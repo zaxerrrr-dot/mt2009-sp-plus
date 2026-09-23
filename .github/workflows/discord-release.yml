@@ -1,7 +1,9 @@
 # Posts the CHANGELOG.md section of a new version to Discord, the way the
 # upstream project's "GitHub Commits" bot does. Runs when a push to main
-# changes VERSION to a version not posted before; can also be run by hand
-# (Actions -> Discord - nowa wersja -> Run workflow) to post or repost one.
+# changes VERSION (a server release, "## X.Y.Z") or CLIENT_VERSION (a client
+# release, "## Klient X.Y.Z") to a version not posted before; can also be
+# run by hand (Actions -> Discord - nowa wersja -> Run workflow) to post or
+# repost one.
 #
 # Needs the repository secret DISCORD_WEBHOOK_URL (Settings -> Secrets and
 # variables -> Actions): the webhook of the Discord channel.
@@ -10,12 +12,17 @@ name: Discord - nowa wersja
 on:
   push:
     branches: [main]
-    paths: [VERSION]
+    paths: [VERSION, CLIENT_VERSION]
   workflow_dispatch:
     inputs:
       version:
-        description: "Wersja do opublikowania (puste = VERSION z main)"
+        description: "Wersja do opublikowania (puste = VERSION albo CLIENT_VERSION z main)"
         required: false
+      kind:
+        description: "Serwer czy klient"
+        type: choice
+        options: [serwer, klient]
+        default: serwer
 
 permissions:
   contents: read
@@ -28,22 +35,36 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Which version
+      - name: Which versions
         id: v
         run: |
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
-            echo "post=1" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ github.event.inputs.kind }}" = "klient" ]; then
+              echo "client=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+              echo "post_client=1" >> "$GITHUB_OUTPUT"
+            else
+              echo "server=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+              echo "post_server=1" >> "$GITHUB_OUTPUT"
+            fi
             exit 0
           fi
-          new=$(tr -d ' \r\n' < VERSION)
-          old=$(git show HEAD~1:VERSION 2>/dev/null | tr -d ' \r\n' || true)
-          echo "version=$new" >> "$GITHUB_OUTPUT"
-          if [ "$new" != "$old" ]; then echo "post=1" >> "$GITHUB_OUTPUT"; else echo "post=0" >> "$GITHUB_OUTPUT"; fi
-          echo "VERSION: $old -> $new"
+          for f in VERSION CLIENT_VERSION; do
+            new=$(tr -d ' \r\n' < "$f" 2>/dev/null || true)
+            old=$(git show "HEAD~1:$f" 2>/dev/null | tr -d ' \r\n' || true)
+            echo "$f: $old -> $new"
+            if [ "$f" = VERSION ]; then key=server; else key=client; fi
+            echo "$key=$new" >> "$GITHUB_OUTPUT"
+            if [ -n "$new" ] && [ "$new" != "$old" ]; then echo "post_$key=1" >> "$GITHUB_OUTPUT"; fi
+          done
 
-      - name: Post to Discord
-        if: steps.v.outputs.post == '1'
+      - name: Post the server release
+        if: steps.v.outputs.post_server == '1'
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: python3 .github/scripts/discord_release.py "${{ steps.v.outputs.version }}"
+        run: python3 .github/scripts/discord_release.py ${{ steps.v.outputs.server }}
+
+      - name: Post the client release
+        if: steps.v.outputs.post_client == '1'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python3 .github/scripts/discord_release.py ${{ steps.v.outputs.client }} --client

@@ -170,7 +170,11 @@ Serwer 2.2.7 i klient 2.0.7. Zaktualizuj oba w launcherze.
 - ...
 ```
 
+Aktualizację samego klienta bot ogłasza, gdy zmienia się `CLIENT_VERSION`;
+jej wpis ma nagłówek `## Klient 2.0.8 — 2026-09-25 — Tytuł`.
+
 Bez tytułu w nagłówku bot bierze nagłówki `###`, a gdy ich nie ma, pierwsze
 zdanie wpisu. Wysłać (albo wysłać ponownie) dowolną wersję można ręcznie:
-*Actions → Discord - nowa wersja → Run workflow* i wpisać numer. Podgląd bez
+*Actions → Discord - nowa wersja → Run workflow*, wpisać numer i wybrać
+`serwer` albo `klient`. Podgląd bez
 wysyłania: `python3 .github/scripts/discord_release.py 2.2.7 --dry-run`.
