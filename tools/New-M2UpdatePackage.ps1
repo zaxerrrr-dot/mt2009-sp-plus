@@ -224,6 +224,18 @@ try {
         if (-not (Test-Path -LiteralPath $sourceFile -PathType Leaf)) {
             throw "Listed file does not exist: $relative"
         }
+        # Windows PowerShell 5.1 reads a script without a byte order mark as
+        # the ANSI code page: "ł" turns into "Ĺ‚", whose second character is a
+        # quotation mark to the parser, and the whole module fails to load -
+        # the launcher then cannot even install the update that would fix it
+        # (MT2009 Plus 2.2.3, launcher/Metin2Launcher.psm1).
+        if ($relative -match '\.(ps1|psm1)$') {
+            $scriptBytes = [IO.File]::ReadAllBytes($sourceFile)
+            $hasBom = $scriptBytes.Length -ge 3 -and $scriptBytes[0] -eq 0xEF -and $scriptBytes[1] -eq 0xBB -and $scriptBytes[2] -eq 0xBF
+            if (-not $hasBom -and @($scriptBytes | Where-Object { $_ -gt 127 }).Count -gt 0) {
+                throw "PowerShell script has non-ASCII characters but no UTF-8 BOM: $relative. Save it as 'UTF-8 with BOM' before packaging."
+            }
+        }
         $destination = Join-Path $temp ((Get-PublishedPath $relative).Replace('/', '\'))
         New-Item -ItemType Directory -Path (Split-Path -Parent $destination) -Force | Out-Null
         Copy-Item -LiteralPath $sourceFile -Destination $destination -Force

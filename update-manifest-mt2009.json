@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-23T18:55:55Z",
-  "statusMessage": "MT2009 Plus v2.2.3: oficjalne zmiany Tieru 2.2.2-2.2.3 oraz pelny zestaw systemow MT2009 Plus.",
+  "publishedAt": "2026-09-23T19:30:00Z",
+  "statusMessage": "MT2009 Plus v2.2.4: poprawka launchera po 2.2.3 oraz pelny zestaw systemow MT2009 Plus.",
   "server": {
-    "version": "2.2.3",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.2.3/metin2-server-update-2.2.3.zip",
-    "sha256": "C90C8A2107A9D78C9A887649EA905CFBEDE37558AF247CB8DFDEE4EFF3B4B3AD",
-    "size": 50618104
+    "version": "2.2.4",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.2.4.zip",
+    "sha256": "BC8EAED578C76BF51CA9C3873ABD4EB0D816098DF535BCEA7A99531B60DB80AF",
+    "size": 50642916
   },
   "client": {
     "version": "2.0.4",
