@@ -5484,11 +5484,15 @@ namespace
 		return false;
 	}
 
-	// The sashes of the item table: four grades each of five kinds (85001..85024
-	// less the unused 85009, 85010, 85019, 85020) and the Herzband (86061..86064).
+	// The sashes of the item table: four grades each of five classic kinds
+	// (85001..85024 less the unused 85009, 85010, 85019, 85020), Death Ruler
+	// (85101..85104) and the Herzband (86061..86064).  Death Ruler no longer
+	// drops, but copies already owned remain ordinary trade goods.
 	bool IsPlayerBotSashVnum(DWORD vnum)
 	{
 		if (vnum >= 86061 && vnum <= 86064)
+			return true;
+		if (vnum >= 85101 && vnum <= 85104)
 			return true;
 		if (vnum < 85001 || vnum > 85024)
 			return false;

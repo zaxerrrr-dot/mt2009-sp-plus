@@ -39,6 +39,12 @@ Jak wydać nową wersję: [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md).
 ## Co zmienia ta paczka
 
 **Przedmioty i systemy**
+- Auto Łowy pod klawiszem **K**: walka, skille, mikstury, przedmioty
+  czasowe, wstawanie oraz filtrowane podnoszenie własnego łupu.
+- Cor Draconis i wszystkie szarfy można przekazywać graczom oraz wystawiać
+  w sklepach zwykłych i offline.
+- Wadliwa rodzina Skrzydeł Władcy Śmierci 85101–85104 nie wypada już z
+  Metinów, bossów ani szkatułek.
 - Kostiumy, fryzury i nakładki na broń Gameforge 26.1.11 (ok. 2200 przedmiotów).
 - Mounty z pieczęci (kostium wierzchowca, ok. 240 pieczęci, 129 modeli) z
   poprawioną prędkością ruchu; deski/chmury/łodzie pozwalają używać umiejętności.

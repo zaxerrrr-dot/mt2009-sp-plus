@@ -1,0 +1,58 @@
+diff --git a/Source/Source Client/GameLib/ItemManager.cpp b/Source/Source Client/GameLib/ItemManager.cpp
+index ad0a483..f45263f 100644
+--- a/Source/Source Client/GameLib/ItemManager.cpp
++++ b/Source/Source Client/GameLib/ItemManager.cpp
+@@ -12,6 +12,32 @@ static DWORD s_adwItemProtoKey[4] =
+ 	27973291
+ };
+ 
++namespace
++{
++	bool IsTradeableCorOrSash(DWORD dwVnum)
++	{
++		static const DWORD s_adwCorVnums[] =
++		{
++			50252, 50255, 50256, 50257, 50258, 50259, 50260,
++			51501, 51502, 51503, 51504, 51505, 51506, 51507, 51508, 51509, 51510,
++			51541, 51548, 51549, 51562, 51569, 51576, 51583, 51590, 51597,
++			51604, 51611, 51618, 51625, 51632, 76040,
++		};
++		for (size_t i = 0; i < _countof(s_adwCorVnums); ++i)
++			if (s_adwCorVnums[i] == dwVnum)
++				return true;
++
++		if (dwVnum >= 85101 && dwVnum <= 85104)
++			return true;
++		if (dwVnum >= 86061 && dwVnum <= 86064)
++			return true;
++		if (dwVnum < 85001 || dwVnum > 85024)
++			return false;
++		const DWORD dwGrade = dwVnum % 10;
++		return dwGrade != 9 && dwGrade != 0;
++	}
++}
++
+ BOOL CItemManager::SelectItemData(DWORD dwIndex)
+ {
+ 	TItemMap::iterator f = m_ItemMap.find(dwIndex);
+@@ -372,6 +398,8 @@ bool CItemManager::LoadItemTable(const char* c_szFileName)
+ 
+ 		CItemData * pItemData;
+ 		DWORD dwVnum = table->dwVnum;
++		if (IsTradeableCorOrSash(dwVnum))
++			table->dwAntiFlags &= ~(ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP);
+ 
+ 		TItemMap::iterator f = m_ItemMap.find(dwVnum);
+ 		if (m_ItemMap.end() == f)
+@@ -558,9 +586,9 @@ bool CItemManager::LoadItemTable(const char* c_szFileName)
+ 		table.bType = ITEM_COSTUME;
+ 		table.bSubType = COSTUME_ACCE;
+ 		table.bSize = 1;
++		// Every sash is tradeable.  DROP and PKDROP remain blocked, while GIVE
++		// and MYSHOP are deliberately absent just as on the server item_proto.
+ 		table.dwAntiFlags = ITEM_ANTIFLAG_DROP | ITEM_ANTIFLAG_PKDROP;
+-		if (source.lAbsorptionRate < ACCE_GRADE_4_ABS_MIN)
+-			table.dwAntiFlags |= ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP;
+ 		table.dwRefinedVnum = source.dwNextVnum;
+ 		table.wRefineSet = source.dwNextVnum ? 409 : 0;
+ 		table.aApplies[0].bType = 97; // APPLY_ACCEDRAIN_RATE
