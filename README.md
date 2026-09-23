@@ -185,8 +185,11 @@ cała sztuczna inteligencja botów pochodzi z oficjalnego wydania.
 - **Oryginalny projekt (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
 - **Discord oryginalnego projektu:** [discord.gg/6v4WkDY6a](https://discord.gg/6v4WkDY6a)
 
-Oraz autorzy, na których pracy opiera się oficjalne wydanie:
-- **AzzlackSyndicate** — pierwotna baza linuksowego portu, instalatorów i panelu.
-- **OskarPWA** — okno magazynu bota i ikony umiejętności w panelu.
-- **seban latino** — Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`).
+Oraz autorzy i pomocnicy, na których pracy opiera się oficjalne wydanie:
+- **AzzlackSyndicate** — autor pierwotnej bazy linuksowego portu, instalatorów i panelu. Repozytorium źródłowe jest obecnie prywatne; zachowujemy historię Git i pełną atrybucję.
+- **OskarPWA** — okno magazynu bota i ikony umiejętności na stronie pochodzą z panelu, który zbudował i udostępnił do przeniesienia.
+- **seban latino** — autor Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`), drugiego panelu w tej instalacji: mapa na żywo, profile, rankingi, gospodarka, telemetria i masowe nadania.
+- **Iwakura** — pomoc przy systemach cen i nazw sklepów, nickach botów oraz algorytmach wartości przedmiotów.
+- **ĹŌŞƬĒĶ** — nowy ekran logowania klienta (od 2.0.6): animowane tło, logo i Discord Rich Presence.
+- **Colide** — nowe okno Auto Łowów w kliencie (od 2.0.17): 12 umiejętności, 6 mikstur na % HP albo PE, 6 przedmiotów na czas, czekanie na HP po wskrzeszeniu i umiejętności niezależne od ataku.
 - [DadsMmoLab/dads-mmo-lab](https://github.com/DadsMmoLab/dads-mmo-lab) — inspiracja dla autonomicznych agentów w grach MMO.
