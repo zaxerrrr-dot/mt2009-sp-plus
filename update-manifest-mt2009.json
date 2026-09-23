@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-23T21:00:00Z",
-  "statusMessage": "MT2009 Plus v2.2.5: wraca wyglad launchera MT2009 PLUS, panel i launcher aktualizuja sie tylko z repozytorium MT2009 Plus.",
+  "publishedAt": "2026-09-23T22:00:00Z",
+  "statusMessage": "MT2009 Plus v2.2.6: wracaja oferty ItemShopu (kostiumy, fryzury, nakladki, pety, mounty) na swiatach zalozonych od 2.2.3.",
   "server": {
-    "version": "2.2.5",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.2.5.zip",
-    "sha256": "285AFD93291401D70ADA15FD19C943125F27B46A9B159A60BF8E441A694D2D64",
-    "size": 50123393
+    "version": "2.2.6",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.2.6.zip",
+    "sha256": "A1D593EA452B8A1EDEC016E105969109BB59F0B01DF137334B5D2ED00A60A220",
+    "size": 50174841
   },
   "client": {
     "version": "2.0.6",

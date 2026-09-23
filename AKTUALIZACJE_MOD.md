@@ -127,6 +127,8 @@ w 2.2.5). Poniższe pliki mają zmiany MT2009 Plus — scalaj je ręcznie
 | `linux-port/docker/seban-panel/app.py` | sprawdzanie wydań repozytorium moda |
 | `linux-port/docker/seban-panel/updater/update-mt2009.py` | manifest moda, odrzucanie Tieru |
 | `linux-port/tools/update.sh` | domyślne repozytorium moda, odrzucanie Tieru |
+| `linux-port/docker/mariadb/playerbot/apply.sh` | pętla wgrywająca `mod/*.sql` (oferty ItemShopu: kostiumy, fryzury, nakładki, pety, mounty) — bez niej nowe światy mają pusty ItemShop |
+| `linux-port/docker/mariadb/playerbot/mod/*.sql` | oferty ItemShopu w grze i w przeglądarce |
 | `tools/New-M2UpdatePackage.ps1` | sprawdzanie `VERSION` i BOM w skryptach PowerShell |
 | `README.md`, `README_EN.md`, `MODS_PL.md`, `AKTUALIZACJE_MOD.md` | opis moda |
 | `update-manifest-mt2009.json`, `VERSION`, `MOD_VERSION`, `CHANGELOG.md` | wersje i kanał moda |

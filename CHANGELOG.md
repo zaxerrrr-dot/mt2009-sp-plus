@@ -17,6 +17,16 @@ every version here.
 
 ---
 
+## 2.2.6 — 2026-09-23
+
+Poprawka ItemShopu; zawiera wszystko z 2.2.5.
+
+- W ItemShopie w grze zakładki Kostiumy, Fryzury +, Nakładki na broń, Pety
+  i Mounty były puste na światach założonych od 2.2.3: z `apply.sh` zniknęło
+  wgrywanie ofert MT2009 Plus (`mariadb/playerbot/mod/*.sql`). Wraca, i przy
+  najbliższym starcie serwera oferty trafiają do bazy (raz na instalację;
+  świat, który już je ma, zostaje bez zmian).
+
 ## 2.2.5 — 2026-09-23
 
 Poprawka launchera i paneli; zawiera wszystko z 2.2.4.
