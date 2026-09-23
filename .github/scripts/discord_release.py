@@ -3,6 +3,10 @@
 
     DISCORD_WEBHOOK_URL=... python3 .github/scripts/discord_release.py [VERSION]
     python3 .github/scripts/discord_release.py 2.2.6 --dry-run   # print the payload
+    python3 .github/scripts/discord_release.py 2.0.7 --client    # a client release
+
+A client release is the "## Klient X.Y.Z — ..." section (VERSION defaults to
+the CLIENT_VERSION file).
 
 The release is the "## X.Y.Z — ..." section of CHANGELOG.md (VERSION defaults
 to the VERSION file). An optional title follows the date:
@@ -22,7 +26,7 @@ REPO = os.environ.get("GITHUB_REPOSITORY", "zaxerrrr-dot/mt2009-sp-plus")
 COLOR = 0x2ECC71
 DESC_MAX = 4000      # Discord: 4096 per embed description
 TOTAL_MAX = 5800     # Discord: 6000 characters across all embeds of a message
-HEAD_RE = re.compile(r"^##\s+(\d+\.\d+\.\d+)\b(.*)$")
+HEAD_RE = re.compile(r"^##\s+(?:(Klient|Client)\s+)?(\d+\.\d+\.\d+)\b(.*)$", re.I)
 
 
 def read(path):
@@ -30,22 +34,22 @@ def read(path):
         return f.read()
 
 
-def section(changelog, version):
+def section(changelog, version, client=False):
     """(heading rest, body) of the version's section, or None."""
     lines = changelog.splitlines()
     for i, line in enumerate(lines):
         m = HEAD_RE.match(line)
-        if m and m.group(1) == version:
+        if m and m.group(2) == version and bool(m.group(1)) == client:
             body = []
             for nxt in lines[i + 1:]:
                 if HEAD_RE.match(nxt) or nxt.strip() == "---":
                     break
                 body.append(nxt)
-            return m.group(2), "\n".join(body).strip()
+            return m.group(3), "\n".join(body).strip()
     return None
 
 
-def title_of(version, rest, body):
+def title_of(version, rest, body, client=False):
     parts = [p.strip() for p in re.split(r"\s+[—–-]\s+", rest.strip(" —–-")) if p.strip()]
     parts = [p for p in parts if not re.fullmatch(r"\d{4}-\d\d-\d\d", p)]
     if parts:
@@ -56,9 +60,12 @@ def title_of(version, rest, body):
         if heads:
             name = ", ".join(heads[:3])
         else:
-            first = next((l.strip() for l in body.splitlines() if l.strip()), "Aktualizacja")
-            name = re.split(r"[;.]", first)[0].strip() or "Aktualizacja"
-    title = f"🚀 {version} — {name}"
+            first = next((l for l in to_discord(body).splitlines() if l.strip()), "Aktualizacja")
+            name = re.split(r"[;.]", first.lstrip("• ").strip())[0].strip() or "Aktualizacja"
+            if len(name) > 120:
+                name = name[:117].rstrip() + "…"
+    label = f"Klient {version}" if client else version
+    title = f"🚀 {label} — {name}"
     return title if len(title) <= 256 else title[:253] + "…"
 
 
@@ -120,12 +127,14 @@ def chunks(text, size):
     return parts
 
 
-def payloads(version):
-    found = section(read("CHANGELOG.md"), version)
+def payloads(version, client=False):
+    found = section(read("CHANGELOG.md"), version, client)
     if not found:
-        sys.exit(f"CHANGELOG.md has no '## {version}' section")
+        sys.exit(f"CHANGELOG.md has no '## {'Klient ' if client else ''}{version}' section")
     rest, body = found
-    title = title_of(version, rest, body)
+    title = title_of(version, rest, body, client)
+    footer = ("MT2009 PLUS • aktualizacja w launcherze: AKTUALIZUJ KLIENTA" if client
+              else "MT2009 PLUS • aktualizacja w launcherze: SPRAWDŹ AKTUALIZACJE")
     url = f"https://github.com/{REPO}/blob/main/CHANGELOG.md"
     parts = chunks(to_discord(body), DESC_MAX)
     messages, embeds, used = [], [], 0
@@ -134,7 +143,7 @@ def payloads(version):
         if n == 0:
             embed.update(title=title, url=url)
         if n == len(parts) - 1:
-            embed["footer"] = {"text": "MT2009 PLUS • aktualizacja w launcherze: SPRAWDŹ AKTUALIZACJE"}
+            embed["footer"] = {"text": footer}
         size = len(part) + (len(title) if n == 0 else 0) + 80
         if embeds and (len(embeds) == 10 or used + size > TOTAL_MAX):
             messages.append(embeds)
@@ -147,8 +156,9 @@ def payloads(version):
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    version = args[0] if args else read("VERSION").strip()
-    msgs = payloads(version)
+    client = "--client" in sys.argv
+    version = args[0] if args else read("CLIENT_VERSION" if client else "VERSION").strip()
+    msgs = payloads(version, client)
     if "--dry-run" in sys.argv:
         print(json.dumps(msgs, ensure_ascii=False, indent=2))
         return
