@@ -17,6 +17,12 @@ every version here.
 
 ---
 
+## 2.2.1 — 2026-09-23
+
+Testowa aktualizacja paczki MT2009 PLUS (mod-4). Serwer dostaje plik
+`test_update_serwer.txt`, klient (2.0.4) plik `test_update_klient.txt`.
+Nic więcej się nie zmienia; baza danych zostaje nietknięta.
+
 ## 2.2.0 — 2026-09-23
 
 Serwer i panel WWW; klient zostaje 2.0.26. Zawiera wszystko z 2.1.0.

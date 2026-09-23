@@ -1,0 +1,2 @@
+Test aktualizacji serwera MT2009 PLUS (2.2.1).
+Jesli widzisz ten plik w folderze serwera, aktualizacja serwera dziala.
