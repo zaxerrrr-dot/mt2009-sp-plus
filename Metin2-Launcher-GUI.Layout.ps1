@@ -245,19 +245,19 @@ $header = [Windows.Forms.Panel]::new(); $header.Dock = 'Top'; $header.Height = 9
 $header.BackColor = UI-Color '#0D141A'; $header.Padding = [Windows.Forms.Padding]::new(26, 14, 26, 10)
 $script:form.Controls.Add($header)
 $brand = [Windows.Forms.Panel]::new(); $brand.Dock = 'Fill'; $header.Controls.Add($brand)
-$subtitle.Text = 'SINGLEPLAYER  /  PLAYERBOTS  /  BY TIERU'
+$subtitle.Text = 'SINGLEPLAYER  /  MT2009  /  BY TIERU EDITED BY ZAXEP'
 $subtitle.Dock = 'Top'; $subtitle.Height = 24
 $subtitle.Font = [Drawing.Font]::new('Segoe UI', 9); $subtitle.ForeColor = $script:ui.Muted
 $brand.Controls.Add($subtitle)
-$title.Text = 'METIN2'; $title.Dock = 'Top'; $title.Height = 37; $title.Font = [Drawing.Font]::new('Georgia', 25, [Drawing.FontStyle]::Bold)
+$title.Text = 'MT2009 PLUS'; $title.Dock = 'Top'; $title.Height = 37; $title.Font = [Drawing.Font]::new('Georgia', 25, [Drawing.FontStyle]::Bold)
 $title.ForeColor = $script:ui.Gold; $brand.Controls.Add($title)
 $brand.Controls.SetChildIndex($title, 0)
-$website = New-Button 'metin2singleplayer.com  >' 0 0 240 44
+$website = New-Button 'metin2sp.pl  >' 0 0 240 44
 UI-ButtonStyle $website
 $website.Dock = 'Right'; $website.Width = 240; $website.BackColor = UI-Color '#19232C'
 $website.ForeColor = $script:ui.Gold
 $website.AccessibleName = UI-Text 'Oficjalna strona projektu' 'Official project website'
-$website.Add_Click({ Start-Process 'https://metin2singleplayer.com/' })
+$website.Add_Click({ Start-Process 'https://metin2sp.pl/' })
 $header.Controls.Add($website)
 UI-ButtonStyle $languageButton
 $languageButton.Text = if ($script:Lang -eq 'en') { 'EN / PL' } else { 'PL / EN' }
