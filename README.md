@@ -1,5 +1,7 @@
 # ⚔️ Metin2 Playerbots — paczka modyfikacji (mt2009 SP+)
 
+**Polski** | [English (README_EN.md)](README_EN.md)
+
 [![Discord](https://img.shields.io/badge/Discord-Dołącz_do_społeczności-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/vGE3T9gpm)
 [![Strona](https://img.shields.io/badge/WWW-metin2sp.pl-C8102E?style=for-the-badge&logo=googlechrome&logoColor=white)](https://metin2sp.pl/)
 

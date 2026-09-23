@@ -1,141 +1,190 @@
-# ⚔️ Metin2 Playerbots
+# ⚔️ Metin2 Playerbots — Modification Pack (mt2009 SP+)
 
 [Polski (README.md)](README.md) | **English**
 
-[![Discord](https://img.shields.io/badge/Discord-Join_Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/6v4WkDY6a)
-[![BuyCoffee](https://img.shields.io/badge/BuyCoffee-Support_the_Project-FF813F?style=for-the-badge&logo=coffeescript&logoColor=white)](https://buycoffee.to/metin2-playerbots)
+[![Discord](https://img.shields.io/badge/Discord-Join_the_community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/vGE3T9gpm)
+[![Website](https://img.shields.io/badge/WWW-metin2sp.pl-C8102E?style=for-the-badge&logo=googlechrome&logoColor=white)](https://metin2sp.pl/)
 
-A local Metin2 singleplayer world populated by genuine, autonomous player characters (Playerbots): leveling up, grinding solo and in squads, looting items, refining gear at the Blacksmith, hunting Metin stones, and persisting their full progression in the standard database.
+A local Metin2 singleplayer world full of autonomous characters (Playerbots),
+built on Tieru's official **Metin2 Playerbots** release (mt2009 server files,
+version 2.2.0) — **extended with systems the official release does not have**:
+costumes, hairstyles, weapon skins, sashes, mounts, pets and alchemy
+(Dragon Soul), over 2,200 new items in total.
 
-## 💬 Community & Project Support
+The bots behave exactly as in the official release: they level up, fight solo
+and in parties, loot, refine gear at the Blacksmith, hunt Metin stones and
+trade with each other. This pack adds new items and systems to that world,
+plus a few bot improvements.
 
-- **[Join our Discord server](https://discord.gg/6v4WkDY6a)** — discuss the project, share playtests and ideas, and follow playerbot development updates.
-- **[Support development on buycoffee.to](https://buycoffee.to/metin2-playerbots)** — voluntary donations help cover the tools and AI models used to develop the project.
+## 💬 Community
 
-<a href="https://buycoffee.to/metin2-playerbots" target="_blank"><img src="https://buycoffee.to/btn/buycoffeeto-btn-primary.svg" style="height: 42px;" alt="Support on buycoffee.to"></a>
-
-Every contribution — testing, bug reports, ideas, code, or financial support — helps us build a more autonomous and lively Metin2 world.
+- **[Discord](https://discord.com/invite/vGE3T9gpm)** — help, bug reports, ideas and news about the pack.
+- **[metin2sp.pl](https://metin2sp.pl/)** — project website.
 
 > [!IMPORTANT]
-> This project supports the **native Windows client only**. It neither contains nor automatically downloads Metin2 files, the r40250 package, or the withdrawn upstream WebClient. Installation requires your own compatible files. See [project provenance and attribution](docs/ATTRIBUTION.md).
-
-Unlike conventional external client-bot scripts, bots in this project are **first-class PC entities controlled by AI logic embedded directly inside the game core server engine**. Real players connecting to the server observe their natural movement, combat combos, skill casts, and equipment via standard Metin2 network packets.
-
----
-
-## 🌟 Bot Capabilities
-
-- ⚔️ **Smart Combat Engine**: Full support for all character classes (Warrior, Sura BM/WP, Ninja Dagger/Archer, Shaman), smooth combo animations, projectile-based bow attacks consuming arrows, active buff maintenance, and skill rotations.
-- 🗺️ **Global 2D NavGrid (A*)**: High-resolution collision grid generated from engine map attributes (`server_attr`) coupled with Global A* and String-Pulling line-of-sight trajectory smoothing.
-- 🚪 **Multi-map Travel**: Autonomous crossings M1 ↔ M2 ↔ M3, the Easy Monkey Dungeon, Orc Valley, the Yongbi Desert, Mount Sohan and the Spider Dungeon V1. Bots pick the map by level and the hub on it by the population's shared memory of where the monsters stand.
-- 🏹 **Hunting missions to level 55 and the Orc Tooth**: the official `levelup` missions taken without a dialog, the option chosen for the map the bot is on; seven Biologist missions including the Orc Tooth and the Soul Stone.
-- 🎁 **Chests and bosses**: Moonlight Treasure Chests and boss caskets are opened and their contents used (bonus scrolls, speed potions, the Blessing Scroll for refines from +6). Parties, guild mates first, raid the Orc Chief and the Spider Queen.
-- 💎 **Metin Stone Hunting**: Dedicated roving Metin hunters patrolling the map, shattering stones, and clearing spawned add waves.
-- 🎒 **Looting & Town Economy**: Post-battle loot collection, automated equipment evaluation including shields, appropriate merchant visits, potion restocking, and gear refinement at the **Blacksmith**.
-- 🐴 **Horse Progression**: Real Horse Medal expeditions into the Monkey Dungeon, delivery to the nearest Stable Boy, and mounted long-distance travel.
-- 👥 **Party & Squad Dynamics**: Dynamic 2–3 player squads, and up to 8 in Orc Valley for the Black Orc camps; cooperative exping and pulling mobs in dense monster camps.
-- 🏪 **Stalls and a bot-to-bot market**: Bots open private stalls in Bokjung and **buy from each other** — the refine material someone is short of, or a piece of gear better than what they are wearing. Anything at +7 or above is never sold to an NPC merchant.
-- 🧬 **Biologist missions**: Collecting specimens and handing them in stage by stage, driven without a quest dialog.
-- 🎣 **Fishing**: A full session — bait written into the rod's socket, waiting for the bite, and pulling inside the six-second window.
-- ✨ **Bonus rerolling**: Bots use Change and Add Attribute stones on gear they are not currently wearing.
-- 🧠 **Personality and goals**: Every bot has its own character and ambition (Metin hunter, collector, horse breeder, a "dropper" of Metins, M3, M2 or medals) that decides what it does with a given hour.
-- 🎛️ **The panel steers behaviour live**: goal weight sliders, a switch for the bots' overhead chat, scrap keepers selling cheap fodder for the blacksmith, and the Moonlight chest chance — all read by the core within five seconds, no restart.
-- 💾 **Native MariaDB Persistence**: Each bot has its own persistent account and character entry in MariaDB, retaining Level, EXP, Yang, items, and quest flags across server restarts.
+> You need **this pack's client** (with the new costumes, mounts, pets and
+> items). Tieru's official client will not show the new items. This repository
+> contains no game files — the full package (client + server) is under
+> **Releases**, see [SERWER_PL.md](SERWER_PL.md).
 
 ---
 
-## 📊 Project Status
+## ✨ What this pack adds
 
-The project is under active research and development.
+The numbers below are counted from the ItemShop offers shipped with the pack
+(`linux-port/docker/mariadb/playerbot/mod/`).
 
-> [!NOTE]
-> **Supported Kingdoms:** The autonomous world covers **all three kingdoms** (**Chunjo** – Yellows, **Shinsoo** – Reds, and **Jinno** – Blues) including M1, M2, M3, Monkey Dungeons, **Orc Valley**, **Yongbi Desert**, **Mount Sohan**, **Hwang Temple**, and **Spider Dungeons**!
+### 👘 Costumes and hairstyles (Gameforge 26.1.11)
+- **860 costumes** (432 male and 432 female versions) — Dragon Knights,
+  Valkyries, Desert Warriors, Light Bearer costumes and more.
+- **848 hairstyles** ("Fryzury +" category) — helmets, masks, turbans, ears and diadems.
+- Timed variants: 1 day, 7 days, 30 days.
 
-### Resource Footprint (measured with 843 bots alive)
-- **Game Engine (`game core`)**: ~1.8 GiB RAM, ~25–38% of one core (a route planner on its own grid, with a memory of planned routes)
-- **Database (`MariaDB`)**: ~89 MiB RAM
-- **Web Admin Panel & Live Map**: ~270 MiB RAM
-- Runs smoothly in the background on standard modern developer PCs.
-- `PLAYERBOT_AUTOSPAWN_COUNT` asks for a number, but the ceiling is how many canonical identities exist in the database (`BOT_COUNT` in `generate_seed.py`), not the slider.
+### 🗡️ Weapon skins
+- **109 skins** for every weapon type — swords, daggers, bows, glaives, bells,
+  fans (Northern Dragon, Curse Bearer series and more).
 
----
+### 🎀 Sashes
+- Full sash system: **combining** two sashes into a stronger one and
+  **absorbing bonuses** from an item into a sash — at **Uriel**.
 
-## 🚀 Quickstart
+### 🐎 Mounts
+- **About 240 mount seals** (129 models) as mount costumes, with fixed
+  movement speed; 136 different mounts in the ItemShop.
+- Skills can be used on boards, clouds and boats.
 
-### 1. Prepare the files
+### 🐾 Pets
+- **190 pets** — one at a time, bonuses from the item, back after relogging.
+- **11 "(łup)" loot pets** pick up items and yang by themselves (yours only).
 
-Have a compatible local r40250 server archive ready. A native Windows client archive, preferably from the exact same release, is optional if you already have a configured client. The “r40250” label alone does not guarantee matching packets and proto files. Neither file belongs in this repository.
+### 🐉 Alchemy (Dragon Soul)
+- Dragon Soul system from level 30 at the **Alchemist**: qualification quest,
+  fragment farming, refining (grade / step / strength), attribute change and
+  a material shop.
 
-### 2. Clone and Install (Windows)
-```powershell
-git clone https://github.com/TieruYT/metin2-playerbots.git
-Set-Location .\metin2-playerbots
-& .\installer\install.ps1 `
-    -Archive 'C:\path\Reference_Server.zip' `
-    -ClientArchive 'C:\path\Reference_Client.zip' `
-    -NoWebClient
-```
+### 🎨 Costume bonuses
+- **Transform Costume** (70063) — rolls 1–3 bonuses.
+- **Enchant Costume** (70064) — changes bonus values.
+- **Bonus Transfer** (70065) — at the Blacksmith, moves bonuses from one
+  costume to another of the same kind (costume / hairstyle / weapon skin).
+- All sold by the General Store saleswoman.
 
-If you already have a configured client, replace `-ClientArchive` with `-NoClient`.
+### 🛒 Shops and extras
+- **Costume shop at Ah-Yu** — costumes, hairstyles and weapon skins for 1 yang.
+- **In-game ItemShop** and **web ItemShop** with new categories (Hairstyles +,
+  Costumes, Weapon skins, Pets, Mounts) — the web shop filters items by the
+  character's class and gender.
+- Lord of Death set, Diadems, Magma Manni.
+- Trash bin, monster drop preview, Easter event toggle in the panel.
 
-### 3. Start the Server after installation
-```powershell
-Set-Location "$env:USERPROFILE\Metin2Server"
-docker compose up -d
-```
+### 🤖 Bot changes
+- Smoother server performance with many bots (per-tick time budget).
+- Bots keep a stock of potions 27101/27104 instead of selling them in stalls.
+- Bot "retirement" from the panel — replacing old bots with new ones.
 
-After the start two web panels are running: the classic admin panel at `http://127.0.0.1:7788` and the **Metin2 Singleplayer Panel** by seban latino at `http://127.0.0.1:7790` — a live map of the bot world, character profiles with inventories and item tooltips, rankings, economy history, host telemetry, live bot controls and bulk item grants. The first visit to `/setup` asks for a name, a theme and an optional password.
+### ⚙️ Other
+- The server accepts the client regardless of its version.
+- Updates come from **this repository**, never from the official one —
+  an official package would overwrite the modifications ([AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md)).
 
-### 4. Join the Game
-Point the client from the same compatible r40250 set to `127.0.0.1` (Auth port `11000`, Game ports `13000–13002`) and jump into the living world in Joan (Chunjo)!
-
-👉 **Detailed installation, `.env` options, and client setup instructions: [docs/INSTALL_EN.md](docs/INSTALL_EN.md)**
-
----
-
-## 🎮 In-Game Commands (GM Commands)
-
-Manage bots directly via in-game chat (requires GM / Administrator permissions):
-
-| Command | Permission | Description | Example |
-|---|---|---|---|
-| `/bot_spawn <id> <empire: 1-3>` | GM | Spawns a specific bot by Player ID into the designated empire (`1` = Shinsoo, `2` = Chunjo, `3` = Jinno). | `/bot_spawn 4 2` |
-| `/bot_despawn <id>` | GM | Despawns and logs out a specific bot. | `/bot_despawn 4` |
-| `/bot_spawn_many <start_id> <count> <empire>` | GM | Spawns a batch range of bots into the designated empire. | `/bot_spawn_many 4 350 2` |
-| `/bot_despawn_many <start_id> <count>` | GM | Despawns a batch range of bots starting from `start_id`. | `/bot_despawn_many 4 350` |
-| `/bot_rank` | All Players | Prints the top level leaderboard and bot coordinates in chat. | `/bot_rank` |
-
----
-
-## 🗺️ Roadmap
-
-- [x] **Phase 1**: Full combat animations for all classes, Archer projectiles, 2D NavGrid (A*), Blacksmith refinement cycle, and 32 regional hubs in Chunjo.
-- [x] **Phase 2A**: M1/M2/M3 traversal, level-based zones, the Easy Monkey Dungeon, and real Horse Medal expeditions.
-- [ ] **Phase 2B**: Orc Valley ✅ and Yongbi Desert ✅ — full **Demon Tower (DT)** runs still to come.
-- [ ] **Phase 3**: Reading Skill Books (KU) and Soul Stones (KD), advanced skill priority trees.
-- [x] **Phase 4A**: Early Biologist missions and first-stage horse progression backed by real Horse Medal drops.
-- [x] **Phase 4B**: the Orc Tooth and the Soul Stone at the Biologist (with the quest's own chance of a spoiled tooth), hunting missions to level 55, the battle horse from the desert trial.
-- [ ] **Phase 4C** *(up next)*: later Biologist missions, three kingdoms and kingdom wars.
-- [ ] **Phase 5**: Fishing ✅ — mining ore veins and alchemy crafting still to come.
-- [x] **Phase 6**: Private bot stalls in town and bot-to-bot trading. Pricing is still fixed-tier rather than demand-driven.
+Full change list (Polish): [MODS_PL.md](MODS_PL.md).
 
 ---
 
-## 📚 Project Documentation
+## 🌟 Bot features (from the official release)
 
-Detailed guides separated into dedicated documentation modules:
+Bots are **full player characters driven by AI inside the server engine** —
+players see their natural movement, attack animations, skills and equipment
+through the normal game protocol.
 
-- 📖 **[Installation & Setup Guide (docs/INSTALL_EN.md)](docs/INSTALL_EN.md)** – Docker, WSL2, Linux, `.env`, client connection.
-- 💻 **[Developer Guide & Diagnostics (docs/DEVELOPMENT_EN.md)](docs/DEVELOPMENT_EN.md)** – 8-second fast C++ builds (`fast-game-build`), debugging, and telemetry logs.
-- 🧩 **[Architecture and refactoring path (docs/ARCHITECTURE.md)](docs/ARCHITECTURE.md)** – module boundaries and the incremental path toward testable AI components.
-- 🧾 **[Provenance & Attribution (docs/ATTRIBUTION.md)](docs/ATTRIBUTION.md)** – fork history, licensing boundary, and WebClient status.
+- ⚔️ **Combat**: every class (Warrior, Sura, Ninja, Shaman), combos, bows with arrows, buffs and skill rotations.
+- 🗺️ **A\* navigation**: a collision grid built from map attributes — bots avoid mountains, rivers and walls.
+- 🚪 **Map travel**: M1/M2/M3, Monkey Dungeon, Orc Valley, Yongbi Desert, Mount Sohan, Hwang Temple, Spider Dungeon, Doyyumhwaji.
+- 🏹 **Quests**: hunting quests, the Biologist including Orc Tooth and Soul Stone, Horse Medal runs.
+- 💎 **Metins and bosses**: Metin hunters, parties against the Orc Chief, Spider Queen and Fire King.
+- 🎒 **Economy**: loot, better gear, potions, Blacksmith refining, stalls and bot-to-bot trade.
+- 👥 **Parties and guilds**: 2–8 player parties, shared grinding, guild wars.
+- 🎣 **Fishing** and bonus rerolling.
+- 🧠 **Personality**: every bot has a character and ambition that decide what it does.
+- 🎛️ **Live panel**: bot map, profiles with equipment, goal sliders and settings without restart.
+- 💾 **Persistent saves**: every bot has its own account and character in MariaDB.
+
+**All three kingdoms** are supported (Shinsoo, Chunjo, Jinno).
 
 ---
 
-## 🤝 Credits & Acknowledgements
+## 🚀 Installation (Windows)
 
-- **AzzlackSyndicate** — author of the original Linux port foundation, installers, and panel. The source repository is now private; its Git history and attribution are retained.
-- **OskarPWA** — the bot depot window and the skill icons on the site come from a panel he built and shared for merging back.
-- **seban latino** — author of the Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`), the second panel in this install: live map, profiles, rankings, economy, telemetry and bulk grants.
-- [DadsMmoLab/dads-mmo-lab](https://github.com/DadsMmoLab/dads-mmo-lab) — Research inspiration for autonomous MMO agent design.
-- The Metin2 emulation and research community.
+1. Install and start **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**.
+2. Download the full package from **Releases** and unpack it, e.g. to
+   `C:\Metin2Mod\` (a path without spaces or special characters is safest).
+3. Run **`Metin2-Launcher-GUI.bat`**.
+4. Click **1. INSTALUJ / PRZYGOTUJ**, then **2. GRAJ**.
+   The first start takes a while (tens of minutes): Docker builds the server
+   from source and creates the bot database.
+
+Two browser panels run after start:
+- `http://127.0.0.1:7788` — admin panel and bot map,
+- `http://127.0.0.1:7790` — Metin2 Singleplayer Panel (seban latino): live map, profiles, rankings, economy.
+
+**Linux / VPS:** see [PACZKA_INFO.txt](PACZKA_INFO.txt); update from the server
+folder with `sh linux-port/tools/update.sh`.
+
+Passwords (database, panel) are generated on first start and saved in
+`linux-port\docker\.env` — on your computer only. Never share them.
+
+## 🗄️ Database access
+
+MariaDB is reachable locally only: `127.0.0.1`, port `3306`.
+The launcher's **DANE DO BAZY (NAVICAT)** button shows host, port and passwords.
+On `1045 - Access denied` use **NAPRAW DOSTĘP DO BAZY** — characters, items
+and bots stay untouched.
+
+## 🎮 GM commands
+
+| Command | Description | Example |
+|---|---|---|
+| `/bot_spawn <id> <kingdom 1-3>` | Spawn a specific bot (`1` Shinsoo, `2` Chunjo, `3` Jinno). | `/bot_spawn 4 2` |
+| `/bot_despawn <id>` | Remove a bot from the world. | `/bot_despawn 4` |
+| `/bot_spawn_many <start_id> <count> <kingdom>` | Mass spawn. | `/bot_spawn_many 4 350 2` |
+| `/bot_despawn_many <start_id> <count>` | Mass despawn. | `/bot_despawn_many 4 350` |
+| `/bot_rank` | Bot level ranking (everyone). | `/bot_rank` |
+| `/acce c` / `/acce a` | Sash combine / absorb window. | `/acce c` |
+
+## 💾 World backup
+
+The launcher's **KOPIA ŚWIATA** button saves the whole world to a zip file.
+"Stop and save" never deletes characters or bot progress.
+
+---
+
+## 📚 Documentation
+
+- [MODS_PL.md](MODS_PL.md) — what the modification pack changes (Polish).
+- [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md) — how updates work and are released (Polish).
+- [docs/INSTALL_EN.md](docs/INSTALL_EN.md) — Docker, WSL2, Linux, `.env`, client.
+- [docs/DEVELOPMENT_EN.md](docs/DEVELOPMENT_EN.md) — building, debugging and AI logs.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — bot architecture.
+- [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md) — project origin and licenses.
+
+## 📜 License
+
+The metin2-playerbots tooling is MIT-licensed (`LICENSE`). The game server
+code, game data and client belong neither to the project authors nor to us —
+read [NOTICE.md](NOTICE.md) before redistributing.
+
+---
+
+## 🤝 Credits and the original project
+
+This pack is a modification of **Metin2 Playerbots** by **Tieru** — all of the
+bots' artificial intelligence comes from the official release.
+
+- **Original project (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
+- **Original project's Discord:** [discord.gg/6v4WkDY6a](https://discord.gg/6v4WkDY6a)
+
+And the authors the official release builds on:
+- **AzzlackSyndicate** — the original Linux port, installers and panel.
+- **OskarPWA** — bot storage window and skill icons in the panel.
+- **seban latino** — Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`).
+- [DadsMmoLab/dads-mmo-lab](https://github.com/DadsMmoLab/dads-mmo-lab) — inspiration for autonomous agents in MMO games.
