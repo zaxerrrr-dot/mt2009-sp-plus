@@ -4,6 +4,23 @@ $ErrorActionPreference = 'Stop'
 # Fallback used when the manifest carries no support block (offline, or an old manifest).
 $script:M2_DEFAULT_SUPPORT_CONTACT = 'https://discord.gg/pt5tvnrN6'
 
+# MT2009 Plus: updates come from the mod's own repository, never from
+# upstream (TieruYT/metin2-playerbots) - an upstream package unpacked over the
+# mod would overwrite its changes. The raw URL is also read through the GitHub
+# contents API first (see Get-M2UpdateManifest).
+$script:M2_MOD_REPOSITORY = 'zaxerrrr-dot/mt2009-sp-plus'
+$script:M2_MOD_MANIFEST_URL = "https://raw.githubusercontent.com/$($script:M2_MOD_REPOSITORY)/main/update-manifest-mt2009.json"
+
+function Test-M2ForeignManifestUrl {
+    # True for a manifest address this package must not follow: empty (what
+    # the mod saved while updates were off), upstream's repository, or the
+    # 1.x channel file this repository does not publish.
+    param([AllowEmptyString()][string]$Url)
+    if ([string]::IsNullOrWhiteSpace($Url)) { return $true }
+    if ($Url -match '(?i)TieruYT/metin2-playerbots') { return $true }
+    return ($Url -match '(?i)zaxerrrr-dot/mt2009-sp-plus/.*/update-manifest\.json$')
+}
+
 function Get-M2SiblingClientExecutable {
     # The full package (Metin2-Singleplayer-<version>.zip) unpacks as Klient\
     # beside Serwer\; a launcher that finds the client there asks nobody for
@@ -25,10 +42,8 @@ function Get-M2DefaultLauncherConfig {
     # dropped onto the other's tree would put ENGINE, world.sql and eighty
     # engine files where they do not belong, and the launcher would then
     # refuse to start the world it had.
-    $manifest = 'https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main/update-manifest.json'
-    if ((Get-M2ServerEngine -ServerRoot $ServerRoot) -eq 'mt2009') {
-        $manifest = 'https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main/update-manifest-mt2009.json'
-    }
+    # MT2009 Plus publishes one channel, the mt2009 one.
+    $manifest = $script:M2_MOD_MANIFEST_URL
     $sibling = Get-M2SiblingClientExecutable -ServerRoot $ServerRoot
     [pscustomobject]@{
         schema = 1
@@ -65,6 +80,11 @@ function Get-M2LauncherConfig {
         if ($null -ne $loaded.PSObject.Properties[$name]) {
             $defaults.$name = [string]$loaded.$name
         }
+    }
+    # A config saved while the mod had updates off holds an empty address, and
+    # one carried over from upstream points at upstream: both get the mod's.
+    if (Test-M2ForeignManifestUrl -Url ([string]$defaults.manifestUrl)) {
+        $defaults.manifestUrl = $script:M2_MOD_MANIFEST_URL
     }
     # Its own line, because the loop above casts to [string] and "False" is a
     # non-empty string - every config would then read as "yes, start it".
@@ -128,10 +148,16 @@ function ConvertFrom-M2ManifestText {
 
 function Get-M2UpdateManifest {
     param(
-        [Parameter(Mandatory = $true)][string]$Source,
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Source,
         [int]$TimeoutSec = 30
     )
 
+    if ([string]::IsNullOrWhiteSpace($Source)) {
+        throw 'Brak adresu kanału aktualizacji (manifestUrl) w konfiguracji launchera.'
+    }
+    if (Test-M2ForeignManifestUrl -Url $Source) {
+        throw 'To nie jest kanał MT2009 Plus. Ta paczka aktualizuje się tylko z repozytorium zaxerrrr-dot/mt2009-sp-plus - oficjalna aktualizacja Tieru nadpisałaby zmiany moda.'
+    }
     if (Test-Path -LiteralPath $Source -PathType Leaf) {
         $text = Get-Content -LiteralPath $Source -Raw -Encoding UTF8
         return ConvertFrom-M2ManifestText -Text $text -Origin $Source

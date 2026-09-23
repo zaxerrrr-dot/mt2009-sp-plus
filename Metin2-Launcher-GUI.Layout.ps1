@@ -245,19 +245,19 @@ $header = [Windows.Forms.Panel]::new(); $header.Dock = 'Top'; $header.Height = 9
 $header.BackColor = UI-Color '#0D141A'; $header.Padding = [Windows.Forms.Padding]::new(26, 14, 26, 10)
 $script:form.Controls.Add($header)
 $brand = [Windows.Forms.Panel]::new(); $brand.Dock = 'Fill'; $header.Controls.Add($brand)
-$subtitle.Text = 'SINGLEPLAYER  /  PLAYERBOTS  /  BY TIERU'
+$subtitle.Text = 'SINGLEPLAYER  /  MT2009  /  BY TIERU EDITED BY ZAXEP'
 $subtitle.Dock = 'Top'; $subtitle.Height = 24
 $subtitle.Font = [Drawing.Font]::new('Segoe UI', 9); $subtitle.ForeColor = $script:ui.Muted
 $brand.Controls.Add($subtitle)
-$title.Text = 'METIN2'; $title.Dock = 'Top'; $title.Height = 37; $title.Font = [Drawing.Font]::new('Georgia', 25, [Drawing.FontStyle]::Bold)
+$title.Text = 'MT2009 PLUS'; $title.Dock = 'Top'; $title.Height = 37; $title.Font = [Drawing.Font]::new('Georgia', 25, [Drawing.FontStyle]::Bold)
 $title.ForeColor = $script:ui.Gold; $brand.Controls.Add($title)
 $brand.Controls.SetChildIndex($title, 0)
-$website = New-Button 'metin2singleplayer.com  >' 0 0 240 44
+$website = New-Button 'metin2sp.pl  >' 0 0 240 44
 UI-ButtonStyle $website
 $website.Dock = 'Right'; $website.Width = 240; $website.BackColor = UI-Color '#19232C'
 $website.ForeColor = $script:ui.Gold
 $website.AccessibleName = UI-Text 'Oficjalna strona projektu' 'Official project website'
-$website.Add_Click({ Start-Process 'https://metin2singleplayer.com/' })
+$website.Add_Click({ Start-Process 'https://metin2sp.pl/' })
 $header.Controls.Add($website)
 UI-ButtonStyle $languageButton
 $languageButton.Text = if ($script:Lang -eq 'en') { 'EN / PL' } else { 'PL / EN' }
@@ -322,13 +322,13 @@ $navStack = [Windows.Forms.FlowLayoutPanel]::new()
 $navStack.Dock = 'Top'; $navStack.Height = 300
 $navStack.FlowDirection = 'TopDown'; $navStack.WrapContents = $false
 $sidebar.Controls.Add($navStack)
-$coffeeButton = New-Button (UI-Text '☕  Postaw kawkę' '☕  Buy a coffee') 0 0 232 44
+$coffeeButton = New-Button (UI-Text 'Dołącz na Discord  >' 'Join our Discord  >') 0 0 232 44
 UI-ButtonStyle $coffeeButton
 $coffeeButton.Dock = 'Bottom'; $coffeeButton.Height = 44
 $coffeeButton.Font = [Drawing.Font]::new('Segoe UI Semibold', 10)
 $coffeeButton.ForeColor = $script:ui.Gold
-$coffeeButton.AccessibleName = UI-Text 'Wesprzyj projekt na BuyCoffee' 'Support the project on BuyCoffee'
-$coffeeButton.Add_Click({ Start-Process 'https://buycoffee.to/metin2-playerbots' })
+$coffeeButton.AccessibleName = UI-Text 'Discord MT2009 PLUS' 'MT2009 PLUS Discord'
+$coffeeButton.Add_Click({ Start-Process 'https://discord.com/invite/vGE3T9gpm' })
 $sidebar.Controls.Add($coffeeButton)
 $versionPanel = [Windows.Forms.Panel]::new()
 $versionPanel.Dock = 'Bottom'; $versionPanel.Height = 232
@@ -400,7 +400,7 @@ $script:ui.LogToggle.Add_Click({ Switch-UILog })
 $logHeader.Controls.Add($script:ui.LogToggle)
 $footer.Dock = 'Bottom'; $footer.Height = 34
 $footer.BackColor = [Drawing.Color]::FromArgb(240, 10, 16, 20)
-$footer.Text = UI-Text 'Twój świat. Twoje tempo.    •    Metin2 Singleplayer by Tieru' 'Your world. Your pace.    •    Metin2 Singleplayer by Tieru'
+$footer.Text = UI-Text 'Twój świat. Twoje tempo.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl' 'Your world. Your pace.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl'
 $footer.ForeColor = $script:ui.Muted; $footer.Padding = [Windows.Forms.Padding]::new(28, 6, 0, 0)
 $main.Controls.Add($footer)
 
@@ -501,7 +501,7 @@ $script:versionLabel.Add_ForeColorChanged({
         $footer.Text = UI-Text 'Dostępna aktualizacja — przejdź do pulpitu.' 'Update available — open Overview.'
         $footer.ForeColor = $script:ui.Gold
     } else {
-        $footer.Text = UI-Text 'Twój świat. Twoje tempo.    •    Metin2 Singleplayer by Tieru' 'Your world. Your pace.    •    Metin2 Singleplayer by Tieru'
+        $footer.Text = UI-Text 'Twój świat. Twoje tempo.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl' 'Your world. Your pace.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl'
         $footer.ForeColor = $script:ui.Muted
     }
     $script:ui.VersionTip.SetToolTip($script:ui.SideVersions, $script:versionLabel.Text)
