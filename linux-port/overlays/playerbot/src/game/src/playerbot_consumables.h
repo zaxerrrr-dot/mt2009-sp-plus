@@ -77,6 +77,10 @@ namespace
 		if (!ch || !item || (item->GetVnum() != PLAYERBOT_MOONLIGHT_CHEST_VNUM &&
 				item->GetType() != ITEM_GIFTBOX))
 			return false;
+		// A Cor Draconis is counter goods of its own (ScorePlayerBotShopStock),
+		// never a box.
+		if (GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
+			return false;
 		if (IsPlayerBotChestLevelLocked(ch, item))
 			return true;
 		// A resource trader's and a dropper's Moonlight chests are all goods: they
@@ -210,7 +214,8 @@ namespace
 		for (WORD boxCell = 0; boxCell < PLAYERBOT_BAG_CELLS; ++boxCell)
 		{
 			LPITEM box = ch->GetInventoryItem(boxCell);
-			if (!box || box->GetType() != ITEM_TREASURE_BOX)
+			if (!box || box->GetType() != ITEM_TREASURE_BOX ||
+					GetPlayerBotRareGoodsKind(box->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
 				continue;
 			for (WORD keyCell = 0; keyCell < PLAYERBOT_BAG_CELLS; ++keyCell)
 			{
@@ -244,6 +249,10 @@ namespace
 			// Chief's, the Spider Queen's) - the engine opens both the same way.
 			if (!item || (item->GetVnum() != PLAYERBOT_MOONLIGHT_CHEST_VNUM &&
 					item->GetType() != ITEM_GIFTBOX))
+				continue;
+			// A Cor Draconis is never opened (MT2009 Plus): it is a player's
+			// goods, and goes on the counter or to the merchant.
+			if (GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
 				continue;
 			// A box already on this bot's own counter. UseItem refuses a locked
 			// item, and that refusal is remembered by vnum for every bot in the

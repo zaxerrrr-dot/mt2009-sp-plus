@@ -61,6 +61,13 @@ Jak wydać nową wersję: [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md).
 - Płynniejsza praca serwera przy wielu botach (budżet czasu na turę).
 - Boty trzymają zapas mikstur 27101/27104 zamiast wystawiać je na straganach.
 - „Emerytura” botów z panelu (wymiana starych botów na nowe).
+- Cor Draconis i szarfy: boty je podnoszą, ale nie otwierają Corów i nie
+  zakładają ani nie łączą szarf. Wystawiają je na swoich sklepach offline dla
+  graczy (Cor 500 000, szarfa 700 000 za sztukę przy kursie yang 100%; cena
+  rośnie z inflacją i szybką sprzedażą, a spada o 10% co 2 h bez sprzedaży,
+  najwyżej o 50%). Każdy rodzaj może być naraz w najwyżej 20% sklepów botów,
+  do 3 pozycji na sklep. Co nie sprzeda się przez 12 h, bot zdejmuje i sprzedaje
+  u handlarki.
 
 **Inne**
 - Serwer wpuszcza klienta bez względu na jego wersję (brak blokady wersji).

@@ -543,6 +543,49 @@ namespace {
                 if (line && line->GetInfo().vnum == vnum) ++lines;
         return lines;
     }
+    // How many lines of a Cor Draconis or a sash (GetPlayerBotRareGoodsKind)
+    // the counter carries.
+    int BotOfflineRareLinesOf(NativeShop shop, int kind) {
+        int lines = 0;
+        if (shop && kind != PLAYERBOT_RARE_GOODS_NONE)
+            for (const auto& [id, line] : shop->GetItems())
+                if (line && GetPlayerBotRareGoodsKind(line->GetInfo().vnum) == kind) ++lines;
+        return lines;
+    }
+    // The first Cor Draconis or sash line that has stood unsold through the
+    // whole markdown and a step more (PLAYERBOT_RARE_GOODS_MERCHANT_AFTER_MS):
+    // it comes home, and its kind goes to the merchant from this bag.
+    DWORD BotOfflineStaleRareLine(TPlayerBotAIState& state, NativeShop shop, DWORD now, DWORD& vnum) {
+        vnum = 0;
+        if (!shop) return 0;
+        auto& o = state.offlineShop;
+        for (const auto& [id, line] : shop->GetItems()) {
+            if (!line || GetPlayerBotRareGoodsKind(line->GetInfo().vnum) == PLAYERBOT_RARE_GOODS_NONE) continue;
+            auto listed = o.listed.find(id);
+            if (listed == o.listed.end())
+                listed = o.listed.emplace(id, playerbot_offline::ListedLine{
+                        line->GetInfo().vnum, 0u, 0u, 0 }).first;
+            // A line from before this core started is clocked from the first
+            // visit that sees it, as the markdown clocks it.
+            if (listed->second.when == 0 && listed->second.observedSince == 0)
+                listed->second.observedSince = now;
+            const uint32_t since = listed->second.when ? listed->second.when : listed->second.observedSince;
+            if (now - since >= PLAYERBOT_RARE_GOODS_MERCHANT_AFTER_MS) {
+                vnum = line->GetInfo().vnum;
+                return id;
+            }
+        }
+        return 0;
+    }
+    // Takes the stale line home (BotOfflineTakeOff) and hands its kind to the
+    // merchant. True when the request reached the DB core.
+    bool BotOfflineTakeOffStaleRare(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now) {
+        DWORD vnum = 0;
+        const DWORD stale = BotOfflineStaleRareLine(state, shop, now, vnum);
+        if (!stale || !BotOfflineTakeOff(ch, state, stale, 0, now, "rare_unsold")) return false;
+        NotePlayerBotRareGoodsUnsold(ch->GetPlayerID(), vnum, now);
+        return true;
+    }
     // How many lines of this item's kind kept by count - the books of its
     // skill, the soul stone (GetPlayerBotStallKindKey) - the counter carries.
     int BotOfflineKindLinesOf(NativeShop shop, LPITEM item) {
@@ -598,6 +641,19 @@ namespace {
         }
         // Nor one of Iwakura's junk weapons past the world's cap.
         if (IsPlayerBotCappedJunkWeapon(item) && IsPlayerBotJunkWeaponMarketFull()) return true;
+        // A Cor Draconis or a sash: PLAYERBOT_RARE_GOODS_LINES_PER_SHOP of a
+        // kind at most, and a counter without one takes its first only while
+        // the bots' counters carrying the kind are under their share
+        // (IsPlayerBotRareGoodsShopQuotaFull).
+        {
+            const int rareKind = GetPlayerBotRareGoodsKind(item->GetVnum());
+            if (rareKind != PLAYERBOT_RARE_GOODS_NONE) {
+                const int rareLines = BotOfflineRareLinesOf(shop, rareKind);
+                if (rareLines >= PLAYERBOT_RARE_GOODS_LINES_PER_SHOP ||
+                        (rareLines == 0 && IsPlayerBotRareGoodsShopQuotaFull(rareKind)))
+                    return true;
+            }
+        }
         // And no more than PLAYERBOT_SHOP_SAME_VNUM_LINES of anything else.
         if (IsPlayerBotSameVnumCapped(item) &&
                 BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_SHOP_SAME_VNUM_LINES)
@@ -926,6 +982,11 @@ namespace {
                 BotOfflineFinishVisit(ch, state, now);
                 return false;
             }
+            // And a Cor Draconis or a sash nobody bought, for the merchant.
+            if (BotOfflineTakeOffStaleRare(ch, state, shop, now)) {
+                BotOfflineFinishVisit(ch, state, now);
+                return false;
+            }
             // So does a piece the owner should be wearing.
             {
                 long long gain = 0;
@@ -989,6 +1050,12 @@ namespace {
                 return false;
             }
         }
+        // A Cor Draconis or a sash that stood through the whole markdown comes
+        // home, and the merchant visit sells it (IsPlayerBotJunkItem).
+        if (BotOfflineTakeOffStaleRare(ch, state, shop, now)) {
+            BotOfflineFinishVisit(ch, state, now);
+            return false;
+        }
         // And a piece the owner should be wearing comes home before anything
         // goes on (BotOfflineReclaimLine).
         {
@@ -1039,6 +1106,11 @@ namespace {
             if (price.yang <= 0 || price.yang >= GOLD_MAX ||
                     shop->GetTotalYangValue() >= GOLD_MAX - price.yang) continue;
             DWORD id = item->GetID();
+            // The counter's first line of a Cor Draconis or a sash takes one of
+            // the kind's places at once, so the next keeper this minute sees it.
+            const int rareKind = GetPlayerBotRareGoodsKind(item->GetVnum());
+            const bool firstRareLine = rareKind != PLAYERBOT_RARE_GOODS_NONE &&
+                    BotOfflineRareLinesOf(shop, rareKind) == 0;
             if (Begin(ch->GetPlayerID(), Add, id, now)) {
                 manager.RecvShopAddItemClientPacket(ch, TItemPos(INVENTORY, at), price, pos);
                 sent = EndCall(ch->GetPlayerID());
@@ -1057,6 +1129,7 @@ namespace {
                     // minute before the ledger is rebuilt.
                     AddPlayerBotMarketSupply(item->GetVnum(), (WORD)item->GetCount(), shop->GetSpawn().map);
                     NotePlayerBotJunkWeaponOnCounter(item->GetVnum(), (int)item->GetCount());
+                    if (firstRareLine) NotePlayerBotShopWithRareGoods(rareKind);
                 }
             }
             break; // at most one item per short service visit
