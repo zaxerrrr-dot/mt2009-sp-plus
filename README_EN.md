@@ -183,8 +183,11 @@ bots' artificial intelligence comes from the official release.
 - **Original project (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
 - **Original project's Discord:** [discord.gg/6v4WkDY6a](https://discord.gg/6v4WkDY6a)
 
-And the authors the official release builds on:
-- **AzzlackSyndicate** — the original Linux port, installers and panel.
-- **OskarPWA** — bot storage window and skill icons in the panel.
-- **seban latino** — Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`).
+And the authors and helpers the official release builds on:
+- **AzzlackSyndicate** — author of the original Linux port base, installers and panel. The source repository is currently private; Git history and full attribution are preserved.
+- **OskarPWA** — the bot storage window and skill icons on the page come from the panel they built and shared for porting.
+- **seban latino** — author of Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`), the second panel in this install: live map, profiles, rankings, economy, telemetry and bulk item grants.
+- **Iwakura** — help with shop pricing and naming systems, bot nicknames and item value algorithms.
+- **ĹŌŞƬĒĶ** — the new client login screen (since 2.0.6): animated background, logo and Discord Rich Presence.
+- **Colide** — the new Auto Hunt window in the client (since 2.0.17): 12 skills, 6 potions by % HP or MP, 6 timed items, waiting for HP after revival and skills independent of attacking.
 - [DadsMmoLab/dads-mmo-lab](https://github.com/DadsMmoLab/dads-mmo-lab) — inspiration for autonomous agents in MMO games.
