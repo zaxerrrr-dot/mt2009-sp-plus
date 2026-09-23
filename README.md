@@ -1,174 +1,192 @@
-# ⚔️ Metin2 Playerbots
+# ⚔️ Metin2 Playerbots — paczka modyfikacji (mt2009 SP+)
 
 **Polski** | [English (README_EN.md)](README_EN.md)
 
-[![Discord](https://img.shields.io/badge/Discord-Dołącz_do_społeczności-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/6v4WkDY6a)
-[![BuyCoffee](https://img.shields.io/badge/BuyCoffee-Postaw_kaw%C4%99-FF813F?style=for-the-badge&logo=coffeescript&logoColor=white)](https://buycoffee.to/metin2-playerbots)
+[![Discord](https://img.shields.io/badge/Discord-Dołącz_do_społeczności-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/vGE3T9gpm)
+[![Strona](https://img.shields.io/badge/WWW-metin2sp.pl-C8102E?style=for-the-badge&logo=googlechrome&logoColor=white)](https://metin2sp.pl/)
 
-Lokalny świat Metin2 singleplayer, w którym po mapie biegają i autentycznie grają autonomiczne postacie (Playerbots): zdobywają poziomy, walczą solo i w party, zbierają łup, ulepszają ekwipunek u Kowala, polują na Metiny i zapisują swój postęp w standardowej bazie danych.
+Lokalny świat Metin2 singleplayer z autonomicznymi postaciami (Playerbots),
+oparty na oficjalnym wydaniu **Metin2 Playerbots** autorstwa Tieru (pliki
+serwerowe mt2009, wersja 2.2.0) — **rozszerzony o systemy, których oficjalne
+wydanie nie ma**: kostiumy, fryzury, nakładki na broń, szarfy, mounty, pety
+i alchemię (Smocze Kamienie), razem ponad 2 200 nowych przedmiotów.
 
-## Wersja 2.0 — nowe pliki serwerowe (mt2009)
+Boty działają dokładnie tak jak w oficjalnym wydaniu: zdobywają poziomy, walczą
+solo i w party, zbierają łup, ulepszają ekwipunek u Kowala, polują na Metiny
+i handlują między sobą. Ta paczka dokłada do tego świata nowe przedmioty
+i systemy oraz kilka poprawek botów.
 
-Od 2.0.0 projekt działa na plikach serwerowych mt2009. To **pełna paczka**
-(klient + serwer w jednym zipie), do pobrania z Discorda:
-[discord.gg/pt5tvnrN6](https://discord.gg/pt5tvnrN6). Stary launcher i stary
-klient z linii 1.33 **nie pasują** do nowych plików — nie aktualizuj po staremu,
-pobierz całość. Po rozpakowaniu aktualizacje serwera i klienta przychodzą przez
-launcher, jak dotąd; linia 2.x ma własny kanał (`update-manifest-mt2009.json`),
-więc instalacje 1.33.x niczego z niej nie dostaną.
-Jak to jest zbudowane: [linux-port-mt2009/README.md](linux-port-mt2009/README.md).
+## 💬 Społeczność
 
-## 💬 Społeczność i wsparcie projektu
-
-- **[Dołącz do serwera Discord](https://discord.gg/6v4WkDY6a)** — porozmawiaj o projekcie, podziel się testami i pomysłami oraz śledź aktualności z rozwoju botów.
-- **[Wesprzyj rozwój na buycoffee.to](https://buycoffee.to/metin2-playerbots)** — dobrowolne wpłaty pomagają pokrywać koszty narzędzi i modeli AI wykorzystywanych podczas rozwijania projektu.
-
-<a href="https://buycoffee.to/metin2-playerbots" target="_blank"><img src="https://buycoffee.to/btn/buycoffeeto-btn-primary.svg" style="height: 42px;" alt="Postaw kawę na buycoffee.to"></a>
-
-Każda forma wsparcia — testy, zgłoszenia błędów, propozycje, kod lub wpłata — pomaga nam tworzyć coraz bardziej samodzielny i żywy świat Metin2.
+- **[Discord](https://discord.com/invite/vGE3T9gpm)** — pomoc, zgłoszenia błędów, pomysły i nowości o paczce.
+- **[metin2sp.pl](https://metin2sp.pl/)** — strona projektu.
 
 > [!IMPORTANT]
-> Projekt działa wyłącznie z **natywnym klientem Windows**. Nie zawiera ani nie pobiera automatycznie plików Metin2, pakietu r40250 lub wycofanego WebClienta. Do instalacji potrzebujesz własnej zgodnej kopii plików. Zobacz [pochodzenie projektu i atrybucję](docs/ATTRIBUTION.md).
-
-W przeciwieństwie do tradycyjnych botów-klientów, boty w tym projekcie są **pełnoprawnymi bytami PC sterowanymi przez AI bezpośrednio wewnątrz silnika serwera (`game core`)**. Oznacza to, że zwykły gracz po wejściu do gry widzi ich naturalny ruch, animacje ataków, skille oraz ekwipunek przez standardowy protokół gry.
-
----
-
-## 🌟 Możliwości botów
-
-- ⚔️ **Inteligentna walka**: Obsługa wszystkich klas (Wojownik, Sura BM/WP, Ninja Dagger/Archer, Szaman), płynne animacje kombosów, ataki z łuku z uwzględnieniem strzał, utrzymywanie buffów i rotacje skilli.
-- 🗺️ **Globalna nawigacja 2D NavGrid (A*)**: Własna siatka kolizji generowana z atrybutów mapy (`server_attr`) oraz algorytm A* z wygładzaniem tras (*String Pulling*). Boty sprawnie omijają góry, rzeki i mury miejskie.
-- 🚪 **Podróże między mapami**: Autonomiczne przejścia M1 ↔ M2 ↔ M3, Łatwy Loch Małp, Dolina Orków, Pustynia Yongbi, Góra Sohan i Loch Pająków V1. Boty dobierają mapę do poziomu, a hub na mapie według wspólnej pamięci populacji o tym, gdzie stoi najwięcej potworów.
-- 🏹 **Misje polowań do 55 poziomu i Ząb Orka**: Oficjalne misje z `levelup` przyjmowane bez okna dialogowego, opcja dobrana do mapy, na której bot stoi; u Biologa siedem misji z Zębem Orka i Kamieniem Duszy włącznie.
-- 🎁 **Szkatułki i bossy**: Szkatułki Księżycowe i szkatułki bossów są otwierane, a ich zawartość używana (zwoje bonusów, mikstury szybkości, Zwój Błogosławieństwa przy ulepszaniu od +6). Drużyny, najpierw ze współgildianami, ruszają na Wodza Orków i Królową Pająków.
-- 💎 **Polowanie na Metiny**: Dedykowana rola łowców Metinów patrolujących całą mapę, niszczących kamienie i czyszczących fale potworów.
-- 🎒 **Loot i ekonomia miejska**: Zbieranie Yang i przedmiotów po walce, automatyczne ubieranie lepszego ekwipunku wraz z tarczami, regularne powroty do odpowiednich handlarzy, uzupełnianie mikstur i ulepszanie u **Kowala**.
-- 🐴 **Rozwój konia**: Wyprawy po prawdziwe Medale Konne do Lochu Małp, oddawanie ich najbliższemu Stajennemu i używanie konia do długich podróży.
-- 👥 **Grupy i Party**: Dynamiczne drużyny 2–3 osobowe, a w Dolinie Orków do 8 osób na obozy Czarnych Orków; formacje bojowe i wspólne expienie w gęstych obozach potworów.
-- 🏪 **Stragany i rynek bot–bot**: Boty otwierają prywatne stragany w Bokjung i **kupują od siebie nawzajem** — ulepszacze, których akurat komuś brakuje, i sprzęt lepszy od noszonego. Przedmiot na +7 lub wyżej nigdy nie trafia do handlarza NPC.
-- 🧬 **Misje Biologa**: Zbieranie okazów i oddawanie ich Biologowi, etapami, bez okna dialogowego questa.
-- 🎣 **Łowienie ryb**: Pełna sesja z przynętą w gnieździe wędki, czekaniem na branie i wyciąganiem w oknie 6 sekund.
-- ✨ **Przerzucanie bonusów**: Boty używają Kamieni Zmiany i Dodania Bonusu na sprzęcie, którego akurat nie mają założonego.
-- 🧠 **Osobowość i cele**: Każdy bot ma własny charakter i ambicję (łowca Metinów, kolekcjoner, hodowca konia, „Dropek” od Metinów, M3, M2 lub medali), które decydują, co robi w danej godzinie.
-- 🎛️ **Panel steruje zachowaniem na żywo**: suwaki wag celów, wyłącznik napisów botów nad głową, boty złomiarze wystawiające tani złom do palenia u kowala oraz szansa na Szkatułki Księżycowe — wszystko odczytywane przez rdzeń w pięć sekund, bez restartu.
-- 💾 **Trwały zapis w bazie**: Każdy bot posiada własne konto i postać w bazie MariaDB — zachowuje poziom, przedmioty, Yang i postępy po restarcie serwera.
+> Do gry potrzebny jest **klient z tej paczki** (z nowymi kostiumami,
+> mountami, petami i przedmiotami). Oficjalny klient Tieru nie pokaże nowych
+> przedmiotów. Repozytorium nie zawiera plików gry — pełna paczka (klient +
+> serwer) jest w zakładce **Releases**, patrz [SERWER_PL.md](SERWER_PL.md).
 
 ---
 
-## 📊 Status projektu
+## ✨ Co dodaje ta paczka
 
-Projekt jest w fazie aktywnego rozwoju.
+Liczby poniżej pochodzą z ofert ItemShopu dołączonych do paczki
+(`linux-port/docker/mariadb/playerbot/mod/`).
 
-> [!NOTE]
-> **Obsługiwane Królestwa:** Autonomiczny świat obejmuje **wszystkie trzy królestwa** (**Chunjo** – Żółci, **Shinsoo** – Czerwoni oraz **Jinno** – Niebiescy) wraz z mapami M1, M2, M3, Lochami Małp, **Doliną Orków**, **Pustynią Yongbi**, **Górą Sohan**, **Świątynią Hwang** oraz **Lochami Pająków**!
+### 👘 Kostiumy i fryzury (Gameforge 26.1.11)
+- **860 kostiumów** (432 męskie i 432 damskie wersje) — m.in. Smocze Rycerki,
+  Walkirie, Pustynni Bojownicy, kostiumy Nosiciela Światła.
+- **848 fryzur** (kategoria „Fryzury +”) — hełmy, maski, turbany, uszy i diademy.
+- Warianty czasowe: 1 dzień, 7 dni, 30 dni.
 
-### Zużycie zasobów (pomiar przy 843 żywych botach)
-- **Serwer gry (`game core`)**: ~1.8 GiB RAM, ~25–38% jednego rdzenia (planer tras z własną siatką i pamięcią policzonych tras)
-- **Baza danych (`MariaDB`)**: ~89 MiB RAM
-- **Panel Webowy Live Map**: ~270 MiB RAM
-- Całość bez problemu działa lokalnie w tle na maszynie deweloperskiej.
-- Liczbę botów ustawia `PLAYERBOT_AUTOSPAWN_COUNT`, ale sufitem jest liczba kanonicznych tożsamości w bazie (`BOT_COUNT` w `generate_seed.py`), a nie sam suwak.
+### 🗡️ Nakładki na broń
+- **109 nakładek** na wszystkie typy broni — miecze, sztylety, łuki, glewie,
+  dzwony, wachlarze (m.in. seria Smoka Północy, Nosiciela Klątwy).
+
+### 🎀 Szarfy
+- Pełny system szarf: **łączenie** dwóch szarf w silniejszą i
+  **przechwytywanie bonusów** z przedmiotu na szarfę — u **Uriela**.
+
+### 🐎 Mounty
+- **Ok. 240 pieczęci wierzchowców** (129 modeli) jako kostium wierzchowca, z
+  poprawioną prędkością ruchu; w ItemShopie 136 różnych mountów.
+- Na deskach, chmurach i łodziach można używać umiejętności.
+
+### 🐾 Pety
+- **190 petów** — jeden naraz, bonusy z przedmiotu, wraca po ponownym
+  zalogowaniu.
+- **11 petów „(łup)”** samo podnosi przedmioty i yang (tylko Twoje).
+
+### 🐉 Alchemia (Smocze Kamienie)
+- System Dusz Smoka od 30 poziomu u **Alchemika**: misja kwalifikacyjna,
+  zbieranie fragmentów, uszlachetnianie (stopień / krok / siła), zmiana
+  właściwości i sklep z materiałami.
+
+### 🎨 Bonusy kostiumów
+- **Transformuj kostium** (70063) — losuje 1–3 bonusy.
+- **Zaczaruj kostium** (70064) — zmienia wartości bonusów.
+- **Transfer bonusów** (70065) — u Kowala przenosi bonusy z jednego kostiumu
+  na drugi tego samego rodzaju (kostium / fryzura / nakładka).
+- Wszystkie do kupienia u Handlarki Różności.
+
+### 🛒 Sklepy i dodatki
+- **Sklep kostiumów u Ah-Yu** — kostiumy, fryzury i nakładki za 1 yang.
+- **ItemShop w grze** i **ItemShop w przeglądarce** z nowymi kategoriami
+  (Fryzury +, Kostiumy, Nakładki na broń, Pety, Mounty) — w przeglądarkowym
+  przedmioty są filtrowane pod klasę i płeć postaci.
+- Zestaw Władcy Śmierci, Diademy, Magma Manni.
+- Kosz na śmieci, podgląd dropu potworów, przełącznik eventu wielkanocnego
+  w panelu.
+
+### 🤖 Zmiany w botach
+- Płynniejsza praca serwera przy wielu botach (budżet czasu na turę).
+- Boty trzymają zapas mikstur 27101/27104 zamiast wystawiać je na straganach.
+- „Emerytura” botów z panelu — wymiana starych botów na nowe.
+
+### ⚙️ Inne
+- Serwer wpuszcza klienta bez względu na jego wersję.
+- Aktualizacje przychodzą z **tego repozytorium**, nigdy z oficjalnego —
+  oficjalna paczka nadpisałaby modyfikacje ([AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md)).
+
+Pełna lista zmian: [MODS_PL.md](MODS_PL.md).
 
 ---
 
-## 🚀 Szybki start (Quickstart)
+## 🌟 Możliwości botów (z oficjalnego wydania)
 
-### 1. Przygotowanie plików
+Boty są **pełnoprawnymi postaciami sterowanymi przez AI wewnątrz silnika
+serwera** — gracz widzi ich naturalny ruch, animacje ataków, skille
+i ekwipunek przez zwykły protokół gry.
 
-Przygotuj lokalnie zgodne archiwum serwera r40250. Opcjonalnie przygotuj także archiwum natywnego klienta Windows, najlepiej z dokładnie tego samego wydania. Sama etykieta „r40250” nie gwarantuje zgodności protokołu i plików proto. Żaden z tych plików nie może być publikowany w tym repozytorium.
+- ⚔️ **Walka**: wszystkie klasy (Wojownik, Sura, Ninja, Szaman), kombosy, łuki ze strzałami, buffy i rotacje skilli.
+- 🗺️ **Nawigacja A\***: własna siatka kolizji z atrybutów mapy — boty omijają góry, rzeki i mury.
+- 🚪 **Podróże między mapami**: M1/M2/M3, Loch Małp, Dolina Orków, Pustynia Yongbi, Góra Sohan, Świątynia Hwang, Loch Pająków, Doyyumhwaji.
+- 🏹 **Misje**: polowania z `levelup`, Biolog z Zębem Orka i Kamieniem Duszy, wyprawy po Medale Konne.
+- 💎 **Metiny i bossy**: łowcy Metinów, drużyny na Wodza Orków, Królową Pająków i Ognistego Króla.
+- 🎒 **Gospodarka**: loot, lepszy ekwipunek, mikstury, ulepszanie u Kowala, stragany i handel bot–bot.
+- 👥 **Party i gildie**: drużyny 2–8 osób, wspólne expienie, wojny gildii.
+- 🎣 **Łowienie ryb** i przerzucanie bonusów.
+- 🧠 **Osobowość**: każdy bot ma charakter i ambicję, które decydują, co robi.
+- 🎛️ **Panel na żywo**: mapa botów, profile z ekwipunkiem, suwaki celów i ustawienia bez restartu.
+- 💾 **Trwały zapis**: każdy bot ma własne konto i postać w MariaDB.
 
-### 2. Klonowanie i instalacja (Windows)
-```powershell
-git clone https://github.com/TieruYT/metin2-playerbots.git
-Set-Location .\metin2-playerbots
-& .\installer\install.ps1 `
-    -Archive 'C:\ścieżka\Reference_Server.zip' `
-    -ClientArchive 'C:\ścieżka\Reference_Client.zip' `
-    -NoWebClient
-```
-
-Jeśli masz już skonfigurowanego klienta, użyj zamiast `-ClientArchive` przełącznika `-NoClient`.
-
-### 3. Uruchomienie serwera po instalacji
-```powershell
-Set-Location "$env:USERPROFILE\Metin2Server"
-docker compose up -d
-```
-
-Po starcie działają dwa panele w przeglądarce: klasyczny panel administracyjny pod `http://127.0.0.1:7788` oraz **Metin2 Singleplayer Panel** autorstwa seban latino pod `http://127.0.0.1:7790` — mapa świata botów na żywo, profile postaci z ekwipunkiem i tooltipami przedmiotów, rankingi, historia gospodarki, telemetria hosta, sterowanie botami i masowe nadawanie przedmiotów. Przy pierwszym wejściu na `/setup` wybierasz nazwę, motyw i opcjonalne hasło.
-
-### 4. Wejście do gry
-Skonfiguruj klienta z tego samego kompatybilnego zestawu r40250 na adres `127.0.0.1` (port Auth `11000`, porty gry `13000–13002`) i ciesz się tętniącym życiem światem w Chunjo!
-
-👉 **Szczegółowy przewodnik instalacji, konfiguracji `.env` i klienta znajdziesz w: [docs/INSTALL.md](docs/INSTALL.md)**
+Obsługiwane są **wszystkie trzy królestwa** (Shinsoo, Chunjo, Jinno).
 
 ---
 
-## 🗄️ Dostęp do bazy danych (Navicat, HeidiSQL, DBeaver)
+## 🚀 Instalacja (Windows)
 
-Baza serwera to MariaDB w kontenerze, wystawiona **tylko na tym komputerze**
-(`127.0.0.1`, port `3306` — albo inny, jeśli w `.env` ustawiono `M2_DB_PUBLISH_PORT`).
-Nowe połączenie w kliencie bazy: typ MySQL/MariaDB, host `127.0.0.1`, port `3306`.
+1. Zainstaluj i uruchom **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**.
+2. Pobierz pełną paczkę z **Releases** i rozpakuj ją, np. do `C:\Metin2Mod\`
+   (najlepiej ścieżka bez polskich znaków i spacji).
+3. Uruchom **`Metin2-Launcher-GUI.bat`**.
+4. Kliknij **1. INSTALUJ / PRZYGOTUJ**, potem **2. GRAJ**.
+   Pierwsze uruchomienie trwa kilkanaście–kilkadziesiąt minut: Docker buduje
+   serwer ze źródeł i tworzy bazę z botami.
 
-| Konto | Do czego | Hasło |
+Po starcie działają dwa panele w przeglądarce:
+- `http://127.0.0.1:7788` — panel administracyjny i mapa botów,
+- `http://127.0.0.1:7790` — Metin2 Singleplayer Panel (seban latino): mapa na żywo, profile, rankingi, gospodarka.
+
+**Linux / VPS:** instrukcja w [PACZKA_INFO.txt](PACZKA_INFO.txt); aktualizacja
+z folderu serwera: `sh linux-port/tools/update.sh`.
+
+Hasła (baza, panel) są losowane przy pierwszym starcie i zapisywane w
+`linux-port\docker\.env` — tylko na Twoim komputerze. Nie wklejaj ich nigdzie.
+
+## 🗄️ Dostęp do bazy danych
+
+Baza MariaDB jest dostępna tylko lokalnie: `127.0.0.1`, port `3306`.
+W launcherze przycisk **DANE DO BAZY (NAVICAT)** pokazuje host, port i hasła.
+Przy błędzie `1045 - Access denied` użyj **NAPRAW DOSTĘP DO BAZY** — postacie,
+przedmioty i boty zostają nietknięte.
+
+## 🎮 Komendy GM
+
+| Komenda | Opis | Przykład |
 |---|---|---|
-| `root` | wszystko | `M2_DB_ROOT_PASSWORD` w `linux-port\docker\.env` |
-| `metin2` | tylko bazy gry (`account`, `player`, `log`, `common`, `hotbackup`) | `M2_DB_PASSWORD` w tym samym pliku |
+| `/bot_spawn <id> <królestwo 1-3>` | Spawn konkretnego bota (`1` Shinsoo, `2` Chunjo, `3` Jinno). | `/bot_spawn 4 2` |
+| `/bot_despawn <id>` | Wylogowanie bota ze świata. | `/bot_despawn 4` |
+| `/bot_spawn_many <start_id> <ilość> <królestwo>` | Masowy spawn. | `/bot_spawn_many 4 350 2` |
+| `/bot_despawn_many <start_id> <ilość>` | Masowe wylogowanie. | `/bot_despawn_many 4 350` |
+| `/bot_rank` | Ranking poziomów botów (dla wszystkich). | `/bot_rank` |
+| `/acce c` / `/acce a` | Okno łączenia / przechwytywania szarf. | `/acce c` |
 
-Najszybciej: w launcherze GUI przycisk **DANE DO BAZY (NAVICAT)** pokazuje
-host, port i oba hasła w polach do skopiowania (w konsoli: akcja `DbAccess`,
-pozycja 16 menu). Hasła są losowane przy pierwszym uruchomieniu i nie ma
-żadnego „domyślnego” — nie wklejaj ich na Discordzie.
+## 💾 Kopia świata
 
-Jeśli klient odpowiada `1045 - Access denied for user 'root'@'172.18.0.1'`,
-baza została zainicjalizowana pod innym hasłem niż to, które jest teraz w `.env`.
-Kliknij **NAPRAW DOSTĘP DO BAZY** (akcja `RepairDb`): zatrzymuje serwer i
-ustawia konta `metin2` i `root` na hasła z `.env`; postacie, przedmioty i boty
-zostają nietknięte. Potem GRAJ i zaloguj się jeszcze raz.
-
-## 🎮 Komendy w grze (GM Commands)
-
-Zarządzanie botami bezpośrednio z poziomu czatu w grze (dla konta GM / Administratora):
-
-| Komenda | Uprawnienia | Opis | Przykład |
-|---|---|---|---|
-| `/bot_spawn <id> <królestwo: 1-3>` | GM | Ręczny spawn konkretnego bota o danym ID (`1` = Shinsoo, `2` = Chunjo, `3` = Jinno). | `/bot_spawn 4 2` |
-| `/bot_despawn <id>` | GM | Usunięcie / wylogowanie bota ze świata. | `/bot_despawn 4` |
-| `/bot_spawn_many <start_id> <ilość> <królestwo>` | GM | Masowe zespawnowanie grupy botów. | `/bot_spawn_many 4 350 2` |
-| `/bot_despawn_many <start_id> <ilość>` | GM | Masowe wylogowanie grupy botów. | `/bot_despawn_many 4 350` |
-| `/bot_rank` | Wszyscy | Wyświetla na czacie aktualny ranking poziomów aktywnych botów. | `/bot_rank` |
+Launcher ma przycisk **KOPIA ŚWIATA** — zapisuje cały świat do pliku zip.
+„Zatrzymaj i zapisz” nigdy nie usuwa postaci ani postępu botów.
 
 ---
 
-## 🗺️ Roadmapa rozwoju
+## 📚 Dokumentacja
 
-- [x] **Faza 1**: Pełne animacje wszystkich klas, łucznicy z pociskami, siatka 2D NavGrid (A*), ulepszanie u Kowala i 32 huby expienia w Chunjo.
-- [x] **Faza 2A**: Przejścia M1/M2/M3, expienie strefowe, Łatwy Loch Małp i rzeczywiste wyprawy po Medale Konne.
-- [ ] **Faza 2B**: Dolina Orków ✅ i Pustynia Yongbi ✅ — pozostają wyprawy na **Wieżę Demonów (DT)**.
-- [ ] **Faza 3**: Czytanie Ksiąg Umiejętności (KU) i Kamieni Duchowych (KD), zaawansowane buildy skilli.
-- [x] **Faza 4A**: Podstawowe misje Biologa i pierwszy etap konia oparty na prawdziwym dropie Medali Konnych.
-- [x] **Faza 4B**: Ząb Orka i Kamień Duszy u Biologa (z szansą na spalenie zęba jak w queście), misje polowań do 55 poziomu, koń bojowy z pustynnej próby.
-- [ ] **Faza 4C** *(następne w kolejce)*: dalsze misje Biologa, trzy królestwa i wojny królestw.
-- [ ] **Faza 5**: Łowienie ryb ✅ — pozostają kilof, wydobywanie rud i alchemia.
-- [x] **Faza 6**: Prywatne stragany botów w mieście i handel bot–bot. Wycena opiera się na razie na stałych progach, nie na popycie.
+- [MODS_PL.md](MODS_PL.md) — co zmienia paczka modyfikacji.
+- [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md) — jak działają i jak wydawać aktualizacje.
+- [docs/INSTALL.md](docs/INSTALL.md) — Docker, WSL2, Linux, `.env`, klient.
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — kompilacja, debugowanie i logi AI.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — architektura botów.
+- [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md) — pochodzenie projektu i licencje.
 
----
+## 📜 Licencja
 
-## 📚 Dokumentacja projektu
-
-Szczegółowe informacje podzielone na dedykowane poradniki:
-
-- 📖 **[Instalacja i Konfiguracja (docs/INSTALL.md)](docs/INSTALL.md)** – Docker, WSL2, Linux, `.env`, podłączanie klienta.
-- 💻 **[Przewodnik Deweloperski (docs/DEVELOPMENT.md)](docs/DEVELOPMENT.md)** – Szybka kompilacja C++ w 8s (`fast-game-build`), debugowanie i logi AI.
-- 🧩 **[Architektura i refaktoryzacja (docs/ARCHITECTURE.md)](docs/ARCHITECTURE.md)** – granice modułów oraz bezpieczny plan dzielenia AI na testowalne części.
-- 🧾 **[Pochodzenie i atrybucja (docs/ATTRIBUTION.md)](docs/ATTRIBUTION.md)** – historia forka, granice licencji i status WebClienta.
+Narzędzia projektu metin2-playerbots są na licencji MIT (plik `LICENSE`).
+Kod serwera gry, dane gry i klient nie należą do autorów projektu ani do nas —
+przeczytaj [NOTICE.md](NOTICE.md) przed dalszym udostępnianiem.
 
 ---
 
-## 🤝 Podziękowania i Credits
+## 🤝 Podziękowania i oryginalny projekt
 
-- **AzzlackSyndicate** — autor pierwotnej bazy linuksowego portu, instalatorów i panelu. Repozytorium źródłowe jest obecnie prywatne; zachowujemy historię Git i pełną atrybucję.
-- **OskarPWA** — okno magazynu bota i ikony umiejętności na stronie pochodzą z panelu, który zbudował i udostępnił do przeniesienia.
-- **seban latino** — autor Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`), drugiego panelu w tej instalacji: mapa na żywo, profile, rankingi, gospodarka, telemetria i masowe nadania.
-- [DadsMmoLab/dads-mmo-lab](https://github.com/DadsMmoLab/dads-mmo-lab) — Inspiracja badawcza dla autonomicznych agentów w grach MMO.
-- Społeczność badaczy i entuzjastów platformy Metin2.
+Ta paczka jest modyfikacją projektu **Metin2 Playerbots** autorstwa **Tieru** —
+cała sztuczna inteligencja botów pochodzi z oficjalnego wydania.
+
+- **Oryginalny projekt (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
+- **Discord oryginalnego projektu:** [discord.gg/6v4WkDY6a](https://discord.gg/6v4WkDY6a)
+
+Oraz autorzy, na których pracy opiera się oficjalne wydanie:
+- **AzzlackSyndicate** — pierwotna baza linuksowego portu, instalatorów i panelu.
+- **OskarPWA** — okno magazynu bota i ikony umiejętności w panelu.
+- **seban latino** — Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`).
+- [DadsMmoLab/dads-mmo-lab](https://github.com/DadsMmoLab/dads-mmo-lab) — inspiracja dla autonomicznych agentów w grach MMO.

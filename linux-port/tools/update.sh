@@ -40,9 +40,14 @@ set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=${M2_UPDATE_STACK_DIR:-$(cd "$HERE/../.." && pwd)}
 COMPOSE_DIR="$ROOT/linux-port/docker"
-REPO=${M2_UPDATE_REPO:-}
-# Metin2 Playerbots Mod: official updates off; set M2_UPDATE_REPO to the mod's own repository to enable.
-case "${1:-}" in stage) ;; *) if [ -z "$REPO" ]; then echo "Aktualizacje są wyłączone w tej paczce modyfikacji (oficjalna aktualizacja nadpisałaby zmiany moda)."; exit 0; fi ;; esac
+# Metin2 Playerbots Mod: the mod's own repository, never upstream
+# (TieruYT/metin2-playerbots) - its package would overwrite the mod.
+REPO=${M2_UPDATE_REPO:-zaxerrrr-dot/mt2009-sp-plus}
+case "$REPO" in
+    *TieruYT/metin2-playerbots*)
+        echo "M2_UPDATE_REPO wskazuje oficjalne repozytorium; ta paczka aktualizuje się tylko z repozytorium moda (zaxerrrr-dot/mt2009-sp-plus)."
+        exit 1 ;;
+esac
 BRANCH=${M2_UPDATE_BRANCH:-main}
 MANIFEST_NAME=update-manifest-mt2009.json
 SPOOL=${M2_UPDATE_SPOOL:-/opt/m2update}
@@ -63,7 +68,7 @@ fetch_text() {
         python3 - "$_url" <<'EOF'
 import sys, urllib.request
 req = urllib.request.Request(sys.argv[1], headers={
-    'User-Agent': 'metin2-playerbots-update/2 (+https://github.com/TieruYT/metin2-playerbots)',
+    'User-Agent': 'metin2-playerbots-update/2 (+https://github.com/zaxerrrr-dot/mt2009-sp-plus)',
     'Accept': 'application/vnd.github.raw+json'})
 sys.stdout.write(urllib.request.urlopen(req, timeout=30).read().decode('utf-8', 'replace'))
 EOF

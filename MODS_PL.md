@@ -25,9 +25,16 @@ i przedmiotami). Oficjalny klient nie pokaże nowych przedmiotów.
 
 ## Aktualizacje
 
-**Wyłączone.** Oficjalna aktualizacja nadpisałaby modyfikacje, więc launcher
-i panele nie sprawdzają i nie pobierają aktualizacji z oficjalnego repozytorium.
-Nowe wersje tej paczki będą wydawane osobno.
+Aktualizacje przychodzą **z repozytorium moda**
+([zaxerrrr-dot/mt2009-sp-plus](https://github.com/zaxerrrr-dot/mt2009-sp-plus)),
+nigdy z oficjalnego — oficjalna paczka nadpisałaby modyfikacje.
+
+- **Windows:** w launcherze przycisk sprawdzania/instalacji aktualizacji, jak
+  w oficjalnym wydaniu.
+- **Linux / VPS:** z folderu serwera `sh linux-port/tools/update.sh`
+  (`sh linux-port/tools/update.sh check` tylko pokazuje wersje).
+
+Jak wydać nową wersję: [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md).
 
 ## Co zmienia ta paczka
 

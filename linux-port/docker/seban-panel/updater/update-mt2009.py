@@ -5,8 +5,9 @@ OVERRIDE_DIR=os.environ.get("SEBAN_OVERRIDE_DIR", os.path.dirname(os.path.abspat
 HOOK=os.path.join(OVERRIDE_DIR,"apply-seban-overrides.sh")
 PROJECT=os.environ.get("SEBAN_COMPOSE_PROJECT", "metin2")
 UPDATE_PANEL=os.environ.get("SEBAN_UPDATE_PANEL", "0") == "1"
-MANIFEST=""  # Metin2 Playerbots Mod: official updates off
-if not MANIFEST: print("Aktualizacje są wyłączone w tej paczce modyfikacji (oficjalna aktualizacja nadpisałaby zmiany moda)."); sys.exit(0)
+# Metin2 Playerbots Mod: the mod's own channel, never upstream's.
+MANIFEST=os.environ.get("SEBAN_UPDATE_MANIFEST", "https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main/update-manifest-mt2009.json")
+if "TieruYT/metin2-playerbots" in MANIFEST: raise SystemExit("ERROR: SEBAN_UPDATE_MANIFEST wskazuje oficjalne repozytorium; ta paczka aktualizuje się tylko z repozytorium moda.")
 SPOOL=os.environ.get("SEBAN_UPDATE_SPOOL", "/var/lib/docker/volumes/metin2_update-spool/_data")
 def progress(step, message):
     tmp=os.path.join(SPOOL, "update.status.new")
