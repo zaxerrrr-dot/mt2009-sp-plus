@@ -26,9 +26,11 @@ Poprawka launchera; zawiera wszystko z 2.2.3.
   znacznika kodowania UTF-8 (BOM), a Windows PowerShell czytał wtedy polskie
   litery jako inne znaki. Plik ma znów BOM, a pakowacz odmawia zbudowania
   paczki ze skryptem PowerShell z polskimi znakami i bez BOM.
-- **Klient 2.0.5:** kostiumowe mounty typu bojowego i militarnego pozwalaja
-  teraz na zwykly atak bez wymogu 11 poziomu konia. Zwykly kon na poziomach
-  1-10 nadal nie pozwala walczyc.
+- **Klient 2.0.6:** kostiumowe mounty pozwalaja teraz na zwykly atak bez
+  wymogu 11 poziomu konia. Zwykly kon na poziomach 1-10 nadal nie pozwala
+  walczyc. Paczka 2.0.6 zastępuje wadliwa 2.0.5, która była zbudowana ze
+  starego źródła i zamykała klienta przy logowaniu przez brak
+  `NEW_AFFECT_DS_SET`. Wersja 2.0.5 nie trafiła do graczy.
 
 ## 2.2.3 — 2026-09-23
 

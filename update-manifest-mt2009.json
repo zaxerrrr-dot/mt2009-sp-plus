@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-23T19:30:00Z",
-  "statusMessage": "MT2009 Plus v2.2.4: poprawka launchera po 2.2.3 oraz walka z mountow bez wymogu konia bojowego.",
+  "publishedAt": "2026-09-23T20:05:48Z",
+  "statusMessage": "MT2009 Plus v2.2.4: poprawiony launcher oraz klient 2.0.6 z walka na mountach bez wymogu konia bojowego.",
   "server": {
     "version": "2.2.4",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.2.4/metin2-server-update-2.2.4.zip",
@@ -10,9 +10,9 @@
     "size": 50642916
   },
   "client": {
-    "version": "2.0.5",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.2.4/metin2-client-update-2.0.5.zip",
-    "sha256": "D67938094D5D27053A835CBEC7FBE7817F117A68AF74D94FD1C6EC998954AAA4",
-    "size": 5530911
+    "version": "2.0.6",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.2.4/metin2-client-update-2.0.6.zip",
+    "sha256": "B92D652BE4ACFC4CDC4151E19121DFDC8ACE2BDA9034E0B354EC906C873A5817",
+    "size": 5538730
   }
 }
