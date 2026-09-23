@@ -17,6 +17,13 @@ every version here.
 
 ---
 
+## Klient 2.0.7 — 2026-09-24
+
+- Naprawiona sprzedaż pojedynczych przedmiotów i opcja „Sprzedaj wiele” u
+  handlarzy. Po rozszerzeniu ekwipunku serwer oczekuje dwubajtowego numeru
+  pola, a klient wysyłał jeden bajt, przez co pakiet sprzedaży rozstrajał
+  połączenie i blokował sterowanie interfejsem.
+
 ## 2.2.6 — 2026-09-23
 
 Poprawka ItemShopu; zawiera wszystko z 2.2.5.

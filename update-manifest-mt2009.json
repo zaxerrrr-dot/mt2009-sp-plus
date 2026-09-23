@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-23T22:00:00Z",
-  "statusMessage": "MT2009 Plus v2.2.6: wracaja oferty ItemShopu (kostiumy, fryzury, nakladki, pety, mounty) na swiatach zalozonych od 2.2.3.",
+  "publishedAt": "2026-09-23T22:21:35Z",
+  "statusMessage": "Klient 2.0.7: naprawiona sprzedaz pojedyncza i Sprzedaj wiele u handlarzy.",
   "server": {
     "version": "2.2.6",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.2.6.zip",
@@ -10,9 +10,9 @@
     "size": 50174841
   },
   "client": {
-    "version": "2.0.6",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.2.4/metin2-client-update-2.0.6.zip",
-    "sha256": "B92D652BE4ACFC4CDC4151E19121DFDC8ACE2BDA9034E0B354EC906C873A5817",
-    "size": 5538730
+    "version": "2.0.7",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.7.zip",
+    "sha256": "122324E7FF4117C4FD0AB4F11326D29FD42B6BA446C682F47F3B1C0FFA715549",
+    "size": 5538728
   }
 }
