@@ -17,6 +17,16 @@ every version here.
 
 ---
 
+## 2.2.4 — 2026-09-23
+
+Poprawka launchera; zawiera wszystko z 2.2.3.
+
+- Po aktualizacji do 2.2.3 launcher nie startował („Unexpected token
+  'aktualizacji'”): plik `launcher/Metin2Launcher.psm1` trafił do paczki bez
+  znacznika kodowania UTF-8 (BOM), a Windows PowerShell czytał wtedy polskie
+  litery jako inne znaki. Plik ma znów BOM, a pakowacz odmawia zbudowania
+  paczki ze skryptem PowerShell z polskimi znakami i bez BOM.
+
 ## 2.2.3 — 2026-09-23
 
 Serwer; klient zostaje 2.0.26. Zawiera wszystko z 2.2.2.
