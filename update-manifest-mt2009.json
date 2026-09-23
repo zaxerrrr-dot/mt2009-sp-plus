@@ -1,5 +1,17 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-23T00:00:00Z"
+  "publishedAt": "2026-09-23T18:00:00Z",
+  "server": {
+    "version": "2.2.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.2.1.zip",
+    "sha256": "62CD749B2364DA73067A918F2324B019B2729C6AD62B37205C8ED11E26809958",
+    "size": 289448
+  },
+  "client": {
+    "version": "2.0.4",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.4.zip",
+    "sha256": "91790321B8EC971CE36B383D75E56837D785D38E4D319BEEBC16D2424921DF87",
+    "size": 240
+  }
 }
