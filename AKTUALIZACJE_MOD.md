@@ -145,3 +145,32 @@ w warunkach odrzucających) i stary instalator `installer/`.
 Każdy plik `.ps1` / `.psm1` musi być zapisany jako **UTF-8 z BOM** — bez
 tego Windows PowerShell nie wczyta polskich znaków i launcher nie wstanie.
 Pakowacz odmówi zbudowania paczki z takim plikiem.
+
+## Ogłoszenie nowej wersji na Discordzie
+
+Gdy push na `main` zmienia `VERSION`, GitHub Actions
+(`.github/workflows/discord-release.yml`) wysyła na kanał Discorda wpis tej
+wersji z `CHANGELOG.md` — tytuł, opis, sekcje `###` jako pogrubione nagłówki,
+punkty listy. Długi wpis dzieli się na kilka części.
+
+**Jednorazowo:** na Discordzie *Ustawienia kanału → Integracje → Webhooki →
+Nowy webhook* → skopiuj adres. Na GitHubie *Settings → Secrets and variables →
+Actions → New repository secret*: nazwa `DISCORD_WEBHOOK_URL`, wartość = adres
+webhooka.
+
+**Przy każdym wydaniu** wystarczy dobrze napisany wpis w `CHANGELOG.md`.
+Tytuł ogłoszenia można podać w nagłówku, po dacie:
+
+```markdown
+## 2.2.7 — 2026-09-24 — Nowe kostiumy, szybsze Auto Łowy
+
+Serwer 2.2.7 i klient 2.0.7. Zaktualizuj oba w launcherze.
+
+### Nowe kostiumy
+- ...
+```
+
+Bez tytułu w nagłówku bot bierze nagłówki `###`, a gdy ich nie ma, pierwsze
+zdanie wpisu. Wysłać (albo wysłać ponownie) dowolną wersję można ręcznie:
+*Actions → Discord - nowa wersja → Run workflow* i wpisać numer. Podgląd bez
+wysyłania: `python3 .github/scripts/discord_release.py 2.2.7 --dry-run`.
