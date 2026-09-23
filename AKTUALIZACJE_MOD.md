@@ -109,3 +109,37 @@ musi **raz** dostać nowe pliki ręcznie (albo pełną nową paczkę):
   `linux-port/docker/seban-panel/updater/update-mt2009.py`
 
 Każda kolejna aktualizacja przychodzi już sama.
+
+## Przenoszenie nowej wersji od Tieru
+
+Nie kopiuj całego drzewa oficjalnego wydania na repozytorium. Wydanie 2.2.3
+tak zrobiło i cofnęło wygląd launchera oraz kanał aktualizacji (naprawione
+w 2.2.5). Poniższe pliki mają zmiany MT2009 Plus — scalaj je ręcznie
+(weź poprawki Tieru, zostaw nasze fragmenty), a nie nadpisuj:
+
+| Plik | Co jest nasze |
+|---|---|
+| `Metin2-Launcher-GUI.Layout.ps1` | tytuł MT2009 PLUS, podtytuł, metin2sp.pl, przycisk Discord, stopka |
+| `Metin2-Launcher-GUI.Background.png` | tło MT2009 PLUS |
+| `launcher/Metin2Launcher.psm1` | kanał `zaxerrrr-dot/mt2009-sp-plus`, odrzucanie kanału Tieru, naprawa pustego `manifestUrl` |
+| `launcher/launcher.config.example.json` | adres `update-manifest-mt2009.json` moda |
+| `files/admin_panel.py` i `linux-port/docker/panel/app/admin_panel.py` | sprawdzanie wersji w repozytorium moda (`/VERSION`) |
+| `linux-port/docker/seban-panel/app.py` | sprawdzanie wydań repozytorium moda |
+| `linux-port/docker/seban-panel/updater/update-mt2009.py` | manifest moda, odrzucanie Tieru |
+| `linux-port/tools/update.sh` | domyślne repozytorium moda, odrzucanie Tieru |
+| `tools/New-M2UpdatePackage.ps1` | sprawdzanie `VERSION` i BOM w skryptach PowerShell |
+| `README.md`, `README_EN.md`, `MODS_PL.md`, `AKTUALIZACJE_MOD.md` | opis moda |
+| `update-manifest-mt2009.json`, `VERSION`, `MOD_VERSION`, `CHANGELOG.md` | wersje i kanał moda |
+
+Po scaleniu sprawdź:
+
+```sh
+grep -rn "TieruYT\|metin2singleplayer\|buycoffee" --include=*.ps1 --include=*.psm1 --include=*.py --include=*.sh .
+```
+
+Jedyne dozwolone trafienia to blokady kanału Tieru (`TieruYT/metin2-playerbots`
+w warunkach odrzucających) i stary instalator `installer/`.
+
+Każdy plik `.ps1` / `.psm1` musi być zapisany jako **UTF-8 z BOM** — bez
+tego Windows PowerShell nie wczyta polskich znaków i launcher nie wstanie.
+Pakowacz odmówi zbudowania paczki z takim plikiem.
