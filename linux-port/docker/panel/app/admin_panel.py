@@ -1817,7 +1817,11 @@ def _client_download_name(raw):
 # The name this server goes by, shown in the header and the browser tab. It is a
 # config key so a different install can call itself something else without the
 # panel needing to be edited.
-BRAND = str(CONF.get("brand", "") or "").strip() or "Singleplayer Official Metin2"
+# MT2009 Plus: the package's own name, unless the operator set another. The
+# names earlier builds wrote into a config count as unset.
+BRAND = str(CONF.get("brand", "") or "").strip()
+if BRAND in ("", "Singleplayer Official Metin2", "Metin2 Singleplayer", "Singleplayer Metin2", "Metin2"):
+    BRAND = "MT2009 PLUS"
 
 # The community's Discord. DELIBERATELY NOT CONFIGURABLE, and that is the point:
 # it is where this project posts what changed and where a player reports a bug,
@@ -1825,7 +1829,9 @@ BRAND = str(CONF.get("brand", "") or "").strip() or "Singleplayer Official Metin
 # An operator who wants a different address edits this line, which is a change
 # to the software and shows up as one -- not a setting that quietly diverges
 # between installs and leaves players pointed at nothing.
-DISCORD_URL = "https://discord.gg/pt5tvnrN6"
+DISCORD_URL = "https://metin2sp.pl/discord"
+# MT2009 Plus's website, beside the Discord in the footer and on the front page.
+WEBSITE_URL = "https://metin2sp.pl/"
 
 CLIENT_NAME  = str(CONF.get("client_name", "Metin2 Client") or "").strip()
 CLIENT_FILE  = _client_download_name(CLIENT_NAME)
@@ -3505,7 +3511,27 @@ T["logout"]["pl"] = "Wyloguj"
 T["back_front"]["pl"] = "← Strona główna"
 T["tip_lang"]["pl"] = "Zmień język tego panelu. Język w grze pozostaje bez zmian."
 T["tip_logout"]["pl"] = "Zakończ sesję administratora w panelu. Konto w grze pozostaje bez zmian."
-T["about_goal"]["pl"] = "Lokalny świat Metin2 rozwijany jako hobbystyczne środowisko dla autonomicznych botów graczy."
+# MT2009 Plus: what this server is, in place of the upstream project's words.
+T["about_goal"] = {
+    "pl": "MT2009 PLUS to lokalny świat Metin2 singleplayer na plikach serwerowych mt2009, pełen autonomicznych postaci (Playerbots): boty zdobywają poziomy, walczą solo i w grupach, ulepszają ekwipunek, polują na Metiny i handlują między sobą.",
+    "en": "MT2009 PLUS is a local singleplayer Metin2 world on the mt2009 server files, full of autonomous characters (Playerbots): the bots level up, fight solo and in parties, refine their gear, hunt Metin stones and trade with each other.",
+    "de": "MT2009 PLUS ist eine lokale Singleplayer-Welt von Metin2 auf den mt2009-Serverdateien, voller autonomer Charaktere (Playerbots): Die Bots steigen auf, kämpfen allein und in Gruppen, verbessern ihre Ausrüstung, jagen Metinsteine und handeln miteinander.",
+    "tr": "MT2009 PLUS, mt2009 sunucu dosyaları üzerinde çalışan yerel bir tek oyunculu Metin2 dünyasıdır ve otonom karakterlerle (Playerbots) doludur: botlar seviye atlar, tek başına ve grupla savaşır, ekipmanını geliştirir, Metin taşı avlar ve birbirleriyle ticaret yapar.",
+}
+T["about_hobby"] = {
+    "pl": "To paczka modyfikacji oficjalnego wydania Metin2 Playerbots od Tieru. Dodaje ponad 2200 nowych przedmiotów i systemów: kostiumy, fryzury, nakładki na broń, szarfy, mounty, pety i alchemię (Smocze Kamienie), a do tego ItemShop w grze i w przeglądarce.",
+    "en": "It is a modification pack of Tieru's official Metin2 Playerbots release. It adds over 2,200 new items and systems: costumes, hairstyles, weapon skins, sashes, mounts, pets and alchemy (Dragon Soul), plus an ItemShop in the game and in the browser.",
+    "de": "Es ist ein Modifikationspaket der offiziellen Metin2-Playerbots-Veröffentlichung von Tieru. Es bringt über 2.200 neue Gegenstände und Systeme: Kostüme, Frisuren, Waffenskins, Schärpen, Reittiere, Haustiere und Alchemie (Drachenstein), dazu einen ItemShop im Spiel und im Browser.",
+    "tr": "Tieru'nun resmî Metin2 Playerbots sürümünün bir modifikasyon paketidir. 2.200'den fazla yeni eşya ve sistem ekler: kostümler, saç modelleri, silah kaplamaları, kuşaklar, binekler, evcil hayvanlar ve simya (Ejderha Taşı), ayrıca oyun içi ve tarayıcıda ItemShop.",
+}
+T["about_oss"] = {
+    "pl": "Aktualizacje przychodzą przez launcher z repozytorium MT2009 PLUS, a nowości i pomoc znajdziesz na stronie projektu i na Discordzie.",
+    "en": "Updates arrive through the launcher from the MT2009 PLUS repository; news and help are on the project's website and on the Discord.",
+    "de": "Updates kommen über den Launcher aus dem MT2009-PLUS-Repository; Neuigkeiten und Hilfe gibt es auf der Projektseite und im Discord.",
+    "tr": "Güncellemeler başlatıcı üzerinden MT2009 PLUS deposundan gelir; haberler ve yardım proje sitesinde ve Discord'da.",
+}
+T["site_link"] = {"pl": "🌐 Strona projektu: metin2sp.pl", "en": "🌐 Project website: metin2sp.pl",
+                  "de": "🌐 Projektseite: metin2sp.pl", "tr": "🌐 Proje sitesi: metin2sp.pl"}
 
 
 # --- Module 5: the goal weights. Four languages like the rest of the panel;
@@ -3900,6 +3926,7 @@ def t(key):
 
 app = Flask(__name__)
 app.jinja_env.globals["DISCORD"] = DISCORD_URL
+app.jinja_env.globals["WEBSITE"] = WEBSITE_URL
 app.secret_key = CONF["flask_secret"]
 
 
@@ -4969,7 +4996,9 @@ __BODY__
 </span></div>
 <p class="muted" style="text-align:center;margin:26px 0 10px;font-size:12.5px">
 <a href="{{ DISCORD }}" target="_blank" rel="noopener noreferrer"
-   style="color:#7a86d6;text-decoration:none">💬 {{ t('dc_foot') }}</a></p>
+   style="color:#7a86d6;text-decoration:none">💬 {{ t('dc_foot') }}</a>
+&nbsp;·&nbsp; <a href="{{ WEBSITE }}" target="_blank" rel="noopener noreferrer"
+   style="color:#e9b64b;text-decoration:none">{{ t('site_link') }}</a></p>
 </body></html>"""
 
 TPL_LOGIN = BASE.replace("__BODY__", """
@@ -5001,6 +5030,8 @@ setInterval(function(){
 {% if browser_ready %}<p>{{t('about_web')}}</p>{% endif %}
 <p>{{t('about_uptime')}}</p>
 <p>{{t('about_oss')}}</p>
+<p><a href="{{ WEBSITE }}" target="_blank" rel="noopener noreferrer">{{t('site_link')}}</a> &nbsp;·&nbsp;
+<a href="{{ DISCORD }}" target="_blank" rel="noopener noreferrer">💬 Discord</a></p>
 {% if contact %}<p>{{t('about_contact')}} <a href="mailto:{{contact}}">{{contact}}</a>.</p>{% endif %}
 </div>
 <div class="card{% if not has_accounts %} onboard{% endif %}" style="max-width:380px;margin:0 auto 16px;text-align:center">
@@ -8334,7 +8365,7 @@ setInterval(fetchBotPositions, 1500);
 def live_map():
     language = lang()
     return render_template_string(TPL_LIVE_MAP,
-                                  brand=CONF.get("server_name", "Metin2"),
+                                  brand=CONF.get("server_name") or BRAND,
                                   browser_ready=browser_client_ready(),
                                   play_url=play_url(),
                                   m=map_i18n(language),

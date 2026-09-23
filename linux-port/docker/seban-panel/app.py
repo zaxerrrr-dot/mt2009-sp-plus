@@ -143,7 +143,7 @@ try:
 except OSError:
     PANEL_VERSION = os.environ.get("SEBAN_PANEL_VERSION", "dev")
 DEFAULT_SETTINGS = {
-    "panel_name": "Metin2 Singleplayer", "stuck_minutes": "5", "theme": "ocean", "monitor_mode": "vps",
+    "panel_name": "MT2009 PLUS", "stuck_minutes": "5", "theme": "ocean", "monitor_mode": "vps",
     # Existing installations without this key stay usable. Fresh installations
     # receive setup_complete=0 from the collector and enter the setup wizard.
     "setup_complete": "1", "auth_enabled": "0", "auth_password_hash": "", "allow_student_chest": "0", "allow_moonlight_chest": "0", "keep_demo_characters": "0", "update_seban_panel": "0",
@@ -392,7 +392,91 @@ def map_name(index):
     return MAP_NAMES.get(index, f"Poza aktywnym światem (mapa #{index})")
 
 
+# MT2009 Plus: the changelog shown here is the package's own, read from its
+# repository on GitHub and kept for a quarter of an hour; the panel's own file
+# is the fallback when GitHub cannot be reached.
+MT2009_PLUS_CHANGELOG_URL = os.environ.get(
+    "MT2009_PLUS_CHANGELOG_URL",
+    "https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main/CHANGELOG.md")
+MT2009_PLUS_DISCORD_URL = "https://metin2sp.pl/discord"
+MT2009_PLUS_WEBSITE_URL = "https://metin2sp.pl/"
+_mt2009_changelog_cache = {"at": 0.0, "entries": None}
+
+
+def _clean_changelog_text(text):
+    text = re.sub(r"\*\*(.+?)\*\*", r"\1", text)
+    text = re.sub(r"`([^`]*)`", r"\1", text)
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def parse_mt2009_changelog(markdown):
+    """The package's CHANGELOG.md as the entries the templates show:
+    "## 2.2.6 — 2026-09-23 — title" (or "## Klient 2.0.7 — ...") is one entry,
+    and each list item, paragraph and "###" heading under it one line."""
+    entries, current, block = [], None, []
+
+    def flush():
+        if current is not None and block:
+            current["changes"].append(_clean_changelog_text(" ".join(block)))
+        block.clear()
+
+    for raw in markdown.splitlines():
+        line = raw.rstrip()
+        heading = re.match(r"^##\s+((?:Klient|Client)\s+)?(\d+\.\d+\.\d+)\b(.*)$", line, re.I)
+        if heading:
+            flush()
+            parts = [part.strip() for part in re.split(r"\s+[—–-]\s+", heading.group(3).strip(" —–-")) if part.strip()]
+            date = next((part for part in parts if re.fullmatch(r"\d{4}-\d\d-\d\d", part)), "")
+            title = " — ".join(part for part in parts if part != date)
+            version = ("Klient " if heading.group(1) else "") + heading.group(2)
+            current = {"timestamp": date or "—", "version": version + (" · " + title if title else ""), "changes": []}
+            entries.append(current)
+            continue
+        if current is None or line.startswith("## ") or line.strip() == "---":
+            flush()
+            if line.startswith("## "):
+                current = None
+            continue
+        if not line.strip():
+            flush()
+            continue
+        sub_heading = re.match(r"^#{3,}\s+(.+)$", line)
+        bullet = re.match(r"^\s*[-*]\s+(.+)$", line)
+        if sub_heading:
+            flush()
+            current["changes"].append("▸ " + _clean_changelog_text(sub_heading.group(1)))
+        elif bullet:
+            flush()
+            block.append(bullet.group(1))
+        else:
+            block.append(line.strip())
+    flush()
+    return [entry for entry in entries if entry["changes"]][:40]
+
+
 def changelog_entries():
+    """MT2009 Plus's own changelog from GitHub, else the panel's file."""
+    now = time.time()
+    cached = _mt2009_changelog_cache["entries"]
+    if cached is not None and now - _mt2009_changelog_cache["at"] < 900:
+        return cached
+    try:
+        request_changelog = Request(MT2009_PLUS_CHANGELOG_URL, headers={"User-Agent": "MT2009-Plus-Panel"})
+        with urlopen(request_changelog, timeout=4) as response:
+            entries = parse_mt2009_changelog(response.read(400_000).decode("utf-8", "replace"))
+        if entries:
+            _mt2009_changelog_cache.update(at=now, entries=entries)
+            return entries
+    except (OSError, ValueError, HTTPError, URLError):
+        pass
+    if cached is not None:
+        _mt2009_changelog_cache["at"] = now - 600  # try GitHub again in five minutes
+        return cached
+    return local_panel_changelog_entries()
+
+
+def local_panel_changelog_entries():
     """Read version notes from the repository file for the public in-panel log."""
     path = Path(__file__).parent / "CHANGELOG.md"
     try:
@@ -1891,7 +1975,10 @@ def globals_for_templates():
     def empire_flag(empire):
         flag = empire_flag_path(empire)
         return url_for("static", filename=f"empires/{flag}") if flag else ""
-    return {"tieru_url": tieru_url, "panel_brand": current_settings.get("panel_name", "Metin2 Singleplayer"), "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag}
+    brand = current_settings.get("panel_name") or "MT2009 PLUS"
+    if brand == "Metin2 Singleplayer":
+        brand = "MT2009 PLUS"
+    return {"tieru_url": tieru_url, "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag}
 @app.route("/login", methods=["GET", "POST"])
 def login():
     current = settings()
