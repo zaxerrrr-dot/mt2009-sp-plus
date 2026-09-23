@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "manifestUrl": "",
+  "manifestUrl": "https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main/update-manifest.json",
   "clientRoot": "C:\\Metin2Client",
   "clientExecutable": "C:\\Metin2Client\\metin2client.exe",
   "supportUploadUrl": ""

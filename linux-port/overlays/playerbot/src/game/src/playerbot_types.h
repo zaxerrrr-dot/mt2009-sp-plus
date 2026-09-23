@@ -1346,6 +1346,27 @@ namespace
 	// monster at a time ("atakuja po jednym przeciwniku", Nagash, 19 September).
 	const int PLAYERBOT_TOWER_BOTS_PER_MONSTER = 2;
 	const int PLAYERBOT_TOWER_SPREAD_RANGE = 600;
+	// The sixth floor's smith. Once the Elite Demon King is down every
+	// character in the instance may have one piece raised there for the fee
+	// alone - no materials, at the anvil's own odds, and a failure burns the
+	// piece as at any blacksmith (DoRefine(item, true), the engine's
+	// REFINE_TYPE_MONEY_ONLY). A bot of UPPER_LEVEL takes the run past him
+	// once everybody has had the turn, or after SMITH_REFINE_WAIT_MS; it used
+	// to do so the moment he stood, and nobody ever used him ("nikt nie
+	// korzysta z mozliwosci ulepszania przedmiotow u kowala", prodnathin,
+	// 23 September).
+	const DWORD PLAYERBOT_TOWER_SMITH_REFINE_WAIT_MS = 150 * 1000;
+	// The floors' drop. Inside, the fight never ends - a bot always holds a
+	// foe and a pack always stands round it - so the ordinary loot pass only
+	// ever took what lay at a bot's feet, and a floor jumps four to eight
+	// seconds after its last monster falls: "sporo dropu zostaje na ziemi"
+	// (prodnathin). Between two foes a bot takes what it may within
+	// LOOT_RANGE, while its health holds LOOT_MIN_HP_PERCENT.
+	const int PLAYERBOT_TOWER_LOOT_RANGE = 1500;
+	const int PLAYERBOT_TOWER_LOOT_MIN_HP_PERCENT = 50;
+	// A raid is a guild and not a party, so the party buffs never reached it:
+	// the tower's Shaman keeps its fellows' buffs up itself, one cast a pass.
+	const DWORD PLAYERBOT_TOWER_ALLY_BUFF_INTERVAL = 3000;
 	// metin2_map_deviltower1's base in cells (Setting.txt), the ground
 	// floor's entrance the quest warps a player to, and the Metin of
 	// Toughness's spawn point (regen.txt: cell 195,690 off the base).
@@ -1429,6 +1450,12 @@ namespace
 	// ("boty dodaja sobie 5 bonusow", 12 September).
 	const int PLAYERBOT_BONUS_MAX_LINES = 4;
 	const int PLAYERBOT_BONUS_MARBLE_LINES = 5;
+	// Iwakura's QUICK FIX nr 3 (23 September): "Boty moga uzywac zmianek
+	// wylacznie na przedmiotach, ktore posiadaja juz co najmniej 3 dodane
+	// bonusy (z priorytetem dobicia do pelnych 4 bonusow przed rozpoczeciem
+	// mieszania)". A change stone waits for this many lines, and a piece of
+	// three takes an add stone first whenever there is one it can use.
+	const int PLAYERBOT_BONUS_CHANGE_MIN_LINES = 3;
 	// What the lines rolled on a piece add to what a stall asks for it.
 	//
 	// A counter wanted the same 150 000 for boots +7 carrying five bonus lines
@@ -1898,6 +1925,16 @@ namespace
 	// Below it a bot always dismounts to fight; at or above it the target
 	// decides.
 	const BYTE PLAYERBOT_BATTLE_HORSE_LEVEL = 11;
+	// And the level of an attack skill at which the saddle stops being worth
+	// it. The engine lets a rider cast nothing of its class from any horse:
+	// CHARACTER::UseSkill refuses every skill but Sprint below a military
+	// horse, and every one but the four horse skills on one, which no bot
+	// has. So a warrior or a sura fighting from a battle horse swung its
+	// weapon and did nothing else, aura and berserk included ("sura bez
+	// skilli na koniu se expi", prodnathin, 23 September). From one attack
+	// skill at Master a bot is stronger on foot and fights there; the horse
+	// still carries it between fights (PlayerBotSkillsBeatTheSaddle).
+	const int PLAYERBOT_SADDLE_SKILL_LEVEL = 20;
 
 	const long PLAYERBOT_MAP_CHUNJO_M1 = 21;
 	// Joan's inner town is walled: the misc merchant and the blacksmith stand
@@ -3573,6 +3610,16 @@ namespace
 	// (sizowski, 15 September). The same two levels the operator's medal
 	// cohort allows (CPlayerBotManager::SpawnMedalDropperCohort).
 	const BYTE PLAYERBOT_DROPPER_OUTGROWN_LEVELS = 2;
+	// The last PID of the cohort as the seed first laid it out: Chunjo 4..1503,
+	// Shinsoo 1504..2003, Jinno 2004..2503 (generate_seed.py). 2.2.1 appended a
+	// thousand Shinsoo and a thousand Jinno identities after it, and the
+	// operator's medal droppers are taken from the far end of a kingdom's
+	// registry - which the appended ones now are. Searched from the whole
+	// registry, every Shinsoo and Jinno dropper already standing at its lock
+	// would have become an ordinary bot at the first start and its place gone
+	// to a character of level one, hours from the dungeon. The first layout's
+	// far end is searched first (CPlayerBotManager::SpawnMedalDropperCohort).
+	const DWORD PLAYERBOT_SEED_FIRST_LAYOUT_LAST_PID = 2503;
 	// A dropper serves its offline shop once in this long instead of every ten
 	// to fifteen minutes. The service is a walk to the village the shop stands
 	// in, and it took the medal droppers off the road to the Monkey Dungeon 68
@@ -5860,6 +5907,7 @@ namespace
 			dwRetreatThreatVID(0),
 			dwNextRefineCheckTime(0),
 			dwNextBonusCheckTime(0),
+			dwBonusFocusItem(0),
 			dwNextChatTime(0),
 			dwLastStatusChatTime(0),
 			dwNextStatusProbeTime(0),
@@ -6130,6 +6178,9 @@ namespace
 		DWORD dwRetreatThreatVID;
 		DWORD dwNextRefineCheckTime;
 		DWORD dwNextBonusCheckTime;
+		// The piece the bonus pass is working on (its item id), kept until it
+		// is done or no stone in the bag fits it (ManagePlayerBotBonusReroll).
+		DWORD dwBonusFocusItem;
 		DWORD dwNextChatTime;
 		DWORD dwLastStatusChatTime;
 		DWORD dwNextStatusProbeTime;

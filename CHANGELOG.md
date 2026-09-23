@@ -17,11 +17,164 @@ every version here.
 
 ---
 
+## 2.2.3 — 2026-09-23
+
+Serwer; klient zostaje 2.0.26. Zawiera wszystko z 2.2.2.
+
+### Boty walczą umiejętnościami, a nie samym atakiem z konia (zgłosił prodnathin)
+
+Z konia nie da się użyć żadnej umiejętności klasy. Gra na to nie pozwala,
+także na koniu bojowym. Wojownik i sura z koniem bojowym walczyli jednak
+z siodła ze wszystkim, więc od 35 poziomu bili samym atakiem: bez
+umiejętności, bez Aury Miecza, Berserka i innych buffów.
+
+Teraz bot, który ma choć jedną umiejętność ataku na poziomie Mistrza,
+zsiada do walki i jej używa. Koń dalej wiezie go między walkami. Bot, który
+nadal walczy z konia, zsiada na chwilę, żeby rzucić brakującego buffa. Tak
+samo szaman zsiada, żeby zbuffować drużynę.
+
+Przejrzałem też buffy: mental rzuca Silne Ciało, body Aurę Miecza i
+Berserka, a szamani swoje buffy. Na naszym świecie testowym w 10 minut
+było to 390 Silnych Ciał, 601 Aur i 567 Berserków.
+
+### Wieża Demonów: buffy, łup, próg 40 i kowal (zgłosił prodnathin)
+
+- **Szamani buffują rajd.** Rajd gildii nie jest drużyną, więc szaman w
+  Wieży buffował tylko siebie. Teraz buffuje każdego ze swojego królestwa,
+  kto jest z nim w Wieży, najpierw graczy.
+- **Łup nie zostaje na ziemi.** Bot w Wieży ciągle ma przeciwnika, więc
+  podnosił tylko to, co leżało mu pod nogami, a piętro przeskakuje kilka
+  sekund po ostatnim potworze. Teraz między dwoma przeciwnikami bot
+  podnosi, co może, w promieniu 15 metrów, jeśli ma co najmniej połowę HP.
+- **Wieża jest od 40 poziomu**, tak jak mówi strażnik przy wejściu. Bot
+  poniżej 40, który trafił do środka razem z innymi, wychodzi i wraca do
+  domu. Nie dotyczy to bota w drużynie gracza.
+- **Boty korzystają z kowala na szóstym piętrze.** Każdy bot raz ulepsza u
+  niego przedmiot pasujący do kowala: broń, zbroję, tarczę albo hełm, albo
+  biżuterię i buty. Płaci tylko yang, bez materiałów. Szansa jest taka sama
+  jak u zwykłego kowala, a nieudane ulepszenie niszczy przedmiot, więc bot
+  stosuje te same zasady ostrożności co w mieście. Nie ryzykuje broni ani
+  zbroi, której nie ma czym zastąpić. Bot z 75 poziomem prowadzi dalej,
+  dopiero gdy wszyscy skorzystają z kowala, najpóźniej po 2,5 minuty.
+
+Sprawdzone na naszym świecie testowym: serwer działa, a obciążenie zostało
+takie samo. Test tylko do odczytu na 212 botach od 30 poziomu pokazał, że
+kowal od broni znalazłby przedmiot dla 93 z nich, od zbroi dla 128, a od
+biżuterii dla 35. Samego przejścia Wieży ani walki z konia bojowego nie
+widzieliśmy, bo na naszym świecie nie ma jeszcze gildii z czterema botami
+na 40 poziomie ani botów z koniem bojowym.
+
+---
+
+## 2.2.2 — 2026-09-23
+
+Serwer; klient zostaje 2.0.26. Zawiera wszystko z 2.2.1.
+
+### Grindery z drugiego tieru idą na M3 (zgłosił Iwakura)
+
+W dokumencie osobowości Iwakury drugi tier Grindera (poziomy 19–25) to M3,
+czyli Ziemia Klanu z przeklętymi zwierzętami i bronią na 30 poziom. Na M3
+trafiały jednak tylko boty, które szukały broni 30 lv, a od Community Patch 2
+bot, który może tę broń kupić, przestał ją farmić. Na naszym świecie testowym
+na M3 było 10 z 426 botów na poziomach 15–25, a na młodym świecie nie było
+żadnego.
+
+Teraz na M3 idzie Grinder z drugiego tieru, który ma broń +6 i zbroję +5, z
+bronią 30 lv albo bez niej. Idzie też bot z ćwiartki, która pomija pierwszą
+wioskę, już od 13 poziomu. Grinder zostaje na M3, dopóki należy do tieru, i
+wychodzi tylko po zakupy albo ulepszenia. Limit tłoku się nie zmienia: około
+15% botów na trzy mapy M3.
+
+Sprawdzone na naszym świecie testowym: kwadrans po zmianie na M3 były 103 boty
+zamiast 27, a obciążenie serwera zostało takie samo.
+
+### Event yang nie podwaja cen na rynku (zgłosił Iwakura)
+
+Podczas eventu yang, na przykład +100%, boty liczyły ceny od stawki z eventem
+(200%) zamiast od stawki świata (100%). Wszystko, co wystawiły w tym czasie,
+kosztowało więc dwa razy więcej. Na początku i na końcu każdego eventu rynek
+zapominał też ceny, których się nauczył. Teraz ceny liczą się zawsze od
+stawki świata, a event yang zmienia tylko to, ile yang wypada z potworów.
+
+Sprawdzone na naszym świecie testowym 6-minutowym eventem yang +100%: stawka
+potworów zmieniła się z 200 na 400 i z powrotem, a ceny botów i pamięć rynku
+zostały bez zmian.
+
+---
+
 ## 2.2.1 — 2026-09-23
 
-Testowa aktualizacja paczki MT2009 PLUS (mod-4). Serwer dostaje plik
-`test_update_serwer.txt`, klient (2.0.4) plik `test_update_klient.txt`.
-Nic więcej się nie zmienia; baza danych zostaje nietknięta.
+Serwer, panel WWW i launcher; klient zostaje 2.0.26. Zawiera wszystko z 2.2.0.
+
+### Po 1500 botów w każdym królestwie (zgłosił kavvaski)
+
+Shinsoo i Jinno miały po 500 postaci botów, a Chunjo 1500. Liczba botów
+ustawiona osobno dla królestwa była po cichu przycinana do tych 500 (729 dla
+Shinsoo dawało 500), a wspólna liczba z suwaka oddawała Chunjo wszystko,
+czego pozostałe dwa królestwa nie mogły wziąć — przy 2500 wychodziło
+500 / 1500 / 500.
+
+Aktualizacja dokłada każdemu światu po 1000 nowych postaci botów w Shinsoo i
+w Jinno, więc każde królestwo ma teraz 1500. Wspólna liczba dzieli się po
+równo: przy 2500 to około 833 boty w każdym królestwie, więc w Chunjo będzie
+ich mniej niż dotąd, a w Shinsoo i Jinno więcej.
+
+- Nowe postacie powstają przy pierwszym uruchomieniu po aktualizacji, na
+  1 poziomie, w pierwszych wioskach (Yongan, Pyongmoo), i dostają nicki z
+  listy jak pozostałe boty.
+- Istniejące boty, ich poziomy, przedmioty, sklepy i nicki zostają bez zmian.
+  Boty, które przy nowym podziale przestaną grać, niczego nie tracą — wrócą,
+  gdy zwiększysz liczbę botów.
+- Stali dropiacze medali zostają tymi samymi postaciami co dotąd.
+- W launcherze pola „Indywidualne wartości dla królestw” przyjmują do 1500
+  (tyle, ile królestwo ma postaci).
+
+Sprawdzone na naszym świecie testowym: aktualizacja utworzyła 2000 postaci,
+wszystkie dostały nicki, a serwer wczytuje po 1500 botów na królestwo.
+
+### Bonusy: jeden przedmiot naraz (Iwakura, QUICK FIX nr 3)
+
+Bot dawał po jednym kamieniu kolejnym przedmiotom — bonus do butów, potem do
+naszyjnika, potem do bransolety — i żadnego nie kończył. Teraz:
+
+- bot pracuje nad jednym przedmiotem naraz: dobija mu bonusy do 4 (piąty
+  Marmurem Błogosławieństwa, jeśli go ma), potem używa na nim zmianek, aż
+  przedmiot będzie gotowy — i dopiero wtedy bierze następny;
+- zmianki idą tylko na przedmioty z co najmniej 3 bonusami, a przedmiot z 3
+  bonusami najpierw dostaje czwarty, jeśli bot ma do niego kamień dodania;
+- nowy przedmiot, który czeka w torbie, aż jego bonusy przebiją noszony,
+  dostaje kamienie zamiast tego noszonego, który i tak zaraz zdejmie;
+- kamień, który nie pasuje do przedmiotu w pracy (na przykład bot ma same
+  zmianki, a przedmiot potrzebuje jeszcze bonusu), idzie na następny
+  przedmiot, zamiast leżeć w torbie.
+
+Sprawdzone na naszym świecie testowym. Przed zmianą 5 z 26 wizyt u kowala
+rozkładało kamienie na dwa przedmioty. W pierwszych dwunastu minutach po
+zmianie 81 botów zużyło 194 kamienie i każdy z nich użył ich na jednym
+przedmiocie. Żadna zmianka nie poszła na przedmiot z mniej niż 3 bonusami.
+Boty zużywają teraz zmianki, które dotąd leżały w torbach: 147 ze 161 zmianek
+trafiło na przedmioty z 3 bonusami, do których bot nie miał kamienia dodania.
+Wcześniej takie przedmioty czekały na czwarty bonus.
+
+### Okno GM „Podgląd Gracza”: Podgląd otwiera nasz panel WWW (zgłosił iceBeeg)
+
+Przycisk **Podgląd** w oknie GM (tym z Captcha, Ban i Kick) otwierał panel
+autora paczki (panel.mt2009.pl), który pokazywał „Sorry, you have been
+blocked”. Teraz otwiera kartę tej postaci w naszym panelu WWW
+(http://127.0.0.1:7788). Kick i Ban działają jak dotąd. Nowy adres gra
+podaje przy logowaniu, więc po aktualizacji wystarczy zalogować się postacią
+GM jeszcze raz.
+
+### Launcher: zajęty port logowania (zgłosił Kordix)
+
+Gdy port logowania (11000) albo port kanału (13000–13002) zajmował inny
+program, diagnostyka radziła „zamknij ten program albo zmień port w .env”.
+Zmiana tych portów nie pomaga — klient gry łączy się zawsze z 11000 i z
+kanałami od 13000 — więc launcher mówi teraz, żeby zamknąć ten program
+(Menedżer zadań → Szczegóły → Zakończ zadanie). Dla portów paneli, ItemShopu
+i bazy danych rada zostaje po staremu.
+
+---
 
 ## 2.2.0 — 2026-09-23
 

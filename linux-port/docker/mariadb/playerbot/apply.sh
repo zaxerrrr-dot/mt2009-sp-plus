@@ -762,30 +762,3 @@ if [ "$gm_rows" = "0" ]; then
         echo "[playerbot-migrate] gmlist is empty and the admin account has no character yet; the first one it gets becomes GM on the next start"
     fi
 fi
-
-# ---------------------------------------------------------------------------
-# Metin2 Playerbots Mod: our item-shop data (mod/*.sql, made by
-# custom-patches/package/build_release.sh). Each file runs ONCE per install --
-# the marker in player.playerbot_migrations keeps a player's own later shop
-# edits. As root: the web shop's database is created by the root-only schema
-# above. A failure is reported and never stops the server from starting.
-# ---------------------------------------------------------------------------
-for mod_sql in /opt/playerbot/mod/*.sql; do
-    [ -s "$mod_sql" ] || continue
-    mod_name="mod:$(basename "$mod_sql")"
-    mod_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = '$mod_name';" 2>/dev/null || echo x)
-    [ "$mod_done" = "0" ] || continue
-    if [ -z "${M2_DB_ROOT_PASSWORD:-}" ]; then
-        echo "[playerbot-migrate] WARNING: M2_DB_ROOT_PASSWORD not set; $mod_name skipped" >&2
-        continue
-    fi
-    if MYSQL_PWD="$M2_DB_ROOT_PASSWORD" mariadb --protocol=tcp --host="$M2_DB_HOST" \
-            --port="$M2_DB_PORT" --user=root --default-character-set=utf8mb4 \
-            < "$mod_sql" 2>/tmp/mod.err; then
-        db -e "INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('$mod_name', NOW());" || true
-        echo "[playerbot-migrate] $mod_name applied"
-    else
-        echo "[playerbot-migrate] WARNING: $mod_name failed:" >&2
-        head -3 /tmp/mod.err >&2 || true
-    fi
-done

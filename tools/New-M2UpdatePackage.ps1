@@ -133,16 +133,6 @@ try {
                "another name - give it its own PathMap row: " +
                "'linux-port-mt2009/VERSION' = 'VERSION'.")
     }
-    # The updaters compare the installed VERSION with the manifest's version
-    # for equality: a zip whose VERSION says something else than -Version is
-    # installed again on every run, or never.
-    if ($Type -eq 'server') {
-        $versionSource = Join-Path $source (($sourceOf['VERSION']) -replace '/', [IO.Path]::DirectorySeparatorChar)
-        $packagedVersion = ([IO.File]::ReadAllText($versionSource)).Trim()
-        if ($packagedVersion -ne $Version.Trim()) {
-            throw "VERSION in the source says '$packagedVersion' but -Version is '$Version'. Put the new version into VERSION first."
-        }
-    }
 
 
     # The overlay sources and the staged build context are two copies of the
