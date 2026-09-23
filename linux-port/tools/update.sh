@@ -43,7 +43,7 @@ COMPOSE_DIR="$ROOT/linux-port/docker"
 REPO=${M2_UPDATE_REPO:-zaxerrrr-dot/mt2009-sp-plus}
 case "$REPO" in
     *TieruYT/metin2-playerbots*)
-        echo "M2_UPDATE_REPO wskazuje oficjalne repozytorium; ta paczka aktualizuje si tylko z repozytorium MT2009 Plus (zaxerrrr-dot/mt2009-sp-plus)."
+        echo "M2_UPDATE_REPO wskazuje oficjalne repozytorium; ta paczka aktualizuje się tylko z repozytorium MT2009 Plus (zaxerrrr-dot/mt2009-sp-plus)."
         exit 1 ;;
 esac
 BRANCH=${M2_UPDATE_BRANCH:-main}

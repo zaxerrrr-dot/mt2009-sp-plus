@@ -2157,12 +2157,13 @@ def local_changelog():
 # (archded, l0st3k, 12 September). The engine flag is read here, ahead of
 # the rest of the engine-specific setup below, because this URL needs it.
 UPDATE_ENGINE = os.environ.get("M2PANEL_ENGINE", "r40250").strip().lower()
+# MT2009 Plus: the mod's own repository, never upstream's. Its tree is the
+# player's tree, so the mt2009 VERSION is the root one.
 UPDATE_BASE_URL = _env_path(
     "M2PANEL_UPDATE_URL",
-    "https://raw.githubusercontent.com/TieruYT/"
-    "metin2-playerbots/main")
+    "https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main")
 # Where this engine's VERSION lives under that base; the changelog is shared.
-UPDATE_VERSION_PATH = "/linux-port-mt2009/VERSION" if UPDATE_ENGINE == "mt2009" else "/VERSION"
+UPDATE_VERSION_PATH = "/VERSION"
 # The other line's VERSION, so a 1.x panel can say that 2.x exists. Only the
 # r40250 line looks across: a 2.x install has nothing to move to.
 UPDATE_NEXT_LINE_PATH = "/linux-port-mt2009/VERSION" if UPDATE_ENGINE != "mt2009" else ""
@@ -2237,8 +2238,8 @@ def _update_fetch(url, limit):
         # Honest about who is calling. GitHub sees this, and so would anyone
         # else the operator points M2PANEL_UPDATE_URL at.
         "User-Agent": "metin2-panel/%s (+%s)" % (PANEL_VERSION or "unknown",
-                                                 "https://github.com/TieruYT/"
-                                                 "metin2-playerbots"),
+                                                 "https://github.com/zaxerrrr-dot/"
+                                                 "mt2009-sp-plus"),
         "Accept": "text/plain",
     })
     with urllib.request.urlopen(req, timeout=UPDATE_TIMEOUT) as resp:

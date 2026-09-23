@@ -17,6 +17,18 @@ every version here.
 
 ---
 
+## 2.2.5 — 2026-09-23
+
+Poprawka launchera i paneli; zawiera wszystko z 2.2.4.
+
+- Wydanie 2.2.3 przyniosło oficjalne pliki Tieru także tam, gdzie MT2009
+  Plus ma własne: launcher znów wyglądał jak oficjalny (METIN2,
+  metin2singleplayer.com, „Postaw kawkę”, stare tło), a panel na 7788
+  sprawdzał aktualizacje w repozytorium Tieru. Wraca wygląd MT2009 PLUS,
+  przycisk Discorda i panel pyta tylko repozytorium MT2009 Plus.
+- Launcher znów odrzuca kanał aktualizacji Tieru i sam poprawia pusty albo
+  obcy adres kanału w swojej konfiguracji.
+
 ## 2.2.4 — 2026-09-23
 
 Poprawka launchera; zawiera wszystko z 2.2.3.
