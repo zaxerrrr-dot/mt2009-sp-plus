@@ -1,0 +1,178 @@
+-- Dragon Soul / Alchemy: main qualification + fragment-farming quest.
+-- Adapted 17 September 2026 from the operator-supplied reference package.
+-- Two changes from the reference: (1) every "define X Y" inlined as a
+-- literal -- this qc does not read `define` at all (confirmed by
+-- new_quest_lv19.quest's own comment in this same directory; qc rejected
+-- the reference's defines with "must start with 'quest'" the first time
+-- this was tried, unmodified, in this pipeline); gemstone=30270,
+-- alchemist=20001, reward_box=50255, gemstone_need_count=10,
+-- gemstone_trade_max_per_day=5 (brief's own instruction, was 10),
+-- dragon_soul_can_use_level=30, drop_flag="ds_drop". (2) every
+-- "gameforge.dragon_soul._NNNN_purpose" locale reference replaced with a
+-- literal Polish string -- that locale mechanism does not exist anywhere
+-- in this codebase (no matching Lua table, DB table, or file found after
+-- an extensive search; see custom-patches/README.md's Dragon Soul section
+-- for the full trail), so referencing it would only fail at runtime the
+-- first time the quest actually fires, not at compile time.
+quest dragon_soul begin
+	state start begin
+		when levelup or letter with pc.level >= 30 begin
+			send_letter("Alchemik chce z Toba porozmawiac o Duszach Smokow.")
+			local v = find_npc_by_vnum(20001)
+
+			if 0 != v then
+				target.vid("__TARGET__", v, mob_name(20001))
+			end
+		end
+		when info or button begin
+			say("Odwiedz Alchemika, gdy osiagniesz 30 poziom.")
+		end
+
+		when 20001.chat."Rozmawiaj o Duszach Smokow" with pc.level >= 30 begin
+			target.delete("__TARGET__")
+
+			say_title(mob_name(20001))
+			say("Witaj, podrozniku. Slyszalem, ze interesujesz sie Duszami Smokow.")
+			set_state(state_learning)
+		end
+	end
+	state state_learning begin
+		when letter begin
+			send_letter("Zbierz 10 Odlamkow Smoczego Kamienia i wroc do Alchemika.")
+		end
+		when info or button begin
+			say("Zbieraj Odlamki Smoczego Kamienia z pokonanych potworow.")
+		end
+		when kill begin
+			if npc.is_pc() then
+				return
+			end
+
+			-- Bots must not be able to farm/drop alchemy materials (operator's
+			-- explicit instruction, 17 September 2026).
+			if pc.is_bot() then
+				return
+			end
+
+			if pc.count_item(30270) < 10 then
+				if drop_gamble_with_flag("ds_drop") then
+					game.drop_item_with_ownership(30270, 1, 300)
+				end
+			end
+		end
+		when 20001.chat."Oddaj Odlamki Smoczego Kamienia" begin
+			say_title(mob_name(20001))
+			if pc.count_item(30270) >= 10 then
+				say("Doskonale! Oto Twoja kwalifikacja do Alchemii Smoczych Kamieni.")
+				pc.remove_item(30270, 10)
+				ds.give_qualification()
+				char_log(pc.get_player_id(), 'DS_QUALIFICATION', 'SUCCESS')
+				pc.give_item2(50255)
+				local today = math.floor(get_global_time() / 86400)
+				pc.setf("dragon_soul", "eye_timestamp", today)
+				pc.setf("dragon_soul", "eye_left", 4)
+				set_state(state_farming)
+			else
+				say("Potrzebuje jeszcze 10 Odlamkow Smoczego Kamienia.")
+			end
+		end
+	end
+	state state_farming begin
+		when letter begin
+			send_letter("Mozesz wymienic Odlamki Smoczego Kamienia na Cor Draconis u Alchemika.")
+		end
+		when info or button begin
+			say("Pozostalo dzisiaj wymian: " .. pc.getf("dragon_soul", "eye_left"))
+		end
+		when kill begin
+			if npc.is_pc() then
+				return
+			end
+
+			-- Bots must not be able to farm/drop alchemy materials (operator's
+			-- explicit instruction, 17 September 2026).
+			if pc.is_bot() then
+				return
+			end
+
+			if drop_gamble_with_flag("ds_drop") then
+				local eye_left = pc.getf("dragon_soul", "eye_left")
+				local haved_gemstone_number = pc.count_item(30270)
+
+				if eye_left > haved_gemstone_number / 10 then
+					game.drop_item_with_ownership(30270, 1, 300)
+				end
+			end
+		end
+		when 30270.pick begin
+			local eye_left = pc.getf("dragon_soul", "eye_left")
+			if eye_left <= 0 then
+				return
+			end
+
+			if pc.count_item(30270) >= 10 then
+				pc.setf("dragon_soul", "eye_left", eye_left - 1)
+				pc.remove_item(30270, 10)
+				pc.give_item2(50255)
+				if 1 == eye_left then
+					notice_multiline("Wykorzystales dzisiejszy limit wymian Cor Draconis. Wroc jutro.", notice)
+					set_state(state_closed_season)
+				end
+			end
+		end
+		when 20001.chat."Porozmawiaj z Alchemikiem" begin
+			say_title(mob_name(20001))
+			local today = math.floor(get_global_time() / 86400)
+			if today == pc.getf("dragon_soul", "eye_timestamp") then
+				say("Wroc jutro po kolejne Cor Draconis.")
+			else
+				say("Nowy dzien, nowe Cor Draconis!")
+				pc.setf("dragon_soul", "eye_timestamp", today)
+				pc.setf("dragon_soul", "eye_left", 5)
+			end
+		end
+	end
+	state state_closed_season begin
+		when letter begin
+			send_letter("Dzisiejszy limit wymian zostal wykorzystany.")
+		end
+		when info or button begin
+			say("Wykorzystales dzisiejszy limit wymian.")
+			local today = math.floor(get_global_time() / 86400)
+			if today == pc.getf("dragon_soul", "eye_timestamp") then
+				say("Wroc jutro.")
+			else
+				say("Nowy dzien juz nastal -- odwiedz Alchemika ponownie.")
+			end
+		end
+
+		when 20001.chat."Porozmawiaj z Alchemikiem ponownie" begin
+			say_title(mob_name(20001))
+			local today = math.floor(get_global_time() / 86400)
+			if today == pc.getf("dragon_soul", "eye_timestamp") then
+				say("Wroc jutro po kolejne Cor Draconis.")
+			else
+				say("Nowy dzien, nowe Cor Draconis!")
+				pc.setf("dragon_soul", "eye_timestamp", today)
+				pc.setf("dragon_soul", "eye_left", 5)
+				set_state(state_farming)
+			end
+		end
+	end
+	-- deprecated states. so, jump to new state.
+	state state_1 begin
+		when login begin
+			set_state(state_learning)
+		end
+	end
+	state state_2 begin
+		when login begin
+			set_state(state_learning)
+		end
+	end
+	state state_3 begin
+		when login begin
+			set_state(state_closed_season)
+		end
+	end
+end

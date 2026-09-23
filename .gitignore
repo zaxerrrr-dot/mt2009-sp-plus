@@ -1,0 +1,16 @@
+# Metin2 server files are NOT kept in this repository (same as upstream
+# TieruYT/metin2-playerbots): engine source, libraries, game data, SQL dumps
+# and item icons ship only in the release zips.
+/linux-port/docker/game/src/server/
+/linux-port/docker/game/src/extern/
+/linux-port/docker/game/src/extern-tarballs/
+/linux-port/docker/game/src/serverfiles/
+/linux-port/docker/mariadb/initdb.d/dumps/
+/linux-port/docker/panel/app/static/
+/linux-port/docker/seban-panel/static/icons/
+# never commit a local install's secrets or state
+/linux-port/docker/.env
+/linux-port/docker/docker-compose.override.yml
+/launcher-logs/
+/support-bundles/
+/.m2*
