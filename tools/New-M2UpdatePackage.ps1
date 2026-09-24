@@ -216,6 +216,30 @@ try {
         }
     }
 
+    # MT2009 Plus ships its engine changes the way Tieru ships his: patched
+    # once, at release time (tools\port\Apply-MT2009PlusEngine.ps1), and
+    # carried in the zip - a player's start-server.ps1 no longer patches
+    # anything. An engine file listed here without its marks would take the
+    # change away from every player who installs the package.
+    if ($Type -eq 'server') {
+        $engineMarks = [ordered]@{
+            'linux-port/docker/game/src/server/game/src/item_manager.cpp' = @(
+                'MT2009_PLUS_BOT_RARE_DROP_V1', 'MT2009_PLUS_BOT_RARE_DROP_V2', 'MT2009_PLUS_BOT_RARE_DROP_V3')
+            'linux-port/docker/game/src/server/game/src/ikarus_shop_manager.cpp' = @('MT2009_PLUS_SHOP_SEARCH_ITEM_V1')
+            'linux-port/docker/game/src/server/game/src/cmd_general.cpp' = @('ACMD(do_autohunt_target)', 'ACMD(do_autohunt_loot)')
+            'linux-port/docker/game/src/server/game/src/cmd.cpp' = @('"autohunt_target"', '"autohunt_loot"')
+        }
+        foreach ($enginePublished in $engineMarks.Keys) {
+            if (-not ($published -contains $enginePublished)) { continue }
+            $engineText = [IO.File]::ReadAllText((Join-Path $source ($sourceOf[$enginePublished] -replace '/', [IO.Path]::DirectorySeparatorChar)))
+            foreach ($mark in $engineMarks[$enginePublished]) {
+                if (-not $engineText.Contains($mark)) {
+                    throw "$enginePublished has no $mark. Run tools\port\Apply-MT2009PlusEngine.ps1 -ServerRoot $source first."
+                }
+            }
+        }
+    }
+
     foreach ($relativeInput in $entries) {
         $relative = $relativeInput.Replace('/', '\').TrimStart('\')
         if ([IO.Path]::IsPathRooted($relative) -or $relative.Split('\') -contains '..') {

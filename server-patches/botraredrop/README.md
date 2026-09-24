@@ -35,10 +35,12 @@ powstawał, więc boty nie miały czego wystawić: licznik
 
 ## Pliki
 
-- `Apply-BotRareDropPatch.ps1` – Windows; wywołuje go `start-server.ps1`
-  przed każdą budową (tak jak `offlineshopsearch`).
-- `apply_botraredrop.py` – Linux/VPS: `python3 apply_botraredrop.py
-  linux-port/docker/game/src/server/game/src`, potem `docker compose build game`.
+- `Apply-BotRareDropPatch.ps1` – wywołuje go przy wydaniu
+  `tools/port/Apply-MT2009PlusEngine.ps1` (tak jak `offlineshopsearch`).
+  Załatany `item_manager.cpp` przychodzi w paczce aktualizacji; gracze ani
+  `start-server.ps1` niczego nie łatają.
+- `apply_botraredrop.py` – ta sama poprawka w Pythonie (bez PowerShella):
+  `python3 apply_botraredrop.py linux-port/docker/game/src/server/game/src`.
 
 Obie wersje robią te same podmiany w trzech etapach, każdy z własnym markerem:
 `MT2009_PLUS_BOT_RARE_DROP_V1` (odblokowanie, 4 podmiany) i

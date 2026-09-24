@@ -34,10 +34,22 @@ W **pełnym folderze serwera moda** (tym z `VERSION`, `MOD_VERSION`,
 1. Wprowadź zmiany. Plik, którego nie ma w
    `launcher\server-update-files.mod.txt`, **nie trafi do graczy** — nowe pliki
    dopisz w sekcji „the mod's own files”.
-2. Ustaw nową wersję w `VERSION` (np. `2.2.1`), podbij `MOD_VERSION` i dopisz
+2. Nałóż zmiany silnika MT2009 Plus (jak `playerbotify.py` u Tieru – tylko
+   u Ciebie, przy wydaniu; gracze niczego nie łatają, dostają gotowe pliki
+   `.cpp` w paczce):
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File tools\port\Apply-MT2009PlusEngine.ps1 -ServerRoot .
+   ```
+
+   Drugie uruchomienie ma wypisać `0 file(s) changed`. Potem zbuduj i sprawdź
+   serwer w grze (`start-server.ps1`). Nowa zmiana silnika = nowy krok w tym
+   skrypcie (z własnym znacznikiem `MT2009_PLUS_...`) i plik silnika na
+   liście `launcher\server-update-files.mod.txt`.
+3. Ustaw nową wersję w `VERSION` (np. `2.2.1`), podbij `MOD_VERSION` i dopisz
    na górze `CHANGELOG.md` sekcję `## 2.2.1 — RRRR-MM-DD` (panel pokazuje ją
    graczom przed aktualizacją).
-3. Zbuduj paczkę:
+4. Zbuduj paczkę:
 
    ```powershell
    powershell -ExecutionPolicy Bypass -File tools\New-M2UpdatePackage.ps1 `
@@ -47,11 +59,12 @@ W **pełnym folderze serwera moda** (tym z `VERSION`, `MOD_VERSION`,
      -DownloadUrl https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.2.1/metin2-server-update-2.2.1.zip
    ```
 
-   Skrypt odmówi, jeśli `VERSION` nie zgadza się z `-Version`. Wypisze SHA-256
+   Skrypt odmówi, jeśli `VERSION` nie zgadza się z `-Version` albo plik
+   silnika na liście nie ma zmian MT2009 Plus (punkt 2). Wypisze SHA-256
    i zapisze `server-manifest-fragment-2.2.1.json`.
-4. Na GitHubie utwórz **Release** z tagiem `v2.2.1` i dołącz
+5. Na GitHubie utwórz **Release** z tagiem `v2.2.1` i dołącz
    `metin2-server-update-2.2.1.zip`.
-5. **Dopiero potem** w repozytorium na `main` zaktualizuj
+6. **Dopiero potem** w repozytorium na `main` zaktualizuj
    `update-manifest-mt2009.json` (blok `server` z fragmentu), `VERSION`,
    `MOD_VERSION`, `CHANGELOG.md` i zmienione pliki źródłowe; commit i push.
    Od tej chwili launchery i serwery widzą nową wersję (API GitHuba po ok.
@@ -129,7 +142,8 @@ w 2.2.5). Poniższe pliki mają zmiany MT2009 Plus — scalaj je ręcznie
 | `linux-port/tools/update.sh` | domyślne repozytorium moda, odrzucanie Tieru |
 | `linux-port/docker/mariadb/playerbot/apply.sh` | pętla wgrywająca `mod/*.sql` (oferty ItemShopu: kostiumy, fryzury, nakładki, pety, mounty) — bez niej nowe światy mają pusty ItemShop |
 | `linux-port/docker/mariadb/playerbot/mod/*.sql` | oferty ItemShopu w grze i w przeglądarce |
-| `tools/New-M2UpdatePackage.ps1` | sprawdzanie `VERSION` i BOM w skryptach PowerShell |
+| `tools/New-M2UpdatePackage.ps1` | sprawdzanie `VERSION`, BOM w skryptach PowerShell i zmian silnika MT2009 Plus |
+| `linux-port/docker/game/src/server/game/src/item_manager.cpp`, `char_item.cpp`, `ikarus_shop_manager.cpp` | po wzięciu wersji Tieru uruchom ponownie `tools/port/Apply-MT2009PlusEngine.ps1` |
 | `README.md`, `README_EN.md`, `MODS_PL.md`, `AKTUALIZACJE_MOD.md` | opis moda |
 | `update-manifest-mt2009.json`, `VERSION`, `MOD_VERSION`, `CHANGELOG.md` | wersje i kanał moda |
 

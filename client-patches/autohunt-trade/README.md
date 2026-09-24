@@ -17,11 +17,11 @@ Ten katalog przechowuje klientową część zmiany rozwijanej na gałęzi
   otaczającymi je warunkami. Pozostawienie pustych `if` powodowało crash przy
   przejściu z wyboru postaci do gry.
 
-Serwerowa część Auto Łowów jest w
-`linux-port/overlays/playerbot/serverfiles/player_autohunt_commands.inc`.
-`start-server.ps1` wstawia ją do źródła silnika i rejestruje obie komendy
-przed kompilacją. Ten sam skrypt usuwa 85101 z puli Metinów/bossów oraz 85104
-z puli szkatułek.
+Serwerowa część Auto Łowów (`/autohunt_target`, `/autohunt_loot`) jest już
+w plikach silnika paczki serwera – to Auto Łowy 2.0 Tieru, które obsługują też
+to okno. Usunięcie 85101 z puli Metinów/bossów i 85104 z puli szkatułek robi
+`tools/port/Apply-MT2009PlusEngine.ps1` przy wydaniu serwera; załatane pliki
+silnika przychodzą w paczce.
 
 Zmiana flag w bazie jest wykonywana idempotentnie przy starcie przez
 `linux-port/docker/mariadb/playerbot/apply.sh`.
