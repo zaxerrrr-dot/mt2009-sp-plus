@@ -172,7 +172,3 @@ linux-port/docker/game/src/server/libthecore/include/stdafx.h
 linux-port/docker/game/src/server/libthecore/src/fdwatch.c
 linux-port/docker/game/src/server/libthecore/src/main.c
 linux-port/docker/game/src/server/libthecore/src/signal.c
-linux-port/docker/game/src/server/game/src/packet.h
-linux-port/docker/game/src/server/game/src/packet_info.cpp
-linux-port/docker/game/src/server/game/src/shop_search_plus.h
-linux-port/docker/game/src/server/game/src/shop_search_plus.cpp

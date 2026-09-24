@@ -28,9 +28,8 @@ param(
 #   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
 #   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
 #   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
-#   drop info, search  packet.h, packet_info.cpp, input_main.cpp, char_item.cpp,
-#                      shop_search_plus.h/.cpp   (MT2009_PLUS_SHOP_SEARCH_PLUS_V1)
 #   speedhack slack    input_main.cpp            (MT2009_PLUS_SPEEDHACK_CLOCK_V1)
+#   Cor stacking       char_item.cpp             (IsStackableCorDraconisVnum)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -182,17 +181,6 @@ if ((Test-Path -LiteralPath $mountPermanentApply -PathType Leaf) -and
         Write-Host 'Mount seals without a time limit are permanent.' -ForegroundColor DarkGray
     }
 }
-# Target Drop Info and the private shop search (server-patches/shopsearchplus):
-# new shop_search_plus.h/.cpp plus hooks in packet.h, packet_info.cpp,
-# input_main.cpp and char_item.cpp.
-$shopSearchPlusApply = Join-Path $repo 'server-patches/shopsearchplus/Apply-ShopSearchPlusPatch.ps1'
-if (Test-Path -LiteralPath $shopSearchPlusApply -PathType Leaf) {
-    $shopSearchPlusResult = & $shopSearchPlusApply -SourceDir $engineGameSource
-    if ($shopSearchPlusResult.Changed) {
-        $syncedFiles++
-        Write-Host 'Enabled Target Drop Info and the private shop search.' -ForegroundColor DarkGray
-    }
-}
 # 5 s of slack in the speedhack move check for Docker/WSL2 clocks stepped back
 # a few seconds at a time (server-patches/speedhackclock).
 $speedHackClockApply = Join-Path $repo 'server-patches/speedhackclock/Apply-SpeedHackClockPatch.ps1'
@@ -203,6 +191,18 @@ if ((Test-Path -LiteralPath $speedHackClockApply -PathType Leaf) -and
     if ($speedHackClockResult.Changed) {
         $syncedFiles++
         Write-Host 'Speedhack check tolerant of stepped clocks.' -ForegroundColor DarkGray
+    }
+}
+# Cor Draconis boxes stack in MoveItem despite ANTI_STACK in the proto
+# (server-patches/corstack; Codex's change from the test server).
+$corStackApply = Join-Path $repo 'server-patches/corstack/Apply-CorStackPatch.ps1'
+$charItemSource = Join-Path $engineGameSource 'char_item.cpp'
+if ((Test-Path -LiteralPath $corStackApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charItemSource -PathType Leaf)) {
+    $corStackResult = & $corStackApply -SourceFile $charItemSource
+    if ($corStackResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Cor Draconis boxes stack.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
