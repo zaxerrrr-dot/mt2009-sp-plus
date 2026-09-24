@@ -1832,6 +1832,8 @@ if BRAND in ("", "Singleplayer Official Metin2", "Metin2 Singleplayer", "Singlep
 DISCORD_URL = "https://metin2sp.pl/discord"
 # MT2009 Plus's website, beside the Discord in the footer and on the front page.
 WEBSITE_URL = "https://metin2sp.pl/"
+# Voluntary support for the MT2009 Plus project.
+COFFEE_URL = "https://buycoffee.to/mt2009plus"
 
 CLIENT_NAME  = str(CONF.get("client_name", "Metin2 Client") or "").strip()
 CLIENT_FILE  = _client_download_name(CLIENT_NAME)
@@ -3017,6 +3019,9 @@ T = {
    "dc_btn":       {"pl":"💬 Dołącz do Discorda","en":"💬 Join the Discord",
                     "de":"💬 Discord beitreten",
                     "tr":"💬 Discord'a katıl"},
+   "coffee_btn":   {"pl":"☕ Postaw kawkę","en":"☕ Buy me a coffee",
+                    "de":"☕ Spendiere einen Kaffee",
+                    "tr":"☕ Bir kahve ısmarla"},
  "rates_nav":    {"pl":"⚙️ Mnożniki serwera","en":"⚙️ Server rates","de":"⚙️ Server-Raten","tr":"⚙️ Sunucu oranları"},
  "rates_open":   {"pl":"⚙️ Otwórz mnożniki serwera","en":"⚙️ Open server rates","de":"⚙️ Server-Raten öffnen","tr":"⚙️ Sunucu oranlarını aç"},
  "rates_dash_hint":{"pl":"Spraw, by cały serwer dawał więcej doświadczenia, przedmiotów i yang — wygodne, jeśli wolisz robić zadania niż grindować.","en":"Make the whole server give more experience, more items and more yang — handy if you would rather do quests than grind.",
@@ -3934,6 +3939,7 @@ def t(key):
 app = Flask(__name__)
 app.jinja_env.globals["DISCORD"] = DISCORD_URL
 app.jinja_env.globals["WEBSITE"] = WEBSITE_URL
+app.jinja_env.globals["COFFEE"] = COFFEE_URL
 app.secret_key = CONF["flask_secret"]
 
 
@@ -4972,6 +4978,8 @@ pre.cmd{padding:12px;border:1px solid var(--line);background:#131007;color:#cdc5
    two, and on a local install it is the only route back. #}
 <div class="top"><h1 title="{{t('about_goal')}}"><a href="{{url_for('login')}}"><img src="/favicon.ico" alt="">{{brand}}</a> <a href="{{url_for('live_map')}}" style="font-size:14px;margin-left:14px;color:#e9b64b;text-decoration:none;font-weight:700;padding:3px 10px;background:rgba(233,182,75,0.12);border:1px solid rgba(233,182,75,0.3);border-radius:6px">🗺️ {{'Mapa na żywo' if curlang == 'pl' else 'Live map'}}</a></h1>
 <div>
+<a class="btn" href="{{ COFFEE }}" target="_blank" rel="noopener noreferrer"
+   style="padding:7px 12px;font-size:13px;margin-right:10px">{{t('coffee_btn')}}</a>
 <span style="font-size:13px" title="{{t('tip_lang')}}">
 {% for code, name in langs.items() %}<a href="{{url_for('setlang', code=code)}}" title="{{name}}" style="margin:0 3px;{{'font-weight:700;text-decoration:underline' if code==curlang else 'opacity:.7'}}">{{code|upper}}</a>{% endfor %}
 </span>
