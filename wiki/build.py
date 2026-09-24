@@ -128,19 +128,23 @@ def main():
     shell = None
     corrected = {}
     pages_dir = os.path.join(mirror, "pages")
+    published = 0
     for root, _, files in os.walk(pages_dir):
         for f in files:
             if f != "index.html":
                 continue
             src = os.path.join(root, f)
             rel = os.path.relpath(root, pages_dir)
+            if rel != "." and edits.is_removed(rel.replace(os.sep, "/")):
+                continue
             t, extra = edits.apply(rel.replace(os.sep, "/"), open(src, encoding="utf-8").read())
             if extra:
                 corrected[rel.replace(os.sep, "/") + "/"] = extra
-            t = rebrand(rewrite_html(t), sidebar)
+            t = rebrand(rewrite_html(edits.strip_links(t)), sidebar)
             dst = os.path.join(site, "" if rel == "." else rel)
             os.makedirs(dst, exist_ok=True)
             open(os.path.join(dst, "index.html"), "w", encoding="utf-8").write(t)
+            published += 1
             if rel == "faq":
                 shell = t
     # The search index's "index" entry is the front page.
@@ -161,7 +165,7 @@ def main():
 
     # Search: the MT2009 entries and ours, for lunr-build.js.
     idx = json.load(open(os.path.join(mirror, "assets", "search-index.json"), encoding="utf-8"))
-    docs = idx["pages"]
+    docs = [d for d in idx["pages"] if not edits.is_removed(d["url"])]
     for d in docs:
         d["title"] = d["title"].replace("Mt2009 Wiki", SITE)
         if d["url"] in corrected:
@@ -180,7 +184,7 @@ def main():
         "<IfModule mod_expires.c>\nExpiresActive On\nExpiresByType image/png \"access plus 30 days\"\n"
         "ExpiresByType text/css \"access plus 7 days\"\nExpiresByType application/javascript \"access plus 7 days\"\n</IfModule>\n" % PREFIX)
     print("pages from MT2009: %d, ours: %d, search docs: %d" % (
-        sum(1 for r, _, fs in os.walk(pages_dir) for f in fs if f == "index.html"), len(entries), len(docs)))
+        published, len(entries), len(docs)))
 
 
 if __name__ == "__main__":

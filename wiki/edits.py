@@ -6,11 +6,18 @@ applies the edits below to the page before it is published:
 
     ("note", html)            a framed "MT2009 PLUS" box under the page title
     ("section", h2_id, html)  replaces an <h2> section's body (up to the next <h2>)
+    ("drop", h2_id)           removes an <h2> section, heading and body
+    ("re", pattern, new)      replaces a regular expression's first match (DOTALL)
     ("sub", old, new)         replaces text; any run of whitespace in `old`
                               matches any whitespace in the page
 
 An edit that no longer finds its place stops the build, so a changed copy
 of the MT2009 wiki is noticed instead of silently left uncorrected.
+
+REMOVED lists pages of systems, maps and NPCs our files do not have: they
+are not published, leave the search, and every link to them goes (sidebar
+entries and categories, list items, category cards; a link in running
+text keeps its words).
 """
 import html
 import re
@@ -21,6 +28,20 @@ BOX = ('<div class="mt2009plus-note" style="border:1px solid rgba(245,228,176,.4
        'MT2009 PLUS</strong><div style="margin-top:6px">%s</div></div>')
 
 DIFFICULTY = ('<a href="/mt2009plus/poziom-trudnosci/">poziomu trudności świata</a>')
+
+REMOVED = [
+    "ReworkGildii",
+    "Mapy/grotawygnancowv1", "Mapy/krainagigantow", "Mapy/wezowepole",
+    "Mapy/gluchaprzlecz", "Mapy/glucheaprzeleczy",
+    "Systemy/emblematy", "Systemy/bossygrupowe",
+    "faqironman",
+    # Search-only lists of the NPCs of removed maps.
+    "NPC/wezowepole", "NPC/krainagigantow", "NPC/gluchaprzlecz",
+    # NPCs found only on the maps above.
+    "NPC/chi-woo", "NPC/min-sun", "NPC/archeologsenn", "NPC/haneul", "NPC/jijin",
+    "NPC/meijin", "NPC/starszyjezdziec", "NPC/staruszkalao", "NPC/veshtar",
+    "NPC/wampirycznyhandlarz",
+]
 
 EDITS = {
     "NPC/rybak": [
@@ -33,6 +54,16 @@ EDITS = {
                  "nieudane ulepszenie zabiera stopień wędki.</li></ul>"),
     ],
     "Systemy/lowienie": [
+        ("section", "misja-rybaka",
+         "<p>Łowienie zaczyna się od misji wprowadzającej u <a href=\"/NPC/rybak\">Rybaka</a>. "
+         "Na MT2009 PLUS nie ma misji z Amuletem Oczyszczającym Wody – wody nie trzeba oczyszczać, "
+         "łowić można od razu po misji u Rybaka, od <strong>30 poziomu</strong>.</p> "),
+        ("drop", "skladniki-amuletu"),
+        ("drop", "aktywacja-amuletu"),
+        ("re", r"<p>\s*Istnieje kilka sposobów na zdobycie Karty Wędkarskiej:.*?</ul>",
+         "<p>Karty Wędkarskiej nie dostaje się za darmo ani za misje – <strong>kupuje się ją u "
+         "<a href=\"/NPC/rybak\">Rybaka</a></strong> (opcja „Karta Wedkarska”): 25 000 Yang "
+         "+ 5× Materiały Rzemieślnicze, od 30 poziomu, raz na 22 godziny.</p>"),
         ("note", "<ul><li>Łowienie jest od <strong>30 poziomu</strong> (wędka, łowienie i Karta Wędkarska).</li>"
                  "<li>Kartę Wędkarską kupuje się u Rybaka (opcja „Karta Wedkarska”): 25 000 Yang "
                  "+ 5× Materiały Rzemieślnicze, raz na 22 godziny.</li>"
@@ -94,6 +125,12 @@ EDITS = {
         ("note", "Żyły rud stoją w Dolinie Orków, na Pustyni Yongbi i na Górze Sohan; znikają po "
                  "7–15 minutach i pojawiają się nowe. Kilof kosztuje 80 000 Yang, kopać można od 30 poziomu."),
     ],
+    "NPC/egzekutorbitewny": [
+        ("re", r"\s*Pełny opis typów wojen, Ligi Bohaterów oraz Punktów Chwały znajdziesz w kategorii <a [^>]*>Rework Gildii</a>\.", ""),
+    ],
+    "Systemy/zielarstwo": [
+        ("re", r'<tr[^>]*>\s*<td class="location-name"[^>]*>Wężowe Pole</td>.*?</tr>', ""),
+    ],
     "NPC/alchemik": [
         ("note", "<ul><li><strong>Alchemia bez misji na 30 poziom</strong> – plecak alchemii działa od razu, "
                  "otwierasz go komendą <code>/dragon_soul</code> albo przyciskiem.</li>"
@@ -115,6 +152,12 @@ def apply(rel, t):
         if op[0] == "sub":
             t, n = re.subn(_fuzzy(op[1]), lambda m: op[2], t, count=1)
             what = op[1]
+        elif op[0] == "re":
+            t, n = re.subn(op[1], lambda m: op[2], t, count=1, flags=re.S)
+            what, added = op[1], added + [op[2]]
+        elif op[0] == "drop":
+            t, n = re.subn(r'<h2 id="%s"[^>]*>.*?</h2>.*?(?=<h2 )' % re.escape(op[1]), "", t, count=1, flags=re.S)
+            what = op[1]
         elif op[0] == "section":
             t, n = re.subn(r'(<h2 id="%s"[^>]*>.*?</h2>).*?(?=<h2 )' % re.escape(op[1]),
                            lambda m: m.group(1) + op[2], t, count=1, flags=re.S)
@@ -126,3 +169,33 @@ def apply(rel, t):
         if n != 1:
             raise SystemExit("wiki/edits.py: %s: %s %r not found" % (rel, op[0], what[:60]))
     return t, html.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", " ".join(added)))).strip()
+
+
+def _removed_re():
+    return "|".join(re.escape(r) for r in REMOVED)
+
+
+def is_removed(rel):
+    """True for a page of REMOVED (any case: the MT2009 wiki has "systemy/..." twins)."""
+    rel = rel.strip("/").lower()
+    return any(rel == r.lower() or rel.startswith(r.lower() + "/") for r in REMOVED)
+
+
+def strip_links(t):
+    """The page without its links to REMOVED pages."""
+    target = r'href="/(?i:%s)(?:/[^"]*)?/?"' % _removed_re()
+    # A sidebar category of a removed section, whole.
+    t = re.sub(r'<div class="nav-category[^"]*">\s*<div class="category-header"(?:(?!<div class="nav-category).)*?'
+               r'<a %s class="category-link.*?</ul>\s*</div>' % target, "", t, flags=re.S)
+    # A category or featured-article card on the front page.
+    t = re.sub(r'(?:<!--[^>]*-->\s*)?<a %s class="(?:category|featured)-card.*?</a>' % target, "", t, flags=re.S)
+    # List items (no nested list inside).
+    t = re.sub(r'<li\b[^>]*>(?:(?!</?li\b).)*?<a %s.*?</li>' % target, "", t, flags=re.S)
+    # Anything else: the link's words stay.
+    t = re.sub(r'<a %s[^>]*>(.*?)</a>' % target, r"\1", t, flags=re.S)
+    # The sidebar's page counts.
+    def count(m):
+        return m.group(1) + "(%d)" % len(re.findall(r"<li\b", m.group(3))) + m.group(2) + m.group(3)
+    t = re.sub(r'(<span class="page-count">)\(\d+\)(</span>\s*</div>\s*)(<ul class="category-pages.*?</ul>)',
+               count, t, flags=re.S)
+    return t
