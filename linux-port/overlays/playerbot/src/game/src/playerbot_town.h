@@ -2501,6 +2501,14 @@ namespace
 				return 900;
 			return IsPlayerBotHairDyeKeptForSale(item) ? 200 : -1;
 		}
+		// The bot's own look from the ItemShop (MT2009 Plus): a costume or a
+		// weapon skin waiting for its slot, and the pet seal it summons from,
+		// never go on the counter.
+		if (item->GetType() == ITEM_PET)
+			return -1;
+		if (item->GetType() == ITEM_COSTUME &&
+				(item->GetSubType() == COSTUME_BODY || item->GetSubType() == COSTUME_WEAPON))
+			return -1;
 		// A hairstyle the bot cannot wear: an item-shop head a keeper bought
 		// for its counter (playerbot_itemshop.h). One it can wear is its own,
 		// on its way to its head.
