@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-24T06:35:48Z",
-  "statusMessage": "Serwer 2.3.0: Cor Draconis i szarfy w handlu i u botow, wyszukiwanie konkretnego przedmiotu, panele MT2009 PLUS.",
+  "publishedAt": "2026-09-24T10:07:04Z",
+  "statusMessage": "Serwer 2.3.1: boty kupuja kostiumy, fryzury, nakladki i pety w ItemShopie, nowy balans alchemii (bonusy na rasy zamiast odpornosci na zywioly).",
   "server": {
-    "version": "2.3.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.3.0.zip",
-    "sha256": "D05EB3F77A580C7FB74F1B032713EF4B4F61BC809A6548B43791EB94A11145CF",
-    "size": 49888583
+    "version": "2.3.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.3.1.zip",
+    "sha256": "7388116068215613D377AB63A82B1041649FD3012159F9E20ACEF98CF6F4B8D2",
+    "size": 49902212
   },
   "client": {
     "version": "2.0.8",
