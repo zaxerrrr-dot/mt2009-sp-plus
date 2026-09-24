@@ -60,3 +60,11 @@ nginx wystarczy zwykłe serwowanie plików).
 - usuwa skrypt statystyk Cloudflare z ich stron (ich token),
 - składa nasze strony z `pages/*.md` w tym samym wyglądzie,
 - przebudowuje indeks wyszukiwarki (`lunr-build.js`) razem z naszymi stronami.
+
+## Podgląd na VPS
+
+Przed wgraniem na hosting wiki jest pod `http://179.61.251.72/wiki/`:
+kontener `mt2009plus-wiki` (nginx, `--restart unless-stopped`) serwuje
+`/opt/metin2/dist/wiki` z konfiguracją `/opt/metin2/wiki-preview/nginx.conf`
+(z nagłówkiem `X-Robots-Tag: noindex`, żeby Google nie zapamiętał adresu
+z IP). Po `sh wiki/build.sh` zmiany widać od razu, bez restartu.
