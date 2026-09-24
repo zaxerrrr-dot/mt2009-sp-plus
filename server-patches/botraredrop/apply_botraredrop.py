@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """apply_botraredrop.py <engine game/src dir> -- Linux/VPS twin of
-Apply-BotRareDropPatch.ps1 (same replacements, same markers). Two steps,
+Apply-BotRareDropPatch.ps1 (same replacements, same markers). Three steps,
 each applied once: V1 lets a bot's kill roll the Cor Draconis and the sash
-(into its bag), V2 gives bots their own chances (Cor 5%, sash 3%). A file
+(into its bag), V2 gives bots their own chances (Cor 5%, sash 3%), V3 keeps
+a bot's drop off the ground when its bag is full. A file
 whose expected code is missing stops with an error, changing nothing.
 Line endings (CRLF/LF) are kept as they were."""
 import os
@@ -10,6 +11,7 @@ import sys
 
 MARK = "MT2009_PLUS_BOT_RARE_DROP_V1"
 MARK_V2 = "MT2009_PLUS_BOT_RARE_DROP_V2"
+MARK_V3 = "MT2009_PLUS_BOT_RARE_DROP_V3"
 # A bot's own chance, percent (operator, 24 Sep 2026); players keep theirs
 # (Cor Draconis: stone 50, boss 80; sash: boss 80).
 BOT_COR_CHANCE = 5
@@ -84,6 +86,35 @@ ITEM_MANAGER_V2 = [
      "\t\tconst int szarfaChance = pkKiller->GetDesc()->IsBot() ? %d : 80;\n" % BOT_SASH_CHANCE),
 ]
 
+# V3: CHARACTER::AutoGiveItem puts an item on the ground when the bag is
+# full, and a bot may not pick a Cor Draconis up again (char_item.cpp,
+# PickupItem): after a minute it was anybody's. A bot with no room gets
+# nothing instead.
+ITEM_MANAGER_V3 = [
+    ("Cor Draconis przy pelnym plecaku bota",
+     "\t\t\t\t\tif (pkKiller->GetDesc()->IsBot())\n"
+     "\t\t\t\t\t\tpkKiller->AutoGiveItem(cor);\n",
+     "\t\t\t\t\t// " + MARK_V3 + ": a full bag gets nothing, never the ground.\n"
+     "\t\t\t\t\tif (pkKiller->GetDesc()->IsBot())\n"
+     "\t\t\t\t\t{\n"
+     "\t\t\t\t\t\tif (pkKiller->GetEmptyInventoryEx(cor) != -1)\n"
+     "\t\t\t\t\t\t\tpkKiller->AutoGiveItem(cor);\n"
+     "\t\t\t\t\t\telse\n"
+     "\t\t\t\t\t\t\tM2_DESTROY_ITEM(cor);\n"
+     "\t\t\t\t\t}\n"),
+    ("szarfa przy pelnym plecaku bota",
+     "\t\t\t\tif (pkKiller->GetDesc()->IsBot())\n"
+     "\t\t\t\t\tpkKiller->AutoGiveItem(szarfa);\n",
+     "\t\t\t\t// " + MARK_V3 + ": a full bag gets nothing, never the ground.\n"
+     "\t\t\t\tif (pkKiller->GetDesc()->IsBot())\n"
+     "\t\t\t\t{\n"
+     "\t\t\t\t\tif (pkKiller->GetEmptyInventoryEx(szarfa) != -1)\n"
+     "\t\t\t\t\t\tpkKiller->AutoGiveItem(szarfa);\n"
+     "\t\t\t\t\telse\n"
+     "\t\t\t\t\t\tM2_DESTROY_ITEM(szarfa);\n"
+     "\t\t\t\t}\n"),
+]
+
 
 def patch(path, steps):
     """steps: [(marker, blocks), ...] -- each step is applied once, in order."""
@@ -113,7 +144,8 @@ def patch(path, steps):
 
 def main():
     src = sys.argv[1]
-    patch(os.path.join(src, "item_manager.cpp"), [(MARK, ITEM_MANAGER), (MARK_V2, ITEM_MANAGER_V2)])
+    patch(os.path.join(src, "item_manager.cpp"), [(MARK, ITEM_MANAGER), (MARK_V2, ITEM_MANAGER_V2),
+                                                     (MARK_V3, ITEM_MANAGER_V3)])
 
 
 if __name__ == "__main__":

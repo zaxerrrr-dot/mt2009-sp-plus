@@ -22,7 +22,9 @@ powstawał, więc boty nie miały czego wystawić: licznik
   `$botSashChance` w `Apply-BotRareDropPatch.ps1` (tylko na świeżym pliku,
   bo gotowy etap V2 nie jest nakładany drugi raz).
 - **Do plecaka, nie na ziemię:** przedmiot z zabójstwa bota trafia prosto do
-  jego plecaka (`AutoGiveItem`). Przy pełnym plecaku upada obok bota.
+  jego plecaka (`AutoGiveItem`). Przy pełnym plecaku przepada (V3) – nie
+  upada na ziemię, bo bot nie podniósłby Cora, a po minucie mógłby go
+  zabrać każdy.
 - **Blokada podnoszenia bez zmian:** `char_item.cpp` (`PickupItem`) dalej nie
   pozwala botowi podnieść Cor Draconis z ziemi, więc boty nie zabierają
   Corów, które wypadły graczom.
@@ -38,9 +40,10 @@ powstawał, więc boty nie miały czego wystawić: licznik
 - `apply_botraredrop.py` – Linux/VPS: `python3 apply_botraredrop.py
   linux-port/docker/game/src/server/game/src`, potem `docker compose build game`.
 
-Obie wersje robią te same podmiany w dwóch etapach, każdy z własnym markerem:
+Obie wersje robią te same podmiany w trzech etapach, każdy z własnym markerem:
 `MT2009_PLUS_BOT_RARE_DROP_V1` (odblokowanie, 4 podmiany) i
-`MT2009_PLUS_BOT_RARE_DROP_V2` (szanse bota, 2 podmiany). Nakładają tylko
+`MT2009_PLUS_BOT_RARE_DROP_V2` (szanse bota, 2 podmiany) i
+`MT2009_PLUS_BOT_RARE_DROP_V3` (pełny plecak bota, 2 podmiany). Nakładają tylko
 brakujący etap (drugie uruchomienie nic nie zmienia),
 zachowują końcówki linii (CRLF/LF) i nie zmieniają niczego, jeśli
 oczekiwanego kodu nie ma.

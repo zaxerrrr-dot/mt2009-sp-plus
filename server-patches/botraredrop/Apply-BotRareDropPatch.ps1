@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)][string]$SourceFile
 )
@@ -7,8 +7,9 @@ param(
 # (server-patches/botraredrop, README.md). Same replacements and markers as
 # apply_botraredrop.py (the Linux/VPS twin). Two steps, each applied once:
 # V1 lets a bot's kill roll both (into its bag), V2 gives bots their own
-# chances (Cor 5%, sash 3%). A file without the expected code throws and
-# nothing is written. CRLF/LF is kept as it was.
+# chances (Cor 5%, sash 3%), V3 keeps a bot's drop off the ground when its
+# bag is full. A file without the expected code throws and nothing is
+# written. CRLF/LF is kept as it was.
 
 $ErrorActionPreference = 'Stop'
 if (-not (Test-Path -LiteralPath $SourceFile -PathType Leaf)) {
@@ -17,6 +18,7 @@ if (-not (Test-Path -LiteralPath $SourceFile -PathType Leaf)) {
 
 $marker = 'MT2009_PLUS_BOT_RARE_DROP_V1'
 $markerV2 = 'MT2009_PLUS_BOT_RARE_DROP_V2'
+$markerV3 = 'MT2009_PLUS_BOT_RARE_DROP_V3'
 # A bot's own chance, percent (operator, 24 Sep 2026); players keep theirs
 # (Cor Draconis: stone 50, boss 80; sash: boss 80).
 $botCorChance = 5
@@ -96,8 +98,38 @@ $blocksV2 = @(
                  "`t`tconst int szarfaChance = pkKiller->GetDesc()->IsBot() ? $botSashChance : 80;") }
 )
 
+# V3: CHARACTER::AutoGiveItem puts an item on the ground when the bag is
+# full, and a bot may not pick a Cor Draconis up again (char_item.cpp,
+# PickupItem): after a minute it was anybody's. A bot with no room gets
+# nothing instead.
+$blocksV3 = @(
+    @{ Name = 'Cor Draconis przy pełnym plecaku bota'
+       Old = L @("`t`t`t`t`tif (pkKiller->GetDesc()->IsBot())",
+                 "`t`t`t`t`t`tpkKiller->AutoGiveItem(cor);")
+       New = L @("`t`t`t`t`t// ${markerV3}: a full bag gets nothing, never the ground.",
+                 "`t`t`t`t`tif (pkKiller->GetDesc()->IsBot())",
+                 "`t`t`t`t`t{",
+                 "`t`t`t`t`t`tif (pkKiller->GetEmptyInventoryEx(cor) != -1)",
+                 "`t`t`t`t`t`t`tpkKiller->AutoGiveItem(cor);",
+                 "`t`t`t`t`t`telse",
+                 "`t`t`t`t`t`t`tM2_DESTROY_ITEM(cor);",
+                 "`t`t`t`t`t}") },
+    @{ Name = 'szarfa przy pełnym plecaku bota'
+       Old = L @("`t`t`t`tif (pkKiller->GetDesc()->IsBot())",
+                 "`t`t`t`t`tpkKiller->AutoGiveItem(szarfa);")
+       New = L @("`t`t`t`t// ${markerV3}: a full bag gets nothing, never the ground.",
+                 "`t`t`t`tif (pkKiller->GetDesc()->IsBot())",
+                 "`t`t`t`t{",
+                 "`t`t`t`t`tif (pkKiller->GetEmptyInventoryEx(szarfa) != -1)",
+                 "`t`t`t`t`t`tpkKiller->AutoGiveItem(szarfa);",
+                 "`t`t`t`t`telse",
+                 "`t`t`t`t`t`tM2_DESTROY_ITEM(szarfa);",
+                 "`t`t`t`t}") }
+)
+
 $changed = $false
-foreach ($step in @(@{ Marker = $marker; Blocks = $blocks }, @{ Marker = $markerV2; Blocks = $blocksV2 })) {
+foreach ($step in @(@{ Marker = $marker; Blocks = $blocks }, @{ Marker = $markerV2; Blocks = $blocksV2 },
+                    @{ Marker = $markerV3; Blocks = $blocksV3 })) {
     if ($text.Contains($step.Marker)) { continue }
     foreach ($block in $step.Blocks) {
         $count = ([regex]::Matches($text, [regex]::Escape($block.Old))).Count
