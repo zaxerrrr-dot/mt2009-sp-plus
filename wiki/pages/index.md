@@ -4,12 +4,12 @@ category: MT2009 PLUS
 order: 0
 keywords: mt2009 plus, mod, boty, singleplayer
 ---
-**MT2009 PLUS** to serwer MT2009 uruchamiany u siebie na komputerze (Docker),
-z żywym światem botów i naszymi modyfikacjami. Wszystko, co opisuje reszta
-tej wiki (mapy, NPC, systemy, ekwipunek, gildie), obowiązuje także u nas –
-tutaj są opisane rzeczy, które MT2009 PLUS dodaje lub zmienia.
+**MT2009 PLUS** to serwer MT2009 uruchamiany u siebie na komputerze (Docker), z żywym światem botów i naszymi modyfikacjami. Mapy, NPC i systemy z pozostałej części wiki są dopasowane do naszych plików.
 
-## Strony MT2009 PLUS
+Nasze strony dzielą się na dwie części:
+
+- **[Gra na MT2009 PLUS](/mt2009plus/gra/)** – co jest w grze: kostiumy, wierzchowce, pety, alchemia, Auto Łowy, ItemShop, zmiany w rozgrywce, gra z botami.
+- **[Serwer i administracja](/mt2009plus/serwer/)** – jak postawić i prowadzić serwer: instalacja, launcher, panele, konta GM i komendy, nadawanie SM, stawki i eventy, boty, COOP, kopie świata.
 
 {{LISTA_STRON}}
 

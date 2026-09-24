@@ -18,6 +18,9 @@ import edits
 
 PREFIX = "/wiki"
 SITE = "MT2009 PLUS Wiki"
+# Our pages' two sections (front matter "group:"): playing vs. running the server.
+GROUPS = [("gra", "Gra na MT2009 PLUS", "fa-gamepad"),
+          ("serwer", "Serwer i administracja", "fa-server")]
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 try:
@@ -119,12 +122,17 @@ def main():
     entries = []
     for _, slug, meta, body in ours:
         title = meta.get("title", slug)
-        content = markdown.markdown(body, extensions=["tables", "fenced_code", "toc", "sane_lists"])
+        # Links in our pages are written from the site root, like MT2009's.
+        content = rewrite_html(markdown.markdown(body, extensions=["tables", "fenced_code", "toc", "sane_lists"]))
         url = "mt2009plus/" if slug == "index" else "mt2009plus/%s/" % slug
         entries.append((url, title, meta, content))
-    sidebar = ('<div class="nav-section"> <h3 id="mt2009-plus"> <i class="fas fa-star"></i> MT2009 PLUS </h3> <ul>' +
-               "".join('<li> <a href="%s/%s" data-astro-prefetch="false"> <i class="fas fa-file-lines page-icon"></i> %s </a> </li>'
-                       % (PREFIX, u, html.escape(tt)) for u, tt, _, _ in entries) + '</ul> </div> ')
+    def in_group(g):
+        return [(u, tt) for u, tt, m, _ in entries if u != "mt2009plus/" and m.get("group") == g]
+    sidebar = "".join(
+        '<div class="nav-section"> <h3 id="mt2009plus-%s"> <i class="fas %s"></i> %s </h3> <ul>' % (g, icon, name) +
+        "".join('<li> <a href="%s/%s" data-astro-prefetch="false"> <i class="fas fa-file-lines page-icon"></i> %s </a> </li>'
+                % (PREFIX, u, html.escape(tt)) for u, tt in in_group(g)) + '</ul> </div> '
+        for g, name, icon in GROUPS)
     shell = None
     corrected = {}
     pages_dir = os.path.join(mirror, "pages")
@@ -151,9 +159,14 @@ def main():
     os.makedirs(os.path.join(site, "index"), exist_ok=True)
     shutil.copyfile(os.path.join(site, "index.html"), os.path.join(site, "index", "index.html"))
 
-    listing = "".join('<li><a href="%s/%s">%s</a></li>' % (PREFIX, u, html.escape(t)) for u, t, _, _ in entries if u != "mt2009plus/")
+    def listing(g):
+        return "<ul>%s</ul>" % "".join('<li><a href="%s/%s">%s</a></li>' % (PREFIX, u, html.escape(tt)) for u, tt in in_group(g))
+    lists = {"{{LISTA_%s}}" % g.upper(): listing(g) for g, _, _ in GROUPS}
+    lists["{{LISTA_STRON}}"] = "".join("<h3>%s</h3>%s" % (name, listing(g)) for g, name, _ in GROUPS)
+
     for url, title, meta, content in entries:
-        content = content.replace("{{LISTA_STRON}}", "<ul>%s</ul>" % listing)
+        for k, v in lists.items():
+            content = content.replace("<p>%s</p>" % k, v).replace(k, v)
         t = re.sub(r"<main([^>]*)>.*</main>",
                    lambda m: '<main%s><article class="wiki-content mt2009plus-page"><h1>%s</h1>%s</article></main>'
                    % (m.group(1), html.escape(title), content), shell, count=1, flags=re.S)

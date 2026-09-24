@@ -15,13 +15,15 @@ MT2009 PLUS.
    ```
    ---
    title: Boty w MT2009 PLUS
-   category: MT2009 PLUS
+   group: gra
+   category: Gra na MT2009 PLUS
    order: 20
    keywords: boty, playerboty, sklepy
    ---
    ```
 
-   `order` ustala kolejność w menu (mniejsza liczba = wyżej),
+   `group` to `gra` (rozgrywka) albo `serwer` (administracja) – decyduje o
+   sekcji w menu; `order` ustala kolejność w menu (mniejsza liczba = wyżej),
    `keywords` pomagają wyszukiwarce.
 3. Treść pisz w Markdown: `## Nagłówek`, `**pogrubienie**`, listy `- `,
    tabele `| a | b |`, linki `[tekst](adres)`, kod w `` `…` ``.

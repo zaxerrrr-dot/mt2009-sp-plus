@@ -1,8 +1,9 @@
 ---
 title: Alchemia MT2009 PLUS
-category: MT2009 PLUS
-order: 30
 keywords: alchemia, kamienie smoka, cor draconis, dragon soul, diament, rubin, jadeit, szafir, granat, onyks, ametyst
+group: gra
+category: Gra na MT2009 PLUS
+order: 50
 ---
 ## Bez misji na 30 poziom
 

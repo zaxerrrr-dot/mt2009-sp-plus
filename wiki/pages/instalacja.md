@@ -1,8 +1,9 @@
 ---
 title: Instalacja (Windows)
-category: MT2009 PLUS
-order: 10
 keywords: instalacja, docker, launcher, windows, grać
+group: serwer
+category: Serwer i administracja
+order: 110
 ---
 ## Czego potrzebujesz
 

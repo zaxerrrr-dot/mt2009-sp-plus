@@ -1,8 +1,9 @@
 ---
 title: Poziom trudności świata
-category: MT2009 PLUS
-order: 20
 keywords: poziom trudności, biolog, stajenny, koń, księgi, czekanie, easy, medium, hard
+group: gra
+category: Gra na MT2009 PLUS
+order: 80
 ---
 Poziom trudności ustawiasz w launcherze (przycisk **POZIOM TRUDNOŚCI**) albo w panelu WWW. Decyduje on, ile gracz czeka u Biologa, u Stajennego i między księgami umiejętności. Zmiana działa od następnego startu serwera. Jeśli postać już czeka, a ustawisz krótszy czas, czekanie od razu się skraca.
 
