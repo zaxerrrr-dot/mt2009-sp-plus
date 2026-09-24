@@ -17,6 +17,18 @@ every version here.
 
 ---
 
+## Klient 2.0.11 — 2026-09-25 — Auto Łowy i poprawki ekwipunku
+
+- Pełna, sprawdzona paczka klienta bez funkcji Target Drop i wyszukiwarki
+  sklepów.
+- Zawiera nowe Auto Łowy pod klawiszem **K**.
+- Cor Draconis oraz wszystkie szarfy można normalnie przenosić, handlować
+  nimi i wystawiać je w sklepach.
+- Przycisk alchemii nie nachodzi już na slot naszyjnika.
+- Zawiera też COOP i wszystkie poprawki z klienta 2.0.10.
+
+---
+
 ## 2.4.0 — 2026-09-24 — Serwer na bazie Tieru 2.2.9, Cory botów nie leżą na ziemi
 
 Serwer 2.4.0; klient zostaje 2.0.10. Zaktualizuj serwer w launcherze

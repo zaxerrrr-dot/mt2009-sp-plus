@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-24T16:05:27Z",
-  "statusMessage": "Serwer 2.4.0: baza Tieru 2.2.9 (Metiny z konia bojowego, Wieza Demonow, szepty do botow, zmiana kanalow) i Cory botow nie leza juz na ziemi.",
+  "publishedAt": "2026-09-25T00:00:00Z",
+  "statusMessage": "Klient 2.0.11: Auto Lowy, poprawione Cory i szarfy oraz przycisk alchemii. Funkcje Target Drop i wyszukiwarki sklepow nie sa w tej wersji klienta.",
   "server": {
     "version": "2.4.0",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.4.0.zip",
@@ -10,9 +10,9 @@
     "size": 55308744
   },
   "client": {
-    "version": "2.0.10",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.10.zip",
-    "sha256": "4ECF80842724DAE7981B64C3E6AC13177D81FD3F4F437B32F7A0362034FB4BDB",
-    "size": 6228004
+    "version": "2.0.11",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.11.zip",
+    "sha256": "36618E20323B4B7EB8241F5AAA4EFDF09102ADDA2A9B07F57C03E7A2F4D0EAE9",
+    "size": 48498400
   }
 }
