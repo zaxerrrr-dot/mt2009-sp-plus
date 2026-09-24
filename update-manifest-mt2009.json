@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-24T10:07:04Z",
-  "statusMessage": "Serwer 2.3.1: boty kupuja kostiumy, fryzury, nakladki i pety w ItemShopie, nowy balans alchemii (bonusy na rasy zamiast odpornosci na zywioly).",
+  "publishedAt": "2026-09-24T11:31:43Z",
+  "statusMessage": "Serwer 2.3.2 i klient 2.0.9: COOP dziala - graj ze znajomymi na swoim swiecie (okno COOP w launcherze, Dolacz.bat w kliencie).",
   "server": {
-    "version": "2.3.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.3.1.zip",
-    "sha256": "7388116068215613D377AB63A82B1041649FD3012159F9E20ACEF98CF6F4B8D2",
-    "size": 49902212
+    "version": "2.3.2",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.3.2.zip",
+    "sha256": "43D0514FDABE0FFDFA37603282FA186E25C39121FBAC5ACBC1BB771FD3BBE59E",
+    "size": 49904140
   },
   "client": {
-    "version": "2.0.8",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.8.zip",
-    "sha256": "664C37DCE58DC9B4B5883C21C527E77D13E976BAA1BADF73278D16B6BC73BB23",
-    "size": 813759
+    "version": "2.0.9",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.9.zip",
+    "sha256": "732549F16759EC1C9E725799A4F7F5831BD42E9221C9845A816C4F0CC43DC11A",
+    "size": 819280
   }
 }

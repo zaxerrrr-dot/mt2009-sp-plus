@@ -17,6 +17,39 @@ every version here.
 
 ---
 
+## 2.3.2 — 2026-09-24 — COOP działa: graj ze znajomymi
+
+Serwer 2.3.2 i klient 2.0.9. **Zaktualizuj oba** – w launcherze przy starcie
+albo przyciskami **SPRAWDŹ AKTUALIZACJE** i **AKTUALIZUJ KLIENTA**. Zawiera
+wszystko z 2.3.1.
+
+### COOP – gra ze znajomymi przez internet
+
+- COOP działa z klientem MT2009 Plus: host udostępnia swój świat w oknie
+  **COOP** w launcherze, a znajomi grają na nim ze swojego komputera.
+- **Host:** okno COOP → *Zabezpiecz konta* → *Dodaj znajomego* → *Hostuj*.
+  Launcher otwiera porty gry, ustawia router (UPnP) albo używa VPN
+  (Radmin VPN, Tailscale, ZeroTier, Hamachi), dodaje regułę zapory i daje
+  kod zaproszenia dla każdego znajomego.
+- **Znajomy:** potrzebuje tylko klienta 2.0.9. Uruchamia `Dolacz.bat`
+  w folderze klienta albo wkleja kod w oknie COOP launchera. Na liście
+  serwerów pojawia się świat hosta jako **„Online: …”**, obok localhosta.
+- Przejście na mapy z innego rdzenia działa u znajomych: podczas
+  hostowania serwer podaje klientom adres, pod którym host jest dostępny,
+  a po **Zakończ** wraca do adresu lokalnego.
+- Hostując przez internet (bez VPN), host też łączy się przez swój adres
+  publiczny. Jeśli u hosta zmiana mapy zawiesza się na ładowaniu, jego
+  router tego nie obsługuje – wtedy najprościej hostować przez Radmin VPN
+  albo Tailscale.
+
+## Klient 2.0.9 — 2026-09-24 — COOP
+
+- Klient czyta `coop.cfg` z folderu klienta i dodaje świat znajomego do
+  listy serwerów jako „Online: …”, za localhostem. Bez tego pliku lista
+  wygląda jak dotąd, a uszkodzony plik jest pomijany.
+- Nowy `Dolacz.bat`: wklej kod zaproszenia od hosta, a skrypt zapisze
+  `coop.cfg` i pokaże login i hasło do świata znajomego.
+
 ## 2.3.1 — 2026-09-24 — Boty w kostiumach z ItemShopu, nowy balans alchemii
 
 Boty ubierają się w ItemShopie: kostiumy, fryzury, nakładki na broń i pety.
