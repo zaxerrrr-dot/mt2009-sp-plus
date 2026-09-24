@@ -581,11 +581,17 @@ function Update-Client {
         return
     }
     $clientRoot = [string]$Config.clientRoot
-    if (-not $clientRoot) {
-        throw 'Nie ustawiono folderu klienta. Uruchom launcher z akcją Configure.'
-    }
-    if (-not (Test-Path -LiteralPath $clientRoot -PathType Container)) {
-        throw "Nie znaleziono folderu klienta: $clientRoot"
+    # A folder that was moved or renamed since it was chosen is asked for
+    # again rather than ending the update (the GUI asks before it gets here).
+    if (-not $clientRoot -or -not (Test-Path -LiteralPath $clientRoot -PathType Container)) {
+        if (-not (Request-ClientExecutable -Missing $clientRoot)) {
+            if (-not $clientRoot) {
+                throw 'Nie ustawiono folderu klienta. Wskaż klienta przyciskiem WYBIERZ KLIENTA w launcherze albo akcją Configure.'
+            }
+            throw "Nie znaleziono folderu klienta: $clientRoot. Wskaż klienta przyciskiem WYBIERZ KLIENTA w launcherze albo akcją Configure."
+        }
+        $Config = Get-Config
+        $clientRoot = [string]$Config.clientRoot
     }
     Assert-ClientNotRunning -Config $Config
     if (-not (Confirm-Operation "Zaktualizować klienta w $clientRoot?")) {
@@ -595,6 +601,38 @@ function Update-Client {
     $result = Invoke-M2PackageUpdate -Component $component -TargetRoot $clientRoot -BackupRoot (Join-Path $serverRoot 'backups\client')
     Save-State -ServerVersion '' -ClientVersion $result.Version
     Write-Host "Klient został zaktualizowany. Plików: $($result.Files), kopia: $($result.Backup)" -ForegroundColor Green
+}
+
+function Request-ClientExecutable {
+    # Asks in the console where metin2client.exe is now, saves it and says
+    # whether a client folder is set. Never with -Yes: nobody is there to
+    # answer, and the GUI asks with a file dialog before it starts the action.
+    param([AllowEmptyString()][string]$Missing = '')
+    if ($Yes) { return $false }
+    if ($Missing) {
+        Write-Host "Nie znaleziono folderu klienta: $Missing" -ForegroundColor Yellow
+    }
+    else {
+        Write-Host 'Nie wskazano jeszcze klienta gry.' -ForegroundColor Yellow
+    }
+    while ($true) {
+        $answer = (Read-Host 'Podaj pełną ścieżkę do metin2client.exe albo jego folderu (Enter = anuluj)').Trim().Trim('"')
+        if (-not $answer) { return $false }
+        $candidate = $answer
+        if (Test-Path -LiteralPath $candidate -PathType Container) {
+            $candidate = Join-Path $candidate 'metin2client.exe'
+        }
+        if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) {
+            Write-Host "Nie ma takiego pliku: $candidate" -ForegroundColor Yellow
+            continue
+        }
+        $config = Get-Config
+        $config.clientExecutable = [IO.Path]::GetFullPath($candidate)
+        $config.clientRoot = [IO.Path]::GetFullPath((Split-Path -Parent $candidate))
+        Save-M2LauncherConfig -Config $config -ConfigPath $configPath
+        Write-Host "Zapisano klienta: $($config.clientExecutable)" -ForegroundColor Green
+        return $true
+    }
 }
 
 function Configure-Launcher {

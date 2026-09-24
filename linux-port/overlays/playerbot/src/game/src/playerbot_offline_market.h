@@ -307,11 +307,20 @@ namespace {
             ++s_mapPlayerBotStallsByMap[shop->GetSpawn().map];
             if (IsPlayerBotM2Map(shop->GetSpawn().map)) ++s_iPlayerBotStallsInM2;
             const bool botShop = CPlayerBotManager::instance().IsRegisteredBotPID(shop->GetOwnerPID());
+            bool rareKinds[PLAYERBOT_RARE_GOODS_KINDS] = { false };
             for (const auto& [id, item] : shop->GetItems()) {
                 if (!item) continue;
                 AddPlayerBotMarketSupply(item->GetVnum(), item->GetInfo().count, shop->GetSpawn().map);
                 if (botShop) NotePlayerBotJunkWeaponOnCounter(item->GetVnum(), item->GetInfo().count);
+                rareKinds[GetPlayerBotRareGoodsKind(item->GetVnum())] = true;
                 ++lines;
+            }
+            // The bots' counters, and which of them carry a Cor Draconis or a
+            // sash (IsPlayerBotRareGoodsShopQuotaFull).
+            if (botShop) {
+                ++s_iPlayerBotRareGoodsBotShops;
+                for (int kind = PLAYERBOT_RARE_GOODS_NONE + 1; kind < PLAYERBOT_RARE_GOODS_KINDS; ++kind)
+                    if (rareKinds[kind]) NotePlayerBotShopWithRareGoods(kind);
             }
         }
     }

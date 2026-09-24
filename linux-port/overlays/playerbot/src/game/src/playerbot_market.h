@@ -989,6 +989,7 @@ namespace
 		s_mapMarketLedger.clear();
 		s_mapMarketLocalSupply.clear();
 		s_iPlayerBotJunkWeaponsOnCounters = 0;
+		ResetPlayerBotRareGoodsCensus();
 		RefreshPlayerBotWorldYang(dwNow);
 
 		DWORD stalls = 0, lines = 0, demandBots = 0;
@@ -1088,6 +1089,14 @@ namespace
 				s_auMarketDecisions[PLAYERBOT_LIST_FLOOR], top.c_str());
 		for (int d = 0; d < PLAYERBOT_LIST_DECISIONS; ++d)
 			s_auMarketDecisions[d] = 0;
+		sys_log(0, "PLAYERBOT_MARKET: rare goods bot_shops=%d cor=%d/%d sash=%d/%d cor_price=%u sash_price=%u",
+				s_iPlayerBotRareGoodsBotShops,
+				s_aiPlayerBotShopsWithRareGoods[PLAYERBOT_RARE_GOODS_COR],
+				GetPlayerBotRareGoodsShopQuota(PLAYERBOT_RARE_GOODS_COR),
+				s_aiPlayerBotShopsWithRareGoods[PLAYERBOT_RARE_GOODS_SASH],
+				GetPlayerBotRareGoodsShopQuota(PLAYERBOT_RARE_GOODS_SASH),
+				ScalePlayerBotIwakuraPrice(PLAYERBOT_COR_DRACONIS_PRICE),
+				ScalePlayerBotIwakuraPrice(PLAYERBOT_SASH_PRICE));
 	}
 }
 

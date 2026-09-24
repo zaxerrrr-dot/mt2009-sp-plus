@@ -39,6 +39,12 @@ Jak wydać nową wersję: [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md).
 ## Co zmienia ta paczka
 
 **Przedmioty i systemy**
+- Auto Łowy pod klawiszem **K**: walka, skille, mikstury, przedmioty
+  czasowe, wstawanie oraz filtrowane podnoszenie własnego łupu.
+- Cor Draconis i wszystkie szarfy można przekazywać graczom oraz wystawiać
+  w sklepach zwykłych i offline.
+- Wadliwa rodzina Skrzydeł Władcy Śmierci 85101–85104 nie wypada już z
+  Metinów, bossów ani szkatułek.
 - Kostiumy, fryzury i nakładki na broń Gameforge 26.1.11 (ok. 2200 przedmiotów).
 - Mounty z pieczęci (kostium wierzchowca, ok. 240 pieczęci, 129 modeli) z
   poprawioną prędkością ruchu; deski/chmury/łodzie pozwalają używać umiejętności.
@@ -56,11 +62,22 @@ Jak wydać nową wersję: [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md).
   filtrowane pod klasę i płeć postaci, z której otwarto sklep.
 - Kosz na śmieci, podgląd dropu potworów, przełącznik eventu wielkanocnego
   w panelu.
+- Wyszukiwarka sklepów pozwala kliknąć konkretny przedmiot i znaleźć tylko
+  sklepy offline oraz stragany botów oferujące dokładnie ten vnum/socket.
 
 **Boty**
 - Płynniejsza praca serwera przy wielu botach (budżet czasu na turę).
 - Boty trzymają zapas mikstur 27101/27104 zamiast wystawiać je na straganach.
 - „Emerytura” botów z panelu (wymiana starych botów na nowe).
+- Cor Draconis i szarfy: boty zdobywają je z metinów i bossów z własnymi,
+  niższymi szansami (Cor 5%, szarfa 3%; gracze bez zmian) – prosto do plecaka;
+  Cora z ziemi bot nie podniesie, więc nie zabiera Corów graczy. Nie otwierają
+  Corów i nie zakładają ani nie łączą szarf. Wystawiają je na swoich sklepach offline dla
+  graczy (Cor 500 000, szarfa 700 000 za sztukę przy kursie yang 100%; cena
+  rośnie z inflacją i szybką sprzedażą, a spada o 10% co 2 h bez sprzedaży,
+  najwyżej o 50%). Każdy rodzaj może być naraz w najwyżej 20% sklepów botów,
+  do 3 pozycji na sklep. Co nie sprzeda się przez 12 h, bot zdejmuje i sprzedaje
+  u handlarki.
 
 **Inne**
 - Serwer wpuszcza klienta bez względu na jego wersję (brak blokady wersji).

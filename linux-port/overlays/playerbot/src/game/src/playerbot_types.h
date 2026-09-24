@@ -5429,6 +5429,102 @@ namespace
 		return false;
 	}
 
+	// MT2009 Plus: Cor Draconis and sashes are players' goods. A bot picks
+	// them up, never opens a Cor Draconis and never wears or combines a sash;
+	// it puts them on its offline counter for players to buy, and a line that
+	// has stood through the whole unsold markdown comes home and goes to the
+	// merchant. Only a share of the bots' counters carries each kind at once
+	// (PLAYERBOT_RARE_GOODS_SHOP_PERCENT_*), so the market is not flooded.
+	enum
+	{
+		PLAYERBOT_RARE_GOODS_NONE = 0,
+		PLAYERBOT_RARE_GOODS_COR = 1,
+		PLAYERBOT_RARE_GOODS_SASH = 2,
+		PLAYERBOT_RARE_GOODS_KINDS = 3
+	};
+	// Every "Cor Draconis" of the item table; not the Cor Draconis chest
+	// (83014) nor the recipe (30650).
+	const DWORD PLAYERBOT_COR_DRACONIS_VNUMS[] = {
+		50252, 50255, 50256, 50257, 50258, 50259, 50260,
+		51501, 51502, 51503, 51504, 51505, 51506, 51507, 51508, 51509, 51510,
+		51541, 51548, 51549, 51562, 51569,
+		51576, 51583, 51590, 51597, 51604, 51611, 51618, 51625, 51632,
+		76040
+	};
+	// The asking price of one unit at a yang rate of 100%, before the market
+	// moves it: ScalePlayerBotIwakuraPrice (yang rate and inflation), the sale
+	// memory and fast sales raise it, the unsold markdown lowers it.
+	const DWORD PLAYERBOT_COR_DRACONIS_PRICE = 500000;
+	const DWORD PLAYERBOT_SASH_PRICE = 700000;
+	// The share of the bots' offline counters that may carry the kind at once,
+	// in percent (never fewer than one counter). A counter that already has a
+	// line of it may add more, up to PLAYERBOT_RARE_GOODS_LINES_PER_SHOP.
+	const int PLAYERBOT_RARE_GOODS_SHOP_PERCENT_COR = 20;
+	const int PLAYERBOT_RARE_GOODS_SHOP_PERCENT_SASH = 20;
+	const int PLAYERBOT_RARE_GOODS_LINES_PER_SHOP = 3;
+	// Where it ranks among a counter's goods: under a level-30 weapon (2000),
+	// over a big bonus roll (1500).
+	const int PLAYERBOT_SHOP_RARE_GOODS_SCORE = 1700;
+	// A line nobody bought through the whole offline markdown
+	// (PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL in steps of
+	// PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT, one per
+	// PLAYERBOT_OFFLINE_UNSOLD_STEP_MS) and one step more comes home, and the
+	// kind goes to the merchant from that bag for
+	// PLAYERBOT_RARE_GOODS_MERCHANT_HOLD_MS rather than back on the counter.
+	const DWORD PLAYERBOT_RARE_GOODS_MERCHANT_AFTER_MS =
+			(DWORD)(PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL / PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT + 1) *
+			PLAYERBOT_OFFLINE_UNSOLD_STEP_MS;
+	const DWORD PLAYERBOT_RARE_GOODS_MERCHANT_HOLD_MS = 24 * 60 * 60 * 1000;
+
+	bool IsPlayerBotCorDraconisVnum(DWORD vnum)
+	{
+		for (size_t i = 0; i < sizeof(PLAYERBOT_COR_DRACONIS_VNUMS) / sizeof(PLAYERBOT_COR_DRACONIS_VNUMS[0]); ++i)
+			if (PLAYERBOT_COR_DRACONIS_VNUMS[i] == vnum)
+				return true;
+		return false;
+	}
+
+	// The sashes of the item table: four grades each of five classic kinds
+	// (85001..85024 less the unused 85009, 85010, 85019, 85020), Death Ruler
+	// (85101..85104) and the Herzband (86061..86064).  Death Ruler no longer
+	// drops, but copies already owned remain ordinary trade goods.
+	bool IsPlayerBotSashVnum(DWORD vnum)
+	{
+		if (vnum >= 86061 && vnum <= 86064)
+			return true;
+		if (vnum >= 85101 && vnum <= 85104)
+			return true;
+		if (vnum < 85001 || vnum > 85024)
+			return false;
+		const DWORD grade = vnum % 10;
+		return grade != 9 && grade != 0;
+	}
+
+	int GetPlayerBotRareGoodsKind(DWORD vnum)
+	{
+		if (IsPlayerBotCorDraconisVnum(vnum))
+			return PLAYERBOT_RARE_GOODS_COR;
+		if (IsPlayerBotSashVnum(vnum))
+			return PLAYERBOT_RARE_GOODS_SASH;
+		return PLAYERBOT_RARE_GOODS_NONE;
+	}
+
+	DWORD GetPlayerBotRareGoodsBasePrice(DWORD vnum)
+	{
+		switch (GetPlayerBotRareGoodsKind(vnum))
+		{
+			case PLAYERBOT_RARE_GOODS_COR: return PLAYERBOT_COR_DRACONIS_PRICE;
+			case PLAYERBOT_RARE_GOODS_SASH: return PLAYERBOT_SASH_PRICE;
+			default: return 0;
+		}
+	}
+
+	int GetPlayerBotRareGoodsShopPercent(int kind)
+	{
+		return kind == PLAYERBOT_RARE_GOODS_COR ? PLAYERBOT_RARE_GOODS_SHOP_PERCENT_COR
+				: kind == PLAYERBOT_RARE_GOODS_SASH ? PLAYERBOT_RARE_GOODS_SHOP_PERCENT_SASH : 0;
+	}
+
 	// A bot that has been AFK and was struck puts the next stop off this long.
 	const DWORD PLAYERBOT_MOOD_AFK_INTERRUPTED_RETRY = 5 * 60 * 1000;
 	// Nor does it leave its own drop lying on the ground to go AFK (Iwakura's

@@ -173,6 +173,9 @@ namespace
 		// Zbroja Twarzy Ducha+3 on a floor (Tieru, 15 September).
 		if (IsPlayerBotPickupGoods(item))
 			return false;
+		// Nor a Cor Draconis or a sash: players' goods for the counter.
+		if (GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
+			return false;
 		const long long unit = (long long)GetPlayerBotNpcSellUnitPrice(item);
 		if (unit <= 0 || unit * (long long)item->GetCount() >= PLAYERBOT_LOOT_CHOOSY_MAX_VALUE)
 			return false;
@@ -221,7 +224,8 @@ namespace
 		if (!ch || !item || !item->GetProto())
 			return false;
 		if (item->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM || item->GetType() == ITEM_SKILLBOOK ||
-				item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM || IsPlayerBotPickupGoods(item))
+				item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM || IsPlayerBotPickupGoods(item) ||
+				GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
 			return true;
 		return PlayerBotLootMergesIntoStack(ch, item);
 	}

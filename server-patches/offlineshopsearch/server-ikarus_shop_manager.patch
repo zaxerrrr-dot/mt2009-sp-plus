@@ -1,0 +1,63 @@
+--- a/game/src/ikarus_shop_manager.cpp	2026-09-22 16:30:23.477928511 +0200
++++ b/game/src/ikarus_shop_manager.cpp	2026-09-22 16:30:23.479763900 +0200
+@@ -3019,7 +3019,8 @@
+ 	// entity's VID and its position; a keeper is an entity like any other.
+ 	template <class FILTERS>
+ 	static void PlayerBotSearchStalls(LPCHARACTER ch, DWORD category, const FILTERS& filters,
+-			std::vector<TSubPacketGCShopSearchItemShop>& foundShops)
++			std::vector<TSubPacketGCShopSearchItemShop>& foundShops,
++			DWORD selectedVnum = 0, int selectedSocket0 = 0)
+ 	{
+ 		const CHARACTER_MANAGER::NAME_MAP& pcs = CHARACTER_MANAGER::instance().GetPCMap();
+ 		for (CHARACTER_MANAGER::NAME_MAP::const_iterator it = pcs.begin();
+@@ -3031,7 +3032,9 @@
+ 					ch->DistanceTo(keeper->GetX(), keeper->GetY()) > 7500)
+ 				continue;
+ 			CPlayerBotStallView view(keeper);
+-			if (!PlayerBotMatchShopCategory(category, &view, filters))
++			// shop search: one item picked in the grid -> only that item
++			if (selectedVnum != 0 ? !view.HasItem(selectedVnum, selectedSocket0)
++					: !PlayerBotMatchShopCategory(category, &view, filters))
+ 				continue;
+ 			TSubPacketGCShopSearchItemShop found{};
+ 			found.shopVid = keeper->GetVID();
+@@ -3076,6 +3079,20 @@
+ 		if (itemVnum >= SHOP_SEARCH_CATEGORY_MAX * SHOP_CATEGORY_MAX_SUB)
+ 			return false;
+ 
++		// shop search: one item picked in the grid. The client sends the
++		// category in itemVnum (as before) and the picked item in socket0
++		// as vnum * 1000 + socket0 of that item; 0 = whole category, so an
++		// old client searches exactly as it did.
++		DWORD selectedVnum = 0;
++		int selectedSocket0 = 0;
++		if (socket0 > 0)
++		{
++			selectedVnum = static_cast<DWORD>(socket0 / 1000);
++			selectedSocket0 = socket0 % 1000;
++			if (!ITEM_MANAGER::instance().GetTable(selectedVnum))
++				return false;
++		}
++
+ 		std::vector<TSubPacketGCShopSearchItemShop> foundShops{};
+ 		for (auto it : m_mapShops)
+ 		{
+@@ -3098,7 +3115,8 @@
+ 				if (ch->DistanceTo(pos.x, pos.y) > 7500)
+ 					continue;
+ 
+-				if (!SearchItemsByCategory(itemVnum, shop))
++				if (selectedVnum != 0 ? !shop->HasItem(selectedVnum, selectedSocket0)
++						: !SearchItemsByCategory(itemVnum, shop))
+ 				{
+ 					continue;
+ 				}
+@@ -3127,7 +3145,7 @@
+ 		if (foundShops.size() < 400)
+ 		{
+ 			const size_t offlineShops = foundShops.size();
+-			PlayerBotSearchStalls(ch, itemVnum, m_shopSearchFilters, foundShops);
++			PlayerBotSearchStalls(ch, itemVnum, m_shopSearchFilters, foundShops, selectedVnum, selectedSocket0);
+ 			if (foundShops.size() > offlineShops)
+ 				ch->ChatPacket(CHAT_TYPE_INFO, "Stragany botow z tym towarem: %d - kazdy oznaczony fajerwerkiem.",
+ 						(int)(foundShops.size() - offlineShops));

@@ -17,6 +17,65 @@ every version here.
 
 ---
 
+## 2.3.0 — 2026-09-24
+
+Cor Draconis i szarfy w handlu i na sklepach botów, wyszukiwanie konkretnego
+przedmiotu, nowy wygląd paneli; zawiera wszystko z 2.2.6. Pierwszy start po
+aktualizacji kompiluje serwer od nowa, więc trwa dłużej niż zwykle.
+
+### Cor Draconis i szarfy
+
+- Cor Draconis i wszystkie szarfy można teraz dać innemu graczowi w handlu
+  oraz wystawić w zwykłym sklepie i w sklepie offline.
+- Boty też zdobywają je z Metinów i bossów, z własnymi, niższymi szansami:
+  Cor Draconis 5%, szarfa 3%. Szanse graczy się nie zmieniają. Zdobyty
+  przedmiot trafia prosto do plecaka bota, a przy pełnym plecaku przepada,
+  więc nic nie leży na ziemi.
+- Bot nigdy nie podnosi Cora z ziemi, więc nie zabiera Corów graczy.
+- Boty nie otwierają Corów i nie zakładają ani nie łączą szarf, tylko
+  sprzedają je graczom w swoich sklepach offline. Cena wyjściowa za sztukę:
+  Cor 500 000 yang, szarfa 700 000 yang. Rośnie z inflacją i przy szybkiej
+  sprzedaży, a spada o 10% co 2 godziny bez sprzedaży (najwyżej o połowę).
+- Każdy rodzaj pojawia się naraz w najwyżej 20% sklepów botów, do 3 pozycji
+  w sklepie. Czego bot nie sprzeda przez 12 godzin, to zdejmuje ze sklepu
+  i oddaje handlarce.
+- Wadliwe Skrzydła Władcy Śmierci (85101–85104) nie wypadają już z Metinów,
+  bossów ani szkatułek.
+
+### Wyszukiwarka sklepów
+
+- Po kliknięciu konkretnego przedmiotu wyszukiwarka pokazuje tylko sklepy
+  offline i stragany botów, które mają dokładnie ten przedmiot. Bez
+  zaznaczenia szuka całej kategorii, jak dotąd. Wymaga klienta 2.0.8.
+
+### Panele i launcher
+
+- Panel admina (7788) i Seban Panel (7790) noszą nazwę MT2009 PLUS, mają
+  odnośniki do Discorda (metin2sp.pl/discord) i strony metin2sp.pl.
+  Changelog w Seban Panelu pochodzi z repozytorium MT2009 PLUS.
+- Launcher sam pyta o folder klienta, jeśli klient został przeniesiony,
+  zamiast przerywać aktualizację.
+- Okno logów i pomoc kierują na Discord MT2009 PLUS. Dziennik zmian
+  w launcherze nie pokazuje już starej listy z pamięci podręcznej.
+
+### Dla wydających
+
+- Zmiany silnika MT2009 PLUS są nakładane raz, przy wydaniu
+  (`tools/port/Apply-MT2009PlusEngine.ps1`), tak jak robi to Tieru. Gotowe
+  pliki silnika przychodzą w paczce, a `start-server.ps1` niczego już nie
+  łata. Packager odmawia zbudowania paczki bez tych zmian.
+
+## Klient 2.0.8 — 2026-09-24
+
+- Paczka zawiera Auto Łowy otwierane klawiszem `K`, wraz z wyborem celów i
+  ustawieniami podnoszenia przedmiotów.
+- Wyszukiwarka sklepów pozwala zaznaczyć konkretny przedmiot i znaleźć tylko
+  sklepy offline oraz stragany botów, które go oferują.
+- Usunięta testowa pozycja „mt2009 VPS” z listy serwerów. Pozostaje
+  „mt2009 localhost” z kanałami CH1 i CH2.
+- Usunięte tymczasowe logi szarfy, które po częściowym usunięciu powodowały
+  błąd składni i zamknięcie klienta podczas wchodzenia do gry.
+
 ## Klient 2.0.7 — 2026-09-24
 
 - Naprawiona sprzedaż pojedynczych przedmiotów i opcja „Sprzedaj wiele” u

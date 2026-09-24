@@ -1954,7 +1954,15 @@ namespace
 		// a marble sold for three hundred yang before there was a table.
 		const DWORD iwakuraBase = GetPlayerBotMarbleAskingBase(item) +
 				GetPlayerBotForgetScrollAskingBase(item);
-		if (bookSkill != 0)
+		// A Cor Draconis or a sash: MT2009 Plus's own price per unit
+		// (PLAYERBOT_COR_DRACONIS_PRICE, PLAYERBOT_SASH_PRICE), on the same
+		// yang-rate curve and inflation as Iwakura's sheet. The sale memory,
+		// the step limiter and a fast sale move it from there, and the unsold
+		// markdown takes it down.
+		const DWORD rareBase = ScalePlayerBotIwakuraPrice(GetPlayerBotRareGoodsBasePrice(item->GetVnum()));
+		if (rareBase != 0)
+			unit = rareBase;
+		else if (bookSkill != 0)
 			unit = GetPlayerBotBookAskingBase(bookSkill);
 		else if (IsPlayerBotGeneralSkillBook(item->GetVnum()))
 			unit = ScalePlayerBotIwakuraPrice(PLAYERBOT_PRIOR_BOOK_ORDINARY *
@@ -2001,7 +2009,7 @@ namespace
 		// alone was a giveaway. A soul stone keeps its grade table.
 		const DWORD wallet = GetPlayerBotMarketMedianWallet();
 		if (wallet > 0 && item->GetType() != ITEM_METIN && bookSkill == 0 &&
-				materialBase == 0 && iwakuraBase == 0 && !hairstyle)
+				materialBase == 0 && iwakuraBase == 0 && rareBase == 0 && !hairstyle)
 		{
 			DWORD permille = PLAYERBOT_MARKET_OTHER_WALLET_PERMILLE;
 			if (IsPlayerBotTradeableMaterial(item))
@@ -2302,6 +2310,13 @@ namespace
 		// A retired item is nobody's goods (IsPlayerBotRetiredItem).
 		if (IsPlayerBotRetiredItem(item->GetVnum()))
 			return -1;
+		// A Cor Draconis or a sash (MT2009 Plus) is a player's goods, high on
+		// the counter - unless a line of its kind came home unsold, when it is
+		// the merchant's (IsPlayerBotJunkItem). Which counters may carry it is
+		// the counter's own question (BotOfflineCounterRefuses).
+		if (GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
+			return ch && IsPlayerBotRareGoodsForMerchant(ch->GetPlayerID(), item->GetVnum(), get_dword_time())
+					? -1 : PLAYERBOT_SHOP_RARE_GOODS_SCORE;
 		// Nor is a piece Iwakura's list keeps for the storekeeper
 		// (playerbot_lpp.h): only its copies past the keep are for sale.
 		if (ch && IsPlayerBotLppKeptItem(ch, item))

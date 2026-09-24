@@ -211,6 +211,31 @@ db -e "UPDATE world.shop_special_proto SET limitvalue0 = 30 WHERE item_vnum = 27
 # a player ("caly czas nie dziala pierscien teleportu", Tieru, 16 September).
 # The ring is dragged onto nothing; the flag comes off. Idempotent.
 db -e "UPDATE world.item_proto SET flag = flag & ~8192 WHERE vnum = 70058 AND (flag & 8192) <> 0;"
+
+# MT2009 Plus: Cor Draconis and every sash may be handed to another player
+# and put in a private/offline shop.  The engine checks GIVE (1 << 13) for an
+# exchange and GIVE|MYSHOP (1 << 13, 1 << 16) for a shop, so clear precisely
+# those two bits and preserve DROP, PKDROP and every unrelated restriction.
+# Run this on every start rather than once: an upstream item_proto import may
+# restore the old flags, and the UPDATE is idempotent.
+trade_mask=$((8192 + 65536))
+db -e "
+    UPDATE world.item_proto
+       SET antiflag = antiflag & ~$trade_mask
+     WHERE (
+            vnum IN (
+                50252,50255,50256,50257,50258,50259,50260,
+                51501,51502,51503,51504,51505,51506,51507,51508,51509,51510,
+                51541,51548,51549,51562,51569,51576,51583,51590,51597,
+                51604,51611,51618,51625,51632,76040
+            )
+            OR vnum BETWEEN 85001 AND 85024
+            OR vnum BETWEEN 85101 AND 85104
+            OR vnum BETWEEN 86061 AND 86064
+       )
+       AND (antiflag & $trade_mask) <> 0;
+"
+echo "[playerbot-migrate] Cor Draconis and sashes: player trade enabled"
 # Maska Sabaha left the world with the Hwang curse (playerbotify
 # apply_hwang_curse_removed, the share step of the game Dockerfile): the shop
 # that sold one sells it no more. The db core reads the shops at boot, so this

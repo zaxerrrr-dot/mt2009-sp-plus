@@ -1184,6 +1184,12 @@ if ((Test-Path -LiteralPath $overlaySource -PathType Container) -and
         Write-Host "UWAGA: brak $seedSource - stragan botow nie zostanie odswiezony." -ForegroundColor Yellow
     }
 
+    # MT2009 Plus engine changes (Auto Lowy, exact-item shop search, the bots'
+    # Cor Draconis and sash drop, no Death Ruler wings) are applied at release
+    # time by tools\port\Apply-MT2009PlusEngine.ps1, the way Tieru's
+    # playerbotify.py applies his: the patched engine files come in the update
+    # zip, and nothing here edits an engine file.
+
     # The migrate container's first act is `[ -s playerbots_seed.sql ] || exit 1`.
     # A missing or empty seed therefore fails the whole start one second after
     # the database comes up, and used to do so with nothing in the log but

@@ -2,7 +2,7 @@
 $ErrorActionPreference = 'Stop'
 
 # Fallback used when the manifest carries no support block (offline, or an old manifest).
-$script:M2_DEFAULT_SUPPORT_CONTACT = 'https://discord.gg/pt5tvnrN6'
+$script:M2_DEFAULT_SUPPORT_CONTACT = 'https://metin2sp.pl/discord'
 
 # MT2009 Plus: updates come from the mod's own repository, never from
 # upstream (TieruYT/metin2-playerbots) - an upstream package unpacked over the
