@@ -63,6 +63,7 @@ linux-port/docker/game/quest/*
 linux-port/docker/game/mob_drop_item.m3.append.txt
 linux-port/docker/game/special_item_group.moonlight.txt
 linux-port/docker/game/special_item_group.starter.txt
+linux-port/docker/game/dragon_soul_applys.mt2009plus.txt
 
 # ---- the launcher and the package's own bookkeeping --------------------------
 # The line's own version and package note, published under the root names.
@@ -116,6 +117,7 @@ linux-port/docker/game/src/server/game/src/cmd_gm.cpp
 linux-port/docker/game/src/server/game/src/config.cpp
 linux-port/docker/game/src/server/game/src/config.h
 linux-port/docker/game/src/server/game/src/constants.cpp
+linux-port/docker/game/src/server/game/src/dragon_soul_table.cpp
 linux-port/docker/game/src/server/game/src/desc.cpp
 linux-port/docker/game/src/server/game/src/desc.h
 linux-port/docker/game/src/server/game/src/desc_client.cpp

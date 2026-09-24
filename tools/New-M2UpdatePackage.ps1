@@ -226,6 +226,7 @@ try {
             'linux-port/docker/game/src/server/game/src/item_manager.cpp' = @(
                 'MT2009_PLUS_BOT_RARE_DROP_V1', 'MT2009_PLUS_BOT_RARE_DROP_V2', 'MT2009_PLUS_BOT_RARE_DROP_V3')
             'linux-port/docker/game/src/server/game/src/ikarus_shop_manager.cpp' = @('MT2009_PLUS_SHOP_SEARCH_ITEM_V1')
+            'linux-port/docker/game/src/server/game/src/dragon_soul_table.cpp' = @('MT2009_PLUS_DS_APPLYS_V1')
             'linux-port/docker/game/src/server/game/src/cmd_general.cpp' = @('ACMD(do_autohunt_target)', 'ACMD(do_autohunt_loot)')
             'linux-port/docker/game/src/server/game/src/cmd.cpp' = @('"autohunt_target"', '"autohunt_loot"')
         }
