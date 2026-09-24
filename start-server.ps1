@@ -1258,6 +1258,21 @@ if ((Test-Path -LiteralPath $overlaySource -PathType Container) -and
             Write-Host 'Enabled exact-item offline shop search.' -ForegroundColor DarkGray
         }
     }
+    # Bots get the Cor Draconis and sash drop of Metin stones and bosses
+    # (server-patches/botraredrop): the engine gave both to a real player's
+    # kill only, so a bot never had one to list. A bot's own drop goes straight
+    # into its bag; the ground pickup of a Cor Draconis stays player-only.
+    $botRareDropApply = Join-Path $PSScriptRoot 'server-patches\botraredrop\Apply-BotRareDropPatch.ps1'
+    $itemManagerSource = Join-Path $engineGameSource 'item_manager.cpp'
+    if ((Get-ServerEngine) -ne 'r40250' -and
+        (Test-Path -LiteralPath $botRareDropApply -PathType Leaf) -and
+        (Test-Path -LiteralPath $itemManagerSource -PathType Leaf)) {
+        $botRareDropResult = & $botRareDropApply -SourceFile $itemManagerSource
+        if ($botRareDropResult.Changed) {
+            $syncedFiles++
+            Write-Host 'Enabled the Cor Draconis and sash drop for bots.' -ForegroundColor DarkGray
+        }
+    }
     # Death Ruler wings (85101..85104) use broken assets in this client.
     # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
     # 4 to the chest pool in two compact arrays.  Remove the family from both
