@@ -68,3 +68,14 @@
 .log-lines .gear-vendor b,.log-lines .gear-stall-sold b{color:#f2c34d}
 .log-lines .gear-equip b,.log-lines .gear-gift-in b,.log-lines .gear-gift-out b,.log-lines .gear-safebox b,.log-lines .gear-bonus b{color:#82b6ff}
 .log-lines span small{color:var(--muted);margin-left:4px}
+
+/* Costume row under the inventory art: body, hair, weapon skin, sash, mount, pet. */
+.costume-row{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:10px 0 4px}
+.costume-slot{display:grid;justify-items:center;gap:3px}
+.costume-slot small{font-size:10px;color:#91a8c5;text-align:center;line-height:1.1}
+.costume-icon{position:relative;display:grid;place-items:center;width:40px;height:40px;border:1px solid #294562;border-radius:4px;background:#08111c}
+.costume-slot.empty .costume-icon{opacity:.45}
+.costume-icon img{max-width:36px;max-height:36px;object-fit:contain;image-rendering:pixelated}
+.costume-icon>span{font-size:9px;color:#9db9de}
+.costume-icon:hover{z-index:5}
+.costume-icon:hover .item-tip{display:block}
