@@ -37,6 +37,17 @@ def rewrite_html(t):
     return t
 
 
+FAQ_URL = PREFIX + "/mt2009plus/faq/"
+FAQ_BUTTON = ('<a href="%s" class="btn btn-secondary" style="background:#c8932f;border-color:#e0b64a;color:#1b1206;'
+              'font-weight:700"><i class="fas fa-circle-question"></i> FAQ – najczęstsze pytania</a>' % FAQ_URL)
+FAQ_BANNER = ('<a href="%s" style="display:flex;align-items:center;gap:16px;margin:0 0 22px;padding:18px 22px;'
+              'border-radius:10px;border:2px solid #e0b64a;background:linear-gradient(90deg,rgba(224,182,74,.28),rgba(224,182,74,.08));'
+              'color:inherit;text-decoration:none"><i class="fas fa-circle-question" style="font-size:2.6em;color:#e0b64a"></i>'
+              '<span><strong style="font-size:1.35em;display:block">Masz pytanie? Zacznij od FAQ</strong>'
+              '<span style="opacity:.85">Auto Łowy, panel GM, Smocze Monety, aktualizacja klienta, Docker i wirtualizacja, '
+              'liczba botów, kostiumy, pety, mounty – odpowiedzi krok po kroku.</span></span></a>' % FAQ_URL)
+
+
 def rebrand(t, sidebar=""):
     # MT2009's Cloudflare Web Analytics beacon (their token): our visits are
     # not theirs to count.
@@ -48,7 +59,10 @@ def rebrand(t, sidebar=""):
     t = t.replace("Kompendium wiedzy o świecie MT2009", "Kompendium wiedzy o świecie MT2009 PLUS")
     # Header: the MT2009 PLUS pages beside "Wszystkie strony".
     t = re.sub(r'(<a href="%s/all-pages" class="btn btn-secondary"[^>]*>.*?</a>)' % PREFIX,
-               r'\1 <a href="%s/mt2009plus/" class="btn btn-secondary">MT2009 PLUS</a>' % PREFIX, t, count=1, flags=re.S)
+               r'\1 <a href="%s/mt2009plus/" class="btn btn-secondary">MT2009 PLUS</a> ' % PREFIX + FAQ_BUTTON.replace("\\", "\\\\"),
+               t, count=1, flags=re.S)
+    # The front page: the FAQ above everything else.
+    t = t.replace('<div class="hero-section">', FAQ_BANNER + '<div class="hero-section">', 1)
     # Footer: our site, the credit to the MT2009 wiki.
     t = t.replace("Oficjalne kompedium wiedzy serwisu MT2009.pl",
                   "Kompendium wiedzy MT2009 PLUS &middot; na podstawie wiki.mt2009.pl, za zgodą MT2009.pl")
@@ -107,6 +121,14 @@ ITEM_CSS = """<style>
 </style>"""
 
 
+def slugify(value, separator):
+    """Heading anchors: Polish letters as their base letter ("ł" has no NFKD form)."""
+    import unicodedata
+    value = value.replace("ł", "l").replace("Ł", "L")
+    value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"[%s\s]+" % separator, separator, re.sub(r"[^\w\s-]", "", value).strip().lower())
+
+
 def read_page(path):
     raw = open(path, encoding="utf-8").read()
     meta = {}
@@ -155,14 +177,16 @@ def main():
     for _, slug, meta, body in ours:
         title = meta.get("title", slug)
         # Links in our pages are written from the site root, like MT2009's.
-        content = rewrite_html(markdown.markdown(body, extensions=["tables", "fenced_code", "toc", "sane_lists"]))
+        content = rewrite_html(markdown.markdown(body, extensions=["tables", "fenced_code", "toc", "sane_lists"],
+                                                  extension_configs={"toc": {"slugify": slugify}}))
         if "{{PRZEDMIOTY:" in content:
             content = ITEM_CSS + re.sub(r"(?:<p>)?\{\{PRZEDMIOTY:(\w+)\}\}(?:</p>)?", lambda m: item_grid(m.group(1), items), content)
         url = "mt2009plus/" if slug == "index" else "mt2009plus/%s/" % slug
         entries.append((url, title, meta, content))
     def in_group(g):
-        return [(u, tt) for u, tt, m, _ in entries if u != "mt2009plus/" and m.get("group") == g]
-    sidebar = "".join(
+        return [(u, tt) for u, tt, m, _ in entries if u not in ("mt2009plus/", "mt2009plus/faq/") and m.get("group") == g]
+    sidebar = ('<div class="nav-section"> <h3 id="mt2009plus-faq"> <i class="fas fa-circle-question" style="color:#e0b64a"></i> '
+               '<a href="%s" style="color:#e0b64a">FAQ – najczęstsze pytania</a> </h3> </div> ' % FAQ_URL) + "".join(
         '<div class="nav-section"> <h3 id="mt2009plus-%s"> <i class="fas %s"></i> %s </h3> <ul>' % (g, icon, name) +
         "".join('<li> <a href="%s/%s" data-astro-prefetch="false"> <i class="fas fa-file-lines page-icon"></i> %s </a> </li>'
                 % (PREFIX, u, html.escape(tt)) for u, tt in in_group(g)) + '</ul> </div> '
