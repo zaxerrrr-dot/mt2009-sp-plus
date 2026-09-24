@@ -149,6 +149,8 @@ def main():
     ours.sort()
     items = json.load(open(os.path.join(HERE, "data", "items.json"), encoding="utf-8"))
     shutil.copytree(os.path.join(HERE, "items"), os.path.join(site, "images", "plus"), dirs_exist_ok=True)
+    # Downloads linked from our pages: /wiki/pobierz/<file>.
+    shutil.copytree(os.path.join(HERE, "files"), os.path.join(site, "pobierz"), dirs_exist_ok=True)
     entries = []
     for _, slug, meta, body in ours:
         title = meta.get("title", slug)

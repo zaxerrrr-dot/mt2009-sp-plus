@@ -21,9 +21,9 @@ keywords: launcher, przyciski, graj, zatrzymaj, liczba botów, kopia
 | **KOPIA / NOWY ŚWIAT** | kopia świata do zip albo nowy, pusty świat ([Kopia świata](/mt2009plus/kopia-swiata/)) |
 | **IMPORTUJ BAZĘ** | wczytuje zapisaną kopię świata |
 | **COOP: GRA ZE ZNAJOMYMI** | udostępnia twój świat znajomym ([COOP](/mt2009plus/coop/)) |
-| **DANE DO BAZY (NAVICAT)** / **NAPRAW DOSTĘP DO BAZY** | dostęp do bazy danych ([Baza danych](/mt2009plus/baza-danych/)) |
+| **DANE DO BAZY (NAVICAT)** / **NAPRAW DOSTĘP DO BAZY** | dostęp do bazy danych ([Baza danych i pliki serwera](/mt2009plus/baza-danych/)) |
 | **PANEL GM F9 (TEST)** | panel GM w kliencie |
-| **ZBIERZ / WYŚLIJ LOGI**, **DIAGNOSTYKA**, **OTWÓRZ LOG**, **FOLDER LOGÓW** | gdy coś nie działa ([Problemy](/mt2009plus/problemy/)) |
+| **ZBIERZ / WYŚLIJ LOGI**, **DIAGNOSTYKA**, **OTWÓRZ LOG**, **FOLDER LOGÓW** | gdy coś nie działa ([Problemy i FAQ](/mt2009plus/problemy/)) |
 | **JĘZYK / LANGUAGE** | język launchera (polski / angielski) |
 
 Po kliknięciu **OTWÓRZ PANEL WWW** launcher pokazuje hasło do panelu (można je tam też zresetować).
