@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-24T11:31:43Z",
-  "statusMessage": "Serwer 2.3.2 i klient 2.0.9: COOP dziala - graj ze znajomymi na swoim swiecie (okno COOP w launcherze, Dolacz.bat w kliencie).",
+  "publishedAt": "2026-09-24T11:49:16Z",
+  "statusMessage": "Klient 2.0.10: pelna paczka klienta - poprawiony atak z mounta i sprzedaz u handlarza dla wszystkich. Serwer 2.3.2: COOP dziala.",
   "server": {
     "version": "2.3.2",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.3.2.zip",
@@ -10,9 +10,9 @@
     "size": 49904140
   },
   "client": {
-    "version": "2.0.9",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.9.zip",
-    "sha256": "732549F16759EC1C9E725799A4F7F5831BD42E9221C9845A816C4F0CC43DC11A",
-    "size": 819280
+    "version": "2.0.10",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.10.zip",
+    "sha256": "4ECF80842724DAE7981B64C3E6AC13177D81FD3F4F437B32F7A0362034FB4BDB",
+    "size": 6228004
   }
 }

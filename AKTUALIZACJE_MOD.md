@@ -85,6 +85,13 @@ Przykładowy manifest:
 }
 ```
 
+> [!IMPORTANT]
+> Paczka klienta musi być **pełna** (zbiorcza): launcher instaluje tylko
+> najnowszą paczkę z manifestu, nie po kolei każdą. Gracz, który przeskoczył
+> z 2.0.4 na 2.0.8, nie dostał `metin2client.exe` z 2.0.6/2.0.7 (klient
+> 2.0.10 to naprawił). Każda paczka klienta zawiera więc wszystkie pliki,
+> które mod zmienia w kliencie, także te niezmienione od poprzedniej wersji.
+
 Klienta aktualizuje się tak samo: `-Type client`, własna lista plików
 (wzór: `launcher\client-update-files.example.txt`) i blok `client` w
 manifeście. Bez bloku `client` launcher klienta nie rusza.
