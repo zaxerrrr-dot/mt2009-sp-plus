@@ -1400,6 +1400,12 @@ namespace
 	// manager's table, whose indices run to a few hundred on this package.
 	const DWORD PLAYERBOT_ISHOP_CHECK_INTERVAL = 10 * 60 * 1000;
 	const DWORD PLAYERBOT_ISHOP_BUY_INTERVAL = 60 * 60 * 1000;
+	// A shopping session (operator, 24 Sep 2026): a bot with the coins buys
+	// every missing piece of its look in one go, not one an hour. The next
+	// piece waits a few seconds: the engine takes one purchase a second per
+	// character (ePulse::ItemShopBuy), and the charge of the last one goes
+	// through the db core before BuyItem reads the account again.
+	const DWORD PLAYERBOT_ISHOP_SESSION_STEP = 5 * 1000;
 	const DWORD PLAYERBOT_ISHOP_BALANCE_INTERVAL = 60 * 60 * 1000;
 	const DWORD PLAYERBOT_ISHOP_CATALOGUE_INTERVAL = 60 * 60 * 1000;
 	const DWORD PLAYERBOT_ISHOP_CENSUS_INTERVAL = 10 * 60 * 1000;
@@ -6193,6 +6199,7 @@ namespace
 			bBoughtHairstyle(false),
 			dwNextItemShopCheckTime(0),
 			dwNextItemShopBuyTime(0),
+			bItemShopLookSession(false),
 			dwNextItemShopBalanceTime(0),
 			dwNextMaterialScanTime(0),
 			dwMaterialHuntVnum(0),
@@ -6576,6 +6583,7 @@ namespace
 		bool bBoughtHairstyle;
 		DWORD dwNextItemShopCheckTime;
 		DWORD dwNextItemShopBuyTime;
+		bool bItemShopLookSession;
 		DWORD dwNextItemShopBalanceTime;
 		// Where this bot has been standing, since when, and whether it is
 		// currently being walked off it. See ManagePlayerBotRelocation.

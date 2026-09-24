@@ -393,7 +393,7 @@ namespace
 	// The first piece missing, in the operator's order; 0 when the bot is
 	// dressed or its piece is not for sale. The strict order is the point: a
 	// bot saves for the costume before it spends on a hairstyle. Which item
-	// of the kind is stable per bot (the pid), so a bot rebuys its own look.
+	// of the kind is drawn at random among those the bot can wear.
 	DWORD PickPlayerBotLook(LPCHARACTER ch, int* pLook)
 	{
 		if (ch->GetLevel() < PLAYERBOT_ISHOP_LOOK_MIN_LEVEL)
@@ -410,7 +410,9 @@ namespace
 			if (mine.empty())
 				continue;
 			*pLook = look;
-			return mine[PlayerBotNavHash(ch->GetPlayerID() ^ (0x4C4F4F4BU + (DWORD)look)) % mine.size()];
+			// Any of them, drawn anew each time (operator: variety), so a
+			// piece that runs out is followed by another.
+			return mine[number(0, (int)mine.size() - 1)];
 		}
 		return 0;
 	}
@@ -616,6 +618,30 @@ namespace
 
 	// ----------------------------------------------------------------- tick
 
+	bool IsPlayerBotLookReason(const char* szReason)
+	{
+		for (int look = 0; look < PLAYERBOT_ISHOP_LOOK_COUNT; ++look)
+			if (szReason && strcmp(szReason, GetPlayerBotLookReason(look)) == 0)
+				return true;
+		return false;
+	}
+
+	// After a purchase: another piece missing and the coins for it, and the
+	// bot comes back in a few seconds instead of an hour.
+	void ContinuePlayerBotLookSession(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		int look = 0;
+		TPlayerBotItemShopWish next;
+		next.dwVnum = PickPlayerBotLook(ch, &look);
+		next.bMarks = false;
+		next.szReason = GetPlayerBotLookReason(look);
+		if (next.dwVnum == 0 || !CanPlayerBotAffordWish(ch, state, next))
+			return;
+		state.bItemShopLookSession = true;
+		state.dwNextItemShopBuyTime = dwNow + PLAYERBOT_ISHOP_SESSION_STEP;
+		state.dwNextItemShopCheckTime = dwNow + PLAYERBOT_ISHOP_SESSION_STEP;
+	}
+
 	// Upkeep, never the tick's owner: a voucher cashed, a purchase made, and
 	// the rest of the tick goes on. Every ten minutes a bot; the account is
 	// asked for its balance only when the bot wants something.
@@ -650,14 +676,22 @@ namespace
 			return;
 		if (dwNow < state.dwNextItemShopBuyTime)
 			return;
+		// Within a session only the look is bought: a stone the bot still
+		// wants after buying one would be bought again every few seconds.
+		const bool session = state.bItemShopLookSession;
+		state.bItemShopLookSession = false;
 		for (int i = 0; i < wants; ++i)
 		{
+			if (session && !IsPlayerBotLookReason(wishes[i].szReason))
+				continue;
 			if (!CanPlayerBotAffordWish(ch, state, wishes[i]))
 				continue;
-			BuyPlayerBotItemShop(ch, state, wishes[i], dwNow);
+			if (BuyPlayerBotItemShop(ch, state, wishes[i], dwNow))
+				ContinuePlayerBotLookSession(ch, state, dwNow);
 			return;
 		}
-		++s_uPlayerBotItemShopSaving;
+		if (!session)
+			++s_uPlayerBotItemShopSaving;
 	}
 
 	void WritePlayerBotItemShopCensus(DWORD dwNow)
