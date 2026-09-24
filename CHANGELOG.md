@@ -17,6 +17,57 @@ every version here.
 
 ---
 
+## 2.4.0 — 2026-09-24 — Serwer na bazie Tieru 2.2.9, Cory botów nie leżą na ziemi
+
+Serwer 2.4.0; klient zostaje 2.0.10. Zaktualizuj serwer w launcherze
+(**SPRAWDŹ AKTUALIZACJE**). Zawiera wszystko z 2.3.4 i wszystkie zmiany
+serwera Tieru do 2.2.9. Pierwszy start po aktualizacji kompiluje serwer od
+nowa, więc trwa dłużej niż zwykle.
+
+Nowości z Auto Łowów po stronie klienta (autologin, Szybki Atak) oraz
+statusy botów po angielsku wejdą z następną aktualizacją klienta. Serwer
+jest już na nie gotowy.
+
+### Cor Draconis i szarfy
+
+- Gdy Metina albo bossa bije gracz razem z botami, Cor Draconis i szarfa,
+  które przy podziale dropu przypadną botowi, trafiają od razu do jego
+  plecaka. Wcześniej leżały na ziemi z nazwą bota i nikt nie mógł ich
+  podnieść, dopóki nie wygasła ochrona właściciela.
+
+### Z serwera Tieru (2.2.4–2.2.9)
+
+- **Metiny z konia bojowego:** bot z koniem bojowym bije Metina z siodła,
+  także w Wieży Demonów, a łucznik strzela do kamienia pieszo.
+- **Wieża Demonów:** łucznicy strzelają z 15 m, bot podnosi swój drop
+  w Wieży, kowal na 6. piętrze dostaje przedmiot z plecaka, na 7. piętrze
+  najpierw potwory, potem Metin, a demony pojawiają się raz.
+- **Łucznicy:** botom strzały się nie kończą, a łucznik nie stoi już
+  w walce między umiejętnościami.
+- **Szepty do botów:** bot powie, jaką ścieżką gra; szaman poda swoje
+  buffy; na „chodź do mnie” bot przyjdzie i pomoże w walce.
+- **Boty zmieniają kanały:** przy drugim kanale co 2 minuty kilka botów
+  zamienia się miejscami.
+- **Wojny gildii:** boty nie rzucają się całą gildią na jedną osobę.
+- **Hazardzista i magazyny:** hazardzista trzyma po 2 bazy każdego
+  przedmiotu, pozostałe boty nie trzymają zbroi w magazynach, a to, co
+  hazardzista ulepszył, idzie na sprzedaż.
+- **Tarcze i zbroje** bot ocenia po obronie i bonusach, a nie po poziomie
+  przedmiotu. **Medale konne** na straganach po 2 sztuki.
+- **Broń na 30 poziom** bot z yangiem ulepsza co najmniej do +6.
+- **Próba konia bojowego:** bot sam szuka łuczników na pustyni.
+- **Rybak** otwiera co piątą małżę, reszta idzie na straganie.
+- **Rada Pustelnika** tuż przed czytaniem księgi, więc czytanie się udaje.
+- **Zmiana ceny wielu przedmiotów naraz** (Ctrl + prawy przycisk) nie gubi
+  pozycji.
+- **Launcher:** opisy przy ustawieniach liczby botów, propozycja
+  przełączenia klienta na angielski, gdy launcher jest po angielsku.
+- **COOP:** gdy router nie otwiera portów, launcher mówi to wprost
+  i podpowiada VPN.
+- **Budowanie przy aktualizacji** dobiera liczbę zadań do wolnej pamięci,
+  więc na laptopie nie stoi tak długo.
+- Panele pokazują aktualny poziom botów.
+
 ## 2.3.4 — 2026-09-24 — Wierzchowce już nie cofają
 
 Serwer 2.3.4; klient zostaje 2.0.10. Zaktualizuj serwer w launcherze
