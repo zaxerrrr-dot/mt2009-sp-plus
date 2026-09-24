@@ -21,4 +21,4 @@ Wiele z nich ma warianty czasowe: 1, 7 i 30 dni. Pozostały czas widać w opisie
 - **Sklep kostiumów u Ah-Yu** – kostiumy, fryzury i nakładki za 1 Yang.
 - Stragany i sklepy offline innych graczy i botów.
 
-Kostiumy można bonusować – zobacz [Bonusy kostiumów](/mt2009plus/bonusy-kostiumow/). Boty też kupują i noszą kostiumy, fryzury, nakładki i pety z ItemShopu, każdy inne.
+Kostiumy można bonusować – zobacz [Bonusy kostiumów](/mt2009plus/bonusy-kostiumow/). Boty też kupują i noszą kostiumy, fryzury, nakładki, pety i wierzchowce z ItemShopu, każdy inne.

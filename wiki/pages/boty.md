@@ -13,7 +13,7 @@ Boty to pełnoprawne postacie sterowane przez serwer, każda z własnym kontem w
 - Rozbijają Metiny, chodzą drużynami na bossów i do Wieży Demonów.
 - Łowią ryby, kopią rudę, ulepszają ekwipunek u kowala i zwojami, bonusują przedmioty i kostiumy.
 - Handlują: wystawiają sklepy offline i stragany, kupują od siebie i od graczy.
-- Kupują w ItemShopie kostiumy, fryzury, nakładki i pety (każdy inne) i je noszą.
+- Kupują w ItemShopie kostiumy, fryzury, nakładki, pety i wierzchowce (każdy inne), noszą je i jeżdżą na mountach ([Wierzchowce](/mt2009plus/wierzchowce/)).
 - Zakładają gildie i walczą w wojnach gildii.
 
 ## Osobowość i nastrój
