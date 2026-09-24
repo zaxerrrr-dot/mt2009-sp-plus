@@ -68,6 +68,17 @@ if ((Test-Path -LiteralPath $botRareDropApply -PathType Leaf) -and
         Write-Host 'Enabled the Cor Draconis and sash drop for bots.' -ForegroundColor DarkGray
     }
 }
+# Cor Draconis and sashes only from a Metin or boss at most 15 levels below
+# the killer (server-patches/rarelevel); after botraredrop, same blocks.
+$rareLevelApply = Join-Path $repo 'server-patches/rarelevel/Apply-RareLevelPatch.ps1'
+if ((Test-Path -LiteralPath $rareLevelApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $itemManagerSource -PathType Leaf)) {
+    $rareLevelResult = & $rareLevelApply -SourceFile $itemManagerSource
+    if ($rareLevelResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Cor Draconis and sash drops within 15 levels below the killer.' -ForegroundColor DarkGray
+    }
+}
 # The alchemy balance (server-patches/dragonsoulbalance): the apply names
 # the MT2009 Plus dragon_soul_table.txt uses (race, monster, critical and
 # piercing bonuses), and "Wartosc ataku"/"Obrona" as the flat values an item
@@ -154,6 +165,16 @@ if ((Test-Path -LiteralPath $mountBonusApply -PathType Leaf) -and
     if ($mountBonusResult.Changed) {
         $syncedFiles++
         Write-Host 'Mount seal bonuses counted once a ride.' -ForegroundColor DarkGray
+    }
+}
+# Mount seals without a time limit ride with no end (server-patches/mountpermanent).
+$mountPermanentApply = Join-Path $repo 'server-patches/mountpermanent/Apply-MountPermanentPatch.ps1'
+if ((Test-Path -LiteralPath $mountPermanentApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $mountSystemSource -PathType Leaf)) {
+    $mountPermanentResult = & $mountPermanentApply -SourceFile $mountSystemSource
+    if ($mountPermanentResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Mount seals without a time limit are permanent.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
