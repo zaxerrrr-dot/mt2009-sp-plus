@@ -1280,6 +1280,10 @@ namespace
 		// never the merchant's: he paid 194 yang for one.
 		if (vnum == PLAYERBOT_GRAND_MASTER_STONE_VNUM)
 			return false;
+		// A pet seal from the ItemShop (MT2009 Plus, playerbot_itemshop.h) is the
+		// bot's own pet, summoned from the bag: never the merchant's.
+		if (item->GetType() == ITEM_PET)
+			return false;
 		// A hairstyle from the ItemShop (playerbot_itemshop.h) is worn, not sold:
 		// the rule's default would vendor it on the next town trip.
 		if (item->GetType() == ITEM_COSTUME)

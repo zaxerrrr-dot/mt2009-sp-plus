@@ -19,6 +19,7 @@ param(
 #   shop search        ikarus_shop_manager.cpp   (MT2009_PLUS_SHOP_SEARCH_ITEM_V1)
 #   bot rare drop      item_manager.cpp          (MT2009_PLUS_BOT_RARE_DROP_V1..V3)
 #   Death Ruler wings  item_manager.cpp, char_item.cpp (no 85101/85104 drop)
+#   alchemy bonuses    dragon_soul_table.cpp     (MT2009_PLUS_DS_APPLYS_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -59,6 +60,21 @@ if ((Test-Path -LiteralPath $botRareDropApply -PathType Leaf) -and
     if ($botRareDropResult.Changed) {
         $syncedFiles++
         Write-Host 'Enabled the Cor Draconis and sash drop for bots.' -ForegroundColor DarkGray
+    }
+}
+# The alchemy balance (server-patches/dragonsoulbalance): the apply names
+# the MT2009 Plus dragon_soul_table.txt uses (race, monster, critical and
+# piercing bonuses), and "Wartosc ataku"/"Obrona" as the flat values an item
+# bonus gives instead of percent multipliers. The table itself is replaced at
+# image build (game/Dockerfile, dragon_soul_applys.mt2009plus.txt).
+$dsBalanceApply = Join-Path $repo 'server-patches/dragonsoulbalance/Apply-DragonSoulBalancePatch.ps1'
+$dsTableSource = Join-Path $engineGameSource 'dragon_soul_table.cpp'
+if ((Test-Path -LiteralPath $dsBalanceApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $dsTableSource -PathType Leaf)) {
+    $dsBalanceResult = & $dsBalanceApply -SourceFile $dsTableSource
+    if ($dsBalanceResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Enabled the MT2009 Plus alchemy bonuses.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

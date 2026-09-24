@@ -17,6 +17,57 @@ every version here.
 
 ---
 
+## 2.3.1 — 2026-09-24 — Boty w kostiumach z ItemShopu, nowy balans alchemii
+
+Boty ubierają się w ItemShopie: kostiumy, fryzury, nakładki na broń i pety.
+Alchemia dostaje nowy balans: zamiast odporności na żywioły są bonusy na
+rasy potworów, a najsilniejsze bonusy są mniejsze. Zawiera wszystko z 2.3.0.
+Klient zostaje 2.0.8. Pierwszy start po aktualizacji kompiluje serwer od
+nowa, więc trwa dłużej niż zwykle.
+
+### Boty kupują wygląd w ItemShopie
+
+- Każdy bot od 30 poziomu, który ma Smocze Monety (SM), kupuje w ItemShopie
+  swój wygląd w stałej kolejności: **kostium → fryzura → nakładka na broń →
+  pet**. Mountów na razie nie kupuje.
+- Kupuje wszystko naraz, w jednej sesji zakupów, co kilka sekund kolejną
+  brakującą rzecz, póki starcza SM. Następna sesja jest najwcześniej po
+  godzinie.
+- Każda rzecz jest losowana spośród tych, które bot może założyć (klasa,
+  płeć, poziom, a nakładka pasuje do jego broni), więc boty wyglądają
+  różnie.
+- Kupione rzeczy bot od razu zakłada, a peta przywołuje. Jeśli walka nie
+  pozwala założyć przedmiotu, bot próbuje przy następnej okazji.
+- Gdy skończy się czas przedmiotu, bot przy następnej sesji dokupuje to,
+  czego mu brakuje, i znów losuje wygląd.
+- Pieczęci peta ani kupionego kostiumu czy nakładki bot nie sprzedaje
+  handlarzowi i nie wystawia na straganie.
+
+### Alchemia (kamienie smoka)
+
+- **Bez odporności na żywioły.** Z kamieni znikają odporności na ogień, lód,
+  wiatr, ziemię, błyskawice i ciemność.
+- **Bonusy na rasy zamiast żywiołów.** Drugi stały bonus kamienia (od
+  jakości pradawnej) to teraz: Diament – silny na mistyków, Rubin – na
+  diabły, Jadeit – na zwierzęta, Szafir – na orki, Onyks – na nieumarłych
+  (do 15%), Granat – na ludzi (do 10%). Dotychczasowe bonusy „silny na
+  żywioł” nic nie dawały.
+- **Ametyst** – stałe: silny na potwory i silny na Metiny (do 10%); losowe:
+  szansa na krytyk i na przeszywające (do 8%), wartość ataku (do 160).
+  Bonusy Sungma, które też nic nie dawały, zniknęły.
+- **Słabsze najsilniejsze bonusy** (wartości na mitycznym kamieniu
+  z najwyższego stopnia, +6): wartość ataku do 320 (było 480), obrona do
+  240, średnie obrażenia i obrażenia umiejętności do 16% (było 24%),
+  Max PŻ do 3200 (było 4800), Max PŻ% do 20% (było 32%), silny na klasy
+  i odporność na klasy do 16% (było 24%), STR/INT/DEX/VIT do 13 (było 16).
+  Blok, unik, odbicie, kradzież PŻ oraz odporność na krytyk i przeszywające
+  są też trochę mniejsze.
+- **Poprawiony błąd:** „Wartość ataku” i „Obrona” z alchemii działały jak
+  procent. Mityczny Rubin +6 dawał +480% ataku zamiast +480 wartości ataku.
+  Teraz to zwykła wartość, jak bonus z przedmiotu.
+- Nowe bonusy dostają kamienie tworzone od tej wersji. Kamienie, które już
+  masz, zachowują swoje bonusy.
+
 ## 2.3.0 — 2026-09-24
 
 Cor Draconis i szarfy w handlu i na sklepach botów, wyszukiwanie konkretnego

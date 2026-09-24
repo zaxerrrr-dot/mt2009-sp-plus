@@ -308,6 +308,21 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && rm -rf /tmp/share-add \
  && echo "share: moonlight + starter chests, M3 drops appended"
 
+# The alchemy bonuses (server-patches/dragonsoulbalance): the package's
+# BasicApplys and AdditionalApplys groups of dragon_soul_table.txt give way to
+# the MT2009 Plus balance - no elemental resistance, a race bonus instead of
+# the elemental one, the Amethyst's Sungma bonuses gone, the strong ones
+# smaller. The engine half (the apply names the table may use) is
+# dragon_soul_table.cpp, MT2009_PLUS_DS_APPLYS_V1.
+COPY dragon_soul_applys.mt2009plus.txt /tmp/dragon_soul_applys.txt
+RUN set -eu; f=/opt/metin2/share/locale/poland/dragon_soul_table.txt \
+ && sed -i 's/\r$//; s/$/\r/' /tmp/dragon_soul_applys.txt \
+ && awk -v add=/tmp/dragon_soul_applys.txt 'BEGIN{skip=0} /^Group[ \t]+BasicApplys/{ while ((getline l < add) > 0) print l; skip=1; next } skip && /^Group[ \t]+ApplyNumSettings/{ skip=0 } !skip{ print }' "$f" > "$f.new" \
+ && grep -q 'ATTBONUS_MILGYO' "$f.new" && grep -q '^Group[[:blank:]]*ApplyNumSettings' "$f.new" \
+ && ! grep -Eq '^[^#]*(RESIST_(ICE|FIRE|WIND|EARTH|ELEC|DARK)|ENCHANT_|SUNGMA_)' "$f.new" \
+ && mv "$f.new" "$f" && rm -f /tmp/dragon_soul_applys.txt \
+ && echo "share: MT2009 Plus alchemy bonuses"
+
 # Maska Sabaha goes with the Hwang curse (playerbotify apply_hwang_curse_removed,
 # port/shareify.py renders this step): its drop lines and the Hwang loot box roll
 # it at nothing - a group stops reading at the first index it lacks, so a line is

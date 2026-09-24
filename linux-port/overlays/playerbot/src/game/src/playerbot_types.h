@@ -1400,10 +1400,20 @@ namespace
 	// manager's table, whose indices run to a few hundred on this package.
 	const DWORD PLAYERBOT_ISHOP_CHECK_INTERVAL = 10 * 60 * 1000;
 	const DWORD PLAYERBOT_ISHOP_BUY_INTERVAL = 60 * 60 * 1000;
+	// A shopping session (operator, 24 Sep 2026): a bot with the coins buys
+	// every missing piece of its look in one go, not one an hour. The next
+	// piece waits a few seconds: the engine takes one purchase a second per
+	// character (ePulse::ItemShopBuy), and the charge of the last one goes
+	// through the db core before BuyItem reads the account again.
+	const DWORD PLAYERBOT_ISHOP_SESSION_STEP = 5 * 1000;
 	const DWORD PLAYERBOT_ISHOP_BALANCE_INTERVAL = 60 * 60 * 1000;
 	const DWORD PLAYERBOT_ISHOP_CATALOGUE_INTERVAL = 60 * 60 * 1000;
 	const DWORD PLAYERBOT_ISHOP_CENSUS_INTERVAL = 10 * 60 * 1000;
-	const int PLAYERBOT_ISHOP_MAX_INDEX = 2000;
+	// MT2009 Plus: the mod's own offers sit far above the package's (hair to
+	// 10397, costumes 20000+, weapon skins 30000+, pets 40000+, mounts
+	// 50000+), and a bound of 2000 never saw them. An hourly look-up of every
+	// index in a std::map is cheap.
+	const int PLAYERBOT_ISHOP_MAX_INDEX = 65535;
 	// Kupon SM 50/100/500/1000/250 (80017/80014/80015/80016/80018).
 	const DWORD PLAYERBOT_ISHOP_VOUCHER_MIN_VNUM = 80014;
 	const DWORD PLAYERBOT_ISHOP_VOUCHER_MAX_VNUM = 80018;
@@ -1413,8 +1423,25 @@ namespace
 	const DWORD PLAYERBOT_ISHOP_BLESSING_SCROLL_VNUM = 25041;
 	const DWORD PLAYERBOT_ISHOP_ATTACK_POTION_VNUM = 71028;
 	// One bot in this many buys a hairstyle, once, from this level.
+	// (MT2009 Plus: no longer used for a bot's own look - see below; the
+	// level floor is still the look's.)
 	const DWORD PLAYERBOT_ISHOP_HAIR_SHARE = 4;
 	const BYTE PLAYERBOT_ISHOP_HAIR_MIN_LEVEL = 30;
+	// MT2009 Plus (operator, 24 September 2026): every bot with Dragon Coins
+	// dresses itself from the ItemShop, one piece at a time and in this
+	// order - costume, hairstyle, weapon skin, pet (no mount) - and wears
+	// what it bought. A piece that runs out (REAL_TIME) leaves its slot empty
+	// and is bought again on a later look. The order is strict: a bot saves
+	// for the costume before it spends on a hairstyle.
+	enum EPlayerBotItemShopLook
+	{
+		PLAYERBOT_ISHOP_LOOK_BODY,
+		PLAYERBOT_ISHOP_LOOK_HAIR,
+		PLAYERBOT_ISHOP_LOOK_WEAPON,
+		PLAYERBOT_ISHOP_LOOK_PET,
+		PLAYERBOT_ISHOP_LOOK_COUNT
+	};
+	const BYTE PLAYERBOT_ISHOP_LOOK_MIN_LEVEL = PLAYERBOT_ISHOP_HAIR_MIN_LEVEL;
 	// And one keeper in PLAYERBOT_ISHOP_HAIR_TRADE_SHARE buys a head it cannot
 	// wear, for its counter, when its coins are wanted for nothing of its own:
 	// the item shop's hairstyles are what a player should find on a counter,
@@ -6172,6 +6199,7 @@ namespace
 			bBoughtHairstyle(false),
 			dwNextItemShopCheckTime(0),
 			dwNextItemShopBuyTime(0),
+			bItemShopLookSession(false),
 			dwNextItemShopBalanceTime(0),
 			dwNextMaterialScanTime(0),
 			dwMaterialHuntVnum(0),
@@ -6555,6 +6583,7 @@ namespace
 		bool bBoughtHairstyle;
 		DWORD dwNextItemShopCheckTime;
 		DWORD dwNextItemShopBuyTime;
+		bool bItemShopLookSession;
 		DWORD dwNextItemShopBalanceTime;
 		// Where this bot has been standing, since when, and whether it is
 		// currently being walked off it. See ManagePlayerBotRelocation.
