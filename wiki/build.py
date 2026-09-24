@@ -13,6 +13,9 @@ in the navigation and in the search index (rebuilt by lunr-build.js).
 """
 import html, json, os, re, shutil, sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import edits
+
 PREFIX = "/wiki"
 SITE = "MT2009 PLUS Wiki"
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -123,6 +126,7 @@ def main():
                "".join('<li> <a href="%s/%s" data-astro-prefetch="false"> <i class="fas fa-file-lines page-icon"></i> %s </a> </li>'
                        % (PREFIX, u, html.escape(tt)) for u, tt, _, _ in entries) + '</ul> </div> ')
     shell = None
+    corrected = {}
     pages_dir = os.path.join(mirror, "pages")
     for root, _, files in os.walk(pages_dir):
         for f in files:
@@ -130,7 +134,10 @@ def main():
                 continue
             src = os.path.join(root, f)
             rel = os.path.relpath(root, pages_dir)
-            t = rebrand(rewrite_html(open(src, encoding="utf-8").read()), sidebar)
+            t, extra = edits.apply(rel.replace(os.sep, "/"), open(src, encoding="utf-8").read())
+            if extra:
+                corrected[rel.replace(os.sep, "/") + "/"] = extra
+            t = rebrand(rewrite_html(t), sidebar)
             dst = os.path.join(site, "" if rel == "." else rel)
             os.makedirs(dst, exist_ok=True)
             open(os.path.join(dst, "index.html"), "w", encoding="utf-8").write(t)
@@ -157,6 +164,8 @@ def main():
     docs = idx["pages"]
     for d in docs:
         d["title"] = d["title"].replace("Mt2009 Wiki", SITE)
+        if d["url"] in corrected:
+            d["content"] = "MT2009 PLUS: " + corrected[d["url"]] + " " + d["content"]
     for url, title, meta, content in entries:
         text = html.unescape(re.sub(r"<[^>]+>", " ", content))
         docs.append({"url": url, "title": title, "category": meta.get("category", "MT2009 PLUS"),
