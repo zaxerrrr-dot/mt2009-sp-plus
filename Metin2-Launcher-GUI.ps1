@@ -372,6 +372,32 @@ function Select-ClientExecutable {
     return ''
 }
 
+# Before a client update: the saved client folder must exist. One that was
+# moved, renamed or deleted since it was chosen is asked for again with the
+# file dialog, and the update goes where the player points - rather than the
+# action ending in "Nie znaleziono folderu klienta" (23-24 September).
+function Confirm-ClientForUpdate {
+    $config = Get-LauncherConfig
+    $clientFolder = [string]$config.clientRoot
+    if ($clientFolder -and (Test-Path -LiteralPath $clientFolder -PathType Container)) { return $true }
+    $text = if ($clientFolder) {
+        "Nie znaleziono folderu klienta:`r`n$clientFolder`r`n`r`nWskaż plik metin2client.exe w aktualnym folderze klienta - aktualizacja zostanie zainstalowana tam."
+    }
+    else {
+        "Nie wskazano jeszcze klienta gry.`r`n`r`nWskaż plik metin2client.exe - aktualizacja zostanie zainstalowana w jego folderze."
+    }
+    $answer = [Windows.Forms.MessageBox]::Show($text, 'Gdzie jest klient?', 'OKCancel', 'Question')
+    if ($answer -ne [Windows.Forms.DialogResult]::OK) {
+        Write-LocalLog 'Aktualizacja klienta anulowana - nie wskazano klienta.'
+        return $false
+    }
+    if (-not (Select-ClientExecutable)) {
+        Write-LocalLog 'Aktualizacja klienta anulowana - nie wskazano klienta.'
+        return $false
+    }
+    return $true
+}
+
 function Find-ClientExecutable {
     $config = Get-LauncherConfig
     if ($config.clientExecutable -and (Test-Path -LiteralPath $config.clientExecutable -PathType Leaf)) {
@@ -686,7 +712,7 @@ function Get-SupportSettings {
         try { $script:supportSettingsCache = Get-M2SupportSettings -Config (Get-LauncherConfig) }
         catch {
             Write-LocalLog "Nie udalo sie odczytac adresu zgloszen: $($_.Exception.Message)" -FileOnly
-            $script:supportSettingsCache = [pscustomobject]@{ UploadUrl = ''; ContactUrl = 'https://discord.gg/pt5tvnrN6'; Source = 'none' }
+            $script:supportSettingsCache = [pscustomobject]@{ UploadUrl = ''; ContactUrl = 'https://metin2sp.pl/discord'; Source = 'none' }
         }
     }
     return $script:supportSettingsCache
@@ -1214,6 +1240,7 @@ function Offer-ClientUpdate {
         Write-LocalLog "Aktualizacja klienta $available odlozona."
         return
     }
+    if (-not (Confirm-ClientForUpdate)) { return }
     Start-LauncherAction -Action 'UpdateClient' -Yes
 }
 
@@ -2662,11 +2689,10 @@ $updateButton.Add_Click({
     Start-LauncherAction -Action 'UpdateServer' -Yes
 })
 $gmPanelButton.Add_Click({
+    # A missing or moved client folder is asked for first, so the question
+    # below names the folder the update will really go to.
+    if (-not (Confirm-ClientForUpdate)) { return }
     $config = Get-M2LauncherConfig -ServerRoot $root -ConfigPath $configPath
-    if (-not [string]$config.clientRoot) {
-        [Windows.Forms.MessageBox]::Show('Najpierw wskaż folder klienta przyciskiem WYBIERZ KLIENTA.', 'Brak klienta', 'OK', 'Information') | Out-Null
-        return
-    }
     if ($script:clientUpdateIsPlain) {
         $answer = [Windows.Forms.MessageBox]::Show(
             "Zaktualizować klienta w $($config.clientRoot)?`r`n`r`nPodmienia pack\root.index i pack\root.data (skrypty gry). Poprzednie wersje trafiają do backups\client w folderze serwera.",

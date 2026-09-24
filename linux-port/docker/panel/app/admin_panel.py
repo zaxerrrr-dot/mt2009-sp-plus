@@ -2192,7 +2192,8 @@ _UPD = {"checked": 0.0,   # last SUCCESSFUL check
         "latest":  "",    # last version seen published
         "notes":   "",    # its changelog, fetched only when it is newer
         "error":   "",    # short, non-technical reason the last attempt failed
-        "next_line": ""}  # the 2.x line's version, seen from a 1.x panel
+        "next_line": "",  # the 2.x line's version, seen from a 1.x panel
+        "source": UPDATE_BASE_URL}  # where the above was read from
 
 _UPD_LOCK = threading.Lock()
 
@@ -2203,6 +2204,12 @@ def _upd_load():
     except (OSError, ValueError):
         return
     if not isinstance(saved, dict):
+        return
+    # MT2009 Plus: what was read from another repository - upstream's, before
+    # this panel pointed at the mod's - is not this source's answer. Kept, it
+    # showed upstream's version and changelog on /patchlog until the next
+    # daily check; dropped, the check runs at once.
+    if str(saved.get("source") or "") != UPDATE_BASE_URL:
         return
     with _UPD_LOCK:
         for key in ("checked", "tried"):
