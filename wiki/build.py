@@ -40,6 +40,13 @@ def rewrite_html(t):
 FAQ_URL = PREFIX + "/mt2009plus/faq/"
 FAQ_BUTTON = ('<a href="%s" class="btn btn-secondary" style="background:#c8932f;border-color:#e0b64a;color:#1b1206;'
               'font-weight:700"><i class="fas fa-circle-question"></i> FAQ – najczęstsze pytania</a>' % FAQ_URL)
+COFFEE_URL = "https://buycoffee.to/mt2009plus"
+COFFEE_STYLE = "background:#1d6fe0;border-color:#4d94ff;color:#fff;font-weight:700"
+COFFEE_BUTTON = ('<a href="%s" target="_blank" rel="noopener" class="btn btn-secondary" style="%s">'
+                 '<i class="fas fa-mug-hot"></i> WESPRZYJ PROJEKT – POSTAW KAWKĘ</a>' % (COFFEE_URL, COFFEE_STYLE))
+COFFEE_NAV = ('<li> <a href="%s" target="_blank" rel="noopener" data-astro-prefetch="false" '
+              'style="%s;border-radius:6px;display:block;padding:8px 10px;margin:4px 0">'
+              '<i class="fas fa-mug-hot"></i> WESPRZYJ PROJEKT – POSTAW KAWKĘ </a> </li>' % (COFFEE_URL, COFFEE_STYLE))
 FAQ_BANNER = ('<a href="%s" style="display:flex;align-items:center;gap:16px;margin:0 0 22px;padding:18px 22px;'
               'border-radius:10px;border:2px solid #e0b64a;background:linear-gradient(90deg,rgba(224,182,74,.28),rgba(224,182,74,.08));'
               'color:inherit;text-decoration:none"><i class="fas fa-circle-question" style="font-size:2.6em;color:#e0b64a"></i>'
@@ -59,8 +66,11 @@ def rebrand(t, sidebar=""):
     t = t.replace("Kompendium wiedzy o świecie MT2009", "Kompendium wiedzy o świecie MT2009 PLUS")
     # Header: the MT2009 PLUS pages beside "Wszystkie strony".
     t = re.sub(r'(<a href="%s/all-pages" class="btn btn-secondary"[^>]*>.*?</a>)' % PREFIX,
-               r'\1 <a href="%s/mt2009plus/" class="btn btn-secondary">MT2009 PLUS</a> ' % PREFIX + FAQ_BUTTON.replace("\\", "\\\\"),
+               r'\1 <a href="%s/mt2009plus/" class="btn btn-secondary">MT2009 PLUS</a> ' % PREFIX + (FAQ_BUTTON + " " + COFFEE_BUTTON).replace("\\", "\\\\"),
                t, count=1, flags=re.S)
+    # Quick navigation (the menu on phones): the coffee between "Strona główna" and "Wszystkie strony".
+    t = re.sub(r'(<li> <a href="%s/" class(?:="[^"]*")? data-astro-prefetch="false"> <i class="fas fa-home"></i> Strona główna\s*</a> </li>)' % PREFIX,
+               lambda m: m.group(1) + " " + COFFEE_NAV, t, count=1)
     # The front page: the FAQ above everything else.
     t = t.replace('<div class="hero-section">', FAQ_BANNER + '<div class="hero-section">', 1)
     # Footer: our site, the credit to the MT2009 wiki.

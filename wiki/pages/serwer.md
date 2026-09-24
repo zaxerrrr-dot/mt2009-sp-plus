@@ -11,4 +11,6 @@ Jak grać i co jest w grze – zobacz [Gra na MT2009 PLUS](/mt2009plus/gra/).
 
 ## Strony o serwerze
 
+Co MT2009 PLUS poprawia w silniku: **[Poprawki MT2009 PLUS](/mt2009plus/poprawki/)**.
+
 {{LISTA_SERWER}}

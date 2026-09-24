@@ -7,7 +7,13 @@ order: 50
 ---
 ## Bez misji na 30 poziom
 
-Plecak alchemii działa dla każdej postaci od razu, bez misji u Alchemika. Otwierasz go przyciskiem albo komendą `/dragon_soul`. Misja u Alchemika nadal wymienia 10 Odłamków Smoczego Kamienia na **Cor Draconis** (50255). Cory wypadają też z Metinów i bossów.
+Plecak alchemii działa dla każdej postaci od razu, bez misji u Alchemika. Otwierasz go przyciskiem albo komendą `/dragon_soul`. Zestaw kamieni aktywujesz jak zwykle w oknie alchemii – działa to dla każdego gracza, nie tylko dla GM.
+
+## Skąd Cor Draconis
+
+- Z **Metinów** (50%) i **bossów** (80%).
+- Z misji u Alchemika: 10 Odłamków Smoczego Kamienia wymienisz na **Cor Draconis** (50255).
+- Od innych graczy i z **sklepów botów** – Cory można dawać i wystawiać w sklepach.
 
 ## Bonusy kamieni smoka
 

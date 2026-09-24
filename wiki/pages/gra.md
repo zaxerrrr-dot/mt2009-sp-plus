@@ -11,4 +11,6 @@ Jeśli prowadzisz serwer (instalacja, panele, SM, boty, eventy), zajrzyj do [Ser
 
 ## Strony o grze
 
+Wszystkie nasze dodatki w skrócie: **[Dodatki MT2009 PLUS](/mt2009plus/dodatki/)**.
+
 {{LISTA_GRA}}
