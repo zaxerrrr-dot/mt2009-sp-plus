@@ -30,6 +30,7 @@ param(
 #   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
 #   drop info, search  packet.h, packet_info.cpp, input_main.cpp, char_item.cpp,
 #                      shop_search_plus.h/.cpp   (MT2009_PLUS_SHOP_SEARCH_PLUS_V1)
+#   speedhack slack    input_main.cpp            (MT2009_PLUS_SPEEDHACK_CLOCK_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -190,6 +191,18 @@ if (Test-Path -LiteralPath $shopSearchPlusApply -PathType Leaf) {
     if ($shopSearchPlusResult.Changed) {
         $syncedFiles++
         Write-Host 'Enabled Target Drop Info and the private shop search.' -ForegroundColor DarkGray
+    }
+}
+# 5 s of slack in the speedhack move check for Docker/WSL2 clocks stepped back
+# a few seconds at a time (server-patches/speedhackclock).
+$speedHackClockApply = Join-Path $repo 'server-patches/speedhackclock/Apply-SpeedHackClockPatch.ps1'
+$inputMainSource = Join-Path $engineGameSource 'input_main.cpp'
+if ((Test-Path -LiteralPath $speedHackClockApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $inputMainSource -PathType Leaf)) {
+    $speedHackClockResult = & $speedHackClockApply -SourceFile $inputMainSource
+    if ($speedHackClockResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Speedhack check tolerant of stepped clocks.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

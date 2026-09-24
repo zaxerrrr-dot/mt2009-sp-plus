@@ -229,7 +229,7 @@ try {
             'linux-port/docker/game/src/server/game/src/ikarus_shop_manager.cpp' = @('MT2009_PLUS_SHOP_SEARCH_ITEM_V1')
             'linux-port/docker/game/src/server/game/src/packet.h' = @('MT2009_PLUS_SHOP_SEARCH_PLUS_V1')
             'linux-port/docker/game/src/server/game/src/packet_info.cpp' = @('MT2009_PLUS_SHOP_SEARCH_PLUS_V1')
-            'linux-port/docker/game/src/server/game/src/input_main.cpp' = @('MT2009_PLUS_SHOP_SEARCH_PLUS_V1')
+            'linux-port/docker/game/src/server/game/src/input_main.cpp' = @('MT2009_PLUS_SHOP_SEARCH_PLUS_V1', 'MT2009_PLUS_SPEEDHACK_CLOCK_V1')
             'linux-port/docker/game/src/server/game/src/char_item.cpp' = @('MT2009_PLUS_SHOP_SEARCH_PLUS_V1')
             'linux-port/docker/game/src/server/game/src/shop_search_plus.cpp' = @('MT2009_PLUS_SHOP_SEARCH_PLUS_V1')
             'linux-port/docker/game/src/server/game/src/dragon_soul_table.cpp' = @('MT2009_PLUS_DS_APPLYS_V1')
