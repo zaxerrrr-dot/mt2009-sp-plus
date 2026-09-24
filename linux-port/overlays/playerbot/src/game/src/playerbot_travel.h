@@ -1006,7 +1006,13 @@ namespace
 		}
 
 		const long oldMap = ch->GetMapIndex();
-		const bool wasRiding = ch->IsRiding();
+		// The horse only: an ItemShop mount (AFFECT_MOUNT) goes through the
+		// warp as it is, and StartRiding on top of it put its rider on a
+		// horse and a mount at once - two mount vnums fighting in every
+		// ComputePoints, which recomputed itself from inside RefreshAffect and
+		// counted the affects twice ("MALL_BONUS exceeded over 100", a Snow
+		// Tiger's +30% experience three times over).
+		const bool wasRiding = ch->IsHorseRiding();
 		// A bot party is one camp and ends with the map. A player's party is the
 		// player's: a bot off to town, or put back on its feet by the sectree
 		// rescue, is still in it - the rescue after a Demon Tower warp left a
