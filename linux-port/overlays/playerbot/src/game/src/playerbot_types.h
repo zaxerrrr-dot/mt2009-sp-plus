@@ -1526,6 +1526,9 @@ namespace
 		PLAYERBOT_ISHOP_LOOK_HAIR,
 		PLAYERBOT_ISHOP_LOOK_WEAPON,
 		PLAYERBOT_ISHOP_LOOK_PET,
+		// The mount seal (operator, 24 September): after the pet, ridden in
+		// place of the horse (playerbot_movement.h, GetPlayerBotMountSeal).
+		PLAYERBOT_ISHOP_LOOK_MOUNT,
 		PLAYERBOT_ISHOP_LOOK_COUNT
 	};
 	const BYTE PLAYERBOT_ISHOP_LOOK_MIN_LEVEL = PLAYERBOT_ISHOP_HAIR_MIN_LEVEL;

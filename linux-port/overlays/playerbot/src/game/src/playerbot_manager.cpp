@@ -2422,6 +2422,16 @@ namespace
 			return false;
 		}
 
+		// A clock stepped back (a Docker/WSL2 clock corrected by a few seconds)
+		// leaves the last activity "in the future": unsigned, dwNow minus it is
+		// huge, and every bot that had just fought was reset at once, every
+		// half minute (MT2009 Plus, 24 September). The activity counts as now.
+		if (state.dwLastMeaningfulActivityTime > dwNow)
+		{
+			state.dwLastMeaningfulActivityTime = dwNow;
+			return false;
+		}
+
 		if (dwNow - state.dwLastMeaningfulActivityTime < PLAYERBOT_INACTIVITY_RESET_TIME)
 			return false;
 

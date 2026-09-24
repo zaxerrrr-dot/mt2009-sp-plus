@@ -25,6 +25,11 @@ param(
 #   pet magic att %    char.cpp                  (MT2009_PLUS_MAGIC_ATT_PER_V1)
 #   mount speed        char_player.cpp           (MT2009_PLUS_MOUNT_SPEED_V1)
 #   bot rare share     char_battle.cpp           (MT2009_PLUS_BOT_RARE_SHARE_V1)
+#   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
+#   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
+#   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
+#   speedhack slack    input_main.cpp            (MT2009_PLUS_SPEEDHACK_CLOCK_V1)
+#   Cor stacking       char_item.cpp             (IsStackableCorDraconisVnum)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -65,6 +70,17 @@ if ((Test-Path -LiteralPath $botRareDropApply -PathType Leaf) -and
     if ($botRareDropResult.Changed) {
         $syncedFiles++
         Write-Host 'Enabled the Cor Draconis and sash drop for bots.' -ForegroundColor DarkGray
+    }
+}
+# Cor Draconis and sashes only from a Metin or boss at most 15 levels below
+# the killer (server-patches/rarelevel); after botraredrop, same blocks.
+$rareLevelApply = Join-Path $repo 'server-patches/rarelevel/Apply-RareLevelPatch.ps1'
+if ((Test-Path -LiteralPath $rareLevelApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $itemManagerSource -PathType Leaf)) {
+    $rareLevelResult = & $rareLevelApply -SourceFile $itemManagerSource
+    if ($rareLevelResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Cor Draconis and sash drops within 15 levels below the killer.' -ForegroundColor DarkGray
     }
 }
 # The alchemy balance (server-patches/dragonsoulbalance): the apply names
@@ -142,6 +158,51 @@ if ((Test-Path -LiteralPath $rareShareApply -PathType Leaf) -and
     if ($rareShareResult.Changed) {
         $syncedFiles++
         Write-Host 'Enabled the bots'' share of Cor Draconis and sashes.' -ForegroundColor DarkGray
+    }
+}
+# A mount seal's bonuses once, not once a ride (server-patches/mountbonus).
+$mountBonusApply = Join-Path $repo 'server-patches/mountbonus/Apply-MountBonusPatch.ps1'
+$mountSystemSource = Join-Path $engineGameSource 'MountSystem.cpp'
+if ((Test-Path -LiteralPath $mountBonusApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $mountSystemSource -PathType Leaf)) {
+    $mountBonusResult = & $mountBonusApply -SourceFile $mountSystemSource
+    if ($mountBonusResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Mount seal bonuses counted once a ride.' -ForegroundColor DarkGray
+    }
+}
+# Mount seals without a time limit ride with no end (server-patches/mountpermanent).
+$mountPermanentApply = Join-Path $repo 'server-patches/mountpermanent/Apply-MountPermanentPatch.ps1'
+if ((Test-Path -LiteralPath $mountPermanentApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $mountSystemSource -PathType Leaf)) {
+    $mountPermanentResult = & $mountPermanentApply -SourceFile $mountSystemSource
+    if ($mountPermanentResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Mount seals without a time limit are permanent.' -ForegroundColor DarkGray
+    }
+}
+# 5 s of slack in the speedhack move check for Docker/WSL2 clocks stepped back
+# a few seconds at a time (server-patches/speedhackclock).
+$speedHackClockApply = Join-Path $repo 'server-patches/speedhackclock/Apply-SpeedHackClockPatch.ps1'
+$inputMainSource = Join-Path $engineGameSource 'input_main.cpp'
+if ((Test-Path -LiteralPath $speedHackClockApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $inputMainSource -PathType Leaf)) {
+    $speedHackClockResult = & $speedHackClockApply -SourceFile $inputMainSource
+    if ($speedHackClockResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Speedhack check tolerant of stepped clocks.' -ForegroundColor DarkGray
+    }
+}
+# Cor Draconis boxes stack in MoveItem despite ANTI_STACK in the proto
+# (server-patches/corstack; Codex's change from the test server).
+$corStackApply = Join-Path $repo 'server-patches/corstack/Apply-CorStackPatch.ps1'
+$charItemSource = Join-Path $engineGameSource 'char_item.cpp'
+if ((Test-Path -LiteralPath $corStackApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charItemSource -PathType Leaf)) {
+    $corStackResult = & $corStackApply -SourceFile $charItemSource
+    if ($corStackResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Cor Draconis boxes stack.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

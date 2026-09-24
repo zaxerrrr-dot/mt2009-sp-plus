@@ -2598,7 +2598,11 @@ namespace
 		if (IsPlayerBotCostumeBonusReagent(item))
 			return -1;
 		if (item->GetType() == ITEM_COSTUME &&
-				(item->GetSubType() == COSTUME_BODY || item->GetSubType() == COSTUME_WEAPON))
+				(item->GetSubType() == COSTUME_BODY || item->GetSubType() == COSTUME_WEAPON
+#if defined(ENABLE_MOUNT_COSTUME_SYSTEM)
+				 || item->GetSubType() == COSTUME_MOUNT
+#endif
+				))
 			return -1;
 		// A hairstyle the bot cannot wear: an item-shop head a keeper bought
 		// for its counter (playerbot_itemshop.h). One it can wear is its own,
@@ -3740,7 +3744,7 @@ namespace
 		// OpenMyShop refuses a character whose main part is not its own body, so
 		// the horse has to go before the stall can be set up.
 		if (ch->IsRiding())
-			ch->StopRiding();
+			StopPlayerBotRiding(ch);
 		ch->HorseSummon(false);
 		ch->SetVictim(NULL);
 		ch->Stop();

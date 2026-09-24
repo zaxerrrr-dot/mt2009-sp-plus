@@ -2270,6 +2270,20 @@ function Get-CoopClientFolder {
     return ''
 }
 
+# The COOP windows' link to the project's support page (operator, 24 September).
+function New-CoopCoffeeLink {
+    param([int]$X, [int]$Y, [int]$Width)
+    $link = [Windows.Forms.LinkLabel]::new()
+    $link.Text = 'Zostań wspierającym, postaw kawę'
+    $link.Location = [Drawing.Point]::new($X, $Y)
+    $link.Size = [Drawing.Size]::new($Width, 22)
+    $link.Font = [Drawing.Font]::new('Segoe UI', 9.5, [Drawing.FontStyle]::Bold)
+    $link.Add_LinkClicked({
+        try { Start-Process 'https://buycoffee.to/mt2009plus' } catch { Write-LocalLog "COOP: nie otwarto strony wsparcia: $($_.Exception.Message)" }
+    })
+    return $link
+}
+
 function Show-CoopUnlockDialog {
     # Hosting is tried by the Patreon testers first. Their password is asked
     # once and remembered by the module (.m2coop.json); a friend who only
@@ -2277,7 +2291,7 @@ function Show-CoopUnlockDialog {
     # Returns 'unlocked', 'join' or 'cancel'. Nothing typed here is logged.
     $dialog = [Windows.Forms.Form]::new()
     $dialog.Text = 'COOP - testy dla patronów'
-    $dialog.Size = [Drawing.Size]::new(520, 270)
+    $dialog.Size = [Drawing.Size]::new(520, 300)
     $dialog.StartPosition = 'CenterParent'
     $dialog.FormBorderStyle = 'FixedDialog'
     $dialog.MaximizeBox = $false
@@ -2324,6 +2338,7 @@ function Show-CoopUnlockDialog {
     $cancel.DialogResult = [Windows.Forms.DialogResult]::Cancel
     $dialog.Controls.Add($cancel)
     $dialog.CancelButton = $cancel
+    $dialog.Controls.Add((New-CoopCoffeeLink -X 14 -Y 220 -Width 476))
     $unlock.Add_Click({
         if (Grant-M2CoopAccess -ServerRoot $root -Password $box.Text) {
             Write-LocalLog 'COOP: hostowanie odblokowane hasłem testów.'
@@ -2551,6 +2566,7 @@ function Show-CoopDialog {
     $closeButton.DialogResult = [Windows.Forms.DialogResult]::Cancel
     $dialog.Controls.Add($closeButton)
     $dialog.CancelButton = $closeButton
+    $dialog.Controls.Add((New-CoopCoffeeLink -X 12 -Y 524 -Width 500))
 
     $refresh = {
         if (-not $JoinOnly) {

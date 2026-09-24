@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-24T16:05:27Z",
-  "statusMessage": "Serwer 2.4.0: baza Tieru 2.2.9 (Metiny z konia bojowego, Wieza Demonow, szepty do botow, zmiana kanalow) i Cory botow nie leza juz na ziemi.",
+  "publishedAt": "2026-09-25T00:30:00Z",
+  "statusMessage": "Serwer 2.4.1 i klient 2.0.11: Cory w stosach, wierzchowce bez 'wygasla', koniec wyrzucania z gry przy zlym zegarze Dockera, nowe Auto Lowy. Zaktualizuj oba.",
   "server": {
-    "version": "2.4.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.4.0.zip",
-    "sha256": "765EA113ECB23DD4BD89E72447ED162D259B764516A8B0F2F0B86B2CEDBC9264",
-    "size": 55308744
+    "version": "2.4.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.4.1.zip",
+    "sha256": "0437329434B074C5ADB8845EF334672AB5C8F081B0BDE6C63811B47B42E7BF2A",
+    "size": 55320839
   },
   "client": {
-    "version": "2.0.10",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.10.zip",
-    "sha256": "4ECF80842724DAE7981B64C3E6AC13177D81FD3F4F437B32F7A0362034FB4BDB",
-    "size": 6228004
+    "version": "2.0.11",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.11.zip",
+    "sha256": "36618E20323B4B7EB8241F5AAA4EFDF09102ADDA2A9B07F57C03E7A2F4D0EAE9",
+    "size": 48498400
   }
 }

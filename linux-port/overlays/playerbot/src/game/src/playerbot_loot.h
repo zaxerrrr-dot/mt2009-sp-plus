@@ -286,6 +286,13 @@ namespace
 				// A cape or a symbol nobody wears (IsPlayerBotLeftOnGroundItem).
 				if (IsPlayerBotLeftOnGroundItem(item->GetVnum()))
 					return true;
+				// A Cor Draconis on the ground is never a bot's: the engine refuses
+				// every bot's pickup of one (char_item.cpp, PickupItem), so a bot's
+				// own Cor goes straight into its bag and a player's stays his. As
+				// loot it held the bot standing over a player's Cor until the Cor
+				// vanished or the player took it (MT2009 Plus, 24 September).
+				if (item->GetVnum() == 50255)
+					return true;
 				if (!towerKey && m_choosy && IsPlayerBotLootBeneathBot(m_owner, item))
 				{
 					++m_skippedCheap;
