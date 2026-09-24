@@ -173,15 +173,13 @@ namespace
 	const DWORD PLAYERBOT_EQUIPMENT_COMBAT_DELAY = 1700;
 	const DWORD PLAYERBOT_GEAR_LOG_INTERVAL = 10000;
 	const DWORD PLAYERBOT_WOODEN_ARROW_VNUM = 8000;
-	const int PLAYERBOT_ARROW_RESTOCK_THRESHOLD = 100;
+	// A bot's quiver is never emptied (Tieru, 24 September: "zeby boty Archer
+	// nie musialy kupowac ciagle strzal, a mialy je bez limitu"), so an Archer
+	// needs arrows only when it has none it can nock, and one bundle bought
+	// then lasts it for good. The shots of a player's Archer still spend
+	// arrows: only the bots' own two shots stopped calling UseArrow.
+	const int PLAYERBOT_ARROW_RESTOCK_THRESHOLD = 1;
 	const int PLAYERBOT_ARROW_SMALL_BUNDLE = 100;
-	const int PLAYERBOT_ARROW_LARGE_BUNDLE = 200;
-	// What a dropper's archer fills its quiver to at the weapon merchant, a
-	// bundle at a time (WantsPlayerBotArrowTopUp). A Monkey Dungeon visit is half
-	// an hour of shooting and a bundle of two hundred lasted minutes: 18 of the
-	// 22 medal droppers that left a dungeon for supplies were archers, each with
-	// more than five hundred red potions still in the bag.
-	const int PLAYERBOT_DROPPER_ARROW_STOCK = 1000;
 	const DWORD PLAYERBOT_POTION_LOG_INTERVAL = 10000;
 	// The engine already saves every character on save_event_second_cycle,
 	// which config.cpp sets to 120 s, and a level change forces a save below
@@ -531,8 +529,10 @@ namespace
 	//
 	// Measured on this world's own refine_proto, because the table's last line
 	// says "unless the anvil is certain": the level-30 family runs
-	// 80/70/60/50/40/30/20/10 percent from +0 to +8, so it never is - a weapon
-	// over 37% average has no anvil step worth taking at all.
+	// 90/85/75/65/55/45/35/25/20 percent from +0 to +9 (world.refine_proto,
+	// sets 352-360), so it never is - a weapon over 37% average has no anvil
+	// step worth taking at all, which is why its own class's copy is taken
+	// to PLAYERBOT_LEVEL30_MIN_PLUS under a scroll when the bag holds one.
 	const long PLAYERBOT_LEVEL30_ANVIL_AVG_CHEAP = 14;
 	const long PLAYERBOT_LEVEL30_ANVIL_AVG_GOOD = 21;
 	const long PLAYERBOT_LEVEL30_ANVIL_AVG_BETTER = 29;
@@ -600,10 +600,15 @@ namespace
 	const int PLAYERBOT_LEVEL30_FIRST_PLUS8_PERCENT = 8;
 	const int PLAYERBOT_LEVEL30_FIRST_PLUS9_PERCENT = 5;
 	const BYTE PLAYERBOT_LEVEL30_LONG_TERM_PLUS = 8;
-	// From this average a level-30 weapon goes under a Blessing Scroll from +3
-	// (the anvil's ceiling, GetPlayerBotLevel30AnvilCeiling), and one on a
-	// counter carrying it is bought when it beats every one the bot holds.
-	const long PLAYERBOT_LEVEL30_BLESSING_FROM_3_AVERAGE = 34;
+	// Iwakura's quick fix of 23 September, in place of community patch 2's
+	// "od 34% Zwojami Blogoslawienstwa juz od +3" and the purchase of every
+	// such weapon, both of which he took back: the class's own level-30
+	// weapon is refined to at least this, whatever its average, under a
+	// scroll when the bag holds one for the step and at the plain anvil when
+	// it does not ("Botom surowo zabrania sie biegania po mapach z bronia +0,
+	// nawet jesli posiada ona bardzo wysokie SR"). A burnt one is bought
+	// again (PlayerBotLacksClassLevel30Weapon) as soon as the budget allows.
+	const BYTE PLAYERBOT_LEVEL30_MIN_PLUS = 6;
 	// The monster a blow is modelled against: the bot's own level, its defence
 	// about fifteen over that on this proto (GetPlayerBotWeaponHitDamageAt).
 	const int PLAYERBOT_MONSTER_DEFENCE_OVER_LEVEL = 15;
@@ -667,6 +672,13 @@ namespace
 	// service visit (BotOfflineUnwantedLine) and goes up again in fives.
 	const int PLAYERBOT_SHOP_SCROLL_LINE_UNITS = 5;
 	const int PLAYERBOT_SHOP_SCROLL_LINES = 3;
+	// Horse medals (PLAYERBOT_HORSE_MEDAL_VNUM) on a counter line: at most two.
+	// The medal is an ITEM_USE, a single by the rule below, and the offline
+	// stand cut none of its kind, so a stack went up whole - ten and twenty on
+	// a line that nobody bought ("wystawiaja nawet po 10 sztuk i nikt tego nie
+	// kupuje", Tieru, 23 September). A longer line already standing comes home
+	// at the next service visit to be cut (BotOfflineUnwantedLine).
+	const int PLAYERBOT_SHOP_HORSE_MEDAL_LINE_UNITS = 2;
 	// Single lines of one kind kept by count - the books of one skill, the
 	// soul stone - one offline counter carries at a time. A line is one unit
 	// (GetPlayerBotStallLineUnits), because a bot buys a line only when all of
@@ -702,7 +714,15 @@ namespace
 	// What a piece of Iwakura's list past its keep scores on a counter
 	// (community patch 2, point 9): the gamblers' stock, above the materials.
 	const int PLAYERBOT_SHOP_LPP_SURPLUS_SCORE = 700;
-	const int PLAYERBOT_SHOP_OTHER_CLASS_BOOK_MIN = 3;
+	// One of them is reason enough: a book of another class is of no use to
+	// the bot and belongs on its counter at once, not in its bag or its box
+	// ("wszystkie ksiegi jakie bot ma w ekwipunku czy w magazynie nie na swoja
+	// klase powinny ladowac natychmiast w sklepie, aby bot nie chomikowal",
+	// Tieru, 24 September). At three, 709 bots of the test world held 1 587 of
+	// them in their bags, two apiece, and opened no counter for them. The box
+	// takes none of them any more (CollectPlayerBotSafeboxBooks) and gives back
+	// what an older version put there (WithdrawPlayerBotSafebox).
+	const int PLAYERBOT_SHOP_OTHER_CLASS_BOOK_MIN = 1;
 	// And a bot in town as the Trader buys the books of its own skills at
 	// Master whatever its gear stands at, with at most this share of its yang
 	// a visit - the window opens with the town visit, or lasts this long where
@@ -877,6 +897,16 @@ namespace
 	// for its three enchantments - longer than most of the fights they were
 	// buffing for, which is why they were usually seen without them.
 	const DWORD PLAYERBOT_BUFF_RECHECK_FAST = 1200;
+	// A rider of a battle horse climbs down for a buff, and its buffs run out
+	// one at a time: a Shaman on a Metin measured on m2zip on 24 September
+	// climbed down for Reflect, was back in the saddle six seconds later and
+	// down again two seconds after that for Blessing. While it stands on the
+	// ground anyway it puts up again whatever has this little left
+	// (IsPlayerBotBuffRunningOut), and each cast keeps it on foot long enough
+	// for the next one - so one climb-down serves the whole set.
+	const long PLAYERBOT_SADDLE_BUFF_REFRESH_SECONDS = 45;
+	const DWORD PLAYERBOT_SADDLE_BUFF_NEXT_MS =
+			PLAYERBOT_SKILL_ANIMATION_LOCK + PLAYERBOT_BUFF_RECHECK_FAST + 1000;
 	// An unfinished town errand is somebody's job until it is done.
 	//
 	// The 8 September audit traced the loop: the bot needs a merchant, the
@@ -1304,6 +1334,21 @@ namespace
 	// (IsPlayerBotOnWarField). A spot is the ground and 400 of pid, so the
 	// crowd stands well inside; the rest is room for a charge and a chase.
 	const long PLAYERBOT_GUILD_WAR_FIELD_RADIUS = 1800;
+	// Who a bot takes on at war. It took the nearest enemy and held him to his
+	// death, and the two sides rally on one ground, so the first enemy to
+	// arrive was everybody's nearest and the war was a queue: "wszyscy sie
+	// rzucaja na jedna osobe i tak w kolko ... zeby po prostu kazdy bil
+	// najblizszy cel" (prodnathin, 23 September); "zmien to aby bylo bardziej
+	// naturalnie" (Tieru, 24 September). A foe now costs his distance, plus
+	// CROWD_PENALTY for every bot of the chooser's guild already on him, plus
+	// a draw of up to JITTER by the pair of pids - so two bots standing side
+	// by side do not choose alike - and the one held costs KEEP_BONUS less.
+	// The choice is made again every RETARGET_MS, so a bot turns to the enemy
+	// who has come up next to it rather than chase the one it picked first.
+	const int PLAYERBOT_GUILD_WAR_CROWD_PENALTY = 500;
+	const int PLAYERBOT_GUILD_WAR_JITTER = 400;
+	const int PLAYERBOT_GUILD_WAR_KEEP_BONUS = 300;
+	const DWORD PLAYERBOT_GUILD_WAR_RETARGET_MS = 4000;
 	// The Demon Tower raid (playerbot_demon_tower.h): one bot guild at a
 	// time on this core, the first a few minutes after a start and the next
 	// an interval after a raid ends; the members gather on the ground floor
@@ -1338,6 +1383,17 @@ namespace
 	const int PLAYERBOT_TOWER_STONE_CLEAR_LIMIT = 25;
 	// ... or with no monster this close to the stone itself.
 	const int PLAYERBOT_TOWER_STONE_CLEAR_RADIUS = 1500;
+	// The seventh floor: the monsters first and the Metin of Murder after
+	// ("niech najpierw skupia sie na mobach, a potem zabieraja sie za kamien",
+	// Tieru, after prodnathin's "lapia aggro na metina i olewaja moby", 23
+	// September). While a monster stands this close to a bot the stone is not
+	// its target, one it holds is let go, and what it fights is ranked from
+	// where it stands rather than from the stone.
+	const int PLAYERBOT_TOWER_STONE_THREAT_RANGE = 1000;
+	// The seventh floor's keys are used between blows: the next of a stack
+	// after this long, and after a use the engine refused, this long.
+	const DWORD PLAYERBOT_TOWER_KEY_RETRY_MS = 3000;
+	const DWORD PLAYERBOT_TOWER_KEY_REFUSED_MS = 20000;
 	// The pack spreads its blows, not itself: an ordinary monster is taken
 	// from the few standing nearest the pack, about this many bots to each,
 	// and only among those no further than SPREAD_RANGE beyond the nearest
@@ -1354,16 +1410,47 @@ namespace
 	// once everybody has had the turn, or after SMITH_REFINE_WAIT_MS; it used
 	// to do so the moment he stood, and nobody ever used him ("nikt nie
 	// korzysta z mozliwosci ulepszania przedmiotow u kowala", prodnathin,
-	// 23 September).
-	const DWORD PLAYERBOT_TOWER_SMITH_REFINE_WAIT_MS = 150 * 1000;
+	// 23 September). A refine takes seconds, and two and a half minutes of
+	// waiting after them was what he saw next ("troche dlugo po ulepszeniu
+	// czeka sie na kolejne pietro"): the wait is forty-five seconds, and one
+	// bot's turn - the walk to him and the refine - is SMITH_TURN_MS at most,
+	// so a bot that cannot reach him no longer holds everybody to the cap.
+	const DWORD PLAYERBOT_TOWER_SMITH_REFINE_WAIT_MS = 45 * 1000;
+	const DWORD PLAYERBOT_TOWER_SMITH_TURN_MS = 20 * 1000;
+	// What a bot gives him is never a piece it wears (Tieru: "nie swoj noszony,
+	// a jakis zarobkowy albo zapasowy, np. +6 i podejma probe na +7, bo kowal
+	// w DT nie wymaga ulepszaczy"): a bag piece he takes, a spare the bot will
+	// wear from any grade under its target, anything else - counter goods -
+	// from this grade up, where a step is worth the fee.
+	const int PLAYERBOT_TOWER_SMITH_GOODS_MIN_PLUS = 4;
 	// The floors' drop. Inside, the fight never ends - a bot always holds a
 	// foe and a pack always stands round it - so the ordinary loot pass only
 	// ever took what lay at a bot's feet, and a floor jumps four to eight
 	// seconds after its last monster falls: "sporo dropu zostaje na ziemi"
 	// (prodnathin). Between two foes a bot takes what it may within
-	// LOOT_RANGE, while its health holds LOOT_MIN_HP_PERCENT.
+	// LOOT_RANGE, while its health holds LOOT_MIN_HP_PERCENT - its own potions
+	// and outgrown gear included, which the choosy looter leaves everywhere
+	// else (CCollectPlayerBotLoot).
 	const int PLAYERBOT_TOWER_LOOT_RANGE = 1500;
 	const int PLAYERBOT_TOWER_LOOT_MIN_HP_PERCENT = 50;
+	// An Archer in the tower shoots from where a bow reaches and no nearer.
+	// It walked up to eight metres of its foe like everybody else walks up to
+	// theirs, and Feather Walk made it the first to arrive, so it was the one
+	// the pack of demons turned on: "za maly dystans archer utrzymuje ... archer
+	// jest zawsze pierwszy i wpierdala sie prosto w walke (przez jego
+	// umiejetnosc co daje speeda) ... fajnie jakby tylko i wylacznie bil z
+	// daleka" (prodnathin, 23 September); "Archer powinien zachowac odleglosc
+	// kilku metrow, w koncu strzela z luku" (Tieru, 24 September). It stops at
+	// ARCHER_RANGE of its foe - the shots and the archery skills all reach
+	// 2500 (world.skill_proto: 46, 48 and 50) - and a monster that comes
+	// within ARCHER_KEEP_AWAY of it gets one step, ARCHER_STEP_BACK towards
+	// the pack standing behind it, and no more: a monster with the Archer's
+	// aggro keeps coming, and a second step would be the first of a run
+	// (StepPlayerBotTowerArcherBack). ARCHER_STEP_MS between two steps.
+	const int PLAYERBOT_TOWER_ARCHER_RANGE = 1500;
+	const int PLAYERBOT_TOWER_ARCHER_KEEP_AWAY = 500;
+	const int PLAYERBOT_TOWER_ARCHER_STEP_BACK = 700;
+	const DWORD PLAYERBOT_TOWER_ARCHER_STEP_MS = 2500;
 	// A raid is a guild and not a party, so the party buffs never reached it:
 	// the tower's Shaman keeps its fellows' buffs up itself, one cast a pass.
 	const DWORD PLAYERBOT_TOWER_ALLY_BUFF_INTERVAL = 3000;
@@ -3084,23 +3171,16 @@ namespace
 	// lines. A giftbox wants three free cells in one column of one page.
 	const int PLAYERBOT_BAG_PAGE_COLUMNS = 5;
 	const int PLAYERBOT_BAG_PAGE_ROWS = 9;
+	// What an armour piece's required level adds to its score, per level: the
+	// tie-break between two pieces whose numbers are the same, Iwakura's "as
+	// close to the character's level as it can be". A point of defence is
+	// worth a thousand, so a level-105 piece gains a tenth of one - the level
+	// never outweighs what the piece gives (GetPlayerBotEquipmentScore).
+	const long long PLAYERBOT_ARMOR_LEVEL_TIE_BREAK = 1;
 	// The Forgetting Scroll (ITEM_SKILLFORGET): one level off a skill and the
 	// point back. A skill that reached seventeen without turning Master is
 	// left there rather than pushed on - every further point is a point the
 	// bot never gets back - and a scroll from a counter buys another roll.
-	// An armour piece more than this many levels below the bot is outgrown and
-	// loses this much score per level past that, so a tier-appropriate piece
-	// at a low refine displaces the starter piece at +6 and gets refined.
-	const int PLAYERBOT_ARMOR_OUTGROWN_LEVELS = 20;
-	// ...as a share of its defence figure per level past that, compounded:
-	// each level keeps this much less of what the level before kept, so no
-	// piece drops to nothing and a higher tier keeps more. It was a flat
-	// fifteen hundred a level, which took the bonus lines with it: a level-18
-	// plate rolled with fifteen hundred health lost at fifty to a dragon armour
-	// with seven more defence and nothing else. Then it was this much a level
-	// up to all of it, and a bot of seventy-four found every armour of level
-	// thirty-four and below worth the same single point.
-	const long long PLAYERBOT_ARMOR_OUTGROWN_PERCENT_PER_LEVEL = 5;
 	const DWORD PLAYERBOT_SKILL_FORGET_SCROLL_VNUM = 70037;
 	// Moving a point from a skill the priority list ranks lower to the one it
 	// wants next: one Forgetting Book per point, at this price and this pace
@@ -3208,6 +3288,14 @@ namespace
 	// a trade: the marble's damage bonus against the whole rotation, and it is
 	// only worth it where the rotation is not what wins the fight anyway.
 	const int PLAYERBOT_POLYMORPH_BOSS_HP_PERCENT = 90;
+	// ...and it is spent on the Reaper and nowhere else. Every boss used to
+	// take one, the Demon Kings of the tower's third and sixth floors among
+	// them ("niekoniecznie wydaje mi sie potrzebne zeby boty tracily na nich
+	// marmurki", prodnathin, 23 September), and the players keep theirs for
+	// the ninth floor's Umarly Rozpruwacz (Tieru, the same evening: "zwykle
+	// uzywa sie na riperze"). 1095, Niebieska Smierc, is the name he gave it
+	// from memory; it is the Catacomb's boss and costs nothing to name here.
+	const DWORD PLAYERBOT_POLYMORPH_BOSS_VNUMS[] = { 1093, 1095 };
 	const DWORD PLAYERBOT_POLYMORPH_RETRY_MS = 60000;
 	// Since 2.0.27 a booster is recognised by what the engine does with it, not
 	// by its vnum: USE_AFFECT with value0 510 is the timed stat buff (attack
@@ -3258,6 +3346,15 @@ namespace
 	{
 		return lMapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN &&
 				lMapIndex / 10000 == PLAYERBOT_MAP_DEMON_TOWER;
+	}
+	// How far a bot's bow shot reaches: eight metres on the maps, where an
+	// Archer mostly hunts alone, and the tower's standoff inside it and on its
+	// ground floor (PLAYERBOT_TOWER_ARCHER_RANGE). The approach and the shot
+	// ask the same number, or the Archer stops where it may not shoot.
+	int GetPlayerBotBowRange(long lMapIndex)
+	{
+		return (lMapIndex == PLAYERBOT_MAP_DEMON_TOWER || IsPlayerBotDemonTowerInstance(lMapIndex))
+				? PLAYERBOT_TOWER_ARCHER_RANGE : 800;
 	}
 	// The tower's keys a bot carries to where they are used
 	// (playerbot_demon_tower.h); the fake Bong-In key is not one of them.
@@ -3601,6 +3698,20 @@ namespace
 	// thirteen seconds after the start, against a split nobody had reached yet.
 	const DWORD PLAYERBOT_CHANNEL_WARMUP_MIN = 300000;
 	const DWORD PLAYERBOT_CHANNEL_WARMUP_AFTER_WINDOW = 120000;
+	// Bots change channel of their own accord, the way people do: with nobody
+	// waiting and the split where the slider wants it, a gate trades
+	// ROAM_PER_MILLE of the playing bots each way - bots of the second channel
+	// that have stayed there ROAM_MIN_STAY_SECONDS onto the shop channel, and
+	// as many of the shop channel's, with no live stand behind them, the other
+	// way - so the split does not move and nobody stays put for good ("it
+	// would be cool if bots change channels itself like 4 hours", Dixdros;
+	// "on tez ma racje, myslalem ze jest tak dynamicznie zrobione", Tieru, 24
+	// September). At a thousand bots and the slider's 40 that is three a gate
+	// each way, ninety an hour: a bot of the second channel stays about four
+	// and a half hours, one of the shop channel longer, because it is the
+	// larger and its stand owners stay by their stands.
+	const unsigned int PLAYERBOT_CHANNEL_ROAM_PER_MILLE = 3;
+	const unsigned int PLAYERBOT_CHANNEL_ROAM_MIN_STAY_SECONDS = 2 * 60 * 60;
 	const int PLAYERBOT_SHOP_RING_MIN = 400;
 	const int PLAYERBOT_SHOP_RING_RADIUS = 1700;
 	// The shop bundle (item 50200) carries LIMIT_NONE in item_proto, so the game
@@ -3746,19 +3857,19 @@ namespace
 				bReason == PLAYERBOT_SHOP_REASON_HOARD;
 	}
 
-	inline const char* GetPlayerBotShopReasonName(BYTE bReason)
+	inline const char* GetPlayerBotShopReasonName(BYTE bReason, bool en = false)
 	{
 		switch (bReason)
 		{
-			case PLAYERBOT_SHOP_REASON_MERCHANT:         return "handlarz";
-			case PLAYERBOT_SHOP_REASON_POOR:             return "brak yang na mikstury";
-			case PLAYERBOT_SHOP_REASON_BAG_FULL:         return "pelny plecak";
-			case PLAYERBOT_SHOP_REASON_DROPPER_PRESSURE: return "dropper, pelny plecak";
-			case PLAYERBOT_SHOP_REASON_BOOKS:            return "nadmiar ksiag";
+			case PLAYERBOT_SHOP_REASON_MERCHANT:         return en ? "merchant" : "handlarz";
+			case PLAYERBOT_SHOP_REASON_POOR:             return en ? "no yang for potions" : "brak yang na mikstury";
+			case PLAYERBOT_SHOP_REASON_BAG_FULL:         return en ? "full bag" : "pelny plecak";
+			case PLAYERBOT_SHOP_REASON_DROPPER_PRESSURE: return en ? "dropper, full bag" : "dropper, pelny plecak";
+			case PLAYERBOT_SHOP_REASON_BOOKS:            return en ? "too many books" : "nadmiar ksiag";
 			case PLAYERBOT_SHOP_REASON_DROPPER_ROLL:     return "dropper";
-			case PLAYERBOT_SHOP_REASON_ROLL:             return "los";
-			case PLAYERBOT_SHOP_REASON_SPARE:            return "zbedny duplikat";
-			case PLAYERBOT_SHOP_REASON_HOARD:            return "nadmiar towaru";
+			case PLAYERBOT_SHOP_REASON_ROLL:             return en ? "chance" : "los";
+			case PLAYERBOT_SHOP_REASON_SPARE:            return en ? "spare duplicate" : "zbedny duplikat";
+			case PLAYERBOT_SHOP_REASON_HOARD:            return en ? "surplus goods" : "nadmiar towaru";
 			default:                                     return "?";
 		}
 	}
@@ -4680,8 +4791,10 @@ namespace
 	// its key from the hook on 701-707 and 731-737; the Demon Souvenir from
 	// 1001 (etc, 1.26) and its key from the hook on 1001-1004. Naming one vnum
 	// made every other carrier worthless experience to a bot past its level,
-	// and 129 bots stood in the valley in parties looking for a target. Any
-	// other hunt means the monster it names.
+	// and 129 bots stood in the valley in parties looking for a target. The
+	// battle horse's trial is a hunt of the same shape: either of the desert's
+	// two archers counts (GetPlayerBotHorseTrialHuntMob). Any other hunt means
+	// the monster it names.
 	bool IsPlayerBotBiologistHuntRace(DWORD huntMob, DWORD race)
 	{
 		if (huntMob == 0)
@@ -4695,6 +4808,7 @@ namespace
 			case 706: return race == 756;
 			case 701: return (race >= 702 && race <= 707) || (race >= 731 && race <= 737);
 			case 1002: return race == 1001 || race == 1003 || race == 1004;
+			case PLAYERBOT_BATTLE_HORSE_MOB_SCORPION_ARCHER: return race == PLAYERBOT_BATTLE_HORSE_MOB_SNAKE_ARCHER;
 		}
 		return false;
 	}
@@ -5708,7 +5822,7 @@ namespace
 	const DWORD PLAYERBOT_RYBAK_EPISODE_MAX = 20 * 60 * 1000;
 	const DWORD PLAYERBOT_RYBAK_MAX_SESSION = 60 * 60 * 1000;
 	// "Bot otwiera co 5 Malz": shells are opened in fives.
-	const int PLAYERBOT_RYBAK_SHELL_BATCH = 5;
+	const int PLAYERBOT_RYBAK_SHELL_BATCH = 5;   // one shell opened in this many
 
 	// Iwakura's Gornik (playerbot_mining.h): a bot with a pickaxe digs a vein
 	// in sight, until the vein is gone ("Ruda znika z mapy"), and after a fight
@@ -5788,6 +5902,36 @@ namespace
 	// Iwakura's Useful Items List (playerbot_lpp.h): under this many free
 	// single cells in the box the list stops keeping the bag's pieces.
 	const int PLAYERBOT_LPP_BOX_MIN_FREE_CELLS = 9;
+	// The most of one family of gear a bot holds, the bag and the box
+	// together, whatever keeps it there - his correction of 23 September to
+	// community patch 2, point 9: "maksymalnie 2 sztuki danego typu
+	// przedmiotu ze wszystkich kategorii ... w ekwipunku i magazynie"; its
+	// class's level-30 weapon is the exception, PLAYERBOT_LEVEL30_KEEP_MAX.
+	const int PLAYERBOT_HELD_FAMILY_LIMIT = 2;
+	// The salt of the draw that makes a bot a gambler by nature, the one
+	// that keeps the list (IsPlayerBotGamblerByNature).
+	const DWORD PLAYERBOT_LPP_GAMBLER_SALT = 0x48415a41U;
+	// A box holding what the list lets go of is visited for it alone - by a
+	// bot already in a village, with room in its bag - at most this often;
+	// a visit that takes six pieces out sends it to the merchants for them
+	// and the next one comes back for six more.
+	const DWORD PLAYERBOT_LPP_RELEASE_VISIT_GAP_MS = 4 * 60 * 1000;
+	// A piece of the list under this grade - what the Demon Tower's smith
+	// takes as goods (PLAYERBOT_TOWER_SMITH_GOODS_MIN_PLUS) - with no line of
+	// his tier 5 or 6 (a "Wysoka Wartosc" line) is plain. The gambler keeps
+	// it within its family's two like any other piece, since it is what the
+	// anvil works; one the list lets go goes to the merchant by the ordinary
+	// rules, never to the counter as the rest of the list's surplus does.
+	// 2.2.7 let every plain piece go: on m2zip on 24 September the boxes held
+	// 13 800 pieces of gear, 3 225 of them body armours at +0 and 8 800
+	// earrings, boots and necklaces nearly all at +0 to +2 ("Boty zbieraja
+	// nadmiar itemow, ktore do niczego sie im nie przydadza", GoracyDelfin;
+	// "zbroje na 34 czy 42 lv tez sa malo warte jesli nie sa ulepszone ... to
+	// juz lepiej jak laduja u handlarza", Tieru). But only a gambler keeps the
+	// list, so what that took was the gamblers' stock, and the boxes of every
+	// other bot were emptied by the list's own release: "czesc musi zostac
+	// (po 2 sztuki danego typu) pod Hazardziste" (Iwakura, the same day).
+	const int PLAYERBOT_LPP_KEEP_MIN_PLUS = PLAYERBOT_TOWER_SMITH_GOODS_MIN_PLUS;
 
 	// Why a bot is fighting a player (playerbot_anti_pk.h): the status line
 	// says it, so it lives here with the state.
@@ -5966,6 +6110,17 @@ namespace
 		// the bag's pieces (they sell as they always did) until a visit finds
 		// room again, or a full box would leave a full bag for good.
 		bool bLppBoxFull;
+		// What the box lets go of (CollectPlayerBotLppBoxRelease) as the last
+		// visit left it, and when a visit may come for that alone; and how
+		// many of each gear family it holds, list or no list, which the
+		// unsold-stands rule asks before it puts a third one down.
+		WORD wLppReleasable;
+		DWORD dwLppReleaseVisitAt;
+		std::map<DWORD, BYTE> mapGearStored;
+		// The pieces a gambler's session worked on, by item id: goods for the
+		// counter from the moment the session ends, never the list's to keep
+		// or the next session's to take (EndPlayerBotGamble).
+		std::set<DWORD> setGambleForSale;
 
 		TPlayerBotPersona() : bRestored(false), bDirty(false), dwLastTick(0), dwNextSave(0),
 			bPersona(playerbot_persona::PERSONA_GRINDER), dwPersonaSince(0), dwNextDecide(0),
@@ -5989,7 +6144,7 @@ namespace
 			dwCompanionBreakUntil(0), bWasInParty(false), dwAskedHumanPid(0), dwAskedHumanAt(0),
 			bAskedHow(0), dwNextHumanAsk(0), dwMercClientPid(0), dwMercApproachUntil(0),
 			dwNextMercScan(0), dwMercCooldownUntil(0), bBagFull(false), bLppStoredKnown(false),
-			bLppBoxFull(false) {}
+			bLppBoxFull(false), wLppReleasable(0), dwLppReleaseVisitAt(0) {}
 	};
 
 	enum EPlayerBotAmbition
@@ -6050,6 +6205,7 @@ namespace
 			dwNextSkillReallocateTime(0),
 			dwNextProgressionChestCheckTime(0),
 			dwNextBuffCheckTime(0),
+			dwSaddleBuffRefreshUntil(0),
 			dwNextSkillCastTime(0),
 			dwNextGearLogTime(0),
 			dwNextPersistTime(0),
@@ -6326,6 +6482,9 @@ namespace
 		DWORD dwNextSkillReallocateTime;
 		DWORD dwNextProgressionChestCheckTime;
 		DWORD dwNextBuffCheckTime;
+		// Until when a rider that climbed down for a buff renews the others
+		// that are running out (PLAYERBOT_SADDLE_BUFF_REFRESH_SECONDS).
+		DWORD dwSaddleBuffRefreshUntil;
 		DWORD dwNextSkillCastTime;
 		DWORD dwNextGearLogTime;
 		DWORD dwNextPersistTime;
