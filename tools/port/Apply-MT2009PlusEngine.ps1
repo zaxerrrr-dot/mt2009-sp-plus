@@ -26,6 +26,10 @@ param(
 #   mount speed        char_player.cpp           (MT2009_PLUS_MOUNT_SPEED_V1)
 #   bot rare share     char_battle.cpp           (MT2009_PLUS_BOT_RARE_SHARE_V1)
 #   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
+#   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
+#   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
+#   drop info, search  packet.h, packet_info.cpp, input_main.cpp, char_item.cpp,
+#                      shop_search_plus.h/.cpp   (MT2009_PLUS_SHOP_SEARCH_PLUS_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -175,6 +179,17 @@ if ((Test-Path -LiteralPath $mountPermanentApply -PathType Leaf) -and
     if ($mountPermanentResult.Changed) {
         $syncedFiles++
         Write-Host 'Mount seals without a time limit are permanent.' -ForegroundColor DarkGray
+    }
+}
+# Target Drop Info and the private shop search (server-patches/shopsearchplus):
+# new shop_search_plus.h/.cpp plus hooks in packet.h, packet_info.cpp,
+# input_main.cpp and char_item.cpp.
+$shopSearchPlusApply = Join-Path $repo 'server-patches/shopsearchplus/Apply-ShopSearchPlusPatch.ps1'
+if (Test-Path -LiteralPath $shopSearchPlusApply -PathType Leaf) {
+    $shopSearchPlusResult = & $shopSearchPlusApply -SourceDir $engineGameSource
+    if ($shopSearchPlusResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Enabled Target Drop Info and the private shop search.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
