@@ -21,6 +21,8 @@ param(
 #   Death Ruler wings  item_manager.cpp, char_item.cpp (no 85101/85104 drop)
 #   alchemy bonuses    dragon_soul_table.cpp     (MT2009_PLUS_DS_APPLYS_V1)
 #   alchemy for all    char_affect.cpp           (MT2009_PLUS_DS_QUALIFY_ON_LOGIN_V1)
+#   alchemy deck cmd   cmd.cpp, cmd_gm.cpp       (MT2009_PLUS_DS_PLAYER_CMD_V1)
+#   pet magic att %    char.cpp                  (MT2009_PLUS_MAGIC_ATT_PER_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -90,6 +92,30 @@ if ((Test-Path -LiteralPath $dsQualifyApply -PathType Leaf) -and
     if ($dsQualifyResult.Changed) {
         $syncedFiles++
         Write-Host 'Enabled the Dragon Soul alchemy for every player.' -ForegroundColor DarkGray
+    }
+}
+# The alchemy deck for players (server-patches/dscommand): the client's
+# "/dragon_soul activate" was a GM_IMPLEMENTOR command, so a player got
+# "Ta komenda nie istnieje"; its testing aids stay a GM's.
+$dsCommandApply = Join-Path $repo 'server-patches/dscommand/Apply-DsCommandPatch.ps1'
+if ((Test-Path -LiteralPath $dsCommandApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd.cpp') -PathType Leaf)) {
+    $dsCommandResult = & $dsCommandApply -SourceDir $engineGameSource
+    if ($dsCommandResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Enabled the alchemy deck command for players.' -ForegroundColor DarkGray
+    }
+}
+# A pet's magic attack % (server-patches/magicattper): PointChange had no
+# case for POINT_MAGIC_ATT_BONUS_PER, so the bonus never applied.
+$magicAttApply = Join-Path $repo 'server-patches/magicattper/Apply-MagicAttPerPatch.ps1'
+$charSource = Join-Path $engineGameSource 'char.cpp'
+if ((Test-Path -LiteralPath $magicAttApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charSource -PathType Leaf)) {
+    $magicAttResult = & $magicAttApply -SourceFile $charSource
+    if ($magicAttResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Enabled the pets'' magic attack bonus.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
