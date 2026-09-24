@@ -13,8 +13,14 @@ powstawał, więc boty nie miały czego wystawić: licznik
 
 ## Co robi poprawka
 
-- **Warunek:** z obu bloków znika `!IsBot()`. Zabójstwo bota losuje Cor i
-  szarfę z **tymi samymi szansami** co zabójstwo gracza.
+- **Warunek:** z obu bloków znika `!IsBot()`, więc zabójstwo bota też losuje
+  Cor i szarfę.
+- **Szanse bota (V2):** Cor Draconis **5%** (metin i boss), szarfa **3%**
+  (boss; silnik liczy też metiny jako rangę boss). Gracze bez zmian: Cor 50%
+  z metina i 80% z bossa, szarfa 80%. Zmiana szans: `BOT_COR_CHANCE` /
+  `BOT_SASH_CHANCE` w `apply_botraredrop.py` i `$botCorChance` /
+  `$botSashChance` w `Apply-BotRareDropPatch.ps1` (tylko na świeżym pliku,
+  bo gotowy etap V2 nie jest nakładany drugi raz).
 - **Do plecaka, nie na ziemię:** przedmiot z zabójstwa bota trafia prosto do
   jego plecaka (`AutoGiveItem`). Przy pełnym plecaku upada obok bota.
 - **Blokada podnoszenia bez zmian:** `char_item.cpp` (`PickupItem`) dalej nie
@@ -32,7 +38,9 @@ powstawał, więc boty nie miały czego wystawić: licznik
 - `apply_botraredrop.py` – Linux/VPS: `python3 apply_botraredrop.py
   linux-port/docker/game/src/server/game/src`, potem `docker compose build game`.
 
-Obie wersje robią te same cztery podmiany, oznaczają plik markerem
-`MT2009_PLUS_BOT_RARE_DROP_V1` (drugie uruchomienie nic nie zmienia),
+Obie wersje robią te same podmiany w dwóch etapach, każdy z własnym markerem:
+`MT2009_PLUS_BOT_RARE_DROP_V1` (odblokowanie, 4 podmiany) i
+`MT2009_PLUS_BOT_RARE_DROP_V2` (szanse bota, 2 podmiany). Nakładają tylko
+brakujący etap (drugie uruchomienie nic nie zmienia),
 zachowują końcówki linii (CRLF/LF) i nie zmieniają niczego, jeśli
 oczekiwanego kodu nie ma.
