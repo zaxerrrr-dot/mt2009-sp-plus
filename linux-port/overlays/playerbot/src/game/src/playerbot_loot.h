@@ -263,8 +263,11 @@ namespace
 				continue;
 			if (!ITEM_MANAGER::instance().GetTable(rolls[i].vnum))
 				continue;
-			// Into the bag; a full bag puts it at the bot's feet (AutoGiveItem),
-			// where the loot pass picks it up.
+			// Into the bag, never onto the ground: the engine refuses a bot
+			// the pickup of a Cor Draconis (CHARACTER::PickupItem, 50255), and
+			// AutoGiveItem would drop it at the feet of a bot with a full bag.
+			if (ch->GetEmptyInventory(1) < 0)
+				continue;
 			ch->AutoGiveItem(rolls[i].vnum, 1, -1, false);
 			sys_log(0, "PLAYERBOT_RARE_DROP: pid=%u name=%s level=%d kind=%s vnum=%u from=%s mob=%u mob_level=%d drop_pct=%d",
 					ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), rolls[i].kind, rolls[i].vnum,
