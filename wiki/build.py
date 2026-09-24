@@ -37,6 +37,8 @@ def rewrite_html(t):
     return t
 
 
+import hashlib
+THEME_VERSION = hashlib.sha1(open(os.path.join(HERE, "assets", "theme.css"), "rb").read()).hexdigest()[:8]
 FAQ_URL = PREFIX + "/mt2009plus/faq/"
 FAQ_BUTTON = ('<a href="%s" class="btn btn-secondary" style="background:#c8932f;border-color:#e0b64a;color:#1b1206;'
               'font-weight:700"><i class="fas fa-circle-question"></i> FAQ</a>' % FAQ_URL)
@@ -90,7 +92,8 @@ def rebrand(t, sidebar=""):
     t = t.replace("Witaj w MT2009 Wiki", "Witaj w MT2009 PLUS Wiki")
     t = t.replace("Kompleksowa baza wiedzy o świecie MT2009.", "Kompleksowa baza wiedzy o świecie MT2009 i MT2009 PLUS.")
     # MT2009 PLUS colours and artwork, after the site's own stylesheets.
-    t = t.replace("</head>", '<link rel="stylesheet" href="%s/plus/theme.css"></head>' % PREFIX, 1)
+    # ?v=: a changed theme is fetched at once, not the browser's cached copy.
+    t = t.replace("</head>", '<link rel="stylesheet" href="%s/plus/theme.css?v=%s"></head>' % (PREFIX, THEME_VERSION), 1)
     # The sidebar: our pages before "Inne strony".
     if sidebar:
         t = t.replace("<!-- Inne strony -->", sidebar + "<!-- Inne strony -->", 1)
