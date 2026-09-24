@@ -78,6 +78,7 @@ namespace
 	std::vector<DWORD> s_vecPlayerBotItemShopBody;
 	std::vector<DWORD> s_vecPlayerBotItemShopWeaponSkin;
 	std::vector<DWORD> s_vecPlayerBotItemShopPet;
+	std::vector<DWORD> s_vecPlayerBotItemShopMount;
 	DWORD s_dwNextPlayerBotItemShopScan = 0;
 
 	unsigned int s_uPlayerBotVouchersUsed = 0;
@@ -100,6 +101,7 @@ namespace
 		s_vecPlayerBotItemShopBody.clear();
 		s_vecPlayerBotItemShopWeaponSkin.clear();
 		s_vecPlayerBotItemShopPet.clear();
+		s_vecPlayerBotItemShopMount.clear();
 
 		CItemShopManager& shop = CItemShopManager::instance();
 		unsigned int entries = 0;
@@ -135,6 +137,10 @@ namespace
 			if (!marks && proto->bType == ITEM_PET && proto->bSubType == PET_PAY && proto->alValues[0] != 0 &&
 					proto->alValues[2] == 0)
 				s_vecPlayerBotItemShopPet.push_back(item.dwVnum);
+#if defined(ENABLE_MOUNT_COSTUME_SYSTEM)
+			if (!marks && proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_MOUNT && proto->alValues[1] != 0)
+				s_vecPlayerBotItemShopMount.push_back(item.dwVnum);
+#endif
 		}
 		if (entries == 0)
 		{
@@ -142,11 +148,11 @@ namespace
 			s_dwNextPlayerBotItemShopScan = dwNow + 5 * 60 * 1000;
 			return;
 		}
-		sys_log(0, "PLAYERBOT_ISHOP: catalogue entries=%u coins=%u marks=%u hairstyles=%u costumes=%u weapon_skins=%u pets=%u",
+		sys_log(0, "PLAYERBOT_ISHOP: catalogue entries=%u coins=%u marks=%u hairstyles=%u costumes=%u weapon_skins=%u pets=%u mounts=%u",
 				entries, (unsigned int)s_mapPlayerBotItemShopCoins.size(),
 				(unsigned int)s_mapPlayerBotItemShopMarks.size(), (unsigned int)s_vecPlayerBotItemShopHair.size(),
 				(unsigned int)s_vecPlayerBotItemShopBody.size(), (unsigned int)s_vecPlayerBotItemShopWeaponSkin.size(),
-				(unsigned int)s_vecPlayerBotItemShopPet.size());
+				(unsigned int)s_vecPlayerBotItemShopPet.size(), (unsigned int)s_vecPlayerBotItemShopMount.size());
 	}
 
 	void RefreshPlayerBotDragonBalance(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
@@ -318,6 +324,10 @@ namespace
 				return IsPlayerBotWeaponSkinFor(ch, proto);
 			case PLAYERBOT_ISHOP_LOOK_PET:
 				return proto->bType == ITEM_PET && proto->bSubType == PET_PAY && proto->alValues[0] != 0;
+#if defined(ENABLE_MOUNT_COSTUME_SYSTEM)
+			case PLAYERBOT_ISHOP_LOOK_MOUNT:
+				return proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_MOUNT && proto->alValues[1] != 0;
+#endif
 		}
 		return false;
 	}
@@ -358,6 +368,14 @@ namespace
 				if (IsPlayerBotPetSummoned(ch))
 					return true;
 				break;
+			case PLAYERBOT_ISHOP_LOOK_MOUNT:
+#if defined(ENABLE_MOUNT_COSTUME_SYSTEM)
+				if (ch->GetWear(WEAR_COSTUME_MOUNT))
+					return true;
+				break;
+#else
+				return true;
+#endif
 		}
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
@@ -375,6 +393,7 @@ namespace
 			case PLAYERBOT_ISHOP_LOOK_BODY: return s_vecPlayerBotItemShopBody;
 			case PLAYERBOT_ISHOP_LOOK_HAIR: return s_vecPlayerBotItemShopHair;
 			case PLAYERBOT_ISHOP_LOOK_WEAPON: return s_vecPlayerBotItemShopWeaponSkin;
+			case PLAYERBOT_ISHOP_LOOK_MOUNT: return s_vecPlayerBotItemShopMount;
 			default: return s_vecPlayerBotItemShopPet;
 		}
 	}
@@ -386,6 +405,7 @@ namespace
 			case PLAYERBOT_ISHOP_LOOK_BODY: return "look_costume";
 			case PLAYERBOT_ISHOP_LOOK_HAIR: return "hairstyle";
 			case PLAYERBOT_ISHOP_LOOK_WEAPON: return "look_weapon_skin";
+			case PLAYERBOT_ISHOP_LOOK_MOUNT: return "look_mount";
 			default: return "look_pet";
 		}
 	}
@@ -540,7 +560,14 @@ namespace
 		static const BYTE s_abWear[PLAYERBOT_ISHOP_LOOK_PET] = { WEAR_COSTUME_BODY, WEAR_COSTUME_HAIR, WEAR_COSTUME_WEAPON };
 		for (int look = 0; look < PLAYERBOT_ISHOP_LOOK_COUNT; ++look)
 		{
-			if (look == PLAYERBOT_ISHOP_LOOK_PET ? IsPlayerBotPetSummoned(ch) : ch->GetWear(s_abWear[look]) != NULL)
+			if (look == PLAYERBOT_ISHOP_LOOK_PET ? IsPlayerBotPetSummoned(ch) :
+					look == PLAYERBOT_ISHOP_LOOK_MOUNT ?
+#if defined(ENABLE_MOUNT_COSTUME_SYSTEM)
+						ch->GetWear(WEAR_COSTUME_MOUNT) != NULL
+#else
+						true
+#endif
+					: ch->GetWear(s_abWear[look]) != NULL)
 				continue;
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 			{

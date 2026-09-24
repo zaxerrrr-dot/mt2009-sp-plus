@@ -272,7 +272,8 @@ namespace
 		// horse.advance() is SetHorseLevel + ComputePoints + SkillLevelPacket,
 		// and the quest dismounts and remounts around it so the rider is sitting
 		// on the animal it just became.
-		const bool wasRiding = ch->IsRiding();
+		// The horse's own saddle only: a bot on its ItemShop mount stays on it.
+		const bool wasRiding = ch->IsHorseRiding();
 		if (wasRiding)
 			ch->StopRiding();
 		ch->SetHorseLevel(ch->GetHorseLevel() + 1);

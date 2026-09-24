@@ -25,6 +25,7 @@ param(
 #   pet magic att %    char.cpp                  (MT2009_PLUS_MAGIC_ATT_PER_V1)
 #   mount speed        char_player.cpp           (MT2009_PLUS_MOUNT_SPEED_V1)
 #   bot rare share     char_battle.cpp           (MT2009_PLUS_BOT_RARE_SHARE_V1)
+#   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -142,6 +143,17 @@ if ((Test-Path -LiteralPath $rareShareApply -PathType Leaf) -and
     if ($rareShareResult.Changed) {
         $syncedFiles++
         Write-Host 'Enabled the bots'' share of Cor Draconis and sashes.' -ForegroundColor DarkGray
+    }
+}
+# A mount seal's bonuses once, not once a ride (server-patches/mountbonus).
+$mountBonusApply = Join-Path $repo 'server-patches/mountbonus/Apply-MountBonusPatch.ps1'
+$mountSystemSource = Join-Path $engineGameSource 'MountSystem.cpp'
+if ((Test-Path -LiteralPath $mountBonusApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $mountSystemSource -PathType Leaf)) {
+    $mountBonusResult = & $mountBonusApply -SourceFile $mountSystemSource
+    if ($mountBonusResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Mount seal bonuses counted once a ride.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
