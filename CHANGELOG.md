@@ -17,6 +17,22 @@ every version here.
 
 ---
 
+## 2.3.4 — 2026-09-24 — Wierzchowce już nie cofają
+
+Serwer 2.3.4; klient zostaje 2.0.10. Zaktualizuj serwer w launcherze
+(**SPRAWDŹ AKTUALIZACJE**). Zawiera wszystko z 2.3.3. Pierwszy start po
+aktualizacji kompiluje serwer od nowa, więc trwa dłużej niż zwykle.
+
+### Wierzchowce
+
+- Szybkie wierzchowce nie cofają już postaci podczas jazdy. Serwer
+  sprawdzał prędkość każdego jeźdźca tak, jakby jechał na zwykłym koniu
+  bojowym, więc wierzchowce szybsze od niego (np. Manni, Manu, Cerber) były
+  cofane. Teraz serwer liczy prędkość z animacji konkretnego wierzchowca,
+  tak jak klient. Dotyczy to wszystkich wierzchowców, nie tylko Magma Manni.
+- Jeśli jakiś wierzchowiec nadal cofa, podaj jego nazwę na kanale
+  **błędy i bugi** na Discordzie.
+
 ## 2.3.3 — 2026-09-24 — Alchemia dla każdego, boty bonusują kostiumy
 
 Serwer 2.3.3; klient zostaje 2.0.10. Zaktualizuj serwer w launcherze

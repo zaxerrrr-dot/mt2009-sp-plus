@@ -23,6 +23,7 @@ param(
 #   alchemy for all    char_affect.cpp           (MT2009_PLUS_DS_QUALIFY_ON_LOGIN_V1)
 #   alchemy deck cmd   cmd.cpp, cmd_gm.cpp       (MT2009_PLUS_DS_PLAYER_CMD_V1)
 #   pet magic att %    char.cpp                  (MT2009_PLUS_MAGIC_ATT_PER_V1)
+#   mount speed        char_player.cpp           (MT2009_PLUS_MOUNT_SPEED_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -116,6 +117,18 @@ if ((Test-Path -LiteralPath $magicAttApply -PathType Leaf) -and
     if ($magicAttResult.Changed) {
         $syncedFiles++
         Write-Host 'Enabled the pets'' magic attack bonus.' -ForegroundColor DarkGray
+    }
+}
+# Every costume mount's speed in the movement check (server-patches/
+# mountspeed): the Magma Manni correction for all of them, widening only.
+$mountSpeedApply = Join-Path $repo 'server-patches/mountspeed/Apply-MountSpeedPatch.ps1'
+$charPlayerSource = Join-Path $engineGameSource 'char_player.cpp'
+if ((Test-Path -LiteralPath $mountSpeedApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charPlayerSource -PathType Leaf)) {
+    $mountSpeedResult = & $mountSpeedApply -SourceFile $charPlayerSource
+    if ($mountSpeedResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Enabled the speed correction for every costume mount.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
