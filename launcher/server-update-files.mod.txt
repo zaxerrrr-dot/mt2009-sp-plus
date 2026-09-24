@@ -108,6 +108,7 @@ linux-port/docker/game/src/server/game/src/char_affect.cpp
 linux-port/docker/game/src/server/game/src/char.h
 linux-port/docker/game/src/server/game/src/char_battle.cpp
 linux-port/docker/game/src/server/game/src/char_item.cpp
+linux-port/docker/game/src/server/game/src/char_player.cpp
 linux-port/docker/game/src/server/game/src/char_quickslot.cpp
 linux-port/docker/game/src/server/game/src/char_shop.cpp
 linux-port/docker/game/src/server/game/src/char_skill.cpp
