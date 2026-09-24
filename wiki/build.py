@@ -39,7 +39,7 @@ def rewrite_html(t):
 
 FAQ_URL = PREFIX + "/mt2009plus/faq/"
 FAQ_BUTTON = ('<a href="%s" class="btn btn-secondary" style="background:#c8932f;border-color:#e0b64a;color:#1b1206;'
-              'font-weight:700"><i class="fas fa-circle-question"></i> FAQ – najczęstsze pytania</a>' % FAQ_URL)
+              'font-weight:700"><i class="fas fa-circle-question"></i> FAQ</a>' % FAQ_URL)
 COFFEE_URL = "https://buycoffee.to/mt2009plus"
 COFFEE_STYLE = "background:#1d6fe0;border-color:#4d94ff;color:#fff;font-weight:700"
 COFFEE_BUTTON = ('<a href="%s" target="_blank" rel="noopener" class="btn btn-secondary" style="%s">'
@@ -72,7 +72,9 @@ def rebrand(t, sidebar=""):
     t = re.sub(r'(<li> <a href="%s/" class(?:="[^"]*")? data-astro-prefetch="false"> <i class="fas fa-home"></i> Strona główna\s*</a> </li>)' % PREFIX,
                lambda m: m.group(1) + " " + COFFEE_NAV, t, count=1)
     # The front page: the FAQ above everything else.
-    t = t.replace('<div class="hero-section">', FAQ_BANNER + '<div class="hero-section">', 1)
+    t = t.replace('<div class="hero-section">',
+                  '<div class="plus-banner" role="img" aria-label="MT2009 Singleplayer Plus"></div>' + FAQ_BANNER
+                  + '<div class="hero-section">', 1)
     # Footer: our site, the credit to the MT2009 wiki.
     t = t.replace("Oficjalne kompedium wiedzy serwisu MT2009.pl",
                   "Kompendium wiedzy MT2009 PLUS &middot; na podstawie wiki.mt2009.pl")
@@ -87,6 +89,8 @@ def rebrand(t, sidebar=""):
     t = re.sub(r">\s*MT2009 Wiki\s*<", ">MT2009 PLUS Wiki<", t)
     t = t.replace("Witaj w MT2009 Wiki", "Witaj w MT2009 PLUS Wiki")
     t = t.replace("Kompleksowa baza wiedzy o świecie MT2009.", "Kompleksowa baza wiedzy o świecie MT2009 i MT2009 PLUS.")
+    # MT2009 PLUS colours and artwork, after the site's own stylesheets.
+    t = t.replace("</head>", '<link rel="stylesheet" href="%s/plus/theme.css"></head>' % PREFIX, 1)
     # The sidebar: our pages before "Inne strony".
     if sidebar:
         t = t.replace("<!-- Inne strony -->", sidebar + "<!-- Inne strony -->", 1)
@@ -184,6 +188,10 @@ def main():
     ours.sort()
     items = json.load(open(os.path.join(HERE, "data", "items.json"), encoding="utf-8"))
     shutil.copytree(os.path.join(HERE, "items"), os.path.join(site, "images", "plus"), dirs_exist_ok=True)
+    # Theme and artwork.
+    os.makedirs(os.path.join(site, "plus"), exist_ok=True)
+    shutil.copyfile(os.path.join(HERE, "assets", "theme.css"), os.path.join(site, "plus", "theme.css"))
+    shutil.copyfile(os.path.join(HERE, "assets", "mt2009plus-tlo.webp"), os.path.join(site, "images", "mt2009plus-tlo.webp"))
     # Downloads linked from our pages: /wiki/pobierz/<file>.
     shutil.copytree(os.path.join(HERE, "files"), os.path.join(site, "pobierz"), dirs_exist_ok=True)
     entries = []

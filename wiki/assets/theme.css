@@ -1,0 +1,37 @@
+/* MT2009 PLUS: colours of the MT2009 Singleplayer Plus artwork (charcoal, gold, ember). */
+:root{
+  --color-bg-primary:#120d0b;
+  --color-bg-secondary:#1c1410;
+  --color-bg-accent:#6b4a2e;
+  --color-border-default:#5e4128;
+  --color-border-focus:#c9963f;
+  --color-text-headers:#f0c878;
+  --color-text-links:#f5d38a;
+  --color-text-links-hover:#ff9a4d;
+  --color-text-primary:#e6dccb;
+  --color-text-secondary:#cbbfa6;
+  --color-warning:#f0c878;
+  --toc-active-bg:rgba(240,200,120,.12);
+  --plus-ember:#e2502a;
+  --plus-gold:#e0b64a;
+}
+body{background:linear-gradient(rgba(12,8,6,.84),rgba(12,8,6,.92)),url(/wiki/images/mt2009plus-tlo.webp) center top/cover fixed,#120d0b}
+@media (max-width:1024px){body{background-attachment:scroll,scroll}}
+.header{background:rgba(22,15,11,.93);border-bottom:1px solid var(--color-border-default);
+  box-shadow:0 1px 0 rgba(226,80,42,.55),0 6px 18px rgba(0,0,0,.45)}
+.article{background:rgba(24,17,13,.94);border-color:var(--color-border-default);
+  box-shadow:0 0 18px 4px rgba(0,0,0,.55),inset 0 1px 0 rgba(240,200,120,.08)}
+.sidebar,.toc{background-color:transparent}
+.footer{background:rgba(20,14,10,.95);border-top:1px solid var(--color-border-default);box-shadow:0 -1px 0 rgba(226,80,42,.45)}
+.article h1,.article h2{color:var(--color-text-headers);text-shadow:0 0 14px rgba(226,80,42,.25)}
+.article h2{border-bottom:1px solid rgba(226,80,42,.35);padding-bottom:6px}
+.article a:hover{color:var(--color-text-links-hover)}
+.plus-banner{display:block;width:100%;aspect-ratio:16/7;margin:0 0 22px;border-radius:var(--border-radius);
+  border:1px solid var(--color-border-default);background:url(/wiki/images/mt2009plus-tlo.webp) center 42%/cover;
+  box-shadow:0 0 22px rgba(226,80,42,.22)}
+.nav-section h3{color:var(--color-text-headers)}
+.btn-secondary{border-color:var(--color-border-default)}
+.plus-item{border-color:rgba(240,200,120,.18);background:rgba(0,0,0,.28)}
+.plus-item:hover{border-color:rgba(226,80,42,.6)}
+#mt2009plus-faq{display:flex;align-items:center;gap:8px}
+.header .btn{white-space:nowrap}
