@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-24T13:25:25Z",
-  "statusMessage": "Serwer 2.3.3: alchemia dla kazdego bez misji, boty bonusuja kostiumy, kostiumy botow w Seban Panelu.",
+  "publishedAt": "2026-09-24T14:49:48Z",
+  "statusMessage": "Serwer 2.3.4: szybkie wierzchowce juz nie cofaja. Jesli jakis nadal cofa, podaj jego nazwe na kanale bledy i bugi.",
   "server": {
-    "version": "2.3.3",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.3.3.zip",
-    "sha256": "3311E885F346D30766A9DBC802E154F8ED91211D92EE9F49B9A22E4D40475716",
-    "size": 55205995
+    "version": "2.3.4",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.3.4.zip",
+    "sha256": "5573961388A97A71FFAC874E9E0002C18D99367E9804237E05F0A20789C1B1E2",
+    "size": 55209977
   },
   "client": {
     "version": "2.0.10",
