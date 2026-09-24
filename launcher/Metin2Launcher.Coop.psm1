@@ -37,8 +37,14 @@ $script:CoopInvitePrefix = 'M2COOP1:'
 # file is plain text - and a new digest re-locks every install. Joining a
 # friend's world needs no password: the invite code is the friend's own key,
 # and only somebody who can host can hand one out.
+# Two passwords open it (MT2009 Plus, 24 Sep 2026): Tieru's testers' one,
+# kept so their installs stay open, and MT2009 Plus's own. The first digest
+# is the one a grant records when the password matches none (never).
 $script:CoopAccessSalt = '7efd8b1a3ea2fc99'
-$script:CoopAccessDigest = '75b8d736837c3268d3109b68010047a71e6e841972087efb5ab83f3e13d7f11e'
+$script:CoopAccessDigests = @(
+    '75b8d736837c3268d3109b68010047a71e6e841972087efb5ab83f3e13d7f11e',  # Tieru's testers
+    '4dff655973b9312f334ad0e6ff3a14473cde4ed55ed61f01d25cddd599dfd207'   # MT2009 Plus
+)
 
 # ---------------------------------------------------------------- paths/env
 
@@ -89,17 +95,19 @@ function Test-M2CoopAccess {
     param([Parameter(Mandatory = $true)][string]$ServerRoot)
     $state = Read-M2CoopState -ServerRoot $ServerRoot
     if (-not ($state.PSObject.Properties.Name -contains 'access')) { return $false }
-    return ([string]$state.access -eq $script:CoopAccessDigest)
+    return ($script:CoopAccessDigests -contains [string]$state.access)
 }
 
 function Grant-M2CoopAccess {
-    # True and remembered when the password is the testers' one; false and
-    # nothing written otherwise. The password itself is never stored.
+    # True and remembered when the password is one of the testers' ones;
+    # false and nothing written otherwise. The password itself is never
+    # stored, only the digest it matched.
     param([Parameter(Mandatory = $true)][string]$ServerRoot, [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Password)
-    if ((Get-M2CoopAccessDigest -Password $Password) -ne $script:CoopAccessDigest) { return $false }
+    $digest = Get-M2CoopAccessDigest -Password $Password
+    if ($script:CoopAccessDigests -notcontains $digest) { return $false }
     $state = Read-M2CoopState -ServerRoot $ServerRoot
-    if ($state.PSObject.Properties.Name -contains 'access') { $state.access = $script:CoopAccessDigest }
-    else { $state | Add-Member -NotePropertyName access -NotePropertyValue $script:CoopAccessDigest }
+    if ($state.PSObject.Properties.Name -contains 'access') { $state.access = $digest }
+    else { $state | Add-Member -NotePropertyName access -NotePropertyValue $digest }
     Save-M2CoopState -ServerRoot $ServerRoot -State $state
     return $true
 }

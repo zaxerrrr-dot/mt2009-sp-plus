@@ -1772,9 +1772,14 @@ function Invoke-CoopGameRecreate {
     # container is recreated with the new address - every core restarts, about
     # a minute. The panels stay on M2_PANEL_BIND_ADDRESS, written out as
     # 127.0.0.1 first if it was empty, so they never follow the game outwards.
-    param([Parameter(Mandatory = $true)][string]$BindAddress)
+    # PublicAddress, when given, is what the cores advertise (M2_PUBLIC_ADDRESS
+    # -> PROXY_IP, rendered at the container's start): the MT2009 Plus client
+    # connects to the address a warp names (TPacketGCWarp), so a friend sent
+    # to 127.0.0.1 at the first map of another core would knock on his own PC.
+    param([Parameter(Mandatory = $true)][string]$BindAddress, [string]$PublicAddress = '')
     if (-not (Get-DotEnvValue -Key 'M2_PANEL_BIND_ADDRESS')) { Set-DotEnvValue -Key 'M2_PANEL_BIND_ADDRESS' -Value '127.0.0.1' }
     Set-DotEnvValue -Key 'M2_HOST_BIND_ADDRESS' -Value $BindAddress
+    if ($PublicAddress) { Set-DotEnvValue -Key 'M2_PUBLIC_ADDRESS' -Value $PublicAddress }
     $composeDir = Join-Path $serverRoot 'linux-port\docker'
     $composeFile = Join-Path $composeDir 'docker-compose.yml'
     # compose writes its progress to stderr, which 'Stop' would turn into a
@@ -1853,11 +1858,27 @@ function Start-CoopHostingAction {
         throw ("Konta {0} mają hasła z paczki - każdy w internecie mógłby się na nie zalogować. Najpierw 'Zabezpiecz konta'." -f ($defaults -join ', '))
     }
     $ports = Get-M2CoopGamePorts -ServerRoot $serverRoot
+    # The address the friends get, and the one the cores have to name in every
+    # warp (PROXY_IP): the client follows the warp's address, not the one it
+    # logged in through.
+    $friendAddress = $(if ($via.Mode -eq 'vpn') { $via.Vpn.Address } else { $report.PublicAddress })
+    if (-not $friendAddress) { throw 'Nie udało się ustalić adresu dla znajomych - hostowanie przerwane, nic nie zmieniono.' }
+    $state = Read-M2CoopState -ServerRoot $serverRoot
+    $advertised = Get-DotEnvValue -Key 'M2_PUBLIC_ADDRESS' -Default '127.0.0.1'
+    # What the player had before any hosting, kept for "Zakończ"; an address
+    # an earlier hosting wrote is not the player's own.
+    $ownAddress = $advertised
+    $hostingNames = @()
+    if ($state.hosting) { $hostingNames = @($state.hosting.PSObject.Properties.Name) }
+    if (($hostingNames -contains 'ownPublicAddress') -and [string]$state.hosting.ownPublicAddress -and
+            (($hostingNames -contains 'friendAddress') -and $advertised -eq [string]$state.hosting.friendAddress)) {
+        $ownAddress = [string]$state.hosting.ownPublicAddress
+    }
     $bindings = Get-M2CoopGameBindings -ServerRoot $serverRoot
-    if ($bindings.Public) { Write-Host 'Porty gry są już otwarte na wszystkich kartach sieciowych.' -ForegroundColor Green }
+    if ($bindings.Public -and $advertised -eq $friendAddress) { Write-Host 'Porty gry są już otwarte na wszystkich kartach sieciowych.' -ForegroundColor Green }
     else {
         Write-Phase 'porty gry dla sieci (restart serwera gry, około minuty)'
-        Invoke-CoopGameRecreate -BindAddress '0.0.0.0'
+        Invoke-CoopGameRecreate -BindAddress '0.0.0.0' -PublicAddress $friendAddress
         if (Wait-CoopGameReady) { Write-Host 'Serwer gry wstał.' -ForegroundColor Green }
         else { Write-Host 'Serwer gry jeszcze wstaje - znajomi zalogują się za chwilę.' -ForegroundColor Yellow }
     }
@@ -1903,12 +1924,11 @@ function Start-CoopHostingAction {
     else {
         Write-Host ("Router nie odpowiada na UPnP: przekieruj w nim ręcznie TCP {0} na {1}." -f ($ports -join ', '), $report.LanAddress) -ForegroundColor Yellow
     }
-    $friendAddress = $(if ($via.Mode -eq 'vpn') { $via.Vpn.Address } else { $report.PublicAddress })
     $state.hosting = [pscustomobject]@{
         active = $true; since = (Get-Date).ToString('s'); lanAddress = $report.LanAddress
         publicAddress = $report.PublicAddress; ports = @($ports); mapped = @($mapped)
         mode = $via.Mode; vpn = $(if ($via.Vpn) { $via.Vpn.Kind } else { '' }); vpnName = $(if ($via.Vpn) { $via.Vpn.Name } else { '' })
-        friendAddress = $friendAddress
+        friendAddress = $friendAddress; ownPublicAddress = $ownAddress
     }
     Save-M2CoopState -ServerRoot $serverRoot -State $state
     Write-Host ''
@@ -1916,7 +1936,13 @@ function Start-CoopHostingAction {
         Write-Host ("Hostowanie włączone przez {0}. Adres dla znajomych: {1}" -f $via.Vpn.Name, $friendAddress) -ForegroundColor Green
         Write-Host ("Znajomi muszą dołączyć do Twojej sieci {0}, zanim wkleją kod zaproszenia." -f $via.Vpn.Name) -ForegroundColor Yellow
     }
-    else { Write-Host ("Hostowanie włączone. Adres dla znajomych: {0}" -f $friendAddress) -ForegroundColor Green }
+    else {
+        Write-Host ("Hostowanie włączone. Adres dla znajomych: {0}" -f $friendAddress) -ForegroundColor Green
+        # Every warp names the public address now, the host's own client's too,
+        # and reaching one's own public address from inside needs the router's
+        # NAT loopback.
+        Write-Host 'Jeśli u Ciebie samego zmiana mapy zawiesza się na ładowaniu, Twój router nie wpuszcza połączeń na własny adres publiczny - hostuj przez Radmin VPN albo Tailscale.' -ForegroundColor Yellow
+    }
     Write-Host 'Ty grasz dalej na serwerze 1 (Metin2 SinglePlayer). Kody zaproszeń dla znajomych są w oknie COOP.'
     if (@($state.friends).Count -eq 0) { Write-Host 'Nie masz jeszcze znajomych - dodaj ich w oknie COOP.' -ForegroundColor Yellow }
     if ($mapped.Count -gt 0 -and $mapped.Count -lt $ports.Count) {
@@ -1941,9 +1967,19 @@ function Stop-CoopHostingAction {
     }
     $bindings = Get-M2CoopGameBindings -ServerRoot $serverRoot
     $previous = Get-DotEnvValue -Key 'M2_HOST_BIND_ADDRESS'
-    if ($bindings.Public -or $previous -ne '127.0.0.1') {
+    # The cores go back to the address the player had before hosting (on a
+    # PC 127.0.0.1), and only when hosting is what put the other one there.
+    $restoreAddress = ''
+    if ($state.hosting) {
+        $names = @($state.hosting.PSObject.Properties.Name)
+        $advertised = Get-DotEnvValue -Key 'M2_PUBLIC_ADDRESS' -Default '127.0.0.1'
+        if (($names -contains 'friendAddress') -and $advertised -eq [string]$state.hosting.friendAddress) {
+            $restoreAddress = $(if (($names -contains 'ownPublicAddress') -and [string]$state.hosting.ownPublicAddress) { [string]$state.hosting.ownPublicAddress } else { '127.0.0.1' })
+        }
+    }
+    if ($bindings.Public -or $previous -ne '127.0.0.1' -or $restoreAddress) {
         Write-Phase 'porty gry tylko dla tego komputera (restart serwera gry, około minuty)'
-        Invoke-CoopGameRecreate -BindAddress '127.0.0.1'
+        Invoke-CoopGameRecreate -BindAddress '127.0.0.1' -PublicAddress $restoreAddress
         [void](Wait-CoopGameReady)
     }
     Write-Host ("Opublikowane: {0}" -f ((Get-M2CoopGameBindings -ServerRoot $serverRoot).Lines -join '; '))

@@ -1,0 +1,30 @@
+--- a/root/intrologin.py
++++ b/root/intrologin.py
+@@ -905,7 +905,7 @@ class LoginWindow(ui.ScriptWindow):
+ 		self.pwdEditLine.SetTabEvent(ui.__mem_func__(self.idEditLine.SetFocus))
+ 
+ 		self.homePageButton.SAFE_SetEvent(self.OpenURL, "https://metin2sp.pl")
+-		self.facebookButton.SAFE_SetEvent(self.OpenURL, "https://metins2sp.pl")
++		self.facebookButton.SAFE_SetEvent(self.OpenURL, "https://buycoffee.to/mt2009plus")
+ 		self.discordButton.SAFE_SetEvent(self.OpenURL, "https://metin2sp.pl/discord")
+ 
+ 		self.save_credential_items = []
+--- a/root/uiItemShop.py
++++ b/root/uiItemShop.py
+@@ -193,7 +193,7 @@ ITEMSHOP_CATEGORIES = {
+ 		"color": colorInfo.DRAGON_COIN_COLOR,
+ 		"action" : {
+ 			"type" : "open_url",
+-			"value" : "https://buycoffee.to/metin2-playerbots"
++			"value" : "https://buycoffee.to/mt2009plus"
+ 		},
+ 	},
+ 
+--- a/root/itemshop_subscriptionwindow.py
++++ b/root/itemshop_subscriptionwindow.py
+@@ -241,4 +241,4 @@ class ItemShopSubscriptionContent(itemshop_contentwindow.ItemShopContentWindow):
+ 			self.elements.append(text)
+ 
+ 	def __OnButtonClick(self):
+-		utils.open_url("https://buycoffee.to/metin2-playerbots")
++		utils.open_url("https://buycoffee.to/mt2009plus")
