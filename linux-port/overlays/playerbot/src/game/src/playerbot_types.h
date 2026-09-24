@@ -1588,6 +1588,36 @@ namespace
 	// Effectively once per town visit. A four-second cadence like the refiner's
 	// would let one stop at the blacksmith burn a quarter of a million yang.
 	const DWORD PLAYERBOT_BONUS_INTERVAL = 300000;
+	// The ItemShop look's bonuses (operator, 24 Sep 2026; playerbot_bonus.h,
+	// ManagePlayerBotCostumeBonus): Handlarka Roznosci (9003) sells 70063
+	// "Transformuj kostium" (1-3 new lines) and 70064 "Zaczaruj kostium" (new
+	// lines, same count), twenty a stack at 125 000 and 250 000 yang apiece.
+	// The engine's odds (CItem::AlterToMagicItem): a second line one in ten, a
+	// third one in fifty on a body costume and one in a hundred elsewhere - so
+	// two lines take about nine rolls (1.1M, one stack is enough nine times in
+	// ten), three take five hundred to a thousand (60-125M a piece). Mixing two
+	// lines until both are worth keeping takes some twenty to forty changes,
+	// 5-10M. A bot starts at 30M, never buys a stack that leaves it under 20M,
+	// and chases the third line only from 150M.
+	const DWORD PLAYERBOT_COSTUME_RESET_VNUM = 70063;
+	const DWORD PLAYERBOT_COSTUME_CHANGE_VNUM = 70064;
+	const DWORD PLAYERBOT_COSTUME_REAGENT_STACK = 20;
+	const BYTE PLAYERBOT_COSTUME_BONUS_MIN_LEVEL = 30;
+	const long long PLAYERBOT_COSTUME_BONUS_START_GOLD = 30000000LL;
+	const long long PLAYERBOT_COSTUME_BONUS_RESERVE_GOLD = 20000000LL;
+	const long long PLAYERBOT_COSTUME_BONUS_THREE_LINES_GOLD = 150000000LL;
+	// A costume that runs out within a week is not worth a stack.
+	const long PLAYERBOT_COSTUME_BONUS_MIN_SECONDS_LEFT = 7L * 24 * 3600;
+	// A line worth keeping (ScorePlayerBotCostumeLine): 1000 health, 30 attack
+	// value, 5% critical, 8 of the school's stat, the map's race at 20%.
+	const int PLAYERBOT_COSTUME_GOOD_LINE_SCORE = 100;
+	// Three stacks of changes on one piece, then it stays as it is until it
+	// runs out: 15M is a costume's worth.
+	const int PLAYERBOT_COSTUME_MAX_CHANGES = 60;
+	const int PLAYERBOT_COSTUME_ROLLS_PER_PASS = 5;
+	const DWORD PLAYERBOT_COSTUME_BONUS_STEP_MS = 1500;
+	// How long a merchant visit may run on for the costume's rolls.
+	const DWORD PLAYERBOT_COSTUME_BONUS_VISIT_MS = 45000;
 	const DWORD PLAYERBOT_INACTIVITY_RESET_TIME = 90000;
 	const DWORD PLAYERBOT_WANDER_INTERVAL = 8000;
 	const DWORD PLAYERBOT_PARTY_CHECK_INTERVAL = 10000;
@@ -6031,6 +6061,10 @@ namespace
 			dwNextRefineCheckTime(0),
 			dwNextBonusCheckTime(0),
 			dwBonusFocusItem(0),
+			dwNextCostumeBonusTime(0),
+			dwCostumeBonusFocusItem(0),
+			iCostumeChangesSpent(0),
+			dwCostumeBonusVisitEnd(0),
 			dwNextChatTime(0),
 			dwLastStatusChatTime(0),
 			dwNextStatusProbeTime(0),
@@ -6305,6 +6339,15 @@ namespace
 		// The piece the bonus pass is working on (its item id), kept until it
 		// is done or no stone in the bag fits it (ManagePlayerBotBonusReroll).
 		DWORD dwBonusFocusItem;
+		// The costume the look's bonus pass is working on (playerbot_bonus.h,
+		// ManagePlayerBotCostumeBonus), the changes spent on it, the pieces
+		// given up on (kept as they are until they run out) and the end of the
+		// merchant visit the rolls may stretch.
+		DWORD dwNextCostumeBonusTime;
+		DWORD dwCostumeBonusFocusItem;
+		int iCostumeChangesSpent;
+		DWORD dwCostumeBonusVisitEnd;
+		std::vector<DWORD> vecCostumeBonusDone;
 		DWORD dwNextChatTime;
 		DWORD dwLastStatusChatTime;
 		DWORD dwNextStatusProbeTime;

@@ -1288,6 +1288,11 @@ namespace
 		// the rule's default would vendor it on the next town trip.
 		if (item->GetType() == ITEM_COSTUME)
 			return false;
+		// The look's bonus reagents from Handlarka (70063/70064,
+		// ManagePlayerBotCostumeBonus) are bought for the bot's own costume.
+		if (item->GetType() == ITEM_USE && (item->GetSubType() == USE_CHANGE_COSTUME_ATTR ||
+				item->GetSubType() == USE_RESET_COSTUME_ATTR))
+			return false;
 
 		// Baek-Go's board (playerbot_herbalism.h) gave two kinds of item a
 		// worth this rule had no branch for, so its default sold both. A recipe
