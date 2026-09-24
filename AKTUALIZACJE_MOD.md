@@ -154,6 +154,14 @@ w 2.2.5). Poniższe pliki mają zmiany MT2009 Plus — scalaj je ręcznie
 | `README.md`, `README_EN.md`, `MODS_PL.md`, `AKTUALIZACJE_MOD.md` | opis moda |
 | `update-manifest-mt2009.json`, `VERSION`, `MOD_VERSION`, `CHANGELOG.md` | wersje i kanał moda |
 
+**Baza Tieru: 2.2.9** (scalone 24 września 2026). Scalaj trójstronnie
+(`git merge-file`): nasz plik, plik Tieru z wersji, na której nasz jest
+oparty, i nowa wersja Tieru. Nie zakładaj jednej bazy dla wszystkich plików
+– przed tym scaleniem źródła botów były na Tieru 2.2.3, choć CHANGELOG
+mówił o 2.2.6, a pojedyncze pliki na 2.2.5–2.2.8. Dla każdego pliku bazą
+jest ta wersja Tieru, od której nasz plik różni się najmniej (albo ta, z
+którą jest identyczny – wtedy po prostu weź nową wersję Tieru).
+
 Po scaleniu sprawdź:
 
 ```sh

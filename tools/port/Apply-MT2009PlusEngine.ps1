@@ -24,6 +24,7 @@ param(
 #   alchemy deck cmd   cmd.cpp, cmd_gm.cpp       (MT2009_PLUS_DS_PLAYER_CMD_V1)
 #   pet magic att %    char.cpp                  (MT2009_PLUS_MAGIC_ATT_PER_V1)
 #   mount speed        char_player.cpp           (MT2009_PLUS_MOUNT_SPEED_V1)
+#   bot rare share     char_battle.cpp           (MT2009_PLUS_BOT_RARE_SHARE_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -129,6 +130,18 @@ if ((Test-Path -LiteralPath $mountSpeedApply -PathType Leaf) -and
     if ($mountSpeedResult.Changed) {
         $syncedFiles++
         Write-Host 'Enabled the speed correction for every costume mount.' -ForegroundColor DarkGray
+    }
+}
+# A Cor Draconis or a sash a many-item drop hands to a bot goes into its bag
+# (server-patches/botrareshare), not onto the ground under its name.
+$rareShareApply = Join-Path $repo 'server-patches/botrareshare/Apply-BotRareSharePatch.ps1'
+$charBattleSource = Join-Path $engineGameSource 'char_battle.cpp'
+if ((Test-Path -LiteralPath $rareShareApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charBattleSource -PathType Leaf)) {
+    $rareShareResult = & $rareShareApply -SourceFile $charBattleSource
+    if ($rareShareResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Enabled the bots'' share of Cor Draconis and sashes.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

@@ -110,9 +110,14 @@ namespace
 		if (!PlayerBotMapHasMetinStones(ch->GetMapIndex()) ||
 				(frontier != 0 && !PlayerBotMapHasMetinStones(frontier)))
 			return;
-		// A battle horse is what a player raises for the stones, so its rider
-		// goes out for them twice as often, whether or not its trained skills
-		// keep it out of the saddle for the fight itself.
+		// A battle horse is what a player raises for the stones, and its rider
+		// breaks them from the saddle (CanPlayerBotFightOnHorse), so it goes out
+		// for them twice as often. 2.2.6 took the doubling away on a misreading:
+		// "do zbijania metinow nikt nie uzywa bojowca" (prodnathin, 23 September)
+		// was the complaint that no bot did, not the rule that none should - "tu
+		// chodzilo o to, ze nie bili wcale z konia ... akurat na metinie mogliby
+		// z bojowca bic", and the operator the next morning: "boty niestety nie
+		// uzywaja koni bojowych do bicia metinow".
 		const int chance = PLAYERBOT_METIN_EXPEDITION_CHANCE_PERCENT *
 				GetPlayerBotWeight(PLAYERBOT_WEIGHT_METIN) / PLAYERBOT_WEIGHT_NEUTRAL *
 				(HasPlayerBotBattleHorse(ch) ? 2 : 1);

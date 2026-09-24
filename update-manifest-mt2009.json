@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-24T14:49:48Z",
-  "statusMessage": "Serwer 2.3.4: szybkie wierzchowce juz nie cofaja. Jesli jakis nadal cofa, podaj jego nazwe na kanale bledy i bugi.",
+  "publishedAt": "2026-09-24T16:05:27Z",
+  "statusMessage": "Serwer 2.4.0: baza Tieru 2.2.9 (Metiny z konia bojowego, Wieza Demonow, szepty do botow, zmiana kanalow) i Cory botow nie leza juz na ziemi.",
   "server": {
-    "version": "2.3.4",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.3.4.zip",
-    "sha256": "5573961388A97A71FFAC874E9E0002C18D99367E9804237E05F0A20789C1B1E2",
-    "size": 55209977
+    "version": "2.4.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.4.0.zip",
+    "sha256": "765EA113ECB23DD4BD89E72447ED162D259B764516A8B0F2F0B86B2CEDBC9264",
+    "size": 55308744
   },
   "client": {
     "version": "2.0.10",

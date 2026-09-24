@@ -98,8 +98,10 @@ namespace
 		bool bEnding;
 		const char* pszEnd;
 		DWORD dwNextReport;
-		// The bots that have had their turn at the sixth floor's smith.
+		// The bots that have had their turn at the sixth floor's smith, and
+		// when each began its turn (PLAYERBOT_TOWER_SMITH_TURN_MS).
 		std::set<DWORD> smithServed;
+		std::map<DWORD, DWORD> smithTurnSince;
 
 		TPlayerBotTowerRun() :
 			iLevel(-1), iAlive(-1), dwEnteredAt(0), dwLevelSince(0), dwLastProgress(0),
@@ -270,6 +272,17 @@ namespace
 		return n;
 	}
 
+	// The seventh floor's stone waits while a monster stands within
+	// PLAYERBOT_TOWER_STONE_THREAT_RANGE of this bot. The pack held the Metin
+	// of Murder to its end once it had it - a stone of that floor is broken
+	// ten times for the chest, and the regen never stops - and the demons that
+	// walked up took the bots apart one by one while they hit it.
+	bool IsPlayerBotTowerStoneWaiting(LPCHARACTER ch, const TPlayerBotTowerScan* scan, int level)
+	{
+		return ch && scan && level == 5 &&
+				CountPlayerBotTowerMonstersNear(scan, ch->GetX(), ch->GetY(), PLAYERBOT_TOWER_STONE_THREAT_RANGE) > 0;
+	}
+
 	// The floor's objective for this bot: the nearest thing that has to die
 	// on it. On the ground floor only the Metin of Toughness; inside, that
 	// stone never (breaking it there does nothing), the fourth and seventh
@@ -296,13 +309,17 @@ namespace
 		const bool fromPack = onFloor && scan && scan->packN >= 2;
 		long fromX = fromPack ? scan->packX : ch->GetX();
 		long fromY = fromPack ? scan->packY : ch->GetY();
+		// On the seventh floor a demon at the bot's side comes first: the
+		// stone waits, and the fight is ranked from the bot
+		// (PLAYERBOT_TOWER_STONE_THREAT_RANGE).
+		const bool threatened = IsPlayerBotTowerStoneWaiting(ch, scan, level);
 		// On a floor the stone turns (the seventh: the Metin of Murder drops
 		// the chest) the pack fights its way to the stone: the monsters are
 		// ranked from the stone, so the ground round it is what gets cleared,
 		// and the stone becomes a candidate the moment nothing stands there.
 		// Ranked from the pack alone it drifted after whatever was nearest and
 		// the stone stood untouched for nine minutes (17 September, 00:05).
-		if (fromPack && level == 5)
+		if (fromPack && level == 5 && !threatened)
 		{
 			for (size_t i = 0; i < scan->entities.size(); ++i)
 				if (scan->entities[i].stone && scan->entities[i].race != PLAYERBOT_DEVIL_TOWER_STONE_FIRST)
@@ -311,6 +328,11 @@ namespace
 					fromY = scan->entities[i].y;
 					break;
 				}
+		}
+		if (threatened)
+		{
+			fromX = ch->GetX();
+			fromY = ch->GetY();
 		}
 		// A stone cannot hit back: on a floor still full of monsters it waits,
 		// or the pack walks into two hundred demons to reach it (the fourth
@@ -335,6 +357,8 @@ namespace
 			// never come, while the ground round the stone does clear.
 			if (!parterStone && e.stone && !stonesNow &&
 					CountPlayerBotTowerMonstersNear(scan, e.x, e.y, PLAYERBOT_TOWER_STONE_CLEAR_RADIUS) > 0)
+				continue;
+			if (!parterStone && e.stone && threatened)
 				continue;
 			const int fromDistance = DISTANCE_APPROX(fromX - e.x, fromY - e.y);
 			const bool shared = parterStone || e.stone || e.boss;
@@ -403,12 +427,100 @@ namespace
 
 	// ------------------------------------------------------------ the fight
 	//
+	// An Archer's one step back from a monster at its side, by pid: when it
+	// may step again, and the monster it last stepped from.
+	struct TPlayerBotTowerArcherStep
+	{
+		DWORD dwNextAt;
+		DWORD dwFromVID;
+		TPlayerBotTowerArcherStep() : dwNextAt(0), dwFromVID(0) {}
+	};
+	std::map<DWORD, TPlayerBotTowerArcherStep> s_mapPlayerBotTowerArcherStep;
+
+	// The monster nearest a point, within radius, off the floor's scan.
+	const TPlayerBotTowerEntity* FindPlayerBotTowerMonsterNear(const TPlayerBotTowerScan* scan,
+			long x, long y, int radius)
+	{
+		const TPlayerBotTowerEntity* best = NULL;
+		int bestDistance = radius + 1;
+		for (size_t i = 0; scan && i < scan->entities.size(); ++i)
+		{
+			const TPlayerBotTowerEntity& e = scan->entities[i];
+			if (e.npc || e.stone)
+				continue;
+			const int distance = DISTANCE_APPROX(x - e.x, y - e.y);
+			if (distance < bestDistance)
+			{
+				bestDistance = distance;
+				best = &e;
+			}
+		}
+		return best;
+	}
+
+	// An Archer a monster has reached takes one step back towards the pack
+	// before it shoots again (PLAYERBOT_TOWER_ARCHER_KEEP_AWAY), so the monster
+	// that follows it walks into the bots that fight it hand to hand. One step
+	// a monster and never away from the pack: a monster that has the Archer's
+	// aggro keeps coming whatever it does, and an Archer that stepped back
+	// from it every time would spend the fight running instead of shooting
+	// (Tieru, 24 September: "moze byc tak, ze ninja ciagle bedzie uciekala
+	// przed mobem"). With the pack beside it or ahead of it, or the same
+	// monster at its side again, it stands and shoots; a step the ground
+	// refuses leaves it shooting where it stands.
+	bool StepPlayerBotTowerArcherBack(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		TPlayerBotTowerArcherStep& step = s_mapPlayerBotTowerArcherStep[ch->GetPlayerID()];
+		if (dwNow < step.dwNextAt)
+			return false;
+		const TPlayerBotTowerScan* scan = ScanPlayerBotTowerMap(ch->GetMapIndex(), dwNow);
+		if (!scan || scan->packN < 2)
+			return false;
+		const TPlayerBotTowerEntity* monster = FindPlayerBotTowerMonsterNear(scan,
+				ch->GetX(), ch->GetY(), PLAYERBOT_TOWER_ARCHER_KEEP_AWAY);
+		if (!monster || monster->vid == step.dwFromVID)
+			return false;
+		// The pack is behind the Archer when going to it is going away from
+		// the monster - and far enough that a step changes anything.
+		const double ax = (double)(ch->GetX() - monster->x);
+		const double ay = (double)(ch->GetY() - monster->y);
+		const double dx = (double)(scan->packX - ch->GetX());
+		const double dy = (double)(scan->packY - ch->GetY());
+		const double length = sqrt(dx * dx + dy * dy);
+		if (dx * ax + dy * ay <= 0.0 || length < (double)PLAYERBOT_TOWER_ARCHER_KEEP_AWAY)
+			return false;
+		step.dwNextAt = dwNow + PLAYERBOT_TOWER_ARCHER_STEP_MS;
+		step.dwFromVID = monster->vid;
+		const double reach = std::min((double)PLAYERBOT_TOWER_ARCHER_STEP_BACK, length);
+		const long toX = ch->GetX() + (long)(dx / length * reach);
+		const long toY = ch->GetY() + (long)(dy / length * reach);
+		if (!MovePlayerBot(ch, toX, toY, dwNow, 4, false, false))
+			return false;
+		SetPlayerBotAction(state, BOT_ACTION_FIGHT, dwNow);
+		PlayerBotLogThrottled("tower_archer_step", dwNow,
+				"PLAYERBOT_TOWER: archer steps back pid=%u name=%s map=%ld monster_race=%u",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)monster->race);
+		return true;
+	}
+
 	// The duel's shape, as in the guild war: the aura first, a caster from its
-	// range, a warrior across the gap, a blade from where it reaches. The
-	// equipment pass in the upkeep group sees the stone in dwTargetVID and puts
-	// the archer's dagger in its hand as it does everywhere else.
+	// range, a warrior across the gap, a blade from where it reaches, a bow
+	// from its own reach - which in here is the tower's standoff
+	// (GetPlayerBotBowRange), with one step back towards the pack from a
+	// monster that reaches it. An Archer keeps the bow for the stones too
+	// (ManagePlayerBotEquipment). The saddle is the foe's business, as
+	// outside: a battle horse's rider breaks a stone from it and climbs down
+	// for what it fights on foot (CanPlayerBotFightOnHorse) - "nikt nie
+	// przywolywal konia nawet na dt" (prodnathin, 23 September). A change
+	// spends the tick; a refusal (the flip hold after a climb-down for a buff,
+	// a tired horse) leaves the bot fighting as it stands.
 	bool FightPlayerBotTowerObjective(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER foe, DWORD dwNow)
 	{
+		const bool wantsSaddle = CanPlayerBotFightOnHorse(ch, foe);
+		if (wantsSaddle != ch->IsRiding() &&
+				SetPlayerBotRidingForTravel(ch, state, wantsSaddle, dwNow,
+						wantsSaddle ? "tower_stone" : "tower"))
+			return true;
 		const int distance = DISTANCE_APPROX(ch->GetX() - foe->GetX(), ch->GetY() - foe->GetY());
 		state.dwTargetVID = (DWORD)foe->GetVID();
 		ch->SetVictim(foe);
@@ -420,9 +532,11 @@ namespace
 		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
 		const bool isBow = (weapon && weapon->GetType() == ITEM_WEAPON &&
 				weapon->GetSubType() == WEAPON_BOW);
-		const int combatRange = isBow ? 800 : PLAYERBOT_DUEL_MELEE_RANGE;
+		const int combatRange = isBow ? GetPlayerBotBowRange(ch->GetMapIndex()) : PLAYERBOT_DUEL_MELEE_RANGE;
 		const bool caster = ch->GetJob() == JOB_SHAMAN ||
 				(ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2);
+		if (isBow && StepPlayerBotTowerArcherBack(ch, state, dwNow))
+			return true;
 		if (distance > combatRange)
 		{
 			if (!isBow && caster && distance <= PLAYERBOT_DUEL_CASTER_RANGE &&
@@ -439,7 +553,8 @@ namespace
 			if (dwNow >= state.dwNextTowerMoveTime)
 			{
 				state.dwNextTowerMoveTime = dwNow + 1000;
-				MovePlayerBot(ch, foe->GetX(), foe->GetY(), dwNow, 4, distance > PLAYERBOT_SEARCH_RANGE, false);
+				MovePlayerBot(ch, foe->GetX(), foe->GetY(), dwNow, 4, distance > PLAYERBOT_SEARCH_RANGE,
+						wantsSaddle, wantsSaddle);
 			}
 			return true;
 		}
@@ -563,21 +678,42 @@ namespace
 		return -1;
 	}
 
+	// When each bot may try a floor key again, by pid.
+	std::map<DWORD, DWORD> s_mapPlayerBotTowerKeyNext;
+
 	// A key that is used where the bot stands: the Unknown Old Chest (30300)
-	// and the Map of the Tower (30302) on the seventh floor.
+	// and the Map of the Tower (30302) on the seventh floor. Only the use
+	// takes the tick. It used to take every tick for as long as the bot held
+	// one, the three seconds between two uses included, so a bot with a chest
+	// in its bag did not fight at all, and one whose use the engine refused
+	// stood for good - the seventh floor's pack standing about with no skill
+	// cast ("stoja w miejscu, nie rzucaja skilli nawet", prodnathin, 24
+	// September). A refusal waits PLAYERBOT_TOWER_KEY_REFUSED_MS and names the
+	// two things UseItem asks first.
 	bool UsePlayerBotTowerKey(LPCHARACTER ch, TPlayerBotAIState& state, DWORD vnum, DWORD dwNow)
 	{
 		const int cell = FindPlayerBotTowerItemCell(ch, vnum);
 		if (cell < 0)
 			return false;
-		if (dwNow < state.dwNextTowerMoveTime)
-			return true;
-		state.dwNextTowerMoveTime = dwNow + 3000;
+		DWORD& nextAt = s_mapPlayerBotTowerKeyNext[ch->GetPlayerID()];
+		if (dwNow < nextAt)
+			return false;
 		if (ch->IsStateMove())
 			ch->Stop();
 		const bool ok = ch->UseItem(TItemPos(INVENTORY, (WORD)cell));
-		sys_log(0, "PLAYERBOT_TOWER: key used pid=%u name=%s vnum=%u ok=%d map=%ld",
-				ch->GetPlayerID(), ch->GetName(), vnum, ok ? 1 : 0, ch->GetMapIndex());
+		nextAt = dwNow + (ok ? PLAYERBOT_TOWER_KEY_RETRY_MS : PLAYERBOT_TOWER_KEY_REFUSED_MS);
+		if (ok)
+		{
+			sys_log(0, "PLAYERBOT_TOWER: key used pid=%u name=%s vnum=%u map=%ld",
+					ch->GetPlayerID(), ch->GetName(), vnum, ch->GetMapIndex());
+		}
+		else
+		{
+			quest::PC* pc = quest::CQuestManager::instance().GetPCForce(ch->GetPlayerID());
+			sys_log(0, "PLAYERBOT_TOWER: key refused pid=%u name=%s vnum=%u map=%ld quest_running=%d can_handle=%d",
+					ch->GetPlayerID(), ch->GetName(), vnum, ch->GetMapIndex(),
+					(pc && pc->IsRunning()) ? 1 : 0, ch->CanHandleItem() ? 1 : 0);
+		}
 		return true;
 	}
 
@@ -691,45 +827,40 @@ namespace
 #endif
 	}
 
-	// The piece this bot gives him: the first worn one of his slots, in the
-	// blacksmith pass's order, that the bot's own rules would raise at a plain
-	// anvil - below its refine target, a result it may wear, the fee in hand.
-	// That is what this is with the materials waived, so the anvil's risk
-	// stands and so does everything the bot keeps a piece back from it for:
-	// a scroll-only weapon, a prize at odds under PLAYERBOT_PRIZE_SAFE_REFINE_PROB,
-	// a level-30 weapon above its ceiling, the only weapon or armour at a step
-	// that can burn it. And a weapon or a body armour with nothing in the bag
-	// to put on instead is not risked at all in here: there is no merchant
-	// between the sixth floor and the ninth.
+	// The piece this bot gives him. Never one it wears (Tieru, 23 September:
+	// "nie swoj noszony, a jakis zarobkowy albo zapasowy, np. +6 i podejma
+	// probe na +7, bo kowal w DT nie wymaga ulepszaczy"): he waives the
+	// materials, so the step worth a burn is on something in the bag - a spare
+	// the bot will wear (IsPlayerBotHigherTierSpare, below its refine target),
+	// or goods for the counter from PLAYERBOT_TOWER_SMITH_GOODS_MIN_PLUS. The
+	// highest grade goes first, where a step pays most, and a spare before
+	// goods of the same grade. Which of the three smiths stands decides what he
+	// takes (IsPlayerBotTowerSmithPiece). What the bot's anvil never risks is
+	// not risked here either: a scroll-only weapon, a prize at odds under
+	// PLAYERBOT_PRIZE_SAFE_REFINE_PROB, a level-30 weapon past its ceiling,
+	// whatever the operator's item policy keeps. A burn costs the bot nothing
+	// it fights with, so no backup is asked for any more.
 	LPITEM PickPlayerBotTowerSmithPiece(LPCHARACTER ch, DWORD smithRace)
 	{
-		static const BYTE wearSlots[] = {
-			WEAR_WEAPON, WEAR_BODY, WEAR_SHIELD, WEAR_HEAD,
-			WEAR_FOOTS, WEAR_WRIST, WEAR_NECK, WEAR_EAR
-		};
-		for (size_t i = 0; i < sizeof(wearSlots) / sizeof(wearSlots[0]); ++i)
+		LPITEM best = NULL;
+		int bestRank = -1;
+		const long long purse = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch);
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
-			const BYTE wear = wearSlots[i];
-			LPITEM item = ch->GetWear(wear);
+			LPITEM item = ch->GetInventoryItem(cell);
 			if (!IsPlayerBotTowerSmithPiece(smithRace, item) || item->isLocked() || item->IsExchanging() ||
-					!IsPlayerBotWornItemSound(ch, item, wear) ||
-					!IsPlayerBotTowerSmithRefineSet(item->GetRefineSet()))
+					!IsPlayerBotTowerSmithRefineSet(item->GetRefineSet()) ||
+					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_KEEP)
 				continue;
 			const BYTE plus = item->GetRefineLevel();
-			if (plus >= GetPlayerBotRefineTarget(ch, item) ||
-					!IsPlayerBotWearableAtLevel(ch, item->GetRefinedVnum()))
+			const bool spareGear = IsPlayerBotHigherTierSpare(ch, item);
+			if (spareGear ? plus >= GetPlayerBotRefineTarget(ch, item)
+					: (int)plus < PLAYERBOT_TOWER_SMITH_GOODS_MIN_PLUS)
 				continue;
 			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
-			if (!recipe || (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) <
-					(long long)ch->ComputeRefineFee(recipe->cost))
+			if (!recipe || purse < (long long)ch->ComputeRefineFee(recipe->cost))
 				continue;
 			if (IsPlayerBotScrollOnlyWeapon(item))
-				continue;
-			if ((wear == WEAR_WEAPON || wear == WEAR_BODY) && !HasPlayerBotBackupGear(ch, wear))
-				continue;
-			const bool scrollStepAllowed = IsPlayerBotScrollStepAllowed(plus);
-			if (scrollStepAllowed &&
-					(IsPlayerBotWornWeaponAtRisk(ch, item) || IsPlayerBotWornArmourAtRisk(ch, item)))
 				continue;
 			if (IsPlayerBotSpecialLevel30Weapon(item))
 			{
@@ -737,18 +868,23 @@ namespace
 						SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS)))
 					continue;
 			}
-			else if (scrollStepAllowed && IsPlayerBotPrizeItem(item) &&
-					recipe->prob < PLAYERBOT_PRIZE_SAFE_REFINE_PROB)
+			else if (IsPlayerBotPrizeItem(item) && recipe->prob < PLAYERBOT_PRIZE_SAFE_REFINE_PROB)
 				continue;
-			return item;
+			const int rank = (int)plus * 2 + (spareGear ? 1 : 0);
+			if (rank > bestRank)
+			{
+				best = item;
+				bestRank = rank;
+			}
 		}
-		return NULL;
+		return best;
 	}
 
-	// This bot's turn at the smith: the walk to him, the piece off, the
-	// refine, the flag down. True while it claims the tick; false once the
-	// turn is over, with the bot entered in run.smithServed either way - a bot
-	// with nothing to give him has had its turn too.
+	// This bot's turn at the smith: the walk to him, the refine, the flag down,
+	// and a line in the chat of whoever stands there. True while it claims the
+	// tick; false once the turn is over, with the bot entered in
+	// run.smithServed either way - a bot with nothing to give him has had its
+	// turn too, and so has one whose turn ran past PLAYERBOT_TOWER_SMITH_TURN_MS.
 	bool UsePlayerBotTowerSmith(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER smith,
 			TPlayerBotTowerRun& run, DWORD dwNow)
 	{
@@ -762,6 +898,17 @@ namespace
 			run.smithServed.insert(pid);
 			sys_log(0, "PLAYERBOT_TOWER: smith has nothing for pid=%u name=%s smith=%u can_refine=%d",
 					pid, ch->GetName(), smith->GetRaceNum(), canRefine);
+			return false;
+		}
+		DWORD& turnSince = run.smithTurnSince[pid];
+		if (turnSince == 0)
+			turnSince = dwNow;
+		else if (dwNow - turnSince > PLAYERBOT_TOWER_SMITH_TURN_MS)
+		{
+			run.smithServed.insert(pid);
+			sys_log(0, "PLAYERBOT_TOWER: smith turn given up pid=%u name=%s smith=%u vnum=%u distance=%d",
+					pid, ch->GetName(), smith->GetRaceNum(), item->GetVnum(),
+					DISTANCE_APPROX(ch->GetX() - smith->GetX(), ch->GetY() - smith->GetY()));
 			return false;
 		}
 		const int distance = DISTANCE_APPROX(ch->GetX() - smith->GetX(), ch->GetY() - smith->GetY());
@@ -785,25 +932,13 @@ namespace
 		const BYTE plus = item->GetRefineLevel();
 		const DWORD oldVnum = item->GetVnum();
 		const DWORD nextVnum = item->GetRefinedVnum();
-		// DoRefine puts the result where the piece lay in the bag: a worn one
-		// comes off first, into a cell of its size, and the equipment pass
-		// puts the result back on. The engine refuses the swap for a second
-		// and a half after a blow; the next pass asks again.
-		if (item->IsEquipped())
-		{
-			if (ch->GetEmptyInventory(item->GetSize()) < 0)
-			{
-				run.smithServed.insert(pid);
-				sys_log(0, "PLAYERBOT_TOWER: smith refine skipped pid=%u name=%s vnum=%u reason=no_bag_cell",
-						pid, ch->GetName(), oldVnum);
-				return false;
-			}
-			if (!ch->UnequipItem(item) || item->IsEquipped())
-				return true;
-		}
 		if (item->GetOwner() != ch || item->GetWindow() != INVENTORY ||
 				item->GetCell() >= PLAYERBOT_BAG_CELLS || ch->GetInventoryItem(item->GetCell()) != item)
 			return true;
+		// The name before the refine: a burn destroys the piece, and a success
+		// puts a new object where it lay.
+		const TItemTable* oldProto = ITEM_MANAGER::instance().GetTable(oldVnum);
+		const std::string name = PlayerBotRefineBaseName(oldProto ? oldProto->szLocaleName : "");
 		const int resultCountBefore = ch->CountSpecifyItem(nextVnum);
 		const bool attempted = ch->DoRefine(item, true);
 		run.smithServed.insert(pid);
@@ -816,12 +951,21 @@ namespace
 		ch->SetQuestFlag("deviltower_zone.can_refine", std::max(0, canRefine - 1));
 		const bool success = ch->CountSpecifyItem(nextVnum) > resultCountBefore;
 		if (success)
-		{
-			BroadcastPlayerBotRefineSuccess(ch, nextVnum, (int)plus + 1);
 			NotePlayerBotMoodRefine(ch, (int)plus + 1);
-		}
 		else
 			NotePlayerBotMoodRefineFailure(ch, (int)plus + 1, "burned");
+		// Said in the ordinary chat of the people on the floor, not shouted to
+		// the kingdom ("info na chacie po spaleniu/ulepszeniu w dt przez
+		// czlonka gildii, wystarczy na zwyklym chacie - nie na wolaj",
+		// prodnathin; Tieru: "niech pisze normalnie"). Every attempt, both ways.
+		char line[CHAT_MAX_LEN + 1];
+		if (success)
+			snprintf(line, sizeof(line), "Kowal w Wiezy: udalo sie! %s z +%u na +%u",
+					name.c_str(), (unsigned int)plus, (unsigned int)plus + 1);
+		else
+			snprintf(line, sizeof(line), "Kowal w Wiezy: nie wyszlo, %s z +%u na +%u - przedmiot spalony",
+					name.c_str(), (unsigned int)plus, (unsigned int)plus + 1);
+		SendPlayerBotLocalChat(ch, line);
 		sys_log(0, "PLAYERBOT_TOWER: smith refine %s pid=%u name=%s smith=%u old_vnum=%u new_vnum=%u plus=%u",
 				success ? "SUCCESS" : "FAILED_BURNED", pid, ch->GetName(), smith->GetRaceNum(),
 				oldVnum, nextVnum, (unsigned int)plus + 1);
@@ -940,6 +1084,7 @@ namespace
 			run.dwSmithSince = 0;
 			run.bSmithDone = false;
 			run.smithServed.clear();
+			run.smithTurnSince.clear();
 			if (level + 2 > s_iPlayerBotTowerBestFloor)
 				s_iPlayerBotTowerBestFloor = level + 2;
 			sys_log(0, "PLAYERBOT_TOWER: floor %d map=%ld alive=%d after_s=%u",
@@ -1023,7 +1168,10 @@ namespace
 
 		if (KeepPlayerBotTowerAlive(ch, state, dwNow))
 			return true;
-		if (ch->IsRiding() && !CanPlayerBotEverFightOnHorse(ch))
+		// A transport horse never fights; a battle horse's rider is asked about
+		// the foe itself (FightPlayerBotTowerObjective), a stone keeping it in
+		// the saddle.
+		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch))
 		{
 			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "tower");
 			return true;
@@ -1068,14 +1216,17 @@ namespace
 				const bool upper = ch->GetLevel() >= PLAYERBOT_TOWER_UPPER_LEVEL;
 				const bool mayEnd = !upper && scan->upperBots == 0 &&
 						dwNow - run.dwSmithSince > PLAYERBOT_TOWER_SMITH_WAIT_MS;
+				// Who is still owed a turn goes into the line, so a wait that
+				// ran to the cap says who it waited for.
+				const int waiting = (upper || mayEnd) ? CountPlayerBotTowerSmithWaiting(map, run) : -1;
 				const bool turnsTaken = (upper || mayEnd) &&
-						(dwNow - run.dwSmithSince > PLAYERBOT_TOWER_SMITH_REFINE_WAIT_MS ||
-						 CountPlayerBotTowerSmithWaiting(map, run) == 0);
+						(waiting == 0 || dwNow - run.dwSmithSince > PLAYERBOT_TOWER_SMITH_REFINE_WAIT_MS);
 				if (turnsTaken && upper)
 				{
 					run.bSmithDone = true;
-					sys_log(0, "PLAYERBOT_TOWER: smith turns over map=%ld served=%u after_s=%u",
-							map, (unsigned int)run.smithServed.size(), (dwNow - run.dwSmithSince) / 1000U);
+					sys_log(0, "PLAYERBOT_TOWER: smith turns over map=%ld served=%u still_waiting=%d after_s=%u",
+							map, (unsigned int)run.smithServed.size(), waiting,
+							(dwNow - run.dwSmithSince) / 1000U);
 					AdvancePlayerBotTowerPastSmith(d, ch);
 					return true;
 				}
@@ -1120,6 +1271,15 @@ namespace
 					(held->IsMonster() || held->IsStone()) &&
 					held->GetRaceNum() != PLAYERBOT_DEVIL_TOWER_STONE_FIRST)
 				foe = held;
+			// ... but not a seventh-floor stone with a demon at the bot's side.
+			if (foe && foe->IsStone() && IsPlayerBotTowerStoneWaiting(ch, scan, level))
+			{
+				PlayerBotLogThrottled("tower_stone_waits", dwNow,
+						"PLAYERBOT_TOWER: stone waits, monsters first pid=%u name=%s map=%ld floor=7 near=%d",
+						ch->GetPlayerID(), ch->GetName(), map,
+						CountPlayerBotTowerMonstersNear(scan, ch->GetX(), ch->GetY(), PLAYERBOT_TOWER_STONE_THREAT_RANGE));
+				foe = NULL;
+			}
 		}
 		if (!foe)
 			foe = PickPlayerBotTowerObjective(ch, scan, level, false, 0);
@@ -1223,7 +1383,10 @@ namespace
 		}
 		if (KeepPlayerBotTowerAlive(ch, state, dwNow))
 			return true;
-		if (ch->IsRiding() && !CanPlayerBotEverFightOnHorse(ch))
+		// A transport horse never fights; a battle horse's rider is asked about
+		// the foe itself (FightPlayerBotTowerObjective), a stone keeping it in
+		// the saddle.
+		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch))
 		{
 			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "tower");
 			return true;
@@ -1306,7 +1469,10 @@ namespace
 		}
 		if (KeepPlayerBotTowerAlive(ch, state, dwNow))
 			return true;
-		if (ch->IsRiding() && !CanPlayerBotEverFightOnHorse(ch))
+		// A transport horse never fights; a battle horse's rider is asked about
+		// the foe itself (FightPlayerBotTowerObjective), a stone keeping it in
+		// the saddle.
+		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch))
 		{
 			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "tower");
 			return true;
