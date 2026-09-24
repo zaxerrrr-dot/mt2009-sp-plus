@@ -1244,6 +1244,20 @@ if ((Test-Path -LiteralPath $overlaySource -PathType Container) -and
         }
     }
 
+    # The item finder normally searches a complete category. This tracked,
+    # idempotent source transformation lets a player click one icon and search
+    # offline shops and playerbot stalls for exactly that vnum/socket0 pair.
+    $shopSearchApply = Join-Path $PSScriptRoot 'server-patches\offlineshopsearch\Apply-ShopSearchPatch.ps1'
+    $shopManagerSource = Join-Path $engineGameSource 'ikarus_shop_manager.cpp'
+    if ((Get-ServerEngine) -ne 'r40250' -and
+        (Test-Path -LiteralPath $shopSearchApply -PathType Leaf) -and
+        (Test-Path -LiteralPath $shopManagerSource -PathType Leaf)) {
+        $shopSearchResult = & $shopSearchApply -SourceFile $shopManagerSource
+        if ($shopSearchResult.Changed) {
+            $syncedFiles++
+            Write-Host 'Enabled exact-item offline shop search.' -ForegroundColor DarkGray
+        }
+    }
     # Death Ruler wings (85101..85104) use broken assets in this client.
     # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
     # 4 to the chest pool in two compact arrays.  Remove the family from both

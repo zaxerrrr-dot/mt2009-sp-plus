@@ -1,0 +1,119 @@
+--- a/root/offlineshopsearch.py	2026-09-22 14:29:12.659230953 +0000
++++ b/root/offlineshopsearch.py	2026-09-22 14:29:12.665230952 +0000
+@@ -585,7 +585,7 @@
+ def is_wearable_search(category):
+ 	return category in (ikashop.SHOP_SEARCH_CATEGORY_ARMOR, ikashop.SHOP_SEARCH_CATEGORY_WEAPON, ikashop.SHOP_SEARCH_CATEGORY_JEWELRY)
+ 
+-def search_category(category, sub_category=-1, isSearchAttr=False):
++def search_category(category, sub_category=-1, isSearchAttr=False, selectedItem=None):
+ 	print category, sub_category
+ 	constInfo.OFFLINESHOP_LAST_SEARCHED_CATEGORY = category
+ 	constInfo.OFFLINESHOP_LAST_SEARCHED_SUBCATEGORY = sub_category
+@@ -602,11 +602,19 @@
+ 		search_data = search_data["sub"][sub_category]
+ 		searchIndex += sub_category
+ 
+-	for data in search_data["itemList"]:
+-		constInfo.OFFLINESHOP_LAST_SEARCHED_ITEMS.append(data)
++	# shop search: one item picked in the grid -> search only that item.
++	# The server reads it from the second argument as vnum * 1000 + socket0
++	# (0 = whole category).
++	searchItemCode = 0
++	if selectedItem and selectedItem[1] >= 0 and selectedItem[1] < 1000:
++		searchItemCode = selectedItem[0] * 1000 + selectedItem[1]
++		constInfo.OFFLINESHOP_LAST_SEARCHED_ITEMS.append(selectedItem)
++	else:
++		for data in search_data["itemList"]:
++			constInfo.OFFLINESHOP_LAST_SEARCHED_ITEMS.append(data)
+ 
+-	print searchIndex
+-	ikashop.SendSearchItem(searchIndex, 0)
++	print searchIndex, searchItemCode
++	ikashop.SendSearchItem(searchIndex, searchItemCode)
+ 
+ def get_item_list(category, sub_category=-1):
+ 	data = SHOP_SEARCH_FILTERS[category]
+@@ -637,6 +645,7 @@
+ 		self.subCategory = -1
+ 		self.itemToolTip = None
+ 		self.isSearchAttr = False
++		self.selectedItemIndex = -1
+ 
+ 	@ui.WindowDestroy
+ 	def Destroy(self):
+@@ -667,6 +676,8 @@
+ 			self.itemSlot.SetSlotStyle(wndMgr.SLOT_STYLE_NONE)
+ 			self.itemSlot.SetOverInItemEvent(ui.__mem_func__(self.__ShowToolTip))
+ 			self.itemSlot.SetOverOutItemEvent(ui.__mem_func__(self.__HideToolTip))
++			self.itemSlot.SetSelectItemSlotEvent(ui.__mem_func__(self.__OnSelectItem))
++			self.itemSlot.SetUnselectItemSlotEvent(ui.__mem_func__(self.__OnSelectItem))
+ 
+ 			self.searchButton.SAFE_SetEvent(self.__OnSearch)
+ 			self.clearButton.SAFE_SetEvent(self.__OnClear)
+@@ -743,6 +754,7 @@
+ 				index = y * self.itemSlot.x_width + x
+ 				self.itemSlot.SetItemSlot(index, 0, 0)
+ 				self.itemSlot.ClearSlot(index)
++				self.itemSlot.DeactivateSlot(index)
+ 
+ 		itemList = get_item_list(self.category, self.subCategory)
+ 		idx = 0
+@@ -750,6 +762,33 @@
+ 			self.itemSlot.SetItemSlot(idx, itemData[0], 0, socket=(itemData[1], 0, 0))
+ 			idx += 1
+ 
++		if self.selectedItemIndex >= len(itemList):
++			self.selectedItemIndex = -1
++		if self.selectedItemIndex >= 0:
++			self.itemSlot.ActivateSlot(self.selectedItemIndex)
++		self.itemSlot.RefreshSlot()
++
++	def __OnSelectItem(self, index):
++		# click an item = search only that item, click it again = whole category
++		if self.category < 0:
++			return
++		itemList = get_item_list(self.category, self.subCategory)
++		if index < 0 or index >= len(itemList):
++			return
++		if self.selectedItemIndex == index:
++			self.selectedItemIndex = -1
++		else:
++			self.selectedItemIndex = index
++		self.__RefreshCategoryItems()
++
++	def __GetSelectedItem(self):
++		if self.selectedItemIndex < 0 or self.category < 0 or is_wearable_search(self.category):
++			return None
++		itemList = get_item_list(self.category, self.subCategory)
++		if self.selectedItemIndex >= len(itemList):
++			return None
++		return itemList[self.selectedItemIndex]
++
+ 	def __CreateCategory(self, categoryIndex):
+ 		if categoryIndex == "break":
+ 			step = ui.Window()
+@@ -821,6 +860,7 @@
+ 
+ 		self.category = category
+ 		self.subCategory = -1
++		self.selectedItemIndex = -1
+ 		self.__RefreshSubCategoryButtons()
+ 		self.__RefreshCategory()
+ 		if category >= 0:
+@@ -847,6 +887,7 @@
+ 
+ 	def __OnClickSubCategory(self, index):
+ 		self.subCategory = index
++		self.selectedItemIndex = -1
+ 		self.__RefreshSubCategoryButtons()
+ 		self.__RefreshCategory()
+ 
+@@ -866,7 +907,7 @@
+ 	def __OnSearch(self):
+ 		if self.category >= 0:
+ 			self.__OnClear()
+-			search_category(self.category, self.subCategory, self.isSearchAttr)
++			search_category(self.category, self.subCategory, self.isSearchAttr, self.__GetSelectedItem())
+ 
+ 	def __OnClear(self):
+ 		ikashop.ClearFoundShopMap()

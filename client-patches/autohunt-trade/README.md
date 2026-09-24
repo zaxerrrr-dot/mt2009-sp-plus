@@ -13,6 +13,9 @@ Ten katalog przechowuje klientową część zmiany rozwijanej na gałęzi
 - `ItemManager.cpp.patch` — usuwa klientowe blokady `GIVE` i `MYSHOP`
   wyłącznie z Cor Draconis i wszystkich szarf. Pozostałe zabezpieczenia,
   w tym zakaz wyrzucania i dropu po śmierci, pozostają bez zmian.
+- `uiInventory-crashfix.patch` — usuwa trzy tymczasowe logi szarfy razem z
+  otaczającymi je warunkami. Pozostawienie pustych `if` powodowało crash przy
+  przejściu z wyboru postaci do gry.
 
 Serwerowa część Auto Łowów jest w
 `linux-port/overlays/playerbot/serverfiles/player_autohunt_commands.inc`.

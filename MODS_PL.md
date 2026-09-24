@@ -62,6 +62,8 @@ Jak wydać nową wersję: [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md).
   filtrowane pod klasę i płeć postaci, z której otwarto sklep.
 - Kosz na śmieci, podgląd dropu potworów, przełącznik eventu wielkanocnego
   w panelu.
+- Wyszukiwarka sklepów pozwala kliknąć konkretny przedmiot i znaleźć tylko
+  sklepy offline oraz stragany botów oferujące dokładnie ten vnum/socket.
 
 **Boty**
 - Płynniejsza praca serwera przy wielu botach (budżet czasu na turę).

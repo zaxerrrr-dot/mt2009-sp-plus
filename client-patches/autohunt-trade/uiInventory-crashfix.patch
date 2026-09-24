@@ -1,0 +1,30 @@
+--- a/root/uiInventory.py
++++ b/root/uiInventory.py
+@@ -1233,9 +1233,6 @@ class InventoryWindow(ui.ScriptWindow):
+ 			attachedSlotPos = mouseModule.mouseController.GetAttachedSlotNumber()
+ 			attachedItemCount = mouseModule.mouseController.GetAttachedItemCount()
+ 			attachedItemIndex = mouseModule.mouseController.GetAttachedItemIndex()
+-			if attachedItemIndex == 85101:
+-				dbg.TraceError("[ACCE_MOVE_85101] empty src=%d dst=%d type=%d count=%d" % (attachedSlotPos, selectedSlotPos, attachedSlotType, attachedItemCount))
+-
+ 			if player.SLOT_TYPE_INVENTORY == attachedSlotType:
+ 				#@fixme011 BEGIN (block ds equip)
+ 				attachedInvenType = player.SlotTypeToInvenType(attachedSlotType)
+@@ -1377,8 +1374,6 @@ class InventoryWindow(ui.ScriptWindow):
+ 				return
+ 
+ 	def __DropSrcItemToDestItemInInventory(self, srcItemVID, srcItemSlotPos, dstItemSlotPos):
+-		if srcItemVID == 85101:
+-			dbg.TraceError("[ACCE_MOVE_85101] occupied src=%d dst=%d flags=%d use=%s" % (srcItemSlotPos, dstItemSlotPos, player.GetItemFlags(srcItemSlotPos), item.GetUseType(srcItemVID)))
+ 		if srcItemSlotPos == dstItemSlotPos:
+ 			return
+ 
+@@ -1912,8 +1907,6 @@ class InventoryWindow(ui.ScriptWindow):
+ 			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.MOVE_ITEM_FAILURE_PRIVATE_SHOP)
+ 			return
+ 
+-		if player.GetItemIndex(srcSlotPos) == 85101:
+-			dbg.TraceError("[ACCE_MOVE_85101] send src=%d dst=%d count=%d" % (srcSlotPos, dstSlotPos, srcItemCount))
+ 		net.SendItemMovePacket(srcSlotPos, dstSlotPos, srcItemCount)
+ 
+ 	def SetDragonSoulRefineWindow(self, wndDragonSoulRefine):
