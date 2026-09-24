@@ -75,12 +75,15 @@ def rebrand(t, sidebar=""):
     t = t.replace('<div class="hero-section">', FAQ_BANNER + '<div class="hero-section">', 1)
     # Footer: our site, the credit to the MT2009 wiki.
     t = t.replace("Oficjalne kompedium wiedzy serwisu MT2009.pl",
-                  "Kompendium wiedzy MT2009 PLUS &middot; na podstawie wiki.mt2009.pl, za zgodą MT2009.pl")
+                  "Kompendium wiedzy MT2009 PLUS &middot; na podstawie wiki.mt2009.pl")
+    # Footer: our links and the support button, no links to MT2009.pl (the credit stays as text).
     t = t.replace('<a href="https://mt2009.pl" target="_blank" rel="noopener">Oficjalna strona serwisu</a>',
-                  '<a href="https://metin2sp.pl/" target="_blank" rel="noopener">metin2sp.pl</a> '
-                  '<a href="https://metin2sp.pl/discord" target="_blank" rel="noopener">Discord MT2009 PLUS</a> '
-                  '<a href="https://wiki.mt2009.pl/" target="_blank" rel="noopener">Wiki MT2009</a>')
-    t = t.replace("&copy; 2026 MT2009.pl Wiki", "&copy; 2026 MT2009 PLUS &middot; treści MT2009 &copy; MT2009.pl")
+                  '<a href="https://metin2sp.pl/" target="_blank" rel="noopener">metin2sp.pl</a></li> '
+                  '<li><a href="https://metin2sp.pl/discord" target="_blank" rel="noopener">Discord MT2009 PLUS</a></li> '
+                  '<li style="margin-top:8px">' + COFFEE_BUTTON)
+    t = re.sub(r'(<h4 id="[^"]*mt2009pl">)MT2009\.pl(</h4>)', r"\1MT2009 PLUS\2", t)
+    t = t.replace("&copy; 2026 MT2009.pl Wiki", "&copy; 2026 MT2009 PLUS")
+    t = re.sub(r'<p>\s*<small>\s*<a href="https://mt2009\.pl"[^>]*>MT2009\.pl</a>\s*</small>\s*</p>', "", t)
     t = re.sub(r">\s*MT2009 Wiki\s*<", ">MT2009 PLUS Wiki<", t)
     t = t.replace("Witaj w MT2009 Wiki", "Witaj w MT2009 PLUS Wiki")
     t = t.replace("Kompleksowa baza wiedzy o świecie MT2009.", "Kompleksowa baza wiedzy o świecie MT2009 i MT2009 PLUS.")
