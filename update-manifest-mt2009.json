@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-23T22:21:35Z",
-  "statusMessage": "Klient 2.0.7: naprawiona sprzedaz pojedyncza i Sprzedaj wiele u handlarzy.",
+  "publishedAt": "2026-09-24T06:21:43Z",
+  "statusMessage": "Klient 2.0.8: Auto Lowy, wyszukiwanie konkretnego przedmiotu, poprawka wejscia do gry i tylko serwer localhost.",
   "server": {
     "version": "2.2.6",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.2.6.zip",
@@ -10,9 +10,9 @@
     "size": 50174841
   },
   "client": {
-    "version": "2.0.7",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.7.zip",
-    "sha256": "122324E7FF4117C4FD0AB4F11326D29FD42B6BA446C682F47F3B1C0FFA715549",
-    "size": 5538728
+    "version": "2.0.8",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.8.zip",
+    "sha256": "664C37DCE58DC9B4B5883C21C527E77D13E976BAA1BADF73278D16B6BC73BB23",
+    "size": 813759
   }
 }

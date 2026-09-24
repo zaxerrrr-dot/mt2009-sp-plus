@@ -17,6 +17,17 @@ every version here.
 
 ---
 
+## Klient 2.0.8 — 2026-09-24
+
+- Paczka zawiera Auto Łowy otwierane klawiszem `K`, wraz z wyborem celów i
+  ustawieniami podnoszenia przedmiotów.
+- Wyszukiwarka sklepów pozwala zaznaczyć konkretny przedmiot i znaleźć tylko
+  sklepy offline oraz stragany botów, które go oferują.
+- Usunięta testowa pozycja „mt2009 VPS” z listy serwerów. Pozostaje
+  „mt2009 localhost” z kanałami CH1 i CH2.
+- Usunięte tymczasowe logi szarfy, które po częściowym usunięciu powodowały
+  błąd składni i zamknięcie klienta podczas wchodzenia do gry.
+
 ## Klient 2.0.7 — 2026-09-24
 
 - Naprawiona sprzedaż pojedynczych przedmiotów i opcja „Sprzedaj wiele” u

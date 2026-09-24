@@ -1,0 +1,37 @@
+diff --git a/root/serverinfo.py b/root/serverinfo.py
+index 004652e..c1e90fe 100644
+--- a/root/serverinfo.py
++++ b/root/serverinfo.py
+@@ -4,7 +4,7 @@ import net
+ from constInfo import TextColor
+ app.ServerName = None
+ 
+-# Local and VPS configurations.
++# Local configuration.
+ # Auth: 11000; CH1: 13000; CH2: 13010.
+ # The remaining map cores are reached through the server's own map hand-over.
+ # This file is stored in pack/root.data and pack/root.index.
+@@ -52,23 +52,7 @@ SERVER_LOCALHOST = {
+ 	"premium_channels": (),
+ }
+ 
+-SERVER_VPS = {
+-	"name":TextColor("mt2009 VPS", "ffd500"), #GOLD
+-	"host":"179.61.251.72",
+-	"auth_base_port": 11000,
+-	"auth_port_increment": 0,
+-	"auth_port_channel_increment": 0,
+-	"auth_count": 1,
+-	"channel_base_port": 13000,
+-	"channel_port_increment": 10,
+-	"channel_count": 2,
+-	"mark":13000,
+-	"mark_name": "10",
+-	"premium_channels": (),
+-}
+-
+ __AddServerToServerList(SERVER_LOCALHOST)
+-__AddServerToServerList(SERVER_VPS)
+ 
+ 
+ ## channel data
