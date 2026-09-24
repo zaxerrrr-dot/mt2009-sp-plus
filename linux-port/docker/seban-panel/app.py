@@ -654,7 +654,12 @@ def item_base_stats(vnum):
         return []
     stats, item_type, subtype = [], int(proto.get("type") or 0), int(proto.get("subtype") or 0)
     level = int(proto.get("level") or 0)
-    if level:
+    # A time-limited costume or pet carries a number of seconds where a level
+    # would be ("Wymagany poziom: 86400"), and not even the right one: the
+    # time left is the item's own (socket 0, see player()).
+    if level > 300 and item_type in (28, 37):
+        pass
+    elif level:
         stats.append(f"Wymagany poziom: {level}")
     value = lambda index: int(proto.get(f"value{index}") or 0)
     refine_bonus = value(5)
@@ -2473,7 +2478,8 @@ def player(pid):
     items = rows("""
       SELECT i.id, i.vnum, i.count, i.window, i.pos, i.socket0,i.socket1,i.socket2,
       i.attrtype0,i.attrvalue0,i.attrtype1,i.attrvalue1,i.attrtype2,i.attrvalue2,i.attrtype3,i.attrvalue3,i.attrtype4,i.attrvalue4,i.attrtype5,i.attrvalue5,i.attrtype6,i.attrvalue6,
-      p.applytype0,p.applyvalue0,p.applytype1,p.applyvalue1,p.applytype2,p.applyvalue2,p.size AS item_size,COALESCE(p.locale_name, CONCAT('VNUM ', i.vnum)) AS item_name
+      p.applytype0,p.applyvalue0,p.applytype1,p.applyvalue1,p.applytype2,p.applyvalue2,p.size AS item_size,COALESCE(p.locale_name, CONCAT('VNUM ', i.vnum)) AS item_name,
+      p.type AS item_type
       FROM player.item i LEFT JOIN player.item_proto p ON p.vnum=i.vnum WHERE i.owner_id=%s
       ORDER BY i.window, i.pos LIMIT 250
     """, (pid,))
@@ -2491,14 +2497,29 @@ def player(pid):
         5: "neck", 6: "ear", 7: "unique1", 8: "unique2", 9: "arrow",
         10: "shield", 23: "belt",
     }
+    # The costume slots (length.h EWearPositions: 19 body, 20 hair, 21 mount,
+    # 22 sash, 24 weapon skin), shown in a row of their own under the
+    # inventory art, which has no place for them. The pet is its seal in the
+    # bag (ITEM_PET, 37): a summoned pet is the game's state, not a slot.
+    costume_slots = {19: "costume_body", 20: "costume_hair", 24: "costume_weapon", 22: "costume_acce", 21: "costume_mount"}
+    costumes = {}
     for item in [*items, *safebox]:
         item["item_name"] = resolve_item_display_name(item["vnum"], item.get("socket0"), game_text(item["item_name"]))
         item["item_size"] = max(1, min(3, int(item.get("item_size") or 1)))
         item["base_stats"] = item_base_stats(item["vnum"])
+        # A costume's or pet seal's REAL_TIME limit counts down in socket 0.
+        if int(item.get("item_type") or 0) in (28, 37) and int(item.get("socket0") or 0) > time.time():
+            left = int(item["socket0"]) - int(time.time())
+            days, hours = left // 86400, left % 86400 // 3600
+            item["base_stats"].insert(0, f"Wygasa za: {days} {'dzień' if days == 1 else 'dni'} {hours} h" if days else f"Wygasa za: {hours} h")
         item["bonuses"] = [apply_text(item.get(f"applytype{i}"), item.get(f"applyvalue{i}")) for i in range(3) if item.get(f"applytype{i}") and item.get(f"applyvalue{i}")]
         item["bonuses"] += [apply_text(item.get(f"attrtype{i}"), item.get(f"attrvalue{i}")) for i in range(7) if item.get(f"attrtype{i}") and item.get(f"attrvalue{i}")]
         if item["window"] == "EQUIPMENT" and item["pos"] in equipment_slots:
             equipment[equipment_slots[item["pos"]]] = item
+        elif item["window"] == "EQUIPMENT" and item["pos"] in costume_slots:
+            costumes[costume_slots[item["pos"]]] = item
+        elif item["window"] == "INVENTORY" and int(item.get("item_type") or 0) == 37 and "pet" not in costumes:
+            costumes["pet"] = item
         elif item["window"] == "INVENTORY" and int(item["pos"] or 0) < INVENTORY_PAGE_SIZE * INVENTORY_PAGES:
             inventory.append(item)
     socket_vnums = sorted({int(item.get(f"socket{i}") or 0) for item in [*items, *safebox] for i in range(3) if int(item.get(f"socket{i}") or 0) > 0})
@@ -2511,7 +2532,9 @@ def player(pid):
         # A Skill Book's socket0 is the taught skill's vnum, not a gem --
         # looking it up in item_proto as a "stone" was matching unrelated
         # items by coincidence (e.g. a sword showing up in a book's tooltip).
-        if int(item["vnum"] or 0) in SKILLBOOK_VNUMS:
+        # A costume's or a pet seal's sockets hold its time and the pet's own
+        # state, never a stone: the pet showed a "Yang" stone for socket 1.
+        if int(item["vnum"] or 0) in SKILLBOOK_VNUMS or int(item.get("item_type") or 0) in (28, 37):
             item["stones"] = []
         else:
             item["stones"] = [stone_defs[vnum] for vnum in (int(item.get(f"socket{i}") or 0) for i in range(3)) if vnum in stone_defs]
@@ -2519,7 +2542,7 @@ def player(pid):
     offline_shop = bot_offline_shop(pid)
     character_stats = character_stat_summary(pid)
     # Client uiinventory.py: a page every 45 cells, page I at slot 0.
-    return render_template("player.html", character=character, equipment=equipment, inventory=inventory, safebox=safebox, inventory_pages=INVENTORY_PAGES, has_safebox=bool(safebox), gear_history=gear_history, offline_shop=offline_shop, character_stats=character_stats)
+    return render_template("player.html", character=character, equipment=equipment, costumes=costumes, inventory=inventory, safebox=safebox, inventory_pages=INVENTORY_PAGES, has_safebox=bool(safebox), gear_history=gear_history, offline_shop=offline_shop, character_stats=character_stats)
 
 
 # VIP and "Dragon Coins" both turned out to be real, already-working engine

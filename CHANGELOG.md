@@ -17,6 +17,45 @@ every version here.
 
 ---
 
+## 2.3.3 — 2026-09-24 — Alchemia dla każdego, boty bonusują kostiumy
+
+Serwer 2.3.3; klient zostaje 2.0.10. Zaktualizuj serwer w launcherze
+(**SPRAWDŹ AKTUALIZACJE**). Zawiera wszystko z 2.3.2. Pierwszy start po
+aktualizacji kompiluje serwer od nowa, więc trwa dłużej niż zwykle.
+
+### Alchemia bez misji na 30 poziom
+
+- Każdy gracz ma od razu dostęp do alchemii, bez misji u Alchemika.
+  Kamień z otwartego Cor Draconis trafia do plecaka alchemii, a nie na
+  ziemię, i można go podnieść z ziemi.
+- Naprawiona aktywacja alchemii: zwykły gracz dostawał „Ta komenda nie
+  istnieje”, działało to tylko u GM.
+- Misja u Alchemika działa dalej jako źródło Cor Draconis za Odłamki.
+
+### Boty bonusują kostiumy
+
+- Boty od 30 poziomu z co najmniej 20 mln yang kupują u Handlarki
+  Różności wzmocnienia i zaczarowania kostiumu – po jednym stacku na
+  wizytę i nigdy poniżej 10 mln yang.
+- Wzmacniają kostium, fryzurę i nakładkę, aż mają dwa bonusy (najbogatsze,
+  od 150 mln, trzy), a potem zaczarowują je, aż oba bonusy będą warte
+  zachowania – według tych samych zasad co przy zbrojach i broniach.
+- Jeden przedmiot naraz; nie ruszają kostiumu, któremu zostało mniej niż
+  tydzień.
+
+### Pety
+
+- Bonus petów „atak magiczny %” zaczął naprawdę działać – wcześniej serwer
+  go pomijał.
+
+### Seban Panel
+
+- Profil bota pokazuje jego kostium, fryzurę, nakładkę, szarfę,
+  wierzchowca i peta, z ikonami, nazwami, bonusami i czasem do
+  wygaśnięcia.
+- Dodane ikony ponad 1600 kostiumów, fryzur, nakładek, szarf, wierzchowców
+  i petów.
+
 ## Klient 2.0.10 — 2026-09-24 — Poprawka: atak z mounta i sprzedaż u handlarza
 
 - Kto aktualizował klienta z wersji starszej niż 2.0.6 prosto do 2.0.8

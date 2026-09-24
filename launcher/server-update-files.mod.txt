@@ -104,6 +104,7 @@ linux-port/docker/game/src/server/game/src/FileMonitor_FreeBSD.cpp
 linux-port/docker/game/src/server/game/src/FileMonitor_FreeBSD.h
 linux-port/docker/game/src/server/game/src/Makefile
 linux-port/docker/game/src/server/game/src/char.cpp
+linux-port/docker/game/src/server/game/src/char_affect.cpp
 linux-port/docker/game/src/server/game/src/char.h
 linux-port/docker/game/src/server/game/src/char_battle.cpp
 linux-port/docker/game/src/server/game/src/char_item.cpp

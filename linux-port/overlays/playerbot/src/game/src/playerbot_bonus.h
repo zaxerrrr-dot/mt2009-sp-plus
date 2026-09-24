@@ -1175,6 +1175,249 @@ namespace
 		}
 		return stonesUsed > 0;
 	}
+
+	// --- The ItemShop look's bonuses ---------------------------------------
+	//
+	// The operator's rule (24 September 2026): a bot with the yang gives the
+	// costume, the hairstyle and the weapon skin it wears their lines the way
+	// a player does at Handlarka Roznosci - 70063 "Transformuj kostium" until
+	// the piece has two lines (three when the bot is rich), then 70064
+	// "Zaczaruj kostium" until the lines are ones it wants, the same scoring
+	// as its armour and weapons. One piece at a time, a stack of each at a
+	// time, and never with yang it needs (PLAYERBOT_COSTUME_BONUS_* in
+	// playerbot_types.h for the prices and odds behind the numbers).
+
+	BYTE GetPlayerBotCostumeScoreCell(LPITEM item)
+	{
+		// The slot whose weights a costume's lines are scored with: the body
+		// costume's lines are the armour's kind, the weapon skin's the
+		// weapon's, the hairstyle's the helmet's.
+		if (!item || item->GetType() != ITEM_COSTUME)
+			return WEAR_BODY;
+		switch (item->GetSubType())
+		{
+			case COSTUME_HAIR: return WEAR_HEAD;
+#ifdef ENABLE_WEAPON_COSTUME_SYSTEM
+			case COSTUME_WEAPON: return WEAR_WEAPON;
+#endif
+			default: return WEAR_BODY;
+		}
+	}
+
+	int ScorePlayerBotCostumeLine(LPCHARACTER ch, LPITEM item, BYTE type, long value)
+	{
+		// Three costume lines the armour's scoring has no case for, and whose
+		// raw numbers (stamina to 400) would pass for the best line there is.
+		switch (type)
+		{
+			case POINT_MAX_STAMINA:   return (int)(value / 40);
+			case POINT_ST_REGEN:      return (int)(value * 2);
+			case POINT_SKILL_DURATION:return (int)(value * 4);
+			case POINT_STEAL_SP:      return (int)(value * 3);
+			default:
+				return ScorePlayerBotBonusLine(ch, GetPlayerBotCostumeScoreCell(item), type, (short)value);
+		}
+	}
+
+	int CountPlayerBotGoodCostumeLines(LPCHARACTER ch, LPITEM item)
+	{
+		int good = 0;
+		for (int i = 0; item && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (item->GetAttributeValue(i) > 0 &&
+					ScorePlayerBotCostumeLine(ch, item, item->GetAttributeType(i), item->GetAttributeValue(i)) >=
+					PLAYERBOT_COSTUME_GOOD_LINE_SCORE)
+				++good;
+		return good;
+	}
+
+	// Seconds a costume has left: its REAL_TIME limit counts down in socket 0.
+	long GetPlayerBotCostumeSecondsLeft(LPITEM item)
+	{
+		if (!item)
+			return 0;
+		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+		{
+			const BYTE type = item->GetProto()->aLimits[i].bType;
+			if (type == LIMIT_REAL_TIME || type == LIMIT_REAL_TIME_START_FIRST_USE)
+			{
+				const long end = item->GetSocket(0);
+				// Not yet started (first use): the whole of its time is ahead.
+				if (end <= 0)
+					return item->GetProto()->aLimits[i].lValue;
+				return end - (long)get_global_time();
+			}
+		}
+		return LONG_MAX;
+	}
+
+	bool IsPlayerBotCostumeBonusReagent(LPITEM item)
+	{
+		return item && item->GetType() == ITEM_USE &&
+				(item->GetSubType() == USE_CHANGE_COSTUME_ATTR || item->GetSubType() == USE_RESET_COSTUME_ATTR);
+	}
+
+	int FindPlayerBotCostumeReagentCell(LPCHARACTER ch, DWORD vnum)
+	{
+		for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetVnum() == vnum && item->GetCount() > 0 && !item->isLocked() && !item->IsExchanging())
+				return (int)cell;
+		}
+		return -1;
+	}
+
+	bool IsPlayerBotCostumeBonusDone(const TPlayerBotAIState& state, DWORD id)
+	{
+		return std::find(state.vecCostumeBonusDone.begin(), state.vecCostumeBonusDone.end(), id) !=
+				state.vecCostumeBonusDone.end();
+	}
+
+	// What the piece needs next: the reset vnum, the change vnum, or 0 when it
+	// is finished or not worth the yang.
+	DWORD GetPlayerBotCostumeBonusNeed(LPCHARACTER ch, const TPlayerBotAIState& state, LPITEM item)
+	{
+		if (!ch || !item || item->GetAttributeSetIndex() == -1 || IsPlayerBotCostumeBonusDone(state, item->GetID()) ||
+				GetPlayerBotCostumeSecondsLeft(item) < PLAYERBOT_COSTUME_BONUS_MIN_SECONDS_LEFT)
+			return 0;
+		const int count = item->GetAttributeCount();
+		const int good = CountPlayerBotGoodCostumeLines(ch, item);
+		// Finished: two lines worth keeping (all of them on a two-line piece).
+		if (count >= 2 && good >= 2)
+			return 0;
+		const int wanted = ch->GetGold() >= PLAYERBOT_COSTUME_BONUS_THREE_LINES_GOLD ? 3 : 2;
+		return count < wanted ? PLAYERBOT_COSTUME_RESET_VNUM : PLAYERBOT_COSTUME_CHANGE_VNUM;
+	}
+
+	// The worn piece the pass works on: the one it was on while that still
+	// needs work, else the weapon skin, the costume, the hairstyle.
+	LPITEM PickPlayerBotCostumeBonusTarget(LPCHARACTER ch, TPlayerBotAIState& state, DWORD* pNeed)
+	{
+		*pNeed = 0;
+		if (!ch || ch->GetLevel() < PLAYERBOT_COSTUME_BONUS_MIN_LEVEL)
+			return NULL;
+		static const BYTE s_abCells[] = {
+#ifdef ENABLE_WEAPON_COSTUME_SYSTEM
+			WEAR_COSTUME_WEAPON,
+#endif
+			WEAR_COSTUME_BODY, WEAR_COSTUME_HAIR };
+		LPITEM first = NULL;
+		DWORD firstNeed = 0;
+		for (size_t i = 0; i < sizeof(s_abCells) / sizeof(s_abCells[0]); ++i)
+		{
+			LPITEM item = ch->GetWear(s_abCells[i]);
+			const DWORD need = GetPlayerBotCostumeBonusNeed(ch, state, item);
+			if (!need)
+				continue;
+			if (item->GetID() == state.dwCostumeBonusFocusItem)
+			{
+				*pNeed = need;
+				return item;
+			}
+			if (!first)
+			{
+				first = item;
+				firstNeed = need;
+			}
+		}
+		*pNeed = firstNeed;
+		return first;
+	}
+
+	// At Handlarka: one stack of what the piece needs next, when the bag has
+	// none and the purse can spare it. Paid like the potions
+	// (ManagePlayerBotMiscMerchant): the proto's price, times the stack.
+	bool BuyPlayerBotCostumeReagent(LPCHARACTER ch, TPlayerBotAIState& state)
+	{
+		DWORD need = 0;
+		if (!ch || ch->GetGold() < PLAYERBOT_COSTUME_BONUS_START_GOLD ||
+				!PickPlayerBotCostumeBonusTarget(ch, state, &need) || !need ||
+				FindPlayerBotCostumeReagentCell(ch, need) >= 0 || ch->GetEmptyInventory(1) < 0)
+			return false;
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(need);
+		if (!proto || proto->dwGold == 0)
+			return false;
+		const long long price = (long long)proto->dwGold * PLAYERBOT_COSTUME_REAGENT_STACK;
+		if ((long long)ch->GetGold() - price < PLAYERBOT_COSTUME_BONUS_RESERVE_GOLD)
+			return false;
+		PlayerBotChangeGold(ch, -(int)price);
+		ch->AutoGiveItem(need, PLAYERBOT_COSTUME_REAGENT_STACK);
+		sys_log(0, "PLAYERBOT_COSTUME_BONUS: bought pid=%u name=%s vnum=%u x%u price=%lld gold_left=%lld",
+				ch->GetPlayerID(), ch->GetName(), need, PLAYERBOT_COSTUME_REAGENT_STACK, price,
+				(long long)ch->GetGold());
+		return true;
+	}
+
+	// A few rolls on the piece, off and back on as the engine wants it
+	// (UseItemEx refuses a worn costume), each checked the way the engine's
+	// own handler checks it (char_item.cpp, USE_RESET/CHANGE_COSTUME_ATTR):
+	// a reset must leave one to three lines, a change the same count, or the
+	// old lines go back and the reagent is kept. True when a reagent was spent.
+	bool ManagePlayerBotCostumeBonus(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded() || ch->IsDead() || dwNow < state.dwNextCostumeBonusTime)
+			return false;
+		state.dwNextCostumeBonusTime = dwNow + PLAYERBOT_COSTUME_BONUS_STEP_MS;
+		DWORD need = 0;
+		LPITEM item = PickPlayerBotCostumeBonusTarget(ch, state, &need);
+		if (!item || !need)
+			return false;
+		int cell = FindPlayerBotCostumeReagentCell(ch, need);
+		if (cell < 0)
+			return false;
+		if (item->GetID() != state.dwCostumeBonusFocusItem)
+		{
+			state.dwCostumeBonusFocusItem = item->GetID();
+			state.iCostumeChangesSpent = 0;
+		}
+		if (ch->GetEmptyInventory(item->GetSize()) < 0 || !ch->UnequipItem(item) || item->IsEquipped())
+			return false;
+
+		int spent = 0;
+		while (spent < PLAYERBOT_COSTUME_ROLLS_PER_PASS && need && cell >= 0)
+		{
+			const int countBefore = item->GetAttributeCount();
+			TPlayerItemAttribute aBefore[ITEM_ATTRIBUTE_MAX_NUM];
+			memcpy(aBefore, item->GetAttributes(), sizeof(aBefore));
+			const bool reset = need == PLAYERBOT_COSTUME_RESET_VNUM;
+			if (reset)
+			{
+				item->ClearAttribute();
+				item->AlterToMagicItem();
+			}
+			else
+				item->ChangeAttribute();
+			const int countAfter = item->GetAttributeCount();
+			if (reset ? (countAfter < 1 || countAfter > 3) : countAfter != countBefore)
+			{
+				item->SetAttributes(aBefore);
+				sys_err("PLAYERBOT_COSTUME_BONUS: %s left %d line(s) (had %d) pid=%u vnum=%u - restored",
+						reset ? "reset" : "change", countAfter, countBefore, ch->GetPlayerID(), item->GetVnum());
+				break;
+			}
+			ConsumePlayerBotBonusStoneAt(ch, cell);
+			++spent;
+			if (!reset && ++state.iCostumeChangesSpent >= PLAYERBOT_COSTUME_MAX_CHANGES)
+				state.vecCostumeBonusDone.push_back(item->GetID());
+			LogManager::instance().ItemLog(ch, item, reset ? "PLAYERBOT_COSTUME_RESET" : "PLAYERBOT_COSTUME_CHANGE",
+					item->GetName());
+			sys_log(0, "PLAYERBOT_COSTUME_BONUS: %s pid=%u name=%s vnum=%u lines=%d->%d good=%d changes=%d gold=%lld",
+					reset ? "reset" : "change", ch->GetPlayerID(), ch->GetName(), item->GetVnum(),
+					countBefore, countAfter, CountPlayerBotGoodCostumeLines(ch, item),
+					state.iCostumeChangesSpent, (long long)(ch->GetGold() / 1000));
+			need = GetPlayerBotCostumeBonusNeed(ch, state, item);
+			cell = need ? FindPlayerBotCostumeReagentCell(ch, need) : -1;
+		}
+		if (!need)
+			sys_log(0, "PLAYERBOT_COSTUME_BONUS: finished pid=%u name=%s vnum=%u lines=%d good=%d changes=%d",
+					ch->GetPlayerID(), ch->GetName(), item->GetVnum(), item->GetAttributeCount(),
+					CountPlayerBotGoodCostumeLines(ch, item), state.iCostumeChangesSpent);
+		item->UpdatePacket();
+		if (!PlayerBotEquipItem(ch, item))
+			sys_err("PLAYERBOT_COSTUME_BONUS: could not re-equip pid=%u name=%s vnum=%u",
+					ch->GetPlayerID(), ch->GetName(), item->GetVnum());
+		return spent > 0;
+	}
 }
 
 #endif

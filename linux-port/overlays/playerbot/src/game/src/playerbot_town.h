@@ -2506,6 +2506,9 @@ namespace
 		// never go on the counter.
 		if (item->GetType() == ITEM_PET)
 			return -1;
+		// Nor the reagents it bought for that look's bonuses.
+		if (IsPlayerBotCostumeBonusReagent(item))
+			return -1;
 		if (item->GetType() == ITEM_COSTUME &&
 				(item->GetSubType() == COSTUME_BODY || item->GetSubType() == COSTUME_WEAPON))
 			return -1;
@@ -4530,6 +4533,12 @@ namespace
 				state.bTownNeedMisc = false;
 				state.dwTownWaitUntil = dwNow + number(
 						PLAYERBOT_MERCHANT_WAIT_MIN, PLAYERBOT_MERCHANT_WAIT_MAX);
+				// The look's bonuses (playerbot_bonus.h): a stack of what the
+				// costume needs, then rolls while the bot stands here.
+				BuyPlayerBotCostumeReagent(ch, state);
+				state.dwCostumeBonusVisitEnd = dwNow + PLAYERBOT_COSTUME_BONUS_VISIT_MS;
+				state.dwNextCostumeBonusTime = 0;
+				ManagePlayerBotCostumeBonus(ch, state, dwNow);
 				state.bTownVisitPhase = BOT_TOWN_PHASE_MISC_WAIT;
 				sys_log(0, "PLAYERBOT_TOWN: misc merchant visit pid=%u name=%s wait_ms=%u pos=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), state.dwTownWaitUntil - dwNow,
@@ -4542,6 +4551,15 @@ namespace
 		{
 			ch->Stop();
 			ch->SetPosition(POS_STANDING);
+			// Rolling on at the counter while there is a reagent and work, for
+			// up to PLAYERBOT_COSTUME_BONUS_VISIT_MS; the one stack a visit
+			// buys was bought on arrival.
+			if (dwNow < state.dwCostumeBonusVisitEnd)
+			{
+				if (ManagePlayerBotCostumeBonus(ch, state, dwNow))
+					state.dwTownWaitUntil = std::max<DWORD>(state.dwTownWaitUntil,
+							std::min<DWORD>(dwNow + 2500, state.dwCostumeBonusVisitEnd));
+			}
 			if (dwNow >= state.dwTownWaitUntil)
 			{
 				state.bTownVisitPhase = state.bTownNeedBlacksmith
