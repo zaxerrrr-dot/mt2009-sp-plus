@@ -5,7 +5,7 @@ category: Gra na MT2009 PLUS
 order: 20
 keywords: mount, wierzchowiec, pieczęć, deska, chmura, łódź, prędkość
 ---
-Wierzchowce to **pieczęcie** zakładane w slot kostiumu wierzchowca. W grze jest ok. 240 pieczęci (129 modeli), w ItemShopie 136 różnych mountów.
+Wierzchowce to **pieczęcie** zakładane w slot kostiumu wierzchowca. W grze jest 139 różnych wierzchowców (pełna lista na dole strony).
 
 - Wierzchowiec daje bonusy z pieczęci i szybszy bieg.
 - Z grzbietu wierzchowca bijesz zwykłym atakiem, tak jak z konia.
@@ -22,3 +22,7 @@ Boty też kupują wierzchowce w ItemShopie i na nich jeżdżą:
 - Przed otwarciem straganu bot zsiada.
 
 Koń z misji u Stajennego działa jak dotąd – zobacz [Jeździectwo](/Systemy/jezdziectwo).
+
+## Lista wierzchowców
+
+{{PRZEDMIOTY:wierzchowce}}

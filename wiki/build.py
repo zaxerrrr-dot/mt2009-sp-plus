@@ -79,6 +79,34 @@ def rewrite_js(t):
     return t
 
 
+def item_grid(kind, items):
+    """{{PRZEDMIOTY:kind}}: the items of wiki/data/items.json with icons and a filter."""
+    cards = "".join(
+        '<div class="plus-item" data-name="%s">%s<span class="plus-item-name">%s</span>'
+        '<span class="plus-item-time">%s</span></div>'
+        % (html.escape(e["name"].lower()),
+           '<img src="%s/images/plus/%s" alt="" loading="lazy" width="32" height="32">' % (PREFIX, e["icon"]) if e["icon"]
+           else '<span class="plus-item-noicon"></span>',
+           html.escape(e["name"]), html.escape(", ".join(e["time"])))
+        for e in items[kind])
+    return ('<div class="plus-items"><input type="search" class="plus-items-filter" placeholder="Szukaj w %d przedmiotach…" '
+            'oninput="var q=this.value.toLowerCase();this.nextElementSibling.querySelectorAll(\'.plus-item\').forEach('
+            'function(c){c.style.display=c.dataset.name.indexOf(q)<0?\'none\':\'\'})">'
+            '<div class="plus-items-grid">%s</div></div>' % (len(items[kind]), cards))
+
+
+ITEM_CSS = """<style>
+.plus-items-filter{width:100%;max-width:360px;padding:8px 10px;margin:6px 0 12px;border-radius:6px;
+ border:1px solid rgba(245,228,176,.35);background:rgba(0,0,0,.25);color:inherit;font:inherit}
+.plus-items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}
+.plus-item{display:grid;grid-template-columns:36px 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;
+ padding:6px 8px;border:1px solid rgba(245,228,176,.15);border-radius:6px;background:rgba(0,0,0,.18)}
+.plus-item img,.plus-item-noicon{grid-row:1/3;width:32px;height:32px;image-rendering:pixelated}
+.plus-item-name{font-size:.9em;line-height:1.2}
+.plus-item-time{font-size:.75em;opacity:.65}
+</style>"""
+
+
 def read_page(path):
     raw = open(path, encoding="utf-8").read()
     meta = {}
@@ -119,11 +147,15 @@ def main():
         slug = f[:-3]
         ours.append((int(meta.get("order", "100")), slug, meta, body))
     ours.sort()
+    items = json.load(open(os.path.join(HERE, "data", "items.json"), encoding="utf-8"))
+    shutil.copytree(os.path.join(HERE, "items"), os.path.join(site, "images", "plus"), dirs_exist_ok=True)
     entries = []
     for _, slug, meta, body in ours:
         title = meta.get("title", slug)
         # Links in our pages are written from the site root, like MT2009's.
         content = rewrite_html(markdown.markdown(body, extensions=["tables", "fenced_code", "toc", "sane_lists"]))
+        if "{{PRZEDMIOTY:" in content:
+            content = ITEM_CSS + re.sub(r"(?:<p>)?\{\{PRZEDMIOTY:(\w+)\}\}(?:</p>)?", lambda m: item_grid(m.group(1), items), content)
         url = "mt2009plus/" if slug == "index" else "mt2009plus/%s/" % slug
         entries.append((url, title, meta, content))
     def in_group(g):
