@@ -17,6 +17,50 @@ every version here.
 
 ---
 
+## 2.4.1 — 2026-09-25 — Cory w stosach, wierzchowce bez „wygasła”, koniec wyrzucania z gry
+
+Serwer 2.4.1 i klient 2.0.11. **Zaktualizuj oba** w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.4.0. Pierwszy start po aktualizacji kompiluje serwer od nowa, więc trwa
+dłużej niż zwykle.
+
+### Cor Draconis i szarfy
+
+- **Cory łączą się w stosy.** Przeciągnięty na taki sam Cor dokłada się do
+  stosu, a ze stosu można oddzielić część.
+- **Boty nie stoją już nad twoim Corem.** Bot nie może podnieść cudzego Cora
+  z ziemi, a mimo to podchodził do niego i czekał, aż zniknie. Teraz go
+  omija – swoje Cory dalej dostaje prosto do plecaka.
+- **Cor i szarfa tylko z potworów w zasięgu poziomu.** Wypadają z Metina
+  albo bossa, który ma najwyżej 15 poziomów mniej niż ty; silniejszy daje
+  drop bez ograniczeń. Postać na 90 poziomie nie wybije już szarfy z Metina
+  na 5 poziomie.
+
+### Wierzchowce
+
+- **Pieczęcie bez limitu czasu działają.** Dzik, Wilk, Tygrys i Lew
+  (niebieskie), Biały Lew, Dzik Wojenny, Wilk Wojenny, Szarżujący Tygrys
+  i Waleczny Lew pisały „Ta pieczęć wierzchowca już wygasła”, choć były
+  nowe. Teraz jeździsz na nich bez końca.
+- **Bonusy pieczęci liczą się raz.** Po śmierci albo teleporcie na
+  wierzchowcu każde kolejne wsiadanie dokładało bonusy jeszcze raz.
+- **Boty jeżdżą na wierzchowcach z ItemShopu.** Koń bojowy zostaje dla nich
+  ważny; ze zwykłego wierzchowca bot zsiada po umiejętność, Metiny bije
+  z siodła, a na deskach, chmurach i łodziach jeździ cały czas.
+
+### Stabilność
+
+- **Koniec wyrzucania do ekranu logowania co pół minuty.** Na części
+  komputerów zegar Dockera (WSL2) chodzi za szybko i co kilkanaście sekund
+  jest cofany o kilka sekund. Serwer brał to za przyspieszanie gry i
+  rozłączał gracza bez komunikatu. Teraz ma na to zapas.
+- Ten sam skok zegara resetował naraz setki botów jako „nieaktywne”
+  i przycinał serwer – już nie.
+- Jeśli masz takie wyrzucanie, zaktualizuj też WSL (`wsl --update`)
+  i Docker Desktop – zegar będzie wtedy równy.
+
+---
+
 ## Klient 2.0.11 — 2026-09-25 — Auto Łowy i poprawki ekwipunku
 
 - Pełna, sprawdzona paczka klienta bez funkcji Target Drop i wyszukiwarki
