@@ -1597,14 +1597,14 @@ namespace
 	// two lines take about nine rolls (1.1M, one stack is enough nine times in
 	// ten), three take five hundred to a thousand (60-125M a piece). Mixing two
 	// lines until both are worth keeping takes some twenty to forty changes,
-	// 5-10M. A bot starts at 30M, never buys a stack that leaves it under 20M,
-	// and chases the third line only from 150M.
+	// 5-10M. A bot starts at 20M and buys freely down to 10M (operator,
+	// 24 Sep 2026), and chases the third line only from 150M.
 	const DWORD PLAYERBOT_COSTUME_RESET_VNUM = 70063;
 	const DWORD PLAYERBOT_COSTUME_CHANGE_VNUM = 70064;
 	const DWORD PLAYERBOT_COSTUME_REAGENT_STACK = 20;
 	const BYTE PLAYERBOT_COSTUME_BONUS_MIN_LEVEL = 30;
-	const long long PLAYERBOT_COSTUME_BONUS_START_GOLD = 30000000LL;
-	const long long PLAYERBOT_COSTUME_BONUS_RESERVE_GOLD = 20000000LL;
+	const long long PLAYERBOT_COSTUME_BONUS_START_GOLD = 20000000LL;
+	const long long PLAYERBOT_COSTUME_BONUS_RESERVE_GOLD = 10000000LL;
 	const long long PLAYERBOT_COSTUME_BONUS_THREE_LINES_GOLD = 150000000LL;
 	// A costume that runs out within a week is not worth a stack.
 	const long PLAYERBOT_COSTUME_BONUS_MIN_SECONDS_LEFT = 7L * 24 * 3600;

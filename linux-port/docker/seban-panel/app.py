@@ -654,12 +654,11 @@ def item_base_stats(vnum):
         return []
     stats, item_type, subtype = [], int(proto.get("type") or 0), int(proto.get("subtype") or 0)
     level = int(proto.get("level") or 0)
-    # A time-limited costume or pet carries its duration in seconds where a
-    # level would be (REAL_TIME limit): "Wymagany poziom: 86400" was a day.
+    # A time-limited costume or pet carries a number of seconds where a level
+    # would be ("Wymagany poziom: 86400"), and not even the right one: the
+    # time left is the item's own (socket 0, see player()).
     if level > 300 and item_type in (28, 37):
-        days, hours = divmod(level // 3600, 24)
-        day_text = "1 dzień" if days == 1 else f"{days} dni"
-        stats.append(f"Czas trwania: {day_text}" if not hours else f"Czas trwania: {day_text} {hours} h" if days else f"Czas trwania: {hours} h")
+        pass
     elif level:
         stats.append(f"Wymagany poziom: {level}")
     value = lambda index: int(proto.get(f"value{index}") or 0)
@@ -2508,6 +2507,11 @@ def player(pid):
         item["item_name"] = resolve_item_display_name(item["vnum"], item.get("socket0"), game_text(item["item_name"]))
         item["item_size"] = max(1, min(3, int(item.get("item_size") or 1)))
         item["base_stats"] = item_base_stats(item["vnum"])
+        # A costume's or pet seal's REAL_TIME limit counts down in socket 0.
+        if int(item.get("item_type") or 0) in (28, 37) and int(item.get("socket0") or 0) > time.time():
+            left = int(item["socket0"]) - int(time.time())
+            days, hours = left // 86400, left % 86400 // 3600
+            item["base_stats"].insert(0, f"Wygasa za: {days} {'dzień' if days == 1 else 'dni'} {hours} h" if days else f"Wygasa za: {hours} h")
         item["bonuses"] = [apply_text(item.get(f"applytype{i}"), item.get(f"applyvalue{i}")) for i in range(3) if item.get(f"applytype{i}") and item.get(f"applyvalue{i}")]
         item["bonuses"] += [apply_text(item.get(f"attrtype{i}"), item.get(f"attrvalue{i}")) for i in range(7) if item.get(f"attrtype{i}") and item.get(f"attrvalue{i}")]
         if item["window"] == "EQUIPMENT" and item["pos"] in equipment_slots:
