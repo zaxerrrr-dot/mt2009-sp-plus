@@ -20,6 +20,7 @@ param(
 #   bot rare drop      item_manager.cpp          (MT2009_PLUS_BOT_RARE_DROP_V1..V3)
 #   Death Ruler wings  item_manager.cpp, char_item.cpp (no 85101/85104 drop)
 #   alchemy bonuses    dragon_soul_table.cpp     (MT2009_PLUS_DS_APPLYS_V1)
+#   alchemy for all    char_affect.cpp           (MT2009_PLUS_DS_QUALIFY_ON_LOGIN_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -75,6 +76,20 @@ if ((Test-Path -LiteralPath $dsBalanceApply -PathType Leaf) -and
     if ($dsBalanceResult.Changed) {
         $syncedFiles++
         Write-Host 'Enabled the MT2009 Plus alchemy bonuses.' -ForegroundColor DarkGray
+    }
+}
+# The Dragon Soul alchemy without the level-30 quest
+# (server-patches/dsqualification): every real player is qualified when his
+# affects load, so a Cor Draconis opens and its stone goes into the alchemy
+# inventory instead of onto the ground.
+$dsQualifyApply = Join-Path $repo 'server-patches/dsqualification/Apply-DsQualificationPatch.ps1'
+$charAffectSource = Join-Path $engineGameSource 'char_affect.cpp'
+if ((Test-Path -LiteralPath $dsQualifyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charAffectSource -PathType Leaf)) {
+    $dsQualifyResult = & $dsQualifyApply -SourceFile $charAffectSource
+    if ($dsQualifyResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Enabled the Dragon Soul alchemy for every player.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
