@@ -17,6 +17,19 @@ every version here.
 
 ---
 
+## Klient 2.0.10 — 2026-09-24 — Poprawka: atak z mounta i sprzedaż u handlarza
+
+- Kto aktualizował klienta z wersji starszej niż 2.0.6 prosto do 2.0.8
+  albo 2.0.9, dostał tylko nowe pliki interfejsu, a stary
+  `metin2client.exe`. Nie działały u niego zwykły atak z kostiumowego
+  mounta (poprawka z 2.0.6) i „Sprzedaj wiele” u handlarza (poprawka
+  z 2.0.7).
+- Klient 2.0.10 to pełna paczka: aktualny `metin2client.exe` razem
+  z interfejsem i COOP z 2.0.9. Po aktualizacji każdy ma wszystkie
+  poprawki, niezależnie od wersji, z której aktualizuje.
+- Przed aktualizacją zamknij grę (sprawdź też Menedżer zadań, czy
+  `metin2client.exe` nie został w tle).
+
 ## 2.3.2 — 2026-09-24 — COOP działa: graj ze znajomymi
 
 Serwer 2.3.2 i klient 2.0.9. **Zaktualizuj oba** – w launcherze przy starcie
