@@ -236,6 +236,23 @@ db -e "
        AND (antiflag & $trade_mask) <> 0;
 "
 echo "[playerbot-migrate] Cor Draconis and sashes: player trade enabled"
+# MT2009 Plus: Cor Draconis boxes stack. The world dump gives 50255 ANTI_STACK
+# (1 << 15), so a fresh or updated install could neither merge two Cors nor
+# split a pile, while /i 50255 20 made a pile of twenty - the test server only
+# worked because its row had been edited by hand. Cors only; sashes do not
+# stack. On every start, like the trade flags above; idempotent.
+db -e "
+    UPDATE world.item_proto
+       SET antiflag = antiflag & ~32768, flag = flag | 4
+     WHERE vnum IN (
+                50252,50255,50256,50257,50258,50259,50260,
+                51501,51502,51503,51504,51505,51506,51507,51508,51509,51510,
+                51541,51548,51549,51562,51569,51576,51583,51590,51597,
+                51604,51611,51618,51625,51632,76040
+            )
+       AND ((antiflag & 32768) <> 0 OR (flag & 4) = 0);
+"
+echo "[playerbot-migrate] Cor Draconis: stackable"
 # Maska Sabaha left the world with the Hwang curse (playerbotify
 # apply_hwang_curse_removed, the share step of the game Dockerfile): the shop
 # that sold one sells it no more. The db core reads the shops at boot, so this
