@@ -230,51 +230,6 @@ namespace
 		return PlayerBotLootMergesIntoStack(ch, item);
 	}
 
-	// A Metin stone or a boss (MOB_RANK_BOSS and up) that died to this bot:
-	// the Cor Draconis and sash drop a player's kill gets, which the engine
-	// never makes for a bot. Rolled once per corpse (the kill note's VID
-	// guard), at PLAYERBOT_RARE_DROP_*_PERMILLE scaled by GetDropPct's percent
-	// - the world's drop rate and the level gap, as for a player - and handed
-	// straight to the bot, which lists it (ScorePlayerBotShopStock).
-	void NotePlayerBotRareGoodsKill(LPCHARACTER ch, LPCHARACTER target)
-	{
-		if (!ch || !target)
-			return;
-		const bool stone = target->IsStone();
-		const bool boss = !stone && target->IsMonster() && target->GetMobRank() >= MOB_RANK_BOSS;
-		if (!stone && !boss)
-			return;
-		int deltaPercent = 0, randRange = 0;
-		if (!ITEM_MANAGER::instance().GetDropPct(target, ch, deltaPercent, randRange) || deltaPercent <= 0)
-			return;
-		struct TRoll { int permille; DWORD vnum; const char* kind; };
-		const TRoll rolls[] = {
-			{ stone ? PLAYERBOT_RARE_DROP_COR_STONE_PERMILLE : PLAYERBOT_RARE_DROP_COR_BOSS_PERMILLE,
-				PLAYERBOT_RARE_DROP_COR_VNUM, "cor" },
-			{ stone ? PLAYERBOT_RARE_DROP_SASH_STONE_PERMILLE : PLAYERBOT_RARE_DROP_SASH_BOSS_PERMILLE,
-				PLAYERBOT_RARE_DROP_SASH_VNUMS[number(0, (int)(sizeof(PLAYERBOT_RARE_DROP_SASH_VNUMS) /
-						sizeof(PLAYERBOT_RARE_DROP_SASH_VNUMS[0])) - 1)], "sash" },
-		};
-		for (size_t i = 0; i < sizeof(rolls) / sizeof(rolls[0]); ++i)
-		{
-			// Per mille times the engine's percent, over 100 000.
-			const long long chance = (long long)rolls[i].permille * deltaPercent;
-			if (chance <= 0 || chance < number(1, 100000))
-				continue;
-			if (!ITEM_MANAGER::instance().GetTable(rolls[i].vnum))
-				continue;
-			// Into the bag, never onto the ground: the engine refuses a bot
-			// the pickup of a Cor Draconis (CHARACTER::PickupItem, 50255), and
-			// AutoGiveItem would drop it at the feet of a bot with a full bag.
-			if (ch->GetEmptyInventory(1) < 0)
-				continue;
-			ch->AutoGiveItem(rolls[i].vnum, 1, -1, false);
-			sys_log(0, "PLAYERBOT_RARE_DROP: pid=%u name=%s level=%d kind=%s vnum=%u from=%s mob=%u mob_level=%d drop_pct=%d",
-					ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), rolls[i].kind, rolls[i].vnum,
-					stone ? "stone" : "boss", (DWORD)target->GetRaceNum(), (int)target->GetLevel(), deltaPercent);
-		}
-	}
-
 	class CCollectPlayerBotLoot
 	{
 		public:

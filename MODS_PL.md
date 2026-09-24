@@ -74,9 +74,6 @@ Jak wydać nową wersję: [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md).
   najwyżej o 50%). Każdy rodzaj może być naraz w najwyżej 20% sklepów botów,
   do 3 pozycji na sklep. Co nie sprzeda się przez 12 h, bot zdejmuje i sprzedaje
   u handlarki.
-- Boty same dostają Cor Draconis i szarfy z zabitych Metinów i bossów
-  (silnik daje ten drop tylko graczom): Cor 5% z Metina i 10% z bossa,
-  szarfa 1% i 3%, przeliczane przez rate dropu serwera i różnicę poziomów.
 
 **Inne**
 - Serwer wpuszcza klienta bez względu na jego wersję (brak blokady wersji).

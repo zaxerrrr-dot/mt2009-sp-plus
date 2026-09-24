@@ -5519,22 +5519,6 @@ namespace
 		}
 	}
 
-	// A Metin stone or a boss killed by a bot. The engine's drop of Cor
-	// Draconis and sashes (ITEM_MANAGER::CreateDropItem, custom-patches
-	// dragon_soul.patch and mount_system.patch: Cor 50% from a stone and 80%
-	// from a boss, a sash 80% from a boss) skips a killer that IsBot(), so the
-	// bot's kill note rolls its own here (NotePlayerBotRareGoodsKill), lower
-	// than a player's: per mille at a kill of the bot's own level at a drop
-	// rate of 100%, scaled by the engine's own GetDropPct - the world's drop
-	// rate, the premium and the level gap.
-	const int PLAYERBOT_RARE_DROP_COR_STONE_PERMILLE = 50;
-	const int PLAYERBOT_RARE_DROP_COR_BOSS_PERMILLE = 100;
-	const int PLAYERBOT_RARE_DROP_SASH_STONE_PERMILLE = 10;
-	const int PLAYERBOT_RARE_DROP_SASH_BOSS_PERMILLE = 30;
-	// What drops: the rough Cor Draconis, and the engine's own sash pool.
-	const DWORD PLAYERBOT_RARE_DROP_COR_VNUM = 50255;
-	const DWORD PLAYERBOT_RARE_DROP_SASH_VNUMS[] = { 85001, 85005, 85011, 85015, 85021 };
-
 	int GetPlayerBotRareGoodsShopPercent(int kind)
 	{
 		return kind == PLAYERBOT_RARE_GOODS_COR ? PLAYERBOT_RARE_GOODS_SHOP_PERCENT_COR

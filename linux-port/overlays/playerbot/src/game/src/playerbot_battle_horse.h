@@ -158,9 +158,6 @@ namespace
 	// The Biologist's share of a kill (playerbot_missions.h, later in the
 	// include order).
 	void NotePlayerBotBiologistCarrierKill(LPCHARACTER ch, LPCHARACTER target);
-	// A Metin stone or a boss the bot killed: Cor Draconis and sashes
-	// (playerbot_loot.h).
-	void NotePlayerBotRareGoodsKill(LPCHARACTER ch, LPCHARACTER target);
 
 	// Called wherever a bot has just swung at something. The engine has no hook
 	// that says "you killed this", so the kill is read off the target the tick
@@ -169,18 +166,13 @@ namespace
 	void NotePlayerBotBattleHorseKill(LPCHARACTER ch, TPlayerBotAIState& state,
 			LPCHARACTER target)
 	{
-		// A Metin stone is not a monster to the engine (IsMonster), and it is
-		// one of the two kills the rare goods roll for.
-		if (!ch || !target || !target->IsDead() || (!target->IsMonster() && !target->IsStone()))
+		if (!ch || !target || !target->IsDead() || !target->IsMonster())
 			return;
 		const DWORD vid = (DWORD)target->GetVID();
 		if (state.dwLastKillCreditedVID == vid)
 			return;
 		state.dwLastKillCreditedVID = vid;
 		// Under the same guard, so a corpse is one roll.
-		NotePlayerBotRareGoodsKill(ch, target);
-		if (!target->IsMonster())
-			return;
 		NotePlayerBotBiologistCarrierKill(ch, target);
 
 		// The military trial is credited from the same place and under the same
