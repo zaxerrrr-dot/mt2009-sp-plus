@@ -676,6 +676,17 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded() || ch->IsDead() || !ch->GetDesc())
 			return;
+#if defined(ENABLE_MOUNT_COSTUME_SYSTEM)
+		// Death takes the seal off into the bag (server-patches/mountdeath); it
+		// goes back on within seconds instead of at the next look, ten
+		// minutes on.
+		if (!ch->GetWear(WEAR_COSTUME_MOUNT) && dwNow >= state.dwNextMountRewearTime &&
+				!ch->IsBusy() && !ch->GetMyShop() && !ch->GetExchange())
+		{
+			state.dwNextMountRewearTime = dwNow + 5000;
+			WearPlayerBotBoughtLook(ch, state);
+		}
+#endif
 		if (dwNow < state.dwNextItemShopCheckTime)
 			return;
 		state.dwNextItemShopCheckTime = dwNow + PLAYERBOT_ISHOP_CHECK_INTERVAL +

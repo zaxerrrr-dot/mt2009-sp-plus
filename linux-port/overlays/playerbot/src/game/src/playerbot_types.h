@@ -6721,6 +6721,7 @@ namespace
 			bDragonBalanceKnown(false),
 			bBoughtHairstyle(false),
 			dwNextItemShopCheckTime(0),
+			dwNextMountRewearTime(0),
 			dwNextItemShopBuyTime(0),
 			bItemShopLookSession(false),
 			dwNextItemShopBalanceTime(0),
@@ -7135,6 +7136,9 @@ namespace
 		bool bDragonBalanceKnown;
 		bool bBoughtHairstyle;
 		DWORD dwNextItemShopCheckTime;
+		// A mount seal taken off at death (server-patches/mountdeath) goes back
+		// on from the bag within seconds, not at the next ItemShop look.
+		DWORD dwNextMountRewearTime;
 		DWORD dwNextItemShopBuyTime;
 		bool bItemShopLookSession;
 		DWORD dwNextItemShopBalanceTime;

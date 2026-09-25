@@ -25,6 +25,7 @@ param(
 #   pet magic att %    char.cpp                  (MT2009_PLUS_MAGIC_ATT_PER_V1)
 #   mount speed        char_player.cpp           (MT2009_PLUS_MOUNT_SPEED_V1)
 #   bot rare share     char_battle.cpp           (MT2009_PLUS_BOT_RARE_SHARE_V1)
+#   mount off at death char_battle.cpp           (MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1)
 #   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
 #   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
 #   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
@@ -106,6 +107,17 @@ if ((Test-Path -LiteralPath $rareToggleApply -PathType Leaf) -and
     if ($rareToggleResult.Changed) {
         $syncedFiles++
         Write-Host 'Cor Draconis and sash drops follow the world switches.' -ForegroundColor DarkGray
+    }
+}
+# A mount seal comes off into the bag at death (server-patches/mountdeath).
+$mountDeathApply = Join-Path $repo 'server-patches/mountdeath/Apply-MountDeathPatch.ps1'
+$charBattleSource = Join-Path $engineGameSource 'char_battle.cpp'
+if ((Test-Path -LiteralPath $mountDeathApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charBattleSource -PathType Leaf)) {
+    $mountDeathResult = & $mountDeathApply -SourceFile $charBattleSource
+    if ($mountDeathResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Mount seal off into the bag at death.' -ForegroundColor DarkGray
     }
 }
 # The alchemy balance (server-patches/dragonsoulbalance): the apply names
