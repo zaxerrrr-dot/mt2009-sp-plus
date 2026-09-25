@@ -17,6 +17,19 @@ every version here.
 
 ---
 
+## Klient 2.0.13 — 2026-09-25 — Towarzysz i przyciski na pasku
+
+- Klawisz **P** otwiera okno Towarzysza z poziomem, HP, PE, położeniem,
+  wykonywaną czynnością i wyposażeniem.
+- Z okna można wydawać polecenia, ustawiać walkę, zbieranie, ochronę i buffy.
+- Pasek w prawym dolnym rogu ma przyciski Towarzysza i Auto Łowów, jeśli
+  szerokość ekranu wynosi co najmniej 940 pikseli.
+- Auto Łowy po wskrzeszeniu, czekając na HP, używają wyłącznie buffów i nie
+  prowokują potworów umiejętnością atakującą.
+- Zachowano wszystkie zmiany klienta MT2009 Plus 2.0.12.
+
+---
+
 ## Klient 2.0.12 — 2026-09-25 — Materiały na wszystkich stronach ekwipunku
 
 - Kowal oraz pozostałe okna klienta widzą materiały znajdujące się na

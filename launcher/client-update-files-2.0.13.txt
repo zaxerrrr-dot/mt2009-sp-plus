@@ -1,0 +1,3 @@
+# Towarzysz, przyciski Towarzysz/Auto Lowy i bezpieczne buffy po wskrzeszeniu.
+pack/root.data
+pack/root.index
