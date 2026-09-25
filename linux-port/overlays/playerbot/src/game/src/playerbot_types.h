@@ -5945,6 +5945,25 @@ namespace
 	void NotePlayerBotSashBought(LPCHARACTER ch, DWORD vnum, long long price);
 	void LogPlayerBotSashCensus();
 
+	// The horse saddlebags and the Dozorca's exchange (playerbot_saddlebag.h).
+	const DWORD PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED = 30378;
+	const DWORD PLAYERBOT_CRAFT_MATERIAL_UNIT_PRICE = 100000;
+	const DWORD PLAYERBOT_CRAFT_UNSOLD_RECALL_MS_PRE = 12 * 60 * 60 * 1000;
+	bool IsPlayerBotSaddlebagKeeperPID(DWORD pid);
+	int GetPlayerBotSaddlebagMedalReserve(LPCHARACTER ch);
+	bool IsPlayerBotCraftExchangeStock(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotKeptCraftMaterial(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotCraftExchangeVnum(DWORD vnum);
+	void NotePlayerBotCraftRecalled(DWORD pid, DWORD itemId);
+	bool WantsPlayerBotCraftMaterialOffer(LPCHARACTER ch, LPITEM offer);
+	bool WantsPlayerBotCraftGoodsOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForCraftMaterial(LPCHARACTER ch, LPITEM item, long long price);
+	bool CanPlayerBotPayForCraftGoods(LPCHARACTER ch, LPITEM item, long long price);
+	bool PlayerBotSaddlebagWantsMedal(LPCHARACTER ch);
+	bool PlayerBotWantsSaddlebagGoods(LPCHARACTER ch);
+	void NotePlayerBotSaddlebagBought(LPCHARACTER ch, DWORD vnum, long long price);
+	void LogPlayerBotSaddlebagCensus();
+
 	int GetPlayerBotRareGoodsKind(DWORD vnum)
 	{
 		if (IsPlayerBotCorDraconisVnum(vnum))
@@ -6571,6 +6590,9 @@ namespace
 			dwNextAlchemistActionTime(0),
 			dwNextSashCheckTime(0),
 			dwNextSashActionTime(0),
+			dwNextSaddlebagCheckTime(0),
+			dwNextSaddlebagActionTime(0),
+			dwNextSaddlebagMoveTime(0),
 			dwNextHorseCheckTime(0),
 			dwNextHorseActionTime(0),
 			dwNextHorseRideCheckTime(0),
@@ -6674,6 +6696,7 @@ namespace
 			bVisitingAlchemist(false),
 			bVisitingUriel(false),
 			bSashVisitSteps(0),
+			bSaddlebagErrand(0),
 			bVisitingStable(false),
 			bFishingSession(false),
 			bIsFishing(false),
@@ -6871,6 +6894,10 @@ namespace
 		// Uriel's sash work (ManagePlayerBotSash), the same shape again.
 		DWORD dwNextSashCheckTime;
 		DWORD dwNextSashActionTime;
+		// The saddlebags' errands and the page's move-back (playerbot_saddlebag.h).
+		DWORD dwNextSaddlebagCheckTime;
+		DWORD dwNextSaddlebagActionTime;
+		DWORD dwNextSaddlebagMoveTime;
 		DWORD dwNextHorseCheckTime;
 		DWORD dwNextHorseActionTime;
 		DWORD dwNextHorseRideCheckTime;
@@ -7037,6 +7064,7 @@ namespace
 		bool bVisitingAlchemist;
 		bool bVisitingUriel;
 		BYTE bSashVisitSteps;
+		BYTE bSaddlebagErrand;
 		bool bVisitingStable;
 		// The bot has committed to a fishing trip: it carries a rod in the weapon
 		// slot and skips combat and gear swaps until the session ends.

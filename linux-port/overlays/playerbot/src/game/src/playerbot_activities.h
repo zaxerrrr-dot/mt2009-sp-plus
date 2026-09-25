@@ -44,6 +44,11 @@ namespace
 	{
 		if (!ch || !IsPlayerBotPersonaEnabled())
 			return false;
+		// A saddlebag bot raises its horse: every row asks a higher one
+		// (playerbot_saddlebag.h).
+		if (IsPlayerBotSaddlebagKeeperPID(ch->GetPlayerID()) &&
+				GetPlayerBotPersonalityByPID(ch->GetPlayerID()) != BOT_PERSONALITY_MEDAL_DROPPER)
+			return false;
 		TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
 		return it != s_mapPlayerBotAIStates.end() && it->second.persona.bRestored &&
 				!it->second.persona.bAdvanced && !IsPlayerBotDropper(it->second.bPersonality);
@@ -114,8 +119,10 @@ namespace
 		const BYTE horseLevel = ch->GetHorseLevel();
 		const bool bBattleHorseWaiting = IsPlayerBotBattleHorseEarned(ch) &&
 				ch->GetGold() >= (int)PLAYERBOT_BATTLE_HORSE_FEE;
+		// The medals a due saddlebag row takes are the row's, not the horse's.
+		const int medalReserve = GetPlayerBotSaddlebagMedalReserve(ch);
 		if (!bBattleHorseWaiting && (!CanPlayerBotAdvanceHorse(ch) ||
-				ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= 0))
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= medalReserve))
 		{
 			state.bVisitingStable = false;
 			state.dwNextHorseActionTime = 0;
@@ -224,7 +231,7 @@ namespace
 			return false;
 		}
 
-		if (ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= 0)
+		if ((int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= GetPlayerBotSaddlebagMedalReserve(ch))
 		{
 			state.bVisitingStable = false;
 			state.dwNextHorseActionTime = 0;
@@ -251,7 +258,7 @@ namespace
 				ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM));
 
 		if (delivered >= 21 || !CanPlayerBotAdvanceHorse(ch) ||
-				ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= 0)
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= GetPlayerBotSaddlebagMedalReserve(ch))
 		{
 			state.bVisitingStable = false;
 			state.dwNextHorseActionTime = 0;

@@ -8092,7 +8092,8 @@ function openBotModal(pid) {
                 (p.hold ? ' &nbsp;|&nbsp; <span style="color:#9ca3af">' + escapeHtml(p.hold) + '</span>' : '') + '</div>' : '') +
               '<div style="grid-column:1 / -1"><b>' + I18N.current_goal + ':</b> <span style="color:#60a5fa;font-weight:700">' + escapeHtml(p.goal) + '</span></div>' +
               '<div style="grid-column:1 / -1"><b>' + I18N.action + ':</b> <span style="color:#ffd700">' + escapeHtml(p.action) + '</span></div>' +
-              '<div><b>' + I18N.horse + ':</b> <span style="color:#c084fc;font-weight:700">Lv ' + (p.horse_level || 0) + '</span></div>' +
+              '<div><b>' + I18N.horse + ':</b> <span style="color:#c084fc;font-weight:700">Lv ' + (p.horse_level || 0) + '</span>' +
+                (p.saddlebag_rows ? ' <span style="color:#a78bfa">| ' + (I18N.language === 'en' ? 'Saddlebags' : 'Juki') + ' ' + p.saddlebag_rows + '/9</span>' : '') + '</div>' +
               '<div><b>' + I18N.biologist + ':</b> <span style="color:#4ade80;font-weight:700">' + (p.biologist_completed || 0) + '/' + (p.biologist_total || 7) + (I18N.bio_done ? ' ' + I18N.bio_done : '') + '</span></div>' +
               '<div style="grid-column:1 / -1"><b>' + I18N.bio_stage + ':</b> <span style="color:#86efac">' + (p.biologist_label || I18N.no_data) + '</span></div>' +
               // Only when there is a hunt to report. On the mt2009 line
@@ -13063,6 +13064,11 @@ def api_bot_inventory(pid):
                 return jsonify({"ok": False, "error": messages["character_missing"]})
 
             player["job_name"] = localized_job_name(player.get("job", 0), language)
+            # The horse saddlebags: rows open (special flag horse_inventory_slot,
+            # 0-9, five cells a row).
+            cur.execute("SELECT value FROM player.player_special_flag WHERE pid = %s AND flag = 'horse_inventory_slot'", (pid,))
+            srow = cur.fetchone()
+            player["saddlebag_rows"] = int(srow["value"]) if srow else 0
             player["in_pt"] = live.get("in_pt") if live else bot_in_party_cohort(pid)
             if live:
                 player["x"] = live.get("x", player.get("x"))

@@ -26,6 +26,7 @@ param(
 #   mount speed        char_player.cpp           (MT2009_PLUS_MOUNT_SPEED_V1)
 #   bot rare share     char_battle.cpp           (MT2009_PLUS_BOT_RARE_SHARE_V1)
 #   mount off at death char_battle.cpp           (MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1)
+#   saddlebags on a mount char.cpp               (MT2009_PLUS_SADDLEBAG_MOUNT_V1)
 #   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
 #   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
 #   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
@@ -118,6 +119,17 @@ if ((Test-Path -LiteralPath $mountDeathApply -PathType Leaf) -and
     if ($mountDeathResult.Changed) {
         $syncedFiles++
         Write-Host 'Mount seal off into the bag at death.' -ForegroundColor DarkGray
+    }
+}
+# The horse saddlebags open on a mount seal too (server-patches/saddlebagmount).
+$saddlebagMountApply = Join-Path $repo 'server-patches/saddlebagmount/Apply-SaddlebagMountPatch.ps1'
+$charSource = Join-Path $engineGameSource 'char.cpp'
+if ((Test-Path -LiteralPath $saddlebagMountApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charSource -PathType Leaf)) {
+    $saddlebagMountResult = & $saddlebagMountApply -SourceFile $charSource
+    if ($saddlebagMountResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Horse saddlebags open on a mount seal too.' -ForegroundColor DarkGray
     }
 }
 # The alchemy balance (server-patches/dragonsoulbalance): the apply names

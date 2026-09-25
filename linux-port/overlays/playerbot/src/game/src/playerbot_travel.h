@@ -1042,6 +1042,7 @@ namespace
 		state.bVisitingStable = false;
 		state.bVisitingAlchemist = false;
 		state.bVisitingUriel = false;
+		state.bSaddlebagErrand = 0;
 		if (!ch->Show(targetMap, targetX, targetY, 0))
 		{
 			if (wasRiding && !ch->IsRiding())

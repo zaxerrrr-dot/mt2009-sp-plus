@@ -424,6 +424,28 @@ namespace {
                 M2_DELETE(preview);
                 continue;
             }
+            // Refine goods the Dozorca takes (playerbot_saddlebag.h), unsold
+            // for PLAYERBOT_CRAFT_UNSOLD_RECALL_MS: home, one a visit, for his
+            // exchange - Materialy Rzemieslnicze sell where these did not.
+            if (ch && IsPlayerBotCraftExchangeVnum(preview->GetVnum()) &&
+                    GetPlayerBotItemPolicy(preview) == PLAYERBOT_ITEM_POLICY_NONE &&
+                    !PlayerBotNeedsRefineMaterial(ch, preview->GetVnum())) {
+                TPlayerBotAIStateMap::const_iterator st = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+                if (st != s_mapPlayerBotAIStates.end()) {
+                    auto listed = st->second.offlineShop.listed.find(id);
+                    if (listed != st->second.offlineShop.listed.end()) {
+                        const uint32_t since = listed->second.when ? listed->second.when : listed->second.observedSince;
+                        if (since != 0 && get_dword_time() - since >= PLAYERBOT_CRAFT_UNSOLD_RECALL_MS_PRE) {
+                            if (!unwanted) {
+                                unwanted = id; reason = "craft_exchange";
+                                NotePlayerBotCraftRecalled(ch->GetPlayerID(), id);
+                            }
+                            M2_DELETE(preview);
+                            continue;
+                        }
+                    }
+                }
+            }
             // A counter shows PLAYERBOT_SHOP_MARBLE_LINES marbles, never two of
             // one monster; the ones that went up before 2.0.78 - up to
             // thirty-one on one counter, and none ever sold - come home one a
@@ -1386,6 +1408,9 @@ namespace {
                     int discount = (int)(standing / PLAYERBOT_OFFLINE_UNSOLD_STEP_MS) * PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT;
                     if (discount > PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL)
                         discount = PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL;
+                    // Materialy Rzemieslnicze keep the operator's price.
+                    if (preview->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
+                        discount = 0;
                     const long long asking = (long long)GetPlayerBotShopAskingPrice(preview) * (100 - discount) / 100;
                     price.yang = std::max(asking, (long long)GetPlayerBotRefineInvestment(preview));
                     if (discount > 0 && price.yang != it->second->GetPrice().yang)

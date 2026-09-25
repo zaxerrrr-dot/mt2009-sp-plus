@@ -235,6 +235,9 @@ namespace
 			if (PlayerBotNeedsRefineMaterial(ch, item->GetVnum()) ||
 					!IsPlayerBotSurplusMaterial(ch, item))
 				continue;
+			// Refine goods the Dozorca exchanges go to him, not into his box.
+			if (IsPlayerBotCraftExchangeStock(ch, item))
+				continue;
 			// A material somebody is short of is the counter's - while the bag
 			// can hold it. A counter lists a few lines, and a keeper of forty
 			// held 38 stacks of them in a bag of 94 cells with four items in the
@@ -2176,6 +2179,10 @@ namespace
 	{
 		if (!item)
 			return 1;
+		// Materialy Rzemieslnicze: the operator's price, a piece, as it stands
+		// (playerbot_saddlebag.h).
+		if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
+			return PLAYERBOT_CRAFT_MATERIAL_UNIT_PRICE * std::max<DWORD>(1, (DWORD)item->GetCount());
 		// The sale memory is read below before the step limiter would notice a
 		// new yang rate, so the rate is checked here first as well.
 		ForgetPlayerBotPricesOnRateChange();
@@ -2465,6 +2472,12 @@ namespace
 	{
 		if (merchant)
 			return true;
+		// A saddlebag bot's medals are its rows' and its horse's
+		// (playerbot_saddlebag.h): none is goods while either can use one.
+		if (ch && IsPlayerBotSaddlebagKeeperPID(ch->GetPlayerID()) &&
+				GetPlayerBotPersonalityByPID(ch->GetPlayerID()) != BOT_PERSONALITY_MEDAL_DROPPER &&
+				(GetPlayerBotSaddlebagMedalReserve(ch) > 0 || CanPlayerBotAdvanceHorse(ch)))
+			return false;
 		// The medal dropper is the medal shop: it farms them to put them up. It
 		// used to hold them while its own horse could use one, and a dropper of
 		// forty on a horse of ten - a battle horse candidate, forbidden to spend
@@ -2612,6 +2625,10 @@ namespace
 			return -1;
 		// A sash a keeper builds its own from (playerbot_sash.h) is not goods.
 		if (ch && IsPlayerBotKeptSash(ch, item))
+			return -1;
+		// Nor the materials a saddlebag bot keeps for its rows, nor refine goods
+		// on their way to the Dozorca (playerbot_saddlebag.h).
+		if (ch && (IsPlayerBotKeptCraftMaterial(ch, item) || IsPlayerBotCraftExchangeStock(ch, item)))
 			return -1;
 		// A Cor Draconis or a sash (MT2009 Plus) is a player's goods, high on
 		// the counter - unless a line of its kind came home unsold, when it is
@@ -3859,7 +3876,7 @@ namespace
 		// reason, which reads the whole bag: this pass runs on every tick of
 		// every bot without a counter.
 		if (state.bVisitingShop || state.bVisitingBiologist || state.bVisitingStable ||
-				state.bVisitingAlchemist || state.bVisitingUriel)
+				state.bVisitingAlchemist || state.bVisitingUriel || state.bSaddlebagErrand != 0)
 			return false;
 		if (state.dwNextShopKeepTime != 0 && dwNow < state.dwNextShopKeepTime)
 			return false;

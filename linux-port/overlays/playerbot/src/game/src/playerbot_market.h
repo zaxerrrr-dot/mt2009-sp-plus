@@ -178,6 +178,14 @@ namespace
 		if (!ch || !offer)
 			return false;
 
+		// Materialy Rzemieslnicze and the refine goods that make them, for a
+		// saddlebag bot short of its next row (playerbot_saddlebag.h).
+		if (offer->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
+			return WantsPlayerBotCraftMaterialOffer(ch, offer);
+		if (IsPlayerBotCraftExchangeVnum(offer->GetVnum()) && WantsPlayerBotCraftGoodsOffer(ch, offer) &&
+				!PlayerBotNeedsRefineMaterial(ch, offer->GetVnum()))
+			return true;
+
 		// A sash, for a bot that builds its own (playerbot_sash.h).
 		if (offer->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(offer->GetVnum()))
 			return WantsPlayerBotSashOffer(ch, offer);
@@ -225,7 +233,7 @@ namespace
 		// A horse medal, if this bot still has a horse to raise. Buying one is
 		// hours of the Monkey Dungeon it does not have to run.
 		if (offer->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM)
-			return CanPlayerBotAdvanceHorse(ch);
+			return CanPlayerBotAdvanceHorse(ch) || PlayerBotSaddlebagWantsMedal(ch);
 
 		// A Forgetting Scroll, while a skill stands at seventeen unmastered.
 		if (offer->GetVnum() == PLAYERBOT_SKILL_FORGET_SCROLL_VNUM)
@@ -320,6 +328,9 @@ namespace
 		// Sashes for the one it builds (playerbot_sash.h).
 		if (PlayerBotWantsSashFromMarket(ch))
 			return true;
+		// Medals and materials for a saddlebag row (playerbot_saddlebag.h).
+		if (PlayerBotWantsSaddlebagGoods(ch))
+			return true;
 		// A Forgetting Scroll for a skill stuck at seventeen.
 		if (GetPlayerBotStuckSkill(ch) != 0)
 			return true;
@@ -386,6 +397,11 @@ namespace
 		if (price > spare) return false;
 		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
 			return CanPlayerBotPayForSashOffer(ch, price);
+		if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
+			return CanPlayerBotPayForCraftMaterial(ch, item, price);
+		if (IsPlayerBotCraftExchangeVnum(item->GetVnum()) && WantsPlayerBotCraftGoodsOffer(ch, item) &&
+				!PlayerBotNeedsRefineMaterial(ch, item->GetVnum()))
+			return CanPlayerBotPayForCraftGoods(ch, item, price);
 		if (IsPlayerBotProgressionOffer(ch, item)) {
 			const long long fair = GetPlayerBotShopAskingPrice(item);
 			// A book comes out of the visit's book purse (community patch 2,
@@ -1109,6 +1125,7 @@ namespace
 				auStallsByReason[PLAYERBOT_SHOP_REASON_HOARD],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_MEDALS]);
 		LogPlayerBotSashCensus();
+		LogPlayerBotSaddlebagCensus();
 		ReportPlayerBotWeaponGoals(dwNow);
 		ReportPlayerBotLevel30Census();
 		sys_log(0, "PLAYERBOT_MARKET: ledger stalls=%u lines=%u vnums=%u demand_bots=%u wallet=%u junk_weapons=%d/%d decisions list=%u probe=%u no_demand=%u overstock=%u floor=%u top:%s",

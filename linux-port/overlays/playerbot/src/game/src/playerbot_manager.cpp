@@ -138,6 +138,7 @@ extern void SendShout(const char* szText, BYTE bEmpire);
 #include "playerbot_market.h"
 #include "playerbot_offline_market.h"
 #include "playerbot_sash.h"
+#include "playerbot_saddlebag.h"
 // Forward declaration: the trade layer falls through to the deterministic
 // conversation layer for ordinary whispers.
 namespace { bool HandlePlayerBotConversation(LPCHARACTER player, LPCHARACTER bot, const char* text); }
@@ -5940,6 +5941,13 @@ void CPlayerBotManager::Update()
 		// which would walk the bot out of the village it was brought to.
 		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotSash(ch, state, dwNow))
+			continue;
+
+		// The Dozorca's exchange and the Stajenny's saddlebag rows
+		// (playerbot_saddlebag.h), local errands of any village; the page's
+		// move-back runs inside on its own clock.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotSaddlebag(ch, state, dwNow))
 			continue;
 
 		// Spending time in town once the errand that brought the bot here is

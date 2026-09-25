@@ -1745,6 +1745,9 @@ namespace
 		// from. The default below sold them all - on the test world some
 		// thousand of each in a day, for a few hundred yang against 40 000 to
 		// 135 000 on the sheet (Tieru, 18 September).
+		// A saddlebag bot's materials for its rows are nobody's scrap.
+		if (IsPlayerBotKeptCraftMaterial(ch, item))
+			return false;
 		if (IsPlayerBotSheetGoods(item))
 			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotCanOpenShop(ch);
 
