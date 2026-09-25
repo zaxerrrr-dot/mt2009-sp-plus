@@ -7818,6 +7818,17 @@ function showItemTooltip(ev, item) {
 
   var html = '<div class="m2-tt-name">' + name + '</div>';
 
+  // A sash: its grade is in its name, its absorption in socket0 and the
+  // piece it absorbed in socket1 (item_length.h ACCE_*).
+  var v = item.vnum || 0;
+  if (((v >= 85001 && v <= 85024) || (v >= 85101 && v <= 85104) || (v >= 86061 && v <= 86064)) && item.sockets) {
+    var absorbed = item.sockets[1] || 0;
+    var absorbedDef = absorbed ? ((g_itemDefs && g_itemDefs[String(absorbed)]) || {}) : null;
+    html += '<div class="m2-tt-stat">' + (lg === 'pl' ? 'Pochłanianie: ' : 'Absorption: ') + (item.sockets[0] || 0) + '%</div>';
+    html += '<div style="color:#a1a1aa;font-size:10px">' + (lg === 'pl' ? 'Pochłonięty przedmiot: ' : 'Absorbed item: ') +
+            '<b style="color:#e5e7eb">' + (absorbed ? (absorbedDef.name || ('#' + absorbed)) : (lg === 'pl' ? 'brak' : 'none')) + '</b></div>';
+  }
+
   if (def.level && def.level > 0) {
     html += '<div style="color:#a1a1aa;font-size:10px">' + (lg === 'pl' ? 'Wymagany Poziom: ' : 'Required Level: ') + '<b style="color:#e5e7eb">' + def.level + '</b></div>';
   }
@@ -8173,7 +8184,9 @@ function openBotModal(pid) {
         ear:    { left: 98, top: 6,  w: 34, h: 34,  watermark: '👂' },
         shield: { left: 98, top: 44, w: 34, h: 34,  watermark: '🛡️' },
         wrist:  { left: 98, top: 80, w: 34, h: 34,  watermark: '💍' },
-        neck:   { left: 98, top: 116,w: 34, h: 34,  watermark: '📿' }
+        neck:   { left: 98, top: 116,w: 34, h: 34,  watermark: '📿' },
+        // The sash (WEAR_COSTUME_ACCE), under the depot and the stall.
+        sash:   { left: 150, top: 86, w: 34, h: 34, watermark: '🎀' }
       };
 
       Object.keys(equipCoords).forEach(function(slotKey) {
@@ -13152,7 +13165,8 @@ def api_bot_inventory(pid):
                 4: "weapon",     # Broń
                 5: "neck",       # Naszyjnik
                 6: "ear",        # Kolczyki
-                10: "shield"     # Tarcza (WEAR_SHIELD; slot 7 is WEAR_UNIQUE1)
+                10: "shield",    # Tarcza (WEAR_SHIELD; slot 7 is WEAR_UNIQUE1)
+                22: "sash"       # Szarfa (WEAR_COSTUME_ACCE)
             }
             equipment = {}
             inventory = []

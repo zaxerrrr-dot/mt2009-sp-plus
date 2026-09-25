@@ -137,6 +137,7 @@ extern void SendShout(const char* szText, BYTE bEmpire);
 #include "playerbot_weapon_goal.h"
 #include "playerbot_market.h"
 #include "playerbot_offline_market.h"
+#include "playerbot_sash.h"
 // Forward declaration: the trade layer falls through to the deterministic
 // conversation layer for ordinary whispers.
 namespace { bool HandlePlayerBotConversation(LPCHARACTER player, LPCHARACTER bot, const char* text); }
@@ -5932,6 +5933,13 @@ void CPlayerBotManager::Update()
 		// stand, and the travel pass walked them straight back out.
 		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotAlchemist(ch, state, dwNow))
+			continue;
+
+		// Uriel (playerbot_sash.h): a keeper's sashes combined, filled and
+		// worn. Beside the Alchemist and for his reason: above the travel pass,
+		// which would walk the bot out of the village it was brought to.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotSash(ch, state, dwNow))
 			continue;
 
 		// Spending time in town once the errand that brought the bot here is

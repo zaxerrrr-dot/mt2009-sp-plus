@@ -5936,6 +5936,15 @@ namespace
 		return grade != 9 && grade != 0;
 	}
 
+	// The sashes a bot builds for itself (playerbot_sash.h, included after the
+	// counters and the market that ask these).
+	bool IsPlayerBotKeptSash(LPCHARACTER ch, LPITEM item);
+	bool WantsPlayerBotSashOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForSashOffer(LPCHARACTER ch, long long price);
+	bool PlayerBotWantsSashFromMarket(LPCHARACTER ch);
+	void NotePlayerBotSashBought(LPCHARACTER ch, DWORD vnum, long long price);
+	void LogPlayerBotSashCensus();
+
 	int GetPlayerBotRareGoodsKind(DWORD vnum)
 	{
 		if (IsPlayerBotCorDraconisVnum(vnum))
@@ -6560,6 +6569,8 @@ namespace
 			dwNextHerbalistActionTime(0),
 			dwNextAlchemistCheckTime(0),
 			dwNextAlchemistActionTime(0),
+			dwNextSashCheckTime(0),
+			dwNextSashActionTime(0),
 			dwNextHorseCheckTime(0),
 			dwNextHorseActionTime(0),
 			dwNextHorseRideCheckTime(0),
@@ -6661,6 +6672,8 @@ namespace
 			bVisitingBiologist(false),
 			bVisitingHerbalist(false),
 			bVisitingAlchemist(false),
+			bVisitingUriel(false),
+			bSashVisitSteps(0),
 			bVisitingStable(false),
 			bFishingSession(false),
 			bIsFishing(false),
@@ -6855,6 +6868,9 @@ namespace
 		// again: soul stones of a banned grade for Magiczny Pyl.
 		DWORD dwNextAlchemistCheckTime;
 		DWORD dwNextAlchemistActionTime;
+		// Uriel's sash work (ManagePlayerBotSash), the same shape again.
+		DWORD dwNextSashCheckTime;
+		DWORD dwNextSashActionTime;
 		DWORD dwNextHorseCheckTime;
 		DWORD dwNextHorseActionTime;
 		DWORD dwNextHorseRideCheckTime;
@@ -7019,6 +7035,8 @@ namespace
 		bool bVisitingBiologist;
 		bool bVisitingHerbalist;
 		bool bVisitingAlchemist;
+		bool bVisitingUriel;
+		BYTE bSashVisitSteps;
 		bool bVisitingStable;
 		// The bot has committed to a fishing trip: it carries a rod in the weapon
 		// slot and skips combat and gear swaps until the session ends.

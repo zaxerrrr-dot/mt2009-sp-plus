@@ -178,6 +178,10 @@ namespace
 		if (!ch || !offer)
 			return false;
 
+		// A sash, for a bot that builds its own (playerbot_sash.h).
+		if (offer->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(offer->GetVnum()))
+			return WantsPlayerBotSashOffer(ch, offer);
+
 		// Development demand is shared with the journey and own-shop reclaim.
 		if (offer->GetType() == ITEM_SKILLBOOK || offer->GetVnum() == PLAYERBOT_GRAND_MASTER_STONE_VNUM)
 			return IsPlayerBotProgressionOffer(ch, offer);
@@ -313,6 +317,9 @@ namespace
 		// A horse medal, while there is still a horse to raise.
 		if (CanPlayerBotAdvanceHorse(ch))
 			return true;
+		// Sashes for the one it builds (playerbot_sash.h).
+		if (PlayerBotWantsSashFromMarket(ch))
+			return true;
 		// A Forgetting Scroll for a skill stuck at seventeen.
 		if (GetPlayerBotStuckSkill(ch) != 0)
 			return true;
@@ -377,6 +384,8 @@ namespace
 		if (!ch || !item || price <= 0) return false;
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		if (price > spare) return false;
+		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
+			return CanPlayerBotPayForSashOffer(ch, price);
 		if (IsPlayerBotProgressionOffer(ch, item)) {
 			const long long fair = GetPlayerBotShopAskingPrice(item);
 			// A book comes out of the visit's book purse (community patch 2,
@@ -1099,6 +1108,7 @@ namespace
 				auStallsByReason[PLAYERBOT_SHOP_REASON_ROLL], auStallsByReason[PLAYERBOT_SHOP_REASON_SPARE],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_HOARD],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_MEDALS]);
+		LogPlayerBotSashCensus();
 		ReportPlayerBotWeaponGoals(dwNow);
 		ReportPlayerBotLevel30Census();
 		sys_log(0, "PLAYERBOT_MARKET: ledger stalls=%u lines=%u vnums=%u demand_bots=%u wallet=%u junk_weapons=%d/%d decisions list=%u probe=%u no_demand=%u overstock=%u floor=%u top:%s",

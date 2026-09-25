@@ -639,6 +639,9 @@ namespace
 				if (state.bVisitingAlchemist)
 					snprintf(status, statusSize, PBT(en, "%sNiose Alchemikowi kamienie duszy na pyl",
 							"%sTaking soul stones to the Alchemist for dust"), prefix);
+				else if (state.bVisitingUriel)
+					snprintf(status, statusSize, PBT(en, "%sIde do Uriela z szarfami",
+							"%sTaking my sashes to Uriel"), prefix);
 				else
 					snprintf(status, statusSize, PBT(en, "%sHandluje", "%sTrading"), prefix);
 				break;

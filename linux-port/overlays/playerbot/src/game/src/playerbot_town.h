@@ -2610,6 +2610,9 @@ namespace
 		// with them (the item shop's copies are the ones a counter would take).
 		if (IsPlayerBotBookAffectItem(item))
 			return -1;
+		// A sash a keeper builds its own from (playerbot_sash.h) is not goods.
+		if (ch && IsPlayerBotKeptSash(ch, item))
+			return -1;
 		// A Cor Draconis or a sash (MT2009 Plus) is a player's goods, high on
 		// the counter - unless a line of its kind came home unsold, when it is
 		// the merchant's (IsPlayerBotJunkItem). Which counters may carry it is
@@ -3856,7 +3859,7 @@ namespace
 		// reason, which reads the whole bag: this pass runs on every tick of
 		// every bot without a counter.
 		if (state.bVisitingShop || state.bVisitingBiologist || state.bVisitingStable ||
-				state.bVisitingAlchemist)
+				state.bVisitingAlchemist || state.bVisitingUriel)
 			return false;
 		if (state.dwNextShopKeepTime != 0 && dwNow < state.dwNextShopKeepTime)
 			return false;

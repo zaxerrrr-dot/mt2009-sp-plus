@@ -1322,6 +1322,8 @@ namespace
 		// pressure that has no counter for it: none at all, or the counters'
 		// share of the kind is taken (IsPlayerBotRareGoodsShopQuotaFull).
 		{
+			if (IsPlayerBotKeptSash(ch, item))
+				return false;
 			const int rareKind = GetPlayerBotRareGoodsKind(item->GetVnum());
 			if (rareKind != PLAYERBOT_RARE_GOODS_NONE)
 				return IsPlayerBotRareGoodsForMerchant(ch->GetPlayerID(), item->GetVnum(), get_dword_time()) ||
