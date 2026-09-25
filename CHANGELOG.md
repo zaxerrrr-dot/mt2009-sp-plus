@@ -17,6 +17,19 @@ every version here.
 
 ---
 
+## 2.5.1 — 2026-09-25 — Poprawka: serwer, który nie wpuszczał do gry
+
+Serwer 2.5.1; klient zostaje 2.0.13. Zaktualizuj serwer w launcherze
+(**SPRAWDŹ AKTUALIZACJE**). Zawiera wszystko z 2.5.0.
+
+- **Koniec wyrzucania po wpisaniu loginu i hasła.** Na części światów
+  brakowało w bazie przedmiotów MT2009 PLUS (np. ametystów alchemii), więc
+  serwer gry wyłączał się zaraz po starcie i po zalogowaniu nie było kanału,
+  do którego można wejść. Teraz serwer przy każdym starcie sam dopisuje do
+  bazy brakujące przedmioty. Postacie i ich rzeczy zostają bez zmian.
+
+---
+
 ## 2.5.0 — 2026-09-25 — Towarzysz, bossowie botów, medale na straganach
 
 Serwer 2.5.0 i klient 2.0.13. **Zaktualizuj oba** w launcherze

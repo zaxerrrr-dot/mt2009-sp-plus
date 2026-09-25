@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-25T12:37:41Z",
-  "statusMessage": "Serwer 2.5.0 i klient 2.0.13: Towarzysz (klawisz P), bossowie bici przez boty, medale na straganach, alchemia i szarfy do wylaczenia. Zaktualizuj oba.",
+  "publishedAt": "2026-09-25T18:07:24Z",
+  "statusMessage": "Serwer 2.5.1: poprawka swiatow, w ktorych po zalogowaniu wyrzucalo z gry (brakujace przedmioty w bazie). Klient zostaje 2.0.13.",
   "server": {
-    "version": "2.5.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.5.0.zip",
-    "sha256": "3FC0236E84FAC5084667166D2938E9FC63BEC1A0CA76AD93910F28B7F312DB97",
-    "size": 55577858
+    "version": "2.5.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.5.1.zip",
+    "sha256": "428AD5848156D75B8421A70F1EB3EA062267430BE876423C6F8CFA42AB157DE5",
+    "size": 55779414
   },
   "client": {
     "version": "2.0.13",
