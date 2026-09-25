@@ -1072,13 +1072,14 @@ namespace
 		}
 		// Who is trading and why, against the TRADE weight in force: the number
 		// an operator needs before deciding the slider "does nothing".
-		sys_log(0, "PLAYERBOT_SHOP: census stalls=%u trade_weight=%d merchant=%u poor=%u bag_full=%u dropper_pressure=%u books=%u dropper_roll=%u roll=%u spare=%u hoard=%u",
+		sys_log(0, "PLAYERBOT_SHOP: census stalls=%u trade_weight=%d merchant=%u poor=%u bag_full=%u dropper_pressure=%u books=%u dropper_roll=%u roll=%u spare=%u hoard=%u medals=%u",
 				stalls, GetPlayerBotWeight(PLAYERBOT_WEIGHT_TRADE),
 				auStallsByReason[PLAYERBOT_SHOP_REASON_MERCHANT], auStallsByReason[PLAYERBOT_SHOP_REASON_POOR],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_BAG_FULL], auStallsByReason[PLAYERBOT_SHOP_REASON_DROPPER_PRESSURE],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_BOOKS], auStallsByReason[PLAYERBOT_SHOP_REASON_DROPPER_ROLL],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_ROLL], auStallsByReason[PLAYERBOT_SHOP_REASON_SPARE],
-				auStallsByReason[PLAYERBOT_SHOP_REASON_HOARD]);
+				auStallsByReason[PLAYERBOT_SHOP_REASON_HOARD],
+				auStallsByReason[PLAYERBOT_SHOP_REASON_MEDALS]);
 		ReportPlayerBotWeaponGoals(dwNow);
 		ReportPlayerBotLevel30Census();
 		sys_log(0, "PLAYERBOT_MARKET: ledger stalls=%u lines=%u vnums=%u demand_bots=%u wallet=%u junk_weapons=%d/%d decisions list=%u probe=%u no_demand=%u overstock=%u floor=%u top:%s",

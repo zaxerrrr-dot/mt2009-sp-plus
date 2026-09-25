@@ -353,7 +353,7 @@ namespace {
             // material stood on one counter - the rest come home one a visit,
             // "stall" or not.
             if (IsPlayerBotSameVnumCapped(preview) &&
-                    ++sameVnum[preview->GetVnum()] > PLAYERBOT_SHOP_SAME_VNUM_LINES) {
+                    ++sameVnum[preview->GetVnum()] > GetPlayerBotSameVnumLineCap(ch, preview)) {
                 if (!unwanted) { unwanted = id; reason = "same_vnum"; }
                 M2_DELETE(preview);
                 continue;
@@ -665,7 +665,7 @@ namespace {
         }
         // And no more than PLAYERBOT_SHOP_SAME_VNUM_LINES of anything else.
         if (IsPlayerBotSameVnumCapped(item) &&
-                BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_SHOP_SAME_VNUM_LINES)
+                BotOfflineLinesOf(shop, item->GetVnum()) >= GetPlayerBotSameVnumLineCap(item->GetOwner(), item))
             return true;
         return false;
     }

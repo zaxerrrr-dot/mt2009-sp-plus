@@ -3848,6 +3848,7 @@ namespace
 		PLAYERBOT_SHOP_REASON_ROLL,
 		PLAYERBOT_SHOP_REASON_SPARE,
 		PLAYERBOT_SHOP_REASON_HOARD,
+		PLAYERBOT_SHOP_REASON_MEDALS,
 		PLAYERBOT_SHOP_REASON_MAX
 	};
 	const DWORD PLAYERBOT_SHOP_REEVALUATE_SPREAD_MS = 300000;   // 5 min
@@ -3873,6 +3874,7 @@ namespace
 			case PLAYERBOT_SHOP_REASON_ROLL:             return en ? "chance" : "los";
 			case PLAYERBOT_SHOP_REASON_SPARE:            return en ? "spare duplicate" : "zbedny duplikat";
 			case PLAYERBOT_SHOP_REASON_HOARD:            return en ? "surplus goods" : "nadmiar towaru";
+			case PLAYERBOT_SHOP_REASON_MEDALS:           return en ? "dropper, horse medals" : "dropper, medale konne";
 			default:                                     return "?";
 		}
 	}
@@ -4264,9 +4266,19 @@ namespace
 	// counter stock, not an errand at the stable, and the count the exit reads
 	// is the whole bag - at five, a dropper already holding five walked in and
 	// straight back out nine seconds later, with nothing to stop it doing so
-	// again. A full stack is the number; the half hour above, the potions and a
-	// bag with no cell left end the visit.
-	const int PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK = 200;
+	// again. The half hour above, the potions and a bag with no cell left end
+	// the visit too.
+	// Fifty, not a full stack of two hundred: at two hundred no dropper ever
+	// left to sell - 699 of the world's 814 medals sat in 109 droppers' bags,
+	// not one on a counter, and no bot of 35+ had a horse above five, so the
+	// battle horse trial never began (rakso7064; the operator, 25 September).
+	// At fifty the dropper goes to its first village and opens a stand with
+	// the medals on it (IsPlayerBotMedalStockReady, playerbot_town.h).
+	const int PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK = 50;
+	// Lines of medals (two a line) a medal dropper's counter carries, over
+	// PLAYERBOT_SHOP_SAME_VNUM_LINES for everybody else: the medals are what
+	// its stand is for.
+	const int PLAYERBOT_MEDAL_DROPPER_MEDAL_LINES = 8;
 	// Which Monkey Dungeon a level is sent to. The medal is a "kill" drop group
 	// (mob_drop_item.txt: one medal per 550 soldiers, 500 fighters, 200 generals)
 	// and CreateDropItem scales every kill-group roll by aiPercentByDeltaLev -

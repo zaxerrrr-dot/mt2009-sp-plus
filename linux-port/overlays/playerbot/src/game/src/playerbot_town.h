@@ -1404,6 +1404,27 @@ namespace
 		return IsPlayerBotMerchant(state) || IsPlayerBotDropper(state.bPersonality);
 	}
 
+	// A medal dropper with its stock in the bag (PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK)
+	// has a counter to put up. The Monkey Dungeon sends it out at that count
+	// and will not take it back until the medals have gone on a counter.
+	bool IsPlayerBotMedalStockReady(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		return ch && ch->IsItemLoaded() &&
+				state.bPersonality == BOT_PERSONALITY_MEDAL_DROPPER &&
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >=
+					PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK;
+	}
+
+	// Lines of one vnum a counter carries: PLAYERBOT_SHOP_SAME_VNUM_LINES, and
+	// PLAYERBOT_MEDAL_DROPPER_MEDAL_LINES of medals on a medal dropper's.
+	int GetPlayerBotSameVnumLineCap(LPCHARACTER owner, LPITEM item)
+	{
+		if (owner && item && item->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM &&
+				GetPlayerBotPersonalityByPID(owner->GetPlayerID()) == BOT_PERSONALITY_MEDAL_DROPPER)
+			return PLAYERBOT_MEDAL_DROPPER_MEDAL_LINES;
+		return PLAYERBOT_SHOP_SAME_VNUM_LINES;
+	}
+
 	// Too poor for its own potions: see PLAYERBOT_SHOP_POOR_MIN_LEVEL.
 	bool IsPlayerBotPoorKeeper(LPCHARACTER ch)
 	{
@@ -1544,6 +1565,10 @@ namespace
 		// should put up, whatever the trade roll or bag pressure said.
 		if (HasPlayerBotSellableSpare(ch))
 			return PLAYERBOT_SHOP_REASON_SPARE;
+		// A medal dropper back from the dungeon with its stock sells it,
+		// whatever the TRADE roll says: the medals are the whole of its trade.
+		if (IsPlayerBotMedalStockReady(ch, state))
+			return PLAYERBOT_SHOP_REASON_MEDALS;
 		// A trader always has the stall open when it can. For everyone else it
 		// stays what it was: an occasional thing one bot in ten does with a spare.
 		if (IsPlayerBotMerchant(state))
@@ -2917,7 +2942,7 @@ namespace
 						++marbles;
 					}
 					else if (IsPlayerBotSameVnumCapped(item) &&
-							++lines[item->GetVnum()] > PLAYERBOT_SHOP_SAME_VNUM_LINES)
+							++lines[item->GetVnum()] > GetPlayerBotSameVnumLineCap(ch, item))
 						continue;
 				}
 				kept.push_back(outScored[i]);
@@ -3548,6 +3573,33 @@ namespace
 			return false;
 		if (state.dwNextShopKeepTime != 0 && dwNow < state.dwNextShopKeepTime)
 			return false;
+		// A medal dropper with its stock (IsPlayerBotMedalStockReady) does not
+		// wait for a town errand to stand it in a village: it goes to the
+		// pitch. The dungeon lets it out in the second village, which takes no
+		// stand while the SHOP_M2 switch is off, so it goes to its first
+		// village - straight from wherever it is, the dungeon included, since
+		// this pass runs before the world travel.
+		const bool medalStock = IsPlayerBotMedalStockReady(ch, state);
+		if (medalStock && !IsPlayerBotShopMapAllowed(ch->GetMapIndex()) &&
+				!IsPlayerBotHeldForCompany(ch))
+		{
+			long homeMap = 0, homeX = 0, homeY = 0;
+			if (!GetPlayerBotVillageReturn(ch, playerbot_empire_rules::MAP_ROLE_M1,
+						homeMap, homeX, homeY) ||
+					!IsPlayerBotMapHostedHere(homeMap) || !IsPlayerBotShopMapAllowed(homeMap))
+			{
+				state.dwNextShopKeepTime = dwNow + number(600000, 900000);
+				return false;
+			}
+			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+			if (!TransitionPlayerBotMap(ch, state, homeMap, homeX, homeY, dwNow,
+						"medal_stall_to_m1"))
+			{
+				state.dwNextShopKeepTime = dwNow + number(120000, 240000);
+				return false;
+			}
+			return true;
+		}
 		// ...but "in town with nothing to do" is a state that barely exists: a bot
 		// comes to Bokjung *because* it has an errand, and leaves the moment the
 		// errand is done. The stall therefore opens right after a completed town
@@ -3585,7 +3637,7 @@ namespace
 		const bool alreadyAtPitch =
 				DISTANCE_APPROX(ch->GetX() - pitchX, ch->GetY() - pitchY) <=
 					PLAYERBOT_SHOP_RING_RADIUS + PLAYERBOT_MARKET_ARRIVE;
-		if (!justFinishedInTown && !alreadyAtPitch)
+		if (!justFinishedInTown && !alreadyAtPitch && !medalStock)
 			return false;
 
 		const BYTE bShopReason = GetPlayerBotShopReason(ch, state);
