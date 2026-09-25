@@ -146,7 +146,7 @@ DEFAULT_SETTINGS = {
     "panel_name": "MT2009 PLUS", "stuck_minutes": "5", "theme": "ocean", "monitor_mode": "vps",
     # Existing installations without this key stay usable. Fresh installations
     # receive setup_complete=0 from the collector and enter the setup wizard.
-    "setup_complete": "1", "auth_enabled": "0", "auth_password_hash": "", "allow_student_chest": "0", "allow_moonlight_chest": "0", "keep_demo_characters": "0", "update_seban_panel": "0",
+    "setup_complete": "1", "auth_enabled": "0", "auth_password_hash": "", "allow_student_chest": "0", "allow_moonlight_chest": "0", "allow_alchemy": "1", "allow_sashes": "1", "keep_demo_characters": "0", "update_seban_panel": "0",
 }
 try:
     ITEM_DEFS = json.loads((Path(__file__).parent / "static" / "item_defs.json").read_text(encoding="utf-8"))
@@ -3696,10 +3696,28 @@ def manage_settings():
 @app.post("/manage/overrides")
 @login_required
 def manage_overrides():
-    values = {key: "1" if request.form.get(key) == "1" else "0" for key in ("allow_student_chest", "allow_moonlight_chest", "keep_demo_characters", "update_seban_panel")}
+    values = {key: "1" if request.form.get(key) == "1" else "0" for key in ("allow_student_chest", "allow_moonlight_chest", "keep_demo_characters", "update_seban_panel", "allow_alchemy", "allow_sashes")}
     write_settings(values)
-    flash("Override'y zapisane. Zostaną zastosowane przy następnej aktualizacji Playerbots.")
+    # MT2009 Plus: alchemy (Cor Draconis) and sashes are world switches that
+    # need no update to take effect - the event flags m2_alchemy_off and
+    # m2_sash_off, read by the engine and dragon_soul.quest. Written now and
+    # handed to the in-game helper (web_admin.quest, RARE) to switch live;
+    # the updater writes M2_ALCHEMY / M2_SASHES into .env for later starts.
+    try:
+        write_rare_switches(values["allow_alchemy"] == "1", values["allow_sashes"] == "1")
+        flash("Override'y zapisane. Alchemia i szarfy przełączone od razu; reszta zostanie zastosowana przy następnej aktualizacji Playerbots.")
+    except pymysql.MySQLError:
+        flash("Override'y zapisane. Nie udało się od razu przełączyć alchemii i szarf – zadziała po następnej aktualizacji albo restarcie.", "error")
     return redirect(url_for("manage"))
+
+
+def write_rare_switches(alchemy, sashes):
+    """The two flags the db core loads at boot, and a RARE row for the live switch."""
+    rows("REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES "
+         "(0, 'm2_alchemy_off', '', %s), (0, 'm2_sash_off', '', %s)",
+         (0 if alchemy else 1, 0 if sashes else 1))
+    rows("INSERT INTO player.web_admin_queue (player_name, cmd, arg1, arg2) VALUES ('', 'RARE', %s, '')",
+         ("%d,%d" % (1 if alchemy else 0, 1 if sashes else 0),))
 
 
 @app.post("/manage/restart-config")
