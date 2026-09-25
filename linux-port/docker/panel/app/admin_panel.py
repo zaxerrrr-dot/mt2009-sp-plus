@@ -3087,6 +3087,16 @@ T = {
  "easter_saved_persisted":{"pl":"Zapisano w bazie. Nikt teraz online nie potwierdził zmiany na żywo — zadziała najpóźniej po najbliższym restarcie serwera gry.","en":"Saved to the database. Nobody confirmed it live just now — it will take effect at the latest on the game server's next restart.",
                   "de":"In der Datenbank gespeichert. Gerade hat niemand die Änderung live bestätigt — sie wirkt spätestens beim nächsten Neustart des Spielservers.",
                   "tr":"Veritabanına kaydedildi. Şu anda kimse canlı olarak onaylamadı — en geç oyun sunucusunun bir sonraki yeniden başlatmasında etkili olacak."},
+ "rare_nav":     {"pl":"🐉 Alchemia i szarfy","en":"🐉 Alchemy and sashes"},
+ "rare_open":    {"pl":"🐉 Otwórz alchemię i szarfy","en":"🐉 Open alchemy and sashes"},
+ "tip_rare":     {"pl":"Włącz albo wyłącz zdobywanie Cor Draconis i szarf. Działa od razu, bez restartu serwera.","en":"Switch getting Cor Draconis and sashes on or off. Takes effect immediately, no server restart."},
+ "rare_dash_hint":{"pl":"Czy na tym świecie wypadają Cor Draconis (alchemia) i szarfy.","en":"Whether Cor Draconis (alchemy) and sashes drop in this world."},
+ "rare_intro":   {"pl":"Dwa niezależne przełączniki. Wyłączenie zatrzymuje tylko nowe przedmioty — to, co gracze już mają, zostaje, a plecak alchemii dalej działa. Zapis działa od razu, bez restartu. Ustawienie z panelu zostaje po restarcie, dopóki ktoś nie zmieni M2_ALCHEMY / M2_SASHES w .env.","en":"Two independent switches. Switching off stops only new items — what players already have stays, and the alchemy bag keeps working. Saving takes effect immediately, no restart. The panel's setting survives restarts until M2_ALCHEMY / M2_SASHES in .env is changed."},
+ "rare_alchemy": {"pl":"Alchemia (Cor Draconis)","en":"Alchemy (Cor Draconis)"},
+ "rare_alchemy_help":{"pl":"Cor Draconis z Metinów i bossów, Odłamki Smoczego Kamienia z potworów oraz ich wymiana na Cory u Alchemika (quest od 30 poziomu).","en":"Cor Draconis from Metins and bosses, Dragon Stone Shards from monsters and their exchange for Cors at the Alchemist (the level-30 quest)."},
+ "rare_sashes":  {"pl":"Szarfy","en":"Sashes"},
+ "rare_sashes_help":{"pl":"Szarfy z bossów i ze skrzyń bossów. Łączenie szarf u Uriela działa zawsze.","en":"Sashes from bosses and boss chests. Combining sashes at Uriel always works."},
+ "rare_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 🐉","en":"Saved and switched live, through the in-game helper. 🐉"},
  "regen_title": {"pl":"Czas odradzania Metinów, bossów i potworów",
                  "en":"Respawn time of Metin stones, bosses and monsters"},
  "regen_help":  {"pl":"Procent zwykłego czasu odradzania: 100 = jak w grze, 50 = dwa razy szybciej, 10 = dziesięć razy szybciej. Działa od razu (przez pomocnika w grze), a po restarcie zostaje. Osobno dla Metinów i bossów, osobno dla zwykłych potworów.",
@@ -4439,6 +4449,29 @@ def persist_easter(cur, drop, rabbit):
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                 "VALUES (0, 'easter_rabbit', '', %s)", (int(rabbit),))
 
+RARE_LIVE_WAIT = 12.0
+
+def read_rare():
+    """Both switches as on (1) or off (0); a missing row reads as on."""
+    vals = {"alchemy": 1, "sashes": 1}
+    with db() as c, c.cursor() as cur:
+        cur.execute("SELECT szName, lValue FROM player.quest WHERE dwPID=0 "
+                    "AND szName IN ('m2_alchemy_off', 'm2_sash_off')")
+        for row in cur.fetchall():
+            try:
+                off = int(row["lValue"]) > 0
+            except (TypeError, ValueError):
+                continue
+            vals["alchemy" if row["szName"] == "m2_alchemy_off" else "sashes"] = 0 if off else 1
+    return vals
+
+def persist_rare(cur, alchemy, sashes):
+    """The two event-flag rows the db core reads at its next start."""
+    cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                "VALUES (0, 'm2_alchemy_off', '', %s)", (0 if alchemy else 1,))
+    cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                "VALUES (0, 'm2_sash_off', '', %s)", (0 if sashes else 1,))
+
 def gm_reload_mt2009():
     """Ask an online IMPLEMENTOR to run /reload a for us. True when one did.
 
@@ -5375,6 +5408,11 @@ TPL_DASH = BASE.replace("__BODY__", """
 <a class="btn" href="{{url_for('easter')}}" title="{{t('tip_easter')}}">{{t('easter_open')}}</a>
 </div>
 <div class="card">
+<h3 class="help" title="{{t('tip_rare')}}">{{t('rare_nav')}}</h3>
+<p class="muted">{{t('rare_dash_hint')}}</p>
+<a class="btn" href="{{url_for('rare')}}" title="{{t('tip_rare')}}">{{t('rare_open')}}</a>
+</div>
+<div class="card">
 <h3 class="help">{{t('se_nav')}}</h3>
 <p class="muted">{{t('se_dash_hint')}}</p>
 <a class="btn" href="{{url_for('season')}}">{{t('se_open')}}</a>
@@ -5759,6 +5797,31 @@ TPL_EASTER = BASE.replace("__BODY__", """
 <h3 style="margin-top:18px">🐇 {{t('easter_rabbit')}}</h3>
 <p class="muted">{{t('easter_rabbit_help')}}</p>
 <label><input type="checkbox" name="rabbit" value="1" {% if cur['easter_rabbit'] %}checked{% endif %}> {{t('easter_enable')}}</label>
+<button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
+</form></div>""")
+
+# The rare goods' two switches: same live path as the Easter page, but the
+# flags say "off" (m2_alchemy_off, m2_sash_off - read by the engine patch
+# server-patches/raretoggle and by dragon_soul.quest), so a world without the
+# rows is a world with both on.
+TPL_RARE = BASE.replace("__BODY__", """
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a></p>
+<div class="card">
+<h3>{{t('rare_nav')}}</h3>
+<p class="muted">{{t('rare_intro')}}</p>
+<p><span class="badge">🐉 {{t('rare_alchemy')}} {{t('easter_on') if cur['alchemy'] else t('easter_off')}}</span>
+   <span class="badge">🎗️ {{t('rare_sashes')}} {{t('easter_on') if cur['sashes'] else t('easter_off')}}</span></p>
+</div>
+
+<div class="card">
+<form method="post">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<h3>🐉 {{t('rare_alchemy')}}</h3>
+<p class="muted">{{t('rare_alchemy_help')}}</p>
+<label><input type="checkbox" name="alchemy" value="1" {% if cur['alchemy'] %}checked{% endif %}> {{t('easter_enable')}}</label>
+<h3 style="margin-top:18px">🎗️ {{t('rare_sashes')}}</h3>
+<p class="muted">{{t('rare_sashes_help')}}</p>
+<label><input type="checkbox" name="sashes" value="1" {% if cur['sashes'] %}checked{% endif %}> {{t('easter_enable')}}</label>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
 
@@ -13542,6 +13605,47 @@ def easter():
     except Exception:
         flash(t("db_down"), "error")
     return render_template_string(TPL_EASTER, cur=cur_easter)
+
+@app.route("/rare", methods=["GET", "POST"])
+@login_required
+def rare():
+    """Alchemy and sashes on or off. Live immediately, no restart."""
+    if not ENGINE_MT2009:
+        flash(t("rates_no_script"), "error")
+        return redirect(url_for("dash"))
+    if request.method == "POST":
+        alchemy = 1 if request.form.get("alchemy") else 0
+        sashes = 1 if request.form.get("sashes") else 0
+        try:
+            with db() as c, c.cursor() as cur:
+                persist_rare(cur, alchemy, sashes)
+        except Exception:
+            flash(t("db_down"), "error")
+            return redirect(url_for("rare"))
+        try:
+            status, qid = queue_and_wait("", "RARE", "%d,%d" % (alchemy, sashes), "",
+                                         wait=RARE_LIVE_WAIT)
+        except Exception:
+            status, qid = "failed", 0
+        if status == "done":
+            flash(t("rare_saved_live"))
+        else:
+            if status == "timeout":
+                try:
+                    with db() as c, c.cursor() as cur:
+                        cur.execute("UPDATE player.web_admin_queue SET status='cancelled' "
+                                    "WHERE id=%s AND status='pending'", (qid,))
+                except Exception:
+                    pass
+            flash(t("easter_saved_persisted"))
+        return redirect(url_for("rare"))
+
+    cur_rare = {"alchemy": 1, "sashes": 1}
+    try:
+        cur_rare = read_rare()
+    except Exception:
+        flash(t("db_down"), "error")
+    return render_template_string(TPL_RARE, cur=cur_rare)
 
 @app.route("/rates", methods=["GET", "POST"])
 @login_required

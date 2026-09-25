@@ -29,6 +29,7 @@ param(
 #   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
 #   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
 #   drop preview min   item_manager.cpp          (MT2009_PLUS_DROP_PREVIEW_MIN_V1)
+#   rare switches      item_manager.cpp, char_item.cpp (MT2009_PLUS_RARE_TOGGLE_V1)
 #   speedhack slack    input_main.cpp            (MT2009_PLUS_SPEEDHACK_CLOCK_V1)
 #   Cor stacking       char_item.cpp             (IsStackableCorDraconisVnum)
 #
@@ -93,6 +94,18 @@ if ((Test-Path -LiteralPath $dropPreviewApply -PathType Leaf) -and
     if ($dropPreviewResult.Changed) {
         $syncedFiles++
         Write-Host 'Drop preview without items under 1 in 10 000 kills.' -ForegroundColor DarkGray
+    }
+}
+# The world's switches for the Cor Draconis and the sashes (event flags
+# m2_alchemy_off / m2_sash_off, server-patches/raretoggle); after rarelevel,
+# whose lines it extends.
+$rareToggleApply = Join-Path $repo 'server-patches/raretoggle/Apply-RareTogglePatch.ps1'
+if ((Test-Path -LiteralPath $rareToggleApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $rareToggleResult = & $rareToggleApply -SourceDirectory $engineGameSource
+    if ($rareToggleResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Cor Draconis and sash drops follow the world switches.' -ForegroundColor DarkGray
     }
 }
 # The alchemy balance (server-patches/dragonsoulbalance): the apply names

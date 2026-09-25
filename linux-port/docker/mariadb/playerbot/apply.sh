@@ -652,6 +652,33 @@ else
     echo "[playerbot-migrate] WARNING: could not write the apprentice chest flag; the quest keeps the last one" >&2
 fi
 
+# The rare goods' two world switches (server-patches/raretoggle and
+# dragon_soul.quest read them): m2_alchemy_off stops every new Cor Draconis,
+# m2_sash_off every new sash. The admin panel sets them live, so, as with the
+# difficulty, .env is applied only when it changed since the last start
+# (m2_rare_env holds what it said): a switch made in the panel survives a
+# restart until .env is changed, and the one changed last is kept.
+switch_off() {
+    case "$(printf '%s' "$1" | tr 'A-Z' 'a-z' | tr -d ' \r')" in
+        0|off|no|false) echo 1 ;;
+        *)              echo 0 ;;
+    esac
+}
+alchemy_off=$(switch_off "${M2_ALCHEMY:-1}")
+sash_off=$(switch_off "${M2_SASHES:-1}")
+rsig=$((alchemy_off * 2 + sash_off + 1))
+rprev=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_rare_env' LIMIT 1" 2>/dev/null | tr -d ' \r')
+if [ -n "$rprev" ] && [ "$rprev" = "$rsig" ]; then
+    echo "[playerbot-migrate] alchemy and sashes: .env unchanged since the last start - the switches stay as the panel or the last start left them"
+elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_alchemy_off', '', $alchemy_off),
+        (0, 'm2_sash_off', '', $sash_off),
+        (0, 'm2_rare_env', '', $rsig);"; then
+    echo "[playerbot-migrate] alchemy: $([ "$alchemy_off" = 1 ] && echo off || echo on), sashes: $([ "$sash_off" = 1 ] && echo off || echo on)"
+else
+    echo "[playerbot-migrate] WARNING: could not write the alchemy and sash switches; they stay as they were" >&2
+fi
+
 echo "[playerbot-migrate] applying deterministic Playerbot seed (PID $first_pid..$last_pid)"
 result=/tmp/playerbot-seed.out
 trap 'rm -f "$result"' EXIT HUP INT TERM

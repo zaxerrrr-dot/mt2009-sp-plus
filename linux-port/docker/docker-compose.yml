@@ -98,6 +98,10 @@ services:
       # Whether a player's new character gets the apprentice chest (the
       # launcher asks with the rates; starter_chest.quest reads the flag).
       M2_STARTER_CHEST: "${M2_STARTER_CHEST:-1}"
+      # The world's switches for the Cor Draconis and the sashes (apply.sh
+      # writes m2_alchemy_off / m2_sash_off when .env changed).
+      M2_ALCHEMY: "${M2_ALCHEMY:-1}"
+      M2_SASHES: "${M2_SASHES:-1}"
 
     entrypoint: ["/bin/sh", "/opt/playerbot/apply.sh"]
 
