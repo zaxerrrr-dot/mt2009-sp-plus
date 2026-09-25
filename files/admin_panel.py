@@ -4055,7 +4055,11 @@ def inject_i18n():
             "brand": BRAND, "srv": server_status(), "rates": public_rates(),
             "dlsize": human_size(_cf["size"]) if _cf["size"] else "",
             "dlsha": _cf["sha256"],
-            "local_only": bool(CONF.get("local_only", False)),
+            # What the pages show must follow what login_required does: on the
+            # mt2009 line local_open() is true even without the installer's
+            # local_only flag, and a page that still drew the passphrase box
+            # sent its POST to login(), which on an open panel just reloads.
+            "local_only": local_open(),
             "has_accounts": accounts_exist(),
             "pp_min": PASSPHRASE_MIN,
             "max_level": MAX_LEVEL,
