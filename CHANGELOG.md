@@ -17,6 +17,70 @@ every version here.
 
 ---
 
+## 2.5.0 — 2026-09-25 — Towarzysz, bossowie botów, medale na straganach
+
+Serwer 2.5.0 i klient 2.0.13. **Zaktualizuj oba** w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.4.1 i wszystkie zmiany serwera Tieru do 2.2.15. Pierwszy start po
+aktualizacji kompiluje serwer od nowa, więc trwa dłużej niż zwykle.
+
+### Towarzysz
+
+- Twój stały kompan: po zalogowaniu kliknij list **Towarzysz**, wybierz
+  klasę, płeć, ścieżkę i nick. Jest z Tobą w grupie, expi po równo, walczy
+  o Ciebie, zbiera Twój drop, a szaman Cię buffuje.
+- Okno Towarzysza pod klawiszem **P**, a na pasku w prawym dolnym rogu
+  przyciski **Towarzysz** i **Auto Łowy**.
+- Szeptem albo komendą `/towarzysz`: przywołaj, wolna ręka, stan, sposób
+  walki.
+
+### Boty
+
+- **Bossowie świata** padają pod grupami botów jednego królestwa: zbierają
+  się poza zasięgiem bossa, buffują się i atakują razem, a gdy boss prawie
+  nie traci życia, przychodzą posiłki.
+- **Medale konne na straganach:** dropper medali wychodzi z Małpiego Lochu
+  z 50 medalami (a nie z 200), idzie do pierwszej wioski i wystawia do 16
+  medali. Zwykłe boty je kupują, szybciej mają konia 10 poziomu i idą na
+  próbę konia bojowego.
+- **Wojna z gildią botów:** mistrz gildii wypowiada ją komendą
+  `/war nazwa_gildii`; obozy i zbiórka przed walką.
+- Rzadkie osobowości botów, receptury zielarskie, Wieża Demonów od 55
+  poziomu, rajdy na bossa bez bójek między królestwami.
+
+### Rozgrywka
+
+- **Zwoje Błogosławieństwa z Metinów** od 15 do 99 poziomu (domyślnie 1%).
+- **Umiejętności:** zwykła staje na 17 punktach, przy 17. punkcie pada rzut
+  na Mistrza; gdy się nie uda, do 30 poziomu resetuje ją Starsza Pani.
+- Broń od 30 poziomu u zwykłego kowala do +6, od +7 pod zwojami.
+- Kowal i inne okna widzą materiały na wszystkich 4 stronach ekwipunku.
+
+### Alchemia i szarfy do wyłączenia
+
+- W panelu admina (**🐉 Alchemia i szarfy**) i w Seban Panelu (Reguły po
+  aktualizacji) włączysz albo wyłączysz alchemię i szarfy – od razu, bez
+  restartu. W `.env`: `M2_ALCHEMY` i `M2_SASHES`.
+- Wyłączenie zatrzymuje tylko nowe Cory, odłamki i szarfy. To, co gracze
+  mają, zostaje, a plecak alchemii działa.
+
+### Poprawki
+
+- **Podgląd dropu** pokazuje tylko przedmioty, które wypadają co najmniej
+  raz na 10 000 zabójstw – bez broni +2 przy psie na 1 poziomie.
+- Auto Łowy po wskrzeszeniu, czekając na życie, rzucają tylko buffy.
+
+### Launcher
+
+- W oknie **POZIOM TRUDNOŚCI** pola **Auto Łowy**, **Towarzysz**
+  i **Skrzynia Ucznia**.
+- **SERWER NA VPS** (eksperymentalne): instalacja i aktualizacja serwera
+  na własnym VPS prosto z launchera.
+- COOP w jednej sieci domowej bez routera; ostrzeżenie o folderze serwera
+  w OneDrive.
+
+---
+
 ## Klient 2.0.13 — 2026-09-25 — Towarzysz i przyciski na pasku
 
 - Klawisz **P** otwiera okno Towarzysza z poziomem, HP, PE, położeniem,

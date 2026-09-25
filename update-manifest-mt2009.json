@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-25T11:42:09Z",
-  "statusMessage": "Klient 2.0.13: okno Towarzysza pod P, przyciski Towarzysz i Auto Lowy na pasku oraz bezpieczne buffy Auto Lowow po wskrzeszeniu. Serwer pozostaje w wersji 2.4.1.",
+  "publishedAt": "2026-09-25T12:37:41Z",
+  "statusMessage": "Serwer 2.5.0 i klient 2.0.13: Towarzysz (klawisz P), bossowie bici przez boty, medale na straganach, alchemia i szarfy do wylaczenia. Zaktualizuj oba.",
   "server": {
-    "version": "2.4.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.4.1.zip",
-    "sha256": "0437329434B074C5ADB8845EF334672AB5C8F081B0BDE6C63811B47B42E7BF2A",
-    "size": 55320839
+    "version": "2.5.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.5.0.zip",
+    "sha256": "3FC0236E84FAC5084667166D2938E9FC63BEC1A0CA76AD93910F28B7F312DB97",
+    "size": 55577858
   },
   "client": {
     "version": "2.0.13",
