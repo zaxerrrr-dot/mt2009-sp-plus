@@ -931,7 +931,8 @@ namespace
 			return ch && GetPlayerBotPersonalityByPID(ch->GetPlayerID()) ==
 					BOT_PERSONALITY_MEDAL_DROPPER ? 1 : PLAYERBOT_HORSE_MEDAL_KEEP;
 		// Nobody keeps a root back: the heap is the whole of what it is for.
-		if (IsPlayerBotBulkGoods(item))
+		// Nor the Alchemist's dust, which no bot consumes.
+		if (IsPlayerBotBulkGoods(item) || item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
 			return 0;
 		return 1;
 	}
@@ -1294,8 +1295,9 @@ namespace
 		if (!ch || !item || item->IsEquipped() || item->isLocked())
 			return false;
 		// What a player handed a companion is the player's choice, not the
-		// merchant's (playerbot_sidekick.h).
-		if (IsPlayerBotSidekickGift(ch, item))
+		// merchant's (playerbot_sidekick.h), and so is what the player put on
+		// it, waiting in the bag for its slot.
+		if (IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item))
 			return false;
 
 		// The operator's word first: merchant is scrap whatever the rules
@@ -1359,9 +1361,18 @@ namespace
 			return true;
 		// The goods a player crafts further (IsPlayerBotPickupGoods) wait for a
 		// counter, and reach the merchant only from a bag under pressure that
-		// has no counter to sell from - the rule a polymorph marble keeps.
+		// has no counter to sell from - the rule a polymorph marble keeps. Gear
+		// among them waits only up to PLAYERBOT_PICKUP_GEAR_BAG_KEEP of a piece,
+		// the first in the bag; a counter shows no more than that of one thing,
+		// and every one past it was a cell lost for good.
 		if (IsPlayerBotPickupGoods(item))
+		{
+			if (IsPlayerBotPickupGear(item) && !IsPlayerBotLppKeptItem(ch, item) &&
+					!IsPlayerBotUpgradeForSelf(ch, item) &&
+					CountPlayerBotVnumUnitsAhead(ch, item) >= PLAYERBOT_PICKUP_GEAR_BAG_KEEP)
+				return true;
 			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotCanOpenShop(ch);
+		}
 		// Kamien Duchowy is its owner's training (ManagePlayerBotGrandMasterTraining),
 		// never the merchant's: he paid 194 yang for one.
 		if (vnum == PLAYERBOT_GRAND_MASTER_STONE_VNUM)
@@ -1565,8 +1576,13 @@ namespace
 		if (IsPlayerBotRefineScroll(vnum))
 			return false;
 		// A soul stone is somebody's socket: this bot's, or across a counter
-		// another's. The merchant paid one yang for a Potwora +4.
+		// another's. The merchant paid one yang for a Potwora +4. One of the
+		// grades Iwakura bans waits in the bag for the Alchemist.
 		if (item->GetType() == ITEM_METIN)
+			return false;
+		// And what the Alchemist gave for it is counter goods: the merchant
+		// pays fifty yang for a dust that cost five hundred and a stone.
+		if (vnum == PLAYERBOT_MAGIC_DUST_VNUM)
 			return false;
 
 		// Fishing tackle and the catch worth keeping. Pearls are the entire point
@@ -2140,7 +2156,7 @@ namespace
 	// the blacksmith can make into one. Goods are sold at what they are.
 	bool IsPlayerBotRefineBagCandidate(LPCHARACTER ch, LPITEM item)
 	{
-		if (!item || item->GetRefinedVnum() == 0)
+		if (!item || item->GetRefinedVnum() == 0 || IsPlayerBotSidekickPinned(ch, item))
 			return false;
 		// A level-30 weapon of a class this bot cannot wear, ground for sale
 		// (PlayerBotRefinesLevel30ForSale): no equipment candidate of its own,
@@ -3090,6 +3106,10 @@ namespace
 	{
 		if (!ch || !item || item->GetRefinedVnum() == 0 ||
 				item->GetRefineLevel() >= GetPlayerBotRefineTarget(ch, item))
+			return false;
+		// What a companion's owner put on is the owner's to refine: a burn at
+		// the companion's anvil would lose the piece the owner chose.
+		if (IsPlayerBotSidekickPinned(ch, item))
 			return false;
 		if (!CanPlayerBotPayRefineStep(ch, item))
 			return false;

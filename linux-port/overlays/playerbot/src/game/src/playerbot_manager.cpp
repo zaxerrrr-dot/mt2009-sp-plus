@@ -7,6 +7,7 @@
 #include "playerbot_stall_rules.h"
 #include "playerbot_persona_rules.h"
 #include "playerbot_lure_order_rules.h"
+#include "playerbot_truce_rules.h"
 
 #include "char.h"
 #include "skill.h"
@@ -1173,8 +1174,8 @@ namespace
 		// character rather than a mood, the same bots pick the fights after
 		// every restart, and the rest are left alone to hunt - which is what
 		// "some aggressive, some neutral" has to mean to be visible at all.
-		if ((int)(PlayerBotNavHash(ch->GetPlayerID() ^ 0x4B494E47U) % 100U) >=
-				s_iPlayerBotKingdomPvpPercent)
+		// The stone rivalry asks the same share (playerbot_targeting.h).
+		if (!IsPlayerBotHostileToOtherKingdoms(ch))
 			return;
 		// Anything the bot is actually doing outranks picking a fight.
 		if (state.bVisitingShop || state.bVisitingBiologist || state.bVisitingStable ||
@@ -1408,7 +1409,12 @@ namespace
 	// 14 September).
 	// The person may be the leader of the bot's party (the wrapper below) or a
 	// companion's owner, whose party it may not lead (playerbot_sidekick.h).
-	bool ManagePlayerBotBuffPerson(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER leader, DWORD dwNow)
+	// A companion asks between two blows too, and there it may not walk: a
+	// buff out of reach waits for the fight to end (mayWalk false).
+	// fightBuffsDue: the fight buffs are due whatever the bot itself is doing,
+	// which is how a companion keeps its owner's (playerbot_sidekick.h).
+	bool ManagePlayerBotBuffPerson(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER leader, DWORD dwNow,
+			bool mayWalk, bool fightBuffsDue)
 	{
 		static std::map<DWORD, DWORD> s_mapPlayerBotLeaderBuffNext;
 		if (!ch || ch->IsDead() || ch->GetJob() != JOB_SHAMAN || ch->GetSkillGroup() == 0)
@@ -1426,7 +1432,7 @@ namespace
 				state.bMultiPullActive || state.bFishingSession || ch->GetMyShop())
 			return false;
 		const bool fighting = ch->GetVictim() && !ch->GetVictim()->IsDead();
-		const bool hunting = fighting || state.dwTargetVID != 0 ||
+		const bool hunting = fighting || fightBuffsDue || state.dwTargetVID != 0 ||
 				(state.dwLastCombatActionTime != 0 &&
 				 dwNow - state.dwLastCombatActionTime < PLAYERBOT_BUFF_COMBAT_WINDOW);
 		const int dist = DISTANCE_APPROX(ch->GetX() - leader->GetX(), ch->GetY() - leader->GetY());
@@ -1451,7 +1457,7 @@ namespace
 				continue;
 			if (proto->dwTargetRange != 0 && dist > (int)proto->dwTargetRange)
 			{
-				if (fighting)
+				if (fighting || !mayWalk)
 					continue;
 				if (!MovePlayerBot(ch, leader->GetX(), leader->GetY(), dwNow, 8, true, false, false, false))
 					continue;
@@ -1490,7 +1496,7 @@ namespace
 		LPPARTY party = ch ? ch->GetParty() : NULL;
 		if (!party || !IsPlayerBotHumanLedParty(party))
 			return false;
-		return ManagePlayerBotBuffPerson(ch, state, party->GetLeaderCharacter(), dwNow);
+		return ManagePlayerBotBuffPerson(ch, state, party->GetLeaderCharacter(), dwNow, true, false);
 	}
 
 	void ManagePlayerBotParty(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
@@ -5536,9 +5542,18 @@ void CPlayerBotManager::Update()
 		if (ManagePlayerBotMoodAfk(ch, state, dwNow))
 			continue;
 
+		// The Demon Tower's floors too, which are instances of map 66 and so no
+		// frontier map by their index. A boss's CRUSH skill slides its victim
+		// 400 units, 800 for CRUSH_LONG, and FuncSplashDamage never asks what
+		// lies there: bots thrown off the ninth floor into the void round it
+		// stood there for the rest of the run, beyond the four cells the route
+		// planner snaps a start by ("boty po zginieciu i odrzuceniu nie sa w
+		// stanie wrocic do walki", prodnathin, 25 September). A player has
+		// "Uwolnij sie" for it (/escape), a bot this.
+		const bool bTowerFloor = IsPlayerBotDemonTowerInstance(ch->GetMapIndex());
 		if (playerbot_empire_rules::IsKingdomMap(ch->GetMapIndex()) ||
 				IsPlayerBotMonkeyMap(ch->GetMapIndex()) ||
-				IsPlayerBotFrontierMap(ch->GetMapIndex()))
+				IsPlayerBotFrontierMap(ch->GetMapIndex()) || bTowerFloor)
 		{
 			const long currentMap = ch->GetMapIndex();
 			CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(
@@ -5561,7 +5576,13 @@ void CPlayerBotManager::Update()
 				if (bInsideObstacle)
 					foundSafe = navigation.FindNearestWalkableWorld(
 							ch->GetX(), ch->GetY(), 20, safe, ch->GetPlayerID());
-				if (!foundSafe)
+				// A floor has no entry point of its own to fall back on, and the
+				// nearest ground of another floor is not the fight: the look
+				// round the bot is only made wider.
+				if (!foundSafe && bTowerFloor && bInsideObstacle)
+					foundSafe = navigation.FindNearestWalkableWorld(
+							ch->GetX(), ch->GetY(), 40, safe, ch->GetPlayerID());
+				if (!foundSafe && !bTowerFloor)
 				{
 					// The village or guild map's own entry point, whichever
 					// kingdom this is. GetPlayerBotHomePoint answers for all
@@ -5592,9 +5613,9 @@ void CPlayerBotManager::Update()
 				ch->Show(currentMap, safe.x, safe.y, 0);
 				ch->Stop();
 				ch->SendMovePacket(FUNC_MOVE, 0, safe.x, safe.y, 0, dwNow);
-				sys_err("PLAYERBOT_NAV: locally rescued pid=%u name=%s reason=%s from=(%ld,%ld) to=(%ld,%ld)",
+				sys_err("PLAYERBOT_NAV: locally rescued pid=%u name=%s reason=%s map=%ld from=(%ld,%ld) to=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), bOutOfBounds ? "bounds" : "blocked",
-						oldX, oldY, safe.x, safe.y);
+						currentMap, oldX, oldY, safe.x, safe.y);
 				continue;
 			}
 		}
@@ -5902,6 +5923,15 @@ void CPlayerBotManager::Update()
 		// sits in the weapon slot, so no combat or gear pass may run under it.
 		if (!state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotMining(ch, state, dwNow))
+			continue;
+
+		// The Alchemist (playerbot_town.h): the soul stones Iwakura bans from
+		// sockets, for dust, while the bot stands in a first village. Above the
+		// travel pass and the rest in town: the bots that carry these stones
+		// are the Metin hunters of the frontier, in the first village for their
+		// stand, and the travel pass walked them straight back out.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotAlchemist(ch, state, dwNow))
 			continue;
 
 		// Spending time in town once the errand that brought the bot here is

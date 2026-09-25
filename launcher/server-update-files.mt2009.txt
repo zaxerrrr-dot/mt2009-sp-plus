@@ -59,6 +59,11 @@ linux-port-mt2009/docker/game/special_item_group.starter.txt
 linux-port-mt2009/PACZKA_INFO.txt
 CHANGELOG.md
 linux-port-mt2009/VERSION
+# The terms travel with every update: from 2.2.17 they are CC BY-NC-SA 4.0,
+# and the MIT text beside them is what versions up to 2.2.16 were released under.
+LICENSE
+LICENSE-MIT.txt
+NOTICE.md
 start-server.ps1
 start.bat
 stop.bat

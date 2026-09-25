@@ -170,8 +170,12 @@ namespace
 			return false;
 		// Never the goods a player crafts further, whatever the merchant pays:
 		// a bot of seventy-three walked past Grzyb Tue, Korzen Gango and a
-		// Zbroja Twarzy Ducha+3 on a floor (Tieru, 15 September).
-		if (IsPlayerBotPickupGoods(item))
+		// Zbroja Twarzy Ducha+3 on a floor (Tieru, 15 September). A piece of
+		// gear the bag already keeps its share of (PLAYERBOT_PICKUP_GEAR_BAG_KEEP)
+		// is the merchant's anyway, so it is judged like any other drop.
+		if (IsPlayerBotPickupGoods(item) &&
+				!(IsPlayerBotPickupGear(item) &&
+				  ch->CountSpecifyItem(item->GetVnum()) >= PLAYERBOT_PICKUP_GEAR_BAG_KEEP))
 			return false;
 		// Nor a Cor Draconis or a sash: players' goods for the counter.
 		if (GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
