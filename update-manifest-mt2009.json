@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-25T00:30:00Z",
-  "statusMessage": "Serwer 2.4.1 i klient 2.0.11: Cory w stosach, wierzchowce bez 'wygasla', koniec wyrzucania z gry przy zlym zegarze Dockera, nowe Auto Lowy. Zaktualizuj oba.",
+  "publishedAt": "2026-09-25T10:26:14Z",
+  "statusMessage": "Klient 2.0.12: kowal i pozostale okna widza materialy na wszystkich czterech stronach ekwipunku. Serwer pozostaje w wersji 2.4.1.",
   "server": {
     "version": "2.4.1",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.4.1.zip",
@@ -10,9 +10,9 @@
     "size": 55320839
   },
   "client": {
-    "version": "2.0.11",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.11.zip",
-    "sha256": "36618E20323B4B7EB8241F5AAA4EFDF09102ADDA2A9B07F57C03E7A2F4D0EAE9",
-    "size": 48498400
+    "version": "2.0.12",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.12.zip",
+    "sha256": "37BC951CD2FF18F1AB323D8B9C9701EC70F975073E212BB144139646AA064BC8",
+    "size": 828695
   }
 }

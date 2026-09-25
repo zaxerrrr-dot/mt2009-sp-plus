@@ -1,0 +1,3 @@
+# Poprawka liczenia materialow na czterech stronach ekwipunku.
+pack/root.data
+pack/root.index

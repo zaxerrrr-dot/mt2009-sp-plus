@@ -17,6 +17,16 @@ every version here.
 
 ---
 
+## Klient 2.0.12 — 2026-09-25 — Materiały na wszystkich stronach ekwipunku
+
+- Kowal oraz pozostałe okna klienta widzą materiały znajdujące się na
+  stronach 3. i 4. ekwipunku.
+- Przeniesienie materiału między stronami jest uwzględniane bez ponownego
+  logowania.
+- Zachowano oddzielną obsługę dodatkowej strony ekwipunku konia.
+
+---
+
 ## 2.4.1 — 2026-09-25 — Cory w stosach, wierzchowce bez „wygasła”, koniec wyrzucania z gry
 
 Serwer 2.4.1 i klient 2.0.11. **Zaktualizuj oba** w launcherze
