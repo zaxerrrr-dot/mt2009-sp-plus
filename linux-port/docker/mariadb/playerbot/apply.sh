@@ -212,6 +212,23 @@ db -e "UPDATE world.shop_special_proto SET limitvalue0 = 30 WHERE item_vnum = 27
 # The ring is dragged onto nothing; the flag comes off. Idempotent.
 db -e "UPDATE world.item_proto SET flag = flag & ~8192 WHERE vnum = 70058 AND (flag & 8192) <> 0;"
 
+# MT2009 Plus: every item the mod's world has (item_proto.mt2009plus.sql,
+# the full package's world.item_proto), added where this world lacks it. A
+# world made from another dump - Tieru's, or one the launcher made anew when
+# it lost its identity - had no Amethyst (170000...), and every game core
+# died at boot on special_item_group.txt ("there is no item 170000"), so a
+# login got through the auth core and then nowhere. INSERT IGNORE: a row
+# that is there is never changed. Every start; a failure never stops it.
+if [ -s /opt/playerbot/item_proto.mt2009plus.sql ]; then
+    ip_before=$(db -N -e "SELECT COUNT(*) FROM world.item_proto" 2>/dev/null || echo 0)
+    if db < /opt/playerbot/item_proto.mt2009plus.sql; then
+        ip_after=$(db -N -e "SELECT COUNT(*) FROM world.item_proto" 2>/dev/null || echo 0)
+        echo "[playerbot-migrate] mod items: $((ip_after - ip_before)) missing item(s) added to world.item_proto ($ip_after in all)"
+    else
+        echo "[playerbot-migrate] WARNING: could not add the mod's items to world.item_proto" >&2
+    fi
+fi
+
 # MT2009 Plus: Cor Draconis and every sash may be handed to another player
 # and put in a private/offline shop.  The engine checks GIVE (1 << 13) for an
 # exchange and GIVE|MYSHOP (1 << 13, 1 << 16) for a shop, so clear precisely
