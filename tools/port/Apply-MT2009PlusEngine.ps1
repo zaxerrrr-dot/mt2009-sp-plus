@@ -28,6 +28,7 @@ param(
 #   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
 #   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
 #   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
+#   drop preview min   item_manager.cpp          (MT2009_PLUS_DROP_PREVIEW_MIN_V1)
 #   speedhack slack    input_main.cpp            (MT2009_PLUS_SPEEDHACK_CLOCK_V1)
 #   Cor stacking       char_item.cpp             (IsStackableCorDraconisVnum)
 #
@@ -81,6 +82,17 @@ if ((Test-Path -LiteralPath $rareLevelApply -PathType Leaf) -and
     if ($rareLevelResult.Changed) {
         $syncedFiles++
         Write-Host 'Cor Draconis and sash drops within 15 levels below the killer.' -ForegroundColor DarkGray
+    }
+}
+# The drop preview lists an item only at 1 in 10 000 kills or better
+# (server-patches/droppreview); the drop itself is unchanged.
+$dropPreviewApply = Join-Path $repo 'server-patches/droppreview/Apply-DropPreviewPatch.ps1'
+if ((Test-Path -LiteralPath $dropPreviewApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $itemManagerSource -PathType Leaf)) {
+    $dropPreviewResult = & $dropPreviewApply -SourceFile $itemManagerSource
+    if ($dropPreviewResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Drop preview without items under 1 in 10 000 kills.' -ForegroundColor DarkGray
     }
 }
 # The alchemy balance (server-patches/dragonsoulbalance): the apply names
