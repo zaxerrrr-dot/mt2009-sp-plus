@@ -652,20 +652,38 @@ else
     echo "[playerbot-migrate] WARNING: could not write the apprentice chest flag; the quest keeps the last one" >&2
 fi
 
+# Whether the world is played with Auto Lowy and with the companion
+# (Towarzysz): the launcher's difficulty window writes M2_AUTOHUNT and
+# M2_SIDEKICK, both on unless .env says 0 (Tieru, 25 September, for Drip's
+# COOP without the auto hunt). Off, the server refuses the hunt's target
+# and drop (m2_autohunt_off, playerbotify apply_auto_hunt_switch) and
+# sends no Towarzysz letter, refuses its command and keeps companions out
+# of the world (m2_sidekick_off). Event flags like the difficulty, so a
+# change reaches the cores at the next start.
+feature_off() {
+    case "$(printf '%s' "$1" | tr 'A-Z' 'a-z' | tr -d ' \r')" in
+        0|off|no|false) echo 1 ;;
+        *)              echo 0 ;;
+    esac
+}
+autohunt_off=$(feature_off "${M2_AUTOHUNT:-1}")
+sidekick_off=$(feature_off "${M2_SIDEKICK:-1}")
+if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_autohunt_off', '', $autohunt_off),
+        (0, 'm2_sidekick_off', '', $sidekick_off);"; then
+    echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on)"
+else
+    echo "[playerbot-migrate] WARNING: could not write the Auto Lowy and companion flags; the cores keep the last ones" >&2
+fi
+
 # The rare goods' two world switches (server-patches/raretoggle and
 # dragon_soul.quest read them): m2_alchemy_off stops every new Cor Draconis,
 # m2_sash_off every new sash. The admin panel sets them live, so, as with the
 # difficulty, .env is applied only when it changed since the last start
 # (m2_rare_env holds what it said): a switch made in the panel survives a
 # restart until .env is changed, and the one changed last is kept.
-switch_off() {
-    case "$(printf '%s' "$1" | tr 'A-Z' 'a-z' | tr -d ' \r')" in
-        0|off|no|false) echo 1 ;;
-        *)              echo 0 ;;
-    esac
-}
-alchemy_off=$(switch_off "${M2_ALCHEMY:-1}")
-sash_off=$(switch_off "${M2_SASHES:-1}")
+alchemy_off=$(feature_off "${M2_ALCHEMY:-1}")
+sash_off=$(feature_off "${M2_SASHES:-1}")
 rsig=$((alchemy_off * 2 + sash_off + 1))
 rprev=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_rare_env' LIMIT 1" 2>/dev/null | tr -d ' \r')
 if [ -n "$rprev" ] && [ "$rprev" = "$rsig" ]; then

@@ -150,11 +150,11 @@ w 2.2.5). Poniższe pliki mają zmiany MT2009 Plus — scalaj je ręcznie
 | `linux-port/docker/mariadb/playerbot/apply.sh` | pętla wgrywająca `mod/*.sql` (oferty ItemShopu: kostiumy, fryzury, nakładki, pety, mounty) — bez niej nowe światy mają pusty ItemShop |
 | `linux-port/docker/mariadb/playerbot/mod/*.sql` | oferty ItemShopu w grze i w przeglądarce |
 | `tools/New-M2UpdatePackage.ps1` | sprawdzanie `VERSION`, BOM w skryptach PowerShell i zmian silnika MT2009 Plus |
-| `linux-port/docker/game/src/server/game/src/item_manager.cpp`, `char_item.cpp`, `ikarus_shop_manager.cpp` | po wzięciu wersji Tieru uruchom ponownie `tools/port/Apply-MT2009PlusEngine.ps1` |
+| pliki silnika w `linux-port/docker/game/src/server/game/src/` (m.in. `item_manager.cpp`, `char_item.cpp`, `cmd.cpp`, `char_affect.cpp`, `MountSystem.cpp`, `input_main.cpp`) | po wzięciu wersji Tieru uruchom ponownie `tools/port/Apply-MT2009PlusEngine.ps1` (albo bliźniaki `server-patches/*/apply_*.py`) – każda łatka ma swój znacznik `MT2009_PLUS_...` |
 | `README.md`, `README_EN.md`, `MODS_PL.md`, `AKTUALIZACJE_MOD.md` | opis moda |
 | `update-manifest-mt2009.json`, `VERSION`, `MOD_VERSION`, `CHANGELOG.md` | wersje i kanał moda |
 
-**Baza Tieru: 2.2.9** (scalone 24 września 2026). Scalaj trójstronnie
+**Baza Tieru: 2.2.15** (scalone 25 września 2026; wcześniej 2.2.9, 24 września). Scalaj trójstronnie
 (`git merge-file`): nasz plik, plik Tieru z wersji, na której nasz jest
 oparty, i nowa wersja Tieru. Nie zakładaj jednej bazy dla wszystkich plików
 – przed tym scaleniem źródła botów były na Tieru 2.2.3, choć CHANGELOG

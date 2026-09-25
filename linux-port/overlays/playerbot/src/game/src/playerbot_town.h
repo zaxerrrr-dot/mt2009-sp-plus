@@ -91,7 +91,7 @@ namespace
 	// Iwakura's Useful Items List (playerbot_lpp.h, after the gambler): what
 	// the bot keeps rather than sells, what goes to the box, what comes out.
 	bool IsPlayerBotLppKeptItem(LPCHARACTER ch, LPITEM item);
-	void CollectPlayerBotLppBoxRelease(LPCHARACTER ch, CSafebox* box, std::set<DWORD>& ids);
+	void CollectPlayerBotLppBoxRelease(LPCHARACTER ch, CSafebox* box, std::set<DWORD>& ids, int* kept = NULL);
 	DWORD GetPlayerBotLppFamily(LPITEM item);
 	int GetPlayerBotHeldFamilyLimit(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotLppHerb(LPITEM item);
@@ -200,6 +200,9 @@ namespace
 				int& n = going[family];
 				if ((stored != state.persona.mapGearStored.end() ? stored->second : 0) + n >=
 						GetPlayerBotHeldFamilyLimit(ch, item))
+					continue;
+				// And the box's eighteen in all (Iwakura's Patch 3, point 3).
+				if ((int)state.persona.wLppBoxGearKept + (int)cells.size() >= PLAYERBOT_LPP_TOTAL_LIMIT)
 					continue;
 				++n;
 			}
@@ -809,7 +812,7 @@ namespace
 				NeedsPlayerBotProgressionWeapon(ch) || NeedsPlayerBotArrows(ch);
 		state.bTownNeedArmorMerchant = HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR) ||
 				NeedsPlayerBotProgressionArmor(ch) || NeedsPlayerBotProgressionShield(ch) ||
-				NeedsPlayerBotProgressionHelmet(ch);
+				NeedsPlayerBotProgressionHelmet(ch) || NeedsPlayerBotBackupArmour(ch);
 		state.bTownNeedBlacksmith = HasPlayerBotRefineOpportunity(ch) ||
 				IsPlayerBotGambling(state, dwNow);
 		// The gambler's first stop is the storekeeper, once a session.
@@ -1464,8 +1467,9 @@ namespace
 				continue;
 			if (item->GetRefineLevel() < PLAYERBOT_SHOP_SPARE_MIN_REFINE)
 				continue;
-			// Nor the weapon kept for the day the one in the hand burns.
-			if (IsPlayerBotKeptBackupWeapon(ch, item))
+			// Nor the weapon kept for the day the one in the hand burns, nor
+			// the armour kept for the day the one on the back does.
+			if (IsPlayerBotKeptBackupWeapon(ch, item) || IsPlayerBotKeptBackupArmour(ch, item))
 				continue;
 			// Gear under level thirty ranks under the prize score and is capped
 			// on a counter, so it cannot carry a stall on its own - a reason to
@@ -1550,6 +1554,24 @@ namespace
 		return false;
 	}
 
+	// Iwakura's Patch 3, point 2: "postac ta powinna pamietac o wystawianiu na
+	// rynek przedmiotow ulepszonych do poziomow +7, +8 oraz +9" - a piece at
+	// the gambler's +7 or past it, made by one of its sessions, still in the bag.
+	bool HasPlayerBotGambleGoods(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		if (!ch || state.persona.setGambleForSale.empty())
+			return false;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && !item->IsEquipped() &&
+					item->GetRefineLevel() >= (int)playerbot_persona::GAMBLE_SAFE_PLUS &&
+					state.persona.setGambleForSale.find(item->GetID()) != state.persona.setGambleForSale.end())
+				return true;
+		}
+		return false;
+	}
+
 	BYTE GetPlayerBotShopReason(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		if (!ch || ch->GetLevel() < PLAYERBOT_SHOP_MIN_LEVEL)
@@ -1569,6 +1591,9 @@ namespace
 		// whatever the TRADE roll says: the medals are the whole of its trade.
 		if (IsPlayerBotMedalStockReady(ch, state))
 			return PLAYERBOT_SHOP_REASON_MEDALS;
+		// And what a gambler's session made, the same way.
+		if (HasPlayerBotGambleGoods(ch, state))
+			return PLAYERBOT_SHOP_REASON_SPARE;
 		// A trader always has the stall open when it can. For everyone else it
 		// stays what it was: an occasional thing one bot in ten does with a spare.
 		if (IsPlayerBotMerchant(state))
@@ -2338,7 +2363,9 @@ namespace
 		return decision;
 	}
 
-	// Is any worn piece still short of what a scroll can take it to?
+	// Is any worn piece still short of what a scroll can take it to? Not one
+	// no scroll goes on (IsPlayerBotScrollFreeGear): a bot in such gear keeps
+	// none back, and its scrolls go to a counter for a bot that can use them.
 	bool PlayerBotWearsScrollWork(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -2350,7 +2377,7 @@ namespace
 		for (size_t i = 0; i < sizeof(wearSlots) / sizeof(wearSlots[0]); ++i)
 		{
 			LPITEM worn = ch->GetWear(wearSlots[i]);
-			if (worn && worn->GetRefinedVnum() != 0 &&
+			if (worn && worn->GetRefinedVnum() != 0 && !IsPlayerBotScrollFreeGear(worn) &&
 					worn->GetRefineLevel() < PLAYERBOT_SCROLL_REFINE_MAX_PLUS)
 				return true;
 		}
@@ -2483,6 +2510,12 @@ namespace
 		// Iwakura's fifty-four weapons at +0..+3 stand on the bots' counters
 		// PLAYERBOT_JUNK_WEAPON_MARKET_CAP at a time, world-wide.
 		if (IsPlayerBotCappedJunkWeapon(item) && IsPlayerBotJunkWeaponMarketFull())
+			return -1;
+		// Iwakura's Patch 3, point 4: a body armour at +0..+4 of a family the
+		// bots' counters already carry PLAYERBOT_LOW_ARMOUR_MARKET_CAP of is no
+		// goods - the anvil takes it to +5 first if it can be paid
+		// (PlayerBotRefinesLowArmourForSale), the merchant otherwise.
+		if (IsPlayerBotCappedLowArmour(item) && IsPlayerBotLowArmourMarketFull(item->GetVnum()))
 			return -1;
 		// Gear under level thirty goes up at +6 or better and ranks under the
 		// materials whatever is rolled on it, and one counter carries only
@@ -2840,6 +2873,7 @@ namespace
 		const bool report = ShouldReportPlayerBotMarketDecisions(
 				ch->GetPlayerID(), get_dword_time());
 		const DWORD backupWeaponID = GetPlayerBotBackupWeaponID(ch, false);
+		const DWORD backupArmourID = GetPlayerBotBackupArmourID(ch, false);
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
@@ -2880,8 +2914,11 @@ namespace
 				if (IsPlayerBotArcherBuild(ch) && IsPlayerBotStoneMeleeWeapon(ch, item) &&
 						FindPlayerBotStoneWeapon(ch, false) == item)
 					continue;
-				// Nor the weapon kept for the day the one in the hand burns.
+				// Nor the weapon kept for the day the one in the hand burns, nor
+				// the armour kept for the day the one on the back does.
 				if (type == ITEM_WEAPON && backupWeaponID != 0 && item->GetID() == backupWeaponID)
+					continue;
+				if (type == ITEM_ARMOR && backupArmourID != 0 && item->GetID() == backupArmourID)
 					continue;
 				const int wearCell = item->FindEquipCell(ch);
 				if (wearCell < 0 || ch->GetWear((BYTE)wearCell) == NULL)
@@ -3327,6 +3364,50 @@ namespace
 		return changed;
 	}
 
+	int FindPlayerBotShopSlot(const bool* grid, int height);
+	void PutPlayerBotShopSlot(bool* grid, int slot, int height);
+	int PlayerBotShopSlotToEngine(int slot);
+
+	// Iwakura's Patch 3, point 6: the lines a stall is opening with, chosen
+	// best first, laid out again over a clear grid in the order of their
+	// categories (GetPlayerBotShopCategory), keeping that order within one. A
+	// layout the grid cannot take whole keeps the placement the choice made.
+	void RelayPlayerBotStallByCategory(LPCHARACTER ch, TShopItemTable* table,
+			std::vector<TPlayerBotShopOffer>& offers, BYTE count)
+	{
+		if (!ch || count == 0 || offers.size() != count)
+			return;
+		std::vector<std::pair<int, int> > order;
+		std::vector<int> heights(count, 1);
+		for (int i = 0; i < count; ++i)
+		{
+			LPITEM item = ch->GetInventoryItem(table[i].pos.cell);
+			if (!item)
+				return;
+			heights[i] = std::max<int>(1, std::min<int>(PLAYERBOT_SHOP_GRID_ROWS, item->GetSize()));
+			order.push_back(std::make_pair(GetPlayerBotShopCategory(item), i));
+		}
+		std::stable_sort(order.begin(), order.end(),
+				[](const std::pair<int, int>& a, const std::pair<int, int>& b) { return a.first < b.first; });
+		bool grid[PLAYERBOT_SHOP_GRID_CELLS];
+		memset(grid, 0, sizeof(grid));
+		std::vector<int> slots(count, -1);
+		for (size_t n = 0; n < order.size(); ++n)
+		{
+			const int line = order[n].second;
+			const int slot = FindPlayerBotShopSlot(grid, heights[line]);
+			if (slot < 0)
+				return;
+			PutPlayerBotShopSlot(grid, slot, heights[line]);
+			slots[line] = slot;
+		}
+		for (int i = 0; i < count; ++i)
+		{
+			table[i].display_pos = (BYTE)PlayerBotShopSlotToEngine(slots[i]);
+			offers[i].bSlot = (BYTE)PlayerBotShopSlotToEngine(slots[i]);
+		}
+	}
+
 	int FindPlayerBotShopSlot(const bool* grid, int height)
 	{
 		for (int row = 0; row + height <= PLAYERBOT_SHOP_GRID_ROWS; ++row)
@@ -3558,6 +3639,10 @@ namespace
 		// a better right than the summon (SB_STALL), so opening one would end
 		// the summon it was called for.
 		if (IsPlayerBotSummoned(ch->GetPlayerID()))
+			return false;
+		// Nor a player's companion: it stands at its owner's side, or plays
+		// while its owner is online, and a stand would outlive both.
+		if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			return false;
 		// Every shop in the world stands on the first channel (the operator's
 		// rule for the second one, playerbot_channel_rules.h). Without the
@@ -3980,6 +4065,7 @@ namespace
 		// moves between the two - a town errand happens in between - and a stall
 		// that loses two of its three lines on the way to the pitch should stay
 		// packed up rather than open with what is left.
+		RelayPlayerBotStallByCategory(ch, table, offers, tableCount);
 		if (!IsPlayerBotStallWorthOpening(tableCount, bestScore, bPoor || IsPlayerBotBagFull(ch) ||
 				bShopReason == PLAYERBOT_SHOP_REASON_HOARD))
 		{
@@ -4111,7 +4197,7 @@ namespace
 		for (size_t i = 0; i < offers.size(); ++i)
 		{
 			AddPlayerBotMarketSupply(offers[i].dwVnum, offers[i].wCount, ch->GetMapIndex());
-			NotePlayerBotJunkWeaponOnCounter(offers[i].dwVnum, offers[i].wCount);
+			NotePlayerBotCappedLineOnCounter(offers[i].dwVnum, offers[i].wCount);
 		}
 		sys_log(0, "PLAYERBOT_SHOP: opened pid=%u name=%s reason=%s items=%u left_behind no_line=%u no_slot=%u antiflag=%u first_vnum=%u first_price=%u pos=(%ld,%ld) sign=\"%s\"",
 				ch->GetPlayerID(), ch->GetName(), GetPlayerBotShopReasonName(state.bShopOpenReason),

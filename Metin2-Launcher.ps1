@@ -1,6 +1,6 @@
 ﻿[CmdletBinding()]
 param(
-    [ValidateSet('Menu', 'Start', 'Stop', 'StartDocker', 'StopAll', 'Check', 'UpdateServer', 'UpdateClient', 'UpdateAll', 'Diagnose', 'Logs', 'SendLogs', 'Configure', 'SetBots', 'SetDifficulty', 'ImportDb', 'BackupDb', 'RestoreDb', 'ResetWorld', 'RepairDb', 'DbAccess', 'PanelPassword', 'FreePorts', 'CoopCheck', 'CoopSecure', 'CoopAddFriend', 'CoopBlockFriend', 'CoopUnblockFriend', 'CoopInvite', 'CoopHost', 'CoopStop', 'CoopRenew', 'CoopJoin')]
+    [ValidateSet('Menu', 'Start', 'Stop', 'StartDocker', 'StopAll', 'Check', 'UpdateServer', 'UpdateClient', 'UpdateAll', 'Diagnose', 'Logs', 'SendLogs', 'Configure', 'SetBots', 'SetDifficulty', 'ImportDb', 'BackupDb', 'RestoreDb', 'ResetWorld', 'RepairDb', 'DbAccess', 'PanelPassword', 'FreePorts', 'CoopCheck', 'CoopSecure', 'CoopAddFriend', 'CoopBlockFriend', 'CoopUnblockFriend', 'CoopInvite', 'CoopHost', 'CoopStop', 'CoopRenew', 'CoopJoin', 'VpsConnect', 'VpsCheck', 'VpsInstall', 'VpsUpdate', 'VpsStatus', 'VpsPanel', 'VpsPanelClose', 'VpsLogs', 'VpsPasswords', 'VpsClient', 'VpsInvite')]
     [string]$Action = 'Menu',
     [string]$Manifest = '',
     [int]$BotCount = -1,
@@ -23,6 +23,10 @@ param(
     # And the waits between two skill books, players' and bots' (custom).
     [string]$BookHours = '',
     [string]$BotBookHours = '',
+    # And whether the world is played with Auto Lowy and with the companion
+    # (Towarzysz): 1 = on, 0 = off, -1 leaves .env as it is.
+    [int]$AutoHunt = -1,
+    [int]$Sidekick = -1,
     # The rates a fresh world starts on, asked for when one is about to be
     # made (ResetWorld, and the first start of an install that has no database
     # yet). -1 leaves .env as it is, which is what every other caller wants.
@@ -47,6 +51,18 @@ param(
     # VPN by name (vpn = the first one found).
     [ValidateSet('auto', 'internet', 'vpn', 'radmin', 'tailscale', 'zerotier', 'hamachi')]
     [string]$CoopVia = 'auto',
+    # CoopHost from the window: it has asked Windows for the firewall rule
+    # itself (in front, where the question is seen), so the action does not
+    # ask again from a hidden process whose question only blinks on the
+    # taskbar.
+    [switch]$CoopFirewallAsked,
+    # Vps*: the VPS to work on. What is given is saved in .m2vps.json and
+    # what is not is taken from there (the window's VPS dialog saves it
+    # before it starts an action).
+    [string]$VpsHost = '',
+    [string]$VpsUser = '',
+    [int]$VpsPort = -1,
+    [string]$VpsDir = '',
     # ResetWorld only: bring the server up on the fresh world right away, so
     # "wyzeruj swiat i zacznij od nowa" is one click and not a reset followed
     # by GRAJ.
@@ -100,6 +116,10 @@ Import-Module $diagnosticsModulePath -Force
 # it the Coop* actions say so and nothing else changes.
 $coopModulePath = Join-Path $serverRoot 'launcher\Metin2Launcher.Coop.psm1'
 if (Test-Path -LiteralPath $coopModulePath -PathType Leaf) { Import-Module $coopModulePath -Force }
+# The VPS (the 2.x line): optional the same way - without it the Vps* actions
+# say so and the menu does not offer them.
+$vpsModulePath = Join-Path $serverRoot 'launcher\Metin2Launcher.Vps.psm1'
+if (Test-Path -LiteralPath $vpsModulePath -PathType Leaf) { Import-Module $vpsModulePath -Force }
 
 function Write-Header {
     Clear-Host
@@ -1022,7 +1042,11 @@ function Set-DifficultyAction {
     $currentHorse = Get-DotEnvValue -Key 'M2_HORSE_WAIT_HOURS' -Default '0'
     $currentBook = Get-DotEnvValue -Key 'M2_BOOK_WAIT_HOURS' -Default '0'
     $currentBotBook = Get-DotEnvValue -Key 'M2_BOT_BOOK_WAIT_HOURS' -Default '0'
+    $currentAutoHunt = (Get-DotEnvValue -Key 'M2_AUTOHUNT' -Default '1') -ne '0'
+    $currentSidekick = (Get-DotEnvValue -Key 'M2_SIDEKICK' -Default '1') -ne '0'
+    $currentStarter = (Get-DotEnvValue -Key 'M2_STARTER_CHEST' -Default '1') -ne '0'
     Write-Host "Aktualny poziom trudności: $current (przy 'custom': Biolog $currentBio h, Stajenny $currentHorse h, księgi: gracze $currentBook h, boty $currentBotBook h)." -ForegroundColor Gray
+    Write-Host "Auto Łowy: $(if ($currentAutoHunt) { 'włączone' } else { 'wyłączone' }); Towarzysz: $(if ($currentSidekick) { 'włączony' } else { 'wyłączony' }); Skrzynia Ucznia: $(if ($currentStarter) { 'tak' } else { 'nie' })." -ForegroundColor Gray
 
     # -Difficulty passed (from the GUI or scripting) is non-interactive, like
     # -BotCount: never Read-Host, restart only with -Yes.
@@ -1046,6 +1070,28 @@ function Set-DifficultyAction {
             $book = Read-Host 'Ile godzin gracz czeka między dwiema księgami tej samej umiejętności (0 = od razu)'
             $botBook = Read-Host 'Ile godzin czekają na kolejną księgę boty (0 = od razu)'
         }
+    }
+    # Auto Lowy, the companion and the apprentice chest: asked in the text menu
+    # after the level, and taken from -AutoHunt/-Sidekick/-StarterChest
+    # otherwise; what .env says when neither. The chest was asked only where a
+    # fresh world is made, so a world already standing had no way to it - and
+    # "gdzie te skrzynie ucznia do wylaczenia ... w launcherze szukam, ni ma"
+    # (Drip, 25 September) was answered with this very window.
+    $autoHuntOn = $currentAutoHunt
+    $sidekickOn = $currentSidekick
+    $starterOn = $currentStarter
+    if ($interactive) {
+        $answer = Read-Host "Auto Łowy (automatyczne polowanie w kliencie, klawisz K) włączone? (T/n, Enter = $(if ($currentAutoHunt) { 'tak' } else { 'nie' }))"
+        if ("$answer".Trim()) { $autoHuntOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
+        $answer = Read-Host "Towarzysz (stały kompan gracza, list i okno P) włączony? (T/n, Enter = $(if ($currentSidekick) { 'tak' } else { 'nie' }))"
+        if ("$answer".Trim()) { $sidekickOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
+        $answer = Read-Host "Skrzynia Ucznia dla nowych postaci graczy (przy pierwszym logowaniu)? (T/n, Enter = $(if ($currentStarter) { 'tak' } else { 'nie' }))"
+        if ("$answer".Trim()) { $starterOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
+    }
+    else {
+        if ($AutoHunt -ge 0) { $autoHuntOn = ($AutoHunt -ne 0) }
+        if ($Sidekick -ge 0) { $sidekickOn = ($Sidekick -ne 0) }
+        if ($StarterChest -ge 0) { $starterOn = ($StarterChest -ne 0) }
     }
     if ($level -notin @('easy', 'medium', 'hard', 'custom')) {
         throw "Nieznany poziom trudności: '$level'. Dozwolone: easy, medium, hard, custom."
@@ -1072,7 +1118,11 @@ function Set-DifficultyAction {
     Set-DotEnvValue -Key 'M2_HORSE_WAIT_HOURS' -Value $horse
     Set-DotEnvValue -Key 'M2_BOOK_WAIT_HOURS' -Value $book
     Set-DotEnvValue -Key 'M2_BOT_BOOK_WAIT_HOURS' -Value $botBook
+    Set-DotEnvValue -Key 'M2_AUTOHUNT' -Value $(if ($autoHuntOn) { '1' } else { '0' })
+    Set-DotEnvValue -Key 'M2_SIDEKICK' -Value $(if ($sidekickOn) { '1' } else { '0' })
+    Set-DotEnvValue -Key 'M2_STARTER_CHEST' -Value $(if ($starterOn) { '1' } else { '0' })
     Write-Host "Zapisano: poziom trudności $level (Biolog $bio h, Stajenny $horse h, księgi: gracze $book h, boty $botBook h)." -ForegroundColor Green
+    Write-Host "Auto Łowy: $(if ($autoHuntOn) { 'włączone' } else { 'wyłączone' }); Towarzysz: $(if ($sidekickOn) { 'włączony' } else { 'wyłączony' }); Skrzynia Ucznia: $(if ($starterOn) { 'tak' } else { 'nie' })." -ForegroundColor Green
     if ($Yes) {
         Start-Server
         Write-Host "Serwer zrestartowany z poziomem trudności: $level." -ForegroundColor Green
@@ -1739,7 +1789,7 @@ function Add-CoopFriendAction {
     $target = Get-M2CoopInviteTarget -ServerRoot $serverRoot
     if ($target.Address) {
         Write-Host 'Kod zaproszenia (skopiuj i wyślij znajomemu):'
-        Write-Host (Get-M2CoopFriendInvite -ServerRoot $serverRoot -Friend $friend -HostAddress $target.Address -Vpn $target.Vpn) -ForegroundColor Cyan
+        Write-Host (Get-M2CoopFriendInvite -ServerRoot $serverRoot -Friend $friend -HostAddress $target.Address -Vpn $target.Vpn -Lan $target.Lan) -ForegroundColor Cyan
         if ($target.Vpn) { Write-Host ("Znajomy musi być w Twojej sieci {0} - kod prowadzi na adres {1}." -f $target.VpnName, $target.Address) -ForegroundColor Yellow }
     }
 }
@@ -1768,7 +1818,7 @@ function Show-CoopInviteAction {
         if ($FriendLogin -and [string]$f.login -ne $FriendLogin) { continue }
         if ($f.blocked) { continue }
         Write-Host ("{0} (login {1}, hasło {2}):" -f $f.name, $f.login, $f.password)
-        Write-Host (Get-M2CoopFriendInvite -ServerRoot $serverRoot -Friend $f -HostAddress $target.Address -Vpn $target.Vpn) -ForegroundColor Cyan
+        Write-Host (Get-M2CoopFriendInvite -ServerRoot $serverRoot -Friend $f -HostAddress $target.Address -Vpn $target.Vpn -Lan $target.Lan) -ForegroundColor Cyan
         $shown++
     }
     if ($shown -eq 0) { Write-Host 'Brak znajomych - dodaj ich najpierw.' -ForegroundColor Yellow }
@@ -1852,7 +1902,7 @@ function Start-CoopHostingAction {
     $requested = $CoopVia
     $vpns = @($report.Vpns)
     if ($Action -eq 'Menu' -and $requested -eq 'auto' -and $vpns.Count -gt 0 -and -not (@('cgnat', 'double-nat') -contains $report.Verdict)) {
-        if (Confirm-Action ("Wykryto {0} (adres {1}). Hostować przez VPN zamiast przez internet?" -f $vpns[0].Name, $vpns[0].Address)) { $requested = $vpns[0].Kind }
+        if (Confirm-Operation -Question ("Wykryto {0} (adres {1}). Hostować przez VPN zamiast przez internet?" -f $vpns[0].Name, $vpns[0].Address)) { $requested = $vpns[0].Kind }
         else { $requested = 'internet' }
     }
     $via = Resolve-M2CoopHostingVia -Report $report -Requested $requested
@@ -1892,11 +1942,22 @@ function Start-CoopHostingAction {
     }
     Write-Host ("Opublikowane: {0}" -f ((Get-M2CoopGameBindings -ServerRoot $serverRoot).Lines -join '; '))
     Write-Phase 'zapora Windows'
-    if (Test-M2CoopFirewallRule) { Write-Host 'Reguła zapory dla portów gry już jest.' }
+    # The window asks for the rule itself before it starts this action
+    # (-CoopFirewallAsked): from here, a hidden process, Windows only blinks
+    # its question on the taskbar, and xXxDaronxXx's (24 September) went
+    # unanswered twice - the second time for two minutes - so nothing outside
+    # his PC could reach the world.
+    $firewallOk = [bool](Test-M2CoopFirewallRule)
+    if ($firewallOk) { Write-Host 'Reguła zapory dla portów gry już jest.' }
+    elseif ($CoopFirewallAsked) { Write-Host 'Reguły zapory nie dodano - okno launchera zapytało o nią Windows i nie dostało zgody.' -ForegroundColor Red }
     else {
-        Write-Host 'Windows zapyta o zgodę administratora na regułę zapory dla portów gry - potwierdź.' -ForegroundColor Yellow
-        if (Add-M2CoopFirewallRule -Ports $ports) { Write-Host 'Reguła zapory dodana.' -ForegroundColor Green }
-        else { Write-Host 'Reguły zapory nie dodano (odmowa zgody?) - zapora może nie wpuścić znajomych.' -ForegroundColor Yellow }
+        Write-Host 'Windows zapyta o zgodę administratora na regułę zapory dla portów gry - potwierdź (okienko Windows może tylko migać na pasku zadań).' -ForegroundColor Yellow
+        $firewallOk = [bool](Add-M2CoopFirewallRule -Ports $ports)
+        if ($firewallOk) { Write-Host 'Reguła zapory dodana.' -ForegroundColor Green }
+        else { Write-Host 'Reguły zapory nie dodano (odmowa zgody albo brak odpowiedzi).' -ForegroundColor Red }
+    }
+    if (-not $firewallOk) {
+        Write-Host 'UWAGA: bez tej reguły zapora Windows może nie wpuścić nikogo spoza tego komputera - ani znajomych z internetu, ani laptopa w tym samym domu. Kliknij HOSTUJ ŚWIAT jeszcze raz i w okienku Windows wybierz "Tak".' -ForegroundColor Red
     }
     foreach ($block in @(Get-M2CoopFirewallBlocks)) {
         Write-Host ("UWAGA: zapora blokuje program {0} (reguła '{1}') - usuń tę regułę w Zaporze Windows, inaczej znajomi się nie połączą." -f $block.Program, $block.Name) -ForegroundColor Yellow
@@ -1945,9 +2006,22 @@ function Start-CoopHostingAction {
         }
     }
     else {
-        Write-Host ("Router nie odpowiada na UPnP: przekieruj w nim ręcznie TCP {0} na {1}." -f ($ports -join ', '), $report.LanAddress) -ForegroundColor Yellow
-        if ($vpns.Count -gt 0 -and $via.Mode -ne 'vpn') {
-            Write-Host ("Albo wybierz w oknie COOP połączenie {0} i hostuj jeszcze raz - wtedy router nie jest potrzebny." -f $vpns[0].Name) -ForegroundColor Yellow
+        # A router that does not answer the search opens nothing either: the
+        # same way out as one that refused every port - a VPN here when the
+        # way was left to the launcher, and otherwise said out loud, not
+        # "Hostowanie włączone" in green (xXxDaronxXx, 24 September).
+        $fallback = Resolve-M2CoopRouterFallback -Via $via -Requested $requested -Vpns $vpns -Mapped 0 -Ports @($ports).Count
+        if ($fallback.Mode -eq 'vpn' -and $via.Mode -ne 'vpn') {
+            $via = $fallback
+            Write-Host ("Router nie odpowiada na UPnP - hostuję przez {0}, adres {1}." -f $via.Vpn.Name, $via.Vpn.Address) -ForegroundColor Yellow
+        }
+        else {
+            $routerRefused = $true
+            Write-Host 'UWAGA: router nie odpowiada na UPnP, więc launcher nie otworzył w nim żadnego portu - znajomi z internetu się nie połączą, dopóki nie przekierujesz portów ręcznie.' -ForegroundColor Red
+            foreach ($line in @(Get-M2CoopRouterHelp -Router '' -LanAddress $report.LanAddress -Ports $ports)) { Write-Host $line -ForegroundColor Yellow }
+            if ($vpns.Count -gt 0) {
+                Write-Host ("Albo wybierz w oknie COOP połączenie {0} i hostuj jeszcze raz - wtedy router nie jest potrzebny." -f $vpns[0].Name) -ForegroundColor Yellow
+            }
         }
     }
     $state.hosting = [pscustomobject]@{
@@ -1971,6 +2045,9 @@ function Start-CoopHostingAction {
         # and reaching one's own public address from inside needs the router's
         # NAT loopback.
         Write-Host 'Jeśli u Ciebie samego zmiana mapy zawiesza się na ładowaniu, Twój router nie wpuszcza połączeń na własny adres publiczny - hostuj przez Radmin VPN albo Tailscale.' -ForegroundColor Yellow
+    }
+    if ($report.LanAddress) {
+        Write-Host ("W tej samej sieci domowej (drugi komputer, laptop na tym samym Wi-Fi) gra łączy się przez {0}, bez routera: kod zaproszenia ma też ten adres, a Dolacz.bat i launcher same go wybiorą." -f $report.LanAddress)
     }
     Write-Host 'Ty grasz dalej na serwerze 1 (Metin2 SinglePlayer). Kody zaproszeń dla znajomych są w oknie COOP.'
     if (@($state.friends).Count -eq 0) { Write-Host 'Nie masz jeszcze znajomych - dodaj ich w oknie COOP.' -ForegroundColor Yellow }
@@ -2043,13 +2120,168 @@ function Join-CoopAction {
     $inv = Read-M2CoopInvite -Code $code
     $client = Get-M2CoopClientFolder -ServerRoot $serverRoot
     if (-not $client) { throw 'Nie znaleziono folderu klienta (wskaż go przyciskiem WYBIERZ KLIENTA).' }
-    $path = Write-M2CoopClientConfig -ClientFolder $client -Invite $inv
-    Write-Host ("Zapisano {0}" -f $path) -ForegroundColor Green
+    # The host's home address when this machine is in that network and the
+    # world answers there (Select-M2CoopJoinHost), the invite's own otherwise.
+    $choice = Resolve-M2CoopJoinHost -Invite $inv
+    $path = Write-M2CoopClientConfig -ClientFolder $client -Invite $inv -HostAddress $choice.Host
+    Write-Host ("Zapisano {0} (adres {1})" -f $path, $choice.Host) -ForegroundColor Green
     Write-Host ("W kliencie wybierz serwer 'Online: {0}' i zaloguj się: login {1}, hasło {2}" -f $inv.name, $inv.login, $inv.password) -ForegroundColor Cyan
-    $advice = Get-M2CoopJoinAdvice -Invite $inv
+    $advice = $(if ($choice.Lan) { '' } else { Get-M2CoopJoinAdvice -Invite $inv })
     if ($advice) { Write-Host $advice -ForegroundColor Yellow }
-    if (Test-M2CoopHostAnswers -HostAddress ([string]$inv.host) -Port ([int]$inv.auth)) { Write-Host 'Serwer znajomego odpowiada z tego komputera.' -ForegroundColor Green }
-    else { Write-Host 'Serwer znajomego teraz nie odpowiada - sprawdź, czy ma uruchomiony serwer i włączone hostowanie.' -ForegroundColor Yellow }
+    foreach ($note in @(Get-M2CoopJoinNotes -Choice $choice)) {
+        Write-Host $note -ForegroundColor $(if ($choice.Answers) { 'Green' } else { 'Yellow' })
+    }
+}
+
+# ---------------------------------------------------------------- vps
+# This world on a rented Linux VPS (launcher\Metin2Launcher.Vps.psm1 does the
+# work, linux-port/tools/vps-install.sh does it on the VPS). The window's VPS
+# dialog runs the long ones through here - the install, the update, the
+# status, the logs - and does the key, the tunnel and anything that shows a
+# password in-process: an action's output is a file under launcher-logs, which
+# support bundles carry. Installing, updating and the panels are for
+# everybody; invite codes are behind the COOP testers' password.
+
+function Assert-VpsModule {
+    if (-not (Get-Command Install-M2Vps -ErrorAction SilentlyContinue)) {
+        throw 'Brak modułu launcher\Metin2Launcher.Vps.psm1 - ta paczka nie ma opcji VPS.'
+    }
+}
+
+function Get-VpsStateForAction {
+    # The saved VPS with whatever -VpsHost/-VpsUser/-VpsPort/-VpsDir said,
+    # asked for in the text menu when there is none yet (or -Ask), and saved.
+    param([switch]$Ask)
+    Assert-VpsModule
+    $state = Get-M2VpsState -ServerRoot $serverRoot
+    if ($VpsHost) { $state.host = $VpsHost.Trim() }
+    if ($VpsUser) { $state.user = $VpsUser.Trim() }
+    if ($VpsPort -gt 0) { $state.port = $VpsPort }
+    if ($VpsDir) { $state.remoteDir = $VpsDir.Trim() }
+    if (($Ask -or -not $state.host) -and $Action -eq 'Menu') {
+        $answer = Read-Host ('Adres VPS (IPv4 albo domena){0}' -f $(if ($state.host) { ' [' + $state.host + ']' } else { '' }))
+        if ($answer) { $state.host = $answer.Trim() }
+        $answer = Read-Host ('Użytkownik na VPS [{0}]' -f $state.user)
+        if ($answer) { $state.user = $answer.Trim() }
+        $answer = Read-Host ('Port SSH [{0}]' -f $state.port)
+        $number = 0
+        if ($answer -and [int]::TryParse($answer, [ref]$number)) { $state.port = $number }
+    }
+    Assert-M2VpsState -State $state
+    Save-M2VpsState -ServerRoot $serverRoot -State $state
+    return $state
+}
+
+function Assert-VpsConsole {
+    # Passwords go to a person and never into a file: the window runs actions
+    # with their output redirected into launcher-logs.
+    if ([Console]::IsOutputRedirected) {
+        throw 'To polecenie pokazuje hasła, więc działa w menu tekstowym albo w oknie VPS launchera, nie jako akcja w tle.'
+    }
+}
+
+function Connect-VpsAction {
+    $state = Get-VpsStateForAction -Ask
+    Write-Host 'Otworzy się okno ssh - wpisz w nim hasło do VPS (tylko ten jeden raz; launcher go nie widzi).' -ForegroundColor Yellow
+    if (Install-M2VpsKey -State $state) { Write-Host ('Klucz działa: launcher łączy się z {0} bez hasła.' -f $state.host) -ForegroundColor Green }
+    else { throw 'Klucz nie działa - sprawdź adres, użytkownika i hasło, i spróbuj jeszcze raz.' }
+}
+
+function Show-VpsCheckAction {
+    $state = Get-VpsStateForAction
+    Write-Phase 'sprawdzanie VPS'
+    $machine = Test-M2VpsMachine -State $state
+    foreach ($line in (Format-M2VpsMachineReport -Machine $machine)) { Write-Host $line }
+    if (-not $machine.Verdict.Ok) { throw 'VPS nie spełnia wymagań - szczegóły wyżej.' }
+}
+
+function Write-VpsOutcome {
+    param([Parameter(Mandatory = $true)]$Status, [Parameter(Mandatory = $true)]$State, [string]$What = 'Instalacja')
+    if ($Status.State -ne 'done') {
+        throw ('{0} na VPS: {1} (etap {2}) - {3}. Szczegóły: LOGI VPS.' -f $What, $Status.State, $Status.Phase, $Status.Message)
+    }
+    Write-Host ('Serwer działa na VPS, wersja {0}.' -f $Status.Version) -ForegroundColor Green
+    Write-Host ('Gracze łączą się z {0} (porty TCP {1} i {2}; jeśli dostawca VPS ma własną zaporę, otwórz je tam).' -f (Get-M2VpsWorldAddress -State $State -Status $Status), $Status.AuthPort, $Status.GamePortRange)
+    Write-Host 'Panele słuchają tylko na VPS: otwiera je OTWÓRZ PANEL (tunel SSH). Hasła kont admin i test pokazuje HASŁA KONT - w tym logu ich nie ma.'
+}
+
+function Install-VpsAction {
+    $state = Get-VpsStateForAction
+    if (-not (Confirm-Operation ('Zainstalować ten świat na VPS {0}? Folder serwera pójdzie na VPS (około 100 MB), a pierwsza budowa trwa tam 15-40 minut.' -f $state.host))) { return }
+    Write-Phase 'instalacja na VPS'
+    $final = Install-M2Vps -State $state -ServerRoot $serverRoot
+    Write-VpsOutcome -Status $final -State $state
+}
+
+function Update-VpsAction {
+    $state = Get-VpsStateForAction
+    if (-not (Confirm-Operation ('Zaktualizować serwer na VPS {0} do najnowszej wersji z GitHuba?' -f $state.host))) { return }
+    Write-Phase 'aktualizacja VPS'
+    $final = Update-M2Vps -State $state -ServerRoot $serverRoot
+    Write-VpsOutcome -Status $final -State $state -What 'Aktualizacja'
+}
+
+function Show-VpsStatusAction {
+    $state = Get-VpsStateForAction
+    $status = Get-M2VpsStatus -State $state
+    $words = @{ running = 'trwa'; done = 'gotowe'; failed = 'NIE UDAŁO SIĘ'; interrupted = 'PRZERWANE (VPS zrestartowany w trakcie? uruchom instalację jeszcze raz)'; none = 'nic jeszcze nie uruchomiono' }
+    $said = $(if ($words.ContainsKey($status.State)) { $words[$status.State] } else { $status.State })
+    Write-Host ('VPS {0}: wersja {1}, zadanie "{2}": {3}' -f $state.host, $status.Version, $status.Kind, $said)
+    if ($status.Message) { Write-Host ('  {0} (etap {1}, od {2}{3})' -f $status.Message, $status.Phase, $status.Started, $(if ($status.Finished) { ' do ' + $status.Finished } else { '' })) }
+    Write-Host ('Adres dla graczy: {0}, porty {1} i {2}; panele na {3}, gra na {4}; botów: {5}' -f $status.PublicAddress, $status.AuthPort, $status.GamePortRange, $status.PanelBind, $status.HostBind, $status.Bots)
+    if ($status.LogText) { Write-Host '--- koniec logu instalacji ---'; Write-Host $status.LogText }
+    if ($status.PsText) { Write-Host '--- kontenery ---'; Write-Host $status.PsText }
+}
+
+function Open-VpsPanelAction {
+    $state = Get-VpsStateForAction
+    $addresses = Open-M2VpsPanel -State $state -ServerRoot $serverRoot
+    Write-Host ('Tunel do paneli VPS działa: panel {0}, panel zaawansowany {1}, ItemShop {2}.' -f $addresses.ClassicUrl, $addresses.SebanUrl, $addresses.ItemShopUrl) -ForegroundColor Green
+    Write-Host 'Działa po zamknięciu launchera; kończy go ZAMKNIJ TUNEL albo zerwane połączenie.'
+    Start-Process $addresses.ClassicUrl
+}
+
+function Close-VpsPanelAction {
+    Assert-VpsModule
+    if (Close-M2VpsPanel -ServerRoot $serverRoot) { Write-Host 'Tunel do paneli VPS zamknięty.' -ForegroundColor Green }
+    else { Write-Host 'Tunel do paneli VPS nie był otwarty.' }
+}
+
+function Show-VpsLogsAction {
+    $state = Get-VpsStateForAction
+    Write-Host (Get-M2VpsLogs -State $state -Lines 300)
+}
+
+function Show-VpsPasswordsAction {
+    Assert-VpsConsole
+    $state = Get-VpsStateForAction
+    $accounts = @(Get-M2VpsAccounts -State $state)
+    if ($accounts.Count -eq 0) { Write-Host 'Na VPS nie ma jeszcze pliku z hasłami - powstaje, gdy baza wstanie po instalacji.' -ForegroundColor Yellow; return }
+    foreach ($account in $accounts) {
+        Write-Host ('  login {0,-14} hasło {1}{2}' -f $account.Login, $account.Password, $(if ($account.Note) { '   (' + $account.Note + ')' } else { '' })) -ForegroundColor Cyan
+    }
+    Write-Host ('Te same hasła leżą na VPS w /root/metin2-accounts.txt (tylko dla roota).')
+}
+
+function Write-VpsClientAction {
+    $state = Get-VpsStateForAction
+    $result = Write-M2VpsClientEntry -State $state -ServerRoot $serverRoot
+    Write-Host ('Zapisano {0}: w kliencie wybierz serwer "Online: {1}" ({2}).' -f $result.Path, $result.Name, $result.Host) -ForegroundColor Green
+    if ($result.Replaced) { Write-Host ('Zastąpił świat znajomego "{0}" - klient ma jedno takie miejsce; kod zaproszenia wpisze go z powrotem.' -f $result.Replaced) -ForegroundColor Yellow }
+}
+
+function Show-VpsInviteAction {
+    Assert-VpsConsole
+    Assert-CoopHostAccess
+    $state = Get-VpsStateForAction
+    $name = $FriendName
+    if (-not $name) { $name = Read-Host 'Imię albo nick znajomego (z niego powstanie login na VPS)' }
+    if (-not $name) { throw 'Nie podano imienia znajomego.' }
+    $status = Get-M2VpsStatus -State $state
+    $friend = New-M2VpsFriend -State $state -ServerRoot $serverRoot -Name $name
+    Write-Host ('Konto na VPS dla {0}: login {1}, hasło {2}' -f $friend.name, $friend.login, $friend.password) -ForegroundColor Green
+    Write-Host 'Kod zaproszenia (skopiuj i wyślij znajomemu w prywatnej wiadomości - zawiera hasło):'
+    Write-Host (Get-M2VpsFriendInvite -State $state -ServerRoot $serverRoot -Account $friend -Status $status) -ForegroundColor Cyan
 }
 
 function Invoke-Action {
@@ -2108,6 +2340,17 @@ function Invoke-Action {
         'CoopStop' { Stop-CoopHostingAction }
         'CoopRenew' { Assert-CoopModule; Update-CoopHostingLease }
         'CoopJoin' { Join-CoopAction }
+        'VpsConnect' { Connect-VpsAction }
+        'VpsCheck' { Show-VpsCheckAction }
+        'VpsInstall' { Install-VpsAction }
+        'VpsUpdate' { Update-VpsAction }
+        'VpsStatus' { Show-VpsStatusAction }
+        'VpsPanel' { Open-VpsPanelAction }
+        'VpsPanelClose' { Close-VpsPanelAction }
+        'VpsLogs' { Show-VpsLogsAction }
+        'VpsPasswords' { Show-VpsPasswordsAction }
+        'VpsClient' { Write-VpsClientAction }
+        'VpsInvite' { Show-VpsInviteAction }
         default { throw "Nieznana akcja: $SelectedAction" }
     }
 }
@@ -2149,6 +2392,19 @@ function Show-Menu {
             Write-Host ' 28. COOP: zakończ hostowanie'
             Write-Host ' 29. COOP: dołącz do świata znajomego (wklej kod)'
         }
+        if (Get-Command Install-M2Vps -ErrorAction SilentlyContinue) {
+            Write-Host ' 30. VPS: adres i połączenie (klucz SSH; hasło do VPS wpisujesz raz)'
+            Write-Host ' 31. VPS: sprawdź serwer (procesor, pamięć, dysk, uprawnienia)'
+            Write-Host ' 32. VPS: zainstaluj ten świat na VPS'
+            Write-Host ' 33. VPS: aktualizuj serwer na VPS'
+            Write-Host ' 34. VPS: stan instalacji'
+            Write-Host ' 35. VPS: otwórz panel WWW (tunel SSH)'
+            Write-Host ' 36. VPS: zamknij tunel do paneli'
+            Write-Host ' 37. VPS: hasła kont gry (admin, test, znajomi)'
+            Write-Host ' 38. VPS: dopisz serwer VPS do klienta gry'
+            Write-Host ' 39. VPS: logi serwera'
+            Write-Host ' 40. VPS: konto i kod zaproszenia dla znajomego (COOP, dla patronów)'
+        }
         Write-Host '  0. Wyjście'
         Write-Host ''
         $choice = Read-Host 'Wybierz opcję'
@@ -2173,6 +2429,17 @@ function Show-Menu {
             '27' { 'CoopHost' }
             '28' { 'CoopStop' }
             '29' { 'CoopJoin' }
+            '30' { 'VpsConnect' }
+            '31' { 'VpsCheck' }
+            '32' { 'VpsInstall' }
+            '33' { 'VpsUpdate' }
+            '34' { 'VpsStatus' }
+            '35' { 'VpsPanel' }
+            '36' { 'VpsPanelClose' }
+            '37' { 'VpsPasswords' }
+            '38' { 'VpsClient' }
+            '39' { 'VpsLogs' }
+            '40' { 'VpsInvite' }
             '0' { return }
             default { '' }
         }
