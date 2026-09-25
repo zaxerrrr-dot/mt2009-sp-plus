@@ -55,6 +55,7 @@ linux-port/docker/mariadb/playerbot/log_schema.sql
 linux-port/docker/mariadb/playerbot/playerbots_seed.sql
 linux-port/docker/mariadb/playerbot/playerbot_names.sql
 linux-port/docker/mariadb/playerbot/gm_characters.sql
+linux-port/docker/mariadb/playerbot/item_proto.mt2009plus.sql
 linux-port/docker/game/Dockerfile
 linux-port/docker/game/.dockerignore
 linux-port/docker/game/build-deps-mt2009.sh
