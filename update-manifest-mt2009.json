@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-25T00:30:00Z",
-  "statusMessage": "Serwer 2.4.1 i klient 2.0.11: Cory w stosach, wierzchowce bez 'wygasla', koniec wyrzucania z gry przy zlym zegarze Dockera, nowe Auto Lowy. Zaktualizuj oba.",
+  "publishedAt": "2026-09-25T12:37:41Z",
+  "statusMessage": "Serwer 2.5.0 i klient 2.0.13: Towarzysz (klawisz P), bossowie bici przez boty, medale na straganach, alchemia i szarfy do wylaczenia. Zaktualizuj oba.",
   "server": {
-    "version": "2.4.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.4.1.zip",
-    "sha256": "0437329434B074C5ADB8845EF334672AB5C8F081B0BDE6C63811B47B42E7BF2A",
-    "size": 55320839
+    "version": "2.5.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.5.0.zip",
+    "sha256": "3FC0236E84FAC5084667166D2938E9FC63BEC1A0CA76AD93910F28B7F312DB97",
+    "size": 55577858
   },
   "client": {
-    "version": "2.0.11",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.11.zip",
-    "sha256": "36618E20323B4B7EB8241F5AAA4EFDF09102ADDA2A9B07F57C03E7A2F4D0EAE9",
-    "size": 48498400
+    "version": "2.0.13",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.13.zip",
+    "sha256": "A17D4122F58156241DAFD29161EF39681E42DE50DE1D82CC7B8977DC6249F061",
+    "size": 48470515
   }
 }

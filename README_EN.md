@@ -4,6 +4,8 @@
 
 [![Discord](https://img.shields.io/badge/Discord-Join_the_community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/vGE3T9gpm)
 [![Website](https://img.shields.io/badge/WWW-metin2sp.pl-C8102E?style=for-the-badge&logo=googlechrome&logoColor=white)](https://metin2sp.pl/)
+[![Wiki](https://img.shields.io/badge/Wiki-metin2sp.pl%2Fwiki-2E7D32?style=for-the-badge&logo=wikipedia&logoColor=white)](https://metin2sp.pl/wiki)
+[![Support the project](https://img.shields.io/badge/Support_the_project_–_buy_a_coffee-1E88E5?style=for-the-badge&logo=buymeacoffee&logoColor=white)](https://buycoffee.to/mt2009plus)
 
 A local Metin2 singleplayer world full of autonomous characters (Playerbots),
 built on Tieru's official **Metin2 Playerbots** release (mt2009 server files,
@@ -20,6 +22,8 @@ plus a few bot improvements.
 
 - **[Discord](https://discord.com/invite/vGE3T9gpm)** — help, bug reports, ideas and news about the pack.
 - **[metin2sp.pl](https://metin2sp.pl/)** — project website.
+- **[Wiki](https://metin2sp.pl/wiki)** — guides, FAQ, items and systems of MT2009 PLUS (in Polish).
+- **[Support the project – buy a coffee](https://buycoffee.to/mt2009plus)** — if you would like to support the pack's development.
 
 > [!IMPORTANT]
 > You need **this pack's client** (with the new costumes, mounts, pets and
@@ -177,11 +181,11 @@ read [NOTICE.md](NOTICE.md) before redistributing.
 
 ## 🤝 Credits and the original project
 
-This pack is a modification of **Metin2 Playerbots** by **Tieru** — all of the
-bots' artificial intelligence comes from the official release.
+This pack is a modification of **Metin2 Playerbots** by **Tieru**, which is the
+core of MT2009 PLUS. All additional changes are made by
+**ZAXEP/SIZOWSKI**.
 
 - **Original project (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
-- **Original project's Discord:** [discord.gg/6v4WkDY6a](https://discord.gg/6v4WkDY6a)
 
 And the authors and helpers the official release builds on:
 - **AzzlackSyndicate** — author of the original Linux port base, installers and panel. The source repository is currently private; Git history and full attribution are preserved.

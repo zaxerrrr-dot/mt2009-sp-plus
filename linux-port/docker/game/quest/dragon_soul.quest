@@ -14,9 +14,16 @@
 -- an extensive search; see custom-patches/README.md's Dragon Soul section
 -- for the full trail), so referencing it would only fail at runtime the
 -- first time the quest actually fires, not at compile time.
+-- MT2009 Plus: the world's alchemy switch (M2_ALCHEMY=0 in .env, or the
+-- admin panel, sets the event flag m2_alchemy_off). While it is off no
+-- fragment drops, the Alchemist trades none for a Cor Draconis and the
+-- level-30 letter is not sent; stones and Cors a player has are untouched.
 quest dragon_soul begin
 	state start begin
 		when levelup or letter with pc.level >= 30 begin
+			if game.get_event_flag("m2_alchemy_off") != 0 then
+				return
+			end
 			send_letter("Alchemik chce z Toba porozmawiac o Duszach Smokow.")
 			local v = find_npc_by_vnum(20001)
 
@@ -28,7 +35,7 @@ quest dragon_soul begin
 			say("Odwiedz Alchemika, gdy osiagniesz 30 poziom.")
 		end
 
-		when 20001.chat."Rozmawiaj o Duszach Smokow" with pc.level >= 30 begin
+		when 20001.chat."Rozmawiaj o Duszach Smokow" with pc.level >= 30 and game.get_event_flag("m2_alchemy_off") == 0 begin
 			target.delete("__TARGET__")
 
 			say_title(mob_name(20001))
@@ -54,6 +61,10 @@ quest dragon_soul begin
 				return
 			end
 
+			if game.get_event_flag("m2_alchemy_off") != 0 then
+				return
+			end
+
 			if pc.count_item(30270) < 10 then
 				if drop_gamble_with_flag("ds_drop") then
 					game.drop_item_with_ownership(30270, 1, 300)
@@ -61,6 +72,11 @@ quest dragon_soul begin
 			end
 		end
 		when 20001.chat."Oddaj Odlamki Smoczego Kamienia" begin
+			if game.get_event_flag("m2_alchemy_off") != 0 then
+				say_title(mob_name(20001))
+				say("Alchemia jest wylaczona na tym swiecie.")
+				return
+			end
 			say_title(mob_name(20001))
 			if pc.count_item(30270) >= 10 then
 				say("Doskonale! Oto Twoja kwalifikacja do Alchemii Smoczych Kamieni.")
@@ -95,6 +111,10 @@ quest dragon_soul begin
 				return
 			end
 
+			if game.get_event_flag("m2_alchemy_off") != 0 then
+				return
+			end
+
 			if drop_gamble_with_flag("ds_drop") then
 				local eye_left = pc.getf("dragon_soul", "eye_left")
 				local haved_gemstone_number = pc.count_item(30270)
@@ -105,6 +125,9 @@ quest dragon_soul begin
 			end
 		end
 		when 30270.pick begin
+			if game.get_event_flag("m2_alchemy_off") != 0 then
+				return
+			end
 			local eye_left = pc.getf("dragon_soul", "eye_left")
 			if eye_left <= 0 then
 				return
@@ -121,6 +144,11 @@ quest dragon_soul begin
 			end
 		end
 		when 20001.chat."Porozmawiaj z Alchemikiem" begin
+			if game.get_event_flag("m2_alchemy_off") != 0 then
+				say_title(mob_name(20001))
+				say("Alchemia jest wylaczona na tym swiecie.")
+				return
+			end
 			say_title(mob_name(20001))
 			local today = math.floor(get_global_time() / 86400)
 			if today == pc.getf("dragon_soul", "eye_timestamp") then
@@ -147,6 +175,11 @@ quest dragon_soul begin
 		end
 
 		when 20001.chat."Porozmawiaj z Alchemikiem ponownie" begin
+			if game.get_event_flag("m2_alchemy_off") != 0 then
+				say_title(mob_name(20001))
+				say("Alchemia jest wylaczona na tym swiecie.")
+				return
+			end
 			say_title(mob_name(20001))
 			local today = math.floor(get_global_time() / 86400)
 			if today == pc.getf("dragon_soul", "eye_timestamp") then

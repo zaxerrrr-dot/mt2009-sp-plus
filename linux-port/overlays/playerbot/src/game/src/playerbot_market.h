@@ -141,17 +141,25 @@ namespace
 	}
 
 	// A bot with a weapon that goes to the anvil under scrolls - one it may
-	// refine no other way, a level-30 weapon in its hand, the one it is
-	// grinding, or the only weapon it has at a step that burns - buys a few,
-	// up to PLAYERBOT_LEVEL30_SCROLL_WANT.
+	// refine no other way, a level-30 weapon in its hand, a weapon of the
+	// operator's anvil table standing at its ceiling, the one it is grinding,
+	// or the only weapon it has at a step that burns - buys a few, up to
+	// PLAYERBOT_LEVEL30_SCROLL_WANT. Never for a weapon no scroll goes on
+	// (IsPlayerBotScrollFreeGear).
 	bool PlayerBotNeedsScrollForWeapon(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded() ||
 				CountPlayerBotSafeRefineScrolls(ch) >= PLAYERBOT_LEVEL30_SCROLL_WANT)
 			return false;
 		LPITEM worn = ch->GetWear(WEAR_WEAPON);
+		if (worn && IsPlayerBotScrollFreeGear(worn))
+			worn = NULL;
 		if (worn && worn->GetRefinedVnum() != 0 &&
 				(IsPlayerBotScrollOnlyWeapon(worn) || IsPlayerBotSpecialLevel30Weapon(worn)))
+			return true;
+		if (worn && worn->GetRefinedVnum() != 0 && IsPlayerBotAnvilTableWeapon(worn) &&
+				(int)worn->GetRefineLevel() >= GetPlayerBotWeaponAnvilCeiling(ch, worn) &&
+				worn->GetRefineLevel() < GetPlayerBotRefineTarget(ch, worn))
 			return true;
 		// The weapon in the hand the anvil would burn with nothing behind it
 		// (IsPlayerBotWornWeaponAtRisk), while it is short of its target: a rich
@@ -311,6 +319,9 @@ namespace
 		// A socket open on a piece it keeps.
 		if (PlayerBotHasOpenSoulStoneSocket(ch))
 			return true;
+		// The bases the addict's anvil works (Iwakura's Patch 3, point 7).
+		if (PlayerBotAddictWantsBases(ch))
+			return true;
 		// And a piece of gear for a slot that is empty or behind the ladder.
 		//
 		// This branch was missing, and it is the whole of why "I put +8 battle
@@ -385,6 +396,13 @@ namespace
 			return price <= spare * playerbot_persona::PERFECT_BUDGET_PERCENT / 100;
 		if (IsPlayerBotStrategicPurchase(item->GetVnum()) || IsPlayerBotStrategicWeaponOffer(ch, item))
 			return price <= GetPlayerBotStrategicPurchaseCap(ch);
+		// The addict's bases and materials come out of its own budget
+		// (GetPlayerBotAddictBudgetLeft, Iwakura's Patch 3, point 7).
+		{
+			const long long addictLeft = GetPlayerBotAddictBudgetLeft(ch);
+			if (addictLeft > 0 && WantsPlayerBotGambleOffer(ch, item))
+				return price <= addictLeft;
+		}
 		const long long cap = (long long)GetPlayerBotMarketMedianWallet() * PLAYERBOT_MARKET_STACK_WALLET_PERCENT / 100;
 		return cap <= 0 || price <= cap;
 	}
@@ -990,6 +1008,7 @@ namespace
 		s_mapMarketLocalSupply.clear();
 		s_iPlayerBotJunkWeaponsOnCounters = 0;
 		ResetPlayerBotRareGoodsCensus();
+		s_mapPlayerBotLowArmourOnCounters.clear();
 		RefreshPlayerBotWorldYang(dwNow);
 
 		DWORD stalls = 0, lines = 0, demandBots = 0;
@@ -1021,7 +1040,7 @@ namespace
 					if (!FindPlayerBotOfferItem(ch, offer))
 						continue;
 					AddPlayerBotMarketSupply(offer.dwVnum, offer.wCount, ch->GetMapIndex());
-					NotePlayerBotJunkWeaponOnCounter(offer.dwVnum, offer.wCount);
+					NotePlayerBotCappedLineOnCounter(offer.dwVnum, offer.wCount);
 					++lines;
 				}
 			}
@@ -1072,13 +1091,14 @@ namespace
 		}
 		// Who is trading and why, against the TRADE weight in force: the number
 		// an operator needs before deciding the slider "does nothing".
-		sys_log(0, "PLAYERBOT_SHOP: census stalls=%u trade_weight=%d merchant=%u poor=%u bag_full=%u dropper_pressure=%u books=%u dropper_roll=%u roll=%u spare=%u hoard=%u",
+		sys_log(0, "PLAYERBOT_SHOP: census stalls=%u trade_weight=%d merchant=%u poor=%u bag_full=%u dropper_pressure=%u books=%u dropper_roll=%u roll=%u spare=%u hoard=%u medals=%u",
 				stalls, GetPlayerBotWeight(PLAYERBOT_WEIGHT_TRADE),
 				auStallsByReason[PLAYERBOT_SHOP_REASON_MERCHANT], auStallsByReason[PLAYERBOT_SHOP_REASON_POOR],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_BAG_FULL], auStallsByReason[PLAYERBOT_SHOP_REASON_DROPPER_PRESSURE],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_BOOKS], auStallsByReason[PLAYERBOT_SHOP_REASON_DROPPER_ROLL],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_ROLL], auStallsByReason[PLAYERBOT_SHOP_REASON_SPARE],
-				auStallsByReason[PLAYERBOT_SHOP_REASON_HOARD]);
+				auStallsByReason[PLAYERBOT_SHOP_REASON_HOARD],
+				auStallsByReason[PLAYERBOT_SHOP_REASON_MEDALS]);
 		ReportPlayerBotWeaponGoals(dwNow);
 		ReportPlayerBotLevel30Census();
 		sys_log(0, "PLAYERBOT_MARKET: ledger stalls=%u lines=%u vnums=%u demand_bots=%u wallet=%u junk_weapons=%d/%d decisions list=%u probe=%u no_demand=%u overstock=%u floor=%u top:%s",

@@ -4,6 +4,8 @@
 
 [![Discord](https://img.shields.io/badge/Discord-Dołącz_do_społeczności-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/vGE3T9gpm)
 [![Strona](https://img.shields.io/badge/WWW-metin2sp.pl-C8102E?style=for-the-badge&logo=googlechrome&logoColor=white)](https://metin2sp.pl/)
+[![Wiki](https://img.shields.io/badge/Wiki-metin2sp.pl%2Fwiki-2E7D32?style=for-the-badge&logo=wikipedia&logoColor=white)](https://metin2sp.pl/wiki)
+[![Wesprzyj projekt](https://img.shields.io/badge/Wesprzyj_projekt_–_postaw_kawkę-1E88E5?style=for-the-badge&logo=buymeacoffee&logoColor=white)](https://buycoffee.to/mt2009plus)
 
 Lokalny świat Metin2 singleplayer z autonomicznymi postaciami (Playerbots),
 oparty na oficjalnym wydaniu **Metin2 Playerbots** autorstwa Tieru (pliki
@@ -20,6 +22,8 @@ i systemy oraz kilka poprawek botów.
 
 - **[Discord](https://discord.com/invite/vGE3T9gpm)** — pomoc, zgłoszenia błędów, pomysły i nowości o paczce.
 - **[metin2sp.pl](https://metin2sp.pl/)** — strona projektu.
+- **[Wiki](https://metin2sp.pl/wiki)** — poradniki, FAQ, przedmioty i systemy MT2009 PLUS.
+- **[Wesprzyj projekt – postaw kawkę](https://buycoffee.to/mt2009plus)** — jeśli chcesz wesprzeć rozwój paczki.
 
 > [!IMPORTANT]
 > Do gry potrzebny jest **klient z tej paczki** (z nowymi kostiumami,
@@ -179,11 +183,11 @@ przeczytaj [NOTICE.md](NOTICE.md) przed dalszym udostępnianiem.
 
 ## 🤝 Podziękowania i oryginalny projekt
 
-Ta paczka jest modyfikacją projektu **Metin2 Playerbots** autorstwa **Tieru** —
-cała sztuczna inteligencja botów pochodzi z oficjalnego wydania.
+Ta paczka jest modyfikacją projektu **Metin2 Playerbots** autorstwa **Tieru**,
+który jest rdzeniem (core) MT2009 PLUS. Wszystkie dodatkowe zmiany dodaje
+**ZAXEP/SIZOWSKI**.
 
 - **Oryginalny projekt (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
-- **Discord oryginalnego projektu:** [discord.gg/6v4WkDY6a](https://discord.gg/6v4WkDY6a)
 
 Oraz autorzy i pomocnicy, na których pracy opiera się oficjalne wydanie:
 - **AzzlackSyndicate** — autor pierwotnej bazy linuksowego portu, instalatorów i panelu. Repozytorium źródłowe jest obecnie prywatne; zachowujemy historię Git i pełną atrybucję.

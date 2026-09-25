@@ -1,0 +1,245 @@
+diff --git a/root/game.py b/root/game.py
+index 1e45de3..f78da7c 100644
+--- a/root/game.py
++++ b/root/game.py
+@@ -638,10 +638,11 @@ class GameWindow(ui.ScriptWindow):
+ 		onPressKeyDict[app.DIK_J] = lambda : self.interface.ToggleGarbageBinWindow()
+ 		onPressKeyDict[app.DIK_H]			= lambda : self.__PressHKey()
+ 		onPressKeyDict[app.DIK_B]			= lambda : self.__PressBKey()
+ 		onPressKeyDict[app.DIK_F]			= lambda : self.__PressFKey()
+ 		onPressKeyDict[app.DIK_Y] 			= lambda : self.interface.wndPlayerStat.Open()
++		onPressKeyDict[app.DIK_P]			= lambda : self.__ToggleSidekick()
+ 		# if app.ENABLE_IKASHOP_RENEWAL:
+ 		# 	onPressKeyDict[app.DIK_F8]		= lambda : self.__PressF8Key()
+ 
+ 
+ 
+@@ -781,18 +782,52 @@ class GameWindow(ui.ScriptWindow):
+ 
+ 	def __ToggleAutoHunt(self):
+ 		import uiautohunt
+ 		uiautohunt.ToggleWindow()
+ 
++	def __KeepSidekickWindow(self):
++		import uisidekick
++		for keeper in self.updateable:
++			if isinstance(keeper, uisidekick.Keeper):
++				return
++		self.RegisterUpdatable(uisidekick.GetKeeper())
++
++	def __ToggleSidekick(self):
++		self.__KeepSidekickWindow()
++		import uisidekick
++		uisidekick.ToggleWindow()
++
++	def __SidekickWindow(self, *rest):
++		self.__KeepSidekickWindow()
++		import uisidekick
++		uisidekick.OpenWindow()
++
++	def __SidekickInfo(self, *args):
++		self.__KeepSidekickWindow()
++		import uisidekick
++		uisidekick.OnServerInfo(*args)
++
++	def __SidekickNames(self, name="-", place="-", doing="-", *rest):
++		import uisidekick
++		uisidekick.OnServerNames(name, place, doing)
++
++	def __SidekickGear(self, slot="0", name="-", *rest):
++		import uisidekick
++		uisidekick.OnServerGear(slot, name)
++
+ 	def __AutoHuntTarget(self, vid="0", *rest):
+ 		import uiautohunt
+ 		uiautohunt.OnServerTarget(vid)
+ 
+ 	def __AutoHuntLoot(self, vid="0", x="0", y="0", *rest):
+ 		import uiautohunt
+ 		uiautohunt.OnServerLoot(vid, x, y)
+ 
++	def __AutoHuntOff(self, *rest):
++		import uiautohunt
++		uiautohunt.OnServerOff()
++
+ 	def __ToggleSprint(self):
+ 		slotIndex = 105 # sprint slot index
+ 		skillIndex = player.GetSkillIndex(slotIndex)
+ 		if skillIndex == 132 and skill.CanUseSkill(skillIndex):
+ 			player.ClickSkillSlot(slotIndex)
+@@ -2631,10 +2666,15 @@ class GameWindow(ui.ScriptWindow):
+ 			"PlayerbotAdminAchievementsEnd"	: self.__PlayerbotAdmin_AchievementsEnd,
+ 			"PlayerbotOverhead"				: self.__PlayerbotAdmin_Overhead,
+ 			"Top1Badge"							: self.__OnTop1Badge,
+ 			"AutoHuntTarget"				: self.__AutoHuntTarget,
+ 			"AutoHuntLoot"					: self.__AutoHuntLoot,
++			"AutoHuntOff"					: self.__AutoHuntOff,
++			"SidekickInfo"					: self.__SidekickInfo,
++			"SidekickNames"					: self.__SidekickNames,
++			"SidekickGear"					: self.__SidekickGear,
++			"SidekickWindow"				: self.__SidekickWindow,
+ 
+ 			# fishing
+ 			"FishingGameStart": self.FishingGameStart,
+ 			"FishingGameStop": self.FishingGameStop,
+ 			"FishingGameCooldown": self.FishingGameCooldown,
+diff --git a/root/uiautohunt.py b/root/uiautohunt.py
+index 75de6b2..3e27ff7 100644
+--- a/root/uiautohunt.py
++++ b/root/uiautohunt.py
+@@ -122,10 +122,14 @@ STUCK_SKIP_SECONDS = 60.0
+ # What needs no enemy still goes on its own clock, fight or no fight: a
+ # standing skill and a toggle, which the client casts where the character
+ # stands, and SELF_SKILLS - the Ninja's Stealth and the Shaman's buffs,
+ # which the client turns on the caster when the target is a monster.
+ SELF_SKILLS = (34, 94, 95, 96, 109, 110, 111)
++# While waiting for HP after resurrection, cast only harmless self buffs.
++# Standing attack skills (for example Dragon's Roar) could otherwise wake the
++# monsters that had just killed the character and create a death loop.
++BUFF_SKILLS = SELF_SKILLS + (3, 4, 19, 49, 63, 64, 65, 79)
+ # What skill.IsStandingSkill says of this client's own skills, for an exe or
+ # a stub that cannot be asked.
+ STANDING_SKILLS = (3, 4, 18, 19, 47, 49, 62, 63, 64, 65, 77, 78, 79, 93)
+ # Only a class's skills and the horse's are ever cast at an enemy; a guild
+ # or a support skill is nobody's.
+@@ -474,11 +478,11 @@ class Hunter(object):
+             maxHP = player.GetStatus(player.MAX_HP)
+             curHP = player.GetStatus(player.HP)
+             threshold = min(100, self.config.get('revive_hp_percent', 60))
+             if maxHP > 0 and curHP * 100 < maxHP * threshold:
+                 self.HandleItems(now)
+-                self.CastSkills(now)
++                self.CastSkills(now, buffsOnly=True)
+                 return
+             self.justRevived = False
+ 
+         self.HandleItems(now)
+         self.CastSkills(now)
+@@ -532,10 +536,16 @@ class Hunter(object):
+         self.targetVid = 0
+         self.lootVid = 0
+         if not quiet:
+             chat.AppendChat(chat.CHAT_TYPE_INFO, 'Auto \xa3owy: stop.')
+ 
++    def OnServerOff(self):
++        if not self.running:
++            return
++        self.Stop(quiet=True)
++        chat.AppendChat(chat.CHAT_TYPE_INFO, 'Auto \xa3owy s\xb9 wy\xb3\xb9czone na tym serwerze (ustawienia \x9cwiata w launcherze).')
++
+     def OnServerTarget(self, value):
+         if not self.running or not self.config.get('attack', 1):
+             return
+ 
+         new_vid = ParseTargetVid(value)
+@@ -734,11 +744,11 @@ class Hunter(object):
+         else:
+             if not self.attacking:
+                 player.SetAttackKeyState(True)
+                 self.attacking = True
+ 
+-    def CastSkills(self, now):
++    def CastSkills(self, now, buffsOnly=False):
+         if not self.config['use_skills']:
+             return
+ 
+         fightDistance = None
+         for index in xrange(SKILL_SLOTS):
+@@ -748,10 +758,12 @@ class Hunter(object):
+             skillIndex = player.GetSkillIndex(slot)
+             if not skillIndex or player.IsSkillCoolTime(slot):
+                 continue
+             if skill.IsToggleSkill(skillIndex) and player.IsSkillActive(slot):
+                 continue
++            if buffsOnly and skillIndex not in BUFF_SKILLS:
++                continue
+             if NeedsTarget(skillIndex):
+                 # The slot's clock is left alone, so the skill goes on the
+                 # first frame the fight is there, and a buff further down
+                 # still goes on this one.
+                 if fightDistance is None:
+@@ -1608,6 +1620,9 @@ def ToggleWindow():
+ 
+ def OnServerTarget(value):
+     GetHunter().OnServerTarget(value)
+ 
+ def OnServerLoot(vid, x, y):
+-    GetHunter().OnServerLoot(vid, x, y)
+\ No newline at end of file
++    GetHunter().OnServerLoot(vid, x, y)
++
++def OnServerOff():
++    GetHunter().OnServerOff()
+diff --git a/root/uitaskbar.py b/root/uitaskbar.py
+index 4a016e1..114f80a 100644
+--- a/root/uitaskbar.py
++++ b/root/uitaskbar.py
+@@ -502,10 +502,14 @@ class TaskBar(ui.ScriptWindow):
+ 		wnd = self.mouseModeButtonList[dir]
+ 		wnd.GetChild("button_move_and_attack").SetEvent(lambda adir=dir, aevent=self.EVENT_MOVE_AND_ATTACK: self.SelectMouseButtonEvent(adir, aevent))
+ 		wnd.GetChild("button_camera").SetEvent(lambda adir=dir, aevent=self.EVENT_CAMERA: self.SelectMouseButtonEvent(adir, aevent))
+ 
+ 		self.toggleButtonDict = toggleButtonDict
++		if self.IsChild("SidekickButton"):
++			self.GetChild("SidekickButton").SetEvent(ui.__mem_func__(self.__OnClickSidekick))
++		if self.IsChild("AutoHuntButton"):
++			self.GetChild("AutoHuntButton").SetEvent(ui.__mem_func__(self.__OnClickAutoHunt))
+ 		self.expGauge = expGauge
+ 
+ 		self.itemShopButton = self.GetChild("ItemShopButton")
+ 		self.itemShopButton.SAFE_SetStringEvent("MOUSE_LEFT_BUTTON_UP", self.__RampageGauge_Click)
+ 
+@@ -534,10 +538,18 @@ class TaskBar(ui.ScriptWindow):
+ 		self.rampageGauge1.Hide()
+ 
+ 	def __RampageGauge_OverOut(self):
+ 		self.rampageGauge1.Show()
+ 
++	def __OnClickSidekick(self):
++		import uisidekick
++		uisidekick.ToggleWindow()
++
++	def __OnClickAutoHunt(self):
++		import uiautohunt
++		uiautohunt.ToggleWindow()
++
+ 	def __RampageGauge_Click(self):
+ 		eventManager.EventManager().send_event(uiItemShop.EVENT_OPEN_ITEMSHOP)
+ 
+ 	def __LoadMouseSettings(self):
+ 		try:
+diff --git a/root/uiscript/taskbar.py b/root/uiscript/taskbar.py
+index 33418c5..20a7dd7 100644
+--- a/root/uiscript/taskbar.py
++++ b/root/uiscript/taskbar.py
+@@ -491,5 +491,30 @@ window = {
+ 			),
+ 		},
+ 
+ 	),
+ }
++
++# Towarzysz and Auto Lowy, when the bar has room for them.
++if SCREEN_WIDTH >= 940:
++	window["children"] = window["children"] + (
++		{
++			"name" : "SidekickButton",
++			"type" : "button",
++			"x" : SCREEN_WIDTH - 205,
++			"y" : 3 + Y_ADD_POSITION,
++			"tooltip_text" : "Towarzysz (P)",
++			"default_image" : "playerbot_ui/sidekick_button_01.tga",
++			"over_image" : "playerbot_ui/sidekick_button_02.tga",
++			"down_image" : "playerbot_ui/sidekick_button_03.tga",
++		},
++		{
++			"name" : "AutoHuntButton",
++			"type" : "button",
++			"x" : SCREEN_WIDTH - 171,
++			"y" : 3 + Y_ADD_POSITION,
++			"tooltip_text" : "Auto \xa3owy (K)",
++			"default_image" : "playerbot_ui/autohunt_button_01.tga",
++			"over_image" : "playerbot_ui/autohunt_button_02.tga",
++			"down_image" : "playerbot_ui/autohunt_button_03.tga",
++		},
++	)

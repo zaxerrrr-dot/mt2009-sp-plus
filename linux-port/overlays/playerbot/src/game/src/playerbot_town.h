@@ -91,7 +91,7 @@ namespace
 	// Iwakura's Useful Items List (playerbot_lpp.h, after the gambler): what
 	// the bot keeps rather than sells, what goes to the box, what comes out.
 	bool IsPlayerBotLppKeptItem(LPCHARACTER ch, LPITEM item);
-	void CollectPlayerBotLppBoxRelease(LPCHARACTER ch, CSafebox* box, std::set<DWORD>& ids);
+	void CollectPlayerBotLppBoxRelease(LPCHARACTER ch, CSafebox* box, std::set<DWORD>& ids, int* kept = NULL);
 	DWORD GetPlayerBotLppFamily(LPITEM item);
 	int GetPlayerBotHeldFamilyLimit(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotLppHerb(LPITEM item);
@@ -200,6 +200,9 @@ namespace
 				int& n = going[family];
 				if ((stored != state.persona.mapGearStored.end() ? stored->second : 0) + n >=
 						GetPlayerBotHeldFamilyLimit(ch, item))
+					continue;
+				// And the box's eighteen in all (Iwakura's Patch 3, point 3).
+				if ((int)state.persona.wLppBoxGearKept + (int)cells.size() >= PLAYERBOT_LPP_TOTAL_LIMIT)
 					continue;
 				++n;
 			}
@@ -809,7 +812,7 @@ namespace
 				NeedsPlayerBotProgressionWeapon(ch) || NeedsPlayerBotArrows(ch);
 		state.bTownNeedArmorMerchant = HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR) ||
 				NeedsPlayerBotProgressionArmor(ch) || NeedsPlayerBotProgressionShield(ch) ||
-				NeedsPlayerBotProgressionHelmet(ch);
+				NeedsPlayerBotProgressionHelmet(ch) || NeedsPlayerBotBackupArmour(ch);
 		state.bTownNeedBlacksmith = HasPlayerBotRefineOpportunity(ch) ||
 				IsPlayerBotGambling(state, dwNow);
 		// The gambler's first stop is the storekeeper, once a session.
@@ -1404,6 +1407,27 @@ namespace
 		return IsPlayerBotMerchant(state) || IsPlayerBotDropper(state.bPersonality);
 	}
 
+	// A medal dropper with its stock in the bag (PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK)
+	// has a counter to put up. The Monkey Dungeon sends it out at that count
+	// and will not take it back until the medals have gone on a counter.
+	bool IsPlayerBotMedalStockReady(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		return ch && ch->IsItemLoaded() &&
+				state.bPersonality == BOT_PERSONALITY_MEDAL_DROPPER &&
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >=
+					PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK;
+	}
+
+	// Lines of one vnum a counter carries: PLAYERBOT_SHOP_SAME_VNUM_LINES, and
+	// PLAYERBOT_MEDAL_DROPPER_MEDAL_LINES of medals on a medal dropper's.
+	int GetPlayerBotSameVnumLineCap(LPCHARACTER owner, LPITEM item)
+	{
+		if (owner && item && item->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM &&
+				GetPlayerBotPersonalityByPID(owner->GetPlayerID()) == BOT_PERSONALITY_MEDAL_DROPPER)
+			return PLAYERBOT_MEDAL_DROPPER_MEDAL_LINES;
+		return PLAYERBOT_SHOP_SAME_VNUM_LINES;
+	}
+
 	// Too poor for its own potions: see PLAYERBOT_SHOP_POOR_MIN_LEVEL.
 	bool IsPlayerBotPoorKeeper(LPCHARACTER ch)
 	{
@@ -1443,8 +1467,9 @@ namespace
 				continue;
 			if (item->GetRefineLevel() < PLAYERBOT_SHOP_SPARE_MIN_REFINE)
 				continue;
-			// Nor the weapon kept for the day the one in the hand burns.
-			if (IsPlayerBotKeptBackupWeapon(ch, item))
+			// Nor the weapon kept for the day the one in the hand burns, nor
+			// the armour kept for the day the one on the back does.
+			if (IsPlayerBotKeptBackupWeapon(ch, item) || IsPlayerBotKeptBackupArmour(ch, item))
 				continue;
 			// Gear under level thirty ranks under the prize score and is capped
 			// on a counter, so it cannot carry a stall on its own - a reason to
@@ -1529,6 +1554,24 @@ namespace
 		return false;
 	}
 
+	// Iwakura's Patch 3, point 2: "postac ta powinna pamietac o wystawianiu na
+	// rynek przedmiotow ulepszonych do poziomow +7, +8 oraz +9" - a piece at
+	// the gambler's +7 or past it, made by one of its sessions, still in the bag.
+	bool HasPlayerBotGambleGoods(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		if (!ch || state.persona.setGambleForSale.empty())
+			return false;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && !item->IsEquipped() &&
+					item->GetRefineLevel() >= (int)playerbot_persona::GAMBLE_SAFE_PLUS &&
+					state.persona.setGambleForSale.find(item->GetID()) != state.persona.setGambleForSale.end())
+				return true;
+		}
+		return false;
+	}
+
 	BYTE GetPlayerBotShopReason(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		if (!ch || ch->GetLevel() < PLAYERBOT_SHOP_MIN_LEVEL)
@@ -1543,6 +1586,13 @@ namespace
 		// A valuable spare of a slot the bot already has filled is goods it
 		// should put up, whatever the trade roll or bag pressure said.
 		if (HasPlayerBotSellableSpare(ch))
+			return PLAYERBOT_SHOP_REASON_SPARE;
+		// A medal dropper back from the dungeon with its stock sells it,
+		// whatever the TRADE roll says: the medals are the whole of its trade.
+		if (IsPlayerBotMedalStockReady(ch, state))
+			return PLAYERBOT_SHOP_REASON_MEDALS;
+		// And what a gambler's session made, the same way.
+		if (HasPlayerBotGambleGoods(ch, state))
 			return PLAYERBOT_SHOP_REASON_SPARE;
 		// A trader always has the stall open when it can. For everyone else it
 		// stays what it was: an occasional thing one bot in ten does with a spare.
@@ -2313,7 +2363,9 @@ namespace
 		return decision;
 	}
 
-	// Is any worn piece still short of what a scroll can take it to?
+	// Is any worn piece still short of what a scroll can take it to? Not one
+	// no scroll goes on (IsPlayerBotScrollFreeGear): a bot in such gear keeps
+	// none back, and its scrolls go to a counter for a bot that can use them.
 	bool PlayerBotWearsScrollWork(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -2325,7 +2377,7 @@ namespace
 		for (size_t i = 0; i < sizeof(wearSlots) / sizeof(wearSlots[0]); ++i)
 		{
 			LPITEM worn = ch->GetWear(wearSlots[i]);
-			if (worn && worn->GetRefinedVnum() != 0 &&
+			if (worn && worn->GetRefinedVnum() != 0 && !IsPlayerBotScrollFreeGear(worn) &&
 					worn->GetRefineLevel() < PLAYERBOT_SCROLL_REFINE_MAX_PLUS)
 				return true;
 		}
@@ -2458,6 +2510,12 @@ namespace
 		// Iwakura's fifty-four weapons at +0..+3 stand on the bots' counters
 		// PLAYERBOT_JUNK_WEAPON_MARKET_CAP at a time, world-wide.
 		if (IsPlayerBotCappedJunkWeapon(item) && IsPlayerBotJunkWeaponMarketFull())
+			return -1;
+		// Iwakura's Patch 3, point 4: a body armour at +0..+4 of a family the
+		// bots' counters already carry PLAYERBOT_LOW_ARMOUR_MARKET_CAP of is no
+		// goods - the anvil takes it to +5 first if it can be paid
+		// (PlayerBotRefinesLowArmourForSale), the merchant otherwise.
+		if (IsPlayerBotCappedLowArmour(item) && IsPlayerBotLowArmourMarketFull(item->GetVnum()))
 			return -1;
 		// Gear under level thirty goes up at +6 or better and ranks under the
 		// materials whatever is rolled on it, and one counter carries only
@@ -2815,6 +2873,7 @@ namespace
 		const bool report = ShouldReportPlayerBotMarketDecisions(
 				ch->GetPlayerID(), get_dword_time());
 		const DWORD backupWeaponID = GetPlayerBotBackupWeaponID(ch, false);
+		const DWORD backupArmourID = GetPlayerBotBackupArmourID(ch, false);
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
@@ -2855,8 +2914,11 @@ namespace
 				if (IsPlayerBotArcherBuild(ch) && IsPlayerBotStoneMeleeWeapon(ch, item) &&
 						FindPlayerBotStoneWeapon(ch, false) == item)
 					continue;
-				// Nor the weapon kept for the day the one in the hand burns.
+				// Nor the weapon kept for the day the one in the hand burns, nor
+				// the armour kept for the day the one on the back does.
 				if (type == ITEM_WEAPON && backupWeaponID != 0 && item->GetID() == backupWeaponID)
+					continue;
+				if (type == ITEM_ARMOR && backupArmourID != 0 && item->GetID() == backupArmourID)
 					continue;
 				const int wearCell = item->FindEquipCell(ch);
 				if (wearCell < 0 || ch->GetWear((BYTE)wearCell) == NULL)
@@ -2917,7 +2979,7 @@ namespace
 						++marbles;
 					}
 					else if (IsPlayerBotSameVnumCapped(item) &&
-							++lines[item->GetVnum()] > PLAYERBOT_SHOP_SAME_VNUM_LINES)
+							++lines[item->GetVnum()] > GetPlayerBotSameVnumLineCap(ch, item))
 						continue;
 				}
 				kept.push_back(outScored[i]);
@@ -3215,8 +3277,13 @@ namespace
 		{
 			state.bShopStandsInRow = 0;
 			state.bShopLastStandSold = false;
-			state.dwNextShopKeepTime = dwNow +
-					number(PLAYERBOT_SHOP_REST_MIN, PLAYERBOT_SHOP_REST_MAX);
+			// No stand closed and a medal dropper with its stock: the map
+			// change (TransitionPlayerBotMap closes whatever stands) is the
+			// walk to its first village to open one, and the rest here held
+			// it off for half an hour to an hour once it got there.
+			if (bHadShop || !IsPlayerBotMedalStockReady(ch, state))
+				state.dwNextShopKeepTime = dwNow +
+						number(PLAYERBOT_SHOP_REST_MIN, PLAYERBOT_SHOP_REST_MAX);
 		}
 		if (bHadShop)
 		{
@@ -3295,6 +3362,50 @@ namespace
 			}
 		}
 		return changed;
+	}
+
+	int FindPlayerBotShopSlot(const bool* grid, int height);
+	void PutPlayerBotShopSlot(bool* grid, int slot, int height);
+	int PlayerBotShopSlotToEngine(int slot);
+
+	// Iwakura's Patch 3, point 6: the lines a stall is opening with, chosen
+	// best first, laid out again over a clear grid in the order of their
+	// categories (GetPlayerBotShopCategory), keeping that order within one. A
+	// layout the grid cannot take whole keeps the placement the choice made.
+	void RelayPlayerBotStallByCategory(LPCHARACTER ch, TShopItemTable* table,
+			std::vector<TPlayerBotShopOffer>& offers, BYTE count)
+	{
+		if (!ch || count == 0 || offers.size() != count)
+			return;
+		std::vector<std::pair<int, int> > order;
+		std::vector<int> heights(count, 1);
+		for (int i = 0; i < count; ++i)
+		{
+			LPITEM item = ch->GetInventoryItem(table[i].pos.cell);
+			if (!item)
+				return;
+			heights[i] = std::max<int>(1, std::min<int>(PLAYERBOT_SHOP_GRID_ROWS, item->GetSize()));
+			order.push_back(std::make_pair(GetPlayerBotShopCategory(item), i));
+		}
+		std::stable_sort(order.begin(), order.end(),
+				[](const std::pair<int, int>& a, const std::pair<int, int>& b) { return a.first < b.first; });
+		bool grid[PLAYERBOT_SHOP_GRID_CELLS];
+		memset(grid, 0, sizeof(grid));
+		std::vector<int> slots(count, -1);
+		for (size_t n = 0; n < order.size(); ++n)
+		{
+			const int line = order[n].second;
+			const int slot = FindPlayerBotShopSlot(grid, heights[line]);
+			if (slot < 0)
+				return;
+			PutPlayerBotShopSlot(grid, slot, heights[line]);
+			slots[line] = slot;
+		}
+		for (int i = 0; i < count; ++i)
+		{
+			table[i].display_pos = (BYTE)PlayerBotShopSlotToEngine(slots[i]);
+			offers[i].bSlot = (BYTE)PlayerBotShopSlotToEngine(slots[i]);
+		}
 	}
 
 	int FindPlayerBotShopSlot(const bool* grid, int height)
@@ -3503,6 +3614,22 @@ namespace
 
 	bool ManagePlayerBotPrivateShop(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
+		// Where a medal dropper with its stock stands in this pass, once a
+		// minute for the whole core: the stand it should open is the medals'
+		// only way to the market.
+		if (IsPlayerBotMedalStockReady(ch, state))
+			PlayerBotLogThrottled("medal_stock_gate", dwNow,
+					"PLAYERBOT_SHOP: medal stock pid=%u name=%s map=%ld ch=%u medals=%d offline=%d my_shop=%d visiting=%d/%d/%d keep_in_s=%d",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)g_bChannel,
+					(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM),
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+					HasPlayerBotOfflineShop(ch) ? 1 : 0,
+#else
+					0,
+#endif
+					ch->GetMyShop() ? 1 : 0, state.bVisitingShop ? 1 : 0,
+					state.bVisitingBiologist ? 1 : 0, state.bVisitingStable ? 1 : 0,
+					state.dwNextShopKeepTime > dwNow ? (int)((state.dwNextShopKeepTime - dwNow) / 1000) : 0);
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 		if (HasPlayerBotOfflineShop(ch)) return false;
 #endif
@@ -3512,6 +3639,10 @@ namespace
 		// a better right than the summon (SB_STALL), so opening one would end
 		// the summon it was called for.
 		if (IsPlayerBotSummoned(ch->GetPlayerID()))
+			return false;
+		// Nor a player's companion: it stands at its owner's side, or plays
+		// while its owner is online, and a stand would outlive both.
+		if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			return false;
 		// Every shop in the world stands on the first channel (the operator's
 		// rule for the second one, playerbot_channel_rules.h). Without the
@@ -3548,6 +3679,50 @@ namespace
 			return false;
 		if (state.dwNextShopKeepTime != 0 && dwNow < state.dwNextShopKeepTime)
 			return false;
+		// A medal dropper with its stock (IsPlayerBotMedalStockReady) does not
+		// wait for a town errand to stand it in a village: it goes to the
+		// pitch. The dungeon lets it out in the second village, which takes no
+		// stand while the SHOP_M2 switch is off, so it goes to its first
+		// village - straight from wherever it is, the dungeon included, since
+		// this pass runs before the world travel.
+		const bool medalStock = IsPlayerBotMedalStockReady(ch, state);
+		if (medalStock && !IsPlayerBotShopMapAllowed(ch->GetMapIndex()) &&
+				!IsPlayerBotHeldForCompany(ch))
+		{
+			long homeMap = 0, homeX = 0, homeY = 0;
+			if (!GetPlayerBotVillageReturn(ch, playerbot_empire_rules::MAP_ROLE_M1,
+						homeMap, homeX, homeY) ||
+					!IsPlayerBotMapHostedHere(homeMap) || !IsPlayerBotShopMapAllowed(homeMap))
+			{
+				state.dwNextShopKeepTime = dwNow + number(600000, 900000);
+				sys_log(0, "PLAYERBOT_SHOP: medal stock has no first village here pid=%u name=%s map=%ld home=%ld",
+						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), homeMap);
+				return false;
+			}
+			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+			if (!TransitionPlayerBotMap(ch, state, homeMap, homeX, homeY, dwNow,
+						"medal_stall_to_m1"))
+			{
+				state.dwNextShopKeepTime = dwNow + number(120000, 240000);
+				return false;
+			}
+			return true;
+		}
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		// In its first village, on the other channel: every stand is on the
+		// shop channel, so it asks to be moved and waits in town for it (the
+		// hold in the manager), rather than being walked back to its hunting
+		// ground before the move comes through.
+		if (medalStock && !IsPlayerBotHeldForCompany(ch) &&
+				g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
+		{
+			EnsurePlayerBotPrivateShopChannel(ch, state, dwNow, "medals");
+			sys_log(0, "PLAYERBOT_SHOP: medal stock waits for the shop channel pid=%u name=%s map=%ld medals=%d here=%u",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(),
+					(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM), (unsigned int)g_bChannel);
+			return false;
+		}
+#endif
 		// ...but "in town with nothing to do" is a state that barely exists: a bot
 		// comes to Bokjung *because* it has an errand, and leaves the moment the
 		// errand is done. The stall therefore opens right after a completed town
@@ -3585,7 +3760,7 @@ namespace
 		const bool alreadyAtPitch =
 				DISTANCE_APPROX(ch->GetX() - pitchX, ch->GetY() - pitchY) <=
 					PLAYERBOT_SHOP_RING_RADIUS + PLAYERBOT_MARKET_ARRIVE;
-		if (!justFinishedInTown && !alreadyAtPitch)
+		if (!justFinishedInTown && !alreadyAtPitch && !medalStock)
 			return false;
 
 		const BYTE bShopReason = GetPlayerBotShopReason(ch, state);
@@ -3890,6 +4065,7 @@ namespace
 		// moves between the two - a town errand happens in between - and a stall
 		// that loses two of its three lines on the way to the pitch should stay
 		// packed up rather than open with what is left.
+		RelayPlayerBotStallByCategory(ch, table, offers, tableCount);
 		if (!IsPlayerBotStallWorthOpening(tableCount, bestScore, bPoor || IsPlayerBotBagFull(ch) ||
 				bShopReason == PLAYERBOT_SHOP_REASON_HOARD))
 		{
@@ -4021,7 +4197,7 @@ namespace
 		for (size_t i = 0; i < offers.size(); ++i)
 		{
 			AddPlayerBotMarketSupply(offers[i].dwVnum, offers[i].wCount, ch->GetMapIndex());
-			NotePlayerBotJunkWeaponOnCounter(offers[i].dwVnum, offers[i].wCount);
+			NotePlayerBotCappedLineOnCounter(offers[i].dwVnum, offers[i].wCount);
 		}
 		sys_log(0, "PLAYERBOT_SHOP: opened pid=%u name=%s reason=%s items=%u left_behind no_line=%u no_slot=%u antiflag=%u first_vnum=%u first_price=%u pos=(%ld,%ld) sign=\"%s\"",
 				ch->GetPlayerID(), ch->GetName(), GetPlayerBotShopReasonName(state.bShopOpenReason),

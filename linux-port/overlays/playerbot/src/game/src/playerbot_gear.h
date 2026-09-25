@@ -1734,10 +1734,29 @@ namespace
 		return avg >= PLAYERBOT_WEAPON_SCROLL_ONLY_AVERAGE || skill >= PLAYERBOT_WEAPON_SCROLL_ONLY_SKILL;
 	}
 
-	// The operator's anvil ceiling for a level-30 weapon, by its average line.
-	// Below it the bot grinds at the blacksmith and takes the risk; at or above
-	// it the step belongs to a scroll. A weapon over the scroll-only line never
-	// reaches this at all - IsPlayerBotScrollOnlyWeapon answers first.
+	// A piece no scroll is put on (PLAYERBOT_SCROLL_FREE_GEAR_MAX_LEVEL). The
+	// blacksmith pass, the scroll pass in the field, the planner, the refine
+	// target and the scroll purchase all ask it, through
+	// FindPlayerBotRefineScrollCellFor where they look for the scroll itself.
+	bool IsPlayerBotScrollFreeGear(LPITEM item)
+	{
+		return item && item->GetLevelLimit() <= PLAYERBOT_SCROLL_FREE_GEAR_MAX_LEVEL;
+	}
+
+	// The weapons the operator's anvil table reaches: the level-30 family and
+	// every weapon from PLAYERBOT_ANVIL_TABLE_WEAPON_MIN_LEVEL.
+	bool IsPlayerBotAnvilTableWeapon(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_WEAPON || item->GetSubType() == WEAPON_ARROW)
+			return false;
+		return IsPlayerBotSpecialLevel30Weapon(item) ||
+				item->GetLevelLimit() >= PLAYERBOT_ANVIL_TABLE_WEAPON_MIN_LEVEL;
+	}
+
+	// The operator's anvil ceiling for a weapon of the table, by its average
+	// line. Below it the bot grinds at the blacksmith and takes the risk; at or
+	// above it the step belongs to a scroll. A weapon over the scroll-only line
+	// never reaches this at all - IsPlayerBotScrollOnlyWeapon answers first.
 	int GetPlayerBotLevel30AnvilCeiling(long average)
 	{
 		if (average <= PLAYERBOT_LEVEL30_ANVIL_AVG_CHEAP)
@@ -1822,6 +1841,31 @@ namespace
 	{
 		return ch && item && IsPlayerBotSpecialLevel30Weapon(item) && IsPlayerBotWeapon(ch, item) &&
 				item->CanUsedBy(ch);
+	}
+
+	// Where the plain anvil stops for a weapon of the table
+	// (IsPlayerBotAnvilTableWeapon): the operator's ceiling for its average
+	// line, and the class's own level-30 weapon never under
+	// PLAYERBOT_LEVEL30_MIN_PLUS. The blacksmith pass, the planner, the scroll
+	// pass, the scroll purchase and the Demon Tower's smith all ask this, so
+	// none of them sends a bot for a step another one holds.
+	int GetPlayerBotWeaponAnvilCeiling(LPCHARACTER ch, LPITEM item)
+	{
+		int ceiling = GetPlayerBotLevel30AnvilCeiling(SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS));
+		if (IsPlayerBotClassLevel30Weapon(ch, item))
+			ceiling = std::max<int>(ceiling, PLAYERBOT_LEVEL30_MIN_PLUS);
+		return ceiling;
+	}
+
+	// A level-30 weapon whose roll is cheap enough that the blacksmith pass
+	// still gambles it at the plain anvil over its ceiling
+	// (PLAYERBOT_LEVEL30_CHEAP_ANVIL_PERCENT): the family is everywhere and the
+	// scroll is not. The planner counts such a step as an errand, since the
+	// pass may take it.
+	bool IsPlayerBotCheapLevel30Roll(LPITEM item)
+	{
+		return IsPlayerBotSpecialLevel30Weapon(item) &&
+				SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS) <= PLAYERBOT_LEVEL30_ANVIL_AVG_CHEAP;
 	}
 
 	// The class's own level-30 weapon, wearable now and under
@@ -2332,10 +2376,19 @@ namespace
 		return 6;
 	}
 
+	// Defined in playerbot_economy.h, after the junk rule it stands beside.
+	bool PlayerBotRefinesLowArmourForSale(LPCHARACTER ch, LPITEM item);
+	// Defined in playerbot_economy.h, after the backup rules it gives way to.
+	bool PlayerBotRisksPlainAnvil(LPCHARACTER ch, LPITEM item);
+
 	BYTE GetPlayerBotRefineTarget(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item)
 			return 0;
+		// A body armour taken to +5 before it may go on a counter (Iwakura's
+		// Patch 3, point 4).
+		if (PlayerBotRefinesLowArmourForSale(ch, item))
+			return PLAYERBOT_LOW_ARMOUR_SALE_PLUS;
 		// A level-30 weapon of its own class in the hand, or the one it is
 		// grinding, goes to +9 whatever the personality: that is what the
 		// weapon is for. A scroll-only one gets there under scrolls or not at
@@ -2360,8 +2413,15 @@ namespace
 		// A scroll in the bag is a ladder to +9 for everybody: under it a
 		// failure costs a level or nothing, never the piece, so the ambition -
 		// which is about not burning what was earned - does not apply while
-		// one is there. See PLAYERBOT_SCROLL_REFINE_MAX_PLUS.
-		if (CountPlayerBotSafeRefineScrolls(ch) == 0)
+		// one is there. See PLAYERBOT_SCROLL_REFINE_MAX_PLUS. Not for a piece
+		// no scroll goes on (IsPlayerBotScrollFreeGear): the plain anvil takes
+		// that one as far as the bot would risk it without.
+		if (CountPlayerBotSafeRefineScrolls(ch) == 0 || IsPlayerBotScrollFreeGear(item))
+			return GetPlayerBotRefineAmbition(ch, item);
+		// Nor for a step the coin sends to the plain anvil (Iwakura's "tylko w
+		// 50% uzywaja bodzi"): the scroll is not the way this time, so it is
+		// no reason to climb past what the bot would risk without one.
+		if (PlayerBotRisksPlainAnvil(ch, item))
 			return GetPlayerBotRefineAmbition(ch, item);
 		// The operator's SCROLL_FROM can put the ladder's first rung above
 		// where a piece would climb by itself, and the steps under that rung
@@ -2452,6 +2512,94 @@ namespace
 			return false;
 		return !IS_SET(proto->dwAntiFlags,
 				GET_SEX(ch) == SEX_MALE ? ITEM_ANTIFLAG_MALE : ITEM_ANTIFLAG_FEMALE);
+	}
+
+	// The body armour a bot keeps for the day the one on its back burns: the
+	// best other body armour in the bag it can put on now, which is the set
+	// IsPlayerBotWornArmourAtRisk counts. That rule holds the armour on the
+	// back off every step of the plain anvil that can burn it while there is
+	// none (THC, 16 September), and nothing kept one - the old armour went to
+	// the merchant at the first visit after an upgrade, as scrap. On m2zip on
+	// 24 September 377 of the 1027 bots of 25 and up wore a body armour whose
+	// next step could burn it and had no other in the bag, the hold logged
+	// some twelve thousand times a minute, and the whole world held 39
+	// Blessing Scrolls to take the step instead ("do 25 lvla ladnie ulepszaja
+	// itemy na +9 a potem nic", Iwakura). Like the backup
+	// weapon it is neither scrap nor counter goods nor the storekeeper's nor
+	// the gambler's, and the armour merchant sells one when there is none
+	// (NeedsPlayerBotBackupArmour).
+	bool IsPlayerBotBackupArmourCandidate(LPCHARACTER ch, LPITEM spare)
+	{
+		return ch && spare && spare->GetType() == ITEM_ARMOR && spare->GetSubType() == ARMOR_BODY &&
+				!spare->IsEquipped() && spare->GetLevelLimit() <= (int)ch->GetLevel() &&
+				IsPlayerBotProtoForCharacter(ch, spare->GetProto());
+	}
+
+	// The best body armour in the bag this bot can put on now, leaving one out.
+	LPITEM FindPlayerBotBestBagArmour(LPCHARACTER ch, LPITEM exclude)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return NULL;
+		LPITEM best = NULL;
+		long long bestScore = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM spare = ch->GetInventoryItem(cell);
+			if (!spare || spare == exclude || spare->GetCell() != cell ||
+					!IsPlayerBotBackupArmourCandidate(ch, spare))
+				continue;
+			const long long score = GetPlayerBotEquipmentScore(spare, ch);
+			if (!best || score > bestScore)
+			{
+				best = spare;
+				bestScore = score;
+			}
+		}
+		return best;
+	}
+
+	// The armour on the back, or - with the slot empty - the one that goes
+	// back on: the weapon's GetPlayerBotHandWeapon for the other slot. A
+	// blacksmith session keeps the piece in the bag from its first step to its
+	// last, and asking the slot alone protected the worn armour on the first
+	// step and on none after it.
+	LPITEM GetPlayerBotBodyArmour(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return NULL;
+		LPITEM worn = ch->GetWear(WEAR_BODY);
+		return worn ? worn : FindPlayerBotBestBagArmour(ch, NULL);
+	}
+
+	LPITEM FindPlayerBotBackupArmour(LPCHARACTER ch)
+	{
+		LPITEM body = GetPlayerBotBodyArmour(ch);
+		return body ? FindPlayerBotBestBagArmour(ch, body) : NULL;
+	}
+
+	// The junk rule asks this of every body armour in the bag, so the answer
+	// is kept for PLAYERBOT_BACKUP_WEAPON_CACHE_MS, as the weapon's is.
+	std::map<DWORD, TPlayerBotBackupWeaponAnswer> s_mapPlayerBotBackupArmour;
+
+	DWORD GetPlayerBotBackupArmourID(LPCHARACTER ch, bool fresh)
+	{
+		if (!ch)
+			return 0;
+		const DWORD now = get_dword_time();
+		TPlayerBotBackupWeaponAnswer& answer = s_mapPlayerBotBackupArmour[ch->GetPlayerID()];
+		if (fresh || answer.dwTime == 0 || now - answer.dwTime >= PLAYERBOT_BACKUP_WEAPON_CACHE_MS)
+		{
+			LPITEM backup = FindPlayerBotBackupArmour(ch);
+			answer.dwTime = now != 0 ? now : 1;
+			answer.dwItemID = backup ? backup->GetID() : 0;
+		}
+		return answer.dwItemID;
+	}
+
+	bool IsPlayerBotKeptBackupArmour(LPCHARACTER ch, LPITEM item, bool fresh = false)
+	{
+		return ch && item && item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_BODY &&
+				item->GetID() != 0 && GetPlayerBotBackupArmourID(ch, fresh) == item->GetID();
 	}
 
 	// Whether some counter in this world holds a level-30 weapon this bot

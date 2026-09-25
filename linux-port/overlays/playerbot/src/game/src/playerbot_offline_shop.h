@@ -71,7 +71,22 @@ namespace {
     // The wait before the next service visit: the long one for a dropper
     // (PLAYERBOT_DROPPER_SHOP_SERVICE_MIN_MS), ten to fifteen minutes for
     // everybody else.
-    DWORD BotOfflineServiceGap(const TPlayerBotAIState& state) {
+    // A medal dropper with its stock in the bag (IsPlayerBotMedalStockReady)
+    // and room for more medal lines on its counter is served at once, not on
+    // the dropper's round of forty to sixty minutes: one line goes up a visit,
+    // and the counter is where the medals are for.
+    bool BotOfflineWantsMedalLines(LPCHARACTER ch, const TPlayerBotAIState& state) {
+        if (!ch || !IsPlayerBotMedalStockReady(ch, state)) return false;
+        auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+        int lines = 0;
+        if (shop)
+            for (const auto& [id, line] : shop->GetItems())
+                if (line && line->GetInfo().vnum == PLAYERBOT_HORSE_MEDAL_VNUM) ++lines;
+        return lines < PLAYERBOT_MEDAL_DROPPER_MEDAL_LINES;
+    }
+    DWORD BotOfflineServiceGap(const TPlayerBotAIState& state, LPCHARACTER ch = NULL) {
+        if (BotOfflineWantsMedalLines(ch, state))
+            return (DWORD)number(20000, 40000);
         if (IsPlayerBotDropper(state.bPersonality))
             return (DWORD)number((int)PLAYERBOT_DROPPER_SHOP_SERVICE_MIN_MS, (int)PLAYERBOT_DROPPER_SHOP_SERVICE_MAX_MS);
         return (DWORD)number(600000, 900000);
@@ -85,7 +100,7 @@ namespace {
         }
         o.visiting = false;
         o.visitUntil = 0;
-        o.nextService = now + BotOfflineServiceGap(state);
+        o.nextService = now + BotOfflineServiceGap(state, ch);
     }
     bool BotOfflinePoll(LPCHARACTER ch, DWORD now) {
         auto it = playerbot_offline::requests.find(ch->GetPlayerID());
@@ -156,21 +171,36 @@ namespace {
         return playerbot_offline::Fits(cell, item->GetSize(), SHOP_PLAYER_WIDTH,
                 SHOP_PLAYER_HOST_ITEM_MAX_NUM) && ch->CanAddItemToShop(item, BYTE(cell));
     }
+    // Where a new line goes. Iwakura's Patch 3, point 6: between the lines of
+    // the categories before its own (GetPlayerBotShopCategory) and those after
+    // it, where the grid has room; failing that after the ones before it;
+    // failing that wherever it fits, as it always went. A counter changes a
+    // line a visit, so the order is kept as it grows rather than rebuilt.
     int BotOfflineSlot(LPCHARACTER ch, NativeShop shop, LPITEM item) {
         bool used[SHOP_PLAYER_HOST_ITEM_MAX_NUM]{};
+        const int category = GetPlayerBotShopCategory(item);
+        int lastLower = -1, firstHigher = SHOP_PLAYER_HOST_ITEM_MAX_NUM;
         if (shop) for (const auto& [id, line] : shop->GetItems()) {
             if (!line || !line->GetTable()) continue;
             int pos = line->GetInfo().pos, size = line->GetTable()->bSize;
             if (!playerbot_offline::Fits(pos, size, SHOP_PLAYER_WIDTH, SHOP_PLAYER_HOST_ITEM_MAX_NUM)) return -1;
             for (int y = 0; y < size; ++y) used[pos + y * SHOP_PLAYER_WIDTH] = true;
+            const int other = GetPlayerBotShopCategoryOf(line->GetTable()->bType,
+                line->GetTable()->bSubType, line->GetInfo().vnum);
+            if (other < category) lastLower = std::max(lastLower, pos);
+            else if (other > category) firstHigher = std::min(firstHigher, pos);
         }
+        int afterLower = -1, anywhere = -1;
         for (int pos = 0; pos < SHOP_PLAYER_HOST_ITEM_MAX_NUM; ++pos) {
             if (!BotOfflineValid(ch, item, pos)) continue;
             bool free = true;
             for (int y = 0; y < item->GetSize(); ++y) free &= !used[pos + y * SHOP_PLAYER_WIDTH];
-            if (free) return pos;
+            if (!free) continue;
+            if (pos > lastLower && pos < firstHigher) return pos;
+            if (pos > lastLower && afterLower < 0) afterLower = pos;
+            if (anywhere < 0) anywhere = pos;
         }
-        return -1;
+        return afterLower >= 0 ? afterLower : anywhere;
     }
     bool SubmitPlayerBotOfflineShop(LPCHARACTER ch, TPlayerBotAIState& state,
             DWORD now, const char* sign, TShopItemTable* table, BYTE count) {
@@ -353,7 +383,7 @@ namespace {
             // material stood on one counter - the rest come home one a visit,
             // "stall" or not.
             if (IsPlayerBotSameVnumCapped(preview) &&
-                    ++sameVnum[preview->GetVnum()] > PLAYERBOT_SHOP_SAME_VNUM_LINES) {
+                    ++sameVnum[preview->GetVnum()] > GetPlayerBotSameVnumLineCap(ch, preview)) {
                 if (!unwanted) { unwanted = id; reason = "same_vnum"; }
                 M2_DELETE(preview);
                 continue;
@@ -365,6 +395,26 @@ namespace {
                     GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL &&
                     s_iPlayerBotJunkWeaponsOnCounters > PLAYERBOT_JUNK_WEAPON_MARKET_CAP) {
                 if (!unwanted) { unwanted = id; reason = "junk_weapon"; }
+                M2_DELETE(preview);
+                continue;
+            }
+            // A green or purple potion that is not a whole pack comes home to
+            // be poured into a larger stack (Iwakura's Patch 3, point 5).
+            if (IsPlayerBotPackedPotion(preview) &&
+                    GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL &&
+                    GetPlayerBotPotionPackUnits((int)preview->GetCount()) != (int)preview->GetCount()) {
+                if (!unwanted) { unwanted = id; reason = "potion_pack"; }
+                M2_DELETE(preview);
+                continue;
+            }
+            // So does a body armour at +0..+4 of a family past
+            // PLAYERBOT_LOW_ARMOUR_MARKET_CAP on the bots' counters (Iwakura's
+            // Patch 3, point 4): the anvil takes it to +5 if it can be paid,
+            // the merchant otherwise.
+            if (IsPlayerBotCappedLowArmour(preview) &&
+                    GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL &&
+                    CountPlayerBotLowArmourOnCounters(preview->GetVnum()) > PLAYERBOT_LOW_ARMOUR_MARKET_CAP) {
+                if (!unwanted) { unwanted = id; reason = "low_armour"; }
                 M2_DELETE(preview);
                 continue;
             }
@@ -462,11 +512,16 @@ namespace {
         if (!Begin(ch->GetPlayerID(), Remove, itemid, now)) return false;
         ikashop::GetManager().RecvShopRemoveItemClientPacket(ch, itemid);
         if (!EndCall(ch->GetPlayerID())) return false;
-        state.offlineShop.listed.erase(itemid);
         // Off the world's count at once, so the next keeper's visit this
         // minute does not take a second one home for the same surplus.
         if (why && strcmp(why, "junk_weapon") == 0 && s_iPlayerBotJunkWeaponsOnCounters > 0)
             --s_iPlayerBotJunkWeaponsOnCounters;
+        if (why && strcmp(why, "low_armour") == 0) {
+            const auto line = state.offlineShop.listed.find(itemid);
+            if (line != state.offlineShop.listed.end())
+                NotePlayerBotLowArmourOnCounter(line->second.vnum, -1);
+        }
+        state.offlineShop.listed.erase(itemid);
         sys_log(0, "PLAYERBOT_OFFLINE: took off pid=%u name=%s item=%u low_gear_kept=%d reason=%s",
             ch->GetPlayerID(), ch->GetName(), itemid, lowGear, why);
         return true;
@@ -663,9 +718,11 @@ namespace {
                     return true;
             }
         }
+        // Nor a body armour at +0..+4 of a family at its cap (Patch 3, point 4).
+        if (IsPlayerBotCappedLowArmour(item) && IsPlayerBotLowArmourMarketFull(item->GetVnum())) return true;
         // And no more than PLAYERBOT_SHOP_SAME_VNUM_LINES of anything else.
         if (IsPlayerBotSameVnumCapped(item) &&
-                BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_SHOP_SAME_VNUM_LINES)
+                BotOfflineLinesOf(shop, item->GetVnum()) >= GetPlayerBotSameVnumLineCap(item->GetOwner(), item))
             return true;
         return false;
     }
@@ -681,6 +738,23 @@ namespace {
     int BotOfflinePrepareLine(LPCHARACTER ch, WORD cell) {
         LPITEM item = ch->GetInventoryItem(cell);
         if (!item) return -1;
+        // Iwakura's Patch 3, point 5: a green or purple potion goes up as the
+        // largest pack of 20, 50, 100 or 200 that the spare over the bot's own
+        // keep fills out of this stack; the merge pass pours the small stacks
+        // together first, and under twenty nothing goes up.
+        if (IsPlayerBotPackedPotion(item)) {
+            const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - PLAYERBOT_HERBALISM_POTION_KEEP;
+            const int take = GetPlayerBotPotionPackUnits(std::min(spare, (int)item->GetCount()));
+            if (take <= 0) return -1;
+            if (take >= (int)item->GetCount()) return cell;
+            if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
+            const int to = ch->GetEmptyInventory(item->GetSize());
+            if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
+                return -1;
+            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u potion_pack=1",
+                ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
+            return to;
+        }
         const int units = GetPlayerBotStallLineUnitsFor(ch, item);
         // A material went up as the stack it was, the anvil's reserve
         // included, and a herb as whatever a cell held. Both are cut the way
@@ -832,6 +906,10 @@ namespace {
         if (o.nextService == 0)
             o.nextService = now + 30000 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x4f534856U) %
                 (IsPlayerBotDropper(state.bPersonality) ? PLAYERBOT_DROPPER_SHOP_SERVICE_MAX_MS : (DWORD)600000);
+        // A medal dropper back with its stock is not left on that round.
+        const bool medalLines = BotOfflineWantsMedalLines(ch, state);
+        if (medalLines && !o.visiting && o.nextService > now + 40000)
+            o.nextService = now + 30000 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d45444cU) % 10000;
         if (BotOfflineBusy(ch, state) || !db_clientdesc || !db_clientdesc->IsPhase(PHASE_DBCLIENT)) {
             if (o.visiting) BotOfflineFinishVisit(ch, state, now);
             return false;
@@ -903,7 +981,7 @@ namespace {
             const DWORD wait = PLAYERBOT_SHOP_CHANNEL_SERVICE_MIN_MS +
                     PlayerBotNavHash(ch->GetPlayerID() ^ 0x43485356U) % PLAYERBOT_SHOP_CHANNEL_SERVICE_SPREAD_MS;
             BotOfflineFinishVisit(ch, state, now);
-            if (!Due(now, since + wait)) {
+            if (!medalLines && !Due(now, since + wait)) {
                 o.nextService = now + PLAYERBOT_OFFLINE_FAR_SERVICE_RETRY_MS;
                 return false;
             }
@@ -945,7 +1023,7 @@ namespace {
         // every keeper out on the frontier was most of the gates' traffic. An
         // empty hand with a weapon on its own counter does not wait (the
         // reclaim probe above), nor does the first visit after a start.
-        if (!o.visiting && ch->GetMapIndex() != serviceMap && ch->GetWear(WEAR_WEAPON) &&
+        if (!o.visiting && !medalLines && ch->GetMapIndex() != serviceMap && ch->GetWear(WEAR_WEAPON) &&
                 o.lastServedAt != 0 && !Due(now, o.lastServedAt + PLAYERBOT_OFFLINE_FAR_SERVICE_MIN_MS)) {
             o.nextService = now + PLAYERBOT_OFFLINE_FAR_SERVICE_RETRY_MS;
             return false;
@@ -1138,7 +1216,7 @@ namespace {
                     // same material up against the player's floor in the
                     // minute before the ledger is rebuilt.
                     AddPlayerBotMarketSupply(item->GetVnum(), (WORD)item->GetCount(), shop->GetSpawn().map);
-                    NotePlayerBotJunkWeaponOnCounter(item->GetVnum(), (int)item->GetCount());
+                    NotePlayerBotCappedLineOnCounter(item->GetVnum(), (int)item->GetCount());
                     if (firstRareLine) NotePlayerBotShopWithRareGoods(rareKind);
                 }
             }

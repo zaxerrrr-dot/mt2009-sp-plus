@@ -172,3 +172,6 @@ linux-port/docker/game/src/server/libthecore/include/stdafx.h
 linux-port/docker/game/src/server/libthecore/src/fdwatch.c
 linux-port/docker/game/src/server/libthecore/src/main.c
 linux-port/docker/game/src/server/libthecore/src/signal.c
+launcher/Metin2Launcher.Vps.psm1
+linux-port/tools/vps-install.sh
+linux-port/docker/game/src/server/game/src/guild_war.cpp
