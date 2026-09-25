@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-25T18:07:24Z",
-  "statusMessage": "Serwer 2.5.1: poprawka swiatow, w ktorych po zalogowaniu wyrzucalo z gry (brakujace przedmioty w bazie). Klient zostaje 2.0.13.",
+  "publishedAt": "2026-09-25T20:52:15Z",
+  "statusMessage": "Serwer 2.5.1: poprawka swiatow z brakujacymi przedmiotami w bazie. Klient 2.0.14 dodaje ekwipunek i umiejetnosci Towarzysza oraz naprawia Scal i uporzadkuj.",
   "server": {
     "version": "2.5.1",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.5.1.zip",
@@ -10,9 +10,9 @@
     "size": 55779414
   },
   "client": {
-    "version": "2.0.13",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.13.zip",
-    "sha256": "A17D4122F58156241DAFD29161EF39681E42DE50DE1D82CC7B8977DC6249F061",
-    "size": 48470515
+    "version": "2.0.14",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.14.zip",
+    "sha256": "B450216355522E8CA94A87C9254F8B230C9D071E7184E9EF6AAF043586C0F585",
+    "size": 856742
   }
 }

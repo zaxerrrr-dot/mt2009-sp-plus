@@ -1,0 +1,3 @@
+# Ekwipunek i umiejętności Towarzysza, naprawione „Scal i uporządkuj”.
+pack/root.data
+pack/root.index
