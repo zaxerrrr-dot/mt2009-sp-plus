@@ -3240,8 +3240,13 @@ namespace
 		{
 			state.bShopStandsInRow = 0;
 			state.bShopLastStandSold = false;
-			state.dwNextShopKeepTime = dwNow +
-					number(PLAYERBOT_SHOP_REST_MIN, PLAYERBOT_SHOP_REST_MAX);
+			// No stand closed and a medal dropper with its stock: the map
+			// change (TransitionPlayerBotMap closes whatever stands) is the
+			// walk to its first village to open one, and the rest here held
+			// it off for half an hour to an hour once it got there.
+			if (bHadShop || !IsPlayerBotMedalStockReady(ch, state))
+				state.dwNextShopKeepTime = dwNow +
+						number(PLAYERBOT_SHOP_REST_MIN, PLAYERBOT_SHOP_REST_MAX);
 		}
 		if (bHadShop)
 		{
@@ -3528,6 +3533,22 @@ namespace
 
 	bool ManagePlayerBotPrivateShop(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
+		// Where a medal dropper with its stock stands in this pass, once a
+		// minute for the whole core: the stand it should open is the medals'
+		// only way to the market.
+		if (IsPlayerBotMedalStockReady(ch, state))
+			PlayerBotLogThrottled("medal_stock_gate", dwNow,
+					"PLAYERBOT_SHOP: medal stock pid=%u name=%s map=%ld ch=%u medals=%d offline=%d my_shop=%d visiting=%d/%d/%d keep_in_s=%d",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)g_bChannel,
+					(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM),
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+					HasPlayerBotOfflineShop(ch) ? 1 : 0,
+#else
+					0,
+#endif
+					ch->GetMyShop() ? 1 : 0, state.bVisitingShop ? 1 : 0,
+					state.bVisitingBiologist ? 1 : 0, state.bVisitingStable ? 1 : 0,
+					state.dwNextShopKeepTime > dwNow ? (int)((state.dwNextShopKeepTime - dwNow) / 1000) : 0);
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 		if (HasPlayerBotOfflineShop(ch)) return false;
 #endif
@@ -3589,6 +3610,8 @@ namespace
 					!IsPlayerBotMapHostedHere(homeMap) || !IsPlayerBotShopMapAllowed(homeMap))
 			{
 				state.dwNextShopKeepTime = dwNow + number(600000, 900000);
+				sys_log(0, "PLAYERBOT_SHOP: medal stock has no first village here pid=%u name=%s map=%ld home=%ld",
+						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), homeMap);
 				return false;
 			}
 			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
@@ -3600,6 +3623,21 @@ namespace
 			}
 			return true;
 		}
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		// In its first village, on the other channel: every stand is on the
+		// shop channel, so it asks to be moved and waits in town for it (the
+		// hold in the manager), rather than being walked back to its hunting
+		// ground before the move comes through.
+		if (medalStock && !IsPlayerBotHeldForCompany(ch) &&
+				g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
+		{
+			EnsurePlayerBotPrivateShopChannel(ch, state, dwNow, "medals");
+			sys_log(0, "PLAYERBOT_SHOP: medal stock waits for the shop channel pid=%u name=%s map=%ld medals=%d here=%u",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(),
+					(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM), (unsigned int)g_bChannel);
+			return false;
+		}
+#endif
 		// ...but "in town with nothing to do" is a state that barely exists: a bot
 		// comes to Bokjung *because* it has an errand, and leaves the moment the
 		// errand is done. The stall therefore opens right after a completed town

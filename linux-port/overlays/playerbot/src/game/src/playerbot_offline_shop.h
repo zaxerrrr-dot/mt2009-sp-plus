@@ -71,7 +71,22 @@ namespace {
     // The wait before the next service visit: the long one for a dropper
     // (PLAYERBOT_DROPPER_SHOP_SERVICE_MIN_MS), ten to fifteen minutes for
     // everybody else.
-    DWORD BotOfflineServiceGap(const TPlayerBotAIState& state) {
+    // A medal dropper with its stock in the bag (IsPlayerBotMedalStockReady)
+    // and room for more medal lines on its counter is served at once, not on
+    // the dropper's round of forty to sixty minutes: one line goes up a visit,
+    // and the counter is where the medals are for.
+    bool BotOfflineWantsMedalLines(LPCHARACTER ch, const TPlayerBotAIState& state) {
+        if (!ch || !IsPlayerBotMedalStockReady(ch, state)) return false;
+        auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+        int lines = 0;
+        if (shop)
+            for (const auto& [id, line] : shop->GetItems())
+                if (line && line->GetInfo().vnum == PLAYERBOT_HORSE_MEDAL_VNUM) ++lines;
+        return lines < PLAYERBOT_MEDAL_DROPPER_MEDAL_LINES;
+    }
+    DWORD BotOfflineServiceGap(const TPlayerBotAIState& state, LPCHARACTER ch = NULL) {
+        if (BotOfflineWantsMedalLines(ch, state))
+            return (DWORD)number(20000, 40000);
         if (IsPlayerBotDropper(state.bPersonality))
             return (DWORD)number((int)PLAYERBOT_DROPPER_SHOP_SERVICE_MIN_MS, (int)PLAYERBOT_DROPPER_SHOP_SERVICE_MAX_MS);
         return (DWORD)number(600000, 900000);
@@ -85,7 +100,7 @@ namespace {
         }
         o.visiting = false;
         o.visitUntil = 0;
-        o.nextService = now + BotOfflineServiceGap(state);
+        o.nextService = now + BotOfflineServiceGap(state, ch);
     }
     bool BotOfflinePoll(LPCHARACTER ch, DWORD now) {
         auto it = playerbot_offline::requests.find(ch->GetPlayerID());
@@ -832,6 +847,10 @@ namespace {
         if (o.nextService == 0)
             o.nextService = now + 30000 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x4f534856U) %
                 (IsPlayerBotDropper(state.bPersonality) ? PLAYERBOT_DROPPER_SHOP_SERVICE_MAX_MS : (DWORD)600000);
+        // A medal dropper back with its stock is not left on that round.
+        const bool medalLines = BotOfflineWantsMedalLines(ch, state);
+        if (medalLines && !o.visiting && o.nextService > now + 40000)
+            o.nextService = now + 30000 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d45444cU) % 10000;
         if (BotOfflineBusy(ch, state) || !db_clientdesc || !db_clientdesc->IsPhase(PHASE_DBCLIENT)) {
             if (o.visiting) BotOfflineFinishVisit(ch, state, now);
             return false;
@@ -903,7 +922,7 @@ namespace {
             const DWORD wait = PLAYERBOT_SHOP_CHANNEL_SERVICE_MIN_MS +
                     PlayerBotNavHash(ch->GetPlayerID() ^ 0x43485356U) % PLAYERBOT_SHOP_CHANNEL_SERVICE_SPREAD_MS;
             BotOfflineFinishVisit(ch, state, now);
-            if (!Due(now, since + wait)) {
+            if (!medalLines && !Due(now, since + wait)) {
                 o.nextService = now + PLAYERBOT_OFFLINE_FAR_SERVICE_RETRY_MS;
                 return false;
             }
@@ -945,7 +964,7 @@ namespace {
         // every keeper out on the frontier was most of the gates' traffic. An
         // empty hand with a weapon on its own counter does not wait (the
         // reclaim probe above), nor does the first visit after a start.
-        if (!o.visiting && ch->GetMapIndex() != serviceMap && ch->GetWear(WEAR_WEAPON) &&
+        if (!o.visiting && !medalLines && ch->GetMapIndex() != serviceMap && ch->GetWear(WEAR_WEAPON) &&
                 o.lastServedAt != 0 && !Due(now, o.lastServedAt + PLAYERBOT_OFFLINE_FAR_SERVICE_MIN_MS)) {
             o.nextService = now + PLAYERBOT_OFFLINE_FAR_SERVICE_RETRY_MS;
             return false;
