@@ -17,6 +17,13 @@ every version here.
 
 ---
 
+## Klient 2.0.17 — 2026-09-26 — Grota V2
+
+- Poprawiono drugą ścieżkę ładowania `metin2_map_skipia_dungeon_02`.
+  Grota V2 nie wyrzuca już klienta do pulpitu przez brak `MapProperty.txt`.
+
+---
+
 ## 2.6.0 — 2026-09-26 — Juki konne, szarfy botów, Grota Wygnańców
 
 Serwer 2.6.0 i klient 2.0.16. **Zaktualizuj oba** w launcherze

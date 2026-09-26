@@ -1,0 +1,12 @@
+# Pelna paczka klienta 2.0.16 z poprawka drugiej sciezki zasobow Groty V2.
+pack/gamedata.data
+pack/gamedata.index
+pack/icon.data
+pack/icon.index
+pack/Index
+pack/locale.data
+pack/locale.index
+pack/maps.data
+pack/maps.index
+pack/root.data
+pack/root.index
