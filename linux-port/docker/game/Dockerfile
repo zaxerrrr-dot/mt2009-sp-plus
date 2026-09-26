@@ -408,12 +408,16 @@ RUN set -eu; N=/opt/metin2/share/locale/poland/map/map_n_threeway/npc.txt \
 # the Dried Head (30319) the third floor takes one of from every member - as
 # r40250's Reaper does. It goes into his existing limit group, flat and certain
 # like his casket, because a second limit group for one monster is ignored.
+#
+# MT2009 Plus (26 September 2026): the Guardian stays commented out. The
+# MT2009 Plus client has no metin2_map_devilcatacomb (only the 7x7
+# metin2_map_devilscatacomb, and this server's map is 8x8), and a player
+# warped onto a map the client cannot load is thrown out at every login
+# after. The token drop stays; the Guardian comes back with the map.
 RUN set -eu; L=/opt/metin2/share/locale/poland \
- && sed -i -E 's#^//(m[[:blank:]]+548[[:blank:]]+494[[:blank:]].*[[:blank:]]20367[[:space:]]*)$#\1#' "$L/map/metin2_map_milgyo/npc.txt" \
- && grep -q -E '^m[[:blank:]]+548[[:blank:]]+494[[:blank:]].*[[:blank:]]20367' "$L/map/metin2_map_milgyo/npc.txt" \
  && sed -i -E '/^Group[[:blank:]]+RiperLimit/,/^}/ s/^([[:blank:]]+1[[:blank:]]+50082[[:blank:]]+1[[:blank:]]+100.*)$/&\n\t2\t30319\t1\t100\r/' "$L/mob_drop_item.txt" \
  && awk '/^Group[[:blank:]]+RiperLimit/{f=1} f&&/^}/{f=0} f&&/[[:blank:]]30319[[:blank:]]/{n++} END{exit n==1?0:1}' "$L/mob_drop_item.txt" \
- && echo "share: Devil's Catacomb opened (the Guardian in Hwang, the Reaper's token)"
+ && echo "share: the Reaper's token (Devil's Catacomb Guardian left out: no client map)"
 
 # The cores run unprivileged and read this tree by path; a directory only root
 # can enter costs every quest below it, silently. Repair, then assert.

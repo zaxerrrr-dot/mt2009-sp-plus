@@ -19,7 +19,7 @@ every version here.
 
 ## 2.6.0 — 2026-09-26 — Juki konne, szarfy botów, Grota Wygnańców
 
-Serwer 2.6.0 i klient 2.0.15. **Zaktualizuj oba** w launcherze
+Serwer 2.6.0 i klient 2.0.16. **Zaktualizuj oba** w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
 z 2.5.1. Pierwszy start po aktualizacji kompiluje serwer od nowa, więc trwa
 dłużej niż zwykle.
@@ -34,7 +34,7 @@ dłużej niż zwykle.
 - **Materiały Rzemieślnicze** robi Dozorca z ulepszaczy: 1000 yang za
   sztukę, udaje się 55%.
 - Juki działają przy przywołanym koniu, w czasie jazdy na koniu, a teraz
-  także w czasie jazdy na wierzchowcu z pieczęci (klient 2.0.15).
+  także w czasie jazdy na wierzchowcu z pieczęci (od klienta 2.0.15).
 - **Boty:** 30% botów rozwija konia i juki – każdy od 3 do 9 rzędów, po
   jednym co kilka godzin. Skupują medale, materiały i tanie ulepszacze,
   a juki służą im za dodatkowe miejsce w plecaku.
@@ -56,9 +56,7 @@ dłużej niż zwykle.
   rogu Doliny Orków, obok niego Seon-Pyeong. Grota V1 (lodowe potwory,
   Setaou, Silna Lodowa Wiedźma) i Grota V2 (Setaou, Dowódca i Generał
   Yonghan). Boty chodzą tam od 78 i 84 poziomu i zwołują rajdy na bossów.
-- **Diabelskie Katakumby** da się przejść: Strażnik Katakumb stoi
-  w Świątyni Hwang. Wejście od 75 poziomu, po pokonaniu Umarłego Rozpruwacza
-  na 9. piętrze Wieży Demonów; od 2. piętra potrzebna jest grupa.
+  Wejście wymaga klienta 2.0.16.
 - Skrzynia Azraela i Skrzynia Mroku mają wreszcie zawartość.
 
 ### Towarzysz
@@ -101,6 +99,12 @@ dłużej niż zwykle.
 - Panel admina: szarfa bota z pochłanianiem i liczba rzędów juków w karcie
   bota; pole hasła tylko tam, gdzie logowanie go wymaga.
 - Licencja paczki: CC BY-NC-SA 4.0.
+## Klient 2.0.16 — 2026-09-26 — Ładowanie map Skipii
+
+- Naprawiono ładowanie `metin2_map_skipia_dungeon_01` i
+  `metin2_map_skipia_dungeon_02`. Klient ma teraz dane map pod ścieżką,
+  której wymaga silnik, więc wejście na mapę nie kończy się błędem braku
+  `MapProperty.txt`.
 
 ---
 
