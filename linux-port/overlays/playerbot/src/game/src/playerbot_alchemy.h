@@ -116,6 +116,10 @@ namespace
 		const long long cost = GetPlayerBotDragonSoulBaseCost((BYTE)((vnum / 1000) % 10),
 				(BYTE)((vnum / 100) % 10), (BYTE)((vnum / 10) % 10));
 		long long price = cost * (100 + PLAYERBOT_DS_PRICE_MARGIN_PERCENT) / 100;
+		// On the world's yang rate and inflation, like the rest of the bots'
+		// goods (ScalePlayerBotIwakuraPrice; operator, 26 September 2026): the
+		// table is the price at the curve's base.
+		price = (long long)ScalePlayerBotIwakuraPrice((DWORD)std::min<long long>(price, 0xFFFFFFFFLL));
 		price = (price + 500) / 1000 * 1000;
 		return (DWORD)std::min<long long>(std::max<long long>(price, 1000), GOLD_MAX - 1000);
 	}
@@ -677,7 +681,11 @@ namespace
 		{
 			state.dwNextDsLocalTime = dwNow + PLAYERBOT_ALCHEMY_LOCAL_MS;
 			EnsurePlayerBotAlchemyQualified(ch);
-			if (ch->GetVictim() == NULL)
+			// EquipItem refuses within a second and a half of a blow or a cast
+			// ("You have to stand still"): the gear pass's own wait.
+			if (ch->GetVictim() == NULL &&
+					dwNow - ch->GetLastAttackTime() > PLAYERBOT_EQUIPMENT_COMBAT_DELAY &&
+					(state.dwLastBotSkillTime == 0 || dwNow - state.dwLastBotSkillTime > PLAYERBOT_EQUIPMENT_COMBAT_DELAY))
 			{
 				OpenPlayerBotCors(ch);
 				EquipPlayerBotBestDragonSouls(ch);
