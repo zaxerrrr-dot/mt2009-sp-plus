@@ -225,9 +225,9 @@ try {
         $engineMarks = [ordered]@{
             'linux-port/docker/game/src/server/game/src/item_manager.cpp' = @(
                 'MT2009_PLUS_BOT_RARE_DROP_V1', 'MT2009_PLUS_BOT_RARE_DROP_V2', 'MT2009_PLUS_BOT_RARE_DROP_V3',
-                'MT2009_PLUS_RARE_LEVEL_V1', 'MT2009_PLUS_DROP_PREVIEW_MIN_V1', 'MT2009_PLUS_RARE_TOGGLE_V1')
+                'MT2009_PLUS_RARE_LEVEL_V1', 'MT2009_PLUS_DROP_PREVIEW_MIN_V1', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_BOT_SASH_DROP_V1', 'MT2009_PLUS_PREVIEW_RARE_V1')
             'linux-port/docker/game/src/server/game/src/ikarus_shop_manager.cpp' = @('MT2009_PLUS_SHOP_SEARCH_ITEM_V1')
-            'linux-port/docker/game/src/server/game/src/char_item.cpp' = @('IsStackableCorDraconisVnum', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_COR_AUTOSTACK_V1', 'MT2009_PLUS_DS_TRACE_PLAYERS_V1')
+            'linux-port/docker/game/src/server/game/src/char_item.cpp' = @('IsStackableCorDraconisVnum', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_COR_AUTOSTACK_V1', 'MT2009_PLUS_DS_TRACE_PLAYERS_V1', 'MT2009_PLUS_BOT_SASH_DROP_V1')
             'linux-port/docker/game/src/server/game/src/input_main.cpp' = @('MT2009_PLUS_SPEEDHACK_CLOCK_V1')
             'linux-port/docker/game/src/server/game/src/dragon_soul_table.cpp' = @('MT2009_PLUS_DS_APPLYS_V1')
             'linux-port/docker/game/src/server/game/src/char_affect.cpp' = @('MT2009_PLUS_DS_QUALIFY_ON_LOGIN_V1')
@@ -238,7 +238,7 @@ try {
             'linux-port/docker/game/src/server/game/src/char_player.cpp' = @('MT2009_PLUS_MOUNT_SPEED_V1')
             'linux-port/docker/game/src/server/game/src/char_battle.cpp' = @('MT2009_PLUS_BOT_RARE_SHARE_V1', 'MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1')
             'linux-port/docker/game/src/server/game/src/MountSystem.cpp' = @('MT2009_PLUS_MOUNT_BONUS_ONCE_V1', 'MT2009_PLUS_MOUNT_PERMANENT_V1')
-            'linux-port/docker/game/src/server/game/src/cmd.cpp' = @('"autohunt_target"', '"autohunt_loot"', 'MT2009_PLUS_DS_PLAYER_CMD_V1')
+            'linux-port/docker/game/src/server/game/src/cmd.cpp' = @('"autohunt_target"', '"autohunt_loot"', 'MT2009_PLUS_DS_PLAYER_CMD_V1', '"chest_preview"')
         }
         foreach ($enginePublished in $engineMarks.Keys) {
             if (-not ($published -contains $enginePublished)) { continue }

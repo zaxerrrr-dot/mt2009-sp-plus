@@ -41,9 +41,12 @@ namespace
 	// A worn stone with less than this left gets an elixir.
 	const int PLAYERBOT_DS_ELIXIR_BELOW_SEC = 2 * 60 * 60;
 	// Unworn stones of one kind kept as refine material.
-	const int PLAYERBOT_DS_MATERIAL_KEEP = 4;
+	// Eight: a rare stone takes about nine ordinary ones.
+	const int PLAYERBOT_DS_MATERIAL_KEEP = 8;
 	// Dragon Stone lines one counter shows (playerbot_offline_shop.h).
-	const int PLAYERBOT_DS_COUNTER_LINES = 4;
+	// Eight, not four: 43 000 unworn stones stood in the bags of 800 users on
+	// the test world (26 September 2026), four lines at a time.
+	const int PLAYERBOT_DS_COUNTER_LINES = 8;
 	// Cors a user keeps in the bag before it stops buying them.
 	const int PLAYERBOT_DS_COR_KEEP = 10;
 	const DWORD PLAYERBOT_ALCHEMY_CHECK_MIN_MS = 4 * 60 * 1000;
@@ -223,14 +226,32 @@ namespace
 
 	// What a user's stones should come to at its level: the refining stops
 	// there, and a stone past it is only worn.
+	//
+	// The grade first - the operator's table (26 September 2026):
+	//   Zwykly, Blyszczacy  - never worn, only material;
+	//   Rzadki              - worn at low levels (30-54);
+	//   Starozytny          - at middle levels (55-74);
+	//   Legendarny          - gladly (75-89), and stepped up after it;
+	//   Mityczny            - worn by anybody who has one, even unstepped;
+	//                         only the end game (90+) makes and steps it.
+	// "Wszystkie kamienie alchemii przed wlozeniem powinny byc ulepszane do
+	// maksymalnego dostepnego poziomu": a kind is refined as far as the bag
+	// allows before its stone goes on (EquipPlayerBotBestDragonSouls), and the
+	// stones of the target grade left over are stepped to the highest step. A
+	// grade refine gives step 0 and strength 0 (DSManager::DoRefineGrade), so
+	// the steps come after the grade.
+	const BYTE PLAYERBOT_DS_MIN_WORN_GRADE = 2;
+	const BYTE PLAYERBOT_DS_MYTH_GRADE = 5;
+	const int PLAYERBOT_DS_END_GAME_LEVEL = 90;
+
 	TPlayerBotDsTarget GetPlayerBotDsTarget(LPCHARACTER ch)
 	{
 		TPlayerBotDsTarget t = { 0, 0, 0 };
 		const int level = ch ? ch->GetLevel() : 0;
-		if (level >= 90)      { t.grade = 4; t.step = 4; t.strength = 4; }
-		else if (level >= 75) { t.grade = 3; t.step = 4; t.strength = 3; }
-		else if (level >= 65) { t.grade = 2; t.step = 3; t.strength = 2; }
-		else if (level >= 50) { t.grade = 1; t.step = 2; t.strength = 1; }
+		if (level >= PLAYERBOT_DS_END_GAME_LEVEL) { t.grade = 5; t.step = 4; t.strength = 4; }
+		else if (level >= 75) { t.grade = 4; t.step = 4; t.strength = 2; }
+		else if (level >= 55) { t.grade = 3; t.step = 4; t.strength = 1; }
+		else if (level >= PLAYERBOT_ALCHEMY_MIN_LEVEL) { t.grade = 2; t.step = 4; t.strength = 0; }
 		return t;
 	}
 
@@ -296,6 +317,12 @@ namespace
 	{
 		if (!ch || !item || !item->IsDragonSoul() || item->IsEquipped() || item->isLocked())
 			return false;
+		// An ordinary or brilliant stone is never goods: nobody buys one, and
+		// it is the material of the rare grade ("boty niech nie wystawiaja
+		// surowej smoczej alchemii ... dopiero od 3 poziomu", operator, 26
+		// September 2026).
+		if (GetPlayerBotDsGrade(item) < PLAYERBOT_DS_MIN_WORN_GRADE)
+			return false;
 		if (!IsPlayerBotAlchemyUser(ch))
 			return true;
 		const int kind = item->GetSubType();
@@ -332,8 +359,12 @@ namespace
 			return (int)ch->CountSpecifyItem(offer->GetVnum()) < PLAYERBOT_DS_COR_KEEP;
 		if (!offer->IsDragonSoul())
 			return false;
+		// A stone it would wear: of the rare grade and over, up to its target
+		// (a mythic one whatever the target).
 		const TPlayerBotDsTarget t = GetPlayerBotDsTarget(ch);
-		if (GetPlayerBotDsGrade(offer) > t.grade || ScorePlayerBotDsLines(ch, offer) <= 0)
+		const BYTE grade = GetPlayerBotDsGrade(offer);
+		if (grade < PLAYERBOT_DS_MIN_WORN_GRADE || (grade > t.grade && grade < PLAYERBOT_DS_MYTH_GRADE) ||
+				ScorePlayerBotDsLines(ch, offer) <= 0)
 			return false;
 		LPITEM worn = GetPlayerBotWornDs(ch, offer->GetSubType());
 		return !worn || RankPlayerBotDs(ch, offer) > RankPlayerBotDs(ch, worn);
@@ -411,20 +442,38 @@ namespace
 		return DSManager::instance().PullOut(ch, TItemPos(DRAGON_SOUL_INVENTORY, (WORD)cell), moved) && !moved->IsEquipped();
 	}
 
-	// The best stone with time left of every kind into deck 0.
+	int FindPlayerBotDsRefine(LPCHARACTER ch, int kind, LPITEM& a, LPITEM& b);
+
+	// The best stone with time left of every kind into deck 0: of the rare
+	// grade and over, and only once the kind has no refine left to do (the
+	// Alchemist does it first) - but a mythic stone goes on as it is. A worn
+	// ordinary or brilliant stone comes off, material again.
 	int EquipPlayerBotBestDragonSouls(LPCHARACTER ch)
 	{
 		int changed = 0;
 		for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
 		{
+			LPITEM worn = GetPlayerBotWornDs(ch, kind);
+			if (worn && GetPlayerBotDsGrade(worn) < PLAYERBOT_DS_MIN_WORN_GRADE && PullOutPlayerBotDs(ch, worn))
+			{
+				sys_log(0, "PLAYERBOT_ALCHEMY: took off pid=%u name=%s vnum=%u kind=%d (under the rare grade)",
+						ch->GetPlayerID(), ch->GetName(), worn->GetVnum(), kind);
+				worn = NULL;
+			}
 			std::vector<LPITEM> stones;
 			CollectPlayerBotDragonSouls(ch, stones, kind);
 			LPITEM best = NULL;
 			for (size_t i = 0; i < stones.size(); ++i)
 				if (HasPlayerBotDsTime(stones[i]) && ScorePlayerBotDsLines(ch, stones[i]) > 0 &&
+						GetPlayerBotDsGrade(stones[i]) >= PLAYERBOT_DS_MIN_WORN_GRADE &&
 						(!best || RankPlayerBotDs(ch, stones[i]) > RankPlayerBotDs(ch, best)))
 					best = stones[i];
-			LPITEM worn = GetPlayerBotWornDs(ch, kind);
+			if (best && GetPlayerBotDsGrade(best) < PLAYERBOT_DS_MYTH_GRADE)
+			{
+				LPITEM a = NULL, b = NULL;
+				if (FindPlayerBotDsRefine(ch, kind, a, b) != 0)	// PLAYERBOT_DS_WORK_NONE
+					continue;
+			}
 			if (!best || (worn && HasPlayerBotDsTime(worn) && RankPlayerBotDs(ch, worn) >= RankPlayerBotDs(ch, best)))
 				continue;
 			if (worn && !PullOutPlayerBotDs(ch, worn))
@@ -510,11 +559,17 @@ namespace
 			b = pick[1];
 			return PLAYERBOT_DS_WORK_GRADE;
 		}
+		// The steps: at the highest grade it has a pair of, the target's or
+		// over it (a stone bought or made before).
+		for (int grade = 5; grade >= (int)t.grade; --grade)
 		for (BYTE step = 0; step < t.step; ++step)
 		{
+			// A mythic stone is stepped only by the end game.
+			if (grade >= PLAYERBOT_DS_MYTH_GRADE && ch->GetLevel() < PLAYERBOT_DS_END_GAME_LEVEL)
+				break;
 			std::vector<LPITEM> pick;
 			for (size_t i = 0; i < stones.size(); ++i)
-				if (GetPlayerBotDsGrade(stones[i]) == t.grade && GetPlayerBotDsStep(stones[i]) == step)
+				if (GetPlayerBotDsGrade(stones[i]) == grade && GetPlayerBotDsStep(stones[i]) == step)
 					pick.push_back(stones[i]);
 			if (pick.size() < 2 || spare < PLAYERBOT_DS_STEP_FEES[step] + 1000000)
 				continue;

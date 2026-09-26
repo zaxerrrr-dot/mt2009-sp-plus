@@ -229,6 +229,15 @@ namespace
 		// - and only while the skill can still be read up.
 		// A Forgetting Scroll on somebody's counter is what a bot past the old
 		// woman's thirty with a skill stuck at seventeen came to market for.
+		// A companion's book must name the skill it reads it for
+		// (ReadPlayerBotSidekickForgetBook); the others write theirs in.
+		if (offer->GetVnum() == PLAYERBOT_SKILL_FORGET_SCROLL_VNUM && IsPlayerBotSidekickPID(ch->GetPlayerID()))
+		{
+			const DWORD skill = (DWORD)offer->GetSocket(0);
+			return skill != 0 && ch->GetSkillMasterType(skill) == SKILL_NORMAL &&
+					ch->GetSkillLevel(skill) >= PLAYERBOT_SKILL_MASTER_TRY_LEVEL && ch->GetSkillLevel(skill) < 20 &&
+					ch->CountSpecifyItem(PLAYERBOT_SKILL_FORGET_SCROLL_VNUM) == 0;
+		}
 		if (offer->GetVnum() == PLAYERBOT_SKILL_FORGET_SCROLL_VNUM)
 			return GetPlayerBotStuckSkill(ch) != 0 &&
 					ch->GetLevel() > PLAYERBOT_SKILL_RESET_MAX_LEVEL &&
@@ -447,7 +456,7 @@ namespace
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		if (price > spare) return false;
 		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
-			return CanPlayerBotPayForSashOffer(ch, price);
+			return CanPlayerBotPayForSashOffer(ch, item, price);
 		if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
 			return CanPlayerBotPayForCraftMaterial(ch, item, price);
 		if (IsPlayerBotCorVnum(item->GetVnum()) || item->IsDragonSoul())
@@ -908,6 +917,10 @@ namespace
 			return false;
 		// The Demon Tower first (playerbot_demon_tower.h).
 		if (IsPlayerBotOnTowerBusiness(ch, state))
+			return false;
+		// And a pirate or a Zuo wave (playerbot_world_events.h): a market trip
+		// is a walk to another village.
+		if (state.bWorldEventKind != 0)
 			return false;
 		// A dropper farms one thing for the counters and buys nothing off them.
 		// The medal droppers went shopping all the same: 350 trips for 116 of

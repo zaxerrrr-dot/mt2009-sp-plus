@@ -527,6 +527,27 @@ function Resolve-M2CoopRouterFallback {
     return [pscustomobject]@{ Mode = 'vpn'; Vpn = $vpns[0] }
 }
 
+function Resolve-M2CoopAdvertisedAddress {
+    # The address the cores name in every warp (PROXY_IP), decided after the
+    # router has been asked. Through a VPN the VPN's; over the Internet with a
+    # port opened the public one. A way left to the launcher ('auto') that got
+    # no port opened and has no VPN to fall back on takes the LAN address: the
+    # public one reaches nobody then - no friend through a closed router, and
+    # not the host either, whose warps would go out to its own public address
+    # and back in only through the router's NAT loopback. A host on such a
+    # router logged in, picked a character and landed back at the channel
+    # list (26 September: no UPnP, the public address changing every few
+    # minutes). With the LAN address the host and the computers at home play;
+    # a player who forwarded the ports by hand chooses "przez internet" and
+    # keeps the public address.
+    param([Parameter(Mandatory = $true)]$Via, [AllowEmptyString()][string]$Requested = 'auto',
+        [int]$Mapped = 0, [AllowEmptyString()][string]$PublicAddress = '', [AllowEmptyString()][string]$LanAddress = '')
+    $want = $(if ($Requested) { $Requested.ToLowerInvariant() } else { 'auto' })
+    if ([string]$Via.Mode -eq 'vpn' -and $Via.Vpn) { return [pscustomobject]@{ Address = [string]$Via.Vpn.Address; Lan = $false } }
+    if ($Mapped -le 0 -and $want -eq 'auto' -and $LanAddress) { return [pscustomobject]@{ Address = $LanAddress; Lan = $true } }
+    return [pscustomobject]@{ Address = $PublicAddress; Lan = $false }
+}
+
 function Get-M2CoopRouterHelp {
     # What to do when the router opened nothing, in the router's own words
     # where it is one people have: a FRITZ!Box answers the search and refuses
@@ -1038,6 +1059,6 @@ Export-ModuleMember -Function Get-M2CoopStatePath, Read-M2CoopState, Save-M2Coop
     Get-M2CoopWorldName, Get-M2CoopFriendInvite, Get-M2CoopAccessDigest, Test-M2CoopAccess, Grant-M2CoopAccess,
     Get-M2CoopVpnProduct, Select-M2CoopVpnAdapters, Get-M2CoopVpnAdapters, Get-M2CoopVpnKindForAddress, Resolve-M2CoopHostingVia,
     Test-M2CoopHostAnswers, Get-M2CoopInviteTarget, Get-M2CoopJoinAdvice,
-    Get-M2CoopUpnpRefusal, Resolve-M2CoopRouterFallback, Get-M2CoopRouterHelp,
+    Get-M2CoopUpnpRefusal, Resolve-M2CoopRouterFallback, Resolve-M2CoopAdvertisedAddress, Get-M2CoopRouterHelp,
     Test-M2CoopLanInviteAddress, Test-M2CoopSameNetwork, Select-M2CoopJoinHost, Get-M2CoopLocalAddresses,
     Resolve-M2CoopJoinHost, Get-M2CoopJoinNotes, Test-M2CoopClientExeOld, Get-M2CoopOldClientNote

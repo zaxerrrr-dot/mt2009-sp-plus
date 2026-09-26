@@ -41,11 +41,22 @@ namespace
 	const DWORD PLAYERBOT_SASH_CHECK_MAX_MS = 10 * 60 * 1000;
 	// A visit's work: combines and one absorption, a few seconds apart.
 	const int PLAYERBOT_SASH_VISIT_MAX_STEPS = 8;
-	// 4+4 only for a bot with this much to spare over its reserve.
+	// 4+4 only from level 90 and for a bot with this much to spare over its
+	// reserve (operator, 26 September 2026).
 	const long long PLAYERBOT_SASH_RICH_GOLD = 10000000LL;
+	const int PLAYERBOT_SASH_UNIQUE_COMBINE_LEVEL = 90;
 	// A piece is absorbed only when it is worth this share of what the bot
-	// wears in that slot (GetPlayerBotEquipmentScore, class-neutral).
+	// wears in that slot (GetPlayerBotEquipmentScore, class-neutral), has a
+	// bonus, and asks a level no more than this far under the bot's - "tylko
+	// przedmioty bliskie poziomem bota i z bonusami" (operator, 26 September
+	// 2026): of 56 filled sashes 49 held a piece without a bonus, most of
+	// levels 5 to 25 on bots of 40 to 64.
 	const int PLAYERBOT_SASH_ABSORB_MIN_PERCENT = 40;
+	const int PLAYERBOT_SASH_ABSORB_LEVEL_SPAN = 10;
+	// A lone sash - the only one of its grade a keeper holds, waiting for a
+	// pair - is goods again after this long: 260 keepers sat on one grade-1
+	// sash each, the very supply the others waited for (26 September 2026).
+	const DWORD PLAYERBOT_SASH_LONE_RELEASE_MS = 3 * 60 * 60 * 1000;
 	// A sash bought off a counter: at most this share of the spare purse.
 	const int PLAYERBOT_SASH_MARKET_PURSE_PERCENT = 25;
 	// Uriel: npc.txt cells (713,605), (655,553) and (425,716) on each first
@@ -140,11 +151,13 @@ namespace
 		const int level = ch->GetLevel();
 		if (level < PLAYERBOT_SASH_MIN_LEVEL)
 			return t;
+		// From 65 any unique; from 90, with the money, 4+4 up to 21%
+		// (operator, 26 September 2026: the 13% and 17% of 75-89 asked 3+3
+		// rolls a bot without ten million had to rebuild).
 		if (level < 50)       { t.grade = 2; t.absorption = ACCE_GRADE_2_ABS; }
 		else if (level < 65)  { t.grade = 3; t.absorption = ACCE_GRADE_3_ABS; }
-		else if (level < 75)  { t.grade = 4; t.absorption = 13; }
-		else                  { t.grade = 4; t.absorption = 17; }
-		if (level >= 90 && GetPlayerBotSashSpareGold(ch) >= PLAYERBOT_SASH_RICH_GOLD)
+		else                  { t.grade = 4; t.absorption = ACCE_GRADE_4_ABS_MIN; }
+		if (level >= PLAYERBOT_SASH_UNIQUE_COMBINE_LEVEL && GetPlayerBotSashSpareGold(ch) >= PLAYERBOT_SASH_RICH_GOLD)
 			t.absorption = 21;
 		return t;
 	}
@@ -190,6 +203,48 @@ namespace
 		}
 	}
 
+	// A lone sash: empty, under the target grade, and the only one of its
+	// grade in the bag - it waits for a pair. After
+	// PLAYERBOT_SASH_LONE_RELEASE_MS alone it is released: goods again, for
+	// the keeper that has the other one (IsPlayerBotKeptSash), and never taken
+	// back off the counter (FindPlayerBotShopUnwantedLine).
+	std::map<DWORD, DWORD> s_mapPlayerBotLoneSashSince;
+	std::set<DWORD> s_setPlayerBotReleasedSash;
+
+	bool IsPlayerBotSashLone(LPCHARACTER ch, LPITEM item, const TPlayerBotSashTarget& t)
+	{
+		if (!IsPlayerBotSashUsable(item) || IsPlayerBotSashAbsorbed(item))
+			return false;
+		const int grade = GetPlayerBotSashGrade(item);
+		if (grade >= t.grade)
+			return false;
+		std::vector<LPITEM> bag;
+		CollectPlayerBotBagSashes(ch, bag);
+		for (size_t i = 0; i < bag.size(); ++i)
+			if (bag[i] != item && !IsPlayerBotSashAbsorbed(bag[i]) && GetPlayerBotSashGrade(bag[i]) == grade)
+				return false;
+		return true;
+	}
+
+	// The clocks, on the keeper's sash look (ManagePlayerBotSash).
+	void NotePlayerBotLoneSashes(LPCHARACTER ch, const TPlayerBotSashTarget& t, DWORD dwNow)
+	{
+		std::vector<LPITEM> bag;
+		CollectPlayerBotBagSashes(ch, bag);
+		for (size_t i = 0; i < bag.size(); ++i)
+		{
+			if (IsPlayerBotSashLone(ch, bag[i], t))
+				s_mapPlayerBotLoneSashSince.insert(std::make_pair(bag[i]->GetID(), dwNow));
+			else
+				s_mapPlayerBotLoneSashSince.erase(bag[i]->GetID());
+		}
+	}
+
+	bool IsPlayerBotSashReleased(DWORD itemId)
+	{
+		return s_setPlayerBotReleasedSash.count(itemId) != 0;
+	}
+
 	// Kept, not goods: a keeper's sashes while its sash is not done, the best
 	// PLAYERBOT_SASH_KEEP of those at or under its target grade; once done,
 	// only one that would beat what it wears. The worn one is never goods.
@@ -210,6 +265,20 @@ namespace
 			return RankPlayerBotSash(item) > RankPlayerBotSash(ch->GetWear(WEAR_COSTUME_ACCE));
 		if (GetPlayerBotSashGrade(item) > t.grade)
 			return true;
+		if (IsPlayerBotSashReleased(item->GetID()))
+			return false;
+		{
+			std::map<DWORD, DWORD>::const_iterator lone = s_mapPlayerBotLoneSashSince.find(item->GetID());
+			if (lone != s_mapPlayerBotLoneSashSince.end() &&
+					get_dword_time() - lone->second >= PLAYERBOT_SASH_LONE_RELEASE_MS && IsPlayerBotSashLone(ch, item, t))
+			{
+				s_setPlayerBotReleasedSash.insert(item->GetID());
+				s_mapPlayerBotLoneSashSince.erase(lone);
+				sys_log(0, "PLAYERBOT_SASH: lone released pid=%u name=%s lv=%d vnum=%u grade=%d",
+						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), item->GetVnum(), GetPlayerBotSashGrade(item));
+				return false;
+			}
+		}
 		const int grade = GetPlayerBotSashGrade(item);
 		const int absorption = GetPlayerBotSashAbsorption(item);
 		int better = 0;
@@ -248,10 +317,76 @@ namespace
 		return grade < t.grade || IsPlayerBotSashAtTarget(offer, t);
 	}
 
-	bool CanPlayerBotPayForSashOffer(LPCHARACTER ch, long long price)
+	// ------------------------------------------------------------ prices
+	//
+	// A sash costs what it takes to make, on average, plus
+	// PLAYERBOT_SASH_PRICE_MARGIN_PERCENT - the way the Dragon Stones are
+	// priced ("tak jak cory, ze 25% drozej niz koszt wyrobienia", operator,
+	// 26 September 2026). A grade-1 sash, the boss's drop, stands at
+	// PLAYERBOT_SASH_PRICE; each grade above is made at Uriel from two of the
+	// grade under it: on a failure the second one and the fee are gone and the
+	// first stays, so one of grade g+1 costs
+	//   cost(g) + (cost(g) + fee(g)) / chance(g)
+	// with the engine's fees and chances (item_length.h ACCE_GRADE_*_PRICE,
+	// ACCE_COMBINE_GRADE_*): 0.7M, 1.7M, 4.41M, 13.84M. A unique's is by its
+	// absorption: 3+3 gives 12-19% (15.5% on average) for cost(4), and past
+	// 19% every point is a third of a 4+4 success, (cost(4) + fee(4)) / 30%.
+	// On the yang rate and inflation like the bots' other goods, and not
+	// marked down (FindPlayerBotShopUnwantedLine's reprice). One flat 700 000
+	// for every grade put a unique at a grade-1's price and let the sale
+	// memory drive a grade 1 to 91 million.
+	const int PLAYERBOT_SASH_PRICE_MARGIN_PERCENT = 25;
+
+	double GetPlayerBotSashGradeCost(int grade)
+	{
+		static double s_cost[5];
+		static bool s_built = false;
+		if (!s_built)
+		{
+			const double fee[5] = { 0.0, (double)ACCE_GRADE_1_PRICE, (double)ACCE_GRADE_2_PRICE,
+					(double)ACCE_GRADE_3_PRICE, (double)ACCE_GRADE_4_PRICE };
+			const double chance[5] = { 1.0, ACCE_COMBINE_GRADE_1 / 100.0, ACCE_COMBINE_GRADE_2 / 100.0,
+					ACCE_COMBINE_GRADE_3 / 100.0, ACCE_COMBINE_GRADE_4 / 100.0 };
+			s_cost[0] = 0.0;
+			s_cost[1] = (double)PLAYERBOT_SASH_PRICE;
+			for (int g = 1; g < 4; ++g)
+				s_cost[g + 1] = s_cost[g] + (s_cost[g] + fee[g]) / chance[g];
+			s_built = true;
+		}
+		return s_cost[std::max(1, std::min(grade, 4))];
+	}
+
+	DWORD GetPlayerBotSashPrice(LPITEM item)
+	{
+		if (!IsPlayerBotSashItem(item))
+			return 0;
+		const int grade = std::max(1, std::min(GetPlayerBotSashGrade(item), 4));
+		double cost = GetPlayerBotSashGradeCost(grade);
+		if (grade == 4)
+		{
+			const double average = (ACCE_GRADE_4_ABS_MIN + 1 + ACCE_GRADE_4_ABS_MAX_COMB) / 2.0;
+			const int abs = std::max(GetPlayerBotSashAbsorption(item), (int)ACCE_GRADE_4_ABS_MIN);
+			const double perPoint = (cost + (double)ACCE_GRADE_4_PRICE) / (ACCE_COMBINE_GRADE_4 / 100.0) /
+					((1 + ACCE_GRADE_4_ABS_RANGE) / 2.0);
+			if (abs <= ACCE_GRADE_4_ABS_MAX_COMB)
+				cost = cost * abs / average;
+			else
+				cost = cost * ACCE_GRADE_4_ABS_MAX_COMB / average + (abs - ACCE_GRADE_4_ABS_MAX_COMB) * perPoint;
+		}
+		long long price = (long long)(cost * (100 + PLAYERBOT_SASH_PRICE_MARGIN_PERCENT) / 100.0);
+		price = (long long)ScalePlayerBotIwakuraPrice((DWORD)std::min<long long>(price, 0xFFFFFFFFLL));
+		price = (price + 500) / 1000 * 1000;
+		return (DWORD)std::min<long long>(std::max<long long>(price, 1000), GOLD_MAX - 1000);
+	}
+
+	// Within a keeper's purse share, and never over a fifth above the price
+	// (a counter's 91 million for a grade-1 was bought at that).
+	bool CanPlayerBotPayForSashOffer(LPCHARACTER ch, LPITEM offer, long long price)
 	{
 		const long long spare = GetPlayerBotSashSpareGold(ch);
-		return price > 0 && price <= spare * PLAYERBOT_SASH_MARKET_PURSE_PERCENT / 100;
+		const long long fair = (long long)GetPlayerBotSashPrice(offer);
+		return price > 0 && price <= spare * PLAYERBOT_SASH_MARKET_PURSE_PERCENT / 100 &&
+				(fair <= 0 || price <= fair * 12 / 10);
 	}
 
 	// Asked before a market walk, without reading a counter: a keeper short of
@@ -270,8 +405,10 @@ namespace
 		for (size_t i = 0; i < bag.size(); ++i)
 			if (!IsPlayerBotSashAbsorbed(bag[i]) && IsPlayerBotSashAtTarget(bag[i], t))
 				return false;
-		for (DWORD vnum = 85001; vnum <= 85024; ++vnum)
+		for (DWORD vnum = 85001; vnum <= 85104; ++vnum)
 		{
+			if (vnum == 85025)
+				vnum = 85101;
 			const TPlayerBotMarketLedgerEntry* e = GetPlayerBotMarketLedgerEntry(vnum);
 			if (e && e->dwSupplyUnits > 0)
 				return true;
@@ -350,9 +487,9 @@ namespace
 				continue;
 			if (grade == 4)
 			{
-				// Uniques: only past level 75, with money to lose at 30%, and
+				// Uniques: only from level 90, with money to lose at 30%, and
 				// while the better one is under the target.
-				if (ch->GetLevel() < 75 || spare < PLAYERBOT_SASH_RICH_GOLD ||
+				if (ch->GetLevel() < PLAYERBOT_SASH_UNIQUE_COMBINE_LEVEL || spare < PLAYERBOT_SASH_RICH_GOLD ||
 						GetPlayerBotSashAbsorption(best) >= t.absorption)
 					continue;
 			}
@@ -403,6 +540,11 @@ namespace
 				if (!worn || GetPlayerBotEquipmentScore(item, ch) > GetPlayerBotEquipmentScore(worn, ch))
 					continue;
 			}
+			// Close to the bot's level and with a bonus to carry.
+			const int limit = (int)item->GetLevelLimit();
+			if (limit > ch->GetLevel() || limit < ch->GetLevel() - PLAYERBOT_SASH_ABSORB_LEVEL_SPAN ||
+					item->GetAttributeCount() <= 0)
+				continue;
 			const long long bar = weapon ? weaponBar : bodyBar;
 			const long long score = GetPlayerBotEquipmentScore(item, NULL);
 			const long long percent = bar > 0 ? score * 100 / bar : 100;
@@ -599,6 +741,7 @@ namespace
 		{
 			state.dwNextSashCheckTime = dwNow + number(PLAYERBOT_SASH_CHECK_MIN_MS, PLAYERBOT_SASH_CHECK_MAX_MS);
 			WearPlayerBotBestSash(ch, t);
+			NotePlayerBotLoneSashes(ch, t, dwNow);
 			if (!HasPlayerBotSashWork(ch, t))
 				return false;
 
@@ -718,8 +861,10 @@ namespace
 namespace
 {
 	bool IsPlayerBotKeptSash(LPCHARACTER, LPITEM) { return false; }
+	bool IsPlayerBotSashReleased(DWORD) { return false; }
+	DWORD GetPlayerBotSashPrice(LPITEM) { return 0; }
 	bool WantsPlayerBotSashOffer(LPCHARACTER, LPITEM) { return false; }
-	bool CanPlayerBotPayForSashOffer(LPCHARACTER, long long) { return false; }
+	bool CanPlayerBotPayForSashOffer(LPCHARACTER, LPITEM, long long) { return false; }
 	bool PlayerBotWantsSashFromMarket(LPCHARACTER) { return false; }
 	void NotePlayerBotSashBought(LPCHARACTER, DWORD, long long) {}
 	bool ManagePlayerBotSash(LPCHARACTER, TPlayerBotAIState&, DWORD) { return false; }

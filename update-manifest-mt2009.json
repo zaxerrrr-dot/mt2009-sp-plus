@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-26T13:51:36Z",
-  "statusMessage": "Serwer 2.7.0 i klient 2.0.17: alchemia u botow, Kamienie Smoka w handlu, Towarzysz sprzedaje zlom.",
+  "publishedAt": "2026-09-26T18:04:36Z",
+  "statusMessage": "Serwer 2.8.0 i klient 2.0.18: podglad skrzyn i dropu, alchemia klasami, szarfy po kosztach, nowe wydarzenia.",
   "server": {
-    "version": "2.7.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.7.0.zip",
-    "sha256": "98C953A6191286549339FE718352ED460F5E910B9A0D119770D1C955F69DA4BA",
-    "size": 56029892
+    "version": "2.8.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.0.zip",
+    "sha256": "91E569DDCAF3BEA621C818BDE8528E6A32711C18992E3E3492F3FEFCB6008978",
+    "size": 56211170
   },
   "client": {
-    "version": "2.0.17",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.17.zip",
-    "sha256": "ABE5E18CC03C8B57D37415B3065390F5D83D0D15A0691130C988CFB79B6242C8",
-    "size": 49479690
+    "version": "2.0.18",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.18.zip",
+    "sha256": "CFD0533170FD872DDE505CC2B3732930B49A1277C85C7A056D0F47BA758F26E3",
+    "size": 50535538
   }
 }

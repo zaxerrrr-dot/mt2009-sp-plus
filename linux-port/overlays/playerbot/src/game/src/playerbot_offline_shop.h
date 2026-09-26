@@ -76,6 +76,8 @@ namespace {
         if (IsPlayerBotHeldForCompany(ch)) return "company";
         // Nor out of the Demon Tower, nor off a raid on its way there.
         if (IsPlayerBotOnTowerBusiness(ch, state)) return "tower";
+        // Nor off a pirate or a Zuo wave (playerbot_world_events.h).
+        if (state.bWorldEventKind != 0) return "world_event";
         // Nor out of a Monkey Dungeon: a visit is half an hour in rooms
         // joined only by their doors, and a keeper warped out of it has the
         // whole way back in to walk. The service waits for the way out.
@@ -426,6 +428,23 @@ namespace {
 				M2_DELETE(preview);
 				continue;
 			}
+            // An ordinary or brilliant Dragon Stone comes home, one a visit:
+            // those are material now, never goods (IsPlayerBotSurplusDragonSoul).
+            if (preview->IsDragonSoul() && (preview->GetVnum() / 1000) % 10 < 2) {
+                if (!unwanted) { unwanted = id; reason = "ds_low_grade"; }
+                M2_DELETE(preview);
+                continue;
+            }
+            // A sash its keeper still wants for its own (WantsPlayerBotSashOffer)
+            // comes home, one a visit - the lines from before it kept them
+            // stood on keepers' counters for good - unless it is a lone one
+            // the keeper let go (IsPlayerBotSashReleased).
+            if (ch && preview->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(preview->GetVnum()) &&
+                    !IsPlayerBotSashReleased(id) && WantsPlayerBotSashOffer(ch, preview)) {
+                if (!unwanted) { unwanted = id; reason = "sash_keeper"; }
+                M2_DELETE(preview);
+                continue;
+            }
             // A piece Iwakura's list keeps for the storekeeper comes home, one a
             // visit, and goes down on the next Trader's visit (playerbot_lpp.h).
             if (IsPlayerBotLppKeptItem(ch, preview)) {
@@ -1563,10 +1582,11 @@ namespace {
                     int discount = (int)(standing / PLAYERBOT_OFFLINE_UNSOLD_STEP_MS) * PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT;
                     if (discount > PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL)
                         discount = PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL;
-                    // Materialy Rzemieslnicze, Cor Draconis and the Dragon Stones
-                    // keep the operator's prices.
+                    // Materialy Rzemieslnicze, Cor Draconis, the Dragon Stones and
+                    // the sashes keep the operator's prices.
                     if (preview->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
-                            IsPlayerBotCorVnum(preview->GetVnum()) || preview->IsDragonSoul())
+                            IsPlayerBotCorVnum(preview->GetVnum()) || preview->IsDragonSoul() ||
+                            (preview->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(preview->GetVnum())))
                         discount = 0;
                     const long long asking = (long long)GetPlayerBotShopAskingPrice(preview) * (100 - discount) / 100;
                     price.yang = std::max(asking, (long long)GetPlayerBotRefineInvestment(preview));

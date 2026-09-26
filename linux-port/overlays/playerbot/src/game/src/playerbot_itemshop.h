@@ -169,9 +169,11 @@ namespace
 		state.dwNextItemShopBalanceTime = dwNow + PLAYERBOT_ISHOP_BALANCE_INTERVAL;
 	}
 
+	// The saddlebag page too (INVENTORY_MAX_NUM, not PLAYERBOT_BAG_CELLS): a
+	// coupon the panel hands a bot with a full bag lands in its open rows.
 	LPITEM FindPlayerBotVoucher(LPCHARACTER ch)
 	{
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		for (WORD cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (item && !item->isLocked() && !item->IsExchanging() &&
@@ -182,37 +184,65 @@ namespace
 		return NULL;
 	}
 
-	// One voucher a pass, the way the package's quest cashes one for a player:
-	// the charge goes through the db core (ChargeCash: cash += value), the row
-	// in itemshop_dragon_scroll is the same, and the voucher goes. The quest
-	// itself is not run - item.remove() there takes the whole stack for one
-	// charge, and a dialog-free UseItem would still cost the bot the flag the
-	// quest checks; the flag is honoured here.
+	// Every voucher in the bag in one pass, every unit of every stack - the
+	// charge the package's quest makes for a player (AddCash through the db
+	// core, cash += value, the itemshop_dragon_scroll row), without its
+	// dialog. It was one unit a pass, and a pass comes every ten minutes: a
+	// stack of 200 took a day and a half, and a bot handed coupons by the
+	// panel sat on almost all of them ("boty maja klikac wszystkie kupony SM,
+	// a nie tylko 50", operator, 26 September 2026). The quest itself is not
+	// run - item.remove() there takes the whole stack for one charge, and a
+	// dialog-free UseItem would still cost the bot the flag the quest checks;
+	// the flag is honoured here.
 	bool UsePlayerBotVoucher(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
-		LPITEM voucher = FindPlayerBotVoucher(ch);
-		if (!voucher)
-			return false;
 		if (quest::CQuestManager::instance().GetEventFlag("block_dragon_voucher") > 0)
 			return false;
-		const int value = voucher->GetValue(0);
-		if (value <= 0)
-			return false;
-		const DWORD id = voucher->GetID();
-		if (!CItemShopManager::instance().AddCash(ch, ERequestCharge_Cash, value, false))
-			return false;
-		LogManager::instance().Query("INSERT INTO itemshop_dragon_scroll VALUES (%u, %u, NOW(), %u, %d)",
-				ch->GetPlayerID(), ch->GetDesc()->GetAccountTable().id, id, value);
-		if (voucher->GetCount() > 1)
-			voucher->SetCount(voucher->GetCount() - 1);
-		else
+		int cashed = 0;
+		long long total = 0;
+		for (LPITEM voucher = FindPlayerBotVoucher(ch); voucher; voucher = FindPlayerBotVoucher(ch))
+		{
+			const int value = voucher->GetValue(0);
+			const int count = (int)voucher->GetCount();
+			if (value <= 0 || count <= 0)
+				break;
+			// One charge for the stack, kept inside the packet's long.
+			const long long coins = (long long)value * count;
+			if (coins > INT_MAX || !CItemShopManager::instance().AddCash(ch, ERequestCharge_Cash, (long)coins, false))
+				break;
+			LogManager::instance().Query("INSERT INTO itemshop_dragon_scroll VALUES (%u, %u, NOW(), %u, %lld)",
+					ch->GetPlayerID(), ch->GetDesc()->GetAccountTable().id, voucher->GetID(), coins);
 			ITEM_MANAGER::instance().RemoveItem(voucher, "PLAYERBOT_VOUCHER");
-		state.iDragonCoins += value;
-		++s_uPlayerBotVouchersUsed;
-		s_uPlayerBotCoinsCharged += (unsigned int)value;
-		sys_log(0, "PLAYERBOT_ISHOP: voucher cashed pid=%u name=%s coins=%d balance=%d",
-				ch->GetPlayerID(), ch->GetName(), value, state.iDragonCoins);
+			state.iDragonCoins = (int)std::min<long long>((long long)state.iDragonCoins + coins, INT_MAX);
+			s_uPlayerBotVouchersUsed += (unsigned int)count;
+			s_uPlayerBotCoinsCharged += (unsigned int)coins;
+			cashed += count;
+			total += coins;
+		}
+		if (cashed == 0)
+			return false;
+		sys_log(0, "PLAYERBOT_ISHOP: voucher cashed pid=%u name=%s vouchers=%d coins=%lld balance=%d",
+				ch->GetPlayerID(), ch->GetName(), cashed, total, state.iDragonCoins);
 		return true;
+	}
+
+	// The vouchers, every minute and ahead of the stall: a bot standing at its
+	// counter ends its pass in ManagePlayerBotPrivateShop and never reached
+	// the ItemShop's upkeep, so the coupons the panel handed out sat in the
+	// bags of every stall keeper - 13 cashed of 1578 delivered in half an
+	// hour on the test world (26 September 2026). The account is read first
+	// when its balance is not known or due, never on the heels of a charge.
+	void CashPlayerBotVouchers(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded() || ch->IsDead() || !ch->GetDesc() || dwNow < state.dwNextVoucherCheckTime)
+			return;
+		state.dwNextVoucherCheckTime = dwNow + PLAYERBOT_ISHOP_VOUCHER_CHECK_INTERVAL +
+				PlayerBotNavHash(ch->GetPlayerID() ^ 0x564f5543U) % 15000U;
+		if (!IsPlayerBotItemShopEnabled() || ch->GetExchange() || !FindPlayerBotVoucher(ch))
+			return;
+		if (!state.bDragonBalanceKnown || dwNow >= state.dwNextItemShopBalanceTime)
+			RefreshPlayerBotDragonBalance(ch, state, dwNow);
+		UsePlayerBotVoucher(ch, state, dwNow);
 	}
 
 	// --------------------------------------------------------------- wishes
@@ -448,7 +478,7 @@ namespace
 	// counter.
 	DWORD PickPlayerBotHairstyleForCounter(LPCHARACTER ch)
 	{
-		if (!ch || s_vecPlayerBotItemShopHair.empty() || !PlayerBotCanOpenShop(ch) ||
+		if (!ch || s_vecPlayerBotItemShopHair.empty() || !PlayerBotHasCounter(ch) ||
 				(PlayerBotNavHash(ch->GetPlayerID() ^ 0x48545244U) % PLAYERBOT_ISHOP_HAIR_TRADE_SHARE) != 0)
 			return 0;
 #if defined(ENABLE_IKASHOP_RENEWAL)
@@ -829,6 +859,10 @@ namespace
 				s_uPlayerBotItemShopRefusals, s_uPlayerBotItemShopSaving, bought.empty() ? "-" : bought.c_str());
 	}
 #else
+	void CashPlayerBotVouchers(LPCHARACTER, TPlayerBotAIState&, DWORD)
+	{
+	}
+
 	void ManagePlayerBotItemShop(LPCHARACTER, TPlayerBotAIState&, DWORD)
 	{
 	}

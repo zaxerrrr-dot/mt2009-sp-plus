@@ -43,16 +43,15 @@ server later. Nothing is wasted.
   Docker Desktop wants a restart after it is first installed, so you may have to
   run the command twice. That is normal.
 
-### The command
+### How to install
 
-Open **PowerShell** (press Start, type `powershell`, press Enter) and paste:
+Unpack the MT2009 PLUS package and double-click **Metin2-Launcher-GUI.bat** in
+its folder, then **GRAJ**. The launcher installs Docker Desktop if needed,
+builds the server and keeps it updated from the MT2009 PLUS repository
+(**SPRAWDŹ AKTUALIZACJE**).
 
-```powershell
-$env:M2_SRC_ARCHIVE = 'C:\path\Reference_Server.zip'
-irm https://raw.githubusercontent.com/TieruYT/metin2-playerbots/main/installer/install.ps1 | iex
-```
-
-That is it. Now read the next section while it works.
+> Do not use an `install.ps1`/`install.sh` command from another project's page:
+> it installs that project's server, not MT2009 PLUS, and updates it from there.
 
 ### What it is doing, in plain words
 
@@ -95,28 +94,24 @@ server instead and follow the section below.
 
 Around 5 € a month at Hetzner, Netcup or Contabo. Any provider works.
 
-### The command
+### How to install
 
-Connect to your server over SSH, then paste:
+The easiest way: in the launcher on your PC, **SERWER NA VPS** – it uploads the
+MT2009 PLUS server folder over SSH and installs it there.
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/TieruYT/metin2-playerbots/main/installer/install.sh | \
-  sudo sh -s -- --archive /path/Reference_Server.zip --no-client
-```
-
-### With your own domain name (recommended)
-
-If you own a domain, point it at your server's IP address first, then run:
+By hand: upload the whole MT2009 PLUS server folder (the one with `VERSION` and
+`linux-port/` in it) to the VPS, connect over SSH and run from that folder:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/TieruYT/metin2-playerbots/main/installer/install.sh | sudo sh -s -- \
-    --archive /path/Reference_Server.zip --no-client \
-    --domain panel.yourdomain.com --email you@example.com
+sudo sh linux-port/tools/vps-install.sh            # install
+sudo sh linux-port/tools/vps-install.sh status     # still building?
+sudo sh linux-port/tools/vps-install.sh update     # the next version
 ```
 
-This gets a free certificate and your admin panel runs over **HTTPS** instead of
-plain HTTP. Worth doing: without it, your panel password travels across the
-internet unencrypted, and anyone in between can read it.
+Updates always come from the MT2009 PLUS repository
+(`zaxerrrr-dot/mt2009-sp-plus`). An install command from another project's
+page installs that project's server instead, and its updates never bring the
+MT2009 PLUS content (alchemy, sashes, saddlebags...).
 
 > **One thing to know about domains and the game.** If you use Cloudflare with
 > the orange cloud switched on, that works for the panel but **not** for the game
