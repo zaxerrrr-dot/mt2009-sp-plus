@@ -2,8 +2,9 @@
 
 Klient miał dane `season2/metin2_map_skipia_dungeon_01` i
 `season2/metin2_map_skipia_dungeon_02`, ale silnik ładował je przez pełną
-ścieżkę `maps/season2/...`. Dodano paczkę `maps`, która zawiera oba kompletne
-zestawy danych pod ścieżką oczekiwaną przez silnik.
+ścieżkę `maps/season2/...`. Dla Groty V2 używa też wariantu
+`maps/metin2_map_skipia_dungeon_02/...`. Paczka `maps` zawiera kompletne dane
+pod wszystkimi trzema ścieżkami oczekiwanymi przez silnik.
 
 Aktualizacja dodaje `pack/maps.data` i `pack/maps.index` oraz dopisuje paczkę
 `maps` do `pack/Index`. Zachowuje istniejącą paczkę `season2` bez zmian.

@@ -17,6 +17,15 @@ every version here.
 
 ---
 
+## Klient 2.0.17 — 2026-09-26 — Naprawa Groty Wygnańców V2
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Serwer zostaje 2.6.0.
+
+- Naprawione wejście do Groty Wygnańców V2: klient nie wyłącza się już po
+  przejściu na drugą część Groty.
+
+---
+
 ## 2.6.0 — 2026-09-26 — Juki konne, szarfy botów, Grota Wygnańców
 
 Serwer 2.6.0 i klient 2.0.16. **Zaktualizuj oba** w launcherze
