@@ -35,6 +35,7 @@ param(
 #   rare switches      item_manager.cpp, char_item.cpp (MT2009_PLUS_RARE_TOGGLE_V1)
 #   speedhack slack    input_main.cpp            (MT2009_PLUS_SPEEDHACK_CLOCK_V1)
 #   Cor stacking       char_item.cpp             (IsStackableCorDraconisVnum)
+#   Cor pickup stacks  char_item.cpp             (MT2009_PLUS_COR_AUTOSTACK_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -263,6 +264,17 @@ if ((Test-Path -LiteralPath $corStackApply -PathType Leaf) -and
     if ($corStackResult.Changed) {
         $syncedFiles++
         Write-Host 'Cor Draconis boxes stack.' -ForegroundColor DarkGray
+    }
+}
+# And join the bag's stack when picked up or given (server-patches/corautostack,
+# after corstack, whose helper it uses).
+$corAutoStackApply = Join-Path $repo 'server-patches/corautostack/Apply-CorAutoStackPatch.ps1'
+if ((Test-Path -LiteralPath $corAutoStackApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charItemSource -PathType Leaf)) {
+    $corAutoStackResult = & $corAutoStackApply -SourceFile $charItemSource
+    if ($corAutoStackResult.Changed) {
+        $syncedFiles++
+        Write-Host 'A Cor Draconis picked up joins the stack in the bag.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
