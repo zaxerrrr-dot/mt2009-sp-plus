@@ -1965,6 +1965,10 @@ def item_icon_url(vnum):
     # Most upgrade series use the same client icon for +0 through +9.
     # Prefer an explicit mapping, then fall back to the base VNUM safely.
     icon = ITEM_ICONS.get(str(value)) or ITEM_ICONS.get(str(value - value % 10))
+    # A Dragon Stone's icon is its kind, grade and step; the strength (the
+    # tens digit) does not change it.
+    if not icon and 110000 <= value <= 175499:
+        icon = ITEM_ICONS.get(str(value - value % 100))
     return url_for("static", filename=f"icons/{quote(icon)}") if icon else None
 
 
@@ -2503,6 +2507,10 @@ def player(pid):
     # bag (ITEM_PET, 37): a summoned pet is the game's state, not a slot.
     costume_slots = {19: "costume_body", 20: "costume_hair", 24: "costume_weapon", 22: "costume_acce", 21: "costume_mount"}
     costumes = {}
+    # The Dragon Stones worn (length.h: DRAGON_SOUL_EQUIP_SLOT_START is
+    # INVENTORY_MAX_NUM + WEAR_MAX_NUM; the database keeps WEAR_MAX_NUM (32) +
+    # deck * 7 + kind): deck I at 32-38, deck II at 39-45.
+    alchemy = [{}, {}]
     for item in [*items, *safebox]:
         item["item_name"] = resolve_item_display_name(item["vnum"], item.get("socket0"), game_text(item["item_name"]))
         item["item_size"] = max(1, min(3, int(item.get("item_size") or 1)))
@@ -2512,12 +2520,27 @@ def player(pid):
             left = int(item["socket0"]) - int(time.time())
             days, hours = left // 86400, left % 86400 // 3600
             item["base_stats"].insert(0, f"Wygasa za: {days} {'dzień' if days == 1 else 'dni'} {hours} h" if days else f"Wygasa za: {hours} h")
+        # A Dragon Stone: grade, step and strength are in its vnum, the time
+        # it has left (seconds, spent while the deck is active) in socket 0.
+        if int(item.get("item_type") or 0) == 29 and 110000 <= int(item["vnum"] or 0) <= 175499:
+            v = int(item["vnum"])
+            grades = ["Zwykły", "Błyszczący", "Rzadki", "Antyczny", "Legendarny", "Mityczny"]
+            steps = ["Najniższy", "Niski", "Średni", "Wysoki", "Najwyższy"]
+            left = int(item.get("socket0") or 0)
+            item["base_stats"] = [
+                f"Klasa: {grades[min(5, v // 1000 % 10)]}",
+                f"Stopień: {steps[min(4, v // 100 % 10)]}",
+                f"Siła: +{v // 10 % 10}",
+                f"Pozostały czas: {left // 3600} h {left % 3600 // 60} min" if left > 0 else "Pozostały czas: brak",
+            ]
         item["bonuses"] = [apply_text(item.get(f"applytype{i}"), item.get(f"applyvalue{i}")) for i in range(3) if item.get(f"applytype{i}") and item.get(f"applyvalue{i}")]
         item["bonuses"] += [apply_text(item.get(f"attrtype{i}"), item.get(f"attrvalue{i}")) for i in range(7) if item.get(f"attrtype{i}") and item.get(f"attrvalue{i}")]
         if item["window"] == "EQUIPMENT" and item["pos"] in equipment_slots:
             equipment[equipment_slots[item["pos"]]] = item
         elif item["window"] == "EQUIPMENT" and item["pos"] in costume_slots:
             costumes[costume_slots[item["pos"]]] = item
+        elif item["window"] == "EQUIPMENT" and 32 <= int(item["pos"] or 0) < 46:
+            alchemy[(int(item["pos"]) - 32) // 7][(int(item["pos"]) - 32) % 7] = item
         elif item["window"] == "INVENTORY" and int(item.get("item_type") or 0) == 37 and "pet" not in costumes:
             costumes["pet"] = item
         elif item["window"] == "INVENTORY" and int(item["pos"] or 0) < INVENTORY_PAGE_SIZE * INVENTORY_PAGES:
@@ -2542,7 +2565,7 @@ def player(pid):
     offline_shop = bot_offline_shop(pid)
     character_stats = character_stat_summary(pid)
     # Client uiinventory.py: a page every 45 cells, page I at slot 0.
-    return render_template("player.html", character=character, equipment=equipment, costumes=costumes, inventory=inventory, safebox=safebox, inventory_pages=INVENTORY_PAGES, has_safebox=bool(safebox), gear_history=gear_history, offline_shop=offline_shop, character_stats=character_stats)
+    return render_template("player.html", character=character, equipment=equipment, costumes=costumes, alchemy=alchemy, inventory=inventory, safebox=safebox, inventory_pages=INVENTORY_PAGES, has_safebox=bool(safebox), gear_history=gear_history, offline_shop=offline_shop, character_stats=character_stats)
 
 
 # VIP and "Dragon Coins" both turned out to be real, already-working engine

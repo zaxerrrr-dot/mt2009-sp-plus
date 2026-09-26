@@ -83,3 +83,8 @@
 .costume-icon:hover{z-index:5}
 .costume-icon:hover .item-tip{display:block}
 @media(max-width:650px){.costume-row{margin:8px auto 4px}}
+
+/* Dragon Stones worn (deck I, deck II when used): the costume row's frame,
+   four to a line and its own title. */
+.alchemy-row{grid-template-columns:repeat(4,1fr)}
+.alchemy-row::before{content:attr(data-title)}
