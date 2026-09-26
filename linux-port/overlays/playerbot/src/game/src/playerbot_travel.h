@@ -1334,6 +1334,21 @@ namespace
 			const int segClear = diagNav.Init(ch->GetMapIndex())
 					? (diagNav.SegmentClearWorld(ch->GetX(), ch->GetY(), portalX, portalY) ? 1 : 0)
 					: -1;
+			// Ground the portal is not on at all: a pocket of the map no walk
+			// leaves - Hwang Temple (map 65) around (544000-554000, 74000-94000),
+			// where the boss raid puts a bot down, 382 "unreachable" plans and
+			// 86 stalls in one night, every one of them the same bot walking
+			// into the same wall. The walk cannot end; the move is made the way
+			// the stranded recovery makes it, straight to where the portal leads.
+			if (diagNav.Init(ch->GetMapIndex()) &&
+					!diagNav.CanReach(ch->GetX(), ch->GetY(), portalX, portalY) &&
+					TransitionPlayerBotMap(ch, state, targetMap, targetX, targetY, dwNow, reason))
+			{
+				sys_log(0, "PLAYERBOT_WORLD: cut off from the portal, moved pid=%u name=%s map=%ld pos=(%ld,%ld) portal=(%ld,%ld) to=%ld reason=%s",
+						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(),
+						portalX, portalY, targetMap, reason ? reason : "?");
+				return true;
+			}
 			// Tagged by the portal, not by the whole subsystem: one tag for
 			// every portal in the world meant one line a minute between them,
 			// and the busiest one hid the other nine behind its own count.
@@ -1348,7 +1363,10 @@ namespace
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(),
 					portalX, portalY, distance, reason ? reason : "?", ch->IsRiding() ? 1 : 0,
 					(unsigned int)state.bLastNavOutcome);
-			PlayerBotLogThrottled(szStuckTag, dwNow,
+			// Its own tag: sharing the syserr line's, this one was never written.
+			char szDiagTag[64];
+			snprintf(szDiagTag, sizeof(szDiagTag), "portal_diag:%s", reason ? reason : "?");
+			PlayerBotLogThrottled(szDiagTag, dwNow,
 					"PLAYERBOT_WORLD: portal walk stalled pid=%u name=%s map=%ld pos=(%ld,%ld) portal=(%ld,%ld) distance=%d reason=%s "
 					"ticks=%u route=%u/%u plan_in=%d defer=%u stuck=%u seg=%d riding=%d last=%u",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(),

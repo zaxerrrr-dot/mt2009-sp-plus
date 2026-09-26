@@ -27,6 +27,7 @@ param(
 #   bot rare share     char_battle.cpp           (MT2009_PLUS_BOT_RARE_SHARE_V1)
 #   mount off at death char_battle.cpp           (MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1)
 #   saddlebags on a mount char.cpp               (MT2009_PLUS_SADDLEBAG_MOUNT_V1)
+#   stones stand still char.cpp, char_state.cpp  (MT2009_PLUS_STONE_STILL_V1)
 #   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
 #   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
 #   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
@@ -130,6 +131,16 @@ if ((Test-Path -LiteralPath $saddlebagMountApply -PathType Leaf) -and
     if ($saddlebagMountResult.Changed) {
         $syncedFiles++
         Write-Host 'Horse saddlebags open on a mount seal too.' -ForegroundColor DarkGray
+    }
+}
+# A Metin stone never walks (server-patches/stonestill).
+$stoneStillApply = Join-Path $repo 'server-patches/stonestill/Apply-StoneStillPatch.ps1'
+if ((Test-Path -LiteralPath $stoneStillApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $stoneStillResult = & $stoneStillApply -SourceDirectory $engineGameSource
+    if ($stoneStillResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Metin stones stand still.' -ForegroundColor DarkGray
     }
 }
 # The alchemy balance (server-patches/dragonsoulbalance): the apply names

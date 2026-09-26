@@ -1191,8 +1191,11 @@ namespace
 		}
 
 		state.dwNextEquipmentCheckTime = dwNow + PLAYERBOT_GEAR_LOG_INTERVAL;
-		sys_err("PLAYERBOT_AI: failed to equip upgrade pid=%u name=%s wear=%d vnum=%u",
-				ch->GetPlayerID(), ch->GetName(), bestWearCell, newVnum);
+		// Never leave the slot empty over a refusal: what came off goes back on.
+		const bool restored = bestOldItem && !bestOldItem->IsEquipped() && PlayerBotEquipItem(ch, bestOldItem);
+		sys_err("PLAYERBOT_AI: failed to equip upgrade pid=%u name=%s wear=%d vnum=%u old=%u restored=%d polymorphed=%d busy=%d",
+				ch->GetPlayerID(), ch->GetName(), bestWearCell, newVnum, oldVnum, restored ? 1 : 0,
+				ch->IsPolymorphed() ? 1 : 0, ch->IsBusy() ? 1 : 0);
 		return false;
 	}
 
