@@ -354,6 +354,30 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && ! grep -q '{72731, 1}' "$L/quest/libs/other/reward_data.lua" \
  && echo "share: Maska Sabaha removed"
 
+# Costumes, mounts, pets and weapon skins come from the ItemShop only
+# (operator, 26 September 2026: players found mounts in Metin stones and
+# chests). The world's item table gave two vnums of the old drop lines to
+# ItemShop mounts - 71282 (Ekstraktor Skaz, gone) is the Niebieski Oldtimer
+# and 71294 (the ItemShop's Rada Pustelnika) the Feniks Zmierzchu - so every
+# kill, boss chest, mission book and fishing catch that rolled those rolled a
+# mount. 71294 becomes the Rada Pustelnika that exists (71094); 71282 and the
+# Pieczec Dzika Wojennego (71125) of the Tajemnicza Skrzynia roll at nothing -
+# a group stops reading at the first index it lacks, so a line is zeroed, not
+# deleted; the fishing table's row is commented out.
+RUN set -eu; L=/opt/metin2/share/locale/poland \
+ && for f in "$L/mob_drop_item.txt" "$L/special_item_group.txt"; do \
+      sed -i -E 's/^([[:blank:]]*[0-9]+[[:blank:]]+)71294([[:blank:]])/\171094\2/' "$f"; \
+      sed -i -E 's/^([[:blank:]]*[0-9]+[[:blank:]]+(71282|71125)[[:blank:]]+[0-9]+[[:blank:]]+)[0-9.]+/\10/' "$f"; \
+      if grep -Eq '^[[:blank:]]*[0-9]+[[:blank:]]+71294[[:blank:]]' "$f" || \
+         grep -Eq '^[[:blank:]]*[0-9]+[[:blank:]]+(71282|71125)[[:blank:]]+[0-9]+[[:blank:]]+[0-9.]*[1-9]' "$f"; then \
+        echo "share: a mount still drops in $f" >&2; exit 1; \
+      fi; \
+    done \
+ && F="$L/quest/libs/fishing/fishing_drop.lua" \
+ && sed -i -E 's/^([[:blank:]]*)(71282,[[:blank:]]*1,)/\1-- \2/' "$F" \
+ && ! grep -Eq '^[[:blank:]]*71282,' "$F" \
+ && echo "share: costumes and mounts from the ItemShop only"
+
 # The quest texts name this world, not Metin2009 (port/shareify.py renders this
 # step): the substitution l0st3k's translate.lua of 15 September makes, on both
 # copies of the file.
