@@ -17,10 +17,12 @@ every version here.
 
 ---
 
-## Klient 2.0.17 — 2026-09-26 — Grota V2
+## Klient 2.0.17 — 2026-09-26 — Naprawa Groty Wygnańców V2
 
-- Poprawiono drugą ścieżkę ładowania `metin2_map_skipia_dungeon_02`.
-  Grota V2 nie wyrzuca już klienta do pulpitu przez brak `MapProperty.txt`.
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Serwer zostaje 2.6.0.
+
+- Naprawione wejście do Groty Wygnańców V2: klient nie wyłącza się już po
+  przejściu na drugą część Groty.
 
 ---
 
