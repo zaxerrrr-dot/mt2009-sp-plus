@@ -137,6 +137,8 @@ namespace
 			case PLAYERBOT_MAP_RED_FOREST: return "do Czerwonego Lasu";
 			case PLAYERBOT_MAP_DEMON_TOWER: return "do Wiezy Demonow";
 			case PLAYERBOT_MAP_FIRE_LAND: return "do Doyyumhwaji";
+			case PLAYERBOT_MAP_GROTTO_V1: return "do Groty Wygnancow";
+			case PLAYERBOT_MAP_GROTTO_V2: return "do Groty Wygnancow 2";
 			default: return "";
 		}
 	}
@@ -170,6 +172,8 @@ namespace
 			case PLAYERBOT_MAP_RED_FOREST: return "to the Red Wood";
 			case PLAYERBOT_MAP_DEMON_TOWER: return "to the Demon Tower";
 			case PLAYERBOT_MAP_FIRE_LAND: return "to Doyyumhwaji";
+			case PLAYERBOT_MAP_GROTTO_V1: return "to the Grotto of Exile";
+			case PLAYERBOT_MAP_GROTTO_V2: return "to the Grotto of Exile 2";
 			default: return "";
 		}
 	}
@@ -633,7 +637,20 @@ namespace
 					snprintf(status, statusSize, PBT(en, "%sWybieram profesje", "%sChoosing a profession"), prefix);
 				break;
 			case BOT_ACTION_SHOP:
-				snprintf(status, statusSize, PBT(en, "%sHandluje", "%sTrading"), prefix);
+				// The Alchemist's exchange (ManagePlayerBotAlchemist) walks under
+				// this action too, and "trading" over a bot crossing the village
+				// to an NPC says nothing.
+				if (state.bVisitingAlchemist)
+					snprintf(status, statusSize, PBT(en, "%sNiose Alchemikowi kamienie duszy na pyl",
+							"%sTaking soul stones to the Alchemist for dust"), prefix);
+				else if (state.bSaddlebagErrand != 0)
+					snprintf(status, statusSize, PBT(en, "%sPrzerabiam ulepszacze u Dozorcy",
+							"%sExchanging refine goods at the Keeper"), prefix);
+				else if (state.bVisitingUriel)
+					snprintf(status, statusSize, PBT(en, "%sIde do Uriela z szarfami",
+							"%sTaking my sashes to Uriel"), prefix);
+				else
+					snprintf(status, statusSize, PBT(en, "%sHandluje", "%sTrading"), prefix);
 				break;
 			case BOT_ACTION_REFINE:
 				snprintf(status, statusSize, PBT(en, "%sUlepszam ekwipunek", "%sUpgrading equipment"), prefix);
@@ -673,7 +690,11 @@ namespace
 				const long stableX = haveStable ? svc.stableKeeper.x : ch->GetX();
 				const long stableY = haveStable ? svc.stableKeeper.y : ch->GetY();
 				const bool bFar = DISTANCE_APPROX(ch->GetX() - stableX, ch->GetY() - stableY) > 850;
-				if (IsPlayerBotBattleHorseEarned(ch))
+				if (state.bSaddlebagErrand != 0)
+					snprintf(status, statusSize, PBT(en, "%sOdblokowuje juki konne (%d/9)",
+							"%sOpening a saddlebag row (%d/9)"), prefix,
+							(int)ch->GetSpecialFlag("horse_inventory_slot") + 1);
+				else if (IsPlayerBotBattleHorseEarned(ch))
 					snprintf(status, statusSize, bFar ? PBT(en, "%sIde do Stajennego po konia bojowego", "%sGoing to the Stable Boy for a battle horse")
 							: PBT(en, "%sOdbieram konia bojowego u Stajennego", "%sCollecting a battle horse from the Stable Boy"), prefix);
 				else if (bFar)

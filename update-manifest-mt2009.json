@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-25T18:07:24Z",
-  "statusMessage": "Serwer 2.5.1: poprawka swiatow, w ktorych po zalogowaniu wyrzucalo z gry (brakujace przedmioty w bazie). Klient zostaje 2.0.13.",
+  "publishedAt": "2026-09-26T09:00:00Z",
+  "statusMessage": "Serwer 2.6.0 i klient 2.0.16: juki konne (takze na wierzchowcach), szarfy botow i Grota Wygnancow.",
   "server": {
-    "version": "2.5.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.5.1.zip",
-    "sha256": "428AD5848156D75B8421A70F1EB3EA062267430BE876423C6F8CFA42AB157DE5",
-    "size": 55779414
+    "version": "2.6.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.6.0.zip",
+    "sha256": "A30343E9363A71F265F6D7314BD7450206EFFC3148B64E2F62D87A31C800A571",
+    "size": 56007341
   },
   "client": {
-    "version": "2.0.13",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.13.zip",
-    "sha256": "A17D4122F58156241DAFD29161EF39681E42DE50DE1D82CC7B8977DC6249F061",
-    "size": 48470515
+    "version": "2.0.16",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.16.zip",
+    "sha256": "08BA881DA9DEE5FAF9CA090162587DBFC7400D8C993EBEDB3BE18E7B76B0B69B",
+    "size": 49217183
   }
 }

@@ -25,6 +25,9 @@ param(
 #   pet magic att %    char.cpp                  (MT2009_PLUS_MAGIC_ATT_PER_V1)
 #   mount speed        char_player.cpp           (MT2009_PLUS_MOUNT_SPEED_V1)
 #   bot rare share     char_battle.cpp           (MT2009_PLUS_BOT_RARE_SHARE_V1)
+#   mount off at death char_battle.cpp           (MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1)
+#   saddlebags on a mount char.cpp               (MT2009_PLUS_SADDLEBAG_MOUNT_V1)
+#   stones stand still char.cpp, char_state.cpp  (MT2009_PLUS_STONE_STILL_V1)
 #   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
 #   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
 #   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
@@ -32,6 +35,7 @@ param(
 #   rare switches      item_manager.cpp, char_item.cpp (MT2009_PLUS_RARE_TOGGLE_V1)
 #   speedhack slack    input_main.cpp            (MT2009_PLUS_SPEEDHACK_CLOCK_V1)
 #   Cor stacking       char_item.cpp             (IsStackableCorDraconisVnum)
+#   Cor pickup stacks  char_item.cpp             (MT2009_PLUS_COR_AUTOSTACK_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -106,6 +110,38 @@ if ((Test-Path -LiteralPath $rareToggleApply -PathType Leaf) -and
     if ($rareToggleResult.Changed) {
         $syncedFiles++
         Write-Host 'Cor Draconis and sash drops follow the world switches.' -ForegroundColor DarkGray
+    }
+}
+# A mount seal comes off into the bag at death (server-patches/mountdeath).
+$mountDeathApply = Join-Path $repo 'server-patches/mountdeath/Apply-MountDeathPatch.ps1'
+$charBattleSource = Join-Path $engineGameSource 'char_battle.cpp'
+if ((Test-Path -LiteralPath $mountDeathApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charBattleSource -PathType Leaf)) {
+    $mountDeathResult = & $mountDeathApply -SourceFile $charBattleSource
+    if ($mountDeathResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Mount seal off into the bag at death.' -ForegroundColor DarkGray
+    }
+}
+# The horse saddlebags open on a mount seal too (server-patches/saddlebagmount).
+$saddlebagMountApply = Join-Path $repo 'server-patches/saddlebagmount/Apply-SaddlebagMountPatch.ps1'
+$charSource = Join-Path $engineGameSource 'char.cpp'
+if ((Test-Path -LiteralPath $saddlebagMountApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charSource -PathType Leaf)) {
+    $saddlebagMountResult = & $saddlebagMountApply -SourceFile $charSource
+    if ($saddlebagMountResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Horse saddlebags open on a mount seal too.' -ForegroundColor DarkGray
+    }
+}
+# A Metin stone never walks (server-patches/stonestill).
+$stoneStillApply = Join-Path $repo 'server-patches/stonestill/Apply-StoneStillPatch.ps1'
+if ((Test-Path -LiteralPath $stoneStillApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $stoneStillResult = & $stoneStillApply -SourceDirectory $engineGameSource
+    if ($stoneStillResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Metin stones stand still.' -ForegroundColor DarkGray
     }
 }
 # The alchemy balance (server-patches/dragonsoulbalance): the apply names
@@ -228,6 +264,17 @@ if ((Test-Path -LiteralPath $corStackApply -PathType Leaf) -and
     if ($corStackResult.Changed) {
         $syncedFiles++
         Write-Host 'Cor Draconis boxes stack.' -ForegroundColor DarkGray
+    }
+}
+# And join the bag's stack when picked up or given (server-patches/corautostack,
+# after corstack, whose helper it uses).
+$corAutoStackApply = Join-Path $repo 'server-patches/corautostack/Apply-CorAutoStackPatch.ps1'
+if ((Test-Path -LiteralPath $corAutoStackApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charItemSource -PathType Leaf)) {
+    $corAutoStackResult = & $corAutoStackApply -SourceFile $charItemSource
+    if ($corAutoStackResult.Changed) {
+        $syncedFiles++
+        Write-Host 'A Cor Draconis picked up joins the stack in the bag.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

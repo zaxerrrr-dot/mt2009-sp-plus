@@ -170,8 +170,12 @@ namespace
 			return false;
 		// Never the goods a player crafts further, whatever the merchant pays:
 		// a bot of seventy-three walked past Grzyb Tue, Korzen Gango and a
-		// Zbroja Twarzy Ducha+3 on a floor (Tieru, 15 September).
-		if (IsPlayerBotPickupGoods(item))
+		// Zbroja Twarzy Ducha+3 on a floor (Tieru, 15 September). A piece of
+		// gear the bag already keeps its share of (PLAYERBOT_PICKUP_GEAR_BAG_KEEP)
+		// is the merchant's anyway, so it is judged like any other drop.
+		if (IsPlayerBotPickupGoods(item) &&
+				!(IsPlayerBotPickupGear(item) &&
+				  ch->CountSpecifyItem(item->GetVnum()) >= PLAYERBOT_PICKUP_GEAR_BAG_KEEP))
 			return false;
 		// Nor a Cor Draconis or a sash: players' goods for the counter.
 		if (GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
@@ -227,6 +231,13 @@ namespace
 				item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM || IsPlayerBotPickupGoods(item) ||
 				GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
 			return true;
+		// A boss's casket opens by itself eight seconds later, and the dungeon's
+		// own bosses drop silver and gold chests, which the bag's key opens: the
+		// medal dropper walked past both (26 September).
+		if (IsPlayerBotBossCasketVnum(item->GetVnum()))
+			return true;
+		if (item->GetType() == ITEM_TREASURE_BOX && PlayerBotHasTreasureKeyFor(ch, item))
+			return true;
 		return PlayerBotLootMergesIntoStack(ch, item);
 	}
 
@@ -240,7 +251,7 @@ namespace
 				m_dwNow(dwNow),
 				// One count for the whole sweep: a full bag is a full bag for
 				// every drop in it.
-				m_bagFull(CountPlayerBotFreeInventoryCells(owner) == 0),
+				m_bagFull(CountPlayerBotFreeInventoryCells(owner) + CountPlayerBotSaddlebagFreeCells(owner) == 0),
 				m_skippedNoRoom(0),
 				// Inside the Demon Tower a bot picks up its own drop whatever it
 				// is worth (Tieru, 23 September: "niech tam drop swoj pilnuja,

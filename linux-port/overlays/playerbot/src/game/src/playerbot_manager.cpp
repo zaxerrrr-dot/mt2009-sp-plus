@@ -7,6 +7,7 @@
 #include "playerbot_stall_rules.h"
 #include "playerbot_persona_rules.h"
 #include "playerbot_lure_order_rules.h"
+#include "playerbot_truce_rules.h"
 
 #include "char.h"
 #include "skill.h"
@@ -136,6 +137,8 @@ extern void SendShout(const char* szText, BYTE bEmpire);
 #include "playerbot_weapon_goal.h"
 #include "playerbot_market.h"
 #include "playerbot_offline_market.h"
+#include "playerbot_sash.h"
+#include "playerbot_saddlebag.h"
 // Forward declaration: the trade layer falls through to the deterministic
 // conversation layer for ordinary whispers.
 namespace { bool HandlePlayerBotConversation(LPCHARACTER player, LPCHARACTER bot, const char* text); }
@@ -1173,8 +1176,8 @@ namespace
 		// character rather than a mood, the same bots pick the fights after
 		// every restart, and the rest are left alone to hunt - which is what
 		// "some aggressive, some neutral" has to mean to be visible at all.
-		if ((int)(PlayerBotNavHash(ch->GetPlayerID() ^ 0x4B494E47U) % 100U) >=
-				s_iPlayerBotKingdomPvpPercent)
+		// The stone rivalry asks the same share (playerbot_targeting.h).
+		if (!IsPlayerBotHostileToOtherKingdoms(ch))
 			return;
 		// Anything the bot is actually doing outranks picking a fight.
 		if (state.bVisitingShop || state.bVisitingBiologist || state.bVisitingStable ||
@@ -1408,7 +1411,12 @@ namespace
 	// 14 September).
 	// The person may be the leader of the bot's party (the wrapper below) or a
 	// companion's owner, whose party it may not lead (playerbot_sidekick.h).
-	bool ManagePlayerBotBuffPerson(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER leader, DWORD dwNow)
+	// A companion asks between two blows too, and there it may not walk: a
+	// buff out of reach waits for the fight to end (mayWalk false).
+	// fightBuffsDue: the fight buffs are due whatever the bot itself is doing,
+	// which is how a companion keeps its owner's (playerbot_sidekick.h).
+	bool ManagePlayerBotBuffPerson(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER leader, DWORD dwNow,
+			bool mayWalk, bool fightBuffsDue)
 	{
 		static std::map<DWORD, DWORD> s_mapPlayerBotLeaderBuffNext;
 		if (!ch || ch->IsDead() || ch->GetJob() != JOB_SHAMAN || ch->GetSkillGroup() == 0)
@@ -1426,7 +1434,7 @@ namespace
 				state.bMultiPullActive || state.bFishingSession || ch->GetMyShop())
 			return false;
 		const bool fighting = ch->GetVictim() && !ch->GetVictim()->IsDead();
-		const bool hunting = fighting || state.dwTargetVID != 0 ||
+		const bool hunting = fighting || fightBuffsDue || state.dwTargetVID != 0 ||
 				(state.dwLastCombatActionTime != 0 &&
 				 dwNow - state.dwLastCombatActionTime < PLAYERBOT_BUFF_COMBAT_WINDOW);
 		const int dist = DISTANCE_APPROX(ch->GetX() - leader->GetX(), ch->GetY() - leader->GetY());
@@ -1451,7 +1459,7 @@ namespace
 				continue;
 			if (proto->dwTargetRange != 0 && dist > (int)proto->dwTargetRange)
 			{
-				if (fighting)
+				if (fighting || !mayWalk)
 					continue;
 				if (!MovePlayerBot(ch, leader->GetX(), leader->GetY(), dwNow, 8, true, false, false, false))
 					continue;
@@ -1490,7 +1498,7 @@ namespace
 		LPPARTY party = ch ? ch->GetParty() : NULL;
 		if (!party || !IsPlayerBotHumanLedParty(party))
 			return false;
-		return ManagePlayerBotBuffPerson(ch, state, party->GetLeaderCharacter(), dwNow);
+		return ManagePlayerBotBuffPerson(ch, state, party->GetLeaderCharacter(), dwNow, true, false);
 	}
 
 	void ManagePlayerBotParty(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
@@ -4059,6 +4067,29 @@ void CPlayerBotManager::OnSidekickCommand(LPCHARACTER ch, const char* szArgument
 	HandlePlayerBotSidekickCommand(ch, szArgument);
 }
 
+// The owner a companion's kill counts for (CHARACTER::Dead through
+// playerbotify's apply_sidekick_kill_credit): the engine gives a monster's
+// death to the quests of the character DistributeExp names, which is the
+// companion when its blows led, and the owner's hunting mission counted
+// nothing the companion killed (Dabroo, 26 September). The owner has to be in
+// this core's world, alive, on the corpse's map and within
+// PLAYERBOT_SIDEKICK_KILL_CREDIT_RANGE of it - the reach of the party's own
+// experience - so a companion sent shopping or let go hunts for itself.
+LPCHARACTER CPlayerBotManager::GetSidekickKillCredit(LPCHARACTER killer, LPCHARACTER victim)
+{
+	if (!killer || !victim || !killer->IsPC() || !killer->GetDesc() || !killer->GetDesc()->IsBot())
+		return NULL;
+	const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(killer->GetPlayerID());
+	if (!rec)
+		return NULL;
+	LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID);
+	if (!owner || owner == killer || owner->IsDead() || owner->GetMapIndex() != victim->GetMapIndex() ||
+			DISTANCE_APPROX(owner->GetX() - victim->GetX(), owner->GetY() - victim->GetY()) >
+				PLAYERBOT_SIDEKICK_KILL_CREDIT_RANGE)
+		return NULL;
+	return owner;
+}
+
 bool CPlayerBotManager::IsRestingBot(DWORD dwPlayerID) const
 {
 	return m_mapLifeRestEnd.find(dwPlayerID) != m_mapLifeRestEnd.end();
@@ -5407,6 +5438,18 @@ void CPlayerBotManager::Update()
 		if (HandleDeath(ch, state, dwNow))
 			continue;
 
+		// The companion's lure self-test (playerbot_sidekick.h): its owner - a
+		// bot standing in for a player - stands on its spot, drinking and doing
+		// nothing else, as a player standing on a spot does.
+		if (IsPlayerBotSidekickSelfTestFrozenOwner(ch))
+		{
+			if (ch->IsStateMove())
+				ch->Stop();
+			UseHealthPotion(ch, state, dwNow);
+			state.dwLastMeaningfulActivityTime = dwNow;
+			continue;
+		}
+
 		// Stunned is stunned, for a bot as much as for anybody.
 		//
 		// The engine puts AFFECT_STUN on a playerbot exactly as on a player -
@@ -5536,9 +5579,18 @@ void CPlayerBotManager::Update()
 		if (ManagePlayerBotMoodAfk(ch, state, dwNow))
 			continue;
 
+		// The Demon Tower's floors too, which are instances of map 66 and so no
+		// frontier map by their index. A boss's CRUSH skill slides its victim
+		// 400 units, 800 for CRUSH_LONG, and FuncSplashDamage never asks what
+		// lies there: bots thrown off the ninth floor into the void round it
+		// stood there for the rest of the run, beyond the four cells the route
+		// planner snaps a start by ("boty po zginieciu i odrzuceniu nie sa w
+		// stanie wrocic do walki", prodnathin, 25 September). A player has
+		// "Uwolnij sie" for it (/escape), a bot this.
+		const bool bTowerFloor = IsPlayerBotDemonTowerInstance(ch->GetMapIndex());
 		if (playerbot_empire_rules::IsKingdomMap(ch->GetMapIndex()) ||
 				IsPlayerBotMonkeyMap(ch->GetMapIndex()) ||
-				IsPlayerBotFrontierMap(ch->GetMapIndex()))
+				IsPlayerBotFrontierMap(ch->GetMapIndex()) || bTowerFloor)
 		{
 			const long currentMap = ch->GetMapIndex();
 			CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(
@@ -5561,7 +5613,13 @@ void CPlayerBotManager::Update()
 				if (bInsideObstacle)
 					foundSafe = navigation.FindNearestWalkableWorld(
 							ch->GetX(), ch->GetY(), 20, safe, ch->GetPlayerID());
-				if (!foundSafe)
+				// A floor has no entry point of its own to fall back on, and the
+				// nearest ground of another floor is not the fight: the look
+				// round the bot is only made wider.
+				if (!foundSafe && bTowerFloor && bInsideObstacle)
+					foundSafe = navigation.FindNearestWalkableWorld(
+							ch->GetX(), ch->GetY(), 40, safe, ch->GetPlayerID());
+				if (!foundSafe && !bTowerFloor)
 				{
 					// The village or guild map's own entry point, whichever
 					// kingdom this is. GetPlayerBotHomePoint answers for all
@@ -5592,9 +5650,9 @@ void CPlayerBotManager::Update()
 				ch->Show(currentMap, safe.x, safe.y, 0);
 				ch->Stop();
 				ch->SendMovePacket(FUNC_MOVE, 0, safe.x, safe.y, 0, dwNow);
-				sys_err("PLAYERBOT_NAV: locally rescued pid=%u name=%s reason=%s from=(%ld,%ld) to=(%ld,%ld)",
+				sys_err("PLAYERBOT_NAV: locally rescued pid=%u name=%s reason=%s map=%ld from=(%ld,%ld) to=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), bOutOfBounds ? "bounds" : "blocked",
-						oldX, oldY, safe.x, safe.y);
+						currentMap, oldX, oldY, safe.x, safe.y);
 				continue;
 			}
 		}
@@ -5904,6 +5962,29 @@ void CPlayerBotManager::Update()
 				ManagePlayerBotMining(ch, state, dwNow))
 			continue;
 
+		// The Alchemist (playerbot_town.h): the soul stones Iwakura bans from
+		// sockets, for dust, while the bot stands in a first village. Above the
+		// travel pass and the rest in town: the bots that carry these stones
+		// are the Metin hunters of the frontier, in the first village for their
+		// stand, and the travel pass walked them straight back out.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotAlchemist(ch, state, dwNow))
+			continue;
+
+		// Uriel (playerbot_sash.h): a keeper's sashes combined, filled and
+		// worn. Beside the Alchemist and for his reason: above the travel pass,
+		// which would walk the bot out of the village it was brought to.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotSash(ch, state, dwNow))
+			continue;
+
+		// The Dozorca's exchange and the Stajenny's saddlebag rows
+		// (playerbot_saddlebag.h), local errands of any village; the page's
+		// move-back runs inside on its own clock.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotSaddlebag(ch, state, dwNow))
+			continue;
+
 		// Spending time in town once the errand that brought the bot here is
 		// done - and above the travel pass, not below it. The rod carries a
 		// level limit of thirty, so every angler is old enough for the frontier
@@ -5965,9 +6046,11 @@ void CPlayerBotManager::Update()
 			// half is not that. No column of three is still a bag that cannot take
 			// a weapon, so it still sends the bot.
 			const bool personaOn = IsPlayerBotPersonaEnabled();
-			const bool bInventoryFull = (personaOn ? IsPlayerBotBagFull(ch)
+			// Not on a raid (a boss in a second village is a raid on a village
+			// map): the bag waits for the way out (Patch 4, point 12).
+			const bool bInventoryFull = ((personaOn ? IsPlayerBotBagFull(ch)
 					: occupiedGridCells * 100 >= PLAYERBOT_BAG_CELLS * 45) ||
-					ch->GetEmptyInventory(3) < 0;
+					ch->GetEmptyInventory(3) < 0) && !IsPlayerBotInDungeonBusiness(ch, state);
 			// The same question the planner asked. It used to be a different one:
 			// this counted stacks rather than potions, looked at four red vnums
 			// and no blue ones at all, and only fired on an empty belt in a
@@ -6077,6 +6160,7 @@ void CPlayerBotManager::Update()
 		UseUtilityPotions(ch, state, dwNow);
 		UsePlayerBotBoosters(ch, state, dwNow);
 		ManagePlayerBotScrollRefine(ch, state, dwNow);
+		ManagePlayerBotFieldBonus(ch, state, dwNow);
 		// This also catches a bot loaded from the database at critically low HP
 		// after a server restart.  Do not let it immediately reacquire a target.
 		// One exception to walking away, and it is about what the target is

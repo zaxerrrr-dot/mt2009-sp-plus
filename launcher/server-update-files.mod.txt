@@ -69,6 +69,9 @@ linux-port/docker/game/dragon_soul_applys.mt2009plus.txt
 # ---- the launcher and the package's own bookkeeping --------------------------
 # The line's own version and package note, published under the root names.
 PACZKA_INFO.txt
+LICENSE
+LICENSE-MIT.txt
+NOTICE.md
 CHANGELOG.md
 VERSION
 start-server.ps1

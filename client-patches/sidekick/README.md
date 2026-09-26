@@ -1,19 +1,23 @@
-# Towarzysz i przyciski paska z klienta Tieru 2.0.33
+# Towarzysz i przyciski paska z klienta Tieru
 
-Ten katalog przechowuje selektywny port funkcji z klienta Tieru 2.0.33 do
+Ten katalog przechowuje selektywny port funkcji z klienta Tieru do
 MT2009 Plus. Pełne paczki Tieru nie są podmieniane, dzięki czemu pozostają
 nasze cztery strony ekwipunku, COOP, Auto Łowy, ItemShop i pozostałe poprawki.
 
 ## Zawartość
 
 - `root/uisidekick.py` — okno Towarzysza pod klawiszem **P**;
+- `root/uisidekickinventory.py` — ekwipunek i umiejętności Towarzysza;
+- `root/sidekickskilltip.py` — opisy umiejętności Towarzysza;
 - `root/playerbot_ui/*.tga` — trzy stany przycisku Towarzysza i Auto Łowów;
 - `client-sidekick-autohunt.patch` — integracja okna w `game.py`, przycisków
   w pasku oraz poprawka Auto Łowów po wskrzeszeniu.
 
 Okno pokazuje poziom, HP, PE, miejsce, wykonywaną czynność oraz ekwipunek
 Towarzysza. Obsługuje przywołanie, oczekiwanie, wolną rękę, zakupy, raport,
-odprawienie, sposób walki, podnoszenie, ochronę i buffy.
+odprawienie, sposób walki, podnoszenie, ochronę i buffy. Przyciski
+**Ekwipunek** i **Umiejętności** otwierają dodatkowe okna; przedmiot można
+przeciągnąć z ekwipunku Towarzysza do własnego plecaka.
 
 Auto Łowy podczas oczekiwania na wymagany poziom HP po wskrzeszeniu rzucają
 wyłącznie bezpieczne buffy. Nie używają wtedy umiejętności atakujących.

@@ -102,6 +102,11 @@ namespace
 				s_mapPlayerBotChestRefused.find(std::make_pair(ch->GetPlayerID(), item->GetVnum())) !=
 				s_mapPlayerBotChestRefused.end())
 			return true;
+		// A boss's casket is opened, whatever the stack: the bot that broke the
+		// boss is the one it is for, and a trader's two of them went up as a
+		// line the chest pass would have opened a few seconds later.
+		if (IsPlayerBotBossCasketVnum(item->GetVnum()))
+			return false;
 		// A trader puts a box up from a much smaller stack, so unopened chests
 		// reach the market without the population stopping opening them: the
 		// chest pass keeps eating the stack either way.
@@ -131,6 +136,25 @@ namespace
 			return 0;
 		int free = 0;
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			if (ch->IsEmptyItemGrid(TItemPos(INVENTORY, cell), 1))
+				++free;
+		return free;
+	}
+
+	// The free cells of the saddlebag page (playerbot_saddlebag.h) while it is
+	// open: the rows unlocked, with the horse out or ridden. Only the bag's
+	// fullness asks it (IsPlayerBotBagFull, IsPlayerBotBagUnderPressure, the
+	// loot): the engine puts a drop there once the four pages are full, and
+	// the saddlebag pass moves it back down as a cell frees - every other rule
+	// counts the four pages it can see.
+	int CountPlayerBotSaddlebagFreeCells(LPCHARACTER ch)
+	{
+		if (!ch || !ch->CanUseHorseInventory() || ch->GetHorseInventoryUnlock() == 0)
+			return 0;
+		const int end = std::min<int>(INVENTORY_MAX_NUM,
+				INVENTORY_DEFAULT_MAX_NUM + INVENTORY_PAGE_COLUMN * ch->GetHorseInventoryUnlock());
+		int free = 0;
+		for (int cell = INVENTORY_DEFAULT_MAX_NUM; cell < end; ++cell)
 			if (ch->IsEmptyItemGrid(TItemPos(INVENTORY, cell), 1))
 				++free;
 		return free;
@@ -214,23 +238,27 @@ namespace
 		for (WORD boxCell = 0; boxCell < PLAYERBOT_BAG_CELLS; ++boxCell)
 		{
 			LPITEM box = ch->GetInventoryItem(boxCell);
-			if (!box || box->GetType() != ITEM_TREASURE_BOX ||
-					GetPlayerBotRareGoodsKind(box->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
+			if (!box || box->GetType() != ITEM_TREASURE_BOX || box->isLocked() ||
+					GetPlayerBotRareGoodsKind(box->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE ||
+					IsPlayerBotChestRefused(ch->GetPlayerID(), box->GetVnum(), dwNow))
 				continue;
 			for (WORD keyCell = 0; keyCell < PLAYERBOT_BAG_CELLS; ++keyCell)
 			{
 				LPITEM key = ch->GetInventoryItem(keyCell);
-				if (!key || key->GetType() != ITEM_TREASURE_KEY || key->GetValue(0) != box->GetValue(0))
+				if (!key || key->GetType() != ITEM_TREASURE_KEY || key->GetValue(0) != box->GetValue(0) ||
+						key->isLocked())
 					continue;
 				// Miejsce na caly zestaw, a nie na jeden przedmiot: patrz
 				// PLAYERBOT_CHEST_FREE_CELLS. Wysokie przedmioty potrzebuja
 				// dodatkowo ciaglych trzech pol w jednej kolumnie, o co
 				// GetEmptyInventory(3) pyta wprost.
 				// The whole set or nothing (PlayerBotBagTakesGroup, playerbot_gear.h):
-				// the key's use hands out the box's own group.
+				// the key's use hands out the box's own group. A box whose set
+				// does not fit waits and the pass goes on: it used to end here,
+				// and every boss casket behind it waited with it.
 				int cellsNeeded = 0;
 				if (!PlayerBotBagTakesGroup(ch, box->GetVnum(), cellsNeeded))
-					return false;
+					break;
 				const DWORD boxVnum = box->GetVnum(), keyVnum = key->GetVnum();
 				const int before = ch->GetEmptyInventory(1);
 				if (ch->UseItem(TItemPos(INVENTORY, keyCell), TItemPos(INVENTORY, boxCell)))
@@ -239,6 +267,12 @@ namespace
 							ch->GetPlayerID(), ch->GetName(), boxVnum, keyVnum, before, ch->GetEmptyInventory(1));
 					return true;
 				}
+				// Remembered like a giftbox's refusal, or the pass asked the
+				// same box every eight seconds for as long as it had the key.
+				NotePlayerBotChestRefused(ch->GetPlayerID(), boxVnum, dwNow);
+				PlayerBotLogThrottled("chest_refused", dwNow,
+						"PLAYERBOT_CHEST: treasure refused pid=%u name=%s box=%u key=%u free=%d",
+						ch->GetPlayerID(), ch->GetName(), boxVnum, keyVnum, ch->GetEmptyInventory(1));
 				break;
 			}
 		}
@@ -283,10 +317,13 @@ namespace
 			if (IsPlayerBotChestRefused(ch->GetPlayerID(), item->GetVnum(), dwNow))
 				continue;
 			// The same test as for the treasure box: room for the whole set the
-			// group can hand out, placed the way the engine places it.
+			// group can hand out, placed the way the engine places it. A box
+			// whose set does not fit waits, and the next is asked: the
+			// Moonlight chest's group is every line of it, a boss casket's one,
+			// so a bag too full for the first still takes the second.
 			int cellsNeeded = 0;
 			if (!PlayerBotBagTakesGroup(ch, item->GetVnum(), cellsNeeded))
-				return false;
+				continue;
 			// The engine's own two refusals, asked first so neither is remembered
 			// as the box's: a giftbox wants a free column of three (UseItemEx,
 			// ITEM_GIFTBOX), and nothing is used with a window open (CanHandleItem -
@@ -309,9 +346,9 @@ namespace
 				if (IsPlayerBotPersonaEnabled())
 					NotePlayerBotMoodValuableCount(ch,
 							CountPlayerBotMoodValuables(ch) - valuablesBefore, "chest");
-				sys_log(0, "PLAYERBOT_CHEST: opened pid=%u name=%s level=%u map=%ld free_before=%d free_after=%d",
-						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), ch->GetMapIndex(),
-						before, ch->GetEmptyInventory(1));
+				sys_log(0, "PLAYERBOT_CHEST: opened pid=%u name=%s level=%u map=%ld vnum=%u boss=%d free_before=%d free_after=%d",
+						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), ch->GetMapIndex(), chestVnum,
+						IsPlayerBotBossCasketVnum(chestVnum) ? 1 : 0, before, ch->GetEmptyInventory(1));
 				return true;
 			}
 			// Not the end of the pass: the next box in the bag may well open,

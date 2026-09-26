@@ -357,7 +357,7 @@ namespace
 		{ 27114,     1500 },	// Fioletowa Mikstura(S)
 		{ 27115,     3000 },	// Fioletowa Mikstura(D)
 		{ 27798,    15000 },	// Skamieniala Krewetka
-		{ 30378,    40000 },	// Materialy Rzemieslnicze
+		{ 30378,   100000 },	// Materialy Rzemieslnicze (operator, 25 September 2026)
 		{ 39002,   500000 },	// Pierscien Doswiadczenia
 		{ 39006,    55000 },	// Peleryna Mestwa
 		{ 39028,  2000000 },	// Zaczarowanie Przedmiotu

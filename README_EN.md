@@ -173,9 +173,16 @@ The launcher's **KOPIA ŚWIATA** button saves the whole world to a zip file.
 
 ## 📜 License
 
-The metin2-playerbots tooling is MIT-licensed (`LICENSE`). The game server
-code, game data and client belong neither to the project authors nor to us —
-read [NOTICE.md](NOTICE.md) before redistributing.
+MT2009 PLUS is a modification of Metin2 Playerbots (Tieru) and, from the
+version based on Tieru 2.2.17, is shared under **CC BY-NC-SA 4.0**
+(Attribution – NonCommercial – ShareAlike), see [LICENSE](LICENSE). You may
+copy, share and modify the pack if you credit the authors, do not make money
+from it and share a modified version under the same licence. Older parts under
+MIT: [LICENSE-MIT.txt](LICENSE-MIT.txt). The game server code, game data and
+client belong neither to the project authors nor to us – read
+[NOTICE.md](NOTICE.md) before redistributing.
+
+Metin2 Playerbots - Tieru - https://github.com/TieruYT/metin2-playerbots - CC BY-NC-SA 4.0
 
 ---
 

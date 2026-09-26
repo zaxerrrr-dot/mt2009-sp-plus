@@ -44,6 +44,11 @@ namespace
 	{
 		if (!ch || !IsPlayerBotPersonaEnabled())
 			return false;
+		// A saddlebag bot raises its horse: every row asks a higher one
+		// (playerbot_saddlebag.h).
+		if (IsPlayerBotSaddlebagKeeperPID(ch->GetPlayerID()) &&
+				GetPlayerBotPersonalityByPID(ch->GetPlayerID()) != BOT_PERSONALITY_MEDAL_DROPPER)
+			return false;
 		TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
 		return it != s_mapPlayerBotAIStates.end() && it->second.persona.bRestored &&
 				!it->second.persona.bAdvanced && !IsPlayerBotDropper(it->second.bPersonality);
@@ -114,8 +119,10 @@ namespace
 		const BYTE horseLevel = ch->GetHorseLevel();
 		const bool bBattleHorseWaiting = IsPlayerBotBattleHorseEarned(ch) &&
 				ch->GetGold() >= (int)PLAYERBOT_BATTLE_HORSE_FEE;
+		// The medals a due saddlebag row takes are the row's, not the horse's.
+		const int medalReserve = GetPlayerBotSaddlebagMedalReserve(ch);
 		if (!bBattleHorseWaiting && (!CanPlayerBotAdvanceHorse(ch) ||
-				ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= 0))
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= medalReserve))
 		{
 			state.bVisitingStable = false;
 			state.dwNextHorseActionTime = 0;
@@ -224,7 +231,7 @@ namespace
 			return false;
 		}
 
-		if (ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= 0)
+		if ((int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= GetPlayerBotSaddlebagMedalReserve(ch))
 		{
 			state.bVisitingStable = false;
 			state.dwNextHorseActionTime = 0;
@@ -251,7 +258,7 @@ namespace
 				ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM));
 
 		if (delivered >= 21 || !CanPlayerBotAdvanceHorse(ch) ||
-				ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= 0)
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <= GetPlayerBotSaddlebagMedalReserve(ch))
 		{
 			state.bVisitingStable = false;
 			state.dwNextHorseActionTime = 0;
@@ -1279,7 +1286,7 @@ namespace
 		// One slot is freed the way the unique-slots pass frees one for a
 		// ring: what pays the bot nothing first, a ring or glove on its clock
 		// last (it comes off at the water anyway), never what the engine
-		// will not let go of.
+		// will not let go of, nor what a companion's owner put on.
 		if (ch->GetWear(WEAR_UNIQUE1) && ch->GetWear(WEAR_UNIQUE2))
 		{
 			LPITEM displaced = NULL;
@@ -1288,7 +1295,7 @@ namespace
 				{
 					LPITEM worn = ch->GetWear(wear);
 					if (!worn || !IsPlayerBotWornItemSound(ch, worn, wear) ||
-							IS_SET(worn->GetFlag(), ITEM_FLAG_IRREMOVABLE))
+							IS_SET(worn->GetFlag(), ITEM_FLAG_IRREMOVABLE) || IsPlayerBotSidekickPinned(ch, worn))
 						continue;
 					if (pass_ == 0 && IsPlayerBotTimedUnique(worn->GetVnum()))
 						continue;

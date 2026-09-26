@@ -80,6 +80,11 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return false;
+		// A bot in a dungeon or on a raid takes no break until it is out of it
+		// (IsPlayerBotInDungeonBusiness; Iwakura's Patch 4, point 12).
+		TPlayerBotAIStateMap::const_iterator dungeonState = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+		if (dungeonState != s_mapPlayerBotAIStates.end() && IsPlayerBotInDungeonBusiness(ch, dungeonState->second))
+			return false;
 		// These problems can make continued combat impossible or waste most future
 		// drops, so they justify an immediate cross-map return.
 		if (ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
@@ -499,6 +504,25 @@ namespace
 		if (level >= PLAYERBOT_FIRE_LAND_MIN_LEVEL && level <= PLAYERBOT_FIRE_LAND_MAX_LEVEL &&
 				PlayerBotNavHash(ch->GetPlayerID() ^ 0x464c414dU) % 3U == 0)
 			return PLAYERBOT_MAP_FIRE_LAND;
+		// Seventy-eight and up: the Grotto of Exile, the only ground past the
+		// Red Forest's 74-82 (26 September). V1's ice and Setaou run 81-89,
+		// V2's Setaou 87-97. From eighty-four V2 takes two draws in three and
+		// V1 the third; below it V1 takes two and the rows under this one the
+		// third, so the Red Forest's own bots do not all move at once. Neither
+		// grotto has a stone, so a Metin hunter by role keeps those rows; and a
+		// grotto this core does not host is passed over here rather than
+		// filtered to nothing after the draw, or a bot of eighty on such a core
+		// would have no frontier at all.
+		if (!stoneHunter && level >= PLAYERBOT_GROTTO_V2_MIN_LEVEL &&
+				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V2))
+		{
+			if ((draw % 3U) != 2 || !IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V1))
+				return PLAYERBOT_MAP_GROTTO_V2;
+			return PLAYERBOT_MAP_GROTTO_V1;
+		}
+		if (!stoneHunter && level >= PLAYERBOT_GROTTO_V1_MIN_LEVEL && (draw % 3U) != 2 &&
+				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V1))
+			return PLAYERBOT_MAP_GROTTO_V1;
 		if (level >= PLAYERBOT_RED_FOREST_MIN_LEVEL)
 		{
 			switch (draw % 3U)
@@ -1040,6 +1064,9 @@ namespace
 		state.bVisitingShop = false;
 		state.bVisitingBiologist = false;
 		state.bVisitingStable = false;
+		state.bVisitingAlchemist = false;
+		state.bVisitingUriel = false;
+		state.bSaddlebagErrand = 0;
 		if (!ch->Show(targetMap, targetX, targetY, 0))
 		{
 			if (wasRiding && !ch->IsRiding())
@@ -1331,6 +1358,21 @@ namespace
 			const int segClear = diagNav.Init(ch->GetMapIndex())
 					? (diagNav.SegmentClearWorld(ch->GetX(), ch->GetY(), portalX, portalY) ? 1 : 0)
 					: -1;
+			// Ground the portal is not on at all: a pocket of the map no walk
+			// leaves - Hwang Temple (map 65) around (544000-554000, 74000-94000),
+			// where the boss raid puts a bot down, 382 "unreachable" plans and
+			// 86 stalls in one night, every one of them the same bot walking
+			// into the same wall. The walk cannot end; the move is made the way
+			// the stranded recovery makes it, straight to where the portal leads.
+			if (diagNav.Init(ch->GetMapIndex()) &&
+					!diagNav.CanReach(ch->GetX(), ch->GetY(), portalX, portalY) &&
+					TransitionPlayerBotMap(ch, state, targetMap, targetX, targetY, dwNow, reason))
+			{
+				sys_log(0, "PLAYERBOT_WORLD: cut off from the portal, moved pid=%u name=%s map=%ld pos=(%ld,%ld) portal=(%ld,%ld) to=%ld reason=%s",
+						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(),
+						portalX, portalY, targetMap, reason ? reason : "?");
+				return true;
+			}
 			// Tagged by the portal, not by the whole subsystem: one tag for
 			// every portal in the world meant one line a minute between them,
 			// and the busiest one hid the other nine behind its own count.
@@ -1345,7 +1387,10 @@ namespace
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(),
 					portalX, portalY, distance, reason ? reason : "?", ch->IsRiding() ? 1 : 0,
 					(unsigned int)state.bLastNavOutcome);
-			PlayerBotLogThrottled(szStuckTag, dwNow,
+			// Its own tag: sharing the syserr line's, this one was never written.
+			char szDiagTag[64];
+			snprintf(szDiagTag, sizeof(szDiagTag), "portal_diag:%s", reason ? reason : "?");
+			PlayerBotLogThrottled(szDiagTag, dwNow,
 					"PLAYERBOT_WORLD: portal walk stalled pid=%u name=%s map=%ld pos=(%ld,%ld) portal=(%ld,%ld) distance=%d reason=%s "
 					"ticks=%u route=%u/%u plan_in=%d defer=%u stuck=%u seg=%d riding=%d last=%u",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(),
