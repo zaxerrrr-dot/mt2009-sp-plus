@@ -17,6 +17,15 @@ every version here.
 
 ---
 
+## Klient 2.0.16 — 2026-09-26 — Ładowanie map Skipii
+
+- Naprawiono ładowanie `metin2_map_skipia_dungeon_01` i
+  `metin2_map_skipia_dungeon_02`. Klient ma teraz dane map pod ścieżką,
+  której wymaga silnik, więc wejście na mapę nie kończy się błędem braku
+  `MapProperty.txt`.
+
+---
+
 ## Klient 2.0.15 — 2026-09-26 — Juki konne na wierzchowcach
 
 - Juki konne działają podczas jazdy na klasycznym koniu oraz na

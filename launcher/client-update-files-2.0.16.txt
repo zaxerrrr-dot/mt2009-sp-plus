@@ -1,0 +1,6 @@
+# Poprawne sciezki zasobow map Skipii.
+pack/Index
+pack/maps.data
+pack/maps.index
+pack/root.data
+pack/root.index
