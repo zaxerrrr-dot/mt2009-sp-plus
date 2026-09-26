@@ -223,6 +223,9 @@ void LoadRetiredPlayerBotIdentities()
 	}
 }
 
+// The pids GivePlayerBotRetireStarterKit has looked at in this run.
+std::set<DWORD> s_setPlayerBotRetireKitChecked;
+
 bool IsRetiredPlayerBotIdentity(DWORD pid)
 {
 	LoadRetiredPlayerBotIdentities();
@@ -623,31 +626,18 @@ bool ResetRetiredPlayerBotRow(DWORD dwPlayerID)
 				(unsigned)fresh.part_base, (unsigned)fresh.part_base);
 		ok = PlayerBotRetireQuery(query);
 	}
+	// No item rows here. This used to INSERT the seed's five-slot starter set
+	// with no id, so MariaDB numbered them MAX(id)+1 - inside the range the db
+	// core hands the game cores for new items, while the server runs. The next
+	// item the world made took the same number, and the db core's cache wrote
+	// it over the starter row: recreated bots came back with no weapon and no
+	// chest and wandered without a target (26 September). The set now comes
+	// through the engine, which numbers items itself, on the bot's first tick
+	// with its bag loaded (GivePlayerBotRetireStarterKit).
 	if (ok)
 	{
-		const DWORD weapon = (fresh.job == JOB_ASSASSIN) ? 1000 :
-				(fresh.job == JOB_SHAMAN ? 7000 : 10);
-		const DWORD armor = (fresh.job == JOB_WARRIOR) ? 11200 :
-				(fresh.job == JOB_ASSASSIN ? 11400 :
-				 (fresh.job == JOB_SURA ? 11600 : 11800));
-		const DWORD chest = (fresh.job == JOB_ASSASSIN) ? 50212 :
-				(fresh.job == JOB_SHAMAN ? 50213 : 50187);
-		// This is the same five-slot starter set as playerbots_seed.sql. Writing
-		// it in the reset transaction removes the login-order race which left
-		// some recreated bots completely empty.
-		snprintf(query, sizeof(query),
-				"INSERT INTO player.item (owner_id,`window`,pos,count,vnum) VALUES "
-				"(%u,'EQUIPMENT',4,1,%u),(%u,'EQUIPMENT',0,1,%u),"
-				"(%u,'INVENTORY',0,200,27001),(%u,'INVENTORY',1,200,27004),"
-				"(%u,'INVENTORY',2,1,%u)",
-				dwPlayerID, weapon, dwPlayerID, armor, dwPlayerID, dwPlayerID,
-				dwPlayerID, chest);
-		ok = PlayerBotRetireQuery(query);
-	}
-	if (ok)
-	{
-		// Both login rewards are already represented by the starter rows above.
-		// Mark them claimed so the first quest login cannot duplicate the kit.
+		// The starter set comes from GivePlayerBotRetireStarterKit.
+		// Mark both login rewards claimed so the first quest login cannot duplicate the kit.
 		snprintf(query, sizeof(query),
 				"INSERT INTO player.quest (dwPID,szName,szState,lValue) VALUES "
 				"(%u,'give_basic_weapon','basic_weapon',1),"
@@ -671,8 +661,74 @@ bool ResetRetiredPlayerBotRow(DWORD dwPlayerID)
 			"UPDATE common.playerbot_retire_pick SET stage='reset',reset_at=UNIX_TIMESTAMP() "
 			"WHERE pid=%u", dwPlayerID);
 	AccountDB::instance().AsyncQuery(query);
+	// The new character is looked at again for its starter set, whatever the
+	// old one was found to have earlier in this run.
+	s_setPlayerBotRetireKitChecked.erase(dwPlayerID);
 	sys_log(0, "PLAYERBOT_RETIRE: recreated pid=%u (%s) at level 1", dwPlayerID, name);
 	return true;
+}
+
+// The seed's starter set (playerbots_seed.sql) for a recreated character: the
+// class's first weapon and armour, worn, 200 red and 200 blue potions and the
+// class's starter chest. Given through AutoGiveItem, so the engine numbers the
+// items (see ResetRetiredPlayerBotRow for what a raw INSERT did).
+//
+// Once per pid and run, on the first tick with the bag loaded, and only to a
+// recreated identity that has neither a weapon nor a starter chest - which is
+// also what a bot recreated by an older version of this file looks like, so
+// those get their set on the next start as well. A bot that has either is left
+// alone; the ordinary AI puts on or opens what it has.
+void GivePlayerBotRetireStarterKit(LPCHARACTER ch)
+{
+	const DWORD pid = ch->GetPlayerID();
+	if (!ch->IsItemLoaded() || ch->IsDead() ||
+			s_setPlayerBotRetireKitChecked.find(pid) != s_setPlayerBotRetireKitChecked.end())
+		return;
+	s_setPlayerBotRetireKitChecked.insert(pid);
+	if (!IsRetiredPlayerBotIdentity(pid) || ch->GetLevel() > 10 || ch->GetWear(WEAR_WEAPON))
+		return;
+
+	const BYTE job = ch->GetJob();
+	const DWORD weapon = (job == JOB_ASSASSIN) ? 1000 : (job == JOB_SHAMAN ? 7000 : 10);
+	const DWORD armor = (job == JOB_WARRIOR) ? 11200 :
+			(job == JOB_ASSASSIN ? 11400 : (job == JOB_SURA ? 11600 : 11800));
+	const DWORD chest = (job == JOB_ASSASSIN) ? 50212 : (job == JOB_SHAMAN ? 50213 : 50187);
+	for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+	{
+		LPITEM item = ch->GetInventoryItem(cell);
+		if (!item)
+			continue;
+		const DWORD vnum = item->GetVnum();
+		if (item->GetType() == ITEM_WEAPON || vnum == chest || vnum == 50187 ||
+				vnum == 50212 || vnum == 50213)
+			return;
+	}
+
+	int given = 0;
+	LPITEM piece = ch->AutoGiveItem(weapon, 1, -1, false);
+	if (piece && piece->GetOwner() == ch && piece->GetWindow() == INVENTORY)
+	{
+		PlayerBotEquipItem(ch, piece);
+		++given;
+	}
+	if (!ch->GetWear(WEAR_BODY))
+	{
+		piece = ch->AutoGiveItem(armor, 1, -1, false);
+		if (piece && piece->GetOwner() == ch && piece->GetWindow() == INVENTORY)
+		{
+			PlayerBotEquipItem(ch, piece);
+			++given;
+		}
+	}
+	if (ch->CountSpecifyItem(27001) == 0 && ch->AutoGiveItem(27001, 200, -1, false))
+		++given;
+	if (ch->CountSpecifyItem(27004) == 0 && ch->AutoGiveItem(27004, 200, -1, false))
+		++given;
+	if (ch->AutoGiveItem(chest, 1, -1, false))
+		++given;
+	ch->Save();
+	sys_log(0, "PLAYERBOT_RETIRE: starter set given pid=%u name=%s job=%u pieces=%d weapon_worn=%d",
+			pid, ch->GetName(), (unsigned int)job, given, ch->GetWear(WEAR_WEAPON) ? 1 : 0);
 }
 
 // The live side: what the character itself still does between now and
@@ -1040,6 +1096,7 @@ bool IsPlayerBotRetirementCandidate(LPCHARACTER ch, BYTE bLevelLo, BYTE bLevelHi
 bool ManagePlayerBotRetirement(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 {
 	const DWORD pid = ch->GetPlayerID();
+	GivePlayerBotRetireStarterKit(ch);
 	std::map<DWORD, TPlayerBotRetireEntry>::iterator it = s_mapPlayerBotRetiring.find(pid);
 	if (it == s_mapPlayerBotRetiring.end())
 		return false;
