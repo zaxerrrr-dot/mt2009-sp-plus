@@ -4,7 +4,8 @@
 # releases/ attached, and GitHub's own "Source code" archives of the tree at
 # that commit. Runs when a push to main changes VERSION (server, tag vX.Y.Z)
 # or CLIENT_VERSION (client, tag klient-vX.Y.Z); can also be run by hand
-# (Actions -> GitHub - wydanie -> Run workflow) for a version already on main.
+# (Actions -> GitHub - wydanie -> Run workflow) for a version already on main,
+# the current one or an older one (tagged at its own release commit).
 #
 # A server release is marked "latest": the Seban panel (7790) reads
 # /releases/latest and expects a server version there, so a client release
@@ -33,9 +34,12 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      # The whole history without its blobs: an older version run by hand
+      # needs the commit that released it, and the zips come on demand.
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
+          filter: blob:none
 
       - name: Which versions
         id: v
@@ -68,10 +72,14 @@ jobs:
           tag="v$V"
           if gh release view "$tag" >/dev/null 2>&1; then echo "$tag already exists"; exit 0; fi
           python3 .github/scripts/github_release.py "$V" out
-          zip="releases/metin2-server-update-$V.zip"
-          files=(); [ -f "$zip" ] && files+=("$zip") || echo "::warning::$zip not in the repository; release without the zip"
-          gh release create "$tag" "${files[@]}" --target "$GITHUB_SHA" \
-            --title "$(cat out/title.txt)" --notes-file out/notes.md --latest
+          zip="metin2-server-update-$V.zip"
+          target=$(sh .github/scripts/release_source.sh VERSION "$V" "$zip" zips)
+          files=(); [ -f "zips/$zip" ] && files+=("zips/$zip")
+          # Only the version main is on takes "latest": one run by hand for
+          # an older version must not push the newest one off that place.
+          latest=--latest; [ "$V" = "$(tr -d ' \r\n' < VERSION)" ] || latest=--latest=false
+          gh release create "$tag" "${files[@]}" --target "$target" \
+            --title "$(cat out/title.txt)" --notes-file out/notes.md "$latest"
 
       - name: Client release
         if: steps.v.outputs.client != ''
@@ -82,7 +90,8 @@ jobs:
           tag="klient-v$V"
           if gh release view "$tag" >/dev/null 2>&1; then echo "$tag already exists"; exit 0; fi
           python3 .github/scripts/github_release.py "$V" out --client
-          zip="releases/metin2-client-update-$V.zip"
-          files=(); [ -f "$zip" ] && files+=("$zip") || echo "::warning::$zip not in the repository; release without the zip"
-          gh release create "$tag" "${files[@]}" --target "$GITHUB_SHA" \
+          zip="metin2-client-update-$V.zip"
+          target=$(sh .github/scripts/release_source.sh CLIENT_VERSION "$V" "$zip" zips)
+          files=(); [ -f "zips/$zip" ] && files+=("zips/$zip")
+          gh release create "$tag" "${files[@]}" --target "$target" \
             --title "$(cat out/title.txt)" --notes-file out/notes.md --latest=false
