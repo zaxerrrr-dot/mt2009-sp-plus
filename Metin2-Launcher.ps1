@@ -1926,9 +1926,10 @@ function Start-CoopHostingAction {
     $ports = Get-M2CoopGamePorts -ServerRoot $serverRoot
     # The address the friends get, and the one the cores have to name in every
     # warp (PROXY_IP): the client follows the warp's address, not the one it
-    # logged in through.
+    # logged in through. Settled after the router (Resolve-M2CoopAdvertisedAddress);
+    # here only whether there is any address at all.
     $friendAddress = $(if ($via.Mode -eq 'vpn') { $via.Vpn.Address } else { $report.PublicAddress })
-    if (-not $friendAddress) { throw 'Nie udało się ustalić adresu dla znajomych - hostowanie przerwane, nic nie zmieniono.' }
+    if (-not $friendAddress -and -not $report.LanAddress) { throw 'Nie udało się ustalić adresu dla znajomych - hostowanie przerwane, nic nie zmieniono.' }
     $state = Read-M2CoopState -ServerRoot $serverRoot
     $advertised = Get-DotEnvValue -Key 'M2_PUBLIC_ADDRESS' -Default '127.0.0.1'
     # What the player had before any hosting, kept for "Zakończ"; an address
@@ -1940,15 +1941,6 @@ function Start-CoopHostingAction {
             (($hostingNames -contains 'friendAddress') -and $advertised -eq [string]$state.hosting.friendAddress)) {
         $ownAddress = [string]$state.hosting.ownPublicAddress
     }
-    $bindings = Get-M2CoopGameBindings -ServerRoot $serverRoot
-    if ($bindings.Public -and $advertised -eq $friendAddress) { Write-Host 'Porty gry są już otwarte na wszystkich kartach sieciowych.' -ForegroundColor Green }
-    else {
-        Write-Phase 'porty gry dla sieci (restart serwera gry, około minuty)'
-        Invoke-CoopGameRecreate -BindAddress '0.0.0.0' -PublicAddress $friendAddress
-        if (Wait-CoopGameReady) { Write-Host 'Serwer gry wstał.' -ForegroundColor Green }
-        else { Write-Host 'Serwer gry jeszcze wstaje - znajomi zalogują się za chwilę.' -ForegroundColor Yellow }
-    }
-    Write-Host ("Opublikowane: {0}" -f ((Get-M2CoopGameBindings -ServerRoot $serverRoot).Lines -join '; '))
     Write-Phase 'zapora Windows'
     # The window asks for the rule itself before it starts this action
     # (-CoopFirewallAsked): from here, a hidden process, Windows only blinks
@@ -2032,6 +2024,27 @@ function Start-CoopHostingAction {
             }
         }
     }
+    # The address the cores advertise is settled only now, after the router:
+    # a VPN the router step fell back on, or the LAN address when nothing was
+    # opened (Resolve-M2CoopAdvertisedAddress) - one restart, with the address
+    # that works.
+    $decided = Resolve-M2CoopAdvertisedAddress -Via $via -Requested $requested -Mapped $mapped.Count `
+        -PublicAddress $report.PublicAddress -LanAddress $report.LanAddress
+    $friendAddress = $decided.Address
+    if (-not $friendAddress) { throw 'Nie udało się ustalić adresu dla znajomych - hostowanie przerwane.' }
+    if ($decided.Lan) {
+        Write-Host ("Serwer ogłasza adres z sieci domowej {0}: grasz Ty i komputery w tym domu. Adres internetowy ({1}) bez otwartych portów nie wpuściłby nawet Ciebie - po wyborze postaci gra wracałaby do wyboru kanału." -f $friendAddress, $report.PublicAddress) -ForegroundColor Yellow
+        Write-Host 'Znajomi z internetu: Radmin VPN albo Tailscale u Ciebie i u nich, potem HOSTUJ ŚWIAT jeszcze raz. Jeśli przekierowałeś porty w routerze ręcznie, wybierz w oknie COOP "przez internet".' -ForegroundColor Yellow
+    }
+    $bindings = Get-M2CoopGameBindings -ServerRoot $serverRoot
+    if ($bindings.Public -and $advertised -eq $friendAddress) { Write-Host 'Porty gry są już otwarte na wszystkich kartach sieciowych.' -ForegroundColor Green }
+    else {
+        Write-Phase 'porty gry dla sieci (restart serwera gry, około minuty)'
+        Invoke-CoopGameRecreate -BindAddress '0.0.0.0' -PublicAddress $friendAddress
+        if (Wait-CoopGameReady) { Write-Host 'Serwer gry wstał.' -ForegroundColor Green }
+        else { Write-Host 'Serwer gry jeszcze wstaje - znajomi zalogują się za chwilę.' -ForegroundColor Yellow }
+    }
+    Write-Host ("Opublikowane: {0}" -f ((Get-M2CoopGameBindings -ServerRoot $serverRoot).Lines -join '; '))
     $state.hosting = [pscustomobject]@{
         active = $true; since = (Get-Date).ToString('s'); lanAddress = $report.LanAddress
         publicAddress = $report.PublicAddress; ports = @($ports); mapped = @($mapped)
@@ -2043,6 +2056,9 @@ function Start-CoopHostingAction {
     if ($via.Mode -eq 'vpn') {
         Write-Host ("Hostowanie włączone przez {0}. Adres dla znajomych: {1}" -f $via.Vpn.Name, $friendAddress) -ForegroundColor Green
         Write-Host ("Znajomi muszą dołączyć do Twojej sieci {0}, zanim wkleją kod zaproszenia." -f $via.Vpn.Name) -ForegroundColor Yellow
+    }
+    elseif ($decided.Lan) {
+        Write-Host ("Hostowanie włączone w sieci domowej, adres {0}. Znajomi z internetu - przez VPN (UWAGA wyżej)." -f $friendAddress) -ForegroundColor Yellow
     }
     elseif ($routerRefused) {
         Write-Host ("Hostowanie włączone, ale bez portów w routerze (UWAGA wyżej). Adres dla znajomych: {0}" -f $friendAddress) -ForegroundColor Yellow

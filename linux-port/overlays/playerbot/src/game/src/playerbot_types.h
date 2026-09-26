@@ -1704,6 +1704,8 @@ namespace
 	// read is a synchronous query. The catalogue is rebuilt hourly from the
 	// manager's table, whose indices run to a few hundred on this package.
 	const DWORD PLAYERBOT_ISHOP_CHECK_INTERVAL = 10 * 60 * 1000;
+	// Vouchers are looked for every minute, whatever the bot is doing.
+	const DWORD PLAYERBOT_ISHOP_VOUCHER_CHECK_INTERVAL = 60 * 1000;
 	const DWORD PLAYERBOT_ISHOP_BUY_INTERVAL = 60 * 60 * 1000;
 	// A shopping session (operator, 24 Sep 2026): a bot with the coins buys
 	// every missing piece of its look in one go, not one an hour. The next
@@ -6939,6 +6941,7 @@ namespace
 			bDragonBalanceKnown(false),
 			bBoughtHairstyle(false),
 			dwNextItemShopCheckTime(0),
+			dwNextVoucherCheckTime(0),
 			dwNextMountRewearTime(0),
 			dwNextItemShopBuyTime(0),
 			bItemShopLookSession(false),
@@ -7370,6 +7373,8 @@ namespace
 		bool bDragonBalanceKnown;
 		bool bBoughtHairstyle;
 		DWORD dwNextItemShopCheckTime;
+		// Vouchers on a clock of their own (CashPlayerBotVouchers).
+		DWORD dwNextVoucherCheckTime;
 		// A mount seal taken off at death (server-patches/mountdeath) goes back
 		// on from the bag within seconds, not at the next ItemShop look.
 		DWORD dwNextMountRewearTime;

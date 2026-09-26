@@ -5722,6 +5722,8 @@ void CPlayerBotManager::Update()
 		if (RescuePlayerBotWithoutSectree(ch, state, dwNow))
 			continue;
 
+		// Before the stall, which ends the pass of a bot at its counter.
+		CashPlayerBotVouchers(ch, state, dwNow);
 		if (ManagePlayerBotPrivateShop(ch, state, dwNow))
 			continue;
 
