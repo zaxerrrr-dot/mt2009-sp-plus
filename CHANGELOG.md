@@ -17,6 +17,93 @@ every version here.
 
 ---
 
+## 2.6.0 — 2026-09-26 — Juki konne, szarfy botów, Grota Wygnańców
+
+Serwer 2.6.0 i klient 2.0.15. **Zaktualizuj oba** w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.5.1. Pierwszy start po aktualizacji kompiluje serwer od nowa, więc trwa
+dłużej niż zwykle.
+
+### Juki konne
+
+- **Piąta strona ekwipunku:** do 45 dodatkowych miejsc (9 rzędów po 5).
+  Pierwszy rząd otwiera Stajenny (koń od 1 poziomu, 1 Medal Konny
+  i 5 Materiałów Rzemieślniczych), kolejne wymagają coraz wyższego poziomu
+  konia (4, 6, 9, 11, 14, 16, 19 i 21). Wszystkie rzędy kosztują razem
+  25 medali i 325 materiałów.
+- **Materiały Rzemieślnicze** robi Dozorca z ulepszaczy: 1000 yang za
+  sztukę, udaje się 55%.
+- Juki działają przy przywołanym koniu, w czasie jazdy na koniu, a teraz
+  także w czasie jazdy na wierzchowcu z pieczęci (klient 2.0.15).
+- **Boty:** 30% botów rozwija konia i juki – każdy od 3 do 9 rzędów, po
+  jednym co kilka godzin. Skupują medale, materiały i tanie ulepszacze,
+  a juki służą im za dodatkowe miejsce w plecaku.
+- Pozostałe boty ulepszacze, które nie sprzedały się w sklepie przez
+  12 godzin, przerabiają u Dozorcy i wystawiają Materiały Rzemieślnicze po
+  100 000 yang za sztukę.
+
+### Szarfy u botów
+
+- 60% botów od 30 poziomu buduje własną szarfę: skupuje szarfy z rynku,
+  łączy je u Uriela (dowolne rodzaje tego samego stopnia), pochłania w nią
+  broń albo zbroję i ją zakłada.
+- Cel rośnie z poziomem: 5% od 30 poziomu, 10% od 50, unikatowa szarfa od 65,
+  a najbogatsze boty od 90 poziomu łączą unikaty do 21%.
+
+### Nowe miejsca
+
+- **Grota Wygnańców:** wejście wraca na swoje miejsce – portal w lewym dolnym
+  rogu Doliny Orków, obok niego Seon-Pyeong. Grota V1 (lodowe potwory,
+  Setaou, Silna Lodowa Wiedźma) i Grota V2 (Setaou, Dowódca i Generał
+  Yonghan). Boty chodzą tam od 78 i 84 poziomu i zwołują rajdy na bossów.
+- **Diabelskie Katakumby** da się przejść: Strażnik Katakumb stoi
+  w Świątyni Hwang. Wejście od 75 poziomu, po pokonaniu Umarłego Rozpruwacza
+  na 9. piętrze Wieży Demonów; od 2. piętra potrzebna jest grupa.
+- Skrzynia Azraela i Skrzynia Mroku mają wreszcie zawartość.
+
+### Towarzysz
+
+- Osobne okna **Ekwipunek** i **Umiejętności** (klient 2.0.14): przedmiot
+  Towarzysza przeciągasz do swojego plecaka, a punkty umiejętności
+  rozdajesz w oknie.
+- Towarzysz dostaje wszystkie punkty umiejętności, a szaman trzyma Twoje
+  buffy tak jak swoje, także w trakcie walki.
+- Potwory, które biją Towarzysza, przechodzą na Ciebie, gdy zginie albo go
+  odeślesz, a jego zabicia liczą się do Twoich misji.
+- Nowy Towarzysz zaczyna z pustym plecakiem i startowym wyposażeniem.
+
+### Boty
+
+- Każdy noszony przedmiot ulepszają co najmniej do +4, a Perfekcjonista
+  dąży do +9. Bonusują tylko tam, gdzie się to opłaca, a z kamieniami – od
+  razu, także poza miastem.
+- Ulepszacze trafiają na sklepy w naturalnych stosach, bez chomikowania.
+  Sprzęt z rynku boty kupują tylko od +6.
+- Metinolog używa Wykrywacza Kamieni Metin i idzie do wskazanego kamienia.
+- 100 Magicznego Pyłu boty zamieniają na Marmur Błogosławieństwa do piątego
+  bonusu.
+- Boty otwierają szkatułki z bossów zamiast je wystawiać, a brakujący klucz
+  kupują na rynku.
+- Boty odpuszczają na „Poddaję się”, boty różnych królestw nie biją się już
+  o Metiny, a pełny plecak nie odciąga bota z Wieży Demonów ani z rajdu.
+
+### Poprawki
+
+- Cor Draconis podniesiony z ziemi albo otrzymany dołącza do stosu, który
+  już masz w ekwipunku.
+- Pieczęć wierzchowca po śmierci schodzi do ekwipunku – po wstaniu możesz ją
+  założyć i jechać dalej.
+- Boty w przemianie kulą polimorfii nie zdejmują już broni i nie walczą
+  z bossem gołymi rękami, a bonusując tuż po ciosie nie zostają bez
+  przedmiotu.
+- Boty nie utykają w części Świątyni Hwang odciętej od wyjścia.
+- Kamienie Metin stoją w miejscu i nie zapychają logów serwera błędami.
+- Panel admina: szarfa bota z pochłanianiem i liczba rzędów juków w karcie
+  bota; pole hasła tylko tam, gdzie logowanie go wymaga.
+- Licencja paczki: CC BY-NC-SA 4.0.
+
+---
+
 ## Klient 2.0.15 — 2026-09-26 — Juki konne na wierzchowcach
 
 - Juki konne działają podczas jazdy na klasycznym koniu oraz na
