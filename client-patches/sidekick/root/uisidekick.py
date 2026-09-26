@@ -531,31 +531,6 @@ def OnServerGear(slot='0', name='-', *rest):
 	GetWindow().OnServerGear(slot, name)
 
 
-# The companion is a ghost to its owner: "niech towarzysz zawsze bedzie
-# mozliwy do przejscia jak by byl duchem, bo postac gracza o niego sie
-# blokuje" (26 September). The client stops its character on every other
-# character's body but an NPC's (CActorInstance::TestActorCollision), so the
-# companion's instance - its vid in the server's "SidekickGhost <vid>", every
-# few seconds while both are on one map - is made an NPC here. Only in the
-# owner's own client; an instance that leaves the view and comes back is made
-# a player again, and the next SidekickGhost turns it back. The window does
-# not have to be open.
-def OnServerGhost(vid='0', *rest):
-	vid = ParseInt(vid)
-	if vid <= 0:
-		return
-	import chr
-	import player
-	main = player.GetMainCharacterIndex()
-	if vid == main or not chr.HasInstance(vid):
-		return
-	if chr.GetInstanceType(vid) != chr.INSTANCE_TYPE_PLAYER:
-		return
-	chr.SelectInstance(vid)
-	chr.SetInstanceType(chr.INSTANCE_TYPE_NPC)
-	chr.SelectInstance(main)
-
-
 def Destroy():
 	window = _window['window']
 	if window is not None:

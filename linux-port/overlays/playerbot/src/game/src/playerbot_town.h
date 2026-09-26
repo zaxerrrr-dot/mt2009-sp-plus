@@ -1410,7 +1410,7 @@ namespace
 	bool ManagePlayerBotAlchemist(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || state.bVisitingShop || state.bVisitingBiologist || state.bVisitingHerbalist ||
-				state.bVisitingStable || state.bFishingSession)
+				state.bVisitingStable || state.bFishingSession || state.bVisitingYonah)
 			return false;
 		// A bot in somebody's party is theirs, and the Alchemist is an errand.
 		if (ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty()))
@@ -2354,6 +2354,8 @@ namespace
 			unit = PLAYERBOT_PRIOR_SHELLFISH;
 		else if (item->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM)
 			unit = PLAYERBOT_PRIOR_HORSE_MEDAL;
+		else if (IsPlayerBotCatacombHead(item->GetVnum()))
+			unit = ScalePlayerBotIwakuraPrice(PLAYERBOT_PRIOR_CATACOMB_HEAD);
 		// An item-shop head, at the price of the coins it cost
 		// (PLAYERBOT_PRIOR_ISHOP_HAIRSTYLE), whatever the wallets say.
 		const bool hairstyle = item->GetType() == ITEM_COSTUME && item->GetSubType() == COSTUME_HAIR;
@@ -2731,6 +2733,10 @@ namespace
 					(int)item->GetCount(), GetPlayerBotCountedGoodsKeep(ch, item)) ? 800 : -1;
 		if (item->GetType() == ITEM_POLYMORPH || IsPlayerBotMetinDetector(item->GetVnum()))
 			return PLAYERBOT_SHOP_POLYMORPH_SCORE;
+		// A Dried Head, for a player's run of the Catacomb
+		// (PLAYERBOT_PRIOR_CATACOMB_HEAD).
+		if (IsPlayerBotCatacombHead(item->GetVnum()))
+			return PLAYERBOT_SHOP_CATACOMB_HEAD_SCORE;
 		// A bonus stone over what the bot keeps for its own rerolling, above the
 		// books and below the materials, the way a marble sits. On this world it
 		// reaches no counter and that is the engine's word, not this branch's:
@@ -3980,6 +3986,10 @@ namespace
 		// Nor a player's companion: it stands at its owner's side, or plays
 		// while its owner is online, and a stand would outlive both.
 		if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return false;
+		// Nor a bot on a pirate or a Zuo wave: a stand is the village's, the
+		// event is out on its map (playerbot_world_events.h).
+		if (state.bWorldEventKind != 0)
 			return false;
 		// Every shop in the world stands on the first channel (the operator's
 		// rule for the second one, playerbot_channel_rules.h). Without the

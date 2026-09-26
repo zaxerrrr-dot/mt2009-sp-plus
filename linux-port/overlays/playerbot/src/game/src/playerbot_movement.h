@@ -603,8 +603,15 @@ namespace
 
 	bool IsPlayerBotDungeonStoneObjective(LPCHARACTER ch, LPCHARACTER stone)
 	{
-		return ch && stone && stone->IsStone() && !stone->IsDead() &&
-				IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()) &&
+		if (!ch || !stone || !stone->IsStone() || stone->IsDead())
+			return false;
+		// The Devil's Catacomb's Metins of Revenge (level 85) are its third
+		// floor's objective for a raider, whatever its level: the tick's
+		// "obsolete stone" check dropped the raid's stone and its route on
+		// every pass for a raider more than ten levels under it.
+		if (IsPlayerBotCatacombInstance(stone->GetMapIndex()) && IsPlayerBotCatacombRaider(ch->GetPlayerID()))
+			return true;
+		return IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()) &&
 				(IsPlayerBotClimbingWithPlayer(ch) || IsPlayerBotTowerRaider(ch));
 	}
 
@@ -1049,8 +1056,16 @@ namespace
 	// trained fights on foot like any rider of a transport horse: the target
 	// section climbs down when it picks a foe, and so do the duel, the Anti-PK
 	// fight and the tower.
+	//
+	// Never a player's companion: it rode up to its owner on the battle horse
+	// and, its skills short of Master, fought from the saddle with the swing
+	// alone - "uzywa konia by byc szybciej przy mnie lecz gdy zaczynamy walke
+	// to z niego nie schodzi" (prodnathin, 26 September). Its owner fights on
+	// foot with the skills it chose, and so does the companion.
 	bool CanPlayerBotEverFightOnHorse(LPCHARACTER ch)
 	{
+		if (ch && IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return false;
 		// A standing mount keeps every skill: nothing beats that saddle.
 		if (HasPlayerBotStandingMount(ch))
 			return true;
@@ -1074,7 +1089,7 @@ namespace
 		if (HasPlayerBotStandingMount(ch))
 			return true;
 		if (target && target->IsStone())
-			return HasPlayerBotBattleHorse(ch);
+			return HasPlayerBotBattleHorse(ch) && !IsPlayerBotSidekickPID(ch->GetPlayerID());
 
 		if (!CanPlayerBotEverFightOnHorse(ch))
 			return false;

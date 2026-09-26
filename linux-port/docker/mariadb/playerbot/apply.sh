@@ -269,20 +269,41 @@ db -e "
   || echo "[playerbot-migrate] WARNING: alchemy item_proto changes failed" >&2
 
 # The Grotto of Exile's warp in Orc Valley's bottom-left corner (10077,
-# restored by the game image) reads its target out of its own locale_name
+# commented again since 2.2.21, when Koe-Pung took the way in; kept right for a
+# GM who puts it back) reads its target out of its own locale_name
 # (FuncCheckWarp), and the package's pointed at cell (9,46) of map 72 - a
 # blocked cell six kilometres from any open ground. The target is the
 # grotto's Town point (100,46), where the engine also stands up whoever dies
 # in there, 1.3 km from the way out (10078). The db core reads mob_proto at
 # boot (PROTO_FROM_DB); idempotent.
 db -e "UPDATE world.mob_proto SET name = '????1? 100 12078', locale_name = '????1? 100 12078' WHERE vnum = 10077 AND locale_name <> '????1? 100 12078';" || echo "[playerbot-migrate] WARNING: could not point the Grotto of Exile warp at its Town" >&2
+# Three doors of the Devil's Catacomb's fourth-floor maze (10814, 10817,
+# 10818) carry a locale_name with no space after the dot - ".233 780" - which
+# FuncCheckWarp's ' %s %ld %ld' cannot read, so the engine moved nobody
+# through them; their name column is whole, and its targets stand on the
+# maze's open ground (checked on map 216's server_attr, 26 September). The
+# stake at the end is reachable in every wiring without them. Idempotent.
+db -e "UPDATE world.mob_proto SET locale_name = name WHERE vnum IN (10814, 10817, 10818) AND locale_name <> name;" || echo "[playerbot-migrate] WARNING: could not mend the Catacomb maze doors" >&2
 # Three ItemShop lines stood behind time auctions the package's server ran
 # in December 2024 - 906 the Metin stone detector, 907 Kamien Duchowy, 908 -
 # and an ended auction is a line nobody sees and BuyItem refuses, a player
 # as much as a bot. Their auction rows go and the lines are ordinary ones;
 # an auction the operator makes is not touched. The db core reads both
-# tables at boot; idempotent.
-db -e "DELETE FROM common.itemshop_time_auctions WHERE item_index IN (906, 907, 908) AND end_time < '2025-01-01'; DELETE p FROM player.itemshop_time_auction AS p LEFT JOIN common.itemshop_time_auctions AS a ON a.item_index = p.item_index WHERE p.item_index IN (906, 907, 908) AND a.item_index IS NULL;" || echo "[playerbot-migrate] WARNING: could not end the ItemShop old time auctions" >&2
+# tables at boot; idempotent. Until 2.2.21 the second DELETE was a
+# multi-table one, which MariaDB refuses with no default database, so the
+# players' buy counts of the three stayed and this warned at every start.
+db -e "DELETE FROM common.itemshop_time_auctions WHERE item_index IN (906, 907, 908) AND end_time < '2025-01-01'; DELETE FROM player.itemshop_time_auction WHERE item_index IN (906, 907, 908) AND item_index NOT IN (SELECT item_index FROM common.itemshop_time_auctions);" || echo "[playerbot-migrate] WARNING: could not end the ItemShop old time auctions" >&2
+# Pirate Tanaka (5001), the Tanaka event's treasure goblin
+# (playerbot_world_events.h): the package gives him 560 yang, which his fall
+# splits into thirty piles of twenty, and a flat thousand at each fifth of his
+# health (playerbotify apply_tanaka_goblin scales that to a fifth of a roll of
+# these). A world whose operator set his yang by hand keeps it: only the
+# stock 560 moves. The db core reads mob_proto at boot; idempotent.
+db -e "UPDATE world.mob_proto SET gold_min = 15000, gold_max = 25000 WHERE vnum = 5001 AND gold_min = 560 AND gold_max = 560;" || echo "[playerbot-migrate] WARNING: could not give Pirate Tanaka his yang" >&2
+# His ear (30202), which Yonah takes for a Purple Ebony Chest
+# (tanaka_ears.quest), stacks to the 200 its row already says: the package
+# left ITEM_FLAG_STACKABLE off, so every ear took a cell. Idempotent.
+db -e "UPDATE world.item_proto SET flag = flag | 4 WHERE vnum = 30202 AND (flag & 4) = 0;" || echo "[playerbot-migrate] WARNING: could not make Tanaka's ear stack" >&2
 # Maska Sabaha left the world with the Hwang curse (playerbotify
 # apply_hwang_curse_removed, the share step of the game Dockerfile): the shop
 # that sold one sells it no more. The db core reads the shops at boot, so this
@@ -420,6 +441,45 @@ if [ "$lands_done" = "0" ]; then
         echo "[playerbot-migrate] the package's guild lands cleared: ${lands_rows:-0} land(s), ${lands_objects:-0} building(s)"
     else
         echo "[playerbot-migrate] WARNING: could not clear the package's guild lands" >&2
+    fi
+fi
+# 2.2.20 opened the Grotto of Exile (72, 73) and the Devil's Catacomb (216)
+# and no client of that time could stand on any of them: the grotto's maps
+# stood in the season2 pack without the maps/ the client looks under, and the
+# Catacomb's map was in no pack at all (client 2.0.38 carries all three, see
+# port/season2ify.py). Entering one closed the client, and a character saved
+# there could not log in again ("postac jest zbugowana", Iwakura, 26
+# September). Once: every character of a person saved on one of them or in an
+# instance of one is put where the way out leads - by Koe-Pung in Orc Valley
+# (284200, 810600, the target of the grotto's exit 10078) or before the
+# Catacomb's Guardian in Hwang Temple (591400, 99200, the quest's own exit).
+# A bot has no client and stays where it is. Before the game container starts
+# (a character left there minutes before an update may still be written back
+# by the old db core's cache; the new client can stand there anyway).
+rescue_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'grotto_catacomb_client_2221';" 2>/dev/null || echo x)
+if [ "$rescue_done" = "0" ]; then
+    if rescue_out=$(db -e "
+        START TRANSACTION;
+        UPDATE player.player AS p JOIN account.account AS a ON a.id = p.account_id
+           SET p.map_index = 64, p.x = 284200, p.y = 810600,
+               p.exit_map_index = 64, p.exit_x = 284200, p.exit_y = 810600
+         WHERE a.login NOT LIKE 'playerbot%'
+           AND (p.map_index IN (72, 73) OR p.map_index BETWEEN 720000 AND 739999);
+        SELECT ROW_COUNT();
+        UPDATE player.player AS p JOIN account.account AS a ON a.id = p.account_id
+           SET p.map_index = 65, p.x = 591400, p.y = 99200,
+               p.exit_map_index = 65, p.exit_x = 591400, p.exit_y = 99200
+         WHERE a.login NOT LIKE 'playerbot%'
+           AND (p.map_index = 216 OR p.map_index BETWEEN 2160000 AND 2169999);
+        SELECT ROW_COUNT();
+        INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('grotto_catacomb_client_2221', NOW());
+        COMMIT;
+    "); then
+        rescue_grotto=$(printf '%s\n' "$rescue_out" | awk 'NR == 1')
+        rescue_catacomb=$(printf '%s\n' "$rescue_out" | awk 'NR == 2')
+        echo "[playerbot-migrate] characters moved out of maps no old client could load: ${rescue_grotto:-0} from the Grotto of Exile, ${rescue_catacomb:-0} from the Devil's Catacomb"
+    else
+        echo "[playerbot-migrate] WARNING: could not move the characters out of the Grotto and the Catacomb" >&2
     fi
 fi
 # fish_log came from r40250's dump and has that engine's eight columns,
