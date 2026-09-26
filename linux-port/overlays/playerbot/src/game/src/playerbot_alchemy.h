@@ -43,7 +43,9 @@ namespace
 	// Unworn stones of one kind kept as refine material.
 	const int PLAYERBOT_DS_MATERIAL_KEEP = 4;
 	// Dragon Stone lines one counter shows (playerbot_offline_shop.h).
-	const int PLAYERBOT_DS_COUNTER_LINES = 4;
+	// Eight, not four: 43 000 unworn stones stood in the bags of 800 users on
+	// the test world (26 September 2026), four lines at a time.
+	const int PLAYERBOT_DS_COUNTER_LINES = 8;
 	// Cors a user keeps in the bag before it stops buying them.
 	const int PLAYERBOT_DS_COR_KEEP = 10;
 	const DWORD PLAYERBOT_ALCHEMY_CHECK_MIN_MS = 4 * 60 * 1000;
@@ -223,14 +225,23 @@ namespace
 
 	// What a user's stones should come to at its level: the refining stops
 	// there, and a stone past it is only worn.
+	//
+	// The step first, on the ordinary grade: "cele dopasowane do przychodu 5
+	// Corow dziennie, zdecydowanie najpierw stopien, bez sensu ulepszac
+	// kamienie klasa inne niz legendarne i mityczne" (operator, 26 September
+	// 2026). A grade refine gives a stone of step 0 and strength 0
+	// (DSManager::DoRefineGrade) and three stones of a grade make about one of
+	// the next, so a grade under the legendary one was a step thrown away:
+	// on the test world bots of 65-74 wore grade 1.5 at step 0.1. Only a bot
+	// of 90 and more goes for the legendary grade, and the steps after it.
 	TPlayerBotDsTarget GetPlayerBotDsTarget(LPCHARACTER ch)
 	{
 		TPlayerBotDsTarget t = { 0, 0, 0 };
 		const int level = ch ? ch->GetLevel() : 0;
 		if (level >= 90)      { t.grade = 4; t.step = 4; t.strength = 4; }
-		else if (level >= 75) { t.grade = 3; t.step = 4; t.strength = 3; }
-		else if (level >= 65) { t.grade = 2; t.step = 3; t.strength = 2; }
-		else if (level >= 50) { t.grade = 1; t.step = 2; t.strength = 1; }
+		else if (level >= 75) { t.grade = 0; t.step = 4; t.strength = 3; }
+		else if (level >= 65) { t.grade = 0; t.step = 3; t.strength = 2; }
+		else if (level >= 50) { t.grade = 0; t.step = 2; t.strength = 1; }
 		return t;
 	}
 
@@ -510,11 +521,15 @@ namespace
 			b = pick[1];
 			return PLAYERBOT_DS_WORK_GRADE;
 		}
+		// The steps: at the highest grade it has a pair of - a stone of a
+		// grade over the target, made before the step came first, is stepped
+		// too rather than left as it is.
+		for (int grade = 5; grade >= (int)t.grade; --grade)
 		for (BYTE step = 0; step < t.step; ++step)
 		{
 			std::vector<LPITEM> pick;
 			for (size_t i = 0; i < stones.size(); ++i)
-				if (GetPlayerBotDsGrade(stones[i]) == t.grade && GetPlayerBotDsStep(stones[i]) == step)
+				if (GetPlayerBotDsGrade(stones[i]) == grade && GetPlayerBotDsStep(stones[i]) == step)
 					pick.push_back(stones[i]);
 			if (pick.size() < 2 || spare < PLAYERBOT_DS_STEP_FEES[step] + 1000000)
 				continue;

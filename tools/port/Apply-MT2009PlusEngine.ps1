@@ -28,6 +28,7 @@ param(
 #   mount off at death char_battle.cpp           (MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1)
 #   saddlebags on a mount char.cpp               (MT2009_PLUS_SADDLEBAG_MOUNT_V1)
 #   stones stand still char.cpp, char_state.cpp  (MT2009_PLUS_STONE_STILL_V1)
+#   bot sash drop      item_manager.cpp, char_item.cpp (MT2009_PLUS_BOT_SASH_DROP_V1)
 #   mount bonus once   MountSystem.cpp           (MT2009_PLUS_MOUNT_BONUS_ONCE_V1)
 #   permanent seals    MountSystem.cpp           (MT2009_PLUS_MOUNT_PERMANENT_V1)
 #   rare drop levels   item_manager.cpp          (MT2009_PLUS_RARE_LEVEL_V1)
@@ -286,6 +287,18 @@ if ((Test-Path -LiteralPath $dsTraceApply -PathType Leaf) -and
     if ($dsTraceResult.Changed) {
         $syncedFiles++
         Write-Host 'Dragon Stone equip trace for players only.' -ForegroundColor DarkGray
+    }
+}
+# Bots roll sashes like players (server-patches/botsashdrop): the boss kill
+# at 80% and the boss chest's unique; after botraredrop, rarelevel and
+# raretoggle, which shape the same blocks.
+$botSashDropApply = Join-Path $repo 'server-patches/botsashdrop/Apply-BotSashDropPatch.ps1'
+if ((Test-Path -LiteralPath $botSashDropApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $botSashDropResult = & $botSashDropApply -SourceDirectory $engineGameSource
+    if ($botSashDropResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Bots roll sashes like players.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

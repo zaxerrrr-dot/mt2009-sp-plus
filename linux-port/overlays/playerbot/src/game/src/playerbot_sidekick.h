@@ -2940,10 +2940,9 @@ namespace
 	{
 		if (!item->IsEquipable() || item->IsDragonSoul() || item->FindEquipCell(sk) < 0)
 			return "Tego nie da sie zalozyc.";
-#if defined(PLAYERBOT_ENGINE_MT2009)
-		if (item->GetType() == ITEM_COSTUME && item->GetSubType() != COSTUME_HAIR)
-			return "Kostiumy sa na tym serwerze wylaczone.";
-#endif
+		// Every costume goes on: the engine takes them on this server now
+		// (char_item.cpp), and "Kostiumy sa na tym serwerze wylaczone" was a
+		// refusal left from when it did not (26 September 2026).
 		if (!item->CanUsedBy(sk))
 			return "To nie jest dla klasy towarzysza.";
 		if ((IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_MALE) && GET_SEX(sk) == SEX_MALE) ||

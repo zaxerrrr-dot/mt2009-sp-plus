@@ -2253,6 +2253,13 @@ namespace
 			return PLAYERBOT_COR_DRACONIS_PRICE * std::max<DWORD>(1, (DWORD)item->GetCount());
 		if (item->IsDragonSoul())
 			return GetPlayerBotDragonSoulPrice(item);
+		// A sash: what it costs to make + 25% (playerbot_sash.h).
+		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
+		{
+			const DWORD sash = GetPlayerBotSashPrice(item);
+			if (sash != 0)
+				return sash;
+		}
 		// The sale memory is read below before the step limiter would notice a
 		// new yang rate, so the rate is checked here first as well.
 		ForgetPlayerBotPricesOnRateChange();

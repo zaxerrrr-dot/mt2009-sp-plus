@@ -447,7 +447,7 @@ namespace
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		if (price > spare) return false;
 		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
-			return CanPlayerBotPayForSashOffer(ch, price);
+			return CanPlayerBotPayForSashOffer(ch, item, price);
 		if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
 			return CanPlayerBotPayForCraftMaterial(ch, item, price);
 		if (IsPlayerBotCorVnum(item->GetVnum()) || item->IsDragonSoul())

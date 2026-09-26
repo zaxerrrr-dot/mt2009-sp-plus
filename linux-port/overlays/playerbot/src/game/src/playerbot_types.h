@@ -6031,9 +6031,10 @@ namespace
 		return false;
 	}
 
-	// MT2009 Plus: Cor Draconis and sashes are players' goods. A bot picks
-	// them up, never opens a Cor Draconis and never wears or combines a sash;
-	// it puts them on its offline counter for players to buy, and a line that
+	// MT2009 Plus: Cor Draconis and sashes are goods. A bot picks them up and
+	// puts them on its offline counter - but an alchemy bot opens its Cors
+	// (playerbot_alchemy.h) and a sash keeper builds and wears its sash
+	// (playerbot_sash.h), keeping what it needs; a line that
 	// has stood through the whole unsold markdown comes home and goes to the
 	// merchant. Only a share of the bots' counters carries each kind at once
 	// (PLAYERBOT_RARE_GOODS_SHOP_PERCENT_*), so the market is not flooded.
@@ -6106,7 +6107,10 @@ namespace
 	// counters and the market that ask these).
 	bool IsPlayerBotKeptSash(LPCHARACTER ch, LPITEM item);
 	bool WantsPlayerBotSashOffer(LPCHARACTER ch, LPITEM offer);
-	bool CanPlayerBotPayForSashOffer(LPCHARACTER ch, long long price);
+	bool CanPlayerBotPayForSashOffer(LPCHARACTER ch, LPITEM offer, long long price);
+	// Its price (cost to make + 25%) and whether it is a released lone sash.
+	DWORD GetPlayerBotSashPrice(LPITEM item);
+	bool IsPlayerBotSashReleased(DWORD itemId);
 	bool PlayerBotWantsSashFromMarket(LPCHARACTER ch);
 	void NotePlayerBotSashBought(LPCHARACTER ch, DWORD vnum, long long price);
 	void LogPlayerBotSashCensus();
