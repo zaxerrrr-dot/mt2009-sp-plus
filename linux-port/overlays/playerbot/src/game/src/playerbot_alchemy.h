@@ -42,6 +42,8 @@ namespace
 	const int PLAYERBOT_DS_ELIXIR_BELOW_SEC = 2 * 60 * 60;
 	// Unworn stones of one kind kept as refine material.
 	const int PLAYERBOT_DS_MATERIAL_KEEP = 4;
+	// Dragon Stone lines one counter shows (playerbot_offline_shop.h).
+	const int PLAYERBOT_DS_COUNTER_LINES = 4;
 	// Cors a user keeps in the bag before it stops buying them.
 	const int PLAYERBOT_DS_COR_KEEP = 10;
 	const DWORD PLAYERBOT_ALCHEMY_CHECK_MIN_MS = 4 * 60 * 1000;
