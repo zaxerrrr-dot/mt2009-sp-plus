@@ -89,6 +89,9 @@ struct State {
     // to the purchase or the moment it is given up, which says why.
     bool farBuy = false;
     uint32_t repriceSteps = 0;
+    // How many visits in a row a restock or a take-off has chained, two
+    // seconds apart (PLAYERBOT_OFFLINE_RESTOCK_CHAIN).
+    uint32_t chainSteps = 0;
     // Which compiled price table this shop was last priced against.
     uint32_t priceGeneration = 0;
     // The empty-hand probe of the counter, and the last line taken back to

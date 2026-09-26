@@ -2294,8 +2294,10 @@ function Update-VersionFooter {
         $what = if ($serverBehind -and $clientBehind) { 'SERWERA I KLIENTA' }
             elseif ($serverBehind) { 'SERWERA' }
             else { 'KLIENTA' }
-        $script:versionLabel.Text = ("!! NOWA WERSJA {0} - kliknij ZAINSTALUJ AKTUALIZACJE`r`n{1}" -f
-            $what, $script:versionLabel.Text)
+        # The button's own words (T 'update'): the line used to send players
+        # to a "ZAINSTALUJ AKTUALIZACJE" nobody could find (Artur554, 25 September).
+        $script:versionLabel.Text = ("!! NOWA WERSJA {0} - kliknij {1}`r`n{2}" -f
+            $what, (T 'update'), $script:versionLabel.Text)
     }
     $script:versionBaseColor = if ($upToDate -and -not $clientBehind) { [Drawing.Color]::LightGreen }
         elseif ($script:latestServerVersion) { [Drawing.Color]::Gold }
@@ -2978,6 +2980,13 @@ function Show-CoopDialog {
             $intro = ("Uruchom klienta i wybierz serwer 'Online: {0}'. Hasło jest w schowku." -f $invite.name)
             if ($advice) { $intro = $advice + ' ' + $intro }
             else { $intro += ' ' + (@(Get-M2CoopJoinNotes -Choice $choice) -join ' ') }
+            # A client exe from before 2.0.17 cannot enter a friend's world at
+            # all (Test-M2CoopClientExeOld): said first, because nothing else
+            # here helps until it is replaced.
+            if (Test-M2CoopClientExeOld -ClientFolder $client) {
+                Write-LocalLog 'COOP: klient ma stary metin2client.exe (sprzed 2.0.17).'
+                $intro = (Get-M2CoopOldClientNote) + ' ' + $intro
+            }
             Show-CoopSecretDialog -Title 'Świat znajomego dodany' -Intro $intro `
                 -Secret ("Login: {0}`r`nHasło: {1}" -f $invite.login, $invite.password)
         }

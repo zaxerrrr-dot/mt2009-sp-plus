@@ -231,6 +231,13 @@ namespace
 				item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM || IsPlayerBotPickupGoods(item) ||
 				GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
 			return true;
+		// A boss's casket opens by itself eight seconds later, and the dungeon's
+		// own bosses drop silver and gold chests, which the bag's key opens: the
+		// medal dropper walked past both (26 September).
+		if (IsPlayerBotBossCasketVnum(item->GetVnum()))
+			return true;
+		if (item->GetType() == ITEM_TREASURE_BOX && PlayerBotHasTreasureKeyFor(ch, item))
+			return true;
 		return PlayerBotLootMergesIntoStack(ch, item);
 	}
 

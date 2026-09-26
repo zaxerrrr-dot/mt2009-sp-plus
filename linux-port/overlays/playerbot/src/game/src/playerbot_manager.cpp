@@ -4067,6 +4067,29 @@ void CPlayerBotManager::OnSidekickCommand(LPCHARACTER ch, const char* szArgument
 	HandlePlayerBotSidekickCommand(ch, szArgument);
 }
 
+// The owner a companion's kill counts for (CHARACTER::Dead through
+// playerbotify's apply_sidekick_kill_credit): the engine gives a monster's
+// death to the quests of the character DistributeExp names, which is the
+// companion when its blows led, and the owner's hunting mission counted
+// nothing the companion killed (Dabroo, 26 September). The owner has to be in
+// this core's world, alive, on the corpse's map and within
+// PLAYERBOT_SIDEKICK_KILL_CREDIT_RANGE of it - the reach of the party's own
+// experience - so a companion sent shopping or let go hunts for itself.
+LPCHARACTER CPlayerBotManager::GetSidekickKillCredit(LPCHARACTER killer, LPCHARACTER victim)
+{
+	if (!killer || !victim || !killer->IsPC() || !killer->GetDesc() || !killer->GetDesc()->IsBot())
+		return NULL;
+	const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(killer->GetPlayerID());
+	if (!rec)
+		return NULL;
+	LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID);
+	if (!owner || owner == killer || owner->IsDead() || owner->GetMapIndex() != victim->GetMapIndex() ||
+			DISTANCE_APPROX(owner->GetX() - victim->GetX(), owner->GetY() - victim->GetY()) >
+				PLAYERBOT_SIDEKICK_KILL_CREDIT_RANGE)
+		return NULL;
+	return owner;
+}
+
 bool CPlayerBotManager::IsRestingBot(DWORD dwPlayerID) const
 {
 	return m_mapLifeRestEnd.find(dwPlayerID) != m_mapLifeRestEnd.end();
@@ -5415,6 +5438,18 @@ void CPlayerBotManager::Update()
 		if (HandleDeath(ch, state, dwNow))
 			continue;
 
+		// The companion's lure self-test (playerbot_sidekick.h): its owner - a
+		// bot standing in for a player - stands on its spot, drinking and doing
+		// nothing else, as a player standing on a spot does.
+		if (IsPlayerBotSidekickSelfTestFrozenOwner(ch))
+		{
+			if (ch->IsStateMove())
+				ch->Stop();
+			UseHealthPotion(ch, state, dwNow);
+			state.dwLastMeaningfulActivityTime = dwNow;
+			continue;
+		}
+
 		// Stunned is stunned, for a bot as much as for anybody.
 		//
 		// The engine puts AFFECT_STUN on a playerbot exactly as on a player -
@@ -6011,9 +6046,11 @@ void CPlayerBotManager::Update()
 			// half is not that. No column of three is still a bag that cannot take
 			// a weapon, so it still sends the bot.
 			const bool personaOn = IsPlayerBotPersonaEnabled();
-			const bool bInventoryFull = (personaOn ? IsPlayerBotBagFull(ch)
+			// Not on a raid (a boss in a second village is a raid on a village
+			// map): the bag waits for the way out (Patch 4, point 12).
+			const bool bInventoryFull = ((personaOn ? IsPlayerBotBagFull(ch)
 					: occupiedGridCells * 100 >= PLAYERBOT_BAG_CELLS * 45) ||
-					ch->GetEmptyInventory(3) < 0;
+					ch->GetEmptyInventory(3) < 0) && !IsPlayerBotInDungeonBusiness(ch, state);
 			// The same question the planner asked. It used to be a different one:
 			// this counted stacks rather than potions, looked at four red vnums
 			// and no blue ones at all, and only fired on an empty belt in a
@@ -6123,6 +6160,7 @@ void CPlayerBotManager::Update()
 		UseUtilityPotions(ch, state, dwNow);
 		UsePlayerBotBoosters(ch, state, dwNow);
 		ManagePlayerBotScrollRefine(ch, state, dwNow);
+		ManagePlayerBotFieldBonus(ch, state, dwNow);
 		// This also catches a bot loaded from the database at critically low HP
 		// after a server restart.  Do not let it immediately reacquire a target.
 		// One exception to walking away, and it is about what the target is

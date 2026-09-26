@@ -137,6 +137,8 @@ namespace
 			case PLAYERBOT_MAP_RED_FOREST: return "do Czerwonego Lasu";
 			case PLAYERBOT_MAP_DEMON_TOWER: return "do Wiezy Demonow";
 			case PLAYERBOT_MAP_FIRE_LAND: return "do Doyyumhwaji";
+			case PLAYERBOT_MAP_GROTTO_V1: return "do Groty Wygnancow";
+			case PLAYERBOT_MAP_GROTTO_V2: return "do Groty Wygnancow 2";
 			default: return "";
 		}
 	}
@@ -170,6 +172,8 @@ namespace
 			case PLAYERBOT_MAP_RED_FOREST: return "to the Red Wood";
 			case PLAYERBOT_MAP_DEMON_TOWER: return "to the Demon Tower";
 			case PLAYERBOT_MAP_FIRE_LAND: return "to Doyyumhwaji";
+			case PLAYERBOT_MAP_GROTTO_V1: return "to the Grotto of Exile";
+			case PLAYERBOT_MAP_GROTTO_V2: return "to the Grotto of Exile 2";
 			default: return "";
 		}
 	}

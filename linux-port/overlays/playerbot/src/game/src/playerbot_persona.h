@@ -489,6 +489,10 @@ namespace
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 		s.trading = s.trading || state.offlineShop.visiting;
 #endif
+		// No Trader in a dungeon or on a raid (Patch 4, point 12): its bag waits
+		// for the way out.
+		if (IsPlayerBotInDungeonBusiness(ch, state))
+			s.trading = false;
 		s.advanced = p.bAdvanced;
 		// A rare personality is the bot's for its whole length (Iwakura's
 		// Patch 3, point 7).

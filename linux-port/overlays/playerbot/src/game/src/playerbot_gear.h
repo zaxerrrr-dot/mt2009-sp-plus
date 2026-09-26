@@ -612,10 +612,112 @@ namespace
 		return score;
 	}
 
+	// Iwakura's Patch 4, point 1: the jewellery and boots worth taking from +4
+	// to +9, by class and for every class, as the +0 vnum of each family (read
+	// off world.item_proto: the family's ten grades are the base and the nine
+	// after it). "Jesli bot ma do wyboru zalozenie podstawowego przedmiotu (np.
+	// butow na 1 lvl +0) lub jednego ze wskazanych tutaj przedmiotow,
+	// preferuje zalozenie przedmiotu z powyzszej listy" - for
+	// PLAYERBOT_JEWEL_LIST_FOLLOWER_PERCENT of the bots; the rest wear what
+	// scores best, "aby uniknac sztywnych regul i zachowac roznorodnosc".
+	struct TPlayerBotListedJewel
+	{
+		DWORD dwBase;
+		int iJob;   // -1 for every class
+	};
+	const TPlayerBotListedJewel PLAYERBOT_LISTED_JEWELS[] = {
+		// Wojownik
+		{ 17020, JOB_WARRIOR },   // Miedziane Kolczyki
+		{ 17100, JOB_WARRIOR },   // Ebonitowe Kolczyki
+		{ 17120, JOB_WARRIOR },   // Perlowe Kolczyki
+		{ 16140, JOB_WARRIOR },   // Naszyj. Z Bial. Zlota
+		// Sura
+		{ 16040, JOB_SURA },      // Srebrny Naszyjnik
+		{ 17060, JOB_SURA },      // Zlote Kolczyki
+		{ 16080, JOB_SURA },      // Jadeitowy Naszyjnik
+		{ 16120, JOB_SURA },      // Perlowy Naszyjnik
+		{ 17140, JOB_SURA },      // Kolczyki Z Bial. Zlota
+		{ 17200, JOB_SURA },      // Kolczyki Z Niebian.Lez
+		// Ninja
+		{ 17080, JOB_ASSASSIN },  // Jadeitowe Kolczyki
+		{ 16160, JOB_ASSASSIN },  // Krysztalowy Naszyjnik
+		{ 17160, JOB_ASSASSIN },  // Krysztalowe Kolczyki
+		// Szaman
+		{ 16040, JOB_SHAMAN },    // Srebrny Naszyjnik
+		{ 17060, JOB_SHAMAN },    // Zlote Kolczyki
+		{ 16080, JOB_SHAMAN },    // Jadeitowy Naszyjnik
+		{ 17140, JOB_SHAMAN },    // Kolczyki Z Bial. Zlota
+		{ 17200, JOB_SHAMAN },    // Kolczyki Z Niebian.Lez
+		// Every class
+		{ 14040, -1 },            // Srebrna Bransoleta
+		{ 14140, -1 },            // Bransol. Z Bial. Zlota
+		{ 14200, -1 },            // Bransol. Z Niebian.Lez
+		{ 16180, -1 },            // Ametystowy Naszyjnik
+		{ 16200, -1 },            // Naszyj. Z Niebian.Lez
+		{ 14160, -1 },            // Krysztalowa Bransoleta
+		// Boots
+		{ 15200, -1 },            // Buty Feniksa
+		{ 15080, -1 },            // Skorzane Kozaki
+		{ 15180, -1 },            // Deszczowe Buty
+		{ 15220, -1 },            // Buty Ognistego Ptaka
+		{ 15160, -1 },            // Ekstazyjne Buty
+	};
+
+	bool IsPlayerBotJewelListFollower(LPCHARACTER ch)
+	{
+		return ch && PlayerBotNavHash(ch->GetPlayerID() ^ 0x4a45574cU) % 100U <
+				PLAYERBOT_JEWEL_LIST_FOLLOWER_PERCENT;
+	}
+
+	bool IsPlayerBotListedJewel(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetType() != ITEM_ARMOR)
+			return false;
+		const BYTE sub = item->GetSubType();
+		if (sub != ARMOR_WRIST && sub != ARMOR_NECK && sub != ARMOR_EAR && sub != ARMOR_FOOTS)
+			return false;
+		const BYTE refine = item->GetRefineLevel();
+		if (refine > 9 || item->GetVnum() < refine)
+			return false;
+		const DWORD base = item->GetVnum() - refine;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_LISTED_JEWELS) / sizeof(PLAYERBOT_LISTED_JEWELS[0]); ++i)
+			if (PLAYERBOT_LISTED_JEWELS[i].dwBase == base &&
+					(PLAYERBOT_LISTED_JEWELS[i].iJob < 0 || PLAYERBOT_LISTED_JEWELS[i].iJob == (int)ch->GetJob()))
+				return true;
+		return false;
+	}
+
+	// Iwakura's Patch 4, point 9: a pair of boots is worth its rolled lines,
+	// and only the lines his tier list rates three of six or better ("maks. PZ,
+	// szansa na cios krytyczny"); its defence is ignored - "w przypadku butow
+	// obrona jest wartoscia marginalna" - and so is its plus, and two clean
+	// pairs are told apart by his PvE tier of the family. The equipment score
+	// used to put the defence at a thousand a point, which made the boots
+	// with the most of it the pair a bot wore whatever was rolled on the
+	// others.
+	long long GetPlayerBotBootsScore(LPITEM item, LPCHARACTER ch)
+	{
+		const int familyTier = std::max(1, GetPlayerBotItemTierOf(item, ch));
+		long long score = 1 + (long long)familyTier * PLAYERBOT_BOOTS_FAMILY_TIER_SCORE;
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+		{
+			const BYTE t = item->GetAttributeType(i);
+			if (t == APPLY_NONE || GetPlayerBotBonusTier(t, (int)ch->GetJob(), false) < PLAYERBOT_BOOTS_MIN_LINE_TIER)
+				continue;
+			score += ScorePlayerBotApplyTiered(t, item->GetAttributeValue(i), ch);
+		}
+		score += (long long)item->GetLevelLimit() * PLAYERBOT_ARMOR_LEVEL_TIE_BREAK;
+		if (IsPlayerBotListedJewel(ch, item) && IsPlayerBotJewelListFollower(ch))
+			score = score * (100 + PLAYERBOT_JEWEL_LIST_PREFERENCE_PERCENT) / 100;
+		return score;
+	}
+
 	long long GetPlayerBotEquipmentScore(LPITEM item, LPCHARACTER ch = NULL)
 	{
 		if (!item || !item->GetProto())
 			return 0;
+		if (ch && item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_FOOTS)
+			return GetPlayerBotBootsScore(item, ch);
 
 		long long score = 1;
 		if (item->GetType() == ITEM_WEAPON)
@@ -751,6 +853,10 @@ namespace
 			if (tier > 0)
 				score = score * (100 + (tier - 3) * PLAYERBOT_TIER_SCORE_PERCENT) / 100;
 		}
+		// And his list of the jewellery worth wearing, for the bots that go by
+		// it (IsPlayerBotJewelListFollower; Patch 4, point 1).
+		if (ch && IsPlayerBotListedJewel(ch, item) && IsPlayerBotJewelListFollower(ch))
+			score = score * (100 + PLAYERBOT_JEWEL_LIST_PREFERENCE_PERCENT) / 100;
 
 		return score;
 	}
@@ -803,10 +909,30 @@ namespace
 		LPITEM hand = GetPlayerBotHandWeapon(ch);
 		if (!hand)
 			return NULL;
+		const long long handScore = GetPlayerBotEquipmentScore(hand, ch);
+		// Never a spare at +7 or past that the hand matches or beats: that one
+		// is goods (IsPlayerBotFinishedSpareGoods; Iwakura's Patch 4, point 7:
+		// "bot zawsze zachowuje dla siebie tylko jeden, najlepszy egzemplarz").
+		// The backup is the best of the rest.
+		LPITEM backup = NULL;
 		long long backupScore = 0;
-		LPITEM backup = FindPlayerBotBestBagWeapon(ch, hand, &backupScore);
-		if (!backup || backupScore * 100 <
-				GetPlayerBotEquipmentScore(hand, ch) * PLAYERBOT_REFINE_BACKUP_SCORE_PERCENT)
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item == hand || item->GetCell() != cell || item->IsEquipped() ||
+					item->GetType() != ITEM_WEAPON || !IsPlayerBotEquipmentCandidate(ch, item) ||
+					item->GetLevelLimit() > ch->GetLevel() || item->FindEquipCell(ch) != WEAR_WEAPON)
+				continue;
+			const long long score = GetPlayerBotEquipmentScore(item, ch);
+			if (item->GetRefineLevel() >= PLAYERBOT_SPARE_GOODS_MIN_PLUS && score <= handScore)
+				continue;
+			if (!backup || score > backupScore || (score == backupScore && item->GetID() < backup->GetID()))
+			{
+				backup = item;
+				backupScore = score;
+			}
+		}
+		if (!backup || backupScore * 100 < handScore * PLAYERBOT_REFINE_BACKUP_SCORE_PERCENT)
 			return NULL;
 		return backup;
 	}
@@ -2348,19 +2474,71 @@ namespace
 	// How far a bot means to take a piece on the plain anvil, where a failed
 	// step burns it. What a scroll in the bag changes is GetPlayerBotRefineTarget.
 	BYTE GetPlayerBotRefineAmbitionDrawn(LPCHARACTER ch, LPITEM item);
+	// Defined below, beside the backup armour it is the other half of.
+	LPITEM GetPlayerBotBodyArmour(LPCHARACTER ch);
+
+	// The weapon, body armour or shield a bot fights in: the one worn, or -
+	// with the slot empty, as it is for a whole blacksmith session - the one
+	// that goes back on (GetPlayerBotHandWeapon, GetPlayerBotBodyArmour, and the
+	// best shield in the bag). A spare in the bag is not one: it is the backup
+	// the day the worn piece burns, or a project the anvil raises until its
+	// numbers win.
+	bool IsPlayerBotBigThreePieceInUse(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item)
+			return false;
+		if (item->IsEquipped())
+			return true;
+		const int cell = item->FindEquipCell(ch);
+		if (cell == WEAR_WEAPON)
+			return item == GetPlayerBotHandWeapon(ch);
+		if (cell == WEAR_BODY)
+			return item == GetPlayerBotBodyArmour(ch);
+		if (cell != WEAR_SHIELD || ch->GetWear(WEAR_SHIELD))
+			return false;
+		LPITEM best = NULL;
+		long long bestScore = 0;
+		for (WORD bagCell = 0; bagCell < PLAYERBOT_BAG_CELLS; ++bagCell)
+		{
+			LPITEM shield = ch->GetInventoryItem(bagCell);
+			if (!shield || shield->GetCell() != bagCell || shield->IsEquipped() ||
+					!IsPlayerBotEquipmentCandidate(ch, shield) || shield->GetLevelLimit() > ch->GetLevel() ||
+					shield->FindEquipCell(ch) != WEAR_SHIELD)
+				continue;
+			const long long score = GetPlayerBotEquipmentScore(shield, ch);
+			if (!best || score > bestScore || (score == bestScore && shield->GetID() < best->GetID()))
+			{
+				best = shield;
+				bestScore = score;
+			}
+		}
+		return best == item;
+	}
 
 	BYTE GetPlayerBotRefineAmbition(LPCHARACTER ch, LPITEM item)
 	{
 		const BYTE drawn = GetPlayerBotRefineAmbitionDrawn(ch, item);
 		if (!ch || !item || drawn == 0 || !IsPlayerBotPersonaEnabled() || IsPlayerBotArcherStoneWeapon(ch, item))
 			return drawn;
-		// The Perfectionist aims the three at +7 whatever the draw - the Law of
-		// Advancement asks the weapon for +7 - and lets the draw carry them to
-		// +8 and +9 ("dazac do progu +7, a docelowo +8 i +9"). The rest waits
-		// for the three.
-		if (IsPlayerBotBigThreeSlot(item->FindEquipCell(ch)))
-			return std::max<BYTE>(drawn, 7);
-		return IsPlayerBotBigThreeAtPlus(ch, 7) ? drawn : 0;
+		// The Perfectionist takes all its gear to +9 (Iwakura's Patch 4, point
+		// 2: "bezwzglednie dazyc do ulepszenia calego swojego sprzetu (broni,
+		// zbroi, bizuterii) na poziom +9"), the weapon, the armour and the
+		// shield first. The rest - helmet, boots, jewellery - goes to +4 while
+		// those three are under +7 (point 1: "nie beda juz korzystac z
+		// ekwipunku na poziomach od +0 do +3"), and on to +9 once they stand
+		// there. It waited at +0 for the three before, and bots with a sword,
+		// an armour and a shield at +7 walked about in jewellery at +0. The draw
+		// is what a bot aims at with the switch off.
+		// "Swojego sprzetu" is the gear a bot fights in: a weapon, armour or
+		// shield in the bag keeps the drawn aim. Taken to +9 as well, the backup
+		// burned in the same session as the piece it was kept for - on m2zip,
+		// the evening Patch 4 went in, Avatarv2 lost its sword and its long
+		// sword at +8 within four seconds and went back to the merchant for a
+		// Miecz six times in seventeen minutes.
+		const int cell = item->FindEquipCell(ch);
+		if (IsPlayerBotBigThreeSlot(cell))
+			return IsPlayerBotBigThreePieceInUse(ch, item) ? PLAYERBOT_PERFECT_TARGET_PLUS : drawn;
+		return IsPlayerBotBigThreeAtPlus(ch, 7) ? PLAYERBOT_PERFECT_TARGET_PLUS : PLAYERBOT_GEAR_MIN_PLUS;
 	}
 
 	BYTE GetPlayerBotRefineAmbitionDrawn(LPCHARACTER ch, LPITEM item)
@@ -2435,12 +2613,12 @@ namespace
 		if (PlayerBotRefinesLevel30ForSale(ch, item))
 			return GetPlayerBotLevel30SaleTarget(item);
 		// Under Iwakura's personalities the helmet, the boots and the jewellery
-		// wait for the weapon, the armour and the shield to stand at +7
-		// (GetPlayerBotRefineAmbition) - and a scroll in the bag, which would
-		// otherwise make a ladder of any piece, does not change that.
+		// go no further than +4 until the weapon, the armour and the shield
+		// stand at +7 (GetPlayerBotRefineAmbition) - and a scroll in the bag,
+		// which would otherwise make a ladder of any piece, does not change that.
 		if (IsPlayerBotPersonaEnabled() && !IsPlayerBotArcherStoneWeapon(ch, item) &&
 				!IsPlayerBotBigThreeSlot(item->FindEquipCell(ch)) && !IsPlayerBotBigThreeAtPlus(ch, 7))
-			return 0;
+			return PLAYERBOT_GEAR_MIN_PLUS;
 		// A scroll in the bag is a ladder to +9 for everybody: under it a
 		// failure costs a level or nothing, never the piece, so the ambition -
 		// which is about not burning what was earned - does not apply while
@@ -2605,7 +2783,54 @@ namespace
 	LPITEM FindPlayerBotBackupArmour(LPCHARACTER ch)
 	{
 		LPITEM body = GetPlayerBotBodyArmour(ch);
-		return body ? FindPlayerBotBestBagArmour(ch, body) : NULL;
+		if (!body)
+			return NULL;
+		// Never a spare at +7 or past that the armour on the back matches or
+		// beats (Iwakura's Patch 4, point 7): that one is goods.
+		const long long bodyScore = GetPlayerBotEquipmentScore(body, ch);
+		LPITEM best = NULL;
+		long long bestScore = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM spare = ch->GetInventoryItem(cell);
+			if (!spare || spare == body || spare->GetCell() != cell ||
+					!IsPlayerBotBackupArmourCandidate(ch, spare))
+				continue;
+			const long long score = GetPlayerBotEquipmentScore(spare, ch);
+			if (spare->GetRefineLevel() >= PLAYERBOT_SPARE_GOODS_MIN_PLUS && score <= bodyScore)
+				continue;
+			if (!best || score > bestScore)
+			{
+				best = spare;
+				bestScore = score;
+			}
+		}
+		return best;
+	}
+
+	// Iwakura's Patch 4, point 7: a weapon, body armour or shield of this bot's
+	// own at +7 or past that the piece it fights in matches or beats is goods -
+	// "zamiast bezczynnie lezec w ekwipunku, przedmioty te sa obowiazkowo
+	// wystawiane na prywatnym sklepie offline podczas najblizszej wizyty w
+	// miescie" - whether it lies in the bag or in the box: neither the backup
+	// (FindPlayerBotBackupWeapon, FindPlayerBotBackupArmour) nor a project for
+	// the anvil (IsPlayerBotHigherTierSpare), and the box gives it back to the
+	// counter (WithdrawPlayerBotSafebox).
+	bool IsPlayerBotFinishedSpareGoods(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->IsEquipped() || item->GetRefineLevel() < PLAYERBOT_SPARE_GOODS_MIN_PLUS ||
+				!IsPlayerBotEquipmentCandidate(ch, item))
+			return false;
+		LPITEM worn = NULL;
+		if (item->GetType() == ITEM_WEAPON && item->GetSubType() != WEAPON_ARROW)
+			worn = GetPlayerBotHandWeapon(ch);
+		else if (item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_BODY)
+			worn = GetPlayerBotBodyArmour(ch);
+		else if (item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_SHIELD)
+			worn = ch->GetWear(WEAR_SHIELD);
+		if (!worn || worn == item)
+			return false;
+		return GetPlayerBotEquipmentScore(worn, ch) >= GetPlayerBotEquipmentScore(item, ch);
 	}
 
 	// The junk rule asks this of every body armour in the bag, so the answer

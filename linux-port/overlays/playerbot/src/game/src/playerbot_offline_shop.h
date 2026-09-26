@@ -11,9 +11,12 @@ namespace {
     // unused - 35 to 47 granted a minute against 25 to 213 refused on m2zip
     // on 18 September, with a thousand keepers waiting to restock. Each token
     // is one small ikashop request to the db core, and the db core's queue is
-    // the thing to read if this is ever raised again.
-    const DWORD PLAYERBOT_OFFLINE_MUTATION_MS = 500;
-    const unsigned PLAYERBOT_OFFLINE_MUTATION_BURST = 5;
+    // the thing to read if this is ever raised again. Raised for Iwakura's
+    // Patch 4, whose visits add up to four lines where they added one
+    // (PLAYERBOT_OFFLINE_RESTOCK_CHAIN): game1 of m2zip spent 13 to 33 tokens
+    // a minute of its 120 on the evening of 25 September.
+    const DWORD PLAYERBOT_OFFLINE_MUTATION_MS = 350;
+    const unsigned PLAYERBOT_OFFLINE_MUTATION_BURST = 8;
     unsigned s_botOfflineTokens = PLAYERBOT_OFFLINE_MUTATION_BURST;
     DWORD s_botOfflineTokenTime = 0;
     // What the budget handed out and turned away in the last minute. Granted
@@ -115,6 +118,19 @@ namespace {
         o.visiting = false;
         o.visitUntil = 0;
         o.nextService = now + BotOfflineServiceGap(state, ch);
+    }
+    // A visit that put a line up or took one home comes back two seconds on
+    // for the next, PLAYERBOT_OFFLINE_RESTOCK_CHAIN times, and then waits the
+    // ordinary round (Iwakura's Patch 4, point 3). Each step is a visit of its
+    // own, the board closed between them, like a reprice slice's steps.
+    void BotOfflineChainVisit(TPlayerBotAIState& state, DWORD now) {
+        auto& o = state.offlineShop;
+        if (o.chainSteps < PLAYERBOT_OFFLINE_RESTOCK_CHAIN) {
+            ++o.chainSteps;
+            o.nextService = now + 2000;
+        } else {
+            o.chainSteps = 0;
+        }
     }
     // A visit that ended before the keeper stood at its counter served
     // nothing, and it used to cost the whole round all the same. A dropper
@@ -392,6 +408,12 @@ namespace {
         const DWORD owner = shop->GetOwnerPID();
         const bool sellsChests = IsPlayerBotResourceTrader(owner) ||
             IsPlayerBotDropper(GetPlayerBotPersonalityByPID(owner));
+        // The mission books past the thirty its village's counters hold
+        // (Iwakura's Patch 4, point 13) come home a line a visit; the ledger is
+        // told of each at once (BotOfflineTakeOff), so the keepers of one
+        // minute do not take the whole village's home between them.
+        const bool missionBooksOver = CountPlayerBotMissionBooksOnMap(shop->GetSpawn().map) >
+            playerbot_stall_rules::MISSION_BOOK_MAP_CAP;
         int marbles = 0;
         std::set<long> marbleMobs;
         std::map<DWORD, int> sameVnum;
@@ -464,12 +486,22 @@ namespace {
                 M2_DELETE(preview);
                 continue;
             }
-            // Past PLAYERBOT_SHOP_SAME_VNUM_LINES of one item - 46 lines of one
-            // material stood on one counter - the rest come home one a visit,
-            // "stall" or not.
-            if (IsPlayerBotSameVnumCapped(preview) &&
-                    ++sameVnum[preview->GetVnum()] > GetPlayerBotSameVnumLineCap(ch, preview)) {
-                if (!unwanted) { unwanted = id; reason = "same_vnum"; }
+            // Past its kind's lines (GetPlayerBotCounterLineCap) - 46 lines of
+            // one material stood on one counter before the caps - the rest come
+            // home one a visit, "stall" or not.
+            {
+                // Or a medal dropper's eight of medals (MT2009 Plus).
+                const int cap = std::max(GetPlayerBotCounterLineCap(preview),
+                        IsPlayerBotSameVnumCapped(preview) ? GetPlayerBotSameVnumLineCap(ch, preview) : 0);
+                if (cap > 0 && ++sameVnum[preview->GetVnum()] > cap) {
+                    if (!unwanted) { unwanted = id; reason = "same_vnum"; }
+                    M2_DELETE(preview);
+                    continue;
+                }
+            }
+            if (missionBooksOver && IsPlayerBotMissionBook(preview->GetVnum()) &&
+                    GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
+                if (!unwanted) { unwanted = id; reason = "mission_books"; }
                 M2_DELETE(preview);
                 continue;
             }
@@ -543,9 +575,11 @@ namespace {
                 continue;
             }
             // A scroll line of more than PLAYERBOT_SHOP_SCROLL_LINE_UNITS went
-            // up as a whole stack before 2.0.55; it comes home to be cut.
+            // up as a whole stack before 2.0.55; since Iwakura's Patch 4 a line
+            // is one, two or five, and a line of three or four comes home to be
+            // cut again ("jednorazowo zdjac ... i dodac je ponownie").
             if (IsPlayerBotSafeRefineScroll(preview->GetVnum()) &&
-                    (int)preview->GetCount() > PLAYERBOT_SHOP_SCROLL_LINE_UNITS &&
+                    !playerbot_stall_rules::IsSmallGoodsLine((int)preview->GetCount()) &&
                     GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
                 if (!unwanted) { unwanted = id; reason = "scroll_pack"; }
                 M2_DELETE(preview);
@@ -560,16 +594,21 @@ namespace {
                 M2_DELETE(preview);
                 continue;
             }
-            // A herb line under a heap and a material line over a hoard's
-            // pack went up before 2.0.68 - the stand put up whatever stack a
-            // cell held: 1171 single roots and 1084 material lines of more
-            // than ten on m2zip. They come home to be merged or cut.
+            // A line of a refine material or a heap in no shape a player cuts
+            // (IsPlayerBotNaturalLine) comes home to be merged and cut again:
+            // Iwakura's Patch 4, point 3 - "po tej aktualizacji boty powinny
+            // jednorazowo zdjac wszystkie ulepszacze, ziola, siano oraz zwoje ze
+            // sklepu i dodac je ponownie wedle nowych wytycznych". The lines
+            // already in a shape stay; on m2zip that evening the counters held
+            // 2 173 material lines of five and 1 434 of four, and herbs in lines
+            // of twenty-one to thirty-six.
             if (GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL &&
-                    ((IsPlayerBotBulkGoods(preview) &&
-                      (int)preview->GetCount() < PLAYERBOT_SHOP_BULK_MIN_UNITS) ||
-                     (IsPlayerBotTradeableMaterial(preview) &&
-                      (int)preview->GetCount() > PLAYERBOT_SHOP_HOARD_PACK_UNITS))) {
-                if (!unwanted) { unwanted = id; reason = "hoard_pack"; }
+                    (IsPlayerBotBulkGoods(preview) || IsPlayerBotTradeableMaterial(preview)) &&
+                    !IsPlayerBotNaturalLine(preview)) {
+                if (!unwanted) {
+                    unwanted = id;
+                    reason = IsPlayerBotBulkGoods(preview) ? "heap_pack" : "material_pack";
+                }
                 M2_DELETE(preview);
                 continue;
             }
@@ -594,9 +633,22 @@ namespace {
     bool BotOfflineTakeOff(LPCHARACTER ch, TPlayerBotAIState& state, DWORD itemid, int lowGear, DWORD now,
             const char* why = "") {
         using namespace playerbot_offline;
+        // What the line was and where it stood, for the ledger once it is off.
+        DWORD lineVnum = 0;
+        WORD lineCount = 0;
+        long lineMap = 0;
+        if (auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID())) {
+            const auto line = shop->GetItems().find(itemid);
+            if (line != shop->GetItems().end() && line->second) {
+                lineVnum = line->second->GetInfo().vnum;
+                lineCount = (WORD)line->second->GetInfo().count;
+                lineMap = shop->GetSpawn().map;
+            }
+        }
         if (!Begin(ch->GetPlayerID(), Remove, itemid, now)) return false;
         ikashop::GetManager().RecvShopRemoveItemClientPacket(ch, itemid);
         if (!EndCall(ch->GetPlayerID())) return false;
+        RemovePlayerBotMarketSupply(lineVnum, lineCount, lineMap);
         // Off the world's count at once, so the next keeper's visit this
         // minute does not take a second one home for the same surplus.
         if (why && strcmp(why, "junk_weapon") == 0 && s_iPlayerBotJunkWeaponsOnCounters > 0)
@@ -683,6 +735,20 @@ namespace {
         sys_log(0, "PLAYERBOT_OFFLINE: took back to wear pid=%u name=%s item=%u gain=%lld",
             ch->GetPlayerID(), ch->GetName(), itemid, gain);
         return true;
+    }
+    // How many lines of refine materials the counter carries, the scrolls apart.
+    int BotOfflineMaterialLines(NativeShop shop) {
+        int lines = 0;
+        if (!shop) return 0;
+        const std::set<DWORD>& materials = GetPlayerBotRefineMaterialVnums();
+        for (const auto& [id, line] : shop->GetItems()) {
+            if (!line) continue;
+            const DWORD vnum = line->GetInfo().vnum;
+            if (materials.find(vnum) != materials.end() && !IsPlayerBotNonGearMaterial(vnum) &&
+                    !IsPlayerBotSafeRefineScroll(vnum))
+                ++lines;
+        }
+        return lines;
     }
     // How many lines of this vnum the counter carries already.
     int BotOfflineLinesOf(NativeShop shop, DWORD vnum) {
@@ -773,14 +839,26 @@ namespace {
     // or a line cut for the add would stand in the bag unadded.
     bool BotOfflineCounterRefuses(NativeShop shop, LPITEM item) {
         if (!item) return true;
-        if (IsPlayerBotTradeableMaterial(item) &&
-                BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_SHOP_MATERIAL_LINES) return true;
-        if (IsPlayerBotBulkGoods(item) &&
-                BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_SHOP_BULK_LINES) return true;
+        // An item's lines by its kind (GetPlayerBotCounterLineCap): eight of a
+        // refine material, five of a refine scroll, two of a heap, three of
+        // most things.
+        {
+            // Or a medal dropper's eight of medals (GetPlayerBotSameVnumLineCap,
+            // MT2009 Plus).
+            const int cap = std::max(GetPlayerBotCounterLineCap(item),
+                    IsPlayerBotSameVnumCapped(item) ? GetPlayerBotSameVnumLineCap(item->GetOwner(), item) : 0);
+            if (cap > 0 && BotOfflineLinesOf(shop, item->GetVnum()) >= cap) return true;
+        }
         if (item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM &&
                 BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_CHEST_COUNTER_LINES) return true;
-        if (IsPlayerBotSafeRefineScroll(item->GetVnum()) &&
-                BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_SHOP_SCROLL_LINES) return true;
+        // Nor a refine material past the materials' share of the counter
+        // (PLAYERBOT_OFFLINE_MATERIAL_LINES_MAX).
+        if (IsPlayerBotTradeableMaterial(item) && !IsPlayerBotSafeRefineScroll(item->GetVnum()) &&
+                BotOfflineMaterialLines(shop) >= PLAYERBOT_OFFLINE_MATERIAL_LINES_MAX) return true;
+        // Nor a mission book past the thirty of its village (Patch 4, point 13).
+        if (shop && IsPlayerBotMissionBook(item->GetVnum()) &&
+                CountPlayerBotMissionBooksOnMap(shop->GetSpawn().map) + (int)item->GetCount() >
+                    playerbot_stall_rules::MISSION_BOOK_MAP_CAP) return true;
         if (IsPlayerBotCountedSingleGoods(item) &&
                 BotOfflineKindLinesOf(shop, item) >= PLAYERBOT_SHOP_COUNTED_SINGLE_LINES) return true;
         if (item->GetType() == ITEM_POLYMORPH) {
@@ -805,22 +883,28 @@ namespace {
         }
         // Nor a body armour at +0..+4 of a family at its cap (Patch 3, point 4).
         if (IsPlayerBotCappedLowArmour(item) && IsPlayerBotLowArmourMarketFull(item->GetVnum())) return true;
-        // And no more than PLAYERBOT_SHOP_SAME_VNUM_LINES of anything else.
-        if (IsPlayerBotSameVnumCapped(item) &&
-                BotOfflineLinesOf(shop, item->GetVnum()) >= GetPlayerBotSameVnumLineCap(item->GetOwner(), item))
-            return true;
         return false;
     }
-    // The bag cell of the line to add. A hoard's pack of ten, a single key, a
-    // pack of Moonlight chests (PLAYERBOT_CHEST_LINE_UNITS), a line of
-    // refine scrolls (PLAYERBOT_SHOP_SCROLL_LINE_UNITS), a pack of a refine
-    // material (PLAYERBOT_SHOP_PACK_UNITS) or a heap of cheap goods
-    // (PLAYERBOT_SHOP_BULK_PACK_UNITS)
-    // is cut off its stack into a free cell (GetPlayerBotStallLineUnitsFor);
-    // anything else goes up as the stack it is, as it always has - a stand
-    // adds one line a visit. -1 when no line can be cut without the stack's
-    // reserve or the bag's last free cells.
-    int BotOfflinePrepareLine(LPCHARACTER ch, WORD cell) {
+    // The lines of this vnum a counter carries, and how many of them are small
+    // (two or fewer): the shape GetPlayerBotNaturalLineUnits cuts the next by.
+    void BotOfflineCountLinesOf(NativeShop shop, DWORD vnum, int& lines, int& small) {
+        lines = small = 0;
+        if (shop)
+            for (const auto& [id, line] : shop->GetItems())
+                if (line && line->GetInfo().vnum == vnum) {
+                    ++lines;
+                    if ((int)line->GetInfo().count <= 2) ++small;
+                }
+    }
+    // The bag cell of the line to add. A line of a refine material, a refine
+    // scroll or a heap in the size a player cuts (GetPlayerBotNaturalLineUnits,
+    // Iwakura's Patch 4), a pack of the green and purple potions, of the
+    // Alchemist's dust or of horse medals, a single key, a pack of Moonlight
+    // chests (PLAYERBOT_CHEST_LINE_UNITS) or one unit of the goods kept by
+    // count is cut off its stack into a free cell; anything else goes up as
+    // the stack it is. -1 when no line can be cut without the stack's reserve
+    // or the bag's last free cells.
+    int BotOfflinePrepareLine(LPCHARACTER ch, WORD cell, NativeShop shop) {
         LPITEM item = ch->GetInventoryItem(cell);
         if (!item) return -1;
         // Iwakura's Patch 3, point 5: a green or purple potion goes up as the
@@ -840,39 +924,53 @@ namespace {
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
             return to;
         }
-        const int units = GetPlayerBotStallLineUnitsFor(ch, item);
-        // A material went up as the stack it was, the anvil's reserve
-        // included, and a herb as whatever a cell held. Both are cut the way
-        // a scroll is: what is over the keep, counted over every stack of the
-        // kind, up to the line - and a heap is never under its minimum.
-        const bool bulk = IsPlayerBotBulkGoods(item);
-        // A safe refine scroll is a material too (recipe 501) and keeps its
-        // own branch below, keep and all. The Alchemist's dust is cut the
-        // same way, in packs, with nothing kept back.
-        if (bulk || item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM ||
-                (IsPlayerBotTradeableMaterial(item) &&
-                !IsPlayerBotSafeRefineScroll(item->GetVnum()))) {
+        const int units = GetPlayerBotStallLineUnits(item);
+        // A refine material, a refine scroll and a heap of herbs or hay are cut
+        // to the sizes a player cuts (Iwakura's Patch 4, point 3;
+        // GetPlayerBotNaturalLineUnits) out of what is over the kind's keep,
+        // counted over every stack of it - so a line already cut off
+        // (BotOfflinePrepareVisitLine) goes up whole while the rest stays in
+        // the stack it came from. The next line's size depends on the lines of
+        // it the counter already shows: a holding of fifty shows five twos,
+        // then fives.
+        if (IsPlayerBotBulkGoods(item) || IsPlayerBotSafeRefineScroll(item->GetVnum()) ||
+                IsPlayerBotTradeableMaterial(item)) {
             const int keep = GetPlayerBotStallBaseKeep(ch, item);
             const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - keep;
-            const int take = std::min(units, std::min((int)item->GetCount(), spare));
-            if (take <= 0 || (bulk && take < PLAYERBOT_SHOP_BULK_MIN_UNITS)) return -1;
+            const int avail = std::min((int)item->GetCount(), spare);
+            int lines = 0, small = 0;
+            BotOfflineCountLinesOf(shop, item->GetVnum(), lines, small);
+            const int take = GetPlayerBotNaturalLineUnits(ch, item, avail, lines, small);
+            if (take <= 0) return -1;
             if (take >= (int)item->GetCount()) return cell;
             if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
                 return -1;
-            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d",
-                ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount(), keep);
+            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d lines=%d small=%d",
+                ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount(), keep,
+                lines, small);
             return to;
         }
-        if (IsPlayerBotSafeRefineScroll(item->GetVnum()) || item->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM) {
-            // A scroll line is what the bot holds over its own keep
-            // (GetPlayerBotStallBaseKeep), up to the line: a stack of five
-            // with a keep of three is a line of two, never the whole stack.
-            // The keep is counted over every stack of the kind, so a line
-            // already cut off (BotOfflinePrepareVisitLine) goes up whole while
-            // the rest of the scrolls stay in the stack it came from. Horse
-            // medals the same way, two to a line over the two a bot keeps.
+        // The Alchemist's dust goes up in packs, over the hundred a marble
+        // takes while a worn piece waits for its fifth line (Patch 4, point 11).
+        if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM) {
+            const int take = std::min(units, std::min((int)item->GetCount(),
+                    (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) - GetPlayerBotStallBaseKeep(ch, item)));
+            if (take <= 0) return -1;
+            if (take >= (int)item->GetCount()) return cell;
+            if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
+            const int to = ch->GetEmptyInventory(item->GetSize());
+            if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
+                return -1;
+            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=0",
+                ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
+            return to;
+        }
+        if (item->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM) {
+            // Horse medals are cut over the two a bot keeps (the medal
+            // dropper one), two to a line, the keep counted over every stack
+            // of them the way the scrolls' was.
             const int keep = GetPlayerBotStallBaseKeep(ch, item);
             const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - keep;
             const int take = std::min(units, std::min((int)item->GetCount(), spare));
@@ -907,8 +1005,7 @@ namespace {
                 (unsigned int)(GetPlayerBotStallKindKey(item) & 0x7fffffffU), total);
             return to;
         }
-        const bool cut = units == PLAYERBOT_SHOP_HOARD_PACK_UNITS ||
-            (units == 1 && item->GetType() == ITEM_TREASURE_KEY) ||
+        const bool cut = (units == 1 && item->GetType() == ITEM_TREASURE_KEY) ||
             item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM;
         if (!cut || (int)item->GetCount() <= units) return cell;
         if ((int)item->GetCount() - units < GetPlayerBotStallBaseKeep(ch, item) ||
@@ -942,7 +1039,7 @@ namespace {
             LPITEM item = ch->GetInventoryItem(cell);
             if (!item || BotOfflineSlot(ch, shop, item) < 0) continue;
             if (BotOfflineCounterRefuses(shop, item)) continue;
-            const int lineCell = BotOfflinePrepareLine(ch, cell);
+            const int lineCell = BotOfflinePrepareLine(ch, cell, shop);
             if (lineCell < 0) continue;
             LPITEM line = ch->GetInventoryItem((WORD)lineCell);
             if (!line) continue;
@@ -992,7 +1089,7 @@ namespace {
         if (BotOfflinePoll(ch, now)) {
             // Never stand waiting for the DB, nor leave edit mode locking sales.
             if (o.visiting) BotOfflineFinishVisit(ch, state, now);
-            if (o.repriceSteps) o.nextService = now + 2000;
+            if (o.repriceSteps || o.chainSteps) o.nextService = now + 2000;
             return false;
         }
         // The first visit after a spawn is spread over a whole service interval.
@@ -1174,6 +1271,7 @@ namespace {
             const DWORD unwanted = BotOfflineUnwantedLine(ch, shop, lowGear, &why);
             if (unwanted && BotOfflineTakeOff(ch, state, unwanted, lowGear, now, why)) {
                 BotOfflineFinishVisit(ch, state, now);
+                BotOfflineChainVisit(state, now);
                 return false;
             }
             // And a Cor Draconis or a sash nobody bought, for the merchant.
@@ -1289,6 +1387,7 @@ namespace {
             const DWORD unwanted = BotOfflineUnwantedLine(ch, shop, lowGearOnCounter, &why);
             if (unwanted && BotOfflineTakeOff(ch, state, unwanted, lowGearOnCounter, now, why)) {
                 BotOfflineFinishVisit(ch, state, now);
+                BotOfflineChainVisit(state, now);
                 return false;
             }
         }
@@ -1338,13 +1437,30 @@ namespace {
             int pos = BotOfflineSlot(ch, shop, item);
             if (pos < 0) continue;
             if (BotOfflineCounterRefuses(shop, item)) continue;
-            const int lineCell = BotOfflinePrepareLine(ch, cell);
+            const int lineCell = BotOfflinePrepareLine(ch, cell, shop);
             if (lineCell < 0) continue;
             const WORD at = (WORD)lineCell;
             item = ch->GetInventoryItem(at);
             if (!item || !BotOfflineValid(ch, item, pos)) continue;
             ikashop::TPriceInfo price{};
             price.yang = std::max(GetPlayerBotShopAskingPrice(item), GetPlayerBotRefineInvestment(item));
+            // Iwakura's Patch 4, point 4, "ludzka pomylka": one listing in a
+            // thousand of a skill book, or of a refine material put up singly,
+            // asks one zero too many - up, never down ("bot wystawi Aure Miecza
+            // za 15kk zamiast 1,5kk"). Drawn by the item's id, so a line slips
+            // once and not at every visit; the hourly reprice may find it, the
+            // way a player finds his own. No bot pays it
+            // (PLAYERBOT_MARKET_MATERIAL_FAIR_MULTIPLE, the books' twice).
+            bool slipped = false;
+            if ((item->GetType() == ITEM_SKILLBOOK ||
+                    (IsPlayerBotTradeableMaterial(item) && item->GetCount() == 1)) &&
+                    playerbot_stall_rules::PriceSlips(PlayerBotNavHash(item->GetID() ^ 0x534c4950U)) &&
+                    price.yang > 0 && shop->GetTotalYangValue() < GOLD_MAX) {
+                const long long before = price.yang;
+                price.yang = playerbot_stall_rules::SlippedPrice(price.yang,
+                        (long long)GOLD_MAX - 1 - (long long)shop->GetTotalYangValue());
+                slipped = price.yang != before;
+            }
             if (price.yang <= 0 || price.yang >= GOLD_MAX ||
                     shop->GetTotalYangValue() >= GOLD_MAX - price.yang) continue;
             DWORD id = item->GetID();
@@ -1372,9 +1488,13 @@ namespace {
                     AddPlayerBotMarketSupply(item->GetVnum(), (WORD)item->GetCount(), shop->GetSpawn().map);
                     NotePlayerBotCappedLineOnCounter(item->GetVnum(), (int)item->GetCount());
                     if (firstRareLine) NotePlayerBotShopWithRareGoods(rareKind);
+                    if (slipped)
+                        sys_log(0, "PLAYERBOT_OFFLINE: price slip pid=%u name=%s item=%u vnum=%u count=%u price=%lld",
+                            ch->GetPlayerID(), ch->GetName(), id, item->GetVnum(),
+                            (unsigned int)item->GetCount(), (long long)price.yang);
                 }
             }
-            break; // at most one item per short service visit
+            break; // one item a step; a step that added one chains the next
         }
         if (!sent && Due(now, o.nextReprice)) {
             if (o.repriceSteps == 0) o.repriceSteps = PLAYERBOT_OFFLINE_REPRICE_SLICE;
@@ -1461,6 +1581,12 @@ namespace {
                     ? PLAYERBOT_OFFLINE_REPRICE_CATCHUP_MS : PLAYERBOT_OFFLINE_REPRICE_MS);
         }
         BotOfflineFinishVisit(ch, state, now);
+        // A step that put a line up comes back for the next
+        // (BotOfflineChainVisit); one that found nothing to add ends the chain.
+        if (sent)
+            BotOfflineChainVisit(state, now);
+        else
+            o.chainSteps = 0;
         return false;
     }
 }

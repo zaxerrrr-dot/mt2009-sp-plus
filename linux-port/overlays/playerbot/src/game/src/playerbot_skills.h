@@ -38,6 +38,10 @@ namespace
 	{
 		if (!ch || ch->GetPoint(POINT_STAT) <= 0 || dwNow < state.dwNextStatCheckTime)
 			return;
+		// A companion whose owner spends its points (the window's "Statystyki",
+		// playerbot_sidekick.h) keeps them for the owner.
+		if (IsPlayerBotSidekickManualStats(ch))
+			return;
 
 		state.dwNextStatCheckTime = dwNow + PLAYERBOT_STAT_CHECK_INTERVAL;
 
