@@ -317,6 +317,12 @@ namespace
 	{
 		if (!ch || !item || !item->IsDragonSoul() || item->IsEquipped() || item->isLocked())
 			return false;
+		// An ordinary or brilliant stone is never goods: nobody buys one, and
+		// it is the material of the rare grade ("boty niech nie wystawiaja
+		// surowej smoczej alchemii ... dopiero od 3 poziomu", operator, 26
+		// September 2026).
+		if (GetPlayerBotDsGrade(item) < PLAYERBOT_DS_MIN_WORN_GRADE)
+			return false;
 		if (!IsPlayerBotAlchemyUser(ch))
 			return true;
 		const int kind = item->GetSubType();

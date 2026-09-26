@@ -17,6 +17,82 @@ every version here.
 
 ---
 
+## 2.8.0 — 2026-09-26 — Alchemia klasami, szarfy po kosztach, nowe wydarzenia
+
+Serwer 2.8.0 i klient 2.0.18. **Zaktualizuj oba** w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.7.0. Pierwszy start po aktualizacji kompiluje serwer od nowa, więc trwa
+dłużej niż zwykle.
+
+### Nowe w grze (klient 2.0.18)
+
+- **Podgląd skrzyni:** mały przycisk w ekwipunku – przeciągasz skrzynkę na
+  okno i widzisz, co może z niej wypaść.
+- **Podgląd dropu:** „?” przy pasku życia potwora albo metina pokazuje, co
+  może z niego wypaść dla Twojej postaci (także Cor Draconis i szarfy).
+- **Przenikanie przez Towarzysza:** Twoja postać przechodzi przez własnego
+  Towarzysza zamiast się o niego blokować.
+- **Masowa zmiana ceny w sklepie** (Ctrl + PPM) zmienia ceny po kolei
+  i sprawdza, czy wszystkie weszły – żadna pozycja już nie „wypada”.
+- Auto Łowy: obrażenia z umiejętności wchodzą.
+- Mapa Katakumb Diabła w kliencie.
+
+### Wydarzenia i miejsca
+
+- **Pirat Tanaka** i **deszcz metinów Zuo** – ustawiasz w panelu (plan
+  tygodniowy albo „Aktywuj teraz”). Za ucho Tanaki Yonah daje Fioletową
+  Hebanową Szkatułkę.
+- **Grota Wygnańców:** Koe-Pung wpuszcza od 75 poziomu za Krwisty Kamień
+  z codziennej misji Seon-Hae (stoi we wszystkich trzech wioskach).
+- **Rajdy botów na Azraela** przez Katakumby Diabła, ogłaszane na czacie.
+- Wieża Demonów: lepsza walka botów na 7. piętrze i z Umarłym Rozpruwaczem.
+- Buffy szamana trafiają do całej drużyny, a łup z potwora należy do tych,
+  którzy go bili.
+
+### Alchemia u botów
+
+- Boty dążą do jak najwyższej **klasy**: zwykłych i błyszczących kamieni nie
+  zakładają, rzadkie noszą na niskich poziomach, starożytne na średnich,
+  legendarne od 75 poziomu (i podnoszą im stopień), mityczne na końcowych.
+- Kamienie ulepszają przed założeniem tak daleko, jak pozwala torba.
+- W sklepach wystawiają kamienie dopiero od klasy rzadkiej.
+
+### Szarfy u botów
+
+- **Cena szarfy = koszt wyrobienia + 25%**, według klasy i absorpcji,
+  przeliczana kursem yang, bez przecen.
+- Drop szarf dla botów taki sam jak dla graczy (także unikaty ze skrzyń
+  bossów).
+- Cele: 5% od 30 poziomu, 10% od 50, unikat od 65, łączenie 4+4 do 21% od
+  90 poziomu. Samotna szarfa bez pary po 3 godzinach idzie do sprzedaży.
+- Boty pochłaniają tylko przedmioty bliskie swojemu poziomowi i z bonusami.
+
+### ItemShop i SM
+
+- **Kostiumy, wierzchowce, pety i nakładki są tylko w ItemShopie** – nie
+  wypadają już z metinów, bossów, skrzyń, Ksiąg Misji ani z łowienia (Rada
+  Pustelnika wypada jak wcześniej).
+- Boty realizują od razu wszystkie Kupony SM, także przy straganie.
+- Panel zaawansowany: **Daj wszystkim botom SM** – kwota rozdawana w kuponach.
+
+### Towarzysz
+
+- Sprzedaje złom z pełnego plecaka u handlarza, walczy pieszo, zmienia
+  królestwo razem z Tobą i sam czyta Księgę Zapomnienia.
+- Może zakładać wszystkie kostiumy.
+
+### Poprawki
+
+- **COOP:** gdy router nie otwiera portów i nie ma VPN, serwer używa adresu
+  z sieci domowej – host może grać, zamiast wracać do wyboru kanału.
+- Fryzura z ItemShopu jest gotowa już przy jednym dobrym bonusie.
+- Sprzedana linia nie wisi już w sklepie bota z ceną 0.
+- Instrukcja instalacji na VPS i instalator prowadzą do serwera MT2009 PLUS
+  (wcześniej instalowały inny projekt, bez alchemii, szarf i juków, a gra
+  prosiła potem o aktualizację klienta).
+
+---
+
 ## 2.7.0 — 2026-09-26 — Alchemia u botów
 
 Serwer 2.7.0, klient bez zmian (2.0.17). Zaktualizuj serwer w launcherze

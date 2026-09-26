@@ -1,5 +1,5 @@
 # Podglad skrzynki - what a chest can hand out (Gibon's window, 26 September:
-# "przeciagasz skrzynke, pokazuje ci co moze poleciec"; Tieru: "kilka osob o
+# "przeciagasz skrzynke, pokazuje ci co moze poleciec"; "kilka osob o
 # tym pisalo").
 #
 # The small chest button beside the inventory's three opens it. A chest

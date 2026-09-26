@@ -1,4 +1,4 @@
-# Walking through one's own companion (server 2.2.23; Tieru, 26 September:
+# Walking through one's own companion (26 September:
 # "towarzysz jest dla naszej postaci nieblokujacym, zeby dalo sie przez niego
 # przenikac, bo jak expi sie z nim to on strasznie przeszkadza").
 #

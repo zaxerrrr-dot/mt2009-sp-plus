@@ -59,7 +59,7 @@ Do not add game archives to Git; see [NOTICE.md](../NOTICE.md) and
 3. Clone the repository and run the PowerShell installer with your own files:
 
 ```powershell
-git clone https://github.com/TieruYT/metin2-playerbots.git
+git clone https://github.com/zaxerrrr-dot/mt2009-sp-plus.git
 Set-Location .\metin2-playerbots
 & .\installer\install.ps1 `
     -Archive 'C:\Metin2Files\Reference_Server.zip' `
@@ -91,7 +91,7 @@ The installer will automatically:
 ### 2. Linux (Ubuntu / Debian)
 
 ```sh
-git clone https://github.com/TieruYT/metin2-playerbots.git
+git clone https://github.com/zaxerrrr-dot/mt2009-sp-plus.git
 cd metin2-playerbots
 sudo sh ./installer/install.sh --local \
   --archive '/path/Reference_Server.zip' \

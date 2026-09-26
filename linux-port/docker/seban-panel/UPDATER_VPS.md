@@ -95,7 +95,7 @@ docker compose --project-directory "$STACK" exec updater m2-updater selftest
 Jeśli test wskaże brak repozytorium, utwórz je raz:
 
 ```bash
-sudo git clone --depth=1 https://github.com/TieruYT/metin2-playerbots.git /var/cache/m2src/repo
+sudo git clone --depth=1 https://github.com/zaxerrrr-dot/mt2009-sp-plus.git /var/cache/m2src/repo
 ```
 
 Następnie wykonaj opisane wyżej przygotowanie cache z własnym pakietem r40250.

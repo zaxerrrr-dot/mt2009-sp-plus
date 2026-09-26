@@ -344,8 +344,6 @@ class TargetBoard(ui.ThinBoard):
 			self.eventEQ(self.vid, self.nameString)
 
 	def UpdatePosition(self):
-		if self.dropButton.IsShow():
-			self.dropButton.SetPosition((self.GetWidth() - self.dropButton.GetWidth()) // 2, 40)
 		self.SetPosition(wndMgr.GetScreenWidth()/2 - self.GetWidth()/2, 10)
 
 		x, y = self.GetGlobalPosition()
@@ -406,8 +404,6 @@ class TargetBoard(ui.ThinBoard):
 			nameFront += "(" + self.GRADE_NAME[grade] + ") "
 
 		self.SetTargetName(nameFront + name, nonplayer.GetVnumByVID(vid))
-		self.SetSize(max(250, self.GetWidth()), 66)
-		self.UpdatePosition()
 
 	def GetTargetVID(self):
 		return self.vid

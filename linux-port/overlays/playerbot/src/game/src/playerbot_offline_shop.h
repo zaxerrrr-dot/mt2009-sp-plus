@@ -428,6 +428,13 @@ namespace {
 				M2_DELETE(preview);
 				continue;
 			}
+            // An ordinary or brilliant Dragon Stone comes home, one a visit:
+            // those are material now, never goods (IsPlayerBotSurplusDragonSoul).
+            if (preview->IsDragonSoul() && (preview->GetVnum() / 1000) % 10 < 2) {
+                if (!unwanted) { unwanted = id; reason = "ds_low_grade"; }
+                M2_DELETE(preview);
+                continue;
+            }
             // A sash its keeper still wants for its own (WantsPlayerBotSashOffer)
             // comes home, one a visit - the lines from before it kept them
             // stood on keepers' counters for good - unless it is a lone one
