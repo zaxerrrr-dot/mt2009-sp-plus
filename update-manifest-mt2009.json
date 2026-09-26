@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-26T18:04:36Z",
-  "statusMessage": "Serwer 2.8.0 i klient 2.0.18: podglad skrzyn i dropu, alchemia klasami, szarfy po kosztach, nowe wydarzenia.",
+  "publishedAt": "2026-09-26T18:27:16Z",
+  "statusMessage": "Serwer 2.8.1 i klient 2.0.19: statusy botow nad glowami.",
   "server": {
-    "version": "2.8.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.0.zip",
-    "sha256": "91E569DDCAF3BEA621C818BDE8528E6A32711C18992E3E3492F3FEFCB6008978",
-    "size": 56211170
+    "version": "2.8.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.1.zip",
+    "sha256": "3409F0C2562F8FA1A5C01AE006A6C6D1ECCCE2592B2EECA0ACFA76B3E804A071",
+    "size": 56211364
   },
   "client": {
-    "version": "2.0.18",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.18.zip",
-    "sha256": "CFD0533170FD872DDE505CC2B3732930B49A1277C85C7A056D0F47BA758F26E3",
-    "size": 50535538
+    "version": "2.0.19",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.19.zip",
+    "sha256": "C8A47DE44889B6ADF9E5FFA807729276EF3785EE55252AD1FF2938DEAC71E23F",
+    "size": 50544643
   }
 }

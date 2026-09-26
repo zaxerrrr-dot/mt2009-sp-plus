@@ -95,7 +95,7 @@ quest dragon_soul begin
 	end
 	state state_farming begin
 		when letter begin
-			send_letter("Mozesz wymienic Odlamki Smoczego Kamienia na Cor Draconis u Alchemika.")
+			send_letter("Odlamki Smoczego Kamienia -> Cor Draconis u Alchemika")
 		end
 		when info or button begin
 			say("Pozostalo dzisiaj wymian: " .. pc.getf("dragon_soul", "eye_left"))

@@ -17,6 +17,28 @@ every version here.
 
 ---
 
+## 2.8.1 — 2026-09-26 — Statusy botów nad głowami
+
+Serwer 2.8.1 i klient 2.0.19. **Zaktualizuj oba** w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.8.0.
+
+- Nad botami widać, co robią (łowią, walczą, handlują), zamiast pustego
+  miejsca – i nic z tego nie trafia do historii czatu.
+- List o wymianie Odłamków Smoczego Kamienia na Cor Draconis wyświetla się
+  poprawnie (był za długi dla klienta).
+
+---
+
+## Klient 2.0.19 — 2026-09-26 — Statusy botów nad głowami
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**).
+
+- Status bota nad jego głową (co teraz robi); klient nie zapisuje już setek
+  wpisów „Unknown Server Command” w syserr.txt.
+
+---
+
 ## 2.8.0 — 2026-09-26 — Alchemia klasami, szarfy po kosztach, nowe wydarzenia
 
 Serwer 2.8.0 i klient 2.0.18. **Zaktualizuj oba** w launcherze
