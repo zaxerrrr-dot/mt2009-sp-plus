@@ -568,6 +568,14 @@ function Update-Server {
     # re-downloading and re-applying it, one backup directory per attempt. What
     # tracks the build is the rebuild marker, not the version number.
     Save-State -ServerVersion $result.Version -ClientVersion ''
+    # So the marker is down before anything in Rebuild-Server can throw, not
+    # only on the failures it knows about: Docker Desktop that would not start
+    # (a port in the Windows-reserved range, 26 September) threw from
+    # Start-Docker with no marker written, the state already said 2.7.0, and
+    # every later GRAJ ran the 2.5.1 engine - its companion answered the
+    # 2.0.17 client's bag window in the chat. Rebuild-Server removes it on
+    # success.
+    Set-Content -LiteralPath $rebuildMarkerPath -Value ([DateTime]::UtcNow.ToString('o')) -Encoding UTF8
     Rebuild-Server
     Write-Host "Serwer działa w wersji $($result.Version)." -ForegroundColor Green
 }
