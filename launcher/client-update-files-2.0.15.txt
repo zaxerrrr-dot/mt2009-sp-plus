@@ -1,0 +1,3 @@
+# Juki konne na zwyklym koniu i wierzchowcach z pieczeci.
+pack/root.data
+pack/root.index
