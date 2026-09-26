@@ -101,6 +101,9 @@ namespace
 	const DWORD PLAYERBOT_SIDEKICK_SERVICE_INTERVAL_MS = 15000;
 	const DWORD PLAYERBOT_SIDEKICK_PARTY_CHECK_MS = 3000;
 	const DWORD PLAYERBOT_SIDEKICK_CATCH_UP_MS = 3000;
+	// How often the owner's client hears the companion's vid, to let its
+	// character through it (SendPlayerBotSidekickGhost).
+	const DWORD PLAYERBOT_SIDEKICK_GHOST_MS = 3000;
 	// The owner losing a fight: under this share of its health, what is hitting
 	// the owner is turned onto the companion - the lure's handover of a monster
 	// (playerbot_lure.h), pointed at itself - a few at a time, while the
@@ -344,13 +347,17 @@ namespace
 		DWORD dwLureStageSince;
 		DWORD dwNextLure;
 		unsigned int uLureCourses;
+		// When the owner's client is next told the companion's vid
+		// (SendPlayerBotSidekickGhost).
+		DWORD dwNextGhost;
 		TPlayerBotSidekickRuntime()
 			: dwNextPartyCheck(0), dwNextService(0), dwNextLoot(0), dwNextCatchUp(0), dwLootVID(0),
 			  dwLootSince(0), dwNextProtect(0), bTrading(false), dwLastFoeVID(0), bHold(false), lHoldMap(0),
 			  lHoldX(0), lHoldY(0), bErrand(false), bErrandVisit(false), dwErrandSince(0), llErrandGold(0),
 			  dwGearSent(0), dwEqGen(0), llEqGoldSent(-1), dwEquipWaitUntil(0), dwOwnerFightSeenAt(0),
 			  dwNextFoeMemory(0), bLureStage(0), dwLureVID(0), iLurePacks(0), iLureMonsters(0), lLureAnchorX(0),
-			  lLureAnchorY(0), dwLureCourseSince(0), dwLureStageSince(0), dwNextLure(0), uLureCourses(0)
+			  lLureAnchorY(0), dwLureCourseSince(0), dwLureStageSince(0), dwNextLure(0), uLureCourses(0),
+			  dwNextGhost(0)
 		{
 			memset(adwFoes, 0, sizeof(adwFoes));
 		}
@@ -5009,6 +5016,28 @@ namespace
 	// Above it in the tick run the duel (it never takes one), the guild war,
 	// the Anti-PK protocol, and the upkeep - stats, skills, books, the gear
 	// pass, chests - exactly as for any bot.
+	// The companion is a ghost to its owner: "niech towarzysz zawsze bedzie
+	// mozliwy do przejscia jak by byl duchem, bo postac gracza o niego sie
+	// blokuje" (operator, 26 September 2026). The client blocks its own
+	// character on every other character's body but an NPC's
+	// (CActorInstance::TestActorCollision), and nothing the server sends turns
+	// that off for one player's character alone - so the owner's client is told
+	// the companion's vid every few seconds and marks that instance an NPC
+	// itself (client 2.0.18, uisidekick.MakeGhost). Every few seconds because
+	// an instance leaving the view and coming back is made anew, as a player
+	// again. A client without the handler drops the command without a word.
+	void SendPlayerBotSidekickGhost(LPCHARACTER ch, const TPlayerBotSidekick& rec, TPlayerBotSidekickRuntime& rt,
+			DWORD dwNow)
+	{
+		if (dwNow < rt.dwNextGhost)
+			return;
+		rt.dwNextGhost = dwNow + PLAYERBOT_SIDEKICK_GHOST_MS;
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
+		if (!owner || !owner->GetDesc() || owner->GetMapIndex() != ch->GetMapIndex())
+			return;
+		owner->ChatPacket(CHAT_TYPE_COMMAND, "SidekickGhost %u", (unsigned int)(DWORD)ch->GetVID());
+	}
+
 	bool ManagePlayerBotSidekick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
@@ -5025,6 +5054,7 @@ namespace
 		KeepPlayerBotSidekickPath(ch, *rec);
 		TopUpPlayerBotSidekickSkillPoints(ch);
 		TPlayerBotSidekickRuntime& rt = s_mapPlayerBotSidekickRuntime[ch->GetPlayerID()];
+		SendPlayerBotSidekickGhost(ch, *rec, rt, dwNow);
 		if (HandlePlayerBotSidekickTrade(ch, state, *rec, rt, dwNow))
 			return true;
 		if (rec->bMode != PLAYERBOT_SIDEKICK_FOLLOW)
