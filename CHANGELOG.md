@@ -17,6 +17,55 @@ every version here.
 
 ---
 
+## 2.7.0 — 2026-09-26 — Alchemia u botów
+
+Serwer 2.7.0, klient bez zmian (2.0.17). Zaktualizuj serwer w launcherze
+(**SPRAWDŹ AKTUALIZACJE**). Zawiera wszystko z 2.6.0. Pierwszy start po
+aktualizacji kompiluje serwer od nowa, więc trwa dłużej niż zwykle.
+
+### Alchemia u botów
+
+- **Codzienne Cory:** każdy bot od 30 poziomu wykonuje dzienne zadanie
+  Alchemika tak jak gracz – co dziesiąty zabity potwór daje odłamek,
+  10 odłamków to Cor Draconis, najwyżej 5 Corów dziennie.
+- **Połowa botów korzysta z alchemii:** otwiera Cory, zakłada najlepszy
+  kamień każdego z 7 rodzajów, ulepsza u Alchemika klasę, stopień i siłę
+  (z tymi samymi szansami i opłatami co gracz) i kupuje Eliksir Czasu, gdy
+  kamieniowi kończy się czas. Im wyższy poziom bota (50, 65, 75, 90), tym
+  lepsze kamienie buduje.
+- Kamienie, których bot nie potrzebuje – nadmiarowe, gorsze kopie albo
+  z bonusami bez znaczenia dla jego klasy – wystawia w sklepie (do 4 linii).
+- **Pozostałe boty** sprzedają Cory w sklepach po 100 000 yang za sztukę,
+  w stosach po co najmniej 5.
+- **Ceny Kamieni Smoka** to średni koszt zrobienia kamienia z Corów po
+  100 000 yang plus 25%, przeliczany według kursu yang tak jak inne towary
+  botów.
+
+### Dla graczy
+
+- Kamienie Smoka można wymieniać i sprzedawać w sklepie.
+- Eliksir Czasu (D) kosztuje 5 000 000 yang.
+
+### Towarzysz
+
+- Z pełnym plecakiem sprzedaje złom u handlarza – gdy stoisz przy
+  handlarzu albo po komendzie „zakupy”. Wcześniej trzymał sprzęt na sklep,
+  którego nigdy nie otwiera.
+
+### Panel i wydania
+
+- Seban Panel (7790): w karcie postaci, pod kostiumami, podgląd noszonych
+  Kamieni Smoka.
+- Każda wersja serwera i klienta trafia też do zakładki **Releases** na
+  GitHubie – z opisem zmian i paczką aktualizacji.
+
+### Poprawki
+
+- Boty zakładają kamienie między walkami, więc nie zapełniają logów
+  odmowami w czasie walki.
+
+---
+
 ## Klient 2.0.17 — 2026-09-26 — Naprawa Groty Wygnańców V2
 
 Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Serwer zostaje 2.6.0.
