@@ -93,6 +93,20 @@ dłużej niż zwykle.
 
 ---
 
+## Klient 2.0.18 — 2026-09-26 — Podgląd skrzyń i dropu, przenikanie Towarzysza
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Wymaga serwera 2.8.0.
+
+- Podgląd skrzyni (przycisk w ekwipunku) i podgląd dropu („?” przy pasku
+  życia potwora albo metina).
+- Twoja postać przechodzi przez własnego Towarzysza.
+- Masowa zmiana ceny w sklepie zmienia wszystkie pozycje po kolei i sprawdza,
+  czy weszły.
+- Auto Łowy: obrażenia z umiejętności wchodzą.
+- Mapa Katakumb Diabła.
+
+---
+
 ## 2.7.0 — 2026-09-26 — Alchemia u botów
 
 Serwer 2.7.0, klient bez zmian (2.0.17). Zaktualizuj serwer w launcherze
