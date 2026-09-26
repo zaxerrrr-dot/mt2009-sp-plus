@@ -244,7 +244,7 @@ namespace
 				m_dwNow(dwNow),
 				// One count for the whole sweep: a full bag is a full bag for
 				// every drop in it.
-				m_bagFull(CountPlayerBotFreeInventoryCells(owner) == 0),
+				m_bagFull(CountPlayerBotFreeInventoryCells(owner) + CountPlayerBotSaddlebagFreeCells(owner) == 0),
 				m_skippedNoRoom(0),
 				// Inside the Demon Tower a bot picks up its own drop whatever it
 				// is worth (Tieru, 23 September: "niech tam drop swoj pilnuja,

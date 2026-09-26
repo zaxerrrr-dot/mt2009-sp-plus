@@ -136,6 +136,25 @@ namespace
 		return free;
 	}
 
+	// The free cells of the saddlebag page (playerbot_saddlebag.h) while it is
+	// open: the rows unlocked, with the horse out or ridden. Only the bag's
+	// fullness asks it (IsPlayerBotBagFull, IsPlayerBotBagUnderPressure, the
+	// loot): the engine puts a drop there once the four pages are full, and
+	// the saddlebag pass moves it back down as a cell frees - every other rule
+	// counts the four pages it can see.
+	int CountPlayerBotSaddlebagFreeCells(LPCHARACTER ch)
+	{
+		if (!ch || !ch->CanUseHorseInventory() || ch->GetHorseInventoryUnlock() == 0)
+			return 0;
+		const int end = std::min<int>(INVENTORY_MAX_NUM,
+				INVENTORY_DEFAULT_MAX_NUM + INVENTORY_PAGE_COLUMN * ch->GetHorseInventoryUnlock());
+		int free = 0;
+		for (int cell = INVENTORY_DEFAULT_MAX_NUM; cell < end; ++cell)
+			if (ch->IsEmptyItemGrid(TItemPos(INVENTORY, cell), 1))
+				++free;
+		return free;
+	}
+
 	// A giftbox opens only into a free column of three - UseItemEx asks
 	// GetEmptyInventory(3) - and a bag of seventy to ninety cells has free cells
 	// without one: the bots holding the most Moonlight chests on the test world

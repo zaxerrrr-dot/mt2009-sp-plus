@@ -984,7 +984,10 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return false;
-		const int occupied = PLAYERBOT_BAG_CELLS - CountPlayerBotFreeInventoryCells(ch);
+		// The saddlebags' free cells count as room: what lands there comes
+		// back down as the bag empties (playerbot_saddlebag.h).
+		const int occupied = PLAYERBOT_BAG_CELLS - CountPlayerBotFreeInventoryCells(ch) -
+				CountPlayerBotSaddlebagFreeCells(ch);
 		return occupied * 100 >= PLAYERBOT_BAG_CELLS * PLAYERBOT_BAG_FULL_PERCENT;
 	}
 
@@ -1000,7 +1003,8 @@ namespace
 	bool IsPlayerBotBagUnderPressure(LPCHARACTER ch)
 	{
 		return ch && ch->IsItemLoaded() &&
-				CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS;
+				CountPlayerBotFreeInventoryCells(ch) + CountPlayerBotSaddlebagFreeCells(ch) <=
+					PLAYERBOT_BAG_PRESSURE_FREE_CELLS;
 	}
 
 	// A bag piece this bot would put on: its slot is empty or it outscores
