@@ -16,6 +16,17 @@
 
 namespace
 {
+	// Whether this bot has a counter to sell from: allowed a shop
+	// (PlayerBotCanOpenShop) and not a player's companion, which never opens
+	// one (playerbot_town.h) - so a companion's full bag takes the no-counter
+	// path to the merchant instead of keeping goods for a counter it never
+	// stands at ("Towarzysz mimo ze ma pelne EQ nie sprzedaje zlomu",
+	// operator, 26 September 2026).
+	bool PlayerBotHasCounter(LPCHARACTER ch)
+	{
+		return ch && PlayerBotCanOpenShop(ch) && !IsPlayerBotSidekickPID(ch->GetPlayerID());
+	}
+
 	// Defined with the market-stall code, which comes later because it needs
 	// the town. Refining announces a good result the moment it happens, so it
 	// cannot wait for that file.
@@ -1453,7 +1464,7 @@ namespace
 			if (rareKind != PLAYERBOT_RARE_GOODS_NONE)
 				return IsPlayerBotRareGoodsForMerchant(ch->GetPlayerID(), item->GetVnum(), get_dword_time()) ||
 						(IsPlayerBotBagUnderPressure(ch) &&
-						 (!PlayerBotCanOpenShop(ch) || IsPlayerBotRareGoodsShopQuotaFull(rareKind)));
+						 (!PlayerBotHasCounter(ch) || IsPlayerBotRareGoodsShopQuotaFull(rareKind)));
 		}
 
 		const DWORD vnum = item->GetVnum();
@@ -1504,7 +1515,7 @@ namespace
 					!IsPlayerBotUpgradeForSelf(ch, item) &&
 					CountPlayerBotVnumUnitsAhead(ch, item) >= PLAYERBOT_PICKUP_GEAR_BAG_KEEP)
 				return true;
-			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotCanOpenShop(ch);
+			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch);
 		}
 		// Kamien Duchowy is its owner's training (ManagePlayerBotGrandMasterTraining),
 		// never the merchant's: he paid 194 yang for one.
@@ -1619,7 +1630,7 @@ namespace
 		// and no counter is possible - unless this bot would wear it.
 		if ((item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR) &&
 				item->GetRefineLevel() <= PLAYERBOT_MERCHANT_MAX_REFINE &&
-				IsPlayerBotBagUnderPressure(ch) && !PlayerBotCanOpenShop(ch) &&
+				IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch) &&
 				!IsPlayerBotUpgradeForSelf(ch, item))
 			return true;
 
@@ -1641,7 +1652,7 @@ namespace
 		// under level thirty keeps the operator's rule above.
 		if (IsPlayerBotLppSurplusGoods(ch, item) && !IsPlayerBotLowLevelGear(item) &&
 				!IsPlayerBotUpgradeForSelf(ch, item))
-			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotCanOpenShop(ch);
+			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch);
 
 		// Whatever else it is, a +5 or better is not something to hand an NPC for
 		// a fifth of the shop price. The reserve rule below keeps one spare per
@@ -1696,7 +1707,7 @@ namespace
 		// or past the PLAYERBOT_SHOP_MARBLE_LINES a counter shows, which no
 		// counter will take and which would otherwise ride in the bag for good.
 		if (item->GetType() == ITEM_POLYMORPH)
-			return IsPlayerBotBagUnderPressure(ch) && (!PlayerBotCanOpenShop(ch) ||
+			return IsPlayerBotBagUnderPressure(ch) && (!PlayerBotHasCounter(ch) ||
 					CountPlayerBotVnumUnitsAhead(ch, item) >= PLAYERBOT_SHOP_MARBLE_LINES);
 		if (item->GetType() == ITEM_TREASURE_BOX)
 			return CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS &&
@@ -1880,7 +1891,7 @@ namespace
 		if (IsPlayerBotKeptCraftMaterial(ch, item))
 			return false;
 		if (IsPlayerBotSheetGoods(item))
-			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotCanOpenShop(ch);
+			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch);
 
 		// Keep at most one immediately usable upgrade for each wear slot.  The old
 		// test kept every item that scored above the currently worn one; at high
