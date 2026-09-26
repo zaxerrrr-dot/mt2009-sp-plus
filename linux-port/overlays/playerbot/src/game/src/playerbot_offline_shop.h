@@ -1496,6 +1496,35 @@ namespace {
             }
             break; // one item a step; a step that added one chains the next
         }
+        // A Dragon Stone the bot has no use for (playerbot_alchemy.h,
+        // IsPlayerBotSurplusDragonSoul) goes up straight from the alchemy bag:
+        // the loop above reads the ordinary bag alone. One a step, when the
+        // step added nothing else.
+        if (!sent && (allowRestock || !Due(now, o.nextReprice))) {
+            for (int dsCell = 0; dsCell < DRAGON_SOUL_INVENTORY_MAX_NUM; ++dsCell) {
+                LPITEM stone = ch->GetItem(TItemPos(DRAGON_SOUL_INVENTORY, (WORD)dsCell));
+                if (!stone || stone->GetCell() != dsCell || !IsPlayerBotSurplusDragonSoul(ch, stone)) continue;
+                const int pos = BotOfflineSlot(ch, shop, stone);
+                if (pos < 0 || !BotOfflineValid(ch, stone, pos)) continue;
+                ikashop::TPriceInfo price{};
+                price.yang = GetPlayerBotDragonSoulPrice(stone);
+                if (price.yang <= 0 || shop->GetTotalYangValue() >= GOLD_MAX - price.yang) continue;
+                const DWORD id = stone->GetID();
+                const DWORD vnum = stone->GetVnum();
+                if (Begin(ch->GetPlayerID(), Add, id, now)) {
+                    manager.RecvShopAddItemClientPacket(ch, TItemPos(DRAGON_SOUL_INVENTORY, (WORD)dsCell), price, pos);
+                    sent = EndCall(ch->GetPlayerID());
+                    if (sent) {
+                        o.listed[id] = playerbot_offline::ListedLine{ vnum, 0u, now, 0 };
+                        AddPlayerBotMarketSupply(vnum, 1, shop->GetSpawn().map);
+                        ++s_kPlayerBotAlchemyStats.listed;
+                        sys_log(0, "PLAYERBOT_ALCHEMY: listed pid=%u name=%s vnum=%u price=%lld",
+                            ch->GetPlayerID(), ch->GetName(), vnum, (long long)price.yang);
+                    }
+                }
+                break;
+            }
+        }
         if (!sent && Due(now, o.nextReprice)) {
             if (o.repriceSteps == 0) o.repriceSteps = PLAYERBOT_OFFLINE_REPRICE_SLICE;
             // Rotate by ID, one existing offer per visit; recompute from market
@@ -1528,8 +1557,10 @@ namespace {
                     int discount = (int)(standing / PLAYERBOT_OFFLINE_UNSOLD_STEP_MS) * PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT;
                     if (discount > PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL)
                         discount = PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL;
-                    // Materialy Rzemieslnicze keep the operator's price.
-                    if (preview->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
+                    // Materialy Rzemieslnicze, Cor Draconis and the Dragon Stones
+                    // keep the operator's prices.
+                    if (preview->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
+                            IsPlayerBotCorVnum(preview->GetVnum()) || preview->IsDragonSoul())
                         discount = 0;
                     const long long asking = (long long)GetPlayerBotShopAskingPrice(preview) * (100 - discount) / 100;
                     price.yang = std::max(asking, (long long)GetPlayerBotRefineInvestment(preview));

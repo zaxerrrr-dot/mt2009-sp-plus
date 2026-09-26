@@ -6054,7 +6054,7 @@ namespace
 	// The asking price of one unit at a yang rate of 100%, before the market
 	// moves it: ScalePlayerBotIwakuraPrice (yang rate and inflation), the sale
 	// memory and fast sales raise it, the unsold markdown lowers it.
-	const DWORD PLAYERBOT_COR_DRACONIS_PRICE = 500000;
+	const DWORD PLAYERBOT_COR_DRACONIS_PRICE = 100000; // a piece, as it stands (operator, 26 September 2026)
 	const DWORD PLAYERBOT_SASH_PRICE = 700000;
 	// The share of the bots' offline counters that may carry the kind at once,
 	// in percent (never fewer than one counter). A counter that already has a
@@ -6127,6 +6127,14 @@ namespace
 	bool PlayerBotWantsSaddlebagGoods(LPCHARACTER ch);
 	void NotePlayerBotSaddlebagBought(LPCHARACTER ch, DWORD vnum, long long price);
 	void LogPlayerBotSaddlebagCensus();
+
+	// Alchemy and the daily Cors (playerbot_alchemy.h).
+	void NotePlayerBotDragonShardKill(LPCHARACTER ch);
+	bool IsPlayerBotKeptCor(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotCorStackShort(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotCorVnum(DWORD vnum);
+	DWORD GetPlayerBotDragonSoulPrice(LPITEM item);
+	void LogPlayerBotAlchemyCensus();
 
 	int GetPlayerBotRareGoodsKind(DWORD vnum)
 	{
@@ -6762,6 +6770,9 @@ namespace
 			dwNextSaddlebagCheckTime(0),
 			dwNextSaddlebagActionTime(0),
 			dwNextSaddlebagMoveTime(0),
+			dwNextDsCheckTime(0),
+			dwNextDsActionTime(0),
+			dwNextDsLocalTime(0),
 			dwNextHorseCheckTime(0),
 			dwNextHorseActionTime(0),
 			dwNextHorseRideCheckTime(0),
@@ -6866,6 +6877,8 @@ namespace
 			bVisitingUriel(false),
 			bSashVisitSteps(0),
 			bSaddlebagErrand(0),
+			bVisitingDsAlchemist(false),
+			bDsVisitSteps(0),
 			bVisitingStable(false),
 			bFishingSession(false),
 			bIsFishing(false),
@@ -7067,6 +7080,10 @@ namespace
 		DWORD dwNextSaddlebagCheckTime;
 		DWORD dwNextSaddlebagActionTime;
 		DWORD dwNextSaddlebagMoveTime;
+		// Alchemy (playerbot_alchemy.h): the Alchemist's visit and the local work.
+		DWORD dwNextDsCheckTime;
+		DWORD dwNextDsActionTime;
+		DWORD dwNextDsLocalTime;
 		DWORD dwNextHorseCheckTime;
 		DWORD dwNextHorseActionTime;
 		DWORD dwNextHorseRideCheckTime;
@@ -7234,6 +7251,8 @@ namespace
 		bool bVisitingUriel;
 		BYTE bSashVisitSteps;
 		BYTE bSaddlebagErrand;
+		bool bVisitingDsAlchemist;
+		BYTE bDsVisitSteps;
 		bool bVisitingStable;
 		// The bot has committed to a fishing trip: it carries a rod in the weapon
 		// slot and skips combat and gear swaps until the session ends.

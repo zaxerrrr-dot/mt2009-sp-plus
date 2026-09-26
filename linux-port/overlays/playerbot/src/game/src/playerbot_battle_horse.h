@@ -189,6 +189,8 @@ namespace
 		state.dwLastKillCreditedVID = vid;
 		// Under the same guard, so a corpse is one roll.
 		NotePlayerBotBiologistCarrierKill(ch, target);
+		// And a Dragon Stone Shard for the Alchemist's daily Cors (playerbot_alchemy.h).
+		NotePlayerBotDragonShardKill(ch);
 
 		// The military trial is credited from the same place and under the same
 		// VID guard. A second hook of its own would have had to share

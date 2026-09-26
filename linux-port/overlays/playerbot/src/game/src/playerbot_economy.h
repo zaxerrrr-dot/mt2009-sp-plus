@@ -553,7 +553,10 @@ namespace
 			return PLAYERBOT_SHOP_HORSE_MEDAL_LINE_UNITS;
 		if (item->GetType() == ITEM_SKILLBOOK || item->GetVnum() == PLAYERBOT_GRAND_MASTER_STONE_VNUM)
 			return 1;
-		// A Cor Draconis goes up one at a time: its price is per unit.
+		// A Cor Draconis goes up five and more a line (operator, 26 September
+		// 2026); a sash one at a time.
+		if (IsPlayerBotCorVnum(item->GetVnum()))
+			return 5;
 		if (GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
 			return 1;
 		// A bean is bought a handful at a time (PLAYERBOT_ZEN_BEAN_LINE_UNITS).
@@ -1444,7 +1447,7 @@ namespace
 		// pressure that has no counter for it: none at all, or the counters'
 		// share of the kind is taken (IsPlayerBotRareGoodsShopQuotaFull).
 		{
-			if (IsPlayerBotKeptSash(ch, item))
+			if (IsPlayerBotKeptSash(ch, item) || IsPlayerBotKeptCor(ch, item))
 				return false;
 			const int rareKind = GetPlayerBotRareGoodsKind(item->GetVnum());
 			if (rareKind != PLAYERBOT_RARE_GOODS_NONE)

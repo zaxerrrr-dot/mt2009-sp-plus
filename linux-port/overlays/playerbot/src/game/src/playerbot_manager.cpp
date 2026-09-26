@@ -125,6 +125,7 @@ extern void SendShout(const char* szText, BYTE bEmpire);
 // asking price.
 #include "playerbot_shop_name_rules.h"
 #include "playerbot_town.h"
+#include "playerbot_alchemy.h"
 // Iwakura's gambler: the session a town visit turns into at its end.
 #include "playerbot_gambler.h"
 // Iwakura's Useful Items List: what a bot keeps at the storekeeper rather than
@@ -5983,6 +5984,13 @@ void CPlayerBotManager::Update()
 		// move-back runs inside on its own clock.
 		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotSaddlebag(ch, state, dwNow))
+			continue;
+
+		// Alchemy (playerbot_alchemy.h): Cors opened, stones worn and the deck
+		// on outside the safe zones on a short clock; refines and the Time
+		// Elixir at the Alchemist of a first village.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotAlchemy(ch, state, dwNow))
 			continue;
 
 		// Spending time in town once the errand that brought the bot here is

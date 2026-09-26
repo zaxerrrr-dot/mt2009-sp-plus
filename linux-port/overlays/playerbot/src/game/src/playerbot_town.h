@@ -2247,6 +2247,12 @@ namespace
 		// (playerbot_saddlebag.h).
 		if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
 			return PLAYERBOT_CRAFT_MATERIAL_UNIT_PRICE * std::max<DWORD>(1, (DWORD)item->GetCount());
+		// Cor Draconis and the Dragon Stones: the operator's prices as they
+		// stand (playerbot_alchemy.h, GetPlayerBotDragonSoulPrice).
+		if (IsPlayerBotCorVnum(item->GetVnum()))
+			return PLAYERBOT_COR_DRACONIS_PRICE * std::max<DWORD>(1, (DWORD)item->GetCount());
+		if (item->IsDragonSoul())
+			return GetPlayerBotDragonSoulPrice(item);
 		// The sale memory is read below before the step limiter would notice a
 		// new yang rate, so the rate is checked here first as well.
 		ForgetPlayerBotPricesOnRateChange();
@@ -2683,6 +2689,14 @@ namespace
 			return -1;
 		// A sash a keeper builds its own from (playerbot_sash.h) is not goods.
 		if (ch && IsPlayerBotKeptSash(ch, item))
+			return -1;
+		// Nor a Cor Draconis an alchemy bot opens itself, nor a Cor line under
+		// PLAYERBOT_COR_LINE_MIN_UNITS (playerbot_alchemy.h).
+		if (ch && (IsPlayerBotKeptCor(ch, item) || IsPlayerBotCorStackShort(ch, item)))
+			return -1;
+		// A Dragon Stone: an alchemy bot's spare, from its own counter pass
+		// (playerbot_offline_shop.h), never from the bag's.
+		if (item->IsDragonSoul())
 			return -1;
 		// Nor the materials a saddlebag bot keeps for its rows, nor refine goods
 		// on their way to the Dozorca (playerbot_saddlebag.h).
@@ -3992,7 +4006,8 @@ namespace
 		// reason, which reads the whole bag: this pass runs on every tick of
 		// every bot without a counter.
 		if (state.bVisitingShop || state.bVisitingBiologist || state.bVisitingStable ||
-				state.bVisitingAlchemist || state.bVisitingUriel || state.bSaddlebagErrand != 0)
+				state.bVisitingAlchemist || state.bVisitingUriel || state.bSaddlebagErrand != 0 ||
+				state.bVisitingDsAlchemist)
 			return false;
 		if (state.dwNextShopKeepTime != 0 && dwNow < state.dwNextShopKeepTime)
 			return false;
