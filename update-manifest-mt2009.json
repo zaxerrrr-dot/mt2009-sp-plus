@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-25T20:52:15Z",
-  "statusMessage": "Serwer 2.5.1: poprawka swiatow z brakujacymi przedmiotami w bazie. Klient 2.0.14 dodaje ekwipunek i umiejetnosci Towarzysza oraz naprawia Scal i uporzadkuj.",
+  "publishedAt": "2026-09-26T07:20:00Z",
+  "statusMessage": "Serwer 2.5.1: poprawka swiatow z brakujacymi przedmiotami w bazie. Klient 2.0.15 pozwala przenosic przedmioty z jukow podczas jazdy na wierzchowcu.",
   "server": {
     "version": "2.5.1",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.5.1.zip",
@@ -10,9 +10,9 @@
     "size": 55779414
   },
   "client": {
-    "version": "2.0.14",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.14.zip",
-    "sha256": "B450216355522E8CA94A87C9254F8B230C9D071E7184E9EF6AAF043586C0F585",
-    "size": 856742
+    "version": "2.0.15",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.15.zip",
+    "sha256": "FC91FAF0BF679F73A40993D4AD03633DA25F2DB43442738A18AEAB622D89F8FA",
+    "size": 853205
   }
 }

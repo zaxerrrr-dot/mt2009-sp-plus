@@ -17,6 +17,14 @@ every version here.
 
 ---
 
+## Klient 2.0.15 — 2026-09-26 — Juki konne na wierzchowcach
+
+- Juki konne działają podczas jazdy na klasycznym koniu oraz na
+  wierzchowcu użytym z pieczęci. Nadal wymagają konia co najmniej na poziomie
+  1, tak jak po stronie serwera.
+
+---
+
 ## Klient 2.0.14 — 2026-09-25 — Ekwipunek Towarzysza i sortowanie
 
 - Okno Towarzysza (**P**) ma teraz osobne okna **Ekwipunek** i

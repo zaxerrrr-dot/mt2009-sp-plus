@@ -1,0 +1,21 @@
+diff --git a/root/uiinventory.py b/root/uiinventory.py
+--- a/root/uiinventory.py
++++ b/root/uiinventory.py
+@@
+ def GetGlobalSlotFromLocalSlotAndTab(localSlot, tab):
+ 	if localSlot >= player.INVENTORY_DEFAULT_MAX_NUM: # horse inventory
+ 		return localSlot
+ 
+ 	return localSlot + player.INVENTORY_PAGE_SIZE * tab
++
++def CanAccessHorseInventory():
++	"""Allow horse bags while riding either a horse or a seal mount."""
++	try:
++		horseLevel = player.GetSkillGrade(109) * 20 + player.GetSkillLevel(109)
++		return horseLevel >= 1 and (constInfo.IS_HORSE_SUMMONED or player.IsMountingHorse())
++	except:
++		return False
+@@
+-		if itemSlotIndex >= player.INVENTORY_DEFAULT_MAX_NUM and itemSlotIndex < player.INVENTORY_MAX_NUM and not constInfo.IS_HORSE_SUMMONED:
++		if itemSlotIndex >= player.INVENTORY_DEFAULT_MAX_NUM and itemSlotIndex < player.INVENTORY_MAX_NUM and not CanAccessHorseInventory():
+ 			return
