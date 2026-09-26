@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-26T18:04:36Z",
-  "statusMessage": "Serwer 2.8.0 i klient 2.0.18: podglad skrzyn i dropu, alchemia klasami, szarfy po kosztach, nowe wydarzenia.",
+  "publishedAt": "2026-09-26T20:23:06Z",
+  "statusMessage": "Serwer 2.8.1: poprawka startu swiezej instalacji (CH1 OFF przy pierwszym uruchomieniu).",
   "server": {
-    "version": "2.8.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.0.zip",
-    "sha256": "91E569DDCAF3BEA621C818BDE8528E6A32711C18992E3E3492F3FEFCB6008978",
-    "size": 56211170
+    "version": "2.8.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.1.zip",
+    "sha256": "195CF2ACE2ECAB6BA829F47F1BE044F8C1545FEB91DF17FA7E3B919C3E4A4777",
+    "size": 56277376
   },
   "client": {
     "version": "2.0.18",

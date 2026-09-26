@@ -17,6 +17,19 @@ every version here.
 
 ---
 
+## 2.8.1 — 2026-09-26 — Poprawka startu świeżej instalacji
+
+Poprawka serwera; zawiera wszystko z 2.8.0. Klient bez zmian (2.0.18).
+
+- Na nowej instalacji 2.8.0 kanał CH1 był OFF przy pierwszym uruchomieniu:
+  baza gry przerywała start z błędem ItemShopu („item_index 906 not found in
+  itemshop_time_auction”). Stare aukcje czasowe ItemShopu (906–908, grudzień
+  2024) były kasowane, a zaraz potem wgrywanie ofert ItemShopu dodawało je
+  z powrotem tylko do połowy. Teraz porządek jest robiony także po wgraniu
+  ofert, więc serwer wstaje za pierwszym razem.
+- Kto trafił na ten błąd, nie musi nic robić po aktualizacji. Bez
+  aktualizacji wystarczyło zatrzymać serwer i kliknąć GRAJ ponownie.
+
 ## 2.8.0 — 2026-09-26 — Alchemia klasami, szarfy po kosztach, nowe wydarzenia
 
 Serwer 2.8.0 i klient 2.0.18. **Zaktualizuj oba** w launcherze

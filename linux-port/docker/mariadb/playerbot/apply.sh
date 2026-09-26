@@ -985,3 +985,10 @@ for mod_sql in /opt/playerbot/mod/*.sql; do
         head -3 /tmp/mod.err >&2 || true
     fi
 done
+# The ended time auctions again, after the item-shop data: on a new install
+# mod/10_ingame_itemshop.sql runs after the cleanup further up and writes
+# 906-908 back into common.itemshop_time_auctions, whose player rows that
+# cleanup had just removed - and the db core then refused to start ("item_index
+# 906 not found in itemshop_time_auction in player database", 26 September,
+# every CH1 OFF on a fresh 2.8.0). Idempotent.
+db -e "DELETE FROM common.itemshop_time_auctions WHERE item_index IN (906, 907, 908) AND end_time < '2025-01-01'; DELETE FROM player.itemshop_time_auction WHERE item_index IN (906, 907, 908) AND item_index NOT IN (SELECT item_index FROM common.itemshop_time_auctions);" || echo "[playerbot-migrate] WARNING: could not end the ItemShop old time auctions" >&2
