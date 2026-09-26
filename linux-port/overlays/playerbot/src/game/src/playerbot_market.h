@@ -178,6 +178,10 @@ namespace
 		if (!ch || !offer)
 			return false;
 
+		// Cor Draconis and Dragon Stones, for an alchemy bot (playerbot_alchemy.h).
+		if (IsPlayerBotCorVnum(offer->GetVnum()) || offer->IsDragonSoul())
+			return WantsPlayerBotAlchemyOffer(ch, offer);
+
 		// Materialy Rzemieslnicze and the refine goods that make them, for a
 		// saddlebag bot short of its next row (playerbot_saddlebag.h).
 		if (offer->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
@@ -375,6 +379,9 @@ namespace
 		// Medals and materials for a saddlebag row (playerbot_saddlebag.h).
 		if (PlayerBotWantsSaddlebagGoods(ch))
 			return true;
+		// Cors for an alchemy bot (playerbot_alchemy.h).
+		if (PlayerBotWantsAlchemyFromMarket(ch))
+			return true;
 		// A Forgetting Scroll for a skill stuck at seventeen.
 		if (GetPlayerBotStuckSkill(ch) != 0)
 			return true;
@@ -443,6 +450,8 @@ namespace
 			return CanPlayerBotPayForSashOffer(ch, price);
 		if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
 			return CanPlayerBotPayForCraftMaterial(ch, item, price);
+		if (IsPlayerBotCorVnum(item->GetVnum()) || item->IsDragonSoul())
+			return CanPlayerBotPayForAlchemyOffer(ch, item, price);
 		if (IsPlayerBotCraftExchangeVnum(item->GetVnum()) && WantsPlayerBotCraftGoodsOffer(ch, item) &&
 				!PlayerBotNeedsRefineMaterial(ch, item->GetVnum()))
 			return CanPlayerBotPayForCraftGoods(ch, item, price);
@@ -1185,6 +1194,7 @@ namespace
 				auStallsByReason[PLAYERBOT_SHOP_REASON_MEDALS]);
 		LogPlayerBotSashCensus();
 		LogPlayerBotSaddlebagCensus();
+		LogPlayerBotAlchemyCensus();
 		ReportPlayerBotWeaponGoals(dwNow);
 		ReportPlayerBotLevel30Census();
 		// Iwakura's Patch 4, point 5: how much of the refine materials the bots

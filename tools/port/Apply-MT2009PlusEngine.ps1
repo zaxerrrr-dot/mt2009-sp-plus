@@ -36,6 +36,7 @@ param(
 #   speedhack slack    input_main.cpp            (MT2009_PLUS_SPEEDHACK_CLOCK_V1)
 #   Cor stacking       char_item.cpp             (IsStackableCorDraconisVnum)
 #   Cor pickup stacks  char_item.cpp             (MT2009_PLUS_COR_AUTOSTACK_V1)
+#   DS trace players   char_item.cpp             (MT2009_PLUS_DS_TRACE_PLAYERS_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -275,6 +276,16 @@ if ((Test-Path -LiteralPath $corAutoStackApply -PathType Leaf) -and
     if ($corAutoStackResult.Changed) {
         $syncedFiles++
         Write-Host 'A Cor Draconis picked up joins the stack in the bag.' -ForegroundColor DarkGray
+    }
+}
+# The Dragon Stone equip trace for players only (server-patches/dstraceplayers).
+$dsTraceApply = Join-Path $repo 'server-patches/dstraceplayers/Apply-DsTracePlayersPatch.ps1'
+if ((Test-Path -LiteralPath $dsTraceApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $charItemSource -PathType Leaf)) {
+    $dsTraceResult = & $dsTraceApply -SourceFile $charItemSource
+    if ($dsTraceResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Dragon Stone equip trace for players only.' -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-26T09:10:00Z",
-  "statusMessage": "Serwer 2.6.0 i klient 2.0.17: juki konne, szarfy botow oraz poprawione ladowanie Groty V2.",
+  "publishedAt": "2026-09-26T13:51:36Z",
+  "statusMessage": "Serwer 2.7.0 i klient 2.0.17: alchemia u botow, Kamienie Smoka w handlu, Towarzysz sprzedaje zlom.",
   "server": {
-    "version": "2.6.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.6.0.zip",
-    "sha256": "A30343E9363A71F265F6D7314BD7450206EFFC3148B64E2F62D87A31C800A571",
-    "size": 56007341
+    "version": "2.7.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.7.0.zip",
+    "sha256": "98C953A6191286549339FE718352ED460F5E910B9A0D119770D1C955F69DA4BA",
+    "size": 56029892
   },
   "client": {
     "version": "2.0.17",

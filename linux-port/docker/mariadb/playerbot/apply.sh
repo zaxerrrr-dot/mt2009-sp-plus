@@ -254,6 +254,20 @@ db -e "
 "
 echo "[playerbot-migrate] Cor Draconis and sashes: player trade enabled"
 
+# MT2009 Plus (26 September 2026): the Dragon Stones (110000-175499) trade and
+# go on a shop at every grade - the lower three carried GIVE|MYSHOP, so a
+# normal, brilliant or rare stone could be neither handed on nor sold - and
+# the Alchemist's Time Elixir (D) costs 5 000 000 instead of 10 000 000. Every
+# start, idempotent; the db core reads world.item_proto at boot.
+db -e "
+    UPDATE world.item_proto
+       SET antiflag = antiflag & ~$trade_mask
+     WHERE vnum BETWEEN 110000 AND 175499
+       AND (antiflag & $trade_mask) <> 0;
+    UPDATE world.item_proto SET gold = 5000000 WHERE vnum = 100002 AND gold <> 5000000;
+" && echo "[playerbot-migrate] alchemy: Dragon Stones tradeable, Time Elixir (D) 5 000 000" \
+  || echo "[playerbot-migrate] WARNING: alchemy item_proto changes failed" >&2
+
 # The Grotto of Exile's warp in Orc Valley's bottom-left corner (10077,
 # restored by the game image) reads its target out of its own locale_name
 # (FuncCheckWarp), and the package's pointed at cell (9,46) of map 72 - a
