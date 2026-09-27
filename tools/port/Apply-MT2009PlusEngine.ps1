@@ -222,6 +222,18 @@ if ((Test-Path -LiteralPath $petStayApply -PathType Leaf) -and
         Write-Host 'The pet now stays when its owner dies.' -ForegroundColor DarkGray
     }
 }
+# A login may carry an underscore, the bots' playerbot_NNN taken over from the
+# advanced panel (server-patches/loginunderscore).
+$loginUnderscoreApply = Join-Path $repo 'server-patches/loginunderscore/Apply-LoginUnderscorePatch.ps1'
+$authSource = Join-Path $engineGameSource 'input_auth.cpp'
+if ((Test-Path -LiteralPath $loginUnderscoreApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $authSource -PathType Leaf)) {
+    $loginUnderscoreResult = & $loginUnderscoreApply -SourceFile $authSource
+    if ($loginUnderscoreResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Logins may now carry an underscore (bot takeover).' -ForegroundColor DarkGray
+    }
+}
 # A pet's magic attack % (server-patches/magicattper): PointChange had no
 # case for POINT_MAGIC_ATT_BONUS_PER, so the bonus never applied.
 $magicAttApply = Join-Path $repo 'server-patches/magicattper/Apply-MagicAttPerPatch.ps1'
