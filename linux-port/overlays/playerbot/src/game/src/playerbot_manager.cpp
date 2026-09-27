@@ -913,14 +913,46 @@ namespace
 			}
 			if (!isBow && TryPlayerBotDuelGapCloser(ch, foe, state, dwNow, distance))
 				return true;
-			MovePlayerBot(ch, foe->GetX(), foe->GetY(), dwNow, 4, false, false);
+			const bool moved = MovePlayerBot(ch, foe->GetX(), foe->GetY(), dwNow, 4, false, false);
+			// A duellist that closes in and never arrives (see "no blow" below).
+			if (distance <= 400)
+			{
+				static std::map<DWORD, DWORD> s_mapPlayerBotDuelChaseLog;
+				DWORD& next = s_mapPlayerBotDuelChaseLog[pid];
+				if (dwNow >= next)
+				{
+					next = dwNow + 1000;
+					sys_log(0, "PLAYERBOT_PVP: closing in pid=%u name=%s dist=%d range=%d moved=%d move=%d nav=%u",
+							pid, ch->GetName(), distance, combatRange, moved ? 1 : 0, ch->IsStateMove() ? 1 : 0,
+							(unsigned int)state.bLastNavOutcome);
+				}
+			}
 			return true;
 		}
 		if (ch->IsStateMove())
 			ch->Stop();
 		ch->SetPosition(POS_FIGHTING);
-		if (!CastPlayerBotDuelSkill(ch, foe, state, dwNow))
-			ExecutePlayerBotBasicAttack(ch, foe, state, dwNow);
+		if (!CastPlayerBotDuelSkill(ch, foe, state, dwNow) &&
+				!ExecutePlayerBotBasicAttack(ch, foe, state, dwNow))
+		{
+			// Why a duellist in reach neither cast nor swung (the operator,
+			// 27 September: a warrior fought a duel with skills alone). Once a
+			// second a bot, and only in a duel.
+			static std::map<DWORD, DWORD> s_mapPlayerBotDuelIdleLog;
+			DWORD& next = s_mapPlayerBotDuelIdleLog[pid];
+			if (dwNow >= next && dwNow >= state.dwNextAttackTime)
+			{
+				next = dwNow + 1000;
+				LPITEM held = ch->GetWear(WEAR_WEAPON);
+				sys_log(0, "PLAYERBOT_PVP: no blow pid=%u name=%s dist=%d move=%d weapon=%u recovering=%d shop=%d "
+						"sanctioned=%d strike=%d safe=%d stun=%d next_attack_in=%d",
+						pid, ch->GetName(), distance, ch->IsStateMove() ? 1 : 0, held ? held->GetVnum() : 0,
+						state.bRecoveringAfterDeath ? 1 : 0, state.bVisitingShop ? 1 : 0,
+						IsPlayerBotSanctionedFoe(ch, foe, dwNow) ? 1 : 0, CanPlayerBotStrikeCharacter(ch, foe) ? 1 : 0,
+						IsPlayerBotSafeZone(ch->GetMapIndex(), ch->GetX(), ch->GetY()) ? 1 : 0, ch->IsStun() ? 1 : 0,
+						(int)(state.dwNextAttackTime - dwNow));
+			}
+		}
 		return true;
 	}
 
@@ -4603,6 +4635,16 @@ static void RunPlayerBotLightTick(LPDESC d, LPCHARACTER ch, TPlayerBotAIState& s
 {
 	if (!d->IsPhase(PHASE_GAME) || ch->IsDead())
 		return;
+	// An open trade window holds the bot where it stands on this tick too
+	// (playerbot_gift_trade.h): the route below walked it on between two full
+	// ticks, off past the window's reach, and the engine closed the trade
+	// (69Marta69 on its merchant round, six windows in thirty seconds).
+	if (ch->GetExchange())
+	{
+		if (ch->IsStateMove())
+			ch->Stop();
+		return;
+	}
 	LPCHARACTER quickTarget = state.dwTargetVID != 0
 			? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
 	// Following an already computed route is cheap; planning one is not, and
