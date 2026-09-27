@@ -187,6 +187,18 @@ if ((Test-Path -LiteralPath $dsCommandApply -PathType Leaf) -and
         Write-Host 'Enabled the alchemy deck command for players.' -ForegroundColor DarkGray
     }
 }
+# Smoczy Skowyt on its target (server-patches/dragonroartarget): SELFONLY
+# put the splash round the Shaman while the client plays it at the target.
+$roarApply = Join-Path $repo 'server-patches/dragonroartarget/Apply-DragonRoarTargetPatch.ps1'
+$skillSource = Join-Path $engineGameSource 'char_skill.cpp'
+if ((Test-Path -LiteralPath $roarApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $skillSource -PathType Leaf)) {
+    $roarResult = & $roarApply -SourceFile $skillSource
+    if ($roarResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Smoczy Skowyt now hits round its target.' -ForegroundColor DarkGray
+    }
+}
 # A pet's magic attack % (server-patches/magicattper): PointChange had no
 # case for POINT_MAGIC_ATT_BONUS_PER, so the bonus never applied.
 $magicAttApply = Join-Path $repo 'server-patches/magicattper/Apply-MagicAttPerPatch.ps1'

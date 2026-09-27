@@ -463,6 +463,13 @@ namespace
 					!(rowHome == PLAYERBOT_MAP_DEMON_TOWER && IsPlayerBotTowerGroundClosedFor(ch)))
 				return rowHome;
 		}
+		// A guild's errand (playerbot_guild_land.h): where the material its
+		// next building lacks drops, for as long as the errand stands.
+		{
+			const long errandMap = GetPlayerBotGuildErrandMap(ch);
+			if (errandMap != 0 && IsPlayerBotFrontierMapIndex(errandMap) && IsPlayerBotMapHostedHere(errandMap))
+				return errandMap;
+		}
 		// And the military trial is in the Demon Tower, for the same reason: the
 		// bot hunts where the trial is, whatever its level would otherwise say.
 		// Not while another kingdom's raid gathers on the ground floor

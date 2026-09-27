@@ -30,10 +30,16 @@
 //     and of what is above it gives at most PLAYERBOT_GUILD_DONOR_SHARE_PERCENT;
 //   - the sum is split in proportion to what each can spare, so a rich member
 //     gives more and a poor one little or nothing;
-//   - a member gives once in PLAYERBOT_GUILD_DONOR_COOLDOWN_MS at most;
+//   - a member gives to every stage while it has something above its
+//     reserve - the land, then each building - and never below it;
 //   - nothing is taken unless the whole sum can be raised: a collection that
 //     would fall short takes nobody's money and is tried again later.
 // Every payment is a row of player.playerbot_guild_contribution.
+//
+// A material nobody has on a counter is fetched: members of the level for it
+// are sent to hunt where it drops (PLAYERBOT_GUILD_MATERIAL_GROUNDS,
+// GetPlayerBotGuildErrandMap), and every member of the guild in this world
+// hands the pieces the next building lacks to the master.
 //
 // The materials' money is collected ahead of the purchases and kept in the
 // master's purse as the guild's fund (playerbot_guild.build_fund): the fund
@@ -77,7 +83,6 @@ namespace
 	const long long PLAYERBOT_GUILD_DONOR_RESERVE_MIN = 1000000;
 	const long long PLAYERBOT_GUILD_DONOR_RESERVE_PER_LEVEL_SQ = 300;
 	const int PLAYERBOT_GUILD_DONOR_SHARE_PERCENT = 25;
-	const DWORD PLAYERBOT_GUILD_DONOR_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 	// The master keeps a reserve of its own too and pays this share of the rest.
 	const long long PLAYERBOT_GUILD_MASTER_RESERVE = 500000;
 	const int PLAYERBOT_GUILD_MASTER_SHARE_PERCENT = 90;
@@ -114,15 +119,32 @@ namespace
 		// pass (the market asks it between the passes).
 		int aiNeed[3];
 		DWORD dwBuildVnum;
-		TPlayerBotGuildLandState() : dwNextTry(0), llFund(0), dwFundHolder(0), dwBuildVnum(0)
+		// The stage as of the last pass (EPlayerBotGuildLandStage).
+		BYTE bStage;
+		TPlayerBotGuildLandState() : dwNextTry(0), llFund(0), dwFundHolder(0), dwBuildVnum(0), bStage(0)
 		{
 			aiNeed[0] = aiNeed[1] = aiNeed[2] = 0;
 		}
 	};
 	std::map<DWORD, TPlayerBotGuildLandState> s_mapPlayerBotGuildLand;
 	bool s_bPlayerBotGuildFundLoaded = false;
-	// When each bot last gave to a collection.
-	std::map<DWORD, DWORD> s_mapPlayerBotGuildDonatedAt;
+	// Where each material drops, for whom, and on which map - the monsters of
+	// mob_drop_item.txt that carry it (Mount Sohan's ice for the log, the
+	// Fireland and the Orc Chief for the stone, the Hwang Temple's frogs and
+	// bosses for the plywood).
+	struct TPlayerBotGuildMaterialGround { DWORD vnum; long map; int minLevel; };
+	const TPlayerBotGuildMaterialGround PLAYERBOT_GUILD_MATERIAL_GROUNDS[] = {
+		{ 90011, PLAYERBOT_MAP_SOHAN, 60 },
+		{ 90010, PLAYERBOT_MAP_FIRE_LAND, 68 },
+		{ 90010, PLAYERBOT_MAP_ORC_VALLEY, 50 },
+		{ 90012, PLAYERBOT_MAP_HWANG, 57 },
+	};
+	// How many members a guild sends at once, and for how long an errand
+	// stands before it is looked at again.
+	const size_t PLAYERBOT_GUILD_ERRANDS_MAX = 4;
+	const DWORD PLAYERBOT_GUILD_ERRAND_MS = 2 * 60 * 60 * 1000;
+	struct TPlayerBotGuildErrand { DWORD dwGuild; DWORD dwVnum; long lMap; DWORD dwUntil; };
+	std::map<DWORD, TPlayerBotGuildErrand> s_mapPlayerBotGuildErrand;
 
 	DWORD GetPlayerBotGuildMaterialBasePrice()
 	{
@@ -182,26 +204,6 @@ namespace
 	void LoadPlayerBotGuildFunds()
 	{
 		s_bPlayerBotGuildFundLoaded = true;
-		// Who gave within the cooldown, so a restart does not let a
-		// collection ask the same bots again.
-		{
-			std::unique_ptr<SQLMsg> gave(DBManager::instance().DirectQuery(
-					"SELECT pid, TIMESTAMPDIFF(SECOND, MAX(at), NOW()) FROM player.playerbot_guild_contribution "
-					"WHERE at > NOW() - INTERVAL 1 DAY GROUP BY pid"));
-			if (gave.get() && gave->uiSQLErrno == 0 && gave->Get() && gave->Get()->pSQLResult)
-			{
-				const DWORD now = get_dword_time();
-				MYSQL_ROW row;
-				while (NULL != (row = mysql_fetch_row(gave->Get()->pSQLResult)))
-				{
-					DWORD pid = 0, ago = 0;
-					if (row[0]) str_to_number(pid, row[0]);
-					if (row[1]) str_to_number(ago, row[1]);
-					if (pid && (DWORD)ago * 1000 < PLAYERBOT_GUILD_DONOR_COOLDOWN_MS && now > (DWORD)ago * 1000)
-						s_mapPlayerBotGuildDonatedAt[pid] = now - (DWORD)ago * 1000;
-				}
-			}
-		}
 		std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
 				"SELECT guild_id, build_fund, fund_holder FROM player.playerbot_guild WHERE build_fund > 0"));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
@@ -277,7 +279,6 @@ namespace
 		struct TDonor { LPCHARACTER ch; long long cap; long long give; };
 		std::vector<TDonor> donors;
 		long long capSum = 0;
-		const DWORD now = get_dword_time();
 		if (rest > 0)
 		{
 			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
@@ -286,9 +287,6 @@ namespace
 				LPCHARACTER member = CHARACTER_MANAGER::instance().FindByPID(it->first);
 				if (!member || member == master || member->GetGuild() != guild || member->IsDead() ||
 						IsPlayerBotSidekickPID(it->first))
-					continue;
-				std::map<DWORD, DWORD>::const_iterator gave = s_mapPlayerBotGuildDonatedAt.find(it->first);
-				if (gave != s_mapPlayerBotGuildDonatedAt.end() && now - gave->second < PLAYERBOT_GUILD_DONOR_COOLDOWN_MS)
 					continue;
 				const long long spare = (long long)member->GetGold() - GetPlayerBotGuildDonorReserve(member);
 				const long long cap = spare > 0 ? spare * PLAYERBOT_GUILD_DONOR_SHARE_PERCENT / 100 : 0;
@@ -328,7 +326,6 @@ namespace
 				continue;
 			PlayerBotChangeGold(donors[i].ch, -donors[i].give);
 			PlayerBotChangeGold(master, donors[i].give);
-			s_mapPlayerBotGuildDonatedAt[donors[i].ch->GetPlayerID()] = now;
 			LogPlayerBotGuildContribution(gid, donors[i].ch->GetPlayerID(), donors[i].give, purpose);
 			sys_log(0, "PLAYERBOT_GUILD_LAND: gave pid=%u name=%s guild=%s amount=%lld cap=%lld purpose=%s",
 					donors[i].ch->GetPlayerID(), donors[i].ch->GetName(), guild->GetName(),
@@ -393,21 +390,185 @@ namespace
 		return true;
 	}
 
+	// ------------------------------------------------ errands and handover
+
+	// What the guild's next building still lacks of a material: its recipe,
+	// less what the master holds when the master is in this world.
+	int GetPlayerBotGuildMaterialNeed(CGuild* guild, int idx)
+	{
+		if (!guild || idx < 0 || idx > 2)
+			return 0;
+		std::map<DWORD, TPlayerBotGuildLandState>::const_iterator it = s_mapPlayerBotGuildLand.find(guild->GetID());
+		if (it == s_mapPlayerBotGuildLand.end() || !it->second.dwBuildVnum)
+			return 0;
+		int need = it->second.aiNeed[idx];
+		LPCHARACTER master = CHARACTER_MANAGER::instance().FindByPID(guild->GetMasterPID());
+		if (master)
+			need -= (int)master->CountSpecifyItem(PLAYERBOT_GUILD_MATERIAL_VNUMS[idx]);
+		return std::max(0, need);
+	}
+
+	// Every member in this world hands the master the pieces the next
+	// building lacks - a gift to the guild like the collection's yang, logged
+	// the same way at what a counter would ask for them.
+	void CollectPlayerBotGuildMaterials(LPCHARACTER master, CGuild* guild)
+	{
+		for (int idx = 0; idx < 3; ++idx)
+		{
+			const DWORD vnum = PLAYERBOT_GUILD_MATERIAL_VNUMS[idx];
+			int need = GetPlayerBotGuildMaterialNeed(guild, idx);
+			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
+					need > 0 && it != s_mapPlayerBotAIStates.end(); ++it)
+			{
+				LPCHARACTER member = CHARACTER_MANAGER::instance().FindByPID(it->first);
+				if (!member || member == master || member->GetGuild() != guild || !member->IsItemLoaded())
+					continue;
+				const int have = (int)member->CountSpecifyItem(vnum);
+				if (have <= 0)
+					continue;
+				if (master->CountSpecifyItem(vnum) == 0 && master->GetEmptyInventory(1) < 0)
+					return;
+				const int give = std::min(have, need);
+				member->RemoveSpecifyItem(vnum, give);
+				master->AutoGiveItem(vnum, give);
+				need -= give;
+				const long long value = (long long)give * GetPlayerBotMaterialAskingBase(vnum);
+				LogPlayerBotGuildContribution(guild->GetID(), member->GetPlayerID(), value, "material");
+				sys_log(0, "PLAYERBOT_GUILD_LAND: handed pid=%u name=%s to=%s guild=%s vnum=%u count=%d",
+						member->GetPlayerID(), member->GetName(), master->GetName(), guild->GetName(), vnum, give);
+			}
+		}
+	}
+
+	// The members sent to fetch what no counter has: up to
+	// PLAYERBOT_GUILD_ERRANDS_MAX of a guild at once, two a material, the
+	// strongest of the level for its ground first.
+	void SendPlayerBotGuildErrands(CGuild* guild, DWORD dwNow)
+	{
+		size_t guildErrands = 0;
+		std::set<DWORD> errandVnums;
+		for (std::map<DWORD, TPlayerBotGuildErrand>::iterator it = s_mapPlayerBotGuildErrand.begin();
+				it != s_mapPlayerBotGuildErrand.end(); )
+		{
+			if (it->second.dwGuild != guild->GetID()) { ++it; continue; }
+			const int idx = GetPlayerBotGuildMaterialIndex(it->second.dwVnum);
+			if (dwNow >= it->second.dwUntil || GetPlayerBotGuildMaterialNeed(guild, idx) <= 0)
+			{
+				s_mapPlayerBotGuildErrand.erase(it++);
+				continue;
+			}
+			++guildErrands;
+			errandVnums.insert(it->second.dwVnum);
+			++it;
+		}
+		for (int idx = 0; idx < 3 && guildErrands < PLAYERBOT_GUILD_ERRANDS_MAX; ++idx)
+		{
+			const DWORD vnum = PLAYERBOT_GUILD_MATERIAL_VNUMS[idx];
+			const int need = GetPlayerBotGuildMaterialNeed(guild, idx);
+			if (need <= 0 || errandVnums.count(vnum))
+				continue;
+			// On the counters already: the master buys it there.
+			const TPlayerBotMarketLedgerEntry* supply = GetPlayerBotMarketLedgerEntry(vnum);
+			if (supply && (int)supply->dwSupplyUnits >= need)
+				continue;
+			for (size_t g = 0; g < sizeof(PLAYERBOT_GUILD_MATERIAL_GROUNDS) / sizeof(PLAYERBOT_GUILD_MATERIAL_GROUNDS[0]); ++g)
+			{
+				const TPlayerBotGuildMaterialGround& ground = PLAYERBOT_GUILD_MATERIAL_GROUNDS[g];
+				if (ground.vnum != vnum)
+					continue;
+				std::vector<std::pair<int, LPCHARACTER> > fit;
+				for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
+						it != s_mapPlayerBotAIStates.end(); ++it)
+				{
+					LPCHARACTER member = CHARACTER_MANAGER::instance().FindByPID(it->first);
+					if (!member || member->GetGuild() != guild || member->GetPlayerID() == guild->GetMasterPID() ||
+							(int)member->GetLevel() < ground.minLevel || IsPlayerBotSidekickPID(it->first) ||
+							IsPlayerBotDropper(it->second.bPersonality) ||
+							s_mapPlayerBotGuildErrand.count(it->first))
+						continue;
+					fit.push_back(std::make_pair(-(int)member->GetLevel(), member));
+				}
+				if (fit.empty())
+					continue;
+				std::sort(fit.begin(), fit.end());
+				for (size_t f = 0; f < fit.size() && f < 2 && guildErrands < PLAYERBOT_GUILD_ERRANDS_MAX; ++f)
+				{
+					TPlayerBotGuildErrand errand = { guild->GetID(), vnum, ground.map, dwNow + PLAYERBOT_GUILD_ERRAND_MS };
+					s_mapPlayerBotGuildErrand[fit[f].second->GetPlayerID()] = errand;
+					++guildErrands;
+					sys_log(0, "PLAYERBOT_GUILD_LAND: errand pid=%u name=%s level=%u guild=%s vnum=%u map=%ld need=%d",
+							fit[f].second->GetPlayerID(), fit[f].second->GetName(), (unsigned int)fit[f].second->GetLevel(),
+							guild->GetName(), vnum, ground.map, need);
+				}
+				break;
+			}
+		}
+	}
+
+	// The map a member on a guild errand hunts on (playerbot_travel.h asks it
+	// before its level's own), or zero.
+	long GetPlayerBotGuildErrandMap(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		std::map<DWORD, TPlayerBotGuildErrand>::iterator it = s_mapPlayerBotGuildErrand.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotGuildErrand.end())
+			return 0;
+		CGuild* guild = ch->GetGuild();
+		if (!guild || guild->GetID() != it->second.dwGuild || get_dword_time() >= it->second.dwUntil ||
+				GetPlayerBotGuildMaterialNeed(guild, GetPlayerBotGuildMaterialIndex(it->second.dwVnum)) <= 0)
+		{
+			s_mapPlayerBotGuildErrand.erase(it);
+			return 0;
+		}
+		return it->second.lMap;
+	}
+
 	// --------------------------------------------------------- the buildings
+
+	// The buildings are known to the core that holds their map only
+	// (CManager::LoadObject), the lands to every core: what stands where is
+	// read from player.object, so a master anywhere knows its land's stage.
+	void QueryPlayerBotObjectVnums(const char* where, std::vector<DWORD>& out)
+	{
+		std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
+				"SELECT o.vnum FROM player.object o JOIN player.guild_land gl ON gl.land_id = o.land_id WHERE %s", where));
+		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
+			return;
+		MYSQL_ROW row;
+		while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+		{
+			DWORD vnum = 0;
+			if (row[0]) str_to_number(vnum, row[0]);
+			if (vnum)
+				out.push_back(vnum);
+		}
+	}
+
+	DWORD GetPlayerBotObjectGroup(DWORD vnum)
+	{
+		const building::TObjectProto* proto = building::CManager::instance().GetObjectProto(vnum);
+		return proto ? proto->dwGroupVnum : 0;
+	}
 
 	// What stands on the map already: a count of each vnum of a group.
 	void CountPlayerBotGuildBuildings(long mapIndex, DWORD group, std::map<DWORD, int>& out)
 	{
-		const std::vector<DWORD>& ids = GetPlayerBotLandIDs();
-		for (size_t i = 0; i < ids.size(); ++i)
-		{
-			building::CLand* land = building::CManager::instance().FindLand(ids[i]);
-			if (!land || land->GetData().lMapIndex != mapIndex || land->GetOwner() == 0)
-				continue;
-			building::LPOBJECT obj = land->FindObjectByGroup(group);
-			if (obj)
-				++out[obj->GetVnum()];
-		}
+		char where[64];
+		snprintf(where, sizeof(where), "o.map_index = %ld", mapIndex);
+		std::vector<DWORD> vnums;
+		QueryPlayerBotObjectVnums(where, vnums);
+		for (size_t i = 0; i < vnums.size(); ++i)
+			if (GetPlayerBotObjectGroup(vnums[i]) == group)
+				++out[vnums[i]];
+	}
+
+	bool PlayerBotLandHasGroup(const std::vector<DWORD>& vnums, DWORD group)
+	{
+		for (size_t i = 0; i < vnums.size(); ++i)
+			if (GetPlayerBotObjectGroup(vnums[i]) == group)
+				return true;
+		return false;
 	}
 
 	DWORD ChoosePlayerBotGuildBuilding(building::CLand* land, CGuild* guild, EPlayerBotGuildLandStage stage)
@@ -463,11 +624,15 @@ namespace
 	{
 		if (!land)
 			return GUILD_LAND_STAGE_LAND;
-		if (!land->FindObjectByGroup(PLAYERBOT_GUILD_GROUP_HQ))
+		char where[64];
+		snprintf(where, sizeof(where), "o.land_id = %u", land->GetID());
+		std::vector<DWORD> vnums;
+		QueryPlayerBotObjectVnums(where, vnums);
+		if (!PlayerBotLandHasGroup(vnums, PLAYERBOT_GUILD_GROUP_HQ))
 			return GUILD_LAND_STAGE_HQ;
-		if (!land->FindObjectByGroup(PLAYERBOT_GUILD_GROUP_SMITH))
+		if (!PlayerBotLandHasGroup(vnums, PLAYERBOT_GUILD_GROUP_SMITH))
 			return GUILD_LAND_STAGE_SMITH;
-		if (!land->FindObjectByGroup(PLAYERBOT_GUILD_GROUP_ALCHEMIST))
+		if (!PlayerBotLandHasGroup(vnums, PLAYERBOT_GUILD_GROUP_ALCHEMIST))
 			return GUILD_LAND_STAGE_ALCHEMIST;
 		return GUILD_LAND_STAGE_DONE;
 	}
@@ -488,17 +653,22 @@ namespace
 			return;
 		}
 
-		long long missingValue = 0;
-		bool missingAny = false;
 		for (int m = 0; m < 3; ++m)
 			land.aiNeed[m] = 0;
 		for (int i = 0; i < building::OBJECT_MATERIAL_MAX_NUM && proto->kMaterials[i].dwItemVnum; ++i)
 		{
 			const int idx = GetPlayerBotGuildMaterialIndex(proto->kMaterials[i].dwItemVnum);
+			if (idx >= 0)
+				land.aiNeed[idx] = (int)proto->kMaterials[i].dwCount;
+		}
+		// What the members carry comes to the master first.
+		CollectPlayerBotGuildMaterials(master, guild);
+		long long missingValue = 0;
+		bool missingAny = false;
+		for (int i = 0; i < building::OBJECT_MATERIAL_MAX_NUM && proto->kMaterials[i].dwItemVnum; ++i)
+		{
 			const int have = (int)master->CountSpecifyItem(proto->kMaterials[i].dwItemVnum);
 			const int need = (int)proto->kMaterials[i].dwCount;
-			if (idx >= 0)
-				land.aiNeed[idx] = need;
 			if (have < need)
 			{
 				missingAny = true;
@@ -509,6 +679,8 @@ namespace
 
 		if (missingAny)
 		{
+			// What no counter carries, members go and fetch.
+			SendPlayerBotGuildErrands(guild, dwNow);
 			// The fund for the missing pieces, raised once; the market spends it.
 			const long long want = missingValue * PLAYERBOT_GUILD_MATERIAL_FUND_PERCENT / 100;
 			if (land.dwFundHolder != master->GetPlayerID())
@@ -586,24 +758,8 @@ namespace
 			BuyPlayerBotGuildLand(master, guild, land, dwNow);
 			return;
 		}
-		// The buildings are known on the core that holds the land's map; a
-		// master elsewhere waits for its next visit there.
-		if (master->GetMapIndex() != pkLand->GetData().lMapIndex)
-		{
-			// Still, the materials can be bought anywhere: keep the fund going
-			// for a building already chosen.
-			if (land.dwBuildVnum)
-			{
-				const building::TObjectProto* proto = building::CManager::instance().GetObjectProto(land.dwBuildVnum);
-				if (proto)
-					BuildPlayerBotGuildBuilding(master, guild, pkLand,
-							proto->dwGroupVnum == PLAYERBOT_GUILD_GROUP_HQ ? GUILD_LAND_STAGE_HQ :
-							proto->dwGroupVnum == PLAYERBOT_GUILD_GROUP_SMITH ? GUILD_LAND_STAGE_SMITH :
-							GUILD_LAND_STAGE_ALCHEMIST, land, dwNow);
-			}
-			return;
-		}
 		const EPlayerBotGuildLandStage stage = GetPlayerBotGuildLandStage(pkLand);
+		land.bStage = (BYTE)stage;
 		if (stage == GUILD_LAND_STAGE_DONE)
 		{
 			land.dwBuildVnum = 0;
@@ -613,7 +769,8 @@ namespace
 		if (land.dwBuildVnum)
 		{
 			const building::TObjectProto* proto = building::CManager::instance().GetObjectProto(land.dwBuildVnum);
-			if (!proto || pkLand->FindObjectByGroup(proto->dwGroupVnum))
+			if (!proto || proto->dwGroupVnum != (stage == GUILD_LAND_STAGE_HQ ? PLAYERBOT_GUILD_GROUP_HQ :
+					stage == GUILD_LAND_STAGE_SMITH ? PLAYERBOT_GUILD_GROUP_SMITH : PLAYERBOT_GUILD_GROUP_ALCHEMIST))
 				land.dwBuildVnum = 0;
 		}
 		BuildPlayerBotGuildBuilding(master, guild, pkLand, stage, land, dwNow);
@@ -673,13 +830,15 @@ namespace
 		if (!ch || !item || !IsPlayerBotGuildBuildMaterial(item->GetVnum()))
 			return false;
 		CGuild* guild = ch->GetGuild();
-		if (!guild || guild->GetMasterPID() != ch->GetPlayerID())
+		if (!guild)
 			return false;
+		// A member keeps what its own guild's next building lacks, for the master.
+		if (guild->GetMasterPID() != ch->GetPlayerID())
+			return GetPlayerBotGuildMaterialNeed(guild, GetPlayerBotGuildMaterialIndex(item->GetVnum())) > 0;
 		std::map<DWORD, TPlayerBotGuildLandState>::const_iterator it = s_mapPlayerBotGuildLand.find(guild->GetID());
-		// Before its first pass the master keeps them all: its guild may need them.
-		return it == s_mapPlayerBotGuildLand.end() || it->second.dwBuildVnum != 0 ||
-				building::CManager::instance().FindLandByGuild(guild->GetID()) == NULL ||
-				GetPlayerBotGuildLandStage(building::CManager::instance().FindLandByGuild(guild->GetID())) != GUILD_LAND_STAGE_DONE;
+		// Before its first pass the master keeps them all: its guild may need
+		// them; once its land has every building, they are goods again.
+		return it == s_mapPlayerBotGuildLand.end() || it->second.bStage != GUILD_LAND_STAGE_DONE;
 	}
 
 	// ------------------------------------------------------- the guild smith

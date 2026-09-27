@@ -3256,6 +3256,63 @@ def bot_personalities():
     return render_template("bot_personalities.html", roster=roster, total=total, query=query, selected=selected, personalities=personalities)
 
 
+
+# Guild lands and buildings (playerbot_guild_land.h in the core): who owns
+# which land, what stands on it, the building fund its master holds and every
+# payment its members made to a collection ("zrzutka").
+GUILD_BUILDING_NAMES = {
+    14100: "Kwatera Główna", 14110: "Kwatera Główna", 14120: "Kwatera Główna",
+    14013: "Kowal broni", 14014: "Płatnerz", 14015: "Jubiler",
+    14043: "Alchemik diamentu", 14045: "Alchemik drewna kopalnego", 14046: "Alchemik miedzi",
+    14047: "Alchemik srebra", 14048: "Alchemik złota", 14049: "Alchemik jadeitu",
+    14050: "Alchemik ebonitu", 14051: "Alchemik perły", 14052: "Alchemik białego złota",
+    14053: "Alchemik kryształu", 14054: "Alchemik ametystu", 14055: "Alchemik niebiańskich łez",
+    14061: "Ołtarz Mocy", 14062: "Ołtarz Mocy", 14063: "Ołtarz Mocy",
+}
+GUILD_CONTRIBUTION_PURPOSES = {"land": "ziemia", "building": "budynek", "materials": "surowce (yang)",
+                               "material": "surowce (przedmioty)"}
+
+
+def guild_estates():
+    """guild_id -> {land_id, map_index, map, price, buildings: [names]}."""
+    estates = {}
+    try:
+        for row in rows("""SELECT gl.guild_id, gl.land_id, l.map_index, l.price
+                           FROM player.guild_land gl LEFT JOIN world.land l ON l.id=gl.land_id"""):
+            estates[int(row["guild_id"])] = {"land_id": row["land_id"], "map_index": row["map_index"],
+                                            "map": map_name(row["map_index"]) if row["map_index"] is not None else "—",
+                                            "price": int(row["price"] or 0), "buildings": []}
+        by_land = {e["land_id"]: e for e in estates.values()}
+        for row in rows("SELECT land_id, vnum FROM player.object ORDER BY id"):
+            estate = by_land.get(row["land_id"])
+            if estate is not None:
+                estate["buildings"].append(GUILD_BUILDING_NAMES.get(int(row["vnum"]), f"Budynek {row['vnum']}"))
+    except pymysql.MySQLError:
+        return {}
+    return estates
+
+
+def guild_contributions(guild_id):
+    """The building fund and every collection payment of one guild."""
+    fund = {"amount": 0, "holder": None}
+    payments, per_member = [], []
+    try:
+        row = one("""SELECT g.build_fund, p.name FROM player.playerbot_guild g
+                     LEFT JOIN player.player p ON p.id=g.fund_holder WHERE g.guild_id=%s""", (guild_id,))
+        if row:
+            fund = {"amount": int(row.get("build_fund") or 0), "holder": row.get("name")}
+        payments = rows("""SELECT c.pid, p.name, c.amount, c.purpose, c.at FROM player.playerbot_guild_contribution c
+                           LEFT JOIN player.player p ON p.id=c.pid WHERE c.guild_id=%s ORDER BY c.at DESC, c.id DESC LIMIT 60""",
+                        (guild_id,))
+        per_member = rows("""SELECT c.pid, p.name, SUM(c.amount) AS total, COUNT(*) AS times
+                             FROM player.playerbot_guild_contribution c LEFT JOIN player.player p ON p.id=c.pid
+                             WHERE c.guild_id=%s GROUP BY c.pid, p.name ORDER BY total DESC""", (guild_id,))
+    except pymysql.MySQLError:
+        pass
+    for payment in payments:
+        payment["purpose_label"] = GUILD_CONTRIBUTION_PURPOSES.get(payment["purpose"], payment["purpose"])
+    return fund, payments, per_member
+
 @app.route("/guilds")
 @login_required
 def guilds():
@@ -3275,6 +3332,9 @@ def guilds():
     summary = {"guilds": len(roster), "online": sum(g["online"] for g in roster),
                "wars": sum(1 for g in roster if g["war_with"]),
                "exp": sum(g["exp_offered"] for g in roster)}
+    estates = guild_estates()
+    for guild in roster:
+        guild["estate"] = estates.get(int(guild.get("id") or 0))
     return render_template("guilds.html", guilds=roster, query=query, summary=summary,
                            next_wars=[{"empire": empire, "text": guild_war_text(seconds)} for empire, seconds in sorted(next_wars.items())],
                            status_written_at=datetime.fromtimestamp(written_at).strftime("%H:%M") if written_at else None)
@@ -3297,7 +3357,9 @@ def guild(guild_id):
                     FROM player.guild_member gm LEFT JOIN player.player p ON p.id=gm.pid
                     WHERE gm.guild_id=%s
                     ORDER BY (gm.pid=%s) DESC,gm.grade ASC,p.level DESC,p.name ASC""", (guild_id, details["leader_id"] or 0))
-    return render_template("guild.html", guild=details, members=members)
+    fund, payments, per_member = guild_contributions(guild_id)
+    return render_template("guild.html", guild=details, members=members, estate=guild_estates().get(guild_id),
+                           fund=fund, payments=payments, per_member=per_member)
 
 
 # kind -> (player_special_flag.flag, unit label for the ranking's "detail"

@@ -8058,6 +8058,7 @@ namespace
 	LPCHARACTER ChoosePlayerBotRefineGuildSmith(LPCHARACTER ch, TPlayerBotAIState& state);
 	bool PlayerBotRefineAnvilTakes(LPCHARACTER ch, const TPlayerBotAIState& state, LPITEM item, LPCHARACTER* pSmith);
 	void ManagePlayerBotGuildLand(LPCHARACTER master, CGuild* guild, DWORD dwNow);
+	long GetPlayerBotGuildErrandMap(LPCHARACTER ch);
 	DWORD GetPlayerBotGuildMaterialBasePrice();
 }
 
