@@ -65,6 +65,12 @@ quest dragon_soul begin
 				return
 			end
 
+			-- Only a monster at most 15 levels under the character, or any
+			-- higher (operator, 27 September 2026).
+			if npc.get_level0() < pc.get_level() - 15 then
+				return
+			end
+
 			if pc.count_item(30270) < 10 then
 				if drop_gamble_with_flag("ds_drop") then
 					game.drop_item_with_ownership(30270, 1, 300)
@@ -95,7 +101,7 @@ quest dragon_soul begin
 	end
 	state state_farming begin
 		when letter begin
-			send_letter("Mozesz wymienic Odlamki Smoczego Kamienia na Cor Draconis u Alchemika.")
+			send_letter("Odlamki Smoczego Kamienia -> Cor Draconis u Alchemika")
 		end
 		when info or button begin
 			say("Pozostalo dzisiaj wymian: " .. pc.getf("dragon_soul", "eye_left"))
@@ -112,6 +118,12 @@ quest dragon_soul begin
 			end
 
 			if game.get_event_flag("m2_alchemy_off") != 0 then
+				return
+			end
+
+			-- Only a monster at most 15 levels under the character, or any
+			-- higher (operator, 27 September 2026).
+			if npc.get_level0() < pc.get_level() - 15 then
 				return
 			end
 

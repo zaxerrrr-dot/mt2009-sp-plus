@@ -17,6 +17,104 @@ every version here.
 
 ---
 
+## 2.8.2 — 2026-09-27 — Pierścień Teleportacji i Anty-Exp w ItemShopie, Auto Łowy na bilet
+
+Serwer 2.8.2 i klient 2.0.20. **Zaktualizuj oba** w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.8.1. Wędka, nowy filtr podnoszenia Auto Łowów i komunikat o bilecie
+działają dopiero z klientem 2.0.20.
+
+### ItemShop: Pierścień Teleportacji, Pierścień Anty-Exp i Auto Łowy
+
+Na to czekaliście – nowe pozycje na pierwszej stronie ItemShopu:
+
+- **Pierścień Teleportacji** (149 SM, od 30 lvl) – Teleporter w kieszeni:
+  te same cele co u Teleportera, z miasta i spoza niego. Nie zużywa się
+  i działa bez limitu czasu.
+- **Pierścień Anty-Exp** (99 SM) – użyj z ekwipunku, żeby włączyć albo
+  wyłączyć blokadę doświadczenia. Bez limitu czasu.
+- **Auto Łowy (8h)** (29 SM) – 8 godzin automatycznego polowania
+  (klawisz K). Czas leci tylko wtedy, gdy postać jest w grze, a kolejne
+  bilety się sumują (do 30 dni).
+- Nowa opcja w oknie POZIOM TRUDNOŚCI i w panelu klasycznym: Auto Łowy
+  „dostępne dla każdego” (domyślnie, jak dotąd) albo „tylko z biletem
+  z ItemShopu”.
+
+Bilet i Pierścień Anty-Exp są przypisane do postaci: nie da się ich
+sprzedać, wymienić ani wyrzucić.
+
+### Klient 2.0.20
+
+- Nad botami widać, co robią (łowią, walczą, handlują), a klient nie
+  zapisuje już setek wpisów „Unknown Server Command” w syserr.txt.
+- Wędka pokazuje wymagany 30 poziom.
+- Filtr podnoszenia Auto Łowów ma osobno hełmy, tarcze, bransolety, buty,
+  naszyjniki i kolczyki. Dotychczasowe ustawienia „Zbroje” i „Ozdoby”
+  przechodzą na nowe przełączniki.
+- Bez czasu Auto Łowów klient mówi, skąd go wziąć, zamiast po cichu
+  przerywać polowanie.
+
+### Alchemia
+
+- Odłamki Smoczego Kamienia z misji Alchemika wypadają tylko z potworów
+  najwyżej 15 poziomów niższych od postaci (albo dowolnie wyższych).
+- List o wymianie Odłamków na Cor Draconis wyświetla się poprawnie (był za
+  długi dla klienta).
+
+### Wojny gildii
+
+- Boty piją mikstury na wojnie, wstają w obozie z pełnym HP i maną, a runda
+  czeka na ostatniego z przegranych.
+- Równe strony: najwyżej 20 na 20, losowo wybrani z całej gildii.
+
+### Towarzysz
+
+- Zakłada przedmioty, które mu dasz (Szamanka nie stoi już z komunikatem
+  „Założy to, jak tylko skończy cios”).
+- Luruje do 15 poziomów ponad właściciela, a Łucznik strzela z dystansu,
+  zamiast wchodzić w grupę potworów.
+
+### Boty
+
+- Czytają księgi także z blokadą poziomu i kupują tylko te, które mogą
+  przeczytać. Księgi i Kamienie Duchowe łączą się po 200.
+- Zbierają yang i Ucho z Tanaki. Pył na Marmur Błogosławieństwa dopiero od
+  30 lvl.
+- Boty po zakończeniu gry wracają z bronią, zbroją, miksturami i skrzynią
+  startową (dotąd często bez broni i bez celu).
+- Rynek: bot kupuje z lady sprzęt +6 i wyżej o jeden plus lepszy od
+  noszonego albo z tym samym plusem i wyraźnie lepszymi bonusami. Zbroje
+  i biżuteria +0..+3 trafiają na lady wszystkich botów (limit 40 na rodzinę).
+  Paczki ziół i siana trafiają na ladę za pierwszym razem.
+- Kowal i ekwipunek: kamienie bonusu idą w przedmiot, który bot naprawdę
+  założy, a ochrona noszonego przedmiotu działa na każdym kroku ulepszania.
+- Rzadkie osobowości (wędkarz, hazardzista) nie wchodzą do drużyn, a suwak
+  wędkowania działa w pełni.
+
+### Launcher i panele
+
+- Na Windowsie zmiany respawnów i poziomu trudności z panelu działają od
+  razu.
+- Własna edycja dropu Szkatułek Blasku Księżyca przetrwa start
+  i aktualizację.
+- Panel zaawansowany Sebana 1.92.0: osobowości botów, czat na żywo,
+  wiadomości ze świata, respawny, nazwy botów, kreator postaci, juki konne
+  i ekwipunek odświeżany na żywo. Kostiumy i Alchemia postaci zostają.
+
+---
+
+## Klient 2.0.20 — 2026-09-27 — Statusy botów, wędka, filtr Auto Łowów
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.0.18.
+
+- Status bota nad jego głową (co teraz robi).
+- Wędka pokazuje 30 poziom.
+- Filtr podnoszenia Auto Łowów: osobno hełmy, tarcze, bransolety, buty,
+  naszyjniki i kolczyki.
+- Komunikat o braku czasu Auto Łowów z biletem z ItemShopu.
+
+---
 ## 2.8.1 — 2026-09-26 — Poprawka startu świeżej instalacji
 
 Poprawka serwera; zawiera wszystko z 2.8.0. Klient bez zmian (2.0.18).
@@ -29,6 +127,8 @@ Poprawka serwera; zawiera wszystko z 2.8.0. Klient bez zmian (2.0.18).
   ofert, więc serwer wstaje za pierwszym razem.
 - Kto trafił na ten błąd, nie musi nic robić po aktualizacji. Bez
   aktualizacji wystarczyło zatrzymać serwer i kliknąć GRAJ ponownie.
+
+---
 
 ## 2.8.0 — 2026-09-26 — Alchemia klasami, szarfy po kosztach, nowe wydarzenia
 

@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-26T20:23:06Z",
-  "statusMessage": "Serwer 2.8.1: poprawka startu swiezej instalacji (CH1 OFF przy pierwszym uruchomieniu).",
+  "publishedAt": "2026-09-27T07:20:05Z",
+  "statusMessage": "Serwer 2.8.2 i klient 2.0.20: Pierscien Teleportacji, Pierscien Anty-Exp i Auto Lowy w ItemShopie.",
   "server": {
-    "version": "2.8.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.1.zip",
-    "sha256": "195CF2ACE2ECAB6BA829F47F1BE044F8C1545FEB91DF17FA7E3B919C3E4A4777",
-    "size": 56277376
+    "version": "2.8.2",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.2.zip",
+    "sha256": "1F8856CD3A38E63836CA3BAD9BEBF7BEC4C744E42C56F5D35C2B364DCDF93E1D",
+    "size": 93088948
   },
   "client": {
-    "version": "2.0.18",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.18.zip",
-    "sha256": "CFD0533170FD872DDE505CC2B3732930B49A1277C85C7A056D0F47BA758F26E3",
-    "size": 50535538
+    "version": "2.0.20",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.20.zip",
+    "sha256": "7828CB0309226DFF1A429358839FD2C500B881657FECD7C25DB102862811102A",
+    "size": 50560409
   }
 }
