@@ -126,7 +126,7 @@ jest już dla bota „gotowa”: bot buduje nową i zakłada tę, która daje wi
 - **Pet zostaje po Twojej śmierci.** Dotąd znikał w chwili śmierci
   postaci. Teraz czeka przy Tobie i po wskrzeszeniu dalej za Tobą idzie.
 
-### Inne zmiany
+### Mniejsze dodatki
 
 - Wieża Demonów: bot, który padnie, wraca niewidzialny do drużyny i leczy
   się po drodze; boty wszystkich królestw wchodzą razem i nie ranią się
