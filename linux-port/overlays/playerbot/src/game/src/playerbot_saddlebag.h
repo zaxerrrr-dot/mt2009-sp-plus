@@ -24,7 +24,7 @@
 // same shape). Who (operator, 25 September 2026):
 //
 //   * PLAYERBOT_SADDLEBAG_PERCENT of the bots, by player id, raise their horse
-//     past the Grinder's first level (IsPlayerBotGrinderRider) and open
+//     (every bot does, CanPlayerBotAdvanceHorse) and open
 //     saddlebag rows - each its own number of them (3-9), one every few hours
 //     at most, as the horse allows. They exchange their spare refine goods,
 //     buy materials and medals off the counters, and keep what the next rows

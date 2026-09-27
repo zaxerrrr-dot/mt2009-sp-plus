@@ -129,6 +129,52 @@ namespace
 				bot->GetPlayerID(), bot->GetName(), to->GetName(), text);
 	}
 
+	// An item as the client links one in a line of the chat, what a player's
+	// Alt-click puts there: the format is playerbot_item_link_rules.h's, the
+	// item this one's - a live item or an offline shop's record of one.
+	std::string FormatPlayerBotItemLink(DWORD vnum, DWORD flags, const long* sockets,
+			const TPlayerItemAttribute* attrs, const char* name)
+	{
+		long socketsOf[playerbot_item_link::LINK_SOCKETS] = { 0, 0, 0 };
+		for (int i = 0; i < playerbot_item_link::LINK_SOCKETS && i < ITEM_SOCKET_MAX_NUM; ++i)
+			socketsOf[i] = sockets[i];
+		playerbot_item_link::TAttr attrsOf[ITEM_ATTRIBUTE_MAX_NUM];
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+		{
+			attrsOf[i].type = attrs[i].bType;
+			attrsOf[i].value = attrs[i].sValue;
+		}
+		return playerbot_item_link::Format(vnum, flags, socketsOf, attrsOf, ITEM_ATTRIBUTE_MAX_NUM, name);
+	}
+
+	// A live item's link, printed under `name` (its proto's by default).
+	std::string MakePlayerBotItemLink(LPITEM item, const char* name = NULL)
+	{
+		if (!item || !item->GetProto())
+			return std::string();
+		long sockets[ITEM_SOCKET_MAX_NUM];
+		for (int i = 0; i < ITEM_SOCKET_MAX_NUM; ++i)
+			sockets[i] = item->GetSocket(i);
+		TPlayerItemAttribute attrs[ITEM_ATTRIBUTE_MAX_NUM];
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+		{
+			attrs[i].bType = item->GetAttributeType(i);
+			attrs[i].sValue = item->GetAttributeValue(i);
+		}
+		return FormatPlayerBotItemLink(item->GetVnum(), (DWORD)item->GetFlag(), sockets, attrs,
+				name && *name ? name : item->GetProto()->szLocaleName);
+	}
+
+	// A reply with the stall lines it names linked while the client can show
+	// the whole line (playerbot_item_link::Substitute, WhisperRoom): the ones
+	// past the room keep their names, because a cut link prints as raw text.
+	std::string LinkPlayerBotTradeReply(LPCHARACTER sender, const char* text,
+			const std::vector<playerbot_item_link::TEntry>& links)
+	{
+		return playerbot_item_link::Substitute(text ? text : "", links,
+				playerbot_item_link::WhisperRoom(strlen(sender->GetName())));
+	}
+
 	// A line on the world channel in the bot's name, within the two throttles.
 	bool ShoutPlayerBotTrade(LPCHARACTER bot, const char* text, DWORD dwNow)
 	{
@@ -241,6 +287,8 @@ namespace
 	struct TPlayerBotStallLine
 	{
 		std::string name;
+		// The item's chat link (MakePlayerBotItemLink), printed as the name.
+		std::string link;
 		DWORD vnum;
 		DWORD skill;
 		// A Forgetting Book's line (ITEM_SKILLFORGET, the skill in socket 0),
@@ -305,6 +353,7 @@ namespace
 						line.forget = true;
 					}
 					line.name = GetPlayerBotStallLineName(item->GetProto(), line.skill, line.forget);
+					line.link = MakePlayerBotItemLink(item, line.name.c_str());
 					line.price = (long long)offer.dwPrice;
 					line.count = offer.wCount ? offer.wCount : 1;
 					out.lines.push_back(line);
@@ -340,6 +389,8 @@ namespace
 					line.forget = true;
 				}
 				line.name = GetPlayerBotStallLineName(proto, line.skill, line.forget);
+				line.link = FormatPlayerBotItemLink(line.vnum, proto->dwFlags, shopItem->GetInfo().alSockets,
+						shopItem->GetInfo().aAttr, line.name.c_str());
 				line.price = (long long)shopItem->GetPrice().yang;
 				line.count = (unsigned int)shopItem->GetInfo().count;
 				out.lines.push_back(line);
@@ -537,7 +588,12 @@ namespace
 			snprintf(reply, sizeof(reply), "Mam %s na straganie w %s, %s yang",
 					bestLine.name.c_str(), GetPlayerBotTownName(bestMap),
 					playerbot_conv::FormatYang(bestLine.price).c_str());
-		SendPlayerBotWhisper(bestKeeper, player, reply);
+		// The line shown as the client shows a linked item: the piece itself,
+		// its grade and bonuses, on a click.
+		std::vector<playerbot_item_link::TEntry> links(1);
+		links[0].name = bestLine.name;
+		links[0].link = bestLine.link;
+		SendPlayerBotWhisper(bestKeeper, player, LinkPlayerBotTradeReply(bestKeeper, reply, links).c_str());
 		return true;
 	}
 
@@ -812,6 +868,123 @@ namespace
 	// A person asking a bot into their guild ("chodz do mnie do gildii",
 	// "chcesz do gildii?", "dolaczysz do gildii?", "dodac cie do gildii?"):
 	// a word of the guild and a word of asking, in one whisper.
+	// A person asking to join the bot's guild (the operator, 27 September):
+	// "dodasz mnie do gildii?", "przyjmiesz mnie do gildii", "moge dolaczyc do
+	// twojej gildii". Read before the invitation the other way round
+	// (IsPlayerBotGuildRecruitText), which "dodaj" and "dolacz" also match.
+	bool IsPlayerBotGuildJoinText(const char* text)
+	{
+		char folded[CHAT_MAX_LEN + 1];
+		FoldPlayerBotChatText(text, folded, sizeof(folded));
+		if (!strstr(folded, "gild"))
+			return false;
+		static const char* const asks[] = {
+			"dodasz mnie", "dodaj mnie", "dodacie mnie", "dodalbys mnie", "dodalabys mnie",
+			"przyjmiesz mnie", "przyjmij mnie", "przyjmiecie mnie", "przyjalbys mnie",
+			"zaprosisz mnie", "zapros mnie", "zaproscie mnie", "wezmiesz mnie", "wez mnie",
+			"moge dolaczyc", "moge do", "mozna dolaczyc", "mozna do", "chce dolaczyc", "chce do",
+			"chcialbym dolaczyc", "chcialabym dolaczyc", "chcialbym do", "chcialabym do",
+			"do twojej", "do waszej",
+		};
+		for (size_t i = 0; i < sizeof(asks) / sizeof(asks[0]); ++i)
+			if (strstr(folded, asks[i]))
+				return true;
+		return false;
+	}
+
+	// The level a person needs to join a bot guild: above the average of the
+	// guild's bots (the operator: "jego poziom musi byc wyzszy niz sredni poziom
+	// botow w gildii"). 0 when the guild has no bot to count or the query fails.
+	int GetPlayerBotGuildJoinLevel(CGuild* guild)
+	{
+		if (!guild)
+			return 0;
+		char query[512];
+		snprintf(query, sizeof(query),
+				"SELECT AVG(p.level) FROM player.guild_member AS gm "
+				"JOIN player.player AS p ON p.id=gm.pid "
+				"JOIN account.account AS a ON a.id=p.account_id "
+				"WHERE gm.guild_id=%u AND BINARY a.login LIKE BINARY 'playerbot\\_%%'", guild->GetID());
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+		MYSQL_ROW row = NULL;
+		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult ||
+				!(row = mysql_fetch_row(msg->Get()->pSQLResult)) || !row[0])
+			return 0;
+		const double average = atof(row[0]);
+		return average > 0.0 ? (int)average + 1 : 0;
+	}
+
+	// The answer to it. A member points to the master, by name; the master of
+	// a bot guild says yes and invites (the engine's own window, which the
+	// person accepts or not) or says what is missing: the level above the
+	// bots' average, a place, the person's own guild, the kingdom.
+	bool HandlePlayerBotGuildJoinWhisper(LPCHARACTER player, LPCHARACTER bot, const char* text)
+	{
+		if (!player || !bot || !IsPlayerBotGuildJoinText(text))
+			return false;
+		if (IsPlayerBotSidekickPID(bot->GetPlayerID()))
+			return false;
+		CGuild* mine = bot->GetGuild();
+		char reply[CHAT_MAX_LEN + 1];
+		if (!mine)
+		{
+			SendPlayerBotWhisper(bot, player, "Nie mam gildii");
+			return true;
+		}
+		if (mine->GetMasterPID() != bot->GetPlayerID())
+		{
+			TGuildMember* master = mine->GetMember(mine->GetMasterPID());
+			if (master && !master->name.empty())
+				snprintf(reply, sizeof(reply), "Liderem jest %s, to on dodaje", master->name.c_str());
+			else
+				snprintf(reply, sizeof(reply), "Nie ja tu dodaje, napisz do lidera");
+			SendPlayerBotWhisper(bot, player, reply);
+			return true;
+		}
+		// The master of a person's guild is a bot only by accident; the bot
+		// guilds are the ones it speaks for.
+		const TPlayerBotGuildInfo* info = GetPlayerBotGuildInfo(mine);
+		const int needLevel = GetPlayerBotGuildJoinLevel(mine);
+		const char* refusal = NULL;
+		if (player->GetGuild() == mine)
+			refusal = "Przeciez juz jestes w mojej gildii";
+		else if (player->GetGuild())
+			refusal = "Najpierw wyjdz ze swojej gildii";
+		else if (!info)
+			refusal = "Nie przyjmuje nowych";
+		else if (player->GetEmpire() != bot->GetEmpire())
+			refusal = "Jestes z innego krolestwa, nie moge";
+		else if (mine->UnderAnyWar() != 0)
+			refusal = "Mamy teraz wojne, napisz pozniej";
+		else if (mine->GetMemberCount() >= GetPlayerBotGuildMemberCap(mine, info->bTier))
+			refusal = "Nie mam juz miejsca w gildii";
+		else if (get_global_time() - player->GetQuestFlag("guild_manage.new_withdraw_time") <
+				CGuildManager::instance().GetWithdrawDelay() ||
+				get_global_time() - player->GetQuestFlag("guild_manage.new_disband_time") <
+				CGuildManager::instance().GetDisbandDelay())
+			refusal = "Niedawno odszedles z gildii, jeszcze nie moge cie dodac";
+		if (refusal)
+		{
+			SendPlayerBotWhisper(bot, player, refusal);
+			return true;
+		}
+		if (needLevel > 0 && player->GetLevel() < needLevel)
+		{
+			sys_log(0, "PLAYERBOT_GUILD: refuses a player pid=%u name=%s guild=%s player=%s level=%u need=%d",
+					bot->GetPlayerID(), bot->GetName(), mine->GetName(), player->GetName(),
+					(unsigned int)player->GetLevel(), needLevel);
+			snprintf(reply, sizeof(reply), "Nie, nie dodam cie, musisz miec %d lvl", needLevel);
+			SendPlayerBotWhisper(bot, player, reply);
+			return true;
+		}
+		SendPlayerBotWhisper(bot, player, "Jasne, juz cie dodaje");
+		sys_log(0, "PLAYERBOT_GUILD: invites a player pid=%u name=%s guild=%s player=%s level=%u need=%d",
+				bot->GetPlayerID(), bot->GetName(), mine->GetName(), player->GetName(),
+				(unsigned int)player->GetLevel(), needLevel);
+		mine->Invite(bot, player);
+		return true;
+	}
+
 	bool IsPlayerBotGuildRecruitText(const char* text)
 	{
 		char folded[CHAT_MAX_LEN + 1];
@@ -889,7 +1062,10 @@ namespace
 
 	void HandlePlayerWhisperToBot(LPCHARACTER player, LPCHARACTER bot, const char* text)
 	{
-		// Before everything else: an invitation is not a trade or a talk.
+		// Before everything else: an invitation is not a trade or a talk, and
+		// a request to join is read before an invitation.
+		if (HandlePlayerBotGuildJoinWhisper(player, bot, text))
+			return;
 		if (HandlePlayerBotGuildRecruitWhisper(player, bot, text))
 			return;
 		if (!player || !bot || !text)
@@ -935,15 +1111,20 @@ namespace
 		if (GetPlayerBotStall(bot->GetPlayerID(), bot, stall) && !stall.lines.empty())
 		{
 			std::string goods;
+			std::vector<playerbot_item_link::TEntry> links;
 			for (size_t k = 0; k < stall.lines.size() && k < 3; ++k)
 			{
 				if (!goods.empty())
 					goods += ", ";
 				goods += stall.lines[k].name;
+				playerbot_item_link::TEntry entry;
+				entry.name = stall.lines[k].name;
+				entry.link = stall.lines[k].link;
+				links.push_back(entry);
 			}
 			snprintf(reply, sizeof(reply), "Mam stragan w %s, na nim: %s",
 					GetPlayerBotTownName(stall.mapIndex), goods.c_str());
-			SendPlayerBotWhisper(bot, player, reply);
+			SendPlayerBotWhisper(bot, player, LinkPlayerBotTradeReply(bot, reply, links).c_str());
 		}
 		else if (it != s_mapPlayerBotAIStates.end() && it->second.bMarketTrip)
 		{

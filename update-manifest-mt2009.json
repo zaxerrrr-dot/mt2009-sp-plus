@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-27T14:53:48Z",
-  "statusMessage": "Serwer 2.9.0: gildie botow kupuja ziemie i stawiaja budynki, zapraszanie botow do gildii, Skowyt na cel.",
+  "publishedAt": "2026-09-27T15:39:14Z",
+  "statusMessage": "Serwer 2.10.0 i klient 2.0.21: dolaczanie do gildii botow, eventy na kilku mapach, szansa w oknie kowala.",
   "server": {
-    "version": "2.9.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.9.0.zip",
-    "sha256": "D75F9FB71173A660AFE936ED6C89275A4BDFEFDECC2965C4AB1B000F3E25A863",
-    "size": 93208168
+    "version": "2.10.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.10.0.zip",
+    "sha256": "069280720EF9634995301B1FDE4B49FBC66852DE9331CFCF9BF0EC7833680381",
+    "size": 93248230
   },
   "client": {
-    "version": "2.0.20",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.20.zip",
-    "sha256": "7828CB0309226DFF1A429358839FD2C500B881657FECD7C25DB102862811102A",
-    "size": 50560409
+    "version": "2.0.21",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.21.zip",
+    "sha256": "0DDD321BA5D736D445B2C319A95A76C014E444B35668496B3FC6A37786F77CFA",
+    "size": 50573499
   }
 }
