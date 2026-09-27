@@ -17,23 +17,182 @@ every version here.
 
 ---
 
-## 2.8.3 — 2026-09-27 — Wierzchowce i pety na starszych instalacjach
+## 2.9.0 — 2026-09-27 — Gildie z ziemią i budynkami, zapraszanie botów do gildii, Skowyt na cel
 
-Poprawka serwera; zawiera wszystko z 2.8.2. Klient bez zmian (2.0.20).
+Serwer 2.9.0, klient bez zmian (2.0.20). Zawiera wszystko z 2.8.2.
+Pierwsze uruchomienie po aktualizacji przebudowuje serwer, więc potrwa
+dłużej niż zwykle.
 
-- **Wierzchowce i pety z kostiumów działają także na serwerach zainstalowanych
-  ze starszej paczki.** Baza takiego serwera miała pieczęcie w starej postaci
-  i bez potworów, w które się zamieniają: przy części wierzchowców wyskakiwało
-  „już jesteś na koniu”, inne wskakiwały w slot i nic się nie działo, a peta
-  nie dało się przywołać. Aktualizacja raz ustawia wszystkie przedmioty
-  i potwory pakietu kostiumów tak jak w pełnej paczce, a przy każdym starcie
-  dopisuje potwory, których brakuje.
+To największa aktualizacja gildii od początku projektu: gildie botów kupują
+ziemię, zbierają na nią pieniądze, stawiają budynki, zdobywają surowce
+i korzystają z własnych kowali. Boty możesz też zapraszać do swojej gildii.
+
+### Gildie botów: ziemia
+
+- Mistrz gildii botów kupuje działkę od **10 poziomu gildii**, po tej samej
+  cenie co gracz (**40–70 mln Yang** za działkę).
+- Najpierw szuka najtańszej wolnej działki w **wiosce (M1) swojego
+  królestwa**, bo tam członkowie przychodzą ulepszać przedmioty. Gdy w wiosce
+  nie ma wolnej działki, kupuje ją na **mapie gildii**.
+- Gildia ma najwyżej **jedną działkę**. Nieudany zakup (brak pieniędzy albo
+  wolnej działki) gildia ponawia po **3 godzinach**.
+
+### Zrzutka: jak gildia składa się na ziemię i budynki
+
+Na ziemię, budynki i surowce gildia składa się wspólnie, uczciwie i jawnie:
+
+1. **Mistrz płaci pierwszy**: około **90%** tego, co ma ponad swoją rezerwę
+   (500 000 Yang).
+2. **Resztę dokładają boty z gildii**, nigdy gracze. Każdy bot zachowuje
+   nietkniętą rezerwę: odłożone przez siebie złoto (np. na konia czy
+   ulepszenia) plus **max(1 mln, poziom² × 300) Yang**. Z tego, co ma ponad
+   rezerwę, daje **najwyżej 25%**.
+3. Kwota jest dzielona **proporcjonalnie do nadwyżek**: bogaty bot daje
+   więcej, biedny mało albo nic.
+4. Bot dokłada się do każdego etapu (ziemia, potem każdy budynek), dopóki ma
+   coś ponad rezerwę, i nigdy nie schodzi poniżej niej.
+5. **Wszystko albo nic**: gdy całej kwoty nie da się zebrać, nikt nic nie
+   traci, a gildia próbuje znowu za 3 godziny.
+
+Zrzutki nie mają dziennego limitu. Każda wpłata jest zapisana i widać ją
+w Seban Panelu.
+
+### Budynki
+
+Mistrz buduje na swojej działce w tej kolejności:
+
+| Kolejność | Budynek | Koszt |
+|---|---|---|
+| 1 | **Kwatera Główna** | 20 mln Yang + 20 Kamieni Węgielnych, 30 Pni, 25 Dykt |
+| 2 | **Kowal** | 40 mln Yang + 20 Kamieni Węgielnych, 30 Pni, 20 Dykt |
+| 3 | **Alchemik** | 20 mln Yang + 15 Kamieni Węgielnych, 20 Pni, 25 Dykt |
+
+- **Który kowal:** kowal broni, jeśli na mapie jeszcze go nie ma, potem
+  płatnerz, potem jubiler. Gdy na mapie są już wszyscy trzej, gildia wybiera
+  losowo.
+- **Który alchemik:** najpierw alchemik ebonitu, potem losowo jeden z tych,
+  których na mapie brakuje, a gdy są już wszyscy – całkiem losowo.
+- Budynki stawiane są tak jak przez gracza: za Yang i surowce z ekwipunku
+  mistrza.
+
+### Surowce na budowę
+
+**Kamień Węgielny**, **Pień** i **Dykta** są teraz cennym towarem:
+
+- Boty nie sprzedają ich już handlarce. Wystawiają je na straganach za około
+  **40 000 Yang za sztukę** (cena rośnie z inflacją i ze stawkami świata).
+- **Fundusz na surowce:** mistrz zbiera zrzutką pieniądze na brakujące
+  surowce z góry i trzyma je osobno, więc nie wyda ich na nic innego.
+- **Mistrzowie kupują surowce ze straganów** innych botów z tego funduszu,
+  jak każdy inny zakup.
+- **Zlecenia:** gdy surowca nie ma na straganach, mistrz wysyła do
+  **4 członków** o odpowiednim poziomie tam, gdzie ten surowiec wypada:
+
+| Surowiec | Gdzie | Od poziomu |
+|---|---|---|
+| Pień | Góra Sohan | 60 |
+| Kamień Węgielny | Doyyumhwaji | 68 |
+| Kamień Węgielny | Dolina Orków | 50 |
+| Dykta | Świątynia Hwang | 57 |
+
+- Każdy członek gildii oddaje mistrzowi surowce potrzebne do następnego
+  budynku.
+- **Drop surowców ×10:** zwykłe potwory dają Kamień Węgielny, Pień i Dyktę
+  **10 razy częściej** niż dotąd (bossowie bez zmian). Ty też możesz je
+  farmić.
+
+### Nowa osobowość: Dropek surowców
+
+- Mniej więcej **jeden na 40 botów** zostaje Dropkiem surowców. Farmi
+  jeden surowiec i wystawia go na straganie.
+- Trzy odmiany, każda z blokadą poziomu, żeby nie przerosła swojego terenu:
+
+| Odmiana | Gdzie farmi | Poziom zatrzymany na |
+|---|---|---|
+| Pień | Góra Sohan | 66 |
+| Kamień Węgielny | Doyyumhwaji | 72 |
+| Dykta | Świątynia Hwang | 61 |
+
+- W panelach osobowość ma nazwę „Dropek surowców”.
+
+### Kowal gildyjny
+
+- Na mapie z kowalem gildyjnym boty ulepszają przedmioty **od 30 poziomu**
+  u kowala właściwego rodzaju: broń u kowala broni, zbroję, hełm i tarczę
+  u płatnerza, biżuterię u jubilera. Resztę ulepszają jak dotąd.
+- Kowal gildyjny daje **+10% szansy** na ulepszenie, ale bierze więcej niż
+  zwykły kowal. Część opłaty trafia do skarbca gildii, która go postawiła.
+- **Z kowali gildii botów możesz korzystać także Ty.**
+- Alchemicy gildyjni już stoją, ale boty jeszcze z nich nie korzystają.
+
+### Zapraszanie botów do Twojej gildii
+
+Napisz do bota szeptem, np. „chodź do mojej gildii”, „dołączysz do gildii?”
+albo „zaproszę cię do gildii”. Bot odpowie:
+
+- **„Dobrze, dodawaj mnie”** – bot bez gildii albo członek zwykłej gildii
+  botów (nie elitarnej). Członek innej gildii od razu z niej odchodzi.
+  Potem przez **5 minut** czeka na Twoje zaproszenie i przyjmuje je.
+- **„Mam swoją gildię, jestem liderem”** – bot jest mistrzem gildii.
+- **„Sorry, moja gildia jest lepsza”** – bot jest w elitarnej gildii botów.
+- Pozostałe odpowiedzi mówią, czego brakuje: nie masz gildii, nie masz prawa
+  zapraszać, gildia jest pełna, bot jest z innego królestwa, jego gildia
+  toczy wojnę albo jest w gildii innego gracza.
+
+Boty bez gildii przyjmują zaproszenie od razu, także bez pisania. Bot
+w Twojej gildii oddaje jej doświadczenie na tych samych zasadach co
+w gildiach botów. Na razie nie wpłaca Ci Yang ani przedmiotów – to jedna
+z możliwych przyszłych opcji. Boty czekające na zaproszenie od gracza nie są
+w tym czasie werbowane do gildii botów.
+
+### Seban Panel: gildie
+
+- Lista gildii ma kolumnę **„Ziemia i budynki”**.
+- Strona gildii pokazuje działkę, postawione budynki, fundusz na surowce
+  i historię wszystkich **zrzutek**: kto, ile i na co dał.
+
+### Smoczy Skowyt na cel
+
+- Smoczy Skowyt szamana zadaje obrażenia wokół **zaznaczonego celu**, a nie
+  tylko wokół samego szamana. Dotąd efekt było widać przy celu na dystans,
+  ale obrażeń nie było.
+- Zasięg to **2500**. Gdy cel jest dalej, umiejętność się nie rzuca (bez
+  zużycia many i bez odnowienia) i pojawia się komunikat „Cel jest za
+  daleko.”.
+- Bez zaznaczonego celu Skowyt działa jak dotąd, wokół szamana.
+
+### Wierzchowce i pety na starszych instalacjach
+
+- **Wierzchowce i pety z kostiumów działają także na serwerach
+  zainstalowanych ze starszej paczki.** Baza takiego serwera miała pieczęcie
+  w starej postaci i bez potworów, w które się zamieniają. Przy części
+  wierzchowców wyskakiwało „już jesteś na koniu”, inne wskakiwały w slot
+  i nic się nie działo, a peta nie dało się przywołać. Aktualizacja raz
+  ustawia wszystkie przedmioty i potwory pakietu kostiumów tak jak w pełnej
+  paczce, a przy każdym starcie dopisuje potwory, których brakuje.
+
+### Launcher
+
 - **Paczka aktualizacji rozpakowana jako nowy serwer:** launcher mówi teraz
   wprost, że to aktualizacja, a nie instalacja, i że do pierwszej instalacji
-  potrzebna jest pełna paczka. Dotąd kończył się technicznym komunikatem
-  o brakujących zrzutach bazy danych.
+  potrzebna jest pełna paczka z Discorda projektu. Dotąd kończył się
+  technicznym komunikatem o brakujących zrzutach bazy danych.
 - Opis wydań na GitHubie zaczyna się od informacji, że pliki `*-update-*.zip`
   to paczki aktualizacji, które launcher pobiera sam.
+
+### Nowa strona metin2sp.pl i odświeżona wiki
+
+- **metin2sp.pl to teraz pełna strona MT2009 PLUS**: co dodaje paczka, co
+  robią boty, jak zacząć krok po kroku (wirtualizacja, Docker, paczka
+  z Discorda, launcher), najczęstsze pytania i filmy.
+- Na stronie jest **lista zmian**, która sama pobiera nowe wersje z GitHuba
+  – każda aktualizacja pojawia się tam od razu po wydaniu.
+- **Wiki** (metin2sp.pl/wiki) opisuje wszystko, co ostatnio doszło: nowa
+  strona o gildiach (ziemia, zrzutki, budynki, surowce, Dropek, kowal
+  gildyjny), Pierścień Teleportacji i Anty-Exp, Auto Łowy na bilet,
+  Towarzysza, alchemię i wojny gildii.
+- Wiki wygodniej czyta się na telefonie: nowe menu boczne, czytelniejsze
+  tabele i marginesy.
 
 ---
 
