@@ -199,6 +199,18 @@ if ((Test-Path -LiteralPath $roarApply -PathType Leaf) -and
         Write-Host 'Smoczy Skowyt now hits round its target.' -ForegroundColor DarkGray
     }
 }
+# The companion picks up its owner's Cor Draconis (server-patches/corpartypickup):
+# the blanket "no Cor for a bot" refused the party branch that hands it over.
+$corPartyApply = Join-Path $repo 'server-patches/corpartypickup/Apply-CorPartyPickupPatch.ps1'
+$itemSource = Join-Path $engineGameSource 'char_item.cpp'
+if ((Test-Path -LiteralPath $corPartyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $itemSource -PathType Leaf)) {
+    $corPartyResult = & $corPartyApply -SourceFile $itemSource
+    if ($corPartyResult.Changed) {
+        $syncedFiles++
+        Write-Host 'The companion now picks up its owner''s Cor Draconis.' -ForegroundColor DarkGray
+    }
+}
 # A pet's magic attack % (server-patches/magicattper): PointChange had no
 # case for POINT_MAGIC_ATT_BONUS_PER, so the bonus never applied.
 $magicAttApply = Join-Path $repo 'server-patches/magicattper/Apply-MagicAttPerPatch.ps1'
