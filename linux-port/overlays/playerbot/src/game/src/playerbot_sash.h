@@ -56,7 +56,8 @@ namespace
 	// class. It goes in only when
 	//   - it asks a level no more than PLAYERBOT_SASH_ABSORB_LEVEL_SPAN under
 	//     the bot's (higher is fine: a sash asks no level of what it holds);
-	//   - it has PLAYERBOT_SASH_MIN_LINES rolled lines, or is refined to
+	//   - it has PLAYERBOT_SASH_MIN_LINES rolled lines, or one strong one
+	//     (IsPlayerBotSashStrongLine), or is refined to
 	//     PLAYERBOT_SASH_MIN_PLUS_BARE at least;
 	//   - it is worth PLAYERBOT_SASH_REF_PERCENT of the weapon the bot fights
 	//     with, put into the same sash - the measure of what is good at its
@@ -64,10 +65,17 @@ namespace
 	//   - it beats the sash the bot wears by PLAYERBOT_SASH_BETTER_PERCENT.
 	// A worn sash under PLAYERBOT_SASH_JUNK_PERCENT of that measure is junk: the
 	// sash is not done, the bot builds another and wears the better one.
+	// "Prog z 90% do 75%, przyjmowac tez przedmiot z jednym mocnym bonusem" (the
+	// operator, 27 September, once the rules left ~500 keepers with nothing to
+	// absorb). And a level-30 weapon has no level and no measure to meet: "bronie
+	// 30 lvl bez zadnych ograniczen, jak sa dobre i duze plusy to nawet bot 75 lvl
+	// moze wlozyc" - its lines (as above) and PLAYERBOT_SASH_LEVEL30_MIN_PLUS
+	// are the whole test, and one in the sash is never junk.
 	const int PLAYERBOT_SASH_ABSORB_LEVEL_SPAN = 10;
 	const int PLAYERBOT_SASH_MIN_LINES = 2;
 	const int PLAYERBOT_SASH_MIN_PLUS_BARE = 7;
-	const int PLAYERBOT_SASH_REF_PERCENT = 90;
+	const int PLAYERBOT_SASH_REF_PERCENT = 75;
+	const int PLAYERBOT_SASH_LEVEL30_MIN_PLUS = 6;
 	const int PLAYERBOT_SASH_BETTER_PERCENT = 110;
 	const int PLAYERBOT_SASH_JUNK_PERCENT = 60;
 	// A lone sash - the only one of its grade a keeper holds, waiting for a
@@ -262,13 +270,65 @@ namespace
 
 	bool IsPlayerBotSashGrailVnum(LPCHARACTER ch, DWORD vnum);
 
+	// A level-30 weapon at PLAYERBOT_SASH_LEVEL30_MIN_PLUS or more (the plus is
+	// the last digit of the vnum).
+	bool IsPlayerBotSashLevel30Vnum(DWORD vnum)
+	{
+		const TItemTable* proto = vnum ? ITEM_MANAGER::instance().GetTable(vnum) : NULL;
+		if (!proto || proto->bType != ITEM_WEAPON || (int)(vnum % 10) < PLAYERBOT_SASH_LEVEL30_MIN_PLUS)
+			return false;
+		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+			if (proto->aLimits[i].bType == LIMIT_LEVEL)
+				return proto->aLimits[i].lValue == 30;
+		return false;
+	}
+
+	// One rolled line worth carrying alone: the top two grades of what
+	// item_attr rolls (a stat of 8, 1000 HP, 5% attack speed, 10% cast speed,
+	// 5% critical or piercing or against half-humans, 10% against a race), or
+	// an average-damage line of 20% or a skill-damage line of 10%.
+	bool IsPlayerBotSashStrongLine(BYTE type, long value)
+	{
+		switch (type)
+		{
+			case APPLY_STR: case APPLY_DEX: case APPLY_INT: case APPLY_CON:
+				return value >= 8;
+			case APPLY_MAX_HP:
+				return value >= 1000;
+			case APPLY_ATT_SPEED:
+				return value >= 5;
+			case APPLY_CAST_SPEED:
+				return value >= 10;
+			case APPLY_CRITICAL_PCT: case APPLY_PENETRATE_PCT: case APPLY_ATTBONUS_HUMAN:
+				return value >= 5;
+			case APPLY_ATTBONUS_ANIMAL: case APPLY_ATTBONUS_ORC: case APPLY_ATTBONUS_MILGYO:
+			case APPLY_ATTBONUS_UNDEAD: case APPLY_ATTBONUS_DEVIL: case APPLY_ATTBONUS_MONSTER:
+				return value >= 10;
+			case APPLY_NORMAL_HIT_DAMAGE_BONUS:
+				return value >= 20;
+			case APPLY_SKILL_DAMAGE_BONUS:
+				return value >= 10;
+			default:
+				return false;
+		}
+	}
+
+	bool HasPlayerBotSashStrongLine(LPITEM item)
+	{
+		for (int i = 0; item && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (IsPlayerBotSashStrongLine(item->GetAttributeType(i), item->GetAttributeValue(i)))
+				return true;
+		return false;
+	}
+
 	// A filled sash not worth keeping on: under PLAYERBOT_SASH_JUNK_PERCENT of
 	// the measure at its own absorption.
 	bool IsPlayerBotSashJunk(LPCHARACTER ch, LPITEM sash)
 	{
 		if (!sash || !IsPlayerBotSashAbsorbed(sash))
 			return false;
-		if (IsPlayerBotSashGrailVnum(ch, (DWORD)sash->GetSocket(ACCE_ABSORBED_SOCKET)))
+		if (IsPlayerBotSashGrailVnum(ch, (DWORD)sash->GetSocket(ACCE_ABSORBED_SOCKET)) ||
+				IsPlayerBotSashLevel30Vnum((DWORD)sash->GetSocket(ACCE_ABSORBED_SOCKET)))
 			return false;
 		const long long reference = GetPlayerBotSashReferenceValue(ch, GetPlayerBotSashAbsorption(sash));
 		return reference > 0 && GetPlayerBotSashValue(ch, sash) * 100 < reference * PLAYERBOT_SASH_JUNK_PERCENT;
@@ -779,14 +839,17 @@ namespace
 	{
 		if (!IsPlayerBotSashPieceKind(item))
 			return -1;
-		if ((int)item->GetLevelLimit() < ch->GetLevel() - PLAYERBOT_SASH_ABSORB_LEVEL_SPAN)
-			return -1;
 		// Lines to carry, or a refine that makes the bare piece worth it.
-		if (item->GetAttributeCount() < PLAYERBOT_SASH_MIN_LINES &&
-				(int)(item->GetVnum() % 10) < PLAYERBOT_SASH_MIN_PLUS_BARE)
+		const bool lines = item->GetAttributeCount() >= PLAYERBOT_SASH_MIN_LINES ||
+				HasPlayerBotSashStrongLine(item);
+		if (!lines && (int)(item->GetVnum() % 10) < PLAYERBOT_SASH_MIN_PLUS_BARE)
+			return -1;
+		// A good level-30 weapon at its plus goes in at any level.
+		const bool level30 = lines && IsPlayerBotSashLevel30Vnum(item->GetVnum());
+		if (!level30 && (int)item->GetLevelLimit() < ch->GetLevel() - PLAYERBOT_SASH_ABSORB_LEVEL_SPAN)
 			return -1;
 		const long long value = GetPlayerBotSashPieceValue(ch, item->GetProto(), item, absorption);
-		if (value * 100 < reference * PLAYERBOT_SASH_REF_PERCENT)
+		if (!level30 && value * 100 < reference * PLAYERBOT_SASH_REF_PERCENT)
 			return -1;
 		if (wornValue > 0 && value * 100 < wornValue * PLAYERBOT_SASH_BETTER_PERCENT)
 			return -1;

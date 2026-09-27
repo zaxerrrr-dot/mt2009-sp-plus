@@ -85,11 +85,24 @@ bazowy atak broni albo obrona zbroi, stałe bonusy i wylosowane bonusy,
 wszystko razy absorpcja szarfy i ocenione pod klasę bota. Bot wchłania
 przedmiot tylko wtedy, gdy:
 
-- ma co najmniej **2 bonusy** albo jest ulepszony **do +7** lub wyżej;
+- ma co najmniej **2 bonusy** albo **jeden mocny bonus**, albo jest
+  ulepszony **do +7** lub wyżej. Mocny bonus to na przykład co najmniej:
+  - 8 siły, zręczności, inteligencji lub witalności;
+  - 1000 PŻ;
+  - 5% szybkości ataku albo 10% szybkości zaklęć;
+  - 5% szansy na krytyk, przeszywające albo silny przeciwko ludziom;
+  - 10% silny przeciwko rasie potworów;
+  - 20% średnich obrażeń albo 10% obrażeń umiejętności;
 - wymaga poziomu najwyżej 10 niższego od bota (wyższy jest w porządku);
-- w szarfie dałby co najmniej **90% tego, co dałaby broń, którą bot
+- w szarfie dałby co najmniej **75% tego, co dałaby broń, którą bot
   walczy** – to miara dobrego przedmiotu na jego poziomie;
 - jest wyraźnie lepszy (o 10%) od tego, co bot już ma w założonej szarfie.
+
+**Broń na 30 poziom bez ograniczeń.** Dobra broń na 30 poziom (2 bonusy albo
+jeden mocny) ulepszona **do +6** lub wyżej trafia do szarfy bota na każdym
+poziomie – także bota na 75 poziom. Nie musi spełniać progu 75% ani okna
+poziomu, musi tylko być lepsza od tego, co bot ma w szarfie. Szarfa z taką
+bronią nigdy nie jest „słaba”.
 
 **Święty Graal szarf.** Najlepsze, co można włożyć do szarfy, to broń na
 30 poziom z jak najwyższym plusem i jak najwyższym procentem właściwego
