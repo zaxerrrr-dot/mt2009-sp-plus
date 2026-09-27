@@ -239,10 +239,17 @@ EOF
 # a channel game core
 #   render_game <channel> <role: first|game1|game2>
 # -----------------------------------------------------------------------------
+# The channels' first port, 13000 unless M2_GAME_PORT_BASE says otherwise: a
+# second stack on the same host (the test server beside a public one) takes
+# another range, and a core must listen on the port the players reach, because
+# a warp between cores sends the client the target core's own PORT.
+M2_GAME_PORT_BASE="${M2_GAME_PORT_BASE:-13000}"
+case "$M2_GAME_PORT_BASE" in ''|*[!0-9]*) M2_GAME_PORT_BASE=13000 ;; esac
+
 render_game() {
   local ch="$1" role="$2"
   local d="$VAR_DIR/channel${ch}/${role}"
-  local base=$(( 13000 + (ch - 1) * 10 ))
+  local base=$(( M2_GAME_PORT_BASE + (ch - 1) * 10 ))
   local p2pbase=$(( 14000 + (ch - 1) * 10 ))
   local offset hostname maps
 
@@ -330,7 +337,7 @@ for ch in $(seq 1 "${M2_CHANNELS}"); do
     render_game "$ch" "$role"
     case "$role" in first) off=0 ;; game1) off=1 ;; game2) off=2 ;; esac
     printf 'ch%s-%s|%s/channel%s/%s|game|%s|game\n' \
-      "$ch" "$role" "$VAR_DIR" "$ch" "$role" "$(( 13000 + (ch - 1) * 10 + off ))" >> "$PLAN"
+      "$ch" "$role" "$VAR_DIR" "$ch" "$role" "$(( M2_GAME_PORT_BASE + (ch - 1) * 10 + off ))" >> "$PLAN"
   done
 done
 

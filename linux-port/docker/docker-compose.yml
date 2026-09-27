@@ -207,6 +207,10 @@ services:
       PLAYERBOT_CH2_SHARE: "${PLAYERBOT_CH2_SHARE:-40}"
       M2_PLAYERBOT_CH2_SET_AT: "${M2_PLAYERBOT_CH2_SET_AT:-0}"
       M2_GAME_CONTAINER_PORT_RANGE: "${M2_GAME_CONTAINER_PORT_RANGE:-13000-13002}"
+      # The channels' first port inside the container (m2-render-config); the
+      # range above has to start there. 13000 unless a second stack on the same
+      # host needs another one.
+      M2_GAME_PORT_BASE: "${M2_GAME_PORT_BASE:-13000}"
       # m2-render-config writes these into CONFIG. Without a line here the
       # value in .env never reaches the container and the defaults stand, which
       # is what every 2.x world had until 2.0.52 (the 1.x compose passes them).
