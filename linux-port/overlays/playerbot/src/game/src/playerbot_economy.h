@@ -1526,6 +1526,11 @@ namespace
 				return false;
 		}
 
+		// The guild building materials are goods now (playerbot_guild_land.h):
+		// the counters, never the merchant.
+		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
+			return false;
+
 		// A piece Iwakura's list keeps for the storekeeper is never the
 		// merchant's, whatever the rules below would make of it.
 		if (IsPlayerBotLppKeptItem(ch, item))
@@ -2828,6 +2833,11 @@ namespace
 			LPITEM item = candidates[i].item;
 			if (!item || item->GetRefinedVnum() == 0)
 				continue;
+			// A guild smith takes the gear of level thirty and up, and the plain
+			// blacksmith leaves it to one on this map (playerbot_guild_land.h).
+			LPCHARACTER guildSmith = NULL;
+			if (!PlayerBotRefineAnvilTakes(ch, state, item, &guildSmith))
+				continue;
 
 			const DWORD oldVnum = item->GetVnum();
 			const DWORD nextVnum = item->GetRefinedVnum();
@@ -3117,7 +3127,15 @@ namespace
 				ch->ClearRefineMode();
 			}
 			else
+			{
+				// At a guild smith the engine's own rules: its fee, the
+				// guild's share of it, and ten points on the odds.
+				if (guildSmith)
+					ch->SetRefineNPC(guildSmith);
 				attempted = ch->DoRefine(item, false);
+				if (guildSmith)
+					ch->SetRefineNPC(NULL);
+			}
 			if (attempted)
 			{
 				// The step's fee goes on the level-30 weapon's budget.

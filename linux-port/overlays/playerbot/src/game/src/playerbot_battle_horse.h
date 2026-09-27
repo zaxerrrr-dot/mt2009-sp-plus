@@ -251,6 +251,10 @@ namespace
 		// where the cohort ceiling forbids the hunting that would earn it back.
 		if (ch && GetPlayerBotFrontierMapForLevel(ch) != 0)
 			reserved += GetPlayerBotTeleporterFareEstimate(ch) * PLAYERBOT_TELEPORTER_FARE_RESERVE_COUNT;
+		// A guild master's purse holds its guild's fund for the building
+		// materials (playerbot_guild_land.h): not its own to spend.
+		if (ch)
+			reserved += (int)std::min<long long>(GetPlayerBotGuildFundReserve(ch->GetPlayerID()), 1000000000LL);
 		return reserved;
 	}
 

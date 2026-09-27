@@ -380,6 +380,14 @@ db -e "CREATE TABLE IF NOT EXISTS player.playerbot_guild (guild_id INT UNSIGNED 
 # restart every update makes.
 db -e "ALTER TABLE player.playerbot_guild ADD COLUMN IF NOT EXISTS last_war_at INT UNSIGNED NOT NULL DEFAULT 0;" \
     || echo "playerbot-migrate: could not add last_war_at to player.playerbot_guild" >&2
+# A bot guild's land and buildings (playerbot_guild_land.h): the fund for the
+# building materials its master holds, and every payment its members made to
+# a collection ("zrzutka") - who, how much, for what - for the panel and for
+# anybody who wants to check it was fair. Idempotent.
+db -e "ALTER TABLE player.playerbot_guild ADD COLUMN IF NOT EXISTS build_fund BIGINT NOT NULL DEFAULT 0, ADD COLUMN IF NOT EXISTS fund_holder INT UNSIGNED NOT NULL DEFAULT 0;" \
+    || echo "playerbot-migrate: could not add the building fund to player.playerbot_guild" >&2
+db -e "CREATE TABLE IF NOT EXISTS player.playerbot_guild_contribution (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, guild_id INT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, amount BIGINT NOT NULL, purpose VARCHAR(24) NOT NULL, at DATETIME NOT NULL, KEY guild_at (guild_id, at)) ENGINE=InnoDB;" \
+    || echo "playerbot-migrate: could not create player.playerbot_guild_contribution" >&2
 # The second channel's pins (playerbot_channel_rules.h): every bot that has
 # ever kept an offline shop lives on the first channel for good, because the
 # shops are the first channel's. The table only grows - each core adds the

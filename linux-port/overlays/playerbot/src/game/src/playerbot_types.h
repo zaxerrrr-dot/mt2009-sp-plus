@@ -7257,6 +7257,7 @@ namespace
 			bLastStatusTownPhase(255),
 			bLastStatusParty(255),
 			dwNextGuildCheckTime(0),
+			dwRefineGuildSmithVID(0),
 			dwLastKillCreditedVID(0),
 			bFoundedGuild(false),
 			dwNextGuildExpOfferTime(0),
@@ -7668,6 +7669,9 @@ namespace
 		// a bot that has not met anybody yet is.
 		std::vector<TPlayerBotFriend> vecFriends;
 		DWORD dwNextGuildCheckTime;
+		// The guild smith this blacksmith visit goes to (playerbot_guild_land.h):
+		// 0 undecided, ~0 the plain blacksmith, else the smith's VID.
+		DWORD dwRefineGuildSmithVID;
 		// The last corpse this bot was credited for. The engine has no "you
 		// killed it" hook, so a kill is read off a target that has gone from
 		// alive to dead under the bot's own blow - and a bot standing over the
@@ -8043,6 +8047,18 @@ namespace
 		state.bCurrentAction = action;
 		state.dwActionChangedTime = dwNow;
 	}
+
+	// A guild's land and buildings (playerbot_guild_land.h), asked before it.
+	long long GetPlayerBotGuildFundReserve(DWORD pid);
+	bool IsPlayerBotGuildBuildMaterial(DWORD vnum);
+	bool IsPlayerBotKeptGuildMaterial(LPCHARACTER ch, LPITEM item);
+	int GetPlayerBotGuildMaterialWant(LPCHARACTER ch, DWORD vnum);
+	bool CanPlayerBotPayForGuildMaterial(LPCHARACTER ch, LPITEM item, long long price);
+	void NotePlayerBotGuildMaterialBought(LPCHARACTER ch, DWORD vnum, long long price);
+	LPCHARACTER ChoosePlayerBotRefineGuildSmith(LPCHARACTER ch, TPlayerBotAIState& state);
+	bool PlayerBotRefineAnvilTakes(LPCHARACTER ch, const TPlayerBotAIState& state, LPITEM item, LPCHARACTER* pSmith);
+	void ManagePlayerBotGuildLand(LPCHARACTER master, CGuild* guild, DWORD dwNow);
+	DWORD GetPlayerBotGuildMaterialBasePrice();
 }
 
 #endif

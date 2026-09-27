@@ -911,6 +911,8 @@ namespace
 		}
 		SpendPlayerBotGuildSkillPoints(ch, guild);
 		RecruitPlayerBotGuildMembers(ch, guild, *info, dwNow);
+		// The land and its buildings (playerbot_guild_land.h).
+		ManagePlayerBotGuildLand(ch, guild, dwNow);
 	}
 }
 

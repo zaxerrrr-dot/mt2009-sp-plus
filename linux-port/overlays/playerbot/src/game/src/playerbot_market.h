@@ -182,6 +182,11 @@ namespace
 		if (IsPlayerBotCorVnum(offer->GetVnum()) || offer->IsDragonSoul())
 			return WantsPlayerBotAlchemyOffer(ch, offer);
 
+		// The guild building materials, for a master whose next building
+		// lacks them (playerbot_guild_land.h); nobody else buys them.
+		if (IsPlayerBotGuildBuildMaterial(offer->GetVnum()))
+			return GetPlayerBotGuildMaterialWant(ch, offer->GetVnum()) > 0;
+
 		// Materialy Rzemieslnicze and the refine goods that make them, for a
 		// saddlebag bot short of its next row (playerbot_saddlebag.h).
 		if (offer->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
@@ -471,6 +476,10 @@ namespace
 
 	bool CanPlayerBotPayForOffer(LPCHARACTER ch, LPITEM item, long long price) {
 		if (!ch || !item || price <= 0) return false;
+		// A master's building materials come out of its guild's fund, which
+		// the reserve below keeps from everything else (playerbot_guild_land.h).
+		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
+			return CanPlayerBotPayForGuildMaterial(ch, item, price);
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		if (price > spare) return false;
 		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
@@ -721,6 +730,7 @@ namespace
 			NotePlayerBotChestBought(ch->GetPlayerID(), get_dword_time());
 		// A gambler's purchase is charged to the session's budget.
 		NotePlayerBotGamblePurchase(ch, paid);
+		NotePlayerBotGuildMaterialBought(ch, pick.dwVnum, paid);
 		if (gambleBase)
 			NotePlayerBotGambleBaseBought(ch, pick.dwVnum, paid);
 		sys_log(0, "PLAYERBOT_MARKET: bought pid=%u name=%s from=%s slot=%u vnum=%u refine=%u count=%u asked=%u paid=%lld gold=%lld",

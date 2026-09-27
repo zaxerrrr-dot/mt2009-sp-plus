@@ -156,6 +156,7 @@ namespace {
         if (IsPlayerBotSashVnum(boughtVnum))
             NotePlayerBotSashBought(ch, boughtVnum, (long long)price);
         NotePlayerBotSaddlebagBought(ch, boughtVnum, (long long)price);
+        NotePlayerBotGuildMaterialBought(ch, boughtVnum, (long long)price);
         if (Begin(ch->GetPlayerID(), Buy, o.buyItem, now)) {
             auto& request = requests.at(ch->GetPlayerID());
             request.vnum = line->GetInfo().vnum;

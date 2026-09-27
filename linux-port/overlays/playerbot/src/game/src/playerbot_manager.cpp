@@ -139,6 +139,7 @@ extern void SendShout(const char* szText, BYTE bEmpire);
 #include "playerbot_weapon_goal.h"
 #include "playerbot_market.h"
 #include "playerbot_offline_market.h"
+#include "playerbot_guild_land.h"
 #include "playerbot_sash.h"
 #include "playerbot_saddlebag.h"
 // Forward declaration: the trade layer falls through to the deterministic

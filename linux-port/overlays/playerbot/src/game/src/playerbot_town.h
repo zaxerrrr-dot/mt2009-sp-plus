@@ -1530,6 +1530,8 @@ namespace
 	void FinishPlayerBotTownVisit(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow,
 			bool completed)
 	{
+		// The next visit chooses its blacksmith afresh (playerbot_guild_land.h).
+		state.dwRefineGuildSmithVID = 0;
 		// The Trader's visit is over: with a heavy purse and its own gear done
 		// it may turn gambler ("moze plynnie zmienic sie w Hazardziste"). The
 		// visit goes on to the storekeeper and the anvil instead of ending -
@@ -2066,6 +2068,10 @@ namespace
 	// by name, or zero when he has not priced this one.
 	DWORD GetPlayerBotMaterialAskingBase(DWORD dwVnum)
 	{
+		// The guild building materials at the operator's price
+		// (playerbot_guild_land.h), through the same curve and inflation.
+		if (IsPlayerBotGuildBuildMaterial(dwVnum))
+			return ScalePlayerBotIwakuraPrice(GetPlayerBotGuildMaterialBasePrice());
 		DWORD base = 0;
 		for (size_t i = 0; i < sizeof(PLAYERBOT_MATERIAL_PRICES) / sizeof(PLAYERBOT_MATERIAL_PRICES[0]); ++i)
 			if (PLAYERBOT_MATERIAL_PRICES[i].dwVnum == dwVnum)
@@ -2699,6 +2705,10 @@ namespace
 		// A retired item is nobody's goods (IsPlayerBotRetiredItem).
 		if (IsPlayerBotRetiredItem(item->GetVnum()))
 			return -1;
+		// The guild building materials: a master keeps what its guild builds
+		// with, everybody else puts them up high (playerbot_guild_land.h).
+		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
+			return (ch && IsPlayerBotKeptGuildMaterial(ch, item)) ? -1 : PLAYERBOT_SHOP_POLICY_STALL_SCORE - 50;
 		// Nor a Rada Pustelnika or an Exorcism Scroll: the book pass reads
 		// with them (the item shop's copies are the ones a counter would take).
 		if (IsPlayerBotBookAffectItem(item))
@@ -4730,8 +4740,21 @@ namespace
 		const long armorNpcY = svc.armourMerchant.y;
 		const long miscNpcX = svc.miscMerchant.x;
 		const long miscNpcY = svc.miscMerchant.y;
-		const long blacksmithNpcX = svc.blacksmith.x;
-		const long blacksmithNpcY = svc.blacksmith.y;
+		long blacksmithNpcX = svc.blacksmith.x;
+		long blacksmithNpcY = svc.blacksmith.y;
+		// A guild smith on this map for the gear of level thirty and up
+		// (playerbot_guild_land.h), chosen once a visit.
+		if (state.bTownVisitPhase == BOT_TOWN_PHASE_BLACKSMITH ||
+				state.bTownVisitPhase == BOT_TOWN_PHASE_BLACKSMITH_WAIT)
+		{
+			if (LPCHARACTER guildSmith = ChoosePlayerBotRefineGuildSmith(ch, state))
+			{
+				blacksmithNpcX = guildSmith->GetX();
+				blacksmithNpcY = guildSmith->GetY();
+			}
+		}
+		else
+			state.dwRefineGuildSmithVID = 0;
 
 		if (state.bTownVisitPhase == BOT_TOWN_PHASE_TRAINER ||
 				state.bTownVisitPhase == BOT_TOWN_PHASE_TRAINER_WAIT ||
