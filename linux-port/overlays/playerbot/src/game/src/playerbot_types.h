@@ -6313,7 +6313,7 @@ namespace
 	void LogPlayerBotSaddlebagCensus();
 
 	// Alchemy and the daily Cors (playerbot_alchemy.h).
-	void NotePlayerBotDragonShardKill(LPCHARACTER ch);
+	void NotePlayerBotDragonShardKill(LPCHARACTER ch, LPCHARACTER victim);
 	bool IsPlayerBotKeptCor(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotCorStackShort(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotCorVnum(DWORD vnum);
