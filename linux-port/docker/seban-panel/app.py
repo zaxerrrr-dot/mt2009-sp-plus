@@ -4714,6 +4714,112 @@ def retired_bots_start():
     return redirect(url_for("retired_bots"))
 
 
+# The two resets of the world (the operator, 27 September). The panel only
+# checks the database password and leaves a request in the spool; the game
+# container's supervisor stops every core, takes a backup and runs
+# m2-world-reset, then starts the cores again - nothing in here touches the
+# world itself, and nothing but the fixed kind crosses the boundary.
+WORLD_RESET_REQUEST = RATES_SPOOL / "world-reset.request"
+WORLD_RESET_STATUS = RATES_SPOOL / "world-reset.status"
+WORLD_RESET_KINDS = {
+    "bots": "Reset świata botów",
+    "all": "Reset całego świata",
+}
+WORLD_RESET_BUSY = ("requested", "stopping", "backup", "resetting", "starting")
+WORLD_RESET_STATE_LABELS = {
+    "requested": "czeka na serwer",
+    "stopping": "zatrzymuję serwer",
+    "backup": "zapisuję kopię bazy",
+    "resetting": "resetuję",
+    "starting": "uruchamiam serwer",
+    "done": "gotowe",
+    "failed": "nie udało się",
+}
+
+
+def world_reset_status():
+    status = read_spool_values(WORLD_RESET_STATUS)
+    request_values = read_spool_values(WORLD_RESET_REQUEST)
+    # A request the game container has not picked up yet has no status of
+    # its own (or an older one).
+    if request_values.get("id") and request_values.get("id") != status.get("id"):
+        status = {"state": "requested", "kind": request_values.get("kind", ""),
+                  "id": request_values.get("id"), "time": request_values.get("time", ""),
+                  "message": "serwer odbierze prośbę w ciągu kilku sekund"}
+    try:
+        age = int(time.time()) - int(status.get("time") or 0)
+    except ValueError:
+        age = 0
+    # A reset that went quiet for over an hour is not running any more.
+    status["busy"] = status.get("state") in WORLD_RESET_BUSY and age < 3600
+    status["label"] = WORLD_RESET_STATE_LABELS.get(status.get("state", ""), status.get("state", ""))
+    status["kind_label"] = WORLD_RESET_KINDS.get(status.get("kind", ""), "")
+    if status.get("time", "").isdigit():
+        status["when"] = datetime.fromtimestamp(int(status["time"])).strftime("%d.%m.%Y %H:%M:%S")
+    return status
+
+
+@app.route("/advanced/world-reset")
+@login_required
+def world_reset():
+    counts = one("""SELECT
+        SUM(BINARY a.login LIKE BINARY 'playerbot\\_%%') AS bots,
+        SUM(NOT (BINARY a.login LIKE BINARY 'playerbot\\_%%')) AS players
+      FROM player.player p JOIN account.account a ON a.id=p.account_id""") or {}
+    return render_template("world_reset.html", status=world_reset_status(),
+                           reset_csrf=update_csrf_token(), kinds=WORLD_RESET_KINDS,
+                           bots=int(counts.get("bots") or 0), players=int(counts.get("players") or 0))
+
+
+@app.get("/advanced/world-reset/status")
+@login_required
+def world_reset_status_json():
+    return jsonify(world_reset_status())
+
+
+@app.post("/advanced/world-reset")
+@login_required
+def world_reset_start():
+    supplied = request.form.get("reset_csrf", "")
+    expected = session.get("seban_update_csrf", "")
+    if not expected or not hmac.compare_digest(supplied, expected):
+        abort(403)
+    kind = request.form.get("kind", "")
+    if kind not in WORLD_RESET_KINDS:
+        abort(400)
+    password = request.form.get("db_password", "")
+    if not password or not hmac.compare_digest(password.encode("utf-8"),
+                                               os.environ.get("DB_PASSWORD", "").encode("utf-8")):
+        # A wrong guess costs a moment, so the form is no oracle for the password.
+        time.sleep(2)
+        app.logger.warning("world reset %s refused: wrong database password", kind)
+        flash("Niepoprawne hasło do bazy danych. Nic nie zostało zmienione.", "error")
+        return redirect(url_for("world_reset"))
+    if request.form.get("confirm", "") != "RESET":
+        flash("Wpisz RESET w polu potwierdzenia.", "error")
+        return redirect(url_for("world_reset"))
+    if world_reset_status()["busy"]:
+        flash("Poprzedni reset jeszcze trwa. Poczekaj na jego zakończenie.", "error")
+        return redirect(url_for("world_reset"))
+    request_id = "reset-" + uuid.uuid4().hex
+    temporary = RATES_SPOOL / (request_id + ".new")
+    try:
+        RATES_SPOOL.mkdir(parents=True, exist_ok=True)
+        temporary.write_text(f"id={request_id}\nkind={kind}\ntime={int(time.time())}\n", encoding="utf-8")
+        temporary.chmod(0o660)
+        os.replace(temporary, WORLD_RESET_REQUEST)
+    except OSError as exc:
+        app.logger.error("world reset %s could not be queued: %s", kind, exc)
+        flash("Nie udało się przekazać prośby do serwera (katalog wymiany niedostępny).", "error")
+        return redirect(url_for("world_reset"))
+    finally:
+        temporary.unlink(missing_ok=True)
+    app.logger.warning("world reset %s requested (%s)", kind, request_id)
+    flash(f"{WORLD_RESET_KINDS[kind]}: prośba przyjęta. Serwer zatrzyma się, zapisze kopię bazy, "
+          "wykona reset i uruchomi się ponownie.", "success")
+    return redirect(url_for("world_reset"))
+
+
 @app.route("/advanced/retired-bots")
 @login_required
 def retired_bots():
@@ -4732,7 +4838,8 @@ def retired_bots():
       GROUP BY b.id,b.queued_count,b.started_at ORDER BY b.started_at DESC""")
     requested_batch = request.args.get("batch", "").strip()
     batch_id = int(requested_batch) if requested_batch.isdigit() else None
-    where, params = ("WHERE p.batch_id=%s", (batch_id,)) if batch_id is not None else ("", ())
+    # Batch 0 is the world reset's (m2-world-reset): every bot, not a retirement.
+    where, params = ("WHERE p.batch_id=%s", (batch_id,)) if batch_id is not None else ("WHERE p.batch_id<>0", ())
     bots = rows(f"""SELECT p.pid,p.batch_id,p.name,p.level,p.stage,
         FROM_UNIXTIME(p.picked_at) AS picked_at,FROM_UNIXTIME(p.reset_at) AS reset_at,
         COUNT(i.item_id) AS listed_lines,COALESCE(SUM(i.listed_count),0) AS listed_units,

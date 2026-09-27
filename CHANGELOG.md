@@ -17,7 +17,7 @@ every version here.
 
 ---
 
-## 2.10.0 — 2026-09-27 — Dołączanie do gildii botów, eventy na kilku mapach, szansa w oknie kowala
+## 2.10.0 — 2026-09-27 — Dołączanie do gildii botów, reset świata w panelu, eventy na kilku mapach
 
 Serwer 2.10.0 i klient 2.0.21: zaktualizuj oba w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
@@ -43,6 +43,25 @@ kolejności, ważne, żeby padło słowo „gildia”:
 - Mistrz odmówi też, gdy jesteś już w gildii, jesteś z innego królestwa,
   gildia toczy wojnę, nie ma w niej miejsca albo niedawno odszedłeś
   z gildii.
+
+### Panel zaawansowany: reset świata
+
+Nowa strona **Zarządzanie → Reset świata** w panelu zaawansowanym. Oba resety
+wymagają **hasła do bazy danych** (`M2_DB_PASSWORD` z pliku
+`linux-port\docker\.env`) i wpisania słowa RESET. Serwer sam się zatrzymuje,
+zapisuje kopię bazy do folderu `backups\reset-swiata`, wykonuje reset
+i uruchamia się ponownie – w panelu widać, na jakim jest etapie.
+
+- **Reset świata botów** – wszystkie boty od razu zaczynają nową grę, tak
+  jak po emeryturze: 1 poziom w pierwszej wiosce swojego królestwa,
+  podstawowy ekwipunek, bez umiejętności, punktów i yang. Zachowują nick,
+  klasę i królestwo. Znikają wszystkie sklepy botów i ich towar, przedmioty
+  z magazynów botów, a gildie botów są rozwiązywane (ziemia wraca do puli).
+  **Postacie graczy i ich Towarzysze zostają bez zmian.**
+- **Reset całego świata** – baza wraca do stanu świeżej instalacji, jak
+  „Zacznij od zera” w launcherze: znikają wszystkie konta i postacie graczy,
+  boty są zasiewane od nowa. Zostają ustawienia serwera z pliku `.env`
+  i ustawienia panelu zaawansowanego.
 
 ### Boty
 

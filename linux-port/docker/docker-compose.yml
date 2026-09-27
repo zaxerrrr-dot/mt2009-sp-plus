@@ -68,7 +68,9 @@ services:
       mariadb:
         condition: service_healthy
 
-    environment:
+    # Anchored: the game container runs this same migrator after the advanced
+    # panel's whole-world reset (m2-world-reset), with the same settings.
+    environment: &migrate-env
       M2_DB_HOST: mariadb
       M2_DB_PORT: "3306"
       M2_DB_USER: "${M2_DB_USER:-metin2}"
@@ -156,6 +158,9 @@ services:
         condition: service_completed_successfully
 
     environment:
+      # The migrator's settings too, for the whole-world reset of the advanced
+      # panel (m2-world-reset runs apply.sh from here); the keys below win.
+      <<: *migrate-env
       M2_DB_HOST: mariadb
       M2_DB_PORT: "3306"
       M2_DB_USER: "${M2_DB_USER:-metin2}"
@@ -235,6 +240,12 @@ services:
     volumes:
       - game-var:/opt/metin2/var
       - rates-spool:/opt/m2spool
+      # The advanced panel's resets (m2-world-reset): the dumps and the
+      # migrator a fresh database is made from, and the server folder's
+      # backups directory for the copy taken before a reset.
+      - ./mariadb/initdb.d:/opt/m2initdb:ro
+      - ./mariadb/playerbot:/opt/playerbot:ro
+      - "${M2_BACKUP_HOST_DIR:-../../backups}:/opt/m2backups"
 
     ulimits:
       nofile:

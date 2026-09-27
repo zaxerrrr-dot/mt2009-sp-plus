@@ -2,12 +2,12 @@
   "schema": 1,
   "channel": "stable",
   "publishedAt": "2026-09-27T15:39:14Z",
-  "statusMessage": "Serwer 2.10.0 i klient 2.0.21: dolaczanie do gildii botow, eventy na kilku mapach, szansa w oknie kowala.",
+  "statusMessage": "Serwer 2.10.0 i klient 2.0.21: dolaczanie do gildii botow, reset swiata w panelu, eventy na kilku mapach.",
   "server": {
     "version": "2.10.0",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.10.0.zip",
-    "sha256": "12B7C4D74D6B30708CD21455B3368E549D4997E33C7BF1C424AEFA9E6EDFC54A",
-    "size": 93248898
+    "sha256": "F1ACBF22E81531A37161D90E0227C5F05B8AD60FC6038BE9B8CB3CC2AD7380B3",
+    "size": 93260837
   },
   "client": {
     "version": "2.0.21",

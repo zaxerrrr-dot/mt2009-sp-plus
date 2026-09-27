@@ -167,6 +167,7 @@ m2-render-config
 #     Everything else about the rates happens later, in m2-supervise.
 # -----------------------------------------------------------------------------
 command -v m2-rates >/dev/null 2>&1 && { m2-rates prepare || log "could not prepare the rate spool (the rates page will say so)"; }
+command -v m2-world-reset >/dev/null 2>&1 && { m2-world-reset prepare || log "could not prepare the world reset's backup folder"; }
 # The same, for the language files: this runs as root, and the four files the
 # switch replaces belong to the image and have to be writable by the service
 # account afterwards. Absent on an image built before this existed.

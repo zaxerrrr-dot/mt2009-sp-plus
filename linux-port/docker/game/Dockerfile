@@ -292,6 +292,7 @@ RUN dpkg --add-architecture i386 \
  && apt-get install -y --no-install-recommends \
         libc6:i386 libstdc++6:i386 libgcc-s1:i386 zlib1g:i386 libmd0:i386 \
         tzdata ca-certificates \
+        mariadb-client \
  && rm -rf /var/lib/apt/lists/*
 
 # Non-root: the game parses untrusted network input and needs no privilege
