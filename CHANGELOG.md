@@ -17,13 +17,11 @@ every version here.
 
 ---
 
-## 2.10.0 — 2026-09-27 — Dołączanie do gildii botów, reset świata w panelu, eventy na kilku mapach
+## 2.10.0 — 2026-09-27 — Dołączanie do gildii botów, reset świata w panelu
 
 Serwer 2.10.0 i klient 2.0.21: zaktualizuj oba w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
-z 2.9.0. Szansa w oknie kowala, przyciski yang u Towarzysza, dłuższe nicki
-w szepcie i zmiany Auto Łowów działają dopiero z klientem 2.0.21. Pierwsze
-uruchomienie po aktualizacji przebudowuje serwer.
+z 2.9.0. Pierwsze uruchomienie po aktualizacji przebudowuje serwer.
 
 ### Dołączanie do gildii botów
 
@@ -63,53 +61,17 @@ i uruchamia się ponownie – w panelu widać, na jakim jest etapie.
   boty są zasiewane od nowa. Zostają ustawienia serwera z pliku `.env`
   i ustawienia panelu zaawansowanego.
 
-### Boty
+### Pozostałe zmiany
 
-- **Boty biją metiny razem z potworami wokół:** umiejętności botów trafiają
-  tyle celów, ile trafiłby gracz (Wir Miecza do 12 potworów), przy metinie
-  otoczonym potworami boty używają umiejętności obszarowych, a zwykły cios
-  trafia do 10 potworów przed botem (było 4).
-- **Wszystkie boty rozwijają konie:** żaden bot nie zatrzymuje się już na
-  pierwszym koniu i nie sprzedaje medali – każdy idzie po konia bojowego
-  i wojskowego.
-- **Broń z lepszymi bonusami:** broń swojej klasy z lepszymi bonusami niż ta
-  w ręce, ale z niższym plusem, bot zostawia, ulepsza u kowala co najmniej do
-  plusa broni w ręce i zakłada, gdy bije mocniej.
-- **Przedmioty w szeptach jako podgląd:** bot wstawia przedmioty, o których
-  pisze, tak jak gracz przez Alt+klik – po kliknięciu nazwy widać okienko
-  z plusem, kamieniami i bonusami. Tak samo w odpowiedzi na „Kupię …” na
-  czacie. Działa także ze starszym klientem.
-- **Czat z botami:** bot odróżnia ulepszacz z „+” w nazwie (np. Biała
-  Wstęga+) od zwykłego i rozumie nazwy graczy: rib, fms, hms, jelonek,
-  koziki, półtorak (także odmienione).
-
-### Zuo i Pirat Tanaka na kilku mapach naraz
-
-- Event uruchomiony na kolejnej mapie nie kończy już poprzedniego: każda
-  mapa ma swój event, który zaczyna się, trwa i kończy niezależnie.
-- Na mapy królestwa (obie wioski, mapa gildii, łatwy Loch Małp) przychodzą
-  tylko boty tego królestwa, na wspólne mapy świata – boty wszystkich trzech.
-- W obu panelach lista trwających eventów pokazuje mapy, a każdy event można
-  zatrzymać osobno.
-
-### Kowal, Towarzysz, szept, Auto Łowy (klient 2.0.21)
-
-- **Szansa w oknie kowala:** okno ulepszania pokazuje szansę, z którą serwer
-  naprawdę losuje – z przepisem, Zwojem Wojny, Zwojem Boga Smoków,
-  Podręcznikiem Kowala i +10 u kowala gildyjnego.
-- **Yang z Towarzyszem:** w oknie ekwipunku Towarzysza są przyciski „Daj”
-  i „Weź” – yang przechodzi w obie strony.
-- **Pełne nicki w szepcie:** okno szeptu przyjmuje nick do 24 znaków (było
-  14), więc napiszesz do każdego bota bez klikania w niego.
-- **Auto Łowy:** postać idzie do dalekiego celu i przedmiotu, dopóki się do
-  nich zbliża, zamiast rezygnować po kilku sekundach. Przedmiot porzucony dla
-  walki podnosi po walce, a przy wyłączonym „Wracaj” nie wraca na start.
-
-### Launcher
-
-- Usuwa z folderu klienta zbędne pliki `metin2client-2.0.13.exe`
-  i `metin2client-claude.exe`, jeśli zostały po starych paczkach. Twój
-  `metin2client.exe` zostaje bez zmian.
+- Boty przy metinach biją też potwory wokół (umiejętności obszarowe), każdy
+  bot rozwija konia, a broń z lepszymi bonusami zostawiają i ulepszają.
+- Przedmioty w szeptach botów są klikalne jak po Alt+klik; boty rozumieją
+  nazwy typu rib, fms, jelonek i ulepszacze z „+”.
+- Zuo i Pirat Tanaka mogą trwać na kilku mapach naraz, każdy do zatrzymania
+  osobno w panelach.
+- Z klientem 2.0.21: szansa na sukces w oknie kowala, przyciski „Daj”
+  i „Weź” yang u Towarzysza, nicki do 24 znaków w oknie szeptu i Auto Łowy,
+  które nie rezygnują z dalekiego celu ani przedmiotu.
 
 ---
 
@@ -121,8 +83,7 @@ z 2.0.20.
 - Okno ulepszania pokazuje szansę na sukces (z serwerem 2.10.0).
 - Przyciski „Daj” i „Weź” yang w oknie ekwipunku Towarzysza.
 - Okno szeptu przyjmuje nick do 24 znaków.
-- Auto Łowy: dalekie cele i przedmioty, podnoszenie po walce, „Wracaj”
-  tylko wtedy, gdy jest włączone.
+- Poprawki Auto Łowów.
 
 ---
 

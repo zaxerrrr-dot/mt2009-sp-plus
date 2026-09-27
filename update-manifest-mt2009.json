@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-27T15:39:14Z",
-  "statusMessage": "Serwer 2.10.0 i klient 2.0.21: dolaczanie do gildii botow, reset swiata w panelu, eventy na kilku mapach.",
+  "publishedAt": "2026-09-27T16:39:25Z",
+  "statusMessage": "Serwer 2.10.0 i klient 2.0.21: dolaczanie do gildii botow i reset swiata w panelu zaawansowanym.",
   "server": {
     "version": "2.10.0",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.10.0.zip",
-    "sha256": "F1ACBF22E81531A37161D90E0227C5F05B8AD60FC6038BE9B8CB3CC2AD7380B3",
-    "size": 93260837
+    "sha256": "ACC8B29F56494C0C444080FF15D6D35FED486C617ACB184D5721270C8BC109FD",
+    "size": 93259997
   },
   "client": {
     "version": "2.0.21",
