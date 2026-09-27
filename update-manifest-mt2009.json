@@ -6,8 +6,8 @@
   "server": {
     "version": "2.10.0",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.10.0.zip",
-    "sha256": "069280720EF9634995301B1FDE4B49FBC66852DE9331CFCF9BF0EC7833680381",
-    "size": 93248230
+    "sha256": "12B7C4D74D6B30708CD21455B3368E549D4997E33C7BF1C424AEFA9E6EDFC54A",
+    "size": 93248898
   },
   "client": {
     "version": "2.0.21",

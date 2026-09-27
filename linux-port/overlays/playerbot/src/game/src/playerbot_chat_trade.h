@@ -869,27 +869,54 @@ namespace
 	// "chcesz do gildii?", "dolaczysz do gildii?", "dodac cie do gildii?"):
 	// a word of the guild and a word of asking, in one whisper.
 	// A person asking to join the bot's guild (the operator, 27 September):
-	// "dodasz mnie do gildii?", "przyjmiesz mnie do gildii", "moge dolaczyc do
-	// twojej gildii". Read before the invitation the other way round
-	// (IsPlayerBotGuildRecruitText), which "dodaj" and "dolacz" also match.
+	// "dodasz mnie do gildii?", "a teraz mnie dodasz do gildii?", "przyjmiesz
+	// mnie do gildii", "moge dolaczyc do twojej gildii". The words in any
+	// order: "gild", "mnie" and a verb of taking someone in, or one of the
+	// phrases that ask for a place. Read before the invitation the other way
+	// round (IsPlayerBotGuildRecruitText), which "dodaj" and "dolacz" also
+	// match; "chodz do mnie do gildii" has none of these verbs.
 	bool IsPlayerBotGuildJoinText(const char* text)
 	{
 		char folded[CHAT_MAX_LEN + 1];
 		FoldPlayerBotChatText(text, folded, sizeof(folded));
 		if (!strstr(folded, "gild"))
 			return false;
-		static const char* const asks[] = {
-			"dodasz mnie", "dodaj mnie", "dodacie mnie", "dodalbys mnie", "dodalabys mnie",
-			"przyjmiesz mnie", "przyjmij mnie", "przyjmiecie mnie", "przyjalbys mnie",
-			"zaprosisz mnie", "zapros mnie", "zaproscie mnie", "wezmiesz mnie", "wez mnie",
+		static const char* const phrases[] = {
 			"moge dolaczyc", "moge do", "mozna dolaczyc", "mozna do", "chce dolaczyc", "chce do",
 			"chcialbym dolaczyc", "chcialabym dolaczyc", "chcialbym do", "chcialabym do",
-			"do twojej", "do waszej",
+			"do twojej", "do waszej", "jest miejsce", "macie miejsce", "masz miejsce",
 		};
-		for (size_t i = 0; i < sizeof(asks) / sizeof(asks[0]); ++i)
-			if (strstr(folded, asks[i]))
+		for (size_t i = 0; i < sizeof(phrases) / sizeof(phrases[0]); ++i)
+			if (strstr(folded, phrases[i]))
 				return true;
-		return false;
+		static const char* const verbs[] = {
+			"dodasz", "dodaj", "dodac", "dodal", "dodacie", "przyjmiesz", "przyjmij", "przyjac",
+			"przyjal", "przyjmiecie", "zaprosisz", "zapros", "zaprosic", "wezmiesz", "wez",
+			"wziac", "wezcie", "dopiszesz", "dopisz", "wpuscisz", "wpusc",
+		};
+		bool me = false, verb = false;
+		for (char* word = folded; *word; )
+		{
+			while (*word && !(*word >= 'a' && *word <= 'z'))
+				++word;
+			char* end = word;
+			while (*end >= 'a' && *end <= 'z')
+				++end;
+			const size_t len = end - word;
+			if (len == 4 && !strncmp(word, "mnie", 4))
+				me = true;
+			else if (len == 3 && !strncmp(word, "mie", 3))
+				me = true;
+			for (size_t i = 0; !verb && i < sizeof(verbs) / sizeof(verbs[0]); ++i)
+			{
+				const size_t vlen = strlen(verbs[i]);
+				// The word itself or the verb with its ending ("dodalbys").
+				if (len >= vlen && !strncmp(word, verbs[i], vlen) && len <= vlen + 4)
+					verb = true;
+			}
+			word = end;
+		}
+		return me && verb;
 	}
 
 	// The level a person needs to join a bot guild: above the average of the

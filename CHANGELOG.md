@@ -28,8 +28,9 @@ uruchomienie po aktualizacji przebudowuje serwer.
 ### Dołączanie do gildii botów
 
 Możesz teraz sam poprosić o miejsce w gildii botów. Napisz do bota z tej
-gildii szeptem, np. „dodasz mnie do gildii?”, „przyjmiesz mnie do gildii?”
-albo „mogę dołączyć do twojej gildii?”:
+gildii szeptem, np. „dodasz mnie do gildii?”, „a teraz mnie przyjmiesz do
+gildii?” albo „mogę dołączyć do twojej gildii?” – słowa mogą być w dowolnej
+kolejności, ważne, żeby padło słowo „gildia”:
 
 - **Zwykły członek** odpisze **„Liderem jest …, to on dodaje”** i poda nick
   mistrza gildii.
