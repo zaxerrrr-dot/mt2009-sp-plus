@@ -5,6 +5,13 @@
 # (Actions -> GitHub - wydanie -> Run workflow) for a version already on main,
 # the current one or an older one (tagged at its own release commit).
 #
+# On a push the current VERSION and CLIENT_VERSION are released when they have
+# no release yet, rather than when the last commit changed them: a push of
+# several commits whose version bump was not the last one (the 2.10.0 release,
+# 27 September) used to create nothing. A new release is also announced on
+# Discord from here, once, when it is created (discord-release.yml is left
+# for posting by hand).
+#
 # A server release is marked "latest": the Seban panel (7790) reads
 # /releases/latest and expects a server version there, so a client release
 # never takes that place. A release that already exists is left alone.
@@ -13,7 +20,7 @@ name: GitHub - wydanie
 on:
   push:
     branches: [main]
-    paths: [VERSION, CLIENT_VERSION]
+    paths: [VERSION, CLIENT_VERSION, .github/workflows/github-release.yml]
   workflow_dispatch:
     inputs:
       version:
@@ -52,16 +59,16 @@ jobs:
             fi
             exit 0
           fi
+          # Each step below skips a version that already has its release.
           for f in VERSION CLIENT_VERSION; do
             new=$(tr -d ' \r\n' < "$f" 2>/dev/null || true)
-            old=$(git show "HEAD~1:$f" 2>/dev/null | tr -d ' \r\n' || true)
-            echo "$f: $old -> $new"
-            if [ -n "$new" ] && [ "$new" != "$old" ]; then
-              if [ "$f" = VERSION ]; then echo "server=$new" >> "$GITHUB_OUTPUT"; else echo "client=$new" >> "$GITHUB_OUTPUT"; fi
-            fi
+            echo "$f: $new"
+            [ -n "$new" ] || continue
+            if [ "$f" = VERSION ]; then echo "server=$new" >> "$GITHUB_OUTPUT"; else echo "client=$new" >> "$GITHUB_OUTPUT"; fi
           done
 
       - name: Server release
+        id: server
         if: steps.v.outputs.server != ''
         env:
           GH_TOKEN: ${{ github.token }}
@@ -86,8 +93,10 @@ jobs:
           latest=--latest; [ "$V" = "$(tr -d ' \r\n' < VERSION)" ] || latest=--latest=false
           gh release create "$tag" "${files[@]}" --target "$target" \
             --title "$(cat out/title.txt)" --notes-file out/notes.md "$latest"
+          echo "created=1" >> "$GITHUB_OUTPUT"
 
       - name: Client release
+        id: client
         if: steps.v.outputs.client != ''
         env:
           GH_TOKEN: ${{ github.token }}
@@ -101,3 +110,18 @@ jobs:
           files=(); [ -f "zips/$zip" ] && files+=("zips/$zip")
           gh release create "$tag" "${files[@]}" --target "$target" \
             --title "$(cat out/title.txt)" --notes-file out/notes.md --latest=false
+          echo "created=1" >> "$GITHUB_OUTPUT"
+
+      # Only a release this run created is announced, so a version is posted
+      # once however many pushes see it.
+      - name: Discord - server
+        if: steps.server.outputs.created == '1'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python3 .github/scripts/discord_release.py ${{ steps.v.outputs.server }}
+
+      - name: Discord - client
+        if: steps.client.outputs.created == '1'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python3 .github/scripts/discord_release.py ${{ steps.v.outputs.client }} --client

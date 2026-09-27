@@ -9,10 +9,9 @@
 # variables -> Actions): the webhook of the Discord channel.
 name: Discord - nowa wersja
 
+# A new version is announced by github-release.yml when its release is
+# created; this workflow is for posting or reposting one by hand.
 on:
-  push:
-    branches: [main]
-    paths: [VERSION, CLIENT_VERSION]
   workflow_dispatch:
     inputs:
       version:
