@@ -260,14 +260,149 @@ namespace
 		return weapon ? GetPlayerBotSashPieceValue(ch, weapon->GetProto(), weapon, absorption) : 0;
 	}
 
+	bool IsPlayerBotSashGrailVnum(LPCHARACTER ch, DWORD vnum);
+
 	// A filled sash not worth keeping on: under PLAYERBOT_SASH_JUNK_PERCENT of
 	// the measure at its own absorption.
 	bool IsPlayerBotSashJunk(LPCHARACTER ch, LPITEM sash)
 	{
 		if (!sash || !IsPlayerBotSashAbsorbed(sash))
 			return false;
+		if (IsPlayerBotSashGrailVnum(ch, (DWORD)sash->GetSocket(ACCE_ABSORBED_SOCKET)))
+			return false;
 		const long long reference = GetPlayerBotSashReferenceValue(ch, GetPlayerBotSashAbsorption(sash));
 		return reference > 0 && GetPlayerBotSashValue(ch, sash) * 100 < reference * PLAYERBOT_SASH_JUNK_PERCENT;
+	}
+
+	// ------------------------------------------------------ the sash's grail
+	//
+	// "Najbardziej pozadana bronia do wkladania do szarf jest 30 lvl luk dla
+	// klas atakujacych fizycznie ... a dla klas atakujacych magicznie wachlarz
+	// 30 lvl, jak najwiekszy plus i jak najwiekszy procent" (the operator, 27
+	// September): the Luk z Rogu Jelenia (2150-2159, the highest physical
+	// attack of its level, rolling the average-damage line) for a warrior, a
+	// weapon sura and a ninja; the Wachlarz Jesiennego Wiatru (7160-7169,
+	// rolling the skill-damage line) for a shaman and a magic sura. A keeper
+	// with PLAYERBOT_SASH_GRAIL_MIN_GOLD to spare buys one off a counter, takes
+	// it to PLAYERBOT_SASH_GRAIL_PLUS at the blacksmith - the anvil's table and
+	// scrolls decide how, as for any level-30 weapon, and one the anvil burns
+	// is bought again - and absorbs it ahead of any other piece. The better of
+	// two is the higher plus, then the higher line.
+	const long long PLAYERBOT_SASH_GRAIL_MIN_GOLD = 5000000LL;
+	const DWORD PLAYERBOT_SASH_GRAIL_BOW = 2150;
+	const DWORD PLAYERBOT_SASH_GRAIL_FAN = 7160;
+
+	DWORD GetPlayerBotSashGrailFamily(LPCHARACTER ch)
+	{
+		return IsPlayerBotMagicSchool(ch) ? PLAYERBOT_SASH_GRAIL_FAN : PLAYERBOT_SASH_GRAIL_BOW;
+	}
+
+	BYTE GetPlayerBotSashGrailLine(LPCHARACTER ch)
+	{
+		return IsPlayerBotMagicSchool(ch) ? APPLY_SKILL_DAMAGE_BONUS : APPLY_NORMAL_HIT_DAMAGE_BONUS;
+	}
+
+	bool IsPlayerBotSashGrailVnum(LPCHARACTER ch, DWORD vnum)
+	{
+		const DWORD family = GetPlayerBotSashGrailFamily(ch);
+		return ch && vnum >= family && vnum <= family + 9;
+	}
+
+	bool IsPlayerBotSashGrailItem(LPCHARACTER ch, LPITEM item)
+	{
+		return ch && item && item->GetType() == ITEM_WEAPON && IsPlayerBotSashGrailVnum(ch, item->GetVnum());
+	}
+
+	long long RankPlayerBotSashGrail(LPCHARACTER ch, LPITEM item)
+	{
+		return (long long)item->GetRefineLevel() * 1000 + SumPlayerBotItemLines(item, GetPlayerBotSashGrailLine(ch));
+	}
+
+	// The plus the grail is absorbed at: PLAYERBOT_SASH_GRAIL_PLUS, or the
+	// anvil's ceiling for its roll when that is lower, or the plus it has when
+	// only a scroll may raise it - a scroll the bag holds still does, first.
+	BYTE GetPlayerBotSashGrailReadyPlus(LPITEM item)
+	{
+		if (IsPlayerBotScrollOnlyWeapon(item))
+			return 0;
+		return (BYTE)std::min<int>(PLAYERBOT_SASH_GRAIL_PLUS,
+				GetPlayerBotLevel30AnvilCeiling(SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS)));
+	}
+
+	bool IsPlayerBotSashGrailReady(LPITEM item)
+	{
+		return item && item->GetRefineLevel() >= GetPlayerBotSashGrailReadyPlus(item);
+	}
+
+	// The keeper's grail in the bag: its best copy, a few seconds at a time
+	// (the counters, the merchant and the blacksmith ask for every item).
+	struct TPlayerBotSashGrailMemo { DWORD dwUntil; DWORD dwItemID; };
+	std::map<DWORD, TPlayerBotSashGrailMemo> s_mapPlayerBotSashGrail;
+
+	LPITEM FindPlayerBotSashGrailProject(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || !IsPlayerBotSashKeeper(ch) || ArePlayerBotSashesOff())
+			return NULL;
+		const DWORD now = get_dword_time();
+		TPlayerBotSashGrailMemo& memo = s_mapPlayerBotSashGrail[ch->GetPlayerID()];
+		if (memo.dwUntil != 0 && (int)(now - memo.dwUntil) < 0)
+		{
+			if (!memo.dwItemID)
+				return NULL;
+			LPITEM held = ITEM_MANAGER::instance().Find(memo.dwItemID);
+			if (held && held->GetOwner() == ch && held->GetWindow() == INVENTORY && !held->IsEquipped())
+				return held;
+		}
+		memo.dwUntil = now + 3000;
+		memo.dwItemID = 0;
+		LPITEM best = NULL;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->IsEquipped() || !IsPlayerBotSashGrailItem(ch, item))
+				continue;
+			if (!best || RankPlayerBotSashGrail(ch, item) > RankPlayerBotSashGrail(ch, best))
+				best = item;
+		}
+		memo.dwItemID = best ? best->GetID() : 0;
+		return best;
+	}
+
+	bool IsPlayerBotSashGrailProject(LPCHARACTER ch, LPITEM item)
+	{
+		return ch && item && IsPlayerBotSashGrailItem(ch, item) && FindPlayerBotSashGrailProject(ch) == item;
+	}
+
+	// The worn sash already holds the grail of its school.
+	bool PlayerBotWornSashHoldsGrail(LPCHARACTER ch)
+	{
+		LPITEM worn = ch ? ch->GetWear(WEAR_COSTUME_ACCE) : NULL;
+		return worn && IsPlayerBotSashItem(worn) && IsPlayerBotSashAbsorbed(worn) &&
+				IsPlayerBotSashGrailVnum(ch, (DWORD)worn->GetSocket(ACCE_ABSORBED_SOCKET));
+	}
+
+	// A rich keeper without one - neither in the bag nor in its sash.
+	bool PlayerBotNeedsSashGrail(LPCHARACTER ch)
+	{
+		if (!ch || !IsPlayerBotSashKeeper(ch) || ArePlayerBotSashesOff() ||
+				GetPlayerBotSashTarget(ch).grade <= 0)
+			return false;
+		const long long spare = GetPlayerBotSashSpareGold(ch);
+		const bool needs = spare >= PLAYERBOT_SASH_GRAIL_MIN_GOLD &&
+				!PlayerBotWornSashHoldsGrail(ch) && FindPlayerBotSashGrailProject(ch) == NULL;
+		if (needs)
+			PlayerBotLogThrottled("sash_grail_needs", get_dword_time(),
+					"PLAYERBOT_SASH: grail wanted pid=%u name=%s lv=%d spare=%lld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), spare);
+		return needs;
+	}
+
+	// A counter's grail worth the money: the school's family with its line
+	// rolled up, not down.
+	bool WantsPlayerBotSashGrailOffer(LPCHARACTER ch, LPITEM offer)
+	{
+		return IsPlayerBotSashGrailItem(ch, offer) && PlayerBotNeedsSashGrail(ch) &&
+				SumPlayerBotItemLines(offer, GetPlayerBotSashGrailLine(ch)) > 0;
 	}
 
 	// Which sash to wear: a filled one by what it gives this bot, over an
@@ -363,12 +498,14 @@ namespace
 	// only one that would beat what it wears. The worn one is never goods.
 	bool IsPlayerBotSashPieceKind(LPITEM item);
 	DWORD GetPlayerBotChosenSashPieceID(LPCHARACTER ch);
+	bool IsPlayerBotSashGrailProject(LPCHARACTER ch, LPITEM item);
 
 	bool IsPlayerBotKeptSash(LPCHARACTER ch, LPITEM item)
 	{
-		// The piece chosen for the sash to fill waits for the Uriel visit.
+		// The piece chosen for the sash to fill waits for the Uriel visit, and
+		// the grail for the blacksmith and then Uriel.
 		if (ch && IsPlayerBotSashPieceKind(item) && !item->IsEquipped() && IsPlayerBotSashKeeper(ch))
-			return GetPlayerBotChosenSashPieceID(ch) == item->GetID();
+			return IsPlayerBotSashGrailProject(ch, item) || GetPlayerBotChosenSashPieceID(ch) == item->GetID();
 		if (!ch || !IsPlayerBotSashItem(item))
 			return false;
 		if (item->IsEquipped())
@@ -685,13 +822,30 @@ namespace
 			return NULL;
 		const long long reference = GetPlayerBotSashReferenceValue(ch, absorption);
 		const long long wornValue = GetPlayerBotWornSashValue(ch, sash);
+		// The grail first, once it is at its plus (and not over a grail it
+		// already wears); a grail still at the blacksmith keeps the sash waiting.
+		LPITEM grail = FindPlayerBotSashGrailProject(ch);
+		if (grail && !grail->isLocked() && !grail->IsExchanging())
+		{
+			if (!IsPlayerBotSashGrailReady(grail))
+				return NULL;
+			if (!PlayerBotWornSashHoldsGrail(ch) || GetPlayerBotSashPieceValue(ch, grail->GetProto(), grail, absorption) * 100 >=
+					wornValue * PLAYERBOT_SASH_BETTER_PERCENT)
+			{
+				PlayerBotLogThrottled("sash_grail", get_dword_time(),
+						"PLAYERBOT_SASH: grail chosen pid=%u name=%s lv=%d piece=%u line=%ld abs=%d",
+						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), grail->GetVnum(),
+						SumPlayerBotItemLines(grail, GetPlayerBotSashGrailLine(ch)), absorption);
+				return grail;
+			}
+		}
 		LPITEM best = NULL;
 		long long bestValue = 0;
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item->GetCell() != cell || item->IsEquipped() || item->isLocked() ||
-					item->IsExchanging() || !IsPlayerBotSashPieceKind(item))
+					item->IsExchanging() || !IsPlayerBotSashPieceKind(item) || item == grail)
 				continue;
 			if (IsPlayerBotLppKeptItem(ch, item) || IsPlayerBotKeptBackupArmour(ch, item) ||
 					IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item) ||
@@ -745,6 +899,14 @@ namespace
 		if (!ch || !offer || !IsPlayerBotSashPieceKind(offer) || !IsPlayerBotSashKeeper(ch) ||
 				ArePlayerBotSashesOff())
 			return false;
+		if (WantsPlayerBotSashGrailOffer(ch, offer))
+		{
+			PlayerBotLogThrottled("sash_grail_offer", get_dword_time(),
+					"PLAYERBOT_SASH: wants the grail off a counter pid=%u name=%s lv=%d piece=%u line=%ld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), offer->GetVnum(),
+					SumPlayerBotItemLines(offer, GetPlayerBotSashGrailLine(ch)));
+			return true;
+		}
 		const TPlayerBotSashTarget t = GetPlayerBotSashTarget(ch);
 		if (t.grade <= 0)
 			return false;
@@ -773,6 +935,8 @@ namespace
 	// Asked before a market walk: a keeper with a sash to fill and no piece.
 	bool PlayerBotWantsSashPieceFromMarket(LPCHARACTER ch)
 	{
+		if (PlayerBotNeedsSashGrail(ch))
+			return true;
 		if (!ch || !IsPlayerBotSashKeeper(ch) || ArePlayerBotSashesOff() ||
 				GetPlayerBotSashSpareGold(ch) < 2000000LL)
 			return false;
@@ -1091,6 +1255,7 @@ namespace
 	bool WantsPlayerBotSashPieceOffer(LPCHARACTER, LPITEM) { return false; }
 	bool CanPlayerBotPayForSashPiece(LPCHARACTER, LPITEM, long long) { return false; }
 	bool PlayerBotWantsSashPieceFromMarket(LPCHARACTER) { return false; }
+	bool IsPlayerBotSashGrailProject(LPCHARACTER, LPITEM) { return false; }
 	void NotePlayerBotSashBought(LPCHARACTER, DWORD, long long) {}
 	bool ManagePlayerBotSash(LPCHARACTER, TPlayerBotAIState&, DWORD) { return false; }
 	void LogPlayerBotSashCensus() {}

@@ -38,6 +38,14 @@ z 2.10.0.
 - **Pet zostaje po Twojej śmierci.** Dotąd znikał w chwili śmierci
   postaci. Teraz czeka przy Tobie i po wskrzeszeniu dalej za Tobą idzie.
 
+### Nicki botów
+
+- 43 nowe nicki (m.in. snajperekxd, Almette, JaroszV2, Mikolaj, Wojtek)
+  są na **nowym świecie** rozdawane jako pierwsze – po równo w każdym
+  królestwie – więc te boty zawsze wchodzą do gry. Znaki, których nie ma
+  w nickach, zostały usunięte albo zamienione (np. „Dobra Ciecz” to
+  DobraCiecz, „Mikołaj” to Mikolaj). Istniejący świat zachowuje nicki.
+
 ### Szarfy botów: tylko wartościowe przedmioty
 
 Boty wkładały do szarf byle co – na przykład zbroję na 26 poziom z jednym
@@ -51,6 +59,21 @@ przedmiot tylko wtedy, gdy:
 - w szarfie dałby co najmniej **90% tego, co dałaby broń, którą bot
   walczy** – to miara dobrego przedmiotu na jego poziomie;
 - jest wyraźnie lepszy (o 10%) od tego, co bot już ma w założonej szarfie.
+
+**Święty Graal szarf.** Najlepsze, co można włożyć do szarfy, to broń na
+30 poziom z jak najwyższym plusem i jak najwyższym procentem właściwego
+bonusu:
+
+- dla wojownika, sury walczącego bronią i ninja – **Łuk z Rogu Jelenia**
+  z jak największymi średnimi obrażeniami;
+- dla szamana i sury czarnej magii – **Wachlarz Jesiennego Wiatru**
+  z jak największymi obrażeniami umiejętności.
+
+Bogaty bot (co najmniej 5 mln yang wolnych) kupuje taki łuk albo wachlarz
+na straganie, ulepsza go u kowala do **+6** (według tych samych zasad co
+każdą broń na 30 poziom – wysoki procent idzie pod zwój) i wkłada do
+szarfy przed każdym innym przedmiotem. Jeśli broń spłonie przy
+ulepszaniu, kupuje następną. Szarfa z Graalem nigdy nie jest „słaba”.
 
 Gdy w plecaku nie ma takiego przedmiotu, bot **kupuje go na straganie**
 (ze swojej puli na szarfy, najwyżej o połowę drożej niż cena rynkowa)

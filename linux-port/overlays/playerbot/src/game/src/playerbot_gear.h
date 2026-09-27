@@ -1995,6 +1995,9 @@ namespace
 		if (!ch || !item || !IsPlayerBotSpecialLevel30Weapon(item) || item->CanUsedBy(ch) ||
 				IsPlayerBotScrollOnlyWeapon(item) || !IsPlayerBotLevel30SaleDraw(ch, itemId))
 			return false;
+		// The bow or fan a keeper builds for its sash is not goods.
+		if (IsPlayerBotSashGrailProject(ch, item))
+			return false;
 		// Two of a family in the bag at most, and the rest are goods at once
 		// (PLAYERBOT_HELD_FAMILY_LIMIT): what a bot grinds for sale is still
 		// what it holds. A copy counts when it lies ahead of this one - or
@@ -2787,6 +2790,10 @@ namespace
 	// plus left it in the bag for good.
 	BYTE GetPlayerBotRefineTarget(LPCHARACTER ch, LPITEM item)
 	{
+		// The sash's grail goes to PLAYERBOT_SASH_GRAIL_PLUS; the anvil's
+		// table and scrolls decide how (playerbot_sash.h).
+		if (IsPlayerBotSashGrailProject(ch, item))
+			return std::max<BYTE>(GetPlayerBotRefineTargetOwn(ch, item), PLAYERBOT_SASH_GRAIL_PLUS);
 		const BYTE target = GetPlayerBotRefineTargetOwn(ch, item);
 		if (!ch || !item || item->IsEquipped() || item->GetType() != ITEM_WEAPON)
 			return target;

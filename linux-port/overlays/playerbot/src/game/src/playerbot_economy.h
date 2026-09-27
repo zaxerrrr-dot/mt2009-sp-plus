@@ -2473,6 +2473,9 @@ namespace
 	{
 		if (!item || item->GetRefinedVnum() == 0 || IsPlayerBotSidekickPinned(ch, item))
 			return false;
+		// The bow or fan a keeper builds for its sash (playerbot_sash.h).
+		if (IsPlayerBotSashGrailProject(ch, item))
+			return item->GetRefineLevel() < GetPlayerBotRefineTarget(ch, item);
 		// A level-30 weapon of a class this bot cannot wear, ground for sale
 		// (PlayerBotRefinesLevel30ForSale): no equipment candidate of its own,
 		// and never junk.

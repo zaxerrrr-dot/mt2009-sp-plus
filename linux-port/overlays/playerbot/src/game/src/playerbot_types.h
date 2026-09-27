@@ -6437,6 +6437,11 @@ namespace
 	bool CanPlayerBotPayForSashOffer(LPCHARACTER ch, LPITEM offer, long long price);
 	// And the weapon or body armour it buys to absorb into one.
 	bool WantsPlayerBotSashPieceOffer(LPCHARACTER ch, LPITEM offer);
+	// The sash's grail - the level-30 bow, or the fan for a magic school - a
+	// rich keeper buys and takes to this plus before absorbing it
+	// (playerbot_sash.h): refined at the blacksmith, never ground for sale.
+	const BYTE PLAYERBOT_SASH_GRAIL_PLUS = 6;
+	bool IsPlayerBotSashGrailProject(LPCHARACTER ch, LPITEM item);
 	bool CanPlayerBotPayForSashPiece(LPCHARACTER ch, LPITEM offer, long long price);
 	bool PlayerBotWantsSashPieceFromMarket(LPCHARACTER ch);
 	// Its price (cost to make + 25%) and whether it is a released lone sash.
