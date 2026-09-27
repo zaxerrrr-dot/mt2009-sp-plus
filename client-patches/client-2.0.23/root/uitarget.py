@@ -439,7 +439,13 @@ class TargetBoard(ui.ThinBoard):
 
 	def __ShowHPBoard(self):
 		if not self.hpGauge.IsShow():
-			self.SetSize(200 + 7*self.nameLength, self.GetHeight())
+			# A player's target keeps the width of its buttons (Szept, Handel...):
+			# the HP of a player one may strike used to shrink the board to the
+			# name and leave the buttons hanging outside it.
+			width = 200 + 7*self.nameLength
+			if self.showingButtonList:
+				width = max(width, len(self.showingButtonList) * 75)
+			self.SetSize(width, self.GetHeight())
 			self.name.SetPosition(23, 13)
 
 			self.name.SetWindowHorizontalAlignLeft()
