@@ -6,7 +6,7 @@ param(
 # Smoczy Skowyt (SKILL_DRAGON_ROAR, 93) on the target it was cast at
 # (server-patches/dragonroartarget, README.md): skill_proto makes it SELFONLY,
 # so the splash was only ever around the Shaman while the client plays it at
-# the target. Within 1500 of its target the skill is computed there, further
+# the target. Within 2500 of its target the skill is computed there, further
 # away it is refused. Same edit and marker as apply_dragonroartarget.py (the
 # Linux/VPS twin). A file without the expected code throws and nothing is
 # written.
@@ -34,7 +34,7 @@ $helper = (@(
     "// the Shaman, else its selected target - one it may strike, alive, on its",
     "// map. Within DRAGON_ROAR_TARGET_RANGE the skill is computed on it;",
     "// further away the skill is refused (UseSkill).",
-    "static const int DRAGON_ROAR_TARGET_RANGE = 1500;",
+    "static const int DRAGON_ROAR_TARGET_RANGE = 2500;",
     "static LPCHARACTER GetDragonRoarTarget(LPCHARACTER ch, DWORD dwVnum, LPCHARACTER victim)",
     "{",
     "`tif (dwVnum != SKILL_DRAGON_ROAR || !ch)",
