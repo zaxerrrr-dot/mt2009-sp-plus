@@ -262,6 +262,36 @@ namespace
 		return PlayerBotLootMergesIntoStack(ch, item);
 	}
 
+	// Whether this bot wants this thing at all - worth the step to it on the
+	// ground, worth a trade when a player hands it over
+	// (playerbot_gift_trade.h). Ownership, reach and room are the caller's.
+	// `cheap` says the one reason that is counted apart: merchant fodder a
+	// choosy looter is past.
+	bool IsPlayerBotWantedLootItem(LPCHARACTER ch, LPITEM item, bool choosy, bool medalDropper,
+			bool* cheap = NULL)
+	{
+		if (cheap)
+			*cheap = false;
+		if (!ch || !item)
+			return false;
+		// A key of the Demon Tower is the floor's, whoever the bot is
+		// (playerbot_demon_tower.h uses or hands it in).
+		const bool towerKey = IsPlayerBotDemonTowerKey(item->GetVnum()) ||
+				IsPlayerBotCatacombKey(item->GetVnum());
+		if (!towerKey && medalDropper && !IsPlayerBotMedalDropperLoot(ch, item))
+			return false;
+		// A cape or a symbol nobody wears (IsPlayerBotLeftOnGroundItem).
+		if (IsPlayerBotLeftOnGroundItem(item->GetVnum()))
+			return false;
+		if (!towerKey && choosy && IsPlayerBotLootBeneathBot(ch, item))
+		{
+			if (cheap)
+				*cheap = true;
+			return false;
+		}
+		return true;
+	}
+
 	class CCollectPlayerBotLoot
 	{
 		public:
@@ -310,15 +340,6 @@ namespace
 						m_owner->GetY() - item->GetY());
 				if (distance > m_maxDistance)
 					return true;
-				// A key of the Demon Tower is the floor's, whoever the bot is
-				// (playerbot_demon_tower.h uses or hands it in).
-				const bool towerKey = IsPlayerBotDemonTowerKey(item->GetVnum()) ||
-						IsPlayerBotCatacombKey(item->GetVnum());
-				if (!towerKey && m_medalDropper && !IsPlayerBotMedalDropperLoot(m_owner, item))
-					return true;
-				// A cape or a symbol nobody wears (IsPlayerBotLeftOnGroundItem).
-				if (IsPlayerBotLeftOnGroundItem(item->GetVnum()))
-					return true;
 				// A Cor Draconis on the ground is never a bot's: the engine refuses
 				// every bot's pickup of one (char_item.cpp, PickupItem), so a bot's
 				// own Cor goes straight into its bag and a player's stays his. As
@@ -326,9 +347,11 @@ namespace
 				// vanished or the player took it (MT2009 Plus, 24 September).
 				if (item->GetVnum() == 50255)
 					return true;
-				if (!towerKey && m_choosy && IsPlayerBotLootBeneathBot(m_owner, item))
+				bool cheap = false;
+				if (!IsPlayerBotWantedLootItem(m_owner, item, m_choosy, m_medalDropper, &cheap))
 				{
-					++m_skippedCheap;
+					if (cheap)
+						++m_skippedCheap;
 					return true;
 				}
 				// A drop the bag cannot take is not loot: walking up to it,

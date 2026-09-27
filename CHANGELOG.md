@@ -17,7 +17,7 @@ every version here.
 
 ---
 
-## 2.10.1 — 2026-09-27 — Przejmij bota, szarfy botów tylko z wartościowymi przedmiotami, pet zostaje po śmierci
+## 2.10.1 — 2026-09-27 — Przejmij bota, prezenty dla botów, szarfy botów tylko z wartościowymi przedmiotami, pet zostaje po śmierci
 
 Serwer 2.10.1 i klient 2.0.22: zaktualizuj oba w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
@@ -37,6 +37,22 @@ z 2.10.0.
 - Pasek nad NPC nie zgłasza błędu, gdy NPC zniknie z widoku (klient 2.0.22).
 - **Pet zostaje po Twojej śmierci.** Dotąd znikał w chwili śmierci
   postaci. Teraz czeka przy Tobie i po wskrzeszeniu dalej za Tobą idzie.
+
+### Boty przyjmują prezenty przez handel
+
+Otwórz handel z botem i włóż do okna przedmioty (albo yang):
+
+- bot **staje w miejscu**, przerywa to, co robił, i czeka, aż zatwierdzisz
+  handel – dopiero wtedy zatwierdza sam;
+- ocenia przedmioty **dokładnie tak, jak łup na ziemi**: przyjmuje handel,
+  jeśli choć jeden z nich podniósłby z ziemi (reszta może być złomem);
+- dziękuje szeptem („dzieki”);
+- gdy w oknie jest sam złom, zamyka handel i odpisuje na przykład „co to za
+  zlom”, „po cholere mi to” albo „Sprzedaj to sobie do handlarki”;
+- gdy nie ma miejsca w torbie, mówi o tym;
+- po dwóch minutach bez zatwierdzenia rezygnuje.
+
+Przedmiot, który dostanie, bot założy, jeśli jest lepszy od jego własnego.
 
 ### Przejmij bota na kilka minut
 

@@ -149,6 +149,7 @@ extern void SendShout(const char* szText, BYTE bEmpire);
 namespace { bool HandlePlayerBotConversation(LPCHARACTER player, LPCHARACTER bot, const char* text); }
 #include "playerbot_chat_trade.h"
 #include "playerbot_loot.h"
+#include "playerbot_gift_trade.h"
 #include "playerbot_survival.h"
 #include "playerbot_wandering.h"
 #include "playerbot_status.h"
@@ -5651,6 +5652,12 @@ WritePlayerBotGuildStatus(dwNow);
 			}
 		}
 #endif
+
+		// A player's trade window, ahead of everything: the bot stands still
+		// until the player accepts, then takes what it would pick up off the
+		// ground (playerbot_gift_trade.h). The companion's is its own.
+		if (HandlePlayerBotGiftTrade(ch, state, dwNow))
+			continue;
 
 		// The duel the bot agreed to, ahead of every errand. A challenge is
 		// answered within three seconds and then fought; a bot that walks off
