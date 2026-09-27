@@ -229,6 +229,19 @@ namespace {
         if (!o.buyOwner) {
             if (!Due(now, o.nextBrowse)) return false;
             o.nextBrowse = now + number(120000, 240000);
+            // A guild master whose next building lacks materials looks for
+            // them on every stand of the map, the gambler's way, paying out of
+            // the guild's fund - which the budget below leaves out, being
+            // reserved (playerbot_guild_land.h).
+            {
+                std::map<DWORD, int> missing;
+                const long long guildCap = CollectPlayerBotGuildMaterialMissing(ch, missing);
+                if (!missing.empty() && guildCap > 0 && FindPlayerBotGambleMaterialPick(ch, state, missing, guildCap, now)) {
+                    sys_log(0, "PLAYERBOT_GUILD_LAND: master goes for materials pid=%u name=%s owner=%u item=%u lacking=%u",
+                        ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (unsigned int)missing.size());
+                    return RunPlayerBotOfflinePick(ch, state, now);
+                }
+            }
             const long long budget = Affordable(ch->GetGold(), GetPlayerBotReservedGold(ch), PLAYERBOT_SHOPPING_GOLD_FLOOR);
             if (budget <= 0) return false;
             // What the weapon under Iwakura's scroll rule lacks for its next

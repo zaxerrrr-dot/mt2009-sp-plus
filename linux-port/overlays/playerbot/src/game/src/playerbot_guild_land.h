@@ -791,6 +791,24 @@ namespace
 		return std::max(0, it->second.aiNeed[idx] - (int)ch->CountSpecifyItem(vnum));
 	}
 
+	// What a master's next building lacks, by vnum, and what it may spend on
+	// it at the counters: the guild's fund, or its own spare gold without one.
+	long long CollectPlayerBotGuildMaterialMissing(LPCHARACTER ch, std::map<DWORD, int>& out)
+	{
+		for (int idx = 0; idx < 3; ++idx)
+		{
+			const int want = GetPlayerBotGuildMaterialWant(ch, PLAYERBOT_GUILD_MATERIAL_VNUMS[idx]);
+			if (want > 0)
+				out[PLAYERBOT_GUILD_MATERIAL_VNUMS[idx]] = want;
+		}
+		if (out.empty())
+			return 0;
+		const long long fund = GetPlayerBotGuildFundReserve(ch->GetPlayerID());
+		if (fund > 0)
+			return std::min(fund, (long long)ch->GetGold());
+		return std::max(0LL, (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch));
+	}
+
 	// A counter's line of materials for the master's building: at a fair price,
 	// out of the fund (or the master's own spare gold when there is none).
 	bool CanPlayerBotPayForGuildMaterial(LPCHARACTER ch, LPITEM item, long long price)

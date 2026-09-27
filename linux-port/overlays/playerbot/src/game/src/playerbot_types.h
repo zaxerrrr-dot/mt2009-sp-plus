@@ -8059,6 +8059,7 @@ namespace
 	bool PlayerBotRefineAnvilTakes(LPCHARACTER ch, const TPlayerBotAIState& state, LPITEM item, LPCHARACTER* pSmith);
 	void ManagePlayerBotGuildLand(LPCHARACTER master, CGuild* guild, DWORD dwNow);
 	long GetPlayerBotGuildErrandMap(LPCHARACTER ch);
+	long long CollectPlayerBotGuildMaterialMissing(LPCHARACTER ch, std::map<DWORD, int>& out);
 	DWORD GetPlayerBotGuildMaterialBasePrice();
 }
 
