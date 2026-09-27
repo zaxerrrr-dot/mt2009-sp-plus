@@ -6,10 +6,17 @@ obrażeń był tylko wokół niego. Klient rysuje umiejętność przy celu, na k
 została rzucona, więc stado na dystans dostawało efekt, ale nie obrażenia
 („Skowyt nie zadaje dmg z odległości”, 27 września 2026).
 
-Łatka w `char_skill.cpp`: gdy klient poda żywy cel na tej samej mapie w
-zasięgu 1500, umiejętność liczy się na celu, a obszar obrażeń obejmuje jego
-otoczenie (`FuncSplashDamage` w `ComputeSkill` jest liczony wokół ofiary). Bez
-celu działa jak dotąd, wokół szamana.
+Łatka w `char_skill.cpp`. Klient nie podaje celu Skowytu (albo podaje samego
+szamana), więc celem jest zaznaczona postać (`CHARACTER::GetTarget`, przy
+niej klient rysuje efekt) – żywa, na tej samej mapie, taka, którą szaman
+może zaatakować:
+
+- w zasięgu 1500 umiejętność liczy się na celu, a obszar obrażeń obejmuje
+  jego otoczenie (`FuncSplashDamage` w `ComputeSkill` jest liczony wokół
+  ofiary);
+- dalej umiejętność w ogóle się nie rzuca: bez many i bez odnowienia,
+  komunikat „Cel jest za daleko.”;
+- bez takiego celu działa jak dotąd, wokół szamana.
 
 - `Apply-DragonRoarTargetPatch.ps1` – Windows (instalator silnika,
   `tools/port/Apply-MT2009PlusEngine.ps1`);
