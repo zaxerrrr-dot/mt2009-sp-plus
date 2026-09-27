@@ -809,8 +809,89 @@ namespace
 	// Defined in playerbot_anti_pk.h, which comes after this file.
 	bool HandlePlayerBotSurrenderWhisper(LPCHARACTER player, LPCHARACTER bot, const char* text, DWORD dwNow);
 
+	// A person asking a bot into their guild ("chodz do mnie do gildii",
+	// "chcesz do gildii?", "dolaczysz do gildii?", "dodac cie do gildii?"):
+	// a word of the guild and a word of asking, in one whisper.
+	bool IsPlayerBotGuildRecruitText(const char* text)
+	{
+		char folded[CHAT_MAX_LEN + 1];
+		FoldPlayerBotChatText(text, folded, sizeof(folded));
+		if (!strstr(folded, "gild"))
+			return false;
+		static const char* const asks[] = {
+			"chodz", "chcesz", "dolacz", "dodac", "dodam", "dodaj", "zapros", "zaprosze",
+			"wbij", "przyjdz", "wstap", "przyjm", "zostan", "zapisz", "do mnie", "do mojej",
+			"do nas", "moze do", "wejdz", "przejdz",
+		};
+		for (size_t i = 0; i < sizeof(asks) / sizeof(asks[0]); ++i)
+			if (strstr(folded, asks[i]))
+				return true;
+		return false;
+	}
+
+	// The answer to it (the operator, 27 September). A bot with no guild says
+	// yes at once; one of a bot guild below the elite leaves it for the
+	// person's and says yes; the elite's members, a guild's master and a
+	// member of another person's guild say no. A yes waits for the person's
+	// invitation (IsPlayerBotAwaitingGuildInvite), which AcceptPlayerBotGuildInvite
+	// takes as for any bot with no guild. In the person's guild it offers its
+	// experience as any member does.
+	bool HandlePlayerBotGuildRecruitWhisper(LPCHARACTER player, LPCHARACTER bot, const char* text)
+	{
+		if (!player || !bot || !IsPlayerBotGuildRecruitText(text))
+			return false;
+		// A companion belongs to its owner (playerbot_sidekick.h).
+		if (IsPlayerBotSidekickPID(bot->GetPlayerID()))
+			return false;
+		CGuild* theirs = player->GetGuild();
+		CGuild* mine = bot->GetGuild();
+		const char* reply = NULL;
+		bool leave = false;
+		if (!theirs)
+			reply = "Najpierw zaloz gildie";
+		else if (mine == theirs)
+			reply = "Przeciez juz jestem w twojej gildii";
+		else if (bot->GetEmpire() != player->GetEmpire())
+			reply = "Jestem z innego krolestwa, nie moge";
+		else if (!theirs->GetMember(player->GetPlayerID()) ||
+				!theirs->HasGradeAuth(theirs->GetMember(player->GetPlayerID())->grade, GUILD_AUTH_ADD_MEMBER))
+			reply = "Nie mozesz zapraszac do tej gildii";
+		else if (theirs->GetMemberCount() >= theirs->GetMaxMemberCount())
+			reply = "Twoja gildia jest pelna";
+		else if (mine)
+		{
+			const TPlayerBotGuildInfo* info = GetPlayerBotGuildInfo(mine);
+			if (mine->GetMasterPID() == bot->GetPlayerID())
+				reply = "Mam swoja gildie, jestem liderem";
+			else if (!info)
+				reply = "Jestem juz w gildii, zostaje w niej";
+			else if (info->bTier == GUILD_TIER_ELITE)
+				reply = "Sorry, moja gildia jest lepsza";
+			else if (mine->UnderAnyWar() != 0)
+				reply = "Moja gildia jest teraz na wojnie, napisz pozniej";
+			else
+				leave = true;
+		}
+		if (!reply)
+		{
+			if (leave)
+			{
+				sys_log(0, "PLAYERBOT_GUILD: leaves for a player's guild pid=%u name=%s from=%s to=%s player=%s",
+						bot->GetPlayerID(), bot->GetName(), mine->GetName(), theirs->GetName(), player->GetName());
+				mine->RequestRemoveMember(bot->GetPlayerID());
+			}
+			NotePlayerBotAwaitingGuildInvite(bot->GetPlayerID(), player->GetPlayerID());
+			reply = "Dobrze, dodawaj mnie";
+		}
+		SendPlayerBotWhisper(bot, player, reply);
+		return true;
+	}
+
 	void HandlePlayerWhisperToBot(LPCHARACTER player, LPCHARACTER bot, const char* text)
 	{
+		// Before everything else: an invitation is not a trade or a talk.
+		if (HandlePlayerBotGuildRecruitWhisper(player, bot, text))
+			return;
 		if (!player || !bot || !text)
 			return;
 		const DWORD dwNow = get_dword_time();
