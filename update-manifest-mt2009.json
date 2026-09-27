@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-27T17:59:46Z",
-  "statusMessage": "Serwer 2.10.1 i klient 2.0.22: Towarzysz zbiera Cor Draconis, poprawki panelu GM i podpowiedzi mikstur.",
+  "publishedAt": "2026-09-27T21:39:02Z",
+  "statusMessage": "Serwer 2.11.0 i klient 2.0.23: przejmowanie botow z panelu, prezenty dla botow przez handel, lepsze szarfy botow.",
   "server": {
-    "version": "2.10.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.10.1.zip",
-    "sha256": "C0DA34865DBADC6A2CDAE58B550523583709D2A0502695BCDBBCAFCF1B5EE8B1",
-    "size": 93261596
+    "version": "2.11.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.11.0.zip",
+    "sha256": "1F58A9ED2DBE81C08387127AEEEEBEB223EC9307DBDF27BF3A5C2293A7F8AE1C",
+    "size": 93329035
   },
   "client": {
-    "version": "2.0.22",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.22.zip",
-    "sha256": "8BF35AFFBEB76D4B67E38401ECCF0FC61DBBC6AA1C753968E385345FC3ACB12E",
-    "size": 50573963
+    "version": "2.0.23",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.23.zip",
+    "sha256": "41E9E7091B5611E653F23D8485CDBE68164E40DFAFAEA9A95153A510EE2C5F24",
+    "size": 50582338
   }
 }

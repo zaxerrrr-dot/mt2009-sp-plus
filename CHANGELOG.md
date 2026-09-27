@@ -17,42 +17,11 @@ every version here.
 
 ---
 
-## 2.10.1 — 2026-09-27 — Przejmij bota, prezenty dla botów, szarfy botów tylko z wartościowymi przedmiotami, pet zostaje po śmierci
+## 2.11.0 — 2026-09-27 — Przejmij bota, prezenty dla botów, lepsze szarfy botów
 
-Serwer 2.10.1 i klient 2.0.22: zaktualizuj oba w launcherze
+Serwer 2.11.0 i klient 2.0.23: zaktualizuj oba w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
 z 2.10.0.
-
-- **Towarzysz podnosi Twoje Cor Draconis.** Dotąd podchodził do Cora, który
-  wypadł dla Ciebie, i rezygnował, bo boty z założenia nie podnoszą Corów
-  z ziemi. Teraz bot może podnieść Cor, który należy do gracza z jego
-  drużyny – i od razu trafia on do tego gracza. Wszystkie inne Cory boty
-  dalej omijają.
-- **Lista przedmiotów w panelu GM w grze działa.** Trzy przedmioty (Magiczny
-  Kamień, Gwiazda Nocy, Śnieżny Kwiat) miały w nazwie ukryty znak końca
-  linii, który przerywał listę. Nazwy są czyszczone przy każdym starcie
-  serwera.
-- **Podpowiedź mikstur szybkości ataku i ruchu** (klient 2.0.22) nie
-  wyrzuca już błędu przy każdym najechaniu myszką i pokazuje bonus.
-- Pasek nad NPC nie zgłasza błędu, gdy NPC zniknie z widoku (klient 2.0.22).
-- **Pet zostaje po Twojej śmierci.** Dotąd znikał w chwili śmierci
-  postaci. Teraz czeka przy Tobie i po wskrzeszeniu dalej za Tobą idzie.
-
-### Boty przyjmują prezenty przez handel
-
-Otwórz handel z botem i włóż do okna przedmioty (albo yang):
-
-- bot **staje w miejscu**, przerywa to, co robił, i czeka, aż zatwierdzisz
-  handel – dopiero wtedy zatwierdza sam;
-- ocenia przedmioty **dokładnie tak, jak łup na ziemi**: przyjmuje handel,
-  jeśli choć jeden z nich podniósłby z ziemi (reszta może być złomem);
-- dziękuje szeptem („dzieki”);
-- gdy w oknie jest sam złom, zamyka handel i odpisuje na przykład „co to za
-  zlom”, „po cholere mi to” albo „Sprzedaj to sobie do handlarki”;
-- gdy nie ma miejsca w torbie, mówi o tym;
-- po dwóch minutach bez zatwierdzenia rezygnuje.
-
-Przedmiot, który dostanie, bot założy, jeśli jest lepszy od jego własnego.
 
 ### Przejmij bota na kilka minut
 
@@ -69,13 +38,21 @@ przycisk **Przejmij bota na [X] minut** (od 1 do 1440).
 - Każde przejęcie ma nowe, losowe hasło. Towarzysza i postaci graczy nie da
   się przejąć.
 
-### Nicki botów
+### Boty przyjmują prezenty przez handel
 
-- 43 nowe nicki (m.in. snajperekxd, Almette, JaroszV2, Mikolaj, Wojtek)
-  są na **nowym świecie** rozdawane jako pierwsze – po równo w każdym
-  królestwie – więc te boty zawsze wchodzą do gry. Znaki, których nie ma
-  w nickach, zostały usunięte albo zamienione (np. „Dobra Ciecz” to
-  DobraCiecz, „Mikołaj” to Mikolaj). Istniejący świat zachowuje nicki.
+Otwórz handel z botem i włóż do okna przedmioty (albo yang):
+
+- bot **staje w miejscu**, przerywa to, co robił, i czeka, aż zatwierdzisz
+  handel – dopiero wtedy zatwierdza sam;
+- ocenia przedmioty **dokładnie tak, jak łup na ziemi**: przyjmuje handel,
+  jeśli choć jeden z nich podniósłby z ziemi (reszta może być złomem);
+- dziękuje szeptem („dzieki”);
+- gdy w oknie jest sam złom, zamyka handel i odpisuje na przykład „co to za
+  zlom”, „po cholere mi to” albo „Sprzedaj to sobie do handlarki”;
+- gdy nie ma miejsca w torbie, mówi o tym;
+- po dwóch minutach bez zatwierdzenia rezygnuje.
+
+Przedmiot, który dostanie, bot założy, jeśli jest lepszy od jego własnego.
 
 ### Szarfy botów: tylko wartościowe przedmioty
 
@@ -124,15 +101,72 @@ Gdy w plecaku nie ma takiego przedmiotu, bot **kupuje go na straganie**
 i nie sprzedaje go przed wizytą u Uriela. Szarfa ze słabym przedmiotem nie
 jest już dla bota „gotowa”: bot buduje nową i zakłada tę, która daje więcej.
 
+### Nicki botów
+
+- 43 nowe nicki (m.in. snajperekxd, Almette, JaroszV2, Mikolaj, Wojtek)
+  są na **nowym świecie** rozdawane jako pierwsze – po równo w każdym
+  królestwie – więc te boty zawsze wchodzą do gry. Znaki, których nie ma
+  w nickach, zostały usunięte albo zamienione (np. „Dobra Ciecz” to
+  DobraCiecz, „Mikołaj” to Mikolaj). Istniejący świat zachowuje nicki.
+
+### Poprawki
+
+- **Towarzysz podnosi Twoje Cor Draconis.** Dotąd podchodził do Cora, który
+  wypadł dla Ciebie, i rezygnował, bo boty z założenia nie podnoszą Corów
+  z ziemi. Teraz bot może podnieść Cor, który należy do gracza z jego
+  drużyny – i od razu trafia on do tego gracza. Wszystkie inne Cory boty
+  dalej omijają.
+- **Lista przedmiotów w panelu GM w grze działa.** Trzy przedmioty (Magiczny
+  Kamień, Gwiazda Nocy, Śnieżny Kwiat) miały w nazwie ukryty znak końca
+  linii, który przerywał listę. Nazwy są czyszczone przy każdym starcie
+  serwera.
+- **Podpowiedź mikstur szybkości ataku i ruchu** (klient 2.0.22) nie
+  wyrzuca już błędu przy każdym najechaniu myszką i pokazuje bonus.
+- Pasek nad NPC nie zgłasza błędu, gdy NPC zniknie z widoku (klient 2.0.22).
+- **Pet zostaje po Twojej śmierci.** Dotąd znikał w chwili śmierci
+  postaci. Teraz czeka przy Tobie i po wskrzeszeniu dalej za Tobą idzie.
+
+### Inne zmiany
+
+- Wieża Demonów: bot, który padnie, wraca niewidzialny do drużyny i leczy
+  się po drodze; boty wszystkich królestw wchodzą razem i nie ranią się
+  nawzajem; mistrz gildii może wejść bez wzywania swoich botów, a każdy
+  gracz może wejść **solo** do własnej Wieży.
+- Boty, które trafiły metina, idą po swoją część łupu (często książkę),
+  zanim zajmie ją ktoś inny.
+- Auto Łowy najpierw kończą walkę, potem zbierają cały drop (klient 2.0.23).
+- Towarzysz: przełącznik **„Gra beze mnie”** (gra dalej, gdy wyjdziesz, do
+  Twojego poziomu +30) i **„Skrzynki”** (może nie otwierać skrzyń);
+  przedmioty, których nie można oddać, przechodzą przez okno jego torby;
+  Towarzysz z mapy innego rdzenia pojawia się od razu przy Tobie.
+- **Seon-Pyeong** przy Grocie Wygnańców przekuwa broń +9 z 65 poziomu i
+  zbroję +9 z 66 poziomu na przedmiot z 80 poziomu (Broszura Szermierki,
+  perły i 2 mln yang).
+- Pasek celu pokazuje życie liczbą, także gracza w pojedynku (klient 2.0.23).
+- Pełny nick właściciela w oknie sklepu offline i w wyszukiwarce.
+- Boty zsiadają z konia i odwołują go w pojedynku i w walce z graczem.
+- Nad botem widać, gdy dropi kamień dla Biologa.
+- Okno ulepszania jest wyższe, więc szansa nie zasłania ulepszaczy
+  (klient 2.0.23).
+- Na dwóch kanałach startują wszystkie boty z suwaka.
+- Launcher mówi, który program zajmuje port serwera, a paczka logów zawiera
+  dzienniki z trzech ostatnich dni.
+
 ---
 
-## Klient 2.0.22 — 2026-09-27 — Podpowiedź mikstur
+## Klient 2.0.23 — 2026-09-27 — Auto Łowy, pasek celu, okno Towarzysza
 
 Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Zawiera wszystko
 z 2.0.21.
 
 - Podpowiedź mikstur szybkości ataku i ruchu działa bez błędów.
 - Pasek nad NPC nie zgłasza błędu, gdy NPC zniknie z widoku.
+- Pasek celu pokazuje życie liczbą (na przykład 1520/3000).
+- Auto Łowy zbierają drop po walce, a łucznik strzela od razu.
+- W oknie Towarzysza (P) przełączniki „Lurowanie”, „Gra beze mnie” i
+  „Skrzynki”.
+- Pełny nick właściciela w oknie sklepu offline.
+- Okno ulepszania nie zasłania ulepszaczy napisem z szansą.
 
 ---
 

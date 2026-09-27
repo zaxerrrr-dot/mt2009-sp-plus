@@ -78,6 +78,12 @@ namespace {
         if (IsPlayerBotOnTowerBusiness(ch, state)) return "tower";
         // Nor off a pirate or a Zuo wave (playerbot_world_events.h).
         if (state.bWorldEventKind != 0) return "world_event";
+        // Nor away from a broken stone's drops while its loot window is open:
+        // a service that fell due during the fight started on the first pass
+        // after the break, and the owner's book lay out its thirty seconds of
+        // ownership for the next bot to ride in (sosen, 27 September).
+        if (state.dwStoneBrokenTime != 0 &&
+                get_dword_time() - state.dwStoneBrokenTime < PLAYERBOT_METIN_LOOT_DASH_TIME) return "metin_loot";
         // Nor out of a Monkey Dungeon: a visit is half an hour in rooms
         // joined only by their doors, and a keeper warped out of it has the
         // whole way back in to walk. The service waits for the way out.

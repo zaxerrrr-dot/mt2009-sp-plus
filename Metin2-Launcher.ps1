@@ -268,6 +268,26 @@ function Assert-DockerDiskWritable {
            $fault + [Environment]::NewLine + [Environment]::NewLine + (Get-M2DockerDiskRemedy))
 }
 
+function Assert-ServerPortsFree {
+    # A program of Windows' own on one of the server's ports - a MySQL on 3306
+    # (Producent Hip Hopu, 27 September) - is what the start's preflight names,
+    # but an update never asked: it downloaded, swapped the files, built for
+    # minutes, and only then did compose fail to bind the port. Asked before
+    # the download now, and again before a build. Another installation's
+    # containers are not this check's: Clear-PortConflicts stops them.
+    # -KeepRebuildPending: the files are already the new ones, so a later GRAJ
+    # must still finish the build.
+    param([switch]$KeepRebuildPending, [string]$Before = 'budowanie serwera')
+    $conflicts = @(Get-M2ProgramPortConflicts -ServerRoot $serverRoot)
+    if ($conflicts.Count -eq 0) { return }
+    if ($KeepRebuildPending) {
+        Set-Content -LiteralPath $rebuildMarkerPath -Value ([DateTime]::UtcNow.ToString('o')) -Encoding UTF8
+    }
+    throw ("Przerywam $Before - port serwera zajmuje inny program:" + [Environment]::NewLine +
+           ((@($conflicts) | ForEach-Object { [string]$_.Advice }) -join [Environment]::NewLine) +
+           [Environment]::NewLine + 'Baza, postacie i ustawienia są w porządku.')
+}
+
 function Start-Server {
     # Before the preflight refuses the start: an old installation takes the
     # ports back on every engine start, so a check that only names it leaves the
@@ -505,6 +525,9 @@ function Rebuild-Server {
     # update is lost at its last step and the player is told to free a port they
     # cannot find.
     Clear-PortConflicts -Quiet | Out-Null
+    # And a port a program of Windows' own holds, which nothing here can stop:
+    # said before the minutes of building, not after them.
+    Assert-ServerPortsFree -KeepRebuildPending
 
     # See Stop-Server: compose progress on stderr must not be treated as failure
     # under $ErrorActionPreference='Stop' in Windows PowerShell 5.1.
@@ -570,6 +593,7 @@ function Update-Server {
         return
     }
     Assert-DockerDiskWritable -Before 'aktualizację (niczego nie pobrano ani nie podmieniono)'
+    Assert-ServerPortsFree -Before 'aktualizację (niczego nie pobrano ani nie podmieniono)'
     if (-not (Confirm-Operation 'Zaktualizować pliki serwera i przebudować kontenery? Baza postaci pozostanie bez zmian.')) {
         Write-Host 'Anulowano.' -ForegroundColor Yellow
         return
@@ -811,8 +835,13 @@ function Get-KingdomCountsFromEnv {
     $total = 0
     [int]::TryParse((Get-DotEnvValue -Key 'PLAYERBOT_AUTOSPAWN_COUNT' -Default '0'), [ref]$total) | Out-Null
     $even = [int][Math]::Floor($total / 3)
+    $enabled = (Get-DotEnvValue -Key 'PLAYERBOT_AUTOSPAWN_PER_KINGDOM' -Default '0') -eq '1'
     $read = {
         param($key)
+        # Only numbers in use are offered back: .env.example ships the three at
+        # 0 and start-server.ps1 adds them to every .env, so "not there yet" was
+        # never true and the dialog opened on zeros after all.
+        if (-not $enabled) { return $even }
         $raw = Get-DotEnvValue -Key $key -Default ''
         if ([string]::IsNullOrWhiteSpace([string]$raw)) { return $even }
         $n = 0
@@ -820,7 +849,7 @@ function Get-KingdomCountsFromEnv {
         return $even
     }
     return @{
-        Enabled = (Get-DotEnvValue -Key 'PLAYERBOT_AUTOSPAWN_PER_KINGDOM' -Default '0') -eq '1'
+        Enabled = $enabled
         Shinsoo = & $read 'PLAYERBOT_AUTOSPAWN_SHINSOO'
         Chunjo  = & $read 'PLAYERBOT_AUTOSPAWN_CHUNJO'
         Jinno   = & $read 'PLAYERBOT_AUTOSPAWN_JINNO'

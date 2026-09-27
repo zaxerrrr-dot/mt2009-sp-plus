@@ -1352,6 +1352,15 @@ function New-M2SupportBundle {
         $composeFile = Join-Path $composeDir 'docker-compose.yml'
         Invoke-M2CapturedCommand -OutputPath (Join-Path $work 'docker-version.txt') -Command { docker version }
         Invoke-M2CapturedCommand -OutputPath (Join-Path $work 'docker-info.txt') -Command { docker info }
+        # Every volume and when it was made. A world that "vanished with the
+        # update" was a database MariaDB had initialized from nothing the
+        # evening before (Piciu97, 27 September), and only the volume's age
+        # says whether it was removed, and when. No space in the format: an
+        # argument with one reaches docker quoted.
+        Invoke-M2CapturedCommand -OutputPath (Join-Path $work 'docker-volumes.txt') -Command {
+            $volumeNames = @(docker volume ls -q)
+            if ($volumeNames.Count -gt 0) { docker volume inspect --format '{{.Name}};{{.CreatedAt}}' $volumeNames }
+        }
         if (Test-Path -LiteralPath $composeFile -PathType Leaf) {
             Invoke-M2CapturedCommand -OutputPath (Join-Path $work 'compose-ps.txt') -Command {
                 docker compose --project-directory $composeDir -f $composeFile ps -a
@@ -1465,9 +1474,15 @@ function New-M2SupportBundle {
         if (Test-Path -LiteralPath $launcherLogDir -PathType Container) {
             $logOutput = Join-Path $work 'launcher-logs'
             New-Item -ItemType Directory -Path $logOutput -Force | Out-Null
-            Get-ChildItem -LiteralPath $launcherLogDir -File -Filter '*.log' |
-                Sort-Object LastWriteTime -Descending |
-                Select-Object -First 5 |
+            # The day's launcher log of the last three days whatever else was
+            # written since, and the five newest of the rest. Five of any kind
+            # let one afternoon's action logs push out the day before - the
+            # day that held what the world lost (Piciu97, 27 September).
+            $allLogs = @(Get-ChildItem -LiteralPath $launcherLogDir -File -Filter '*.log' |
+                Sort-Object LastWriteTime -Descending)
+            $dailyLogs = @($allLogs | Where-Object { $_.Name -like 'launcher-*.log' } | Select-Object -First 3)
+            $otherLogs = @($allLogs | Where-Object { $_.Name -notlike 'launcher-*.log' } | Select-Object -First 5)
+            @($dailyLogs + $otherLogs) |
                 ForEach-Object {
                     $safeLog = Protect-M2LogContent -Text (Get-Content -LiteralPath $_.FullName -Raw -ErrorAction SilentlyContinue)
                     [IO.File]::WriteAllText((Join-Path $logOutput $_.Name), $safeLog, [Text.UTF8Encoding]::new($false))

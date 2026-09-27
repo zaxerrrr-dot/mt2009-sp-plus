@@ -966,14 +966,27 @@ function Get-SpawnPlanFromEnv {
 
 function Get-KingdomPlanFromEnv {
     # PLAYERBOT_AUTOSPAWN_PER_KINGDOM with the three numbers, and the second
-    # channel with its share, as .env has them; off, 0/0/0 and 40% otherwise.
+    # channel with its share, as .env has them; off and 40% otherwise.
+    #
+    # The three boxes open on the operator's own numbers only while those are in
+    # use, and on an even share of the bots that play otherwise - never on the
+    # zeros .env.example ships: ticked and half filled, they left two kingdoms
+    # with nobody ("nowe postacie tworza sie tylko w Chunjo", NerrVoVy, 19
+    # September). The 2.0.83 fix reached the text launcher alone, and only for a
+    # .env without the keys, which start-server.ps1 adds at 0 to every one.
     $envPath = Join-Path $root 'linux-port\docker\.env'
     $plan = @{ PerKingdom = $false; Shinsoo = 0; Chunjo = 0; Jinno = 0; Channel2 = $false; Channel2Share = 40 }
     if (Test-Path -LiteralPath $envPath -PathType Leaf) {
         $content = [IO.File]::ReadAllText($envPath)
         $m = [Regex]::Match($content, '(?m)^PLAYERBOT_AUTOSPAWN_PER_KINGDOM=(\d+)\s*$')
         if ($m.Success) { $plan.PerKingdom = $m.Groups[1].Value -eq '1' }
+        $total = 0
+        $m = [Regex]::Match($content, '(?m)^PLAYERBOT_AUTOSPAWN_COUNT=(\d+)\s*$')
+        if ($m.Success) { $total = [int]$m.Groups[1].Value }
+        $even = [int][Math]::Floor($total / 3)
         foreach ($pair in @(@('Shinsoo', 'PLAYERBOT_AUTOSPAWN_SHINSOO'), @('Chunjo', 'PLAYERBOT_AUTOSPAWN_CHUNJO'), @('Jinno', 'PLAYERBOT_AUTOSPAWN_JINNO'))) {
+            $plan[$pair[0]] = $even
+            if (-not $plan.PerKingdom) { continue }
             $m = [Regex]::Match($content, '(?m)^' + $pair[1] + '=(\d+)\s*$')
             if ($m.Success) { $plan[$pair[0]] = [int]$m.Groups[1].Value }
         }
@@ -3595,8 +3608,14 @@ $botCountButton.Add_Click({
     }
     else { "$count grających botów" }
     $channelWhat = if ($chosen.Channel2) { ", drugi kanał włączony ($($chosen.Channel2Share)% botów na CH2)" } else { '' }
+    # A kingdom at zero starts nobody, and said so only in the text launcher.
+    $emptyKingdoms = @()
+    if ($chosen.PerKingdom) {
+        foreach ($k in @('Shinsoo', 'Chunjo', 'Jinno')) { if ([int]$chosen.$k -le 0) { $emptyKingdoms += $k } }
+    }
+    $emptyWhat = if ($emptyKingdoms.Count -gt 0) { "`n`nUWAGA: " + ($emptyKingdoms -join ' i ') + ' nie wystartuje żadnego bota.' } else { '' }
     $answer = [Windows.Forms.MessageBox]::Show(
-        "Ustawić $what (wejście w $($chosen.Minutes) min, $($chosen.Late) dodatkowych w ciągu $($chosen.Hours) h)$channelWhat i zrestartować serwer teraz, aby zastosować? Baza i postęp botów pozostaną bez zmian.",
+        "Ustawić $what (wejście w $($chosen.Minutes) min, $($chosen.Late) dodatkowych w ciągu $($chosen.Hours) h)$channelWhat i zrestartować serwer teraz, aby zastosować? Baza i postęp botów pozostaną bez zmian.$emptyWhat",
         'Liczba botów', 'YesNoCancel', 'Question')
     if ($answer -eq [Windows.Forms.DialogResult]::Cancel) { return }
     if ($answer -eq [Windows.Forms.DialogResult]::Yes) {

@@ -1692,7 +1692,14 @@ namespace
 	const DWORD PLAYERBOT_TOWER_FLOOR_MAX_MS = 35 * 60 * 1000;
 	const DWORD PLAYERBOT_TOWER_MAX_MS = 2 * 60 * 60 * 1000;
 	const DWORD PLAYERBOT_TOWER_SMITH_WAIT_MS = 60 * 1000;
-	const DWORD PLAYERBOT_TOWER_SCAN_INTERVAL = 1500;
+	// The floor's scan is a list of what stood when it was taken, and a bot
+	// that fights from it every half second saw a monster it had just killed
+	// for up to 1.5 s after (a corpse stays findable for ten): it swung at the
+	// corpse or stood, and the Metin of Murder's waves were met by bots that
+	// did nothing for a second or two ("przy respie mobow z metina boty
+	// dostaja laga", prodnathin, 27 September). Every pick now skips the dead
+	// and the scan is at most this old, so a wave is seen on the next pass.
+	const DWORD PLAYERBOT_TOWER_SCAN_INTERVAL = 400;
 	const DWORD PLAYERBOT_TOWER_CENSUS_INTERVAL = 10 * 60 * 1000;
 	// The bots' tower level: the raid calls nobody under it, a guild master
 	// summons nobody under it, and a bot under it that the jump took in leaves
@@ -1717,6 +1724,22 @@ namespace
 	const int PLAYERBOT_TOWER_STONE_CLEAR_LIMIT = 25;
 	// ... or with no monster this close to the stone itself.
 	const int PLAYERBOT_TOWER_STONE_CLEAR_RADIUS = 1500;
+	// A bot that fell on a floor walks back to the pack before it fights
+	// again (RegroupPlayerBotTowerAfterDeath). Its recovery ends once it is
+	// healed and within REGROUP_RADIUS of the pack, or of the floor's arrival
+	// when no bot stands. REGROUP_MAX_MS after the fall - ten seconds of which
+	// it lies dead (PLAYERBOT_REVIVE_DELAY) - it ends healed wherever the walk
+	// has got to, so a pack that keeps moving or a route the ground refuses
+	// cannot keep it out of the fight.
+	const int PLAYERBOT_TOWER_REGROUP_RADIUS = 700;
+	const DWORD PLAYERBOT_TOWER_REGROUP_MAX_MS = 60 * 1000;
+	// A floor has no town to walk back to either, so the pack drinks at a
+	// war's thresholds (PLAYERBOT_GUILD_WAR_POTION_*), not the hunt's 65%:
+	// the eighth floor's groups respawn every minute and attack on sight, and
+	// a pack of half the old size lost its bots one at a time there
+	// (prodnathin, 27 September).
+	const int PLAYERBOT_TOWER_POTION_HP_PERCENT = 85;
+	const int PLAYERBOT_TOWER_POTION_SP_PERCENT = 50;
 	// The seventh floor: the monsters first and the Metin of Murder after
 	// ("niech najpierw skupia sie na mobach, a potem zabieraja sie za kamien",
 	// Tieru, after prodnathin's "lapia aggro na metina i olewaja moby", 23
@@ -3740,6 +3763,11 @@ namespace
 	// the stone's pack is still on it, and the fight comes first then.
 	const DWORD PLAYERBOT_METIN_LOOT_LINGER_MS = 5000;
 	const int PLAYERBOT_METIN_LOOT_LINGER_MIN_HP_PERCENT = 40;
+	// How long after its last blow a bot still holds a share of a stone's drop:
+	// the engine hands the items round everybody still in the stone's fight,
+	// struck within forty seconds (playerbotify's apply_drop_to_active_attackers),
+	// so a bot whose sweep hurt the stone beside its own monster owns a book too.
+	const DWORD PLAYERBOT_METIN_LOOT_SHARE_MS = 40000;
 	// An archer pulls too, but a bow is not a shield: one group, four attackers.
 	const int PLAYERBOT_MULTI_PULL_ARCHER_MAX_AGGRESSORS = 4;
 	const BYTE PLAYERBOT_SKILL_MASTER_TRY_LEVEL = 17;
@@ -5249,6 +5277,12 @@ namespace
 		BYTE rewardPoint;
 		int rewardPointValue;
 		DWORD rewardBoxVnum;
+		// The key's own words, for the line over the bot's head: in a row's
+		// second half the bot is after the key and no longer the specimen,
+		// and the status went on naming the specimen - "Zbieram dla Biologa:
+		// Zab Orka" over a bot of eighty with ten teeth handed in, hunting
+		// Elite Orcs for Jinunggyi's stone (prodnathin, 27 September).
+		const char* keyItemLabel;
 	};
 
 	// The gold and experience columns are zero on purpose, and that is this
@@ -5259,12 +5293,12 @@ namespace
 	// GivePlayerBotBiologistReward. Filling a row in here is all it takes if
 	// the quest ever gets a reward_data entry of its own.
 	const TPlayerBotBiologistMission PLAYERBOT_BIOLOGIST_MISSIONS[] = {
-		{ 4,  "make_herb_lv4",  50701, 173, 5,  90, 0, 0, "Kwiat Brzoskwini", 0, 0, 0, 0, 0 },
-		{ 7,  "make_herb_lv7",  50702, 175, 5,  90, 0, 0, "Pokrzywa",         0, 0, 0, 0, 0 },
-		{ 10, "make_herb_lv10", 50703, 177, 5,  90, 0, 0, "Kwiat Kaki",       0, 0, 0, 0, 0 },
-		{ 15, "make_herb_lv15", 50704, 181, 5,  90, 0, 0, "Korzen Gango",     0, 0, 0, 0, 0 },
-		{ 20, "make_herb_lv20", 50705, 182, 10, 80, 0, 0, "Bez",              0, 0, 0, 0, 0 },
-		{ 25, "make_herb_lv25", 50706, 183, 10, 70, 0, 0, "Grzyb Tue",        0, 0, 0, 0, 0 },
+		{ 4,  "make_herb_lv4",  50701, 173, 5,  90, 0, 0, "Kwiat Brzoskwini", 0, 0, 0, 0, 0, NULL },
+		{ 7,  "make_herb_lv7",  50702, 175, 5,  90, 0, 0, "Pokrzywa",         0, 0, 0, 0, 0, NULL },
+		{ 10, "make_herb_lv10", 50703, 177, 5,  90, 0, 0, "Kwiat Kaki",       0, 0, 0, 0, 0, NULL },
+		{ 15, "make_herb_lv15", 50704, 181, 5,  90, 0, 0, "Korzen Gango",     0, 0, 0, 0, 0, NULL },
+		{ 20, "make_herb_lv20", 50705, 182, 10, 80, 0, 0, "Bez",              0, 0, 0, 0, 0, NULL },
+		{ 25, "make_herb_lv25", 50706, 183, 10, 70, 0, 0, "Grzyb Tue",        0, 0, 0, 0, 0, NULL },
 		// The Orc Tooth. Ten from the Orcs (601) of the valley, one in twenty
 		// kills while the quest is open; sixty percent of what is handed in is
 		// accepted, the rest is spoiled, as in the quest without the elixir. The
@@ -5273,7 +5307,7 @@ namespace
 		// (30220), one in five hundred Elite Orc kills while the quest waits for
 		// it, and the reward is the quest's own, ten movement speed for good.
 		{ 30, "collect_quest_lv30", 30006, 601, 10, 60, 0, 0, "Zab Orka",
-				30220, 631, POINT_MOV_SPEED, 10, 50109 },
+				30220, 631, POINT_MOV_SPEED, 10, 50109, "Kamien Duszy Jinunggyi" },
 		// The chain does not stop at the Orc Tooth: collect_quest_lv30's last
 		// state runs lv40, and lv40 runs lv50. Both want fifteen specimens at
 		// the same sixty percent, both wait for a key item one kill in five
@@ -5289,7 +5323,7 @@ namespace
 		// (IsPlayerBotBiologistHuntRace), and the Curse Book's specimen and its
 		// key are two different families on the same Tormentor.
 		{ 40, "collect_quest_lv40", 30047, 706, 15, 60, 0, 0, "Ksiega Klatw",
-				30221, 701, POINT_ATT_SPEED, 5, 50110 },
+				30221, 701, POINT_ATT_SPEED, 5, 50110, "Swiatynny Kamien Duszy" },
 		// The Demon Souvenir is the row this world cannot finish, and it is
 		// here so that it starts working by itself the day that changes. Its
 		// specimen (30015) drops from the Demon Soldier (1001) and its key
@@ -5303,7 +5337,7 @@ namespace
 		// The key names 1002 for the same reason: 1001 alone carries the
 		// souvenir, 1001-1004 the key.
 		{ 50, "collect_quest_lv50", 30015, 1001, 15, 60, 0, 0, "Pamiatka Po Demonie",
-				30222, 1002, POINT_DEF_GRADE_BONUS, 60, 50111 }
+				30222, 1002, POINT_DEF_GRADE_BONUS, 60, 50111, "Kamien Duszy Sagyi" }
 	};
 	const DWORD PLAYERBOT_ORC_TOOTH_VNUM = 30006;
 	// How many specimens are worth a walk to Joan.
@@ -6225,11 +6259,6 @@ namespace
 
 	BYTE GetPlayerBotPersonalityByPID(DWORD dwPID);
 
-	// The Demon Tower's ground floor while another kingdom's bot guild gathers
-	// there for its raid (playerbot_demon_tower.h): the travel does not send a
-	// bot there, and one already there leaves.
-	bool IsPlayerBotTowerGroundClosedFor(LPCHARACTER ch);
-
 	// The role a bot plays in its guild's war and whether its side is
 	// regrouping after a round (playerbot_guild_war.h), for the status line.
 	const char* GetPlayerBotWarRoleName(LPCHARACTER ch, bool en);
@@ -6239,6 +6268,7 @@ namespace
 	// fragment that asks these): whose it is, whether it stands at its
 	// owner's side, and what its owner handed it.
 	bool IsPlayerBotSidekickPID(DWORD pid);
+	bool IsPlayerBotSidekickKeepingChests(LPCHARACTER ch);
 	bool IsPlayerBotSidekickLeashed(LPCHARACTER ch);
 	bool IsPlayerBotSidekickHolding(LPCHARACTER ch);
 	bool IsPlayerBotSidekickGift(LPCHARACTER ch, LPITEM item);
@@ -7221,6 +7251,8 @@ namespace
 			dwStoneFightStartTime(0),
 			dwStoneProgressVID(0),
 			dwStoneBrokenTime(0),
+			dwStoneLootVID(0),
+			dwStoneLootHitTime(0),
 			bFightProgressBoss(false),
 			dwRaceHistogramStamp(0),
 			dwMetinExpeditionUntil(0),
@@ -7586,6 +7618,11 @@ namespace
 		DWORD dwStoneFightStartTime;
 		DWORD dwStoneProgressVID;
 		DWORD dwStoneBrokenTime;
+		// The stone this bot last hurt, as its target or in a sweep beside it,
+		// and when (NotePlayerBotStoneHit): its break opens the loot window
+		// for every bot with a share of the drop, not only the one aiming at it.
+		DWORD dwStoneLootVID;
+		DWORD dwStoneLootHitTime;
 		// The monster the fight-progress clock tracks is a boss: its fall opens
 		// the loot window a broken stone gets (dwStoneBrokenTime).
 		bool bFightProgressBoss;

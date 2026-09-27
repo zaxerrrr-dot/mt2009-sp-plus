@@ -325,6 +325,28 @@ migrate_world_layout() {
     printf 'M2_PLAYERBOT_WORLD_LAYOUT_DEFAULTED=1\n' >> "$_env"
 }
 
+# Every 2.x world is meant to run all three kingdoms ("istotne, by tak bylo u
+# kazdego"), and a .env is written once and kept: a Linux install made before
+# 2.0.8 carries M2_PLAYERBOT_KINGDOMS=0 and stayed a Chunjo-only world for
+# good, because only the Windows launcher ever flipped it
+# (Assert-KingdomsDefault in start-server.ps1). Flipped here exactly once too;
+# an operator who sets 0 again afterwards keeps 0.
+migrate_kingdoms() {
+    _env="$COMPOSE_DIR/.env"
+    [ -f "$_env" ] || return 0
+    grep -q '^M2_PLAYERBOT_KINGDOMS_DEFAULTED=' "$_env" && return 0
+    [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
+    if grep -q '^M2_PLAYERBOT_KINGDOMS=' "$_env"; then
+        if [ "$(kv "$_env" M2_PLAYERBOT_KINGDOMS | tr -d ' \r')" != 1 ]; then
+            sed -i 's|^M2_PLAYERBOT_KINGDOMS=.*|M2_PLAYERBOT_KINGDOMS=1|' "$_env"
+            note "   three kingdoms: M2_PLAYERBOT_KINGDOMS=1 (Shinsoo, Chunjo and Jinno; the migrator seeds the two new ones on this start)"
+        fi
+    else
+        printf 'M2_PLAYERBOT_KINGDOMS=1\n' >> "$_env"
+    fi
+    printf 'M2_PLAYERBOT_KINGDOMS_DEFAULTED=1\n' >> "$_env"
+}
+
 # 2.2.11 dropped a Blessing Scroll from one Metin stone in twenty, and
 # Iwakura's answer the same evening was one in a hundred for the test. The
 # 2.2.11 value is in every .env add_missing_env_keys gave the key to, where a
@@ -507,6 +529,8 @@ run_update() {
     note "   the folder now says version $(installed_version)"
     migrate_timezone
     add_missing_env_keys
+    # Before the layout, which reads the kingdoms' own counts.
+    migrate_kingdoms
     # After the keys, so a world that had no layout line at all gets the
     # example's and then this.
     migrate_world_layout
