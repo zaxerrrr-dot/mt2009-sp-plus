@@ -17,6 +17,37 @@ every version here.
 
 ---
 
+## 2.10.1 — 2026-09-27 — Towarzysz zbiera Cor Draconis, poprawki panelu GM i podpowiedzi
+
+Serwer 2.10.1 i klient 2.0.22: zaktualizuj oba w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.10.0.
+
+- **Towarzysz podnosi Twoje Cor Draconis.** Dotąd podchodził do Cora, który
+  wypadł dla Ciebie, i rezygnował, bo boty z założenia nie podnoszą Corów
+  z ziemi. Teraz bot może podnieść Cor, który należy do gracza z jego
+  drużyny – i od razu trafia on do tego gracza. Wszystkie inne Cory boty
+  dalej omijają.
+- **Lista przedmiotów w panelu GM w grze działa.** Trzy przedmioty (Magiczny
+  Kamień, Gwiazda Nocy, Śnieżny Kwiat) miały w nazwie ukryty znak końca
+  linii, który przerywał listę. Nazwy są czyszczone przy każdym starcie
+  serwera.
+- **Podpowiedź mikstur szybkości ataku i ruchu** (klient 2.0.22) nie
+  wyrzuca już błędu przy każdym najechaniu myszką i pokazuje bonus.
+- Pasek nad NPC nie zgłasza błędu, gdy NPC zniknie z widoku (klient 2.0.22).
+
+---
+
+## Klient 2.0.22 — 2026-09-27 — Podpowiedź mikstur
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.0.21.
+
+- Podpowiedź mikstur szybkości ataku i ruchu działa bez błędów.
+- Pasek nad NPC nie zgłasza błędu, gdy NPC zniknie z widoku.
+
+---
+
 ## 2.10.0 — 2026-09-27 — Dołączanie do gildii botów, reset świata w panelu
 
 Serwer 2.10.0 i klient 2.0.21: zaktualizuj oba w launcherze

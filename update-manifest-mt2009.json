@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-27T16:39:25Z",
-  "statusMessage": "Serwer 2.10.0 i klient 2.0.21: dolaczanie do gildii botow i reset swiata w panelu zaawansowanym.",
+  "publishedAt": "2026-09-27T17:59:46Z",
+  "statusMessage": "Serwer 2.10.1 i klient 2.0.22: Towarzysz zbiera Cor Draconis, poprawki panelu GM i podpowiedzi mikstur.",
   "server": {
-    "version": "2.10.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.10.0.zip",
-    "sha256": "ACC8B29F56494C0C444080FF15D6D35FED486C617ACB184D5721270C8BC109FD",
-    "size": 93259997
+    "version": "2.10.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.10.1.zip",
+    "sha256": "C0DA34865DBADC6A2CDAE58B550523583709D2A0502695BCDBBCAFCF1B5EE8B1",
+    "size": 93261596
   },
   "client": {
-    "version": "2.0.21",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.21.zip",
-    "sha256": "0DDD321BA5D736D445B2C319A95A76C014E444B35668496B3FC6A37786F77CFA",
-    "size": 50573499
+    "version": "2.0.22",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.22.zip",
+    "sha256": "8BF35AFFBEB76D4B67E38401ECCF0FC61DBBC6AA1C753968E385345FC3ACB12E",
+    "size": 50573963
   }
 }

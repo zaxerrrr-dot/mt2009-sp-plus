@@ -335,6 +335,14 @@ db -e "UPDATE world.item_proto SET stack = 200 WHERE (type IN (17, 22) OR vnum =
 # up. ASCII names: db() speaks latin1 into the cp1250 columns. A line the
 # operator changed by hand is kept (INSERT IGNORE). Idempotent.
 db -e "UPDATE world.item_proto SET locale_name = 'Auto Lowy (8h)', flag = flag | 4, antiflag = 74112 WHERE vnum = 31073 AND locale_name <> 'Auto Lowy (8h)'; UPDATE world.item_proto SET locale_name = 'Pierscien Anty-Exp', flag = 0, antiflag = 41344 WHERE vnum = 40002 AND locale_name <> 'Pierscien Anty-Exp'; INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" || echo "[playerbot-migrate] WARNING: could not add the ItemShop's Auto Lowy ticket and rings" >&2
+# Three names in the shipped dumps end in a line break (Magiczny Kamien 25042,
+# Gwiazda Nocy 50731, Sniezny Kwiat 50732: "\r\n" inside the quotes). A name
+# goes into server commands a client splits on whitespace, and the GM panel's
+# item list broke there ("__GMPanelItemListChunk() takes exactly 2 arguments
+# (3 given)", a player's syserr, 27 September). Control characters are taken
+# out of every name, on every start; a clean name is not touched.
+db -e "UPDATE world.item_proto SET locale_name = REGEXP_REPLACE(locale_name, '[[:cntrl:]]+', '') WHERE locale_name REGEXP '[[:cntrl:]]';" \
+    || echo "[playerbot-migrate] WARNING: could not clean the line breaks out of item names" >&2
 # Maska Sabaha left the world with the Hwang curse (playerbotify
 # apply_hwang_curse_removed, the share step of the game Dockerfile): the shop
 # that sold one sells it no more. The db core reads the shops at boot, so this
