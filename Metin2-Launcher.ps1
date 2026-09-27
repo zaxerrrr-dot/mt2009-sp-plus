@@ -462,7 +462,19 @@ function Rebuild-Server {
         $dbReady = $false
         if ($dbVolume) { $dbReady = Test-M2VolumeInitialized -Volume $dbVolume }
         if (-not $dbReady) {
-            throw ("Brakuje zrzutow bazy danych, wiec pierwsza baza powstalaby pusta.`n`n" +
+            # An update package unpacked on its own (a player took the zip from a
+            # GitHub release for the full server, 27 September): no dumps folder at
+            # all (the .env is made before this check). Say so first, plainly.
+            $updatePackageNote = ''
+            if (-not (Test-Path -LiteralPath (Join-Path $serverRoot 'linux-port\docker\mariadb\initdb.d\dumps') -PathType Container)) {
+                $updatePackageNote = ("To wyglada na rozpakowana PACZKE AKTUALIZACJI (metin2-server-update-*.zip), " +
+                    "a nie na pelna instalacje serwera. Paczka aktualizacji zawiera tylko pliki zmienione " +
+                    "od poprzedniej wersji - bez bazy danych i plikow gry - i launcher pobiera ja sam " +
+                    "(SPRAWDZ AKTUALIZACJE). Do pierwszej instalacji pobierz PELNA paczke MT2009 PLUS " +
+                    "(instrukcja: README, sekcja Instalacja), rozpakuj ja do osobnego folderu i kliknij GRAJ. " +
+                    "Ten folder mozesz usunac - nic w nim nie powstalo.`n`n")
+            }
+            throw ($updatePackageNote + "Brakuje zrzutow bazy danych, wiec pierwsza baza powstalaby pusta.`n`n" +
                    "Katalog: " + (Join-Path $serverRoot 'linux-port\docker\mariadb\initdb.d\dumps') + "`n" +
                    "Brakuje: " + ($missingDumps -join ', ') + "`n`n" +
                    "MariaDB wystartowalaby bez schematu gry (i zglosila 'healthy'), a playerbot-migrate " +

@@ -229,6 +229,22 @@ if [ -s /opt/playerbot/item_proto.mt2009plus.sql ]; then
     fi
 fi
 
+# MT2009 Plus: the monsters the same way (mob_proto.mt2009plus.sql, the full
+# package's world.mob_proto). A world from another dump had the costume
+# pack's mount and pet seals from the file above and not their monsters, so
+# a mount "failed to spawn (missing mob_proto row?)" and said "already on a
+# horse" the next time, and a pet never came (a player's support bundle,
+# 27 September). INSERT IGNORE: a row that is there is never changed.
+if [ -s /opt/playerbot/mob_proto.mt2009plus.sql ]; then
+    mp_before=$(db -N -e "SELECT COUNT(*) FROM world.mob_proto" 2>/dev/null || echo 0)
+    if db < /opt/playerbot/mob_proto.mt2009plus.sql; then
+        mp_after=$(db -N -e "SELECT COUNT(*) FROM world.mob_proto" 2>/dev/null || echo 0)
+        echo "[playerbot-migrate] mod monsters: $((mp_after - mp_before)) missing monster(s) added to world.mob_proto ($mp_after in all)"
+    else
+        echo "[playerbot-migrate] WARNING: could not add the mod's monsters to world.mob_proto" >&2
+    fi
+fi
+
 # MT2009 Plus: Cor Draconis and every sash may be handed to another player
 # and put in a private/offline shop.  The engine checks GIVE (1 << 13) for an
 # exchange and GIVE|MYSHOP (1 << 13, 1 << 16) for a shop, so clear precisely

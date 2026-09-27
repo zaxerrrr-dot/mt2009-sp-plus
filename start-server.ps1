@@ -1327,7 +1327,19 @@ if ($missingDumps.Count -gt 0) {
         }
     }
     if (-not $dbVolumeInitialized) {
-        throw ("Brakuje zrzutow bazy danych w " + $dumpDir + ".`n" +
+        # An update package unpacked on its own (a player took the zip from a
+        # GitHub release for the full server, 27 September): no dumps folder at
+        # all (the .env is made before this check). Say so first, plainly.
+        $updatePackageNote = ''
+        if (-not (Test-Path -LiteralPath $dumpDir -PathType Container)) {
+            $updatePackageNote = ("To wyglada na rozpakowana PACZKE AKTUALIZACJI (metin2-server-update-*.zip), " +
+                "a nie na pelna instalacje serwera. Paczka aktualizacji zawiera tylko pliki zmienione " +
+                "od poprzedniej wersji - bez bazy danych i plikow gry - i launcher pobiera ja sam " +
+                "(SPRAWDZ AKTUALIZACJE). Do pierwszej instalacji pobierz PELNA paczke MT2009 PLUS " +
+                "(instrukcja: README, sekcja Instalacja), rozpakuj ja do osobnego folderu i kliknij GRAJ. " +
+                "Ten folder mozesz usunac - nic w nim nie powstalo.`n`n")
+        }
+        throw ($updatePackageNote + "Brakuje zrzutow bazy danych w " + $dumpDir + ".`n" +
                "Brakuje: " + ($missingDumps -join ', ') + "`n`n" +
                "Bez nich MariaDB uruchomi sie pusta (i zglosi 'healthy'), a playerbot-migrate " +
                "bedzie czekal 30 minut na schemat, ktory nigdy nie powstanie. Zrzuty pochodza " +

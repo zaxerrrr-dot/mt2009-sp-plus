@@ -28,8 +28,10 @@ i systemy oraz kilka poprawek botów.
 > [!IMPORTANT]
 > Do gry potrzebny jest **klient z tej paczki** (z nowymi kostiumami,
 > mountami, petami i przedmiotami). Oficjalny klient Tieru nie pokaże nowych
-> przedmiotów. Repozytorium nie zawiera plików gry — pełna paczka (klient +
-> serwer) jest w zakładce **Releases**, patrz [SERWER_PL.md](SERWER_PL.md).
+> przedmiotów. Repozytorium nie zawiera plików gry — potrzebna jest pełna
+> paczka (klient + serwer), patrz [SERWER_PL.md](SERWER_PL.md). W zakładce
+> **Releases** są tylko paczki aktualizacji (`metin2-*-update-*.zip`): launcher
+> pobiera je sam i nie nadają się do pierwszej instalacji.
 
 ---
 
@@ -122,7 +124,8 @@ Obsługiwane są **wszystkie trzy królestwa** (Shinsoo, Chunjo, Jinno).
 ## 🚀 Instalacja (Windows)
 
 1. Zainstaluj i uruchom **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**.
-2. Pobierz pełną paczkę z **Releases** i rozpakuj ją, np. do `C:\Metin2Mod\`
+2. Pobierz pełną paczkę MT2009 PLUS (nie `metin2-server-update-*.zip`
+   z Releases – to tylko aktualizacja) i rozpakuj ją, np. do `C:\Metin2Mod\`
    (najlepiej ścieżka bez polskich znaków i spacji).
 3. Uruchom **`Metin2-Launcher-GUI.bat`**.
 4. Kliknij **1. INSTALUJ / PRZYGOTUJ**, potem **2. GRAJ**.

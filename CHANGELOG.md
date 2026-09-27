@@ -17,6 +17,26 @@ every version here.
 
 ---
 
+## 2.8.3 — 2026-09-27 — Wierzchowce i pety na starszych instalacjach
+
+Poprawka serwera; zawiera wszystko z 2.8.2. Klient bez zmian (2.0.20).
+
+- **Wierzchowce i pety z kostiumów działają także na serwerach zainstalowanych
+  ze starszej paczki.** Baza takiego serwera miała pieczęcie w starej postaci
+  i bez potworów, w które się zamieniają: przy części wierzchowców wyskakiwało
+  „już jesteś na koniu”, inne wskakiwały w slot i nic się nie działo, a peta
+  nie dało się przywołać. Aktualizacja raz ustawia wszystkie przedmioty
+  i potwory pakietu kostiumów tak jak w pełnej paczce, a przy każdym starcie
+  dopisuje potwory, których brakuje.
+- **Paczka aktualizacji rozpakowana jako nowy serwer:** launcher mówi teraz
+  wprost, że to aktualizacja, a nie instalacja, i że do pierwszej instalacji
+  potrzebna jest pełna paczka. Dotąd kończył się technicznym komunikatem
+  o brakujących zrzutach bazy danych.
+- Opis wydań na GitHubie zaczyna się od informacji, że pliki `*-update-*.zip`
+  to paczki aktualizacji, które launcher pobiera sam.
+
+---
+
 ## 2.8.2 — 2026-09-27 — Pierścień Teleportacji i Anty-Exp w ItemShopie, Auto Łowy na bilet
 
 Serwer 2.8.2 i klient 2.0.20. **Zaktualizuj oba** w launcherze

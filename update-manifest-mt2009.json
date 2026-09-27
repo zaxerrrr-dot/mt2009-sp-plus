@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-27T07:20:05Z",
-  "statusMessage": "Serwer 2.8.2 i klient 2.0.20: Pierscien Teleportacji, Pierscien Anty-Exp i Auto Lowy w ItemShopie.",
+  "publishedAt": "2026-09-27T09:50:27Z",
+  "statusMessage": "Serwer 2.8.3: wierzchowce i pety dzialaja takze na serwerach ze starszej instalacji.",
   "server": {
-    "version": "2.8.2",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.2.zip",
-    "sha256": "1F8856CD3A38E63836CA3BAD9BEBF7BEC4C744E42C56F5D35C2B364DCDF93E1D",
-    "size": 93088948
+    "version": "2.8.3",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.3.zip",
+    "sha256": "39304CF6660D709C38F3AD0F6F457C07FC9149E1DD826CD6F6DD4AD8F91172A1",
+    "size": 93173096
   },
   "client": {
     "version": "2.0.20",

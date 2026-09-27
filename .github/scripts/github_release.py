@@ -35,7 +35,17 @@ def main():
     label = ("MT2009 PLUS — klient %s" if client else "MT2009 PLUS %s") % version
     title = label + (" — " + " — ".join(parts) if parts else "")
     kind = "client" if client else "server"
-    notes = (body + "\n\n---\n\n"
+    # The zips below are updates, not an installation: a player unpacked the
+    # server one as a new server and it stopped on the missing database
+    # dumps (27 September). Said first, before the changes.
+    notes = ("> [!IMPORTANT]\n"
+             "> **To są paczki aktualizacji, nie instalacja.** Zawierają tylko "
+             "pliki zmienione od poprzedniej wersji (bez bazy danych i plików "
+             "gry). Istniejący serwer i klient aktualizuje sam launcher "
+             "(**SPRAWDŹ AKTUALIZACJE**). Do pierwszej instalacji potrzebna jest "
+             "pełna paczka MT2009 PLUS - instrukcja w "
+             "[README](https://github.com/%s#-instalacja-windows).\n\n" % REPO
+             + body + "\n\n---\n\n"
              "Aktualizacja instaluje się sama: launcher (Windows) albo "
              "`sh linux-port/tools/update.sh` (VPS). Plik "
              "`metin2-%s-update-%s.zip` poniżej to ta sama paczka, do pobrania "
