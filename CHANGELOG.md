@@ -17,7 +17,7 @@ every version here.
 
 ---
 
-## 2.10.1 — 2026-09-27 — Towarzysz zbiera Cor Draconis, poprawki panelu GM i podpowiedzi
+## 2.10.1 — 2026-09-27 — Szarfy botów tylko z wartościowymi przedmiotami, pet zostaje po śmierci
 
 Serwer 2.10.1 i klient 2.0.22: zaktualizuj oba w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
@@ -35,6 +35,27 @@ z 2.10.0.
 - **Podpowiedź mikstur szybkości ataku i ruchu** (klient 2.0.22) nie
   wyrzuca już błędu przy każdym najechaniu myszką i pokazuje bonus.
 - Pasek nad NPC nie zgłasza błędu, gdy NPC zniknie z widoku (klient 2.0.22).
+- **Pet zostaje po Twojej śmierci.** Dotąd znikał w chwili śmierci
+  postaci. Teraz czeka przy Tobie i po wskrzeszeniu dalej za Tobą idzie.
+
+### Szarfy botów: tylko wartościowe przedmioty
+
+Boty wkładały do szarf byle co – na przykład zbroję na 26 poziom z jednym
+bonusem 6%. Teraz każdy przedmiot jest wyceniany tak, jak działa szarfa:
+bazowy atak broni albo obrona zbroi, stałe bonusy i wylosowane bonusy,
+wszystko razy absorpcja szarfy i ocenione pod klasę bota. Bot wchłania
+przedmiot tylko wtedy, gdy:
+
+- ma co najmniej **2 bonusy** albo jest ulepszony **do +7** lub wyżej;
+- wymaga poziomu najwyżej 10 niższego od bota (wyższy jest w porządku);
+- w szarfie dałby co najmniej **90% tego, co dałaby broń, którą bot
+  walczy** – to miara dobrego przedmiotu na jego poziomie;
+- jest wyraźnie lepszy (o 10%) od tego, co bot już ma w założonej szarfie.
+
+Gdy w plecaku nie ma takiego przedmiotu, bot **kupuje go na straganie**
+(ze swojej puli na szarfy, najwyżej o połowę drożej niż cena rynkowa)
+i nie sprzedaje go przed wizytą u Uriela. Szarfa ze słabym przedmiotem nie
+jest już dla bota „gotowa”: bot buduje nową i zakłada tę, która daje więcej.
 
 ---
 

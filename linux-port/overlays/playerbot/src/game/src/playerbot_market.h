@@ -198,6 +198,10 @@ namespace
 		// A sash, for a bot that builds its own (playerbot_sash.h).
 		if (offer->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(offer->GetVnum()))
 			return WantsPlayerBotSashOffer(ch, offer);
+		// A weapon or body armour worth absorbing into that sash, for a
+		// keeper with nothing in its bag for it (playerbot_sash.h).
+		if (WantsPlayerBotSashPieceOffer(ch, offer))
+			return true;
 
 		// Development demand is shared with the journey and own-shop reclaim.
 		if (offer->GetType() == ITEM_SKILLBOOK || offer->GetVnum() == PLAYERBOT_GRAND_MASTER_STONE_VNUM)
@@ -400,8 +404,8 @@ namespace
 		// A horse medal, while there is still a horse to raise.
 		if (CanPlayerBotAdvanceHorse(ch))
 			return true;
-		// Sashes for the one it builds (playerbot_sash.h).
-		if (PlayerBotWantsSashFromMarket(ch))
+		// Sashes for the one it builds, and the piece to fill it (playerbot_sash.h).
+		if (PlayerBotWantsSashFromMarket(ch) || PlayerBotWantsSashPieceFromMarket(ch))
 			return true;
 		// Medals and materials for a saddlebag row (playerbot_saddlebag.h).
 		if (PlayerBotWantsSaddlebagGoods(ch))
@@ -484,6 +488,8 @@ namespace
 		if (price > spare) return false;
 		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
 			return CanPlayerBotPayForSashOffer(ch, item, price);
+		if (WantsPlayerBotSashPieceOffer(ch, item))
+			return CanPlayerBotPayForSashPiece(ch, item, price);
 		if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
 			return CanPlayerBotPayForCraftMaterial(ch, item, price);
 		if (IsPlayerBotCorVnum(item->GetVnum()) || item->IsDragonSoul())

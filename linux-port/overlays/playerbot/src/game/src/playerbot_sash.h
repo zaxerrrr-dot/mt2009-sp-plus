@@ -45,14 +45,31 @@ namespace
 	// reserve (operator, 26 September 2026).
 	const long long PLAYERBOT_SASH_RICH_GOLD = 10000000LL;
 	const int PLAYERBOT_SASH_UNIQUE_COMBINE_LEVEL = 90;
-	// A piece is absorbed only when it is worth this share of what the bot
-	// wears in that slot (GetPlayerBotEquipmentScore, class-neutral), has a
-	// bonus, and asks a level no more than this far under the bot's - "tylko
-	// przedmioty bliskie poziomem bota i z bonusami" (operator, 26 September
-	// 2026): of 56 filled sashes 49 held a piece without a bonus, most of
-	// levels 5 to 25 on bots of 40 to 64.
-	const int PLAYERBOT_SASH_ABSORB_MIN_PERCENT = 40;
+	// What goes into a sash (GetPlayerBotSashPieceValue): "tylko przedmioty
+	// bliskie poziomem bota i z bonusami" (operator, 26 September 2026), and
+	// then "boty wrzucaja syfiaste przedmioty do szarf, np. zbroje na 26 lvl
+	// z bonusem 6%" (27 September) - the old rule, 40% of the class-neutral
+	// equipment score of what the bot wore, let a body armour of 26 with one
+	// line of 6% into the sash of a bot of 47. A piece is now measured by what
+	// the sash would give this bot: absorption times its base attack or
+	// defence, its own lines and its rolled ones, each scored for the bot's
+	// class. It goes in only when
+	//   - it asks a level no more than PLAYERBOT_SASH_ABSORB_LEVEL_SPAN under
+	//     the bot's (higher is fine: a sash asks no level of what it holds);
+	//   - it has PLAYERBOT_SASH_MIN_LINES rolled lines, or is refined to
+	//     PLAYERBOT_SASH_MIN_PLUS_BARE at least;
+	//   - it is worth PLAYERBOT_SASH_REF_PERCENT of the weapon the bot fights
+	//     with, put into the same sash - the measure of what is good at its
+	//     level;
+	//   - it beats the sash the bot wears by PLAYERBOT_SASH_BETTER_PERCENT.
+	// A worn sash under PLAYERBOT_SASH_JUNK_PERCENT of that measure is junk: the
+	// sash is not done, the bot builds another and wears the better one.
 	const int PLAYERBOT_SASH_ABSORB_LEVEL_SPAN = 10;
+	const int PLAYERBOT_SASH_MIN_LINES = 2;
+	const int PLAYERBOT_SASH_MIN_PLUS_BARE = 7;
+	const int PLAYERBOT_SASH_REF_PERCENT = 90;
+	const int PLAYERBOT_SASH_BETTER_PERCENT = 110;
+	const int PLAYERBOT_SASH_JUNK_PERCENT = 60;
 	// A lone sash - the only one of its grade a keeper holds, waiting for a
 	// pair - is goods again after this long: 260 keepers sat on one grade-1
 	// sash each, the very supply the others waited for (26 September 2026).
@@ -168,6 +185,102 @@ namespace
 				GetPlayerBotSashAbsorption(item) >= t.absorption;
 	}
 
+	// ------------------------------------------------ what a sash is worth
+
+	// One line of a piece in a sash of this absorption, as the engine gives it
+	// (CItem::CalcAcceBonus: a positive line is at least 1), scored for the
+	// bot's class the way its gear is (ScorePlayerBotApplyTiered).
+	long long ScorePlayerBotSashLine(BYTE type, long value, int absorption, LPCHARACTER ch)
+	{
+		if (type == APPLY_NONE || type == APPLY_SKILL || value == 0)
+			return 0;
+#if defined(USE_ACCE_ABSORB_WITH_NO_NEGATIVE_BONUS)
+		if (value < 0)
+			return 0;
+#endif
+		return ScorePlayerBotApplyTiered(type, CItem::CalcAcceBonus((int32_t)value, (uint32_t)absorption), ch);
+	}
+
+	// What a sash of `absorption` holding a piece of `proto` with the rolled
+	// lines of `lines` gives the bot - what CItem::ModifyPoints adds for a
+	// sash: a weapon's attack (the greater of its two values, plus the refine
+	// value; the physical one worth what the bot's school makes of it, the
+	// magic one likewise), a body armour's defence and magic defence, the
+	// piece's own lines and its rolled ones, each times the absorption.
+	long long GetPlayerBotSashPieceValue(LPCHARACTER ch, const TItemTable* proto, LPITEM lines, int absorption)
+	{
+		if (!proto || absorption <= 0)
+			return 0;
+		long long value = 0;
+		const bool magic = IsPlayerBotMagicSchool(ch);
+		if (proto->bType == ITEM_WEAPON)
+		{
+			if (proto->alValues[3] + proto->alValues[4] > 0)
+			{
+				const long attack = std::max(proto->alValues[3], proto->alValues[4]) + proto->alValues[5];
+				value += (long long)CItem::CalcAcceBonus((int32_t)attack, (uint32_t)absorption) * (magic ? 60 : 300);
+			}
+			if (proto->alValues[1] + proto->alValues[2] > 0)
+			{
+				const long attack = std::max(proto->alValues[1], proto->alValues[2]) + proto->alValues[5];
+				value += (long long)CItem::CalcAcceBonus((int32_t)attack, (uint32_t)absorption) * (magic ? 300 : 60);
+			}
+		}
+		else if (proto->bType == ITEM_ARMOR && proto->bSubType == ARMOR_BODY)
+		{
+			value += ScorePlayerBotApplyTiered(APPLY_DEF_GRADE_BONUS,
+					CItem::CalcAcceBonus((int32_t)(proto->alValues[1] + proto->alValues[5] * 2), (uint32_t)absorption), ch);
+			if (proto->alValues[0] > 0)
+				value += (long long)CItem::CalcAcceBonus((int32_t)proto->alValues[0], (uint32_t)absorption) * 50;
+		}
+		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
+			value += ScorePlayerBotSashLine(proto->aApplies[i].bType, proto->aApplies[i].lValue, absorption, ch);
+		if (lines)
+			for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+				value += ScorePlayerBotSashLine(lines->GetAttributeType(i), lines->GetAttributeValue(i), absorption, ch);
+		return value;
+	}
+
+	// A filled sash: the piece it holds (the proto of its absorbed vnum) with
+	// the lines it copied from it, at its own absorption.
+	long long GetPlayerBotSashValue(LPCHARACTER ch, LPITEM sash)
+	{
+		if (!sash || !IsPlayerBotSashItem(sash) || !IsPlayerBotSashAbsorbed(sash))
+			return 0;
+		return GetPlayerBotSashPieceValue(ch,
+				ITEM_MANAGER::instance().GetTable((DWORD)sash->GetSocket(ACCE_ABSORBED_SOCKET)),
+				sash, GetPlayerBotSashAbsorption(sash));
+	}
+
+	// The measure of a good piece at the bot's level: the weapon it fights
+	// with, put into a sash of this absorption. 0 without a weapon.
+	long long GetPlayerBotSashReferenceValue(LPCHARACTER ch, int absorption)
+	{
+		LPITEM weapon = ch ? ch->GetWear(WEAR_WEAPON) : NULL;
+		return weapon ? GetPlayerBotSashPieceValue(ch, weapon->GetProto(), weapon, absorption) : 0;
+	}
+
+	// A filled sash not worth keeping on: under PLAYERBOT_SASH_JUNK_PERCENT of
+	// the measure at its own absorption.
+	bool IsPlayerBotSashJunk(LPCHARACTER ch, LPITEM sash)
+	{
+		if (!sash || !IsPlayerBotSashAbsorbed(sash))
+			return false;
+		const long long reference = GetPlayerBotSashReferenceValue(ch, GetPlayerBotSashAbsorption(sash));
+		return reference > 0 && GetPlayerBotSashValue(ch, sash) * 100 < reference * PLAYERBOT_SASH_JUNK_PERCENT;
+	}
+
+	// Which sash to wear: a filled one by what it gives this bot, over an
+	// empty one by its absorption.
+	long long RankPlayerBotSashFor(LPCHARACTER ch, LPITEM item)
+	{
+		if (!item)
+			return -1;
+		if (IsPlayerBotSashAbsorbed(item))
+			return (1LL << 40) + GetPlayerBotSashValue(ch, item);
+		return GetPlayerBotSashAbsorption(item);
+	}
+
 	// Which sash is the better one to wear: a filled one over an empty one,
 	// then the absorption.
 	int RankPlayerBotSash(LPITEM item)
@@ -181,7 +294,7 @@ namespace
 	{
 		LPITEM worn = ch ? ch->GetWear(WEAR_COSTUME_ACCE) : NULL;
 		return worn && IsPlayerBotSashItem(worn) && IsPlayerBotSashAbsorbed(worn) &&
-				IsPlayerBotSashAtTarget(worn, t);
+				IsPlayerBotSashAtTarget(worn, t) && !IsPlayerBotSashJunk(ch, worn);
 	}
 
 	bool IsPlayerBotSashUsable(LPITEM item)
@@ -248,8 +361,14 @@ namespace
 	// Kept, not goods: a keeper's sashes while its sash is not done, the best
 	// PLAYERBOT_SASH_KEEP of those at or under its target grade; once done,
 	// only one that would beat what it wears. The worn one is never goods.
+	bool IsPlayerBotSashPieceKind(LPITEM item);
+	DWORD GetPlayerBotChosenSashPieceID(LPCHARACTER ch);
+
 	bool IsPlayerBotKeptSash(LPCHARACTER ch, LPITEM item)
 	{
+		// The piece chosen for the sash to fill waits for the Uriel visit.
+		if (ch && IsPlayerBotSashPieceKind(item) && !item->IsEquipped() && IsPlayerBotSashKeeper(ch))
+			return GetPlayerBotChosenSashPieceID(ch) == item->GetID();
 		if (!ch || !IsPlayerBotSashItem(item))
 			return false;
 		if (item->IsEquipped())
@@ -260,9 +379,9 @@ namespace
 		if (t.grade <= 0)
 			return false;
 		if (IsPlayerBotSashDone(ch, t))
-			return RankPlayerBotSash(item) > RankPlayerBotSash(ch->GetWear(WEAR_COSTUME_ACCE));
+			return RankPlayerBotSashFor(ch, item) > RankPlayerBotSashFor(ch, ch->GetWear(WEAR_COSTUME_ACCE));
 		if (IsPlayerBotSashAbsorbed(item))
-			return RankPlayerBotSash(item) > RankPlayerBotSash(ch->GetWear(WEAR_COSTUME_ACCE));
+			return RankPlayerBotSashFor(ch, item) > RankPlayerBotSashFor(ch, ch->GetWear(WEAR_COSTUME_ACCE));
 		if (GetPlayerBotSashGrade(item) > t.grade)
 			return true;
 		if (IsPlayerBotSashReleased(item->GetID()))
@@ -502,61 +621,163 @@ namespace
 		return false;
 	}
 
-	// The piece to absorb: a weapon or a body armour in the bag the bot will
-	// not wear and does not keep for anything else, worth at least
-	// PLAYERBOT_SASH_ABSORB_MIN_PERCENT of what it wears in that slot. Any
-	// class's: the sash does not ask.
-	LPITEM FindPlayerBotSashAbsorbPiece(LPCHARACTER ch)
+	bool IsPlayerBotSashPieceKind(LPITEM item)
 	{
-		if (!ch || !ch->IsItemLoaded())
-			return NULL;
-		LPITEM wornWeapon = ch->GetWear(WEAR_WEAPON);
-		LPITEM wornBody = ch->GetWear(WEAR_BODY);
-		const long long weaponBar = wornWeapon ? GetPlayerBotEquipmentScore(wornWeapon, NULL) : 0;
-		const long long bodyBar = wornBody ? GetPlayerBotEquipmentScore(wornBody, NULL) : 0;
-		LPITEM best = NULL;
-		long long bestPercent = 0;
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
-		{
-			LPITEM item = ch->GetInventoryItem(cell);
-			if (!item || item->GetCell() != cell || item->IsEquipped() || item->isLocked() ||
-					item->IsExchanging() || !item->GetProto())
-				continue;
-			const bool weapon = item->GetType() == ITEM_WEAPON && item->GetSubType() != WEAPON_ARROW
+		if (!item || !item->GetProto())
+			return false;
+		if (item->GetType() == ITEM_WEAPON)
+			return item->GetSubType() != WEAPON_ARROW
 #if defined(ENABLE_QUIVER_SYSTEM)
 					&& item->GetSubType() != WEAPON_QUIVER
 #endif
 					;
-			const bool body = item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_BODY;
-			if (!weapon && !body)
+		return item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_BODY;
+	}
+
+	// What `item` would be worth in a sash of `absorption` under the rules
+	// above (PLAYERBOT_SASH_*), or -1 when it does not pass them. `reference`
+	// and `wornValue` are the bot's measure and its worn sash's worth.
+	long long GetPlayerBotSashPieceWorth(LPCHARACTER ch, LPITEM item, int absorption,
+			long long reference, long long wornValue)
+	{
+		if (!IsPlayerBotSashPieceKind(item))
+			return -1;
+		if ((int)item->GetLevelLimit() < ch->GetLevel() - PLAYERBOT_SASH_ABSORB_LEVEL_SPAN)
+			return -1;
+		// Lines to carry, or a refine that makes the bare piece worth it.
+		if (item->GetAttributeCount() < PLAYERBOT_SASH_MIN_LINES &&
+				(int)(item->GetVnum() % 10) < PLAYERBOT_SASH_MIN_PLUS_BARE)
+			return -1;
+		const long long value = GetPlayerBotSashPieceValue(ch, item->GetProto(), item, absorption);
+		if (value * 100 < reference * PLAYERBOT_SASH_REF_PERCENT)
+			return -1;
+		if (wornValue > 0 && value * 100 < wornValue * PLAYERBOT_SASH_BETTER_PERCENT)
+			return -1;
+		return value;
+	}
+
+	// The worn sash's worth for the rules, unless it is the one being filled.
+	long long GetPlayerBotWornSashValue(LPCHARACTER ch, LPITEM sash)
+	{
+		LPITEM worn = ch ? ch->GetWear(WEAR_COSTUME_ACCE) : NULL;
+		return (worn && worn != sash) ? GetPlayerBotSashValue(ch, worn) : 0;
+	}
+
+	// One the bot would put on is not spare: the gear pass has it.
+	bool IsPlayerBotSashPieceWorn(LPCHARACTER ch, LPITEM item)
+	{
+		if (!IsPlayerBotEquipmentCandidate(ch, item) || item->GetLevelLimit() > ch->GetLevel())
+			return false;
+		LPITEM worn = item->GetType() == ITEM_WEAPON ? ch->GetWear(WEAR_WEAPON) : ch->GetWear(WEAR_BODY);
+		return !worn || GetPlayerBotEquipmentScore(item, ch) > GetPlayerBotEquipmentScore(worn, ch);
+	}
+
+	// The piece to absorb into `sash`: a weapon or a body armour in the bag
+	// the bot will not wear and does not keep for anything else, of any
+	// class's (the sash does not ask), that passes the rules above - the one
+	// the sash would make most of.
+	LPITEM FindPlayerBotSashAbsorbPiece(LPCHARACTER ch, LPITEM sash)
+	{
+		if (!ch || !ch->IsItemLoaded() || !sash)
+			return NULL;
+		const int absorption = GetPlayerBotSashAbsorption(sash);
+		if (absorption <= 0)
+			return NULL;
+		const long long reference = GetPlayerBotSashReferenceValue(ch, absorption);
+		const long long wornValue = GetPlayerBotWornSashValue(ch, sash);
+		LPITEM best = NULL;
+		long long bestValue = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->IsEquipped() || item->isLocked() ||
+					item->IsExchanging() || !IsPlayerBotSashPieceKind(item))
 				continue;
 			if (IsPlayerBotLppKeptItem(ch, item) || IsPlayerBotKeptBackupArmour(ch, item) ||
-					IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item))
+					IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item) ||
+					IsPlayerBotSashPieceWorn(ch, item))
 				continue;
-			// One it would put on is not spare.
-			if (IsPlayerBotEquipmentCandidate(ch, item) && item->GetLevelLimit() <= ch->GetLevel())
-			{
-				LPITEM worn = weapon ? wornWeapon : wornBody;
-				if (!worn || GetPlayerBotEquipmentScore(item, ch) > GetPlayerBotEquipmentScore(worn, ch))
-					continue;
-			}
-			// Close to the bot's level and with a bonus to carry.
-			const int limit = (int)item->GetLevelLimit();
-			if (limit > ch->GetLevel() || limit < ch->GetLevel() - PLAYERBOT_SASH_ABSORB_LEVEL_SPAN ||
-					item->GetAttributeCount() <= 0)
+			const long long value = GetPlayerBotSashPieceWorth(ch, item, absorption, reference, wornValue);
+			if (value < 0)
 				continue;
-			const long long bar = weapon ? weaponBar : bodyBar;
-			const long long score = GetPlayerBotEquipmentScore(item, NULL);
-			const long long percent = bar > 0 ? score * 100 / bar : 100;
-			if (percent < PLAYERBOT_SASH_ABSORB_MIN_PERCENT)
-				continue;
-			if (!best || percent > bestPercent)
+			if (!best || value > bestValue)
 			{
 				best = item;
-				bestPercent = percent;
+				bestValue = value;
 			}
 		}
+		if (best)
+			PlayerBotLogThrottled("sash_piece", get_dword_time(),
+					"PLAYERBOT_SASH: piece chosen pid=%u name=%s lv=%d piece=%u lines=%d value=%lld reference=%lld worn=%lld abs=%d",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), best->GetVnum(), best->GetAttributeCount(),
+					bestValue, reference, wornValue, absorption);
 		return best;
+	}
+
+	// The bag's chosen piece, a few seconds at a time: the counters and the
+	// merchant ask for every item of the bag (IsPlayerBotKeptSash).
+	struct TPlayerBotSashPieceMemo { DWORD dwUntil; DWORD dwItemID; };
+	std::map<DWORD, TPlayerBotSashPieceMemo> s_mapPlayerBotSashPiece;
+
+	DWORD GetPlayerBotChosenSashPieceID(LPCHARACTER ch)
+	{
+		const DWORD now = get_dword_time();
+		TPlayerBotSashPieceMemo& memo = s_mapPlayerBotSashPiece[ch->GetPlayerID()];
+		if (memo.dwUntil != 0 && (int)(now - memo.dwUntil) < 0)
+			return memo.dwItemID;
+		memo.dwUntil = now + 3000;
+		memo.dwItemID = 0;
+		const TPlayerBotSashTarget t = GetPlayerBotSashTarget(ch);
+		LPITEM sash = t.grade > 0 ? FindPlayerBotSashToFill(ch, t) : NULL;
+		LPITEM piece = sash ? FindPlayerBotSashAbsorbPiece(ch, sash) : NULL;
+		memo.dwItemID = piece ? piece->GetID() : 0;
+		return memo.dwItemID;
+	}
+
+	// ------------------------------------------------ a piece off a counter
+
+	// A keeper with an empty sash at its target and nothing in the bag for it
+	// buys the piece on the market, the way players do: a weapon or a body
+	// armour passing the same rules, from the sash's share of the purse and
+	// at no more than half again its asking price.
+	bool WantsPlayerBotSashPieceOffer(LPCHARACTER ch, LPITEM offer)
+	{
+		if (!ch || !offer || !IsPlayerBotSashPieceKind(offer) || !IsPlayerBotSashKeeper(ch) ||
+				ArePlayerBotSashesOff())
+			return false;
+		const TPlayerBotSashTarget t = GetPlayerBotSashTarget(ch);
+		if (t.grade <= 0)
+			return false;
+		LPITEM sash = FindPlayerBotSashToFill(ch, t);
+		if (!sash || GetPlayerBotChosenSashPieceID(ch) != 0 || IsPlayerBotSashPieceWorn(ch, offer))
+			return false;
+		const int absorption = GetPlayerBotSashAbsorption(sash);
+		const long long worth = GetPlayerBotSashPieceWorth(ch, offer, absorption,
+				GetPlayerBotSashReferenceValue(ch, absorption), GetPlayerBotWornSashValue(ch, sash));
+		if (worth >= 0)
+			PlayerBotLogThrottled("sash_piece_offer", get_dword_time(),
+					"PLAYERBOT_SASH: wants a piece off a counter pid=%u name=%s lv=%d piece=%u lines=%d value=%lld abs=%d",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), offer->GetVnum(), offer->GetAttributeCount(),
+					worth, absorption);
+		return worth >= 0;
+	}
+
+	bool CanPlayerBotPayForSashPiece(LPCHARACTER ch, LPITEM offer, long long price)
+	{
+		const long long spare = GetPlayerBotSashSpareGold(ch);
+		const long long fair = (long long)GetPlayerBotShopAskingPrice(offer);
+		return price > 0 && price <= spare * PLAYERBOT_SASH_MARKET_PURSE_PERCENT / 100 &&
+				(fair <= 0 || price <= fair * 15 / 10);
+	}
+
+	// Asked before a market walk: a keeper with a sash to fill and no piece.
+	bool PlayerBotWantsSashPieceFromMarket(LPCHARACTER ch)
+	{
+		if (!ch || !IsPlayerBotSashKeeper(ch) || ArePlayerBotSashesOff() ||
+				GetPlayerBotSashSpareGold(ch) < 2000000LL)
+			return false;
+		const TPlayerBotSashTarget t = GetPlayerBotSashTarget(ch);
+		return t.grade > 0 && FindPlayerBotSashToFill(ch, t) && GetPlayerBotChosenSashPieceID(ch) == 0;
 	}
 
 	bool HasPlayerBotSashWork(LPCHARACTER ch, const TPlayerBotSashTarget& t)
@@ -564,7 +785,8 @@ namespace
 		LPITEM a = NULL, b = NULL;
 		if (FindPlayerBotSashPair(ch, t, a, b))
 			return true;
-		return FindPlayerBotSashToFill(ch, t) && FindPlayerBotSashAbsorbPiece(ch);
+		LPITEM sash = FindPlayerBotSashToFill(ch, t);
+		return sash && FindPlayerBotSashAbsorbPiece(ch, sash);
 	}
 
 	// Takes the worn sash off into the bag, for the window: it refuses an
@@ -679,10 +901,10 @@ namespace
 			LPITEM s = bag[i];
 			if (!IsPlayerBotSashAbsorbed(s) && !IsPlayerBotSashAtTarget(s, t))
 				continue;
-			if (!best || RankPlayerBotSash(s) > RankPlayerBotSash(best))
+			if (!best || RankPlayerBotSashFor(ch, s) > RankPlayerBotSashFor(ch, best))
 				best = s;
 		}
-		if (!best || (worn && RankPlayerBotSash(best) <= RankPlayerBotSash(worn)))
+		if (!best || (worn && RankPlayerBotSashFor(ch, best) <= RankPlayerBotSashFor(ch, worn)))
 			return false;
 		const DWORD oldVnum = worn ? worn->GetVnum() : 0;
 		if (worn && !TakeOffPlayerBotSash(ch, worn))
@@ -822,7 +1044,7 @@ namespace
 		else if (state.bSashVisitSteps < PLAYERBOT_SASH_VISIT_MAX_STEPS)
 		{
 			LPITEM sash = FindPlayerBotSashToFill(ch, t);
-			LPITEM piece = sash ? FindPlayerBotSashAbsorbPiece(ch) : NULL;
+			LPITEM piece = sash ? FindPlayerBotSashAbsorbPiece(ch, sash) : NULL;
 			if (sash && piece)
 			{
 				did = AbsorbIntoPlayerBotSash(ch, sash, piece);
@@ -866,6 +1088,9 @@ namespace
 	bool WantsPlayerBotSashOffer(LPCHARACTER, LPITEM) { return false; }
 	bool CanPlayerBotPayForSashOffer(LPCHARACTER, LPITEM, long long) { return false; }
 	bool PlayerBotWantsSashFromMarket(LPCHARACTER) { return false; }
+	bool WantsPlayerBotSashPieceOffer(LPCHARACTER, LPITEM) { return false; }
+	bool CanPlayerBotPayForSashPiece(LPCHARACTER, LPITEM, long long) { return false; }
+	bool PlayerBotWantsSashPieceFromMarket(LPCHARACTER) { return false; }
 	void NotePlayerBotSashBought(LPCHARACTER, DWORD, long long) {}
 	bool ManagePlayerBotSash(LPCHARACTER, TPlayerBotAIState&, DWORD) { return false; }
 	void LogPlayerBotSashCensus() {}

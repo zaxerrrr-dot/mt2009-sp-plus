@@ -6435,6 +6435,10 @@ namespace
 	bool IsPlayerBotKeptSash(LPCHARACTER ch, LPITEM item);
 	bool WantsPlayerBotSashOffer(LPCHARACTER ch, LPITEM offer);
 	bool CanPlayerBotPayForSashOffer(LPCHARACTER ch, LPITEM offer, long long price);
+	// And the weapon or body armour it buys to absorb into one.
+	bool WantsPlayerBotSashPieceOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForSashPiece(LPCHARACTER ch, LPITEM offer, long long price);
+	bool PlayerBotWantsSashPieceFromMarket(LPCHARACTER ch);
 	// Its price (cost to make + 25%) and whether it is a released lone sash.
 	DWORD GetPlayerBotSashPrice(LPITEM item);
 	bool IsPlayerBotSashReleased(DWORD itemId);

@@ -211,6 +211,17 @@ if ((Test-Path -LiteralPath $corPartyApply -PathType Leaf) -and
         Write-Host 'The companion now picks up its owner''s Cor Draconis.' -ForegroundColor DarkGray
     }
 }
+# The pet stays when its owner dies (server-patches/petstaysondeath).
+$petStayApply = Join-Path $repo 'server-patches/petstaysondeath/Apply-PetStaysOnDeathPatch.ps1'
+$petSource = Join-Path $engineGameSource 'PetSystem.cpp'
+if ((Test-Path -LiteralPath $petStayApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $petSource -PathType Leaf)) {
+    $petStayResult = & $petStayApply -SourceFile $petSource
+    if ($petStayResult.Changed) {
+        $syncedFiles++
+        Write-Host 'The pet now stays when its owner dies.' -ForegroundColor DarkGray
+    }
+}
 # A pet's magic attack % (server-patches/magicattper): PointChange had no
 # case for POINT_MAGIC_ATT_BONUS_PER, so the bonus never applied.
 $magicAttApply = Join-Path $repo 'server-patches/magicattper/Apply-MagicAttPerPatch.ps1'
