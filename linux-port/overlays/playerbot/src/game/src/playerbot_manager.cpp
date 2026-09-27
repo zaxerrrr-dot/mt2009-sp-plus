@@ -136,6 +136,7 @@ extern void SendShout(const char* szText, BYTE bEmpire);
 #include "playerbot_shop_signs.h"
 #include "playerbot_offline_shop.h"
 #include "playerbot_retirement.h"
+#include "playerbot_takeover.h"
 #include "playerbot_itemshop.h"
 #include "playerbot_weapon_goal.h"
 #include "playerbot_market.h"
@@ -2764,6 +2765,10 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 	if (!bSidekick && IsPlayerBotSidekickPID(dwPlayerID))
 		return false;
 
+	// Taken over by a person from the advanced panel (playerbot_takeover.h):
+	// out of the world until the takeover is over.
+	if (IsPlayerBotTakeoverHold(dwPlayerID))
+		return false;
 	// Being retired: out of the world until its character is new.
 	if (IsPlayerBotRetirementHold(dwPlayerID))
 		return false;
@@ -3555,7 +3560,7 @@ void CPlayerBotManager::TopUpMissingBots(DWORD dwNow)
 		// the top-up from asking for it every minute only for SpawnPendingBatch
 		// to drop it again.
 		else if (m_setBannedBots.find(*it) == m_setBannedBots.end() && !IsRestingBot(*it) && !IsPlayerBotRetirementHold(*it) &&
-				!IsPlayerBotSidekickPID(*it))
+				!IsPlayerBotSidekickPID(*it) && !IsPlayerBotTakeoverHold(*it))
 			missing.push_back(*it);
 	}
 	if (missing.empty())
@@ -5328,6 +5333,9 @@ void CPlayerBotManager::Update()
 	// and the next round queued. Nothing here waits for the database.
 	RunChannelMachinery(dwNow);
 #endif
+	// Bots a person has taken over from the advanced panel: out, and back when
+	// the time is up (playerbot_takeover.h). Before the spawns, which ask it.
+	ProcessPlayerBotTakeovers(dwNow);
 	// The next batch of the cohort, if one is due - see PLAYERBOT_SPAWN_WINDOW.
 	SpawnPendingBatch(dwNow);
 	// The second cohort, one at a time over its hours (ScheduleLateJoiners).

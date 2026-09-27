@@ -3964,6 +3964,123 @@ def load_character_items(pid, account_id):
     return equipment, costumes, alchemy, inventory, safebox, horse_bag
 
 
+# "Przejmij bota na xxx minut" (the operator, 27 September): the panel writes
+# one row of common.playerbot_takeover, and the game cores do the rest
+# (playerbot_takeover.h): the bot leaves the world, the account opens with the
+# password made here, and when the time is up the account closes as it was, a
+# person still on it is sent off and the bot comes back.
+TAKEOVER_STATE_LABELS = {
+    "requested": "bot wylogowuje się (kilka sekund)",
+    "active": "przejęty – możesz się zalogować",
+    "returning": "czas minął – bot wraca (do minuty)",
+    "done": "zakończone",
+}
+
+
+def ensure_takeover_table():
+    rows("""CREATE TABLE IF NOT EXISTS common.playerbot_takeover (
+        pid INT UNSIGNED NOT NULL PRIMARY KEY,
+        account_id INT UNSIGNED NOT NULL,
+        login VARCHAR(30) NOT NULL DEFAULT '',
+        password_plain VARCHAR(32) NOT NULL DEFAULT '',
+        password_hash VARCHAR(42) NOT NULL,
+        old_password VARCHAR(42) NOT NULL,
+        old_status VARCHAR(8) NOT NULL,
+        minutes INT UNSIGNED NOT NULL,
+        state VARCHAR(12) NOT NULL DEFAULT 'requested',
+        requested_at INT UNSIGNED NOT NULL DEFAULT 0,
+        active_at INT UNSIGNED NOT NULL DEFAULT 0,
+        until INT UNSIGNED NOT NULL DEFAULT 0,
+        returning_at INT UNSIGNED NOT NULL DEFAULT 0,
+        done_at INT UNSIGNED NOT NULL DEFAULT 0) ENGINE=InnoDB""")
+
+
+def takeover_account(pid):
+    """The bot's account, or None for a person's character or a companion."""
+    account = one("""SELECT a.id, a.login, a.password, a.status FROM player.player p
+        JOIN account.account a ON a.id=p.account_id
+        WHERE p.id=%s AND BINARY a.login LIKE BINARY 'playerbot\\_%%'""", (pid,))
+    if not account:
+        return None
+    try:
+        if one("SELECT 1 AS x FROM player.playerbot_sidekick WHERE sidekick_pid=%s", (pid,)):
+            return None
+    except pymysql.MySQLError:
+        pass
+    return account
+
+
+def takeover_status(pid):
+    try:
+        ensure_takeover_table()
+        row = one("""SELECT pid, login, password_plain, minutes, state,
+            CAST(until AS SIGNED) - CAST(UNIX_TIMESTAMP() AS SIGNED) AS seconds_left
+            FROM common.playerbot_takeover WHERE pid=%s""", (pid,))
+    except pymysql.MySQLError:
+        return None
+    if not row:
+        return None
+    row["label"] = TAKEOVER_STATE_LABELS.get(row["state"], row["state"])
+    row["running"] = row["state"] in ("requested", "active", "returning")
+    left = int(row.get("seconds_left") or 0)
+    row["left_text"] = f"{max(0, left) // 60} min {max(0, left) % 60} s" if row["state"] == "active" else ""
+    return row
+
+
+def mysql_password_hash(password):
+    return "*" + hashlib.sha1(hashlib.sha1(password.encode("utf-8")).digest()).hexdigest().upper()
+
+
+@app.post("/player/<int:pid>/takeover")
+@login_required
+def player_takeover(pid):
+    supplied = request.form.get("takeover_csrf", "")
+    expected = session.get("seban_update_csrf", "")
+    if not expected or not hmac.compare_digest(supplied, expected):
+        abort(403)
+    account = takeover_account(pid)
+    if not account:
+        flash("Przejąć można tylko bota (nie postać gracza ani Towarzysza).", "error")
+        return redirect(url_for("player", pid=pid))
+    ensure_takeover_table()
+    current = takeover_status(pid)
+    if request.form.get("action") == "stop":
+        if current and current["state"] == "active":
+            rows("UPDATE common.playerbot_takeover SET until=UNIX_TIMESTAMP() WHERE pid=%s AND state='active'", (pid,))
+            flash("Przejęcie kończy się – bot wróci do gry w ciągu minuty.", "success")
+        elif current and current["state"] == "requested":
+            rows("UPDATE common.playerbot_takeover SET state='done', done_at=UNIX_TIMESTAMP() WHERE pid=%s AND state='requested'", (pid,))
+            flash("Przejęcie anulowane – bot wróci do gry w ciągu minuty.", "success")
+        return redirect(url_for("player", pid=pid))
+    if current and current["running"]:
+        flash("Ten bot jest już przejęty.", "error")
+        return redirect(url_for("player", pid=pid))
+    try:
+        minutes = int(request.form.get("minutes", ""))
+    except ValueError:
+        minutes = 0
+    if not 1 <= minutes <= 1440:
+        flash("Czas przejęcia: od 1 do 1440 minut.", "error")
+        return redirect(url_for("player", pid=pid))
+    alphabet = "abcdefghjkmnpqrstuvwxyz23456789"
+    password = "".join(alphabet[b % len(alphabet)] for b in os.urandom(10))
+    # What the account goes back to. A bot's account is always closed
+    # ("!", BLOCK); one found open is the leftover of an interrupted takeover.
+    old_password, old_status = account["password"], account["status"]
+    if old_status == "OK" or old_password != "!":
+        old_password, old_status = "!", "BLOCK"
+    rows("""REPLACE INTO common.playerbot_takeover
+        (pid, account_id, login, password_plain, password_hash, old_password, old_status, minutes,
+         state, requested_at, active_at, until, returning_at, done_at)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'requested',UNIX_TIMESTAMP(),0,0,0,0)""",
+         (pid, account["id"], account["login"], password, mysql_password_hash(password),
+          old_password, old_status, minutes))
+    app.logger.warning("bot %s taken over for %s min (login %s)", pid, minutes, account["login"])
+    flash(f"Bot przejęty na {minutes} min. Za kilka sekund wyloguje się z gry – wtedy zaloguj się "
+          f"w kliencie loginem {account['login']} i hasłem {password}.", "success")
+    return redirect(url_for("player", pid=pid))
+
+
 @app.route("/player/<int:pid>")
 @login_required
 def player(pid):
@@ -4042,7 +4159,10 @@ def player(pid):
     mission_progress = character_mission_progress(pid)
     gm_row = one("SELECT mAuthority FROM common.gmlist WHERE mName=%s LIMIT 1", (character["name"],))
     character["gm_rank"] = gm_row["mAuthority"] if gm_row else ""
+    takeover_bot = takeover_account(pid) is not None
     return render_template("player.html", character=character, equipment=equipment, costumes=costumes, alchemy=alchemy, inventory=inventory, safebox=safebox,
+                            takeover_bot=takeover_bot, takeover=takeover_status(pid) if takeover_bot else None,
+                            takeover_csrf=update_csrf_token(),
                             has_safebox=bool(safebox), horse_bag=horse_bag, has_horse_bag=bool(horse_bag),
                             gear_history=gear_history, offline_shop=offline_shop, character_stats=character_stats,
                             mission_progress=mission_progress, gm_ranks=GM_RANK_OPTIONS)

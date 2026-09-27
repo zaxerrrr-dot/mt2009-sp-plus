@@ -17,7 +17,7 @@ every version here.
 
 ---
 
-## 2.10.1 — 2026-09-27 — Szarfy botów tylko z wartościowymi przedmiotami, pet zostaje po śmierci
+## 2.10.1 — 2026-09-27 — Przejmij bota, szarfy botów tylko z wartościowymi przedmiotami, pet zostaje po śmierci
 
 Serwer 2.10.1 i klient 2.0.22: zaktualizuj oba w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
@@ -37,6 +37,21 @@ z 2.10.0.
 - Pasek nad NPC nie zgłasza błędu, gdy NPC zniknie z widoku (klient 2.0.22).
 - **Pet zostaje po Twojej śmierci.** Dotąd znikał w chwili śmierci
   postaci. Teraz czeka przy Tobie i po wskrzeszeniu dalej za Tobą idzie.
+
+### Przejmij bota na kilka minut
+
+W panelu zaawansowanym, na stronie każdego bota (Gracze → bot), jest nowy
+przycisk **Przejmij bota na [X] minut** (od 1 do 1440).
+
+- Bot od razu wylogowuje się z gry, a panel pokazuje **login i hasło** do
+  jego konta. Po kilku sekundach logujesz się nimi w kliencie i grasz jego
+  postacią: z jego ekwipunkiem, poziomem i gildią.
+- Po upływie czasu konto zamyka się: login i hasło przestają działać, a jeśli
+  nadal grasz tą postacią, zostajesz wylogowany. Bot loguje się z powrotem
+  (w ciągu minuty) i wraca do swoich zajęć.
+- Przycisk **Zakończ teraz** oddaje postać botowi od razu.
+- Każde przejęcie ma nowe, losowe hasło. Towarzysza i postaci graczy nie da
+  się przejąć.
 
 ### Nicki botów
 
