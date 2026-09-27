@@ -1259,9 +1259,13 @@ $gameContext = Join-Path $PSScriptRoot 'linux-port\docker\game\src'
 # zip entry - and share\package is empty on every install of both lines. Make
 # it rather than refuse over it (Restore-M2EmptyGameContextDirs in the module
 # says the same; this script imports no module and carries its own copy).
-$emptyByDesign = Join-Path $gameContext 'serverfiles\share\package'
-if (-not (Test-Path -LiteralPath $emptyByDesign)) {
-    try { New-Item -ItemType Directory -Path $emptyByDesign -Force -ErrorAction Stop | Out-Null } catch { }
+# serverfiles\mark-default, the guild symbols' seed, is the same: empty, and
+# COPYd by the Dockerfile ("/src/serverfiles/mark-default: not found").
+foreach ($emptyRel in @('serverfiles\share\package', 'serverfiles\mark-default')) {
+    $emptyByDesign = Join-Path $gameContext $emptyRel
+    if (-not (Test-Path -LiteralPath $emptyByDesign)) {
+        try { New-Item -ItemType Directory -Path $emptyByDesign -Force -ErrorAction Stop | Out-Null } catch { }
+    }
 }
 # Per engine, the same list as Get-M2RequiredGameContext in the module:
 # mt2009 keeps its protos in the database (no share\conf) and its

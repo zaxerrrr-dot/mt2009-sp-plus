@@ -1735,7 +1735,11 @@ function Restore-M2EmptyGameContextDirs {
     # Nothing is ever in these, so make them rather than demand them.
     param([Parameter(Mandatory = $true)][string]$ServerRoot)
     $made = @()
-    foreach ($rel in @('linux-port\docker\game\src\serverfiles\share\package')) {
+    # serverfiles\mark-default (the guild symbols' seed, COPYd the same way)
+    # is empty too, and a copy of the repository or a stripped unpack arrives
+    # without it: "/src/serverfiles/mark-default: not found" (27 September).
+    foreach ($rel in @('linux-port\docker\game\src\serverfiles\share\package',
+            'linux-port\docker\game\src\serverfiles\mark-default')) {
         $full = Join-Path $ServerRoot $rel
         if (Test-Path -LiteralPath $full) { continue }
         try {

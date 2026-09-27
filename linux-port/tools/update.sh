@@ -428,7 +428,10 @@ restore_empty_context_dirs() {
     # bare directory entry - git cannot carry one either - fails the build at
     # "failed to compute cache key" (dekri, 20 September, on Windows). Make it
     # rather than let the build die over a directory with nothing in it.
-    for d in "$COMPOSE_DIR/game/src/serverfiles/share/package"; do
+    # serverfiles/mark-default (the guild symbols' seed) is empty and COPYd
+    # the same way ("/src/serverfiles/mark-default: not found", 27 September).
+    for d in "$COMPOSE_DIR/game/src/serverfiles/share/package" \
+             "$COMPOSE_DIR/game/src/serverfiles/mark-default"; do
         [ -d "$d" ] || mkdir -p "$d" 2>/dev/null || true
     done
 }

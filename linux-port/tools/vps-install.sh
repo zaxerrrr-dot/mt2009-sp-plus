@@ -554,6 +554,12 @@ run_job() {
     case "$J_KIND" in
         install)
             job_phase build "budowa obrazow i start serwera (docker compose up -d --build) - pierwszy raz 15-40 minut"
+            # Two build inputs are empty directories, which git and some
+            # unpackers do not carry; the game Dockerfile COPYs both and the
+            # build dies at "failed to compute cache key ... not found"
+            # (serverfiles/mark-default, 27 September). Made, never demanded.
+            mkdir -p "$COMPOSE_DIR/game/src/serverfiles/share/package" \
+                     "$COMPOSE_DIR/game/src/serverfiles/mark-default" 2>/dev/null || true
             ( cd "$COMPOSE_DIR" && docker compose up -d --build )
             _rc=$?
             if [ "$_rc" -ne 0 ]; then
