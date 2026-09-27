@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-26T18:27:16Z",
-  "statusMessage": "Serwer 2.8.1 i klient 2.0.19: statusy botow nad glowami.",
+  "publishedAt": "2026-09-27T07:20:05Z",
+  "statusMessage": "Serwer 2.8.2 i klient 2.0.20: Pierscien Teleportacji, Pierscien Anty-Exp i Auto Lowy w ItemShopie.",
   "server": {
-    "version": "2.8.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.1.zip",
-    "sha256": "3409F0C2562F8FA1A5C01AE006A6C6D1ECCCE2592B2EECA0ACFA76B3E804A071",
-    "size": 56211364
+    "version": "2.8.2",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.8.2.zip",
+    "sha256": "1F8856CD3A38E63836CA3BAD9BEBF7BEC4C744E42C56F5D35C2B364DCDF93E1D",
+    "size": 93088948
   },
   "client": {
-    "version": "2.0.19",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.19.zip",
-    "sha256": "C8A47DE44889B6ADF9E5FFA807729276EF3785EE55252AD1FF2938DEAC71E23F",
-    "size": 50544643
+    "version": "2.0.20",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.20.zip",
+    "sha256": "7828CB0309226DFF1A429358839FD2C500B881657FECD7C25DB102862811102A",
+    "size": 50560409
   }
 }

@@ -5498,9 +5498,8 @@ def maps():
 @app.route("/changelog")
 @login_required
 def changelog():
-    source = request.args.get("source", "seban")
-    if source not in ("seban", "tieru"):
-        source = "seban"
+    # One changelog here: the project's own (changelog.html has no second tab).
+    source = "seban"
     tieru_entries, tieru_error = ([], None) if source != "tieru" else tieru_changelog_entries()
     return render_template("changelog.html", entries=changelog_entries(), panel_version=PANEL_VERSION,
                             source=source, tieru_entries=tieru_entries, tieru_error=tieru_error)

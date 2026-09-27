@@ -17,23 +17,31 @@ every version here.
 
 ---
 
-## 2.8.2 — 2026-09-27 — Auto Łowy w ItemShopie, wojny gildii, Towarzysz
+## 2.8.2 — 2026-09-27 — Pierścień Teleportacji i Anty-Exp w ItemShopie, Auto Łowy na bilet
 
 Serwer 2.8.2 i klient 2.0.20. **Zaktualizuj oba** w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
 z 2.8.1. Wędka, nowy filtr podnoszenia Auto Łowów i komunikat o bilecie
 działają dopiero z klientem 2.0.20.
 
-### ItemShop: Auto Łowy na godziny gry i dwa pierścienie
+### ItemShop: Pierścień Teleportacji, Pierścień Anty-Exp i Auto Łowy
 
-- Nowe pozycje: „Auto Łowy (8h)” (29 SM), „Pierścień Anty-Exp” (99)
-  i „Pierścień Teleportacji” (149, od 30 lvl). Pierścienie działają bez
-  limitu czasu.
-- Bilet Auto Łowów daje 8 godzin, które lecą tylko wtedy, gdy postać jest
-  w grze. Kolejne bilety się sumują.
-- Nowa opcja w oknie POZIOM TRUDNOŚCI i w panelu klasycznym: „Auto Łowy
-  dostępne dla każdego” (domyślnie) albo „tylko po kupnie przedmiotu
+Na to czekaliście – nowe pozycje na pierwszej stronie ItemShopu:
+
+- **Pierścień Teleportacji** (149 SM, od 30 lvl) – Teleporter w kieszeni:
+  te same cele co u Teleportera, z miasta i spoza niego. Nie zużywa się
+  i działa bez limitu czasu.
+- **Pierścień Anty-Exp** (99 SM) – użyj z ekwipunku, żeby włączyć albo
+  wyłączyć blokadę doświadczenia. Bez limitu czasu.
+- **Auto Łowy (8h)** (29 SM) – 8 godzin automatycznego polowania
+  (klawisz K). Czas leci tylko wtedy, gdy postać jest w grze, a kolejne
+  bilety się sumują (do 30 dni).
+- Nowa opcja w oknie POZIOM TRUDNOŚCI i w panelu klasycznym: Auto Łowy
+  „dostępne dla każdego” (domyślnie, jak dotąd) albo „tylko z biletem
   z ItemShopu”.
+
+Bilet i Pierścień Anty-Exp są przypisane do postaci: nie da się ich
+sprzedać, wymienić ani wyrzucić.
 
 ### Klient 2.0.20
 
@@ -89,8 +97,6 @@ działają dopiero z klientem 2.0.20.
   razu.
 - Własna edycja dropu Szkatułek Blasku Księżyca przetrwa start
   i aktualizację.
-- Świeża instalacja: CH1 wstaje za pierwszym razem (stare aukcje czasowe
-  nie blokują już serwera bazy).
 - Panel zaawansowany Sebana 1.92.0: osobowości botów, czat na żywo,
   wiadomości ze świata, respawny, nazwy botów, kreator postaci, juki konne
   i ekwipunek odświeżany na żywo. Kostiumy i Alchemia postaci zostają.
@@ -107,6 +113,20 @@ z 2.0.18.
 - Filtr podnoszenia Auto Łowów: osobno hełmy, tarcze, bransolety, buty,
   naszyjniki i kolczyki.
 - Komunikat o braku czasu Auto Łowów z biletem z ItemShopu.
+
+---
+## 2.8.1 — 2026-09-26 — Poprawka startu świeżej instalacji
+
+Poprawka serwera; zawiera wszystko z 2.8.0. Klient bez zmian (2.0.18).
+
+- Na nowej instalacji 2.8.0 kanał CH1 był OFF przy pierwszym uruchomieniu:
+  baza gry przerywała start z błędem ItemShopu („item_index 906 not found in
+  itemshop_time_auction”). Stare aukcje czasowe ItemShopu (906–908, grudzień
+  2024) były kasowane, a zaraz potem wgrywanie ofert ItemShopu dodawało je
+  z powrotem tylko do połowy. Teraz porządek jest robiony także po wgraniu
+  ofert, więc serwer wstaje za pierwszym razem.
+- Kto trafił na ten błąd, nie musi nic robić po aktualizacji. Bez
+  aktualizacji wystarczyło zatrzymać serwer i kliknąć GRAJ ponownie.
 
 ---
 

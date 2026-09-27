@@ -1021,3 +1021,8 @@ done
 # 906 not found in itemshop_time_auction in player database", 26 September,
 # every CH1 OFF on a fresh 2.8.0). Idempotent.
 db -e "DELETE FROM common.itemshop_time_auctions WHERE item_index IN (906, 907, 908) AND end_time < '2025-01-01'; DELETE FROM player.itemshop_time_auction WHERE item_index IN (906, 907, 908) AND item_index NOT IN (SELECT item_index FROM common.itemshop_time_auctions);" || echo "[playerbot-migrate] WARNING: could not end the ItemShop old time auctions" >&2
+# The ItemShop's Auto Lowy ticket and the two rings once more, after the
+# item-shop data: on a new install mod/10_ingame_itemshop.sql runs after the
+# lines further up, empties common.itemshop_items and writes it back without
+# them. INSERT IGNORE: a line the operator changed by hand is kept.
+db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" || echo "[playerbot-migrate] WARNING: could not add the ItemShop's Auto Lowy ticket and rings" >&2
