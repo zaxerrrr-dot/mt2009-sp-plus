@@ -1605,6 +1605,24 @@ def update_status():
     return result
 
 
+def baked_playerbots_version():
+    """The VERSION the image was built with, or None.
+
+    update.sh and the launcher copy the server's own VERSION into seban-panel/
+    and the Dockerfile COPYs it beside this file. It wins over the environment:
+    compose's PLAYERBOTS_VERSION falls back to a number written into
+    docker-compose.yml, and nothing on a VPS sets M2_PLAYERBOTS_VERSION, so a
+    2.10.0 server reported 2.2.29 (27 September).
+    """
+    try:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "VERSION"),
+                  encoding="utf-8-sig") as handle:
+            baked = handle.read().strip()
+    except OSError:
+        return None
+    return baked if version_key(baked) else None
+
+
 def installed_playerbots_version():
     """Read the live MT2009 version reported by the isolated updater watcher."""
     current = update_status()
@@ -1615,6 +1633,9 @@ def installed_playerbots_version():
         match = re.search(r"version ([0-9]+(?:\.[0-9]+)+)", current.get("message", ""))
         if match:
             return match.group(1)
+    baked = baked_playerbots_version()
+    if baked:
+        return baked
     return os.environ.get("PLAYERBOTS_VERSION", "nieustawiona")
 
 def version_key(value):
