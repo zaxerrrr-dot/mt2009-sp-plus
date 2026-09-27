@@ -43,7 +43,8 @@ def main():
              "pliki zmienione od poprzedniej wersji (bez bazy danych i plików "
              "gry). Istniejący serwer i klient aktualizuje sam launcher "
              "(**SPRAWDŹ AKTUALIZACJE**). Do pierwszej instalacji potrzebna jest "
-             "pełna paczka MT2009 PLUS - instrukcja w "
+             "pełna paczka MT2009 PLUS z Discorda projektu "
+             "([metin2sp.pl/discord](https://metin2sp.pl/discord)) - instrukcja w "
              "[README](https://github.com/%s#-instalacja-windows).\n\n" % REPO
              + body + "\n\n---\n\n"
              "Aktualizacja instaluje się sama: launcher (Windows) albo "

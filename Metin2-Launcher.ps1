@@ -471,6 +471,7 @@ function Rebuild-Server {
                     "a nie na pelna instalacje serwera. Paczka aktualizacji zawiera tylko pliki zmienione " +
                     "od poprzedniej wersji - bez bazy danych i plikow gry - i launcher pobiera ja sam " +
                     "(SPRAWDZ AKTUALIZACJE). Do pierwszej instalacji pobierz PELNA paczke MT2009 PLUS " +
+                    "z Discorda projektu (metin2sp.pl/discord) " +
                     "(instrukcja: README, sekcja Instalacja), rozpakuj ja do osobnego folderu i kliknij GRAJ. " +
                     "Ten folder mozesz usunac - nic w nim nie powstalo.`n`n")
             }
