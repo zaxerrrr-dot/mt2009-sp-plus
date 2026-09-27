@@ -66,6 +66,8 @@ namespace
 			// The medal dropper stays one: community patch 2, point 4 asks for
 			// four and a half times as many, where this line made none.
 			case BOT_PERSONALITY_MEDAL_DROPPER: return BOT_PERSONALITY_MEDAL_DROPPER;
+			// So does the guild materials dropper: the guilds build with it.
+			case BOT_PERSONALITY_GUILD_DROPPER: return BOT_PERSONALITY_GUILD_DROPPER;
 			default: return drawn;
 		}
 	}

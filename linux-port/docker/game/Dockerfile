@@ -472,6 +472,19 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && awk '/^Group[[:blank:]]+RiperLimit/{f=1} f&&/^}/{f=0} f&&/[[:blank:]]30319[[:blank:]]/{n++} END{exit n==1?0:1}' "$L/mob_drop_item.txt" \
  && echo "share: the Reaper's token (Devil's Catacomb Guardian left out: no client map)"
 
+# MT2009 Plus (27 September 2026): the guild building materials - Kamien
+# Wegielny 90010, Pien 90011, Dykta 90012 - drop ten times as often from the
+# ordinary monsters that carry them (Mount Sohan's ice, the Fireland's fire,
+# the Hwang Temple's frogs: 0.09-0.4 in mob_drop_item.txt, one piece in
+# roughly a thousand to four thousand kills); the bosses' chances (40-300)
+# stay. The guilds build with them (playerbot_guild_land.h) and the guild
+# materials droppers farm them. Exactly fourteen lines, or the build stops.
+RUN set -eu; L=/opt/metin2/share/locale/poland \
+ && awk -F '\t' 'BEGIN{OFS="\t"} ($3 ~ /^9001[012]$/ && $5+0 > 0 && $5+0 < 1) {$5 = $5 * 10; n++} {print} END{print n > "/tmp/guildmat.count"}' "$L/mob_drop_item.txt" > /tmp/mob_drop_item.txt \
+ && [ "$(cat /tmp/guildmat.count)" = 14 ] \
+ && mv /tmp/mob_drop_item.txt "$L/mob_drop_item.txt" && rm -f /tmp/guildmat.count \
+ && echo "share: guild building materials x10 from ordinary monsters (14 lines)"
+
 # The cores run unprivileged and read this tree by path; a directory only root
 # can enter costs every quest below it, silently. Repair, then assert.
 RUN set -eu; \

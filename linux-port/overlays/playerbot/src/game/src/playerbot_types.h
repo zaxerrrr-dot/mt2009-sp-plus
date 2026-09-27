@@ -4349,6 +4349,25 @@ namespace
 	const BYTE PLAYERBOT_EXP_LOCK_M3_DROPPER = 30;
 	const BYTE PLAYERBOT_EXP_LOCK_M2_DROPPER = 36;
 	const BYTE PLAYERBOT_EXP_LOCK_MEDAL_DROPPER = 33;
+	// The guild materials dropper (BOT_PERSONALITY_GUILD_DROPPER): one bot in
+	// this many of those the draw reaches (not a party fighter or a stone
+	// hunter by role, not an extra medal dropper) that has not outgrown its
+	// ground - about one in forty of all bots, as the operator asked; at 40
+	// it came to one in 84 on the test world (21 of 1761). A ground by pid - the log on
+	// Mount Sohan (ice, 62-66), the cornerstone in the Fireland (69-73), the
+	// plywood in the Hwang Temple (frogs, 57-61) - where it hunts from
+	// minLevel and holds at lock, the same under the personalities.
+	const DWORD PLAYERBOT_GUILD_DROPPER_SHARE = 19;
+	struct TPlayerBotGuildDropperGround { DWORD vnum; long map; BYTE minLevel; BYTE lock; };
+	const TPlayerBotGuildDropperGround PLAYERBOT_GUILD_DROPPER_GROUNDS[3] = {
+		{ 90011, PLAYERBOT_MAP_SOHAN, 60, 66 },
+		{ 90010, PLAYERBOT_MAP_FIRE_LAND, 67, 72 },
+		{ 90012, PLAYERBOT_MAP_HWANG, 56, 61 },
+	};
+	const TPlayerBotGuildDropperGround& GetPlayerBotGuildDropperGround(DWORD pid)
+	{
+		return PLAYERBOT_GUILD_DROPPER_GROUNDS[((pid ^ 0x47445250U) * 2654435761U >> 16) % 3U];
+	}
 	// Iwakura's community patch 2, point 4 ("Grinder Lochu Malp", Tier 4).
 	// Under the personalities a drawn medal dropper stays one (it used to
 	// become a Wanderer, and 26 bots in a thousand farmed medals), and this
@@ -6165,7 +6184,12 @@ namespace
 		BOT_PERSONALITY_METIN_DROPPER,
 		BOT_PERSONALITY_M3_DROPPER,
 		BOT_PERSONALITY_M2_DROPPER,
-		BOT_PERSONALITY_MEDAL_DROPPER
+		BOT_PERSONALITY_MEDAL_DROPPER,
+		// The guild materials dropper ("Dropek surowcow", the operator, 27
+		// September): farms Kamien Wegielny, Pien or Dykta for the guilds'
+		// buildings (PLAYERBOT_GUILD_DROPPER_GROUNDS) and sells them on the
+		// counters. Appended, never inserted - the panels read the id.
+		BOT_PERSONALITY_GUILD_DROPPER
 	};
 
 	bool IsPlayerBotDropper(BYTE personality)
@@ -6173,7 +6197,8 @@ namespace
 		return personality == BOT_PERSONALITY_METIN_DROPPER ||
 				personality == BOT_PERSONALITY_M3_DROPPER ||
 				personality == BOT_PERSONALITY_M2_DROPPER ||
-				personality == BOT_PERSONALITY_MEDAL_DROPPER;
+				personality == BOT_PERSONALITY_MEDAL_DROPPER ||
+				personality == BOT_PERSONALITY_GUILD_DROPPER;
 	}
 
 	BYTE GetPlayerBotPersonalityByPID(DWORD dwPID);

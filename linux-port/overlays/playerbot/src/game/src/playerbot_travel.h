@@ -463,6 +463,17 @@ namespace
 					!(rowHome == PLAYERBOT_MAP_DEMON_TOWER && IsPlayerBotTowerGroundClosedFor(ch)))
 				return rowHome;
 		}
+		// The guild materials dropper hunts its ground from its level for it.
+		{
+			TPlayerBotAIStateMap::const_iterator self = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+			if (self != s_mapPlayerBotAIStates.end() && self->second.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
+			{
+				const TPlayerBotGuildDropperGround& ground = GetPlayerBotGuildDropperGround(ch->GetPlayerID());
+				if (ch->GetLevel() >= ground.minLevel && IsPlayerBotFrontierMapIndex(ground.map) &&
+						IsPlayerBotMapHostedHere(ground.map))
+					return ground.map;
+			}
+		}
 		// A guild's errand (playerbot_guild_land.h): where the material its
 		// next building lacks drops, for as long as the errand stands.
 		{
@@ -640,6 +651,8 @@ namespace
 		{
 			case BOT_PERSONALITY_WANDERER:
 				return 7; // explorer: almost always out on the far maps
+			case BOT_PERSONALITY_GUILD_DROPPER:
+				return 8; // its ground is out there: always
 			case BOT_PERSONALITY_METIN_BREAKER:
 				return 6; // both frontier maps carry their own Metin spawns
 			case BOT_PERSONALITY_GEAR_SPECIALIST:
@@ -708,6 +721,7 @@ namespace
 		switch (personality)
 		{
 			case BOT_PERSONALITY_WANDERER:
+			case BOT_PERSONALITY_GUILD_DROPPER:
 				return PLAYERBOT_FRONTIER_MAX_VISIT_TIME * 2;
 			case BOT_PERSONALITY_CAREFUL_COLLECTOR:
 				return PLAYERBOT_FRONTIER_MAX_VISIT_TIME / 2;

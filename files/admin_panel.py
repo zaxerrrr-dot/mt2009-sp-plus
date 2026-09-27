@@ -290,7 +290,7 @@ BOT_PERSONALITY_LABELS = {
         0: "Wytrwały poszukiwacz", 1: "Pogromca Metinów", 2: "Towarzysz drużyny",
         3: "Mistrz ekwipunku", 4: "Rozważny zbieracz", 5: "Handlarz",
         6: "Wędrowiec", 7: "Dropek Metinów", 8: "Dropek z M3",
-        9: "Dropek z M2", 10: "Dropek medali",
+        9: "Dropek z M2", 10: "Dropek medali", 11: "Dropek surowców",
     },
     "en": {
         0: "Steady adventurer", 1: "Metin breaker", 2: "Team companion",

@@ -196,7 +196,9 @@ namespace
 	// and ManagePlayerBotExpLock lifts the lock from a bot that is no dropper.
 	bool IsPlayerBotPastDropperBand(LPCHARACTER ch, BYTE personality)
 	{
-		const BYTE lockLevel = GetPlayerBotExpLockLevel(personality);
+		const BYTE lockLevel = personality == BOT_PERSONALITY_GUILD_DROPPER && ch
+				? GetPlayerBotGuildDropperGround(ch->GetPlayerID()).lock
+				: GetPlayerBotExpLockLevel(personality);
 		return ch && lockLevel != 0 &&
 				ch->GetLevel() > lockLevel + PLAYERBOT_DROPPER_OUTGROWN_LEVELS;
 	}
@@ -220,6 +222,12 @@ namespace
 					PLAYERBOT_MEDAL_DROPPER_EXTRA_PER_MILLE &&
 				!IsPlayerBotPastDropperBand(ch, BOT_PERSONALITY_MEDAL_DROPPER))
 			return BOT_PERSONALITY_MEDAL_DROPPER;
+
+		// The guild materials dropper (the operator, 27 September): one in
+		// PLAYERBOT_GUILD_DROPPER_SHARE of the bots not past their ground.
+		if ((PlayerBotNavHash(ch->GetPlayerID() ^ 0x47445250U) % PLAYERBOT_GUILD_DROPPER_SHARE) == 0 &&
+				!IsPlayerBotPastDropperBand(ch, BOT_PERSONALITY_GUILD_DROPPER))
+			return BOT_PERSONALITY_GUILD_DROPPER;
 
 		// Traders are drawn before the rest: a bot that trades for a living is not
 		// a variant of an adventurer, it is a different way of playing, and the
@@ -272,6 +280,8 @@ namespace
 				return BOT_AMBITION_EQUIPMENT;
 			case BOT_PERSONALITY_MEDAL_DROPPER:
 				return BOT_AMBITION_HORSE;
+			case BOT_PERSONALITY_GUILD_DROPPER:
+				return BOT_AMBITION_TRADE;
 			case BOT_PERSONALITY_WANDERER:
 				return BOT_AMBITION_HORSE;
 			case BOT_PERSONALITY_TEAM_COMPANION:
@@ -493,6 +503,8 @@ namespace
 		const bool persona = !cohort && !sidekick && IsPlayerBotPersonaEnabled();
 		if (persona && !state.persona.bRestored)
 			return;
+		if (state.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
+			lockLevel = GetPlayerBotGuildDropperGround(ch->GetPlayerID()).lock;
 		if (sidekick)
 			lockLevel = 0;
 		if (cohort)
@@ -501,6 +513,9 @@ namespace
 			// The Tier 4 Grinder holds where its medals are worth farming
 			// (community patch 2, point 4), not at a tier's lock.
 			lockLevel = PLAYERBOT_EXP_LOCK_MEDAL_DROPPER;
+		else if (persona && state.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
+			// Its ground's lock, as without the personalities.
+			lockLevel = GetPlayerBotGuildDropperGround(ch->GetPlayerID()).lock;
 		else if (persona)
 			lockLevel = GetPlayerBotPersonaLockLevel(ch, state);
 		const bool shouldLock = lockLevel != 0 && ch->GetLevel() >= lockLevel;
