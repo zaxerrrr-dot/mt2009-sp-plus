@@ -11,7 +11,9 @@ Względem klienta 2.0.22 (`client-patches/client-2.0.22`), zmiany z klientów
   razu, przedmiot, którego nie da się podnieść, pomijają na 30 s;
 - `root/uirefine.py` – okno o linijkę wyższe, gdy pokazuje szansę;
 - `root/uisidekick.py` – przełączniki „Lurowanie”, „Gra beze mnie” i
-  „Skrzynki” (nasze okno „Statystyki” zostaje).
+  „Skrzynki” (nasze okno „Statystyki” zostaje);
+- `root/serverinfo.py` (nasze) – obok `coop.cfg` czyta też `coop2.cfg`, więc
+  lista serwerów może mieć dwa światy zewnętrzne (np. główny i testowy).
 
 Świadomie pominięte: większe przyciski przy ekwipunku
 (`uiscript/inventorywindow.py`, grafiki `playerbot_ui/*_btn*.tga`) i maksima

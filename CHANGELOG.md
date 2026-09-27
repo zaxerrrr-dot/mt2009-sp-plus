@@ -167,6 +167,8 @@ z 2.0.21.
   „Skrzynki”.
 - Pełny nick właściciela w oknie sklepu offline.
 - Okno ulepszania nie zasłania ulepszaczy napisem z szansą.
+- Lista serwerów może mieć dwa serwery zewnętrzne: obok `coop.cfg` klient
+  czyta też `coop2.cfg`.
 
 ---
 
