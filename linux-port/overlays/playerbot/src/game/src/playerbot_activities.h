@@ -1272,6 +1272,10 @@ namespace
 		}
 		if (!pass)
 		{
+			// One card a trip for a companion sent fishing: the owner's, never
+			// a bought one.
+			if (IsPlayerBotSidekickFishing(ch->GetPlayerID()))
+				return false;
 			if (ch->GetGold() < (int)(PLAYERBOT_FISHING_PASS_PRICE + GetPlayerBotReservedGold(ch)))
 				return false;
 			// AutoGiveItem drops what the bag cannot take at the bot's feet.
@@ -1412,7 +1416,10 @@ namespace
 
 		if (!state.bFishingSession)
 		{
-			if (dwNow < state.dwNextFishingCheckTime || !IsPlayerBotAngler(ch, state))
+			// A companion its owner sent fishing is an angler for as long as
+			// its card lasts (playerbot_sidekick.h, "Na ryby").
+			if (dwNow < state.dwNextFishingCheckTime ||
+					!(IsPlayerBotAngler(ch, state) || IsPlayerBotSidekickFishing(ch->GetPlayerID())))
 				return false;
 			// Never walk off mid-fight; finish the pack first.
 			LPCHARACTER victim = state.dwTargetVID != 0

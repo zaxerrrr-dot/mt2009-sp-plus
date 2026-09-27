@@ -6268,6 +6268,8 @@ namespace
 	// fragment that asks these): whose it is, whether it stands at its
 	// owner's side, and what its owner handed it.
 	bool IsPlayerBotSidekickPID(DWORD pid);
+	// Sent fishing by its owner (playerbot_sidekick.h, "Na ryby").
+	bool IsPlayerBotSidekickFishing(DWORD pid);
 	bool IsPlayerBotSidekickKeepingChests(LPCHARACTER ch);
 	bool IsPlayerBotSidekickLeashed(LPCHARACTER ch);
 	bool IsPlayerBotSidekickHolding(LPCHARACTER ch);

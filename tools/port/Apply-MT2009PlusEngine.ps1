@@ -234,6 +234,19 @@ if ((Test-Path -LiteralPath $loginUnderscoreApply -PathType Leaf) -and
         Write-Host 'Logins may now carry an underscore (bot takeover).' -ForegroundColor DarkGray
     }
 }
+# The players' conveniences of 28 September (server-patches/playerqol): the
+# garbage bin by the batch, the pickup filter of the Z key and the loot pets,
+# the merge-only arrange, the search's MT2009 Plus category and the horse
+# skills on a costume mount.
+$playerQolApply = Join-Path $repo 'server-patches/playerqol/Apply-PlayerQolPatch.ps1'
+if ((Test-Path -LiteralPath $playerQolApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf)) {
+    $playerQolResult = & $playerQolApply -SourceDir $engineGameSource
+    if ($playerQolResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} player convenience edit(s).' -f $playerQolResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # A pet's magic attack % (server-patches/magicattper): PointChange had no
 # case for POINT_MAGIC_ATT_BONUS_PER, so the bonus never applied.
 $magicAttApply = Join-Path $repo 'server-patches/magicattper/Apply-MagicAttPerPatch.ps1'

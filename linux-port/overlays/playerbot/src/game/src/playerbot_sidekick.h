@@ -399,6 +399,10 @@ namespace
 		// Playing on its own while its owner is out of the game ("Gra beze
 		// mnie"; StartPlayerBotSidekickAlone).
 		bool bAlone;
+		// Sent fishing ("Na ryby"; SendPlayerBotSidekickFishing): at the water
+		// for as long as its Fishing Card lasts, and since when.
+		bool bFishing;
+		DWORD dwFishingSince;
 		TPlayerBotSidekickRuntime()
 			: dwNextPartyCheck(0), dwNextService(0), dwNextLoot(0), dwNextCatchUp(0), dwLootVID(0),
 			  dwLootSince(0), dwNextProtect(0), bTrading(false), dwLastFoeVID(0), bHold(false), lHoldMap(0),
@@ -406,7 +410,7 @@ namespace
 			  dwGearSent(0), dwEqGen(0), llEqGoldSent(-1), dwEquipWaitUntil(0), dwOwnerFightSeenAt(0),
 			  dwNextFoeMemory(0), bLureStage(0), dwLureVID(0), iLurePacks(0), iLureMonsters(0), lLureAnchorX(0),
 			  lLureAnchorY(0), dwLureCourseSince(0), dwLureStageSince(0), dwNextLure(0), uLureCourses(0),
-			  dwNextForgetCheck(0), dwBagFullToldAt(0), bAlone(false)
+			  dwNextForgetCheck(0), dwBagFullToldAt(0), bAlone(false), bFishing(false), dwFishingSince(0)
 		{
 			memset(adwFoes, 0, sizeof(adwFoes));
 		}
@@ -1305,12 +1309,22 @@ namespace
 	// companion goes wherever its owner went - a dungeon instance included,
 	// with the membership Entergame would give a reconnecting player (as
 	// CPlayerBotManager::WarpBot does).
+	bool PlacePlayerBotSidekickAt(LPCHARACTER ch, TPlayerBotAIState& state, long targetMap, long x, long y,
+			DWORD dwNow, const char* reason);
+
 	bool PlacePlayerBotSidekick(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER owner, DWORD dwNow,
 			const char* reason)
 	{
 		long x = 0, y = 0;
 		GetPlayerBotSidekickSpot(ch, owner, x, y);
-		const long targetMap = owner->GetMapIndex();
+		return PlacePlayerBotSidekickAt(ch, state, owner->GetMapIndex(), x, y, dwNow, reason);
+	}
+
+	// The same move to a point of this core's maps: beside the owner, or the
+	// fishing bank of its kingdom's first village (SendPlayerBotSidekickFishing).
+	bool PlacePlayerBotSidekickAt(LPCHARACTER ch, TPlayerBotAIState& state, long targetMap, long x, long y,
+			DWORD dwNow, const char* reason)
+	{
 		const long oldMap = ch->GetMapIndex();
 		const bool wasRiding = ch->IsRiding();
 		state.dwTargetVID = 0;
@@ -2455,6 +2469,7 @@ namespace
 		{
 			rtIt->second.bHold = false;
 			rtIt->second.bErrand = false;
+			rtIt->second.bFishing = false;
 		}
 		LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(rec.dwSidekickPID);
 		TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(rec.dwSidekickPID);
@@ -2490,6 +2505,7 @@ namespace
 		{
 			rtIt->second.bHold = false;
 			rtIt->second.bErrand = false;
+			rtIt->second.bFishing = false;
 		}
 		// What it was fighting at the owner's side stays with the owner.
 		if (rec.bMode == PLAYERBOT_SIDEKICK_FOLLOW)
@@ -2617,6 +2633,128 @@ namespace
 		}
 		*state = &st->second;
 		return sk;
+	}
+
+	bool PlayerBotSidekickHasFishingPass(LPCHARACTER sk)
+	{
+		if (!sk)
+			return false;
+		if (sk->IsEquipUniqueItem(UNIQUE_ITEM_FISHING_PASS))
+			return true;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = sk->GetInventoryItem(cell);
+			if (item && item->GetVnum() == UNIQUE_ITEM_FISHING_PASS)
+				return true;
+		}
+		return false;
+	}
+
+	bool IsPlayerBotSidekickFishing(DWORD pid)
+	{
+		std::map<DWORD, TPlayerBotSidekickRuntime>::const_iterator it = s_mapPlayerBotSidekickRuntime.find(pid);
+		return it != s_mapPlayerBotSidekickRuntime.end() && it->second.bFishing;
+	}
+
+	// "Na ryby" (the operator, 28 September: "towarzysz ... na lowienie ryb i
+	// lowi wtedy ryby przez jeden karnet rybacki"). It goes to the water with
+	// the Fishing Card it carries - the owner hands one over through its bag
+	// window; it buys none for this - and fishes as an angler bot does
+	// (ManagePlayerBotFishing) until the card runs out, then comes back.
+	// Called back earlier with "Przywolaj". The bank is the one of the map it
+	// stands on, or of its kingdom's first village when this core hosts it.
+	void SendPlayerBotSidekickFishing(LPCHARACTER owner, TPlayerBotSidekick& rec, DWORD dwNow)
+	{
+		TPlayerBotAIState* state = NULL;
+		LPCHARACTER sk = FindPlayerBotSidekickForOrder(owner, rec, &state);
+		if (!sk)
+			return;
+		TPlayerBotSidekickRuntime& rt = s_mapPlayerBotSidekickRuntime[rec.dwSidekickPID];
+		if (rt.bFishing)
+		{
+			SayPlayerBotSidekick(owner, "Juz lowie ryby. Zawolaj mnie (Przywolaj), jesli mam wrocic wczesniej.");
+			return;
+		}
+		if (rt.bErrand)
+		{
+			SayPlayerBotSidekick(owner, "Jestem na zakupach - najpierw mnie zawolaj.");
+			return;
+		}
+		if ((int)sk->GetLevel() < PLAYERBOT_FISHING_MIN_LEVEL)
+		{
+			char text[128];
+			snprintf(text, sizeof(text), "Na ryby potrzebuje %d poziomu.", PLAYERBOT_FISHING_MIN_LEVEL);
+			SayPlayerBotSidekick(owner, text);
+			return;
+		}
+		if (!PlayerBotSidekickHasFishingPass(sk))
+		{
+			SayPlayerBotSidekick(owner, "Daj mi Karte Wedkarska (w oknie mojej torby) - bez niej nie moge lowic.");
+			return;
+		}
+		if (!GetPlayerBotFishingBank(sk->GetMapIndex()))
+		{
+			const long village = playerbot_empire_rules::GetHomeMap((int)sk->GetEmpire(),
+					playerbot_empire_rules::MAP_ROLE_M1);
+			const TPlayerBotFishingBank* bank = village ? GetPlayerBotFishingBank(village) : NULL;
+			if (!bank || !IsPlayerBotMapHostedHere(village) ||
+					!PlacePlayerBotSidekickAt(sk, *state, village, bank->centre.x, bank->centre.y, dwNow,
+							"sidekick_fishing"))
+			{
+				SayPlayerBotSidekick(owner, "Stad nie dojde nad wode - zabierz mnie do pierwszej wioski, tam jest lowisko.");
+				return;
+			}
+		}
+		rt.bHold = false;
+		rt.bFishing = true;
+		rt.dwFishingSince = dwNow;
+		if (rec.bMode == PLAYERBOT_SIDEKICK_FOLLOW)
+			HandPlayerBotSidekickFoesBeforeLeaving(rec.dwSidekickPID, owner, "fishing");
+		rec.bMode = PLAYERBOT_SIDEKICK_FREE;
+		DBManager::instance().Query("UPDATE player.playerbot_sidekick SET mode=1 WHERE owner_pid=%u", rec.dwOwnerPID);
+		if (sk->GetParty() && owner->GetParty() == sk->GetParty())
+			LeavePlayerBotParty(sk);
+		state->dwTargetVID = 0;
+		sk->SetVictim(NULL);
+		state->bFishingSession = false;
+		state->dwNextFishingCheckTime = 0;
+		SayPlayerBotSidekick(owner, "Ide na ryby. Lowie, dopoki Karta Wedkarska nie wygasnie - zawolaj mnie (Przywolaj), jesli bede potrzebny.");
+		sys_log(0, "PLAYERBOT_SIDEKICK: sent fishing owner=%u pid=%u map=%ld", rec.dwOwnerPID, rec.dwSidekickPID,
+				sk->GetMapIndex());
+	}
+
+	// At the water: the next session straight after the last, and home when
+	// the card is gone. True when it came back this tick.
+	bool KeepPlayerBotSidekickFishing(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotSidekick& rec,
+			TPlayerBotSidekickRuntime& rt, DWORD dwNow)
+	{
+		if (!rt.bFishing)
+			return false;
+		if (rec.bMode == PLAYERBOT_SIDEKICK_FOLLOW)
+		{
+			rt.bFishing = false;
+			return false;
+		}
+		if (!state.bFishingSession)
+			state.dwNextFishingCheckTime = 0;
+		// A card that expired is taken out of the bag by the engine; the first
+		// half minute is the walk to the bank with the card still in the bag.
+		if (PlayerBotSidekickHasFishingPass(ch) || dwNow - rt.dwFishingSince < 30000)
+			return false;
+		rt.bFishing = false;
+		sys_log(0, "PLAYERBOT_SIDEKICK: fishing over, the card ran out owner=%u pid=%u", rec.dwOwnerPID,
+				rec.dwSidekickPID);
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
+		if (owner)
+		{
+			SayPlayerBotSidekick(owner, "Karta Wedkarska sie skonczyla - wracam do ciebie.");
+			SummonPlayerBotSidekick(owner, rec, dwNow);
+			return true;
+		}
+		rec.bMode = PLAYERBOT_SIDEKICK_FOLLOW;
+		DBManager::instance().Query("UPDATE player.playerbot_sidekick SET mode=0 WHERE owner_pid=%u", rec.dwOwnerPID);
+		state.bFishingSession = false;
+		return true;
 	}
 
 	// "Czekaj tutaj": it stays where its owner stands now - put there first
@@ -4307,6 +4445,8 @@ namespace
 			HoldPlayerBotSidekick(ch, rec->second, dwNow);
 		else if (!strcmp(sub, "zakupy"))
 			SendPlayerBotSidekickShopping(ch, rec->second, dwNow);
+		else if (!strcmp(sub, "ryby"))
+			SendPlayerBotSidekickFishing(ch, rec->second, dwNow);
 		else if (!strcmp(sub, "luruj"))
 		{
 			if (!strcmp(a1, "0") || !strcmp(a1, "1"))
@@ -5639,6 +5779,8 @@ namespace
 		TPlayerBotSidekickRuntime& rt = s_mapPlayerBotSidekickRuntime[ch->GetPlayerID()];
 		ReadPlayerBotSidekickForgetBook(ch, *rec, rt, dwNow);
 		if (HandlePlayerBotSidekickTrade(ch, state, *rec, rt, dwNow))
+			return true;
+		if (KeepPlayerBotSidekickFishing(ch, state, *rec, rt, dwNow))
 			return true;
 		if (rec->bMode != PLAYERBOT_SIDEKICK_FOLLOW)
 			return false;

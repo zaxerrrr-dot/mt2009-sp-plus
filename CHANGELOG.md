@@ -17,6 +17,61 @@ every version here.
 
 ---
 
+## 2.12.0 — 2026-09-28 — Filtr podnoszenia, Towarzysz na rybach, szybszy kosz, kategoria MT2009 Plus
+
+Serwer 2.12.0 i klient 2.0.24: zaktualizuj oba w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.11.0.
+
+### Filtr podnoszenia (klawisz Z i pet)
+
+- Nowe okno **Filtr podnoszenia** – otwiera je **Ctrl+Z** albo komenda
+  `/filtr`. Te same rodzaje przedmiotów co w Auto Łowach (broń, zbroje,
+  hełmy, tarcze, bransolety, buty, naszyjniki, kolczyki, ozdoby, mikstury,
+  księgi, kamienie, inne): zaznaczasz, co ma być podnoszone, a reszta zostaje
+  na ziemi.
+- Filtr działa na **klawisz Z** (także przytrzymany), klawisz **`** i na
+  **peta, który zbiera drop**. Yang jest podnoszony zawsze.
+- Ustawienia zapisują się w kliencie i wracają po każdym wejściu do gry.
+
+### Towarzysz na rybach
+
+- Nowy przycisk **Na ryby** w oknie Towarzysza (albo `/towarzysz ryby`).
+  Daj Towarzyszowi **Kartę Wędkarską** (w oknie jego torby) – idzie nad wodę
+  i łowi, dopóki karta nie wygaśnie, a potem wraca do Ciebie. Drugiej karty
+  sam nie kupi.
+- Łowi na łowisku mapy, na której stoi, albo przenosi się nad wodę pierwszej
+  wioski swojego królestwa. **Przywołaj** kończy łowienie wcześniej.
+
+### Kosz działa od razu
+
+- Kosz najpierw pyta o potwierdzenie, a potem usuwa **po 18 stosów naraz**,
+  zamiast sprawdzać i usuwać każdy stos osobno z przerwami. Pełny kosz (36
+  stosów) znika w sekundę zamiast pół minuty.
+
+### Wyszukiwarka sklepów
+
+- **F5** znowu otwiera i zamyka wyszukiwarkę sklepów.
+- Nowa kategoria **MT2009 Plus**: **Cor Draconis**, **szarfy proste,
+  dostojne, zacne i unikatowe** (każdy wzór i nazwa danego stopnia) oraz
+  **alchemia antyczna, legendarna i mityczna** (każdy kamień i każdy stopień
+  danej klasy) – bez dzielenia na plusy i konkretne kamienie.
+
+### Porządkowanie ekwipunku
+
+- Przycisk porządkowania pyta, co zrobić: **Ułóż i scal** (jak dotąd) albo
+  **Tylko scal stosy** – łączy stosy tego samego przedmiotu i niczego więcej
+  nie przestawia.
+
+### Walka
+
+- **Auto Łowy** nie biją już zabitego potwora, dopóki nie zniknie jego model
+  – przechodzą do następnego celu, gdy tylko cel ma 0 PŻ.
+- **Umiejętności konne** (Cięcie z Siodła i pozostałe) działają na
+  **mountach** (wierzchowcach z kostiumu), na których można walczyć.
+
+---
+
 ## 2.11.0 — 2026-09-27 — Przejmij bota, prezenty dla botów, lepsze szarfy botów
 
 Serwer 2.11.0 i klient 2.0.23: zaktualizuj oba w launcherze

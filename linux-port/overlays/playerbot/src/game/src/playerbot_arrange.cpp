@@ -367,7 +367,21 @@ int CountPlayerBotGridHoles(LPCHARACTER ch, WORD cells)
 
 }  // namespace
 
+static TResult ArrangeInventoryImpl(LPCHARACTER ch, bool fromPlayer, bool mergeOnly);
+
 TResult ArrangeInventory(LPCHARACTER ch, bool fromPlayer)
+{
+	return ArrangeInventoryImpl(ch, fromPlayer, false);
+}
+
+TResult MergeInventoryStacks(LPCHARACTER ch, bool fromPlayer)
+{
+	return ArrangeInventoryImpl(ch, fromPlayer, true);
+}
+
+// mergeOnly: the plan's pours and none of its moves; a stack poured empty
+// leaves its cell, the rest stay where they stand.
+static TResult ArrangeInventoryImpl(LPCHARACTER ch, bool fromPlayer, bool mergeOnly)
 {
 	TResult result;
 	if (!ch || !ch->IsPC() || !ch->IsItemLoaded()) {
@@ -490,7 +504,7 @@ TResult ArrangeInventory(LPCHARACTER ch, bool fromPlayer)
 		return result;
 	}
 	result.strategy = plan.strategy;
-	if (plan.transfers.empty() && plan.moved == 0) {
+	if (plan.transfers.empty() && (mergeOnly || plan.moved == 0)) {
 		result.code = RESULT_NOTHING;
 		return result;
 	}
@@ -531,6 +545,8 @@ TResult ArrangeInventory(LPCHARACTER ch, bool fromPlayer)
 	// while B goes into A's - needs no free cell in between.
 	std::vector<std::pair<LPITEM, WORD> > movers;
 	for (const rules::Placement& placement : plan.placements) {
+		if (mergeOnly)
+			break;
 		std::map<uint32_t, LPITEM>::iterator it = handleOf.find(placement.id);
 		if (it == handleOf.end())
 			continue;
@@ -551,7 +567,12 @@ TResult ArrangeInventory(LPCHARACTER ch, bool fromPlayer)
 
 	int misplaced = 0;
 	std::map<uint32_t, int> finalCell;
+	if (mergeOnly)
+		for (std::map<uint32_t, LPITEM>::const_iterator it = handleOf.begin(); it != handleOf.end(); ++it)
+			finalCell[it->first] = it->second->GetOwner() == ch ? it->second->GetCell() : -1;
 	for (const rules::Placement& placement : plan.placements) {
+		if (mergeOnly)
+			break;
 		std::map<uint32_t, LPITEM>::iterator it = handleOf.find(placement.id);
 		if (it == handleOf.end())
 			continue;
@@ -1309,6 +1330,13 @@ TTransfer MoveInSafebox(LPCHARACTER ch, unsigned int fromPos, unsigned int toPos
 namespace playerbot_arrange {
 
 TResult ArrangeInventory(LPCHARACTER, bool)
+{
+	TResult result;
+	result.code = RESULT_UNSUPPORTED;
+	return result;
+}
+
+TResult MergeInventoryStacks(LPCHARACTER, bool)
 {
 	TResult result;
 	result.code = RESULT_UNSUPPORTED;
