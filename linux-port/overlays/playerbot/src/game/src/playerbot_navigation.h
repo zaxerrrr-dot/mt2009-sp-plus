@@ -1231,6 +1231,13 @@ namespace
 							const int index = Index(x, y);
 							if (requiredComponent != 0 && m_component[index] != requiredComponent)
 								continue;
+							// MT2009_PLUS_NAV_LIVE_OBJECT_V1: and free in the live world
+							// too. A guild building (ATTR_OBJECT, placed long after this
+							// grid was built) left its footprint walkable here: a bot
+							// that walked to a guild smith inside it was "rescued" onto
+							// its own blocked cell every second and never moved again.
+							if (IsLiveBlockedCell(x, y))
+								continue;
 							const DWORD tie = PlayerBotNavHash(seed ^ (DWORD)index);
 							if (!found || tie < bestTie)
 							{

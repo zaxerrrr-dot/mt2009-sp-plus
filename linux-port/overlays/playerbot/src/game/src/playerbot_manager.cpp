@@ -6068,6 +6068,20 @@ WritePlayerBotGuildStatus(dwNow);
 					foundSafe = navigation.FindNearestWalkableWorld(
 							fallbackX, fallbackY, 30, safe, ch->GetPlayerID());
 				}
+				// MT2009_PLUS_NAV_LIVE_OBJECT_V1: never "rescued" onto a cell the
+				// live world still blocks - the static grid does not know a guild
+				// building placed after it was built - so step off it as the
+				// planner does.
+				if (foundSafe && IsPlayerBotPositionBlocked(currentMap, safe.x, safe.y))
+				{
+					long escapeX = 0, escapeY = 0;
+					foundSafe = navigation.FindEscapeFromBlockedCell(safe.x, safe.y, escapeX, escapeY);
+					if (foundSafe)
+					{
+						safe.x = escapeX;
+						safe.y = escapeY;
+					}
+				}
 				if (!foundSafe)
 					continue;
 
