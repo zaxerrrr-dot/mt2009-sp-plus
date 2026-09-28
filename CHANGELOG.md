@@ -17,11 +17,25 @@ every version here.
 
 ---
 
-## 2.12.0 — 2026-09-28 — Filtr podnoszenia, Towarzysz na rybach, szybszy kosz, kategoria MT2009 Plus, Dom Towarowy
+## 2.12.0 — 2026-09-28 — Dom Towarowy, Towarzysz lider grupy i na rybach, filtr podnoszenia, szybszy kosz
 
 Serwer 2.12.0 i klient 2.0.24: zaktualizuj oba w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
 z 2.11.0.
+
+### Dom Towarowy – cały rynek w jednym oknie
+
+- U **Handlarki Różności** w pierwszej wiosce jest nowa rozmowa **„Dom
+  Towarowy”**: jedno okno ze **wszystkimi ofertami sklepów offline** – graczy
+  i botów.
+- Wyszukiwanie po nazwie (także po nazwie umiejętności w księgach),
+  kategorie po lewej, cena od–do i pięć sposobów sortowania.
+- **Kupujesz bez chodzenia po sklepach** – prosto z okna, stos w całości.
+- Przy wystawianiu przedmiotu we własnym sklepie offline pod ceną widać, za
+  ile wystawiłby go bot i ile boty ostatnio za niego płaciły.
+- Zwykły sklep Handlarki otwiera rozmowa „Kup przedmioty”. Dom Towarowy
+  włącza się i wyłącza w oknie poziomu trudności w launcherze (domyślnie
+  włączony).
 
 ### Filtr podnoszenia (klawisz Z i pet)
 
@@ -87,11 +101,6 @@ z 2.11.0.
 
 ### Mniejsze dodatki
 
-- **Dom Towarowy** u Handlarki Różności w M1: jedno okno ze wszystkimi
-  ofertami sklepów offline graczy i botów – wyszukiwanie po nazwie,
-  kategorie, cena od–do, sortowanie, zakup bez podchodzenia do sklepu
-  (klient 2.0.24). Włączany w oknie poziomu trudności w launcherze. Przy
-  wystawianiu przedmiotu we własnym sklepie widać, za ile wystawiłby go bot.
 - Zamiast Hazardzisty czterech rzadkich Hazardzistów (na fioletowo), którzy
   ulepszają i sprzedają sprzęt w sklepach offline.
 - Nowe ceny broni na 30 poziom, marmurów polimorfii i wędek; inflacja rośnie
@@ -109,6 +118,23 @@ z 2.11.0.
 - Okrzyki botów docierają do graczy na wszystkich mapach.
 - Przycisk „Logi VPS” działa też z serwerem postawionym ręcznie; bot
   łowiący ryby odpowiada na atak gracza; drobne poprawki rynku i kowala.
+
+---
+
+## Klient 2.0.24 — 2026-09-28 — Dom Towarowy, filtr podnoszenia, okno Towarzysza
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.0.23.
+
+- Okno Domu Towarowego i podpowiedź ceny przy wystawianiu w sklepie offline.
+- Okno filtra podnoszenia (Ctrl+Z albo `/filtr`); z włączonym filtrem Z i `
+  podnoszą przez serwer.
+- F5 otwiera wyszukiwarkę sklepów; kategoria MT2009 Plus.
+- Kosz usuwa po 18 stosów naraz.
+- Wybór „Ułóż i scal” albo „Tylko scal stosy” przy porządkowaniu ekwipunku.
+- Auto Łowy nie biją zabitego potwora.
+- Okno Towarzysza: „Na ryby”, sekcja Grupa (lider, bonus z Dowodzenia).
+- Lista serwerów może mieć dwa serwery zewnętrzne (`coop.cfg` i `coop2.cfg`).
 
 ---
 
