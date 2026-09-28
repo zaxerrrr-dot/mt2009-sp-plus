@@ -577,8 +577,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/ochao-add \
 #  * the regen files of the two dungeons (data/dungeon/razador_mt: every fourth line of the
 #    package's flame_dungeon files, a party of level 55 and not the 100+ the package planned;
 #    data/dungeon/nemere_mt: the ice rooms, the package's ice_dungeon groups of groups);
-#  * the flame dungeon's own map (351) spawns nothing by itself any more - the package's
-#    npc.txt/regen.txt filled the public copy nobody enters with Razador's hourly group;
+#  * the public copies of 351 and 352 are the lobbies (both maps on game2, see
+#    m2-render-config): nothing spawns there but the NPC that opens the instance - the
+#    Am-heh statue (20385) on 351, the stone lion (20397) on 352; the package's own
+#    npc.txt/regen.txt filled 351 with Razador's hourly group;
 #  * the two guards: the Fire Land's (20394) on map 62 at the archive's exit cell (91,916),
 #    the Ice Land's (20395) on Mount Sohan (61) at (738,119); both cells measured free;
 #  * the Nemere dungeon's drops, mirrored from the package's Razador groups.
@@ -593,6 +595,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && mkdir -p /opt/metin2/share/data/dungeon \
  && cp -a "$A/data/dungeon/razador_mt" "$A/data/dungeon/nemere_mt" /opt/metin2/share/data/dungeon/ \
  && for f in regen.txt npc.txt boss.txt stone.txt; do : > "$L/map/metin2_map_n_flame_dungeon_01/$f"; done \
+ && printf 'm\t348\t578\t0\t0\t0\t0\t60s\t100\t1\t20385\r\n' > "$L/map/metin2_map_n_flame_dungeon_01/npc.txt" \
  && for p in "metin2_map_n_flame_01 95 910 20394" "map_n_snowm_01 742 114 20395"; do \
       set -- $p; F="$L/map/$1/npc.txt"; \
       [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; \

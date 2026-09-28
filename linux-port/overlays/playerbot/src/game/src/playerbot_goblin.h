@@ -608,8 +608,6 @@ namespace mt2009_goblin
 	{
 		if (!IsOn())
 			return Msg(ch, MSG_EVENT_OFF);
-		if (IsIslandMap(ch->GetMapIndex()))
-			return;
 		if (Revealed(ch))
 			return SendInfo(ch);
 		if (Gold(ch) < GOLD_REVEAL)
@@ -624,8 +622,8 @@ namespace mt2009_goblin
 
 	void ResetBoard(LPCHARACTER ch)
 	{
-		if (!IsOn() || IsIslandMap(ch->GetMapIndex()) || !Revealed(ch))
-			return;
+		if (!IsOn() || !Revealed(ch))
+			return SendInfo(ch);
 		if (Claims(ch) <= 0 && ClaimedMask(ch) == 0)
 			return Msg(ch, MSG_CANNOT_RESET_LIST);
 		if (Claims(ch) >= CLAIMS_PER_ROUND && !AccTaken(ch))
@@ -643,8 +641,8 @@ namespace mt2009_goblin
 
 	void Claim(LPCHARACTER ch)
 	{
-		if (!IsOn() || IsIslandMap(ch->GetMapIndex()))
-			return;
+		if (!IsOn())
+			return Msg(ch, MSG_EVENT_OFF);
 		if (!Revealed(ch))
 			return Msg(ch, MSG_REVEAL_FIRST);
 		const int claims = Claims(ch);
@@ -699,7 +697,7 @@ namespace mt2009_goblin
 	{
 		if (!IsOn())
 			return;
-		if (IsIslandMap(ch->GetMapIndex()) || !Revealed(ch) || Claims(ch) < CLAIMS_PER_ROUND)
+		if (!Revealed(ch) || Claims(ch) < CLAIMS_PER_ROUND)
 		{
 			Msg(ch, MSG_ACC_TOOLTIP);
 			return SendRounds(ch);
@@ -1004,9 +1002,12 @@ namespace mt2009_goblin
 		const Waypoint& w = path.wp[inst.wp];
 		g->SetNowWalking(true);
 		g->SetRotationToXY(w.x, w.y);
-		g->Goto(w.x, w.y);
+		const bool going = g->Goto(w.x, w.y);
 		g->SendMovePacket(FUNC_WAIT, 0, 0, 0, 0);
 		g->StartStateMachine(1);
+		sys_log(0, "GOBLIN: goblin of pid %u walks path %d wp %d (%s) from %ld,%ld to %ld,%ld, %u ms%s", inst.pid,
+				inst.path, inst.wp, w.type == WP_MOB ? "wave" : (w.type == WP_TURN ? "turn" : "chest"), g->GetX(), g->GetY(),
+				w.x, w.y, (unsigned int)g->GetCurrentMoveDuration(), going ? "" : " (goto refused)");
 		inst.walkAt = get_dword_time();
 		inst.lastX = g->GetX();
 		inst.lastY = g->GetY();
@@ -1053,12 +1054,17 @@ namespace mt2009_goblin
 			const long y = w.y + ((i / 4) - 1) * 150 + number(-40, 40);
 			LPCHARACTER mob = CHARACTER_MANAGER::instance().SpawnMob(vnum, inst.map, x, y, 0, true, -1, true);
 			if (!mob)
+			{
+				sys_err("GOBLIN: wave monster %u did not spawn at %ld,%ld on %ld", vnum, x, y, inst.map);
 				continue;
+			}
 			mob->SetAggressive();
 			if (g)
 				mob->BeginFight(g);
 			inst.wave.push_back(mob->GetVID());
 		}
+		sys_log(0, "GOBLIN: wave of %u monsters for pid %u at path %d wp %d (%ld,%ld)", (unsigned int)inst.wave.size(),
+				inst.pid, inst.path, inst.wp, w.x, w.y);
 	}
 
 	// A wave's dead: a Doubloon each, as long as the purse has room.
@@ -1261,6 +1267,9 @@ namespace mt2009_goblin
 					ArriveChest(inst, owner, g);
 				return;
 			}
+			if (now - inst.walkAt >= 10000 && (now - inst.walkAt) % 10000 < 250)
+				sys_log(0, "GOBLIN: goblin of pid %u at %ld,%ld, %ld px from wp %d, %s", inst.pid, g->GetX(), g->GetY(),
+						(long)sqrt((double)dist2), inst.wp, moving ? "walking" : "standing");
 			if (!moving)
 			{
 				if (g->GetX() == inst.lastX && g->GetY() == inst.lastY)
@@ -1365,16 +1374,26 @@ namespace mt2009_goblin
 		inst.createdAt = get_dword_time();
 		inst.endsAt = now + RUN_SECONDS;
 		s_mapInstances[inst.pid] = inst;
-		sys_log(0, "GOBLIN: %s goes on from the island's map to its copy %ld", ch->GetName(), map);
 		// The exit the save writes: where the ticket was used, not here.
 		ch->SetExitLocation(ch->GetQuestFlag(F_RET_X), ch->GetQuestFlag(F_RET_Y), ch->GetQuestFlag(F_RET_MAP));
-		MarkWarping(ch);
-		if (!ch->WarpSet(SPAWN_X, SPAWN_Y, map))
+		// Into the copy without a warp: the copy is the same map at the same
+		// coordinates, so the client has nothing to load - the engine's Show
+		// moves the character to the copy's sectree (as a GM goto does inside
+		// a map), and the player sees one loading screen, the one to the
+		// island's core. A warp here was the second loading screen (the
+		// operator's test, 28 September).
+		ch->Stop();
+		if (!ch->Show(map, SPAWN_X, SPAWN_Y, 0))
 		{
+			sys_err("GOBLIN: %s could not be shown on the copy %ld", ch->GetName(), map);
 			s_mapInstances.erase(inst.pid);
 			QueueDestroy(map, 1000);
 			GoHome(ch);
+			return;
 		}
+		ch->Stop();
+		ch->SyncPacket();
+		sys_log(0, "GOBLIN: %s moved from the island's map to its copy %ld (no warp)", ch->GetName(), map);
 	}
 
 	void Arrived(Instance& inst, LPCHARACTER ch)
@@ -1637,9 +1656,7 @@ namespace mt2009_goblin
 		// restart.
 		if (!s_dwBootAt)
 			s_dwBootAt = now;
-		if (now - s_dwBootAt < 60000)
-			return;
-		if (IsPlayerBotEventLeader())
+		if (now - s_dwBootAt >= 60000 && IsPlayerBotEventLeader())
 		{
 			const int nowEpoch = (int)get_global_time();
 			if (on && !s_bWasOn)
@@ -1760,6 +1777,8 @@ void GoblinCommand(LPCHARACTER ch, const char* argument)
 	one_argument(rest, arg2, sizeof(arg2));
 	if (strcmp(sub, "gm") && TooSoon(ch))
 		return;
+	sys_log(0, "GOBLIN: /goblin %s %s %s by %s (map %ld, event %d, doubloons %d, revealed %d)", sub, arg, arg2,
+			ch->GetName(), ch->GetMapIndex(), IsOn() ? 1 : 0, Gold(ch), Revealed(ch) ? 1 : 0);
 	if (!*sub || !strcmp(sub, "otworz"))
 	{
 		SendEvent(ch);

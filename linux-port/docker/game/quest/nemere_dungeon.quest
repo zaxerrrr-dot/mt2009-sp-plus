@@ -1,7 +1,8 @@
 -- MT2009_PLUS_DUNGEONS_V1 (nemere): Lodowa Kraina - loch Nemere, od poziomu 75,
 -- tylko dla graczy. Przebieg jak w archiwum "Flame-and-Nemere-dungeon" (R4kan,
 -- Nemere.cpp), napisany na lochach silnika (d.*) zamiast osobnego kodu C++:
--- stra¿nik Lodowej Krainy (20395, Góra Sohan, mapa 61) tworzy instancjê mapy 352
+-- stra¿nik Lodowej Krainy (20395, Góra Sohan, mapa 61) przenosi do poczekalni
+-- (publiczna mapa 352 na game2), gdzie Kamienny Lew tworzy instancjê mapy 352
 -- (metin2_map_n_snow_dungeon_01) dla gracza albo ludzi z jego dru¿yny (boty
 -- zostaj¹ na zewn¹trz). Kamienny lew (20397) przy wejœciu zaczyna wyprawê:
 --   1: zabij 20 potworów,
@@ -83,19 +84,14 @@ quest nemere_dungeon begin
 			d.exit_all()
 		end
 
+		-- The guard (map 61, game1) sends a player to the public copy of the map - the
+		-- lobby on game2 - where 20397 makes the instance: d.new_jump is local to its core,
+		-- and game1 cannot host 351/352 (MAP_ALLOW_LIMIT, m2-render-config). The cooldown is
+		-- written only once the instance exists.
 		when 20395.chat."Lodowa Kraina (Nemere)" begin
 			local c = nemere_dungeon.cfg()
 			say_title(mob_name(20395))
 			if pc.is_playerbot() then
-				return
-			end
-			local idx = pc.getf("nemere_dungeon", "idx")
-			if idx > 0 and get_global_time() - pc.getf("nemere_dungeon", "entry") < c.limit_min * 60 and d.find(idx) then
-				say("Twoja wyprawa do Lodowej Krainy wci¹¿ trwa.")
-				say("Czy chcesz do niej wróciæ?")
-				if select("Wróæ do lochu", "Nie teraz") == 1 then
-					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, idx)
-				end
 				return
 			end
 			say("Za tym przejœciem le¿y Lodowa Kraina, w której")
@@ -104,7 +100,7 @@ quest nemere_dungeon begin
 			say("")
 			say_reward("Wymagany poziom: "..c.min_level..". Ponowne wejœcie po 60 minutach.")
 			say_reward("Loch jest tylko dla graczy - boty z dru¿yny zostaj¹ tutaj.")
-			if select("WejdŸ do œrodka", "Nie teraz") ~= 1 then
+			if select("PrzejdŸ do wejœcia", "Nie teraz") ~= 1 then
 				return
 			end
 			-- Closed to players until the client carries the map (game.get_event_flag,
@@ -114,12 +110,53 @@ quest nemere_dungeon begin
 				say("Przejœcie jest jeszcze zamkniête. Wróæ póŸniej.")
 				return
 			end
-			if party.is_party() and not party.is_leader() then
+			if pc.get_level() < c.min_level then
 				say_title(mob_name(20395))
-				say("Tylko przywódca dru¿yny mo¿e otworzyæ przejœcie.")
+				say("Jesteœ za s³aby. Wróæ, gdy osi¹gniesz poziom "..c.min_level..".")
 				return
 			end
+			if not pc.can_warp() or pc.is_busy() then
+				say_title(mob_name(20395))
+				say("Poczekaj chwilê po handlu lub rozmowie i spróbuj ponownie.")
+				return
+			end
+			local x = (c.base_x + c.entry[1]) * 100
+			local y = (c.base_y + c.entry[2]) * 100
+			-- The leader brings the people of the party standing here; bots stay.
+			if party.is_party() and party.is_leader() then
+				local me = pc.get_player_id()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						if not pc.is_playerbot() and pc.get_level() >= c.min_level and pc.can_warp() then
+							pc.warp(x, y)
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			pc.warp(x, y)
+		end
+
+		-- The lobby (public map 352 on game2): the leader, or a player alone, opens the instance.
+		when 20397.chat."Otwórz przejœcie do Lodowej Krainy" with pc.get_map_index() == 352 begin
+			local c = nemere_dungeon.cfg()
+			say_title(mob_name(20397))
 			local now = get_global_time()
+			local idx = pc.getf("nemere_dungeon", "idx")
+			if idx > 0 and now - pc.getf("nemere_dungeon", "entry") < c.limit_min * 60 and d.find(idx) then
+				say("Twoja wyprawa wci¹¿ trwa. Czy chcesz do niej wróciæ?")
+				if select("Wróæ do lochu", "Nie teraz") == 1 then
+					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, idx)
+				end
+				return
+			end
+			if party.is_party() and not party.is_leader() then
+				say("Tylko przywódca dru¿yny mo¿e otworzyæ przejœcie.")
+				say("Poczekaj tu na niego - zabierze ca³¹ dru¿ynê.")
+				return
+			end
 			local humans = {}
 			local low = {}
 			local wait = {}
@@ -132,28 +169,27 @@ quest nemere_dungeon begin
 						if pc.get_level() < c.min_level then
 							table.insert(low, pc.get_name())
 						end
-						if now - pc.getf("nemere_dungeon", "entry") < c.cooldown then
+						if not pc.is_gm() and now - pc.getf("nemere_dungeon", "entry") < c.cooldown then
 							table.insert(wait, pc.get_name())
 						end
 					end
 					q.end_other_pc_block()
 				end
 			else
+				table.insert(humans, pc.get_player_id())
 				if pc.get_level() < c.min_level then
 					table.insert(low, pc.get_name())
 				end
-				if now - pc.getf("nemere_dungeon", "entry") < c.cooldown then
+				if not pc.is_gm() and now - pc.getf("nemere_dungeon", "entry") < c.cooldown then
 					table.insert(wait, pc.get_name())
 				end
 			end
 			if table.getn(low) > 0 then
-				say_title(mob_name(20395))
 				say("Za s³abi, by wejœæ (poziom "..c.min_level.."+):")
 				for i, n in next, low, nil do say(color(1,1,0).."    "..n) end
 				return
 			end
 			if table.getn(wait) > 0 then
-				say_title(mob_name(20395))
 				say("Jeszcze nie odpoczêli po poprzedniej wyprawie:")
 				for i, n in next, wait, nil do say(color(1,1,0).."    "..n) end
 				local left = c.cooldown - (now - pc.getf("nemere_dungeon", "entry"))
@@ -163,42 +199,47 @@ quest nemere_dungeon begin
 				end
 				return
 			end
-			if not pc.can_warp() or pc.is_busy() then
-				say_title(mob_name(20395))
-				say("Poczekaj chwilê po handlu lub rozmowie i spróbuj ponownie.")
+			say("Dru¿yna na tej mapie wejdzie razem z tob¹.")
+			if select("Otwórz przejœcie", "Nie teraz") ~= 1 then
 				return
 			end
-
-			pc.setf("nemere_dungeon", "entry", now)
-			d.new_jump(c.map, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100)
+			if party.is_party() then
+				d.new_jump_party(c.map, c.base_x + c.entry[1], c.base_y + c.entry[2])
+			else
+				d.new_jump(c.map, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100)
+			end
 			local didx = d.get_map_index()
-			pc.setf("nemere_dungeon", "idx", didx)
+			if didx == nil or didx < 10000 then
+				say_title(mob_name(20397))
+				say("Nie uda³o siê otworzyæ przejœcia. Spróbuj ponownie za chwilê.")
+				return
+			end
+			for i, pid in next, humans, nil do
+				q.begin_other_pc_block(pid)
+				pc.setf("nemere_dungeon", "entry", now)
+				pc.setf("nemere_dungeon", "idx", didx)
+				q.end_other_pc_block()
+			end
 			d.setf("leader", pc.get_player_id())
 			d.setf("step", 0)
 			d.setf("left", c.limit_min)
 			d.spawn_mob(20397, c.lion[1], c.lion[2])
 			server_timer("nemere_tick", 60, didx)
-
-			local me = pc.get_player_id()
-			for i, pid in next, humans, nil do
-				if pid ~= me then
-					q.begin_other_pc_block(pid)
-					pc.setf("nemere_dungeon", "entry", now)
-					pc.setf("nemere_dungeon", "idx", didx)
-					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, didx)
-					q.end_other_pc_block()
-				end
-			end
 		end
 
 		when login begin
 			local c = nemere_dungeon.cfg()
 			local idx = pc.get_map_index()
 			if idx == c.map then
-				pc.warp(c.exit_x * 100, c.exit_y * 100, c.exit_map)
+				if pc.is_playerbot() then
+					pc.warp(c.exit_x * 100, c.exit_y * 100)
+					return
+				end
+				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				syschat("Lodowa Kraina: porozmawiaj z Kamiennym Lwem, aby otworzyæ przejœcie.")
 			elseif nemere_dungeon.inside() then
 				if pc.is_playerbot() then
-					pc.warp(c.exit_x * 100, c.exit_y * 100, c.exit_map)
+					pc.warp(c.exit_x * 100, c.exit_y * 100)
 					return
 				end
 				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)

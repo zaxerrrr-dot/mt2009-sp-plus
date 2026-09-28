@@ -1,7 +1,8 @@
 -- MT2009_PLUS_DUNGEONS_V1 (razador): Czyœciec Ognia - loch Razadora, od poziomu 55,
 -- tylko dla graczy. Przebieg jak w archiwum "Flame-and-Nemere-dungeon" (R4kan,
 -- Arrador.cpp), napisany na lochach silnika (d.*) zamiast osobnego kodu C++:
--- stra¿nik Ognistej Ziemi (20394, mapa 62) tworzy instancjê mapy 351
+-- stra¿nik Ognistej Ziemi (20394, mapa 62) przenosi do poczekalni (publiczna mapa 351
+-- na game2), gdzie pos¹g Am-heh tworzy instancjê mapy 351
 -- (metin2_map_n_flame_dungeon_01) dla gracza albo ludzi z jego dru¿yny (boty
 -- zostaj¹ na zewn¹trz), pos¹g Am-heh (20385) w œrodku wydaje szeœæ zadañ w
 -- losowej kolejnoœci (przesuniêcie cykliczne 1..6 jak DungeonStepSort), a po
@@ -15,7 +16,7 @@
 --   7: Razador; po jego œmierci wszyscy wychodz¹ po 60 sekundach.
 -- Ka¿de zadanie otwiera swoje drzwi (20387 + 20388). Limit 60 minut, ponowne
 -- wejœcie po godzinie od wejœcia (archiwum: 1 h). Mapy 351/352 s¹ na rdzeniu
--- game1 razem z wejœciami (61, 62), bo loch powstaje na rdzeniu stra¿nika.
+-- game2: game1 ma ju¿ 32 mapy (MAP_ALLOW_LIMIT), a d.new_jump tworzy loch lokalnie.
 quest razador_dungeon begin
 	state start begin
 		function cfg()
@@ -114,20 +115,14 @@ quest razador_dungeon begin
 			d.exit_all()
 		end
 
-		-- The guard on the Fire Land.
+		-- The guard (map 62, game1) sends a player to the public copy of the map - the
+		-- lobby on game2 - where 20385 makes the instance: d.new_jump is local to its core,
+		-- and game1 cannot host 351/352 (MAP_ALLOW_LIMIT, m2-render-config). The cooldown is
+		-- written only once the instance exists.
 		when 20394.chat."Czyœciec Ognia (Razador)" begin
 			local c = razador_dungeon.cfg()
 			say_title(mob_name(20394))
 			if pc.is_playerbot() then
-				return
-			end
-			local idx = pc.getf("razador_dungeon", "idx")
-			if idx > 0 and get_global_time() - pc.getf("razador_dungeon", "entry") < c.limit_min * 60 and d.find(idx) then
-				say("Twoja wyprawa do Czyœæca Ognia wci¹¿ trwa.")
-				say("Czy chcesz do niej wróciæ?")
-				if select("Wróæ do lochu", "Nie teraz") == 1 then
-					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, idx)
-				end
 				return
 			end
 			say("Legendy mówi¹, ¿e za tym portalem œpi Razador,")
@@ -136,7 +131,7 @@ quest razador_dungeon begin
 			say("")
 			say_reward("Wymagany poziom: "..c.min_level..". Ponowne wejœcie po 60 minutach.")
 			say_reward("Loch jest tylko dla graczy - boty z dru¿yny zostaj¹ tutaj.")
-			if select("WejdŸ do œrodka", "Nie teraz") ~= 1 then
+			if select("PrzejdŸ do wejœcia", "Nie teraz") ~= 1 then
 				return
 			end
 			-- Closed to players until the client carries the map (game.get_event_flag,
@@ -146,12 +141,53 @@ quest razador_dungeon begin
 				say("Przejœcie jest jeszcze zamkniête. Wróæ póŸniej.")
 				return
 			end
-			if party.is_party() and not party.is_leader() then
+			if pc.get_level() < c.min_level then
 				say_title(mob_name(20394))
-				say("Tylko przywódca dru¿yny mo¿e otworzyæ portal.")
+				say("Jesteœ za s³aby. Wróæ, gdy osi¹gniesz poziom "..c.min_level..".")
 				return
 			end
+			if not pc.can_warp() or pc.is_busy() then
+				say_title(mob_name(20394))
+				say("Poczekaj chwilê po handlu lub rozmowie i spróbuj ponownie.")
+				return
+			end
+			local x = (c.base_x + c.entry[1]) * 100
+			local y = (c.base_y + c.entry[2]) * 100
+			-- The leader brings the people of the party standing here; bots stay.
+			if party.is_party() and party.is_leader() then
+				local me = pc.get_player_id()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						if not pc.is_playerbot() and pc.get_level() >= c.min_level and pc.can_warp() then
+							pc.warp(x, y)
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			pc.warp(x, y)
+		end
+
+		-- The lobby (public map 351 on game2): the leader, or a player alone, opens the instance.
+		when 20385.chat."Otwórz portal Czyœæca Ognia" with pc.get_map_index() == 351 begin
+			local c = razador_dungeon.cfg()
+			say_title(mob_name(20385))
 			local now = get_global_time()
+			local idx = pc.getf("razador_dungeon", "idx")
+			if idx > 0 and now - pc.getf("razador_dungeon", "entry") < c.limit_min * 60 and d.find(idx) then
+				say("Twoja wyprawa wci¹¿ trwa. Czy chcesz do niej wróciæ?")
+				if select("Wróæ do lochu", "Nie teraz") == 1 then
+					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, idx)
+				end
+				return
+			end
+			if party.is_party() and not party.is_leader() then
+				say("Tylko przywódca dru¿yny mo¿e otworzyæ przejœcie.")
+				say("Poczekaj tu na niego - zabierze ca³¹ dru¿ynê.")
+				return
+			end
 			local humans = {}
 			local low = {}
 			local wait = {}
@@ -164,28 +200,27 @@ quest razador_dungeon begin
 						if pc.get_level() < c.min_level then
 							table.insert(low, pc.get_name())
 						end
-						if now - pc.getf("razador_dungeon", "entry") < c.cooldown then
+						if not pc.is_gm() and now - pc.getf("razador_dungeon", "entry") < c.cooldown then
 							table.insert(wait, pc.get_name())
 						end
 					end
 					q.end_other_pc_block()
 				end
 			else
+				table.insert(humans, pc.get_player_id())
 				if pc.get_level() < c.min_level then
 					table.insert(low, pc.get_name())
 				end
-				if now - pc.getf("razador_dungeon", "entry") < c.cooldown then
+				if not pc.is_gm() and now - pc.getf("razador_dungeon", "entry") < c.cooldown then
 					table.insert(wait, pc.get_name())
 				end
 			end
 			if table.getn(low) > 0 then
-				say_title(mob_name(20394))
 				say("Za s³abi, by wejœæ (poziom "..c.min_level.."+):")
 				for i, n in next, low, nil do say(color(1,1,0).."    "..n) end
 				return
 			end
 			if table.getn(wait) > 0 then
-				say_title(mob_name(20394))
 				say("Jeszcze nie odpoczêli po poprzedniej wyprawie:")
 				for i, n in next, wait, nil do say(color(1,1,0).."    "..n) end
 				local left = c.cooldown - (now - pc.getf("razador_dungeon", "entry"))
@@ -195,17 +230,27 @@ quest razador_dungeon begin
 				end
 				return
 			end
-			if not pc.can_warp() or pc.is_busy() then
-				say_title(mob_name(20394))
-				say("Poczekaj chwilê po handlu lub rozmowie i spróbuj ponownie.")
+			say("Dru¿yna na tej mapie wejdzie razem z tob¹.")
+			if select("Otwórz przejœcie", "Nie teraz") ~= 1 then
 				return
 			end
-
-			-- The leader (or the lone player) creates the instance and goes first.
-			pc.setf("razador_dungeon", "entry", now)
-			d.new_jump(c.map, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100)
+			if party.is_party() then
+				d.new_jump_party(c.map, c.base_x + c.entry[1], c.base_y + c.entry[2])
+			else
+				d.new_jump(c.map, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100)
+			end
 			local didx = d.get_map_index()
-			pc.setf("razador_dungeon", "idx", didx)
+			if didx == nil or didx < 10000 then
+				say_title(mob_name(20385))
+				say("Nie uda³o siê otworzyæ przejœcia. Spróbuj ponownie za chwilê.")
+				return
+			end
+			for i, pid in next, humans, nil do
+				q.begin_other_pc_block(pid)
+				pc.setf("razador_dungeon", "entry", now)
+				pc.setf("razador_dungeon", "idx", didx)
+				q.end_other_pc_block()
+			end
 			d.setf("leader", pc.get_player_id())
 			d.setf("order", number(1, 6))
 			d.setf("done", 0)
@@ -218,28 +263,21 @@ quest razador_dungeon begin
 				d.set_unique("idoor"..i, d.spawn_mob_ac_dir(20388, c.idoors[i][1], c.idoors[i][2], c.idoors_dir[i]))
 			end
 			server_timer("razador_tick", 60, didx)
-
-			-- The other people of the party on this map follow; bots stay.
-			local me = pc.get_player_id()
-			for i, pid in next, humans, nil do
-				if pid ~= me then
-					q.begin_other_pc_block(pid)
-					pc.setf("razador_dungeon", "entry", now)
-					pc.setf("razador_dungeon", "idx", didx)
-					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, didx)
-					q.end_other_pc_block()
-				end
-			end
 		end
 
 		when login begin
 			local c = razador_dungeon.cfg()
 			local idx = pc.get_map_index()
 			if idx == c.map then
-				pc.warp(c.exit_x * 100, c.exit_y * 100, c.exit_map)
+				if pc.is_playerbot() then
+					pc.warp(c.exit_x * 100, c.exit_y * 100)
+					return
+				end
+				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				syschat("Czyœciec Ognia: porozmawiaj z pos¹giem Am-heh, aby otworzyæ portal.")
 			elseif razador_dungeon.inside() then
 				if pc.is_playerbot() then
-					pc.warp(c.exit_x * 100, c.exit_y * 100, c.exit_map)
+					pc.warp(c.exit_x * 100, c.exit_y * 100)
 					return
 				end
 				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)

@@ -101,12 +101,15 @@ MAPS_first="1 3 4 5 6 107 81 110 111 112 113 181 182 183 200 250 302 304 209"
 # two are the 81-97 ground past the Red Forest, entered from Orc Valley, and a
 # grotto on game2 was a grotto no bot could stand in.
 # MT2009_PLUS_DUNGEONS_V1: 351 (Razador, metin2_map_n_flame_dungeon_01) and 352 (Nemere,
-# metin2_map_n_snow_dungeon_01) sit on game1 with their entrances - the guards on the Fire
-# Land (62) and Mount Sohan (61) - because d.new_jump makes the instance on the core the
-# player talks on. They are players-only: a bot is never taken in, and one that lands
-# there is sent out (quest/razador_dungeon.quest, quest/nemere_dungeon.quest).
-MAPS_game1="21 23 24 25 26 61 62 63 64 65 66 67 68 69 70 71 104 108 109 79 216 217 72 73 351 352"
-MAPS_game2="41 43 44 45 46 90 208 301 303"
+# metin2_map_n_snow_dungeon_01) sit on game2, NOT on game1: a core announces at most
+# MAP_ALLOW_LIMIT (32) maps to the db core, taken from a sorted set, and game1 of the
+# unified layout already hosts 32 - two more there dropped 351/352 from the map
+# locations ("WarpSet: cannot find map location index 351", 28 September). The guards
+# on the Fire Land (62) and Mount Sohan (61) warp a player to the public copy of the
+# map, a lobby on game2, where the statue/lion makes the instance (d.new_jump is
+# local to the core). Players only: no bot can stand on a game2 map.
+MAPS_game1="21 23 24 25 26 61 62 63 64 65 66 67 68 69 70 71 104 108 109 79 216 217 72 73"
+MAPS_game2="41 43 44 45 46 90 208 301 303 351 352"
 
 # One world on one core, when the operator asks for it.
 #
@@ -128,7 +131,7 @@ M2_PLAYERBOT_WORLD_LAYOUT="${M2_PLAYERBOT_WORLD_LAYOUT:-split}"
 if [ "$M2_PLAYERBOT_WORLD_LAYOUT" = "unified" ]; then
   MAPS_game1="$MAPS_game1 1 3 4 5 41 43 44 45"
   MAPS_first="6 107 81 110 111 112 113 181 182 183 200 250 302 304 209"
-  MAPS_game2="46 90 208 301 303"
+  MAPS_game2="46 90 208 301 303 351 352"
   log "world layout: unified (all three kingdoms + frontier on game1)"
 else
   log "world layout: split (per-kingdom cores; Shinsoo/Jinno cap ~36)"
