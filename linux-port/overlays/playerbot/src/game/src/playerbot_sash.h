@@ -33,18 +33,23 @@
 namespace
 {
 	const int PLAYERBOT_SASH_MIN_LEVEL = 30;
-	const int PLAYERBOT_SASH_KEEPER_PERCENT = 60;
+	// Four bots in five since 28 September: 660 grade-1 sashes stood on the
+	// counters and 3300 more in the bags, while the keepers were done at
+	// grade 2 (the operator: "boty chetniej to kupowaly i robily wyzsze
+	// szarfy").
+	const int PLAYERBOT_SASH_KEEPER_PERCENT = 80;
 	// Unworn sashes a keeper holds for the combining; past this many the worst
 	// are goods again.
 	const int PLAYERBOT_SASH_KEEP = 10;
-	const DWORD PLAYERBOT_SASH_CHECK_MIN_MS = 5 * 60 * 1000;
-	const DWORD PLAYERBOT_SASH_CHECK_MAX_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_SASH_CHECK_MIN_MS = 3 * 60 * 1000;
+	const DWORD PLAYERBOT_SASH_CHECK_MAX_MS = 6 * 60 * 1000;
 	// A visit's work: combines and one absorption, a few seconds apart.
 	const int PLAYERBOT_SASH_VISIT_MAX_STEPS = 8;
-	// 4+4 only from level 90 and for a bot with this much to spare over its
-	// reserve (operator, 26 September 2026).
-	const long long PLAYERBOT_SASH_RICH_GOLD = 10000000LL;
-	const int PLAYERBOT_SASH_UNIQUE_COMBINE_LEVEL = 90;
+	// 4+4 only from this level and for a bot with this much to spare over its
+	// reserve (operator, 26 September 2026: 90 and ten million; 28 September:
+	// higher sashes - 75 and six million).
+	const long long PLAYERBOT_SASH_RICH_GOLD = 6000000LL;
+	const int PLAYERBOT_SASH_UNIQUE_COMBINE_LEVEL = 75;
 	// What goes into a sash (GetPlayerBotSashPieceValue): "tylko przedmioty
 	// bliskie poziomem bota i z bonusami" (operator, 26 September 2026), and
 	// then "boty wrzucaja syfiaste przedmioty do szarf, np. zbroje na 26 lvl
@@ -83,7 +88,7 @@ namespace
 	// sash each, the very supply the others waited for (26 September 2026).
 	const DWORD PLAYERBOT_SASH_LONE_RELEASE_MS = 3 * 60 * 60 * 1000;
 	// A sash bought off a counter: at most this share of the spare purse.
-	const int PLAYERBOT_SASH_MARKET_PURSE_PERCENT = 25;
+	const int PLAYERBOT_SASH_MARKET_PURSE_PERCENT = 40;
 	// Uriel: npc.txt cells (713,605), (655,553) and (425,716) on each first
 	// village's BasePosition (409600,896000), (0,102400), (921600,204800).
 	const DWORD PLAYERBOT_URIEL_VNUM = 20011;
@@ -176,11 +181,12 @@ namespace
 		const int level = ch->GetLevel();
 		if (level < PLAYERBOT_SASH_MIN_LEVEL)
 			return t;
-		// From 65 any unique; from 90, with the money, 4+4 up to 21%
-		// (operator, 26 September 2026: the 13% and 17% of 75-89 asked 3+3
-		// rolls a bot without ten million had to rebuild).
-		if (level < 50)       { t.grade = 2; t.absorption = ACCE_GRADE_2_ABS; }
-		else if (level < 65)  { t.grade = 3; t.absorption = ACCE_GRADE_3_ABS; }
+		// A grade higher since 28 September ("robily wyzsze szarfy", the
+		// operator; the grade-1 sashes the combining eats were piling up): 10%
+		// from 30, any unique from 50, and with the money 4+4 up to 21% from
+		// PLAYERBOT_SASH_UNIQUE_COMBINE_LEVEL (26 September 2026: 5% from 30,
+		// 10% from 50, a unique from 65, 4+4 from 90).
+		if (level < 50)       { t.grade = 3; t.absorption = ACCE_GRADE_3_ABS; }
 		else                  { t.grade = 4; t.absorption = ACCE_GRADE_4_ABS_MIN; }
 		if (level >= PLAYERBOT_SASH_UNIQUE_COMBINE_LEVEL && GetPlayerBotSashSpareGold(ch) >= PLAYERBOT_SASH_RICH_GOLD)
 			t.absorption = 21;
@@ -716,7 +722,7 @@ namespace
 			return false;
 		std::vector<LPITEM> bag;
 		CollectPlayerBotBagSashes(ch, bag);
-		if ((int)bag.size() >= PLAYERBOT_SASH_KEEP || GetPlayerBotSashSpareGold(ch) < 4000000LL)
+		if ((int)bag.size() >= PLAYERBOT_SASH_KEEP || GetPlayerBotSashSpareGold(ch) < 2500000LL)
 			return false;
 		for (size_t i = 0; i < bag.size(); ++i)
 			if (!IsPlayerBotSashAbsorbed(bag[i]) && IsPlayerBotSashAtTarget(bag[i], t))

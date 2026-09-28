@@ -28,7 +28,11 @@
 
 namespace
 {
-	const int PLAYERBOT_ALCHEMY_PERCENT = 50;
+	// Three bots in four since 28 September: with half, 448 Cors stood on the
+	// counters and 1878 more in the bags of the sellers, while the users that
+	// could have opened them were a few hundred (the operator: "boty chetniej
+	// to kupowaly ... i klikaly alchemie").
+	const int PLAYERBOT_ALCHEMY_PERCENT = 75;
 	const int PLAYERBOT_ALCHEMY_MIN_LEVEL = 30;
 	const DWORD PLAYERBOT_DS_SHARD_VNUM = 30270;
 	const int PLAYERBOT_DS_SHARDS_PER_COR = 10;
@@ -48,11 +52,22 @@ namespace
 	// the test world (26 September 2026), four lines at a time.
 	const int PLAYERBOT_DS_COUNTER_LINES = 8;
 	// Cors a user keeps in the bag before it stops buying them.
-	const int PLAYERBOT_DS_COR_KEEP = 10;
-	const DWORD PLAYERBOT_ALCHEMY_CHECK_MIN_MS = 4 * 60 * 1000;
-	const DWORD PLAYERBOT_ALCHEMY_CHECK_MAX_MS = 9 * 60 * 1000;
+	const int PLAYERBOT_DS_COR_KEEP = 25;
+	const DWORD PLAYERBOT_ALCHEMY_CHECK_MIN_MS = 3 * 60 * 1000;
+	const DWORD PLAYERBOT_ALCHEMY_CHECK_MAX_MS = 6 * 60 * 1000;
 	const DWORD PLAYERBOT_ALCHEMY_LOCAL_MS = 20000;
-	const int PLAYERBOT_ALCHEMY_VISIT_MAX_STEPS = 10;
+	const int PLAYERBOT_ALCHEMY_VISIT_MAX_STEPS = 20;
+	// Cors opened a pass (every PLAYERBOT_ALCHEMY_LOCAL_MS), in a fight too:
+	// three a pass out of combat left 2300 Cors in the bags of 31 users.
+	const int PLAYERBOT_DS_COR_OPEN_PER_PASS = 10;
+	// What a refine leaves over its fee: a million kept the poorer users, the
+	// ones that opened their Cors, away from the Alchemist for good.
+	const long long PLAYERBOT_DS_REFINE_SPARE = 300000LL;
+	// A Cor off a counter: at most this many times the price the bots ask for
+	// one (ScalePlayerBotIwakuraPrice(PLAYERBOT_COR_DRACONIS_PRICE)). The old
+	// cap was twice the unscaled 100 000 - under every Cor on every counter
+	// (680 000 - 1 025 000 on the test world), so no bot ever bought one.
+	const int PLAYERBOT_DS_COR_BUY_MULT = 5;
 	const char* PLAYERBOT_DS_SHARDS_FLAG = "playerbot.ds_shards";
 	const char* PLAYERBOT_DS_DAY_FLAG = "playerbot.ds_day";
 	const char* PLAYERBOT_DS_LEFT_FLAG = "playerbot.ds_left";
@@ -383,7 +398,8 @@ namespace
 		if (IsPlayerBotCorVnum(item->GetVnum()))
 		{
 			const long long unit = price / std::max<long long>(1, (long long)item->GetCount());
-			return unit <= (long long)PLAYERBOT_COR_DRACONIS_PRICE * 2 && price <= spare * 30 / 100;
+			return unit <= (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_COR_DRACONIS_PRICE) * PLAYERBOT_DS_COR_BUY_MULT &&
+					price <= spare * 40 / 100;
 		}
 		return price <= (long long)GetPlayerBotDragonSoulPrice(item) * 12 / 10 && price <= spare * 25 / 100;
 	}
@@ -394,7 +410,7 @@ namespace
 			return false;
 		const TPlayerBotMarketLedgerEntry* cors = GetPlayerBotMarketLedgerEntry(PLAYERBOT_COR_ROUGH_VNUM);
 		return cors && cors->dwSupplyUnits > 0 &&
-				(long long)ch->GetGold() - GetPlayerBotReservedGold(ch) > 2000000LL;
+				(long long)ch->GetGold() - GetPlayerBotReservedGold(ch) > 1000000LL;
 	}
 
 	// ------------------------------------------------------------ in the field
@@ -414,7 +430,7 @@ namespace
 	int OpenPlayerBotCors(LPCHARACTER ch)
 	{
 		int opened = 0;
-		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && opened < 3; ++cell)
+		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && opened < PLAYERBOT_DS_COR_OPEN_PER_PASS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem((WORD)cell);
 			if (!item || item->GetCell() != cell || !IsPlayerBotCorVnum(item->GetVnum()) || item->isLocked())
@@ -554,7 +570,7 @@ namespace
 			for (size_t i = 0; i < stones.size(); ++i)
 				if (GetPlayerBotDsGrade(stones[i]) == grade)
 					pick.push_back(stones[i]);
-			if (pick.size() < 2 || spare < PLAYERBOT_DS_GRADE_FEES[grade] + 1000000)
+			if (pick.size() < 2 || spare < PLAYERBOT_DS_GRADE_FEES[grade] + PLAYERBOT_DS_REFINE_SPARE)
 				continue;
 			std::sort(pick.begin(), pick.end(), [&](LPITEM x, LPITEM y) {
 				return (x == worn ? 1 : 0) < (y == worn ? 1 : 0) ||
@@ -575,7 +591,7 @@ namespace
 			for (size_t i = 0; i < stones.size(); ++i)
 				if (GetPlayerBotDsGrade(stones[i]) == grade && GetPlayerBotDsStep(stones[i]) == step)
 					pick.push_back(stones[i]);
-			if (pick.size() < 2 || spare < PLAYERBOT_DS_STEP_FEES[step] + 1000000)
+			if (pick.size() < 2 || spare < PLAYERBOT_DS_STEP_FEES[step] + PLAYERBOT_DS_REFINE_SPARE)
 				continue;
 			std::sort(pick.begin(), pick.end(), [&](LPITEM x, LPITEM y) {
 				return (x == worn ? 1 : 0) < (y == worn ? 1 : 0) ||
@@ -742,15 +758,15 @@ namespace
 		{
 			state.dwNextDsLocalTime = dwNow + PLAYERBOT_ALCHEMY_LOCAL_MS;
 			EnsurePlayerBotAlchemyQualified(ch);
+			// A Cor is a use of an item, which a fight does not refuse: opened
+			// on every pass, not only between the blows.
+			OpenPlayerBotCors(ch);
 			// EquipItem refuses within a second and a half of a blow or a cast
 			// ("You have to stand still"): the gear pass's own wait.
 			if (ch->GetVictim() == NULL &&
 					dwNow - ch->GetLastAttackTime() > PLAYERBOT_EQUIPMENT_COMBAT_DELAY &&
 					(state.dwLastBotSkillTime == 0 || dwNow - state.dwLastBotSkillTime > PLAYERBOT_EQUIPMENT_COMBAT_DELAY))
-			{
-				OpenPlayerBotCors(ch);
 				EquipPlayerBotBestDragonSouls(ch);
-			}
 			ManagePlayerBotDsDeck(ch);
 		}
 		if (state.bVisitingShop || state.bVisitingBiologist || state.bVisitingHerbalist || state.bVisitingStable ||
