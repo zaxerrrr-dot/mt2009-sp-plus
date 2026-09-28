@@ -4,13 +4,14 @@
 #
 #  Na świeżym VPS (Debian lub Ubuntu, 64-bit x86, zalogowany jako root):
 #
-#      wget -O instaluj-vps.sh https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main/instaluj-vps.sh
+#      wget -O instaluj-vps.sh https://metin2sp.pl/wiki/pobierz/instaluj-vps.sh
 #      sh instaluj-vps.sh
 #
 #  Co robi, po kolei:
 #    1. sprawdza maszynę i doinstalowuje wget, unzip, curl, python3;
-#    2. pobiera (wget) pełną paczkę serwera - PACZKA_URL niżej albo --paczka
-#       URL - i rozpakowuje ją do FOLDER (domyślnie /opt/mt2009plus);
+#    2. pobiera (wget) pełną paczkę serwera z metin2sp.pl (PACZKA_URL niżej,
+#       inna: --paczka URL) i rozpakowuje ją do FOLDER (domyślnie
+#       /opt/mt2009plus);
 #    3. aktualizuje ją do najnowszej wersji z GitHuba: czyta
 #       update-manifest-mt2009.json, pobiera paczkę aktualizacji serwera,
 #       sprawdza jej SHA-256 i nakłada na folder;
@@ -23,7 +24,7 @@
 #  drugi raz, a vps-install.sh zachowuje .env i hasła.
 #
 #  Opcje:
-#    --paczka URL     bezpośredni link do pełnej paczki (.zip albo .tar.gz)
+#    --paczka URL     inny bezpośredni link do pełnej paczki (.zip albo .tar.gz)
 #    --folder KATALOG gdzie ma stać serwer (domyślnie /opt/mt2009plus)
 #    --address ADRES  publiczny adres serwera (domyślnie: odczytany IPv4 VPS)
 #    --bots N         liczba botów (domyślnie według pamięci)
@@ -35,7 +36,7 @@ set -u
 
 # Pełna paczka serwera: BEZPOŚREDNI link do pliku (wget musi pobrać sam plik,
 # nie stronę z przyciskiem "Pobierz").
-PACZKA_URL=${M2_PACZKA_URL:-""}
+PACZKA_URL=${M2_PACZKA_URL:-http://metin2sp.pl/MT2009-PLUS-Serwer-2.12.0.zip}
 FOLDER=${M2_FOLDER:-/opt/mt2009plus}
 REPO=zaxerrrr-dot/mt2009-sp-plus
 BRANCH=main
