@@ -1,0 +1,176 @@
+// MT2009_PLUS_DUNGEONS_V1 (nemere): the Nemere dungeon drops, mirrored from the package Razador groups
+// (6001-6009 kill groups -> 6101-6109; 6091 drop group -> 6191 with the gear one step higher, +6/+7).
+
+Group	MT2009_nemere_6101
+{
+	type 	kill
+	mob	6101
+	kill_drop	1000
+	1	30506	1	100	0	-- Szafirowy Ozdobny N贸偶
+	2	30510	1	100	0	-- Wytworny Naramiennik
+	3	30522	1	100	0	-- Ogniwa 臿艅cucha
+}
+
+
+Group	MT2009_nemere_6102
+{
+	type 	kill
+	mob	6102
+	kill_drop	1000
+	1	30504	1	100	0	-- Srebrny Zacisk
+	2	30516	1	100	0	-- Antyczny Naramiennik
+	3	30521	1	100	0	-- Element Pier艣cienia
+}
+
+
+Group	MT2009_nemere_6103
+{
+	type 	kill
+	mob	6103
+	kill_drop	500
+	1	30503	1	100	0	-- Ametystowy Ozdobny N贸偶
+	2	30509	1	100	0	-- Niebieska Smocza Stal
+	3	30513	1	100	0	-- Szlachetny Naramiennik
+}
+
+
+Group	MT2009_nemere_6104
+{
+	type 	kill
+	mob	6104
+	kill_drop	500
+	1	30506	1	100	0	-- Szafirowy Ozdobny N贸偶
+	2	30510	1	100	0	-- Wytworny Naramiennik
+	3	30522	1	100	0	-- Ogniwa 臿艅cucha
+}
+
+
+Group	MT2009_nemere_6105
+{
+	type 	kill
+	mob	6105
+	kill_drop	100
+	1	30504	1	100	0	-- Srebrny Zacisk
+	2	30516	1	100	0	-- Antyczny Naramiennik
+	3	30521	1	100	0	-- Element Pier艣cienia
+	4	30550	1	10	0	-- Niebieski Rzemyk
+}
+
+
+Group	MT2009_nemere_6106
+{
+	type 	kill
+	mob	6106
+	kill_drop	100
+	1	30503	1	100	0	-- Ametystowy Ozdobny N贸偶
+	2	30509	1	100	0	-- Niebieska Smocza Stal
+	3	30513	1	100	0	-- Szlachetny Naramiennik
+	4	30550	1	50	0	-- Niebieski Rzemyk
+}
+
+
+Group	MT2009_nemere_6107
+{
+	type 	kill
+	mob	6107
+	kill_drop	100
+	1	30506	1	100	0	-- Szafirowy Ozdobny N贸偶
+	2	30510	1	100	0	-- Wytworny Naramiennik
+	3	30522	1	100	0	-- Ogniwa 臿艅cucha
+	4	30550	1	60	0	-- Niebieski Rzemyk
+}
+
+
+Group	MT2009_nemere_6108
+{
+	type 	kill
+	mob	6108
+	kill_drop	50
+	1	30504	1	100	0	-- Srebrny Zacisk
+	2	30516	1	100	0	-- Antyczny Naramiennik
+	3	30521	1	100	0	-- Element Pier艣cienia
+	4	30550	1	80	0	-- Niebieski Rzemyk
+}
+
+
+Group	MT2009_nemere_6109
+{
+	type 	kill
+	mob	6109
+	kill_drop	50
+	1	30503	1	100	0	-- Ametystowy Ozdobny N贸偶
+	2	30509	1	100	0	-- Niebieska Smocza Stal
+	3	30513	1	100	0	-- Szlachetny Naramiennik
+	4	30550	1	100	0	-- Niebieski Rzemyk
+}
+
+
+Group	MT2009_nemere_6191
+{
+	type	drop
+	Mob	6191	-- Nemere
+	1	50726	1	1	-- Grzyb Tue
+	2	70012	1	15	-- 舲a Bogini
+	3	39006	1	15	-- Peleryna M臋stwa
+	4	25040	1	10	-- Zw贸j B艂ogos艂awie艅stwa
+	5	70048	1	20	-- P艂aszcz Uciekiniera
+	6	70037	1	25	-- Ksi臋ga Zapomnienia
+	7	70014	1	25	-- Pigu艂ka Krwi
+	8	70043	1	20	-- R臋kawica Z艂odzieja
+	9	39002	1	20	-- Pier艣cie艅 Do艣wiadczenia
+	10	27002	50	100	-- Czerwona Mikstura(艢)
+	11	27003	30	200	-- Czerwona Mikstura(D)
+	12	27005	30	100	-- Niebieska Mikstura(艢)
+	13	50300	1	400	-- Ksi臋ga Umiej臋tno艣ci
+	14	70014	1	1	-- Pigu艂ka Krwi
+	15	70037	1	1	-- Ksi臋ga Zapomnienia
+	16	50254	1	400	-- Skrzynia Mroku
+	17	146	1	30	-- Miecz Bojowy+6
+	18	147	1	20	-- Miecz Bojowy+7
+	19	156	1	30	-- Miecz Szponu Ducha+6
+	20	157	1	20	-- Miecz Szponu Ducha+7
+	21	1106	1	30	-- Smoczy N贸偶+6
+	22	1107	1	20	-- Smoczy N贸偶+7
+	23	2146	1	30	-- Olbrz. 舥k 呕贸艂t. Smoka+6
+	24	2147	1	20	-- Olbrz. 舥k 呕贸艂t. Smoka+7
+	25	3146	1	30	-- Magnetyczne Ostrze+6
+	26	3147	1	20	-- Magnetyczne Ostrze+7
+	27	5106	1	30	-- Dzwon Nieba I Ziemi+6
+	28	5107	1	20	-- Dzwon Nieba I Ziemi+7
+	29	7146	1	30	-- Wachlarz Zbawienia+6
+	30	7147	1	20	-- Wachlarz Zbawienia+7
+	31	11296	1	30	-- Zbroja Z Czarnej Stali+6
+	32	11297	1	20	-- Zbroja Z Czarnej Stali+7
+	33	11496	1	30	-- Ubranie Czarn. Wiatru+6
+	34	11497	1	20	-- Ubranie Czarn. Wiatru+7
+	35	11696	1	30	-- Zbr. P艂yt. Czar. Magii+6
+	36	11697	1	20	-- Zbr. P艂yt. Czar. Magii+7
+	37	11896	1	30	-- Czarna Szata+6
+	38	11897	1	20	-- Czarna Szata+7
+	39	30500	1	60	-- Rubinowy Ozdobny N贸偶
+	40	30501	1	60	-- Z艂ota Sprz膮czka
+	41	30502	1	60	-- Rubinowa Ozdoba
+	42	30503	1	60	-- Ametystowy Ozdobny N贸偶
+	43	30504	1	60	-- Srebrny Zacisk
+	44	30505	1	60	-- Szmaragdowa Ozdoba
+	45	30506	1	60	-- Szafirowy Ozdobny N贸偶
+	46	30507	1	60	-- Br膮zowy Zacisk
+	47	30508	1	60	-- Szafirowa Ozdoba
+	48	30509	1	60	-- Niebieska Smocza Stal
+	49	30510	1	60	-- Wytworny Naramiennik
+	50	30511	1	60	-- Czerwony Materia艂
+	51	30512	1	60	-- Czerwona Smocza Stal
+	52	30513	1	60	-- Szlachetny Naramiennik
+	53	30514	1	60	-- Fioletowy Materia艂
+	54	30515	1	60	-- Purpurowa Smocza Stal
+	55	30516	1	60	-- Antyczny Naramiennik
+	56	30517	1	60	-- Z艂oty Materia艂
+	57	30518	1	60	-- Z艂ota Prz臋dza
+	58	30519	1	60	-- Z艂oty Hak
+	59	30520	1	60	-- Z艂ota Spinka
+	60	30521	1	60	-- Element Pier艣cienia
+	61	30522	1	60	-- Ogniwa 臿艅cucha
+	62	30523	1	60	-- Element Ozdoby
+}
+
+

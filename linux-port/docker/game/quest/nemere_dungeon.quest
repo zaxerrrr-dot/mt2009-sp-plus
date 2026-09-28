@@ -1,0 +1,384 @@
+-- MT2009_PLUS_DUNGEONS_V1 (nemere): Lodowa Kraina - loch Nemere, od poziomu 75,
+-- tylko dla graczy. Przebieg jak w archiwum "Flame-and-Nemere-dungeon" (R4kan,
+-- Nemere.cpp), napisany na lochach silnika (d.*) zamiast osobnego kodu C++:
+-- stra¿nik Lodowej Krainy (20395, Góra Sohan, mapa 61) tworzy instancjê mapy 352
+-- (metin2_map_n_snow_dungeon_01) dla gracza albo ludzi z jego dru¿yny (boty
+-- zostaj¹ na zewn¹trz). Kamienny lew (20397) przy wejœciu zaczyna wyprawê:
+--   1: zabij 20 potworów,
+--   2: potwory upuszczaj¹ Lodowy Klucz (30760, 49%), u¿yj go,
+--   3: zabij 20 potworów,
+--   4: zabij 20 potworów,
+--   5: potwory upuszczaj¹ Kryszta³ Lodu (30761, 49%), oddaj po jednym piêciu pieczêciom (20398),
+--   6: zniszcz Metin Mrozu (8058),
+--   7: pokonaj czterech Szelów (6151),
+--   8: potwory upuszczaj¹ Klucz Mrozu (30762, 49%), u¿yj go,
+--   9: zniszcz Lodowy Filar (20399),
+--  10: Nemere (6191); po jego œmierci wszyscy wychodz¹ po 60 sekundach.
+-- Ka¿dy etap przenosi dru¿ynê do nastêpnej komnaty (5 s, jak w archiwum).
+-- Limit 60 minut (archiwum: 3600 s), ponowne wejœcie po godzinie od wejœcia.
+quest nemere_dungeon begin
+	state start begin
+		function cfg()
+			return {
+				map = 352,
+				base_x = 5120, base_y = 1536, size_x = 1024, size_y = 768,
+				entry = {171, 270},
+				lion = {172, 261},
+				exit_map = 61, exit_x = 3584 + 738, exit_y = 1536 + 119,
+				min_level = 75,
+				cooldown = 60 * 60,
+				limit_min = 60,
+				rooms = {
+					[2] = {422, 261}, [3] = {764, 264}, [4] = {175, 535}, [5] = {422, 538},
+					[6] = {748, 540}, [7] = {305, 708}, [8] = {571, 701}, [9] = {851, 693},
+					[10] = {927, 395},
+				},
+				seals = {{449,488},{455,445},{419,422},{382,444},{389,488}},
+				metin6 = {747, 494},
+				szel = {{302,678},{281,657},{303,635},{324,656}},
+				pillar = {849, 660},
+				boss = {927, 333},
+				path = "data/dungeon/nemere_mt/",
+				drop_pct = 49,
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 352 * 10000 and idx < 353 * 10000
+		end
+
+		function purge_mobs()
+			local c = nemere_dungeon.cfg()
+			d.purge_area(c.base_x * 100, c.base_y * 100, (c.base_x + c.size_x) * 100, (c.base_y + c.size_y) * 100)
+		end
+
+		function step_text(step)
+			if step == 1 or step == 3 or step == 4 then return "Zabij 20 potworów."
+			elseif step == 2 then return "Zdob¹dŸ Lodowy Klucz z potworów i u¿yj go."
+			elseif step == 5 then return "Zdob¹dŸ Kryszta³y Lodu z potworów i oddaj po jednym ka¿dej z piêciu pieczêci."
+			elseif step == 6 then return "Zniszcz Metin Mrozu."
+			elseif step == 7 then return "Pokonaj czterech Szelów."
+			elseif step == 8 then return "Zdob¹dŸ Klucz Mrozu z potworów i u¿yj go."
+			elseif step == 9 then return "Zniszcz Lodowy Filar."
+			end
+			return "Pokonaj Nemere!"
+		end
+
+		-- Next stage: clean the room, then after 5 s the next room (timer).
+		function go(step)
+			d.clear_regen()
+			nemere_dungeon.purge_mobs()
+			d.setf("step", step)
+			d.setf("kills", 0)
+			d.setf("ready", 0)
+			d.notice("Nemere: Etap zaliczony. Za 5 sekund przejdziecie dalej.")
+			server_timer("nemere_step", 5, d.get_map_index())
+		end
+
+		function finish()
+			local c = nemere_dungeon.cfg()
+			d.setf("closed", 1)
+			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			d.exit_all()
+		end
+
+		when 20395.chat."Lodowa Kraina (Nemere)" begin
+			local c = nemere_dungeon.cfg()
+			say_title(mob_name(20395))
+			if pc.is_playerbot() then
+				return
+			end
+			local idx = pc.getf("nemere_dungeon", "idx")
+			if idx > 0 and get_global_time() - pc.getf("nemere_dungeon", "entry") < c.limit_min * 60 and d.find(idx) then
+				say("Twoja wyprawa do Lodowej Krainy wci¹¿ trwa.")
+				say("Czy chcesz do niej wróciæ?")
+				if select("Wróæ do lochu", "Nie teraz") == 1 then
+					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, idx)
+				end
+				return
+			end
+			say("Za tym przejœciem le¿y Lodowa Kraina, w której")
+			say("czeka Nemere, pan mrozu. Nikt stamt¹d nie wróci³,")
+			say("by o nim opowiedzieæ.")
+			say("")
+			say_reward("Wymagany poziom: "..c.min_level..". Ponowne wejœcie po 60 minutach.")
+			say_reward("Loch jest tylko dla graczy - boty z dru¿yny zostaj¹ tutaj.")
+			if select("WejdŸ do œrodka", "Nie teraz") ~= 1 then
+				return
+			end
+			-- Closed to players until the client carries the map (game.get_event_flag,
+			-- "/eventflag mt2009_dungeons 1" opens both dungeons); a GM may always enter.
+			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons") < 1 then
+				say_title(mob_name(20395))
+				say("Przejœcie jest jeszcze zamkniête. Wróæ póŸniej.")
+				return
+			end
+			if party.is_party() and not party.is_leader() then
+				say_title(mob_name(20395))
+				say("Tylko przywódca dru¿yny mo¿e otworzyæ przejœcie.")
+				return
+			end
+			local now = get_global_time()
+			local humans = {}
+			local low = {}
+			local wait = {}
+			if party.is_party() then
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					q.begin_other_pc_block(pid)
+					if not pc.is_playerbot() then
+						table.insert(humans, pid)
+						if pc.get_level() < c.min_level then
+							table.insert(low, pc.get_name())
+						end
+						if now - pc.getf("nemere_dungeon", "entry") < c.cooldown then
+							table.insert(wait, pc.get_name())
+						end
+					end
+					q.end_other_pc_block()
+				end
+			else
+				if pc.get_level() < c.min_level then
+					table.insert(low, pc.get_name())
+				end
+				if now - pc.getf("nemere_dungeon", "entry") < c.cooldown then
+					table.insert(wait, pc.get_name())
+				end
+			end
+			if table.getn(low) > 0 then
+				say_title(mob_name(20395))
+				say("Za s³abi, by wejœæ (poziom "..c.min_level.."+):")
+				for i, n in next, low, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(wait) > 0 then
+				say_title(mob_name(20395))
+				say("Jeszcze nie odpoczêli po poprzedniej wyprawie:")
+				for i, n in next, wait, nil do say(color(1,1,0).."    "..n) end
+				local left = c.cooldown - (now - pc.getf("nemere_dungeon", "entry"))
+				if left > 0 then
+					say("")
+					say("Ty mo¿esz wejœæ za "..math.ceil(left / 60).." min.")
+				end
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say_title(mob_name(20395))
+				say("Poczekaj chwilê po handlu lub rozmowie i spróbuj ponownie.")
+				return
+			end
+
+			pc.setf("nemere_dungeon", "entry", now)
+			d.new_jump(c.map, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100)
+			local didx = d.get_map_index()
+			pc.setf("nemere_dungeon", "idx", didx)
+			d.setf("leader", pc.get_player_id())
+			d.setf("step", 0)
+			d.setf("left", c.limit_min)
+			d.spawn_mob(20397, c.lion[1], c.lion[2])
+			server_timer("nemere_tick", 60, didx)
+
+			local me = pc.get_player_id()
+			for i, pid in next, humans, nil do
+				if pid ~= me then
+					q.begin_other_pc_block(pid)
+					pc.setf("nemere_dungeon", "entry", now)
+					pc.setf("nemere_dungeon", "idx", didx)
+					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, didx)
+					q.end_other_pc_block()
+				end
+			end
+		end
+
+		when login begin
+			local c = nemere_dungeon.cfg()
+			local idx = pc.get_map_index()
+			if idx == c.map then
+				pc.warp(c.exit_x * 100, c.exit_y * 100, c.exit_map)
+			elseif nemere_dungeon.inside() then
+				if pc.is_playerbot() then
+					pc.warp(c.exit_x * 100, c.exit_y * 100, c.exit_map)
+					return
+				end
+				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				pc.setf("nemere_dungeon", "inside", 1)
+				if d.getf("step") == 0 then
+					d.notice("Nemere: Porozmawiaj z Kamiennym Lwem, aby rozpocz¹æ wyprawê.")
+				end
+			elseif pc.getf("nemere_dungeon", "inside") == 1 then
+				pc.setf("nemere_dungeon", "inside", 0)
+				for v = 30760, 30762 do
+					if pc.count_item(v) > 0 then pc.remove_item(v, pc.count_item(v)) end
+				end
+			end
+		end
+
+		when 20397.chat."Rozpocznij wyprawê na Nemere" with nemere_dungeon.inside() and d.getf("step") == 0 begin
+			local c = nemere_dungeon.cfg()
+			say_title(mob_name(20397))
+			if party.is_party() and d.getf("leader") ~= pc.get_player_id() then
+				say("Tylko przywódca wyprawy mo¿e obudziæ lwa.")
+				return
+			end
+			say("Lew budzi siê, a z mrozu wychodz¹ potwory...")
+			npc.purge()
+			d.setf("step", 1)
+			d.setf("kills", 0)
+			d.setf("ready", 1)
+			d.regen_file(c.path.."zone_1.txt")
+			d.notice("Nemere: "..nemere_dungeon.step_text(1))
+		end
+
+		when nemere_step.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				local c = nemere_dungeon.cfg()
+				local step = d.getf("step")
+				local room = c.rooms[step]
+				if room then
+					d.jump_all(c.base_x + room[1], c.base_y + room[2])
+				end
+				if step == 2 then
+					d.set_regen_file(c.path.."zone_2.txt")
+				elseif step == 3 then
+					d.regen_file(c.path.."zone_3.txt")
+				elseif step == 4 then
+					d.regen_file(c.path.."zone_4.txt")
+				elseif step == 5 then
+					for i = 1, table.getn(c.seals) do
+						d.spawn_mob(20398, c.seals[i][1], c.seals[i][2])
+					end
+					d.setf("seals", table.getn(c.seals))
+					d.set_regen_file(c.path.."zone_5.txt")
+				elseif step == 6 then
+					d.spawn_mob(8058, c.metin6[1], c.metin6[2])
+				elseif step == 7 then
+					for i = 1, table.getn(c.szel) do
+						d.spawn_mob(6151, c.szel[i][1], c.szel[i][2])
+					end
+				elseif step == 8 then
+					d.set_regen_file(c.path.."zone_8.txt")
+				elseif step == 9 then
+					d.spawn_mob(20399, c.pillar[1], c.pillar[2])
+				elseif step == 10 then
+					d.spawn_mob(6191, c.boss[1], c.boss[2])
+				end
+				d.setf("ready", 1)
+				d.notice("Nemere: "..nemere_dungeon.step_text(step))
+			end
+		end
+
+		when nemere_tick.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("closed") == 1 then
+					return
+				end
+				local left = d.getf("left") - 1
+				d.setf("left", left)
+				if left <= 0 then
+					d.notice("Nemere: Czas min¹³. Mróz wyrzuca was z Lodowej Krainy.")
+					nemere_dungeon.finish()
+					return
+				end
+				if left == 30 or left == 15 or left == 10 or left == 5 or left == 1 then
+					d.notice("Nemere: Pozosta³o "..left.." min.")
+				end
+				server_timer("nemere_tick", 60, get_server_timer_arg())
+			end
+		end
+
+		when nemere_end.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				nemere_dungeon.finish()
+			end
+		end
+
+		when kill with nemere_dungeon.inside() and d.getf("ready") == 1 begin
+			local c = nemere_dungeon.cfg()
+			local step = d.getf("step")
+			local race = npc.get_race()
+			if race < 6101 or race > 6199 then
+				return
+			end
+			if step == 1 or step == 3 or step == 4 then
+				d.setf("kills", d.getf("kills") + 1)
+				if d.getf("kills") >= 20 then
+					nemere_dungeon.go(step + 1)
+				end
+			elseif step == 2 then
+				if number(1, 100) <= c.drop_pct then
+					game.drop_item_with_ownership(30760, 1, 60)
+				end
+			elseif step == 5 then
+				if number(1, 100) <= c.drop_pct then
+					game.drop_item_with_ownership(30761, 1, 60)
+				end
+			elseif step == 8 then
+				if number(1, 100) <= c.drop_pct then
+					game.drop_item_with_ownership(30762, 1, 60)
+				end
+			end
+		end
+
+		when 30760.use with nemere_dungeon.inside() begin
+			if d.getf("step") == 2 and d.getf("ready") == 1 then
+				pc.remove_item(30760, 1)
+				d.notice("Nemere: Lodowy Klucz otworzy³ przejœcie.")
+				nemere_dungeon.go(3)
+			else
+				syschat("Ten klucz nie pasuje teraz do niczego.")
+			end
+		end
+
+		when 30762.use with nemere_dungeon.inside() begin
+			if d.getf("step") == 8 and d.getf("ready") == 1 then
+				pc.remove_item(30762, 1)
+				d.notice("Nemere: Klucz Mrozu otworzy³ przejœcie.")
+				nemere_dungeon.go(9)
+			else
+				syschat("Ten klucz nie pasuje teraz do niczego.")
+			end
+		end
+
+		when 20398.take with nemere_dungeon.inside() and d.getf("step") == 5 and d.getf("ready") == 1 begin
+			if item.vnum == 30761 then
+				item.remove()
+				npc.purge()
+				d.setf("seals", d.getf("seals") - 1)
+				if d.getf("seals") <= 0 then
+					nemere_dungeon.go(6)
+				else
+					d.notice("Nemere: Pieczêæ z³amana. Pozosta³o: "..d.getf("seals"))
+				end
+			else
+				say_title(mob_name(20398))
+				say("Pieczêæ przyjmie tylko Kryszta³ Lodu.")
+			end
+		end
+
+		when 8058.kill with nemere_dungeon.inside() and d.getf("step") == 6 and d.getf("ready") == 1 begin
+			nemere_dungeon.go(7)
+		end
+
+		when 6151.kill with nemere_dungeon.inside() and d.getf("step") == 7 and d.getf("ready") == 1 begin
+			d.setf("kills", d.getf("kills") + 1)
+			if d.getf("kills") >= 4 then
+				nemere_dungeon.go(8)
+			else
+				d.notice("Nemere: Szel pokonany ("..d.getf("kills").."/4).")
+			end
+		end
+
+		when 20399.kill with nemere_dungeon.inside() and d.getf("step") == 9 and d.getf("ready") == 1 begin
+			nemere_dungeon.go(10)
+		end
+
+		when 6191.kill with nemere_dungeon.inside() and d.getf("step") == 10 and d.getf("ready") == 1 begin
+			d.setf("step", 11)
+			d.clear_regen()
+			nemere_dungeon.purge_mobs()
+			d.notice("Nemere zosta³ pokonany! Za 60 sekund wszyscy wróc¹ na Górê Sohan.")
+			server_timer("nemere_end", 60, d.get_map_index())
+		end
+	end
+end

@@ -1,0 +1,390 @@
+-- MT2009_PLUS_DUNGEONS_V1 (razador): Czyœciec Ognia - loch Razadora, od poziomu 55,
+-- tylko dla graczy. Przebieg jak w archiwum "Flame-and-Nemere-dungeon" (R4kan,
+-- Arrador.cpp), napisany na lochach silnika (d.*) zamiast osobnego kodu C++:
+-- stra¿nik Ognistej Ziemi (20394, mapa 62) tworzy instancjê mapy 351
+-- (metin2_map_n_flame_dungeon_01) dla gracza albo ludzi z jego dru¿yny (boty
+-- zostaj¹ na zewn¹trz), pos¹g Am-heh (20385) w œrodku wydaje szeœæ zadañ w
+-- losowej kolejnoœci (przesuniêcie cykliczne 1..6 jak DungeonStepSort), a po
+-- nich otwiera salê Razadora (6091):
+--   1: zabij 20 potworów,
+--   2: potwory upuszczaj¹ Z³ot¹ Zêbatkê (30329, 9%), oddaj j¹ Steli Isfet (20386),
+--   3: zabij 20 potworów,
+--   4: zabij Ignitora (6051),
+--   5: potwory upuszczaj¹ Kamieñ Maat (30330, 9%), oddaj po jednym siedmiu stelom,
+--   6: zniszcz Metin Czyœæca (8057),
+--   7: Razador; po jego œmierci wszyscy wychodz¹ po 60 sekundach.
+-- Ka¿de zadanie otwiera swoje drzwi (20387 + 20388). Limit 60 minut, ponowne
+-- wejœcie po godzinie od wejœcia (archiwum: 1 h). Mapy 351/352 s¹ na rdzeniu
+-- game1 razem z wejœciami (61, 62), bo loch powstaje na rdzeniu stra¿nika.
+quest razador_dungeon begin
+	state start begin
+		function cfg()
+			return {
+				map = 351,
+				base_x = 7424, base_y = 6144, size = 768,
+				entry = {342, 584},
+				statue = {350, 360},
+				boss_room = {685, 710},
+				boss = {686, 637},
+				exit_map = 62, exit_x = 5888 + 91, exit_y = 6144 + 916,
+				min_level = 55,
+				cooldown = 60 * 60,
+				limit_min = 60,
+				doors = {{320,394},{293,359},{333,321},{378,320},{400,355},{394,401}},
+				doors_dir = {135,90,210,152,90,223},
+				idoors = {{268,447},{234,359},{300,264},{454,217},{470,355},{467,469}},
+				idoors_dir = {135,90,210,152,90,239},
+				stone2 = {195, 352},
+				ignitor = {470, 175},
+				stones5 = {{486,345},{511,336},{525,349},{521,365},{503,372},{486,365},{500,354}},
+				metin6 = {511, 480},
+				path = "data/dungeon/razador_mt/",
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 351 * 10000 and idx < 352 * 10000
+		end
+
+		function purge_mobs()
+			local c = razador_dungeon.cfg()
+			d.purge_area(c.base_x * 100, c.base_y * 100, (c.base_x + c.size) * 100, (c.base_y + c.size) * 100)
+		end
+
+		function step_text(step)
+			if step == 1 then return "Zabij 20 potworów w otwartej komnacie."
+			elseif step == 2 then return "Zdob¹dŸ Z³ot¹ Zêbatkê z potworów i oddaj j¹ Steli Isfet."
+			elseif step == 3 then return "Zabij 20 potworów w otwartej komnacie."
+			elseif step == 4 then return "Wœród potworów czeka Ignitor. Pokonaj go."
+			elseif step == 5 then return "Zbierz Kamienie Maat z potworów i oddaj po jednym ka¿dej z siedmiu stel."
+			elseif step == 6 then return "Zniszcz Metin Czyœæca."
+			end
+			return "ObudŸ w¹wóz Am-heh i pokonaj Razadora."
+		end
+
+		function step_done()
+			local c = razador_dungeon.cfg()
+			d.clear_regen()
+			razador_dungeon.purge_mobs()
+			d.setf("active", 0)
+			d.setf("kills", 0)
+			d.setf("done", d.getf("done") + 1)
+			if d.getf("done") >= 6 then
+				d.notice("Razador: Wszystkie pieczêcie z³amane. Wróæ do pos¹gu Am-heh, aby obudziæ w¹wóz.")
+			else
+				d.notice("Razador: Zadanie wykonane. Wróæ do pos¹gu Am-heh po nastêpne.")
+			end
+		end
+
+		function start_step(step)
+			local c = razador_dungeon.cfg()
+			d.setf("step", step)
+			d.setf("active", 1)
+			d.setf("kills", 0)
+			d.kill_unique("door"..step)
+			d.kill_unique("idoor"..step)
+			d.notice("Razador: "..razador_dungeon.step_text(step))
+			if step == 1 then
+				d.regen_file(c.path.."fd_a.txt")
+			elseif step == 2 then
+				d.set_regen_file(c.path.."fd_b.txt")
+				d.set_unique("stone2", d.spawn_mob(20386, c.stone2[1], c.stone2[2]))
+			elseif step == 3 then
+				d.regen_file(c.path.."fd_c.txt")
+			elseif step == 4 then
+				d.set_regen_file(c.path.."fd_d.txt")
+				d.spawn_mob(6051, c.ignitor[1], c.ignitor[2])
+			elseif step == 5 then
+				d.set_regen_file(c.path.."fd_e.txt")
+				for i = 1, table.getn(c.stones5) do
+					d.spawn_mob(20386, c.stones5[i][1], c.stones5[i][2])
+				end
+				d.setf("stones", table.getn(c.stones5))
+			elseif step == 6 then
+				d.set_regen_file(c.path.."fd_f.txt")
+				d.spawn_mob(8057, c.metin6[1], c.metin6[2])
+			end
+		end
+
+		function finish()
+			local c = razador_dungeon.cfg()
+			d.setf("closed", 1)
+			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			d.exit_all()
+		end
+
+		-- The guard on the Fire Land.
+		when 20394.chat."Czyœciec Ognia (Razador)" begin
+			local c = razador_dungeon.cfg()
+			say_title(mob_name(20394))
+			if pc.is_playerbot() then
+				return
+			end
+			local idx = pc.getf("razador_dungeon", "idx")
+			if idx > 0 and get_global_time() - pc.getf("razador_dungeon", "entry") < c.limit_min * 60 and d.find(idx) then
+				say("Twoja wyprawa do Czyœæca Ognia wci¹¿ trwa.")
+				say("Czy chcesz do niej wróciæ?")
+				if select("Wróæ do lochu", "Nie teraz") == 1 then
+					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, idx)
+				end
+				return
+			end
+			say("Legendy mówi¹, ¿e za tym portalem œpi Razador,")
+			say("w³adca ognia. Nikt, kto tam wszed³, nie wróci³,")
+			say("by o nim opowiedzieæ.")
+			say("")
+			say_reward("Wymagany poziom: "..c.min_level..". Ponowne wejœcie po 60 minutach.")
+			say_reward("Loch jest tylko dla graczy - boty z dru¿yny zostaj¹ tutaj.")
+			if select("WejdŸ do œrodka", "Nie teraz") ~= 1 then
+				return
+			end
+			-- Closed to players until the client carries the map (game.get_event_flag,
+			-- "/eventflag mt2009_dungeons 1" opens both dungeons); a GM may always enter.
+			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons") < 1 then
+				say_title(mob_name(20394))
+				say("Przejœcie jest jeszcze zamkniête. Wróæ póŸniej.")
+				return
+			end
+			if party.is_party() and not party.is_leader() then
+				say_title(mob_name(20394))
+				say("Tylko przywódca dru¿yny mo¿e otworzyæ portal.")
+				return
+			end
+			local now = get_global_time()
+			local humans = {}
+			local low = {}
+			local wait = {}
+			if party.is_party() then
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					q.begin_other_pc_block(pid)
+					if not pc.is_playerbot() then
+						table.insert(humans, pid)
+						if pc.get_level() < c.min_level then
+							table.insert(low, pc.get_name())
+						end
+						if now - pc.getf("razador_dungeon", "entry") < c.cooldown then
+							table.insert(wait, pc.get_name())
+						end
+					end
+					q.end_other_pc_block()
+				end
+			else
+				if pc.get_level() < c.min_level then
+					table.insert(low, pc.get_name())
+				end
+				if now - pc.getf("razador_dungeon", "entry") < c.cooldown then
+					table.insert(wait, pc.get_name())
+				end
+			end
+			if table.getn(low) > 0 then
+				say_title(mob_name(20394))
+				say("Za s³abi, by wejœæ (poziom "..c.min_level.."+):")
+				for i, n in next, low, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(wait) > 0 then
+				say_title(mob_name(20394))
+				say("Jeszcze nie odpoczêli po poprzedniej wyprawie:")
+				for i, n in next, wait, nil do say(color(1,1,0).."    "..n) end
+				local left = c.cooldown - (now - pc.getf("razador_dungeon", "entry"))
+				if left > 0 then
+					say("")
+					say("Ty mo¿esz wejœæ za "..math.ceil(left / 60).." min.")
+				end
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say_title(mob_name(20394))
+				say("Poczekaj chwilê po handlu lub rozmowie i spróbuj ponownie.")
+				return
+			end
+
+			-- The leader (or the lone player) creates the instance and goes first.
+			pc.setf("razador_dungeon", "entry", now)
+			d.new_jump(c.map, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100)
+			local didx = d.get_map_index()
+			pc.setf("razador_dungeon", "idx", didx)
+			d.setf("leader", pc.get_player_id())
+			d.setf("order", number(1, 6))
+			d.setf("done", 0)
+			d.setf("step", 0)
+			d.setf("active", 0)
+			d.setf("left", c.limit_min)
+			d.spawn_mob(20385, c.statue[1], c.statue[2])
+			for i = 1, 6 do
+				d.set_unique("door"..i, d.spawn_mob_ac_dir(20387, c.doors[i][1], c.doors[i][2], c.doors_dir[i]))
+				d.set_unique("idoor"..i, d.spawn_mob_ac_dir(20388, c.idoors[i][1], c.idoors[i][2], c.idoors_dir[i]))
+			end
+			server_timer("razador_tick", 60, didx)
+
+			-- The other people of the party on this map follow; bots stay.
+			local me = pc.get_player_id()
+			for i, pid in next, humans, nil do
+				if pid ~= me then
+					q.begin_other_pc_block(pid)
+					pc.setf("razador_dungeon", "entry", now)
+					pc.setf("razador_dungeon", "idx", didx)
+					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, didx)
+					q.end_other_pc_block()
+				end
+			end
+		end
+
+		when login begin
+			local c = razador_dungeon.cfg()
+			local idx = pc.get_map_index()
+			if idx == c.map then
+				pc.warp(c.exit_x * 100, c.exit_y * 100, c.exit_map)
+			elseif razador_dungeon.inside() then
+				if pc.is_playerbot() then
+					pc.warp(c.exit_x * 100, c.exit_y * 100, c.exit_map)
+					return
+				end
+				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				pc.setf("razador_dungeon", "inside", 1)
+				if d.getf("closed") == 0 then
+					d.notice("Razador: Porozmawiaj z pos¹giem Am-heh, aby otrzymaæ zadanie.")
+				end
+			elseif pc.getf("razador_dungeon", "inside") == 1 then
+				pc.setf("razador_dungeon", "inside", 0)
+				if pc.count_item(30329) > 0 then pc.remove_item(30329, pc.count_item(30329)) end
+				if pc.count_item(30330) > 0 then pc.remove_item(30330, pc.count_item(30330)) end
+			end
+		end
+
+		-- The statue hands out the tasks.
+		when 20385.chat."Zadanie Am-heh" with razador_dungeon.inside() begin
+			local c = razador_dungeon.cfg()
+			say_title(mob_name(20385))
+			if party.is_party() and d.getf("leader") ~= pc.get_player_id() then
+				say("Tylko przywódca wyprawy mo¿e obudziæ pos¹g.")
+				return
+			end
+			if d.getf("boss") >= 1 then
+				say("W¹wóz Am-heh jest ju¿ otwarty.")
+				if select("Przenieœ mnie do Razadora", "Zostañ tutaj") == 1 then
+					pc.warp((c.base_x + c.boss_room[1]) * 100, (c.base_y + c.boss_room[2]) * 100, pc.get_map_index())
+				end
+				return
+			end
+			if d.getf("active") == 1 then
+				say("Zadanie wci¹¿ trwa:")
+				say(razador_dungeon.step_text(d.getf("step")))
+				if d.getf("step") == 1 or d.getf("step") == 3 then
+					say_reward("Pokonane: "..d.getf("kills").." / 20")
+				elseif d.getf("step") == 5 then
+					say_reward("Pozosta³e stele: "..d.getf("stones"))
+				end
+				return
+			end
+			if d.getf("done") >= 6 then
+				say("Pieczêcie z³amane. W¹wóz Am-heh budzi siê...")
+				d.setf("boss", 1)
+				d.setf("step", 7)
+				d.notice("Razador: W¹wóz Am-heh budzi siê! Za chwilê staniecie przed Razadorem.")
+				server_timer("razador_boss", 5, d.get_map_index())
+				return
+			end
+			local step = math.mod(d.getf("order") - 1 + d.getf("done"), 6) + 1
+			say("Kolejne zadanie ("..(d.getf("done") + 1).."/6):")
+			say(razador_dungeon.step_text(step))
+			razador_dungeon.start_step(step)
+		end
+
+		when razador_boss.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				local c = razador_dungeon.cfg()
+				d.jump_all(c.base_x + c.boss_room[1], c.base_y + c.boss_room[2])
+				d.set_regen_file(c.path.."fd_boss.txt")
+				d.spawn_mob(6091, c.boss[1], c.boss[2])
+				d.notice("Razador: Pokonajcie Razadora!")
+			end
+		end
+
+		when razador_tick.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("closed") == 1 then
+					return
+				end
+				local left = d.getf("left") - 1
+				d.setf("left", left)
+				if left <= 0 then
+					d.notice("Razador: Czas min¹³. Portal wyrzuca was z Czyœæca Ognia.")
+					razador_dungeon.finish()
+					return
+				end
+				if left == 30 or left == 15 or left == 10 or left == 5 or left == 1 then
+					d.notice("Razador: Pozosta³o "..left.." min.")
+				end
+				server_timer("razador_tick", 60, get_server_timer_arg())
+			end
+		end
+
+		when razador_end.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				razador_dungeon.finish()
+			end
+		end
+
+		when kill with razador_dungeon.inside() and d.getf("active") == 1 begin
+			local step = d.getf("step")
+			local race = npc.get_race()
+			if race < 6001 or race > 6099 then
+				return
+			end
+			if step == 1 or step == 3 then
+				d.setf("kills", d.getf("kills") + 1)
+				if d.getf("kills") >= 20 then
+					razador_dungeon.step_done()
+				end
+			elseif step == 2 then
+				if number(1, 100) < 10 then
+					game.drop_item_with_ownership(30329, 1, 60)
+				end
+			elseif step == 5 then
+				if number(1, 100) < 10 then
+					game.drop_item_with_ownership(30330, 1, 60)
+				end
+			end
+		end
+
+		when 20386.take with razador_dungeon.inside() and d.getf("active") == 1 begin
+			local step = d.getf("step")
+			if step == 2 and item.vnum == 30329 then
+				item.remove()
+				npc.purge()
+				razador_dungeon.step_done()
+			elseif step == 5 and item.vnum == 30330 then
+				item.remove()
+				npc.purge()
+				d.setf("stones", d.getf("stones") - 1)
+				if d.getf("stones") <= 0 then
+					razador_dungeon.step_done()
+				else
+					d.notice("Razador: Stela zgaszona. Pozosta³o: "..d.getf("stones"))
+				end
+			else
+				say_title(mob_name(20386))
+				say("Stela nie przyjmuje tego przedmiotu.")
+			end
+		end
+
+		when 6051.kill with razador_dungeon.inside() and d.getf("active") == 1 and d.getf("step") == 4 begin
+			razador_dungeon.step_done()
+		end
+
+		when 8057.kill with razador_dungeon.inside() and d.getf("active") == 1 and d.getf("step") == 6 begin
+			razador_dungeon.step_done()
+		end
+
+		when 6091.kill with razador_dungeon.inside() and d.getf("boss") == 1 begin
+			d.setf("boss", 2)
+			d.clear_regen()
+			razador_dungeon.purge_mobs()
+			d.notice("Razador zosta³ pokonany! Za 60 sekund wszyscy wróc¹ na Ognist¹ Ziemiê.")
+			server_timer("razador_end", 60, d.get_map_index())
+		end
+	end
+end

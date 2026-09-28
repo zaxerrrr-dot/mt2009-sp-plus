@@ -119,6 +119,10 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_events.h"
 // The Battle Pass (the engine calls in through server-patches/playerqol).
 #include "playerbot_battlepass.h"
+// MT2009 PLUS New Pet System, the second pet (playerbot_newpet.h).
+#include "playerbot_newpet.h"
+#include "playerbot_wheel.h" // Kolo Fortuny, "/kolo" (MT2009_PLUS_WHEEL_V1)
+#include "playerbot_goblin.h" // Poszukiwanie skarbow, "/goblin" (MT2009_PLUS_GOBLIN_V1)
 // Iwakura's Bot Mood System: the moods and the notes the loot, the chests,
 // the fishing and the blacksmith send it - early, so any of them may.
 #include "playerbot_mood.h"
@@ -198,6 +202,10 @@ namespace { bool HandlePlayerBotConversation(LPCHARACTER player, LPCHARACTER bot
 // world, and the bots that answer them. After the raids, whose fight it
 // borrows and which it gives way to.
 #include "playerbot_world_events.h"
+// MT2009_PLUS_GUILD_DUTY_V1 (include): the guild leader's duties - the yang
+// collection, the item mission and its bank, the Demon Tower expedition.
+// After the tower and the guild land, whose raid and grounds it uses.
+#include "playerbot_guildduty.h"
 // The player's own companion, "Towarzysz": the owner's party, the owner's
 // fights, the owner's drops, the owner's trades. Before companions.h, whose
 // IsPlayerBotHeldForCompany asks whether a bot is one.
@@ -207,6 +215,9 @@ namespace { bool HandlePlayerBotConversation(LPCHARACTER player, LPCHARACTER bot
 #include "playerbot_companions.h"
 #include "playerbot_lure.h"
 #include "playerbot_admin.h"
+// MT2009_PLUS_BP_BOTS_V1: the bots' Battle Pass errands and shouts, after
+// every fragment they ask (the raids' bosses, the angler, the travel).
+#include "playerbot_bpbots.h"
 
 namespace
 {
@@ -357,6 +368,10 @@ namespace
 	bool IsPlayerBotPartyEligible(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		if (!ch)
+			return false;
+		// MT2009_PLUS_BP_BOTS_V1: a Battle Pass errand is played alone for its
+		// while, as a rare state is (playerbot_bpbots.h).
+		if (playerbot_bpbots::IsOnErrand(ch->GetPlayerID()))
 			return false;
 		const bool bFrontier = IsPlayerBotFrontierMapIndex(ch->GetMapIndex());
 		// The camp level is the frontier's own floor; the role has always
@@ -2814,8 +2829,10 @@ CPlayerBotManager::~CPlayerBotManager()
 #endif
 }
 
+#include "playerbot_ochao.h" // MT2009_PLUS_OCHAO_V1 (include): Swiatynia Ochao, the En-Tai Guardian's clock
 void CPlayerBotManager::StartWorldClock()
 {
+	mt2009_ochao::Start(); // MT2009_PLUS_OCHAO_V1 (start): only where map 209 is hosted
 	if (s_pkPlayerBotUpdateEvent || s_pkPlayerBotWorldEvent)
 		return;
 	playerbot_world_event_info* info = AllocEventInfo<playerbot_world_event_info>();
@@ -5596,6 +5613,9 @@ void CPlayerBotManager::Update()
 	// Pirate Tanaka and Zuo: what they put into the world, and who is called
 	// to it (playerbot_world_events.h).
 	ManagePlayerBotWorldEvents(dwNow);
+	// MT2009_PLUS_GUILD_DUTY_V1 (pass): the guild leaders' duties, this core's
+	// bots (playerbot_guildduty.h).
+	ManagePlayerBotGuildDuties(dwNow);
 WritePlayerBotGuildStatus(dwNow);
 	WritePlayerBotItemShopCensus(dwNow);
 	// The ore veins, once a minute for the whole world. A vein deletes itself
@@ -6262,6 +6282,9 @@ WritePlayerBotGuildStatus(dwNow);
 		if (ManagePlayerBotProgressionChests(ch, state, dwNow))
 			continue;
 		RollPlayerBotMetinExpedition(ch, state, dwNow);
+		// MT2009_PLUS_BP_BOTS_V1: the Battle Pass missions, as errands or by
+		// the way, and the "!BP" shouts (playerbot_bpbots.h).
+		playerbot_bpbots::Think(ch, state, dwNow);
 		PlanPlayerBotLongTermGoal(ch, state, dwNow);
 		// Which of Iwakura's personalities claims the bot, and whether its
 		// Grinder has met the Law of Advancement.

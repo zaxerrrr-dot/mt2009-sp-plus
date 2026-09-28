@@ -86,7 +86,10 @@ PUBLIC_LINE="PUBLIC_IP: ${CONTAINER_IP}"
 # The CONFIG parser reads a line with fgets(buf, 256, fp); the longest line
 # below is well inside that.
 # -----------------------------------------------------------------------------
-MAPS_first="1 3 4 5 6 107 81 110 111 112 113 181 182 183 200 250 302 304"
+# MT2009_PLUS_OCHAO_V1 (maps): 209, Swiatynia Ochao (metin2_map_mt_th_dungeon_01),
+# goes with the season-2 maps on "first" in both layouts: a players' map (level
+# 95+, entered from Orc Valley through the Temple Guardian) no bot walks onto.
+MAPS_first="1 3 4 5 6 107 81 110 111 112 113 181 182 183 200 250 302 304 209"
 # 66, 67 and 68 - the Demon Tower, the Forest and the Red Forest - moved off
 # game2 the way 104 and 109 were moved before them: a bot cannot walk onto a map
 # its own core does not host, and every bot in this world lives on game1. The
@@ -97,8 +100,13 @@ MAPS_first="1 3 4 5 6 107 81 110 111 112 113 181 182 183 200 250 302 304"
 # the first Grotto of Exile, joined its second (73) here on 26 September: the
 # two are the 81-97 ground past the Red Forest, entered from Orc Valley, and a
 # grotto on game2 was a grotto no bot could stand in.
-MAPS_game1="21 23 24 25 26 61 62 63 64 65 66 67 68 69 70 71 104 108 109 79 216 217 72 73"
-MAPS_game2="41 43 44 45 46 90 208 301 303 351"
+# MT2009_PLUS_DUNGEONS_V1: 351 (Razador, metin2_map_n_flame_dungeon_01) and 352 (Nemere,
+# metin2_map_n_snow_dungeon_01) sit on game1 with their entrances - the guards on the Fire
+# Land (62) and Mount Sohan (61) - because d.new_jump makes the instance on the core the
+# player talks on. They are players-only: a bot is never taken in, and one that lands
+# there is sent out (quest/razador_dungeon.quest, quest/nemere_dungeon.quest).
+MAPS_game1="21 23 24 25 26 61 62 63 64 65 66 67 68 69 70 71 104 108 109 79 216 217 72 73 351 352"
+MAPS_game2="41 43 44 45 46 90 208 301 303"
 
 # One world on one core, when the operator asks for it.
 #
@@ -119,12 +127,16 @@ MAPS_game2="41 43 44 45 46 90 208 301 303 351"
 M2_PLAYERBOT_WORLD_LAYOUT="${M2_PLAYERBOT_WORLD_LAYOUT:-split}"
 if [ "$M2_PLAYERBOT_WORLD_LAYOUT" = "unified" ]; then
   MAPS_game1="$MAPS_game1 1 3 4 5 41 43 44 45"
-  MAPS_first="6 107 81 110 111 112 113 181 182 183 200 250 302 304"
-  MAPS_game2="46 90 208 301 303 351"
+  MAPS_first="6 107 81 110 111 112 113 181 182 183 200 250 302 304 209"
+  MAPS_game2="46 90 208 301 303"
   log "world layout: unified (all three kingdoms + frontier on game1)"
 else
   log "world layout: split (per-kingdom cores; Shinsoo/Jinno cap ~36)"
 fi
+# MT2009_PLUS_GOBLIN_V1: Treasure Island (419) - the Treasure Hunt event's
+# private copies (playerbot_goblin.h) - on game2 under either layout; a ticket
+# used on another core sends the player there first.
+MAPS_game2="$MAPS_game2 419"
 # The difficulty is acted on by the migrate service (event flags the quests
 # read); said here so a support bundle carries it next to the layout.
 log "difficulty: ${M2_DIFFICULTY:-easy} (Biologist and stable keeper waits; apply.sh writes the flags)"

@@ -351,6 +351,9 @@ namespace
 		// the event is out on its own map (playerbot_world_events.h).
 		if (state.bWorldEventKind != 0)
 			return false;
+		// MT2009_PLUS_BP_BOTS_V1: gone fishing for a Battle Pass mission.
+		if (playerbot_bpbots::WantsFishing(ch))
+			return true;
 		if (IsPlayerBotPersonaEnabled() && state.persona.bRestored)
 			return IsPlayerBotRybakNow(ch, state, get_dword_time());
 		const DWORD roll = PlayerBotNavHash(ch->GetPlayerID() ^ 0x46495348U) % 100U;

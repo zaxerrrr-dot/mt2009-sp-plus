@@ -3599,6 +3599,7 @@ namespace
 
 		s_dwLastShoutTime = dwNow;
 		SendPlayerBotShout(msg, ch->GetEmpire());
+		BattlePassOnShout(ch); // MT2009_PLUS_BP_BOTS_V1: a shout for the Battle Pass
 		sys_log(0, "PLAYERBOT_SHOUT: pid=%u plus=%d text=%s",
 				ch->GetPlayerID(), newPlus, msg);
 	}

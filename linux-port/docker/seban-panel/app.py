@@ -1742,8 +1742,12 @@ def queue_tieru_update(update_seban_panel=False):
 
 
 EVENTS_FILE = RATES_SPOOL / "playerbot_events.tsv"
-EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo")
+EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "metinloot",
+               "goblin")  # MT2009_PLUS_GOBLIN_V1: Poszukiwanie skarbów (playerbot_goblin.h)
 EVENT_WORLD_KINDS = ("tanaka", "zuo")
+# On or off, no figure: the Moonlight chests and the double loot of bosses and
+# Metins (MT2009_PLUS_LOOT_EVENTS_V1, playerbot_events.h).
+EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin")  # goblin: MT2009_PLUS_GOBLIN_V1
 EVENT_WORLD_DEFAULT = {"tanaka": 3, "zuo": 8}
 EVENT_WORLD_MAX = {"tanaka": 20, "zuo": 30}
 EVENT_BOTS_DEFAULT = 50
@@ -1762,8 +1766,13 @@ EVENT_LABELS = {
     "yang": "Yang",
     "tanaka": "Pirat Tanaka",
     "zuo": "Zuo: deszcz Metinów",
+    "bossloot": "Podwójny loot z bossów",
+    "metinloot": "Podwójny loot z Metinów",
+    # MT2009_PLUS_GOBLIN_V1: the Treasure Hunt with the Treasure Goblin.
+    "goblin": "Poszukiwanie skarbów (Goblin)",
 }
-EVENT_ICONS = {"chest": "🎁", "exp": "⚡", "drop": "📦", "yang": "💰", "tanaka": "🏴‍☠️", "zuo": "☄️"}
+EVENT_ICONS = {"chest": "🎁", "exp": "⚡", "drop": "📦", "yang": "💰", "tanaka": "🏴‍☠️", "zuo": "☄️", "bossloot": "👹", "metinloot": "🪨",
+               "goblin": "🪙"}  # goblin: MT2009_PLUS_GOBLIN_V1
 EVENT_DAY_NAMES = ("Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd")
 EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360)
 EVENT_HHMM = re.compile(r"^([01]?\d|2[0-4]):([0-5]\d)$")
@@ -3467,6 +3476,51 @@ def guild_contributions(guild_id):
         payment["purpose_label"] = GUILD_CONTRIBUTION_PURPOSES.get(payment["purpose"], payment["purpose"])
     return fund, payments, per_member
 
+
+# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's duties (playerbot_guildduty.h),
+# read only - the yang collection, the item mission with its bank and the
+# Demon Tower expedition, the running one of each or the last.
+GUILD_DUTY_STATES = {1: "trwa", 2: "zakończona", 3: "anulowana", 4: "czas minął"}
+GUILD_DUTY_TOWER_STATES = {1: "czeka na boty", 2: "zbiórka na parterze", 3: "rozbijanie Metina",
+                           4: "w wieży", 5: "zakończona", 6: "odwołana", 7: "nieudana"}
+GUILD_DUTY_MATERIALS = {90010: "Kamień Węglowy", 90011: "Pień", 90012: "Dykta"}
+
+
+def guild_duties(guild_id):
+    duties = {"collect": None, "donors": [], "mission": None, "workers": [], "bank": [], "tower": None}
+    try:
+        duties["collect"] = one("""SELECT id, state, target, collected, FROM_UNIXTIME(start_ts) AS started,
+                                   FROM_UNIXTIME(end_ts) AS ends FROM player.guild_duty_collect
+                                   WHERE guild_id=%s ORDER BY (state=1) DESC, id DESC LIMIT 1""", (guild_id,))
+        if duties["collect"]:
+            duties["donors"] = rows("""SELECT d.pid, p.name, d.amount, d.times FROM player.guild_duty_donation d
+                                       LEFT JOIN player.player p ON p.id=d.pid WHERE d.collect_id=%s
+                                       ORDER BY d.amount DESC LIMIT 20""", (duties["collect"]["id"],))
+        duties["mission"] = one("""SELECT id, state, vnum, target, collected, workers, workers_max
+                                   FROM player.guild_duty_mission WHERE guild_id=%s
+                                   ORDER BY (state=1) DESC, id DESC LIMIT 1""", (guild_id,))
+        if duties["mission"]:
+            duties["workers"] = rows("""SELECT w.pid, p.name, p.level, w.delivered FROM player.guild_duty_worker w
+                                        LEFT JOIN player.player p ON p.id=w.pid WHERE w.mission_id=%s
+                                        ORDER BY w.delivered DESC""", (duties["mission"]["id"],))
+        duties["bank"] = rows("""SELECT b.vnum, b.bot_pid, p.name, b.count, b.delivered, b.withdrawn, b.returned,
+                                 b.return_pending FROM player.guild_duty_bank b LEFT JOIN player.player p ON p.id=b.bot_pid
+                                 WHERE b.guild_id=%s AND b.count > 0
+                                 ORDER BY b.vnum, b.count DESC LIMIT 60""", (guild_id,))
+        duties["tower"] = one("""SELECT id, state, wanted, members, recruits, floor, note,
+                                 FROM_UNIXTIME(created_ts) AS created FROM player.guild_duty_tower
+                                 WHERE guild_id=%s ORDER BY (active_guild IS NOT NULL) DESC, id DESC LIMIT 1""", (guild_id,))
+    except pymysql.MySQLError:
+        pass
+    for key, labels in (("collect", GUILD_DUTY_STATES), ("mission", GUILD_DUTY_STATES), ("tower", GUILD_DUTY_TOWER_STATES)):
+        if duties[key]:
+            duties[key]["state_label"] = labels.get(duties[key]["state"], str(duties[key]["state"]))
+    if duties["mission"]:
+        duties["mission"]["item"] = GUILD_DUTY_MATERIALS.get(duties["mission"]["vnum"], str(duties["mission"]["vnum"]))
+    for b in duties["bank"]:
+        b["item"] = GUILD_DUTY_MATERIALS.get(b["vnum"], str(b["vnum"]))
+    return duties
+
 @app.route("/guilds")
 @login_required
 def guilds():
@@ -3513,7 +3567,8 @@ def guild(guild_id):
                     ORDER BY (gm.pid=%s) DESC,gm.grade ASC,p.level DESC,p.name ASC""", (guild_id, details["leader_id"] or 0))
     fund, payments, per_member = guild_contributions(guild_id)
     return render_template("guild.html", guild=details, members=members, estate=guild_estates().get(guild_id),
-                           fund=fund, payments=payments, per_member=per_member)
+                           fund=fund, payments=payments, per_member=per_member,
+                           duties=guild_duties(guild_id))  # MT2009_PLUS_GUILD_DUTY_V1
 
 
 # kind -> (player_special_flag.flag, unit label for the ranking's "detail"
@@ -6256,7 +6311,7 @@ BATTLEPASS_TYPES = [
     (2, "Zniszcz kamienie Metin", "mob"),
     (3, "Pokonaj bossów", "mob"),
     (4, "Złów ryby", None),
-    (5, "Udane ulepszenia przedmiotów", None),
+    (5, "Próby ulepszenia przedmiotów", None),
     (6, "Zbierz yang", None),
     (7, "Otwórz skrzynie", None),
     (8, "Zbierz zioła", None),
@@ -6265,6 +6320,7 @@ BATTLEPASS_TYPES = [
     (11, "Wykonaj Księgi Misji", None),
     (12, "Czas gry (minuty)", None),
     (13, "Użyj przedmiotu", "item"),
+    (14, "Wołanie (wiadomości na wołaj)", None),
 ]
 BATTLEPASS_TYPE_NAMES = {t: label for t, label, _ in BATTLEPASS_TYPES}
 BATTLEPASS_TYPE_TARGET = {t: kind for t, _, kind in BATTLEPASS_TYPES}
@@ -6321,9 +6377,10 @@ def battlepass_auto_name(mission):
     target = mission["target"]
     kind = BATTLEPASS_TYPE_TARGET.get(mission["type"])
     texts = {1: "Zabij {n} potworów", 2: "Zniszcz {n} kamieni Metin", 3: "Pokonaj {n} bossów",
-             4: "Złów {n} ryb", 5: "Ulepsz {n} przedmiotów", 6: "Zbierz {n} yang", 7: "Otwórz {n} skrzyń",
+             4: "Złów {n} ryb", 5: "Ulepsz przedmiot {n} razy", 6: "Zbierz {n} yang", 7: "Otwórz {n} skrzyń",
              8: "Zbierz {n} ziół", 9: "Wydobądź {n} rudy", 10: "Ukończ {n} lochów",
-             11: "Wykonaj {n} Ksiąg Misji", 12: "Graj przez {n} min", 13: "Użyj {n} przedmiotów"}
+             11: "Wykonaj {n} Ksiąg Misji", 12: "Graj przez {n} min", 13: "Użyj {n} przedmiotów",
+             14: "Napisz {n} razy na wołaj"}
     level = mission.get("target_level") or 0
     suffix = f" (poziom {level})" if level and kind == "mob" else ""
     if target and kind == "mob":
@@ -6375,7 +6432,7 @@ def battlepass():
                         rows("DELETE FROM player.battlepass_mission WHERE id=%s", (int(raw_id),))
                         removed += 1
                         continue
-                    mtype = battlepass_int(request.form, key + "type", 0, 13)
+                    mtype = battlepass_int(request.form, key + "type", 0, 14)
                     if not mtype:
                         continue  # an empty new row
                     count = battlepass_int(request.form, key + "count", 1, 2000000000, 1)
@@ -6458,6 +6515,127 @@ def battlepass():
                            battlepass_csrf=update_csrf_token())
 
 
+# ---- Koło Fortuny (MT2009 PLUS) ----------------------------------------------
+# MT2009_PLUS_WHEEL_V1: the price of a spin and the reward pool the game's
+# wheel reads (playerbot_wheel.h, "/kolo", client uiwheel.py - F12):
+# player.wheel_config and player.wheel_reward; every spin is a row of
+# player.wheel_spin. The game reads the first two again every 30 seconds.
+WHEEL_NEW_ROWS = 4
+WHEEL_TICKET_VNUM = 80030
+
+
+def ensure_wheel_tables():
+    """The tables the game makes at its first wheel call, with the same starter
+    pool (only while there is no config row yet), so the page works first."""
+    rows("""CREATE TABLE IF NOT EXISTS player.wheel_config (
+        id TINYINT UNSIGNED NOT NULL PRIMARY KEY, enabled TINYINT UNSIGNED NOT NULL DEFAULT 1,
+        cost_vnum INT UNSIGNED NOT NULL DEFAULT 80030, cost_count INT UNSIGNED NOT NULL DEFAULT 1) ENGINE=InnoDB""")
+    rows("""CREATE TABLE IF NOT EXISTS player.wheel_reward (
+        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, vnum INT UNSIGNED NOT NULL,
+        count INT UNSIGNED NOT NULL DEFAULT 1, weight INT UNSIGNED NOT NULL DEFAULT 10,
+        rare TINYINT UNSIGNED NOT NULL DEFAULT 0, active TINYINT UNSIGNED NOT NULL DEFAULT 1) ENGINE=InnoDB""")
+    rows("""CREATE TABLE IF NOT EXISTS player.wheel_spin (
+        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, pid INT UNSIGNED NOT NULL,
+        created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, items VARCHAR(255) NOT NULL DEFAULT '',
+        slot TINYINT UNSIGNED NOT NULL DEFAULT 0, vnum INT UNSIGNED NOT NULL, count INT UNSIGNED NOT NULL DEFAULT 1,
+        rare TINYINT UNSIGNED NOT NULL DEFAULT 0, cost_vnum INT UNSIGNED NOT NULL DEFAULT 0,
+        cost_count INT UNSIGNED NOT NULL DEFAULT 0, state TINYINT UNSIGNED NOT NULL DEFAULT 0,
+        given DATETIME NULL DEFAULT NULL, KEY pid_state (pid, state), KEY state_created (state, created)) ENGINE=InnoDB""")
+    rows("""INSERT INTO player.wheel_reward (vnum, count, weight, rare)
+        SELECT t.v, t.c, t.w, t.r FROM (
+        SELECT 27002 AS v, 50 AS c, 150 AS w, 0 AS r UNION ALL SELECT 27005, 50, 150, 0
+        UNION ALL SELECT 71095, 5, 100, 0 UNION ALL SELECT 50255, 2, 100, 0 UNION ALL SELECT 71001, 1, 70, 0
+        UNION ALL SELECT 71084, 1, 60, 0 UNION ALL SELECT 71085, 1, 50, 0 UNION ALL SELECT 50513, 1, 50, 0
+        UNION ALL SELECT 71027, 2, 50, 0 UNION ALL SELECT 71028, 2, 50, 0 UNION ALL SELECT 71026, 1, 40, 0
+        UNION ALL SELECT 71044, 2, 40, 0 UNION ALL SELECT 71045, 2, 40, 0 UNION ALL SELECT 71025, 1, 30, 0
+        UNION ALL SELECT 80017, 1, 16, 1 UNION ALL SELECT 80018, 1, 4, 1
+        ) AS t WHERE NOT EXISTS (SELECT 1 FROM player.wheel_config)
+        AND NOT EXISTS (SELECT 1 FROM player.wheel_reward)""")
+    rows("INSERT IGNORE INTO player.wheel_config (id, enabled, cost_vnum, cost_count) VALUES (1, 1, 80030, 1)")
+
+
+@app.route("/wheel", methods=["GET", "POST"])
+@login_required
+def wheel():
+    ensure_wheel_tables()
+    if request.method == "POST":
+        if request.form.get("wheel_csrf", "") != session.get("seban_update_csrf", ""):
+            flash("Sesja formularza wygasła - odśwież stronę i spróbuj jeszcze raz.", "error")
+            return redirect(url_for("wheel"))
+        action = request.form.get("action", "")
+        try:
+            if action == "config":
+                cost_vnum = battlepass_int(request.form, "cost_vnum", 1, 2147483647, WHEEL_TICKET_VNUM)
+                cost_count = battlepass_int(request.form, "cost_count", 1, 200, 1)
+                enabled = 1 if request.form.get("enabled") else 0
+                if not battlepass_item_name(cost_vnum):
+                    raise ValueError("cost_vnum")
+                rows("UPDATE player.wheel_config SET enabled=%s, cost_vnum=%s, cost_count=%s WHERE id=1",
+                     (enabled, cost_vnum, cost_count))
+                rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_WHEEL',%s)",
+                     (f"config enabled={enabled} cost={cost_vnum}x{cost_count}",))
+                flash("Ustawienia koła zapisane. Gra wczyta je w ciągu 30 sekund.", "success")
+            elif action == "rewards":
+                saved = removed = added = 0
+                for index in range(int(request.form.get("row_count", 0) or 0)):
+                    key = f"r{index}_"
+                    raw_id = request.form.get(key + "id", "")
+                    if raw_id and request.form.get(key + "delete"):
+                        rows("DELETE FROM player.wheel_reward WHERE id=%s", (int(raw_id),))
+                        removed += 1
+                        continue
+                    vnum = battlepass_int(request.form, key + "vnum", 0, 2147483647)
+                    if not vnum:
+                        continue  # an empty new row
+                    if not battlepass_item_name(vnum):
+                        raise ValueError(f"{key}vnum (nieznany VNUM {vnum})")
+                    count = battlepass_int(request.form, key + "count", 1, 60000, 1)
+                    weight = battlepass_int(request.form, key + "weight", 0, 1000000, 10)
+                    rare = 1 if request.form.get(key + "rare") else 0
+                    active = 1 if request.form.get(key + "active") else 0
+                    if raw_id:
+                        rows("UPDATE player.wheel_reward SET vnum=%s, count=%s, weight=%s, rare=%s, active=%s WHERE id=%s",
+                             (vnum, count, weight, rare, active, int(raw_id)))
+                        saved += 1
+                    else:
+                        rows("INSERT INTO player.wheel_reward (vnum, count, weight, rare, active) VALUES (%s,%s,%s,%s,%s)",
+                             (vnum, count, weight, rare, active))
+                        added += 1
+                rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_WHEEL',%s)",
+                     (f"saved {saved}, added {added}, removed {removed}",))
+                flash(f"Pula nagród zapisana (zmienione: {saved}, nowe: {added}, usunięte: {removed}). "
+                      "Gra wczyta ją w ciągu 30 sekund.", "success")
+        except ValueError as error:
+            flash(f"Nieprawidłowa wartość w polu {error}.", "error")
+        return redirect(url_for("wheel"))
+
+    config = one("SELECT enabled, cost_vnum, cost_count FROM player.wheel_config WHERE id=1") or {}
+    config["cost_name"] = battlepass_item_name(config.get("cost_vnum", 0))
+    rewards = rows("SELECT id, vnum, count, weight, rare, active FROM player.wheel_reward ORDER BY id")
+    total = sum(r["weight"] for r in rewards if r["active"] and r["vnum"])
+    for r in rewards:
+        r["name"] = battlepass_item_name(r["vnum"])
+        r["chance"] = (100.0 * r["weight"] / total) if (total and r["active"]) else 0.0
+    ticket = one("""SELECT `index`, count, price FROM common.itemshop_items
+        WHERE vnum=%s AND currency='DRAGON_COIN' ORDER BY count LIMIT 1""", (config.get("cost_vnum", 0),))
+    stats = one("""SELECT COUNT(*) AS total,
+        COALESCE(SUM(created >= CURDATE()), 0) AS today,
+        COALESCE(SUM(created >= NOW() - INTERVAL 7 DAY), 0) AS week,
+        COALESCE(SUM(state = 0), 0) AS pending,
+        COALESCE(SUM(rare = 1 AND created >= NOW() - INTERVAL 7 DAY), 0) AS rare_week,
+        COUNT(DISTINCT pid) AS players FROM player.wheel_spin""") or {}
+    recent = rows("""SELECT s.id, s.created, s.vnum, s.count, s.rare, s.state, s.pid, p.name
+        FROM player.wheel_spin s LEFT JOIN player.player p ON p.id = s.pid ORDER BY s.id DESC LIMIT 25""")
+    names = {}
+    for s in recent:
+        s["name"] = game_text(s["name"]) if s.get("name") else f"PID {s['pid']}"
+        if s["vnum"] not in names:
+            names[s["vnum"]] = battlepass_item_name(s["vnum"])
+        s["item"] = names[s["vnum"]] or str(s["vnum"])
+    return render_template("wheel.html", config=config, rewards=rewards, total=total, ticket=ticket,
+                           stats=stats, recent=recent, new_rows=WHEEL_NEW_ROWS, wheel_csrf=update_csrf_token())
+
+
 @app.route("/events", methods=["GET", "POST"])
 @login_required
 def events():
@@ -6513,7 +6691,7 @@ def events():
                     if map_id not in EVENT_MAP_IDS:
                         map_id = 0
                 new_rows.append({"kind": kind, "days": days, "start": start, "end": end,
-                                 "value": 0 if kind == "chest" else value, "map": map_id,
+                                 "value": 0 if kind in EVENT_FLAG_KINDS else value, "map": map_id,
                                  "on": bool(request.form.get(f"r{index}_on"))})
             try:
                 write_events(new_rows, nows)
@@ -6545,7 +6723,7 @@ def events():
             # second map is a second event beside the first, the same map again
             # starts that one over.
             nows[event_now_key(kind, map_id)] = {"kind": kind, "until": started + minutes * 60,
-                                                "value": 0 if kind == "chest" else value,
+                                                "value": 0 if kind in EVENT_FLAG_KINDS else value,
                                                 "map": map_id, "since": started}
             write_events(rows, nows)
             flash(f"Event aktywowany na {minutes} min. Rdzeń odczyta go w ciągu pięciu sekund.", "success")
@@ -6571,7 +6749,7 @@ def events():
                            event_kinds=EVENT_KINDS, event_labels=EVENT_LABELS,
                            day_names=EVENT_DAY_NAMES, now_minutes=EVENT_NOW_MINUTES,
                            now_epoch=int(time.time()), event_history=event_history,
-                           event_icons=EVENT_ICONS, world_kinds=EVENT_WORLD_KINDS,
+                           event_icons=EVENT_ICONS, world_kinds=EVENT_WORLD_KINDS, flag_kinds=EVENT_FLAG_KINDS,
                            world_defaults=EVENT_WORLD_DEFAULT, world_max=EVENT_WORLD_MAX,
                            event_maps=EVENT_MAPS, event_settings=read_event_settings())
 
@@ -7068,6 +7246,501 @@ def api_heat_events():
                 events.append({"map_index": index, "x": event["x"], "y": event["y"], "time": event["time"].isoformat(), "name": event.get("name")})
                 break
     return {"ok": True, "type": event_type, "events": events, "bounds": MAP_BOUNDS}
+
+
+# ---- MT2009_PLUS_CHEST_EDITOR_V1 ---------------------------------------------
+# "Szkatułki": what a chest (Szkatułka Blasku Księżyca 50011 and every other
+# group of special_item_group.txt) hands out, edited here.
+#
+# The file lives in the game image (the Dockerfile builds it from the
+# package's file, our Moonlight chest and the starter chests) and every core
+# reads it once, while it boots, so it could only be changed by rebuilding the
+# image. This page writes the groups the operator changed - only those, whole -
+# to the spool volume both containers share (chests/special_item_group.custom.txt,
+# UTF-8 with CRLF like the package's file). The game's m2-chests (run by
+# m2-supervise before the cores boot) puts them into the live file in place of
+# the image's groups with the same Vnum and publishes the image's file back as
+# chests/special_item_group.base.txt, which is what this page shows; until a
+# game image with m2-chests runs, the copy bundled with the panel stands in.
+# A wrong item number stops a core at boot, so everything is checked here
+# (item_proto, nested groups, index order) and again by m2-chests.
+CHEST_SPOOL = RATES_SPOOL / "chests"
+CHEST_CUSTOM = CHEST_SPOOL / "special_item_group.custom.txt"
+CHEST_BASE = CHEST_SPOOL / "special_item_group.base.txt"
+CHEST_STATUS = CHEST_SPOOL / "status"
+CHEST_BACKUPS = CHEST_SPOOL / "backup"
+CHEST_SNAPSHOT = Path(__file__).resolve().with_name("special_item_group.snapshot.txt")
+CHEST_BACKUP_KEEP = 100
+CHEST_MAX_LINES = 1023
+# Szkatułka Blasku Księżyca: shown first, it is the chest the operator asks for.
+CHEST_FEATURED = (50011,)
+CHEST_TOKENS = {
+    "gold": "Yang", "exp": "Doświadczenie", "mob": "Potwór (VNUM w polu Ilość)",
+    "group": "Grupa potworów (numer w polu Ilość)", "slow": "Spowolnienie",
+    "drain_hp": "Utrata HP", "poison": "Trucizna", "bleeding": "Krwawienie",
+}
+CHEST_TYPES = {"": "Losuje 1 pozycję (wagi)", "pct": "Każda pozycja osobno (%)",
+               "quest": "Questowa", "special": "Specjalna", "attr": "Bonusy (attr)"}
+
+
+def chest_parse(text):
+    """special_item_group.txt -> groups, read the way the core reads it: the
+    index lines 1, 2, 3... up to the first missing one; '--' starts a
+    comment; a fifth number is the rare chance."""
+    groups, current, entries = [], None, {}
+    for number, raw in enumerate(text.replace("\r", "").split("\n"), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        tokens = line.split()
+        key = tokens[0].lower()
+        if current is None:
+            if key == "group" and len(tokens) > 1:
+                current, entries = {"name": tokens[1], "vnum": None, "type": "", "extras": [], "items": [], "line": number}, {}
+            continue
+        if tokens[0] == "{":
+            continue
+        if tokens[0] == "}":
+            index = 1
+            while index in entries:
+                current["items"].append(entries[index])
+                index += 1
+            if current["vnum"] is not None:
+                groups.append(current)
+            current = None
+            continue
+        if key == "vnum" and len(tokens) > 1 and tokens[1].isdigit():
+            current["vnum"] = int(tokens[1])
+        elif key == "type" and len(tokens) > 1:
+            current["type"] = tokens[1].lower()
+        elif tokens[0].isdigit():
+            fields = tokens[1:]
+            comment = ""
+            for position, token in enumerate(fields):
+                if token.startswith("--") or token == "-":
+                    comment = " ".join(fields[position:]).lstrip("-").strip()
+                    fields = fields[:position]
+                    break
+            entry = {"item": fields[0] if fields else "", "count": fields[1] if len(fields) > 1 else "0",
+                     "prob": fields[2] if len(fields) > 2 else "0", "rare": "0", "comment": comment}
+            if len(fields) > 3:
+                if fields[3].lstrip("-").isdigit():
+                    entry["rare"] = fields[3]
+                    if not comment:
+                        entry["comment"] = " ".join(fields[4:]).lstrip("-").strip()
+                elif not comment:
+                    entry["comment"] = " ".join(fields[3:]).lstrip("-").strip()
+            entries.setdefault(int(tokens[0]), entry)
+        else:
+            current["extras"].append(line)
+    return groups
+
+
+def chest_read_text(path):
+    try:
+        return path.read_bytes().decode("utf-8-sig", "replace")
+    except OSError:
+        return None
+
+
+def chest_file_sha(path):
+    try:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError:
+        return ""
+
+
+def chest_state():
+    """Base groups (first per Vnum, as the core keeps them), the operator's
+    groups, where the base came from and how the game took the last save."""
+    text, source = chest_read_text(CHEST_BASE), "game"
+    if text is None:
+        text, source = chest_read_text(CHEST_SNAPSHOT) or "", "snapshot"
+    base = {}
+    for group in chest_parse(text):
+        base.setdefault(group["vnum"], group)
+    custom = {}
+    for group in chest_parse(chest_read_text(CHEST_CUSTOM) or ""):
+        custom.setdefault(group["vnum"], group)
+    status = read_spool_values(CHEST_STATUS) if CHEST_STATUS.exists() else {}
+    sha = chest_file_sha(CHEST_CUSTOM) if custom else ""
+    try:
+        base_time = datetime.fromtimestamp((CHEST_BASE if source == "game" else CHEST_SNAPSHOT).stat().st_mtime)
+    except OSError:
+        base_time = None
+    if not status:
+        live = {"kind": "unknown", "text": "Gra nie zgłosiła jeszcze stanu szkatułek – obraz gry nie ma skryptu m2-chests. "
+                "Zapis działa, ale gra użyje go dopiero po aktualizacji obrazu gry i restarcie."}
+    elif status.get("state") == "rejected" and status.get("sha") == sha:
+        live = {"kind": "error", "text": "Gra ODRZUCIŁA zapisany plik i działa na szkatułkach z obrazu: " + status.get("message", "")}
+    elif status.get("state") == "rejected":
+        live = {"kind": "pending", "text": "Poprzedni zapis został odrzucony przez grę (" + status.get("message", "") +
+                "). Aktualny zapis czeka na restart rdzeni."}
+    elif (status.get("sha") or "") == sha:
+        live = {"kind": "ok", "text": "W grze działają dokładnie te szkatułki, które widzisz" +
+                (f" ({len(custom)} zmienionych grup)." if custom else " (bez zmian względem obrazu gry).")}
+    else:
+        live = {"kind": "pending", "text": "Zapisane zmiany czekają na restart rdzeni gry – do tego czasu gra rozdaje poprzednią zawartość."}
+    try:
+        live["time"] = datetime.fromtimestamp(int(status.get("time", "0"))) if status.get("time") else None
+    except ValueError:
+        live["time"] = None
+    return {"base": base, "custom": custom, "source": source, "base_time": base_time, "live": live}
+
+
+def chest_effective(state):
+    groups = dict(state["base"])
+    groups.update(state["custom"])
+    return groups
+
+
+def chest_item_names(vnums):
+    # "s50012" (a nested group) is named after its chest too.
+    vnums = sorted({int(str(v).lstrip("sS")) for v in vnums if str(v).lstrip("sS").isdigit()})
+    names = {}
+    for start in range(0, len(vnums), 500):
+        part = vnums[start:start + 500]
+        marks = ",".join(["%s"] * len(part))
+        for row in rows(f"SELECT vnum,locale_name,type FROM player.item_proto WHERE vnum IN ({marks})", part):
+            names[int(row["vnum"])] = {"name": game_text(row["locale_name"]), "type": int(row["type"] or 0)}
+    return names
+
+
+def chest_entry_label(entry, names, groups):
+    item = str(entry["item"]).lower()
+    if item.isdigit():
+        known = names.get(int(item))
+        return known["name"] if known else "NIEZNANY PRZEDMIOT"
+    if item in CHEST_TOKENS:
+        return CHEST_TOKENS[item]
+    if item.startswith("s") and item[1:].isdigit():
+        nested = groups.get(int(item[1:]))
+        inner = names.get(int(item[1:]))
+        return "Losowanie z grupy " + item[1:] + (f" ({inner['name']})" if inner else f" ({nested['name']})" if nested else " – BRAK TAKIEJ GRUPY")
+    return "?"
+
+
+def chest_render_group(group):
+    """One group in the package's layout: tabs, CRLF (added when written),
+    rare always written so a comment is never read as one."""
+    lines = [f"Group\t{group['name']}", "{", f"\tVnum\t{group['vnum']}"]
+    if group.get("type"):
+        lines.append(f"\tType\t{group['type']}")
+    for extra in group.get("extras", []):
+        lines.append("\t" + extra)
+    for index, entry in enumerate(group["items"], 1):
+        line = f"\t{index}\t{entry['item']}\t{entry['count']}\t{entry['prob']}\t{entry.get('rare') or 0}"
+        comment = re.sub(r"[\"{}\r\n\t]", " ", entry.get("comment") or "").strip()
+        if comment:
+            line += f"\t-- {comment}"
+        lines.append(line)
+    lines.append("}")
+    return lines
+
+
+def chest_write_custom(custom_groups, reason):
+    """Writes the operator's groups (atomically, a backup of the previous file
+    first). custom_groups: {vnum: group}."""
+    import fcntl
+    CHEST_SPOOL.mkdir(parents=True, exist_ok=True)
+    CHEST_BACKUPS.mkdir(parents=True, exist_ok=True)
+    for folder in (CHEST_SPOOL, CHEST_BACKUPS):
+        try:
+            os.chown(folder, -1, 2050)
+            os.chmod(folder, 0o2770)
+        except OSError:
+            pass
+    with open(CHEST_SPOOL / ".lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")[:-3]
+        if CHEST_CUSTOM.exists():
+            (CHEST_BACKUPS / f"special_item_group.custom.{stamp}.txt").write_bytes(CHEST_CUSTOM.read_bytes())
+        else:
+            (CHEST_BACKUPS / f"special_item_group.custom.{stamp}.txt").write_bytes(
+                b"# (przed tym zapisem nie bylo zadnych zmian z panelu - obraz gry)\r\n")
+        lines = ["# MT2009_PLUS_CHEST_EDITOR_V1 - grupy special_item_group.txt zmienione w panelu Seban",
+                 f"# zapis: {datetime.now():%Y-%m-%d %H:%M:%S} - {reason}",
+                 "# Te grupy zastepuja grupy z obrazu gry o tym samym Vnum (m2-chests, przy starcie rdzeni).", ""]
+        for vnum in sorted(custom_groups):
+            lines += chest_render_group(custom_groups[vnum]) + [""]
+        temporary = CHEST_SPOOL / f"special_item_group.custom.txt.new{os.getpid()}"
+        temporary.write_bytes("\r\n".join(lines).encode("utf-8"))
+        os.chmod(temporary, 0o664)
+        os.replace(temporary, CHEST_CUSTOM)
+        backups = sorted(CHEST_BACKUPS.glob("special_item_group.custom.*.txt"))
+        for old in backups[:-CHEST_BACKUP_KEEP]:
+            try:
+                old.unlink()
+            except OSError:
+                pass
+
+
+def chest_backups():
+    result = []
+    for path in sorted(CHEST_BACKUPS.glob("special_item_group.custom.*.txt"), reverse=True)[:40]:
+        try:
+            groups = chest_parse(path.read_bytes().decode("utf-8", "replace"))
+            result.append({"name": path.name, "time": datetime.fromtimestamp(path.stat().st_mtime),
+                           "groups": ", ".join(str(g["vnum"]) for g in groups) or "brak zmian (obraz gry)"})
+        except OSError:
+            continue
+    return result
+
+
+def chest_validate(group_vnum, group_type, entries, groups):
+    """Everything the core would stop on at boot, or crash on when opened."""
+    errors = []
+    names = chest_item_names([e["item"] for e in entries])
+    if not entries:
+        errors.append("Grupa musi mieć co najmniej jedną pozycję.")
+    if len(entries) > CHEST_MAX_LINES:
+        errors.append(f"Najwyżej {CHEST_MAX_LINES} pozycji w grupie.")
+    for number, entry in enumerate(entries, 1):
+        item = entry["item"]
+        if group_type == "attr":
+            continue
+        if item.isdigit():
+            if int(item) not in names:
+                errors.append(f"Pozycja {number}: przedmiot {item} nie istnieje w item_proto (serwer by nie wstał).")
+        elif item in CHEST_TOKENS:
+            pass
+        elif item.startswith("s") and item[1:].isdigit():
+            if int(item[1:]) == group_vnum:
+                errors.append(f"Pozycja {number}: grupa nie może losować sama z siebie.")
+            elif int(item[1:]) not in groups:
+                errors.append(f"Pozycja {number}: nie ma grupy {item[1:]} do zagnieżdżenia.")
+        else:
+            errors.append(f"Pozycja {number}: „{item}” to nie VNUM ani znane słowo (gold, exp, mob, group, sNNNN...).")
+        if item.isdigit() and int(entry["count"]) < 1:
+            errors.append(f"Pozycja {number}: ilość przedmiotu musi być co najmniej 1.")
+        if group_type == "pct" and int(entry["prob"]) > 100:
+            errors.append(f"Pozycja {number}: w grupie procentowej szansa to 0–100%.")
+    if group_type != "attr" and entries and not any(int(e["prob"]) > 0 for e in entries):
+        errors.append("Co najmniej jedna pozycja musi mieć szansę większą od 0 (pusta grupa wywraca rdzeń przy otwarciu).")
+    return errors
+
+
+def chest_form_int(value, low, high, label):
+    value = (value or "").strip()
+    if not re.fullmatch(r"-?\d+", value):
+        raise ValueError(f"{label}: „{value}” to nie liczba całkowita.")
+    number = int(value)
+    if not low <= number <= high:
+        raise ValueError(f"{label}: dozwolone {low}–{high}.")
+    return number
+
+
+def chest_check_csrf():
+    if request.form.get("chest_csrf", "") != session.get("seban_update_csrf", ""):
+        flash("Sesja formularza wygasła – odśwież stronę i spróbuj jeszcze raz.", "error")
+        return False
+    return True
+
+
+@app.route("/chests")
+@login_required
+def chests():
+    state = chest_state()
+    groups = chest_effective(state)
+    names = chest_item_names(groups.keys())
+    listed = []
+    for vnum, group in groups.items():
+        known = names.get(vnum)
+        listed.append({"vnum": vnum, "group_name": group["name"], "item_name": known["name"] if known else "",
+                       "is_item": bool(known), "is_box": bool(known and known["type"] == 23),
+                       "type": group["type"], "lines": len(group["items"]), "custom": vnum in state["custom"],
+                       "featured": vnum in CHEST_FEATURED, "new": vnum not in state["base"]})
+    listed.sort(key=lambda g: (not g["featured"], not g["custom"], not g["is_box"], not g["is_item"], g["vnum"]))
+    return render_template("chests.html", groups=listed, state=state, backups=chest_backups(),
+                           chest_csrf=update_csrf_token(), restart=restart_progress())
+
+
+@app.route("/chests/<int:vnum>")
+@login_required
+def chest_edit(vnum):
+    state = chest_state()
+    groups = chest_effective(state)
+    group = groups.get(vnum)
+    if group is None:
+        flash(f"Nie ma grupy o Vnum {vnum}. Utwórz ją przyciskiem „Nowa szkatułka”.", "error")
+        return redirect(url_for("chests"))
+    names = chest_item_names([vnum] + [e["item"] for e in group["items"]])
+    weights = sum(max(0, int(e["prob"])) for e in group["items"] if str(e["prob"]).lstrip("-").isdigit())
+    entries = []
+    for entry in group["items"]:
+        prob = int(entry["prob"]) if str(entry["prob"]).lstrip("-").isdigit() else 0
+        if group["type"] == "pct":
+            chance = min(100.0, max(0, prob))
+        else:
+            chance = (100.0 * prob / weights) if weights and prob > 0 else 0.0
+        item = str(entry["item"])
+        entries.append(dict(entry, label=chest_entry_label(entry, names, groups), chance=chance,
+                            icon=item_icon_url(item) if item.isdigit() else None,
+                            nested=int(item[1:]) if item[:1].lower() == "s" and item[1:].isdigit() else None))
+    base = state["base"].get(vnum)
+    return render_template("chests.html", edit=group, entries=entries, vnum=vnum, state=state,
+                           item_name=(names.get(vnum) or {}).get("name", ""), custom=vnum in state["custom"],
+                           has_base=base is not None, tokens=CHEST_TOKENS, types=CHEST_TYPES,
+                           chest_csrf=update_csrf_token(), featured=vnum in CHEST_FEATURED)
+
+
+@app.post("/chests/<int:vnum>")
+@login_required
+def chest_save(vnum):
+    if not chest_check_csrf():
+        return redirect(url_for("chest_edit", vnum=vnum))
+    state = chest_state()
+    groups = chest_effective(state)
+    group = groups.get(vnum)
+    action = request.form.get("action", "save")
+    custom = dict(state["custom"])
+    try:
+        if action == "reset":
+            if vnum not in custom:
+                flash("Ta grupa i tak jest taka jak w obrazie gry.")
+                return redirect(url_for("chest_edit", vnum=vnum))
+            del custom[vnum]
+            chest_write_custom(custom, f"przywrocono grupe {vnum} z obrazu gry")
+            flash(f"Grupa {vnum} wróci do zawartości z obrazu gry po restarcie rdzeni.", "success")
+            return redirect(url_for("chest_edit", vnum=vnum) if vnum in state["base"] else url_for("chests"))
+        if group is None:
+            raise ValueError(f"Nie ma grupy o Vnum {vnum}.")
+        group_type = (request.form.get("group_type", group["type"]) or "").strip().lower()
+        if group_type not in CHEST_TYPES:
+            raise ValueError("Nieznany rodzaj grupy.")
+        if group["type"] in ("quest", "special", "attr") or group_type in ("quest", "special", "attr"):
+            group_type = group["type"]
+        entries = []
+        count = min(int(request.form.get("row_count", "0") or 0), CHEST_MAX_LINES + 50)
+        for index in range(count):
+            key = f"r{index}_"
+            item = (request.form.get(key + "item") or "").strip().lower()
+            if request.form.get(key + "delete") == "1" or not item:
+                continue
+            item = item.split()[0]
+            label = f"Pozycja „{item}”"
+            entries.append({
+                "item": item,
+                "count": str(chest_form_int(request.form.get(key + "count"), 0, 2000000000, label + " – ilość")),
+                "prob": str(chest_form_int(request.form.get(key + "prob"), 0, 1000000000, label + " – szansa")),
+                "rare": str(chest_form_int(request.form.get(key + "rare") or "0", 0, 100, label + " – rare")),
+                "comment": "",
+            })
+        errors = chest_validate(vnum, group_type, entries, groups)
+        if errors:
+            for message in errors[:12]:
+                flash(message, "error")
+            flash("Nic nie zostało zapisane – popraw błędy i zapisz jeszcze raz.", "error")
+            return redirect(url_for("chest_edit", vnum=vnum))
+        names = chest_item_names([e["item"] for e in entries])
+        for entry in entries:
+            entry["comment"] = chest_entry_label(entry, names, groups)
+        custom[vnum] = {"name": group["name"], "vnum": vnum, "type": group_type,
+                        "extras": [x for x in group.get("extras", []) if x.split()[0].lower() == "effect"],
+                        "items": entries}
+        chest_write_custom(custom, f"zmieniono grupe {vnum}")
+    except ValueError as exc:
+        flash(str(exc), "error")
+        return redirect(url_for("chest_edit", vnum=vnum))
+    except OSError as exc:
+        flash(f"Nie udało się zapisać pliku w wolumenie spool: {exc}", "error")
+        return redirect(url_for("chest_edit", vnum=vnum))
+    flash(f"Zapisano {len(entries)} pozycji grupy {vnum}. Gra rozda nową zawartość po restarcie rdzeni "
+          "(przycisk „Zastosuj teraz” na liście szkatułek).", "success")
+    return redirect(url_for("chest_edit", vnum=vnum))
+
+
+@app.post("/chests/new")
+@login_required
+def chest_new():
+    if not chest_check_csrf():
+        return redirect(url_for("chests"))
+    raw = (request.form.get("vnum") or "").strip()
+    if not raw.isdigit():
+        flash("Podaj VNUM przedmiotu (szkatułki), dla którego ma powstać grupa.", "error")
+        return redirect(url_for("chests"))
+    vnum = int(raw)
+    state = chest_state()
+    groups = chest_effective(state)
+    if vnum in groups:
+        return redirect(url_for("chest_edit", vnum=vnum))
+    names = chest_item_names([vnum])
+    if vnum not in names:
+        flash(f"Przedmiot {vnum} nie istnieje w item_proto.", "error")
+        return redirect(url_for("chests"))
+    custom = dict(state["custom"])
+    custom[vnum] = {"name": f"PanelChest_{vnum}", "vnum": vnum, "type": "", "extras": [],
+                    "items": [{"item": "27001", "count": "1", "prob": "1", "rare": "0", "comment": "Czerwona Mikstura (M) - do zmiany"}]}
+    try:
+        chest_write_custom(custom, f"nowa grupa {vnum}")
+    except OSError as exc:
+        flash(f"Nie udało się zapisać pliku w wolumenie spool: {exc}", "error")
+        return redirect(url_for("chests"))
+    note = "" if names[vnum]["type"] == 23 else " Uwaga: ten przedmiot nie jest typu szkatułka (GIFTBOX), więc gra może nie otwierać go jak szkatułki."
+    flash(f"Utworzono grupę dla {names[vnum]['name']} z jedną pozycją startową – ustaw zawartość i zapisz.{note}", "success")
+    return redirect(url_for("chest_edit", vnum=vnum))
+
+
+@app.post("/chests/apply")
+@login_required
+def chest_apply():
+    if not chest_check_csrf():
+        return redirect(url_for("chests"))
+    if request.form.get("confirmation", "").strip().upper() != "RESTART":
+        flash("Aby potwierdzić restart rdzeni, wpisz RESTART.", "error")
+        return redirect(url_for("chests"))
+    queue_rate_restart(read_rates())
+    flash("Restart rdzeni zlecony – przed startem gra wczyta szkatułki z panelu (m2-chests). "
+          "Gracze online zostaną rozłączeni na ok. minutę.", "success")
+    return redirect(url_for("chests"))
+
+
+@app.post("/chests/restore")
+@login_required
+def chest_restore():
+    if not chest_check_csrf():
+        return redirect(url_for("chests"))
+    name = request.form.get("backup", "")
+    if not re.fullmatch(r"special_item_group\.custom\.[0-9-]+\.txt", name) or not (CHEST_BACKUPS / name).is_file():
+        flash("Nie ma takiej kopii.", "error")
+        return redirect(url_for("chests"))
+    custom = {}
+    for group in chest_parse((CHEST_BACKUPS / name).read_bytes().decode("utf-8", "replace")):
+        custom.setdefault(group["vnum"], group)
+    try:
+        chest_write_custom(custom, f"przywrocono kopie {name}")
+    except OSError as exc:
+        flash(f"Nie udało się zapisać pliku: {exc}", "error")
+        return redirect(url_for("chests"))
+    flash(f"Przywrócono kopię {name} ({len(custom)} grup). Obecny stan trafił do kopii. Zadziała po restarcie rdzeni.", "success")
+    return redirect(url_for("chests"))
+
+
+@app.route("/chests/backup/<name>")
+@login_required
+def chest_backup_view(name):
+    if not re.fullmatch(r"special_item_group\.custom\.[0-9-]+\.txt", name) or not (CHEST_BACKUPS / name).is_file():
+        abort(404)
+    return (CHEST_BACKUPS / name).read_bytes().decode("utf-8", "replace"), 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.route("/chests/file")
+@login_required
+def chest_file_view():
+    text = chest_read_text(CHEST_CUSTOM)
+    return (text if text is not None else "# brak zmian z panelu - gra uzywa szkatulek z obrazu\n"), 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.route("/api/chests/items")
+@login_required
+def api_chest_items():
+    query = request.args.get("q", "").strip()
+    if len(query) < 2 and not query.isdigit():
+        return {"ok": True, "items": []}
+    found = rows("SELECT vnum,locale_name FROM player.item_proto WHERE vnum=%s OR locale_name LIKE %s ORDER BY vnum LIMIT 25",
+                 (int(query) if query.isdigit() else -1, f"%{query}%"))
+    return {"ok": True, "items": [{"vnum": int(r["vnum"]), "name": game_text(r["locale_name"])} for r in found]}
+# ---- /MT2009_PLUS_CHEST_EDITOR_V1 --------------------------------------------
 
 
 from item_grants import install as install_item_grants

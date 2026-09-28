@@ -505,12 +505,23 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_GUILD_DUTY_V1 (errand): defined in playerbot_guildduty.h.
+	long GetPlayerBotGuildDutyMap(LPCHARACTER ch);
+	bool IsPlayerBotGuildDutyKeptItem(LPCHARACTER ch, DWORD vnum);
+
 	// The map a member on a guild errand hunts on (playerbot_travel.h asks it
 	// before its level's own), or zero.
 	long GetPlayerBotGuildErrandMap(LPCHARACTER ch)
 	{
 		if (!ch)
 			return 0;
+		// MT2009_PLUS_GUILD_DUTY_V1 (errand): a player's guild's item mission
+		// sends its workers to the material's ground (playerbot_guildduty.h).
+		{
+			const long dutyMap = GetPlayerBotGuildDutyMap(ch);
+			if (dutyMap != 0)
+				return dutyMap;
+		}
 		std::map<DWORD, TPlayerBotGuildErrand>::iterator it = s_mapPlayerBotGuildErrand.find(ch->GetPlayerID());
 		if (it == s_mapPlayerBotGuildErrand.end())
 			return 0;
@@ -847,6 +858,10 @@ namespace
 	{
 		if (!ch || !item || !IsPlayerBotGuildBuildMaterial(item->GetVnum()))
 			return false;
+		// MT2009_PLUS_GUILD_DUTY_V1 (keep): a worker of an item mission keeps
+		// the material for the guild's bank (playerbot_guildduty.h).
+		if (IsPlayerBotGuildDutyKeptItem(ch, item->GetVnum()))
+			return true;
 		CGuild* guild = ch->GetGuild();
 		if (!guild)
 			return false;

@@ -664,6 +664,10 @@ namespace
 		// Breaking one warps every PC on the killer's map into a new tower.
 		if (IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()))
 			return false;
+		// MT2009_PLUS_BP_BOTS_V1: a stone its Battle Pass mission names, and
+		// one it can break, is worth it however far the bot has outgrown it.
+		if (playerbot_bpbots::WantsStone(ch, stone))
+			return true;
 		// Iwakura's stone hunter: ten levels either way, "aby zagwarantowac
 		// szanse na drop oraz upewnic sie, ze bot fizycznie da rade go zniszczyc".
 		if (IsPlayerBotPersonaEnabled())

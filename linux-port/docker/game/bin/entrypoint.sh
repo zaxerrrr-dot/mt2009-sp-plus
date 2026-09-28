@@ -173,6 +173,11 @@ command -v m2-world-reset >/dev/null 2>&1 && { m2-world-reset prepare || log "co
 # account afterwards. Absent on an image built before this existed.
 command -v m2-lang >/dev/null 2>&1 \
   && { m2-lang prepare || log "could not prepare the language files (the language page will say so)"; }
+# MT2009_PLUS_CHEST_EDITOR_V1: the chests the Seban panel edits - the image's
+# special_item_group.txt kept aside, the live one writable by the service
+# account, the spool folder both containers write (m2-chests).
+command -v m2-chests >/dev/null 2>&1 \
+  && { m2-chests prepare || log "could not prepare the chest files (the panel's Szkatułki page will say so)"; }
 
 # -----------------------------------------------------------------------------
 # 3. Resource limits.

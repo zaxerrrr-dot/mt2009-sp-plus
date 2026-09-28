@@ -1438,6 +1438,8 @@ namespace
 					}
 				}
 
+				// MT2009_PLUS_BP_BOTS_V1: what a Battle Pass mission names (playerbot_bpbots.h).
+				baseScore += playerbot_bpbots::TargetBonus(m_owner, candidate);
 				// Distance penalty: only 2 points per unit so level-appropriate mobs within 2000 distance beat low-level dogs
 				tc.score = baseScore - (distance * 2);
 				m_targets.push_back(tc);

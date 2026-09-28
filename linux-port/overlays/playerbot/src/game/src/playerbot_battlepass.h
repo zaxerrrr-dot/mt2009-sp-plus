@@ -60,6 +60,8 @@ namespace playerbot_bpbots
 	int BossRecruitBonus(DWORD pid, DWORD race);
 	// A mission of this bot's was just settled: look again soon.
 	void OnProgressSettled(DWORD pid);
+	// On a Battle Pass errand now: no bot party for it meanwhile.
+	bool IsOnErrand(DWORD pid);
 }
 
 namespace mt2009_battlepass
@@ -801,7 +803,7 @@ namespace mt2009_battlepass
 // The engine's calls (server-patches/playerqol, MT2009_PLUS_BATTLE_PASS_V1).
 void BattlePassOnKill(LPCHARACTER killer, LPCHARACTER victim)
 {
-	if (!killer || !victim || victim->IsPC() || !mt2009_battlepass::Eligible(killer))
+	if (!killer || !victim || victim->IsPC() || !mt2009_battlepass::Counts(killer))
 		return;
 	const DWORD race = victim->GetRaceNum();
 	const DWORD level = victim->GetLevel();

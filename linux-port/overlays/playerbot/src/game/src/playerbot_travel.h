@@ -660,6 +660,14 @@ namespace
 	// window, or 0 when its own village is still the right place for it.
 	long GetPlayerBotFrontierMapForLevel(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BP_BOTS_V1: a Battle Pass errand's stones name the map
+		// for its while - a shared one, or 0 for the bot's own villages
+		// (playerbot_bpbots.h).
+		{
+			long errandMap = 0;
+			if (playerbot_bpbots::GetErrandMap(ch, errandMap))
+				return IsPlayerBotMapHostedHere(errandMap) ? errandMap : 0;
+		}
 		long map = GetPlayerBotFrontierMapForLevelRaw(ch);
 		// Community Patch 5, point 8: "mapy Loch pajakow V1 oraz Loch pajakow
 		// V2 zostaja od teraz calkowicie zablokowane dla botow z osobowoscia

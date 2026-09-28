@@ -141,7 +141,7 @@
   "file": "item.cpp",
   "marker": "MT2009_PLUS_COSTUME_SET_V1 (sets)",
   "old": "\tch->UpdatePacket();\n}\n\nbool CItem::IsEquipable() const",
-  "new": "\tch->UpdatePacket();\n}\n\n// MT2009_PLUS_COSTUME_SET_V1 (sets): costume sets (the operator, 28\n// September: \"zeby zestaw dzialal musi byc zalozony kostium i fryzura z\n// jednego kompletu ... 800 HP i 15 wartosci ataku\"). The sets are\n// <locale>/costume_sets.txt, read once at the first look: a line is\n// \"name<TAB>bodies<TAB>hairs\", the vnums comma-separated. A body and a hair\n// worn from one line give the bonus, as affect 545, which is not saved - it\n// is judged again at every equip, the login's included. The client's tooltip\n// reads the same lists (costume_sets.py). A hidden costume still counts.\nstatic const DWORD MT2009_PLUS_AFFECT_COSTUME_SET = 545;\nstatic const long MT2009_PLUS_COSTUME_SET_HP = 800;\nstatic const long MT2009_PLUS_COSTUME_SET_ATT = 15;\n\nstruct TMt2009PlusCostumeSets\n{\n\tbool loaded;\n\tstd::map<DWORD, std::vector<int> > bodies;\n\tstd::map<DWORD, std::vector<int> > hairs;\n\tTMt2009PlusCostumeSets() : loaded(false) {}\n};\n\nstatic void Mt2009PlusReadVnums(const std::string& field, int set, std::map<DWORD, std::vector<int> >& into)\n{\n\tstd::string number;\n\tfor (size_t i = 0; i <= field.size(); ++i)\n\t{\n\t\tconst char c = i < field.size() ? field[i] : ',';\n\t\tif (c >= '0' && c <= '9')\n\t\t\tnumber += c;\n\t\telse if (!number.empty())\n\t\t{\n\t\t\tinto[(DWORD)strtoul(number.c_str(), NULL, 10)].push_back(set);\n\t\t\tnumber.clear();\n\t\t}\n\t}\n}\n\nstatic const TMt2009PlusCostumeSets& Mt2009PlusCostumeSets()\n{\n\tstatic TMt2009PlusCostumeSets s;\n\tif (s.loaded)\n\t\treturn s;\n\ts.loaded = true;\n\tconst std::string path = LocaleService_GetBasePath() + \"/costume_sets.txt\";\n\tFILE* fp = fopen(path.c_str(), \"rb\");\n\tif (!fp)\n\t{\n\t\tsys_err(\"COSTUME_SET: no %s - no sets\", path.c_str());\n\t\treturn s;\n\t}\n\tchar line[8192];\n\tint sets = 0;\n\twhile (fgets(line, sizeof(line), fp))\n\t{\n\t\tif (line[0] == '#' || line[0] == '\\r' || line[0] == '\\n')\n\t\t\tcontinue;\n\t\tconst std::string text(line);\n\t\tconst size_t tab1 = text.find('\\t');\n\t\tconst size_t tab2 = tab1 == std::string::npos ? std::string::npos : text.find('\\t', tab1 + 1);\n\t\tif (tab2 == std::string::npos)\n\t\t\tcontinue;\n\t\tMt2009PlusReadVnums(text.substr(tab1 + 1, tab2 - tab1 - 1), sets, s.bodies);\n\t\tMt2009PlusReadVnums(text.substr(tab2 + 1), sets, s.hairs);\n\t\t++sets;\n\t}\n\tfclose(fp);\n\tsys_log(0, \"COSTUME_SET: %d sets, %u bodies, %u hairs from %s\", sets,\n\t\t\t(unsigned int)s.bodies.size(), (unsigned int)s.hairs.size(), path.c_str());\n\treturn s;\n}\n\nvoid Mt2009PlusCheckCostumeSet(LPCHARACTER ch, LPITEM leaving)\n{\n\tif (!ch || !ch->IsPC())\n\t\treturn;\n\t// Adding or removing the bonus recomputes the points, and ComputePoints\n\t// runs every worn item's ModifyPoints again - this function among them,\n\t// with the costume on its way off still in its slot. Answering that inner\n\t// call put the bonus straight back, the removal loop took it again, for\n\t// ever, until the core ran out of memory (28 September, taking a costume\n\t// off). The outer call decides; the inner ones stand aside.\n\tstatic bool s_bDeciding = false;\n\tif (s_bDeciding)\n\t\treturn;\n\tstruct TDeciding\n\t{\n\t\tTDeciding() { s_bDeciding = true; }\n\t\t~TDeciding() { s_bDeciding = false; }\n\t} deciding;\n\tconst TMt2009PlusCostumeSets& sets = Mt2009PlusCostumeSets();\n\tLPITEM body = ch->GetWear(WEAR_COSTUME_BODY);\n\tLPITEM hair = ch->GetWear(WEAR_COSTUME_HAIR);\n\tif (body == leaving) body = NULL;\n\tif (hair == leaving) hair = NULL;\n\tbool matched = false;\n\tif (body && hair)\n\t{\n\t\tstd::map<DWORD, std::vector<int> >::const_iterator b = sets.bodies.find(body->GetVnum());\n\t\tstd::map<DWORD, std::vector<int> >::const_iterator h = sets.hairs.find(hair->GetVnum());\n\t\tif (b != sets.bodies.end() && h != sets.hairs.end())\n\t\t\tfor (size_t i = 0; i < b->second.size() && !matched; ++i)\n\t\t\t\tmatched = std::find(h->second.begin(), h->second.end(), b->second[i]) != h->second.end();\n\t}\n\tconst bool has = ch->FindAffect(MT2009_PLUS_AFFECT_COSTUME_SET) != NULL;\n\tif (matched && !has)\n\t{\n\t\tch->AddAffect(MT2009_PLUS_AFFECT_COSTUME_SET, POINT_MAX_HP, MT2009_PLUS_COSTUME_SET_HP, AFF_NONE,\n\t\t\t\tINFINITE_AFFECT_DURATION, 0, false);\n\t\tch->AddAffect(MT2009_PLUS_AFFECT_COSTUME_SET, POINT_ATT_GRADE_BONUS, MT2009_PLUS_COSTUME_SET_ATT, AFF_NONE,\n\t\t\t\tINFINITE_AFFECT_DURATION, 0, false);\n\t\tif (ch->GetSectree())\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.\",\n\t\t\t\t\tMT2009_PLUS_COSTUME_SET_HP, MT2009_PLUS_COSTUME_SET_ATT);\n\t}\n\telse if (!matched && has)\n\t{\n\t\tch->RemoveAffect(MT2009_PLUS_AFFECT_COSTUME_SET);\n\t\tif (ch->GetSectree())\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Zestaw kostiumow niepelny - bonus zestawu zniknal.\");\n\t}\n\telse\n\t\treturn;\n\t// RemoveAffect recomputed the points, and ComputePoints put every worn\n\t// item's look back on - the costume on its way off among them, still in\n\t// its slot: its hair or body stayed on the character after it came off\n\t// (28 September). The looks again, from what stays worn.\n\tvoid Mt2009PlusApplyCostumeParts(LPCHARACTER ch, LPITEM leaving);\n\tMt2009PlusApplyCostumeParts(ch, leaving);\n}\n\nbool CItem::IsEquipable() const"
+  "new": "\tch->UpdatePacket();\n}\n\n// MT2009_PLUS_COSTUME_SET_V1 (sets): costume sets (the operator, 28\n// September: \"zeby zestaw dzialal musi byc zalozony kostium i fryzura z\n// jednego kompletu ... 800 HP i 15 wartosci ataku\"). The sets are\n// <locale>/costume_sets.txt, read once at the first look: a line is\n// \"name<TAB>bodies<TAB>hairs\", the vnums comma-separated. A body and a hair\n// worn from one line give the bonus, as affect 545, which is not saved - it\n// is judged again at every equip, the login's included. The client's tooltip\n// reads the same lists (costume_sets.py). A hidden costume still counts.\nstatic const DWORD MT2009_PLUS_AFFECT_COSTUME_SET = 545;\nstatic const long MT2009_PLUS_COSTUME_SET_HP = 800;\nstatic const long MT2009_PLUS_COSTUME_SET_ATT = 15;\n\nstruct TMt2009PlusCostumeSets\n{\n\tbool loaded;\n\tstd::map<DWORD, std::vector<int> > bodies;\n\tstd::map<DWORD, std::vector<int> > hairs;\n\tTMt2009PlusCostumeSets() : loaded(false) {}\n};\n\nstatic void Mt2009PlusReadVnums(const std::string& field, int set, std::map<DWORD, std::vector<int> >& into)\n{\n\tstd::string number;\n\tfor (size_t i = 0; i <= field.size(); ++i)\n\t{\n\t\tconst char c = i < field.size() ? field[i] : ',';\n\t\tif (c >= '0' && c <= '9')\n\t\t\tnumber += c;\n\t\telse if (!number.empty())\n\t\t{\n\t\t\tinto[(DWORD)strtoul(number.c_str(), NULL, 10)].push_back(set);\n\t\t\tnumber.clear();\n\t\t}\n\t}\n}\n\nstatic const TMt2009PlusCostumeSets& Mt2009PlusCostumeSets()\n{\n\tstatic TMt2009PlusCostumeSets s;\n\tif (s.loaded)\n\t\treturn s;\n\ts.loaded = true;\n\tconst std::string path = LocaleService_GetBasePath() + \"/costume_sets.txt\";\n\tFILE* fp = fopen(path.c_str(), \"rb\");\n\tif (!fp)\n\t{\n\t\tsys_err(\"COSTUME_SET: no %s - no sets\", path.c_str());\n\t\treturn s;\n\t}\n\tchar line[8192];\n\tint sets = 0;\n\twhile (fgets(line, sizeof(line), fp))\n\t{\n\t\tif (line[0] == '#' || line[0] == '\\r' || line[0] == '\\n')\n\t\t\tcontinue;\n\t\tconst std::string text(line);\n\t\tconst size_t tab1 = text.find('\\t');\n\t\tconst size_t tab2 = tab1 == std::string::npos ? std::string::npos : text.find('\\t', tab1 + 1);\n\t\tif (tab2 == std::string::npos)\n\t\t\tcontinue;\n\t\tMt2009PlusReadVnums(text.substr(tab1 + 1, tab2 - tab1 - 1), sets, s.bodies);\n\t\tMt2009PlusReadVnums(text.substr(tab2 + 1), sets, s.hairs);\n\t\t++sets;\n\t}\n\tfclose(fp);\n\tsys_log(0, \"COSTUME_SET: %d sets, %u bodies, %u hairs from %s\", sets,\n\t\t\t(unsigned int)s.bodies.size(), (unsigned int)s.hairs.size(), path.c_str());\n\treturn s;\n}\n\nvoid Mt2009PlusCheckCostumeSet(LPCHARACTER ch, LPITEM leaving)\n{\n\tif (!ch || !ch->IsPC())\n\t\treturn;\n\t// Adding or removing the bonus recomputes the points, and ComputePoints\n\t// runs every worn item's ModifyPoints again - this function among them,\n\t// with the costume on its way off still in its slot. Answering that inner\n\t// call put the bonus straight back, the removal loop took it again, for\n\t// ever, until the core ran out of memory (28 September, taking a costume\n\t// off). The outer call decides; the inner ones stand aside.\n\tstatic bool s_bDeciding = false;\n\tif (s_bDeciding)\n\t\treturn;\n\tstruct TDeciding\n\t{\n\t\tTDeciding() { s_bDeciding = true; }\n\t\t~TDeciding() { s_bDeciding = false; }\n\t} deciding;\n\tconst TMt2009PlusCostumeSets& sets = Mt2009PlusCostumeSets();\n\tLPITEM body = ch->GetWear(WEAR_COSTUME_BODY);\n\tLPITEM hair = ch->GetWear(WEAR_COSTUME_HAIR);\n\tif (body == leaving) body = NULL;\n\tif (hair == leaving) hair = NULL;\n\tbool matched = false;\n\tif (body && hair)\n\t{\n\t\tstd::map<DWORD, std::vector<int> >::const_iterator b = sets.bodies.find(body->GetVnum());\n\t\tstd::map<DWORD, std::vector<int> >::const_iterator h = sets.hairs.find(hair->GetVnum());\n\t\tif (b != sets.bodies.end() && h != sets.hairs.end())\n\t\t\tfor (size_t i = 0; i < b->second.size() && !matched; ++i)\n\t\t\t\tmatched = std::find(h->second.begin(), h->second.end(), b->second[i]) != h->second.end();\n\t}\n\tconst bool has = ch->FindAffect(MT2009_PLUS_AFFECT_COSTUME_SET) != NULL;\n\tif (matched && !has)\n\t{\n\t\t// The set's aura: the unused affect flag AFF_FIRE_RAGE (bit 44 in the\n\t\t// client), which the client draws as the special armour's glow.\n\t\tch->AddAffect(MT2009_PLUS_AFFECT_COSTUME_SET, POINT_MAX_HP, MT2009_PLUS_COSTUME_SET_HP, AFF_FIRE_RAGE,\n\t\t\t\tINFINITE_AFFECT_DURATION, 0, false);\n\t\tch->AddAffect(MT2009_PLUS_AFFECT_COSTUME_SET, POINT_ATT_GRADE_BONUS, MT2009_PLUS_COSTUME_SET_ATT, AFF_NONE,\n\t\t\t\tINFINITE_AFFECT_DURATION, 0, false);\n\t\tif (ch->GetSectree())\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Zestaw kostiumow: +%ld PZ i +%ld wartosci ataku.\",\n\t\t\t\t\tMT2009_PLUS_COSTUME_SET_HP, MT2009_PLUS_COSTUME_SET_ATT);\n\t}\n\telse if (!matched && has)\n\t{\n\t\tch->RemoveAffect(MT2009_PLUS_AFFECT_COSTUME_SET);\n\t\tif (ch->GetSectree())\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Zestaw kostiumow niepelny - bonus zestawu zniknal.\");\n\t}\n\telse\n\t\treturn;\n\t// RemoveAffect recomputed the points, and ComputePoints put every worn\n\t// item's look back on - the costume on its way off among them, still in\n\t// its slot: its hair or body stayed on the character after it came off\n\t// (28 September). The looks again, from what stays worn.\n\tvoid Mt2009PlusApplyCostumeParts(LPCHARACTER ch, LPITEM leaving);\n\tMt2009PlusApplyCostumeParts(ch, leaving);\n}\n\nbool CItem::IsEquipable() const"
  },
  {
   "file": "char_affect.cpp",
@@ -196,5 +196,149 @@
   "marker": "MT2009_PLUS_BATTLE_PASS_V1 (refine try scroll)",
   "old": "\tif (prob <= success_prob) // success\n",
   "new": "\t// MT2009_PLUS_BATTLE_PASS_V1 (refine try scroll): every refine attempt\n\t// with a scroll, won or lost, for the Battle Pass.\n\t{\n\t\tvoid BattlePassOnRefine(LPCHARACTER ch);\n\t\tBattlePassOnRefine(this);\n\t}\n\tif (prob <= success_prob) // success\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_WHEEL_V1 (command)",
+  "old": "// MT2009_PLUS_BATTLE_PASS_V1 (command): the Battle Pass window's",
+  "new": "// MT2009_PLUS_WHEEL_V1 (command): the Kolo Fortuny window's\n// \"/kolo [krec | odbierz <id>]\" (playerbot_wheel.h).\nACMD(do_wheel)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid WheelCommand(LPCHARACTER ch, const char* argument);\n\tWheelCommand(ch, argument);\n}\n\n// MT2009_PLUS_BATTLE_PASS_V1 (command): the Battle Pass window's"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_WHEEL_V1 (declare)",
+  "old": "// MT2009_PLUS_BATTLE_PASS_V1 (declare)\nACMD(do_battlepass);\n",
+  "new": "// MT2009_PLUS_BATTLE_PASS_V1 (declare)\nACMD(do_battlepass);\n// MT2009_PLUS_WHEEL_V1 (declare)\nACMD(do_wheel);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_WHEEL_V1 (table)",
+  "old": "\t{ \"battlepass\",\tdo_battlepass,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"battlepass\",\tdo_battlepass,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_WHEEL_V1 (table)\n\t{ \"kolo\",\tdo_wheel,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_LOOT_EVENTS_V1",
+  "old": "\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n",
+  "new": "\t// MT2009_PLUS_LOOT_EVENTS_V1: the double-loot events (playerbot_events.h):\n\t// while one runs, every item a boss or a Metin stone dropped so far is\n\t// dropped once more - a fresh item of the same vnum and count. Quest drops\n\t// below are left single.\n\t{\n\t\tbool Mt2009PlusDoubleLoot(LPCHARACTER victim);\n\t\tif (Mt2009PlusDoubleLoot(pkChr))\n\t\t{\n\t\t\tconst size_t dropped = vec_item.size();\n\t\t\tfor (size_t i = 0; i < dropped; ++i)\n\t\t\t{\n\t\t\t\tLPITEM twin = CreateItem(vec_item[i]->GetVnum(), vec_item[i]->GetCount(), 0, true);\n\t\t\t\tif (twin)\n\t\t\t\t\tvec_item.emplace_back(twin);\n\t\t\t}\n\t\t}\n\t}\n\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_NEW_PET_V1 (use)",
+  "old": "\t\t\t\tcase PET_ATTR_CHANGE: //11\n\t\t\t\tcase PET_PRIMIUM_FEEDSTUFF: //13\n\t\t\t\t\tbreak;\n",
+  "new": "\t\t\t\tcase PET_ATTR_CHANGE: //11\n\t\t\t\tcase PET_PRIMIUM_FEEDSTUFF: //13\n\t\t\t\t{\n\t\t\t\t\t// MT2009_PLUS_NEW_PET_V1 (use): the New Pet System's eggs, food,\n\t\t\t\t\t// elixirs and books (playerbot_newpet.h); the ItemShop seals\n\t\t\t\t\t// (PET_UPBRINGING, PET_PAY) stay above.\n\t\t\t\t\tbool NewPetUseItem(LPCHARACTER ch, LPITEM item);\n\t\t\t\t\treturn NewPetUseItem(this, item);\n\t\t\t\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_NEW_PET_V1 (exp)",
+  "old": "\tiExp = AdjustExpByLevel(to, iExp);\n\n\tto->PointChange(POINT_EXP, iExp, true);\n\tfrom->CreateFly(FLY_EXP, to);\n",
+  "new": "\tiExp = AdjustExpByLevel(to, iExp);\n\n\tto->PointChange(POINT_EXP, iExp, true);\n\tfrom->CreateFly(FLY_EXP, to);\n\t// MT2009_PLUS_NEW_PET_V1 (exp): the kill's experience for the owner's\n\t// New Pet System pet too, and its items' drops (playerbot_newpet.h).\n\t{\n\t\tvoid NewPetOnExp(LPCHARACTER victim, LPCHARACTER to, int exp);\n\t\tNewPetOnExp(from, to, iExp);\n\t}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_NEW_PET_V1 (points)",
+  "old": "\t\tif (pPetSystem)\n\t\t\tpPetSystem->RefreshBuff();\n",
+  "new": "\t\tif (pPetSystem)\n\t\t\tpPetSystem->RefreshBuff();\n\t\t// MT2009_PLUS_NEW_PET_V1 (points): the New Pet System pet's bonuses\n\t\t// while it is out (playerbot_newpet.h).\n\t\t{\n\t\t\tvoid NewPetApplyPoints(LPCHARACTER ch);\n\t\t\tNewPetApplyPoints(this);\n\t\t}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_NEW_PET_V1 (declare)",
+  "old": "// MT2009_PLUS_BATTLE_PASS_V1 (declare)\nACMD(do_battlepass);\n",
+  "new": "// MT2009_PLUS_BATTLE_PASS_V1 (declare)\nACMD(do_battlepass);\n// MT2009_PLUS_NEW_PET_V1 (declare): defined in playerbot_newpet.h\nACMD(do_newpet);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_NEW_PET_V1 (table)",
+  "old": "\t// MT2009_PLUS_BATTLE_PASS_V1 (table)\n\t{ \"battlepass\",\tdo_battlepass,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t// MT2009_PLUS_BATTLE_PASS_V1 (table)\n\t{ \"battlepass\",\tdo_battlepass,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_NEW_PET_V1 (table)\n\t{ \"newpet\",\tdo_newpet,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_GUILD_DUTY_V1 (command)",
+  "old": "\tvoid BattlePassCommand(LPCHARACTER ch, const char* argument);\n\tBattlePassCommand(ch, argument);\n}\n",
+  "new": "\tvoid BattlePassCommand(LPCHARACTER ch, const char* argument);\n\tBattlePassCommand(ch, argument);\n}\n\n// MT2009_PLUS_GUILD_DUTY_V1 (command): the guild leader's panel\n// \"/gildia_obowiazki [zrzutka <yang> <h> | zrzutka_anuluj | misja <vnum> <n> |\n// misja_anuluj | wyplac <vnum> <n> | dt [n] | dt_anuluj]\" (playerbot_guildduty.h).\nACMD(do_guild_duty)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid GuildDutyCommand(LPCHARACTER ch, const char* argument);\n\tGuildDutyCommand(ch, argument);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_GUILD_DUTY_V1 (declare)",
+  "old": "// MT2009_PLUS_BATTLE_PASS_V1 (declare)\nACMD(do_battlepass);\n",
+  "new": "// MT2009_PLUS_BATTLE_PASS_V1 (declare)\nACMD(do_battlepass);\n// MT2009_PLUS_GUILD_DUTY_V1 (declare)\nACMD(do_guild_duty);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_GUILD_DUTY_V1 (table)",
+  "old": "\t{ \"battlepass\",\tdo_battlepass,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"battlepass\",\tdo_battlepass,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_GUILD_DUTY_V1 (table)\n\t{ \"gildia_obowiazki\",\tdo_guild_duty,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_BATTLE_PASS_V1 (shout)",
+  "old": "\t\tif (pinfo->type == CHAT_TYPE_SHOUT)\n\t\t{\n\t\t\tSendShout(chatbuf, ch->GetEmpire());\n",
+  "new": "\t\tif (pinfo->type == CHAT_TYPE_SHOUT)\n\t\t{\n\t\t\tSendShout(chatbuf, ch->GetEmpire());\n\n\t\t\t// MT2009_PLUS_BATTLE_PASS_V1 (shout): every message let out on the\n\t\t\t// shout channel, whatever it says, for the Battle Pass\n\t\t\t// (playerbot_battlepass.h).\n\t\t\t{\n\t\t\t\tvoid BattlePassOnShout(LPCHARACTER ch);\n\t\t\t\tBattlePassOnShout(ch);\n\t\t\t}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (declare)",
+  "old": "// MT2009_PLUS_WHEEL_V1 (declare)\nACMD(do_wheel);\n",
+  "new": "// MT2009_PLUS_WHEEL_V1 (declare)\nACMD(do_wheel);\n// MT2009_PLUS_GOBLIN_V1 (declare)\nACMD(do_goblin);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (table)",
+  "old": "\t// MT2009_PLUS_WHEEL_V1 (table)\n\t{ \"kolo\",\tdo_wheel,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t// MT2009_PLUS_WHEEL_V1 (table)\n\t{ \"kolo\",\tdo_wheel,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_GOBLIN_V1 (table)\n\t{ \"goblin\",\tdo_goblin,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (command)",
+  "old": "// MT2009_PLUS_WHEEL_V1 (command): the Kolo Fortuny window's\n// \"/kolo [krec | odbierz <id>]\" (playerbot_wheel.h).\nACMD(do_wheel)\n",
+  "new": "// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n// \"/goblin [info|odkryj|szukaj|reset|tury|tura|ranking|wyjdz]\" (playerbot_goblin.h).\nACMD(do_goblin)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid GoblinCommand(LPCHARACTER ch, const char* argument);\n\tGoblinCommand(ch, argument);\n}\n\n// MT2009_PLUS_WHEEL_V1 (command): the Kolo Fortuny window's\n// \"/kolo [krec | odbierz <id>]\" (playerbot_wheel.h).\nACMD(do_wheel)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (use)",
+  "old": "bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)\n{\n\tint iLimitRealtimeStartFirstUseFlagIndex = -1;\n",
+  "new": "bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)\n{\n\t// MT2009_PLUS_GOBLIN_V1 (use): the Treasure Ticket, the Goblin Key and its\n\t// box (playerbot_goblin.h), before the item's own limits and type.\n\t{\n\t\tbool GoblinUseItem(LPCHARACTER ch, LPITEM item);\n\t\tif (GoblinUseItem(this, item))\n\t\t\treturn true;\n\t}\n\tint iLimitRealtimeStartFirstUseFlagIndex = -1;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (used)",
+  "old": "\t\t// MT2009_PLUS_BATTLE_PASS_V1 (use): an item used, for the Battle Pass.\n\t\tif (ret)\n\t\t{\n\t\t\tvoid BattlePassOnUse(LPCHARACTER ch, DWORD vnum);\n\t\t\tBattlePassOnUse(this, vnum);\n\t\t}\n\t\treturn (ret);\n",
+  "new": "\t\t// MT2009_PLUS_BATTLE_PASS_V1 (use): an item used, for the Battle Pass.\n\t\tif (ret)\n\t\t{\n\t\t\tvoid BattlePassOnUse(LPCHARACTER ch, DWORD vnum);\n\t\t\tBattlePassOnUse(this, vnum);\n\t\t\t// MT2009_PLUS_GOBLIN_V1 (used): a chest opened may give a Treasure Ticket.\n\t\t\tvoid GoblinOnUse(LPCHARACTER ch, DWORD vnum);\n\t\t\tGoblinOnUse(this, vnum);\n\t\t}\n\t\treturn (ret);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (used ex)",
+  "old": "\t\tif (usedOk)\n\t\t{\n\t\t\tvoid BattlePassOnUse(LPCHARACTER ch, DWORD vnum);\n\t\t\tBattlePassOnUse(this, usedVnum);\n\t\t}\n\t\treturn usedOk;\n",
+  "new": "\t\tif (usedOk)\n\t\t{\n\t\t\tvoid BattlePassOnUse(LPCHARACTER ch, DWORD vnum);\n\t\t\tBattlePassOnUse(this, usedVnum);\n\t\t\t// MT2009_PLUS_GOBLIN_V1 (used ex): a chest opened may give a Treasure Ticket.\n\t\t\tvoid GoblinOnUse(LPCHARACTER ch, DWORD vnum);\n\t\t\tGoblinOnUse(this, usedVnum);\n\t\t}\n\t\treturn usedOk;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (refine free)",
+  "old": "\tif (!(bMoneyOnly))\n\t{\n\t\tfor (int i = 0; i < prt->material_count; ++i)\n\t\t{\n\t\t\tif (CountSpecifyItem(prt->materials[i].vnum) < prt->materials[i].count)\n",
+  "new": "\t// MT2009_PLUS_GOBLIN_V1 (refine free): the Treasure Hunt's blessing - the\n\t// next refine takes no materials, and the blessing is spent.\n\tbool GoblinRefineFree(LPCHARACTER ch, bool consume);\n\tif (!(bMoneyOnly) && !GoblinRefineFree(this, true))\n\t{\n\t\tfor (int i = 0; i < prt->material_count; ++i)\n\t\t{\n\t\t\tif (CountSpecifyItem(prt->materials[i].vnum) < prt->materials[i].count)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (refine pct)",
+  "old": "\tint prob = number(1, 100);\n\n\tif (IsRefineThroughGuild())\n\t\tprob -= 10;\n",
+  "new": "\tint prob = number(1, 100);\n\n\tif (IsRefineThroughGuild())\n\t\tprob -= 10;\n\n\t// MT2009_PLUS_GOBLIN_V1 (refine pct): the Treasure Hunt's blessing, +10 %\n\t// on this refine (spent).\n\t{\n\t\tint GoblinRefineBonus(LPCHARACTER ch, bool consume);\n\t\tprob -= GoblinRefineBonus(this, true);\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (refine scroll)",
+  "old": "\tsuccess_prob += pkItemScroll->GetValue(1);\n\n\tif (bCheckMaterials)\n",
+  "new": "\tsuccess_prob += pkItemScroll->GetValue(1);\n\n\t// MT2009_PLUS_GOBLIN_V1 (refine scroll): the Treasure Hunt's blessings on a\n\t// scroll's refine - +10 %, no materials (each spent).\n\t{\n\t\tint GoblinRefineBonus(LPCHARACTER ch, bool consume);\n\t\tbool GoblinRefineFree(LPCHARACTER ch, bool consume);\n\t\tsuccess_prob += GoblinRefineBonus(this, true);\n\t\tif (bCheckMaterials && GoblinRefineFree(this, true))\n\t\t\tbCheckMaterials = false;\n\t}\n\n\tif (bCheckMaterials)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (refine info)",
+  "old": "\tp.prob = MINMAX(0, iRefineChance, 100);\n\n\tif (bType == REFINE_TYPE_MONEY_ONLY || IsRefineBonus(itemScroll, TUNING_FLAG_NO_ITEM))\n",
+  "new": "\t// MT2009_PLUS_GOBLIN_V1 (refine info): the chance and the materials shown\n\t// with the Treasure Hunt's blessings (not spent here).\n\tint GoblinRefineBonus(LPCHARACTER ch, bool consume);\n\tbool GoblinRefineFree(LPCHARACTER ch, bool consume);\n\tiRefineChance += GoblinRefineBonus(this, false);\n\tp.prob = MINMAX(0, iRefineChance, 100);\n\n\tif (bType == REFINE_TYPE_MONEY_ONLY || IsRefineBonus(itemScroll, TUNING_FLAG_NO_ITEM) ||\n\t\t\t(bType != REFINE_TYPE_MONEY_ONLY && GoblinRefineFree(this, false)))\n"
+ },
+ {
+  "file": "pvp.cpp",
+  "marker": "MT2009_PLUS_GOBLIN_V1 (attack)",
+  "old": "bool CPVPManager::CanAttack(LPCHARACTER pkChr, LPCHARACTER pkVictim)\n{\n\tif (!pkChr || !pkVictim)\n\t\treturn false;\n\n\tswitch (pkVictim->GetCharType())\n",
+  "new": "bool CPVPManager::CanAttack(LPCHARACTER pkChr, LPCHARACTER pkVictim)\n{\n\tif (!pkChr || !pkVictim)\n\t\treturn false;\n\n\t// MT2009_PLUS_GOBLIN_V1 (attack): the Treasure Hunt's wave monsters strike\n\t// the Treasure Goblin, a NPC (playerbot_goblin.h).\n\t{\n\t\tbool GoblinAttackable(LPCHARACTER attacker, LPCHARACTER victim);\n\t\tif (GoblinAttackable(pkChr, pkVictim))\n\t\t\treturn true;\n\t}\n\n\tswitch (pkVictim->GetCharType())\n"
  }
 ]

@@ -313,6 +313,8 @@ namespace
 			r.strength = GetPlayerBotStrengthCached(it->first);
 			if (r.strength <= 0)
 				r.strength = (int)c->GetLevel() * 1000;
+			// MT2009_PLUS_BP_BOTS_V1: a bot with a Battle Pass boss mission first.
+			r.strength += playerbot_bpbots::BossRecruitBonus(it->first, row.wRace);
 			out.push_back(r);
 		}
 		std::sort(out.begin(), out.end(), PlayerBotBossRecruitOrder);

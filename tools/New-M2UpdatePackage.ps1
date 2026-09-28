@@ -225,24 +225,25 @@ try {
         $engineMarks = [ordered]@{
             'linux-port/docker/game/src/server/game/src/item_manager.cpp' = @(
                 'MT2009_PLUS_BOT_RARE_DROP_V1', 'MT2009_PLUS_BOT_RARE_DROP_V2', 'MT2009_PLUS_BOT_RARE_DROP_V3',
-                'MT2009_PLUS_RARE_LEVEL_V1', 'MT2009_PLUS_DROP_PREVIEW_MIN_V1', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_BOT_SASH_DROP_V1', 'MT2009_PLUS_PREVIEW_RARE_V1')
+                'MT2009_PLUS_RARE_LEVEL_V1', 'MT2009_PLUS_DROP_PREVIEW_MIN_V1', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_BOT_SASH_DROP_V1', 'MT2009_PLUS_PREVIEW_RARE_V1', 'MT2009_PLUS_LOOT_EVENTS_V1')
             'linux-port/docker/game/src/server/game/src/ikarus_shop_manager.cpp' = @('MT2009_PLUS_SHOP_SEARCH_ITEM_V1', 'MT2009_PLUS_SHOP_SEARCH_PLUS_V1 (bound)')
             'linux-port/docker/game/src/server/game/src/PetSystem.cpp' = @('MT2009_PLUS_PET_STAYS_ON_DEATH_V1')
             'linux-port/docker/game/src/server/game/src/input_auth.cpp' = @('MT2009_PLUS_LOGIN_UNDERSCORE_V1')
-            'linux-port/docker/game/src/server/game/src/char_item.cpp' = @('IsStackableCorDraconisVnum', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_COR_AUTOSTACK_V1', 'MT2009_PLUS_DS_TRACE_PLAYERS_V1', 'MT2009_PLUS_BOT_SASH_DROP_V1', 'MT2009_PLUS_COR_PARTY_PICKUP_V1', 'MT2009_PLUS_PICKUP_FILTER_V1 (collect)', 'MT2009_PLUS_MOUNT_ON_EQUIP_V1 (ride)', 'MT2009_PLUS_BATTLE_PASS_V1 (use)', 'MT2009_PLUS_BATTLE_PASS_V1 (refine try)', 'MT2009_PLUS_BATTLE_PASS_V1 (refine try scroll)')
-            'linux-port/docker/game/src/server/game/src/input_main.cpp' = @('MT2009_PLUS_SPEEDHACK_CLOCK_V1', 'MT2009_PLUS_FLEA_FILL_V1')
+            'linux-port/docker/game/src/server/game/src/char_item.cpp' = @('IsStackableCorDraconisVnum', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_COR_AUTOSTACK_V1', 'MT2009_PLUS_DS_TRACE_PLAYERS_V1', 'MT2009_PLUS_BOT_SASH_DROP_V1', 'MT2009_PLUS_COR_PARTY_PICKUP_V1', 'MT2009_PLUS_PICKUP_FILTER_V1 (collect)', 'MT2009_PLUS_MOUNT_ON_EQUIP_V1 (ride)', 'MT2009_PLUS_BATTLE_PASS_V1 (use)', 'MT2009_PLUS_BATTLE_PASS_V1 (refine try)', 'MT2009_PLUS_BATTLE_PASS_V1 (refine try scroll)', 'MT2009_PLUS_NEW_PET_V1 (use)', 'MT2009_PLUS_GOBLIN_V1 (use)', 'MT2009_PLUS_GOBLIN_V1 (refine free)')
+            'linux-port/docker/game/src/server/game/src/pvp.cpp' = @('MT2009_PLUS_GOBLIN_V1 (attack)')
+            'linux-port/docker/game/src/server/game/src/input_main.cpp' = @('MT2009_PLUS_SPEEDHACK_CLOCK_V1', 'MT2009_PLUS_FLEA_FILL_V1', 'MT2009_PLUS_BATTLE_PASS_V1 (shout)')
             'linux-port/docker/game/src/server/game/src/dragon_soul_table.cpp' = @('MT2009_PLUS_DS_APPLYS_V1')
             'linux-port/docker/game/src/server/game/src/char_affect.cpp' = @('MT2009_PLUS_DS_QUALIFY_ON_LOGIN_V1', 'MT2009_PLUS_COSTUME_SET_V1 (no save)')
-            'linux-port/docker/game/src/server/game/src/cmd_general.cpp' = @('ACMD(do_autohunt_target)', 'ACMD(do_autohunt_loot)', 'MT2009_PLUS_GARBAGE_BATCH_V1', 'MT2009_PLUS_PICKUP_FILTER_V1 (commands)', 'MT2009_PLUS_ARRANGE_MERGE_V1', 'MT2009_PLUS_COSTUME_HIDE_V1 (command)', 'MT2009_PLUS_EVENT_CALENDAR_V1 (command)', 'MT2009_PLUS_BATTLE_PASS_V1 (command)')
+            'linux-port/docker/game/src/server/game/src/cmd_general.cpp' = @('ACMD(do_autohunt_target)', 'ACMD(do_autohunt_loot)', 'MT2009_PLUS_GARBAGE_BATCH_V1', 'MT2009_PLUS_PICKUP_FILTER_V1 (commands)', 'MT2009_PLUS_ARRANGE_MERGE_V1', 'MT2009_PLUS_COSTUME_HIDE_V1 (command)', 'MT2009_PLUS_EVENT_CALENDAR_V1 (command)', 'MT2009_PLUS_BATTLE_PASS_V1 (command)', 'MT2009_PLUS_WHEEL_V1 (command)', 'MT2009_PLUS_GUILD_DUTY_V1 (command)', 'MT2009_PLUS_GOBLIN_V1 (command)')
             'linux-port/docker/game/src/server/game/src/cmd_gm.cpp' = @('MT2009_PLUS_DS_PLAYER_CMD_V1')
-            'linux-port/docker/game/src/server/game/src/char.cpp' = @('MT2009_PLUS_MAGIC_ATT_PER_V1', 'MT2009_PLUS_SADDLEBAG_MOUNT_V1', 'MT2009_PLUS_STONE_STILL_V1', 'MT2009_PLUS_BATTLE_PASS_V1 (stat)')
+            'linux-port/docker/game/src/server/game/src/char.cpp' = @('MT2009_PLUS_MAGIC_ATT_PER_V1', 'MT2009_PLUS_SADDLEBAG_MOUNT_V1', 'MT2009_PLUS_STONE_STILL_V1', 'MT2009_PLUS_BATTLE_PASS_V1 (stat)', 'MT2009_PLUS_NEW_PET_V1 (points)')
             'linux-port/docker/game/src/server/game/src/char_state.cpp' = @('MT2009_PLUS_STONE_STILL_V1')
             'linux-port/docker/game/src/server/game/src/char_skill.cpp' = @('MT2009_PLUS_DRAGON_ROAR_TARGET_V1', 'MT2009_PLUS_MOUNT_HORSE_SKILLS_V1', 'MT2009_PLUS_DRAGON_ROAR_EFFECT_V1')
             'linux-port/docker/game/src/server/game/src/char_player.cpp' = @('MT2009_PLUS_MOUNT_SPEED_V1')
-            'linux-port/docker/game/src/server/game/src/char_battle.cpp' = @('MT2009_PLUS_BOT_RARE_SHARE_V1', 'MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1', 'MT2009_PLUS_BATTLE_PASS_V1 (kill)')
+            'linux-port/docker/game/src/server/game/src/char_battle.cpp' = @('MT2009_PLUS_BOT_RARE_SHARE_V1', 'MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1', 'MT2009_PLUS_BATTLE_PASS_V1 (kill)', 'MT2009_PLUS_NEW_PET_V1 (exp)')
             'linux-port/docker/game/src/server/game/src/MountSystem.cpp' = @('MT2009_PLUS_MOUNT_BONUS_ONCE_V1', 'MT2009_PLUS_MOUNT_PERMANENT_V1')
             'linux-port/docker/game/src/server/game/src/item.cpp' = @('MT2009_PLUS_COSTUME_HIDE_V1 (hook)', 'MT2009_PLUS_COSTUME_SET_V1 (hook)', 'MT2009_PLUS_COSTUME_SET_V1 (sets)')
-            'linux-port/docker/game/src/server/game/src/cmd.cpp' = @('"autohunt_target"', '"autohunt_loot"', 'MT2009_PLUS_DS_PLAYER_CMD_V1', '"chest_preview"', 'MT2009_PLUS_PICKUP_FILTER_V1 (table)', 'MT2009_PLUS_COSTUME_HIDE_V1 (table)', 'MT2009_PLUS_EVENT_CALENDAR_V1 (table)', 'MT2009_PLUS_BATTLE_PASS_V1 (table)')
+            'linux-port/docker/game/src/server/game/src/cmd.cpp' = @('"autohunt_target"', '"autohunt_loot"', 'MT2009_PLUS_DS_PLAYER_CMD_V1', '"chest_preview"', 'MT2009_PLUS_PICKUP_FILTER_V1 (table)', 'MT2009_PLUS_COSTUME_HIDE_V1 (table)', 'MT2009_PLUS_EVENT_CALENDAR_V1 (table)', 'MT2009_PLUS_BATTLE_PASS_V1 (table)', 'MT2009_PLUS_WHEEL_V1 (table)', 'MT2009_PLUS_NEW_PET_V1 (table)', 'MT2009_PLUS_GUILD_DUTY_V1 (table)', 'MT2009_PLUS_GOBLIN_V1 (table)')
         }
         foreach ($enginePublished in $engineMarks.Keys) {
             if (-not ($published -contains $enginePublished)) { continue }

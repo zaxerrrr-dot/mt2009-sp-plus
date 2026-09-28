@@ -190,6 +190,7 @@ namespace
 		char msg[CHAT_MAX_LEN + 1];
 		snprintf(msg, sizeof(msg), "%s : %s", bot->GetName(), text);
 		SendPlayerBotShout(msg, bot->GetEmpire());
+		BattlePassOnShout(bot); // MT2009_PLUS_BP_BOTS_V1: a shout for the Battle Pass
 		sys_log(0, "PLAYERBOT_TRADE: shout pid=%u name=%s text=\"%s\"",
 				bot->GetPlayerID(), bot->GetName(), text);
 		return true;

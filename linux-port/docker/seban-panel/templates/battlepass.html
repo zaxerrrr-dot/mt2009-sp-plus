@@ -22,7 +22,7 @@
 <section class="cards compact">
 <article><span>Sezon</span><strong>{{ '%02d'|format(season % 100) }}.{{ season // 100 }}</strong><small>do końca {{ days_left }} dni</small></article>
 <article><span>Misje aktywne</span><strong>{{ missions|selectattr('active')|list|length }}</strong><small>wszystkich: {{ missions|length }}</small></article>
-<article><span>Gracze z postępem</span><strong>{{ stats.players }}</strong><small>w tym sezonie</small></article>
+<article><span>Postacie z postępem</span><strong>{{ stats.players }}</strong><small>gracze i boty, w tym sezonie</small></article>
 <article><span>Ukończyli wszystko</span><strong>{{ stats.finished }}</strong><small>nagroda końcowa odebrana: {{ stats.final }}</small></article>
 </section>
 

@@ -203,6 +203,13 @@ log "boot plan: ${CORE_ORDER[*]}"
 boot_cores() {
   local name rc=0
 
+  # MT2009_PLUS_CHEST_EDITOR_V1: the chests as the Seban panel saved them
+  # (m2-chests), put into special_item_group.txt before any core reads it -
+  # on the first boot and on every restart the panel asks for.
+  if [ "${HAVE_CHESTS:-0}" = "1" ]; then
+    m2-chests apply || log "the panel's chests could not be applied -- the image's chests stay"
+  fi
+
   for name in "${CORE_ORDER[@]}"; do
     [ "$SHUTTING_DOWN" = "0" ] || return "$rc"
 
@@ -254,6 +261,11 @@ command -v m2-gm >/dev/null 2>&1 && HAVE_GM=1
 # only read them while they boot.
 HAVE_LANG=0
 command -v m2-lang >/dev/null 2>&1 && HAVE_LANG=1
+
+# MT2009_PLUS_CHEST_EDITOR_V1: what the chests hold, from the Seban panel's
+# "Szkatułki" page (m2-chests; boot_cores calls it). Absent on older images.
+HAVE_CHESTS=0
+command -v m2-chests >/dev/null 2>&1 && HAVE_CHESTS=1
 
 # The advanced panel's two resets (the bots' new game, the whole world anew).
 # Done with every core down, so no core and no db cache writes the old world

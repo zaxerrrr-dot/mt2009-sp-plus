@@ -259,7 +259,9 @@ RUN set -eux; \
     # appended to the share's cube.txt below; NerrVoVy, 27 September).
     # flea_market is the Dom Towarowy's two options at the miscellaneous
     # merchant in M1, offered only while M2_FLEA_MARKET is on (Uxie [DSO]).
-    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market; do \
+    # temple_of_the_ochao is the Temple of Ochao's entrance (Straznik Swiatyni,
+    # 20426), its portal (20415) and the Bodyguard's reward (MT2009_PLUS_OCHAO_V1).
+    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon goblin_skarbow; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -399,6 +401,24 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && ! grep -Eq '^[[:blank:]]*71282,' "$F" \
  && echo "share: costumes and mounts from the ItemShop only"
 
+# MT2009_PLUS_GOBLIN_V1: Treasure Island (map 419) of the Treasure Hunt event
+# (playerbot_goblin.h) - the map from the "Official Treasure Hunt System"
+# archive, its line in the map index, and the Treasure Goblin's and the
+# Giant Treasure Chest's motions (treasure_hunt/README.txt). Which core hosts
+# it is m2-render-config's (MAPS_game2).
+COPY treasure_hunt/ /tmp/treasure_hunt/
+RUN set -eu; L=/opt/metin2/share/locale/poland; D=/opt/metin2/share/data/monster \
+ && rm -rf "$L/map/metin2_map_treasure_hunt" \
+ && cp -a /tmp/treasure_hunt/map/metin2_map_treasure_hunt "$L/map/metin2_map_treasure_hunt" \
+ && LC_ALL=C sed -i '/^419[[:blank:]]/d' "$L/map/index" \
+ && if [ -n "$(tail -c 1 "$L/map/index")" ]; then printf '\r\n' >> "$L/map/index"; fi \
+ && printf '419\tmetin2_map_treasure_hunt\r\n' >> "$L/map/index" \
+ && for m in treasure_hunt_goblin treasure_hunt_box; do rm -rf "$D/$m"; cp -a "/tmp/treasure_hunt/monster/$m" "$D/$m"; done \
+ && chmod -R a+rX "$L/map/metin2_map_treasure_hunt" "$D/treasure_hunt_goblin" "$D/treasure_hunt_box" \
+ && rm -rf /tmp/treasure_hunt \
+ && test -s "$L/map/metin2_map_treasure_hunt/server_attr" \
+ && echo "share: Treasure Island (419) and the goblin's motions"
+
 # The quest texts name this world, not Metin2009 (port/shareify.py renders this
 # step): the substitution l0st3k's translate.lua of 15 September makes, on both
 # copies of the file.
@@ -511,6 +531,81 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-add/cube.se
  && rm -rf /tmp/cube-add \
  && test "$(grep -c -E '^npc[[:blank:]]+20091[[:space:]]*$' "$C")" -eq "$n" \
  && echo "share: Seon-Pyeong's recipes appended to cube.txt ($n)"
+
+# MT2009_PLUS_OCHAO_V1 (share): Swiatynia Ochao, the Temple of Ochao of the
+# "Version 16.2" package - map 209, metin2_map_mt_th_dungeon_01, an open map
+# for level 95 and more, hosted on "first" (m2-render-config). Its server
+# files as the package ships them, its groups (group.ochao.txt) and drops
+# (mob_drop_item.ochao.txt: the package's vnums mapped to this world's), the
+# En-Tai Guardian's motions (data/monster/trent_officer) and the entrance NPC,
+# Straznik Swiatyni (20426): beside Koe-Pung in Orc Valley, on a cell measured
+# free on its server_attr, and where the package stands him in Dawnmistwood.
+# The Guardian's eleven rooms are playerbot_ochao.h; the NPCs' talk is
+# quest/temple_of_the_ochao.quest (compiled above).
+COPY ochao/ /tmp/ochao-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/ochao-add \
+ && rm -rf "$L/map/metin2_map_mt_th_dungeon_01" && cp -a "$A/map/metin2_map_mt_th_dungeon_01" "$L/map/" \
+ && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+ && sed -i -E '/^209[[:blank:]]/d' "$L/map/index" && printf '209 metin2_map_mt_th_dungeon_01\n' >> "$L/map/index" \
+ && test "$(grep -c -E '^209[[:blank:]]+metin2_map_mt_th_dungeon_01' "$L/map/index")" -eq 1 \
+ && mkdir -p /opt/metin2/share/data/monster && rm -rf /opt/metin2/share/data/monster/trent_officer \
+ && cp -a "$A/data/monster/trent_officer" /opt/metin2/share/data/monster/ \
+ && ! grep -q -E '^Group[[:blank:]]+OchaoMonsters1[[:space:]]*$' "$L/group.txt" \
+ && { [ -z "$(tail -c 1 "$L/group.txt")" ] || printf '\n' >> "$L/group.txt"; } \
+ && sed 's/\r$//' "$A/group.ochao.txt" >> "$L/group.txt" \
+ && sed -i 's/\r$//; s/$/\r/' "$A/mob_drop_item.ochao.txt" \
+ && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
+ && cat "$A/mob_drop_item.ochao.txt" >> "$L/mob_drop_item.txt" \
+ && for p in "map_n_threeway 289 1448 5" "metin2_map_dawnmistwood 1004 700 1"; do \
+      set -- $p; F="$L/map/$1/npc.txt"; \
+      [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; \
+      grep -q -E '[[:blank:]]20426[[:space:]]*$' "$F" || printf 'm\t%s\t%s\t0\t0\t0\t%s\t1m\t100\t1\t20426\n' "$2" "$3" "$4" >> "$F"; \
+      grep -q -E "^m[[:blank:]]+$2[[:blank:]]+$3[[:blank:]].*[[:blank:]]20426" "$F"; \
+    done \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("ochao"' "$S" || printf 'add_goto_info("ochao", 0, 209, 8537, 14164)\r\n' >> "$S"; } \
+ && rm -rf "$A" \
+ && echo "share: Swiatynia Ochao (map 209, groups, drops, Straznik Swiatyni, /goto ochao)"
+
+# MT2009_PLUS_DUNGEONS_V1: the Razador and Nemere dungeons (quest/razador_dungeon.quest and
+# quest/nemere_dungeon.quest, compiled above; their monsters, keys and names are apply.sh's
+# MT2009_PLUS_DUNGEONS_V1). Everything they need from the share goes in here:
+#  * metin2_map_n_snow_dungeon_01 (index 352, 4x3 at 512000 153600 - where the client's
+#    atlasinfo puts it) with its Setting/Town and a server_attr made by us (every cell
+#    walkable: the package never shipped the map, and the client's own attr decides where
+#    a player walks);
+#  * the regen files of the two dungeons (data/dungeon/razador_mt: every fourth line of the
+#    package's flame_dungeon files, a party of level 55 and not the 100+ the package planned;
+#    data/dungeon/nemere_mt: the ice rooms, the package's ice_dungeon groups of groups);
+#  * the flame dungeon's own map (351) spawns nothing by itself any more - the package's
+#    npc.txt/regen.txt filled the public copy nobody enters with Razador's hourly group;
+#  * the two guards: the Fire Land's (20394) on map 62 at the archive's exit cell (91,916),
+#    the Ice Land's (20395) on Mount Sohan (61) at (738,119); both cells measured free;
+#  * the Nemere dungeon's drops, mirrored from the package's Razador groups.
+COPY dungeons/ /tmp/dungeons-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && cp -a "$A/map/metin2_map_n_snow_dungeon_01" "$L/map/" \
+ && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+ && { grep -q -E '^352[[:blank:]]' "$L/map/index" || printf '352 metin2_map_n_snow_dungeon_01\n' >> "$L/map/index"; } \
+ && test "$(grep -c -E '^352[[:blank:]]+metin2_map_n_snow_dungeon_01[[:space:]]*$' "$L/map/index")" = 1 \
+ && test "$(grep -c -E '^351[[:blank:]]+metin2_map_n_flame_dungeon_01[[:space:]]*$' "$L/map/index")" = 1 \
+ && mkdir -p /opt/metin2/share/data/dungeon \
+ && cp -a "$A/data/dungeon/razador_mt" "$A/data/dungeon/nemere_mt" /opt/metin2/share/data/dungeon/ \
+ && for f in regen.txt npc.txt boss.txt stone.txt; do : > "$L/map/metin2_map_n_flame_dungeon_01/$f"; done \
+ && for p in "metin2_map_n_flame_01 95 910 20394" "map_n_snowm_01 742 114 20395"; do \
+      set -- $p; F="$L/map/$1/npc.txt"; \
+      [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; \
+      grep -q -E "[[:blank:]]$4[[:space:]]*\$" "$F" || printf 'm\t%s\t%s\t0\t0\t0\t0\t60s\t100\t1\t%s\n' "$2" "$3" "$4" >> "$F"; \
+      grep -q -E "^m[[:blank:]]+$2[[:blank:]]+$3[[:blank:]].*[[:blank:]]$4" "$F"; \
+    done \
+ && ! grep -q -E '^[[:blank:]]*Mob[[:blank:]]+6191([^0-9]|$)' "$L/mob_drop_item.txt" \
+ && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
+ && cat "$A/mob_drop_item.dungeons.append.txt" >> "$L/mob_drop_item.txt" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_nemere_' "$L/mob_drop_item.txt")" = 10 \
+ && test "$(od -An -tx1 -j4 -N4 "$L/map/metin2_map_n_snow_dungeon_01/server_attr" | tr -d ' ')" = 0c000000 \
+ && rm -rf "$A" \
+ && echo "share: Razador (351) and Nemere (352) dungeons, their guards and the Nemere drops"
 
 # The cores run unprivileged and read this tree by path; a directory only root
 # can enter costs every quest below it, silently. Repair, then assert.
