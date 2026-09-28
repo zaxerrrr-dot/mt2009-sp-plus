@@ -981,6 +981,18 @@ class GuildWindow(ui.ScriptWindow):
 		self.symbolSelectDialog=uiUploadMark.SymbolSelectDialog()
 		self.symbolSelectDialog.SAFE_SetSelectEvent(self.__OnSelectSymbol)
 
+		# Orders to the guild's bots (uiguildbots.py): a button in the bottom
+		# row, for whoever may give them, kept among the page's children,
+		# which the page's own clearing releases.
+		try:
+			import uiguildbots
+			self.botOrdersButton = uiguildbots.MakeGuildWindowButton(page)
+			page.Children.append(self.botOrdersButton)
+		except Exception:
+			import dbg
+			dbg.TraceError("uiguildbots: no orders button on the guild window")
+			self.botOrdersButton = None
+
 
 	def __MakeBoardPage(self):
 
@@ -1312,6 +1324,10 @@ class GuildWindow(ui.ScriptWindow):
 
 	@ui.WindowDestroy
 	def Destroy(self):
+		# The bots' orders window goes with the guild window (uiguildbots.py).
+		import sys
+		if "uiguildbots" in sys.modules:
+			sys.modules["uiguildbots"].Destroy()
 		self.ClearDictionary()
 		self.board = None
 		self.pageName = None
@@ -1352,6 +1368,10 @@ class GuildWindow(ui.ScriptWindow):
 		self.__Initialize()
 
 	def DeleteGuild(self):
+		# Out of the guild, no orders to its bots (uiguildbots.py).
+		import sys
+		if "uiguildbots" in sys.modules:
+			sys.modules["uiguildbots"].CloseWindow()
 		self.RefreshGuildInfoPage()
 		self.RefreshGuildBoardPage()
 		self.RefreshGuildMemberPage()
@@ -1450,6 +1470,11 @@ class GuildWindow(ui.ScriptWindow):
 				nameTextLine.SetText(name)
 			else:
 				nameTextLine.SetText(localeInfo.GUILD_INFO_ENEMY_GUILD_EMPTY)
+
+		# Who may give the guild's bots orders changes with the ranks.
+		if getattr(self, "botOrdersButton", None):
+			import uiguildbots
+			uiguildbots.RefreshGuildWindowButton(self.botOrdersButton)
 
 	def __GetGuildBoardCommentData(self, index):
 		commentID, chrName, comment = guild.GetGuildBoardCommentData(index)

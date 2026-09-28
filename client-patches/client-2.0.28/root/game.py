@@ -836,7 +836,7 @@ class GameWindow(ui.ScriptWindow):
 		# The keeper ends with the game window; the next one hears the
 		# VID again, because a warp is a new login on the server.
 		import sidekickcollision
-		sidekickcollision.SetVid(vid)
+		sidekickcollision.SetVid(vid, *rest)
 		for keeper in self.updateable:
 			if isinstance(keeper, sidekickcollision.Keeper):
 				return
@@ -2833,6 +2833,7 @@ class GameWindow(ui.ScriptWindow):
 			"FleaMarketOpen"		: self.OpenFleaMarket,
 			"FleaPriceQuote"		: self.FleaPriceQuote,
 			"FleaMarketStackUpdate"	: self.FleaMarketStackUpdate,
+			"FleaPriceRange"		: self.FleaPriceRange,
 			"ShowMeMallPassword"	: self.AskMallPassword,
 			"item_mall"				: self.__ItemMall_Open,
 			# END_OF_ITEM_MALL
@@ -3643,6 +3644,11 @@ class GameWindow(ui.ScriptWindow):
 		if self.interface:
 			self.interface.fleaMarket.UpdateStackOffer(
 				int(ownerID), int(itemID), int(remainingCount), int(remainingYang), int(remainingCheque))
+
+	def FleaPriceRange(self, requestID, minPrice, maxPrice, *rest):
+		if self.interface:
+			self.interface.offlineShopManage.SetFleaMarketPriceRange(
+				int(requestID), int(minPrice), int(maxPrice))
 
 	def __EnableTestServerFlag(self):
 		app.EnableTestServerFlag()

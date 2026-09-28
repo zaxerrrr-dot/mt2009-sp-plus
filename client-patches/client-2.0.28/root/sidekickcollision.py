@@ -24,6 +24,18 @@
 # September), and it is an NPC again, to be walked through, once the cursor
 # has left it.
 #
+# The hair and the sash (MT2009_PLUS_SIDEKICK_HAIR_V1). CInstanceBase::SetHair
+# and SetAcce return for an instance that is not a player, and the client's
+# ChangeArmor makes the body anew and puts the hair back through SetHair - so
+# the companion typed as an NPC lost its head in a new armour or costume, and
+# kept its old hair when given a new one ("pusta glowa", 28 September). The
+# server sends the two parts with the VID, again at every change of the
+# armour, the hair or the sash:
+#
+#   SidekickVid <vid> <hair> <sash>
+#
+# and the keeper puts both back with the instance a player for that moment.
+#
 # Python 2.7 as the client has it; any exe of this line has the three chr
 # calls, and one without them only loses the collision, never the game.
 
@@ -33,7 +45,7 @@ import player
 
 CHECK_EVERY = 0.25
 
-_state = {'vid': 0, 'next': 0.0, 'hover': False}
+_state = {'vid': 0, 'next': 0.0, 'hover': False, 'look': None}
 
 
 def ParseVid(value):
@@ -44,10 +56,23 @@ def ParseVid(value):
 	return vid if vid > 0 else 0
 
 
-def SetVid(value):
-	_state['vid'] = ParseVid(value)
+def ParseLook(look):
+	"""(hair, sash) from the command's two numbers, or None without them."""
+	if len(look) < 2:
+		return None
+	try:
+		return (max(0, int(look[0])), max(0, int(look[1])))
+	except (TypeError, ValueError):
+		return None
+
+
+def SetVid(value, *look):
+	vid = ParseVid(value)
+	if vid != _state['vid']:
+		_state['hover'] = False
+	_state['vid'] = vid
 	_state['next'] = 0.0
-	_state['hover'] = False
+	_state['look'] = ParseLook(look) if vid else None
 
 
 def GetVid():
@@ -60,6 +85,31 @@ def _SetType(vid, kind):
 	# The selection is what every other chr.Set* call acts on; the main
 	# character is where the stock scripts expect to find it.
 	chr.SelectInstance(player.GetMainCharacterIndex())
+
+
+def ApplyLook():
+	"""Puts the hair and the sash the server named on the companion's instance,
+	once; True when it did."""
+	look = _state['look']
+	vid = _state['vid']
+	if not look or not vid:
+		return False
+	if vid == player.GetMainCharacterIndex() or not chr.HasInstance(vid):
+		return False
+	_state['look'] = None
+	(hair, sash) = look
+	npc = chr.GetInstanceType(vid) == chr.INSTANCE_TYPE_NPC
+	chr.SelectInstance(vid)
+	if npc:
+		chr.SetInstanceType(chr.INSTANCE_TYPE_PLAYER)
+	try:
+		chr.SetHair(hair)
+		chr.SetAcce(sash)
+	finally:
+		if npc:
+			chr.SetInstanceType(chr.INSTANCE_TYPE_NPC)
+		chr.SelectInstance(player.GetMainCharacterIndex())
+	return True
 
 
 def Apply():
@@ -107,11 +157,17 @@ class Keeper(object):
 			Apply()
 		except Exception:
 			_state['vid'] = 0
+			return
+		try:
+			ApplyLook()
+		except Exception:
+			_state['look'] = None
 
 	def Destroy(self):
 		_state['vid'] = 0
 		_state['next'] = 0.0
 		_state['hover'] = False
+		_state['look'] = None
 
 
 _keeper = []
