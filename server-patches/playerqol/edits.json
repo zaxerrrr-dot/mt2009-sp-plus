@@ -184,5 +184,17 @@
   "marker": "MT2009_PLUS_BATTLE_PASS_V1 (table)",
   "old": "\t// MT2009_PLUS_EVENT_CALENDAR_V1 (table)\n\t{ \"kalendarz\",\tdo_event_calendar,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
   "new": "\t// MT2009_PLUS_EVENT_CALENDAR_V1 (table)\n\t{ \"kalendarz\",\tdo_event_calendar,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_BATTLE_PASS_V1 (table)\n\t{ \"battlepass\",\tdo_battlepass,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_BATTLE_PASS_V1 (refine try)",
+  "old": "\tif (prob <= prt->prob)\n\t{\n\t\tLPITEM pkNewItem",
+  "new": "\t// MT2009_PLUS_BATTLE_PASS_V1 (refine try): every refine attempt at a\n\t// smith, won or lost, for the Battle Pass.\n\t{\n\t\tvoid BattlePassOnRefine(LPCHARACTER ch);\n\t\tBattlePassOnRefine(this);\n\t}\n\tif (prob <= prt->prob)\n\t{\n\t\tLPITEM pkNewItem"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_BATTLE_PASS_V1 (refine try scroll)",
+  "old": "\tif (prob <= success_prob) // success\n",
+  "new": "\t// MT2009_PLUS_BATTLE_PASS_V1 (refine try scroll): every refine attempt\n\t// with a scroll, won or lost, for the Battle Pass.\n\t{\n\t\tvoid BattlePassOnRefine(LPCHARACTER ch);\n\t\tBattlePassOnRefine(this);\n\t}\n\tif (prob <= success_prob) // success\n"
  }
 ]

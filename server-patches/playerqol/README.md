@@ -15,7 +15,7 @@ Zmiany silnika opisane w `edits.json`, każda z własnym znacznikiem:
 | `MT2009_PLUS_DRAGON_ROAR_EFFECT_V1` | `char_skill.cpp` | Smoczy Skowyt rzucony na cel pokazuje efekt wybuchu przy celu (`paeryong.mse`, `_2`–`_4` według stopnia umiejętności). |
 | `MT2009_PLUS_EVENT_CALENDAR_V1` | `cmd_general.cpp`, `cmd.cpp` | `/kalendarz` – harmonogram eventów z paneli dla okna kalendarza (F11), `CPlayerBotManager::SendEventCalendar`. |
 | `MT2009_PLUS_COSTUME_SET_V1` | `item.cpp`, `char_affect.cpp` | Zestawy kostiumów z `locale/poland/costume_sets.txt` (`linux-port/docker/game/costume_sets.txt`): kostium i fryzura z jednej linii = +800 PŻ, +15 wartości ataku (affect 545, niezapisywany, liczony przy każdym założeniu). |
-| `MT2009_PLUS_BATTLE_PASS_V1` | `char_battle.cpp`, `char.cpp`, `char_item.cpp`, `cmd_general.cpp`, `cmd.cpp` | Battle Pass (`playerbot_battlepass.h`): zabicia, statystyki gracza, użycie przedmiotu i `/battlepass`. Misje w `player.battlepass_mission`, postęp w `player.battlepass_progress` (sezon = miesiąc), nagroda końcowa Kupon SM (50). Boty nie biorą udziału. |
+| `MT2009_PLUS_BATTLE_PASS_V1` | `char_battle.cpp`, `char.cpp`, `char_item.cpp`, `cmd_general.cpp`, `cmd.cpp` | Battle Pass (`playerbot_battlepass.h`): zabicia, statystyki gracza, próby ulepszenia (u kowala i zwojem), użycie przedmiotu i `/battlepass`. Misje w `player.battlepass_mission`, postęp w `player.battlepass_progress` (sezon = miesiąc), nagroda końcowa Kupon SM (50). Boty nie biorą udziału. |
 
 - `Apply-PlayerQolPatch.ps1` – Windows (`tools/port/Apply-MT2009PlusEngine.ps1`);
 - `apply_playerqol.py` – Linux/VPS; oba czytają ten sam `edits.json`.

@@ -38,7 +38,7 @@ TYPES = {
 	2: ('Zniszcz kamienie Metin', 'monster_damage.tga', 'Zniszcz %(n)s kamieni Metin', 'Zniszcz %(n)s x %(what)s'),
 	3: ('Pokonaj boss\xf3w', 'deal_damage_category.tga', 'Pokonaj %(n)s boss\xf3w', 'Pokonaj %(n)s x %(what)s'),
 	4: ('Z\xb3\xf3w ryby', 'catch_fish_category.tga', 'Z\xb3\xf3w %(n)s ryb', 'Z\xb3\xf3w %(n)s ryb'),
-	5: ('Ulepsz przedmioty', 'craft_icon.tga', 'Ulepsz %(n)s przedmiot\xf3w', 'Ulepsz %(n)s przedmiot\xf3w'),
+	5: ('Ulepszanie przedmiot\xf3w', 'craft_icon.tga', 'Ulepsz przedmiot %(n)s razy', 'Ulepsz przedmiot %(n)s razy'),
 	6: ('Zbierz yang', 'spend_yang.tga', 'Zbierz %(n)s yang', 'Zbierz %(n)s yang'),
 	7: ('Otw\xf3rz skrzynie', 'farm_item_category.tga', 'Otw\xf3rz %(n)s skrzy\xf1', 'Otw\xf3rz %(n)s skrzy\xf1'),
 	8: ('Zbierz zio\xb3a', 'farm_item_category.tga', 'Zbierz %(n)s zi\xf3\xb3', 'Zbierz %(n)s zi\xf3\xb3'),
@@ -47,6 +47,7 @@ TYPES = {
 	11: ('Ksi\xeagi Misji', 'design_info.tga', 'Wykonaj %(n)s Ksi\xb9g Misji', 'Wykonaj %(n)s Ksi\xb9g Misji'),
 	12: ('Czas gry', 'open_battlepass.tga', 'Graj przez %(n)s min', 'Graj przez %(n)s min'),
 	13: ('U\xbfyj przedmiotu', None, 'U\xbfyj %(n)s przedmiot\xf3w', 'U\xbfyj %(n)s x %(what)s'),
+	14: ('Wo\xb3anie', 'design_info.tga', 'Napisz %(n)s razy na wo\xb3aj', 'Napisz %(n)s razy na wo\xb3aj'),
 }
 
 _data = {'begin': None, 'missions': [], 'pending': [], 'pending_begin': None, 'allDone': False, 'window': None}

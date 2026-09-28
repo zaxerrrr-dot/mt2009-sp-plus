@@ -2,7 +2,12 @@
 // przyciskiem w gui, boty nie korzystaja, zamiast biletu - nagroda kupon SM
 // 50, postep w bazie"; the missions are set afterwards).
 //
-// No ticket: every player (not a bot) takes part. A season is a calendar
+// No ticket: every player takes part, and the bots too (MT2009_PLUS_BP_BOTS_V1,
+// the operator, 28 September: "integracja botow z battlepassem ... boty maja
+// dazyc do tego, aby zamknac wszystkie misje"): their kills, fish and shouts
+// count like anybody's, a reward goes into the bot's bag, and the season's
+// final reward is taken the moment the last mission is done - a bot has no
+// window. What a bot sets out to do about a mission is playerbot_bpbots.h. A season is a calendar
 // month of the server's clock (YYYYMM), so progress starts again on the
 // first; nothing has to be deleted. Everything lives in the database:
 //   player.battlepass_mission  - the missions, the operator's to fill: type,
@@ -25,6 +30,7 @@
 //   5 refines that took 6 yang picked up 7 chests opened 8 herbs picked
 //   9 ore mined        10 dungeons done 11 mission books 12 minutes played
 //  13 items used (target = the vnum)
+//  14 shout messages (any text on the shout channel, a bot's too)
 // 1-3 and 13 honour the target vnum; a companion's kill is its owner's, as
 // for the quests. The engine calls in through server-patches/playerqol
 // (MT2009_PLUS_BATTLE_PASS_V1): the kill, AddPlayerStat, UseItem and the
@@ -35,6 +41,27 @@
 // adds its count to the row (progress = progress + delta) every minute, and
 // at once when a mission may be done; the window reads the rows again. A
 // reward is taken with a conditional UPDATE, so no two cores give it.
+// The bots' side of the Battle Pass (playerbot_bpbots.h, included by the
+// manager after every fragment it asks about), declared here for the bot code
+// that asks it first: the stone band, the target score, the frontier draw,
+// the angler and the boss raid's call (MT2009_PLUS_BP_BOTS_V1).
+namespace playerbot_bpbots
+{
+	// A stone this bot has a Battle Pass mission for, and can break.
+	bool WantsStone(LPCHARACTER ch, LPCHARACTER stone);
+	// What a candidate is worth on top of the targeting's own score.
+	int TargetBonus(LPCHARACTER ch, LPCHARACTER candidate);
+	// A Battle Pass errand's map: true with a frontier map, or with 0 for the
+	// bot's own villages; false when no errand names one.
+	bool GetErrandMap(LPCHARACTER ch, long& map);
+	// Gone fishing for a Battle Pass mission.
+	bool WantsFishing(LPCHARACTER ch);
+	// Extra weight for the boss raid's call.
+	int BossRecruitBonus(DWORD pid, DWORD race);
+	// A mission of this bot's was just settled: look again soon.
+	void OnProgressSettled(DWORD pid);
+}
+
 namespace mt2009_battlepass
 {
 	enum EType
@@ -52,6 +79,12 @@ namespace mt2009_battlepass
 		TYPE_QUESTBOOK = 11,
 		TYPE_PLAYTIME = 12,
 		TYPE_USE_ITEM = 13,
+		// Every message a character sends on the shout channel, whatever it
+		// says (MT2009_PLUS_BATTLE_PASS_V1 (shout), input_main.cpp); a bot's
+		// own shouts count too (playerbot_bpbots.h: "!BP" when it has nothing
+		// else to say).
+		TYPE_SHOUT = 14,
+		TYPE_LAST = TYPE_SHOUT,
 	};
 
 	// The season's final reward: up to three items, player.battlepass_config
@@ -131,9 +164,21 @@ namespace mt2009_battlepass
 		return end > now ? (int)((end - now + 86399) / 86400) : 0;
 	}
 
+	// Who opens the window and gives the commands: a player.
 	bool Eligible(LPCHARACTER ch)
 	{
 		return ch && ch->IsPC() && ch->GetDesc() && !ch->GetDesc()->IsBot();
+	}
+
+	bool IsBot(LPCHARACTER ch)
+	{
+		return ch && ch->GetDesc() && ch->GetDesc()->IsBot();
+	}
+
+	// Whose deeds count: a player's and a bot's alike (MT2009_PLUS_BP_BOTS_V1).
+	bool Counts(LPCHARACTER ch)
+	{
+		return ch && ch->IsPC() && ch->GetDesc();
 	}
 
 	bool EnsureTables()
@@ -183,7 +228,8 @@ namespace mt2009_battlepass
 		}
 		// The season's missions until the operator writes their own (only into an
 		// empty table, once): Metins of level 25 to 50 (8005-8010), monsters,
-		// fish and refines as chains - each unlocks when the one before is done -
+		// fish, refines and shouts (1000, 2000, 10000 messages on the shout
+		// channel) as chains - each unlocks when the one before is done -
 		// bosses and any Metins; 5 Cor Draconis and a 50 SM coupon for each.
 		std::unique_ptr<SQLMsg> seeded(AccountDB::instance().DirectQuery(
 				"INSERT INTO player.battlepass_mission (id, type, target, count, reward_vnum, reward_count, "
@@ -205,6 +251,9 @@ namespace mt2009_battlepass
 				" UNION ALL SELECT 14, 2, 0, 200, 0"
 				" UNION ALL SELECT 15, 5, 0, 50, 0"
 				" UNION ALL SELECT 16, 5, 0, 100, 15"
+				" UNION ALL SELECT 17, 14, 0, 1000, 0"
+				" UNION ALL SELECT 18, 14, 0, 2000, 17"
+				" UNION ALL SELECT 19, 14, 0, 10000, 18"
 				") AS t WHERE NOT EXISTS (SELECT 1 FROM player.battlepass_mission)"));
 		return true;
 	}
@@ -254,7 +303,7 @@ namespace mt2009_battlepass
 				str_to_number(m.rewardCount[r], row[5 + r * 2]);
 			}
 			m.type = (BYTE)type;
-			if (m.id == 0 || m.count == 0 || m.type < TYPE_MONSTER || m.type > TYPE_USE_ITEM)
+			if (m.id == 0 || m.count == 0 || m.type < TYPE_MONSTER || m.type > TYPE_LAST)
 				continue;
 			if (row[10] && lengths && lengths[10] > 0)
 				m.nameHex = HexOf(row[10], lengths[10]);
@@ -324,6 +373,62 @@ namespace mt2009_battlepass
 		}
 	}
 
+	// Every bot on this core with no rows read for the season, read at once:
+	// hundreds of bots would otherwise each ask the database on their first
+	// kill (MT2009_PLUS_BP_BOTS_V1). A few hundred pids to a query.
+	void ReadBotCaches(DWORD season)
+	{
+		std::vector<DWORD> pids;
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
+				it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			std::map<DWORD, Cache>::const_iterator have = s_mapCaches.find(it->first);
+			if (have != s_mapCaches.end() && have->second.season == season)
+				continue;
+			if (CHARACTER_MANAGER::instance().FindByPID(it->first))
+				pids.push_back(it->first);
+		}
+		const size_t CHUNK = 300;
+		for (size_t first = 0; first < pids.size(); first += CHUNK)
+		{
+			const size_t last = std::min(pids.size(), first + CHUNK);
+			std::string query = "SELECT pid, mission, progress, claimed FROM player.battlepass_progress WHERE season=";
+			char number[24];
+			snprintf(number, sizeof(number), "%u AND pid IN (", season);
+			query += number;
+			for (size_t i = first; i < last; ++i)
+			{
+				Cache& cache = s_mapCaches[pids[i]];
+				// This core's counts not yet written stay (a new season has none).
+				if (cache.season != season)
+				{
+					cache = Cache();
+					cache.season = season;
+				}
+				snprintf(number, sizeof(number), i + 1 < last ? "%u," : "%u)", pids[i]);
+				query += number;
+			}
+			std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query.c_str()));
+			if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
+				continue;
+			MYSQL_ROW row;
+			while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+			{
+				DWORD pid = 0, mission = 0, progress = 0, claimed = 0;
+				str_to_number(pid, row[0]);
+				str_to_number(mission, row[1]);
+				str_to_number(progress, row[2]);
+				str_to_number(claimed, row[3]);
+				std::map<DWORD, Cache>::iterator c = s_mapCaches.find(pid);
+				if (c == s_mapCaches.end())
+					continue;
+				Progress& p = mission == 0 ? c->second.final : c->second.missions[mission];
+				p.value = progress;
+				p.claimed = claimed != 0;
+			}
+		}
+	}
+
 	Cache& GetCache(LPCHARACTER ch)
 	{
 		const DWORD pid = ch->GetPlayerID();
@@ -331,6 +436,13 @@ namespace mt2009_battlepass
 		std::map<DWORD, Cache>::iterator it = s_mapCaches.find(pid);
 		if (it != s_mapCaches.end() && it->second.season == season)
 			return it->second;
+		if (IsBot(ch) && EnsureTables())
+		{
+			ReadBotCaches(season);
+			it = s_mapCaches.find(pid);
+			if (it != s_mapCaches.end() && it->second.season == season)
+				return it->second;
+		}
 		Cache& cache = s_mapCaches[pid];
 		cache = Cache();
 		cache.season = season;
@@ -367,6 +479,60 @@ namespace mt2009_battlepass
 		}
 	}
 
+	// Every count of this core into the database in a few statements, each
+	// row added to what is there and capped at its mission's count: with
+	// hundreds of bots counting, a statement per row was thousands a minute
+	// (MT2009_PLUS_BP_BOTS_V1). DBManager::Query holds 4096 bytes.
+	void WriteAllDeltas()
+	{
+		std::string caps = "CASE mission";
+		for (size_t i = 0; i < s_vecMissions.size(); ++i)
+		{
+			char when[48];
+			snprintf(when, sizeof(when), " WHEN %u THEN %u", s_vecMissions[i].id, s_vecMissions[i].count);
+			caps += when;
+		}
+		caps += " ELSE 4294967295 END";
+		if (caps.size() > 2000)
+			caps = "4294967295";
+		const std::string head = "INSERT INTO player.battlepass_progress (pid, season, mission, progress, claimed) VALUES ";
+		const std::string tail = " ON DUPLICATE KEY UPDATE progress = LEAST(" + caps + ", progress + VALUES(progress))";
+		const size_t room = 4000 - head.size() - tail.size();
+		std::string values;
+		unsigned int statements = 0, rows = 0;
+		for (std::map<DWORD, Cache>::iterator c = s_mapCaches.begin(); c != s_mapCaches.end(); ++c)
+			for (std::map<DWORD, Progress>::iterator it = c->second.missions.begin(); it != c->second.missions.end(); ++it)
+			{
+				Progress& p = it->second;
+				if (!p.delta)
+					continue;
+				const Mission* m = FindMission(it->first);
+				const DWORD cap = m ? m->count : 0xFFFFFFFFu;
+				char row[80];
+				snprintf(row, sizeof(row), "%s(%u,%u,%u,%u,0)", values.empty() ? "" : ",",
+						c->first, c->second.season, it->first, std::min<DWORD>(cap, p.delta));
+				if (!values.empty() && values.size() + strlen(row) > room)
+				{
+					DBManager::instance().Query("%s", (head + values + tail).c_str());
+					++statements;
+					values.clear();
+					snprintf(row, sizeof(row), "(%u,%u,%u,%u,0)", c->first, c->second.season, it->first,
+							std::min<DWORD>(cap, p.delta));
+				}
+				values += row;
+				++rows;
+				p.value = std::min<DWORD>(cap, p.value + p.delta);
+				p.delta = 0;
+			}
+		if (!values.empty())
+		{
+			DBManager::instance().Query("%s", (head + values + tail).c_str());
+			++statements;
+		}
+		if (rows)
+			sys_log(1, "BATTLEPASS: %u counts written in %u statements", rows, statements);
+	}
+
 	// Marks a reward as taken in the database, once: the core whose UPDATE
 	// changes the row gives it, a second core (or a second click) finds it
 	// taken. mission 0 is the season's final reward.
@@ -399,6 +565,7 @@ namespace mt2009_battlepass
 	}
 
 	void EnsureTick();
+	bool GiveFinal(LPCHARACTER ch, Cache& cache);
 
 	// A mission whose required one is not done yet; a requirement that is not
 	// an active mission locks nothing.
@@ -443,15 +610,24 @@ namespace mt2009_battlepass
 			for (int r = 0; r < 3; ++r)
 				if (m.rewardVnum[r])
 					ch->AutoGiveItem(m.rewardVnum[r], (ITEM_COUNT)std::max<DWORD>(1, m.rewardCount[r]));
-			sys_log(0, "BATTLEPASS: %s done mission %u", ch->GetName(), m.id);
+			sys_log(0, "BATTLEPASS: %s%s done mission %u", IsBot(ch) ? "bot " : "", ch->GetName(), m.id);
 			if (announce && AllDone(cache) && !cache.final.claimed)
 				ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!");
+		}
+		// A bot has no window to press: the final reward is its own the moment
+		// the season's last mission is done, and it looks again at what is left
+		// (playerbot_bpbots.h) (MT2009_PLUS_BP_BOTS_V1).
+		if (IsBot(ch))
+		{
+			if (AllDone(cache) && !cache.final.claimed)
+				GiveFinal(ch, cache);
+			playerbot_bpbots::OnProgressSettled(pid);
 		}
 	}
 
 	void Add(LPCHARACTER ch, BYTE type, DWORD target, long long amount, DWORD level = 0)
 	{
-		if (amount <= 0 || !Eligible(ch))
+		if (amount <= 0 || !Counts(ch))
 			return;
 		LoadMissions(false);
 		bool any = false;
@@ -484,8 +660,10 @@ namespace mt2009_battlepass
 		}
 		if (reached)
 		{
-			Settle(ch, cache, true);
-			ch->ChatPacket(CHAT_TYPE_COMMAND, "BPUpdate");
+			const bool player = Eligible(ch);
+			Settle(ch, cache, player);
+			if (player)
+				ch->ChatPacket(CHAT_TYPE_COMMAND, "BPUpdate");
 		}
 	}
 
@@ -512,10 +690,19 @@ namespace mt2009_battlepass
 				if (ch && Eligible(ch) && ch->GetSectree())
 					Add(ch, TYPE_PLAYTIME, 0, 1);
 			}
+			// And the bots on this core (MT2009_PLUS_BP_BOTS_V1).
+			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
+					it != s_mapPlayerBotAIStates.end(); ++it)
+			{
+				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+				if (ch && IsBot(ch) && ch->GetSectree())
+					Add(ch, TYPE_PLAYTIME, 0, 1);
+			}
 		}
+		// Every count in a few statements (hundreds of bots count too).
+		WriteAllDeltas();
 		for (std::map<DWORD, Cache>::iterator it = s_mapCaches.begin(); it != s_mapCaches.end(); )
 		{
-			WriteDeltas(it->first, it->second, false);
 			if (!CHARACTER_MANAGER::instance().FindByPID(it->first))
 				s_mapCaches.erase(it++);
 			else
@@ -585,18 +772,29 @@ namespace mt2009_battlepass
 			ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: najpierw ukoncz wszystkie misje sezonu.");
 			return;
 		}
+		if (!GiveFinal(ch, cache))
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.");
+			return;
+		}
+		SendWindow(ch);
+	}
+
+	// The season's final reward, taken once whichever core gets there.
+	bool GiveFinal(LPCHARACTER ch, Cache& cache)
+	{
 		if (!TakeClaim(ch->GetPlayerID(), cache.season, 0))
 		{
 			cache.final.claimed = true;
-			ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.");
-			return;
+			return false;
 		}
 		cache.final.claimed = true;
 		for (int r = 0; r < 3; ++r)
 			if (s_adwFinalVnum[r])
 				ch->AutoGiveItem(s_adwFinalVnum[r], (ITEM_COUNT)std::max<DWORD>(1, s_adwFinalCount[r]));
-		sys_log(0, "BATTLEPASS: %s claimed the final reward of %u", ch->GetName(), cache.season);
-		SendWindow(ch);
+		sys_log(0, "BATTLEPASS: %s%s claimed the final reward of %u", IsBot(ch) ? "bot " : "", ch->GetName(),
+				cache.season);
+		return true;
 	}
 }
 
@@ -624,7 +822,6 @@ void BattlePassOnStat(LPCHARACTER ch, DWORD stat, long long value)
 	switch (stat)
 	{
 		case PLAYER_STATS_FISHING_FLAG: type = TYPE_FISH; break;
-		case PLAYER_STATS_REFINE_SUCCESS_FLAG: type = TYPE_REFINE; break;
 		case PLAYER_STATS_GOLD_FLAG: type = TYPE_YANG; break;
 		case PLAYER_STATS_CHEST_FLAG: type = TYPE_CHEST; break;
 		case PLAYER_STATS_HERBALISM_FLAG: type = TYPE_HERB; break;
@@ -636,9 +833,23 @@ void BattlePassOnStat(LPCHARACTER ch, DWORD stat, long long value)
 	Add(ch, type, 0, value);
 }
 
+// A refine attempt, won or lost (at a smith or with a scroll).
+void BattlePassOnRefine(LPCHARACTER ch)
+{
+	mt2009_battlepass::Add(ch, mt2009_battlepass::TYPE_REFINE, 0, 1);
+}
+
 void BattlePassOnUse(LPCHARACTER ch, DWORD vnum)
 {
 	mt2009_battlepass::Add(ch, mt2009_battlepass::TYPE_USE_ITEM, vnum, 1);
+}
+
+// A message on the shout channel, whatever it says: a player's once the engine
+// has let it out (MT2009_PLUS_BATTLE_PASS_V1 (shout), input_main.cpp), a bot's
+// where the bot shouts (MT2009_PLUS_BP_BOTS_V1).
+void BattlePassOnShout(LPCHARACTER ch)
+{
+	mt2009_battlepass::Add(ch, mt2009_battlepass::TYPE_SHOUT, 0, 1);
 }
 
 // "/battlepass" (the window), "/battlepass odbierz <id>", "/battlepass nagroda",
