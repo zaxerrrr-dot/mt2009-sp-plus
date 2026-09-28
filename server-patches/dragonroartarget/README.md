@@ -11,7 +11,7 @@ szamana), więc celem jest zaznaczona postać (`CHARACTER::GetTarget`, przy
 niej klient rysuje efekt) – żywa, na tej samej mapie, taka, którą szaman
 może zaatakować:
 
-- w zasięgu 2500 umiejętność liczy się na celu, a obszar obrażeń obejmuje
+- w zasięgu 1800 (jak Latający Talizman) umiejętność liczy się na celu, a obszar obrażeń obejmuje
   jego otoczenie (`FuncSplashDamage` w `ComputeSkill` jest liczony wokół
   ofiary);
 - dalej umiejętność w ogóle się nie rzuca: bez many i bez odnowienia,

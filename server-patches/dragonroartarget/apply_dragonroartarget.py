@@ -9,7 +9,7 @@ range took the effect and no damage ("Skowyt nie zadaje dmg z odleglosci",
 target is the packet's victim when it is another character, or else the
 character's selected target (CHARACTER::GetTarget, the one the client plays
 the effect at), if the caster may strike it:
-  - within 2500 the skill is computed on the target,
+  - within 1800 (Flying Talisman's reach) the skill is computed on the target,
     whose surroundings the splash covers (ComputeSkill's FuncSplashDamage is
     centred on the victim);
   - further than that the skill is not cast at all - no mana, no cooldown,
@@ -28,7 +28,7 @@ HELPER = (
     "// the Shaman, else its selected target - one it may strike, alive, on its\n"
     "// map. Within DRAGON_ROAR_TARGET_RANGE the skill is computed on it;\n"
     "// further away the skill is refused (UseSkill).\n"
-    "static const int DRAGON_ROAR_TARGET_RANGE = 2500;\n"
+    "static const int DRAGON_ROAR_TARGET_RANGE = 1800;\n"
     "static LPCHARACTER GetDragonRoarTarget(LPCHARACTER ch, DWORD dwVnum, LPCHARACTER victim)\n"
     "{{\n"
     "\tif (dwVnum != SKILL_DRAGON_ROAR || !ch)\n"
