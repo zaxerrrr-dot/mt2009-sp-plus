@@ -6221,6 +6221,207 @@ def respawns_map():
     return redirect(url_for("respawns"))
 
 
+# ---- Battle Pass (MT2009 PLUS) ------------------------------------------------
+# The missions and the season's final reward the game's Battle Pass reads
+# (playerbot_battlepass.h): player.battlepass_mission and
+# player.battlepass_config. The game reads both again every 30 seconds, so a
+# change here reaches the players without a restart. A season is a calendar
+# month; progress is player.battlepass_progress by season (YYYYMM).
+BATTLEPASS_TYPES = [
+    (1, "Zabij potwory", "mob"),
+    (2, "Zniszcz kamienie Metin", "mob"),
+    (3, "Pokonaj bossów", "mob"),
+    (4, "Złów ryby", None),
+    (5, "Udane ulepszenia przedmiotów", None),
+    (6, "Zbierz yang", None),
+    (7, "Otwórz skrzynie", None),
+    (8, "Zbierz zioła", None),
+    (9, "Wydobądź rudę", None),
+    (10, "Ukończ lochy", None),
+    (11, "Wykonaj Księgi Misji", None),
+    (12, "Czas gry (minuty)", None),
+    (13, "Użyj przedmiotu", "item"),
+]
+BATTLEPASS_TYPE_NAMES = {t: label for t, label, _ in BATTLEPASS_TYPES}
+BATTLEPASS_TYPE_TARGET = {t: kind for t, _, kind in BATTLEPASS_TYPES}
+BATTLEPASS_NEW_ROWS = 4
+
+
+def ensure_battlepass_tables():
+    """The same tables the game makes at its first Battle Pass call, so the
+    page works before any player has opened the window."""
+    rows("""CREATE TABLE IF NOT EXISTS player.battlepass_mission (
+        id INT UNSIGNED NOT NULL PRIMARY KEY, type TINYINT UNSIGNED NOT NULL,
+        target INT UNSIGNED NOT NULL DEFAULT 0, count INT UNSIGNED NOT NULL DEFAULT 1,
+        reward_vnum INT UNSIGNED NOT NULL DEFAULT 0, reward_count INT UNSIGNED NOT NULL DEFAULT 0,
+        name VARBINARY(96) NOT NULL DEFAULT '', active TINYINT UNSIGNED NOT NULL DEFAULT 1) ENGINE=InnoDB""")
+    rows("""ALTER TABLE player.battlepass_mission
+        ADD COLUMN IF NOT EXISTS reward2_vnum INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward_count,
+        ADD COLUMN IF NOT EXISTS reward2_count INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward2_vnum,
+        ADD COLUMN IF NOT EXISTS reward3_vnum INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward2_count,
+        ADD COLUMN IF NOT EXISTS reward3_count INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward3_vnum,
+        ADD COLUMN IF NOT EXISTS description VARBINARY(255) NOT NULL DEFAULT '' AFTER name""")
+    rows("""CREATE TABLE IF NOT EXISTS player.battlepass_progress (
+        pid INT UNSIGNED NOT NULL, season INT UNSIGNED NOT NULL, mission INT UNSIGNED NOT NULL,
+        progress INT UNSIGNED NOT NULL DEFAULT 0, claimed TINYINT UNSIGNED NOT NULL DEFAULT 0,
+        PRIMARY KEY (pid, season, mission)) ENGINE=InnoDB""")
+    rows("""CREATE TABLE IF NOT EXISTS player.battlepass_config (
+        id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
+        final1_vnum INT UNSIGNED NOT NULL DEFAULT 0, final1_count INT UNSIGNED NOT NULL DEFAULT 0,
+        final2_vnum INT UNSIGNED NOT NULL DEFAULT 0, final2_count INT UNSIGNED NOT NULL DEFAULT 0,
+        final3_vnum INT UNSIGNED NOT NULL DEFAULT 0, final3_count INT UNSIGNED NOT NULL DEFAULT 0) ENGINE=InnoDB""")
+    rows("INSERT IGNORE INTO player.battlepass_config (id, final1_vnum, final1_count) VALUES (1, 80017, 1)")
+
+
+def battlepass_item_name(vnum):
+    vnum = int(vnum or 0)
+    if not vnum:
+        return ""
+    row = one("SELECT COALESCE(locale_name,name) AS n FROM player.item_proto WHERE vnum=%s", (vnum,))
+    return game_text(row.get("n")) if row else ""
+
+
+def battlepass_mob_name(vnum):
+    vnum = int(vnum or 0)
+    if not vnum:
+        return ""
+    row = one("SELECT COALESCE(locale_name,name) AS n FROM player.mob_proto WHERE vnum=%s", (vnum,))
+    return game_text(row.get("n")) if row else ""
+
+
+def battlepass_auto_name(mission):
+    """What the game window calls a mission with no name of its own."""
+    count = mission["count"]
+    target = mission["target"]
+    kind = BATTLEPASS_TYPE_TARGET.get(mission["type"])
+    texts = {1: "Zabij {n} potworów", 2: "Zniszcz {n} kamieni Metin", 3: "Pokonaj {n} bossów",
+             4: "Złów {n} ryb", 5: "Ulepsz {n} przedmiotów", 6: "Zbierz {n} yang", 7: "Otwórz {n} skrzyń",
+             8: "Zbierz {n} ziół", 9: "Wydobądź {n} rudy", 10: "Ukończ {n} lochów",
+             11: "Wykonaj {n} Ksiąg Misji", 12: "Graj przez {n} min", 13: "Użyj {n} przedmiotów"}
+    if target and kind == "mob":
+        return f"{texts[mission['type']].split(' {n}')[0]} {count} x {battlepass_mob_name(target) or target}"
+    if target and kind == "item":
+        return f"Użyj {count} x {battlepass_item_name(target) or target}"
+    return texts.get(mission["type"], "Misja").format(n=f"{count:,}".replace(",", " "))
+
+
+def battlepass_int(form, key, low, high, default=0):
+    try:
+        value = int(str(form.get(key, "")).strip() or default)
+    except ValueError:
+        raise ValueError(key)
+    if not low <= value <= high:
+        raise ValueError(key)
+    return value
+
+
+@app.route("/battlepass", methods=["GET", "POST"])
+@login_required
+def battlepass():
+    ensure_battlepass_tables()
+    if request.method == "POST":
+        if request.form.get("battlepass_csrf", "") != session.get("seban_update_csrf", ""):
+            flash("Sesja formularza wygasła - odśwież stronę i spróbuj jeszcze raz.", "error")
+            return redirect(url_for("battlepass"))
+        action = request.form.get("action", "")
+        try:
+            if action == "final":
+                values = []
+                for k in (1, 2, 3):
+                    vnum = battlepass_int(request.form, f"final{k}_vnum", 0, 2147483647)
+                    count = battlepass_int(request.form, f"final{k}_count", 0, 60000)
+                    if vnum and not count:
+                        count = 1
+                    values += [vnum, count if vnum else 0]
+                rows("""UPDATE player.battlepass_config SET final1_vnum=%s, final1_count=%s, final2_vnum=%s,
+                    final2_count=%s, final3_vnum=%s, final3_count=%s WHERE id=1""", tuple(values))
+                flash("Nagroda końcowa zapisana. Gra wczyta ją w ciągu 30 sekund.", "success")
+            elif action == "missions":
+                existing = {r["id"] for r in rows("SELECT id FROM player.battlepass_mission")}
+                next_id = max(existing or {0}) + 1
+                saved = removed = added = 0
+                for index in range(int(request.form.get("row_count", 0) or 0)):
+                    key = f"m{index}_"
+                    raw_id = request.form.get(key + "id", "")
+                    if raw_id and request.form.get(key + "delete"):
+                        rows("DELETE FROM player.battlepass_mission WHERE id=%s", (int(raw_id),))
+                        removed += 1
+                        continue
+                    mtype = battlepass_int(request.form, key + "type", 0, 13)
+                    if not mtype:
+                        continue  # an empty new row
+                    count = battlepass_int(request.form, key + "count", 1, 2000000000, 1)
+                    target = battlepass_int(request.form, key + "target", 0, 2147483647)
+                    if not BATTLEPASS_TYPE_TARGET.get(mtype):
+                        target = 0
+                    rewards = []
+                    for k in ("", "2", "3"):
+                        vnum = battlepass_int(request.form, f"{key}reward{k}_vnum", 0, 2147483647)
+                        rcount = battlepass_int(request.form, f"{key}reward{k}_count", 0, 60000)
+                        rewards += [vnum, max(1, rcount) if vnum else 0]
+                    name = (request.form.get(key + "name") or "").strip().encode("cp1250", "replace")[:96]
+                    desc = (request.form.get(key + "description") or "").strip().encode("cp1250", "replace")[:255]
+                    active = 1 if request.form.get(key + "active") else 0
+                    values = (mtype, target, count, *rewards, name, desc, active)
+                    if raw_id:
+                        rows("""UPDATE player.battlepass_mission SET type=%s, target=%s, count=%s, reward_vnum=%s,
+                            reward_count=%s, reward2_vnum=%s, reward2_count=%s, reward3_vnum=%s, reward3_count=%s,
+                            name=%s, description=%s, active=%s WHERE id=%s""", values + (int(raw_id),))
+                        saved += 1
+                    else:
+                        rows("""INSERT INTO player.battlepass_mission (type, target, count, reward_vnum, reward_count,
+                            reward2_vnum, reward2_count, reward3_vnum, reward3_count, name, description, active, id)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", values + (next_id,))
+                        next_id += 1
+                        added += 1
+                rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_BATTLEPASS',%s)",
+                     (f"saved {saved}, added {added}, removed {removed}",))
+                flash(f"Misje zapisane (zmienione: {saved}, nowe: {added}, usunięte: {removed}). "
+                      "Gra wczyta je w ciągu 30 sekund.", "success")
+        except ValueError as error:
+            flash(f"Nieprawidłowa wartość w polu {error}.", "error")
+        return redirect(url_for("battlepass"))
+
+    missions = rows("""SELECT id,type,target,count,reward_vnum,reward_count,reward2_vnum,reward2_count,
+        reward3_vnum,reward3_count,name,description,active FROM player.battlepass_mission ORDER BY id""")
+    for m in missions:
+        m["name"] = game_text(m["name"]) if m["name"] else ""
+        m["description"] = game_text(m["description"]) if m["description"] else ""
+        kind = BATTLEPASS_TYPE_TARGET.get(m["type"])
+        m["target_name"] = (battlepass_mob_name(m["target"]) if kind == "mob" else
+                            battlepass_item_name(m["target"]) if kind == "item" else "")
+        m["rewards"] = [(m["reward_vnum"], m["reward_count"], battlepass_item_name(m["reward_vnum"])),
+                        (m["reward2_vnum"], m["reward2_count"], battlepass_item_name(m["reward2_vnum"])),
+                        (m["reward3_vnum"], m["reward3_count"], battlepass_item_name(m["reward3_vnum"]))]
+        m["auto_name"] = battlepass_auto_name(m)
+    config = one("SELECT * FROM player.battlepass_config WHERE id=1") or {}
+    finals = [(config.get(f"final{k}_vnum", 0), config.get(f"final{k}_count", 0),
+               battlepass_item_name(config.get(f"final{k}_vnum", 0))) for k in (1, 2, 3)]
+    today = datetime.now()
+    season = today.year * 100 + today.month
+    next_month = (today.replace(day=1) + timedelta(days=32)).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    days_left = max(0, (next_month - today).days + 1)
+    active_ids = [m["id"] for m in missions if m["active"]]
+    stats = {"players": 0, "finished": 0, "final": 0}
+    if active_ids:
+        marks = ",".join(["%s"] * len(active_ids))
+        stats["players"] = one(f"""SELECT COUNT(DISTINCT pid) AS c FROM player.battlepass_progress
+            WHERE season=%s AND mission IN ({marks}) AND progress>0""", (season, *active_ids)).get("c", 0)
+        stats["final"] = one("""SELECT COUNT(*) AS c FROM player.battlepass_progress
+            WHERE season=%s AND mission=0 AND claimed=1""", (season,)).get("c", 0)
+        need = {m["id"]: m["count"] for m in missions if m["active"]}
+        done = {}
+        for r in rows(f"""SELECT pid,mission,progress FROM player.battlepass_progress
+                WHERE season=%s AND mission IN ({marks})""", (season, *active_ids)):
+            if r["progress"] >= need.get(r["mission"], 1 << 31):
+                done[r["pid"]] = done.get(r["pid"], 0) + 1
+        stats["finished"] = sum(1 for v in done.values() if v >= len(active_ids))
+    return render_template("battlepass.html", missions=missions, finals=finals, types=BATTLEPASS_TYPES,
+                           type_names=BATTLEPASS_TYPE_NAMES, type_target=BATTLEPASS_TYPE_TARGET,
+                           new_rows=BATTLEPASS_NEW_ROWS, season=season, days_left=days_left, stats=stats,
+                           battlepass_csrf=update_csrf_token())
+
+
 @app.route("/events", methods=["GET", "POST"])
 @login_required
 def events():

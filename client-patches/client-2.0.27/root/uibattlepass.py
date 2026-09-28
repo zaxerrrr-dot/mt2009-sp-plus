@@ -3,6 +3,7 @@
 # graphics as they were (uiscript/mt2009battlepass.py, mt2009_ui/battle_pass),
 # fed by our server (playerbot_battlepass.h, "/battlepass"):
 #   BPBegin <season YYYYMM> <days left> <final vnum> <final count> <final claimed> <missions>
+#           [<final vnum 2> <count 2> <final vnum 3> <count 3>]
 #   BPMission <id> <type> <target> <count> <progress> <claimed>
 #             <vnum1> <count1> <vnum2> <count2> <vnum3> <count3> <name hex or ->
 #   BPDesc <id> <description hex>          - "//" breaks a line
@@ -92,6 +93,11 @@ def Request():
 def OnBegin(season='0', days='0', finalVnum='0', finalCount='0', finalClaimed='0', count='0', *rest):
 	try:
 		_data['pending_begin'] = (int(season), int(days), int(finalVnum), int(finalCount), int(finalClaimed) != 0)
+		finals = [(int(finalVnum), int(finalCount))]
+		for k in range(2):
+			if len(rest) >= k * 2 + 2:
+				finals.append((int(rest[k * 2]), int(rest[k * 2 + 1])))
+		_data['pending_finals'] = finals
 	except ValueError:
 		_data['pending_begin'] = None
 	_data['pending'] = []
@@ -131,6 +137,7 @@ def OnEnd(allDone='0', *rest):
 	if not _data.get('pending_begin'):
 		return
 	_data['begin'] = _data['pending_begin']
+	_data['finals'] = _data.get('pending_finals') or []
 	_data['missions'] = _data['pending']
 	_data['pending'] = []
 	_data['allDone'] = allDone == '1'
@@ -448,9 +455,9 @@ class BattlePassWindow(ui.ScriptWindow):
 			self.tooltipItem.SetItemToolTip(m['rewards'][k][0])
 
 	def __OverInFinal(self, slotIndex):
-		begin = _data['begin']
-		if begin and slotIndex == 0 and begin[2]:
-			self.tooltipItem.SetItemToolTip(begin[2])
+		finals = _data.get('finals') or []
+		if slotIndex < len(finals) and finals[slotIndex][0]:
+			self.tooltipItem.SetItemToolTip(finals[slotIndex][0])
 
 	def __OverOut(self):
 		self.tooltipItem.HideToolTip()
@@ -463,10 +470,14 @@ class BattlePassWindow(ui.ScriptWindow):
 			month = season % 100
 			self.titleName.SetText('Battle Pass - %s %d (do ko\xf1ca %d dni)' % (
 					MONTHS[month - 1] if 1 <= month <= 12 else str(month), season // 100, days))
-			self.finalSlot.SetItemSlot(0, begin[2], begin[3] if begin[3] > 1 else 0)
+			finals = _data.get('finals') or [(begin[2], begin[3])]
+			for k in range(3):
+				vnum, cnt = finals[k] if k < len(finals) else (0, 0)
+				self.finalSlot.SetItemSlot(k, vnum, cnt if cnt > 1 else 0)
 		else:
 			self.titleName.SetText('Battle Pass')
-			self.finalSlot.SetItemSlot(0, 0, 0)
+			for k in range(3):
+				self.finalSlot.SetItemSlot(k, 0, 0)
 		self.finalSlot.RefreshSlot()
 		count = len(missions)
 		self.scrollBar.SetMiddleBarSize(float(ROWS) / float(count) if count > ROWS else 1.0)

@@ -13,8 +13,10 @@
 //                                from the type, "//" breaks a description);
 //   player.battlepass_progress - pid, season, mission, progress, claimed;
 //                                mission 0 is the season's final reward.
-// Finishing every mission of the season gives the final reward, a Kupon SM
-// (50) - 80017.
+// Finishing every mission of the season gives the final reward: up to three
+// items of player.battlepass_config, a Kupon SM (50) - 80017 - at first.
+// The advanced panel (Seban Panel, Battle Pass page) edits both tables; the
+// game reads them again every 30 seconds.
 //
 // Mission types (the window words them, uibattlepass.py):
 //   1 monsters killed   2 Metin stones   3 bosses        4 fish caught
@@ -50,9 +52,13 @@ namespace mt2009_battlepass
 		TYPE_USE_ITEM = 13,
 	};
 
-	const DWORD FINAL_REWARD_VNUM = 80017; // Kupon SM (50)
+	// The season's final reward: up to three items, player.battlepass_config
+	// (the advanced panel's Battle Pass page); a Kupon SM (50) - 80017 - until
+	// the operator sets another.
+	const DWORD FINAL_REWARD_VNUM = 80017;
 	const DWORD FINAL_REWARD_COUNT = 1;
-	const DWORD MISSIONS_RELOAD_MS = 5 * 60 * 1000;
+	// The panel's changes reach the game within this.
+	const DWORD MISSIONS_RELOAD_MS = 30 * 1000;
 
 	struct Mission
 	{
@@ -88,6 +94,8 @@ namespace mt2009_battlepass
 	};
 
 	std::vector<Mission> s_vecMissions;
+	DWORD s_adwFinalVnum[3] = { FINAL_REWARD_VNUM, 0, 0 };
+	DWORD s_adwFinalCount[3] = { FINAL_REWARD_COUNT, 0, 0 };
 	DWORD s_dwMissionsLoadedAt = 0;
 	bool s_bMissionsLoaded = false;
 	bool s_bTables = false;
@@ -150,6 +158,14 @@ namespace mt2009_battlepass
 				"progress INT UNSIGNED NOT NULL DEFAULT 0, "
 				"claimed TINYINT UNSIGNED NOT NULL DEFAULT 0, "
 				"PRIMARY KEY (pid, season, mission)) ENGINE=InnoDB"));
+		std::unique_ptr<SQLMsg> config(AccountDB::instance().DirectQuery(
+				"CREATE TABLE IF NOT EXISTS player.battlepass_config ("
+				"id TINYINT UNSIGNED NOT NULL PRIMARY KEY, "
+				"final1_vnum INT UNSIGNED NOT NULL DEFAULT 0, final1_count INT UNSIGNED NOT NULL DEFAULT 0, "
+				"final2_vnum INT UNSIGNED NOT NULL DEFAULT 0, final2_count INT UNSIGNED NOT NULL DEFAULT 0, "
+				"final3_vnum INT UNSIGNED NOT NULL DEFAULT 0, final3_count INT UNSIGNED NOT NULL DEFAULT 0) ENGINE=InnoDB"));
+		std::unique_ptr<SQLMsg> configRow(AccountDB::instance().DirectQuery(
+				"INSERT IGNORE INTO player.battlepass_config (id, final1_vnum, final1_count) VALUES (1, 80017, 1)"));
 		s_bTables = m.get() && m->uiSQLErrno == 0 && p.get() && p->uiSQLErrno == 0;
 		if (!s_bTables)
 		{
@@ -221,6 +237,20 @@ namespace mt2009_battlepass
 		}
 		if (!s_bMissionsLoaded || fresh.size() != s_vecMissions.size())
 			sys_log(0, "BATTLEPASS: %u missions", (unsigned int)fresh.size());
+		std::unique_ptr<SQLMsg> config(AccountDB::instance().DirectQuery(
+				"SELECT final1_vnum, final1_count, final2_vnum, final2_count, final3_vnum, final3_count "
+				"FROM player.battlepass_config WHERE id=1"));
+		if (config.get() && config->uiSQLErrno == 0 && config->Get() && config->Get()->pSQLResult)
+		{
+			MYSQL_ROW crow = mysql_fetch_row(config->Get()->pSQLResult);
+			if (crow)
+				for (int r = 0; r < 3; ++r)
+				{
+					s_adwFinalVnum[r] = s_adwFinalCount[r] = 0;
+					str_to_number(s_adwFinalVnum[r], crow[r * 2]);
+					str_to_number(s_adwFinalCount[r], crow[r * 2 + 1]);
+				}
+		}
 		s_vecMissions.swap(fresh);
 		s_bMissionsLoaded = true;
 	}
@@ -460,8 +490,11 @@ namespace mt2009_battlepass
 		Cache& cache = GetCache(ch);
 		// What the other cores counted too, and anything done rewarded.
 		Settle(ch, cache, true);
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "BPBegin %u %d %u %u %d %u", cache.season, DaysLeft(),
-				FINAL_REWARD_VNUM, FINAL_REWARD_COUNT, cache.final.claimed ? 1 : 0, (unsigned int)s_vecMissions.size());
+		// The final reward's first item where it always was, the other two after
+		// the mission count (a window older than them reads the first alone).
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "BPBegin %u %d %u %u %d %u %u %u %u %u", cache.season, DaysLeft(),
+				s_adwFinalVnum[0], s_adwFinalCount[0], cache.final.claimed ? 1 : 0, (unsigned int)s_vecMissions.size(),
+				s_adwFinalVnum[1], s_adwFinalCount[1], s_adwFinalVnum[2], s_adwFinalCount[2]);
 		for (size_t i = 0; i < s_vecMissions.size(); ++i)
 		{
 			const Mission& m = s_vecMissions[i];
@@ -508,7 +541,9 @@ namespace mt2009_battlepass
 			return;
 		}
 		cache.final.claimed = true;
-		ch->AutoGiveItem(FINAL_REWARD_VNUM, FINAL_REWARD_COUNT);
+		for (int r = 0; r < 3; ++r)
+			if (s_adwFinalVnum[r])
+				ch->AutoGiveItem(s_adwFinalVnum[r], (ITEM_COUNT)std::max<DWORD>(1, s_adwFinalCount[r]));
 		sys_log(0, "BATTLEPASS: %s claimed the final reward of %u", ch->GetName(), cache.season);
 		SendWindow(ch);
 	}
