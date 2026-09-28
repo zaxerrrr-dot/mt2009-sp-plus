@@ -2759,6 +2759,7 @@ class GameWindow(ui.ScriptWindow):
 			# The Battle Pass (uibattlepass.py).
 			"BPBegin": self.__BattlePassBegin,
 			"BPMission": self.__BattlePassMission,
+			"BPDesc": self.__BattlePassDesc,
 			"BPEnd": self.__BattlePassEnd,
 			"BPUpdate": self.__BattlePassUpdate,
 			"CostumeHiddenAck": self.__CostumeHiddenAck,
@@ -3496,6 +3497,10 @@ class GameWindow(ui.ScriptWindow):
 	def __BattlePassMission(self, *args):
 		import uibattlepass
 		uibattlepass.OnMission(*args)
+
+	def __BattlePassDesc(self, *args):
+		import uibattlepass
+		uibattlepass.OnDesc(*args)
 
 	def __BattlePassEnd(self, *args):
 		import uibattlepass

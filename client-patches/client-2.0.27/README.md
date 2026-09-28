@@ -10,11 +10,14 @@ Względem klienta 2.0.26 (`client-patches/client-2.0.26`). Część serwerowa:
   Podpięte w `interfacemodule.py` i `uiinventory.py`.
 - `root/uieventcalendar.py` (nowy) – kalendarz eventów (F11 albo przycisk na
   pasku): eventy z harmonogramu paneli (`/kalendarz`, odpowiedź
-  `EventCalBegin/EventCal/EventCalEnd`), miesiąc z ikonami, lista eventów
-  wybranego dnia, „Teraz trwa”.
-- `root/uibattlepass.py` (nowy) – okno Battle Passa (przycisk na pasku albo
-  `/battlepass`): misje sezonu z postępem, „Odbierz” nagrody misji, nagroda
-  końcowa (Kupon SM 50).
+  `EventCalBegin/EventCal/EventCalEnd`), widok tygodniowy (Pn–Nd, dzisiejszy
+  dzień podświetlony, godziny i ikony eventów), na górze pasek „TRWA TERAZ” /
+  „DZIŚ SĄ EVENTY!”.
+- `root/uibattlepass.py`, `root/uiscript/mt2009battlepass.py` (nowe) – okno
+  Battle Passa w układzie i grafikach wybranego przez operatora okna
+  (`root/mt2009_ui/battle_pass/`): lista misji z ikoną, paskiem i trzema
+  nagrodami, przewijanie, szczegóły misji, podsumowanie i nagroda końcowa
+  (Kupon SM 50). Nagrody misji przychodzą same po ukończeniu misji.
 - `root/costume_sets.py` (nowy, generowany z serwerowego
   `linux-port/docker/game/costume_sets.txt`) i `root/uitooltip.py` –
   podpowiedź „Zestaw kostiumów” z pasującymi fryzurami / kostiumami.

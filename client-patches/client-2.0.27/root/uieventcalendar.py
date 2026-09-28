@@ -10,7 +10,8 @@
 #   EventCal <kind> <days, bit 0 = Mon> <start min> <end min> <value> <now> <since> <until> <map>
 #   EventCalEnd <lines>
 # The dates are the server's. A weekly window shows on every day of the month
-# its days mask names; an "activate now" one on the days it spans.
+# its days mask names; an "activate now" one on the days it spans. The
+# window shows a week (Monday to Sunday) with today lit and a banner on top.
 #
 # Python 2.7 as the client has it; the texts are CP1250 escapes.
 
@@ -189,28 +190,29 @@ def ActiveNow():
 
 
 class EventCalendarWindow(ui.BoardWithTitleBar):
-	CELL = 57
-	LEFT = 14
-	TOP = 58
-	ROWS = 6
-	LIST_ROWS = 8
+	"""A week at a time (the operator, 28 September: "zeby kalendarz
+	wyswietlal sie tygodniowo ... bardziej widoczne ze dzisiaj jest jakis
+	event"): a banner with what runs now or what today holds, then the seven
+	days, today lit, each with its events and their hours."""
+	WIDTH = 500
+	LEFT = 12
+	ROW = 50
+	EVENTS_PER_ROW = 3
 
 	def __init__(self):
 		ui.BoardWithTitleBar.__init__(self)
 		self.widgets = []
-		self.cells = []
-		self.listLines = []
-		self.year = self.month = 0
-		self.selected = None
+		self.rows = []
+		self.weekStart = None
 		self.nextRequest = 0.0
 		self.AddFlag('movable')
 		self.AddFlag('float')
-		width = self.LEFT * 2 + self.CELL * 7
-		height = self.TOP + 18 + self.CELL * self.ROWS + 32 + self.LIST_ROWS * 16 + 14
-		self.SetSize(width, height)
+		self.top = 34 + 44 + 28
+		height = self.top + 7 * self.ROW + 14
+		self.SetSize(self.WIDTH, height)
 		self.SetTitleName('Kalendarz event\xf3w')
 		self.SetCloseEvent(ui.__mem_func__(self.Close))
-		self.__Build(width)
+		self.__Build()
 		self.SetCenterPosition()
 
 	def __Text(self, parent, x, y, text='', center=False):
@@ -224,60 +226,70 @@ class EventCalendarWindow(ui.BoardWithTitleBar):
 		self.widgets.append(line)
 		return line
 
-	def __Build(self, width):
-		prev = ui.Button()
-		prev.SetParent(self)
-		prev.SetPosition(self.LEFT, 34)
-		prev.SetUpVisual('d:/ymir work/ui/public/small_button_01.sub')
-		prev.SetOverVisual('d:/ymir work/ui/public/small_button_02.sub')
-		prev.SetDownVisual('d:/ymir work/ui/public/small_button_03.sub')
-		prev.SetText('<')
-		prev.SetEvent(ui.__mem_func__(self.__Month), -1)
-		prev.Show()
-		nxt = ui.Button()
-		nxt.SetParent(self)
-		nxt.SetPosition(width - self.LEFT - 43, 34)
-		nxt.SetUpVisual('d:/ymir work/ui/public/small_button_01.sub')
-		nxt.SetOverVisual('d:/ymir work/ui/public/small_button_02.sub')
-		nxt.SetDownVisual('d:/ymir work/ui/public/small_button_03.sub')
-		nxt.SetText('>')
-		nxt.SetEvent(ui.__mem_func__(self.__Month), 1)
-		nxt.Show()
-		self.widgets.extend([prev, nxt])
-		self.monthLine = self.__Text(self, width // 2, 37, '', True)
-		for i, name in enumerate(WEEKDAYS):
-			self.__Text(self, self.LEFT + i * self.CELL + self.CELL // 2, self.TOP, name, True)
-		for row in range(self.ROWS):
-			for col in range(7):
-				cell = ui.Button()
-				cell.SetParent(self)
-				cell.SetPosition(self.LEFT + col * self.CELL, self.TOP + 18 + row * self.CELL)
-				cell.SetUpVisual(IMG + 'black_bg.tga')
-				cell.SetOverVisual(IMG + 'blue_bg.tga')
-				cell.SetDownVisual(IMG + 'blue_bg.tga')
-				cell.SetEvent(ui.__mem_func__(self.__SelectCell), len(self.cells))
-				cell.Show()
-				number = ui.TextLine()
-				number.SetParent(cell)
-				number.SetPosition(5, 3)
-				number.Show()
-				icons = []
-				for k in range(3):
-					icon = ui.ExpandedImageBox()
-					icon.SetParent(cell)
-					icon.AddFlag('not_pick')
-					icon.SetPosition(3 + k * 17, 35)
-					icons.append(icon)
-				self.cells.append({'button': cell, 'number': number, 'icons': icons, 'date': None})
-		listTop = self.TOP + 18 + self.CELL * self.ROWS + 8
-		self.nowLine = self.__Text(self, self.LEFT, listTop)
-		self.dayLine = self.__Text(self, self.LEFT, listTop + 16)
-		for i in range(self.LIST_ROWS):
-			self.listLines.append(self.__Text(self, self.LEFT + 8, listTop + 34 + i * 16))
+	def __Button(self, x, y, text, event, *args):
+		button = ui.Button()
+		button.SetParent(self)
+		button.SetPosition(x, y)
+		button.SetUpVisual('d:/ymir work/ui/public/small_button_01.sub')
+		button.SetOverVisual('d:/ymir work/ui/public/small_button_02.sub')
+		button.SetDownVisual('d:/ymir work/ui/public/small_button_03.sub')
+		button.SetText(text)
+		button.SetEvent(event, *args)
+		button.Show()
+		self.widgets.append(button)
+		return button
+
+	def __Build(self):
+		width = self.WIDTH
+		# The banner: what runs now, else what today holds.
+		banner = ui.Bar()
+		banner.SetParent(self)
+		banner.SetPosition(self.LEFT, 34)
+		banner.SetSize(width - self.LEFT * 2, 40)
+		banner.SetColor(0x80202020)
+		banner.Show()
+		self.widgets.append(banner)
+		self.bannerLine1 = self.__Text(self, width // 2, 38, '', True)
+		self.bannerLine1.SetOutline()
+		self.bannerLine2 = self.__Text(self, width // 2, 55, '', True)
+		self.bannerLine2.SetOutline()
+		navY = 34 + 44 + 2
+		self.__Button(self.LEFT, navY, '<', ui.__mem_func__(self.__Week), -1)
+		self.__Button(self.LEFT + 48, navY, 'Dzi\x9c', ui.__mem_func__(self.__Week), 0)
+		self.__Button(width - self.LEFT - 43, navY, '>', ui.__mem_func__(self.__Week), 1)
+		self.weekLine = self.__Text(self, width // 2 + 20, navY + 3, '', True)
+		for i in range(7):
+			y = self.top + i * self.ROW
+			light = ui.Bar()
+			light.SetParent(self)
+			light.SetPosition(self.LEFT, y)
+			light.SetSize(width - self.LEFT * 2, self.ROW - 4)
+			light.SetColor(0x60305080)
+			self.widgets.append(light)
+			day = ui.ExpandedImageBox()
+			day.SetParent(self)
+			day.SetPosition(self.LEFT + 2, y + 1)
+			day.LoadImage(IMG + 'black_bg.tga')
+			day.SetScale(0.78, 0.78)
+			day.Show()
+			self.widgets.append(day)
+			name = self.__Text(self, self.LEFT + 24, y + 8, WEEKDAYS[i], True)
+			date = self.__Text(self, self.LEFT + 24, y + 24, '', True)
+			entries = []
+			for k in range(self.EVENTS_PER_ROW):
+				icon = ui.ExpandedImageBox()
+				icon.SetParent(self)
+				icon.AddFlag('not_pick')
+				icon.SetPosition(self.LEFT + 58 + k * 140, y + 4)
+				self.widgets.append(icon)
+				time = self.__Text(self, self.LEFT + 58 + k * 140 + 34, y + 6)
+				what = self.__Text(self, self.LEFT + 58 + k * 140 + 34, y + 22)
+				entries.append((icon, time, what))
+			more = self.__Text(self, width - self.LEFT - 60, y + 36)
+			self.rows.append({'light': light, 'day': day, 'name': name, 'date': date, 'entries': entries, 'more': more})
 
 	def Open(self):
-		if _data['now'] and not self.year:
-			self.year, self.month = _data['now'][1], _data['now'][2]
+		self.weekStart = None
 		self.Refresh()
 		self.Show()
 		self.SetTop()
@@ -296,92 +308,91 @@ class EventCalendarWindow(ui.BoardWithTitleBar):
 			self.nextRequest = app.GetTime() + 60.0
 			Request()
 
-	def __Month(self, step):
-		if not self.year:
+	def __Today(self):
+		if not _data['now']:
+			return None
+		return DaysFromCivil(*_data['now'][1:4])
+
+	def __Week(self, step):
+		today = self.__Today()
+		if today is None:
 			return
-		self.month += step
-		if self.month < 1:
-			self.month, self.year = 12, self.year - 1
-		elif self.month > 12:
-			self.month, self.year = 1, self.year + 1
-		self.selected = None
+		if step == 0 or self.weekStart is None:
+			self.weekStart = today - Weekday(today)
+		else:
+			self.weekStart += step * 7
 		self.Refresh()
 
-	def __SelectCell(self, index):
-		date = self.cells[index]['date']
-		if date:
-			self.selected = date
-			self.__RefreshList()
-
 	def Refresh(self):
-		if not _data['now']:
-			self.monthLine.SetText('Wczytywanie...')
+		today = self.__Today()
+		if today is None:
+			self.bannerLine1.SetText('Wczytywanie...')
+			self.bannerLine2.SetText('')
 			return
-		if not self.year:
-			self.year, self.month = _data['now'][1], _data['now'][2]
-		today = _data['now'][1:4]
-		if self.selected is None and (self.year, self.month) == today[:2]:
-			self.selected = today
-		self.monthLine.SetText('%s %d' % (MONTHS[self.month - 1], self.year))
-		first = DaysFromCivil(self.year, self.month, 1)
-		lead = Weekday(first)
-		count = DaysInMonth(self.year, self.month)
-		for i, cell in enumerate(self.cells):
-			d = i - lead + 1
-			for icon in cell['icons']:
-				icon.Hide()
-			if d < 1 or d > count:
-				cell['date'] = None
-				cell['number'].SetText('')
-				cell['button'].SetUpVisual(IMG + 'black_bg.tga')
-				cell['button'].Disable()
-				continue
-			cell['button'].Enable()
-			date = (self.year, self.month, d)
-			cell['date'] = date
-			cell['number'].SetText(str(d))
-			cell['button'].SetUpVisual(IMG + ('today_bg.tga' if date == today else 'black_bg.tga'))
-			kinds = []
-			for start, end, kind, value in EventsOnDay(*date):
-				if kind not in kinds:
-					kinds.append(kind)
-			for k, kind in enumerate(kinds[:3]):
-				icon = cell['icons'][k]
-				icon.LoadImage(IMG + KIND_ICON.get(kind, 'bonus_event.tga'))
-				icon.SetScale(0.36, 0.36)
-				icon.Show()
-		self.__RefreshList()
+		if self.weekStart is None:
+			self.weekStart = today - Weekday(today)
+		self.__RefreshBanner(today)
+		first = CivilFromDays(self.weekStart)
+		last = CivilFromDays(self.weekStart + 6)
+		self.weekLine.SetText('%02d.%02d - %02d.%02d.%d' % (first[2], first[1], last[2], last[1], last[0]))
+		for i, row in enumerate(self.rows):
+			day = self.weekStart + i
+			y, m, d = CivilFromDays(day)
+			isToday = day == today
+			row['date'].SetText('%02d.%02d' % (d, m))
+			row['day'].LoadImage(IMG + ('today_bg.tga' if isToday else 'black_bg.tga'))
+			row['day'].SetScale(0.78, 0.78)
+			if isToday:
+				row['light'].Show()
+				row['name'].SetPackedFontColor(0xffffe060)
+				row['date'].SetPackedFontColor(0xffffe060)
+			else:
+				row['light'].Hide()
+				row['name'].SetPackedFontColor(0xffe0e0e0)
+				row['date'].SetPackedFontColor(0xffa0a0a0)
+			events = EventsOnDay(y, m, d)
+			for k, (icon, time, what) in enumerate(row['entries']):
+				if k < len(events):
+					start, end, kind, value = events[k]
+					icon.LoadImage(IMG + KIND_ICON.get(kind, 'bonus_event.tga'))
+					icon.SetScale(0.6, 0.6)
+					icon.Show()
+					time.SetText('%s - %s' % (HHMM(start), HHMM(end)))
+					what.SetText(KindName(kind, value))
+					r, g, b = KIND_COLOR.get(kind, (1.0, 1.0, 1.0))
+					what.SetFontColor(r, g, b)
+					time.SetPackedFontColor(0xffffffff if isToday else 0xffc8c8c8)
+				else:
+					icon.Hide()
+					time.SetText('')
+					what.SetText('')
+			if not events:
+				row['entries'][0][1].SetText('brak event\xf3w')
+				row['entries'][0][1].SetPackedFontColor(0xff808080)
+			row['more'].SetText('+%d wi\xeacej' % (len(events) - self.EVENTS_PER_ROW) if len(events) > self.EVENTS_PER_ROW else '')
 
-	def __RefreshList(self):
+	def __RefreshBanner(self, today):
 		active = ActiveNow()
+		y, m, d = CivilFromDays(today)
+		todays = EventsOnDay(y, m, d)
 		if active:
 			names = []
 			for kind, value, until in active:
 				names.append(KindName(kind, value))
-			self.nowLine.SetText('Teraz trwa: ' + ', '.join(names))
-			self.nowLine.SetPackedFontColor(0xff7cff7c)
+			self.bannerLine1.SetText('TRWA TERAZ: ' + ', '.join(names))
+			self.bannerLine1.SetPackedFontColor(0xff5cff5c)
+		elif todays:
+			self.bannerLine1.SetText('DZI\x8c S\xa5 EVENTY!')
+			self.bannerLine1.SetPackedFontColor(0xffffd040)
 		else:
-			self.nowLine.SetText('Teraz nie trwa \xbfaden event.')
-			self.nowLine.SetPackedFontColor(0xffc8c8c8)
-		for line in self.listLines:
-			line.SetText('')
-		if not self.selected:
-			self.dayLine.SetText('')
-			return
-		y, m, d = self.selected
-		self.dayLine.SetText('%02d.%02d.%d:' % (d, m, y))
-		events = EventsOnDay(y, m, d)
-		if not events:
-			self.listLines[0].SetText('Brak event\xf3w tego dnia.')
-			self.listLines[0].SetPackedFontColor(0xffc8c8c8)
-			return
-		for i, (start, end, kind, value) in enumerate(events[:self.LIST_ROWS]):
-			line = self.listLines[i]
-			line.SetText('%s - %s   %s' % (HHMM(start), HHMM(end), KindName(kind, value)))
-			r, g, b = KIND_COLOR.get(kind, (1.0, 1.0, 1.0))
-			line.SetFontColor(r, g, b)
-		if len(events) > self.LIST_ROWS:
-			self.listLines[-1].SetText('... i %d wi\xeacej' % (len(events) - self.LIST_ROWS + 1))
+			self.bannerLine1.SetText('Dzi\x9c nie ma event\xf3w.')
+			self.bannerLine1.SetPackedFontColor(0xffa0a0a0)
+		if todays:
+			parts = ['%s %s' % (HHMM(start), KindName(kind, value)) for start, end, kind, value in todays[:4]]
+			self.bannerLine2.SetText('Dzi\x9c: ' + ',  '.join(parts) + (' ...' if len(todays) > 4 else ''))
+			self.bannerLine2.SetPackedFontColor(0xffffe8a0)
+		else:
+			self.bannerLine2.SetText('')
 
 
 def GetWindow():

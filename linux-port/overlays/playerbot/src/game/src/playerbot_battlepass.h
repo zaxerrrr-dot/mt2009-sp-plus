@@ -6,9 +6,11 @@
 // month of the server's clock (YYYYMM), so progress starts again on the
 // first; nothing has to be deleted. Everything lives in the database:
 //   player.battlepass_mission  - the missions, the operator's to fill: type,
-//                                target (0 = any), count, an optional reward
-//                                of its own, an optional name (raw CP1250,
-//                                empty = the client words it from the type);
+//                                target (0 = any), count, up to three rewards
+//                                of its own (given the moment the mission is
+//                                done), an optional name and description (raw
+//                                CP1250; an empty name is worded by the client
+//                                from the type, "//" breaks a description);
 //   player.battlepass_progress - pid, season, mission, progress, claimed;
 //                                mission 0 is the season's final reward.
 // Finishing every mission of the season gives the final reward, a Kupon SM
@@ -55,9 +57,10 @@ namespace mt2009_battlepass
 		BYTE type;
 		DWORD target;
 		DWORD count;
-		DWORD rewardVnum;
-		DWORD rewardCount;
+		DWORD rewardVnum[3];
+		DWORD rewardCount[3];
 		std::string nameHex;
+		std::string descHex;
 	};
 
 	struct Progress
@@ -124,6 +127,13 @@ namespace mt2009_battlepass
 				"reward_count INT UNSIGNED NOT NULL DEFAULT 0, "
 				"name VARBINARY(96) NOT NULL DEFAULT '', "
 				"active TINYINT UNSIGNED NOT NULL DEFAULT 1) ENGINE=InnoDB"));
+		std::unique_ptr<SQLMsg> more(AccountDB::instance().DirectQuery(
+				"ALTER TABLE player.battlepass_mission "
+				"ADD COLUMN IF NOT EXISTS reward2_vnum INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward_count, "
+				"ADD COLUMN IF NOT EXISTS reward2_count INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward2_vnum, "
+				"ADD COLUMN IF NOT EXISTS reward3_vnum INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward2_count, "
+				"ADD COLUMN IF NOT EXISTS reward3_count INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward3_vnum, "
+				"ADD COLUMN IF NOT EXISTS description VARBINARY(255) NOT NULL DEFAULT '' AFTER name"));
 		std::unique_ptr<SQLMsg> p(AccountDB::instance().DirectQuery(
 				"CREATE TABLE IF NOT EXISTS player.battlepass_progress ("
 				"pid INT UNSIGNED NOT NULL, "
@@ -142,7 +152,8 @@ namespace mt2009_battlepass
 		// own (only into an empty table, once).
 		std::unique_ptr<SQLMsg> seeded(AccountDB::instance().DirectQuery(
 				"INSERT INTO player.battlepass_mission (id, type, target, count) "
-				"SELECT * FROM (SELECT 1, 1, 0, 1000 UNION ALL SELECT 2, 2, 0, 30 UNION ALL SELECT 3, 4, 0, 50) AS t "
+				"SELECT t.id, t.type, t.target, t.count FROM (SELECT 1 AS id, 1 AS type, 0 AS target, 1000 AS count "
+				"UNION ALL SELECT 2, 2, 0, 30 UNION ALL SELECT 3, 4, 0, 50) AS t "
 				"WHERE NOT EXISTS (SELECT 1 FROM player.battlepass_mission)"));
 		return true;
 	}
@@ -169,7 +180,8 @@ namespace mt2009_battlepass
 		if (!EnsureTables())
 			return;
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(
-				"SELECT id, type, target, count, reward_vnum, reward_count, name FROM player.battlepass_mission "
+				"SELECT id, type, target, count, reward_vnum, reward_count, reward2_vnum, reward2_count, "
+				"reward3_vnum, reward3_count, name, description FROM player.battlepass_mission "
 				"WHERE active <> 0 ORDER BY id"));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 			return;
@@ -184,13 +196,19 @@ namespace mt2009_battlepass
 			str_to_number(type, row[1]);
 			str_to_number(m.target, row[2]);
 			str_to_number(m.count, row[3]);
-			str_to_number(m.rewardVnum, row[4]);
-			str_to_number(m.rewardCount, row[5]);
+			for (int r = 0; r < 3; ++r)
+			{
+				m.rewardVnum[r] = m.rewardCount[r] = 0;
+				str_to_number(m.rewardVnum[r], row[4 + r * 2]);
+				str_to_number(m.rewardCount[r], row[5 + r * 2]);
+			}
 			m.type = (BYTE)type;
 			if (m.id == 0 || m.count == 0 || m.type < TYPE_MONSTER || m.type > TYPE_USE_ITEM)
 				continue;
-			if (row[6] && lengths && lengths[6] > 0)
-				m.nameHex = HexOf(row[6], lengths[6]);
+			if (row[10] && lengths && lengths[10] > 0)
+				m.nameHex = HexOf(row[10], lengths[10]);
+			if (row[11] && lengths && lengths[11] > 0)
+				m.descHex = HexOf(row[11], lengths[11]);
 			fresh.push_back(m);
 		}
 		if (!s_bMissionsLoaded || fresh.size() != s_vecMissions.size())
@@ -267,6 +285,25 @@ namespace mt2009_battlepass
 
 	void EnsureTick();
 
+	bool HasReward(const Mission& m)
+	{
+		return m.rewardVnum[0] || m.rewardVnum[1] || m.rewardVnum[2];
+	}
+
+	// A mission's own rewards, the moment it is done (as the window the
+	// operator chose has it: no button for them).
+	void GiveRewards(LPCHARACTER ch, Cache& cache, const Mission& m, Progress& p)
+	{
+		if (p.claimed || !HasReward(m))
+			return;
+		p.claimed = true;
+		SaveProgress(ch->GetPlayerID(), cache.season, m.id, p);
+		for (int r = 0; r < 3; ++r)
+			if (m.rewardVnum[r])
+				ch->AutoGiveItem(m.rewardVnum[r], (ITEM_COUNT)std::max<DWORD>(1, m.rewardCount[r]));
+		sys_log(0, "BATTLEPASS: %s done mission %u, rewards given", ch->GetName(), m.id);
+	}
+
 	void Add(LPCHARACTER ch, BYTE type, DWORD target, long long amount)
 	{
 		if (amount <= 0 || !Eligible(ch))
@@ -292,8 +329,9 @@ namespace mt2009_battlepass
 			p.dirty = true;
 			if (p.value >= m.count)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: misja ukonczona! %s",
-						m.rewardVnum ? "Odbierz nagrode w oknie Battle Passa." : "");
+				ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: misja ukonczona!%s",
+						HasReward(m) ? " Nagroda trafila do ekwipunku." : "");
+				GiveRewards(ch, cache, m, p);
 				if (AllDone(cache) && !cache.final.claimed)
 					ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!");
 				ch->ChatPacket(CHAT_TYPE_COMMAND, "BPUpdate");
@@ -355,9 +393,14 @@ namespace mt2009_battlepass
 		{
 			const Mission& m = s_vecMissions[i];
 			const Progress& p = cache.missions[m.id];
-			ch->ChatPacket(CHAT_TYPE_COMMAND, "BPMission %u %u %u %u %u %d %u %u %s", m.id, (unsigned int)m.type,
-					m.target, m.count, p.value, p.claimed ? 1 : 0, m.rewardVnum, m.rewardCount,
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "BPMission %u %u %u %u %u %d %u %u %u %u %u %u %s", m.id,
+					(unsigned int)m.type, m.target, m.count, p.value, p.claimed ? 1 : 0,
+					m.rewardVnum[0], m.rewardCount[0], m.rewardVnum[1], m.rewardCount[1], m.rewardVnum[2], m.rewardCount[2],
 					m.nameHex.empty() ? "-" : m.nameHex.c_str());
+			// The description on a line of its own: a chat command is at most
+			// 512 bytes, and hex doubles it.
+			if (!m.descHex.empty())
+				ch->ChatPacket(CHAT_TYPE_COMMAND, "BPDesc %u %s", m.id, m.descHex.substr(0, 440).c_str());
 		}
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "BPEnd %d", AllDone(cache) ? 1 : 0);
 	}
@@ -372,12 +415,9 @@ namespace mt2009_battlepass
 			if (m.id != missionId)
 				continue;
 			Progress& p = cache.missions[m.id];
-			if (p.value < m.count || p.claimed || !m.rewardVnum)
+			if (p.value < m.count)
 				return;
-			p.claimed = true;
-			SaveProgress(ch->GetPlayerID(), cache.season, m.id, p);
-			ch->AutoGiveItem(m.rewardVnum, (ITEM_COUNT)std::max<DWORD>(1, m.rewardCount));
-			sys_log(0, "BATTLEPASS: %s claimed mission %u (%u x%u)", ch->GetName(), m.id, m.rewardVnum, m.rewardCount);
+			GiveRewards(ch, cache, m, p);
 			SendWindow(ch);
 			return;
 		}
