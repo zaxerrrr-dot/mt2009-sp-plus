@@ -13,6 +13,7 @@
 #
 # Python 2.7 as the client has it; the texts are CP1250 escapes.
 
+import app
 import item
 import net
 import nonplayer
@@ -22,6 +23,7 @@ import wndMgr
 
 IMG = 'mt2009_ui/battle_pass/'
 ROWS = 6
+REFRESH_SECONDS = 3.0
 
 MONTHS = ('Stycze\xf1', 'Luty', 'Marzec', 'Kwiecie\xf1', 'Maj', 'Czerwiec', 'Lipiec',
 		'Sierpie\xf1', 'Wrzesie\xf1', 'Pa\x9fdziernik', 'Listopad', 'Grudzie\xf1')
@@ -404,6 +406,14 @@ class BattlePassWindow(ui.ScriptWindow):
 		self.Show()
 		self.SetTop()
 		Request()
+		self.nextRequest = app.GetTime() + REFRESH_SECONDS
+
+	# The progress, fresh while the window is open (the operator: "trzeba
+	# wyjsc i wejsc do battlepassa, aby sie odswiezaly postepy").
+	def OnUpdate(self):
+		if app.GetTime() >= getattr(self, 'nextRequest', 0.0):
+			self.nextRequest = app.GetTime() + REFRESH_SECONDS
+			Request()
 
 	def Close(self):
 		self.tooltipItem.HideToolTip()
