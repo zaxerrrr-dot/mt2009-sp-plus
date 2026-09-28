@@ -1713,6 +1713,14 @@ namespace
 	const DWORD PLAYERBOT_TOWER_GATHER_MS = 4 * 60 * 1000;
 	const DWORD PLAYERBOT_TOWER_STONE_TIMEOUT_MS = 10 * 60 * 1000;
 	const DWORD PLAYERBOT_TOWER_STALL_MS = 20 * 60 * 1000;
+	// A floor's monster the route planner cannot reach - one wedged in the
+	// sixth floor's wall, while the Elite Demon King stood unhit across the
+	// room (prodnathin, 28 September) - is out of every bot's pick for
+	// UNREACHABLE_MS; once the pack has had nothing else to fight for
+	// UNSTICK_MS, up to UNSTICK_MAX of the wedged ones are set down beside it.
+	const DWORD PLAYERBOT_TOWER_UNREACHABLE_MS = 60 * 1000;
+	const DWORD PLAYERBOT_TOWER_UNSTICK_MS = 30 * 1000;
+	const int PLAYERBOT_TOWER_UNSTICK_MAX = 6;
 	const DWORD PLAYERBOT_TOWER_FLOOR_MAX_MS = 35 * 60 * 1000;
 	const DWORD PLAYERBOT_TOWER_MAX_MS = 2 * 60 * 60 * 1000;
 	const DWORD PLAYERBOT_TOWER_SMITH_WAIT_MS = 60 * 1000;

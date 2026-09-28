@@ -639,9 +639,20 @@ namespace
 		// marmurkach bic bossy" means (prodnathin, 25 September), and a
 		// Shaman's or a black-magic Sura's damage is its skills, which the
 		// marble takes away.
-		const bool raidBoss = state.wBossRaidRace != 0 && victim->GetRaceNum() == state.wBossRaidRace &&
-				ch->GetJob() != JOB_SHAMAN && !(ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2);
+		const bool skillBuild = ch->GetJob() == JOB_SHAMAN || (ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2);
+		const bool raidBoss = state.wBossRaidRace != 0 && victim->GetRaceNum() == state.wBossRaidRace && !skillBuild;
 		if (!reaper && !raidBoss)
+			return;
+		// Nor on the Reaper for a bot whose part in his fight is its skills or
+		// its bow: under the marble the engine refuses every skill, so the
+		// Shaman stopped healing and buffing the pack and the Archer that
+		// kites him from range fought him hand to hand as a monster ("w
+		// momencie kiedy bot stwierdzi, ze chce bic z marmurka to jego questy
+		// sa wylaczane", prodnathin, 27 September). The marble is the melee
+		// builds'.
+		LPITEM hand = ch->GetWear(WEAR_WEAPON);
+		const bool bow = hand && hand->GetType() == ITEM_WEAPON && hand->GetSubType() == WEAPON_BOW;
+		if (reaper && (skillBuild || bow))
 			return;
 		// Early in the fight, or the five minutes are spent on a boss that is
 		// nearly down and the bot has thrown a marble away for one hit.
@@ -5835,6 +5846,24 @@ WritePlayerBotGuildStatus(dwNow);
 		if (ManagePlayerBotGuildWar(ch, state, dwNow))
 			continue;
 
+		// A broken stone's loot window comes before a player's quarrel: the
+		// drop is the bot's for thirty seconds and then anybody's, and a
+		// player who fought the bot over the stone waited those seconds out
+		// while the bot fought back and then picked the bot's drop up ("bot
+		// probuje walczyc z graczem zamiast podniesc przedmiot nalezacy do
+		// niego", teivos, 27 September). Not under the linger's health: then
+		// the fight comes first, as it does against the stone's own pack.
+		bool bLootDecided = false;
+		const bool bStoneLootOpen = state.dwStoneBrokenTime != 0 &&
+				dwNow - state.dwStoneBrokenTime < PLAYERBOT_METIN_LOOT_DASH_TIME;
+		if (bStoneLootOpen && ch->GetMaxHP() > 0 &&
+				ch->GetHP() * 100 >= ch->GetMaxHP() * PLAYERBOT_METIN_LOOT_LINGER_MIN_HP_PERCENT)
+		{
+			bLootDecided = true;
+			if (HandleLoot(ch, state, dwNow))
+				continue;
+		}
+
 		// A player who struck the bot, or its party, or is breaking its stone
 		// for another kingdom (playerbot_anti_pk.h): ahead of every errand,
 		// the way a duel is - "natychmiast przerywa swoje dotychczasowe zajecie".
@@ -5855,9 +5884,8 @@ WritePlayerBotGuildStatus(dwNow);
 		// A broken stone's or a fallen boss's loot window, ahead of every errand
 		// below: the drop is its owner's for thirty seconds and then anybody's.
 		// It is this pass's one loot decision; the call further down is skipped.
-		bool bLootDecided = false;
-		if (state.dwStoneBrokenTime != 0 &&
-				dwNow - state.dwStoneBrokenTime < PLAYERBOT_METIN_LOOT_DASH_TIME)
+		// Asked above the quarrel already, unless the bot was too hurt then.
+		if (bStoneLootOpen && !bLootDecided)
 		{
 			bLootDecided = true;
 			if (HandleLoot(ch, state, dwNow))

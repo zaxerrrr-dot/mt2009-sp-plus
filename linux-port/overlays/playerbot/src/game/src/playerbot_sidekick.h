@@ -273,6 +273,7 @@ namespace
 		// PARTY_ROLE_ATTACKER..PARTY_ROLE_DEFENDER, PARTY_ROLE_NORMAL for none.
 		bool bLead;
 		BYTE bRole;
+		bool bParty;	// "Grupa": joins its owner's party whoever leads it
 		BYTE bGroup;
 		BYTE bLevel;
 		// The owner's level: live while the owner is in this world, the
@@ -286,7 +287,7 @@ namespace
 			: dwOwnerPID(0), dwSidekickPID(0), bMode(PLAYERBOT_SIDEKICK_FOLLOW),
 			  bStance(PLAYERBOT_SIDEKICK_STANCE_ATTACK), bLoot(PLAYERBOT_SIDEKICK_LOOT_ALL), bProtect(true),
 			  bBuffs(true), bManualSkills(false), bManualStats(false), bStatResetUsed(false), bLure(false),
-			  bSolo(false), bChests(true), bLead(false), bRole(PARTY_ROLE_NORMAL), bGroup(0), bLevel(1), bOwnerLevel(0), bSetupDone(true), dwOwnerSeenAt(0),
+			  bSolo(false), bChests(true), bLead(false), bRole(PARTY_ROLE_NORMAL), bParty(true), bGroup(0), bLevel(1), bOwnerLevel(0), bSetupDone(true), dwOwnerSeenAt(0),
 			  dwNextSpawnTry(0)
 		{
 		}
@@ -469,8 +470,8 @@ namespace
 		// the test world already held; without the columns the companions still
 		// load, with the defaults, and keep what they are told while the core
 		// runs. The stat points, the stat reset and the lure came the day
-		// after that, in the same statement, and "Gra beze mnie" (solo) and
-		// "Skrzynki" (chests) on 27 September.
+		// after that, in the same statement, "Gra beze mnie" (solo) and
+		// "Skrzynki" (chests) on 27 September, and "Grupa" (party) on the 28th.
 		std::unique_ptr<SQLMsg> settings(AccountDB::instance().DirectQuery(
 				"ALTER TABLE player.playerbot_sidekick "
 				"ADD COLUMN IF NOT EXISTS stance TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER mode, "
@@ -484,7 +485,8 @@ namespace
 				"ADD COLUMN IF NOT EXISTS solo TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER lure, "
 				"ADD COLUMN IF NOT EXISTS chests TINYINT UNSIGNED NOT NULL DEFAULT 1 AFTER solo, "
 				"ADD COLUMN IF NOT EXISTS lead TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER chests, "
-				"ADD COLUMN IF NOT EXISTS role TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER lead"));
+				"ADD COLUMN IF NOT EXISTS role TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER lead, "
+				"ADD COLUMN IF NOT EXISTS party TINYINT UNSIGNED NOT NULL DEFAULT 1 AFTER role"));
 		s_bPlayerBotSidekickSettingsColumns = settings.get() && settings->uiSQLErrno == 0;
 		if (!s_bPlayerBotSidekickSettingsColumns)
 			sys_err("PLAYERBOT_SIDEKICK: no settings columns errno=%u", settings.get() ? settings->uiSQLErrno : 0U);
@@ -517,14 +519,15 @@ namespace
 		if (!EnsurePlayerBotSidekickTable())
 			return;
 		// The owner's level from its row, which is where an owner out of the
-		// game is (the cap of "Gra beze mnie"), and the chest switch after it.
+		// game is (the cap of "Gra beze mnie"), and the chest and party switches
+		// after it.
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(s_bPlayerBotSidekickSettingsColumns
 				? "SELECT s.owner_pid, s.sidekick_pid, s.mode, s.skill_group, s.start_level, s.setup_done, s.stance, "
 				  "s.loot, s.protect, s.buffs, s.manual_skills, s.manual_stats, s.stat_reset, s.lure, s.solo, "
-				  "(SELECT p.level FROM player.player AS p WHERE p.id=s.owner_pid), s.chests, s.lead, s.role "
+				  "(SELECT p.level FROM player.player AS p WHERE p.id=s.owner_pid), s.chests, s.lead, s.role, s.party "
 				  "FROM player.playerbot_sidekick AS s"
 				: "SELECT s.owner_pid, s.sidekick_pid, s.mode, s.skill_group, s.start_level, s.setup_done, "
-				  "0, 2, 1, 1, 0, 0, 0, 0, 0, (SELECT p.level FROM player.player AS p WHERE p.id=s.owner_pid), 1, 0, 0 "
+				  "0, 2, 1, 1, 0, 0, 0, 0, 0, (SELECT p.level FROM player.player AS p WHERE p.id=s.owner_pid), 1, 0, 0, 1 "
 				  "FROM player.playerbot_sidekick AS s"));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 			return;
@@ -536,7 +539,7 @@ namespace
 			TPlayerBotSidekick rec;
 			unsigned int mode = 0, group = 0, level = 1, done = 0, stance = 0, loot = 2, protect = 1, buffs = 1,
 					manual = 0, manualStats = 0, statReset = 0, lure = 0, solo = 0, ownerLevel = 0, chests = 1,
-					lead = 0, role = 0;
+					lead = 0, role = 0, party = 1;
 			if (row[0]) str_to_number(rec.dwOwnerPID, row[0]);
 			if (row[1]) str_to_number(rec.dwSidekickPID, row[1]);
 			if (row[2]) str_to_number(mode, row[2]);
@@ -556,6 +559,7 @@ namespace
 			if (row[16]) str_to_number(chests, row[16]);
 			if (row[17]) str_to_number(lead, row[17]);
 			if (row[18]) str_to_number(role, row[18]);
+			if (row[19]) str_to_number(party, row[19]);
 			if (rec.dwOwnerPID == 0 || rec.dwSidekickPID == 0)
 				continue;
 			rec.bMode = mode == PLAYERBOT_SIDEKICK_FREE ? PLAYERBOT_SIDEKICK_FREE : PLAYERBOT_SIDEKICK_FOLLOW;
@@ -571,6 +575,7 @@ namespace
 			rec.bChests = chests != 0;
 			rec.bLead = lead != 0;
 			rec.bRole = (role >= PARTY_ROLE_ATTACKER && role <= PARTY_ROLE_DEFENDER) ? (BYTE)role : (BYTE)PARTY_ROLE_NORMAL;
+			rec.bParty = party != 0;
 			rec.bGroup = (BYTE)std::min<unsigned int>(group, 2);
 			rec.bLevel = (BYTE)std::max<unsigned int>(1, std::min<unsigned int>(level, 255));
 			rec.bOwnerLevel = (BYTE)std::min<unsigned int>(ownerLevel, 255);
@@ -602,6 +607,7 @@ namespace
 					rec.bChests = old->second.bChests;
 					rec.bLead = old->second.bLead;
 					rec.bRole = old->second.bRole;
+					rec.bParty = old->second.bParty;
 				}
 			}
 			fresh[rec.dwOwnerPID] = rec;
@@ -1253,14 +1259,28 @@ namespace
 
 	// ---------------------------------------------------------- the party
 
+	// "Grupa" of this companion (TPlayerBotSidekick::bParty), by its pid.
+	bool IsPlayerBotSidekickJoiningAnyParty(DWORD sidekickPid)
+	{
+		std::map<DWORD, DWORD>::const_iterator owner = s_mapPlayerBotSidekickOwner.find(sidekickPid);
+		if (owner == s_mapPlayerBotSidekickOwner.end())
+			return false;
+		TPlayerBotSidekickMap::const_iterator rec = s_mapPlayerBotSidekicks.find(owner->second);
+		return rec != s_mapPlayerBotSidekicks.end() && rec->second.bParty;
+	}
+
 	// In the owner's party, "exp leci nam po rowno". A party the owner leads,
 	// or none, which is made for the owner the way the engine makes one when
 	// its first invitation is accepted (CHARACTER::PartyInviteAccept); the
 	// split is set once, when this makes the party - after that it is the
-	// leader's. Another player's party is its leader's to fill: the companion
-	// takes an invitation from that leader (AcceptPlayerBotPartyInvite) and
-	// otherwise follows its owner outside it. And not while the owner is in a
-	// dungeon, where the engine refuses a new member too (PERR_DUNGEON).
+	// leader's. Another person's party the companion joins with "Grupa" on
+	// (the default) while a place stays free after it for one more person:
+	// three friends in one party, and only the leader's companion with them,
+	// was "tylko jeden towarzysz" (xXxDaronxXx, 28 September). With "Grupa"
+	// off it takes an invitation from that leader (AcceptPlayerBotPartyInvite)
+	// and otherwise follows its owner outside the party. And not while the
+	// owner is in a dungeon, where the engine refuses a new member too
+	// (PERR_DUNGEON).
 	void ApplyPlayerBotSidekickRole(LPCHARACTER ch, LPCHARACTER owner, const TPlayerBotSidekick& rec, LPPARTY party);
 
 	void KeepPlayerBotSidekickInParty(LPCHARACTER ch, LPCHARACTER owner, DWORD dwNow)
@@ -1328,7 +1348,18 @@ namespace
 			return;
 		if (owner->GetDungeon())
 			return;
-		if (party && party->GetLeaderPID() != owner->GetPlayerID())
+		const bool joinsAny = IsPlayerBotSidekickJoiningAnyParty(ch->GetPlayerID());
+		if (party && party->GetLeaderPID() != owner->GetPlayerID() && joinsAny &&
+				party->GetMemberCount() + 2 > PARTY_MAX_MEMBER)
+		{
+			if (ch->GetParty())
+				LeavePlayerBotParty(ch);
+			PlayerBotLogThrottled("sidekick_party_room", dwNow,
+					"PLAYERBOT_SIDEKICK: no place left for a person after it pid=%u name=%s owner=%u members=%d",
+					ch->GetPlayerID(), ch->GetName(), owner->GetPlayerID(), (int)party->GetMemberCount());
+			return;
+		}
+		if (party && party->GetLeaderPID() != owner->GetPlayerID() && !joinsAny)
 		{
 			if (ch->GetParty())
 				LeavePlayerBotParty(ch);
@@ -2789,6 +2820,22 @@ namespace
 			SetPlayerBotSidekickPartyRole(party, ch->GetPlayerID(), ownerPid, want, true);
 	}
 
+	// "Grupa", kept in the record at once (see the stance): whether the
+	// companion follows its owner into a party somebody else leads. Answers
+	// with the companion's words for it.
+	const char* SetPlayerBotSidekickParty(TPlayerBotSidekick& rec, bool join)
+	{
+		if (rec.bParty != join)
+		{
+			rec.bParty = join;
+			SetPlayerBotSidekickSetting(rec, "party", join ? 1U : 0U);
+		}
+		if (join)
+			return "Dobra, dolaczam do twojej grupy, nawet gdy prowadzi ja ktos inny - jesli zostanie w niej miejsce "
+					"jeszcze dla jednej osoby.";
+		return "Dobra, do grupy, ktora prowadzi ktos inny, dolacze tylko na zaproszenie jej lidera.";
+	}
+
 	// The companion in this core's world with its state, or NULL with the owner
 	// told why not.
 	LPCHARACTER FindPlayerBotSidekickForOrder(LPCHARACTER owner, const TPlayerBotSidekick& rec,
@@ -3199,10 +3246,10 @@ namespace
 			mode = 3;
 		else if (rt && rt->bHold && mode == 0)
 			mode = 2;
-		// "Gra beze mnie" and "Skrzynki" last: a window older than they are reads
-		// the words it knows and leaves the rest (uisidekick.ParseInfo).
+		// "Gra beze mnie", "Skrzynki" and "Grupa" last: a window older than they
+		// are reads the words it knows and leaves the rest (uisidekick.ParseInfo).
 		SendPlayerBotSidekickCommand(owner,
-				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d",
+				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d",
 				PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL,
 				inWorld ? (int)sk->GetRaceNum() : -1, inWorld ? (int)sk->GetSkillGroup() : 0,
 				inWorld ? sk->GetLevel() : 0, expPercent,
@@ -3212,7 +3259,7 @@ namespace
 				rec.bBuffs ? 1 : 0, inWorld ? (long long)sk->GetGold() : 0LL, (unsigned int)red, (unsigned int)blue,
 				inWorld && sk->IsDead() ? 1 : 0, rec.bLure ? 1 : 0, rt ? (int)rt->bLureStage : 0, rec.bSolo ? 1 : 0,
 				rec.bChests ? 1 : 0, rec.bLead ? 1 : 0, (unsigned int)rec.bRole,
-				inWorld ? sk->GetLeadershipSkillLevel() : 0);
+				inWorld ? sk->GetLeadershipSkillLevel() : 0, rec.bParty ? 1 : 0);
 		char doing[96] = "";
 		char place[64] = "";
 		if (inWorld)
@@ -4673,6 +4720,14 @@ namespace
 				SayPlayerBotSidekick(ch, SetPlayerBotSidekickChests(rec->second, !strcmp(a1, "1")));
 			else
 				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz skrzynki 1 (sam otwieram skrzynie) albo /towarzysz skrzynki 0");
+		}
+		else if (!strcmp(sub, "grupa"))
+		{
+			if (!strcmp(a1, "0") || !strcmp(a1, "1"))
+				SayPlayerBotSidekick(ch, SetPlayerBotSidekickParty(rec->second, !strcmp(a1, "1")));
+			else
+				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz grupa 1 (dolaczam do twojej grupy, kto by jej nie prowadzil) "
+						"albo /towarzysz grupa 0");
 		}
 		else if (!strcmp(sub, "zbieraj") || !strcmp(sub, "ochrona") || !strcmp(sub, "buffy"))
 		{

@@ -1,0 +1,712 @@
+# The companion's window ("Towarzysz", playerbot_sidekick.h on the server):
+# what it is doing and has on it, and the orders a player gives it, on the P
+# key and from the Towarzysz letter - Tieru's request of 25 September, "GUI na
+# podstawie AutoLowow, ale do sterowania towarzyszem".
+#
+# The server answers "/towarzysz okno" (and "okno 1" for the whole gear, which
+# the window asks for when it opens) with three commands, each far under the
+# 512 bytes CHARACTER::ChatPacket formats into:
+#
+#   SidekickInfo <protocol> 0                       - no companion
+#   SidekickInfo <protocol> 2                       - companions switched off
+#                                                     in this world (M2_SIDEKICK)
+#   SidekickInfo <protocol> 1 <race> <group> <level> <exp%> <hp> <maxhp> <sp>
+#                <maxsp> <where> <dist> <mode> <stance> <loot> <protect>
+#                <buffs> <gold> <red> <blue> <dead> [<lure> <luring> [<solo> [<chests>
+#                [<lead> <role> <leadership> [<party>]]]]]
+#   SidekickNames <name> <place> <doing>            - hex of the CP1250 bytes
+#   SidekickGear <slot 0-7> <name>                  - hex, only when changed
+#
+# where: 0 not in the game, 1 on the owner's map, 2 elsewhere; mode: 0 at the
+# owner's side, 1 free, 2 waiting, 3 shopping; stance: 0 attacks everything,
+# 1 attacks nobody first, 2 does not fight; loot: 0 nothing, 1 the owner's,
+# 2 everything. The orders are the letter's own commands, so the window adds
+# nothing the server did not already take from the quest: przywolaj, wolny,
+# czekaj, zakupy, stan, walka N, zbieraj N, ochrona N, buffy N, luruj N, sam N,
+# skrzynki N, grupa N, odprawa tak. lure (server 2.2.19): the companion wakes packs round
+# the owner and brings them over; luring: 0 no course, 1 out to a pack, 2 back
+# with them. solo (server 2.2.30, "Gra beze mnie"): with its owner out of the
+# game it plays on alone, up to thirty levels over the owner's. chests (server
+# 2.2.31, "Skrzynki"): 1 it opens the chests in its bag, 0 it leaves them closed.
+# party (server 2.13.0, "Grupa"): 1 it joins its owner's party whoever leads it,
+# while a place stays free after it for one more person; 0 a party somebody
+# else leads only on that leader's invitation.
+#
+# "Ekwipunek" and "Umiejetnosci" open the companion's bag and skill windows
+# (uisidekickinventory.py). Every command of the companion's windows leaves
+# through the one queue below, because the server's limit is per character.
+#
+# Python 2.7 as the client has it; the Polish letters are CP1250 escapes.
+
+import clientclock
+import net
+import ui
+
+PROTOCOL = 1
+POLL_INTERVAL = 1.5
+# The server drops a sixth command in half a second (ENABLE_ANTI_CMD_FLOOD)
+# without a word, so a burst of clicks is spaced.
+COMMAND_SPACING = 0.3
+HEX_DIGITS = '0123456789abcdefABCDEF'
+MAX_TEXT_BYTES = 64
+
+JOBS = ('Wojownik', 'Ninja', 'Sura', 'Szaman')
+PATHS = (
+	('Cia\xb3o', 'Umys\xb3'),
+	('Skrytob\xf3jca', '\xa3ucznik'),
+	('Bro\xf1', 'Czarna magia'),
+	('Smok', 'Leczenie'),
+)
+MODES = ('przy tobie', 'wolna r\xeaka', 'czeka w miejscu', 'robi zakupy')
+STANCES = ('Atakuj', 'Nie 1. atak', 'Nie walcz')
+STANCE_HINTS = ('bije wszystko w pobli\xbfu', 'nie zaczyna, broni ciebie i siebie', 'nie walczy wcale')
+LOOTS = ('Nic', 'Tw\xf3j drop', 'Wszystko')
+GEAR_LABELS = ('Bro\xf1', 'Zbroja', 'He\xb3m', 'Tarcza', 'Buty', 'Bransoleta', 'Naszyjnik', 'Kolczyki')
+
+GAUGE_HP = 'red'
+GAUGE_SP = 'pink'
+
+
+def DecodeText(value, limit=MAX_TEXT_BYTES):
+	"""The server's hex of CP1250 bytes; '' for '-', anything malformed or
+	longer than limit bytes."""
+	if not value or value == '-' or len(value) % 2 or len(value) > limit * 2:
+		return ''
+	chars = []
+	for i in range(0, len(value), 2):
+		pair = value[i:i + 2]
+		if pair[0] not in HEX_DIGITS or pair[1] not in HEX_DIGITS:
+			return ''
+		code = int(pair, 16)
+		chars.append(chr(code) if code >= 32 and code != 127 else '?')
+	return ''.join(chars)
+
+
+def ParseInt(value, default=0):
+	try:
+		return int(value)
+	except (TypeError, ValueError):
+		return default
+
+
+# ---------------------------------------------------------------- the queue
+#
+# One queue for this window and the bag and skill windows: an order waits its
+# turn and keeps its place, a poll goes only when nothing waits, and nothing
+# leaves sooner than COMMAND_SPACING after the last. The windows pump it while
+# shown and the keeper while anything waits, so an order given just before a
+# window closed still goes.
+
+_queue = {'pending': [], 'next': 0.0}
+
+
+def _Send(text, now):
+	_queue['next'] = now + COMMAND_SPACING
+	net.SendChatPacket('/towarzysz ' + text)
+
+
+def SendCommand(text):
+	"""An order: at once when the line is free, else after those before it."""
+	now = clientclock.Now()
+	if not _queue['pending'] and now >= _queue['next']:
+		_Send(text, now)
+	else:
+		_queue['pending'].append(text)
+
+
+def PumpCommands():
+	"""Sends the next waiting order when its time has come; True when it did."""
+	if not _queue['pending']:
+		return False
+	now = clientclock.Now()
+	if now < _queue['next']:
+		return False
+	_Send(_queue['pending'].pop(0), now)
+	return True
+
+
+def TryPoll(text):
+	"""A poll, only when no order waits and the line is free; True when sent."""
+	if _queue['pending']:
+		return False
+	now = clientclock.Now()
+	if now < _queue['next']:
+		return False
+	_Send(text, now)
+	return True
+
+
+def HasPendingCommands():
+	return bool(_queue['pending'])
+
+
+def ResetCommands():
+	_queue['pending'] = []
+	_queue['next'] = 0.0
+
+
+def ParseInfo(args):
+	"""SidekickInfo's words after the command, as a dict; None when the
+	protocol is another one or the line is short. 'has' is False with no
+	companion."""
+	if len(args) < 2 or ParseInt(args[0], -1) != PROTOCOL:
+		return None
+	state = ParseInt(args[1])
+	if state == 0:
+		return {'has': False}
+	if state == 2:
+		return {'has': False, 'off': True}
+	names = ('race', 'group', 'level', 'exp', 'hp', 'maxhp', 'sp', 'maxsp', 'where', 'dist',
+			'mode', 'stance', 'loot', 'protect', 'buffs', 'gold', 'red', 'blue', 'dead')
+	values = args[2:]
+	if len(values) < len(names):
+		return None
+	info = {'has': True}
+	for i, name in enumerate(names):
+		info[name] = ParseInt(values[i])
+	# The lure came later: an older server sends no such words, and the window
+	# then shows no switch for it. The same for "Gra beze mnie" after it.
+	if len(values) >= len(names) + 2:
+		info['lure'] = ParseInt(values[len(names)])
+		info['luring'] = ParseInt(values[len(names) + 1])
+	if len(values) >= len(names) + 3:
+		info['solo'] = ParseInt(values[len(names) + 2])
+	if len(values) >= len(names) + 4:
+		info['chests'] = ParseInt(values[len(names) + 3])
+	# "Lider grupy", the owner's bonus and the companion's Leadership
+	# (server 2.12.0).
+	if len(values) >= len(names) + 7:
+		info['lead'] = ParseInt(values[len(names) + 4])
+		info['role'] = ParseInt(values[len(names) + 5])
+		info['leadership'] = ParseInt(values[len(names) + 6])
+	# "Grupa" (server 2.13.0): whether it joins its owner's party whoever
+	# leads it.
+	if len(values) >= len(names) + 8:
+		info['party'] = ParseInt(values[len(names) + 7])
+	return info
+
+
+# The owner's bonus from the companion's Leadership, as the party window
+# names the roles (localeInfo.PARTY_SET_*), with the level each wants
+# (CParty::Update). The button steps through them in this order.
+ROLES = (
+	(0, 'bez bonusu', 0),
+	(7, 'Obro\xf1ca (obrona)', 1),
+	(2, 'Atakuj\xb9cy (atak)', 10),
+	(4, 'Blokuj\xb9cy (czas trwania)', 10),
+	(6, 'Berserker (szybko\x9c\xe6 ataku)', 15),
+	(3, 'Walcz\xb9cy w zwarciu (maks. P\xaf)', 20),
+	(5, 'Mistrz umiej\xeatno\x9cci', 20),
+)
+
+
+def LeadershipText(level):
+	"""0-40 as the skill window writes it: 1-19, M1-M10, G1-G10, P."""
+	if level < 20:
+		return str(level)
+	if level < 30:
+		return 'M%d' % (level - 19)
+	if level < 40:
+		return 'G%d' % (level - 29)
+	return 'P'
+
+
+def FormatGold(value):
+	"""1234567 -> '1.234.567', as the client writes yang."""
+	text = str(max(0, value))
+	parts = []
+	while len(text) > 3:
+		parts.insert(0, text[-3:])
+		text = text[:-3]
+	parts.insert(0, text)
+	return '.'.join(parts)
+
+
+def ClassText(race, group):
+	if race < 0:
+		return ''
+	job = race % 4
+	text = JOBS[job]
+	if group in (1, 2):
+		text += ' (%s)' % PATHS[job][group - 1]
+	return text
+
+
+def PlaceText(info, place):
+	where = info.get('where', 0)
+	if where == 0:
+		return 'poza gr\xb9'
+	if where == 2:
+		return '%s (inna mapa)' % (place or 'inna mapa')
+	dist = info.get('dist', 0)
+	if dist < 1000:
+		near = 'obok ciebie'
+	else:
+		near = '%d m od ciebie' % (dist // 100)
+	return '%s, %s' % (place, near) if place else near
+
+
+class SidekickWindow(ui.BoardWithTitleBar):
+	WIDTH = 300
+	HEIGHT = 677
+
+	def __init__(self):
+		ui.BoardWithTitleBar.__init__(self)
+		self.widgets = []
+		self.info = None
+		self.names = ('', '', '')
+		self.gear = [''] * len(GEAR_LABELS)
+		self.nextPoll = 0.0
+		self.question = None
+		self.AddFlag('movable')
+		self.AddFlag('float')
+		self.SetSize(self.WIDTH, self.HEIGHT)
+		self.SetTitleName('Towarzysz')
+		self.SetCloseEvent(ui.__mem_func__(self.Close))
+		self.Build()
+		self.RefreshAll()
+
+	# -------------------------------------------------------------- building
+
+	def Build(self):
+		# Six boards and a status line in 673 pixels.
+		BL = 10
+		BW = self.WIDTH - 2 * BL
+		ROW = 15
+		y = 32
+
+		stBoard = self._Board(BL, y, BW, 146)
+		self._Label(stBoard, 14, 4, 'Posta\xe6')
+		self.nameLine = self._Label(stBoard, 10, 20, '')
+		self.classLine = self._Label(stBoard, 10, 20 + ROW, '')
+		self._Label(stBoard, 10, 52, 'HP')
+		self.hpGauge = self._Gauge(stBoard, 36, 55, 150, GAUGE_HP)
+		self.hpText = self._Label(stBoard, 194, 52, '')
+		self._Label(stBoard, 10, 52 + ROW, 'PE')
+		self.spGauge = self._Gauge(stBoard, 36, 55 + ROW, 150, GAUGE_SP)
+		self.spText = self._Label(stBoard, 194, 52 + ROW, '')
+		self.expLine = self._Label(stBoard, 10, 84, '')
+		self.potionLine = self._Label(stBoard, 10, 84 + ROW, '')
+		self.placeLine = self._Label(stBoard, 10, 84 + 2 * ROW, '')
+		self.doingLine = self._Label(stBoard, 10, 84 + 3 * ROW, '')
+		y += 146 + 4
+
+		# Three large buttons (88 wide) a row, 92 apart, in the board's 280.
+		orBoard = self._Board(BL, y, BW, 88)
+		self._Label(orBoard, 14, 4, 'Polecenia')
+		self.summonButton = self._Btn(orBoard, 'large', 6, 20, 'Przywo\xb3aj', self.OnOrder, 'przywolaj')
+		self.holdButton = self._Btn(orBoard, 'large', 98, 20, 'Czekaj tu', self.OnOrder, 'czekaj')
+		self.freeButton = self._Btn(orBoard, 'large', 190, 20, 'Wolna r\xeaka', self.OnOrder, 'wolny')
+		self._Btn(orBoard, 'large', 6, 42, 'Na zakupy', self.OnOrder, 'zakupy')
+		self._Btn(orBoard, 'large', 98, 42, 'Raport', self.OnOrder, 'stan')
+		self._Btn(orBoard, 'large', 190, 42, 'Odpraw', self.OnDismiss)
+		# "Na ryby": with the Fishing Card it carries, at the water until the
+		# card runs out ("Przywolaj" calls it back sooner).
+		self._Btn(orBoard, 'large', 6, 64, 'Na ryby', self.OnOrder, 'ryby')
+		y += 88 + 4
+
+		wkBoard = self._Board(BL, y, BW, 60)
+		self._Label(wkBoard, 14, 4, 'Walka')
+		self.stanceButtons = []
+		for i, text in enumerate(STANCES):
+			self.stanceButtons.append(self._Btn(wkBoard, 'large', 6 + i * 92, 20, text, self.OnStance, i))
+		self.stanceHint = self._Label(wkBoard, 10, 42, '')
+		y += 60 + 4
+
+		dpBoard = self._Board(BL, y, BW, 93)
+		self._Label(dpBoard, 14, 4, 'Drop i wsparcie')
+		self.lootButtons = []
+		for i, text in enumerate(LOOTS):
+			self.lootButtons.append(self._Btn(dpBoard, 'large', 6 + i * 92, 20, text, self.OnLoot, i))
+		self.protectButton = self._Btn(dpBoard, 'large', 6, 42, '', self.OnProtect)
+		self.buffButton = self._Btn(dpBoard, 'large', 98, 42, '', self.OnBuffs)
+		self.lureButton = self._Btn(dpBoard, 'large', 190, 42, '', self.OnLure)
+		# "Gra beze mnie": whether it plays on while its owner is out of the
+		# game, up to thirty levels over the owner's (the engine's party
+		# boundary, so the two can hunt together again).
+		self.soloButton = self._Btn(dpBoard, 'xlarge', 6, 65, '', self.OnSolo)
+		self.soloButton.SetToolTipText('do twojego poziomu +30')
+		# "Skrzynki": whether it opens the chests in its bag itself or leaves
+		# them for the owner, whose they are (xxkld., 27 September).
+		self.chestButton = self._Btn(dpBoard, 'large', 190, 67, '', self.OnChests)
+		y += 93 + 4
+
+		# "Lider grupy": the companion makes the party and invites its owner,
+		# and its Leadership (Dowodzenie) gives the owner the bonus chosen here.
+		gpBoard = self._Board(BL, y, BW, 70)
+		self.groupLabel = self._Label(gpBoard, 14, 4, 'Grupa')
+		# "Grupa": whether it follows its owner into a party somebody else
+		# leads (xXxDaronxXx, 28 September), in the board's title row.
+		self.partyButton = self._Btn(gpBoard, 'large', 190, 1, '', self.OnParty)
+		self.partyButton.SetToolTipText('do grupy prowadzonej przez kogo\x9c innego')
+		self.leadButton = self._Btn(gpBoard, 'large', 6, 24, '', self.OnLead)
+		self.roleButton = self._Btn(gpBoard, 'xlarge', 98, 24, '', self.OnRole)
+		self.roleHint = self._Label(gpBoard, 10, 48, '')
+		y += 70 + 4
+
+		# What it wears, and the two windows that show and change it: the bag
+		# and the gear as the player's own inventory (uisidekickinventory.py),
+		# and the skills. The buttons take the board's title row, six pixels
+		# taller than the label alone.
+		EQ_HEAD = 26
+		eqBoard = self._Board(BL, y, BW, EQ_HEAD + len(GEAR_LABELS) * 14 + 2)
+		self._Label(eqBoard, 14, 6, 'Za\xb3o\xbfone')
+		self.inventoryButton = self._Btn(eqBoard, 'large', 98, 3, 'Ekwipunek', self.OnInventory)
+		self.skillsButton = self._Btn(eqBoard, 'large', 190, 3, 'Umiej\xeatno\x9cci', self.OnSkills)
+		self.gearLines = []
+		for i, label in enumerate(GEAR_LABELS):
+			self._Label(eqBoard, 10, EQ_HEAD + i * 14, label + ':')
+			self.gearLines.append(self._Label(eqBoard, 86, EQ_HEAD + i * 14, '-'))
+		y += EQ_HEAD + len(GEAR_LABELS) * 14 + 2 + 4
+
+		self.statusLine = self._Label(self, self.WIDTH // 2, y, '')
+		self.statusLine.SetHorizontalAlignCenter()
+
+	def _Board(self, x, y, w, h):
+		board = ui.ThinBoard()
+		board.SetParent(self)
+		board.SetPosition(x, y)
+		board.SetSize(w, h)
+		board.Show()
+		self.widgets.append(board)
+		return board
+
+	def _Label(self, parent, x, y, text):
+		line = ui.TextLine()
+		line.SetParent(parent)
+		line.SetPosition(x, y)
+		line.SetText(text)
+		line.Show()
+		self.widgets.append(line)
+		return line
+
+	def _Btn(self, parent, size, x, y, text, event, *args):
+		button = ui.Button()
+		button.SetParent(parent)
+		button.SetPosition(x, y)
+		button.SetUpVisual('d:/ymir work/ui/public/%s_button_01.sub' % size)
+		button.SetOverVisual('d:/ymir work/ui/public/%s_button_02.sub' % size)
+		button.SetDownVisual('d:/ymir work/ui/public/%s_button_03.sub' % size)
+		button.SetText(text)
+		button.SAFE_SetEvent(event, *args)
+		button.Show()
+		self.widgets.append(button)
+		return button
+
+	def _Gauge(self, parent, x, y, width, color):
+		gauge = ui.Gauge()
+		gauge.SetParent(parent)
+		gauge.SetPosition(x, y)
+		gauge.MakeGauge(width, color)
+		gauge.Show()
+		self.widgets.append(gauge)
+		return gauge
+
+	# -------------------------------------------------------------- the server
+
+	def OnServerInfo(self, args):
+		info = ParseInfo(args)
+		if info is None:
+			return
+		self.info = info
+		self.RefreshAll()
+
+	def OnServerNames(self, name='-', place='-', doing='-'):
+		self.names = (DecodeText(name), DecodeText(place), DecodeText(doing))
+		self.RefreshAll()
+
+	def OnServerGear(self, slot='0', name='-'):
+		index = ParseInt(slot, -1)
+		if 0 <= index < len(self.gear):
+			self.gear[index] = DecodeText(name)
+			self.gearLines[index].SetText(self.gear[index] or '-')
+
+	# -------------------------------------------------------------- showing
+
+	def RefreshAll(self):
+		info = self.info
+		if not info:
+			self.statusLine.SetText('Czekam na odpowied\x9f serwera...')
+			return
+		if not info.get('has'):
+			if info.get('off'):
+				self.nameLine.SetText('Towarzysze s\xb9 wy\xb3\xb9czeni na tym serwerze.')
+				self.classLine.SetText('W\xb3\xb9cza je w\xb3a\x9cciciel serwera w launcherze.')
+			else:
+				self.nameLine.SetText('Nie masz jeszcze towarzysza.')
+				self.classLine.SetText('Wybierz go w li\x9ccie "Towarzysz".')
+			for line in (self.hpText, self.spText, self.expLine, self.potionLine, self.placeLine, self.doingLine):
+				line.SetText('')
+			self.hpGauge.SetPercentage(0, 1)
+			self.spGauge.SetPercentage(0, 1)
+			self.stanceHint.SetText('')
+			self.statusLine.SetText('')
+			return
+		name, place, doing = self.names
+		if info['race'] < 0:
+			self.nameLine.SetText(name or 'Towarzysz')
+			self.classLine.SetText('Za chwil\xea b\xeadzie w grze.')
+		else:
+			self.nameLine.SetText('%s   Lv %d' % (name or 'Towarzysz', info['level']))
+			self.classLine.SetText(ClassText(info['race'], info['group']))
+		maxHP = max(1, info['maxhp'])
+		maxSP = max(1, info['maxsp'])
+		self.hpGauge.SetPercentage(max(0, min(info['hp'], maxHP)), maxHP)
+		self.spGauge.SetPercentage(max(0, min(info['sp'], maxSP)), maxSP)
+		self.hpText.SetText('%d / %d' % (max(0, info['hp']), info['maxhp']))
+		self.spText.SetText('%d / %d' % (max(0, info['sp']), info['maxsp']))
+		self.expLine.SetText('Do\x9cwiadczenie: %d%%   Yang: %s' % (info['exp'], FormatGold(info['gold'])))
+		self.potionLine.SetText('Mikstury: %d czerw. / %d nieb.' % (info['red'], info['blue']))
+		self.placeLine.SetText('Gdzie: %s' % PlaceText(info, place))
+		mode = info['mode'] if 0 <= info['mode'] < len(MODES) else 0
+		if info['dead']:
+			self.doingLine.SetText('Teraz: le\xbfy, zaraz wstanie')
+		else:
+			self.doingLine.SetText('Teraz: %s' % (doing or MODES[mode]))
+		self.SetPressed(self.stanceButtons, info['stance'])
+		self.SetPressed(self.lootButtons, info['loot'])
+		stance = info['stance'] if 0 <= info['stance'] < len(STANCE_HINTS) else 0
+		self.stanceHint.SetText(STANCE_HINTS[stance])
+		self.protectButton.SetText('Ochrona: %s' % ('tak' if info['protect'] else 'nie'))
+		self.buffButton.SetText('Buffy: %s' % ('tak' if info['buffs'] else 'nie'))
+		if 'lure' in info:
+			self.lureButton.SetText('Lurowanie: %s' % ('tak' if info['lure'] else 'nie'))
+			self.lureButton.Show()
+		else:
+			self.lureButton.Hide()
+		if 'solo' in info:
+			self.soloButton.SetText('Gra beze mnie: %s' % ('tak' if info['solo'] else 'nie'))
+			self.soloButton.Show()
+		else:
+			self.soloButton.Hide()
+		if 'chests' in info:
+			self.chestButton.SetText('Skrzynki: %s' % ('tak' if info['chests'] else 'nie'))
+			self.chestButton.Show()
+		else:
+			self.chestButton.Hide()
+		if 'lead' in info:
+			self.groupLabel.SetText('Grupa   Dowodzenie: %s' % LeadershipText(info['leadership']))
+			self.leadButton.SetText('Lider: %s' % ('Towarzysz' if info['lead'] else 'Ja'))
+			role = [r for r in ROLES if r[0] == info['role']]
+			role = role[0] if role else ROLES[0]
+			self.roleButton.SetText('Bonus: %s' % role[1])
+			if not info['lead']:
+				self.roleHint.SetText('Bonus dzia\xb3a, gdy liderem jest Towarzysz.')
+			elif role[2] > info['leadership']:
+				self.roleHint.SetText('Wymaga Dowodzenia %s - daj mu Ksi\xeag\xea Dowodzenia.' % LeadershipText(role[2]))
+			else:
+				self.roleHint.SetText('')
+			for w in (self.leadButton, self.roleButton):
+				w.Show()
+		else:
+			self.groupLabel.SetText('Grupa')
+			self.leadButton.Hide()
+			self.roleButton.Hide()
+			self.roleHint.SetText('Serwer nie obs\xb3uguje jeszcze lidera-Towarzysza.')
+		if 'party' in info:
+			self.partyButton.SetText('Do\xb3\xb9cza: %s' % ('tak' if info['party'] else 'nie'))
+			self.partyButton.Show()
+		else:
+			self.partyButton.Hide()
+		# The summon, the free hand and the wait are the three states the
+		# companion is in outside an errand: the one it is in stays down.
+		self.SetPressed((self.summonButton, self.freeButton, self.holdButton), mode if mode < 3 else -1)
+		self.statusLine.SetText('Tryb: %s' % MODES[mode])
+
+	def SetPressed(self, buttons, index):
+		# A button held down says which one is set, the way the game's own
+		# radio groups do it.
+		for i, button in enumerate(buttons):
+			if i == index:
+				button.Down()
+			else:
+				button.SetUp()
+
+	# -------------------------------------------------------------- orders
+
+	def SendCommand(self, text):
+		SendCommand(text)
+
+	def OnInventory(self):
+		import uisidekickinventory
+		uisidekickinventory.ToggleEquipmentWindow(self)
+
+	def OnSkills(self):
+		import uisidekickinventory
+		uisidekickinventory.ToggleSkillWindow(self)
+
+	def OnOrder(self, order):
+		self.SendCommand(order)
+		# The answer comes back at the next look; asked for at once, the
+		# window shows the new mode without waiting for the poll.
+		self.nextPoll = 0.0
+
+	def OnStance(self, stance):
+		self.SendCommand('walka %d' % stance)
+		self.nextPoll = 0.0
+
+	def OnLoot(self, loot):
+		self.SendCommand('zbieraj %d' % loot)
+		self.nextPoll = 0.0
+
+	def OnProtect(self):
+		protect = self.info.get('protect', 1) if self.info else 1
+		self.SendCommand('ochrona %d' % (0 if protect else 1))
+		self.nextPoll = 0.0
+
+	def OnBuffs(self):
+		buffs = self.info.get('buffs', 1) if self.info else 1
+		self.SendCommand('buffy %d' % (0 if buffs else 1))
+		self.nextPoll = 0.0
+
+	def OnLure(self):
+		lure = self.info.get('lure', 0) if self.info else 0
+		self.SendCommand('luruj %d' % (0 if lure else 1))
+		self.nextPoll = 0.0
+
+	def OnSolo(self):
+		solo = self.info.get('solo', 0) if self.info else 0
+		self.SendCommand('sam %d' % (0 if solo else 1))
+		self.nextPoll = 0.0
+
+	def OnLead(self):
+		lead = self.info.get('lead', 0) if self.info else 0
+		self.SendCommand('lider %d' % (0 if lead else 1))
+		self.nextPoll = 0.0
+
+	def OnRole(self):
+		current = self.info.get('role', 0) if self.info else 0
+		ids = [r[0] for r in ROLES]
+		nextRole = ids[(ids.index(current) + 1) % len(ids)] if current in ids else ids[0]
+		self.SendCommand('rola %d' % nextRole)
+		self.nextPoll = 0.0
+
+	def OnChests(self):
+		chests = self.info.get('chests', 1) if self.info else 1
+		self.SendCommand('skrzynki %d' % (0 if chests else 1))
+		self.nextPoll = 0.0
+
+	def OnParty(self):
+		party = self.info.get('party', 1) if self.info else 1
+		self.SendCommand('grupa %d' % (0 if party else 1))
+		self.nextPoll = 0.0
+
+	def OnDismiss(self):
+		import uiCommon
+		question = uiCommon.QuestionDialog()
+		question.SetText('Odprawi\xe6 towarzysza na dobre? Tego nie da si\xea cofn\xb9\xe6.')
+		question.SetAcceptEvent(ui.__mem_func__(self.OnDismissAccept))
+		question.SetCancelEvent(ui.__mem_func__(self.OnDismissCancel))
+		question.Open()
+		self.question = question
+
+	def OnDismissAccept(self):
+		self.SendCommand('odprawa tak')
+		self.OnDismissCancel()
+		self.nextPoll = 0.0
+
+	def OnDismissCancel(self):
+		if self.question:
+			self.question.Close()
+		self.question = None
+
+	# -------------------------------------------------------------- the clock
+
+	def OnUpdate(self):
+		if PumpCommands():
+			return
+		now = clientclock.Now()
+		if now >= self.nextPoll and TryPoll('okno'):
+			self.nextPoll = now + POLL_INTERVAL
+
+	def Open(self):
+		self.Show()
+		self.SetTop()
+		self.nextPoll = clientclock.Now() + POLL_INTERVAL
+		SendCommand('okno 1')
+
+	def Close(self):
+		# The orders already given stay in the queue: the keeper sends them.
+		self.OnDismissCancel()
+		self.Hide()
+
+	def OnPressEscapeKey(self):
+		self.Close()
+		return True
+
+	def Destroy(self):
+		self.OnDismissCancel()
+		self.Hide()
+		self.widgets = []
+
+
+_window = {'window': None}
+
+
+def GetWindow():
+	if _window['window'] is None:
+		window = SidekickWindow()
+		window.SetCenterPosition()
+		_window['window'] = window
+	return _window['window']
+
+
+def ToggleWindow():
+	window = GetWindow()
+	if window.IsShow():
+		window.Close()
+	else:
+		window.Open()
+
+
+def OpenWindow():
+	window = GetWindow()
+	if not window.IsShow():
+		window.Open()
+
+
+def OnServerInfo(*args):
+	# Answers that come while the window is closed are kept all the same, so
+	# it opens on what the server last said.
+	GetWindow().OnServerInfo(args)
+
+
+def OnServerNames(name='-', place='-', doing='-', *rest):
+	GetWindow().OnServerNames(name, place, doing)
+
+
+def OnServerGear(slot='0', name='-', *rest):
+	GetWindow().OnServerGear(slot, name)
+
+
+def Destroy():
+	window = _window['window']
+	if window is not None:
+		window.Destroy()
+	_window['window'] = None
+	# The bag and skill windows were opened from this one; they go with it
+	# even where their own keeper never got registered.
+	import sys
+	if 'uisidekickinventory' in sys.modules:
+		sys.modules['uisidekickinventory'].Destroy()
+	ResetCommands()
+
+
+class Keeper(object):
+	"""One of the game's updateables: the game window's Close destroys every
+	updateable, and the companion's window goes with it rather than stand over
+	the character select. The window updates itself (its own OnUpdate while
+	shown); the keeper sends what is still queued when none is."""
+
+	def CanUpdate(self):
+		return HasPendingCommands()
+
+	def OnUpdate(self):
+		PumpCommands()
+
+	def Destroy(self):
+		Destroy()
+
+
+def GetKeeper():
+	return Keeper()

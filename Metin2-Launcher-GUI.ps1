@@ -28,6 +28,8 @@ if ($UiSelfTest) {
 $supportDirectory = Join-Path $root 'support-bundles'
 $composeFile = Join-Path $root 'linux-port\docker\docker-compose.yml'
 $sessionLog = Join-Path $logDirectory ('launcher-{0}.log' -f (Get-Date -Format 'yyyyMMdd'))
+# Protect-M2SessionLogLine's memory of a heading whose password is on the next line.
+$script:sessionLogRedaction = @{}
 
 function Write-StartupFailure {
     # Straight to the file: this runs before (or instead of) the window, so
@@ -62,7 +64,28 @@ trap {
 
 foreach ($required in @($cliLauncher, $modulePath, $diagnosticsModulePath, $composeFile)) {
     if (-not (Test-Path -LiteralPath $required -PathType Leaf)) {
-        throw "Brakuje wymaganego pliku: $required"
+        # Hyper96's Metin2-Launcher.ps1 was written by the update at 01:20, run
+        # at 01:22 and gone at 01:23 with the launcher still open (28 September):
+        # the launcher deletes none of these, an antivirus that takes a script
+        # which downloads and starts a server for a threat does. Say what to do
+        # rather than only which file it was.
+        $relative = $required.Substring($root.Length).TrimStart('\')
+        # Which antivirus, from Windows' own Security Center, so the report
+        # names it: Hyper96's folder was in his antivirus's exclusions and its
+        # history was empty, and the file was gone all the same.
+        $antivirus = ''
+        try {
+            $antivirus = (@(Get-CimInstance -Namespace 'root/SecurityCenter2' -ClassName 'AntiVirusProduct' -ErrorAction Stop |
+                ForEach-Object { [string]$_.displayName } | Where-Object { $_ }) | Sort-Object -Unique) -join ', '
+        }
+        catch { }
+        throw ("Brakuje pliku launchera: $required`r`n" +
+            $(if ($antivirus) { "Antywirus w systemie: $antivirus`r`n" } else { '' }) + "`r`n" +
+            "Launcher sam go nie usuwa - najczesciej zabiera go antywirus (falszywy alarm na skrypt, ktory pobiera i uruchamia serwer).`r`n`r`n" +
+            "1. Zajrzyj do kwarantanny antywirusa. W Windows: Zabezpieczenia Windows > Ochrona przed wirusami i zagrozeniami > Historia ochrony. " +
+            "Przywroc plik i dodaj folder $root do wykluczen.`r`n" +
+            "2. Jesli nie da sie go przywrocic: pobierz z GitHuba (TieruYT/metin2-playerbots, Releases) paczke metin2-server-update-<wersja>.zip " +
+            "i wyjmij z niej $relative do $root. Najpierw dodaj wykluczenie, inaczej antywirus zabierze go znowu.")
     }
 }
 
@@ -154,8 +177,12 @@ function Write-LocalLog {
         [switch]$FileOnly
     )
     $line = '{0}  {1}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Message
+    # The file is what players post, so a password never reaches it; the box
+    # keeps the line as it was, because that is where the player reads it.
+    $fileLine = $line
+    try { $fileLine = Protect-M2SessionLogLine -Text $line -State $script:sessionLogRedaction } catch { }
     [IO.File]::AppendAllText($sessionLog,
-        (ConvertTo-M2AsciiLine $line) + [Environment]::NewLine,
+        (ConvertTo-M2AsciiLine $fileLine) + [Environment]::NewLine,
         [Text.UTF8Encoding]::new($false))
     if (-not $FileOnly -and $script:logBox -and -not $script:logBox.IsDisposed) {
         $script:logBox.AppendText($line + [Environment]::NewLine)
@@ -866,6 +893,9 @@ function Complete-LauncherAction {
         }
     }
     $output = $script:activeOutputAll
+    foreach ($path in @($script:activeOut, $script:activeErr)) {
+        try { Protect-M2LogFile -Path $path } catch { }
+    }
 
     $action = $script:activeAction
     $launchClient = $script:launchClientAfterAction

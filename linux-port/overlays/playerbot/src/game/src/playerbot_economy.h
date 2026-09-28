@@ -2538,6 +2538,25 @@ namespace
 	// what the bot will wear is worth refining in the bag: an upgrade the
 	// equipment pass is about to put on, or the one higher-tier spare per slot
 	// the blacksmith can make into one. Goods are sold at what they are.
+	//
+	// Whether the engine would take this piece's next step at all: the fee in
+	// the purse and every material in the bag, the two things DoRefine and
+	// DoRefineWithScroll refuse on before they take anything. A bag piece is
+	// asked this and not CanPlayerBotPayRefineStep, whose reserve and
+	// Biologist's share the bag's pieces have never been held to.
+	bool CanPlayerBotAffordRefineAttempt(LPCHARACTER ch, LPITEM item)
+	{
+		const TRefineTable* recipe = item ? CRefineManager::instance().GetRefineRecipe(item->GetRefineSet()) : NULL;
+		if (!ch || !recipe || ch->GetGold() < ch->ComputeRefineFee(recipe->cost))
+			return false;
+		for (int i = 0; i < recipe->material_count; ++i)
+		{
+			if (ch->CountSpecifyItem(recipe->materials[i].vnum) < recipe->materials[i].count)
+				return false;
+		}
+		return true;
+	}
+
 	bool IsPlayerBotRefineBagCandidate(LPCHARACTER ch, LPITEM item)
 	{
 		if (!item || item->GetRefinedVnum() == 0 || IsPlayerBotSidekickPinned(ch, item))
@@ -2927,6 +2946,13 @@ namespace
 							(unsigned int)GetPlayerBotRefineTarget(ch, item));
 				continue;
 			}
+			// A step the engine would refuse is no candidate, as it is not for a
+			// worn piece above: a body armour at +7 short of a material was
+			// tried at every blacksmith tick of every visit, "refine SKIPPED ...
+			// vnum=11647 plus=7 materials=30006:2/0" twenty to forty times an
+			// hour a bot on m2zip (28 September).
+			if (!CanPlayerBotAffordRefineAttempt(ch, item))
+				continue;
 
 			TRefineCandidate cand;
 			cand.wearCell = 255;
