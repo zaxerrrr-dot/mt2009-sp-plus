@@ -491,6 +491,12 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && mv /tmp/mob_drop_item.txt "$L/mob_drop_item.txt" && rm -f /tmp/guildmat.count \
  && echo "share: guild building materials x10 from ordinary monsters (14 lines)"
 
+# The costume sets (server-patches/playerqol, MT2009_PLUS_COSTUME_SET_V1): a
+# body and a hair of one line give +800 HP and +15 attack value. The game
+# reads it from its locale at the first equip; the client's tooltip has the
+# same lists in costume_sets.py.
+COPY costume_sets.txt /opt/metin2/share/locale/poland/costume_sets.txt
+
 # Seon-Pyeong's recipes (port/shareify.py renders cube.seon_pyeong.txt and this
 # step; the quest that opens his window is quest/seon_pyeong.quest above): a +9
 # piece of level 65-66 into its level-80 successor. The package's cube.txt has

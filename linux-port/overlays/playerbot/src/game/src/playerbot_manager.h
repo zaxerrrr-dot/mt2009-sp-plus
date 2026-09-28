@@ -99,6 +99,11 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// via playerbotify.py).
 		bool	SpawnSidekick(DWORD dwPlayerID);
 		void	OnSidekickCommand(LPCHARACTER ch, const char* szArgument);
+		// The event calendar's schedule (client uieventcalendar.py, F11):
+		// the timed events the panels wrote, as this core read them
+		// (playerbot_events.h), for the /kalendarz command (cmd_general.cpp,
+		// server-patches/playerqol).
+		void	SendEventCalendar(LPCHARACTER ch);
 		// Where a companion whose saved place is a map this core does not
 		// host loads instead: beside its owner (InputDB::PlayerLoad, mt2009
 		// via playerbotify.py). False for anybody else.

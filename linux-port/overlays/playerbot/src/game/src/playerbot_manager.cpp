@@ -117,6 +117,8 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_log.h"
 #include "playerbot_config.h"
 #include "playerbot_events.h"
+// The Battle Pass (the engine calls in through server-patches/playerqol).
+#include "playerbot_battlepass.h"
 // Iwakura's Bot Mood System: the moods and the notes the loot, the chests,
 // the fishing and the blacksmith send it - early, so any of them may.
 #include "playerbot_mood.h"
@@ -4287,6 +4289,42 @@ bool CPlayerBotManager::SpawnSidekick(DWORD dwPlayerID)
 void CPlayerBotManager::OnSidekickCommand(LPCHARACTER ch, const char* szArgument)
 {
 	HandlePlayerBotSidekickCommand(ch, szArgument);
+}
+
+// The event calendar (the operator, 28 September: "kalendarz eventow pod F11
+// ... z eventami ustawionymi w panelu"). Every core reads the panels' file
+// (RefreshPlayerBotEvents runs on the update tick and on the world-event
+// clock of a core without bots), so the player's own core answers:
+//   EventCalBegin <epoch> <year> <month> <mday> <weekday 0=Mon> <minute> <utc offset min>
+//   EventCal <kind> <days mask, bit 0 = Mon> <start min> <end min> <value> <now 0|1> <since> <until> <map>
+//   EventCalEnd <lines>
+// kind is playerbot_events' (0 chest, 1 exp, 2 drop, 3 yang, 4 Tanaka,
+// 5 Zuo); the window turns the weekly lines into the month's days itself.
+// The date is the server's, which is what the events keep.
+void CPlayerBotManager::SendEventCalendar(LPCHARACTER ch)
+{
+	if (!ch || !ch->GetDesc())
+		return;
+	RefreshPlayerBotEvents(get_dword_time());
+	const time_t now = time(NULL);
+	struct tm local;
+	localtime_r(&now, &local);
+	ch->ChatPacket(CHAT_TYPE_COMMAND, "EventCalBegin %ld %d %d %d %d %d %ld",
+			(long)now, local.tm_year + 1900, local.tm_mon + 1, local.tm_mday,
+			(local.tm_wday + 6) % 7, local.tm_hour * 60 + local.tm_min, (long)(local.tm_gmtoff / 60));
+	unsigned int sent = 0;
+	for (size_t i = 0; i < s_vecPlayerBotEvents.size() && sent < 150; ++i)
+	{
+		const playerbot_events::Window& w = s_vecPlayerBotEvents[i];
+		// An "activate now" line long over is no news.
+		if (w.now && w.until > 0 && w.until < (long)now)
+			continue;
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "EventCal %d %u %d %d %d %d %ld %ld %ld",
+				w.kind, (unsigned int)w.days, w.startMin, w.endMin, w.value, w.now ? 1 : 0,
+				w.since, w.until, w.map);
+		++sent;
+	}
+	ch->ChatPacket(CHAT_TYPE_COMMAND, "EventCalEnd %u", sent);
 }
 
 // A companion is saved where it last stood, and that can be a map another
