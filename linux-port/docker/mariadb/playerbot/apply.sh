@@ -529,6 +529,11 @@ if [ "$rescue_done" = "0" ]; then
         echo "[playerbot-migrate] WARNING: could not move the characters out of the Grotto and the Catacomb" >&2
     fi
 fi
+# Smoczy Skowyt (93) cast at a target (server-patches/dragonroartarget) hurts a
+# circle round that target of dwSplashRange: 500, the package's, left half a
+# pack standing ("nie wszystkie trafiaja", the operator, 28 September). 900,
+# only over the package's own 500; skill_proto is read at the cores' start.
+db -e "UPDATE world.skill_proto SET dwSplashRange = 900 WHERE dwVnum = 93 AND dwSplashRange = 500;" || echo "[playerbot-migrate] WARNING: could not widen Smoczy Skowyt's splash" >&2
 # Broszura Szermierki (70031), Seon-Pyeong's recipe material, stacks to the
 # 200 its row already says: the package left ITEM_FLAG_STACKABLE off, so
 # every brochure took a cell (NerrVoVy, 27 September), as Tanaka's ear did.
