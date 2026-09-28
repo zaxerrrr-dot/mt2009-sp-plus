@@ -377,12 +377,29 @@ sync_channel_ports() {
     _env="$COMPOSE_DIR/.env"
     [ -f "$_env" ] || return 0
     _ch2=$(kv "$_env" M2_PLAYERBOT_CH2 | tr -d ' \r')
-    _wish=$( (cd "$COMPOSE_DIR" && docker compose exec -T game cat /opt/m2spool/channels.wanted) 2>/dev/null |
-        sed -n 's/^CH2=//p' | head -n 1 | tr -d ' \r')
-    case "$_wish" in
-        0|1) _ch2="$_wish" ;;
+    _channels=$(kv "$_env" M2_CHANNELS | tr -d ' \r')
+    _env_at=$(kv "$_env" M2_PLAYERBOT_CH2_SET_AT | tr -d ' \r')
+    case "$_env_at" in
+        ''|*[!0-9]*) _env_at=0 ;;
     esac
-    if [ "$_ch2" = 1 ]; then
+    # The panel's wish wins only when it is newer than .env's own moment
+    # (M2_PLAYERBOT_CH2_SET_AT), as it does in the entrypoint; a world whose
+    # operator set M2_CHANNELS=2 by hand keeps its ports.
+    _wishes=$( (cd "$COMPOSE_DIR" && docker compose exec -T game cat /opt/m2spool/channels.wanted) 2>/dev/null |
+        tr -d ' \r')
+    _wish=$(printf '%s\n' "$_wishes" | sed -n 's/^CH2=//p' | head -n 1)
+    _wish_at=$(printf '%s\n' "$_wishes" | sed -n 's/^SET_AT=//p' | head -n 1)
+    case "$_wish_at" in
+        ''|*[!0-9]*) _wish_at=0 ;;
+    esac
+    case "$_wish" in
+        0|1)
+            if [ "$_wish_at" -gt "$_env_at" ]; then
+                _ch2="$_wish"
+            fi
+            ;;
+    esac
+    if [ "$_ch2" = 1 ] || [ "$_channels" = 2 ]; then
         _want=13000-13012
     else
         _want=13000-13002

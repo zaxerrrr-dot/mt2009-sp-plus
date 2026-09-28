@@ -724,6 +724,11 @@ function Get-M2ProgramPortAdvice {
     )
 
     $who = if ($Listener.Name) { "proces $($Listener.Name), PID $($Listener.Pid)" } else { "PID $($Listener.Pid)" }
+    # An ssh on a panel port is as a rule the VPS window's tunnel, and moving
+    # the server's port is the wrong answer to it (Sudak, 28 September).
+    if ([string]$Listener.Name -match '^(?i)ssh$') {
+        return "Port $Port ($Name) zajmuje tunel SSH ($who). Jeśli to tunel do paneli z okna SERWER NA VPS, kliknij tam ZAMKNIJ TUNEL; inny tunel zamknij w Menedżerze zadań (karta Szczegóły, Zakończ zadanie). Potem spróbuj jeszcze raz."
+    }
     if ($ClientFixed -or -not $Key) {
         return "Port $Port ($Name) zajmuje $who. Zamknij ten program (Menedżer zadań, karta Szczegóły, Zakończ zadanie) i spróbuj jeszcze raz. Nie zmieniaj tego portu w pliku .env: klient gry łączy się zawsze z portem 11000 i kanałami od 13000, więc po zmianie nie dałoby się zalogować."
     }

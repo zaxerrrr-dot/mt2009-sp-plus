@@ -24,14 +24,17 @@
 //
 // A player's guild takes on a bot guild of its own kingdom by the master's
 // ordinary declaration (the guild window, or /war). The engine refuses a
-// player every field war (CGuild::CanStartWar) and an arena war needs the
-// arena's map on the player's own core, so the engine hands a declaration on
-// a bot guild here (playerbotify.py, apply_player_war_on_bot_guilds); it is
-// always a field war on the kingdom's guild map, and the bot guild answers it
-// on the guild chat, with a rest between wars for both sides. "Mozliwosc
-// rozpoczecia wojny gildii na gildie botow" (Remigiusz, 18 September). A
-// guild skill cannot be used here: CGuild::UseSkill only works inside a war
-// arena.
+// player every field war (CGuild::CanStartWar), and an arena war is fought on
+// 110 or 111, which only the first core hosts and no bot can reach - the
+// declaration itself goes out from any core, since every core loads their
+// regions - so the engine hands a declaration on a bot guild here
+// (playerbotify.py, apply_player_war_on_bot_guilds); it is always a field war
+// on the kingdom's guild map, and the bot guild answers it on the guild chat,
+// with a rest between wars for both sides. "Mozliwosc rozpoczecia wojny
+// gildii na gildie botow" (Remigiusz, 18 September). A war between two
+// people's guilds stays the engine's arena war, answered through do_war
+// (apply_guild_war_answer_type on mt2009). A guild skill cannot be used here:
+// CGuild::UseSkill only works inside a war arena.
 //
 // An implementation fragment in the sense playerbot_types.h describes: include
 // it exactly once, after playerbot_targeting.h (the blows are that file's) and
@@ -1980,6 +1983,22 @@ namespace
 			if (chosen)
 				foe = chosen;
 		}
+		// MT2009_PLUS_WAR_REGROUP_V1: a regroup is a pause, not a fight. The
+		// reach above is measured from the bot, not from its camp, so the
+		// winners who had chased the last of the losers up to the losers' camp
+		// went on fighting there: the losers stood up whole, struck out (which
+		// ends their grace) and fell again before the next round. 252 of the
+		// 600 deaths of the Cloud9/Anarchia war on the test server (28
+		// September) came in its 30 regroups, and 21 of 95 regroups that day
+		// ended with a side still down, whose next round was lost within
+		// seconds - to the eye, bots that stop fighting and stand at their
+		// camps. In a regroup no bot is picked now: every bot walks to its
+		// own camp and waits there; only a person who walks into the camp is
+		// fought.
+		if (foe && round.dwRegroupUntil != 0 &&
+				(!foe->GetDesc() || foe->GetDesc()->IsBot() ||
+				DISTANCE_APPROX(campX - foe->GetX(), campY - foe->GetY()) > PLAYERBOT_GUILD_WAR_CAMP_DEFEND_RANGE))
+			foe = NULL;
 		if (!foe)
 		{
 			state.dwTargetVID = 0;

@@ -235,11 +235,15 @@ namespace
 	}
 
 	// A body armour Iwakura's Patch 3, point 4 caps on the market: +0..+4, and
-	// not one rolled with prize lines, which is not what flooded it.
+	// not one rolled with prize lines, which is not what flooded it. Nor a
+	// black-steel armour of sixty-six (playerbot_stalki.h): the flood was the
+	// level-34 families, and a Stalki is never the merchant's, so one the cap
+	// sent home would stand in its bag for good.
 	bool IsPlayerBotCappedLowArmour(LPITEM item)
 	{
 		return item && item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_BODY &&
-				item->GetRefineLevel() <= PLAYERBOT_LOW_ARMOUR_MAX_PLUS && !IsPlayerBotPrizeItem(item);
+				item->GetRefineLevel() <= PLAYERBOT_LOW_ARMOUR_MAX_PLUS && !IsPlayerBotPrizeItem(item) &&
+				!IsPlayerBotStalkiItem(item);
 	}
 
 	// And a jewel his answer of 26 September holds to the same bound: +0..+3,
@@ -908,6 +912,22 @@ namespace
 					out.insert(vnum);
 			}
 		}
+	}
+
+	// Whether this monster can still give this bot a material at all.
+	// CreateDropItem multiplies every drop by the same PERCENT_LVDELTA as
+	// experience, so fifteen levels over a monster leave one percent of the
+	// chance, and under PLAYERBOT_MATERIAL_MIN_DROP_PERCENT a need is no
+	// reason to farm it. One question for the fight's material exception
+	// (BuildPlayerBotCombatContext) and for the errand that walks the bot to
+	// that fight (StartPlayerBotMaterialHunt): the errand asked nothing, and
+	// rode a bot of forty across its first village to a wolf of four that the
+	// fight then refused.
+	bool CanPlayerBotFarmMaterialFrom(LPCHARACTER ch, LPCHARACTER mob)
+	{
+		return ch && mob && mob->IsMonster() &&
+				PERCENT_LVDELTA(ch->GetLevel(), mob->GetLevel()) >=
+					PLAYERBOT_MATERIAL_MIN_DROP_PERCENT;
 	}
 
 	// Every material any recipe in the game consumes, collected once. There is
@@ -1610,6 +1630,14 @@ namespace
 		// bought off a counter was scrap to the rules below.
 		if (IsPlayerBotGambleForSale(ch, item) || IsPlayerBotRareGambleHeldBase(ch, item))
 			return false;
+		// Nor a Stalki, of any class and at any plus (the operator's decision of
+		// 28 September, playerbot_stalki.h): the one a bot keeps for its next
+		// levels waits in the bag and the rest are a counter's. The default
+		// below sold a level-75 weapon of another class at +0..+3 for a fifth
+		// of its merchant price, and the level rule under it sold the armour a
+		// bot of sixty-four had just picked up for the level it was reaching.
+		if (IsPlayerBotStalkiItem(item))
+			return false;
 
 		// A Cor Draconis or a sash (MT2009 Plus) is the counter's. The
 		// merchant takes it once a line of its kind came home from this bot's
@@ -2180,6 +2208,18 @@ namespace
 			if (IsPlayerBotJunkItem(ch, ch->GetInventoryItem(cell)))
 				++count;
 		return count;
+	}
+
+	// A dozen pieces of scrap send a bot to the merchant under the old rules.
+	// Iwakura's Trader goes at eighty percent of the bag (IsPlayerBotBagFull),
+	// so under his system the scrap is sold on whatever visit comes and starts
+	// none. The town visit and the first village's hold on a departure ask
+	// this one function, because that hold is lifted by a visit: a need that
+	// holds the bot and starts no visit is lifted by nothing but a relog.
+	bool PlayerBotWantsSellRun(LPCHARACTER ch)
+	{
+		return !IsPlayerBotPersonaEnabled() &&
+				CountPlayerBotJunkItems(ch) >= PLAYERBOT_SELL_RUN_JUNK_ITEMS;
 	}
 
 	// Boosters nobody but their holder can use, past PLAYERBOT_BOOSTER_KEEP_PER_VNUM,

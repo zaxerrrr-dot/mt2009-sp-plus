@@ -221,7 +221,9 @@ RUN set -eux; \
     # pc.is_playerbot for the Devil's Catacomb's bot branches (2.2.21).
     # affect.get_duration and pc.has_affect for the ItemShop's Auto Lowy ticket
     # and anti-experience ring (autohunt_time, antiexp_ring; 2.2.26).
-    for fn in mysql_direct_query pc.equip_slot pc.unequip_slot item.set_attr item.get_max_stack item.use pc.open_special_shop affect.add_new affect.remove_new pc.is_playerbot affect.get_duration pc.has_affect; do \
+    # pc.warp_channel for the panels' teleport to a bot on another channel
+    # (web_admin; 2.2.37).
+    for fn in mysql_direct_query pc.equip_slot pc.unequip_slot item.set_attr item.get_max_stack item.use pc.open_special_shop affect.add_new affect.remove_new pc.is_playerbot affect.get_duration pc.has_affect pc.warp_channel; do \
       grep -qx "$fn" /tmp/qc-work/quest_functions || echo "$fn" >> /tmp/qc-work/quest_functions; \
     done; \
     # pony_levelup is the package's own stable-keeper quest with the 18-hour
@@ -337,15 +339,17 @@ COPY src/serverfiles/share/package /opt/metin2/share/package
 #    26 September: an edit of the shipped file came back as the 16.09 one);
 #  * special_item_group.starter.txt - the starter chest chain the playerbot
 #    seed hands out and the package has no group for.
-COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt /tmp/share-add/
+#  * special_item_group.cors.txt - the higher Cor Draconis grades (50256-50259)
+#    open into dragon stones of their own grade (MT2009_PLUS_COR_GRADES_V1).
+COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt /tmp/share-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland \
  && for f in /tmp/share-add/*.txt; do sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$f"; done \
  && m=/tmp/share-add/special_item_group.moonlight.txt; c=/tmp/share-add/special_item_group.moonlight.custom.txt \
  && if [ -s "$c" ]; then grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+50011[[:space:]]*$' "$c" || { echo "FATAL: $c defines no Vnum 50011" >&2; exit 1; }; m="$c"; echo "share: the operator's Moonlight chest"; fi \
  && cat /tmp/share-add/mob_drop_item.m3.append.txt >> "$L/mob_drop_item.txt" \
  && f="$L/special_item_group.txt" \
- && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254)([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
- && cat "$m" /tmp/share-add/special_item_group.starter.txt >> "$f.new" \
+ && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254|50256|50257|50258|50259)([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
+ && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt >> "$f.new" \
  && mv "$f.new" "$f" \
  && rm -rf /tmp/share-add \
  && echo "share: moonlight + starter chests, M3 drops appended"
@@ -609,6 +613,20 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && test "$(od -An -tx1 -j4 -N4 "$L/map/metin2_map_n_snow_dungeon_01/server_attr" | tr -d ' ')" = 0c000000 \
  && rm -rf "$A" \
  && echo "share: Razador (351) and Nemere (352) dungeons, their guards and the Nemere drops"
+# The Spider Baroness (port/shareify.py renders special_spawns.baroness.txt and
+# this step): the level-75 boss who drops the Stalki, stood in the second
+# Spider Dungeon's last room every four to five hours (the operator's decision
+# of 28 September). The package spawns her nowhere; the damage multiplier her
+# lair would give her is the engine's (playerbotify apply_spider_baroness_damage).
+COPY special_spawns.baroness.txt /tmp/spawn-add/
+RUN set -eu; S=/opt/metin2/share/locale/poland/special_spawns.txt; A=/tmp/spawn-add/special_spawns.baroness.txt \
+ && ! grep -q -E '^[[:blank:]]*vnum[[:blank:]]+2092[[:space:]]*$' "$S" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$S")" ] || printf '\r\n' >> "$S"; } \
+ && cat "$A" >> "$S" \
+ && rm -rf /tmp/spawn-add \
+ && test "$(grep -c -E '^[[:blank:]]*spawn_vnum[[:blank:]]+2092[[:space:]]*$' "$S")" -eq 1 \
+ && echo "share: the Spider Baroness spawns in the second Spider Dungeon"
 
 # The cores run unprivileged and read this tree by path; a directory only root
 # can enter costs every quest below it, silently. Repair, then assert.

@@ -15,6 +15,11 @@
 // defines objects, relies on the engine headers playerbot_manager.cpp includes
 // above it, and reopens the same anonymous namespace. Include it exactly once.
 
+#if defined(PLAYERBOT_ENGINE_MT2009)
+// MT2009_PLUS_PICKUP_FILTER_V1 (char_item.cpp): the player's pick-up filter.
+bool Mt2009PlusPickupFilterAllows(LPCHARACTER ch, LPITEM item);
+#endif
+
 namespace
 {
 	// Dropped yang. ITEM_ELK is the money type, not a vnum: the drop is a real
@@ -84,24 +89,50 @@ namespace
 	class FPlayerBotPartyLootOwner
 	{
 		public:
-			FPlayerBotPartyLootOwner(LPITEM item) : m_item(item), m_bFound(false) {}
+			FPlayerBotPartyLootOwner(LPITEM item) : m_item(item), m_pkMember(NULL) {}
 
 			void operator () (LPCHARACTER member)
 			{
-				if (!m_bFound && member && m_item && m_item->IsOwnership(member))
-					m_bFound = true;
+				if (!m_pkMember && member && m_item && m_item->IsOwnership(member))
+					m_pkMember = member;
 			}
 
-			bool Found() const { return m_bFound; }
+			bool Found() const { return m_pkMember != NULL; }
+			LPCHARACTER Member() const { return m_pkMember; }
 
 		private:
 			LPITEM m_item;
-			bool m_bFound;
+			LPCHARACTER m_pkMember;
 	};
+
+	// MT2009_PLUS_PICKUP_FILTER_V1 (bots): the player's own pick-up filter
+	// (uipickupfilter.py, Ctrl+Z; char_item.cpp keeps it by player id) is also
+	// what a bot of the player's party or the player's companion lifts for the
+	// player - "jesli nie chcemy podnosic zbroi, to Towarzysz tez ich nie
+	// podnosi" (the operator, 28 September). A character with no filter, and
+	// yang, pass. The engine's party branch of PickupItem asks the same.
+	bool PlayerBotRecipientWantsDrop(LPCHARACTER recipient, LPITEM item)
+	{
+		if (!recipient || !item || !recipient->IsPC() ||
+				(recipient->GetDesc() && recipient->GetDesc()->IsBot()))
+			return true;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return Mt2009PlusPickupFilterAllows(recipient, item);
+#else
+		return true;
+#endif
+	}
+
+	// playerbot_sidekick.h: a companion's owner, whose filter it keeps.
+	LPCHARACTER GetPlayerBotSidekickFilterOwner(LPCHARACTER ch);
 
 	bool IsPlayerBotPartyLoot(LPCHARACTER owner, LPITEM item)
 	{
 		if (!owner || !item)
+			return false;
+		// MT2009_PLUS_PICKUP_FILTER_V1 (bots): a player's companion takes
+		// nothing its owner has filtered out, not even its own drop.
+		if (!PlayerBotRecipientWantsDrop(GetPlayerBotSidekickFilterOwner(owner), item))
 			return false;
 		if (item->IsOwnership(owner))
 			return true;
@@ -122,7 +153,9 @@ namespace
 		// soon as the individual owners moved toward another target.
 		FPlayerBotPartyLootOwner finder(item);
 		owner->GetParty()->ForEachOnlineMember(finder);
-		return finder.Found();
+		// MT2009_PLUS_PICKUP_FILTER_V1 (bots): not what the member it would go
+		// to has filtered out.
+		return finder.Found() && PlayerBotRecipientWantsDrop(finder.Member(), item);
 	}
 
 	// Whether a drop would land in a bag with no free cell: only by merging
@@ -222,8 +255,12 @@ namespace
 				if (item->GetType() == ITEM_ARMOR &&
 						(item->GetSubType() == ARMOR_HEAD || item->GetSubType() == ARMOR_SHIELD))
 					return false;
+				// Nor a Stalki: the Baroness drops them for a crowd whose best is
+				// past sixty-six, and outgrown they are still a counter's second
+				// prize (PLAYERBOT_SHOP_STALKI_SCORE), never the merchant's.
 				if (item->GetRefineLevel() >= PLAYERBOT_PRECIOUS_REFINE ||
-						IsPlayerBotPrizeItem(item) || IsPlayerBotSpecialLevel30Weapon(item))
+						IsPlayerBotPrizeItem(item) || IsPlayerBotSpecialLevel30Weapon(item) ||
+						IsPlayerBotStalkiItem(item))
 					return false;
 				int levelLimit = 0;
 				for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)

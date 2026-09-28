@@ -340,5 +340,11 @@
   "marker": "MT2009_PLUS_GOBLIN_V1 (attack)",
   "old": "bool CPVPManager::CanAttack(LPCHARACTER pkChr, LPCHARACTER pkVictim)\n{\n\tif (!pkChr || !pkVictim)\n\t\treturn false;\n\n\tswitch (pkVictim->GetCharType())\n",
   "new": "bool CPVPManager::CanAttack(LPCHARACTER pkChr, LPCHARACTER pkVictim)\n{\n\tif (!pkChr || !pkVictim)\n\t\treturn false;\n\n\t// MT2009_PLUS_GOBLIN_V1 (attack): the Treasure Hunt's wave monsters strike\n\t// the Treasure Goblin, a NPC (playerbot_goblin.h).\n\t{\n\t\tbool GoblinAttackable(LPCHARACTER attacker, LPCHARACTER victim);\n\t\tif (GoblinAttackable(pkChr, pkVictim))\n\t\t\treturn true;\n\t}\n\n\tswitch (pkVictim->GetCharType())\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_PICKUP_FILTER_V1 (party)",
+  "old": "\t\tLPCHARACTER owner = funcFindOwnership.owner;\n\t\t// @fixme115\n\t\tif (!owner)\n\t\t\treturn false;\n",
+  "new": "\t\tLPCHARACTER owner = funcFindOwnership.owner;\n\t\t// @fixme115\n\t\tif (!owner)\n\t\t\treturn false;\n\n\t\t// MT2009_PLUS_PICKUP_FILTER_V1 (party): a party member - the companion,\n\t\t// a bot of the party - does not pick up for a member what that member\n\t\t// has filtered out (Ctrl+Z, uipickupfilter.py): it stays on the ground.\n\t\t{\n\t\t\tbool Mt2009PlusPickupFilterAllows(LPCHARACTER ch, LPITEM item);\n\t\t\tif (owner != this && !Mt2009PlusPickupFilterAllows(owner, item))\n\t\t\t\treturn false;\n\t\t}\n"
  }
 ]

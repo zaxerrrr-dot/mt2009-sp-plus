@@ -8,11 +8,15 @@
 #include "playerbot_persona_rules.h"
 #include "playerbot_lure_order_rules.h"
 #include "playerbot_truce_rules.h"
+#include "playerbot_guild_aid_rules.h"
 #include "playerbot_war_rules.h"
 #include "playerbot_item_link_rules.h"
 #include "playerbot_price_rules.h"
 #include "playerbot_bonus_rules.h"
 #include "playerbot_refine_rules.h"
+#include "playerbot_moonlight_rules.h"
+#include "playerbot_stalki_rules.h"
+#include "playerbot_guild_order_rules.h"
 
 #include "char.h"
 #include "skill.h"
@@ -115,6 +119,9 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_persona_tables.h"
 #include "playerbot_weapon_atlas.h"
 #include "playerbot_log.h"
+// What is said to one person (Polish only on MT2009 PLUS): early, so anything
+// may speak to a person.
+#include "playerbot_language.h"
 #include "playerbot_config.h"
 #include "playerbot_events.h"
 // The Battle Pass (the engine calls in through server-patches/playerqol).
@@ -133,6 +140,9 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_combat_value_policy.h"
 #include "playerbot_battle_horse.h"
 #include "playerbot_gear.h"
+// The Stalki - the level-66 armours and the level-75 weapons - as the bots
+// keep and buy them: after the gear, whose candidate test and score it asks.
+#include "playerbot_stalki.h"
 #include "playerbot_consumables.h"
 #include "playerbot_activities.h"
 #include "playerbot_mining.h"
@@ -175,7 +185,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_saddlebag.h"
 // Forward declaration: the trade layer falls through to the deterministic
 // conversation layer for ordinary whispers.
-namespace { bool HandlePlayerBotConversation(LPCHARACTER player, LPCHARACTER bot, const char* text); }
+namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* playerName, LPCHARACTER bot, const char* text); }
 #include "playerbot_chat_trade.h"
 #include "playerbot_loot.h"
 #include "playerbot_gift_trade.h"
@@ -213,6 +223,11 @@ namespace { bool HandlePlayerBotConversation(LPCHARACTER player, LPCHARACTER bot
 // Iwakura's social personalities: the companion's phase and its invitations
 // to people, a companion Shaman's party buffs, and the mercenary's contracts.
 #include "playerbot_companions.h"
+// A person's orders to the bots of the person's guild ("/gildia_boty", the
+// guild window's buttons): who comes, and what it fights there. After the
+// companions, whose "held for company" it asks, the companion, whose choice
+// of foe it borrows, and the tower, whose fight.
+#include "playerbot_guild_orders.h"
 #include "playerbot_lure.h"
 #include "playerbot_admin.h"
 // MT2009_PLUS_BP_BOTS_V1: the bots' Battle Pass errands and shouts, after
@@ -4341,6 +4356,11 @@ void CPlayerBotManager::SendEventCalendar(LPCHARACTER ch)
 	ch->ChatPacket(CHAT_TYPE_COMMAND, "EventCalEnd %u", sent);
 }
 
+void CPlayerBotManager::OnGuildBotOrder(LPCHARACTER ch, const char* szArgument)
+{
+	HandlePlayerBotGuildOrder(ch, szArgument);
+}
+
 // A companion is saved where it last stood, and that can be a map another
 // core hosts: it followed its owner there, and the owner came back. The
 // engine's load refused it before anything of ours could put it beside its
@@ -5219,10 +5239,12 @@ void CPlayerBotManager::CoordinateChannelSwaps(DWORD dwNow)
 	m_dwNextChannelCoordinatorTime = dwNow + PLAYERBOT_CHANNEL_COORDINATOR_INTERVAL;
 	m_bChannelCoordInFlight = true;
 	const std::string shop = std::to_string(playerbot_channel_rules::SHOP_CHANNEL);
+	// The bots that play are the first two channels' (channel IN (1,2)): a
+	// row of any other channel must never count towards the shop channel's cap.
 	SendChannelSql(PB_CHSQL_CENSUS, 0, 0, 0, 0,
 			"SELECT COALESCE((SELECT TIMESTAMPDIFF(SECOND,last_batch,NOW()) "
 			"FROM common.playerbot_channel_control WHERE id=1),999999),"
-			"COALESCE(SUM(" + PlayerBotChannelSeen() + "),0),"
+			"COALESCE(SUM(channel IN (1,2) AND " + PlayerBotChannelSeen() + "),0),"
 			"COALESCE(SUM(channel=" + shop + " AND " + PlayerBotChannelSeen() + "),0),"
 			"COALESCE(SUM(channel<>" + shop + " AND requested_channel=" + shop +
 			" AND " + PlayerBotChannelRequestReady() + "),0) "
@@ -6568,8 +6590,10 @@ WritePlayerBotGuildStatus(dwNow);
 					IsPlayerBotGambling(state, dwNow);
 			const bool bNeedsGearUpgrade = bNeedsCoreGear || NeedsPlayerBotArrows(ch);
 			// The Trader's merchant round comes with the eighty percent above,
-			// not with a dozen pieces of junk.
-			const bool bNeedsSellRun = !personaOn && CountPlayerBotJunkItems(ch) >= 12;
+			// not with a dozen pieces of junk. The first village's hold on a
+			// departure asks the same function, or it waits for a visit this
+			// line never starts.
+			const bool bNeedsSellRun = PlayerBotWantsSellRun(ch);
 			const bool bNeedsPotionCleanup = HasPlayerBotExcessPotions(ch);
 			// What the box gives back - the list's pieces the gambler no longer
 			// keeps, the refine materials for the counter (Patch 4, point 5) -
@@ -7156,21 +7180,89 @@ bool CPlayerBotManager::IsManaged(DWORD dwPlayerID) const
 	return m_mapBots.find(dwPlayerID) != m_mapBots.end();
 }
 
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+// Piciu713's market range for the Dom Towarowy's hint (28 September): the
+// cheapest and the dearest listing of the same thing on every other offline
+// shop - players' and bots', what the Dom Towarowy's catalogue lists - each
+// priced for the stack being put up, so fifty arrows are held against fifty
+// whatever stack the other counter keeps them in. A book whose skill is its
+// socket 0 (50300 and the two forgetting books, 70037 and 70055 - the
+// catalogue's own list) is the same thing only with the same skill; any other
+// book's skill is its vnum. Three things are left out. The asker's own
+// counter: the line being repriced is on it, so the range always held that
+// line's own price, and "Minimalna" could only ever go down. A bot's slip
+// still standing (Iwakura's "ludzka pomylka", a zero too many): no buyer takes
+// it, and "Maksymalna" would copy it. And a shop that ran out or is being
+// edited, which nobody can buy from. Zeros: nothing comparable is listed.
+static void GetPlayerBotFleaMarketRange(LPCHARACTER ch, LPITEM item,
+		unsigned long long& minPrice, unsigned long long& maxPrice)
+{
+	minPrice = 0;
+	maxPrice = 0;
+	const DWORD vnum = item->GetVnum();
+	const bool skillInSocket = vnum == 50300 || vnum == 70037 || vnum == 70055;
+	const unsigned long long targetCount = std::max<DWORD>(1, item->GetCount());
+	for (const auto& [ownerPID, shop] : ikashop::GetManager().GetPlayerBotOfflineShops())
+	{
+		if (!shop || shop->GetOwnerPID() == ch->GetPlayerID() || shop->GetDuration() == 0
+				|| shop->IsEditMode())
+			continue;
+		for (const auto& [lineID, line] : shop->GetItems())
+		{
+			if (!line)
+				continue;
+			const auto& info = line->GetInfo();
+			if (info.vnum != vnum || (skillInSocket && info.alSockets[0] != item->GetSocket(0)))
+				continue;
+			const long long totalYang = info.price.GetTotalYangAmount();
+			if (totalYang <= 0)
+				continue;
+			// Only a drawn line of one unit can be a slip, one in a thousand of
+			// them, so only that one is looked at closer - as the ledger does.
+			if (info.count == 1 && IsPlayerBotPriceSlipDrawn(lineID))
+			{
+				bool slip = false;
+				if (LPITEM preview = BotOfflinePreview(*line))
+				{
+					slip = IsPlayerBotStandingPriceSlip(preview, totalYang);
+					M2_DELETE(preview);
+				}
+				if (slip)
+					continue;
+			}
+			const unsigned long long listedCount = std::max<DWORD>(1, info.count);
+			const unsigned long long stackPrice = std::max<unsigned long long>(1,
+					(unsigned long long)totalYang * targetCount / listedCount);
+			if (minPrice == 0 || stackPrice < minPrice)
+				minPrice = stackPrice;
+			if (stackPrice > maxPrice)
+				maxPrice = stackPrice;
+		}
+	}
+}
+#endif
+
 // Uxie [DSO]'s price hint for the Dom Towarowy (27 September): a player putting
 // an item on its own offline shop's counter is told what a bot would ask for
 // it (the asking price every bot's counter uses) and what the bots have been
 // paid for one lately, with the number of sales behind that. A bot has no
 // counter window to show it in. Zeros say there is nothing to go by.
-void CPlayerBotManager::SendFleaMarketPriceQuote(LPCHARACTER ch, BYTE bWindow,
-		WORD wCell, DWORD dwRequestID)
+//
+// With bRange the market's range for such a stack goes first, as
+// "FleaPriceRange" (Piciu713, 28 September), and only to a client that asked
+// for it by the request's fourth number (playerbotify apply_flea_price_range):
+// a client's handler of a server command takes exactly the numbers it was
+// written for - the published 2.0.49 one four, and a fifth is a TypeError in
+// its syserr and no hint at all - so FleaPriceQuote keeps its four, and a
+// client that knows no FleaPriceRange is never sent one.
+static void SendPlayerBotFleaMarketQuote(LPCHARACTER ch, LPITEM item,
+		DWORD dwRequestID, bool bRange)
 {
-	if (!ch || IsManaged(ch->GetPlayerID()))
-		return;
-
 	DWORD suggestedPrice = 0;
 	DWORD observedPrice = 0;
 	DWORD sampleCount = 0;
-	LPITEM item = ch->GetItem(TItemPos(bWindow, wCell));
+	unsigned long long marketMinPrice = 0;
+	unsigned long long marketMaxPrice = 0;
 	if (item)
 	{
 		suggestedPrice = GetPlayerBotShopAskingPrice(item);
@@ -7181,15 +7273,88 @@ void CPlayerBotManager::SendFleaMarketPriceQuote(LPCHARACTER ch, BYTE bWindow,
 				item->GetRefineLevel(), get_dword_time(), &samples, skillVnum);
 		observedPrice = observedUnitPrice * std::max<DWORD>(1, item->GetCount());
 		sampleCount = (DWORD)samples;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		if (bRange)
+			GetPlayerBotFleaMarketRange(ch, item, marketMinPrice, marketMaxPrice);
+#endif
 	}
 
+	if (bRange)
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "FleaPriceRange %u %llu %llu",
+				dwRequestID, marketMinPrice, marketMaxPrice);
 	ch->ChatPacket(CHAT_TYPE_COMMAND, "FleaPriceQuote %u %u %u %u",
 			dwRequestID, suggestedPrice, observedPrice, sampleCount);
+}
+
+void CPlayerBotManager::SendFleaMarketPriceQuote(LPCHARACTER ch, BYTE bWindow,
+		WORD wCell, DWORD dwRequestID, bool bRange)
+{
+	if (!ch || IsManaged(ch->GetPlayerID()))
+		return;
+
+	SendPlayerBotFleaMarketQuote(ch, ch->GetItem(TItemPos(bWindow, wCell)), dwRequestID, bRange);
+}
+
+// The same hint for a line already on the asker's own offline shop (Piciu713,
+// 28 September): the edit-price window asks for it by the line's item id. The
+// line is read as BotOfflinePreview reads a stand's - an item the item manager
+// never sees, with no id taken, nothing queued for a save and no event. His
+// version made a real one (CShopItem::CreateItem) under the line's own id and
+// destroyed it in the same call with the save skipped: for that moment the id
+// of the piece on the counter is registered in the item manager and queued
+// for a save, CreateItem refuses outright (ITEM_ID_DUP) whenever the id is
+// held there already, and without the SetSkipSave before M2_DESTROY_ITEM the
+// destroy sends the db core HEADER_GD_ITEM_DESTROY for that id. A line that
+// is gone, or a shop that is not the asker's, is answered with nothing, and
+// the window stays as a world with the Dom Towarowy off leaves it. Nothing on
+// r40250.
+void CPlayerBotManager::SendFleaMarketShopItemPriceQuote(LPCHARACTER ch,
+		DWORD dwShopItemID, DWORD dwRequestID, bool bRange)
+{
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+	if (!ch || IsManaged(ch->GetPlayerID()))
+		return;
+	auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+	if (!shop)
+		return;
+	auto line = shop->GetItem(dwShopItemID);
+	if (!line)
+		return;
+	LPITEM preview = BotOfflinePreview(*line);
+	if (!preview)
+		return;
+	SendPlayerBotFleaMarketQuote(ch, preview, dwRequestID, bRange);
+	M2_DELETE(preview);
+#else
+	(void)ch;
+	(void)dwShopItemID;
+	(void)dwRequestID;
+	(void)bRange;
+#endif
 }
 
 size_t CPlayerBotManager::GetCount() const
 {
 	return m_mapBots.size();
+}
+
+// The bootstrap in input_db.cpp's MapLocations runs once a core. The db core
+// sends MapLocations again whenever another core sets up - on the 2.x line to
+// every core of every channel (ENABLE_MOVE_CHANNEL) - and the guard used to be
+// "no bot in the world yet". A start whose first batch put nobody in - the
+// bots held at the door on a new world, or a first batch the channel table
+// refused - answered yes at every one of them, and each run scheduled the
+// kingdom's next identities after the ones already queued: a new world on
+// four channels started every identity it had, 5 000 bots for the 2 500 asked
+// and still coming ("jak limit 2500 botow to jakim cudem mam juz 3200 prawie i
+// ciagle rosnie", Latarka, 28 September). Whoever goes missing afterwards is
+// TopUpMissingBots' job, never the bootstrap's again.
+bool CPlayerBotManager::TakeAutospawnBootstrap()
+{
+	if (m_bAutospawnBootstrapTaken)
+		return false;
+	m_bAutospawnBootstrapTaken = true;
+	return m_mapBots.empty();
 }
 
 void CPlayerBotManager::GetAvailableBots(std::vector<DWORD>& out, size_t limit)
@@ -7309,9 +7474,10 @@ void CPlayerBotManager::OnPlayerFieldWarEntry(LPCHARACTER ch, DWORD dwMyGuild, D
 	EnterPlayerBotFieldWar(ch, dwMyGuild, dwOppGuild);
 }
 
-// A player's blow at a bot, or at a person in a party (CHARACTER::Damage,
-// mt2009 via playerbotify.py): the one thing the engine does not remember
-// about a fight, and the one the Anti-PK protocol needs (playerbot_anti_pk.h).
+// A player's blow at a bot, or at a person in a party or a guild
+// (CHARACTER::Damage, mt2009 via playerbotify.py): the one thing the engine
+// does not remember about a fight, and the one the Anti-PK protocol needs
+// (playerbot_anti_pk.h).
 void CPlayerBotManager::OnPlayerStruck(LPCHARACTER victim, LPCHARACTER attacker)
 {
 	NotePlayerBotStruck(victim, attacker, get_dword_time());
@@ -7390,6 +7556,14 @@ void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const
 	if (HandlePlayerBotSidekickWhisper(from, bot, szText))
 		return;
 	HandlePlayerWhisperToBot(from, bot, szText);
+}
+
+// The companion's orders need the owner at its side, so an owner on another
+// core - for the few seconds before the companion follows it there - is
+// answered by the conversation, as anybody is.
+void CPlayerBotManager::OnPeerWhisper(const char* szFrom, LPCHARACTER bot, const char* szText)
+{
+	HandlePlayerWhisperFromPeer(szFrom, bot, szText);
 }
 
 // --- The F9 panel's two entry points ---------------------------------------

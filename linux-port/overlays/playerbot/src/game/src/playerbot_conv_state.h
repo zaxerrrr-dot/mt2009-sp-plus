@@ -199,6 +199,7 @@ namespace playerbot_conv
 		SB_OTHER_PARTY,    // with another person: their party, their order
 		SB_OTHER_SUMMON,   // already on its way to somebody else
 		SB_DEAD,
+		SB_OTHER_CHANNEL,  // the person plays on the other channel: another core's world
 		SB_COUNT
 	};
 
@@ -206,7 +207,7 @@ namespace playerbot_conv
 	{
 		static const char* const k[SB_COUNT] = {
 			"none", "other_map", "stall", "fishing", "mining", "duel", "guild_war", "tower", "dungeon",
-			"merc", "other_party", "other_summon", "dead" };
+			"merc", "other_party", "other_summon", "dead", "other_channel" };
 		return b >= 0 && b < SB_COUNT ? k[b] : "?";
 	}
 
@@ -340,6 +341,12 @@ namespace playerbot_conv
 		long long weaponGoalPrice;  // what it costs on a counter, 0 unknown
 		bool weaponOutclassed;      // the goal hits a third harder than the hand
 		bool weaponIsGoal;          // the hand already holds the goal's family
+		// The channel the bot plays on and the one the asker does, 0 unknown. A
+		// whisper can come from the other channel (the engine relays it between
+		// the two cores), and "w Joan" alone would send that person to their
+		// own channel's Joan, where the bot is not (AskerOnOtherChannel).
+		int channel;
+		int askerChannel;
 
 		TBotSnapshot() : level(1), job(0), empire(0), mapIndex(0), inTown(false), safeZone(false),
 			inDungeon(false), action(A_IDLE), goal(G_LEVEL), travelMap(0), riding(false),
@@ -356,7 +363,7 @@ namespace playerbot_conv
 			askerNear(false), hour(12), afk(false), huntRemaining(0), dragonCoins(0), dragonKnown(false),
 			skillGroup(0), mainSkill(0), summonBlock(SB_NONE), summoned(false), summonedByAsker(false),
 			summonArrived(false), askerOnMap(false), askerDistance(-1), weaponLevel(0), weaponGoalPrice(0),
-			weaponOutclassed(false), weaponIsGoal(false)
+			weaponOutclassed(false), weaponIsGoal(false), channel(0), askerChannel(0)
 		{
 			for (int i = 0; i < 6; ++i)
 			{
@@ -367,6 +374,12 @@ namespace playerbot_conv
 
 		int Build() const { return BuildOf(job, skillGroup); }
 	};
+
+	// Whether the asker plays on the other channel than the bot.
+	inline bool AskerOnOtherChannel(const TBotSnapshot& s)
+	{
+		return s.channel > 0 && s.askerChannel > 0 && s.channel != s.askerChannel;
+	}
 
 	// Things only the engine can look up, asked for while a reply is written.
 	class IConvWorld

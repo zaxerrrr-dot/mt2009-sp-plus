@@ -177,10 +177,12 @@ namespace
 	const DWORD PLAYERBOT_SIDEKICK_FOE_MEMORY_EVERY_MS = 1000;
 	const size_t PLAYERBOT_SIDEKICK_FOE_MEMORY_MAX = 32;
 	const int PLAYERBOT_SIDEKICK_HANDOFF_RANGE = 2500;
-	// The owner spends the stat points (the window's "Statystyki"; Kiciamol,
+	// The owner spends the stat points (the window's status page; Kiciamol,
 	// 25 September: "Dodasz jeszcze mozliwosc dodawania statystyk przez
-	// gracza?" - Tieru: "Tak"). One order adds at most this many points.
-	const int PLAYERBOT_SIDEKICK_STAT_ORDER_MAX = 10;
+	// gracza?" - Tieru: "Tak"). One order adds at most this many points: the
+	// page's "+" is the player's own, whose Ctrl + click asks for a number of
+	// two digits, and ninety is what one stat can hold.
+	const int PLAYERBOT_SIDEKICK_STAT_ORDER_MAX = 90;
 	// "Lurowanie" in the window (Tieru, 25 September: "towarzysz zbiera 3
 	// grupki mobow - moby zwykle sa w trojke/czworke, wiec niech jakos to
 	// odroznia i zbiera spoty"). A course wakes up to this many packs round
@@ -651,6 +653,16 @@ namespace
 		return rec && !rec->bChests;
 	}
 
+	// MT2009_PLUS_PICKUP_FILTER_V1 (bots): the owner whose pick-up filter
+	// (Ctrl+Z) this companion keeps, on this core; NULL for any other bot.
+	LPCHARACTER GetPlayerBotSidekickFilterOwner(LPCHARACTER ch)
+	{
+		if (!ch || s_mapPlayerBotSidekickOwner.empty())
+			return NULL;
+		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
+		return rec ? CHARACTER_MANAGER::instance().FindByPID(rec->dwOwnerPID) : NULL;
+	}
+
 	// The owner, when it is a person in this core's world (or a bot, under the
 	// self-test).
 	LPCHARACTER GetPlayerBotSidekickOwnerChar(DWORD ownerPid)
@@ -871,8 +883,8 @@ namespace
 		return rec && rec->bManualSkills;
 	}
 
-	// The owner spends its stat points (the window's "Statystyki"), and the
-	// stat pass (ManagePlayerBotStats) leaves them alone.
+	// The owner spends its stat points (the window's "Statystyki rozdaje sam"),
+	// and the stat pass (ManagePlayerBotStats) leaves them alone.
 	bool IsPlayerBotSidekickManualStats(LPCHARACTER ch)
 	{
 		if (!ch || s_mapPlayerBotSidekickOwner.empty())
@@ -2347,12 +2359,26 @@ namespace
 	// a new login, a new VID for the owner - and again after
 	// PLAYERBOT_SIDEKICK_BODY_RESEND_MS. A root from before 2.0.40 answers the
 	// command with one "Unknown Server Command" line in its syserr.txt.
+	//
+	// MT2009_PLUS_SIDEKICK_HAIR_V1: "SidekickVid <vid> <hair> <sash>" - the
+	// hair and the sash parts too, and again at every change of the armour,
+	// the hair or the sash. An instance typed as an NPC takes no hair and no
+	// sash (CInstanceBase::SetHair and SetAcce return for anything but a
+	// player), and the client's ChangeArmor builds the body anew and puts the
+	// hair back through SetHair: the companion in a new armour or costume
+	// stood with an empty head in its owner's eyes ("Towarzysz jak ma zalozona
+	// fryzure, to nie wyswietla sie model - jest tak, jakby pusta glowa", 28
+	// September). sidekickcollision.py puts both back as a player for a
+	// moment. A root before this ignores the two numbers.
 	struct TPlayerBotSidekickBodySent
 	{
 		DWORD dwVid;
 		DWORD dwOwnerVid;
 		DWORD dwAt;
-		TPlayerBotSidekickBodySent() : dwVid(0), dwOwnerVid(0), dwAt(0) {}
+		DWORD dwMain;
+		DWORD dwHair;
+		DWORD dwAcce;
+		TPlayerBotSidekickBodySent() : dwVid(0), dwOwnerVid(0), dwAt(0), dwMain(0), dwHair(0), dwAcce(0) {}
 	};
 	std::map<DWORD, TPlayerBotSidekickBodySent> s_mapPlayerBotSidekickBodySent;	// by owner pid
 
@@ -2367,13 +2393,27 @@ namespace
 		// Nothing to take back from a client that was never told.
 		if (vid == 0 && sent.dwVid == 0)
 			return;
-		if (vid == sent.dwVid && ownerVid == sent.dwOwnerVid &&
-				dwNow - sent.dwAt < PLAYERBOT_SIDEKICK_BODY_RESEND_MS)
+		const DWORD main = vid ? (DWORD)sk->GetPart(PART_MAIN) : 0;
+		const DWORD hair = vid ? (DWORD)sk->GetPart(PART_HAIR) : 0;
+#ifdef ENABLE_ACCE_COSTUME_SYSTEM
+		const DWORD acce = vid ? (DWORD)sk->GetPart(PART_ACCE) : 0;
+#else
+		const DWORD acce = 0;
+#endif
+		if (vid == sent.dwVid && ownerVid == sent.dwOwnerVid && main == sent.dwMain && hair == sent.dwHair &&
+				acce == sent.dwAcce && dwNow - sent.dwAt < PLAYERBOT_SIDEKICK_BODY_RESEND_MS)
 			return;
-		owner->ChatPacket(CHAT_TYPE_COMMAND, "SidekickVid %u", (unsigned int)vid);
+		if (vid)
+			owner->ChatPacket(CHAT_TYPE_COMMAND, "SidekickVid %u %u %u", (unsigned int)vid, (unsigned int)hair,
+					(unsigned int)acce);
+		else
+			owner->ChatPacket(CHAT_TYPE_COMMAND, "SidekickVid 0");
 		sent.dwVid = vid;
 		sent.dwOwnerVid = ownerVid;
 		sent.dwAt = dwNow;
+		sent.dwMain = main;
+		sent.dwHair = hair;
+		sent.dwAcce = acce;
 	}
 #endif
 
@@ -4269,14 +4309,28 @@ namespace
 		const int magicAtt = 0;
 		const int skillDuration = 0;
 #endif
-		// And after those, the stat window's (StatWindow in
-		// uisidekickinventory.py): the points left, who spends them, whether the
-		// one free reset is still there, and the four stats as spent - the real
+		// And after those, the stat points of the window's status page
+		// (uisidekick.py): the points left, who spends them, whether the one
+		// free reset is still there, and the four stats as spent - the real
 		// points, without what the gear adds - in the order the character window
-		// shows them (vitality, intelligence, strength, dexterity). An older
-		// client reads none of it.
+		// shows them (vitality, intelligence, strength, dexterity).
+		//
+		// And last, what that page shows as the player's own character window
+		// shows it and the client cannot work out for another character
+		// (Piciu713, 28 September: "jaki zakres ataku ma moj towarzysz i ile ma
+		// obrony"): the experience and what the level needs, the attack the
+		// gear, the party and the monster grades add over the weapon's own
+		// (uicharacter.py's atkBonus and attackerBonus - the weapon's the
+		// client reads from its item table, as it does for the player), the
+		// defence boost in percent, and the moving speed. An older client reads
+		// none of it.
+		int attackBonus = (int)sk->GetPoint(POINT_ATT_GRADE_BONUS) + (int)sk->GetPoint(POINT_PARTY_ATTACKER_BONUS);
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		attackBonus += (int)sk->GetPoint(POINT_DAGGER_ATT_GRADE_MONSTER) + (int)sk->GetPoint(POINT_ATT_GRADE_MONSTER);
+#endif
 		SendPlayerBotSidekickCommand(owner,
-				"SidekickSkillBegin %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %u %d %d %d %d %d %d %d",
+				"SidekickSkillBegin %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %u %d %d %d %d %d %d %d "
+				"%u %u %d %d %d",
 				PLAYERBOT_SIDEKICK_EQ_PROTOCOL, (int)sk->GetPoint(POINT_SKILL), (int)sk->GetJob(),
 				(int)sk->GetSkillGroup(), rec->second.bManualSkills ? 1 : 0, (int)sk->GetLevel(),
 				(int)sk->GetPoint(POINT_ST), (int)sk->GetPoint(POINT_DX), (int)sk->GetPoint(POINT_HT),
@@ -4287,7 +4341,9 @@ namespace
 				weapon ? (unsigned int)weapon->GetVnum() : 0U,
 				(int)sk->GetPoint(POINT_STAT), rec->second.bManualStats ? 1 : 0, rec->second.bStatResetUsed ? 0 : 1,
 				(int)sk->GetRealPoint(POINT_HT), (int)sk->GetRealPoint(POINT_IQ), (int)sk->GetRealPoint(POINT_ST),
-				(int)sk->GetRealPoint(POINT_DX));
+				(int)sk->GetRealPoint(POINT_DX),
+				(unsigned int)sk->GetExp(), (unsigned int)sk->GetNextExp(), attackBonus,
+				(int)sk->GetPoint(POINT_DEF_BONUS), (int)sk->GetPoint(POINT_MOV_SPEED));
 		const DWORD base = GetPlayerBotSidekickSkillBase(sk);
 		for (DWORD vnum = base; base != 0 && vnum < base + 6; ++vnum)
 			if (CSkillManager::instance().Get(vnum))
@@ -4761,8 +4817,9 @@ namespace
 			SendPlayerBotSidekickWindow(ch, !strcmp(a1, "1"));
 			return;
 		}
-		// The bag window and the skills window (uisidekickinventory.py): each
-		// says for itself that there is no companion.
+		// The bag window (uisidekickinventory.py) and the status and skill pages
+		// of the companion's window (uisidekick.py): each answer says for
+		// itself that there is no companion.
 		if (!strcmp(sub, "eq"))
 		{
 			HandlePlayerBotSidekickEqCommand(ch, a1, a2, a3);
@@ -5218,6 +5275,11 @@ namespace
 				return;
 			std::map<DWORD, DWORD>::const_iterator failed = rt.mapLootFailed.find(item->GetVID());
 			if (failed != rt.mapLootFailed.end() && (int)(now - failed->second) < 0)
+				return;
+			// MT2009_PLUS_PICKUP_FILTER_V1 (bots): what the owner does not pick
+			// up (Ctrl+Z), its companion leaves too - the owner's drops and its
+			// own alike.
+			if (!PlayerBotRecipientWantsDrop(owner ? owner : GetPlayerBotSidekickFilterOwner(self), item))
 				return;
 			const bool ownersOnly = owner && item->IsOwnership(owner) && !item->IsOwnership(self);
 			if (ownersOnly)

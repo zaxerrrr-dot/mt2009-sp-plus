@@ -896,18 +896,44 @@ function Test-M2VpsLocalPortFree {
     finally { if ($listener) { try { $listener.Stop() } catch { } } }
 }
 
+function Get-M2VpsLocalServerPorts {
+    # The panel ports of the server installed in this folder, from its .env
+    # (the defaults where a line is missing); none where no server was ever
+    # set up here. A tunnel that took them while that server was stopped held
+    # them when it next started: an update built its images and then could not
+    # bind 7790, and every retry stopped at "port 7788 zajmuje proces ssh"
+    # (Sudak, 28 September).
+    param([Parameter(Mandatory = $true)][string]$ServerRoot)
+    $envPath = Join-Path $ServerRoot 'linux-port\docker\.env'
+    if (-not (Test-Path -LiteralPath $envPath -PathType Leaf)) { return @() }
+    $values = @{}
+    foreach ($line in @(Get-Content -LiteralPath $envPath -ErrorAction SilentlyContinue)) {
+        if ([string]$line -match '^\s*(M2_PANEL_PUBLIC_PORT|M2_SEBAN_PANEL_PORT|M2_ITEMSHOP_PUBLIC_PORT)\s*=\s*(\d+)\s*$') {
+            $values[$Matches[1]] = [int]$Matches[2]
+        }
+    }
+    $ports = @()
+    foreach ($entry in @(@('M2_PANEL_PUBLIC_PORT', 7788), @('M2_SEBAN_PANEL_PORT', 7790), @('M2_ITEMSHOP_PUBLIC_PORT', 7791))) {
+        $ports += $(if ($values.ContainsKey($entry[0])) { $values[$entry[0]] } else { [int]$entry[1] })
+    }
+    return $ports
+}
+
 function Get-M2VpsTunnelPlan {
     # Pure but for the probe: a local port for every remote panel port - the
     # same number where it is free, which keeps the panels' links to each
     # other (they name 127.0.0.1:7788), else ten or twenty thousand higher,
-    # where a server running on this PC already holds 7788.
-    param([Parameter(Mandatory = $true)][int[]]$RemotePorts, [Parameter(Mandatory = $true)][scriptblock]$IsFree)
+    # where a server running on this PC already holds 7788. -AvoidPorts: the
+    # ports of the server installed on this PC, never taken even while it is
+    # stopped (Get-M2VpsLocalServerPorts).
+    param([Parameter(Mandatory = $true)][int[]]$RemotePorts, [Parameter(Mandatory = $true)][scriptblock]$IsFree,
+        [int[]]$AvoidPorts = @())
     $taken = @()
     $plan = @()
     foreach ($remote in $RemotePorts) {
         $chosen = 0
         foreach ($candidate in @($remote, ($remote + 10000), ($remote + 20000))) {
-            if ($candidate -gt 65535 -or $taken -contains $candidate) { continue }
+            if ($candidate -gt 65535 -or $taken -contains $candidate -or $AvoidPorts -contains $candidate) { continue }
             if (& $IsFree $candidate) { $chosen = $candidate; break }
         }
         if ($chosen -eq 0) { throw ('Nie ma wolnego portu na tym komputerze dla panelu VPS {0}.' -f $remote) }
@@ -974,7 +1000,8 @@ function Open-M2VpsPanel {
     }
     catch { $status = $null }
     [void](Close-M2VpsPanel -ServerRoot $ServerRoot)
-    $plan = Get-M2VpsTunnelPlan -RemotePorts $remotePorts -IsFree { param($port) Test-M2VpsLocalPortFree -Port $port }
+    $plan = Get-M2VpsTunnelPlan -RemotePorts $remotePorts -AvoidPorts @(Get-M2VpsLocalServerPorts -ServerRoot $ServerRoot) `
+        -IsFree { param($port) Test-M2VpsLocalPortFree -Port $port }
     $forwards = @($plan | ForEach-Object { '{0}:127.0.0.1:{1}' -f $_.local, $_.remote })
     $line = ConvertTo-M2VpsCommandLine -Arguments (Get-M2VpsSshArguments -State $State -BatchMode -NoCommand -Forward $forwards)
     $process = Start-Process -FilePath (Get-M2VpsTool 'ssh') -ArgumentList $line -WindowStyle Hidden -PassThru
@@ -1209,7 +1236,7 @@ Export-ModuleMember -Function Get-M2VpsStatePath, Get-M2VpsDefaultKeyPath, New-M
     Test-M2VpsMachine, Format-M2VpsMachineReport,
     Test-M2VpsUploadExcluded, Get-M2VpsNestedExcludes, Get-M2VpsUploadEntries, Get-M2VpsTarArguments, Get-M2VpsUnpackCommand, Send-M2VpsServer,
     ConvertFrom-M2VpsStatus, Get-M2VpsStatus, Compare-M2VpsVersion, Wait-M2VpsJob, Get-M2VpsInstallAddressArgument, Install-M2Vps, Update-M2Vps,
-    Test-M2VpsLocalPortFree, Get-M2VpsTunnelPlan, Get-M2VpsTunnelProcess, Get-M2VpsPanelAddresses, Close-M2VpsPanel, Open-M2VpsPanel,
+    Test-M2VpsLocalPortFree, Get-M2VpsLocalServerPorts, Get-M2VpsTunnelPlan, Get-M2VpsTunnelProcess, Get-M2VpsPanelAddresses, Close-M2VpsPanel, Open-M2VpsPanel,
     Get-M2VpsLogsScript, Get-M2VpsLogs, ConvertFrom-M2VpsAccounts, Get-M2VpsAccounts,
     Get-M2VpsGamePorts, Get-M2VpsWorldAddress, Write-M2VpsClientEntry, Test-M2VpsInviteAccess, Assert-M2VpsInviteAccess,
     ConvertTo-M2VpsAsciiName, New-M2VpsFriend, Get-M2VpsFriendInvite

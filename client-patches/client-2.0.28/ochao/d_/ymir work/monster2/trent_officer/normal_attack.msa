@@ -12,7 +12,7 @@ Group MotionEventData
         MotionEventType      4
         StartingTime         0.681265
         DuringTime           0.200000
-        EnableHitProcess     0
+        EnableHitProcess     1
         
         AttackType           0
         HittingType          1

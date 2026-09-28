@@ -597,16 +597,37 @@ function Test-M2CoopFirewallRule {
 
 function Add-M2CoopFirewallRule {
     param([Parameter(Mandatory = $true)][int[]]$Ports)
+    $global:M2CoopFirewallError = ''
     if (Test-M2CoopFirewallRule) { return $true }
     # The rule is the operating system's; adding it takes the administrator's
     # consent, asked by Windows itself (UAC), never assumed.
     $list = ($Ports | Sort-Object -Unique) -join ','
-    $command = "New-NetFirewallRule -DisplayName '$script:CoopFirewallRule' -Direction Inbound -Protocol TCP -LocalPort $list -Action Allow -Profile Any | Out-Null"
+    # MT2009_PLUS_COOP_FIREWALL_V1: the elevated PowerShell runs with its own
+    # execution policy bypassed, falls back to netsh when New-NetFirewallRule
+    # fails, and its result is kept in $global:M2CoopFirewallError for the log.
+    # Every failure used to be logged as "odmowa zgody" - a cancelled question
+    # and a command that failed alike - while a host hosted six times without
+    # the rule and no friend's connection ever reached the auth core (bundle
+    # of 28 September, Radmin VPN).
+    $command = "try { New-NetFirewallRule -DisplayName '$script:CoopFirewallRule' -Direction Inbound -Protocol TCP -LocalPort $list -Action Allow -Profile Any -ErrorAction Stop | Out-Null; exit 0 } catch { netsh advfirewall firewall add rule 'name=$script:CoopFirewallRule' dir=in action=allow protocol=TCP localport=$list profile=any | Out-Null; exit `$LASTEXITCODE }"
     try {
-        $p = Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-Command', $command) -Verb RunAs -Wait -PassThru -WindowStyle Hidden
-        [void]$p
-    } catch { return $false }
-    return (Test-M2CoopFirewallRule)
+        $p = Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', $command) -Verb RunAs -Wait -PassThru -WindowStyle Hidden
+        if ($p -and $p.ExitCode -ne 0) { $global:M2CoopFirewallError = ('polecenie zapory zakonczone kodem {0}' -f $p.ExitCode) }
+    } catch {
+        $global:M2CoopFirewallError = ('Windows: {0}' -f $_.Exception.Message)
+        return $false
+    }
+    $ok = [bool](Test-M2CoopFirewallRule)
+    if (-not $ok -and -not $global:M2CoopFirewallError) { $global:M2CoopFirewallError = 'regula nie pojawila sie w zaporze' }
+    return $ok
+}
+
+# The same rule by hand, for an account without the administrator's rights
+# or a question that never shows: one line for an administrator's Command
+# Prompt (MT2009_PLUS_COOP_FIREWALL_V1).
+function Get-M2CoopFirewallManualCommand {
+    param([Parameter(Mandatory = $true)][int[]]$Ports)
+    return ('netsh advfirewall firewall add rule name="{0}" dir=in action=allow protocol=TCP localport={1} profile=any' -f $script:CoopFirewallRule, (($Ports | Sort-Object -Unique) -join ','))
 }
 
 function Remove-M2CoopFirewallRule {
@@ -1061,4 +1082,5 @@ Export-ModuleMember -Function Get-M2CoopStatePath, Read-M2CoopState, Save-M2Coop
     Test-M2CoopHostAnswers, Get-M2CoopInviteTarget, Get-M2CoopJoinAdvice,
     Get-M2CoopUpnpRefusal, Resolve-M2CoopRouterFallback, Resolve-M2CoopAdvertisedAddress, Get-M2CoopRouterHelp,
     Test-M2CoopLanInviteAddress, Test-M2CoopSameNetwork, Select-M2CoopJoinHost, Get-M2CoopLocalAddresses,
-    Resolve-M2CoopJoinHost, Get-M2CoopJoinNotes, Test-M2CoopClientExeOld, Get-M2CoopOldClientNote
+    Resolve-M2CoopJoinHost, Get-M2CoopJoinNotes, Test-M2CoopClientExeOld, Get-M2CoopOldClientNote,
+    Get-M2CoopFirewallManualCommand

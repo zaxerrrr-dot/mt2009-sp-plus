@@ -48,19 +48,34 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// decides whether and which bot answers.
 		void	OnPlayerShout(LPCHARACTER ch, const char* szText);
 		void	OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const char* szText);
+		// A whisper to a bot of this core from a person another core holds -
+		// the other channel's, or a map this core does not host - by name, as
+		// the P2P relay brings it (CInputP2P::Relay, mt2009 via playerbotify.py).
+		void	OnPeerWhisper(const char* szFrom, LPCHARACTER bot, const char* szText);
 
 		bool	IsManaged(DWORD dwPlayerID) const;
 		// The Dom Towarowy's price hint (/flea_price, playerbotify
 		// apply_flea_market): the bots' asking price for the item in that
-		// cell and what they have been paid for it, as "FleaPriceQuote".
+		// cell and what they have been paid for it, as "FleaPriceQuote";
+		// with bRange first the market's range for such a stack, as
+		// "FleaPriceRange" (Piciu713, apply_flea_price_range).
 		void	SendFleaMarketPriceQuote(LPCHARACTER ch, BYTE bWindow, WORD wCell,
-				DWORD dwRequestID);
+				DWORD dwRequestID, bool bRange = false);
+		// The same for a line already on the asker's own offline shop, named
+		// by the line's item id (/flea_price's window 255). Nothing on an
+		// engine without ikashop.
+		void	SendFleaMarketShopItemPriceQuote(LPCHARACTER ch, DWORD dwShopItemID,
+				DWORD dwRequestID, bool bRange = false);
 		bool	IsRegistered(DWORD dwPlayerID);
 		// The same question answered from the registry as it is, never by
 		// loading it: false until the bootstrap has loaded it. For callers
 		// that may run before that and must not trigger the load (p2p.cpp).
 		bool	IsRegisteredBotPID(DWORD dwPlayerID) const;
 		size_t	GetCount() const;
+		// The autospawn bootstrap's one run on this core (input_db.cpp's
+		// MapLocations, playerbotify.py): true the first time it is asked and
+		// never again, so another core's setup cannot start a second cohort.
+		bool	TakeAutospawnBootstrap();
 		// Registered identities not spawned right now, ascending, at most
 		// `limit` of them - the F9 panel's "bots ready to spawn" list.
 		void	GetAvailableBots(std::vector<DWORD>& out, size_t limit);
@@ -89,9 +104,10 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// bot guild is fought on the kingdom's guild map, and the player goes
 		// to its guild's camp there (playerbot_guild_war.h).
 		void	OnPlayerFieldWarEntry(LPCHARACTER ch, DWORD dwMyGuild, DWORD dwOppGuild);
-		// A player struck a bot, or a person in a party (CHARACTER::Damage,
-		// mt2009 via playerbotify.py): the Anti-PK protocol's only source of
-		// who is attacking a bot - the engine keeps no record of it.
+		// A player struck a bot, or a person in a party or a guild
+		// (CHARACTER::Damage, mt2009 via playerbotify.py): the Anti-PK
+		// protocol's only source of who is attacking a bot or a guild's person
+		// - the engine keeps no record of it.
 		void	OnPlayerStruck(LPCHARACTER victim, LPCHARACTER attacker);
 		// A boss or a king fell, and this is who struck the last blow
 		// (CHARACTER::Dead, mt2009 via playerbotify.py): the Demon Tower's
@@ -108,6 +124,11 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// (playerbot_events.h), for the /kalendarz command (cmd_general.cpp,
 		// server-patches/playerqol).
 		void	SendEventCalendar(LPCHARACTER ch);
+		// A person's order to the bots of the person's guild, "/gildia_boty
+		// pomoc|exp|wracajcie" - the guild window's buttons (cmd_general.cpp,
+		// mt2009 via playerbotify.py; playerbot_guild_orders.h). The place is
+		// the person's own on this core, never the client's word.
+		void	OnGuildBotOrder(LPCHARACTER ch, const char* szArgument);
 		// Where a companion whose saved place is a map this core does not
 		// host loads instead: beside its owner (InputDB::PlayerLoad, mt2009
 		// via playerbotify.py). False for anybody else.
@@ -253,6 +274,8 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// cohort, then the late joiners (SplitForThisChannel). Every core
 		// computes the same plan from the same identities.
 		int			m_aChannelPlanned[3][4] = {};
+		// Whether this core's autospawn bootstrap has run (TakeAutospawnBootstrap).
+		bool			m_bAutospawnBootstrapTaken = false;
 		// Whether the channels come from the assignment table (mt2009 with the
 		// second channel on) rather than the spread and the pins.
 		bool			m_bChannelTable = false;

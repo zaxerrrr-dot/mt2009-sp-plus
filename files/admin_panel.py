@@ -249,10 +249,10 @@ def hunting_progress_label(current, selection, remain, complete, language=None):
             mob_name = HUNTING_MOB_NAMES_PL.get(mob_vnum, mob_name)
         done = max(0, required - remain)
         return "Lv %d • %s: %d/%d" % (current, mob_name, done, required)
+    messages = map_i18n(language)
     if complete:
-        return ("Ukończone do Lv %d" if language == "pl" else
-                "Completed through Lv %d") % complete
-    return "Jeszcze nierozpoczęte" if language == "pl" else "Not started yet"
+        return messages["hunt_done_through"].format(n=complete)
+    return messages["hunt_not_started"]
 
 # Party membership is intentionally restricted by the game core to this
 # deterministic ten-percent cohort.  Runtime parties are not persisted in the
@@ -416,6 +416,10 @@ def read_playerbot_live_status():
             if not modified or now - modified > 20:
                 continue
             skipped = 0
+            # The channel a bot is on is its file's: "teleport me" has to
+            # move a character on another channel there (api_admin_warp_me).
+            channel_match = re.search(r"/channel(\d+)/", path)
+            channel = int(channel_match.group(1)) if channel_match else 1
             try:
                 # The r40250 core and Polish locale tables use Windows-1250.
                 with open(path, "r", encoding="cp1250", errors="replace") as stream:
@@ -464,6 +468,7 @@ def read_playerbot_live_status():
                             "mood_id": None if mood == PLAYERBOT_PERSONA_NONE else mood,
                             "mood_lock": row.get("mood_lock", 0),
                             "lock_level": row.get("lock_level", 0),
+                            "channel": channel,
                             "status": parts[-1],
                         }
             except OSError:
@@ -513,7 +518,7 @@ def playerbot_mood_label(entry, language):
 
 
 def playerbot_live_labels(entry, language):
-    language = language if language in ("pl", "en") else "en"
+    language = language if language in BOT_PERSONALITY_LABELS else "en"
     if not entry:
         return {
             "personality": BOT_PERSONALITY_LABELS[language][0],
@@ -532,7 +537,7 @@ def playerbot_live_labels(entry, language):
     personality = BOT_PERSONA_LABELS[language].get(persona, old) if persona is not None else old
     hold = ""
     if persona is not None and entry.get("lock_level"):
-        hold = ("blokada expa na %d lvl" if language == "pl" else "exp held at level %d") % entry["lock_level"]
+        hold = map_i18n(language)["exp_hold"].format(n=entry["lock_level"])
     return {
         "personality": personality,
         "charakter": old if persona is not None else "",
@@ -1750,6 +1755,43 @@ def read_guild_status():
         g["empire_key"] = GUILD_EMPIRE_KEYS.get(g["empire"], "gl_empire_unknown")
         out.append(g)
     out.sort(key=lambda g: (g["tier"], -g["level"], -g["members"], g["name"]))
+    return out
+
+
+def read_player_guilds():
+    """The guilds people lead - a master whose account is not a bot's
+    (playerbot_NNN) - read from the database, because the cores report the
+    bot guilds alone (Derpsonkowy95, 28 September: the guild page "obecnie
+    wyswietla tylko gildie botow"). No tier and no online count: a tier is a
+    percentile of the bots, and the database cannot say who is in the game.
+    The names are CP1250 like every name column here."""
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute(
+                "SELECT g.id AS guild_id, CAST(g.name AS BINARY) AS name, g.level, g.ladder_point AS ladder, "
+                "g.win AS wins, g.draw AS draws, g.loss AS losses, m.id AS master_pid, "
+                "CAST(m.name AS BINARY) AS master, COALESCE(pi.empire, 0) AS empire, "
+                "(SELECT COUNT(*) FROM player.guild_member gm WHERE gm.guild_id = g.id) AS members "
+                "FROM player.guild g "
+                "JOIN player.player m ON m.id = g.master "
+                "JOIN account.account a ON a.id = m.account_id "
+                "LEFT JOIN player.player_index pi ON pi.id = m.account_id "
+                "WHERE a.login NOT LIKE 'playerbot\\_%' "
+                "ORDER BY g.level DESC, g.ladder_point DESC, g.id")
+            found = cur.fetchall()
+    except Exception:
+        return []
+    out = []
+    for g in found:
+        g["name"] = log_text(g.get("name"))
+        g["master"] = log_text(g.get("master"))
+        for key in ("level", "ladder", "wins", "draws", "losses", "members", "empire"):
+            try:
+                g[key] = int(g.get(key) or 0)
+            except (TypeError, ValueError):
+                g[key] = 0
+        g["empire_key"] = GUILD_EMPIRE_KEYS.get(g["empire"], "gl_empire_unknown")
+        out.append(g)
     return out
 
 
@@ -3014,7 +3056,7 @@ def localized_item_name(vnum, language=None):
         return ITEM_NAMES_PL[int(vnum or 0)]
     name = ITEM_NAMES.get(vnum, "")
     if not name:
-        return ("Przedmiot #%d" if language == "pl" else "Item #%d") % int(vnum or 0)
+        return map_i18n(language)["item_n"].format(n=int(vnum or 0))
     if ENGINE_MT2009:
         return name          # the package's own name, in the package's language
     return translate_item_name_pl(name) if language == "pl" else name
@@ -3996,6 +4038,9 @@ T.update({
  "gl_col_record":{"en":"W/D/L","pl":"Z/R/P","de":"S/U/N","tr":"G/B/M"},
  "gl_col_exp":   {"en":"Exp received","pl":"Otrzymany exp","de":"Erhaltene Erfahrung","tr":"Alınan tecrübe"},
  "gl_col_war":   {"en":"War","pl":"Wojna","de":"Krieg","tr":"Savaş"},
+ "gl_players":   {"en":"Player guilds","pl":"Gildie graczy"},
+ "gl_players_note": {"en":"Guilds whose master is a person, from the database: no tier (that is the bots' percentile) and no online count.","pl":"Gildie, których mistrzem jest człowiek, z bazy danych: bez klasy (to percentyl botów) i bez liczby osób online."},
+ "gl_players_none": {"en":"No guild is led by a person yet.","pl":"Żadnej gildii nie prowadzi jeszcze człowiek."},
  "gl_war_with":  {"en":"vs","pl":"z","de":"gegen","tr":"vs"},
  "gl_next_war":  {"en":"Next bot guild war","pl":"Następna wojna gildii botów","de":"Nächster Bot-Gildenkrieg","tr":"Sonraki bot lonca savaşı"},
  "gl_next_war_now": {"en":"under way now (guild map)","pl":"trwa teraz (mapa gildyjna)","de":"läuft jetzt (Gildenkarte)","tr":"şu anda sürüyor (lonca haritası)"},
@@ -4160,10 +4205,10 @@ T.update({
                   "pl":"Kto zrobił najwięcej w tym tygodniu i wszystkie rekordy, jakie świat ustanowił.",
                   "de":"Wer diese Woche am meisten geschafft hat, und jeder Rekord, den die Welt je aufgestellt hat.",
                   "tr":"Bu hafta en çok kim başardı ve dünyanın şimdiye kadarki tüm rekorları."},
- "se_intro":     {"en":"Seven days of metins, bosses and refines that landed on +7 or better. Level, horse and gold are shown for context but are deliberately not scored: they are what a bot IS, not what it did this week.",
-                  "pl":"Siedem dni metinów, bossów i ulepszeń, które weszły na +7 lub wyżej. Poziom, koń i yang są pokazane dla kontekstu, ale celowo nie liczą się do wyniku: to jest to, KIM bot jest, a nie co zrobił w tym tygodniu.",
-                  "de":"Sieben Tage Metins, Bosse und Aufwertungen, die auf +7 oder besser gelandet sind. Level, Pferd und Yang stehen als Kontext dabei, zählen aber bewusst nicht: sie sagen, was ein Bot IST, nicht was er diese Woche getan hat.",
-                  "tr":"Yedi günlük metin, boss ve +7 ve üzerine oturan yükseltmeler. Seviye, at ve yang bağlam için gösterilir ama bilerek puana girmez: onlar botun NE olduğunu söyler, bu hafta ne yaptığını değil."},
+ "se_intro":     {"en":"Seven days of metins, bosses and refines that landed on +7 or better. Level, horse and gold are shown for context but are deliberately not scored: they are what a character IS, not what it did this week.",
+                  "pl":"Siedem dni metinów, bossów i ulepszeń, które weszły na +7 lub wyżej. Poziom, koń i yang są pokazane dla kontekstu, ale celowo nie liczą się do wyniku: to jest to, KIM postać jest, a nie co zrobiła w tym tygodniu.",
+                  "de":"Sieben Tage Metins, Bosse und Aufwertungen, die auf +7 oder besser gelandet sind. Level, Pferd und Yang stehen als Kontext dabei, zählen aber bewusst nicht: sie sagen, was ein Charakter IST, nicht was er diese Woche getan hat.",
+                  "tr":"Yedi günlük metin, boss ve +7 ve üzerine oturan yükseltmeler. Seviye, at ve yang bağlam için gösterilir ama bilerek puana girmez: onlar karakterin NE olduğunu söyler, bu hafta ne yaptığını değil."},
  "se_back_map":  {"en":"Live map","pl":"Mapa na żywo","de":"Live-Karte","tr":"Canlı harita"},
  "se_records":   {"en":"Server records","pl":"Rekordy serwera","de":"Serverrekorde","tr":"Sunucu rekorları"},
  "se_records_h": {"en":"All time, since the world was created.","pl":"Od początku istnienia świata.",
@@ -4186,6 +4231,47 @@ T.update({
  "se_r_refines": {"en":"Most +7 and up","pl":"Najwięcej +7 i wyżej","de":"Meiste +7 und mehr","tr":"En çok +7 ve üzeri"},
  "se_r_horse":   {"en":"Best horse","pl":"Najlepszy koń","de":"Bestes Pferd","tr":"En iyi at"},
  "se_r_gold":    {"en":"Most yang","pl":"Najwięcej yang","de":"Meiste Yang","tr":"En çok yang"},
+})
+
+
+# What used to be written where it stands - a flash in English on every page,
+# "← Back", "Map", "dni" - and the season's marks for people (28 September).
+T.update({
+ "pl_map": {"pl": "Mapa", "en": "Map"},
+ "se_days": {"pl": "{n} dni", "en": "{n} days"},
+ "unit_min": {"pl": "min", "en": "min"},
+ "ai_items_example": {"pl": "30048\tstall\t# Kawalek Lodu\ntype:19\tstall\t# marmury polimorfii\n50703\tdrop\t# Kwiat Kaki", "en": "30048\tstall\t# Piece of Ice\ntype:19\tstall\t# polymorph marbles\n50703\tdrop\t# Kaki Blossom"},
+ "login_locked": {"pl": "Zbyt wiele błędnych prób. Dla bezpieczeństwa odczekaj 15 minut. ⏳", "en": "Too many wrong attempts. Please wait 15 minutes for security. ⏳"},
+ "login_wrong": {"pl": "Błędne hasło panelu, spróbuj jeszcze raz. 🙂", "en": "Wrong passphrase, try again. 🙂"},
+ "too_many_tries": {"pl": "Zbyt wiele prób. Odczekaj chwilę. ⏳", "en": "Too many attempts. Please wait a while. ⏳"},
+ "dl_not_ready": {"pl": "Pobieranie gry nie jest jeszcze gotowe.", "en": "The game download is not ready yet."},
+ "play_not_set": {"pl": "Gra w przeglądarce nie jest ustawiona na tym serwerze.", "en": "Playing in the browser is not set up on this server."},
+ "reg_too_many": {"pl": "Z tego połączenia założono już zbyt wiele kont. Spróbuj ponownie później. ⏳", "en": "Too many accounts were created from this connection. Please try again later. ⏳"},
+ "reg_bad_user": {"pl": "Nazwa użytkownika musi mieć 4-16 liter lub cyfr, bez spacji. 🙂", "en": "The username must be 4-16 letters/numbers, no spaces. 🙂"},
+ "reg_bad_pw": {"pl": "Hasło musi mieć co najmniej 6 znaków. 🙂", "en": "The password must be at least 6 characters. 🙂"},
+ "reg_pw_mismatch": {"pl": "Hasła się różnią — spróbuj jeszcze raz. 🙂", "en": "The two passwords don't match — try again. 🙂"},
+ "reg_bad_social": {"pl": "Kod usuwania musi mieć dokładnie 7 cyfr (np. 1234567). 🙂", "en": "The delete code must be exactly 7 digits (e.g. 1234567). 🙂"},
+ "reg_name_taken": {"pl": "Ta nazwa użytkownika jest już zajęta — wybierz inną. 🙂", "en": "That username is already taken — pick another one. 🙂"},
+ "reg_failed": {"pl": "Nie udało się teraz założyć konta. Spróbuj ponownie za chwilę. 🙏", "en": "The account could not be created right now. Please try again in a bit. 🙏"},
+ "acc_wrong": {"pl": "Błędna nazwa użytkownika lub hasło. 🙂", "en": "Wrong username or password. 🙂"},
+ "acc_new_short": {"pl": "Nowe hasło musi mieć co najmniej 6 znaków. 🙂", "en": "The new password must be at least 6 characters. 🙂"},
+ "acc_new_mismatch": {"pl": "Nowe hasła się różnią. 🙂", "en": "The two new passwords don't match. 🙂"},
+ "acc_pw_changed": {"pl": "🔒 Hasło zostało zmienione! Przy następnym logowaniu do gry użyj nowego.", "en": "🔒 Your password was changed! Use the new one next time you log into the game."},
+ "acc_pw_wrong": {"pl": "Obecne hasło jest błędne. 🙂", "en": "The current password is wrong. 🙂"},
+ "gold_1m": {"pl": "💰 1 milion", "en": "💰 1 Million"},
+ "gold_10m": {"pl": "💰 10 milionów", "en": "💰 10 Million"},
+ "gold_100m": {"pl": "💰 100 milionów", "en": "💰 100 Million"},
+ "gold_1b": {"pl": "👑 1 miliard", "en": "👑 1 Billion"},
+ "win_inventory": {"pl": "ekwipunek", "en": "inventory"},
+ "win_equipment": {"pl": "założone", "en": "equipped"},
+ "win_safebox": {"pl": "magazyn", "en": "storage"},
+ "win_mall": {"pl": "magazyn ItemShopu", "en": "item-shop storage"},
+ "win_dragon_soul": {"pl": "kamienie smoka", "en": "dragon soul"},
+ "win_belt": {"pl": "pas", "en": "belt"},
+ "win_offlineshop": {"pl": "sklep offline", "en": "offline shop"},
+ "se_char": {"pl": "Postać", "en": "Character"},
+ "se_people_note": {"pl": "👤 to postać gracza. Postaci GM-ów (common.gmlist) nie są liczone.", "en": "👤 marks a player's character. Game masters' characters (common.gmlist) are not counted."},
+ "se_people_more": {"pl": "Gracze spoza pierwszej pięćdziesiątki", "en": "Players outside the top fifty"},
 })
 
 CATS = ["all","weapon","armor","usable","ds","metin","special","other"]
@@ -4237,9 +4323,11 @@ def lang():
     Polish player on an English-language Windows landed on an English page:
     Chrome sends "en-US,en;q=0.9,pl;q=0.8" and best_match picks English. What
     they then saw was worse than either language on its own - "mam polowe
-    panelu po angielsku polowe po polsku" - because this panel is only half
-    translated: 446 strings go through t() and about 530 more are written in
-    Polish where they stand, so an English page is a Polish page with holes.
+    panelu po angielsku polowe po polsku" - because this panel was only half
+    translated then: 446 strings went through t() and about 530 more were
+    written in Polish where they stood. Since 28 September every text a page
+    shows goes through T, MAP_I18N, the label tables or APPLY_TEXTS, and a new
+    one belongs in one of them, not in a template.
 
     So Polish is the default and the browser is not consulted at all. The
     switch in the header is how anyone changes it, and that choice is now
@@ -4427,10 +4515,22 @@ MAX_FAIL, LOCK_SEC = 5, 900
 FAILS = {}
 
 JOB_EMOJI = {0:"⚔️",4:"⚔️",5:"🗡️",1:"🗡️",2:"🔮",6:"🔮",7:"🌀",3:"🌀",8:"🐺"}
-JOB_NAME  = {0:"Warrior",4:"Warrior",5:"Ninja",1:"Ninja",2:"Sura",6:"Sura",7:"Shaman",3:"Shaman",8:"Lycan"}
+# The class a job is (job % 4, the Lycan apart), in the page's language: the
+# dashboard's list printed "Warrior" on a Polish page.
+CLASS_NAMES = {
+    "pl": {0: "Wojownik", 1: "Ninja", 2: "Sura", 3: "Szaman", 8: "Lykan"},
+    "en": {0: "Warrior", 1: "Ninja", 2: "Sura", 3: "Shaman", 8: "Lycan"},
+}
 
-GOLD_PRESETS = [("💰 1 Million", 1_000_000), ("💰 10 Million", 10_000_000),
-                ("💰 100 Million", 100_000_000), ("👑 1 Billion", 1_000_000_000)]
+
+def class_name(job):
+    names = CLASS_NAMES.get(lang(), CLASS_NAMES["en"])
+    job = int(job or 0)
+    return names.get(job if job == 8 else job % 4, "")
+
+
+GOLD_PRESETS = [("gold_1m", 1_000_000), ("gold_10m", 10_000_000),
+                ("gold_100m", 100_000_000), ("gold_1b", 1_000_000_000)]
 WARP_LOC = [  # (emoji, {lang:name}, coords)
   ("🏯", {"en":"Shinsoo City","pl":"Miasto Shinsoo","de":"Shinsoo-Stadt","tr":"Shinsoo Şehri"}, "474300 954800"),
   ("🏮", {"en":"Chunjo City","pl":"Miasto Chunjo","de":"Chunjo-Stadt","tr":"Chunjo Şehri"}, "65900 155600"),
@@ -4449,10 +4549,10 @@ WARP_LOC = [  # (emoji, {lang:name}, coords)
   ("🧊", {"en":"Grotto of Exile","pl":"Grota Wygnańców","de":"Grotte der Verbannung","tr":"Sürgün Mağarası"}, "10000 1207800"),
 ]
 SPEED_LOC = [
-  ("🚶", {"en":"Normal (reset)","de":"Normal (zurücksetzen)","tr":"Normal (sıfırla)"}, 0),
-  ("🏃", {"en":"Fast (+30%)","de":"Schnell (+30%)","tr":"Hızlı (+30%)"}, 30),
-  ("💨", {"en":"Very Fast (+60%)","de":"Sehr schnell (+60%)","tr":"Çok Hızlı (+60%)"}, 60),
-  ("⚡", {"en":"Light Speed (+100%)","de":"Lichtgeschwindigkeit (+100%)","tr":"Işık Hızı (+100%)"}, 100),
+  ("🚶", {"en":"Normal (reset)","pl":"Normalnie (reset)","de":"Normal (zurücksetzen)","tr":"Normal (sıfırla)"}, 0),
+  ("🏃", {"en":"Fast (+30%)","pl":"Szybko (+30%)","de":"Schnell (+30%)","tr":"Hızlı (+30%)"}, 30),
+  ("💨", {"en":"Very Fast (+60%)","pl":"Bardzo szybko (+60%)","de":"Sehr schnell (+60%)","tr":"Çok Hızlı (+60%)"}, 60),
+  ("⚡", {"en":"Light Speed (+100%)","pl":"Prędkość światła (+100%)","de":"Lichtgeschwindigkeit (+100%)","tr":"Işık Hızı (+100%)"}, 100),
 ]
 # The game master ranks, in the order the game itself grades them. The strings
 # are not ours to choose: common.gmlist.mAuthority is an ENUM, and a value the
@@ -4464,15 +4564,19 @@ SPEED_LOC = [
 # everyday commands and not the ones that rewrite the world.
 GM_RANKS = [
   ("LOW_WIZARD",  {"en":"Helper — the everyday commands",
+                   "pl":"Pomocnik — codzienne komendy",
                    "de":"Helfer — die alltäglichen Befehle",
                    "tr":"Yardımcı — günlük komutlar"}),
   ("GOD",         {"en":"Game master — nearly everything",
+                   "pl":"Mistrz gry — prawie wszystko",
                    "de":"Spielleiter — fast alles",
                    "tr":"Oyun yöneticisi — neredeyse her şey"}),
   ("HIGH_WIZARD", {"en":"High game master",
+                   "pl":"Starszy mistrz gry",
                    "de":"Oberspielleiter",
                    "tr":"Üst oyun yöneticisi"}),
   ("IMPLEMENTOR", {"en":"Owner — every command there is",
+                   "pl":"Właściciel — każda istniejąca komenda",
                    "de":"Betreiber — jeder existierende Befehl",
                    "tr":"Sahip — var olan her komut"}),
 ]
@@ -4846,7 +4950,7 @@ def gm_reload_mt2009():
     return done
 
 def gold_presets_i18n():
-    return GOLD_PRESETS
+    return [(t(key), amount) for key, amount in GOLD_PRESETS]
 def warp_presets_i18n():
     lg = lang()
     return [("%s %s" % (e, n.get(lg, n["en"])), xy) for e, n, xy in WARP_LOC]
@@ -5345,7 +5449,7 @@ pre.cmd{padding:12px;border:1px solid var(--line);background:#131007;color:#cdc5
 {# The title is the way home, as it is on every other site. Worth having even
    where a logout link exists: from a player page it is one click instead of
    two, and on a local install it is the only route back. #}
-<div class="top"><h1 title="{{t('about_goal')}}"><a href="{{url_for('login')}}"><img src="/favicon.ico" alt="">{{brand}}</a> <a href="{{url_for('live_map')}}" style="font-size:14px;margin-left:14px;color:#e9b64b;text-decoration:none;font-weight:700;padding:3px 10px;background:rgba(233,182,75,0.12);border:1px solid rgba(233,182,75,0.3);border-radius:6px">🗺️ {{'Mapa na żywo' if curlang == 'pl' else 'Live map'}}</a></h1>
+<div class="top"><h1 title="{{t('about_goal')}}"><a href="{{url_for('login')}}"><img src="/favicon.ico" alt="">{{brand}}</a> <a href="{{url_for('live_map')}}" style="font-size:14px;margin-left:14px;color:#e9b64b;text-decoration:none;font-weight:700;padding:3px 10px;background:rgba(233,182,75,0.12);border:1px solid rgba(233,182,75,0.3);border-radius:6px">🗺️ {{t('se_back_map')}}</a></h1>
 <div>
 <a class="btn" href="{{ COFFEE }}" target="_blank" rel="noopener noreferrer"
    style="padding:7px 12px;font-size:13px;margin-right:10px">{{t('coffee_btn')}}</a>
@@ -5511,7 +5615,7 @@ TPL_DL_LIMIT = BASE.replace("__BODY__", """
 <div style="font-size:48px">⏳</div>
 <h3>{{t('dl_limit_title')}}</h3>
 <p class="muted" style="font-size:15px">{{ t('dl_limit_all' if scope == 'all' else 'dl_limit').replace('{h}', wait_h|string) }}</p>
-<p><a href="{{url_for('login')}}">← Back</a></p></div>""")
+<p><a href="{{url_for('login')}}">{{t('acc_back')}}</a></p></div>""")
 
 TPL_RESET = BASE.replace("__BODY__", """
 <div class="card" style="max-width:420px;margin:40px auto;text-align:center">
@@ -5525,12 +5629,12 @@ TPL_RESET = BASE.replace("__BODY__", """
 <button class="big">{{t('reset_set_btn')}}</button></form>
 {% else %}
 <p class="muted">{{t('reset_bad_link')}}</p>
-<p><a href="{{url_for('login')}}">← Back</a></p>
+<p><a href="{{url_for('login')}}">{{t('acc_back')}}</a></p>
 {% endif %}
 </div>""")
 
 TPL_REGISTER = BASE.replace("__BODY__", """
-<p><a href="{{url_for('login')}}">← Back</a></p>
+<p><a href="{{url_for('login')}}">{{t('acc_back')}}</a></p>
 <div class="card" style="max-width:440px;margin:20px auto">
 <h3>📝 {{t('reg_title')}}</h3>
 <p class="muted">{{t('reg_hint')}}</p>
@@ -5859,7 +5963,7 @@ TPL_PLAYER = BASE.replace("__BODY__", """
 <h3>{{emoji(p.job)}} {{p.name}}</h3>
 <span class="badge">{{t('level')}} {{p.level}}</span>
 <span class="badge">💰 {{"{:,}".format(p.gold)}} yang</span>
-<span class="badge">🗺️ Map {{p.map_index}}</span>
+<span class="badge">🗺️ {{t('pl_map')}} {{p.map_index}}</span>
 </div>
 
 <div class="card"><h3 class="help" title="{{t('tip_send_item')}}">{{t('give_item')}}</h3>
@@ -5984,7 +6088,7 @@ TPL_PLAYER = BASE.replace("__BODY__", """
 {% else %}
 <div style="max-height:320px;overflow:auto">
 <table>
-{% for it in inv %}<tr><td>{{it.name}}</td><td class="muted">×{{it.count}}</td><td class="muted">{{it.window}}</td></tr>{% endfor %}
+{% for it in inv %}<tr><td>{{it.name}}</td><td class="muted">×{{it.count}}</td><td class="muted">{{ t(WINDOW_KEYS[it.window]) if it.window in WINDOW_KEYS else it.window }}</td></tr>{% endfor %}
 </table></div>
 {% endif %}</div>""")
 
@@ -6202,28 +6306,36 @@ TPL_SEASON = BASE.replace("__BODY__", """
 </div>
 
 <div class="card">
-<h3>{{t('se_nav')}} &mdash; {{s.days}} dni</h3>
+<h3>{{t('se_nav')}} &mdash; {{t('se_days').format(n=s.days)}}</h3>
 {% if not s.rows %}
 <p class="muted">{{t('se_empty')}}</p>
 {% else %}
-<div style="overflow-x:auto">
-<table style="width:100%;border-collapse:collapse">
-<tr style="text-align:left">
-  <th>#</th><th>{{t('se_bot')}}</th><th>{{t('se_score')}}</th>
-  <th>{{t('se_metins')}}</th><th>{{t('se_bosses')}}</th><th>{{t('se_refines')}}</th>
-  <th>{{t('se_deaths')}}</th><th>{{t('se_level')}}</th><th>{{t('se_horse')}}</th>
-</tr>
-{% for r in s.rows %}
-<tr style="border-top:1px solid rgba(128,128,128,.25)">
-  <td class="muted">{{loop.index}}</td>
-  <td><b>{{r.name}}</b></td>
+{% if s.people %}<p class="muted">{{t('se_people_note')}}</p>{% endif %}
+{# A person's line is tinted and carries the mark, so it is found in a table of
+   bots at a glance; the ones below the fifty follow at their own places. #}
+{% macro season_row(r) %}
+<tr style="border-top:1px solid rgba(128,128,128,.25){% if not r.is_bot %};background:rgba(239,68,68,.10){% endif %}">
+  <td class="muted">{{r.place}}</td>
+  <td>{% if not r.is_bot %}<span title="{{t('se_char')}}">👤</span> {% endif %}<b>{{r.name}}</b></td>
   <td><b>{{r.score}}</b></td>
   <td>{{r.metins}}</td><td>{{r.bosses}}</td><td>{{r.refines}}</td>
   <td class="muted">{{r.deaths}}</td>
   <td class="muted">{{r.level}}</td>
   <td class="muted">{{r.horse}}</td>
 </tr>
-{% endfor %}
+{% endmacro %}
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse">
+<tr style="text-align:left">
+  <th>#</th><th>{{t('se_char')}}</th><th>{{t('se_score')}}</th>
+  <th>{{t('se_metins')}}</th><th>{{t('se_bosses')}}</th><th>{{t('se_refines')}}</th>
+  <th>{{t('se_deaths')}}</th><th>{{t('se_level')}}</th><th>{{t('se_horse')}}</th>
+</tr>
+{% for r in s.rows %}{{ season_row(r) }}{% endfor %}
+{% if s.people_below %}
+<tr><td colspan="9" class="muted" style="padding-top:14px">{{t('se_people_more')}}</td></tr>
+{% for r in s.people_below %}{{ season_row(r) }}{% endfor %}
+{% endif %}
 </table>
 </div>
 {% endif %}
@@ -6350,7 +6462,7 @@ TPL_GUILDS = BASE.replace("__BODY__", """
 <h3>{{t('gl_summary')}}{% if guilds %}: {{guilds|length}}
   {% for key in tier_keys %}{% set n = guilds|selectattr('tier_key', 'equalto', key)|list|length %}{% if n %}<span class="badge">{{t(key)}}: {{n}}</span> {% endif %}{% endfor %}{% endif %}</h3>
 {% if not guilds %}<p class="muted">{{t('gl_stale')}}</p>{% else %}
-{% if next_wars %}<p>\u2694 {{t('gl_next_war')}}: {% for key, s in next_wars %}<b>{{t(key)}}</b>: {% if s == 0 %}{{t('gl_next_war_now')}}{% elif s < 0 %}{{t('gl_next_war_off')}}{% else %}{{t('gl_next_war_in')}} {{(s // 60) + 1}} min{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+{% if next_wars %}<p>\u2694 {{t('gl_next_war')}}: {% for key, s in next_wars %}<b>{{t(key)}}</b>: {% if s == 0 %}{{t('gl_next_war_now')}}{% elif s < 0 %}{{t('gl_next_war_off')}}{% else %}{{t('gl_next_war_in')}} {{(s // 60) + 1}} {{t('unit_min')}}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
 <div style="overflow-x:auto">
 <table>
 <tr><th>{{t('gl_col_name')}}</th><th>{{t('gl_col_kingdom')}}</th><th>{{t('gl_col_tier')}}</th>
@@ -6371,6 +6483,31 @@ TPL_GUILDS = BASE.replace("__BODY__", """
   <td>{{g.wins}}/{{g.draws}}/{{g.losses}}</td>
   <td>{{g.exp_offered}}</td>
   <td>{% if g.war_with %}\u2694 {{t('gl_war_with')}} <b>{{g.war_with}}</b> {{g.war_score}}:{{g.war_enemy_score}}{% endif %}{% if g.tower_raid %} \u26e9 {{t('gl_tower')}}{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+{% endif %}
+</div>
+
+<div class="card">
+<h3>{{t('gl_players')}}{% if player_guilds %}: {{player_guilds|length}}{% endif %}</h3>
+<p class="muted">{{t('gl_players_note')}}</p>
+{% if not player_guilds %}<p class="muted">{{t('gl_players_none')}}</p>{% else %}
+<div style="overflow-x:auto">
+<table>
+<tr><th>{{t('gl_col_name')}}</th><th>{{t('gl_col_kingdom')}}</th><th>{{t('gl_col_level')}}</th>
+    <th>{{t('gl_col_members')}}</th><th>{{t('gl_col_master')}}</th><th>{{t('gl_col_ladder')}}</th>
+    <th>{{t('gl_col_record')}}</th></tr>
+{% for g in player_guilds %}
+<tr>
+  <td><b>{{g.name}}</b></td>
+  <td>{{t(g.empire_key)}}</td>
+  <td>{{g.level}}</td>
+  <td>{{g.members}}</td>
+  <td>{{g.master}}</td>
+  <td>{{g.ladder}}</td>
+  <td>{{g.wins}}/{{g.draws}}/{{g.losses}}</td>
 </tr>
 {% endfor %}
 </table>
@@ -6569,7 +6706,7 @@ TPL_AI_ITEMS = BASE.replace("__BODY__", """
 <form method="post">
 <input type="hidden" name="_csrf" value="{{csrf_token}}">
 <textarea name="policy" rows="18" spellcheck="false" style="width:100%;font-family:monospace;font-size:13px"
-          placeholder="30048	stall	# Kawalek Lodu&#10;type:19	stall	# marmury polimorfii&#10;50703	drop	# Kwiat Kaki">{{policy}}</textarea>
+          placeholder="{{t('ai_items_example')}}">{{policy}}</textarea>
 <button class="big" style="margin-top:10px">{{t('ai_save')}}</button>
 </form></div>""")
 
@@ -6595,7 +6732,18 @@ MAP_I18N = {
   "copied":"Skopiowano","paste":"wklej w grze [Enter] → Ctrl+V → [Enter]","solo_exp":"Solo — zdobywanie doświadczenia","party_exp":"[PT] Zdobywanie doświadczenia w grupie","metin_hunt":"Polowanie na Metiny",
   "character_missing":"Postać nie znaleziona","bio_next":"Następna misja od Lv {level}: {name}","bio_key":"{name}{sep}{have}/{need}, czeka na: {key}",
   "bio_all":"Wszystkie podstawowe misje ukończone","bio_complete":"komplet","bio_done":"ukończone","bio_skipped":"za niskie dla bota, pominięte: {n}","bio_dropper":"nie dotyczy — dropper nie robi Biologa",
-  "bio_rank_now":"{done}/{total} ukończone • teraz: {stage}","bio_rank_next":"{done}/{total} ukończone • {stage}"
+  "bio_rank_now":"{done}/{total} ukończone • teraz: {stage}","bio_rank_next":"{done}/{total} ukończone • {stage}",
+  "rankings_all":"Rankingi","people_only":"Tylko gracze","people_only_hint":"Same postacie ludzi, bez botów, ponumerowane między sobą.",
+  "person_mark":"Postać gracza","ranking_people_note":"👤 postać gracza · postaci GM-ów nie są liczone",
+  "rank_avg_short":"ŚR","rank_skill_short":"UM","bag":"Plecak","weapon30_one":"Broń 30 Lv",
+  "tt_req_level":"Wymagany Poziom","tt_attack":"Wartość Ataku","tt_magic_attack":"Wartość Magicznego Ataku",
+  "tt_attack_speed":"Szybkość Ataku","tt_defense":"Obrona","tt_move_speed":"Szybkość Ruchu",
+  "tt_broken_stone":"Pęknięty Kamień","tt_empty_socket":"Czysty Slot","tt_soul_stone":"Kamień Duszy",
+  "item_n":"Przedmiot #{n}","bot_badge":"BOT","exp_hold":"blokada expa na {n} lvl",
+  "hunt_done_through":"Ukończone do Lv {n}","hunt_not_started":"Jeszcze nierozpoczęte",
+  "gh_sold_for":"{count} za {price} yang","gh_instead":"zamiast {item}","gh_paid":"za {price} yang","gh_from":"od {seller}",
+  "warp_player_offline":"Żadna postać gracza nie jest teraz w grze.","warp_no_human":"Nie ma postaci gracza, którą można przenieść.",
+  "warp_timeout":"Gra nie odpowiedziała na czas.","saddlebags":"Juki"
  },
  "en": {
   "title":"Live world map — Chunjo","live":"LIVE (1.5 s)","subtitle":"Interactive real-time view of bot positions and progression",
@@ -6616,9 +6764,164 @@ MAP_I18N = {
   "copied":"Copied","paste":"paste in game [Enter] → Ctrl+V → [Enter]","solo_exp":"Solo levelling","party_exp":"[PT] Party levelling","metin_hunt":"Hunting Metins",
   "character_missing":"Character not found","bio_next":"Next mission at Lv {level}: {name}","bio_key":"{name}{sep}{have}/{need}, waiting for: {key}",
   "bio_all":"All basic missions completed","bio_complete":"complete","bio_done":"done","bio_skipped":"outgrown, skipped: {n}","bio_dropper":"does not apply — a dropper does not do the Biologist",
-  "bio_rank_now":"{done}/{total} done • now: {stage}","bio_rank_next":"{done}/{total} done • {stage}"
+  "bio_rank_now":"{done}/{total} done • now: {stage}","bio_rank_next":"{done}/{total} done • {stage}",
+  "rankings_all":"Rankings","people_only":"Players only","people_only_hint":"People's characters only, without the bots, numbered among themselves.",
+  "person_mark":"A player's character","ranking_people_note":"👤 a player's character · game masters' characters are not counted",
+  "rank_avg_short":"AVG","rank_skill_short":"SKILL","bag":"Bag","weapon30_one":"Lv 30 weapon",
+  "tt_req_level":"Required Level","tt_attack":"Attack Value","tt_magic_attack":"Magic Attack Value",
+  "tt_attack_speed":"Attack Speed","tt_defense":"Defence","tt_move_speed":"Movement Speed",
+  "tt_broken_stone":"Broken Stone","tt_empty_socket":"Empty Socket","tt_soul_stone":"Spirit Stone",
+  "item_n":"Item #{n}","bot_badge":"BOT","exp_hold":"exp held at level {n}",
+  "hunt_done_through":"Completed through Lv {n}","hunt_not_started":"Not started yet",
+  "gh_sold_for":"{count} for {price} yang","gh_instead":"instead of {item}","gh_paid":"for {price} yang","gh_from":"from {seller}",
+  "warp_player_offline":"None of the players' characters is in the game right now.","warp_no_human":"There is no player's character to move.",
+  "warp_timeout":"The game did not answer in time.","saddlebags":"Saddlebags"
  }
 }
+
+
+# Every bonus line the engine can roll, in the wording the game itself uses.
+# Polish and English were generated from three sources that have to agree:
+# the server's EApplyTypes enum fixes the numbers, the client's AFFECT_DICT
+# maps each number to a locale key, and the client's locale_game.txt holds the
+# text - the table that replaced a hand-made one with 71 and 72 the wrong way
+# round, the two post-kill recovery chances as plain numbers and no entry for
+# 87-91 ("Bonus #89").
+#
+# The text keeps the client's own placeholder, and that is what says how to
+# print the value: %d%% is a percentage, %d a plain number, %.1f a multiplier,
+# and no placeholder at all means the client shows the line with no number
+# after it. Ids the client has no text for are absent on purpose. The mt2009
+# engine numbers these lines as POINT_*; the live map puts a type through
+# POINT_TO_APPLY before it looks here. Only the page's own language goes into
+# the page (apply_meta_for), so an English page carries no Polish.
+APPLY_TEXTS = {
+ 1: ("flat", {"pl": "Max PŻ: +%d", "en": "Max. HP +%d"}),
+ 2: ("flat", {"pl": "Max PE: +%d", "en": "Max. SP +%d"}),
+ 3: ("flat", {"pl": "Witalność +%d", "en": "Vitality +%d"}),
+ 4: ("flat", {"pl": "Inteligencja +%d", "en": "Intelligence +%d"}),
+ 5: ("flat", {"pl": "Siła: +%d", "en": "Strength +%d"}),
+ 6: ("flat", {"pl": "Zręczność +%d", "en": "Dexterity +%d"}),
+ 7: ("percent", {"pl": "Szybkość Ataku +%d%%", "en": "Attack Speed +%d%%"}),
+ 8: ("percent", {"pl": "Szybkość Ruchu %d%%", "en": "Moving Speed %d%%"}),
+ 9: ("percent", {"pl": "Szybkość Zaklęcia +%d%%", "en": "Casting Speed +%d%%"}),
+ 10: ("percent", {"pl": "Regeneracja PŻ: +%d%%", "en": "HP Regeneration +%d%%"}),
+ 11: ("percent", {"pl": "Regeneracja PE: +%d%%", "en": "SP Regeneration +%d%%"}),
+ 12: ("percent", {"pl": "Szansa na Otrucie %d%%", "en": "Poisoning chance %d%%"}),
+ 13: ("percent", {"pl": "Szansa na Omdlenie %d%%", "en": "Blackout chance %d%%"}),
+ 14: ("percent", {"pl": "Szansa na Spowolnienie %d%%", "en": "Slowing chance %d%%"}),
+ 15: ("percent", {"pl": "Szansa na cios krytyczny +%d%%", "en": "Chance of critical hit +%d%% "}),
+ 16: ("percent", {"pl": "Szansa na przeszywające Uderzenie: %d%% ", "en": "%d%% Chance for piercing Hits"}),
+ 17: ("percent", {"pl": "Silny przeciwko Ludziom +%d%%", "en": "Strong against Half Humans +%d%%"}),
+ 18: ("percent", {"pl": "Silny przeciwko Zwierzętom +%d%%", "en": "Strong against Animals +%d%%"}),
+ 19: ("percent", {"pl": "Silny przeciwko Orkom +%d%%", "en": "Strong against Orcs +%d%%"}),
+ 20: ("percent", {"pl": "Silny przeciwko Mistykom +%d%%", "en": "Strong against Mystics +%d%%"}),
+ 21: ("percent", {"pl": "Silny przeciwko Nieumarłym +%d%%", "en": "Strong against Undead +%d%%"}),
+ 22: ("percent", {"pl": "Silny przeciwko Diabłom +%d%%", "en": "Strong against Devils +%d%%"}),
+ 23: ("percent", {"pl": "%d%% obrażeń będzie dodanych do PŻ", "en": "%d%% damage  will be absorbed by HP"}),
+ 24: ("percent", {"pl": "%d%% obrażeń będzie dodanych do PE", "en": "%d%% damage will be absorbed by SP"}),
+ 25: ("percent", {"pl": "%d%% Szansa na kradzież PE", "en": "%d%% chance to rob SP"}),
+ 26: ("percent", {"pl": "Szansa na odzyskanie PE: %d%%", "en": "%d%% Chance to get back SP when hit"}),
+ 27: ("percent", {"pl": "Szansa na blok ciosów %d%%", "en": "Chance to block a close-combat attack %d%% "}),
+ 28: ("percent", {"pl": "Szansa na uniknięcie Strzały: %d%%", "en": "Chance to avoid Arrows %d%%"}),
+ 29: ("percent", {"pl": "Odporność na Miecze: %d%%", "en": "Sword Defence %d%%"}),
+ 30: ("percent", {"pl": "Odporność na Broń Dwuręczną: %d%%", "en": "Two-Handed Defence %d%%"}),
+ 31: ("percent", {"pl": "Odporność na Sztylety: %d%%", "en": "Dagger Defence %d%%"}),
+ 32: ("percent", {"pl": "Odporność na Dzwony: %d%%", "en": "Bell Defence %d%%"}),
+ 33: ("percent", {"pl": "Odporność na Wachlarze: %d%%", "en": "Fan Defence %d%%"}),
+ 34: ("percent", {"pl": "Odporność na Strzały: %d%%", "en": "Arrow Resistance %d%%"}),
+ 35: ("percent", {"pl": "Odporność na Ogień: %d%%", "en": "Fire Resistance %d%%"}),
+ 36: ("percent", {"pl": "Odporność na Błyskawice: %d%%", "en": "Lightning Resistance %d%%"}),
+ 37: ("percent", {"pl": "Odporność na Magię: %d%%", "en": "Magic Resistance %d%%"}),
+ 38: ("percent", {"pl": "Odporność na Wiatr: %d%%", "en": "Wind Resistance %d%%"}),
+ 39: ("percent", {"pl": "%d%% Szansa na odbicie Ciosu", "en": "%d%% Chance to reflect close combat hits  "}),
+ 40: ("percent", {"pl": "Szansa na odbicie Klątwy: %d%%", "en": "Chance to reflect Curse: %d%%"}),
+ 41: ("percent", {"pl": "Odporność na Trucizny: %d%%", "en": "Poison Resistance %d%%"}),
+ 42: ("percent", {"pl": "Szansa na odzyskanie PE: %d%%", "en": "%d%% Chance to restore SP"}),
+ 43: ("percent", {"pl": "Szansa na Bonus DOŚ: %d%%", "en": "%d%% Chance for EXP Bonus"}),
+ 44: ("percent", {"pl": "Szansa na podwójną ilość Yang: %d%%", "en": "%d%% Chance to drop double Yang"}),
+ 45: ("percent", {"pl": "Szansa na podwójną ilość Przedmiotów: %d%%", "en": "%d%% Chance to drop double the Items"}),
+ 46: ("percent", {"pl": "Mikstury %d%% efekt podniesiony", "en": "Potion %d%% effect raise"}),
+ 47: ("percent", {"pl": "Szansa na odzyskanie PŻ: %d%%", "en": "%d%% Chance, to restore HP"}),
+ 48: ("boolean", {"pl": "Odporność na Omdlenia", "en": "Defence against blackouts"}),
+ 49: ("boolean", {"pl": "Odporność na Spowolnienia", "en": "Defence against slowing"}),
+ 50: ("boolean", {"pl": "Niewrażliwy na Upadek", "en": "Immune against falling down"}),
+ 52: ("flat", {"pl": "Zasięg Łuku +%dm", "en": "Arc Range +%dm"}),
+ 53: ("flat", {"pl": "Wartość Ataku +%d", "en": "Attack Value +%d"}),
+ 54: ("flat", {"pl": "Obrona +%d", "en": "Defence +%d"}),
+ 55: ("flat", {"pl": "Wartość Magicznego Ataku: +%d", "en": "Magical Attack Value +%d"}),
+ 56: ("flat", {"pl": "Magiczna Obrona: +%d", "en": "Magical Defence +%d"}),
+ 58: ("flat", {"pl": "Max Wytrzymałość: +%d", "en": "Max. Endurance +%d"}),
+ 59: ("percent", {"pl": "Silny przeciwko Wojownikom +%d%%", "en": "Strong against Warriorr +%d%%"}),
+ 60: ("percent", {"pl": "Silny przeciwko Ninja +%d%%", "en": "Strong against Ninjas +%d%%"}),
+ 61: ("percent", {"pl": "Silny przeciwko Sura +%d%%", "en": "Strong against Sura +%d%%"}),
+ 62: ("percent", {"pl": "Silny przeciwko Szamanom +%d%%", "en": "Strong against Shamans +%d%%"}),
+ 63: ("percent", {"pl": "Silny przeciwko Potworom +%d%%", "en": "Strength against monsters +%d%%"}),
+ 64: ("percent", {"pl": "Wartość Ataku: +%d%%", "en": "Attack Value +%d%%"}),
+ 65: ("percent", {"pl": "Obrona: +%d%%", "en": "Defence +%d%%"}),
+ 66: ("percent", {"pl": "Punkty Doświadczenia: +%d%%", "en": "EXP +%d%%"}),
+ 67: ("multiplier", {"pl": "Szansa na zdobycie Przedmiotów pomnożona o %.1f", "en": "Chance of capturing Items multiplied with %.1f"}),
+ 68: ("multiplier", {"pl": "Szansa na zdobycie Yang pomnożona o %.1f", "en": "Chance of capturing Yang multiplied with %.1f"}),
+ 69: ("percent", {"pl": "Maks. PŻ +%d%%", "en": "Max. HP +%d%%"}),
+ 70: ("percent", {"pl": "Maks. PE +%d%% ", "en": "Max. SP +%d%% "}),
+ 71: ("percent", {"pl": "Obrażenie Umiejętności: %d%%", "en": "Skill Damage %d%%"}),
+ 72: ("percent", {"pl": "Średnie Obrażenia: %d%%", "en": "Average Damage %d%%"}),
+ 73: ("percent", {"pl": "Odporność na Obrażenia Umiejętności %d%%", "en": "Resistance against Skill Damage %d%%"}),
+ 74: ("percent", {"pl": "Odporność na Obrażenia: %d%%", "en": "Average Damage Resistance %d%%"}),
+ 75: ("percent", {"pl": "iCafe DOŚ Bonus +%d%%", "en": "iCafe EXP Bonus +%d%%"}),
+ 76: ("percent_decimal", {"pl": "iCafe Szansa na zdobycie Przedmiotów plus %.1f%%", "en": "iCafe Chance of capturing Items plus %.1f%%"}),
+ 78: ("percent", {"pl": "Odporność na Wojowników: %d%%", "en": "Defence chance against warrior attacks: %d%%"}),
+ 79: ("percent", {"pl": "Odporność na Ninja: %d%%", "en": "Defence chance against ninja attacks: %d%%"}),
+ 80: ("percent", {"pl": "Odporność na Sura: %d%%", "en": "Defence chance against sura attacks: %d%%"}),
+ 81: ("percent", {"pl": "Odporność na Szamanów: %d%%", "en": "Defence chance against shaman attacks: %d%%"}),
+ 82: ("flat", {"pl": "Energia %d", "en": "Energy %d "}),
+ 84: ("percent", {"pl": "Bonus kostiumu %d%% ", "en": "Costume bonus %d%% "}),
+ 85: ("percent", {"pl": "Magiczny atak +%d%%", "en": "Magic attack +%d%%"}),
+ 86: ("percent", {"pl": "Magiczny/krótkodystansowy atak +%d%%", "en": "Magic/melee attack +%d%%"}),
+ 87: ("percent", {"pl": "Odporność na lód +%d%%", "en": "Ice resistance +%d%%"}),
+ 88: ("percent", {"pl": "Odporność na ziemię +%d%%", "en": "Earth resistance +%d%%"}),
+ 89: ("percent", {"pl": "Odporność na mrok +%d%%", "en": "Resistance against darkness +%d%%"}),
+ 90: ("percent", {"pl": "Odporność na cios krytyczny +%d%%", "en": "Resistance against critical hits +%d%%"}),
+ 91: ("percent", {"pl": "Odporność na przeszywający cios +%d%%", "en": "Resistance against piercing hits +%d%%"}),
+ 1138: ("percent", {"pl": "Terror +%d%%", "en": "Terror +%d%%"}),
+ 1139: ("percent", {"pl": "Regeneracja wytrzymałości +%d%%", "en": "Stamina regeneration +%d%%"}),
+ 1140: ("flat", {"pl": "Atak sztyletem przeciw potworom +%d", "en": "Dagger attack against monsters +%d"}),
+ 1141: ("flat", {"pl": "Wartość ataku przeciw potworom +%d", "en": "Attack value against monsters +%d"}),
+ 1142: ("flat", {"pl": "Odporność na potwory +%d‰", "en": "Resistance against monsters +%d‰"}),
+ 1143: ("percent", {"pl": "Pochłanianie obrażeń +%d%%", "en": "Damage absorption +%d%%"}),
+ 1144: ("percent", {"pl": "Pochłanianie obrażeń od potworów +%d%%", "en": "Damage absorption from monsters +%d%%"}),
+ 1145: ("boolean", {"pl": "Przełamanie odporności na ogłuszenie", "en": "Breaks stun immunity"}),
+ 1146: ("boolean", {"pl": "Przełamanie klątwy świątyni", "en": "Breaks the temple curse"}),
+ 1147: ("percent", {"pl": "Czas trwania umiejętności +%d%%", "en": "Skill duration +%d%%"}),
+ 1148: ("percent", {"pl": "Silny przeciw potworom z Doliny Orków +%d%%", "en": "Strong against Orc Valley monsters +%d%%"}),
+ 1149: ("percent", {"pl": "Silny przeciw Metinom +%d%%", "en": "Strong against Metin stones +%d%%"}),
+ 1150: ("percent", {"pl": "Silny przeciw bossom +%d%%", "en": "Strong against bosses +%d%%"}),
+ 1151: ("percent", {"pl": "Magiczny atak przeciw potworom +%d%%", "en": "Magic attack against monsters +%d%%"}),
+ 1152: ("percent", {"pl": "Przełamanie odporności na miecz +%d%%", "en": "Breaks sword resistance +%d%%"}),
+ 1153: ("percent", {"pl": "Przełamanie odporności na broń dwuręczną +%d%%", "en": "Breaks two-handed resistance +%d%%"}),
+ 1154: ("percent", {"pl": "Przełamanie odporności na sztylet +%d%%", "en": "Breaks dagger resistance +%d%%"}),
+ 1155: ("percent", {"pl": "Przełamanie odporności na dzwonek +%d%%", "en": "Breaks bell resistance +%d%%"}),
+ 1156: ("percent", {"pl": "Przełamanie odporności na wachlarz +%d%%", "en": "Breaks fan resistance +%d%%"}),
+ 1157: ("percent", {"pl": "Przełamanie odporności na łuk +%d%%", "en": "Breaks bow resistance +%d%%"}),
+ 1158: ("percent", {"pl": "Szansa na zbieranie +%d%%", "en": "Collecting chance +%d%%"}),
+ 1159: ("percent", {"pl": "Szansa na naukę +%d%%", "en": "Learning chance +%d%%"}),
+ 1160: ("percent", {"pl": "Odporność na ludzi +%d%%", "en": "Resistance against humans +%d%%"}),
+ 1161: ("flat", {"pl": "Magiczny atak +%d", "en": "Magic attack +%d"}),
+ 1162: ("percent", {"pl": "Szansa na podpalenie +%d%%", "en": "Chance of burning +%d%%"}),
+ 1163: ("percent", {"pl": "Zamiana obrażeń na PE +%d%%", "en": "Damage converted to SP +%d%%"}),
+ 1164: ("percent", {"pl": "Szansa na rzadki łup +%d%%", "en": "Rare drop chance +%d%%"}),
+ 1165: ("flat", {"pl": "Magiczna wartość ataku przeciw potworom +%d", "en": "Magic attack value against monsters +%d"}),
+ 1166: ("percent", {"pl": "Szansa na unieruchomienie +%d%%", "en": "Chance of rooting +%d%%"}),
+ 1167: ("flat", {"pl": "Atak specjalny +%d", "en": "Special attack +%d"}),
+ 1168: ("percent", {"pl": "Kara za śmierć +%d%%", "en": "Death penalty +%d%%"}),
+}
+
+
+def apply_meta_for(language):
+    """The bonus lines for the live map's JS, in one language: {id: {t, f}}."""
+    return {key: {"t": texts.get(language) or texts["en"], "f": fmt}
+            for key, (fmt, texts) in APPLY_TEXTS.items()}
+
 
 def map_i18n(language=None):
     language = language or (lang() if has_request_context() else "en")
@@ -6640,7 +6943,7 @@ BIOLOGIST_NAMES_EN = {
 def localized_job_name(job, language=None):
     language = language or (lang() if has_request_context() else "en")
     names = JOB_NAMES_MAP.get(language, JOB_NAMES_MAP["en"])
-    return names.get(int(job or 0), "Wojownik" if language == "pl" else "Warrior")
+    return names.get(int(job or 0), names[0])
 
 def localized_biologist_name(quest_name, polish_name, language=None):
     language = language or (lang() if has_request_context() else "en")
@@ -6859,7 +7162,7 @@ TPL_LIVE_MAP = BASE.replace("__BODY__", """
       </div>
 
       <div class="card" style="padding:14px">
-        <h4 style="margin:0 0 10px;color:var(--gold2)">🏆 {{m.rankings}}</h4>
+        <h4 style="margin:0 0 10px;color:var(--gold2)">🏆 <span id="rankTitle">{{ m.rankings_all if people_ranked else m.rankings }}</span></h4>
         <div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">
           <button type="button" class="btn btn-sm rank-tab active" onclick="setRankCategory('level', this)" style="font-size:11px;padding:3px 6px">⭐ {{m.rank_level}}</button>
           <button type="button" class="btn btn-sm rank-tab" onclick="setRankCategory('gold', this)" style="font-size:11px;padding:3px 6px">💰 Yang</button>
@@ -6890,6 +7193,15 @@ TPL_LIVE_MAP = BASE.replace("__BODY__", """
               <option value="5000">5000</option>
             </select>
           </label>
+        </div>
+        {# People are ranked beside the bots (rankings_count_people), marked, and
+           this narrows the list to them, numbered among themselves. Hidden while
+           the rankings are the bots' alone. #}
+        <div id="rankPeopleBar" style="display:{{ 'flex' if people_ranked else 'none' }};justify-content:space-between;align-items:center;gap:8px;margin:-4px 0 10px;flex-wrap:wrap">
+          <label title="{{m.people_only_hint}}" style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);white-space:nowrap;cursor:pointer">
+            <input type="checkbox" id="rankPeople" onchange="fetchRankings()" style="width:auto;margin:0"> 👤 {{m.people_only}}
+          </label>
+          <span class="muted" style="font-size:10px">{{m.ranking_people_note}}</span>
         </div>
         <div style="max-height:410px;overflow-y:auto" id="topBotsList">
           <p class="muted" style="font-size:12px;text-align:center">{{m.loading}}</p>
@@ -6973,6 +7285,8 @@ TPL_LIVE_MAP = BASE.replace("__BODY__", """
   transition: background 0.15s, border-color 0.15s;
 }
 .rank-row:hover { background: #241e12; border-color: var(--gold); }
+/* A person's line in a ranking of bots: the map's colour for a player. */
+.rank-row.person { background: #1f100d; border-color: #7f1d1d; box-shadow: inset 3px 0 0 #ef4444; }
 
 /* Modal Styles */
 .modal-overlay {
@@ -7512,12 +7826,30 @@ function showRankingNote(text) {
   if (listEl) listEl.innerHTML = '<p class="muted" style="font-size:12px;text-align:center">' + text + '</p>';
 }
 
+function rankPeopleOnly() {
+  var box = document.getElementById('rankPeople');
+  return !!(box && box.checked);
+}
+
+// Whether the rankings count people at all is the operator's switch (Seban's
+// panel, /manage); the answer comes with every ranking, so the title and the
+// "players only" box follow it without a reload.
+function applyRankScope(people) {
+  var bar = document.getElementById('rankPeopleBar');
+  if (bar) bar.style.display = people ? 'flex' : 'none';
+  var title = document.getElementById('rankTitle');
+  if (title) title.textContent = people ? I18N.rankings_all : I18N.rankings;
+  var box = document.getElementById('rankPeople');
+  if (box && !people) box.checked = false;
+}
+
 function fetchRankings() {
   fetch('/api/bot_rankings?type=' + encodeURIComponent(g_selectedRankCategory) +
-        '&limit=' + g_rankLimit)
+        '&limit=' + g_rankLimit + (rankPeopleOnly() ? '&people=1' : ''))
     .then(function(res) { return res.json(); })
     .then(function(data) {
       if (data && data.ok) {
+        applyRankScope(!!data.people);
         g_rankData = data.rankings || [];
         renderRankings();
       } else {
@@ -7568,17 +7900,20 @@ function renderRankings() {
       return;
     }
     var ptBadge = b.in_pt ? '<span style="color:#a855f7;font-weight:700">[PT]</span> ' : '';
+    // A person's character among the bots: marked, and its line tinted.
+    var isPerson = b.is_bot === false;
+    var personBadge = isPerson ? '<span title="' + escapeHtml(I18N.person_mark) + '">👤</span> ' : '';
     var detailStr = '';
     if (g_selectedRankCategory === 'gold') {
       detailStr = '<span style="color:#eab308;font-weight:700">' + (b.gold || 0).toLocaleString() + ' Yang</span>';
     } else if (g_selectedRankCategory === 'weapon30') {
-      var srStr = b.sr !== undefined ? '<span style="color:#4ade80;font-weight:700">ŚR: ' + (b.sr > 0 ? '+' : '') + b.sr + '%</span>' : '';
-      var umStr = b.um !== undefined && b.um !== 0 ? ' <span style="color:#38bdf8;font-weight:700">UM: ' + (b.um > 0 ? '+' : '') + b.um + '%</span>' : '';
+      var srStr = b.sr !== undefined ? '<span style="color:#4ade80;font-weight:700">' + I18N.rank_avg_short + ': ' + (b.sr > 0 ? '+' : '') + b.sr + '%</span>' : '';
+      var umStr = b.um !== undefined && b.um !== 0 ? ' <span style="color:#38bdf8;font-weight:700">' + I18N.rank_skill_short + ': ' + (b.um > 0 ? '+' : '') + b.um + '%</span>' : '';
       var winBadge = b.item_window === 'EQUIPMENT' ? '<span style="background:#15803d;color:#fff;font-size:9px;padding:1px 4px;border-radius:3px;margin-left:4px">EQ</span>'
-                                                   : '<span style="background:#374151;color:#bbb;font-size:9px;padding:1px 4px;border-radius:3px;margin-left:4px">Plecak</span>';
+                                                   : '<span style="background:#374151;color:#bbb;font-size:9px;padding:1px 4px;border-radius:3px;margin-left:4px">' + I18N.bag + '</span>';
       var iconUrl = b.weapon_vnum ? getItemIconUrl(b.weapon_vnum) : null;
       var iconImg = iconUrl ? '<img src="' + iconUrl + '" onerror="' + ICON_ONERROR + '" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;image-rendering:pixelated">' : '';
-      detailStr = '<div>' + iconImg + '<span style="color:#ffd700;font-weight:700">' + (b.weapon_name || 'Broń 30 Lv') + '</span> ' + winBadge + '</div><div>' + srStr + umStr + '</div>';
+      detailStr = '<div>' + iconImg + '<span style="color:#ffd700;font-weight:700">' + (b.weapon_name || I18N.weapon30_one) + '</span> ' + winBadge + '</div><div>' + srStr + umStr + '</div>';
     } else if (g_selectedRankCategory === 'weapon') {
       detailStr = '<span style="color:#38bdf8;font-weight:700">' + (b.weapon_name || I18N.none) + '</span>';
     } else if (g_selectedRankCategory === 'armor') {
@@ -7605,15 +7940,15 @@ function renderRankings() {
     } else if (g_selectedRankCategory === 'plus9') {
       var p9win = b.item_window === 'EQUIPMENT'
           ? '<span style="background:#15803d;color:#fff;font-size:9px;padding:1px 4px;border-radius:3px;margin-left:4px">EQ</span>'
-          : '<span style="background:#374151;color:#bbb;font-size:9px;padding:1px 4px;border-radius:3px;margin-left:4px">Plecak</span>';
+          : '<span style="background:#374151;color:#bbb;font-size:9px;padding:1px 4px;border-radius:3px;margin-left:4px">' + I18N.bag + '</span>';
       var p9icon = b.weapon_vnum ? '<img src="' + getItemIconUrl(b.weapon_vnum) + '" onerror="' + ICON_ONERROR + '" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;image-rendering:pixelated">' : '';
       detailStr = p9icon + '<span style="color:#f97316;font-weight:700">' + (b.weapon_name || '+9') + '</span>' + p9win;
     } else {
       detailStr = '<span style="color:var(--gold);font-weight:700">Lv ' + b.level + '</span>';
     }
 
-    rankHtml += '<div class="rank-row" onclick="openBotModal(' + b.id + ')">' +
-                '<div><b>#' + (idx+1) + '</b> ' + ptBadge + empireFlag(b.empire) + '<b>' + b.name + '</b> <span class="muted">(' + b.job + ')</span></div>' +
+    rankHtml += '<div class="rank-row' + (isPerson ? ' person' : '') + '" onclick="openBotModal(' + b.id + ')">' +
+                '<div><b>#' + (idx+1) + '</b> ' + ptBadge + personBadge + empireFlag(b.empire) + '<b>' + escapeHtml(b.name) + '</b> <span class="muted">(' + escapeHtml(b.job) + ')</span></div>' +
                 '<div style="text-align:right">' + detailStr + ' <span style="font-size:10px;color:#888">🔍</span></div>' +
                 '</div>';
   });
@@ -7735,156 +8070,24 @@ fetch('/static/item_icons.json')
   .then(function(data) { g_itemIcons = data; })
   .catch(function(err) { console.warn('Could not load item_icons.json:', err); });
 
-// Every bonus line the engine can roll, with the wording the game itself uses.
-// Generated from three sources that have to agree: the server's EApplyTypes
-// enum fixes the numbers, the client's AFFECT_DICT maps each number to a locale
-// key, and the client's locale_game.txt holds the text. Nothing here is
-// translated by hand, which is what the previous table did - it had 71 and 72
-// the wrong way round (71 is skill damage, 72 is average damage), classed the
-// two post-kill recovery chances as plain numbers rather than percentages, and
-// had no entry at all for 87-91, so an ice/earth/dark resistance showed up as
-// "Bonus #89".
-//
-// The text keeps the client's own placeholder, and that is what says how to
-// print the value: %d%% is a percentage, %d a plain number, %.1f a
-// multiplier, and no placeholder at all means the client shows the line with no
-// number after it. Ids the client has no text for are absent on purpose.
+// The bonus lines, in the page's language (APPLY_TEXTS, apply_meta_for).
 // The mt2009 engine numbers these lines as POINT_* (player.item.attrtype
 // carries a point there); APPLY_META is keyed by the APPLY_* numbers both
 // clients use, so a type goes through this table first. Empty on r40250.
 var POINT_TO_APPLY = {{ point_to_apply|tojson }};
 function applyKey(type) { var k = POINT_TO_APPLY[type]; return k === undefined ? type : k; }
 
-var APPLY_META = {
-  1: {pl: "Max PŻ: +%d", en: "Max. HP +%d", f: "flat"},
-  2: {pl: "Max PE: +%d", en: "Max. SP +%d", f: "flat"},
-  3: {pl: "Witalność +%d", en: "Vitality +%d", f: "flat"},
-  4: {pl: "Inteligencja +%d", en: "Intelligence +%d", f: "flat"},
-  5: {pl: "Siła: +%d", en: "Strength +%d", f: "flat"},
-  6: {pl: "Zręczność +%d", en: "Dexterity +%d", f: "flat"},
-  7: {pl: "Szybkość Ataku +%d%%", en: "Attack Speed +%d%%", f: "percent"},
-  8: {pl: "Szybkość Ruchu %d%%", en: "Moving Speed %d%%", f: "percent"},
-  9: {pl: "Szybkość Zaklęcia +%d%%", en: "Casting Speed +%d%%", f: "percent"},
-  10: {pl: "Regeneracja PŻ: +%d%%", en: "HP Regeneration +%d%%", f: "percent"},
-  11: {pl: "Regeneracja PE: +%d%%", en: "SP Regeneration +%d%%", f: "percent"},
-  12: {pl: "Szansa na Otrucie %d%%", en: "Poisoning chance %d%%", f: "percent"},
-  13: {pl: "Szansa na Omdlenie %d%%", en: "Blackout chance %d%%", f: "percent"},
-  14: {pl: "Szansa na Spowolnienie %d%%", en: "Slowing chance %d%%", f: "percent"},
-  15: {pl: "Szansa na cios krytyczny +%d%%", en: "Chance of critical hit +%d%% ", f: "percent"},
-  16: {pl: "Szansa na przeszywające Uderzenie: %d%% ", en: "%d%% Chance for piercing Hits", f: "percent"},
-  17: {pl: "Silny przeciwko Ludziom +%d%%", en: "Strong against Half Humans +%d%%", f: "percent"},
-  18: {pl: "Silny przeciwko Zwierzętom +%d%%", en: "Strong against Animals +%d%%", f: "percent"},
-  19: {pl: "Silny przeciwko Orkom +%d%%", en: "Strong against Orcs +%d%%", f: "percent"},
-  20: {pl: "Silny przeciwko Mistykom +%d%%", en: "Strong against Mystics +%d%%", f: "percent"},
-  21: {pl: "Silny przeciwko Nieumarłym +%d%%", en: "Strong against Undead +%d%%", f: "percent"},
-  22: {pl: "Silny przeciwko Diabłom +%d%%", en: "Strong against Devils +%d%%", f: "percent"},
-  23: {pl: "%d%% obrażeń będzie dodanych do PŻ", en: "%d%% damage  will be absorbed by HP", f: "percent"},
-  24: {pl: "%d%% obrażeń będzie dodanych do PE", en: "%d%% damage will be absorbed by SP", f: "percent"},
-  25: {pl: "%d%% Szansa na kradzież PE", en: "%d%% chance to rob SP", f: "percent"},
-  26: {pl: "Szansa na odzyskanie PE: %d%%", en: "%d%% Chance to get back SP when hit", f: "percent"},
-  27: {pl: "Szansa na blok ciosów %d%%", en: "Chance to block a close-combat attack %d%% ", f: "percent"},
-  28: {pl: "Szansa na uniknięcie Strzały: %d%%", en: "Chance to avoid Arrows %d%%", f: "percent"},
-  29: {pl: "Odporność na Miecze: %d%%", en: "Sword Defence %d%%", f: "percent"},
-  30: {pl: "Odporność na Broń Dwuręczną: %d%%", en: "Two-Handed Defence %d%%", f: "percent"},
-  31: {pl: "Odporność na Sztylety: %d%%", en: "Dagger Defence %d%%", f: "percent"},
-  32: {pl: "Odporność na Dzwony: %d%%", en: "Bell Defence %d%%", f: "percent"},
-  33: {pl: "Odporność na Wachlarze: %d%%", en: "Fan Defence %d%%", f: "percent"},
-  34: {pl: "Odporność na Strzały: %d%%", en: "Arrow Resistance %d%%", f: "percent"},
-  35: {pl: "Odporność na Ogień: %d%%", en: "Fire Resistance %d%%", f: "percent"},
-  36: {pl: "Odporność na Błyskawice: %d%%", en: "Lightning Resistance %d%%", f: "percent"},
-  37: {pl: "Odporność na Magię: %d%%", en: "Magic Resistance %d%%", f: "percent"},
-  38: {pl: "Odporność na Wiatr: %d%%", en: "Wind Resistance %d%%", f: "percent"},
-  39: {pl: "%d%% Szansa na odbicie Ciosu", en: "%d%% Chance to reflect close combat hits  ", f: "percent"},
-  40: {pl: "Szansa na odbicie Klątwy: %d%%", en: "Chance to reflect Curse: %d%%", f: "percent"},
-  41: {pl: "Odporność na Trucizny: %d%%", en: "Poison Resistance %d%%", f: "percent"},
-  42: {pl: "Szansa na odzyskanie PE: %d%%", en: "%d%% Chance to restore SP", f: "percent"},
-  43: {pl: "Szansa na Bonus DOŚ: %d%%", en: "%d%% Chance for EXP Bonus", f: "percent"},
-  44: {pl: "Szansa na podwójną ilość Yang: %d%%", en: "%d%% Chance to drop double Yang", f: "percent"},
-  45: {pl: "Szansa na podwójną ilość Przedmiotów: %d%%", en: "%d%% Chance to drop double the Items", f: "percent"},
-  46: {pl: "Mikstury %d%% efekt podniesiony", en: "Potion %d%% effect raise", f: "percent"},
-  47: {pl: "Szansa na odzyskanie PŻ: %d%%", en: "%d%% Chance, to restore HP", f: "percent"},
-  48: {pl: "Odporność na Omdlenia", en: "Defence against blackouts", f: "boolean"},
-  49: {pl: "Odporność na Spowolnienia", en: "Defence against slowing", f: "boolean"},
-  50: {pl: "Niewrażliwy na Upadek", en: "Immune against falling down", f: "boolean"},
-  52: {pl: "Zasięg Łuku +%dm", en: "Arc Range +%dm", f: "flat"},
-  53: {pl: "Wartość Ataku +%d", en: "Attack Value +%d", f: "flat"},
-  54: {pl: "Obrona +%d", en: "Defence +%d", f: "flat"},
-  55: {pl: "Wartość Magicznego Ataku: +%d", en: "Magical Attack Value +%d", f: "flat"},
-  56: {pl: "Magiczna Obrona: +%d", en: "Magical Defence +%d", f: "flat"},
-  58: {pl: "Max Wytrzymałość: +%d", en: "Max. Endurance +%d", f: "flat"},
-  59: {pl: "Silny przeciwko Wojownikom +%d%%", en: "Strong against Warriorr +%d%%", f: "percent"},
-  60: {pl: "Silny przeciwko Ninja +%d%%", en: "Strong against Ninjas +%d%%", f: "percent"},
-  61: {pl: "Silny przeciwko Sura +%d%%", en: "Strong against Sura +%d%%", f: "percent"},
-  62: {pl: "Silny przeciwko Szamanom +%d%%", en: "Strong against Shamans +%d%%", f: "percent"},
-  63: {pl: "Silny przeciwko Potworom +%d%%", en: "Strength against monsters +%d%%", f: "percent"},
-  64: {pl: "Wartość Ataku: +%d%%", en: "Attack Value +%d%%", f: "percent"},
-  65: {pl: "Obrona: +%d%%", en: "Defence +%d%%", f: "percent"},
-  66: {pl: "Punkty Doświadczenia: +%d%%", en: "EXP +%d%%", f: "percent"},
-  67: {pl: "Szansa na zdobycie Przedmiotów pomnożona o %.1f", en: "Chance of capturing Items multiplied with %.1f", f: "multiplier"},
-  68: {pl: "Szansa na zdobycie Yang pomnożona o %.1f", en: "Chance of capturing Yang multiplied with %.1f", f: "multiplier"},
-  69: {pl: "Maks. PŻ +%d%%", en: "Max. HP +%d%%", f: "percent"},
-  70: {pl: "Maks. PE +%d%% ", en: "Max. SP +%d%% ", f: "percent"},
-  71: {pl: "Obrażenie Umiejętności: %d%%", en: "Skill Damage %d%%", f: "percent"},
-  72: {pl: "Średnie Obrażenia: %d%%", en: "Average Damage %d%%", f: "percent"},
-  73: {pl: "Odporność na Obrażenia Umiejętności %d%%", en: "Resistance against Skill Damage %d%%", f: "percent"},
-  74: {pl: "Odporność na Obrażenia: %d%%", en: "Average Damage Resistance %d%%", f: "percent"},
-  75: {pl: "iCafe DOŚ Bonus +%d%%", en: "iCafe EXP Bonus +%d%%", f: "percent"},
-  76: {pl: "iCafe Szansa na zdobycie Przedmiotów plus %.1f%%", en: "iCafe Chance of capturing Items plus %.1f%%", f: "percent_decimal"},
-  78: {pl: "Odporność na Wojowników: %d%%", en: "Defence chance against warrior attacks: %d%%", f: "percent"},
-  79: {pl: "Odporność na Ninja: %d%%", en: "Defence chance against ninja attacks: %d%%", f: "percent"},
-  80: {pl: "Odporność na Sura: %d%%", en: "Defence chance against sura attacks: %d%%", f: "percent"},
-  81: {pl: "Odporność na Szamanów: %d%%", en: "Defence chance against shaman attacks: %d%%", f: "percent"},
-  82: {pl: "Energia %d", en: "Energy %d ", f: "flat"},
-  84: {pl: "Bonus kostiumu %d%% ", en: "Costume bonus %d%% ", f: "percent"},
-  85: {pl: "Magiczny atak +%d%%", en: "Magic attack +%d%%", f: "percent"},
-  86: {pl: "Magiczny/krótkodystansowy atak +%d%%", en: "Magic/melee attack +%d%%", f: "percent"},
-  87: {pl: "Odporność na lód +%d%%", en: "Ice resistance +%d%%", f: "percent"},
-  88: {pl: "Odporność na ziemię +%d%%", en: "Earth resistance +%d%%", f: "percent"},
-  89: {pl: "Odporność na mrok +%d%%", en: "Resistance against darkness +%d%%", f: "percent"},
-  90: {pl: "Odporność na cios krytyczny +%d%%", en: "Resistance against critical hits +%d%%", f: "percent"},
-  91: {pl: "Odporność na przeszywający cios +%d%%", en: "Resistance against piercing hits +%d%%", f: "percent"},
-  1138: {pl: "Terror +%d%%", en: "Terror +%d%%", f: "percent"},
-  1139: {pl: "Regeneracja wytrzymałości +%d%%", en: "Stamina regeneration +%d%%", f: "percent"},
-  1140: {pl: "Atak sztyletem przeciw potworom +%d", en: "Dagger attack against monsters +%d", f: "flat"},
-  1141: {pl: "Wartość ataku przeciw potworom +%d", en: "Attack value against monsters +%d", f: "flat"},
-  1142: {pl: "Odporność na potwory +%d‰", en: "Resistance against monsters +%d‰", f: "flat"},
-  1143: {pl: "Pochłanianie obrażeń +%d%%", en: "Damage absorption +%d%%", f: "percent"},
-  1144: {pl: "Pochłanianie obrażeń od potworów +%d%%", en: "Damage absorption from monsters +%d%%", f: "percent"},
-  1145: {pl: "Przełamanie odporności na ogłuszenie", en: "Breaks stun immunity", f: "boolean"},
-  1146: {pl: "Przełamanie klątwy świątyni", en: "Breaks the temple curse", f: "boolean"},
-  1147: {pl: "Czas trwania umiejętności +%d%%", en: "Skill duration +%d%%", f: "percent"},
-  1148: {pl: "Silny przeciw potworom z Doliny Orków +%d%%", en: "Strong against Orc Valley monsters +%d%%", f: "percent"},
-  1149: {pl: "Silny przeciw Metinom +%d%%", en: "Strong against Metin stones +%d%%", f: "percent"},
-  1150: {pl: "Silny przeciw bossom +%d%%", en: "Strong against bosses +%d%%", f: "percent"},
-  1151: {pl: "Magiczny atak przeciw potworom +%d%%", en: "Magic attack against monsters +%d%%", f: "percent"},
-  1152: {pl: "Przełamanie odporności na miecz +%d%%", en: "Breaks sword resistance +%d%%", f: "percent"},
-  1153: {pl: "Przełamanie odporności na broń dwuręczną +%d%%", en: "Breaks two-handed resistance +%d%%", f: "percent"},
-  1154: {pl: "Przełamanie odporności na sztylet +%d%%", en: "Breaks dagger resistance +%d%%", f: "percent"},
-  1155: {pl: "Przełamanie odporności na dzwonek +%d%%", en: "Breaks bell resistance +%d%%", f: "percent"},
-  1156: {pl: "Przełamanie odporności na wachlarz +%d%%", en: "Breaks fan resistance +%d%%", f: "percent"},
-  1157: {pl: "Przełamanie odporności na łuk +%d%%", en: "Breaks bow resistance +%d%%", f: "percent"},
-  1158: {pl: "Szansa na zbieranie +%d%%", en: "Collecting chance +%d%%", f: "percent"},
-  1159: {pl: "Szansa na naukę +%d%%", en: "Learning chance +%d%%", f: "percent"},
-  1160: {pl: "Odporność na ludzi +%d%%", en: "Resistance against humans +%d%%", f: "percent"},
-  1161: {pl: "Magiczny atak +%d", en: "Magic attack +%d", f: "flat"},
-  1162: {pl: "Szansa na podpalenie +%d%%", en: "Chance of burning +%d%%", f: "percent"},
-  1163: {pl: "Zamiana obrażeń na PE +%d%%", en: "Damage converted to SP +%d%%", f: "percent"},
-  1164: {pl: "Szansa na rzadki łup +%d%%", en: "Rare drop chance +%d%%", f: "percent"},
-  1165: {pl: "Magiczna wartość ataku przeciw potworom +%d", en: "Magic attack value against monsters +%d", f: "flat"},
-  1166: {pl: "Szansa na unieruchomienie +%d%%", en: "Chance of rooting +%d%%", f: "percent"},
-  1167: {pl: "Atak specjalny +%d", en: "Special attack +%d", f: "flat"},
-  1168: {pl: "Kara za śmierć +%d%%", en: "Death penalty +%d%%", f: "percent"}
-};
+var APPLY_META = {{ apply_meta|tojson }};
 
 // One formatter for both the fixed bonuses an item is made with and the random
 // lines rolled onto it, so the same id can never be worded or punctuated two
 // different ways. The sign lives in the client's own template: where it puts a
 // "+" the value is meant to read as a gain, so a negative value drops that "+"
 // instead of printing "+-10".
-function formatApply(type, val, lg) {
+function formatApply(type, val) {
   var meta = APPLY_META[applyKey(type)];
   if (!meta) return 'Bonus #' + type + ': ' + (val > 0 ? '+' : '') + val;
-  var text = meta[lg] || meta.en;
+  var text = meta.t;
   if (meta.f === 'boolean') return text;
   var shown = (meta.f === 'multiplier' || meta.f === 'percent_decimal')
       ? (Math.round(val * 10) / 10).toFixed(1)
@@ -8006,19 +8209,19 @@ function renderShopWindow(shop) {
   if (!shop) {
     list.innerHTML = '';
     where.textContent = '';
-    empty.textContent = I18N.shop_none || 'Ten bot nie ma otwartego sklepu.';
+    empty.textContent = I18N.shop_none;
     empty.style.display = 'block';
     return;
   }
   var offers = shop.offers || [];
   where.textContent = (shop.name || '') +
-      ' · ' + (I18N.map || 'Mapa') + ' ' + shop.map_index +
+      ' · ' + I18N.map + ' ' + shop.map_index +
       ' (' + shop.x + ', ' + shop.y + ')' +
-      (shop.is_premium ? ' · ' + (I18N.shop_premium || 'premium') : '') +
-      (shop.expired ? ' · ' + (I18N.shop_expired || 'wygasły') : '');
+      (shop.is_premium ? ' · ' + I18N.shop_premium : '') +
+      (shop.expired ? ' · ' + I18N.shop_expired : '');
   if (!offers.length) {
     list.innerHTML = '';
-    empty.textContent = I18N.shop_empty || 'Lada jest pusta.';
+    empty.textContent = I18N.shop_empty;
     empty.style.display = 'block';
     return;
   }
@@ -8048,7 +8251,7 @@ function toggleBotShop(pid, name) {
   win.style.display = 'block';
   g_currentShopPid = pid;
   var titleEl = document.getElementById('m2ShopTitle');
-  if (titleEl) titleEl.textContent = (I18N.shop || 'Sklep') + (name ? ' — ' + name : '');
+  if (titleEl) titleEl.textContent = I18N.shop + (name ? ' — ' + name : '');
   renderShopWindow(null);
 
   fetch('/api/bot_shop/' + pid, {cache:'no-store'})
@@ -8122,7 +8325,7 @@ function toggleBotSafebox(pid, name) {
   win.style.display = 'block';
   g_currentSafeboxPid = pid;
   var titleEl = document.getElementById('m2SafeboxTitle');
-  if (titleEl) titleEl.textContent = (I18N.depot || 'Magazyn') + (name ? ' — ' + name : '');
+  if (titleEl) titleEl.textContent = I18N.depot + (name ? ' — ' + name : '');
 
   renderSafeboxGrid([]);
   fetch('/api/bot_safebox/' + pid, {cache:'no-store'})
@@ -8210,9 +8413,10 @@ function showItemTooltip(ev, item) {
   var tt = document.getElementById('m2ItemTooltip');
   if (!tt || !item) return;
 
-  var lg = I18N.language || 'pl';
+  // The words are the page's (I18N); this used to read I18N.language, which
+  // the table never had, so every tooltip said "Wymagany Poziom" in English.
   var def = (g_itemDefs && g_itemDefs[String(item.vnum)]) || {};
-  var name = item.name || def.name || ('Item #' + item.vnum);
+  var name = item.name || def.name || I18N.item_n.replace('{n}', item.vnum);
 
   var html = '<div class="m2-tt-name">' + name + '</div>';
 
@@ -8228,7 +8432,7 @@ function showItemTooltip(ev, item) {
   }
 
   if (def.level && def.level > 0) {
-    html += '<div style="color:#a1a1aa;font-size:10px">' + (lg === 'pl' ? 'Wymagany Poziom: ' : 'Required Level: ') + '<b style="color:#e5e7eb">' + def.level + '</b></div>';
+    html += '<div style="color:#a1a1aa;font-size:10px">' + I18N.tt_req_level + ': <b style="color:#e5e7eb">' + def.level + '</b></div>';
   }
 
   // Combat Stats (Attack / Defense)
@@ -8238,17 +8442,17 @@ function showItemTooltip(ev, item) {
     var minAtt = (def.value3 || 0) + (def.value5 || 0);
     var maxAtt = (def.value4 || 0) + (def.value5 || 0);
     if (minAtt > 0 || maxAtt > 0) {
-      statHtml += '<div class="m2-tt-stat">' + (lg === 'pl' ? 'Wartość Ataku: ' : 'Attack Value: ') + minAtt + ' - ' + maxAtt + '</div>';
+      statHtml += '<div class="m2-tt-stat">' + I18N.tt_attack + ': ' + minAtt + ' - ' + maxAtt + '</div>';
       hasStats = true;
     }
     var minMag = (def.value1 || 0) + (def.value5 || 0);
     var maxMag = (def.value2 || 0) + (def.value5 || 0);
     if (minMag > 0 || maxMag > 0) {
-      statHtml += '<div class="m2-tt-stat">' + (lg === 'pl' ? 'Wartość Magicznego Ataku: ' : 'Magic Attack Value: ') + minMag + ' - ' + maxMag + '</div>';
+      statHtml += '<div class="m2-tt-stat">' + I18N.tt_magic_attack + ': ' + minMag + ' - ' + maxMag + '</div>';
       hasStats = true;
     }
     if (def.value0 > 0) {
-      statHtml += '<div class="m2-tt-stat">' + (lg === 'pl' ? 'Szybkość Ataku: +' : 'Attack Speed: +') + def.value0 + '%</div>';
+      statHtml += '<div class="m2-tt-stat">' + I18N.tt_attack_speed + ': +' + def.value0 + '%</div>';
       hasStats = true;
     }
   } else if (def.type === 2) { // Armor / Equip
@@ -8259,11 +8463,11 @@ function showItemTooltip(ev, item) {
     else if (def.subtype === 4) defVal = (def.value1 || 0) + (def.value5 || 0); // Boots
 
     if (defVal > 0) {
-      statHtml += '<div class="m2-tt-stat">' + (lg === 'pl' ? 'Obrona: ' : 'Defense: ') + defVal + '</div>';
+      statHtml += '<div class="m2-tt-stat">' + I18N.tt_defense + ': ' + defVal + '</div>';
       hasStats = true;
     }
     if (def.value0 > 0) {
-      statHtml += '<div class="m2-tt-stat">' + (lg === 'pl' ? 'Szybkość Ruchu: ' : 'Movement Speed: ') + (def.subtype === 0 ? '-' : '+') + def.value0 + '%</div>';
+      statHtml += '<div class="m2-tt-stat">' + I18N.tt_move_speed + ': ' + (def.subtype === 0 ? '-' : '+') + def.value0 + '%</div>';
       hasStats = true;
     }
   }
@@ -8273,7 +8477,7 @@ function showItemTooltip(ev, item) {
     def.apply.forEach(function(ap) {
       if (ap.type && ap.val) {
         if (applyIsHidden(ap.type)) return;
-        statHtml += '<div class="m2-tt-stat">' + formatApply(ap.type, ap.val, lg) + '</div>';
+        statHtml += '<div class="m2-tt-stat">' + formatApply(ap.type, ap.val) + '</div>';
         hasStats = true;
       }
     });
@@ -8288,7 +8492,7 @@ function showItemTooltip(ev, item) {
     html += '<div class="m2-tt-divider"></div>';
     item.attrs.forEach(function(a) {
       if (applyIsHidden(a.type)) return;
-      html += '<div class="m2-tt-bonus">' + formatApply(a.type, a.val, lg) + '</div>';
+      html += '<div class="m2-tt-bonus">' + formatApply(a.type, a.val) + '</div>';
     });
   }
 
@@ -8300,12 +8504,12 @@ function showItemTooltip(ev, item) {
       if (sVal === 0 && def.type !== 1 && def.type !== 2) return;
       hasSock = true;
       if (sVal === 0) {
-        sockHtml += '<div class="m2-tt-socket" style="color:#71717a">⚪ ' + (lg === 'pl' ? 'Pęknięty Kamień' : 'Broken Stone') + '</div>';
+        sockHtml += '<div class="m2-tt-socket" style="color:#71717a">⚪ ' + I18N.tt_broken_stone + '</div>';
       } else if (sVal === 1) {
-        sockHtml += '<div class="m2-tt-socket" style="color:#94a3b8">⚪ ' + (lg === 'pl' ? 'Czysty Slot' : 'Empty Socket') + '</div>';
+        sockHtml += '<div class="m2-tt-socket" style="color:#94a3b8">⚪ ' + I18N.tt_empty_socket + '</div>';
       } else if (sVal >= 28000 && sVal <= 28999) {
         var sDef = (g_itemDefs && g_itemDefs[String(sVal)]) || {};
-        var sName = sDef.name || ('Kamień Duszy #' + sVal);
+        var sName = sDef.name || (I18N.tt_soul_stone + ' #' + sVal);
         sockHtml += '<div class="m2-tt-socket" style="color:#38bdf8">💎 ' + sName + '</div>';
       } else if (sVal > 1) {
         sockHtml += '<div class="m2-tt-socket" style="color:#94a3b8">⚙️ #' + sVal + '</div>';
@@ -8448,8 +8652,8 @@ function openBotModal(pid) {
       // The account decides, not the nickname: renaming a bot used to relabel
       // it GRACZ here while every other view still knew what it was.
       var isBot = !!p.is_bot;
-      var typeBadge = isBot ? '<span style="background:#2ecc71;color:#000;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">BOT</span>'
-                            : '<span style="background:#ef4444;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">GRACZ</span>';
+      var typeBadge = isBot ? '<span style="background:#2ecc71;color:#000;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">' + I18N.bot_badge + '</span>'
+                            : '<span style="background:#ef4444;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">' + I18N.player + '</span>';
 
       var html = '<div class="m2-modal-columns">';
 
@@ -8464,7 +8668,7 @@ function openBotModal(pid) {
       var wx = Math.floor(p.x / 100);
       var wy = Math.floor(p.y / 100);
       html += '<div style="margin-bottom:12px">' +
-              '<button type="button" class="btn btn-sm" onclick="warpMeToBot(' + p.x + ',' + p.y + ')" style="width:100%;margin-bottom:8px;background:#16a34a;color:#fff;font-weight:700;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-size:13px;box-shadow:0 0 10px rgba(22,163,74,0.5)">' +
+              '<button type="button" class="btn btn-sm" onclick="warpMeToBot(' + p.x + ',' + p.y + ',' + (p.channel || 0) + ')" style="width:100%;margin-bottom:8px;background:#16a34a;color:#fff;font-weight:700;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-size:13px;box-shadow:0 0 10px rgba(22,163,74,0.5)">' +
               '⚡ ' + I18N.teleport_me +
               '</button>' +
               '<div style="display:flex;gap:8px">' +
@@ -8481,6 +8685,10 @@ function openBotModal(pid) {
               '<div><b>HP:</b> <span style="color:#ef4444">' + (p.hp || 0) + '</span> / <b>MP:</b> <span style="color:#38bdf8">' + (p.mp || 0) + '</span></div>' +
               '<div><b>Yang:</b> <span style="color:#eab308;font-weight:700">' + (p.gold || 0).toLocaleString() + '</span></div>' +
               '<div><b>' + I18N.position + ':</b> (' + p.x + ', ' + p.y + ')</div>' +
+              // What the AI is doing is a bot's alone: a person reached from a
+              // ranking (blipu, 28 September) has no personality, goal or action,
+              // and the defaults read as though he had.
+              (isBot ?
               '<div><b>' + I18N.personality + ':</b> <span style="color:#c084fc;font-weight:700">' + escapeHtml(p.personality) + '</span>' +
                 (p.charakter ? ' <span style="color:#9ca3af">(' + I18N.charakter + ': ' + escapeHtml(p.charakter) + ')</span>' : '') + '</div>' +
               '<div><b>' + I18N.ambition + ':</b> <span style="color:#86efac;font-weight:700">' + escapeHtml(p.ambition) + '</span></div>' +
@@ -8489,9 +8697,10 @@ function openBotModal(pid) {
               (p.mood ? '<div style="grid-column:1 / -1"><b>' + I18N.mood + ':</b> <span style="color:#fbbf24;font-weight:700">' + escapeHtml(p.mood) + '</span>' +
                 (p.hold ? ' &nbsp;|&nbsp; <span style="color:#9ca3af">' + escapeHtml(p.hold) + '</span>' : '') + '</div>' : '') +
               '<div style="grid-column:1 / -1"><b>' + I18N.current_goal + ':</b> <span style="color:#60a5fa;font-weight:700">' + escapeHtml(p.goal) + '</span></div>' +
-              '<div style="grid-column:1 / -1"><b>' + I18N.action + ':</b> <span style="color:#ffd700">' + escapeHtml(p.action) + '</span></div>' +
+              '<div style="grid-column:1 / -1"><b>' + I18N.action + ':</b> <span style="color:#ffd700">' + escapeHtml(p.action) + '</span></div>'
+              : '') +
               '<div><b>' + I18N.horse + ':</b> <span style="color:#c084fc;font-weight:700">Lv ' + (p.horse_level || 0) + '</span>' +
-                (p.saddlebag_rows ? ' <span style="color:#a78bfa">| ' + (I18N.language === 'en' ? 'Saddlebags' : 'Juki') + ' ' + p.saddlebag_rows + '/9</span>' : '') + '</div>' +
+                (p.saddlebag_rows ? ' <span style="color:#a78bfa">| ' + I18N.saddlebags + ' ' + p.saddlebag_rows + '/9</span>' : '') + '</div>' +
               '<div><b>' + I18N.biologist + ':</b> <span style="color:#4ade80;font-weight:700">' + (p.biologist_completed || 0) + '/' + (p.biologist_total || 7) + (I18N.bio_done ? ' ' + I18N.bio_done : '') + '</span></div>' +
               '<div style="grid-column:1 / -1"><b>' + I18N.bio_stage + ':</b> <span style="color:#86efac">' + (p.biologist_label || I18N.no_data) + '</span></div>' +
               // Only when there is a hunt to report. On the mt2009 line
@@ -8569,7 +8778,7 @@ function openBotModal(pid) {
       // RIGHT COLUMN: Authentic Metin2 Inventory Window
       html += '<div>';
       html += '<div class="m2-inv-window">' +
-              '<div class="m2-window-title">⚔️ ' + (I18N.inventory || 'Ekwipunek') + '</div>';
+              '<div class="m2-window-title">⚔️ ' + I18N.inventory + '</div>';
 
       // Equipment Section with Character Silhouette
       html += '<div class="m2-equip-container">' +
@@ -8608,7 +8817,7 @@ function openBotModal(pid) {
       // The depot is not a wear slot, so it has no entry in equipCoords. The
       // container is 200px wide and the eight real slots stop at x=132, so it
       // goes in that unused margin rather than overlapping any of them.
-      html += '<div class="m2-equip-slot" title="' + (I18N.depot || 'Magazyn') +
+      html += '<div class="m2-equip-slot" title="' + I18N.depot +
               '" style="left:150px;top:6px;width:34px;height:34px;cursor:pointer;' +
               'display:flex;align-items:center;justify-content:center;font-size:19px"' +
               ' data-botpid="' + p.id + '" data-botname="' + p.name + '"' +
@@ -8616,7 +8825,7 @@ function openBotModal(pid) {
 
       // And the stall beside it: what the bot sells lives in its offline shop,
       // which is neither the bag nor the depot (Tieru, 17 September).
-      html += '<div class="m2-equip-slot" title="' + (I18N.shop || 'Sklep') +
+      html += '<div class="m2-equip-slot" title="' + I18N.shop +
               '" style="left:150px;top:46px;width:34px;height:34px;cursor:pointer;' +
               'display:flex;align-items:center;justify-content:center;font-size:19px"' +
               ' data-botpid="' + p.id + '" data-botname="' + p.name + '"' +
@@ -8828,7 +9037,7 @@ function copyWarp(x, y) {
   copyCommand('/warp ' + x + ' ' + y);
 }
 
-function warpMeToBot(x, y) {
+function warpMeToBot(x, y, channel) {
   var t = document.getElementById('mapToast');
   if (t) {
     t.innerText = '⏳ ' + I18N.teleporting;
@@ -8840,7 +9049,8 @@ function warpMeToBot(x, y) {
     // 'auto' lets the server pick the character that actually played last.
     // This used to send a hardcoded name, so the button teleported that one
     // player on every installation and silently did nothing for everyone else.
-    body: JSON.stringify({ x: x, y: y, player_name: 'auto' })
+    // The bot's channel too: a character on another one is moved there.
+    body: JSON.stringify({ x: x, y: y, channel: channel || 0, player_name: 'auto' })
   })
   .then(function(res) { return res.json(); })
   .then(function(data) {
@@ -8851,7 +9061,12 @@ function warpMeToBot(x, y) {
       }
     } else {
       if (t) {
-        t.innerText = '❌ ' + I18N.error + ': ' + (data.error || data.status || I18N.failure);
+        // The server answers with a word (api_admin_warp_me); the three it
+        // says for a reason a person can act on are said in the page's words.
+        var why = (data && (data.error || data.status)) || '';
+        var said = {player_offline: I18N.warp_player_offline, no_human_player: I18N.warp_no_human,
+                    timeout: I18N.warp_timeout}[why];
+        t.innerText = '❌ ' + I18N.error + ': ' + (said || why || I18N.failure);
         setTimeout(function() { t.style.display = 'none'; }, 4000);
       }
     }
@@ -8893,6 +9108,7 @@ def live_map():
                                   browser_ready=browser_client_ready(),
                                   play_url=play_url(),
                                   m=map_i18n(language),
+                                  apply_meta=apply_meta_for(language),
                                   langs=LANGS,
                                   curlang=language,
                                   tile_version=PLAYERBOT_MAP_TILE_VERSION,
@@ -8902,6 +9118,7 @@ def live_map():
                                   # zero and the tab is a hundred rows of
                                   # nothing - hidden there, kept on r40250.
                                   engine_mt2009=ENGINE_MT2009,
+                                  people_ranked=rankings_count_people(),
                                   is_admin=bool(session.get("auth")))
 
 # ---------------------------------------------------------------------------
@@ -8973,6 +9190,80 @@ def bot_sql(query):
     return query
 
 
+# ---------------------------------------------------------------------------
+# Who a ranking counts: every character but a game master's (blipu, 28
+# September: "Wgl fajnie graczy dodac do wszystkich rankingow, jak gramy na coop
+# fajnie porownywac postep"). The rankings, the season and its records used to
+# ask <<BOT_2>>, so a person playing beside the bots was in none of them.
+#
+# A game master is a character with a rank in common.gmlist - the table the
+# engine reads to hand out the commands, and the one the player page's rank
+# card writes. That is what keeps Admin, AdminNinja, AdminSura and AdminSzaman
+# (gm_characters.sql: level 90, 500 000 000 yang and a full +9 set each) off
+# the first four places of every table. Not the admin account: the operator's
+# own character often lives on it ("tylko moja Tieru"), and it is a player's.
+# Not the names either: the r40250 package calls its GM [SA]Admin, and a rank
+# given in the panel goes to whatever character it is given to. A PLAYER row
+# is no rank (gm_rank_of); a GM whose rank is taken away is ranked again.
+#
+# Seban's panel has the switch (/manage, "Prawdziwi gracze w rankingach", a
+# common.m2_switches row), and this panel follows it, so the two cannot rank
+# different worlds. No row means people are in; only an explicit 0 takes them
+# out, and then the rankings are the bots' alone again.
+# ---------------------------------------------------------------------------
+RANKING_PEOPLE_SWITCH = "include_real_players_in_rankings"
+RANKING_PEOPLE_TTL = 30.0
+_RANKING_PEOPLE = {"at": 0.0, "on": True}
+
+
+def rankings_count_people():
+    """Whether the rankings count people's characters beside the bots."""
+    now = time.time()
+    if now - _RANKING_PEOPLE["at"] < RANKING_PEOPLE_TTL:
+        return _RANKING_PEOPLE["on"]
+    on = True
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("SELECT value FROM common.m2_switches WHERE name = %s",
+                        (RANKING_PEOPLE_SWITCH,))
+            row = cur.fetchone()
+        if row is not None:
+            on = str(row.get("value", "1")).strip() != "0"
+    except Exception:
+        # Seban's collector creates the table; before it has, and on a
+        # database it cannot create one in, nobody has said no.
+        on = True
+    _RANKING_PEOPLE.update(at=now, on=on)
+    return on
+
+
+def _not_game_master(alias):
+    ref = (alias + ".") if alias else ""
+    return ("NOT EXISTS (SELECT 1 FROM common.gmlist rg"
+            " WHERE rg.mName = " + ref + "name AND rg.mAuthority <> 'PLAYER')")
+
+
+def _ranked(alias, pct, people_only):
+    if not rankings_count_people():
+        # Bots only; and a people-only ranking of a world that ranks no people
+        # is empty rather than a list the switch said not to show.
+        return "(1 = 0)" if people_only else _bot_identity(alias, pct)
+    if people_only:
+        return ("(" + _not_game_master(alias) + " AND NOT "
+                + _bot_identity(alias, pct) + ")")
+    return _not_game_master(alias)
+
+
+def ranking_sql(query, people_only=False):
+    """Expand the ranking markers - <<RANKED_2>>, <<RANKED_1>>, <<RANKED_P_2>>,
+    <<RANKED_P_1>>, spelled as the bot markers are - then the bot markers."""
+    for marker, alias, pct in (("<<RANKED_P_2>>", "p", "%%"), ("<<RANKED_P_1>>", "p", "%"),
+                               ("<<RANKED_2>>", "", "%%"), ("<<RANKED_1>>", "", "%")):
+        if marker in query:
+            query = query.replace(marker, _ranked(alias, pct, people_only))
+    return bot_sql(query)
+
+
 @app.route("/api/admin/warp_me", methods=["POST"])
 def api_admin_warp_me():
     try:
@@ -8980,6 +9271,12 @@ def api_admin_warp_me():
         target_x = int(data.get("x", 0))
         target_y = int(data.get("y", 0))
         gm_name = data.get("player_name") or "auto"
+        # "y:channel" when the bot's channel is known: web_admin.quest moves a
+        # character on another channel there (pc.warp_channel), where a plain
+        # WARP stayed on the character's own ("teleportuje, ale nie zmienia
+        # ch", prodnathin, 28 September).
+        channel = int(data.get("channel") or 0)
+        target_arg2 = "%d:%d" % (target_y, channel) if channel > 0 else str(target_y)
 
         # "auto": whoever is in the game right now. The panel cannot ask the
         # database that - last_play is written when the character is saved,
@@ -9004,10 +9301,10 @@ def api_admin_warp_me():
                     # teleport succeeded. Say what is actually wrong instead.
                     return jsonify({"ok": False, "error": "no_human_player"}), 404
                 cur.executemany("INSERT INTO player.web_admin_queue (player_name,cmd,arg1,arg2) VALUES (%s,%s,%s,%s)",
-                                [(n, "WARP", str(target_x), str(target_y)) for n in names])
+                                [(n, "WARP", str(target_x), target_arg2) for n in names])
                 cur.execute("SELECT id, player_name FROM player.web_admin_queue WHERE cmd='WARP' AND status='pending'"
                             " AND arg1=%s AND arg2=%s AND player_name IN ({})".format(",".join(["%s"] * len(names))),
-                            (str(target_x), str(target_y)) + tuple(names))
+                            (str(target_x), target_arg2) + tuple(names))
                 rows = {r["id"]: r["player_name"] for r in cur.fetchall()}
             moved, st = None, "timeout"
             deadline = time.time() + 6.0
@@ -9035,7 +9332,7 @@ def api_admin_warp_me():
                                 "tried": names, "x": target_x, "y": target_y})
             return jsonify({"ok": st == "done", "status": st, "name": moved, "x": target_x, "y": target_y})
 
-        st, qid = queue_and_wait(gm_name, "WARP", target_x, target_y, wait=5.0)
+        st, qid = queue_and_wait(gm_name, "WARP", target_x, target_arg2, wait=5.0)
         if st == "timeout":
             # A WARP nobody answered must not wait for the next login.
             with db() as c, c.cursor() as cur:
@@ -9162,7 +9459,7 @@ REFINE_HOWS = ("REFINE SUCCESS", "REFINE FAIL", "REMOVE (REFINE FAIL)")
 
 
 def refine_way_label(way, language):
-    lang_key = "pl" if language == "pl" else "en"
+    lang_key = language if language in LANGS else "en"
     kind, _, vnum = (way or "").strip().partition(":")
     if vnum.isdigit():
         name = localized_item_name(int(vnum), language)
@@ -9220,7 +9517,8 @@ def match_refine_ways(cur, pid, rows):
 @app.route("/api/bot_gear_history/<int:pid>")
 def api_bot_gear_history(pid):
     language = lang()
-    lang_key = "pl" if language == "pl" else "en"
+    lang_key = language if language in LANGS else "en"
+    messages = map_i18n(language)
     try:
         limit = max(10, min(400, int(request.args.get("limit", 60))))
     except (TypeError, ValueError):
@@ -9259,18 +9557,19 @@ def api_bot_gear_history(pid):
                 hint = log_text(r.get("hint")).strip()
                 detail = ""
                 if how in ("PLAYERBOT_GIFT_OUT",):
-                    detail = ("→ " if lang_key == "en" else "→ ") + hint
+                    detail = "→ " + hint
                 elif how in ("PLAYERBOT_GIFT_IN",):
-                    detail = ("← " if lang_key == "en" else "← ") + hint
+                    detail = "← " + hint
                 elif how == "PLAYERBOT_STALL_SOLD":
                     # "vnum xCOUNT za PRICE"
                     parts = hint.split()
                     if len(parts) >= 4:
-                        detail = parts[1] + (" for " if lang_key == "en" else " za ") + "{:,}".format(int(parts[3])).replace(",", " ") + " yang"
+                        detail = messages["gh_sold_for"].format(
+                            count=parts[1], price="{:,}".format(int(parts[3])).replace(",", " "))
                 elif how == "PLAYERBOT_EQUIP":
                     parts = hint.split()
                     if len(parts) >= 4 and parts[3].isdigit() and int(parts[3]) > 0:
-                        detail = ("instead of " if lang_key == "en" else "zamiast ") + localized_item_name(int(parts[3]), language)
+                        detail = messages["gh_instead"].format(item=localized_item_name(int(parts[3]), language))
                 elif how.startswith("REFINE") or how.startswith("REMOVE"):
                     # The engine's hint is the item's own name with its grade,
                     # which the item column already shows; how the refine was
@@ -9291,9 +9590,10 @@ def api_bot_gear_history(pid):
             if tab in ("trade", "all"):
                 kind, labels = GEAR_HISTORY_OFFLINE_BUY
                 for t, vnum, count, yang, seller in gear_history_offline_buys(cur, pid, limit):
-                    detail = ("x%d " % count if count > 1 else "") + ("for " if lang_key == "en" else "za ") +                         "{:,}".format(yang).replace(",", " ") + " yang"
+                    detail = ("x%d " % count if count > 1 else "") + messages["gh_paid"].format(
+                        price="{:,}".format(yang).replace(",", " "))
                     if seller:
-                        detail += (" from " if lang_key == "en" else " od ") + seller
+                        detail += " " + messages["gh_from"].format(seller=seller)
                     rows.append((t, {
                         "time": t.strftime("%d.%m %H:%M") if hasattr(t, "strftime") else str(t),
                         "kind": kind,
@@ -13711,6 +14011,7 @@ def api_bot_inventory(pid):
                 player["x"] = live.get("x", player.get("x"))
                 player["y"] = live.get("y", player.get("y"))
                 player["hp"] = live.get("hp", player.get("hp"))
+                player["channel"] = live.get("channel", 0)
             player["action"] = live_labels["action"]
             player["personality"] = live_labels["personality"]
             player["charakter"] = live_labels["charakter"]
@@ -13979,20 +14280,30 @@ def api_bot_rankings():
         rank_limit = max(15, min(5000, int(request.args.get("limit", "15"))))
     except (TypeError, ValueError):
         rank_limit = 15
+    # "Tylko gracze": people's characters alone, numbered among themselves, so a
+    # person is found however far down the whole list they stand.
+    people_only = request.args.get("people") == "1"
+    people_ranked = rankings_count_people()
     language = lang()
     messages = map_i18n(language)
     try:
         with db() as c, c.cursor() as cur:
             if rtype == "gold":
-                cur.execute(bot_sql("""
+                cur.execute(ranking_sql("""
                     SELECT id, name, level, job, gold
                     FROM player.player
-                    WHERE <<BOT_2>>
+                    WHERE <<RANKED_2>>
                     ORDER BY gold DESC, level DESC
                     LIMIT %s
-                """), (rank_limit,))
+                """, people_only), (rank_limit,))
             elif rtype == "weapon30":
-                cur.execute(bot_sql("""
+                # What a character carries: the bag and the worn slots. A
+                # SAFEBOX or MALL row's owner_id is the ACCOUNT's id (see
+                # api_bot_safebox), so joined to player.id it put an account's
+                # depot on whichever character had that number - a person's
+                # depot on a bot, once people were ranked at all. A counter's
+                # line (IKASHOP_*) is for sale, not the keeper's weapon.
+                cur.execute(ranking_sql("""
                     SELECT p.id, p.name, p.level, p.job, p.gold,
                            i.vnum as weapon_vnum, i.window as item_window,
                            i.attrtype0, i.attrvalue0, i.attrtype1, i.attrvalue1,
@@ -14001,7 +14312,7 @@ def api_bot_rankings():
                            i.attrtype6, i.attrvalue6
                     FROM player.item i
                     JOIN player.player p ON p.id = i.owner_id
-                    WHERE <<BOT_P_2>> AND (
+                    WHERE <<RANKED_P_2>> AND i.window IN ('INVENTORY', 'EQUIPMENT') AND (
                         (i.vnum BETWEEN 290 AND 299) OR
                         (i.vnum BETWEEN 1170 AND 1179) OR
                         (i.vnum BETWEEN 2150 AND 2159) OR
@@ -14011,47 +14322,47 @@ def api_bot_rankings():
                     )
                     ORDER BY i.id DESC
                     LIMIT %s
-                """), (WEAPON30_RANK_SCAN,))
+                """, people_only), (WEAPON30_RANK_SCAN,))
             elif rtype == "weapon":
-                cur.execute(bot_sql("""
+                cur.execute(ranking_sql("""
                     SELECT p.id, p.name, p.level, p.job, p.gold, i.vnum as weapon_vnum
                     FROM player.player p
                     LEFT JOIN player.item i ON p.id = i.owner_id AND i.window = 'EQUIPMENT' AND i.pos = 4
-                    WHERE <<BOT_P_2>>
+                    WHERE <<RANKED_P_2>>
                     ORDER BY MOD(i.vnum, 10) DESC, i.vnum DESC, p.level DESC
                     LIMIT %s
-                """), (rank_limit,))
+                """, people_only), (rank_limit,))
             elif rtype == "armor":
-                cur.execute(bot_sql("""
+                cur.execute(ranking_sql("""
                     SELECT p.id, p.name, p.level, p.job, p.gold, i.vnum as armor_vnum
                     FROM player.player p
                     LEFT JOIN player.item i ON p.id = i.owner_id AND i.window = 'EQUIPMENT' AND i.pos = 0
-                    WHERE <<BOT_P_2>>
+                    WHERE <<RANKED_P_2>>
                     ORDER BY MOD(i.vnum, 10) DESC, i.vnum DESC, p.level DESC
                     LIMIT %s
-                """), (rank_limit,))
+                """, people_only), (rank_limit,))
             elif rtype == "items":
-                cur.execute(bot_sql("""
+                cur.execute(ranking_sql("""
                     SELECT p.id, p.name, p.level, p.job, p.gold, COUNT(i.id) as item_count
                     FROM player.player p
                     LEFT JOIN player.item i ON p.id = i.owner_id AND i.window = 'INVENTORY'
-                    WHERE <<BOT_P_2>>
+                    WHERE <<RANKED_P_2>>
                     GROUP BY p.id
                     ORDER BY item_count DESC, p.level DESC
                     LIMIT %s
-                """), (rank_limit,))
+                """, people_only), (rank_limit,))
             elif rtype == "horse":
-                cur.execute(bot_sql("""
+                cur.execute(ranking_sql("""
                     SELECT id, name, level, job, gold, horse_level
                     FROM player.player
-                    WHERE <<BOT_2>>
+                    WHERE <<RANKED_2>>
                     ORDER BY horse_level DESC, level DESC, exp DESC
                     LIMIT %s
-                """), (rank_limit,))
+                """, people_only), (rank_limit,))
             elif rtype == "biologist":
                 mission_names = tuple(m[0] for m in BIOLOGIST_MISSIONS)
                 placeholders = ",".join(["%s"] * len(mission_names))
-                ranking_sql = bot_sql("""
+                biologist_sql = ranking_sql("""
                     SELECT p.id, p.name, p.level, p.job, p.gold,
                            COUNT(DISTINCT CASE
                                WHEN q.szState = '__status' AND q.lValue = %s
@@ -14059,15 +14370,15 @@ def api_bot_rankings():
                     FROM player.player p
                     LEFT JOIN player.quest q
                       ON q.dwPID = p.id AND q.szName IN ({})
-                    WHERE <<BOT_P_2>>
+                    WHERE <<RANKED_P_2>>
                     GROUP BY p.id
                     ORDER BY biologist_completed DESC, p.level DESC, p.exp DESC
                     LIMIT %s
-                """).format(placeholders)
-                cur.execute(ranking_sql, (BIOLOGIST_COMPLETE_STATE,) + mission_names +
+                """, people_only).format(placeholders)
+                cur.execute(biologist_sql, (BIOLOGIST_COMPLETE_STATE,) + mission_names +
                             (rank_limit,))
             elif rtype == "hunting":
-                cur.execute(bot_sql("""
+                cur.execute(ranking_sql("""
                     SELECT p.id, p.name, p.level, p.job, p.gold,
                            MAX(CASE WHEN q.szState = 'complete' THEN q.lValue ELSE 0 END) AS hunting_complete,
                            MAX(CASE WHEN q.szState = 'current' THEN q.lValue ELSE 0 END) AS hunting_current,
@@ -14076,12 +14387,12 @@ def api_bot_rankings():
                     FROM player.player p
                     LEFT JOIN player.quest q
                       ON q.dwPID = p.id AND q.szName = 'levelup'
-                    WHERE <<BOT_P_2>>
+                    WHERE <<RANKED_P_2>>
                     GROUP BY p.id
                     ORDER BY hunting_complete DESC, hunting_current DESC,
                               hunting_remain ASC, p.level DESC
                     LIMIT %s
-                """), (rank_limit,))
+                """, people_only), (rank_limit,))
             elif rtype == "shops" and ENGINE_MT2009:
                 # On the 2.x line a bot's stall is a real offline shop (2.0.26):
                 # an independent entity the engine keeps in
@@ -14093,26 +14404,28 @@ def api_bot_rankings():
                 # from where the keeper happens to be hunting; the live entry is
                 # still read so the row can say what the keeper is doing now.
                 live = read_playerbot_live_status()
-                cur.execute(bot_sql("""
+                cur.execute(ranking_sql("""
                     SELECT p.id, p.name, p.level, p.job, p.gold,
                            s.map AS stall_map_index
                     FROM player.ikashop_offlineshop s
                     JOIN player.player p ON p.id = s.owner
-                    WHERE s.duration > 0 AND <<BOT_P_2>>
+                    WHERE s.duration > 0 AND <<RANKED_P_2>>
                     ORDER BY p.level DESC
                     LIMIT %s
-                """), (rank_limit,))
+                """, people_only), (rank_limit,))
             elif rtype == "shops":
                 # An open stall exists only in the game core's memory, so this is
                 # the one ranking the database cannot answer. The live status file
                 # can: a keeper reports BOT_ACTION_STALL for as long as its stall
                 # stands, which is what separates it from a bot merely visiting a
-                # merchant (BOT_ACTION_SHOP).
+                # merchant (BOT_ACTION_SHOP). A person's stall is in no file, so
+                # this one ranks the bots' stalls alone.
                 live = read_playerbot_live_status()
                 keeper_ids = [pid for pid, entry in live.items()
                               if entry.get("action_id") == BOT_ACTION_STALL_ID]
-                if not keeper_ids:
+                if not keeper_ids or people_only:
                     return jsonify({"ok": True, "type": rtype, "limit": rank_limit,
+                                    "people": people_ranked, "people_only": people_only,
                                     "rankings": []})
                 keeper_ids = keeper_ids[:rank_limit]
                 placeholders = ",".join(["%s"] * len(keeper_ids))
@@ -14131,11 +14444,11 @@ def api_bot_rankings():
                 # skill_level is a packed blob, so the whole set has to come
                 # back - two and a half thousand rows on a full world, which is
                 # what this page already reads for the live map.
-                cur.execute(bot_sql("""
+                cur.execute(ranking_sql("""
                     SELECT id, name, level, job, gold, skill_group, skill_level
                     FROM player.player
-                    WHERE <<BOT_2>> AND skill_group > 0
-                """))
+                    WHERE <<RANKED_1>> AND skill_group > 0
+                """, people_only))
             elif rtype == "plus9":
                 # Equipment stores its refine in the vnum: base + 0..9. Which
                 # vnums are equipment is a question for item_proto, not for a
@@ -14147,25 +14460,28 @@ def api_bot_rankings():
                 #
                 # type 1 is ITEM_WEAPON and 2 is ITEM_ARMOR (common/item_length.h),
                 # which is exactly the set whose refine chain runs base+0..9.
-                cur.execute(bot_sql("""
+                # The bag and the worn slots only, for the weapon30 ranking's
+                # reason: a depot row's owner is an account, not a character.
+                cur.execute(ranking_sql("""
                     SELECT p.id, p.name, p.level, p.job, p.gold,
                            i.vnum as weapon_vnum, i.window as item_window
                     FROM player.item i
                     JOIN player.player p ON p.id = i.owner_id
                     JOIN player.item_proto ip ON ip.vnum = i.vnum
-                    WHERE <<BOT_P_2>> AND ip.type IN (1, 2)
+                    WHERE <<RANKED_P_2>> AND i.window IN ('INVENTORY', 'EQUIPMENT')
+                      AND ip.type IN (1, 2)
                       AND MOD(i.vnum, 10) = 9
                     ORDER BY i.vnum DESC, p.level DESC
                     LIMIT %s
-                """), (rank_limit,))
+                """, people_only), (rank_limit,))
             else: # level
-                cur.execute(bot_sql("""
+                cur.execute(ranking_sql("""
                     SELECT id, name, level, job, exp, gold
                     FROM player.player
-                    WHERE <<BOT_2>>
+                    WHERE <<RANKED_2>>
                     ORDER BY level DESC, exp DESC
                     LIMIT %s
-                """), (rank_limit,))
+                """, people_only), (rank_limit,))
 
             rows = cur.fetchall()
             # The Biologist's ranking names the row each bot is on, as the card
@@ -14194,16 +14510,19 @@ def api_bot_rankings():
                 bio_live = read_playerbot_live_status()
             # One lookup for the whole page instead of a column in each of the
             # dozen ranking queries, which is also the only way it stays right
-            # when a new ranking is added.
-            empires = {}
+            # when a new ranking is added - the kingdom, and whether the row is
+            # a bot or a person, whom the list marks.
+            empires, bots = {}, set()
             if rows:
-                rank_ids = [r["id"] for r in rows]
+                rank_ids = sorted({r["id"] for r in rows})
                 cur.execute(
-                    bot_sql("SELECT id, <<EMPIRE>> AS empire FROM player.player"
+                    bot_sql("SELECT id, <<EMPIRE>> AS empire, <<BOT_2>> AS is_bot FROM player.player"
                             " WHERE id IN (" + ",".join(["%s"] * len(rank_ids)) + ")"),
                     rank_ids)
-                empires = {row["id"]: int(row["empire"] or 0)
-                           for row in cur.fetchall()}
+                for row in cur.fetchall():
+                    empires[row["id"]] = int(row["empire"] or 0)
+                    if int(row.get("is_bot") or 0):
+                        bots.add(row["id"])
             rankings = []
             for r in rows:
                 wv = r.get("weapon_vnum")
@@ -14308,7 +14627,10 @@ def api_bot_rankings():
                     "skill_rank_name": skill_name,
                     "skill_score": skill_score,
                     "stall_map": stall_map,
-                    "in_pt": bot_in_party_cohort(r["id"])
+                    "is_bot": r["id"] in bots,
+                    # The party cohort is the bots' (BOT_PARTY_MODULO); a
+                    # person's party is nothing the database holds.
+                    "in_pt": r["id"] in bots and bot_in_party_cohort(r["id"])
                 })
 
             if rtype == "weapon30":
@@ -14324,6 +14646,7 @@ def api_bot_rankings():
                 rankings = rankings[:rank_limit]
 
             return jsonify({"ok": True, "type": rtype, "limit": rank_limit,
+                            "people": people_ranked, "people_only": people_only,
                             "rankings": rankings})
     except Exception as e:
         return jsonify({"ok": False, "error": str(e), "rankings": []})
@@ -14731,7 +15054,12 @@ def read_channels_state():
     ports = eff.get("PORTS", "13000-13002")
     state = {"on": on, "share": share, "ports_open": ports.endswith("13012"),
              "want_on": on, "want_share": share, "pending": "", "choices": CH2_SHARE_CHOICES}
-    if wish.get("CH2") in ("0", "1"):
+    # The wish, unless the server already runs a later choice (the launcher's,
+    # written into .env after the panel's): the entrypoint notes the moment of
+    # the choice that won, and a server from before that note shows the wish.
+    overtaken = (eff.get("SET_AT", "").isdigit() and wish.get("SET_AT", "").isdigit()
+                 and int(wish["SET_AT"]) < int(eff["SET_AT"]))
+    if wish.get("CH2") in ("0", "1") and not overtaken:
         w_on = wish.get("CH2") == "1"
         w_share = int(wish.get("SHARE", "40")) if wish.get("SHARE", "").isdigit() else 40
         state["want_on"], state["want_share"] = w_on, w_share
@@ -14787,7 +15115,7 @@ def guilds_page():
             next_wars[g["empire"]] = nw
     next_war_rows = [(GUILD_EMPIRE_KEYS.get(e, "gl_empire_unknown"), s) for e, s in sorted(next_wars.items())]
     return render_template_string(TPL_GUILDS, guilds=guilds, tier_keys=GUILD_TIER_KEYS,
-                                  next_wars=next_war_rows)
+                                  next_wars=next_war_rows, player_guilds=read_player_guilds())
 
 
 @app.route("/events", methods=["GET", "POST"])
@@ -15152,7 +15480,8 @@ def season_data():
 
     since = (datetime.datetime.now()
              - datetime.timedelta(days=SEASON_DAYS)).strftime("%Y-%m-%d %H:%M:%S")
-    out = {"rows": [], "records": {}, "days": SEASON_DAYS, "error": ""}
+    out = {"rows": [], "people_below": [], "people": True, "records": {},
+           "days": SEASON_DAYS, "error": ""}
     try:
         with db() as c, c.cursor() as cur:
             metins = _season_counts(cur, "STONE_KILL", since)
@@ -15163,13 +15492,15 @@ def season_data():
 
             # Only the characters that did something this week need naming: a
             # world with a thousand bots must not fetch a thousand rows to show
-            # fifty of them.
+            # fifty of them. People are ranked beside the bots and marked (see
+            # rankings_count_people); a game master's character is not.
             active = set(metins) | set(bosses) | set(refines)
             rows = []
             if active:
                 cur.execute(
-                    bot_sql("SELECT id, name, level, job, horse_level FROM player.player "
-                    "WHERE <<BOT_2>> AND id IN %s"), (tuple(sorted(active)),))
+                    ranking_sql("SELECT id, name, level, job, horse_level, <<BOT_2>> AS is_bot"
+                                " FROM player.player WHERE <<RANKED_2>> AND id IN %s"),
+                    (tuple(sorted(active)),))
                 for p in cur.fetchall():
                     pid = int(p["id"])
                     m = metins.get(pid, 0)
@@ -15180,26 +15511,33 @@ def season_data():
                         "name": p["name"],
                         "level": int(p["level"] or 0),
                         "horse": int(p["horse_level"] or 0),
+                        "is_bot": bool(int(p.get("is_bot") or 0)),
                         "metins": m, "bosses": b, "refines": r,
                         "deaths": deaths.get(pid, 0),
                         "score": (m * SEASON_POINTS_METIN + b * SEASON_POINTS_BOSS
                                   + r * SEASON_POINTS_REFINE),
                     })
             rows.sort(key=lambda x: (-x["score"], -x["metins"], x["name"]))
+            for place, row in enumerate(rows, 1):
+                row["place"] = place
             out["rows"] = rows[:50]
+            # A person below the fifty is still somebody looking for his own
+            # line: listed under them, at his own place.
+            out["people_below"] = [row for row in rows[50:] if not row["is_bot"]]
+            out["people"] = rankings_count_people()
 
             # --- the all-time records --------------------------------------
             # Every tile is {name, level}, whatever "level" means for that tile,
             # so the template does not need a branch per record.
             recs = {}
-            cur.execute(bot_sql("SELECT name, level FROM player.player "
-                        "WHERE <<BOT_1>> ORDER BY level DESC, exp DESC LIMIT 1"))
+            cur.execute(ranking_sql("SELECT name, level FROM player.player "
+                        "WHERE <<RANKED_1>> ORDER BY level DESC, exp DESC LIMIT 1"))
             recs["level"] = cur.fetchone()
-            cur.execute(bot_sql("SELECT name, horse_level AS level FROM player.player "
-                        "WHERE <<BOT_1>> ORDER BY horse_level DESC LIMIT 1"))
+            cur.execute(ranking_sql("SELECT name, horse_level AS level FROM player.player "
+                        "WHERE <<RANKED_1>> ORDER BY horse_level DESC LIMIT 1"))
             recs["horse"] = cur.fetchone()
-            cur.execute(bot_sql("SELECT name, gold AS level FROM player.player "
-                        "WHERE <<BOT_1>> ORDER BY gold DESC LIMIT 1"))
+            cur.execute(ranking_sql("SELECT name, gold AS level FROM player.player "
+                        "WHERE <<RANKED_1>> ORDER BY gold DESC LIMIT 1"))
             recs["gold"] = cur.fetchone()
             for key, how, extra in (
                     ("metins", "STONE_KILL", ""),
@@ -15207,9 +15545,9 @@ def season_data():
                     ("refines", "REFINE SUCCESS",
                      "AND l.hint REGEXP '" + SEASON_REFINE_PATTERN + "' ")):
                 cur.execute(
-                    bot_sql("SELECT p.name, COUNT(*) AS level FROM log.log l "
+                    ranking_sql("SELECT p.name, COUNT(*) AS level FROM log.log l "
                     "JOIN player.player p ON p.id = l.who "
-                    "WHERE l.how = %s AND <<BOT_P_2>> ") + extra +
+                    "WHERE l.how = %s AND <<RANKED_P_2>> ") + extra +
                     "GROUP BY l.who ORDER BY level DESC LIMIT 1", (how,))
                 recs[key] = cur.fetchone()
             out["records"] = {k: v for k, v in recs.items() if v}
@@ -15522,7 +15860,7 @@ def login():
     if request.method == "POST":
         cnt, lock = FAILS.get(ip, [0, 0])
         if time.time() < lock:
-            flash("Too many wrong attempts. Please wait 15 minutes for security. ⏳", "error")
+            flash(t("login_locked"), "error")
             return render_template_string(TPL_LOGIN, client_ready=os.path.exists(CLIENT_ZIP), client_name=CLIENT_LABEL,
                                   client_url=CLIENT_URL, browser_ready=browser_play_ready(),
                                   play_url=play_url())
@@ -15533,7 +15871,7 @@ def login():
         cnt += 1
         FAILS[ip] = [cnt, time.time() + LOCK_SEC if cnt >= MAX_FAIL else 0]
         time.sleep(1.5)
-        flash("Wrong passphrase, try again. 🙂", "error")
+        flash(t("login_wrong"), "error")
     return render_template_string(TPL_LOGIN, client_ready=os.path.exists(CLIENT_ZIP), client_name=CLIENT_LABEL,
                                   client_url=CLIENT_URL, browser_ready=browser_play_ready(),
                                   play_url=play_url())
@@ -15650,7 +15988,7 @@ def reset(token):
         return render_template_string(TPL_RESET, valid=False, login="")
     if request.method == "POST":
         if rate_limited("pwreset", 5, 900):
-            flash("Too many attempts. Please wait a while. ⏳", "error")
+            flash(t("too_many_tries"), "error")
             return render_template_string(TPL_RESET, valid=True, login=lg)
         new, new2 = request.form.get("new", ""), request.form.get("new2", "")
         if len(new) < 6:
@@ -15678,7 +16016,7 @@ def download():
     if CLIENT_URL:
         return redirect(CLIENT_URL)
     if not os.path.exists(CLIENT_ZIP):
-        flash("The game download is not ready yet.", "error")
+        flash(t("dl_not_ready"), "error")
         return redirect(url_for("login"))
     # A slot is spent only by a fresh fetch of the whole file. HEAD probes cost
     # nothing, and neither does resuming: a genuine resume asks for a Range that
@@ -15784,7 +16122,7 @@ def play_redirect():
 @app.route("/play/")
 def play():
     if not browser_client_ready():
-        flash("Playing in the browser is not set up on this server.", "error")
+        flash(t("play_not_set"), "error")
         return redirect(url_for("login"))
     resp = send_from_directory(browser_root(), "index.html")
     return _play_headers(resp, "no-cache")
@@ -15921,7 +16259,7 @@ def register():
     form = {"login": "", "social": ""}
     if request.method == "POST":
         if rate_limited("register", 3, 3600):
-            flash("Too many accounts were created from this connection. Please try again later. ⏳", "error")
+            flash(t("reg_too_many"), "error")
             return render_template_string(TPL_REGISTER, form=form)
         lg = request.form.get("login", "").strip()
         pw = request.form.get("pw", "")
@@ -15929,19 +16267,19 @@ def register():
         social = request.form.get("social", "").strip()
         form = {"login": lg, "social": social}
         if not (4 <= len(lg) <= 16 and lg.isalnum()):
-            flash("The username must be 4-16 letters/numbers, no spaces. 🙂", "error")
+            flash(t("reg_bad_user"), "error")
         elif len(pw) < 6:
-            flash("The password must be at least 6 characters. 🙂", "error")
+            flash(t("reg_bad_pw"), "error")
         elif pw != pw2:
-            flash("The two passwords don't match — try again. 🙂", "error")
+            flash(t("reg_pw_mismatch"), "error")
         elif not (social.isdigit() and len(social) == 7):
-            flash("The delete code must be exactly 7 digits (e.g. 1234567). 🙂", "error")
+            flash(t("reg_bad_social"), "error")
         else:
             try:
                 with db() as c, c.cursor() as cur:
                     cur.execute("SELECT 1 FROM account.account WHERE login=%s", (lg,))
                     if cur.fetchone():
-                        flash("That username is already taken — pick another one. 🙂", "error")
+                        flash(t("reg_name_taken"), "error")
                         return render_template_string(TPL_REGISTER, form=form)
                     cur.execute(
                         "INSERT INTO account.account (login,password,social_id,status) "
@@ -15953,14 +16291,14 @@ def register():
                                               browser_ready=browser_play_ready(),
                                               play_url=play_url())
             except Exception:
-                flash("The account could not be created right now. Please try again in a bit. 🙏", "error")
+                flash(t("reg_failed"), "error")
     return render_template_string(TPL_REGISTER, form=form)
 
 @app.route("/account", methods=["GET", "POST"])
 def account():
     if request.method == "POST":
         if rate_limited("acclogin", 8, 900):
-            flash("Too many attempts. Please wait a while. ⏳", "error")
+            flash(t("too_many_tries"), "error")
             return render_template_string(TPL_ACCOUNT_LOGIN)
         lg = request.form.get("login", "").strip()
         pw = request.form.get("pw", "")
@@ -15975,7 +16313,7 @@ def account():
             session["player"] = lg
         else:
             time.sleep(1.0)
-            flash("Wrong username or password. 🙂", "error")
+            flash(t("acc_wrong"), "error")
             return render_template_string(TPL_ACCOUNT_LOGIN)
     lg = session.get("player")
     if not lg:
@@ -16001,9 +16339,9 @@ def account_password():
         return redirect(url_for("account"))
     old, new, new2 = (request.form.get(k, "") for k in ("old", "new", "new2"))
     if len(new) < 6:
-        flash("The new password must be at least 6 characters. 🙂", "error")
+        flash(t("acc_new_short"), "error")
     elif new != new2:
-        flash("The two new passwords don't match. 🙂", "error")
+        flash(t("acc_new_mismatch"), "error")
     else:
         try:
             with db() as c, c.cursor() as cur:
@@ -16011,9 +16349,9 @@ def account_password():
                 row = cur.fetchone()
                 if row and hmac.compare_digest(row["password"], m2_hash(old)):
                     cur.execute("UPDATE account.account SET password=%s WHERE login=%s", (m2_hash(new), lg))
-                    flash("🔒 Your password was changed! Use the new one next time you log into the game.")
+                    flash(t("acc_pw_changed"))
                 else:
-                    flash("The current password is wrong. 🙂", "error")
+                    flash(t("acc_pw_wrong"), "error")
         except Exception:
             flash(t("db_down"), "error")
     return redirect(url_for("account"))
@@ -16077,7 +16415,16 @@ def dash():
         players = []
     return render_template_string(TPL_DASH, players=players,
                                   emoji=lambda j: JOB_EMOJI.get(j, "🧑"),
-                                  jobname=lambda j: JOB_NAME.get(j, ""))
+                                  jobname=class_name)
+
+# The window an item row sits in, in the page's language: the inventory card
+# used to print the raw column ("equipment", "inventory") on every page.
+ITEM_WINDOW_KEYS = {
+    "inventory": "win_inventory", "equipment": "win_equipment",
+    "safebox": "win_safebox", "mall": "win_mall",
+    "dragon_soul_inventory": "win_dragon_soul", "belt_inventory": "win_belt",
+    "ikashop_offlineshop": "win_offlineshop",
+}
 
 @app.route("/player/<int:pid>")
 @login_required
@@ -16090,7 +16437,7 @@ def player(pid):
         flash(t("db_down"), "error")
         return render_template_string(TPL_DASH, players=[],
                                       emoji=lambda j: JOB_EMOJI.get(j, "🧑"),
-                                      jobname=lambda j: JOB_NAME.get(j, ""))
+                                      jobname=class_name)
     if not p:
         flash(t("not_found"), "error")
         return redirect(url_for("dash"))
@@ -16107,6 +16454,7 @@ def player(pid):
         inv = None
     return render_template_string(TPL_PLAYER, p=p, inv=inv,
                                   emoji=lambda j: JOB_EMOJI.get(j, "🧑"),
+                                  WINDOW_KEYS=ITEM_WINDOW_KEYS,
                                   cats=CATS,
                                   gold_presets=gold_presets_i18n(), warp_presets=warp_presets_i18n(),
                                   speed_presets=speed_presets_i18n(),

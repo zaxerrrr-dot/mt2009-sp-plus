@@ -18,7 +18,11 @@
 // shout to CPlayerBotManager::OnPlayerShout after it has gone out, and
 // CInputMain::Whisper hands a whisper addressed to a bot to OnPlayerWhisper
 // instead of writing it to a descriptor with no client behind it. Both are
-// one call each; everything they call is here.
+// one call each; everything they call is here. A whisper from a person on
+// another core - the other channel, or a map this core does not host - comes
+// by the P2P relay, and CInputP2P::Relay hands it to OnPeerWhisper the same
+// way (mt2009, playerbotify apply_peer_whisper_to_bot); the answer goes back
+// by the relay too (SendPlayerBotWhisperTo).
 //
 // Text is CP1250, which is what the Polish client sends and what the item
 // names in the proto are written in. Matching folds both sides to lowercase
@@ -111,10 +115,12 @@ namespace
 
 	// The whisper the client shows as one from the bot: the same packet
 	// CInputMain::Whisper builds for a player, with the bot's name as sender.
-	void SendPlayerBotWhisper(LPCHARACTER bot, LPCHARACTER to, const char* text)
+	// `relayTo` names the person when `desc` is another core's P2P descriptor
+	// rather than the person's own: that core hands the packet to its client
+	// (CInputP2P::Relay), as it does a player's whisper to somebody the
+	// sender's core does not hold.
+	void SendPlayerBotWhisperPacket(LPCHARACTER bot, LPDESC desc, const char* relayTo, const char* text)
 	{
-		if (!bot || !to || !to->GetDesc() || !text || !*text)
-			return;
 		const size_t len = std::min<size_t>(strlen(text), CHAT_MAX_LEN);
 		TPacketGCWhisper pack;
 		pack.bHeader = HEADER_GC_WHISPER;
@@ -124,9 +130,97 @@ namespace
 		TEMP_BUFFER tmpbuf;
 		tmpbuf.write(&pack, sizeof(pack));
 		tmpbuf.write(text, (int)len);
-		to->GetDesc()->Packet(tmpbuf.read_peek(), tmpbuf.size());
+		if (relayTo)
+			desc->SetRelay(relayTo);
+		desc->Packet(tmpbuf.read_peek(), tmpbuf.size());
+		// The packet clears the relay name - unless the descriptor refused it
+		// (a peer closing), and then the next packet to that core would go
+		// astray under this person's name. CInputMain::Whisper clears it too.
+		if (relayTo)
+			desc->SetRelay("");
+	}
+
+	void SendPlayerBotWhisper(LPCHARACTER bot, LPCHARACTER to, const char* text)
+	{
+		if (!bot || !to || !to->GetDesc() || !text || !*text)
+			return;
+		SendPlayerBotWhisperPacket(bot, to->GetDesc(), NULL, text);
 		sys_log(0, "PLAYERBOT_TRADE: whisper pid=%u name=%s to=%s text=\"%s\"",
 				bot->GetPlayerID(), bot->GetName(), to->GetName(), text);
+	}
+
+	// A whisper to somebody another core holds, by the P2P table's line for
+	// them - the table every core keeps of every other core's characters.
+	// False when there is none: the person has logged out, or has come to this
+	// core in the meantime (a character here is not in the table).
+	bool SendPlayerBotWhisperToPeer(LPCHARACTER bot, const char* toName, const char* text)
+	{
+		if (!bot || !toName || !*toName || !text || !*text)
+			return false;
+		CCI* peer = P2P_MANAGER::instance().Find(toName);
+		if (!peer || !peer->pkDesc)
+			return false;
+		SendPlayerBotWhisperPacket(bot, peer->pkDesc, peer->szName, text);
+		return true;
+	}
+
+	// Whoever whispered or shouted. A character of this core, or - `local`
+	// NULL - one another core holds: the other channel's core, or the core of
+	// a map this one does not host. That one is known here by its line in the
+	// P2P table, reaches a bot here through the P2P relay (CInputP2P::Relay,
+	// OnPeerWhisper) and is answered the same way (SendPlayerBotWhisperTo). A
+	// bot lives on one core only, so the answer can only come from there.
+	struct TPlayerBotPerson
+	{
+		DWORD pid;
+		std::string name;
+		long mapIndex;
+		int channel;
+		LPCHARACTER local;
+		TPlayerBotPerson() : pid(0), mapIndex(0), channel(0), local(NULL) {}
+	};
+
+	TPlayerBotPerson GetPlayerBotLocalPerson(LPCHARACTER ch)
+	{
+		TPlayerBotPerson person;
+		if (!ch)
+			return person;
+		person.pid = ch->GetPlayerID();
+		person.name = ch->GetName();
+		person.mapIndex = ch->GetMapIndex();
+		person.channel = g_bChannel;
+		person.local = ch;
+		return person;
+	}
+
+	TPlayerBotPerson GetPlayerBotPeerPerson(const CCI* peer)
+	{
+		TPlayerBotPerson person;
+		if (!peer)
+			return person;
+		person.pid = peer->dwPID;
+		person.name = peer->szName;
+		person.mapIndex = peer->lMapIndex;
+		person.channel = peer->bChannel;
+		return person;
+	}
+
+	// A bot's whisper to a person wherever the person is.
+	void SendPlayerBotWhisperTo(LPCHARACTER bot, const TPlayerBotPerson& to, const char* text)
+	{
+		if (to.local)
+		{
+			SendPlayerBotWhisper(bot, to.local, text);
+			return;
+		}
+		if (!bot || !text || !*text)
+			return;
+		if (SendPlayerBotWhisperToPeer(bot, to.name.c_str(), text))
+			sys_log(0, "PLAYERBOT_TRADE: whisper pid=%u name=%s to=%s to_channel=%d text=\"%s\"",
+					bot->GetPlayerID(), bot->GetName(), to.name.c_str(), to.channel, text);
+		else
+			sys_log(0, "PLAYERBOT_CHAT: reply to another core undelivered pid=%u name=%s to=%s",
+					bot->GetPlayerID(), bot->GetName(), to.name.c_str());
 	}
 
 	// An item as the client links one in a line of the chat, what a player's
@@ -544,7 +638,7 @@ namespace
 
 	// "Kupie X": the nearest open counter with X on it answers with where and
 	// how much. The player's own map first, then any.
-	bool AnswerPlayerBotBuyShout(LPCHARACTER player, const char* query, bool book, bool forget,
+	bool AnswerPlayerBotBuyShout(const TPlayerBotPerson& player, const char* query, bool book, bool forget,
 			DWORD skillVnum)
 	{
 		std::vector<std::string> candidates;
@@ -558,16 +652,23 @@ namespace
 				it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			LPCHARACTER keeper = CHARACTER_MANAGER::instance().FindByPID(it->first);
-			if (!keeper || !GetPlayerBotStall(it->first, keeper, stall) || stall.channel != g_bChannel)
+			// A counter on the channel the person plays on: this core's for a
+			// person here, the person's own for one who whispered from the
+			// other channel (a bot here may keep its stand on the first).
+			if (!keeper || !GetPlayerBotStall(it->first, keeper, stall) || stall.channel != player.channel)
 				continue;
 			for (size_t k = 0; k < stall.lines.size(); ++k)
 			{
 				const TPlayerBotStallLine& line = stall.lines[k];
 				if (!PlayerBotStallLineMatches(line, candidates, book, forget, skillVnum))
 					continue;
-				const long long distance = stall.mapIndex == player->GetMapIndex()
-						? (long long)DISTANCE_APPROX(player->GetX() - stall.x, player->GetY() - stall.y)
-						: 1000000LL + (long long)stall.mapIndex;
+				// Where on the map is known of a person here only; another
+				// core's person has its map, and a counter there comes first.
+				long long distance = 1000000LL + (long long)stall.mapIndex;
+				if (stall.mapIndex == player.mapIndex)
+					distance = player.local
+							? (long long)DISTANCE_APPROX(player.local->GetX() - stall.x, player.local->GetY() - stall.y)
+							: 500000LL;
 				if (bestDistance < 0 || distance < bestDistance)
 				{
 					bestDistance = distance;
@@ -594,7 +695,7 @@ namespace
 		std::vector<playerbot_item_link::TEntry> links(1);
 		links[0].name = bestLine.name;
 		links[0].link = bestLine.link;
-		SendPlayerBotWhisper(bestKeeper, player, LinkPlayerBotTradeReply(bestKeeper, reply, links).c_str());
+		SendPlayerBotWhisperTo(bestKeeper, player, LinkPlayerBotTradeReply(bestKeeper, reply, links).c_str());
 		return true;
 	}
 
@@ -614,7 +715,7 @@ namespace
 
 	// "Sprzedam X": a bot that is short of X says it will buy, and where. The
 	// bot can: playerbot_market.h reads a player's counter like any other.
-	bool AnswerPlayerBotSellShout(LPCHARACTER player, const char* query, bool book, bool forget,
+	bool AnswerPlayerBotSellShout(const TPlayerBotPerson& player, const char* query, bool book, bool forget,
 			DWORD skillVnum)
 	{
 		// No bot buys a Forgetting Book off anybody (the few it reads it makes,
@@ -694,7 +795,7 @@ namespace
 		else
 			snprintf(reply, sizeof(reply), "Kupie %s - wystaw na straganie w Joan albo Bokjung, boty tam kupuja",
 					pszName ? pszName : query);
-		SendPlayerBotWhisper(buyer, player, reply);
+		SendPlayerBotWhisperTo(buyer, player, reply);
 		return true;
 	}
 
@@ -735,7 +836,7 @@ namespace
 		}
 	}
 
-	bool HandlePlayerBotLureOrder(LPCHARACTER player, LPCHARACTER bot,
+	bool HandlePlayerBotLureOrder(const TPlayerBotPerson& player, LPCHARACTER bot,
 			const char* text, DWORD dwNow)
 	{
 		const EPlayerBotLureOrder order = ParsePlayerBotLureOrder(text);
@@ -749,18 +850,18 @@ namespace
 
 		if (order == PLAYERBOT_LURE_ORDER_STOP)
 		{
-			if (state.dwLurePlayerPID != player->GetPlayerID())
+			if (state.dwLurePlayerPID != player.pid)
 				snprintf(reply, sizeof(reply), "Nie luruje dla ciebie");
 			else
 			{
 				sys_log(0, "PLAYERBOT_LURE: order ended pid=%u name=%s player=%s held_ms=%u",
-						bot->GetPlayerID(), bot->GetName(), player->GetName(),
+						bot->GetPlayerID(), bot->GetName(), player.name.c_str(),
 						state.dwLurePlayerTime != 0 ? dwNow - state.dwLurePlayerTime : 0);
 				state.dwLurePlayerPID = 0;
 				state.dwLurePlayerTime = 0;
 				snprintf(reply, sizeof(reply), "Dobra, koncze lurowanie");
 			}
-			SendPlayerBotWhisper(bot, player, reply);
+			SendPlayerBotWhisperTo(bot, player, reply);
 			return true;
 		}
 
@@ -769,9 +870,13 @@ namespace
 		// each has a sentence of its own instead of one "nie moge".
 		const char* refuse = NULL;
 		LPITEM weapon = bot->GetWear(WEAR_WEAPON);
-		if (!bot->GetParty() || bot->GetParty() != player->GetParty())
+		// A person on another core is on another map, or on the other channel's
+		// copy of this one, and no party brings the bot across.
+		if (!player.local)
+			refuse = "Nie stoje na twojej mapie";
+		else if (!bot->GetParty() || bot->GetParty() != player.local->GetParty())
 			refuse = "Najpierw zapros mnie do druzyny";
-		else if (bot->GetMapIndex() != player->GetMapIndex())
+		else if (bot->GetMapIndex() != player.local->GetMapIndex())
 			refuse = "Nie stoje na twojej mapie";
 		else if (!IsPlayerBotArcherBuild(bot))
 			refuse = "Nie jestem lucznikiem - lurowanie robie z luku";
@@ -786,11 +891,11 @@ namespace
 			refuse = "Jestesmy w strefie bezpieczenstwa - wyjdz na lowisko i powtorz";
 		if (refuse)
 		{
-			SendPlayerBotWhisper(bot, player, refuse);
+			SendPlayerBotWhisperTo(bot, player, refuse);
 			return true;
 		}
 
-		if (state.dwLurePlayerPID == player->GetPlayerID())
+		if (state.dwLurePlayerPID == player.pid)
 		{
 			// Asking again renews the order rather than restarting it: a person
 			// who types it twice does not want the course in progress dropped.
@@ -799,40 +904,41 @@ namespace
 		}
 		else
 		{
-			state.dwLurePlayerPID = player->GetPlayerID();
+			state.dwLurePlayerPID = player.pid;
 			state.dwLurePlayerTime = dwNow;
 			// Whatever the role was waiting out is not this person's wait.
 			state.dwLureNextTime = 0;
 			sys_log(0, "PLAYERBOT_LURE: order taken pid=%u name=%s level=%u player=%s map=%ld",
 					bot->GetPlayerID(), bot->GetName(), bot->GetLevel(),
-					player->GetName(), bot->GetMapIndex());
+					player.name.c_str(), bot->GetMapIndex());
 			snprintf(reply, sizeof(reply),
 					"Jasne. Stoj w miejscu, przyprowadze je na ciebie. Koniec: napisz \"przestan lurowac\"");
 		}
-		SendPlayerBotWhisper(bot, player, reply);
+		SendPlayerBotWhisperTo(bot, player, reply);
 		return true;
 	}
 
-	bool PlayerBotTradeReplyAllowed(LPCHARACTER player, DWORD dwNow)
+	bool PlayerBotTradeReplyAllowed(DWORD personPID, DWORD dwNow)
 	{
-		DWORD& last = s_mapPlayerBotTradeReplyTime[player->GetPlayerID()];
+		DWORD& last = s_mapPlayerBotTradeReplyTime[personPID];
 		if (last != 0 && dwNow - last < PLAYERBOT_TRADE_REPLY_INTERVAL)
 			return false;
 		last = dwNow;
 		return true;
 	}
 
-	// A player's shout, after it has gone out on the channel.
-	void HandlePlayerShoutForTrade(LPCHARACTER player, const char* text)
+	// A trade line, shouted or whispered: answered by the bot best placed to
+	// answer it, as a shout is. True when one did.
+	bool AnswerPlayerBotTradeLine(const TPlayerBotPerson& player, const char* text)
 	{
-		if (!player || !text)
-			return;
+		if (!player.pid || !text)
+			return false;
 		char query[128];
 		bool book = false;
 		bool forget = false;
 		const EPlayerBotTradeVerb verb = ParsePlayerBotTradeText(text, query, sizeof(query), book, forget);
 		if (verb == PLAYERBOT_TRADE_NONE)
-			return;
+			return false;
 		const DWORD skillVnum = book ? FindPlayerBotSkillByName(query) : 0;
 		if (book && skillVnum == 0)
 		{
@@ -850,14 +956,22 @@ namespace
 			forget = false;
 		}
 		const DWORD dwNow = get_dword_time();
-		if (!PlayerBotTradeReplyAllowed(player, dwNow))
-			return;
+		if (!PlayerBotTradeReplyAllowed(player.pid, dwNow))
+			return false;
 		const bool answered = verb == PLAYERBOT_TRADE_BUY
 				? AnswerPlayerBotBuyShout(player, query, book, forget, skillVnum)
 				: AnswerPlayerBotSellShout(player, query, book, forget, skillVnum);
 		sys_log(0, "PLAYERBOT_TRADE: shout from=%s verb=%s book=%d forget=%d query=\"%s\" answered=%d",
-				player->GetName(), verb == PLAYERBOT_TRADE_BUY ? "buy" : "sell",
+				player.name.c_str(), verb == PLAYERBOT_TRADE_BUY ? "buy" : "sell",
 				book ? 1 : 0, forget ? 1 : 0, query, answered ? 1 : 0);
+		return answered;
+	}
+
+	// A player's shout, after it has gone out on the channel.
+	void HandlePlayerShoutForTrade(LPCHARACTER player, const char* text)
+	{
+		if (player)
+			AnswerPlayerBotTradeLine(GetPlayerBotLocalPerson(player), text);
 	}
 
 	// A player's whisper to a bot. A trade line is answered like a shout, by
@@ -1088,21 +1202,18 @@ namespace
 		return true;
 	}
 
-	void HandlePlayerWhisperToBot(LPCHARACTER player, LPCHARACTER bot, const char* text)
+	// A whisper to a bot here, from a person here or on another core.
+	void AnswerPlayerBotWhisper(const TPlayerBotPerson& player, LPCHARACTER bot, const char* text)
 	{
-		// Before everything else: an invitation is not a trade or a talk, and
-		// a request to join is read before an invitation.
-		if (HandlePlayerBotGuildJoinWhisper(player, bot, text))
-			return;
-		if (HandlePlayerBotGuildRecruitWhisper(player, bot, text))
-			return;
-		if (!player || !bot || !text)
+		if (!player.pid || !bot || !text)
 			return;
 		const DWORD dwNow = get_dword_time();
 		// "Poddaje sie" first (the truce, playerbot_anti_pk.h): the lure
 		// order's bare stop words are a surrender's too, and from a person the
-		// bots are fighting "dosc" answered "Nie luruje dla ciebie".
-		if (HandlePlayerBotSurrenderWhisper(player, bot, text, dwNow))
+		// bots are fighting "dosc" answered "Nie luruje dla ciebie". The truce
+		// is this core's, for the bots at a person here: one on another core is
+		// fought by that core's bots, and surrenders to them.
+		if (player.local && HandlePlayerBotSurrenderWhisper(player.local, bot, text, dwNow))
 			return;
 		// Before the trade line, because an order is answered whatever the
 		// reply clock says: a person who asked a bot to pull for them is owed
@@ -1120,12 +1231,19 @@ namespace
 			// answers it itself from its own counter and needs (conversation
 			// layer, I_BUY / I_SELL), so nothing a person writes is lost.
 			std::map<DWORD, DWORD>::const_iterator last =
-					s_mapPlayerBotTradeReplyTime.find(player->GetPlayerID());
+					s_mapPlayerBotTradeReplyTime.find(player.pid);
 			if (last != s_mapPlayerBotTradeReplyTime.end() && last->second != 0 &&
 					dwNow - last->second < PLAYERBOT_TRADE_REPLY_INTERVAL &&
-					HandlePlayerBotConversation(player, bot, text))
+					HandlePlayerBotConversationWith(player.pid, player.name.c_str(), bot, text))
 				return;
-			HandlePlayerShoutForTrade(player, text);
+			if (AnswerPlayerBotTradeLine(player, text))
+				return;
+			// Nobody on this core has the thing on a counter or wants it. The
+			// line used to be left without a word, as a shout nobody can answer
+			// is; whispered, it is this bot's to answer from its own counter and
+			// needs. A person on the other channel meets that most: that
+			// channel's counters are mostly the other core's bots'.
+			HandlePlayerBotConversationWith(player.pid, player.name.c_str(), bot, text);
 			return;
 		}
 		// Ordinary conversation: analysed at once, answered from the
@@ -1133,7 +1251,7 @@ namespace
 		// together. No limiter drops anything (playerbot_conv_engine.h).
 		char reply[CHAT_MAX_LEN + 1];
 		TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.find(bot->GetPlayerID());
-		if (HandlePlayerBotConversation(player, bot, text))
+		if (HandlePlayerBotConversationWith(player.pid, player.name.c_str(), bot, text))
 			return;
 		TPlayerBotStall stall;
 		if (GetPlayerBotStall(bot->GetPlayerID(), bot, stall) && !stall.lines.empty())
@@ -1152,18 +1270,66 @@ namespace
 			}
 			snprintf(reply, sizeof(reply), "Mam stragan w %s, na nim: %s",
 					GetPlayerBotTownName(stall.mapIndex), goods.c_str());
-			SendPlayerBotWhisper(bot, player, LinkPlayerBotTradeReply(bot, reply, links).c_str());
+			SendPlayerBotWhisperTo(bot, player, LinkPlayerBotTradeReply(bot, reply, links).c_str());
 		}
 		else if (it != s_mapPlayerBotAIStates.end() && it->second.bMarketTrip)
 		{
 			snprintf(reply, sizeof(reply), "Wlasnie ide na targ w %s", GetPlayerBotTownName(bot->GetMapIndex()));
-			SendPlayerBotWhisper(bot, player, reply);
+			SendPlayerBotWhisperTo(bot, player, reply);
 		}
 		else
 		{
 			snprintf(reply, sizeof(reply), "Nie rozumiem. Zapytaj mnie, co robie, gdzie expie albo co mam na straganie.");
-			SendPlayerBotWhisper(bot, player, reply);
+			SendPlayerBotWhisperTo(bot, player, reply);
 		}
+	}
+
+	void HandlePlayerWhisperToBot(LPCHARACTER player, LPCHARACTER bot, const char* text)
+	{
+		// Before everything else: an invitation is not a trade or a talk, and
+		// a request to join is read before an invitation. A person of this
+		// core only: the guild's own calls need the character here.
+		if (HandlePlayerBotGuildJoinWhisper(player, bot, text))
+			return;
+		if (HandlePlayerBotGuildRecruitWhisper(player, bot, text))
+			return;
+		if (player)
+			AnswerPlayerBotWhisper(GetPlayerBotLocalPerson(player), bot, text);
+	}
+
+	// A whisper to a bot of this core from a person another core holds - the
+	// other channel's, or the core of a map this one does not host. The
+	// person's core sends it here by the P2P relay, as any whisper to somebody
+	// it does not hold, and this core used to hand it to the bot's descriptor,
+	// which has no client and drops every packet: "boty na innym CH nie
+	// odpisuja na priv" (Derpsonkowy95, 28 September). CInputP2P::Relay hands
+	// it here now (mt2009, playerbotify apply_peer_whisper_to_bot), and it is
+	// answered as any whisper is - here, because the bot lives on this core
+	// alone - and the answer goes back by the same relay.
+	void HandlePlayerWhisperFromPeer(const char* fromName, LPCHARACTER bot, const char* text)
+	{
+		if (!fromName || !*fromName || !bot || !text || !*text)
+			return;
+		const CCI* peer = P2P_MANAGER::instance().Find(fromName);
+		const char* dropped = NULL;
+		if (!peer)
+			dropped = "sender_gone";
+		// A person's whisper only: a bot's line answered would be answered
+		// back, core to core.
+		else if (CPlayerBotManager::instance().IsRegisteredBotPID(peer->dwPID))
+			dropped = "sender_is_bot";
+		if (dropped)
+		{
+			sys_log(0, "PLAYERBOT_CHAT: whisper from another core dropped pid=%u name=%s from=%s reason=%s",
+					bot->GetPlayerID(), bot->GetName(), fromName, dropped);
+			return;
+		}
+		const TPlayerBotPerson person = GetPlayerBotPeerPerson(peer);
+		sys_log(0, "PLAYERBOT_CHAT: whisper from another core pid=%u name=%s channel=%d map=%ld from=%s "
+				"from_pid=%u from_channel=%d from_map=%ld",
+				bot->GetPlayerID(), bot->GetName(), (int)g_bChannel, bot->GetMapIndex(),
+				person.name.c_str(), person.pid, person.channel, person.mapIndex);
+		AnswerPlayerBotWhisper(person, bot, text);
 	}
 }
 

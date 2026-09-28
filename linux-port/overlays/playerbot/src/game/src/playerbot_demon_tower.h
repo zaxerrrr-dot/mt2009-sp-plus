@@ -1465,9 +1465,12 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
+			// Nor the Stalki kept for the level ahead (playerbot_stalki.h): that is
+			// the bot's next armour or weapon, not goods to try a step on.
 			if (!IsPlayerBotTowerSmithPiece(smithRace, item) || item->isLocked() || item->IsExchanging() ||
 					!IsPlayerBotTowerSmithRefineSet(item->GetRefineSet()) ||
-					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_KEEP)
+					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_KEEP ||
+					IsPlayerBotKeptStalki(ch, item))
 				continue;
 			const BYTE plus = item->GetRefineLevel();
 			const bool spareGear = IsPlayerBotHigherTierSpare(ch, item);

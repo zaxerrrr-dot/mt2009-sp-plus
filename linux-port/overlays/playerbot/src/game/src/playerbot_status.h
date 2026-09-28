@@ -345,6 +345,9 @@ namespace
 	// (playerbot_chat_conversation.h, which comes after this file).
 	inline bool BuildPlayerBotSummonStatus(LPCHARACTER ch, const TPlayerBotAIState& state, const char* prefix,
 			char* status, size_t statusSize, bool en);
+	// The person of its guild a bot is fighting for (playerbot_anti_pk.h,
+	// which comes after this file), or NULL.
+	LPCHARACTER FindPlayerBotGuildAidPerson(DWORD defenderPid);
 
 	// What a Biologist row has the bot after right now, in the words over its
 	// head: the specimen, or in the row's second half the key the quest waits
@@ -662,6 +665,16 @@ namespace
 							case BOT_FOE_GUILD:
 								snprintf(status, statusSize, PBT(en, "%sBronie gildii przed %s", "%sDefending the guild against %s"), prefix, target->GetName());
 								break;
+							case BOT_FOE_GUILD_AID:
+							{
+								LPCHARACTER person = FindPlayerBotGuildAidPerson(ch->GetPlayerID());
+								if (person)
+									snprintf(status, statusSize, "%sBronie %s przed %s", prefix,
+											person->GetName(), target->GetName());
+								else
+									snprintf(status, statusSize, "%sBronie gildii przed %s", prefix, target->GetName());
+								break;
+							}
 							default:
 								snprintf(status, statusSize, PBT(en, "%sWalcze z %s", "%sFighting %s"), prefix, target->GetName());
 								break;

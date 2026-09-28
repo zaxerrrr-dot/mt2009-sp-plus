@@ -323,10 +323,25 @@ quest web_admin begin
 										pc.set_level(lv)
 									end
 								elseif cmd == "WARP" then
+									-- arg2 is "y", or "y:channel" when the panel read the
+									-- bot on a channel: pc.warp stays on this one, so a bot
+									-- on another is reached with the engine's channel move
+									-- (pc.warp_channel, playerbotify.py; "teleportuje, ale
+									-- nie zmienia ch", prodnathin, 28 September).
 									local x = tonumber(arg1)
 									local y = tonumber(arg2)
+									local chan = nil
+									if y == nil and arg2 ~= nil then
+										local _, _, sy, sc = string.find(arg2, "^(%d+):(%d+)$")
+										y = tonumber(sy)
+										chan = tonumber(sc)
+									end
 									if x == nil or y == nil then
 										result = "bad_args"
+									elseif chan ~= nil and chan ~= pc.get_channel_id() then
+										if not pc.warp_channel(chan, x, y) then
+											result = "no_channel"
+										end
 									else
 										pc.warp(x, y)
 									end

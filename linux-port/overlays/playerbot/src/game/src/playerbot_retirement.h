@@ -780,18 +780,15 @@ long GetPlayerBotRetireHomeMap(LPCHARACTER ch)
 }
 
 // The asking price of the ordinary stall (CollectPlayerBotShopItems' fill loop
-// in playerbot_town.h) - asking price, the market's demand correction, never
-// under what the blacksmith was paid - without the two markdowns that only mean
-// something to a bot that keeps a stall for a living.
+// in playerbot_town.h) - asking price, the kind's shortage markup
+// (GetPlayerBotListingPrice, which replaced the demand correction in base
+// 2.2.36), never under the listing floor - without the two markdowns that only
+// mean something to a bot that keeps a stall for a living.
 DWORD GetPlayerBotRetirementPrice(LPITEM item, DWORD dwNow)
 {
-	DWORD price = GetPlayerBotShopAskingPrice(item);
-	const int hot = GetPlayerBotDemandPercent(item->GetVnum(), item->GetRefineLevel(), dwNow,
-			GetPlayerBotSkillBookSkillVnum(item));
-	if (hot > 0)
-		price = std::max<DWORD>(1, (DWORD)((unsigned long long)price *
-				(unsigned long long)(100 + hot) / 100ULL));
-	return std::max<DWORD>(price, GetPlayerBotRefineInvestment(item));
+	(void)dwNow;
+	const DWORD price = GetPlayerBotListingPrice(item, GetPlayerBotShopAskingPrice(item), 0);
+	return std::max<DWORD>(price, GetPlayerBotListingFloor(item));
 }
 
 bool IsPlayerBotRetirementPotion(DWORD vnum)

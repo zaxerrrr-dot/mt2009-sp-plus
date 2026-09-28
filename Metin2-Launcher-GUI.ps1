@@ -1776,6 +1776,37 @@ function Update-BotDialogValueLabel {
     else { $label.Text = "Boty: $([int]$Form.Controls['botBar'].Value)" }
 }
 
+function Update-BotDialogChannel {
+    # The second channel's part of the bot dialog: the share box while it is
+    # on, and a line on what it runs - its ports, its RAM, and a warning when
+    # Docker's machine is likely too small for two channels
+    # (Get-M2ChannelMemoryWarning: half of the computer's memory under what
+    # the channels take, about 2.6 GB each and 1.5 GB for the rest).
+    param($Form)
+    if (-not $Form) { return }
+    $check = $Form.Controls['channelCheck']
+    $info = $Form.Controls['channelInfo']
+    if (-not $check -or -not $info) { return }
+    $Form.Controls['channelShareBox'].Enabled = $check.Checked
+    $text = "Serwer rozkłada wtedy boty na dwa rdzenie procesora. Wszystkie sklepy`r`n(botów i graczy) stoją tylko na CH1. Ok. 2,5 GB RAM więcej. Porty 13010-13012."
+    $warning = ''
+    if ($check.Checked) {
+        # The computer's memory is asked of Windows once a session; 0 when it
+        # would not say, which warns about nothing.
+        if ($null -eq $script:botDialogTotalMemory) {
+            try { $script:botDialogTotalMemory = [long](Get-CimInstance -ClassName Win32_ComputerSystem -ErrorAction Stop).TotalPhysicalMemory }
+            catch { $script:botDialogTotalMemory = 0L }
+        }
+        try { $warning = [string](Get-M2ChannelMemoryWarning -Channels 2 -TotalBytes $script:botDialogTotalMemory) } catch { $warning = '' }
+    }
+    if ($warning) {
+        $text = $text + "`r`n" + $warning
+        $info.ForeColor = [Drawing.Color]::FromArgb(170, 60, 0)
+    }
+    else { $info.ForeColor = [Drawing.SystemColors]::ControlText }
+    $info.Text = $text
+}
+
 function Add-BotDialogHelp {
     # A "?" beside a setting of the bot dialog: a hover shows what the setting
     # does, a click opens the same text in a box that stays until it is read
@@ -1832,7 +1863,7 @@ function Show-BotCountDialog {
         [hashtable]$Kingdoms = @{ PerKingdom = $false; Shinsoo = 0; Chunjo = 0; Jinno = 0; Channel2 = $false; Channel2Share = 40 })
     $dialog = [Windows.Forms.Form]::new()
     $dialog.Text = (T 'botDialog')
-    $dialog.Size = [Drawing.Size]::new(480, 606)
+    $dialog.Size = [Drawing.Size]::new(480, 662)
     $dialog.StartPosition = 'CenterParent'
     $dialog.FormBorderStyle = 'FixedDialog'
     $dialog.MaximizeBox = $false
@@ -1994,26 +2025,24 @@ function Show-BotCountDialog {
     $shareBox.Enabled = $channelCheck.Checked
     $dialog.Controls.Add($shareBox)
     Add-BotDialogHelp -Dialog $dialog -Tip $tip -Title 'Boty na CH2' -Text $helpShare -X 400 -Y 434 -Also @($shareLabel, $shareBox)
-    $channelCheck.Add_CheckedChanged({
-            $form = $this.FindForm()
-            if ($form) { $form.Controls['channelShareBox'].Enabled = $this.Checked }
-        })
     $channelInfo = [Windows.Forms.Label]::new()
-    $channelInfo.Text = "Serwer rozkłada wtedy boty na dwa rdzenie procesora. Wszystkie sklepy`r`n(botów i graczy) stoją tylko na CH1. Otwiera porty 13010-13012."
+    $channelInfo.Name = 'channelInfo'
     $channelInfo.Location = [Drawing.Point]::new(14, 466)
-    $channelInfo.Size = [Drawing.Size]::new(440, 36)
+    $channelInfo.Size = [Drawing.Size]::new(440, 92)
     $dialog.Controls.Add($channelInfo)
+    Update-BotDialogChannel $dialog
+    $channelCheck.Add_CheckedChanged({ Update-BotDialogChannel $this.FindForm() })
 
     $okButton = [Windows.Forms.Button]::new()
     $okButton.Text = (T 'apply')
-    $okButton.Location = [Drawing.Point]::new(252, 514)
+    $okButton.Location = [Drawing.Point]::new(252, 570)
     $okButton.Size = [Drawing.Size]::new(100, 32)
     $okButton.DialogResult = [Windows.Forms.DialogResult]::OK
     $dialog.Controls.Add($okButton)
 
     $cancelButton = [Windows.Forms.Button]::new()
     $cancelButton.Text = (T 'cancel')
-    $cancelButton.Location = [Drawing.Point]::new(358, 514)
+    $cancelButton.Location = [Drawing.Point]::new(358, 570)
     $cancelButton.Size = [Drawing.Size]::new(96, 32)
     $cancelButton.DialogResult = [Windows.Forms.DialogResult]::Cancel
     $dialog.Controls.Add($cancelButton)
@@ -3100,9 +3129,10 @@ function Show-CoopDialog {
         if (-not (Test-M2CoopFirewallRule)) {
             $dialog.Cursor = [Windows.Forms.Cursors]::WaitCursor
             $ruleAdded = $false
-            try { $ruleAdded = [bool](Add-M2CoopFirewallRule -Ports (Get-M2CoopGamePorts -ServerRoot $root)) } catch { $ruleAdded = $false }
+            try { $ruleAdded = [bool](Add-M2CoopFirewallRule -Ports (Get-M2CoopGamePorts -ServerRoot $root)) } catch { $ruleAdded = $false; $global:M2CoopFirewallError = [string]$_.Exception.Message }
             $dialog.Cursor = [Windows.Forms.Cursors]::Default
-            Write-LocalLog ("COOP: regula zapory {0}." -f $(if ($ruleAdded) { 'dodana z okna' } else { 'nie dodana (odmowa zgody)' }))
+            # MT2009_PLUS_COOP_FIREWALL_V1: why it was not added, in the log.
+            Write-LocalLog ("COOP: regula zapory {0}." -f $(if ($ruleAdded) { 'dodana z okna' } else { 'nie dodana ({0})' -f $(if ($global:M2CoopFirewallError) { $global:M2CoopFirewallError } else { 'odmowa zgody' }) }))
         }
         $dialog.Close()
         Start-LauncherAction -Action 'CoopHost' -Yes -ExtraArgs @('-CoopVia', $via, '-CoopFirewallAsked')
@@ -3605,7 +3635,9 @@ $gmPanelButton.Add_Click({
         return
     }
     $answer = [Windows.Forms.MessageBox]::Show(
-        "Panel GM na F9 (autor: OskarPWA) to funkcja MOCNO EKSPERYMENTALNA.`r`n`r`nInstalacja podmienia w kliencie dwa pliki: packoot.eix i packoot.epk (skrypty gry). Poprzednie wersje trafiają do kopii zapasowej w folderze serwera (backups\client), więc da się wrócić.`r`n`r`nPanel otwiera tylko postać z uprawnieniami GM klawiszem F9. Jeśli po instalacji gra nie wczytuje się do końca, przywróć pliki z kopii i zgłoś to na Discordzie.`r`n`r`nZainstalować teraz?",
+        "Panel GM na F9 (autor: OskarPWA) to funkcja MOCNO EKSPERYMENTALNA.`r`n`r`nInstalacja podmienia w kliencie dwa pliki: pack
+oot.eix i pack
+oot.epk (skrypty gry). Poprzednie wersje trafiają do kopii zapasowej w folderze serwera (backups\client), więc da się wrócić.`r`n`r`nPanel otwiera tylko postać z uprawnieniami GM klawiszem F9. Jeśli po instalacji gra nie wczytuje się do końca, przywróć pliki z kopii i zgłoś to na Discordzie.`r`n`r`nZainstalować teraz?",
         'Panel GM F9 - wersja testowa', 'YesNo', 'Warning')
     if ($answer -ne [Windows.Forms.DialogResult]::Yes) { return }
     Start-LauncherAction -Action 'UpdateClient' -Yes

@@ -84,8 +84,18 @@ namespace playerbot_conv
 		ReplaceAll(out, "$WLVL", ToString((long long)s.weaponLevel));
 		ReplaceAll(out, "$GOALPRICE", FormatYang(s.weaponGoalPrice));
 		ReplaceAll(out, "$GOAL", s.weaponGoal.empty() ? std::string("cos lepszego") : s.weaponGoal);
-		ReplaceAll(out, "$MAPINSHORT", map.atShort);
-		ReplaceAll(out, "$MAPIN", map.at);
+		// Where the bot is, and for a person on the other channel on which one:
+		// "w Joan" alone would send them to their own channel's Joan.
+		std::string mapIn = map.at;
+		std::string mapInShort = map.atShort;
+		if (AskerOnOtherChannel(s))
+		{
+			const std::string channel = "na CH" + ToString((long long)s.channel);
+			mapIn = IsKnownMap(s.mapIndex) ? mapIn + " " + channel : channel;
+			mapInShort = IsKnownMap(s.mapIndex) ? mapInShort + " " + channel : channel;
+		}
+		ReplaceAll(out, "$MAPINSHORT", mapInShort);
+		ReplaceAll(out, "$MAPIN", mapIn);
 		ReplaceAll(out, "$MAPNAME", *map.name ? map.name : "ta mapa");
 		ReplaceAll(out, "$DEST", *dest.to ? dest.to : "dalej");
 		ReplaceAll(out, "$TARGET", s.targetName.empty() ? std::string("moby") : s.targetName);

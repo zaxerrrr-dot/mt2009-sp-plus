@@ -1,10 +1,11 @@
 TextureSet
 
-TextureCount 13
+TextureCount 17
+
 Start Texture001
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_grass03.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\b\field\field 01.dds"
+    5.000000
+    5.000000
     0.000000
     0.000000
     0
@@ -12,9 +13,9 @@ Start Texture001
     0
 End Texture001
 Start Texture002
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_grass01.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\b\field\field 03.dds"
+    5.000000
+    5.000000
     0.000000
     0.000000
     0
@@ -22,19 +23,19 @@ Start Texture002
     0
 End Texture002
 Start Texture003
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_field04.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\elemental_01\elemental_03_04.dds"
+    4.000000
+    4.000000
     0.000000
     0.000000
-    0
+    1
     0
     0
 End Texture003
 Start Texture004
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_sand00.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\treasure_hunt\treasure_hunt_field_02.dds"
+    4.000000
+    4.000000
     0.000000
     0.000000
     0
@@ -42,7 +43,7 @@ Start Texture004
     0
 End Texture004
 Start Texture005
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_grass03.dds"
+    "d:\ymir work\terrainmaps\capedragonhead\capedragon_grass002.dds"
     3.000000
     3.000000
     0.000000
@@ -52,9 +53,9 @@ Start Texture005
     0
 End Texture005
 Start Texture006
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_grass02.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\treasure_hunt\treasure_hunt_grass002.dds"
+    2.000000
+    2.000000
     0.000000
     0.000000
     0
@@ -62,9 +63,9 @@ Start Texture006
     0
 End Texture006
 Start Texture007
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_grass01.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\b\grass\grass 03.dds"
+    9.000000
+    9.000000
     0.000000
     0.000000
     0
@@ -72,7 +73,7 @@ Start Texture007
     0
 End Texture007
 Start Texture008
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_stone01.dds"
+    "d:\ymir work\terrainmaps\b\stone\stone04.dds"
     3.000000
     3.000000
     0.000000
@@ -82,9 +83,9 @@ Start Texture008
     0
 End Texture008
 Start Texture009
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_stone02.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\treasure_hunt\treasure_hunt_stone04.dds"
+    4.000000
+    4.000000
     0.000000
     0.000000
     0
@@ -92,17 +93,17 @@ Start Texture009
     0
 End Texture009
 Start Texture010
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_field01.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\treasure_hunt\treasure_hunt_field_02_1.dds"
+    4.000000
+    4.000000
     0.000000
     0.000000
-    0
+    1
     0
     0
 End Texture010
 Start Texture011
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_stone03.dds"
+    "d:\ymir work\terrainmaps\b\stone\stone03.dds"
     3.000000
     3.000000
     0.000000
@@ -112,22 +113,62 @@ Start Texture011
     0
 End Texture011
 Start Texture012
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_field03.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\a\beach\beach water.dds"
+    4.000000
+    4.000000
     0.000000
     0.000000
-    0
+    1
     0
     0
 End Texture012
 Start Texture013
-    "D:\ymir work\terrainmaps\mtthunder\mtthunder_sand00.dds"
-    3.000000
-    3.000000
+    "d:\ymir work\terrainmaps\treasure_hunt\treasure_hunt_tile_01.dds"
+    2.000000
+    2.000000
     0.000000
     0.000000
     0
     0
     0
 End Texture013
+Start Texture014
+    "d:\ymir work\terrainmaps\b\beach\beach sand 01.dds"
+    5.000000
+    5.000000
+    0.000000
+    0.000000
+    0
+    0
+    0
+End Texture014
+Start Texture015
+    "d:\ymir work\terrainmaps\b\beach\beach sand 02.dds"
+    5.000000
+    5.000000
+    0.000000
+    0.000000
+    0
+    0
+    0
+End Texture015
+Start Texture016
+    "d:\ymir work\terrainmaps\b\beach\beach sand 03.dds"
+    5.000000
+    5.000000
+    0.000000
+    0.000000
+    0
+    0
+    0
+End Texture016
+Start Texture017
+    "d:\ymir work\terrainmaps\guild_battle\guild_tile_002.dds"
+    3.000000
+    3.000000
+    0.000000
+    0.000000
+    0
+    0
+    0
+End Texture017

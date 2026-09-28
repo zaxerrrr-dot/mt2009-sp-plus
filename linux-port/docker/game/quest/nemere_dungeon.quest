@@ -29,8 +29,9 @@ quest nemere_dungeon begin
 				min_level = 75,
 				cooldown = 60 * 60,
 				limit_min = 60,
+				-- [4] i [5]: 3 komorki na polnoc od pozycji z archiwum - tam server_attr z attr.atr klienta GF (2.0.28) ma sciane.
 				rooms = {
-					[2] = {422, 261}, [3] = {764, 264}, [4] = {175, 535}, [5] = {422, 538},
+					[2] = {422, 261}, [3] = {764, 264}, [4] = {175, 532}, [5] = {421, 535},
 					[6] = {748, 540}, [7] = {305, 708}, [8] = {571, 701}, [9] = {851, 693},
 					[10] = {927, 395},
 				},

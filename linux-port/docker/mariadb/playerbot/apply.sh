@@ -1379,3 +1379,17 @@ CREATE TEMPORARY TABLE world.gob_mob AS SELECT * FROM world.mob_proto WHERE vnum
 UPDATE world.gob_mob SET vnum = 20857, name = _cp1250 X'5769656C6B6120536B727A796E696120536B617262F377', locale_name = _cp1250 X'5769656C6B6120536B727A796E696120536B617262F377', rank = 0, type = 1, level = 1, ai_flag = 'NOMOVE', setImmuneFlag = 'STUN,SLOW,TERROR', folder = 'treasure_hunt_box', on_click = 0, exp = 0;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.gob_mob;
 DROP TEMPORARY TABLE world.gob_mob;" || echo "[playerbot-migrate] WARNING: could not add the Treasure Hunt's items and its goblin" >&2
+
+# MT2009_PLUS_COSTUME_BONUS_V1: costume bonuses. The engine rolls a costume's
+# bonuses from item_attr's costume_body / costume_hair / costume_weapon sets
+# (ENABLE_ITEM_ATTR_COSTUME), and the base dump ships all three at zero: an
+# ItemShop costume "(bonus)" / "+" (magic_pct 100) came without a bonus and
+# Transformuj kostium (70063) rolled nothing ("PutAttributeWithLevel: Cannot put
+# item attribute 8 1" in syserr). Seeded once, only while every costume column
+# is still zero, from the sets costumes used before (body / head / weapon) -
+# the operator's own values are never overwritten. And the General Store
+# (shop 3, NPC 9003) sells the three costume items: 70063 Transformuj kostium,
+# 70064 Zaczaruj kostium, 70065 Transfer bonusow. Idempotent.
+db -e "SET @m2_costume_sets := (SELECT COALESCE(SUM(costume_body + costume_hair + costume_weapon), 0) FROM world.item_attr);
+UPDATE world.item_attr SET costume_body = body, costume_hair = head, costume_weapon = weapon WHERE @m2_costume_sets = 0;
+INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) VALUES (3, 70065, 1), (3, 70064, 20), (3, 70063, 20);" || echo "[playerbot-migrate] WARNING: could not set up the costume bonus sets and the General Store's costume items" >&2

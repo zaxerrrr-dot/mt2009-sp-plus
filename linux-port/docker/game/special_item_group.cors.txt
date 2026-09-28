@@ -1,0 +1,48 @@
+# MT2009_PLUS_COR_GRADES_V1: the higher Cor Draconis grades from the shop search
+# (the operator, 28 September): each opens into a dragon stone of its own
+# grade, as the rough one gives a rough stone - cut 1x1000, rare 1x2000,
+# antique 1x3000, legendary 1x4000, one of the seven kinds at random.
+Group	cor_draconis_cut
+{
+	Vnum	50256 -- Cor Draconis (szlifowane)
+	1	111000	1	1 -- Cut Dragon Diamond
+	2	121000	1	1 -- Cut Dragon Ruby
+	3	131000	1	1 -- Cut Dragon Jade
+	4	141000	1	1 -- Cut Dragon Sapphire
+	5	151000	1	1 -- Cut Dragon Garnet
+	6	161000	1	1 -- Cut Dragon Onyx
+	7	171000	1	1 -- Cut Dragon Amethyst
+}
+Group	cor_draconis_rare
+{
+	Vnum	50257 -- Cor Draconis (rzadkie)
+	1	112000	1	1 -- Rare Dragon Diamond
+	2	122000	1	1 -- Rare Dragon Ruby
+	3	132000	1	1 -- Rare Dragon Jade
+	4	142000	1	1 -- Rare Dragon Sapphire
+	5	152000	1	1 -- Rare Dragon Garnet
+	6	162000	1	1 -- Rare Dragon Onyx
+	7	172000	1	1 -- Rare Dragon Amethyst
+}
+Group	cor_draconis_antique
+{
+	Vnum	50258 -- Cor Draconis (antyczne)
+	1	113000	1	1 -- Antique Dragon Diamond
+	2	123000	1	1 -- Antique Dragon Ruby
+	3	133000	1	1 -- Antique Dragon Jade
+	4	143000	1	1 -- Antique Dragon Sapphire
+	5	153000	1	1 -- Antique Dragon Garnet
+	6	163000	1	1 -- Antique Dragon Onyx
+	7	173000	1	1 -- Antique Dragon Amethyst
+}
+Group	cor_draconis_legendary
+{
+	Vnum	50259 -- Cor Draconis (legendarne)
+	1	114000	1	1 -- Legendary Dragon Diamond
+	2	124000	1	1 -- Legendary Dragon Ruby
+	3	134000	1	1 -- Legendary Dragon Jade
+	4	144000	1	1 -- Legendary Dragon Sapphire
+	5	154000	1	1 -- Legendary Dragon Garnet
+	6	164000	1	1 -- Legendary Dragon Onyx
+	7	174000	1	1 -- Legendary Dragon Amethyst
+}

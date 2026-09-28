@@ -101,6 +101,7 @@ PLAYERBOT_CH2_SHARE="${PLAYERBOT_CH2_SHARE:-40}"
 ch2_env_at="${M2_PLAYERBOT_CH2_SET_AT:-0}"
 case "$ch2_env_at" in ''|*[!0-9]*) ch2_env_at=0 ;; esac
 ch2_source=env
+ch2_at="$ch2_env_at"
 ch2_wish="$M2_RATES_SPOOL/channels.wanted"
 if [ -f "$ch2_wish" ]; then
   wish_on=$(sed -n 's/^CH2=\([01]\)\r\{0,1\}$/\1/p' "$ch2_wish" | head -n 1)
@@ -110,6 +111,7 @@ if [ -f "$ch2_wish" ]; then
     M2_PLAYERBOT_CH2="$wish_on"
     [ -n "$wish_share" ] && PLAYERBOT_CH2_SHARE="$wish_share"
     ch2_source=panel
+    ch2_at="$wish_at"
   fi
 fi
 case "$M2_PLAYERBOT_CH2" in 1) : ;; *) M2_PLAYERBOT_CH2=0 ;; esac
@@ -124,10 +126,12 @@ export M2_PLAYERBOT_CH2 PLAYERBOT_CH2_SHARE M2_CHANNELS
 # The published range says whether players can reach CH2: the launcher opens
 # 13000-13012 when it switches the channel on; a wish from the panel alone
 # brings the bots over at once and the players with the launcher's next start.
+# SET_AT is the moment of the choice that won, so the panel can tell its own
+# wish still waiting from one a later choice in the launcher has overtaken.
 mkdir -p "$VAR_DIR"
-printf 'CH2=%s\nSHARE=%s\nCHANNELS=%s\nSOURCE=%s\nPORTS=%s\n' \
+printf 'CH2=%s\nSHARE=%s\nCHANNELS=%s\nSOURCE=%s\nPORTS=%s\nSET_AT=%s\n' \
   "$M2_PLAYERBOT_CH2" "$PLAYERBOT_CH2_SHARE" "$M2_CHANNELS" "$ch2_source" \
-  "${M2_GAME_CONTAINER_PORT_RANGE:-13000-13002}" > "$VAR_DIR/channels.effective" 2>/dev/null || true
+  "${M2_GAME_CONTAINER_PORT_RANGE:-13000-13002}" "$ch2_at" > "$VAR_DIR/channels.effective" 2>/dev/null || true
 
 if [ -z "$M2_PUBLIC_ADDRESS" ]; then
   log "WARNING: M2_PUBLIC_ADDRESS is not set."

@@ -271,6 +271,29 @@ function Assert-DockerDiskWritable {
            $fault + [Environment]::NewLine + [Environment]::NewLine + (Get-M2DockerDiskRemedy))
 }
 
+function Close-VpsTunnelOnServerPorts {
+    # The VPS window's tunnel to the panels is this launcher's own ssh, and one
+    # opened while this PC's server was stopped took 127.0.0.1:7788, 7790 and
+    # 7791 - an update started meanwhile built its images and could not bind
+    # 7790, and every retry stopped at "port 7788 zajmuje proces ssh" (upstream
+    # fix of 28 September). The tunnel now keeps off those ports; one that an
+    # older launcher opened on them is closed here, before a start or an update
+    # asks about the ports, because the server comes first and the VPS window
+    # opens the tunnel again ten thousand ports higher.
+    if (-not (Get-Command Get-M2VpsTunnelProcess -ErrorAction SilentlyContinue)) { return }
+    try {
+        $process = Get-M2VpsTunnelProcess -State (Get-M2VpsState -ServerRoot $serverRoot)
+        if (-not $process) { return }
+        $held = @(Get-M2ProgramPortConflicts -ServerRoot $serverRoot | Where-Object { [int]$_.Listener.Pid -eq [int]$process.Id })
+        if ($held.Count -eq 0) { return }
+        if (Close-M2VpsPanel -ServerRoot $serverRoot) {
+            Write-Host ('Zamknięto tunel do paneli VPS - trzymał porty tego serwera ({0}). Panele VPS otworzysz znowu przyciskiem OTWÓRZ PANEL w oknie SERWER NA VPS.' -f
+                ((@($held) | ForEach-Object { [string]$_.Port }) -join ', ')) -ForegroundColor Yellow
+        }
+    }
+    catch { Write-Host "Nie udało się sprawdzić tunelu do paneli VPS: $($_.Exception.Message)" -ForegroundColor Yellow }
+}
+
 function Assert-ServerPortsFree {
     # A program of Windows' own on one of the server's ports - a MySQL on 3306
     # (Producent Hip Hopu, 27 September) - is what the start's preflight names,
@@ -281,6 +304,7 @@ function Assert-ServerPortsFree {
     # -KeepRebuildPending: the files are already the new ones, so a later GRAJ
     # must still finish the build.
     param([switch]$KeepRebuildPending, [string]$Before = 'budowanie serwera')
+    Close-VpsTunnelOnServerPorts
     $conflicts = @(Get-M2ProgramPortConflicts -ServerRoot $serverRoot)
     if ($conflicts.Count -eq 0) { return }
     if ($KeepRebuildPending) {
@@ -296,6 +320,7 @@ function Start-Server {
     # ports back on every engine start, so a check that only names it leaves the
     # player exactly where they were.
     Clear-PortConflicts -Quiet | Out-Null
+    Close-VpsTunnelOnServerPorts
     Assert-DockerPrerequisites -CheckPanelPort
     Write-Phase 'Docker sprawdzony'
     # A second-channel wish left in the web panel, before .env is read.
@@ -992,6 +1017,12 @@ function Set-BotCountAction {
                 $ch = Set-SecondChannel -Enabled ($Channel2 -eq 1) -Share $share
                 if ($ch.Enabled) { Write-Host "Zapisano: drugi kanał (CH2) włączony, $($ch.Share)% botów na CH2." -ForegroundColor Green }
                 else { Write-Host 'Zapisano: drugi kanał (CH2) wyłączony.' -ForegroundColor Green }
+                # Each channel is about 2.5 GB of Docker's memory (upstream's
+                # measurement): a warning, never a refusal.
+                if ($ch.Enabled) {
+                    $memory = Get-M2ChannelMemoryWarning -Channels 2
+                    if ($memory) { Write-Host $memory -ForegroundColor Yellow }
+                }
             }
         }
         if ($Yes) {
@@ -1047,6 +1078,8 @@ function Set-BotCountAction {
         $share = if ("$shAnswer".Trim() -match '^\d+$') { [int]$shAnswer } else { $ch2.Share }
         $applied2 = Set-SecondChannel -Enabled $true -Share $share
         Write-Host "Zapisano: drugi kanał włączony, $($applied2.Share)% botów na CH2." -ForegroundColor Green
+        $memory = Get-M2ChannelMemoryWarning -Channels 2
+        if ($memory) { Write-Host $memory -ForegroundColor Yellow }
     }
     elseif ("$chAnswer".Trim() -match '^[nN]' -and $ch2.Enabled) {
         Set-SecondChannel -Enabled $false -Share $ch2.Share | Out-Null
@@ -2043,10 +2076,15 @@ function Start-CoopHostingAction {
         Write-Host 'Windows zapyta o zgodę administratora na regułę zapory dla portów gry - potwierdź (okienko Windows może tylko migać na pasku zadań).' -ForegroundColor Yellow
         $firewallOk = [bool](Add-M2CoopFirewallRule -Ports $ports)
         if ($firewallOk) { Write-Host 'Reguła zapory dodana.' -ForegroundColor Green }
-        else { Write-Host 'Reguły zapory nie dodano (odmowa zgody albo brak odpowiedzi).' -ForegroundColor Red }
+        else { Write-Host ('Reguły zapory nie dodano ({0}).' -f $(if ($global:M2CoopFirewallError) { $global:M2CoopFirewallError } else { 'odmowa zgody albo brak odpowiedzi' })) -ForegroundColor Red }
     }
     if (-not $firewallOk) {
         Write-Host 'UWAGA: bez tej reguły zapora Windows może nie wpuścić nikogo spoza tego komputera - ani znajomych z internetu, ani laptopa w tym samym domu. Kliknij HOSTUJ ŚWIAT jeszcze raz i w okienku Windows wybierz "Tak".' -ForegroundColor Red
+        # MT2009_PLUS_COOP_FIREWALL_V1: the way round the question, for an
+        # account that is not an administrator's or a question that never shows.
+        if (Get-Command Get-M2CoopFirewallManualCommand -ErrorAction SilentlyContinue) {
+            Write-Host ('Jeśli okienko Windows się nie pojawia albo to konto nie ma uprawnień administratora: uruchom Wiersz polecenia jako administrator (menu Start, wpisz cmd, prawy przycisk - Uruchom jako administrator), wklej tę linię i naciśnij Enter, potem HOSTUJ ŚWIAT jeszcze raz: {0}' -f (Get-M2CoopFirewallManualCommand -Ports $ports)) -ForegroundColor Yellow
+        }
     }
     foreach ($block in @(Get-M2CoopFirewallBlocks)) {
         Write-Host ("UWAGA: zapora blokuje program {0} (reguła '{1}') - usuń tę regułę w Zaporze Windows, inaczej znajomi się nie połączą." -f $block.Program, $block.Name) -ForegroundColor Yellow

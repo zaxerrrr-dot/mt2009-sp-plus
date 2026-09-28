@@ -1243,10 +1243,11 @@ function Protect-M2LogContent {
     # where the value must be on the same line: \s crosses into the next
     # line's timestamp. A heading is a line that ends in ")" or ":" - the line
     # that carries the password itself ends in the password - and .NET's $
-    # stands before \n alone, so a CRLF line ends at \r?$.
+    # stands before \n alone, so a CRLF line ends at \r?$. The password
+    # button's second print of it, "Gotowe. Zaloguj sie haslem:", is one too.
     $safe = [Regex]::Replace(
         $safe,
-        '(?im)(has[lł]o do panelu[^\r\n]*[):][ \t]*\r?\n(?:[ \t]*\r?\n)*(?:\d{4}-\d\d-\d\d \d\d:\d\d:\d\d  )?[ \t]*)(\S+)(?=[ \t]*\r?$)',
+        '(?im)((?:has[lł]o do panelu|zaloguj si[eę] has[lł]em)[^\r\n]*[):][ \t]*\r?\n(?:[ \t]*\r?\n)*(?:\d{4}-\d\d-\d\d \d\d:\d\d:\d\d  )?[ \t]*)(\S+)(?=[ \t]*\r?$)',
         '$1<redacted>')
     $safe = [Regex]::Replace(
         $safe,
@@ -1287,7 +1288,7 @@ function Protect-M2SessionLogLine {
         $State['redactNext'] = $false
         return $body.Groups[1].Value + '<redacted>'
     }
-    if ($State -and ($body.Groups[2].Value -match '(?i)^has[lł]o do panelu.*[):][ \t]*$' -or
+    if ($State -and ($body.Groups[2].Value -match '(?i)^(?:has[lł]o do panelu|(?:gotowe\. )?zaloguj si[eę] has[lł]em).*[):][ \t]*$' -or
             $body.Groups[2].Value -match 'ADMIN PANEL PASSWORD')) {
         $State['redactNext'] = $true
     }
@@ -1773,6 +1774,34 @@ function Get-M2ServerEngine {
         if ($engine -match '^[a-z0-9]+$') { return $engine }
     }
     return 'r40250'
+}
+
+function Get-M2ChannelMemoryWarning {
+    <#
+        Every game channel is three more game cores, and WSL 2 gives Docker's
+        machine half of the computer's memory unless .wslconfig says otherwise.
+        A channel is about 2.6 GB there (measured upstream on 28 September: the
+        core hosting the villages and the frontier 2.5-2.8 GB, the two others
+        about 0.09 GB each, whatever the channel's bot count), and MariaDB, the
+        panels and Docker itself about 1.5 GB more. It said "about 1 GB" until
+        then, and a player whose machine ran out of memory at two channels was
+        never warned. Warns from the second channel when half the computer's
+        memory is under what the channels take. A warning and never a refusal:
+        the operator may have given Docker more by hand. TotalBytes is the
+        computer's memory, asked of Windows when not given; an empty answer is
+        no warning.
+    #>
+    param([int]$Channels, [long]$TotalBytes = -1)
+    if ($Channels -lt 2) { return '' }
+    if ($TotalBytes -lt 0) {
+        try { $TotalBytes = [long](Get-CimInstance -ClassName Win32_ComputerSystem -ErrorAction Stop).TotalPhysicalMemory }
+        catch { return '' }
+    }
+    if ($TotalBytes -le 0) { return '' }
+    $dockerGb = [Math]::Round($TotalBytes / 2 / 1GB, 1)
+    $needGb = [Math]::Round(1.5 + 2.6 * $Channels, 1)
+    if ($dockerGb -ge $needGb) { return '' }
+    return ('UWAGA: każdy kanał to ok. 2,5 GB RAM w maszynie Dockera, która dostaje zwykle połowę pamięci komputera - tu ok. {0} GB. {1} kanały potrzebują ok. {2} GB; bezpieczniej wyłączyć drugi kanał albo dać Dockerowi więcej pamięci.' -f $dockerGb, $Channels, $needGb)
 }
 
 function Get-M2RequiredSqlDumps {
@@ -2441,6 +2470,7 @@ Export-ModuleMember -Function @(
     'Test-M2VolumeInitialized',
     'Get-M2MissingSqlDumps',
     'Get-M2ServerEngine',
+    'Get-M2ChannelMemoryWarning',
     'Get-M2SiblingClientExecutable',
     'Get-M2RequiredSqlDumps',
     'Get-M2RequiredGameContext',

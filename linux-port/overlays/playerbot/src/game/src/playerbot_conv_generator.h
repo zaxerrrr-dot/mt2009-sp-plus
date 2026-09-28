@@ -1070,6 +1070,9 @@ namespace playerbot_conv
 			return "Teraz stoje ze straganem, moze pozniej.";
 		if (s.dead || g.LowHp())
 			return "Chwila, najpierw sie podlecze.";
+		// An invitation reaches nobody on the other channel.
+		if (AskerOnOtherChannel(s))
+			return Fill(g, "Chetnie, ale jestem $MAPIN. Przejdz na moj kanal, to mnie zaprosisz.");
 		std::string out;
 		if (s.askerLevel > 0 && (s.askerLevel > s.level + 15 || s.level > s.askerLevel + 15))
 			out = "Chetnie, ale mamy duza roznice poziomow. Zapros, zobaczymy.";
@@ -1836,6 +1839,10 @@ namespace playerbot_conv
 				if (IsKnownMap(g.s.mapIndex))
 					return Fill(g, "Jestem daleko, $MAPIN. Stad nie dam rady przyjsc.");
 				return "Jestem daleko, na innej mapie. Stad nie dam rady przyjsc.";
+			case SB_OTHER_CHANNEL:
+				// $MAPIN names the channel to a person on the other one.
+				g.reason = "Bo jestem na innym kanale.";
+				return Fill(g, "Jestem $MAPIN, a ty na innym kanale. Stad nie dam rady przyjsc.");
 			case SB_STALL:
 				g.reason = "Bo pilnuje straganu.";
 				return "Stoje teraz ze straganem, nie moge odejsc.";
