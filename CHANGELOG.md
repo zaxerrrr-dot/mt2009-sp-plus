@@ -17,6 +17,103 @@ every version here.
 
 ---
 
+## 2.13.0 — 2026-09-28 — Ukrywanie kostiumów, nowy klient: napisy osobowości botów i Discord, instalator VPS jednym plikiem
+
+Serwer 2.13.0 i klient 2.0.25: zaktualizuj oba w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.12.0.
+
+### Ukryj / pokaż kostiumy
+
+- Pod slotami w oknie kostiumów jest nowy przycisk **„Ukryj kostiumy”**
+  (po kliknięciu **„Pokaż kostiumy”**).
+- Ukryte kostiumy **zostają założone i dają wszystkie bonusy**, ale postać
+  wygląda jak bez nich: widać **prawdziwą zbroję i broń**, a zamiast kostiumu
+  fryzury **domyślną fryzurę postaci**. Tak samo widzą Cię inni gracze
+  i boty. Szarfa zostaje bez zmian.
+- Ustawienie zapisuje się w kliencie i wraca po każdym wejściu do gry
+  i teleporcie.
+
+### Nowy klient (metin2client.exe)
+
+- **Napisy osobowości nad botami** – kolorowy wiersz między nickiem a gildią
+  („Pogromca Metinów”, „Rybak”, „Hazardzista”...).
+- **Discord** – status gry z logo MT2009 PLUS, mapą, postacią i przyciskiem
+  **„Dołącz do gry!”** prowadzącym na Discorda serwera.
+- **Auto Łowy** – zabity potwór jest od razu zostawiany, łucznik atakuje
+  z daleka, a przy ustawianiu zasięgu widać okrąg na ziemi.
+- **Umiejętności konne na montach kostiumowych** – Cięcie z Siodła i reszta
+  umiejętności konnych działają na wierzchowcach, które mogą walczyć.
+- Podpowiedzi mikstur szybkości ataku i ruchu pokazują bonus.
+
+### Szarfy i Cor Draconis u botów
+
+- Boty **chętniej kupują szarfy i Cory z lad**: na Cora wydadzą do pięciu
+  razy tyle, za ile same go wystawiają, a na szarfę do 40% wolnego yang.
+- **Wyższe szarfy**: szarfę buduje 80% botów od 30 poziomu (było 60%), cel
+  od 30 poziomu to 10%, szarfa unikatowa od 50 poziomu (było od 65),
+  łączenie unikatów 4+4 od 75 poziomu (było od 90).
+- **Alchemia**: korzysta z niej 75% botów (było 50%), otwierają do 10 Corów
+  naraz, także w trakcie polowania, i ulepszają kamienie już przy mniejszym
+  zapasie yang.
+
+### Instalator VPS jednym plikiem
+
+- Nowy plik **`instaluj-vps.sh`**: na świeżym VPS (Debian lub Ubuntu,
+  zalogowany jako root) pobiera pełną paczkę serwera z metin2sp.pl,
+  aktualizuje ją do najnowszej wersji z GitHuba (ze sprawdzeniem sumy
+  SHA-256), instaluje Dockera, przygotowuje `.env` z bezpiecznymi
+  ustawieniami i uruchamia serwer. Na końcu pokazuje adres, hasła kont i jak otworzyć panele.
+- Uruchomienie:
+  `wget -O instaluj-vps.sh https://metin2sp.pl/wiki/pobierz/instaluj-vps.sh`
+  i `sh instaluj-vps.sh`. Opcje: `--paczka` (inna pełna paczka),
+  `--folder`, `--address`, `--bots`, `--bez-aktualizacji`, `--force`,
+  `--tylko-pliki`. Szczegóły na wiki (Linux / VPS).
+
+### Mniejsze dodatki
+
+- **Towarzysz: „Dołącza”** – w polu „Grupa” okna Towarzysza (albo
+  `/towarzysz grupa 1` / `0`, domyślnie włączone): Towarzysz dołącza do
+  Twojej grupy także wtedy, gdy prowadzi ją ktoś inny, o ile zostanie w niej
+  miejsce jeszcze dla jednej osoby.
+- **ItemShop: strona „Ślub”** – Pierścionek Zaręczynowy, Smoking, Suknia
+  Ślubna, Bukiet, Pióro Ptaka Miłości oraz biżuteria Miłości i Harmonii, od
+  25 poziomu, za Smocze Monety.
+- **Sklep offline: „Auto cena”** – przycisk pod sugestią botów w oknie ceny
+  wpisuje ją jako cenę (domyślnie wyłączony, działa przy włączonym Domu
+  Towarowym).
+- **15 zapisanych kont** w oknie logowania: 5 stron po 3 konta, F1–F3 logują
+  konto z widocznej strony.
+- Wieża Demonów, 6. piętro: boty omijają potwora zaklinowanego w ścianie
+  i biją Elitarnego Króla Demonów, a zaklinowane potwory na końcu ściągają do
+  siebie.
+- Bot najpierw zbiera swój łup z Metina, a dopiero potem odpowiada graczowi,
+  który walczył z nim o kamień. Marmur na Żniwiarza biorą tylko boty walczące
+  wręcz. Bot u kowala nie próbuje co kilka sekund ulepszać przedmiotu, na
+  który nie ma materiałów.
+- Broszura Szermierki stackuje się do 200.
+- Pierwsza instalacja na VPS nie kończy się już błędem bazy
+  „$1: unbound variable”.
+- Launcher nie zapisuje hasła do panelu w pliku logu, a gdy brakuje któregoś
+  jego pliku, mówi, co zrobić, i podaje wykryty antywirus.
+
+---
+
+## Klient 2.0.25 — 2026-09-28 — Ukrywanie kostiumów, nowy metin2client.exe
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.0.24.
+
+- Przycisk „Ukryj kostiumy” / „Pokaż kostiumy” w oknie kostiumów.
+- Nowy `metin2client.exe`: napisy osobowości nad botami, status na
+  Discordzie z przyciskiem „Dołącz do gry!”, umiejętności konne na montach,
+  okrąg zasięgu Auto Łowów, podpowiedzi mikstur szybkości.
+- Okno Towarzysza: przełącznik „Dołącza” w polu „Grupa”.
+- 15 zapisanych kont w oknie logowania, strona „Ślub” w ItemShopie,
+  przycisk „Auto cena” przy wystawianiu w sklepie offline.
+
+---
+
 ## 2.12.0 — 2026-09-28 — Dom Towarowy, Towarzysz lider grupy i na rybach, filtr podnoszenia, szybszy kosz
 
 Serwer 2.12.0 i klient 2.0.24: zaktualizuj oba w launcherze

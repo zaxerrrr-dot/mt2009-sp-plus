@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-28T06:29:17Z",
-  "statusMessage": "Serwer 2.12.0 i klient 2.0.24: Dom Towarowy u Handlarki Roznosci, Towarzysz lider grupy i na rybach, filtr podnoszenia, szybszy kosz.",
+  "publishedAt": "2026-09-28T09:08:01Z",
+  "statusMessage": "Serwer 2.13.0 i klient 2.0.25: ukrywanie kostiumow, napisy osobowosci botow, Discord, boty kupuja szarfy i Cory, instalator VPS jednym plikiem.",
   "server": {
-    "version": "2.12.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.12.0.zip",
-    "sha256": "5528C49DCFF7C8B8D4E77A3545A4735786BBDCF7BA91EBB05EA9CF90FCAF6ACD",
-    "size": 93454097
+    "version": "2.13.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.13.0.zip",
+    "sha256": "E40805D91A032164D4214095D224C71B87859FCC1DDA1DC6999ECBF294863FBE",
+    "size": 93466235
   },
   "client": {
-    "version": "2.0.24",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.24.zip",
-    "sha256": "5CDE5D27D38B62A9CED1DFFCDFDE8F0FABB8D2B3777A0F05D1DB7E67CCE63E97",
-    "size": 50615805
+    "version": "2.0.25",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-client-update-2.0.25.zip",
+    "sha256": "593328A792F55E3B283C1DED37D2BF8B5FD91344F753E67304E3A28B21737B0A",
+    "size": 50626184
   }
 }
