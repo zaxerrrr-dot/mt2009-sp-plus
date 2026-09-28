@@ -28,5 +28,11 @@ Względem klienta 2.0.23 (`client-patches/client-2.0.23`). Część serwerowa:
   i plusy.
 - `root/uisidekick.py` – przycisk „Na ryby” w oknie Towarzysza.
 
+Z klienta 2.0.46 bazy (scalone trójstronnie, baza 2.0.45): Dom Towarowy
+(`root/customfleamarket.py`, nowy; `offlineshopsearch.py`, `interfacemodule.py`,
+`game.py`), podpowiedź ceny przy wystawianiu (`offlineshopmanage.py`) i tytuły
+czterech Hazardzistów (`playerbot_status_tail.py`). Pominięte: maksima bonusów
+w `localeinfo_point.py` (Maks. PŻ 2000 nie wchodzi do MT2009 PLUS).
+
 gamedata i season2 bez zmian. Pakowanie: pliki 2.0.23 i 2.0.24 na `root`
 klienta 2.0.22 przez `m2pack.repack_add` (nowy plik `uipickupfilter.py`).

@@ -10,6 +10,9 @@
 #include "playerbot_truce_rules.h"
 #include "playerbot_war_rules.h"
 #include "playerbot_item_link_rules.h"
+#include "playerbot_price_rules.h"
+#include "playerbot_bonus_rules.h"
+#include "playerbot_refine_rules.h"
 
 #include "char.h"
 #include "skill.h"
@@ -64,6 +67,26 @@ extern int passes_per_sec;
 // Declared in input_p2p.cpp. ChatPacket would be useless for a bot - it has no
 // client descriptor of its own to send to.
 extern void SendShout(const char* szText, BYTE bEmpire);
+
+// A bot's shout goes where a player's does (CInputMain::Chat): to the other
+// cores as the P2P shout, and to this core's own clients through SendShout.
+// SendShout alone reached only the players on the bot's own core, so a friend
+// in COOP on another core or channel never read a line of it (blipu, 27
+// September). Who may read it stays the engine's rule (FuncShout): the bot's
+// own kingdom, and a GM - the host, most often - every kingdom.
+static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
+{
+	TPacketGGShout p;
+	memset(&p, 0, sizeof(p));
+	p.bHeader = HEADER_GG_SHOUT;
+	p.bEmpire = bEmpire;
+#ifdef PLAYERBOT_ENGINE_MT2009
+	p.bChatType = CHAT_TYPE_SHOUT;
+#endif
+	strlcpy(p.szText, szText, sizeof(p.szText));
+	P2P_MANAGER::instance().Send(&p, sizeof(TPacketGGShout));
+	SendShout(szText, bEmpire);
+}
 
 // The names the fragments below were written against, on an engine that
 // spells some of them differently. Empty on r40250.
@@ -6409,7 +6432,10 @@ WritePlayerBotGuildStatus(dwNow);
 				}
 			}
 
-			const bool bWeaponMissing = (ch->GetWear(WEAR_WEAPON) == NULL);
+			// A bot of thirty fighting with a weapon for the tenth level or under
+			// while it could buy one over the line is missing its weapon too
+			// (Community Patch 5, point 2).
+			const bool bWeaponMissing = (ch->GetWear(WEAR_WEAPON) == NULL) || NeedsPlayerBotProperWeapon(ch);
 			// Item count is not inventory usage: weapons and armour occupy 2-3
 			// vertical cells.  Keep a generous reserve for a high-rate Metin drop and
 			// visit town before no contiguous 3-cell slot remains.
@@ -6453,10 +6479,14 @@ WritePlayerBotGuildStatus(dwNow);
 			// of 26 September).
 			const bool bNeedsLppRelease = PlayerBotWantsLppRelease(ch, state, dwNow);
 			const bool bNeedsMaterialRelease = PlayerBotWantsMaterialRelease(ch, state, dwNow);
+			// One of Community Patch 5's four gamblers with its bases in the bag
+			// and its shopping over: the visit begins its session
+			// (BeginPlayerBotRareGambleSession in StartPlayerBotTownVisit).
+			const bool bNeedsGambleSession = PlayerBotRareGamblerWantsTown(ch, true);
 
 			if (bNeedsProfession || bInventoryFull || bNeedsPotions || bWeaponMissing ||
 					bNeedsRefine || bNeedsGearUpgrade || bNeedsSellRun ||
-					bNeedsPotionCleanup)
+					bNeedsPotionCleanup || bNeedsGambleSession)
 				StartPlayerBotTownVisit(ch, state, dwNow);
 			else if (bNeedsLppRelease || bNeedsMaterialRelease)
 			{
@@ -6547,7 +6577,13 @@ WritePlayerBotGuildStatus(dwNow);
 		UseManaPotion(ch, state, dwNow);
 		UseUtilityPotions(ch, state, dwNow);
 		UsePlayerBotBoosters(ch, state, dwNow);
-		ManagePlayerBotScrollRefine(ch, state, dwNow);
+		// A scroll step in the field claims the tick: Iwakura's scroll rule
+		// stops the fight for the engine's equip window, and a step taken is
+		// the tick's action. Not where a person counts on the bot's blows, nor
+		// in the middle of a Metin stone, whose claim a dropped target leaves
+		// standing (ReleasePlayerBotMetinReservation is the stone section's).
+		if (ManagePlayerBotScrollRefine(ch, state, dwNow, !bServingPerson && !bFightingMetin))
+			continue;
 		ManagePlayerBotFieldBonus(ch, state, dwNow);
 		// This also catches a bot loaded from the database at critically low HP
 		// after a server restart.  Do not let it immediately reacquire a target.
@@ -7018,6 +7054,37 @@ WritePlayerBotGuildStatus(dwNow);
 bool CPlayerBotManager::IsManaged(DWORD dwPlayerID) const
 {
 	return m_mapBots.find(dwPlayerID) != m_mapBots.end();
+}
+
+// Uxie [DSO]'s price hint for the Dom Towarowy (27 September): a player putting
+// an item on its own offline shop's counter is told what a bot would ask for
+// it (the asking price every bot's counter uses) and what the bots have been
+// paid for one lately, with the number of sales behind that. A bot has no
+// counter window to show it in. Zeros say there is nothing to go by.
+void CPlayerBotManager::SendFleaMarketPriceQuote(LPCHARACTER ch, BYTE bWindow,
+		WORD wCell, DWORD dwRequestID)
+{
+	if (!ch || IsManaged(ch->GetPlayerID()))
+		return;
+
+	DWORD suggestedPrice = 0;
+	DWORD observedPrice = 0;
+	DWORD sampleCount = 0;
+	LPITEM item = ch->GetItem(TItemPos(bWindow, wCell));
+	if (item)
+	{
+		suggestedPrice = GetPlayerBotShopAskingPrice(item);
+		const DWORD skillVnum = item->GetType() == ITEM_SKILLBOOK
+				? GetPlayerBotSkillBookSkillVnum(item) : 0;
+		size_t samples = 0;
+		const DWORD observedUnitPrice = GetPlayerBotSaleUnitPrice(item->GetVnum(),
+				item->GetRefineLevel(), get_dword_time(), &samples, skillVnum);
+		observedPrice = observedUnitPrice * std::max<DWORD>(1, item->GetCount());
+		sampleCount = (DWORD)samples;
+	}
+
+	ch->ChatPacket(CHAT_TYPE_COMMAND, "FleaPriceQuote %u %u %u %u",
+			dwRequestID, suggestedPrice, observedPrice, sampleCount);
 }
 
 size_t CPlayerBotManager::GetCount() const

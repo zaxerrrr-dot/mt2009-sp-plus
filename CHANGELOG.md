@@ -17,7 +17,7 @@ every version here.
 
 ---
 
-## 2.12.0 — 2026-09-28 — Filtr podnoszenia, Towarzysz na rybach, szybszy kosz, kategoria MT2009 Plus
+## 2.12.0 — 2026-09-28 — Filtr podnoszenia, Towarzysz na rybach, szybszy kosz, kategoria MT2009 Plus, Dom Towarowy
 
 Serwer 2.12.0 i klient 2.0.24: zaktualizuj oba w launcherze
 (**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
@@ -69,6 +69,31 @@ z 2.11.0.
   – przechodzą do następnego celu, gdy tylko cel ma 0 PŻ.
 - **Umiejętności konne** (Cięcie z Siodła i pozostałe) działają na
   **mountach** (wierzchowcach z kostiumu), na których można walczyć.
+
+### Mniejsze dodatki
+
+- **Dom Towarowy** u Handlarki Różności w M1: jedno okno ze wszystkimi
+  ofertami sklepów offline graczy i botów – wyszukiwanie po nazwie,
+  kategorie, cena od–do, sortowanie, zakup bez podchodzenia do sklepu
+  (klient 2.0.24). Włączany w oknie poziomu trudności w launcherze. Przy
+  wystawianiu przedmiotu we własnym sklepie widać, za ile wystawiłby go bot.
+- Zamiast Hazardzisty czterech rzadkich Hazardzistów (na fioletowo), którzy
+  ulepszają i sprzedają sprzęt w sklepach offline.
+- Nowe ceny broni na 30 poziom, marmurów polimorfii i wędek; inflacja rośnie
+  jak procent składany; przedmiot z kilkoma maksymalnymi bonusami jest
+  droższy.
+- Boty nie kupują przedmiotów z pomyłką w cenie (o jedno zero za dużo),
+  a taka pomyłka znika ze sklepu najpóźniej po 4 godzinach.
+- Bot od 30 poziomu nie walczy bronią na 1–10 poziom; Zwoje
+  Błogosławieństwa idą na broń także w trakcie walki; kamienie bonusów,
+  także zielone, trafiają na cały ekwipunek.
+- **Peleryna Męstwa** przyciąga wszystkie potwory widoczne na ekranie
+  (najwyżej 80), bez bossów i potworów walczących z kimś innym.
+- Wojny gildii: runda trwa do ostatniego bota jednej strony, a długość
+  (15 albo 30 minut) i częstotliwość wojen botów ustawia się w panelu.
+- Okrzyki botów docierają do graczy na wszystkich mapach.
+- Przycisk „Logi VPS” działa też z serwerem postawionym ręcznie; bot
+  łowiący ryby odpowiada na atak gracza; drobne poprawki rynku i kowala.
 
 ---
 

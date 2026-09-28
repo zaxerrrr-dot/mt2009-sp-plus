@@ -4556,6 +4556,10 @@ class Interface(object):
 		self.offlineShopSearch.SetToolTip(self.tooltipItem)
 		self.offlineShopSearch.Hide()
 
+		self.fleaMarket = offlineShopSearch.FleaMarketWindow()
+		self.fleaMarket.SetToolTip(self.tooltipItem)
+		self.fleaMarket.SetGuestBoard(self.offlineShopGuest)
+
 		self.hyperlinkItemTooltip = uiToolTip.HyperlinkItemToolTip()
 		self.hyperlinkItemTooltip.Hide()
 
@@ -4957,6 +4961,9 @@ class Interface(object):
 		if self.offlineShopSearch:
 			self.offlineShopSearch.Destroy()
 
+		if self.fleaMarket:
+			self.fleaMarket.Destroy()
+
 		if self.dlgRefineNew:
 			self.dlgRefineNew.Destroy()
 
@@ -5072,6 +5079,7 @@ class Interface(object):
 		del self.offlineShopGuest
 		del self.offlineShopHistory
 		del self.offlineShopSearch
+		del self.fleaMarket
 		del self.inputDialog
 		del self.wndChatLog
 		del self.dlgRefineNew
@@ -6019,6 +6027,10 @@ class Interface(object):
 
 	def OpenPrivateShopManage(self):
 		self.offlineShopManage.Toggle()
+		return True
+
+	def OpenFleaMarket(self):
+		self.fleaMarket.Open()
 		return True
 
 	def ClickPrivateShop(self, vid, is_offline):

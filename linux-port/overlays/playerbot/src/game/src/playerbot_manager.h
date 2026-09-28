@@ -50,6 +50,11 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		void	OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const char* szText);
 
 		bool	IsManaged(DWORD dwPlayerID) const;
+		// The Dom Towarowy's price hint (/flea_price, playerbotify
+		// apply_flea_market): the bots' asking price for the item in that
+		// cell and what they have been paid for it, as "FleaPriceQuote".
+		void	SendFleaMarketPriceQuote(LPCHARACTER ch, BYTE bWindow, WORD wCell,
+				DWORD dwRequestID);
 		bool	IsRegistered(DWORD dwPlayerID);
 		// The same question answered from the registry as it is, never by
 		// loading it: false until the bootstrap has loaded it. For callers

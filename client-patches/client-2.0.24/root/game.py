@@ -2743,6 +2743,9 @@ class GameWindow(ui.ScriptWindow):
 			"MobPreviewEnd"			: self.__MobPreviewEnd,
 			"MobPreviewError"		: self.__MobPreviewError,
 			"TargetHP"				: self.__TargetHP,
+			"FleaMarketOpen"		: self.OpenFleaMarket,
+			"FleaPriceQuote"		: self.FleaPriceQuote,
+			"FleaMarketStackUpdate"	: self.FleaMarketStackUpdate,
 			"ShowMeMallPassword"	: self.AskMallPassword,
 			"item_mall"				: self.__ItemMall_Open,
 			# END_OF_ITEM_MALL
@@ -3445,6 +3448,23 @@ class GameWindow(ui.ScriptWindow):
 		# player.IsTargetDead, and a corpse was hit until its model vanished.
 		import uiautohunt
 		uiautohunt.OnServerTargetHP(vid, hp, maxHp)
+
+	# The Dom Towarowy (Uxie [DSO]): the merchant opens its window, the
+	# counter gets its price hint, and a stack the market sold part of
+	# shows what is left.
+	def OpenFleaMarket(self):
+		if self.interface:
+			self.interface.OpenFleaMarket()
+
+	def FleaPriceQuote(self, requestID, suggestedPrice, observedPrice, sampleCount):
+		if self.interface:
+			self.interface.offlineShopManage.SetFleaMarketPriceQuote(
+				int(requestID), int(suggestedPrice), int(observedPrice), int(sampleCount))
+
+	def FleaMarketStackUpdate(self, ownerID, itemID, remainingCount, remainingYang, remainingCheque):
+		if self.interface:
+			self.interface.fleaMarket.UpdateStackOffer(
+				int(ownerID), int(itemID), int(remainingCount), int(remainingYang), int(remainingCheque))
 
 	def __EnableTestServerFlag(self):
 		app.EnableTestServerFlag()

@@ -832,7 +832,10 @@ fi
 # and drop (m2_autohunt_off, playerbotify apply_auto_hunt_switch) and
 # sends no Towarzysz letter, refuses its command and keeps companions out
 # of the world (m2_sidekick_off). Event flags like the difficulty, so a
-# change reaches the cores at the next start.
+# change reaches the cores at the next start. The Dom Towarowy (M2_FLEA_MARKET,
+# the same window, 27 September) is a third: off, flea_market.quest offers
+# nothing at the merchant and every /flea_ command refuses
+# (m2_flea_market_off, playerbotify apply_flea_market).
 feature_off() {
     case "$(printf '%s' "$1" | tr 'A-Z' 'a-z' | tr -d ' \r')" in
         0|off|no|false) echo 1 ;;
@@ -841,12 +844,14 @@ feature_off() {
 }
 autohunt_off=$(feature_off "${M2_AUTOHUNT:-1}")
 sidekick_off=$(feature_off "${M2_SIDEKICK:-1}")
+flea_off=$(feature_off "${M2_FLEA_MARKET:-1}")
 if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_autohunt_off', '', $autohunt_off),
-        (0, 'm2_sidekick_off', '', $sidekick_off);"; then
-    echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on)"
+        (0, 'm2_sidekick_off', '', $sidekick_off),
+        (0, 'm2_flea_market_off', '', $flea_off);"; then
+    echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on), Dom Towarowy: $([ "$flea_off" = 1 ] && echo off || echo on)"
 else
-    echo "[playerbot-migrate] WARNING: could not write the Auto Lowy and companion flags; the cores keep the last ones" >&2
+    echo "[playerbot-migrate] WARNING: could not write the Auto Lowy, companion and Dom Towarowy flags; the cores keep the last ones" >&2
 fi
 # Auto Lowy for everybody (0) or only with the ItemShop's ticket (1): .env
 # M2_AUTOHUNT_ITEM, which the launcher's difficulty window writes; the
