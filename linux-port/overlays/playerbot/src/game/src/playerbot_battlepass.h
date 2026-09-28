@@ -26,8 +26,11 @@
 // (MT2009_PLUS_BATTLE_PASS_V1): the kill, AddPlayerStat, UseItem and the
 // /battlepass command.
 //
-// Progress is kept per player in memory and written every minute, when it
-// changed, and at a claim.
+// The database is the truth. A player's character moves between cores (each
+// hosts other maps), so a core never writes a total: it counts in memory and
+// adds its count to the row (progress = progress + delta) every minute, and
+// at once when a mission may be done; the window reads the rows again. A
+// reward is taken with a conditional UPDATE, so no two cores give it.
 namespace mt2009_battlepass
 {
 	enum EType
@@ -63,12 +66,17 @@ namespace mt2009_battlepass
 		std::string descHex;
 	};
 
+	// What this core knows of one mission of one player: the total the
+	// database had at the last read, and what this core counted since. The
+	// database is the truth - a player's characters move between cores (every
+	// core hosts other maps), and each core only ever adds its own count to it
+	// (progress = progress + delta), never writes a total over another core's.
 	struct Progress
 	{
 		DWORD value;
+		DWORD delta;
 		bool claimed;
-		bool dirty;
-		Progress() : value(0), claimed(false), dirty(false) {}
+		Progress() : value(0), delta(0), claimed(false) {}
 	};
 
 	struct Cache
@@ -217,6 +225,45 @@ namespace mt2009_battlepass
 		s_bMissionsLoaded = true;
 	}
 
+	const Mission* FindMission(DWORD id)
+	{
+		for (size_t i = 0; i < s_vecMissions.size(); ++i)
+			if (s_vecMissions[i].id == id)
+				return &s_vecMissions[i];
+		return NULL;
+	}
+
+	// The player's rows of this season, read again; this core's own counts
+	// not yet written stay on top of them.
+	void ReadProgress(DWORD pid, Cache& cache)
+	{
+		for (std::map<DWORD, Progress>::iterator it = cache.missions.begin(); it != cache.missions.end(); ++it)
+		{
+			it->second.value = 0;
+			it->second.claimed = false;
+		}
+		cache.final.value = 0;
+		cache.final.claimed = false;
+		char query[160];
+		snprintf(query, sizeof(query),
+				"SELECT mission, progress, claimed FROM player.battlepass_progress WHERE pid=%u AND season=%u",
+				pid, cache.season);
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
+			return;
+		MYSQL_ROW row;
+		while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+		{
+			DWORD mission = 0, progress = 0, claimed = 0;
+			str_to_number(mission, row[0]);
+			str_to_number(progress, row[1]);
+			str_to_number(claimed, row[2]);
+			Progress& p = mission == 0 ? cache.final : cache.missions[mission];
+			p.value = progress;
+			p.claimed = claimed != 0;
+		}
+	}
+
 	Cache& GetCache(LPCHARACTER ch)
 	{
 		const DWORD pid = ch->GetPlayerID();
@@ -227,46 +274,54 @@ namespace mt2009_battlepass
 		Cache& cache = s_mapCaches[pid];
 		cache = Cache();
 		cache.season = season;
-		if (!EnsureTables())
-			return cache;
-		char query[160];
-		snprintf(query, sizeof(query),
-				"SELECT mission, progress, claimed FROM player.battlepass_progress WHERE pid=%u AND season=%u",
-				pid, season);
-		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
-		if (msg.get() && msg->uiSQLErrno == 0 && msg->Get() && msg->Get()->pSQLResult)
-		{
-			MYSQL_ROW row;
-			while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
-			{
-				DWORD mission = 0, progress = 0, claimed = 0;
-				str_to_number(mission, row[0]);
-				str_to_number(progress, row[1]);
-				str_to_number(claimed, row[2]);
-				Progress& p = mission == 0 ? cache.final : cache.missions[mission];
-				p.value = progress;
-				p.claimed = claimed != 0;
-			}
-		}
+		if (EnsureTables())
+			ReadProgress(pid, cache);
 		return cache;
 	}
 
-	void SaveProgress(DWORD pid, DWORD season, DWORD mission, Progress& p)
-	{
-		DBManager::instance().Query(
-				"INSERT INTO player.battlepass_progress (pid, season, mission, progress, claimed) VALUES (%u, %u, %u, %u, %u) "
-				"ON DUPLICATE KEY UPDATE progress=VALUES(progress), claimed=VALUES(claimed)",
-				pid, season, mission, p.value, p.claimed ? 1 : 0);
-		p.dirty = false;
-	}
-
-	void Flush(DWORD pid, Cache& cache)
+	// This core's counts into the database, added to what is there (capped at
+	// the mission's count). Synchronous when a decision hangs on the result.
+	void WriteDeltas(DWORD pid, Cache& cache, bool now)
 	{
 		for (std::map<DWORD, Progress>::iterator it = cache.missions.begin(); it != cache.missions.end(); ++it)
-			if (it->second.dirty)
-				SaveProgress(pid, cache.season, it->first, it->second);
-		if (cache.final.dirty)
-			SaveProgress(pid, cache.season, 0, cache.final);
+		{
+			Progress& p = it->second;
+			if (!p.delta)
+				continue;
+			const Mission* m = FindMission(it->first);
+			const DWORD cap = m ? m->count : 0xFFFFFFFFu;
+			char query[320];
+			snprintf(query, sizeof(query),
+					"INSERT INTO player.battlepass_progress (pid, season, mission, progress, claimed) "
+					"VALUES (%u, %u, %u, LEAST(%u, %u), 0) "
+					"ON DUPLICATE KEY UPDATE progress = LEAST(%u, progress + %u)",
+					pid, cache.season, it->first, cap, p.delta, cap, p.delta);
+			if (now)
+			{
+				std::unique_ptr<SQLMsg> done(AccountDB::instance().DirectQuery(query));
+			}
+			else
+				DBManager::instance().Query("%s", query);
+			p.value = std::min<DWORD>(cap, p.value + p.delta);
+			p.delta = 0;
+		}
+	}
+
+	// Marks a reward as taken in the database, once: the core whose UPDATE
+	// changes the row gives it, a second core (or a second click) finds it
+	// taken. mission 0 is the season's final reward.
+	bool TakeClaim(DWORD pid, DWORD season, DWORD mission)
+	{
+		char query[256];
+		snprintf(query, sizeof(query),
+				"INSERT IGNORE INTO player.battlepass_progress (pid, season, mission, progress, claimed) "
+				"VALUES (%u, %u, %u, 0, 0)", pid, season, mission);
+		std::unique_ptr<SQLMsg> ensure(AccountDB::instance().DirectQuery(query));
+		snprintf(query, sizeof(query),
+				"UPDATE player.battlepass_progress SET claimed=1 WHERE pid=%u AND season=%u AND mission=%u AND claimed=0",
+				pid, season, mission);
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+		return msg.get() && msg->uiSQLErrno == 0 && msg->Get() && msg->Get()->uiAffectedRows == 1;
 	}
 
 	bool AllDone(Cache& cache)
@@ -277,7 +332,7 @@ namespace mt2009_battlepass
 		{
 			const Mission& m = s_vecMissions[i];
 			std::map<DWORD, Progress>::const_iterator it = cache.missions.find(m.id);
-			if (it == cache.missions.end() || it->second.value < m.count)
+			if (it == cache.missions.end() || it->second.value + it->second.delta < m.count)
 				return false;
 		}
 		return true;
@@ -290,18 +345,35 @@ namespace mt2009_battlepass
 		return m.rewardVnum[0] || m.rewardVnum[1] || m.rewardVnum[2];
 	}
 
-	// A mission's own rewards, the moment it is done (as the window the
-	// operator chose has it: no button for them).
-	void GiveRewards(LPCHARACTER ch, Cache& cache, const Mission& m, Progress& p)
+	// The database brought up to date for this player, then every mission
+	// done and not yet rewarded rewarded - once, whichever core gets there.
+	void Settle(LPCHARACTER ch, Cache& cache, bool announce)
 	{
-		if (p.claimed || !HasReward(m))
-			return;
-		p.claimed = true;
-		SaveProgress(ch->GetPlayerID(), cache.season, m.id, p);
-		for (int r = 0; r < 3; ++r)
-			if (m.rewardVnum[r])
-				ch->AutoGiveItem(m.rewardVnum[r], (ITEM_COUNT)std::max<DWORD>(1, m.rewardCount[r]));
-		sys_log(0, "BATTLEPASS: %s done mission %u, rewards given", ch->GetName(), m.id);
+		const DWORD pid = ch->GetPlayerID();
+		WriteDeltas(pid, cache, true);
+		ReadProgress(pid, cache);
+		for (size_t i = 0; i < s_vecMissions.size(); ++i)
+		{
+			const Mission& m = s_vecMissions[i];
+			Progress& p = cache.missions[m.id];
+			if (p.value < m.count || p.claimed)
+				continue;
+			if (!TakeClaim(pid, cache.season, m.id))
+			{
+				p.claimed = true;
+				continue;
+			}
+			p.claimed = true;
+			if (announce)
+				ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: misja ukonczona!%s",
+						HasReward(m) ? " Nagroda trafila do ekwipunku." : "");
+			for (int r = 0; r < 3; ++r)
+				if (m.rewardVnum[r])
+					ch->AutoGiveItem(m.rewardVnum[r], (ITEM_COUNT)std::max<DWORD>(1, m.rewardCount[r]));
+			sys_log(0, "BATTLEPASS: %s done mission %u", ch->GetName(), m.id);
+			if (announce && AllDone(cache) && !cache.final.claimed)
+				ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!");
+		}
 	}
 
 	void Add(LPCHARACTER ch, BYTE type, DWORD target, long long amount)
@@ -316,26 +388,25 @@ namespace mt2009_battlepass
 			return;
 		EnsureTick();
 		Cache& cache = GetCache(ch);
+		bool reached = false;
 		for (size_t i = 0; i < s_vecMissions.size(); ++i)
 		{
 			const Mission& m = s_vecMissions[i];
 			if (m.type != type || (m.target != 0 && m.target != target))
 				continue;
 			Progress& p = cache.missions[m.id];
-			if (p.value >= m.count)
+			const DWORD have = p.value + p.delta;
+			if (have >= m.count)
 				continue;
-			const long long next = (long long)p.value + amount;
-			p.value = next >= (long long)m.count ? m.count : (DWORD)next;
-			p.dirty = true;
-			if (p.value >= m.count)
-			{
-				ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: misja ukonczona!%s",
-						HasReward(m) ? " Nagroda trafila do ekwipunku." : "");
-				GiveRewards(ch, cache, m, p);
-				if (AllDone(cache) && !cache.final.claimed)
-					ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: wszystkie misje sezonu ukonczone - odbierz nagrode koncowa!");
-				ch->ChatPacket(CHAT_TYPE_COMMAND, "BPUpdate");
-			}
+			const long long room = (long long)(m.count - have);
+			p.delta += (DWORD)(amount >= room ? room : amount);
+			if (p.value + p.delta >= m.count)
+				reached = true;
+		}
+		if (reached)
+		{
+			Settle(ch, cache, true);
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "BPUpdate");
 		}
 	}
 
@@ -345,7 +416,7 @@ namespace mt2009_battlepass
 	};
 
 	// Every minute: a minute played for everybody in the game on this core,
-	// what changed written, the departed forgotten, the missions re-read.
+	// this core's counts written, the departed forgotten, the missions re-read.
 	EVENTFUNC(battlepass_tick)
 	{
 		LoadMissions(false);
@@ -365,7 +436,7 @@ namespace mt2009_battlepass
 		}
 		for (std::map<DWORD, Cache>::iterator it = s_mapCaches.begin(); it != s_mapCaches.end(); )
 		{
-			Flush(it->first, it->second);
+			WriteDeltas(it->first, it->second, false);
 			if (!CHARACTER_MANAGER::instance().FindByPID(it->first))
 				s_mapCaches.erase(it++);
 			else
@@ -387,6 +458,8 @@ namespace mt2009_battlepass
 		LoadMissions(false);
 		EnsureTick();
 		Cache& cache = GetCache(ch);
+		// What the other cores counted too, and anything done rewarded.
+		Settle(ch, cache, true);
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "BPBegin %u %d %u %u %d %u", cache.season, DaysLeft(),
 				FINAL_REWARD_VNUM, FINAL_REWARD_COUNT, cache.final.claimed ? 1 : 0, (unsigned int)s_vecMissions.size());
 		for (size_t i = 0; i < s_vecMissions.size(); ++i)
@@ -394,7 +467,8 @@ namespace mt2009_battlepass
 			const Mission& m = s_vecMissions[i];
 			const Progress& p = cache.missions[m.id];
 			ch->ChatPacket(CHAT_TYPE_COMMAND, "BPMission %u %u %u %u %u %d %u %u %u %u %u %u %s", m.id,
-					(unsigned int)m.type, m.target, m.count, p.value, p.claimed ? 1 : 0,
+					(unsigned int)m.type, m.target, m.count, std::min<DWORD>(m.count, p.value + p.delta),
+					p.claimed ? 1 : 0,
 					m.rewardVnum[0], m.rewardCount[0], m.rewardVnum[1], m.rewardCount[1], m.rewardVnum[2], m.rewardCount[2],
 					m.nameHex.empty() ? "-" : m.nameHex.c_str());
 			// The description on a line of its own: a chat command is at most
@@ -405,28 +479,18 @@ namespace mt2009_battlepass
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "BPEnd %d", AllDone(cache) ? 1 : 0);
 	}
 
-	void Claim(LPCHARACTER ch, DWORD missionId)
+	void Claim(LPCHARACTER ch, DWORD)
 	{
 		LoadMissions(false);
-		Cache& cache = GetCache(ch);
-		for (size_t i = 0; i < s_vecMissions.size(); ++i)
-		{
-			const Mission& m = s_vecMissions[i];
-			if (m.id != missionId)
-				continue;
-			Progress& p = cache.missions[m.id];
-			if (p.value < m.count)
-				return;
-			GiveRewards(ch, cache, m, p);
-			SendWindow(ch);
-			return;
-		}
+		Settle(ch, GetCache(ch), true);
+		SendWindow(ch);
 	}
 
 	void ClaimFinal(LPCHARACTER ch)
 	{
 		LoadMissions(false);
 		Cache& cache = GetCache(ch);
+		Settle(ch, cache, false);
 		if (cache.final.claimed)
 		{
 			ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.");
@@ -437,9 +501,13 @@ namespace mt2009_battlepass
 			ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: najpierw ukoncz wszystkie misje sezonu.");
 			return;
 		}
+		if (!TakeClaim(ch->GetPlayerID(), cache.season, 0))
+		{
+			cache.final.claimed = true;
+			ch->ChatPacket(CHAT_TYPE_INFO, "Battle Pass: nagroda koncowa tego sezonu jest juz odebrana.");
+			return;
+		}
 		cache.final.claimed = true;
-		cache.final.value = 1;
-		SaveProgress(ch->GetPlayerID(), cache.season, 0, cache.final);
 		ch->AutoGiveItem(FINAL_REWARD_VNUM, FINAL_REWARD_COUNT);
 		sys_log(0, "BATTLEPASS: %s claimed the final reward of %u", ch->GetName(), cache.season);
 		SendWindow(ch);
