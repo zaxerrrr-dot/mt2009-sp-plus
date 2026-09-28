@@ -478,12 +478,52 @@ namespace
 		return f.m_person;
 	}
 
+	// Who struck the Reaper down, by the tower instance he fell in. The floor
+	// scan sees only that he no longer stands; the killer is known to
+	// CHARACTER::Dead alone, which tells OnBossKilled (playerbotify
+	// apply_boss_last_blow). Read once, by the notice.
+	struct TPlayerBotTowerReaperBlow
+	{
+		std::string name;
+		DWORD dwAt;
+	};
+	std::map<long, TPlayerBotTowerReaperBlow> s_PlayerBotTowerReaperBlow;
+
+	void NotePlayerBotBossKilled(LPCHARACTER boss, LPCHARACTER killer, DWORD dwNow)
+	{
+		if (!boss || !killer || !killer->IsPC() || boss->GetRaceNum() != PLAYERBOT_TOWER_REAPER)
+			return;
+		// A run no bot's pass watches - a person's alone - never reads its
+		// entry, so what is older than any notice could want goes here.
+		for (auto it = s_PlayerBotTowerReaperBlow.begin(); it != s_PlayerBotTowerReaperBlow.end();)
+		{
+			if (dwNow - it->second.dwAt > PLAYERBOT_TOWER_REAPER_BLOW_MS)
+				it = s_PlayerBotTowerReaperBlow.erase(it);
+			else
+				++it;
+		}
+		TPlayerBotTowerReaperBlow& blow = s_PlayerBotTowerReaperBlow[boss->GetMapIndex()];
+		blow.name = killer->GetName();
+		blow.dwAt = dwNow;
+	}
+
 	// The Reaper's fall is news: "powiadomienie na chacie ze rajd tej i tej
 	// gildii pokonal umarlego rozpruwacza" (prodnathin, 25 September). A bot
 	// guild's raid is named after its guild; a person's run with bots in it
-	// after the person's guild, or the person.
+	// after the person's guild, or the person. And the last blow is named,
+	// a person's or a bot's: "powiadomienie o ... zabiciu ripera przez 'x' -
+	// moze to byc gracz" (prodnathin, 28 September).
 	void AnnouncePlayerBotTowerReaper(long map, const TPlayerBotTowerRun& run, DWORD dwNow)
 	{
+		std::string lastBlow;
+		const auto blowIt = s_PlayerBotTowerReaperBlow.find(map);
+		if (blowIt != s_PlayerBotTowerReaperBlow.end())
+		{
+			if (dwNow - blowIt->second.dwAt <= PLAYERBOT_TOWER_REAPER_BLOW_MS)
+				lastBlow = blowIt->second.name;
+			s_PlayerBotTowerReaperBlow.erase(blowIt);
+		}
+
 		const TPlayerBotTowerRaid& raid = s_PlayerBotTowerRaid;
 		CGuild* g = (raid.bPhase == TOWER_PHASE_INSIDE && raid.lInstance == map)
 				? CGuildManager::instance().FindGuild(raid.dwGuildID) : NULL;
@@ -500,8 +540,8 @@ namespace
 			LPCHARACTER person = FindPlayerBotTowerPerson(map);
 			if (!person)
 			{
-				sys_log(0, "PLAYERBOT_TOWER: reaper down map=%ld told=0 why=no_raid_no_person after_s=%u",
-						map, (dwNow - run.dwEnteredAt) / 1000U);
+				sys_log(0, "PLAYERBOT_TOWER: reaper down map=%ld told=0 why=no_raid_no_person last_blow=%s after_s=%u",
+						map, lastBlow.empty() ? "-" : lastBlow.c_str(), (dwNow - run.dwEnteredAt) / 1000U);
 				return;
 			}
 			CGuild* pg = person->GetGuild();
@@ -513,9 +553,12 @@ namespace
 						person->GetName());
 			who = pg ? pg->GetName() : person->GetName();
 		}
-		BroadcastNotice(msg);
-		sys_log(0, "PLAYERBOT_TOWER: reaper down map=%ld told=1 who=%s after_s=%u",
-				map, who.c_str(), (dwNow - run.dwEnteredAt) / 1000U);
+		std::string notice = msg;
+		if (!lastBlow.empty())
+			notice += " Ostatni cios: " + lastBlow + ".";
+		BroadcastNotice(notice.c_str());
+		sys_log(0, "PLAYERBOT_TOWER: reaper down map=%ld told=1 who=%s last_blow=%s after_s=%u",
+				map, who.c_str(), lastBlow.empty() ? "-" : lastBlow.c_str(), (dwNow - run.dwEnteredAt) / 1000U);
 	}
 
 	// Watched from the ninth floor's scan: standing, then gone - his kill
@@ -985,15 +1028,19 @@ namespace
 
 		if (distance <= PLAYERBOT_DUEL_BUFF_RANGE && ManagePlayerBotCombatBuffs(ch, state, dwNow, true))
 			return true;
+		// Under a marble every build fights hand to hand
+		// (IsPlayerBotFightingAsMonster): no bow's reach, no casting range, no
+		// stepping away from the Reaper.
+		const bool marbled = IsPlayerBotFightingAsMonster(ch);
 		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
-		const bool isBow = (weapon && weapon->GetType() == ITEM_WEAPON &&
+		const bool isBow = !marbled && (weapon && weapon->GetType() == ITEM_WEAPON &&
 				weapon->GetSubType() == WEAPON_BOW);
 		const int combatRange = isBow ? GetPlayerBotBowRange(ch->GetMapIndex()) : PLAYERBOT_DUEL_MELEE_RANGE;
-		const bool caster = ch->GetJob() == JOB_SHAMAN ||
-				(ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2);
+		const bool caster = !marbled && (ch->GetJob() == JOB_SHAMAN ||
+				(ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2));
 		// The Reaper, from range: the Archer at its bow's reach and the Shaman
 		// at its casting range, and the one he turns on steps away from him.
-		if (foe->GetRaceNum() == PLAYERBOT_TOWER_REAPER && (isBow || ch->GetJob() == JOB_SHAMAN))
+		if (foe->GetRaceNum() == PLAYERBOT_TOWER_REAPER && (isBow || (!marbled && ch->GetJob() == JOB_SHAMAN)))
 		{
 			if (foe->GetVictim() == ch && distance < PLAYERBOT_TOWER_REAPER_KITE_DISTANCE &&
 					KitePlayerBotFromTowerBoss(ch, state, foe, dwNow))

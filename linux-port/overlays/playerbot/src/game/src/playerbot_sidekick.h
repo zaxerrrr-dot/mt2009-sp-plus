@@ -1227,9 +1227,19 @@ namespace
 				"WHERE i.window='SAFEBOX' AND i.owner_id=p.account_id", pid);
 		std::unique_ptr<SQLMsg> safebox(AccountDB::instance().DirectQuery(query));
 		const int level = MINMAX(1, owner->GetLevel(), 255);
-		snprintf(query, sizeof(query),
-				"INSERT INTO player.playerbot_sidekick (owner_pid, sidekick_pid, mode, skill_group, start_level, setup_done, created_at) "
-				"VALUES (%u, %u, 0, %d, %d, 0, NOW())", ownerPid, pid, group, level);
+		// A new companion's skill points are its owner's from the start: the
+		// AI spent them all at the first summon, before anybody had opened the
+		// window ("Lepiej byloby, gdyby domyslnie wlaczona byla opcja
+		// samodzielnego rozdawania skilli", blasty, 28 September). The window's
+		// switch hands them to the AI. The stat points stay the AI's.
+		if (s_bPlayerBotSidekickSettingsColumns)
+			snprintf(query, sizeof(query),
+					"INSERT INTO player.playerbot_sidekick (owner_pid, sidekick_pid, mode, skill_group, start_level, setup_done, "
+					"created_at, manual_skills) VALUES (%u, %u, 0, %d, %d, 0, NOW(), 1)", ownerPid, pid, group, level);
+		else
+			snprintf(query, sizeof(query),
+					"INSERT INTO player.playerbot_sidekick (owner_pid, sidekick_pid, mode, skill_group, start_level, setup_done, created_at) "
+					"VALUES (%u, %u, 0, %d, %d, 0, NOW())", ownerPid, pid, group, level);
 		std::unique_ptr<SQLMsg> insert(AccountDB::instance().DirectQuery(query));
 		if (!insert.get() || insert->uiSQLErrno != 0)
 		{
@@ -1243,6 +1253,7 @@ namespace
 		rec.bGroup = (BYTE)group;
 		rec.bLevel = (BYTE)level;
 		rec.bSetupDone = false;
+		rec.bManualSkills = true;
 		rec.dwOwnerSeenAt = get_dword_time();
 		s_mapPlayerBotSidekicks[ownerPid] = rec;
 		s_mapPlayerBotSidekickOwner[pid] = ownerPid;
@@ -1251,6 +1262,8 @@ namespace
 		snprintf(text, sizeof(text), "%s (%s) dolacza do ciebie - chwila i bedzie przy tobie.",
 				name, GetPlayerBotSidekickClassName((BYTE)race));
 		SayPlayerBotSidekick(owner, text);
+		SayPlayerBotSidekick(owner, "Punkty umiejetnosci rozdajesz ty: okno towarzysza (P), Umiejetnosci. "
+				"Wolisz, zeby robil to sam? Ustaw tam \"Punkty rozdaje sam: nie\".");
 		sys_log(0, "PLAYERBOT_SIDEKICK: created owner=%u owner_name=%s pid=%u name=%s race=%d group=%d level=%d",
 				ownerPid, owner->GetName(), pid, name, race, group, level);
 		CPlayerBotManager::instance().SpawnSidekick(pid);
@@ -4289,9 +4302,105 @@ namespace
 		SetPlayerBotSidekickSetting(rec, "manual_skills", manual ? 1U : 0U);
 	}
 
+	// "umiejetnosci zeruj <vnum>": the owner takes one of the companion's skills
+	// back to nothing, with what a player would use, out of the companion's own
+	// bag - "mozliwosc resetowania jego umiejetnosci do zera za pomoca KZ lub
+	// zwoju powrotu umiejetnosci" (blasty, 28 September). The Forgetting Book
+	// takes one level with its point (SkillLevelDown) and never a Master's; the
+	// skill reset scroll takes the whole skill, Master and all, and does what
+	// its quest does (ResetOneSkill, the next Master forced). Books when the
+	// bag holds enough to reach zero, because the scroll is the ItemShop's;
+	// the scroll when they are too few, or for a Master; and nothing half-way:
+	// the owner asked for zero. The points wait in the window, the owner's to
+	// spend from then on, as after a "+".
+	bool ResetPlayerBotSidekickSkill(LPCHARACTER sk, TPlayerBotSidekick& rec, DWORD vnum, std::string& answer)
+	{
+		char text[192];
+		const int before = (int)sk->GetSkillLevel(vnum);
+		const bool normal = sk->GetSkillMasterType(vnum) == SKILL_NORMAL;
+		std::vector<WORD> bookCells;
+		int books = 0;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		LPITEM scroll = NULL;
+#endif
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = sk->GetInventoryItem(cell);
+			if (!item || item->isLocked())
+				continue;
+			if (item->GetType() == ITEM_SKILLFORGET && (DWORD)item->GetSocket(0) == vnum)
+			{
+				bookCells.push_back(cell);
+				books += (int)item->GetCount();
+			}
+#if defined(PLAYERBOT_ENGINE_MT2009)
+			else if (!scroll && item->GetVnum() == PLAYERBOT_SIDEKICK_SKILL_RESET_SCROLL_VNUM)
+				scroll = item;
+#endif
+		}
+		const char* way = "none";
+		if (normal && books >= before)
+		{
+			way = "books";
+			int read = 0;
+			for (size_t i = 0; i < bookCells.size() && sk->GetSkillLevel(vnum) > 0; ++i)
+			{
+				for (int guard = 0; guard < 40 && sk->GetSkillLevel(vnum) > 0; ++guard)
+				{
+					LPITEM item = sk->GetInventoryItem(bookCells[i]);
+					if (!item || item->GetType() != ITEM_SKILLFORGET || (DWORD)item->GetSocket(0) != vnum)
+						break;
+					const int was = (int)sk->GetSkillLevel(vnum);
+					sk->UseItem(TItemPos(INVENTORY, bookCells[i]));
+					if ((int)sk->GetSkillLevel(vnum) >= was)
+						break;
+					++read;
+				}
+			}
+			if (sk->GetSkillLevel(vnum) > 0)
+				snprintf(text, sizeof(text), "Przeczytane Ksiegi Zapomnienia: %d, %s stoi na %d - reszty silnik nie przyjal.",
+						read, GetPlayerBotSkillName(vnum), (int)sk->GetSkillLevel(vnum));
+			else
+				snprintf(text, sizeof(text), "Przeczytane Ksiegi Zapomnienia: %d - %s od zera, punkty czekaja w oknie.",
+						read, GetPlayerBotSkillName(vnum));
+		}
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		else if (scroll)
+		{
+			way = "scroll";
+			if (!sk->ResetOneSkill(vnum))
+				snprintf(text, sizeof(text), "Zwoj Powrotu Umiejetnosci nie zadzialal.");
+			else
+			{
+				sk->SetQuestFlag("reset_status_items.force_to_master_skill",
+						sk->GetQuestFlag("reset_status_items.force_to_master_skill") + 1);
+				scroll->SetCount(scroll->GetCount() - 1);
+				sk->Save();
+				snprintf(text, sizeof(text), "Zwoj Powrotu Umiejetnosci uzyty: %s od zera, punkty czekaja w oknie. "
+						"Kolejna umiejetnosc na 17 zostanie mistrzem.", GetPlayerBotSkillName(vnum));
+			}
+		}
+#endif
+		else if (!normal)
+			snprintf(text, sizeof(text), "Mistrza nie cofnie Ksiega Zapomnienia - wloz do plecaka towarzysza "
+					"Zwoj Powrotu Umiejetnosci.");
+		else
+			snprintf(text, sizeof(text), "Do zera trzeba %d Ksiag Zapomnienia tej umiejetnosci, w plecaku towarzysza "
+					"jest %d - albo wloz mu Zwoj Powrotu Umiejetnosci.", before, books);
+		answer = text;
+		const bool done = sk->GetSkillLevel(vnum) < before;
+		if (done && !rec.bManualSkills)
+			SetPlayerBotSidekickManualSkills(rec, true);
+		sys_log(0, "PLAYERBOT_SIDEKICK: skill reset owner=%u pid=%u vnum=%u way=%s master=%d level=%d->%d books=%d points=%d",
+				rec.dwOwnerPID, sk->GetPlayerID(), vnum, way, normal ? 0 : 1, before, (int)sk->GetSkillLevel(vnum), books,
+				(int)sk->GetPoint(POINT_SKILL));
+		return done;
+	}
+
 	// "umiejetnosci" (the list), "umiejetnosci dodaj <vnum>" (one point there -
 	// and from then on the owner spends them, or the skill pass would move the
-	// point to its own build), "umiejetnosci reczne <0|1>".
+	// point to its own build), "umiejetnosci reczne <0|1>", "umiejetnosci zeruj
+	// <vnum>" (ResetPlayerBotSidekickSkill).
 	void HandlePlayerBotSidekickSkillCommand(LPCHARACTER owner, const char* op, const char* a)
 	{
 		if (!*op)
@@ -4354,6 +4463,22 @@ namespace
 			sys_log(0, "PLAYERBOT_SIDEKICK: skill up owner=%u pid=%u vnum=%u code=%d level=%d points=%d",
 					owner->GetPlayerID(), sk->GetPlayerID(), vnum, code, (int)sk->GetSkillLevel(vnum),
 					(int)sk->GetPoint(POINT_SKILL));
+		}
+		else if (!strcmp(op, "zeruj"))
+		{
+			DWORD vnum = 0;
+			str_to_number(vnum, a);
+			const DWORD base = GetPlayerBotSidekickSkillBase(sk);
+			if (base == 0)
+				answer = "Towarzysz nie ma jeszcze sciezki (dostanie ja na 5 poziomie).";
+			else if (vnum < base || vnum >= base + 6 || !CSkillManager::instance().Get(vnum))
+				answer = "To nie jest umiejetnosc towarzysza.";
+			else if (sk->GetSkillLevel(vnum) <= 0)
+				answer = "Ta umiejetnosc jest juz na zerze.";
+			else if (sk->IsPolymorphed() || sk->IsDead() || sk->GetExchange())
+				answer = "Nie teraz - sprobuj, gdy towarzysz nie walczy przemieniony, nie lezy i nie handluje.";
+			else if (ResetPlayerBotSidekickSkill(sk, rec->second, vnum, answer))
+				code = 0;
 		}
 		else
 			answer = "Nieznane polecenie okna.";
@@ -5398,9 +5523,10 @@ namespace
 				if (rt.setForgetToldItems.insert(item->GetID()).second)
 				{
 					const bool mine = skill >= base && skill < base + 6;
-					snprintf(text, sizeof(text), "Ta Ksiega Zapomnienia jest do umiejetnosci %s, %s - zostaje w plecaku.",
+					snprintf(text, sizeof(text), "Ta Ksiega Zapomnienia jest do umiejetnosci %s, %s - zostaje w plecaku.%s",
 							skill ? GetPlayerBotSkillName(skill) : "(zadnej)",
-							mine ? "a ta nie stoi na 17" : "ktorej nie mam");
+							mine ? "a ta nie stoi na 17" : "ktorej nie mam",
+							mine ? " Zeruj w oknie umiejetnosci ja zuzyje." : "");
 					SayPlayerBotSidekick(owner, text);
 				}
 				continue;

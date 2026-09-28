@@ -3760,8 +3760,8 @@ namespace
 		{
 			// Unit prices are the ones the old fixed purchases implied: 20 yang for
 			// a Red Potion (M), 32 for a Blue Potion (M).
-			const DWORD RED_TARGET = 800;
-			const DWORD BLUE_TARGET = 600;
+			const DWORD RED_TARGET = (DWORD)PLAYERBOT_POTION_FILL_RED;
+			const DWORD BLUE_TARGET = (DWORD)PLAYERBOT_POTION_FILL_BLUE;
 			// From forty the bot buys the big (D) potions, not the medium (S).
 			// A level-47 bot heals in the hundreds per hit and a medium potion
 			// is a sip; "na tych poziomach to juz duze potki u handlarki", as
@@ -4118,6 +4118,14 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return false;
+		// The REFINE weight under neutral closes the anvil for a share of the
+		// bots (IsPlayerBotWeightGateOpen). This is the one question the
+		// planner, the town trip, the blacksmith's stop and the cross-map
+		// return all ask; a gambler's session is its own errand and is asked
+		// beside it, and a bot already at the anvil refines what it can.
+		if (!IsPlayerBotWeightGateOpen(ch->GetPlayerID(), PLAYERBOT_WEIGHT_REFINE,
+				PLAYERBOT_WEIGHT_GATE_SALT_REFINE, get_dword_time()))
+			return false;
 
 		const BYTE wearSlots[] = {
 			WEAR_WEAPON, WEAR_BODY, WEAR_SHIELD, WEAR_HEAD,
@@ -4150,6 +4158,9 @@ namespace
 	bool HasPlayerBotPriorityRefineOpportunity(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded())
+			return false;
+		if (!IsPlayerBotWeightGateOpen(ch->GetPlayerID(), PLAYERBOT_WEIGHT_REFINE,
+				PLAYERBOT_WEIGHT_GATE_SALT_REFINE, get_dword_time()))
 			return false;
 
 		// Cross-map blacksmith trips are reserved for currently worn essentials.

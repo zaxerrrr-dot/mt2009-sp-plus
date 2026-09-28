@@ -636,25 +636,17 @@ namespace
 				sizeof(PLAYERBOT_POLYMORPH_BOSS_VNUMS[0]); ++i)
 			if (PLAYERBOT_POLYMORPH_BOSS_VNUMS[i] == victim->GetRaceNum())
 				reaper = true;
-		// And on the boss a raid was called to (playerbot_boss_raid.h), by a
-		// build whose blows the marble multiplies: a raid is what "na
-		// marmurkach bic bossy" means (prodnathin, 25 September), and a
-		// Shaman's or a black-magic Sura's damage is its skills, which the
-		// marble takes away.
-		const bool skillBuild = ch->GetJob() == JOB_SHAMAN || (ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2);
-		const bool raidBoss = state.wBossRaidRace != 0 && victim->GetRaceNum() == state.wBossRaidRace && !skillBuild;
+		// And on the boss a raid was called to (playerbot_boss_raid.h): a raid
+		// is what "na marmurkach bic bossy" means (prodnathin, 25 September).
+		// Every build takes it. 2.2.33 kept it from the Shaman, the black-magic
+		// Sura and the Archer, whose part is their skills or their bow; what
+		// went wrong was their fight, which went on as a caster's and an
+		// archer's under the marble, and a transformed bot fights hand to
+		// hand now (IsPlayerBotFightingAsMonster) - "boty typu sura szaman
+		// lucznik rowniez powinny wchodzic na marmur" (prodnathin, 28
+		// September).
+		const bool raidBoss = state.wBossRaidRace != 0 && victim->GetRaceNum() == state.wBossRaidRace;
 		if (!reaper && !raidBoss)
-			return;
-		// Nor on the Reaper for a bot whose part in his fight is its skills or
-		// its bow: under the marble the engine refuses every skill, so the
-		// Shaman stopped healing and buffing the pack and the Archer that
-		// kites him from range fought him hand to hand as a monster ("w
-		// momencie kiedy bot stwierdzi, ze chce bic z marmurka to jego questy
-		// sa wylaczane", prodnathin, 27 September). The marble is the melee
-		// builds'.
-		LPITEM hand = ch->GetWear(WEAR_WEAPON);
-		const bool bow = hand && hand->GetType() == ITEM_WEAPON && hand->GetSubType() == WEAPON_BOW;
-		if (reaper && (skillBuild || bow))
 			return;
 		// Early in the fight, or the five minutes are spent on a boss that is
 		// nearly down and the bot has thrown a marble away for one hit.
@@ -2159,6 +2151,11 @@ namespace
 				dwNow < state.dwNextSkillBookTime)
 			return;
 		state.dwNextSkillBookTime = dwNow + PLAYERBOT_SKILL_BOOK_CHECK_INTERVAL;
+		// The SKILL weight under neutral: a share of the bots leaves its books
+		// in the bag for the half hour (IsPlayerBotWeightGateOpen).
+		if (!IsPlayerBotWeightGateOpen(ch->GetPlayerID(), PLAYERBOT_WEIGHT_SKILL,
+				PLAYERBOT_WEIGHT_GATE_SALT_SKILL, dwNow))
+			return;
 		// Short of the experience a read wants, the engine keeps the book and
 		// the use still says yes: nothing to try until the bot has hunted.
 		if (!PlayerBotHasBookReadExp(ch))
@@ -7281,6 +7278,11 @@ void CPlayerBotManager::OnPlayerFieldWarEntry(LPCHARACTER ch, DWORD dwMyGuild, D
 void CPlayerBotManager::OnPlayerStruck(LPCHARACTER victim, LPCHARACTER attacker)
 {
 	NotePlayerBotStruck(victim, attacker, get_dword_time());
+}
+
+void CPlayerBotManager::OnBossKilled(LPCHARACTER boss, LPCHARACTER killer)
+{
+	NotePlayerBotBossKilled(boss, killer, get_dword_time());
 }
 
 // --- The F10 bot-admin window -----------------------------------------------
