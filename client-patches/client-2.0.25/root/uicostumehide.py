@@ -2,12 +2,13 @@
 # September: "ukryj/pokaz kostiumy ... jak sa ukryte, to normalnie widac
 # oryginalna zbroje i bron, ale sa zalozone i daja bonusy").
 #
-# The costumes stay worn and keep their bonuses; only what the body and the
-# weapon look like changes, for every player around. The server does the
+# The costumes stay worn and keep their bonuses; only what the body, the
+# weapon and the hair look like changes, for every player around. The server does the
 # looks (item.cpp, Mt2009PlusApplyCostumeParts, server-patches/playerqol):
 # "/kostiumy_ukryj <0|1>", sent after every login and warp
 # (CostumeHideSync, an updatable of game.py) and on every click; it answers
-# "CostumeHiddenAck <0|1>". The hair costume and the sash stay as they are.
+# "CostumeHiddenAck <0|1>". A hidden hair costume shows the character's own
+# default hair; the sash stays as it is.
 #
 # The setting is the client's, for every character: autohunt/kostiumy.cfg.
 #
@@ -106,7 +107,7 @@ def OnAck(hidden='0', *rest):
         return
     _state['announce'] = False
     if hidden == '1':
-        chat.AppendChat(chat.CHAT_TYPE_INFO, 'Kostiumy ukryte - wida\xe6 zbroj\xea i bro\xf1, bonusy kostium\xf3w dzia\xb3aj\xb9 dalej.')
+        chat.AppendChat(chat.CHAT_TYPE_INFO, 'Kostiumy ukryte - wida\xe6 zbroj\xea, bro\xf1 i zwyk\xb3\xb9 fryzur\xea, bonusy kostium\xf3w dzia\xb3aj\xb9 dalej.')
     else:
         chat.AppendChat(chat.CHAT_TYPE_INFO, 'Kostiumy znowu widoczne.')
 

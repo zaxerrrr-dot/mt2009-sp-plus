@@ -7,7 +7,7 @@ Względem klienta 2.0.24 (`client-patches/client-2.0.24`). Część serwerowa:
   `autohunt/kostiumy.cfg`, wysyłane na serwer po każdym wejściu do gry
   i przeniesieniu (`/kostiumy_ukryj <0|1>`) oraz po każdym kliknięciu.
   Kostiumy zostają założone i dają bonusy; wszyscy widzą zbroję i broń
-  spod kostiumu.
+  spod kostiumu, a zamiast kostiumu fryzury domyślną fryzurę postaci.
 - `root/uiinventory.py` – przycisk „Ukryj kostiumy” / „Pokaż kostiumy” pod
   slotami okna kostiumów (okno wyższe o 26 px).
 - `root/game.py` – synchronizacja przy wejściu do gry, odpowiedź
