@@ -233,7 +233,7 @@ try {
             'linux-port/docker/game/src/server/game/src/input_main.cpp' = @('MT2009_PLUS_SPEEDHACK_CLOCK_V1', 'MT2009_PLUS_FLEA_FILL_V1')
             'linux-port/docker/game/src/server/game/src/dragon_soul_table.cpp' = @('MT2009_PLUS_DS_APPLYS_V1')
             'linux-port/docker/game/src/server/game/src/char_affect.cpp' = @('MT2009_PLUS_DS_QUALIFY_ON_LOGIN_V1')
-            'linux-port/docker/game/src/server/game/src/cmd_general.cpp' = @('ACMD(do_autohunt_target)', 'ACMD(do_autohunt_loot)', 'MT2009_PLUS_GARBAGE_BATCH_V1', 'MT2009_PLUS_PICKUP_FILTER_V1 (commands)', 'MT2009_PLUS_ARRANGE_MERGE_V1')
+            'linux-port/docker/game/src/server/game/src/cmd_general.cpp' = @('ACMD(do_autohunt_target)', 'ACMD(do_autohunt_loot)', 'MT2009_PLUS_GARBAGE_BATCH_V1', 'MT2009_PLUS_PICKUP_FILTER_V1 (commands)', 'MT2009_PLUS_ARRANGE_MERGE_V1', 'MT2009_PLUS_COSTUME_HIDE_V1 (command)')
             'linux-port/docker/game/src/server/game/src/cmd_gm.cpp' = @('MT2009_PLUS_DS_PLAYER_CMD_V1')
             'linux-port/docker/game/src/server/game/src/char.cpp' = @('MT2009_PLUS_MAGIC_ATT_PER_V1', 'MT2009_PLUS_SADDLEBAG_MOUNT_V1', 'MT2009_PLUS_STONE_STILL_V1')
             'linux-port/docker/game/src/server/game/src/char_state.cpp' = @('MT2009_PLUS_STONE_STILL_V1')
@@ -241,7 +241,8 @@ try {
             'linux-port/docker/game/src/server/game/src/char_player.cpp' = @('MT2009_PLUS_MOUNT_SPEED_V1')
             'linux-port/docker/game/src/server/game/src/char_battle.cpp' = @('MT2009_PLUS_BOT_RARE_SHARE_V1', 'MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1')
             'linux-port/docker/game/src/server/game/src/MountSystem.cpp' = @('MT2009_PLUS_MOUNT_BONUS_ONCE_V1', 'MT2009_PLUS_MOUNT_PERMANENT_V1')
-            'linux-port/docker/game/src/server/game/src/cmd.cpp' = @('"autohunt_target"', '"autohunt_loot"', 'MT2009_PLUS_DS_PLAYER_CMD_V1', '"chest_preview"', 'MT2009_PLUS_PICKUP_FILTER_V1 (table)')
+            'linux-port/docker/game/src/server/game/src/item.cpp' = @('MT2009_PLUS_COSTUME_HIDE_V1 (hook)')
+            'linux-port/docker/game/src/server/game/src/cmd.cpp' = @('"autohunt_target"', '"autohunt_loot"', 'MT2009_PLUS_DS_PLAYER_CMD_V1', '"chest_preview"', 'MT2009_PLUS_PICKUP_FILTER_V1 (table)', 'MT2009_PLUS_COSTUME_HIDE_V1 (table)')
         }
         foreach ($enginePublished in $engineMarks.Keys) {
             if (-not ($published -contains $enginePublished)) { continue }

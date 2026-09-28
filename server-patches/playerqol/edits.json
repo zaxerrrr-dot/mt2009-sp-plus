@@ -70,5 +70,29 @@
   "marker": "MT2009_PLUS_FLEA_FILL_V1",
   "old": "\t\t//case ikashop::SUBHEADER_CG_SHOP_SEARCH_FILL_REQUEST:\n\t\t//\treturn IkarusShopPacketSearchFillRequest(ch, data, iBufferLeft);\n",
   "new": "\t\t// MT2009_PLUS_FLEA_FILL_V1 (server-patches/playerqol): the Dom\n\t\t// Towarowy's window asks for its catalogue with this packet\n\t\t// (ikashop.SendRandomSearchFillRequest). Commented out, the server\n\t\t// read its bytes as an unknown header and closed the connection the\n\t\t// moment the window opened (the operator, 28 September).\n\t\tcase ikashop::SUBHEADER_CG_SHOP_SEARCH_FILL_REQUEST:\n\t\t\treturn IkarusShopPacketSearchFillRequest(ch, data, iBufferLeft);\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_COSTUME_HIDE_V1 (hook)",
+  "old": "\t\t\tbreak;\n\t}\n}\n\nbool CItem::IsEquipable() const",
+  "new": "\t\t\tbreak;\n\t}\n\n\t// MT2009_PLUS_COSTUME_HIDE_V1 (hook): with the costumes hidden, the armour\n\t// and the weapon show as they are, whatever this item just did to the parts.\n\t{\n\t\tbool Mt2009PlusCostumeHidden(LPCHARACTER ch);\n\t\tvoid Mt2009PlusApplyCostumeParts(LPCHARACTER ch, LPITEM leaving);\n\t\tif (m_pOwner && Mt2009PlusCostumeHidden(m_pOwner) &&\n\t\t\t\t(m_pProto->bType == ITEM_WEAPON || m_pProto->bType == ITEM_ARMOR || m_pProto->bType == ITEM_COSTUME))\n\t\t\tMt2009PlusApplyCostumeParts(m_pOwner, bAdd ? NULL : this);\n\t}\n}\n\n// MT2009_PLUS_COSTUME_HIDE_V1 (server-patches/playerqol): \"Ukryj kostiumy\"\n// (the operator, 28 September). The costumes stay worn and give their bonuses;\n// the body and the weapon every player sees are the armour and the weapon under\n// them. The client's costume window sends \"/kostiumy_ukryj <0|1>\" after every\n// login and every click.\nstd::map<DWORD, bool> g_mapMt2009PlusCostumeHidden;\n\nbool Mt2009PlusCostumeHidden(LPCHARACTER ch)\n{\n\tif (!ch || !ch->IsPC())\n\t\treturn false;\n\tstd::map<DWORD, bool>::const_iterator it = g_mapMt2009PlusCostumeHidden.find(ch->GetPlayerID());\n\treturn it != g_mapMt2009PlusCostumeHidden.end() && it->second;\n}\n\n// The body and weapon parts from what is worn; `leaving` is an item on its way\n// off, counted as gone already.\nvoid Mt2009PlusApplyCostumeParts(LPCHARACTER ch, LPITEM leaving)\n{\n\tif (!ch || !ch->IsPC() || ch->IsPolymorphed())\n\t\treturn;\n\tconst bool hidden = Mt2009PlusCostumeHidden(ch);\n\tLPITEM body = ch->GetWear(WEAR_BODY);\n\tLPITEM costumeBody = ch->GetWear(WEAR_COSTUME_BODY);\n\tif (body == leaving) body = NULL;\n\tif (costumeBody == leaving) costumeBody = NULL;\n\tch->SetPart(PART_MAIN, (!hidden && costumeBody) ? costumeBody->GetVnum()\n\t\t\t: (body ? body->GetVnum() : ch->GetOriginalPart(PART_MAIN)));\n\tLPITEM weapon = ch->GetWear(WEAR_WEAPON);\n\tif (weapon == leaving) weapon = NULL;\n#ifdef ENABLE_WEAPON_COSTUME_SYSTEM\n\tLPITEM costumeWeapon = ch->GetWear(WEAR_COSTUME_WEAPON);\n\tif (costumeWeapon == leaving) costumeWeapon = NULL;\n\tch->SetPart(PART_WEAPON, (!hidden && costumeWeapon) ? costumeWeapon->GetVnum() : (weapon ? weapon->GetVnum() : 0));\n#else\n\tch->SetPart(PART_WEAPON, weapon ? weapon->GetVnum() : 0);\n#endif\n\tch->UpdatePacket();\n}\n\nbool CItem::IsEquipable() const"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_COSTUME_HIDE_V1 (command)",
+  "old": "ACMD(do_pickup_filter_open)\n{",
+  "new": "// MT2009_PLUS_COSTUME_HIDE_V1 (command): \"/kostiumy_ukryj <0|1>\" from the\n// costume window (item.cpp, Mt2009PlusApplyCostumeParts).\nextern std::map<DWORD, bool> g_mapMt2009PlusCostumeHidden;\nvoid Mt2009PlusApplyCostumeParts(LPCHARACTER ch, LPITEM leaving);\n\nACMD(do_costume_hide)\n{\n\tchar arg1[32];\n\tone_argument(argument, arg1, sizeof(arg1));\n\tint hide = 0;\n\tstr_to_number(hide, arg1);\n\tif (hide)\n\t\tg_mapMt2009PlusCostumeHidden[ch->GetPlayerID()] = true;\n\telse\n\t\tg_mapMt2009PlusCostumeHidden.erase(ch->GetPlayerID());\n\tMt2009PlusApplyCostumeParts(ch, NULL);\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"CostumeHiddenAck %d\", hide ? 1 : 0);\n}\n\nACMD(do_pickup_filter_open)\n{"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_COSTUME_HIDE_V1 (declare)",
+  "old": "ACMD(do_pickup_filter_open);\n",
+  "new": "ACMD(do_pickup_filter_open);\n// MT2009_PLUS_COSTUME_HIDE_V1 (declare)\nACMD(do_costume_hide);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_COSTUME_HIDE_V1 (table)",
+  "old": "\t{ \"filtr\",\tdo_pickup_filter_open,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"filtr\",\tdo_pickup_filter_open,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_COSTUME_HIDE_V1 (table)\n\t{ \"kostiumy_ukryj\",\tdo_costume_hide,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
  }
 ]
