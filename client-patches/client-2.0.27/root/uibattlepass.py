@@ -6,6 +6,9 @@
 #           [<final vnum 2> <count 2> <final vnum 3> <count 3>]
 #   BPMission <id> <type> <target> <count> <progress> <claimed>
 #             <vnum1> <count1> <vnum2> <count2> <vnum3> <count3> <name hex or ->
+#             [<target level> <required mission> <locked>]
+#     target level - only monsters/Metins of this level count (0 = any)
+#     required mission, locked - the mission unlocks when that one is done
 #   BPDesc <id> <description hex>          - "//" breaks a line
 #   BPEnd <all done>
 #   BPUpdate                               - something changed; the open window asks again
@@ -74,8 +77,10 @@ def MissionText(m):
 	if not info:
 		return 'Misja %d' % m['id']
 	n = Money(m['count']) if m['type'] == 6 else str(m['count'])
+	level = m.get('level', 0)
+	suffix = (' (poziom %d)' % level) if level and m['type'] in (1, 2, 3) else ''
 	if not m['target']:
-		return info[2] % {'n': n}
+		return info[2] % {'n': n} + suffix
 	if m['type'] in (1, 2, 3):
 		try:
 			what = nonplayer.GetMonsterName(m['target'])
@@ -83,7 +88,7 @@ def MissionText(m):
 			what = str(m['target'])
 	else:
 		what = ItemName(m['target'])
-	return info[3] % {'n': n, 'what': what}
+	return info[3] % {'n': n, 'what': what} + suffix
 
 
 def Request():
@@ -119,7 +124,14 @@ def OnMission(*args):
 	_data['pending'].append({'id': values[0], 'type': values[1], 'target': values[2], 'count': values[3],
 			'progress': values[4], 'claimed': values[5] != 0,
 			'rewards': [(values[6], values[7]), (values[8], values[9]), (values[10], values[11])],
-			'name': name, 'desc': ''})
+			'name': name, 'desc': '', 'level': 0, 'requires': 0, 'locked': False})
+	try:
+		extra = [int(a) for a in args[13:16]]
+	except (ValueError, TypeError):
+		extra = []
+	if len(extra) == 3:
+		m = _data['pending'][-1]
+		m['level'], m['requires'], m['locked'] = extra[0], extra[1], extra[2] != 0
 
 
 def OnDesc(mid='0', text='', *rest):
@@ -517,7 +529,12 @@ class BattlePassWindow(ui.ScriptWindow):
 				row['icon'].LoadImage(IMG + ((info and info[1]) or 'monster_icon.tga'))
 			row['icon'].Show()
 			row['name'].SetText(MissionText(m))
-			row['name'].SetPackedFontColor(0xff82ff7d if m['progress'] >= m['count'] else 0xffffffff)
+			if m['progress'] >= m['count']:
+				row['name'].SetPackedFontColor(0xff82ff7d)
+			elif m.get('locked'):
+				row['name'].SetPackedFontColor(0xff8c8c8c)
+			else:
+				row['name'].SetPackedFontColor(0xffffffff)
 			row['gauge'].SetPercentage(m['progress'], m['count'])
 			for k, slot in enumerate(row['slots']):
 				vnum, cnt = m['rewards'][k]
@@ -540,13 +557,22 @@ class BattlePassWindow(ui.ScriptWindow):
 		info = TYPES.get(m['type'])
 		self.missionName.SetText('Nazwa: ' + MissionText(m))
 		self.missionType.SetText('Typ: ' + (info[0] if info else str(m['type'])))
+		required = None
+		if m.get('locked'):
+			for other in missions:
+				if other['id'] == m['requires']:
+					required = other
 		if m['progress'] >= m['count']:
 			self.missionStatus.SetText('Status: |cff82ff7dUko\xf1czona')
+		elif m.get('locked'):
+			self.missionStatus.SetText('Status: |cff9a9a9aZablokowana')
 		else:
 			self.missionStatus.SetText('Status: |cfff4f770W trakcie')
 		self.missionProgress.SetText('Post\xeap: %s / %s' % (Money(m['progress']), Money(m['count'])))
 		self.missionDescription.SetText('Opis:')
 		text = m['desc'] or 'Brak opisu.'
+		if required:
+			text = '|cff9a9a9aNajpierw uko\xf1cz://' + MissionText(required) + '//' + text
 		for i, part in enumerate(text.split('//')[:5]):
 			line = ui.TextLine()
 			line.SetParent(self.board)

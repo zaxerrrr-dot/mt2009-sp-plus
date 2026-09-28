@@ -6260,7 +6260,9 @@ def ensure_battlepass_tables():
         ADD COLUMN IF NOT EXISTS reward2_count INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward2_vnum,
         ADD COLUMN IF NOT EXISTS reward3_vnum INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward2_count,
         ADD COLUMN IF NOT EXISTS reward3_count INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward3_vnum,
-        ADD COLUMN IF NOT EXISTS description VARBINARY(255) NOT NULL DEFAULT '' AFTER name""")
+        ADD COLUMN IF NOT EXISTS description VARBINARY(255) NOT NULL DEFAULT '' AFTER name,
+        ADD COLUMN IF NOT EXISTS target_level INT UNSIGNED NOT NULL DEFAULT 0 AFTER target,
+        ADD COLUMN IF NOT EXISTS requires_id INT UNSIGNED NOT NULL DEFAULT 0 AFTER active""")
     rows("""CREATE TABLE IF NOT EXISTS player.battlepass_progress (
         pid INT UNSIGNED NOT NULL, season INT UNSIGNED NOT NULL, mission INT UNSIGNED NOT NULL,
         progress INT UNSIGNED NOT NULL DEFAULT 0, claimed TINYINT UNSIGNED NOT NULL DEFAULT 0,
@@ -6298,11 +6300,13 @@ def battlepass_auto_name(mission):
              4: "Złów {n} ryb", 5: "Ulepsz {n} przedmiotów", 6: "Zbierz {n} yang", 7: "Otwórz {n} skrzyń",
              8: "Zbierz {n} ziół", 9: "Wydobądź {n} rudy", 10: "Ukończ {n} lochów",
              11: "Wykonaj {n} Ksiąg Misji", 12: "Graj przez {n} min", 13: "Użyj {n} przedmiotów"}
+    level = mission.get("target_level") or 0
+    suffix = f" (poziom {level})" if level and kind == "mob" else ""
     if target and kind == "mob":
-        return f"{texts[mission['type']].split(' {n}')[0]} {count} x {battlepass_mob_name(target) or target}"
+        return f"{texts[mission['type']].split(' {n}')[0]} {count} x {battlepass_mob_name(target) or target}{suffix}"
     if target and kind == "item":
         return f"Użyj {count} x {battlepass_item_name(target) or target}"
-    return texts.get(mission["type"], "Misja").format(n=f"{count:,}".replace(",", " "))
+    return texts.get(mission["type"], "Misja").format(n=f"{count:,}".replace(",", " ")) + suffix
 
 
 def battlepass_int(form, key, low, high, default=0):
@@ -6352,8 +6356,14 @@ def battlepass():
                         continue  # an empty new row
                     count = battlepass_int(request.form, key + "count", 1, 2000000000, 1)
                     target = battlepass_int(request.form, key + "target", 0, 2147483647)
+                    level = battlepass_int(request.form, key + "target_level", 0, 255)
                     if not BATTLEPASS_TYPE_TARGET.get(mtype):
                         target = 0
+                    if BATTLEPASS_TYPE_TARGET.get(mtype) != "mob":
+                        level = 0
+                    requires = battlepass_int(request.form, key + "requires", 0, 2147483647)
+                    if raw_id and requires == int(raw_id):
+                        requires = 0
                     rewards = []
                     for k in ("", "2", "3"):
                         vnum = battlepass_int(request.form, f"{key}reward{k}_vnum", 0, 2147483647)
@@ -6362,16 +6372,18 @@ def battlepass():
                     name = (request.form.get(key + "name") or "").strip().encode("cp1250", "replace")[:96]
                     desc = (request.form.get(key + "description") or "").strip().encode("cp1250", "replace")[:255]
                     active = 1 if request.form.get(key + "active") else 0
-                    values = (mtype, target, count, *rewards, name, desc, active)
+                    values = (mtype, target, level, count, *rewards, name, desc, active, requires)
                     if raw_id:
-                        rows("""UPDATE player.battlepass_mission SET type=%s, target=%s, count=%s, reward_vnum=%s,
-                            reward_count=%s, reward2_vnum=%s, reward2_count=%s, reward3_vnum=%s, reward3_count=%s,
-                            name=%s, description=%s, active=%s WHERE id=%s""", values + (int(raw_id),))
+                        rows("""UPDATE player.battlepass_mission SET type=%s, target=%s, target_level=%s, count=%s,
+                            reward_vnum=%s, reward_count=%s, reward2_vnum=%s, reward2_count=%s, reward3_vnum=%s,
+                            reward3_count=%s, name=%s, description=%s, active=%s, requires_id=%s WHERE id=%s""",
+                             values + (int(raw_id),))
                         saved += 1
                     else:
-                        rows("""INSERT INTO player.battlepass_mission (type, target, count, reward_vnum, reward_count,
-                            reward2_vnum, reward2_count, reward3_vnum, reward3_count, name, description, active, id)
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", values + (next_id,))
+                        rows("""INSERT INTO player.battlepass_mission (type, target, target_level, count, reward_vnum,
+                            reward_count, reward2_vnum, reward2_count, reward3_vnum, reward3_count, name, description,
+                            active, requires_id, id)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", values + (next_id,))
                         next_id += 1
                         added += 1
                 rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_BATTLEPASS',%s)",
@@ -6382,8 +6394,8 @@ def battlepass():
             flash(f"Nieprawidłowa wartość w polu {error}.", "error")
         return redirect(url_for("battlepass"))
 
-    missions = rows("""SELECT id,type,target,count,reward_vnum,reward_count,reward2_vnum,reward2_count,
-        reward3_vnum,reward3_count,name,description,active FROM player.battlepass_mission ORDER BY id""")
+    missions = rows("""SELECT id,type,target,target_level,count,reward_vnum,reward_count,reward2_vnum,reward2_count,
+        reward3_vnum,reward3_count,name,description,active,requires_id FROM player.battlepass_mission ORDER BY id""")
     for m in missions:
         m["name"] = game_text(m["name"]) if m["name"] else ""
         m["description"] = game_text(m["description"]) if m["description"] else ""

@@ -6,7 +6,9 @@
 // month of the server's clock (YYYYMM), so progress starts again on the
 // first; nothing has to be deleted. Everything lives in the database:
 //   player.battlepass_mission  - the missions, the operator's to fill: type,
-//                                target (0 = any), count, up to three rewards
+//                                target (0 = any), the target's level (0 =
+//                                any), the mission that must be done first
+//                                (0 = none), count, up to three rewards
 //                                of its own (given the moment the mission is
 //                                done), an optional name and description (raw
 //                                CP1250; an empty name is worded by the client
@@ -70,6 +72,11 @@ namespace mt2009_battlepass
 		DWORD rewardCount[3];
 		std::string nameHex;
 		std::string descHex;
+		// Only a victim of this level counts (0 = any): "Metins of level 25".
+		DWORD targetLevel;
+		// Locked, and counting nothing, until this mission is done (0 = none):
+		// a chain such as 2000, 5000, 10000 monsters.
+		DWORD requiredId;
 	};
 
 	// What this core knows of one mission of one player: the total the
@@ -149,7 +156,9 @@ namespace mt2009_battlepass
 				"ADD COLUMN IF NOT EXISTS reward2_count INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward2_vnum, "
 				"ADD COLUMN IF NOT EXISTS reward3_vnum INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward2_count, "
 				"ADD COLUMN IF NOT EXISTS reward3_count INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward3_vnum, "
-				"ADD COLUMN IF NOT EXISTS description VARBINARY(255) NOT NULL DEFAULT '' AFTER name"));
+				"ADD COLUMN IF NOT EXISTS description VARBINARY(255) NOT NULL DEFAULT '' AFTER name, "
+				"ADD COLUMN IF NOT EXISTS target_level INT UNSIGNED NOT NULL DEFAULT 0 AFTER target, "
+				"ADD COLUMN IF NOT EXISTS requires_id INT UNSIGNED NOT NULL DEFAULT 0 AFTER active"));
 		std::unique_ptr<SQLMsg> p(AccountDB::instance().DirectQuery(
 				"CREATE TABLE IF NOT EXISTS player.battlepass_progress ("
 				"pid INT UNSIGNED NOT NULL, "
@@ -172,13 +181,31 @@ namespace mt2009_battlepass
 			sys_err("BATTLEPASS: no tables errno=%u/%u", m.get() ? m->uiSQLErrno : 0U, p.get() ? p->uiSQLErrno : 0U);
 			return false;
 		}
-		// Three to see the window with until the operator writes the season's
-		// own (only into an empty table, once).
+		// The season's missions until the operator writes their own (only into an
+		// empty table, once): Metins of level 25 to 50 (8005-8010), monsters,
+		// fish and refines as chains - each unlocks when the one before is done -
+		// bosses and any Metins; 5 Cor Draconis and a 50 SM coupon for each.
 		std::unique_ptr<SQLMsg> seeded(AccountDB::instance().DirectQuery(
-				"INSERT INTO player.battlepass_mission (id, type, target, count) "
-				"SELECT t.id, t.type, t.target, t.count FROM (SELECT 1 AS id, 1 AS type, 0 AS target, 1000 AS count "
-				"UNION ALL SELECT 2, 2, 0, 30 UNION ALL SELECT 3, 4, 0, 50) AS t "
-				"WHERE NOT EXISTS (SELECT 1 FROM player.battlepass_mission)"));
+				"INSERT INTO player.battlepass_mission (id, type, target, count, reward_vnum, reward_count, "
+				"reward2_vnum, reward2_count, requires_id) "
+				"SELECT t.id, t.type, t.target, t.count, 50255, 5, 80017, 1, t.req FROM ("
+				"SELECT 1 AS id, 2 AS type, 8005 AS target, 10 AS count, 0 AS req"
+				" UNION ALL SELECT 2, 2, 8006, 10, 1"
+				" UNION ALL SELECT 3, 2, 8007, 10, 2"
+				" UNION ALL SELECT 4, 2, 8008, 20, 3"
+				" UNION ALL SELECT 5, 2, 8009, 20, 4"
+				" UNION ALL SELECT 6, 2, 8010, 30, 5"
+				" UNION ALL SELECT 7, 1, 0, 2000, 0"
+				" UNION ALL SELECT 8, 1, 0, 5000, 7"
+				" UNION ALL SELECT 9, 1, 0, 10000, 8"
+				" UNION ALL SELECT 10, 4, 0, 10, 0"
+				" UNION ALL SELECT 11, 4, 0, 30, 10"
+				" UNION ALL SELECT 12, 4, 0, 50, 11"
+				" UNION ALL SELECT 13, 3, 0, 20, 0"
+				" UNION ALL SELECT 14, 2, 0, 200, 0"
+				" UNION ALL SELECT 15, 5, 0, 50, 0"
+				" UNION ALL SELECT 16, 5, 0, 100, 15"
+				") AS t WHERE NOT EXISTS (SELECT 1 FROM player.battlepass_mission)"));
 		return true;
 	}
 
@@ -205,7 +232,7 @@ namespace mt2009_battlepass
 			return;
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(
 				"SELECT id, type, target, count, reward_vnum, reward_count, reward2_vnum, reward2_count, "
-				"reward3_vnum, reward3_count, name, description FROM player.battlepass_mission "
+				"reward3_vnum, reward3_count, name, description, target_level, requires_id FROM player.battlepass_mission "
 				"WHERE active <> 0 ORDER BY id"));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 			return;
@@ -233,6 +260,9 @@ namespace mt2009_battlepass
 				m.nameHex = HexOf(row[10], lengths[10]);
 			if (row[11] && lengths && lengths[11] > 0)
 				m.descHex = HexOf(row[11], lengths[11]);
+			m.targetLevel = m.requiredId = 0;
+			str_to_number(m.targetLevel, row[12]);
+			str_to_number(m.requiredId, row[13]);
 			fresh.push_back(m);
 		}
 		if (!s_bMissionsLoaded || fresh.size() != s_vecMissions.size())
@@ -370,6 +400,19 @@ namespace mt2009_battlepass
 
 	void EnsureTick();
 
+	// A mission whose required one is not done yet; a requirement that is not
+	// an active mission locks nothing.
+	bool IsLocked(Cache& cache, const Mission& m)
+	{
+		if (!m.requiredId || m.requiredId == m.id)
+			return false;
+		const Mission* req = FindMission(m.requiredId);
+		if (!req)
+			return false;
+		const Progress& p = cache.missions[req->id];
+		return p.value + p.delta < req->count;
+	}
+
 	bool HasReward(const Mission& m)
 	{
 		return m.rewardVnum[0] || m.rewardVnum[1] || m.rewardVnum[2];
@@ -406,7 +449,7 @@ namespace mt2009_battlepass
 		}
 	}
 
-	void Add(LPCHARACTER ch, BYTE type, DWORD target, long long amount)
+	void Add(LPCHARACTER ch, BYTE type, DWORD target, long long amount, DWORD level = 0)
 	{
 		if (amount <= 0 || !Eligible(ch))
 			return;
@@ -418,11 +461,17 @@ namespace mt2009_battlepass
 			return;
 		EnsureTick();
 		Cache& cache = GetCache(ch);
+		// Locks as they were before this count: the kill that finishes a mission
+		// does not count for the next one in its chain too.
+		std::vector<bool> locked(s_vecMissions.size());
+		for (size_t i = 0; i < s_vecMissions.size(); ++i)
+			locked[i] = IsLocked(cache, s_vecMissions[i]);
 		bool reached = false;
 		for (size_t i = 0; i < s_vecMissions.size(); ++i)
 		{
 			const Mission& m = s_vecMissions[i];
-			if (m.type != type || (m.target != 0 && m.target != target))
+			if (m.type != type || (m.target != 0 && m.target != target) ||
+					(m.targetLevel != 0 && m.targetLevel != level) || locked[i])
 				continue;
 			Progress& p = cache.missions[m.id];
 			const DWORD have = p.value + p.delta;
@@ -499,11 +548,13 @@ namespace mt2009_battlepass
 		{
 			const Mission& m = s_vecMissions[i];
 			const Progress& p = cache.missions[m.id];
-			ch->ChatPacket(CHAT_TYPE_COMMAND, "BPMission %u %u %u %u %u %d %u %u %u %u %u %u %s", m.id,
+			// The level, the required mission and whether it is locked after the
+			// name: a window older than them reads the rest alone.
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "BPMission %u %u %u %u %u %d %u %u %u %u %u %u %s %u %u %d", m.id,
 					(unsigned int)m.type, m.target, m.count, std::min<DWORD>(m.count, p.value + p.delta),
 					p.claimed ? 1 : 0,
 					m.rewardVnum[0], m.rewardCount[0], m.rewardVnum[1], m.rewardCount[1], m.rewardVnum[2], m.rewardCount[2],
-					m.nameHex.empty() ? "-" : m.nameHex.c_str());
+					m.nameHex.empty() ? "-" : m.nameHex.c_str(), m.targetLevel, m.requiredId, IsLocked(cache, m) ? 1 : 0);
 			// The description on a line of its own: a chat command is at most
 			// 512 bytes, and hex doubles it.
 			if (!m.descHex.empty())
@@ -555,13 +606,14 @@ void BattlePassOnKill(LPCHARACTER killer, LPCHARACTER victim)
 	if (!killer || !victim || victim->IsPC() || !mt2009_battlepass::Eligible(killer))
 		return;
 	const DWORD race = victim->GetRaceNum();
+	const DWORD level = victim->GetLevel();
 	if (victim->IsStone())
-		mt2009_battlepass::Add(killer, mt2009_battlepass::TYPE_METIN, race, 1);
+		mt2009_battlepass::Add(killer, mt2009_battlepass::TYPE_METIN, race, 1, level);
 	else
 	{
-		mt2009_battlepass::Add(killer, mt2009_battlepass::TYPE_MONSTER, race, 1);
+		mt2009_battlepass::Add(killer, mt2009_battlepass::TYPE_MONSTER, race, 1, level);
 		if (victim->GetMobRank() >= MOB_RANK_BOSS)
-			mt2009_battlepass::Add(killer, mt2009_battlepass::TYPE_BOSS, race, 1);
+			mt2009_battlepass::Add(killer, mt2009_battlepass::TYPE_BOSS, race, 1, level);
 	}
 }
 
