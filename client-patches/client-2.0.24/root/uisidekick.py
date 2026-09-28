@@ -169,7 +169,38 @@ def ParseInfo(args):
 		info['solo'] = ParseInt(values[len(names) + 2])
 	if len(values) >= len(names) + 4:
 		info['chests'] = ParseInt(values[len(names) + 3])
+	# "Lider grupy", the owner's bonus and the companion's Leadership
+	# (server 2.12.0).
+	if len(values) >= len(names) + 7:
+		info['lead'] = ParseInt(values[len(names) + 4])
+		info['role'] = ParseInt(values[len(names) + 5])
+		info['leadership'] = ParseInt(values[len(names) + 6])
 	return info
+
+
+# The owner's bonus from the companion's Leadership, as the party window
+# names the roles (localeInfo.PARTY_SET_*), with the level each wants
+# (CParty::Update). The button steps through them in this order.
+ROLES = (
+	(0, 'bez bonusu', 0),
+	(7, 'Obro\xf1ca (obrona)', 1),
+	(2, 'Atakuj\xb9cy (atak)', 10),
+	(4, 'Blokuj\xb9cy (czas trwania)', 10),
+	(6, 'Berserker (szybko\x9c\xe6 ataku)', 15),
+	(3, 'Walcz\xb9cy w zwarciu (maks. P\xaf)', 20),
+	(5, 'Mistrz umiej\xeatno\x9cci', 20),
+)
+
+
+def LeadershipText(level):
+	"""0-40 as the skill window writes it: 1-19, M1-M10, G1-G10, P."""
+	if level < 20:
+		return str(level)
+	if level < 30:
+		return 'M%d' % (level - 19)
+	if level < 40:
+		return 'G%d' % (level - 29)
+	return 'P'
 
 
 def FormatGold(value):
@@ -209,7 +240,7 @@ def PlaceText(info, place):
 
 class SidekickWindow(ui.BoardWithTitleBar):
 	WIDTH = 300
-	HEIGHT = 603
+	HEIGHT = 673
 
 	def __init__(self):
 		ui.BoardWithTitleBar.__init__(self)
@@ -230,7 +261,7 @@ class SidekickWindow(ui.BoardWithTitleBar):
 	# -------------------------------------------------------------- building
 
 	def Build(self):
-		# Five boards and a status line in 603 pixels.
+		# Six boards and a status line in 673 pixels.
 		BL = 10
 		BW = self.WIDTH - 2 * BL
 		ROW = 15
@@ -291,6 +322,15 @@ class SidekickWindow(ui.BoardWithTitleBar):
 		# them for the owner, whose they are (xxkld., 27 September).
 		self.chestButton = self._Btn(dpBoard, 'large', 190, 67, '', self.OnChests)
 		y += 93 + 4
+
+		# "Lider grupy": the companion makes the party and invites its owner,
+		# and its Leadership (Dowodzenie) gives the owner the bonus chosen here.
+		gpBoard = self._Board(BL, y, BW, 66)
+		self.groupLabel = self._Label(gpBoard, 14, 4, 'Grupa')
+		self.leadButton = self._Btn(gpBoard, 'large', 6, 20, '', self.OnLead)
+		self.roleButton = self._Btn(gpBoard, 'xlarge', 98, 20, '', self.OnRole)
+		self.roleHint = self._Label(gpBoard, 10, 44, '')
+		y += 66 + 4
 
 		# What it wears, and the two windows that show and change it: the bag
 		# and the gear as the player's own inventory (uisidekickinventory.py),
@@ -432,6 +472,25 @@ class SidekickWindow(ui.BoardWithTitleBar):
 			self.chestButton.Show()
 		else:
 			self.chestButton.Hide()
+		if 'lead' in info:
+			self.groupLabel.SetText('Grupa   Dowodzenie: %s' % LeadershipText(info['leadership']))
+			self.leadButton.SetText('Lider: %s' % ('Towarzysz' if info['lead'] else 'Ja'))
+			role = [r for r in ROLES if r[0] == info['role']]
+			role = role[0] if role else ROLES[0]
+			self.roleButton.SetText('Bonus: %s' % role[1])
+			if not info['lead']:
+				self.roleHint.SetText('Bonus dzia\xb3a, gdy liderem jest Towarzysz.')
+			elif role[2] > info['leadership']:
+				self.roleHint.SetText('Wymaga Dowodzenia %s - daj mu Ksi\xeag\xea Dowodzenia.' % LeadershipText(role[2]))
+			else:
+				self.roleHint.SetText('')
+			for w in (self.leadButton, self.roleButton):
+				w.Show()
+		else:
+			self.groupLabel.SetText('Grupa')
+			self.leadButton.Hide()
+			self.roleButton.Hide()
+			self.roleHint.SetText('Serwer nie obs\xb3uguje jeszcze lidera-Towarzysza.')
 		# The summon, the free hand and the wait are the three states the
 		# companion is in outside an errand: the one it is in stays down.
 		self.SetPressed((self.summonButton, self.freeButton, self.holdButton), mode if mode < 3 else -1)
@@ -491,6 +550,18 @@ class SidekickWindow(ui.BoardWithTitleBar):
 	def OnSolo(self):
 		solo = self.info.get('solo', 0) if self.info else 0
 		self.SendCommand('sam %d' % (0 if solo else 1))
+		self.nextPoll = 0.0
+
+	def OnLead(self):
+		lead = self.info.get('lead', 0) if self.info else 0
+		self.SendCommand('lider %d' % (0 if lead else 1))
+		self.nextPoll = 0.0
+
+	def OnRole(self):
+		current = self.info.get('role', 0) if self.info else 0
+		ids = [r[0] for r in ROLES]
+		nextRole = ids[(ids.index(current) + 1) % len(ids)] if current in ids else ids[0]
+		self.SendCommand('rola %d' % nextRole)
 		self.nextPoll = 0.0
 
 	def OnChests(self):

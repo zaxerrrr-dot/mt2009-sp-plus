@@ -43,6 +43,21 @@ z 2.11.0.
 - Łowi na łowisku mapy, na której stoi, albo przenosi się nad wodę pierwszej
   wioski swojego królestwa. **Przywołaj** kończy łowienie wcześniej.
 
+### Towarzysz jako lider grupy, bonus z Dowodzenia
+
+- W oknie Towarzysza (P) nowa sekcja **Grupa**. Przycisk **Lider: Ja /
+  Towarzysz** – gdy liderem jest Towarzysz, to on zakłada grupę i Cię do
+  niej zaprasza (także `/towarzysz lider 1`).
+- Towarzysz czyta **Księgi Dowodzenia** z torby (daj mu je w oknie jego
+  torby). Jego poziom Dowodzenia widać w oknie.
+- Przycisk **Bonus** wybiera, jaki bonus z Dowodzenia dostajesz jako członek
+  jego grupy: Obrońca (obrona, od 1 poziomu Dowodzenia), Atakujący (atak, od
+  10), Blokujący (czas trwania, od 10), Berserker (szybkość ataku, od 15),
+  Walczący w zwarciu (maks. PŻ, od M1) albo Mistrz umiejętności (od M1).
+  Siła bonusu rośnie z poziomem Dowodzenia, jak w oryginalnej grze.
+- Gdy w Twojej grupie są też inni gracze, Towarzysz nie przejmuje
+  dowodzenia – grupa zostaje taka, jaka jest.
+
 ### Kosz działa od razu
 
 - Kosz najpierw pyta o potwierdzenie, a potem usuwa **po 18 stosów naraz**,
