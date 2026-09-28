@@ -9,6 +9,7 @@ Zmiany silnika opisane w `edits.json`, każda z własnym znacznikiem:
 | `MT2009_PLUS_ARRANGE_MERGE_V1` | `cmd_general.cpp` | `/inventory_arrange merge` – samo łączenie stosów, bez przestawiania. |
 | `MT2009_PLUS_SHOP_SEARCH_PLUS_V1` | `ikarus_shop_manager.cpp` | Kategoria wyszukiwarki „MT2009 Plus”: Cory, szarfy według stopnia, alchemia antyczna, legendarna i mityczna. |
 | `MT2009_PLUS_MOUNT_HORSE_SKILLS_V1` | `char_skill.cpp` | Umiejętności konne (np. Cięcie z Siodła) na moncie kostiumowym, który może walczyć. |
+| `MT2009_PLUS_FLEA_FILL_V1` | `input_main.cpp` | Pakiet, którym okno Domu Towarowego prosi o katalog (`SEARCH_FILL_REQUEST`) – zakomentowany serwer rozłączał gracza przy otwarciu okna. |
 
 - `Apply-PlayerQolPatch.ps1` – Windows (`tools/port/Apply-MT2009PlusEngine.ps1`);
 - `apply_playerqol.py` – Linux/VPS; oba czytają ten sam `edits.json`.

@@ -575,10 +575,9 @@ SHOP_SEARCH_FILTERS = {
 # shows a few icons of each; a result is matched by MatchPlus, not by them.
 SHOP_SEARCH_CATEGORY_PLUS = getattr(ikashop, 'SHOP_SEARCH_CATEGORY_JEWELRY_ATTR', 14) + 1
 
-PLUS_CORS = (50252, 50255, 50256, 50257, 50258, 50259, 50260,
-	51501, 51502, 51503, 51504, 51505, 51506, 51507, 51508, 51509, 51510,
-	51541, 51548, 51549, 51562, 51569,
-	51576, 51583, 51590, 51597, 51604, 51611, 51618, 51625, 51632, 76040)
+# The Cor Draconis the operator keeps in this tab (28 September): the second
+# to the sixth of the grid it first had (the legendary last), the rest out.
+PLUS_CORS = (50255, 50256, 50257, 50258, 50259)
 
 
 def PlusSashGrade(vnum):

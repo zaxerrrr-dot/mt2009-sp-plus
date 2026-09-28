@@ -230,7 +230,7 @@ try {
             'linux-port/docker/game/src/server/game/src/PetSystem.cpp' = @('MT2009_PLUS_PET_STAYS_ON_DEATH_V1')
             'linux-port/docker/game/src/server/game/src/input_auth.cpp' = @('MT2009_PLUS_LOGIN_UNDERSCORE_V1')
             'linux-port/docker/game/src/server/game/src/char_item.cpp' = @('IsStackableCorDraconisVnum', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_COR_AUTOSTACK_V1', 'MT2009_PLUS_DS_TRACE_PLAYERS_V1', 'MT2009_PLUS_BOT_SASH_DROP_V1', 'MT2009_PLUS_COR_PARTY_PICKUP_V1', 'MT2009_PLUS_PICKUP_FILTER_V1 (collect)')
-            'linux-port/docker/game/src/server/game/src/input_main.cpp' = @('MT2009_PLUS_SPEEDHACK_CLOCK_V1')
+            'linux-port/docker/game/src/server/game/src/input_main.cpp' = @('MT2009_PLUS_SPEEDHACK_CLOCK_V1', 'MT2009_PLUS_FLEA_FILL_V1')
             'linux-port/docker/game/src/server/game/src/dragon_soul_table.cpp' = @('MT2009_PLUS_DS_APPLYS_V1')
             'linux-port/docker/game/src/server/game/src/char_affect.cpp' = @('MT2009_PLUS_DS_QUALIFY_ON_LOGIN_V1')
             'linux-port/docker/game/src/server/game/src/cmd_general.cpp' = @('ACMD(do_autohunt_target)', 'ACMD(do_autohunt_loot)', 'MT2009_PLUS_GARBAGE_BATCH_V1', 'MT2009_PLUS_PICKUP_FILTER_V1 (commands)', 'MT2009_PLUS_ARRANGE_MERGE_V1')
