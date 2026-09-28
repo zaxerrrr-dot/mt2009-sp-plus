@@ -12,6 +12,7 @@ Zmiany silnika opisane w `edits.json`, każda z własnym znacznikiem:
 | `MT2009_PLUS_FLEA_FILL_V1` | `input_main.cpp` | Pakiet, którym okno Domu Towarowego prosi o katalog (`SEARCH_FILL_REQUEST`) – zakomentowany serwer rozłączał gracza przy otwarciu okna. |
 | `MT2009_PLUS_COSTUME_HIDE_V1` | `item.cpp`, `cmd_general.cpp`, `cmd.cpp` | „Ukryj kostiumy”: `/kostiumy_ukryj <0|1>` – kostium zbroi i broni zostaje założony i daje bonusy, a wszyscy widzą zbroję i broń pod nim (kostium fryzury – domyślna fryzura postaci; szarfa bez zmian). Odpowiedź `CostumeHiddenAck <0|1>`. |
 | `MT2009_PLUS_MOUNT_ON_EQUIP_V1` | `char_item.cpp` | Pieczęć wierzchowca założona przez gracza (klik w torbie albo przeciągnięcie na slot) od razu go dosiada, jak Ctrl+G z pieczęcią w torbie. Boty i logowanie bez zmian. |
+| `MT2009_PLUS_DRAGON_ROAR_EFFECT_V1` | `char_skill.cpp` | Smoczy Skowyt rzucony na cel pokazuje efekt wybuchu przy celu (`paeryong.mse`, `_2`–`_4` według stopnia umiejętności). |
 
 - `Apply-PlayerQolPatch.ps1` – Windows (`tools/port/Apply-MT2009PlusEngine.ps1`);
 - `apply_playerqol.py` – Linux/VPS; oba czytają ten sam `edits.json`.

@@ -237,7 +237,7 @@ try {
             'linux-port/docker/game/src/server/game/src/cmd_gm.cpp' = @('MT2009_PLUS_DS_PLAYER_CMD_V1')
             'linux-port/docker/game/src/server/game/src/char.cpp' = @('MT2009_PLUS_MAGIC_ATT_PER_V1', 'MT2009_PLUS_SADDLEBAG_MOUNT_V1', 'MT2009_PLUS_STONE_STILL_V1')
             'linux-port/docker/game/src/server/game/src/char_state.cpp' = @('MT2009_PLUS_STONE_STILL_V1')
-            'linux-port/docker/game/src/server/game/src/char_skill.cpp' = @('MT2009_PLUS_DRAGON_ROAR_TARGET_V1', 'MT2009_PLUS_MOUNT_HORSE_SKILLS_V1')
+            'linux-port/docker/game/src/server/game/src/char_skill.cpp' = @('MT2009_PLUS_DRAGON_ROAR_TARGET_V1', 'MT2009_PLUS_MOUNT_HORSE_SKILLS_V1', 'MT2009_PLUS_DRAGON_ROAR_EFFECT_V1')
             'linux-port/docker/game/src/server/game/src/char_player.cpp' = @('MT2009_PLUS_MOUNT_SPEED_V1')
             'linux-port/docker/game/src/server/game/src/char_battle.cpp' = @('MT2009_PLUS_BOT_RARE_SHARE_V1', 'MT2009_PLUS_MOUNT_DEATH_UNEQUIP_V1')
             'linux-port/docker/game/src/server/game/src/MountSystem.cpp' = @('MT2009_PLUS_MOUNT_BONUS_ONCE_V1', 'MT2009_PLUS_MOUNT_PERMANENT_V1')
