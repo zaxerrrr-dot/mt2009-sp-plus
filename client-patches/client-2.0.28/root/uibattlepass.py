@@ -119,7 +119,7 @@ def OnMission(*args):
 	name = ''
 	if len(args) > 12 and args[12] != '-':
 		try:
-			name = args[12].decode('hex')
+			name = ''.join([chr(int(args[12][i:i + 2], 16)) for i in xrange(0, len(args[12]) - 1, 2)])
 		except Exception:
 			name = ''
 	_data['pending'].append({'id': values[0], 'type': values[1], 'target': values[2], 'count': values[3],
@@ -138,7 +138,7 @@ def OnMission(*args):
 def OnDesc(mid='0', text='', *rest):
 	try:
 		mid = int(mid)
-		text = text.decode('hex')
+		text = ''.join([chr(int(text[i:i + 2], 16)) for i in xrange(0, len(text) - 1, 2)])
 	except Exception:
 		return
 	for m in _data['pending']:

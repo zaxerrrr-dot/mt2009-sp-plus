@@ -382,5 +382,35 @@
   "marker": "MT2009_PLUS_SKILL_DURATION_V1 (compute)",
   "old": "\tint iDur3 = (int)pkSk->kDurationPoly3.Eval();\n\n\tbool canDurationBeExtended",
   "new": "\tint iDur3 = (int)pkSk->kDurationPoly3.Eval();\n\t// MT2009_PLUS_SKILL_DURATION_V1 (compute)\n\tApplyGrandMasterSkillDuration(this, pkSk, iDur, iDur2, iDur3);\n\n\tbool canDurationBeExtended"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_DROP_V1 (boss)",
+  "old": "bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item)\n{\n\tint iDeltaPercent, iRandRange;\n",
+  "new": "// MT2009_PLUS_DUNGEON_DROP_V1 (boss): the Razador (351) and Nemere (352) dungeons (the owner,\n// 29 September). Their bosses, Razador (6091) and Nemere (6191), drop only yang\n// (RewardGold, char_battle.cpp) - the loot is the 2-5 chests per player the dungeon\n// quests hand out. Their monsters, Metins and mini-bosses (6001-6199, 8057, 8058)\n// and whatever else dies on those maps or their instances keep their own tables but\n// get none of the world's extras: no skill-book top-up, Moonlight chest, Dragon Coin\n// voucher, Cor Draconis, sash, Blessing Scroll, horse book nor the double-loot event.\nstatic bool Mt2009PlusDungeonMob(DWORD race)\n{\n\treturn (race >= 6001 && race <= 6199) || race == 8057 || race == 8058;\n}\n\nstatic bool Mt2009PlusDungeonPlainDrop(LPCHARACTER victim)\n{\n\tconst long mapIndex = victim->GetMapIndex();\n\tconst long base = mapIndex >= 10000 ? mapIndex / 10000 : mapIndex;\n\treturn base == 351 || base == 352 || Mt2009PlusDungeonMob(victim->GetRaceNum());\n}\n\nbool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item)\n{\n\tint iDeltaPercent, iRandRange;\n\tif (pkChr->GetRaceNum() == 6091 || pkChr->GetRaceNum() == 6191)\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_DROP_V1 (specials)",
+  "old": "\t// One skill book from every Metin stone, whatever its table rolled - the\n",
+  "new": "\t// MT2009_PLUS_DUNGEON_DROP_V1 (specials): nothing of the world's extras below in the Razador and\n\t// Nemere dungeons (Mt2009PlusDungeonPlainDrop above); the block closes before the\n\t// quest drops.\n\tif (!Mt2009PlusDungeonPlainDrop(pkChr))\n\t{\n\t// One skill book from every Metin stone, whatever its table rolled - the\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_DROP_V1 (specials end)",
+  "old": "\t\t}\n\t}\n\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n",
+  "new": "\t\t}\n\t}\n\t} // MT2009_PLUS_DUNGEON_DROP_V1 (specials end)\n\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_DROP_V1 (preview book)",
+  "old": "\t\t\tif (viewer->GetLevel() <= mob->GetLevel() + PLAYERBOT_METIN_BOOK_LEVEL_DELTA)\n",
+  "new": "\t\t\t// MT2009_PLUS_DUNGEON_DROP_V1 (preview book): no book top-up from the dungeons' Metins.\n\t\t\tif (viewer->GetLevel() <= mob->GetLevel() + PLAYERBOT_METIN_BOOK_LEVEL_DELTA && !Mt2009PlusDungeonMob(race))\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_DROP_V1 (preview)",
+  "old": "\t\tif ((mob->IsStone() ? g_iMoonlightChestStonePermille : g_iMoonlightChestPermille) > 0)\n\t\t\tAddMobPreviewItem(lines, 50011, 1);\n\t\tif ((mob->IsStone() ? g_iDragonCoinStonePermille\n\t\t\t\t: (mob->GetMobRank() >= MOB_RANK_BOSS ? g_iDragonCoinBossPermille : 0)) > 0)\n\t\t\tAddMobPreviewItem(lines, 80017, 1);\n\t\t// MT2009_PLUS_PREVIEW_RARE_V1: the Cor Draconis and the sash of a Metin\n\t\t// or a boss at most 15 levels under the viewer, while the world has\n\t\t// them on (CreateDropItem above; server-patches/botraredrop, rarelevel,\n\t\t// raretoggle). The engine counts the Metin stones as bosses too.\n\t\tif (mob->GetMobRank() >= MOB_RANK_BOSS && viewer->GetLevel() <= mob->GetLevel() + 15)\n\t\t{\n\t\t\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_alchemy_off\") == 0)\n\t\t\t\tAddMobPreviewItem(lines, 50255, 1);\n\t\t\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_sash_off\") == 0)\n\t\t\t{\n\t\t\t\tstatic const DWORD s_aPreviewSash[] = { 85001, 85005, 85011, 85015, 85021 };\n\t\t\t\tfor (DWORD sash : s_aPreviewSash)\n\t\t\t\t\tAddMobPreviewItem(lines, sash, 1);\n\t\t\t}\n\t\t}\n",
+  "new": "\t\t// MT2009_PLUS_DUNGEON_DROP_V1 (preview): none of the world's extras for the Razador and Nemere\n\t\t// dungeons' own monsters (CreateDropItem above).\n\t\tif (!Mt2009PlusDungeonMob(race))\n\t\t{\n\t\tif ((mob->IsStone() ? g_iMoonlightChestStonePermille : g_iMoonlightChestPermille) > 0)\n\t\t\tAddMobPreviewItem(lines, 50011, 1);\n\t\tif ((mob->IsStone() ? g_iDragonCoinStonePermille\n\t\t\t\t: (mob->GetMobRank() >= MOB_RANK_BOSS ? g_iDragonCoinBossPermille : 0)) > 0)\n\t\t\tAddMobPreviewItem(lines, 80017, 1);\n\t\t// MT2009_PLUS_PREVIEW_RARE_V1: the Cor Draconis and the sash of a Metin\n\t\t// or a boss at most 15 levels under the viewer, while the world has\n\t\t// them on (CreateDropItem above; server-patches/botraredrop, rarelevel,\n\t\t// raretoggle). The engine counts the Metin stones as bosses too.\n\t\tif (mob->GetMobRank() >= MOB_RANK_BOSS && viewer->GetLevel() <= mob->GetLevel() + 15)\n\t\t{\n\t\t\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_alchemy_off\") == 0)\n\t\t\t\tAddMobPreviewItem(lines, 50255, 1);\n\t\t\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_sash_off\") == 0)\n\t\t\t{\n\t\t\t\tstatic const DWORD s_aPreviewSash[] = { 85001, 85005, 85011, 85015, 85021 };\n\t\t\t\tfor (DWORD sash : s_aPreviewSash)\n\t\t\t\t\tAddMobPreviewItem(lines, sash, 1);\n\t\t\t}\n\t\t}\n\t\t}\n"
  }
 ]

@@ -446,7 +446,10 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 				PlayerBotWeightNameEquals(szKey, "SASH") ||
 				PlayerBotWeightNameEquals(szKey, "ALCHEMY"))
 		{
-			const int percent = value < 0 ? 0 : (value > 100 ? 100 : (int)value);
+			// 0-250 like the goal weights: above 100 the share grows (sashes
+			// 80% -> all bots from 125, alchemy 75% -> all from 134, the BP
+			// draw scaled); every consumer caps itself at all bots.
+			const int percent = value < 0 ? 0 : (value > 250 ? 250 : (int)value);
 			int& wanted = PlayerBotWeightNameEquals(szKey, "BATTLEPASS") ? s_iPlayerBotBattlePassPercent :
 					(PlayerBotWeightNameEquals(szKey, "SASH") ? s_iPlayerBotSashPercent : s_iPlayerBotAlchemyPercent);
 			// Against the default the reset put back, so the line is written
@@ -677,12 +680,16 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			value = value ? 1 : 0;
 			return true;
 		}
-		if (PlayerBotWeightNameEquals(szKey, "SCRAP") ||
-				PlayerBotWeightNameEquals(szKey, "BATTLEPASS") ||
+		if (PlayerBotWeightNameEquals(szKey, "SCRAP"))
+		{
+			value = value < 0 ? 0 : (value > 100 ? 100 : value);
+			return true;
+		}
+		if (PlayerBotWeightNameEquals(szKey, "BATTLEPASS") ||
 				PlayerBotWeightNameEquals(szKey, "SASH") ||
 				PlayerBotWeightNameEquals(szKey, "ALCHEMY"))
 		{
-			value = value < 0 ? 0 : (value > 100 ? 100 : value);
+			value = value < 0 ? 0 : (value > 250 ? 250 : value);
 			return true;
 		}
 		if (PlayerBotWeightNameEquals(szKey, "CHEST") ||

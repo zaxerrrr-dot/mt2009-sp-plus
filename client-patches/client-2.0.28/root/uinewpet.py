@@ -9,7 +9,7 @@
 #              <bonus 0> <bonus 1> <bonus 2> <skills "type.level,..." x15>
 #              <name hex> <species hex>
 #   NewPet End
-#   NewPet Evo <stage> <level> <yang> <vnum1> <count1> <vnum2> <count2> <vnum3> <count3>
+#   NewPet Evo <stage> <level> <yang> <vnum1> <count1> ... <vnum5> <count5> (3 to 5 pairs)
 #   NewPet Hatch <cell> <egg vnum> <yang>  - an egg used: ask the name
 #   NewPet Rename <id> <yang>              - Zwoj Imienia Peta used
 #   NewPet Info <id> <name hex>            - a pet in a transporter (tooltip)
@@ -118,12 +118,15 @@ def BonusValue(level, maxValue):
 	return level * maxValue / 20
 
 
+# The client's embedded Python has no encodings.hex_codec (its encodings
+# module is a single cythonized file), so text.decode('hex') raises
+# LookupError there: the hex is decoded by hand.
 def Unhex(text):
-	if not text or text == '-':
+	if not text or text == '-' or len(text) % 2:
 		return ''
 	try:
-		return text.decode('hex')
-	except Exception:
+		return ''.join([chr(int(text[i:i + 2], 16)) for i in xrange(0, len(text), 2)])
+	except ValueError:
 		return ''
 
 
@@ -161,9 +164,9 @@ def OnCommand(what='', *args):
 		__OnEnd()
 	elif what == 'Evo':
 		try:
-			values = [int(a) for a in args[:9]]
-			_data['evo'][values[0]] = {'level': values[1], 'gold': values[2],
-					'items': [(values[3], values[4]), (values[5], values[6]), (values[7], values[8])]}
+			values = [int(a) for a in args[:13]]
+			pairs = [(values[i], values[i + 1]) for i in xrange(3, len(values) - 1, 2)]
+			_data['evo'][values[0]] = {'level': values[1], 'gold': values[2], 'items': pairs[:9]}
 		except (ValueError, IndexError):
 			pass
 	elif what == 'Hatch':
@@ -220,7 +223,7 @@ def __OnPet(args):
 	_data['pending'].append({'id': v[0], 'egg': v[1], 'young': v[2], 'hero': v[3], 'level': v[4],
 			'exp': v[5], 'need': v[6], 'evolution': v[7], 'cap': v[8], 'life': v[9], 'lifeMax': v[10],
 			'active': v[11] != 0, 'out': v[12] != 0, 'bonus': (v[13], v[14], v[15]), 'skills': skills[:15],
-			'name': Unhex(args[17]), 'species': Unhex(args[18])})
+			'name': Unhex(args[17]), 'species': Unhex(args[18]) or SPECIES.get(v[1], ItemName(v[1]))})
 
 
 def __OnEnd():
@@ -418,7 +421,11 @@ class NewPetWindow(ui.ScriptWindow):
 		self.petIcon.SetParent(self)
 		self.petIcon.SetPosition(22, 52)
 		self.petIcon.SetEvent(ui.__mem_func__(self.__NextPet))
-		self.petIcon.SetToolTipWindow(self.iconTip)
+		# The tooltips are shown on the mouse-over events, not through
+		# SetToolTipWindow: that one parents the tooltip to the button (it
+		# lost its TOP_MOST layer and was drawn under the window's boards).
+		self.petIcon.SAFE_SetStringEvent('MOUSE_OVER_IN', self.__OverInIcon)
+		self.petIcon.SAFE_SetStringEvent('MOUSE_OVER_OUT', self.__OverOutIcon)
 
 		for i, (x, y) in enumerate(SKILL_SLOTS):
 			button = ui.Button()
@@ -427,7 +434,8 @@ class NewPetWindow(ui.ScriptWindow):
 			button.SetEvent(ui.__mem_func__(self.__ClickSkill), i)
 			tip = uiToolTip.ToolTip()
 			tip.HideToolTip()
-			button.SetToolTipWindow(tip)
+			button.SAFE_SetStringEvent('MOUSE_OVER_IN', self.__OverInSkill, i)
+			button.SAFE_SetStringEvent('MOUSE_OVER_OUT', self.__OverOutSkill, i)
 			level = ui.TextLine()
 			level.SetParent(self)
 			level.SetPosition(x + 31, y + 20)
@@ -458,6 +466,7 @@ class NewPetWindow(ui.ScriptWindow):
 		for g in self.gauges:
 			g.Hide()
 		self.petIcon.Hide()
+		self.iconTip.HideToolTip()
 		for i in xrange(15):
 			self.__SetSkill(i, None, 0)
 		self.expTip.SetText('')
@@ -560,6 +569,7 @@ class NewPetWindow(ui.ScriptWindow):
 		if skill is None or skill == 0 or (skill != SKILL_LOCKED and not SKILLS.get(skill)):
 			button.Hide()
 			label.Hide()
+			self.skillTips[i].HideToolTip()
 			self.skillShown[i] = None
 			return
 		image = IMG + ('skill_locked.tga' if skill == SKILL_LOCKED else 'skill/%d.tga' % skill)
@@ -685,6 +695,22 @@ class NewPetWindow(ui.ScriptWindow):
 		self.itemTip.HideToolTip()
 
 	# ---- events ----
+
+	def __OverInIcon(self):
+		if self.iconTip and self.petIcon.IsShow():
+			self.iconTip.ShowToolTip()
+
+	def __OverOutIcon(self):
+		if self.iconTip:
+			self.iconTip.HideToolTip()
+
+	def __OverInSkill(self, i):
+		if 0 <= i < len(self.skillTips) and self.skillButtons[i].IsShow():
+			self.skillTips[i].ShowToolTip()
+
+	def __OverOutSkill(self, i):
+		if 0 <= i < len(self.skillTips):
+			self.skillTips[i].HideToolTip()
 
 	def __OverInExp(self):
 		self.expTip.Show()

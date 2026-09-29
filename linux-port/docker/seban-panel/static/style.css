@@ -258,7 +258,11 @@ body[data-cursor="custom"]{cursor:url('cursor.cur'),auto}
 html,body{max-width:100%;overflow-x:hidden}
 main{min-width:0;width:auto}
 aside.site-nav{min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable}
-aside.site-nav nav{min-height:0;padding-bottom:12px}
+/* The nav must not shrink: a shrunk nav let its last links overflow under
+   "Wyloguj" (margin-top:auto), which then sat above the external links.
+   The rail scrolls instead, and "Wyloguj" stays the last entry. */
+aside.site-nav nav{min-height:0;padding-bottom:12px;flex:0 0 auto}
+aside.site-nav>form{flex:0 0 auto}
 aside.site-nav nav a,aside.site-nav nav summary{min-width:0;overflow-wrap:anywhere}
 .panel,.live-shell,.cards article{min-width:0}
 table{max-width:100%}

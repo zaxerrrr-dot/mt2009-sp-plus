@@ -42,9 +42,42 @@ def load_ours(listing):
         if len(t) == 4: s.add(norm(t[3]))
     return s
 
+# Granny .gr2 models name their textures inside (Oodle1-compressed) sections: gr2/gr2dec decompresses
+# them (opengr2's oodle1.c, MPL-2.0), the texture file names are then read from the raw data.
+GR2DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gr2')
+GR2DEC = os.path.join(GR2DIR, 'gr2dec')
+RE_TEX = re.compile(rb'[\x20-\x7e]{1,200}?\.(?:dds|tga|bmp|jpg|png)(?![A-Za-z0-9])', re.I)
+GR2_FAIL = {}   # key -> reason (compression formats gr2dec cannot read: BitKnit, only seen in motions)
+_gr2cache = {}
+def _gr2dec():
+    if not os.path.exists(GR2DEC):
+        import subprocess
+        subprocess.check_call(['gcc', '-O2', '-w', '-static', '-o', GR2DEC, os.path.join(GR2DIR, 'gr2dec.c'), os.path.join(GR2DIR, 'oodle1.c')])
+    return GR2DEC
+
+def gr2_textures(key, path):
+    """texture keys a .gr2 references (normalised; bare names resolve next to the model)"""
+    if path in _gr2cache: return _gr2cache[path]
+    import subprocess
+    r = subprocess.run([_gr2dec(), path], capture_output=True)
+    out = set()
+    if r.returncode:
+        GR2_FAIL[key] = r.stderr.decode('latin1').strip() or 'rc %d' % r.returncode
+    else:
+        d = key.rsplit('/', 1)[0] + '/'
+        for t in RE_TEX.findall(r.stdout):
+            t = norm(t.decode('latin1'))
+            t = t.split(':', 1)[1].lstrip('/') if ':' in t[:3] else t   # any drive letter
+            if t.startswith('ymir work/'): out.add('d:/' + t)
+            elif '/' not in t: out.add(d + t)
+            else: out.add('d:/ymir work/' + t.split('ymir work/', 1)[1] if 'ymir work/' in t else d + t.rsplit('/', 1)[1])
+    _gr2cache[path] = out
+    return out
+
 def refs_of(key, path):
     out = set()
     k = key.lower()
+    if k.endswith('.gr2'): return gr2_textures(k, path)
     if not k.endswith(TEXT_EXT): return out
     try: txt = open(path, 'rb').read().decode('latin1')
     except Exception: return out

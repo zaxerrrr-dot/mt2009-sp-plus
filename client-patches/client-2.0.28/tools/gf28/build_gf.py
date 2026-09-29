@@ -9,7 +9,7 @@ HERE = '/opt/metin2/cache/tcm/gf28'
 C28 = '/opt/metin2/cache/tcm/c28/pack'
 OUT = HERE + '/out/pack'
 GF = '/opt/metin2/cache/gf/Gameforge_26.1.11/_client'
-NEW_PACKS = ['gf_razador', 'gf_nemere', 'gf_misc']
+NEW_PACKS = ['gf_razador', 'gf_nemere', 'gf_misc', 'gf_mobs']
 TEXT = ('.txt', '.msa', '.msm', '.mse', '.mss', '.msenv', '.sub', '.prb', '.prd', '.pre', '.prt', '.py', '.ifl', '.pra')
 def ctype(name): return 2 if name.endswith(TEXT) else 1
 rd = packlib.rd

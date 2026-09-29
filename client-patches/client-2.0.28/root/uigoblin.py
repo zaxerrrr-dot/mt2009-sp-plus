@@ -946,6 +946,12 @@ class RankInfo(ui.ListBoxEx.Item):
 	"""A row of the archive's ranking: the place, the name, the rounds."""
 	HIGH_RANK_IMG = EV + 'ranking/high_ranking_bg.tga'
 	CUR_PLAYER_RANK_IMG = EV + 'ranking/my_ranking_bg.tga'
+	# The row's background (246 x 21) has three boxes: the place 0-54, the
+	# name 54-179 and the rounds 179-234. Every text is centred in its box
+	# (the headers of uiscript/goblinrankingwindow.py sit over the same ones).
+	WIDTH = 246
+	HEIGHT = 21
+	COLUMNS = ((0, 54), (54, 125), (179, 55))
 
 	def __init__(self, rank, name, rounds, isHighRanker):
 		ui.ListBoxEx.Item.__init__(self)
@@ -957,32 +963,42 @@ class RankInfo(ui.ListBoxEx.Item):
 		background.AddFlag('not_pick')
 		background.Show()
 		self.children.append(background)
-		for x, width, text in ((33, 26, str(rank)), (120, 90, name), (213, 28, str(rounds))):
+		for (x, width), text in zip(self.COLUMNS, (str(rank), name, str(rounds))):
 			holder = ui.Window()
 			holder.SetParent(self)
-			holder.SetPosition(x, 2)
-			holder.SetSize(width, 28)
+			holder.SetPosition(x, 0)
+			holder.SetSize(width, self.HEIGHT)
 			holder.AddFlag('not_pick')
 			holder.Show()
 			line = ui.TextLine()
 			line.SetParent(holder)
-			line.SetPosition(0, 7)
+			line.SetPosition(0, 0)
 			line.SetHorizontalAlignCenter()
+			line.SetVerticalAlignCenter()
 			line.SetWindowHorizontalAlignCenter()
+			line.SetWindowVerticalAlignCenter()
 			line.SetText(text)
 			line.Show()
 			self.children.append(holder)
 			self.children.append(line)
-		self.SetSize(248, 28)
+		self.SetSize(self.WIDTH, self.HEIGHT)
 
 	def __del__(self):
 		ui.ListBoxEx.Item.__del__(self)
+
+	# A ranking row is not selectable (no blue bar on a click).
+	def OnMouseLeftButtonDown(self):
+		pass
+
+	def OnSelectedRender(self):
+		pass
 
 
 class RankingWindow(ui.ScriptWindow):
 	"""The archive's AccumultedCountRankingWindow."""
 
 	HIGH_RANKER_MAX_COUNT = 10
+	ROW_STEP = 23
 
 	def __init__(self):
 		ui.ScriptWindow.__init__(self)
@@ -991,10 +1007,13 @@ class RankingWindow(ui.ScriptWindow):
 		self.board.SetCloseEvent(ui.__mem_func__(self.Close))
 		self.highRankerList = self.GetChild('high_ranking_list')
 		self.curPlayerRank = self.GetChild('cur_player_rank')
+		self.emptyText = self.GetChild('empty_text')
+		self.dot = self.GetChild('dot')
 		for listBox, count in ((self.highRankerList, self.HIGH_RANKER_MAX_COUNT), (self.curPlayerRank, 1)):
-			listBox.SetItemSize(248, 28)
-			listBox.SetItemStep(28)
+			listBox.SetItemSize(RankInfo.WIDTH, RankInfo.HEIGHT)
+			listBox.SetItemStep(self.ROW_STEP)
 			listBox.SetViewItemCount(count)
+		self.dot.Hide()
 
 	def __del__(self):
 		ui.ScriptWindow.__del__(self)
@@ -1017,11 +1036,20 @@ class RankingWindow(ui.ScriptWindow):
 	def Refresh(self):
 		self.highRankerList.RemoveAllItems()
 		self.curPlayerRank.RemoveAllItems()
-		for place, name, rounds in _data.get('rank', [])[:self.HIGH_RANKER_MAX_COUNT]:
+		ranks = _data.get('rank', [])[:self.HIGH_RANKER_MAX_COUNT]
+		for place, name, rounds in ranks:
 			self.highRankerList.AppendItem(RankInfo(place, name, rounds, True))
+		if ranks:
+			self.emptyText.Hide()
+		else:
+			self.emptyText.Show()
 		me = _data.get('rankme')
+		self.dot.Hide()
 		if me and me[2] > 0:
 			self.curPlayerRank.AppendItem(RankInfo(me[0] if me[0] > 0 else '-', me[1], me[2], False))
+			# The dots only between the list and a place below it.
+			if me[0] <= 0 or me[0] > len(ranks) + 1:
+				self.dot.Show()
 
 
 class GoblinBoard(ui.ThinBoard):

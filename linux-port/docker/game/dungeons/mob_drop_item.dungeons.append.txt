@@ -1,5 +1,7 @@
 // MT2009_PLUS_DUNGEONS_V1 (nemere): the Nemere dungeon drops, mirrored from the package Razador groups
-// (6001-6009 kill groups -> 6101-6109; 6091 drop group -> 6191 with the gear one step higher, +6/+7).
+// (6001-6009 kill groups -> 6101-6109). MT2009_PLUS_DUNGEON_DROP_V1: no drop group for Nemere (6191)
+// nor Razador (6091, the Dockerfile cuts the package one) - the bosses give only yang, the loot is
+// the 2-5 chests per player of the dungeon quests (the owner, 29 September).
 
 Group	MT2009_nemere_6101
 {
@@ -105,79 +107,8 @@ Group	MT2009_nemere_6109
 }
 
 
-Group	MT2009_nemere_6191
-{
-	type	drop
-	Mob	6191	-- Nemere
-	1	50726	1	1	-- Grzyb Tue
-	2	70012	1	15	-- �za Bogini
-	3	39006	1	15	-- Peleryna Męstwa
-	4	25040	1	10	-- Zwój Błogosławieństwa
-	5	70048	1	20	-- Płaszcz Uciekiniera
-	6	70037	1	25	-- Księga Zapomnienia
-	7	70014	1	25	-- Pigułka Krwi
-	8	70043	1	20	-- Rękawica Złodzieja
-	9	39002	1	20	-- Pierścień Doświadczenia
-	10	27002	50	100	-- Czerwona Mikstura(Ś)
-	11	27003	30	200	-- Czerwona Mikstura(D)
-	12	27005	30	100	-- Niebieska Mikstura(Ś)
-	13	50300	1	400	-- Księga Umiejętności
-	14	70014	1	1	-- Pigułka Krwi
-	15	70037	1	1	-- Księga Zapomnienia
-	16	50254	1	400	-- Skrzynia Mroku
-	17	146	1	30	-- Miecz Bojowy+6
-	18	147	1	20	-- Miecz Bojowy+7
-	19	156	1	30	-- Miecz Szponu Ducha+6
-	20	157	1	20	-- Miecz Szponu Ducha+7
-	21	1106	1	30	-- Smoczy Nóż+6
-	22	1107	1	20	-- Smoczy Nóż+7
-	23	2146	1	30	-- Olbrz. �uk Żółt. Smoka+6
-	24	2147	1	20	-- Olbrz. �uk Żółt. Smoka+7
-	25	3146	1	30	-- Magnetyczne Ostrze+6
-	26	3147	1	20	-- Magnetyczne Ostrze+7
-	27	5106	1	30	-- Dzwon Nieba I Ziemi+6
-	28	5107	1	20	-- Dzwon Nieba I Ziemi+7
-	29	7146	1	30	-- Wachlarz Zbawienia+6
-	30	7147	1	20	-- Wachlarz Zbawienia+7
-	31	11296	1	30	-- Zbroja Z Czarnej Stali+6
-	32	11297	1	20	-- Zbroja Z Czarnej Stali+7
-	33	11496	1	30	-- Ubranie Czarn. Wiatru+6
-	34	11497	1	20	-- Ubranie Czarn. Wiatru+7
-	35	11696	1	30	-- Zbr. Płyt. Czar. Magii+6
-	36	11697	1	20	-- Zbr. Płyt. Czar. Magii+7
-	37	11896	1	30	-- Czarna Szata+6
-	38	11897	1	20	-- Czarna Szata+7
-	39	30500	1	60	-- Rubinowy Ozdobny Nóż
-	40	30501	1	60	-- Złota Sprzączka
-	41	30502	1	60	-- Rubinowa Ozdoba
-	42	30503	1	60	-- Ametystowy Ozdobny Nóż
-	43	30504	1	60	-- Srebrny Zacisk
-	44	30505	1	60	-- Szmaragdowa Ozdoba
-	45	30506	1	60	-- Szafirowy Ozdobny Nóż
-	46	30507	1	60	-- Brązowy Zacisk
-	47	30508	1	60	-- Szafirowa Ozdoba
-	48	30509	1	60	-- Niebieska Smocza Stal
-	49	30510	1	60	-- Wytworny Naramiennik
-	50	30511	1	60	-- Czerwony Materiał
-	51	30512	1	60	-- Czerwona Smocza Stal
-	52	30513	1	60	-- Szlachetny Naramiennik
-	53	30514	1	60	-- Fioletowy Materiał
-	54	30515	1	60	-- Purpurowa Smocza Stal
-	55	30516	1	60	-- Antyczny Naramiennik
-	56	30517	1	60	-- Złoty Materiał
-	57	30518	1	60	-- Złota Przędza
-	58	30519	1	60	-- Złoty Hak
-	59	30520	1	60	-- Złota Spinka
-	60	30521	1	60	-- Element Pierścienia
-	61	30522	1	60	-- Ogniwa �ańcucha
-	62	30523	1	60	-- Element Ozdoby
-}
-
-
-
-
 // MT2009_PLUS_BOSS_CHESTS_V1: the boss chests (special_item_group.dungeons.txt). The dungeon
-// quests give one to every player of the party inside when the boss dies, so these lines drop
+// quests give 2-5 to every player of the party inside when the boss dies, so these lines drop
 // nothing (0%) - they only put the chest into the monster's drop preview (/mob_drop_preview).
 Group	MT2009_chest_preview_6091
 {

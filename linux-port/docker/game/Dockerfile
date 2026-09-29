@@ -340,19 +340,25 @@ COPY src/serverfiles/share/package /opt/metin2/share/package
 #  * special_item_group.starter.txt - the starter chest chain the playerbot
 #    seed hands out and the package has no group for.
 #  * special_item_group.cors.txt - the higher Cor Draconis grades (50256-50259)
-#    open into dragon stones of their own grade (MT2009_PLUS_COR_GRADES_V1).
+#    open into dragon stones of their own grade (MT2009_PLUS_COR_GRADES_V1), and
+#    so does the newer series 51501-51646 (its grade ranges, colours, "+" and
+#    chests), which the stock file has no group for;
+#  * special_item_group.goblin.txt - the Goblin board's money pouch (50023),
+#    1 000 000 - 10 000 000 yang instead of the stock 10 000 - 50 000.
 #  * special_item_group.dungeons.txt - the Razador (50270) and Nemere (50271)
 #    boss chests the two dungeons' quests hand out (MT2009_PLUS_BOSS_CHESTS_V1).
-COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt special_item_group.dungeons.txt /tmp/share-add/
+COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt special_item_group.dungeons.txt special_item_group.goblin.txt /tmp/share-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland \
  && for f in /tmp/share-add/*.txt; do sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$f"; done \
  && m=/tmp/share-add/special_item_group.moonlight.txt; c=/tmp/share-add/special_item_group.moonlight.custom.txt \
  && if [ -s "$c" ]; then grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+50011[[:space:]]*$' "$c" || { echo "FATAL: $c defines no Vnum 50011" >&2; exit 1; }; m="$c"; echo "share: the operator's Moonlight chest"; fi \
  && cat /tmp/share-add/mob_drop_item.m3.append.txt >> "$L/mob_drop_item.txt" \
  && f="$L/special_item_group.txt" \
- && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254|50256|50257|50258|50259|50270|50271)([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
- && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt /tmp/share-add/special_item_group.dungeons.txt >> "$f.new" \
+ && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254|50256|50257|50258|50259|50270|50271|50023|515[0-9][0-9]|516[0-4][0-9])([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
+ && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt /tmp/share-add/special_item_group.dungeons.txt /tmp/share-add/special_item_group.goblin.txt >> "$f.new" \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(50270|50271)([^0-9]|$)' "$f.new")" = 2 \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(515[0-9][0-9]|516[0-4][0-9])([^0-9]|$)' "$f.new")" = 146 \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+50023([^0-9]|$)' "$f.new")" = 1 \
  && mv "$f.new" "$f" \
  && rm -rf /tmp/share-add \
  && echo "share: moonlight + starter + boss chests, M3 drops appended"
@@ -599,6 +605,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/ochao-add \
 #    atlasinfo puts it) with its Setting/Town and a server_attr made by us (every cell
 #    walkable: the package never shipped the map, and the client's own attr decides where
 #    a player walks);
+#  * MT2009_PLUS_DUNGEON_DROP_V1: metin2_map_n_flame_dungeon_01's server_attr (351) made from the
+#    GF client's attr.atr (the one the 2.0.28 client walks on) with the package's no-PK cells
+#    kept - the package's own blocked the bridges' middles, so a player could not cross them
+#    (the owner, 29 September); 352's already is the client's;
 #  * the regen files of the two dungeons (data/dungeon/razador_mt: every fourth line of the
 #    package's flame_dungeon files, a party of level 55 and not the 100+ the package planned;
 #    data/dungeon/nemere_mt: the ice rooms, the package's ice_dungeon groups of groups);
@@ -613,6 +623,7 @@ COPY dungeons/ /tmp/dungeons-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
  && cp -a "$A/map/metin2_map_n_snow_dungeon_01" "$L/map/" \
+ && cp "$A/map/metin2_map_n_flame_dungeon_01/server_attr" "$L/map/metin2_map_n_flame_dungeon_01/server_attr" \
  && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
  && { grep -q -E '^352[[:blank:]]' "$L/map/index" || printf '352 metin2_map_n_snow_dungeon_01\n' >> "$L/map/index"; } \
  && test "$(grep -c -E '^352[[:blank:]]+metin2_map_n_snow_dungeon_01[[:space:]]*$' "$L/map/index")" = 1 \
@@ -630,17 +641,21 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && ! grep -q -E '^[[:blank:]]*Mob[[:blank:]]+6191([^0-9]|$)' "$L/mob_drop_item.txt" \
  && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
  && cat "$A/mob_drop_item.dungeons.append.txt" >> "$L/mob_drop_item.txt" \
- && awk 'BEGIN{n=0} /^Group/{inb=0} /^[[:blank:]]*Mob[[:blank:]]+(6091|6191)([^0-9]|$)/{inb=1; n=0} \
-      { if (inb && $1 ~ /^[0-9]+$/ && $2 ~ /^[0-9]+$/) { if ($2 == "50254") next; n++; sub(/^[[:blank:]]*[0-9]+/, "\t" n) } print } \
-      /^}/{inb=0}' "$L/mob_drop_item.txt" > "$L/mob_drop_item.txt.new" && mv "$L/mob_drop_item.txt.new" "$L/mob_drop_item.txt" \
- && ! awk '/^[[:blank:]]*Mob[[:blank:]]+(6091|6191)([^0-9]|$)/{f=1} /^}/{f=0} f && $2=="50254"{bad=1} END{exit !bad}' "$L/mob_drop_item.txt" \
- && test "$(grep -c -E '^Group[[:blank:]]+MT2009_nemere_' "$L/mob_drop_item.txt")" = 10 \
+ && awk '/^Group/{inb=1; blk=""; cut=0; name=$2} \
+      inb { blk = blk $0 "\n"; if ($0 ~ /^[[:blank:]]*Mob[[:blank:]]+(6091|6191)([^0-9]|$)/ && name !~ /^MT2009_chest_preview_/) cut = 1; \
+            if ($0 ~ /^}/) { inb = 0; if (!cut) printf "%s", blk }; next } \
+      { print }' "$L/mob_drop_item.txt" > "$L/mob_drop_item.txt.new" && mv "$L/mob_drop_item.txt.new" "$L/mob_drop_item.txt" \
+ && test "$(grep -c -E '^[[:blank:]]*Mob[[:blank:]]+(6091|6191)([^0-9]|$)' "$L/mob_drop_item.txt")" = 2 \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_chest_preview_(6091|6191)' "$L/mob_drop_item.txt")" = 2 \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_nemere_' "$L/mob_drop_item.txt")" = 9 \
  && test "$(od -An -tx1 -j4 -N4 "$L/map/metin2_map_n_snow_dungeon_01/server_attr" | tr -d ' ')" = 0c000000 \
+ && test "$(od -An -tx1 -N8 "$L/map/metin2_map_n_flame_dungeon_01/server_attr" | tr -d ' ')" = 0c0000000c000000 \
  && rm -rf "$A" \
  && echo "share: Razador (351) and Nemere (352) dungeons, their guards and the Nemere drops"
-# (MT2009_PLUS_BOSS_CHESTS_V1: the Skrzynia Mroku 50254 comes from Azrael only - the
-# owner, 29 September - so it is cut from Razador's and Nemere's groups above and
-# their lines renumbered; the engine stops a group at its first missing index.)
+# (MT2009_PLUS_DUNGEON_DROP_V1: Razador (6091) and Nemere (6191) drop only yang - the owner,
+# 29 September; their loot is the 2-5 chests per player of the quests - so every drop group
+# of theirs is cut whole above but the 0% chest previews; item_manager.cpp drops nothing
+# for them either.)
 # The Spider Baroness (port/shareify.py renders special_spawns.baroness.txt and
 # this step): the level-75 boss who drops the Stalki, stood in the second
 # Spider Dungeon's last room every four to five hours (the operator's decision

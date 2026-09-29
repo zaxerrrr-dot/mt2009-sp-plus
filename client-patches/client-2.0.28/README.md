@@ -3,7 +3,7 @@
 Względem klienta 2.0.27 (`client-patches/client-2.0.27`). Paczki są
 kumulatywne: gotowe pliki są w `/opt/metin2/cache/tcm/c28/pack` (`root`,
 `gamedata`, `locale`, `icon`, `maps`, `property`, nowe `newpet`, `ochao`, `goblin`,
-`gf_razador`, `gf_nemere`, `gf_misc` i `Index`). Oficjalne zasoby z klienta Gameforge
+`gf_razador`, `gf_nemere`, `gf_misc`, `gf_mobs` i `Index`). Oficjalne zasoby z klienta Gameforge
 opisuje sekcja „Zasoby z klienta Gameforge”.
 Zbudowane przez `tools/build28.py` (obraz `m2pack-lzo`) z paczek testowego
 klienta 2.0.27 (`/opt/metin2/cache/tcm/c27/pack`).
@@ -199,6 +199,26 @@ też się rozwiązują. Wyjątki są w „Czego brakuje”. Każdy obiekt z `are
 czterech map ma swój plik w `property`, a każdy plik tego obiektu jest w paczkach
 (poza dwoma obiektami gildii w lochu Nemere, patrz niżej).
 
+## Poprawki z testów (2026-09-29): tekstury obiektów i potwory Wyspy Skarbów
+
+- **Tekstury modeli .gr2.** Resolver (`tools/gf28/gfres.py`) nie czytał plików .gr2, więc
+  modele obiektów lochów weszły bez tekstur (jednolite beżowe/bladoniebieskie bryły: brama
+  Razadora na mapie 62, mosty, kolumny i lampy na 351, platformy i płyty lodu na 352).
+  Teraz `gfres.gr2_textures()` rozpakowuje sekcje .gr2 (Oodle1, `tools/gf28/gr2/gr2dec.c` +
+  `oodle1.c` z opengr2, MPL-2.0) i czyta nazwy tekstur, a `plan.py` dokłada je razem z modelem.
+  Dodatkowo tekstury obiektów map wejściowych 62 (`metin2_map_n_flame_01`) i 61
+  (`map_n_snowm_01`, wg areadata GF). Doszło: `gf_razador` +24, `gf_nemere` +97, `goblin` +10.
+- **Potwory fal Goblina (nowa paczka `gf_mobs`, 1589 plików).** Z 50 ras `MOB_POOL`
+  (`playerbot_goblin.h`, 3001–3805) nasze paczki miały modele tylko 14 (lemury z `ochao`,
+  5 z `gf_misc`). Reszta nie miała `.msm`, więc klient nie tworzył postaci (serwer je miał,
+  goblin ginął od niewidocznych potworów). `gf_mobs` = wszystkie foldery `monster2/<rasa>/`
+  z GF (modele, ruchy, tekstury, dźwięki, efekty); `npclist` miał już wszystkie wpisy.
+- Sprawdzenie: `tools/gf28/verify_gr2tex.py` (w `rebuild.sh`) – dla każdego obiektu map
+  351/352/Ochao/419/61/62 i każdego .gr2 w `gf_*`/`goblin`/`ochao` każda tekstura z .gr2
+  jest w paczkach; każda rasa fal ma msm, motlist, msa i tekstury. Brakują tylko pliki,
+  których nie ma też GF (lightmapy `flame_dungeon/0x_*lightingmap.dds`, kilka nieużywanych
+  tekstur `crustacean_*`, `thief_magic_weapon.dds`, `clops_soldier_weapon.dds`).
+
 ## Czego brakuje
 
 - Pliki, których nie ma w rozpakowanym kliencie GF (pewnie siedzą w 215 zaszyfrowanych
@@ -220,7 +240,7 @@ czterech map ma swój plik w `property`, a każdy plik tego obiektu jest w paczk
 Rozpakować do folderu klienta, w którym jest już 2.0.27 test (root) oraz
 gamedata/locale z 2.0.26. Rozpakować wszystkie `klient-test-2.0.28-*.zip`, nadpisując
 pliki: `root`, `gamedata`, `locale`, `icon`, `maps`, `property`, `newpet`, `ochao`, `goblin`,
-`gf_razador`, `gf_nemere`, `gf_misc`. `pack/Index` (z `gf_razador`, `gf_nemere`, `gf_misc`
+`gf_razador`, `gf_nemere`, `gf_misc`, `gf_mobs`. `pack/Index` (z `gf_razador`, `gf_nemere`, `gf_misc`, `gf_mobs`
 na końcu) jest w zipach `newpet`, `ochao`, `goblin` i `gf_*` i wszędzie jest taki sam.
 Inny wariant: jeden zip `klient-test-2.0.28.zip` z całą aktualizacją
 (kopia do pobrania przez SFTP: `/opt/metin2/dist/klient/klient-test-2.0.28-pelny.zip`).

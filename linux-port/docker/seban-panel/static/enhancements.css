@@ -154,7 +154,9 @@ button.danger{background:#7a2331!important}
 .panel:not(.is-loading) .dashboard-widget-loader{display:none}
 .ld-shimmer--compact{position:static;width:72px;min-height:0;height:10px;display:flex;justify-content:center}.ld-shimmer--compact i{width:72px;height:8px}
 .empire-bots-cell.is-loading .empire-bots-breakdown,.channel-bots-cell.is-loading .channel-bots-breakdown{width:100%;min-height:29px}
-.dashboard-widgets--loading .panel{position:relative;overflow:hidden}
+.dashboard-widgets--loading .panel,.dashboard-widgets .panel.is-loading{position:relative;overflow:hidden}
+/* The deferred loader is position:absolute; without a positioned .panel it was
+   anchored to the page and its three shimmer bars glowed over the side menu. */
 .dashboard-widgets--loading .panel>.dashboard-widget-loader{display:flex}
 .dashboard-widget-loader i{display:block}
 .dashboard-widget-error{padding:20px;text-align:center}

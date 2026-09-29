@@ -8,12 +8,13 @@
 -- losowej kolejnoœci (przesuniêcie cykliczne 1..6 jak DungeonStepSort), a po
 -- nich otwiera salê Razadora (6091):
 --   1: zabij 20 potworów,
---   2: potwory upuszczaj¹ Z³ot¹ Zêbatkê (30329, 9%), oddaj j¹ Steli Isfet (20386),
+--   2: potwory upuszczaj¹ Z³ot¹ Zêbatkê (30329, 2%), oddaj j¹ Steli Isfet (20386),
 --   3: zabij 20 potworów,
 --   4: zabij Ignitora (6051),
---   5: potwory upuszczaj¹ Kamieñ Maat (30330, 9%), oddaj po jednym siedmiu stelom,
+--   5: potwory upuszczaj¹ Kamieñ Maat (30330, 4%), oddaj po jednym siedmiu stelom,
 --   6: zniszcz Metin Czyœæca (8057),
---   7: Razador; po jego œmierci wszyscy wychodz¹ po 60 sekundach.
+--   7: Razador (sam daje tylko yang); po jego œmierci ka¿dy gracz w lochu dostaje
+--      2-5 Skrzyñ Razadora, a wszyscy wychodz¹ po 60 sekundach.
 -- Ka¿de zadanie otwiera swoje drzwi (20387 + 20388). Limit 60 minut, ponowne
 -- wejœcie po godzinie od wejœcia (archiwum: 1 h). Mapy 351/352 s¹ na rdzeniu
 -- game2: game1 ma ju¿ 32 mapy (MAP_ALLOW_LIMIT), a d.new_jump tworzy loch lokalnie.
@@ -40,6 +41,13 @@ quest razador_dungeon begin
 				stones5 = {{486,345},{511,336},{525,349},{521,365},{503,372},{486,365},{500,354}},
 				metin6 = {511, 480},
 				path = "data/dungeon/razador_mt/",
+				-- MT2009_PLUS_DUNGEON_DROP_V1: the quest items per mille of a kill (the
+				-- owner, 29 September: 9% poured them out). A room holds about 48
+				-- monsters (16 groups of 3, back after 60 s): the cog (one) ~50 kills,
+				-- the seven Maat stones ~175 kills, three to four rooms.
+				cog_permille = 20,
+				maat_permille = 40,
+				chests_min = 2, chests_max = 5,
 			}
 		end
 
@@ -48,11 +56,14 @@ quest razador_dungeon begin
 			return idx >= 351 * 10000 and idx < 352 * 10000
 		end
 
-		-- MT2009_PLUS_BOSS_CHESTS_V1: the boss's chest (50270, special_item_group.dungeons.txt)
+		-- MT2009_PLUS_BOSS_CHESTS_V1: the boss's chests (50270, special_item_group.dungeons.txt)
 		-- for every player of the killer's party inside this instance (get_member_pids gives
 		-- only the members on the killer's map index), or for the killer alone; a full bag
-		-- drops it at the player's feet (give_item2). Bots never enter the dungeon.
+		-- drops them at the player's feet (give_item2). Bots never enter the dungeon.
+		-- MT2009_PLUS_DUNGEON_DROP_V1: each player rolls his own 2-5 (the owner, 29 September);
+		-- Razador himself drops only yang (item_manager.cpp).
 		function give_chests()
+			local c = razador_dungeon.cfg()
 			local pids = {}
 			if party.is_party() then
 				pids = {party.get_member_pids()}
@@ -63,7 +74,11 @@ quest razador_dungeon begin
 			for i, pid in next, pids, nil do
 				q.begin_other_pc_block(pid)
 				if not pc.is_playerbot() then
-					pc.give_item2(50270, 1)
+					local n = number(c.chests_min, c.chests_max)
+					for k = 1, n do
+						pc.give_item2(50270, 1)
+					end
+					syschat("Razador: otrzymujesz Skrzynie Razadora: "..n..".")
 				end
 				q.end_other_pc_block()
 			end
@@ -136,6 +151,42 @@ quest razador_dungeon begin
 			d.exit_all()
 		end
 
+		-- MT2009_PLUS_DUNGEON_DROP_V1 (entry): the instance and its first spawns - from the
+		-- statue's dialog, or from the lobby's login timer for a player who came alone
+		-- (the guard sets "auto"; the owner, 29 September: the statue's walk and two
+		-- dialogs made the entry slow). d.new_jump/new_jump_party warp at once.
+		function create(humans, now)
+			local c = razador_dungeon.cfg()
+			if party.is_party() then
+				d.new_jump_party(c.map, c.base_x + c.entry[1], c.base_y + c.entry[2])
+			else
+				d.new_jump(c.map, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100)
+			end
+			local didx = d.get_map_index()
+			if didx == nil or didx < 10000 then
+				return false
+			end
+			for i, pid in next, humans, nil do
+				q.begin_other_pc_block(pid)
+				pc.setf("razador_dungeon", "entry", now)
+				pc.setf("razador_dungeon", "idx", didx)
+				q.end_other_pc_block()
+			end
+			d.setf("leader", pc.get_player_id())
+			d.setf("order", number(1, 6))
+			d.setf("done", 0)
+			d.setf("step", 0)
+			d.setf("active", 0)
+			d.setf("left", c.limit_min)
+			d.spawn_mob(20385, c.statue[1], c.statue[2])
+			for i = 1, 6 do
+				d.set_unique("door"..i, d.spawn_mob_ac_dir(20387, c.doors[i][1], c.doors[i][2], c.doors_dir[i]))
+				d.set_unique("idoor"..i, d.spawn_mob_ac_dir(20388, c.idoors[i][1], c.idoors[i][2], c.idoors_dir[i]))
+			end
+			server_timer("razador_tick", 60, didx)
+			return true
+		end
+
 		-- The guard (map 62, game1) sends a player to the public copy of the map - the
 		-- lobby on game2 - where 20385 makes the instance: d.new_jump is local to its core,
 		-- and game1 cannot host 351/352 (MAP_ALLOW_LIMIT, m2-render-config). The cooldown is
@@ -187,6 +238,9 @@ quest razador_dungeon begin
 						q.end_other_pc_block()
 					end
 				end
+			end
+			if not party.is_party() then
+				pc.setf("razador_dungeon", "auto", 1)
 			end
 			pc.warp(x, y)
 		end
@@ -255,35 +309,27 @@ quest razador_dungeon begin
 			if select("Otwórz przejœcie", "Nie teraz") ~= 1 then
 				return
 			end
-			if party.is_party() then
-				d.new_jump_party(c.map, c.base_x + c.entry[1], c.base_y + c.entry[2])
-			else
-				d.new_jump(c.map, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100)
-			end
-			local didx = d.get_map_index()
-			if didx == nil or didx < 10000 then
+			if not razador_dungeon.create(humans, now) then
 				say_title(mob_name(20385))
 				say("Nie uda³o siê otworzyæ przejœcia. Spróbuj ponownie za chwilê.")
+			end
+		end
+
+		-- A player alone, sent by the guard, goes into a new instance a second after the lobby
+		-- loads - no walk to the statue. Anything that stops it leaves him at the statue.
+		when razador_auto.timer begin
+			local c = razador_dungeon.cfg()
+			if pc.get_map_index() ~= c.map or party.is_party() then
 				return
 			end
-			for i, pid in next, humans, nil do
-				q.begin_other_pc_block(pid)
-				pc.setf("razador_dungeon", "entry", now)
-				pc.setf("razador_dungeon", "idx", didx)
-				q.end_other_pc_block()
+			local now = get_global_time()
+			if pc.get_level() < c.min_level or (not pc.is_gm() and now - pc.getf("razador_dungeon", "entry") < c.cooldown) then
+				syschat("Czyœciec Ognia: porozmawiaj z pos¹giem Am-heh, aby otworzyæ portal.")
+				return
 			end
-			d.setf("leader", pc.get_player_id())
-			d.setf("order", number(1, 6))
-			d.setf("done", 0)
-			d.setf("step", 0)
-			d.setf("active", 0)
-			d.setf("left", c.limit_min)
-			d.spawn_mob(20385, c.statue[1], c.statue[2])
-			for i = 1, 6 do
-				d.set_unique("door"..i, d.spawn_mob_ac_dir(20387, c.doors[i][1], c.doors[i][2], c.doors_dir[i]))
-				d.set_unique("idoor"..i, d.spawn_mob_ac_dir(20388, c.idoors[i][1], c.idoors[i][2], c.idoors_dir[i]))
+			if not razador_dungeon.create({pc.get_player_id()}, now) then
+				syschat("Czyœciec Ognia: nie uda³o siê otworzyæ portalu - porozmawiaj z pos¹giem Am-heh.")
 			end
-			server_timer("razador_tick", 60, didx)
 		end
 
 		when login begin
@@ -295,7 +341,14 @@ quest razador_dungeon begin
 					return
 				end
 				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
-				syschat("Czyœciec Ognia: porozmawiaj z pos¹giem Am-heh, aby otworzyæ portal.")
+				if pc.getf("razador_dungeon", "auto") == 1 and not party.is_party() then
+					pc.setf("razador_dungeon", "auto", 0)
+					syschat("Czyœciec Ognia: portal siê otwiera...")
+					timer("razador_auto", 1)
+				else
+					pc.setf("razador_dungeon", "auto", 0)
+					syschat("Czyœciec Ognia: porozmawiaj z pos¹giem Am-heh, aby otworzyæ portal.")
+				end
 			elseif razador_dungeon.inside() then
 				if pc.is_playerbot() then
 					pc.warp(c.exit_x * 100, c.exit_y * 100)
@@ -399,11 +452,11 @@ quest razador_dungeon begin
 					razador_dungeon.step_done()
 				end
 			elseif step == 2 then
-				if number(1, 100) < 10 then
+				if number(1, 1000) <= razador_dungeon.cfg().cog_permille then
 					game.drop_item_with_ownership(30329, 1, 60)
 				end
 			elseif step == 5 then
-				if number(1, 100) < 10 then
+				if number(1, 1000) <= razador_dungeon.cfg().maat_permille then
 					game.drop_item_with_ownership(30330, 1, 60)
 				end
 			end

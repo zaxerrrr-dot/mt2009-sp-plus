@@ -162,20 +162,26 @@ namespace mt2009_newpet
 		{ { POINT_HT, 0, 0 }, 10 },
 	};
 
+	enum { EVOLUTION_ITEMS = 5 };
+
 	struct EvolutionCost
 	{
-		DWORD vnum[3];
-		DWORD count[3];
+		DWORD vnum[EVOLUTION_ITEMS];
+		DWORD count[EVOLUTION_ITEMS];
 		long long gold;
 	};
 
 	// Young -> Wild -> Brave -> Heroic. The mod's own lists are its server's
-	// items; these are this world's (pearls, dragon scales and claws, spirit
-	// stones, crystal essences, raw Cor Draconis).
+	// items; these are this world's (pearls, spirit stones, the Unknown
+	// Medicine, crystal essences, raw Cor Draconis). MT2009_PLUS_NEW_PET_V1
+	// (evolution 2): Wild -> Brave takes 10 Kamien Duchowy (50513), 10 Nieznane
+	// Lekarstwo (30009, the one monsters drop) and 5 of each pearl (27992-27994)
+	// instead of the dragon scales and claws (the owner, 29 September). Heroic takes
+	// our rough Cor Draconis (50255), the one that drops, not the 515xx one.
 	const EvolutionCost EVOLUTION_COSTS[EVOLUTION_MAX] = {
-		{ { 27992, 27993, 27994 }, { 5, 5, 5 }, 5000000LL },
-		{ { 71123, 71129, 50513 }, { 10, 10, 5 }, 20000000LL },
-		{ { 31005, 31006, 51501 }, { 10, 10, 10 }, 50000000LL },
+		{ { 27992, 27993, 27994, 0, 0 }, { 5, 5, 5, 0, 0 }, 5000000LL },
+		{ { 50513, 30009, 27992, 27993, 27994 }, { 10, 10, 5, 5, 5 }, 20000000LL },
+		{ { 31005, 31006, 50255, 0, 0 }, { 10, 10, 10, 0, 0 }, 50000000LL },
 	};
 
 	// The eggs: per kill, one in N (0 = never), from monsters of level 10 or
@@ -617,8 +623,10 @@ namespace mt2009_newpet
 		for (int e = 0; e < EVOLUTION_MAX; ++e)
 		{
 			const EvolutionCost& c = EVOLUTION_COSTS[e];
-			ch->ChatPacket(CHAT_TYPE_COMMAND, "NewPet Evo %d %d %lld %u %u %u %u %u %u", e, LEVEL_CAPS[e], c.gold,
-					c.vnum[0], c.count[0], c.vnum[1], c.count[1], c.vnum[2], c.count[2]);
+			// Five pairs; a client that reads three shows the first three.
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "NewPet Evo %d %d %lld %u %u %u %u %u %u %u %u %u %u", e, LEVEL_CAPS[e], c.gold,
+					c.vnum[0], c.count[0], c.vnum[1], c.count[1], c.vnum[2], c.count[2],
+					c.vnum[3], c.count[3], c.vnum[4], c.count[4]);
 		}
 	}
 
@@ -1352,7 +1360,7 @@ namespace mt2009_newpet
 			return;
 		}
 		const EvolutionCost& cost = EVOLUTION_COSTS[pet->evolution];
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < EVOLUTION_ITEMS; ++i)
 		{
 			if (!cost.vnum[i] || !cost.count[i])
 				continue;
@@ -1383,7 +1391,7 @@ namespace mt2009_newpet
 		const int newEvolution = pet->evolution + 1;
 		if (!Change(owner, *pet, set, where))
 			return;
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < EVOLUTION_ITEMS; ++i)
 			if (cost.vnum[i] && cost.count[i])
 				ch->RemoveSpecifyItem(cost.vnum[i], (ITEM_COUNT)cost.count[i]);
 		ch->ChangeGold(-cost.gold);

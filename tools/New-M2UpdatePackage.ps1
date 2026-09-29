@@ -225,7 +225,7 @@ try {
         $engineMarks = [ordered]@{
             'linux-port/docker/game/src/server/game/src/item_manager.cpp' = @(
                 'MT2009_PLUS_BOT_RARE_DROP_V1', 'MT2009_PLUS_BOT_RARE_DROP_V2', 'MT2009_PLUS_BOT_RARE_DROP_V3',
-                'MT2009_PLUS_RARE_LEVEL_V1', 'MT2009_PLUS_DROP_PREVIEW_MIN_V1', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_BOT_SASH_DROP_V1', 'MT2009_PLUS_PREVIEW_RARE_V1', 'MT2009_PLUS_LOOT_EVENTS_V1')
+                'MT2009_PLUS_RARE_LEVEL_V1', 'MT2009_PLUS_DROP_PREVIEW_MIN_V1', 'MT2009_PLUS_RARE_TOGGLE_V1', 'MT2009_PLUS_BOT_SASH_DROP_V1', 'MT2009_PLUS_PREVIEW_RARE_V1', 'MT2009_PLUS_LOOT_EVENTS_V1', 'MT2009_PLUS_DUNGEON_DROP_V1 (boss)', 'MT2009_PLUS_DUNGEON_DROP_V1 (specials)', 'MT2009_PLUS_DUNGEON_DROP_V1 (specials end)', 'MT2009_PLUS_DUNGEON_DROP_V1 (preview book)', 'MT2009_PLUS_DUNGEON_DROP_V1 (preview)')
             'linux-port/docker/game/src/server/game/src/ikarus_shop_manager.cpp' = @('MT2009_PLUS_SHOP_SEARCH_ITEM_V1', 'MT2009_PLUS_SHOP_SEARCH_PLUS_V1 (bound)')
             'linux-port/docker/game/src/server/game/src/PetSystem.cpp' = @('MT2009_PLUS_PET_STAYS_ON_DEATH_V1')
             'linux-port/docker/game/src/server/game/src/input_auth.cpp' = @('MT2009_PLUS_LOGIN_UNDERSCORE_V1')

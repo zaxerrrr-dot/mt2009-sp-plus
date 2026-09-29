@@ -70,7 +70,7 @@ def Unhex(text):
 	if not text or text == '-':
 		return ''
 	try:
-		return text.decode('hex')
+		return ''.join([chr(int(text[i:i + 2], 16)) for i in xrange(0, len(text) - 1, 2)])
 	except Exception:
 		return ''
 

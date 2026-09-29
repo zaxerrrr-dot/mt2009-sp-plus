@@ -203,6 +203,9 @@ AI_WEIGHT_HINTS = {
     "HUNTING": "Misja polowania na awans (tylko r40250). 100 = każdy bot z misją; poniżej część botów po pół godziny bije to, co jest na mapie.",
     "LEVEL": "Zwykłe bicie potworów. Podniesione: cel „poziom” wygrywa w statusie, grinderzy biją po kilka potworów naraz i piją mikstury szybkości. Obniżenie nic nie zmienia.",
     "FISHING": "Ilu botów łowi: przy osobowościach bot od 30 lv bez grupy losuje co pół godziny wg nastroju. Podniesienie w sekundy, obniżenie po końcu sesji (do godziny).",
+    "BATTLEPASS": "Szansa, że bot bez zajęcia celowo weźmie misję Battle Passa (metin, ryby, kowal, boss). 100 = jak dotąd (15–70% wg osobowości), 250 = 2,5× tyle (najwyżej za każdym razem), 0 = tylko postęp przy okazji. Od razu.",
+    "SASH": "Pula botów od 30 lv, które budują szarfy. 100 = 80% z nich, od 125 = wszystkie, 0 = nikt (reszta sprzedaje szarfy). Przy następnym sprawdzeniu szarf (3–6 min).",
+    "ALCHEMY": "Pula botów od 30 lv, które używają alchemii smoka. 100 = 75% z nich, od 135 = wszystkie, 0 = nikt (reszta sprzedaje Cory i zbędne kamienie). Od razu.",
     "TRADE": "Ilu botów trzyma stragan (bez Handlarza, biednych, pełnego plecaka, droppera pod presją i cennych zapasów). Na 2.x stojący sklep offline tylko nie jest odnawiany po 8 h.",
 }
 # These values share the live weight file with goal weights, but the core treats
@@ -2514,8 +2517,10 @@ def read_ai_weights():
                     key, raw_value = fields[0].upper(), fields[1]
                     if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "ISHOP", "SHOP_M2", "PERSONA"):
                         values[key] = 0 if raw_value.lower() in ("0", "off", "no") else 1
-                    elif key in ("SCRAP", "REST", "KINGDOMPVP", "BATTLEPASS", "SASH", "ALCHEMY"):
+                    elif key in ("SCRAP", "REST", "KINGDOMPVP"):
                         values[key] = max(0, min(100, int(raw_value)))
+                    elif key in ("BATTLEPASS", "SASH", "ALCHEMY"):
+                        values[key] = max(0, min(250, int(raw_value)))
                     elif key == "SCROLL_FROM":
                         values[key] = max(1, min(9, int(raw_value)))
                     elif key == "WAR_MINUTES":
@@ -2573,7 +2578,7 @@ def write_ai_weights(values):
     content.append(f"REST\t{max(0, min(100, int(values.get('REST', 100))))}")
     content.append(f"KINGDOMPVP\t{max(0, min(100, int(values.get('KINGDOMPVP', 0))))}")
     for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
-        content.append(f"{key}\t{max(0, min(100, int(values.get(key, 100))))}")
+        content.append(f"{key}\t{max(0, min(250, int(values.get(key, 100))))}")
     content.append(f"SCROLL_FROM\t{max(1, min(9, int(values.get('SCROLL_FROM', 1))))}")
     content.append(f"WAR_MINUTES\t{max(5, min(180, int(values.get('WAR_MINUTES', 30))))}")
     content.append(f"WAR_HOURS\t{max(1, min(24, int(values.get('WAR_HOURS', 2))))}")
@@ -8035,7 +8040,7 @@ def manage_behavior():
     # The three wills: a field the page did not render keeps the file's value.
     for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
         try:
-            values[key] = max(0, min(100, int(request.form.get(key, values.get(key, 100)))))
+            values[key] = max(0, min(250, int(request.form.get(key, values.get(key, 100)))))
         except (TypeError, ValueError):
             values[key] = 100
     try:

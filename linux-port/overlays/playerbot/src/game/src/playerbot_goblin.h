@@ -162,20 +162,26 @@ namespace mt2009_goblin
 	//   27209 Green Potion (L)        -> 27102 Zielona Mikstura (D)
 	//   27212 Purple Potion (L)       -> 27105 Fioletowa Mikstura (D)
 	//   76044 Pet Book Chest          -> 55009 the new pet system's chest of a random pet skill book
-	//   50261 Cor Daemonis (Rough)    -> 51501 Cor Draconis (surowe)
+	//   50261 Cor Daemonis (Rough)    -> 50255 Cor Draconis (Rough)
 	//   83074 Plat. Monster Card Box  -> 50037 Heksagonalna Szkatulka (no monster cards)
 	//   72061 Medal of the Dragon+    -> 71004 Medal Smoka
-	//   76040 Cor Draconis (Normal)   -> 51503 Cor Draconis (zwyczajne)
+	//   76040 Cor Draconis (Normal)   -> 50256 Cor Draconis (szlif.)
 	//   79026 Iron Dragon Elixir (S)  -> 72723 Eliksir Slonca (M)
-	//   72348 Time Spiral (20%)       -> 100000 Eliksir Czasu (M)
-	//   55031 Tasty Treat+            -> 50023 Sakiewka Pieniedzy (no pets in the client)
+	//   72348 Time Spiral (20%)       -> 100002 Eliksir Czasu (D), the biggest one
+	//   55031 Tasty Treat+            -> 50023 Sakiewka Pieniedzy (no pets in the client;
+	//                                    1 000 000 - 10 000 000 yang, special_item_group)
+	// MT2009_PLUS_GOBLIN_V1 (cors): every Cor is one of ours that opens into stones
+	// (50255-50259, special_item_group), not the 515xx series (the owner, 29 September):
+	// normal tier 50255, rare 50256, ancient 50257, round 10 50258.
+	// MT2009_PLUS_GOBLIN_V1 (board): slot 17, the rare tier's Blessing of Life (71018),
+	// is 20 Peleryna Mestwa (70038) in one stack (the owner, 29 September).
 	const Reward BOARD[BOARD_SLOTS] =
 	{
 		{ 27102, 1 }, { 27105, 1 }, { KEY_VNUM, 1 }, { 72050, 1 }, { 55009, 1 },
-		{ 76029, 1 }, { 51501, 1 }, { 76019, 1 }, { 71027, 1 }, { 50037, 1 },
+		{ 76029, 1 }, { 50255, 1 }, { 76019, 1 }, { 71027, 1 }, { 50037, 1 },
 		{ 71004, 1 }, { 70003, 1 }, { 70043, 1 }, { 71028, 1 }, { 76013, 1 },
-		{ 71030, 1 }, { 71083, 1 }, { 71018, 1 }, { 51503, 1 }, { 76014, 1 },
-		{ 72723, 1 }, { 70058, 1 }, { 51504, 1 }, { 100000, 1 }, { 50023, 1 },
+		{ 71030, 1 }, { 71083, 1 }, { 70038, 20 }, { 50256, 1 }, { 76014, 1 },
+		{ 72723, 1 }, { 70058, 1 }, { 50257, 1 }, { 100002, 1 }, { 50023, 1 },
 	};
 
 	// Which slots each tier opens (the archive's OPEN_SLOT_DATA_BY_REWARD_TYPE).
@@ -207,25 +213,25 @@ namespace mt2009_goblin
 	// The round rewards (treasure_hunt.txt, event_accumulated_reward_list):
 	// one of the items by weight, and the blessing while the first ones last.
 	//   72057 Double Experience Ring (36h) -> 72049 Pierscien Doswiadczenia
-	//   49993 Aura Fire Rune (100)         -> 51501 Cor Draconis (surowe)
+	//   49993 Aura Fire Rune (100)         -> 50255 Cor Draconis (Rough)
 	//   72784 Riding (Random)              -> 50060 Instr. Jazdy Konnej
 	//   72774 Monster Hunter Book          -> 28437 Kamien Duszy Potwora+4
 	//   79028 Iron Dragon Elixir (L)       -> 72725 Eliksir Slonca (D)
 	//   79025 White Dragon Elixir (L)      -> 72729 Eliksir Ksiezyca (D)
 	const Round ROUND[ROUNDS] =
 	{
-		{ 0, 0, 0, 0, { { 27102, 40, 50 }, { 51501, 3, 50 } }, 2 },
+		{ 0, 0, 0, 0, { { 27102, 40, 50 }, { 50255, 3, 50 } }, 2 },
 		{ 0, 0, 0, 0, { { 71044, 10, 50 }, { 71045, 10, 50 } }, 2 },
-		{ 0, 0, 0, 0, { { 51501, 15, 50 }, { 72049, 1, 50 } }, 2 },
+		{ 0, 0, 0, 0, { { 50255, 15, 50 }, { 72049, 1, 50 } }, 2 },
 		{ 0, 0, 0, 0, { { KEY_BOX_VNUM, 1, 50 }, { 71020, 5, 50 } }, 2 },
 		{ 0, 0, 0, 0, { { 113000, 1, 12 }, { 123000, 1, 12 }, { 133000, 1, 12 }, { 143000, 1, 12 },
-				{ 153000, 1, 12 }, { 163000, 1, 12 }, { 173000, 1, 12 }, { 51501, 20, 12 } }, 8 },
-		{ AFFECT_REFINE_PCT, 10, 100, 259200, { { 51501, 10, 100 } }, 1 },
+				{ 153000, 1, 12 }, { 163000, 1, 12 }, { 173000, 1, 12 }, { 50255, 20, 12 } }, 8 },
+		{ AFFECT_REFINE_PCT, 10, 100, 259200, { { 50255, 10, 100 } }, 1 },
 		{ 0, 0, 0, 0, { { 50060, 1, 50 }, { 28437, 1, 50 } }, 2 },
 		{ 0, 0, 0, 0, { { 113000, 1, 10 }, { 123000, 1, 10 }, { 133000, 1, 10 }, { 143000, 1, 10 },
 				{ 153000, 1, 10 }, { 163000, 1, 10 }, { 173000, 1, 10 }, { 100700, 2, 10 } }, 8 },
 		{ AFFECT_REFINE_FREE, 0, 50, 259200, { { 53315, 1, 100 } }, 1 },
-		{ 0, 0, 0, 0, { { 72725, 1, 20 }, { 71020, 10, 20 }, { 76019, 20, 20 }, { 51506, 1, 20 },
+		{ 0, 0, 0, 0, { { 72725, 1, 20 }, { 71020, 10, 20 }, { 76019, 20, 20 }, { 50258, 1, 20 },
 				{ 72729, 1, 20 } }, 5 },
 	};
 

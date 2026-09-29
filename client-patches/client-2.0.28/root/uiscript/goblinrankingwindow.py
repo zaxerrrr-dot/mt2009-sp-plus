@@ -6,9 +6,9 @@ PUBLIC_PATH						= "d:/ymir work/ui/public/"
 PATTERN_PATH					= "d:/ymir work/ui/pattern/"
 ROOT_PATH						= "mt2009_ui/goblin/event/ranking/"
 WINDOW_WIDTH					= 279
-WINDOW_HEIGHT					= 354
+WINDOW_HEIGHT					= 344
 OUTLINE_WIDTH					= 258
-OUTLINE_HEIGHT					= 310
+OUTLINE_HEIGHT					= 300
 
 window = {
 	"name"		: "treasure_hunt_event_reward_list_window",
@@ -70,13 +70,13 @@ window = {
 				{
 					"name"		: "rank_text_window",
 					"type"		: "window",
-					"style"		: ("ltr", "attach", ),
+					"style"		: ("ltr", "attach", "not_pick", ),
 					
-					"x"			: 36,
-					"y"			: 39,
+					"x"			: 15,
+					"y"			: 34,
 
-					"width"		: 22,
-					"height"	: 11,
+					"width"		: 54,
+					"height"	: 21,
 
 					"children" :
 					(
@@ -100,13 +100,13 @@ window = {
 				{
 					"name"		: "name_text_window",
 					"type"		: "window",
-					"style"		: ("ltr", "attach", ),
+					"style"		: ("ltr", "attach", "not_pick", ),
 					
-					"x"			: 122,
-					"y"			: 39,
+					"x"			: 69,
+					"y"			: 34,
 
-					"width"		: 22,
-					"height"	: 11,
+					"width"		: 125,
+					"height"	: 21,
 
 					"children" :
 					(
@@ -130,13 +130,13 @@ window = {
 				{
 					"name"		: "count_text_window",
 					"type"		: "window",
-					"style"		: ("ltr", "attach", ),
+					"style"		: ("ltr", "attach", "not_pick", ),
 					
-					"x"			: 215,
-					"y"			: 39,
+					"x"			: 194,
+					"y"			: 34,
 
-					"width"		: 22,
-					"height"	: 11,
+					"width"		: 55,
+					"height"	: 21,
 
 					"children" :
 					(
@@ -158,22 +158,34 @@ window = {
 					),
 				},
 
+				# 10 rows of 21 px (the rows' background), 23 px apart.
 				{
 					"name"		: "high_ranking_list",
 					"type"		: "listboxex",
 					"x"			: 15,
-					"y"			: 55,
-					"width"		: 203,
-					"height"	: 280,
+					"y"			: 58,
+					"width"		: 246,
+					"height"	: 230,
 				},
 
-				# etc 
+				{
+					"name"		: "empty_text",
+					"type"		: "text",
+					"x"			: 0,
+					"y"			: 160,
+					"horizontal_align"		: "center",
+					"text_horizontal_align" : "center",
+					"color"		: 0xFFA0A0A0,
+					"text"		: "Nikt jeszcze nie uko\xf1czy\xb3 tury.",
+				},
+
+				# Shown only when the own place is below the list (uigoblin.py).
 				{
 					"name" : "dot",
 					"type" : "image",
 
-					"x" : 139,
-					"y" : 303,
+					"x" : 137,
+					"y" : 292,
 							
 					"image"	: ROOT_PATH + "dot.tga",	
 				},
@@ -182,9 +194,9 @@ window = {
 					"name"		: "cur_player_rank",
 					"type"		: "listboxex",
 					"x"			: 15,
-					"y"			: 316,
-					"width"		: 203,
-					"height"	: 28,
+					"y"			: 306,
+					"width"		: 246,
+					"height"	: 21,
 				},
 
 			),
