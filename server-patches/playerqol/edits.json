@@ -346,5 +346,11 @@
   "marker": "MT2009_PLUS_PICKUP_FILTER_V1 (party)",
   "old": "\t\tLPCHARACTER owner = funcFindOwnership.owner;\n\t\t// @fixme115\n\t\tif (!owner)\n\t\t\treturn false;\n",
   "new": "\t\tLPCHARACTER owner = funcFindOwnership.owner;\n\t\t// @fixme115\n\t\tif (!owner)\n\t\t\treturn false;\n\n\t\t// MT2009_PLUS_PICKUP_FILTER_V1 (party): a party member - the companion,\n\t\t// a bot of the party - does not pick up for a member what that member\n\t\t// has filtered out (Ctrl+Z, uipickupfilter.py): it stays on the ground.\n\t\t{\n\t\t\tbool Mt2009PlusPickupFilterAllows(LPCHARACTER ch, LPITEM item);\n\t\t\tif (owner != this && !Mt2009PlusPickupFilterAllows(owner, item))\n\t\t\t\treturn false;\n\t\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BATTLE_PASS_V1 (kill share)",
+  "old": "\t\t\tBattlePassOnKill(pkQuestKiller, this);\n\t\t}\n",
+  "new": "\t\t\tBattlePassOnKill(pkQuestKiller, this);\n\t\t}\n\t\t// MT2009_PLUS_BATTLE_PASS_V1 (kill share): a Metin or a boss counts for\n\t\t// everyone who hurt it and the killer's party near it (playerbot_battlepass.h).\n\t\tif (IsStone() || GetMobRank() >= MOB_RANK_BOSS)\n\t\t{\n\t\t\tstd::vector<LPCHARACTER> hurt;\n\t\t\tfor (TDamageMap::iterator it = m_map_kDamage.begin(); it != m_map_kDamage.end(); ++it)\n\t\t\t{\n\t\t\t\tLPCHARACTER attacker = CHARACTER_MANAGER::instance().Find(it->first);\n\t\t\t\tif (attacker && attacker != pkQuestKiller)\n\t\t\t\t\thurt.push_back(attacker);\n\t\t\t}\n\t\t\tvoid BattlePassOnKillShared(LPCHARACTER killer, LPCHARACTER victim, const std::vector<LPCHARACTER>& hurt);\n\t\t\tBattlePassOnKillShared(pkQuestKiller, this, hurt);\n\t\t}\n"
  }
 ]

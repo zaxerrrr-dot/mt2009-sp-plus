@@ -817,6 +817,48 @@ void BattlePassOnKill(LPCHARACTER killer, LPCHARACTER victim)
 	}
 }
 
+// A Metin or a boss counts for everyone who hurt it and for the killer's party
+// members near it, not only for the last blow: a raid of eight kills a boss
+// once and all eight need it for their mission (the owner, 29 September).
+// The killer itself was counted by BattlePassOnKill already.
+namespace mt2009_battlepass
+{
+	struct FShareKill
+	{
+		LPCHARACTER victim;
+		std::set<DWORD>* done;
+		void operator()(LPCHARACTER ch)
+		{
+			if (!ch || !ch->IsPC() || !Counts(ch) || ch->GetMapIndex() != victim->GetMapIndex() ||
+					DISTANCE_APPROX(ch->GetX() - victim->GetX(), ch->GetY() - victim->GetY()) > 5000 ||
+					!done->insert(ch->GetPlayerID()).second)
+				return;
+			const DWORD race = victim->GetRaceNum();
+			const DWORD level = victim->GetLevel();
+			if (victim->IsStone())
+				Add(ch, TYPE_METIN, race, 1, level);
+			else
+				Add(ch, TYPE_BOSS, race, 1, level);
+		}
+	};
+}
+
+void BattlePassOnKillShared(LPCHARACTER killer, LPCHARACTER victim, const std::vector<LPCHARACTER>& hurt)
+{
+	if (!victim || victim->IsPC() || !(victim->IsStone() || victim->GetMobRank() >= MOB_RANK_BOSS))
+		return;
+	std::set<DWORD> done;
+	if (killer && killer->IsPC())
+		done.insert(killer->GetPlayerID());
+	mt2009_battlepass::FShareKill share;
+	share.victim = victim;
+	share.done = &done;
+	for (size_t i = 0; i < hurt.size(); ++i)
+		share(hurt[i]);
+	if (killer && killer->GetParty())
+		killer->GetParty()->ForEachOnlineMember(share);
+}
+
 void BattlePassOnStat(LPCHARACTER ch, DWORD stat, long long value)
 {
 	using namespace mt2009_battlepass;
