@@ -1390,7 +1390,12 @@ namespace mt2009_newpet
 		const std::string name = pet->name;
 		const int newEvolution = pet->evolution + 1;
 		if (!Change(owner, *pet, set, where))
+		{
+			Say(ch, "Ewolucja nie powiod\xb3" "a si\xea - spr\xf3" "buj ponownie.");
+			sys_log(0, "NEWPET: %s evolve of pet %s failed (row changed)", ch->GetName(), name.c_str());
+			SendData(ch, owner, false);
 			return;
+		}
 		for (int i = 0; i < EVOLUTION_ITEMS; ++i)
 			if (cost.vnum[i] && cost.count[i])
 				ch->RemoveSpecifyItem(cost.vnum[i], (ITEM_COUNT)cost.count[i]);
@@ -1568,7 +1573,13 @@ namespace mt2009_newpet
 		else if (!strcmp(sub, "rename"))
 			Rename(ch, arg1);
 		else if (!strcmp(sub, "evolve"))
+		{
+			// "evolve <id>": the window's shown pet, chosen first (a "select"
+			// sent right before it fell under the 300 ms limit above).
+			if (*arg1)
+				Select(ch, arg1);
 			Evolve(ch);
+		}
 		else if (!strcmp(sub, "skilldel"))
 			ForgetOne(ch, arg1);
 		else if (!strcmp(sub, "select"))
@@ -1741,7 +1752,7 @@ void NewPetApplyPoints(LPCHARACTER ch)
 }
 
 // "/newpet [open | sync | summon | unsummon | hatch <cell> <name> | rename
-// <name> | evolve | skilldel <slot> | select <id> | release <id> | refresh |
+// <name> | evolve [<id>] | skilldel <slot> | select <id> | release <id> | refresh |
 // info <id>]",
 // the window's (uinewpet.py); a GM also has gmexp <n>, gmlevel <n>, gmegg.
 ACMD(do_newpet)

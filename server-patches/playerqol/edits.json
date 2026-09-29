@@ -229,9 +229,9 @@
  },
  {
   "file": "char_battle.cpp",
-  "marker": "MT2009_PLUS_NEW_PET_V1 (exp)",
-  "old": "\tiExp = AdjustExpByLevel(to, iExp);\n\n\tto->PointChange(POINT_EXP, iExp, true);\n\tfrom->CreateFly(FLY_EXP, to);\n",
-  "new": "\tiExp = AdjustExpByLevel(to, iExp);\n\n\tto->PointChange(POINT_EXP, iExp, true);\n\tfrom->CreateFly(FLY_EXP, to);\n\t// MT2009_PLUS_NEW_PET_V1 (exp): the kill's experience for the owner's\n\t// New Pet System pet too, and its items' drops (playerbot_newpet.h).\n\t{\n\t\tvoid NewPetOnExp(LPCHARACTER victim, LPCHARACTER to, int exp);\n\t\tNewPetOnExp(from, to, iExp);\n\t}\n"
+  "marker": "MT2009_PLUS_NEW_PET_V1 (exp given)",
+  "old": "\t// set\n\tto->PointChange(POINT_EXP, iExp, true);\n\tfrom->CreateFly(FLY_EXP, to);\n\t// marriage\n",
+  "new": "\t// set\n\tto->PointChange(POINT_EXP, iExp, true);\n\tfrom->CreateFly(FLY_EXP, to);\n\t// MT2009_PLUS_NEW_PET_V1 (exp given): the kill's experience for the owner's\n\t// New Pet System pet too, and its items' drops (playerbot_newpet.h). In\n\t// the ENABLE_NEWEXP_CALCULATION GiveExp - the one this engine builds (the\n\t// first hook sat in the #else twin and never ran).\n\t{\n\t\tvoid NewPetOnExp(LPCHARACTER victim, LPCHARACTER to, int exp);\n\t\tNewPetOnExp(from, to, iExp);\n\t}\n\t// marriage\n"
  },
  {
   "file": "char.cpp",
@@ -454,5 +454,47 @@
   "marker": "MT2009_PLUS_DUNGEON_ONE_WARP_V1 (table)",
   "old": "\t\t\t{ \"find\",\t\t\tdungeon_find\t\t},\n",
   "new": "\t\t\t{ \"find\",\t\t\tdungeon_find\t\t},\n\t\t\t// MT2009_PLUS_DUNGEON_ONE_WARP_V1 (table)\n\t\t\t{ \"new_jump_pids\",\tdungeon_new_jump_pids\t},\n"
+ },
+ {
+  "file": "dungeon.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_RETURN_V1",
+  "old": "\tpDungeon->deadEvent = NULL;\n\n\tCDungeonManager::instance().Destroy(info->dungeon_id);\n",
+  "new": "\t// MT2009_PLUS_DUNGEON_RETURN_V1 (server-patches/playerqol): an instance whose quest set the\n\t// dungeon flag \"mt2009_keep_until\" (a unix time) outlives its players until then, not only\n\t// DUNGEON_INSTANCE_LIFETIME - the Razador and Nemere expeditions last an hour and their\n\t// guards' \"Wroc do lochu\" (d.find) found nothing five minutes after a disconnect. The quest\n\t// zeroes the flag when the expedition ends; checked again at least once a minute.\n\t{\n\t\tconst long keepUntil = (long)pDungeon->GetFlag(\"mt2009_keep_until\");\n\t\tconst long now = (long)get_global_time();\n\t\tif (keepUntil > now)\n\t\t\treturn PASSES_PER_SEC(MIN(keepUntil - now, 60L));\n\t}\n\n\tpDungeon->deadEvent = NULL;\n\n\tCDungeonManager::instance().Destroy(info->dungeon_id);\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_FLEA_SALES_V1",
+  "old": "\tconst bool withRange = version >= 2;\n\tif (requestID != 0 && window == FLEA_PRICE_OWN_SHOP_WINDOW)\n\t{\n\t\tCPlayerBotManager::instance().SendFleaMarketShopItemPriceQuote(ch, cell, requestID, withRange);\n\t\treturn;\n\t}\n\tif (requestID == 0 || window != INVENTORY || cell >= INVENTORY_AND_EQUIP_SLOT_MAX)\n\t\treturn;\n\n\tCPlayerBotManager::instance().SendFleaMarketPriceQuote(ch, INVENTORY, (WORD)cell, requestID, withRange);\n",
+  "new": "\tconst bool withRange = version >= 2;\n\t// MT2009_PLUS_FLEA_SALES_V1 (server-patches/playerqol): version 3 - the\n\t// client's \"Ceny\" window - also asks for the bots' last sale and median,\n\t// sent as \"FleaPriceSales\" before the quote. Version 2 as before.\n\tconst bool withSales = version >= 3;\n\tif (requestID != 0 && window == FLEA_PRICE_OWN_SHOP_WINDOW)\n\t{\n\t\tCPlayerBotManager::instance().SendFleaMarketShopItemPriceQuote(ch, cell, requestID, withRange, withSales);\n\t\treturn;\n\t}\n\tif (requestID == 0 || window != INVENTORY || cell >= INVENTORY_AND_EQUIP_SLOT_MAX)\n\t\treturn;\n\n\tCPlayerBotManager::instance().SendFleaMarketPriceQuote(ch, INVENTORY, (WORD)cell, requestID, withRange, withSales);\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SALE_ONCE_V1",
+  "old": "\t\tplayerbot_offline::NoteSold(ownerid, itemid, shopItem->GetVnum(), shopItem->GetInfo().count, shopItem->GetPrice().GetTotalYangAmount());\n",
+  "new": "\t\t// MT2009_PLUS_SALE_ONCE_V1 (server-patches/playerqol): the sale is the\n\t\t// owner's on the core the owner is on, and counted by vnum on every\n\t\t// core. Every core recorded it for the owner, and a bot that changed\n\t\t// channel drained the same sale again where it arrived.\n\t\tplayerbot_offline::NoteSold(ownerCh ? ownerid : 0, itemid, shopItem->GetVnum(), shopItem->GetInfo().count, shopItem->GetPrice().GetTotalYangAmount());\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_LOCK_OWNER_V1 (map)",
+  "old": "bool CClientManager::RecvIkarusShopLockBuyItem(CPeer* peer, const char* data)\n{",
+  "new": "// MT2009_PLUS_SHOP_LOCK_OWNER_V1 (map), server-patches/playerqol: whose purchase\n// placed the lock on a line, by (owner, item). Only that purchase may settle\n// the sale or release the lock (RecvIkarusShopBuyItemPacket): the core paid\n// the seller before it asked whether the line was locked at all.\nstatic std::map<std::pair<DWORD, DWORD>, DWORD>& Mt2009PlusShopLockGuests()\n{\n\tstatic std::map<std::pair<DWORD, DWORD>, DWORD> guests;\n\treturn guests;\n}\n\nbool CClientManager::RecvIkarusShopLockBuyItem(CPeer* peer, const char* data)\n{"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_LOCK_OWNER_V1 (lock)",
+  "old": "\tif (m_offlineshopShopCache.LockSellItem(subpack.ownerid, subpack.itemid, subpack.seenprice)){\n",
+  "new": "\tif (m_offlineshopShopCache.LockSellItem(subpack.ownerid, subpack.itemid, subpack.seenprice)){\n\t\t// MT2009_PLUS_SHOP_LOCK_OWNER_V1 (lock): the lock remembers its buyer.\n\t\tMt2009PlusShopLockGuests()[std::make_pair(subpack.ownerid, subpack.itemid)] = subpack.guestid;\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_LOCK_OWNER_V1 (settle)",
+  "old": "\t// unlocking locked item\n\tif(!success){\n\t\tm_offlineshopShopCache.UnlockSellItem(dwOwner, dwItem);\n\t\treturn true;\n\t}\n",
+  "new": "\t// MT2009_PLUS_SHOP_LOCK_OWNER_V1 (settle): only the purchase that placed\n\t// the lock settles the sale or releases it, and before any yang moves.\n\t{\n\t\tauto& guests = Mt2009PlusShopLockGuests();\n\t\tauto lockGuest = guests.find(std::make_pair(dwOwner, dwItem));\n\t\tif (!it->second->lock || lockGuest == guests.end() || lockGuest->second != subpack.guestid)\n\t\t{\n\t\t\tsys_err(\"MT2009_PLUS_SHOP_LOCK_OWNER_V1: %s of item %u (owner %u) by %u refused: %s\",\n\t\t\t\tsuccess ? \"settlement\" : \"release\", dwItem, dwOwner, subpack.guestid,\n\t\t\t\t!it->second->lock ? \"not locked\" : lockGuest == guests.end() ? \"lock of no purchase\" : \"another purchase's lock\");\n\t\t\treturn false;\n\t\t}\n\t\tguests.erase(lockGuest);\n\t}\n\n\t// unlocking locked item\n\tif(!success){\n\t\tm_offlineshopShopCache.UnlockSellItem(dwOwner, dwItem);\n\t\treturn true;\n\t}\n"
+ },
+ {
+  "file": "../../common/CommonDefines.h",
+  "marker": "MT2009_PLUS_MAP_ALLOW_48_V1",
+  "old": "enum eCommonDefines {\n\tMAP_ALLOW_LIMIT = 32, // 32 default\n};\n",
+  "new": "enum eCommonDefines {\n\t// MT2009_PLUS_MAP_ALLOW_48_V1: game1 of the unified layout hosts 33 maps\n\t// once the Temple of Ochao (209) sits beside the bots (m2-render-config);\n\t// every core and the db core are built from this one tree.\n\tMAP_ALLOW_LIMIT = 48, // 32 default\n};\n"
  }
 ]

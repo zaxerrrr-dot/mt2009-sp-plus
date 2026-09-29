@@ -298,7 +298,7 @@ DEFAULT_SETTINGS = {
     "panel_name": "MT2009 PLUS", "stuck_minutes": "5", "theme": "ocean", "monitor_mode": "vps", "cursor": "custom",
     # Existing installations without this key stay usable. Fresh installations
     # receive setup_complete=0 from the collector and enter the setup wizard.
-    "setup_complete": "1", "auth_enabled": "0", "auth_password_hash": "", "allow_student_chest": "0", "allow_moonlight_chest": "0", "allow_alchemy": "1", "allow_sashes": "1", "keep_demo_characters": "0", "update_seban_panel": "0",
+    "setup_complete": "1", "auth_enabled": "0", "auth_password_hash": "", "allow_student_chest": "0", "allow_alchemy": "1", "allow_sashes": "1", "keep_demo_characters": "0", "update_seban_panel": "0",
     # Rare boss/dungeon announcements are visible in every supported feed by
     # default. Missing keys on older installations deliberately inherit this.
     "legendary_notice_live_chat": "1", "legendary_notice_world_feed": "1", "legendary_notice_ticker": "1",
@@ -1423,6 +1423,7 @@ def guild_statuses():
     Pola wspólne gildii bierzemy raz; botów online i exp sumujemy ze wszystkich
     rdzeni, bo każdy rdzeń widzi tylko własną część świata."""
     gathered, newest = {}, 0.0
+    now = time.time()
     for _channel, path in channel_paths("playerbot_guild_status.tsv"):
         try:
             mtime = path.stat().st_mtime
@@ -1430,6 +1431,12 @@ def guild_statuses():
         except OSError:
             continue
         if not lines:
+            continue
+        # Rdzeń z botami przepisuje raport co minutę; rdzeń bez botów (po
+        # zmianie układu świata) zostawiał stary i te same boty liczyły się
+        # dwa razy (gildia 16 członków, 40 online). Serwer czyści je przy
+        # starcie (m2-render-config), a raport starszy niż 5 minut pomijamy.
+        if now - mtime > 300:
             continue
         newest = max(newest, mtime)
         columns = lines[0].rstrip("\r").split("\t")
@@ -1471,6 +1478,9 @@ def guild_statuses():
     result = []
     for guild in gathered.values():
         guild["avg_strength"] = guild["strength_sum"] // guild["online"] if guild["online"] else 0
+        # Nigdy więcej online niż członków.
+        if guild.get("members", 0) > 0 and guild["online"] > guild["members"]:
+            guild["online"] = guild["members"]
         guild["tier_label"] = GUILD_TIERS.get(guild["tier"], "Zwykła")
         result.append(guild)
     result.sort(key=lambda g: (g["tier"], -g["level"], -g["members"], g["name"].casefold()))
@@ -7792,7 +7802,7 @@ def manage_overrides():
     # updater; the updater's own overrides are saved only when it is on.
     keys = ("allow_alchemy", "allow_sashes")
     if panel_feature_enabled("seban_updater"):
-        keys = ("allow_student_chest", "allow_moonlight_chest", "keep_demo_characters", "update_seban_panel") + keys
+        keys = ("allow_student_chest", "keep_demo_characters", "update_seban_panel") + keys
     values = {key: "1" if request.form.get(key) == "1" else "0" for key in keys}
     write_settings(values)
     # MT2009 Plus: alchemy (Cor Draconis) and sashes are world switches that

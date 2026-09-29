@@ -106,6 +106,7 @@ Metin2-Launcher-GUI.Background.png
 launcher/Metin2Launcher.psm1
 launcher/Metin2Launcher.Diagnostics.psm1
 launcher/Metin2Launcher.Coop.psm1
+launcher/Metin2Launcher.Report.psm1
 launcher/launcher.config.example.json
 launcher/update-manifest.example.json
 launcher/server-update-files.mod.txt
@@ -115,6 +116,7 @@ tools/New-M2UpdatePackage.ps1
 linux-port/tools/update.sh
 
 # ---- engine files the port changed or added (measured against the package) --
+linux-port/docker/game/src/server/common/CommonDefines.h
 linux-port/docker/game/src/server/common/length.h
 linux-port/docker/game/src/server/common/tables.h
 linux-port/docker/game/src/server/db/src/ClientManager.cpp
@@ -166,6 +168,7 @@ linux-port/docker/game/src/server/game/src/input_p2p.cpp
 linux-port/docker/game/src/server/game/src/packet.h
 linux-port/docker/game/src/server/game/src/packet_info.cpp
 linux-port/docker/game/src/server/game/src/questlua_dungeon.cpp
+linux-port/docker/game/src/server/game/src/dungeon.cpp
 linux-port/docker/game/src/server/game/src/item.cpp
 linux-port/docker/game/src/server/game/src/item_manager.cpp
 linux-port/docker/game/src/server/game/src/item_manager.h

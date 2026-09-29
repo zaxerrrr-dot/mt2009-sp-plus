@@ -78,6 +78,7 @@ Metin2-Launcher-GUI.Background.png
 launcher/Metin2Launcher.psm1
 launcher/Metin2Launcher.Diagnostics.psm1
 launcher/Metin2Launcher.Coop.psm1
+launcher/Metin2Launcher.Report.psm1
 launcher/Metin2Launcher.Vps.psm1
 launcher/launcher.config.example.json
 launcher/update-manifest.example.json

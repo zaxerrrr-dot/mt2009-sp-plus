@@ -1314,6 +1314,10 @@ namespace
 				hubs = grottoV2Hubs;
 				hubCount = sizeof(grottoV2Hubs) / sizeof(grottoV2Hubs[0]);
 			}
+			// MT2009_PLUS_OCHAO_BOTS_V1 (hubs): the Temple of Ochao's spots and
+			// its three bosses (playerbot_ochao_bots.h).
+			else if (ch->GetMapIndex() == PLAYERBOT_MAP_OCHAO)
+				hubs = GetPlayerBotOchaoHubs(hubCount);
 			const DWORD pid = ch->GetPlayerID();
 			// A stone anybody has seen on this map comes before any hub while the
 			// bot hunts stones - by role, or on an expedition. Off the town map

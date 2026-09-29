@@ -3529,6 +3529,19 @@ namespace
 	// is drawn by: V1's ice of 81, V2's Setaou of 87.
 	const BYTE PLAYERBOT_GROTTO_V1_MIN_LEVEL = 78;
 	const BYTE PLAYERBOT_GROTTO_V2_MIN_LEVEL = 84;
+	// MT2009_PLUS_OCHAO_BOTS_V1 (map): the Temple of Ochao (map 209,
+	// metin2_map_mt_th_dungeon_01), entered from Orc Valley through Straznik
+	// Swiatyni from level 95 (temple_of_the_ochao.quest) and left through the
+	// Teleporter (9012) in its middle hall - a labyrinth, walked by
+	// playerbot_ochao_bots.h. The arrival is the quest's gate (Town.txt 89,84),
+	// the exit the Teleporter's cell (npc.txt 400,385), both cell centres with
+	// four open cells all round on the map's server_attr.
+	const long PLAYERBOT_MAP_OCHAO = 209;
+	const long PLAYERBOT_OCHAO_ARRIVAL_X = 853725;
+	const long PLAYERBOT_OCHAO_ARRIVAL_Y = 1416425;
+	const long PLAYERBOT_OCHAO_EXIT_X = 884825;
+	const long PLAYERBOT_OCHAO_EXIT_Y = 1446525;
+	const BYTE PLAYERBOT_OCHAO_MIN_LEVEL = 95;
 	// The Demon Tower is not a frontier and has no hub table: a bot goes there
 	// for the Biologist's level-50 specimen and comes back. 1001-1004 stand in
 	// two clusters and this is the denser one.
@@ -3560,6 +3573,7 @@ namespace
 			case PLAYERBOT_MAP_FIRE_LAND: outX = PLAYERBOT_FIRE_LAND_ARRIVAL_X; outY = PLAYERBOT_FIRE_LAND_ARRIVAL_Y; return true;
 			case PLAYERBOT_MAP_GROTTO_V1: outX = PLAYERBOT_GROTTO_V1_ARRIVAL_X; outY = PLAYERBOT_GROTTO_V1_ARRIVAL_Y; return true;
 			case PLAYERBOT_MAP_GROTTO_V2: outX = PLAYERBOT_GROTTO_V2_ARRIVAL_X; outY = PLAYERBOT_GROTTO_V2_ARRIVAL_Y; return true;
+			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_ARRIVAL_X; outY = PLAYERBOT_OCHAO_ARRIVAL_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			default: return false;
 		}
 	}
@@ -3580,6 +3594,7 @@ namespace
 			case PLAYERBOT_MAP_FIRE_LAND: outX = PLAYERBOT_FIRE_LAND_EXIT_X; outY = PLAYERBOT_FIRE_LAND_EXIT_Y; return true;
 			case PLAYERBOT_MAP_GROTTO_V1: outX = PLAYERBOT_GROTTO_V1_EXIT_X; outY = PLAYERBOT_GROTTO_V1_EXIT_Y; return true;
 			case PLAYERBOT_MAP_GROTTO_V2: outX = PLAYERBOT_GROTTO_V2_EXIT_X; outY = PLAYERBOT_GROTTO_V2_EXIT_Y; return true;
+			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_EXIT_X; outY = PLAYERBOT_OCHAO_EXIT_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			default: return false;
 		}
 	}
@@ -3602,7 +3617,8 @@ namespace
 				mapIndex == PLAYERBOT_MAP_SPIDER_V2 || mapIndex == PLAYERBOT_MAP_HWANG ||
 				mapIndex == PLAYERBOT_MAP_FOREST || mapIndex == PLAYERBOT_MAP_RED_FOREST ||
 				mapIndex == PLAYERBOT_MAP_FIRE_LAND ||
-				mapIndex == PLAYERBOT_MAP_GROTTO_V1 || mapIndex == PLAYERBOT_MAP_GROTTO_V2;
+				mapIndex == PLAYERBOT_MAP_GROTTO_V1 || mapIndex == PLAYERBOT_MAP_GROTTO_V2 ||
+				mapIndex == PLAYERBOT_MAP_OCHAO; // MT2009_PLUS_OCHAO_BOTS_V1
 	}
 
 	// Both Spider Dungeons: the ones reached across the desert and entered
@@ -3628,6 +3644,7 @@ namespace
 			case PLAYERBOT_MAP_FIRE_LAND: return "fire_land";
 			case PLAYERBOT_MAP_GROTTO_V1: return "grotto_v1";
 			case PLAYERBOT_MAP_GROTTO_V2: return "grotto_v2";
+			case PLAYERBOT_MAP_OCHAO: return "ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			default: return "frontier";
 		}
 	}
@@ -8293,7 +8310,8 @@ namespace
 		return !IsPlayerBotSpiderMap(mapIndex) && !IsPlayerBotMonkeyMap(mapIndex) &&
 				mapIndex != PLAYERBOT_MAP_FOREST && mapIndex != PLAYERBOT_MAP_RED_FOREST &&
 				mapIndex != PLAYERBOT_MAP_DEMON_TOWER &&
-				mapIndex != PLAYERBOT_MAP_GROTTO_V1 && mapIndex != PLAYERBOT_MAP_GROTTO_V2;
+				mapIndex != PLAYERBOT_MAP_GROTTO_V1 && mapIndex != PLAYERBOT_MAP_GROTTO_V2 &&
+				mapIndex != PLAYERBOT_MAP_OCHAO; // MT2009_PLUS_OCHAO_BOTS_V1: its stone.txt is empty
 	}
 
 	// Hunting stones right now: by role for life, or by expedition for half an

@@ -87,9 +87,11 @@ PUBLIC_LINE="PUBLIC_IP: ${CONTAINER_IP}"
 # below is well inside that.
 # -----------------------------------------------------------------------------
 # MT2009_PLUS_OCHAO_V1 (maps): 209, Swiatynia Ochao (metin2_map_mt_th_dungeon_01),
-# goes with the season-2 maps on "first" in both layouts: a players' map (level
-# 95+, entered from Orc Valley through the Temple Guardian) no bot walks onto.
-MAPS_first="1 3 4 5 6 107 81 110 111 112 113 181 182 183 200 250 302 304 209"
+# level 95+, entered from Orc Valley through the Temple Guardian. It sits on
+# game1 beside Orc Valley in both layouts (MT2009_PLUS_OCHAO_BOTS_V1): the bots
+# hunt it, and a bot cannot cross cores. game1 of the unified layout then hosts
+# 33 maps, so MAP_ALLOW_LIMIT is 48 (server-patches/playerqol, MT2009_PLUS_MAP_ALLOW_48_V1).
+MAPS_first="1 3 4 5 6 107 81 110 111 112 113 181 182 183 200 250 302 304"
 # 66, 67 and 68 - the Demon Tower, the Forest and the Red Forest - moved off
 # game2 the way 104 and 109 were moved before them: a bot cannot walk onto a map
 # its own core does not host, and every bot in this world lives on game1. The
@@ -109,7 +111,7 @@ MAPS_first="1 3 4 5 6 107 81 110 111 112 113 181 182 183 200 250 302 304 209"
 # (d.new_jump_pids, MT2009_PLUS_DUNGEON_ONE_WARP_V1) and game2 warps the players
 # straight into it - one loading screen, no lobby. Players only: no bot can stand on
 # a game2 map.
-MAPS_game1="21 23 24 25 26 61 62 63 64 65 66 67 68 69 70 71 104 108 109 79 216 217 72 73"
+MAPS_game1="21 23 24 25 26 61 62 63 64 65 66 67 68 69 70 71 104 108 109 79 216 217 72 73 209"
 MAPS_game2="41 43 44 45 46 90 208 301 303 351 352"
 
 # One world on one core, when the operator asks for it.
@@ -131,7 +133,7 @@ MAPS_game2="41 43 44 45 46 90 208 301 303 351 352"
 M2_PLAYERBOT_WORLD_LAYOUT="${M2_PLAYERBOT_WORLD_LAYOUT:-split}"
 if [ "$M2_PLAYERBOT_WORLD_LAYOUT" = "unified" ]; then
   MAPS_game1="$MAPS_game1 1 3 4 5 41 43 44 45"
-  MAPS_first="6 107 81 110 111 112 113 181 182 183 200 250 302 304 209"
+  MAPS_first="6 107 81 110 111 112 113 181 182 183 200 250 302 304"
   MAPS_game2="46 90 208 301 303 351 352"
   log "world layout: unified (all three kingdoms + frontier on game1)"
 else
@@ -284,8 +286,13 @@ render_game() {
   # ends up hosting none (first/game2 under the unified layout, or after any
   # map move) never rewrites it, so a stale file from a previous layout would
   # leave the panel counting bots that are not there. Clear it on boot; a core
-  # with bots recreates it within a second.
-  rm -f "$d/playerbot_status.tsv" "$d/playerbot_status.tsv.tmp"
+  # with bots recreates it within a second. The guild and event reports the
+  # same way: both panels add every core's guild report up, so a first/game2
+  # report left from an earlier layout showed a guild with more bots online
+  # than members, and a core with bots writes its own again within a minute.
+  rm -f "$d/playerbot_status.tsv" "$d/playerbot_status.tsv.tmp" \
+    "$d/playerbot_guild_status.tsv" "$d/playerbot_guild_status.tsv.tmp" \
+    "$d/playerbot_events_status.tsv" "$d/playerbot_events_status.tsv.tmp"
 
   # Guild marks are player-created content. Seed once, then never touch.
   if [ ! -d "$d/mark" ]; then

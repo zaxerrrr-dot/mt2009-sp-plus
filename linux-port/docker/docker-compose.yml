@@ -330,6 +330,14 @@ services:
       # front page leaves the line out entirely -- better than pointing your
       # players at whatever address happened to be in the source.
       M2_CONTACT_EMAIL: "${M2_CONTACT_EMAIL:-}"
+      # The supporters' password for /register. Empty = registration as before.
+      M2PANEL_REGISTER_ACCESS_CODE: "${M2_REGISTER_ACCESS_CODE:-}"
+      # What the supporters' sign-up page tells players to add in the launcher:
+      # the server address and the login / first channel port.
+      M2PANEL_REGISTER_GAME_ADDRESS: "${M2_REGISTER_GAME_ADDRESS:-}"
+      M2PANEL_GAME_ADDRESS: "${M2_CLIENT_ADDRESS:-${M2_PUBLIC_ADDRESS:-}}"
+      M2PANEL_LOGIN_PORT: "${M2_CLIENT_AUTH_PORT:-${M2_AUTH_PORT:-11000}}"
+      M2PANEL_GAME_PORT_RANGE: "${M2_GAME_PORT_RANGE:-13000-13002}"
 
       # ---- the client that runs in a browser ------------------------------
       # Off. With it off the panel offers nothing, serves nothing under /play

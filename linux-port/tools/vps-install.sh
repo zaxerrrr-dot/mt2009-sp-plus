@@ -446,9 +446,11 @@ secure_existing_env() {
     say "linux-port/docker/.env jest - hasla bazy zostaja takie, jakie sa."
 }
 
+ENV_KEPT=0
 prepare_env() {
     if [ -f "$ENV_FILE" ]; then
         secure_existing_env
+        ENV_KEPT=1
     else
         write_new_env
     fi
@@ -460,6 +462,14 @@ prepare_env() {
 stage_context() {
     [ -f "$ROOT/linux-port/tools/update.sh" ] || die "nie ma linux-port/tools/update.sh - wgrany folder jest niekompletny"
     sh "$ROOT/linux-port/tools/update.sh" stage || die "nie udalo sie przygotowac kontekstu budowy panelu (update.sh stage)"
+    # An install over a world with an .env is an update by another name (the
+    # launcher's install over an older world): its .env gets what update.sh
+    # gives an updated one - the example's new keys (existing values stay as
+    # they are), the channels' ports counted from M2_GAME_PORT_BASE (CH2
+    # switched on in the panel) and the once-only flips.
+    if [ "$ENV_KEPT" = 1 ]; then
+        sh "$ROOT/linux-port/tools/update.sh" env || warn "nie udalo sie uzupelnic .env (update.sh env) - serwer ruszy z tym, co jest"
+    fi
     mkdir -p "$COMPOSE_DIR/game/src/serverfiles/share/package" 2>/dev/null || true
 }
 

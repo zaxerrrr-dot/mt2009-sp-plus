@@ -21,6 +21,9 @@ Zmiany silnika opisane w `edits.json`, każda z własnym znacznikiem:
 | `MT2009_PLUS_NEW_PET_V1` | `char_item.cpp`, `char_battle.cpp`, `char.cpp`, `cmd.cpp` | Nowy system petów (`playerbot_newpet.h`), obok petów z ItemShopu: przedmioty peta, exp z zabójstw właściciela, bonusy w `ComputePoints`, komenda `/newpet`. Stan w `player.newpet_pet`. |
 | `MT2009_PLUS_GUILD_DUTY_V1` | `cmd_general.cpp`, `cmd.cpp` | Obowiązki lidera gildii (`playerbot_guildduty.h`): `/gildia_obowiazki` – zrzutka yang rozłożona w czasie, misja botów na materiały z bankiem przedmiotów, wyprawa na Wieżę Demonów. Tabele `player.guild_duty_*`. |
 | `MT2009_PLUS_GOBLIN_V1` | `cmd_general.cpp`, `cmd.cpp`, `char_item.cpp`, `pvp.cpp` | Event „Poszukiwanie skarbów” z Goblinem (`playerbot_goblin.h`): `/goblin`, Bilet Skarbów i Klucz Goblina, błogosławieństwa ulepszania (+10% / bez materiałów), fale na Wyspie Skarbów atakują goblina (NPC). |
+| `MT2009_PLUS_FLEA_SALES_V1` | `cmd_gm.cpp` | `/flea_price` w wersji 3 (okno „Ceny”): przed `FleaPriceQuote` idzie `FleaPriceSales <req> <ostatnia> <mediana> <próbki>` – ostatnia sprzedaż botów i mediana dla całego stosu. Wersja 2 bez zmian. |
+| `MT2009_PLUS_SALE_ONCE_V1` | `ikarus_shop_manager.cpp` | Sprzedaż z lady offline zapisuje się właścicielowi tylko na rdzeniu, na którym on jest (`playerbot_offline::NoteSold`) – bot po zmianie kanału nie dostaje tej samej sprzedaży drugi raz (log, historia ekwipunku w panelu). |
+| `MT2009_PLUS_SHOP_LOCK_OWNER_V1` | `../../db/src/ClientManagerIkarusShop.cpp` | Rdzeń bazy: blokada przedmiotu na ladzie pamięta, czyj zakup ją założył; tylko ten zakup rozlicza sprzedaż albo zwalnia blokadę, a sprawdzenie jest przed wypłatą sprzedawcy. |
 
 - `Apply-PlayerQolPatch.ps1` – Windows (`tools/port/Apply-MT2009PlusEngine.ps1`);
 - `apply_playerqol.py` – Linux/VPS; oba czytają ten sam `edits.json`.

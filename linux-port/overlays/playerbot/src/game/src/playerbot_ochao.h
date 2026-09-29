@@ -22,7 +22,10 @@
 // missing hit point is "attacked", IsDead() or his disappearance is "killed"
 // (the last position seen is where the portal opens). The event starts with
 // the core's world clock (CPlayerBotManager::StartWorldClock) and only on the
-// core that hosts map 209 (m2-render-config: "first"). Bots never go there.
+// core that hosts map 209 (m2-render-config: game1, beside the bots since
+// MT2009_PLUS_OCHAO_BOTS_V1). The bots' side of the temple - the way in, the
+// hunting spots, the way out - is playerbot_ochao_bots.h, whose watch runs on
+// this clock.
 //
 // The package's restart_city_pos hook (sectree_manager.cpp) is not needed: a
 // "restart in town" on 209 uses the map's own Town.txt, the temple's gate.
@@ -35,6 +38,9 @@
 #include "sectree_manager.h"
 #include "event.h"
 #include "utils.h"
+
+// MT2009_PLUS_OCHAO_BOTS_V1 (watch): playerbot_ochao_bots.h.
+namespace { void TickPlayerBotOchao(); }
 
 namespace mt2009_ochao
 {
@@ -228,6 +234,7 @@ namespace mt2009_ochao
 			return 0;
 		}
 		Tick();
+		TickPlayerBotOchao(); // MT2009_PLUS_OCHAO_BOTS_V1 (watch)
 		return PASSES_PER_SEC(TICK_SECONDS);
 	}
 

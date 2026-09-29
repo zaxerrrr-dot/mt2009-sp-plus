@@ -118,6 +118,7 @@ quest nemere_dungeon begin
 		function finish()
 			local c = nemere_dungeon.cfg()
 			d.setf("closed", 1)
+			d.setf("mt2009_keep_until", 0)
 			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
 			d.exit_all()
 		end
@@ -133,6 +134,9 @@ quest nemere_dungeon begin
 			local c = nemere_dungeon.cfg()
 			d.setf("init", 1)
 			d.setf("entered", 1)
+			-- MT2009_PLUS_DUNGEON_RETURN_V1: the instance outlives its players until the time limit
+			-- (dungeon.cpp), so "Wróæ do lochu" at the guard finds it after a disconnect.
+			d.setf("mt2009_keep_until", get_global_time() + c.limit_min * 60 + 60)
 			d.setf("step", 0)
 			d.setf("left", c.limit_min)
 			d.spawn_mob(20397, c.lion[1], c.lion[2])

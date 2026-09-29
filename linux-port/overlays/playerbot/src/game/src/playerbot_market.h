@@ -208,6 +208,11 @@ namespace
 		if (WantsPlayerBotSashPieceOffer(ch, offer))
 			return true;
 
+		// The piece over an outdated shield, helmet or body armour
+		// (IsPlayerBotOutdatedGearOffer, playerbot_gear.h).
+		if (IsPlayerBotOutdatedGearOffer(ch, offer))
+			return true;
+
 		// Development demand is shared with the journey and own-shop reclaim.
 		if (offer->GetType() == ITEM_SKILLBOOK || offer->GetVnum() == PLAYERBOT_GRAND_MASTER_STONE_VNUM)
 			return IsPlayerBotProgressionOffer(ch, offer);
@@ -223,6 +228,10 @@ namespace
 		// A Moonlight chest, to open (WantsPlayerBotMoonlightChest).
 		if (offer->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			return WantsPlayerBotMoonlightChest(ch);
+
+		// A flooded material for the refiners' exchange (playerbot_bonus.h).
+		if (IsPlayerBotExchangeBuyOffer(ch, offer))
+			return true;
 
 		// A material it is short of right now. This is the whole reason a bot
 		// walks the market: the alternative is farming the same material for an
@@ -527,9 +536,24 @@ namespace
 			const long long fair = GetPlayerBotShopAskingPrice(item);
 			// A book comes out of the visit's book purse (community patch 2,
 			// point 5), which counts what the visit has already spent on books.
+			// Or out of what the bot holds over PLAYERBOT_BOOK_SURPLUS_GOLD.
 			if (item->GetType() == ITEM_SKILLBOOK)
-				return fair > 0 && price <= fair * 2 && price <= GetPlayerBotBookBudgetLeft(ch);
+				return fair > 0 && price <= fair * 2 &&
+						price <= std::max(GetPlayerBotBookBudgetLeft(ch), GetPlayerBotBookSurplus(ch));
 			return fair > 0 && price <= fair * 2 && price <= spare * 30 / 100;
+		}
+		// A flooded material for the exchange: at no more than the flood's
+		// price a piece, out of PLAYERBOT_EXCHANGE_BUY_PERCENT of the spare.
+		if (IsPlayerBotExchangeBuyOffer(ch, item) && !PlayerBotNeedsRefineMaterial(ch, item->GetVnum()))
+			return price / std::max<long long>(1, (long long)item->GetCount()) <=
+					(long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_EXCHANGE_UNIT_PRICE_MAX) &&
+					price <= spare * PLAYERBOT_EXCHANGE_BUY_PERCENT / 100;
+		// The piece over outdated gear: PLAYERBOT_OUTDATED_GEAR_BUDGET_PERCENT
+		// of what the bot can spend, near the market's price for it.
+		if (IsPlayerBotOutdatedGearOffer(ch, item)) {
+			const long long fair = GetPlayerBotShopAskingPrice(item);
+			return (fair <= 0 || price <= fair * 2) &&
+					price <= spare * PLAYERBOT_OUTDATED_GEAR_BUDGET_PERCENT / 100;
 		}
 		// The class's level-30 weapon has its own share (community patch 2,
 		// point 1): PLAYERBOT_LEVEL30_BUDGET_PERCENT for the purchase and the

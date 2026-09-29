@@ -102,25 +102,10 @@ class GameWindow(ui.ScriptWindow):
 		# postaciom, ktore naprawde maja gm_level > 0.
 		constInfo.IsGM = False
 
-		# Znaczek Top1 (serwer: top1_badge_event, playerbot_manager.cpp): postac z
-		# najwyzszym poziomem dostaje nieuzywana flage afektu AFF_HAIR (serwer nr 40,
-		# czyli bit 39). Klient numeruje flagi od zera (AFFECT_YMIR=0 ... FIRE=28,
-		# stad "28" dla AFF_FIRE=29 w starym uiAffectShower), wiec bit 39 = HAIR.
-		# UWAGA: chr.AFFECT_CHINA_FIREWORK w tym buildzie zwraca 224 - to NIE jest
-		# numer bitu, dlatego stala jest wpisana wprost. Tu doczepiamy do niej efekt
-		# TOP1.mse - ten sam mechanizm, ktorym silnik rysuje znak GM (gm.mse dla
-		# AFFECT_YMIR), wiec rozmiar i miganie sa identyczne.
-		TOP1_AFFECT_BIT = 39
-		try:
-			# Zaczepienie na korzeniu postaci (""): przesuniecie z top1.mse jest wtedy
-			# pionowe (z=110 wypadalo w pasie, z=240 = tuz nad nazwa). Na kosci glowy
-			# ("Bip01 Head") obraca sie z kostka i laduje z boku postaci.
-			chrmgr.RegisterEffect(chrmgr.EFFECT_AFFECT + TOP1_AFFECT_BIT, "", "d:/ymir work/effect/gm/top1.mse")
-			dbg.TraceError("Top1 effect registered for affect bit %d (EFFECT_AFFECT=%s, POISON=%s, STUN=%s, MOV_SPEED=%s, FISH_MIND=%s)" % (
-				TOP1_AFFECT_BIT, getattr(chrmgr, "EFFECT_AFFECT", "?"), getattr(chr, "AFFECT_POISON", "?"),
-				getattr(chr, "AFFECT_STUN", "?"), getattr(chr, "AFFECT_MOV_SPEED_POTION", "?"), getattr(chr, "AFFECT_FISH_MIND", "?")))
-		except Exception, e:
-			dbg.TraceError("Top1 effect register failed: %s" % e)
+		# Znaczek Top1 to tablica nad glowa (Top1Badge, interfacemodule.py).
+		# Dawna rejestracja efektu afektu wskazywala d:/ymir work/effect/gm/top1.mse,
+		# ktorego nie ma w zadnej paczce: kazdy start dopisywal blad LoadScript i
+		# linie sledzenia do syserr.txt, a nic nie rysowal - usunieta.
 
 		# Zestaw kostiumow (serwer: MT2009_PLUS_COSTUME_SET_V1, afekt 545): postac
 		# z pelnym zestawem ma nieuzywana flage AFF_FIRE_RAGE (serwer nr 45, czyli
@@ -2834,6 +2819,7 @@ class GameWindow(ui.ScriptWindow):
 			"FleaPriceQuote"		: self.FleaPriceQuote,
 			"FleaMarketStackUpdate"	: self.FleaMarketStackUpdate,
 			"FleaPriceRange"		: self.FleaPriceRange,
+			"FleaPriceSales"		: self.FleaPriceSales,
 			"ShowMeMallPassword"	: self.AskMallPassword,
 			"item_mall"				: self.__ItemMall_Open,
 			# END_OF_ITEM_MALL
@@ -3649,6 +3635,11 @@ class GameWindow(ui.ScriptWindow):
 		if self.interface:
 			self.interface.offlineShopManage.SetFleaMarketPriceRange(
 				int(requestID), int(minPrice), int(maxPrice))
+
+	def FleaPriceSales(self, requestID, lastSalePrice, medianPrice, medianUnits, *rest):
+		if self.interface:
+			self.interface.offlineShopManage.SetFleaMarketPriceSales(
+				int(requestID), int(lastSalePrice), int(medianPrice), int(medianUnits))
 
 	def __EnableTestServerFlag(self):
 		app.EnableTestServerFlag()

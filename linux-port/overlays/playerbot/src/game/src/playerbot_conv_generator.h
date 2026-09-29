@@ -1124,7 +1124,10 @@ namespace playerbot_conv
 					"Nie musisz przeplacac, na straganie $WHERE stoi za $PRICE." };
 				out = PBC_PICK(g, k);
 			}
-			else if (offer >= price)
+			// The price as the bot says it ("1.5kk" for 1 523 000) is the
+			// price: an offer of what the stall shows was answered "troche
+			// malo" to the bot's own words (Setnil).
+			else if (offer >= price || SayMoney(offer) == SayMoney(price))
 			{
 				static const char* const k[] = {
 					"Za $OFFER moze byc. $ITEM stoi na moim straganie $WHERE, kup normalnie.",

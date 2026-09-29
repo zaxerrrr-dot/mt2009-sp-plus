@@ -154,6 +154,8 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_economy.h"
 #include "playerbot_progression_needs.h"
 #include "playerbot_bonus.h"
+#include "playerbot_ochao.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the temple's map and clock, before the bots' knowledge of it
+#include "playerbot_ochao_bots.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the bots in the Temple of Ochao
 #include "playerbot_travel.h"
 #include "playerbot_planner.h"
 // Which of Iwakura's personalities claims a bot, the Grinder's lock and the
@@ -578,8 +580,14 @@ namespace
 			lockLevel = GetPlayerBotGuildDropperGround(ch->GetPlayerID()).lock;
 		else if (persona)
 			lockLevel = GetPlayerBotPersonaLockLevel(ch, state);
-		const bool shouldLock = lockLevel != 0 && ch->GetLevel() >= lockLevel;
 #if defined(PLAYERBOT_ENGINE_MT2009)
+		// The owner's Anti-Exp Ring holds its companion too (upstream 2.2.39):
+		// with the ring on, the companion took its share of every kill in the
+		// party and outgrew its owner. The monsters' drop is not touched
+		// (DistributeExp falls back to GetMostAttacked). It tells its owner.
+		LPCHARACTER ringOwner = sidekick ? GetPlayerBotSidekickOwnerHere(ch->GetPlayerID()) : NULL;
+		const bool ownerRing = ringOwner && ringOwner->FindAffect(AFFECT_EXP_BLOCK) != NULL;
+		const bool shouldLock = (lockLevel != 0 && ch->GetLevel() >= lockLevel) || ownerRing;
 		const bool locked = ch->FindAffect(AFFECT_EXP_BLOCK) != NULL;
 		if (locked == shouldLock)
 			return;
@@ -589,14 +597,19 @@ namespace
 			sys_log(0, "PLAYERBOT_AI: exp lock lifted pid=%u name=%s level=%u lock=%u personality=%u",
 					ch->GetPlayerID(), ch->GetName(), (unsigned)ch->GetLevel(),
 					(unsigned)lockLevel, (unsigned)state.bPersonality);
+			if (ringOwner)
+				SayPlayerBotSidekick(ringOwner, "Pierscien Anty-Exp zdjety - znowu zbieram doswiadczenie.");
 			return;
 		}
 		ch->AddAffect(AFFECT_EXP_BLOCK, POINT_NONE, 0, 0, INFINITE_AFFECT_DURATION, 0, true, true);
+		if (ownerRing)
+			SayPlayerBotSidekick(ringOwner, "Masz Pierscien Anty-Exp, wiec ja tez nie zbieram doswiadczenia.");
 		sys_log(0, "PLAYERBOT_AI: exp locked for a %s pid=%u name=%s level=%u lock=%u personality=%u",
-				sidekick ? "companion playing alone" : persona ? "grinder" : "dropper", ch->GetPlayerID(),
+				ownerRing ? "companion of an Anti-Exp Ring" : sidekick ? "companion playing alone" : persona ? "grinder" : "dropper", ch->GetPlayerID(),
 				ch->GetName(), (unsigned)ch->GetLevel(),
 				(unsigned)lockLevel, (unsigned)state.bPersonality);
 #else
+		const bool shouldLock = lockLevel != 0 && ch->GetLevel() >= lockLevel;
 		// r40250 has no AFFECT_EXP_BLOCK at all - PointChange there knows no
 		// such affect, so there is nothing to ask it for and a dropper on that
 		// line goes on levelling as it always did. Freezing it would need an
@@ -2089,10 +2102,17 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (!item || item->GetCell() != cell || !IsPlayerBotGeneralSkillBook(item->GetVnum()) ||
-					!CanPlayerBotReadGeneralSkillBookNow(ch, item->GetVnum()))
+			if (!item || item->GetCell() != cell)
 				continue;
-			const DWORD skill = GetPlayerBotGeneralSkillBookSkill(item->GetVnum());
+			// And the polymorph books and the Mining Guide
+			// (IsPlayerBotExtraSkillBook), on the same clock.
+			const bool extra = IsPlayerBotExtraSkillBook(item->GetVnum());
+			if (extra ? !CanPlayerBotReadExtraSkillBookNow(ch, item->GetVnum())
+					: (!IsPlayerBotGeneralSkillBook(item->GetVnum()) ||
+						!CanPlayerBotReadGeneralSkillBookNow(ch, item->GetVnum())))
+				continue;
+			const DWORD skill = extra ? GetPlayerBotExtraSkillBookSkill(item->GetVnum())
+					: GetPlayerBotGeneralSkillBookSkill(item->GetVnum());
 #if defined(PLAYERBOT_ENGINE_MT2009)
 			ClampPlayerBotBookWait(ch, skill);
 #endif
@@ -5930,9 +5950,15 @@ WritePlayerBotGuildStatus(dwNow);
 		// probuje walczyc z graczem zamiast podniesc przedmiot nalezacy do
 		// niego", teivos, 27 September). Not under the linger's health: then
 		// the fight comes first, as it does against the stone's own pack.
+		// Not for a companion at its owner's side: what it picks up is its
+		// window's setting ("Nic" is nothing), which its own pass keeps - at a
+		// Metin it gathered everything round for twenty seconds, whatever the
+		// setting, and ran off from the fight (upstream 2.2.39). Let off the
+		// leash or playing alone it is any bot.
 		bool bLootDecided = false;
 		const bool bStoneLootOpen = state.dwStoneBrokenTime != 0 &&
-				dwNow - state.dwStoneBrokenTime < PLAYERBOT_METIN_LOOT_DASH_TIME;
+				dwNow - state.dwStoneBrokenTime < PLAYERBOT_METIN_LOOT_DASH_TIME &&
+				!IsPlayerBotSidekickLeashed(ch);
 		if (bStoneLootOpen && ch->GetMaxHP() > 0 &&
 				ch->GetHP() * 100 >= ch->GetMaxHP() * PLAYERBOT_METIN_LOOT_LINGER_MIN_HP_PERCENT)
 		{
@@ -6880,6 +6906,8 @@ WritePlayerBotGuildStatus(dwNow);
 			!bPartyCanContinue ||
 			// In a person's party, round the person (IsPlayerBotTargetOffHumanLeader).
 			(!bTargetIsDuelFoe && IsPlayerBotTargetOffHumanLeader(ch, target)) ||
+			// Nor on ground no walk reaches (IsPlayerBotMonsterOutOfWalk).
+			(bTargetIsMonster && IsPlayerBotMonsterOutOfWalk(ch, target)) ||
 			IsPlayerBotSafeZone(ch->GetMapIndex(), target ? target->GetX() : ch->GetX(),
 					target ? target->GetY() : ch->GetY()) ||
 			target->GetMapIndex() != ch->GetMapIndex() ||
@@ -7255,8 +7283,36 @@ static void GetPlayerBotFleaMarketRange(LPCHARACTER ch, LPITEM item,
 // written for - the published 2.0.49 one four, and a fifth is a TypeError in
 // its syserr and no hint at all - so FleaPriceQuote keeps its four, and a
 // client that knows no FleaPriceRange is never sent one.
+// The "Ceny" window's sales line (request version 3, bSales): the last price
+// the bots paid for one and the median of the sale memory's prices, each for
+// the whole stack, and how many sales stand behind it. The median without the
+// recency nudge GetPlayerBotSaleUnitPrice puts on it, and 0 while there are
+// fewer than PLAYERBOT_SALE_MIN_SAMPLES sales ("Za malo sprzedazy"). The
+// memory is written once per purchase, by the buyer's core
+// (BotOfflinePoll), so a sale is in it once.
+static void GetPlayerBotFleaMarketSales(LPITEM item, unsigned long long& lastPrice,
+		unsigned long long& medianPrice, DWORD& samples)
+{
+	lastPrice = medianPrice = 0;
+	samples = 0;
+	const DWORD skillVnum = item->GetType() == ITEM_SKILLBOOK ? GetPlayerBotSkillBookSkillVnum(item) : 0;
+	TPlayerBotSaleMap::const_iterator it =
+			s_mapSaleMemory.find(PlayerBotSaleKey(item->GetVnum(), item->GetRefineLevel(), skillVnum));
+	if (it == s_mapSaleMemory.end() || it->second.bCount == 0)
+		return;
+	const TPlayerBotSaleMemory& mem = it->second;
+	const unsigned long long count = std::max<DWORD>(1, item->GetCount());
+	lastPrice = (unsigned long long)mem.dwUnitPrice[(mem.bNext + PLAYERBOT_SALE_MEMORY - 1) % PLAYERBOT_SALE_MEMORY] * count;
+	samples = mem.bCount;
+	if (mem.bCount < PLAYERBOT_SALE_MIN_SAMPLES)
+		return;
+	std::vector<DWORD> sorted(mem.dwUnitPrice, mem.dwUnitPrice + mem.bCount);
+	std::sort(sorted.begin(), sorted.end());
+	medianPrice = (unsigned long long)sorted[sorted.size() / 2] * count;
+}
+
 static void SendPlayerBotFleaMarketQuote(LPCHARACTER ch, LPITEM item,
-		DWORD dwRequestID, bool bRange)
+		DWORD dwRequestID, bool bRange, bool bSales = false)
 {
 	DWORD suggestedPrice = 0;
 	DWORD observedPrice = 0;
@@ -7282,17 +7338,26 @@ static void SendPlayerBotFleaMarketQuote(LPCHARACTER ch, LPITEM item,
 	if (bRange)
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "FleaPriceRange %u %llu %llu",
 				dwRequestID, marketMinPrice, marketMaxPrice);
+	if (bSales)
+	{
+		unsigned long long lastSalePrice = 0, medianPrice = 0;
+		DWORD medianUnits = 0;
+		if (item)
+			GetPlayerBotFleaMarketSales(item, lastSalePrice, medianPrice, medianUnits);
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "FleaPriceSales %u %llu %llu %u",
+				dwRequestID, lastSalePrice, medianPrice, medianUnits);
+	}
 	ch->ChatPacket(CHAT_TYPE_COMMAND, "FleaPriceQuote %u %u %u %u",
 			dwRequestID, suggestedPrice, observedPrice, sampleCount);
 }
 
 void CPlayerBotManager::SendFleaMarketPriceQuote(LPCHARACTER ch, BYTE bWindow,
-		WORD wCell, DWORD dwRequestID, bool bRange)
+		WORD wCell, DWORD dwRequestID, bool bRange, bool bSales)
 {
 	if (!ch || IsManaged(ch->GetPlayerID()))
 		return;
 
-	SendPlayerBotFleaMarketQuote(ch, ch->GetItem(TItemPos(bWindow, wCell)), dwRequestID, bRange);
+	SendPlayerBotFleaMarketQuote(ch, ch->GetItem(TItemPos(bWindow, wCell)), dwRequestID, bRange, bSales);
 }
 
 // The same hint for a line already on the asker's own offline shop (Piciu713,
@@ -7309,7 +7374,7 @@ void CPlayerBotManager::SendFleaMarketPriceQuote(LPCHARACTER ch, BYTE bWindow,
 // the window stays as a world with the Dom Towarowy off leaves it. Nothing on
 // r40250.
 void CPlayerBotManager::SendFleaMarketShopItemPriceQuote(LPCHARACTER ch,
-		DWORD dwShopItemID, DWORD dwRequestID, bool bRange)
+		DWORD dwShopItemID, DWORD dwRequestID, bool bRange, bool bSales)
 {
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 	if (!ch || IsManaged(ch->GetPlayerID()))
@@ -7323,13 +7388,14 @@ void CPlayerBotManager::SendFleaMarketShopItemPriceQuote(LPCHARACTER ch,
 	LPITEM preview = BotOfflinePreview(*line);
 	if (!preview)
 		return;
-	SendPlayerBotFleaMarketQuote(ch, preview, dwRequestID, bRange);
+	SendPlayerBotFleaMarketQuote(ch, preview, dwRequestID, bRange, bSales);
 	M2_DELETE(preview);
 #else
 	(void)ch;
 	(void)dwShopItemID;
 	(void)dwRequestID;
 	(void)bRange;
+	(void)bSales;
 #endif
 }
 

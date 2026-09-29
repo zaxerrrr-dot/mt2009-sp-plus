@@ -619,6 +619,9 @@ for _grp in PLAYER_SKILLS.values():
 for _grp in PLAYER_SKILLS_EN.values():
     for _sid, _nm in _grp:
         SKILL_ID_NAMES[_sid] = _nm
+# By the page's language, for the explanations of the bots' decisions.
+SKILL_NAMES_BY_LANG = {"pl": SKILL_ID_NAMES_PL, "en": SKILL_ID_NAMES}
+SKILL_GROUP_NAMES_BY_LANG = {"pl": SKILL_GROUP_NAMES, "en": SKILL_GROUP_NAMES_EN}
 
 
 def skill_rank_label(master_type, level):
@@ -1172,6 +1175,10 @@ def read_ai_weights():
     # not know what CONFIG holds, and must not write a guess over it.
     vals["CHEST"] = None
     vals["CHEST_STONE"] = None
+    # How many days the core keeps its explanations of the bots' decisions
+    # (log.playerbot_listing, log.playerbot_equip; mt2009). None while the key
+    # is absent, which the core reads as seven days; 0 is off.
+    vals["EXPLAIN"] = None
     try:
         with open(AI_WEIGHTS, encoding="utf-8", errors="replace") as fh:
             for line in fh:
@@ -1260,6 +1267,15 @@ def read_ai_weights():
                     except ValueError:
                         pass
                     continue
+                # Days, not a weight: without this `continue` the slider branch
+                # below would clamp it to 25..250 and the next save would write
+                # that ("A switch read in a loop of sliders has to continue").
+                if name == "EXPLAIN":
+                    try:
+                        vals["EXPLAIN"] = max(0, min(EXPLAIN_MAX_DAYS, int(parts[1])))
+                    except ValueError:
+                        pass
+                    continue
                 if name not in vals:
                     continue
                 try:
@@ -1328,6 +1344,10 @@ def write_ai_weights(vals):
     for key in ("CHEST", "CHEST_STONE"):
         if vals.get(key) is not None:
             body.append("%s\t%d" % (key, max(0, min(1000, int(vals[key])))))
+    # The days the core keeps its explanations; written only once set, so an
+    # untouched install keeps the core's own default.
+    if vals.get("EXPLAIN") is not None:
+        body.append("EXPLAIN\t%d" % max(0, min(EXPLAIN_MAX_DAYS, int(vals["EXPLAIN"]))))
     # What the file holds beyond this page's keys stays: rewriting it from the
     # page's own list dropped a newer core's settings and a hand-set TICK_MS
     # at every save (the advanced panel already kept them).
@@ -1703,6 +1723,7 @@ def read_guild_status():
     minutes. Online bots and the experience offered are summed over the cores,
     everything else is the guild's own (the same on every core)."""
     guilds, newest = {}, 0
+    now = time.time()
     for path in GUILD_STATUS_FILES:
         try:
             mtime = os.path.getmtime(path)
@@ -1711,6 +1732,13 @@ def read_guild_status():
         except OSError:
             continue
         if not lines:
+            continue
+        # A core rewrites its report once a minute while it hosts bots; one
+        # that hosts none since a layout change never does, and its old report
+        # counted the same bots a second time (a guild of 16 with 40 online).
+        # The server clears those at start (m2-render-config); a report five
+        # minutes old is left out here all the same.
+        if now - mtime > 300:
             continue
         newest = max(newest, mtime)
         head = lines[0].rstrip("\r").split("\t")
@@ -1765,6 +1793,9 @@ def read_guild_status():
     out = []
     for g in guilds.values():
         g["avg_strength"] = g["strength_sum"] // g["online"] if g["online"] else 0
+        # Never more online than the guild has members.
+        if g.get("members", 0) > 0 and g["online"] > g["members"]:
+            g["online"] = g["members"]
         g["tier_key"] = GUILD_TIER_KEYS[min(max(g["tier"], 0), 3)]
         g["empire_key"] = GUILD_EMPIRE_KEYS.get(g["empire"], "gl_empire_unknown")
         out.append(g)
@@ -3503,8 +3534,8 @@ T = {
  "ch2_save":    {"pl":"Zapisz (zadziała po restarcie serwera)", "en":"Save (applies after a server restart)"},
  "ch2_now_off": {"pl":"Teraz: CH2 wyłączony - wszystkie boty grają na CH1.", "en":"Now: CH2 is off - every bot plays on CH1."},
  "ch2_now_on":  {"pl":"Teraz: CH2 włączony, na CH2 gra {share}% botów.", "en":"Now: CH2 is on, {share}% of the bots play on it."},
- "ch2_ports":   {"pl":"Gracze wejdą na CH2 po najbliższym uruchomieniu serwera z launchera (GRAJ) - launcher otworzy wtedy porty 13010-13012. Boty grają na CH2 już teraz.",
-                 "en":"Players reach CH2 after the next start from the launcher (GRAJ), which opens ports 13010-13012 then. The bots play on CH2 already."},
+ "ch2_ports":   {"pl":"Gracze wejdą na CH2 po najbliższym uruchomieniu serwera z launchera (GRAJ) - launcher otworzy wtedy porty {ports}. Boty grają na CH2 już teraz.",
+                 "en":"Players reach CH2 after the next start from the launcher (GRAJ), which opens ports {ports} then. The bots play on CH2 already."},
  "ch2_pending": {"pl":"Zapisano w panelu: {what}. Zadziała po restarcie serwera.", "en":"Saved in the panel: {what}. Applies after a server restart."},
  "ch2_on_word": {"pl":"CH2 włączony, {share}% botów", "en":"CH2 on, {share}% of the bots"},
  "ch2_off_word": {"pl":"CH2 wyłączony", "en":"CH2 off"},
@@ -4311,6 +4342,85 @@ T.update({
  "se_people_more": {"pl": "Gracze spoza pierwszej pięćdziesiątki", "en": "Players outside the top fifty"},
 })
 
+# The bots' decisions (28 September): the world page of what the core explains
+# - why a line went on a counter at its price, why a piece was put on - and the
+# AI page's switch for how long it keeps those rows.
+T.update({
+ "dc_nav": {"pl": "🔎 Decyzje botów", "en": "🔎 Bot decisions",
+       "de": "🔎 Entscheidungen der Bots", "tr": "🔎 Bot kararları"},
+ "dc_open": {"pl": "🔎 Otwórz decyzje botów", "en": "🔎 Open bot decisions",
+       "de": "🔎 Entscheidungen der Bots öffnen", "tr": "🔎 Bot kararlarını aç"},
+ "dc_dash_hint": {"pl": "Nietypowe decyzje botów z całego świata: co wystawiły i po ile, co założyły i dlaczego — żeby dziwne zachowanie dało się dokładnie zgłosić.",
+       "en": "The bots' unusual decisions across the world: what they listed and at what price, what they put on and why — so odd behaviour can be reported precisely.",
+       "de": "Ungewöhnliche Entscheidungen der Bots in der ganzen Welt: was sie eingestellt haben und zu welchem Preis, was sie angelegt haben und warum — damit seltsames Verhalten genau gemeldet werden kann.",
+       "tr": "Botların dünya genelindeki olağandışı kararları: neyi hangi fiyata tezgâha koydular, neyi neden kuşandılar — tuhaf davranışlar tam olarak bildirilebilsin diye."},
+ "dc_intro": {"pl": "Wiersze z ostatnich godzin, które rdzeń oznaczył flagą. „?” rozwija wyjaśnienie, „Kopiuj” daje je jako tekst do zgłoszenia, a nick bota otwiera jego kartę na mapie.",
+       "en": "Rows of the last hours the core flagged. “?” opens an explanation, “Copy” gives it as text for a report, and a bot's name opens its card on the map.",
+       "de": "Zeilen der letzten Stunden, die der Kern markiert hat. „?“ klappt eine Erklärung auf, „Kopieren“ gibt sie als Text für eine Meldung, und der Name eines Bots öffnet seine Karte auf der Karte.",
+       "tr": "Çekirdeğin son saatlerde işaretlediği satırlar. “?” bir açıklamayı açar, “Kopyala” onu bildirim için metin olarak verir, botun adı ise haritadaki kartını açar."},
+ "dc_state_on": {"pl": "Zapisywanie wyjaśnień: włączone, wiersze trzymane {n} dni.", "en": "Recording explanations: on, rows kept {n} days.",
+       "de": "Erklärungen aufzeichnen: an, Zeilen werden {n} Tage aufbewahrt.", "tr": "Açıklamaları kaydetme: açık, satırlar {n} gün saklanır."},
+ "dc_state_default": {"pl": " (domyślnie — w pliku wag nie ma klucza EXPLAIN)", "en": " (the default — the weights file has no EXPLAIN key)",
+       "de": " (Standard — die Gewichtsdatei hat keinen EXPLAIN-Schlüssel)", "tr": " (varsayılan — ağırlık dosyasında EXPLAIN anahtarı yok)"},
+ "dc_state_off": {"pl": "Zapisywanie wyjaśnień: wyłączone (EXPLAIN 0) — rdzeń nic nie zapisuje.",
+       "en": "Recording explanations: off (EXPLAIN 0) — the core records nothing.",
+       "de": "Erklärungen aufzeichnen: aus (EXPLAIN 0) — der Kern zeichnet nichts auf.",
+       "tr": "Açıklamaları kaydetme: kapalı (EXPLAIN 0) — çekirdek hiçbir şey kaydetmiyor."},
+ "dc_state_engine": {"pl": "Ten silnik (r40250) nie zapisuje wyjaśnień — robi to tylko linia 2.x.",
+       "en": "This engine (r40250) records no explanations — only the 2.x line does.",
+       "de": "Diese Engine (r40250) zeichnet keine Erklärungen auf — nur die 2.x-Linie tut das.",
+       "tr": "Bu motor (r40250) açıklama kaydetmez — bunu yalnızca 2.x hattı yapar."},
+ "dc_change": {"pl": "Zmień w zachowaniu botów", "en": "Change it in bot behaviour",
+       "de": "Im Bot-Verhalten ändern", "tr": "Bot davranışında değiştir"},
+ "dc_hours": {"pl": "Ostatnie", "en": "The last", "de": "Die letzten", "tr": "Son"},
+ "dc_hours_n": {"pl": "{n} godz.", "en": "{n} h", "de": "{n} Std.", "tr": "{n} sa"},
+ "dc_kind": {"pl": "Rodzaj", "en": "Kind", "de": "Art", "tr": "Tür"},
+ "dc_kind_all": {"pl": "Wszystko", "en": "Everything", "de": "Alles", "tr": "Hepsi"},
+ "dc_kind_equip": {"pl": "Ekwipunek", "en": "Equipment", "de": "Ausrüstung", "tr": "Ekipman"},
+ "dc_kind_listing": {"pl": "Lada", "en": "Counter", "de": "Ladentisch", "tr": "Tezgâh"},
+ "dc_flag": {"pl": "Flaga", "en": "Flag", "de": "Markierung", "tr": "İşaret"},
+ "dc_flag_unusual": {"pl": "Każda nietypowa", "en": "Any unusual", "de": "Jede ungewöhnliche", "tr": "Her olağandışı"},
+ "dc_flag_any": {"pl": "Każda flaga", "en": "Any flag", "de": "Jede Markierung", "tr": "Her işaret"},
+ "dc_show": {"pl": "Pokaż", "en": "Show", "de": "Anzeigen", "tr": "Göster"},
+ "dc_col_time": {"pl": "Czas", "en": "Time", "de": "Zeit", "tr": "Zaman"},
+ "dc_col_bot": {"pl": "Bot", "en": "Bot", "de": "Bot", "tr": "Bot"},
+ "dc_col_what": {"pl": "Co", "en": "What", "de": "Was", "tr": "Ne"},
+ "dc_col_flags": {"pl": "Flagi", "en": "Flags", "de": "Markierungen", "tr": "İşaretler"},
+ "dc_none": {"pl": "Brak oznaczonych decyzji w tym oknie czasu.", "en": "No flagged decisions in this window.",
+       "de": "Keine markierten Entscheidungen in diesem Zeitraum.", "tr": "Bu zaman aralığında işaretli karar yok."},
+ "dc_missing": {"pl": "W bazie nie ma jeszcze tabel wyjaśnień (log.playerbot_equip, log.playerbot_listing): starsza wersja świata albo rdzeń ich jeszcze nie utworzył.",
+       "en": "The database has no explanation tables yet (log.playerbot_equip, log.playerbot_listing): an older world, or the core has not created them yet.",
+       "de": "Die Datenbank hat noch keine Erklärungstabellen (log.playerbot_equip, log.playerbot_listing): eine ältere Welt, oder der Kern hat sie noch nicht angelegt.",
+       "tr": "Veritabanında henüz açıklama tabloları yok (log.playerbot_equip, log.playerbot_listing): daha eski bir dünya ya da çekirdek onları henüz oluşturmadı."},
+ "dc_count": {"pl": "Wierszy: {n}", "en": "Rows: {n}", "de": "Zeilen: {n}", "tr": "Satır: {n}"},
+ "dc_card": {"pl": "Karta bota na mapie", "en": "The bot's card on the map", "de": "Die Karte des Bots auf der Karte", "tr": "Botun haritadaki kartı"},
+ "dc_limit_note": {"pl": "pokazano najnowsze {n}; zawęź okno albo flagę, by zobaczyć starsze.",
+       "en": "the newest {n} are shown; narrow the window or the flag to see older ones.",
+       "de": "die neuesten {n} werden gezeigt; grenze Zeitraum oder Markierung ein, um ältere zu sehen.",
+       "tr": "en yeni {n} gösteriliyor; eskileri görmek için aralığı ya da işareti daralt."},
+ "ai_explain": {"pl": "Wyjaśnienia decyzji botów", "en": "Explanations of the bots' decisions",
+       "de": "Erklärungen der Bot-Entscheidungen", "tr": "Bot kararlarının açıklamaları"},
+ "ai_explain_help": {"pl": "Rdzeń zapisuje, dlaczego bot wystawił przedmiot i jak wyliczył cenę, oraz dlaczego zmienił założony przedmiot — do dymków w sklepie bota, historii ekwipunku i strony decyzji. 0 wyłącza zapis (nic nie jest liczone), 1–30 to liczba dni, przez które wiersze zostają w bazie; bez wpisu w pliku: 7 dni. Linii, które wciąż stoją na ladzie, nic nie kasuje. Działa w ciągu pięciu sekund.",
+       "en": "The core records why a bot listed an item and how it reached the price, and why it changed a worn piece — for the tooltips in a bot's shop, the equipment history and the decisions page. 0 switches recording off (nothing is computed), 1–30 is how many days the rows stay in the database; with no line in the file: 7 days. Lines still standing on a counter are never deleted. Applies within five seconds.",
+       "de": "Der Kern zeichnet auf, warum ein Bot einen Gegenstand eingestellt und wie er den Preis ermittelt hat, und warum er ein getragenes Stück gewechselt hat — für die Tooltips im Laden eines Bots, den Ausrüstungsverlauf und die Entscheidungsseite. 0 schaltet die Aufzeichnung aus (nichts wird berechnet), 1–30 ist die Zahl der Tage, die die Zeilen in der Datenbank bleiben; ohne Zeile in der Datei: 7 Tage. Zeilen, die noch auf einem Ladentisch stehen, werden nie gelöscht. Wirkt binnen fünf Sekunden.",
+       "tr": "Çekirdek, botun bir eşyayı neden tezgâha koyduğunu ve fiyata nasıl ulaştığını, giyili bir parçayı neden değiştirdiğini kaydeder — botun dükkânındaki ipuçları, ekipman geçmişi ve kararlar sayfası için. 0 kaydı kapatır (hiçbir şey hesaplanmaz), 1–30 satırların veritabanında kaç gün kalacağıdır; dosyada satır yoksa: 7 gün. Hâlâ tezgâhta duran satırlar asla silinmez. Beş saniye içinde etkili olur."},
+ "ai_explain_days": {"pl": "Dni przechowywania (0 = wyłączone):", "en": "Days kept (0 = off):",
+       "de": "Aufbewahrungstage (0 = aus):", "tr": "Saklama günü (0 = kapalı):"},
+ # The export for an analyst or a language model, and the page's two new
+ # filters: the anomalies the panel reads out of a row, and one bot.
+ "dc_flag_anomaly": {"pl": "Anomalie wykryte przez panel", "en": "Anomalies the panel found",
+       "de": "Vom Panel gefundene Auffälligkeiten", "tr": "Panelin bulduğu anormallikler"},
+ "dc_bot": {"pl": "Bot (pid albo nick)", "en": "Bot (pid or name)", "de": "Bot (PID oder Name)", "tr": "Bot (pid ya da ad)"},
+ "dc_bot_unknown": {"pl": "Nie ma takiego bota: {name}", "en": "No such bot: {name}", "de": "Kein solcher Bot: {name}",
+       "tr": "Böyle bir bot yok: {name}"},
+ "dc_copy_ai_all": {"pl": "📋 Kopiuj wszystkie dla AI ({n})", "en": "📋 Copy all for an AI ({n})",
+       "de": "📋 Alle für eine KI kopieren ({n})", "tr": "📋 Hepsini yapay zekâ için kopyala ({n})"},
+ "dc_ai_hint": {"pl": "„Kopiuj dla AI” daje decyzję albo wszystkie pokazane jako Markdown: każda liczba, nazwy kodów z gry, wartości odniesienia i krótki przewodnik — do wklejenia modelowi językowemu, który ma wskazać, gdzie bot się pogubił.",
+       "en": "“Copy for an AI” gives a decision, or all those shown, as Markdown: every number, the game's code names, the reference values and a short guide — to paste to a language model that is to find where a bot went wrong.",
+       "de": "„Für eine KI kopieren“ gibt eine Entscheidung oder alle gezeigten als Markdown: jede Zahl, die Code-Namen des Spiels, die Referenzwerte und eine kurze Anleitung — zum Einfügen bei einem Sprachmodell, das finden soll, wo sich ein Bot verrannt hat.",
+       "tr": "“Yapay zekâ için kopyala” bir kararı ya da gösterilenlerin hepsini Markdown olarak verir: her sayı, oyunun kod adları, referans değerleri ve kısa bir kılavuz — bir botun nerede yanıldığını bulacak bir dil modeline yapıştırmak için."},
+})
+
 CATS = ["all","weapon","armor","usable","ds","metin","special","other"]
 
 # The two damage lines, by their engine numbers. common/length.h:
@@ -4487,6 +4597,12 @@ def csrf_protect():
     sent = request.form.get("_csrf", "")
     real = session.get("_csrf", "")
     if not (real and sent and hmac.compare_digest(sent, real)):
+        # Back to the form itself, not to the front page: a server that lets
+        # only /register through its gate would answer the front page with a
+        # 403, and the player would never see why the form did nothing.
+        if request.endpoint == "register":
+            flash(reg_msg("csrf_bad"), "error")
+            return redirect(url_for("register"))
         flash(t("csrf_bad"), "error")
         return redirect(url_for("login"))
 
@@ -5801,6 +5917,248 @@ TPL_REG_DONE = BASE.replace("__BODY__", """
 
 <p style="margin-top:16px"><a href="{{url_for('login')}}">← {{brand}}</a></p></div>""")
 
+# The supporters' sign-up page: what /register shows when M2_REGISTER_ACCESS_CODE
+# is set. A page of its own rather than BASE, dressed like metin2sp.pl (the same
+# charcoal, ember and gold, the same artwork behind it) -- it is the page the
+# supporters' channel links to, and it should look like it belongs to the site
+# they came from. Self-contained: the artwork and the icon come from /register
+# itself (see REGISTER_ASSETS), fonts fall back to the system's, and there is no
+# link to any other page of this panel, which a gated server would refuse.
+#
+# done=True is the same page after a successful sign-up: the form gives way to
+# the "see you in the game" note and the how-to stays.
+TPL_REG_SUPPORTERS = """<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{% if done %}Konto gotowe{% else %}Załóż konto{% endif %} — MT2009 PLUS dla wspierających</title>
+<link rel="icon" type="image/png" href="{{ url_for('register', asset='ikona') }}">
+<style>
+:root{--bg:#0f0a08;--card:#1d1511;--card2:#261b15;--border:#4a3322;--border-soft:#2e2019;
+--text:#f1e7d6;--muted:#c1b299;--accent:#e2502a;--accent2:#e0b64a;--gold:#f0c878;--ok:#6cc46b;--bad:#ff8a7a;
+--chunjo:#f2c230;--radius:14px;--radius-sm:10px;
+--font-display:"Poppins","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+--font-body:"Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--text);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;
+background:linear-gradient(rgba(12,8,6,.84),rgba(12,8,6,.95)),url("{{ url_for('register', asset='tlo') }}") center top/cover fixed,var(--bg)}
+@media (max-width:1024px){body{background-attachment:scroll,scroll}}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em}
+a{color:var(--accent2)}
+a:hover{color:#ffcf7a}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(10,8,7,.8);backdrop-filter:blur(14px) saturate(140%);
+-webkit-backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid var(--border-soft);
+box-shadow:0 1px 0 rgba(226,80,42,.45)}
+.topbar-inner{max-width:1180px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-family:var(--font-display);font-size:1.3rem;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:9px;color:var(--text);text-decoration:none}
+.logo-mark{display:inline-flex;width:32px;height:32px;border-radius:9px;align-items:center;justify-content:center;font-size:1rem;
+background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 4px 14px rgba(226,80,42,.35)}
+.logo-dot{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.top-note{color:var(--muted);font-size:.88rem;font-weight:600}
+.hero{position:relative;text-align:center;padding:56px 16px 30px}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+background:radial-gradient(700px 320px at 50% 30%,rgba(226,80,42,.22),transparent 70%)}
+.hero-inner{max-width:860px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--accent2);font-weight:700;font-size:.82rem;text-transform:uppercase;
+letter-spacing:.08em;background:rgba(226,80,42,.1);border:1px solid rgba(226,80,42,.3);padding:6px 14px;border-radius:999px}
+.hero h1{font-size:clamp(1.9rem,5vw,3.2rem);line-height:1.12;margin:16px 0 14px;text-shadow:0 0 22px rgba(226,80,42,.35)}
+.lead{font-size:1.12rem;max-width:720px;margin:0 auto}
+.chunjo{display:inline-flex;align-items:center;gap:14px;margin:26px auto 0;padding:12px 22px 12px 14px;text-align:left;
+background:linear-gradient(135deg,rgba(242,194,48,.16),rgba(29,21,17,.92));border:1px solid rgba(242,194,48,.55);
+border-radius:var(--radius);box-shadow:0 0 26px rgba(242,194,48,.14)}
+.chunjo-flag{flex:0 0 auto;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:1.35rem;
+background:radial-gradient(circle at 35% 30%,#ffe27a,var(--chunjo) 55%,#b8860b);box-shadow:0 0 0 3px rgba(242,194,48,.25),0 0 18px rgba(242,194,48,.45)}
+.chunjo strong{display:block;font-family:var(--font-display);font-size:1.35rem;color:var(--chunjo);line-height:1.2}
+.chunjo span{color:var(--muted);font-size:.93rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:999px;font-weight:700;
+border:none;cursor:pointer;font-size:.98rem;font-family:inherit;text-decoration:none;transition:transform .15s ease,box-shadow .15s ease,filter .15s ease}
+.btn:hover{text-decoration:none;transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn-main{width:100%;padding:14px 22px;font-size:1.05rem;color:#fff;background:linear-gradient(135deg,var(--accent),#c9722e);
+box-shadow:0 4px 16px rgba(226,80,42,.35)}
+.btn-main:hover{box-shadow:0 10px 26px rgba(226,80,42,.5);color:#fff}
+.btn-coffee{background:linear-gradient(135deg,#f5c24a,#e0913a);color:#1b0d06;box-shadow:0 4px 16px rgba(240,180,70,.3)}
+.btn-coffee:hover{color:#1b0d06;box-shadow:0 10px 26px rgba(240,180,70,.45)}
+.hero-actions{margin-top:22px}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+.col{display:grid;gap:22px;min-width:0}
+.card{background:rgba(29,21,17,.93);border:1px solid var(--border);border-radius:var(--radius);padding:24px;
+box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 1px 0 rgba(240,200,120,.06)}
+.card h2{margin:0 0 6px;font-size:1.35rem;color:var(--gold)}
+.card>p{margin:0 0 14px;color:var(--muted)}
+.card.form-card{border-color:rgba(226,80,42,.55);box-shadow:0 0 26px rgba(226,80,42,.16),0 8px 24px rgba(0,0,0,.45)}
+label{display:block;font-weight:600;font-size:.93rem;margin:14px 0 6px}
+input[type=text],input[type=password]{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);
+background:rgba(12,8,6,.75);color:var(--text);font-size:1rem;font-family:inherit}
+input:focus{border-color:var(--accent2);outline:none;box-shadow:0 0 0 3px rgba(224,182,74,.18)}
+.field-code{padding:14px;margin-top:6px;border-radius:var(--radius-sm);border:1px dashed rgba(242,194,48,.5);background:rgba(242,194,48,.06)}
+.field-code label{margin-top:0;color:var(--chunjo)}
+.hint{font-size:.85rem;color:var(--muted);margin-top:5px;min-height:1em}
+.hint.ok{color:var(--ok)}.hint.bad{color:var(--bad)}
+.submit{margin-top:22px}
+.flash{border-radius:var(--radius-sm);padding:12px 14px;margin:0 0 14px;font-weight:600;border:1px solid}
+.flash.error{background:rgba(120,30,20,.45);border-color:rgba(255,120,100,.55);color:#ffd3cb}
+.flash.info{background:rgba(40,80,40,.4);border-color:rgba(108,196,107,.5);color:#d8f5d6}
+.steps{list-style:none;counter-reset:step;margin:14px 0 0;padding:0;display:grid;gap:18px}
+.steps>li{position:relative;padding:16px 16px 14px 58px;background:rgba(12,8,6,.5);border:1px solid var(--border-soft);border-radius:var(--radius-sm)}
+.steps>li::before{counter-increment:step;content:counter(step);position:absolute;left:14px;top:14px;width:30px;height:30px;border-radius:50%;
+display:grid;place-items:center;font-weight:800;color:#1b0d06;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.steps h3{margin:0 0 4px;font-size:1.03rem}
+.steps p{margin:0;color:var(--muted);font-size:.95rem}
+.srv{margin:12px 0 4px;display:grid;gap:8px}
+.srv-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 10px 8px 12px;
+border-radius:8px;background:rgba(0,0,0,.35);border:1px solid rgba(240,200,120,.16)}
+.srv-row span{color:var(--muted);font-size:.9rem}
+.srv-row code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:1.02rem;color:var(--gold);font-weight:700;word-break:break-all}
+.srv-val{display:flex;align-items:center;gap:8px;margin-left:auto}
+.copy{font:inherit;font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:999px;cursor:pointer;color:var(--text);
+background:var(--card2);border:1px solid var(--border)}
+.copy:hover{border-color:var(--accent2)}
+.done-card{text-align:center}
+.done-card .big{font-size:3rem;line-height:1}
+.footer{text-align:center;color:var(--muted);font-size:.88rem;padding:0 16px 34px}
+.footer a{color:var(--muted)}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.steps>li{padding-left:52px}.steps>li::before{left:12px}.hero{padding:34px 16px 20px}.lead{font-size:1rem}.card{padding:18px}
+.chunjo{display:flex;width:100%}.hero-actions .btn{width:100%}.top-note{display:none}}
+</style></head><body>
+<header class="topbar"><div class="topbar-inner">
+<a class="logo" href="{{ WEBSITE }}" rel="noopener"><span class="logo-mark" aria-hidden="true">⚔️</span><span>MT2009 <span class="logo-dot">PLUS</span></span></a>
+<span class="top-note">Serwer dla wspierających</span>
+</div></header>
+
+<section class="hero"><div class="hero-inner">
+<span class="eyebrow">⚔️ Wspólny serwer dla wspierających</span>
+{% if done %}
+<h1>Konto {{ form.login }} jest gotowe!</h1>
+<p class="lead">Dziękuję, że jesteś z nami. Wejdź do gry według trzech kroków poniżej — do zobaczenia w Chunjo!
+Już nie mogę się doczekać, aż stoczymy jakieś PvP i razem przejdziemy nowe dungeony.</p>
+{% else %}
+<h1>Dziękuję za Twoje wsparcie!</h1>
+<p class="lead">Załóż konto i graj razem ze mną! Już nie mogę się doczekać, aż stoczymy jakieś PvP
+i razem przejdziemy nowe dungeony.</p>
+{% endif %}
+<div class="chunjo" role="note">
+<div class="chunjo-flag" aria-hidden="true">🏯</div>
+<div><strong>Gramy w Chunjo</strong><span>Przy tworzeniu pierwszej postaci wybierz królestwo Chunjo — tam się spotkamy.</span></div>
+</div>
+<div class="hero-actions">
+<a class="btn btn-coffee" href="{{ COFFEE }}" target="_blank" rel="noopener">☕ Postaw kawę na rozwój MT2009 PLUS</a>
+</div>
+</div></section>
+
+<main class="wrap">
+<div class="col">
+{% if done %}
+<div class="card done-card">
+<div class="big" aria-hidden="true">🎉</div>
+<h2>Witaj na serwerze!</h2>
+<p>Logujesz się w grze nazwą <strong>{{ form.login }}</strong> i hasłem, które przed chwilą wybrałeś.
+Zapisz je sobie, żeby nie zginęło.</p>
+</div>
+{% else %}
+<div class="card form-card">
+<h2>Załóż konto</h2>
+<p>Konto działa na tym serwerze — to nim logujesz się w grze.</p>
+{% with m = get_flashed_messages(with_categories=true) %}{% for c, msg in m %}
+<div class="flash {{ 'error' if c == 'error' else 'info' }}" role="alert">{{ msg }}</div>
+{% endfor %}{% endwith %}
+<form method="post" action="{{ url_for('register') }}" novalidate>
+<input type="hidden" name="_csrf" value="{{ csrf_token }}">
+<div class="field-code">
+<label for="accessCode">🔑 Hasło dla wspierających</label>
+<input type="password" name="access_code" id="accessCode" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+<div class="hint">Znajdziesz je na kanale dla wspierających. Bez niego konto nie powstanie.</div>
+</div>
+<label for="regName">Login</label>
+<input type="text" name="login" id="regName" value="{{ form.login }}" maxlength="16" autocomplete="username" autocapitalize="off" spellcheck="false" required>
+<div class="hint" id="nameHint">4–16 liter lub cyfr, bez spacji i polskich znaków.</div>
+<label for="regPw">Hasło</label>
+<input type="password" name="pw" id="regPw" autocomplete="new-password" required>
+<div class="hint">Co najmniej 6 znaków.</div>
+<label for="regPw2">Powtórz hasło</label>
+<input type="password" name="pw2" id="regPw2" autocomplete="new-password" required>
+<div class="hint" id="pwHint"></div>
+<label for="regSocial">Kod usuwania postaci</label>
+<input type="text" name="social" id="regSocial" value="{{ form.social }}" maxlength="7" inputmode="numeric" pattern="[0-9]{7}" autocomplete="off" required>
+<div class="hint">Dowolne 7 cyfr, np. 1234567. Gra pyta o nie przy kasowaniu postaci — zapamiętaj je.</div>
+<div class="submit"><button class="btn btn-main" type="submit">Załóż konto i dołącz</button></div>
+</form>
+</div>
+{% endif %}
+</div>
+
+<div class="col">
+<div class="card">
+<h2>Jak zacząć grać</h2>
+<ol class="steps">
+<li><h3>Pobierz grę</h3>
+<p>Potrzebujesz klienta MT2009 PLUS.
+{% if client_url %}<a href="{{ client_url }}" rel="noopener noreferrer">Pobierz go stąd</a>{% else %}Link do pobrania jest na <a href="{{ DISCORD }}" target="_blank" rel="noopener">Discordzie</a>{% endif %}.
+Masz go już? Uruchom <strong>MT2009-Aktualizator</strong>, żeby był aktualny.</p></li>
+<li><h3>Dodaj serwer</h3>
+<p>W MT2009-Aktualizatorze kliknij <strong>„Dodaj własny serwer VPS”</strong>, wpisz dowolną nazwę i te dane:</p>
+<div class="srv">
+<div class="srv-row"><span>Adres IP</span><div class="srv-val"><code>{{ game.address }}</code><button type="button" class="copy" data-copy="{{ game.address }}">Kopiuj</button></div></div>
+<div class="srv-row"><span>Port logowania</span><div class="srv-val"><code>{{ game.login_port }}</code><button type="button" class="copy" data-copy="{{ game.login_port }}">Kopiuj</button></div></div>
+<div class="srv-row"><span>Port kanału 1</span><div class="srv-val"><code>{{ game.channel_port }}</code><button type="button" class="copy" data-copy="{{ game.channel_port }}">Kopiuj</button></div></div>
+</div></li>
+<li><h3>Wejdź do gry</h3>
+<p>W grze wybierz serwer <strong>„Online: &lt;Twoja nazwa&gt;”</strong>, zaloguj się kontem z tej strony
+i stwórz postać w królestwie <strong style="color:var(--chunjo)">Chunjo</strong>.</p></li>
+</ol>
+</div>
+<div class="card">
+<h2>Wspólny serwer wspierających</h2>
+<p>To jeden, wspólny świat MT2009 PLUS dla osób, które wspierają rozwój projektu. Gramy tu razem —
+ja, Ty i inni wspierający — a obok nas setki botów, które grają jak ludzie: polują, handlują,
+zakładają gildie i biją bossów. Konto z tej strony działa tylko na tym serwerze.</p>
+</div>
+</div>
+</main>
+
+<footer class="footer">MT2009 PLUS · <a href="{{ WEBSITE }}" rel="noopener">metin2sp.pl</a> · <a href="{{ DISCORD }}" target="_blank" rel="noopener">Discord</a></footer>
+
+<script>
+(function(){
+ var n=document.getElementById('regName'),nh=document.getElementById('nameHint'),
+     p1=document.getElementById('regPw'),p2=document.getElementById('regPw2'),ph=document.getElementById('pwHint'),tmr=null;
+ if(n){
+  var base=nh.textContent;
+  n.addEventListener('input',function(){
+   clearTimeout(tmr); nh.textContent=base; nh.className='hint';
+   var v=n.value.trim();
+   if(!v) return;
+   if(!/^[A-Za-z0-9]{4,16}$/.test(v)){ if(v.length>=4){nh.textContent='Tylko litery i cyfry (bez polskich znaków), 4–16 znaków.';nh.className='hint bad';} return; }
+   tmr=setTimeout(function(){
+    fetch('/api/checkname?u='+encodeURIComponent(v)).then(function(r){return r.ok?r.json():null;}).then(function(d){
+     if(!d||!d.ok||n.value.trim()!==v) return;
+     nh.textContent=d.free?'✓ Login jest wolny':'✗ Ten login jest już zajęty';
+     nh.className='hint '+(d.free?'ok':'bad');
+    }).catch(function(){});
+   },350);
+  });
+  var pwc=function(){
+   if(!p2.value){ph.textContent='';ph.className='hint';return;}
+   var same=p1.value===p2.value;
+   ph.textContent=same?'✓ Hasła są zgodne':'✗ Hasła się różnią';
+   ph.className='hint '+(same?'ok':'bad');
+  };
+  p1.addEventListener('input',pwc); p2.addEventListener('input',pwc);
+ }
+ Array.prototype.forEach.call(document.querySelectorAll('.copy'),function(b){
+  b.addEventListener('click',function(){
+   var v=b.getAttribute('data-copy'),done=function(){b.textContent='Skopiowano';setTimeout(function(){b.textContent='Kopiuj';},1500);};
+   if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(v).then(done,function(){});return;}
+   var t=document.createElement('textarea');t.value=v;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';
+   document.body.appendChild(t);t.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(t);
+  });
+ });
+})();
+</script>
+</body></html>"""
+
 TPL_ACCOUNT_LOGIN = BASE.replace("__BODY__", """
 <p><a href="{{url_for('login')}}">{{t('acc_back')}}</a></p>
 <div class="card" style="max-width:420px;margin:20px auto;text-align:center">
@@ -5924,6 +6282,14 @@ TPL_DASH = BASE.replace("__BODY__", """
 <p class="muted">{{t('gl_dash_hint')}}</p>
 <a class="btn" href="{{url_for('guilds_page')}}">{{t('gl_open')}}</a>
 </div>
+{# The bots' explained decisions: only the 2.x line's core records them. #}
+{% if engine_mt2009 %}
+<div class="card">
+<h3 class="help">{{t('dc_nav')}}</h3>
+<p class="muted">{{t('dc_dash_hint')}}</p>
+<a class="btn" href="{{url_for('decisions_page')}}">{{t('dc_open')}}</a>
+</div>
+{% endif %}
 <div class="card">
 <h3 class="help" title="{{t('tip_reset')}}">🔗 {{t('reset_title')}}</h3>
 <p class="muted">{{t('reset_hint')}}</p>
@@ -6277,7 +6643,7 @@ regenLabel("regen_boss");regenLabel("regen_mob");
 <h3>🔀 {{t('ch2_title')}}</h3>
 <p class="muted">{{t('ch2_help')}}</p>
 <p>{% if channels.on %}{{ t('ch2_now_on').replace('{share}', channels.share|string) }}{% else %}{{t('ch2_now_off')}}{% endif %}</p>
-{% if channels.on and not channels.ports_open %}<p class="muted">⚠️ {{t('ch2_ports')}}</p>{% endif %}
+{% if channels.on and not channels.ports_open %}<p class="muted">⚠️ {{t('ch2_ports').replace('{ports}', channels.ch2_ports)}}</p>{% endif %}
 {% if channels.pending %}<p class="muted">🕓 {{ t('ch2_pending').replace('{what}', channels.pending) }}</p>{% endif %}
 <label><input type="checkbox" name="ch2" value="1"{% if channels.want_on %} checked{% endif %}> {{t('ch2_enable')}}</label>
 <h3 style="margin-top:12px">{{t('ch2_share')}}</h3>
@@ -6597,7 +6963,8 @@ TPL_AI = BASE.replace("__BODY__", """
 <p class="muted">{{t('ai_intro')}}</p>
 <p><a class="btn" href="{{url_for('ai_item_policy')}}">{{t('ai_items_open')}}</a>
    <a class="btn" href="{{url_for('events_page')}}">{{t('ev_open')}}</a>
-   <a class="btn" href="{{url_for('guilds_page')}}">{{t('gl_open')}}</a></p>
+   <a class="btn" href="{{url_for('guilds_page')}}">{{t('gl_open')}}</a>
+   {% if engine_mt2009 %}<a class="btn" href="{{url_for('decisions_page')}}">{{t('dc_open')}}</a>{% endif %}</p>
 </div>
 
 <div class="card">
@@ -6662,6 +7029,17 @@ TPL_AI = BASE.replace("__BODY__", """
   <h3 style="margin:0 0 2px">🛒 {{t('ai_ishop')}}</h3>
   <p class="muted" style="margin:0 0 6px">{{t('ai_ishop_help')}}</p>
   <label><input type="checkbox" name="ISHOP" value="1" {% if cur.get('ISHOP', 1) %}checked{% endif %}> {{t('ai_ishop_on')}}</label>
+</div>
+{# Not a slider: 0 is off and 1-30 the days the core keeps its explanations;
+   an absent key is the core's own seven, and saving the page untouched keeps
+   it absent (ai_weights). #}
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">🔎 {{t('ai_explain')}}</h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_explain_help')}}</p>
+  <label>{{t('ai_explain_days')}}
+    <input type="number" name="EXPLAIN" min="0" max="{{explain_max}}" step="1"
+           value="{{ cur.get('EXPLAIN') if cur.get('EXPLAIN') is not none else explain_default }}" style="width:110px"></label>
+  <a href="{{url_for('decisions_page')}}" style="margin-left:10px">{{t('dc_open')}}</a>
 </div>
 {% endif %}
 <div style="margin-bottom:18px">
@@ -6856,6 +7234,224 @@ MAP_I18N = {
   "warp_timeout":"The game did not answer in time.","saddlebags":"Saddlebags"
  }
 }
+
+# The words around the bots' explanations - the shop's tooltip and its pinned
+# pane, the gear history's "?" and its decisions tab, the /decisions page - in
+# all four languages. The codes' own words are the DECISION_* tables beside
+# the gear history, and the server says an explanation whole; these are what
+# frames it.
+for _lang, _texts in {
+ "pl": {
+  "ex_why_counter": "Dlaczego na ladzie", "ex_how_price": "Jak powstała cena",
+  "ex_pin_hint": "Kliknij, aby przypiąć wyjaśnienie.", "ex_copy": "Kopiuj", "ex_copied": "Skopiowano wyjaśnienie",
+  "ex_close": "Zamknij", "ex_none": "Brak zapisanego wyjaśnienia tej linii.",
+  "ex_state_missing": "Ten świat nie ma jeszcze tabel wyjaśnień (starsza wersja albo rdzeń ich jeszcze nie utworzył).",
+  "ex_state_off": "Ten silnik nie zapisuje wyjaśnień decyzji botów.",
+  "ex_unusual": "nietypowe", "ex_unusual_only": "Tylko nietypowe",
+  "ex_col_step": "Krok", "ex_col_effect": "Zmiana", "ex_col_value": "Cena", "ex_col_term": "Składnik",
+  "ex_steps_cut": "… dalsze kroki ucięte (lista była za długa)", "ex_last_change": "Ostatnia zmiana",
+  "ex_changes": "zmian od wystawienia: {n}", "ex_was_now": "było {was} → jest {now}",
+  "ex_codes": "Kody", "ex_flags": "Flagi", "ex_list_price": "cena {price}", "ex_price": "{price} yang",
+  "ex_stand": "Sklep otwarty, bo: {reason}", "ex_pick": "Kandydat {rank}. z {n}",
+  "ex_pick_refused": ", lada odrzuciła {k} wyżej od niego", "ex_score": "wynik {score}",
+  "ex_cut": "{shape}: ze stosu {whole} szt. na ladę {take}, zapas trzymany w plecaku: {keep}",
+  "ex_held": "w plecaku łącznie {held}",
+  "ex_price_differs": "Cena na ladzie ({now}) różni się od wyjaśnionej ({explained}) — tej zmiany nic nie zapisało.",
+  "ex_end_sold": "Sprzedane za {price} yang", "ex_end_off": "Zdjęte z lady: {reason}",
+  "ex_context": "Okoliczności", "ex_origin": "Skąd nowy", "ex_roles": "Role", "ex_lines": "Bonusy",
+  "ex_stones": "Kamienie", "ex_old": "Stary", "ex_new": "Nowy", "ex_delta": "Różnica",
+  "ex_terms": "Składniki wyniku", "ex_blow": "Cios broni rozłożony na części", "ex_gain": "Zmiana wyniku",
+  "ex_score_word": "Wynik", "ex_bot": "Bot", "ex_item": "Przedmiot", "ex_time": "Czas", "ex_more": "Wyjaśnienie",
+  "ex_title_equip": "Dlaczego to założył", "ex_title_unequip": "Dlaczego to zdjął",
+  "ex_level_slot": "poziom {level}, slot: {slot}", "ex_suppressed": "limit pominął przedtem {n} wpisów tego bota",
+  "ex_wear_unique": "unikat", "ex_wear_slot": "slot {n}", "ex_mob_n": "potwór #{n}",
+  "ex_skill_n": "umiejętność #{n}", "ex_code_n": "kod {n}", "ex_nothing": "nic",
+  "gear_tab_decisions": "Decyzje", "gh_unequipped": "Zdjęte",
+ },
+ "en": {
+  "ex_why_counter": "Why on the counter", "ex_how_price": "How the price was reached",
+  "ex_pin_hint": "Click to pin the explanation.", "ex_copy": "Copy", "ex_copied": "Explanation copied",
+  "ex_close": "Close", "ex_none": "No explanation recorded for this line.",
+  "ex_state_missing": "This world has no explanation tables yet (an older version, or the core has not created them yet).",
+  "ex_state_off": "This engine does not record the bots' explanations.",
+  "ex_unusual": "unusual", "ex_unusual_only": "Unusual only",
+  "ex_col_step": "Step", "ex_col_effect": "Effect", "ex_col_value": "Price", "ex_col_term": "Term",
+  "ex_steps_cut": "… further steps cut (the list was too long)", "ex_last_change": "Last change",
+  "ex_changes": "changes since listing: {n}", "ex_was_now": "was {was} → now {now}",
+  "ex_codes": "Codes", "ex_flags": "Flags", "ex_list_price": "price {price}", "ex_price": "{price} yang",
+  "ex_stand": "Shop open because: {reason}", "ex_pick": "Candidate {rank} of {n}",
+  "ex_pick_refused": ", the counter refused {k} ranked above it", "ex_score": "score {score}",
+  "ex_cut": "{shape}: of a stack of {whole}, {take} to the counter; the reserve kept in the bag: {keep}",
+  "ex_held": "{held} in the bag in all",
+  "ex_price_differs": "The counter's price ({now}) differs from the explained one ({explained}) — nothing recorded that change.",
+  "ex_end_sold": "Sold for {price} yang", "ex_end_off": "Taken off the counter: {reason}",
+  "ex_context": "Context", "ex_origin": "Where the new piece came from", "ex_roles": "Roles", "ex_lines": "Bonus lines",
+  "ex_stones": "Stones", "ex_old": "Old", "ex_new": "New", "ex_delta": "Delta",
+  "ex_terms": "Score terms", "ex_blow": "The weapon's blow, broken down", "ex_gain": "Score change",
+  "ex_score_word": "Score", "ex_bot": "Bot", "ex_item": "Item", "ex_time": "Time", "ex_more": "Explanation",
+  "ex_title_equip": "Why it put this on", "ex_title_unequip": "Why it took this off",
+  "ex_level_slot": "level {level}, slot: {slot}", "ex_suppressed": "the budget dropped {n} of this bot's rows before this one",
+  "ex_wear_unique": "unique", "ex_wear_slot": "slot {n}", "ex_mob_n": "monster #{n}",
+  "ex_skill_n": "skill #{n}", "ex_code_n": "code {n}", "ex_nothing": "nothing",
+  "gear_tab_decisions": "Decisions", "gh_unequipped": "Taken off",
+ },
+ "de": {
+  "ex_why_counter": "Warum auf dem Ladentisch", "ex_how_price": "Wie der Preis zustande kam",
+  "ex_pin_hint": "Klicken, um die Erklärung anzuheften.", "ex_copy": "Kopieren", "ex_copied": "Erklärung kopiert",
+  "ex_close": "Schließen", "ex_none": "Für diese Zeile ist keine Erklärung aufgezeichnet.",
+  "ex_state_missing": "Diese Welt hat noch keine Erklärungstabellen (eine ältere Version, oder der Kern hat sie noch nicht angelegt).",
+  "ex_state_off": "Diese Engine zeichnet keine Erklärungen der Bots auf.",
+  "ex_unusual": "ungewöhnlich", "ex_unusual_only": "Nur ungewöhnliche",
+  "ex_col_step": "Schritt", "ex_col_effect": "Wirkung", "ex_col_value": "Preis", "ex_col_term": "Bestandteil",
+  "ex_steps_cut": "… weitere Schritte abgeschnitten (die Liste war zu lang)", "ex_last_change": "Letzte Änderung",
+  "ex_changes": "Änderungen seit dem Einstellen: {n}", "ex_was_now": "war {was} → jetzt {now}",
+  "ex_codes": "Codes", "ex_flags": "Markierungen", "ex_list_price": "Preis {price}", "ex_price": "{price} Yang",
+  "ex_stand": "Laden offen, weil: {reason}", "ex_pick": "Kandidat {rank} von {n}",
+  "ex_pick_refused": ", der Ladentisch lehnte {k} davor ab", "ex_score": "Wert {score}",
+  "ex_cut": "{shape}: von einem Stapel zu {whole} Stück {take} auf den Ladentisch; im Beutel gehaltene Reserve: {keep}",
+  "ex_held": "insgesamt {held} im Beutel",
+  "ex_price_differs": "Der Preis auf dem Ladentisch ({now}) weicht vom erklärten ({explained}) ab — diese Änderung wurde nicht aufgezeichnet.",
+  "ex_end_sold": "Verkauft für {price} Yang", "ex_end_off": "Vom Ladentisch genommen: {reason}",
+  "ex_context": "Umstände", "ex_origin": "Herkunft des neuen Stücks", "ex_roles": "Rollen", "ex_lines": "Bonuszeilen",
+  "ex_stones": "Steine", "ex_old": "Alt", "ex_new": "Neu", "ex_delta": "Differenz",
+  "ex_terms": "Bestandteile des Werts", "ex_blow": "Der Schlag der Waffe, aufgeschlüsselt", "ex_gain": "Wertänderung",
+  "ex_score_word": "Wert", "ex_bot": "Bot", "ex_item": "Gegenstand", "ex_time": "Zeit", "ex_more": "Erklärung",
+  "ex_title_equip": "Warum er das angelegt hat", "ex_title_unequip": "Warum er das abgelegt hat",
+  "ex_level_slot": "Level {level}, Platz: {slot}", "ex_suppressed": "das Budget ließ davor {n} Zeilen dieses Bots weg",
+  "ex_wear_unique": "Unikat", "ex_wear_slot": "Platz {n}", "ex_mob_n": "Monster #{n}",
+  "ex_skill_n": "Fertigkeit #{n}", "ex_code_n": "Code {n}", "ex_nothing": "nichts",
+  "gear_tab_decisions": "Entscheidungen", "gh_unequipped": "Abgelegt",
+ },
+ "tr": {
+  "ex_why_counter": "Neden tezgâhta", "ex_how_price": "Fiyat nasıl oluştu",
+  "ex_pin_hint": "Açıklamayı sabitlemek için tıkla.", "ex_copy": "Kopyala", "ex_copied": "Açıklama kopyalandı",
+  "ex_close": "Kapat", "ex_none": "Bu satır için kayıtlı açıklama yok.",
+  "ex_state_missing": "Bu dünyada henüz açıklama tabloları yok (eski bir sürüm ya da çekirdek onları henüz oluşturmadı).",
+  "ex_state_off": "Bu motor botların açıklamalarını kaydetmez.",
+  "ex_unusual": "olağandışı", "ex_unusual_only": "Yalnızca olağandışı",
+  "ex_col_step": "Adım", "ex_col_effect": "Etki", "ex_col_value": "Fiyat", "ex_col_term": "Bileşen",
+  "ex_steps_cut": "… sonraki adımlar kesildi (liste çok uzundu)", "ex_last_change": "Son değişiklik",
+  "ex_changes": "tezgâha konduktan beri değişiklik: {n}", "ex_was_now": "önce {was} → şimdi {now}",
+  "ex_codes": "Kodlar", "ex_flags": "İşaretler", "ex_list_price": "fiyat {price}", "ex_price": "{price} yang",
+  "ex_stand": "Dükkân açık, çünkü: {reason}", "ex_pick": "{n} aday içinde {rank}.",
+  "ex_pick_refused": ", tezgâh üstündeki {k} adayı reddetti", "ex_score": "puan {score}",
+  "ex_cut": "{shape}: {whole} adetlik yığından {take} tezgâha; çantada tutulan yedek: {keep}",
+  "ex_held": "çantada toplam {held}",
+  "ex_price_differs": "Tezgâhtaki fiyat ({now}) açıklanandan ({explained}) farklı — bu değişikliği hiçbir şey kaydetmedi.",
+  "ex_end_sold": "{price} yang karşılığında satıldı", "ex_end_off": "Tezgâhtan indirildi: {reason}",
+  "ex_context": "Bağlam", "ex_origin": "Yeni parçanın kaynağı", "ex_roles": "Roller", "ex_lines": "Bonus satırları",
+  "ex_stones": "Taşlar", "ex_old": "Eski", "ex_new": "Yeni", "ex_delta": "Fark",
+  "ex_terms": "Puan bileşenleri", "ex_blow": "Silahın darbesi, parçalarına ayrılmış", "ex_gain": "Puan değişimi",
+  "ex_score_word": "Puan", "ex_bot": "Bot", "ex_item": "Eşya", "ex_time": "Zaman", "ex_more": "Açıklama",
+  "ex_title_equip": "Bunu neden kuşandı", "ex_title_unequip": "Bunu neden çıkardı",
+  "ex_level_slot": "seviye {level}, yuva: {slot}", "ex_suppressed": "bütçe bundan önce bu botun {n} satırını atladı",
+  "ex_wear_unique": "eşsiz", "ex_wear_slot": "yuva {n}", "ex_mob_n": "canavar #{n}",
+  "ex_skill_n": "beceri #{n}", "ex_code_n": "kod {n}", "ex_nothing": "hiçbir şey",
+  "gear_tab_decisions": "Kararlar", "gh_unequipped": "Çıkarıldı",
+ },
+}.items():
+    # Only the languages this panel speaks (Polish and English): the German
+    # and Turkish words stay beside them for a panel that adds those.
+    if _lang in MAP_I18N:
+        MAP_I18N[_lang].update(_texts)
+
+# The export for an analyst or a language model (29 September, the operator:
+# "zebysmy mogli latwo widziec, gdzie sa bledy, i dawac je AI do analizy"): one
+# decision, a bot's decisions or a page of them as Markdown, with every number
+# the page shows, the header's code names beside the words, the values the rules
+# compared against and a short guide to reading it (exMarkdown, EXPLAIN_JS).
+for _lang, _texts in {
+ "pl": {
+  "ex_copy_ai": "Kopiuj dla AI", "ex_copied_ai": "Skopiowano jako Markdown dla AI",
+  "ex_anomalies": "Anomalie", "ex_ai_title": "Decyzje botów Metin2 — do analizy",
+  "ex_ai_guide": "Każda decyzja to wiersz zapisany przez rdzeń gry w chwili jej podjęcia (log.playerbot_equip, "
+                 "log.playerbot_listing); nazwy w `…` to kody z playerbot_explain_rules.h i stałe nakładki. Zmiana "
+                 "ekwipunku: przegląd zakłada rzecz, której wynik (TERM_TOTAL) przewyższa noszoną o SWAP_MARGIN_PERMILLE "
+                 "promili, a rzecz zdjętą w ciągu godziny dopiero o SWAP_BACK_MARGIN_PERCENT procent. Wynik broni to jej "
+                 "cios ×1000 (TERM_BLOW_X1000, model GetPlayerBotWeaponHitDamageAt: stopień ataku na piechotę, rzut broni, "
+                 "atak z plusa, obrona potwora na poziomie bota, średnie obrażenia i obrażenia umiejętności, ukryty bonus "
+                 "poziomu broni mt2009) ze stopniem Iwakury tylko na ciosie, i obok preferencja klasy i stałe bonusy; "
+                 "reszty ekwipunku — obrona, bonusy i kamienie razy stopień rodziny. Linia lady: kroki ceny w kolejności "
+                 "wyceny — arkusz Iwakury ze stawką yang i inflacją, bonusy, pamięć sprzedaży, rejestr rynku, ogranicznik "
+                 "kroku, rozrzut sprzedawcy, progi, zaokrąglenie. Flagi zapisał rdzeń, anomalie wyliczył panel.",
+  "ex_ai_ask": "Zadanie: wskaż decyzje sprzeczne z ich własnymi liczbami albo z celem bota, podaj regułę (nazwę kodu), "
+               "która je podjęła, i co by je naprawiło.",
+  "ex_ai_refs": "Wartości odniesienia (stałe z kodu)", "ex_ai_equip": "Zmiana ekwipunku", "ex_ai_listing": "Linia lady",
+  "ex_ai_now": "teraz", "ex_ai_decision": "Decyzja", "ex_ai_level_then": "poziom w chwili decyzji: {level}",
+  "ex_sheet_ratio": "cena za sztukę wobec arkusza: {unit} / {sheet} = {ratio}", "ex_ai_code": "kod",
+  "ex_ai_n": "Decyzji: {n}",
+ },
+ "en": {
+  "ex_copy_ai": "Copy for an AI", "ex_copied_ai": "Copied as Markdown for an AI",
+  "ex_anomalies": "Anomalies", "ex_ai_title": "Metin2 bot decisions — for analysis",
+  "ex_ai_guide": "Each decision is a row the game core wrote the moment it was taken (log.playerbot_equip, "
+                 "log.playerbot_listing); the names in `…` are the codes of playerbot_explain_rules.h and the overlay's "
+                 "constants. An equipment change: the pass puts on a piece whose score (TERM_TOTAL) beats the worn one's "
+                 "by SWAP_MARGIN_PERMILLE per mille, and a piece it took off within the hour only by "
+                 "SWAP_BACK_MARGIN_PERCENT percent. A weapon's score is its blow x1000 (TERM_BLOW_X1000, the model of "
+                 "GetPlayerBotWeaponHitDamageAt: the attack grade on foot, the weapon's roll, the plus's attack, a monster's "
+                 "defence at the bot's level, average and skill damage, mt2009's hidden bonus by the weapon's level) with "
+                 "Iwakura's tier on the blow alone, and beside it the class's preference and the fixed lines; the rest of "
+                 "the gear's is defence, lines and stones times the family's tier. A counter line: the price's steps in the "
+                 "order the pricing takes them - Iwakura's sheet at the yang rate and the inflation, the lines, the sale "
+                 "memory, the market ledger, the step limit, the keeper's spread, the floors, the rounding. The flags are "
+                 "the core's, the anomalies the panel's.",
+  "ex_ai_ask": "Task: point out the decisions that contradict their own numbers or the bot's goal, name the rule "
+               "(the code name) that took each, and say what would fix it.",
+  "ex_ai_refs": "Reference values (constants of the code)", "ex_ai_equip": "Equipment change", "ex_ai_listing": "Counter line",
+  "ex_ai_now": "now", "ex_ai_decision": "Decision", "ex_ai_level_then": "level at the decision: {level}",
+  "ex_sheet_ratio": "unit price against the sheet: {unit} / {sheet} = {ratio}", "ex_ai_code": "code",
+  "ex_ai_n": "Decisions: {n}",
+ },
+ "de": {
+  "ex_copy_ai": "Für eine KI kopieren", "ex_copied_ai": "Als Markdown für eine KI kopiert",
+  "ex_anomalies": "Auffälligkeiten", "ex_ai_title": "Entscheidungen der Metin2-Bots — zur Analyse",
+  "ex_ai_guide": "Jede Entscheidung ist eine Zeile, die der Spielkern im Moment der Entscheidung geschrieben hat "
+                 "(log.playerbot_equip, log.playerbot_listing); die Namen in `…` sind die Codes aus "
+                 "playerbot_explain_rules.h und Konstanten des Overlays. Ein Ausrüstungswechsel: der Durchlauf legt ein "
+                 "Stück an, dessen Wert (TERM_TOTAL) den des getragenen um SWAP_MARGIN_PERMILLE Promille übertrifft, ein "
+                 "innerhalb der Stunde abgelegtes Stück erst um SWAP_BACK_MARGIN_PERCENT Prozent. Der Wert einer Waffe ist "
+                 "ihr Schlag x1000 (TERM_BLOW_X1000, das Modell von GetPlayerBotWeaponHitDamageAt: Angriffsstufe zu Fuß, "
+                 "Wurf der Waffe, Angriff aus dem Plus, Verteidigung eines Monsters auf dem Level des Bots, "
+                 "Durchschnitts- und Fertigkeitsschaden, der versteckte Levelbonus der Waffe auf mt2009) mit Iwakuras Stufe "
+                 "nur auf dem Schlag, daneben die Klassenvorliebe und die festen Zeilen; der Rest der Ausrüstung: "
+                 "Verteidigung, Zeilen und Steine mal der Stufe der Familie. Eine Ladentischzeile: die Schritte des Preises "
+                 "in der Reihenfolge der Bepreisung - Iwakuras Liste zur Yang-Rate und Inflation, die Zeilen, das "
+                 "Verkaufsgedächtnis, das Marktbuch, die Schrittbegrenzung, die Spanne des Verkäufers, die Untergrenzen, "
+                 "die Rundung. Die Markierungen stammen vom Kern, die Auffälligkeiten vom Panel.",
+  "ex_ai_ask": "Aufgabe: zeige die Entscheidungen, die ihren eigenen Zahlen oder dem Ziel des Bots widersprechen, nenne "
+               "die Regel (den Code-Namen), die jede getroffen hat, und was sie beheben würde.",
+  "ex_ai_refs": "Referenzwerte (Konstanten des Codes)", "ex_ai_equip": "Ausrüstungswechsel", "ex_ai_listing": "Ladentischzeile",
+  "ex_ai_now": "jetzt", "ex_ai_decision": "Entscheidung", "ex_ai_level_then": "Level bei der Entscheidung: {level}",
+  "ex_sheet_ratio": "Stückpreis gegenüber der Liste: {unit} / {sheet} = {ratio}", "ex_ai_code": "Code",
+  "ex_ai_n": "Entscheidungen: {n}",
+ },
+ "tr": {
+  "ex_copy_ai": "Yapay zekâ için kopyala", "ex_copied_ai": "Yapay zekâ için Markdown olarak kopyalandı",
+  "ex_anomalies": "Anormallikler", "ex_ai_title": "Metin2 bot kararları — analiz için",
+  "ex_ai_guide": "Her karar, oyun çekirdeğinin karar anında yazdığı bir satırdır (log.playerbot_equip, "
+                 "log.playerbot_listing); `…` içindeki adlar playerbot_explain_rules.h kodları ve katmanın sabitleridir. "
+                 "Ekipman değişikliği: tarama, puanı (TERM_TOTAL) giyilenden SWAP_MARGIN_PERMILLE binde fazla olan parçayı "
+                 "kuşanır; son bir saatte çıkardığı parçayı ise ancak SWAP_BACK_MARGIN_PERCENT yüzde fazlaysa. Bir silahın "
+                 "puanı darbesi x1000'dir (TERM_BLOW_X1000, GetPlayerBotWeaponHitDamageAt modeli: yayan saldırı derecesi, "
+                 "silahın zarı, artıdan gelen saldırı, botun seviyesindeki bir canavarın savunması, ortalama ve beceri "
+                 "hasarı, mt2009'un silah seviyesine bağlı gizli bonusu), Iwakura kademesi yalnızca darbeye uygulanır, "
+                 "yanında sınıf tercihi ve sabit satırlar; ekipmanın geri kalanı: savunma, satırlar ve taşlar çarpı ailenin "
+                 "kademesi. Tezgâh satırı: fiyat adımları fiyatlama sırasıyla - yang oranı ve enflasyonla Iwakura'nın "
+                 "listesi, satırlar, satış hafızası, pazar defteri, adım sınırı, satıcı marjı, tabanlar, yuvarlama. "
+                 "İşaretler çekirdeğin, anormallikler panelin.",
+  "ex_ai_ask": "Görev: kendi sayılarıyla ya da botun hedefiyle çelişen kararları göster, her birini alan kuralı (kod "
+               "adını) belirt ve neyin düzelteceğini söyle.",
+  "ex_ai_refs": "Referans değerleri (kodun sabitleri)", "ex_ai_equip": "Ekipman değişikliği", "ex_ai_listing": "Tezgâh satırı",
+  "ex_ai_now": "şimdi", "ex_ai_decision": "Karar", "ex_ai_level_then": "karar anındaki seviye: {level}",
+  "ex_sheet_ratio": "adet fiyatı listeye göre: {unit} / {sheet} = {ratio}", "ex_ai_code": "kod",
+  "ex_ai_n": "Karar: {n}",
+ },
+}.items():
+    # Only the languages this panel speaks (Polish and English): the German
+    # and Turkish words stay beside them for a panel that adds those.
+    if _lang in MAP_I18N:
+        MAP_I18N[_lang].update(_texts)
 
 
 # Every bonus line the engine can roll, in the wording the game itself uses.
@@ -7108,6 +7704,418 @@ def biologist_stage_text(stage, messages, separator):
     return "%s%s%d/%d" % (name, separator, accepted, needed)
 
 
+# The bots' explanations laid out: the server says each one whole in the page's
+# language (explain_listing, explain_equip), and this is the one place that
+# draws it - for the live map's shop tooltip and pane and its gear history, and
+# for the /decisions page - and turns it into plain text for a report. It reads
+# the page's own I18N (map_i18n). Put into both templates as text, so it must
+# carry nothing Jinja would read: no double braces and no brace-hash.
+EXPLAIN_CSS = """
+.m2ex{font-size:11px;line-height:1.4;color:#d4d4d8;text-align:left}
+.m2ex-h{margin:6px 0 2px;color:#fbbf24;font-weight:700}
+.m2ex-muted{color:#a1a1aa}
+.m2ex-warn{color:#fca5a5;margin-top:3px}
+.m2ex-flags{margin:3px 0}
+.m2ex-flag{display:inline-block;margin:1px 3px 1px 0;padding:0 5px;border-radius:3px;border:1px solid #3f3f46;
+  background:#18181b;color:#d4d4d8;font-size:10px;font-weight:600;line-height:15px}
+.m2ex-flag.unusual{border-color:#ef4444;background:#3f1111;color:#fecaca}
+table.m2ex-t{border-collapse:collapse;width:100%;margin:3px 0}
+table.m2ex-t th,table.m2ex-t td{padding:1px 4px;border-bottom:1px solid #27272a;font-size:10px;line-height:1.35;
+  text-align:left;vertical-align:top;background:none;color:#d4d4d8}
+table.m2ex-t th{color:#a1a1aa;text-transform:none;letter-spacing:0}
+table.m2ex-t .n{text-align:right;white-space:nowrap}
+table.m2ex-t tr.m2ex-top td{background:rgba(251,191,36,.14);color:#fde68a;font-weight:700}
+.m2ex-cols{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 0}
+.m2ex-piece{background:#101012;border:1px solid #27272a;border-radius:4px;padding:4px 5px}
+.m2ex-lines{color:#4ade80}
+.m2ex-codes{margin-top:5px;font-family:monospace;font-size:9px;color:#71717a;word-break:break-all}
+.m2ex-box{margin:3px 0 6px;padding:6px 8px;background:#0c0c0e;border:1px solid #3f3f46;border-radius:6px}
+button.m2ex-btn{padding:1px 8px;font-size:10px;background:#334155;color:#fff;border:none;border-radius:4px;
+  cursor:pointer;margin:0 0 0 4px;box-shadow:none;font-weight:600}
+button.m2ex-q{padding:0 6px;font-size:10px;line-height:15px;background:#1f2937;color:#fbbf24;border:1px solid #fbbf24;
+  border-radius:8px;cursor:pointer;margin:0 0 0 4px;box-shadow:none;font-weight:700}
+.m2ex-flag.anomaly{border-color:#f59e0b;background:#3a2606;color:#fde68a}
+"""
+
+# The numbers the equipment pass and the counter compare against, for the AI
+# export's reference block (exMarkdown): each a constant of the overlay under
+# the name it has there, with the header it is in. The test reads each out of
+# its header, so a change there not made here fails it.
+DECISION_REFERENCE = (
+    ("SWAP_MARGIN_PERMILLE", 10, "playerbot_swap_rules.h"),
+    ("SWAP_BACK_MARGIN_PERCENT", 5, "playerbot_swap_rules.h"),
+    ("WEAPON_TIER_STEP_PERCENT", 2, "playerbot_swap_rules.h"),
+    ("PLAYERBOT_TIER_SCORE_PERCENT", 8, "playerbot_types.h"),
+    ("PLAYERBOT_MONSTER_DEFENCE_OVER_LEVEL", 15, "playerbot_types.h"),
+    ("PLAYERBOT_WEAPON_OWN_LINE_PERCENT", 100, "playerbot_types.h"),
+    ("PLAYERBOT_WEAPON_OTHER_LINE_PERCENT", 35, "playerbot_types.h"),
+    ("LOW_WEAPON_BAN_FROM_LEVEL", 30, "playerbot_refine_rules.h"),
+    ("LOW_WEAPON_MAX_LEVEL", 10, "playerbot_refine_rules.h"),
+    ("ANVIL_LEVEL_BAND", 15, "playerbot_refine_rules.h"),
+    ("FLIP_FLOP_WINDOW_SECONDS", 3600, "playerbot_explain_rules.h"),
+)
+
+EXPLAIN_JS = """
+var EX_NL = String.fromCharCode(10);
+var EX_REFS = """ + json.dumps([list(r) for r in DECISION_REFERENCE]) + """;
+
+function exEsc(value) {
+  return String(value === undefined || value === null ? '' : value)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+function exFlagsHtml(flags) {
+  if (!flags || !flags.length) return '';
+  var html = '<div class="m2ex-flags">';
+  flags.forEach(function(f) {
+    html += '<span class="m2ex-flag' + (f.unusual ? ' unusual' : '') + '">' + exEsc(f.label) + '</span>';
+  });
+  return html + '</div>';
+}
+
+function exUnusualBadge(ex) {
+  return ex && ex.unusual ? ' <span class="m2ex-flag unusual">' + exEsc(I18N.ex_unusual) + '</span>' : '';
+}
+
+function exStepsHtml(steps, cut) {
+  if (!steps || !steps.length) return '';
+  var html = '<table class="m2ex-t"><tr><th>' + exEsc(I18N.ex_col_step) + '</th><th class="n">' +
+             exEsc(I18N.ex_col_effect) + '</th><th class="n">' + exEsc(I18N.ex_col_value) + '</th></tr>';
+  steps.forEach(function(s) {
+    html += '<tr><td><b>' + exEsc(s.label) + '</b>' +
+            (s.detail ? ' <span class="m2ex-muted">' + exEsc(s.detail) + '</span>' : '') +
+            '</td><td class="n">' + exEsc(s.effect) + '</td><td class="n">' + exEsc(s.value) + '</td></tr>';
+  });
+  html += '</table>';
+  if (cut) html += '<div class="m2ex-muted">' + exEsc(I18N.ex_steps_cut) + '</div>';
+  return html;
+}
+
+// Why a line is on its counter and how its price came about. `full` adds the
+// last change's own steps and the codes: the pane has room, a tooltip not.
+function exListingHtml(ex, full) {
+  if (!ex) return '<div class="m2ex m2ex-muted">' + exEsc(I18N.ex_none) + '</div>';
+  var html = '<div class="m2ex"><div class="m2ex-h">' + exEsc(I18N.ex_why_counter) + exUnusualBadge(ex) + '</div>';
+  html += '<div>' + exEsc(ex.goods) + '</div>';
+  ['stand', 'pick', 'cut', 'listed'].forEach(function(key) {
+    if (ex[key]) html += '<div class="m2ex-muted">' + exEsc(ex[key]) + '</div>';
+  });
+  html += exFlagsHtml(ex.flags) + exAnomaliesHtml(ex.anomalies);
+  html += '<div class="m2ex-h">' + exEsc(I18N.ex_how_price) + '</div>' + exStepsHtml(ex.steps, ex.steps_cut);
+  if (ex.sheet) html += '<div class="m2ex-muted">' + exEsc(ex.sheet) + '</div>';
+  if (ex.last) {
+    html += '<div class="m2ex-h">' + exEsc(I18N.ex_last_change) + ': ' + exEsc(ex.last.title) + '</div>' +
+            '<div class="m2ex-muted">' + exEsc(ex.last.line) + '</div>';
+    if (full) html += exStepsHtml(ex.last.steps, ex.last.steps_cut);
+  }
+  if (ex.end) html += '<div class="m2ex-warn">' + exEsc(ex.end) + '</div>';
+  if (ex.price_note) html += '<div class="m2ex-warn">' + exEsc(ex.price_note) + '</div>';
+  if (full && ex.codes) html += '<div class="m2ex-codes">' + exEsc(I18N.ex_codes) + ': ' + exEsc(ex.codes) + '</div>';
+  return html + '</div>';
+}
+
+function exPieceHtml(title, piece) {
+  var html = '<div class="m2ex-piece"><div class="m2ex-muted">' + exEsc(title) + '</div>';
+  if (!piece) return html + '<div>' + exEsc(I18N.ex_nothing) + '</div></div>';
+  html += '<div><b>' + exEsc(piece.name) + '</b></div>' +
+          '<div class="m2ex-muted">' + exEsc(I18N.ex_score_word) + ': ' + exEsc(piece.score) + '</div>';
+  if (piece.roles && piece.roles.length) {
+    html += '<div>' + piece.roles.map(function(r) { return '<span class="m2ex-flag">' + exEsc(r) + '</span>'; }).join('') + '</div>';
+  }
+  if (piece.lines && piece.lines.length) html += '<div class="m2ex-lines">' + piece.lines.map(exEsc).join('<br>') + '</div>';
+  if (piece.stones && piece.stones.length) {
+    html += '<div class="m2ex-muted">' + exEsc(I18N.ex_stones) + ': ' + piece.stones.map(exEsc).join(', ') + '</div>';
+  }
+  return html + '</div>';
+}
+
+function exTermsHtml(title, rows) {
+  if (!rows || !rows.length) return '';
+  var html = '<div class="m2ex-h">' + exEsc(title) + '</div><table class="m2ex-t"><tr><th>' + exEsc(I18N.ex_col_term) +
+             '</th><th class="n">' + exEsc(I18N.ex_old) + '</th><th class="n">' + exEsc(I18N.ex_new) +
+             '</th><th class="n">' + exEsc(I18N.ex_delta) + '</th></tr>';
+  rows.forEach(function(r) {
+    // m2ex-top and never "top", which is BASE's header bar (display:flex).
+    html += '<tr' + (r.top ? ' class="m2ex-top"' : '') + '><td>' + exEsc(r.label) + '</td><td class="n">' + exEsc(r.old) +
+            '</td><td class="n">' + exEsc(r.new) + '</td><td class="n">' + exEsc(r.delta) + '</td></tr>';
+  });
+  return html + '</table>';
+}
+
+// Why a piece went on or came off: the pass and rule, the two pieces side by
+// side, the score's terms old against new (the three that moved it most lit),
+// and a weapon's blow the same way.
+function exEquipHtml(ex, full) {
+  if (!ex) return '';
+  var html = '<div class="m2ex"><div class="m2ex-h">' + exEsc(ex.title) + exUnusualBadge(ex) + '</div>';
+  html += '<div><b>' + exEsc(ex.summary) + '</b></div><div class="m2ex-muted">' + exEsc(ex.slot) +
+          (ex.time ? ' · ' + exEsc(ex.time) : '') + '</div>';
+  if (ex.context) html += '<div class="m2ex-muted">' + exEsc(I18N.ex_context) + ': ' + exEsc(ex.context) + '</div>';
+  if (ex.origin) html += '<div class="m2ex-muted">' + exEsc(I18N.ex_origin) + ': ' + exEsc(ex.origin) + '</div>';
+  if (ex.gain) html += '<div>' + exEsc(I18N.ex_gain) + ': <b>' + exEsc(ex.gain) + '</b></div>';
+  if (ex.suppressed) html += '<div class="m2ex-warn">' + exEsc(ex.suppressed) + '</div>';
+  html += exFlagsHtml(ex.flags) + exAnomaliesHtml(ex.anomalies);
+  html += '<div class="m2ex-cols">' + exPieceHtml(I18N.ex_new, ex['new']) + exPieceHtml(I18N.ex_old, ex.old) + '</div>';
+  html += exTermsHtml(I18N.ex_terms, ex.terms);
+  html += exTermsHtml(I18N.ex_blow, ex.blow);
+  if (full && ex.codes) html += '<div class="m2ex-codes">' + exEsc(I18N.ex_codes) + ': ' + exEsc(ex.codes) + '</div>';
+  return html + '</div>';
+}
+
+function exHtml(ex, full) {
+  return ex && ex.kind === 'equip' ? exEquipHtml(ex, full) : exListingHtml(ex, full);
+}
+
+function exStepsText(steps, cut) {
+  var out = [];
+  (steps || []).forEach(function(s) {
+    out.push('  ' + s.label + (s.detail ? ' (' + s.detail + ')' : '') + (s.effect ? ' ' + s.effect : '') +
+             (s.value ? ' = ' + s.value : ''));
+  });
+  if (cut) out.push('  ' + I18N.ex_steps_cut);
+  return out;
+}
+
+function exTermsText(title, rows) {
+  if (!rows || !rows.length) return [];
+  var out = [title + ':'];
+  rows.forEach(function(r) {
+    out.push('  ' + (r.top ? '* ' : '') + r.label + ': ' + r.old + ' -> ' + r['new'] + (r.delta ? ' (' + r.delta + ')' : ''));
+  });
+  return out;
+}
+
+// An explanation as plain text for a report: the bot, the item, the time,
+// the words as the page shows them, and the codes the numbers came from.
+function exText(ex, botName, pid, itemName) {
+  var lines = [I18N.ex_bot + ': ' + (botName || '') + ' (pid ' + pid + ')'];
+  if (!ex) return lines.join(EX_NL);
+  if (ex.kind === 'equip') {
+    lines.push(I18N.ex_time + ': ' + ex.time);
+    lines.push(ex.title + ': ' + ex.summary + ' · ' + ex.slot);
+    if (ex.context) lines.push(I18N.ex_context + ': ' + ex.context);
+    if (ex.origin) lines.push(I18N.ex_origin + ': ' + ex.origin);
+    [[I18N.ex_new, ex['new']], [I18N.ex_old, ex.old]].forEach(function(pair) {
+      var p = pair[1];
+      lines.push(pair[0] + ': ' + (!p ? I18N.ex_nothing : p.name + ' · ' + I18N.ex_score_word + ' ' + p.score +
+                 (p.roles.length ? ' · ' + I18N.ex_roles + ': ' + p.roles.join(', ') : '') +
+                 (p.lines.length ? ' · ' + I18N.ex_lines + ': ' + p.lines.join('; ') : '') +
+                 (p.stones.length ? ' · ' + I18N.ex_stones + ': ' + p.stones.join(', ') : '')));
+    });
+    if (ex.gain) lines.push(I18N.ex_gain + ': ' + ex.gain);
+    if (ex.suppressed) lines.push(ex.suppressed);
+    lines = lines.concat(exTermsText(I18N.ex_terms, ex.terms), exTermsText(I18N.ex_blow, ex.blow));
+  } else {
+    lines.push(I18N.ex_item + ': ' + (itemName || '') + ' (id ' + ex.item_id + ')');
+    lines.push(I18N.ex_time + ': ' + ex.listed_time + (ex.last_time && ex.last_time !== ex.listed_time ? ' / ' + ex.last_time : ''));
+    lines.push(I18N.ex_why_counter + ': ' + ex.goods);
+    ['stand', 'pick', 'cut', 'listed'].forEach(function(key) { if (ex[key]) lines.push('  ' + ex[key]); });
+    lines.push(I18N.ex_how_price + ':');
+    lines = lines.concat(exStepsText(ex.steps, ex.steps_cut));
+    if (ex.sheet) lines.push('  ' + ex.sheet);
+    if (ex.last) {
+      lines.push(I18N.ex_last_change + ': ' + ex.last.title + ' · ' + ex.last.line);
+      lines = lines.concat(exStepsText(ex.last.steps, ex.last.steps_cut));
+    }
+    if (ex.end) lines.push(ex.end);
+    if (ex.price_note) lines.push(ex.price_note);
+  }
+  if (ex.flags && ex.flags.length) {
+    lines.push(I18N.ex_flags + ': ' + ex.flags.map(function(f) {
+      return f.label + (f.unusual ? ' [' + I18N.ex_unusual + ']' : '');
+    }).join(', '));
+  }
+  if (ex.anomalies && ex.anomalies.length) {
+    lines.push(I18N.ex_anomalies + ': ' + ex.anomalies.map(function(a) { return a.label; }).join('; '));
+  }
+  lines.push(I18N.ex_codes + ': ' + ex.codes);
+  return lines.join(EX_NL);
+}
+
+// The anomalies the panel read out of a row, beside the core's flags.
+function exAnomaliesHtml(anomalies) {
+  if (!anomalies || !anomalies.length) return '';
+  var html = '<div class="m2ex-flags">';
+  anomalies.forEach(function(a) {
+    html += '<span class="m2ex-flag anomaly">⚑ ' + exEsc(a.label) + '</span>';
+  });
+  return html + '</div>';
+}
+
+// ---- the export for an analyst or a language model -----------------------
+// Markdown with every number the page shows, the rules header's code names
+// beside the words, and a guide and the reference values once at the top.
+function exMdCell(value) {
+  return String(value === undefined || value === null ? '' : value).split('|').join('/').split(EX_NL).join(' ');
+}
+
+function exMdCode(name) {
+  return name ? ' (`' + name + '`)' : '';
+}
+
+function exMdBot(bot, ex) {
+  if (!bot) return '';
+  var parts = [];
+  if (bot.job) parts.push(bot.job + (bot.path ? ', ' + bot.path : ''));
+  if (ex && ex.kind === 'equip' && ex.level) parts.push(I18N.ex_ai_level_then.replace('{level}', ex.level));
+  var now = [];
+  if (bot.level) now.push(String(bot.level));
+  ['persona', 'mood', 'goal', 'map'].forEach(function(k) { if (bot[k]) now.push(bot[k]); });
+  if (now.length) parts.push(I18N.ex_ai_now + ': ' + now.join(', '));
+  if (bot.stats) parts.push(bot.stats);
+  return parts.length ? '- **' + I18N.ex_bot + ':** ' + exMdCell(parts.join(' · ')) : '';
+}
+
+function exMdFlags(ex) {
+  var out = [];
+  if (ex.flags && ex.flags.length) {
+    out.push('- **' + I18N.ex_flags + ':** ' + ex.flags.map(function(f) {
+      return exMdCell(f.label) + exMdCode(f.name) + (f.unusual ? ' [' + I18N.ex_unusual + ']' : '');
+    }).join(', '));
+  }
+  if (ex.anomalies && ex.anomalies.length) {
+    out.push('- **' + I18N.ex_anomalies + ':** ' + ex.anomalies.map(function(a) { return exMdCell(a.label); }).join('; '));
+  }
+  return out;
+}
+
+function exMdTerms(title, rows) {
+  if (!rows || !rows.length) return [];
+  var out = ['', '**' + title + '**', '',
+             '| ' + I18N.ex_col_term + ' | ' + I18N.ex_ai_code + ' | ' + I18N.ex_old + ' | ' + I18N.ex_new + ' | ' +
+             I18N.ex_delta + ' |', '|---|---|---:|---:|---:|'];
+  rows.forEach(function(r) {
+    var label = exMdCell(r.label);
+    out.push('| ' + (r.top ? '**' + label + '**' : label) + ' | `' + (r.name || r.code) + '` | ' + exMdCell(r.old) +
+             ' | ' + exMdCell(r['new']) + ' | ' + exMdCell(r.delta) + ' |');
+  });
+  return out;
+}
+
+function exMdSteps(steps, cut) {
+  if (!steps || !steps.length) return [];
+  var out = ['', '| # | ' + I18N.ex_col_step + ' | ' + I18N.ex_ai_code + ' | | ' + I18N.ex_col_effect + ' | ' +
+             I18N.ex_col_value + ' |', '|---:|---|---|---|---:|---:|'];
+  steps.forEach(function(s, i) {
+    out.push('| ' + (i + 1) + ' | ' + exMdCell(s.label) + ' | `' + (s.name || s.code) + '` | ' + exMdCell(s.detail) +
+             ' | ' + exMdCell(s.effect) + ' | ' + exMdCell(s.value) + ' |');
+  });
+  if (cut) out.push('', I18N.ex_steps_cut);
+  return out;
+}
+
+function exMdPiece(piece, field) {
+  if (!piece) return field === 'name' ? I18N.ex_nothing : '';
+  if (field === 'name') return piece.name + ' (vnum ' + piece.vnum + ', +' + piece.plus + ', id ' + piece.id + ')';
+  if (field === 'roles') {
+    return (piece.roles || []).map(function(r, i) {
+      return r + (piece.role_names && piece.role_names[i] ? ' `' + piece.role_names[i] + '`' : '');
+    }).join(', ');
+  }
+  var value = piece[field];
+  if (value && value.join) return value.join(', ');
+  return value === undefined || value === null ? '' : String(value);
+}
+
+// One decision as Markdown. bot: {name, job, path, level, persona, mood, goal,
+// map, stats} - what the page knows of the bot now; itemName for a counter line.
+function exMarkdownOne(ex, bot, itemName) {
+  if (!ex) return '';
+  var name = (bot && bot.name) || '';
+  var out = [];
+  if (ex.kind === 'equip') {
+    out.push('### ' + I18N.ex_ai_equip + ' E' + ex.id + ' · ' + ex.time + ' · ' + name + ' (pid ' + ex.pid + ')');
+    var botLine = exMdBot(bot, ex);
+    if (botLine) out.push(botLine);
+    var names = ex.names || {};
+    out.push('- **' + I18N.ex_ai_decision + ':** ' + exMdCell(ex.title + ': ' + ex.summary) + ' (`' + (names.path || '') +
+             '` · `' + (names.rule || '') + '`) · ' + exMdCell(ex.slot));
+    if (ex.context) out.push('- **' + I18N.ex_context + ':** ' + exMdCell(ex.context) + exMdCode(names.context));
+    if (ex.origin) out.push('- **' + I18N.ex_origin + ':** ' + exMdCell(ex.origin) + exMdCode(names.origin));
+    if (ex.gain) out.push('- **' + I18N.ex_gain + ':** ' + ex.gain);
+    out = out.concat(exMdFlags(ex));
+    if (ex.suppressed) out.push('- ' + exMdCell(ex.suppressed));
+    out.push('', '| | ' + I18N.ex_new + ' | ' + I18N.ex_old + ' |', '|---|---|---|');
+    [['ex_item', 'name'], ['ex_score_word', 'score'], ['ex_roles', 'roles'], ['ex_lines', 'lines'],
+     ['ex_stones', 'stones']].forEach(function(row) {
+      var a = exMdPiece(ex['new'], row[1]), b = exMdPiece(ex.old, row[1]);
+      if (row[1] === 'name' || a || b) out.push('| ' + I18N[row[0]] + ' | ' + exMdCell(a) + ' | ' + exMdCell(b) + ' |');
+    });
+    out = out.concat(exMdTerms(I18N.ex_terms, ex.terms), exMdTerms(I18N.ex_blow, ex.blow));
+  } else {
+    out.push('### ' + I18N.ex_ai_listing + ' L' + ex.item_id + ' · ' + ex.listed_time + ' · ' + name + ' (pid ' + ex.pid + ')');
+    var botLine2 = exMdBot(bot, ex);
+    if (botLine2) out.push(botLine2);
+    var ln = ex.names || {};
+    out.push('- **' + I18N.ex_item + ':** ' + exMdCell(itemName || '') + ' (vnum ' + ex.vnum + ', × ' + ex.count + ')');
+    out.push('- **' + I18N.ex_why_counter + ':** ' + exMdCell(ex.goods) + exMdCode(ln.goods));
+    ['stand', 'pick', 'cut', 'listed', 'sheet'].forEach(function(key) {
+      if (ex[key]) out.push('- ' + exMdCell(ex[key]) + (key === 'listed' ? exMdCode(ln.list_event) : ''));
+    });
+    out = out.concat(exMdFlags(ex));
+    out.push('', '**' + I18N.ex_how_price + '**');
+    out = out.concat(exMdSteps(ex.steps, ex.steps_cut));
+    if (ex.last) {
+      out.push('', '**' + I18N.ex_last_change + ':** ' + exMdCell(ex.last.title + ' · ' + ex.last.line) + exMdCode(ln.last_event));
+      out = out.concat(exMdSteps(ex.last.steps, ex.last.steps_cut));
+    }
+    if (ex.end) out.push('', '- ' + exMdCell(ex.end) + exMdCode(ln.off || ln.last_event));
+    if (ex.price_note) out.push('- ' + exMdCell(ex.price_note));
+  }
+  out.push('', I18N.ex_codes + ': `' + ex.codes + '`');
+  return out.join(EX_NL);
+}
+
+// A whole export: the title, the guide, the task, the reference values, and
+// every decision given as {ex, bot, item}.
+function exMarkdown(items) {
+  items = (items || []).filter(function(it) { return it && it.ex; });
+  var out = ['# ' + I18N.ex_ai_title, '', I18N.ex_ai_n.replace('{n}', items.length) + ' · ' + new Date().toISOString(),
+             '', I18N.ex_ai_guide, '', '**' + I18N.ex_ai_ask + '**', '', '## ' + I18N.ex_ai_refs, '',
+             '| | | |', '|---|---:|---|'];
+  EX_REFS.forEach(function(r) { out.push('| `' + r[0] + '` | ' + r[1] + ' | ' + r[2] + ' |'); });
+  items.forEach(function(it) {
+    out.push('', '---', '', exMarkdownOne(it.ex, it.bot, it.item));
+  });
+  return out.join(EX_NL) + EX_NL;
+}
+
+function exCopyAi(items) {
+  exCopy(exMarkdown(items), I18N.ex_copied_ai);
+}
+
+function exCopyFallback(text) {
+  var area = document.createElement('textarea');
+  area.value = text;
+  area.style.position = 'fixed';
+  area.style.opacity = '0';
+  document.body.appendChild(area);
+  area.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(area);
+}
+
+// The clipboard API only exists on a secure page (https, or the loopback);
+// a panel opened over the network by its address falls back on the old way.
+function exCopy(text, message) {
+  var done = function() {
+    var toast = document.getElementById('mapToast');
+    if (!toast) return;
+    toast.innerText = '📋 ' + (message || I18N.ex_copied);
+    toast.style.display = 'block';
+    setTimeout(function() { toast.style.display = 'none'; }, 2500);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done, function() { exCopyFallback(text); done(); });
+    return;
+  }
+  exCopyFallback(text);
+  done();
+}
+"""
+
+
 TPL_LIVE_MAP = BASE.replace("__BODY__", """
 <div style="max-width:1240px;margin:0 auto">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
@@ -7291,6 +8299,7 @@ TPL_LIVE_MAP = BASE.replace("__BODY__", """
 </div>
 
 <style>
+""" + EXPLAIN_CSS + """
 .lvl-btn.active, .rank-tab.active { background: var(--gold) !important; color: #000 !important; font-weight: 700; }
 .heat-dot {
   position: absolute;
@@ -7560,6 +8569,18 @@ TPL_LIVE_MAP = BASE.replace("__BODY__", """
 .m2-shop-name { flex: 1; color: #d8c9a3; font-size: 11px; line-height: 1.2; }
 .m2-shop-count { color: #8a7b5c; font-size: 10px; }
 .m2-shop-price { color: var(--gold); font-size: 11px; white-space: nowrap; }
+/* A line that carries its explanation: hover shows it beside the item, a click
+   pins it under the counter, wider, with its steps, codes and a copy button. */
+.m2-shop-row.explained { cursor: pointer; }
+.m2-shop-row.explained:hover { background: rgba(251,191,36,0.06); }
+.m2-shop-row.unusual { box-shadow: inset 2px 0 0 #ef4444; }
+.m2-shop-mark { color: #fbbf24; font-size: 10px; font-weight: 700; }
+.m2-shop-window.m2-shop-wide { width: 440px; }
+.m2-shop-why { display: none; margin-top: 6px; padding-top: 6px; border-top: 1px solid #3d3119;
+  max-height: 420px; overflow-y: auto; }
+.m2-shop-why-head { display: flex; justify-content: space-between; align-items: center; gap: 6px;
+  margin-bottom: 4px; color: #e6ca65; font-size: 11px; font-weight: 700; }
+#m2ItemTooltip.m2-tt-wide { max-width: 420px; }
 .m2-grid-frame {
   position: relative;
   width: 170px;
@@ -7755,6 +8776,7 @@ TPL_LIVE_MAP = BASE.replace("__BODY__", """
   <div id="m2ShopWhere" class="m2-shop-where"></div>
   <div id="m2ShopList" class="m2-shop-list"></div>
   <div id="m2ShopEmpty" class="m2-safebox-empty" style="display:none">{{m.shop_none}}</div>
+  <div id="m2ShopWhy" class="m2-shop-why"></div>
 </div>
 
 <div id="botModal" class="modal-overlay" onclick="if(event.target===this)closeBotModal()">
@@ -7768,6 +8790,10 @@ TPL_LIVE_MAP = BASE.replace("__BODY__", """
 
 <script>
 var I18N = {{m|tojson}};
+// Whether this engine records the bots' explanations (mt2009 only): the
+// decisions tab and the "unusual only" switch exist where it does.
+var EXPLAIN_ON = {{ 'true' if engine_mt2009 else 'false' }};
+""" + EXPLAIN_JS + """
 var g_bots = [];
 var g_selectedLevel = 'all';
 var g_selectedMap = 21;
@@ -8267,6 +9293,12 @@ function toggleBotSafeboxFromEl(el) {
 // window IKASHOP_OFFLINESHOP is the counter and each line's price is in that
 // item's ikashop_data (see /api/bot_shop).
 var g_currentShopPid = null;
+// The lines on show, the bot they belong to, and whether this world explains
+// them ("ok"), has no table for it yet ("missing") or never does ("off").
+var g_currentShopOffers = [];
+var g_currentShopName = '';
+var g_currentShopState = 'off';
+var g_shopWhyIndex = -1;
 
 function toggleBotShopFromEl(el) {
   var pid = parseInt(el.getAttribute('data-botpid'), 10);
@@ -8275,6 +9307,7 @@ function toggleBotShopFromEl(el) {
 
 function closeShopWindow() {
   var win = document.getElementById('m2ShopWindow');
+  closeShopWhy();
   if (win) win.style.display = 'none';
   g_currentShopPid = null;
 }
@@ -8284,6 +9317,9 @@ function renderShopWindow(shop) {
   var where = document.getElementById('m2ShopWhere');
   var empty = document.getElementById('m2ShopEmpty');
   if (!list || !where || !empty) return;
+  closeShopWhy();
+  g_currentShopOffers = [];
+  g_currentShopState = 'off';
   if (!shop) {
     list.innerHTML = '';
     where.textContent = '';
@@ -8292,11 +9328,13 @@ function renderShopWindow(shop) {
     return;
   }
   var offers = shop.offers || [];
+  g_currentShopState = shop.explain_state || 'off';
   where.textContent = (shop.name || '') +
       ' · ' + I18N.map + ' ' + shop.map_index +
       ' (' + shop.x + ', ' + shop.y + ')' +
       (shop.is_premium ? ' · ' + I18N.shop_premium : '') +
-      (shop.expired ? ' · ' + I18N.shop_expired : '');
+      (shop.expired ? ' · ' + I18N.shop_expired : '') +
+      (shop.explain_note ? ' · ' + shop.explain_note : '');
   if (!offers.length) {
     list.innerHTML = '';
     empty.textContent = I18N.shop_empty;
@@ -8304,17 +9342,79 @@ function renderShopWindow(shop) {
     return;
   }
   empty.style.display = 'none';
-  var html = '';
-  offers.forEach(function(offer) {
-    html += '<div class="m2-shop-row">' +
-            '<img src="' + getItemIconUrl(offer.vnum) + '" onerror="' + ICON_ONERROR + '" draggable="false">' +
+  g_currentShopOffers = offers;
+  list.innerHTML = '';
+  offers.forEach(function(offer, idx) {
+    var row = document.createElement('div');
+    var explained = !!offer.explain || g_currentShopState === 'ok';
+    row.className = 'm2-shop-row' + (explained ? ' explained' : '') +
+                    (offer.explain && offer.explain.unusual ? ' unusual' : '');
+    row.innerHTML = '<img src="' + getItemIconUrl(offer.vnum) + '" onerror="' + ICON_ONERROR + '" draggable="false">' +
             '<span class="m2-shop-name">' + escapeHtml(offer.name) +
             (offer.count > 1 ? ' <span class="m2-shop-count">x' + offer.count + '</span>' : '') +
             '</span>' +
-            '<span class="m2-shop-price">' + (offer.price || 0).toLocaleString() + '</span>' +
-            '</div>';
+            (offer.explain ? '<span class="m2-shop-mark" title="' + escapeHtml(I18N.ex_why_counter) + '">?</span>' : '') +
+            '<span class="m2-shop-price">' + (offer.price || 0).toLocaleString() + '</span>';
+    // The tooltip is the bag's, with its lines and stones, and the reason the
+    // line is on the counter and its price under them; a click keeps that
+    // open under the counter to be read and copied into a report.
+    row.onmouseenter = function(ev) { showShopTooltip(ev, idx); };
+    row.onmousemove = function(ev) { moveItemTooltip(ev); };
+    row.onmouseleave = function() { hideItemTooltip(); };
+    if (explained) row.onclick = function() { pinShopWhy(idx); };
+    list.appendChild(row);
   });
-  list.innerHTML = html;
+}
+
+function showShopTooltip(ev, idx) {
+  var offer = g_currentShopOffers[idx];
+  if (!offer) return;
+  var extra = '';
+  if (offer.explain) {
+    extra = exListingHtml(offer.explain, false) +
+            '<div class="m2ex-muted" style="margin-top:4px">' + escapeHtml(I18N.ex_pin_hint) + '</div>';
+  } else if (g_currentShopState === 'ok') {
+    extra = exListingHtml(null, false);
+  }
+  showItemTooltip(ev, offer, extra, !!offer.explain);
+}
+
+function pinShopWhy(idx) {
+  var pane = document.getElementById('m2ShopWhy');
+  var win = document.getElementById('m2ShopWindow');
+  var offer = g_currentShopOffers[idx];
+  if (!pane || !offer) return;
+  if (g_shopWhyIndex === idx && pane.style.display === 'block') {
+    closeShopWhy();
+    return;
+  }
+  hideItemTooltip();
+  g_shopWhyIndex = idx;
+  pane.innerHTML = '<div class="m2-shop-why-head"><span>' + escapeHtml(offer.name) +
+      (offer.count > 1 ? ' x' + offer.count : '') + '</span><span style="white-space:nowrap">' +
+      (offer.explain ? '<button type="button" class="m2ex-btn" onclick="copyShopWhy()">📋 ' + escapeHtml(I18N.ex_copy) + '</button>' : '') +
+      '<button type="button" class="m2ex-btn" onclick="closeShopWhy()">' + escapeHtml(I18N.ex_close) + '</button></span></div>' +
+      exListingHtml(offer.explain, true);
+  pane.style.display = 'block';
+  if (win) win.classList.add('m2-shop-wide');
+}
+
+function closeShopWhy() {
+  var pane = document.getElementById('m2ShopWhy');
+  var win = document.getElementById('m2ShopWindow');
+  if (pane) {
+    pane.style.display = 'none';
+    pane.innerHTML = '';
+  }
+  if (win) win.classList.remove('m2-shop-wide');
+  g_shopWhyIndex = -1;
+}
+
+function copyShopWhy() {
+  var offer = g_currentShopOffers[g_shopWhyIndex];
+  if (!offer || !offer.explain) return;
+  exCopy(exText(offer.explain, g_currentShopName, g_currentShopPid,
+                offer.name + (offer.count > 1 ? ' x' + offer.count : '')));
 }
 
 function toggleBotShop(pid, name) {
@@ -8328,6 +9428,7 @@ function toggleBotShop(pid, name) {
 
   win.style.display = 'block';
   g_currentShopPid = pid;
+  g_currentShopName = name || '';
   var titleEl = document.getElementById('m2ShopTitle');
   if (titleEl) titleEl.textContent = I18N.shop + (name ? ' — ' + name : '');
   renderShopWindow(null);
@@ -8487,7 +9588,9 @@ function showEquipTooltip(ev, el) {
   }
 }
 
-function showItemTooltip(ev, item) {
+// `extra` is more HTML under the item's own lines - a counter line's
+// explanation - and `wide` lets the tooltip grow to carry it.
+function showItemTooltip(ev, item, extra, wide) {
   var tt = document.getElementById('m2ItemTooltip');
   if (!tt || !item) return;
 
@@ -8596,7 +9699,10 @@ function showItemTooltip(ev, item) {
     if (hasSock) html += sockHtml;
   }
 
+  if (extra) html += '<div class="m2-tt-divider"></div>' + extra;
   tt.innerHTML = html;
+  if (wide) tt.classList.add('m2-tt-wide');
+  else tt.classList.remove('m2-tt-wide');
   tt.style.display = 'block';
   moveItemTooltip(ev);
 }
@@ -8823,15 +9929,31 @@ function openBotModal(pid) {
 
       // Equipment history: what this bot refined, burned, put on, gave away,
       // sold and stored - read out of log.log, where the engine and the core
-      // both write it. Filled on open, like the live log below.
+      // both write it. Filled on open, like the live log below. On mt2009 a
+      // line the core explained has a "?", and the decisions tab lists what it
+      // explained: its equipment decisions and its counter lines.
+      // What the AI export says of the bot now, beside what each decision
+      // recorded of it then (its level).
+      var gearStats = p.stats ? 'STR ' + p.stats.STR + ' VIT ' + p.stats.VIT + ' DEX ' + p.stats.DEX + ' INT ' + p.stats.INT : '';
+      g_gearBot = {pid: p.id, name: p.name, level: p.level, job: p.job_name || '', path: p.profession_name || '',
+                   persona: p.personality || '', mood: p.mood || '', goal: p.goal || '', stats: gearStats};
+      g_gearRows = [];
       html += '<div style="margin-top:14px;border-top:1px solid #332814;padding-top:10px">' +
-              '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
+              '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:8px">' +
               '<h4 style="margin:0;color:var(--gold);font-size:13px">📖 ' + I18N.gear_history + '</h4>' +
+              '<div style="display:flex;gap:8px;align-items:center">' +
+              (EXPLAIN_ON ? '<label style="font-size:11px;color:#fca5a5;display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap">' +
+                            '<input type="checkbox" id="botGearUnusual"' + (g_gearUnusual ? ' checked' : '') +
+                            ' onchange="setGearUnusual(' + p.id + ', this.checked)" style="width:auto;margin:0"> ⚠ ' +
+                            escapeHtml(I18N.ex_unusual_only) + '</label>' +
+                            '<button type="button" class="m2ex-btn" onclick="copyGearAi()" title="' + escapeHtml(I18N.ex_copy_ai) +
+                            '">📋 ' + escapeHtml(I18N.ex_copy_ai) + '</button>' : '') +
               '<button type="button" onclick="loadBotGearHistory(' + p.id + ', true)" style="padding:2px 8px;font-size:11px;background:#334155;color:#fff;border:none;border-radius:4px;cursor:pointer">' + I18N.gear_history_more + '</button>' +
+              '</div>' +
               '</div>' +
               '<div class="muted" style="font-size:10px;margin-bottom:6px">' + I18N.gear_history_hint + '</div>' +
               '<div id="botGearTabs" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">' + gearTabButtons(p.id) + '</div>' +
-              '<div id="botGearHistory" style="background:#09090b;border:1px solid #27272a;border-radius:6px;padding:6px 8px;max-height:220px;overflow-y:auto;font-size:11px;line-height:1.5">' +
+              '<div id="botGearHistory" style="background:#09090b;border:1px solid #27272a;border-radius:6px;padding:6px 8px;max-height:320px;overflow-y:auto;font-size:11px;line-height:1.5">' +
               I18N.gear_history_loading + '</div>' +
               '</div>';
 
@@ -8972,7 +10094,15 @@ var g_seenLogsSet = {};
 // of them is not a scroll through the other two. The tab chosen stays chosen
 // from one bot's card to the next.
 var GEAR_TABS = ['trade', 'bonus', 'refine', 'other', 'all'];
+// What the core explained - equipment decisions and counter lines - on a tab
+// of its own, where the core records it (mt2009).
+if (EXPLAIN_ON) GEAR_TABS.push('decisions');
 var g_gearTab = 'trade';
+// Only the lines whose explanation is flagged unusual; kept from one card to
+// the next like the tab.
+var g_gearUnusual = false;
+var g_gearRows = [];
+var g_gearBot = {pid: 0, name: ''};
 
 function gearTabButtons(pid) {
   var html = '';
@@ -8994,34 +10124,84 @@ function selectGearTab(pid, tab) {
   loadBotGearHistory(pid, false);
 }
 
+function setGearUnusual(pid, on) {
+  g_gearUnusual = !!on;
+  var box = document.getElementById('botGearHistory');
+  if (box) box.textContent = I18N.gear_history_loading;
+  loadBotGearHistory(pid, false);
+}
+
 function loadBotGearHistory(pid, older) {
   var box = document.getElementById('botGearHistory');
   if (!box) return;
   var limit = older ? 400 : 60;
   var tab = g_gearTab;
-  fetch('/api/bot_gear_history/' + pid + '?limit=' + limit + '&tab=' + tab)
+  var unusual = g_gearUnusual;
+  fetch('/api/bot_gear_history/' + pid + '?limit=' + limit + '&tab=' + tab + (unusual ? '&unusual=1' : ''))
     .then(function(res) { return res.json(); })
     .then(function(data) {
-      if (!box || tab !== g_gearTab) return;
+      if (!box || tab !== g_gearTab || unusual !== g_gearUnusual) return;
+      g_gearRows = [];
       if (!data || !data.ok || !data.rows || data.rows.length === 0) {
-        box.textContent = (data && data.error) ? data.error : I18N.gear_history_empty;
+        box.textContent = (data && data.error) ? data.error :
+            ((data && data.explain_state === 'missing' && tab === 'decisions') ? I18N.ex_state_missing : I18N.gear_history_empty);
         return;
       }
+      g_gearRows = data.rows;
       var colors = { refine_ok: '#4ade80', refine_fail: '#f87171', burned: '#f87171', equip: '#60a5fa',
+                     unequip: '#fb923c', listing: '#fbbf24',
                      gift_out: '#fbbf24', gift_in: '#fbbf24', stall_sold: '#a78bfa', bought: '#a78bfa',
                      vendor: '#94a3b8', bonus: '#f472b6', safebox: '#38bdf8', get: '#94a3b8', other: '#94a3b8' };
       var html = '';
-      data.rows.forEach(function(r) {
+      data.rows.forEach(function(r, i) {
         var c = colors[r.kind] || colors.other;
-        html += '<div style="display:flex;gap:8px;border-bottom:1px solid #1f1f23;padding:2px 0">' +
+        html += '<div style="border-bottom:1px solid #1f1f23;padding:2px 0' + (r.unusual ? ';box-shadow:inset 2px 0 0 #ef4444;padding-left:4px' : '') + '">' +
+                '<div style="display:flex;gap:8px">' +
                 '<span style="color:#71717a;white-space:nowrap">' + r.time + '</span>' +
                 '<span style="color:' + c + ';white-space:nowrap;min-width:110px">' + r.label + '</span>' +
-                '<span style="color:#e4e4e7">' + r.item + (r.detail ? ' <span style="color:#a1a1aa">' + r.detail + '</span>' : '') + '</span>' +
+                '<span style="color:#e4e4e7;flex:1">' + r.item + (r.detail ? ' <span style="color:#a1a1aa">' + r.detail + '</span>' : '') + '</span>' +
+                (r.why ? '<button type="button" class="m2ex-q" title="' + escapeHtml(I18N.ex_more) + '" onclick="toggleGearWhy(' + i + ')">?</button>' : '') +
+                '</div>' +
+                (r.why ? '<div id="gearWhy' + i + '" style="display:none"></div>' : '') +
                 '</div>';
       });
       box.innerHTML = html;
     })
     .catch(function() { if (box) box.textContent = I18N.gear_history_empty; });
+}
+
+// A line's "?": its explanation under it, with a copy button for a report.
+function toggleGearWhy(i) {
+  var el = document.getElementById('gearWhy' + i);
+  var r = g_gearRows[i];
+  if (!el || !r || !r.why) return;
+  if (el.style.display !== 'none') {
+    el.style.display = 'none';
+    return;
+  }
+  el.innerHTML = '<div class="m2ex-box">' + exHtml(r.why, true) +
+                 '<div style="text-align:right;margin-top:4px"><button type="button" class="m2ex-btn" onclick="copyGearWhy(' + i + ')">📋 ' +
+                 escapeHtml(I18N.ex_copy) + '</button><button type="button" class="m2ex-btn" onclick="copyGearAiOne(' + i + ')">🤖 ' +
+                 escapeHtml(I18N.ex_copy_ai) + '</button></div></div>';
+  el.style.display = 'block';
+}
+
+function copyGearWhy(i) {
+  var r = g_gearRows[i];
+  if (!r || !r.why) return;
+  exCopy(exText(r.why, g_gearBot.name, g_gearBot.pid, r.item));
+}
+
+// One of the card's explanations, or every one the tab shows, for an AI.
+function copyGearAiOne(i) {
+  var r = g_gearRows[i];
+  if (r && r.why) exCopyAi([{ex: r.why, bot: g_gearBot, item: r.item}]);
+}
+
+function copyGearAi() {
+  var items = [];
+  g_gearRows.forEach(function(r) { if (r && r.why) items.push({ex: r.why, bot: g_gearBot, item: r.item}); });
+  if (items.length) exCopyAi(items);
 }
 
 function fetchBotLogs(botName) {
@@ -9168,6 +10348,17 @@ function copyCommand(cmd) {
     setTimeout(function() { t.style.display = 'none'; }, 3500);
   }
 }
+
+// A link opens a bot's card: /map?bot=<pid>, and &gear=<tab> for the tab of
+// its equipment history - how the decisions page sends the operator to a bot.
+(function openBotFromLink() {
+  var query = new URLSearchParams(window.location.search);
+  var pid = parseInt(query.get('bot') || '', 10);
+  if (!(pid > 0)) return;
+  var gear = query.get('gear');
+  if (gear && GEAR_TABS.indexOf(gear) >= 0) g_gearTab = gear;
+  openBotModal(pid);
+})();
 
 // Initial fetch and 1.5s interval polling
 fetchBotPositions();
@@ -9464,10 +10655,25 @@ GEAR_HISTORY_HOWS = {
     # A bot's purchase from a village merchant and the marble a hundred Magic
     # Dust make (Iwakura's Patch 4, point 11): neither had a row the card read
     # (B23 of Iwakura's audit of 26 September).
-    "PLAYERBOT_NPC_BUY":     ("bought",      {"pl": "Kupione u handlarza", "en": "Bought from a merchant"}),
-    "PLAYERBOT_DUST_MARBLE": ("bonus",       {"pl": "Marmur z Magicznego Pyłu", "en": "Marble from Magic Dust"}),
-    "EXCHANGE_TAKE":         ("gift_in",     {"pl": "Z wymiany",          "en": "From a trade"}),
-    "EXCHANGE_GIVE":         ("gift_out",    {"pl": "Oddane w wymianie",  "en": "Given in a trade"}),
+    "PLAYERBOT_NPC_BUY":     ("bought",      {"pl": "Kupione u handlarza", "en": "Bought from a merchant",
+                             "de": "Beim Händler gekauft", "tr": "Satıcıdan satın alındı"}),
+    "PLAYERBOT_DUST_MARBLE": ("bonus",       {"pl": "Marmur z Magicznego Pyłu", "en": "Marble from Magic Dust",
+                             "de": "Marmor aus Magischem Staub", "tr": "Sihirli Tozdan Mermer"}),
+    # Iwakura's exchange of surplus refine materials (29 September): the stone
+    # or the marble it gave, the reward a failed roll did not give, and the
+    # materials it took.
+    "PLAYERBOT_MATERIAL_EXCHANGE": ("bonus", {"pl": "Z wymiany ulepszaczy", "en": "From a material exchange",
+                             "de": "Aus einem Materialtausch", "tr": "Malzeme takasından"}),
+    "PLAYERBOT_MATERIAL_EXCHANGE_FAIL": ("refine_fail", {"pl": "Wymiana ulepszaczy nieudana",
+                             "en": "Material exchange failed", "de": "Materialtausch fehlgeschlagen",
+                             "tr": "Malzeme takası başarısız"}),
+    "PLAYERBOT_MATERIAL_EXCHANGE_IN": ("vendor", {"pl": "Oddane na wymianę ulepszaczy",
+                             "en": "Given in a material exchange", "de": "Für einen Materialtausch abgegeben",
+                             "tr": "Malzeme takasına verildi"}),
+    "EXCHANGE_TAKE":         ("gift_in",     {"pl": "Z wymiany",          "en": "From a trade",
+                             "de": "Aus einem Handel", "tr": "Ticaretten"}),
+    "EXCHANGE_GIVE":         ("gift_out",    {"pl": "Oddane w wymianie",  "en": "Given in a trade",
+                             "de": "Im Handel abgegeben", "tr": "Ticarette verildi"}),
 }
 
 # Iwakura's Patch 3, point 1: the card's tabs. Trade is what was sold and
@@ -9479,12 +10685,905 @@ GEAR_HISTORY_TABS = {
     "trade":  ("PLAYERBOT_STALL_SOLD", "SHOP_BUY", "PLAYERBOT_SHOP_SELL", "EXCHANGE_TAKE",
                "EXCHANGE_GIVE", "PLAYERBOT_GIFT_OUT", "PLAYERBOT_GIFT_IN", "PLAYERBOT_NPC_BUY"),
     "bonus":  ("PLAYERBOT_BONUS", "PLAYERBOT_BONUS_ADD", "PLAYERBOT_BONUS_CHANGE", "PLAYERBOT_BONUS_MARBLE",
-               "PLAYERBOT_DUST_MARBLE"),
+               "PLAYERBOT_DUST_MARBLE", "PLAYERBOT_MATERIAL_EXCHANGE", "PLAYERBOT_MATERIAL_EXCHANGE_FAIL",
+               "PLAYERBOT_MATERIAL_EXCHANGE_IN"),
     "refine": ("REFINE SUCCESS", "REFINE FAIL", "REMOVE (REFINE FAIL)", "REFINE FISH_ROD SUCCESS",
                "REFINE FISH_ROD FAIL"),
     "other":  ("PLAYERBOT_EQUIP", "SAFEBOX PUT", "SAFEBOX GET", "MOONLIGHT_GET"),
 }
 GEAR_HISTORY_OFFLINE_BUY = ("bought", {"pl": "Kupione w sklepie offline", "en": "Bought from an offline shop"})
+
+
+# ---- The bots' explanations ----------------------------------------------------
+# Why a bot put a line on its counter and how it reached the price, and why it
+# changed a worn piece ("why did it swap Miecz Pelni Ksiezyca +6 for Krwawy Miecz
+# +4" - the question the operator wants to be able to answer and report). The
+# mt2009 core writes two InnoDB tables in `log` beside the decisions themselves:
+# playerbot_listing, one row per counter line keyed by the line's item id, and
+# playerbot_equip, one row per equipment decision. It writes numbers only. Every
+# code below is a fixed number of playerbot_explain_rules.h (one enum entry per
+# line; a number never changes once shipped, a new one is appended), and this is
+# where they are said in the page's language - tests/admin_panel_decisions_test.py
+# reads that header and checks that each one has its four texts here, with the
+# parameters the design gives it.
+#
+# The two text encodings are the header's too: steps and terms are
+# "code=value[:a[:b[:c]]]" joined by ";" with trailing zero parameters left out
+# and ";~" when the column ran out of room; lines are "type:value" joined by ","
+# then "|" and the vnums of the seated stones. A line's type is the item's own
+# attrtype - a POINT number on mt2009 - so it goes through apply_key like every
+# other bonus line in this panel ("The panels' 71 and 72").
+#
+# What is explained is what a bot lists and what it wears, and nothing else:
+# the panel shows what the two tables hold and adds nothing to it.
+#
+# A template's placeholders are {a} {b} {c} and {value}; the kind of each says
+# how the number is written (_dx_param, beside the route that reads them).
+EXPLAIN_DEFAULT_DAYS = 7       # the core's own default while the key is absent
+EXPLAIN_MAX_DAYS = 30
+# The flags that make a row "unusual" (the rules header's masks).
+DECISION_LISTING_UNUSUAL = 1 | 4 | 8 | 16 | 512 | 2048
+DECISION_EQUIP_UNUSUAL = 1 | 2 | 4 | 8 | 16 | 64 | 128
+
+# How a line went up, changed or came down (EVENT_*).
+DECISION_EVENTS = {
+ 0: {"pl": "Nieznane zdarzenie", "en": "Unknown event", "de": "Unbekanntes Ereignis", "tr": "Bilinmeyen olay"},
+ 1: {"pl": "Wystawione przy otwarciu sklepu", "en": "Listed when the shop opened",
+     "de": "Beim Öffnen des Ladens eingestellt", "tr": "Dükkân açılırken tezgâha kondu"},
+ 2: {"pl": "Dołożone przy obsłudze sklepu", "en": "Added on a shop visit",
+     "de": "Bei einem Ladenbesuch hinzugefügt", "tr": "Dükkân ziyaretinde eklendi"},
+ 3: {"pl": "Wystawione na straganie", "en": "Listed on a stall", "de": "Am Stand eingestellt", "tr": "Tezgâha kondu"},
+ 4: {"pl": "Przecenione", "en": "Repriced", "de": "Neu bepreist", "tr": "Yeniden fiyatlandı"},
+ 5: {"pl": "Pomyłka w cenie poprawiona przez właściciela", "en": "Price slip put right by the keeper",
+     "de": "Preisfehler vom Besitzer korrigiert", "tr": "Fiyat hatası sahibi tarafından düzeltildi"},
+ 6: {"pl": "Pomyłka w cenie poprawiona przez rdzeń", "en": "Price slip put right by the core",
+     "de": "Preisfehler vom Kern korrigiert", "tr": "Fiyat hatası çekirdek tarafından düzeltildi"},
+ 7: {"pl": "Podniesione do progu", "en": "Raised to the floor", "de": "Auf die Untergrenze angehoben", "tr": "Tabana yükseltildi"},
+ 8: {"pl": "Zdjęte z lady", "en": "Taken off the counter", "de": "Vom Ladentisch genommen", "tr": "Tezgâhtan indirildi"},
+ 9: {"pl": "Zabrane z lady do założenia", "en": "Taken back to wear", "de": "Zum Anlegen zurückgenommen", "tr": "Giymek için geri alındı"},
+ 10: {"pl": "Sprzedane", "en": "Sold", "de": "Verkauft", "tr": "Satıldı"},
+}
+
+# Why the stand is open: EPlayerBotShopReason, playerbot_types.h, 0..9 as it is.
+DECISION_STAND = {
+ 0: {"pl": "powód nieznany", "en": "reason unknown", "de": "Grund unbekannt", "tr": "neden bilinmiyor"},
+ 1: {"pl": "osobowość Handlarz", "en": "the Merchant personality", "de": "die Händler-Persönlichkeit", "tr": "Tüccar kişiliği"},
+ 2: {"pl": "brak yang na mikstury", "en": "no yang for potions", "de": "kein Yang für Tränke", "tr": "iksir için yang yok"},
+ 3: {"pl": "pełny plecak", "en": "a full bag", "de": "ein voller Beutel", "tr": "dolu çanta"},
+ 4: {"pl": "dropper z pełnym plecakiem", "en": "a dropper with a full bag", "de": "ein Dropper mit vollem Beutel", "tr": "çantası dolu bir dropper"},
+ 5: {"pl": "nadmiar ksiąg", "en": "too many books", "de": "zu viele Bücher", "tr": "fazla kitap"},
+ 6: {"pl": "los droppera", "en": "a dropper's roll", "de": "der Wurf eines Droppers", "tr": "bir dropper'ın zarı"},
+ 7: {"pl": "los", "en": "chance", "de": "Zufall", "tr": "şans"},
+ 8: {"pl": "zbędny duplikat", "en": "a spare duplicate", "de": "ein überzähliges Duplikat", "tr": "fazla bir kopya"},
+ 9: {"pl": "nadmiar towaru", "en": "surplus goods", "de": "Warenüberschuss", "tr": "mal fazlası"},
+}
+
+# What shape the line was cut to (SHAPE_*).
+DECISION_SHAPES = {
+ 0: {"pl": "cały stos", "en": "the whole stack", "de": "der ganze Stapel", "tr": "yığının tamamı"},
+ 1: {"pl": "naturalna porcja", "en": "a natural lot", "de": "eine natürliche Menge", "tr": "doğal bir parti"},
+ 2: {"pl": "paczka mikstur", "en": "a potion pack", "de": "ein Trankpaket", "tr": "iksir paketi"},
+ 3: {"pl": "paczka pyłu", "en": "a dust pack", "de": "ein Staubpaket", "tr": "toz paketi"},
+ 4: {"pl": "para medali", "en": "a pair of medals", "de": "ein Medaillenpaar", "tr": "madalya çifti"},
+ 5: {"pl": "sztuka ponad zapas", "en": "a single over the keep", "de": "ein Einzelstück über dem Vorrat", "tr": "stok üstü tek parça"},
+ 6: {"pl": "pojedynczy klucz", "en": "a single key", "de": "ein einzelner Schlüssel", "tr": "tek anahtar"},
+ 7: {"pl": "paczka szkatułek", "en": "a chest pack", "de": "ein Truhenpaket", "tr": "sandık paketi"},
+ 8: {"pl": "sztuka oddzielona na straganie", "en": "a single split off for a stall",
+     "de": "ein für den Stand abgeteiltes Einzelstück", "tr": "tezgâh için ayrılan tek parça"},
+}
+
+# Why a line came home (OFF_*): BotOfflineUnwantedLine's words, in its order.
+DECISION_OFF = {
+ 0: {"pl": "bez podanego powodu", "en": "no reason given", "de": "ohne angegebenen Grund", "tr": "neden belirtilmedi"},
+ 1: {"pl": "Lista Przydatnych Przedmiotów zatrzymuje go dla magazyniera", "en": "the Useful Items List keeps it for the storekeeper",
+     "de": "die Liste nützlicher Gegenstände behält es für den Lagerverwalter", "tr": "Faydalı Eşyalar Listesi onu depocu için tutuyor"},
+ 2: {"pl": "kamień duszy dla Alchemika (na pył)", "en": "a spirit stone for the Alchemist's dust",
+     "de": "ein Geiststein für den Staub des Alchemisten", "tr": "Simyacının tozu için bir ruh taşı"},
+ 3: {"pl": "za dużo marmurów albo drugi tego samego potwora", "en": "too many marbles, or a second of one monster",
+     "de": "zu viele Verwandlungskugeln oder eine zweite desselben Monsters", "tr": "fazla dönüşüm küresi ya da aynı canavarın ikincisi"},
+ 4: {"pl": "ponad limit linii tego samego przedmiotu", "en": "over the line cap of one item",
+     "de": "über der Zeilengrenze eines Gegenstands", "tr": "aynı eşyanın satır sınırının üstünde"},
+ 5: {"pl": "za dużo ksiąg misji w wiosce", "en": "too many mission books in the village",
+     "de": "zu viele Missionsbücher im Dorf", "tr": "köyde fazla görev kitabı"},
+ 6: {"pl": "za dużo słabych broni na ladach", "en": "too many junk weapons on the counters",
+     "de": "zu viele Schrottwaffen auf den Ladentischen", "tr": "tezgâhlarda fazla hurda silah"},
+ 7: {"pl": "niepełna paczka mikstur, do zlania", "en": "not a whole potion pack, to be poured together",
+     "de": "kein ganzes Trankpaket, wird zusammengeschüttet", "tr": "tam olmayan iksir paketi, birleştirilecek"},
+ 8: {"pl": "za dużo słabych zbroi tej rodziny", "en": "too many low armours of this family",
+     "de": "zu viele schwache Rüstungen dieser Familie", "tr": "bu aileden fazla düşük zırh"},
+ 9: {"pl": "za dużo słabej biżuterii tej rodziny", "en": "too many low jewels of this family",
+     "de": "zu viel schwacher Schmuck dieser Familie", "tr": "bu aileden fazla düşük takı"},
+ 10: {"pl": "farba z wody, do wyrzucenia", "en": "a dye from the water, to be thrown away",
+      "de": "eine Haarfarbe aus dem Wasser, wird weggeworfen", "tr": "sudan çıkan boya, atılacak"},
+ 11: {"pl": "broń 30 lv wraca pod kowadło", "en": "a level-30 weapon goes back to the anvil",
+      "de": "eine Waffe Lv 30 geht zurück zum Amboss", "tr": "30. seviye silah örse geri dönüyor"},
+ 12: {"pl": "szkatułki: bot ich nie sprzedaje albo linia za długa", "en": "chests: the bot does not sell them, or the line is too long",
+      "de": "Truhen: der Bot verkauft sie nicht, oder die Zeile ist zu lang", "tr": "sandıklar: bot onları satmıyor ya da satır çok uzun"},
+ 13: {"pl": "za długa linia Kamieni Duchowych", "en": "too long a line of Soul Stones",
+      "de": "zu lange Zeile Seelensteine", "tr": "fazla uzun bir Ruh Taşı satırı"},
+ 14: {"pl": "linia zwojów nie po 1, 2 lub 5", "en": "a scroll line not of 1, 2 or 5",
+      "de": "eine Schriftrollenzeile nicht zu 1, 2 oder 5", "tr": "1, 2 ya da 5 olmayan parşömen satırı"},
+ 15: {"pl": "za długa linia medali konnych", "en": "too long a line of horse medals",
+      "de": "zu lange Zeile Pferdemedaillen", "tr": "fazla uzun bir at madalyası satırı"},
+ 16: {"pl": "sterta nie w naturalnej porcji", "en": "a heap not in a natural lot",
+      "de": "ein Haufen nicht in natürlicher Menge", "tr": "doğal partide olmayan bir yığın"},
+ 17: {"pl": "materiał nie w naturalnej porcji", "en": "a material not in a natural lot",
+      "de": "ein Material nicht in natürlicher Menge", "tr": "doğal partide olmayan bir malzeme"},
+ 18: {"pl": "ekwipunek poniżej 30 lv za słaby albo ponad limit", "en": "gear under level 30 too low, or over its cap",
+      "de": "Ausrüstung unter Lv 30 zu schwach oder über der Grenze", "tr": "30. seviye altı ekipman çok zayıf ya da sınırın üstünde"},
+ 19: {"pl": "wędka lub kilof wraca do właściciela", "en": "a rod or a pickaxe goes back to its owner",
+      "de": "eine Angel oder Spitzhacke geht an ihren Besitzer zurück", "tr": "olta ya da kazma sahibine dönüyor"},
+ 20: {"pl": "zabrane do założenia", "en": "taken back to wear", "de": "zum Anlegen zurückgenommen", "tr": "giymek için geri alındı"},
+}
+
+# The small vocabularies a parameter can be one of ("enum:NAME").
+DECISION_ENUMS = {
+ # PLAYERBOT_ITEM_POLICY_*, the words of the item policy file.
+ "POLICY": {
+  1: {"pl": "zostaw", "en": "keep", "de": "behalten", "tr": "sakla"},
+  2: {"pl": "stragan", "en": "stall", "de": "Stand", "tr": "tezgâh"},
+  3: {"pl": "handlarz", "en": "merchant", "de": "Händler", "tr": "satıcı"},
+  4: {"pl": "wyrzuć", "en": "drop", "de": "wegwerfen", "tr": "yere at"},
+ },
+ "STALKI_WHY": {
+  1: {"pl": "innej klasy", "en": "another class's", "de": "einer anderen Klasse", "tr": "başka bir sınıfın"},
+  2: {"pl": "za daleko w przód", "en": "too far ahead", "de": "zu weit voraus", "tr": "çok ileride"},
+  3: {"pl": "druga sztuka", "en": "a second copy", "de": "ein zweites Exemplar", "tr": "ikinci bir kopya"},
+ },
+ # PlayerBotKeepsLevel30ForAnvil's why: 1, 2 and 6 keep the weapon, 3 to 5 let it go.
+ "L30_WHY": {
+  1: {"pl": "projekt", "en": "a project", "de": "ein Projekt", "tr": "bir proje"},
+  2: {"pl": "broń własnej klasy", "en": "the class's own", "de": "die der eigenen Klasse", "tr": "kendi sınıfının"},
+  3: {"pl": "innej klasy", "en": "another class's", "de": "einer anderen Klasse", "tr": "başka bir sınıfın"},
+  4: {"pl": "losowanie wskazało ladę", "en": "the draw said counter", "de": "die Auslosung sagte Ladentisch", "tr": "kura tezgâhı gösterdi"},
+  5: {"pl": "plecak trzyma już maksimum", "en": "the bag already keeps the maximum",
+      "de": "der Beutel hält schon das Maximum", "tr": "çanta zaten azami sayıyı tutuyor"},
+  6: {"pl": "zatrzymana losowaniem", "en": "kept by the draw", "de": "durch die Auslosung behalten", "tr": "kurayla tutuldu"},
+ },
+ "SCROLL_KEEP": {
+  0: {"pl": "nic nie czeka na zwój", "en": "nothing waits for a scroll", "de": "nichts wartet auf eine Schriftrolle", "tr": "parşömen bekleyen bir şey yok"},
+  1: {"pl": "noszony ekwipunek do ulepszenia", "en": "worn gear to refine", "de": "getragene Ausrüstung zum Verbessern", "tr": "yükseltilecek giyili ekipman"},
+  2: {"pl": "handlarz zasobami", "en": "a resource trader", "de": "ein Rohstoffhändler", "tr": "bir kaynak tüccarı"},
+  3: {"pl": "reguła zwojów", "en": "the scroll rule", "de": "die Schriftrollen-Regel", "tr": "parşömen kuralı"},
+ },
+ "MEDAL_WHY": {
+  1: {"pl": "Handlarz", "en": "a Merchant", "de": "ein Händler", "tr": "Tüccar"},
+  2: {"pl": "dropper medali", "en": "a medal dropper", "de": "ein Medaillen-Dropper", "tr": "madalya dropper'ı"},
+  3: {"pl": "ponad zapas", "en": "over the keep", "de": "über dem Vorrat", "tr": "stok üstü"},
+  4: {"pl": "koń na maksimum dla poziomu", "en": "the horse is maxed for the level",
+      "de": "das Pferd ist für das Level ausgereizt", "tr": "at, seviyesi için en üstte"},
+ },
+ "MAT_WHY": {
+  1: {"pl": "próba rynku", "en": "a market probe", "de": "ein Markttest", "tr": "piyasa denemesi"},
+  2: {"pl": "brak popytu", "en": "no demand", "de": "keine Nachfrage", "tr": "talep yok"},
+  3: {"pl": "nadmiar", "en": "overstock", "de": "Überbestand", "tr": "fazla stok"},
+ },
+ "VALUABLE": {
+  0: {"pl": "", "en": "", "de": "", "tr": ""},
+  1: {"pl": " (z cennym bonusem)", "en": " (with a valuable bonus)", "de": " (mit wertvollem Bonus)", "tr": " (değerli bonuslu)"},
+ },
+ "BOOK_USEFUL": {
+  0: {"pl": " (bot jej nie przeczyta)", "en": " (of no use to the bot)", "de": " (für den Bot nutzlos)", "tr": " (bota faydası yok)"},
+  1: {"pl": " (przydatna, ale ponad zapas)", "en": " (useful, but over the keep)",
+      "de": " (nützlich, aber über dem Vorrat)", "tr": " (faydalı, ama stok üstü)"},
+ },
+ "AT_TOP": {
+  0: {"pl": "", "en": "", "de": "", "tr": ""},
+  1: {"pl": " (na maksimum)", "en": " (at the top)", "de": " (am Maximum)", "tr": " (en üstte)"},
+ },
+ "PREVIEW": {
+  0: {"pl": "", "en": "", "de": "", "tr": ""},
+  1: {"pl": " (podgląd bez właściciela, więc bez wahania)", "en": " (a preview without its keeper, so no swing)",
+      "de": " (Vorschau ohne Besitzer, also keine Schwankung)", "tr": " (sahipsiz önizleme, bu yüzden dalgalanma yok)"},
+ },
+ "MARBLE_SRC": {
+  0: {"pl": "losowanie z przedziału", "en": "drawn from the band", "de": "aus dem Bereich gezogen", "tr": "aralıktan çekildi"},
+  1: {"pl": "wyjątek wymieniony z nazwy", "en": "a named exception", "de": "eine namentliche Ausnahme", "tr": "adıyla belirtilmiş istisna"},
+ },
+ "FIXED": {
+  1: {"pl": "biała perła", "en": "white pearl", "de": "weiße Perle", "tr": "beyaz inci"},
+  2: {"pl": "niebieska perła", "en": "blue pearl", "de": "blaue Perle", "tr": "mavi inci"},
+  3: {"pl": "czerwona perła", "en": "red pearl", "de": "rote Perle", "tr": "kırmızı inci"},
+  4: {"pl": "małża", "en": "shellfish", "de": "Muschel", "tr": "istiridye"},
+  5: {"pl": "medal konny", "en": "horse medal", "de": "Pferdemedaille", "tr": "at madalyası"},
+  6: {"pl": "Suszona Głowa", "en": "Dried Head", "de": "getrockneter Kopf", "tr": "Kurutulmuş Kafa"},
+  7: {"pl": "fryzura", "en": "hairstyle", "de": "Frisur", "tr": "saç modeli"},
+  8: {"pl": "Magiczny Pył", "en": "Magic Dust", "de": "Magischer Staub", "tr": "Sihirli Toz"},
+ },
+ "GRADE_TABLE": {
+  0: {"pl": "", "en": "", "de": "", "tr": ""},
+  1: {"pl": " (z tabeli stopni)", "en": " (from the grade table)", "de": " (aus der Stufentabelle)", "tr": " (derece tablosundan)"},
+ },
+ "CLOCK_UNIT": {
+  0: {"pl": "wystawień", "en": "stands", "de": "Standzeiten", "tr": "stant dönemi"},
+  1: {"pl": "min", "en": "min", "de": "Min.", "tr": "dk"},
+ },
+ "CLOCK_RESTART": {
+  0: {"pl": "", "en": "", "de": "", "tr": ""},
+  1: {"pl": " (zegar ruszył po restarcie)", "en": " (the clock began after a restart)",
+      "de": " (die Uhr begann nach einem Neustart)", "tr": " (saat yeniden başlatmadan sonra başladı)"},
+ },
+ "GENERATION": {
+  0: {"pl": "bieżące pokolenie", "en": "the current generation", "de": "die aktuelle Generation", "tr": "güncel kuşak"},
+  1: {"pl": "wycenione w innym pokoleniu (nadrabia tempo)", "en": "priced under another generation (catching up)",
+      "de": "unter einer anderen Generation bepreist (holt auf)", "tr": "başka bir kuşakta fiyatlanmış (yetişiyor)"},
+ },
+ "SLIP_BY": {
+  0: {"pl": "poprawił właściciel", "en": "the keeper put it right", "de": "der Besitzer hat ihn korrigiert", "tr": "sahibi düzeltti"},
+  1: {"pl": "poprawił rdzeń, bo właściciel był daleko", "en": "the core put it right, the keeper being away",
+      "de": "der Kern hat ihn korrigiert, weil der Besitzer weg war", "tr": "sahibi uzakta olduğu için çekirdek düzeltti"},
+  2: {"pl": "poprawił rdzeń, bo pomyłka była wstrzymana", "en": "the core put it right, the slip being held",
+      "de": "der Kern hat ihn korrigiert, weil der Fehler zurückgehalten war", "tr": "hata bekletildiği için çekirdek düzeltti"},
+  3: {"pl": "poprawił rdzeń, po czasie", "en": "the core put it right, late",
+      "de": "der Kern hat ihn korrigiert, verspätet", "tr": "çekirdek geç de olsa düzeltti"},
+ },
+ "LADDER_CAT": {
+  1: {"pl": "broń", "en": "weapon", "de": "Waffe", "tr": "silah"},
+  2: {"pl": "zbroja", "en": "armour", "de": "Rüstung", "tr": "zırh"},
+  3: {"pl": "tarcza", "en": "shield", "de": "Schild", "tr": "kalkan"},
+  4: {"pl": "hełm", "en": "helmet", "de": "Helm", "tr": "kask"},
+  5: {"pl": "buty", "en": "boots", "de": "Schuhe", "tr": "ayakkabı"},
+  6: {"pl": "bransoleta", "en": "bracelet", "de": "Armband", "tr": "bilezik"},
+  7: {"pl": "naszyjnik", "en": "necklace", "de": "Halskette", "tr": "kolye"},
+  8: {"pl": "kolczyki", "en": "earrings", "de": "Ohrringe", "tr": "küpe"},
+  9: {"pl": "broń zapasowa", "en": "backup weapon", "de": "Ersatzwaffe", "tr": "yedek silah"},
+  10: {"pl": "zbroja zapasowa", "en": "backup armour", "de": "Ersatzrüstung", "tr": "yedek zırh"},
+ },
+ "SAFEBOX_WHY": {
+  1: {"pl": "Stalka", "en": "a Stalki", "de": "eine Stalki", "tr": "bir Stalki"},
+  2: {"pl": "zwolnione z Listy Przydatnych Przedmiotów", "en": "released from the Useful Items List",
+      "de": "aus der Liste nützlicher Gegenstände freigegeben", "tr": "Faydalı Eşyalar Listesinden çıkarıldı"},
+  3: {"pl": "hazard", "en": "a gamble", "de": "ein Glücksspiel", "tr": "bir kumar"},
+  4: {"pl": "klucz", "en": "a key", "de": "ein Schlüssel", "tr": "bir anahtar"},
+  9: {"pl": "inne", "en": "other", "de": "anderes", "tr": "diğer"},
+ },
+}
+
+# Why an item is goods at all (GOODS_*): the branches of ScorePlayerBotShopStock,
+# code: (the kinds of a, b, c; the four texts).
+DECISION_GOODS = {
+ 0: ({}, {"pl": "Wystawione, zanim zaczęto zapisywać wyjaśnienia", "en": "Listed before explanations were recorded",
+          "de": "Eingestellt, bevor Erklärungen aufgezeichnet wurden", "tr": "Açıklamalar kaydedilmeye başlanmadan önce tezgâha kondu"}),
+ 1: ({"a": "enum:POLICY"},
+     {"pl": "Operator przypisał go ladzie (reguła „{a}”)", "en": "The operator sent it to the counter (rule “{a}”)",
+      "de": "Der Betreiber hat ihn dem Ladentisch zugewiesen (Regel „{a}“)", "tr": "Operatör onu tezgâha gönderdi (kural “{a}”)"}),
+ 2: ({"a": "plus"},
+     {"pl": "Towar hazardzisty z sesji przy kowadle ({a})", "en": "A gambler's goods from its session at the anvil ({a})",
+      "de": "Ware eines Glücksspielers aus seiner Sitzung am Amboss ({a})", "tr": "Kumarbazın örs başındaki oturumundan mal ({a})"}),
+ 3: ({"a": "int", "b": "int"},
+     {"pl": "Kamienie Duchowe ponad zapas: w plecaku {a}, zapas {b}", "en": "Soul Stones over the keep: {a} in the bag, keeps {b}",
+      "de": "Seelensteine über dem Vorrat: {a} im Beutel, behält {b}", "tr": "Stok üstü Ruh Taşları: çantada {a}, saklanan {b}"}),
+ 4: ({"a": "mob"},
+     {"pl": "Marmur polimorfii ({a}) — towar, nie złom", "en": "A polymorph marble ({a}) — goods, not scrap",
+      "de": "Eine Verwandlungskugel ({a}) — Ware, kein Schrott", "tr": "Bir dönüşüm küresi ({a}) — mal, hurda değil"}),
+ 5: ({}, {"pl": "Wykrywacz metinów — bot teraz nie poluje na kamienie", "en": "A Metin detector — the bot is not hunting stones now",
+          "de": "Ein Metin-Detektor — der Bot jagt gerade keine Steine", "tr": "Bir Metin dedektörü — bot şu an taş avlamıyor"}),
+ 6: ({}, {"pl": "Suszona Głowa — dla graczy idących do Katakumb", "en": "A Dried Head — for a player's run of the Catacomb",
+          "de": "Ein getrockneter Kopf — für den Katakomben-Lauf eines Spielers", "tr": "Bir Kurutulmuş Kafa — bir oyuncunun Yeraltı Mezarı koşusu için"}),
+ 7: ({"a": "int", "b": "int"},
+     {"pl": "Kamienie bonusów ponad zapas: w plecaku {a}, zapas {b}", "en": "Bonus stones over the keep: {a} in the bag, keeps {b}",
+      "de": "Bonussteine über dem Vorrat: {a} im Beutel, behält {b}", "tr": "Stok üstü bonus taşları: çantada {a}, saklanan {b}"}),
+ 8: ({"a": "skill"},
+     {"pl": "Zwój Zapomnienia ({a}) z listy „do handlarki” — wystawia go tylko Handlarz",
+      "en": "A Forgetting Scroll ({a}) of the merchant-only list — only a Merchant lists it",
+      "de": "Eine Schriftrolle des Vergessens ({a}) von der Nur-Händler-Liste — nur ein Händler stellt sie ein",
+      "tr": "Yalnız-satıcı listesinden bir Unutma Parşömeni ({a}) — onu yalnızca Tüccar satar"}),
+ 9: ({"a": "plus", "b": "level", "c": "enum:STALKI_WHY"},
+     {"pl": "Stalka, której bot nie zatrzymuje: {a}, poziom {b} — {c}", "en": "A Stalki the bot does not keep: {a}, level {b} — {c}",
+      "de": "Eine Stalki, die der Bot nicht behält: {a}, Level {b} — {c}", "tr": "Botun tutmadığı bir Stalki: {a}, seviye {b} — {c}"}),
+ 10: ({"a": "plus", "b": "pct", "c": "plus"},
+      {"pl": "Broń 30 lv innej klasy, gotowa na sprzedaż: {a}, średnie obrażenia {b}, cel {c}",
+       "en": "A level-30 weapon of another class, ready for sale: {a}, average damage {b}, target {c}",
+       "de": "Eine Waffe Lv 30 einer anderen Klasse, verkaufsbereit: {a}, Durchschnittsschaden {b}, Ziel {c}",
+       "tr": "Başka bir sınıfın 30. seviye silahı, satışa hazır: {a}, ortalama zarar {b}, hedef {c}"}),
+ 11: ({"a": "plus", "b": "pct", "c": "enum:L30_WHY"},
+      {"pl": "Broń 30 lv niezatrzymana do kowadła: {a}, średnie obrażenia {b} — {c}",
+       "en": "A level-30 weapon not kept for the anvil: {a}, average damage {b} — {c}",
+       "de": "Eine Waffe Lv 30, nicht für den Amboss behalten: {a}, Durchschnittsschaden {b} — {c}",
+       "tr": "Örs için tutulmayan 30. seviye silah: {a}, ortalama zarar {b} — {c}"}),
+ 12: ({"a": "plus", "b": "level"},
+      {"pl": "Zbroja lub biżuteria {a} poniżej 30 lv (poziom {b}) — towar każdego bota",
+       "en": "Armour or a jewel at {a} under level 30 (level {b}) — every bot's goods",
+       "de": "Rüstung oder Schmuck {a} unter Lv 30 (Level {b}) — Ware jedes Bots",
+       "tr": "30. seviye altında {a} zırh ya da takı (seviye {b}) — her botun malı"}),
+ 13: ({"a": "plus", "b": "plus", "c": "level"},
+      {"pl": "Ekwipunek poniżej 30 lv na minimalnym ulepszeniu: {a} (próg {b}), poziom {c}",
+       "en": "Gear under level 30 at its minimum refine: {a} (threshold {b}), level {c}",
+       "de": "Ausrüstung unter Lv 30 auf Mindestverbesserung: {a} (Schwelle {b}), Level {c}",
+       "tr": "Asgari yükseltmede 30. seviye altı ekipman: {a} (eşik {b}), seviye {c}"}),
+ 14: ({"a": "plus", "b": "enum:VALUABLE"},
+      {"pl": "Nadwyżka z Listy Przydatnych Przedmiotów: {a}{b}", "en": "Surplus of the Useful Items List: {a}{b}",
+       "de": "Überschuss der Liste nützlicher Gegenstände: {a}{b}", "tr": "Faydalı Eşyalar Listesi fazlası: {a}{b}"}),
+ 15: ({"a": "apply", "b": "applyval:a"},
+      {"pl": "Cenny bonus: {a} {b}", "en": "A valuable bonus: {a} {b}", "de": "Ein wertvoller Bonus: {a} {b}", "tr": "Değerli bir bonus: {a} {b}"}),
+ 16: ({"a": "plus"},
+      {"pl": "Ekwipunek z listy „do handlarza” ({a}) — wystawia go tylko Handlarz",
+       "en": "Gear of the merchant-only list ({a}) — only a Merchant lists it",
+       "de": "Ausrüstung von der Nur-Händler-Liste ({a}) — nur ein Händler stellt sie ein",
+       "tr": "Yalnız-satıcı listesinden ekipman ({a}) — onu yalnızca Tüccar satar"}),
+ 17: ({"a": "plus", "b": "item", "c": "plus"},
+      {"pl": "Cenny zapas {a}; bot nosi {b} ({c})", "en": "A precious spare at {a}; the bot wears {b} ({c})",
+       "de": "Ein wertvolles Ersatzstück {a}; der Bot trägt {b} ({c})", "tr": "Değerli bir yedek {a}; bot {b} ({c}) giyiyor"}),
+ 18: ({"a": "int", "b": "int", "c": "enum:SCROLL_KEEP"},
+      {"pl": "Zwoje ponad zapas: {a} w plecaku, zapas {b} ({c})", "en": "Scrolls over the keep: {a} in the bag, keeps {b} ({c})",
+       "de": "Schriftrollen über dem Vorrat: {a} im Beutel, behält {b} ({c})", "tr": "Stok üstü parşömenler: çantada {a}, saklanan {b} ({c})"}),
+ 19: ({"a": "int", "b": "int", "c": "enum:MEDAL_WHY"},
+      {"pl": "Medale konne: {a} w plecaku, zapas {b} ({c})", "en": "Horse medals: {a} in the bag, keeps {b} ({c})",
+       "de": "Pferdemedaillen: {a} im Beutel, behält {b} ({c})", "tr": "At madalyaları: çantada {a}, saklanan {b} ({c})"}),
+ 20: ({"a": "int", "b": "int", "c": "int"},
+      {"pl": "Materiał, którego wiosce brakuje dla graczy: {a} w plecaku, rezerwa kowadła {b}, podaż w wiosce {c}",
+       "en": "A material the village is short of for the players: {a} in the bag, anvil reserve {b}, village supply {c}",
+       "de": "Ein Material, das dem Dorf für die Spieler fehlt: {a} im Beutel, Amboss-Reserve {b}, Angebot im Dorf {c}",
+       "tr": "Köyün oyuncular için eksik olduğu malzeme: çantada {a}, örs rezervi {b}, köydeki arz {c}"}),
+ 21: ({"a": "int", "b": "int", "c": "int"},
+      {"pl": "Materiał, którego brakuje botom: {a} w plecaku, rezerwa {b}, brakuje {c} botom",
+       "en": "A material the bots are short of: {a} in the bag, reserve {b}, {c} bots short",
+       "de": "Ein Material, das den Bots fehlt: {a} im Beutel, Reserve {b}, {c} Bots fehlt es",
+       "tr": "Botların eksik olduğu malzeme: çantada {a}, rezerv {b}, {c} botta eksik"}),
+ 22: ({"a": "int", "b": "int", "c": "enum:MAT_WHY"},
+      {"pl": "Materiał ponad rezerwę: {a} w plecaku, rezerwa {b} ({c})", "en": "A material over the reserve: {a} in the bag, reserve {b} ({c})",
+       "de": "Material über der Reserve: {a} im Beutel, Reserve {b} ({c})", "tr": "Rezerv üstü malzeme: çantada {a}, rezerv {b} ({c})"}),
+ 23: ({"a": "plus"},
+      {"pl": "Towar zebrany z ziemi (siano, marchew, księgi misji), {a}", "en": "Pickup goods (hay, carrots, mission books), {a}",
+       "de": "Aufgesammelte Ware (Heu, Karotten, Missionsbücher), {a}", "tr": "Yerden toplanan mal (saman, havuç, görev kitapları), {a}"}),
+ 24: ({}, {"pl": "Mikstura z tablicy Baek-Go ponad zapas", "en": "A potion from Baek-Go's board, over the keep",
+           "de": "Ein Trank von Baek-Gos Tafel, über dem Vorrat", "tr": "Baek-Go'nun tahtasından stok üstü bir iksir"}),
+ 25: ({}, {"pl": "Receptura przeczytana do sufitu", "en": "A recipe already read to its ceiling",
+           "de": "Ein Rezept, schon bis zur Obergrenze gelesen", "tr": "Tavanına kadar okunmuş bir tarif"}),
+ 26: ({}, {"pl": "Farba do włosów z ItemShopu", "en": "An item-shop hair dye", "de": "Ein Haarfärbemittel aus dem ItemShop", "tr": "ItemShop saç boyası"}),
+ 27: ({}, {"pl": "Farba z wody zatrzymana na sprzedaż", "en": "A dye from the water kept for sale",
+           "de": "Eine Haarfarbe aus dem Wasser, für den Verkauf behalten", "tr": "Satış için tutulan sudan çıkma boya"}),
+ 28: ({}, {"pl": "Fryzura z ItemShopu, której bot nie założy", "en": "An item-shop hairstyle the bot cannot wear",
+           "de": "Eine ItemShop-Frisur, die der Bot nicht tragen kann", "tr": "Botun takamayacağı bir ItemShop saç modeli"}),
+ 29: ({"a": "skill"},
+      {"pl": "Zwój Zapomnienia — żadna umiejętność bota na niego nie czeka ({a})",
+       "en": "A Forgetting Scroll — none of the bot's skills waits for it ({a})",
+       "de": "Eine Schriftrolle des Vergessens — keine Fertigkeit des Bots wartet darauf ({a})",
+       "tr": "Bir Unutma Parşömeni — botun hiçbir becerisi onu beklemiyor ({a})"}),
+ 30: ({"a": "int", "b": "int"},
+      {"pl": "Magiczny Pył ponad zapas: {a} w plecaku, zapas {b}", "en": "Magic Dust over the keep: {a} in the bag, keeps {b}",
+       "de": "Magischer Staub über dem Vorrat: {a} im Beutel, behält {b}", "tr": "Stok üstü Sihirli Toz: çantada {a}, saklanan {b}"}),
+ 31: ({"a": "plus", "b": "int"},
+      {"pl": "Kamień duszy {a} (rodzaj {b}) — jeden z 15 na 100 zostawionych dla rynku",
+       "en": "A spirit stone {a} (kind {b}) — one of the 15 in 100 kept for the market",
+       "de": "Ein Geiststein {a} (Art {b}) — einer der 15 von 100, die für den Markt bleiben",
+       "tr": "Bir ruh taşı {a} (tür {b}) — pazar için ayrılan 100'de 15'ten biri"}),
+ 32: ({"a": "plus", "b": "int"},
+      {"pl": "Kamień duszy {a} (rodzaj {b}), którego bot nie osadzi", "en": "A spirit stone {a} (kind {b}) the bot cannot seat",
+       "de": "Ein Geiststein {a} (Art {b}), den der Bot nicht einsetzen kann", "tr": "Botun takamayacağı bir ruh taşı {a} (tür {b})"}),
+ 33: ({"a": "int", "b": "int", "c": "enum:BOOK_USEFUL"},
+      {"pl": "Księga ogólna: {a} przed nią w plecaku, zapas {b}{c}", "en": "A general book: {a} ahead of it in the bag, keeps {b}{c}",
+       "de": "Ein allgemeines Buch: {a} davor im Beutel, behält {b}{c}", "tr": "Genel bir kitap: çantada önünde {a}, saklanan {b}{c}"}),
+ 34: ({}, {"pl": "Wyceniony z nazwy w arkuszu Iwakury", "en": "Priced by name on Iwakura's sheet",
+           "de": "Auf Iwakuras Liste namentlich bepreist", "tr": "Iwakura'nın listesinde adıyla fiyatlanmış"}),
+ 35: ({"a": "skill", "b": "int"},
+      {"pl": "Księga ({a}) na ladzie droppera metinów, zapas {b}", "en": "A book ({a}) on a Metin dropper's counter, keeps {b}",
+       "de": "Ein Buch ({a}) auf dem Ladentisch eines Metin-Droppers, behält {b}", "tr": "Metin dropper'ının tezgâhında bir kitap ({a}), saklanan {b}"}),
+ 36: ({"a": "skill", "b": "int"},
+      {"pl": "Własna księga ({a}) ponad zapas {b}", "en": "Its own book ({a}) over the keep of {b}",
+       "de": "Ein eigenes Buch ({a}) über dem Vorrat von {b}", "tr": "Kendi kitabı ({a}), {b} stoğunun üstünde"}),
+ 37: ({"a": "skill"},
+      {"pl": "Księga innej ścieżki ({a})", "en": "Another build's book ({a})", "de": "Das Buch eines anderen Wegs ({a})", "tr": "Başka bir yolun kitabı ({a})"}),
+ 38: ({"a": "plus"},
+      {"pl": "Zbroja lub biżuteria {a} — towar każdego bota", "en": "Armour or a jewel at {a} — every bot's goods",
+       "de": "Rüstung oder Schmuck {a} — Ware jedes Bots", "tr": "{a} zırh ya da takı — her botun malı"}),
+ 39: ({"a": "plus"},
+      {"pl": "Słaby ekwipunek {a} na ladzie zbieracza złomu", "en": "Low gear {a} on a scrap keeper's counter",
+       "de": "Schwache Ausrüstung {a} auf dem Ladentisch eines Schrotthändlers", "tr": "Hurdacının tezgâhında zayıf ekipman {a}"}),
+ 40: ({"a": "int", "b": "int"},
+      {"pl": "Nieotwarta szkatułka ponad zapas: {a} w plecaku, zapas {b}", "en": "An unopened chest over the hold: {a} in the bag, holds {b}",
+       "de": "Eine ungeöffnete Truhe über dem Vorrat: {a} im Beutel, behält {b}", "tr": "Stok üstü açılmamış sandık: çantada {a}, saklanan {b}"}),
+ 41: ({"a": "int", "b": "int"},
+      {"pl": "Klucz bez skrzyni ponad zapas: {a} w plecaku, zapas {b}", "en": "A key with no chest, over the keep: {a} in the bag, keeps {b}",
+       "de": "Ein Schlüssel ohne Truhe, über dem Vorrat: {a} im Beutel, behält {b}", "tr": "Sandıksız anahtar, stok üstü: çantada {a}, saklanan {b}"}),
+}
+
+# One step of the price (STEP_*): code: (the kind of `value` when it is not the
+# price after the step - None when it is, and the value column shows it -, the
+# kinds of a, b, c, the step's name, the step's detail).
+DECISION_STEPS = {
+ 0: (None, {}, {"pl": "Nieznany krok", "en": "Unknown step", "de": "Unbekannter Schritt", "tr": "Bilinmeyen adım"},
+     {"pl": "", "en": "", "de": "", "tr": ""}),
+ 1: ("pct", {"a": "pct", "b": "x10000", "c": "int"},
+     {"pl": "Kontekst", "en": "Context", "de": "Kontext", "tr": "Bağlam"},
+     {"pl": "krzywa {value}, stawka yang {a}, inflacja {b} (kroków: {c})", "en": "curve {value}, yang rate {a}, inflation {b} ({c} steps)",
+      "de": "Kurve {value}, Yang-Rate {a}, Inflation {b} ({c} Schritte)", "tr": "eğri {value}, yang oranı {a}, enflasyon {b} ({c} adım)"}),
+ 2: ("x100", {"a": "apply", "b": "applyval:a", "c": "enum:AT_TOP"},
+     {"pl": "Linia bonusu", "en": "Bonus line", "de": "Bonuszeile", "tr": "Bonus satırı"},
+     {"pl": "{a} {b}{c}: {value}", "en": "{a} {b}{c}: {value}", "de": "{a} {b}{c}: {value}", "tr": "{a} {b}{c}: {value}"}),
+ 3: ("x100", {"a": "int"},
+     {"pl": "Linie na maksimum", "en": "Lines at the top", "de": "Zeilen am Maximum", "tr": "En üstteki satırlar"},
+     {"pl": "linii na maksimum: {a}, mnożnik {value}", "en": "{a} lines at the top, multiplier {value}",
+      "de": "{a} Zeilen am Maximum, Faktor {value}", "tr": "en üstte {a} satır, çarpan {value}"}),
+ 4: ("pct", {"a": "x100"},
+     {"pl": "Dopłata za bonusy", "en": "Bonus premium", "de": "Bonus-Aufschlag", "tr": "Bonus primi"},
+     {"pl": "dopłata {value} (iloczyn z limitem {a})", "en": "premium {value} (capped product {a})",
+      "de": "Aufschlag {value} (begrenztes Produkt {a})", "tr": "prim {value} (sınırlı çarpım {a})"}),
+ 5: ("yang", {"a": "plus"},
+     {"pl": "Wkład u kowala", "en": "The blacksmith's bill", "de": "Rechnung des Schmieds", "tr": "Demirci faturası"},
+     {"pl": "kowal dostał {value} za drogę do {a}", "en": "the blacksmith was paid {value} on the way to {a}",
+      "de": "der Schmied bekam {value} auf dem Weg zu {a}", "tr": "demirciye {a} yolunda {value} ödendi"}),
+ 6: (None, {"a": "yang", "b": "item", "c": "plus"},
+     {"pl": "Arkusz Iwakury (ekwipunek)", "en": "Iwakura's sheet (gear)", "de": "Iwakuras Liste (Ausrüstung)", "tr": "Iwakura'nın listesi (ekipman)"},
+     {"pl": "{b}, {c}: z arkusza {a}", "en": "{b}, {c}: sheet price {a}", "de": "{b}, {c}: Listenpreis {a}", "tr": "{b}, {c}: liste fiyatı {a}"}),
+ 7: ("pct", {"a": "int"},
+     {"pl": "Osadzone kamienie", "en": "Seated stones", "de": "Eingesetzte Steine", "tr": "Takılı taşlar"},
+     {"pl": "kamieni: {a}, dopłata {value}", "en": "{a} stones, premium {value}", "de": "{a} Steine, Aufschlag {value}", "tr": "{a} taş, prim {value}"}),
+ 8: (None, {"a": "plus"},
+     {"pl": "Cena stała za plus", "en": "Flat price for the plus", "de": "Festpreis für das Plus", "tr": "Artı için sabit fiyat"},
+     {"pl": "cena stała dla {a}", "en": "flat price for {a}", "de": "Festpreis für {a}", "tr": "{a} için sabit fiyat"}),
+ 9: (None, {"a": "yang", "b": "x100"},
+     {"pl": "Złom", "en": "Scrap", "de": "Schrott", "tr": "Hurda"},
+     {"pl": "cena handlarza {a}, mnożnik {b}", "en": "merchant price {a}, multiplier {b}",
+      "de": "Händlerpreis {a}, Faktor {b}", "tr": "satıcı fiyatı {a}, çarpan {b}"}),
+ 10: (None, {"a": "yang"},
+      {"pl": "Próg wkładu", "en": "Investment floor", "de": "Investitionsuntergrenze", "tr": "Yatırım tabanı"},
+      {"pl": "podniesiona do rachunku kowala {a}", "en": "raised to the blacksmith's bill {a}",
+       "de": "auf die Rechnung des Schmieds {a} angehoben", "tr": "demirci faturasına ({a}) yükseltildi"}),
+ 11: (None, {"a": "pct"},
+      {"pl": "Premia za bonusy", "en": "Bonus premium applied", "de": "Bonusprämie", "tr": "Uygulanan bonus primi"},
+      {"pl": "premia {a}", "en": "premium {a}", "de": "Prämie {a}", "tr": "prim {a}"}),
+ 12: (None, {"a": "pctsigned", "b": "enum:PREVIEW"},
+      {"pl": "Konkurencja", "en": "Competition", "de": "Konkurrenz", "tr": "Rekabet"},
+      {"pl": "odchylenie {a}{b}", "en": "swing {a}{b}", "de": "Schwankung {a}{b}", "tr": "sapma {a}{b}"}),
+ 13: (None, {"a": "mob", "b": "enum:MARBLE_SRC"},
+      {"pl": "Arkusz Iwakury (marmur)", "en": "Iwakura's sheet (marble)", "de": "Iwakuras Liste (Kugel)", "tr": "Iwakura'nın listesi (küre)"},
+      {"pl": "{a}: {b}", "en": "{a}: {b}", "de": "{a}: {b}", "tr": "{a}: {b}"}),
+ 14: (None, {"a": "int"},
+      {"pl": "Ilość", "en": "Count", "de": "Anzahl", "tr": "Adet"},
+      {"pl": "× {a} szt.", "en": "× {a}", "de": "× {a} Stück", "tr": "× {a} adet"}),
+ 15: (None, {"a": "yang", "b": "pct"},
+      {"pl": "Punkt wyjścia: handlarz", "en": "Starting point: the merchant", "de": "Ausgangspunkt: der Händler", "tr": "Başlangıç: satıcı"},
+      {"pl": "cena handlarza {a}, narzut {b}", "en": "merchant price {a}, markup {b}", "de": "Händlerpreis {a}, Aufschlag {b}", "tr": "satıcı fiyatı {a}, kâr payı {b}"}),
+ 16: (None, {},
+      {"pl": "Punkt wyjścia: broń 30 lv", "en": "Starting point: a level-30 weapon", "de": "Ausgangspunkt: eine Waffe Lv 30", "tr": "Başlangıç: 30. seviye silah"},
+      {"pl": "", "en": "", "de": "", "tr": ""}),
+ 17: (None, {"a": "skill", "b": "yang"},
+      {"pl": "Arkusz Iwakury (księga)", "en": "Iwakura's sheet (book)", "de": "Iwakuras Liste (Buch)", "tr": "Iwakura'nın listesi (kitap)"},
+      {"pl": "{a}: z arkusza {b}", "en": "{a}: sheet price {b}", "de": "{a}: Listenpreis {b}", "tr": "{a}: liste fiyatı {b}"}),
+ 18: (None, {"a": "item"},
+      {"pl": "Arkusz Iwakury (księga ogólna)", "en": "Iwakura's sheet (general book)",
+       "de": "Iwakuras Liste (allgemeines Buch)", "tr": "Iwakura'nın listesi (genel kitap)"},
+      {"pl": "{a}", "en": "{a}", "de": "{a}", "tr": "{a}"}),
+ 19: (None, {"a": "yang"},
+      {"pl": "Arkusz Iwakury (materiał)", "en": "Iwakura's sheet (material)", "de": "Iwakuras Liste (Material)", "tr": "Iwakura'nın listesi (malzeme)"},
+      {"pl": "z arkusza {a}", "en": "sheet price {a}", "de": "Listenpreis {a}", "tr": "liste fiyatı {a}"}),
+ 20: (None, {"a": "yang", "b": "yang"},
+      {"pl": "Wartość szkatułki", "en": "Chest worth", "de": "Truhenwert", "tr": "Sandık değeri"},
+      {"pl": "z arkusza {a}, wartość zawartości {b}", "en": "sheet {a}, worth by its contents {b}",
+       "de": "Liste {a}, Wert nach Inhalt {b}", "tr": "liste {a}, içeriğe göre değer {b}"}),
+ 21: (None, {"a": "skill"},
+      {"pl": "Arkusz Iwakury (Zwój Zapomnienia)", "en": "Iwakura's sheet (Forgetting Scroll)",
+       "de": "Iwakuras Liste (Schriftrolle des Vergessens)", "tr": "Iwakura'nın listesi (Unutma Parşömeni)"},
+      {"pl": "{a}", "en": "{a}", "de": "{a}", "tr": "{a}"}),
+ 22: (None, {"a": "enum:FIXED"},
+      {"pl": "Stała cena wyjściowa", "en": "Fixed starting price", "de": "Fester Ausgangspreis", "tr": "Sabit başlangıç fiyatı"},
+      {"pl": "{a}", "en": "{a}", "de": "{a}", "tr": "{a}"}),
+ 23: (None, {"a": "plus", "b": "int", "c": "enum:GRADE_TABLE"},
+      {"pl": "Arkusz Iwakury (kamień duszy)", "en": "Iwakura's sheet (spirit stone)", "de": "Iwakuras Liste (Geiststein)", "tr": "Iwakura'nın listesi (ruh taşı)"},
+      {"pl": "{a}, rodzaj {b}{c}", "en": "{a}, kind {b}{c}", "de": "{a}, Art {b}{c}", "tr": "{a}, tür {b}{c}"}),
+ 24: (None, {},
+      {"pl": "Brak ceny handlarza", "en": "No merchant price", "de": "Kein Händlerpreis", "tr": "Satıcı fiyatı yok"},
+      {"pl": "", "en": "", "de": "", "tr": ""}),
+ 25: (None, {"a": "yang", "b": "permille", "c": "pct"},
+      {"pl": "Portfele", "en": "Wallets", "de": "Geldbörsen", "tr": "Cüzdanlar"},
+      {"pl": "mediana portfela {a}, udział {b}, wartość {c}", "en": "median wallet {a}, share {b}, worth {c}",
+       "de": "mittlere Geldbörse {a}, Anteil {b}, Wert {c}", "tr": "ortanca cüzdan {a}, pay {b}, değer {c}"}),
+ 26: ("yang", {"a": "pct"},
+      {"pl": "Limit portfela na stos", "en": "Wallet cap for the stack", "de": "Geldbörsen-Grenze für den Stapel", "tr": "Yığın için cüzdan sınırı"},
+      {"pl": "limit {value} za sztukę, stos {a}", "en": "cap {value} a unit, stack {a}",
+       "de": "Grenze {value} pro Stück, Stapel {a}", "tr": "adet başına {value} sınır, yığın {a}"}),
+ 27: (None, {"a": "yang", "b": "int"},
+      {"pl": "Pamięć sprzedaży", "en": "Sale memory", "de": "Verkaufsgedächtnis", "tr": "Satış hafızası"},
+      {"pl": "mediana zapłaconej ceny {a}, sprzedaży: {b}", "en": "median paid {a}, {b} sales",
+       "de": "Median bezahlt {a}, {b} Verkäufe", "tr": "ödenen ortanca {a}, {b} satış"}),
+ 28: (None, {"a": "int", "b": "int", "c": "x100"},
+      {"pl": "Rejestr rynku", "en": "Market ledger", "de": "Marktbuch", "tr": "Pazar defteri"},
+      {"pl": "brakuje {a} botom, na ladach {b} szt., mnożnik {c}", "en": "{a} bots short, {b} units on counters, multiplier {c}",
+       "de": "{a} Bots fehlt es, {b} Stück auf Ladentischen, Faktor {c}", "tr": "{a} botta eksik, tezgâhlarda {b} adet, çarpan {c}"}),
+ 29: (None, {"a": "yang"},
+      {"pl": "Ogranicznik kroku", "en": "Step limit", "de": "Schrittbegrenzung", "tr": "Adım sınırı"},
+      {"pl": "chciał {a}", "en": "wanted {a}", "de": "wollte {a}", "tr": "istenen {a}"}),
+ 30: (None, {"a": "pct"},
+      {"pl": "Rozrzut sprzedawcy", "en": "The keeper's spread", "de": "Spanne des Verkäufers", "tr": "Satıcı marjı"},
+      {"pl": "{a}", "en": "{a}", "de": "{a}", "tr": "{a}"}),
+ 31: (None, {"a": "yang"},
+      {"pl": "Próg dla towaru z bonusem", "en": "Floor for bonus goods", "de": "Untergrenze für Bonusware", "tr": "Bonuslu mal tabanı"},
+      {"pl": "próg {a} za sztukę", "en": "floor {a} a unit", "de": "Untergrenze {a} pro Stück", "tr": "adet başına taban {a}"}),
+ 32: (None, {},
+      {"pl": "Zaokrąglenie", "en": "Rounded", "de": "Gerundet", "tr": "Yuvarlandı"},
+      {"pl": "", "en": "", "de": "", "tr": ""}),
+ 33: (None, {"a": "pct"},
+      {"pl": "Zniżka biedaka", "en": "A poor bot's discount", "de": "Rabatt eines armen Bots", "tr": "Yoksul bot indirimi"},
+      {"pl": "zniżka {a}", "en": "discount {a}", "de": "Rabatt {a}", "tr": "indirim {a}"}),
+ 34: (None, {"a": "int", "b": "enum:CLOCK_UNIT", "c": "enum:CLOCK_RESTART"},
+      {"pl": "Zegar przeceny", "en": "Markdown clock", "de": "Preisnachlass-Uhr", "tr": "İndirim saati"},
+      {"pl": "{a} {b}{c}", "en": "{a} {b}{c}", "de": "{a} {b}{c}", "tr": "{a} {b}{c}"}),
+ 35: (None, {"a": "pct"},
+      {"pl": "Przecena", "en": "Markdown", "de": "Preisnachlass", "tr": "İndirim"},
+      {"pl": "obniżka {a}", "en": "down {a}", "de": "minus {a}", "tr": "{a} düşüş"}),
+ 36: (None, {"a": "pct", "b": "pct", "c": "int"},
+      {"pl": "Podwyżka", "en": "Markup", "de": "Preisaufschlag", "tr": "Zam"},
+      {"pl": "podwyżka {a}: brakowało w {b} przeglądów, sprzedanych linii {c}", "en": "up {a}: missing in {b} of looks, {c} lines sold",
+       "de": "plus {a}: fehlte bei {b} der Blicke, {c} Zeilen verkauft", "tr": "{a} artış: bakışların {b} kadarında yoktu, {c} satır satıldı"}),
+ 37: (None, {"a": "pct"},
+      {"pl": "Podwyżka odrzucona", "en": "Markup refused", "de": "Aufschlag abgelehnt", "tr": "Zam reddedildi"},
+      {"pl": "{a} przekroczyłoby limit yang", "en": "{a} would pass the yang limit",
+       "de": "{a} würde die Yang-Grenze überschreiten", "tr": "{a} yang sınırını aşardı"}),
+ 38: (None, {"a": "yang"},
+      {"pl": "Próg wystawienia", "en": "Listing floor", "de": "Einstell-Untergrenze", "tr": "Listeleme tabanı"},
+      {"pl": "podniesiona do progu {a}", "en": "raised to the floor {a}", "de": "auf die Untergrenze {a} angehoben", "tr": "{a} tabanına yükseltildi"}),
+ 39: (None, {"a": "yang"},
+      {"pl": "Pomyłka w cenie", "en": "Price slip", "de": "Preisfehler", "tr": "Fiyat hatası"},
+      {"pl": "miało być {a}", "en": "meant {a}", "de": "gemeint war {a}", "tr": "olması gereken {a}"}),
+ 40: (None, {"a": "enum:GENERATION"},
+      {"pl": "Pokolenie cen", "en": "Price generation", "de": "Preisgeneration", "tr": "Fiyat kuşağı"},
+      {"pl": "{a}", "en": "{a}", "de": "{a}", "tr": "{a}"}),
+ 41: (None, {"a": "yang", "b": "minutes", "c": "enum:SLIP_BY"},
+      {"pl": "Pomyłka poprawiona", "en": "Slip put right", "de": "Preisfehler korrigiert", "tr": "Fiyat hatası düzeltildi"},
+      {"pl": "było {a} przez {b}; {c}", "en": "was {a} for {b}; {c}", "de": "war {a} für {b}; {c}", "tr": "{b} boyunca {a} idi; {c}"}),
+ 42: (None, {"a": "yang"},
+      {"pl": "Podniesione do progu", "en": "Raised to the floor", "de": "Auf die Untergrenze angehoben", "tr": "Tabana yükseltildi"},
+      {"pl": "było {a}", "en": "was {a}", "de": "war {a}", "tr": "önceden {a}"}),
+}
+
+# The listing flags (LFLAG_*), bit: texts.
+DECISION_LFLAGS = {
+ 1: {"pl": "taniej niż u handlarza", "en": "under the merchant's price", "de": "unter dem Händlerpreis", "tr": "satıcı fiyatının altında"},
+ 2: {"pl": "cenę podniósł próg", "en": "a floor lifted the price", "de": "eine Untergrenze hob den Preis", "tr": "fiyatı bir taban yükseltti"},
+ 4: {"pl": "poniżej połowy arkusza", "en": "under half of the sheet", "de": "unter der Hälfte der Liste", "tr": "listenin yarısının altında"},
+ 8: {"pl": "ponad 3× arkusz", "en": "over 3× the sheet", "de": "über dem 3-Fachen der Liste", "tr": "listenin 3 katının üstünde"},
+ 16: {"pl": "pamięć sprzedaży mocno przesunęła cenę", "en": "the sale memory pulled the price hard",
+      "de": "das Verkaufsgedächtnis zog den Preis stark", "tr": "satış hafızası fiyatı sertçe çekti"},
+ 32: {"pl": "rejestr na granicy mnożnika", "en": "the ledger at its multiplier's edge",
+      "de": "das Marktbuch am Rand seines Faktors", "tr": "defter çarpanının sınırında"},
+ 64: {"pl": "przecena na maksimum", "en": "markdown at its maximum", "de": "Preisnachlass am Maximum", "tr": "indirim en üst düzeyde"},
+ 128: {"pl": "podwyżka na maksimum", "en": "markup at its maximum", "de": "Aufschlag am Maximum", "tr": "zam en üst düzeyde"},
+ 256: {"pl": "pomyłka w cenie", "en": "price slip", "de": "Preisfehler", "tr": "fiyat hatası"},
+ 512: {"pl": "lepsze od noszonego i wkrótce do założenia", "en": "better than the worn piece and wearable soon",
+       "de": "besser als das getragene Stück und bald tragbar", "tr": "giyilenden iyi ve yakında giyilebilir"},
+ 1024: {"pl": "lada odrzuciła wyższego kandydata", "en": "a higher-ranked candidate was refused",
+        "de": "ein höher eingestufter Kandidat wurde abgelehnt", "tr": "daha üst sıradaki bir aday reddedildi"},
+ 2048: {"pl": "przecena o ponad 50%", "en": "a reprice moved it over 50%", "de": "eine Neubepreisung um über 50%", "tr": "yeniden fiyatlama %50'den fazla oynattı"},
+}
+
+# The equipment flags (EFLAG_*), bit: texts.
+DECISION_EFLAGS = {
+ 1: {"pl": "plus spadł o 2 lub więcej", "en": "the plus fell by 2 or more", "de": "das Plus fiel um 2 oder mehr", "tr": "artı 2 ya da daha fazla düştü"},
+ 2: {"pl": "niższy wymagany poziom", "en": "a lower level limit", "de": "eine niedrigere Levelgrenze", "tr": "daha düşük seviye sınırı"},
+ 4: {"pl": "gorsze bonusy niż stary", "en": "worse lines than the old piece", "de": "schlechtere Zeilen als das alte Stück", "tr": "eskisinden kötü satırlar"},
+ 8: {"pl": "zysk poniżej 2%", "en": "a gain under 2%", "de": "ein Gewinn unter 2%", "tr": "%2'nin altında kazanç"},
+ 16: {"pl": "zamiana tam i z powrotem w godzinę", "en": "swapped back within the hour",
+      "de": "innerhalb einer Stunde zurückgetauscht", "tr": "bir saat içinde geri değiştirildi"},
+ 32: {"pl": "stary wyzerowany regułą", "en": "the old piece scored 0 by a rule", "de": "das alte Stück per Regel mit 0 bewertet", "tr": "eski parça bir kuralla 0 puan aldı"},
+ 64: {"pl": "zastąpiony projekt lub nagroda", "en": "a project or a prize replaced", "de": "ein Projekt oder ein Preis ersetzt", "tr": "bir proje ya da ödül değiştirildi"},
+ 128: {"pl": "limit pominął wcześniejsze wpisy", "en": "the budget dropped rows before this one",
+       "de": "das Budget ließ davor Zeilen weg", "tr": "bütçe bundan önce satırları atladı"},
+ 256: {"pl": "po spaleniu przy ulepszaniu", "en": "after a burn at the anvil", "de": "nach einem Verbrennen am Amboss", "tr": "örste yanmadan sonra"},
+}
+
+# Which pass decided it (PATH_*), the rule it followed (RULE_*) and the moment it
+# came at (CONTEXT_*).
+DECISION_PATHS = {
+ 0: {"pl": "Nieznana ścieżka", "en": "Unknown path", "de": "Unbekannter Pfad", "tr": "Bilinmeyen yol"},
+ 1: {"pl": "Przegląd ekwipunku", "en": "The equipment pass", "de": "Der Ausrüstungsdurchlauf", "tr": "Ekipman taraması"},
+ 2: {"pl": "Pusta ręka", "en": "An empty hand", "de": "Eine leere Hand", "tr": "Boş el"},
+ 3: {"pl": "Broń awaryjna od handlarza", "en": "An emergency weapon from the merchant", "de": "Eine Notfallwaffe vom Händler", "tr": "Satıcıdan acil silah"},
+ 4: {"pl": "Zdjęcie broni niepasującej do profesji", "en": "Taking off a weapon wrong for the profession",
+     "de": "Ablegen einer Waffe, die nicht zur Lehre passt", "tr": "Beceri grubuna uymayan silahın çıkarılması"},
+ 5: {"pl": "Zdjęcie przedmiotu unikalnego", "en": "Taking off a unique item", "de": "Ablegen eines Unikats", "tr": "Eşsiz bir eşyanın çıkarılması"},
+}
+DECISION_RULES = {
+ 0: {"pl": "nieznana reguła", "en": "unknown rule", "de": "unbekannte Regel", "tr": "bilinmeyen kural"},
+ 1: {"pl": "lepszy wynik", "en": "a better score", "de": "ein besserer Wert", "tr": "daha iyi puan"},
+ 2: {"pl": "pusty slot", "en": "an empty slot", "de": "ein leerer Platz", "tr": "boş yuva"},
+ 3: {"pl": "przypięte przez właściciela towarzysza", "en": "pinned by the companion's owner",
+     "de": "vom Besitzer des Begleiters festgelegt", "tr": "yoldaşın sahibi tarafından sabitlendi"},
+ 4: {"pl": "stara broń zakazana (słaba broń od 30 lv)", "en": "the old weapon banned (a low weapon from level 30)",
+     "de": "die alte Waffe verboten (eine schwache Waffe ab Lv 30)", "tr": "eski silah yasaklı (30. seviyeden itibaren zayıf silah)"},
+ 5: {"pl": "łucznik zmienia broń na kamień", "en": "an archer's switch for a stone", "de": "Wechsel eines Bogenschützen für einen Stein", "tr": "okçunun taş için silah değişimi"},
+ 6: {"pl": "najlepsza broń do pustej ręki", "en": "the best weapon for an empty hand", "de": "die beste Waffe für eine leere Hand", "tr": "boş el için en iyi silah"},
+ 7: {"pl": "słaba broń jako ostatnie wyjście", "en": "a low weapon as the last resort", "de": "eine schwache Waffe als letzter Ausweg", "tr": "son çare olarak zayıf silah"},
+ 8: {"pl": "broń awaryjna", "en": "an emergency weapon", "de": "eine Notfallwaffe", "tr": "acil silah"},
+ 9: {"pl": "broń nie pasuje do profesji", "en": "the weapon does not fit the profession", "de": "die Waffe passt nicht zur Lehre", "tr": "silah beceri grubuna uymuyor"},
+ 10: {"pl": "unikat, którego bot nigdy nie nosi", "en": "a unique the bot never wears", "de": "ein Unikat, das der Bot nie trägt", "tr": "botun asla takmadığı eşsiz eşya"},
+}
+DECISION_CONTEXTS = {
+ 0: {"pl": "bez szczególnych okoliczności", "en": "no particular moment", "de": "kein besonderer Moment", "tr": "özel bir an değil"},
+ 1: {"pl": "po wizycie u kowala", "en": "after the blacksmith", "de": "nach dem Schmied", "tr": "demirciden sonra"},
+ 2: {"pl": "po spaleniu noszonego przedmiotu", "en": "after the worn piece burned", "de": "nachdem das getragene Stück verbrannte", "tr": "giyili parça yandıktan sonra"},
+ 3: {"pl": "tuż po wejściu do gry (do 120 s)", "en": "just after spawning (120 s or less)", "de": "direkt nach dem Erscheinen (bis 120 s)", "tr": "oyuna girdikten hemen sonra (120 sn'ye kadar)"},
+ 4: {"pl": "po zabraniu z lady", "en": "back from the counter", "de": "vom Ladentisch zurück", "tr": "tezgâhtan dönünce"},
+ 5: {"pl": "po wystawieniu noszonego przedmiotu na własną ladę", "en": "after the worn piece went on the bot's own counter",
+     "de": "nachdem das getragene Stück auf den eigenen Ladentisch kam", "tr": "giyili parça botun kendi tezgâhına konduktan sonra"},
+}
+
+# Where the new piece came from (ORIGIN_*): code: (the kind of its ref, written
+# {a}; the four texts). Anything the core took no note of is "unknown".
+DECISION_ORIGINS = {
+ 0: ({}, {"pl": "nieznane (łup, skrzynia, wymiana)", "en": "unknown (a drop, a chest, a trade)",
+          "de": "unbekannt (Beute, Truhe, Handel)", "tr": "bilinmiyor (ganimet, sandık, takas)"}),
+ 1: ({"a": "enum:LADDER_CAT"},
+     {"pl": "kupione u handlarza z drabinki ({a})", "en": "bought from the merchant, off the ladder ({a})",
+      "de": "beim Händler gekauft, nach der Leiter ({a})", "tr": "satıcıdan merdivene göre alındı ({a})"}),
+ 2: ({"a": "yang"},
+     {"pl": "kupione awaryjnie u handlarza za {a}", "en": "bought in an emergency from the merchant for {a}",
+      "de": "im Notfall beim Händler gekauft für {a}", "tr": "satıcıdan acil olarak {a} karşılığında alındı"}),
+ 3: ({"a": "yang"},
+     {"pl": "kupione u handlarza jako właściwa broń za {a}", "en": "bought from the merchant as a proper weapon for {a}",
+      "de": "beim Händler als richtige Waffe gekauft für {a}", "tr": "satıcıdan uygun silah olarak {a} karşılığında alındı"}),
+ 4: ({"a": "int"},
+     {"pl": "ulepszone u kowala z przedmiotu #{a}", "en": "refined at the anvil from item #{a}",
+      "de": "am Amboss verbessert aus Gegenstand #{a}", "tr": "örste #{a} eşyasından yükseltildi"}),
+ 5: ({"a": "int"},
+     {"pl": "zabrane z lady do założenia (zysk {a})", "en": "taken back from the counter to wear (gain {a})",
+      "de": "vom Ladentisch zum Anlegen zurückgenommen (Gewinn {a})", "tr": "giymek için tezgâhtan geri alındı (kazanç {a})"}),
+ 6: ({"a": "enum:SAFEBOX_WHY"},
+     {"pl": "wyjęte z magazynu ({a})", "en": "taken out of the safebox ({a})", "de": "aus dem Lager genommen ({a})", "tr": "depodan alındı ({a})"}),
+ 7: ({"a": "int"},
+     {"pl": "zrobione przez hazardzistę (rodzaj {a})", "en": "made by a gambler (kind {a})",
+      "de": "von einem Glücksspieler gemacht (Art {a})", "tr": "bir kumarbaz yaptı (tür {a})"}),
+}
+
+# What a piece is to its bot (ROLE_* bits).
+DECISION_ROLES = {
+ 1: {"pl": "rodzina broni 30 lv", "en": "a level-30 weapon family", "de": "Waffenfamilie Lv 30", "tr": "30. seviye silah ailesi"},
+ 2: {"pl": "broń 30 lv tej klasy", "en": "the class's level-30 weapon", "de": "die Waffe Lv 30 der Klasse", "tr": "sınıfın 30. seviye silahı"},
+ 4: {"pl": "projekt broni 30 lv", "en": "a level-30 weapon project", "de": "Projekt Waffe Lv 30", "tr": "30. seviye silah projesi"},
+ 8: {"pl": "projekt bonusów", "en": "a lines project", "de": "Bonus-Projekt", "tr": "bonus projesi"},
+ 16: {"pl": "Stalka", "en": "Stalki", "de": "Stalki", "tr": "Stalki"},
+ 32: {"pl": "Stalka zatrzymana na poziom", "en": "Stalki kept for the level", "de": "Stalki für das Level behalten", "tr": "seviye için tutulan Stalki"},
+ 64: {"pl": "zapas na wyższy stopień", "en": "a higher-tier spare", "de": "Ersatz für eine höhere Stufe", "tr": "üst kademe yedeği"},
+ 128: {"pl": "zapas", "en": "a backup", "de": "Ersatz", "tr": "yedek"},
+ 256: {"pl": "przedmiot reguły zwojów", "en": "a scroll-rule piece", "de": "Stück der Schriftrollen-Regel", "tr": "parşömen kuralı parçası"},
+ 512: {"pl": "nagroda", "en": "a prize", "de": "ein Preis", "tr": "ödül"},
+ 1024: {"pl": "biżuteria z listy", "en": "a listed jewel", "de": "gelisteter Schmuck", "tr": "listelenmiş takı"},
+ 2048: {"pl": "z kamieniami duszy", "en": "with spirit stones", "de": "mit Geiststeinen", "tr": "ruh taşlı"},
+ 4096: {"pl": "zestaw hazardzisty", "en": "a gamble set", "de": "Glücksspiel-Satz", "tr": "kumar seti"},
+ 8192: {"pl": "przypięte przez właściciela", "en": "pinned by the owner", "de": "vom Besitzer festgelegt", "tr": "sahibi sabitledi"},
+ 16384: {"pl": "zakazana słaba broń", "en": "a banned low weapon", "de": "verbotene schwache Waffe", "tr": "yasaklı zayıf silah"},
+ 32768: {"pl": "broń tylko na zwoje", "en": "a scroll-only weapon", "de": "Waffe nur mit Schriftrollen", "tr": "yalnız parşömenli silah"},
+}
+
+# The score's terms and the weapon blow's (TERM_*): code: (the divisor the value
+# is written with - BLOW and DEFENCE are x1000 -, the four names). 20..38 are
+# the blow model's own (TPlayerBotBlowParts), shown beside each other.
+DECISION_TERMS = {
+ 0: (1, {"pl": "nieznany składnik", "en": "unknown term", "de": "unbekannter Bestandteil", "tr": "bilinmeyen bileşen"}),
+ 1: (1, {"pl": "Wynik", "en": "Score", "de": "Wert", "tr": "Puan"}),
+ 2: (1000, {"pl": "Cios", "en": "Blow", "de": "Schlag", "tr": "Darbe"}),
+ 3: (1, {"pl": "Preferencja klasy", "en": "Class preference", "de": "Klassenvorliebe", "tr": "Sınıf tercihi"}),
+ 4: (1000, {"pl": "Obrona", "en": "Defence", "de": "Verteidigung", "tr": "Savunma"}),
+ 5: (1, {"pl": "Rozstrzygnięcie poziomem", "en": "Level tie-break", "de": "Entscheidung nach Level", "tr": "Seviye eşitlik bozucu"}),
+ 6: (1, {"pl": "Stałe bonusy przedmiotu", "en": "The item's fixed bonuses", "de": "Feste Boni des Gegenstands", "tr": "Eşyanın sabit bonusları"}),
+ 7: (1, {"pl": "Linie bonusów", "en": "Bonus lines", "de": "Bonuszeilen", "tr": "Bonus satırları"}),
+ 8: (1, {"pl": "Kamienie duszy", "en": "Spirit stones", "de": "Geiststeine", "tr": "Ruh taşları"}),
+ 9: (1, {"pl": "Odporności", "en": "Immunities", "de": "Immunitäten", "tr": "Bağışıklıklar"}),
+ 10: (1, {"pl": "Linie na rasy", "en": "Race lines", "de": "Rassenzeilen", "tr": "Irk satırları"}),
+ 11: (1, {"pl": "Stopień z listy Iwakury (%)", "en": "Iwakura's tier (%)", "de": "Iwakuras Stufe (%)", "tr": "Iwakura'nın kademesi (%)"}),
+ 12: (1, {"pl": "Biżuteria z listy (%)", "en": "Listed jewel (%)", "de": "Gelisteter Schmuck (%)", "tr": "Listelenmiş takı (%)"}),
+ 13: (1, {"pl": "Rodzina butów", "en": "Boots family", "de": "Schuhfamilie", "tr": "Ayakkabı ailesi"}),
+ 14: (1, {"pl": "Wymagany poziom", "en": "Level limit", "de": "Levelgrenze", "tr": "Seviye sınırı"}),
+ 15: (1, {"pl": "Plus", "en": "Plus", "de": "Plus", "tr": "Artı"}),
+ 20: (1, {"pl": "Cios (razem)", "en": "Blow (total)", "de": "Schlag (gesamt)", "tr": "Darbe (toplam)"}),
+ 21: (1, {"pl": "Rzut ataku broni", "en": "Weapon attack roll", "de": "Angriffswurf der Waffe", "tr": "Silah saldırı zarı"}),
+ 22: (1, {"pl": "Rzut ataku magicznego", "en": "Magic attack roll", "de": "Magischer Angriffswurf", "tr": "Büyü saldırı zarı"}),
+ 23: (1, {"pl": "Atak z plusa", "en": "Attack from the plus", "de": "Angriff durch das Plus", "tr": "Artıdan gelen saldırı"}),
+ 24: (1, {"pl": "Stopień", "en": "Grade", "de": "Stufe", "tr": "Derece"}),
+ 25: (1, {"pl": "Wartość ataku %", "en": "Attack value %", "de": "Angriffswert %", "tr": "Saldırı değeri %"}),
+ 26: (1, {"pl": "Silny przeciw rasie %", "en": "Strong against the race %", "de": "Stark gegen die Rasse %", "tr": "Irka karşı güçlü %"}),
+ 27: (1, {"pl": "Średnie obrażenia %", "en": "Average damage %", "de": "Durchschnittsschaden %", "tr": "Ortalama zarar %"}),
+ 28: (1, {"pl": "Obrażenia umiejętności %", "en": "Skill damage %", "de": "Fertigkeitsschaden %", "tr": "Beceri hasarı %"}),
+ 29: (1, {"pl": "Cios krytyczny %", "en": "Critical hit %", "de": "Kritischer Treffer %", "tr": "Kritik vuruş %"}),
+ 30: (1, {"pl": "Przeszywające uderzenie %", "en": "Piercing hit %", "de": "Durchbohrender Treffer %", "tr": "Delici vuruş %"}),
+ 31: (1, {"pl": "Ukryty bonus poziomu %", "en": "Hidden level bonus %", "de": "Versteckter Levelbonus %", "tr": "Gizli seviye bonusu %"}),
+ 32: (1, {"pl": "Atak", "en": "Attack", "de": "Angriff", "tr": "Saldırı"}),
+ 33: (1, {"pl": "Obrona potwora", "en": "Monster defence", "de": "Monsterverteidigung", "tr": "Canavar savunması"}),
+ 34: (1, {"pl": "Zwykłe uderzenie", "en": "Plain hit", "de": "Normaler Treffer", "tr": "Normal vuruş"}),
+ 35: (1, {"pl": "Uderzenie umiejętnością", "en": "Skill hit", "de": "Fertigkeitstreffer", "tr": "Beceri vuruşu"}),
+ 36: (1, {"pl": "Styl walki", "en": "Fighting style", "de": "Kampfstil", "tr": "Dövüş tarzı"}),
+ 37: (1, {"pl": "Udział zwykłych uderzeń", "en": "Plain-hit share", "de": "Anteil normaler Treffer", "tr": "Normal vuruş payı"}),
+ 38: (1, {"pl": "Udział umiejętności", "en": "Skill share", "de": "Fertigkeitsanteil", "tr": "Beceri payı"}),
+ 40: (1, {"pl": "Linie wg stopni (ocena)", "en": "Tiered lines score", "de": "Zeilenwert nach Stufen", "tr": "Kademeli satır puanı"}),
+}
+DECISION_BLOW_TERMS = frozenset(range(20, 39))
+# The terms that add up to a score, and of the blow the ones that move it: the
+# three with the largest change are the ones a report should start from.
+DECISION_TERM_RANKED = frozenset((2, 3, 4, 5, 6, 7, 8, 9, 10, 13))
+DECISION_BLOW_RANKED = frozenset(range(21, 36))
+
+# What the code calls each number, for the export an analyst or a language
+# model reads ("Kopiuj dla AI", exMarkdown): the words above are the page's
+# language, and these are the rules header's own names, so a report that says
+# STEP_LEDGER or RULE_SCORE_UPGRADE can be looked up in
+# playerbot_explain_rules.h and in the pass that writes it.
+# tests/admin_panel_decisions_test.py checks every one against the header.
+DECISION_CODE_NAMES = {
+ "EVENT": {
+  1: "EVENT_LIST_CREATE", 2: "EVENT_LIST_ADD", 3: "EVENT_LIST_CLASSIC", 4: "EVENT_REPRICE", 5: "EVENT_SLIP_FIX",
+  6: "EVENT_SLIP_FIX_CORE", 7: "EVENT_RAISE_TO_FLOOR", 8: "EVENT_TAKE_OFF", 9: "EVENT_RECLAIM", 10: "EVENT_SOLD",
+ },
+ "GOODS": {
+  0: "GOODS_UNKNOWN", 1: "GOODS_POLICY_STALL", 2: "GOODS_GAMBLE_GOODS", 3: "GOODS_GM_STONE_SPARE", 4: "GOODS_MARBLE",
+  5: "GOODS_METIN_DETECTOR", 6: "GOODS_CATACOMB_HEAD", 7: "GOODS_BONUS_STONE_SPARE",
+  8: "GOODS_FORGET_SCROLL_MERCHANT_ONLY", 9: "GOODS_STALKI_OTHER", 10: "GOODS_LEVEL30_SALE_READY",
+  11: "GOODS_LEVEL30_NOT_KEPT", 12: "GOODS_LOW_LEVEL_LOW_PLUS", 13: "GOODS_LOW_LEVEL_REFINED",
+  14: "GOODS_LPP_SURPLUS", 15: "GOODS_VALUABLE_BONUS", 16: "GOODS_MERCHANT_ONLY_GEAR", 17: "GOODS_PRECIOUS_SPARE",
+  18: "GOODS_SAFE_SCROLL_OVER_KEEP", 19: "GOODS_HORSE_MEDAL", 20: "GOODS_MATERIAL_FLOOR", 21: "GOODS_MATERIAL_SHORT",
+  22: "GOODS_MATERIAL_OTHER", 23: "GOODS_PICKUP_GOODS", 24: "GOODS_SURPLUS_POTION", 25: "GOODS_SURPLUS_RECIPE",
+  26: "GOODS_HAIR_DYE_SHOP", 27: "GOODS_HAIR_DYE_FISHED_KEPT", 28: "GOODS_ISHOP_HAIRSTYLE",
+  29: "GOODS_FORGET_SCROLL", 30: "GOODS_MAGIC_DUST", 31: "GOODS_SOUL_STONE_LOW_MARKET", 32: "GOODS_SOUL_STONE",
+  33: "GOODS_GENERAL_BOOK", 34: "GOODS_SHEET_GOODS", 35: "GOODS_SKILL_BOOK_DROPPER",
+  36: "GOODS_SKILL_BOOK_OWN_SPARE", 37: "GOODS_SKILL_BOOK_OTHER_CLASS", 38: "GOODS_LOW_PLUS_GEAR",
+  39: "GOODS_SCRAP_KEEPER_LOW", 40: "GOODS_SURPLUS_CHEST", 41: "GOODS_SURPLUS_KEY",
+ },
+ "SHAPE": {
+  0: "SHAPE_WHOLE_STACK", 1: "SHAPE_NATURAL_LINE", 2: "SHAPE_POTION_PACK", 3: "SHAPE_DUST_PACK",
+  4: "SHAPE_MEDAL_PAIR", 5: "SHAPE_COUNTED_SINGLE", 6: "SHAPE_KEY_SINGLE", 7: "SHAPE_CHEST_PACK",
+  8: "SHAPE_CLASSIC_SPLIT_SINGLE",
+ },
+ "OFF": {
+  1: "OFF_LPP", 2: "OFF_SOUL_STONE_DUST", 3: "OFF_MARBLE", 4: "OFF_SAME_VNUM", 5: "OFF_MISSION_BOOKS",
+  6: "OFF_JUNK_WEAPON", 7: "OFF_POTION_PACK", 8: "OFF_LOW_ARMOUR", 9: "OFF_LOW_JEWEL", 10: "OFF_HAIR_DYE",
+  11: "OFF_LEVEL30_ANVIL", 12: "OFF_CHEST_PACK", 13: "OFF_GM_STONE", 14: "OFF_SCROLL_PACK", 15: "OFF_MEDAL_PACK",
+  16: "OFF_HEAP_PACK", 17: "OFF_MATERIAL_PACK", 18: "OFF_LOW_GEAR", 19: "OFF_TACKLE", 20: "OFF_RECLAIM_TO_WEAR",
+ },
+ "STEP": {
+  1: "STEP_CONTEXT", 2: "STEP_BONUS_LINE", 3: "STEP_BONUS_MAX_LINES", 4: "STEP_BONUS_PERCENT", 5: "STEP_INVESTMENT",
+  6: "STEP_SHEET_GEAR", 7: "STEP_SOCKET_STONES", 8: "STEP_FLAT_PLUS", 9: "STEP_SCRAP", 10: "STEP_INVESTMENT_FLOOR",
+  11: "STEP_BONUS_PREMIUM", 12: "STEP_COMPETITION", 13: "STEP_SHEET_MARBLE", 14: "STEP_COUNT",
+  15: "STEP_PRIOR_MERCHANT", 16: "STEP_PRIOR_LEVEL30", 17: "STEP_SHEET_BOOK", 18: "STEP_SHEET_GENERAL_BOOK",
+  19: "STEP_SHEET_MATERIAL", 20: "STEP_CHEST_WORTH", 21: "STEP_SHEET_FORGET_SCROLL", 22: "STEP_FIXED_PRIOR",
+  23: "STEP_SHEET_SOUL_STONE", 24: "STEP_NO_MERCHANT_PRIOR", 25: "STEP_WALLET", 26: "STEP_WALLET_STACK_CAP",
+  27: "STEP_SALE_MEMORY", 28: "STEP_LEDGER", 29: "STEP_STEP_LIMIT", 30: "STEP_SPREAD", 31: "STEP_BONUS_GOODS_FLOOR",
+  32: "STEP_ROUND", 33: "STEP_POOR_DISCOUNT", 34: "STEP_MARKDOWN_CLOCK", 35: "STEP_MARKDOWN", 36: "STEP_MARKUP",
+  37: "STEP_MARKUP_REFUSED", 38: "STEP_LISTING_FLOOR", 39: "STEP_SLIP", 40: "STEP_GENERATION",
+  41: "STEP_SLIP_PUT_RIGHT", 42: "STEP_RAISED_TO_FLOOR",
+ },
+ "LFLAG": {
+  1: "LFLAG_UNDER_MERCHANT", 2: "LFLAG_FLOOR_BOUND", 4: "LFLAG_UNDER_SHEET_HALF", 8: "LFLAG_OVER_SHEET_3X",
+  16: "LFLAG_MEMORY_PULL", 32: "LFLAG_REGULATOR_EDGE", 64: "LFLAG_MARKDOWN_MAX", 128: "LFLAG_MARKUP_MAX",
+  256: "LFLAG_SLIP", 512: "LFLAG_BETTER_THAN_WORN_SOON", 1024: "LFLAG_LOW_RANK", 2048: "LFLAG_PRICE_JUMP",
+ },
+ "PATH": {
+  1: "PATH_EQUIP_PASS", 2: "PATH_EMPTY_HAND", 3: "PATH_EMERGENCY_BUY", 4: "PATH_PROFESSION_OFF", 5: "PATH_UNIQUE",
+ },
+ "RULE": {
+  1: "RULE_SCORE_UPGRADE", 2: "RULE_EMPTY_SLOT", 3: "RULE_OWNER_PIN", 4: "RULE_OLD_LOW_WEAPON_BANNED",
+  5: "RULE_ARCHER_STONE_SWITCH", 6: "RULE_EMPTY_HAND_BEST", 7: "RULE_EMPTY_HAND_LOW_FALLBACK",
+  8: "RULE_EMERGENCY_WEAPON", 9: "RULE_PROFESSION_MISMATCH", 10: "RULE_UNIQUE_NEVER_WORN",
+ },
+ "CONTEXT": {
+  0: "CONTEXT_NONE", 1: "CONTEXT_AFTER_BLACKSMITH", 2: "CONTEXT_AFTER_BURN", 3: "CONTEXT_AFTER_SPAWN",
+  4: "CONTEXT_RETURNED_FROM_COUNTER", 5: "CONTEXT_WENT_TO_COUNTER",
+ },
+ "ORIGIN": {
+  0: "ORIGIN_UNKNOWN", 1: "ORIGIN_NPC_LADDER", 2: "ORIGIN_NPC_EMERGENCY", 3: "ORIGIN_NPC_PROPER_WEAPON",
+  4: "ORIGIN_REFINED", 5: "ORIGIN_RECLAIMED", 6: "ORIGIN_SAFEBOX", 7: "ORIGIN_GAMBLER",
+ },
+ "ROLE": {
+  1: "ROLE_LEVEL30_FAMILY", 2: "ROLE_CLASS_LEVEL30", 4: "ROLE_LEVEL30_PROJECT", 8: "ROLE_LINES_PROJECT",
+  16: "ROLE_STALKI", 32: "ROLE_STALKI_KEPT", 64: "ROLE_HIGHER_TIER_SPARE", 128: "ROLE_BACKUP",
+  256: "ROLE_SCROLL_RULE_PIECE", 512: "ROLE_PRIZE", 1024: "ROLE_LISTED_JEWEL", 2048: "ROLE_SOUL_STONES",
+  4096: "ROLE_GAMBLE_SET", 8192: "ROLE_OWNER_PINNED", 16384: "ROLE_BANNED_LOW_WEAPON",
+  32768: "ROLE_SCROLL_ONLY_WEAPON",
+ },
+ "TERM": {
+  1: "TERM_TOTAL", 2: "TERM_BLOW_X1000", 3: "TERM_CLASS_PREF", 4: "TERM_DEFENCE_X1000", 5: "TERM_LEVEL_TIE",
+  6: "TERM_PROTO_APPLIES", 7: "TERM_LINES", 8: "TERM_SOUL_STONES", 9: "TERM_IMMUNE", 10: "TERM_RACE_LINES",
+  11: "TERM_TIER_PCT", 12: "TERM_LISTED_JEWEL_PCT", 13: "TERM_BOOTS_FAMILY", 14: "TERM_LEVEL_LIMIT", 15: "TERM_PLUS",
+  20: "TERM_BLOW", 21: "TERM_ROLL", 22: "TERM_MAGIC_ROLL", 23: "TERM_PLUS_ATTACK", 24: "TERM_GRADE",
+  25: "TERM_ATT_PCT", 26: "TERM_RACE_PCT", 27: "TERM_AVG_PCT", 28: "TERM_SKILL_PCT", 29: "TERM_CRIT_PCT",
+  30: "TERM_PEN_PCT", 31: "TERM_LEVEL_BONUS_PCT", 32: "TERM_ATTACK", 33: "TERM_MOB_DEFENCE", 34: "TERM_HIT",
+  35: "TERM_SKILL_HIT", 36: "TERM_STYLE", 37: "TERM_HIT_SHARE", 38: "TERM_SKILL_SHARE", 40: "TERM_LINES_TIERED",
+ },
+ "EFLAG": {
+  1: "EFLAG_PLUS_DOWN", 2: "EFLAG_LEVEL_DOWN", 4: "EFLAG_LINES_WORSE", 8: "EFLAG_SMALL_GAIN", 16: "EFLAG_FLIP_FLOP",
+  32: "EFLAG_OLD_ZEROED", 64: "EFLAG_PROJECT_REPLACED", 128: "EFLAG_SUPPRESSED_BEFORE", 256: "EFLAG_AFTER_BURN",
+ },
+}
+
+
+def decision_code_name(prefix, code):
+    """The header's name of a code ("STEP_LEDGER"), or PREFIX_<n> for one a
+    newer core wrote and this panel does not know yet."""
+    code = int(code or 0)
+    return DECISION_CODE_NAMES.get(prefix, {}).get(code) or "%s_%d" % (prefix, code)
+
+
+# What the panel reads out of a row beyond the core's own flags: the mistakes
+# the explanations found on 29 September, so the next of their kind shows at a
+# glance and can be filtered for on /decisions. A weapon put on over one whose
+# modelled blow was higher (the tier nudge that overruled the blow), a level-30
+# weapon taken off for another weapon (the operator's question: is it the model
+# or a rule?), and a weapon listed as a spare while a rod or a pickaxe was in
+# the hand (the bot's own weapon on its counter after fishing). {a} is the
+# numbers that make it one.
+DECISION_ANOMALIES = {
+ "blow_down": {"pl": "słabszy cios niż zdjęta broń: {a}", "en": "a weaker blow than the weapon taken off: {a}",
+               "de": "ein schwächerer Schlag als die abgelegte Waffe: {a}", "tr": "çıkarılan silahtan zayıf darbe: {a}"},
+ "level30_off": {"pl": "broń 30 lv zastąpiona inną bronią", "en": "a level-30 weapon replaced by another weapon",
+                 "de": "eine Waffe Lv 30 durch eine andere Waffe ersetzt", "tr": "30. seviye silah başka bir silahla değiştirildi"},
+ "tool_spare": {"pl": "wystawione jako zapas, gdy w ręce było narzędzie ({a})",
+                "en": "listed as a spare while a tool was in the hand ({a})",
+                "de": "als Ersatz eingestellt, während ein Werkzeug in der Hand war ({a})",
+                "tr": "elde bir alet varken yedek olarak tezgâha kondu ({a})"},
+ "worn_listed": {"pl": "noszony przedmiot trafił na własną ladę bota", "en": "the worn piece went on the bot's own counter",
+                 "de": "das getragene Stück kam auf den eigenen Ladentisch des Bots",
+                 "tr": "giyili parça botun kendi tezgâhına kondu"},
+}
+# A rod (27400..27599 on mt2009) or a pickaxe (29101..29199) in the weapon slot.
+DECISION_TOOL_RANGES = ((27400, 27599), (29101, 29199))
+
+
+def decision_is_tool(vnum):
+    vnum = int(vnum or 0)
+    return any(low <= vnum <= high for low, high in DECISION_TOOL_RANGES)
+
+
+def _dx_anomaly(code, a, language):
+    texts = DECISION_ANOMALIES[code]
+    return {"code": code, "label": _dx_pick(texts, language).replace("{a}", a)}
+
+
+def decision_equip_anomalies(row, new_terms, old_terms, language):
+    """The anomalies of an equipment row: a change after the worn piece went on
+    the bot's own counter (CONTEXT_WENT_TO_COUNTER), a weapon swap by score
+    whose new blow (TERM_BLOW) is under the old one's, and a level-30 weapon
+    taken off for a weapon of another family."""
+    out = []
+    if int(row.get("context") or 0) == 5:
+        out.append(_dx_anomaly("worn_listed", "", language))
+    if int(row.get("wear") or 0) != 4 or not int(row.get("new_vnum") or 0) or not int(row.get("old_vnum") or 0):
+        return out
+    new_blow, old_blow = new_terms.get(20), old_terms.get(20)
+    if int(row.get("path") or 0) == 1 and int(row.get("rule") or 0) == 1 and new_blow is not None \
+            and old_blow and new_blow < old_blow:
+        change = (new_blow - old_blow) * 100.0 / old_blow
+        tier_new, tier_old = new_terms.get(11), old_terms.get(11)
+        detail = "%d → %d (%s%%)" % (old_blow, new_blow, _dx_dec(change, 1, language))
+        if tier_new is not None and tier_old is not None and tier_new != tier_old:
+            detail += "; %s %+d%% / %+d%%" % (decision_code_name("TERM", 11), tier_old, tier_new)
+        out.append(_dx_anomaly("blow_down", detail, language))
+    if int(row.get("old_roles") or 0) & 1 and not int(row.get("new_roles") or 0) & 1:
+        out.append(_dx_anomaly("level30_off", "", language))
+    return out
+
+
+def decision_listing_anomalies(row, language):
+    """The anomalies of a counter line: a spare whose "worn piece" (why_b of
+    GOODS_PRECIOUS_SPARE) was a rod or a pickaxe - the weapon the hand takes
+    back after the session, put on the counter."""
+    out = []
+    if int(row.get("why") or 0) == 17 and decision_is_tool(row.get("why_b")):
+        out.append(_dx_anomaly("tool_spare", localized_item_name(int(row.get("why_b") or 0), language), language))
+    return out
+
+
+# The steps that give a line its sheet price for one unit (their value is the
+# price after them), and the one that puts the lines' premium on it.
+DECISION_SHEET_STEPS = frozenset((6, 13, 17, 18, 19, 20, 21, 23))
+
+
+def decision_sheet_ratio(row, steps):
+    """What one unit asks against the sheet's price for it, from the steps: the
+    first sheet step's value, with STEP_BONUS_PREMIUM's after it for gear, and
+    the unit the line meant (a slip's price meant, STEP_SLIP's a). None when
+    the price came from no sheet."""
+    sheet = None
+    meant = None
+    for code, value, a, _b, _c in steps:
+        if code in DECISION_SHEET_STEPS and sheet is None:
+            sheet = value
+        elif code == 11 and sheet:
+            sheet = value
+        elif code == 39:
+            meant = a
+    count = max(1, int(row.get("count") or 0))
+    price = meant or int(row.get("list_price") or 0)
+    if not sheet or not price:
+        return None
+    return {"unit": price // count, "sheet": sheet, "ratio": float(price) / count / sheet}
 
 
 def gear_history_offline_buys(cur, pid, limit):
@@ -9592,6 +11691,674 @@ def match_refine_ways(cur, pid, rows):
     return ways
 
 
+# ---- reading and saying the explanations -------------------------------------
+# The wear slots the card knows, by the engine's wear number, and the word the
+# live map uses for each. One map for the inventory card and the explanations.
+WEAR_SLOT_KEYS = {
+    0: "body",       # Zbroja
+    1: "head",       # Hełm
+    2: "foots",      # Buty
+    3: "wrist",      # Bransoleta
+    4: "weapon",     # Broń
+    5: "neck",       # Naszyjnik
+    6: "ear",        # Kolczyki
+    10: "shield",    # Tarcza (WEAR_SHIELD; slot 7 is WEAR_UNIQUE1)
+}
+WEAR_SLOT_WORDS = {"body": "armor", "head": "helmet", "foots": "boots", "wrist": "bracelet",
+                   "weapon": "weapon", "neck": "necklace", "ear": "earrings", "shield": "shield"}
+WEAR_UNIQUE_SLOTS = frozenset((7, 8))
+
+
+def decode_explain_pairs(text):
+    """A steps or terms column as [(code, value, a, b, c)], and whether it ends
+    in the "~" that says the core ran out of room. A part it cannot read is
+    left out rather than taking the rest with it."""
+    out, cut = [], False
+    for part in str(text or "").split(";"):
+        part = part.strip()
+        if not part:
+            continue
+        if part == "~":
+            cut = True
+            continue
+        code, sep, rest = part.partition("=")
+        if not sep:
+            continue
+        try:
+            numbers = [int(x) for x in rest.split(":")][:4]
+            code = int(code)
+        except ValueError:
+            continue
+        numbers += [0] * (4 - len(numbers))
+        out.append((code, numbers[0], numbers[1], numbers[2], numbers[3]))
+    return out, cut
+
+
+def decode_explain_lines(text):
+    """A lines column as ([(attrtype, value)], [seated stone vnums])."""
+    lines_part, _, stones_part = str(text or "").partition("|")
+    lines = []
+    for part in lines_part.split(","):
+        kind, sep, value = part.strip().partition(":")
+        if not sep:
+            continue
+        try:
+            lines.append((int(kind), int(value)))
+        except ValueError:
+            continue
+    stones = [int(p) for p in (s.strip() for s in stones_part.split(",")) if p.isdigit()]
+    return lines, stones
+
+
+def _dx_lang(language):
+    return language if language in LANGS else "en"
+
+
+def _dx_pick(texts, language):
+    """A text of a {pl, en, de, tr} dict, English when the language has none."""
+    return texts.get(language) or texts.get("en") or ""
+
+
+def _dx_int(value):
+    """A number the way this panel writes yang: thousands apart with a space."""
+    try:
+        n = int(value)
+    except (TypeError, ValueError):
+        return str(value)
+    return ("-" if n < 0 else "") + "{:,}".format(abs(n)).replace(",", " ")
+
+
+def _dx_dec(value, digits, language):
+    text = ("%." + str(int(digits)) + "f") % float(value)
+    return text if language == "en" else text.replace(".", ",")
+
+
+# A mob's name for the marbles, read lazily from the world's own mob_proto and
+# kept: a counter carries three marbles at most, so this is a handful of reads.
+_MOB_NAMES = {}
+_MOB_NAME_RETRY = 600
+
+
+def localized_mob_name(vnum, language=None):
+    language = _dx_lang(language or (lang() if has_request_context() else "en"))
+    vnum = int(vnum or 0)
+    if vnum <= 0:
+        return "—"
+    known = _MOB_NAMES.get(vnum)
+    if ENGINE_MT2009 and (known is None or (not known[0] and time.time() - known[1] > _MOB_NAME_RETRY)):
+        name = ""
+        try:
+            with db() as c, c.cursor() as cur:
+                # cp1250 like every name column, and latin1 on the way out: the
+                # bytes, decoded here (see _load_item_proto).
+                cur.execute("SELECT CAST(locale_name AS BINARY) AS name FROM player.mob_proto WHERE vnum = %s",
+                            (vnum,))
+                row = cur.fetchone()
+            name = log_text(row.get("name")).strip() if row else ""
+        except Exception:
+            name = ""
+        if len(_MOB_NAMES) < 8192:
+            _MOB_NAMES[vnum] = (name, time.time())
+        known = (name, time.time())
+    return (known[0] if known else "") or map_i18n(language)["ex_mob_n"].format(n=vnum)
+
+
+def _dx_skill(skill_id, language):
+    skill_id = int(skill_id or 0)
+    if skill_id <= 0:
+        return "—"
+    name = SKILL_NAMES_BY_LANG.get(language, {}).get(skill_id) or SKILL_ID_NAMES.get(skill_id)
+    return name or map_i18n(language)["ex_skill_n"].format(n=skill_id)
+
+
+# The value slot of a bonus line's text, with what is glued to it: "+%d%%",
+# ": %d", "%.1f", "+%dm", "+%d‰".
+_DX_APPLY_SLOT = re.compile(r"\s*:?\s*\+?%(?:\.1f|d|s)(?:%%|‰|m\b)?")
+
+
+def apply_name(attr_type, language):
+    """A bonus line's name without its value ("Średnie Obrażenia")."""
+    entry = APPLY_TEXTS.get(apply_key(attr_type))
+    if not entry:
+        return "Bonus #%d" % int(attr_type or 0)
+    text = _DX_APPLY_SLOT.sub("", _dx_pick(entry[1], language)).replace("%%", "%")
+    return re.sub(r"\s{2,}", " ", text).strip(" :")
+
+
+def apply_value_text(attr_type, value, language):
+    """A bonus line's value in its own unit, for beside apply_name."""
+    entry = APPLY_TEXTS.get(apply_key(attr_type))
+    fmt = entry[0] if entry else "flat"
+    value = int(value or 0)
+    if fmt == "boolean":
+        return ""
+    if fmt == "multiplier":
+        return "×" + _dx_dec(value, 1, language)
+    if fmt in ("percent", "percent_decimal"):
+        return "%s%d%%" % ("+" if value > 0 else "", value)
+    return "%s%d" % ("+" if value > 0 else "", value)
+
+
+def format_apply(attr_type, value, language):
+    """A whole bonus line as the tooltip's formatApply writes it."""
+    entry = APPLY_TEXTS.get(apply_key(attr_type))
+    value = int(value or 0)
+    if not entry:
+        return "Bonus #%d: %s%d" % (int(attr_type or 0), "+" if value > 0 else "", value)
+    fmt, texts = entry
+    text = _dx_pick(texts, language)
+    if fmt == "boolean":
+        return text
+    shown = _dx_dec(value, 1, "en") if fmt in ("multiplier", "percent_decimal") else str(value)
+
+    def slot(match):
+        if not match.group(0).startswith("+") or value < 0:
+            return shown
+        return "+" + shown
+    return re.sub(r"\+?%(?:\.1f|d|s)", slot, text, count=1).replace("%%", "%").strip()
+
+
+def _dx_param(kind, raw, params, language):
+    """One number of a code, written by its kind:
+    int, yang - a count or a price, thousands apart;
+    plus - "+7"; level - a bare number; pct, pctsigned, permille;
+    x100, x10000 - a multiplier stored as an integer ("×1,04");
+    minutes; item, skill, mob - a name; apply - a bonus line's name, and
+    applyval:<param> - its value in that line's unit;
+    enum:<NAME> - a word of DECISION_ENUMS."""
+    try:
+        raw = int(raw or 0)
+    except (TypeError, ValueError):
+        return str(raw)
+    if kind in ("int", "yang"):
+        return _dx_int(raw)
+    if kind == "plus":
+        return "+%d" % raw
+    if kind == "level":
+        return str(raw)
+    if kind == "pct":
+        return "%d%%" % raw
+    if kind == "pctsigned":
+        return ("+%d%%" % raw) if raw > 0 else ("%d%%" % raw)
+    if kind == "permille":
+        return "%d‰" % raw
+    if kind == "x100":
+        return "×" + _dx_dec(raw / 100.0, 2, language)
+    if kind == "x10000":
+        return "×" + _dx_dec(raw / 10000.0, 4, language)
+    if kind == "minutes":
+        return "%d %s" % (raw, _dx_pick(T["unit_min"], language))
+    if kind == "item":
+        return localized_item_name(raw, language) if raw > 0 else "—"
+    if kind == "skill":
+        return _dx_skill(raw, language)
+    if kind == "mob":
+        return localized_mob_name(raw, language)
+    if kind == "apply":
+        return apply_name(raw, language) if raw else "—"
+    if kind.startswith("applyval:"):
+        return apply_value_text(params.get(kind[len("applyval:"):], 0), raw, language)
+    if kind.startswith("enum:"):
+        entry = DECISION_ENUMS.get(kind[len("enum:"):], {}).get(raw)
+        return _dx_pick(entry, language) if entry else str(raw)
+    return str(raw)
+
+
+_DX_SLOT = re.compile(r"\{(a|b|c|value)\}")
+
+
+def _dx_fill(template, kinds, raw, language):
+    """A template with {a} {b} {c} {value} written from raw by their kinds."""
+    def one(match):
+        name = match.group(1)
+        return _dx_param(kinds.get(name, "int"), raw.get(name, 0), raw, language)
+    return _DX_SLOT.sub(one, template)
+
+
+def _dx_unknown(code, raw, language):
+    """A code this panel has no words for (a newer core's): said as a number
+    with its parameters, so a report still carries it."""
+    params = ", ".join("%s=%s" % (k, raw[k]) for k in ("value", "a", "b", "c") if raw.get(k))
+    return map_i18n(language)["ex_code_n"].format(n=code) + (" (" + params + ")" if params else "")
+
+
+def decision_label(table, code, language):
+    """The words of a code of one of the plain tables."""
+    entry = table.get(int(code or 0))
+    return _dx_pick(entry, language) if entry else _dx_unknown(code, {}, language)
+
+
+def decision_goods_text(code, a, b, c, language):
+    entry = DECISION_GOODS.get(int(code or 0))
+    raw = {"a": a or 0, "b": b or 0, "c": c or 0}
+    if not entry:
+        return _dx_unknown(code, raw, language)
+    kinds, texts = entry
+    return _dx_fill(_dx_pick(texts, language), kinds, raw, language)
+
+
+def decision_origin_text(code, ref, language):
+    entry = DECISION_ORIGINS.get(int(code or 0))
+    raw = {"a": ref or 0}
+    if not entry:
+        return _dx_unknown(code, raw, language)
+    kinds, texts = entry
+    return _dx_fill(_dx_pick(texts, language), kinds, raw, language)
+
+
+def _dx_change(before, after, language):
+    """How a step moved the price: a percentage, or a multiple when it is large."""
+    if not before or before == after:
+        return "=" if before else ""
+    ratio = float(after) / float(before)
+    if ratio >= 2.0 or ratio <= 0.5:
+        return "×" + _dx_dec(ratio, 2, language)
+    change = (ratio - 1.0) * 100.0
+    return ("+" if change > 0 else "") + _dx_dec(change, 1, language) + "%"
+
+
+def decision_step_rows(text, language):
+    """A steps column as rows of name, detail, effect on the price, and the
+    price after the step; and whether the column was cut."""
+    steps, cut = decode_explain_pairs(text)
+    rows, running = [], None
+    for code, value, a, b, c in steps:
+        raw = {"value": value, "a": a, "b": b, "c": c}
+        entry = DECISION_STEPS.get(code)
+        if entry:
+            value_kind, kinds, names, details = entry
+            kinds = dict(kinds)
+            if value_kind:
+                kinds["value"] = value_kind
+            label = _dx_pick(names, language)
+            detail = _dx_fill(_dx_pick(details, language), kinds, raw, language)
+        else:
+            # A step of a newer core: its value is most likely the price.
+            value_kind, label, detail = None, _dx_unknown(code, {}, language), _dx_unknown(code, raw, language)
+        effect = shown = ""
+        if value_kind is None:
+            shown = _dx_int(value)
+            effect = _dx_change(running, value, language) if running is not None else ""
+            running = value
+        rows.append({"code": code, "name": decision_code_name("STEP", code), "label": label, "detail": detail,
+                     "effect": effect, "value": shown})
+    return rows, cut
+
+
+def decision_flags(flags, table, unusual_mask, language, prefix=None):
+    """The flag badges of a row, each marked when it is one of the unusual,
+    with the header's name of the flag when the table's prefix is given."""
+    flags = int(flags or 0)
+    out = []
+    bit = 1
+    while bit <= flags:
+        if flags & bit:
+            entry = table.get(bit)
+            badge = {"code": bit, "label": _dx_pick(entry, language) if entry else "#%d" % bit,
+                     "unusual": bool(bit & unusual_mask)}
+            if prefix:
+                badge["name"] = decision_code_name(prefix, bit)
+            out.append(badge)
+        bit <<= 1
+    return out
+
+
+def decision_roles(roles, language):
+    roles = int(roles or 0)
+    out = []
+    bit = 1
+    while bit <= roles:
+        if roles & bit:
+            entry = DECISION_ROLES.get(bit)
+            out.append(_dx_pick(entry, language) if entry else "#%d" % bit)
+        bit <<= 1
+    return out
+
+
+def _dx_time(value, seconds=True):
+    if hasattr(value, "strftime"):
+        return value.strftime("%d.%m %H:%M:%S" if seconds else "%d.%m %H:%M")
+    return str(value or "")
+
+
+def listing_codes(row):
+    """A counter line's row as one line of numbers, for a report."""
+    g = lambda k: row.get(k) if row.get(k) is not None else 0
+    return ("L1 id=%s pid=%s v=%s n=%s ev=%s sr=%s why=%s:%s:%s:%s sc=%s rk=%s/%s rf=%s cut=%s:%s:%s held=%s "
+            "lp=%s ls=%s p=%s was=%s le=%s lst=%s ch=%s off=%s sold=%s f=%s at=%s/%s") % (
+        g("item_id"), g("pid"), g("vnum"), g("count"), g("list_event"), g("stand_reason"),
+        g("why"), g("why_a"), g("why_b"), g("why_c"), g("score"), g("pick_rank"), g("candidates"),
+        g("refused_above"), g("cut_shape"), g("cut_from"), g("cut_keep"), g("held"), g("list_price"),
+        row.get("list_steps") or "-", g("price"), g("was"), g("last_event"), row.get("last_steps") or "-",
+        g("changes"), g("off_reason"), g("sold_price"), g("flags"),
+        _dx_time(row.get("listed_at")).replace(" ", "_"), _dx_time(row.get("last_at")).replace(" ", "_"))
+
+
+def equip_codes(row):
+    """An equipment decision's row as one line of numbers, for a report."""
+    g = lambda k: row.get(k) if row.get(k) is not None else 0
+    return ("E1 id=%s t=%s pid=%s lv=%s w=%s path=%s rule=%s ctx=%s new=%s:%s:+%s:%s:%s:%s:%s nl=%s nt=%s "
+            "old=%s:%s:+%s:%s:%s ol=%s ot=%s sup=%s f=%s") % (
+        g("id"), _dx_time(row.get("time")).replace(" ", "_"), g("pid"), g("level"), g("wear"), g("path"),
+        g("rule"), g("context"), g("new_id"), g("new_vnum"), g("new_plus"), g("new_score"), g("new_roles"),
+        g("new_origin"), g("new_origin_ref"), row.get("new_lines") or "-", row.get("new_terms") or "-",
+        g("old_id"), g("old_vnum"), g("old_plus"), g("old_score"), g("old_roles"),
+        row.get("old_lines") or "-", row.get("old_terms") or "-", g("suppressed"), g("flags"))
+
+
+LISTING_CHANGE_EVENTS = frozenset((4, 5, 6, 7))
+LISTING_END_EVENTS = frozenset((8, 9, 10))
+
+
+def explain_listing(row, language, counter_price=None):
+    """One counter line's row of log.playerbot_listing, said in the page's
+    language: why it is goods and on this counter, how it was picked and cut,
+    the price step by step, what happened to it since, its flags, and the raw
+    codes for a report. counter_price is what the line asks now, when known."""
+    language = _dx_lang(language)
+    m = map_i18n(language)
+    count = int(row.get("count") or 0)
+    result = {"kind": "listing", "item_id": int(row.get("item_id") or 0), "pid": int(row.get("pid") or 0),
+              "vnum": int(row.get("vnum") or 0), "count": count}
+    goods = decision_goods_text(row.get("why"), row.get("why_a"), row.get("why_b"), row.get("why_c"), language)
+    if int(row.get("score") or 0):
+        goods += " · " + m["ex_score"].format(score=_dx_int(row.get("score")))
+    result["goods"] = goods
+    stand = int(row.get("stand_reason") or 0)
+    result["stand"] = m["ex_stand"].format(reason=decision_label(DECISION_STAND, stand, language)) if stand else ""
+    candidates = int(row.get("candidates") or 0)
+    pick = ""
+    if candidates:
+        # pick_rank is the index among the scored candidates, 0 the first.
+        pick = m["ex_pick"].format(rank=int(row.get("pick_rank") or 0) + 1, n=candidates)
+        if int(row.get("refused_above") or 0):
+            pick += m["ex_pick_refused"].format(k=int(row.get("refused_above") or 0))
+    result["pick"] = pick
+    cut = ""
+    if int(row.get("cut_from") or 0):
+        cut = m["ex_cut"].format(shape=decision_label(DECISION_SHAPES, row.get("cut_shape"), language),
+                                 whole=_dx_int(row.get("cut_from")), take=_dx_int(count),
+                                 keep=_dx_int(row.get("cut_keep")))
+    if int(row.get("held") or 0):
+        cut += ("; " if cut else "") + m["ex_held"].format(held=_dx_int(row.get("held")))
+    result["cut"] = cut
+    list_event = int(row.get("list_event") or 0)
+    list_price = int(row.get("list_price") or 0)
+    result["listed_time"] = _dx_time(row.get("listed_at"))
+    result["listed"] = " · ".join(p for p in (
+        decision_label(DECISION_EVENTS, list_event, language) if list_event else "",
+        result["listed_time"],
+        m["ex_list_price"].format(price=_dx_int(list_price)) if list_price else "") if p)
+    result["steps"], result["steps_cut"] = decision_step_rows(row.get("list_steps"), language)
+    last_event = int(row.get("last_event") or 0)
+    result["last_time"] = _dx_time(row.get("last_at"))
+    result["last"] = None
+    if last_event in LISTING_CHANGE_EVENTS:
+        steps, steps_cut = decision_step_rows(row.get("last_steps"), language)
+        line = m["ex_was_now"].format(was=_dx_int(row.get("was")), now=_dx_int(row.get("price")))
+        if int(row.get("changes") or 0):
+            line += " · " + m["ex_changes"].format(n=int(row.get("changes") or 0))
+        result["last"] = {"title": decision_label(DECISION_EVENTS, last_event, language) + " · " + result["last_time"],
+                          "line": line, "steps": steps, "steps_cut": steps_cut}
+    result["end"] = ""
+    if last_event in LISTING_END_EVENTS:
+        if last_event == 10:
+            end = m["ex_end_sold"].format(price=_dx_int(row.get("sold_price")))
+        else:
+            end = m["ex_end_off"].format(reason=decision_label(DECISION_OFF, row.get("off_reason"), language))
+        result["end"] = end + " · " + result["last_time"]
+    explained = int(row.get("price") or 0) or list_price
+    result["price"] = _dx_int(explained) if explained else ""
+    result["price_note"] = ""
+    if counter_price is not None and explained and int(counter_price or 0) != explained \
+            and last_event not in LISTING_END_EVENTS:
+        result["price_note"] = m["ex_price_differs"].format(now=_dx_int(counter_price), explained=_dx_int(explained))
+    flags = int(row.get("flags") or 0)
+    result["flags"] = decision_flags(flags, DECISION_LFLAGS, DECISION_LISTING_UNUSUAL, language, "LFLAG")
+    result["unusual"] = bool(flags & DECISION_LISTING_UNUSUAL)
+    result["codes"] = listing_codes(row)
+    # For the export: the header's names of what the row says, the anomalies
+    # the panel reads out of it, and the unit against the sheet.
+    result["names"] = {"goods": decision_code_name("GOODS", row.get("why")),
+                       "list_event": decision_code_name("EVENT", list_event) if list_event else "",
+                       "last_event": decision_code_name("EVENT", last_event) if last_event else "",
+                       "off": decision_code_name("OFF", row.get("off_reason"))
+                       if last_event in LISTING_END_EVENTS and last_event != 10 else ""}
+    result["anomalies"] = decision_listing_anomalies(row, language)
+    ratio = decision_sheet_ratio(row, decode_explain_pairs(row.get("list_steps"))[0])
+    result["sheet"] = m["ex_sheet_ratio"].format(unit=_dx_int(ratio["unit"]), sheet=_dx_int(ratio["sheet"]),
+                                                 ratio="×" + _dx_dec(ratio["ratio"], 2, language)) if ratio else ""
+    return result
+
+
+def _dx_wear_label(wear, language):
+    m = map_i18n(language)
+    key = WEAR_SLOT_KEYS.get(int(wear or 0))
+    if key:
+        return m[WEAR_SLOT_WORDS[key]]
+    if int(wear or 0) in WEAR_UNIQUE_SLOTS:
+        return m["ex_wear_unique"]
+    return m["ex_wear_slot"].format(n=int(wear or 0))
+
+
+def _dx_piece(row, side, language):
+    """The new or the old piece of an equipment row."""
+    item_id = int(row.get(side + "_id") or 0)
+    vnum = int(row.get(side + "_vnum") or 0)
+    if not item_id and not vnum:
+        return None
+    lines, stones = decode_explain_lines(row.get(side + "_lines"))
+    return {"id": item_id, "vnum": vnum,
+            "name": localized_item_name(vnum, language) if vnum else "#%d" % item_id,
+            "plus": int(row.get(side + "_plus") or 0),
+            "score": _dx_int(row.get(side + "_score") or 0),
+            "roles": decision_roles(row.get(side + "_roles"), language),
+            "lines": [format_apply(kind, value, language) for kind, value in lines],
+            "stones": [localized_item_name(v, language) for v in stones]}
+
+
+def _dx_term_value(value, scale, language):
+    if value is None:
+        return "—"
+    if scale == 1:
+        return _dx_int(value)
+    return _dx_dec(float(value) / scale, 1, language)
+
+
+def _dx_term_rows(codes, new_terms, old_terms, ranked, has_old, language):
+    """The old/new/delta rows of some terms, the three largest changes among
+    the ranked ones marked `top`."""
+    rows = []
+    for code in codes:
+        entry = DECISION_TERMS.get(code)
+        scale = entry[0] if entry else 1
+        new, old = new_terms.get(code), old_terms.get(code) if has_old else None
+        delta = None
+        if has_old and (new is not None or old is not None):
+            delta = (new or 0) - (old or 0)
+        rows.append({"code": code, "name": decision_code_name("TERM", code),
+                     "label": _dx_pick(entry[1], language) if entry else _dx_unknown(code, {}, language),
+                     "old": _dx_term_value(old, scale, language), "new": _dx_term_value(new, scale, language),
+                     "delta": "" if not delta else (("+" if delta > 0 else "") + _dx_term_value(delta, scale, language)),
+                     "top": False, "_delta": abs(delta or 0) if code in ranked else 0})
+    for row in sorted((r for r in rows if r["_delta"]), key=lambda r: -r["_delta"])[:3]:
+        row["top"] = True
+    for row in rows:
+        del row["_delta"]
+    return rows
+
+
+def explain_equip(row, language):
+    """One row of log.playerbot_equip, said in the page's language: which pass
+    and rule, when, the two pieces with their roles and lines, where the new
+    one came from, the score's terms old against new with the three that moved
+    it most, the weapon's blow beside each other, the flags, the raw codes."""
+    language = _dx_lang(language)
+    m = map_i18n(language)
+    new, old = _dx_piece(row, "new", language), _dx_piece(row, "old", language)
+    path = decision_label(DECISION_PATHS, row.get("path"), language)
+    rule = decision_label(DECISION_RULES, row.get("rule"), language)
+    context = int(row.get("context") or 0)
+    result = {"kind": "equip", "id": int(row.get("id") or 0), "pid": int(row.get("pid") or 0),
+              "time": _dx_time(row.get("time")),
+              "title": m["ex_title_equip"] if new else m["ex_title_unequip"],
+              "path": path, "rule": rule, "summary": path + " · " + rule,
+              "context": decision_label(DECISION_CONTEXTS, context, language) if context else "",
+              "slot": m["ex_level_slot"].format(level=int(row.get("level") or 0),
+                                                slot=_dx_wear_label(row.get("wear"), language)),
+              "origin": decision_origin_text(row.get("new_origin"), row.get("new_origin_ref"), language) if new else "",
+              "new": new, "old": old}
+    new_score, old_score = int(row.get("new_score") or 0), int(row.get("old_score") or 0)
+    result["gain"] = ""
+    if new and old and old_score > 0:
+        change = (new_score - old_score) * 100.0 / old_score
+        result["gain"] = ("+" if change > 0 else "") + _dx_dec(change, 1, language) + "%"
+    new_terms = {code: value for code, value, _a, _b, _c in decode_explain_pairs(row.get("new_terms"))[0]}
+    old_terms = {code: value for code, value, _a, _b, _c in decode_explain_pairs(row.get("old_terms"))[0]}
+    codes = sorted(set(new_terms) | set(old_terms))
+    result["terms"] = _dx_term_rows([c for c in codes if c not in DECISION_BLOW_TERMS], new_terms, old_terms,
+                                    DECISION_TERM_RANKED, bool(old), language)
+    result["blow"] = _dx_term_rows([c for c in codes if c in DECISION_BLOW_TERMS], new_terms, old_terms,
+                                   DECISION_BLOW_RANKED, bool(old), language)
+    flags = int(row.get("flags") or 0)
+    result["flags"] = decision_flags(flags, DECISION_EFLAGS, DECISION_EQUIP_UNUSUAL, language, "EFLAG")
+    result["unusual"] = bool(flags & DECISION_EQUIP_UNUSUAL)
+    suppressed = int(row.get("suppressed") or 0)
+    result["suppressed"] = m["ex_suppressed"].format(n=suppressed) if suppressed else ""
+    result["codes"] = equip_codes(row)
+    # For the export: the header's names, the level the bot had then, and
+    # what the panel reads out of the row beyond the core's flags.
+    result["names"] = {"path": decision_code_name("PATH", row.get("path")),
+                       "rule": decision_code_name("RULE", row.get("rule")),
+                       "context": decision_code_name("CONTEXT", context),
+                       "origin": decision_code_name("ORIGIN", row.get("new_origin")) if new else ""}
+    for side, piece in (("new", new), ("old", old)):
+        if piece:
+            roles = int(row.get(side + "_roles") or 0)
+            piece["role_names"] = [decision_code_name("ROLE", bit) for bit in (1 << k for k in range(16)) if roles & bit]
+    result["level"] = int(row.get("level") or 0)
+    result["anomalies"] = decision_equip_anomalies(row, new_terms, old_terms, language)
+    return result
+
+
+def _explain_rows(cur, sql, params):
+    """The rows of one of the two explanation tables and whether the table is
+    there: "ok", "missing" (MySQL's 1146: a world from before them, or a core
+    that has not created them yet) or "error". Never raises - an explanation
+    that cannot be read is no explanation, not a page that fails."""
+    try:
+        cur.execute(sql, params)
+        return list(cur.fetchall()), "ok"
+    except Exception as e:
+        code = e.args[0] if getattr(e, "args", None) else None
+        if code == 1146:
+            return [], "missing"
+        app.logger.warning("explanations: %s", e)
+        return [], "error"
+
+
+def _explain_state(*states):
+    """One state for several reads: missing only when every table is."""
+    states = [s for s in states if s]
+    if not states:
+        return "ok"
+    if all(s == "missing" for s in states):
+        return "missing"
+    if "ok" in states:
+        return "ok"
+    return states[0]
+
+
+def gear_history_equip_entry(row, language, messages, lang_key):
+    """An equipment decision as a line of the gear history, with its why."""
+    why = explain_equip(row, language)
+    t = row.get("time")
+    if why["new"]:
+        labels = GEAR_HISTORY_HOWS["PLAYERBOT_EQUIP"][1]
+        entry = {"kind": "equip", "label": labels.get(lang_key, labels["en"]), "item": why["new"]["name"],
+                 "detail": messages["gh_instead"].format(item=why["old"]["name"]) if why["old"] else ""}
+    else:
+        entry = {"kind": "unequip", "label": messages["gh_unequipped"],
+                 "item": why["old"]["name"] if why["old"] else "", "detail": ""}
+    entry.update({"time": _dx_time(t, seconds=False), "why": why, "unusual": why["unusual"]})
+    return (t, entry)
+
+
+def gear_history_listing_entry(row, language, messages):
+    """A counter line's last event as a line of the gear history, with its why."""
+    why = explain_listing(row, language)
+    event = int(row.get("last_event") or 0) or int(row.get("list_event") or 0)
+    count = int(row.get("count") or 0)
+    vnum = int(row.get("vnum") or 0)
+    if event == 10:
+        # The label already says "Sold": the line carries what it sold for.
+        detail = messages["ex_price"].format(price=_dx_int(row.get("sold_price")))
+    elif event in LISTING_END_EVENTS:
+        detail = decision_label(DECISION_OFF, row.get("off_reason"), language)
+    else:
+        detail = messages["ex_price"].format(price=why["price"]) if why["price"] else ""
+    t = row.get("last_at") or row.get("listed_at")
+    return (t, {"time": _dx_time(t, seconds=False), "kind": "listing",
+                "label": decision_label(DECISION_EVENTS, event, language),
+                "item": (localized_item_name(vnum, language) if vnum else "#%d" % why["item_id"]) +
+                        (" x%d" % count if count > 1 else ""),
+                "detail": detail, "why": why, "unusual": why["unusual"]})
+
+
+def attach_equip_explanations(entries, equip_log, equip_rows, floor, language, messages, lang_key):
+    """Give each PLAYERBOT_EQUIP line of log.log its explanation: the row of
+    log.playerbot_equip for the same new item id written within five seconds
+    (the closest when a pair was swapped back and forth). A row with no twin -
+    an empty hand, an emergency weapon, a piece taken off - is a line of its
+    own; one older than the oldest line read (`floor`) is left out, because
+    its twin was simply not read."""
+    used = set()
+    for index, t, what in equip_log:
+        best, best_gap = None, None
+        for j, er in enumerate(equip_rows):
+            if j in used or int(er.get("new_id") or 0) != what or not hasattr(er.get("time"), "strftime"):
+                continue
+            gap = abs((er["time"] - t).total_seconds())
+            if gap <= 5 and (best_gap is None or gap < best_gap):
+                best, best_gap = j, gap
+        if best is not None:
+            used.add(best)
+            why = explain_equip(equip_rows[best], language)
+            entries[index][1]["why"] = why
+            entries[index][1]["unusual"] = why["unusual"]
+    slack = datetime.timedelta(seconds=5)
+    for j, er in enumerate(equip_rows):
+        if j in used:
+            continue
+        t = er.get("time")
+        if floor is not None and hasattr(t, "strftime") and t < floor - slack:
+            continue
+        entries.append(gear_history_equip_entry(er, language, messages, lang_key))
+
+
+def gear_history_decisions(cur, pid, limit, unusual, language, messages, lang_key):
+    """The card's decisions tab: the bot's equipment decisions and its counter
+    lines by their last event, newest first. Unusual only filters in SQL, so the
+    limit counts the rows that are shown."""
+    equip_sql = "SELECT * FROM log.playerbot_equip WHERE pid = %s"
+    listing_sql = "SELECT * FROM log.playerbot_listing WHERE pid = %s"
+    equip_args, listing_args = [pid], [pid]
+    if unusual:
+        equip_sql += " AND (flags & %s) <> 0"
+        listing_sql += " AND (flags & %s) <> 0"
+        equip_args.append(DECISION_EQUIP_UNUSUAL)
+        listing_args.append(DECISION_LISTING_UNUSUAL)
+    # pid_time_idx and pid_last_idx carry these orders; LIMIT keeps it cheap.
+    equip_rows, equip_state = _explain_rows(cur, equip_sql + " ORDER BY `time` DESC, id DESC LIMIT %s",
+                                            tuple(equip_args + [limit]))
+    listing_rows, listing_state = _explain_rows(cur, listing_sql + " ORDER BY last_at DESC LIMIT %s",
+                                                tuple(listing_args + [limit]))
+    entries = [gear_history_equip_entry(r, language, messages, lang_key) for r in equip_rows]
+    entries += [gear_history_listing_entry(r, language, messages) for r in listing_rows]
+    entries.sort(key=lambda e: e[0] if hasattr(e[0], "strftime") else datetime.datetime.min, reverse=True)
+    return entries[:limit], _explain_state(equip_state, listing_state)
+
+
 @app.route("/api/bot_gear_history/<int:pid>")
 def api_bot_gear_history(pid):
     language = lang()
@@ -9602,19 +12369,33 @@ def api_bot_gear_history(pid):
     except (TypeError, ValueError):
         limit = 60
     tab = request.args.get("tab", "all")
+    # Only the lines that carry an explanation whose flags are unusual (the
+    # rules header's masks) - the card's "Tylko nietypowe".
+    unusual = request.args.get("unusual", "") in ("1", "true", "on")
     hows = list(GEAR_HISTORY_TABS[tab]) if tab in GEAR_HISTORY_TABS else list(GEAR_HISTORY_HOWS.keys())
     marks = ",".join(["%s"] * len(hows))
     try:
         with db() as c, c.cursor() as cur:
+            # The decisions tab: what the core explained, equipment and counter
+            # lines together. The explanations are mt2009's alone; r40250 shows
+            # none and asks for none.
+            if tab == "decisions":
+                if not ENGINE_MT2009:
+                    return jsonify({"ok": True, "pid": pid, "tab": tab, "rows": [], "explain_state": "off"})
+                entries, state = gear_history_decisions(cur, pid, limit, unusual, language, messages, lang_key)
+                return jsonify({"ok": True, "pid": pid, "tab": tab, "rows": [row for _, row in entries],
+                                "explain_state": state})
             # `who` is indexed; the IN list keeps the loot noise (GET, SET_SOCKET,
-            # GET_GOLD - millions of rows) out of the scan.
+            # GET_GOLD - millions of rows) out of the scan. `what` is the item's
+            # id, which is how an equip line finds its explanation.
             cur.execute(
-                "SELECT time, how, hint, vnum FROM log.log "
+                "SELECT time, how, hint, vnum, what FROM log.log "
                 "WHERE who = %s AND how IN (" + marks + ") "
                 "ORDER BY time DESC LIMIT %s",
                 tuple([pid] + hows + [limit]),
             )
             raw = list(cur.fetchall())
+            equip_log = []
             ways = match_refine_ways(cur, pid, raw)
             # A scroll that fails hands the piece back a grade down, and the
             # engine removes the old piece under the same reason as a burn: a
@@ -9653,11 +12434,13 @@ def api_bot_gear_history(pid):
                     # which the item column already shows; how the refine was
                     # made comes from log.refinelog.
                     detail = "(" + refine_way_label(ways[index], language) + ")" if index in ways else ""
-                elif how in ("SAFEBOX PUT", "SAFEBOX GET"):
+                elif how in ("SAFEBOX PUT", "SAFEBOX GET", "PLAYERBOT_MATERIAL_EXCHANGE_IN"):
                     parts = hint.rsplit(" ", 1)
                     if len(parts) == 2 and parts[1].isdigit() and int(parts[1]) > 1:
                         detail = "x" + parts[1]
                 t = r.get("time")
+                if how == "PLAYERBOT_EQUIP" and hasattr(t, "strftime") and int(r.get("what") or 0):
+                    equip_log.append((len(rows), t, int(r.get("what") or 0)))
                 rows.append((t, {
                     "time": t.strftime("%d.%m %H:%M") if hasattr(t, "strftime") else str(t),
                     "kind": kind,
@@ -9665,6 +12448,18 @@ def api_bot_gear_history(pid):
                     "item": item or ("#%d" % vnum if vnum else ""),
                     "detail": detail,
                 }))
+            explain_state = "off"
+            if ENGINE_MT2009 and tab in ("other", "all"):
+                # The explanations of the equip lines, and the decisions that
+                # have no line of log.log (log.playerbot_equip, pid_time_idx).
+                equip_rows, explain_state = _explain_rows(
+                    cur, "SELECT * FROM log.playerbot_equip WHERE pid = %s ORDER BY `time` DESC, id DESC LIMIT %s",
+                    (pid, limit))
+                times = [r.get("time") for r in raw if hasattr(r.get("time"), "strftime")]
+                floor = min(times) if len(raw) >= limit and times else None
+                attach_equip_explanations(rows, equip_log, equip_rows, floor, language, messages, lang_key)
+            if unusual:
+                rows = [e for e in rows if e[1].get("unusual")]
             if tab in ("trade", "all"):
                 kind, labels = GEAR_HISTORY_OFFLINE_BUY
                 for t, vnum, count, yang, seller in gear_history_offline_buys(cur, pid, limit):
@@ -9672,6 +12467,8 @@ def api_bot_gear_history(pid):
                         price="{:,}".format(yang).replace(",", " "))
                     if seller:
                         detail += " " + messages["gh_from"].format(seller=seller)
+                    if unusual:
+                        continue        # no explanation stands behind these lines
                     rows.append((t, {
                         "time": t.strftime("%d.%m %H:%M") if hasattr(t, "strftime") else str(t),
                         "kind": kind,
@@ -9679,9 +12476,10 @@ def api_bot_gear_history(pid):
                         "item": (localized_item_name(vnum, language) if vnum else "") or ("#%d" % vnum if vnum else ""),
                         "detail": detail,
                     }))
-                rows.sort(key=lambda e: e[0] if hasattr(e[0], "strftime") else datetime.datetime.min, reverse=True)
-                rows = rows[:limit]
-        return jsonify({"ok": True, "pid": pid, "tab": tab, "rows": [row for _, row in rows]})
+            rows.sort(key=lambda e: e[0] if hasattr(e[0], "strftime") else datetime.datetime.min, reverse=True)
+            rows = rows[:limit]
+        return jsonify({"ok": True, "pid": pid, "tab": tab, "rows": [row for _, row in rows],
+                        "explain_state": explain_state})
     except Exception as e:
         return jsonify({"ok": False, "error": str(e), "rows": []})
 
@@ -14295,7 +17093,12 @@ def api_bot_shop(pid):
     # its ikashop_data at once and the window changes when the game core saves
     # the item back - and read "0" as its price (6zmacko, 26 September), so it
     # is left out; duration 0 is a stand that ran out, which nobody can buy from.
+    # Each line carries its lines and stones for the tooltip, and on mt2009 why
+    # it is on the counter and how its price was reached: log.playerbot_listing,
+    # read by the lines' item ids in one query (its primary key), said in the
+    # page's language. A world without the table explains nothing.
     language = lang()
+    messages = map_i18n(language)
     try:
         with db() as c, c.cursor() as cur:
             cur.execute(
@@ -14311,7 +17114,10 @@ def api_bot_shop(pid):
                 return jsonify({"ok": True, "shop": None})
             cur.execute(
                 """
-                SELECT id, pos, `count`, vnum, socket0,
+                SELECT id, pos, `count`, vnum, socket0, socket1, socket2,
+                       attrtype0, attrvalue0, attrtype1, attrvalue1, attrtype2, attrvalue2,
+                       attrtype3, attrvalue3, attrtype4, attrvalue4, attrtype5, attrvalue5,
+                       attrtype6, attrvalue6,
                        CAST(JSON_UNQUOTE(JSON_EXTRACT(ikashop_data, '$.yang')) AS UNSIGNED) AS price
                   FROM player.item
                  WHERE owner_id = %s AND `window` = 'IKASHOP_OFFLINESHOP'
@@ -14320,16 +17126,37 @@ def api_bot_shop(pid):
                 """,
                 (pid,),
             )
+            lines = list(cur.fetchall())
+            explain_state, listing = "off", {}
+            if ENGINE_MT2009:
+                ids = sorted({int(it.get("id") or 0) for it in lines} - {0})
+                explain_state = "ok"
+                if ids:
+                    found, explain_state = _explain_rows(
+                        cur, "SELECT * FROM log.playerbot_listing WHERE item_id IN (" +
+                        ",".join(["%s"] * len(ids)) + ")", tuple(ids))
+                    listing = {int(r.get("item_id") or 0): r for r in found}
             offers = []
-            for it in cur.fetchall():
+            for it in lines:
                 vnum = it.get("vnum") or 0
+                attrs = []
+                for a_idx in range(7):
+                    atype = it.get("attrtype%d" % a_idx) or 0
+                    aval = it.get("attrvalue%d" % a_idx) or 0
+                    if atype != 0 and aval != 0:
+                        attrs.append({"type": atype, "val": aval})
+                price = int(it.get("price") or 0)
+                row = listing.get(int(it.get("id") or 0))
                 offers.append({
                     "id": it.get("id"),
                     "vnum": vnum,
                     "name": item_full_name(vnum, it.get("socket0"), language),
                     "count": it.get("count") or 1,
                     "pos": it.get("pos") or 0,
-                    "price": int(it.get("price") or 0),
+                    "price": price,
+                    "sockets": [it.get("socket0") or 0, it.get("socket1") or 0, it.get("socket2") or 0],
+                    "attrs": attrs,
+                    "explain": explain_listing(row, language, price) if row else None,
                 })
             return jsonify({"ok": True, "shop": {
                 # The banner is cp1250 like every other name column here.
@@ -14340,6 +17167,10 @@ def api_bot_shop(pid):
                 "is_premium": bool(shop.get("is_premium")),
                 "expired": int(shop.get("duration") or 0) == 0,
                 "offers": offers,
+                # "off" on r40250, which records nothing; "missing" on a world
+                # whose log database has no table yet.
+                "explain_state": explain_state,
+                "explain_note": messages["ex_state_missing"] if explain_state == "missing" else "",
             }})
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
@@ -15170,8 +18001,20 @@ def read_channels_state():
     wish = _read_kv(CHANNELS_WISH)
     on = eff.get("CH2") == "1"
     share = int(eff.get("SHARE", "40")) if eff.get("SHARE", "").isdigit() else 40
-    ports = eff.get("PORTS", "13000-13002")
-    state = {"on": on, "share": share, "ports_open": ports.endswith("13012"),
+    # The channels' first port is M2_GAME_PORT_BASE (13000 unless a second
+    # stack on the host moved it): the entrypoint writes it as BASE, and the
+    # container range starts there. CH2's cores listen on BASE+10..BASE+12,
+    # and the players reach them once the published range goes that far.
+    base = eff.get("BASE", "")
+    if not base.isdigit():
+        base = re.match(r"\s*(\d+)", eff.get("PORTS", ""))
+        base = base.group(1) if base else "13000"
+    base = int(base)
+    ports = eff.get("PORTS", "%d-%d" % (base, base + 2))
+    last = re.search(r"(\d+)\s*$", ports)
+    ports_open = bool(last) and int(last.group(1)) >= base + 12
+    state = {"on": on, "share": share, "ports_open": ports_open,
+             "ch2_ports": "%d-%d" % (base + 10, base + 12),
              "want_on": on, "want_share": share, "pending": "", "choices": CH2_SHARE_CHOICES}
     # The wish, unless the server already runs a later choice (the launcher's,
     # written into .env after the panel's): the entrypoint notes the moment of
@@ -15235,6 +18078,297 @@ def guilds_page():
     next_war_rows = [(GUILD_EMPIRE_KEYS.get(e, "gl_empire_unknown"), s) for e, s in sorted(next_wars.items())]
     return render_template_string(TPL_GUILDS, guilds=guilds, tier_keys=GUILD_TIER_KEYS,
                                   next_wars=next_war_rows, player_guilds=read_player_guilds())
+
+
+# ---- the bots' decisions, world-wide ------------------------------------------
+# Every row the core flagged in the last hours, from both explanation tables
+# (log.playerbot_equip by `time`, log.playerbot_listing by `last_at`, each on
+# its own index and LIMITed), with the bot's name and a link to its card on
+# the live map, each explanation a "?" away and a click from being copied into
+# a report. mt2009 alone: r40250's core records nothing, and the page says so.
+DECISION_PAGE_HOURS = (1, 6, 24, 72, 168)
+DECISION_PAGE_LIMIT = 300
+
+TPL_DECISIONS = BASE.replace("__BODY__", """
+<style>""" + EXPLAIN_CSS + """
+/* The page's own rows only (a child, never a descendant): an explanation's
+   tables sit inside a cell of this one and keep their own small type. */
+table.dc-table > tbody > tr > td{font-size:13px;vertical-align:top}
+table.dc-table > tbody > tr.dc-unusual > td:first-child{box-shadow:inset 3px 0 0 #ef4444}
+table.dc-table > tbody > tr.dc-why > td{background:#0c0c0e}
+</style>
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a></p>
+<div class="card">
+<h3>{{t('dc_nav')}}</h3>
+<p class="muted">{{t('dc_intro')}}</p>
+<p>{{state_text}}{% if engine_mt2009 %} <a href="{{url_for('ai_weights')}}">{{t('dc_change')}}</a>{% endif %}</p>
+</div>
+{% if engine_mt2009 %}
+<div class="card">
+<form method="get" action="{{url_for('decisions_page')}}" class="row" style="align-items:flex-end">
+  <label>{{t('dc_hours')}}
+    <select name="hours">{% for h in hour_choices %}<option value="{{h}}"{% if h == hours %} selected{% endif %}>{{ t('dc_hours_n').format(n=h) }}</option>{% endfor %}</select></label>
+  <label>{{t('dc_kind')}}
+    <select name="kind">{% for key, label in kind_choices %}<option value="{{key}}"{% if key == kind %} selected{% endif %}>{{label}}</option>{% endfor %}</select></label>
+  <label>{{t('dc_flag')}}
+    <select name="flag">{% for key, label in flag_choices %}<option value="{{key}}"{% if key == flag %} selected{% endif %}>{{label}}</option>{% endfor %}</select></label>
+  <label>{{t('dc_bot')}}
+    <input type="text" name="bot" value="{{bot_text}}" maxlength="32" style="width:130px"></label>
+  <button>{{t('dc_show')}}</button>
+</form>
+</div>
+<div class="card">
+{% if missing %}<p class="muted">{{t('dc_missing')}}</p>
+{% elif not rows %}<p class="muted">{{t('dc_none')}}</p>
+{% else %}
+<p class="muted">{{ t('dc_count').format(n=rows|length) }}{% if capped %} — {{ t('dc_limit_note').format(n=rows|length) }}{% endif %}</p>
+<p><button type="button" class="m2ex-btn" style="font-size:12px;padding:3px 10px" onclick="dcCopyAiAll()">{{ t('dc_copy_ai_all').format(n=rows|length) }}</button>
+  <span class="muted" style="font-size:12px">{{t('dc_ai_hint')}}</span></p>
+<div style="overflow-x:auto">
+<table class="dc-table">
+<tr><th>{{t('dc_col_time')}}</th><th>{{t('dc_col_bot')}}</th><th>{{t('dc_kind')}}</th><th>{{t('dc_col_what')}}</th><th>{{t('dc_col_flags')}}</th><th></th></tr>
+{% for r in rows %}
+<tr class="{{ 'dc-unusual' if r.unusual or r.why.anomalies else '' }}">
+  <td class="muted" style="white-space:nowrap">{{r.time}}</td>
+  <td><a href="{{url_for('live_map')}}?bot={{r.pid}}&amp;gear=decisions" title="{{t('dc_card')}}">{{r.name}}</a></td>
+  <td>{{r.kind_label}}</td>
+  <td>{{r.what}}</td>
+  <td>{% for f in r.why.flags %}<span class="m2ex-flag{{ ' unusual' if f.unusual else '' }}">{{f.label}}</span>{% endfor %}{% for a in r.why.anomalies %}<span class="m2ex-flag anomaly">⚑ {{a.label}}</span>{% endfor %}</td>
+  <td><button type="button" class="m2ex-q" title="{{m.ex_more}}" onclick="dcToggle({{loop.index0}})">?</button></td>
+</tr>
+<tr id="dcWhy{{loop.index0}}" class="dc-why" style="display:none"><td colspan="6"></td></tr>
+{% endfor %}
+</table>
+</div>
+{% endif %}
+</div>
+{% endif %}
+<div id="mapToast" style="display:none;position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid #38bdf8;color:#f8fafc;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:999999"></div>
+<script>
+var I18N = {{ m|tojson }};
+var DC_ROWS = {{ rows|tojson }};
+var DC_BOTS = {{ bots|tojson }};
+""" + EXPLAIN_JS + """
+function dcToggle(i) {
+  var row = document.getElementById('dcWhy' + i);
+  var r = DC_ROWS[i];
+  if (!row || !r) return;
+  if (row.style.display !== 'none') {
+    row.style.display = 'none';
+    return;
+  }
+  row.cells[0].innerHTML = '<div class="m2ex-box">' + exHtml(r.why, true) +
+      '<div style="text-align:right;margin-top:4px"><button type="button" class="m2ex-btn" onclick="dcCopy(' + i + ')">📋 ' +
+      exEsc(I18N.ex_copy) + '</button><button type="button" class="m2ex-btn" onclick="dcCopyAi(' + i + ')">🤖 ' +
+      exEsc(I18N.ex_copy_ai) + '</button></div></div>';
+  row.style.display = '';
+}
+
+function dcCopy(i) {
+  var r = DC_ROWS[i];
+  if (r) exCopy(exText(r.why, r.name, r.pid, r.item));
+}
+
+// For an AI: the bot as the page knows it now, beside each decision.
+function dcAiItem(r) {
+  return {ex: r.why, bot: DC_BOTS[String(r.pid)] || {pid: r.pid, name: r.name}, item: r.item};
+}
+
+function dcCopyAi(i) {
+  var r = DC_ROWS[i];
+  if (r) exCopyAi([dcAiItem(r)]);
+}
+
+function dcCopyAiAll() {
+  exCopyAi(DC_ROWS.map(dcAiItem));
+}
+</script>
+""")
+
+
+def explain_state_text():
+    """What the weights file says of the explanations, in the page's words."""
+    if not ENGINE_MT2009:
+        return t("dc_state_engine")
+    days = read_ai_weights().get("EXPLAIN")
+    if days is None:
+        # "... 7 days (the default - no EXPLAIN key)." - the note before the stop.
+        return t("dc_state_on").format(n=EXPLAIN_DEFAULT_DAYS).rstrip(".") + t("dc_state_default") + "."
+    if days == 0:
+        return t("dc_state_off")
+    return t("dc_state_on").format(n=days)
+
+
+def decision_page_masks(flag):
+    """The page's flag filter as (equipment mask, listing mask): every unusual
+    one, any flag at all, or one flag of one table ("e1", "l2048"). The
+    anomalies are not flags of the core's and have their own queries."""
+    if flag in ("any", "anomaly"):
+        return 0xFFFFFFFF, 0xFFFFFFFF
+    if flag and flag[0] in ("e", "l") and flag[1:].isdigit():
+        bit = int(flag[1:])
+        if flag[0] == "e" and bit in DECISION_EFLAGS:
+            return bit, 0
+        if flag[0] == "l" and bit in DECISION_LFLAGS:
+            return 0, bit
+    return DECISION_EQUIP_UNUSUAL, DECISION_LISTING_UNUSUAL
+
+
+# The anomalies are the panel's own reading of a row, so their rows are looked
+# for in a wider net and read one by one: every weapon change with two pieces
+# in the window, and every spare listed with a tool in the hand.
+DECISION_PAGE_SCAN = 3000
+
+
+def decision_page_bot(cur, text):
+    """The page's bot filter - a pid, or a character's exact name - as (pid,
+    found); (0, True) when there is none."""
+    text = (text or "").strip()
+    if not text:
+        return 0, True
+    if text.isdigit():
+        return int(text), True
+    try:
+        cur.execute("SELECT id FROM player.player WHERE name = %s LIMIT 1", (text,))
+        row = cur.fetchone()
+    except Exception:
+        row = None
+    return (int(row["id"]), True) if row and row.get("id") else (0, False)
+
+
+def decision_page_bots(rows_by_pid, language):
+    """What the AI export says of each bot on the page now: its class and path
+    and level from player.player, and from the core's status file the
+    personality, mood and goal it plays by."""
+    live_all = read_playerbot_live_status()
+    profession_names = SKILL_GROUP_NAMES_BY_LANG.get(language, SKILL_GROUP_NAMES_EN)
+    bots = {}
+    for pid, r in rows_by_pid.items():
+        bot = {"pid": pid, "name": log_text(r.get("pname")).strip() or "#%d" % pid}
+        job = r.get("pjob")
+        if job is not None:
+            bot["job"] = localized_job_name(job, language)
+            bot["path"] = profession_names.get((int(job or 0) % 4, int(r.get("psg") or 0)), "")
+        if r.get("plevel") is not None:
+            bot["level"] = int(r.get("plevel") or 0)
+        live = live_all.get(pid)
+        if live:
+            labels = playerbot_live_labels(live, language)
+            bot.update({"persona": labels["personality"], "mood": labels["mood"], "goal": labels["goal"]})
+        bots[str(pid)] = bot
+    return bots
+
+
+@app.route("/decisions")
+@login_required
+def decisions_page():
+    """The bots' flagged decisions of the last hours, both kinds, newest first:
+    by the core's flags, or by the anomalies the panel reads out of a row; for
+    every bot, or one."""
+    language = lang()
+    lang_key = _dx_lang(language)
+    messages = map_i18n(language)
+    try:
+        hours = int(request.args.get("hours", 24))
+    except (TypeError, ValueError):
+        hours = 24
+    if hours not in DECISION_PAGE_HOURS:
+        hours = 24
+    kind = request.args.get("kind", "all")
+    if kind not in ("all", "equip", "listing"):
+        kind = "all"
+    flag = request.args.get("flag", "unusual")
+    anomaly = flag == "anomaly"
+    equip_mask, listing_mask = decision_page_masks(flag)
+    if not anomaly and (equip_mask, listing_mask) == (DECISION_EQUIP_UNUSUAL, DECISION_LISTING_UNUSUAL):
+        flag = "unusual"
+    bot_text = (request.args.get("bot") or "").strip()[:32]
+    rows, states, capped, meta = [], [], False, {}
+    if ENGINE_MT2009:
+        try:
+            with db() as c, c.cursor() as cur:
+                pid, found_bot = decision_page_bot(cur, bot_text)
+                if not found_bot:
+                    flash(t("dc_bot_unknown").format(name=bot_text), "error")
+                pid_sql = " AND e.pid = %s" if pid else ""
+                pid_args = (pid,) if pid else ()
+                select_equip = ("SELECT e.*, CAST(p.name AS BINARY) AS pname, p.level AS plevel, p.job AS pjob, "
+                                "p.skill_group AS psg FROM log.playerbot_equip e LEFT JOIN player.player p ON p.id = e.pid ")
+                if found_bot and kind in ("all", "equip") and equip_mask:
+                    if anomaly:
+                        sql = (select_equip + "WHERE e.`time` >= NOW() - INTERVAL %s HOUR AND ((e.wear = 4 AND e.old_vnum <> 0 "
+                               "AND e.new_vnum <> 0) OR e.context = 5)" + pid_sql + " ORDER BY e.`time` DESC LIMIT %s")
+                        args, cap = (hours,) + pid_args + (DECISION_PAGE_SCAN,), DECISION_PAGE_SCAN
+                    else:
+                        sql = (select_equip + "WHERE e.`time` >= NOW() - INTERVAL %s HOUR AND (e.flags & %s) <> 0" + pid_sql +
+                               " ORDER BY e.`time` DESC LIMIT %s")
+                        args, cap = (hours, equip_mask) + pid_args + (DECISION_PAGE_LIMIT,), DECISION_PAGE_LIMIT
+                    found, state = _explain_rows(cur, sql, args)
+                    states.append(state)
+                    capped = capped or len(found) >= cap
+                    for r in found:
+                        why = explain_equip(r, language)
+                        if anomaly and not why["anomalies"]:
+                            continue
+                        piece = why["new"] or why["old"] or {}
+                        what = piece.get("name", "")
+                        if why["new"] and why["old"]:
+                            what += " " + messages["gh_instead"].format(item=why["old"]["name"])
+                        meta.setdefault(why["pid"], r)
+                        rows.append({"_t": r.get("time"), "time": _dx_time(r.get("time")),
+                                     "pid": why["pid"], "name": log_text(r.get("pname")).strip() or "#%d" % why["pid"],
+                                     "kind_label": t("dc_kind_equip"), "item": piece.get("name", ""),
+                                     "what": what + " · " + why["summary"], "unusual": why["unusual"], "why": why})
+                pid_sql = " AND l.pid = %s" if pid else ""
+                select_listing = ("SELECT l.*, CAST(p.name AS BINARY) AS pname, p.level AS plevel, p.job AS pjob, "
+                                  "p.skill_group AS psg FROM log.playerbot_listing l LEFT JOIN player.player p ON p.id = l.pid ")
+                if found_bot and kind in ("all", "listing") and listing_mask:
+                    if anomaly:
+                        tools = " OR ".join("l.why_b BETWEEN %d AND %d" % pair for pair in DECISION_TOOL_RANGES)
+                        sql = (select_listing + "WHERE l.last_at >= NOW() - INTERVAL %s HOUR AND l.why = 17 AND (" + tools +
+                               ")" + pid_sql + " ORDER BY l.last_at DESC LIMIT %s")
+                        args = (hours,) + pid_args + (DECISION_PAGE_LIMIT,)
+                    else:
+                        sql = (select_listing + "WHERE l.last_at >= NOW() - INTERVAL %s HOUR AND (l.flags & %s) <> 0" + pid_sql +
+                               " ORDER BY l.last_at DESC LIMIT %s")
+                        args = (hours, listing_mask) + pid_args + (DECISION_PAGE_LIMIT,)
+                    found, state = _explain_rows(cur, sql, args)
+                    states.append(state)
+                    capped = capped or len(found) >= DECISION_PAGE_LIMIT
+                    for r in found:
+                        entry = gear_history_listing_entry(r, language, messages)[1]
+                        why = entry["why"]
+                        if anomaly and not why["anomalies"]:
+                            continue
+                        meta.setdefault(why["pid"], r)
+                        rows.append({"_t": r.get("last_at") or r.get("listed_at"),
+                                     "time": _dx_time(r.get("last_at") or r.get("listed_at")),
+                                     "pid": why["pid"], "name": log_text(r.get("pname")).strip() or "#%d" % why["pid"],
+                                     "kind_label": t("dc_kind_listing"), "item": entry["item"],
+                                     "what": " · ".join(p for p in (entry["item"], entry["label"], entry["detail"]) if p),
+                                     "unusual": why["unusual"], "why": why})
+        except Exception:
+            app.logger.exception("decisions page")
+            flash(t("db_down"), "error")
+    rows.sort(key=lambda e: e["_t"] if hasattr(e["_t"], "strftime") else datetime.datetime.min, reverse=True)
+    capped = capped or len(rows) > DECISION_PAGE_LIMIT
+    rows = rows[:DECISION_PAGE_LIMIT]
+    for row in rows:
+        del row["_t"]
+    shown = {row["pid"] for row in rows}
+    bots = decision_page_bots({pid: r for pid, r in meta.items() if pid in shown}, language) if rows else {}
+    flag_choices = [("unusual", t("dc_flag_unusual")), ("any", t("dc_flag_any")), ("anomaly", t("dc_flag_anomaly"))]
+    flag_choices += [("e%d" % bit, t("dc_kind_equip") + ": " + _dx_pick(texts, lang_key))
+                     for bit, texts in sorted(DECISION_EFLAGS.items())]
+    flag_choices += [("l%d" % bit, t("dc_kind_listing") + ": " + _dx_pick(texts, lang_key))
+                     for bit, texts in sorted(DECISION_LFLAGS.items())]
+    return render_template_string(
+        TPL_DECISIONS, rows=rows, m=messages, engine_mt2009=ENGINE_MT2009, bots=bots, bot_text=bot_text,
+        missing=bool(states) and all(s == "missing" for s in states), capped=capped,
+        state_text=explain_state_text(), hours=hours, kind=kind, flag=flag,
+        hour_choices=DECISION_PAGE_HOURS,
+        kind_choices=[("all", t("dc_kind_all")), ("equip", t("dc_kind_equip")), ("listing", t("dc_kind_listing"))],
+        flag_choices=flag_choices)
 
 
 @app.route("/events", methods=["GET", "POST"])
@@ -15439,6 +18573,18 @@ def ai_weights():
                 vals[key] = max(0, min(1000, int(request.form.get(key))))
             except (TypeError, ValueError):
                 vals[key] = None
+        # The explanations' days: on the mt2009 page alone, which is the only
+        # core that records them; anywhere else, and for anything unreadable,
+        # the file's value stays. An absent key left at the default it shows
+        # stays absent, so saving the page never pins the core's own default.
+        vals["EXPLAIN"] = old.get("EXPLAIN")
+        if ENGINE_MT2009 and "EXPLAIN" in request.form:
+            try:
+                days = max(0, min(EXPLAIN_MAX_DAYS, int(request.form.get("EXPLAIN"))))
+            except (TypeError, ValueError):
+                days = old.get("EXPLAIN")
+            if not (old.get("EXPLAIN") is None and days == EXPLAIN_DEFAULT_DAYS):
+                vals["EXPLAIN"] = days
         # The chest switch: off writes zero for both figures and keeps the
         # sliders' values for the day it is switched back on.
         chest_off = bool(request.form.get("CHEST_OFF"))
@@ -15471,7 +18617,8 @@ def ai_weights():
     return render_template_string(TPL_AI, cur=cur, chest_off=chest_off,
                                   keys=keys, wmin=AI_W_MIN, bots_held=read_bot_hold(),
                                   wmax=AI_W_MAX, wneutral=AI_W_NEUTRAL, wcapped=AI_W_CAPPED,
-                                  engine_mt2009=ENGINE_MT2009)
+                                  engine_mt2009=ENGINE_MT2009,
+                                  explain_default=EXPLAIN_DEFAULT_DAYS, explain_max=EXPLAIN_MAX_DAYS)
 
 
 @app.route("/ai/tower_now", methods=["POST"])
@@ -16380,45 +19527,203 @@ def crash_list():
     return jsonify(count=len(out), reports=out)
 
 # ---------------- Player registration & account ----------------
+#
+# The supporters' password (M2_REGISTER_ACCESS_CODE in .env). Empty: the page is
+# the ordinary registration form and nothing below changes a thing. Set: nobody
+# gets an account without typing it, and the page becomes the supporters'
+# sign-up page -- in Polish, because that is who it is for.
+#
+# Read from the environment on every request rather than once at import, so a
+# panel started before the operator set it cannot end up enforcing a stale one.
+def register_access_code():
+    return os.environ.get("M2PANEL_REGISTER_ACCESS_CODE", "").strip()
+
+def register_code_matches(sent, real):
+    """Constant time, and blind to the length too: both sides are hashed to the
+    same size before they are compared."""
+    a = hashlib.sha256(sent.encode("utf-8", "replace")).digest()
+    b = hashlib.sha256(real.encode("utf-8", "replace")).digest()
+    return hmac.compare_digest(a, b)
+
+# Wrong guesses. Per address: five in a quarter of an hour, then that address is
+# refused -- even with the right password, or a lockout would still answer
+# "yes" and be no lockout at all. Across all addresses: a ceiling per hour, so
+# guessing from many addresses at once stops too. Every wrong guess also costs
+# the guesser a second. What this bounds is the rate; the strength comes from
+# the password, which is why .env.example asks for ten characters or more.
+REG_CODE_IP_FAILS, REG_CODE_IP_WINDOW = 5, 900
+REG_CODE_ALL_FAILS, REG_CODE_ALL_WINDOW = 200, 3600
+_REG_CODE_FAILS = {}
+_REG_CODE_LOCK = threading.Lock()
+
+def _reg_code_prune(now):
+    for ip in list(_REG_CODE_FAILS):
+        kept = [ts for ts in _REG_CODE_FAILS[ip] if now - ts < REG_CODE_ALL_WINDOW]
+        if kept:
+            _REG_CODE_FAILS[ip] = kept
+        else:
+            del _REG_CODE_FAILS[ip]
+
+def register_code_blocked(ip):
+    now = time.time()
+    with _REG_CODE_LOCK:
+        _reg_code_prune(now)
+        mine = [ts for ts in _REG_CODE_FAILS.get(ip, []) if now - ts < REG_CODE_IP_WINDOW]
+        total = sum(len(v) for v in _REG_CODE_FAILS.values())
+    return len(mine) >= REG_CODE_IP_FAILS or total >= REG_CODE_ALL_FAILS
+
+def register_code_failed(ip):
+    with _REG_CODE_LOCK:
+        _REG_CODE_FAILS.setdefault(ip, []).append(time.time())
+        total = sum(len(v) for v in _REG_CODE_FAILS.values())
+    if total == REG_CODE_ALL_FAILS:
+        app.logger.warning("register: %d wrong supporters' passwords within an hour; "
+                           "the form refuses every password until they age out", total)
+
+def reg_msg(key):
+    """A message for the registration page: Polish when the supporters' page is
+    on (the whole page is Polish), otherwise in the visitor's language."""
+    if register_access_code():
+        return REG_SUP_MSG.get(key) or T.get(key, {}).get("pl") or t(key)
+    return t(key)
+
+REG_SUP_MSG = {
+    "reg_code_missing": "Wpisz hasło dla wspierających — bez niego nie założysz konta. "
+                        "Znajdziesz je na kanale dla wspierających.",
+    "reg_code_wrong":   "To nie jest poprawne hasło dla wspierających. Sprawdź, czy przepisałeś "
+                        "je dokładnie (wielkość liter ma znaczenie).",
+    "reg_code_locked":  "Za dużo błędnych prób hasła dla wspierających. Odczekaj 15 minut "
+                        "i spróbuj ponownie.",
+    "csrf_bad":         "Formularz wygasł albo nie przyszedł z tej strony. Wypełnij go jeszcze raz.",
+}
+
+# What the page tells a player to type into MT2009-Aktualizator ("Dodaj własny
+# serwer VPS"): the address and the two ports. The ports are the ones this
+# stack publishes (compose passes M2_CLIENT_AUTH_PORT / M2_AUTH_PORT and the
+# first port of M2_GAME_PORT_RANGE). The address, unless the operator names one,
+# is the one the player opened this page on -- the game runs on the same
+# machine, and unlike M2_PUBLIC_ADDRESS it cannot be left behind when a server
+# moves. A loopback or LAN address says nothing to anybody else, so then the
+# configured one is shown instead.
+def _is_public_host(host):
+    if not host or host == "localhost" or "." not in host and ":" not in host:
+        return False
+    try:
+        import ipaddress
+        ip = ipaddress.ip_address(host)
+    except ValueError:
+        return True                    # a domain name
+    return not (ip.is_loopback or ip.is_private or ip.is_link_local or ip.is_unspecified)
+
+def register_game_info():
+    host = (request.host or "").strip()
+    if host.startswith("["):
+        host = host[1:].split("]", 1)[0]
+    elif host.count(":") == 1:
+        host = host.rsplit(":", 1)[0]
+    named = os.environ.get("M2PANEL_REGISTER_GAME_ADDRESS", "").strip()
+    conf = os.environ.get("M2PANEL_GAME_ADDRESS", "").strip()
+    if named:
+        address = named
+    elif _is_public_host(host):
+        address = host
+    else:
+        address = conf or host
+
+    def _port(raw, default):
+        m = re.match(r"\s*(\d{1,5})", raw or "")
+        return int(m.group(1)) if m and 0 < int(m.group(1)) < 65536 else default
+    return {
+        "address": address,
+        "login_port": _port(os.environ.get("M2PANEL_LOGIN_PORT"), 11000),
+        "channel_port": _port(os.environ.get("M2PANEL_GAME_PORT_RANGE"), 13000),
+    }
+
+# The page's own pictures. Served from /register itself, with a query string,
+# because a public server may let exactly that one path through its gate
+# (nginx "location = /register") and nothing else -- not /static, not even
+# /favicon.ico. A fixed list: the name picks an entry, it is never a path.
+REGISTER_ASSETS = {
+    "tlo":   (os.path.join(_HERE, "register_assets", "mt2009plus-tlo.webp"), "image/webp"),
+    "ikona": (FAVICON, "image/png"),
+}
+
+def _register_asset(name):
+    entry = REGISTER_ASSETS.get(name)
+    if not entry or not os.path.exists(entry[0]):
+        return ("", 404)
+    resp = send_file(entry[0], mimetype=entry[1], conditional=True)
+    resp.headers["Cache-Control"] = "public, max-age=604800"
+    return resp
+
+def _render_register(form, done=False):
+    if register_access_code():
+        return render_template_string(TPL_REG_SUPPORTERS, form=form, done=done,
+                                      game=register_game_info(), client_url=CLIENT_URL)
+    return render_template_string(TPL_REGISTER, form=form)
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "GET" and request.args.get("asset"):
+        return _register_asset(request.args.get("asset", ""))
     form = {"login": "", "social": ""}
+    code = register_access_code()
     if request.method == "POST":
+        if code:
+            # First, before anything else is looked at: a locked-out address
+            # learns nothing, not even whether this guess would have been right.
+            ip = request.remote_addr or "?"
+            form = {"login": request.form.get("login", "").strip()[:32],
+                    "social": request.form.get("social", "").strip()[:16]}
+            if register_code_blocked(ip):
+                flash(reg_msg("reg_code_locked"), "error")
+                return _render_register(form)
+            sent = request.form.get("access_code", "").strip()
+            if not sent:
+                flash(reg_msg("reg_code_missing"), "error")
+                return _render_register(form)
+            if not register_code_matches(sent, code):
+                register_code_failed(ip)
+                time.sleep(1.0)
+                flash(reg_msg("reg_code_wrong"), "error")
+                return _render_register(form)
         if rate_limited("register", 3, 3600):
-            flash(t("reg_too_many"), "error")
-            return render_template_string(TPL_REGISTER, form=form)
+            flash(reg_msg("reg_too_many"), "error")
+            return _render_register(form)
         lg = request.form.get("login", "").strip()
         pw = request.form.get("pw", "")
         pw2 = request.form.get("pw2", "")
         social = request.form.get("social", "").strip()
         form = {"login": lg, "social": social}
         if not (4 <= len(lg) <= 16 and lg.isalnum()):
-            flash(t("reg_bad_user"), "error")
+            flash(reg_msg("reg_bad_user"), "error")
         elif len(pw) < 6:
-            flash(t("reg_bad_pw"), "error")
+            flash(reg_msg("reg_bad_pw"), "error")
         elif pw != pw2:
-            flash(t("reg_pw_mismatch"), "error")
+            flash(reg_msg("reg_pw_mismatch"), "error")
         elif not (social.isdigit() and len(social) == 7):
-            flash(t("reg_bad_social"), "error")
+            flash(reg_msg("reg_bad_social"), "error")
         else:
             try:
                 with db() as c, c.cursor() as cur:
                     cur.execute("SELECT 1 FROM account.account WHERE login=%s", (lg,))
                     if cur.fetchone():
-                        flash(t("reg_name_taken"), "error")
-                        return render_template_string(TPL_REGISTER, form=form)
+                        flash(reg_msg("reg_name_taken"), "error")
+                        return _render_register(form)
                     cur.execute(
                         "INSERT INTO account.account (login,password,social_id,status) "
                         "VALUES (%s,%s,%s,'OK')",
                         (lg, m2_hash(pw), social))
+                if code:
+                    return _render_register({"login": lg, "social": ""}, done=True)
                 return render_template_string(TPL_REG_DONE,
                                               client_ready=os.path.exists(CLIENT_ZIP),
                                               client_url=CLIENT_URL,
                                               browser_ready=browser_play_ready(),
                                               play_url=play_url())
             except Exception:
-                flash(t("reg_failed"), "error")
-    return render_template_string(TPL_REGISTER, form=form)
+                flash(reg_msg("reg_failed"), "error")
+    return _render_register(form)
 
 @app.route("/account", methods=["GET", "POST"])
 def account():
@@ -16541,7 +19846,7 @@ def dash():
         players = []
     return render_template_string(TPL_DASH, players=players,
                                   emoji=lambda j: JOB_EMOJI.get(j, "🧑"),
-                                  jobname=class_name)
+                                  jobname=class_name, engine_mt2009=ENGINE_MT2009)
 
 # The window an item row sits in, in the page's language: the inventory card
 # used to print the raw column ("equipment", "inventory") on every page.

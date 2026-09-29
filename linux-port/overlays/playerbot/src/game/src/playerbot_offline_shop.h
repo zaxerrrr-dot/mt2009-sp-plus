@@ -228,6 +228,13 @@ namespace {
         if (r.done) {
             if (r.success && r.op == playerbot_offline::Buy && r.count && r.unitPrice) {
                 RememberPlayerBotSale(r.vnum, r.refine, r.unitPrice, now, r.skill);
+                // A book of its own skill is read at once: the book pass
+                // looks again on this tick rather than on its clock.
+                if (r.skill) {
+                    TPlayerBotAIStateMap::iterator bookState = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+                    if (bookState != s_mapPlayerBotAIStates.end())
+                        bookState->second.dwNextSkillBookTime = 0;
+                }
                 // A gambler's or an addict's purchase is charged to its budget
                 // as the classic stall's always was (BuyFromPlayerBotStall):
                 // the offline road skipped it, and the addict's 85 percent
@@ -283,6 +290,20 @@ namespace {
         return playerbot_offline::FitsOnPage(cell, item->GetSize(), SHOP_PLAYER_WIDTH, SHOP_PLAYER_HEIGHT,
                 playerbot_offline::BOT_SHOP_PAGES) && ch->CanAddItemToShop(item, BYTE(cell));
     }
+    // The cells of a stand no line stands on, over both pages.
+    const int PLAYERBOT_SHOP_BOOK_FREE_CELLS = 20;
+    int BotOfflineFreeCells(NativeShop shop) {
+        int used = 0;
+        if (shop) for (const auto& [id, line] : shop->GetItems())
+            if (line && line->GetTable()) used += line->GetTable()->bSize;
+        return std::max(0, PLAYERBOT_OFFLINE_SHOP_CELLS - used);
+    }
+    // Eight bots in ten lay their stand out the way a player lays out a bag
+    // (Iwakura): by kind, then by number and plus - the vnum, whose last digit
+    // is the plus. The rest go by kind alone, as all of them did.
+    bool BotOfflineArrangesLikeBag(LPCHARACTER ch) {
+        return ch && PlayerBotNavHash(ch->GetPlayerID() ^ 0x41525247U) % 10U < 8U;
+    }
     // Where a new line goes. Iwakura's Patch 3, point 6: between the lines of
     // the categories before its own (GetPlayerBotShopCategory) and those after
     // it, where the grid has room; failing that after the ones before it;
@@ -292,7 +313,10 @@ namespace {
     // the first ends.
     int BotOfflineSlot(LPCHARACTER ch, NativeShop shop, LPITEM item) {
         bool used[PLAYERBOT_OFFLINE_SHOP_CELLS]{};
-        const int category = GetPlayerBotShopCategory(item);
+        // The kind, and for a bot that lays out like a bag the vnum after it.
+        const bool byVnum = BotOfflineArrangesLikeBag(ch);
+        const unsigned long long category = ((unsigned long long)GetPlayerBotShopCategory(item) << 32) |
+            (byVnum ? item->GetVnum() : 0U);
         int lastLower = -1, firstHigher = PLAYERBOT_OFFLINE_SHOP_CELLS;
         if (shop) for (const auto& [id, line] : shop->GetItems()) {
             if (!line || !line->GetTable()) continue;
@@ -300,8 +324,8 @@ namespace {
             if (!playerbot_offline::FitsOnPage(pos, size, SHOP_PLAYER_WIDTH, SHOP_PLAYER_HEIGHT,
                     playerbot_offline::BOT_SHOP_PAGES)) return -1;
             for (int y = 0; y < size; ++y) used[pos + y * SHOP_PLAYER_WIDTH] = true;
-            const int other = GetPlayerBotShopCategoryOf(line->GetTable()->bType,
-                line->GetTable()->bSubType, line->GetInfo().vnum);
+            const unsigned long long other = ((unsigned long long)GetPlayerBotShopCategoryOf(line->GetTable()->bType,
+                line->GetTable()->bSubType, line->GetInfo().vnum) << 32) | (byVnum ? line->GetInfo().vnum : 0U);
             if (other < category) lastLower = std::max(lastLower, pos);
             else if (other > category) firstHigher = std::min(firstHigher, pos);
         }
@@ -1168,8 +1192,13 @@ namespace {
         if (shop && IsPlayerBotMissionBook(item->GetVnum()) &&
                 CountPlayerBotMissionBooksOnMap(shop->GetSpawn().map) + (int)item->GetCount() >
                     playerbot_stall_rules::MISSION_BOOK_MAP_CAP) return true;
+        // A book past its skill's three lines is still taken while the stand
+        // has more than PLAYERBOT_SHOP_BOOK_FREE_CELLS free cells: the books
+        // of other classes stood in the bags behind the cap.
         if (IsPlayerBotCountedSingleGoods(item) &&
-                BotOfflineKindLinesOf(shop, item) >= PLAYERBOT_SHOP_COUNTED_SINGLE_LINES) return true;
+                BotOfflineKindLinesOf(shop, item) >= PLAYERBOT_SHOP_COUNTED_SINGLE_LINES &&
+                !(item->GetType() == ITEM_SKILLBOOK && BotOfflineFreeCells(shop) > PLAYERBOT_SHOP_BOOK_FREE_CELLS))
+            return true;
         if (item->GetType() == ITEM_POLYMORPH) {
             bool sameMob = false;
             if (BotOfflineMarbleLines(shop, item->GetSocket(0), sameMob) >= PLAYERBOT_SHOP_MARBLE_LINES || sameMob)
@@ -1884,6 +1913,16 @@ namespace {
             const int rareKind = GetPlayerBotRareGoodsKind(item->GetVnum());
             const bool firstRareLine = rareKind != PLAYERBOT_RARE_GOODS_NONE &&
                     BotOfflineRareLinesOf(shop, rareKind) == 0;
+            // Everything the bookkeeping below reads of the item, read while
+            // it is still in hand: the add moves it into the stand and
+            // destroys the instance (ProcessAddItemToShop ->
+            // MoveAndDestroyInstance), and the lines below read the freed
+            // item - a use-after-free that could bring the core down.
+            const DWORD addVnum = item->GetVnum();
+            const WORD addCount = (WORD)item->GetCount();
+            const uint32_t addSkill = item->GetType() == ITEM_SKILLBOOK ? (uint32_t)item->GetSocket(0) : 0u;
+            const uint8_t addRefine = (uint8_t)item->GetRefineLevel();
+            item = NULL;
             if (Begin(ch->GetPlayerID(), Add, id, now)) {
                 manager.RecvShopAddItemClientPacket(ch, TItemPos(INVENTORY, at), price, pos);
                 sent = EndCall(ch->GetPlayerID());
@@ -1893,24 +1932,22 @@ namespace {
                 // must not set the price of Aura Miecza.
                 if (sent) {
                     o.listed[id] = playerbot_offline::ListedLine{
-                        item->GetVnum(),
-                        item->GetType() == ITEM_SKILLBOOK ? (uint32_t)item->GetSocket(0) : 0u,
-                        now, (uint8_t)item->GetRefineLevel() };
+                        addVnum, addSkill, now, addRefine };
                     // On the ledger at once, by its village, like a classic
                     // stall's lines: the next keeper there must not put the
                     // same material up against the player's floor in the
                     // minute before the ledger is rebuilt. A slip is no bot's
                     // supply.
                     if (!slipped)
-                        AddPlayerBotMarketSupply(item->GetVnum(), (WORD)item->GetCount(), shop->GetSpawn().map);
-                    NotePlayerBotCappedLineOnCounter(item->GetVnum(), (int)item->GetCount());
+                        AddPlayerBotMarketSupply(addVnum, addCount, shop->GetSpawn().map);
+                    NotePlayerBotCappedLineOnCounter(addVnum, (int)addCount);
                     if (firstRareLine) NotePlayerBotShopWithRareGoods(rareKind);
-                    NotePlayerBotMissionBooksOnCounter(shop->GetSpawn().map, item->GetVnum(), (int)item->GetCount());
+                    NotePlayerBotMissionBooksOnCounter(shop->GetSpawn().map, addVnum, (int)addCount);
                     if (slipped) {
                         BotOfflineRememberSlip(state, id, now);
                         sys_log(0, "PLAYERBOT_OFFLINE: price slip pid=%u name=%s item=%u vnum=%u count=%u price=%lld meant=%lld at=add",
-                            ch->GetPlayerID(), ch->GetName(), id, item->GetVnum(),
-                            (unsigned int)item->GetCount(), (long long)price.yang, meant);
+                            ch->GetPlayerID(), ch->GetName(), id, addVnum,
+                            (unsigned int)addCount, (long long)price.yang, meant);
                     }
                 }
             }

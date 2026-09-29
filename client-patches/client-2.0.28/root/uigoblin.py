@@ -21,6 +21,7 @@
 #
 # Python 2.7 as the client has it; the texts are CP1250 escapes.
 
+import app
 import chat
 import item
 import net
@@ -66,26 +67,40 @@ OWN_ITEM_NAME = {
 	KEY_VNUM: 'Klucz Goblina',
 	KEY_BOX_VNUM: 'Szkatu\xb3ka z Kluczami Goblina',
 }
+# Their icons are in the icon pack (icon/item) - the ticket's used to be a
+# black box.
 OWN_ITEM_ICON = {
-	70617: EV + 'reward_list/accumulate_count_text_bg.tga',
-	KEY_VNUM: EV + 'key_icon.tga',
-	KEY_BOX_VNUM: EV + 'key_icon.tga',
+	70617: 'icon/item/70617.tga',
+	KEY_VNUM: 'icon/item/70618.tga',
+	KEY_BOX_VNUM: 'icon/item/70619.tga',
 }
 
 TITLE = 'Poszukiwanie skarb\xf3w'
-GOLD_ICON_TOOLTIP_1 = 'Zdobywasz je, chroni\xb9c Goblina Skarb\xf3w na Wyspie Skarb\xf3w.'
-GOLD_ICON_TOOLTIP_2 = 'Bilety Skarb\xf3w znajdziesz w skrzyniach. Najwi\xeacej Doblon\xf3w: %d'
+GOLD_ICON_TOOLTIP_TITLE = 'Doblony'
+GOLD_ICON_TOOLTIP_1 = 'Zdobywasz je, chroni\xb9c Goblina Skarb\xf3w'
+GOLD_ICON_TOOLTIP_1B = 'na Wyspie Skarb\xf3w (Bilety Skarb\xf3w ze skrzy\xf1).'
+GOLD_ICON_TOOLTIP_2 = 'Najwi\xeacej Doblon\xf3w: %d'
 SET_REWARD_BUTTON_TOOLTIP_1 = 'Zobacz nagrody'
 SET_REWARD_BUTTON_TOOLTIP_2 = 'Zobacz nagrody za %d Doblon\xf3w.'
+SET_REWARD_BUTTON_TOOLTIP_DONE = 'Nagrody s\xb9 ju\xbf odkryte.'
+SET_REWARD_BUTTON_TOOLTIP_GOLD = 'Masz za ma\xb3o Doblon\xf3w (potrzeba %d).'
 ACCUMULATE_COUNT_TOOLTIP = 'Aby uko\xf1czy\xe6 1 tur\xea, musisz zebra\xe6 9 nagr\xf3d.'
 SHOW_ACCUMULATE_REWARD_BUTTON_TOOLTIP = 'Przejd\x9f do nagr\xf3d za tury'
 REWARD_BUTTON_TOOLTIP_1 = 'Szukaj skarbu'
 REWARD_BUTTON_TOOLTIP_2 = 'Nie mo\xbfesz szuka\xe6 skarbu, zanim nie zobaczysz nagr\xf3d.'
 RESET_BUTTON_TOOLTIP = 'Resetuj'
+RESET_BUTTON_TOOLTIP_COST = 'Nowa plansza nagr\xf3d za %d Doblon\xf3w.'
+REWARD_BUTTON_TOOLTIP_FREE = 'Pierwsza nagroda tury jest darmowa.'
+REWARD_BUTTON_TOOLTIP_KEY = 'Koszt: 1 Klucz Goblina.'
+REWARD_BUTTON_TOOLTIP_FULL = 'Ta tura jest ju\xbf pe\xb3na - odbierz nagrod\xea za tur\xea.'
 RANKING_BUTTON_TOOLTIP = 'Ranking tur'
 REWARD_RESET_POPUP_1 = 'Czy chcesz zresetowa\xe6 nagrody?'
 REWARD_RESET_POPUP_2 = 'Wszystkie nagrody zostan\xb9 zresetowane.'
 GET_ACCUMULATED_REWARD_BUTTON_TOOLTIP = 'Aby zobaczy\xe6 nowe nagrody, odbierz nagrod\xea za tur\xea.'
+ROUND_REWARD_TOOLTIP_TITLE = 'Odbierz nagrod\xea za tur\xea'
+ROUND_REWARD_TOOLTIP_NOT_YET = 'Najpierw zbierz %d nagr\xf3d z planszy.'
+ROUND_REWARD_TOOLTIP_OTHER = 'Odebra\xe6 mo\xbfesz tylko nagrod\xea za bie\xbf\xb9c\xb9 tur\xea (%d).'
+UNKNOWN_ITEM = 'Przedmiot %d'
 BUFF_TITLE = 'B\xb3ogos\xb3awie\xf1stwo ulepszania'
 INCREASE_REFINE_PCT = 'Nast\xeapne ulepszenie ma o %d%% wi\xeaksz\xb9 szans\xea. (Raz na event)'
 REFINE_FREE_MATERIAL = 'Nast\xeapne ulepszenie nie zu\xbfyje materia\xb3\xf3w. (Raz na event)'
@@ -197,13 +212,35 @@ def ItemKnown(vnum):
 
 
 def ItemName(vnum):
-	if vnum in OWN_ITEM_NAME and not ItemKnown(vnum):
-		return OWN_ITEM_NAME[vnum]
+	if not ItemKnown(vnum):
+		# Not the fallback item's name (the exe selects 60001).
+		return OWN_ITEM_NAME.get(vnum, UNKNOWN_ITEM % vnum)
 	try:
 		item.SelectItem(vnum)
 		return item.GetItemName()
 	except Exception:
-		return str(vnum)
+		return UNKNOWN_ITEM % vnum
+
+
+_iconKnown = {}
+
+
+# The icon of an item the client's item table does not know: the event's own
+# ones, else icon/item/<vnum>.tga when the packs have it (an empty slot
+# otherwise - a hole in the board).
+def FallbackIcon(vnum):
+	if vnum in OWN_ITEM_ICON:
+		return OWN_ITEM_ICON[vnum]
+	if vnum in _iconKnown:
+		return _iconKnown[vnum]
+	path = 'icon/item/%05d.tga' % vnum
+	try:
+		if not app.IsExistFile(path):
+			path = None
+	except Exception:
+		path = None
+	_iconKnown[vnum] = path
+	return path
 
 
 def ClockText(epoch):
@@ -295,6 +332,10 @@ class ThinToolTip(object):
 				tooltip.AutoAppendTextLine(line, uiToolTip.ToolTip.TITLE_COLOR)
 			else:
 				tooltip.AutoAppendTextLine(line)
+		# AutoAppendTextLine neither sizes the background nor re-centres the
+		# lines placed before the tooltip grew wider: without this the text
+		# floated with no background (what uicharacter.py does too).
+		tooltip.AlignHorizonalCenter()
 		tooltip.ShowToolTip()
 		self.tooltip = tooltip
 
@@ -311,16 +352,26 @@ class ThinToolTip(object):
 				pass
 
 
+# The hover of a button or a plain window. A Button's C++ side calls
+# ShowToolTip/HideToolTip, which run Window.OnMouseOverIn/Out - the class's,
+# reading eventDict - so an OnMouseOverIn set on the instance never ran and
+# the buttons had no tooltips. The string events work for both.
 def BindHover(widget, overIn, overOut):
 	if not widget:
 		return
-	widget.OnMouseOverIn = overIn
-	widget.OnMouseOverOut = overOut
+	if isinstance(widget, ui.ImageBox) or not hasattr(widget, 'eventDict'):
+		widget.OnMouseOverIn = overIn
+		widget.OnMouseOverOut = overOut
+		return
+	ui.Window.SetStringEvent(widget, 'MOUSE_OVER_IN', overIn)
+	ui.Window.SetStringEvent(widget, 'MOUSE_OVER_OUT', overOut)
 
 
 class SlotMarks(object):
 	"""Images over a slot window: the claimed tick, and the icon of an item the
 	client's item table does not know yet (the event's own)."""
+
+	ICON_SIZE = 32
 
 	def __init__(self, slotWindow, slotSize, count):
 		self.slot = slotWindow
@@ -328,12 +379,17 @@ class SlotMarks(object):
 		self.count = count
 		self.images = {}
 
+	# Where the slot window draws an item: its icon at the slot's top left
+	# (the 45 px cells of the round window are laid out for that), a smaller
+	# image centred in that 32 x 32 icon box. The marks used to be centred
+	# in the whole cell - 6 px off the items beside them.
 	def __Position(self, index, image, width, height):
 		column = index % 5
 		row = index // 5
-		image.SetPosition(column * self.size + (self.size - width) // 2, row * self.size + (self.size - height) // 2)
+		image.SetPosition(column * self.size + max(0, (self.ICON_SIZE - width) // 2),
+				row * self.size + max(0, (self.ICON_SIZE - height) // 2))
 
-	def Set(self, index, kind, fileName):
+	def Set(self, index, kind, fileName, locked=False):
 		key = (index, kind)
 		image = self.images.get(key)
 		if image is None:
@@ -342,8 +398,17 @@ class SlotMarks(object):
 			image.AddFlag('not_pick')
 			self.images[key] = image
 		image.LoadImage(fileName)
+		if locked:
+			image.SetColor(*LOCKED_SLOT_DIFFUSE)
+		else:
+			image.SetColor(1.0, 1.0, 1.0, 1.0)
 		self.__Position(index, image, image.GetWidth(), image.GetHeight())
 		image.Show()
+
+	def Raise(self, index, kind):
+		image = self.images.get((index, kind))
+		if image:
+			image.SetTop()
 
 	def Clear(self, index=None, kind=None):
 		for key, image in self.images.items():
@@ -541,10 +606,13 @@ class TreasureHuntWindow(ui.ScriptWindow):
 					self.rewardSlot.SetItemSlot(index, vnum, count)
 				else:
 					self.rewardSlot.SetItemSlot(index, vnum, count, LOCKED_SLOT_DIFFUSE)
-			elif vnum in OWN_ITEM_ICON:
-				self.marks.Set(index, 'icon', OWN_ITEM_ICON[vnum])
+			else:
+				icon = FallbackIcon(vnum)
+				if icon:
+					self.marks.Set(index, 'icon', icon, not enabled)
 			if claimed:
 				self.marks.Set(index, 'check', EV + 'get_reward_check.tga')
+				self.marks.Raise(index, 'check')
 		self.rewardSlot.RefreshSlot()
 
 	def __SetButtonPair(self, onButton, offButton, active):
@@ -643,28 +711,41 @@ class TreasureHuntWindow(ui.ScriptWindow):
 		Send('ranking')
 
 	# Main window -> round rewards -> ranking, side by side (the archive's
-	# chain), on the other side when the screen ends.
-	def __PlaceAt(self, side, anchorX, anchorY, anchorW):
-		sideW = side.GetWidth()
-		sideH = side.GetHeight()
-		x = anchorX + anchorW - 5
-		y = anchorY
-		if x + sideW > wndMgr.GetScreenWidth():
-			x = anchorX - sideW + 5
-		x = max(0, x)
-		if y + sideH > wndMgr.GetScreenHeight():
-			y = max(0, wndMgr.GetScreenHeight() - sideH)
-		side.SetPosition(x, y)
+	# chain). Each side window goes right of the group when it fits there,
+	# else left of it, else under the main window - never on the main window
+	# (the chain used to flip the ranking back onto it on a 1024 or 1280 px
+	# wide screen). They follow the main window when it is dragged.
+	SIDE_GAP = -5
 
 	def PlaceSideWindows(self):
-		anchorX, anchorY = self.GetGlobalPosition()
-		anchorW = self.GetWidth()
-		if self.roundWindow and self.roundWindow.IsShow():
-			self.__PlaceAt(self.roundWindow, anchorX, anchorY, anchorW)
-			anchorX, anchorY = self.roundWindow.GetGlobalPosition()
-			anchorW = self.roundWindow.GetWidth()
-		if self.rankingWindow and self.rankingWindow.IsShow():
-			self.__PlaceAt(self.rankingWindow, anchorX, anchorY, anchorW)
+		screenW = wndMgr.GetScreenWidth()
+		screenH = wndMgr.GetScreenHeight()
+		mainX, mainY = self.GetGlobalPosition()
+		mainW, mainH = self.GetWidth(), self.GetHeight()
+		left, right = mainX, mainX + mainW
+		below = mainY + mainH + self.SIDE_GAP
+		for side in (self.roundWindow, self.rankingWindow):
+			if not side or not side.IsShow():
+				continue
+			sideW, sideH = side.GetWidth(), side.GetHeight()
+			y = mainY
+			if right + self.SIDE_GAP + sideW <= screenW:
+				x = right + self.SIDE_GAP
+				right = x + sideW
+			elif left - self.SIDE_GAP - sideW >= 0:
+				x = left - self.SIDE_GAP - sideW
+				left = x
+			elif below + sideH <= screenH:
+				x = min(max(0, mainX), max(0, screenW - sideW))
+				y = below
+				below += sideH + self.SIDE_GAP
+			else:
+				x = max(0, screenW - sideW)
+			y = max(0, min(y, screenH - sideH))
+			side.SetPosition(x, y)
+
+	def OnMoveWindow(self, x, y):
+		self.PlaceSideWindows()
 
 	# --- the tooltips
 
@@ -691,10 +772,17 @@ class TreasureHuntWindow(ui.ScriptWindow):
 		self.thin.Hide()
 
 	def __OverInGoldIcon(self):
-		self.thin.Show((GOLD_ICON_TOOLTIP_1, GOLD_ICON_TOOLTIP_2 % GOLD_MAX))
+		self.thin.Show((GOLD_ICON_TOOLTIP_TITLE, GOLD_ICON_TOOLTIP_1, GOLD_ICON_TOOLTIP_1B, GOLD_ICON_TOOLTIP_2 % GOLD_MAX), True)
 
+	# The buttons say what they would do now (the sunken ones why not).
 	def __OverInRewardSetButton(self):
-		self.thin.Show((SET_REWARD_BUTTON_TOOLTIP_1, SET_REWARD_BUTTON_TOOLTIP_2 % NEED_GOLD_FOR_SET_REWARD), True)
+		info = self.Info()
+		lines = [SET_REWARD_BUTTON_TOOLTIP_1, SET_REWARD_BUTTON_TOOLTIP_2 % NEED_GOLD_FOR_SET_REWARD]
+		if info.get('revealed'):
+			lines.append(SET_REWARD_BUTTON_TOOLTIP_DONE)
+		elif info.get('gold', 0) < NEED_GOLD_FOR_SET_REWARD:
+			lines.append(SET_REWARD_BUTTON_TOOLTIP_GOLD % NEED_GOLD_FOR_SET_REWARD)
+		self.thin.Show(lines, True)
 
 	def __OverInAccumulateHelpButton(self):
 		self.thin.Show((ACCUMULATE_COUNT_TOOLTIP,))
@@ -703,10 +791,28 @@ class TreasureHuntWindow(ui.ScriptWindow):
 		self.thin.Show((SHOW_ACCUMULATE_REWARD_BUTTON_TOOLTIP,))
 
 	def __OverInRewardButton(self):
-		self.thin.Show((REWARD_BUTTON_TOOLTIP_1, REWARD_BUTTON_TOOLTIP_2), True)
+		info = self.Info()
+		if not info.get('revealed'):
+			second = REWARD_BUTTON_TOOLTIP_2
+		elif info.get('claims', 0) >= GET_MAX_REWARD_COUNT or not info.get('canGet'):
+			second = REWARD_BUTTON_TOOLTIP_FULL
+		elif info.get('claims', 0) == 0:
+			second = REWARD_BUTTON_TOOLTIP_FREE
+		else:
+			second = REWARD_BUTTON_TOOLTIP_KEY
+		self.thin.Show((REWARD_BUTTON_TOOLTIP_1, second), True)
 
 	def __OverInResetButton(self):
-		self.thin.Show((RESET_BUTTON_TOOLTIP,))
+		info = self.Info()
+		lines = [RESET_BUTTON_TOOLTIP, RESET_BUTTON_TOOLTIP_COST % NEED_GOLD_FOR_SET_REWARD]
+		if info.get('revealed') and not self.CanReset():
+			if info.get('claims', 0) <= 0 and info.get('mask', 0) == 0:
+				lines.append(MESSAGES[20][0])
+			elif info.get('canAcc'):
+				lines.append(MESSAGES[21][0])
+			else:
+				lines.append(SET_REWARD_BUTTON_TOOLTIP_GOLD % NEED_GOLD_FOR_SET_REWARD)
+		self.thin.Show(lines, True)
 
 	def __OverInRankingButton(self):
 		self.thin.Show((RANKING_BUTTON_TOOLTIP,))
@@ -872,8 +978,10 @@ class RoundRewardWindow(ui.ScriptWindow):
 				self.marks.Set(i, 'icon', IMG + 'affect/treasure_hunt_refine_buff.tga')
 			elif ItemKnown(vnum):
 				self.rewardSlot.SetItemSlot(i, vnum, count)
-			elif vnum in OWN_ITEM_ICON:
-				self.marks.Set(i, 'icon', OWN_ITEM_ICON[vnum])
+			else:
+				icon = FallbackIcon(vnum)
+				if icon:
+					self.marks.Set(i, 'icon', icon)
 		self.rewardSlot.RefreshSlot()
 		tier, canTake = _data.get('acc', (0, 0))
 		info = _data.get('info') or {}
@@ -910,7 +1018,15 @@ class RoundRewardWindow(ui.ScriptWindow):
 		Send('tura')
 
 	def __OverInClaim(self):
-		self.thin.Show((GET_ACCUMULATED_REWARD_BUTTON_TOOLTIP,))
+		tier, canTake = _data.get('acc', (0, 0))
+		current = min(MAX_ROUND_INDEX, max(0, tier))
+		if self.canClaimNow:
+			second = GET_ACCUMULATED_REWARD_BUTTON_TOOLTIP
+		elif self.viewRound != current:
+			second = ROUND_REWARD_TOOLTIP_OTHER % (current + 1)
+		else:
+			second = ROUND_REWARD_TOOLTIP_NOT_YET % GET_MAX_REWARD_COUNT
+		self.thin.Show((ROUND_REWARD_TOOLTIP_TITLE, second), True)
 
 	def __OnOverInItem(self, slotIndex):
 		self.thin.Hide()
@@ -1009,10 +1125,12 @@ class RankingWindow(ui.ScriptWindow):
 		self.curPlayerRank = self.GetChild('cur_player_rank')
 		self.emptyText = self.GetChild('empty_text')
 		self.dot = self.GetChild('dot')
+		# The view count first: SetItemSize/SetItemStep size the list box from
+		# it (the own-place box was ten rows tall, out of the window).
 		for listBox, count in ((self.highRankerList, self.HIGH_RANKER_MAX_COUNT), (self.curPlayerRank, 1)):
+			listBox.SetViewItemCount(count)
 			listBox.SetItemSize(RankInfo.WIDTH, RankInfo.HEIGHT)
 			listBox.SetItemStep(self.ROW_STEP)
-			listBox.SetViewItemCount(count)
 		self.dot.Hide()
 
 	def __del__(self):
@@ -1083,8 +1201,7 @@ class GoblinBoard(ui.ThinBoard):
 		self.hover.SetSize(self.BOARD_WIDTH, self.BOARD_HEIGHT)
 		self.hover.SetPosition(0, 0)
 		self.hover.SetPickAlways()
-		self.hover.OnMouseOverIn = ui.__mem_func__(self.__ShowDetail)
-		self.hover.OnMouseOverOut = ui.__mem_func__(self.thin.Hide)
+		BindHover(self.hover, ui.__mem_func__(self.__ShowDetail), ui.__mem_func__(self.thin.Hide))
 		self.hover.Show()
 		self.SetSize(self.BOARD_WIDTH, self.BOARD_HEIGHT)
 
@@ -1141,7 +1258,8 @@ class TreasureIsland(object):
 		self.giveUp.SetDownVisual('d:/ymir work/ui/public/large_button_03.sub')
 		self.giveUp.SetText(GIVE_UP_BUTTON)
 		self.giveUp.SetEvent(ui.__mem_func__(self.__OnClickGiveUp))
-		self.giveUp.SetPosition((self.PANEL_WIDTH - 79) // 2, GoblinBoard.BOARD_HEIGHT + 4)
+		# large_button_*.sub is 88 px wide.
+		self.giveUp.SetPosition((self.PANEL_WIDTH - 88) // 2, GoblinBoard.BOARD_HEIGHT + 4)
 		self.giveUp.Show()
 		self.window.SetSize(self.PANEL_WIDTH, GoblinBoard.BOARD_HEIGHT + 26 + 8)
 		self.window.SetPosition(wndMgr.GetScreenWidth() // 2 - self.PANEL_WIDTH // 2, 60)
@@ -1207,8 +1325,7 @@ class EventButton(ui.Window):
 		self.button.SetOverVisual(IMG + 'button_02.tga')
 		self.button.SetDownVisual(IMG + 'button_03.tga')
 		self.button.SetEvent(ui.__mem_func__(self.__OnClick))
-		self.button.OnMouseOverIn = ui.__mem_func__(self.__OverIn)
-		self.button.OnMouseOverOut = ui.__mem_func__(self.thin.Hide)
+		BindHover(self.button, ui.__mem_func__(self.__OverIn), ui.__mem_func__(self.thin.Hide))
 		self.button.SetPosition(0, 0)
 		self.button.Show()
 		self.SetSize(32, 32)

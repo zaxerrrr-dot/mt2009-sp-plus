@@ -3428,6 +3428,11 @@ namespace
 		// merchant now - so they have to be goods here, or they would ride in
 		// the bag for good). After the Combo and Leadership books, which are
 		// on the sheet too and keep a few to read.
+		// A polymorph book or a Mining Guide the bot can read now stays in the
+		// bag for the book pass (IsPlayerBotExtraSkillBook), a few of them.
+		if (IsPlayerBotExtraSkillBook(item->GetVnum()) && CanPlayerBotReadExtraSkillBookNow(ch, item->GetVnum()) &&
+				CountPlayerBotVnumUnitsAhead(ch, item) < PLAYERBOT_GENERAL_BOOK_KEEP)
+			return -1;
 		if (IsPlayerBotSheetGoods(item))
 			return PLAYERBOT_SHOP_SHEET_GOODS_SCORE;
 		// Skill books. Stock for everyone; the Metin dropper's whole trade, so

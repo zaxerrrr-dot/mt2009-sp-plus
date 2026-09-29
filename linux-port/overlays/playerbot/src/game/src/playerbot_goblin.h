@@ -90,6 +90,12 @@ namespace mt2009_goblin
 	// ComputePoints, which a PointChange would not.
 	const DWORD AFFECT_GOBLIN_DEF = 671;
 	const DWORD AFFECT_GOBLIN_SPEED = 672;
+	// The poison blessing: the engine never asks IsImmune(IMMUNE_POISON) (its
+	// test in AttackedByPoison is commented out), so an immune flag alone did
+	// nothing and a wave's poison took 10 x 8 % of the goblin's health. Poison
+	// damage is GetPoisonDamageRate - POINT_POISON_REDUCE, so this makes it 0,
+	// and KeepGoblin cures a poisoning the moment it lands.
+	const DWORD AFFECT_GOBLIN_POISON = 673;
 	// The round rewards' refine blessings (the archive's affect 668 and 669):
 	// the next refine +10 %, the next refine without its materials. The
 	// engine asks through MT2009_PLUS_GOBLIN_V1 (refine ...).
@@ -1216,6 +1222,11 @@ namespace mt2009_goblin
 		}
 		if (fresh & 2)
 			g->AddAffect(AFFECT_GOBLIN_DEF, POINT_DEF_GRADE, 50, 0, RUN_SECONDS + 600, 0, true);
+		if (fresh & 4)
+		{
+			g->AddAffect(AFFECT_GOBLIN_POISON, POINT_POISON_REDUCE, 100, 0, RUN_SECONDS + 600, 0, true);
+			g->RemovePoison();
+		}
 		if (fresh & 8)
 			g->AddAffect(AFFECT_GOBLIN_SPEED, POINT_MOV_SPEED, 100, 0, RUN_SECONDS + 600, 0, true);
 		inst.buffs |= fresh;
@@ -1236,7 +1247,11 @@ namespace mt2009_goblin
 				g->SetHP(wantMax);
 		}
 		if (inst.buffs & 4)
+		{
 			g->SetImmuneFlag(g->GetMobTable().dwImmuneFlag | IMMUNE_POISON);
+			if (g->IsAffectFlag(AFF_POISON) || g->FindAffect(AFFECT_POISON))
+				g->RemovePoison();
+		}
 	}
 
 	void Escort(Instance& inst, LPCHARACTER owner, LPCHARACTER g, DWORD now)

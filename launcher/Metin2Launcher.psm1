@@ -51,6 +51,9 @@ function Get-M2DefaultLauncherConfig {
         clientRoot = $(if ($sibling) { Split-Path -Parent $sibling } else { '' })
         clientExecutable = $sibling
         supportUploadUrl = ''
+        # ZGLOS / REPORT's address (Metin2Launcher.Report.psm1): empty, and
+        # then the manifest's support.reportUrl decides; one set here wins.
+        reportUrl = ''
         # Interface language: 'pl' or 'en'. More and more of the Discord is
         # English-speaking, and a launcher nobody can read is a launcher nobody
         # runs correctly.
@@ -76,7 +79,7 @@ function Get-M2LauncherConfig {
     }
 
     $loaded = Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
-    foreach ($name in @('manifestUrl', 'clientRoot', 'clientExecutable', 'supportUploadUrl', 'language')) {
+    foreach ($name in @('manifestUrl', 'clientRoot', 'clientExecutable', 'supportUploadUrl', 'reportUrl', 'language')) {
         if ($null -ne $loaded.PSObject.Properties[$name]) {
             $defaults.$name = [string]$loaded.$name
         }
@@ -110,7 +113,7 @@ function Save-M2LauncherConfig {
         [Parameter(Mandatory = $true)][string]$ConfigPath
     )
 
-    $Config | Select-Object schema, manifestUrl, clientRoot, clientExecutable, supportUploadUrl, language, launchClientOnPlay |
+    $Config | Select-Object schema, manifestUrl, clientRoot, clientExecutable, supportUploadUrl, reportUrl, language, launchClientOnPlay |
         ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $ConfigPath -Encoding UTF8
 }
 
@@ -1468,7 +1471,7 @@ function New-M2SupportBundle {
                 if ($core -like 'ch2-*') { $coreDir = '/opt/metin2/var/channel2/' + $core.Substring(4) }
                 Invoke-M2CapturedCommand -OutputPath (Join-Path $work ('playerbot-syslog-' + $core + '.txt')) -Command {
                     docker compose --project-directory $composeDir -f $composeFile exec -T game sh -c `
-                        ('for f in ' + $coreDir + '/log/*/syslog.* ' + $coreDir + '/syslog; do [ -f $f ] && tail -n 400000 $f; done 2>/dev/null | grep -a -e PLAYERBOT_WORLD -e PLAYERBOT_PORTAL -e PLAYERBOT_NAV -e PLAYERBOT_WATCHDOG -e PLAYERBOT_GOAL -e PLAYERBOT_LOAD -e PLAYERBOT_SHOP -e PLAYERBOT_TOWN -e PLAYERBOT_DEPARTURE -e PLAYERBOT_HORSE -e PLAYERBOT_MONKEY -e PLAYERBOT_AUTH -e PLAYERBOT_CHANNEL -e PLAYERBOT_SERVICE -e PLAYERBOT_CONFIG -e PLAYERBOT_EVENT -e PLAYERBOT_LIFE -e PLAYERBOT_CHEST -e PLAYERBOT_COMBAT -e PLAYERBOT_STOCK -e PLAYERBOT_GUILD -e PLAYERBOT_TOWER -e PLAYERBOT_CATACOMB -e PLAYERBOT_ISHOP -e PLAYERBOT_OFFLINE -e PLAYERBOT_MARKET -e PLAYERBOT_BAG -e INVENTORY_ARRANGE -e PLAYERBOT_AI -e PLAYERBOT_ECONOMY -e PLAYERBOT_PVP -e PLAYERBOT_LOOT -e PLAYERBOT_MOOD -e PLAYERBOT_PERSONA -e PLAYERBOT_ANTIPK -e PLAYERBOT_MERC -e PLAYERBOT_LPP -e PLAYERBOT_ALCHEMIST -e PLAYERBOT_METIN:.detector -e PLAYERBOT_BONUS -e PLAYERBOT_PARTY:.accepted -e PLAYERBOT_PARTY:.asked -e PLAYERBOT_LURE:.order -e PLAYERBOT_LURE:.pack.handed -e PLAYERBOT_LURE:.waiting -e PLAYERBOT_CONV -e PLAYERBOT_CHAT -e PLAYERBOT_SUMMON -e PLAYERBOT_SIDEKICK -e CAPE_PULL -e FLEA_MARKET -e QUEST_ITEM -e GMPANEL -e GM_PROFILE -e autospawn | tail -n 40000')
+                        ('for f in ' + $coreDir + '/log/*/syslog.* ' + $coreDir + '/syslog; do [ -f $f ] && tail -n 400000 $f; done 2>/dev/null | grep -a -e PLAYERBOT_WORLD -e PLAYERBOT_PORTAL -e PLAYERBOT_NAV -e PLAYERBOT_WATCHDOG -e PLAYERBOT_GOAL -e PLAYERBOT_LOAD -e PLAYERBOT_SHOP -e PLAYERBOT_TOWN -e PLAYERBOT_DEPARTURE -e PLAYERBOT_HORSE -e PLAYERBOT_MONKEY -e PLAYERBOT_AUTH -e PLAYERBOT_CHANNEL -e PLAYERBOT_SERVICE -e PLAYERBOT_CONFIG -e PLAYERBOT_EVENT -e PLAYERBOT_LIFE -e PLAYERBOT_CHEST -e PLAYERBOT_COMBAT -e PLAYERBOT_STOCK -e PLAYERBOT_GUILD -e PLAYERBOT_TOWER -e PLAYERBOT_CATACOMB -e PLAYERBOT_ISHOP -e PLAYERBOT_OFFLINE -e PLAYERBOT_MARKET -e PLAYERBOT_BAG -e INVENTORY_ARRANGE -e PLAYERBOT_AI -e PLAYERBOT_ECONOMY -e PLAYERBOT_PVP -e PLAYERBOT_LOOT -e PLAYERBOT_MOOD -e PLAYERBOT_PERSONA -e PLAYERBOT_ANTIPK -e PLAYERBOT_MERC -e PLAYERBOT_LPP -e PLAYERBOT_ALCHEMIST -e PLAYERBOT_METIN:.detector -e PLAYERBOT_BONUS -e PLAYERBOT_PARTY:.accepted -e PLAYERBOT_PARTY:.asked -e PLAYERBOT_LURE:.order -e PLAYERBOT_LURE:.pack.handed -e PLAYERBOT_LURE:.waiting -e PLAYERBOT_CONV -e PLAYERBOT_CHAT -e PLAYERBOT_SUMMON -e PLAYERBOT_SIDEKICK -e PLAYERBOT_EXPLAIN -e CAPE_PULL -e FLEA_MARKET -e QUEST_ITEM -e GMPANEL -e GM_PROFILE -e autospawn | tail -n 40000')
                 }
                 Invoke-M2CapturedCommand -OutputPath (Join-Path $work ('syserr-' + $core + '.txt')) -Command {
                     docker compose --project-directory $composeDir -f $composeFile exec -T game sh -c `
@@ -1547,6 +1550,11 @@ function New-M2SupportBundle {
         $launcherConfig = Join-Path $root '.m2launcher.json'
         if (Test-Path -LiteralPath $launcherConfig -PathType Leaf) {
             $safeConfig = Protect-M2LogContent -Text (Get-Content -LiteralPath $launcherConfig -Raw -ErrorAction SilentlyContinue)
+            # Adres wysylki logow (webhook Discorda z tokenem w sciezce) i adres
+            # zgloszen sa haslami w postaci URL, a filtr logow URL-i nie
+            # rozpoznaje. Zostaje tylko to, czy byl ustawiony.
+            $safeConfig = [Regex]::Replace([string]$safeConfig,
+                '("(?:supportUploadUrl|reportUrl)"\s*:\s*")([^"]+)(")', '$1<ukryty>$3')
             [IO.File]::WriteAllText((Join-Path $work 'launcher-config-redacted.json'), $safeConfig, [Text.UTF8Encoding]::new($false))
         }
 

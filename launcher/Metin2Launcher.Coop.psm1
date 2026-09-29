@@ -131,23 +131,41 @@ function Get-M2CoopContainerPrefix {
 }
 
 # The ports a friend's client talks to: auth, then every game core the plan
-# runs - three a channel, from M2_GAME_PORT_RANGE (a second channel widens it).
+# runs - three a channel, from M2_GAME_PORT_RANGE (a second channel widens
+# it), and every channel .env switches on (M2_CHANNELS, M2_PLAYERBOT_CH2)
+# counted from the first port of that range - M2_GAME_PORT_BASE when the range
+# says nothing: a rule made for CH1 alone let a friend reach auth and CH1 and
+# no other channel.
 function Get-M2CoopGamePorts {
     param([Parameter(Mandatory = $true)][string]$ServerRoot)
     $auth = [int](Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_AUTH_PORT' -Default '11000')
-    $range = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_GAME_PORT_RANGE' -Default '13000-13002'
+    $base = 13000
+    $baseText = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_GAME_PORT_BASE' -Default '13000'
+    if ($baseText -match '^\s*(\d+)\s*$' -and [int]$Matches[1] -gt 0 -and [int]$Matches[1] -lt 65500) { $base = [int]$Matches[1] }
+    $range = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_GAME_PORT_RANGE' -Default ('{0}-{1}' -f $base, ($base + 2))
     $ports = New-Object System.Collections.Generic.List[int]
     $ports.Add($auth)
+    $first = $base
     if ($range -match '^\s*(\d+)\s*-\s*(\d+)\s*$') {
         $from = [int]$Matches[1]; $to = [int]$Matches[2]
-        if ($to -ge $from -and ($to - $from) -le 20) {
+        $first = $from
+        if ($to -ge $from -and ($to - $from) -le 40) {
             foreach ($p in $from..$to) {
                 # 13003-13009 sit between two channels' cores and nothing listens there.
                 if ((($p - $from) % 10) -le 2) { $ports.Add($p) }
             }
         }
     }
-    else { foreach ($p in 13000..13002) { $ports.Add($p) } }
+    $channels = 1
+    $channelsText = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_CHANNELS' -Default '1'
+    if ($channelsText -match '^\s*([1-4])\s*$') { $channels = [int]$Matches[1] }
+    if ((Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_PLAYERBOT_CH2' -Default '0') -eq '1' -and $channels -lt 2) { $channels = 2 }
+    for ($ch = 0; $ch -lt $channels; $ch++) {
+        foreach ($offset in 0..2) {
+            $p = $first + 10 * $ch + $offset
+            if (-not $ports.Contains($p)) { $ports.Add($p) }
+        }
+    }
     return @($ports)
 }
 
@@ -591,17 +609,40 @@ function Test-M2CoopHostAnswers {
 # ---------------------------------------------------------------- firewall
 
 function Test-M2CoopFirewallRule {
-    $rule = Get-NetFirewallRule -DisplayName $script:CoopFirewallRule -ErrorAction SilentlyContinue
-    return [bool]$rule
+    # Whether our rule is there - and, given the ports, whether it lets every
+    # one of them in. The rule was made once, with the ports of the channels
+    # that ran that day, and nothing widened it after: a host who switched
+    # the second channel on later kept a rule for 11000 and 13000-13002, and a
+    # friend whose host has no rule of Docker's own reached auth and CH1 and
+    # no other channel. Rules of the same name (a netsh line added by hand
+    # beside the first one) count together.
+    param([int[]]$Ports = @())
+    $rules = @(Get-NetFirewallRule -DisplayName $script:CoopFirewallRule -ErrorAction SilentlyContinue)
+    if ($rules.Count -eq 0) { return $false }
+    if (@($Ports).Count -eq 0) { return $true }
+    $allowed = New-Object 'System.Collections.Generic.HashSet[int]'
+    foreach ($filter in @($rules | Get-NetFirewallPortFilter -ErrorAction SilentlyContinue)) {
+        foreach ($entry in @($filter.LocalPort)) {
+            $text = ([string]$entry).Trim()
+            if ($text -eq 'Any') { return $true }
+            if ($text -match '^(\d+)-(\d+)$') { foreach ($p in ([int]$Matches[1])..([int]$Matches[2])) { [void]$allowed.Add($p) } }
+            elseif ($text -match '^\d+$') { [void]$allowed.Add([int]$text) }
+        }
+    }
+    foreach ($port in @($Ports)) { if (-not $allowed.Contains([int]$port)) { return $false } }
+    return $true
 }
 
 function Add-M2CoopFirewallRule {
     param([Parameter(Mandatory = $true)][int[]]$Ports)
     $global:M2CoopFirewallError = ''
-    if (Test-M2CoopFirewallRule) { return $true }
-    # The rule is the operating system's; adding it takes the administrator's
-    # consent, asked by Windows itself (UAC), never assumed.
+    if (Test-M2CoopFirewallRule -Ports $Ports) { return $true }
+    # The rule is the operating system's; adding or widening it takes the
+    # administrator's consent, asked by Windows itself (UAC), never assumed.
+    # A rule an earlier hosting made without a channel's ports gets the whole
+    # list in the same elevated call, rather than a second rule beside it.
     $list = ($Ports | Sort-Object -Unique) -join ','
+    $name = $script:CoopFirewallRule
     # MT2009_PLUS_COOP_FIREWALL_V1: the elevated PowerShell runs with its own
     # execution policy bypassed, falls back to netsh when New-NetFirewallRule
     # fails, and its result is kept in $global:M2CoopFirewallError for the log.
@@ -609,7 +650,9 @@ function Add-M2CoopFirewallRule {
     # and a command that failed alike - while a host hosted six times without
     # the rule and no friend's connection ever reached the auth core (bundle
     # of 28 September, Radmin VPN).
-    $command = "try { New-NetFirewallRule -DisplayName '$script:CoopFirewallRule' -Direction Inbound -Protocol TCP -LocalPort $list -Action Allow -Profile Any -ErrorAction Stop | Out-Null; exit 0 } catch { netsh advfirewall firewall add rule 'name=$script:CoopFirewallRule' dir=in action=allow protocol=TCP localport=$list profile=any | Out-Null; exit `$LASTEXITCODE }"
+    $command = "if (Get-NetFirewallRule -DisplayName '$name' -ErrorAction SilentlyContinue) { " +
+        "try { Set-NetFirewallRule -DisplayName '$name' -Protocol TCP -LocalPort $list -ErrorAction Stop; exit 0 } catch { netsh advfirewall firewall set rule 'name=$name' new localport=$list | Out-Null; exit `$LASTEXITCODE } } " +
+        "else { try { New-NetFirewallRule -DisplayName '$name' -Direction Inbound -Protocol TCP -LocalPort $list -Action Allow -Profile Any -ErrorAction Stop | Out-Null; exit 0 } catch { netsh advfirewall firewall add rule 'name=$name' dir=in action=allow protocol=TCP localport=$list profile=any | Out-Null; exit `$LASTEXITCODE } }"
     try {
         $p = Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', $command) -Verb RunAs -Wait -PassThru -WindowStyle Hidden
         if ($p -and $p.ExitCode -ne 0) { $global:M2CoopFirewallError = ('polecenie zapory zakonczone kodem {0}' -f $p.ExitCode) }
@@ -617,8 +660,8 @@ function Add-M2CoopFirewallRule {
         $global:M2CoopFirewallError = ('Windows: {0}' -f $_.Exception.Message)
         return $false
     }
-    $ok = [bool](Test-M2CoopFirewallRule)
-    if (-not $ok -and -not $global:M2CoopFirewallError) { $global:M2CoopFirewallError = 'regula nie pojawila sie w zaporze' }
+    $ok = [bool](Test-M2CoopFirewallRule -Ports $Ports)
+    if (-not $ok -and -not $global:M2CoopFirewallError) { $global:M2CoopFirewallError = 'regula nie pojawila sie w zaporze albo nie obejmuje wszystkich portow gry' }
     return $ok
 }
 

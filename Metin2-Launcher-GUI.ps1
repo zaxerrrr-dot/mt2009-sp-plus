@@ -2980,7 +2980,10 @@ function Show-CoopDialog {
             $state = Read-M2CoopState -ServerRoot $root
             $bindings = Get-M2CoopGameBindings -ServerRoot $root
             $lines = @()
-            $ruleText = $(if (Test-M2CoopFirewallRule) { 'reguła zapory jest' } else { 'BRAK reguły zapory - HOSTUJ ŚWIAT o nią poprosi' })
+            $gamePorts = @(Get-M2CoopGamePorts -ServerRoot $root)
+            $ruleText = $(if (Test-M2CoopFirewallRule -Ports $gamePorts) { 'reguła zapory jest' }
+                elseif (Test-M2CoopFirewallRule) { 'reguła zapory BEZ części portów gry - HOSTUJ ŚWIAT ją poprawi' }
+                else { 'BRAK reguły zapory - HOSTUJ ŚWIAT o nią poprosi' })
             if (-not $bindings.Running) { $lines += 'Serwer gry: nie działa - najpierw GRAJ.' }
             elseif ($bindings.Public) { $lines += ('Hostowanie: WŁĄCZONE - porty gry są otwarte dla sieci ({0}).' -f $ruleText) }
             else { $lines += 'Hostowanie: wyłączone - porty gry słuchają tylko na tym komputerze.' }
@@ -3131,7 +3134,7 @@ function Show-CoopDialog {
         # Windows puts the question of a process in front on the screen, and
         # the question of the hidden action only on the taskbar, where
         # xXxDaronxXx's went unanswered twice (24 September).
-        if (-not (Test-M2CoopFirewallRule)) {
+        if (-not (Test-M2CoopFirewallRule -Ports (Get-M2CoopGamePorts -ServerRoot $root))) {
             $dialog.Cursor = [Windows.Forms.Cursors]::WaitCursor
             $ruleAdded = $false
             try { $ruleAdded = [bool](Add-M2CoopFirewallRule -Ports (Get-M2CoopGamePorts -ServerRoot $root)) } catch { $ruleAdded = $false; $global:M2CoopFirewallError = [string]$_.Exception.Message }
@@ -3974,6 +3977,53 @@ $repairDbButton.Add_Click({
     if ($answer -ne [Windows.Forms.DialogResult]::Yes) { return }
     Start-LauncherAction -Action 'RepairDb'
 })
+
+# ZGLOS / REPORT: a bug, a suggestion or anything else, to the MT2009 PLUS
+# owner with the logs unless the player unticks them. The form is the
+# module's (launcher\Metin2Launcher.Report.psm1); the Report action collects
+# and sends like every other action, one at a time, and leaves its answer in
+# a file beside the form it was handed, which the watch below shows. Only when
+# the module is there. The plain window has it at the top right, the title
+# making room; the layout puts it on the logs page.
+$reportModulePath = Join-Path $root 'launcher\Metin2Launcher.Report.psm1'
+$reportButton = $null
+if (Test-Path -LiteralPath $reportModulePath -PathType Leaf) {
+    Import-Module $reportModulePath -Force
+    $title.Width = 500
+    $reportButton = New-Button 'ZGŁOŚ BŁĄD / POMYSŁ' 536 20 190 36 ([Drawing.Color]::FromArgb(150, 62, 72))
+    $script:form.Controls.Add($reportButton)
+    $script:reportResultPath = ''
+    $script:reportWatch = [Windows.Forms.Timer]::new()
+    $script:reportWatch.Interval = 700
+    $script:reportWatch.Add_Tick({
+        $answer = $null
+        try { $answer = Read-M2ReportResult -Path $script:reportResultPath } catch { }
+        if ($answer) {
+            $script:reportWatch.Stop()
+            Show-M2ReportOutcome -Result $answer -Owner $script:form
+            return
+        }
+        # The action ended with no answer: it failed before writing one, and
+        # its own error dialog has said so.
+        if (-not $script:activeProcess) { $script:reportWatch.Stop() }
+    })
+    $reportButton.Add_Click({
+        if ($script:activeProcess -and -not $script:activeProcess.HasExited) {
+            [Windows.Forms.MessageBox]::Show('Poczekaj na zakończenie bieżącej operacji.', 'Launcher pracuje', 'OK', 'Information') | Out-Null
+            return
+        }
+        $request = Show-M2ReportDialog -ServerRoot $root -Owner $script:form -Config (Get-LauncherConfig) -Manifest $script:latestManifest
+        if (-not $request) { return }
+        $requestPath = Save-M2ReportRequest -ServerRoot $root -Request $request
+        $before = $script:activeProcess
+        Start-LauncherAction -Action 'Report' -Yes -ExtraArgs @('-ReportFile', $requestPath)
+        # A start the launcher refused leaves the request as the next draft.
+        if ($script:activeProcess -and -not [object]::ReferenceEquals($script:activeProcess, $before)) {
+            $script:reportResultPath = Get-M2ReportResultPath -RequestPath $requestPath
+            $script:reportWatch.Start()
+        }
+    })
+}
 
 # The window's layout - the menu of five pages, the cards, the painted
 # background (22 September) - is its own file and only moves the controls

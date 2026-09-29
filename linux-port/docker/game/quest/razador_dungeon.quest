@@ -149,6 +149,7 @@ quest razador_dungeon begin
 		function finish()
 			local c = razador_dungeon.cfg()
 			d.setf("closed", 1)
+			d.setf("mt2009_keep_until", 0)
 			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
 			d.exit_all()
 		end
@@ -164,6 +165,9 @@ quest razador_dungeon begin
 			local c = razador_dungeon.cfg()
 			d.setf("init", 1)
 			d.setf("entered", 1)
+			-- MT2009_PLUS_DUNGEON_RETURN_V1: the instance outlives its players until the time limit
+			-- (dungeon.cpp), so "Wróæ do lochu" at the guard finds it after a disconnect.
+			d.setf("mt2009_keep_until", get_global_time() + c.limit_min * 60 + 60)
 			d.setf("order", number(1, 6))
 			d.setf("done", 0)
 			d.setf("step", 0)

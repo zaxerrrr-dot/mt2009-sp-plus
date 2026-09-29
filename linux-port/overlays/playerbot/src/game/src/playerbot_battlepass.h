@@ -800,9 +800,14 @@ namespace mt2009_battlepass
 	}
 }
 
+// MT2009_PLUS_OCHAO_BOTS_V1 (kills): the Temple of Ochao's watch counts a
+// bot's kills there (playerbot_ochao_bots.h, later in this unit).
+namespace { void NoteOchaoBotKill(LPCHARACTER killer, LPCHARACTER victim); }
+
 // The engine's calls (server-patches/playerqol, MT2009_PLUS_BATTLE_PASS_V1).
 void BattlePassOnKill(LPCHARACTER killer, LPCHARACTER victim)
 {
+	NoteOchaoBotKill(killer, victim); // MT2009_PLUS_OCHAO_BOTS_V1 (kills)
 	if (!killer || !victim || victim->IsPC() || !mt2009_battlepass::Counts(killer))
 		return;
 	const DWORD race = victim->GetRaceNum();

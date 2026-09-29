@@ -618,7 +618,14 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/ochao-add \
 #    npc.txt/regen.txt filled 351 with Razador's hourly group;
 #  * the two guards: the Fire Land's (20394) on map 62 at the archive's exit cell (91,916),
 #    the Ice Land's (20395) on Mount Sohan (61) at (738,119); both cells measured free;
-#  * the Nemere dungeon's drops, mirrored from the package's Razador groups.
+#  * the Nemere dungeon's drops, mirrored from the package's Razador groups;
+#  * MT2009_PLUS_NEMERE_GOLEM_MAG_V1: the Lodowy Golem Mag's (6107, icegolem_magician) run
+#    motion - the package's run.msa moves it BACKWARDS (Accumulation y +15.84, every other
+#    mob's is negative), so the server's move speed for it was negative and every chase got
+#    a move duration of ~4e9 ms (a negative int in a DWORD): its server position no longer
+#    matched the one the client drew, the player's hits landed out of range (no HP taken)
+#    and the player was pulled across the room. The client's run.msa
+#    (gf_nemere, the same run.GR2) has -310.21; the server takes the same number.
 # Older packages' shares (a VPS on 2.14.0, 29 September) list no 351 in map/index and
 # already carry a Mob 6191 group: the index line is added like 352's, and the awk below
 # drops any 6091/6191 group but the chest previews, so only our own groups guard against
@@ -635,6 +642,9 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && test "$(grep -c -E '^351[[:blank:]]+metin2_map_n_flame_dungeon_01[[:space:]]*$' "$L/map/index")" = 1 \
  && mkdir -p /opt/metin2/share/data/dungeon \
  && cp -a "$A/data/dungeon/razador_mt" "$A/data/dungeon/nemere_mt" /opt/metin2/share/data/dungeon/ \
+ && M=/opt/metin2/share/data/monster/icegolem_magician/run.msa \
+ && sed -i -E 's/^(Accumulation[[:blank:]]+)0\.00[[:blank:]]+15\.84[[:blank:]]+0\.00/\10.00\t-310.21\t0.00/' "$M" \
+ && grep -q -E '^Accumulation[[:blank:]]+0\.00[[:blank:]]+-310\.21[[:blank:]]+0\.00' "$M" \
  && for f in regen.txt npc.txt boss.txt stone.txt; do : > "$L/map/metin2_map_n_flame_dungeon_01/$f"; done \
  && printf 'm\t348\t578\t0\t0\t0\t0\t60s\t100\t1\t20385\r\n' > "$L/map/metin2_map_n_flame_dungeon_01/npc.txt" \
  && for p in "metin2_map_n_flame_01 95 910 20394" "map_n_snowm_01 742 114 20395"; do \
@@ -661,6 +671,93 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
 # 29 September; their loot is the 2-5 chests per player of the quests - so every drop group
 # of theirs is cut whole above but the 0% chest previews; item_manager.cpp drops nothing
 # for them either.)
+# The level-75 weapons, the Reaper's and Azrael's, not the Spider Baroness's
+# (MT2009_PLUS_LEVEL75_DROP_V1; upstream 2.2.39, the operator's decision of
+# 29 September). Her limit group (mob 2092) loses its 12 lines of
+# level 75 - six families at +3 and +4 - and is numbered again: the reader
+# stops at the first index a group lacks, and the drop preview lists every
+# line whatever its chance. The Reaper (1093) and Azrael (2598) get the 7
+# families of 75, the fan of 75 among them, in their own limit groups (a second
+# one for a monster is ignored), numbered on from the last line - the Reaper's
+# Dried Head above included: the Reaper +3 at 10%, +4 at 5%; Azrael
+# +3 at 20%, +4 at 10%. The drop preview reads the loaded groups, so it follows.
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt \
+ ; C='183 184 193 194 3163 3164 2173 2174 1133 1134 5123 5124' \
+ ; A='1093:183:10:Zatruty_miecz+3 1093:184:5:Zatruty_miecz+4 \
+      1093:193:10:Lwi_Miecz+3 1093:194:5:Lwi_Miecz+4 \
+      1093:3163:10:Miecz_Zalu+3 1093:3164:5:Miecz_Zalu+4 \
+      1093:2173:10:Stalowy_Luk_Kruka+3 1093:2174:5:Stalowy_Luk_Kruka+4 \
+      1093:1133:10:Skrzydla_Demona_Chakr.+3 1093:1134:5:Skrzydla_Demona_Chakr.+4 \
+      1093:7183:10:Wachlarz_8_Trigramow+3 1093:7184:5:Wachlarz_8_Trigramow+4 \
+      1093:5123:10:Bambusowy_Dzwon+3 1093:5124:5:Bambusowy_Dzwon+4 \
+      2598:183:20:Zatruty_miecz+3 2598:184:10:Zatruty_miecz+4 \
+      2598:193:20:Lwi_Miecz+3 2598:194:10:Lwi_Miecz+4 \
+      2598:3163:20:Miecz_Zalu+3 2598:3164:10:Miecz_Zalu+4 \
+      2598:2173:20:Stalowy_Luk_Kruka+3 2598:2174:10:Stalowy_Luk_Kruka+4 \
+      2598:1133:20:Skrzydla_Demona_Chakr.+3 2598:1134:10:Skrzydla_Demona_Chakr.+4 \
+      2598:7183:20:Wachlarz_8_Trigramow+3 2598:7184:10:Wachlarz_8_Trigramow+4 \
+      2598:5123:20:Bambusowy_Dzwon+3 2598:5124:10:Bambusowy_Dzwon+4' \
+ && awk -v from=2092 -v cut="$C" -v add="$A" ' \
+      function flush(   i, t, f, j, lead, mx, k, nm) { \
+        if (typ == "limit" && mob == from) { \
+          hits++; j = 0; \
+          for (i = 1; i <= nb; i++) { \
+            t = B[i]; sub(/\r$/, "", t); \
+            if (split(t, f) >= 2 && f[1] ~ /^[0-9]+$/) { \
+              if (f[2] in C) { gone++; continue; } \
+              match(B[i], /^[ \t]*[0-9]+/); lead = substr(B[i], 1, RLENGTH); sub(/[0-9]+$/, "", lead); \
+              print lead (++j) substr(B[i], RLENGTH + 1); \
+            } else print B[i]; \
+          } \
+        } else if (typ == "limit" && (mob in NA)) { \
+          got[mob]++; mx = 0; \
+          for (i = 1; i <= nb; i++) { \
+            t = B[i]; sub(/\r$/, "", t); \
+            if (split(t, f) >= 2 && f[1] ~ /^[0-9]+$/) { \
+              if (f[1] + 0 > mx) mx = f[1] + 0; \
+              for (k = 1; k <= NA[mob]; k++) if (AV[mob, k] == f[2]) twice++; \
+            } \
+            if (i < nb) print B[i]; \
+          } \
+          for (k = 1; k <= NA[mob]; k++) { nm = AN[mob, k]; gsub(/_/, " ", nm); printf "\t%d\t%s\t1\t%s\t-- %s\r\n", mx + k, AV[mob, k], AP[mob, k], nm; } \
+          print B[nb]; \
+        } else for (i = 1; i <= nb; i++) print B[i]; \
+      } \
+      BEGIN { nc = split(cut, c, " "); for (i = 1; i <= nc; i++) C[c[i]] = 1; n = split(add, a, " "); for (i = 1; i <= n; i++) { split(a[i], p, ":"); k = ++NA[p[1]]; AV[p[1], k] = p[2]; AP[p[1], k] = p[3]; AN[p[1], k] = p[4]; } } \
+      /^Group/ { inb = 1; nb = 0; mob = ""; typ = ""; } \
+      !inb { print; next; } \
+      { B[++nb] = $0; t = $0; sub(/\r$/, "", t); k = split(t, f); if (k >= 2 && tolower(f[1]) == "mob") mob = f[2]; if (k >= 2 && tolower(f[1]) == "type") typ = tolower(f[2]); } \
+      /^}/ { flush(); inb = 0; } \
+      END { if (inb) flush(); if (hits != 1 || gone != nc) { printf "share: %d limit groups of %s, %d of its %d lines of 75 cut\n", hits, from, gone, nc > "/dev/stderr"; bad = 1; } for (m in NA) if (got[m] != 1) { printf "share: %d limit groups of %s\n", got[m], m > "/dev/stderr"; bad = 1; } if (twice) { printf "share: %d lines of 75 were there already\n", twice > "/dev/stderr"; bad = 1; } exit bad; } \
+      ' "$F" > "$F.new" \
+ && mv "$F.new" "$F" \
+ && awk -v from=2092 -v cut="$C" -v add="$A" ' \
+      function check(   i, n, key, q) { \
+        seen[mob]++; \
+        for (i = 1; i <= nb; i++) if (I[i] != i) { printf "share: line %d of the limit group of %s is numbered %d\n", i, mob, I[i] > "/dev/stderr"; bad = 1; } \
+        if (mob == from) { for (i = 1; i <= nb; i++) if (V[i] in C) { printf "share: %s is still in the limit group of %s\n", V[i], mob > "/dev/stderr"; bad = 1; } return; } \
+        for (key in W) { split(key, q, SUBSEP); if (q[1] != mob) continue; n = 0; for (i = 1; i <= nb; i++) if (V[i] == q[2]) n++; if (n != 1) { printf "share: %s is %d times in the limit group of %s\n", q[2], n, mob > "/dev/stderr"; bad = 1; } } \
+      } \
+      BEGIN { nc = split(cut, c, " "); for (i = 1; i <= nc; i++) C[c[i]] = 1; n = split(add, a, " "); for (i = 1; i <= n; i++) { split(a[i], p, ":"); W[p[1], p[2]] = 1; M[p[1]] = 1; } } \
+      /^Group/ { mob = ""; typ = ""; nb = 0; } \
+      { t = $0; sub(/\r$/, "", t); k = split(t, f); if (k >= 2 && tolower(f[1]) == "mob") mob = f[2]; if (k >= 2 && tolower(f[1]) == "type") typ = tolower(f[2]); if (k >= 2 && f[1] ~ /^[0-9]+$/) { nb++; I[nb] = f[1] + 0; V[nb] = f[2]; } } \
+      /^}/ && typ == "limit" && (mob == from || (mob in M)) { check(); } \
+      END { if (seen[from] != 1) { printf "share: %d limit groups of %s\n", seen[from], from > "/dev/stderr"; bad = 1; } for (m in M) if (seen[m] != 1) { printf "share: %d limit groups of %s\n", seen[m], m > "/dev/stderr"; bad = 1; } exit bad; } \
+      ' "$F" \
+ && echo "share: the level-75 weapons are the Reaper's and Azrael's, not the Spider Baroness's"
+
+# A herbal recipe is read without a wait (port/shareify.py renders this step;
+# Iwakura for Derpsonkowy95, 29 September): crafting.learn_recipe wrote a wait
+# of SKILLBOOK_LEARN_DELAY - twenty-one hours - on every recipe a read took and
+# refused the next read until it ran out or an Exorcism Scroll was spent. It is
+# no longer written, and one written before is no longer asked.
+RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting.lua \
+ && LC_ALL=C sed -i -E 's/^([[:blank:]]*local is_delay = )delta_delay > 0([[:space:]]*)$/\1false\2/; s/^([[:blank:]]*set_flag\("learn_delay"\.\.vnum, )get_time\(\) \+ SKILLBOOK_LEARN_DELAY\)([[:space:]]*)$/\10)\2/' "$F" \
+ && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*local is_delay = false[[:space:]]*$' "$F")" -eq 1 \
+ && test "$(LC_ALL=C grep -c -E 'set_flag\("learn_delay"\.\.vnum, 0\)' "$F")" -eq 1 \
+ && ! LC_ALL=C grep -q 'SKILLBOOK_LEARN_DELAY' "$F" \
+ && echo "share: a recipe is read without a wait"
+
 # The Spider Baroness (port/shareify.py renders special_spawns.baroness.txt and
 # this step): the level-75 boss who drops the Stalki, stood in the second
 # Spider Dungeon's last room every four to five hours (the operator's decision

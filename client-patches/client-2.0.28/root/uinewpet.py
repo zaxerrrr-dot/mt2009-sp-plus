@@ -13,7 +13,7 @@
 #   NewPet Hatch <cell> <egg vnum> <yang>  - an egg used: ask the name
 #   NewPet Rename <id> <yang>              - Zwoj Imienia Peta used
 #   NewPet Info <id> <name hex>            - a pet in a transporter (tooltip)
-# and the window sends "/newpet open|sync|refresh|toggle|evolve|select <id>|
+# and the window sends "/newpet open|sync|refresh|toggle|evolve <id>|select <id>|
 # release <id>|skilldel <slot>|hatch <cell> <name>|rename <name>".
 # U opens it, as does "/newpet" typed in the chat. A pet in its transporter
 # (55007: socket 0 its id, 1 level + 1000 * evolution, 2 its egg) is shown by
@@ -622,12 +622,15 @@ class NewPetWindow(ui.ScriptWindow):
 		self.feedGold.SetPosition(65, 145)
 		self.feedGold.SetHorizontalAlignCenter()
 		self.feedGold.Show()
+		# The confirm button with its text (the round accept sprite had no
+		# label and was not seen as the evolution's button - item 32).
 		button = ui.Button()
 		button.SetParent(board)
-		button.SetPosition(50, 162)
-		button.SetUpVisual('d:/ymir work/ui/public/acceptbutton00.sub')
-		button.SetOverVisual('d:/ymir work/ui/public/acceptbutton01.sub')
-		button.SetDownVisual('d:/ymir work/ui/public/acceptbutton02.sub')
+		button.SetPosition(34, 164)
+		button.SetUpVisual('d:/ymir work/ui/public/middle_button_01.sub')
+		button.SetOverVisual('d:/ymir work/ui/public/middle_button_02.sub')
+		button.SetDownVisual('d:/ymir work/ui/public/middle_button_03.sub')
+		button.SetText('Ewoluuj')
 		button.SetEvent(ui.__mem_func__(self.ClickEvolve))
 		button.Show()
 		self.feedWindow = board
@@ -650,8 +653,10 @@ class NewPetWindow(ui.ScriptWindow):
 		if not pet or pet['evolution'] >= 3:
 			self.feedLevel.SetText('Najwy\xbfsza ewolucja')
 			self.feedGold.SetText('')
+			self.feedButton.Hide()
 			self.feedGrid.RefreshSlot()
 			return
+		self.feedButton.Show()
 		evo = _data['evo'].get(pet['evolution'])
 		if evo:
 			for vnum, count in evo['items']:
@@ -683,9 +688,9 @@ class NewPetWindow(ui.ScriptWindow):
 		pet = self.__Pet()
 		if not pet:
 			return
-		if not pet['active']:
-			Send('select %d' % pet['id'])
-		Send('evolve')
+		# One command with the shown pet's id: the server chooses it first
+		# (a separate "select" right before was dropped by its 300 ms limit).
+		Send('evolve %d' % pet['id'])
 
 	def __OverInFeed(self, slotIndex):
 		if 0 <= slotIndex < len(self.feedItems):

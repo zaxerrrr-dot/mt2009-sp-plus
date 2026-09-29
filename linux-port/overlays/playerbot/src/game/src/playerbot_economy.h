@@ -830,6 +830,7 @@ namespace
 	// it. Without it a bot short by one bought a pack of two, was no longer
 	// short, and put both on its own counter at the price it had just paid
 	// (Zolc Niedzwiedzia x2, sizowski) - then was short again.
+	const int PLAYERBOT_MATERIAL_KEEP_LEVELS = 15;
 	int GetPlayerBotRefineMaterialReserve(LPCHARACTER ch, DWORD materialVnum)
 	{
 		if (!ch || materialVnum == 0)
@@ -848,12 +849,27 @@ namespace
 			if (IsPlayerBotEquipmentCandidate(ch, candidate))
 				gear.push_back(candidate);
 		}
+		// The level-30 weapon worked in the bag is kept for too, wherever it
+		// stands among the gear above.
+		TPlayerBotLevel30View level30;
+		ReadPlayerBotLevel30View(ch, level30);
+		if (level30.project && std::find(gear.begin(), gear.end(), level30.project) == gear.end())
+			gear.push_back(level30.project);
+		LPITEM hand = ch->GetWear(WEAR_WEAPON);
 		int reserve = 0;
 		for (size_t i = 0; i < gear.size(); ++i)
 		{
 			LPITEM item = gear[i];
 			if (!item || item->GetRefinedVnum() == 0 ||
 					item->GetRefineLevel() >= GetPlayerBotRefineTarget(ch, item))
+				continue;
+			// Materials only for pieces within PLAYERBOT_MATERIAL_KEEP_LEVELS
+			// of the bot's own level: what a lower map's gear takes goes on
+			// sale, at every look over the goods. Never the weapon in the hand
+			// nor the level-30 project: a bot of 46 with a weapon at +6..+8
+			// lost the materials of its next plus to that rule.
+			if (item != hand && item != level30.project &&
+					(int)item->GetLevelLimit() + PLAYERBOT_MATERIAL_KEEP_LEVELS < (int)ch->GetLevel())
 				continue;
 			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
 			if (!recipe)
@@ -2095,6 +2111,9 @@ namespace
 		// 135 000 on the sheet (Tieru, 18 September).
 		// A saddlebag bot's materials for its rows are nobody's scrap.
 		if (IsPlayerBotKeptCraftMaterial(ch, item))
+			return false;
+		// A polymorph book or a Mining Guide it can read is read, not sold.
+		if (IsPlayerBotExtraSkillBook(vnum) && CanPlayerBotReadExtraSkillBookNow(ch, vnum))
 			return false;
 		if (IsPlayerBotSheetGoods(item))
 			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch);

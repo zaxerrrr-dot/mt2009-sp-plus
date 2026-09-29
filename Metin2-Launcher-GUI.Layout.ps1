@@ -495,6 +495,8 @@ UI-Card 'logs' $diagnosticsButton (UI-Text 'Sprawdź środowisko i możliwe przy
 UI-Card 'logs' $bundleButton (UI-Text 'Przygotuj paczkę logów do zgłoszenia.' 'Prepare a log bundle for a support request.')
 UI-Card 'logs' $openLogButton (UI-Text 'Otwórz bieżący dziennik w edytorze.' 'Open the current log in an editor.')
 UI-Card 'logs' $folderButton (UI-Text 'Przejdź do wszystkich zapisanych logów.' 'Browse all saved log files.')
+# ZGLOS / REPORT, when its module is there (Metin2-Launcher-GUI.ps1 makes the button).
+UI-Card 'logs' $reportButton (UI-Text 'Błąd albo pomysł - prosto do autora, z logami.' 'A bug or an idea - straight to the author, with the logs.') '#6E3A44'
 
 Show-UIPage 'home'
 $script:ui.VersionTip = [Windows.Forms.ToolTip]::new()
@@ -589,6 +591,7 @@ function Invoke-LayoutSelfTest([string]$OutputDirectory) {
         $repairDbButton, $dbAccessButton, $gmPanelButton, $worldBackupButton, $difficultyButton, $languageButton, $ratesButton)
     if ($coopButton) { $expected += $coopButton }
     if ($vpsButton) { $expected += $vpsButton }
+    if ($reportButton) { $expected += $reportButton }
     foreach ($button in $expected) {
         if (@($script:ui.Cards | Where-Object { $_.Button -eq $button }).Count -ne 1) { throw "Missing/duplicate action: $($button.Text)" }
     }

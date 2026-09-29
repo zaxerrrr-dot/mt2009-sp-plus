@@ -1,6 +1,6 @@
 ﻿[CmdletBinding()]
 param(
-    [ValidateSet('Menu', 'Start', 'Stop', 'StartDocker', 'StopAll', 'Check', 'UpdateServer', 'UpdateClient', 'UpdateAll', 'RepairClientExe', 'Diagnose', 'Logs', 'SendLogs', 'Configure', 'SetBots', 'SetDifficulty', 'ImportDb', 'BackupDb', 'RestoreDb', 'ResetWorld', 'RepairDb', 'DbAccess', 'PanelPassword', 'FreePorts', 'CoopCheck', 'CoopSecure', 'CoopAddFriend', 'CoopBlockFriend', 'CoopUnblockFriend', 'CoopInvite', 'CoopHost', 'CoopStop', 'CoopRenew', 'CoopJoin', 'VpsConnect', 'VpsCheck', 'VpsInstall', 'VpsUpdate', 'VpsStatus', 'VpsPanel', 'VpsPanelClose', 'VpsLogs', 'VpsPasswords', 'VpsClient', 'VpsInvite')]
+    [ValidateSet('Menu', 'Start', 'Stop', 'StartDocker', 'StopAll', 'Check', 'UpdateServer', 'UpdateClient', 'UpdateAll', 'RepairClientExe', 'Diagnose', 'Logs', 'SendLogs', 'Report', 'Configure', 'SetBots', 'SetDifficulty', 'ImportDb', 'BackupDb', 'RestoreDb', 'ResetWorld', 'RepairDb', 'DbAccess', 'PanelPassword', 'FreePorts', 'CoopCheck', 'CoopSecure', 'CoopAddFriend', 'CoopBlockFriend', 'CoopUnblockFriend', 'CoopInvite', 'CoopHost', 'CoopStop', 'CoopRenew', 'CoopJoin', 'VpsConnect', 'VpsCheck', 'VpsInstall', 'VpsUpdate', 'VpsStatus', 'VpsPanel', 'VpsPanelClose', 'VpsLogs', 'VpsPasswords', 'VpsClient', 'VpsInvite')]
     [string]$Action = 'Menu',
     [string]$Manifest = '',
     [int]$BotCount = -1,
@@ -69,6 +69,16 @@ param(
     [string]$VpsUser = '',
     [int]$VpsPort = -1,
     [string]$VpsDir = '',
+    # Report (ZGLOS / REPORT, launcher\Metin2Launcher.Report.psm1): the
+    # report's text, its kind (bug / suggestion / other, or blad /
+    # propozycja / inne), a contact to answer, and -NoLogs to send it without
+    # the logs. The window hands its form over as a file (-ReportFile): a
+    # page of text on a command line is quotes Start-Process passes on broken.
+    [string]$Message = '',
+    [string]$Category = '',
+    [string]$Contact = '',
+    [switch]$NoLogs,
+    [string]$ReportFile = '',
     # ResetWorld only: bring the server up on the fresh world right away, so
     # "wyzeruj swiat i zacznij od nowa" is one click and not a reset followed
     # by GRAJ.
@@ -126,6 +136,9 @@ if (Test-Path -LiteralPath $coopModulePath -PathType Leaf) { Import-Module $coop
 # say so and the menu does not offer them.
 $vpsModulePath = Join-Path $serverRoot 'launcher\Metin2Launcher.Vps.psm1'
 if (Test-Path -LiteralPath $vpsModulePath -PathType Leaf) { Import-Module $vpsModulePath -Force }
+# ZGLOS / REPORT: optional the same way - without it the Report action says so.
+$reportModulePath = Join-Path $serverRoot 'launcher\Metin2Launcher.Report.psm1'
+if (Test-Path -LiteralPath $reportModulePath -PathType Leaf) { Import-Module $reportModulePath -Force }
 
 function Write-Header {
     Clear-Host
@@ -910,24 +923,37 @@ function Get-SecondChannelFromEnv {
 
 function Set-SecondChannel {
     # The second channel (M2_PLAYERBOT_CH2): the switch, the share of the bots
-    # that play on it, and the two port ranges compose publishes - 13000-13012
-    # while it is on (its cores listen on 13010-13012), the first channel's
-    # three otherwise. The host side keeps the first port a player may have
-    # moved. SetAt is when the choice was made: the game container compares it
-    # with the web panel's wish, and the newer of the two wins.
+    # that play on it, and the two port ranges compose publishes - base..base+12
+    # while it is on (its cores listen on base+10..base+12), the first channel's
+    # three otherwise, where base is M2_GAME_PORT_BASE (13000 unless a second
+    # stack on the host moved it; the cores listen there, m2-render-config).
+    # A world with M2_CHANNELS=3 or 4 keeps every channel's ports. The host
+    # side keeps its distance from the container side, so a player who moved
+    # the published ports keeps them. SetAt is when the choice was made: the
+    # game container compares it with the web panel's wish, and the newer of
+    # the two wins.
     param([bool]$Enabled, [int]$Share = 40, [long]$SetAt = 0)
     if ($Share -lt 10) { $Share = 10 }
     if ($Share -gt 90) { $Share = 90 }
     if ($SetAt -le 0) { $SetAt = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() }
-    $first = 13000
-    $range = Get-DotEnvValue -Key 'M2_GAME_PORT_RANGE' -Default '13000-13002'
-    if ($range -match '^\s*(\d+)') { $first = [int]$Matches[1] }
-    $span = if ($Enabled) { 12 } else { 2 }
+    $base = 13000
+    if ((Get-DotEnvValue -Key 'M2_GAME_PORT_BASE' -Default '13000') -match '^\s*(\d+)\s*$' -and [int]$Matches[1] -gt 0 -and [int]$Matches[1] -lt 65500) { $base = [int]$Matches[1] }
+    $hostFirst = $base
+    $containerFirst = $base
+    $range = Get-DotEnvValue -Key 'M2_GAME_PORT_RANGE' -Default ''
+    $containerRange = Get-DotEnvValue -Key 'M2_GAME_CONTAINER_PORT_RANGE' -Default ''
+    if ($containerRange -match '^\s*(\d+)') { $containerFirst = [int]$Matches[1] }
+    if ($range -match '^\s*(\d+)') { $hostFirst = [int]$Matches[1] - $containerFirst + $base }
+    if ($hostFirst -le 0 -or $hostFirst -gt 65500) { $hostFirst = $base }
+    $channels = 1
+    if ((Get-DotEnvValue -Key 'M2_CHANNELS' -Default '1') -match '^\s*([1-4])\s*$') { $channels = [int]$Matches[1] }
+    if ($Enabled -and $channels -lt 2) { $channels = 2 }
+    $span = 10 * ($channels - 1) + 2
     Set-DotEnvValue -Key 'M2_PLAYERBOT_CH2' -Value $(if ($Enabled) { '1' } else { '0' })
     Set-DotEnvValue -Key 'PLAYERBOT_CH2_SHARE' -Value "$Share"
     Set-DotEnvValue -Key 'M2_PLAYERBOT_CH2_SET_AT' -Value "$SetAt"
-    Set-DotEnvValue -Key 'M2_GAME_PORT_RANGE' -Value ('{0}-{1}' -f $first, ($first + $span))
-    Set-DotEnvValue -Key 'M2_GAME_CONTAINER_PORT_RANGE' -Value ('13000-{0}' -f (13000 + $span))
+    Set-DotEnvValue -Key 'M2_GAME_PORT_RANGE' -Value ('{0}-{1}' -f $hostFirst, ($hostFirst + $span))
+    Set-DotEnvValue -Key 'M2_GAME_CONTAINER_PORT_RANGE' -Value ('{0}-{1}' -f $base, ($base + $span))
     return @{ Enabled = $Enabled; Share = $Share }
 }
 
@@ -1788,6 +1814,55 @@ function Send-Logs {
     else { Write-Host 'Wysłano paczkę diagnostyczną.' -ForegroundColor Green }
 }
 
+function Send-Report {
+    # ZGLOS / REPORT (launcher\Metin2Launcher.Report.psm1): the player's own
+    # words, the versions and - unless -NoLogs - the support bundle, sent to
+    # the report address (reportUrl in .m2launcher.json, else the manifest's
+    # support.reportUrl, else the log button's Discord webhook) or kept as a
+    # ZIP when there is none. The window hands its form over in -ReportFile
+    # and reads the answer the module leaves beside it; the text launcher asks
+    # for the form here. A report that was sent or kept is the action's
+    # success either way - the answer says which.
+    if (-not (Get-Command Invoke-M2Report -ErrorAction SilentlyContinue)) {
+        throw 'Brakuje modułu launcher\Metin2Launcher.Report.psm1 - ta paczka nie ma zgłoszeń.'
+    }
+    $resultPath = ''
+    if ($ReportFile) {
+        $request = Read-M2ReportRequest -Path $ReportFile
+        $resultPath = Get-M2ReportResultPath -RequestPath $ReportFile
+    }
+    elseif ($Message) {
+        $request = New-M2ReportRequest -Category $Category -Description $Message -Contact $Contact -AttachLogs (-not $NoLogs)
+    }
+    elseif ($Yes) {
+        throw 'Zgłoszenie bez okna potrzebuje treści: -Message "opis".'
+    }
+    else {
+        $request = Read-M2ReportFromConsole -ServerRoot $serverRoot -Category $Category -Contact $Contact -NoLogs:$NoLogs
+        if (-not $request) {
+            Write-Host 'Bez opisu - nic nie wysłano.' -ForegroundColor Yellow
+            return
+        }
+        if (-not (Confirm-Operation ('Wysłać zgłoszenie ({0}, logi: {1})?' -f (Get-M2ReportCategoryText -Category $request.category), $(if ($request.attachLogs) { 'tak' } else { 'nie' })))) {
+            Write-Host 'Nie wysłano.' -ForegroundColor Yellow
+            return
+        }
+    }
+    # What the Logs action's ZIP carries beside the bundle: the preflight and
+    # the free space on the drives (Create-Logs).
+    $extra = @{}
+    if ($request.attachLogs) {
+        try { $extra['preflight.txt'] = Format-M2DockerPreflightReport -Report (Get-M2DockerPreflight -ServerRoot $serverRoot -CheckPanelPort) } catch { }
+        try { $extra['disk-space.txt'] = Get-M2DiskSpaceReport -ServerRoot $serverRoot } catch { }
+    }
+    $result = Invoke-M2Report -ServerRoot $serverRoot -Config (Get-Config) -Request $request -ExtraFiles $extra -ResultPath $resultPath
+    if ($ReportFile) { Remove-Item -LiteralPath $ReportFile -Force -ErrorAction SilentlyContinue }
+    # The window opens the folder itself when it shows the answer.
+    if (-not $Yes -and $result.Outcome -ne 'sent' -and $result.Path) {
+        Start-Process -FilePath 'explorer.exe' -ArgumentList ('/select,"{0}"' -f $result.Path)
+    }
+}
+
 # ---------------------------------------------------------------- co-op
 # Playing the host's world with friends over the Internet (experimental;
 # launcher\Metin2Launcher.Coop.psm1 does the work). The window's COOP dialog
@@ -1879,7 +1954,12 @@ function Show-CoopCheckAction {
             else { Write-Host ("  router: port {0} bez przekierowania" -f $port) }
         }
     }
-    Write-Host ("Reguła zapory Windows dla portów gry: {0}" -f $(if (Test-M2CoopFirewallRule) { 'jest' } else { 'brak (doda ją Hostuj)' }))
+    # The rule has to let in every channel's ports, not only the ones of the
+    # day it was made (CH2 switched on after the first hosting).
+    $ruleState = $(if (Test-M2CoopFirewallRule -Ports $ports) { 'jest' }
+        elseif (Test-M2CoopFirewallRule) { 'jest, ale bez części portów gry (HOSTUJ ŚWIAT ją poprawi)' }
+        else { 'brak (doda ją Hostuj)' })
+    Write-Host ("Reguła zapory Windows dla portów gry: {0}" -f $ruleState)
     foreach ($block in @(Get-M2CoopFirewallBlocks)) {
         Write-Host ("  UWAGA: zapora blokuje program {0} (reguła '{1}', profil {2}) - taka reguła wygrywa z każdą regułą zezwalającą." -f $block.Program, $block.Name, $block.Profile) -ForegroundColor Yellow
     }
@@ -2070,7 +2150,7 @@ function Start-CoopHostingAction {
     # its question on the taskbar, and xXxDaronxXx's (24 September) went
     # unanswered twice - the second time for two minutes - so nothing outside
     # his PC could reach the world.
-    $firewallOk = [bool](Test-M2CoopFirewallRule)
+    $firewallOk = [bool](Test-M2CoopFirewallRule -Ports $ports)
     if ($firewallOk) { Write-Host 'Reguła zapory dla portów gry już jest.' }
     elseif ($CoopFirewallAsked) { Write-Host 'Reguły zapory nie dodano - okno launchera zapytało o nią Windows i nie dostało zgody.' -ForegroundColor Red }
     else {
@@ -2484,6 +2564,7 @@ function Invoke-Action {
         'Diagnose' { Show-DockerDiagnostics -CheckPanelPort | Out-Null }
         'Logs' { Create-Logs | Out-Null }
         'SendLogs' { Send-Logs }
+        'Report' { Send-Report }
         'Configure' { Configure-Launcher }
         'SetBots' { Set-BotCountAction }
         'SetDifficulty' { Set-DifficultyAction }
@@ -2569,6 +2650,9 @@ function Show-Menu {
             Write-Host ' 39. VPS: logi serwera'
             Write-Host ' 40. VPS: konto i kod zaproszenia dla znajomego (COOP, dla patronów)'
         }
+        if (Get-Command Invoke-M2Report -ErrorAction SilentlyContinue) {
+            Write-Host ' 41. Zgłoś błąd, propozycję albo pytanie (do autora, z logami)'
+        }
         Write-Host '  0. Wyjście'
         Write-Host ''
         $choice = Read-Host 'Wybierz opcję'
@@ -2604,6 +2688,7 @@ function Show-Menu {
             '38' { 'VpsClient' }
             '39' { 'VpsLogs' }
             '40' { 'VpsInvite' }
+            '41' { 'Report' }
             '0' { return }
             default { '' }
         }

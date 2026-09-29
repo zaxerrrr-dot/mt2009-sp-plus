@@ -194,6 +194,27 @@ namespace
 	// run - item.remove() there takes the whole stack for one charge, and a
 	// dialog-free UseItem would still cost the bot the flag the quest checks;
 	// the flag is honoured here.
+	// What a bot's vouchers brought it since this core first cashed one for
+	// it: the pace a need it cannot pay for yet is saved up at
+	// (PlayerBotSavesForWish). A restart starts the count again.
+	struct TPlayerBotCoinIncome
+	{
+		int iSince;
+		long long llCoins;
+	};
+	std::map<DWORD, TPlayerBotCoinIncome> s_mapPlayerBotCoinIncome;
+
+	void NotePlayerBotCoinIncome(DWORD pid, long long coins)
+	{
+		std::map<DWORD, TPlayerBotCoinIncome>::iterator it = s_mapPlayerBotCoinIncome.find(pid);
+		if (it == s_mapPlayerBotCoinIncome.end())
+		{
+			TPlayerBotCoinIncome income = { get_global_time(), 0 };
+			it = s_mapPlayerBotCoinIncome.insert(std::make_pair(pid, income)).first;
+		}
+		it->second.llCoins += coins;
+	}
+
 	bool UsePlayerBotVoucher(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (quest::CQuestManager::instance().GetEventFlag("block_dragon_voucher") > 0)
@@ -214,6 +235,7 @@ namespace
 					ch->GetPlayerID(), ch->GetDesc()->GetAccountTable().id, voucher->GetID(), coins);
 			ITEM_MANAGER::instance().RemoveItem(voucher, "PLAYERBOT_VOUCHER");
 			state.iDragonCoins = (int)std::min<long long>((long long)state.iDragonCoins + coins, INT_MAX);
+			NotePlayerBotCoinIncome(ch->GetPlayerID(), coins);
 			s_uPlayerBotVouchersUsed += (unsigned int)count;
 			s_uPlayerBotCoinsCharged += (unsigned int)coins;
 			cashed += count;
@@ -546,46 +568,155 @@ namespace
 	// takes the first it can afford: the first build picked one wish only,
 	// and a bot with no marks whose first wish was the marks' Blessing Scroll
 	// never got as far as the hairstyle its coins would have bought.
-	const int PLAYERBOT_ISHOP_MAX_WISHES = 7;
+	const int PLAYERBOT_ISHOP_MAX_WISHES = 14;
+
+	// ItemShop by needs (sosen94: on the test world 346 of 347 purchases in a
+	// week were hairstyles). Besides the stone, the change stone and the
+	// Exorcism Scroll: a Metin detector for a stone hunter, the Teleport Ring
+	// on the frontier, and for marks the Rada Pustelnika for a book waiting
+	// to be read and the boosters for a raid, the tower and a war - what the
+	// bot is doing now first. A need the balance cannot pay yet is saved for
+	// when the bot's vouchers would bring it within
+	// PLAYERBOT_ISHOP_SAVE_DAYS, and the look is bought only from what is
+	// over the needs' reserve.
+	const DWORD PLAYERBOT_ISHOP_METIN_DETECTOR_VNUM = 27989;
+	const DWORD PLAYERBOT_ISHOP_RADA_VNUM = 71094;
+	const DWORD PLAYERBOT_ISHOP_BOOSTER_VNUMS[] = { 71028, 71044, 71027, 71045, 71030 };
+	const int PLAYERBOT_ISHOP_SAVE_DAYS = 10;
+
+	bool PlayerBotHoldsReadableClassBook(LPCHARACTER ch);
+	bool IsPlayerBotFrontierMapIndex(long mapIndex);
+
+	// The cheapest line of a wish the bot's level may buy, whatever the
+	// balance; 0 when the shop has none.
+	DWORD GetPlayerBotItemShopCheapest(LPCHARACTER ch, DWORD vnum, bool marks)
+	{
+		const TPlayerBotItemShopTable& table = marks ? s_mapPlayerBotItemShopMarks : s_mapPlayerBotItemShopCoins;
+		TPlayerBotItemShopTable::const_iterator it = table.find(vnum);
+		DWORD best = 0;
+		if (it != table.end())
+			for (size_t i = 0; i < it->second.size(); ++i)
+				if (it->second[i].dwCount != 0 && ch->GetLevel() >= it->second[i].bMinLevel &&
+						(best == 0 || it->second[i].dwPrice < best))
+					best = it->second[i].dwPrice;
+		return best;
+	}
+
+	// Whether a need the balance cannot pay yet is worth saving for: the
+	// coins this bot's vouchers have brought, at their pace, would cover it
+	// within PLAYERBOT_ISHOP_SAVE_DAYS.
+	bool PlayerBotSavesForWish(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD price)
+	{
+		if (price == 0)
+			return false;
+		const long long have = state.iDragonCoins;
+		if (have >= (long long)price)
+			return true;
+		std::map<DWORD, TPlayerBotCoinIncome>::const_iterator it = s_mapPlayerBotCoinIncome.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotCoinIncome.end() || it->second.llCoins <= 0)
+			return false;
+		const long long elapsed = std::max<long long>(86400, (long long)get_global_time() - it->second.iSince);
+		return it->second.llCoins * PLAYERBOT_ISHOP_SAVE_DAYS * 86400LL / elapsed >= (long long)price - have;
+	}
+
+	bool PlayerBotHoldsAnyOf(LPCHARACTER ch, const DWORD* vnums, size_t count)
+	{
+		for (size_t i = 0; i < count; ++i)
+			if (ch->CountSpecifyItem(vnums[i]) > 0)
+				return true;
+		return false;
+	}
+
+	// The coins the needs keep back from the look: each coin need the bot
+	// can pay or is saving for, at its cheapest line.
+	long long GetPlayerBotItemShopNeedReserve(LPCHARACTER ch, const TPlayerBotAIState& state,
+			const TPlayerBotItemShopWish* wishes, int n)
+	{
+		long long reserve = 0;
+		for (int i = 0; i < n; ++i)
+		{
+			if (wishes[i].bMarks)
+				continue;
+			const DWORD price = GetPlayerBotItemShopCheapest(ch, wishes[i].dwVnum, false);
+			if (PlayerBotSavesForWish(ch, state, price))
+				reserve += price;
+		}
+		return reserve;
+	}
+
+	// A look - hairstyle, costume, skin or pet - only from the coins over the
+	// needs' reserve.
+	bool PlayerBotLookFromSurplus(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD vnum, long long reserve)
+	{
+		const DWORD price = GetPlayerBotItemShopCheapest(ch, vnum, false);
+		return price != 0 && (long long)state.iDragonCoins - (long long)price >= reserve;
+	}
+
+	int CollectPlayerBotItemShopNeeds(LPCHARACTER ch, const TPlayerBotAIState& state, TPlayerBotItemShopWish* wishes)
+	{
+		int n = 0;
+		const DWORD now = get_dword_time();
+		// What the bot is doing now goes first: a raid, the tower or a war,
+		// a stone hunt, the frontier, a book waiting.
+		const bool fighting = IsPlayerBotOnTowerBusiness(ch, state) || state.dwGuildWarEnemyGID != 0;
+		const bool hunting = IsPlayerBotMetinHunting(state, now);
+		const bool frontier = IsPlayerBotFrontierMapIndex(ch->GetMapIndex());
+		TPlayerBotItemShopWish now_[PLAYERBOT_ISHOP_MAX_WISHES];
+		TPlayerBotItemShopWish later[PLAYERBOT_ISHOP_MAX_WISHES];
+		int nNow = 0, nLater = 0;
+		auto add = [&](DWORD vnum, bool marks, const char* reason, bool current)
+		{
+			TPlayerBotItemShopWish w;
+			w.dwVnum = vnum;
+			w.bMarks = marks;
+			w.szReason = reason;
+			if (current && nNow < PLAYERBOT_ISHOP_MAX_WISHES)
+				now_[nNow++] = w;
+			else if (!current && nLater < PLAYERBOT_ISHOP_MAX_WISHES)
+				later[nLater++] = w;
+		};
+		if (fighting && !PlayerBotHoldsBooster(ch))
+			for (size_t i = 0; i < sizeof(PLAYERBOT_ISHOP_BOOSTER_VNUMS) / sizeof(PLAYERBOT_ISHOP_BOOSTER_VNUMS[0]); ++i)
+				if (PlayerBotMarksCover(state, PLAYERBOT_ISHOP_BOOSTER_VNUMS[i]))
+				{
+					add(PLAYERBOT_ISHOP_BOOSTER_VNUMS[i], true, "raid_booster", true);
+					break;
+				}
+		if (hunting && !PlayerBotHoldsAnyOf(ch, PLAYERBOT_METIN_DETECTOR_VNUMS,
+				sizeof(PLAYERBOT_METIN_DETECTOR_VNUMS) / sizeof(PLAYERBOT_METIN_DETECTOR_VNUMS[0])))
+			add(PLAYERBOT_ISHOP_METIN_DETECTOR_VNUM, false, "metin_detector", true);
+		if (frontier && ch->GetLevel() >= PLAYERBOT_TELEPORT_RING_MIN_LEVEL &&
+				ch->CountSpecifyItem(PLAYERBOT_TELEPORT_RING_VNUM) == 0)
+			add(PLAYERBOT_TELEPORT_RING_VNUM, false, "teleport_ring", true);
+		const bool bookWaits = PlayerBotHoldsReadableClassBook(ch);
+		if (s_mapPlayerBotItemShopCoins.find(PLAYERBOT_ISHOP_EXORCISM_VNUM) != s_mapPlayerBotItemShopCoins.end() &&
+				PlayerBotWantsExorcismScroll(ch))
+			add(PLAYERBOT_ISHOP_EXORCISM_VNUM, false, "exorcism_scroll", true);
+		if (bookWaits && !ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) &&
+				FindPlayerBotBookAffectCell(ch, AFFECT_SKILL_BOOK_BONUS) < 0 &&
+				PlayerBotMarksCover(state, PLAYERBOT_ISHOP_RADA_VNUM))
+			add(PLAYERBOT_ISHOP_RADA_VNUM, true, "rada_pustelnika", true);
+		if (PlayerBotWantsGrandMasterStone(ch))
+			add(PLAYERBOT_GRAND_MASTER_STONE_VNUM, false, "grand_master_stone", false);
+		if (PlayerBotWantsChangeStone(ch))
+			add(PLAYERBOT_BONUS_CHANGE_VNUM, false, "change_stone", false);
+		if (PlayerBotWearsScrollWork(ch) && CountPlayerBotSafeRefineScrolls(ch) == 0 &&
+				PlayerBotMarksCover(state, PLAYERBOT_ISHOP_BLESSING_SCROLL_VNUM))
+			add(PLAYERBOT_ISHOP_BLESSING_SCROLL_VNUM, true, "blessing_scroll", false);
+		for (int i = 0; i < nNow && n < PLAYERBOT_ISHOP_MAX_WISHES; ++i)
+			wishes[n++] = now_[i];
+		for (int i = 0; i < nLater && n < PLAYERBOT_ISHOP_MAX_WISHES; ++i)
+			wishes[n++] = later[i];
+		return n;
+	}
 
 	int CollectPlayerBotItemShopWishes(LPCHARACTER ch, const TPlayerBotAIState& state, TPlayerBotItemShopWish* wishes)
 	{
-		int n = 0;
-		if (PlayerBotWantsGrandMasterStone(ch))
-		{
-			wishes[n].dwVnum = PLAYERBOT_GRAND_MASTER_STONE_VNUM;
-			wishes[n].bMarks = false;
-			wishes[n++].szReason = "grand_master_stone";
-		}
-		if (PlayerBotWantsChangeStone(ch))
-		{
-			wishes[n].dwVnum = PLAYERBOT_BONUS_CHANGE_VNUM;
-			wishes[n].bMarks = false;
-			wishes[n++].szReason = "change_stone";
-		}
-		if (s_mapPlayerBotItemShopCoins.find(PLAYERBOT_ISHOP_EXORCISM_VNUM) != s_mapPlayerBotItemShopCoins.end() &&
-				PlayerBotWantsExorcismScroll(ch))
-		{
-			wishes[n].dwVnum = PLAYERBOT_ISHOP_EXORCISM_VNUM;
-			wishes[n].bMarks = false;
-			wishes[n++].szReason = "exorcism_scroll";
-		}
-		if (PlayerBotWearsScrollWork(ch) && CountPlayerBotSafeRefineScrolls(ch) == 0 &&
-				PlayerBotMarksCover(state, PLAYERBOT_ISHOP_BLESSING_SCROLL_VNUM))
-		{
-			wishes[n].dwVnum = PLAYERBOT_ISHOP_BLESSING_SCROLL_VNUM;
-			wishes[n].bMarks = true;
-			wishes[n++].szReason = "blessing_scroll";
-		}
-		if (!PlayerBotHoldsBooster(ch) && PlayerBotMarksCover(state, PLAYERBOT_ISHOP_ATTACK_POTION_VNUM))
-		{
-			wishes[n].dwVnum = PLAYERBOT_ISHOP_ATTACK_POTION_VNUM;
-			wishes[n].bMarks = true;
-			wishes[n++].szReason = "attack_potion";
-		}
+		int n = CollectPlayerBotItemShopNeeds(ch, state, wishes);
+		const long long reserve = GetPlayerBotItemShopNeedReserve(ch, state, wishes, n);
 		int look = 0;
 		const DWORD lookVnum = PickPlayerBotLook(ch, &look);
-		if (lookVnum != 0)
+		if (lookVnum != 0 && n < PLAYERBOT_ISHOP_MAX_WISHES && PlayerBotLookFromSurplus(ch, state, lookVnum, reserve))
 		{
 			wishes[n].dwVnum = lookVnum;
 			wishes[n].bMarks = false;
@@ -770,6 +901,10 @@ namespace
 		next.bMarks = false;
 		next.szReason = GetPlayerBotLookReason(look);
 		if (next.dwVnum == 0 || !CanPlayerBotAffordWish(ch, state, next))
+			return;
+		TPlayerBotItemShopWish needs[PLAYERBOT_ISHOP_MAX_WISHES];
+		const int n = CollectPlayerBotItemShopNeeds(ch, state, needs);
+		if (!PlayerBotLookFromSurplus(ch, state, next.dwVnum, GetPlayerBotItemShopNeedReserve(ch, state, needs, n)))
 			return;
 		state.bItemShopLookSession = true;
 		state.dwNextItemShopBuyTime = dwNow + PLAYERBOT_ISHOP_SESSION_STEP;

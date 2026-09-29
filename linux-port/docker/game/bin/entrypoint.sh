@@ -124,14 +124,20 @@ fi
 export M2_PLAYERBOT_CH2 PLAYERBOT_CH2_SHARE M2_CHANNELS
 # What the server runs with, for the panel (it reads this volume, not .env).
 # The published range says whether players can reach CH2: the launcher opens
-# 13000-13012 when it switches the channel on; a wish from the panel alone
+# BASE..BASE+12 (13000-13012 by default) when it switches the channel on; a wish from the panel alone
 # brings the bots over at once and the players with the launcher's next start.
 # SET_AT is the moment of the choice that won, so the panel can tell its own
 # wish still waiting from one a later choice in the launcher has overtaken.
 mkdir -p "$VAR_DIR"
-printf 'CH2=%s\nSHARE=%s\nCHANNELS=%s\nSOURCE=%s\nPORTS=%s\nSET_AT=%s\n' \
+# BASE is the channels' first port (M2_GAME_PORT_BASE, m2-render-config): the
+# panels tell the second channel's ports from it (BASE+10..BASE+12), and a
+# range that does not reach BASE+12 means CH2 is not published yet.
+ch_port_base="${M2_GAME_PORT_BASE:-13000}"
+case "$ch_port_base" in ''|*[!0-9]*) ch_port_base=13000 ;; esac
+printf 'CH2=%s\nSHARE=%s\nCHANNELS=%s\nSOURCE=%s\nPORTS=%s\nSET_AT=%s\nBASE=%s\n' \
   "$M2_PLAYERBOT_CH2" "$PLAYERBOT_CH2_SHARE" "$M2_CHANNELS" "$ch2_source" \
-  "${M2_GAME_CONTAINER_PORT_RANGE:-13000-13002}" "$ch2_at" > "$VAR_DIR/channels.effective" 2>/dev/null || true
+  "${M2_GAME_CONTAINER_PORT_RANGE:-$ch_port_base-$((ch_port_base + 2))}" "$ch2_at" "$ch_port_base" \
+  > "$VAR_DIR/channels.effective" 2>/dev/null || true
 
 if [ -z "$M2_PUBLIC_ADDRESS" ]; then
   log "WARNING: M2_PUBLIC_ADDRESS is not set."

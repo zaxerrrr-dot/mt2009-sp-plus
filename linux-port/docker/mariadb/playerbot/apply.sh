@@ -1146,8 +1146,11 @@ db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, 
 # NewPetUseItem - the ItemShop seals keep PET_UPBRINGING/PET_PAY), the pet
 # mobs (34036-34083, clones of 34001 as the ItemShop pets are; the client's
 # npclist.txt has their models), the ItemShop's pet page lines 40901-40927
-# (eggs, supplies, the pet transporter) and the Proteinowa Przekaska and
-# the Transporter Peta at the General Store.
+# (eggs, supplies, the pet transporter). MT2009_PLUS_NEW_PET_SHOP_V1: no NPC
+# shop sells a new-pet item - they come from the ItemShop and the Metin drops
+# only (the owner, 29 September); 2.14.0 and older put the Proteinowa
+# Przekaska and the Transporter Peta on the General Store (shop 3, Handlarka),
+# the DELETE below takes them off on every existing install.
 # Last, after the item-shop data (mod/10_ingame_itemshop.sql rewrites
 # common.itemshop_items once per install). INSERT IGNORE: a row the operator
 # changed by hand is kept. The names are UTF-8 here, SET NAMES converts them
@@ -1301,7 +1304,7 @@ INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
 UPDATE world.np_mob SET vnum = 34048, name = 'Pisklę Exedyara (Hero)', locale_name = 'Pisklę Exedyara (Hero)';
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
 INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (40901, 55401, 1, 29, 'DRAGON_COIN', 0), (40902, 55402, 1, 29, 'DRAGON_COIN', 0), (40903, 55403, 1, 29, 'DRAGON_COIN', 0), (40904, 55404, 1, 29, 'DRAGON_COIN', 0), (40905, 55405, 1, 29, 'DRAGON_COIN', 0), (40906, 55406, 1, 29, 'DRAGON_COIN', 0), (40907, 55409, 1, 29, 'DRAGON_COIN', 0), (40908, 55410, 1, 29, 'DRAGON_COIN', 0), (40909, 55411, 1, 29, 'DRAGON_COIN', 0), (40920, 55001, 10, 9, 'DRAGON_COIN', 0), (40921, 55032, 10, 19, 'DRAGON_COIN', 0), (40922, 55035, 5, 19, 'DRAGON_COIN', 0), (40923, 55009, 1, 15, 'DRAGON_COIN', 0), (40924, 55008, 1, 9, 'DRAGON_COIN', 0), (40925, 55033, 1, 9, 'DRAGON_COIN', 0), (40926, 55034, 1, 5, 'DRAGON_COIN', 0), (40927, 55036, 1, 49, 'DRAGON_COIN', 0), (40928, 55002, 1, 19, 'DRAGON_COIN', 0);
-INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) VALUES (3, 55001, 1), (3, 55001, 10), (3, 55002, 1);" || echo "[playerbot-migrate] WARNING: could not add the New Pet System's items, mobs and shop lines" >&2
+DELETE FROM world.shop_item WHERE item_vnum BETWEEN 55001 AND 55999;" || echo "[playerbot-migrate] WARNING: could not add the New Pet System's items and mobs" >&2
 # MT2009_PLUS_WHEEL_V1: Bilet Kola Fortuny (80030), the Kolo Fortuny's ticket (playerbot_wheel.h,
 # "/kolo"): quest type, stacks to 200, tradeable, no drop/NPC sale (the SM coupon's antiflags); the
 # ItemShop's first page sells it for 25 Smocze Monety. PROTO_FROM_DB: read at the db core's boot. Idempotent.

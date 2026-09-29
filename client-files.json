@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "version": "2.0.28",
+  "files": [
+    {
+      "path": "Dolacz.bat",
+      "size": 92,
+      "sha256": "CAD0B604D8CC39C7475F3D4FF8F29E76C4F7FA4F7713A4032F9D208C6931A8E8"
+    },
+    {
+      "path": "Dolacz.ps1",
+      "size": 6038,
+      "sha256": "9CDB49ADB74E4EA740C8DB0150987F2DB48F64A8973C1BB4C26FE82CE6C9DDD2"
+    },
+    {
+      "path": "metin2client.exe",
+      "size": 13617152,
+      "sha256": "F86C987E9EF5B599CF53178F62CEBCE93F63CB3A9C9C947208A5653395C810FB"
+    },
+    {
+      "path": "pack/gamedata.index",
+      "size": 3764,
+      "sha256": "B44495B2E141CCDD21379746BC896E41FC924EA910B911B08F714F3B36C37389"
+    },
+    {
+      "path": "pack/gf_misc.index",
+      "size": 8108,
+      "sha256": "1EA2DE044A03B56DCFF1A84C4CC5F6C8721A6AF36A2C5706D85E26062E812121"
+    },
+    {
+      "path": "pack/gf_mobs.index",
+      "size": 49076,
+      "sha256": "5B5A57CCBC7405F8B746D702F302799F742470FA47D60ECCCF3060793845995D"
+    },
+    {
+      "path": "pack/gf_nemere.index",
+      "size": 19876,
+      "sha256": "4074BFC37D08C2FCEDA98C0C8B715937CB796FE00F3E26AE4CFFC30804E7AFFD"
+    },
+    {
+      "path": "pack/gf_razador.index",
+      "size": 25028,
+      "sha256": "7B62A4D86D53C49A8CEDE64594CE80581F212D5943F43FE8CB49FD24EC329AE8"
+    },
+    {
+      "path": "pack/goblin.index",
+      "size": 5956,
+      "sha256": "B6B5149B314DBB7EC0E714E6535E2920008E3F9990FD3EC03E6D809AA2B7DA76"
+    },
+    {
+      "path": "pack/icon.index",
+      "size": 69292,
+      "sha256": "986698F689513534507C0DD208C1D1328CF77B5F7D47F265C7922805131D6727"
+    },
+    {
+      "path": "pack/Index",
+      "size": 611,
+      "sha256": "CBE7F7A710F69CEF274C7A75920FB25B2A070503A8B9C63980DA937F58B87C29"
+    },
+    {
+      "path": "pack/locale.index",
+      "size": 23492,
+      "sha256": "5FA804B4AA5489A63ECE17DAAA6C96732640B9FA332A39AE42E602FC2E94B517"
+    },
+    {
+      "path": "pack/maps.index",
+      "size": 55796,
+      "sha256": "F864AAF43A39C13C8A8C293580FF7F70322656BD1133A9BA3E24E4D12897313E"
+    },
+    {
+      "path": "pack/newpet.index",
+      "size": 5828,
+      "sha256": "380AD994503E1155A88C56928A2C07275CE84B20D5D735DB39235E5C6F91BB84"
+    },
+    {
+      "path": "pack/ochao.index",
+      "size": 19556,
+      "sha256": "619DEAFF5F30D5DA5D0BF2A782C7640EAE2BCC36D2910E43A3CB728281748A9F"
+    },
+    {
+      "path": "pack/property.index",
+      "size": 48548,
+      "sha256": "021F4AC595AA0A09C01D53334FDFC5D4CCB3172BE51302B1A6643D9CB0065372"
+    },
+    {
+      "path": "pack/root.index",
+      "size": 16364,
+      "sha256": "711249CEBC2C2C8D4590824CBB0C88821D5BE6E758F8999301BBDA260A9EE1E9"
+    }
+  ]
+}

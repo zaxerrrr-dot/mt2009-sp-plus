@@ -139,6 +139,7 @@ namespace
 			case PLAYERBOT_MAP_FIRE_LAND: return "do Doyyumhwaji";
 			case PLAYERBOT_MAP_GROTTO_V1: return "do Groty Wygnancow";
 			case PLAYERBOT_MAP_GROTTO_V2: return "do Groty Wygnancow 2";
+			case PLAYERBOT_MAP_OCHAO: return "do Swiatyni Ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			default: return "";
 		}
 	}
@@ -174,6 +175,7 @@ namespace
 			case PLAYERBOT_MAP_FIRE_LAND: return "to Doyyumhwaji";
 			case PLAYERBOT_MAP_GROTTO_V1: return "to the Grotto of Exile";
 			case PLAYERBOT_MAP_GROTTO_V2: return "to the Grotto of Exile 2";
+			case PLAYERBOT_MAP_OCHAO: return "to the Temple of Ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			default: return "";
 		}
 	}

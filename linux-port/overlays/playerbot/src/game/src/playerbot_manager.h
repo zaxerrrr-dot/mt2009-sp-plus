@@ -59,13 +59,15 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// cell and what they have been paid for it, as "FleaPriceQuote";
 		// with bRange first the market's range for such a stack, as
 		// "FleaPriceRange" (Piciu713, apply_flea_price_range).
+		// With bSales (request version 3) "FleaPriceSales" goes before the
+		// quote: the bots' last sale and median for such a stack.
 		void	SendFleaMarketPriceQuote(LPCHARACTER ch, BYTE bWindow, WORD wCell,
-				DWORD dwRequestID, bool bRange = false);
+				DWORD dwRequestID, bool bRange = false, bool bSales = false);
 		// The same for a line already on the asker's own offline shop, named
 		// by the line's item id (/flea_price's window 255). Nothing on an
 		// engine without ikashop.
 		void	SendFleaMarketShopItemPriceQuote(LPCHARACTER ch, DWORD dwShopItemID,
-				DWORD dwRequestID, bool bRange = false);
+				DWORD dwRequestID, bool bRange = false, bool bSales = false);
 		bool	IsRegistered(DWORD dwPlayerID);
 		// The same question answered from the registry as it is, never by
 		// loading it: false until the bootstrap has loaded it. For callers

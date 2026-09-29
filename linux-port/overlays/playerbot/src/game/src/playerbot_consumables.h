@@ -513,6 +513,40 @@ namespace
 		return false;
 	}
 
+	// The polymorph books (50314-50316) and the Mining Guide (50600, the
+	// engine's ITEM_MINING_SKILL_TRAIN_BOOK), read the way char_item.cpp
+	// reads them. They were goods for the counter and nothing else, so no bot
+	// ever raised either skill. The horse-taming book stays the players':
+	// a bot has that skill at 10 from the horse training alone.
+	bool IsPlayerBotExtraSkillBook(DWORD vnum)
+	{
+		return (vnum >= 50314 && vnum <= 50316) || vnum == 50600;
+	}
+
+	DWORD GetPlayerBotExtraSkillBookSkill(DWORD vnum)
+	{
+		return vnum == 50600 ? (DWORD)SKILL_MINING : (DWORD)SKILL_POLYMORPH;
+	}
+
+	// The engine's own tests: under 40 and the skill's own cap; a polymorph
+	// book for its range of the skill (value0..value1) from its level
+	// (value3).
+	bool CanPlayerBotReadExtraSkillBookNow(LPCHARACTER ch, DWORD vnum)
+	{
+		if (!ch || !IsPlayerBotExtraSkillBook(vnum))
+			return false;
+		const DWORD skill = GetPlayerBotExtraSkillBookSkill(vnum);
+		const int level = ch->GetSkillLevel(skill);
+		const CSkillProto* sk = CSkillManager::instance().Get(skill);
+		if (!sk || level >= 40 || level >= (int)sk->bMaxLevel)
+			return false;
+		if (vnum == 50600)
+			return true;
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		return proto && (int)ch->GetLevel() >= proto->alValues[3] &&
+				level >= proto->alValues[0] && level < proto->alValues[1];
+	}
+
 	bool IsPlayerBotMetinDetector(DWORD vnum)
 	{
 		for (size_t i = 0; i < sizeof(PLAYERBOT_METIN_DETECTOR_VNUMS) / sizeof(PLAYERBOT_METIN_DETECTOR_VNUMS[0]); ++i)

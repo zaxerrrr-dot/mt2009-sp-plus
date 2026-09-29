@@ -148,7 +148,7 @@ window = {
 
 							"vertical_align" : "center",
 							"text_vertical_align" : "center",
-							"text" : "9999",
+							"text" : "1",
 						},
 					),
 				},

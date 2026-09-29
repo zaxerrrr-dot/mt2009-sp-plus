@@ -1521,12 +1521,147 @@ namespace
 		return marble != NULL;
 	}
 
+	// The refiners' exchange (Iwakura): with the market flooded by a refine
+	// material - over PLAYERBOT_EXCHANGE_FLOOD_UNITS on the stands at no more
+	// than PLAYERBOT_EXCHANGE_UNIT_PRICE_MAX a piece - a bot with a surplus of
+	// it trades PLAYERBOT_EXCHANGE_STONE_UNITS for a Zaczarowanie or a
+	// Wzmocnienie Przedmiotu (the one it has fewer of), or
+	// PLAYERBOT_EXCHANGE_MARBLE_UNITS for a Marmur Blogoslawienstwa when it
+	// wears PLAYERBOT_EXCHANGE_MARBLE_PIECES pieces of four lines or more.
+	// The fee is PLAYERBOT_EXCHANGE_FEE on the price sheet's yang scale; one
+	// time in PLAYERBOT_EXCHANGE_SUCCESS_PERCENT it works, and a failure keeps
+	// the materials and the fee. "Magicznie", as the dust's marble: no NPC.
+	// While the flood lasts a bot short of the stones may buy the material
+	// off the stands for it (IsPlayerBotExchangeBuyOffer).
+	const int PLAYERBOT_EXCHANGE_STONE_UNITS = 20;
+	const int PLAYERBOT_EXCHANGE_MARBLE_UNITS = 75;
+	const int PLAYERBOT_EXCHANGE_MARBLE_PIECES = 4;
+	const int PLAYERBOT_EXCHANGE_MARBLE_LINES = 4;
+	const DWORD PLAYERBOT_EXCHANGE_FLOOD_UNITS = 200;
+	const DWORD PLAYERBOT_EXCHANGE_UNIT_PRICE_MAX = 70000;
+	const DWORD PLAYERBOT_EXCHANGE_FEE = 500000;
+	const int PLAYERBOT_EXCHANGE_SUCCESS_PERCENT = 60;
+	const int PLAYERBOT_EXCHANGE_STONE_KEEP = 5;
+	const int PLAYERBOT_EXCHANGE_BUY_PERCENT = 10;
+
+	DWORD GetPlayerBotShopAskingPrice(LPITEM item);
+	int GetPlayerBotRefineMaterialReserve(LPCHARACTER ch, DWORD materialVnum);
+
+	// A material the market is flooded with, judged by one piece of it.
+	bool IsPlayerBotExchangeFlooded(LPITEM item)
+	{
+		if (!item || !IsPlayerBotTradeableMaterial(item) || IsPlayerBotSafeRefineScroll(item->GetVnum()))
+			return false;
+		const TPlayerBotMarketLedgerEntry* supply = GetPlayerBotMarketLedgerEntry(item->GetVnum());
+		if (!supply || supply->dwSupplyUnits <= PLAYERBOT_EXCHANGE_FLOOD_UNITS)
+			return false;
+		const DWORD unit = GetPlayerBotShopAskingPrice(item) / std::max<DWORD>(1, (DWORD)item->GetCount());
+		return unit > 0 && unit <= ScalePlayerBotIwakuraPrice(PLAYERBOT_EXCHANGE_UNIT_PRICE_MAX);
+	}
+
+	bool PlayerBotWantsExchangeMarble(LPCHARACTER ch)
+	{
+		if (FindPlayerBotBlessingMarbleCell(ch) >= 0)
+			return false;
+		int pieces = 0;
+		for (int wear = 0; wear < WEAR_MAX_NUM; ++wear)
+			if (LPITEM worn = ch->GetWear(wear))
+				if (worn->GetAttributeCount() >= PLAYERBOT_EXCHANGE_MARBLE_LINES)
+					++pieces;
+		return pieces >= PLAYERBOT_EXCHANGE_MARBLE_PIECES;
+	}
+
+	// The stone it has fewer of, or 0 with both at the keep.
+	DWORD GetPlayerBotExchangeStoneWanted(LPCHARACTER ch)
+	{
+		const int change = (int)ch->CountSpecifyItem(PLAYERBOT_BONUS_CHANGE_VNUM);
+		const int add = (int)ch->CountSpecifyItem(PLAYERBOT_BONUS_ADD_VNUM);
+		if (std::min(change, add) >= PLAYERBOT_EXCHANGE_STONE_KEEP)
+			return 0;
+		return add <= change ? PLAYERBOT_BONUS_ADD_VNUM : PLAYERBOT_BONUS_CHANGE_VNUM;
+	}
+
+	long long GetPlayerBotExchangeFee()
+	{
+		return (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_EXCHANGE_FEE);
+	}
+
+	int GetPlayerBotExchangeSurplus(LPCHARACTER ch, DWORD vnum)
+	{
+		return (int)ch->CountSpecifyItem(vnum) - GetPlayerBotRefineMaterialReserve(ch, vnum) -
+				GetPlayerBotBiologistReserve(ch, vnum);
+	}
+
+	// One exchange a bot every PLAYERBOT_EXCHANGE_GAP_MS.
+	const DWORD PLAYERBOT_EXCHANGE_GAP_MS = 30 * 60 * 1000;
+	std::map<DWORD, DWORD> s_mapPlayerBotExchangeNext;
+
+	bool ManagePlayerBotRefinerExchange(LPCHARACTER ch)
+	{
+		if (!ch || ch->GetLevel() < PLAYERBOT_BONUS_MIN_LEVEL || ch->GetEmptyInventory(1) < 0)
+			return false;
+		const DWORD now = get_dword_time();
+		std::map<DWORD, DWORD>::const_iterator next = s_mapPlayerBotExchangeNext.find(ch->GetPlayerID());
+		if (next != s_mapPlayerBotExchangeNext.end() && (int)(now - next->second) < 0)
+			return false;
+		const long long fee = GetPlayerBotExchangeFee();
+		if ((long long)ch->GetGold() - fee < GetPlayerBotReservedGold(ch) + PLAYERBOT_SHOPPING_GOLD_FLOOR)
+			return false;
+		const bool marble = PlayerBotWantsExchangeMarble(ch);
+		const DWORD stone = GetPlayerBotExchangeStoneWanted(ch);
+		if (!marble && !stone)
+			return false;
+		std::set<DWORD> seen;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->isLocked() || !seen.insert(item->GetVnum()).second ||
+					!IsPlayerBotExchangeFlooded(item))
+				continue;
+			const DWORD material = item->GetVnum();
+			const int surplus = GetPlayerBotExchangeSurplus(ch, material);
+			const bool forMarble = marble && surplus >= PLAYERBOT_EXCHANGE_MARBLE_UNITS;
+			if (!forMarble && !(stone && surplus >= PLAYERBOT_EXCHANGE_STONE_UNITS))
+				continue;
+			const int units = forMarble ? PLAYERBOT_EXCHANGE_MARBLE_UNITS : PLAYERBOT_EXCHANGE_STONE_UNITS;
+			const DWORD reward = forMarble ? PLAYERBOT_BLESSING_MARBLE_VNUM : stone;
+			ch->RemoveSpecifyItem(material, units);
+			ch->PointChange(POINT_GOLD, -fee);
+			s_mapPlayerBotExchangeNext[ch->GetPlayerID()] = now + PLAYERBOT_EXCHANGE_GAP_MS;
+			const bool success = number(1, 100) <= PLAYERBOT_EXCHANGE_SUCCESS_PERCENT;
+			LPITEM made = success ? ch->AutoGiveItem(reward, 1, -1, false) : NULL;
+			if (made)
+				LogManager::instance().ItemLog(ch, made, "PLAYERBOT_REFINER_EXCHANGE", made->GetName());
+			sys_log(0, "PLAYERBOT_BONUS: refiner exchange pid=%u name=%s material=%u units=%d fee=%lld reward=%u ok=%d gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), material, units, fee, reward, made ? 1 : 0,
+					(long long)ch->GetGold());
+			return true;
+		}
+		return false;
+	}
+
+	// A line of such a material a bot short of the stones would take off a
+	// stand for the exchange, up to what one exchange wants.
+	bool IsPlayerBotExchangeBuyOffer(LPCHARACTER ch, LPITEM offer)
+	{
+		if (!ch || !offer || ch->GetLevel() < PLAYERBOT_BONUS_MIN_LEVEL || !IsPlayerBotExchangeFlooded(offer))
+			return false;
+		const bool marble = PlayerBotWantsExchangeMarble(ch);
+		if (!marble && !GetPlayerBotExchangeStoneWanted(ch))
+			return false;
+		const int want = marble ? PLAYERBOT_EXCHANGE_MARBLE_UNITS : PLAYERBOT_EXCHANGE_STONE_UNITS;
+		const int surplus = std::max(0, GetPlayerBotExchangeSurplus(ch, offer->GetVnum()));
+		return surplus < want && surplus + (int)offer->GetCount() <= want &&
+				(long long)ch->GetGold() > GetPlayerBotExchangeFee() * 2;
+	}
+
 	bool ManagePlayerBotBonusReroll(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->IsItemLoaded() || dwNow < state.dwNextBonusCheckTime)
 			return false;
 		state.dwNextBonusCheckTime = dwNow + PLAYERBOT_BONUS_INTERVAL;
 		ManagePlayerBotDustMarble(ch);
+		ManagePlayerBotRefinerExchange(ch);
 		// Nothing to spend, nothing to weigh: the pass below scores every line
 		// of eight worn pieces, and a bag with no stone and no marble ends here.
 		// Any stone at any level: under PLAYERBOT_BONUS_MIN_LEVEL the green

@@ -366,8 +366,10 @@ migrate_blessing_scroll() {
     printf 'M2_BLESSING_SCROLL_STONE_PERMILLE_DEFAULTED=1\n' >> "$_env"
 }
 
-# Channel N listens on 13000+10*(N-1)..+2 inside the container, and compose
-# publishes M2_GAME_PORT_RANGE onto M2_GAME_CONTAINER_PORT_RANGE - so with the
+# Channel N listens on BASE+10*(N-1)..+2 inside the container (BASE is
+# M2_GAME_PORT_BASE, 13000 unless a second stack on the host moved it -
+# m2-render-config), and compose publishes M2_GAME_PORT_RANGE onto
+# M2_GAME_CONTAINER_PORT_RANGE - so with the
 # second channel on and the range left at 13000-13002 the cores are up, the
 # bots play on CH2 and nobody outside the machine can reach it. Only the
 # Windows launcher ever widened it, so a Linux host, or anyone who switched the
@@ -401,24 +403,56 @@ sync_channel_ports() {
             fi
             ;;
     esac
-    if [ "$_ch2" = 1 ] || [ "$_channels" = 2 ]; then
-        _want=13000-13012
-    else
-        _want=13000-13002
+    # Every channel the world runs keeps its ports: M2_CHANNELS (1-4), and
+    # at least two while the second channel is on.
+    _need=1
+    case "$_channels" in
+        2|3|4) _need="$_channels" ;;
+    esac
+    if [ "$_ch2" = 1 ] && [ "$_need" -lt 2 ]; then
+        _need=2
     fi
+    # The channels' first port inside the container: M2_GAME_PORT_BASE, which
+    # the cores listen on (13000 when .env does not say). It used to be
+    # 13000 here whatever the base was, and a world on 43000 got 13000-13012
+    # at its first update with the second channel on (vps4, 2.10 -> 2.14).
+    _base=$(kv "$_env" M2_GAME_PORT_BASE | tr -d ' \r')
+    case "$_base" in
+        ''|*[!0-9]*) _base=13000 ;;
+    esac
+    [ "$_base" -gt 0 ] && [ "$_base" -lt 65500 ] || _base=13000
+    _span=$((10 * (_need - 1) + 2))
+    # The published side keeps its distance from the container's: a host that
+    # moved its ports (M2_GAME_PORT_RANGE 14000-..., container 13000-...)
+    # keeps them, and one whose two ranges were the same stays so.
+    _host_first=$(kv "$_env" M2_GAME_PORT_RANGE | tr -d ' \r' | sed -n 's/^\([0-9][0-9]*\).*/\1/p')
+    _cont_first=$(kv "$_env" M2_GAME_CONTAINER_PORT_RANGE | tr -d ' \r' | sed -n 's/^\([0-9][0-9]*\).*/\1/p')
+    [ -n "$_cont_first" ] || _cont_first=$_base
+    if [ -n "$_host_first" ]; then
+        _host_first=$((_host_first - _cont_first + _base))
+    else
+        _host_first=$_base
+    fi
+    if [ "$_host_first" -le 0 ] || [ "$_host_first" -ge 65500 ]; then
+        _host_first=$_base
+    fi
+    _want_host=$_host_first-$((_host_first + _span))
+    _want_cont=$_base-$((_base + _span))
+    _want="$_want_host (container $_want_cont)"
     _changed=0
     for _key in M2_GAME_PORT_RANGE M2_GAME_CONTAINER_PORT_RANGE; do
+        if [ "$_key" = M2_GAME_PORT_RANGE ]; then _want_one=$_want_host; else _want_one=$_want_cont; fi
         _cur=$(kv "$_env" "$_key" | tr -d ' \r')
-        [ "$_cur" = "$_want" ] && continue
+        [ "$_cur" = "$_want_one" ] && continue
         [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
         if grep -q "^$_key=" "$_env"; then
-            sed -i "s|^$_key=.*|$_key=$_want|" "$_env"
+            sed -i "s|^$_key=.*|$_key=$_want_one|" "$_env"
         else
-            printf '%s=%s\n' "$_key" "$_want" >> "$_env"
+            printf '%s=%s\n' "$_key" "$_want_one" >> "$_env"
         fi
         _changed=1
     done
-    [ "$_changed" = 1 ] && note "   the channels' ports: $_want (second channel $([ "$_ch2" = 1 ] && echo on || echo off))"
+    [ "$_changed" = 1 ] && note "   the channels' ports: $_want ($_need channel(s), second channel $([ "$_ch2" = 1 ] && echo on || echo off))"
     return 0
 }
 
@@ -454,6 +488,48 @@ add_missing_env_keys() {
         _added="$_added $_key"
     done < "$_ex"
     [ -n "$_added" ] && note "   new .env keys, at the example's defaults:$_added"
+    add_other_missing_env_keys
+    return 0
+}
+
+# Every other key of the example that .env lacks, so a reinstall or an update
+# leaves an .env that names every setting the release knows (it used to keep
+# only the list above). Added only where it changes nothing: the example's
+# value is empty (compose reads an empty key as an absent one) or is the very
+# default docker-compose.yml gives the key. Never a password, a secret or a
+# token, never a once-only marker (*_DEFAULTED, *_SET_AT: their absence is
+# what makes a migration run), and never a key .env already has, empty or not.
+add_other_missing_env_keys() {
+    _env="$COMPOSE_DIR/.env"
+    _ex="$COMPOSE_DIR/.env.example"
+    _compose="$COMPOSE_DIR/docker-compose.yml"
+    [ -f "$_env" ] && [ -f "$_ex" ] || return 0
+    _added=""
+    while IFS= read -r _line || [ -n "$_line" ]; do
+        _line=$(printf '%s' "$_line" | tr -d '\r')
+        case "$_line" in
+            [A-Z_0-9]*=*) ;;
+            *) continue ;;
+        esac
+        _key=${_line%%=*}
+        _val=${_line#*=}
+        case "$_key" in
+            *PASSWORD*|*SECRET*|*TOKEN*|*_DEFAULTED|*_SET_AT) continue ;;
+        esac
+        grep -q "^$_key=" "$_env" && continue
+        if [ -n "$_val" ]; then
+            [ -f "$_compose" ] || continue
+            # The key's compose defaults, ${KEY:-value}; one, and the same.
+            _defaults=$(grep -o "\${$_key:-[^}]*}" "$_compose" 2>/dev/null | sed "s/^\\\${$_key:-//; s/}\$//" | sort -u)
+            [ -n "$_defaults" ] || continue
+            [ "$(printf '%s\n' "$_defaults" | wc -l)" = 1 ] || continue
+            [ "$_defaults" = "$_val" ] || continue
+        fi
+        [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
+        printf '%s\n' "$_line" >> "$_env"
+        _added="$_added $_key"
+    done < "$_ex"
+    [ -n "$_added" ] && note "   .env keys it did not name, at what they already meant:$_added"
     return 0
 }
 
@@ -558,15 +634,7 @@ run_update() {
     # From here VERSION says the new version whatever happens to the build;
     # this is what tells the next run to finish it.
     : > "$BUILD_PENDING" 2>/dev/null || true
-    migrate_timezone
-    add_missing_env_keys
-    # Before the layout, which reads the kingdoms' own counts.
-    migrate_kingdoms
-    # After the keys, so a world that had no layout line at all gets the
-    # example's and then this.
-    migrate_world_layout
-    # After the keys too: a world that never had the line gets the example's.
-    migrate_blessing_scroll
+    migrate_env
     build_and_start
 }
 
@@ -574,7 +642,8 @@ run_update() {
 # Also what a run that finds BUILD_PENDING does, so a build that failed (or
 # a VPS that rebooted halfway) is finished without downloading anything.
 build_and_start() {
-    # Before compose, because a published port range only changes at a recreate.
+    # Before compose, because a published port range only changes at a recreate
+    # (migrate_env did it already on a full update; a pending build redoes it).
     sync_channel_ports
     restore_empty_context_dirs
     stage_panel_context || { fail "the panel's build context could not be staged from files/"; return 1; }
@@ -594,6 +663,25 @@ build_and_start() {
 }
 
 kv() { sed -n "s/^$2=//p" "$1" 2>/dev/null | head -n 1; }
+
+# What an update does to .env once the new files are in place, in this order.
+# `sh update.sh env' runs it alone: vps-install.sh does when it installs over
+# a world that already has an .env (the launcher's "install" over an older
+# world on a VPS), so a new key, the channels' ports and the once-only flips
+# reach that world as they reach an updated one. Existing values stay.
+migrate_env() {
+    migrate_timezone
+    add_missing_env_keys
+    # Before the layout, which reads the kingdoms' own counts.
+    migrate_kingdoms
+    # After the keys, so a world that had no layout line at all gets the
+    # example's and then this.
+    migrate_world_layout
+    # After the keys too: a world that never had the line gets the example's.
+    migrate_blessing_scroll
+    # Before compose, because a published port range only changes at a recreate.
+    sync_channel_ports
+}
 
 watch() {
     WATCHING=1
@@ -623,7 +711,8 @@ case "${1:-run}" in
     check) check_tree; fetch_manifest > "$WORK.m" && printf 'installed %s, published %s\n' "$(installed_version)" "$(manifest_field "$WORK.m" version)"; rm -f "$WORK.m" ;;
     watch) check_tree; watch ;;
     stage) check_tree; stage_panel_context && say "the panel's build context is staged from files/" || die "staging the panel's build context failed" ;;
-    *) printf 'usage: sh %s [run|check|watch|stage]\n' "$0"; exit 2 ;;
+    env)   check_tree; migrate_env ;;
+    *) printf 'usage: sh %s [run|check|watch|stage|env]\n' "$0"; exit 2 ;;
 esac
 exit $?
 }
