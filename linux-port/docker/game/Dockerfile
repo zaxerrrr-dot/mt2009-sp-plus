@@ -619,6 +619,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/ochao-add \
 #  * the two guards: the Fire Land's (20394) on map 62 at the archive's exit cell (91,916),
 #    the Ice Land's (20395) on Mount Sohan (61) at (738,119); both cells measured free;
 #  * the Nemere dungeon's drops, mirrored from the package's Razador groups.
+# Older packages' shares (a VPS on 2.14.0, 29 September) list no 351 in map/index and
+# already carry a Mob 6191 group: the index line is added like 352's, and the awk below
+# drops any 6091/6191 group but the chest previews, so only our own groups guard against
+# a second append.
 COPY dungeons/ /tmp/dungeons-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -626,6 +630,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && cp "$A/map/metin2_map_n_flame_dungeon_01/server_attr" "$L/map/metin2_map_n_flame_dungeon_01/server_attr" \
  && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
  && { grep -q -E '^352[[:blank:]]' "$L/map/index" || printf '352 metin2_map_n_snow_dungeon_01\n' >> "$L/map/index"; } \
+ && { grep -q -E '^351[[:blank:]]' "$L/map/index" || printf '351 metin2_map_n_flame_dungeon_01\n' >> "$L/map/index"; } \
  && test "$(grep -c -E '^352[[:blank:]]+metin2_map_n_snow_dungeon_01[[:space:]]*$' "$L/map/index")" = 1 \
  && test "$(grep -c -E '^351[[:blank:]]+metin2_map_n_flame_dungeon_01[[:space:]]*$' "$L/map/index")" = 1 \
  && mkdir -p /opt/metin2/share/data/dungeon \
@@ -638,7 +643,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
       grep -q -E "[[:blank:]]$4[[:space:]]*\$" "$F" || printf 'm\t%s\t%s\t0\t0\t0\t0\t60s\t100\t1\t%s\n' "$2" "$3" "$4" >> "$F"; \
       grep -q -E "^m[[:blank:]]+$2[[:blank:]]+$3[[:blank:]].*[[:blank:]]$4" "$F"; \
     done \
- && ! grep -q -E '^[[:blank:]]*Mob[[:blank:]]+6191([^0-9]|$)' "$L/mob_drop_item.txt" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_nemere_' "$L/mob_drop_item.txt" \
  && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
  && cat "$A/mob_drop_item.dungeons.append.txt" >> "$L/mob_drop_item.txt" \
  && awk '/^Group/{inb=1; blk=""; cut=0; name=$2} \
