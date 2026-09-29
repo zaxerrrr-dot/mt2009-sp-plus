@@ -52,6 +52,8 @@ set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=${M2_UPDATE_STACK_DIR:-$(cd "$HERE/../.." && pwd)}
 COMPOSE_DIR="$ROOT/linux-port/docker"
+# Written after an unpack, removed after a build that finished (build_and_start).
+BUILD_PENDING="$ROOT/.update-build-pending"
 REPO=${M2_UPDATE_REPO:-zaxerrrr-dot/mt2009-sp-plus}
 case "$REPO" in
     *TieruYT/metin2-playerbots*)
@@ -523,6 +525,15 @@ run_update() {
     [ -n "$_ver" ] && [ -n "$_url" ] && [ -n "$_sha" ] || { fail "the manifest has no server version, url or sha256"; return 1; }
     note "   installed $(installed_version), published $_ver"
     if [ "$(installed_version)" = "$_ver" ] && [ "${FORCE:-0}" != 1 ]; then
+        # The files are this version, but the last run stopped before its
+        # build finished (BUILD_PENDING is written right after the unpack):
+        # VERSION alone said "nothing to do" and the server kept the old
+        # images for good ("already on 2.14.0", 29 September). Build now.
+        if [ -f "$BUILD_PENDING" ]; then
+            note "   the files are $_ver, but the last update did not finish building -- building now"
+            build_and_start
+            return $?
+        fi
         note "   already on $_ver -- nothing to do (FORCE=1 to unpack it again)"
         set_status ok "the server is running version $_ver"
         return 0
@@ -544,6 +555,9 @@ run_update() {
     step "unpacking $_ver over $ROOT"
     unpack_over "$WORK/update.zip" "$ROOT" || { fail "the zip could not be unpacked"; return 1; }
     note "   the folder now says version $(installed_version)"
+    # From here VERSION says the new version whatever happens to the build;
+    # this is what tells the next run to finish it.
+    : > "$BUILD_PENDING" 2>/dev/null || true
     migrate_timezone
     add_missing_env_keys
     # Before the layout, which reads the kingdoms' own counts.
@@ -553,6 +567,13 @@ run_update() {
     migrate_world_layout
     # After the keys too: a world that never had the line gets the example's.
     migrate_blessing_scroll
+    build_and_start
+}
+
+# The half of an update after the files: staged build inputs, then compose.
+# Also what a run that finds BUILD_PENDING does, so a build that failed (or
+# a VPS that rebooted halfway) is finished without downloading anything.
+build_and_start() {
     # Before compose, because a published port range only changes at a recreate.
     sync_channel_ports
     restore_empty_context_dirs
@@ -564,7 +585,8 @@ run_update() {
         ( cd "$COMPOSE_DIR" && docker compose up -d --build ) >> "$LOG" 2>&1
     else
         ( cd "$COMPOSE_DIR" && docker compose up -d --build )
-    fi || { fail "the new version was not built or not started -- the log says where it stopped"; return 1; }
+    fi || { fail "the new version was not built or not started -- the log says where it stopped; run this again to retry the build"; return 1; }
+    rm -f "$BUILD_PENDING" 2>/dev/null || true
     note "the server is now running version $(installed_version)"
     set_status ok "the server is running version $(installed_version)"
     rm -rf "$WORK"
