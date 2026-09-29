@@ -1155,6 +1155,11 @@ def read_ai_weights():
     vals["REST"] = 100
     # Percent of bots that pick fights with bots of another kingdom; 0 is off.
     vals["KINGDOMPVP"] = 0
+    # The three wills (playerbot_config.h): percent of what the build does -
+    # the Battle Pass errands, the sash keepers, the Dragon Soul users.
+    vals["BATTLEPASS"] = 100
+    vals["SASH"] = 100
+    vals["ALCHEMY"] = 100
     # The lowest plus a refine under a Blessing or Dragon God scroll may land
     # on; 1 is no floor, which is also what the core starts from.
     vals["SCROLL_FROM"] = 1
@@ -1222,6 +1227,12 @@ def read_ai_weights():
                 if name == "KINGDOMPVP":
                     try:
                         vals["KINGDOMPVP"] = max(0, min(100, int(parts[1])))
+                    except ValueError:
+                        pass
+                    continue
+                if name in ("BATTLEPASS", "SASH", "ALCHEMY"):
+                    try:
+                        vals[name] = max(0, min(100, int(parts[1])))
                     except ValueError:
                         pass
                     continue
@@ -1302,6 +1313,9 @@ def write_ai_weights(vals):
     # Percent of bots hostile to the other kingdoms; 0 means the world is at
     # peace with itself, which is the default the core also starts from.
     body.append("KINGDOMPVP\t%d" % max(0, min(100, int(vals.get("KINGDOMPVP", 0)))))
+    # The three wills, percent of the build's: 100 is the world as it was.
+    for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
+        body.append("%s\t%d" % (key, max(0, min(100, int(vals.get(key, 100))))))
     # The lowest plus a scroll refine may land on; 1 leaves the bots' own
     # rules alone.
     body.append("SCROLL_FROM\t%d" % max(1, min(9, int(vals.get("SCROLL_FROM", 1)))))
@@ -3998,6 +4012,19 @@ T.update({
                   "tr":"İlk köydeki işlerini bitirdikten sonra yaklaşık üç dakika pazar halkasında kalıp tezgâhlar arasında dolaşan botların payı. 0 - kimse dinlenmez: botlar sürekli avlanır, şehre yalnızca iş için gelir. Kaydırıcı ne derse desin 18. seviyenin altındaki bot asla dinlenmez, açık tezgâh yokken kimse tezgâhlara bakmaz. Bot kişilikleri açıkken yalnızca kötü ruh halindeki botlar dinlenir ve kaydırıcı onların payıdır."},
  "ai_rest_off":  {"en":"nobody rests","pl":"nikt nie odpoczywa","de":"niemand ruht","tr":"kimse dinlenmez"},
  "ai_rest_all":  {"en":"every bot","pl":"każdy bot","de":"jeder Bot","tr":"her bot"},
+ "ai_will_bp":   {"en":"Will to do the Battle Pass","pl":"Chęć robienia Battle Passa"},
+ "ai_will_bp_help": {"en":"Every 1.5-2.5 minutes a bot with nothing else to do draws whether it takes one of its open Battle Pass missions on as a goal for up to an hour: a trip to the map of the mission's Metin stone, fishing, the blacksmith, or a place in a boss raid. The slider multiplies that chance (at 100 it depends on the personality: 15-70%) and the chance of taking the next mission of a chain. 0 - no deliberate Battle Pass trips at all, and running ones end at the next check. Progress made by the way (monsters, Metins and fish met on the way, shouts on the chat) counts whatever the slider says. Applies at once.",
+                  "pl":"Co 1,5–2,5 minuty bot bez innego zajęcia losuje, czy weźmie jedną ze swoich otwartych misji Battle Passa jako cel na do godziny: wyprawa na mapę metina z misji, łowienie ryb, wizyta u kowala albo miejsce w rajdzie na bossa. Suwak mnoży tę szansę (przy 100 zależy od osobowości: 15–70%) i szansę wzięcia kolejnej misji z łańcucha. 0 - żadnych celowych wypraw po Battle Pass, a trwające kończą się przy następnym sprawdzeniu. Postęp „przy okazji” (potwory, metiny i ryby spotkane po drodze, okrzyki na czacie) liczy się niezależnie od suwaka. Działa od razu."},
+ "ai_will_bp_off": {"en":"only by the way","pl":"tylko przy okazji"},
+ "ai_will_all":  {"en":"as before","pl":"jak dotąd"},
+ "ai_will_sash": {"en":"Will to make sashes","pl":"Chęć robienia szarf"},
+ "ai_will_sash_help": {"en":"At 100, 80% of the bots of level 30 and up build sashes (chosen for good by the character number). A builder keeps its sashes, combines them at Uriel, absorbs a good weapon or armour into one, buys sashes and pieces to absorb off the market and wears the best one. The slider shrinks that pool: the bots outside it sell their sashes on their stalls, and a sash already worn stays on. Raising it brings the same bots back. Reaches a bot at its next sash check (3-6 minutes).",
+                  "pl":"Przy 100 szarfy buduje 80% botów od 30 poziomu (wybranych na stałe po numerze postaci). Budowniczy trzyma szarfy w plecaku, łączy je u Uriela, wchłania w nie dobrą broń lub zbroję, kupuje szarfy i przedmioty do wchłonięcia z rynku i zakłada najlepszą. Suwak zmniejsza tę pulę: boty spoza niej sprzedają szarfy na straganach, a założona szarfa zostaje na postaci. Podniesienie przywraca te same boty. Dociera do bota przy jego następnym sprawdzeniu szarf (3–6 minut)."},
+ "ai_will_sash_off": {"en":"nobody builds, all sell","pl":"nikt nie buduje, wszyscy sprzedają"},
+ "ai_will_alch": {"en":"Will to do alchemy","pl":"Chęć robienia alchemii"},
+ "ai_will_alch_help": {"en":"At 100, 75% of the bots of level 30 and up use Dragon Soul alchemy (chosen for good by the character number): they open Cor Draconis, wear the best dragon stones, refine them at the Alchemist, buy Cors, stones and the Time Elixir off the market. The slider shrinks that pool: the bots outside it sell their Cors and spare stones on their stalls. Every bot of 30 and up still gathers the shards and daily Cors whatever the slider says, and worn stones stay on. Raising it brings the same bots back. Applies at once.",
+                  "pl":"Przy 100 alchemii smoka używa 75% botów od 30 poziomu (wybranych na stałe po numerze postaci): otwierają Cor Draconis, zakładają najlepsze kamienie smoka, ulepszają je u Alchemika, kupują z rynku Cory, kamienie i Eliksir Czasu. Suwak zmniejsza tę pulę: boty spoza niej sprzedają Cory i zbędne kamienie na straganach. Odłamki i dzienne Cory zbiera każdy bot od 30 poziomu niezależnie od suwaka, a założone kamienie zostają. Podniesienie przywraca te same boty. Działa od razu."},
+ "ai_will_alch_off": {"en":"nobody uses, all sell","pl":"nikt nie używa, wszyscy sprzedają"},
  "ai_kpvp":      {"en":"Hostility between kingdoms","pl":"Wrogość między królestwami","de":"Feindschaft zwischen Königreichen","tr":"Krallıklar arası düşmanlık"},
  "ai_kpvp_help": {"en":"The share of bots that will start a duel with a bot of another kingdom when they meet on shared ground - Orc Valley, the desert, Mount Sohan, the dungeons. Never in a village, never against a player, and never against a bot that is hurt or already fighting one. Which bots are the aggressive ones is fixed per character, so the same ones quarrel after every restart. Off by default. It works only with the shared world layout (unified, the default up to 1500 bots): under split every core holds one kingdom's bots, so there is nobody to fight.",
                   "pl":"Udział botów, które zaczepią bota z innego królestwa, gdy spotkają go na wspólnym terenie - w Dolinie Orków, na pustyni, na Górze Sohan, w lochach. Nigdy w wiosce, nigdy na graczu i nigdy na bocie rannym albo już walczącym. To, które boty są agresywne, jest przypisane na stałe do postaci, więc po każdym restarcie zaczepiają te same. Domyślnie wyłączone. Działa tylko przy wspólnym układzie świata (unified, domyślny do 1500 botów): przy układzie split każdy rdzeń ma boty jednego królestwa i nie ma z kim walczyć.",
@@ -6662,6 +6689,20 @@ TPL_AI = BASE.replace("__BODY__", """
     <span>0 — {{t('ai_rest_off')}}</span><span>100 — {{t('ai_rest_all')}}</span>
   </div>
 </div>
+{% if engine_mt2009 %}
+{% for wkey, wlabel, wicon, woff in [("BATTLEPASS", "ai_will_bp", "🎟️", "ai_will_bp_off"), ("SASH", "ai_will_sash", "🎀", "ai_will_sash_off"), ("ALCHEMY", "ai_will_alch", "🐉", "ai_will_alch_off")] %}
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">{{wicon}} {{t(wlabel)}}
+      <span class="badge" id="v_{{wkey}}">{{cur.get(wkey, 100)}}%</span></h3>
+  <p class="muted" style="margin:0 0 6px">{{t(wlabel + '_help')}}</p>
+  <input type="range" name="{{wkey}}" id="s_{{wkey}}" min="0" max="100" step="5" value="{{cur.get(wkey, 100)}}" style="width:100%"
+         oninput="document.getElementById('v_{{wkey}}').textContent=this.value+'%'">
+  <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
+    <span>0 — {{t(woff)}}</span><span>100 — {{t('ai_will_all')}}</span>
+  </div>
+</div>
+{% endfor %}
+{% endif %}
 <div style="margin-bottom:18px">
   <h3 style="margin:0 0 2px">⚔️ {{t('ai_kpvp')}}
       <span class="badge" id="v_KINGDOMPVP">{{cur.get('KINGDOMPVP', 0)}}%</span></h3>
@@ -15373,6 +15414,13 @@ def ai_weights():
             vals["KINGDOMPVP"] = max(0, min(100, int(request.form.get("KINGDOMPVP", 0))))
         except (TypeError, ValueError):
             vals["KINGDOMPVP"] = 0
+        # The three wills are on the mt2009 page alone; a form without them
+        # (r40250, or a tab opened before they existed) keeps the file's.
+        for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
+            try:
+                vals[key] = max(0, min(100, int(request.form.get(key, old.get(key, 100)))))
+            except (TypeError, ValueError):
+                vals[key] = old.get(key, 100)
         try:
             vals["SCROLL_FROM"] = max(1, min(9, int(request.form.get("SCROLL_FROM", 1))))
         except (TypeError, ValueError):

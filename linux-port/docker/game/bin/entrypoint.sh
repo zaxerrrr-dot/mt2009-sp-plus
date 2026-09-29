@@ -182,6 +182,11 @@ command -v m2-lang >/dev/null 2>&1 \
 # account, the spool folder both containers write (m2-chests).
 command -v m2-chests >/dev/null 2>&1 \
   && { m2-chests prepare || log "could not prepare the chest files (the panel's Szkatułki page will say so)"; }
+# MT2009_PLUS_DROP_EDITOR_V1: the same for the monsters' drops the Seban panel
+# edits - the image's mob_drop_item.txt kept aside, the live one writable by
+# the service account, the spool folder (m2-drops).
+command -v m2-drops >/dev/null 2>&1 \
+  && { m2-drops prepare || log "could not prepare the drop files (the panel's Drop z potworów page will say so)"; }
 
 # -----------------------------------------------------------------------------
 # 3. Resource limits.

@@ -151,10 +151,12 @@ namespace
 		return quest::CQuestManager::instance().GetEventFlag("m2_alchemy_off") != 0;
 	}
 
+	// The share scaled by the panel's ALCHEMY will (playerbot_config.h; 100 =
+	// the build's 75%), by player id, so the same bots come back when raised.
 	bool IsPlayerBotAlchemyUserPID(DWORD pid)
 	{
 		const DWORD h = (pid * 3266489917U) ^ 0x414c4348U;
-		return (int)((h >> 15) % 100) < PLAYERBOT_ALCHEMY_PERCENT;
+		return (int)((h >> 15) % 100) < PLAYERBOT_ALCHEMY_PERCENT * s_iPlayerBotAlchemyPercent / 100;
 	}
 
 	bool IsPlayerBotAlchemyUser(LPCHARACTER ch)

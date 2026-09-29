@@ -130,7 +130,11 @@ namespace playerbot_bpbots
 		{ 8002, true, false, { 0, 0 } },
 		{ 8003, true, false, { 0, 0 } },
 		{ 8004, true, false, { 0, 0 } },
-		{ 8005, true, true, { 0, 0 } },
+		// 8005 is on M2 only for the errand: the first village has one spawn
+		// of it every 20-25 minutes, the second 3+2 every 12-15, and the level
+		// rule takes a bot of 22 and more to M2 anyway - on an M1 errand it
+		// stood on the stone's map 37% of the time (29 September).
+		{ 8005, false, true, { 0, 0 } },
 		{ 8006, false, true, { 0, 0 } },
 		{ 8007, false, true, { 0, 0 } },
 		{ 8008, false, false, { PLAYERBOT_MAP_DESERT, PLAYERBOT_MAP_ORC_VALLEY } },
@@ -1045,6 +1049,9 @@ namespace playerbot_bpbots
 				EndErrand(ch, state, b, dwNow, "done");
 			else if (!IsActive(b, dwNow))
 				EndErrand(ch, state, b, dwNow, "time");
+			// The panel's BATTLEPASS will at zero: no bot keeps an errand.
+			else if (s_iPlayerBotBattlePassPercent <= 0)
+				EndErrand(ch, state, b, dwNow, "will_off");
 			// A person's business comes first; a bot party it was in leaves it
 			// (IsPlayerBotPartyEligible says no while the errand lasts).
 			else if (IsPlayerBotHeldForCompany(ch) || IsPlayerBotInDungeonBusiness(ch, state) ||
@@ -1064,13 +1071,28 @@ namespace playerbot_bpbots
 		if (b.dwRestUntil != 0 && (int)(dwNow - b.dwRestUntil) < 0)
 			return;
 		const BYTE follow = b.bFollowGoal;
-		b.bFollowGoal = GOAL_NONE;
-		if (open.empty() || IsBusy(ch, state))
+		if (open.empty())
+		{
+			b.bFollowGoal = GOAL_NONE;
 			return;
+		}
+		// Still busy with what finished the mission (the fishing session that
+		// caught the last fish, a raid): the chain's next errand waits for the
+		// next free look instead of being lost - it was cleared before this
+		// test, and 1 follow in 8468 draws came of 288 errands done (29 September).
+		if (IsBusy(ch, state))
+			return;
+		b.bFollowGoal = GOAL_NONE;
 		++s_uRolls;
 		if (follow != GOAL_NONE)
 			++s_uFollow;
-		if (follow == GOAL_NONE && number(1, 100) > AdoptChance(ch, state))
+		// The panel's BATTLEPASS will (playerbot_config.h): the chance scaled,
+		// and the next errand of a chain drawn against it too - at 100 the
+		// build's draw, at 0 no errand at all (what a bot does by the way
+		// still counts for its missions).
+		const int will = s_iPlayerBotBattlePassPercent;
+		if (follow == GOAL_NONE ? number(1, 100) > AdoptChance(ch, state) * will / 100 :
+				(will < 100 && number(1, 100) > will))
 		{
 			++s_uByTheWay;
 			// By the way, this time; the next draw jittered by the pid.

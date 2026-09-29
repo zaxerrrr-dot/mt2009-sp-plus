@@ -209,6 +209,9 @@ AI_WEIGHT_HINTS = {
 # them as switches or direct settings rather than 25–250% goal weights.
 AI_LIVE_DEFAULTS = {"CHAT": 1, "BOOKS": 1, "NIGHT": 1, "LIFE": 0, "WARS": 1, "TOWER": 1, "CATACOMB": 1, "ISHOP": 1,
                      "SHOP_M2": 0, "PERSONA": 1, "SCRAP": 0, "REST": 100, "KINGDOMPVP": 0, "SCROLL_FROM": 1,
+                     # The three wills (playerbot_config.h): percent of what the
+                     # build does, 100 = as before, 0 = none of it.
+                     "BATTLEPASS": 100, "SASH": 100, "ALCHEMY": 100,
                      "WAR_MINUTES": 30, "WAR_HOURS": 2, "CHEST": None, "CHEST_STONE": None}
 AI_SPECIAL_WEIGHT_KEYS = frozenset(AI_LIVE_DEFAULTS)
 BIOLOGIST_COMPLETE_STATE = 557528158
@@ -2511,7 +2514,7 @@ def read_ai_weights():
                     key, raw_value = fields[0].upper(), fields[1]
                     if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "ISHOP", "SHOP_M2", "PERSONA"):
                         values[key] = 0 if raw_value.lower() in ("0", "off", "no") else 1
-                    elif key in ("SCRAP", "REST", "KINGDOMPVP"):
+                    elif key in ("SCRAP", "REST", "KINGDOMPVP", "BATTLEPASS", "SASH", "ALCHEMY"):
                         values[key] = max(0, min(100, int(raw_value)))
                     elif key == "SCROLL_FROM":
                         values[key] = max(1, min(9, int(raw_value)))
@@ -2569,6 +2572,8 @@ def write_ai_weights(values):
     content.append(f"SCRAP\t{max(0, min(100, int(values.get('SCRAP', 0))))}")
     content.append(f"REST\t{max(0, min(100, int(values.get('REST', 100))))}")
     content.append(f"KINGDOMPVP\t{max(0, min(100, int(values.get('KINGDOMPVP', 0))))}")
+    for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
+        content.append(f"{key}\t{max(0, min(100, int(values.get(key, 100))))}")
     content.append(f"SCROLL_FROM\t{max(1, min(9, int(values.get('SCROLL_FROM', 1))))}")
     content.append(f"WAR_MINUTES\t{max(5, min(180, int(values.get('WAR_MINUTES', 30))))}")
     content.append(f"WAR_HOURS\t{max(1, min(24, int(values.get('WAR_HOURS', 2))))}")
@@ -8027,6 +8032,12 @@ def manage_behavior():
         values["KINGDOMPVP"] = max(0, min(100, int(request.form.get("KINGDOMPVP", values.get("KINGDOMPVP", 0)))))
     except (TypeError, ValueError):
         values["KINGDOMPVP"] = 0
+    # The three wills: a field the page did not render keeps the file's value.
+    for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
+        try:
+            values[key] = max(0, min(100, int(request.form.get(key, values.get(key, 100)))))
+        except (TypeError, ValueError):
+            values[key] = 100
     try:
         values["SCROLL_FROM"] = max(1, min(9, int(request.form.get("SCROLL_FROM", values.get("SCROLL_FROM", 1)))))
     except (TypeError, ValueError):
@@ -8757,6 +8768,615 @@ def api_chest_items():
                  (int(query) if query.isdigit() else -1, f"%{query}%"))
     return {"ok": True, "items": [{"vnum": int(r["vnum"]), "name": game_text(r["locale_name"])} for r in found]}
 # ---- /MT2009_PLUS_CHEST_EDITOR_V1 --------------------------------------------
+
+
+# ---- MT2009_PLUS_DROP_EDITOR_V1 ----------------------------------------------
+# "Drop z potworów": what a monster, a Metin stone or a boss drops, edited here
+# (the "Szkatułki" page's twin, for mob_drop_item.txt).
+#
+# mob_drop_item.txt lives in the game image (the package's file plus the
+# Dockerfile's appends) and every core reads it once, while it boots
+# (ReadMonsterDropItemGroup). A group is "Group <name> { Mob <vnum>; Type
+# drop|kill|limit|thiefgloves; [kill_drop N | level_limit N]; 1 <item> <count>
+# <chance> [rare] ... }". This page writes the groups the operator changed -
+# only those, whole, one per monster and kind - to the spool volume both
+# containers share (drops/mob_drop_item.custom.txt, ASCII with CRLF). The
+# game's m2-drops (m2-supervise, before the cores boot) cuts every image
+# group of the same monster and kind out of the live file and appends these,
+# so a server update (a new image, a new mob_drop_item.txt) keeps them. A
+# group without item lines means "none of this kind for this monster". The
+# game publishes the image's file back as drops/mob_drop_item.base.txt, which
+# is what this page shows, and how its last apply went as drops/status.
+DROP_SPOOL = RATES_SPOOL / "drops"
+DROP_CUSTOM = DROP_SPOOL / "mob_drop_item.custom.txt"
+DROP_BASE = DROP_SPOOL / "mob_drop_item.base.txt"
+DROP_COMMON_BASE = DROP_SPOOL / "common_drop_item.base.txt"
+DROP_ETC_BASE = DROP_SPOOL / "etc_drop_item.base.txt"
+DROP_STATUS = DROP_SPOOL / "status"
+DROP_BACKUPS = DROP_SPOOL / "backup"
+DROP_BACKUP_KEEP = 100
+DROP_MAX_LINES = 255          # ReadMonsterDropItemGroup reads indexes 1..255
+DROP_MAX_COUNT = 2000
+DROP_TYPES = {
+    "drop": "Drop (każda pozycja osobno)",
+    "kill": "Kill (1 przedmiot co N zabójstw)",
+    "limit": "Limit (od poziomu gracza)",
+    "thiefgloves": "Rękawice złodzieja / premium",
+}
+MOB_RANK_NAMES = {0: "Zwykły", 1: "Silniejszy", 2: "Rycerz", 3: "Elitarny", 4: "Boss", 5: "Król"}
+MOB_TYPE_NAMES = {0: "Potwór", 1: "NPC", 2: "Metin", 3: "Portal", 4: "Drzwi", 5: "Budynek"}
+
+
+def drop_ascii(text):
+    """Comments go into the file as plain ASCII: the core's line reader takes
+    any byte above 127 as the first half of a two-byte character."""
+    import unicodedata
+    text = (text or "").replace("ł", "l").replace("Ł", "L")
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"[^A-Za-z0-9 .,:;()+'/%-]", " ", text).strip()[:60]
+
+
+def drop_parse(text):
+    """mob_drop_item.txt -> groups, read the way the core reads it: keys in any
+    case, the first value of a key wins, index lines 1, 2, 3... up to the
+    first missing one, "--" starts a comment, "#" a comment line."""
+    groups, current = [], None
+    for number, raw in enumerate(text.replace("\r", "").split("\n"), 1):
+        tokens = raw.split()
+        if not tokens or tokens[0].startswith("#") or tokens[0].startswith("//"):
+            continue
+        for position, token in enumerate(tokens):
+            if position and token.startswith("--"):
+                comment = " ".join(tokens[position:]).lstrip("-").strip()
+                tokens = tokens[:position]
+                break
+        else:
+            comment = ""
+        key = tokens[0].lower()
+        if current is None:
+            if key == "group" and len(tokens) > 1:
+                current = {"name": tokens[1], "keys": {}, "entries": {}, "line": number, "comment": comment}
+            continue
+        if tokens[0].startswith("{") or key.startswith("--"):
+            continue
+        if tokens[0].startswith("}"):
+            keys = current["keys"]
+            items, index = [], 1
+            while index in current["entries"]:
+                items.append(current["entries"][index])
+                index += 1
+            mob = keys.get("mob", [""])[0]
+            group = {"name": current["name"], "line": current["line"], "type": keys.get("type", [""])[0],
+                     "mob": int(mob) if mob.isdigit() else None, "items": items,
+                     "kill_drop": (keys.get("kill_drop") or ["0"])[0], "level_limit": (keys.get("level_limit") or ["0"])[0],
+                     "mob_comment": keys.get("_mob_comment", "")}
+            if group["mob"] is not None:
+                groups.append(group)
+            current = None
+            continue
+        if len(tokens) < 2:
+            continue
+        if tokens[0].isdigit():
+            fields = tokens[1:]
+            current["entries"].setdefault(int(tokens[0]), {
+                "item": fields[0], "count": fields[1] if len(fields) > 1 else "0",
+                "prob": fields[2] if len(fields) > 2 else "0",
+                "rare": fields[3] if len(fields) > 3 and fields[3].isdigit() else "0", "comment": comment})
+        elif key not in current["keys"]:
+            current["keys"][key] = tokens[1:]
+            if key == "mob":
+                current["keys"]["_mob_comment"] = comment
+    return groups
+
+
+def drop_read(path):
+    try:
+        return path.read_bytes().decode("utf-8-sig", "replace")
+    except OSError:
+        return None
+
+
+def drop_state():
+    """The image's groups, the operator's groups ({(mob, type): group}), and
+    how the game took the last save."""
+    text = drop_read(DROP_BASE)
+    base = drop_parse(text or "")
+    custom = {}
+    for group in drop_parse(drop_read(DROP_CUSTOM) or ""):
+        custom.setdefault((group["mob"], group["type"]), group)
+    status = read_spool_values(DROP_STATUS) if DROP_STATUS.exists() else {}
+    sha = chest_file_sha(DROP_CUSTOM) if custom else ""
+    try:
+        base_time = datetime.fromtimestamp(DROP_BASE.stat().st_mtime)
+    except OSError:
+        base_time = None
+    if not status:
+        live = {"kind": "unknown", "text": "Gra nie zgłosiła jeszcze stanu dropu – obraz gry nie ma skryptu m2-drops albo rdzenie "
+                "jeszcze nie wystartowały. Zapis działa, ale gra użyje go dopiero po aktualizacji obrazu gry i restarcie."}
+    elif status.get("state") == "rejected" and status.get("sha") == sha:
+        live = {"kind": "error", "text": "Gra ODRZUCIŁA zapisany plik i działa na dropie z obrazu: " + status.get("message", "")}
+    elif status.get("state") == "rejected":
+        live = {"kind": "pending", "text": "Poprzedni zapis został odrzucony przez grę (" + status.get("message", "") +
+                "). Aktualny zapis czeka na restart rdzeni."}
+    elif (status.get("sha") or "") == sha:
+        live = {"kind": "ok", "text": "Zastosowane: w grze działa dokładnie ten drop, który widzisz" +
+                (f" ({len(custom)} zmienionych grup)." if custom else " (bez zmian względem obrazu gry).")}
+    else:
+        live = {"kind": "pending", "text": "Czeka na restart: zapisane zmiany wejdą po restarcie rdzeni gry – do tego czasu potwory dropią po staremu."}
+    try:
+        live["time"] = datetime.fromtimestamp(int(status.get("time", "0"))) if status.get("time") else None
+    except ValueError:
+        live["time"] = None
+    return {"base": base, "custom": custom, "has_base": text is not None, "base_time": base_time, "live": live}
+
+
+def drop_mob_rows():
+    cached = getattr(g, "_drop_mobs", None)
+    if cached is None:
+        cached = {}
+        for row in rows("SELECT vnum,locale_name,name,`rank`,type,level,drop_item FROM player.mob_proto"):
+            cached[int(row["vnum"])] = {
+                "vnum": int(row["vnum"]), "name": game_text(row["locale_name"]) or game_text(row["name"]),
+                "rank": int(row["rank"] or 0), "type": int(row["type"] or 0), "level": int(row["level"] or 0),
+                "drop_item": int(row["drop_item"] or 0)}
+        for mob in cached.values():
+            mob["rank_name"] = MOB_RANK_NAMES.get(mob["rank"], str(mob["rank"]))
+            mob["kind"] = ("metin" if mob["type"] == 2 else "boss" if mob["rank"] >= 4 and mob["type"] == 0
+                           else "mob" if mob["type"] == 0 else "other")
+            mob["kind_name"] = {"metin": "Metin", "boss": "Boss", "mob": "Potwór"}.get(mob["kind"], MOB_TYPE_NAMES.get(mob["type"], "Inne"))
+        g._drop_mobs = cached
+    return cached
+
+
+def drop_mob_groups(state, mob):
+    """What the engine uses for one monster, per kind: the operator's group,
+    or the image's. drop groups of one monster are merged by the engine, the
+    other kinds keep only the first group (std::map::emplace)."""
+    result = {}
+    for kind in DROP_TYPES:
+        base = [grp for grp in state["base"] if grp["mob"] == mob and grp["type"] == kind]
+        custom = state["custom"].get((mob, kind))
+        if custom is not None:
+            result[kind] = {"source": "custom", "groups": [custom] if custom["items"] else [], "base": base,
+                            "removed": not custom["items"]}
+        elif base:
+            result[kind] = {"source": "image", "groups": base if kind == "drop" else base[:1], "base": base,
+                            "ignored": [] if kind == "drop" else base[1:], "removed": False}
+    return result
+
+
+def drop_item_label(item, names, chest_groups):
+    item = str(item).lower()
+    if item.isdigit():
+        known = names.get(int(item))
+        return known["name"] if known else "NIEZNANY PRZEDMIOT"
+    if item.startswith("s") and item[1:].isdigit():
+        inner = names.get(int(item[1:]))
+        nested = chest_groups.get(int(item[1:]))
+        title = inner["name"] if inner and inner["type"] == 23 else (nested["name"] if nested else "")
+        return "Losowanie z grupy szkatułki " + item[1:] + (f" ({title})" if title else "") + ("" if nested else " – BRAK TAKIEJ GRUPY")
+    return "?"
+
+
+def drop_float(value):
+    try:
+        return float(str(value).replace(",", "."))
+    except ValueError:
+        return 0.0
+
+
+def drop_chance(kind, entry, group, weights):
+    """Chance per kill, in %, as CreateDropItem computes it for a killer of
+    the monster's level with no bonus (iDeltaPercent 100, iRandRange 4e6)."""
+    prob = drop_float(entry["prob"])
+    if kind in ("drop", "thiefgloves"):
+        return min(100.0, max(0.0, prob / 4.0))
+    if kind == "limit":
+        return min(100.0, max(0.0, prob))
+    if kind == "kill":
+        every = max(1, int(drop_float(group.get("kill_drop", 1)) or 1))
+        return (100.0 * max(0.0, prob) / weights / every) if weights else 0.0
+    return 0.0
+
+
+def drop_render_group(mob, kind, group):
+    lines = [f"Group\tMT2009_panel_{mob}_{kind}", "{", f"\tMob\t{mob}", f"\tType\t{kind}"]
+    if kind == "kill":
+        lines.append(f"\tkill_drop\t{group['kill_drop']}")
+    if kind == "limit":
+        lines.append(f"\tlevel_limit\t{group['level_limit']}")
+    for index, entry in enumerate(group["items"], 1):
+        line = f"\t{index}\t{entry['item']}\t{entry['count']}\t{entry['prob']}"
+        if kind == "kill":
+            line += f"\t{entry.get('rare') or 0}"
+        comment = drop_ascii(entry.get("comment"))
+        if comment:
+            line += f"\t-- {comment}"
+        lines.append(line)
+    lines.append("}")
+    return lines
+
+
+def drop_write_custom(custom_groups, reason):
+    """Writes the operator's groups ({(mob, type): group}) atomically, a
+    backup of the previous file first."""
+    import fcntl
+    DROP_SPOOL.mkdir(parents=True, exist_ok=True)
+    DROP_BACKUPS.mkdir(parents=True, exist_ok=True)
+    for folder in (DROP_SPOOL, DROP_BACKUPS):
+        try:
+            os.chown(folder, -1, 2050)
+            os.chmod(folder, 0o2770)
+        except OSError:
+            pass
+    with open(DROP_SPOOL / ".lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")[:-3]
+        backup = DROP_BACKUPS / f"mob_drop_item.custom.{stamp}.txt"
+        if DROP_CUSTOM.exists():
+            backup.write_bytes(DROP_CUSTOM.read_bytes())
+        else:
+            backup.write_bytes(b"# (przed tym zapisem nie bylo zadnych zmian z panelu - obraz gry)\r\n")
+        lines = ["# MT2009_PLUS_DROP_EDITOR_V1 - grupy mob_drop_item.txt zmienione w panelu Seban",
+                 f"# zapis: {datetime.now():%Y-%m-%d %H:%M:%S} - {drop_ascii(reason)}",
+                 "# Kazda grupa zastepuje WSZYSTKIE grupy z obrazu gry o tym samym Mob i Type (m2-drops, przy starcie rdzeni).",
+                 "# Grupa bez pozycji = ten potwor nie ma dropu tego rodzaju.", ""]
+        for mob, kind in sorted(custom_groups):
+            lines += drop_render_group(mob, kind, custom_groups[(mob, kind)]) + [""]
+        temporary = DROP_SPOOL / f"mob_drop_item.custom.txt.new{os.getpid()}"
+        temporary.write_bytes("\r\n".join(lines).encode("ascii", "replace"))
+        os.chmod(temporary, 0o664)
+        os.replace(temporary, DROP_CUSTOM)
+        for old in sorted(DROP_BACKUPS.glob("mob_drop_item.custom.*.txt"))[:-DROP_BACKUP_KEEP]:
+            try:
+                old.unlink()
+            except OSError:
+                pass
+
+
+def drop_backups():
+    result = []
+    for path in sorted(DROP_BACKUPS.glob("mob_drop_item.custom.*.txt"), reverse=True)[:40]:
+        try:
+            groups = drop_parse(path.read_bytes().decode("utf-8", "replace"))
+            result.append({"name": path.name, "time": datetime.fromtimestamp(path.stat().st_mtime),
+                           "groups": ", ".join(f"{grp['mob']} {grp['type']}" + ("" if grp["items"] else " (usunięta)")
+                                               for grp in groups) or "brak zmian (obraz gry)"})
+        except OSError:
+            continue
+    return result
+
+
+def drop_validate(mob, kind, group):
+    """Everything ReadMonsterDropItemGroup would stop the core on, and what
+    would make a drop silently never happen."""
+    errors = []
+    entries = group["items"]
+    if mob not in drop_mob_rows():
+        errors.append(f"Potwór {mob} nie istnieje w mob_proto.")
+    if kind not in DROP_TYPES:
+        errors.append("Nieznany rodzaj grupy.")
+        return errors
+    if not entries:
+        errors.append("Grupa musi mieć co najmniej jedną pozycję (żeby wyłączyć drop tego rodzaju, użyj „Usuń grupę”).")
+    if len(entries) > DROP_MAX_LINES:
+        errors.append(f"Najwyżej {DROP_MAX_LINES} pozycji w grupie (silnik czyta tylko numery 1–255).")
+    names = chest_item_names([e["item"] for e in entries])
+    chest_groups = chest_effective(chest_state())
+    for number, entry in enumerate(entries, 1):
+        item = entry["item"]
+        if item.isdigit():
+            if int(item) not in names:
+                errors.append(f"Pozycja {number}: przedmiot {item} nie istnieje w item_proto (rdzeń by nie wstał).")
+        elif item.startswith("s") and item[1:].isdigit():
+            if kind != "drop":
+                errors.append(f"Pozycja {number}: losowanie z grupy szkatułki (s{item[1:]}) działa tylko w grupie „drop”.")
+            elif int(item[1:]) not in chest_groups:
+                errors.append(f"Pozycja {number}: nie ma grupy szkatułki {item[1:]} w special_item_group.txt (nic by nie wypadło).")
+        else:
+            errors.append(f"Pozycja {number}: „{item}” to nie VNUM przedmiotu ani s+numer grupy szkatułki.")
+        if kind == "kill" and int(drop_float(entry["prob"])) < 1:
+            errors.append(f"Pozycja {number}: w grupie „kill” waga musi być liczbą całkowitą ≥ 1 (0 zatrzymuje rdzeń).")
+        if kind == "limit" and drop_float(entry["prob"]) > 100:
+            errors.append(f"Pozycja {number}: w grupie „limit” szansa to 0–100%.")
+    if kind == "kill" and int(group["kill_drop"]) < 1:
+        errors.append("„Co ile zabójstw” musi być co najmniej 1.")
+    if kind != "kill" and entries and not any(drop_float(e["prob"]) > 0 for e in entries):
+        errors.append("Co najmniej jedna pozycja musi mieć szansę większą od 0.")
+    return errors
+
+
+def drop_check_csrf():
+    if request.form.get("drop_csrf", "") != session.get("seban_update_csrf", ""):
+        flash("Sesja formularza wygasła – odśwież stronę i spróbuj jeszcze raz.", "error")
+        return False
+    return True
+
+
+def drop_other_sources(mob):
+    """Drops that are not in mob_drop_item.txt, read-only: the package's
+    common and etc tables and what CreateDropItem hands out by itself."""
+    stone, boss = mob["kind"] == "metin", mob["rank"] >= 4
+    other = []
+    if mob["drop_item"]:
+        text = drop_read(DROP_ETC_BASE) or ""
+        for line in text.replace("\r", "").split("\n"):
+            parts = line.split("\t")
+            if len(parts) >= 2 and parts[0].strip() == str(mob["drop_item"]):
+                other.append({"item": mob["drop_item"], "chance": f"{drop_float(parts[-1]) / 4:.3g}%",
+                              "note": "etc_drop_item.txt (pole drop_item w mob_proto)"})
+    if stone:
+        other += [
+            {"item": 50300, "chance": "1 szt. gwarantowana", "note": "Księga umiejętności z każdego Metina, gdy zabójca ma najwyżej poziom Metina + 15"},
+            {"item": None, "chance": "wg tabeli silnika", "note": "Kamienie duchowe (tabela aStoneDrop w silniku, zależnie od Metina)"},
+            {"item": 50255, "chance": "50% (bot 5%)", "note": "Cor Draconis – zabójca najwyżej 15 poz. ponad Metina, alchemia włączona"},
+            {"item": 50011, "chance": "domyślnie 30%", "note": "Szkatułka Blasku Księżyca (CONFIG MOONLIGHT_CHEST_STONE_PERMILLE, gdy szkatułki włączone)"},
+            {"item": 80017, "chance": "domyślnie 0,3%", "note": "Kupon SM (CONFIG DRAGON_COIN_STONE_PERMILLE)"},
+        ]
+        if 15 <= mob["level"] <= 99:
+            other.append({"item": 25040, "chance": "domyślnie 1%", "note": "Zwój Błogosławieństwa, Metiny 15–99 (CONFIG BLESSING_SCROLL_STONE_PERMILLE)"})
+    elif boss:
+        other += [
+            {"item": 50255, "chance": "80% (bot 5%)", "note": "Cor Draconis – zabójca najwyżej 15 poz. ponad bossa, alchemia włączona"},
+            {"item": 85001, "chance": "80%", "note": "Szarfa +0 (jedna z 85001/85005/85011/85015/85021) – zabójca najwyżej 15 poz. ponad bossa"},
+            {"item": 80017, "chance": "domyślnie 5%", "note": "Kupon SM (CONFIG DRAGON_COIN_BOSS_PERMILLE)"},
+            {"item": 50011, "chance": "domyślnie 1%", "note": "Szkatułka Blasku Księżyca (CONFIG MOONLIGHT_CHEST_PERMILLE, gdy szkatułki włączone)"},
+        ]
+    else:
+        other.append({"item": 50011, "chance": "domyślnie 1%", "note": "Szkatułka Blasku Księżyca (CONFIG MOONLIGHT_CHEST_PERMILLE, gdy szkatułki włączone)"})
+    if stone or boss:
+        other.append({"item": None, "chance": "×2", "note": "Eventy podwójnego łupu: wszystko, co wypadło z bossa/Metina, wypada drugi raz"})
+    other.append({"item": None, "chance": "—", "note": "Dropy z questów (skrypty questów) i event księgi jeździeckiej – poza tym edytorem"})
+    common = []
+    if mob["rank"] <= 3:
+        text = drop_read(DROP_COMMON_BASE) or ""
+        for line in text.replace("\r", "").split("\n")[1:]:
+            cells = line.split("\t")
+            part = cells[mob["rank"] * 6: mob["rank"] * 6 + 6]
+            if len(part) < 5 or not part[4].strip().isdigit() or int(part[4]) <= 1 or not part[1].strip().isdigit() or part[1].strip() == "0":
+                continue
+            common.append({"item": int(part[4]), "levels": f"{part[1].strip()}–{part[2].strip()}",
+                           "chance": drop_float(part[3]) / 4})
+    names = chest_item_names([o["item"] for o in other if o["item"]] + [c["item"] for c in common])
+    for entry in other + common:
+        entry["name"] = (names.get(entry["item"]) or {}).get("name", "") if entry["item"] else ""
+        entry["icon"] = item_icon_url(entry["item"]) if entry["item"] else None
+    return other, common
+
+
+@app.route("/drops")
+@login_required
+def drops():
+    state = drop_state()
+    mobs = drop_mob_rows()
+    query = request.args.get("q", "").strip()
+    kind = request.args.get("kind", "")
+    counts = {}
+    for grp in state["base"]:
+        counts[grp["mob"]] = counts.get(grp["mob"], 0) + 1
+    changed = sorted({mob for mob, _ in state["custom"]})
+    found = []
+    if query or kind in ("metin", "boss"):
+        needle = query.casefold()
+        for mob in mobs.values():
+            if kind in ("metin", "boss") and mob["kind"] != kind:
+                continue
+            if query and not (query == str(mob["vnum"]) or (not query.isdigit() and needle in mob["name"].casefold())):
+                continue
+            found.append(mob)
+        found.sort(key=lambda m: (m["vnum"] != (int(query) if query.isdigit() else -1), m["level"], m["vnum"]))
+        found = found[:300]
+    return render_template("drops.html", state=state, found=found, query=query, kind=kind, counts=counts,
+                           changed=[mobs.get(v) or {"vnum": v, "name": "?", "level": 0, "kind_name": "?", "rank_name": ""} for v in changed],
+                           custom_keys=state["custom"], backups=drop_backups(), drop_csrf=update_csrf_token(),
+                           restart=restart_progress(), types=DROP_TYPES)
+
+
+@app.route("/drops/<int:mob>")
+@login_required
+def drop_edit(mob):
+    state = drop_state()
+    info = drop_mob_rows().get(mob)
+    if info is None:
+        flash(f"Nie ma potwora o VNUM {mob} w mob_proto.", "error")
+        return redirect(url_for("drops"))
+    kinds = drop_mob_groups(state, mob)
+    vnums = []
+    for data in kinds.values():
+        for grp in data["groups"] + data.get("ignored", []):
+            vnums += [e["item"] for e in grp["items"]]
+    names = chest_item_names(vnums)
+    chest_groups = chest_effective(chest_state())
+    rates = read_rates()
+    sections = []
+    for kind, label in DROP_TYPES.items():
+        data = kinds.get(kind)
+        section = {"kind": kind, "label": label, "data": data, "entries": [], "custom": (mob, kind) in state["custom"],
+                   "has_base": bool(data and data["base"])}
+        if data and data["groups"]:
+            first = data["groups"][0]
+            section["kill_drop"] = first["kill_drop"]
+            section["level_limit"] = first["level_limit"]
+            for grp in data["groups"]:
+                weights = sum(max(0.0, drop_float(e["prob"])) for e in grp["items"]) if kind == "kill" else 0
+                for entry in grp["items"]:
+                    item = str(entry["item"])
+                    chance = drop_chance(kind, entry, grp, weights)
+                    section["entries"].append(dict(
+                        entry, group=grp["name"], label=drop_item_label(item, names, chest_groups), chance=chance,
+                        chance_rate=min(100.0, chance * (rates.get("drop", 100) / 100.0)) if kind != "limit" else chance,
+                        icon=item_icon_url(item) if item.isdigit() else None,
+                        nested=int(item[1:]) if item[:1].lower() == "s" and item[1:].isdigit() else None,
+                        share=(100.0 * drop_float(entry["prob"]) / weights) if weights else None))
+            section["group_names"] = [grp["name"] for grp in data["groups"]]
+        sections.append(section)
+    other, common = drop_other_sources(info)
+    return render_template("drops.html", edit=True, mob=info, sections=sections, state=state, other=other,
+                           common=common, rates=rates, drop_csrf=update_csrf_token(), types=DROP_TYPES)
+
+
+@app.post("/drops/<int:mob>")
+@login_required
+def drop_save(mob):
+    if not drop_check_csrf():
+        return redirect(url_for("drop_edit", mob=mob))
+    kind = request.form.get("kind", "")
+    action = request.form.get("action", "save")
+    anchor = f"#k-{kind}"
+    if kind not in DROP_TYPES:
+        flash("Nieznany rodzaj grupy.", "error")
+        return redirect(url_for("drop_edit", mob=mob))
+    state = drop_state()
+    custom = dict(state["custom"])
+    key = (mob, kind)
+    has_base = any(grp["mob"] == mob and grp["type"] == kind for grp in state["base"])
+    try:
+        if action == "reset":
+            if key not in custom:
+                flash("Ta grupa i tak jest taka jak w obrazie gry.")
+            else:
+                del custom[key]
+                drop_write_custom(custom, f"przywrocono {kind} potwora {mob} z obrazu gry")
+                flash(f"Grupa „{kind}” potwora {mob} wróci do stanu z obrazu gry po restarcie rdzeni.", "success")
+            return redirect(url_for("drop_edit", mob=mob) + anchor)
+        if action == "remove":
+            if has_base:
+                custom[key] = {"mob": mob, "type": kind, "kill_drop": "1", "level_limit": "0", "items": []}
+            else:
+                custom.pop(key, None)
+            drop_write_custom(custom, f"usunieto {kind} potwora {mob}")
+            flash(f"Grupa „{kind}” potwora {mob} zniknie po restarcie rdzeni." +
+                  (" Gra wytnie ją z pliku z obrazu także po aktualizacjach." if has_base else ""), "success")
+            return redirect(url_for("drop_edit", mob=mob) + anchor)
+        if action == "create":
+            if key in custom and custom[key]["items"]:
+                return redirect(url_for("drop_edit", mob=mob) + anchor)
+            if mob not in drop_mob_rows():
+                raise ValueError(f"Potwór {mob} nie istnieje w mob_proto.")
+            start = {"item": "27001", "count": "1", "prob": "1" if kind != "drop" else "4", "rare": "0", "comment": "do zmiany"}
+            custom[key] = {"mob": mob, "type": kind, "kill_drop": "100", "level_limit": "1", "items": [start]}
+            drop_write_custom(custom, f"nowa grupa {kind} potwora {mob}")
+            flash(f"Utworzono grupę „{kind}” z jedną pozycją startową (Czerwona Mikstura) – ustaw zawartość i zapisz."
+                  + (" Zastąpi ona grupę z obrazu gry." if has_base else ""), "success")
+            return redirect(url_for("drop_edit", mob=mob) + anchor)
+        entries = []
+        count = min(int(request.form.get("row_count", "0") or 0), DROP_MAX_LINES + 50)
+        for index in range(count):
+            prefix = f"r{index}_"
+            item = (request.form.get(prefix + "item") or "").strip().lower()
+            if request.form.get(prefix + "delete") == "1" or not item:
+                continue
+            item = item.split()[0]
+            label = f"Pozycja „{item}”"
+            prob_raw = (request.form.get(prefix + "prob") or "").strip().replace(",", ".")
+            if kind == "kill":
+                prob = str(chest_form_int(prob_raw, 0, 1000000, label + " – waga"))
+            else:
+                if not re.fullmatch(r"\d{1,7}(\.\d{1,6})?", prob_raw):
+                    raise ValueError(f"{label} – szansa: „{prob_raw}” to nie liczba (np. 4 albo 0.5).")
+                prob = prob_raw.rstrip("0").rstrip(".") if "." in prob_raw else prob_raw
+                if drop_float(prob) > 400:
+                    raise ValueError(f"{label} – szansa: najwyżej 400 (= 100% na zabicie).")
+            entries.append({
+                "item": item,
+                "count": str(chest_form_int(request.form.get(prefix + "count"), 1, DROP_MAX_COUNT, label + " – ilość")),
+                "prob": prob,
+                "rare": str(chest_form_int(request.form.get(prefix + "rare") or "0", 0, 100, label + " – rare")) if kind == "kill" else "0",
+                "comment": "",
+            })
+        group = {"mob": mob, "type": kind, "items": entries,
+                 "kill_drop": str(chest_form_int(request.form.get("kill_drop") or "1", 1, 1000000, "Co ile zabójstw")) if kind == "kill" else "0",
+                 "level_limit": str(chest_form_int(request.form.get("level_limit") or "0", 0, 250, "Poziom od")) if kind == "limit" else "0"}
+        errors = drop_validate(mob, kind, group)
+        if errors:
+            for message in errors[:12]:
+                flash(message, "error")
+            flash("Nic nie zostało zapisane – popraw błędy i zapisz jeszcze raz.", "error")
+            return redirect(url_for("drop_edit", mob=mob) + anchor)
+        names = chest_item_names([e["item"] for e in entries])
+        for entry in entries:
+            known = names.get(int(entry["item"])) if entry["item"].isdigit() else None
+            entry["comment"] = known["name"] if known else entry["item"]
+        custom[key] = group
+        drop_write_custom(custom, f"zmieniono {kind} potwora {mob}")
+    except ValueError as exc:
+        flash(str(exc), "error")
+        return redirect(url_for("drop_edit", mob=mob) + anchor)
+    except OSError as exc:
+        flash(f"Nie udało się zapisać pliku w wolumenie spool: {exc}", "error")
+        return redirect(url_for("drop_edit", mob=mob) + anchor)
+    flash(f"Zapisano {len(entries)} pozycji grupy „{kind}” potwora {mob}. Potwór zacznie tak dropić po restarcie rdzeni "
+          "(„Zastosuj teraz” na liście) – i zostanie tak po aktualizacjach serwera.", "success")
+    return redirect(url_for("drop_edit", mob=mob) + anchor)
+
+
+@app.post("/drops/apply")
+@login_required
+def drop_apply():
+    if not drop_check_csrf():
+        return redirect(url_for("drops"))
+    if request.form.get("confirmation", "").strip().upper() != "RESTART":
+        flash("Aby potwierdzić restart rdzeni, wpisz RESTART.", "error")
+        return redirect(url_for("drops"))
+    queue_rate_restart(read_rates())
+    flash("Restart rdzeni zlecony – przed startem gra wczyta drop z panelu (m2-drops). "
+          "Gracze online zostaną rozłączeni na ok. minutę.", "success")
+    return redirect(url_for("drops"))
+
+
+@app.post("/drops/restore")
+@login_required
+def drop_restore():
+    if not drop_check_csrf():
+        return redirect(url_for("drops"))
+    name = request.form.get("backup", "")
+    if not re.fullmatch(r"mob_drop_item\.custom\.[0-9-]+\.txt", name) or not (DROP_BACKUPS / name).is_file():
+        flash("Nie ma takiej kopii.", "error")
+        return redirect(url_for("drops"))
+    custom = {}
+    for group in drop_parse((DROP_BACKUPS / name).read_bytes().decode("utf-8", "replace")):
+        if group["type"] in DROP_TYPES:
+            custom.setdefault((group["mob"], group["type"]), group)
+    try:
+        drop_write_custom(custom, f"przywrocono kopie {name}")
+    except OSError as exc:
+        flash(f"Nie udało się zapisać pliku: {exc}", "error")
+        return redirect(url_for("drops"))
+    flash(f"Przywrócono kopię {name} ({len(custom)} grup). Obecny stan trafił do kopii. Zadziała po restarcie rdzeni.", "success")
+    return redirect(url_for("drops"))
+
+
+@app.post("/drops/reset-all")
+@login_required
+def drop_reset_all():
+    if not drop_check_csrf():
+        return redirect(url_for("drops"))
+    if request.form.get("confirmation", "").strip().upper() != "OBRAZ":
+        flash("Aby przywrócić cały drop z obrazu gry, wpisz OBRAZ.", "error")
+        return redirect(url_for("drops"))
+    try:
+        drop_write_custom({}, "przywrocono caly drop z obrazu gry")
+    except OSError as exc:
+        flash(f"Nie udało się zapisać pliku: {exc}", "error")
+        return redirect(url_for("drops"))
+    flash("Wszystkie zmiany dropu z panelu usunięte (są w kopii zapasowej). Drop z obrazu gry wróci po restarcie rdzeni.", "success")
+    return redirect(url_for("drops"))
+
+
+@app.route("/drops/backup/<name>")
+@login_required
+def drop_backup_view(name):
+    if not re.fullmatch(r"mob_drop_item\.custom\.[0-9-]+\.txt", name) or not (DROP_BACKUPS / name).is_file():
+        abort(404)
+    return (DROP_BACKUPS / name).read_bytes().decode("utf-8", "replace"), 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.route("/drops/file")
+@login_required
+def drop_file_view():
+    text = drop_read(DROP_CUSTOM)
+    return (text if text is not None else "# brak zmian z panelu - gra uzywa dropu z obrazu\n"), 200, {"Content-Type": "text/plain; charset=utf-8"}
+# ---- /MT2009_PLUS_DROP_EDITOR_V1 ---------------------------------------------
 
 
 from item_grants import install as install_item_grants

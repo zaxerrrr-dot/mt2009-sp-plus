@@ -209,6 +209,11 @@ boot_cores() {
   if [ "${HAVE_CHESTS:-0}" = "1" ]; then
     m2-chests apply || log "the panel's chests could not be applied -- the image's chests stay"
   fi
+  # MT2009_PLUS_DROP_EDITOR_V1: the monsters' drops as the Seban panel saved
+  # them (m2-drops), merged into mob_drop_item.txt the same way.
+  if [ "${HAVE_DROPS:-0}" = "1" ]; then
+    m2-drops apply || log "the panel's drops could not be applied -- the image's drops stay"
+  fi
 
   for name in "${CORE_ORDER[@]}"; do
     [ "$SHUTTING_DOWN" = "0" ] || return "$rc"
@@ -266,6 +271,11 @@ command -v m2-lang >/dev/null 2>&1 && HAVE_LANG=1
 # "Szkatułki" page (m2-chests; boot_cores calls it). Absent on older images.
 HAVE_CHESTS=0
 command -v m2-chests >/dev/null 2>&1 && HAVE_CHESTS=1
+
+# MT2009_PLUS_DROP_EDITOR_V1: what the monsters drop, from the Seban panel's
+# "Drop z potworów" page (m2-drops; boot_cores calls it). Absent on older images.
+HAVE_DROPS=0
+command -v m2-drops >/dev/null 2>&1 && HAVE_DROPS=1
 
 # The advanced panel's two resets (the bots' new game, the whole world anew).
 # Done with every core down, so no core and no db cache writes the old world

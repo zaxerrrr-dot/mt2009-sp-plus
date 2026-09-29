@@ -107,6 +107,21 @@ namespace
 	// author's town; zero is the operator who wants every bot hunting, asked
 	// for by name. The level floor beside it is PLAYERBOT_TOWN_REST_MIN_LEVEL.
 	int s_iPlayerBotRestPercent = 100;
+	// Three wills, in percent of what the build does (the operator, 29
+	// September: "suwaki: checi robienia Battle Passa, szarf, alchemii").
+	// A hundred is the world as it was and the default; zero is none of it.
+	//   BATTLEPASS - the draw a bot makes to take a Battle Pass mission on as
+	//     an errand (playerbot_bpbots.h AdoptChance, and the next errand of a
+	//     chain); what it does for the pass by the way still counts;
+	//   SASH - the share of the sash keepers (playerbot_sash.h
+	//     PLAYERBOT_SASH_KEEPER_PERCENT): the others sell their sashes;
+	//   ALCHEMY - the share of the Dragon Soul users (playerbot_alchemy.h
+	//     PLAYERBOT_ALCHEMY_PERCENT): the others sell their Cors and stones.
+	// Both shares go by player id, so raising the slider again brings back
+	// the same bots.
+	int s_iPlayerBotBattlePassPercent = 100;
+	int s_iPlayerBotSashPercent = 100;
+	int s_iPlayerBotAlchemyPercent = 100;
 	// The manager tick's time budget per pass, in milliseconds (TICK_MS; see
 	// PLAYERBOT_TICK_BUDGET_MS_DEFAULT). Zero is no budget.
 	int s_iPlayerBotTickBudgetMs = PLAYERBOT_TICK_BUDGET_MS_DEFAULT;
@@ -219,6 +234,9 @@ namespace
 		s_bPlayerBotOverheadChat = true;
 		s_iPlayerBotScrapPercent = 0;
 		s_iPlayerBotRestPercent = 100;
+		s_iPlayerBotBattlePassPercent = 100;
+		s_iPlayerBotSashPercent = 100;
+		s_iPlayerBotAlchemyPercent = 100;
 		s_iPlayerBotTickBudgetMs = PLAYERBOT_TICK_BUDGET_MS_DEFAULT;
 		s_iPlayerBotKingdomPvpPercent = 0;
 		s_iPlayerBotScrollFromPlus = 1;
@@ -424,6 +442,20 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			s_iPlayerBotRestPercent = percent;
 			return;
 		}
+		if (PlayerBotWeightNameEquals(szKey, "BATTLEPASS") ||
+				PlayerBotWeightNameEquals(szKey, "SASH") ||
+				PlayerBotWeightNameEquals(szKey, "ALCHEMY"))
+		{
+			const int percent = value < 0 ? 0 : (value > 100 ? 100 : (int)value);
+			int& wanted = PlayerBotWeightNameEquals(szKey, "BATTLEPASS") ? s_iPlayerBotBattlePassPercent :
+					(PlayerBotWeightNameEquals(szKey, "SASH") ? s_iPlayerBotSashPercent : s_iPlayerBotAlchemyPercent);
+			// Against the default the reset put back, so the line is written
+			// only when the file asks for something else than the build does.
+			if (percent != wanted)
+				sys_log(0, "PLAYERBOT_CONFIG: will %s %d%%", szKey, percent);
+			wanted = percent;
+			return;
+		}
 		if (PlayerBotWeightNameEquals(szKey, "TICK_MS"))
 		{
 			const int budget = value < 0 ? 0 : (value > 1000 ? 1000 : (int)value);
@@ -582,6 +614,12 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_iPlayerBotScrapPercent;
 		if (PlayerBotWeightNameEquals(szKey, "REST"))
 			return s_iPlayerBotRestPercent;
+		if (PlayerBotWeightNameEquals(szKey, "BATTLEPASS"))
+			return s_iPlayerBotBattlePassPercent;
+		if (PlayerBotWeightNameEquals(szKey, "SASH"))
+			return s_iPlayerBotSashPercent;
+		if (PlayerBotWeightNameEquals(szKey, "ALCHEMY"))
+			return s_iPlayerBotAlchemyPercent;
 		if (PlayerBotWeightNameEquals(szKey, "KINGDOMPVP"))
 			return s_iPlayerBotKingdomPvpPercent;
 		if (PlayerBotWeightNameEquals(szKey, "WAR_MINUTES"))
@@ -639,7 +677,10 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			value = value ? 1 : 0;
 			return true;
 		}
-		if (PlayerBotWeightNameEquals(szKey, "SCRAP"))
+		if (PlayerBotWeightNameEquals(szKey, "SCRAP") ||
+				PlayerBotWeightNameEquals(szKey, "BATTLEPASS") ||
+				PlayerBotWeightNameEquals(szKey, "SASH") ||
+				PlayerBotWeightNameEquals(szKey, "ALCHEMY"))
 		{
 			value = value < 0 ? 0 : (value > 100 ? 100 : value);
 			return true;

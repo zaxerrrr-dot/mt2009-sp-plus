@@ -147,11 +147,12 @@ namespace
 		return item && item->GetSocket(ACCE_ABSORBED_SOCKET) > 0;
 	}
 
-	// Which bots build one: a stable roll on the player id.
+	// Which bots build one: a stable roll on the player id, the share scaled by
+	// the panel's SASH will (playerbot_config.h; 100 = the build's 80%).
 	bool IsPlayerBotSashKeeperPID(DWORD pid)
 	{
 		const DWORD h = (pid * 2654435761U) ^ 0x53415348U;
-		return (int)((h >> 16) % 100) < PLAYERBOT_SASH_KEEPER_PERCENT;
+		return (int)((h >> 16) % 100) < PLAYERBOT_SASH_KEEPER_PERCENT * s_iPlayerBotSashPercent / 100;
 	}
 
 	bool IsPlayerBotSashKeeper(LPCHARACTER ch)
