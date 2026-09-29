@@ -16,7 +16,7 @@ put('gamedata', 'gamedata/npclist.txt', HERE + '/npclist.new.txt')
 put('icon', 'icon/item/50260.tga', HERE + '/icon_50255.tga')
 shutil.copyfile('/opt/metin2/cache/tcm/c28/pack/Index', ST + '/Index')
 os.makedirs(ST + '/tools/gf28', exist_ok=True)
-for f in ('gfres.py', 'seeds.py', 'stage.py', 'verify_gr2tex.py', 'plan.py', 'gen.py', 'build_gf.py', 'verify_all.py', 'verify_refs.py', 'make_zips.py', 'rebuild.sh', 'attr/srvattr.py', 'attr/check_fix.py', 'attr/gen_nemere.py'):
+for f in ('gfres.py', 'seeds.py', 'stage.py', 'verify_gr2tex.py', 'verify_mdatr.py', 'plan.py', 'gen.py', 'build_gf.py', 'verify_all.py', 'verify_refs.py', 'make_zips.py', 'rebuild.sh', 'attr/srvattr.py', 'attr/check_fix.py', 'attr/gen_nemere.py'):
     if os.path.exists(os.path.join(HERE, f)): shutil.copyfile(os.path.join(HERE, f), os.path.join(ST, 'tools/gf28', os.path.basename(f)))
 os.makedirs(ST + '/tools/gf28/gr2', exist_ok=True)
 for f in ('gr2dec.c', 'oodle1.c', 'oodle1.h', 'dllapi.h', 'debug.h', 'LICENSE-opengr2.txt'):

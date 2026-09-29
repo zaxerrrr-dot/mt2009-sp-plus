@@ -163,6 +163,9 @@ linux-port/docker/game/src/server/game/src/input_auth.cpp
 linux-port/docker/game/src/server/game/src/input_login.cpp
 linux-port/docker/game/src/server/game/src/input_main.cpp
 linux-port/docker/game/src/server/game/src/input_p2p.cpp
+linux-port/docker/game/src/server/game/src/packet.h
+linux-port/docker/game/src/server/game/src/packet_info.cpp
+linux-port/docker/game/src/server/game/src/questlua_dungeon.cpp
 linux-port/docker/game/src/server/game/src/item.cpp
 linux-port/docker/game/src/server/game/src/item_manager.cpp
 linux-port/docker/game/src/server/game/src/item_manager.h

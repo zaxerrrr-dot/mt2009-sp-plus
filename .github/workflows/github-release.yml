@@ -87,6 +87,13 @@ jobs:
           czip="metin2-client-update-$cv.zip"
           if [ -n "$cv" ] && git cat-file -e "$target:releases/$czip" 2>/dev/null; then
             git show "$target:releases/$czip" > "zips/$czip"; files+=("zips/$czip")
+          elif [ -n "$cv" ] && git cat-file -e "$target:releases/$czip.part1" 2>/dev/null; then
+            # Over 100 MB: kept in parts (.part1, .part2, ...), joined here.
+            : > "zips/$czip"; n=1
+            while git cat-file -e "$target:releases/$czip.part$n" 2>/dev/null; do
+              git show "$target:releases/$czip.part$n" >> "zips/$czip"; n=$((n + 1))
+            done
+            files+=("zips/$czip")
           fi
           # Only the version main is on takes "latest": one run by hand for
           # an older version must not push the newest one off that place.

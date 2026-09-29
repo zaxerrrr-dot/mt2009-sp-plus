@@ -31,6 +31,15 @@ if [ "$target" != "${GITHUB_SHA:-$(git rev-parse HEAD)}" ]; then
 fi
 if git cat-file -e "$src:releases/$zip" 2>/dev/null; then
   git show "$src:releases/$zip" > "$out/$zip"
+elif git cat-file -e "$src:releases/$zip.part1" 2>/dev/null; then
+  # A zip over GitHub's 100 MB file limit is kept as $zip.part1, .part2, ...
+  # (split by bytes) and joined here, so the release carries it whole.
+  : > "$out/$zip"
+  n=1
+  while git cat-file -e "$src:releases/$zip.part$n" 2>/dev/null; do
+    git show "$src:releases/$zip.part$n" >> "$out/$zip"
+    n=$((n + 1))
+  done
 else
   echo "::warning::releases/$zip not found; release without the zip" >&2
 fi

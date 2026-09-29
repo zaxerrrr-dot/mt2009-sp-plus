@@ -17,6 +17,128 @@ every version here.
 
 ---
 
+## 2.14.0 — 2026-09-29 — Battle Pass, kalendarz eventów, nowe pety, Koło Fortuny, lochy Razadora i Nemere, Świątynia Ochao, Poszukiwanie skarbów
+
+Serwer 2.14.0 i klient 2.0.28: zaktualizuj oba w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.13.0. Paczka klienta jest duża (ok. 160 MB) – pobiera się z wydania na
+GitHubie.
+
+### Battle Pass (miesięczny sezon)
+
+- Nowe okno Battle Passa i przycisk na pasku. Misje: potwory, Metiny,
+  bossowie, ryby, ulepszanie (liczy się każda próba), okrzyki.
+- Każda misja daje do trzech nagród (domyślnie 5× Cor Draconis i Kupon SM
+  (50)), a cały sezon – nagrodę końcową. Misje mogą być łańcuchami
+  i dotyczyć celów jednego poziomu.
+- **Metin i boss liczą się wszystkim, którzy go bili, i drużynie zabójcy
+  w promieniu 50 m** – nie tylko ostatniemu ciosowi.
+- Boty też robią misje. W panelu zaawansowanym nowa strona **Battle Pass**
+  (misje, nagrody, nagroda końcowa, gracze).
+
+### Kalendarz eventów (F11) i nowe eventy
+
+- **F11** – kalendarz tydzień po tygodniu, przycisk na pasku i ikonka
+  z odliczaniem.
+- Nowe eventy: **Podwójny loot z bossów**, **Podwójny loot z Metinów**
+  i **Poszukiwanie skarbów**.
+- **Metiny wielkanocne**: najwyżej 3 na mapę (więcej proporcjonalnie do
+  ustawienia respawnu Metinów i bossów), po wyłączeniu eventu nie pojawiają
+  się nowe.
+
+### Nowe pety (z jajek)
+
+- Obok petów z ItemShopu: 9 gatunków, poziomy 1–120, ewolucje Młody → Dziki
+  → Odważny → Heroiczny, trzy bonusy, 22 umiejętności z ksiąg, energia
+  życiowa, zmiana imienia i handel petem w Transporterze Peta. Okno pod **U**.
+- Druga ewolucja: 10× Kamień Duchowy, 10× Nieznane Lekarstwo i po 5× Białej,
+  Niebieskiej i Krwawej Perły.
+
+### Lochy: Razador i Nemere
+
+- **Czyściec Ognia** (Razador, od 55 poz., wejście u strażnika na Ognistej
+  Ziemi) i **Lodowa Kraina** (Nemere, od 75 poz., Góra Sohan) – solo albo
+  z drużyną graczy, 60 minut, odnowienie 60 minut. Strażnik przenosi prosto
+  do lochu – jeden ekran ładowania.
+- **Skrzynie bossów:** po śmierci bossa każdy gracz w lochu dostaje
+  **od 2 do 5** skrzyń (losowane osobno dla każdego). **Skrzynia Razadora**:
+  broń na 65 poz. albo zbroja na 61 poz. (+0 do +4); **Skrzynia Nemere**:
+  broń na 70 poz. albo Tarcza Tytanów. Do tego zapychacze jak w oficjalnych
+  skrzyniach (bez broni na 75 poz. i Stalek) i przedmioty dla petów.
+- Sami bossowie dają tylko yang. Potwory i Metiny w lochach nie dają Corów,
+  szarf ani SM. Przedmioty zadań (klucze, kamienie, kryształy) wypadają
+  rzadziej. Szel bije dwa razy mocniej.
+- Skrzynia Mroku wypada już tylko z Azraela.
+- Oficjalne mapy, modele, tekstury i kolizje (mosty).
+
+### Świątynia Ochao, Poszukiwanie skarbów, Koło Fortuny
+
+- **Świątynia Ochao** – otwarta mapa od 95 poz. (wejście w Dolinie Orków przy
+  Koe-Pungu) z wędrującym Strażnikiem En-Tai.
+- **Poszukiwanie skarbów** – Bilety Skarbów, Wyspa Skarbów (od 70 poz.),
+  eskorta Goblina, Doblony, plansza nagród i ranking. Nagrody: Cory
+  Draconis, które dają kamienie, Sakiewka Pieniędzy 1–10 mln yang, Eliksir
+  Czasu (D), Peleryny Męstwa ×20.
+- **Koło Fortuny** – **F12**, obrót za Bilet Koła Fortuny (25 SM
+  w ItemShopie), jackpoty Kupon SM (50) i (250).
+
+### Gildie
+
+- **Obowiązki lidera gildii**: zrzutka yang od botów, misje na przedmioty
+  z bankiem gildii, wyprawa na Wieżę Demonów.
+- **Boty gildii** bronią swojego gracza i słuchają rozkazów (przycisk
+  „Boty” w oknie gildii, `/gildia_boty`).
+- **Wojny gildii**: wyzwanie da się przyjąć, rundy kończą się same,
+  w przerwie boty wracają do obozów.
+
+### Umiejętności
+
+- **Umiejętności czasowe trwają o 50% dłużej od G1** (Aura Miecza, Silne
+  Ciało, Czarowane Ostrze, Czarowana Zbroja, Błogosławieństwo, Szybkość,
+  Pomoc Smoka i inne); opis pokazuje nowy czas.
+- **Smoczy Skowyt** rzuca się na cel z zasięgu 1800, obszar 900 wokół celu.
+
+### Panele
+
+- **Drop z potworów** (Seban): podajesz ID potwora, Metina albo bossa
+  i edytujesz jego drop z szansami na żywo; zmiany przetrwają aktualizacje.
+- **Szkatułki** (edytor zawartości), **Koło Fortuny**, **Battle Pass**.
+- Suwaki botów **Battle Pass**, **szarfy** i **alchemia** w grupie
+  „Zachowanie botów”, 0–250% (100% = jak dotąd).
+- Suwaki zachowania botów (zakupy, kowal, księgi, biolog, misje łowieckie)
+  naprawdę sterują botami.
+
+### Mniejsze zmiany
+
+- **Zestawy kostiumów**: kostium i fryzura z jednego zestawu dają +800 PŻ
+  i +15 wartości ataku. Bonusy kostiumów z ItemShopu działają.
+- **Cor Draconis** wyższych stopni otwierają się w kamień smoka swojego
+  stopnia.
+- **Dom Towarowy**: kup wiele ofert naraz; ceny botów tanieją i drożeją
+  z popytem.
+- **Towarzysz**: nowe okno z zakładkami, filtr podnoszenia działa też na
+  niego i drużynę, fryzura, broń i szarfa wracają po zmianie zbroi.
+- **Alt+1 / Alt+2** od razu zmieniają kanał. Pozycje okien zapamiętane dla
+  każdej postaci. Pieczęć wierzchowca od razu go dosiada.
+- Sam klik nie robi z nikogo mordercy. Boty nie utykają w budynkach gildii,
+  trzymają Stalki na zapas i nie wystawiają wędek ani kilofów.
+
+---
+
+## Klient 2.0.28 — 2026-09-29 — Battle Pass, kalendarz, nowe pety, lochy, Goblin, Koło Fortuny
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.0.25. Paczka ma ok. 160 MB.
+
+- Okna Battle Passa, kalendarza (F11), Koła Fortuny (F12), nowych petów (U),
+  Poszukiwania skarbów i rankingu, obowiązków gildii i Towarzysza.
+- Oficjalne mapy, modele, tekstury i kolizje Świątyni Ochao, lochów
+  Razadora i Nemere oraz Wyspy Skarbów, potwory Goblina.
+- Pasek boczny ekwipunku, pozycje okien dla każdej postaci, Alt+1/Alt+2,
+  czas umiejętności ×1,5 w opisach, kup wiele w Domu Towarowym.
+
+---
+
 ## 2.13.0 — 2026-09-28 — Ukrywanie kostiumów, nowy klient: napisy osobowości botów i Discord, instalator VPS jednym plikiem
 
 Serwer 2.13.0 i klient 2.0.25: zaktualizuj oba w launcherze

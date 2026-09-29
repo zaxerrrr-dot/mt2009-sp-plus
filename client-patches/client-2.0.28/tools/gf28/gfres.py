@@ -74,6 +74,23 @@ def gr2_textures(key, path):
     _gr2cache[path] = out
     return out
 
+# Map objects' collision + walkable height (exe 2.0.25 property loader, see verify_mdatr.py): a "Building"
+# (BuildingFile) or "DungeonBlock" (DungeonBlockFile) property gets NoExtension(model) + ".mdatr" as its
+# CAttributeData. The property never names that file, so text-reference following alone never finds it.
+def mdatr_of(model):
+    model = norm(model); i = model.rfind('.')
+    return (model[:i] if i > model.rfind('/') else model) + '.mdatr'
+
+def prop_attr_model(text):
+    """model whose .mdatr the exe loads for this property text (None for trees/effects/ambience)"""
+    kv = {}
+    for l in text.replace('\r', '').split('\n'):
+        t = l.split(None, 1)
+        if len(t) == 2: kv[t[0].lower()] = t[1].strip().strip('"')
+    typ = kv.get('propertytype', '').lower()
+    f = kv.get({'building': 'buildingfile', 'dungeonblock': 'dungeonblockfile'}.get(typ, '-'), '')
+    return norm(f) if f else None
+
 def refs_of(key, path):
     out = set()
     k = key.lower()

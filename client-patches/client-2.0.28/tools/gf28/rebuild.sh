@@ -11,5 +11,7 @@ docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $H/build_gf.py
 [ -z "$(ls -A $H/out/pack)" ] || cp -v $H/out/pack/* /opt/metin2/cache/tcm/c28/pack/
 docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $H/verify_all.py
 docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $H/verify_gr2tex.py | tee $H/verify_gr2tex.out
+docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $H/verify_mdatr.py > $H/verify_mdatr.out || { cat $H/verify_mdatr.out; exit 1; }
+grep -E '^==|^RESULT' $H/verify_mdatr.out
 python3 $H/stage.py
 python3 $H/make_zips.py

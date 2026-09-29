@@ -38,11 +38,15 @@ def prop_refs(m):
         if c not in OUR_PROP:
             k = gfres.norm('property/' + os.path.relpath(GFPROP[c], G + '/property'))
             newprops[k] = GFPROP[c]
-        for l in open(p, 'rb').read().decode('latin1').replace('\r', '').split('\n'):
+        text = open(p, 'rb').read().decode('latin1')
+        for l in text.replace('\r', '').split('\n'):
             t = l.split(None, 1)
             if len(t) == 2 and t[0].lower().endswith('file'):
                 v = t[1].strip().strip('"')
                 if v: seeds.add(gfres.norm(v))
+        # collision + walkable height: the exe loads NoExtension(model).mdatr, the property never names it
+        model = gfres.prop_attr_model(text)
+        if model and gfres.mdatr_of(model) in G_ALL: seeds.add(gfres.mdatr_of(model))
     return seeds, newprops
 
 def mapseeds(m, ts, env):
@@ -108,13 +112,15 @@ for pack, mapname, sd in GROUPS:
         where[k] = dest; plan.setdefault(dest, {})[k] = src
     report[pack] = dict(unresolved=sorted(unres), n=len(files), already=len(oh))
 # Entrance maps (base-client maps, not imported): the textures their objects' .gr2 models name, so the
-# dungeon gates / props there are never drawn untextured (base-client copies, if any, are identical names).
+# dungeon gates / props there are never drawn untextured, and their .mdatr (collision / walkable height) so
+# bridges are walked ON and buildings block (base-client copies, if any, are identical names).
 ENTRANCES = (('gf_razador', 'metin2_map_n_flame_01'), ('gf_nemere', 'map_n_snowm_01'))
 for pack, m in ENTRANCES:
     ps, npr = prop_refs(m)
     tex = set()
     for k in ps:
         if k.endswith('.gr2') and k in G_ALL: tex |= gfres.refs_of(k, G_ALL[k])
+        if k.endswith('.mdatr'): tex.add(k)   # collision/height of the gate, bridges, towers (item 27)
     files, unres, oh = gfres.closure(sorted(tex), ours)
     for k, src in sorted(files.items()):
         if k in ours or k in where: continue
