@@ -97,13 +97,17 @@ services:
       M2_RATE_DROP: "${M2_RATE_DROP:-100}"
       M2_RATE_YANG: "${M2_RATE_YANG:-100}"
       M2_PLAYERBOT_START_HELD: "${M2_PLAYERBOT_START_HELD:-0}"
-      # Whether a player's new character gets the apprentice chest (the
-      # launcher asks with the rates; starter_chest.quest reads the flag).
+      # Whether the world gives the apprentice chest, to a player's new
+      # character and to the bots alike (the launcher's difficulty window and
+      # new-world dialog; the migrator writes the flag the quest, the seed and
+      # the cores read). M2_PLAYERBOT_DISABLE_STUDENT_CHEST=1 is Seban's own
+      # integration's name for off, and is read as that.
       M2_STARTER_CHEST: "${M2_STARTER_CHEST:-1}"
       # The world's switches for the Cor Draconis and the sashes (apply.sh
       # writes m2_alchemy_off / m2_sash_off when .env changed).
       M2_ALCHEMY: "${M2_ALCHEMY:-1}"
       M2_SASHES: "${M2_SASHES:-1}"
+      M2_PLAYERBOT_DISABLE_STUDENT_CHEST: "${M2_PLAYERBOT_DISABLE_STUDENT_CHEST:-0}"
       # Whether the world is played with Auto Lowy and with the companion
       # (the launcher's difficulty window; the migrator writes the flags).
       M2_AUTOHUNT: "${M2_AUTOHUNT:-1}"
@@ -492,7 +496,7 @@ services:
       # server it is actually looking at rather than "nieustawiona".
       # The default is bumped with every release, so a world nobody has
       # configured still reports the version it is actually running.
-      PLAYERBOTS_VERSION: "${M2_PLAYERBOTS_VERSION:-2.2.37}"
+      PLAYERBOTS_VERSION: "${M2_PLAYERBOTS_VERSION:-2.2.38}"
       TZ: "${M2_TZ:-UTC}"
     ports:
       # 7790 outside: 7789 is the browser bridge's port in this stack.

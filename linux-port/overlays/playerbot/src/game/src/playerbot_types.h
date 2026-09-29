@@ -1617,7 +1617,9 @@ namespace
 	const int PLAYERBOT_GUILD_WAR_CAMP_POTION_HP_PERCENT = 95;
 	const int PLAYERBOT_GUILD_WAR_CAMP_POTION_SP_PERCENT = 90;
 	// The muster: for this long after the war's start each side stands at its
-	// camp and buffs, and fights only a foe who comes within DEFEND_RANGE.
+	// camp and buffs, and fights only a person who comes within DEFEND_RANGE
+	// of the camp - never a bot, which stands at its own camp then (the break
+	// between two rounds holds the camps the same way).
 	const DWORD PLAYERBOT_GUILD_WAR_MUSTER_SECONDS = 20;
 	const long PLAYERBOT_GUILD_WAR_CAMP_DEFEND_RANGE = 900;
 	// A bot that fell stands up at its own camp, and once healed nobody picks
@@ -1672,15 +1674,32 @@ namespace
 	const int PLAYERBOT_GUILD_WAR_KEEP_BONUS = 300;
 	const DWORD PLAYERBOT_GUILD_WAR_RETARGET_MS = 4000;
 	// The war by class and path (playerbot_war_rules.h, prodnathin's proposal
-	// of 26 September) - a round, and what the roles do in it. A side that has
-	// knocked out the whole of the other walks back to its camp while the
-	// other stands up and buffs at its own, for REGROUP_MS - and up to
-	// REGROUP_EXTRA_MS more while nobody of the losers is up yet - and then
-	// both leave their camps again, one by one. A war's rounds are looked at
-	// every ROUND_CHECK_MS.
-	const DWORD PLAYERBOT_GUILD_WAR_REGROUP_MS = 25 * 1000;
-	const DWORD PLAYERBOT_GUILD_WAR_REGROUP_EXTRA_MS = 15 * 1000;
+	// of 26 September) - a round, and what the roles do in it. A round is
+	// fought until one side has nobody left in the fight, the fallen waiting
+	// at their camps, and it cannot hang: nobody going down for
+	// ROUND_STALL_MS, or ROUND_MAX_MS in all, ends it to the side with more
+	// standing. A round had no end but a whole side down, and one bot nobody
+	// could reach held Shinsoo's first war still for fifteen minutes; DUDU
+	// (28 September) wants a round to last about a minute. Then a break of
+	// BREAK_MS with everybody at the camps, up, whole and buffing - the half
+	// minute to buff he asked for between two rounds - and up to
+	// BREAK_EXTRA_MS more while anybody is still on the way there, and both
+	// leave their camps again, one by one. A war's rounds are looked at every
+	// ROUND_CHECK_MS.
+	const DWORD PLAYERBOT_GUILD_WAR_ROUND_STALL_MS = 60 * 1000;
+	const DWORD PLAYERBOT_GUILD_WAR_ROUND_MAX_MS = 3 * 60 * 1000;
+	const DWORD PLAYERBOT_GUILD_WAR_BREAK_MS = 30 * 1000;
+	const DWORD PLAYERBOT_GUILD_WAR_BREAK_EXTRA_MS = 15 * 1000;
 	const DWORD PLAYERBOT_GUILD_WAR_ROUND_CHECK_MS = 1000;
+	// A bot at war on ground no route joins to its camp's centre - a skill's
+	// knockback puts its victim down without asking what lies there - is put
+	// back at its camp after STRANDED_MS; the tick's own rescue from blocked
+	// ground runs below the war's pass. And a bot in the fight steps back no
+	// nearer the centre of its own camp than CAMP_KEEP_OUT (CAMP_RADIUS and
+	// a little): the camp is the fallen's while a round lasts, and a fight
+	// that followed a healer or an archer into it was fought among them.
+	const DWORD PLAYERBOT_GUILD_WAR_STRANDED_MS = 5 * 1000;
+	const long PLAYERBOT_GUILD_WAR_CAMP_KEEP_OUT = 700;
 	// A defensive healer keeps out of reach: a foe within HEALER_FLEE_RANGE
 	// sends it HEALER_FLEE_STEP back towards its camp, and it holds
 	// HEALER_BEHIND behind its side's pack; it looks for somebody to heal (Cure,
@@ -4786,6 +4805,14 @@ namespace
 	// mining::ORE_COUNT_FOR_REFINE. A hundred raw ore is one smelted piece.
 	const int PLAYERBOT_ORE_SMELT_COUNT = 100;
 	const DWORD PLAYERBOT_ORE_SMELT_FEE = 5000;
+	// A rod or a pickaxe that stands on its bot's own offline counter (the 2.x
+	// line) and nowhere else is fetched, never bought again
+	// (IsPlayerBotTackleOnOwnCounter): the session looks again this soon, and
+	// for this long the service visit comes for it at once, past a far stand's
+	// round (ManagePlayerBotOfflineService). The bots bought a new rod at the
+	// Rybak while their Wedka+4 stood on the counter (Octodan, 26 September).
+	const DWORD PLAYERBOT_TACKLE_HOME_RETRY_MS = 90000;
+	const DWORD PLAYERBOT_TACKLE_HOME_HOLD_MS = 15 * 60 * 1000;
 
 	// Two kingdoms meeting on shared ground. Only ever on a frontier map, only
 	// between bots, and only while the operator's KINGDOMPVP switch is above
@@ -6403,10 +6430,12 @@ namespace
 
 	BYTE GetPlayerBotPersonalityByPID(DWORD dwPID);
 
-	// The role a bot plays in its guild's war and whether its side is
-	// regrouping after a round (playerbot_guild_war.h), for the status line.
+	// The role a bot plays in its guild's war, whether its war is in the break
+	// between two rounds, and whether it sits out the round it fell in
+	// (playerbot_guild_war.h), for the status line.
 	const char* GetPlayerBotWarRoleName(LPCHARACTER ch, bool en);
-	bool IsPlayerBotWarRegrouping(LPCHARACTER ch);
+	bool IsPlayerBotWarOnBreak(LPCHARACTER ch);
+	bool IsPlayerBotWarWaitingOut(LPCHARACTER ch);
 
 	// The player's own companion (playerbot_sidekick.h, included after every
 	// fragment that asks these): whose it is, whether it stands at its

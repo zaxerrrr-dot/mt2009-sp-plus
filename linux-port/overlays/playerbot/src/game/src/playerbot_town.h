@@ -3059,6 +3059,16 @@ namespace
 			if (policy != PLAYERBOT_ITEM_POLICY_NONE)
 				return -1;
 		}
+		// Nor is tackle, on any counter: a rod or a pickaxe is the tool of its
+		// bot's own sessions, and a second one is the merchant's
+		// (IsPlayerBotJunkItem). A rod's grade is the plus in its name, so from
+		// Wedka+4 the precious refine below scored it 1004 and up, over the
+		// prize score - the bot's only rod, stowed in the bag between two
+		// sessions, went up first on its counter, and the next session bought
+		// another at the Rybak: rods +4 and +5 on counter after counter
+		// (Octodan, 26 September). Only the operator's "stall", above, lists one.
+		if (item->GetType() == ITEM_ROD || item->GetType() == ITEM_PICK)
+			return -1;
 		// A retired item is nobody's goods (IsPlayerBotRetiredItem).
 		if (IsPlayerBotRetiredItem(item->GetVnum()))
 			return -1;

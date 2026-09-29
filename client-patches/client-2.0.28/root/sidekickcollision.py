@@ -11,41 +11,48 @@
 #
 #   SidekickVid <vid>     - 0 once it has gone
 #
-# and the keeper below types that instance as an NPC - chr.SetInstanceType on
-# the selected instance - whenever the client has made it anew, which it does
-# every time the companion comes back into view. Nothing else of the instance
-# changes. What an NPC's type also means in this client: a new hair or sash
-# shows when it next comes into view, the minimap draws it as an NPC - and a
-# click opens no player menu, because CPythonPlayer::OpenCharacterMenu, which
-# both mouse buttons end in, returns for anything but a player. So under the
-# cursor the companion is a player again (SetPicked, from game.py's picking,
-# every frame): a click opens the menu - whisper, trade, guild - as it does
-# for anybody else ("Na towarzysza nie dziala prawe klikniecie", Piciu713, 28
-# September), and it is an NPC again, to be walked through, once the cursor
-# has left it.
+# and the companion is an NPC for as long as the world is updated and not a
+# moment longer. CheckAdvancing runs in one place,
+# CPythonCharacterManager::UpdateTransform, inside app.UpdateGame, which
+# game.py's OnUpdate calls first of all; so app.UpdateGame is wrapped once
+# (Install), and the wrapper types the companion as an NPC before the stock
+# update and as the player it is after it.
 #
-# The hair and the sash (MT2009_PLUS_SIDEKICK_HAIR_V1). CInstanceBase::SetHair
-# and SetAcce return for an instance that is not a player, and the client's
-# ChangeArmor makes the body anew and puts the hair back through SetHair - so
-# the companion typed as an NPC lost its head in a new armour or costume, and
-# kept its old hair when given a new one ("pusta glowa", 28 September). The
-# server sends the two parts with the VID, again at every change of the
-# armour, the hair or the sash:
+# It used to stay an NPC from the moment the client had made it, and to this
+# client an NPC is a body and nothing else ("Napraw fryzury npc, bo szamanka
+# nie ma wlosow", 28 September: a Shaman companion, bald). Armour of
+# another shape - its gear pass, its owner's hand, a stone or the anvil taking
+# the piece off and back - comes as a character update, and
+# CInstanceBase::ChangeArmor builds the model again: SetRace, where
+# CActorInstance::SetRace reserves one model part for anything but a PC, then
+# SetHair, which returns for a non-PC, SetWeapon, whose part is not there, and
+# SetAcce, which returns too. The companion stood bald and empty-handed until
+# it next came into view, and a hair dye or a sash never showed at all
+# (ChangeHair, ChangeAcce). The client reads the packets before the windows'
+# update in a frame (CPythonApplication::Process: the network stream, then
+# OnUIUpdate) and handles a click between two frames (Loop), so now every
+# model is built for a player, a click opens the player's menu
+# (CPythonPlayer::OpenCharacterMenu takes a player only), and nothing but the
+# collision ever sees an NPC.
 #
-#   SidekickVid <vid> <hair> <sash>
+# Under the cursor (SetPicked, from game.py's picking, every frame) it stays a
+# player through the update as well, as it has been since a click on it
+# opened no menu ("Na towarzysza nie dziala prawe klikniecie", Piciu713, 28
+# September). The click itself falls between two frames now, but what it sets
+# going inside the update - the walk to a character out of reach,
+# CPythonPlayer::__ReserveProcess_ClickActor - meets what it met then. Walking
+# into it with the cursor on it collides.
 #
-# and the keeper puts both back with the instance a player for that moment.
-#
-# Python 2.7 as the client has it; any exe of this line has the three chr
-# calls, and one without them only loses the collision, never the game.
+# Python 2.7 as the client has it; any exe of this line has the chr calls, and
+# one without them only loses the collision, never the game or its update.
 
 import chr
-import clientclock
 import player
 
-CHECK_EVERY = 0.25
+_state = {'vid': 0, 'hover': False}
 
-_state = {'vid': 0, 'next': 0.0, 'hover': False, 'look': None}
+# Marks the wrapper on app.UpdateGame, so it is put there once.
+WRAPPER_MARK = 'sidekickCollision'
 
 
 def ParseVid(value):
@@ -56,23 +63,13 @@ def ParseVid(value):
 	return vid if vid > 0 else 0
 
 
-def ParseLook(look):
-	"""(hair, sash) from the command's two numbers, or None without them."""
-	if len(look) < 2:
-		return None
-	try:
-		return (max(0, int(look[0])), max(0, int(look[1])))
-	except (TypeError, ValueError):
-		return None
-
-
-def SetVid(value, *look):
-	vid = ParseVid(value)
-	if vid != _state['vid']:
-		_state['hover'] = False
-	_state['vid'] = vid
-	_state['next'] = 0.0
-	_state['look'] = ParseLook(look) if vid else None
+def SetVid(value, *rest):
+	# Numbers after the VID (an older server's hair and sash, the keeper that
+	# put them back before the model was built as a player's) are not read.
+	_state['vid'] = ParseVid(value)
+	_state['hover'] = False
+	if _state['vid']:
+		Install()
 
 
 def GetVid():
@@ -81,93 +78,103 @@ def GetVid():
 
 def _SetType(vid, kind):
 	chr.SelectInstance(vid)
-	chr.SetInstanceType(kind)
-	# The selection is what every other chr.Set* call acts on; the main
-	# character is where the stock scripts expect to find it.
-	chr.SelectInstance(player.GetMainCharacterIndex())
-
-
-def ApplyLook():
-	"""Puts the hair and the sash the server named on the companion's instance,
-	once; True when it did."""
-	look = _state['look']
-	vid = _state['vid']
-	if not look or not vid:
-		return False
-	if vid == player.GetMainCharacterIndex() or not chr.HasInstance(vid):
-		return False
-	_state['look'] = None
-	(hair, sash) = look
-	npc = chr.GetInstanceType(vid) == chr.INSTANCE_TYPE_NPC
-	chr.SelectInstance(vid)
-	if npc:
-		chr.SetInstanceType(chr.INSTANCE_TYPE_PLAYER)
 	try:
-		chr.SetHair(hair)
-		chr.SetAcce(sash)
+		chr.SetInstanceType(kind)
 	finally:
-		if npc:
-			chr.SetInstanceType(chr.INSTANCE_TYPE_NPC)
+		# The selection is what every other chr.Set* call acts on; the main
+		# character is where the stock scripts expect to find it, whatever
+		# the call did.
 		chr.SelectInstance(player.GetMainCharacterIndex())
-	return True
 
 
-def Apply():
-	"""True when the companion's instance was typed as an NPC just now."""
+def BeginWorldUpdate():
+	"""The companion's VID when it was typed as an NPC for the update just
+	now, 0 when it was not. Only while both instances are there: a selection
+	that fails keeps the previous one, and the type would go to that."""
 	vid = _state['vid']
 	if not vid or _state['hover']:
-		return False
+		return 0
 	main = player.GetMainCharacterIndex()
-	if vid == main or not chr.HasInstance(vid):
-		return False
-	if chr.GetInstanceType(vid) == chr.INSTANCE_TYPE_NPC:
-		return False
+	if vid == main or not chr.HasInstance(main) or not chr.HasInstance(vid):
+		return 0
 	_SetType(vid, chr.INSTANCE_TYPE_NPC)
+	return vid
+
+
+def EndWorldUpdate(vid):
+	"""The companion a player again. The update itself lets an instance that
+	walked out of view go (CPythonCharacterManager::Update), and one no longer
+	there is left alone."""
+	if not vid or not chr.HasInstance(vid) or not chr.HasInstance(player.GetMainCharacterIndex()):
+		return
+	_SetType(vid, chr.INSTANCE_TYPE_PLAYER)
+
+
+def _Guarded(call, *args):
+	try:
+		return call(*args)
+	except Exception:
+		# An exe without the call: the owner collides with its companion again,
+		# and the world goes on being updated.
+		_state['vid'] = 0
+		return 0
+
+
+def Install():
+	"""Wraps app.UpdateGame, once; True when the wrapper is on it. game.py
+	looks the function up on the module at every frame, so the next update
+	is the wrapper's."""
+	# Imported here, as clientclock does it, so a test's stub is the one read.
+	import app
+	stock = getattr(app, 'UpdateGame', None)
+	if stock is None:
+		return False
+	if getattr(stock, WRAPPER_MARK, False):
+		return True
+
+	def UpdateGame(*args):
+		typed = _Guarded(BeginWorldUpdate)
+		try:
+			return stock(*args)
+		finally:
+			if typed:
+				_Guarded(EndWorldUpdate, typed)
+
+	setattr(UpdateGame, WRAPPER_MARK, True)
+	try:
+		app.UpdateGame = UpdateGame
+	except Exception:
+		return False
 	return True
 
 
 def SetPicked(picked):
 	"""The character under the cursor, from game.py every frame (-1 for none).
-	True when the companion's type changed: a player under the cursor, an NPC
-	once the cursor has left it."""
+	True when the companion came under the cursor or left it: under it, it
+	stays a player through the next update too."""
 	vid = _state['vid']
 	hover = bool(vid) and picked == vid
 	if hover == _state['hover']:
 		return False
 	_state['hover'] = hover
-	if vid == player.GetMainCharacterIndex() or not chr.HasInstance(vid):
-		return False
-	_SetType(vid, chr.INSTANCE_TYPE_PLAYER if hover else chr.INSTANCE_TYPE_NPC)
 	return True
 
 
 class Keeper(object):
-	"""Registered among game.py's updateables; ends with the game window, whose
-	next one hears the VID again (a warp is a new login on the server)."""
+	"""Registered among game.py's updateables for its Destroy: the game
+	window's end forgets the companion, and the next window hears the VID
+	again (a warp is a new login on the server). The typing is the wrapped
+	app.UpdateGame's, so there is nothing to do on a frame."""
 
 	def CanUpdate(self):
-		return _state['vid'] != 0
+		return False
 
 	def OnUpdate(self):
-		now = clientclock.Now()
-		if now < _state['next']:
-			return
-		_state['next'] = now + CHECK_EVERY
-		try:
-			Apply()
-		except Exception:
-			_state['vid'] = 0
-			return
-		try:
-			ApplyLook()
-		except Exception:
-			_state['look'] = None
+		pass
 
 	def Destroy(self):
 		_state['vid'] = 0
-		_state['next'] = 0.0
 		_state['hover'] = False
-		_state['look'] = None
 
 
 _keeper = []

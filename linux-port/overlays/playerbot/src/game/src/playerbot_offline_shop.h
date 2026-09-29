@@ -104,6 +104,16 @@ namespace {
     bool BotOfflineBusy(LPCHARACTER ch, const TPlayerBotAIState& state) {
         return BotOfflineBusyReason(ch, state) != NULL;
     }
+    // A rod or a pickaxe the owner's session is waiting for, found on this
+    // counter and nowhere else (AskPlayerBotTackleHome): the visit that
+    // fetches it does not wait out a far stand's round.
+    bool IsPlayerBotTackleAskedHome(DWORD pid, DWORD now) {
+        auto asked = s_mapPlayerBotTackleAskedAt.find(pid);
+        if (asked == s_mapPlayerBotTackleAskedAt.end()) return false;
+        if (now - asked->second < PLAYERBOT_TACKLE_HOME_HOLD_MS) return true;
+        s_mapPlayerBotTackleAskedAt.erase(asked);
+        return false;
+    }
     // The wait before the next service visit: the long one for a dropper
     // (PLAYERBOT_DROPPER_SHOP_SERVICE_MIN_MS), ten to fifteen minutes for
     // everybody else.
@@ -665,6 +675,15 @@ namespace {
         int marbles = 0;
         std::set<long> marbleMobs;
         std::map<DWORD, int> sameVnum;
+        // A rod or a pickaxe is its keeper's tool and never goods
+        // (ScorePlayerBotShopStock). The ones that went up - a rod's plus is in
+        // its name, so from Wedka+4 the precious-refine score took it for a
+        // spare - come home ahead of any other line while the bag has room for
+        // one, because its owner's next session waits for it rather than
+        // buying another at the Rybak (Octodan, 26 September); with no room,
+        // after the rest, so a tool the bag cannot take keeps nothing else on
+        // the counter. An item the operator put on "stall" stays.
+        DWORD tackleFits = 0, tackleAny = 0;
         for (const auto& [id, line] : shop->GetItems()) {
             if (!line) continue;
             LPITEM preview = BotOfflinePreview(*line);
@@ -688,6 +707,13 @@ namespace {
             if (ch && preview->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(preview->GetVnum()) &&
                     !IsPlayerBotSashReleased(id) && WantsPlayerBotSashOffer(ch, preview)) {
                 if (!unwanted) { unwanted = id; reason = "sash_keeper"; }
+                M2_DELETE(preview);
+                continue;
+            }
+            if ((preview->GetType() == ITEM_ROD || preview->GetType() == ITEM_PICK) &&
+                    GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
+                if (!tackleAny) tackleAny = id;
+                if (!tackleFits && ch && ch->GetEmptyInventory(preview->GetSize()) >= 0) tackleFits = id;
                 M2_DELETE(preview);
                 continue;
             }
@@ -899,6 +925,10 @@ namespace {
             }
             M2_DELETE(preview);
         }
+        if (tackleFits || (!unwanted && tackleAny)) {
+            unwanted = tackleFits ? tackleFits : tackleAny;
+            reason = "tackle";
+        }
         if (why) *why = reason;
         return unwanted;
     }
@@ -934,6 +964,9 @@ namespace {
             if (line != state.offlineShop.listed.end())
                 NotePlayerBotLowArmourOnCounter(line->second.vnum, -1);
         }
+        // A tool on its way home is no longer waited for (AskPlayerBotTackleHome).
+        if (why && strcmp(why, "tackle") == 0)
+            s_mapPlayerBotTackleAskedAt.erase(ch->GetPlayerID());
         state.offlineShop.listed.erase(itemid);
         sys_log(0, "PLAYERBOT_OFFLINE: took off pid=%u name=%s item=%u low_gear_kept=%d reason=%s",
             ch->GetPlayerID(), ch->GetName(), itemid, lowGear, why);
@@ -1522,9 +1555,11 @@ namespace {
         // every keeper out on the frontier was most of the gates' traffic. An
         // empty hand with a weapon on its own counter does not wait (the
         // reclaim probe above), nor does the first visit after a start, nor a
-        // slipped price whose time is out (the slip probe above).
+        // slipped price whose time is out (the slip probe above), nor a rod or
+        // a pickaxe the owner's session is waiting for (AskPlayerBotTackleHome).
         if (!o.visiting && !medalLines && ch->GetMapIndex() != serviceMap && ch->GetWear(WEAR_WEAPON) &&
-                o.lastServedAt != 0 && !Due(now, o.lastServedAt + PLAYERBOT_OFFLINE_FAR_SERVICE_MIN_MS)) {
+                o.lastServedAt != 0 && !Due(now, o.lastServedAt + PLAYERBOT_OFFLINE_FAR_SERVICE_MIN_MS) &&
+                !IsPlayerBotTackleAskedHome(ch->GetPlayerID(), now)) {
             long long normal = 0;
             int ageMin = -1;
             if (!BotOfflineDueSlipLine(ch, state, shop, now, normal, ageMin)) {

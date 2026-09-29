@@ -443,19 +443,14 @@ class TargetBoard(ui.ThinBoard):
 
 	def __ShowHPBoard(self):
 		if not self.hpGauge.IsShow():
-			# A player's target keeps the width of its buttons (Szept, Handel...):
-			# the HP of a player one may strike used to shrink the board to the
-			# name and leave the buttons hanging outside it.
-			width = self.__GetHPBoardWidth()
-			if self.showingButtonList:
-				width = max(width, len(self.showingButtonList) * 75)
-			self.SetSize(width, self.GetHeight())
 			self.name.SetPosition(23, 13)
 
 			self.name.SetWindowHorizontalAlignLeft()
 			self.name.SetHorizontalAlignLeft()
 			self.hpGauge.Show()
 			self.hpText.Show()
+			# Sized with the gauge up, which __GetBoardWidth counts.
+			self.SetSize(self.__GetBoardWidth(), self.GetHeight())
 			self.UpdatePosition()
 
 	# The board is as wide as the name draws, not seven pixels a character:
@@ -473,6 +468,18 @@ class TargetBoard(ui.ThinBoard):
 			dbg.TraceError("TARGET_BOARD: wide name len=%d drawn=%d vid=%s name=%r" % (
 				self.nameLength, drawn, self.vid, self.nameString))
 		return max(self.HP_BOARD_MIN_WIDTH, min(drawn, self.HP_BOARD_MAX_WIDTH))
+
+	# ... and never narrower than the rest of what it shows: the row of
+	# buttons under the name, and the name and the gauge while the gauge is
+	# up. A right-click lays a character's buttons out and the server's
+	# TargetHP puts the gauge up a moment later; each sized the board alone,
+	# and the gauge left nine buttons hanging past a board 272 pixels wide
+	# (DUDU, 28 September).
+	def __GetBoardWidth(self):
+		width = max(150, len(self.showingButtonList) * 75)
+		if self.hpGauge.IsShow():
+			width = max(width, self.__GetHPBoardWidth())
+		return width
 
 	def SetHP(self, hpPercentage):
 		self.__ShowHPBoard()
@@ -763,7 +770,8 @@ class TargetBoard(ui.ThinBoard):
 			button.SetPosition(pos, 33)
 			pos += 68
 
-		self.SetSize(max(150, showingButtonCount * 75), 65)
+		# As wide as the row, and as the gauge's half while the gauge is up.
+		self.SetSize(self.__GetBoardWidth(), 65)
 		self.UpdatePosition()
 
 	def OnUpdate(self):

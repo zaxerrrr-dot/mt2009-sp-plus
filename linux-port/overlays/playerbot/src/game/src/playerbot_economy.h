@@ -1867,6 +1867,35 @@ namespace
 				!IsPlayerBotUpgradeForSelf(ch, item))
 			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch);
 
+		// Tackle: one rod is the angler's and one pickaxe the miner's, and a
+		// second of either is scrap - one that another of its kind, worn or in
+		// the bag, matches or beats in grade (the grades are consecutive vnums).
+		// The bots that bought a rod per session (see CountPlayerBotRods) were
+		// carrying fifteen, and a vendored rod or pickaxe (eighty thousand yang)
+		// would only be bought again for the next session. Above the refine keep
+		// below, because a tool's grade is the plus in its name: from Wedka+4 a
+		// second rod was never scrap, and the counter took any rod from +4 for a
+		// precious spare - the bot's only one too, stowed in the bag between two
+		// sessions, so the next session bought another at the Rybak (Octodan,
+		// 26 September). A tool is never counter goods now
+		// (ScorePlayerBotShopStock), so the merchant is where a second one goes,
+		// whatever its plus, or it would ride in the bag for good.
+		if (item->GetType() == ITEM_ROD || item->GetType() == ITEM_PICK)
+		{
+			const BYTE tool = item->GetType();
+			LPITEM worn = ch->GetWear(WEAR_WEAPON);
+			if (worn && worn != item && worn->GetType() == tool && worn->GetVnum() >= vnum)
+				return true;
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM other = ch->GetInventoryItem(cell);
+				if (other && other != item && other->GetType() == tool &&
+						(other->GetVnum() > vnum || (other->GetVnum() == vnum && other->GetID() < item->GetID())))
+					return true;
+			}
+			return false;
+		}
+
 		// Whatever else it is, a +5 or better is not something to hand an NPC for
 		// a fifth of the shop price. The reserve rule below keeps one spare per
 		// slot and sold the rest; that is how a Riba +9 went to a merchant
@@ -1942,50 +1971,14 @@ namespace
 		if (vnum == PLAYERBOT_MAGIC_DUST_VNUM)
 			return false;
 
-		// Fishing tackle and the catch worth keeping. Pearls are the entire point
-		// of a fishing trip -- they are what carries equipment to +7/+8/+9 -- and a
-		// vendored rod would simply have to be bought again for the next session.
-		// Ordinary fish and bones stay sellable: that is the angler's pocket money.
-		// One rod is tackle; a second one is scrap. The bots that bought a rod
-		// per session (see CountPlayerBotRods) are carrying fifteen, and the
-		// worst of them go to the merchant: a rod that another rod - worn or in
-		// the bag - matches or beats in grade.
-		if (item->GetType() == ITEM_ROD)
-		{
-			LPITEM worn = ch->GetWear(WEAR_WEAPON);
-			if (worn && worn != item && worn->GetType() == ITEM_ROD && worn->GetVnum() >= vnum)
-				return true;
-			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
-			{
-				LPITEM other = ch->GetInventoryItem(cell);
-				if (other && other != item && other->GetType() == ITEM_ROD &&
-						(other->GetVnum() > vnum || (other->GetVnum() == vnum && other->GetID() < item->GetID())))
-					return true;
-			}
-			return false;
-		}
+		// The catch worth keeping. Pearls are the entire point of a fishing trip
+		// -- they are what carries equipment to +7/+8/+9. Ordinary fish and bones
+		// stay sellable: that is the angler's pocket money. (The rod and the
+		// pickaxe are tackle, judged above the refine keep.)
 		if (vnum == PLAYERBOT_FISHING_BAIT_VNUM ||
 				vnum == PLAYERBOT_SHELLFISH_VNUM || vnum == PLAYERBOT_CAMPFIRE_VNUM ||
 				(vnum >= PLAYERBOT_PEARL_FIRST_VNUM && vnum <= PLAYERBOT_PEARL_LAST_VNUM))
 			return false;
-		// A pickaxe is tackle, exactly as a rod is, and the same rule applies:
-		// one is the tool, a second one is scrap. It costs eighty thousand yang
-		// and the junk rule's default is to sell, so without this a miner would
-		// vendor its pickaxe on the town trip after every session.
-		if (item->GetType() == ITEM_PICK)
-		{
-			LPITEM worn = ch->GetWear(WEAR_WEAPON);
-			if (worn && worn != item && worn->GetType() == ITEM_PICK && worn->GetVnum() >= vnum)
-				return true;
-			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
-			{
-				LPITEM other = ch->GetInventoryItem(cell);
-				if (other && other != item && other->GetType() == ITEM_PICK &&
-						(other->GetVnum() > vnum || (other->GetVnum() == vnum && other->GetID() < item->GetID())))
-					return true;
-			}
-			return false;
-		}
 		// Ore, raw and smelted. A hundred raw make one smelted piece and the
 		// smelted ones are what a player crosses a market for, so neither is
 		// ever the merchant's - they are the whole point of the digging, and

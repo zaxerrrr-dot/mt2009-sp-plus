@@ -125,8 +125,10 @@ namespace playerbot_conv
 		ReplaceAll(out, "$ARMOR", s.armorName.empty() ? std::string("nic") : GearName(s.armorName, s.armorPlus));
 		ReplaceAll(out, "$APLUS", ToString(s.armorPlus));
 		ReplaceAll(out, "$BIO", s.bioWanted);
-		ReplaceAll(out, "$HUNT", s.huntMob);
+		// $HUNTN before $HUNT, which is its first five letters: the other way
+		// round a bot said "Zostalo mi Czarny OrkN sztuk".
 		ReplaceAll(out, "$HUNTN", ToString(s.huntRemaining));
+		ReplaceAll(out, "$HUNT", s.huntMob);
 		ReplaceAll(out, "$MOBS", ToString(s.mobsNear < 0 ? 0 : s.mobsNear));
 		{
 			const TMapWords& shopMap = GetMapWords(s.shopMapIndex);

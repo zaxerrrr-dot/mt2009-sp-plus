@@ -1250,7 +1250,9 @@ function Show-DifficultyDialog {
     $dialog.Controls.Add($sidekickCheck)
     $starterCheck = [Windows.Forms.CheckBox]::new()
     $starterCheck.Name = 'starterChest'
-    $starterCheck.Text = 'Skrzynia Ucznia dla nowych postaci graczy (przy pierwszym logowaniu)'
+    # One switch for people and bots: off, a player's new character gets no
+    # chest, a bot is made without one and loses the ones in its bag.
+    $starterCheck.Text = 'Skrzynia Ucznia w grze - nowe postacie graczy i boty'
     $starterCheck.Location = [Drawing.Point]::new(18, $y + 240)
     $starterCheck.Size = [Drawing.Size]::new(516, 24)
     $starterCheck.Checked = ($Current.Starter -ne $false)
@@ -1373,11 +1375,14 @@ function Show-FreshWorldDialog {
     $dialog.Controls.Add($holdBox)
     $y += 34
 
+    # What the world had, not a fixed "on": a wipe ticked the chest back on
+    # for everybody who had switched it off and clicked through the dialog -
+    # one way "the apprentice chests come back" (the operator, 28 September).
     $starterBox = [Windows.Forms.CheckBox]::new()
-    $starterBox.Text = 'Skrzynia Ucznia dla nowych postaci graczy (przy pierwszym logowaniu)'
+    $starterBox.Text = 'Skrzynia Ucznia w grze - nowe postacie graczy i boty'
     $starterBox.Location = [Drawing.Point]::new(18, $y + 6)
     $starterBox.Size = [Drawing.Size]::new(516, 26)
-    $starterBox.Checked = $true
+    $starterBox.Checked = ((Get-DifficultyFromEnv).Starter -ne $false)
     $dialog.Controls.Add($starterBox)
     $y += 34
 

@@ -3469,6 +3469,16 @@ T = {
                    "en":"✅ Saved! The new Auto Hunt access is live in game."},
  "ah_saved_restart": {"pl":"Zapisano. Nikt nie jest zalogowany, więc pomocnik w grze nie odpowiedział — zmiana zadziała po restarcie serwera (albo zapisz jeszcze raz, gdy ktoś będzie w grze).",
                       "en":"Saved. Nobody is logged in, so the in-game helper did not answer — the change applies after a server restart (or save again while somebody is in game)."},
+ "sc_title":    {"pl":"Skrzynia Ucznia", "en":"Apprentice Chest"},
+ "sc_help":     {"pl":"Łańcuch Skrzyń Ucznia (od Skrzyni Ucznia I po Skrzynię Arcymistrza: mikstury, eliksiry, zielone kamienie i następna skrzynia) — jeden przełącznik dla graczy i botów. Włączona: nowa postać gracza dostaje ją przy pierwszym logowaniu (do 5. poziomu), bot ma swoją od początku i otwiera kolejne skrzynie na ich poziomach. Wyłączona: nie dostaje jej nikt; boty tracą nieotwarte skrzynie z łańcucha, a nowe boty rodzą się bez niej. Skrzyń graczy nic nie rusza. Zmiana działa od razu i zostaje po restarcie, dopóki nie zmienisz jej w launcherze (przycisk POZIOM TRUDNOŚCI, M2_STARTER_CHEST w .env).",
+                 "en":"The Apprentice Chest chain (from Apprentice Chest I to the Grand Master Chest: potions, elixirs, green stones and the next chest) - one switch for players and bots. On: a player's new character gets it at its first login (up to level 5), a bot has its own from the start and opens the next chests at their levels. Off: nobody gets it; the bots lose the unopened chests of the chain and new bots are made without one. Players' chests are never touched. A change is live at once and stays across a restart until it is changed in the launcher (the DIFFICULTY button, M2_STARTER_CHEST in .env)."},
+ "sc_on":       {"pl":"Skrzynia Ucznia w grze (gracze i boty)", "en":"Apprentice Chest in the game (players and bots)"},
+ "sc_off":      {"pl":"Bez Skrzyni Ucznia (ani dla graczy, ani dla botów)", "en":"No Apprentice Chest (for neither players nor bots)"},
+ "sc_save":     {"pl":"Zapisz Skrzynię Ucznia", "en":"Save the Apprentice Chest"},
+ "sc_saved_live": {"pl":"✅ Zapisano! Zmiana działa już w grze.",
+                   "en":"✅ Saved! The change is live in game."},
+ "sc_saved_restart": {"pl":"Zapisano. Gra nie odpowiedziała (serwer jest wyłączony albo dopiero startuje) — zmiana zadziała przy następnym starcie serwera.",
+                      "en":"Saved. The game did not answer (the server is down or still starting) - the change applies at the next server start."},
  "ai_books_moved": {"pl":"Na tym serwerze ustawia to poziom trudności (Mnożniki serwera → Poziom trudności): osobno czas dla graczy, osobno dla botów; 0 = od razu.",
                     "en":"On this server the difficulty sets it (Server rates → Difficulty): one wait for the players, one for the bots; 0 = at once."},
  "ch2_title":   {"pl":"Drugi kanał (CH2)", "en":"Second channel (CH2)"},
@@ -4802,6 +4812,21 @@ def read_autohunt_mt2009():
                 name = name.decode("ascii", "replace")
             out["item" if name == "m2_autohunt_item" else "off"] = 1 if int(value or 0) > 0 else 0
     return out
+
+# The apprentice chest (Skrzynia Ucznia, the chain up to Skrzynia Arcymistrza),
+# one switch for the whole world, people and bots alike: the event flag
+# m2_starter_chest_off, which starter_chest.quest asks at a person's first
+# login, the seed at a bot's creation, and the cores for the bots in the world
+# (off, a bot keeps and opens none of the chain). The migrator applies .env's
+# M2_STARTER_CHEST only when it changed since the last start, so what this card
+# writes stays until the launcher's choice changes (the operator, 28 September:
+# "czemu wracaja u niektorych"). No row reads as on, as the quest reads it.
+def read_starter_chest_mt2009():
+    with db() as c, c.cursor() as cur:
+        cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName='m2_starter_chest_off' LIMIT 1")
+        row = cur.fetchone()
+    value = (row["lValue"] if isinstance(row, dict) else row[0]) if row else 0
+    return {"off": 1 if int(value or 0) > 0 else 0}
 
 def read_regen_mt2009():
     """The two flags as the page shows them (100 = normal), from player.quest."""
@@ -6205,6 +6230,17 @@ regenLabel("regen_boss");regenLabel("regen_mob");
 <p><label><input type="radio" name="item" value="0"{% if not autohunt.item %} checked{% endif %}> {{t('ah_all')}}</label></p>
 <p><label><input type="radio" name="item" value="1"{% if autohunt.item %} checked{% endif %}> {{t('ah_item')}}</label></p>
 <button class="big" style="margin-top:12px">{{t('ah_save')}}</button>
+</form></div>
+{% endif %}
+{% if starter_chest %}
+<div class="card">
+<form method="post" action="{{url_for('rates_starter_chest')}}">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<h3>🎒 {{t('sc_title')}}</h3>
+<p class="muted">{{t('sc_help')}}</p>
+<p><label><input type="radio" name="off" value="0"{% if not starter_chest.off %} checked{% endif %}> {{t('sc_on')}}</label></p>
+<p><label><input type="radio" name="off" value="1"{% if starter_chest.off %} checked{% endif %}> {{t('sc_off')}}</label></p>
+<button class="big" style="margin-top:12px">{{t('sc_save')}}</button>
 </form></div>
 {% endif %}
 {% if channels %}
@@ -14827,6 +14863,7 @@ def rates():
     regen_count = None
     difficulty = None
     autohunt = None
+    starter_chest = None
     if ENGINE_MT2009:
         try:
             regen = read_regen_mt2009()
@@ -14844,6 +14881,10 @@ def rates():
             autohunt = read_autohunt_mt2009()
         except Exception:
             autohunt = None
+        try:
+            starter_chest = read_starter_chest_mt2009()
+        except Exception:
+            starter_chest = None
     channels = None
     if ENGINE_MT2009:
         try:
@@ -14854,7 +14895,7 @@ def rates():
                                   regen_count=regen_count, count_choices=REGEN_COUNT_CHOICES,
                                   difficulty=difficulty, difficulty_levels=DIFFICULTY_LEVELS,
                                   difficulty_max=DIFFICULTY_MAX_HOURS, autohunt=autohunt,
-                                  channels=channels,
+                                  starter_chest=starter_chest, channels=channels,
                                   intro_key="rates_intro_mt2009" if ENGINE_MT2009 else "rates_intro",
                                   state_msg=t("rates_st_" + st) if st in RATE_STATES else "")
 
@@ -15020,6 +15061,42 @@ def rates_autohunt():
             except Exception:
                 pass
         flash(t("ah_saved_restart"))
+    return redirect(url_for("rates"))
+
+
+@app.post("/rates/starter_chest")
+@login_required
+def rates_starter_chest():
+    """The apprentice chest on or off, for people and bots alike. mt2009 only:
+    starter_chest.quest, the seed and the cores read the event flag. The row is
+    what a restart keeps; web_admin.quest's STARTER_CHEST makes it live."""
+    if not ENGINE_MT2009:
+        return redirect(url_for("rates"))
+    value = (request.form.get("off", "") or "").strip()
+    if value not in ("0", "1"):
+        return redirect(url_for("rates"))
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                        "VALUES (0, 'm2_starter_chest_off', '', %s)", (int(value),))
+    except Exception:
+        flash(t("db_down"), "error")
+        return redirect(url_for("rates"))
+    try:
+        status, qid = queue_and_wait("", "STARTER_CHEST", value, "", wait=RATES_LIVE_WAIT)
+    except Exception:
+        status, qid = "failed", 0
+    if status == "done":
+        flash(t("sc_saved_live"))
+    else:
+        if status == "timeout":
+            try:
+                with db() as c, c.cursor() as cur:
+                    cur.execute("UPDATE player.web_admin_queue SET status='cancelled' "
+                                "WHERE id=%s AND status='pending'", (qid,))
+            except Exception:
+                pass
+        flash(t("sc_saved_restart"))
     return redirect(url_for("rates"))
 
 

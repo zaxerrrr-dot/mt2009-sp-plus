@@ -428,8 +428,14 @@ namespace
 			if (startedAt != 0 && (DWORD)get_global_time() < startedAt + PLAYERBOT_GUILD_WAR_MUSTER_SECONDS)
 				snprintf(status, statusSize, PBT(en, "%sZbiorka przed wojna gildii z %s (%s)", "%sMustering for the guild war with %s (%s)"),
 						prefix, enemy ? enemy->GetName() : "?", role);
-			else if (IsPlayerBotWarRegrouping(ch))
-				snprintf(status, statusSize, PBT(en, "%sPrzegrupowanie w obozie - wojna z %s", "%sRegrouping at the camp - war with %s"),
+			// The two ways a bot at war stands still at its camp on purpose,
+			// said above it: from outside both looked like a war that had
+			// stopped (DUDU, 28 September).
+			else if (IsPlayerBotWarOnBreak(ch))
+				snprintf(status, statusSize, "%sPrzerwa miedzy rundami w obozie - wojna z %s",
+						prefix, enemy ? enemy->GetName() : "?");
+			else if (IsPlayerBotWarWaitingOut(ch))
+				snprintf(status, statusSize, "%sPolegl, czeka w obozie na nastepna runde - wojna z %s",
 						prefix, enemy ? enemy->GetName() : "?");
 			else
 				snprintf(status, statusSize, PBT(en, "%sWojna gildii z %s (%s)", "%sGuild war with %s (%s)"),

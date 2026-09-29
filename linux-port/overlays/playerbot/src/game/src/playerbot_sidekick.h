@@ -2359,26 +2359,12 @@ namespace
 	// a new login, a new VID for the owner - and again after
 	// PLAYERBOT_SIDEKICK_BODY_RESEND_MS. A root from before 2.0.40 answers the
 	// command with one "Unknown Server Command" line in its syserr.txt.
-	//
-	// MT2009_PLUS_SIDEKICK_HAIR_V1: "SidekickVid <vid> <hair> <sash>" - the
-	// hair and the sash parts too, and again at every change of the armour,
-	// the hair or the sash. An instance typed as an NPC takes no hair and no
-	// sash (CInstanceBase::SetHair and SetAcce return for anything but a
-	// player), and the client's ChangeArmor builds the body anew and puts the
-	// hair back through SetHair: the companion in a new armour or costume
-	// stood with an empty head in its owner's eyes ("Towarzysz jak ma zalozona
-	// fryzure, to nie wyswietla sie model - jest tak, jakby pusta glowa", 28
-	// September). sidekickcollision.py puts both back as a player for a
-	// moment. A root before this ignores the two numbers.
 	struct TPlayerBotSidekickBodySent
 	{
 		DWORD dwVid;
 		DWORD dwOwnerVid;
 		DWORD dwAt;
-		DWORD dwMain;
-		DWORD dwHair;
-		DWORD dwAcce;
-		TPlayerBotSidekickBodySent() : dwVid(0), dwOwnerVid(0), dwAt(0), dwMain(0), dwHair(0), dwAcce(0) {}
+		TPlayerBotSidekickBodySent() : dwVid(0), dwOwnerVid(0), dwAt(0) {}
 	};
 	std::map<DWORD, TPlayerBotSidekickBodySent> s_mapPlayerBotSidekickBodySent;	// by owner pid
 
@@ -2393,27 +2379,13 @@ namespace
 		// Nothing to take back from a client that was never told.
 		if (vid == 0 && sent.dwVid == 0)
 			return;
-		const DWORD main = vid ? (DWORD)sk->GetPart(PART_MAIN) : 0;
-		const DWORD hair = vid ? (DWORD)sk->GetPart(PART_HAIR) : 0;
-#ifdef ENABLE_ACCE_COSTUME_SYSTEM
-		const DWORD acce = vid ? (DWORD)sk->GetPart(PART_ACCE) : 0;
-#else
-		const DWORD acce = 0;
-#endif
-		if (vid == sent.dwVid && ownerVid == sent.dwOwnerVid && main == sent.dwMain && hair == sent.dwHair &&
-				acce == sent.dwAcce && dwNow - sent.dwAt < PLAYERBOT_SIDEKICK_BODY_RESEND_MS)
+		if (vid == sent.dwVid && ownerVid == sent.dwOwnerVid &&
+				dwNow - sent.dwAt < PLAYERBOT_SIDEKICK_BODY_RESEND_MS)
 			return;
-		if (vid)
-			owner->ChatPacket(CHAT_TYPE_COMMAND, "SidekickVid %u %u %u", (unsigned int)vid, (unsigned int)hair,
-					(unsigned int)acce);
-		else
-			owner->ChatPacket(CHAT_TYPE_COMMAND, "SidekickVid 0");
+		owner->ChatPacket(CHAT_TYPE_COMMAND, "SidekickVid %u", (unsigned int)vid);
 		sent.dwVid = vid;
 		sent.dwOwnerVid = ownerVid;
 		sent.dwAt = dwNow;
-		sent.dwMain = main;
-		sent.dwHair = hair;
-		sent.dwAcce = acce;
 	}
 #endif
 

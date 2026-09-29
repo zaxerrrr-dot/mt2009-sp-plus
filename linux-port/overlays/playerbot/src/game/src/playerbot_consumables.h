@@ -329,6 +329,12 @@ namespace
 			// population opening that kind of box for the next few minutes.
 			if (item->isLocked())
 				continue;
+			// The apprentice chain is giftboxes too, and with the world's
+			// apprentice chest off none of it is opened: the progression pass
+			// (playerbot_gear.h) takes it out of the bag instead, and it runs
+			// later in the tick than this one.
+			if (IsPlayerBotApprenticeChestVnum(item->GetVnum()) && IsPlayerBotApprenticeChestOff())
+				continue;
 			// A dropper keeps its Moonlight chests for its counter, up to
 			// PLAYERBOT_CHEST_DROPPER_HOLD, and opens what is past that. The
 			// resource trader kept six for its counter as well (2.0.31, after

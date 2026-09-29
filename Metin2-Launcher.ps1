@@ -1209,7 +1209,7 @@ function Set-DifficultyAction {
         }
         $answer = Read-Host "Towarzysz (stały kompan gracza, list i okno P) włączony? (T/n, Enter = $(if ($currentSidekick) { 'tak' } else { 'nie' }))"
         if ("$answer".Trim()) { $sidekickOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
-        $answer = Read-Host "Skrzynia Ucznia dla nowych postaci graczy (przy pierwszym logowaniu)? (T/n, Enter = $(if ($currentStarter) { 'tak' } else { 'nie' }))"
+        $answer = Read-Host "Skrzynia Ucznia w grze - dla nowych postaci graczy i dla botów? (T/n, Enter = $(if ($currentStarter) { 'tak' } else { 'nie' }))"
         if ("$answer".Trim()) { $starterOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
         $answer = Read-Host "Dom Towarowy (wszystkie oferty sklepów offline u Handlarki Różności w M1) włączony? (T/n, Enter = $(if ($currentFlea) { 'tak' } else { 'nie' }))"
         if ("$answer".Trim()) { $fleaOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
@@ -1514,13 +1514,14 @@ function Set-FreshWorldSettings {
             $hold = 0
         }
         Write-Host ''
-        Write-Host 'Skrzynia Ucznia to zestaw skrzyń, który prowadzi postać przez pierwsze wioski (boty też je mają):' -ForegroundColor Cyan
-        if (Confirm-Operation 'Czy nowe postacie graczy mają dostawać Skrzynię Ucznia przy pierwszym logowaniu?') {
-            $starter = 1
-        }
-        else {
-            $starter = 0
-        }
+        Write-Host 'Skrzynia Ucznia to zestaw skrzyń, który prowadzi postać przez pierwsze wioski - jeden przełącznik dla graczy i botów:' -ForegroundColor Cyan
+        # Enter keeps what the world had. A [t/N] question switched the chest off
+        # for everybody who pressed Enter, and the window ticked it back on for
+        # everybody who had it off - either way a wipe changed it unasked.
+        $starterNow = (Get-DotEnvValue -Key 'M2_STARTER_CHEST' -Default '1') -ne '0'
+        $answer = Read-Host "Skrzynia Ucznia w grze - dla nowych postaci graczy i dla botów? (T/n, Enter = $(if ($starterNow) { 'tak' } else { 'nie' }))"
+        if ("$answer".Trim()) { $starterNow = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
+        $starter = $(if ($starterNow) { 1 } else { 0 })
     }
 
     $written = @()
@@ -1544,7 +1545,7 @@ function Set-FreshWorldSettings {
     if ($starter -ge 0) {
         $starterValue = $(if ($starter -ge 1) { '1' } else { '0' })
         Set-DotEnvValue -Key 'M2_STARTER_CHEST' -Value $starterValue
-        $written += $(if ($starterValue -eq '1') { 'nowe postacie dostają Skrzynię Ucznia' } else { 'bez Skrzyni Ucznia dla nowych postaci' })
+        $written += $(if ($starterValue -eq '1') { 'Skrzynia Ucznia w grze' } else { 'bez Skrzyni Ucznia (ani dla graczy, ani dla botów)' })
     }
     if ($written.Count -gt 0) {
         Write-Host ('Zapisano: ' + ($written -join ', ') + '.') -ForegroundColor Green

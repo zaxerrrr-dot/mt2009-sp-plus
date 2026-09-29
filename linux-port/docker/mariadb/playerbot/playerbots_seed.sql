@@ -5019,6 +5019,11 @@ BEGIN NOT ATOMIC
         ON i.owner_id = s.pid AND i.window = 'INVENTORY' AND i.pos = 1
      WHERE i.id IS NULL;
 
+    -- The class's apprentice chest (Skrzynia Ucznia I) is the world's choice,
+    -- for people and bots alike: while the operator has it off
+    -- (M2_STARTER_CHEST, the event flag m2_starter_chest_off) the mt2009
+    -- wrapper sets @playerbot_seed_starter_chest to 0 and a bot made then
+    -- starts without one. r40250's never sets it, and every bot has its chest.
     INSERT INTO player.item (owner_id, window, pos, count, vnum)
     SELECT s.pid, 'INVENTORY', 2, 1,
            CASE
@@ -5030,7 +5035,8 @@ BEGIN NOT ATOMIC
       JOIN playerbot_seed_pending AS q ON q.pid = s.pid
       LEFT JOIN player.item AS i
         ON i.owner_id = s.pid AND i.window = 'INVENTORY' AND i.pos = 2
-     WHERE i.id IS NULL;
+     WHERE i.id IS NULL
+       AND COALESCE(@playerbot_seed_starter_chest, 1) <> 0;
 
     -- The seed already supplied the starter chest above. Mark the stock login
     -- reward as claimed so give_basic_weapon does not create a second chest and,
@@ -5044,7 +5050,8 @@ BEGIN NOT ATOMIC
     -- new character): it gives the chest at a first login at level five or
     -- under, and on a new world every bot's first login is at level one - so
     -- every bot had a second chest and a second starter weapon out of it
-    -- (Iwakura, 26 September).
+    -- (Iwakura, 26 September). Marked whether the seed gave one or not: a
+    -- bot made while the chest is off does not get one later either.
     INSERT INTO player.quest (dwPID, szName, szState, lValue)
     SELECT q.pid, 'starter_chest', 'given', 1
       FROM playerbot_seed_pending AS q
@@ -5064,9 +5071,9 @@ BEGIN NOT ATOMIC
         OR NOT EXISTS (
                SELECT 1 FROM player.item AS i
                 WHERE i.owner_id = q.pid AND i.window = 'INVENTORY' AND i.pos = 1)
-        OR NOT EXISTS (
+        OR (COALESCE(@playerbot_seed_starter_chest, 1) <> 0 AND NOT EXISTS (
                SELECT 1 FROM player.item AS i
-                WHERE i.owner_id = q.pid AND i.window = 'INVENTORY' AND i.pos = 2);
+                WHERE i.owner_id = q.pid AND i.window = 'INVENTORY' AND i.pos = 2));
     IF v_conflicts <> 0 THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'playerbot seed: starter slots are incomplete';
