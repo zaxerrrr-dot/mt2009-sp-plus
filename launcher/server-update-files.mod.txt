@@ -66,6 +66,7 @@ linux-port/docker/game/mob_drop_item.m3.append.txt
 linux-port/docker/game/special_item_group.moonlight.txt
 linux-port/docker/game/special_item_group.starter.txt
 linux-port/docker/game/special_item_group.cors.txt
+linux-port/docker/game/special_item_group.dungeons.txt
 linux-port/docker/game/cube.seon_pyeong.txt
 linux-port/docker/game/costume_sets.txt
 linux-port/docker/game/dragon_soul_applys.mt2009plus.txt
@@ -74,6 +75,14 @@ linux-port/docker/game/special_spawns.baroness.txt
 linux-port/docker/game/ochao/*
 linux-port/docker/game/ochao/map/metin2_map_mt_th_dungeon_01/*
 linux-port/docker/game/ochao/data/monster/trent_officer/*
+linux-port/docker/game/dungeons/*
+linux-port/docker/game/dungeons/data/dungeon/nemere_mt/*
+linux-port/docker/game/dungeons/data/dungeon/razador_mt/*
+linux-port/docker/game/dungeons/map/metin2_map_n_snow_dungeon_01/*
+linux-port/docker/game/treasure_hunt/*
+linux-port/docker/game/treasure_hunt/map/metin2_map_treasure_hunt/*
+linux-port/docker/game/treasure_hunt/monster/treasure_hunt_box/*
+linux-port/docker/game/treasure_hunt/monster/treasure_hunt_goblin/*
 
 # ---- the launcher and the package's own bookkeeping --------------------------
 # The line's own version and package note, published under the root names.

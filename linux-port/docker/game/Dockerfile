@@ -341,18 +341,21 @@ COPY src/serverfiles/share/package /opt/metin2/share/package
 #    seed hands out and the package has no group for.
 #  * special_item_group.cors.txt - the higher Cor Draconis grades (50256-50259)
 #    open into dragon stones of their own grade (MT2009_PLUS_COR_GRADES_V1).
-COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt /tmp/share-add/
+#  * special_item_group.dungeons.txt - the Razador (50270) and Nemere (50271)
+#    boss chests the two dungeons' quests hand out (MT2009_PLUS_BOSS_CHESTS_V1).
+COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt special_item_group.dungeons.txt /tmp/share-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland \
  && for f in /tmp/share-add/*.txt; do sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$f"; done \
  && m=/tmp/share-add/special_item_group.moonlight.txt; c=/tmp/share-add/special_item_group.moonlight.custom.txt \
  && if [ -s "$c" ]; then grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+50011[[:space:]]*$' "$c" || { echo "FATAL: $c defines no Vnum 50011" >&2; exit 1; }; m="$c"; echo "share: the operator's Moonlight chest"; fi \
  && cat /tmp/share-add/mob_drop_item.m3.append.txt >> "$L/mob_drop_item.txt" \
  && f="$L/special_item_group.txt" \
- && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254|50256|50257|50258|50259)([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
- && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt >> "$f.new" \
+ && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254|50256|50257|50258|50259|50270|50271)([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
+ && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt /tmp/share-add/special_item_group.dungeons.txt >> "$f.new" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(50270|50271)([^0-9]|$)' "$f.new")" = 2 \
  && mv "$f.new" "$f" \
  && rm -rf /tmp/share-add \
- && echo "share: moonlight + starter chests, M3 drops appended"
+ && echo "share: moonlight + starter + boss chests, M3 drops appended"
 
 # The alchemy bonuses (server-patches/dragonsoulbalance): the package's
 # BasicApplys and AdditionalApplys groups of dragon_soul_table.txt give way to
@@ -458,6 +461,24 @@ RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
  && rm -rf "$O/monkey_curse" \
  && ! find "$O" -path "$O/state" -prune -o -name 'monkey_curse*' -print | grep -q . \
  && echo "share: monkey curse removed ($n handlers)"
+
+# MT2009_PLUS_EASTER_METIN_CAP_V1: the package compiles three generations of
+# the Easter event - event_easter, event_easter_2012 and event_easter_2013 -
+# and all three answer the same easter_drop/easter_rabbit flags and the same
+# kill of an Easter metin (8041-8050): one kill put two or three new metins
+# down (_2013 on the killer's map, the other two on a map of the killer's
+# kingdom and level), paid out a basket twice and an egg besides, and _2013
+# put twelve more on a map at every login or map change while the Bunny was
+# on - "Metin na Metinie" on every map (a player, 29 September). event_easter
+# is the event the panel switches; the two older ones lose their handlers and
+# keep their state tables for the flags characters already carry. The
+# engine caps what is left per map (regen.cpp, EasterRegenMaySpawn).
+RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
+ && n=$(find "$O" -path "$O/state" -prune -o -type f \( -name 'event_easter_2012.*' -o -name 'event_easter_2013.*' \) -print | wc -l) \
+ && find "$O" -path "$O/state" -prune -o -type f \( -name 'event_easter_2012.*' -o -name 'event_easter_2013.*' \) -exec rm -f {} + \
+ && ! find "$O" -path "$O/state" -prune -o -type f \( -name 'event_easter_2012.*' -o -name 'event_easter_2013.*' \) -print | grep -q . \
+ && test -f "$O/8043/kill/event_easter.start" \
+ && echo "share: old Easter event copies removed ($n handlers)"
 
 # The Grotto of Exile's entrance (port/shareify.py renders this step): the
 # package commented out Koe-Pung in Orc Valley's bottom-left corner (20093,
@@ -609,10 +630,17 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && ! grep -q -E '^[[:blank:]]*Mob[[:blank:]]+6191([^0-9]|$)' "$L/mob_drop_item.txt" \
  && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
  && cat "$A/mob_drop_item.dungeons.append.txt" >> "$L/mob_drop_item.txt" \
+ && awk 'BEGIN{n=0} /^Group/{inb=0} /^[[:blank:]]*Mob[[:blank:]]+(6091|6191)([^0-9]|$)/{inb=1; n=0} \
+      { if (inb && $1 ~ /^[0-9]+$/ && $2 ~ /^[0-9]+$/) { if ($2 == "50254") next; n++; sub(/^[[:blank:]]*[0-9]+/, "\t" n) } print } \
+      /^}/{inb=0}' "$L/mob_drop_item.txt" > "$L/mob_drop_item.txt.new" && mv "$L/mob_drop_item.txt.new" "$L/mob_drop_item.txt" \
+ && ! awk '/^[[:blank:]]*Mob[[:blank:]]+(6091|6191)([^0-9]|$)/{f=1} /^}/{f=0} f && $2=="50254"{bad=1} END{exit !bad}' "$L/mob_drop_item.txt" \
  && test "$(grep -c -E '^Group[[:blank:]]+MT2009_nemere_' "$L/mob_drop_item.txt")" = 10 \
  && test "$(od -An -tx1 -j4 -N4 "$L/map/metin2_map_n_snow_dungeon_01/server_attr" | tr -d ' ')" = 0c000000 \
  && rm -rf "$A" \
  && echo "share: Razador (351) and Nemere (352) dungeons, their guards and the Nemere drops"
+# (MT2009_PLUS_BOSS_CHESTS_V1: the Skrzynia Mroku 50254 comes from Azrael only - the
+# owner, 29 September - so it is cut from Razador's and Nemere's groups above and
+# their lines renumbered; the engine stops a group at its first missing index.)
 # The Spider Baroness (port/shareify.py renders special_spawns.baroness.txt and
 # this step): the level-75 boss who drops the Stalki, stood in the second
 # Spider Dungeon's last room every four to five hours (the operator's decision

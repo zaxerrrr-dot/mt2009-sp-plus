@@ -50,6 +50,27 @@ quest nemere_dungeon begin
 			return idx >= 352 * 10000 and idx < 353 * 10000
 		end
 
+		-- MT2009_PLUS_BOSS_CHESTS_V1: the boss's chest (50271, special_item_group.dungeons.txt)
+		-- for every player of the killer's party inside this instance (get_member_pids gives
+		-- only the members on the killer's map index), or for the killer alone; a full bag
+		-- drops it at the player's feet (give_item2). Bots never enter the dungeon.
+		function give_chests()
+			local pids = {}
+			if party.is_party() then
+				pids = {party.get_member_pids()}
+			end
+			if table.getn(pids) == 0 then
+				pids = {pc.get_player_id()}
+			end
+			for i, pid in next, pids, nil do
+				q.begin_other_pc_block(pid)
+				if not pc.is_playerbot() then
+					pc.give_item2(50271, 1)
+				end
+				q.end_other_pc_block()
+			end
+		end
+
 		function purge_mobs()
 			local c = nemere_dungeon.cfg()
 			d.purge_area(c.base_x * 100, c.base_y * 100, (c.base_x + c.size_x) * 100, (c.base_y + c.size_y) * 100)
@@ -417,6 +438,7 @@ quest nemere_dungeon begin
 
 		when 6191.kill with nemere_dungeon.inside() and d.getf("step") == 10 and d.getf("ready") == 1 begin
 			d.setf("step", 11)
+			nemere_dungeon.give_chests()
 			d.clear_regen()
 			nemere_dungeon.purge_mobs()
 			d.notice("Nemere zosta³ pokonany! Za 60 sekund wszyscy wróc¹ na Górê Sohan.")

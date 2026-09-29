@@ -2939,6 +2939,11 @@ class SkillToolTip(ToolTip):
 
 		## Duration
 		duration = skill.GetDuration(skillIndex, skillPercentage)
+		# MT2009_PLUS_SKILL_DURATION_V1: the timed skills last half as long again
+		# from G1 (skill level 30) up - the server's char_skill.cpp
+		# (ApplyGrandMasterSkillDuration), on the formula's time before the items'.
+		if duration > 0 and skillLevel >= 30 and skillIndex in (3, 4, 19, 34, 49, 63, 64, 65, 78, 79, 94, 95, 96, 110, 111):
+			duration += duration / 2
 		if duration > 0:
 			duration += duration * player.GetStatus(player.POINT_SKILL_DURATION) / 100
 			duration += player.GetStatus(player.POINT_PARTY_BUFFER_BONUS)

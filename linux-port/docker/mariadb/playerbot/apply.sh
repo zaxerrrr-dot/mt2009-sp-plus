@@ -1451,3 +1451,12 @@ DROP TEMPORARY TABLE world.gob_mob;" || echo "[playerbot-migrate] WARNING: could
 db -e "SET @m2_costume_sets := (SELECT COALESCE(SUM(costume_body + costume_hair + costume_weapon), 0) FROM world.item_attr);
 UPDATE world.item_attr SET costume_body = body, costume_hair = head, costume_weapon = weapon WHERE @m2_costume_sets = 0;
 INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) VALUES (3, 70065, 1), (3, 70064, 20), (3, 70063, 20);" || echo "[playerbot-migrate] WARNING: could not set up the costume bonus sets and the General Store's costume items" >&2
+
+# MT2009_PLUS_BOSS_CHESTS_V1: the Razador and Nemere dungeons' boss chests, at the
+# official vnums - Skrzynia Razadora (50270) and Skrzynia Nemere (50271), gift boxes
+# (type 23) that stack, opened by their special_item_group groups
+# (game/special_item_group.dungeons.txt); razador_dungeon.quest and nemere_dungeon.quest
+# hand them out when the boss dies. Idempotent: added once, never changed after.
+db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(50270, 'Skrzynia Razadora', 'Skrzynia Razadora', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50271, 'Skrzynia Nemere', 'Skrzynia Nemere', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || echo "[playerbot-migrate] WARNING: could not add the Razador and Nemere boss chests" >&2

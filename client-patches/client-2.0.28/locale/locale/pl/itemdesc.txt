@@ -2848,3 +2848,5 @@
 70618	Klucz Goblina	Tym kluczem zdobêdziesz wiêcej nagród w Poszukiwaniu skarbów.
 70619	Szkatu³ka z Kluczami Goblina	Zawiera 8 Kluczy Goblina.
 80030	Bilet Ko³a Fortuny	Bilet na jeden obrót Ko³em Fortuny (F12). Kupisz go w ItemShopie za Smocze Monety.
+50270	Skrzynia Razadora	Ta skrzynia zosta³a wydobyta z Czyœæca Ognia, legowiska Razadora. Znajduje siê w niej prawdziwy królewski skarb.
+50271	Skrzynia Nemere	Ta skrzynia zosta³a wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje siê w niej prawdziwy królewski skarb.

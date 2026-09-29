@@ -174,3 +174,22 @@ Group	MT2009_nemere_6191
 }
 
 
+
+
+// MT2009_PLUS_BOSS_CHESTS_V1: the boss chests (special_item_group.dungeons.txt). The dungeon
+// quests give one to every player of the party inside when the boss dies, so these lines drop
+// nothing (0%) - they only put the chest into the monster's drop preview (/mob_drop_preview).
+Group	MT2009_chest_preview_6091
+{
+	type	drop
+	Mob	6091	-- Razador
+	1	50270	1	0	-- Skrzynia Razadora (quest: razador_dungeon)
+}
+
+
+Group	MT2009_chest_preview_6191
+{
+	type	drop
+	Mob	6191	-- Nemere
+	1	50271	1	0	-- Skrzynia Nemere (quest: nemere_dungeon)
+}

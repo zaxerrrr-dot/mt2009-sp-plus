@@ -127217,3 +127217,5 @@
 70618	ETC	icon/item/70618.tga
 70619	ETC	icon/item/70619.tga
 80030	ETC	icon/item/dragonticket.tga
+50270	ETC	icon/item/50270.tga	d:/ymir work/item/etc/boss_box.gr2
+50271	ETC	icon/item/50271.tga	d:/ymir work/item/etc/boss_box.gr2
