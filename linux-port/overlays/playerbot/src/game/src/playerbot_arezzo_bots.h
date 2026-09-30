@@ -1116,8 +1116,11 @@ namespace
 				return TransitionPlayerBotMap(ch, state, destMap, destX, destY, dwNow, "arezzo_closed") ? 1 : 0;
 			return -1;
 		}
+		// Out of potions or a weapon: the frontier's own exit takes it out of
+		// the temple (to town and back later), not on to the Guardian.
 		if (mapIndex == PLAYERBOT_MAP_OCHAO && GetPlayerBotArezzoForcedMap(ch) == PLAYERBOT_MAP_AREZZO_FOREST &&
-				s_setPlayerBotArezzoLeave.count(ch->GetPlayerID()) == 0 && !IsPlayerBotOchaoLeaving(ch))
+				s_setPlayerBotArezzoLeave.count(ch->GetPlayerID()) == 0 && !IsPlayerBotOchaoLeaving(ch) &&
+				!BlocksPlayerBotTravel(ch))
 			return ManagePlayerBotArezzoLasInTemple(ch, state, dwNow);
 		return -1;
 	}
