@@ -119,3 +119,62 @@ zależności → `plan.json`), `gen.py` (msenv w folderach map, atlasy, `areadat
 localeinfo, wiersze protos, idempotentnie), `build_az.py` (paczki w dockerze `m2pack-lzo`,
 odczyt każdego wpisu, stare wpisy bez zmian), `verify_az.py` (obiekty map → property →
 modele → tekstury, `.mdatr`, rasy z npclist), `extract_out.py`, `stage.py`, `rebuild.sh`.
+
+# Etapy 5–8: Pustkowie Faraona, Wzgórze Wukonga, Ruiny Skorpiona, Starożytna Dżungla
+
+Budowane przez `tools/az58/rebuild58.sh` na aktualnych paczkach klienta (`/opt/metin2/cache/tcm/c30/pack`, w których
+jest już etap 1 i panel lochów), wynik w `/opt/metin2/cache/arezzo-work/client/out58/pack`. Pliki tekstowe i protos
+w tym katalogu (`gamedata/`, `locale/`, `root/localeinfo.py`) są już wersją z etapami 1 i 5–8. Pliki wygenerowane są
+w `gen58/`, lista wpisów nowych paczek ze źródłami w `manifest58.json`.
+
+| Mapa | Indeks | Folder w kliencie | BasePosition | Rozmiar |
+|---|---|---|---|---|
+| Pustkowie Faraona | 361 | `metin2_map_pustynia` | 230400 384000 | 4×4 |
+| Wzgórze Wukonga | 364 | `plechito_wukong_dungeon` | 844800 537600 | 2×2 |
+| Ruiny Skorpiona | 365 | `plechito_scorpion_dungeon` | 844800 588800 | 2×2 |
+| Starożytna Dżungla | 366 | `plechito_easter2023_dungeon` | 768000 537600 | 3×3 |
+
+## Nowe paczki (`Index`: `az_maps2`, `az_maps3`, `az_mobs2`, `az_mobs3`, `az_mobs4` na końcu)
+
+Podział tak, żeby każdy zip był mały (zmierzone: 8–15 MB).
+
+- `az_maps2` (138 plików, 15,5 MB w paczce): Pustkowie Faraona – textureset `pustynia.txt`, tekstury terenu,
+  `plechito_desert_map_01.msenv` ze skyboxem, obiekty `zone/plechi_env/desert_map_01`, `devils_dragon_island`,
+  `daimao`, `trusiakwork`, `.mdatr`, tekstury 17 oficjalnych obiektów (modele z klienta bazowego) i atlas.
+- `az_maps3` (133 pliki, 18,3 MB): trzy lochy – texturesety, msenv, obiekty `zone/plechi_dungeon/*`, `.mdatr`, atlasy.
+- `az_mobs2` (203 pliki, 12,8 MB): rasy Wzgórza Wukonga (`monster2/plechito_wukong/*`, kamienie w `monster/plechito_wukong/*`)
+  z efektami `effect/plechito/*`.
+- `az_mobs3` (250 plików, 9,9 MB): rasy piramidy (`monster2/plechito_pyramid_monsters/*`, `monster2/plechito_pyramid_stone1|4`).
+- `az_mobs4` (319 plików, 17,6 MB): Ruiny Skorpiona (`monster2/plechito_scorpion_monsters/*`, `monster/metinstone/scorpion_stone1.msm`)
+  i Starożytna Dżungla (`monster2/plechito_easter2023/*`, kamienie w `monster/plechito_easter2023/*`).
+
+## Zmienione paczki
+
+- `maps` +343 (4 foldery map i kopie msenv, bez `server_attr`), `property` +58 (obiekty map; kolizji CRC z naszą paczką brak –
+  17 obiektów Pustkowia to te same oficjalne obiekty, które już mamy).
+- `gamedata`: `atlasinfo.txt` +4, `npclist.txt` +38 linii ras i NPC oraz 33 linie aliasów `0 <rasa> <katalog>/<rasa>` (z npclist
+  Arezzo, `\` zamienione na `/`; aliasy stoją przed liniami vnumów), `mob_proto` 1471 → 1509, `item_proto` 6091 → 6097,
+  `item_list.txt` +6 (pieczęcie z ikoną `30327.tga`, skrzynie `50270.tga`/`50271.tga` z modelem `boss_box.gr2`).
+- `locale`: `itemdesc.txt` +6. `root`: `localeinfo.py` – 4 nazwy map w bloku `MT2009_PLUS_AREZZO_V1`.
+
+## Rasy Plechito (katalogi zagnieżdżone)
+
+Arezzo trzyma rasy w podkatalogach (`monster2/plechito_wukong/plechi_wukong_boss1/…`), a ścieżki w `.msm` są pełne
+i wskazują na `monster2`. Układ jest zachowany; npclist dostaje alias, np. `0 plechi_wukong_boss1 plechito_wukong/plechi_wukong_boss1`.
+Arezzo ma część ras podwójnie (`monster/` i `monster2/`) – wzięta jest kopia z `monster2` (na nią wskazują `.msm`), kamienie
+Wukonga i Dżungli są tylko w `monster/`. Kamień Skorpiona (9696) to `monster/metinstone/scorpion_stone1.msm` na oficjalnym
+`metinstone_01.gr2` (klient bazowy). Numery z allocation.json: kamienie i bossowie piramidy 9677/9678/9675/9681, Dżungla 9707–9714
+(w npclist klienta 8207–8209 i 16101–16131 są zajęte przez oficjalne NPC).
+
+## Czego brakuje (Arezzo też tego nie ma)
+
+- Pustkowie: 14 tekstur (`zone/plechi_env/desert_map_01/maze_*.dds`, `sand.dds`, 2 tekstury `terrainmaps/daimao/bydaimao`).
+- Ruiny Skorpiona: 2 tekstury logo `m2m_logo*`.
+- Rasy: `guardian warrior_e.dds` (9673), `guardian_thoth_e.dds` i `waepon_e.dds` (9675), `spawn.msa` WuKonga (9682);
+  żadna rasa Plechito nie ma dźwięków (`sound/…`).
+- GR2 64-bit: brak w tych mapach i rasach.
+
+## Narzędzia (`tools/az58`)
+
+`rebuild58.sh [BASE] [OUT]` (domyślnie `c30/pack` → `client/out58/pack`): `c30list.py` (lista i pliki bazy), `plan58.py`,
+`gen58.py`, `build58.py`, `verify58.py`, `extract58.py`, `stage58.py`. Drugie uruchomienie na bazie z tymi paczkami daje „unchanged”.

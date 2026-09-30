@@ -150,6 +150,10 @@ MAPS_game2="$MAPS_game2 419"
 # game2 with Razador and Nemere (d.new_jump_pids from its guard in Orc Valley).
 MAPS_game1="$MAPS_game1 360 362"
 MAPS_game2="$MAPS_game2 363"
+# MT2009_PLUS_AREZZO_V1 (maps, phases 5-8): Pustkowie Faraona (361) on game1 with the other open Arezzo
+# maps (game1 of the unified layout: 36 maps of 48); the dungeons 364-366 on game2 with 363.
+MAPS_game1="$MAPS_game1 361"
+MAPS_game2="$MAPS_game2 364 365 366"
 # The difficulty is acted on by the migrate service (event flags the quests
 # read); said here so a support bundle carries it next to the layout.
 log "difficulty: ${M2_DIFFICULTY:-easy} (Biologist and stable keeper waits; apply.sh writes the flags)"

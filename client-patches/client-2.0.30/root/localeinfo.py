@@ -512,6 +512,10 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_exp" : "Dolina Cyklop\xf3w",
 	"natural_map" : "Zaczarowany Las",
 	"plechito_chamber_of_wisdom" : "Biblioteka Wiedzy",
+	"metin2_map_pustynia" : "Pustkowie Faraona",
+	"plechito_wukong_dungeon" : "Wzg\xf3rze Wukonga",
+	"plechito_scorpion_dungeon" : "Ruiny Skorpiona",
+	"plechito_easter2023_dungeon" : "Staro\xbfytna D\xbfungla",
 }
 
 

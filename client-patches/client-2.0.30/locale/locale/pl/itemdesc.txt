@@ -2852,3 +2852,9 @@
 50271	Skrzynia Nemere	Ta skrzynia zosta³a wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje siê w niej prawdziwy królewski skarb.
 30765	Pieczêæ Biblioteki	Pieczêæ stra¿nika Biblioteki Wiedzy. U¿yj jej w lochu, aby przyzwaæ kolejn¹ falê paj¹ków.
 30773	Skrzynia Biblioteki	Nagroda za pokonanie Baronówny Paj¹ków w Bibliotece Wiedzy. Kliknij prawym przyciskiem, aby otworzyæ.
+30766	Pieczêæ Wzgórza	Pieczêæ stra¿nika Wzgórza Wukonga. U¿yj jej w lochu, aby przyzwaæ kolejn¹ falê ma³p.
+30767	Pieczêæ Ruin	Pieczêæ stra¿nika Ruin Skorpiona. U¿yj jej w lochu, aby przyzwaæ kolejn¹ falê skorpionów.
+30768	Pieczêæ D¿ungli	Pieczêæ stra¿nika Staro¿ytnej D¿ungli. U¿yj jej w lochu, aby przyzwaæ kolejn¹ falê stworzeñ.
+30774	Skrzynia Wukonga	Nagroda za pokonanie WuKonga na Wzgórzu Wukonga. Kliknij prawym przyciskiem, aby otworzyæ.
+30775	Skrzynia Skorpiona	Nagroda za pokonanie Króla Skorpionów w Ruinach Skorpiona. Kliknij prawym przyciskiem, aby otworzyæ.
+30776	Skrzynia D¿ungli	Nagroda za pokonanie Królowej D¿ungli w Staro¿ytnej D¿ungli. Kliknij prawym przyciskiem, aby otworzyæ.

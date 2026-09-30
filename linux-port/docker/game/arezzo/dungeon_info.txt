@@ -26,10 +26,14 @@ drop	wieza	7183	1	10
 drop	wieza	7184	1	5
 drop	wieza	5123	1	10
 drop	wieza	5124	1	5
+dungeon	wukong	364	1	xy	65	5537	1450	45	0	1	8	9682	wzgorze_wukonga.entry	1800	0	0	Wzgórze_Wukonga	Œwi¹tynia_Hwang
+drop	wukong	30774	3	100
 dungeon	malpy2	108	1	town	108	0	0	40	0	1	8	5162	-	0	0	0	Normalny_Loch_Ma³p	Normalny_Loch_Ma³p
 dungeon	razador	351	1	xy	62	5979	7060	55	0	1	8	6091	razador_dungeon.entry	3600	0	0	Czyœciec_Ognia_(Razador)	Doyyumhwaji
 drop	razador	50270	5	100
 dungeon	malpy3	109	1	town	109	0	0	55	0	1	8	5163	-	0	0	0	Trudny_Loch_Ma³p	Trudny_Loch_Ma³p
+dungeon	skorpion	365	1	xy	62	5989	7058	65	0	1	8	9694	ruiny_skorpiona.entry	3600	0	0	Ruiny_Skorpiona	Doyyumhwaji
+drop	skorpion	30775	4	100
 dungeon	pajaki	71	1	town	71	0	0	60	0	1	8	2092	-	0	0	0	Loch_Paj¹ków_(Baronówna)	Loch_Paj¹ków_Poz._2
 drop	pajaki	14163	1	50
 drop	pajaki	16163	1	50
@@ -74,3 +78,5 @@ drop	ochao	70043	1	45
 drop	ochao	30015	1	15
 drop	ochao	30082	1	15
 drop	ochao	30523	1	40
+dungeon	dzungla	366	1	xy	362	3783	3954	95	0	1	8	9714	starozytna_dzungla.entry	3600	0	0	Staro¿ytna_D¿ungla	Zaczarowany_Las
+drop	dzungla	30776	5	100

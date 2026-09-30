@@ -117,3 +117,7 @@ metin2_map_treasure_hunt	512000	1203200	3	3
 metin2_map_exp	230400	281600	4	4
 natural_map	332800	384000	4	4
 plechito_chamber_of_wisdom	947200	614400	2	2
+metin2_map_pustynia	230400	384000	4	4
+plechito_wukong_dungeon	844800	537600	2	2
+plechito_scorpion_dungeon	844800	588800	2	2
+plechito_easter2023_dungeon	768000	537600	3	3

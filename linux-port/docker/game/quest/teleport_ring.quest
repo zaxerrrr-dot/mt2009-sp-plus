@@ -12,6 +12,7 @@ quest teleport_ring begin
             local low = {64, 61, get_player_map3_index(), 63}
             if game.get_event_flag("mt2009_arezzo_closed") == 0 then
                 table.insert(low, 360)
+                table.insert(low, 361) -- Pustkowie Faraona (MT2009_PLUS_AREZZO_V1, phase 8)
             end
             return low
         end
