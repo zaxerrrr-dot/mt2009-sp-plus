@@ -71,7 +71,11 @@ namespace
 	const DWORD PLAYERBOT_OCHAO_LEG_TIMEOUT = 15000;
 	const int PLAYERBOT_OCHAO_MAX_STALLS = 4;
 	// How far a bot looks for a corner of the way out it can see.
-	const int PLAYERBOT_OCHAO_NODE_SIGHT = 14000;
+	const int PLAYERBOT_OCHAO_NODE_SIGHT = 30000;
+	// Before this long in the temple only what stops the fight (no weapon, no
+	// potions, BlocksPlayerBotTravel) takes a bot out: the way in and out is
+	// some six minutes of walking, and two of hunting were not worth it.
+	const DWORD PLAYERBOT_OCHAO_MIN_VISIT_TIME = 12 * 60 * 1000;
 	// Monitoring: a bot on the map that has not moved this far in this long,
 	// and has fought nothing in the last ten seconds, counts as stuck.
 	const int PLAYERBOT_OCHAO_STUCK_DISTANCE = 200;
@@ -172,6 +176,34 @@ namespace
 		{ 890725, 1476475, 73 }, { 890875, 1476625, 192 }
 	};
 
+	// Walking distance between the hunting spots, in units (a breadth-first
+	// walk on the map's server_attr, times 0.85 for the diagonal): the spot
+	// choice measures the labyrinth by this, not by the straight line.
+	const int PLAYERBOT_OCHAO_HUB_WALK[22][22] = {
+		{ 0, 31662, 20442, 61072, 10795, 68467, 62475, 44455, 71910, 68722, 57290, 14917, 12877, 42117, 47302, 20145, 27582, 46155, 113135, 156697, 148877, 78837 },
+		{ 31662, 0, 11560, 92735, 42457, 100130, 94137, 27837, 70677, 45390, 43137, 17680, 23545, 10795, 15980, 29537, 59245, 39737, 128392, 155465, 147645, 71995 },
+		{ 20442, 11560, 0, 81175, 30897, 88570, 82577, 39057, 69742, 56610, 54357, 6800, 11985, 22015, 27200, 17977, 47685, 43987, 127457, 154530, 146710, 76670 },
+		{ 61072, 92735, 81175, 0, 50277, 43690, 37697, 77222, 34382, 59670, 61922, 75990, 69190, 94520, 89080, 75437, 33490, 65322, 58607, 124950, 117130, 39865 },
+		{ 10795, 42457, 30897, 50277, 0, 57672, 51680, 49470, 76925, 73737, 62305, 25712, 18912, 52912, 58097, 25160, 16787, 51170, 102340, 161712, 153892, 83597 },
+		{ 68467, 100130, 88570, 43690, 57672, 0, 6672, 107142, 78072, 103360, 105612, 83385, 76585, 110585, 115770, 82832, 40885, 108842, 102297, 168640, 160820, 83555 },
+		{ 62475, 94137, 82577, 37697, 51680, 6672, 0, 101150, 72080, 97367, 99620, 77392, 70592, 104592, 109777, 76840, 34892, 102850, 96305, 162647, 154827, 77562 },
+		{ 44455, 27837, 39057, 77222, 49470, 107142, 101150, 0, 42840, 24267, 16915, 45517, 31577, 17297, 11857, 24310, 66257, 11900, 100555, 127627, 119807, 44157 },
+		{ 71910, 70677, 69742, 34382, 76925, 78072, 72080, 42840, 0, 28517, 27540, 75182, 59032, 60137, 54697, 51765, 61327, 30940, 57715, 103317, 95497, 8712 },
+		{ 68722, 45390, 56610, 59670, 73737, 103360, 97367, 24267, 28517, 0, 11432, 63070, 55845, 34850, 32980, 48577, 86615, 22567, 83002, 125035, 117215, 26605 },
+		{ 57290, 43137, 54357, 61922, 62305, 105612, 99620, 16915, 27540, 11432, 0, 60562, 44412, 32597, 27157, 37145, 79092, 11135, 85255, 119807, 111987, 28857 },
+		{ 14917, 17680, 6800, 75990, 25712, 83385, 77392, 45517, 75182, 63070, 60562, 0, 17425, 28475, 33660, 23417, 42500, 49427, 128052, 159970, 152150, 82110 },
+		{ 12877, 23545, 11985, 69190, 18912, 76585, 70592, 31577, 59032, 55845, 44412, 17425, 0, 34000, 39185, 7267, 35700, 33277, 116747, 143820, 136000, 65960 },
+		{ 42117, 10795, 22015, 94520, 52912, 110585, 104592, 17297, 60137, 34850, 32597, 28475, 34000, 0, 5440, 39992, 69700, 29197, 117852, 144925, 137105, 61455 },
+		{ 47302, 15980, 27200, 89080, 58097, 115770, 109777, 11857, 54697, 32980, 27157, 33660, 39185, 5440, 0, 34552, 74885, 23757, 112412, 139485, 131665, 56015 },
+		{ 20145, 29537, 17977, 75437, 25160, 82832, 76840, 24310, 51765, 48577, 37145, 23417, 7267, 39992, 34552, 0, 41947, 26010, 109480, 136552, 128732, 58692 },
+		{ 27582, 59245, 47685, 33490, 16787, 40885, 34892, 66257, 61327, 86615, 79092, 42500, 35700, 69700, 74885, 41947, 0, 67957, 85552, 151895, 144075, 66810 },
+		{ 46155, 39737, 43987, 65322, 51170, 108842, 102850, 11900, 30940, 22567, 11135, 49427, 33277, 29197, 23757, 26010, 67957, 0, 88655, 115727, 107907, 34552 },
+		{ 113135, 128392, 127457, 58607, 102340, 102297, 96305, 100555, 57715, 83002, 85255, 128052, 116747, 117852, 112412, 109480, 85552, 88655, 0, 66342, 58522, 63197 },
+		{ 156697, 155465, 154530, 124950, 161712, 168640, 162647, 127627, 103317, 125035, 119807, 159970, 143820, 144925, 139485, 136552, 151895, 115727, 66342, 0, 7820, 110245 },
+		{ 148877, 147645, 146710, 117130, 153892, 160820, 154827, 119807, 95497, 117215, 111987, 152150, 136000, 137105, 131665, 128732, 144075, 107907, 58522, 7820, 0, 102425 },
+		{ 78837, 71995, 76670, 39865, 83597, 83555, 77562, 44157, 8712, 26605, 28857, 82110, 65960, 61455, 56015, 58692, 66810, 34552, 63197, 110245, 102425, 0 }
+	};
+	const int PLAYERBOT_OCHAO_WALK_HUBS = 22; // the rows above: the spots, not the bosses
 	const size_t PLAYERBOT_OCHAO_HUB_COUNT = sizeof(PLAYERBOT_OCHAO_HUBS) / sizeof(PLAYERBOT_OCHAO_HUBS[0]);
 	const int PLAYERBOT_OCHAO_NODE_COUNT = (int)(sizeof(PLAYERBOT_OCHAO_EXIT_TREE) / sizeof(PLAYERBOT_OCHAO_EXIT_TREE[0]));
 
@@ -187,14 +219,30 @@ namespace
 		DWORD dwStarted;
 		DWORD dwLegSince;
 		int iLegBest;
+		long lLegX, lLegY;
 		BYTE bStalls;
 		bool bNavOnly;
 		bool bPortal;
 		char szReason[40];
 		TPlayerBotOchaoExit() : iNode(-1), dwStarted(0), dwLegSince(0), iLegBest(0),
-				bStalls(0), bNavOnly(false), bPortal(false) { szReason[0] = 0; }
+				lLegX(0), lLegY(0), bStalls(0), bNavOnly(false), bPortal(false) { szReason[0] = 0; }
 	};
 	std::map<DWORD, TPlayerBotOchaoExit> s_mapPlayerBotOchaoExit;
+	// Another pass's warp out of the temple (a shop's upkeep, a raid far
+	// away, Uriel): no warp is made from the middle of the labyrinth - the bot
+	// walks out to the Teleporter or the Portal first and goes from there.
+	struct TPlayerBotOchaoPending
+	{
+		long lMap, lX, lY;
+		DWORD dwSince;
+		char szReason[40];
+	};
+	std::map<DWORD, TPlayerBotOchaoPending> s_mapPlayerBotOchaoPending;
+	// A warp out of the temple is made within this reach of its Teleporter or
+	// its open Portal; and a walk out that has not got there in this long
+	// gives up and lets the warp through.
+	const int PLAYERBOT_OCHAO_WARP_REACH = 450;
+	const DWORD PLAYERBOT_OCHAO_PENDING_MAX_MS = 15 * 60 * 1000;
 	// The operator's test: sent bots hunt here whatever their draw says, and
 	// a leave order sends one out through the maze.
 	std::set<DWORD> s_setPlayerBotOchaoForced;
@@ -218,9 +266,12 @@ namespace
 		bool bStuck;
 		DWORD dwStuckEpisodes;
 		DWORD dwStuckMs;
+		DWORD dwVisitDeaths;
+		DWORD adwDeathAt[2];	// the two last deaths, for the restart at the gate
 		TPlayerBotOchaoTrack() : dwEntered(0), dwCrossStart(0), dwKills(0), dwBossKills(0), ullExp(0),
 				dwDeaths(0), dwLastExp(0), dwLastNext(0), bLastLevel(0), bWasDead(false),
-				lAnchorX(0), lAnchorY(0), dwAnchorSince(0), bStuck(false), dwStuckEpisodes(0), dwStuckMs(0) {}
+				lAnchorX(0), lAnchorY(0), dwAnchorSince(0), bStuck(false), dwStuckEpisodes(0), dwStuckMs(0),
+				dwVisitDeaths(0) { adwDeathAt[0] = adwDeathAt[1] = 0; }
 	};
 	std::map<DWORD, TPlayerBotOchaoTrack> s_mapPlayerBotOchaoTrack;
 
@@ -240,9 +291,20 @@ namespace
 		return ch && s_setPlayerBotOchaoForced.count(ch->GetPlayerID()) != 0;
 	}
 
+	// A bot that dies this often in one visit is outclassed here and goes.
+	const DWORD PLAYERBOT_OCHAO_VISIT_DEATHS_LEAVE = 6;
+	// Two deaths within this long: the next revival is at the gate, the
+	// temple's Town.txt, as "restart in town" puts a player - not back into
+	// the pack that killed it.
+	const DWORD PLAYERBOT_OCHAO_DEATH_WINDOW_MS = 240000;
 	bool IsPlayerBotOchaoLeaveOrdered(LPCHARACTER ch)
 	{
-		return ch && s_setPlayerBotOchaoLeave.count(ch->GetPlayerID()) != 0;
+		if (!ch)
+			return false;
+		if (s_setPlayerBotOchaoLeave.count(ch->GetPlayerID()) != 0)
+			return true;
+		std::map<DWORD, TPlayerBotOchaoTrack>::const_iterator t = s_mapPlayerBotOchaoTrack.find(ch->GetPlayerID());
+		return t != s_mapPlayerBotOchaoTrack.end() && t->second.dwVisitDeaths >= PLAYERBOT_OCHAO_VISIT_DEATHS_LEAVE;
 	}
 
 	bool IsPlayerBotOchaoHosted()
@@ -260,6 +322,48 @@ namespace
 		if (IsPlayerBotOchaoForced(ch))
 			return true;
 		return !stoneHunter && (draw % 3U) != 1;
+	}
+
+	// The spot a point belongs to: the nearest one it can see (of the four
+	// nearest), or the nearest.
+	int GetPlayerBotOchaoSpotOf(long x, long y, bool needSight)
+	{
+		int order[PLAYERBOT_OCHAO_WALK_HUBS];
+		int dist[PLAYERBOT_OCHAO_WALK_HUBS];
+		for (int i = 0; i < PLAYERBOT_OCHAO_WALK_HUBS; ++i)
+		{
+			order[i] = i;
+			dist[i] = DISTANCE_APPROX(x - PLAYERBOT_OCHAO_HUBS[i].x, y - PLAYERBOT_OCHAO_HUBS[i].y);
+		}
+		std::sort(order, order + PLAYERBOT_OCHAO_WALK_HUBS, [&dist](int a, int b) { return dist[a] < dist[b]; });
+		if (!needSight)
+			return order[0];
+		CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(PLAYERBOT_MAP_OCHAO);
+		if (nav.Init(PLAYERBOT_MAP_OCHAO))
+			for (int k = 0; k < 4; ++k)
+				if (nav.SegmentClearWorld(x, y, PLAYERBOT_OCHAO_HUBS[order[k]].x, PLAYERBOT_OCHAO_HUBS[order[k]].y))
+					return order[k];
+		return order[0];
+	}
+
+	// How far a bot walks to a point of the temple: to the spot it stands by,
+	// the labyrinth between the two spots, and on. Asked by the spot choice
+	// (ChoosePlayerBotHuntingHub) in place of the straight line.
+	int GetPlayerBotOchaoWalk(LPCHARACTER ch, long x, long y)
+	{
+		static DWORD s_dwPid = 0, s_dwStamp = 0;
+		static int s_iFrom = -1;
+		const DWORD dwNow = get_dword_time();
+		if (s_dwPid != ch->GetPlayerID() || dwNow - s_dwStamp > 2000 || s_iFrom < 0)
+		{
+			s_dwPid = ch->GetPlayerID();
+			s_dwStamp = dwNow;
+			s_iFrom = GetPlayerBotOchaoSpotOf(ch->GetX(), ch->GetY(), true);
+		}
+		const int to = GetPlayerBotOchaoSpotOf(x, y, false);
+		return DISTANCE_APPROX(ch->GetX() - PLAYERBOT_OCHAO_HUBS[s_iFrom].x, ch->GetY() - PLAYERBOT_OCHAO_HUBS[s_iFrom].y) +
+				PLAYERBOT_OCHAO_HUB_WALK[s_iFrom][to] +
+				DISTANCE_APPROX(x - PLAYERBOT_OCHAO_HUBS[to].x, y - PLAYERBOT_OCHAO_HUBS[to].y);
 	}
 
 	const TPlayerBotHuntingHub* GetPlayerBotOchaoHubs(size_t& count)
@@ -280,6 +384,35 @@ namespace
 		const DWORD pid = ch->GetPlayerID();
 		if (ch->GetMapIndex() == PLAYERBOT_MAP_OCHAO && targetMap != PLAYERBOT_MAP_OCHAO)
 		{
+			// Out only from the Teleporter or the Portal, or with the ring.
+			const bool atTeleporter = DISTANCE_APPROX(ch->GetX() - PLAYERBOT_OCHAO_EXIT_X,
+					ch->GetY() - PLAYERBOT_OCHAO_EXIT_Y) <= PLAYERBOT_OCHAO_WARP_REACH;
+			LPCHARACTER openPortal = mt2009_ochao::s_dwPortalVID ? mt2009_ochao::FindOnMap(mt2009_ochao::s_dwPortalVID) : NULL;
+			const bool atPortal = openPortal && DISTANCE_APPROX(ch->GetX() - openPortal->GetX(),
+					ch->GetY() - openPortal->GetY()) <= PLAYERBOT_OCHAO_WARP_REACH;
+			std::map<DWORD, TPlayerBotOchaoPending>::iterator pend = s_mapPlayerBotOchaoPending.find(pid);
+			// Or once it has died too often in this visit to walk anywhere: the
+			// warp is its way out of a pack it cannot get past.
+			std::map<DWORD, TPlayerBotOchaoTrack>::const_iterator track = s_mapPlayerBotOchaoTrack.find(pid);
+			const bool gaveUp = pend != s_mapPlayerBotOchaoPending.end() &&
+					(dwNow - pend->second.dwSince >= PLAYERBOT_OCHAO_PENDING_MAX_MS ||
+					 (track != s_mapPlayerBotOchaoTrack.end() && track->second.dwVisitDeaths >= PLAYERBOT_OCHAO_VISIT_DEATHS_LEAVE));
+			const bool ring = reason && strstr(reason, "ring") != NULL;
+			if (!atTeleporter && !atPortal && !gaveUp && !ring)
+			{
+				if (pend == s_mapPlayerBotOchaoPending.end())
+				{
+					TPlayerBotOchaoPending& p = s_mapPlayerBotOchaoPending[pid];
+					p.lMap = targetMap; p.lX = targetX; p.lY = targetY; p.dwSince = dwNow;
+					strlcpy(p.szReason, reason ? reason : "?", sizeof(p.szReason));
+					sys_log(0, "OCHAO_BOT: walks out first pid=%u name=%s to=%ld reason=%s pos=(%ld,%ld)",
+							pid, ch->GetName(), targetMap, reason ? reason : "?", ch->GetX(), ch->GetY());
+				}
+				return 1;
+			}
+			if (gaveUp)
+				sys_log(0, "OCHAO_BOT: walk out gave up pid=%u name=%s pos=(%ld,%ld)", pid, ch->GetName(), ch->GetX(), ch->GetY());
+			s_mapPlayerBotOchaoPending.erase(pid);
 			std::map<DWORD, TPlayerBotOchaoTrack>::iterator t = s_mapPlayerBotOchaoTrack.find(pid);
 			std::map<DWORD, TPlayerBotOchaoExit>::iterator e = s_mapPlayerBotOchaoExit.find(pid);
 			sys_log(0, "OCHAO_BOT: left pid=%u name=%s to=%ld reason=%s via=%s pos=(%ld,%ld) stay_s=%u exit_walk_s=%u stalls=%u kills=%u exp=%llu deaths=%u",
@@ -316,6 +449,8 @@ namespace
 			std::map<DWORD, TPlayerBotOchaoCrossing>::iterator c = s_mapPlayerBotOchaoCrossing.find(pid);
 			TPlayerBotOchaoTrack& t = s_mapPlayerBotOchaoTrack[pid];
 			t.dwEntered = dwNow;
+			t.dwVisitDeaths = 0;
+			t.adwDeathAt[0] = t.adwDeathAt[1] = 0;
 			t.dwCrossStart = c != s_mapPlayerBotOchaoCrossing.end() ? c->second.dwSince : 0;
 			sys_log(0, "OCHAO_BOT: entered pid=%u name=%s level=%u job=%u crossing_s=%u forced=%d",
 					pid, ch->GetName(), (unsigned int)ch->GetLevel(), (unsigned int)ch->GetJob(),
@@ -490,10 +625,15 @@ namespace
 			nodeY = PLAYERBOT_OCHAO_EXIT_TREE[exit.iNode].y;
 			distance = DISTANCE_APPROX(ch->GetX() - nodeX, ch->GetY() - nodeY);
 		}
-		if (exit.dwLegSince == 0 || distance + PLAYERBOT_OCHAO_LEG_PROGRESS <= exit.iLegBest)
+		// Progress is ground covered, not only the straight line shortening: a
+		// corner out of sight is reached round the walls.
+		if (exit.dwLegSince == 0 || distance + PLAYERBOT_OCHAO_LEG_PROGRESS <= exit.iLegBest ||
+				DISTANCE_APPROX(ch->GetX() - exit.lLegX, ch->GetY() - exit.lLegY) >= PLAYERBOT_OCHAO_LEG_PROGRESS * 2)
 		{
 			exit.dwLegSince = dwNow;
 			exit.iLegBest = distance;
+			exit.lLegX = ch->GetX();
+			exit.lLegY = ch->GetY();
 		}
 		else if (dwNow - exit.dwLegSince >= PLAYERBOT_OCHAO_LEG_TIMEOUT)
 		{
@@ -510,6 +650,32 @@ namespace
 		}
 		MovePlayerBot(ch, nodeX, nodeY, dwNow, 6, true, true, false, true);
 		return true;
+	}
+
+	// From the top of the bot's tick, before every errand: a warp another
+	// pass asked for while the bot stood in the labyrinth is walked out first.
+	bool ManagePlayerBotOchaoPendingExit(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (s_mapPlayerBotOchaoPending.empty() || !ch)
+			return false;
+		std::map<DWORD, TPlayerBotOchaoPending>::iterator it = s_mapPlayerBotOchaoPending.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotOchaoPending.end())
+			return false;
+		if (ch->GetMapIndex() != PLAYERBOT_MAP_OCHAO)
+		{
+			s_mapPlayerBotOchaoPending.erase(it);
+			return false;
+		}
+		// Dead, low, or in a fight: the fight and the recovery come first.
+		if (ch->IsDead() || state.bRecoveringAfterDeath || state.bTacticalRetreat ||
+				(ch->GetMaxHP() > 0 && ch->GetHP() * 100 < ch->GetMaxHP() * 40))
+			return false;
+		LPCHARACTER victim = ch->GetVictim();
+		if (victim && !victim->IsDead() && victim->GetVictim() == ch &&
+				DISTANCE_APPROX(ch->GetX() - victim->GetX(), ch->GetY() - victim->GetY()) < 600)
+			return false;
+		const TPlayerBotOchaoPending p = it->second;
+		return MovePlayerBotOutOfOchao(ch, state, p.lMap, p.lX, p.lY, dwNow, p.szReason);
 	}
 
 	// ------------------------------------------------------------ the kills
@@ -666,6 +832,8 @@ namespace
 				{
 					t.dwEntered = dwNow;
 					t.dwAnchorSince = dwNow;
+					t.dwVisitDeaths = 0;
+					t.adwDeathAt[0] = t.adwDeathAt[1] = 0;
 				}
 				// Experience, across a level too.
 				const DWORD exp = ch->GetExp();
@@ -691,7 +859,32 @@ namespace
 				if (ch->IsDead() && !t.bWasDead)
 				{
 					++t.dwDeaths;
+					++t.dwVisitDeaths;
+					t.adwDeathAt[0] = t.adwDeathAt[1];
+					t.adwDeathAt[1] = dwNow;
 					sys_log(0, "OCHAO_BOT: died pid=%u name=%s pos=(%ld,%ld)", pid, ch->GetName(), ch->GetX(), ch->GetY());
+				}
+				// Revived where it fell, for the second time in a short while: up
+				// at the gate instead, the temple's restart in town.
+				// Not a bot on its way out: the gate is the far end of the labyrinth.
+				if (t.bWasDead && !ch->IsDead() && t.adwDeathAt[0] != 0 &&
+						!s_mapPlayerBotOchaoExit.count(pid) && !s_mapPlayerBotOchaoPending.count(pid) &&
+						dwNow - t.adwDeathAt[0] <= PLAYERBOT_OCHAO_DEATH_WINDOW_MS)
+				{
+					state.dwTargetVID = 0;
+					ch->SetVictim(NULL);
+					ClearPlayerBotRoute(state, true);
+					ch->Stop();
+					const long fromX = ch->GetX(), fromY = ch->GetY();
+					if (ch->Show(PLAYERBOT_MAP_OCHAO, PLAYERBOT_OCHAO_ARRIVAL_X, PLAYERBOT_OCHAO_ARRIVAL_Y, 0))
+					{
+						ch->Stop();
+						ch->SendMovePacket(FUNC_MOVE, 0, PLAYERBOT_OCHAO_ARRIVAL_X, PLAYERBOT_OCHAO_ARRIVAL_Y, 0, dwNow);
+						s_mapPlayerBotOchaoExit.erase(pid);
+						sys_log(0, "OCHAO_BOT: restarted at the gate pid=%u name=%s from=(%ld,%ld) visit_deaths=%u",
+								pid, ch->GetName(), fromX, fromY, t.dwVisitDeaths);
+					}
+					t.adwDeathAt[0] = t.adwDeathAt[1] = 0;
 				}
 				t.bWasDead = ch->IsDead();
 				// The Guardian's fighters.

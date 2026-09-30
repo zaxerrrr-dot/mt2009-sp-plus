@@ -5973,6 +5973,11 @@ WritePlayerBotGuildStatus(dwNow);
 		if (ManagePlayerBotPersonaFoe(ch, state, dwNow))
 			continue;
 
+		// MT2009_PLUS_OCHAO_BOTS_V1 (walk out): a warp asked for in the Temple of
+		// Ochao's labyrinth waits for the walk to its Teleporter or Portal.
+		if (ManagePlayerBotOchaoPendingExit(ch, state, dwNow))
+			continue;
+
 		// Before anything that can claim the tick. An open stall is engine state
 		// with a deadline this manager owns, so releasing it must not depend on
 		// which subsystem happens to win the tick - that dependency is why stalls

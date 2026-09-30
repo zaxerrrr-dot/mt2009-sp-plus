@@ -231,6 +231,34 @@ void SortKeyOf(LPITEM item, int64_t* key)
 			: -(int64_t)item->GetCount();
 }
 
+// Cor Draconis: MoveItem, AutoStackItem and AutoStackItemProto stack these
+// whatever the proto says (IsStackableCorDraconisVnum in char_item.cpp,
+// server-patches/corstack and corautostack) - a world's proto may still carry
+// ANTI_STACK or lack STACKABLE on them, as the client's item_proto does. The
+// arrange went by the proto alone and so left every Cor stack where it was
+// ("Sortowanie/stackowanie nie laczy Cor Draconis", 30 September). The same
+// list as the engine's; the coloured Cors (Cor Diamas, Rubinum...) and the
+// Smocze Skrzynie are not on it and stay unstacked, as a drag leaves them.
+bool IsStackableCorDraconisVnum(DWORD vnum)
+{
+	switch (vnum) {
+	case 50252: case 50255: case 50256: case 50257: case 50258: case 50259: case 50260:
+	case 51501: case 51502: case 51503: case 51504: case 51505: case 51506: case 51507: case 51508: case 51509: case 51510:
+	case 51541: case 51548: case 51549: case 51562: case 51569: case 51576: case 51583: case 51590: case 51597:
+	case 51604: case 51611: case 51618: case 51625: case 51632: case 76040:
+		return true;
+	}
+	return false;
+}
+
+// Whether the engine stacks this item at all: the stack flag without
+// ANTI_STACK, or a Cor Draconis.
+bool StacksAtAll(LPITEM item)
+{
+	return (item->IsStackable() && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK)) ||
+			IsStackableCorDraconisVnum(item->GetVnum());
+}
+
 // Whether two bag stacks may pour into each other. The engine's rule
 // (MoveItem, AutoStackItem) is the vnum, the stack flag and every socket; this
 // asks for the attributes, the flag word and the look as well, so it never
@@ -239,8 +267,7 @@ bool SameStack(LPITEM a, LPITEM b)
 {
 	if (a->GetVnum() != b->GetVnum() || a->GetOriginalVnum() != b->GetOriginalVnum())
 		return false;
-	if (!a->IsStackable() || IS_SET(a->GetAntiFlag(), ITEM_ANTIFLAG_STACK) ||
-			!b->IsStackable() || IS_SET(b->GetAntiFlag(), ITEM_ANTIFLAG_STACK))
+	if (!StacksAtAll(a) || !StacksAtAll(b))
 		return false;
 	if (a->GetFlag() != b->GetFlag())
 		return false;
@@ -484,8 +511,7 @@ static TResult ArrangeInventoryImpl(LPCHARACTER ch, bool fromPlayer, bool mergeO
 	std::vector<LPITEM> representatives;
 	for (size_t i = 0; i < items.size(); ++i) {
 		LPITEM item = handles[i];
-		if (items[i].pinned || !item->IsStackable() || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK) ||
-				item->GetMaxStack() < 2)
+		if (items[i].pinned || !StacksAtAll(item) || item->GetMaxStack() < 2)
 			continue;
 		size_t group = 0;
 		for (; group < representatives.size(); ++group)
@@ -802,7 +828,7 @@ LPITEM SafeboxItemAt(CSafebox* box, unsigned int pos)
 
 bool IsSplittable(LPITEM item)
 {
-	return item->IsStackable() && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK) && item->GetMaxStack() > 1;
+	return StacksAtAll(item) && item->GetMaxStack() > 1;
 }
 
 // The part cut off a stack: everything SameStack compares, so it pours back

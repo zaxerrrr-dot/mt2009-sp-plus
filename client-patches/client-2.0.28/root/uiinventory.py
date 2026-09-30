@@ -339,20 +339,37 @@ class BeltInventoryWindow(ui.ScriptWindow):
 # sidebarem z boku ... Towarzysz, Autolowy, Sortowanie autopickup, Kosz,
 # Wyszukiwarka sklepow, Battlepass, Kalendarz eventow"). A board on the
 # inventory's left, as the reference sidebar has it: one 32x32 button per
-# window, opened the way its hotkey or the taskbar opens it. It shows and
-# hides with the inventory and follows it wherever it goes - dragged, or put
-# back by uiwindowpos. With no room on the left (the inventory at the
-# screen's left edge) it stands on the right instead.
+# window, opened the way its hotkey opens it. It shows and hides with the
+# inventory and follows it wherever it goes - dragged, or put back by
+# uiwindowpos. With no room on the left (the inventory at the screen's left
+# edge) it stands on the right instead.
+#
+# It folds (the owner, 30 September: "mozliwosc zwiniecia i rozwiniecia"): a
+# tab on the board's outer edge, as the belt window has one, folds the board
+# away and leaves only the tab against the inventory; the tab unfolds it
+# again. Folded or not is kept for the character with the window positions
+# (uiwindowpos, key FOLDED_KEY).
 #
 # The icons are mt2009_ui/sidebar/<name>_01/02/03.tga (normal/over/down),
-# one frame for all eight (the Kolo Fortuny's wheel added later).
+# one frame for all eight (the Kolo Fortuny's wheel added later), and the
+# tab's arrows mt2009_ui/sidebar/tab_left|tab_right_01/02/03.tga.
 SIDEBAR_IMAGE = "mt2009_ui/sidebar/%s_%02d.tga"
 
-class SidebarWindow(ui.Board):
+class SidebarWindow(ui.Window):
 	BUTTON_WIDTH = 32
 	BUTTON_HEIGHT = 32
 	BUTTON_GAP_X = 16
 	BUTTON_GAP_Y = 10
+
+	# The fold tab: beside the first icon, on the board's outer edge.
+	TAB_WIDTH = 14
+	TAB_HEIGHT = 44
+	TAB_Y = 4
+
+	# CP1250, as the tooltips below.
+	TOOLTIP_FOLD = "Zwi\xf1 pasek"
+	TOOLTIP_UNFOLD = "Rozwi\xf1 pasek"
+	FOLDED_KEY = "pasek_boczny_zwiniety"
 
 	# (image, tooltip, handler) - the tooltips are CP1250.
 	BUTTONS = (
@@ -367,30 +384,49 @@ class SidebarWindow(ui.Board):
 	)
 
 	def __init__(self, wndInventory):
-		ui.Board.__init__(self)
+		ui.Window.__init__(self)
 		self.AddFlag("float")
-		# Held weakly: the inventory holds this board, and ui.Window has a
+		# A frame round the board and the tab: only they take the mouse, and
+		# a click on the rest of it (the strip over a folded tab) goes through.
+		self.AddFlag("not_pick")
+		# Held weakly: the inventory holds this bar, and ui.Window has a
 		# __del__, so a cycle through the two would never be collected.
 		self.wndInventory = proxy(wndInventory)
-		self.lastInventoryRect = None
+		self.lastLayout = None
+		self.folded = False
+		self.foldedLoaded = False
 		self.buttons = []
-		self.__CreateButtons()
+		self.board = None
+		self.tab = None
+		self.__CreateBoard()
+		self.__CreateTab()
+		self.fullWidth = self.TAB_WIDTH + self.board.GetWidth()
 
 	def __del__(self):
-		ui.Board.__del__(self)
+		ui.Window.__del__(self)
 
 	def Destroy(self):
 		for button in self.buttons:
 			button.Hide()
 		self.buttons = []
+		if self.tab:
+			self.tab.Hide()
+			self.tab = None
+		if self.board:
+			self.board.Hide()
+			self.board = None
 		self.wndInventory = None
-		self.lastInventoryRect = None
+		self.lastLayout = None
 
-	def __CreateButtons(self):
+	def __CreateBoard(self):
+		board = ui.Board()
+		board.SetParent(self)
+		self.board = board
+
 		y = self.BUTTON_GAP_Y
 		for name, text, handler in self.BUTTONS:
 			button = ui.Button()
-			button.SetParent(self)
+			button.SetParent(board)
 			button.SetUpVisual(SIDEBAR_IMAGE % (name, 1))
 			button.SetOverVisual(SIDEBAR_IMAGE % (name, 2))
 			button.SetDownVisual(SIDEBAR_IMAGE % (name, 3))
@@ -405,10 +441,47 @@ class SidebarWindow(ui.Board):
 			self.buttons.append(button)
 			y += self.BUTTON_HEIGHT + self.BUTTON_GAP_Y
 
-		self.SetSize(self.BUTTON_GAP_X + self.BUTTON_WIDTH + self.BUTTON_GAP_X, y)
+		board.SetSize(self.BUTTON_GAP_X + self.BUTTON_WIDTH + self.BUTTON_GAP_X, y)
+		board.Show()
+
+	def __CreateTab(self):
+		tab = ui.Button()
+		tab.SetParent(self)
+		tab.disableClickSound = True
+		tab.SAFE_SetEvent(self.OnClickFold)
+		self.tab = tab
+		self.__SetTabArrow("left")
+		tab.SetToolTipText(self.TOOLTIP_FOLD)
+		tab.Show()
+
+	def __SetTabArrow(self, direction):
+		name = "tab_" + direction
+		self.tab.SetUpVisual(SIDEBAR_IMAGE % (name, 1))
+		self.tab.SetOverVisual(SIDEBAR_IMAGE % (name, 2))
+		self.tab.SetDownVisual(SIDEBAR_IMAGE % (name, 3))
+
+	# Folded or not, as the character left it. Read once there is a
+	# character to read it for (uiwindowpos keeps one file per character).
+	def __LoadFolded(self):
+		if self.foldedLoaded:
+			return
+		try:
+			import uiwindowpos
+			value = uiwindowpos.GetValue(self.FOLDED_KEY, 0)
+		except Exception:
+			value = None
+		if value is None:
+			return
+		self.folded = bool(value)
+		self.foldedLoaded = True
+
+	def IsFolded(self):
+		self.__LoadFolded()
+		return self.folded
 
 	def Show(self):
-		ui.Board.Show(self)
+		self.__LoadFolded()
+		ui.Window.Show(self)
 		self.AdjustPosition()
 
 	def Close(self):
@@ -421,37 +494,97 @@ class SidebarWindow(ui.Board):
 		except (ReferenceError, AttributeError):
 			return None
 
-	# How far the board reaches out on the inventory's left: its width, or
-	# nothing when it stands on the right. The belt window hangs past it.
+	# The side is chosen by the unfolded width, so folding and unfolding
+	# never move the bar across the inventory.
+	def __IsOnLeft(self, x):
+		return x - self.fullWidth >= 0
+
+	# How far the bar reaches out on the inventory's left: the board and its
+	# tab, the tab alone when folded, or nothing when it stands on the right.
+	# The belt window hangs past it.
 	def GetLeftOffset(self):
+		self.__LoadFolded()
+		rect = self.__GetInventoryRect()
+		if rect is None or not self.__IsOnLeft(rect[0]):
+			return 0
+		if self.folded:
+			return self.TAB_WIDTH
+		return self.fullWidth
+
+	def __GetLayout(self):
 		rect = self.__GetInventoryRect()
 		if rect is None:
-			return 0
-		if rect[0] - self.GetWidth() < 0:
-			return 0
-		return self.GetWidth()
+			return None
+		return rect + (self.__IsOnLeft(rect[0]), self.folded)
 
 	def AdjustPosition(self):
-		rect = self.__GetInventoryRect()
-		if rect is None:
+		layout = self.__GetLayout()
+		if layout is None or not self.board or not self.tab:
 			return
-		x, y, width = rect
-		if x - self.GetWidth() < 0:
-			self.SetPosition(x + width, y)
+		x, y, width, onLeft, folded = layout
+		boardWidth = self.board.GetWidth()
+
+		if folded:
+			self.board.Hide()
+			self.SetSize(self.TAB_WIDTH, self.TAB_Y + self.TAB_HEIGHT)
+			self.tab.SetPosition(0, self.TAB_Y)
+			frameWidth = self.TAB_WIDTH
 		else:
-			self.SetPosition(x - self.GetWidth(), y)
-		self.lastInventoryRect = rect
+			self.SetSize(self.fullWidth, max(self.board.GetHeight(), self.TAB_Y + self.TAB_HEIGHT))
+			if onLeft:
+				self.tab.SetPosition(0, self.TAB_Y)
+				self.board.SetPosition(self.TAB_WIDTH, 0)
+			else:
+				self.board.SetPosition(0, 0)
+				self.tab.SetPosition(boardWidth, self.TAB_Y)
+			self.board.Show()
+			frameWidth = self.fullWidth
+
+		if onLeft:
+			self.SetPosition(x - frameWidth, y)
+		else:
+			self.SetPosition(x + width, y)
+
+		# The arrow points where the board goes: towards the inventory to
+		# fold it, away from it to unfold it.
+		if onLeft == folded:
+			self.__SetTabArrow("left")
+		else:
+			self.__SetTabArrow("right")
+		if folded:
+			self.tab.SetToolTipText(self.TOOLTIP_UNFOLD)
+		else:
+			self.tab.SetToolTipText(self.TOOLTIP_FOLD)
+
+		self.lastLayout = layout
+
+	def OnClickFold(self):
+		self.__LoadFolded()
+		self.folded = not self.folded
+		try:
+			import uiwindowpos
+			uiwindowpos.SetValue(self.FOLDED_KEY, 1 if self.folded else 0)
+		except Exception:
+			pass
+		self.AdjustPosition()
+		# The belt hangs past the bar and moves with it.
+		try:
+			wndBelt = getattr(self.wndInventory, "wndBelt", None)
+			if wndBelt and wndBelt.IsShow():
+				wndBelt.AdjustPositionAndSize()
+		except ReferenceError:
+			pass
 
 	def OnUpdate(self):
 		# The inventory is moved by more than a drag (uiwindowpos restores it
-		# after its Show); the board keeps up with it every frame.
+		# after its Show); the bar keeps up with it every frame.
 		try:
 			if not self.wndInventory.IsShow():
 				self.Hide()
 				return
 		except (ReferenceError, AttributeError):
 			return
-		if self.__GetInventoryRect() != self.lastInventoryRect:
+		if self.__GetLayout() != self.lastLayout:
 			self.AdjustPosition()
 
 	def __GetInterface(self):

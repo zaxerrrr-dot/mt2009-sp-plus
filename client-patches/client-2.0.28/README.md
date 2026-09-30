@@ -219,6 +219,18 @@ czterech map ma swój plik w `property`, a każdy plik tego obiektu jest w paczk
   których nie ma też GF (lightmapy `flame_dungeon/0x_*lightingmap.dds`, kilka nieużywanych
   tekstur `crustacean_*`, `thief_magic_weapon.dds`, `clops_soldier_weapon.dds`).
 
+## Poprawki z testów (2026-09-30): pasek boczny i pasek zadań
+
+- **Zwijany pasek boczny ekwipunku** (`uiinventory.py`, `SidebarWindow`). Na zewnętrznej
+  krawędzi paska jest zakładka ze strzałką (`mt2009_ui/sidebar/tab_left|tab_right_01–03.tga`,
+  14×44, nowe pliki paczki `root`) z podpowiedzią „Zwiń pasek” / „Rozwiń pasek”. Zwinięty
+  pasek zostawia przy ekwipunku samą zakładkę, a okno pasa (pas ekwipunku) przesuwa się razem z nim. Stan zapisuje się
+  dla postaci razem z pozycjami okien (`autohunt/okna/<nick>.cfg`, wiersz
+  `pasek_boczny_zwiniety=1,0`; `uiwindowpos.GetValue/SetValue`).
+- **Pasek zadań** (`uitaskbar.py`, `uiscript/taskbar.py`): nie ma już przycisków Towarzysza,
+  Auto Łowów, kalendarza eventów i Battle Passa, bo są w pasku bocznym. P, K, F11
+  i „/battlepass” działają jak wcześniej. Zostają tylko cztery stałe przyciski na prawym brzegu.
+
 ## Czego brakuje
 
 - Pliki, których nie ma w rozpakowanym kliencie GF (pewnie siedzą w 215 zaszyfrowanych

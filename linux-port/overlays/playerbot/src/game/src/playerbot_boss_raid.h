@@ -308,6 +308,10 @@ namespace
 				++inBand;
 			if (GetPlayerBotBossRaidRefusal(c, it->second, row, dwNow))
 				continue;
+			// MT2009_PLUS_OCHAO_BOTS_V1 (raid): a bot in the Temple of Ochao's
+			// labyrinth is minutes from its way out; the raid calls somebody nearer.
+			if (c->GetMapIndex() == PLAYERBOT_MAP_OCHAO && row.lMap != PLAYERBOT_MAP_OCHAO)
+				continue;
 			TPlayerBotBossRecruit r;
 			r.pid = it->first;
 			r.empire = c->GetEmpire();

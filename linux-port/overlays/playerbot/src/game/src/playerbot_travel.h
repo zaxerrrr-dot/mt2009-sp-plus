@@ -669,6 +669,10 @@ namespace
 	// window, or 0 when its own village is still the right place for it.
 	long GetPlayerBotFrontierMapForLevel(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_OCHAO_BOTS_V1 (test): a bot sent to the Temple of Ochao
+		// goes there before any errand's map.
+		if (IsPlayerBotOchaoForced(ch) && WantsPlayerBotOchao(ch, 0, false))
+			return PLAYERBOT_MAP_OCHAO;
 		// MT2009_PLUS_BP_BOTS_V1: a Battle Pass errand's stones name the map
 		// for its while - a shared one, or 0 for the bot's own villages
 		// (playerbot_bpbots.h).
@@ -2392,7 +2396,10 @@ namespace
 					(mapIndex == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaveOrdered(ch)); // MT2009_PLUS_OCHAO_BOTS_V1 (test)
 			// Two minutes of actually playing here before anything but a real
 			// emergency may send the bot home again.
-			const bool settledIn = stayed >= PLAYERBOT_FRONTIER_MIN_VISIT_TIME;
+			// MT2009_PLUS_OCHAO_BOTS_V1 (stay): the temple is a long way in and out,
+			// so only what stops the fight takes a bot out of it sooner.
+			const bool settledIn = stayed >= (mapIndex == PLAYERBOT_MAP_OCHAO
+					? PLAYERBOT_OCHAO_MIN_VISIT_TIME : PLAYERBOT_FRONTIER_MIN_VISIT_TIME);
 			// Outgrowing the map matters as much as running out of potions: neither
 			// Orc Valley nor the Desert has a merchant, a blacksmith or a trainer.
 			const bool outOfBand = GetPlayerBotFrontierMapForLevel(ch) != mapIndex;

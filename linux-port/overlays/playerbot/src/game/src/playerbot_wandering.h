@@ -307,7 +307,10 @@ namespace
 				score = worth / (1 + others);
 			// Nearer is better, all else equal: a camp across the delta costs a
 			// route of two hundred milliseconds to plan and three minutes to walk.
-			const int distance = DISTANCE_APPROX(ch->GetX() - hub.x, ch->GetY() - hub.y);
+			// MT2009_PLUS_OCHAO_BOTS_V1 (walk): in the Temple of Ochao's labyrinth
+			// the walk, not the straight line (playerbot_ochao_bots.h).
+			const int distance = ch->GetMapIndex() == PLAYERBOT_MAP_OCHAO ? GetPlayerBotOchaoWalk(ch, hub.x, hub.y)
+					: DISTANCE_APPROX(ch->GetX() - hub.x, ch->GetY() - hub.y);
 			score = (int)((long long)score * PLAYERBOT_HUB_HALF_WORTH_DISTANCE /
 					(PLAYERBOT_HUB_HALF_WORTH_DISTANCE + distance));
 			score += (int)(PlayerBotNavHash(dwSeed ^ (DWORD)(i * 0x9e3779b9U)) % 150U);
