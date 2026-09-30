@@ -247,6 +247,18 @@ if ((Test-Path -LiteralPath $playerQolApply -PathType Leaf) -and
         Write-Host ('Applied {0} player convenience edit(s).' -f $playerQolResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The Blue Dragon lair (server-patches/bluedragon, MT2009_PLUS_BLUE_DRAGON_V1):
+# Beran-Setaou in an instance of map 208 takes no damage while one of his four
+# stones stands, and each dragon keeps its own skill cooldowns.
+$blueDragonApply = Join-Path $repo 'server-patches/bluedragon/Apply-BlueDragonPatch.ps1'
+if ((Test-Path -LiteralPath $blueDragonApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'BlueDragon.cpp') -PathType Leaf)) {
+    $blueDragonResult = & $blueDragonApply -SourceDir $engineGameSource
+    if ($blueDragonResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Blue Dragon lair edit(s).' -f $blueDragonResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # A pet's magic attack % (server-patches/magicattper): PointChange had no
 # case for POINT_MAGIC_ATT_BONUS_PER, so the bonus never applied.
 $magicAttApply = Join-Path $repo 'server-patches/magicattper/Apply-MagicAttPerPatch.ps1'

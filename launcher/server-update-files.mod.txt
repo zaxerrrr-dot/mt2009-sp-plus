@@ -79,8 +79,10 @@ linux-port/docker/game/ochao/data/monster/trent_officer/*
 linux-port/docker/game/dungeons/*
 linux-port/docker/game/dungeons/data/dungeon/nemere_mt/*
 linux-port/docker/game/dungeons/data/dungeon/razador_mt/*
+linux-port/docker/game/dungeons/data/dungeon/bluedragon_mt/*
 linux-port/docker/game/dungeons/map/metin2_map_n_snow_dungeon_01/*
 linux-port/docker/game/dungeons/map/metin2_map_n_flame_dungeon_01/*
+linux-port/docker/game/dungeons/map/metin2_map_skipia_dungeon_boss/*
 # MT2009_PLUS_AREZZO_V1: the Arezzo places' share files (Dockerfile step "share: Arezzo places").
 linux-port/docker/game/arezzo/*
 linux-port/docker/game/treasure_hunt/*
@@ -131,6 +133,8 @@ linux-port/docker/game/src/server/game/src/ClientPackageCryptInfo.cpp
 linux-port/docker/game/src/server/game/src/FileMonitor_FreeBSD.cpp
 linux-port/docker/game/src/server/game/src/FileMonitor_FreeBSD.h
 linux-port/docker/game/src/server/game/src/MountSystem.cpp
+linux-port/docker/game/src/server/game/src/BlueDragon.cpp
+linux-port/docker/game/src/server/game/src/BlueDragon.h
 linux-port/docker/game/src/server/game/src/Makefile
 linux-port/docker/game/src/server/game/src/battle.cpp
 linux-port/docker/game/src/server/game/src/char.cpp

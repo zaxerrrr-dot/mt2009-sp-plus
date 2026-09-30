@@ -1,0 +1,26 @@
+[
+ {
+  "file": "BlueDragon.h",
+  "marker": "MT2009_PLUS_BLUE_DRAGON_V1 (decl)",
+  "old": "extern int BlueDragon_Damage (LPCHARACTER me, LPCHARACTER attacker, int dam);\n",
+  "new": "extern int BlueDragon_Damage (LPCHARACTER me, LPCHARACTER attacker, int dam);\n// MT2009_PLUS_BLUE_DRAGON_V1 (decl): the Blue Dragon lair (server-patches/bluedragon).\n// Beran-Setaou (2493) in an instance of map 208 takes no damage while one of its four\n// stones (8031-8034) stands there; each dragon keeps its own skill cooldowns.\nextern bool BlueDragon_IsBoss (DWORD dwVnum);\nextern bool BlueDragon_Block (long lMapIndex);\n"
+ },
+ {
+  "file": "BlueDragon.cpp",
+  "marker": "MT2009_PLUS_BLUE_DRAGON_V1 (block)",
+  "old": "int BlueDragon_StateBattle(LPCHARACTER pChar)\n{\n",
+  "new": "// MT2009_PLUS_BLUE_DRAGON_V1 (block): the Blue Dragon lair (server-patches/bluedragon,\n// quest/blue_dragon_lair.quest). As in Owsap's renewal (BlueDragon_Block/IsBoss): in an\n// instance of map 208 (2080000-2089999) Beran-Setaou takes no damage while any of the four\n// dragon stones is alive there - one pass over the instance, a dead stone no longer counts.\n// The public map 208 and every other map are left as they were.\n#include <array>\n#include <map>\n#include \"char_manager.h\"\n\nstatic const DWORD MT2009_BLUE_DRAGON_BOSS_VNUM = 2493;\nstatic const long MT2009_BLUE_DRAGON_MAP_INDEX = 208;\n\nstruct FMt2009PlusCountDragonStones\n{\n\tsize_t cnt;\n\n\tFMt2009PlusCountDragonStones() : cnt(0) {}\n\n\tvoid operator() (LPENTITY ent)\n\t{\n\t\tif (NULL == ent || !ent->IsType(ENTITY_CHARACTER))\n\t\t\treturn;\n\n\t\tLPCHARACTER pChar = static_cast<LPCHARACTER>(ent);\n\n\t\tif (!pChar->IsStone() || pChar->IsDead())\n\t\t\treturn;\n\n\t\tswitch (pChar->GetRaceNum())\n\t\t{\n\t\t\tcase 8031:\n\t\t\tcase 8032:\n\t\t\tcase 8033:\n\t\t\tcase 8034:\n\t\t\t\t++cnt;\n\t\t\t\tbreak;\n\t\t}\n\t}\n};\n\nbool BlueDragon_IsBoss(DWORD dwVnum)\n{\n\treturn MT2009_BLUE_DRAGON_BOSS_VNUM == dwVnum;\n}\n\nbool BlueDragon_Block(long lMapIndex)\n{\n\tif (lMapIndex < MT2009_BLUE_DRAGON_MAP_INDEX * 10000 || lMapIndex >= (MT2009_BLUE_DRAGON_MAP_INDEX + 1) * 10000)\n\t\treturn false;\n\n\tLPSECTREE_MAP pSecMap = SECTREE_MANAGER::instance().GetMap(lMapIndex);\n\n\tif (NULL == pSecMap)\n\t\treturn false;\n\n\tFMt2009PlusCountDragonStones f;\n\tpSecMap->for_each(f);\n\n\treturn f.cnt > 0;\n}\n\n// MT2009_PLUS_BLUE_DRAGON_V1 (cooldown): the skills' next-use times per dragon (by VID). The\n// classic code kept one static array for every dragon, so two lairs fought at the same time\n// shared - and stole - each other's cooldowns. Entries of dragons that are gone are dropped\n// once the table holds more than a few.\nstatic std::array<time_t, 3>& BlueDragon_SkillCanUseTime(LPCHARACTER pChar)\n{\n\tstatic std::map<DWORD, std::array<time_t, 3> > s_mapSkillCanUseTime;\n\n\tif (s_mapSkillCanUseTime.size() > 16)\n\t{\n\t\tfor (std::map<DWORD, std::array<time_t, 3> >::iterator it = s_mapSkillCanUseTime.begin(); it != s_mapSkillCanUseTime.end(); )\n\t\t{\n\t\t\tif (it->first != (DWORD) pChar->GetVID() && NULL == CHARACTER_MANAGER::instance().Find(it->first))\n\t\t\t\tit = s_mapSkillCanUseTime.erase(it);\n\t\t\telse\n\t\t\t\t++it;\n\t\t}\n\t}\n\n\tstd::map<DWORD, std::array<time_t, 3> >::iterator it = s_mapSkillCanUseTime.find((DWORD) pChar->GetVID());\n\n\tif (it == s_mapSkillCanUseTime.end())\n\t{\n\t\tstd::array<time_t, 3> empty;\n\t\tempty.fill(0);\n\t\tit = s_mapSkillCanUseTime.insert(std::make_pair((DWORD) pChar->GetVID(), empty)).first;\n\t}\n\n\treturn it->second;\n}\n\nint BlueDragon_StateBattle(LPCHARACTER pChar)\n{\n"
+ },
+ {
+  "file": "BlueDragon.cpp",
+  "marker": "MT2009_PLUS_BLUE_DRAGON_V1 (cooldown use)",
+  "old": "\tstatic time_t timeSkillCanUseTime[SkillCount];\n",
+  "new": "\t// MT2009_PLUS_BLUE_DRAGON_V1 (cooldown use): this dragon's own cooldowns (was: one static array).\n\tstd::array<time_t, 3>& timeSkillCanUseTime = BlueDragon_SkillCanUseTime(pChar);\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BLUE_DRAGON_V1 (damage)",
+  "old": "#endif\n\n\tif (type == DAMAGE_TYPE_SYSTEM)\n\t{\n\t\tint hp = GetHP();\n",
+  "new": "#endif\n\n\t// MT2009_PLUS_BLUE_DRAGON_V1 (damage): Beran-Setaou in a Blue Dragon lair instance (map 208)\n\t// shrugs off every blow while one of his four stones stands (BlueDragon.cpp).\n\tif (IsMonster() && BlueDragon_IsBoss(GetRaceNum()) && BlueDragon_Block(GetMapIndex()))\n\t{\n\t\tif (pAttacker)\n\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\treturn false;\n\t}\n\n\tif (type == DAMAGE_TYPE_SYSTEM)\n\t{\n\t\tint hp = GetHP();\n"
+ }
+]

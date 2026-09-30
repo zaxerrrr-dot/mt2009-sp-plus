@@ -1869,3 +1869,14 @@ INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) VALUES (3, 7006
 db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
 (50270, 'Skrzynia Razadora', 'Skrzynia Razadora', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (50271, 'Skrzynia Nemere', 'Skrzynia Nemere', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || echo "[playerbot-migrate] WARNING: could not add the Razador and Nemere boss chests" >&2
+
+# MT2009_PLUS_BLUE_DRAGON_V1: the Blue Dragon lair (Leze Smoka, map 208, quest/blue_dragon_lair.quest,
+# server-patches/bluedragon) for a party of level 90 - Beran-Setaou (2493) is brought down to the
+# band of the Grotto of Exile V2 (its boss 2491 is level 93): level 97 -> 93, HP 5 000 000 ->
+# 3 000 000, defence 739 -> 250, experience 3 564 000 -> 2 000 000, regeneration 5% every 35 s ->
+# 3% every 30 s; his damage stays. His four stones (8031-8034, which shield him while they stand):
+# level 60 -> 90, HP 250 000 -> 300 000, defence 80 -> 90. The lair's other monsters (2411-2414)
+# are the Grotto V2's own and stay as they are. PROTO_FROM_DB: read at the db core's boot.
+# Idempotent: the same values every start.
+db -e "UPDATE world.mob_proto SET level = 93, max_hp = 3000000, def = 250, exp = 2000000, regen_cycle = 30, regen_percent = 3 WHERE vnum = 2493;
+UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (8031, 8032, 8033, 8034);" || echo "[playerbot-migrate] WARNING: could not set up the Blue Dragon lair's dragon and stones" >&2

@@ -269,7 +269,9 @@ RUN set -eux; \
     # bosses of the open maps (MT2009_PLUS_DUNGEON_PANEL_V1, playerbot_dungeon_panel.h).
     # wzgorze_wukonga, ruiny_skorpiona and starozytna_dzungla are the Arezzo dungeons 364-366
     # (MT2009_PLUS_AREZZO_V1, phases 5-7).
-    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla; do \
+    # blue_dragon_lair is the Blue Dragon lair (map 208) entered at the Sura's Ghost in the Grotto of
+    # Exile V2 (MT2009_PLUS_BLUE_DRAGON_V1).
+    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -697,6 +699,37 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && test "$(od -An -tx1 -N8 "$L/map/metin2_map_n_flame_dungeon_01/server_attr" | tr -d ' ')" = 0c0000000c000000 \
  && rm -rf "$A" \
  && echo "share: Razador (351) and Nemere (352) dungeons, their guards and the Nemere drops"
+
+# MT2009_PLUS_BLUE_DRAGON_V1: the Blue Dragon lair - Leze Smoka, map 208 (metin2_map_skipia_dungeon_boss,
+# 2x2, on game2), for a party of level 90 (quest/blue_dragon_lair.quest, compiled above; the dragon's
+# and the stones' numbers are apply.sh's MT2009_PLUS_BLUE_DRAGON_V1, the engine half - Beran-Setaou
+# takes no damage while a stone stands - is server-patches/bluedragon). The Sura's Ghost (30121, the
+# package's npc.txt line on map 73 at 266,175) asks game2 for an instance over P2P, like Razador's guard:
+#  * data/dungeon/bluedragon_mt/regen.txt - the lair's monsters, Owsap's data/dungeon/dragon_lair.txt
+#    without the stones and the dragon's group (the quest places both);
+#  * the map's instance_regen.txt (the guild lair's, CDragonLairManager - no active quest starts it)
+#    pointed seven lines at group_group 50000, which does not exist: now the lair's own packs with the
+#    dragon and his four stones;
+#  * the public copy of 208 is the fallback lobby, as Razador's 351: nothing spawns there but the
+#    Sura's Ghost (30121) at 246,173, which opens the instance (the package filled it with the lair's
+#    monsters and stones, regen.txt emptied);
+#  * BlueDragon.lua with Beran-Setaou's weaker skills (dungeons/BlueDragon.lua; settings.lua loads it).
+COPY dungeons/ /tmp/bluedragon-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/bluedragon-add; M="$L/map/metin2_map_skipia_dungeon_boss" \
+ && test -d "$M" \
+ && grep -q -E '^208[[:blank:]]+metin2_map_skipia_dungeon_boss' "$L/map/index" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/data/dungeon/bluedragon_mt/regen.txt" "$A/map/metin2_map_skipia_dungeon_boss/instance_regen.txt" \
+ && mkdir -p /opt/metin2/share/data/dungeon && rm -rf /opt/metin2/share/data/dungeon/bluedragon_mt \
+ && cp -a "$A/data/dungeon/bluedragon_mt" /opt/metin2/share/data/dungeon/ \
+ && cp "$A/map/metin2_map_skipia_dungeon_boss/instance_regen.txt" "$M/instance_regen.txt" \
+ && ! grep -q -E '[[:blank:]]50000[[:space:]]*$' "$M/instance_regen.txt" \
+ && for f in regen.txt boss.txt stone.txt; do : > "$M/$f"; done \
+ && printf 'm\t246\t173\t0\t0\t0\t0\t60s\t100\t1\t30121\r\n' > "$M/npc.txt" \
+ && cp "$A/BlueDragon.lua" "$L/BlueDragon.lua" \
+ && grep -q 'MT2009_PLUS_BLUE_DRAGON_V1' "$L/BlueDragon.lua" \
+ && LC_ALL=C grep -a -q 'BlueDragon.lua' "$L/settings.lua" \
+ && rm -rf "$A" \
+ && echo "share: Blue Dragon lair (208): its regen, the lobby, instance_regen.txt and BlueDragon.lua"
 
 # MT2009_PLUS_AREZZO_V1 (share): the first three places from the Arezzo files (the owner has the
 # rights to them), for players - the bots come later:
