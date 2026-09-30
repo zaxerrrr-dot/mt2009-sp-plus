@@ -42,7 +42,7 @@ quest blue_dragon_lair begin
 				fee = 15000000, fee_text = "15 000 000",
 				daily = 5,
 				path = "data/dungeon/bluedragon_mt/",
-				stone_back = 300, -- a stone returns this many seconds after the last one fell (0 = never)
+				stone_back = 0, -- a stone returns this many seconds after the last one fell (0 = never)
 				end_sec = 180,
 				rewards = {{71123, 1}, {71129, 1}},
 			}

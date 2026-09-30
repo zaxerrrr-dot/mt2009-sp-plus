@@ -1878,5 +1878,5 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 # level 60 -> 90, HP 250 000 -> 300 000, defence 80 -> 90. The lair's other monsters (2411-2414)
 # are the Grotto V2's own and stay as they are. PROTO_FROM_DB: read at the db core's boot.
 # Idempotent: the same values every start.
-db -e "UPDATE world.mob_proto SET level = 93, max_hp = 3000000, def = 250, exp = 2000000, regen_cycle = 30, regen_percent = 3 WHERE vnum = 2493;
+db -e "UPDATE world.mob_proto SET level = 93, max_hp = 3000000, def = 250, exp = 2000000, regen_cycle = 30, regen_percent = 1 WHERE vnum = 2493;
 UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (8031, 8032, 8033, 8034);" || echo "[playerbot-migrate] WARNING: could not set up the Blue Dragon lair's dragon and stones" >&2
