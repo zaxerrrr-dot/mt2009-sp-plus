@@ -385,6 +385,13 @@ namespace
 
 		const char* prefix = ch->GetParty() ? "[PT] " : "";
 		const char* goal = GetPlayerBotGoalLabel(state.bLongTermGoal, en);
+		// MT2009_PLUS_SHOUTERS_V1: a shouter at its level stands at its post
+		// (playerbot_shouters.h), whatever its planner last wanted.
+		if (ch->GetLevel() >= PLAYERBOT_SHOUTER_LEVEL && IsPlayerBotShouterPID(ch->GetPlayerID()))
+		{
+			snprintf(status, statusSize, "%s", PBT(en, "Stoje przy Handlarce", "Standing by the general store"));
+			return;
+		}
 		// The Demon Tower: the floor a bot is on, or the raid it is going to
 		// (playerbot_demon_tower.h).
 		if (IsPlayerBotDemonTowerInstance(ch->GetMapIndex()))

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application x:Class="N2_Patcher.App" StartupUri="view/MainWindow.xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:N2_Patcher">
+  <Application.Resources>
+    <FontFamily x:Key="Front_00">ms-appx:///Fonts/OpenSans-ExtraBold.ttf#Open Sans - ExtraBold</FontFamily>
+  </Application.Resources>
+</Application>

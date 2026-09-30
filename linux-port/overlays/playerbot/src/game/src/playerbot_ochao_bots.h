@@ -76,6 +76,29 @@ namespace
 	// potions, BlocksPlayerBotTravel) takes a bot out: the way in and out is
 	// some six minutes of walking, and two of hunting were not worth it.
 	const DWORD PLAYERBOT_OCHAO_MIN_VISIT_TIME = 12 * 60 * 1000;
+	// The temple's boss raids (playerbot_boss_raid.h): a recruit is a bot
+	// inside within this walk of the boss, and the gathering waits this long -
+	// the labyrinth's walks are longer than the open maps'.
+	const int PLAYERBOT_OCHAO_RAID_WALK_MAX = 60000;
+	const DWORD PLAYERBOT_OCHAO_RAID_GATHER_MS = 5 * 60 * 1000;
+	// The muster: the raid meets out of his group's reach - the corner of the
+	// way out this far from him along the corridors - and goes in together
+	// (a member arriving alone at his side was his escort's, one by one). A
+	// member within this of the muster has come.
+	const int PLAYERBOT_OCHAO_RAID_MUSTER_WALK = 4500;
+	const int PLAYERBOT_OCHAO_RAID_MUSTER_ARRIVED = 1500;
+	// He has walked this far from where the muster was chosen: chosen again.
+	const int PLAYERBOT_OCHAO_RAID_MUSTER_MOVE = 4000;
+	// Every this often while it gathers, a member sent back to the gate (or
+	// otherwise out of the walk) is let go and the raid is filled up again
+	// from the nearest free bots of its kingdom.
+	const DWORD PLAYERBOT_OCHAO_RAID_TOPUP_MS = 30000;
+	// Let go only past this walk (the gate is 45-100 km from the bosses; the
+	// walk's estimate moves a few km as the nearest spot changes).
+	const int PLAYERBOT_OCHAO_RAID_DROP_WALK = PLAYERBOT_OCHAO_RAID_WALK_MAX + 30000;
+	// In the fight, a member further from him than this walks the corners to
+	// him (WalkPlayerBotInOchao) instead of being sent at him straight.
+	const int PLAYERBOT_OCHAO_RAID_FIGHT_WALK = 3000;
 	// Monitoring: a bot on the map that has not moved this far in this long,
 	// and has fought nothing in the last ten seconds, counts as stuck.
 	const int PLAYERBOT_OCHAO_STUCK_DISTANCE = 200;
@@ -115,8 +138,9 @@ namespace
 		// the eleven rooms (playerbot_ochao.h); the Ochao Bodyguard (6311) and
 		// the Ochao Lord (6390) come from boss.txt every hour.
 		{ 864100, 1422500, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 6400 },
-		{ 899800, 1421800, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 6311 },
-		{ 888100, 1416200, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 6390 }
+		// The Ochao Bodyguard (6311) and the Ochao Lord (6390) are the boss
+		// raid's (playerbot_boss_raid.h): called, gathered and walked there
+		// together, not a hub any passer-by takes.
 	};
 	// The way out, as a tree rooted at the Teleporter: every node's next node
 	// is the next corner towards him on the shortest walk (Dijkstra on the
@@ -364,6 +388,14 @@ namespace
 		return DISTANCE_APPROX(ch->GetX() - PLAYERBOT_OCHAO_HUBS[s_iFrom].x, ch->GetY() - PLAYERBOT_OCHAO_HUBS[s_iFrom].y) +
 				PLAYERBOT_OCHAO_HUB_WALK[s_iFrom][to] +
 				DISTANCE_APPROX(x - PLAYERBOT_OCHAO_HUBS[to].x, y - PLAYERBOT_OCHAO_HUBS[to].y);
+	}
+
+	// On its way out (the frontier's exit, or another pass's warp walked out).
+	bool IsPlayerBotOchaoLeaving(LPCHARACTER ch)
+	{
+		return ch && (s_mapPlayerBotOchaoExit.count(ch->GetPlayerID()) != 0 ||
+				s_mapPlayerBotOchaoPending.count(ch->GetPlayerID()) != 0 ||
+				IsPlayerBotOchaoLeaveOrdered(ch));
 	}
 
 	const TPlayerBotHuntingHub* GetPlayerBotOchaoHubs(size_t& count)
@@ -678,7 +710,245 @@ namespace
 		return MovePlayerBotOutOfOchao(ch, state, p.lMap, p.lX, p.lY, dwNow, p.szReason);
 	}
 
+	// ------------------------------------------------------------ a walk inside
+	//
+	// A walk from one point of the labyrinth to another (the boss raid's way to
+	// its boss, playerbot_boss_raid.h) goes by the same corners as the way out:
+	// up the tree from the corner the bot can see to the first corner the
+	// goal's own branch shares, and down that branch to the corner the goal can
+	// be seen from. Each leg is a straight line with open cells either side,
+	// so no leg is planned into a wall and the far-plan budget is not asked.
+	// A corner further along the way that is already in sight is walked to
+	// straight; the goal itself, once in sight, too.
+	struct TPlayerBotOchaoWalk
+	{
+		long lGoalX, lGoalY;
+		std::vector<short> path;
+		size_t idx;
+		DWORD dwLastUsed;
+		DWORD dwLegSince;
+		int iLegBest;
+		long lLegX, lLegY;
+		BYTE bStalls;
+		bool bNavOnly;
+		TPlayerBotOchaoWalk() : lGoalX(0), lGoalY(0), idx(0), dwLastUsed(0), dwLegSince(0), iLegBest(0),
+				lLegX(0), lLegY(0), bStalls(0), bNavOnly(false) {}
+	};
+	std::map<DWORD, TPlayerBotOchaoWalk> s_mapPlayerBotOchaoWalk;
+	// The goal moved this far (a boss who walks): the way is planned again.
+	const int PLAYERBOT_OCHAO_WALK_REPLAN = 1500;
+	// Counted for the watch: walks planned by the corners, walks given up to
+	// the navigation after PLAYERBOT_OCHAO_MAX_STALLS stalls.
+	unsigned int s_uPlayerBotOchaoWalksPlanned = 0;
+	unsigned int s_uPlayerBotOchaoWalksNavOnly = 0;
+
+	// The nearest corner in sight of a point (within PLAYERBOT_OCHAO_NODE_SIGHT),
+	// or the nearest corner.
+	int GetPlayerBotOchaoNodeInSight(CPlayerBotNavigation& nav, long x, long y)
+	{
+		std::vector<std::pair<int, int> > order;
+		order.reserve(PLAYERBOT_OCHAO_NODE_COUNT);
+		for (int i = 0; i < PLAYERBOT_OCHAO_NODE_COUNT; ++i)
+			order.push_back(std::make_pair(DISTANCE_APPROX(x - PLAYERBOT_OCHAO_EXIT_TREE[i].x,
+					y - PLAYERBOT_OCHAO_EXIT_TREE[i].y), i));
+		std::sort(order.begin(), order.end());
+		for (size_t k = 0; k < order.size() && order[k].first <= PLAYERBOT_OCHAO_NODE_SIGHT; ++k)
+			if (nav.SegmentClearWorld(x, y, PLAYERBOT_OCHAO_EXIT_TREE[order[k].second].x,
+					PLAYERBOT_OCHAO_EXIT_TREE[order[k].second].y))
+				return order[k].second;
+		return order.empty() ? -1 : order[0].second;
+	}
+
+	// The corners from (fromX, fromY) to (toX, toY) through the tree.
+	bool PlanPlayerBotOchaoWalk(CPlayerBotNavigation& nav, long fromX, long fromY, long toX, long toY,
+			std::vector<short>& path)
+	{
+		path.clear();
+		const int a = GetPlayerBotOchaoNodeInSight(nav, fromX, fromY);
+		const int b = GetPlayerBotOchaoNodeInSight(nav, toX, toY);
+		if (a < 0 || b < 0)
+			return false;
+		std::vector<short> up, down;
+		std::vector<char> onUp(PLAYERBOT_OCHAO_NODE_COUNT, 0);
+		for (int n = a, guard = 0; n >= 0 && guard <= PLAYERBOT_OCHAO_NODE_COUNT; n = PLAYERBOT_OCHAO_EXIT_TREE[n].next, ++guard)
+		{
+			up.push_back((short)n);
+			onUp[n] = 1;
+		}
+		int meet = -1;
+		for (int n = b, guard = 0; n >= 0 && guard <= PLAYERBOT_OCHAO_NODE_COUNT; n = PLAYERBOT_OCHAO_EXIT_TREE[n].next, ++guard)
+		{
+			if (onUp[n])
+			{
+				meet = n;
+				break;
+			}
+			down.push_back((short)n);
+		}
+		if (meet < 0)
+			return false;
+		for (size_t i = 0; i < up.size(); ++i)
+		{
+			path.push_back(up[i]);
+			if (up[i] == meet)
+				break;
+		}
+		for (size_t i = down.size(); i-- > 0;)
+			path.push_back(down[i]);
+		return !path.empty();
+	}
+
+	// Where a raid on a boss standing at (bossX, bossY) meets: up the tree from
+	// the corner he can be seen from, to the first corner this far along it.
+	bool GetPlayerBotOchaoMuster(long bossX, long bossY, long& outX, long& outY)
+	{
+		CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(PLAYERBOT_MAP_OCHAO);
+		if (!nav.Init(PLAYERBOT_MAP_OCHAO))
+			return false;
+		int n = GetPlayerBotOchaoNodeInSight(nav, bossX, bossY);
+		if (n < 0)
+			return false;
+		long px = bossX, py = bossY;
+		int walked = 0;
+		for (int guard = 0; n >= 0 && guard <= PLAYERBOT_OCHAO_NODE_COUNT; ++guard)
+		{
+			const TPlayerBotOchaoNode& node = PLAYERBOT_OCHAO_EXIT_TREE[n];
+			walked += DISTANCE_APPROX(node.x - px, node.y - py);
+			px = node.x;
+			py = node.y;
+			if (walked >= PLAYERBOT_OCHAO_RAID_MUSTER_WALK &&
+					DISTANCE_APPROX(node.x - bossX, node.y - bossY) >= PLAYERBOT_BOSS_RAID_RALLY_MIN)
+			{
+				outX = node.x;
+				outY = node.y;
+				return true;
+			}
+			n = node.next;
+		}
+		return false;
+	}
+
+	void ForgetPlayerBotOchaoWalk(DWORD pid)
+	{
+		s_mapPlayerBotOchaoWalk.erase(pid);
+	}
+
+	// One step of the walk to (x, y); false when the bot is not in the temple.
+	bool WalkPlayerBotInOchao(LPCHARACTER ch, TPlayerBotAIState& state, long x, long y, DWORD dwNow)
+	{
+		if (!ch || ch->GetMapIndex() != PLAYERBOT_MAP_OCHAO)
+			return false;
+		CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(PLAYERBOT_MAP_OCHAO);
+		if (!nav.Init(PLAYERBOT_MAP_OCHAO))
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+		const int toGoal = DISTANCE_APPROX(ch->GetX() - x, ch->GetY() - y);
+		TPlayerBotOchaoWalk& w = s_mapPlayerBotOchaoWalk[pid];
+		// Given up to the navigation for another goal, or long ago: the corners
+		// again.
+		if (w.bNavOnly && (dwNow - w.dwLastUsed > 60000 ||
+				DISTANCE_APPROX(x - w.lGoalX, y - w.lGoalY) > PLAYERBOT_OCHAO_WALK_REPLAN))
+			w = TPlayerBotOchaoWalk();
+		// The goal in sight: straight to it.
+		if (w.bNavOnly || (toGoal <= PLAYERBOT_OCHAO_NODE_SIGHT && nav.SegmentClearWorld(ch->GetX(), ch->GetY(), x, y)))
+		{
+			w.dwLastUsed = dwNow;
+			w.path.clear();
+			MovePlayerBot(ch, x, y, dwNow, 6, true, toGoal > 4000, false, true);
+			return true;
+		}
+		if (w.path.empty() || w.idx >= w.path.size() || dwNow - w.dwLastUsed > 60000 ||
+				DISTANCE_APPROX(x - w.lGoalX, y - w.lGoalY) > PLAYERBOT_OCHAO_WALK_REPLAN)
+		{
+			const BYTE stalls = (dwNow - w.dwLastUsed > 60000) ? 0 : w.bStalls;
+			w = TPlayerBotOchaoWalk();
+			w.bStalls = stalls;
+			w.lGoalX = x;
+			w.lGoalY = y;
+			if (!PlanPlayerBotOchaoWalk(nav, ch->GetX(), ch->GetY(), x, y, w.path))
+			{
+				w.bNavOnly = true;
+				++s_uPlayerBotOchaoWalksNavOnly;
+				w.dwLastUsed = dwNow;
+				MovePlayerBot(ch, x, y, dwNow, 6, true, true, false, true);
+				return true;
+			}
+			++s_uPlayerBotOchaoWalksPlanned;
+			ClearPlayerBotRoute(state, true);
+		}
+		w.dwLastUsed = dwNow;
+		// Corners passed, or already in sight further along.
+		while (w.idx < w.path.size())
+		{
+			const TPlayerBotOchaoNode& n = PLAYERBOT_OCHAO_EXIT_TREE[w.path[w.idx]];
+			if (DISTANCE_APPROX(ch->GetX() - n.x, ch->GetY() - n.y) <= PLAYERBOT_OCHAO_NODE_REACHED)
+			{
+				++w.idx;
+				w.dwLegSince = 0;
+				continue;
+			}
+			if (w.idx + 1 < w.path.size())
+			{
+				const TPlayerBotOchaoNode& m = PLAYERBOT_OCHAO_EXIT_TREE[w.path[w.idx + 1]];
+				if (DISTANCE_APPROX(ch->GetX() - m.x, ch->GetY() - m.y) <= PLAYERBOT_OCHAO_NODE_SIGHT &&
+						nav.SegmentClearWorld(ch->GetX(), ch->GetY(), m.x, m.y))
+				{
+					++w.idx;
+					w.dwLegSince = 0;
+					continue;
+				}
+			}
+			break;
+		}
+		if (w.idx >= w.path.size())
+		{
+			// Past the last corner and the goal still out of sight: straight on
+			// the navigation from here.
+			MovePlayerBot(ch, x, y, dwNow, 6, true, toGoal > 4000, false, true);
+			return true;
+		}
+		const long nodeX = PLAYERBOT_OCHAO_EXIT_TREE[w.path[w.idx]].x;
+		const long nodeY = PLAYERBOT_OCHAO_EXIT_TREE[w.path[w.idx]].y;
+		const int distance = DISTANCE_APPROX(ch->GetX() - nodeX, ch->GetY() - nodeY);
+		if (w.dwLegSince == 0 || distance + PLAYERBOT_OCHAO_LEG_PROGRESS <= w.iLegBest ||
+				DISTANCE_APPROX(ch->GetX() - w.lLegX, ch->GetY() - w.lLegY) >= PLAYERBOT_OCHAO_LEG_PROGRESS * 2)
+		{
+			w.dwLegSince = dwNow;
+			w.iLegBest = distance;
+			w.lLegX = ch->GetX();
+			w.lLegY = ch->GetY();
+		}
+		else if (dwNow - w.dwLegSince >= PLAYERBOT_OCHAO_LEG_TIMEOUT)
+		{
+			++w.bStalls;
+			sys_log(0, "OCHAO_BOT: walk leg stalled pid=%u name=%s node=%d pos=(%ld,%ld) node_pos=(%ld,%ld) goal=(%ld,%ld) stalls=%u",
+					pid, ch->GetName(), (int)w.path[w.idx], ch->GetX(), ch->GetY(), nodeX, nodeY, x, y,
+					(unsigned int)w.bStalls);
+			ClearPlayerBotRoute(state, true);
+			if (w.bStalls >= PLAYERBOT_OCHAO_MAX_STALLS)
+			{
+				w.bNavOnly = true;
+				++s_uPlayerBotOchaoWalksNavOnly;
+			}
+			else
+				w.path.clear();	// planned again from here on the next step
+			return true;
+		}
+		MovePlayerBot(ch, nodeX, nodeY, dwNow, 6, true, true, false, true);
+		return true;
+	}
+
 	// ------------------------------------------------------------ the kills
+
+	// Who struck the last blow on a boss of the temple, by his VID (the boss
+	// raid asks it, playerbot_boss_raid.h).
+	std::map<DWORD, DWORD> s_mapPlayerBotOchaoBossKiller;
+	DWORD GetPlayerBotOchaoBossKiller(DWORD vid)
+	{
+		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotOchaoBossKiller.find(vid);
+		return it == s_mapPlayerBotOchaoBossKiller.end() ? 0 : it->second;
+	}
 
 	void NoteOchaoBotKill(LPCHARACTER killer, LPCHARACTER victim)
 	{
@@ -691,6 +961,9 @@ namespace
 		if (race == mt2009_ochao::GUARDIAN_VNUM || race == 6311 || race == 6390)
 		{
 			++t.dwBossKills;
+			if (s_mapPlayerBotOchaoBossKiller.size() > 64)
+				s_mapPlayerBotOchaoBossKiller.clear();
+			s_mapPlayerBotOchaoBossKiller[(DWORD)victim->GetVID()] = killer->GetPlayerID();
 			const DWORD dwNow = get_dword_time();
 			sys_log(0, "OCHAO_BOT: boss killed race=%u name=%s killer=%u pos=(%ld,%ld) fighters=%u since_spawn_s=%u since_engaged_s=%u",
 					race, victim->GetName(), killer->GetPlayerID(), victim->GetX(), victim->GetY(),
@@ -773,6 +1046,17 @@ namespace
 					++ordered;
 				}
 				sys_log(0, "OCHAO_BOT: test leave ordered=%d on_map=%u", ordered, (unsigned int)pids.size());
+			}
+			else if (!strcmp(cmd, "spawn"))
+			{
+				// A boss at his boss.txt point, for a test of the raid.
+				LPSECTREE_MAP map = SECTREE_MANAGER::instance().GetMap(PLAYERBOT_MAP_OCHAO);
+				long cx = 0, cy = 0;
+				if (n == 6311) { cx = 550; cy = 138; }
+				else if (n == 6390) { cx = 433; cy = 82; }
+				LPCHARACTER boss = (map && cx) ? CHARACTER_MANAGER::instance().SpawnMob(n, PLAYERBOT_MAP_OCHAO,
+						map->m_setting.iBaseX + cx * 100, map->m_setting.iBaseY + cy * 100, 0, true, -1, true) : NULL;
+				sys_log(0, "OCHAO_BOT: test spawn race=%d vid=%u", n, boss ? (unsigned int)boss->GetVID() : 0U);
 			}
 			else if (!strcmp(cmd, "reset"))
 			{
@@ -941,10 +1225,20 @@ namespace
 		}
 		if (out)
 		{
-			fprintf(out, "#\t%ld\ton_map=%d\tcrossing=%d\tguardian=%u\tguardian_fighters=%u\tportal=%u\n",
+			fprintf(out, "#\t%ld\ton_map=%d\tcrossing=%d\tguardian=%u\tguardian_fighters=%u\tportal=%u\twalks=%u\twalks_nav=%u\n",
 					(long)wall, onMap, crossing, guardian ? (unsigned int)guardian->GetVID() : 0U,
-					(unsigned int)s_setPlayerBotOchaoGuardianFighters.size(), (unsigned int)mt2009_ochao::s_dwPortalVID);
+					(unsigned int)s_setPlayerBotOchaoGuardianFighters.size(), (unsigned int)mt2009_ochao::s_dwPortalVID,
+					s_uPlayerBotOchaoWalksPlanned, s_uPlayerBotOchaoWalksNavOnly);
 			fclose(out);
+			// Walks nobody has stepped for five minutes (a raid over, a bot gone).
+			for (std::map<DWORD, TPlayerBotOchaoWalk>::iterator w = s_mapPlayerBotOchaoWalk.begin();
+					w != s_mapPlayerBotOchaoWalk.end();)
+			{
+				if (dwNow - w->second.dwLastUsed > 300000)
+					s_mapPlayerBotOchaoWalk.erase(w++);
+				else
+					++w;
+			}
 		}
 	}
 }

@@ -3352,6 +3352,7 @@ namespace
 			const bool classLevel30 = IsPlayerBotClassLevel30Weapon(ch, item);
 			const long long goldBeforeAttempt = (long long)ch->GetGold();
 			const WORD cellBefore = item->GetCell();
+			const DWORD idBefore = item->GetID();
 			bool attempted = false;
 			if (scrollCell >= 0)
 			{
@@ -3377,6 +3378,12 @@ namespace
 				LPITEM after = ch->GetInventoryItem(cellBefore);
 				state.adwRefineTakenOffItem[wearCell] = after ? after->GetID() : 0;
 			}
+			// The piece the anvil handed back - a new item in the same cell -
+			// remembers what it was made from (playerbot_explain.h).
+			if (attempted && IsPlayerBotExplainOn())
+				if (LPITEM made = ch->GetInventoryItem(cellBefore))
+					if (made->GetID() != idBefore)
+						NotePlayerBotExplainOrigin(made, per::ORIGIN_REFINED, idBefore);
 			if (attempted)
 			{
 				// The step's fee goes on the level-30 weapon's budget.
@@ -3397,6 +3404,10 @@ namespace
 					// And a failure on the way to them costs a level of mood.
 					NotePlayerBotMoodRefineFailure(ch, (int)plusLevel + 1,
 							scrollCell >= 0 ? "downgraded" : "burned");
+					// A worn piece burned: what goes on in its slot next goes on
+					// after the burn (playerbot_explain.h).
+					if (scrollCell < 0 && wearCell < WEAR_MAX_NUM)
+						NotePlayerBotExplainBurn(ch->GetPlayerID(), wearCell, dwNow);
 					// A burnt class weapon is bought again straight away, while the
 					// bot still stands in the village ("bot ma obowiazek zakupic
 					// kolejna sztuke broni na 30. poziom z rynku, jesli pozwala na to

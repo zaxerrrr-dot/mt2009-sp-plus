@@ -6458,6 +6458,11 @@ namespace
 	// fragment that asks these): whose it is, whether it stands at its
 	// owner's side, and what its owner handed it.
 	bool IsPlayerBotSidekickPID(DWORD pid);
+	// MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages
+	// (playerbot_shouters.h), kept out of everything the population does.
+	bool IsPlayerBotShouterPID(DWORD pid);
+	// The level it levels to and then stands at its post.
+	const BYTE PLAYERBOT_SHOUTER_LEVEL = 15;
 	// Sent fishing by its owner (playerbot_sidekick.h, "Na ryby").
 	bool IsPlayerBotSidekickFishing(DWORD pid);
 	bool IsPlayerBotSidekickKeepingChests(LPCHARACTER ch);

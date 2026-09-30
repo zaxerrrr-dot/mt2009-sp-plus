@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-29T15:39:15Z",
-  "statusMessage": "Serwer 2.14.0 i klient 2.0.28: Battle Pass, kalendarz eventow (F11), nowe pety, Kolo Fortuny, lochy Razadora i Nemere, Swiatynia Ochao, Poszukiwanie skarbow.",
+  "publishedAt": "2026-09-30T08:52:43Z",
+  "statusMessage": "Serwer 2.15.0 i klient 2.0.29: boty w Swiatyni Ochao, decyzje botow w panelu, nowy patcher klienta, poprawki po 2.14.0.",
   "server": {
-    "version": "2.14.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.14.0.zip",
-    "sha256": "F8154DB72CCE7EFFFEE2A240889358916CEBAED5054875D45991CF8F15360E3B",
-    "size": 95283278
+    "version": "2.15.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.15.0.zip",
+    "sha256": "12DF00A5EA109E78B0B5F93F04C82E188FC7C29A8A5320A5D98482063B8C674C",
+    "size": 95605329
   },
   "client": {
-    "version": "2.0.28",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.28/metin2-client-update-2.0.28.zip",
-    "sha256": "0300264F208B0D11EAEB78DFB21DB40328363E06143AA464D1E3C8602DF4D2BD",
-    "size": 162261807
+    "version": "2.0.29",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.29/metin2-client-update-2.0.29.zip",
+    "sha256": "9AFC96598AEF7A49A2B6DCE6371E387BF0136F666F4435D41E8C5E584BAAD412",
+    "size": 199120545
   }
 }

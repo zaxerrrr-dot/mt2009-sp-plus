@@ -444,6 +444,12 @@
   "new": "\t\tcase HEADER_GG_FIND_DUNGEON:\n\t\t\tDungeonFind(c_pData);\n\t\t\tbreak;\n\n\t\t// MT2009_PLUS_DUNGEON_ONE_WARP_V1 (case)\n\t\tcase HEADER_GG_DUNGEON_NEW_JUMP:\n\t\t\tquest::Mt2009PlusDungeonNewJumpRecv(c_pData);\n\t\t\tbreak;\n"
  },
  {
+  "file": "input_p2p.cpp",
+  "marker": "MT2009_PLUS_SHOUTERS_V1 (p2p)",
+  "old": "\tTPacketGGShout * p = (TPacketGGShout *) c_pData;\n\tif (p->bChatType == CHAT_TYPE_SHOUT)\n\t\tSendShout(p->szText, p->bEmpire);\n",
+  "new": "\tTPacketGGShout * p = (TPacketGGShout *) c_pData;\n\tif (p->bChatType == CHAT_TYPE_SHOUT)\n\t{\n\t\tSendShout(p->szText, p->bEmpire);\n\t\t// MT2009_PLUS_SHOUTERS_V1 (p2p): another core's line of the shout channel, counted for\n\t\t// the shouters of the first villages (playerbot_shouters.h).\n\t\tCPlayerBotManager::instance().OnPeerShout(p->bEmpire);\n\t}\n"
+ },
+ {
   "file": "questlua_dungeon.cpp",
   "marker": "MT2009_PLUS_DUNGEON_ONE_WARP_V1 (lua)",
   "old": "\tvoid RegisterDungeonFunctionTable()\n",

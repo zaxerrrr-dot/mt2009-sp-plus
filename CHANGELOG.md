@@ -17,6 +17,107 @@ every version here.
 
 ---
 
+## 2.15.0 — 2026-09-30 — Boty w Świątyni Ochao, decyzje botów w panelu, patcher klienta, poprawki po 2.14.0
+
+Serwer 2.15.0 i klient 2.0.29: zaktualizuj oba w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**). Zawiera wszystko
+z 2.14.0.
+
+### Boty w Świątyni Ochao
+
+- Boty od **95 poziomu** chodzą do Świątyni Ochao jak gracze: przez
+  Strażnika Świątyni w Dolinie Orków, polują w całym labiryncie, a wracają,
+  przechodząc labirynt do Teleportera w środkowej sali albo przez Portal po
+  Strażniku En-Tai.
+- Znają mapę: 22 miejsca do expienia, trasy przez labirynt policzone z góry,
+  wybór miejsca według prawdziwej drogi, a nie linii prostej.
+- Nie teleportują się ze środka labiryntu – najpierw wychodzą pieszo.
+- **Rajdy na Ochroniarza Ochao i Władcę Ochao** jak na innych bossów
+  (Strażnik En-Tai bez rajdów).
+- Test nocny: 8 rund po ~150 botów, bez crasha i bez utykania w labiryncie.
+
+### Decyzje botów w panelu
+
+- Nowa strona **„Decyzje”** w panelu klasycznym: dlaczego bot wystawił
+  przedmiot, jak krok po kroku powstała cena, dlaczego zmienił ekwipunek;
+  oznaczone nietypowe decyzje i anomalie, filtry i przycisk
+  **„Kopiuj dla AI”**.
+- Karta bota ma zakładkę „Decyzje”, a lada bota na mapie – podpowiedź „?”.
+- Wpisy czyszczą się same (domyślnie po 7 dniach; ustawienie w panelu,
+  0 = nie zapisuj).
+
+### Boty – handel, ekwipunek, świat
+
+- Księgi umiejętności z nadwyżki yang (od 10 mln), księgi polimorfii
+  i Przewodnik Górnictwa, bez przełączania broni przy wsiadaniu na konia,
+  wymiana przestarzałej zbroi, hełmu i tarczy od 50 poziomu (hełm do +6).
+- ItemShop według potrzeb (kamienie zmiany, Pierścień Teleportacji,
+  wykrywacz Metinów...) zamiast samych fryzur; hazardziści częściej;
+  wymiana nadmiaru ulepszaczy; porządniejsze lady.
+- Wieża Demonów bez stania przy Żniwiarzu, wyjazd z M1 bez utykania,
+  Teleporter płatny w każdym królestwie, Pierścień Teleportacji do domu,
+  Pyongmoo bez utykania przy wąwozie.
+- Pierścień Anty-Exp obejmuje Towarzysza; ustawienie „Nic” przy Metinach
+  jest przestrzegane.
+- Bronie na 75 poziom ze Żniwiarza i Azraela zamiast Pajęczej Baronowej;
+  receptury Baek-Go bez 21 godzin czekania.
+- Sklepy offline: blokada przedmiotu rozlicza tylko swój zakup, jedna
+  sprzedaż to jeden wpis, poprawiony błąd pamięci po wystawieniu.
+- W każdym królestwie w M1 stoi przy Handlarce jeden... szczególny bot.
+  Jeśli przeszkadza – przełącznik „Krzykacze w M1” w panelu.
+
+### Poprawki po 2.14.0
+
+- **Lodowy Golem Mag** (Nemere) nie odrzuca już przez pół mapy i można go
+  zabić.
+- **Nowe pety:** działa ewolucja (przycisk „Ewoluuj”), pety dostają exp,
+  a z potworów wypadają jajka i przedmioty dla petów.
+- Przedmioty dla petów tylko w ItemShopie i z Metinów – nie ma ich już
+  w sklepie ogólnym.
+- **„Wróć do lochu”** u Razadora i Nemere działa przez cały czas wyprawy.
+- Błogosławieństwo Goblina chroni przed trucizną.
+- Sortowanie ekwipunku łączy Cor Draconis.
+- Drugi kanał na własnych portach: zakres portów liczy się od
+  `M2_GAME_PORT_BASE` (koniec „13000” po aktualizacji).
+
+### Rejestracja dla serwera wspierających
+
+- Nowe ustawienie `M2_REGISTER_ACCESS_CODE`: gdy jest ustawione, strona
+  `/register` wymaga hasła (wielokrotnego użytku) i wygląda jak
+  metin2sp.pl. Puste = rejestracja jak dotąd.
+
+### Launcher i panele
+
+- Przycisk **„Zgłoś”** (opis i logi w jednej paczce), zapora COOP dla
+  portów wszystkich kanałów, ponowna instalacja na VPS uzupełnia brakujące
+  ustawienia w `.env`.
+- Gildie nie pokazują więcej botów online niż członków; poprawka położenia
+  „Wyloguj” w panelu zaawansowanym.
+- Usunięta nieaktualna opcja „Włącz Skrzynie Blasku Księżyca w dropie”
+  (szkatułki działają według eventu z harmonogramu).
+
+---
+
+## Klient 2.0.29 — 2026-09-30 — Patcher, okno „Ceny”, zwijany pasek boczny
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**) albo nowym
+patcherem. Zawiera wszystko z 2.0.28.
+
+- **MT2009 Patcher** (`MT2009-Patcher.exe`): okno z newsami, statusem
+  serwera i przyciskiem GRAJ; sprawdza pliki klienta i pobiera tylko to,
+  co się zmieniło; opcja **„Dodaj własny serwer VPS”** (domyślne porty,
+  wpisujesz tylko nazwę i IP).
+- Okno **„Ceny”** przy wystawianiu przedmiotu (sugestia botów, mediana,
+  zakres rynku, ostatnia sprzedaż).
+- **Zwijany pasek boczny** ekwipunku; dolny pasek bez przycisków, które są
+  już w pasku bocznym (Battle Pass, kalendarz, Towarzysz, Auto Łowy).
+- Okno nowych petów: przycisk „Ewoluuj”, nazwa i podpowiedzi; poprawione
+  okno Goblina i jego ranking; teksty Battle Passa i obowiązków gildii.
+- Nowy regulamin w grze z linkami do projektu; bez błędu `top1.mse`
+  w syserr.
+
+---
+
 ## 2.14.0 — 2026-09-29 — Battle Pass, kalendarz eventów, nowe pety, Koło Fortuny, lochy Razadora i Nemere, Świątynia Ochao, Poszukiwanie skarbów
 
 Serwer 2.14.0 i klient 2.0.28: zaktualizuj oba w launcherze

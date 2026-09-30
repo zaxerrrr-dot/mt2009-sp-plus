@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Linux tests of the non-UI code of the patcher (the same .cs files). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>SYSLIB0014;SYSLIB0021;SYSLIB0022;SYSLIB0041</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <Compile Include="..\MT2009-Patcher\N2_Patcher\Core\*.cs" Link="Core\%(Filename).cs" />
+    <Compile Include="..\MT2009-Patcher\N2_Patcher\Model\PatchItem.cs" Link="Model\PatchItem.cs" />
+    <Compile Include="..\MT2009-Patcher\N2_Patcher\Model\NewsItem.cs" Link="Model\NewsItem.cs" />
+    <Compile Include="..\MT2009-Patcher\N2_Patcher\Model\ChannelState.cs" Link="Model\ChannelState.cs" />
+    <Compile Include="..\MT2009-Patcher\N2_Patcher\Model\ServerState.cs" Link="Model\ServerState.cs" />
+  </ItemGroup>
+</Project>

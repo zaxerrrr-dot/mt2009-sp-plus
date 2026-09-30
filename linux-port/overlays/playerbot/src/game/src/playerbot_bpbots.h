@@ -862,7 +862,8 @@ namespace playerbot_bpbots
 			return NULL;
 		LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(pid);
 		if (!c || !mt2009_battlepass::IsBot(c) || c->GetEmpire() != empire || c->IsDead() ||
-				(int)c->GetLevel() < g_iShoutLimitLevel || IsPlayerBotSidekickPID(pid) || IsPlayerBotOnMercContract(pid))
+				(int)c->GetLevel() < g_iShoutLimitLevel || IsPlayerBotSidekickPID(pid) || IsPlayerBotOnMercContract(pid) ||
+				IsPlayerBotShouterPID(pid)) // MT2009_PLUS_SHOUTERS_V1: its own lines only
 			return NULL;
 		return c;
 	}

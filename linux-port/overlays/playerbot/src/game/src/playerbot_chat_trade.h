@@ -121,6 +121,10 @@ namespace
 	// sender's core does not hold.
 	void SendPlayerBotWhisperPacket(LPCHARACTER bot, LPDESC desc, const char* relayTo, const char* text)
 	{
+		// MT2009_PLUS_SHOUTERS_V1: a shouter of the first villages whispers to
+		// nobody (playerbot_shouters.h).
+		if (!bot || IsPlayerBotShouterPID(bot->GetPlayerID()))
+			return;
 		const size_t len = std::min<size_t>(strlen(text), CHAT_MAX_LEN);
 		TPacketGCWhisper pack;
 		pack.bHeader = HEADER_GC_WHISPER;

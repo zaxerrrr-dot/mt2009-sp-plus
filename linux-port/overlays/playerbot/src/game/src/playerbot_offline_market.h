@@ -962,6 +962,18 @@ namespace {
             ++corrected;
             sys_log(0, "PLAYERBOT_OFFLINE: price slip put right by the core pid=%u name=%s item=%u vnum=%u from=%lld to=%lld why=%s",
                 slip.owner, shop->GetOwnerName(), slip.item, vnum, price, normal, why);
+            // The line's row (playerbot_explain.h): how long this core saw it
+            // stand, and why the core and not its keeper.
+            if (IsPlayerBotExplainOn()) {
+                const auto seenAt = s_mapPlayerBotSlipSeenAt.find(slip.item);
+                const long long minutes = seenAt != s_mapPlayerBotSlipSeenAt.end() ? (long long)((now - seenAt->second) / 60000U) : 0;
+                const int by = strcmp(why, "keeper_held") == 0 ? per::SLIP_BY_CORE_HELD
+                        : (strcmp(why, "keeper_late") == 0 ? per::SLIP_BY_CORE_LATE : per::SLIP_BY_CORE_AWAY);
+                std::vector<per::TPair> steps(1, per::Pair(per::STEP_SLIP_PUT_RIGHT, normal, price, minutes, by));
+                QueuePlayerBotListingEvent(slip.item, slip.owner, vnum, line->GetInfo().count, per::EVENT_SLIP_FIX_CORE,
+                    normal, price, per::EncodePairs(steps, per::STEPS_COLUMN), 0, 0,
+                    per::LFLAG_SLIP);
+            }
         }
     }
 }

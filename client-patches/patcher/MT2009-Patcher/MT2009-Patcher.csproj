@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    MT2009 PLUS Patcher (N2Play Patcher by [DEV]Akito, adapted).
+    .NET Framework 4.8 WPF, built on Linux: build.sh (Docker, dotnet/sdk:8.0).
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>MT2009-Patcher</AssemblyName>
+    <RootNamespace>N2_Patcher</RootNamespace>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ApplicationIcon>resources\icon.ico</ApplicationIcon>
+    <Deterministic>true</Deterministic>
+    <DebugType>none</DebugType>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <!-- Embedded into the exe (App.ResolveEmbedded), not copied next to it. -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" GeneratePathProperty="true" ExcludeAssets="runtime" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(PkgNewtonsoft_Json)\lib\net45\Newtonsoft.Json.dll" LogicalName="Newtonsoft.Json.dll" Visible="false" />
+    <Resource Include="resources\**\*.png" />
+    <Resource Include="resources\icon.ico" />
+    <Resource Include="fonts\*.ttf" />
+  </ItemGroup>
+</Project>

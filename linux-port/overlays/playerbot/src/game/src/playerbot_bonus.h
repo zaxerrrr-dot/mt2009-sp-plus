@@ -657,11 +657,22 @@ namespace
 					item->GetAttributeValue(i), &atTop);
 			if (atTop)
 				++atTopLines;
+			// Said beside the premium they make (playerbot_explain.h).
+			PlayerBotPriceBonusStep(per::STEP_BONUS_LINE, pct, item->GetAttributeType(i),
+					item->GetAttributeValue(i), atTop ? 1 : 0);
 			// Every line is walked to the end: the ceiling stops the product,
 			// not the count of lines at their top.
 			product = playerbot_price_rules::CompoundLinePercent(product, pct, PLAYERBOT_BONUS_PRICE_MAX_PCT);
 		}
-		return (int)playerbot_price_rules::PiecePremiumPercent(product, atTopLines);
+		const int premium = (int)playerbot_price_rules::PiecePremiumPercent(product, atTopLines);
+		if (IsPlayerBotPriceTracing() && count > 0)
+		{
+			if (atTopLines > 0)
+				PlayerBotPriceBonusStep(per::STEP_BONUS_MAX_LINES, playerbot_price_rules::MaxLinesPercent(atTopLines),
+						atTopLines);
+			PlayerBotPriceBonusStep(per::STEP_BONUS_PERCENT, premium, product);
+		}
+		return premium;
 	}
 
 	int ScorePlayerBotItemBonuses(LPCHARACTER ch, LPITEM item, BYTE wearCell)

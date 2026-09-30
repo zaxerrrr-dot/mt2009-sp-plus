@@ -243,7 +243,7 @@ try {
             'linux-port/docker/game/src/server/game/src/char_player.cpp' = @('MT2009_PLUS_MOUNT_SPEED_V1')
             'linux-port/docker/game/src/server/game/src/packet.h' = @('MT2009_PLUS_DUNGEON_ONE_WARP_V1 (header)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (packet)')
             'linux-port/docker/game/src/server/game/src/packet_info.cpp' = @('MT2009_PLUS_DUNGEON_ONE_WARP_V1 (info)')
-            'linux-port/docker/game/src/server/game/src/input_p2p.cpp' = @('MT2009_PLUS_DUNGEON_ONE_WARP_V1 (decl)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (case)')
+            'linux-port/docker/game/src/server/game/src/input_p2p.cpp' = @('MT2009_PLUS_DUNGEON_ONE_WARP_V1 (decl)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (case)', 'MT2009_PLUS_SHOUTERS_V1 (p2p)')
             'linux-port/docker/game/src/server/game/src/questlua_dungeon.cpp' = @('MT2009_PLUS_DUNGEON_ONE_WARP_V1 (lua)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (table)')
             'linux-port/docker/game/src/server/game/src/dungeon.cpp' = @('MT2009_PLUS_DUNGEON_RETURN_V1')
             'linux-port/docker/game/src/server/db/src/ClientManagerIkarusShop.cpp' = @('MT2009_PLUS_SHOP_LOCK_OWNER_V1 (map)', 'MT2009_PLUS_SHOP_LOCK_OWNER_V1 (lock)', 'MT2009_PLUS_SHOP_LOCK_OWNER_V1 (settle)')

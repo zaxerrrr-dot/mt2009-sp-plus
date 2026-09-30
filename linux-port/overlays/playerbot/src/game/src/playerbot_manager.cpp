@@ -78,8 +78,16 @@ extern void SendShout(const char* szText, BYTE bEmpire);
 // in COOP on another core or channel never read a line of it (blipu, 27
 // September). Who may read it stays the engine's rule (FuncShout): the bot's
 // own kingdom, and a GM - the host, most often - every kingdom.
+// MT2009_PLUS_SHOUTERS_V1: every line the shout channel carried on this core
+// since the start, by kingdom - the bots' here, the players' (OnPlayerShout)
+// and the other cores' (OnPeerShout) - which the shouters of the first
+// villages count their turn by (playerbot_shouters.h).
+static unsigned int s_auPlayerBotShoutsSeen[4] = { 0, 0, 0, 0 };
+
 static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 {
+	if (bEmpire >= 1 && bEmpire <= 3)
+		++s_auPlayerBotShoutsSeen[bEmpire];
 	TPacketGGShout p;
 	memset(&p, 0, sizeof(p));
 	p.bHeader = HEADER_GG_SHOUT;
@@ -123,6 +131,10 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 // may speak to a person.
 #include "playerbot_language.h"
 #include "playerbot_config.h"
+// The explanations of the bots' decisions (log.playerbot_listing,
+// log.playerbot_equip): the recorder here, the parts that read the whole AI
+// after it (playerbot_explain_late.h, below).
+#include "playerbot_explain.h"
 #include "playerbot_events.h"
 // The Battle Pass (the engine calls in through server-patches/playerqol).
 #include "playerbot_battlepass.h"
@@ -185,6 +197,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_guild_land.h"
 #include "playerbot_sash.h"
 #include "playerbot_saddlebag.h"
+#include "playerbot_explain_late.h"
 // Forward declaration: the trade layer falls through to the deterministic
 // conversation layer for ordinary whispers.
 namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* playerName, LPCHARACTER bot, const char* text); }
@@ -235,6 +248,8 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_BP_BOTS_V1: the bots' Battle Pass errands and shouts, after
 // every fragment they ask (the raids' bosses, the angler, the travel).
 #include "playerbot_bpbots.h"
+// MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages.
+#include "playerbot_shouters.h"
 
 namespace
 {
@@ -549,6 +564,12 @@ namespace
 	{
 		if (!ch)
 			return;
+		// MT2009_PLUS_SHOUTERS_V1: a shouter stops at its level and nowhere else.
+		if (IsPlayerBotShouterPID(ch->GetPlayerID()))
+		{
+			ManagePlayerBotShouterExpLock(ch);
+			return;
+		}
 		BYTE lockLevel = GetPlayerBotExpLockLevel(state.bPersonality);
 		// A player's companion levels with its owner, whatever the persona
 		// system would lock a bot of its level at; a lock it carried from its
@@ -2824,6 +2845,8 @@ namespace
 		// A player's companion, on a core no bot has woken yet: the first of
 		// them starts Update and ends this clock (playerbot_sidekick.h).
 		ManagePlayerBotSidekicks(dwNow);
+		// MT2009_PLUS_SHOUTERS_V1: and the shouters, whatever the population.
+		ManagePlayerBotShouters(dwNow);
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		// A channel that starts with nobody still learns who is moved to it,
 		// and spawns them; the first of them starts Update and ends this.
@@ -3482,6 +3505,9 @@ size_t CPlayerBotManager::SpawnRegistered(size_t count, BYTE bEmpire)
 			continue;
 		if (m_setScheduledBots.find(*it) != m_setScheduledBots.end())
 			continue;
+		// MT2009_PLUS_SHOUTERS_V1: on top of the number, never part of it.
+		if (IsPlayerBotShouterPID(*it))
+			continue;
 		m_dequePendingSpawns.push_back(*it);
 		m_setScheduledBots.insert(*it);
 		++selected;
@@ -3649,7 +3675,7 @@ size_t CPlayerBotManager::ScheduleLateJoiners(size_t count, BYTE bEmpire, DWORD 
 			continue;
 		if (m_setScheduledBots.find(*it) != m_setScheduledBots.end() ||
 				m_setMedalDropperCohort.find(*it) != m_setMedalDropperCohort.end() ||
-				waiting.find(*it) != waiting.end())
+				waiting.find(*it) != waiting.end() || IsPlayerBotShouterPID(*it))
 			continue;
 		chosen.push_back(*it);
 	}
@@ -3679,7 +3705,7 @@ void CPlayerBotManager::SpawnLateJoiners(DWORD dwNow)
 	{
 		const DWORD pid = m_dequeLateJoiners.front().second;
 		m_dequeLateJoiners.pop_front();
-		if (m_setScheduledBots.find(pid) != m_setScheduledBots.end())
+		if (m_setScheduledBots.find(pid) != m_setScheduledBots.end() || IsPlayerBotShouterPID(pid))
 			continue;
 		m_setScheduledBots.insert(pid);
 		// A banned or resting one is scheduled and not spawned: the top-up
@@ -4476,8 +4502,9 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 	for (TPlayerBotMap::const_iterator it = m_mapBots.begin(); it != m_mapBots.end(); ++it)
 	{
 		const DWORD pid = it->first;
-		// A player's companion keeps its owner's hours, not a schedule.
-		if (IsPlayerBotSidekickPID(pid))
+		// A player's companion keeps its owner's hours, not a schedule; a
+		// shouter of the first villages is always there.
+		if (IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid))
 			continue;
 		std::map<DWORD, DWORD>::iterator session = m_mapLifeSessionEnd.find(pid);
 		if (session == m_mapLifeSessionEnd.end())
@@ -5143,7 +5170,8 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 		// (SpawnMedalDropperCohort): the second channel's core does not know
 		// it, so a dropper moved there would become an ordinary bot and the
 		// top-up here would never bring it back.
-		bool pinned = IsMedalDropperCohortPID(pid) || IsPlayerBotSidekickPID(pid) || ch->GetMyShop() != NULL ||
+		bool pinned = IsMedalDropperCohortPID(pid) || IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid) ||
+				ch->GetMyShop() != NULL ||
 				(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) || IsPlayerBotSummoned(pid) ||
 				ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ||
 				playerbot_pvp::GetDuelOpponent(pid, dwNow) != 0 ||
@@ -5597,11 +5625,16 @@ void CPlayerBotManager::Update()
 	// The players' companions: in the world while their owners are here
 	// (playerbot_sidekick.h).
 	ManagePlayerBotSidekicks(dwNow);
+	// MT2009_PLUS_SHOUTERS_V1: the shouters of the first villages.
+	ManagePlayerBotShouters(dwNow);
 
 	// Once for the whole population: the panel may have moved a weight since
 	// the last tick, and every bot planned below must see the same numbers.
 	RefreshPlayerBotWeights(dwNow);
 	RefreshPlayerBotItemPolicy(dwNow);
+	// The explanations of the bots' decisions: the queue to the log database,
+	// the cleanup EXPLAIN asks for, the minute's line (playerbot_explain.h).
+	ManagePlayerBotExplain(dwNow);
 	// The PERSONA switch moved: every bot goes back to the personality it
 	// drew, or on to the character that draw leans to, on this tick - and so
 	// do its ambition and, through ManagePlayerBotExpLock, its lock.
@@ -5851,6 +5884,11 @@ WritePlayerBotGuildStatus(dwNow);
 		}
 
 		if (!d->IsPhase(PHASE_GAME))
+			continue;
+
+		// MT2009_PLUS_SHOUTERS_V1: a shouter at its level stands at its post
+		// and shouts, and does nothing else (playerbot_shouters.h).
+		if (ManagePlayerBotShouterTick(ch, state, dwNow))
 			continue;
 
 		// A stone this bot hurt within PLAYERBOT_METIN_LOOT_SHARE_MS is gone:
@@ -7527,6 +7565,9 @@ void CPlayerBotManager::OnGuildInvite(CGuild* guild, LPCHARACTER inviter, LPCHAR
 {
 	if (!guild || !invitee || !IsRegisteredBotPID(invitee->GetPlayerID()))
 		return;
+	// MT2009_PLUS_SHOUTERS_V1: a shouter answers nobody.
+	if (IsPlayerBotShouterPID(invitee->GetPlayerID()))
+		return;
 	AcceptPlayerBotGuildInvite(invitee, guild, inviter);
 }
 
@@ -7618,11 +7659,30 @@ bool CPlayerBotManager::GetAchievementWinner(int id, DWORD& dwPID, std::string& 
 
 void CPlayerBotManager::OnPlayerShout(LPCHARACTER ch, const char* szText)
 {
+	// MT2009_PLUS_SHOUTERS_V1: a line of the channel for the shouters' count.
+	if (ch && ch->GetEmpire() >= 1 && ch->GetEmpire() <= 3)
+		++s_auPlayerBotShoutsSeen[ch->GetEmpire()];
 	HandlePlayerShoutForTrade(ch, szText);
+}
+
+// MT2009_PLUS_SHOUTERS_V1: another core's line of the channel, a bot's or a
+// player's, for the shouters' count (playerbot_shouters.h).
+void CPlayerBotManager::OnPeerShout(BYTE bEmpire)
+{
+	if (bEmpire >= 1 && bEmpire <= 3)
+		++s_auPlayerBotShoutsSeen[bEmpire];
+}
+
+bool CPlayerBotManager::IsScheduledBot(DWORD dwPlayerID) const
+{
+	return m_setScheduledBots.find(dwPlayerID) != m_setScheduledBots.end();
 }
 
 void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const char* szText)
 {
+	// MT2009_PLUS_SHOUTERS_V1: a shouter answers no whisper.
+	if (bot && IsPlayerBotShouterPID(bot->GetPlayerID()))
+		return;
 	// A companion's owner gives its orders by whisper too (playerbot_sidekick.h).
 	if (HandlePlayerBotSidekickWhisper(from, bot, szText))
 		return;
@@ -7634,6 +7694,8 @@ void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const
 // answered by the conversation, as anybody is.
 void CPlayerBotManager::OnPeerWhisper(const char* szFrom, LPCHARACTER bot, const char* szText)
 {
+	if (bot && IsPlayerBotShouterPID(bot->GetPlayerID()))
+		return;
 	HandlePlayerWhisperFromPeer(szFrom, bot, szText);
 }
 

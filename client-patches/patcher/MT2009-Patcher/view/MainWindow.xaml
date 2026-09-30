@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="N2_Patcher.MainWindow" Title="MT2009 PLUS Patcher" Height="655" Width="1067" AllowsTransparency="True" WindowStyle="None" WindowStartupLocation="CenterScreen" Background="#00FFFFFF" ResizeMode="NoResize" Closed="WindowClosed" Icon="..\Resources\icon.ico" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+  <Grid Name="Grid">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="534" />
+      <ColumnDefinition Width="533" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="328" />
+      <RowDefinition Height="327" />
+    </Grid.RowDefinitions>
+    <Image HorizontalAlignment="Left" Height="655" Width="1067" VerticalAlignment="Top" Source="..\Resources\bg.png" Grid.RowSpan="2" Grid.ColumnSpan="2" MouseLeftButtonDown="ImgBgMouseLeftDown" />
+    <Image Name="animanteBg" HorizontalAlignment="Left" Height="531" Width="916" VerticalAlignment="Top" Grid.RowSpan="2" Grid.ColumnSpan="2" Source="/resources/animate/bg_00000.png" Margin="53,57,0,0" MouseLeftButtonDown="ImgBgMouseLeftDown" />
+    <Image Name="btn_vps" ToolTip="Dodaj własny serwer VPS" HorizontalAlignment="Left" Height="21" Width="21" Margin="336,59,0,0" VerticalAlignment="Top" Cursor="Hand" Grid.Column="1" MouseLeftButtonDown="BtnVps">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\btn_vps.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\btn_vps_hover.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="btn_config" ToolTip="Konfiguracja klienta" HorizontalAlignment="Left" Height="21" Width="21" Margin="360,59,0,0" VerticalAlignment="Top" Cursor="Hand" Grid.Column="1" MouseLeftButtonDown="BtnConfig">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\btn_config.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\btn_config_hover.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="btn_minimize" ToolTip="Minimalizuj" HorizontalAlignment="Left" Height="21" Width="21" Margin="384,59,0,0" VerticalAlignment="Top" Cursor="Hand" Grid.Column="1" MouseLeftButtonDown="BtnMinimize">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\btn_minimize.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\btn_minimize_hover.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="btn_quit" ToolTip="Zamknij" HorizontalAlignment="Left" Height="21" Width="21" Margin="408,59,0,0" VerticalAlignment="Top" Cursor="Hand" Grid.Column="1" MouseLeftButtonDown="BtnClose">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\btn_close.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\btn_close_hover.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="btn_home" ToolTip="Strona MT2009 PLUS" HorizontalAlignment="Left" Height="55" Width="56" Margin="3,245,0,0" VerticalAlignment="Top" Cursor="Hand" MouseLeftButtonDown="BtnHome">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\btn_home.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\btn_home_hover.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="btn_discord" ToolTip="Discord MT2009 PLUS" HorizontalAlignment="Left" Height="55" Width="56" Margin="3,295,0,0" VerticalAlignment="Top" Cursor="Hand" Grid.RowSpan="2" MouseLeftButtonDown="BtnDiscord">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\btn_discord.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\btn_discord_hover.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="btnVoteForCoins" ToolTip="Postaw kawę" HorizontalAlignment="Left" Height="55" Width="56" Margin="3,17,0,0" VerticalAlignment="Top" Cursor="Hand" Grid.Row="1" MouseLeftButtonDown="BtnVoteForCoins">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\btn_vote.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\btn_vote_hover.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="btn_start" HorizontalAlignment="Left" Height="74" Width="224" Margin="163,138,0,0" VerticalAlignment="Top" Cursor="Hand" Grid.Column="1" Grid.Row="1" MouseLeftButtonDown="BtnStartMouseLeftButtonDown">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\btn_play.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\btn_play_hover.png" />
+            </Trigger>
+            <Trigger Property="UIElement.IsEnabled" Value="False">
+              <Setter Property="Image.Source" Value="..\Resources\btn_play_disable.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="newsBG" Source="..\Resources\news_bg.png" Height="203" Width="462" Grid.ColumnSpan="2" Margin="108,111,497,14" Visibility="Hidden" />
+    <TextBlock Name="newsTitle" Margin="108,111,496,14" Padding="125,75,125,0" TextWrapping="Wrap" TextBlock.FontSize="25" TextBlock.Foreground="#FFFFFFFF" Grid.ColumnSpan="2" TextBlock.FontWeight="Bold" TextBlock.FontFamily="{DynamicResource Front_00}" />
+    <TextBlock Name="newsType" Margin="108,111,496,14" Padding="125,40,125,0" TextWrapping="Wrap" TextBlock.FontSize="14" TextBlock.Foreground="#FFFFFFFF" Grid.ColumnSpan="2" TextBlock.FontWeight="Bold" TextBlock.FontFamily="{DynamicResource Front_00}" />
+    <TextBlock Name="newsWriter" Margin="108,111,496,14" Padding="218,41,125,0" TextWrapping="Wrap" TextBlock.FontSize="13" TextBlock.Foreground="#FFFF9A77" Grid.ColumnSpan="2" TextBlock.FontFamily="{DynamicResource Front_00}" />
+    <Label Name="newsLinkLable" Cursor="Hand" Padding="125,75,125,0" Margin="108,111,496,13" Grid.ColumnSpan="2" MouseLeftButtonDown="newsLink" />
+    <Image Name="btnNewsPrev" Height="52" Width="56" Margin="166,180,322,96" VerticalAlignment="Top" Cursor="Hand" Visibility="Hidden" MouseLeftButtonDown="btnPrevNews">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\arrow_left.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\arrow_left_hover.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="btnNewsNext" Height="52" Width="56" Margin="480,180,8,96" VerticalAlignment="Top" Cursor="Hand" Visibility="Hidden" MouseLeftButtonDown="btnNextNews">
+      <Image.Style>
+        <Style>
+          <Setter Property="Image.Source" Value="..\Resources\arrow_right.png" />
+          <Style.Triggers>
+            <Trigger Property="UIElement.IsMouseOver" Value="True">
+              <Setter Property="Image.Source" Value="..\Resources\arrow_right_hover.png" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
+    <Image Name="activeNewsDot" Panel.ZIndex="99" Source="..\Resources\dot_activ.png" Height="6" Width="6" Margin="235,268,293,54" Visibility="Hidden" />
+    <Image Name="progressBarFullMask" Panel.ZIndex="3" HorizontalAlignment="Left" Height="54" Width="605" VerticalAlignment="Top" Margin="87,109,0,0" Source="..\Resources\loading_mask.png" Grid.Row="1" Stretch="UniformToFill" Grid.ColumnSpan="2" />
+    <Image Name="progressBarFullBg" Panel.ZIndex="1" HorizontalAlignment="Left" Height="27" Width="579" VerticalAlignment="Top" Margin="100,123,0,0" Source="..\Resources\loading_bg.png" Grid.Row="1" Stretch="UniformToFill" Grid.ColumnSpan="2" />
+    <Image Name="progressBarFull" Panel.ZIndex="2" HorizontalAlignment="Left" Height="27" Width="0" VerticalAlignment="Top" Margin="100,123,0,0" Source="..\Resources\loading_full.png" Grid.Row="1" Stretch="UniformToFill" Grid.ColumnSpan="2" />
+    <Image Name="progressBarFileMask" Panel.ZIndex="3" HorizontalAlignment="Left" Height="54" Width="605" VerticalAlignment="Top" Margin="87,171,0,0" Source="..\Resources\loading_mask.png" Grid.Row="1" Stretch="UniformToFill" Grid.ColumnSpan="2" Visibility="Hidden" />
+    <Image Name="progressBarFileBg" Panel.ZIndex="1" HorizontalAlignment="Left" Height="27" Width="579" VerticalAlignment="Top" Margin="100,184,0,0" Source="..\Resources\loading_bg.png" Grid.Row="1" Stretch="UniformToFill" Grid.ColumnSpan="2" Visibility="Hidden" />
+    <Image Name="progressBarFile" Panel.ZIndex="2" HorizontalAlignment="Left" Height="27" Width="0" VerticalAlignment="Top" Margin="100,184,0,0" Source="..\Resources\loading_full.png" Grid.Row="1" Stretch="UniformToFill" Grid.ColumnSpan="2" />
+    <TextBlock Name="checkClientTitle" Margin="96,94,384,208" Panel.ZIndex="3" Padding="3,6,3,0" TextBlock.FontFamily="{DynamicResource Front_00}" TextBlock.TextAlignment="Left" TextBlock.Foreground="#FFEBC7B5" Text="Sprawdzanie plików klienta:" Grid.ColumnSpan="2" Grid.Row="1" TextBlock.FontSize="14" />
+    <TextBlock Name="checkClientInfo" Margin="96,94,384,208" Panel.ZIndex="3" Padding="3,6,3,0" TextBlock.FontFamily="{DynamicResource Front_00}" TextBlock.TextAlignment="Right" TextBlock.Foreground="#FFEBC7B5" Text="0%" Grid.ColumnSpan="2" Grid.Row="1" TextBlock.FontSize="14" />
+    <TextBlock Name="fullTitle" Visibility="Hidden" Margin="96,94,384,208" Panel.ZIndex="3" Padding="3,6,3,0" TextBlock.FontFamily="{DynamicResource Front_00}" Grid.Row="1" TextBlock.TextAlignment="Left" TextBlock.Foreground="#FFEBC7B5" Grid.ColumnSpan="2" TextBlock.FontSize="14" Text="Postęp całkowity" />
+    <TextBlock Name="fullInfo" Visibility="Hidden" Margin="96,94,384,208" Panel.ZIndex="3" Padding="3,6,3,0" TextBlock.FontFamily="{DynamicResource Front_00}" Grid.Row="1" TextBlock.TextAlignment="Right" TextBlock.Foreground="#FFEBC7B5" Grid.ColumnSpan="2" TextBlock.FontSize="14" Text="0%" />
+    <TextBlock Name="currentTitle" Visibility="Hidden" Margin="96,156,384,146" Panel.ZIndex="3" Padding="3,6,3,0" TextBlock.FontFamily="{DynamicResource Front_00}" Grid.Row="1" TextBlock.TextAlignment="Left" TextBlock.Foreground="#FFEBC7B5" Grid.ColumnSpan="2" TextBlock.FontSize="14" Text="Pobieranie - ..." />
+    <TextBlock Name="currentInfo" Visibility="Hidden" Margin="96,156,384,146" Panel.ZIndex="3" Padding="3,6,3,0" TextBlock.FontFamily="{DynamicResource Front_00}" Grid.Row="1" TextBlock.TextAlignment="Right" TextBlock.Foreground="#FFEBC7B5" Grid.ColumnSpan="2" TextBlock.FontSize="14" Text="0%" />
+    <TextBlock Name="readyInfo" Visibility="Hidden" Margin="86,180,382,112" Panel.ZIndex="3" TextBlock.FontSize="18" Padding="10,0,10,0" TextBlock.FontFamily="{DynamicResource Front_00}" Grid.Row="1" TextBlock.TextAlignment="Center" TextBlock.Foreground="#FFEBC7B5" Text="Gra jest aktualna! Możesz grać." Grid.ColumnSpan="2" />
+    <!-- MT2009 PLUS: status of the server chosen in the game (coop.cfg / coop2.cfg / localhost). -->
+    <StackPanel Name="serverPanel" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,62,0,0" Width="250" Panel.ZIndex="3" ToolTip="Stan serwera z listy serwerów w grze: port logowania i porty kanałów (coop.cfg / coop2.cfg, bez nich localhost).">
+      <DockPanel LastChildFill="True">
+        <TextBlock Name="serverPrev" DockPanel.Dock="Left" Text="&#x2039;" Cursor="Hand" Visibility="Hidden" Padding="6,0,6,0" Margin="0,-4,0,0" TextBlock.FontSize="18" TextBlock.FontWeight="Bold" TextBlock.Foreground="#FFFF9A77" MouseLeftButtonDown="BtnServerPrev" />
+        <TextBlock Name="serverNext" DockPanel.Dock="Right" Text="&#x203A;" Cursor="Hand" Visibility="Hidden" Padding="6,0,6,0" Margin="0,-4,0,0" TextBlock.FontSize="18" TextBlock.FontWeight="Bold" TextBlock.Foreground="#FFFF9A77" MouseLeftButtonDown="BtnServerNext" />
+        <TextBlock Name="serverName" TextAlignment="Center" TextTrimming="CharacterEllipsis" TextBlock.FontFamily="{DynamicResource Front_00}" TextBlock.FontSize="14" TextBlock.FontWeight="Bold" TextBlock.Foreground="#FFFFFFFF" Text="" />
+      </DockPanel>
+      <TextBlock Name="serverAuth" TextAlignment="Center" Margin="0,3,0,0" TextBlock.FontFamily="{DynamicResource Front_00}" TextBlock.FontSize="13" TextBlock.Foreground="#FFEBC7B5" />
+      <TextBlock Name="serverChannels" TextAlignment="Center" Margin="0,2,0,0" TextBlock.FontFamily="{DynamicResource Front_00}" TextBlock.FontSize="13" TextBlock.Foreground="#FFEBC7B5" />
+    </StackPanel>
+  </Grid>
+</Window>

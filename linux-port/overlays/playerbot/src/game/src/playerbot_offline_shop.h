@@ -420,6 +420,17 @@ namespace {
             int ageMin, DWORD now) {
         using namespace playerbot_offline;
         if (normal <= 0 || normal >= GOLD_MAX || !Begin(ch->GetPlayerID(), Edit, itemid, now)) return false;
+        // What the line asked and what it is, for its explanation.
+        long long slipped = 0, slipCount = 0;
+        DWORD slipVnum = 0;
+        if (auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID())) {
+            const auto line = shop->GetItems().find(itemid);
+            if (line != shop->GetItems().end() && line->second) {
+                slipped = (long long)line->second->GetPrice().GetTotalYangAmount();
+                slipCount = line->second->GetInfo().count;
+                slipVnum = line->second->GetInfo().vnum;
+            }
+        }
         ikashop::TPriceInfo price{};
         price.yang = normal;
         ikashop::GetManager().RecvShopEditItemClientPacket(ch, itemid, price);
@@ -428,6 +439,13 @@ namespace {
         if (known != state.offlineShop.listed.end()) known->second.slippedAt = 0;
         sys_log(0, "PLAYERBOT_OFFLINE: price slip put right pid=%u name=%s item=%u price=%lld age_min=%d",
             ch->GetPlayerID(), ch->GetName(), itemid, normal, ageMin);
+        if (IsPlayerBotExplainOn()) {
+            std::vector<per::TPair> steps(1, per::Pair(per::STEP_SLIP_PUT_RIGHT, normal, slipped,
+                ageMin > 0 ? ageMin : 0, per::SLIP_BY_KEEPER));
+            QueuePlayerBotListingEvent(itemid, ch->GetPlayerID(), slipVnum, slipCount, per::EVENT_SLIP_FIX, normal,
+                slipped, per::EncodePairs(steps, per::STEPS_COLUMN), 0, 0,
+                per::LFLAG_SLIP);
+        }
         return true;
     }
     // The first line of the keeper's running stand that asks less than its
@@ -481,6 +499,17 @@ namespace {
         if (!EndCall(ch->GetPlayerID())) return false;
         sys_log(0, "PLAYERBOT_OFFLINE: raised to its floor pid=%u name=%s item=%u vnum=%u price=%lld was=%lld",
             ch->GetPlayerID(), ch->GetName(), itemid, vnum, price, was);
+        if (IsPlayerBotExplainOn()) {
+            long long count = 0;
+            if (auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID())) {
+                const auto line = shop->GetItems().find(itemid);
+                if (line != shop->GetItems().end() && line->second) count = line->second->GetInfo().count;
+            }
+            std::vector<per::TPair> steps(1, per::Pair(per::STEP_RAISED_TO_FLOOR, price, was));
+            QueuePlayerBotListingEvent(itemid, ch->GetPlayerID(), vnum, count, per::EVENT_RAISE_TO_FLOOR, price, was,
+                per::EncodePairs(steps, per::STEPS_COLUMN), 0, 0,
+                per::LFLAG_FLOOR_BOUND);
+        }
         return true;
     }
     bool SubmitPlayerBotOfflineShop(LPCHARACTER ch, TPlayerBotAIState& state,
@@ -577,6 +606,32 @@ namespace {
             for (BYTE n = 0; n < count; ++n) {
                 const TPlayerBotNewLine& line = newLines[n];
                 if (!line.vnum) continue;
+                // The line's explanation: what ManagePlayerBotPrivateShop worked
+                // out for it, and the slip drawn above (playerbot_explain.h).
+                if (IsPlayerBotExplainOn()) {
+                    TPlayerBotListingExplain row;
+                    if (!TakePlayerBotListingPending(line.id, row)) {
+                        row.itemId = line.id;
+                        row.pid = ch->GetPlayerID();
+                        row.vnum = line.vnum;
+                        row.count = line.count;
+                        row.standReason = state.bShopOpenReason;
+                    }
+                    row.listEvent = per::EVENT_LIST_CREATE;
+                    row.listPrice = (long long)table[n].price;
+                    if (meant[n]) {
+                        std::vector<per::TPair> steps;
+                        steps.push_back(per::Pair(per::STEP_SLIP, row.listPrice, meant[n]));
+                        const std::string slip = per::EncodePairs(steps, per::STEPS_COLUMN);
+                        if (row.steps.find('~') == std::string::npos &&
+                                row.steps.size() + 1 + slip.size() <= per::STEPS_COLUMN)
+                            row.steps += (row.steps.empty() ? "" : ";") + slip;
+                        row.flags |= per::LFLAG_SLIP;
+                    }
+                    const long long left = (long long)ch->CountSpecifyItem(line.vnum);
+                    if (left > 0 && line.count > 1) row.held = left;
+                    QueuePlayerBotListing(row);
+                }
                 if (!meant[n])
                     AddPlayerBotMarketSupply(line.vnum, (WORD)line.count, standMap);
                 NotePlayerBotCappedLineOnCounter(line.vnum, (int)line.count);
@@ -640,6 +695,9 @@ namespace {
                 (unsigned int)line.count, (long long)line.price);
             LogManager::instance().ItemLog(ch, (int)line.item, (int)vnum,
                 "PLAYERBOT_STALL_SOLD", hint);
+            // The line's row: sold, for what (playerbot_explain.h).
+            QueuePlayerBotListingEvent(line.item, ch->GetPlayerID(), vnum, line.count, per::EVENT_SOLD,
+                line.price, 0, "", 0, line.price, slip ? per::LFLAG_SLIP : 0);
             // Every sale with how long its line stood, which is what the work on
             // unsold stock has to be measured by. -1 for a line this core never
             // saw go up: a restart inherited it, and its age is not known.
@@ -966,12 +1024,14 @@ namespace {
         DWORD lineVnum = 0;
         WORD lineCount = 0;
         long lineMap = 0;
+        long long linePrice = 0;
         if (auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID())) {
             const auto line = shop->GetItems().find(itemid);
             if (line != shop->GetItems().end() && line->second) {
                 lineVnum = line->second->GetInfo().vnum;
                 lineCount = (WORD)line->second->GetInfo().count;
                 lineMap = shop->GetSpawn().map;
+                linePrice = (long long)line->second->GetPrice().GetTotalYangAmount();
             }
         }
         if (!Begin(ch->GetPlayerID(), Remove, itemid, now)) return false;
@@ -994,6 +1054,8 @@ namespace {
         state.offlineShop.listed.erase(itemid);
         sys_log(0, "PLAYERBOT_OFFLINE: took off pid=%u name=%s item=%u low_gear_kept=%d reason=%s",
             ch->GetPlayerID(), ch->GetName(), itemid, lowGear, why);
+        QueuePlayerBotListingEvent(itemid, ch->GetPlayerID(), lineVnum, lineCount, per::EVENT_TAKE_OFF, linePrice, 0,
+            "", per::OffReasonCode(why), 0, 0);
         return true;
     }
     // A piece on the owner's own counter it should be wearing: better, by the
@@ -1059,9 +1121,24 @@ namespace {
     // Back into the bag through the journal, for the equipment pass to put on.
     bool BotOfflineReclaim(LPCHARACTER ch, TPlayerBotAIState& state, DWORD itemid, long long gain, DWORD now) {
         using namespace playerbot_offline;
+        DWORD lineVnum = 0;
+        long long lineCount = 0, linePrice = 0;
+        if (auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID())) {
+            const auto line = shop->GetItems().find(itemid);
+            if (line != shop->GetItems().end() && line->second) {
+                lineVnum = line->second->GetInfo().vnum;
+                lineCount = line->second->GetInfo().count;
+                linePrice = (long long)line->second->GetPrice().GetTotalYangAmount();
+            }
+        }
         if (!Begin(ch->GetPlayerID(), Remove, itemid, now)) return false;
         ikashop::GetManager().RecvShopRemoveItemClientPacket(ch, itemid);
         if (!EndCall(ch->GetPlayerID())) return false;
+        // Its row ends, and the piece remembers where it came from for the
+        // equipment decision that puts it on (playerbot_explain.h).
+        QueuePlayerBotListingEvent(itemid, ch->GetPlayerID(), lineVnum, lineCount, per::EVENT_RECLAIM, linePrice, 0,
+            "", per::OFF_RECLAIM_TO_WEAR, 0, 0);
+        NotePlayerBotExplainOrigin(itemid, per::ORIGIN_RECLAIMED, gain > 0 ? gain : 0);
         state.offlineShop.listed.erase(itemid);
         state.offlineShop.lastReclaimItem = itemid;
         state.offlineShop.lastReclaimAt = now;
@@ -1247,10 +1324,19 @@ namespace {
     // (BotOfflinePrepareVisitLine) is taken as it is: looked at again, a heap
     // of fifty was cut once more to twenty one time in three, or left in the
     // bag when no cell was free for the second cut (B01 of Iwakura's audit).
-    int BotOfflinePrepareLine(LPCHARACTER ch, WORD cell, NativeShop shop, bool alreadyCut = false) {
+    int BotOfflinePrepareLine(LPCHARACTER ch, WORD cell, NativeShop shop, bool alreadyCut = false,
+            TPlayerBotLineCut* cutOut = NULL) {
         LPITEM item = ch->GetInventoryItem(cell);
         if (!item) return -1;
         if (alreadyCut) return cell;
+        // How the line was cut, for its explanation: the shape, the stack it
+        // came off and the reserve left in the bag.
+        TPlayerBotLineCut cutNote;
+        cutNote.from = (int)item->GetCount();
+        struct TCutOut {
+            TPlayerBotLineCut* out; TPlayerBotLineCut* note;
+            ~TCutOut() { if (out) *out = *note; }
+        } cutGuard = { cutOut, &cutNote };
         // Iwakura's Patch 3, point 5: a green or purple potion goes up as the
         // largest pack of 20, 50, 100 or 200 that the spare over the bot's own
         // keep fills out of this stack; the merge pass pours the small stacks
@@ -1258,8 +1344,10 @@ namespace {
         if (IsPlayerBotPackedPotion(item)) {
             const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - PLAYERBOT_HERBALISM_POTION_KEEP;
             const int take = GetPlayerBotPotionPackUnits(std::min(spare, (int)item->GetCount()));
+            cutNote.shape = per::SHAPE_POTION_PACK;
+            cutNote.keep = PLAYERBOT_HERBALISM_POTION_KEEP;
             if (take <= 0) return -1;
-            if (take >= (int)item->GetCount()) return cell;
+            if (take >= (int)item->GetCount()) { cutNote.from = 0; return cell; }
             if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
@@ -1285,8 +1373,10 @@ namespace {
             int lines = 0, small = 0;
             BotOfflineCountLinesOf(shop, item->GetVnum(), lines, small);
             const int take = GetPlayerBotNaturalLineUnits(ch, item, avail, spare, lines, small);
+            cutNote.shape = per::SHAPE_NATURAL_LINE;
+            cutNote.keep = keep;
             if (take <= 0) return -1;
-            if (take >= (int)item->GetCount()) return cell;
+            if (take >= (int)item->GetCount()) { cutNote.from = 0; return cell; }
             if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
@@ -1301,8 +1391,10 @@ namespace {
         if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM) {
             const int take = std::min(units, std::min((int)item->GetCount(),
                     (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) - GetPlayerBotStallBaseKeep(ch, item)));
+            cutNote.shape = per::SHAPE_DUST_PACK;
+            cutNote.keep = GetPlayerBotStallBaseKeep(ch, item);
             if (take <= 0) return -1;
-            if (take >= (int)item->GetCount()) return cell;
+            if (take >= (int)item->GetCount()) { cutNote.from = 0; return cell; }
             if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
@@ -1318,8 +1410,10 @@ namespace {
             const int keep = GetPlayerBotStallBaseKeep(ch, item);
             const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - keep;
             const int take = std::min(units, std::min((int)item->GetCount(), spare));
+            cutNote.shape = per::SHAPE_MEDAL_PAIR;
+            cutNote.keep = keep;
             if (take <= 0) return -1;
-            if (take >= (int)item->GetCount()) return cell;
+            if (take >= (int)item->GetCount()) { cutNote.from = 0; return cell; }
             if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
@@ -1338,8 +1432,10 @@ namespace {
             const int keep = GetPlayerBotCountedGoodsKeep(ch, item);
             const int total = CountPlayerBotStallKindUnits(ch, item);
             const int take = playerbot_stall_rules::LineTake((int)item->GetCount(), total, keep, units);
+            cutNote.shape = per::SHAPE_COUNTED_SINGLE;
+            cutNote.keep = keep;
             if (take <= 0) return -1;
-            if (take >= (int)item->GetCount()) return cell;
+            if (take >= (int)item->GetCount()) { cutNote.from = 0; return cell; }
             if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
             const int to = ch->GetEmptyInventory(item->GetSize());
             if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
@@ -1351,7 +1447,9 @@ namespace {
         }
         const bool cut = (units == 1 && item->GetType() == ITEM_TREASURE_KEY) ||
             item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM;
-        if (!cut || (int)item->GetCount() <= units) return cell;
+        if (!cut || (int)item->GetCount() <= units) { cutNote.from = 0; return cell; }
+        cutNote.shape = item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM ? per::SHAPE_CHEST_PACK : per::SHAPE_KEY_SINGLE;
+        cutNote.keep = GetPlayerBotStallBaseKeep(ch, item);
         if ((int)item->GetCount() - units < GetPlayerBotStallBaseKeep(ch, item) ||
                 CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS)
             return -1;
@@ -1371,6 +1469,28 @@ namespace {
     // and lineCell=-1 for every scroll. Remembered by item id and cell for the
     // add of the same visit; a cut left behind by a visit that ended early is
     // an ordinary split stack, poured back by the merge pass.
+    // Why a candidate of the bag goes up, read off the stack it is cut from
+    // before the cut (playerbot_explain.h): the goods rule and its score, its
+    // rank among the candidates, how many above it the counter refused.
+    void BotOfflineExplainCandidate(LPCHARACTER ch, const TPlayerBotAIState& state, LPITEM stack, int rank,
+            int candidates, int refused, TPlayerBotListingExplain& row) {
+        row = TPlayerBotListingExplain();
+        if (!ch || !stack || !IsPlayerBotExplainOn()) return;
+        TPlayerBotGoodsWhy why;
+        int score = 0;
+        ExplainPlayerBotGoods(ch, stack, IsPlayerBotStallKeeper(state), why, score);
+        row.pid = ch->GetPlayerID();
+        row.standReason = state.bShopOpenReason;
+        row.why = why.code;
+        row.whyA = why.a;
+        row.whyB = why.b;
+        row.whyC = why.c;
+        row.score = score;
+        row.pickRank = rank;
+        row.candidates = candidates;
+        row.refusedAbove = refused;
+        if (refused > 0) row.flags |= per::LFLAG_LOW_RANK;
+    }
     void BotOfflinePrepareVisitLine(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop) {
         auto& o = state.offlineShop;
         o.preparedItem = 0;
@@ -1379,16 +1499,28 @@ namespace {
         BotOfflineUnwantedLine(ch, shop, lowGear);
         std::vector<std::pair<int, WORD> > scored;
         CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state), lowGear);
+        int rank = -1, refused = 0;
         for (auto [score, cell] : scored) {
+            ++rank;
             LPITEM item = ch->GetInventoryItem(cell);
-            if (!item || BotOfflineSlot(ch, shop, item) < 0) continue;
-            if (BotOfflineCounterRefuses(shop, item)) continue;
-            const int lineCell = BotOfflinePrepareLine(ch, cell, shop);
-            if (lineCell < 0) continue;
+            if (!item || BotOfflineSlot(ch, shop, item) < 0) { ++refused; continue; }
+            if (BotOfflineCounterRefuses(shop, item)) { ++refused; continue; }
+            // The explanation is read off the stack before it is cut.
+            TPlayerBotListingExplain row;
+            if (IsPlayerBotExplainOn())
+                BotOfflineExplainCandidate(ch, state, item, rank, (int)scored.size(), refused, row);
+            TPlayerBotLineCut cut;
+            const int lineCell = BotOfflinePrepareLine(ch, cell, shop, false, &cut);
+            if (lineCell < 0) { ++refused; continue; }
             LPITEM line = ch->GetInventoryItem((WORD)lineCell);
-            if (!line) continue;
+            if (!line) { ++refused; continue; }
             o.preparedItem = line->GetID();
             o.preparedCell = (uint32_t)lineCell;
+            if (IsPlayerBotExplainOn()) {
+                row.itemId = line->GetID();
+                row.cut = cut;
+                SetPlayerBotListingPending(row);
+            }
             return;
         }
     }
@@ -1861,6 +1993,20 @@ namespace {
                     sent = EndCall(ch->GetPlayerID());
                     if (sent) {
                         o.listed[id] = playerbot_offline::ListedLine{ vnum, 0u, now, 0 };
+                        if (IsPlayerBotExplainOn()) {
+                            TPlayerBotListingExplain row;
+                            row.itemId = id;
+                            row.pid = ch->GetPlayerID();
+                            row.vnum = vnum;
+                            row.count = 1;
+                            row.standReason = state.bShopOpenReason;
+                            row.listEvent = per::EVENT_LIST_ADD;
+                            row.why = per::GOODS_DRAGON_STONE_SPARE;
+                            row.listPrice = (long long)price.yang;
+                            std::vector<per::TPair> steps(1, per::Pair(per::STEP_OPERATOR_PRICE, row.listPrice, row.listPrice));
+                            row.steps = per::EncodePairs(steps, per::STEPS_COLUMN);
+                            QueuePlayerBotListing(row);
+                        }
                         AddPlayerBotMarketSupply(vnum, 1, shop->GetSpawn().map);
                         ++s_kPlayerBotAlchemyStats.listed;
                         sys_log(0, "PLAYERBOT_ALCHEMY: listed pid=%u name=%s vnum=%u price=%lld",
@@ -1870,25 +2016,55 @@ namespace {
                 break;
             }
         }
+        // The candidates' ranks for the explanation: the line cut before the
+        // board opened is counted where its own visit found it.
+        int addRank = preparedCell >= 0 ? -2 : -1, addRefused = 0;
         if (!sent)
         for (auto [score, cell] : scored) {
             if (!allowRestock && Due(now, o.nextReprice) && !shop->GetItems().empty()) break;
+            ++addRank;
             auto item = ch->GetInventoryItem(cell);
             int pos = BotOfflineSlot(ch, shop, item);
-            if (pos < 0) continue;
-            if (BotOfflineCounterRefuses(shop, item)) continue;
-            const int lineCell = BotOfflinePrepareLine(ch, cell, shop, (int)cell == preparedCell);
-            if (lineCell < 0) continue;
+            if (pos < 0) { ++addRefused; continue; }
+            if (BotOfflineCounterRefuses(shop, item)) { ++addRefused; continue; }
+            // Why this one, read off the stack before the cut (playerbot_explain.h);
+            // the prepared line brings what its own visit read.
+            TPlayerBotListingExplain explained;
+            const bool preparedLine = (int)cell == preparedCell;
+            if (IsPlayerBotExplainOn() && !preparedLine)
+                BotOfflineExplainCandidate(ch, state, item, std::max(0, addRank), (int)scored.size() - (preparedCell >= 0 ? 1 : 0),
+                        addRefused, explained);
+            TPlayerBotLineCut cut;
+            const int lineCell = BotOfflinePrepareLine(ch, cell, shop, preparedLine, &cut);
+            if (lineCell < 0) { ++addRefused; continue; }
             const WORD at = (WORD)lineCell;
             item = ch->GetInventoryItem(at);
-            if (!item || !BotOfflineValid(ch, item, pos)) continue;
+            if (!item || !BotOfflineValid(ch, item, pos)) { ++addRefused; continue; }
+            if (IsPlayerBotExplainOn()) {
+                if (preparedLine) {
+                    if (!TakePlayerBotListingPending(item->GetID(), explained))
+                        BotOfflineExplainCandidate(ch, state, item, 0, 1, 0, explained);
+                } else
+                    explained.cut = cut;
+            }
             ikashop::TPriceInfo price{};
             // A new line is marked down by nothing, so it asks its kind's
             // markup when the market keeps selling the kind and keeps running
             // out of it (Iwakura, 28 September; GetPlayerBotListingPrice).
+            // The price is traced step by step for the line's explanation.
+            TPlayerBotPriceTraceScope priceTrace;
             int markup = 0;
-            price.yang = std::max(GetPlayerBotListingPrice(item, GetPlayerBotShopAskingPrice(item), 0, &markup),
-                    GetPlayerBotListingFloor(item));
+            {
+                const DWORD listing = GetPlayerBotListingPrice(item, GetPlayerBotShopAskingPrice(item), 0, &markup);
+                const DWORD floor = GetPlayerBotListingFloor(item);
+                if (floor > listing) {
+                    priceTrace.Step(per::STEP_LISTING_FLOOR, floor, floor);
+                    priceTrace.trace.flags |= per::LFLAG_FLOOR_BOUND;
+                }
+                price.yang = std::max(listing, floor);
+            }
+            // Whether the line is a piece the bot should rather wear soon.
+            const unsigned int wornFlags = priceTrace.On() ? GetPlayerBotListingWornFlags(ch, item) : 0;
             if (markup > 0)
                 PlayerBotLogThrottled("offline_markup", now,
                         "PLAYERBOT_OFFLINE: marked up pid=%u name=%s item=%u vnum=%u markup=%d%% price=%lld at=add",
@@ -1906,7 +2082,11 @@ namespace {
                         (long long)GOLD_MAX - 1 - (long long)shop->GetTotalYangValue());
             const bool slipped = price.yang != meant;
             if (price.yang <= 0 || price.yang >= GOLD_MAX ||
-                    shop->GetTotalYangValue() >= GOLD_MAX - price.yang) continue;
+                    shop->GetTotalYangValue() >= GOLD_MAX - price.yang) { ++addRefused; continue; }
+            if (slipped) {
+                priceTrace.Step(per::STEP_SLIP, price.yang, meant);
+                priceTrace.trace.flags |= per::LFLAG_SLIP;
+            }
             DWORD id = item->GetID();
             // The counter's first line of a Cor Draconis or a sash takes one of
             // the kind's places at once, so the next keeper this minute sees it.
@@ -1933,6 +2113,22 @@ namespace {
                 if (sent) {
                     o.listed[id] = playerbot_offline::ListedLine{
                         addVnum, addSkill, now, addRefine };
+                    // The line's explanation (playerbot_explain.h).
+                    if (priceTrace.On()) {
+                        explained.itemId = id;
+                        explained.pid = ch->GetPlayerID();
+                        explained.vnum = addVnum;
+                        explained.count = addCount;
+                        explained.standReason = state.bShopOpenReason;
+                        explained.listEvent = per::EVENT_LIST_ADD;
+                        explained.listPrice = (long long)price.yang;
+                        explained.steps = priceTrace.trace.Encode();
+                        explained.flags |= priceTrace.trace.flags | wornFlags |
+                            priceTrace.trace.PriceFlags(slipped ? meant : (long long)price.yang, addCount);
+                        const long long left = (long long)ch->CountSpecifyItem(addVnum);
+                        if (left > 0 && addCount > 1) explained.held = left;
+                        QueuePlayerBotListing(explained);
+                    }
                     // On the ledger at once, by its village, like a classic
                     // stall's lines: the next keeper there must not put the
                     // same material up against the player's floor in the
@@ -2000,9 +2196,30 @@ namespace {
                     if (operatorPriced)
                         discount = 0;
                     int markup = 0;
-                    const long long asking = operatorPriced ? (long long)GetPlayerBotShopAskingPrice(preview)
-                            : (long long)GetPlayerBotListingPrice(preview, GetPlayerBotShopAskingPrice(preview), discount, &markup);
-                    price.yang = std::max(asking, (long long)GetPlayerBotListingFloor(preview));
+                    // The reprice traced step by step for the line's explanation.
+                    TPlayerBotPriceTraceScope priceTrace;
+                    const long long askingNow = (long long)GetPlayerBotShopAskingPrice(preview);
+                    if (priceTrace.On() && !operatorPriced) {
+                        // The generation the counter was priced under, and the
+                        // clock of the markdown - said at the price they leave.
+                        priceTrace.Step(per::STEP_GENERATION, askingNow,
+                                o.priceGeneration != GetPlayerBotPriceGeneration() ? 1 : 0);
+                        priceTrace.Step(per::STEP_MARKDOWN_CLOCK, askingNow, standing / 60000U, per::CLOCK_MINUTES,
+                                listed->second.when == 0 ? 1 : 0);
+                    }
+                    const long long asking = operatorPriced ? askingNow
+                            : (long long)GetPlayerBotListingPrice(preview, (DWORD)askingNow, discount, &markup);
+                    const long long repriceFloor = (long long)GetPlayerBotListingFloor(preview);
+                    if (repriceFloor > asking) {
+                        priceTrace.Step(per::STEP_LISTING_FLOOR, repriceFloor, repriceFloor);
+                        priceTrace.trace.flags |= per::LFLAG_FLOOR_BOUND;
+                    }
+                    price.yang = std::max(asking, repriceFloor);
+                    const unsigned int repriceFlags = priceTrace.On()
+                            ? priceTrace.trace.flags | priceTrace.trace.PriceFlags(price.yang, preview->GetCount()) : 0;
+                    const std::string repriceSteps = priceTrace.On() ? priceTrace.trace.Encode() : std::string();
+                    const DWORD repriceVnum = preview->GetVnum();
+                    const long long repriceCount = preview->GetCount();
                     if (discount > 0 && price.yang != it->second->GetPrice().yang)
                         PlayerBotLogThrottled("offline_markdown", now, "PLAYERBOT_OFFLINE: marked down pid=%u name=%s item=%u vnum=%u standing_min=%u discount=%d%% price=%lld",
                                 ch->GetPlayerID(), ch->GetName(), it->first, preview->GetVnum(),
@@ -2014,8 +2231,12 @@ namespace {
                     M2_DELETE(preview);
                     if (price.yang > 0 && price.yang < GOLD_MAX && price.yang != it->second->GetPrice().yang &&
                             Begin(ch->GetPlayerID(), Edit, it->first, now)) {
+                        const long long was = (long long)it->second->GetPrice().yang;
                         manager.RecvShopEditItemClientPacket(ch, it->first, price);
-                        EndCall(ch->GetPlayerID());
+                        if (EndCall(ch->GetPlayerID()))
+                            QueuePlayerBotListingEvent(it->first, ch->GetPlayerID(), repriceVnum, repriceCount,
+                                per::EVENT_REPRICE, price.yang, was, repriceSteps, 0, 0,
+                                repriceFlags | (per::IsPriceJump(was, price.yang) ? per::LFLAG_PRICE_JUMP : 0));
                     }
                 }
             }

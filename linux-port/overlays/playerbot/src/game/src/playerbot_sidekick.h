@@ -1140,6 +1140,7 @@ namespace
 			if (pid == 0 || !CPlayerBotManager::instance().IsRegisteredBotPID(pid) ||
 					CPlayerBotManager::instance().IsManaged(pid) ||
 					CPlayerBotManager::instance().IsMedalDropperCohortPID(pid) ||
+					IsPlayerBotShouterPID(pid) || // MT2009_PLUS_SHOUTERS_V1
 					CHARACTER_MANAGER::instance().FindByPID(pid) || P2P_MANAGER::instance().FindByPID(pid))
 				continue;
 			return pid;

@@ -1152,6 +1152,9 @@ def read_ai_weights():
     # Iwakura's personalities and moods (playerbot_persona.h). On: the operator
     # asked for them (19 September); off is the world as it was before.
     vals["PERSONA"] = 1
+    # The three shouters of the first villages (playerbot_shouters.h,
+    # MT2009_PLUS_SHOUTERS_V1): on top of the bot count. On.
+    vals["SHOUTERS"] = 1
     vals["SCRAP"] = 0
     # Percent of bots that rest on the market ring after a town errand; 100 is
     # the author's town, 0 is "every bot hunting".
@@ -1218,6 +1221,9 @@ def read_ai_weights():
                     continue
                 if name == "PERSONA":
                     vals["PERSONA"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
+                    continue
+                if name == "SHOUTERS":
+                    vals["SHOUTERS"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
                     continue
                 if name == "SCRAP":
                     try:
@@ -1322,6 +1328,8 @@ def write_ai_weights(vals):
     body.append("SHOP_M2\t%d" % (1 if vals.get("SHOP_M2", 0) else 0))
     # Not a weight: Iwakura's personalities, moods and the Grinder's locks.
     body.append("PERSONA\t%d" % (1 if vals.get("PERSONA", 1) else 0))
+    # Not a weight: the three shouters of the first villages (1 = in the world).
+    body.append("SHOUTERS\t%d" % (1 if vals.get("SHOUTERS", 1) else 0))
     # Percent of stall keepers that sell scrap gear; 0 is off.
     body.append("SCRAP\t%d" % max(0, min(100, int(vals.get("SCRAP", 0)))))
     # Percent of bots that rest in town after an errand; 0 means nobody does.
@@ -4022,6 +4030,11 @@ T.update({
                   "de":"Aus (Standard): ein Bot eröffnet seinen Stand nur in den ersten Dörfern, wo die Spieler einkaufen; ein abgelaufener Stand aus einem zweiten Dorf wird beim nächsten Besuch seines Besitzers auf dem Marktring des ersten Dorfes erneuert. An: die Stände stehen in beiden Dörfern, wie bisher.",
                   "tr":"Kapalı (varsayılan): bot tezgahını yalnızca oyuncuların alışveriş yaptığı ilk köylerde açar; ikinci köyde duran ve süresi dolan tezgah, sahibinin bir sonraki ziyaretinde ilk köyün pazar halkasında yenilenir. Açık: tezgahlar eskisi gibi iki köyde de durur."},
  "ai_shop_m2_on": {"en":"Allowed","pl":"Dozwolone","de":"Erlaubt","tr":"İzin verildi"},
+ "ai_shouters":  {"en":"Shouters in M1 (3 bots)","pl":"Krzykacze w M1 (3 boty)","de":"Schreier in M1 (3 Bots)","tr":"M1'de bağıranlar (3 bot)"},
+ "ai_shouters_help": {"en":"Three extra bots, one per kingdom (apka2009, appka2009, apppka2009), on top of the bot count. They level up to 15, then stand without weapon and armour by the general store of their kingdom's first village and now and then shout a line on the shout channel (once per 20-30 channel lines, at least 10 minutes apart). They answer nothing: no whispers, parties, trades or guilds. Off: they log out at once and do not come back until switched on again.",
+                  "pl":"Trzy dodatkowe boty, po jednym na królestwo (apka2009, appka2009, apppka2009), ponad liczbę botów. Wbijają 15 poziom, potem stoją bez broni i zbroi przy Handlarce w pierwszej wiosce swojego królestwa i co jakiś czas wołają na kanale wołaj (raz na 20–30 wiadomości kanału, nie częściej niż co 10 minut). Nie odpowiadają na szepty, grupy, handel ani gildie. Wyłączone: od razu się wylogowują i nie wracają, dopóki ich nie włączysz.",
+                  "de":"Drei zusätzliche Bots, einer pro Reich, über der Botanzahl. Sie leveln bis 15 und stehen dann ohne Waffe und Rüstung beim Gemischtwarenhändler im ersten Dorf und rufen ab und zu etwas in den Ruf-Kanal. Aus: sie loggen sofort aus.",
+                  "tr":"Her krallık için bir tane olmak üzere bot sayısının üstünde üç ek bot. 15. seviyeye kadar kasarlar, sonra ilk köyün genel mağazasının yanında silahsız ve zırhsız durup ara sıra bağırma kanalına yazarlar. Kapalı: hemen çıkış yaparlar."},
  "ai_persona":   {"en":"Bot personalities (Iwakura v2)","pl":"Osobowości botów (Iwakura v2)","de":"Bot-Persönlichkeiten (Iwakura v2)","tr":"Bot kişilikleri (Iwakura v2)"},
  "ai_persona_help": {"en":"Iwakura's personality system. A bot's personality follows its situation (Grinder, Conqueror, Trader, Gambler, Perfectionist, Metin slayer, Miner, Fisherman, Mercenary, Companion) and it has a mood (poor, normal, very good) shown on its card. A Grinder holds its level at its tier (15, 23, 30-35, 40-48, 55-62) until it wears a weapon +7, an armour +6 and a shield +6 for its level, and only then may level on as a Conqueror. A bot in a poor mood pauses between packs and goes AFK now and then; only such bots rest in town. Now and then a bot becomes one of five rare personalities for a while, shown in red: Metinologist, Addict, Mad Scientist, Executioner, Mad Angler - or, among the richest bots, one of four gamblers shown in purple: Junior, Senior, Chief and Mad Gambler. Off: the bots play as they did before, with their old personalities.",
                   "pl":"System osobowości Iwakury. Osobowość bota wynika z jego sytuacji (Grinder, Zdobywca, Handlarz, Hazardzista, Perfekcjonista, Pogromca metinów, Górnik, Rybak, Najemnik, Towarzysz), a bot ma nastrój (słaby, normalny, bardzo dobry) widoczny na jego karcie. Grinder trzyma poziom swojego tieru (15, 23, 30-35, 40-48, 55-62), dopóki nie założy broni +7, zbroi +6 i tarczy +6 na swój poziom - dopiero wtedy może dalej expić jako Zdobywca. Bot w słabym nastroju robi przerwy między grupami mobów i co jakiś czas odchodzi od komputera; tylko takie boty odpoczywają w mieście. Od czasu do czasu bot staje się na pewien czas jedną z pięciu rzadkich osobowości, widocznych na czerwono: Metinolog, Nałogowiec, Szalony Naukowiec, Egzekutor, Szalony Wędkarz - a wśród najbogatszych botów jednym z czterech Hazardzistów, widocznych na fioletowo: Młodszym, Starszym, Naczelnym i Szalonym. Wyłączone: boty grają jak wcześniej, ze starymi osobowościami.",
@@ -7046,6 +7059,11 @@ TPL_AI = BASE.replace("__BODY__", """
   <h3 style="margin:0 0 2px">🏪 {{t('ai_shop_m2')}}</h3>
   <p class="muted" style="margin:0 0 6px">{{t('ai_shop_m2_help')}}</p>
   <label><input type="checkbox" name="SHOP_M2" value="1" {% if cur.get('SHOP_M2', 0) %}checked{% endif %}> {{t('ai_shop_m2_on')}}</label>
+</div>
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">📢 {{t('ai_shouters')}}</h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_shouters_help')}}</p>
+  <label><input type="checkbox" name="SHOUTERS" value="1" {% if cur.get('SHOUTERS', 1) %}checked{% endif %}> {{t('ai_persona_on')}}</label>
 </div>
 <div style="margin-bottom:18px">
   <h3 style="margin:0 0 2px">♻️ {{t('ai_scrap')}}
@@ -10756,6 +10774,9 @@ DECISION_STAND = {
  7: {"pl": "los", "en": "chance", "de": "Zufall", "tr": "şans"},
  8: {"pl": "zbędny duplikat", "en": "a spare duplicate", "de": "ein überzähliges Duplikat", "tr": "fazla bir kopya"},
  9: {"pl": "nadmiar towaru", "en": "surplus goods", "de": "Warenüberschuss", "tr": "mal fazlası"},
+ # MT2009 Plus: a medal dropper standing with its stock (PLAYERBOT_SHOP_REASON_MEDALS).
+ 10: {"pl": "medale konne droppera", "en": "a medal dropper's medals", "de": "die Medaillen eines Medaillen-Droppers",
+      "tr": "bir madalya dropper'ının madalyaları"},
 }
 
 # What shape the line was cut to (SHAPE_*).
@@ -10814,6 +10835,19 @@ DECISION_OFF = {
  19: {"pl": "wędka lub kilof wraca do właściciela", "en": "a rod or a pickaxe goes back to its owner",
       "de": "eine Angel oder Spitzhacke geht an ihren Besitzer zurück", "tr": "olta ya da kazma sahibine dönüyor"},
  20: {"pl": "zabrane do założenia", "en": "taken back to wear", "de": "zum Anlegen zurückgenommen", "tr": "giymek için geri alındı"},
+ # MT2009 Plus's own reasons (from 200, so an appended upstream code never clashes).
+ 200: {"pl": "własna mikstura bojowa bota (zielona lub fioletowa)", "en": "the bot's own combat potion (green or purple)",
+       "de": "der eigene Kampftrank des Bots (grün oder lila)", "tr": "botun kendi savaş iksiri (yeşil ya da mor)"},
+ 201: {"pl": "zwykły lub błyszczący kamień smoka to teraz materiał", "en": "an ordinary or brilliant Dragon Stone is material now",
+       "de": "ein gewöhnlicher oder glänzender Drachenstein ist jetzt Material", "tr": "sıradan ya da parlak Ejderha Taşı artık malzeme"},
+ 202: {"pl": "szarfa, którą bot chce dla siebie", "en": "a sash the bot wants for itself",
+       "de": "eine Schärpe, die der Bot selbst will", "tr": "botun kendisi için istediği bir kuşak"},
+ 203: {"pl": "towar rzemieślniczy się nie sprzedał — do wymiany u Dozorcy", "en": "crafting goods left unsold — for the Dozorca's exchange",
+       "de": "Handwerksware blieb unverkauft — für den Tausch beim Dozorca", "tr": "zanaat malı satılmadı — Dozorca takası için"},
+ 204: {"pl": "Cor Draconis lub szarfa nie sprzedała się po pełnej przecenie — do handlarza",
+       "en": "a Cor Draconis or a sash unsold through the whole markdown — for the merchant",
+       "de": "ein Cor Draconis oder eine Schärpe blieb trotz vollem Preisnachlass unverkauft — für den Händler",
+       "tr": "tam indirime rağmen satılmayan Cor Draconis ya da kuşak — satıcıya"},
 }
 
 # The small vocabularies a parameter can be one of ("enum:NAME").
@@ -11076,6 +11110,13 @@ DECISION_GOODS = {
  41: ({"a": "int", "b": "int"},
       {"pl": "Klucz bez skrzyni ponad zapas: {a} w plecaku, zapas {b}", "en": "A key with no chest, over the keep: {a} in the bag, keeps {b}",
        "de": "Ein Schlüssel ohne Truhe, über dem Vorrat: {a} im Beutel, behält {b}", "tr": "Sandıksız anahtar, stok üstü: çantada {a}, saklanan {b}"}),
+ # MT2009 Plus's own goods (from 200).
+ 200: ({}, {"pl": "Cor Draconis albo szarfa — towar dla graczy", "en": "A Cor Draconis or a sash — goods for the players",
+            "de": "Ein Cor Draconis oder eine Schärpe — Ware für die Spieler", "tr": "Bir Cor Draconis ya da kuşak — oyuncular için mal"}),
+ 201: ({}, {"pl": "Materiał budowlany gildii, którego gildia bota nie trzyma", "en": "A guild building material the bot's guild does not keep",
+            "de": "Ein Gildenbaumaterial, das die Gilde des Bots nicht behält", "tr": "Botun loncasının tutmadığı bir lonca yapı malzemesi"}),
+ 202: ({}, {"pl": "Kamień smoka, którego bot nie użyje", "en": "A Dragon Stone the bot has no use for",
+            "de": "Ein Drachenstein, den der Bot nicht braucht", "tr": "Botun kullanmadığı bir Ejderha Taşı"}),
 }
 
 # One step of the price (STEP_*): code: (the kind of `value` when it is not the
@@ -11225,6 +11266,10 @@ DECISION_STEPS = {
  42: (None, {"a": "yang"},
       {"pl": "Podniesione do progu", "en": "Raised to the floor", "de": "Auf die Untergrenze angehoben", "tr": "Tabana yükseltildi"},
       {"pl": "było {a}", "en": "was {a}", "de": "war {a}", "tr": "önceden {a}"}),
+ # MT2009 Plus: Cor Draconis, a Dragon Stone, a sash, the crafting goods.
+ 200: (None, {"a": "yang"},
+       {"pl": "Cena operatora", "en": "The operator's price", "de": "Preis des Betreibers", "tr": "Operatörün fiyatı"},
+       {"pl": "{a} za sztukę", "en": "{a} a unit", "de": "{a} pro Stück", "tr": "adet başına {a}"}),
 }
 
 # The listing flags (LFLAG_*), bit: texts.
@@ -11416,6 +11461,7 @@ DECISION_CODE_NAMES = {
   33: "GOODS_GENERAL_BOOK", 34: "GOODS_SHEET_GOODS", 35: "GOODS_SKILL_BOOK_DROPPER",
   36: "GOODS_SKILL_BOOK_OWN_SPARE", 37: "GOODS_SKILL_BOOK_OTHER_CLASS", 38: "GOODS_LOW_PLUS_GEAR",
   39: "GOODS_SCRAP_KEEPER_LOW", 40: "GOODS_SURPLUS_CHEST", 41: "GOODS_SURPLUS_KEY",
+  200: "GOODS_RARE_GOODS", 201: "GOODS_GUILD_MATERIAL", 202: "GOODS_DRAGON_STONE_SPARE",
  },
  "SHAPE": {
   0: "SHAPE_WHOLE_STACK", 1: "SHAPE_NATURAL_LINE", 2: "SHAPE_POTION_PACK", 3: "SHAPE_DUST_PACK",
@@ -11427,6 +11473,7 @@ DECISION_CODE_NAMES = {
   6: "OFF_JUNK_WEAPON", 7: "OFF_POTION_PACK", 8: "OFF_LOW_ARMOUR", 9: "OFF_LOW_JEWEL", 10: "OFF_HAIR_DYE",
   11: "OFF_LEVEL30_ANVIL", 12: "OFF_CHEST_PACK", 13: "OFF_GM_STONE", 14: "OFF_SCROLL_PACK", 15: "OFF_MEDAL_PACK",
   16: "OFF_HEAP_PACK", 17: "OFF_MATERIAL_PACK", 18: "OFF_LOW_GEAR", 19: "OFF_TACKLE", 20: "OFF_RECLAIM_TO_WEAR",
+  200: "OFF_BUFF_POTION", 201: "OFF_DS_LOW_GRADE", 202: "OFF_SASH_KEEPER", 203: "OFF_CRAFT_EXCHANGE", 204: "OFF_RARE_UNSOLD",
  },
  "STEP": {
   1: "STEP_CONTEXT", 2: "STEP_BONUS_LINE", 3: "STEP_BONUS_MAX_LINES", 4: "STEP_BONUS_PERCENT", 5: "STEP_INVESTMENT",
@@ -11438,7 +11485,7 @@ DECISION_CODE_NAMES = {
   27: "STEP_SALE_MEMORY", 28: "STEP_LEDGER", 29: "STEP_STEP_LIMIT", 30: "STEP_SPREAD", 31: "STEP_BONUS_GOODS_FLOOR",
   32: "STEP_ROUND", 33: "STEP_POOR_DISCOUNT", 34: "STEP_MARKDOWN_CLOCK", 35: "STEP_MARKDOWN", 36: "STEP_MARKUP",
   37: "STEP_MARKUP_REFUSED", 38: "STEP_LISTING_FLOOR", 39: "STEP_SLIP", 40: "STEP_GENERATION",
-  41: "STEP_SLIP_PUT_RIGHT", 42: "STEP_RAISED_TO_FLOOR",
+  41: "STEP_SLIP_PUT_RIGHT", 42: "STEP_RAISED_TO_FLOOR", 200: "STEP_OPERATOR_PRICE",
  },
  "LFLAG": {
   1: "LFLAG_UNDER_MERCHANT", 2: "LFLAG_FLOOR_BOUND", 4: "LFLAG_UNDER_SHEET_HALF", 8: "LFLAG_OVER_SHEET_3X",
@@ -18537,6 +18584,7 @@ def ai_weights():
             vals["ISHOP"] = old.get("ISHOP", 1)
         vals["SHOP_M2"] = 1 if request.form.get("SHOP_M2") else 0
         vals["PERSONA"] = 1 if request.form.get("PERSONA") else 0
+        vals["SHOUTERS"] = 1 if request.form.get("SHOUTERS") else 0
         try:
             vals["SCRAP"] = max(0, min(100, int(request.form.get("SCRAP", 0))))
         except (TypeError, ValueError):

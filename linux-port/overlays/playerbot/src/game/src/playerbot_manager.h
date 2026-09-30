@@ -54,6 +54,13 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		void	OnPeerWhisper(const char* szFrom, LPCHARACTER bot, const char* szText);
 
 		bool	IsManaged(DWORD dwPlayerID) const;
+		// Whether the population's cohort or its top-up asked for this identity
+		// (the shouters' picker, playerbot_shouters.h, steps over it).
+		bool	IsScheduledBot(DWORD dwPlayerID) const;
+		// A shout another core sent over P2P (CInputP2P::Shout, mt2009 via
+		// server-patches/playerqol, MT2009_PLUS_SHOUTERS_V1): counted for the
+		// shouters of the first villages (playerbot_shouters.h).
+		void	OnPeerShout(BYTE bEmpire);
 		// The Dom Towarowy's price hint (/flea_price, playerbotify
 		// apply_flea_market): the bots' asking price for the item in that
 		// cell and what they have been paid for it, as "FleaPriceQuote";
