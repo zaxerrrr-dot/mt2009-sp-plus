@@ -857,8 +857,9 @@ def panel_feature_states(current=None):
 def require_panel_feature(name):
     if panel_feature_enabled(name):
         return None
-    flash(f"Funkcja „{PANEL_FEATURES[name]['title']}” wymaga dodatkowej integracji. Włącz ją dopiero po wykonaniu instrukcji w ustawieniach panelu.", "error")
-    return redirect(url_for("manage_panel", _anchor="compatibility"))
+    # MT2009: the features that need Seban's extra helpers are not shown at all (the operator, 30 September).
+    flash(f"Funkcja „{PANEL_FEATURES[name]['title']}” nie jest dostępna na tym serwerze.", "error")
+    return redirect(url_for("manage"))
 
 
 def validate_display_settings(form):
