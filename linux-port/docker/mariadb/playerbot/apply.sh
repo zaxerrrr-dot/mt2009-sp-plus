@@ -534,6 +534,17 @@ fi
 # pack standing ("nie wszystkie trafiaja", the operator, 28 September). 900,
 # only over the package's own 500; skill_proto is read at the cores' start.
 db -e "UPDATE world.skill_proto SET dwSplashRange = 900 WHERE dwVnum = 93 AND dwSplashRange = 500;" || echo "[playerbot-migrate] WARNING: could not widen Smoczy Skowyt's splash" >&2
+# MT2009_PLUS_FIRE_ARROW_BALANCE_V1: Ognista Strzala (48, Ninja archer) back
+# to the official formula, the one world.skill_proto_copy_przed_zmianami_barabasza
+# still holds. The package's rework (1.5*atk -> 2*atk, + dex*2*k, all *1.35,
+# and the master poly raised to the normal one) made it about 1.55 times as
+# strong and the Ninja archers held the whole top of the skill damage ranking.
+# Players and bots alike: bots cast it through CHARACTER::UseSkill, which
+# evaluates this row. The rework's third point (ATT_SPECIAL 20*k, self only,
+# the bonus against Metins and bosses) and setFlag are left as they are.
+# Each column moves only from the package's exact text, so an operator's own
+# formula stays; skill_proto is read at the cores' start. Idempotent.
+db -e "UPDATE world.skill_proto SET szPointPoly = '-(1.5*atk + (2.8*atk + number(100, 300))*k)' WHERE dwVnum = 48 AND szPointPoly = '-(2*atk + (2.8*atk + number(100, 300))*k + dex*2*k)*1.35'; UPDATE world.skill_proto SET szMasterBonusPoly = '-(1.5*atk + (2.6*atk + number(100, 300))*k)' WHERE dwVnum = 48 AND szMasterBonusPoly = '-(2*atk + (2.8*atk + number(100, 300))*k + dex*2*k)*1.35';" || echo "[playerbot-migrate] WARNING: could not put Ognista Strzala back to its formula" >&2
 # Broszura Szermierki (70031), Seon-Pyeong's recipe material, stacks to the
 # 200 its row already says: the package left ITEM_FLAG_STACKABLE off, so
 # every brochure took a cell (NerrVoVy, 27 September), as Tanaka's ear did.

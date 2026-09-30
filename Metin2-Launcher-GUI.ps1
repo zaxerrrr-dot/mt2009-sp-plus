@@ -10,7 +10,11 @@ param(
     [ValidateSet('pl', 'en')][string]$UiLanguage = 'pl',
     # Another installation for the modules and the configuration, so the
     # window can be tried from a checkout against a working server.
-    [string]$ServerRoot = ''
+    [string]$ServerRoot = '',
+    # MT2009_PLUS_LAUNCHER_NO_CONSOLE_V1: this run is the window's own,
+    # started without a console by the first run (see below); it starts
+    # nothing again.
+    [switch]$Detached
 )
 
 $ErrorActionPreference = 'Stop'
@@ -60,6 +64,52 @@ trap {
     }
     catch { }
     break
+}
+
+# MT2009_PLUS_LAUNCHER_NO_CONSOLE_V1: the window alone, without the black
+# console its .bat opens behind it (closing that console closed the launcher
+# too). The first run starts this script again with no console window at all -
+# CREATE_NO_WINDOW, which leaves Windows Terminal nothing to take over, where
+# -WindowStyle Hidden only hides the old console host - waits until the new run
+# has a window on the screen, and ends with 0; the .bat's console closes behind
+# it (and Restart-Launcher, which starts the .bat, takes exit code 0 for a good
+# start). The .bat itself stays as it was: a running cmd reads its .bat line by
+# line, and the launcher's own update replaces it while it waits. Errors keep
+# their way out: the trap above and the window's handlers show a message box
+# and write launcher-logs. A new run that ends before any window of its own
+# leaves this one to go on here in the console, where what stopped it can be
+# read; M2_LAUNCHER_CONSOLE=1 keeps the console for good.
+if (-not $SelfTest -and -not $UiSelfTest -and -not $Detached -and $env:M2_LAUNCHER_CONSOLE -ne '1') {
+    $detachedChild = $null
+    try {
+        $detachedArguments = @('-NoProfile', '-STA', '-ExecutionPolicy', 'Bypass', '-File', ('"{0}"' -f $PSCommandPath), '-Detached')
+        if ($PSBoundParameters.ContainsKey('ServerRoot')) {
+            $detachedArguments += @('-ServerRoot', ('"{0}"' -f $ServerRoot.TrimEnd('\')))
+        }
+        $detachedStart = [Diagnostics.ProcessStartInfo]::new([Diagnostics.Process]::GetCurrentProcess().MainModule.FileName,
+            ($detachedArguments -join ' '))
+        $detachedStart.UseShellExecute = $false
+        $detachedStart.CreateNoWindow = $true
+        $detachedStart.WorkingDirectory = (Get-Location).ProviderPath
+        $detachedChild = [Diagnostics.Process]::Start($detachedStart)
+    }
+    catch {
+        $detachedChild = $null
+        Write-StartupFailure ('okno bez konsoli nie wystartowalo, launcher zostaje w konsoli: ' + $_.Exception.Message)
+    }
+    if ($detachedChild) {
+        Write-Host 'Otwieram okno launchera - ta konsola zaraz sie zamknie.'
+        $detachedDeadline = [DateTime]::UtcNow.AddSeconds(90)
+        try {
+            while (-not $detachedChild.HasExited -and [DateTime]::UtcNow -lt $detachedDeadline) {
+                $detachedChild.Refresh()
+                if ($detachedChild.MainWindowHandle -ne [IntPtr]::Zero) { break }
+                Start-Sleep -Milliseconds 250
+            }
+        }
+        catch { }
+        if (-not $detachedChild.HasExited) { exit 0 }
+    }
 }
 
 foreach ($required in @($cliLauncher, $modulePath, $diagnosticsModulePath, $composeFile)) {
