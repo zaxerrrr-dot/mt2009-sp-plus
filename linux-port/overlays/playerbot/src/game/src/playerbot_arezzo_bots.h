@@ -79,6 +79,7 @@ namespace
 	bool GetPlayerBotVillageReturn(LPCHARACTER ch, playerbot_empire_rules::EMapRole role,
 			long& destMap, long& destX, long& destY);
 	bool BlocksPlayerBotTravel(LPCHARACTER ch);
+	void CountPlayerBotPotions(LPCHARACTER ch, size_t& redCount, size_t& blueCount);
 	bool IsPlayerBotHumanLedParty(LPPARTY party);
 	bool IsPlayerBotHeldForCompany(LPCHARACTER ch);
 	bool IsPlayerBotOnMercContract(DWORD pid);
@@ -452,6 +453,11 @@ namespace
 	// this walks the corners.
 	const int PLAYERBOT_AREZZO_RAID_WALK_MAX = 70000;
 	const DWORD PLAYERBOT_AREZZO_RAID_GATHER_MS = 5 * 60 * 1000;
+	// The Las (round 3: no raid formed, "nobody to call ... free=0/0/0" 14
+	// times): a dozen to forty bots over 24 spots on ground where the walk is
+	// 1.5 times the straight line - the whole map's walk, and longer to gather.
+	const int PLAYERBOT_AREZZO_FOREST_RAID_WALK_MAX = 160000;
+	const DWORD PLAYERBOT_AREZZO_FOREST_RAID_GATHER_MS = 8 * 60 * 1000;
 	const int PLAYERBOT_AREZZO_RAID_FIGHT_WALK = 3000;
 	// The way into the Las from the temple: the Portal is taken when the walk
 	// to it (by the labyrinth's corners) is no longer than this - it stands a
@@ -535,10 +541,11 @@ namespace
 		DWORD dwFoeRace;
 		DWORD dwFoeAt;
 		bool bFoePC;
+		DWORD dwNextRestock;
 		TPlayerBotArezzoTrack() : dwEntered(0), lMap(0), dwSent(0), dwKills(0), dwBossKills(0), ullExp(0),
 				dwDeaths(0), dwLastExp(0), dwLastNext(0), bLastLevel(0), bWasDead(false),
 				lAnchorX(0), lAnchorY(0), dwAnchorSince(0), bStuck(false), dwStuckEpisodes(0), dwStuckMs(0),
-				dwVisitDeaths(0), dwAwaySince(0), dwNextResend(0), dwFoeRace(0), dwFoeAt(0), bFoePC(false) { adwDeathAt[0] = adwDeathAt[1] = 0; }
+				dwVisitDeaths(0), dwAwaySince(0), dwNextResend(0), dwFoeRace(0), dwFoeAt(0), bFoePC(false), dwNextRestock(0) { adwDeathAt[0] = adwDeathAt[1] = 0; }
 	};
 	std::map<DWORD, TPlayerBotArezzoTrack> s_mapPlayerBotArezzoTrack;
 	unsigned int s_uPlayerBotArezzoWalksPlanned = 0;
@@ -621,6 +628,22 @@ namespace
 		const long map = ch->GetMapIndex();
 		return map == forced || (forced == PLAYERBOT_MAP_AREZZO_FOREST &&
 				(map == PLAYERBOT_MAP_OCHAO || map == PLAYERBOT_MAP_ORC_VALLEY));
+	}
+
+	// What really stops a held bot: no weapon, no armour, no arrows for a bow,
+	// or the red potions gone (under three). Not a full bag (it fights on
+	// without picking up) and not a thin belt: round 3 sent 130 Las bots home
+	// on "frontier_services" (BlocksPlayerBotTravel: fewer than ten reds, or no
+	// free three-cell column) and each paid 18-60 minutes of temple to come
+	// back. The belt is kept full on the map instead (RestockPlayerBotArezzo).
+	bool IsPlayerBotArezzoTrulyBlocked(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return false;
+		size_t red = 0, blue = 0;
+		CountPlayerBotPotions(ch, red, blue);
+		return ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
+				NeedsPlayerBotArrows(ch) || red < 3;
 	}
 
 	bool IsPlayerBotArezzoLeaving(LPCHARACTER ch)
@@ -778,6 +801,24 @@ namespace
 		return !path.empty();
 	}
 
+	// A step along a straight open line is at most this long: a goal 15-30 km
+	// down the line was one far plan a call, and the core's budget of eighty a
+	// minute refused them in turn (round 3: 42 leg stalls on 360, twenty of
+	// them at one corner 16 km off).
+	const int PLAYERBOT_AREZZO_STEP = 3000;
+	bool StepPlayerBotArezzoToward(LPCHARACTER ch, CPlayerBotNavigation& nav, long x, long y, DWORD dwNow, bool horse)
+	{
+		const long dx = x - ch->GetX(), dy = y - ch->GetY();
+		const double d = sqrt((double)dx * dx + (double)dy * dy);
+		if (d > PLAYERBOT_AREZZO_STEP + 500 && nav.SegmentClearWorld(ch->GetX(), ch->GetY(), x, y))
+		{
+			const long px = ch->GetX() + (long)(dx * PLAYERBOT_AREZZO_STEP / d);
+			const long py = ch->GetY() + (long)(dy * PLAYERBOT_AREZZO_STEP / d);
+			return MovePlayerBot(ch, px, py, dwNow, 8, true, horse, false, true);
+		}
+		return MovePlayerBot(ch, x, y, dwNow, 8, true, horse, false, true);
+	}
+
 	// One step of the walk to (x, y) on the bot's Arezzo map; false when the
 	// bot is not on one. The goal in sight, or near: straight on the
 	// navigation. Otherwise leg by leg along the corners.
@@ -803,7 +844,7 @@ namespace
 		{
 			w.dwLastUsed = dwNow;
 			w.path.clear();
-			MovePlayerBot(ch, x, y, dwNow, 8, true, toGoal > 4000, false, true);
+			StepPlayerBotArezzoToward(ch, nav, x, y, dwNow, toGoal > 4000);
 			return true;
 		}
 		if (w.path.empty() || w.idx >= w.path.size() || dwNow - w.dwLastUsed > 60000 ||
@@ -851,7 +892,7 @@ namespace
 		}
 		if (w.idx >= w.path.size())
 		{
-			MovePlayerBot(ch, x, y, dwNow, 8, true, toGoal > 4000, false, true);
+			StepPlayerBotArezzoToward(ch, nav, x, y, dwNow, toGoal > 4000);
 			return true;
 		}
 		const long nodeX = info->pTree[w.path[w.idx]].x;
@@ -881,7 +922,7 @@ namespace
 				w.path.clear();
 			return true;
 		}
-		MovePlayerBot(ch, nodeX, nodeY, dwNow, 8, true, true, false, true);
+		StepPlayerBotArezzoToward(ch, nav, nodeX, nodeY, dwNow, true);
 		return true;
 	}
 
@@ -987,7 +1028,7 @@ namespace
 			const bool ring = s_bPlayerBotArezzoRingWarp || (reason && strstr(reason, "ring") != NULL);
 			const bool closed = !IsPlayerBotArezzoOpen();
 			// A held bot goes nowhere on another pass's errand.
-			if (!closed && IsPlayerBotArezzoHeldHere(ch) && !BlocksPlayerBotTravel(ch) &&
+			if (!closed && IsPlayerBotArezzoHeldHere(ch) && !IsPlayerBotArezzoTrulyBlocked(ch) &&
 					!(reason && strncmp(reason, "arezzo_", 7) == 0))
 			{
 				char tag[48];
@@ -1037,7 +1078,7 @@ namespace
 		if ((fromMap == PLAYERBOT_MAP_OCHAO || fromMap == PLAYERBOT_MAP_ORC_VALLEY) && targetMap != fromMap &&
 				targetMap != PLAYERBOT_MAP_OCHAO && targetMap != PLAYERBOT_MAP_AREZZO_FOREST &&
 				targetMap != PLAYERBOT_MAP_ORC_VALLEY && IsPlayerBotArezzoOpen() &&
-				IsPlayerBotArezzoHeldHere(ch) && !BlocksPlayerBotTravel(ch) &&
+				IsPlayerBotArezzoHeldHere(ch) && !IsPlayerBotArezzoTrulyBlocked(ch) &&
 				!(reason && (strncmp(reason, "arezzo_", 7) == 0 || strncmp(reason, "ochao_", 6) == 0)))
 		{
 			char tag[48];
@@ -1216,7 +1257,7 @@ namespace
 		// the temple (to town and back later), not on to the Guardian.
 		if (mapIndex == PLAYERBOT_MAP_OCHAO && GetPlayerBotArezzoForcedMap(ch) == PLAYERBOT_MAP_AREZZO_FOREST &&
 				s_setPlayerBotArezzoLeave.count(ch->GetPlayerID()) == 0 && !IsPlayerBotOchaoLeaving(ch) &&
-				!BlocksPlayerBotTravel(ch))
+				!IsPlayerBotArezzoTrulyBlocked(ch))
 			return ManagePlayerBotArezzoLasInTemple(ch, state, dwNow);
 		return -1;
 	}
@@ -1550,6 +1591,53 @@ namespace
 			t.dwSent = dwNow;
 	}
 
+	// A held bot's belt, kept on its map at the merchant's price out of its own
+	// gold (the owner's "simply have them carry enough potions", round 3): the
+	// trip home for a belt would cost a Las bot the whole temple again. Under
+	// 60 reds it buys a stack of 200 (the big ones from level 40, 40 yang each),
+	// a caster under 40 blues a stack of 200; only with a free cell, never more
+	// than half its gold.
+	void RestockPlayerBotArezzo(LPCHARACTER ch, TPlayerBotArezzoTrack& t, DWORD dwNow)
+	{
+		if (dwNow < t.dwNextRestock || ch->IsDead() || !ch->IsItemLoaded() || !IsPlayerBotArezzoHeldHere(ch))
+			return;
+		t.dwNextRestock = dwNow + 10000;
+		size_t red = 0, blue = 0;
+		CountPlayerBotPotions(ch, red, blue);
+		const bool big = ch->GetLevel() >= PLAYERBOT_BIG_POTION_MIN_LEVEL;
+		const bool caster = ch->GetJob() == JOB_SHAMAN || ch->GetJob() == JOB_SURA;
+		int boughtRed = 0, boughtBlue = 0;
+		if (red < 60 && ch->GetEmptyInventory(1) >= 0)
+		{
+			const long long cost = 200LL * (big ? 40 : 20);
+			if ((long long)ch->GetGold() >= cost * 2)
+			{
+				PlayerBotChangeGold(ch, -cost);
+				ch->AutoGiveItem(big ? 27003 : 27002, 200);
+				boughtRed = 200;
+			}
+		}
+		if (caster && blue < 40 && ch->GetEmptyInventory(1) >= 0)
+		{
+			const long long cost = 200LL * (big ? 64 : 32);
+			if ((long long)ch->GetGold() >= cost * 2)
+			{
+				PlayerBotChangeGold(ch, -cost);
+				ch->AutoGiveItem(big ? 27006 : 27005, 200);
+				boughtBlue = 200;
+			}
+		}
+		if (boughtRed || boughtBlue)
+			sys_log(0, "ARZ_BOT: restock pid=%u name=%s map=%ld red=%u blue=%u bought_red=%d bought_blue=%d gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)red, (unsigned int)blue,
+					boughtRed, boughtBlue, (long long)ch->GetGold());
+		else if (red < 10)
+			PlayerBotLogThrottled("arezzo_restock_failed", dwNow,
+					"ARZ_BOT: restock impossible pid=%u name=%s map=%ld red=%u free_cell=%d gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)red,
+					ch->GetEmptyInventory(1) >= 0 ? 1 : 0, (long long)ch->GetGold());
+	}
+
 	void TickPlayerBotArezzo()
 	{
 		const DWORD dwNow = get_dword_time();
@@ -1594,6 +1682,7 @@ namespace
 			TPlayerBotAIState& state = it->second;
 			TPlayerBotArezzoTrack& t = s_mapPlayerBotArezzoTrack[pid];
 			int mode = 0;	// 0 hunting, 1 leaving, 2 on the way in (road), 3 in the temple for the Las
+			RestockPlayerBotArezzo(ch, t, dwNow);
 			if (here)
 			{
 				++onMap[map - PLAYERBOT_MAP_AREZZO_CYCLOPS];
@@ -1694,9 +1783,19 @@ namespace
 				// the keyboard" (2-4 min) and pause between packs, and the rest
 				// after a revival. 101 of round 2's 126 "stuck" were the first,
 				// 16 the last, all on open ground.
-				const bool resting = (state.persona.dwAfkUntil != 0 && dwNow < state.persona.dwAfkUntil) ||
+				bool resting = (state.persona.dwAfkUntil != 0 && dwNow < state.persona.dwAfkUntil) ||
 						(state.persona.dwPauseUntil != 0 && dwNow < state.persona.dwPauseUntil) ||
 						state.bRecoveringAfterDeath;
+				// A party member beside its leader goes at the leader's pace
+				// (145 of round 3's 169 "stuck" on 360/361 were party members
+				// waiting while the leader stopped); the leader is watched itself.
+				if (!resting && ch->GetParty())
+				{
+					LPCHARACTER leader = ch->GetParty()->GetLeaderCharacter();
+					if (leader && leader != ch && leader->GetMapIndex() == map &&
+							DISTANCE_APPROX(ch->GetX() - leader->GetX(), ch->GetY() - leader->GetY()) <= 2500)
+						resting = true;
+				}
 				if (resting)
 					++restingNow;
 				if (fighting || ch->IsDead() || resting ||

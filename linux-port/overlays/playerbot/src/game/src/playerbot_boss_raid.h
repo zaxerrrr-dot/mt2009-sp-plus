@@ -397,8 +397,12 @@ namespace
 				if (c->GetMapIndex() != row.lMap || !boss || IsPlayerBotArezzoLeaving(c))
 					continue;
 				arezzoWalk = GetPlayerBotArezzoWalk(c, boss->GetX(), boss->GetY());
-				if (arezzoWalk > PLAYERBOT_AREZZO_RAID_WALK_MAX)
+				if (arezzoWalk > (row.lMap == PLAYERBOT_MAP_AREZZO_FOREST
+						? PLAYERBOT_AREZZO_FOREST_RAID_WALK_MAX : PLAYERBOT_AREZZO_RAID_WALK_MAX))
 					continue;
+				// A long walk weighs a tenth: the nearest first, but a strong
+				// bot across the forest still comes.
+				arezzoWalk /= 10;
 			}
 			else if (IsPlayerBotArezzoMap(c->GetMapIndex()) || IsPlayerBotArezzoBound(c))
 				continue;
@@ -539,6 +543,36 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_AREZZO_BOTS_V1 (watch): why the bots on an Arezzo map were
+	// not called to its boss, counted by reason.
+	void LogPlayerBotArezzoRaidRefusals(const TPlayerBotWorldBoss& row, LPCHARACTER boss, DWORD dwNow)
+	{
+		std::map<std::string, int> why;
+		int onMap = 0;
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!c || c->GetMapIndex() != row.lMap)
+				continue;
+			++onMap;
+			const char* w = GetPlayerBotBossRaidRefusal(c, it->second, row, dwNow);
+			if (!w && IsPlayerBotArezzoLeaving(c))
+				w = "leaving";
+			if (!w && boss && GetPlayerBotArezzoWalk(c, boss->GetX(), boss->GetY()) >
+					(row.lMap == PLAYERBOT_MAP_AREZZO_FOREST ? PLAYERBOT_AREZZO_FOREST_RAID_WALK_MAX : PLAYERBOT_AREZZO_RAID_WALK_MAX))
+				w = "walk";
+			++why[w ? w : "free"];
+		}
+		std::string list;
+		for (std::map<std::string, int>::const_iterator w = why.begin(); w != why.end(); ++w)
+		{
+			char one[48];
+			snprintf(one, sizeof(one), " %s=%d", w->first.c_str(), w->second);
+			list += one;
+		}
+		sys_log(0, "ARZ_BOT: raid refusals race=%u map=%ld on_map=%d%s", (unsigned int)row.wRace, row.lMap, onMap, list.c_str());
+	}
+
 	// MT2009_PLUS_OCHAO_BOTS_V1 (top-up): while a temple raid gathers, a
 	// member that is no longer within the walk (sent back to the gate after
 	// its deaths, or dead where it stands) is let go, and the raid is filled
@@ -630,7 +664,9 @@ namespace
 			if (!has)
 				chosen.back() = *shaman;
 		}
-		const int need = std::max(2, ((int)row.bSize + 1) / 2);
+		// MT2009_PLUS_AREZZO_BOTS_V1 (raid): on an Arezzo map two are enough to
+		// begin; the gathering calls more (the stall rule reinforces).
+		const int need = IsPlayerBotArezzoMap(row.lMap) ? 2 : std::max(2, ((int)row.bSize + 1) / 2);
 		if ((int)chosen.size() < need)
 		{
 			// Once in ten minutes a boss, each boss on its own: one throttle for
@@ -645,6 +681,8 @@ namespace
 						perEmpire[1], perEmpire[2], perEmpire[3], need);
 				if (row.lMap == PLAYERBOT_MAP_OCHAO)
 					LogPlayerBotOchaoRaidRefusals(row, boss, dwNow);
+				if (IsPlayerBotArezzoMap(row.lMap))
+					LogPlayerBotArezzoRaidRefusals(row, boss, dwNow); // MT2009_PLUS_AREZZO_BOTS_V1
 			}
 			return false;
 		}
@@ -845,12 +883,13 @@ namespace
 			}
 			int need = std::max(2, ((int)row.bSize + 1) / 2);
 			const bool timeUp = dwNow - raid.dwPhaseSince >= (row.lMap == PLAYERBOT_MAP_OCHAO
-					? PLAYERBOT_OCHAO_RAID_GATHER_MS : (IsPlayerBotArezzoMap(row.lMap) // MT2009_PLUS_AREZZO_BOTS_V1
-					? PLAYERBOT_AREZZO_RAID_GATHER_MS : PLAYERBOT_BOSS_RAID_GATHER_MS)); // MT2009_PLUS_OCHAO_BOTS_V1
+					? PLAYERBOT_OCHAO_RAID_GATHER_MS : (row.lMap == PLAYERBOT_MAP_AREZZO_FOREST // MT2009_PLUS_AREZZO_BOTS_V1
+					? PLAYERBOT_AREZZO_FOREST_RAID_GATHER_MS : (IsPlayerBotArezzoMap(row.lMap)
+					? PLAYERBOT_AREZZO_RAID_GATHER_MS : PLAYERBOT_BOSS_RAID_GATHER_MS))); // MT2009_PLUS_OCHAO_BOTS_V1
 			// MT2009_PLUS_OCHAO_BOTS_V1 (gather): in the labyrinth the walk is
 			// long and the packs on it many - at the end of the gathering two
 			// who have come go in, and the rest follow them to him.
-			if (row.lMap == PLAYERBOT_MAP_OCHAO && timeUp)
+			if ((row.lMap == PLAYERBOT_MAP_OCHAO || IsPlayerBotArezzoMap(row.lMap)) && timeUp) // MT2009_PLUS_AREZZO_BOTS_V1
 				need = 2;
 			if (arrived >= (int)raid.members.size() || arrived >= (int)row.bSize || started ||
 					(timeUp && arrived >= need))

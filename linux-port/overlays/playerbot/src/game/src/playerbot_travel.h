@@ -2504,7 +2504,7 @@ namespace
 			// stays until it is told to leave - the visit clock, the services,
 			// the medal, the weapon and the river wait; only what stops the
 			// fight (blocked) takes it home, and the order brings it back.
-			if (IsPlayerBotArezzoMap(mapIndex) && IsPlayerBotArezzoHeldHere(ch) && !blocked)
+			if (IsPlayerBotArezzoMap(mapIndex) && IsPlayerBotArezzoHeldHere(ch) && !IsPlayerBotArezzoTrulyBlocked(ch))
 				return false;
 
 			// A share of the bots keeps Joan as home: the services trip goes
