@@ -1259,7 +1259,7 @@ def read_ai_weights():
                     continue
                 if name in ("BATTLEPASS", "SASH", "ALCHEMY"):
                     try:
-                        vals[name] = max(0, min(100, int(parts[1])))
+                        vals[name] = max(0, min(250, int(parts[1])))
                     except ValueError:
                         pass
                     continue
@@ -1357,7 +1357,7 @@ def write_ai_weights(vals):
     body.append("KINGDOMPVP\t%d" % max(0, min(100, int(vals.get("KINGDOMPVP", 0)))))
     # The three wills, percent of the build's: 100 is the world as it was.
     for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
-        body.append("%s\t%d" % (key, max(0, min(100, int(vals.get(key, 100))))))
+        body.append("%s\t%d" % (key, max(0, min(250, int(vals.get(key, 100))))))
     # The lowest plus a scroll refine may land on; 1 leaves the bots' own
     # rules alone.
     body.append("SCROLL_FROM\t%d" % max(1, min(9, int(vals.get("SCROLL_FROM", 1)))))
@@ -4095,17 +4095,17 @@ T.update({
  "ai_rest_off":  {"en":"nobody rests","pl":"nikt nie odpoczywa","de":"niemand ruht","tr":"kimse dinlenmez"},
  "ai_rest_all":  {"en":"every bot","pl":"każdy bot","de":"jeder Bot","tr":"her bot"},
  "ai_will_bp":   {"en":"Will to do the Battle Pass","pl":"Chęć robienia Battle Passa"},
- "ai_will_bp_help": {"en":"Every 1.5-2.5 minutes a bot with nothing else to do draws whether it takes one of its open Battle Pass missions on as a goal for up to an hour: a trip to the map of the mission's Metin stone, fishing, the blacksmith, or a place in a boss raid. The slider multiplies that chance (at 100 it depends on the personality: 15-70%) and the chance of taking the next mission of a chain. 0 - no deliberate Battle Pass trips at all, and running ones end at the next check. Progress made by the way (monsters, Metins and fish met on the way, shouts on the chat) counts whatever the slider says. Applies at once.",
-                  "pl":"Co 1,5–2,5 minuty bot bez innego zajęcia losuje, czy weźmie jedną ze swoich otwartych misji Battle Passa jako cel na do godziny: wyprawa na mapę metina z misji, łowienie ryb, wizyta u kowala albo miejsce w rajdzie na bossa. Suwak mnoży tę szansę (przy 100 zależy od osobowości: 15–70%) i szansę wzięcia kolejnej misji z łańcucha. 0 - żadnych celowych wypraw po Battle Pass, a trwające kończą się przy następnym sprawdzeniu. Postęp „przy okazji” (potwory, metiny i ryby spotkane po drodze, okrzyki na czacie) liczy się niezależnie od suwaka. Działa od razu."},
+ "ai_will_bp_help": {"en":"The chance a bot with nothing to do deliberately takes a Battle Pass mission on (Metin, fishing, blacksmith, boss). 100 = as before (15-70% by personality), 250 = 2.5x that (at most every time), 0 = only progress by the way. Applies at once.",
+                  "pl":"Szansa, że bot bez zajęcia celowo weźmie misję Battle Passa (metin, ryby, kowal, boss). 100 = jak dotąd (15–70% wg osobowości), 250 = 2,5× tyle (najwyżej za każdym razem), 0 = tylko postęp przy okazji. Od razu."},
  "ai_will_bp_off": {"en":"only by the way","pl":"tylko przy okazji"},
  "ai_will_all":  {"en":"as before","pl":"jak dotąd"},
  "ai_will_sash": {"en":"Will to make sashes","pl":"Chęć robienia szarf"},
- "ai_will_sash_help": {"en":"At 100, 80% of the bots of level 30 and up build sashes (chosen for good by the character number). A builder keeps its sashes, combines them at Uriel, absorbs a good weapon or armour into one, buys sashes and pieces to absorb off the market and wears the best one. The slider shrinks that pool: the bots outside it sell their sashes on their stalls, and a sash already worn stays on. Raising it brings the same bots back. Reaches a bot at its next sash check (3-6 minutes).",
-                  "pl":"Przy 100 szarfy buduje 80% botów od 30 poziomu (wybranych na stałe po numerze postaci). Budowniczy trzyma szarfy w plecaku, łączy je u Uriela, wchłania w nie dobrą broń lub zbroję, kupuje szarfy i przedmioty do wchłonięcia z rynku i zakłada najlepszą. Suwak zmniejsza tę pulę: boty spoza niej sprzedają szarfy na straganach, a założona szarfa zostaje na postaci. Podniesienie przywraca te same boty. Dociera do bota przy jego następnym sprawdzeniu szarf (3–6 minut)."},
+ "ai_will_sash_help": {"en":"The pool of level 30+ bots that build sashes. 100 = 80% of them, 125 and up = all, 0 = none (the rest sell their sashes). At the next sash check (3-6 min).",
+                  "pl":"Pula botów od 30 lv, które budują szarfy. 100 = 80% z nich, od 125 = wszystkie, 0 = nikt (reszta sprzedaje szarfy). Przy następnym sprawdzeniu szarf (3–6 min)."},
  "ai_will_sash_off": {"en":"nobody builds, all sell","pl":"nikt nie buduje, wszyscy sprzedają"},
  "ai_will_alch": {"en":"Will to do alchemy","pl":"Chęć robienia alchemii"},
- "ai_will_alch_help": {"en":"At 100, 75% of the bots of level 30 and up use Dragon Soul alchemy (chosen for good by the character number): they open Cor Draconis, wear the best dragon stones, refine them at the Alchemist, buy Cors, stones and the Time Elixir off the market. The slider shrinks that pool: the bots outside it sell their Cors and spare stones on their stalls. Every bot of 30 and up still gathers the shards and daily Cors whatever the slider says, and worn stones stay on. Raising it brings the same bots back. Applies at once.",
-                  "pl":"Przy 100 alchemii smoka używa 75% botów od 30 poziomu (wybranych na stałe po numerze postaci): otwierają Cor Draconis, zakładają najlepsze kamienie smoka, ulepszają je u Alchemika, kupują z rynku Cory, kamienie i Eliksir Czasu. Suwak zmniejsza tę pulę: boty spoza niej sprzedają Cory i zbędne kamienie na straganach. Odłamki i dzienne Cory zbiera każdy bot od 30 poziomu niezależnie od suwaka, a założone kamienie zostają. Podniesienie przywraca te same boty. Działa od razu."},
+ "ai_will_alch_help": {"en":"The pool of level 30+ bots that use Dragon Soul alchemy. 100 = 75% of them, 135 and up = all, 0 = none (the rest sell Cors and spare stones). Applies at once.",
+                  "pl":"Pula botów od 30 lv, które używają alchemii smoka. 100 = 75% z nich, od 135 = wszystkie, 0 = nikt (reszta sprzedaje Cory i zbędne kamienie). Od razu."},
  "ai_will_alch_off": {"en":"nobody uses, all sell","pl":"nikt nie używa, wszyscy sprzedają"},
  "ai_kpvp":      {"en":"Hostility between kingdoms","pl":"Wrogość między królestwami","de":"Feindschaft zwischen Königreichen","tr":"Krallıklar arası düşmanlık"},
  "ai_kpvp_help": {"en":"The share of bots that will start a duel with a bot of another kingdom when they meet on shared ground - Orc Valley, the desert, Mount Sohan, the dungeons. Never in a village, never against a player, and never against a bot that is hurt or already fighting one. Which bots are the aggressive ones is fixed per character, so the same ones quarrel after every restart. Off by default. It works only with the shared world layout (unified, the default up to 1500 bots): under split every core holds one kingdom's bots, so there is nobody to fight.",
@@ -4658,6 +4658,12 @@ def csrf_protect():
     sent = request.form.get("_csrf", "")
     real = session.get("_csrf", "")
     if not (real and sent and hmac.compare_digest(sent, real)):
+        # Back to the form itself, not to the front page: a server that lets
+        # only /register through its gate would answer the front page with a
+        # 403, and the player would never see why the form did nothing.
+        if request.endpoint == "register":
+            flash(reg_msg("csrf_bad"), "error")
+            return redirect(url_for("register"))
         flash(t("csrf_bad"), "error")
         return redirect(url_for("login"))
 
@@ -6009,6 +6015,248 @@ TPL_REG_DONE = BASE.replace("__BODY__", """
 
 <p style="margin-top:16px"><a href="{{url_for('login')}}">← {{brand}}</a></p></div>""")
 
+# The supporters' sign-up page: what /register shows when M2_REGISTER_ACCESS_CODE
+# is set. A page of its own rather than BASE, dressed like metin2sp.pl (the same
+# charcoal, ember and gold, the same artwork behind it) -- it is the page the
+# supporters' channel links to, and it should look like it belongs to the site
+# they came from. Self-contained: the artwork and the icon come from /register
+# itself (see REGISTER_ASSETS), fonts fall back to the system's, and there is no
+# link to any other page of this panel, which a gated server would refuse.
+#
+# done=True is the same page after a successful sign-up: the form gives way to
+# the "see you in the game" note and the how-to stays.
+TPL_REG_SUPPORTERS = """<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{% if done %}Konto gotowe{% else %}Załóż konto{% endif %} — MT2009 PLUS dla wspierających</title>
+<link rel="icon" type="image/png" href="{{ url_for('register', asset='ikona') }}">
+<style>
+:root{--bg:#0f0a08;--card:#1d1511;--card2:#261b15;--border:#4a3322;--border-soft:#2e2019;
+--text:#f1e7d6;--muted:#c1b299;--accent:#e2502a;--accent2:#e0b64a;--gold:#f0c878;--ok:#6cc46b;--bad:#ff8a7a;
+--chunjo:#f2c230;--radius:14px;--radius-sm:10px;
+--font-display:"Poppins","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+--font-body:"Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--text);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;
+background:linear-gradient(rgba(12,8,6,.84),rgba(12,8,6,.95)),url("{{ url_for('register', asset='tlo') }}") center top/cover fixed,var(--bg)}
+@media (max-width:1024px){body{background-attachment:scroll,scroll}}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em}
+a{color:var(--accent2)}
+a:hover{color:#ffcf7a}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(10,8,7,.8);backdrop-filter:blur(14px) saturate(140%);
+-webkit-backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid var(--border-soft);
+box-shadow:0 1px 0 rgba(226,80,42,.45)}
+.topbar-inner{max-width:1180px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-family:var(--font-display);font-size:1.3rem;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:9px;color:var(--text);text-decoration:none}
+.logo-mark{display:inline-flex;width:32px;height:32px;border-radius:9px;align-items:center;justify-content:center;font-size:1rem;
+background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 4px 14px rgba(226,80,42,.35)}
+.logo-dot{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.top-note{color:var(--muted);font-size:.88rem;font-weight:600}
+.hero{position:relative;text-align:center;padding:56px 16px 30px}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+background:radial-gradient(700px 320px at 50% 30%,rgba(226,80,42,.22),transparent 70%)}
+.hero-inner{max-width:860px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--accent2);font-weight:700;font-size:.82rem;text-transform:uppercase;
+letter-spacing:.08em;background:rgba(226,80,42,.1);border:1px solid rgba(226,80,42,.3);padding:6px 14px;border-radius:999px}
+.hero h1{font-size:clamp(1.9rem,5vw,3.2rem);line-height:1.12;margin:16px 0 14px;text-shadow:0 0 22px rgba(226,80,42,.35)}
+.lead{font-size:1.12rem;max-width:720px;margin:0 auto}
+.chunjo{display:inline-flex;align-items:center;gap:14px;margin:26px auto 0;padding:12px 22px 12px 14px;text-align:left;
+background:linear-gradient(135deg,rgba(242,194,48,.16),rgba(29,21,17,.92));border:1px solid rgba(242,194,48,.55);
+border-radius:var(--radius);box-shadow:0 0 26px rgba(242,194,48,.14)}
+.chunjo-flag{flex:0 0 auto;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:1.35rem;
+background:radial-gradient(circle at 35% 30%,#ffe27a,var(--chunjo) 55%,#b8860b);box-shadow:0 0 0 3px rgba(242,194,48,.25),0 0 18px rgba(242,194,48,.45)}
+.chunjo strong{display:block;font-family:var(--font-display);font-size:1.35rem;color:var(--chunjo);line-height:1.2}
+.chunjo span{color:var(--muted);font-size:.93rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:999px;font-weight:700;
+border:none;cursor:pointer;font-size:.98rem;font-family:inherit;text-decoration:none;transition:transform .15s ease,box-shadow .15s ease,filter .15s ease}
+.btn:hover{text-decoration:none;transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn-main{width:100%;padding:14px 22px;font-size:1.05rem;color:#fff;background:linear-gradient(135deg,var(--accent),#c9722e);
+box-shadow:0 4px 16px rgba(226,80,42,.35)}
+.btn-main:hover{box-shadow:0 10px 26px rgba(226,80,42,.5);color:#fff}
+.btn-coffee{background:linear-gradient(135deg,#f5c24a,#e0913a);color:#1b0d06;box-shadow:0 4px 16px rgba(240,180,70,.3)}
+.btn-coffee:hover{color:#1b0d06;box-shadow:0 10px 26px rgba(240,180,70,.45)}
+.hero-actions{margin-top:22px}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+.col{display:grid;gap:22px;min-width:0}
+.card{background:rgba(29,21,17,.93);border:1px solid var(--border);border-radius:var(--radius);padding:24px;
+box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 1px 0 rgba(240,200,120,.06)}
+.card h2{margin:0 0 6px;font-size:1.35rem;color:var(--gold)}
+.card>p{margin:0 0 14px;color:var(--muted)}
+.card.form-card{border-color:rgba(226,80,42,.55);box-shadow:0 0 26px rgba(226,80,42,.16),0 8px 24px rgba(0,0,0,.45)}
+label{display:block;font-weight:600;font-size:.93rem;margin:14px 0 6px}
+input[type=text],input[type=password]{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);
+background:rgba(12,8,6,.75);color:var(--text);font-size:1rem;font-family:inherit}
+input:focus{border-color:var(--accent2);outline:none;box-shadow:0 0 0 3px rgba(224,182,74,.18)}
+.field-code{padding:14px;margin-top:6px;border-radius:var(--radius-sm);border:1px dashed rgba(242,194,48,.5);background:rgba(242,194,48,.06)}
+.field-code label{margin-top:0;color:var(--chunjo)}
+.hint{font-size:.85rem;color:var(--muted);margin-top:5px;min-height:1em}
+.hint.ok{color:var(--ok)}.hint.bad{color:var(--bad)}
+.submit{margin-top:22px}
+.flash{border-radius:var(--radius-sm);padding:12px 14px;margin:0 0 14px;font-weight:600;border:1px solid}
+.flash.error{background:rgba(120,30,20,.45);border-color:rgba(255,120,100,.55);color:#ffd3cb}
+.flash.info{background:rgba(40,80,40,.4);border-color:rgba(108,196,107,.5);color:#d8f5d6}
+.steps{list-style:none;counter-reset:step;margin:14px 0 0;padding:0;display:grid;gap:18px}
+.steps>li{position:relative;padding:16px 16px 14px 58px;background:rgba(12,8,6,.5);border:1px solid var(--border-soft);border-radius:var(--radius-sm)}
+.steps>li::before{counter-increment:step;content:counter(step);position:absolute;left:14px;top:14px;width:30px;height:30px;border-radius:50%;
+display:grid;place-items:center;font-weight:800;color:#1b0d06;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.steps h3{margin:0 0 4px;font-size:1.03rem}
+.steps p{margin:0;color:var(--muted);font-size:.95rem}
+.srv{margin:12px 0 4px;display:grid;gap:8px}
+.srv-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 10px 8px 12px;
+border-radius:8px;background:rgba(0,0,0,.35);border:1px solid rgba(240,200,120,.16)}
+.srv-row span{color:var(--muted);font-size:.9rem}
+.srv-row code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:1.02rem;color:var(--gold);font-weight:700;word-break:break-all}
+.srv-val{display:flex;align-items:center;gap:8px;margin-left:auto}
+.copy{font:inherit;font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:999px;cursor:pointer;color:var(--text);
+background:var(--card2);border:1px solid var(--border)}
+.copy:hover{border-color:var(--accent2)}
+.done-card{text-align:center}
+.done-card .big{font-size:3rem;line-height:1}
+.footer{text-align:center;color:var(--muted);font-size:.88rem;padding:0 16px 34px}
+.footer a{color:var(--muted)}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.steps>li{padding-left:52px}.steps>li::before{left:12px}.hero{padding:34px 16px 20px}.lead{font-size:1rem}.card{padding:18px}
+.chunjo{display:flex;width:100%}.hero-actions .btn{width:100%}.top-note{display:none}}
+</style></head><body>
+<header class="topbar"><div class="topbar-inner">
+<a class="logo" href="{{ WEBSITE }}" rel="noopener"><span class="logo-mark" aria-hidden="true">⚔️</span><span>MT2009 <span class="logo-dot">PLUS</span></span></a>
+<span class="top-note">Serwer dla wspierających</span>
+</div></header>
+
+<section class="hero"><div class="hero-inner">
+<span class="eyebrow">⚔️ Wspólny serwer dla wspierających</span>
+{% if done %}
+<h1>Konto {{ form.login }} jest gotowe!</h1>
+<p class="lead">Dziękuję, że jesteś z nami. Wejdź do gry według trzech kroków poniżej — do zobaczenia w Chunjo!
+Już nie mogę się doczekać, aż stoczymy jakieś PvP i razem przejdziemy nowe dungeony.</p>
+{% else %}
+<h1>Dziękuję za Twoje wsparcie!</h1>
+<p class="lead">Załóż konto i graj razem ze mną! Już nie mogę się doczekać, aż stoczymy jakieś PvP
+i razem przejdziemy nowe dungeony.</p>
+{% endif %}
+<div class="chunjo" role="note">
+<div class="chunjo-flag" aria-hidden="true">🏯</div>
+<div><strong>Gramy w Chunjo</strong><span>Przy tworzeniu pierwszej postaci wybierz królestwo Chunjo — tam się spotkamy.</span></div>
+</div>
+<div class="hero-actions">
+<a class="btn btn-coffee" href="{{ COFFEE }}" target="_blank" rel="noopener">☕ Postaw kawę na rozwój MT2009 PLUS</a>
+</div>
+</div></section>
+
+<main class="wrap">
+<div class="col">
+{% if done %}
+<div class="card done-card">
+<div class="big" aria-hidden="true">🎉</div>
+<h2>Witaj na serwerze!</h2>
+<p>Logujesz się w grze nazwą <strong>{{ form.login }}</strong> i hasłem, które przed chwilą wybrałeś.
+Zapisz je sobie, żeby nie zginęło.</p>
+</div>
+{% else %}
+<div class="card form-card">
+<h2>Załóż konto</h2>
+<p>Konto działa na tym serwerze — to nim logujesz się w grze.</p>
+{% with m = get_flashed_messages(with_categories=true) %}{% for c, msg in m %}
+<div class="flash {{ 'error' if c == 'error' else 'info' }}" role="alert">{{ msg }}</div>
+{% endfor %}{% endwith %}
+<form method="post" action="{{ url_for('register') }}" novalidate>
+<input type="hidden" name="_csrf" value="{{ csrf_token }}">
+<div class="field-code">
+<label for="accessCode">🔑 Hasło dla wspierających</label>
+<input type="password" name="access_code" id="accessCode" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+<div class="hint">Znajdziesz je na kanale dla wspierających. Bez niego konto nie powstanie.</div>
+</div>
+<label for="regName">Login</label>
+<input type="text" name="login" id="regName" value="{{ form.login }}" maxlength="16" autocomplete="username" autocapitalize="off" spellcheck="false" required>
+<div class="hint" id="nameHint">4–16 liter lub cyfr, bez spacji i polskich znaków.</div>
+<label for="regPw">Hasło</label>
+<input type="password" name="pw" id="regPw" autocomplete="new-password" required>
+<div class="hint">Co najmniej 6 znaków.</div>
+<label for="regPw2">Powtórz hasło</label>
+<input type="password" name="pw2" id="regPw2" autocomplete="new-password" required>
+<div class="hint" id="pwHint"></div>
+<label for="regSocial">Kod usuwania postaci</label>
+<input type="text" name="social" id="regSocial" value="{{ form.social }}" maxlength="7" inputmode="numeric" pattern="[0-9]{7}" autocomplete="off" required>
+<div class="hint">Dowolne 7 cyfr, np. 1234567. Gra pyta o nie przy kasowaniu postaci — zapamiętaj je.</div>
+<div class="submit"><button class="btn btn-main" type="submit">Załóż konto i dołącz</button></div>
+</form>
+</div>
+{% endif %}
+</div>
+
+<div class="col">
+<div class="card">
+<h2>Jak zacząć grać</h2>
+<ol class="steps">
+<li><h3>Pobierz grę</h3>
+<p>Potrzebujesz klienta MT2009 PLUS.
+{% if client_url %}<a href="{{ client_url }}" rel="noopener noreferrer">Pobierz go stąd</a>{% else %}Link do pobrania jest na <a href="{{ DISCORD }}" target="_blank" rel="noopener">Discordzie</a>{% endif %}.
+Masz go już? Uruchom <strong>MT2009-Aktualizator</strong>, żeby był aktualny.</p></li>
+<li><h3>Dodaj serwer</h3>
+<p>W MT2009-Aktualizatorze kliknij <strong>„Dodaj własny serwer VPS”</strong>, wpisz dowolną nazwę i te dane:</p>
+<div class="srv">
+<div class="srv-row"><span>Adres IP</span><div class="srv-val"><code>{{ game.address }}</code><button type="button" class="copy" data-copy="{{ game.address }}">Kopiuj</button></div></div>
+<div class="srv-row"><span>Port logowania</span><div class="srv-val"><code>{{ game.login_port }}</code><button type="button" class="copy" data-copy="{{ game.login_port }}">Kopiuj</button></div></div>
+<div class="srv-row"><span>Port kanału 1</span><div class="srv-val"><code>{{ game.channel_port }}</code><button type="button" class="copy" data-copy="{{ game.channel_port }}">Kopiuj</button></div></div>
+</div></li>
+<li><h3>Wejdź do gry</h3>
+<p>W grze wybierz serwer <strong>„Online: &lt;Twoja nazwa&gt;”</strong>, zaloguj się kontem z tej strony
+i stwórz postać w królestwie <strong style="color:var(--chunjo)">Chunjo</strong>.</p></li>
+</ol>
+</div>
+<div class="card">
+<h2>Wspólny serwer wspierających</h2>
+<p>To jeden, wspólny świat MT2009 PLUS dla osób, które wspierają rozwój projektu. Gramy tu razem —
+ja, Ty i inni wspierający — a obok nas setki botów, które grają jak ludzie: polują, handlują,
+zakładają gildie i biją bossów. Konto z tej strony działa tylko na tym serwerze.</p>
+</div>
+</div>
+</main>
+
+<footer class="footer">MT2009 PLUS · <a href="{{ WEBSITE }}" rel="noopener">metin2sp.pl</a> · <a href="{{ DISCORD }}" target="_blank" rel="noopener">Discord</a></footer>
+
+<script>
+(function(){
+ var n=document.getElementById('regName'),nh=document.getElementById('nameHint'),
+     p1=document.getElementById('regPw'),p2=document.getElementById('regPw2'),ph=document.getElementById('pwHint'),tmr=null;
+ if(n){
+  var base=nh.textContent;
+  n.addEventListener('input',function(){
+   clearTimeout(tmr); nh.textContent=base; nh.className='hint';
+   var v=n.value.trim();
+   if(!v) return;
+   if(!/^[A-Za-z0-9]{4,16}$/.test(v)){ if(v.length>=4){nh.textContent='Tylko litery i cyfry (bez polskich znaków), 4–16 znaków.';nh.className='hint bad';} return; }
+   tmr=setTimeout(function(){
+    fetch('/api/checkname?u='+encodeURIComponent(v)).then(function(r){return r.ok?r.json():null;}).then(function(d){
+     if(!d||!d.ok||n.value.trim()!==v) return;
+     nh.textContent=d.free?'✓ Login jest wolny':'✗ Ten login jest już zajęty';
+     nh.className='hint '+(d.free?'ok':'bad');
+    }).catch(function(){});
+   },350);
+  });
+  var pwc=function(){
+   if(!p2.value){ph.textContent='';ph.className='hint';return;}
+   var same=p1.value===p2.value;
+   ph.textContent=same?'✓ Hasła są zgodne':'✗ Hasła się różnią';
+   ph.className='hint '+(same?'ok':'bad');
+  };
+  p1.addEventListener('input',pwc); p2.addEventListener('input',pwc);
+ }
+ Array.prototype.forEach.call(document.querySelectorAll('.copy'),function(b){
+  b.addEventListener('click',function(){
+   var v=b.getAttribute('data-copy'),done=function(){b.textContent='Skopiowano';setTimeout(function(){b.textContent='Kopiuj';},1500);};
+   if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(v).then(done,function(){});return;}
+   var t=document.createElement('textarea');t.value=v;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';
+   document.body.appendChild(t);t.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(t);
+  });
+ });
+})();
+</script>
+</body></html>"""
+
 TPL_ACCOUNT_LOGIN = BASE.replace("__BODY__", """
 <p><a href="{{url_for('login')}}">{{t('acc_back')}}</a></p>
 <div class="card" style="max-width:420px;margin:20px auto;text-align:center">
@@ -6957,20 +7205,6 @@ TPL_AI = BASE.replace("__BODY__", """
     <span>0 — {{t('ai_rest_off')}}</span><span>100 — {{t('ai_rest_all')}}</span>
   </div>
 </div>
-{% if engine_mt2009 %}
-{% for wkey, wlabel, wicon, woff in [("BATTLEPASS", "ai_will_bp", "🎟️", "ai_will_bp_off"), ("SASH", "ai_will_sash", "🎀", "ai_will_sash_off"), ("ALCHEMY", "ai_will_alch", "🐉", "ai_will_alch_off")] %}
-<div style="margin-bottom:18px">
-  <h3 style="margin:0 0 2px">{{wicon}} {{t(wlabel)}}
-      <span class="badge" id="v_{{wkey}}">{{cur.get(wkey, 100)}}%</span></h3>
-  <p class="muted" style="margin:0 0 6px">{{t(wlabel + '_help')}}</p>
-  <input type="range" name="{{wkey}}" id="s_{{wkey}}" min="0" max="100" step="5" value="{{cur.get(wkey, 100)}}" style="width:100%"
-         oninput="document.getElementById('v_{{wkey}}').textContent=this.value+'%'">
-  <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
-    <span>0 — {{t(woff)}}</span><span>100 — {{t('ai_will_all')}}</span>
-  </div>
-</div>
-{% endfor %}
-{% endif %}
 <div style="margin-bottom:18px">
   <h3 style="margin:0 0 2px">⚔️ {{t('ai_kpvp')}}
       <span class="badge" id="v_KINGDOMPVP">{{cur.get('KINGDOMPVP', 0)}}%</span></h3>
@@ -7026,6 +7260,21 @@ TPL_AI = BASE.replace("__BODY__", """
   </div>
 </div>
 {% endfor %}
+{% if engine_mt2009 %}
+{# The three wills sit with the goal weights: 0-250, 100 = the build's share. #}
+{% for wkey, wlabel, wicon, woff in [("BATTLEPASS", "ai_will_bp", "🎟️", "ai_will_bp_off"), ("SASH", "ai_will_sash", "🎀", "ai_will_sash_off"), ("ALCHEMY", "ai_will_alch", "🐉", "ai_will_alch_off")] %}
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">{{wicon}} {{t(wlabel)}}
+      <span class="badge" id="v_{{wkey}}">{{cur.get(wkey, 100)}}</span></h3>
+  <p class="muted" style="margin:0 0 6px">{{t(wlabel + '_help')}}</p>
+  <input type="range" class="m2ai-goal" name="{{wkey}}" id="s_{{wkey}}" min="0" max="250" step="5" value="{{cur.get(wkey, 100)}}" style="width:100%"
+         oninput="document.getElementById('v_{{wkey}}').textContent=this.value">
+  <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
+    <span>0 — {{t(woff)}}</span><span>100 — {{t('ai_will_all')}}</span><span>250 — {{t('ai_often')}}</span>
+  </div>
+</div>
+{% endfor %}
+{% endif %}
 <button type="button" onclick="m2aiReset()">{{t('ai_reset')}}</button>
 <button class="big" style="margin-top:10px">{{t('ai_save')}}</button>
 </form></div>
@@ -18525,7 +18774,7 @@ def ai_weights():
         # (r40250, or a tab opened before they existed) keeps the file's.
         for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
             try:
-                vals[key] = max(0, min(100, int(request.form.get(key, old.get(key, 100)))))
+                vals[key] = max(0, min(250, int(request.form.get(key, old.get(key, 100)))))
             except (TypeError, ValueError):
                 vals[key] = old.get(key, 100)
         try:
@@ -19501,45 +19750,203 @@ def crash_list():
     return jsonify(count=len(out), reports=out)
 
 # ---------------- Player registration & account ----------------
+#
+# The supporters' password (M2_REGISTER_ACCESS_CODE in .env). Empty: the page is
+# the ordinary registration form and nothing below changes a thing. Set: nobody
+# gets an account without typing it, and the page becomes the supporters'
+# sign-up page -- in Polish, because that is who it is for.
+#
+# Read from the environment on every request rather than once at import, so a
+# panel started before the operator set it cannot end up enforcing a stale one.
+def register_access_code():
+    return os.environ.get("M2PANEL_REGISTER_ACCESS_CODE", "").strip()
+
+def register_code_matches(sent, real):
+    """Constant time, and blind to the length too: both sides are hashed to the
+    same size before they are compared."""
+    a = hashlib.sha256(sent.encode("utf-8", "replace")).digest()
+    b = hashlib.sha256(real.encode("utf-8", "replace")).digest()
+    return hmac.compare_digest(a, b)
+
+# Wrong guesses. Per address: five in a quarter of an hour, then that address is
+# refused -- even with the right password, or a lockout would still answer
+# "yes" and be no lockout at all. Across all addresses: a ceiling per hour, so
+# guessing from many addresses at once stops too. Every wrong guess also costs
+# the guesser a second. What this bounds is the rate; the strength comes from
+# the password, which is why .env.example asks for ten characters or more.
+REG_CODE_IP_FAILS, REG_CODE_IP_WINDOW = 5, 900
+REG_CODE_ALL_FAILS, REG_CODE_ALL_WINDOW = 200, 3600
+_REG_CODE_FAILS = {}
+_REG_CODE_LOCK = threading.Lock()
+
+def _reg_code_prune(now):
+    for ip in list(_REG_CODE_FAILS):
+        kept = [ts for ts in _REG_CODE_FAILS[ip] if now - ts < REG_CODE_ALL_WINDOW]
+        if kept:
+            _REG_CODE_FAILS[ip] = kept
+        else:
+            del _REG_CODE_FAILS[ip]
+
+def register_code_blocked(ip):
+    now = time.time()
+    with _REG_CODE_LOCK:
+        _reg_code_prune(now)
+        mine = [ts for ts in _REG_CODE_FAILS.get(ip, []) if now - ts < REG_CODE_IP_WINDOW]
+        total = sum(len(v) for v in _REG_CODE_FAILS.values())
+    return len(mine) >= REG_CODE_IP_FAILS or total >= REG_CODE_ALL_FAILS
+
+def register_code_failed(ip):
+    with _REG_CODE_LOCK:
+        _REG_CODE_FAILS.setdefault(ip, []).append(time.time())
+        total = sum(len(v) for v in _REG_CODE_FAILS.values())
+    if total == REG_CODE_ALL_FAILS:
+        app.logger.warning("register: %d wrong supporters' passwords within an hour; "
+                           "the form refuses every password until they age out", total)
+
+def reg_msg(key):
+    """A message for the registration page: Polish when the supporters' page is
+    on (the whole page is Polish), otherwise in the visitor's language."""
+    if register_access_code():
+        return REG_SUP_MSG.get(key) or T.get(key, {}).get("pl") or t(key)
+    return t(key)
+
+REG_SUP_MSG = {
+    "reg_code_missing": "Wpisz hasło dla wspierających — bez niego nie założysz konta. "
+                        "Znajdziesz je na kanale dla wspierających.",
+    "reg_code_wrong":   "To nie jest poprawne hasło dla wspierających. Sprawdź, czy przepisałeś "
+                        "je dokładnie (wielkość liter ma znaczenie).",
+    "reg_code_locked":  "Za dużo błędnych prób hasła dla wspierających. Odczekaj 15 minut "
+                        "i spróbuj ponownie.",
+    "csrf_bad":         "Formularz wygasł albo nie przyszedł z tej strony. Wypełnij go jeszcze raz.",
+}
+
+# What the page tells a player to type into MT2009-Aktualizator ("Dodaj własny
+# serwer VPS"): the address and the two ports. The ports are the ones this
+# stack publishes (compose passes M2_CLIENT_AUTH_PORT / M2_AUTH_PORT and the
+# first port of M2_GAME_PORT_RANGE). The address, unless the operator names one,
+# is the one the player opened this page on -- the game runs on the same
+# machine, and unlike M2_PUBLIC_ADDRESS it cannot be left behind when a server
+# moves. A loopback or LAN address says nothing to anybody else, so then the
+# configured one is shown instead.
+def _is_public_host(host):
+    if not host or host == "localhost" or "." not in host and ":" not in host:
+        return False
+    try:
+        import ipaddress
+        ip = ipaddress.ip_address(host)
+    except ValueError:
+        return True                    # a domain name
+    return not (ip.is_loopback or ip.is_private or ip.is_link_local or ip.is_unspecified)
+
+def register_game_info():
+    host = (request.host or "").strip()
+    if host.startswith("["):
+        host = host[1:].split("]", 1)[0]
+    elif host.count(":") == 1:
+        host = host.rsplit(":", 1)[0]
+    named = os.environ.get("M2PANEL_REGISTER_GAME_ADDRESS", "").strip()
+    conf = os.environ.get("M2PANEL_GAME_ADDRESS", "").strip()
+    if named:
+        address = named
+    elif _is_public_host(host):
+        address = host
+    else:
+        address = conf or host
+
+    def _port(raw, default):
+        m = re.match(r"\s*(\d{1,5})", raw or "")
+        return int(m.group(1)) if m and 0 < int(m.group(1)) < 65536 else default
+    return {
+        "address": address,
+        "login_port": _port(os.environ.get("M2PANEL_LOGIN_PORT"), 11000),
+        "channel_port": _port(os.environ.get("M2PANEL_GAME_PORT_RANGE"), 13000),
+    }
+
+# The page's own pictures. Served from /register itself, with a query string,
+# because a public server may let exactly that one path through its gate
+# (nginx "location = /register") and nothing else -- not /static, not even
+# /favicon.ico. A fixed list: the name picks an entry, it is never a path.
+REGISTER_ASSETS = {
+    "tlo":   (os.path.join(_HERE, "register_assets", "mt2009plus-tlo.webp"), "image/webp"),
+    "ikona": (FAVICON, "image/png"),
+}
+
+def _register_asset(name):
+    entry = REGISTER_ASSETS.get(name)
+    if not entry or not os.path.exists(entry[0]):
+        return ("", 404)
+    resp = send_file(entry[0], mimetype=entry[1], conditional=True)
+    resp.headers["Cache-Control"] = "public, max-age=604800"
+    return resp
+
+def _render_register(form, done=False):
+    if register_access_code():
+        return render_template_string(TPL_REG_SUPPORTERS, form=form, done=done,
+                                      game=register_game_info(), client_url=CLIENT_URL)
+    return render_template_string(TPL_REGISTER, form=form)
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "GET" and request.args.get("asset"):
+        return _register_asset(request.args.get("asset", ""))
     form = {"login": "", "social": ""}
+    code = register_access_code()
     if request.method == "POST":
+        if code:
+            # First, before anything else is looked at: a locked-out address
+            # learns nothing, not even whether this guess would have been right.
+            ip = request.remote_addr or "?"
+            form = {"login": request.form.get("login", "").strip()[:32],
+                    "social": request.form.get("social", "").strip()[:16]}
+            if register_code_blocked(ip):
+                flash(reg_msg("reg_code_locked"), "error")
+                return _render_register(form)
+            sent = request.form.get("access_code", "").strip()
+            if not sent:
+                flash(reg_msg("reg_code_missing"), "error")
+                return _render_register(form)
+            if not register_code_matches(sent, code):
+                register_code_failed(ip)
+                time.sleep(1.0)
+                flash(reg_msg("reg_code_wrong"), "error")
+                return _render_register(form)
         if rate_limited("register", 3, 3600):
-            flash(t("reg_too_many"), "error")
-            return render_template_string(TPL_REGISTER, form=form)
+            flash(reg_msg("reg_too_many"), "error")
+            return _render_register(form)
         lg = request.form.get("login", "").strip()
         pw = request.form.get("pw", "")
         pw2 = request.form.get("pw2", "")
         social = request.form.get("social", "").strip()
         form = {"login": lg, "social": social}
         if not (4 <= len(lg) <= 16 and lg.isalnum()):
-            flash(t("reg_bad_user"), "error")
+            flash(reg_msg("reg_bad_user"), "error")
         elif len(pw) < 6:
-            flash(t("reg_bad_pw"), "error")
+            flash(reg_msg("reg_bad_pw"), "error")
         elif pw != pw2:
-            flash(t("reg_pw_mismatch"), "error")
+            flash(reg_msg("reg_pw_mismatch"), "error")
         elif not (social.isdigit() and len(social) == 7):
-            flash(t("reg_bad_social"), "error")
+            flash(reg_msg("reg_bad_social"), "error")
         else:
             try:
                 with db() as c, c.cursor() as cur:
                     cur.execute("SELECT 1 FROM account.account WHERE login=%s", (lg,))
                     if cur.fetchone():
-                        flash(t("reg_name_taken"), "error")
-                        return render_template_string(TPL_REGISTER, form=form)
+                        flash(reg_msg("reg_name_taken"), "error")
+                        return _render_register(form)
                     cur.execute(
                         "INSERT INTO account.account (login,password,social_id,status) "
                         "VALUES (%s,%s,%s,'OK')",
                         (lg, m2_hash(pw), social))
+                if code:
+                    return _render_register({"login": lg, "social": ""}, done=True)
                 return render_template_string(TPL_REG_DONE,
                                               client_ready=os.path.exists(CLIENT_ZIP),
                                               client_url=CLIENT_URL,
                                               browser_ready=browser_play_ready(),
                                               play_url=play_url())
             except Exception:
-                flash(t("reg_failed"), "error")
-    return render_template_string(TPL_REGISTER, form=form)
+                flash(reg_msg("reg_failed"), "error")
+    return _render_register(form)
 
 @app.route("/account", methods=["GET", "POST"])
 def account():
