@@ -538,5 +538,131 @@
   "marker": "MT2009_PLUS_DUNGEON_PANEL_V1 (command)",
   "old": "// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n",
   "new": "// MT2009_PLUS_DUNGEON_PANEL_V1 (command): the dungeon panel,\n// \"/lochy [open|warp <i>|rank <i> <type>|reload]\" (playerbot_dungeon_panel.h).\nACMD(do_dungeon_panel)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid DungeonPanelCommand(LPCHARACTER ch, const char* argument);\n\tDungeonPanelCommand(ch, argument);\n}\n\n// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (decl)",
+  "old": "\t\tint\t\t\t\t\tGetShootMaxTargetCount(DWORD dwType = 0);\n",
+  "new": "\t\tint\t\t\t\t\tGetShootMaxTargetCount(DWORD dwType = 0);\n\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (decl): a normal shot's extra targets\n\t\t// go to the clients with its fly target, before the arrow leaves; a\n\t\t// shoot skill's cast is remembered until its shot (char_battle.cpp).\n\t\tvoid\t\t\t\tAnnounceShootTargets(DWORD dwTargetVID);\n\t\tvoid\t\t\t\tNoteShootSkillUsed();\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (pending)",
+  "old": "class CFuncShoot\n{\n",
+  "new": "// MT2009_PLUS_ARCHER_MULTISHOT_V1 (pending): when a player last cast a shoot\n// skill (UseSkill -> NoteShootSkillUsed), by VID, until the skill's own shot\n// comes (Shoot) or MT2009_PLUS_SKILL_SHOT_WAIT has passed. A fly target sent\n// meanwhile is the skill's, and a normal shot's extra arrows told with it\n// would be drawn with a Fire Arrow that never strikes them.\nstatic std::map<DWORD, DWORD> s_mapMt2009PlusShootSkillAt;\nstatic const DWORD MT2009_PLUS_SKILL_SHOT_WAIT = 3000;\n\nclass CFuncShoot\n{\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (flag)",
+  "old": "\tDWORD\t\tm_dVictimCount;\n\n\tCFuncShoot(LPCHARACTER ch, BYTE bType, DWORD dVictimCount = 1) : m_me(ch), m_bType(bType), m_bSucceed(FALSE), m_dVictimCount(dVictimCount)\n\t{\n\t}\n",
+  "new": "\tDWORD\t\tm_dVictimCount;\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (flag): this arrow is one of the shot's\n\t// extra ones. It was a mark on the monster itself (the engine's\n\t// SetAdditionalShootingTarget), shared by every archer and left on it\n\t// whenever an extra arrow did not land (out of range, a refused hit, a\n\t// skill that took no extras): a later Fire or Poison Arrow aimed at that\n\t// monster was then thrown away as an \"extra\" one - a miss, with the\n\t// mana and the cooldown gone. The shot knows its extras now; the mark is\n\t// neither read nor set.\n\tbool\t\tm_bAdditional;\n\n\tCFuncShoot(LPCHARACTER ch, BYTE bType, DWORD dVictimCount = 1) : m_me(ch), m_bType(bType), m_bSucceed(FALSE), m_dVictimCount(dVictimCount), m_bAdditional(false)\n\t{\n\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (skill extra)",
+  "old": "\t\t\t\tm_bType != SKILL_REPETITIVE_SHOT && m_bType != SKILL_ARROW_SHOWER && m_bType != SKILL_HORSE_WILDATTACK_RANGE &&\n\t\t\t\tpkVictim->IsAdditionalShootingTarget())\n\t\t\t{\n\t\t\t\tpkVictim->SetAdditionalShootingTarget(false);\n\t\t\t\treturn;\n\t\t\t}\n",
+  "new": "\t\t\t\tm_bType != SKILL_REPETITIVE_SHOT && m_bType != SKILL_ARROW_SHOWER && m_bType != SKILL_HORSE_WILDATTACK_RANGE &&\n\t\t\t\tm_bAdditional)\n\t\t\t{\n\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (skill extra): a one-target\n\t\t\t\t// skill strikes its own target alone.\n\t\t\t\treturn;\n\t\t\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (normal arrow)",
+  "old": "\t\t\t\tif (!pkVictim->IsAdditionalShootingTarget())\n\t\t\t\t\tm_me->UseArrow(pkArrow, 1);\n\t\t\t\telse\n\t\t\t\t\tpkVictim->SetAdditionalShootingTarget(false);\n",
+  "new": "\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (normal arrow): the extra arrows\n\t\t\t\t// of a shot cost nothing, only the main one does.\n\t\t\t\tif (!m_bAdditional)\n\t\t\t\t\tm_me->UseArrow(pkArrow, 1);\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (repetitive arrow)",
+  "old": "\t\t\t\tif (pkVictim->IsAdditionalShootingTarget())\n\t\t\t\t{\n\t\t\t\t\tif (m_me->HasPlayerData() && m_me->playerData->m_dwRemainingShootCount == 1)\n\t\t\t\t\t\tpkVictim->SetAdditionalShootingTarget(false);\n\t\t\t\t}\n\t\t\t\telse if (m_me->HasPlayerData() && m_me->playerData->m_dwRemainingShootCount == GetMaxAttackCountForSkill(SKILL_REPETITIVE_SHOT, m_me->GetSkillPower(SKILL_REPETITIVE_SHOT)))\n",
+  "new": "\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (repetitive arrow): one arrow for\n\t\t\t\t// the whole skill, at its first shot at the main target.\n\t\t\t\tif (!m_bAdditional && m_me->HasPlayerData() && m_me->playerData->m_dwRemainingShootCount == GetMaxAttackCountForSkill(SKILL_REPETITIVE_SHOT, m_me->GetSkillPower(SKILL_REPETITIVE_SHOT)))\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (shower arrow)",
+  "old": "\t\t\t\tsys_log(0, \"%s kwankeyok %s\", m_me->GetName(), pkVictim->GetName());\n\t\t\t\tm_me->ComputeSkill(m_bType, pkVictim);\n\n\t\t\t\tif (!pkVictim->IsAdditionalShootingTarget())\n",
+  "new": "\t\t\t\tsys_log(0, \"%s kwankeyok %s\", m_me->GetName(), pkVictim->GetName());\n\t\t\t\tm_me->ComputeSkill(m_bType, pkVictim);\n\n\t\t\t\tif (!m_bAdditional) // MT2009_PLUS_ARCHER_MULTISHOT_V1 (shower arrow)\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (horse arrow)",
+  "old": "\t\t\t\tsys_log(0, \"%s horse_wildattack %s\", m_me->GetName(), pkVictim->GetName());\n\t\t\t\tm_me->ComputeSkill(m_bType, pkVictim);\n\t\t\t\tif (!pkVictim->IsAdditionalShootingTarget())\n",
+  "new": "\t\t\t\tsys_log(0, \"%s horse_wildattack %s\", m_me->GetName(), pkVictim->GetName());\n\t\t\t\tm_me->ComputeSkill(m_bType, pkVictim);\n\t\t\t\tif (!m_bAdditional) // MT2009_PLUS_ARCHER_MULTISHOT_V1 (horse arrow)\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (mark)",
+  "old": "\t\tvictimNeighbor->SetAdditionalShootingTarget(true);\n\t\tm_attacker->AddFlyTarget(victimNeighbor, m_bType);\n",
+  "new": "\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (mark): no mark on the monster, see\n\t\t// CFuncShoot::m_bAdditional.\n\t\tm_attacker->AddFlyTarget(victimNeighbor, m_bType);\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (shoot skill)",
+  "old": "\tbool isPlayer = HasPlayerData();\n\n\tif (isPlayer && bType > 0 && IsSkillCooldown(",
+  "new": "\tbool isPlayer = HasPlayerData();\n\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (shoot skill): the cast's shot has come;\n\t// the next fly target is a normal shot's again (AnnounceShootTargets).\n\tif (isPlayer && bType > 0)\n\t\ts_mapMt2009PlusShootSkillAt.erase(GetVID());\n\n\tif (isPlayer && bType > 0 && IsSkillCooldown("
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (shoot)",
+  "old": "\tCFuncShoot f(this, bType);\n\tOnShootSkill(bType);\n\n\tif (isPlayer)\n\t{\n\t\tif (m_dwFlyTargetID != 0)\n\t\t{\n\t\t\tLPCHARACTER victim = CHARACTER_MANAGER::instance().Find(m_dwFlyTargetID);\n\t\t\tif (victim && m_vec_dwFlyTargets.size() == 0) {\n",
+  "new": "\tCFuncShoot f(this, bType);\n\tOnShootSkill(bType);\n\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (shoot): the main target, never struck\n\t// again by one of the same shot's extra arrows.\n\tconst DWORD dwMainVID = m_dwFlyTargetID;\n\n\tif (isPlayer)\n\t{\n\t\tif (m_dwFlyTargetID != 0)\n\t\t{\n\t\t\tLPCHARACTER victim = CHARACTER_MANAGER::instance().Find(m_dwFlyTargetID);\n\t\t\t// A normal shot's extra targets were found with its fly target and\n\t\t\t// sent to the clients then (AnnounceShootTargets). Found here, their\n\t\t\t// arrows reached the clients after the client had let this one go,\n\t\t\t// and were drawn with the next shot - arrows that did nothing. The\n\t\t\t// skills that shoot at several still find theirs here.\n\t\t\tif (victim && m_vec_dwFlyTargets.size() == 0 && bType != 0) {\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (shoot extras)",
+  "old": "\tif (isPlayer)\n\t{\n\t\tf.m_dVictimCount = m_vec_dwFlyTargets.size() + 1;\n\t\tf = std::for_each(m_vec_dwFlyTargets.begin(), m_vec_dwFlyTargets.end(), f);\n\t\tif (playerData->m_dwRemainingShootCount == 0)\n\t\t\tm_vec_dwFlyTargets.clear();\n\t}\n",
+  "new": "\tif (isPlayer)\n\t{\n\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (shoot extras): the extra arrows,\n\t\t// marked as such (no arrow spent, no one-target skill), from a copy -\n\t\t// an invisible target met on the way resets the fly targets\n\t\t// (ResetFlyTarget) under a loop that walked the vector itself.\n\t\tconst std::vector<DWORD> vecExtra(m_vec_dwFlyTargets);\n\t\tf.m_dVictimCount = vecExtra.size() + 1;\n\t\tf.m_bAdditional = true;\n\t\tfor (size_t i = 0; i < vecExtra.size(); ++i)\n\t\t\tif (vecExtra[i] != dwMainVID)\n\t\t\t\tf(vecExtra[i]);\n\t\tif (playerData->m_dwRemainingShootCount == 0)\n\t\t\tm_vec_dwFlyTargets.clear();\n\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (announce)",
+  "old": "\treturn 3 + m_bComboIndex;\n}\n",
+  "new": "\treturn 3 + m_bComboIndex;\n}\n\n// MT2009_PLUS_ARCHER_MULTISHOT_V1 (announce): a player's normal shot strikes\n// its target and up to two more - three and four with Sztuka Combo on\n// (GetShootMaxTargetCount) - of the monsters already attacking the archer, at\n// most 10 m from the target (CFuncFindShootTargetsAround). The client sends\n// the fly target as the bow is drawn and the shot as the arrow leaves; the\n// extra targets were looked for at the shot, so their arrows\n// (HEADER_GC_ADD_FLY_SHOOT_TARGETING) reached the clients after it and were\n// drawn with the next shot. They are found here, at the fly target\n// (CInputMain::FlyTarget), told while the bow is still drawn and struck by\n// the shot that follows (Shoot). What an earlier fly target told and no\n// shot used is taken back first, from the clients too, as UseSkill does for\n// a skill. Not while a shoot skill's shot is due (NoteShootSkillUsed), nor\n// between the arrows of one draw (two from the saddle, a Repetitive Shot).\nvoid CHARACTER::AnnounceShootTargets(DWORD dwTargetVID)\n{\n\tif (!IsPC() || !GetDesc() || GetDesc()->IsBot() || !HasPlayerData() || !GetSectree())\n\t\treturn;\n\n\tif (GetJob() != JOB_ASSASSIN || GetSkillGroup() != NINJA_ARCHER)\n\t\treturn;\n\n\tstd::map<DWORD, DWORD>::iterator it = s_mapMt2009PlusShootSkillAt.find(GetVID());\n\tif (it != s_mapMt2009PlusShootSkillAt.end())\n\t{\n\t\tif (get_dword_time() - it->second < MT2009_PLUS_SKILL_SHOT_WAIT)\n\t\t\treturn;\n\t\ts_mapMt2009PlusShootSkillAt.erase(it);\n\t}\n\n\tif (playerData->m_dwRemainingShootCount != 0)\n\t\treturn;\n\n\tif (!m_vec_dwFlyTargets.empty())\n\t{\n\t\tm_vec_dwFlyTargets.clear();\n\t\tTPacketGCFlyClearTargeting pack;\n\t\tpack.bHeader = HEADER_GC_CLEAR_FLY_SHOOT_TARGETING;\n\t\tpack.dwShooterVID = GetVID();\n\t\tPacketAround(&pack, sizeof(TPacketGCFlyClearTargeting), NULL);\n\t}\n\n\t// The target MainFlyTarget took (not an invisible one, not the ground).\n\tLPITEM pkBow, pkArrow;\n\tif (dwTargetVID == 0 || dwTargetVID != m_dwFlyTargetID || GetArrowAndBow(&pkBow, &pkArrow, 1) != 1)\n\t\treturn;\n\n\tLPCHARACTER victim = CHARACTER_MANAGER::instance().Find(dwTargetVID);\n\tif (!victim || victim->IsDead())\n\t\treturn;\n\n\tCFuncFindShootTargetsAround f(victim, this, 0);\n\tGetSectree()->ForEachAround(f);\n}\n\nvoid CHARACTER::NoteShootSkillUsed()\n{\n\tif (IsPC() && GetDesc() && !GetDesc()->IsBot())\n\t\ts_mapMt2009PlusShootSkillAt[GetVID()] = get_dword_time();\n}\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (skill shot)",
+  "old": "\tm_dwLastSkillTime = get_dword_time();\n\n\treturn true;\n}\n\nint CHARACTER::GetUsedSkillMasterType(DWORD dwVnum)\n",
+  "new": "\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (skill shot): the fly target that comes\n\t// before this skill's shot is the skill's (CHARACTER::AnnounceShootTargets).\n\tif (IsShootSkill(dwVnum))\n\t\tNoteShootSkillUsed();\n\n\tm_dwLastSkillTime = get_dword_time();\n\n\treturn true;\n}\n\nint CHARACTER::GetUsedSkillMasterType(DWORD dwVnum)\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (fly)",
+  "old": "\tTPacketCGFlyTargeting * p = (TPacketCGFlyTargeting *) pcData;\n\tch->MainFlyTarget(p->dwTargetVID, p->x, p->y);\n}\n",
+  "new": "\tTPacketCGFlyTargeting * p = (TPacketCGFlyTargeting *) pcData;\n\tch->MainFlyTarget(p->dwTargetVID, p->x, p->y);\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (fly): a normal shot's extra arrows leave\n\t// the bow with the main one (char_battle.cpp).\n\tch->AnnounceShootTargets(p->dwTargetVID);\n}\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (lag)",
+  "old": "bool IS_SPEED_HACK(LPCHARACTER ch, LPCHARACTER victim, DWORD current_time, bool isBow, DWORD victimCount, DWORD dwSkillVnum)\n{\n\tif (!ch->HasPlayerData())\n\t\treturn false;\n\n\tif (isBow)\n\t{\n\t\tauto lastTargetTime = ch->playerData->m_LastShootTargetTime;\n\t\tauto deltaTime = get_dword_time() - lastTargetTime;\n",
+  "new": "// MT2009_PLUS_ARCHER_MULTISHOT_V1 (lag): how long the input being read now may\n// have waited for it (main.cpp, idle). The bow's checks below measure the\n// time between a player's packets by when they are read: a round the bots'\n// AI held up let the fly target and the shot - or two shots - pile up in the\n// socket and be read together, a few microseconds apart, and the shot was\n// thrown away as too fast (\"target swap faster than attackSpeed\", \"attack\n// hack\") after the client had drawn it - or, read after the round, as too\n// late for its move packet (\"where is move packet?\"). Up to a second of\n// that wait counts for the player; a normal round is some 40 ms.\nextern DWORD g_dwMt2009PlusInputLag;\n\nbool IS_SPEED_HACK(LPCHARACTER ch, LPCHARACTER victim, DWORD current_time, bool isBow, DWORD victimCount, DWORD dwSkillVnum)\n{\n\tif (!ch->HasPlayerData())\n\t\treturn false;\n\n\tconst DWORD dwLagCredit = isBow ? MIN(g_dwMt2009PlusInputLag, (DWORD)1000) : 0;\n\n\tif (isBow)\n\t{\n\t\tauto lastTargetTime = ch->playerData->m_LastShootTargetTime;\n\t\tauto deltaTime = get_dword_time() - lastTargetTime + dwLagCredit;\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (lag move)",
+  "old": "\t\tif (movePacketLastAttackTimeDelta > movePacketTimeLimit)\n",
+  "new": "\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (lag move): the other way round - the\n\t\t// attack's move packet read before a held-up round, its shot after it.\n\t\tif (movePacketLastAttackTimeDelta > movePacketTimeLimit + dwLagCredit)\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (lag hits)",
+  "old": "\tif (isBow && dwSkillVnum != SKILL_REPETITIVE_SHOT && victimCount == 1 &&\n\t\tdeltaTime < attackSpeed)\n",
+  "new": "\tif (isBow && dwSkillVnum != SKILL_REPETITIVE_SHOT && victimCount == 1 &&\n\t\tdeltaTime + dwLagCredit < attackSpeed) // MT2009_PLUS_ARCHER_MULTISHOT_V1 (lag hits)\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (lag target)",
+  "old": "\t\tDWORD target_attack_delta_time = current_time - attackLog.last_attack_time;\n",
+  "new": "\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (lag target): see dwLagCredit.\n\t\tDWORD target_attack_delta_time = current_time - attackLog.last_attack_time + dwLagCredit;\n"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (input lag)",
+  "old": "LPFDWATCH\tmain_fdw = NULL;\n",
+  "new": "LPFDWATCH\tmain_fdw = NULL;\n\n// MT2009_PLUS_ARCHER_MULTISHOT_V1 (input lag): the time since the last round\n// of reading the clients (idle, before io_loop) - as long as a packet read in\n// this round may have waited in its socket. A round the bots' AI held up\n// reads packets sent far apart as if they had come together; the bow's\n// speed checks allow for it (IS_SPEED_HACK, battle.cpp).\nDWORD\t\tg_dwMt2009PlusInputLag = 0;\n"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (input lag poll)",
+  "old": "\tt = get_dword_time();\n\tif (!io_loop(main_fdw)) return 0;\n",
+  "new": "\tt = get_dword_time();\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (input lag poll): see g_dwMt2009PlusInputLag.\n\t{\n\t\tstatic DWORD s_dwLastInputRound = 0;\n\t\tg_dwMt2009PlusInputLag = s_dwLastInputRound ? t - s_dwLastInputRound : 0;\n\t\ts_dwLastInputRound = t;\n\t}\n\tif (!io_loop(main_fdw)) return 0;\n"
  }
 ]
