@@ -1138,6 +1138,31 @@ $script:DifficultyPresets = @{
     hard   = @{ Biologist = '24'; Horse = '12'; Book = '21'; BotBook = '21' }
 }
 
+# MT2009_PLUS_EXCHANGE_CHANCE_V1: the level also sets the NPC exchanges'
+# chances, percent - soul stones to Magiczny Pyl, skill books to Pergamin,
+# upgrade items to Materialy Rzemieslnicze - for the players and the bots'
+# dust alike. The presets are the ones quest/m2_difficulty.lua,
+# playerbot_config.h and the classic panel carry; custom takes .env's
+# M2_EXCHANGE_*_CHANCE, where 0 is the package's (easy's) number. The
+# migrator writes those three at every start; they are edited in .env.
+$script:ExchangeChanceKeys = @('M2_EXCHANGE_DUST_CHANCE', 'M2_EXCHANGE_PARCHMENT_CHANCE', 'M2_EXCHANGE_MATERIAL_CHANCE')
+$script:ExchangeChancePresets = @{ easy = @(100, 100, 55); medium = @(90, 45, 55); hard = @(55, 40, 55) }
+
+function Get-ExchangeChances {
+    param([string]$Level)
+    if ($Level -ne 'custom' -and $script:ExchangeChancePresets.ContainsKey($Level)) { return , $script:ExchangeChancePresets[$Level] }
+    $out = @(0, 0, 0)
+    for ($i = 0; $i -lt 3; $i++) {
+        $n = 0.0
+        $text = "$(Get-DotEnvValue -Key $script:ExchangeChanceKeys[$i] -Default '0')".Trim().TrimEnd('%').Replace(',', '.')
+        [void][double]::TryParse($text, [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$n)
+        $p = [int][Math]::Floor($n)
+        if ($p -le 0) { $p = $script:ExchangeChancePresets.easy[$i] } elseif ($p -gt 100) { $p = 100 }
+        $out[$i] = $p
+    }
+    return , $out
+}
+
 function Get-DotEnvValue {
     param([Parameter(Mandatory = $true)][string]$Key, [string]$Default = '')
     $envPath = Get-PlayerbotEnvPath
@@ -1206,6 +1231,8 @@ function Set-DifficultyAction {
         Write-Host ' 2. medium - Biolog 8 h; kucyk i Księgi Konia 4 h; treningi konia 6 h (1-10) i 7 h (11-19); księgi 7 h'
         Write-Host ' 3. hard   - jak w oryginale: Biolog 24 h; kucyk i Księgi 12 h; treningi 18 h i 21 h; księgi 21 h'
         Write-Host ' 4. custom - własne godziny (Biolog, każde czekanie u Stajennego, księgi graczy i księgi botów)'
+        $customChances = Get-ExchangeChances -Level 'custom'
+        Write-Host ("    Szanse wymiany u NPC (Magiczny Pył / Pergamin / Materiały Rzemieślnicze): easy 100/100/55%, medium 90/45/55%, hard 55/40/55%, custom - M2_EXCHANGE_* w .env (teraz {0}/{1}/{2}%)" -f $customChances[0], $customChances[1], $customChances[2])
         $answer = Read-Host 'Wybierz poziom (1-4)'
         $level = switch ($answer) { '1' { 'easy' } '2' { 'medium' } '3' { 'hard' } '4' { 'custom' } default { '' } }
         if (-not $level) { Write-Host 'Anulowano.' -ForegroundColor Yellow; return }
@@ -1286,7 +1313,8 @@ function Set-DifficultyAction {
     Set-DotEnvValue -Key 'M2_STARTER_CHEST' -Value $(if ($starterOn) { '1' } else { '0' })
     Set-DotEnvValue -Key 'M2_FLEA_MARKET' -Value $(if ($fleaOn) { '1' } else { '0' })
     Set-DotEnvValue -Key 'M2_AREZZO' -Value $(if ($arezzoOn) { '1' } else { '0' })
-    Write-Host "Zapisano: poziom trudności $level (Biolog $bio h, Stajenny $horse h, księgi: gracze $book h, boty $botBook h)." -ForegroundColor Green
+    $chances = Get-ExchangeChances -Level $level
+    Write-Host "Zapisano: poziom trudności $level (Biolog $bio h, Stajenny $horse h, księgi: gracze $book h, boty $botBook h; wymiana u NPC: Magiczny Pył $($chances[0])%, Pergamin $($chances[1])%, Materiały $($chances[2])%)." -ForegroundColor Green
     Write-Host "Auto Łowy: $(if ($autoHuntOn) { 'włączone' } else { 'wyłączone' }) ($(if ($autoHuntItemOn) { 'tylko po kupnie przedmiotu z ItemShop' } else { 'dla każdego' })); Towarzysz: $(if ($sidekickOn) { 'włączony' } else { 'wyłączony' }); Skrzynia Ucznia: $(if ($starterOn) { 'tak' } else { 'nie' }); Dom Towarowy: $(if ($fleaOn) { 'włączony' } else { 'wyłączony' }); Moduł Arezzo: $(if ($arezzoOn) { 'włączony' } else { 'wyłączony' })." -ForegroundColor Green
     if ($Yes) {
         Start-Server
@@ -2065,8 +2093,23 @@ function Invoke-CoopGameRecreate {
     $previousPreference = $ErrorActionPreference
     try {
         $ErrorActionPreference = 'Continue'
-        docker compose --project-directory $composeDir -f $composeFile up -d --no-deps game
-        $exit = $LASTEXITCODE
+        # MT2009_PLUS_COOP_RECREATE_RETRY_V1: Docker Desktop frees the old
+        # container's published ports a moment after the container is gone,
+        # so the new one may find its own port still taken ("ports are not
+        # available ... Only one usage of each socket address"): it is created
+        # and stays down, and the world with it until START. The port is free
+        # a few seconds later, so the same up is asked again - three times at
+        # most, five seconds apart.
+        $exit = 0
+        for ($attempt = 1; $attempt -le 3; $attempt++) {
+            if ($attempt -gt 1) {
+                Write-Host ("docker compose up game zakończył się kodem {0} - ponawiam za 5 s (próba {1} z 3)." -f $exit, $attempt) -ForegroundColor Yellow
+                Start-Sleep -Seconds 5
+            }
+            docker compose --project-directory $composeDir -f $composeFile up -d --no-deps game
+            $exit = $LASTEXITCODE
+            if ($exit -eq 0) { break }
+        }
     }
     finally { $ErrorActionPreference = $previousPreference }
     if ($exit -ne 0) { throw "docker compose up game zakończył się kodem $exit." }

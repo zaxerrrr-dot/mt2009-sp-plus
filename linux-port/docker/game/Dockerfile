@@ -463,6 +463,30 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/quest/libs/other/_otherModuleLoad
  && test -s /opt/metin2/share/locale/poland/quest/libs/other/m2_difficulty.lua \
  && echo "share: difficulty hooked into the quest libraries"
 
+# MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances follow the
+# world's difficulty - soul stones to Magiczny Pyl, skill books to Pergamin,
+# upgrade items to Materialy Rzemieslnicze. The
+# package keeps its chances in a table local to item_exchange.lua and reads
+# it twice: the window's chance field (item_exchange.open's cmdchat, which the
+# client prints as it is) and the roll of each piece (item_exchange.exchange).
+# Both reads go through m2_difficulty.exchange_chance (m2_difficulty.lua,
+# loaded after the crafting libraries and asked only at run time), so the
+# window shows the chance that is rolled; the package's number is what it
+# answers when nothing else applies.
+RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/item_exchange.lua \
+ && LC_ALL=C grep -q 'if number(1,100) <= exchange_data.chance then' "$F" \
+ && LC_ALL=C grep -q 'exchange_data.price, exchange_data.chance, vnum))' "$F" \
+ && LC_ALL=C sed -i \
+      -e 's/^\([[:blank:]]*\)local success_count = 0/\1local m2_exchange_percent = m2_difficulty.exchange_chance(exchange_vnum, exchange_data.chance)\n\1local success_count = 0/' \
+      -e 's/if number(1,100) <= exchange_data\.chance then/if number(1,100) <= m2_exchange_percent then/' \
+      -e 's/exchange_data\.price, exchange_data\.chance, vnum))/exchange_data.price, m2_difficulty.exchange_chance(vnum, exchange_data.chance), vnum))/' \
+      "$F" \
+ && test "$(LC_ALL=C grep -c 'm2_difficulty.exchange_chance(' "$F")" = 2 \
+ && LC_ALL=C grep -q 'if number(1,100) <= m2_exchange_percent then' "$F" \
+ && ! LC_ALL=C grep -q '<= exchange_data.chance' "$F" \
+ && LC_ALL=C grep -q 'm2_difficulty.exchange_chance = function' /opt/metin2/share/locale/poland/quest/libs/other/m2_difficulty.lua \
+ && echo "share: the NPC exchanges' chances follow the difficulty"
+
 # The monkey curse (port/shareify.py renders this step): the package's
 # monkey_curse quest turned anybody 55 minutes into a Monkey Dungeon (35 on
 # 108, 25 on 109) into a monkey and warped them out, bots included. Its event

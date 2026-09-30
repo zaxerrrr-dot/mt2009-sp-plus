@@ -1536,14 +1536,22 @@ namespace
 			for (size_t i = 0; i < taken.size(); ++i)
 				ITEM_MANAGER::instance().RemoveItem(taken[i], "PLAYERBOT_ALCHEMIST");
 			PlayerBotChangeGold(ch, -fee);
-			for (int left = dust; left > 0; )
+			// MT2009_PLUS_EXCHANGE_CHANCE_V1: a roll a dust, at the chance the
+			// players get (the world's difficulty); the fee is paid for every
+			// try, as the quest takes it.
+			const int chance = GetPlayerBotExchangeChance(PLAYERBOT_NPC_EXCHANGE_DUST);
+			int made = 0;
+			for (int i = 0; i < dust; ++i)
+				if (chance >= 100 || number(1, 100) <= chance)
+					++made;
+			for (int left = made; left > 0; )
 			{
 				const int chunk = std::min(left, 200);
 				ch->AutoGiveItem(PLAYERBOT_MAGIC_DUST_VNUM, chunk, -1, false);
 				left -= chunk;
 			}
-			sys_log(0, "PLAYERBOT_ALCHEMIST: exchanged pid=%u name=%s stones=%d dust=%d fee=%lld gold=%lld",
-					ch->GetPlayerID(), ch->GetName(), count, dust, fee, (long long)ch->GetGold());
+			sys_log(0, "PLAYERBOT_ALCHEMIST: exchanged pid=%u name=%s stones=%d dust=%d/%d chance=%d fee=%lld gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), count, made, dust, chance, fee, (long long)ch->GetGold());
 		}
 
 		state.bVisitingAlchemist = false;

@@ -89,6 +89,11 @@ services:
       # the presets carry their own).
       M2_BOOK_WAIT_HOURS: "${M2_BOOK_WAIT_HOURS:-0}"
       M2_BOT_BOOK_WAIT_HOURS: "${M2_BOT_BOOK_WAIT_HOURS:-0}"
+      # The NPC exchanges' chances for a custom difficulty, percent (0 = the
+      # package's 100/100/55; the presets carry their own).
+      M2_EXCHANGE_DUST_CHANCE: "${M2_EXCHANGE_DUST_CHANCE:-0}"
+      M2_EXCHANGE_PARCHMENT_CHANCE: "${M2_EXCHANGE_PARCHMENT_CHANCE:-0}"
+      M2_EXCHANGE_MATERIAL_CHANCE: "${M2_EXCHANGE_MATERIAL_CHANCE:-0}"
       # The rates a fresh world starts on, as event flags written before
       # the cores come up (apply.sh). A world that has been set from the
       # panel keeps what the panel said; these reach only a world whose

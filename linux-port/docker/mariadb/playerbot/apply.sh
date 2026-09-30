@@ -808,6 +808,30 @@ else
     echo "[playerbot-migrate] WARNING: could not write the difficulty flags; the quests keep the last ones" >&2
 fi
 
+# MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances - soul stones to
+# Magiczny Pyl, skill books to Pergamin, upgrade items to Materialy
+# Rzemieslnicze - follow the level flag above: easy is the package's 100 / 100
+# / 55, medium 90 / 45 / 55, hard 55 / 40 / 55 (quest/m2_difficulty.lua for the
+# players, GetPlayerBotExchangeChance for the bots' dust and materials). A
+# custom level takes these three flags, .env's M2_EXCHANGE_DUST_CHANCE,
+# _PARCHMENT_ and _MATERIAL_ in percent, 0 or nothing being the package's own.
+# No panel writes them, so they are .env's at every start; a level changed in
+# the panel picks its preset or these at once.
+exchange_percent() {
+    printf '%s\n' "$1" | tr -d ' \r%' | awk '{ p = int($1 + 0); if (p < 0) p = 0; if (p > 100) p = 100; printf "%d", p }'
+}
+xdust=$(exchange_percent "${M2_EXCHANGE_DUST_CHANCE:-0}")
+xparch=$(exchange_percent "${M2_EXCHANGE_PARCHMENT_CHANCE:-0}")
+xmat=$(exchange_percent "${M2_EXCHANGE_MATERIAL_CHANCE:-0}")
+if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_exchange_dust_chance', '', $xdust),
+        (0, 'm2_exchange_parchment_chance', '', $xparch),
+        (0, 'm2_exchange_material_chance', '', $xmat);"; then
+    echo "[playerbot-migrate] exchange chances for a custom difficulty: dust $xdust%, parchment $xparch%, materials $xmat% (0 = the package's 100/100/55)"
+else
+    echo "[playerbot-migrate] WARNING: could not write the exchange chances; the quests keep the last ones" >&2
+fi
+
 # The apprentice chest (Skrzynia Ucznia) is the world's choice, one switch
 # for people and bots alike: the event flag m2_starter_chest_off, which
 # starter_chest.quest asks at a person's first login, the seed below asks
