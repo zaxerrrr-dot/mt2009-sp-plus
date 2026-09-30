@@ -43,6 +43,12 @@
  },
  {
   "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_PICKUP_FILTER_V1 (auto hunt)",
+  "old": "\t\tif (item->GetType() != ITEM_ELK && !(AutoHuntLootKind(item) & m_iKinds))\n\t\t\treturn;\n",
+  "new": "\t\tif (item->GetType() != ITEM_ELK && !(AutoHuntLootKind(item) & m_iKinds))\n\t\t\treturn;\n\t\t// MT2009_PLUS_PICKUP_FILTER_V1 (auto hunt): one pick-up filter for the Z key,\n\t\t// Auto Lowy and the companion (the operator, 30 September: \"filtr dzialal\n\t\t// na wszystko: czyli na nas, na autolowy i na towarzysza jednoczesnie\").\n\t\t// The client asks for the filter's kinds already (uiautohunt.LootMask);\n\t\t// the filter the client last sent (/pickup_filter, char_item.cpp) holds\n\t\t// here too, for a client that asks for more. Yang always passes.\n\t\t{\n\t\t\tbool Mt2009PlusPickupFilterAllows(LPCHARACTER ch, LPITEM item);\n\t\t\tif (!Mt2009PlusPickupFilterAllows(m_ch, item))\n\t\t\t\treturn;\n\t\t}\n"
+ },
+ {
+  "file": "cmd_general.cpp",
   "marker": "MT2009_PLUS_ARRANGE_MERGE_V1",
   "old": "\tif (*arg1)\n\t\tresult.code = playerbot_arrange::RESULT_BAD_REQUEST;\n\telse\n\t\tresult = playerbot_arrange::ArrangeInventory(ch, true);",
   "new": "\t// MT2009_PLUS_ARRANGE_MERGE_V1 (server-patches/playerqol): \"merge\" pours\n\t// the stacks together and moves nothing else (\"samo laczenie w stacki bez\n\t// sortowania\", the operator, 28 September).\n\tif (!strcmp(arg1, \"merge\"))\n\t\tresult = playerbot_arrange::MergeInventoryStacks(ch, true);\n\telse if (*arg1)\n\t\tresult.code = playerbot_arrange::RESULT_BAD_REQUEST;\n\telse\n\t\tresult = playerbot_arrange::ArrangeInventory(ch, true);"
