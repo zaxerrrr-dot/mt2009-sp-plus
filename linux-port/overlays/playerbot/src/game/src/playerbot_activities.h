@@ -1081,6 +1081,10 @@ namespace
 			if (vnum <= PLAYERBOT_HAIR_DYE_FIRST_VNUM ||
 					vnum > PLAYERBOT_HAIR_DYE_LAST_VNUM)
 				continue;
+			// MT2009_PLUS_SIDEKICK_HAIR_V1: a dye its owner handed a companion is
+			// the owner's to use, from the companion's window.
+			if (IsPlayerBotSidekickGift(ch, item))
+				continue;
 			if (!ch->UseItem(TItemPos(INVENTORY, cell)))
 				continue;
 			sys_log(0, "PLAYERBOT_LOOK: hair dyed pid=%u name=%s vnum=%u part=%d",
@@ -1129,7 +1133,8 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item->GetCell() != cell || item->IsEquipped() || item->isLocked() ||
 					!IsPlayerBotFishedHairDye(item->GetVnum()) ||
-					GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE)
+					GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE ||
+					IsPlayerBotSidekickGift(ch, item)) // MT2009_PLUS_SIDEKICK_HAIR_V1
 				continue;
 			if (keepOneColour && item->GetVnum() > PLAYERBOT_HAIR_DYE_FIRST_VNUM)
 			{

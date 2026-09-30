@@ -146,6 +146,9 @@ namespace
 
 	// playerbot_sidekick.h: a companion's owner, whose filter it keeps.
 	LPCHARACTER GetPlayerBotSidekickFilterOwner(LPCHARACTER ch);
+	// MT2009_PLUS_SIDEKICK_LOOT_OFF_V1 (playerbot_sidekick.h): a companion whose
+	// window says "Nic" - it picks nothing up, in any state.
+	bool IsPlayerBotSidekickLootOff(LPCHARACTER ch);
 
 	bool IsPlayerBotPartyLoot(LPCHARACTER owner, LPITEM item)
 	{
@@ -389,13 +392,17 @@ namespace
 				m_skippedCheap(0),
 				m_medalDropper(owner && GetPlayerBotPersonalityByPID(owner->GetPlayerID()) ==
 						BOT_PERSONALITY_MEDAL_DROPPER),
-				m_priorityOnly(priorityOnly)
+				m_priorityOnly(priorityOnly),
+				// MT2009_PLUS_SIDEKICK_LOOT_OFF_V1: a companion set to "Nic" sees no
+				// loot at all - let off the leash, playing alone, sent to town or
+				// just summoned, in its owner's party or not.
+				m_lootOff(IsPlayerBotSidekickLootOff(owner))
 			{
 			}
 
 			bool operator () (LPENTITY entity)
 			{
-				if (!entity || !entity->IsType(ENTITY_ITEM))
+				if (m_lootOff || !entity || !entity->IsType(ENTITY_ITEM))
 					return false;
 
 				LPITEM item = static_cast<LPITEM>(entity);
@@ -474,6 +481,7 @@ namespace
 			int m_skippedCheap;
 			bool m_medalDropper;
 			bool m_priorityOnly;
+			bool m_lootOff;
 			std::vector<std::pair<int, LPITEM> > m_items;
 	};
 
@@ -521,6 +529,9 @@ namespace
 	bool TryPlayerBotCombatPickup(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->GetSectree() || dwNow < state.dwNextLootPickupTime)
+			return false;
+		// MT2009_PLUS_SIDEKICK_LOOT_OFF_V1: "Nic" in the companion's window.
+		if (IsPlayerBotSidekickLootOff(ch))
 			return false;
 
 		// Set the throttle before scanning.  An empty floor used to leave the
@@ -730,6 +741,14 @@ namespace
 	bool HandleLoot(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->GetSectree())
+			return false;
+		// MT2009_PLUS_SIDEKICK_LOOT_OFF_V1: a companion set to "Nic" picks
+		// nothing up in any state. Let off the leash ("Wolna reka") this pass
+		// ran for it as for any bot, and in its owner's party the engine's party
+		// branch of PickupItem handed it the owner's drops as well - the owner's
+		// items went into its bag whatever the window said. Nor does it stand at
+		// a broken stone waiting for a drop it will not take.
+		if (IsPlayerBotSidekickLootOff(ch))
 			return false;
 
 		// Cleanup must also run for bots which spend minutes in continuous combat.
