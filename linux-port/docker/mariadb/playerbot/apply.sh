@@ -583,6 +583,16 @@ if [ -s /opt/playerbot/log_schema.sql ]; then
         head -3 /tmp/logschema.err >&2
     fi
 fi
+# MT2009_PLUS_BOT_SESSIONS_V1: the bots' sessions, one row a session, which
+# the game core writes (playerbot_session.h) and the classic panel's "Sesje
+# gry" card and "Tylko boty" list read. The table is log_schema.sql's too;
+# made here as well, so a log schema that failed above on another table does
+# not leave the cores without it. Kept eight days: the cores purge every hour
+# while they run, and this is the same purge at every start, for a world that
+# was down a while. A session still open and seen within the eight days
+# stays, however long ago it began. Idempotent.
+db -e "CREATE TABLE IF NOT EXISTS log.playerbot_session (pid int(10) unsigned NOT NULL, login_at datetime NOT NULL, channel tinyint(3) unsigned NOT NULL DEFAULT 0, core varchar(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT '', login_reason tinyint(3) unsigned NOT NULL DEFAULT 0, seen_at datetime DEFAULT NULL, logout_at datetime DEFAULT NULL, logout_reason tinyint(3) unsigned NOT NULL DEFAULT 0, rest_until datetime DEFAULT NULL, PRIMARY KEY (pid, login_at), KEY open_idx (channel, core, logout_at), KEY login_at_idx (login_at)) ENGINE=InnoDB DEFAULT CHARSET=ascii;" || echo "[playerbot-migrate] WARNING: could not create log.playerbot_session" >&2
+db -e "DELETE FROM log.playerbot_session WHERE login_at < NOW() - INTERVAL 8 DAY AND COALESCE(logout_at, seen_at, login_at) < NOW() - INTERVAL 8 DAY;" || echo "[playerbot-migrate] WARNING: could not purge the bots' old sessions" >&2
 
 itemshop_schema=/opt/playerbot/itemshop_schema.sql
 if [ -s "$itemshop_schema" ]; then

@@ -4482,6 +4482,78 @@ T.update({
        "tr": "“Yapay zekâ için kopyala” bir kararı ya da gösterilenlerin hepsini Markdown olarak verir: her sayı, oyunun kod adları, referans değerleri ve kısa bir kılavuz — bir botun nerede yanıldığını bulacak bir dil modeline yapıştırmak için."},
 })
 
+# MT2009_PLUS_BOT_SESSIONS_V1: a bot's sessions (30 September): the "Sesje
+# gry" card on a bot's page and its state in the list of characters, from
+# log.playerbot_session (playerbot_session.h).
+T.update({
+ "ss_title": {"pl": "🕒 Sesje gry", "en": "🕒 Play sessions", "de": "🕒 Spielsitzungen", "tr": "🕒 Oyun oturumları"},
+ "ss_state_in": {"pl": "🟢 W grze od {since}, kanał {channel}", "en": "🟢 In the game since {since}, channel {channel}",
+       "de": "🟢 Im Spiel seit {since}, Kanal {channel}", "tr": "🟢 {since} zamanından beri oyunda, kanal {channel}"},
+ "ss_state_in_now": {"pl": "🟢 W grze, kanał {channel}", "en": "🟢 In the game, channel {channel}",
+       "de": "🟢 Im Spiel, Kanal {channel}", "tr": "🟢 Oyunda, kanal {channel}"},
+ "ss_state_rest": {"pl": "💤 Odpoczywa do {until} (wylogował się {since})", "en": "💤 Resting until {until} (logged out {since})",
+       "de": "💤 Ruht bis {until} (abgemeldet {since})", "tr": "💤 {until} zamanına kadar dinleniyor ({since} çıkış yaptı)"},
+ "ss_state_out": {"pl": "⚪ Poza grą od {since}: {why}", "en": "⚪ Out of the game since {since}: {why}",
+       "de": "⚪ Nicht im Spiel seit {since}: {why}", "tr": "⚪ {since} zamanından beri oyunda değil: {why}"},
+ "ss_state_none": {"pl": "⚪ Poza grą — w ostatnich 7 dniach nie zapisano żadnej sesji.",
+       "en": "⚪ Out of the game — no session recorded in the last 7 days.",
+       "de": "⚪ Nicht im Spiel — in den letzten 7 Tagen wurde keine Sitzung erfasst.",
+       "tr": "⚪ Oyunda değil — son 7 günde hiçbir oturum kaydedilmedi."},
+ "ss_week": {"pl": "Ostatnie 7 dni: {played} w grze", "en": "Last 7 days: {played} in the game",
+       "de": "Letzte 7 Tage: {played} im Spiel", "tr": "Son 7 gün: {played} oyunda"},
+ "ss_total": {"pl": "łączny czas gry postaci: {played}", "en": "the character's total play time: {played}",
+       "de": "Gesamtspielzeit des Charakters: {played}", "tr": "karakterin toplam oyun süresi: {played}"},
+ "ss_strip_hint": {"pl": "Każdy pasek to doba od północy do północy, zielone odcinki to czas w grze, złoty to sesja, która trwa. Najedź na odcinek, żeby zobaczyć godziny.",
+       "en": "Each strip is a day from midnight to midnight; the green stretches are time in the game, the gold one a session still going on. Point at a stretch to see its hours.",
+       "de": "Jeder Streifen ist ein Tag von Mitternacht bis Mitternacht; grüne Abschnitte sind Zeit im Spiel, der goldene eine noch laufende Sitzung. Zeige auf einen Abschnitt, um seine Uhrzeiten zu sehen.",
+       "tr": "Her şerit gece yarısından gece yarısına bir gündür; yeşil bölümler oyunda geçen zaman, altın rengi olan hâlâ süren oturumdur. Saatlerini görmek için bir bölümün üzerine gel."},
+ "ss_col_in": {"pl": "Wejście", "en": "Logged in", "de": "Angemeldet", "tr": "Giriş"},
+ "ss_col_out": {"pl": "Wyjście", "en": "Logged out", "de": "Abgemeldet", "tr": "Çıkış"},
+ "ss_col_len": {"pl": "Czas", "en": "Length", "de": "Dauer", "tr": "Süre"},
+ "ss_col_ch": {"pl": "Kanał", "en": "Channel", "de": "Kanal", "tr": "Kanal"},
+ "ss_col_why": {"pl": "Dlaczego", "en": "Why", "de": "Warum", "tr": "Neden"},
+ "ss_ongoing": {"pl": "trwa", "en": "going on", "de": "läuft", "tr": "sürüyor"},
+ "ss_rest_until": {"pl": "odpoczynek do {until}", "en": "a rest until {until}", "de": "Pause bis {until}", "tr": "{until} zamanına kadar dinlenme"},
+ "ss_missing": {"pl": "Serwer nie zapisuje jeszcze sesji botów: rdzeń gry robi to od tej aktualizacji, od swojego pierwszego startu.",
+       "en": "The server does not record the bots' sessions yet: the game core does from this update on, from its first start.",
+       "de": "Der Server erfasst die Sitzungen der Bots noch nicht: der Spielkern tut es ab diesem Update, ab seinem ersten Start.",
+       "tr": "Sunucu botların oturumlarını henüz kaydetmiyor: oyun çekirdeği bunu bu güncellemeden itibaren, ilk başlatılışından sonra yapar."},
+ "ss_error": {"pl": "Nie udało się odczytać sesji z bazy.", "en": "The sessions could not be read from the database.",
+       "de": "Die Sitzungen konnten nicht aus der Datenbank gelesen werden.", "tr": "Oturumlar veritabanından okunamadı."},
+ "ss_today": {"pl": "dziś", "en": "today", "de": "heute", "tr": "bugün"},
+ "ss_yesterday": {"pl": "wczoraj", "en": "yesterday", "de": "gestern", "tr": "dün"},
+ "ss_tomorrow": {"pl": "jutro", "en": "tomorrow", "de": "morgen", "tr": "yarın"},
+ "ss_h_min": {"pl": "{h} h {m} min", "en": "{h} h {m} min", "de": "{h} Std. {m} Min.", "tr": "{h} sa {m} dk"},
+ "ss_min": {"pl": "{m} min", "en": "{m} min", "de": "{m} Min.", "tr": "{m} dk"},
+ "ss_in_0": {"pl": "wejście nieznane", "en": "an unknown login", "de": "unbekannte Anmeldung", "tr": "bilinmeyen giriş"},
+ "ss_in_1": {"pl": "start serwera lub uzupełnienie", "en": "server start or top-up", "de": "Serverstart oder Auffüllen", "tr": "sunucu başlangıcı veya tamamlama"},
+ "ss_in_2": {"pl": "po odpoczynku", "en": "after a rest", "de": "nach einer Pause", "tr": "dinlenmeden sonra"},
+ "ss_in_3": {"pl": "z innego kanału", "en": "from another channel", "de": "von einem anderen Kanal", "tr": "başka bir kanaldan"},
+ "ss_in_4": {"pl": "z właścicielem (Towarzysz)", "en": "with its owner (companion)", "de": "mit seinem Besitzer (Begleiter)", "tr": "sahibiyle (yoldaş)"},
+ "ss_out_0": {"pl": "nieznane (serwer nie zamknął sesji)", "en": "unknown (the server did not close the session)",
+       "de": "unbekannt (der Server hat die Sitzung nicht geschlossen)", "tr": "bilinmiyor (sunucu oturumu kapatmadı)"},
+ "ss_out_1": {"pl": "odpoczynek", "en": "a rest", "de": "Pause", "tr": "dinlenme"},
+ "ss_out_2": {"pl": "ban", "en": "a ban", "de": "Sperre", "tr": "yasak"},
+ "ss_out_3": {"pl": "przejście na inny kanał", "en": "moved to another channel", "de": "auf einen anderen Kanal gewechselt", "tr": "başka kanala geçti"},
+ "ss_out_4": {"pl": "wylogowany przez GM-a lub panel", "en": "logged out by a GM or the panel", "de": "von einem GM oder dem Panel abgemeldet", "tr": "GM veya panel tarafından çıkarıldı"},
+ "ss_out_5": {"pl": "z właścicielem (Towarzysz)", "en": "with its owner (companion)", "de": "mit seinem Besitzer (Begleiter)", "tr": "sahibiyle (yoldaş)"},
+ "ss_out_6": {"pl": "rozłączenie", "en": "disconnected", "de": "Verbindung getrennt", "tr": "bağlantı koptu"},
+ "ss_out_7": {"pl": "zatrzymanie serwera", "en": "the server stopped", "de": "Server gestoppt", "tr": "sunucu durduruldu"},
+ # "Koniec gry" (playerbot_retirement.h): this project's own reason.
+ "ss_out_8": {"pl": "koniec gry (sprzedał wszystko, nowa postać)", "en": "end of play (sold everything, a new character)",
+       "de": "Spielende (alles verkauft, neuer Charakter)", "tr": "oyunun sonu (her şeyi sattı, yeni karakter)"},
+ "ss_col_state": {"pl": "Stan", "en": "State", "de": "Status", "tr": "Durum"},
+ "ss_list_in": {"pl": "🟢 w grze, kanał {channel}", "en": "🟢 in the game, channel {channel}", "de": "🟢 im Spiel, Kanal {channel}", "tr": "🟢 oyunda, kanal {channel}"},
+ "ss_list_rest": {"pl": "💤 odpoczywa do {until}", "en": "💤 resting until {until}", "de": "💤 ruht bis {until}", "tr": "💤 {until} zamanına kadar dinleniyor"},
+ "ss_list_out": {"pl": "⚪ poza grą", "en": "⚪ out of the game", "de": "⚪ nicht im Spiel", "tr": "⚪ oyunda değil"},
+ "ss_only_bots": {"pl": "🤖 Tylko boty, z ich stanem", "en": "🤖 Bots only, with their state", "de": "🤖 Nur Bots, mit ihrem Status", "tr": "🤖 Yalnızca botlar, durumlarıyla"},
+ "ss_all_chars": {"pl": "👥 Wszystkie postacie", "en": "👥 All characters", "de": "👥 Alle Charaktere", "tr": "👥 Tüm karakterler"},
+ "ss_bots_count": {"pl": "Botów: {total} — w grze {in_game}, odpoczywa {resting}, poza grą {out}.",
+       "en": "Bots: {total} — {in_game} in the game, {resting} resting, {out} out of the game.",
+       "de": "Bots: {total} — {in_game} im Spiel, {resting} ruhen, {out} nicht im Spiel.",
+       "tr": "Botlar: {total} — {in_game} oyunda, {resting} dinleniyor, {out} oyunda değil."},
+})
+
 CATS = ["all","weapon","armor","usable","ds","metin","special","other"]
 
 # The two damage lines, by their engine numbers. common/length.h:
@@ -6404,15 +6476,18 @@ TPL_DASH = BASE.replace("__BODY__", """
 <div class="card">
 <h3 class="help" title="{{t('tip_players')}}">👥 {{t('players')}}</h3>
 <p class="muted">{{t('tap_hint')}}</p>
+{# MT2009_PLUS_BOT_SESSIONS_V1: "Tylko boty" - every bot with its state. #}
+<p>{% if bots_only %}<a href="/admin">{{t('ss_all_chars')}}</a>{% if bot_counts %} · <span class="muted">{{ t('ss_bots_count').format(**bot_counts) }}</span>{% endif %}{% else %}<a href="/admin?who=bots">{{t('ss_only_bots')}}</a>{% endif %}</p>
 {% if players %}<input id="pfilter" placeholder="{{t('search_players')}}" autocomplete="off" style="margin-bottom:8px">{% endif %}
 <table id="ptable">
-<tr><th>{{t('character')}}</th><th class="help" title="{{t('tip_acc_col')}}">{{t('acc_col')}}</th><th>{{t('level')}}</th><th>Yang</th><th>{{t('last_seen')}}</th></tr>
+<tr><th>{{t('character')}}</th><th class="help" title="{{t('tip_acc_col')}}">{{t('acc_col')}}</th><th>{{t('level')}}</th><th>Yang</th><th>{{t('ss_col_state')}}</th><th>{{t('last_seen')}}</th></tr>
 {% for p in players %}
 <tr data-k="{{ (p.name ~ ' ' ~ (p.account or ''))|lower }}">
 <td><a href="{{url_for('player', pid=p.id)}}" title="{{t('tip_player')}}">{% if p.active %}<span class="dot on" title="{{t('tip_active')}}"></span>{% endif %}{{emoji(p.job)}} <b>{{p.name}}</b></a>
 <div class="muted">{{jobname(p.job)}}</div></td>
 <td title="{{t('tip_acc_col')}}">👤 {{p.account or '—'}}</td>
 <td>{{p.level}}</td><td>{{"{:,}".format(p.gold)}}</td>
+<td>{{p.state_text}}</td>
 <td class="muted">{{p.last_play}}</td></tr>
 {% endfor %}</table>
 {% if not players %}<p>{{t('no_chars')}} 🙂</p>{% endif %}
@@ -6486,6 +6561,47 @@ TPL_PLAYER = BASE.replace("__BODY__", """
 <span class="badge">💰 {{"{:,}".format(p.gold)}} yang</span>
 <span class="badge">🗺️ {{t('pl_map')}} {{p.map_index}}</span>
 </div>
+
+{# MT2009_PLUS_BOT_SESSIONS_V1: a bot's hours of play (log.playerbot_session):
+   what it is doing now, a strip for each of the last seven days, and the
+   sessions themselves. #}
+{% if sessions %}
+<div class="card" id="sessions">
+<style>
+.ss-days{margin:10px 0 6px}
+.ss-row{display:flex;align-items:center;gap:8px;margin:3px 0}
+.ss-lab{width:64px;flex:none;font-size:12px;color:var(--muted);text-align:right}
+.ss-bar{position:relative;flex:1;height:14px;background:var(--card);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.ss-bar i{position:absolute;top:0;bottom:0;background:var(--green);opacity:.85}
+.ss-bar i.on{background:var(--gold)}
+.ss-sum{width:96px;flex:none;font-size:12px;color:var(--muted)}
+.ss-scale{position:relative;flex:1;height:14px;font-size:11px;color:var(--muted)}
+.ss-scale span{position:absolute;transform:translateX(-50%)}
+.ss-t{white-space:nowrap}
+</style>
+<h3>{{t('ss_title')}}</h3>
+<p><b>{{sessions.state_text}}</b></p>
+{% if sessions.table_state == 'missing' %}<p class="muted">{{t('ss_missing')}}</p>
+{% elif sessions.table_state == 'error' %}<p class="muted">{{t('ss_error')}}</p>
+{% else %}
+<p class="muted">{{sessions.week_text}}{% if sessions.total_text %} · {{sessions.total_text}}{% endif %}</p>
+<div class="ss-days">
+{% for d in sessions.strips %}
+<div class="ss-row"><span class="ss-lab">{{d.label}}</span><div class="ss-bar">{% for s in d.segments %}<i{% if s.ongoing %} class="on"{% endif %} style="left:{{s.left}}%;width:{{s.width}}%" title="{{s.title}}"></i>{% endfor %}</div><span class="ss-sum">{{d.total}}</span></div>
+{% endfor %}
+<div class="ss-row"><span class="ss-lab"></span><div class="ss-scale"><span style="left:0">0</span><span style="left:25%">6</span><span style="left:50%">12</span><span style="left:75%">18</span><span style="left:100%">24</span></div><span class="ss-sum"></span></div>
+</div>
+<p class="muted">{{t('ss_strip_hint')}}</p>
+{% if sessions.rows %}
+<table>
+<tr><th>{{t('ss_col_in')}}</th><th>{{t('ss_col_out')}}</th><th>{{t('ss_col_len')}}</th><th>{{t('ss_col_ch')}}</th><th>{{t('ss_col_why')}}</th></tr>
+{% for r in sessions.rows %}<tr><td class="ss-t">{{r.start}}</td><td class="ss-t">{{r.end}}</td><td class="ss-t">{{r.length}}</td><td>{{r.channel}}</td><td class="muted">{{r.why}}</td></tr>
+{% endfor %}</table>
+{% endif %}
+{% endif %}
+</div>
+{% endif %}
+
 
 <div class="card"><h3 class="help" title="{{t('tip_send_item')}}">{{t('give_item')}}</h3>
 <form method="post" action="{{url_for('action')}}" id="itemForm">
@@ -20031,22 +20147,55 @@ def dash():
     # "/" stays the dashboard you reach by entering the passphrase.
     if local_open() and request.path == "/":
         return redirect(url_for("login"))
+    # MT2009_PLUS_BOT_SESSIONS_V1: "Tylko boty": every bot with its state now
+    # - in the game, resting until when, or out (the operator, 30 September) -
+    # in that order.
+    bots_only = request.args.get("who") == "bots"
+    bot_counts = None
     try:
         with db() as c, c.cursor() as cur:
-            cur.execute("SELECT p.id, p.name, p.job, p.level, p.gold, p.last_play, "
-                        "a.login AS account "
-                        "FROM player.player p "
-                        "LEFT JOIN account.account a ON a.id = p.account_id "
-                        # People first, then the bots that fit: the list is
-                        # filtered in the browser, and a filter over the two
-                        # hundred most recent characters found nobody's own
-                        # once fifteen hundred bots had played more recently.
-                        "ORDER BY (a.login LIKE 'playerbot_%'), p.last_play DESC LIMIT 200")
+            if bots_only:
+                cur.execute("SELECT p.id, p.name, p.job, p.level, p.gold, p.last_play, "
+                            "a.login AS account "
+                            "FROM player.player p "
+                            "JOIN account.account a ON a.id = p.account_id "
+                            "WHERE LEFT(a.login, 10) = 'playerbot_' "
+                            "ORDER BY p.last_play DESC LIMIT %s", (BOT_LIST_LIMIT,))
+            else:
+                cur.execute("SELECT p.id, p.name, p.job, p.level, p.gold, p.last_play, "
+                            "a.login AS account "
+                            "FROM player.player p "
+                            "LEFT JOIN account.account a ON a.id = p.account_id "
+                            # People first, then the bots that fit: the list is
+                            # filtered in the browser, and a filter over the two
+                            # hundred most recent characters found nobody's own
+                            # once fifteen hundred bots had played more recently.
+                            "ORDER BY (a.login LIKE 'playerbot_%'), p.last_play DESC LIMIT 200")
             players = cur.fetchall()
+            states = bot_list_states(cur, [p["id"] for p in players
+                                           if str(p.get("account") or "").startswith("playerbot_")])
         # 'recently in the game' marker: last_play within the last 10 minutes.
         # The game stamps it at login/logout, so this is honest about what it
         # knows - the tooltip says 'was in the game', not 'is online'.
         now = datetime.datetime.now()
+        for p in players:
+            kind, value = states.get(p["id"], (None, None))
+            p["state"] = kind
+            if kind == "in":
+                p["state_text"] = t("ss_list_in").format(channel=value)
+            elif kind == "rest":
+                p["state_text"] = t("ss_list_rest").format(until=fmt_session_moment(value, now))
+            elif kind == "out":
+                p["state_text"] = t("ss_list_out")
+            else:
+                p["state_text"] = ""
+        if bots_only:
+            order = {"in": 0, "rest": 1, "out": 2}
+            players = sorted(players, key=lambda p: order.get(p["state"], 3))
+            bot_counts = {"total": len(players),
+                          "in_game": sum(1 for p in players if p["state"] == "in"),
+                          "resting": sum(1 for p in players if p["state"] == "rest"),
+                          "out": sum(1 for p in players if p["state"] == "out")}
         for p in players:
             lp = p.get("last_play")
             # A character who has never played carries MySQL's zero date,
@@ -20067,7 +20216,7 @@ def dash():
         app.logger.exception("dashboard query failed")
         flash(t("db_down"), "error")
         players = []
-    return render_template_string(TPL_DASH, players=players,
+    return render_template_string(TPL_DASH, players=players, bots_only=bots_only, bot_counts=bot_counts,
                                   emoji=lambda j: JOB_EMOJI.get(j, "🧑"),
                                   jobname=class_name, engine_mt2009=ENGINE_MT2009)
 
@@ -20079,6 +20228,204 @@ ITEM_WINDOW_KEYS = {
     "dragon_soul_inventory": "win_dragon_soul", "belt_inventory": "win_belt",
     "ikashop_offlineshop": "win_offlineshop",
 }
+
+# MT2009_PLUS_BOT_SESSIONS_V1: a bot's sessions (the operator, 30 September:
+# "czy przy kazdym bocie mozemy podejrzec ich godziny gry kiedy grali i czy
+# sa online"), from log.playerbot_session, which the game core writes
+# (playerbot_session.h): a row a session, opened as the bot comes into the
+# world and closed as it leaves, with why and - for a rest - until when. The
+# reasons are playerbot_session_rules.h's numbers, which never change (8,
+# "koniec gry", is this project's own).
+SESSION_DAYS = 7
+SESSION_LOGOUT_REST = 1
+# An open session the status files do not show is still believed while its
+# core's heartbeat (every five minutes) is this fresh.
+SESSION_OPEN_FRESH_SECONDS = 11 * 60
+# "Tylko boty" lists every bot of a world, both channels' thousands.
+BOT_LIST_LIMIT = 10000
+
+
+def read_bot_sessions(cur, pid, days=SESSION_DAYS):
+    """The bot's sessions that touch the last `days` days, newest first, the
+    table's state ("ok", "missing", "error") and the database's own now -
+    the rows are the database's clock, not this container's."""
+    rows, state = _explain_rows(
+        cur,
+        "SELECT login_at, channel, core, login_reason, seen_at, logout_at, logout_reason, rest_until "
+        "FROM log.playerbot_session WHERE pid = %s "
+        "AND (logout_at IS NULL OR logout_at >= NOW() - INTERVAL %s DAY) "
+        "ORDER BY login_at DESC LIMIT 300", (pid, days))
+    now = None
+    try:
+        cur.execute("SELECT NOW() AS now")
+        found = cur.fetchone()
+        now = found and found.get("now")
+    except Exception:
+        now = None
+    if not isinstance(now, datetime.datetime):
+        now = datetime.datetime.now()
+    return rows, state, now
+
+
+def summarize_bot_sessions(rows, now, live=None, days=SESSION_DAYS):
+    """The card's facts from the rows, newest first: the sessions with their
+    end - the newest open one runs to now while the status files show the
+    bot or its core said it was there a few minutes ago, any other open one
+    ended where it was last seen, why unknown -; the state now ("in", "rest",
+    "out", "none"); a strip for each of the last `days` days, today first,
+    each session's stretch of it in per cent of the day; and the seconds
+    played in those days."""
+    sessions = []
+    for r in rows:
+        start = r.get("login_at")
+        if not isinstance(start, datetime.datetime):
+            continue
+        end = r.get("logout_at")
+        seen = r.get("seen_at")
+        if not isinstance(seen, datetime.datetime):
+            seen = start
+        ongoing = False
+        if not isinstance(end, datetime.datetime):
+            if not sessions and (live or (now - seen).total_seconds() <= SESSION_OPEN_FRESH_SECONDS):
+                end, ongoing = now, True
+            else:
+                end = seen
+        end = max(end, start)
+        rest = r.get("rest_until")
+        sessions.append({
+            "start": start, "end": end, "ongoing": ongoing,
+            "channel": int(r.get("channel") or 0),
+            "login": int(r.get("login_reason") or 0),
+            "logout": 0 if ongoing else int(r.get("logout_reason") or 0),
+            "rest_until": rest if isinstance(rest, datetime.datetime) else None,
+            "seconds": int((end - start).total_seconds()),
+        })
+    latest = sessions[0] if sessions else None
+    if live:
+        state = {"kind": "in", "channel": int(live.get("channel") or (latest["channel"] if latest else 0)),
+                 "since": latest["start"] if latest and latest["ongoing"] else None}
+    elif latest and latest["ongoing"]:
+        state = {"kind": "in", "channel": latest["channel"], "since": latest["start"]}
+    elif (latest and latest["logout"] == SESSION_LOGOUT_REST and latest["rest_until"]
+          and latest["rest_until"] > now):
+        state = {"kind": "rest", "until": latest["rest_until"], "since": latest["end"]}
+    elif latest:
+        state = {"kind": "out", "since": latest["end"], "reason": latest["logout"]}
+    else:
+        state = {"kind": "none"}
+    today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    strips = []
+    week = 0
+    for back in range(days):
+        day0 = today - datetime.timedelta(days=back)
+        day1 = day0 + datetime.timedelta(days=1)
+        segments, total = [], 0
+        for s in reversed(sessions):
+            a, b = max(s["start"], day0), min(s["end"], day1)
+            if b <= a:
+                continue
+            seconds = (b - a).total_seconds()
+            total += seconds
+            segments.append({"left": round(100.0 * (a - day0).total_seconds() / 86400.0, 3),
+                             "width": round(max(100.0 * seconds / 86400.0, 0.35), 3),
+                             "start": a, "end": b, "ongoing": s["ongoing"] and b >= s["end"]})
+        strips.append({"day": day0, "segments": segments, "seconds": int(total)})
+        week += total
+    return {"state": state, "sessions": sessions, "strips": strips, "week_seconds": int(week), "now": now}
+
+
+def fmt_session_duration(seconds):
+    hours, minutes = divmod(max(0, int(seconds)) // 60, 60)
+    if hours:
+        return t("ss_h_min").format(h=hours, m="%02d" % minutes)
+    return t("ss_min").format(m=minutes)
+
+
+def fmt_session_moment(when, now):
+    """"dzis 14:05", "wczoraj 09:12", "jutro 03:40" or "28.09 14:05"."""
+    if not isinstance(when, datetime.datetime):
+        return "—"
+    shift = (when.date() - now.date()).days
+    day = {0: t("ss_today"), -1: t("ss_yesterday"), 1: t("ss_tomorrow")}.get(shift, when.strftime("%d.%m"))
+    return "%s %s" % (day, when.strftime("%H:%M"))
+
+
+def bot_sessions_view(rows, table_state, now, live=None, playtime_minutes=None):
+    """The "Sesje gry" card as words in the page's language."""
+    facts = summarize_bot_sessions(rows, now, live)
+    state = facts["state"]
+    if state["kind"] == "in" and state.get("since"):
+        state_text = t("ss_state_in").format(since=fmt_session_moment(state["since"], now), channel=state["channel"])
+    elif state["kind"] == "in":
+        state_text = t("ss_state_in_now").format(channel=state["channel"])
+    elif state["kind"] == "rest":
+        state_text = t("ss_state_rest").format(until=fmt_session_moment(state["until"], now),
+                                               since=fmt_session_moment(state["since"], now))
+    elif state["kind"] == "out":
+        state_text = t("ss_state_out").format(since=fmt_session_moment(state["since"], now),
+                                              why=t("ss_out_%d" % state["reason"]) if ("ss_out_%d" % state["reason"]) in T else t("ss_out_0"))
+    else:
+        state_text = t("ss_state_none")
+    strips = []
+    for strip in facts["strips"]:
+        shift = (strip["day"].date() - now.date()).days
+        label = {0: t("ss_today"), -1: t("ss_yesterday")}.get(shift, strip["day"].strftime("%d.%m"))
+        strips.append({
+            "label": label,
+            "total": fmt_session_duration(strip["seconds"]) if strip["seconds"] else "",
+            "segments": [{"left": s["left"], "width": s["width"], "ongoing": s["ongoing"],
+                          "title": "%s–%s (%s)" % (s["start"].strftime("%H:%M"),
+                                                   t("ss_ongoing") if s["ongoing"] else s["end"].strftime("%H:%M"),
+                                                   fmt_session_duration((s["end"] - s["start"]).total_seconds()))}
+                         for s in strip["segments"]],
+        })
+    table = []
+    for s in facts["sessions"][:50]:
+        login = t("ss_in_%d" % s["login"]) if ("ss_in_%d" % s["login"]) in T else t("ss_in_0")
+        if s["ongoing"]:
+            logout = t("ss_ongoing")
+        else:
+            logout = t("ss_out_%d" % s["logout"]) if ("ss_out_%d" % s["logout"]) in T else t("ss_out_0")
+            if s["logout"] == SESSION_LOGOUT_REST and s["rest_until"]:
+                logout = t("ss_rest_until").format(until=fmt_session_moment(s["rest_until"], now))
+        table.append({
+            "start": fmt_session_moment(s["start"], now),
+            "end": t("ss_ongoing") if s["ongoing"] else fmt_session_moment(s["end"], now),
+            "length": fmt_session_duration(s["seconds"]),
+            "channel": s["channel"] or "—",
+            "why": "%s → %s" % (login, logout),
+        })
+    total_text = ""
+    if playtime_minutes:
+        total_text = t("ss_total").format(played=fmt_session_duration(int(playtime_minutes) * 60))
+    return {
+        "table_state": table_state, "state_text": state_text, "state": state["kind"],
+        "week_text": t("ss_week").format(played=fmt_session_duration(facts["week_seconds"])),
+        "total_text": total_text, "strips": strips, "rows": table,
+    }
+
+
+def bot_list_states(cur, pids):
+    """Each bot's state for the list of characters: in the game (the status
+    files, with its channel), resting until when (a rest the database holds
+    and the status files do not contradict), or out - {pid: (kind, value)}."""
+    live = read_playerbot_live_status()
+    resting = {}
+    if ENGINE_MT2009 and pids:
+        rows, _state = _explain_rows(
+            cur, "SELECT pid, MAX(rest_until) AS rest_until FROM log.playerbot_session "
+                 "WHERE rest_until > NOW() AND logout_reason = %s GROUP BY pid", (SESSION_LOGOUT_REST,))
+        resting = {int(r["pid"]): r["rest_until"] for r in rows if r.get("pid")}
+    out = {}
+    for pid in pids:
+        if pid in live:
+            out[pid] = ("in", live[pid].get("channel") or 1)
+        elif pid in resting:
+            out[pid] = ("rest", resting[pid])
+        else:
+            out[pid] = ("out", None)
+    return out
+
 
 @app.route("/player/<int:pid>")
 @login_required
@@ -20106,7 +20453,22 @@ def player(pid):
                    for r in cur.fetchall()]
     except Exception:
         inv = None
-    return render_template_string(TPL_PLAYER, p=p, inv=inv,
+    # MT2009_PLUS_BOT_SESSIONS_V1: a bot's hours of play; the game core
+    # writes them (playerbot_session.h).
+    sessions = None
+    if ENGINE_MT2009:
+        try:
+            with db() as c, c.cursor() as cur:
+                cur.execute(bot_sql("SELECT <<BOT_P_2>> AS bot FROM player.player p WHERE p.id = %s"), (pid,))
+                found = cur.fetchone()
+                if found and any(found.values()):
+                    rows, table_state, now = read_bot_sessions(cur, pid)
+                    sessions = bot_sessions_view(rows, table_state, now,
+                                                 read_playerbot_live_status().get(pid), p.get("playtime"))
+        except Exception:
+            app.logger.exception("bot sessions of %s", pid)
+            sessions = None
+    return render_template_string(TPL_PLAYER, p=p, inv=inv, sessions=sessions,
                                   emoji=lambda j: JOB_EMOJI.get(j, "🧑"),
                                   WINDOW_KEYS=ITEM_WINDOW_KEYS,
                                   cats=CATS,

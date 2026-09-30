@@ -2450,7 +2450,7 @@ namespace
 					}
 					sys_log(0, "PLAYERBOT_SIDEKICK: companions switched off, logging out pid=%u owner=%u",
 							rec.dwSidekickPID, rec.dwOwnerPID);
-					CPlayerBotManager::instance().Despawn(rec.dwSidekickPID);
+					CPlayerBotManager::instance().Despawn(rec.dwSidekickPID, playerbot_session_rules::OUT_SIDEKICK); // MT2009_PLUS_BOT_SESSIONS_V1
 					s_mapPlayerBotSidekickRuntime.erase(rec.dwSidekickPID);
 				}
 #if defined(PLAYERBOT_ENGINE_MT2009)
@@ -2481,7 +2481,7 @@ namespace
 								rec.dwSidekickPID, rec.dwOwnerPID, (unsigned int)sk->GetEmpire(),
 								(unsigned int)owner->GetEmpire());
 						SayPlayerBotSidekick(owner, "Zmieniles krolestwo - ide za toba, zaraz bede.");
-						CPlayerBotManager::instance().Despawn(rec.dwSidekickPID);
+						CPlayerBotManager::instance().Despawn(rec.dwSidekickPID, playerbot_session_rules::OUT_SIDEKICK); // MT2009_PLUS_BOT_SESSIONS_V1
 						s_mapPlayerBotSidekickRuntime.erase(rec.dwSidekickPID);
 						rec.dwNextSpawnTry = dwNow + PLAYERBOT_SIDEKICK_SPAWN_RETRY_MS;
 						continue;
@@ -2532,7 +2532,7 @@ namespace
 				}
 				sys_log(0, "PLAYERBOT_SIDEKICK: owner gone, logging out pid=%u owner=%u", rec.dwSidekickPID,
 						rec.dwOwnerPID);
-				CPlayerBotManager::instance().Despawn(rec.dwSidekickPID);
+				CPlayerBotManager::instance().Despawn(rec.dwSidekickPID, playerbot_session_rules::OUT_SIDEKICK); // MT2009_PLUS_BOT_SESSIONS_V1
 				s_mapPlayerBotSidekickRuntime.erase(rec.dwSidekickPID);
 			}
 		}
@@ -2694,7 +2694,7 @@ namespace
 			LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(rec.dwSidekickPID);
 			if (sk && sk->GetParty())
 				LeavePlayerBotParty(sk);
-			CPlayerBotManager::instance().Despawn(rec.dwSidekickPID);
+			CPlayerBotManager::instance().Despawn(rec.dwSidekickPID, playerbot_session_rules::OUT_SIDEKICK); // MT2009_PLUS_BOT_SESSIONS_V1
 		}
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		// The record goes with this call, so the owner's client hears of the

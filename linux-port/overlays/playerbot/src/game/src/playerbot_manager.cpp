@@ -136,6 +136,8 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 // log.playerbot_equip): the recorder here, the parts that read the whole AI
 // after it (playerbot_explain_late.h, below).
 #include "playerbot_explain.h"
+// MT2009_PLUS_BOT_SESSIONS_V1: the bots' sessions (log.playerbot_session).
+#include "playerbot_session.h"
 #include "playerbot_events.h"
 // The Battle Pass (the engine calls in through server-patches/playerqol).
 #include "playerbot_battlepass.h"
@@ -4104,6 +4106,8 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 // Called from Update before that loop.
 void CPlayerBotManager::ProcessRetirementResets(DWORD dwNow)
 {
+	// MT2009_PLUS_BOT_SESSIONS_V1: every log-out below ends the session as
+	// "koniec gry" (OUT_RETIRE).
 	if (s_mapPlayerBotRetiring.empty())
 		return;
 
@@ -4141,7 +4145,7 @@ void CPlayerBotManager::ProcessRetirementResets(DWORD dwNow)
 			if (entry.stage == PLAYERBOT_RETIRE_SELLING)
 			{
 				if (ch)
-					Despawn(pid);
+					Despawn(pid, playerbot_session_rules::OUT_RETIRE);
 				break;
 			}
 			if (entry.stage == PLAYERBOT_RETIRE_SHOPPING && !entry.bStallSeen &&
@@ -4157,7 +4161,7 @@ void CPlayerBotManager::ProcessRetirementResets(DWORD dwNow)
 			AuditPlayerBotRetireSales(pid, entry);
 			if (ch)
 			{
-				Despawn(pid);
+				Despawn(pid, playerbot_session_rules::OUT_RETIRE);
 				ch = NULL;
 			}
 			MonitorPlayerBotRetirementStall(pid, entry, dwNow);
@@ -4174,7 +4178,7 @@ void CPlayerBotManager::ProcessRetirementResets(DWORD dwNow)
 				if (state != s_mapPlayerBotAIStates.end())
 					BotOfflineDrainSales(ch, state->second, dwNow);
 				WipePlayerBotForRetirement(ch);
-				Despawn(pid);
+				Despawn(pid, playerbot_session_rules::OUT_RETIRE);
 			}
 			entry.stage = PLAYERBOT_RETIRE_DESPAWNED;
 			entry.dwPurgeAt = dwNow + PLAYERBOT_RETIRE_PURGE_DELAY_MS;
@@ -4184,7 +4188,7 @@ void CPlayerBotManager::ProcessRetirementResets(DWORD dwNow)
 			// Something spawned it again (a restart, a channel swap): out again.
 			if (ch)
 			{
-				Despawn(pid);
+				Despawn(pid, playerbot_session_rules::OUT_RETIRE);
 				entry.dwPurgeAt = dwNow + PLAYERBOT_RETIRE_PURGE_DELAY_MS;
 				break;
 			}
@@ -4208,7 +4212,7 @@ void CPlayerBotManager::ProcessRetirementResets(DWORD dwNow)
 			// resends this idempotent request.
 			if (ch)
 			{
-				Despawn(pid);
+				Despawn(pid, playerbot_session_rules::OUT_RETIRE);
 				entry.stage = PLAYERBOT_RETIRE_DESPAWNED;
 				entry.dwPurgeAt = dwNow + PLAYERBOT_RETIRE_PURGE_DELAY_MS;
 				break;
@@ -4224,7 +4228,7 @@ void CPlayerBotManager::ProcessRetirementResets(DWORD dwNow)
 		case PLAYERBOT_RETIRE_PURGED:
 			if (ch)
 			{
-				Despawn(pid);
+				Despawn(pid, playerbot_session_rules::OUT_RETIRE);
 				entry.stage = PLAYERBOT_RETIRE_DESPAWNED;
 				entry.dwPurgeAt = dwNow + PLAYERBOT_RETIRE_PURGE_DELAY_MS;
 				break;
@@ -4330,14 +4334,15 @@ void CPlayerBotManager::RefreshBannedBots(DWORD dwNow)
 	for (std::set<DWORD>::const_iterator it = m_setBannedBots.begin();
 			it != m_setBannedBots.end(); ++it)
 	{
-		if (CHARACTER_MANAGER::instance().FindByPID(*it) != NULL && Despawn(*it))
+		if (CHARACTER_MANAGER::instance().FindByPID(*it) != NULL &&
+				Despawn(*it, playerbot_session_rules::OUT_BAN)) // MT2009_PLUS_BOT_SESSIONS_V1
 			++despawned;
 	}
 	sys_log(0, "PLAYERBOT_AUTH: banned bots=%u despawned=%u",
 			(unsigned int)m_setBannedBots.size(), despawned);
 }
 
-bool CPlayerBotManager::Despawn(DWORD dwPlayerID)
+bool CPlayerBotManager::Despawn(DWORD dwPlayerID, BYTE bSessionOut, DWORD dwRestSeconds)
 {
 	TPlayerBotMap::iterator it = m_mapBots.find(dwPlayerID);
 	if (it == m_mapBots.end())
@@ -4345,6 +4350,9 @@ bool CPlayerBotManager::Despawn(DWORD dwPlayerID)
 
 	LPDESC d = it->second;
 	m_mapBots.erase(it);
+	// MT2009_PLUS_BOT_SESSIONS_V1: the session ends here, with its reason;
+	// the descriptor's end below no longer finds the bot.
+	ClosePlayerBotSession(dwPlayerID, bSessionOut, dwRestSeconds);
 	s_mapPlayerBotAIStates.erase(dwPlayerID);
 	// Its F10 history and its remembered level go with it.
 	ForgetPlayerBotAdminState(dwPlayerID);
@@ -4563,6 +4571,12 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 			sys_log(0, "PLAYERBOT_LIFE: schedule %s, %u resting come back",
 					IsPlayerBotLifeScheduleEnabled() ? "all day" : "off",
 					(unsigned int)m_mapLifeRestEnd.size());
+			// MT2009_PLUS_BOT_SESSIONS_V1: their rests end now, and their
+			// next entry is the end of one.
+			for (std::map<DWORD, DWORD>::const_iterator r = m_mapLifeRestEnd.begin(); r != m_mapLifeRestEnd.end(); ++r)
+				NotePlayerBotSessionRestOver(r->first);
+			if (!m_mapLifeRestEnd.empty())
+				EndPlayerBotSessionRests();
 			m_mapLifeSessionEnd.clear();
 			m_mapLifeRestEnd.clear();
 			m_setLifeReturning.clear();
@@ -4663,7 +4677,8 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 		if (bot != m_mapBots.end() && bot->second && bot->second->GetCharacter())
 			strlcpy(szName, bot->second->GetCharacter()->GetName(), sizeof(szName));
 		m_mapLifeSessionEnd.erase(pid);
-		if (!Despawn(pid))
+		// MT2009_PLUS_BOT_SESSIONS_V1: the session row says until when.
+		if (!Despawn(pid, playerbot_session_rules::OUT_REST, (rest + 999U) / 1000U))
 			continue;
 		m_mapLifeRestEnd[pid] = dwNow + rest;
 		sys_log(0, "PLAYERBOT_LIFE: logged out pid=%u name=%s rest=%umin",
@@ -4678,6 +4693,7 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 		{
 			sys_log(0, "PLAYERBOT_LIFE: back pid=%u", it->first);
 			m_setLifeReturning.insert(it->first);
+			NotePlayerBotSessionRestOver(it->first); // MT2009_PLUS_BOT_SESSIONS_V1
 			m_mapLifeRestEnd.erase(it++);
 			++back;
 		}
@@ -4808,6 +4824,8 @@ void CPlayerBotManager::OnPlayerLoaded(LPDESC d)
 				d->GetCharacter()->GetPlayerID(), d->GetCharacter()->GetName(),
 				(unsigned int)state.bBotRole, (unsigned int)state.bPersonality,
 				(unsigned int)state.bAmbition, d->GetCharacter()->GetMapIndex());
+		// MT2009_PLUS_BOT_SESSIONS_V1: its session begins, with why.
+		OpenPlayerBotSession(dwPID, TakePlayerBotSessionEntryReason(dwPID, IsPlayerBotSidekickPID(dwPID)));
 	}
 }
 
@@ -4834,9 +4852,14 @@ void CPlayerBotManager::OnDescriptorDestroyed(LPDESC d)
 	if (!d || !d->IsBot())
 		return;
 
+	// MT2009_PLUS_BOT_SESSIONS_V1: a descriptor that goes without Despawn
+	// (which forgets the bot first) is a kick, or the core stopping.
+	const BYTE sessionOut = g_bShutdown ? playerbot_session_rules::OUT_STOP
+			: playerbot_session_rules::OUT_DISCONNECT;
 	THandleToPlayerMap::iterator hit = m_mapHandles.find(d->GetHandle());
 	if (hit != m_mapHandles.end())
 	{
+		ClosePlayerBotSession(hit->second, sessionOut, 0);
 		s_mapPlayerBotAIStates.erase(hit->second);
 		m_mapBots.erase(hit->second);
 		m_mapHandles.erase(hit);
@@ -4847,6 +4870,7 @@ void CPlayerBotManager::OnDescriptorDestroyed(LPDESC d)
 	{
 		if (it->second == d)
 		{
+			ClosePlayerBotSession(it->first, sessionOut, 0);
 			s_mapPlayerBotAIStates.erase(it->first);
 			m_mapBots.erase(it);
 			return;
@@ -5629,7 +5653,7 @@ void CPlayerBotManager::OnChannelAssignments(void* pvMsg)
 	{
 		sys_log(0, "PLAYERBOT_CHANNEL: pid=%u moved to channel %u, logging out here",
 				leave[i], (unsigned int)m_mapBotAccounts[leave[i]].bChannel);
-		Despawn(leave[i]);
+		Despawn(leave[i], playerbot_session_rules::OUT_CHANNEL); // MT2009_PLUS_BOT_SESSIONS_V1
 	}
 	// Nobody moved away is this channel's to start or to top up any more.
 	for (TRegisteredPlayerBotSet::iterator i = m_setRegisteredBots.begin(); i != m_setRegisteredBots.end();)
@@ -5682,6 +5706,7 @@ void CPlayerBotManager::SpawnChannelArrivals(DWORD)
 		if (m_setScheduledBots.insert(*i).second)
 			m_dequePendingSpawns.push_back(*i);
 		sys_log(0, "PLAYERBOT_CHANNEL: pid=%u arrives on channel %u", *i, (unsigned int)g_bChannel);
+		NotePlayerBotSessionFromChannel(*i); // MT2009_PLUS_BOT_SESSIONS_V1
 		if (g_bChannel == playerbot_channel_rules::SHOP_CHANNEL)
 			m_setChannelMovedIn.insert(*i);
 		m_setChannelArrivals.erase(i++);
@@ -5744,6 +5769,9 @@ void CPlayerBotManager::Update()
 	// The explanations of the bots' decisions: the queue to the log database,
 	// the cleanup EXPLAIN asks for, the minute's line (playerbot_explain.h).
 	ManagePlayerBotExplain(dwNow);
+	// MT2009_PLUS_BOT_SESSIONS_V1: the open sessions' heartbeat and the purge
+	// of rows past their days (playerbot_session.h).
+	ManagePlayerBotSessions(dwNow);
 	// The PERSONA switch moved: every bot goes back to the personality it
 	// drew, or on to the character that draw leans to, on this tick - and so
 	// do its ambition and, through ManagePlayerBotExpLock, its lock.
