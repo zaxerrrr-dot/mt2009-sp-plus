@@ -286,6 +286,13 @@ namespace
 		// table's otherwise (the cap of "Gra beze mnie").
 		BYTE bOwnerLevel;
 		bool bSetupDone;
+		// MT2009_PLUS_PICKUP_FILTER_V1 (companion): "Filtr" in the window's Drop
+		// (Sosna's of 30 September): -1 off - it takes everything its Drop
+		// allows; else the kinds of its owner's Auto Lowy it takes (with "Bez
+		// bonusu", bit 13), and yang. The owner's live kinds come first
+		// (GetPlayerBotSidekickFilterKinds); these are the last ones seen, for
+		// a companion playing without its owner.
+		int iPickupFilter;
 		// This core's clocks.
 		DWORD dwOwnerSeenAt;
 		DWORD dwNextSpawnTry;
@@ -293,7 +300,7 @@ namespace
 			: dwOwnerPID(0), dwSidekickPID(0), bMode(PLAYERBOT_SIDEKICK_FOLLOW),
 			  bStance(PLAYERBOT_SIDEKICK_STANCE_ATTACK), bLoot(PLAYERBOT_SIDEKICK_LOOT_ALL), bProtect(true),
 			  bBuffs(true), bManualSkills(false), bManualStats(false), bStatResetUsed(false), bLure(false),
-			  bSolo(false), bChests(true), bLead(false), bRole(PARTY_ROLE_NORMAL), bParty(true), bGroup(0), bLevel(1), bOwnerLevel(0), bSetupDone(true), dwOwnerSeenAt(0),
+			  bSolo(false), bChests(true), bLead(false), bRole(PARTY_ROLE_NORMAL), bParty(true), bGroup(0), bLevel(1), bOwnerLevel(0), bSetupDone(true), iPickupFilter(-1), dwOwnerSeenAt(0),
 			  dwNextSpawnTry(0)
 		{
 		}
@@ -483,7 +490,8 @@ namespace
 		// load, with the defaults, and keep what they are told while the core
 		// runs. The stat points, the stat reset and the lure came the day
 		// after that, in the same statement, "Gra beze mnie" (solo) and
-		// "Skrzynki" (chests) on 27 September, and "Grupa" (party) on the 28th.
+		// "Skrzynki" (chests) on 27 September, "Grupa" (party) on the 28th and
+		// "Filtr" (pickup_filter, MT2009_PLUS_PICKUP_FILTER_V1) on the 30th.
 		std::unique_ptr<SQLMsg> settings(AccountDB::instance().DirectQuery(
 				"ALTER TABLE player.playerbot_sidekick "
 				"ADD COLUMN IF NOT EXISTS stance TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER mode, "
@@ -498,7 +506,8 @@ namespace
 				"ADD COLUMN IF NOT EXISTS chests TINYINT UNSIGNED NOT NULL DEFAULT 1 AFTER solo, "
 				"ADD COLUMN IF NOT EXISTS lead TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER chests, "
 				"ADD COLUMN IF NOT EXISTS role TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER lead, "
-				"ADD COLUMN IF NOT EXISTS party TINYINT UNSIGNED NOT NULL DEFAULT 1 AFTER role"));
+				"ADD COLUMN IF NOT EXISTS party TINYINT UNSIGNED NOT NULL DEFAULT 1 AFTER role, "
+				"ADD COLUMN IF NOT EXISTS pickup_filter INT NOT NULL DEFAULT -1 AFTER party"));
 		s_bPlayerBotSidekickSettingsColumns = settings.get() && settings->uiSQLErrno == 0;
 		if (!s_bPlayerBotSidekickSettingsColumns)
 			sys_err("PLAYERBOT_SIDEKICK: no settings columns errno=%u", settings.get() ? settings->uiSQLErrno : 0U);
@@ -536,10 +545,11 @@ namespace
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(s_bPlayerBotSidekickSettingsColumns
 				? "SELECT s.owner_pid, s.sidekick_pid, s.mode, s.skill_group, s.start_level, s.setup_done, s.stance, "
 				  "s.loot, s.protect, s.buffs, s.manual_skills, s.manual_stats, s.stat_reset, s.lure, s.solo, "
-				  "(SELECT p.level FROM player.player AS p WHERE p.id=s.owner_pid), s.chests, s.lead, s.role, s.party "
+				  "(SELECT p.level FROM player.player AS p WHERE p.id=s.owner_pid), s.chests, s.lead, s.role, s.party, "
+				  "s.pickup_filter "
 				  "FROM player.playerbot_sidekick AS s"
 				: "SELECT s.owner_pid, s.sidekick_pid, s.mode, s.skill_group, s.start_level, s.setup_done, "
-				  "0, 2, 1, 1, 0, 0, 0, 0, 0, (SELECT p.level FROM player.player AS p WHERE p.id=s.owner_pid), 1, 0, 0, 1 "
+				  "0, 2, 1, 1, 0, 0, 0, 0, 0, (SELECT p.level FROM player.player AS p WHERE p.id=s.owner_pid), 1, 0, 0, 1, -1 "
 				  "FROM player.playerbot_sidekick AS s"));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 			return;
@@ -572,6 +582,9 @@ namespace
 			if (row[17]) str_to_number(lead, row[17]);
 			if (row[18]) str_to_number(role, row[18]);
 			if (row[19]) str_to_number(party, row[19]);
+			// MT2009_PLUS_PICKUP_FILTER_V1 (companion)
+			int pickupFilter = -1;
+			if (row[20]) str_to_number(pickupFilter, row[20]);
 			if (rec.dwOwnerPID == 0 || rec.dwSidekickPID == 0)
 				continue;
 			rec.bMode = mode == PLAYERBOT_SIDEKICK_FREE ? PLAYERBOT_SIDEKICK_FREE : PLAYERBOT_SIDEKICK_FOLLOW;
@@ -588,6 +601,7 @@ namespace
 			rec.bLead = lead != 0;
 			rec.bRole = (role >= PARTY_ROLE_ATTACKER && role <= PARTY_ROLE_DEFENDER) ? (BYTE)role : (BYTE)PARTY_ROLE_NORMAL;
 			rec.bParty = party != 0;
+			rec.iPickupFilter = pickupFilter < 0 ? -1 : (pickupFilter & 0x3FFF);
 			rec.bGroup = (BYTE)std::min<unsigned int>(group, 2);
 			rec.bLevel = (BYTE)std::max<unsigned int>(1, std::min<unsigned int>(level, 255));
 			rec.bOwnerLevel = (BYTE)std::min<unsigned int>(ownerLevel, 255);
@@ -620,6 +634,7 @@ namespace
 					rec.bLead = old->second.bLead;
 					rec.bRole = old->second.bRole;
 					rec.bParty = old->second.bParty;
+					rec.iPickupFilter = old->second.iPickupFilter;
 				}
 			}
 			fresh[rec.dwOwnerPID] = rec;
@@ -686,6 +701,39 @@ namespace
 			return false;
 		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
 		return rec && rec->bLoot == PLAYERBOT_SIDEKICK_LOOT_NONE;
+	}
+
+	// MT2009_PLUS_PICKUP_FILTER_V1 (companion): the kinds a companion's "Filtr"
+	// takes - its owner's Auto Lowy pick-up kinds as the owner's client last
+	// sent them to this core (/pickup_filter, char_item.cpp: every login, warp
+	// and change of the panel), so a change there holds for the companion at
+	// once; the ones kept in its record where the owner sent none here (out of
+	// the game, "Gra beze mnie"). Meaningful only with the filter on.
+	DWORD GetPlayerBotSidekickFilterKinds(const TPlayerBotSidekick& rec)
+	{
+		DWORD kinds = rec.iPickupFilter < 0 ? 0 : (DWORD)rec.iPickupFilter;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		DWORD live = 0;
+		if (Mt2009PlusPickupKindsOf(rec.dwOwnerPID, &live))
+			kinds = live;
+#endif
+		return kinds;
+	}
+
+	// Whether a companion takes an item by its "Filtr": everything with the
+	// filter off, and any bot that is nobody's companion. Yang always.
+	bool PlayerBotSidekickFilterAllows(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || s_mapPlayerBotSidekickOwner.empty() || IsPlayerBotMoneyDrop(item))
+			return true;
+		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
+		if (!rec || rec->iPickupFilter < 0)
+			return true;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return Mt2009PlusPickupKindsAllow(item, GetPlayerBotSidekickFilterKinds(*rec));
+#else
+		return true;
+#endif
 	}
 
 	// The owner, when it is a person in this core's world (or a bot, under the
@@ -2871,6 +2919,50 @@ namespace
 			SetPlayerBotSidekickPartyRole(party, ch->GetPlayerID(), ownerPid, want, true);
 	}
 
+	// MT2009_PLUS_PICKUP_FILTER_V1 (companion): the "Filtr" of the window's
+	// Drop, kept in the record at once: -1 off, else the kinds (a signed
+	// column, which SetPlayerBotSidekickSetting does not write).
+	void StorePlayerBotSidekickPickupFilter(TPlayerBotSidekick& rec, int filter)
+	{
+		if (rec.iPickupFilter == filter)
+			return;
+		rec.iPickupFilter = filter;
+		if (s_bPlayerBotSidekickSettingsColumns)
+		{
+			char query[160];
+			snprintf(query, sizeof(query), "UPDATE player.playerbot_sidekick SET pickup_filter=%d WHERE owner_pid=%u",
+					filter, rec.dwOwnerPID);
+			std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+		}
+		sys_log(0, "PLAYERBOT_SIDEKICK: setting owner=%u pid=%u pickup_filter=%d", rec.dwOwnerPID, rec.dwSidekickPID,
+				filter);
+	}
+
+	// NULL, and not a word, for new kinds to a filter already on: the
+	// window's SyncFilterKinds.
+	const char* SetPlayerBotSidekickPickupFilter(TPlayerBotSidekick& rec, bool on, DWORD kinds)
+	{
+		const bool wasOn = rec.iPickupFilter >= 0;
+		StorePlayerBotSidekickPickupFilter(rec, on ? (int)(kinds & 0x3FFF) : -1);
+		if (on && wasOn)
+			return NULL;
+		if (!on)
+			return "Dobra, zbieram wszystko, na co pozwala Drop.";
+		return "Dobra, zbieram tylko rodzaje przedmiotow zaznaczone w twoich Auto Lowach (Podnoszenie) - i yang.";
+	}
+
+	// The owner's live kinds into the record while the filter is on, for the
+	// time the companion plays without its owner. Asked by the window's poll,
+	// written only when they differ.
+	void KeepPlayerBotSidekickFilterKinds(TPlayerBotSidekick& rec)
+	{
+		if (rec.iPickupFilter < 0)
+			return;
+		const int kinds = (int)(GetPlayerBotSidekickFilterKinds(rec) & 0x3FFF);
+		if (kinds != rec.iPickupFilter)
+			StorePlayerBotSidekickPickupFilter(rec, kinds);
+	}
+
 	// "Grupa", kept in the record at once (see the stance): whether the
 	// companion follows its owner into a party somebody else leads. Answers
 	// with the companion's words for it.
@@ -3271,6 +3363,8 @@ namespace
 			SendPlayerBotSidekickCommand(owner, "SidekickInfo %d 0", PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL);
 			return;
 		}
+		// MT2009_PLUS_PICKUP_FILTER_V1 (companion): the owner's kinds kept.
+		KeepPlayerBotSidekickFilterKinds(it->second);
 		const TPlayerBotSidekick& rec = it->second;
 		LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(rec.dwSidekickPID);
 		TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(rec.dwSidekickPID);
@@ -3299,8 +3393,10 @@ namespace
 			mode = 2;
 		// "Gra beze mnie", "Skrzynki" and "Grupa" last: a window older than they
 		// are reads the words it knows and leaves the rest (uisidekick.ParseInfo).
+		// MT2009_PLUS_PICKUP_FILTER_V1 (companion): "Filtr" after "Grupa" - -1
+		// off, else the kinds it takes.
 		SendPlayerBotSidekickCommand(owner,
-				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d",
+				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d",
 				PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL,
 				inWorld ? (int)sk->GetRaceNum() : -1, inWorld ? (int)sk->GetSkillGroup() : 0,
 				inWorld ? sk->GetLevel() : 0, expPercent,
@@ -3310,7 +3406,8 @@ namespace
 				rec.bBuffs ? 1 : 0, inWorld ? (long long)sk->GetGold() : 0LL, (unsigned int)red, (unsigned int)blue,
 				inWorld && sk->IsDead() ? 1 : 0, rec.bLure ? 1 : 0, rt ? (int)rt->bLureStage : 0, rec.bSolo ? 1 : 0,
 				rec.bChests ? 1 : 0, rec.bLead ? 1 : 0, (unsigned int)rec.bRole,
-				inWorld ? sk->GetLeadershipSkillLevel() : 0, rec.bParty ? 1 : 0);
+				inWorld ? sk->GetLeadershipSkillLevel() : 0, rec.bParty ? 1 : 0,
+				rec.iPickupFilter < 0 ? -1 : (int)(GetPlayerBotSidekickFilterKinds(rec) & 0x3FFF));
 		char doing[96] = "";
 		char place[64] = "";
 		if (inWorld)
@@ -5036,6 +5133,24 @@ namespace
 				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz grupa 1 (dolaczam do twojej grupy, kto by jej nie prowadzil) "
 						"albo /towarzysz grupa 0");
 		}
+		// MT2009_PLUS_PICKUP_FILTER_V1 (companion): "/towarzysz filtr 1 <kinds>"
+		// (the window sends its owner's Auto Lowy kinds, uiautohunt.KindsMask)
+		// or "/towarzysz filtr 0".
+		else if (!strcmp(sub, "filtr"))
+		{
+			if (!strcmp(a1, "0"))
+				SayPlayerBotSidekick(ch, SetPlayerBotSidekickPickupFilter(rec->second, false, 0));
+			else if (!strcmp(a1, "1") && *a2)
+			{
+				unsigned long kinds = 0;
+				str_to_number(kinds, a2);
+				if (const char* text = SetPlayerBotSidekickPickupFilter(rec->second, true, (DWORD)kinds))
+					SayPlayerBotSidekick(ch, text);
+			}
+			else
+				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz filtr 1 <rodzaje> (tylko to, co w Auto Lowach) albo "
+						"/towarzysz filtr 0 (wszystko)");
+		}
 		else if (!strcmp(sub, "zbieraj") || !strcmp(sub, "ochrona") || !strcmp(sub, "buffy"))
 		{
 			int value = -1;
@@ -5405,6 +5520,11 @@ namespace
 			// up (Ctrl+Z), its companion leaves too - the owner's drops and its
 			// own alike.
 			if (!PlayerBotRecipientWantsDrop(owner ? owner : GetPlayerBotSidekickFilterOwner(self), item))
+				return;
+			// MT2009_PLUS_PICKUP_FILTER_V1 (companion): and with its own "Filtr"
+			// on, only its owner's Auto Lowy kinds - the owner's drops and its
+			// own alike - and yang.
+			if (!PlayerBotSidekickFilterAllows(self, item))
 				return;
 			const bool ownersOnly = owner && item->IsOwnership(owner) && !item->IsOwnership(self);
 			if (ownersOnly)
