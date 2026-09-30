@@ -1,0 +1,53 @@
+
+Group	MT2009_arezzo_cyklopy_1
+{
+	Vnum	36001
+	Leader	"General Outis"	9605
+	1	"Cyklop Zolnierz"	9602
+	2	"Cyklop Zolnierz"	9602
+	3	"Cyklop Mag"	9603
+}
+
+Group	MT2009_arezzo_cyklopy_2
+{
+	Vnum	36002
+	Leader	"Cyklop Kat"	9604
+	1	"Jednooki Zabijaka"	9601
+	2	"Jednooki Zabijaka"	9601
+	3	"Cyklop Mag"	9603
+}
+
+Group	MT2009_arezzo_cyklopy_3
+{
+	Vnum	36003
+	Leader	"Jednooki Zabijaka"	9601
+	1	"Jednooki Zabijaka"	9601
+	2	"Cyklop Zolnierz"	9602
+}
+
+Group	MT2009_arezzo_lemury_1
+{
+	Vnum	36201
+	Leader	"Lemur Kat"	9614
+	1	"Lemur Wojownik"	9611
+	2	"Lemur Zolnierz"	9612
+	3	"Lemur Mag"	9613
+}
+
+Group	MT2009_arezzo_lemury_2
+{
+	Vnum	36202
+	Leader	"Lemur General"	9615
+	1	"Lemur Zolnierz"	9612
+	2	"Lemur Mag"	9613
+	3	"Lemur Wojownik"	9611
+}
+
+Group	MT2009_arezzo_lemury_3
+{
+	Vnum	36203
+	Leader	"Lemur Wojownik"	9611
+	1	"Lemur Wojownik"	9611
+	2	"Lemur Zolnierz"	9612
+	3	"Lemur Mag"	9613
+}

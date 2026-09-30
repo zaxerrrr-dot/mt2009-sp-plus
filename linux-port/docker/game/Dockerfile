@@ -263,7 +263,9 @@ RUN set -eux; \
     # merchant in M1, offered only while M2_FLEA_MARKET is on (Uxie [DSO]).
     # temple_of_the_ochao is the Temple of Ochao's entrance (Straznik Swiatyni,
     # 20426), its portal (20415) and the Bodyguard's reward (MT2009_PLUS_OCHAO_V1).
-    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon goblin_skarbow; do \
+    # biblioteka_wiedzy is the Arezzo library dungeon (363) and map_warp the package's
+    # Teleporter with Dolina Cyklopow (360) on its first page (MT2009_PLUS_AREZZO_V1).
+    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon goblin_skarbow biblioteka_wiedzy map_warp; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -667,6 +669,66 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
  && test "$(od -An -tx1 -N8 "$L/map/metin2_map_n_flame_dungeon_01/server_attr" | tr -d ' ')" = 0c0000000c000000 \
  && rm -rf "$A" \
  && echo "share: Razador (351) and Nemere (352) dungeons, their guards and the Nemere drops"
+
+# MT2009_PLUS_AREZZO_V1 (share): the first three places from the Arezzo files (the owner has the
+# rights to them), for players - the bots come later:
+#  * Dolina Cyklopow: metin2_map_exp, index 360, 4x4 at 230400 281600, level 45, on game1
+#    (m2-render-config), entered by the Teleporter (quest/map_warp.quest, first page);
+#  * Zaczarowany Las: natural_map, 362, 4x4 at 332800 384000, level 95+, game1, entered by the
+#    portal the En-Tai Guardian leaves in the Temple of Ochao (quest/temple_of_the_ochao.quest);
+#  * Biblioteka Wiedzy: plechito_chamber_of_wisdom, 363, 2x2 at 947200 614400, the level-30 spider
+#    dungeon on game2 (quest/biblioteka_wiedzy.quest, rooms in data/dungeon/biblioteka_wiedzy); its
+#    guard, Straznik Biblioteki (20430), stands in Orc Valley beside the Temple guard (a cell measured
+#    free) and in the public copy of 363 (the fallback lobby, as Razador's 351).
+# Arezzo's server_attr (cell for cell the client's attr.atr, checked) and Setting.txt; the regen is
+# every other of Arezzo's spawn points with our monsters (the level-45 cyclopes 9601-9605, the
+# stronger lemures 9611-9615) in groups 36001-36203 (group.arezzo.txt); Arezzo's C++ timed bosses and
+# stones are boss.txt / stone.txt (Arges 9606, Polifem 9607, Metin Cienia 8009; Lemur Hrabia 3390,
+# the Bodyguard 3391, 8052, 8053); a Teleporter (9012) at each open map's landing point. The drops
+# (mob_drop_item.arezzo.txt), the library's chest 30773 (special_item_group.arezzo.txt), the names
+# the Teleporter shows (translate.lua) and /goto cyklopy, /goto las for game masters.
+COPY arezzo/ /tmp/arezzo-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for m in metin2_map_exp natural_map plechito_chamber_of_wisdom; do rm -rf "$L/map/$m"; cp -a "$A/map/$m" "$L/map/"; done \
+ && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+ && sed -i -E '/^36[0-6][[:blank:]]/d' "$L/map/index" \
+ && printf '360 metin2_map_exp\n362 natural_map\n363 plechito_chamber_of_wisdom\n' >> "$L/map/index" \
+ && test "$(grep -c -E '^(360[[:blank:]]+metin2_map_exp|362[[:blank:]]+natural_map|363[[:blank:]]+plechito_chamber_of_wisdom)[[:space:]]*$' "$L/map/index")" = 3 \
+ && mkdir -p /opt/metin2/share/data/dungeon && rm -rf /opt/metin2/share/data/dungeon/biblioteka_wiedzy \
+ && cp -a "$A/data/dungeon/biblioteka_wiedzy" /opt/metin2/share/data/dungeon/ \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_arezzo_' "$L/group.txt" \
+ && { [ -z "$(tail -c 1 "$L/group.txt")" ] || printf '\n' >> "$L/group.txt"; } \
+ && sed 's/\r$//' "$A/group.arezzo.txt" >> "$L/group.txt" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+36(00[123]|20[123])[[:space:]]*$' "$L/group.txt")" = 6 \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_arezzo_' "$L/mob_drop_item.txt" \
+ && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
+ && cat "$A/mob_drop_item.arezzo.txt" >> "$L/mob_drop_item.txt" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_arezzo_' "$L/mob_drop_item.txt")" = 7 \
+ && f="$L/special_item_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(30773|95073[123])([^0-9]|$)' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/special_item_group.arezzo.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(30773|95073[123])([^0-9]|$)' "$f")" = 4 \
+ && F="$L/map/map_n_threeway/npc.txt" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; } \
+ && { grep -q -E '[[:blank:]]20430[[:space:]]*$' "$F" || printf 'm\t294\t1450\t0\t0\t0\t5\t60s\t100\t1\t20430\n' >> "$F"; } \
+ && grep -q -E '^m[[:blank:]]+294[[:blank:]]+1450[[:blank:]].*[[:blank:]]20430' "$F" \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[360\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_AREZZO_V1: the Arezzo places (the Teleporter lists 360)\r\ntranslate.general.map_names[360] = "Dolina Cyklop\363w"\r\ntranslate.general.map_names[362] = "Zaczarowany Las"\r\ntranslate.general.map_names[363] = "Biblioteka Wiedzy"\r\n' >> "$f"; \
+    done \
+ && LC_ALL=C grep -a -q 'map_names\[360\]' "$L/quest/libs/translate/translate.lua" \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("cyklopy"' "$S" || printf 'add_goto_info("cyklopy", 0, 360, 2650, 3051)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("las"' "$S" || printf 'add_goto_info("las", 0, 362, 3787, 3946)\r\n' >> "$S"; } \
+ && test "$(od -An -tx1 -N8 "$L/map/metin2_map_exp/server_attr" | tr -d ' ')" = 1000000010000000 \
+ && test "$(od -An -tx1 -N8 "$L/map/natural_map/server_attr" | tr -d ' ')" = 1000000010000000 \
+ && test "$(od -An -tx1 -N8 "$L/map/plechito_chamber_of_wisdom/server_attr" | tr -d ' ')" = 0800000008000000 \
+ && rm -rf "$A" \
+ && echo "share: Arezzo places - Dolina Cyklopow (360), Zaczarowany Las (362), Biblioteka Wiedzy (363)"
 # (MT2009_PLUS_DUNGEON_DROP_V1: Razador (6091) and Nemere (6191) drop only yang - the owner,
 # 29 September; their loot is the 2-5 chests per player of the quests - so every drop group
 # of theirs is cut whole above but the 0% chest previews; item_manager.cpp drops nothing

@@ -81,6 +81,8 @@ linux-port/docker/game/dungeons/data/dungeon/nemere_mt/*
 linux-port/docker/game/dungeons/data/dungeon/razador_mt/*
 linux-port/docker/game/dungeons/map/metin2_map_n_snow_dungeon_01/*
 linux-port/docker/game/dungeons/map/metin2_map_n_flame_dungeon_01/*
+# MT2009_PLUS_AREZZO_V1: the Arezzo places' share files (Dockerfile step "share: Arezzo places").
+linux-port/docker/game/arezzo/*
 linux-port/docker/game/treasure_hunt/*
 linux-port/docker/game/treasure_hunt/map/metin2_map_treasure_hunt/*
 linux-port/docker/game/treasure_hunt/monster/treasure_hunt_box/*

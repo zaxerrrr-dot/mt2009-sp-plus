@@ -1,0 +1,3810 @@
+{
+ "az_maps": {
+  "d:/ymir work/daimao/drzewa/jungla/bambus3.mde": {
+   "sha1": "43f5b02609de870ba593103ba1c2417b245705a2",
+   "size": 3084731,
+   "src": "AREZZO:ymir work/daimao/drzewa/jungla/bambus3.mde"
+  },
+  "d:/ymir work/daimao/drzewa/jungla/bambus3.mse": {
+   "sha1": "b8f3366cb9dd96aca790d62e0167ad23f5858724",
+   "size": 955,
+   "src": "AREZZO:ymir work/daimao/drzewa/jungla/bambus3.mse"
+  },
+  "d:/ymir work/daimao/kamienie_01/26.gr2": {
+   "sha1": "b58b25e9ddc2410cb3c578a8de1715b636fce905",
+   "size": 16088,
+   "src": "AREZZO:ymir work/daimao/kamienie_01/26.gr2"
+  },
+  "d:/ymir work/daimao/kamienie_01/26.mdatr": {
+   "sha1": "a869180a432437c1a50f6c3d6c61fa81d1c41172",
+   "size": 95,
+   "src": "AREZZO:ymir work/daimao/kamienie_01/26.mdatr"
+  },
+  "d:/ymir work/daimao/kamienie_01/4_1.gr2": {
+   "sha1": "fbd05ae839a5c45db0ae01724fe04c69d7e80b2d",
+   "size": 18580,
+   "src": "AREZZO:ymir work/daimao/kamienie_01/4_1.gr2"
+  },
+  "d:/ymir work/daimao/kamienie_01/4_1.mdatr": {
+   "sha1": "341ed2ec0dc918be32e251a0a2e6c8a585d827a9",
+   "size": 108,
+   "src": "AREZZO:ymir work/daimao/kamienie_01/4_1.mdatr"
+  },
+  "d:/ymir work/daimao/kamienie_01/9.gr2": {
+   "sha1": "46fc33c2cafd678d50280e29b775181b0e65ab67",
+   "size": 22872,
+   "src": "AREZZO:ymir work/daimao/kamienie_01/9.gr2"
+  },
+  "d:/ymir work/daimao/kamienie_01/9.mdatr": {
+   "sha1": "a869180a432437c1a50f6c3d6c61fa81d1c41172",
+   "size": 95,
+   "src": "AREZZO:ymir work/daimao/kamienie_01/9.mdatr"
+  },
+  "d:/ymir work/daimao/kamienie_01/rock.dds": {
+   "sha1": "8880284b760540a9067b92e4d11d7914a2e34acc",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/kamienie_01/rock.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/1.dds": {
+   "sha1": "bc919e4d89a6c415b5fab7fbb21ad7df38901a00",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/1.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/1a.dds": {
+   "sha1": "48263923f5cc21317d5c2dec163e35cf1a102c9a",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/1a.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/2.dds": {
+   "sha1": "c49bb90cbf191b9f8342e8ed8163e4cf2f936d0c",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/2.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/2a.dds": {
+   "sha1": "467dc150bdbeaadf22e63a5f92d2f85a57e5f1cc",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/2a.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/3.dds": {
+   "sha1": "635ba0a4cd4e7c9a219909a79429f014147785ed",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/3.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/3a.dds": {
+   "sha1": "3d5e4038266a0e3fbdd87fc02c943898d9c20085",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/3a.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/4.dds": {
+   "sha1": "87cdeb8d415c3fe4a738c10d0657c27ce5fd410d",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/4.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/7.dds": {
+   "sha1": "84f26605f099849e679699049534b20821c07118",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/7.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/dun_gate2.dds": {
+   "sha1": "861466696fb202d8d2cf6e3a8e4d838662251fb2",
+   "size": 131200,
+   "src": "AREZZO:ymir work/daimao/magic_forest/dun_gate2.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/dun_gate2.gr2": {
+   "sha1": "a2291bdf9e77f643eb3cb629fd6a1ff1e6e49e99",
+   "size": 85568,
+   "src": "AREZZO:ymir work/daimao/magic_forest/dun_gate2.gr2"
+  },
+  "d:/ymir work/daimao/magic_forest/dun_gate2.mdatr": {
+   "sha1": "aedd1facb3d312eedd775871009a2cddaa493d94",
+   "size": 566,
+   "src": "AREZZO:ymir work/daimao/magic_forest/dun_gate2.mdatr"
+  },
+  "d:/ymir work/daimao/magic_forest/dun_gate2.mde": {
+   "sha1": "331000704043c65c0d35497c896ade30b63d260e",
+   "size": 3613567,
+   "src": "AREZZO:ymir work/daimao/magic_forest/dun_gate2.mde"
+  },
+  "d:/ymir work/daimao/magic_forest/dun_gate2.mse": {
+   "sha1": "dc33c1801da5307f990d2f6e2661a8c3d800bbb6",
+   "size": 957,
+   "src": "AREZZO:ymir work/daimao/magic_forest/dun_gate2.mse"
+  },
+  "d:/ymir work/daimao/magic_forest/dun_gate3.dds": {
+   "sha1": "15482aaa1cbd3250c7544cac6da2a689a1e662b7",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/dun_gate3.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/dun_wall1.gr2": {
+   "sha1": "96272b7bf8330fd1eeb438958c45808c605faace",
+   "size": 156080,
+   "src": "AREZZO:ymir work/daimao/magic_forest/dun_wall1.gr2"
+  },
+  "d:/ymir work/daimao/magic_forest/dun_wall1.mdatr": {
+   "sha1": "1390da7d19aea1947844afb3d00b71222667aa5b",
+   "size": 90,
+   "src": "AREZZO:ymir work/daimao/magic_forest/dun_wall1.mdatr"
+  },
+  "d:/ymir work/daimao/magic_forest/dunwall1.dds": {
+   "sha1": "e88904b45b1de2277de9e51ef80ef00dc2a9a766",
+   "size": 2097280,
+   "src": "AREZZO:ymir work/daimao/magic_forest/dunwall1.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/ring01.gr2": {
+   "sha1": "f4be7fbaddb63c3643bb4391cf7e3c44bf9a6ad5",
+   "size": 24432,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ring01.gr2"
+  },
+  "d:/ymir work/daimao/magic_forest/ring01.mdatr": {
+   "sha1": "1390da7d19aea1947844afb3d00b71222667aa5b",
+   "size": 90,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ring01.mdatr"
+  },
+  "d:/ymir work/daimao/magic_forest/ring02.gr2": {
+   "sha1": "29abae2fe8d70975de1296d3f7526c1064a367b5",
+   "size": 24420,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ring02.gr2"
+  },
+  "d:/ymir work/daimao/magic_forest/ring02.mdatr": {
+   "sha1": "1390da7d19aea1947844afb3d00b71222667aa5b",
+   "size": 90,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ring02.mdatr"
+  },
+  "d:/ymir work/daimao/magic_forest/ring06.gr2": {
+   "sha1": "0c1ef4ce6b287e9dada101c95372d555c9d3b10a",
+   "size": 16620,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ring06.gr2"
+  },
+  "d:/ymir work/daimao/magic_forest/ring06.mdatr": {
+   "sha1": "1390da7d19aea1947844afb3d00b71222667aa5b",
+   "size": 90,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ring06.mdatr"
+  },
+  "d:/ymir work/daimao/magic_forest/ring_a1.dds": {
+   "sha1": "f6ac72f95a9e9315022b017910ad2194c5c3cfe7",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ring_a1.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/ring_a3.dds": {
+   "sha1": "6335567b3358aa2d8adf43d0cc27561b4e8f2de6",
+   "size": 524416,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ring_a3.dds"
+  },
+  "d:/ymir work/daimao/magic_forest/ruin01.gr2": {
+   "sha1": "5c184a0db09cfd8a519afbfa1a79d242139eb40c",
+   "size": 579128,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ruin01.gr2"
+  },
+  "d:/ymir work/daimao/magic_forest/ruin01.mdatr": {
+   "sha1": "1390da7d19aea1947844afb3d00b71222667aa5b",
+   "size": 90,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ruin01.mdatr"
+  },
+  "d:/ymir work/daimao/magic_forest/ruin04.gr2": {
+   "sha1": "facfe0acb72de5f198ab01f71f4db7562a503764",
+   "size": 125568,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ruin04.gr2"
+  },
+  "d:/ymir work/daimao/magic_forest/ruin04.mdatr": {
+   "sha1": "1390da7d19aea1947844afb3d00b71222667aa5b",
+   "size": 90,
+   "src": "AREZZO:ymir work/daimao/magic_forest/ruin04.mdatr"
+  },
+  "d:/ymir work/effect/background/gatein.dds": {
+   "sha1": "bc9e986fe2eab98987f29454920d2d48d7969a66",
+   "size": 65664,
+   "src": "AREZZO:ymir work/effect/background/gatein.dds"
+  },
+  "d:/ymir work/environment/alune_wiking_1.msenv": {
+   "sha1": "bc892a640a652fe920e2a5007141918316e247ca",
+   "size": 2176,
+   "src": "AREZZO:ymir work/environment/alune_wiking_1.msenv"
+  },
+  "d:/ymir work/environment/ateoptoniepoeta2.msenv": {
+   "sha1": "f1d41827fbe922b78a232d1d44fd803025114a41",
+   "size": 2337,
+   "src": "AREZZO:ymir work/environment/ateoptoniepoeta2.msenv"
+  },
+  "d:/ymir work/environment/chamber_of_wisdom.msenv": {
+   "sha1": "bbbe051b273d9e60dbf4fe0861d9b33721b8fabd",
+   "size": 2221,
+   "src": "AREZZO:ymir work/environment/chamber_of_wisdom.msenv"
+  },
+  "d:/ymir work/environment/clouds_zone01.tga": {
+   "sha1": "a8e05cd8470a2108b166ac4d1b6ff4d620d88543",
+   "size": 262162,
+   "src": "GF:d_/ymir work/environment/clouds_zone01.tga"
+  },
+  "d:/ymir work/environment/daimao_skybox/daimao_city/b.dds": {
+   "sha1": "505a89455e0bf120e8142440f3eae5aaafcff17f",
+   "size": 524416,
+   "src": "AREZZO:ymir work/environment/daimao_skybox/daimao_city/b.dds"
+  },
+  "d:/ymir work/environment/daimao_skybox/daimao_city/d.dds": {
+   "sha1": "9c31c840d15039f9f85a0839760ce7e74dfa4e6f",
+   "size": 524416,
+   "src": "AREZZO:ymir work/environment/daimao_skybox/daimao_city/d.dds"
+  },
+  "d:/ymir work/environment/daimao_skybox/daimao_city/f.dds": {
+   "sha1": "5839a17bc9dd7754d5d0fb80e486f656d80729a7",
+   "size": 524416,
+   "src": "AREZZO:ymir work/environment/daimao_skybox/daimao_city/f.dds"
+  },
+  "d:/ymir work/environment/daimao_skybox/daimao_city/l.dds": {
+   "sha1": "887afb33af1f8c538f31fef1a51d9637e5936852",
+   "size": 524416,
+   "src": "AREZZO:ymir work/environment/daimao_skybox/daimao_city/l.dds"
+  },
+  "d:/ymir work/environment/daimao_skybox/daimao_city/r.dds": {
+   "sha1": "6727c366f8629ec2d4538891b785263ee7ef5efc",
+   "size": 524416,
+   "src": "AREZZO:ymir work/environment/daimao_skybox/daimao_city/r.dds"
+  },
+  "d:/ymir work/environment/daimao_skybox/daimao_city/t.dds": {
+   "sha1": "4175c344316076fdb45cb2b92c8398e54c9ea11d",
+   "size": 524416,
+   "src": "AREZZO:ymir work/environment/daimao_skybox/daimao_city/t.dds"
+  },
+  "d:/ymir work/environment/wiking/storm_b.dds": {
+   "sha1": "c1311ae193ae37a6c371f9df9336c60508ed28d3",
+   "size": 1398256,
+   "src": "AREZZO:ymir work/environment/wiking/storm_b.dds"
+  },
+  "d:/ymir work/environment/wiking/storm_f.dds": {
+   "sha1": "9ff1ecb07fb051689b0097852ab62b332355e255",
+   "size": 1398256,
+   "src": "AREZZO:ymir work/environment/wiking/storm_f.dds"
+  },
+  "d:/ymir work/environment/wiking/storm_l.dds": {
+   "sha1": "3c03153509315ae5857962c043ffdbb81621c4fe",
+   "size": 1398256,
+   "src": "AREZZO:ymir work/environment/wiking/storm_l.dds"
+  },
+  "d:/ymir work/environment/wiking/storm_r.dds": {
+   "sha1": "73245683ba60d0d71c152f2729a969c8bcdbdb79",
+   "size": 1398256,
+   "src": "AREZZO:ymir work/environment/wiking/storm_r.dds"
+  },
+  "d:/ymir work/environment/wiking/storm_t.dds": {
+   "sha1": "956e62cdec1f15936ba9ba4af8ea11effd543ef6",
+   "size": 1398256,
+   "src": "AREZZO:ymir work/environment/wiking/storm_t.dds"
+  },
+  "d:/ymir work/redwood/bigbig1.spt": {
+   "sha1": "ed23f1f17d04dcbabac833480de94ef0f7da6c59",
+   "size": 6640,
+   "src": "AREZZO:ymir work/redwood/bigbig1.spt"
+  },
+  "d:/ymir work/redwood/bigbig2.spt": {
+   "sha1": "895d15f11009cbc87d8f68ee5ea39e7ae58d56fb",
+   "size": 6640,
+   "src": "AREZZO:ymir work/redwood/bigbig2.spt"
+  },
+  "d:/ymir work/redwood/tree3.spt": {
+   "sha1": "4eba5b12e62c907973071febc7084db093faa5f6",
+   "size": 6540,
+   "src": "AREZZO:ymir work/redwood/tree3.spt"
+  },
+  "d:/ymir work/redwood/treecamoranparadisebark.dds": {
+   "sha1": "a4d55e8a863eef2a84dfe09de2005e2a366460a4",
+   "size": 1398228,
+   "src": "AREZZO:ymir work/redwood/treecamoranparadisebark.dds"
+  },
+  "d:/ymir work/redwood/treecamoranparadiseleaves01.dds": {
+   "sha1": "ba6d9cdf9267c06f90970f54be8d46043d3c87cb",
+   "size": 1398228,
+   "src": "AREZZO:ymir work/redwood/treecamoranparadiseleaves01.dds"
+  },
+  "d:/ymir work/terrainmaps/_new_m/8.dds": {
+   "sha1": "9b201679b1e5afe6c138d69aee9135b38343f972",
+   "size": 699192,
+   "src": "AREZZO:ymir work/terrainmaps/_new_m/8.dds"
+  },
+  "d:/ymir work/terrainmaps/_new_m/grass02.dds": {
+   "sha1": "fdc883b9df644ab2ba1231ef195a58d65f78b18f",
+   "size": 262272,
+   "src": "AREZZO:ymir work/terrainmaps/_new_m/grass02.dds"
+  },
+  "d:/ymir work/terrainmaps/daimao/0daimao_magic_forest/df4_rock_01.dds": {
+   "sha1": "70f72e10e5fbdd9daccf36586b0fd024503d058b",
+   "size": 131200,
+   "src": "AREZZO:ymir work/terrainmaps/daimao/0daimao_magic_forest/df4_rock_01.dds"
+  },
+  "d:/ymir work/terrainmaps/daimao/0daimao_magic_forest/dirt.dds": {
+   "sha1": "11a1fff8395f013e07ddb6a137d27cabcf5203d7",
+   "size": 131200,
+   "src": "AREZZO:ymir work/terrainmaps/daimao/0daimao_magic_forest/dirt.dds"
+  },
+  "d:/ymir work/terrainmaps/daimao/0daimao_magic_forest/grass (6).dds": {
+   "sha1": "7f235bcc2d74ebebfb0cc4a796d5e949523ac79d",
+   "size": 524416,
+   "src": "AREZZO:ymir work/terrainmaps/daimao/0daimao_magic_forest/grass (6).dds"
+  },
+  "d:/ymir work/terrainmaps/daimao/0daimao_magic_forest/ground (13).dds": {
+   "sha1": "63b81af25694b08a5f4d46fbdb84891ffa408afe",
+   "size": 524416,
+   "src": "AREZZO:ymir work/terrainmaps/daimao/0daimao_magic_forest/ground (13).dds"
+  },
+  "d:/ymir work/terrainmaps/daimao/0daimao_magic_forest/ground (17).dds": {
+   "sha1": "eff42af8460aaee3ce9881e75b8ae6d48d0e0164",
+   "size": 524416,
+   "src": "AREZZO:ymir work/terrainmaps/daimao/0daimao_magic_forest/ground (17).dds"
+  },
+  "d:/ymir work/terrainmaps/daimao/0daimao_magic_forest/ground (8).dds": {
+   "sha1": "226b0a9256ebb8506f10db3497808e5e310f7b1c",
+   "size": 524416,
+   "src": "AREZZO:ymir work/terrainmaps/daimao/0daimao_magic_forest/ground (8).dds"
+  },
+  "d:/ymir work/terrainmaps/plechi_env_map/dark.dds": {
+   "sha1": "5f84c58289dc7b34987f34cdd083e99ac7fc6573",
+   "size": 65664,
+   "src": "AREZZO:ymir work/terrainmaps/plechi_env_map/dark.dds"
+  },
+  "d:/ymir work/terrainmaps/trusiakwork/alaska_mine/grass01.dds": {
+   "sha1": "d2cb4c44d168db06af4cdbb6d789c4f563393c2a",
+   "size": 262272,
+   "src": "AREZZO:ymir work/terrainmaps/trusiakwork/alaska_mine/grass01.dds"
+  },
+  "d:/ymir work/terrainmaps/trusiakwork/alaska_mine/ground01.dds": {
+   "sha1": "5977619e10d79ed6ec0fe724d9b495ab6c5fbb19",
+   "size": 262272,
+   "src": "AREZZO:ymir work/terrainmaps/trusiakwork/alaska_mine/ground01.dds"
+  },
+  "d:/ymir work/terrainmaps/trusiakwork/football_pitch/football_grass.dds": {
+   "sha1": "b320b6b784fb2ab15640f23fc71f45665d85f09f",
+   "size": 349680,
+   "src": "AREZZO:ymir work/terrainmaps/trusiakwork/football_pitch/football_grass.dds"
+  },
+  "d:/ymir work/terrainmaps/trusiakwork/misja1/skala.dds": {
+   "sha1": "025cb4524937d97e30bc2be3591e5da5ff7f69d5",
+   "size": 174720,
+   "src": "AREZZO:ymir work/terrainmaps/trusiakwork/misja1/skala.dds"
+  },
+  "d:/ymir work/tree/jestok.spt": {
+   "sha1": "774ad39a73aa31bd537ce47e2707237eea90e458",
+   "size": 7495,
+   "src": "AREZZO:ymir work/tree/jestok.spt"
+  },
+  "d:/ymir work/tree/plant_bush2.spt": {
+   "sha1": "81ed75de7c14a06ba71513b7387e01573c0eb812",
+   "size": 12168,
+   "src": "AREZZO:ymir work/tree/plant_bush2.spt"
+  },
+  "d:/ymir work/tree/plant_bush3.spt": {
+   "sha1": "2e2121c9dd0ef7bfd203d40580560a7558b98278",
+   "size": 12168,
+   "src": "AREZZO:ymir work/tree/plant_bush3.spt"
+  },
+  "d:/ymir work/tree/plant_bush4.spt": {
+   "sha1": "8c8684c0aca7f897d10f195131f284011b6a380d",
+   "size": 12168,
+   "src": "AREZZO:ymir work/tree/plant_bush4.spt"
+  },
+  "d:/ymir work/tree/plants/grass.spt": {
+   "sha1": "eedb35f039dd94fec6687a3b6e7ee2f4639ff97b",
+   "size": 12161,
+   "src": "AREZZO:ymir work/tree/plants/grass.spt"
+  },
+  "d:/ymir work/tree/plechito_trees/pink_tree01.dds": {
+   "sha1": "b5530777c696efa838e369a72af7c51effeb1f63",
+   "size": 131200,
+   "src": "AREZZO:ymir work/tree/plechito_trees/pink_tree01.dds"
+  },
+  "d:/ymir work/tree/plechito_trees/pink_tree01a.spt": {
+   "sha1": "634d8e46f66b2937c9efdeb0e7aff36a2c55f24f",
+   "size": 5648,
+   "src": "AREZZO:ymir work/tree/plechito_trees/pink_tree01a.spt"
+  },
+  "d:/ymir work/tree/plechito_trees/pink_tree01b.spt": {
+   "sha1": "28520b8bdbab2f46e1e90212f49ca5693336deb2",
+   "size": 5648,
+   "src": "AREZZO:ymir work/tree/plechito_trees/pink_tree01b.spt"
+  },
+  "d:/ymir work/tree/plechito_trees/pink_tree04.dds": {
+   "sha1": "3d3a2db9205521e3a9232c40ad057e18dff76f5d",
+   "size": 131200,
+   "src": "AREZZO:ymir work/tree/plechito_trees/pink_tree04.dds"
+  },
+  "d:/ymir work/tree/plechito_trees/pink_tree04a.spt": {
+   "sha1": "2f0386a4fd63b624122764665b095e71a0fd18e7",
+   "size": 5479,
+   "src": "AREZZO:ymir work/tree/plechito_trees/pink_tree04a.spt"
+  },
+  "d:/ymir work/tree/plechito_trees/pink_tree04b.spt": {
+   "sha1": "721a0c353541807db427a98bc01a7df8ecddc696",
+   "size": 5478,
+   "src": "AREZZO:ymir work/tree/plechito_trees/pink_tree04b.spt"
+  },
+  "d:/ymir work/tree/plechito_trees/pink_tree04c.spt": {
+   "sha1": "6c372c3a4c361c12bd9946d51a4456cb9ad70284",
+   "size": 5478,
+   "src": "AREZZO:ymir work/tree/plechito_trees/pink_tree04c.spt"
+  },
+  "d:/ymir work/tree/plechito_trees/pink_tree_bark01.dds": {
+   "sha1": "e3c415fffe4d02427d1e0d6e4924c30c31745c3b",
+   "size": 349660,
+   "src": "AREZZO:ymir work/tree/plechito_trees/pink_tree_bark01.dds"
+  },
+  "d:/ymir work/tree/plechito_trees/ptf_tree00.dds": {
+   "sha1": "3ed4dba40a308c3f7a8c9d32e08e5dd735f6c0e9",
+   "size": 174904,
+   "src": "AREZZO:ymir work/tree/plechito_trees/ptf_tree00.dds"
+  },
+  "d:/ymir work/tree/plechito_trees/ptf_tree00a.spt": {
+   "sha1": "89c49b475a853eaeffe31bf72c1ce7c6a51d366a",
+   "size": 6440,
+   "src": "AREZZO:ymir work/tree/plechito_trees/ptf_tree00a.spt"
+  },
+  "d:/ymir work/tree/plechito_trees/ptf_tree00b.spt": {
+   "sha1": "57c0729c0f2ecc072035708abd8c327238676b2b",
+   "size": 6440,
+   "src": "AREZZO:ymir work/tree/plechito_trees/ptf_tree00b.spt"
+  },
+  "d:/ymir work/tree/plechito_trees/ptf_tree00c.spt": {
+   "sha1": "864ee7dce3ccfd8ba8cb00095a3be46827d18389",
+   "size": 6440,
+   "src": "AREZZO:ymir work/tree/plechito_trees/ptf_tree00c.spt"
+  },
+  "d:/ymir work/tree/plechito_trees/ptf_trunk00.dds": {
+   "sha1": "c77431627659ba550df1df58009270a620617be3",
+   "size": 174904,
+   "src": "AREZZO:ymir work/tree/plechito_trees/ptf_trunk00.dds"
+  },
+  "d:/ymir work/tree/plechito_trees/ptn5_trunk.dds": {
+   "sha1": "6e31463edeeb7b0f82641074fe840d96afe3061b",
+   "size": 262272,
+   "src": "AREZZO:ymir work/tree/plechito_trees/ptn5_trunk.dds"
+  },
+  "d:/ymir work/tree/shye/asian/2/sycamore.spt": {
+   "sha1": "fd04a3b281b45d10bb7e1d756e309ea31891d327",
+   "size": 6744,
+   "src": "AREZZO:ymir work/tree/shye/asian/2/sycamore.spt"
+  },
+  "d:/ymir work/tree/shye/asian/2/sycamore2.spt": {
+   "sha1": "455e47c7e195c9c03ed27f307a80e4888174eea5",
+   "size": 6743,
+   "src": "AREZZO:ymir work/tree/shye/asian/2/sycamore2.spt"
+  },
+  "d:/ymir work/tree/shye/asian/7/1/yulinsycamore.spt": {
+   "sha1": "572492378cd8c880809856153c1d79ef870e802c",
+   "size": 6814,
+   "src": "AREZZO:ymir work/tree/shye/asian/7/1/yulinsycamore.spt"
+  },
+  "d:/ymir work/tree/shye/asian/columnarbig6.spt": {
+   "sha1": "0da76e7bca17f5892f98f8978e0caf1c133d7adb",
+   "size": 5767,
+   "src": "AREZZO:ymir work/tree/shye/asian/columnarbig6.spt"
+  },
+  "d:/ymir work/tree/shye/asian/columnarbig9.spt": {
+   "sha1": "03a9962e6ec77de1cf7e4e6a4b223ca7b90f8799",
+   "size": 5808,
+   "src": "AREZZO:ymir work/tree/shye/asian/columnarbig9.spt"
+  },
+  "d:/ymir work/tree/shye/asian/columnarenglishgreen1.spt": {
+   "sha1": "904714ab3aa3dc1370af7f9ffe55f6335a934970",
+   "size": 5717,
+   "src": "AREZZO:ymir work/tree/shye/asian/columnarenglishgreen1.spt"
+  },
+  "d:/ymir work/tree/treeredwoodbark.dds": {
+   "sha1": "38751523e1961632fe9ccca12864b55a1be7027c",
+   "size": 349672,
+   "src": "AREZZO:ymir work/tree/treeredwoodbark.dds"
+  },
+  "d:/ymir work/tree/treeredwoodlarge22.spt": {
+   "sha1": "d19f9b60022cf4f342dbe8a09fb1991cf61ec005",
+   "size": 5545,
+   "src": "AREZZO:ymir work/tree/treeredwoodlarge22.spt"
+  },
+  "d:/ymir work/tree/treeredwoodleaves.dds": {
+   "sha1": "e689586028ea0647278fd4f8a79fe410389686ff",
+   "size": 349680,
+   "src": "AREZZO:ymir work/tree/treeredwoodleaves.dds"
+  },
+  "d:/ymir work/tree/treeswampcypressleaves.dds": {
+   "sha1": "dc993a632285b3b841d860a9066e473ad1ffb299",
+   "size": 349680,
+   "src": "AREZZO:ymir work/tree/treeswampcypressleaves.dds"
+  },
+  "d:/ymir work/ui/atlas/metin2_map_exp/atlas.sub": {
+   "sha1": "c774e145da00db533bca56b77cea1841539d7c9b",
+   "size": 101,
+   "src": "GEN:d_/ymir work/ui/atlas/metin2_map_exp/atlas.sub"
+  },
+  "d:/ymir work/ui/atlas/natural_map/atlas.sub": {
+   "sha1": "6d61815331a094c6a0b63bb9f293f076252d52bb",
+   "size": 98,
+   "src": "GEN:d_/ymir work/ui/atlas/natural_map/atlas.sub"
+  },
+  "d:/ymir work/ui/atlas/plechito_chamber_of_wisdom/atlas.sub": {
+   "sha1": "b011cf02e3cefd4b5f6e532864a79fc71bceaf08",
+   "size": 113,
+   "src": "GEN:d_/ymir work/ui/atlas/plechito_chamber_of_wisdom/atlas.sub"
+  },
+  "d:/ymir work/ui/metin2_map_exp_atlas.dds": {
+   "sha1": "4112519e91fbc9c4380e929c0e1c8dc6682b6815",
+   "size": 131200,
+   "src": "GEN:d_/ymir work/ui/metin2_map_exp_atlas.dds"
+  },
+  "d:/ymir work/ui/natural_map_atlas.dds": {
+   "sha1": "324c371ffbd1cfe98522769f24002fee7a71940e",
+   "size": 131200,
+   "src": "GEN:d_/ymir work/ui/natural_map_atlas.dds"
+  },
+  "d:/ymir work/ui/plechito_chamber_of_wisdom_atlas.dds": {
+   "sha1": "d8a8d2ebe412623e0c5940ee796f29519cd5d430",
+   "size": 32896,
+   "src": "GEN:d_/ymir work/ui/plechito_chamber_of_wisdom_atlas.dds"
+  },
+  "d:/ymir work/zone/b/obj/b_general_obj_02.dds": {
+   "sha1": "a668c53b62092a7acb8c8189fde503eefcce370d",
+   "size": 174720,
+   "src": "GF:d_/ymir work/zone/b/obj/b_general_obj_02.dds"
+  },
+  "d:/ymir work/zone/b/obj/b_general_obj_02.mdatr": {
+   "sha1": "78dfd42c72690b0c5c0028bb11c53b4a0305bfc4",
+   "size": 94,
+   "src": "GF:d_/ymir work/zone/b/obj/b_general_obj_02.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/b_general_obj_06.dds": {
+   "sha1": "86b1fa7fc8c132ef4d726853bee10921323da409",
+   "size": 174720,
+   "src": "GF:d_/ymir work/zone/b/obj/b_general_obj_06.dds"
+  },
+  "d:/ymir work/zone/b/obj/b_general_obj_10.mdatr": {
+   "sha1": "dfc762654d00c3399ee1e16149f9d329c65f5683",
+   "size": 94,
+   "src": "GF:d_/ymir work/zone/b/obj/b_general_obj_10.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/b_general_obj_18.dds": {
+   "sha1": "c3f89eb70922c1d56bb197e759e80e572fb220d2",
+   "size": 174720,
+   "src": "GF:d_/ymir work/zone/b/obj/b_general_obj_18.dds"
+  },
+  "d:/ymir work/zone/b/obj/b_general_obj_21_1.mdatr": {
+   "sha1": "746e7549028bd5b302d661d0b9416d480b52345e",
+   "size": 94,
+   "src": "GF:d_/ymir work/zone/b/obj/b_general_obj_21_1.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/b_general_obj_22.mdatr": {
+   "sha1": "434650ae15267341953717bf4503faf78154a7e4",
+   "size": 310,
+   "src": "GF:d_/ymir work/zone/b/obj/b_general_obj_22.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/b_general_obj_23.mdatr": {
+   "sha1": "5d2a741238f6fc35bd5e1c20277d6cafe27f3bff",
+   "size": 94,
+   "src": "GF:d_/ymir work/zone/b/obj/b_general_obj_23.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_bigstonegate.dds": {
+   "sha1": "590f822a58c28dfac51dec64cee545ffa7e870e7",
+   "size": 174720,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_bigstonegate.dds"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_breakenbox01.mdatr": {
+   "sha1": "f4711548154f65a0cbcab31fcd7df437b958c73f",
+   "size": 90,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_breakenbox01.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_breakenbox02.mdatr": {
+   "sha1": "7d98e90c158be191236d3e2219b9babfbf0146db",
+   "size": 90,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_breakenbox02.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_breakenbox03.mdatr": {
+   "sha1": "c44dd1fb561cd7cf66a8c8d2609fe28c8429a56d",
+   "size": 90,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_breakenbox03.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_ferryboat.dds": {
+   "sha1": "73ad90486f002b0a29488cff02cde6419115c887",
+   "size": 174720,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_ferryboat.dds"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_itembox01.mdatr": {
+   "sha1": "b6520f1fc36082e35411596573f3886fe6073976",
+   "size": 90,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_itembox01.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_itembox02.mdatr": {
+   "sha1": "e30d4f2234a3cda7ff24531839a5704133998051",
+   "size": 90,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_itembox02.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_itembox03.mdatr": {
+   "sha1": "a703a27338a0e211efff4a040177c78d7a79cde8",
+   "size": 90,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_itembox03.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_jar_blue02.mdatr": {
+   "sha1": "0cf575798072cf9105affca250c7f157f251488c",
+   "size": 94,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_jar_blue02.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_jar_red01.mdatr": {
+   "sha1": "2615dafefe8ff7bab9d3cffb327d610d83c23df2",
+   "size": 94,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_jar_red01.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_jar_yellow01.mdatr": {
+   "sha1": "560cd1a51711d3c328a0fd0d8d208062b7e483db",
+   "size": 94,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_jar_yellow01.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_jar_yellow02.mdatr": {
+   "sha1": "bb9ba9ff70543001db69f1c04056c01959f251f0",
+   "size": 94,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_jar_yellow02.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_pillar.mdatr": {
+   "sha1": "423d883f01bd2435bb1e92c4b7efa63af8516ec8",
+   "size": 166,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_pillar.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/general_obj_stone13.dds": {
+   "sha1": "4985982562b86536e7bd3a23d8f212711d698922",
+   "size": 174904,
+   "src": "GF:d_/ymir work/zone/b/obj/general_obj_stone13.dds"
+  },
+  "d:/ymir work/zone/b/obj/jungle trusiak/general_obj_bigstonegate20.gr2": {
+   "sha1": "fe5f671f9eb3fb150d744836613195581d27c2f4",
+   "size": 11472,
+   "src": "AREZZO:ymir work/zone/b/obj/jungle trusiak/general_obj_bigstonegate20.gr2"
+  },
+  "d:/ymir work/zone/b/obj/jungle trusiak/general_obj_bigstonegate20.mdatr": {
+   "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+   "size": 22,
+   "src": "AREZZO:ymir work/zone/b/obj/jungle trusiak/general_obj_bigstonegate20.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/jungle trusiak/general_obj_stone01.dds": {
+   "sha1": "3e0f6e0090c554164d1ca7b35318c07974f82e95",
+   "size": 43832,
+   "src": "AREZZO:ymir work/zone/b/obj/jungle trusiak/general_obj_stone01.dds"
+  },
+  "d:/ymir work/zone/b/obj/jungle trusiak/general_obj_stone04.dds": {
+   "sha1": "3e0f6e0090c554164d1ca7b35318c07974f82e95",
+   "size": 43832,
+   "src": "AREZZO:ymir work/zone/b/obj/jungle trusiak/general_obj_stone04.dds"
+  },
+  "d:/ymir work/zone/b/obj/jungle trusiak/general_obj_stone13.gr2": {
+   "sha1": "8f69f1019dddf5c8ebe50679e762dce1436e50c1",
+   "size": 9788,
+   "src": "AREZZO:ymir work/zone/b/obj/jungle trusiak/general_obj_stone13.gr2"
+  },
+  "d:/ymir work/zone/b/obj/jungle trusiak/general_obj_stone13.mdatr": {
+   "sha1": "a64d1c16532dbac91760d6f49a99eb3d20427fbc",
+   "size": 94,
+   "src": "AREZZO:ymir work/zone/b/obj/jungle trusiak/general_obj_stone13.mdatr"
+  },
+  "d:/ymir work/zone/b/obj/jungle trusiak/skala.dds": {
+   "sha1": "3e0f6e0090c554164d1ca7b35318c07974f82e95",
+   "size": 43832,
+   "src": "AREZZO:ymir work/zone/b/obj/jungle trusiak/skala.dds"
+  },
+  "d:/ymir work/zone/b/obj/jungle trusiak/thing_rock00.gr2": {
+   "sha1": "decaf1b3fd89476ad6a0029e20e0413834b3bc85",
+   "size": 10457,
+   "src": "AREZZO:ymir work/zone/b/obj/jungle trusiak/thing_rock00.gr2"
+  },
+  "d:/ymir work/zone/b/obj/jungle trusiak/thing_rock00.mdatr": {
+   "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+   "size": 22,
+   "src": "AREZZO:ymir work/zone/b/obj/jungle trusiak/thing_rock00.mdatr"
+  },
+  "d:/ymir work/zone/devils_dragon_island/bone/bone_whale_head01.mdatr": {
+   "sha1": "db55e870f95b302a42639680765cb5332975b842",
+   "size": 1026,
+   "src": "AREZZO:ymir work/zone/devils_dragon_island/bone/bone_whale_head01.mdatr"
+  },
+  "d:/ymir work/zone/devils_dragon_island/bone/bone_whale_lump00.mdatr": {
+   "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+   "size": 22,
+   "src": "AREZZO:ymir work/zone/devils_dragon_island/bone/bone_whale_lump00.mdatr"
+  },
+  "d:/ymir work/zone/devils_dragon_island/bone/bone_whale_lump02.mdatr": {
+   "sha1": "28d0cf59904417121bcf640f9a37a890a23e935d",
+   "size": 310,
+   "src": "GF:d_/ymir work/zone/devils_dragon_island/bone/bone_whale_lump02.mdatr"
+  },
+  "d:/ymir work/zone/devils_dragon_island/bone/bone_whale_rib_up00.mdatr": {
+   "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+   "size": 22,
+   "src": "AREZZO:ymir work/zone/devils_dragon_island/bone/bone_whale_rib_up00.mdatr"
+  },
+  "d:/ymir work/zone/devils_dragon_island/bone/bone_whale_rib_up01.mdatr": {
+   "sha1": "126b99172ea547bbf33b8853d4f330403d9d6955",
+   "size": 310,
+   "src": "GF:d_/ymir work/zone/devils_dragon_island/bone/bone_whale_rib_up01.mdatr"
+  },
+  "d:/ymir work/zone/devils_dragon_island/camp/camp_redthief_gate_01.mdatr": {
+   "sha1": "e0317efedde4db26e69da4843745986cf739a83e",
+   "size": 310,
+   "src": "AREZZO:ymir work/zone/devils_dragon_island/camp/camp_redthief_gate_01.mdatr"
+  },
+  "d:/ymir work/zone/devils_dragon_island/camp/camp_redthief_gate_02.mdatr": {
+   "sha1": "dc65c64f44d3cfefc3dd2661ed4cc188dc56b72e",
+   "size": 310,
+   "src": "AREZZO:ymir work/zone/devils_dragon_island/camp/camp_redthief_gate_02.mdatr"
+  },
+  "d:/ymir work/zone/devils_dragon_island/camp/camp_redthief_gate_03.mdatr": {
+   "sha1": "ff6dab5eab7d8791d0960427fa77d87a7306dba0",
+   "size": 310,
+   "src": "AREZZO:ymir work/zone/devils_dragon_island/camp/camp_redthief_gate_03.mdatr"
+  },
+  "d:/ymir work/zone/devils_dragon_island/camp_redthief_gate.dds": {
+   "sha1": "3dfea87adb86ba79e8a205983cbfbe4dafe315e0",
+   "size": 688256,
+   "src": "GF:d_/ymir work/zone/devils_dragon_island/camp_redthief_gate.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/books00.gr2": {
+   "sha1": "94f267f42c377d005b96b99c56c045a3964786c7",
+   "size": 15412,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/books00.gr2"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/books01.gr2": {
+   "sha1": "54b743ee163c094db6ff17fd88b71549d774fa4a",
+   "size": 30224,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/books01.gr2"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/books01lightingmap.dds": {
+   "sha1": "9de5aee8a22edadc8fe5b30656fc60e4c922a4a5",
+   "size": 131200,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/books01lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/chamber_of_wisdom.gr2": {
+   "sha1": "b859b34403fc9552bfc71ad11daad661e6236782",
+   "size": 520552,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/chamber_of_wisdom.gr2"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/chamber_of_wisdom.mdatr": {
+   "sha1": "275b01e20ba399d73ccccd1b68693df0276911f6",
+   "size": 18598,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/chamber_of_wisdom.mdatr"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/pillar00.gr2": {
+   "sha1": "f16b2c7c747889a3c8f99e20017277272ba38821",
+   "size": 14056,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/pillar00.gr2"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/pillar00lightingmap.dds": {
+   "sha1": "18c3d63394efbb931ae608b5a6cf38c412fdb09d",
+   "size": 32896,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/pillar00lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_chamber_books00lightingmap.dds": {
+   "sha1": "2535ef1ae5a6bf7b36b95b93457b85de76a17291",
+   "size": 32896,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_chamber_books00lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex00.dds": {
+   "sha1": "813c34c7fb587dead6d5f1de844f162aea4d616c",
+   "size": 696448,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex00.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex01.dds": {
+   "sha1": "96240a050097f445d16cf23697e0b3e53c90f33a",
+   "size": 174208,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex01.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex02.dds": {
+   "sha1": "c6ffaa5813751c6b11bf697166d50202e62283bc",
+   "size": 174208,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex02.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex03.dds": {
+   "sha1": "372c0c3da2303f4130c2ff38fad94f4bf1540c7f",
+   "size": 696448,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex03.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex04.dds": {
+   "sha1": "c53b69a7c452ecabab5abf08981d4764e2dc105a",
+   "size": 696448,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex04.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex05.dds": {
+   "sha1": "0dc470811843b99c553ec5603add0e85e2537ea9",
+   "size": 174208,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex05.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex06.dds": {
+   "sha1": "11863bee82cf2fa833b13928536ebaac2d1ef2e5",
+   "size": 174208,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex06.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex07.dds": {
+   "sha1": "abe2a7597b04e72479cb352b35aeaf9d9b3109e8",
+   "size": 174208,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex07.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex08.dds": {
+   "sha1": "9694ab6427116b6ba022dfced320122262b8e5a2",
+   "size": 696448,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex08.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex09.dds": {
+   "sha1": "9a166045b0a603a3fdc553e958410e3162c28d5f",
+   "size": 174208,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_tex09.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_ceiling00lightingmap.dds": {
+   "sha1": "21defefe43e066e5b0117c02e5b4812905296745",
+   "size": 131200,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_ceiling00lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_ceiling02lightingmap.dds": {
+   "sha1": "2f92c2bdddc3dbf21ed4a7456e6270ce5aefeb2e",
+   "size": 131200,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_ceiling02lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_ciling01lightingmap.dds": {
+   "sha1": "752ab70543281cc08e26bc662165bab0eb15df5b",
+   "size": 131200,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_ciling01lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_deco00lightingmap.dds": {
+   "sha1": "00d377297ee8a9f7f79c2af00e275258596943d3",
+   "size": 131200,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_deco00lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_deco01lightingmap.dds": {
+   "sha1": "d043ce2608246d32ca5cf5bcff62e6834f86cca3",
+   "size": 524416,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_deco01lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_deco02lightingmap.dds": {
+   "sha1": "e88fdc9fa6d7c207273400bb76b1c13b14cf686c",
+   "size": 524416,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_deco02lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_floor00lightingmap.dds": {
+   "sha1": "7236fe65c08a318c954e2fc2095180284ef6cbd0",
+   "size": 131200,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_floor00lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_floor01lightingmap.dds": {
+   "sha1": "7f2b307b1f9cb789be4d78f198d136e6d6e6bfc8",
+   "size": 131200,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_floor01lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_floor02lightingmap.dds": {
+   "sha1": "2c04c006b88049692d0631d8379ee5a3eceb032d",
+   "size": 131200,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_floor02lightingmap.dds"
+  },
+  "d:/ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_wall00lightingmap.dds": {
+   "sha1": "04da72430d623a30a20e282b6d3fb8060afc72e9",
+   "size": 524416,
+   "src": "AREZZO:ymir work/zone/plechi_dungeon/chamber_of_wisdom/plechito_wisdom_chamber_wall00lightingmap.dds"
+  },
+  "d:/ymir work/zone/santhia_poust/dum_1.gr2": {
+   "sha1": "a9b65e2a2e7db1d49f02737a2dfe7c07a841e554",
+   "size": 105557,
+   "src": "AREZZO:ymir work/zone/santhia_poust/dum_1.gr2"
+  },
+  "d:/ymir work/zone/santhia_poust/kostlivec.gr2": {
+   "sha1": "4ede3b4b15c716073af46cc0636a2f81d62cce44",
+   "size": 262993,
+   "src": "AREZZO:ymir work/zone/santhia_poust/kostlivec.gr2"
+  },
+  "d:/ymir work/zone/santhia_poust/rozhledna2.gr2": {
+   "sha1": "c671164ca439a7f62c63425c7b27b69768e7a93a",
+   "size": 106329,
+   "src": "AREZZO:ymir work/zone/santhia_poust/rozhledna2.gr2"
+  },
+  "d:/ymir work/zone/santhia_poust/santhia_3.dds": {
+   "sha1": "f21b3b22a77651f7a7c65c24f6a51fc4f3e643e1",
+   "size": 174720,
+   "src": "AREZZO:ymir work/zone/santhia_poust/santhia_3.dds"
+  },
+  "d:/ymir work/zone/santhia_poust/santhia_dum_15.dds": {
+   "sha1": "544ce59686631fc80b9e87fdbc59b5ccfd77c1b9",
+   "size": 43776,
+   "src": "AREZZO:ymir work/zone/santhia_poust/santhia_dum_15.dds"
+  },
+  "d:/ymir work/zone/santhia_poust/santhia_dum_16.dds": {
+   "sha1": "6f06696846713ce8777bb43550bed127b0900642",
+   "size": 43776,
+   "src": "AREZZO:ymir work/zone/santhia_poust/santhia_dum_16.dds"
+  },
+  "d:/ymir work/zone/santhia_poust/santhia_rozhledna_12.dds": {
+   "sha1": "ddac906f52717c54cc61db85b40a12fea8577d2b",
+   "size": 350677,
+   "src": "AREZZO:ymir work/zone/santhia_poust/santhia_rozhledna_12.dds"
+  },
+  "d:/ymir work/zone/santhia_poust/santhia_stan_11.dds": {
+   "sha1": "f8ad2e7b064e8647c2ccd508f6de05b44029aa97",
+   "size": 174720,
+   "src": "AREZZO:ymir work/zone/santhia_poust/santhia_stan_11.dds"
+  },
+  "d:/ymir work/zone/santhia_poust/santhia_stanek_13.dds": {
+   "sha1": "67c516cde7f09fafe953d3a68a383428d85d5162",
+   "size": 43776,
+   "src": "AREZZO:ymir work/zone/santhia_poust/santhia_stanek_13.dds"
+  },
+  "d:/ymir work/zone/santhia_poust/stan1.gr2": {
+   "sha1": "e203cb5707987495e7662b20818bd04b0c7cc14d",
+   "size": 139227,
+   "src": "AREZZO:ymir work/zone/santhia_poust/stan1.gr2"
+  },
+  "d:/ymir work/zone/santhia_poust/stan2.gr2": {
+   "sha1": "a18015b462d2a26fac6eaf9ff607480c35378803",
+   "size": 156205,
+   "src": "AREZZO:ymir work/zone/santhia_poust/stan2.gr2"
+  },
+  "d:/ymir work/zone/santhia_poust/stan3.gr2": {
+   "sha1": "463e3ae59aa9e2a1a804acd0bcccd03ac09c539e",
+   "size": 119734,
+   "src": "AREZZO:ymir work/zone/santhia_poust/stan3.gr2"
+  },
+  "d:/ymir work/zone/santhia_poust/stanek.gr2": {
+   "sha1": "1609c413ab85539cf6f2ab139f55c66386454243",
+   "size": 51511,
+   "src": "AREZZO:ymir work/zone/santhia_poust/stanek.gr2"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/50_1000.gr2": {
+   "sha1": "adf3e656cc9a240b7c827f48b9097551e6a80e84",
+   "size": 17800,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/50_1000.gr2"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/50_2000.gr2": {
+   "sha1": "68734c09327c5820ea0139bf85335f44ce175a14",
+   "size": 17816,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/50_2000.gr2"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/50_2000.mde": {
+   "sha1": "de292ce81bc0d7c5369193fd32ed845e12f0b2fb",
+   "size": 3993731,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/50_2000.mde"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/50_2000_shin.mse": {
+   "sha1": "736e4d5bdfe3b770c789609197970ed08ca76eb4",
+   "size": 4122,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/50_2000_shin.mse"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/64.gr2": {
+   "sha1": "3fe6077006b0c6a4340d2ca28f92f33c1148c2f1",
+   "size": 29912,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/64.gr2"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/64.mdatr": {
+   "sha1": "650d42dba59c386945486b9cb8abd37ec35acb68",
+   "size": 526,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/64.mdatr"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/64_2.gr2": {
+   "sha1": "b746307ed5bf1eae1930c1a3e31f842285e4c345",
+   "size": 37172,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/64_2.gr2"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/64_2.mdatr": {
+   "sha1": "abaaf1038061f41cd9f8113f467d9ba5e1046563",
+   "size": 526,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/64_2.mdatr"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/textures/50.dds": {
+   "sha1": "47aa95f63db4de3ca23c2978433e7c84374aa351",
+   "size": 349680,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/textures/50.dds"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/textures/64.dds": {
+   "sha1": "1b4113df7d4f27fbbfb7ff08efb22101992db0dd",
+   "size": 349680,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/textures/64.dds"
+  },
+  "d:/ymir work/zone/shyeonline/decoration/statue/textures/64_2.dds": {
+   "sha1": "3c95875a55775d12934b91c45c3a09088c2f7ed1",
+   "size": 349680,
+   "src": "AREZZO:ymir work/zone/shyeonline/decoration/statue/textures/64_2.dds"
+  },
+  "d:/ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao.dds": {
+   "sha1": "5856abcff9b33d18ea2a2933bac8ce00dbca3bda",
+   "size": 349680,
+   "src": "AREZZO:ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao.dds"
+  },
+  "d:/ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao2.gr2": {
+   "sha1": "9ab104b2604b1a3d704d8ad36c21f2b7842b5224",
+   "size": 31376,
+   "src": "AREZZO:ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao2.gr2"
+  },
+  "d:/ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao2.mdatr": {
+   "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+   "size": 22,
+   "src": "AREZZO:ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao2.mdatr"
+  },
+  "d:/ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao3.gr2": {
+   "sha1": "3b2caf265b663251c91af10f6be457aeab53dcbd",
+   "size": 21084,
+   "src": "AREZZO:ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao3.gr2"
+  },
+  "d:/ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao3.mdatr": {
+   "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+   "size": 22,
+   "src": "AREZZO:ymir work/zone/shyeonline/halloween/decoration/wood/wood_zao3.mdatr"
+  },
+  "d:/ymir work/zone/shyeonline/statue/2.dds": {
+   "sha1": "1074a3b9921c63f314919756dbc759a6f6a4daca",
+   "size": 349680,
+   "src": "AREZZO:ymir work/zone/shyeonline/statue/2.dds"
+  },
+  "d:/ymir work/zone/shyeonline/statue/2.gr2": {
+   "sha1": "cd12e45abdf9a6bccd93e108129d6cf750c4d7de",
+   "size": 66612,
+   "src": "AREZZO:ymir work/zone/shyeonline/statue/2.gr2"
+  },
+  "d:/ymir work/zone/shyeonline/statue/2.mdatr": {
+   "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+   "size": 22,
+   "src": "AREZZO:ymir work/zone/shyeonline/statue/2.mdatr"
+  },
+  "d:/ymir work/zone/shyeonline/statue/3.gr2": {
+   "sha1": "4aa75e71398d886bd125b5fd15135f429e293cb9",
+   "size": 66776,
+   "src": "AREZZO:ymir work/zone/shyeonline/statue/3.gr2"
+  },
+  "d:/ymir work/zone/shyeonline/statue/3.mdatr": {
+   "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+   "size": 22,
+   "src": "AREZZO:ymir work/zone/shyeonline/statue/3.mdatr"
+  },
+  "d:/ymir work/zone/shyeonline/tree/bladegrass3.mde": {
+   "sha1": "181cfcbfa5cfef0e46fb52d9b0efe4b550b0f826",
+   "size": 76275,
+   "src": "AREZZO:ymir work/zone/shyeonline/tree/bladegrass3.mde"
+  },
+  "d:/ymir work/zone/shyeonline/tree/bladegrass3.mse": {
+   "sha1": "ec59a5e8d63e38206a14b075199e655eaa7a1acf",
+   "size": 959,
+   "src": "AREZZO:ymir work/zone/shyeonline/tree/bladegrass3.mse"
+  },
+  "d:/ymir work/zone/shyeonline/tree/grass_001_088_a_test.mde": {
+   "sha1": "01a39a3df044d2941049b9936bedae7eb19af5fd",
+   "size": 27227,
+   "src": "AREZZO:ymir work/zone/shyeonline/tree/grass_001_088_a_test.mde"
+  },
+  "d:/ymir work/zone/shyeonline/tree/mde3/02.mse": {
+   "sha1": "02425623c05b93f63e1781dc0d5d9138383d7772",
+   "size": 1001,
+   "src": "AREZZO:ymir work/zone/shyeonline/tree/mde3/02.mse"
+  },
+  "textureset/ateop_fm_4.txt": {
+   "sha1": "597b0a55c1bbd876f59c6f6ec29e29b3bdabd135",
+   "size": 1144,
+   "src": "AREZZO:textureset/ateop_fm_4.txt"
+  },
+  "textureset/chamber_of_wisdom_dungeon.txt": {
+   "sha1": "7b04299de02ab320de51cca5599e830a631b3b0f",
+   "size": 199,
+   "src": "AREZZO:textureset/chamber_of_wisdom_dungeon.txt"
+  },
+  "textureset/vasto_exp1.txt": {
+   "sha1": "3f2d4678597388ea91fa01c1aa685d76e67ffc3f",
+   "size": 1070,
+   "src": "AREZZO:textureset/vasto_exp1.txt"
+  }
+ },
+ "az_mobs": {
+  "d:/ymir work/effect/monster2/tornado2.mse": {
+   "sha1": "034367d6fe7ccb31fdbd608082f5feec75f16c6f",
+   "size": 9149,
+   "src": "GF:d_/ymir work/effect/monster2/tornado2.mse"
+  },
+  "d:/ymir work/monster2/cyclops_boss/back_damage.gr2": {
+   "sha1": "0c7461ba564a940421bcb9486416686189c6b2c6",
+   "size": 17106,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/back_damage.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/back_damage.msa": {
+   "sha1": "a9101ca9e36ff5567141479abe1e59d79cb6d730",
+   "size": 155,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/back_damage.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/back_damage1.gr2": {
+   "sha1": "89e9a94fb418ad7aaef5577ada6a398eeb4ac6d2",
+   "size": 17194,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/back_damage1.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/back_damage1.msa": {
+   "sha1": "5819ef82b0d64657c19b986d21ddeb8b29d98803",
+   "size": 156,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/back_damage1.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/back_knockdown.gr2": {
+   "sha1": "9cee53ea62e876d30ee40d42e8a913662e12c7db",
+   "size": 17400,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/back_knockdown.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/back_knockdown.msa": {
+   "sha1": "f340fe811ccc709dfa14c7cb1beec7581407c89d",
+   "size": 158,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/back_knockdown.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/cyclops_boss.dds": {
+   "sha1": "a0f056ebbbad0c65c491595da9a71f05b9d6731f",
+   "size": 174208,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/cyclops_boss.dds"
+  },
+  "d:/ymir work/monster2/cyclops_boss/cyclops_boss.gr2": {
+   "sha1": "ae96e03335a1cd0c6938a622ed27adbb69c3435e",
+   "size": 128184,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/cyclops_boss.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/cyclops_boss.msm": {
+   "sha1": "6d565e6e0bebecccea4fa28b6e8b28eeef85d4e6",
+   "size": 1095,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/cyclops_boss.msm"
+  },
+  "d:/ymir work/monster2/cyclops_boss/cyclops_boss_lod_01.gr2": {
+   "sha1": "24deb77db6caf9f5b06914b865a8e0eaae3a7b8a",
+   "size": 96264,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/cyclops_boss_lod_01.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/cyclops_boss_weapon.dds": {
+   "sha1": "a72f185e4116bedbb0aafd7733aeae8415b3f25a",
+   "size": 43648,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/cyclops_boss_weapon.dds"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_damage.gr2": {
+   "sha1": "326f748857b6c5afee5d5058d7fe7fbd83435f76",
+   "size": 17244,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_damage.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_damage.msa": {
+   "sha1": "c1f80a59e902de3186509a94aa66ba23d7492cd5",
+   "size": 156,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_damage.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_damage1.gr2": {
+   "sha1": "20004884b1390c8db3e96f7bca728c6931061a41",
+   "size": 17214,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_damage1.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_damage1.msa": {
+   "sha1": "c2f08ff67c3ee6260a30f840844a4f9da489f2c5",
+   "size": 155,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_damage1.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_dead.gr2": {
+   "sha1": "c56656a6892423afa2a4c084512a5ff1cf108156",
+   "size": 36034,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_dead.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_dead.msa": {
+   "sha1": "cbee00fc2404558417001bb616c7fdc8e753cdf5",
+   "size": 154,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_dead.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_knockdown.gr2": {
+   "sha1": "ca5a02d5748c693369b0c1eb0c6a45b7f9f1b705",
+   "size": 17478,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_knockdown.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_knockdown.msa": {
+   "sha1": "4f14776005d42617743bdd8f83fc7f35048cec4b",
+   "size": 159,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_knockdown.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_standup.gr2": {
+   "sha1": "ba3f63363c0bc305e7539041d6b3b66d63a382d0",
+   "size": 17286,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_standup.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/front_standup.msa": {
+   "sha1": "58054c60ec27f13809968da8d94392d920452142",
+   "size": 157,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/front_standup.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/motlist.txt": {
+   "sha1": "8b82655fee21c99fe5ffa06d6a46fd2a8b788f8a",
+   "size": 692,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/motlist.txt"
+  },
+  "d:/ymir work/monster2/cyclops_boss/normal_attack.gr2": {
+   "sha1": "979786133c169bdfc1d7ad23ea8caa8df5285e28",
+   "size": 24240,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/normal_attack.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/normal_attack.msa": {
+   "sha1": "e251ef1e2437674a2f35a493c7de1df5a70933ab",
+   "size": 841,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/normal_attack.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/normal_attack1.gr2": {
+   "sha1": "6210d174b05bbd34e8130bb8ebb9d2b780f0df77",
+   "size": 24340,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/normal_attack1.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/normal_attack1.msa": {
+   "sha1": "385430ccfaf4b08a436a398f9be90ada299ab961",
+   "size": 842,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/normal_attack1.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/run.gr2": {
+   "sha1": "1d75fc468c1509bbe0fd2abbd6df73ee89060930",
+   "size": 22280,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/run.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/run.msa": {
+   "sha1": "673b9680c44ca97c6ff6e688c747ec776fcc49bb",
+   "size": 191,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/run.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/special_attack.gr2": {
+   "sha1": "5eb6b543b8cdb50cdba20f858e4c44df4734f754",
+   "size": 36688,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/special_attack.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/special_attack.msa": {
+   "sha1": "a7febf57713114bc1eb66c1870a21aba45c98cb0",
+   "size": 3695,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/special_attack.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/wait.gr2": {
+   "sha1": "aedc6171063fa63e9f35b06a31f1230997580a71",
+   "size": 21634,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/wait.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/wait.msa": {
+   "sha1": "83b21251a1ea28d72c8c80d392f03de5d0957561",
+   "size": 148,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/wait.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/wait1.gr2": {
+   "sha1": "980e5f709de1080c2857c3c109b964f585669ba0",
+   "size": 33968,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/wait1.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/wait1.msa": {
+   "sha1": "fec377a0aaaeb684fac3b01377ae2ecdf41a9bfc",
+   "size": 149,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/wait1.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/wait2.gr2": {
+   "sha1": "755d0ae6a069dce42275ed55d11cd163007a05a5",
+   "size": 34854,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/wait2.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/wait2.msa": {
+   "sha1": "177840b30a39a2a8ec1a011589d265720c81414e",
+   "size": 149,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/wait2.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss/walk.gr2": {
+   "sha1": "30d574ac2ed0ed89f670e26baf7602562efeee21",
+   "size": 22046,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/walk.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss/walk.msa": {
+   "sha1": "e6feabbab51eacba55c6555c048afb704d41d796",
+   "size": 184,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss/walk.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/back_damage.gr2": {
+   "sha1": "e57766144af12daa639ce53a7eb317e9a6b335d4",
+   "size": 20314,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/back_damage.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/back_damage.msa": {
+   "sha1": "1989a9f0b36b930fa1fb671c707f06a7fcdf3c7c",
+   "size": 156,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/back_damage.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/back_damage1.gr2": {
+   "sha1": "c31a90a054da954a417b03f774ec83e9611bb798",
+   "size": 20724,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/back_damage1.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/back_damage1.msa": {
+   "sha1": "37c5bd788b5889f4bced5324dc6aa7d14de47110",
+   "size": 157,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/back_damage1.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/back_knockdown.gr2": {
+   "sha1": "921868dc2df2baa58f930f17ebb75035d323bee6",
+   "size": 29198,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/back_knockdown.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/back_knockdown.msa": {
+   "sha1": "6e92c80c78f6dc9f9ec0f9ed70876a426c627abc",
+   "size": 159,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/back_knockdown.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/cyclops_boss2.dds": {
+   "sha1": "b5a6f9d7f42340da3ae0f9dfa338082e1da0e0bc",
+   "size": 87528,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/cyclops_boss2.dds"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/cyclops_boss2.gr2": {
+   "sha1": "b347f328b7b418740803573f0a7915afcaea6dd6",
+   "size": 191528,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/cyclops_boss2.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/cyclops_boss2.msm": {
+   "sha1": "d4b94d6ede3eb11a0e0cdbe413e7d16cb3f3c95c",
+   "size": 1098,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/cyclops_boss2.msm"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/cyclops_boss2_lod_01.gr2": {
+   "sha1": "b1a58ff336d4dda54e68f3e04a43b38aad4d5c82",
+   "size": 131460,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/cyclops_boss2_lod_01.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/cyclops_boss2_weapon.dds": {
+   "sha1": "b924612b82968aaac6766b38c6cd1da6e5159984",
+   "size": 43136,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/cyclops_boss2_weapon.dds"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_damage.gr2": {
+   "sha1": "9897e15badb8d0b10945cef380168eb5c7590606",
+   "size": 20844,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_damage.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_damage.msa": {
+   "sha1": "492529890f08d480f5c4ecae36acbb903c52f2bf",
+   "size": 157,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_damage.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_damage1.gr2": {
+   "sha1": "3ea72c5bb41ca26a954b5436765fd22efa2b6af3",
+   "size": 20984,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_damage1.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_damage1.msa": {
+   "sha1": "8e7304f4834531cd109fd33b2487f369c99bcc1f",
+   "size": 158,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_damage1.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_dead.gr2": {
+   "sha1": "ec60e00e3a294654ec4b99992ac6cfd996e4f6f6",
+   "size": 72068,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_dead.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_dead.msa": {
+   "sha1": "920c2295deae450a12bf17186f5199c1404c066d",
+   "size": 155,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_dead.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_knockdown.gr2": {
+   "sha1": "13dae731452bb99f7811c3c3ff5e36bdf4bc430a",
+   "size": 28802,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_knockdown.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_knockdown.msa": {
+   "sha1": "f1cfff689a69d06feb322eb3c9fd0a9e40282d86",
+   "size": 158,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_knockdown.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_standup.gr2": {
+   "sha1": "32db7b39b0128802b2c1e79572843feec9d02855",
+   "size": 21124,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_standup.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/front_standup.msa": {
+   "sha1": "0156cb1e9ae36edfdec8ea7fa631756798efabc0",
+   "size": 158,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/front_standup.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/motlist.txt": {
+   "sha1": "1b8b488e88fb12679ec3ca680be364f580a367b3",
+   "size": 760,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/motlist.txt"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/normal_attack.gr2": {
+   "sha1": "4d329fdef971d6a5b7ebe3ec31c6d72757afa2fb",
+   "size": 29114,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/normal_attack.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/normal_attack.msa": {
+   "sha1": "764c049c63f6e02c8adfefe0f1a5c1d3246756b8",
+   "size": 842,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/normal_attack.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/normal_attack1.gr2": {
+   "sha1": "2e8cca1f5695d9f8080c8a8334449efcb2232a0d",
+   "size": 30192,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/normal_attack1.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/normal_attack1.msa": {
+   "sha1": "40b32db3f2fe25673b93c6d5eb9b160df16d9018",
+   "size": 843,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/normal_attack1.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/run.gr2": {
+   "sha1": "cf44d6e9cfd8cecc5a7e719cf53206907f258e81",
+   "size": 26966,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/run.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/run.msa": {
+   "sha1": "3f495d25713942d1b8c0c453ddf2d2dc6d43fbe0",
+   "size": 184,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/run.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/special_attack.gr2": {
+   "sha1": "00246972d9b19f7c75e35d8d5f00c961665ca905",
+   "size": 45344,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/special_attack.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/special_attack.msa": {
+   "sha1": "fd7af18533aec331b10317776008deaf6677fd19",
+   "size": 2265,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/special_attack.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/special_attack1.gr2": {
+   "sha1": "b4f0b73b19a872688294a939620176c2e2db6202",
+   "size": 27774,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/special_attack1.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/special_attack1.msa": {
+   "sha1": "c8b12f9c5a0b2c285e4ff60b0a441793b978b636",
+   "size": 2639,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/special_attack1.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/wait.gr2": {
+   "sha1": "e1005ea0eea9b44a0354a9be3c43deda8389a9ea",
+   "size": 26624,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/wait.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/wait.msa": {
+   "sha1": "194d8e45e771464cb2dbb7013386177ab0f819fc",
+   "size": 149,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/wait.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/wait1.gr2": {
+   "sha1": "06c3f8b16280ecbfa88335b4509faf9040587c78",
+   "size": 40858,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/wait1.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/wait1.msa": {
+   "sha1": "9907b40afb2a64512f99a15f7239478df3778b5b",
+   "size": 150,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/wait1.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/wait2.gr2": {
+   "sha1": "0b71c27a52c8a6ff9952afc04aa640cd1552f9cc",
+   "size": 42756,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/wait2.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/wait2.msa": {
+   "sha1": "8b22de8c3876bbc2ca010857390c6251a52db300",
+   "size": 150,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/wait2.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/wait3.gr2": {
+   "sha1": "00e8ba2294a67e2c05ed580ab695622560f5cfc5",
+   "size": 41626,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/wait3.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/wait3.msa": {
+   "sha1": "d9245d096fad2670c58e7c2688165158835499ed",
+   "size": 150,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/wait3.msa"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/walk.gr2": {
+   "sha1": "ba86d7c5cf71b7cfc1b38c99f583f334a99573c5",
+   "size": 27874,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/walk.gr2"
+  },
+  "d:/ymir work/monster2/cyclops_boss2/walk.msa": {
+   "sha1": "a7df92c5a2aaf235f7f91fddb06f5e10e66639a7",
+   "size": 185,
+   "src": "GF:d_/ymir work/monster2/cyclops_boss2/walk.msa"
+  },
+  "sound/monster/orc_knight/attack_2.wav": {
+   "sha1": "bc8ad6a231da182ac546127e51dfbb36f4fb8afd",
+   "size": 37778,
+   "src": "GF:sound/monster/orc_knight/attack_2.wav"
+  },
+  "sound/monster/orc_knight/damage_1.wav": {
+   "sha1": "ad5d93f01fc63ff158fdf36abec7fa043c278fe7",
+   "size": 15962,
+   "src": "GF:sound/monster/orc_knight/damage_1.wav"
+  },
+  "sound/monster/orc_knight/fall_1.wav": {
+   "sha1": "4557eb57d65899145a5803779351c187cd6213a0",
+   "size": 48412,
+   "src": "GF:sound/monster/orc_knight/fall_1.wav"
+  },
+  "sound/monster/orc_lord/attack_2.wav": {
+   "sha1": "1c7a780504c039457cd517fd13563ad40c39eca5",
+   "size": 38146,
+   "src": "GF:sound/monster/orc_lord/attack_2.wav"
+  },
+  "sound/monster/orc_lord/drop_1.wav": {
+   "sha1": "ea72da391cb6f79264c335e4c599dc5188bd3ff2",
+   "size": 29484,
+   "src": "GF:sound/monster/orc_lord/drop_1.wav"
+  },
+  "sound/monster/orc_lord/fall_1.wav": {
+   "sha1": "1ea835e1a37c08f65319516a3d713175b3c29939",
+   "size": 79662,
+   "src": "GF:sound/monster/orc_lord/fall_1.wav"
+  },
+  "sound/monster2/cyclops_boss/back_damage.mss": {
+   "sha1": "b948bd63e1c0276de43e50be105542789ce6ed15",
+   "size": 136,
+   "src": "GF:sound/monster2/cyclops_boss/back_damage.mss"
+  },
+  "sound/monster2/cyclops_boss/back_damage1.mss": {
+   "sha1": "b948bd63e1c0276de43e50be105542789ce6ed15",
+   "size": 136,
+   "src": "GF:sound/monster2/cyclops_boss/back_damage1.mss"
+  },
+  "sound/monster2/cyclops_boss/back_knockdown.mss": {
+   "sha1": "eeb478cf6b9bbae250b05531f94725fa757fbc26",
+   "size": 136,
+   "src": "GF:sound/monster2/cyclops_boss/back_knockdown.mss"
+  },
+  "sound/monster2/cyclops_boss/front_damage.mss": {
+   "sha1": "b948bd63e1c0276de43e50be105542789ce6ed15",
+   "size": 136,
+   "src": "GF:sound/monster2/cyclops_boss/front_damage.mss"
+  },
+  "sound/monster2/cyclops_boss/front_damage1.mss": {
+   "sha1": "b948bd63e1c0276de43e50be105542789ce6ed15",
+   "size": 136,
+   "src": "GF:sound/monster2/cyclops_boss/front_damage1.mss"
+  },
+  "sound/monster2/cyclops_boss/front_dead.mss": {
+   "sha1": "49cd140f63a13f308996e9835ec4f5f5e0cf72be",
+   "size": 286,
+   "src": "GF:sound/monster2/cyclops_boss/front_dead.mss"
+  },
+  "sound/monster2/cyclops_boss/front_knockdown.mss": {
+   "sha1": "b948bd63e1c0276de43e50be105542789ce6ed15",
+   "size": 136,
+   "src": "GF:sound/monster2/cyclops_boss/front_knockdown.mss"
+  },
+  "sound/monster2/cyclops_boss/normal_attack.mss": {
+   "sha1": "6ec9b8e0658be9189240e1fa08d37fe720947dfd",
+   "size": 198,
+   "src": "GF:sound/monster2/cyclops_boss/normal_attack.mss"
+  },
+  "sound/monster2/cyclops_boss/normal_attack1.mss": {
+   "sha1": "b0adb79fac74e78fed3e5340693af585e88207ed",
+   "size": 198,
+   "src": "GF:sound/monster2/cyclops_boss/normal_attack1.mss"
+  },
+  "sound/monster2/cyclops_boss/run.mss": {
+   "sha1": "ea0868c9daee0c9d0d4e22a544596f2c1ff0562e",
+   "size": 222,
+   "src": "GF:sound/monster2/cyclops_boss/run.mss"
+  },
+  "sound/monster2/cyclops_boss/special_attack.mss": {
+   "sha1": "b906bd90eb1f0f8496df9965e3721a73fb6eb9f4",
+   "size": 266,
+   "src": "GF:sound/monster2/cyclops_boss/special_attack.mss"
+  },
+  "sound/monster2/cyclops_boss/walk.mss": {
+   "sha1": "b9b061c996fdb02b1bba5049cb6a1c2b3f1e6393",
+   "size": 222,
+   "src": "GF:sound/monster2/cyclops_boss/walk.mss"
+  },
+  "sound/monster2/cyclops_boss2/back_damage.mss": {
+   "sha1": "fbbb5a4544a2dd97a6b49e2582490801ac182b42",
+   "size": 134,
+   "src": "GF:sound/monster2/cyclops_boss2/back_damage.mss"
+  },
+  "sound/monster2/cyclops_boss2/back_damage1.mss": {
+   "sha1": "fbbb5a4544a2dd97a6b49e2582490801ac182b42",
+   "size": 134,
+   "src": "GF:sound/monster2/cyclops_boss2/back_damage1.mss"
+  },
+  "sound/monster2/cyclops_boss2/back_knockdown.mss": {
+   "sha1": "fbbb5a4544a2dd97a6b49e2582490801ac182b42",
+   "size": 134,
+   "src": "GF:sound/monster2/cyclops_boss2/back_knockdown.mss"
+  },
+  "sound/monster2/cyclops_boss2/front_damage.mss": {
+   "sha1": "fbbb5a4544a2dd97a6b49e2582490801ac182b42",
+   "size": 134,
+   "src": "GF:sound/monster2/cyclops_boss2/front_damage.mss"
+  },
+  "sound/monster2/cyclops_boss2/front_damage1.mss": {
+   "sha1": "fbbb5a4544a2dd97a6b49e2582490801ac182b42",
+   "size": 134,
+   "src": "GF:sound/monster2/cyclops_boss2/front_damage1.mss"
+  },
+  "sound/monster2/cyclops_boss2/front_dead.mss": {
+   "sha1": "71c1b26b36aab50e485dda81659a1c2e0f71b26c",
+   "size": 260,
+   "src": "GF:sound/monster2/cyclops_boss2/front_dead.mss"
+  },
+  "sound/monster2/cyclops_boss2/front_knockdown.mss": {
+   "sha1": "fbbb5a4544a2dd97a6b49e2582490801ac182b42",
+   "size": 134,
+   "src": "GF:sound/monster2/cyclops_boss2/front_knockdown.mss"
+  },
+  "sound/monster2/cyclops_boss2/normal_attack.mss": {
+   "sha1": "2508683c882cdf1b551c4c874a50e6c428310315",
+   "size": 198,
+   "src": "GF:sound/monster2/cyclops_boss2/normal_attack.mss"
+  },
+  "sound/monster2/cyclops_boss2/normal_attack1.mss": {
+   "sha1": "bbb2686d05aaf2c6815a6205737eebd9972c43ab",
+   "size": 198,
+   "src": "GF:sound/monster2/cyclops_boss2/normal_attack1.mss"
+  },
+  "sound/monster2/cyclops_boss2/run.mss": {
+   "sha1": "d6a9914e18a9ac1b8b921b44c4181a411484d5a7",
+   "size": 219,
+   "src": "GF:sound/monster2/cyclops_boss2/run.mss"
+  },
+  "sound/monster2/cyclops_boss2/special_attack.mss": {
+   "sha1": "b2c1943faeb23dd52156eba046cecc02133fe47c",
+   "size": 197,
+   "src": "GF:sound/monster2/cyclops_boss2/special_attack.mss"
+  },
+  "sound/monster2/cyclops_boss2/special_attack1.mss": {
+   "sha1": "d0acf4b47e41fbbb95c36d0205213d3c78460c1b",
+   "size": 197,
+   "src": "GF:sound/monster2/cyclops_boss2/special_attack1.mss"
+  },
+  "sound/monster2/cyclops_boss2/walk.mss": {
+   "sha1": "8a4bf242aec637ce910f224f521bd2574dddce10",
+   "size": 219,
+   "src": "GF:sound/monster2/cyclops_boss2/walk.mss"
+  }
+ },
+ "maps": {
+  "maps/metin2_map_exp/000000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/000000/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/000000/areadata.txt": {
+   "sha1": "d46c38a84cc31a0ebc97e881ff22411767ee6dcb",
+   "size": 6447,
+   "src": "AREZZO:metin2_map_exp/000000/areadata.txt"
+  },
+  "maps/metin2_map_exp/000000/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/000000/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/000000/attr.atr": {
+   "sha1": "6f76222a90649a91e245d0522fe4268fec0105f4",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/000000/attr.atr"
+  },
+  "maps/metin2_map_exp/000000/height.raw": {
+   "sha1": "a28b498c11aa4dff23a111d395fe3a917fa24402",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/000000/height.raw"
+  },
+  "maps/metin2_map_exp/000000/minimap.dds": {
+   "sha1": "b103441cd08a7aa969bdc72ea9a014b43e12c4d2",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/000000/minimap.dds"
+  },
+  "maps/metin2_map_exp/000000/shadowmap.dds": {
+   "sha1": "ace83bdbc3ed65628c3d61bd7dc3d919bccf4143",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/000000/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/000000/shadowmap.raw": {
+   "sha1": "1346e8fcdb6fef9b9b5613b7b4da2769861d201b",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/000000/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/000000/tile.raw": {
+   "sha1": "40a0fc1e016569f2ba4869bb7679fb3a33a79e4c",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/000000/tile.raw"
+  },
+  "maps/metin2_map_exp/000000/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/000000/water.wtr"
+  },
+  "maps/metin2_map_exp/000001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/000001/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/000001/areadata.txt": {
+   "sha1": "074c1fac32848bd557e348ef92e6ebd5de2f7448",
+   "size": 8824,
+   "src": "AREZZO:metin2_map_exp/000001/areadata.txt"
+  },
+  "maps/metin2_map_exp/000001/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/000001/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/000001/attr.atr": {
+   "sha1": "a3c1441160777557cccc7782c91081d5b3ae5dcb",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/000001/attr.atr"
+  },
+  "maps/metin2_map_exp/000001/height.raw": {
+   "sha1": "a02bd94badd9876bfa81f1c3023839f935dda884",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/000001/height.raw"
+  },
+  "maps/metin2_map_exp/000001/minimap.dds": {
+   "sha1": "a47969987ca87dee1618bf54e3227291fac30a9c",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/000001/minimap.dds"
+  },
+  "maps/metin2_map_exp/000001/shadowmap.dds": {
+   "sha1": "897c22024531ece9d04987431823a08b3c3608fc",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/000001/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/000001/shadowmap.raw": {
+   "sha1": "133d34c348579f338806e5189f1b37a96a4b07f8",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/000001/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/000001/tile.raw": {
+   "sha1": "1bedad9efdf311baf83e2fde04b75b1ccfa37c89",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/000001/tile.raw"
+  },
+  "maps/metin2_map_exp/000001/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/000001/water.wtr"
+  },
+  "maps/metin2_map_exp/000002/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/000002/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/000002/areadata.txt": {
+   "sha1": "1b7a244b13c4d13710fdf813f9a47bae2c16384f",
+   "size": 6148,
+   "src": "AREZZO:metin2_map_exp/000002/areadata.txt"
+  },
+  "maps/metin2_map_exp/000002/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/000002/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/000002/attr.atr": {
+   "sha1": "df11ed307f6d17c873350f42a1f160683d5f00ac",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/000002/attr.atr"
+  },
+  "maps/metin2_map_exp/000002/height.raw": {
+   "sha1": "9fbaea4d45e02dc50a648d87761aef69f70528ee",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/000002/height.raw"
+  },
+  "maps/metin2_map_exp/000002/minimap.dds": {
+   "sha1": "3252670b6442958ddf68802e276e3da9322da5dc",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/000002/minimap.dds"
+  },
+  "maps/metin2_map_exp/000002/shadowmap.dds": {
+   "sha1": "744a7e818cd6f7b9351653343fee21afb525f6da",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/000002/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/000002/shadowmap.raw": {
+   "sha1": "f1ec23d222d065605db937d2ea1db42397641793",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/000002/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/000002/tile.raw": {
+   "sha1": "d6ab400d82647162c84e45b89e03ceb67efdfb1f",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/000002/tile.raw"
+  },
+  "maps/metin2_map_exp/000002/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/000002/water.wtr"
+  },
+  "maps/metin2_map_exp/000003/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/000003/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/000003/areadata.txt": {
+   "sha1": "b4b91a7a7a732628c7b9f03e80ca2d842455208d",
+   "size": 7392,
+   "src": "AREZZO:metin2_map_exp/000003/areadata.txt"
+  },
+  "maps/metin2_map_exp/000003/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/000003/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/000003/attr.atr": {
+   "sha1": "6df48479433d94a0cc6dbebf72a6bc6fec3e2e13",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/000003/attr.atr"
+  },
+  "maps/metin2_map_exp/000003/height.raw": {
+   "sha1": "f84e70c5cf32313ccf070db024e105efc6cd5e5d",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/000003/height.raw"
+  },
+  "maps/metin2_map_exp/000003/minimap.dds": {
+   "sha1": "5c4464887c292defbec83fd818e3ab475591c49b",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/000003/minimap.dds"
+  },
+  "maps/metin2_map_exp/000003/shadowmap.dds": {
+   "sha1": "64f4b37e7e76d94341874f0e99051b12e597c185",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/000003/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/000003/shadowmap.raw": {
+   "sha1": "0abcb211a37104536a2411c5a1e73f81cfce6087",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/000003/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/000003/tile.raw": {
+   "sha1": "2427c73cc675f37095ffd13d9b51b996fd8df991",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/000003/tile.raw"
+  },
+  "maps/metin2_map_exp/000003/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/000003/water.wtr"
+  },
+  "maps/metin2_map_exp/001000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/001000/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/001000/areadata.txt": {
+   "sha1": "680aa074ceac899d156b236e30847c6f7b3642eb",
+   "size": 13004,
+   "src": "AREZZO:metin2_map_exp/001000/areadata.txt"
+  },
+  "maps/metin2_map_exp/001000/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/001000/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/001000/attr.atr": {
+   "sha1": "0f8b2d0b6383984a8f4e5113bfe4b321707ea2d7",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/001000/attr.atr"
+  },
+  "maps/metin2_map_exp/001000/height.raw": {
+   "sha1": "e2856f7cb6d41d6bd7dbfcc66cde7630bf842bbb",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/001000/height.raw"
+  },
+  "maps/metin2_map_exp/001000/minimap.dds": {
+   "sha1": "35c895ceb6f8c0cd298ce6c26e6414287112f281",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/001000/minimap.dds"
+  },
+  "maps/metin2_map_exp/001000/shadowmap.dds": {
+   "sha1": "07dc25dbfd0f3e96d409b43500041e9e1f4e88a8",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/001000/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/001000/shadowmap.raw": {
+   "sha1": "c27a40cf7d43c96dccd7bbed5c8691279c8789c9",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/001000/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/001000/tile.raw": {
+   "sha1": "a4d8db147ac74ce8ab66eedb528ee7fa515adc01",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/001000/tile.raw"
+  },
+  "maps/metin2_map_exp/001000/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/001000/water.wtr"
+  },
+  "maps/metin2_map_exp/001001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/001001/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/001001/areadata.txt": {
+   "sha1": "091eb08cd666deb49fbb7a22c1337e3663ce3b3a",
+   "size": 10488,
+   "src": "AREZZO:metin2_map_exp/001001/areadata.txt"
+  },
+  "maps/metin2_map_exp/001001/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/001001/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/001001/attr.atr": {
+   "sha1": "c63cb84423e1308d004b43ce202958f461df7603",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/001001/attr.atr"
+  },
+  "maps/metin2_map_exp/001001/height.raw": {
+   "sha1": "ba13e4648e6f553fa779bb519f7e9f2687491126",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/001001/height.raw"
+  },
+  "maps/metin2_map_exp/001001/minimap.dds": {
+   "sha1": "428b24721976cd59e7a86e719d3fe3e7cced9de2",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/001001/minimap.dds"
+  },
+  "maps/metin2_map_exp/001001/shadowmap.dds": {
+   "sha1": "bfa338c3d4cff719d03dc714abb649eef18e0d59",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/001001/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/001001/shadowmap.raw": {
+   "sha1": "48dec1559e5080224033741251b5b5d5e9266090",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/001001/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/001001/tile.raw": {
+   "sha1": "eaee6e0ed169ebf47422bda50547be78e3f627cf",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/001001/tile.raw"
+  },
+  "maps/metin2_map_exp/001001/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/001001/water.wtr"
+  },
+  "maps/metin2_map_exp/001002/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/001002/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/001002/areadata.txt": {
+   "sha1": "845b106637f0d6b9a3103d0bdb754a09a2217877",
+   "size": 4755,
+   "src": "AREZZO:metin2_map_exp/001002/areadata.txt"
+  },
+  "maps/metin2_map_exp/001002/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/001002/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/001002/attr.atr": {
+   "sha1": "8fa666881363da4c225452c804af3bbaf0fcd2eb",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/001002/attr.atr"
+  },
+  "maps/metin2_map_exp/001002/height.raw": {
+   "sha1": "ba1ec1f89713aef3a834bfa8f7ed8dfe011cca95",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/001002/height.raw"
+  },
+  "maps/metin2_map_exp/001002/minimap.dds": {
+   "sha1": "ffba7f524aad88b71633d0742de9ac176343f9b5",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/001002/minimap.dds"
+  },
+  "maps/metin2_map_exp/001002/shadowmap.dds": {
+   "sha1": "becb33c2466e66aafb1742f4ed3ad300286026e7",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/001002/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/001002/shadowmap.raw": {
+   "sha1": "df1ef525e46c902bf90a5f4efb3ff2739b537ec3",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/001002/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/001002/tile.raw": {
+   "sha1": "f3e117d81175dfe8193b29e73d8d1827b9bd5210",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/001002/tile.raw"
+  },
+  "maps/metin2_map_exp/001002/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/001002/water.wtr"
+  },
+  "maps/metin2_map_exp/001003/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/001003/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/001003/areadata.txt": {
+   "sha1": "77c7bf3f17acf83fb874359df61b5a9e40305078",
+   "size": 11944,
+   "src": "AREZZO:metin2_map_exp/001003/areadata.txt"
+  },
+  "maps/metin2_map_exp/001003/areaproperty.txt": {
+   "sha1": "ece505738f680fcb24ca984c38766a8ada519d93",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/001003/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/001003/attr.atr": {
+   "sha1": "d78b3f4a9e5b59859f19c13153ea045015b86f0c",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/001003/attr.atr"
+  },
+  "maps/metin2_map_exp/001003/height.raw": {
+   "sha1": "74ba62e28defddb437912c004b07d187ae1bfa57",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/001003/height.raw"
+  },
+  "maps/metin2_map_exp/001003/minimap.dds": {
+   "sha1": "72aaad79f3cce963f907364bf1615d32695fbd1b",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/001003/minimap.dds"
+  },
+  "maps/metin2_map_exp/001003/shadowmap.dds": {
+   "sha1": "d025915a26986908262da71948e4fd888e868cdd",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/001003/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/001003/shadowmap.raw": {
+   "sha1": "789f664b4dcd1dcd330a58df6774b6856266b2a9",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/001003/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/001003/tile.raw": {
+   "sha1": "642de618485dd53377bb9623d98e43a7822e3ba2",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/001003/tile.raw"
+  },
+  "maps/metin2_map_exp/001003/water.wtr": {
+   "sha1": "3e4434c6248958bd85046ddd0558fc5e3e1b7331",
+   "size": 16403,
+   "src": "AREZZO:metin2_map_exp/001003/water.wtr"
+  },
+  "maps/metin2_map_exp/002000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/002000/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/002000/areadata.txt": {
+   "sha1": "a353379574cf57c5bd3ad921b4ec7733d0103d89",
+   "size": 5909,
+   "src": "AREZZO:metin2_map_exp/002000/areadata.txt"
+  },
+  "maps/metin2_map_exp/002000/areaproperty.txt": {
+   "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/002000/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/002000/attr.atr": {
+   "sha1": "332ad17ac4c2fb33c54cfb129863c658f46c9afc",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/002000/attr.atr"
+  },
+  "maps/metin2_map_exp/002000/height.raw": {
+   "sha1": "a428512615143c2abfabd21afad4b05a6bfd34e0",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/002000/height.raw"
+  },
+  "maps/metin2_map_exp/002000/minimap.dds": {
+   "sha1": "e5813a485b20afa3ab22c28eb67cd46cf4461b72",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/002000/minimap.dds"
+  },
+  "maps/metin2_map_exp/002000/shadowmap.dds": {
+   "sha1": "5dad22b7b79cd7b3f7a4ecafd3a9f3ff2e1529cf",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/002000/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/002000/shadowmap.raw": {
+   "sha1": "c4f1a275baa96ec07d162637670203e868e160c7",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/002000/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/002000/tile.raw": {
+   "sha1": "c1ef00e797c5dfda4fb9c6b613af8d77b656d31c",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/002000/tile.raw"
+  },
+  "maps/metin2_map_exp/002000/water.wtr": {
+   "sha1": "90c7e2b871015837c9c69ee09b043c68a06ba4a5",
+   "size": 16395,
+   "src": "AREZZO:metin2_map_exp/002000/water.wtr"
+  },
+  "maps/metin2_map_exp/002001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/002001/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/002001/areadata.txt": {
+   "sha1": "fe656bd34c314be49ca85f9fb23d2171db88eee4",
+   "size": 5900,
+   "src": "AREZZO:metin2_map_exp/002001/areadata.txt"
+  },
+  "maps/metin2_map_exp/002001/areaproperty.txt": {
+   "sha1": "048ccadcd01b74f473ab8595cadfeff547b2d1e6",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/002001/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/002001/attr.atr": {
+   "sha1": "bf53ea57dbe93f5f71d0d55300122716a69451f2",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/002001/attr.atr"
+  },
+  "maps/metin2_map_exp/002001/height.raw": {
+   "sha1": "4582fe79d4b8c461d8dd502e79c605c938eafd7b",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/002001/height.raw"
+  },
+  "maps/metin2_map_exp/002001/minimap.dds": {
+   "sha1": "7aa17fc909bb6478c56242224356e052da27a087",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/002001/minimap.dds"
+  },
+  "maps/metin2_map_exp/002001/shadowmap.dds": {
+   "sha1": "0fbb2a27c850157b5c2dc7750a4b004116fca1a8",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/002001/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/002001/shadowmap.raw": {
+   "sha1": "f12a4108947c7ad8c20f91ca64f8c76dd148f418",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/002001/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/002001/tile.raw": {
+   "sha1": "d7286a53dee42a78fbe9dc5d28a1c1fbbad8d0a9",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/002001/tile.raw"
+  },
+  "maps/metin2_map_exp/002001/water.wtr": {
+   "sha1": "e4ece596dd867af4a4330bdbd4feba65af189311",
+   "size": 16399,
+   "src": "AREZZO:metin2_map_exp/002001/water.wtr"
+  },
+  "maps/metin2_map_exp/002002/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/002002/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/002002/areadata.txt": {
+   "sha1": "55c0967c9bec6024f517c4dd60ea50db7b463041",
+   "size": 2546,
+   "src": "AREZZO:metin2_map_exp/002002/areadata.txt"
+  },
+  "maps/metin2_map_exp/002002/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/002002/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/002002/attr.atr": {
+   "sha1": "f9c90d5f4deddf0fbfc447a2b0d83fc469b15cd6",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/002002/attr.atr"
+  },
+  "maps/metin2_map_exp/002002/height.raw": {
+   "sha1": "4e1a83333feada3319d77f00b4709054ee1ed52d",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/002002/height.raw"
+  },
+  "maps/metin2_map_exp/002002/minimap.dds": {
+   "sha1": "b7e51d41b679c7948110a7045423b46828cb9ffb",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/002002/minimap.dds"
+  },
+  "maps/metin2_map_exp/002002/shadowmap.dds": {
+   "sha1": "532334da4689f90f2e39d58038ee184ee643a298",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/002002/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/002002/shadowmap.raw": {
+   "sha1": "366d49a800cac777a5328ff9e08046e7c504b7f7",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/002002/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/002002/tile.raw": {
+   "sha1": "635f0d00b253ea8dfecd307065163b5cbcf0d1b3",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/002002/tile.raw"
+  },
+  "maps/metin2_map_exp/002002/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/002002/water.wtr"
+  },
+  "maps/metin2_map_exp/002003/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/002003/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/002003/areadata.txt": {
+   "sha1": "8694d1411811cd6758e2c9628dd9a0ddbbd18506",
+   "size": 2112,
+   "src": "AREZZO:metin2_map_exp/002003/areadata.txt"
+  },
+  "maps/metin2_map_exp/002003/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/002003/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/002003/attr.atr": {
+   "sha1": "7cd87ca430a03303519daccba0e0b8428925dc09",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/002003/attr.atr"
+  },
+  "maps/metin2_map_exp/002003/height.raw": {
+   "sha1": "2bcc3ec62db66daa0bbf3e66a87f5860ffb280fc",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/002003/height.raw"
+  },
+  "maps/metin2_map_exp/002003/minimap.dds": {
+   "sha1": "cc003ed1d1e1bdb84ced8abd14d35e86eb89c485",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/002003/minimap.dds"
+  },
+  "maps/metin2_map_exp/002003/shadowmap.dds": {
+   "sha1": "a41d5c036163227aa694e266d879ec2d73df1874",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/002003/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/002003/shadowmap.raw": {
+   "sha1": "ce3abfe52c408230d0be845833670eb2c81f4ea7",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/002003/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/002003/tile.raw": {
+   "sha1": "9c34de45bd876fd0be653a0a17a57276f2ebe374",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/002003/tile.raw"
+  },
+  "maps/metin2_map_exp/002003/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/002003/water.wtr"
+  },
+  "maps/metin2_map_exp/003000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/003000/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/003000/areadata.txt": {
+   "sha1": "88305954cf86e34954b751e7bd94a29430ce6f3b",
+   "size": 5486,
+   "src": "AREZZO:metin2_map_exp/003000/areadata.txt"
+  },
+  "maps/metin2_map_exp/003000/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/003000/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/003000/attr.atr": {
+   "sha1": "f1d011ca7799a715b6a269e95e4e4dbe7d45714e",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/003000/attr.atr"
+  },
+  "maps/metin2_map_exp/003000/height.raw": {
+   "sha1": "b67b6a0ce40e93ae22c4fc3810e3c82930974091",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/003000/height.raw"
+  },
+  "maps/metin2_map_exp/003000/minimap.dds": {
+   "sha1": "a2f7ae3667dc2ca80a8e71fa55767667ee733c93",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/003000/minimap.dds"
+  },
+  "maps/metin2_map_exp/003000/shadowmap.dds": {
+   "sha1": "ed76a78f026a3739cd4e0c33e891843269650db7",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/003000/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/003000/shadowmap.raw": {
+   "sha1": "66f6eb8717f80d36e5b18cc05b762bf901f32d2b",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/003000/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/003000/tile.raw": {
+   "sha1": "6e0e96f3ed82ee477dd58677d9c6d555bf488b62",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/003000/tile.raw"
+  },
+  "maps/metin2_map_exp/003000/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/003000/water.wtr"
+  },
+  "maps/metin2_map_exp/003001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/003001/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/003001/areadata.txt": {
+   "sha1": "3f033b4524220fb3ede923a5bcfb0b107ae26a1d",
+   "size": 3667,
+   "src": "AREZZO:metin2_map_exp/003001/areadata.txt"
+  },
+  "maps/metin2_map_exp/003001/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/003001/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/003001/attr.atr": {
+   "sha1": "ac23e76b5f353dfefe8ec4667375fce43de4eaa5",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/003001/attr.atr"
+  },
+  "maps/metin2_map_exp/003001/height.raw": {
+   "sha1": "1505c05228141d48ff5b0cec91bc473644133add",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/003001/height.raw"
+  },
+  "maps/metin2_map_exp/003001/minimap.dds": {
+   "sha1": "4cdd2333678932097b3e716eecfa0c3d64111aad",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/003001/minimap.dds"
+  },
+  "maps/metin2_map_exp/003001/shadowmap.dds": {
+   "sha1": "ce4d6b0f93d1a8f6212590312c44403b2ed6cff4",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/003001/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/003001/shadowmap.raw": {
+   "sha1": "f4bb52f9f07bea019919159a75f6e09e79095d28",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/003001/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/003001/tile.raw": {
+   "sha1": "0561d9bac9d4efa686623e2b050933a6e08a0f9e",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/003001/tile.raw"
+  },
+  "maps/metin2_map_exp/003001/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/003001/water.wtr"
+  },
+  "maps/metin2_map_exp/003002/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/003002/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/003002/areadata.txt": {
+   "sha1": "fe6a5ca842baf1834c01b46f2dc8594f9d1b7025",
+   "size": 2961,
+   "src": "AREZZO:metin2_map_exp/003002/areadata.txt"
+  },
+  "maps/metin2_map_exp/003002/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/003002/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/003002/attr.atr": {
+   "sha1": "5dac7e5c7de227a2ed5ea59cb3b5711f809c6ab8",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/003002/attr.atr"
+  },
+  "maps/metin2_map_exp/003002/height.raw": {
+   "sha1": "14e6328dd58569246a9c7c7b02823553ad1425a6",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/003002/height.raw"
+  },
+  "maps/metin2_map_exp/003002/minimap.dds": {
+   "sha1": "4eb538e85ff03ddaa7cc6de972de44590d7f0784",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/003002/minimap.dds"
+  },
+  "maps/metin2_map_exp/003002/shadowmap.dds": {
+   "sha1": "6c79a1264bb8b1e06afa36dcc6c7192ec1f24a45",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/003002/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/003002/shadowmap.raw": {
+   "sha1": "75f094e2efe5fa819c6055aff75b626cb57b2987",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/003002/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/003002/tile.raw": {
+   "sha1": "003d0238eb22ba5446c3179befee3c57c0592c5d",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/003002/tile.raw"
+  },
+  "maps/metin2_map_exp/003002/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/003002/water.wtr"
+  },
+  "maps/metin2_map_exp/003003/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:metin2_map_exp/003003/areaambiencedata.txt"
+  },
+  "maps/metin2_map_exp/003003/areadata.txt": {
+   "sha1": "f3cccd8192e533fbf43ed4c59c320d5ce790d7c9",
+   "size": 2999,
+   "src": "AREZZO:metin2_map_exp/003003/areadata.txt"
+  },
+  "maps/metin2_map_exp/003003/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:metin2_map_exp/003003/areaproperty.txt"
+  },
+  "maps/metin2_map_exp/003003/attr.atr": {
+   "sha1": "fb12288342e317535143b2e27f9cd1d26335fbd0",
+   "size": 65542,
+   "src": "AREZZO:metin2_map_exp/003003/attr.atr"
+  },
+  "maps/metin2_map_exp/003003/height.raw": {
+   "sha1": "321a5f27b6014410537bb59a188b499c13c8cd26",
+   "size": 34322,
+   "src": "AREZZO:metin2_map_exp/003003/height.raw"
+  },
+  "maps/metin2_map_exp/003003/minimap.dds": {
+   "sha1": "dd95d276cc1af227c8ce47747cff10d153754cfb",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/003003/minimap.dds"
+  },
+  "maps/metin2_map_exp/003003/shadowmap.dds": {
+   "sha1": "07c4303e8ddc70c2ba0e6a6d44a0abb7407683e1",
+   "size": 32896,
+   "src": "AREZZO:metin2_map_exp/003003/shadowmap.dds"
+  },
+  "maps/metin2_map_exp/003003/shadowmap.raw": {
+   "sha1": "e89487bca2cc91bb4d961d6419368d75d4f89bc2",
+   "size": 131072,
+   "src": "AREZZO:metin2_map_exp/003003/shadowmap.raw"
+  },
+  "maps/metin2_map_exp/003003/tile.raw": {
+   "sha1": "40368368c0787ba6cf881e3d0907044a5bbbdd49",
+   "size": 66564,
+   "src": "AREZZO:metin2_map_exp/003003/tile.raw"
+  },
+  "maps/metin2_map_exp/003003/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:metin2_map_exp/003003/water.wtr"
+  },
+  "maps/metin2_map_exp/alune_wiking_1.msenv": {
+   "sha1": "bc892a640a652fe920e2a5007141918316e247ca",
+   "size": 2176,
+   "src": "AREZZO:ymir work/environment/alune_wiking_1.msenv"
+  },
+  "maps/metin2_map_exp/mapproperty.txt": {
+   "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+   "size": 47,
+   "src": "AREZZO:metin2_map_exp/mapproperty.txt"
+  },
+  "maps/metin2_map_exp/setting.txt": {
+   "sha1": "1adabbb51afa96ab6f50bef8885b004a9a4b8e63",
+   "size": 197,
+   "src": "AREZZO:metin2_map_exp/setting.txt"
+  },
+  "maps/metin2_map_exp/town.txt": {
+   "sha1": "6a0b1871fb88131fcbe164e42e5d1a79d705822f",
+   "size": 36,
+   "src": "AREZZO:metin2_map_exp/town.txt"
+  },
+  "maps/natural_map/000000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/000000/areaambiencedata.txt"
+  },
+  "maps/natural_map/000000/areadata.txt": {
+   "sha1": "6858a3bb45a9d322b0e69cda4779e240a23c6091",
+   "size": 11897,
+   "src": "GEN:maps/natural_map/000000/areadata.txt"
+  },
+  "maps/natural_map/000000/areaproperty.txt": {
+   "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+   "size": 56,
+   "src": "AREZZO:natural_map/000000/areaproperty.txt"
+  },
+  "maps/natural_map/000000/attr.atr": {
+   "sha1": "0ed38cb32389f8b8f5a7e4f02718cafcfa39087f",
+   "size": 65542,
+   "src": "AREZZO:natural_map/000000/attr.atr"
+  },
+  "maps/natural_map/000000/height.raw": {
+   "sha1": "8720735e8a55d59098abfa5b179b659ef2d62eed",
+   "size": 34322,
+   "src": "AREZZO:natural_map/000000/height.raw"
+  },
+  "maps/natural_map/000000/minimap.dds": {
+   "sha1": "b94761e38d8d6011b0c7c67120730ee2c573c882",
+   "size": 32896,
+   "src": "AREZZO:natural_map/000000/minimap.dds"
+  },
+  "maps/natural_map/000000/shadowmap.dds": {
+   "sha1": "bfc2c11eda3ec1517ffd19577f49936b63083c4c",
+   "size": 32896,
+   "src": "AREZZO:natural_map/000000/shadowmap.dds"
+  },
+  "maps/natural_map/000000/shadowmap.raw": {
+   "sha1": "fe85afc341b4a6985092b54bea6862f5bf2577ba",
+   "size": 131072,
+   "src": "AREZZO:natural_map/000000/shadowmap.raw"
+  },
+  "maps/natural_map/000000/tile.raw": {
+   "sha1": "9924c2b5621265efcd1deac52773ec760893ac1e",
+   "size": 66564,
+   "src": "AREZZO:natural_map/000000/tile.raw"
+  },
+  "maps/natural_map/000000/water.wtr": {
+   "sha1": "97cfefe89ae74765b87472ba29b66c72e6d2a558",
+   "size": 16395,
+   "src": "AREZZO:natural_map/000000/water.wtr"
+  },
+  "maps/natural_map/000001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/000001/areaambiencedata.txt"
+  },
+  "maps/natural_map/000001/areadata.txt": {
+   "sha1": "b18e60491abd9f53fc29f5cf82bec4f8062fa4d7",
+   "size": 15999,
+   "src": "GEN:maps/natural_map/000001/areadata.txt"
+  },
+  "maps/natural_map/000001/areaproperty.txt": {
+   "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+   "size": 56,
+   "src": "AREZZO:natural_map/000001/areaproperty.txt"
+  },
+  "maps/natural_map/000001/attr.atr": {
+   "sha1": "fb12604e08d7b13c0a8621eb228e1a791fdb446d",
+   "size": 65542,
+   "src": "AREZZO:natural_map/000001/attr.atr"
+  },
+  "maps/natural_map/000001/height.raw": {
+   "sha1": "9def5d3c83b0286b229a7e17fb8a9fed9a29f223",
+   "size": 34322,
+   "src": "AREZZO:natural_map/000001/height.raw"
+  },
+  "maps/natural_map/000001/minimap.dds": {
+   "sha1": "13698f0d2606b88eb3657c19d58eaf6648d92d2a",
+   "size": 32896,
+   "src": "AREZZO:natural_map/000001/minimap.dds"
+  },
+  "maps/natural_map/000001/shadowmap.dds": {
+   "sha1": "3bda5a48ca3bd2d34a3783a3362a36f51c85be93",
+   "size": 32896,
+   "src": "AREZZO:natural_map/000001/shadowmap.dds"
+  },
+  "maps/natural_map/000001/shadowmap.raw": {
+   "sha1": "a9cf8ecb5a56484bc810a1395021d475f1979250",
+   "size": 131072,
+   "src": "AREZZO:natural_map/000001/shadowmap.raw"
+  },
+  "maps/natural_map/000001/tile.raw": {
+   "sha1": "9ec07854ab319656b3da1fb880b028907b60d9be",
+   "size": 66564,
+   "src": "AREZZO:natural_map/000001/tile.raw"
+  },
+  "maps/natural_map/000001/water.wtr": {
+   "sha1": "abf690fcd481dbd36b66868d67c8dde7c4da40f4",
+   "size": 16395,
+   "src": "AREZZO:natural_map/000001/water.wtr"
+  },
+  "maps/natural_map/000002/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/000002/areaambiencedata.txt"
+  },
+  "maps/natural_map/000002/areadata.txt": {
+   "sha1": "d29c83057b4ed26982beb89ac8a50cb522c00fdb",
+   "size": 16782,
+   "src": "GEN:maps/natural_map/000002/areadata.txt"
+  },
+  "maps/natural_map/000002/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:natural_map/000002/areaproperty.txt"
+  },
+  "maps/natural_map/000002/attr.atr": {
+   "sha1": "2b1beef37fbc3a6e306463e8e2a7a6cd757915af",
+   "size": 65542,
+   "src": "AREZZO:natural_map/000002/attr.atr"
+  },
+  "maps/natural_map/000002/height.raw": {
+   "sha1": "ea19391d9fb657b0fb7921c8f39690b29ee216ae",
+   "size": 34322,
+   "src": "AREZZO:natural_map/000002/height.raw"
+  },
+  "maps/natural_map/000002/minimap.dds": {
+   "sha1": "89bee8e8373a6ed090f927872795ebe147b85386",
+   "size": 32896,
+   "src": "AREZZO:natural_map/000002/minimap.dds"
+  },
+  "maps/natural_map/000002/shadowmap.dds": {
+   "sha1": "aed302ae3225a7f3c28771225ebd3ad24ce46e3a",
+   "size": 32896,
+   "src": "AREZZO:natural_map/000002/shadowmap.dds"
+  },
+  "maps/natural_map/000002/shadowmap.raw": {
+   "sha1": "535b6bc67ff1f9ff6a51466e4ac7f4b91846b421",
+   "size": 131072,
+   "src": "AREZZO:natural_map/000002/shadowmap.raw"
+  },
+  "maps/natural_map/000002/tile.raw": {
+   "sha1": "7e79ae1a298e28128141a70aff4e7c7edff3412f",
+   "size": 66564,
+   "src": "AREZZO:natural_map/000002/tile.raw"
+  },
+  "maps/natural_map/000002/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:natural_map/000002/water.wtr"
+  },
+  "maps/natural_map/000003/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/000003/areaambiencedata.txt"
+  },
+  "maps/natural_map/000003/areadata.txt": {
+   "sha1": "c6670e48cbe6d3583d60b20d18b0da96e881e202",
+   "size": 16526,
+   "src": "GEN:maps/natural_map/000003/areadata.txt"
+  },
+  "maps/natural_map/000003/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:natural_map/000003/areaproperty.txt"
+  },
+  "maps/natural_map/000003/attr.atr": {
+   "sha1": "0791ce72f6dab573db64db78f97c2ca10e5efff8",
+   "size": 65542,
+   "src": "AREZZO:natural_map/000003/attr.atr"
+  },
+  "maps/natural_map/000003/height.raw": {
+   "sha1": "9cb265eca70e4a799eade93e648855a2b5f34c07",
+   "size": 34322,
+   "src": "AREZZO:natural_map/000003/height.raw"
+  },
+  "maps/natural_map/000003/minimap.dds": {
+   "sha1": "3d659bb03e3f869fcc217fb05e03ac89df39d812",
+   "size": 32896,
+   "src": "AREZZO:natural_map/000003/minimap.dds"
+  },
+  "maps/natural_map/000003/shadowmap.dds": {
+   "sha1": "f272ebbc086f9dada6d28ebf1b337b670090769d",
+   "size": 32896,
+   "src": "AREZZO:natural_map/000003/shadowmap.dds"
+  },
+  "maps/natural_map/000003/shadowmap.raw": {
+   "sha1": "9efcbc4effd132ab3d813ecb6535bc15024d45c8",
+   "size": 131072,
+   "src": "AREZZO:natural_map/000003/shadowmap.raw"
+  },
+  "maps/natural_map/000003/tile.raw": {
+   "sha1": "c5c100e6791a48057ca561ed49345765c5357d81",
+   "size": 66564,
+   "src": "AREZZO:natural_map/000003/tile.raw"
+  },
+  "maps/natural_map/000003/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:natural_map/000003/water.wtr"
+  },
+  "maps/natural_map/001000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/001000/areaambiencedata.txt"
+  },
+  "maps/natural_map/001000/areadata.txt": {
+   "sha1": "1e966a7238b2cf2c383b901a31b73f2a1d0bacf2",
+   "size": 13633,
+   "src": "GEN:maps/natural_map/001000/areadata.txt"
+  },
+  "maps/natural_map/001000/areaproperty.txt": {
+   "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+   "size": 56,
+   "src": "AREZZO:natural_map/001000/areaproperty.txt"
+  },
+  "maps/natural_map/001000/attr.atr": {
+   "sha1": "2b16c3246b36f9e2e85cb252190e14eb0e25d924",
+   "size": 65542,
+   "src": "AREZZO:natural_map/001000/attr.atr"
+  },
+  "maps/natural_map/001000/height.raw": {
+   "sha1": "f47c7944625503acba8eb4d0389c4e9a1f7ee56f",
+   "size": 34322,
+   "src": "AREZZO:natural_map/001000/height.raw"
+  },
+  "maps/natural_map/001000/minimap.dds": {
+   "sha1": "53596b07c15de1e8aabc6228a0e9574d1acacfe0",
+   "size": 32896,
+   "src": "AREZZO:natural_map/001000/minimap.dds"
+  },
+  "maps/natural_map/001000/shadowmap.dds": {
+   "sha1": "f3b679b394214f73f38cd1f48122748fc8e622c8",
+   "size": 32896,
+   "src": "AREZZO:natural_map/001000/shadowmap.dds"
+  },
+  "maps/natural_map/001000/shadowmap.raw": {
+   "sha1": "57944169dfea5bf36f183848e296a77c62fbb329",
+   "size": 131072,
+   "src": "AREZZO:natural_map/001000/shadowmap.raw"
+  },
+  "maps/natural_map/001000/tile.raw": {
+   "sha1": "1cff96c5f10b10c28f8e63b926fe1e0d7074e465",
+   "size": 66564,
+   "src": "AREZZO:natural_map/001000/tile.raw"
+  },
+  "maps/natural_map/001000/water.wtr": {
+   "sha1": "82032a7bb8e733fd579d7f7456108642340e52c9",
+   "size": 16395,
+   "src": "AREZZO:natural_map/001000/water.wtr"
+  },
+  "maps/natural_map/001001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/001001/areaambiencedata.txt"
+  },
+  "maps/natural_map/001001/areadata.txt": {
+   "sha1": "4bcf2684a7ddb09e53ae75edf176171d580ef0f1",
+   "size": 14904,
+   "src": "AREZZO:natural_map/001001/areadata.txt"
+  },
+  "maps/natural_map/001001/areaproperty.txt": {
+   "sha1": "048ccadcd01b74f473ab8595cadfeff547b2d1e6",
+   "size": 56,
+   "src": "AREZZO:natural_map/001001/areaproperty.txt"
+  },
+  "maps/natural_map/001001/attr.atr": {
+   "sha1": "f7b471e73e2081b39dcac505d110f43beb48aed6",
+   "size": 65542,
+   "src": "AREZZO:natural_map/001001/attr.atr"
+  },
+  "maps/natural_map/001001/height.raw": {
+   "sha1": "b2a72e91a508dfe0c91992bcd254e136049e5deb",
+   "size": 34322,
+   "src": "AREZZO:natural_map/001001/height.raw"
+  },
+  "maps/natural_map/001001/minimap.dds": {
+   "sha1": "5a29ff333d04fcdf9c8e6ff1a706512a0b8f6820",
+   "size": 32896,
+   "src": "AREZZO:natural_map/001001/minimap.dds"
+  },
+  "maps/natural_map/001001/shadowmap.dds": {
+   "sha1": "28904920623147dd97384385d63e45af27b874c6",
+   "size": 32896,
+   "src": "AREZZO:natural_map/001001/shadowmap.dds"
+  },
+  "maps/natural_map/001001/shadowmap.raw": {
+   "sha1": "de5ce07cdfec3c90a91e44fd8bf9459eed0e4db4",
+   "size": 131072,
+   "src": "AREZZO:natural_map/001001/shadowmap.raw"
+  },
+  "maps/natural_map/001001/tile.raw": {
+   "sha1": "0ab6ff55d54f6079de72ab88cb80305d52d45fb6",
+   "size": 66564,
+   "src": "AREZZO:natural_map/001001/tile.raw"
+  },
+  "maps/natural_map/001001/water.wtr": {
+   "sha1": "67df386f716247154b39e6336fcd0dbb09aed16a",
+   "size": 16399,
+   "src": "AREZZO:natural_map/001001/water.wtr"
+  },
+  "maps/natural_map/001002/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/001002/areaambiencedata.txt"
+  },
+  "maps/natural_map/001002/areadata.txt": {
+   "sha1": "fd3d6a938fffe35ef763ad36dc6ba4414bcaef86",
+   "size": 26081,
+   "src": "AREZZO:natural_map/001002/areadata.txt"
+  },
+  "maps/natural_map/001002/areaproperty.txt": {
+   "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+   "size": 56,
+   "src": "AREZZO:natural_map/001002/areaproperty.txt"
+  },
+  "maps/natural_map/001002/attr.atr": {
+   "sha1": "28aef98118cb29f8def85ee20bca587be7c76c8a",
+   "size": 65542,
+   "src": "AREZZO:natural_map/001002/attr.atr"
+  },
+  "maps/natural_map/001002/height.raw": {
+   "sha1": "1669cf1bf0a90bf7a543341f59e794aec4446272",
+   "size": 34322,
+   "src": "AREZZO:natural_map/001002/height.raw"
+  },
+  "maps/natural_map/001002/minimap.dds": {
+   "sha1": "e2ec3f19251787673b90b5f6bb1cb9758e51755d",
+   "size": 32896,
+   "src": "AREZZO:natural_map/001002/minimap.dds"
+  },
+  "maps/natural_map/001002/shadowmap.dds": {
+   "sha1": "89d3c396fb09941e161d195b1fcddac61405bed0",
+   "size": 32896,
+   "src": "AREZZO:natural_map/001002/shadowmap.dds"
+  },
+  "maps/natural_map/001002/shadowmap.raw": {
+   "sha1": "85ca7baa6b30d5d36b96b0f33ad8e17b6bc2d0a5",
+   "size": 131072,
+   "src": "AREZZO:natural_map/001002/shadowmap.raw"
+  },
+  "maps/natural_map/001002/tile.raw": {
+   "sha1": "9623e55476837461c6bd4d3245e6e120642726e7",
+   "size": 66564,
+   "src": "AREZZO:natural_map/001002/tile.raw"
+  },
+  "maps/natural_map/001002/water.wtr": {
+   "sha1": "1b0a046d6ad7929c03ee796b2c833bf2ad8407fc",
+   "size": 16395,
+   "src": "AREZZO:natural_map/001002/water.wtr"
+  },
+  "maps/natural_map/001003/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/001003/areaambiencedata.txt"
+  },
+  "maps/natural_map/001003/areadata.txt": {
+   "sha1": "2696e2aac03ae77dad8cf24714d0962e1e533ac4",
+   "size": 14610,
+   "src": "GEN:maps/natural_map/001003/areadata.txt"
+  },
+  "maps/natural_map/001003/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:natural_map/001003/areaproperty.txt"
+  },
+  "maps/natural_map/001003/attr.atr": {
+   "sha1": "425bfbf9a9b41f8c85af7215807485c3aae26cea",
+   "size": 65542,
+   "src": "AREZZO:natural_map/001003/attr.atr"
+  },
+  "maps/natural_map/001003/height.raw": {
+   "sha1": "c420e0f7a202ea6314117aa850da35a0e4f0c73d",
+   "size": 34322,
+   "src": "AREZZO:natural_map/001003/height.raw"
+  },
+  "maps/natural_map/001003/minimap.dds": {
+   "sha1": "ce615ca2fc20bf1bba9fb6f070013d641a167110",
+   "size": 32896,
+   "src": "AREZZO:natural_map/001003/minimap.dds"
+  },
+  "maps/natural_map/001003/shadowmap.dds": {
+   "sha1": "3e81e48f0b503380100994d4e936ac8a59d8c54f",
+   "size": 32896,
+   "src": "AREZZO:natural_map/001003/shadowmap.dds"
+  },
+  "maps/natural_map/001003/shadowmap.raw": {
+   "sha1": "1a0010f9d364ffbfdf1329c40e91f87ac2b883bc",
+   "size": 131072,
+   "src": "AREZZO:natural_map/001003/shadowmap.raw"
+  },
+  "maps/natural_map/001003/tile.raw": {
+   "sha1": "26989ffc6e5c73ffc0f0efac0f79fbae12a30151",
+   "size": 66564,
+   "src": "AREZZO:natural_map/001003/tile.raw"
+  },
+  "maps/natural_map/001003/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:natural_map/001003/water.wtr"
+  },
+  "maps/natural_map/002000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/002000/areaambiencedata.txt"
+  },
+  "maps/natural_map/002000/areadata.txt": {
+   "sha1": "ff19960d8c8147dfa1e626ee7067a025dcff1f0c",
+   "size": 9418,
+   "src": "AREZZO:natural_map/002000/areadata.txt"
+  },
+  "maps/natural_map/002000/areaproperty.txt": {
+   "sha1": "048ccadcd01b74f473ab8595cadfeff547b2d1e6",
+   "size": 56,
+   "src": "AREZZO:natural_map/002000/areaproperty.txt"
+  },
+  "maps/natural_map/002000/attr.atr": {
+   "sha1": "1b28a4094501e3d3c1938c0d42341da72becc82a",
+   "size": 65542,
+   "src": "AREZZO:natural_map/002000/attr.atr"
+  },
+  "maps/natural_map/002000/height.raw": {
+   "sha1": "f9f8698a7be90a860f836d6f484dc776227155d8",
+   "size": 34322,
+   "src": "AREZZO:natural_map/002000/height.raw"
+  },
+  "maps/natural_map/002000/minimap.dds": {
+   "sha1": "faf4e5919ddd9ac9c43e52f167fdda28b1e090f0",
+   "size": 32896,
+   "src": "AREZZO:natural_map/002000/minimap.dds"
+  },
+  "maps/natural_map/002000/shadowmap.dds": {
+   "sha1": "a1892f88ce486f598809ef2624b07f1502c5b9de",
+   "size": 32896,
+   "src": "AREZZO:natural_map/002000/shadowmap.dds"
+  },
+  "maps/natural_map/002000/shadowmap.raw": {
+   "sha1": "fa164038c52d9f059f7b561d9b252c8800474dce",
+   "size": 131072,
+   "src": "AREZZO:natural_map/002000/shadowmap.raw"
+  },
+  "maps/natural_map/002000/tile.raw": {
+   "sha1": "a7b21b373330e34cba02cb121aa678b942035cb5",
+   "size": 66564,
+   "src": "AREZZO:natural_map/002000/tile.raw"
+  },
+  "maps/natural_map/002000/water.wtr": {
+   "sha1": "66896f6b5ee63a58f20f48684702bd2c7da8ce44",
+   "size": 16399,
+   "src": "AREZZO:natural_map/002000/water.wtr"
+  },
+  "maps/natural_map/002001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/002001/areaambiencedata.txt"
+  },
+  "maps/natural_map/002001/areadata.txt": {
+   "sha1": "095b90ee680d65adf3cf62921f6aa34870f91e78",
+   "size": 22867,
+   "src": "GEN:maps/natural_map/002001/areadata.txt"
+  },
+  "maps/natural_map/002001/areaproperty.txt": {
+   "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+   "size": 56,
+   "src": "AREZZO:natural_map/002001/areaproperty.txt"
+  },
+  "maps/natural_map/002001/attr.atr": {
+   "sha1": "8f8718b0695953979351201d0acaea0dd626a2c0",
+   "size": 65542,
+   "src": "AREZZO:natural_map/002001/attr.atr"
+  },
+  "maps/natural_map/002001/height.raw": {
+   "sha1": "0738fe1d8e7fc3615ae75640fd64aa53925459d6",
+   "size": 34322,
+   "src": "AREZZO:natural_map/002001/height.raw"
+  },
+  "maps/natural_map/002001/minimap.dds": {
+   "sha1": "33e5faa6ce251845f7eb8ff53e65769a4da11b70",
+   "size": 32896,
+   "src": "AREZZO:natural_map/002001/minimap.dds"
+  },
+  "maps/natural_map/002001/shadowmap.dds": {
+   "sha1": "b85cc096b3af168744b4d98229aa6c5d221a5e15",
+   "size": 32896,
+   "src": "AREZZO:natural_map/002001/shadowmap.dds"
+  },
+  "maps/natural_map/002001/shadowmap.raw": {
+   "sha1": "d4abaf959530d7502341527e9283a216c211f9ff",
+   "size": 131072,
+   "src": "AREZZO:natural_map/002001/shadowmap.raw"
+  },
+  "maps/natural_map/002001/tile.raw": {
+   "sha1": "1261ae5823c1cc617eeb9b5d7c6818c2acf5679c",
+   "size": 66564,
+   "src": "AREZZO:natural_map/002001/tile.raw"
+  },
+  "maps/natural_map/002001/water.wtr": {
+   "sha1": "5be39324b1e3597d833246c6701fb6904d3ae6a6",
+   "size": 16395,
+   "src": "AREZZO:natural_map/002001/water.wtr"
+  },
+  "maps/natural_map/002002/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/002002/areaambiencedata.txt"
+  },
+  "maps/natural_map/002002/areadata.txt": {
+   "sha1": "b6247b0ee82e30845cdef191f1b5b47bac94e8bc",
+   "size": 19342,
+   "src": "AREZZO:natural_map/002002/areadata.txt"
+  },
+  "maps/natural_map/002002/areaproperty.txt": {
+   "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+   "size": 56,
+   "src": "AREZZO:natural_map/002002/areaproperty.txt"
+  },
+  "maps/natural_map/002002/attr.atr": {
+   "sha1": "763fefd5f2f7e8b56fc6fe22abb86ffeda041097",
+   "size": 65542,
+   "src": "AREZZO:natural_map/002002/attr.atr"
+  },
+  "maps/natural_map/002002/height.raw": {
+   "sha1": "9da2956905707f9f879b014e1179fade249247c8",
+   "size": 34322,
+   "src": "AREZZO:natural_map/002002/height.raw"
+  },
+  "maps/natural_map/002002/minimap.dds": {
+   "sha1": "fa65c7daa3c840b2d817fd23317471bcbb017ef9",
+   "size": 32896,
+   "src": "AREZZO:natural_map/002002/minimap.dds"
+  },
+  "maps/natural_map/002002/shadowmap.dds": {
+   "sha1": "92d6362a3799d9ee657861fd965ca22e55806a8b",
+   "size": 32896,
+   "src": "AREZZO:natural_map/002002/shadowmap.dds"
+  },
+  "maps/natural_map/002002/shadowmap.raw": {
+   "sha1": "601535bc11c21cbd6575d2ee63b1d77af68fc307",
+   "size": 131072,
+   "src": "AREZZO:natural_map/002002/shadowmap.raw"
+  },
+  "maps/natural_map/002002/tile.raw": {
+   "sha1": "04a10a0ef8282c9141f7a48f5ff2baaa8c548f4a",
+   "size": 66564,
+   "src": "AREZZO:natural_map/002002/tile.raw"
+  },
+  "maps/natural_map/002002/water.wtr": {
+   "sha1": "8657b6a92fe85ca379a80708145da155670c669f",
+   "size": 16395,
+   "src": "AREZZO:natural_map/002002/water.wtr"
+  },
+  "maps/natural_map/002003/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/002003/areaambiencedata.txt"
+  },
+  "maps/natural_map/002003/areadata.txt": {
+   "sha1": "7071eb8c81dd1a83140fa334b9dbabae45d7512f",
+   "size": 18111,
+   "src": "GEN:maps/natural_map/002003/areadata.txt"
+  },
+  "maps/natural_map/002003/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:natural_map/002003/areaproperty.txt"
+  },
+  "maps/natural_map/002003/attr.atr": {
+   "sha1": "1c6e34eaaa20971944789158a179f603d88a5542",
+   "size": 65542,
+   "src": "AREZZO:natural_map/002003/attr.atr"
+  },
+  "maps/natural_map/002003/height.raw": {
+   "sha1": "5fe85fbdfd4fea3a59ee112a4873461e8e4b44af",
+   "size": 34322,
+   "src": "AREZZO:natural_map/002003/height.raw"
+  },
+  "maps/natural_map/002003/minimap.dds": {
+   "sha1": "750cc921cb2d47e240768fdcb91f7e03cd4d97b9",
+   "size": 32896,
+   "src": "AREZZO:natural_map/002003/minimap.dds"
+  },
+  "maps/natural_map/002003/shadowmap.dds": {
+   "sha1": "8f5d3827fe332dab69fb5b7463b1d2ab65a75cdb",
+   "size": 32896,
+   "src": "AREZZO:natural_map/002003/shadowmap.dds"
+  },
+  "maps/natural_map/002003/shadowmap.raw": {
+   "sha1": "d5c50403fdd78e9b9d0285eee0a31fc83ab9e8a1",
+   "size": 131072,
+   "src": "AREZZO:natural_map/002003/shadowmap.raw"
+  },
+  "maps/natural_map/002003/tile.raw": {
+   "sha1": "16e71949ff4f9a61dd8b609382634c1a26c792dc",
+   "size": 66564,
+   "src": "AREZZO:natural_map/002003/tile.raw"
+  },
+  "maps/natural_map/002003/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:natural_map/002003/water.wtr"
+  },
+  "maps/natural_map/003000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/003000/areaambiencedata.txt"
+  },
+  "maps/natural_map/003000/areadata.txt": {
+   "sha1": "94591abaff4bf913204f0702e42a6f33ba71b6a0",
+   "size": 16414,
+   "src": "GEN:maps/natural_map/003000/areadata.txt"
+  },
+  "maps/natural_map/003000/areaproperty.txt": {
+   "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+   "size": 56,
+   "src": "AREZZO:natural_map/003000/areaproperty.txt"
+  },
+  "maps/natural_map/003000/attr.atr": {
+   "sha1": "24efecd82a64aaa6bfe15c2647149c928c49d9ea",
+   "size": 65542,
+   "src": "AREZZO:natural_map/003000/attr.atr"
+  },
+  "maps/natural_map/003000/height.raw": {
+   "sha1": "d0d8dbdbf6c9cce1cafefb481ac76d5735ec59b7",
+   "size": 34322,
+   "src": "AREZZO:natural_map/003000/height.raw"
+  },
+  "maps/natural_map/003000/minimap.dds": {
+   "sha1": "e258c1b64da40af751e82f539f0928d5ec791bf5",
+   "size": 32896,
+   "src": "AREZZO:natural_map/003000/minimap.dds"
+  },
+  "maps/natural_map/003000/shadowmap.dds": {
+   "sha1": "78e39094ca8c7178afa17cd9e76f40882f2f44d6",
+   "size": 32896,
+   "src": "AREZZO:natural_map/003000/shadowmap.dds"
+  },
+  "maps/natural_map/003000/shadowmap.raw": {
+   "sha1": "af84db42570924d3025eea27e461dc26d9a5ec41",
+   "size": 131072,
+   "src": "AREZZO:natural_map/003000/shadowmap.raw"
+  },
+  "maps/natural_map/003000/tile.raw": {
+   "sha1": "51606b7984d62b3ce61484da6a2c0570b88fd99d",
+   "size": 66564,
+   "src": "AREZZO:natural_map/003000/tile.raw"
+  },
+  "maps/natural_map/003000/water.wtr": {
+   "sha1": "a13060472e2590306d5191b5da9f822bed2ad87f",
+   "size": 16395,
+   "src": "AREZZO:natural_map/003000/water.wtr"
+  },
+  "maps/natural_map/003001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/003001/areaambiencedata.txt"
+  },
+  "maps/natural_map/003001/areadata.txt": {
+   "sha1": "5e7e4a4c426f12610102cadd7ba72ad61ceadaed",
+   "size": 20330,
+   "src": "GEN:maps/natural_map/003001/areadata.txt"
+  },
+  "maps/natural_map/003001/areaproperty.txt": {
+   "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+   "size": 56,
+   "src": "AREZZO:natural_map/003001/areaproperty.txt"
+  },
+  "maps/natural_map/003001/attr.atr": {
+   "sha1": "878b5b8880896353a0401b274f7629ee135eb84a",
+   "size": 65542,
+   "src": "AREZZO:natural_map/003001/attr.atr"
+  },
+  "maps/natural_map/003001/height.raw": {
+   "sha1": "cb74eb3e8f9697a7b9dd7320ce5b1c299fd956c5",
+   "size": 34322,
+   "src": "AREZZO:natural_map/003001/height.raw"
+  },
+  "maps/natural_map/003001/minimap.dds": {
+   "sha1": "a0c33cd8fd01d4889da31922b638b0c0b06e3dbc",
+   "size": 32896,
+   "src": "AREZZO:natural_map/003001/minimap.dds"
+  },
+  "maps/natural_map/003001/shadowmap.dds": {
+   "sha1": "548d5a331f90ceb67cd82516d79f6a1b231f875e",
+   "size": 32896,
+   "src": "AREZZO:natural_map/003001/shadowmap.dds"
+  },
+  "maps/natural_map/003001/shadowmap.raw": {
+   "sha1": "7d73db8cb9b3144554c914522090c8d0923801c9",
+   "size": 131072,
+   "src": "AREZZO:natural_map/003001/shadowmap.raw"
+  },
+  "maps/natural_map/003001/tile.raw": {
+   "sha1": "6188483c248fa0bdec1efb575e903938a14adc42",
+   "size": 66564,
+   "src": "AREZZO:natural_map/003001/tile.raw"
+  },
+  "maps/natural_map/003001/water.wtr": {
+   "sha1": "083d1ab80fd6ef063edd0b455b4736e930eb0c84",
+   "size": 16395,
+   "src": "AREZZO:natural_map/003001/water.wtr"
+  },
+  "maps/natural_map/003002/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/003002/areaambiencedata.txt"
+  },
+  "maps/natural_map/003002/areadata.txt": {
+   "sha1": "ca79be025ecb2b65283b1fbac77d4891cdca8a78",
+   "size": 14497,
+   "src": "GEN:maps/natural_map/003002/areadata.txt"
+  },
+  "maps/natural_map/003002/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:natural_map/003002/areaproperty.txt"
+  },
+  "maps/natural_map/003002/attr.atr": {
+   "sha1": "4218b656ca67ab325b2d1f898bf29c0df86c6aef",
+   "size": 65542,
+   "src": "AREZZO:natural_map/003002/attr.atr"
+  },
+  "maps/natural_map/003002/height.raw": {
+   "sha1": "2fcd39d1b51969c75f6e2395d048219d111d0982",
+   "size": 34322,
+   "src": "AREZZO:natural_map/003002/height.raw"
+  },
+  "maps/natural_map/003002/minimap.dds": {
+   "sha1": "05f1e406ba523e0804f0fe0228a19495bdcff288",
+   "size": 32896,
+   "src": "AREZZO:natural_map/003002/minimap.dds"
+  },
+  "maps/natural_map/003002/shadowmap.dds": {
+   "sha1": "1b199394f88fcf3f65daf394a2a069662fc7630b",
+   "size": 32896,
+   "src": "AREZZO:natural_map/003002/shadowmap.dds"
+  },
+  "maps/natural_map/003002/shadowmap.raw": {
+   "sha1": "87b73604b505cbfe149a0b07738ad06c3569f9cb",
+   "size": 131072,
+   "src": "AREZZO:natural_map/003002/shadowmap.raw"
+  },
+  "maps/natural_map/003002/tile.raw": {
+   "sha1": "4a0e3b8381bf7e73a0063fe99b67bfff2d7c1db1",
+   "size": 66564,
+   "src": "AREZZO:natural_map/003002/tile.raw"
+  },
+  "maps/natural_map/003002/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:natural_map/003002/water.wtr"
+  },
+  "maps/natural_map/003003/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:natural_map/003003/areaambiencedata.txt"
+  },
+  "maps/natural_map/003003/areadata.txt": {
+   "sha1": "6437603ac8a8af600541517081846e6f11ed9d09",
+   "size": 11808,
+   "src": "GEN:maps/natural_map/003003/areadata.txt"
+  },
+  "maps/natural_map/003003/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:natural_map/003003/areaproperty.txt"
+  },
+  "maps/natural_map/003003/attr.atr": {
+   "sha1": "57ca0d13e9edabe2158fa5ba9ff7a5aee0f6b16d",
+   "size": 65542,
+   "src": "AREZZO:natural_map/003003/attr.atr"
+  },
+  "maps/natural_map/003003/height.raw": {
+   "sha1": "62237142e973357a60ddfaa7e2a24f3dab4909ff",
+   "size": 34322,
+   "src": "AREZZO:natural_map/003003/height.raw"
+  },
+  "maps/natural_map/003003/minimap.dds": {
+   "sha1": "2047c187f67e9c22759bf9bd73c2610333408cc8",
+   "size": 32896,
+   "src": "AREZZO:natural_map/003003/minimap.dds"
+  },
+  "maps/natural_map/003003/shadowmap.dds": {
+   "sha1": "70bf5b6a2211e71e5a0adefdc2ae88b2ea72bfd9",
+   "size": 32896,
+   "src": "AREZZO:natural_map/003003/shadowmap.dds"
+  },
+  "maps/natural_map/003003/shadowmap.raw": {
+   "sha1": "6dbbdee7ee6a65be8ebe819bb2a58acd69dc0e7a",
+   "size": 131072,
+   "src": "AREZZO:natural_map/003003/shadowmap.raw"
+  },
+  "maps/natural_map/003003/tile.raw": {
+   "sha1": "ff9dcb1f1992112661badbc0df28872b9403e330",
+   "size": 66564,
+   "src": "AREZZO:natural_map/003003/tile.raw"
+  },
+  "maps/natural_map/003003/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:natural_map/003003/water.wtr"
+  },
+  "maps/natural_map/ateoptoniepoeta2.msenv": {
+   "sha1": "f1d41827fbe922b78a232d1d44fd803025114a41",
+   "size": 2337,
+   "src": "AREZZO:ymir work/environment/ateoptoniepoeta2.msenv"
+  },
+  "maps/natural_map/mapproperty.txt": {
+   "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+   "size": 47,
+   "src": "AREZZO:natural_map/mapproperty.txt"
+  },
+  "maps/natural_map/setting.txt": {
+   "sha1": "eaa6a588837fea72ac3ddb8b33277aeb12875409",
+   "size": 199,
+   "src": "AREZZO:natural_map/setting.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/areaambiencedata.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/areadata.txt": {
+   "sha1": "780ce870636ccc2bb9280a3697b54d0c48e071f4",
+   "size": 304,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/areadata.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/areaproperty.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/attr.atr": {
+   "sha1": "aab4c810be4987cd13bdc66eef86145a20e8ddd4",
+   "size": 65542,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/attr.atr"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/height.raw": {
+   "sha1": "d80d53e363fd0cb0a87e7fb7a4149e8c3474aa0d",
+   "size": 34322,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/height.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/minimap.dds": {
+   "sha1": "09e1687cc0035fb947da55bd9fa05aa05e81fb76",
+   "size": 32896,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/minimap.dds"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/shadowmap.dds": {
+   "sha1": "b98c6fc99140ed63e515e560746afbd786519306",
+   "size": 32896,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/shadowmap.dds"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/shadowmap.raw": {
+   "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+   "size": 131072,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/shadowmap.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/tile.raw": {
+   "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+   "size": 66564,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/tile.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/000000/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000000/water.wtr"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/areaambiencedata.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/areadata.txt": {
+   "sha1": "04b764e94e42e27f7ff1147e7005814e8b35f424",
+   "size": 719,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/areadata.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/areaproperty.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/attr.atr": {
+   "sha1": "25ea8dbc91695035b62a897250cf5e7ce6f7b286",
+   "size": 65542,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/attr.atr"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/height.raw": {
+   "sha1": "e64aea4e1227cf47920d7231b4e3b9699f0edf43",
+   "size": 34322,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/height.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/minimap.dds": {
+   "sha1": "e21f7612d2c51dd043e2bc517e75170ef8cdc86c",
+   "size": 32896,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/minimap.dds"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/shadowmap.dds": {
+   "sha1": "b98c6fc99140ed63e515e560746afbd786519306",
+   "size": 32896,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/shadowmap.dds"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/shadowmap.raw": {
+   "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+   "size": 131072,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/shadowmap.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/tile.raw": {
+   "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+   "size": 66564,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/tile.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/000001/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:plechito_chamber_of_wisdom/000001/water.wtr"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/areaambiencedata.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/areadata.txt": {
+   "sha1": "bc9079222e879dd343a3f0bf7f4c4a758a7aa9f6",
+   "size": 721,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/areadata.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/areaproperty.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/attr.atr": {
+   "sha1": "384128721396fe21e0364e5f0a3ee4ee290b7da0",
+   "size": 65542,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/attr.atr"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/height.raw": {
+   "sha1": "34d4740eb56840f65043595f601268168132862a",
+   "size": 34322,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/height.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/minimap.dds": {
+   "sha1": "4863e32721632402c070c86f1b6513d2fb8411b5",
+   "size": 32896,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/minimap.dds"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/shadowmap.dds": {
+   "sha1": "b98c6fc99140ed63e515e560746afbd786519306",
+   "size": 32896,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/shadowmap.dds"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/shadowmap.raw": {
+   "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+   "size": 131072,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/shadowmap.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/tile.raw": {
+   "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+   "size": 66564,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/tile.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/001000/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001000/water.wtr"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/areaambiencedata.txt": {
+   "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+   "size": 41,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/areaambiencedata.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/areadata.txt": {
+   "sha1": "d5d565c6354f080d8097b36dbcd3e234790e352a",
+   "size": 849,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/areadata.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/areaproperty.txt": {
+   "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+   "size": 56,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/areaproperty.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/attr.atr": {
+   "sha1": "93289c226e0e766e21f5a0d448cf94349552bf7d",
+   "size": 65542,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/attr.atr"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/height.raw": {
+   "sha1": "27a600817e5c10868572fc27d56163d562ed4f96",
+   "size": 34322,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/height.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/minimap.dds": {
+   "sha1": "e4f0c7441cd94a597e4cea2f41c96f19638d897c",
+   "size": 32896,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/minimap.dds"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/shadowmap.dds": {
+   "sha1": "b98c6fc99140ed63e515e560746afbd786519306",
+   "size": 32896,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/shadowmap.dds"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/shadowmap.raw": {
+   "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+   "size": 131072,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/shadowmap.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/tile.raw": {
+   "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+   "size": 66564,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/tile.raw"
+  },
+  "maps/plechito_chamber_of_wisdom/001001/water.wtr": {
+   "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+   "size": 16391,
+   "src": "AREZZO:plechito_chamber_of_wisdom/001001/water.wtr"
+  },
+  "maps/plechito_chamber_of_wisdom/chamber_of_wisdom.msenv": {
+   "sha1": "bbbe051b273d9e60dbf4fe0861d9b33721b8fabd",
+   "size": 2221,
+   "src": "AREZZO:ymir work/environment/chamber_of_wisdom.msenv"
+  },
+  "maps/plechito_chamber_of_wisdom/mapproperty.txt": {
+   "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+   "size": 47,
+   "src": "AREZZO:plechito_chamber_of_wisdom/mapproperty.txt"
+  },
+  "maps/plechito_chamber_of_wisdom/setting.txt": {
+   "sha1": "b2f443ca2df5e2a30c76095044cf7bfddc0c1404",
+   "size": 215,
+   "src": "AREZZO:plechito_chamber_of_wisdom/setting.txt"
+  }
+ },
+ "property": {
+  "property/drzewa i ro\u0153liny/nowe/3.prt": {
+   "sha1": "0ddd5413bc88df33777024384603e9eae1a5677a",
+   "size": 158,
+   "src": "AREZZO:property/drzewa i ro\u0153liny/nowe/3.prt"
+  },
+  "property/drzewa i ro\u0153liny/nowe/krzak2.prt": {
+   "sha1": "bdfa50596d4e75fc67bd60ba82992c5ae6efbf5a",
+   "size": 161,
+   "src": "AREZZO:property/drzewa i ro\u0153liny/nowe/krzak2.prt"
+  },
+  "property/kamienie/jungle/skala13.prb": {
+   "sha1": "979a5e608f10fe0b961bfa15ba1c6ba2734e72cb",
+   "size": 165,
+   "src": "AREZZO:property/kamienie/jungle/skala13.prb"
+  },
+  "property/kamienie/jungle/skala16.prb": {
+   "sha1": "78c91b998c3e2a6aa225b363fca68105b467b359",
+   "size": 158,
+   "src": "AREZZO:property/kamienie/jungle/skala16.prb"
+  },
+  "property/kamienie/jungle/skaladuza.prb": {
+   "sha1": "6a93eab5eac8b564d328b5494df2f35c8839ab28",
+   "size": 175,
+   "src": "AREZZO:property/kamienie/jungle/skaladuza.prb"
+  },
+  "property/prb/1179294573.prb": {
+   "sha1": "61314c5a530dc47f95374a0faf29407a6d741ab8",
+   "size": 152,
+   "src": "AREZZO:property/prb/1179294573.prb"
+  },
+  "property/prb/1209999264.prb": {
+   "sha1": "1f13113925fb28228e2ce2dc70c60df45ddd49e5",
+   "size": 152,
+   "src": "AREZZO:property/prb/1209999264.prb"
+  },
+  "property/prb/1298401961.prb": {
+   "sha1": "fa9de86b2f86fc6fb1c0aeb1f3055c7b941ed92d",
+   "size": 174,
+   "src": "AREZZO:property/prb/1298401961.prb"
+  },
+  "property/prb/1445500041.prb": {
+   "sha1": "e0b34424f4e8e22f93dad5de927f442e27836606",
+   "size": 162,
+   "src": "AREZZO:property/prb/1445500041.prb"
+  },
+  "property/prb/1490057658.prb": {
+   "sha1": "e400e331bb2d661f18a63385036e597c0b390ab4",
+   "size": 146,
+   "src": "AREZZO:property/prb/1490057658.prb"
+  },
+  "property/prb/1559688245.prb": {
+   "sha1": "c6aa474744256c9160efe70bb62e7fb318b734a1",
+   "size": 146,
+   "src": "AREZZO:property/prb/1559688245.prb"
+  },
+  "property/prb/1600685611.prb": {
+   "sha1": "08ba24336830ac765ac6df4831a16019638b3ee6",
+   "size": 156,
+   "src": "AREZZO:property/prb/1600685611.prb"
+  },
+  "property/prb/1630031869.prb": {
+   "sha1": "09bf1578037ef485b50274b408d35b574a2fe32d",
+   "size": 174,
+   "src": "AREZZO:property/prb/1630031869.prb"
+  },
+  "property/prb/1656640663.prb": {
+   "sha1": "745722fcff14985e0b6a9cc1b425178cb66d8bd0",
+   "size": 162,
+   "src": "AREZZO:property/prb/1656640663.prb"
+  },
+  "property/prb/1909855683.prb": {
+   "sha1": "abcb32dbbebe18936a91401786427225c8898ef5",
+   "size": 139,
+   "src": "AREZZO:property/prb/1909855683.prb"
+  },
+  "property/prb/2038531830.prb": {
+   "sha1": "c4472e699850f611834719644f32838c71366fa0",
+   "size": 139,
+   "src": "AREZZO:property/prb/2038531830.prb"
+  },
+  "property/prb/2152850107.prb": {
+   "sha1": "eace44cd07657307bb7e72801e07c8793d6e0da5",
+   "size": 151,
+   "src": "AREZZO:property/prb/2152850107.prb"
+  },
+  "property/prb/2389666509.prb": {
+   "sha1": "18bf5bb11136dd23747e2fc75ab5be90090aeef4",
+   "size": 135,
+   "src": "AREZZO:property/prb/2389666509.prb"
+  },
+  "property/prb/2389666526.prb": {
+   "sha1": "26ee38b09156e8272890ec1544de92505bdca5bc",
+   "size": 137,
+   "src": "AREZZO:property/prb/2389666526.prb"
+  },
+  "property/prb/2389666602.prb": {
+   "sha1": "d483f40b8b6855e6ae90bf470b4b63c8425215bc",
+   "size": 139,
+   "src": "AREZZO:property/prb/2389666602.prb"
+  },
+  "property/prb/2498557438.prb": {
+   "sha1": "4bd36667fbbcfd09416466cdb9ffb4a27b8f5860",
+   "size": 146,
+   "src": "AREZZO:property/prb/2498557438.prb"
+  },
+  "property/prb/2752320719.prb": {
+   "sha1": "d4f3792e05dc0b59a65790f8fd5a5485ed5f6a5f",
+   "size": 146,
+   "src": "AREZZO:property/prb/2752320719.prb"
+  },
+  "property/prb/3260664572.prb": {
+   "sha1": "24491f9814dfaad441fd2a6cb70dc65a08a9efef",
+   "size": 152,
+   "src": "AREZZO:property/prb/3260664572.prb"
+  },
+  "property/prb/3632062213.prb": {
+   "sha1": "ee6706ec0b8639babb520df42869474823ae489f",
+   "size": 146,
+   "src": "AREZZO:property/prb/3632062213.prb"
+  },
+  "property/pre/1188872738.pre": {
+   "sha1": "15234356c0350e296b6ec9a0529c75efd2c5de88",
+   "size": 136,
+   "src": "AREZZO:property/pre/1188872738.pre"
+  },
+  "property/pre/1733683198.pre": {
+   "sha1": "d2ffe3acfedd471e865791fc23602a20eee55c50",
+   "size": 151,
+   "src": "AREZZO:property/pre/1733683198.pre"
+  },
+  "property/pre/1886750781.pre": {
+   "sha1": "d7801c803fae896a9b082eca515836894ccd6e68",
+   "size": 123,
+   "src": "AREZZO:property/pre/1886750781.pre"
+  },
+  "property/pre/4001101041.pre": {
+   "sha1": "ecae767a09f4848f7cfe0a2f96e3de59bb0877d7",
+   "size": 128,
+   "src": "AREZZO:property/pre/4001101041.pre"
+  },
+  "property/pre/876338895.pre": {
+   "sha1": "1b6f639efb6665502d4f76d4ab961486ba24be3f",
+   "size": 130,
+   "src": "AREZZO:property/pre/876338895.pre"
+  },
+  "property/property/plechi_dungeon/chamber_of_wisdom/books00.prd": {
+   "sha1": "711fe2feffb5a05c1cd197d745800a3f9aef96b5",
+   "size": 156,
+   "src": "AREZZO:property/property/plechi_dungeon/chamber_of_wisdom/books00.prd"
+  },
+  "property/property/plechi_dungeon/chamber_of_wisdom/books01.prd": {
+   "sha1": "fc818b8f1f76e8b253f93f717a51a6b023c7f92d",
+   "size": 156,
+   "src": "AREZZO:property/property/plechi_dungeon/chamber_of_wisdom/books01.prd"
+  },
+  "property/property/plechi_dungeon/chamber_of_wisdom/chamber_of_wisdom.prd": {
+   "sha1": "f0e12f6a261a38e48fc6743ab9f463071453d339",
+   "size": 177,
+   "src": "AREZZO:property/property/plechi_dungeon/chamber_of_wisdom/chamber_of_wisdom.prd"
+  },
+  "property/property/plechi_dungeon/chamber_of_wisdom/pillar00.prd": {
+   "sha1": "6531d75a77f3f66424ace6f3022d4e4481bba408",
+   "size": 159,
+   "src": "AREZZO:property/property/plechi_dungeon/chamber_of_wisdom/pillar00.prd"
+  },
+  "property/prt/1081624938.prt": {
+   "sha1": "a42a14c30d9f80e74ea409f85aa998ccd42e5571",
+   "size": 174,
+   "src": "AREZZO:property/prt/1081624938.prt"
+  },
+  "property/prt/1212047156.prt": {
+   "sha1": "a7ca49da88d408fa4a1e78ca82ac178859b584ee",
+   "size": 164,
+   "src": "AREZZO:property/prt/1212047156.prt"
+  },
+  "property/prt/1431205068.prt": {
+   "sha1": "78b9b32ef5281e729f3b0c47faca2cc00efd10d2",
+   "size": 180,
+   "src": "AREZZO:property/prt/1431205068.prt"
+  },
+  "property/prt/1519687220.prt": {
+   "sha1": "d1c476f0245ce7633751704f9ce1ded95c940f82",
+   "size": 182,
+   "src": "GEN:property/prt/1519687220.prt"
+  },
+  "property/prt/1554845537.prt": {
+   "sha1": "b458c23bce86b7cc4ba7ab43485f27c7ce81d869",
+   "size": 172,
+   "src": "AREZZO:property/prt/1554845537.prt"
+  },
+  "property/prt/1625021333.prt": {
+   "sha1": "096e08761bd8f2edf6218ae97b4f78363340792b",
+   "size": 180,
+   "src": "AREZZO:property/prt/1625021333.prt"
+  },
+  "property/prt/1786684970.prt": {
+   "sha1": "fdfbe9e828c9bcd9c4deb2adb8c6df111f2b5ff3",
+   "size": 176,
+   "src": "AREZZO:property/prt/1786684970.prt"
+  },
+  "property/prt/1822184519.prt": {
+   "sha1": "ba276962edfb663e093342d66c65c726e8f4c876",
+   "size": 186,
+   "src": "AREZZO:property/prt/1822184519.prt"
+  },
+  "property/prt/2020434095.prt": {
+   "sha1": "a36a5efdb24e333b755d845ebe7f339cf38fd8c9",
+   "size": 198,
+   "src": "AREZZO:property/prt/2020434095.prt"
+  },
+  "property/prt/2276201389.prt": {
+   "sha1": "050c6c28fa626f7ec6802b847d6cbade3c630f62",
+   "size": 162,
+   "src": "AREZZO:property/prt/2276201389.prt"
+  },
+  "property/prt/2440423968.prt": {
+   "sha1": "f71f565e35475bd87b777f8fd34c799e13c72c00",
+   "size": 182,
+   "src": "AREZZO:property/prt/2440423968.prt"
+  },
+  "property/prt/2513073710.prt": {
+   "sha1": "f02b5e7d8211a176e62a215aec19b7f2769a4cda",
+   "size": 162,
+   "src": "AREZZO:property/prt/2513073710.prt"
+  },
+  "property/prt/2593667659.prt": {
+   "sha1": "b482da2d7e31cc743f8194441400ea8526395a9c",
+   "size": 182,
+   "src": "GEN:property/prt/2593667659.prt"
+  },
+  "property/prt/2777732119.prt": {
+   "sha1": "a70737a3065f8a396b0ff384e89036b0f03f32c4",
+   "size": 184,
+   "src": "AREZZO:property/prt/2777732119.prt"
+  },
+  "property/prt/2921395941.prt": {
+   "sha1": "35c5b7cb114b4f73234a4570384ead108f6e858d",
+   "size": 167,
+   "src": "AREZZO:property/prt/2921395941.prt"
+  },
+  "property/prt/3579130166.prt": {
+   "sha1": "5b458d4bbac9e098defc218f338b1bfc2ec7c949",
+   "size": 184,
+   "src": "AREZZO:property/prt/3579130166.prt"
+  },
+  "property/prt/3708686587.prt": {
+   "sha1": "7e0d5f8841aab372e0ec0935a733431dec215cc9",
+   "size": 162,
+   "src": "AREZZO:property/prt/3708686587.prt"
+  },
+  "property/prt/3749595490.prt": {
+   "sha1": "baba4fec427d7f22bacc09c20702b375999c8c70",
+   "size": 182,
+   "src": "AREZZO:property/prt/3749595490.prt"
+  },
+  "property/prt/3889725487.prt": {
+   "sha1": "55a2789630e29650260294dcbb9817c84a5d486c",
+   "size": 184,
+   "src": "AREZZO:property/prt/3889725487.prt"
+  },
+  "property/prt/3990697582.prt": {
+   "sha1": "a0f78818f2de05a48de83e8a7c7ec4109bd4ac67",
+   "size": 184,
+   "src": "AREZZO:property/prt/3990697582.prt"
+  },
+  "property/prt/3999658204.prt": {
+   "sha1": "c2c3576ec23f21d635909c9382f7307265f6a3e9",
+   "size": 182,
+   "src": "AREZZO:property/prt/3999658204.prt"
+  },
+  "property/prt/751415542.prt": {
+   "sha1": "52ae3cf7969835fa156bac8f8519e94166574c97",
+   "size": 160,
+   "src": "AREZZO:property/prt/751415542.prt"
+  },
+  "property/prt/863911119.prt": {
+   "sha1": "7b2f856777e3c405dccdbeee6ea04c7bb780fe11",
+   "size": 183,
+   "src": "AREZZO:property/prt/863911119.prt"
+  },
+  "property/santhia_poust/dum_1.prb": {
+   "sha1": "133e5402d55183280d6cd6d0a141987576d321b3",
+   "size": 143,
+   "src": "AREZZO:property/santhia_poust/dum_1.prb"
+  },
+  "property/santhia_poust/rozhledna2.prb": {
+   "sha1": "2134e2f0ba048d2f5153cbd55ee46fd598a7064d",
+   "size": 153,
+   "src": "AREZZO:property/santhia_poust/rozhledna2.prb"
+  },
+  "property/santhia_poust/stan1.prb": {
+   "sha1": "8a0c60862ad4efd326513e81029e01c58bfd7a62",
+   "size": 143,
+   "src": "AREZZO:property/santhia_poust/stan1.prb"
+  },
+  "property/santhia_poust/stan2.prb": {
+   "sha1": "0f3921757787dbaa12a8ca957b6993f3b5d547ad",
+   "size": 143,
+   "src": "AREZZO:property/santhia_poust/stan2.prb"
+  },
+  "property/santhia_poust/stan3.prb": {
+   "sha1": "79c9e5eba78545098e945cac16f8c7333827bb38",
+   "size": 143,
+   "src": "AREZZO:property/santhia_poust/stan3.prb"
+  },
+  "property/santhia_poust/stanek.prb": {
+   "sha1": "04f91486482fe7f12ed8c4b9c8882eeebf7c7f79",
+   "size": 145,
+   "src": "AREZZO:property/santhia_poust/stanek.prb"
+  }
+ }
+}
