@@ -178,3 +178,9 @@ Wukonga i Dżungli są tylko w `monster/`. Kamień Skorpiona (9696) to `monster/
 
 `rebuild58.sh [BASE] [OUT]` (domyślnie `c30/pack` → `client/out58/pack`): `c30list.py` (lista i pliki bazy), `plan58.py`,
 `gen58.py`, `build58.py`, `verify58.py`, `extract58.py`, `stage58.py`. Drugie uruchomienie na bazie z tymi paczkami daje „unchanged”.
+
+## Boty: osobowość Zielarz (`MT2009_PLUS_BOTLIFE_V1`)
+
+- `root`: `playerbot_status_tail.py` (baza: wpis z paczki `root` 2.0.29/2.0.30) – tytuł 119 „Zielarz”
+  („Herbalist” w kliencie angielskim), kolor (0.45, 0.85, 0.4). Serwer wysyła go jako `PlayerBotTitle <vid> 119`
+  (`PERSONA_TITLE_BASE` + `PERSONA_ZIELARZ`); starszy klient go nie zna i nic nie rysuje.

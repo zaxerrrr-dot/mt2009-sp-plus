@@ -4304,6 +4304,12 @@ namespace
 	// days); the stones had 20 387 units in bags and not one on a counter.
 	// The per-vnum line cap is what bounds it from here.
 	const int PLAYERBOT_SHOP_BONUS_STONE_SCORE = 520;
+	// MT2009_PLUS_BOTLIFE_V1: a jewellery refine stone over what the bot's
+	// own sockets take (GetPlayerBotAccessoryStoneKeep) - a Diament or an
+	// Ebonit is worth more than a bonus stone and every material, and for
+	// the same reason as the bonus stone it has to rank over the materials,
+	// or a keeper holding any would never put one up.
+	const int PLAYERBOT_SHOP_ACCESSORY_STONE_SCORE = 560;
 	const int PLAYERBOT_SHOP_MARBLE_LINES = 3;
 	// And no counter carries more than PLAYERBOT_SHOP_SAME_VNUM_LINES lines of
 	// one item. The caps above were each for a kind - a material, a heap, the

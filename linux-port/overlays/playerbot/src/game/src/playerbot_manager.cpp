@@ -17,6 +17,7 @@
 #include "playerbot_moonlight_rules.h"
 #include "playerbot_stalki_rules.h"
 #include "playerbot_guild_order_rules.h"
+#include "playerbot_life_rules.h" // MT2009_PLUS_BOTLIFE_V1: the LIFE_HOURS day
 
 #include "char.h"
 #include "skill.h"
@@ -4475,11 +4476,17 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 	if (m_dwNextLifeCheckTime != 0 && dwNow < m_dwNextLifeCheckTime)
 		return;
 	m_dwNextLifeCheckTime = dwNow + PLAYERBOT_LIFE_CHECK_INTERVAL;
-	if (!IsPlayerBotLifeScheduleEnabled())
+	// MT2009_PLUS_BOTLIFE_V1: the hours of play a day (LIFE_HOURS,
+	// playerbot_life_rules.h). Zero keeps the free-running sessions and rests
+	// below; the whole day is no rests, which is the schedule off.
+	const int lifeHours = GetPlayerBotLifeHours();
+	const bool byHours = playerbot_life::Scheduled(lifeHours);
+	if (!IsPlayerBotLifeScheduleEnabled() || playerbot_life::AllDay(lifeHours))
 	{
 		if (!m_mapLifeSessionEnd.empty() || !m_mapLifeRestEnd.empty() || !m_setLifeReturning.empty())
 		{
-			sys_log(0, "PLAYERBOT_LIFE: schedule off, %u resting come back",
+			sys_log(0, "PLAYERBOT_LIFE: schedule %s, %u resting come back",
+					IsPlayerBotLifeScheduleEnabled() ? "all day" : "off",
 					(unsigned int)m_mapLifeRestEnd.size());
 			m_mapLifeSessionEnd.clear();
 			m_mapLifeRestEnd.clear();
@@ -4500,7 +4507,10 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 	// is that curve to the bot: 500 a kingdom at 14:30, 40 at 20:40, then
 	// back up to 270 and down again ("boty poszly na odpoczynek ale z niego
 	// nie wracaja"). They were coming back; too few at a time.
-	const size_t maxResting = m_setScheduledBots.size() * PLAYERBOT_LIFE_MAX_RESTING_PERCENT / 100;
+	// Under LIFE_HOURS the cap follows the day: its resting share and a
+	// tenth over it (playerbot_life::MaxRestingPercent).
+	const size_t maxResting = m_setScheduledBots.size() *
+			(byHours ? (size_t)playerbot_life::MaxRestingPercent(lifeHours) : PLAYERBOT_LIFE_MAX_RESTING_PERCENT) / 100;
 	unsigned int heldOn = 0;
 	for (TPlayerBotMap::const_iterator it = m_mapBots.begin(); it != m_mapBots.end(); ++it)
 	{
@@ -4515,6 +4525,22 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 			// Back from a rest: a whole session. Just started with the world:
 			// anything from half an hour, so the first log-outs spread.
 			const bool returning = m_setLifeReturning.erase(pid) > 0;
+			if (byHours)
+			{
+				// MT2009_PLUS_BOTLIFE_V1: a session of the day's length, a
+				// quarter either way; the first after a start anything from
+				// half an hour (or less, for a shorter session) up to it.
+				const DWORD nominal = playerbot_life::SessionMs(lifeHours);
+				const DWORD roll = PlayerBotNavHash(pid ^ (dwNow / 1000U) ^ 0x4c494645U);
+				DWORD length = playerbot_life::Spread(nominal, roll);
+				if (!returning)
+				{
+					const DWORD first = std::min<DWORD>(PLAYERBOT_LIFE_FIRST_SESSION_MIN_MS, nominal / 2);
+					length = first + (length > first ? roll % (length - first + 1) : 0);
+				}
+				m_mapLifeSessionEnd[pid] = dwNow + length;
+				continue;
+			}
 			const DWORD floor = returning ? PLAYERBOT_LIFE_SESSION_MIN_MS : PLAYERBOT_LIFE_FIRST_SESSION_MIN_MS;
 			const DWORD spread = PlayerBotNavHash(pid ^ (dwNow / 1000U) ^ 0x4c494645U) %
 					(PLAYERBOT_LIFE_SESSION_MAX_MS - floor);
@@ -4548,7 +4574,12 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 	for (size_t i = 0; i < leaving.size(); ++i)
 	{
 		const DWORD pid = leaving[i];
-		const DWORD rest = PLAYERBOT_LIFE_REST_MIN_MS +
+		// MT2009_PLUS_BOTLIFE_V1: under LIFE_HOURS the rest that makes the
+		// day add up, a quarter either way.
+		const DWORD rest = byHours
+				? std::max<DWORD>(PLAYERBOT_LIFE_CHECK_INTERVAL, playerbot_life::Spread(
+					playerbot_life::RestMs(lifeHours), PlayerBotNavHash(pid ^ dwNow ^ 0x52455354U)))
+				: PLAYERBOT_LIFE_REST_MIN_MS +
 				PlayerBotNavHash(pid ^ dwNow ^ 0x52455354U) %
 				(PLAYERBOT_LIFE_REST_MAX_MS - PLAYERBOT_LIFE_REST_MIN_MS);
 		char szName[CHARACTER_NAME_MAX_LEN + 1];
@@ -4592,10 +4623,10 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 	if (m_dwNextLifeCensusTime == 0 || dwNow >= m_dwNextLifeCensusTime)
 	{
 		m_dwNextLifeCensusTime = dwNow + PLAYERBOT_LIFE_CENSUS_INTERVAL;
-		sys_log(0, "PLAYERBOT_LIFE: census online=%u resting=%u returning=%u left_now=%u back_now=%u held_on=%u cap=%u",
+		sys_log(0, "PLAYERBOT_LIFE: census online=%u resting=%u returning=%u left_now=%u back_now=%u held_on=%u cap=%u hours=%d",
 				(unsigned int)m_mapBots.size(), (unsigned int)m_mapLifeRestEnd.size(),
 				(unsigned int)m_setLifeReturning.size(), (unsigned int)leaving.size(), back,
-				heldOn, (unsigned int)maxResting);
+				heldOn, (unsigned int)maxResting, lifeHours);
 	}
 }
 
