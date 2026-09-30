@@ -461,6 +461,28 @@ function Test-M2FileInUse {
     return $false
 }
 
+function Invoke-M2FileRetry {
+    # MT2009_PLUS_UPDATE_RETRY_V1: a file the antivirus (or Docker Desktop's
+    # file sharing) holds open for a moment - "Proces nie moze uzyskac dostepu
+    # do pliku, poniewaz jest on uzywany przez inny proces" on a different,
+    # random file at every try (JaroszV2, 30 September: 41083.png,
+    # playerbot_combat_value_policy.h, 02120.png, 86012.png). One such file used
+    # to end the whole update; now the same copy is tried again up to eight
+    # times, 0.5 s apart, and only a file still held after ~4 s stops it.
+    param([Parameter(Mandatory = $true)][scriptblock]$Action)
+
+    for ($attempt = 1; ; $attempt++) {
+        try {
+            & $Action
+            return
+        }
+        catch {
+            if ($attempt -ge 8 -or -not (Test-M2FileInUse -ErrorRecord $_)) { throw }
+            Start-Sleep -Milliseconds 500
+        }
+    }
+}
+
 function New-M2FileInUseError {
     param(
         [Parameter(Mandatory = $true)][string]$Path,
@@ -675,7 +697,9 @@ function Expand-M2SafeZip {
                 # a nie cala paczke: skaner sprawdza plik przy zamknieciu uchwytu,
                 # wiec to tutaj wychodzi na jaw.
                 try {
-                    $output = [IO.File]::Open($target, [IO.FileMode]::Create, [IO.FileAccess]::Write, [IO.FileShare]::None)
+                    $output = $null
+                    Invoke-M2FileRetry { $script:m2RetryOut = [IO.File]::Open($target, [IO.FileMode]::Create, [IO.FileAccess]::Write, [IO.FileShare]::None) }
+                    $output = $script:m2RetryOut
                     try { $input.CopyTo($output) } finally { $output.Dispose() }
                 }
                 catch {
@@ -784,7 +808,7 @@ function Invoke-M2PackageUpdate {
             if ($change.Existed) {
                 $backupFile = Join-Path $backup $change.Relative
                 New-Item -ItemType Directory -Path (Split-Path -Parent $backupFile) -Force | Out-Null
-                Copy-Item -LiteralPath $change.Destination -Destination $backupFile -Force
+                Invoke-M2FileRetry { Copy-Item -LiteralPath $change.Destination -Destination $backupFile -Force }
             }
         }
 
@@ -798,7 +822,7 @@ function Invoke-M2PackageUpdate {
             foreach ($change in $changes) {
                 New-Item -ItemType Directory -Path (Split-Path -Parent $change.Destination) -Force | Out-Null
                 try {
-                    Copy-Item -LiteralPath $change.Source -Destination $change.Destination -Force
+                    Invoke-M2FileRetry { Copy-Item -LiteralPath $change.Source -Destination $change.Destination -Force }
                 }
                 catch {
                     if (Test-M2AntivirusBlock -ErrorRecord $_) {
