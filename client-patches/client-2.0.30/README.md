@@ -184,3 +184,25 @@ Wukonga i Dżungli są tylko w `monster/`. Kamień Skorpiona (9696) to `monster/
 - `root`: `playerbot_status_tail.py` (baza: wpis z paczki `root` 2.0.29/2.0.30) – tytuł 119 „Zielarz”
   („Herbalist” w kliencie angielskim), kolor (0.45, 0.85, 0.4). Serwer wysyła go jako `PlayerBotTitle <vid> 119`
   (`PERSONA_TITLE_BASE` + `PERSONA_ZIELARZ`); starszy klient go nie zna i nic nie rysuje.
+
+## Menedżer eventów w grze (`MT2009_PLUS_EVENT_MANAGER_V1`)
+
+Wspólna podstawa pod mini gry Owsapa (Złap Króla, Rumi, Yut Nori, Dzieci Kwiaty) i każdy
+przyszły event. Serwer: `server-patches/eventmanager`, `playerbot_ingame_events.h`; exe:
+`client-patches/exe` (pakiet 183, moduł `ingameEventSystem`). Pliki `root` (baza: paczka `root`
+z `tcm/c31`):
+
+- `ingameevent.py` (nowy) – lista eventów dla pythona: z modułu exe, a na starym exe z linii
+  `IGE …`; powitanie `/ingame_event hello <caps>`; nazwy Owsapa i jego polecenia flag.
+- `uiingameevent.py` (nowy) – okno „Wydarzenia w grze” (lista, czas do końca, okno nagród,
+  do 3 nagród, przycisk kalendarza) i przycisk obok minimapy (obrazy `e_open_*` z GF, gdy paczka
+  je ma; do tego czasu `mt2009_ui/calendar_button_*`). Wszystko o evencie jest w `EVENTS`
+  – nowy event to jeden wpis, bez nowego exe. Mini gra dopina swoje okno przez
+  `RegisterOpener(key, func)`.
+- `game.py` – start (po wejściu do świata, obok kalendarza), zamknięcie, polecenia `IGE`,
+  `mini_game_okey`, `mini_game_okey_normal`, `mini_game_yutnori`, `mini_game_catchking`,
+  `e_flower_drop`, `easter_drop`, `BINARY_RefreshInGameEvent`.
+- `interfacemodule.py` – tooltip przedmiotów dla nagród, ukrywanie przycisku z resztą okien,
+  nazwy Owsapa `ShowInGameEvent`, `ShowMiniMapInGameEventButton`, `HideMiniMapInGameEventButton`.
+- `uieventcalendar.py` – nazwy nowych rodzajów (9–13) i na ikonie „trwa teraz” także eventy z samej
+  flagi (np. strona Wielkanocy w panelu).

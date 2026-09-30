@@ -38,6 +38,7 @@ param(
 #   Cor stacking       char_item.cpp             (IsStackableCorDraconisVnum)
 #   Cor pickup stacks  char_item.cpp             (MT2009_PLUS_COR_AUTOSTACK_V1)
 #   DS trace players   char_item.cpp             (MT2009_PLUS_DS_TRACE_PLAYERS_V1)
+#   event manager      packet.h, cmd.cpp, cmd_general.cpp (MT2009_PLUS_EVENT_MANAGER_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -257,6 +258,19 @@ if ((Test-Path -LiteralPath $blueDragonApply -PathType Leaf) -and
     if ($blueDragonResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Blue Dragon lair edit(s).' -f $blueDragonResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The in-game event manager (server-patches/eventmanager): the event list's
+# packet HEADER_GC_INGAME_EVENT (183) in packet.h and "/ingame_event" in
+# cmd.cpp / cmd_general.cpp (playerbot_ingame_events.h); after playerqol,
+# whose goblin lines it anchors on.
+$eventManagerApply = Join-Path $repo 'server-patches/eventmanager/Apply-EventManagerPatch.ps1'
+if ((Test-Path -LiteralPath $eventManagerApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'packet.h') -PathType Leaf)) {
+    $eventManagerResult = & $eventManagerApply -SourceDir $engineGameSource
+    if ($eventManagerResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} event manager edit(s).' -f $eventManagerResult.Applied) -ForegroundColor DarkGray
     }
 }
 # A pet's magic attack % (server-patches/magicattper): PointChange had no

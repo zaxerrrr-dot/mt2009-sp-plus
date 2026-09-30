@@ -1870,11 +1870,15 @@ def queue_tieru_update(update_seban_panel=False):
 
 EVENTS_FILE = RATES_SPOOL / "playerbot_events.tsv"
 EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "metinloot",
-               "goblin")  # MT2009_PLUS_GOBLIN_V1: Poszukiwanie skarbów (playerbot_goblin.h)
+               "goblin",  # MT2009_PLUS_GOBLIN_V1: Poszukiwanie skarbów (playerbot_goblin.h)
+               # MT2009_PLUS_EVENT_MANAGER_V1: the in-game event manager's mini games and
+               # the Easter event (playerbot_ingame_events.h).
+               "catchking", "rumi", "yutnori", "flower", "easter")
 EVENT_WORLD_KINDS = ("tanaka", "zuo")
 # On or off, no figure: the Moonlight chests and the double loot of bosses and
 # Metins (MT2009_PLUS_LOOT_EVENTS_V1, playerbot_events.h).
-EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin")  # goblin: MT2009_PLUS_GOBLIN_V1
+EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
+                    "catchking", "rumi", "yutnori", "flower", "easter")  # MT2009_PLUS_EVENT_MANAGER_V1
 EVENT_WORLD_DEFAULT = {"tanaka": 3, "zuo": 8}
 EVENT_WORLD_MAX = {"tanaka": 20, "zuo": 30}
 EVENT_BOTS_DEFAULT = 50
@@ -1897,9 +1901,16 @@ EVENT_LABELS = {
     "metinloot": "Podwójny loot z Metinów",
     # MT2009_PLUS_GOBLIN_V1: the Treasure Hunt with the Treasure Goblin.
     "goblin": "Poszukiwanie skarbów (Goblin)",
+    # MT2009_PLUS_EVENT_MANAGER_V1: the mini games and the Easter event.
+    "catchking": "Złap Króla",
+    "rumi": "Rumi (Okey)",
+    "yutnori": "Yut Nori",
+    "flower": "Dzieci Kwiaty",
+    "easter": "Event wielkanocny",
 }
 EVENT_ICONS = {"chest": "🎁", "exp": "⚡", "drop": "📦", "yang": "💰", "tanaka": "🏴‍☠️", "zuo": "☄️", "bossloot": "👹", "metinloot": "🪨",
-               "goblin": "🪙"}  # goblin: MT2009_PLUS_GOBLIN_V1
+               "goblin": "🪙",  # goblin: MT2009_PLUS_GOBLIN_V1
+               "catchking": "👑", "rumi": "🃏", "yutnori": "🎲", "flower": "🌸", "easter": "🐇"}  # MT2009_PLUS_EVENT_MANAGER_V1
 EVENT_DAY_NAMES = ("Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd")
 EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360)
 EVENT_HHMM = re.compile(r"^([01]?\d|2[0-4]):([0-5]\d)$")

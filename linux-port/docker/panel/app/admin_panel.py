@@ -1411,10 +1411,14 @@ CHEST_SWITCH = os.path.join(AI_SPOOL, "playerbot_chest_switch.tsv")
 # with playerbot_events_status.tsv beside its playerbot_status.tsv.
 EVENTS_FILE = os.path.join(AI_SPOOL, "playerbot_events.tsv")
 EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "metinloot",
-               "goblin")  # MT2009_PLUS_GOBLIN_V1: the Treasure Hunt (playerbot_goblin.h)
+               "goblin",  # MT2009_PLUS_GOBLIN_V1: the Treasure Hunt (playerbot_goblin.h)
+               # MT2009_PLUS_EVENT_MANAGER_V1: the in-game event manager's mini games and
+               # the Easter event (playerbot_ingame_events.h).
+               "catchking", "rumi", "yutnori", "flower", "easter")
 # On or off, no figure: the Moonlight chests and the double loot of bosses and
 # Metins (MT2009_PLUS_LOOT_EVENTS_V1).
-EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin")  # goblin: MT2009_PLUS_GOBLIN_V1
+EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
+                    "catchking", "rumi", "yutnori", "flower", "easter")  # MT2009_PLUS_EVENT_MANAGER_V1
 # Tanaka and Zuo put something into the world (playerbot_world_events.h): their
 # value is a count - pirates at once, Metin stones a wave - and they carry a
 # map, 0 letting the event pick. The core holds the same bounds
@@ -4180,6 +4184,11 @@ T.update({
  "ev_kind_bossloot":{"en":"Double boss loot","pl":"Podw\u00f3jny loot z boss\u00f3w","de":"Doppelte Boss-Beute","tr":"\u00c7ift boss ganimeti"},
  "ev_kind_metinloot":{"en":"Double Metin loot","pl":"Podw\u00f3jny loot z Metin\u00f3w","de":"Doppelte Metin-Beute","tr":"\u00c7ift Metin ganimeti"},
  "ev_kind_goblin":{"en":"Treasure Hunt (Goblin)","pl":"Poszukiwanie skarb\u00f3w (Goblin)","de":"Schatzsuche (Goblin)","tr":"Hazine Av\u0131 (Goblin)"},
+ "ev_kind_catchking":{"en":"Catch the King","pl":"Z\u0142ap Kr\u00f3la","de":"Fang den K\u00f6nig","tr":"Kral\u0131 Yakala"},
+ "ev_kind_rumi":{"en":"Rumi (Okey)","pl":"Rumi (Okey)","de":"Rumi (Okey)","tr":"Okey"},
+ "ev_kind_yutnori":{"en":"Yut Nori","pl":"Yut Nori","de":"Yut Nori","tr":"Yut Nori"},
+ "ev_kind_flower":{"en":"Flower Event","pl":"Dzieci Kwiaty","de":"Blumen-Event","tr":"\u00c7i\u00e7ek Etkinli\u011fi"},
+ "ev_kind_easter":{"en":"Easter event","pl":"Event wielkanocny","de":"Oster-Event","tr":"Paskalya etkinli\u011fi"},
  "ev_kind_exp":  {"en":"Experience","pl":"Do\u015bwiadczenie","de":"Erfahrung","tr":"Tecr\u00fcbe"},
  "ev_kind_drop": {"en":"Item drop","pl":"Drop przedmiot\u00f3w","de":"Item-Drop","tr":"E\u015fya d\u00fc\u015fmesi"},
  "ev_kind_yang": {"en":"Yang","pl":"Yang","de":"Yang","tr":"Yang"},
@@ -7045,9 +7054,9 @@ TPL_EVENTS = BASE.replace("__BODY__", """
 </div>{% endfor %}
 {% elif s and s.active and k in world_kinds %}<span class="badge">{{t('ev_active')}} {{s.until_text}} ({{map_name(s.map)}})</span>
 {% if s.host %}<br><small>{{t('ev_world_alive')}}: {{s.alive}} &middot; {{t('ev_world_killed')}}: {{s.killed}} &middot; {{t('ev_world_bots')}}: {{s.bots}}{% if s.phase == 'stones' %} &middot; {{t('ev_phase_stones')}}{% elif s.phase == 'bosses' %} &middot; {{t('ev_phase_bosses')}}{% endif %}</small>{% endif %}
-{% elif s and s.active %}<span class="badge">{{t('ev_active')}} {{s.until_text}}{% if s.value and k not in ('chest', 'bossloot', 'metinloot', 'goblin') %} (+{{s.value}}%){% endif %}</span>
+{% elif s and s.active %}<span class="badge">{{t('ev_active')}} {{s.until_text}}{% if s.value and k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %} (+{{s.value}}%){% endif %}</span>
 {% elif s and s.next_start and k in world_kinds %}{{t('ev_next')}}: {{s.next_start_text}} ({{map_name(s.next_map)}})
-{% elif s and s.next_start %}{{t('ev_next')}}: {{s.next_start_text}}{% if s.next_value and k not in ('chest', 'bossloot', 'metinloot', 'goblin') %} (+{{s.next_value}}%){% endif %}
+{% elif s and s.next_start %}{{t('ev_next')}}: {{s.next_start_text}}{% if s.next_value and k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %} (+{{s.next_value}}%){% endif %}
 {% elif s and s.scheduled %}{{t('ev_inactive')}}
 {% elif s %}{{t('ev_none')}}
 {% else %}-{% endif %}
@@ -7061,7 +7070,7 @@ TPL_EVENTS = BASE.replace("__BODY__", """
 <select name="minutes">{% for m in minutes %}<option value="{{m}}" {% if m == 60 %}selected{% endif %}>{{m}}</option>{% endfor %}</select>
 {% if k in world_kinds %}{{t('ev_now_' + k)}} <input type="number" name="value" min="1" max="{{world_max[k]}}" value="{{world_default[k]}}" style="width:60px">
 <select name="map">{% for m in maps %}<option value="{{m[0]}}">{{map_name(m[0])}}</option>{% endfor %}</select>
-{% elif k not in ('chest', 'bossloot', 'metinloot', 'goblin') %}{{t('ev_now_value')}} <input type="number" name="value" min="1" max="1000" value="50" style="width:70px">{% endif %}
+{% elif k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %}{{t('ev_now_value')}} <input type="number" name="value" min="1" max="1000" value="50" style="width:70px">{% endif %}
 <button class="btn" type="submit">{{t('ev_now_go')}}</button>
 </form>
 {% if k in world_kinds %}<br><small class="muted">{{t('ev_world_many')}}</small>{% endif %}
