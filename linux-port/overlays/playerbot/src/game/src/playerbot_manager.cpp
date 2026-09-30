@@ -2501,15 +2501,90 @@ namespace
 	// inactivity watchdog off a bot standing still on purpose. The Kamien
 	// Duchowy never takes a bot under zero, so this is the net for whatever
 	// else does.
+	//
+	// MT2009_PLUS_BOT_RANK_GLOVE_V1: only while the town can lift it. Standing
+	// in the ring lifts nothing by itself - the engine gives a negative rank
+	// back by the minute only outside a safe zone, and by the kill - so a bot
+	// with no bean, none it could pay for and none on any stall stood there
+	// for good (upstream 2.2.43). It waits for a bean it has, or for one the
+	// stalls hold and its purse reaches; with neither, or when
+	// PLAYERBOT_NEGATIVE_RANK_TOWN_PATIENCE_MS pass with its rank no higher,
+	// it hunts it back for PLAYERBOT_NEGATIVE_RANK_HUNT_MS with the Prophecy
+	// King's Glove on (playerbot_unique_slots.h) and then asks the town again.
+	const char* GetPlayerBotNegativeRankHuntReason(LPCHARACTER ch, bool inTown, DWORD dwNow)
+	{
+		TPlayerBotRankRecovery& rec = s_mapPlayerBotRankRecovery[ch->GetPlayerID()];
+		const int rank = ch->GetRealAlignment();
+		if (rec.dwHuntUntil != 0)
+		{
+			if (dwNow < rec.dwHuntUntil)
+				return "hunting";
+			// The hunt is over: the town is asked afresh.
+			rec.dwHuntUntil = 0;
+			rec.dwHoldSince = 0;
+		}
+		// A bean in the bag is eaten within PLAYERBOT_ZEN_BEAN_CHECK_INTERVAL.
+		if (ch->CountSpecifyItem(PLAYERBOT_ZEN_BEAN_VNUM) > 0)
+		{
+			rec.dwHoldSince = 0;
+			return NULL;
+		}
+		const char* reason = NULL;
+		const TPlayerBotMarketLedgerEntry* beans = GetPlayerBotMarketLedgerEntry(PLAYERBOT_ZEN_BEAN_VNUM);
+		// A line of beans at the sheet's price, out of what the shopping pass
+		// may spend (CanPlayerBotPayForOffer's purse).
+		const long long line = (long long)GetPlayerBotMaterialAskingBase(PLAYERBOT_ZEN_BEAN_VNUM) *
+				PLAYERBOT_ZEN_BEAN_LINE_UNITS;
+		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) -
+				(long long)PLAYERBOT_SHOPPING_GOLD_FLOOR;
+		if (!beans || beans->dwSupplyUnits == 0)
+			reason = "no_beans_on_stalls";
+		else if (spare <= 0 || (line > 0 && spare < line) || ch->GetEmptyInventory(2) < 0)
+			reason = "cannot_afford";
+		// The wait is counted in the village, not on the way there.
+		else if (!inTown)
+			return NULL;
+		else if (rec.dwHoldSince == 0 || rank > rec.iHoldRank)
+		{
+			// The wait starts, or starts over after a bean was eaten.
+			rec.dwHoldSince = dwNow;
+			rec.iHoldRank = rank;
+		}
+		else if (dwNow - rec.dwHoldSince >= PLAYERBOT_NEGATIVE_RANK_TOWN_PATIENCE_MS)
+			reason = "no_bean_bought";
+		if (!reason)
+			return NULL;
+		rec.dwHuntUntil = dwNow + PLAYERBOT_NEGATIVE_RANK_HUNT_MS;
+		rec.dwHoldSince = 0;
+		sys_log(0, "PLAYERBOT_AI: negative rank, hunting it back pid=%u name=%s map=%ld rank=%d reason=%s gold=%lld spare=%lld bean_line=%lld beans_on_stalls=%u glove=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), rank, reason,
+				(long long)ch->GetGold(), spare, line, beans ? beans->dwSupplyUnits : 0U,
+				(int)ch->CountSpecifyItem(PLAYERBOT_RANK_GLOVE_VNUM));
+		return reason;
+	}
+
 	bool KeepPlayerBotNegativeRankInTown(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
-		if (!ch || ch->IsDead() || !ch->IsItemLoaded() || ch->GetRealAlignment() >= 0)
+		if (!ch || ch->IsDead() || !ch->IsItemLoaded())
 			return false;
+		if (ch->GetRealAlignment() >= 0)
+		{
+			// MT2009_PLUS_BOT_RANK_GLOVE_V1: back at zero, nothing to recover.
+			if (!s_mapPlayerBotRankRecovery.empty())
+				s_mapPlayerBotRankRecovery.erase(ch->GetPlayerID());
+			return false;
+		}
 		// A raider of the Demon Tower finishes the tower first.
 		if (IsPlayerBotOnTowerBusiness(ch, state))
 			return false;
 		const long map = ch->GetMapIndex();
-		if (IsPlayerBotSafeZone(map, ch->GetX(), ch->GetY()))
+		const bool inTown = IsPlayerBotSafeZone(map, ch->GetX(), ch->GetY());
+		// MT2009_PLUS_BOT_RANK_GLOVE_V1: no bean to be had - hunt it back. The
+		// wait is counted from the village map on: the pitch below may stand
+		// just outside the ring's attribute.
+		if (GetPlayerBotNegativeRankHuntReason(ch, inTown || IsPlayerBotVillageMap(map), dwNow))
+			return false;
+		if (inTown)
 		{
 			state.dwTownLingerUntil = dwNow + PLAYERBOT_NEGATIVE_RANK_HOLD_MS;
 			if (ch->IsStateMove())
