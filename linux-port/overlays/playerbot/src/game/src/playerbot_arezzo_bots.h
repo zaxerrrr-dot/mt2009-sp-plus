@@ -1409,7 +1409,10 @@ namespace
 			s_dwStarted = dwNow;
 		if (!s_bPlayerBotArezzoOrdersLoaded)
 			LoadPlayerBotArezzoOrders();
-		if (!s_bPlayerBotArezzoCohortLoaded && dwNow - s_dwStarted >= PLAYERBOT_AREZZO_COHORT_DELAY_MS)
+		// Once the population has begun to come in (the registry is loaded by
+		// then), so the test characters queue behind nothing that refuses them.
+		if (!s_bPlayerBotArezzoCohortLoaded && dwNow - s_dwStarted >= PLAYERBOT_AREZZO_COHORT_DELAY_MS &&
+				CPlayerBotManager::instance().GetCount() > 0)
 			LoadPlayerBotArezzoCohort(dwNow);
 		if (dwNow >= s_dwNextFile)
 		{
