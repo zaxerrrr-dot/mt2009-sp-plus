@@ -531,10 +531,14 @@ namespace
 		DWORD adwDeathAt[2];
 		DWORD dwAwaySince;		// a sent bot seen off its map since (0: on it)
 		DWORD dwNextResend;
+		// The last monster (or player) seen fighting the bot, for "died by=".
+		DWORD dwFoeRace;
+		DWORD dwFoeAt;
+		bool bFoePC;
 		TPlayerBotArezzoTrack() : dwEntered(0), lMap(0), dwSent(0), dwKills(0), dwBossKills(0), ullExp(0),
 				dwDeaths(0), dwLastExp(0), dwLastNext(0), bLastLevel(0), bWasDead(false),
 				lAnchorX(0), lAnchorY(0), dwAnchorSince(0), bStuck(false), dwStuckEpisodes(0), dwStuckMs(0),
-				dwVisitDeaths(0), dwAwaySince(0), dwNextResend(0) { adwDeathAt[0] = adwDeathAt[1] = 0; }
+				dwVisitDeaths(0), dwAwaySince(0), dwNextResend(0), dwFoeRace(0), dwFoeAt(0), bFoePC(false) { adwDeathAt[0] = adwDeathAt[1] = 0; }
 	};
 	std::map<DWORD, TPlayerBotArezzoTrack> s_mapPlayerBotArezzoTrack;
 	unsigned int s_uPlayerBotArezzoWalksPlanned = 0;
@@ -1217,6 +1221,28 @@ namespace
 		return -1;
 	}
 
+	// ------------------------------------------------------------ keeping alive
+
+	// The Las (97-105) against bots of 95-97 took 57 of round 2's 93 deaths:
+	// there, and on the road through the temple, a bot drinks from 85 % (the
+	// Demon Tower's rule) and steps back from 50 %.
+	bool IsPlayerBotArezzoHardGround(LPCHARACTER ch)
+	{
+		if (!ch)
+			return false;
+		const long map = ch->GetMapIndex();
+		return map == PLAYERBOT_MAP_AREZZO_FOREST ||
+				(map == PLAYERBOT_MAP_OCHAO && s_mapPlayerBotArezzoLas.count(ch->GetPlayerID()) != 0);
+	}
+	int GetPlayerBotArezzoPotionPercent(LPCHARACTER ch)
+	{
+		return IsPlayerBotArezzoHardGround(ch) ? 85 : PLAYERBOT_POTION_HP_PERCENT;
+	}
+	int GetPlayerBotArezzoRetreatPercent(LPCHARACTER ch)
+	{
+		return IsPlayerBotArezzoHardGround(ch) ? 50 : PLAYERBOT_RETREAT_START_HP_PERCENT;
+	}
+
 	// ------------------------------------------------------------ the kills
 
 	void NoteArezzoBotKill(LPCHARACTER killer, LPCHARACTER victim)
@@ -1550,7 +1576,7 @@ namespace
 			out = fopen(PLAYERBOT_AREZZO_TRACK_FILE, "a");
 		}
 		const time_t wall = time(0);
-		int onMap[3] = { 0, 0, 0 }, lasTemple = 0, lasRoad = 0, sentAway = 0, cohortOnline = 0;
+		int onMap[3] = { 0, 0, 0 }, lasTemple = 0, lasRoad = 0, sentAway = 0, cohortOnline = 0, restingNow = 0;
 		for (TPlayerBotAIStateMap::iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			const DWORD pid = it->first;
@@ -1600,16 +1626,44 @@ namespace
 				t.bLastLevel = ch->GetLevel();
 				t.dwLastExp = exp;
 				t.dwLastNext = ch->GetNextExp();
+				// Who is fighting it, while it lives: its target striking back, or
+				// the threat it retreats from (the engine keeps no killer).
+				if (!ch->IsDead())
+				{
+					LPCHARACTER foe = NULL;
+					LPCHARACTER v = ch->GetVictim();
+					if (v && !v->IsDead() && v->GetVictim() == ch)
+						foe = v;
+					if (!foe && state.dwRetreatThreatVID)
+						foe = CHARACTER_MANAGER::instance().Find(state.dwRetreatThreatVID);
+					if (!foe && state.dwTargetVID)
+					{
+						LPCHARACTER tv = CHARACTER_MANAGER::instance().Find(state.dwTargetVID);
+						if (tv && !tv->IsDead() && tv->GetVictim() == ch)
+							foe = tv;
+					}
+					if (foe && foe != ch)
+					{
+						t.dwFoeRace = foe->IsPC() ? 0 : foe->GetRaceNum();
+						t.bFoePC = foe->IsPC();
+						t.dwFoeAt = dwNow;
+					}
+				}
 				if (ch->IsDead() && !t.bWasDead)
 				{
 					++t.dwDeaths;
 					++t.dwVisitDeaths;
 					t.adwDeathAt[0] = t.adwDeathAt[1];
 					t.adwDeathAt[1] = dwNow;
-					LPCHARACTER killer = ch->GetVictim();
-					sys_log(0, "ARZ_BOT: died pid=%u name=%s map=%ld level=%u pos=(%ld,%ld) visit_deaths=%u by=%u",
-							pid, ch->GetName(), map, (unsigned int)ch->GetLevel(), ch->GetX(), ch->GetY(), t.dwVisitDeaths,
-							killer ? (unsigned int)(killer->IsPC() ? 1 : killer->GetRaceNum()) : 0U);
+					const bool known = t.dwFoeAt != 0 && dwNow - t.dwFoeAt <= 15000;
+					const CMob* mob = known && !t.bFoePC ? CMobManager::instance().Get(t.dwFoeRace) : NULL;
+					sys_log(0, "ARZ_BOT: died pid=%u name=%s map=%ld level=%u job=%u pos=(%ld,%ld) visit_deaths=%u by=%u by_name=%s pvp=%d potions_red=%d",
+							pid, ch->GetName(), map, (unsigned int)ch->GetLevel(), (unsigned int)(ch->GetJob() % 4),
+							ch->GetX(), ch->GetY(), t.dwVisitDeaths,
+							known ? (t.bFoePC ? 1U : t.dwFoeRace) : 0U,
+							known ? (t.bFoePC ? "player" : (mob ? mob->m_table.szLocaleName : "?")) : "unknown",
+							known && t.bFoePC ? 1 : 0, (int)ch->CountSpecifyItem(27003) + (int)ch->CountSpecifyItem(27002) +
+							(int)ch->CountSpecifyItem(27001));
 				}
 				// A second death within the window: the next revival at the
 				// arrival, not in the pack that killed it (not on the way out).
@@ -1636,7 +1690,16 @@ namespace
 				t.bWasDead = ch->IsDead();
 				const bool fighting = ch->GetVictim() != NULL ||
 						(state.dwLastCombatActionTime != 0 && dwNow - state.dwLastCombatActionTime < 10000);
-				if (fighting || ch->IsDead() ||
+				// Standing still on purpose is no stuck: the mood's "away from
+				// the keyboard" (2-4 min) and pause between packs, and the rest
+				// after a revival. 101 of round 2's 126 "stuck" were the first,
+				// 16 the last, all on open ground.
+				const bool resting = (state.persona.dwAfkUntil != 0 && dwNow < state.persona.dwAfkUntil) ||
+						(state.persona.dwPauseUntil != 0 && dwNow < state.persona.dwPauseUntil) ||
+						state.bRecoveringAfterDeath;
+				if (resting)
+					++restingNow;
+				if (fighting || ch->IsDead() || resting ||
 						DISTANCE_APPROX(ch->GetX() - t.lAnchorX, ch->GetY() - t.lAnchorY) > PLAYERBOT_AREZZO_STUCK_DISTANCE)
 				{
 					if (t.bStuck)
@@ -1650,11 +1713,15 @@ namespace
 				{
 					t.bStuck = true;
 					++t.dwStuckEpisodes;
-					sys_log(0, "ARZ_BOT: stuck pid=%u name=%s map=%ld pos=(%ld,%ld) action=%u route=%u/%u leaving=%d hp=%d",
+					LPCHARACTER tv = state.dwTargetVID ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
+					sys_log(0, "ARZ_BOT: stuck pid=%u name=%s map=%ld pos=(%ld,%ld) action=%u route=%u/%u leaving=%d hp=%d target=%u target_dist=%d hub=%u",
 							pid, ch->GetName(), map, ch->GetX(), ch->GetY(), (unsigned int)state.bCurrentAction,
 							(unsigned int)state.uRouteIndex, (unsigned int)state.vecRoute.size(),
 							IsPlayerBotArezzoLeaving(ch) ? 1 : 0,
-							ch->GetMaxHP() > 0 ? (int)(ch->GetHP() * 100LL / ch->GetMaxHP()) : 0);
+							ch->GetMaxHP() > 0 ? (int)(ch->GetHP() * 100LL / ch->GetMaxHP()) : 0,
+							tv ? (unsigned int)tv->GetRaceNum() : 0U,
+							tv ? DISTANCE_APPROX(ch->GetX() - tv->GetX(), ch->GetY() - tv->GetY()) : -1,
+							(unsigned int)state.wHuntingHub);
 				}
 				if (t.bStuck)
 					t.dwStuckMs += 1000;
@@ -1692,12 +1759,12 @@ namespace
 		}
 		if (out)
 		{
-			fprintf(out, "#\t%ld\tm360=%d\tm361=%d\tm362=%d\tlas_temple=%d\tlas_road=%d\tsent_away=%d\tforced=%u\tcohort_online=%d\tportal=%u\tguardian=%u\twalks=%u\twalks_nav=%u\trefused=%u\topen=%d\n",
+			fprintf(out, "#\t%ld\tm360=%d\tm361=%d\tm362=%d\tlas_temple=%d\tlas_road=%d\tsent_away=%d\tforced=%u\tcohort_online=%d\tportal=%u\tguardian=%u\twalks=%u\twalks_nav=%u\trefused=%u\topen=%d\tresting=%d\n",
 					(long)wall, onMap[0], onMap[1], onMap[2], lasTemple, lasRoad, sentAway,
 					(unsigned int)s_mapPlayerBotArezzoForced.size(), cohortOnline,
 					(unsigned int)mt2009_ochao::s_dwPortalVID, (unsigned int)mt2009_ochao::s_dwGuardianVID,
 					s_uPlayerBotArezzoWalksPlanned, s_uPlayerBotArezzoWalksNavOnly, s_uPlayerBotArezzoRefused,
-					IsPlayerBotArezzoOpen() ? 1 : 0);
+					IsPlayerBotArezzoOpen() ? 1 : 0, restingNow);
 			fclose(out);
 			for (std::map<DWORD, TPlayerBotArezzoWalk>::iterator w = s_mapPlayerBotArezzoWalk.begin();
 					w != s_mapPlayerBotArezzoWalk.end();)

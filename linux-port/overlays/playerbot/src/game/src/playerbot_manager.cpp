@@ -6957,7 +6957,7 @@ WritePlayerBotGuildStatus(dwNow);
 			continue;
 		}
 
-		UseHealthPotion(ch, state, dwNow);
+		UseHealthPotion(ch, state, dwNow, GetPlayerBotArezzoPotionPercent(ch)); // MT2009_PLUS_AREZZO_BOTS_V1 (las)
 		UseManaPotion(ch, state, dwNow);
 		UseUtilityPotions(ch, state, dwNow);
 		UsePlayerBotBoosters(ch, state, dwNow);
@@ -7008,7 +7008,7 @@ WritePlayerBotGuildStatus(dwNow);
 				: (state.dwTargetVID != 0 ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL);
 		if (!state.bTacticalRetreat && retreatThreat && retreatThreat->IsMonster() &&
 				!retreatThreat->IsDead() && ch->GetMaxHP() > 0 &&
-				ch->GetHP() * 100 <= ch->GetMaxHP() * PLAYERBOT_RETREAT_START_HP_PERCENT)
+				ch->GetHP() * 100 <= ch->GetMaxHP() * GetPlayerBotArezzoRetreatPercent(ch)) // MT2009_PLUS_AREZZO_BOTS_V1 (las)
 			StartPlayerBotTacticalRetreat(ch, state, retreatThreat, dwNow);
 		if (HandlePlayerBotTacticalRetreat(ch, state, dwNow))
 			continue;
