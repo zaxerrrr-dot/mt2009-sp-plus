@@ -173,6 +173,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_bonus.h"
 #include "playerbot_ochao.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the temple's map and clock, before the bots' knowledge of it
 #include "playerbot_ochao_bots.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the bots in the Temple of Ochao
+#include "playerbot_arezzo_bots.h" // MT2009_PLUS_AREZZO_BOTS_V1 (include): the test cohorts on the Arezzo maps
 #include "playerbot_travel.h"
 #include "playerbot_planner.h"
 // Which of Iwakura's personalities claims a bot, the Grinder's lock and the
@@ -2973,6 +2974,7 @@ void CPlayerBotManager::StartWorldClock()
 {
 	mt2009_ochao::Start(); // MT2009_PLUS_OCHAO_V1 (start): only where map 209 is hosted
 	mt2009_arezzo::Start(); // MT2009_PLUS_AREZZO_MODULE_V1 (start): every core
+	StartPlayerBotArezzoWatch(); // MT2009_PLUS_AREZZO_BOTS_V1 (start): where 360-362 are hosted
 	if (s_pkPlayerBotUpdateEvent || s_pkPlayerBotWorldEvent)
 		return;
 	playerbot_world_event_info* info = AllocEventInfo<playerbot_world_event_info>();
@@ -3667,6 +3669,49 @@ size_t CPlayerBotManager::SpawnMedalDropperCohort(size_t count, BYTE bEmpire, BY
 			(unsigned int)bEmpire, (unsigned int)count, (unsigned int)selected,
 			(unsigned int)bExpLockLevel);
 	SpawnPendingBatch(get_dword_time());
+	return selected;
+}
+
+// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): named identities on top of the
+// population, as the medal droppers are (playerbot_arezzo_bots.h reads them
+// from playerbot_arezzo_cohort.txt): each one this channel has registered,
+// not banned and not yet asked for, goes into the spawn queue, and the top-up
+// keeps it in the world like the rest.
+size_t CPlayerBotManager::ScheduleExtraBots(const std::vector<DWORD>& pids)
+{
+	if (pids.empty() || !LoadRegisteredBots())
+		return 0;
+	size_t selected = 0, unknown = 0, already = 0;
+	for (size_t i = 0; i < pids.size(); ++i)
+	{
+		const DWORD pid = pids[i];
+		if (m_setRegisteredBots.find(pid) == m_setRegisteredBots.end() || GetRegisteredEmpire(pid) == 0)
+		{
+			++unknown;
+			continue;
+		}
+		if (m_setScheduledBots.find(pid) != m_setScheduledBots.end())
+		{
+			++already;
+			continue;
+		}
+		m_dequePendingSpawns.push_back(pid);
+		m_setScheduledBots.insert(pid);
+		++selected;
+	}
+	if (selected > 0)
+	{
+		const size_t batches = std::max<size_t>(1, m_dwSpawnWindowMs / PLAYERBOT_SPAWN_BATCH_INTERVAL);
+		m_uSpawnBatchSize = std::max<size_t>(m_uSpawnBatchSize,
+				std::max<size_t>(1, (selected + batches - 1) / batches));
+		m_dwSpawnWindowStarted = get_dword_time();
+		m_uSpawnWindowTotal = m_setScheduledBots.size();
+		m_dwNextSpawnBatchTime = 0;
+	}
+	sys_log(0, "PLAYERBOT: extra identities asked=%u scheduled=%u already=%u not_registered_here=%u",
+			(unsigned int)pids.size(), (unsigned int)selected, (unsigned int)already, (unsigned int)unknown);
+	if (selected > 0)
+		SpawnPendingBatch(get_dword_time());
 	return selected;
 }
 
@@ -4608,6 +4653,10 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 		// A player's companion keeps its owner's hours, not a schedule; a
 		// shouter of the first villages is always there.
 		if (IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid))
+			continue;
+		// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): the Arezzo test's characters
+		// play for as long as the test runs.
+		if (IsPlayerBotArezzoCohortPID(pid))
 			continue;
 		std::map<DWORD, DWORD>::iterator session = m_mapLifeSessionEnd.find(pid);
 		if (session == m_mapLifeSessionEnd.end())
@@ -6152,6 +6201,10 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_OCHAO_BOTS_V1 (walk out): a warp asked for in the Temple of
 		// Ochao's labyrinth waits for the walk to its Teleporter or Portal.
 		if (ManagePlayerBotOchaoPendingExit(ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_AREZZO_BOTS_V1 (walk out): the same on the Arezzo maps,
+		// out by their Teleporter.
+		if (ManagePlayerBotArezzoPendingExit(ch, state, dwNow))
 			continue;
 
 		// Before anything that can claim the tick. An open stall is engine state

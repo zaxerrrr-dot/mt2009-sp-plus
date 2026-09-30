@@ -21,6 +21,9 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// stops at (PLAYERBOT_MEDAL_DROPPERS, PLAYERBOT_MEDAL_DROPPER_LEVEL).
 		size_t	SpawnMedalDropperCohort(size_t count, BYTE bEmpire, BYTE bExpLockLevel);
 		bool	IsMedalDropperCohortPID(DWORD dwPlayerID) const;
+		// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): these identities too, on top of
+		// the population; how many were queued now.
+		size_t	ScheduleExtraBots(const std::vector<DWORD>& pids);
 		BYTE	GetMedalDropperCohortLevel() const;
 		// The kingdom a registered PID belongs to, 0 when it is not registered.
 		BYTE	GetRegisteredEmpire(DWORD dwPlayerID);

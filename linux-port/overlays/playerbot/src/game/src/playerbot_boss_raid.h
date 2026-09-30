@@ -98,6 +98,16 @@ namespace
 		// 30 September).
 		{ 6311, 209, 95, 120, 8, true },	// Ochroniarz Ochao (103), boss.txt, hourly
 		{ 6390, 209, 95, 120, 10, true },	// Wladca Ochao (105), boss.txt, hourly
+		// MT2009_PLUS_AREZZO_BOTS_V1 (bosses): the Arezzo maps' bosses
+		// (boss.txt of each), for the bots already on the map - for now the
+		// operator's test cohorts alone (playerbot_arezzo_bots.h). The windows
+		// open at each map's own floor, the size is what his health asks.
+		{ 9606, 360, 43, 61, 4, true },		// Arges (52), Dolina Cyklopow, 50-70 min
+		{ 9607, 360, 43, 64, 6, true },		// Polifem (55), 2-3 h
+		{ 9675, 361, 52, 69, 5, true },		// Bastet (60), Pustkowie Faraona, 50-70 min
+		{ 9681, 361, 54, 71, 6, true },		// Anubis (62), 2-3 h
+		{ 3390, 362, 95, 120, 8, true },	// Lemur Hrabia (103), Zaczarowany Las, 50-70 min
+		{ 3391, 362, 95, 120, 10, true },	// Straz Przyboczna Lemur (105), 2-3 h
 	};
 	const size_t PLAYERBOT_WORLD_BOSS_COUNT = sizeof(PLAYERBOT_WORLD_BOSSES) / sizeof(PLAYERBOT_WORLD_BOSSES[0]);
 
@@ -196,6 +206,8 @@ namespace
 		state.dwNextBossRaidMoveTime = 0;
 		if (ch)
 			ForgetPlayerBotOchaoWalk(ch->GetPlayerID()); // MT2009_PLUS_OCHAO_BOTS_V1 (walk)
+		if (ch)
+			ForgetPlayerBotArezzoWalk(ch->GetPlayerID()); // MT2009_PLUS_AREZZO_BOTS_V1 (walk)
 		if (dwBossVID != 0 && state.dwTargetVID == dwBossVID)
 			state.dwTargetVID = 0;
 		if (ch && dwBossVID != 0 && ch->GetVictim() && (DWORD)ch->GetVictim()->GetVID() == dwBossVID)
@@ -377,6 +389,19 @@ namespace
 			// labyrinth is minutes from its way out; the raid calls somebody nearer.
 			if (c->GetMapIndex() == PLAYERBOT_MAP_OCHAO && row.lMap != PLAYERBOT_MAP_OCHAO)
 				continue;
+			// MT2009_PLUS_AREZZO_BOTS_V1 (raid): the Arezzo test's bots hunt
+			// their map's bosses and nobody else's; and nobody else hunts those.
+			int arezzoWalk = 0;
+			if (IsPlayerBotArezzoMap(row.lMap))
+			{
+				if (c->GetMapIndex() != row.lMap || !boss || IsPlayerBotArezzoLeaving(c))
+					continue;
+				arezzoWalk = GetPlayerBotArezzoWalk(c, boss->GetX(), boss->GetY());
+				if (arezzoWalk > PLAYERBOT_AREZZO_RAID_WALK_MAX)
+					continue;
+			}
+			else if (IsPlayerBotArezzoMap(c->GetMapIndex()) || IsPlayerBotArezzoBound(c))
+				continue;
 			// And the other way round: the temple's own bosses are for the bots
 			// inside, within a walk that ends before the gathering does.
 			int ochaoWalk = 0;
@@ -405,6 +430,7 @@ namespace
 			// In the labyrinth the nearest by the walk first (a unit of walk
 			// weighs what a unit of strength does).
 			r.strength -= ochaoWalk;
+			r.strength -= arezzoWalk; // MT2009_PLUS_AREZZO_BOTS_V1
 			out.push_back(r);
 		}
 		std::sort(out.begin(), out.end(), PlayerBotBossRecruitOrder);
@@ -711,7 +737,8 @@ namespace
 				raid.members.erase(m++);
 			// MT2009_PLUS_OCHAO_BOTS_V1 (leaving): a member another pass has sent
 			// out of the temple walks out; it is no longer the raid's.
-			else if (row.lMap == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaving(member))
+			else if ((row.lMap == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaving(member)) ||
+					(IsPlayerBotArezzoMap(row.lMap) && IsPlayerBotArezzoLeaving(member))) // MT2009_PLUS_AREZZO_BOTS_V1
 			{
 				sys_log(0, "PLAYERBOT_RAID: member leaves the temple pid=%u name=%s race=%u",
 						*m, member->GetName(), (unsigned int)row.wRace);
@@ -818,7 +845,8 @@ namespace
 			}
 			int need = std::max(2, ((int)row.bSize + 1) / 2);
 			const bool timeUp = dwNow - raid.dwPhaseSince >= (row.lMap == PLAYERBOT_MAP_OCHAO
-					? PLAYERBOT_OCHAO_RAID_GATHER_MS : PLAYERBOT_BOSS_RAID_GATHER_MS); // MT2009_PLUS_OCHAO_BOTS_V1
+					? PLAYERBOT_OCHAO_RAID_GATHER_MS : (IsPlayerBotArezzoMap(row.lMap) // MT2009_PLUS_AREZZO_BOTS_V1
+					? PLAYERBOT_AREZZO_RAID_GATHER_MS : PLAYERBOT_BOSS_RAID_GATHER_MS)); // MT2009_PLUS_OCHAO_BOTS_V1
 			// MT2009_PLUS_OCHAO_BOTS_V1 (gather): in the labyrinth the walk is
 			// long and the packs on it many - at the end of the gathering two
 			// who have come go in, and the rest follow them to him.
@@ -992,7 +1020,9 @@ namespace
 		// another map is.
 		// MT2009_PLUS_OCHAO_BOTS_V1 (walk): never inside the labyrinth - there
 		// the walk is the way, planned round its walls.
-		if (distance > PLAYERBOT_BOSS_RAID_WALK_MAX && row.lMap != PLAYERBOT_MAP_OCHAO)
+		// MT2009_PLUS_AREZZO_BOTS_V1 (walk): nor on an Arezzo map - there the
+		// walk is its routes.
+		if (distance > PLAYERBOT_BOSS_RAID_WALK_MAX && row.lMap != PLAYERBOT_MAP_OCHAO && !IsPlayerBotArezzoMap(row.lMap))
 		{
 			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
 			if (dwNow < state.dwNextBossRaidMoveTime)
@@ -1022,6 +1052,10 @@ namespace
 			// labyrinth - by its corners, not at him through the walls.
 			if (row.lMap == PLAYERBOT_MAP_OCHAO && distance > PLAYERBOT_OCHAO_RAID_FIGHT_WALK &&
 					WalkPlayerBotInOchao(ch, state, boss->GetX(), boss->GetY(), dwNow))
+				return true;
+			// MT2009_PLUS_AREZZO_BOTS_V1 (walk): on an Arezzo map by its routes.
+			if (IsPlayerBotArezzoMap(row.lMap) && distance > PLAYERBOT_AREZZO_RAID_FIGHT_WALK &&
+					WalkPlayerBotInArezzo(ch, state, boss->GetX(), boss->GetY(), dwNow))
 				return true;
 			return FightPlayerBotTowerObjective(ch, state, boss, dwNow);
 		}
@@ -1055,6 +1089,16 @@ namespace
 		{
 			if (toRally > 400)
 				WalkPlayerBotInOchao(ch, state, rallyX, rallyY, dwNow);
+			return true;
+		}
+		// MT2009_PLUS_AREZZO_BOTS_V1 (walk): on an Arezzo map by its routes.
+		if (IsPlayerBotArezzoMap(row.lMap))
+		{
+			if (toRally > 400 && dwNow >= state.dwNextBossRaidMoveTime)
+			{
+				state.dwNextBossRaidMoveTime = dwNow + 1000;
+				WalkPlayerBotInArezzo(ch, state, rallyX, rallyY, dwNow);
+			}
 			return true;
 		}
 		if (toRally > 400 && dwNow >= state.dwNextBossRaidMoveTime)

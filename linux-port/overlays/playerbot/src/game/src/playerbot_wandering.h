@@ -309,8 +309,10 @@ namespace
 			// route of two hundred milliseconds to plan and three minutes to walk.
 			// MT2009_PLUS_OCHAO_BOTS_V1 (walk): in the Temple of Ochao's labyrinth
 			// the walk, not the straight line (playerbot_ochao_bots.h).
+			// MT2009_PLUS_AREZZO_BOTS_V1 (walk): and on an Arezzo map the walk too.
 			const int distance = ch->GetMapIndex() == PLAYERBOT_MAP_OCHAO ? GetPlayerBotOchaoWalk(ch, hub.x, hub.y)
-					: DISTANCE_APPROX(ch->GetX() - hub.x, ch->GetY() - hub.y);
+					: (IsPlayerBotArezzoMap(ch->GetMapIndex()) ? GetPlayerBotArezzoWalk(ch, hub.x, hub.y)
+					: DISTANCE_APPROX(ch->GetX() - hub.x, ch->GetY() - hub.y));
 			score = (int)((long long)score * PLAYERBOT_HUB_HALF_WORTH_DISTANCE /
 					(PLAYERBOT_HUB_HALF_WORTH_DISTANCE + distance));
 			score += (int)(PlayerBotNavHash(dwSeed ^ (DWORD)(i * 0x9e3779b9U)) % 150U);
@@ -1321,6 +1323,10 @@ namespace
 			// its three bosses (playerbot_ochao_bots.h).
 			else if (ch->GetMapIndex() == PLAYERBOT_MAP_OCHAO)
 				hubs = GetPlayerBotOchaoHubs(hubCount);
+			// MT2009_PLUS_AREZZO_BOTS_V1 (hubs): the Arezzo maps' spots
+			// (playerbot_arezzo_bots.h); their bosses are the boss raid's.
+			else if (IsPlayerBotArezzoMap(ch->GetMapIndex()))
+				hubs = GetPlayerBotArezzoHubs(ch->GetMapIndex(), hubCount);
 			const DWORD pid = ch->GetPlayerID();
 			// A stone anybody has seen on this map comes before any hub while the
 			// bot hunts stones - by role, or on an expedition. Off the town map
@@ -1580,7 +1586,15 @@ namespace
 		// walked. UpdatePlayerBotTravelMount still refuses to mount inside
 		// PLAYERBOT_HORSE_MOUNT_DISTANCE, so a step across a clearing is
 		// unaffected.
-		if (!MovePlayerBot(ch, targetX, targetY, dwNow, 32, true, true))
+		// MT2009_PLUS_AREZZO_BOTS_V1 (walk): a far spot of an Arezzo map out
+		// of sight is walked to by the map's routes (playerbot_arezzo_bots.h).
+		if (IsPlayerBotArezzoMap(ch->GetMapIndex()) &&
+				DISTANCE_APPROX(ch->GetX() - targetX, ch->GetY() - targetY) > PLAYERBOT_AREZZO_TREE_WALK_MIN)
+		{
+			WalkPlayerBotInArezzo(ch, state, targetX, targetY, dwNow);
+			state.dwNextWanderTime = dwNow + 1200;
+		}
+		else if (!MovePlayerBot(ch, targetX, targetY, dwNow, 32, true, true))
 		{
 			state.dwNextWanderTime = dwNow + 1500;
 			if (state.bStuckCounter >= 3)

@@ -483,6 +483,13 @@ namespace
 	{
 		if (!ch)
 			return 0;
+		// MT2009_PLUS_AREZZO_BOTS_V1 (test): a bot the operator sent to an
+		// Arezzo map hunts there until told to leave.
+		{
+			const long arezzo = GetPlayerBotArezzoFrontier(ch);
+			if (arezzo != 0)
+				return arezzo;
+		}
 		// MT2009_PLUS_OCHAO_BOTS_V1 (test): a bot the operator sent to the
 		// Temple of Ochao hunts there until told to leave.
 		if (IsPlayerBotOchaoForced(ch) && WantsPlayerBotOchao(ch, 0, false))
@@ -669,6 +676,13 @@ namespace
 	// window, or 0 when its own village is still the right place for it.
 	long GetPlayerBotFrontierMapForLevel(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_AREZZO_BOTS_V1 (test): a bot sent to an Arezzo map goes
+		// there before any errand's map.
+		{
+			const long arezzo = GetPlayerBotArezzoFrontier(ch);
+			if (arezzo != 0)
+				return arezzo;
+		}
 		// MT2009_PLUS_OCHAO_BOTS_V1 (test): a bot sent to the Temple of Ochao
 		// goes there before any errand's map.
 		if (IsPlayerBotOchaoForced(ch) && WantsPlayerBotOchao(ch, 0, false))
@@ -762,6 +776,9 @@ namespace
 	{
 		if (!ch || GetPlayerBotFrontierMapForLevel(ch) == 0)
 			return false;
+		// MT2009_PLUS_AREZZO_BOTS_V1 (test): the operator's send is no roll.
+		if (GetPlayerBotArezzoFrontier(ch) != 0)
+			return true;
 		TPlayerBotAIStateMap::const_iterator it =
 				s_mapPlayerBotAIStates.find(ch->GetPlayerID());
 		const BYTE personality = it != s_mapPlayerBotAIStates.end()
@@ -1100,6 +1117,15 @@ namespace
 		// MT2009_PLUS_OCHAO_BOTS_V1 (route): the Temple of Ochao is entered from
 		// level 95 through Straznik Swiatyni in Orc Valley, and every way out is
 		// written down (playerbot_ochao_bots.h).
+		// MT2009_PLUS_AREZZO_BOTS_V1 (route): the Arezzo maps and dungeons and
+		// the Blue Dragon's lair take no bot but the operator's test cohorts,
+		// the Las only through the temple's Portal, and each Arezzo map is
+		// left by its Teleporter (playerbot_arezzo_bots.h).
+		{
+			const int arezzo = RoutePlayerBotArezzoTransition(ch, state, targetMap, targetX, targetY, dwNow, reason);
+			if (arezzo >= 0)
+				return arezzo != 0;
+		}
 		{
 			const int ochao = RoutePlayerBotOchaoTransition(ch, state, targetMap, targetX, targetY, dwNow, reason);
 			if (ochao >= 0)
@@ -1347,6 +1373,11 @@ namespace
 	{
 		// MT2009_PLUS_OCHAO_BOTS_V1 (fee): the Temple of Ochao's Teleporter.
 		if (x == PLAYERBOT_OCHAO_EXIT_X && y == PLAYERBOT_OCHAO_EXIT_Y)
+			return true;
+		// MT2009_PLUS_AREZZO_BOTS_V1 (fee): the Arezzo maps' Teleporters.
+		if ((x == PLAYERBOT_AREZZO_CYCLOPS_EXIT_X && y == PLAYERBOT_AREZZO_CYCLOPS_EXIT_Y) ||
+				(x == PLAYERBOT_AREZZO_PHARAOH_EXIT_X && y == PLAYERBOT_AREZZO_PHARAOH_EXIT_Y) ||
+				(x == PLAYERBOT_AREZZO_FOREST_EXIT_X && y == PLAYERBOT_AREZZO_FOREST_EXIT_Y))
 			return true;
 		if ((x == PLAYERBOT_M1_TELEPORTER_X && y == PLAYERBOT_M1_TELEPORTER_Y) ||
 				(x == PLAYERBOT_M2_TO_M3_TELEPORTER_X && y == PLAYERBOT_M2_TO_M3_TELEPORTER_Y))
@@ -1710,7 +1741,12 @@ namespace
 				s_mapPlayerBotTeleportRingReady.find(ch->GetPlayerID());
 		if (it != s_mapPlayerBotTeleportRingReady.end() && dwNow < it->second)
 			return false;
-		if (!TransitionPlayerBotMap(ch, state, destMap, destX, destY, dwNow, reason))
+		// MT2009_PLUS_AREZZO_BOTS_V1 (ring): the Arezzo maps' gate lets the
+		// ring's warp through (RoutePlayerBotArezzoTransition asks this).
+		s_bPlayerBotArezzoRingWarp = true;
+		const bool moved = TransitionPlayerBotMap(ch, state, destMap, destX, destY, dwNow, reason);
+		s_bPlayerBotArezzoRingWarp = false;
+		if (!moved)
 			return false;
 		s_mapPlayerBotTeleportRingReady[ch->GetPlayerID()] = dwNow + PLAYERBOT_TELEPORT_RING_COOLDOWN_MS;
 		sys_log(0, "PLAYERBOT_WORLD: teleport ring home pid=%u name=%s to_map=%ld (%s)",
@@ -1960,6 +1996,14 @@ namespace
 					dwNow, toV1 ? "desert_gate_to_v1" : "desert_gate_to_bokjung");
 		}
 
+		// MT2009_PLUS_AREZZO_BOTS_V1 (travel): an Arezzo map closing under the
+		// bot, and the way into the Las through the temple's Guardian and his
+		// Portal.
+		{
+			const int arezzo = ManagePlayerBotArezzoTravel(ch, state, dwNow);
+			if (arezzo >= 0)
+				return arezzo != 0;
+		}
 		// MT2009_PLUS_OCHAO_BOTS_V1 (crossing): in Orc Valley on the way to the
 		// Temple of Ochao, the walk to Straznik Swiatyni beside Koe-Pung.
 		{
@@ -2393,13 +2437,16 @@ namespace
 			// ("frontier_visit_complete" after 41 minutes, m2zip 17 September).
 			const bool visitExpired = (!onBattleTrialHere && stayed >=
 					GetPlayerBotFrontierVisitTime(state.bPersonality)) ||
-					(mapIndex == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaveOrdered(ch)); // MT2009_PLUS_OCHAO_BOTS_V1 (test)
+					(mapIndex == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaveOrdered(ch)) || // MT2009_PLUS_OCHAO_BOTS_V1 (test)
+					(IsPlayerBotArezzoMap(mapIndex) && IsPlayerBotArezzoLeaveOrdered(ch)); // MT2009_PLUS_AREZZO_BOTS_V1 (test)
 			// Two minutes of actually playing here before anything but a real
 			// emergency may send the bot home again.
 			// MT2009_PLUS_OCHAO_BOTS_V1 (stay): the temple is a long way in and out,
 			// so only what stops the fight takes a bot out of it sooner.
+			// MT2009_PLUS_AREZZO_BOTS_V1 (stay): and the Las, reached the same way.
 			const bool settledIn = stayed >= (mapIndex == PLAYERBOT_MAP_OCHAO
-					? PLAYERBOT_OCHAO_MIN_VISIT_TIME : PLAYERBOT_FRONTIER_MIN_VISIT_TIME);
+					? PLAYERBOT_OCHAO_MIN_VISIT_TIME : (mapIndex == PLAYERBOT_MAP_AREZZO_FOREST
+						? PLAYERBOT_AREZZO_FOREST_MIN_VISIT_TIME : PLAYERBOT_FRONTIER_MIN_VISIT_TIME));
 			// Outgrowing the map matters as much as running out of potions: neither
 			// Orc Valley nor the Desert has a merchant, a blacksmith or a trainer.
 			const bool outOfBand = GetPlayerBotFrontierMapForLevel(ch) != mapIndex;
@@ -2492,6 +2539,9 @@ namespace
 			// to the Teleporter, or through the Guardian's Portal while it stands.
 			if (mapIndex == PLAYERBOT_MAP_OCHAO)
 				return MovePlayerBotOutOfOchao(ch, state, destMap, destX, destY, dwNow, reason);
+			// MT2009_PLUS_AREZZO_BOTS_V1 (exit): to the map's Teleporter by its routes.
+			if (IsPlayerBotArezzoMap(mapIndex))
+				return MovePlayerBotOutOfArezzo(ch, state, destMap, destX, destY, dwNow, reason);
 			return MovePlayerBotToWorldPortal(ch, state, exitX, exitY,
 					destMap, destX, destY, dwNow, reason);
 		}

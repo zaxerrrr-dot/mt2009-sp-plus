@@ -52,6 +52,9 @@ namespace
 	bool BlocksPlayerBotTravel(LPCHARACTER ch);
 	long GetPlayerBotFrontierMapForLevel(LPCHARACTER ch);
 	bool IsPlayerBotHumanLedParty(LPPARTY party);
+	// From playerbot_arezzo_bots.h, which comes after this file.
+	bool IsPlayerBotArezzoBoundForLas(LPCHARACTER ch);
+	bool IsPlayerBotArezzoBound(LPCHARACTER ch);
 
 	// Straznik Swiatyni in Orc Valley: the point walked to is where the
 	// quest's Portal puts a player down, two steps from him.
@@ -514,7 +517,10 @@ namespace
 			return -1;
 		const DWORD pid = ch->GetPlayerID();
 		std::map<DWORD, TPlayerBotOchaoCrossing>::iterator c = s_mapPlayerBotOchaoCrossing.find(pid);
-		const bool wants = GetPlayerBotFrontierMapForLevel(ch) == PLAYERBOT_MAP_OCHAO;
+		// MT2009_PLUS_AREZZO_BOTS_V1 (las): a bot sent to the Las crosses the
+		// temple on its way (playerbot_arezzo_bots.h, later in this unit).
+		const bool wants = GetPlayerBotFrontierMapForLevel(ch) == PLAYERBOT_MAP_OCHAO ||
+				IsPlayerBotArezzoBoundForLas(ch);
 		if (c == s_mapPlayerBotOchaoCrossing.end())
 		{
 			// Landed in the valley by its own road (the Portal, a raid) with the
@@ -987,6 +993,9 @@ namespace
 				continue;
 			if (!onTemple && (ch->GetLevel() < PLAYERBOT_OCHAO_MIN_LEVEL ||
 					(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty()))))
+				continue;
+			// MT2009_PLUS_AREZZO_BOTS_V1: the Arezzo test's bots are its own.
+			if (IsPlayerBotArezzoBound(ch))
 				continue;
 			out.push_back(it->first);
 		}
