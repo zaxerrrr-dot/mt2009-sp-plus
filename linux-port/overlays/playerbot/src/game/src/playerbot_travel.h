@@ -2500,6 +2500,12 @@ namespace
 					ch->GetParty() == NULL && WantsPlayerBotFishingTrip(ch, state, dwNow);
 			if (!visitExpired && !outOfBand && !needsTown && !wantsMedal && !wantsWeapon && !wantsFishing)
 				return false;
+			// MT2009_PLUS_AREZZO_BOTS_V1 (held): a bot the Arezzo test sent here
+			// stays until it is told to leave - the visit clock, the services,
+			// the medal, the weapon and the river wait; only what stops the
+			// fight (blocked) takes it home, and the order brings it back.
+			if (IsPlayerBotArezzoMap(mapIndex) && IsPlayerBotArezzoHeldHere(ch) && !blocked)
+				return false;
 
 			// A share of the bots keeps Joan as home: the services trip goes
 			// there, and only the services trip - a medal, a weapon hunt and

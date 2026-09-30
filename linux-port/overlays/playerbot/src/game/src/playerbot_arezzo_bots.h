@@ -495,7 +495,17 @@ namespace
 	struct TPlayerBotArezzoExit { DWORD dwStarted; char szReason[40]; };
 	std::map<DWORD, TPlayerBotArezzoExit> s_mapPlayerBotArezzoExit;
 	// A bot on its way into the Las: since when, and what it was last seen doing.
-	struct TPlayerBotArezzoLas { DWORD dwSince; BYTE bPhase; DWORD dwPhaseSince; };
+	struct TPlayerBotArezzoLas
+	{
+		DWORD dwSince; BYTE bPhase; DWORD dwPhaseSince;
+		DWORD dwPortalVID;	// the Portal this bot has set out for
+		DWORD dwLastLog;
+		TPlayerBotArezzoLas() : dwSince(0), bPhase(0), dwPhaseSince(0), dwPortalVID(0), dwLastLog(0) {}
+	};
+	// A Portal within this is used (the quest's choice "Zaczarowany Las"),
+	// without the portal walk's stall-and-wait: the NPC stands on the cell the
+	// walk aims at, and the minute it stands is too short to wait out a stall.
+	const int PLAYERBOT_AREZZO_LAS_PORTAL_USE = 700;
 	enum { AREZZO_LAS_ROAD = 0, AREZZO_LAS_TEMPLE, AREZZO_LAS_GUARDIAN, AREZZO_LAS_PORTAL };
 	std::map<DWORD, TPlayerBotArezzoLas> s_mapPlayerBotArezzoLas;
 
@@ -519,10 +529,12 @@ namespace
 		DWORD dwStuckMs;
 		DWORD dwVisitDeaths;
 		DWORD adwDeathAt[2];
+		DWORD dwAwaySince;		// a sent bot seen off its map since (0: on it)
+		DWORD dwNextResend;
 		TPlayerBotArezzoTrack() : dwEntered(0), lMap(0), dwSent(0), dwKills(0), dwBossKills(0), ullExp(0),
 				dwDeaths(0), dwLastExp(0), dwLastNext(0), bLastLevel(0), bWasDead(false),
 				lAnchorX(0), lAnchorY(0), dwAnchorSince(0), bStuck(false), dwStuckEpisodes(0), dwStuckMs(0),
-				dwVisitDeaths(0) { adwDeathAt[0] = adwDeathAt[1] = 0; }
+				dwVisitDeaths(0), dwAwaySince(0), dwNextResend(0) { adwDeathAt[0] = adwDeathAt[1] = 0; }
 	};
 	std::map<DWORD, TPlayerBotArezzoTrack> s_mapPlayerBotArezzoTrack;
 	unsigned int s_uPlayerBotArezzoWalksPlanned = 0;
@@ -583,6 +595,28 @@ namespace
 		std::map<DWORD, TPlayerBotArezzoTrack>::const_iterator t = s_mapPlayerBotArezzoTrack.find(ch->GetPlayerID());
 		return t != s_mapPlayerBotArezzoTrack.end() && t->second.dwVisitDeaths >= PLAYERBOT_AREZZO_VISIT_DEATHS_LEAVE &&
 				IsPlayerBotArezzoMap(ch->GetMapIndex());
+	}
+
+	// Sent by the test and not told to leave: the bot stays on its map (and
+	// on its road into the Las) whatever errand another pass has for it - a
+	// shop's upkeep, the alchemist, Uriel, a horse, the river. Only what stops
+	// the fight (no weapon, no armour, no potions, no arrows) takes it to town,
+	// and it comes back by itself: the order stands.
+	bool IsPlayerBotArezzoHeld(LPCHARACTER ch)
+	{
+		return GetPlayerBotArezzoForcedMap(ch) != 0 && !IsPlayerBotArezzoLeaveOrdered(ch);
+	}
+
+	// Held and standing on the ground the order is about: its map, or for the
+	// Las the temple and Orc Valley on the way.
+	bool IsPlayerBotArezzoHeldHere(LPCHARACTER ch)
+	{
+		if (!IsPlayerBotArezzoHeld(ch))
+			return false;
+		const long forced = GetPlayerBotArezzoForcedMap(ch);
+		const long map = ch->GetMapIndex();
+		return map == forced || (forced == PLAYERBOT_MAP_AREZZO_FOREST &&
+				(map == PLAYERBOT_MAP_OCHAO || map == PLAYERBOT_MAP_ORC_VALLEY));
 	}
 
 	bool IsPlayerBotArezzoLeaving(LPCHARACTER ch)
@@ -948,6 +982,18 @@ namespace
 					 (t != s_mapPlayerBotArezzoTrack.end() && t->second.dwVisitDeaths >= PLAYERBOT_AREZZO_VISIT_DEATHS_LEAVE));
 			const bool ring = s_bPlayerBotArezzoRingWarp || (reason && strstr(reason, "ring") != NULL);
 			const bool closed = !IsPlayerBotArezzoOpen();
+			// A held bot goes nowhere on another pass's errand.
+			if (!closed && IsPlayerBotArezzoHeldHere(ch) && !BlocksPlayerBotTravel(ch) &&
+					!(reason && strncmp(reason, "arezzo_", 7) == 0))
+			{
+				char tag[48];
+				snprintf(tag, sizeof(tag), "arezzo_errand:%s", reason ? reason : "?");
+				PlayerBotLogThrottled(tag, dwNow,
+						"ARZ_BOT: errand refused pid=%u name=%s map=%ld to=%ld reason=%s (held by the test)",
+						pid, ch->GetName(), fromMap, targetMap, reason ? reason : "?");
+				s_mapPlayerBotArezzoPending.erase(pid);
+				return 0;
+			}
 			if (!atTeleporter && !gaveUp && !ring && !closed)
 			{
 				if (pend == s_mapPlayerBotArezzoPending.end())
@@ -981,6 +1027,21 @@ namespace
 				t->second.dwSent = dwNow;	// the next way in is timed from here
 			}
 			// On to the gate below when the target is another place of the list.
+		}
+		// The Las-bound bot in the temple or in Orc Valley: the same, except
+		// for the road itself (the temple's gate, its Portal, the valley).
+		if ((fromMap == PLAYERBOT_MAP_OCHAO || fromMap == PLAYERBOT_MAP_ORC_VALLEY) && targetMap != fromMap &&
+				targetMap != PLAYERBOT_MAP_OCHAO && targetMap != PLAYERBOT_MAP_AREZZO_FOREST &&
+				targetMap != PLAYERBOT_MAP_ORC_VALLEY && IsPlayerBotArezzoOpen() &&
+				IsPlayerBotArezzoHeldHere(ch) && !BlocksPlayerBotTravel(ch) &&
+				!(reason && (strncmp(reason, "arezzo_", 7) == 0 || strncmp(reason, "ochao_", 6) == 0)))
+		{
+			char tag[48];
+			snprintf(tag, sizeof(tag), "arezzo_errand:%s", reason ? reason : "?");
+			PlayerBotLogThrottled(tag, dwNow,
+					"ARZ_BOT: errand refused pid=%u name=%s map=%ld to=%ld reason=%s (on the road to the Las)",
+					pid, ch->GetName(), fromMap, targetMap, reason ? reason : "?");
+			return 0;
 		}
 		if (!IsPlayerBotOffLimitsMap(targetMap) || targetBase == fromMap ||
 				(fromMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN && fromMap / 10000 == targetBase))
@@ -1055,22 +1116,48 @@ namespace
 		BYTE phase = AREZZO_LAS_TEMPLE;
 		int result = 0;
 		LPCHARACTER portal = FindPlayerBotOchaoPortal();
-		const int portalWalk = portal ? GetPlayerBotOchaoWalk(ch, portal->GetX(), portal->GetY()) : 0;
 		LPCHARACTER guardian = mt2009_ochao::FindOnMap(mt2009_ochao::s_dwGuardianVID);
-		if (portal && portalWalk <= PLAYERBOT_AREZZO_LAS_PORTAL_WALK_MAX)
+		// Set out for a Portal once, while it is within the walk, and keep to
+		// it until it closes: the walk's estimate moves as the bot turns the
+		// labyrinth's corners, and choosing again every tick turned it round.
+		if (!portal)
+			las.dwPortalVID = 0;
+		else if (las.dwPortalVID != (DWORD)portal->GetVID() &&
+				GetPlayerBotOchaoWalk(ch, portal->GetX(), portal->GetY()) <= PLAYERBOT_AREZZO_LAS_PORTAL_WALK_MAX)
+		{
+			las.dwPortalVID = (DWORD)portal->GetVID();
+			sys_log(0, "ARZ_BOT: las takes the portal pid=%u name=%s pos=(%ld,%ld) portal=(%ld,%ld) distance=%d after_s=%u",
+					pid, ch->GetName(), ch->GetX(), ch->GetY(), portal->GetX(), portal->GetY(),
+					DISTANCE_APPROX(ch->GetX() - portal->GetX(), ch->GetY() - portal->GetY()), (dwNow - las.dwSince) / 1000);
+			las.dwLastLog = dwNow;
+		}
+		if (portal && las.dwPortalVID == (DWORD)portal->GetVID())
 		{
 			phase = AREZZO_LAS_PORTAL;
 			CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(PLAYERBOT_MAP_OCHAO);
 			const int d = DISTANCE_APPROX(ch->GetX() - portal->GetX(), ch->GetY() - portal->GetY());
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
-			if (d > PLAYERBOT_AREZZO_LAS_PORTAL_NEAR || !nav.Init(PLAYERBOT_MAP_OCHAO) ||
-					!nav.SegmentClearWorld(ch->GetX(), ch->GetY(), portal->GetX(), portal->GetY()))
-				result = WalkPlayerBotInOchao(ch, state, portal->GetX(), portal->GetY(), dwNow) ? 1 : 0;
+			if (d <= PLAYERBOT_AREZZO_LAS_PORTAL_USE)
+			{
+				// Beside it: the quest's first choice, "Zaczarowany Las".
+				ch->Stop();
+				if (TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_AREZZO_FOREST, PLAYERBOT_AREZZO_FOREST_ARRIVAL_X,
+						PLAYERBOT_AREZZO_FOREST_ARRIVAL_Y, dwNow, "arezzo_las_portal"))
+					return 1;
+				PlayerBotLogThrottled("arezzo_las_portal_failed", dwNow,
+						"ARZ_BOT: las portal refused pid=%u name=%s pos=(%ld,%ld) portal=(%ld,%ld) distance=%d",
+						pid, ch->GetName(), ch->GetX(), ch->GetY(), portal->GetX(), portal->GetY(), d);
+				result = 1;
+			}
+			else if (d <= PLAYERBOT_AREZZO_LAS_PORTAL_NEAR && nav.Init(PLAYERBOT_MAP_OCHAO) &&
+					nav.SegmentClearWorld(ch->GetX(), ch->GetY(), portal->GetX(), portal->GetY()))
+			{
+				MovePlayerBot(ch, portal->GetX(), portal->GetY(), dwNow, 8, true, false, false, false);
+				result = 1;
+			}
 			else
-				result = MovePlayerBotToWorldPortal(ch, state, portal->GetX(), portal->GetY(),
-						PLAYERBOT_MAP_AREZZO_FOREST, PLAYERBOT_AREZZO_FOREST_ARRIVAL_X, PLAYERBOT_AREZZO_FOREST_ARRIVAL_Y,
-						dwNow, "arezzo_las_portal") ? 1 : 0;
+				result = WalkPlayerBotInOchao(ch, state, portal->GetX(), portal->GetY(), dwNow) ? 1 : 0;
 		}
 		else if (guardian && !guardian->IsDead())
 		{
@@ -1089,12 +1176,17 @@ namespace
 			else
 				result = FightPlayerBotTowerObjective(ch, state, guardian, dwNow) ? 1 : 0;
 		}
+		// The other phases once a minute at most for a bot (the portal's own
+		// line is above, once a Portal).
 		if (phase != las.bPhase)
 		{
-			sys_log(0, "ARZ_BOT: las %s pid=%u name=%s pos=(%ld,%ld) after_s=%u%s",
-					phase == AREZZO_LAS_PORTAL ? "takes the portal" : (phase == AREZZO_LAS_GUARDIAN ? "goes for the guardian" : "waits in the temple"),
-					pid, ch->GetName(), ch->GetX(), ch->GetY(), (dwNow - las.dwSince) / 1000,
-					phase == AREZZO_LAS_PORTAL ? "" : "");
+			if (phase != AREZZO_LAS_PORTAL && (las.dwLastLog == 0 || dwNow - las.dwLastLog >= 60000))
+			{
+				sys_log(0, "ARZ_BOT: las %s pid=%u name=%s pos=(%ld,%ld) after_s=%u",
+						phase == AREZZO_LAS_GUARDIAN ? "goes for the guardian" : "waits in the temple",
+						pid, ch->GetName(), ch->GetX(), ch->GetY(), (dwNow - las.dwSince) / 1000);
+				las.dwLastLog = dwNow;
+			}
 			las.bPhase = phase;
 			las.dwPhaseSince = dwNow;
 		}
@@ -1401,6 +1493,37 @@ namespace
 
 	// ------------------------------------------------------------ the watch
 
+	// A bot the order still sends that is off its map - home for potions or a
+	// repair, logged in elsewhere after a restart - goes back by itself: after
+	// PLAYERBOT_AREZZO_RESEND_AFTER_MS away, when it is not shopping, not
+	// fighting, not short of what the fight needs, and not a person's company.
+	const DWORD PLAYERBOT_AREZZO_RESEND_AFTER_MS = 90000;
+	const DWORD PLAYERBOT_AREZZO_RESEND_RETRY_MS = 30000;
+	void ResendPlayerBotArezzo(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotArezzoTrack& t, long map, DWORD dwNow)
+	{
+		const TPlayerBotArezzoMap* info = GetPlayerBotArezzoMapInfo(map);
+		if (!info || !IsPlayerBotArezzoHeld(ch) || GetPlayerBotArezzoForcedMap(ch) != map)
+			return;
+		const long here = ch->GetMapIndex();
+		if (t.dwAwaySince == 0)
+			t.dwAwaySince = dwNow;
+		if (dwNow - t.dwAwaySince < PLAYERBOT_AREZZO_RESEND_AFTER_MS || dwNow < t.dwNextResend)
+			return;
+		t.dwNextResend = dwNow + PLAYERBOT_AREZZO_RESEND_RETRY_MS;
+		if (ch->IsDead() || state.bRecoveringAfterDeath || here >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ||
+				(map == PLAYERBOT_MAP_AREZZO_FOREST && (here == PLAYERBOT_MAP_OCHAO || here == PLAYERBOT_MAP_ORC_VALLEY)) ||
+				(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) || IsPlayerBotHeldForCompany(ch) ||
+				state.bTownVisitPhase != BOT_TOWN_PHASE_NONE || ch->GetMyShop() != NULL ||
+				state.wBossRaidRace != 0 || BlocksPlayerBotTravel(ch) ||
+				(ch->GetVictim() != NULL && !ch->GetVictim()->IsDead()))
+			return;
+		const bool moved = TransitionPlayerBotMap(ch, state, map, info->lArrivalX, info->lArrivalY, dwNow, "arezzo_resend");
+		sys_log(0, "ARZ_BOT: re-sent pid=%u name=%s map=%ld from=%ld away_s=%u ok=%d",
+				ch->GetPlayerID(), ch->GetName(), map, here, (dwNow - t.dwAwaySince) / 1000, moved ? 1 : 0);
+		if (moved)
+			t.dwSent = dwNow;
+	}
+
 	void TickPlayerBotArezzo()
 	{
 		const DWORD dwNow = get_dword_time();
@@ -1550,7 +1673,10 @@ namespace
 			{
 				mode = 2;
 				++sentAway;
+				ResendPlayerBotArezzo(ch, state, t, forced != s_mapPlayerBotArezzoForced.end() ? forced->second : 0, dwNow);
 			}
+			if (here || las)
+				t.dwAwaySince = 0;
 			if (out)
 			{
 				LPCHARACTER victim = ch->GetVictim();

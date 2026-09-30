@@ -1728,6 +1728,14 @@ namespace {
                 return false;
             }
         }
+        // MT2009_PLUS_AREZZO_BOTS_V1 (held): a bot the Arezzo test holds on its
+        // map (or on its road into the Las) serves its shop after the test.
+        if (ch->GetMapIndex() != serviceMap && IsPlayerBotArezzoHeldHere(ch)) {
+            if (o.visiting)
+                BotOfflineInterruptVisit(ch, state, now, "arezzo_test");
+            o.nextService = now + PLAYERBOT_OFFLINE_FAR_SERVICE_RETRY_MS;
+            return false;
+        }
         if (!o.visiting) {
             o.visiting = true;
             o.visitStarted = now;

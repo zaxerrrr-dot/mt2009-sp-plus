@@ -423,8 +423,12 @@ namespace
 			const bool atTeleporter = DISTANCE_APPROX(ch->GetX() - PLAYERBOT_OCHAO_EXIT_X,
 					ch->GetY() - PLAYERBOT_OCHAO_EXIT_Y) <= PLAYERBOT_OCHAO_WARP_REACH;
 			LPCHARACTER openPortal = mt2009_ochao::s_dwPortalVID ? mt2009_ochao::FindOnMap(mt2009_ochao::s_dwPortalVID) : NULL;
+			// MT2009_PLUS_AREZZO_BOTS_V1 (las): the Portal to the Las is talked to
+			// from a few steps, as a player does - the NPC stands on its own cell.
+			const int portalReach = reason && strcmp(reason, "arezzo_las_portal") == 0
+					? 800 : PLAYERBOT_OCHAO_WARP_REACH;
 			const bool atPortal = openPortal && DISTANCE_APPROX(ch->GetX() - openPortal->GetX(),
-					ch->GetY() - openPortal->GetY()) <= PLAYERBOT_OCHAO_WARP_REACH;
+					ch->GetY() - openPortal->GetY()) <= portalReach;
 			std::map<DWORD, TPlayerBotOchaoPending>::iterator pend = s_mapPlayerBotOchaoPending.find(pid);
 			// Or once it has died too often in this visit to walk anywhere: the
 			// warp is its way out of a pack it cannot get past.
