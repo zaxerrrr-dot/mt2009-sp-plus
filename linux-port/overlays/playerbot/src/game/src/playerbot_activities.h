@@ -1391,7 +1391,10 @@ namespace
 					if (!worn || !IsPlayerBotWornItemSound(ch, worn, wear) ||
 							IS_SET(worn->GetFlag(), ITEM_FLAG_IRREMOVABLE) || IsPlayerBotSidekickPinned(ch, worn))
 						continue;
-					if (pass_ == 0 && IsPlayerBotTimedUnique(worn->GetVnum()))
+					// MT2009_PLUS_BOT_RANK_GLOVE_V1: the Prophecy King's Glove
+					// or Symbol at a negative rank goes last too.
+					if (pass_ == 0 && (IsPlayerBotTimedUnique(worn->GetVnum()) ||
+							(IsPlayerBotRankUnique(worn->GetVnum()) && ch->GetRealAlignment() < 0)))
 						continue;
 					displaced = worn;
 				}
