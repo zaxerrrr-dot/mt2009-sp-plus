@@ -3562,6 +3562,58 @@ namespace
 	const long PLAYERBOT_OCHAO_EXIT_X = 884825;
 	const long PLAYERBOT_OCHAO_EXIT_Y = 1446525;
 	const BYTE PLAYERBOT_OCHAO_MIN_LEVEL = 95;
+	// MT2009_PLUS_AREZZO_BOTS_V1 (maps): the Arezzo module's three open maps
+	// (flag mt2009_arezzo_closed, playerbot_arezzo.h). Only the operator's test
+	// cohorts go there for now (playerbot_arezzo_bots.h, the test hook
+	// "playerbot_arezzo_test"); every other bot's frontier is as before, and
+	// TransitionPlayerBotMap refuses the rest. Dolina Cyklopow (360) and
+	// Pustkowie Faraona (361) are on the Teleporter's first page; Zaczarowany
+	// Las (362) is reached only through the Temple of Ochao, by Straznik
+	// En-Tai's Portal. Each arrival is the map's Town.txt, each exit its
+	// Teleporter (npc.txt 9012), both cell centres with open ground all round,
+	// measured on the map's server_attr by tools/arezzo_bot_map.py.
+	const long PLAYERBOT_MAP_AREZZO_CYCLOPS = 360;	// metin2_map_exp
+	const long PLAYERBOT_MAP_AREZZO_PHARAOH = 361;	// metin2_map_pustynia
+	const long PLAYERBOT_MAP_AREZZO_FOREST = 362;	// natural_map
+	const long PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_X = 265050;
+	const long PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_Y = 305150;
+	const long PLAYERBOT_AREZZO_CYCLOPS_EXIT_X = 265450;
+	const long PLAYERBOT_AREZZO_CYCLOPS_EXIT_Y = 305450;
+	const long PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_X = 240950;
+	const long PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_Y = 394050;
+	const long PLAYERBOT_AREZZO_PHARAOH_EXIT_X = 241350;
+	const long PLAYERBOT_AREZZO_PHARAOH_EXIT_Y = 394350;
+	// The Las: the quest's portal lands at cell (459,106) = (378700,394600).
+	const long PLAYERBOT_AREZZO_FOREST_ARRIVAL_X = 378750;
+	const long PLAYERBOT_AREZZO_FOREST_ARRIVAL_Y = 394650;
+	const long PLAYERBOT_AREZZO_FOREST_EXIT_X = 379150;
+	const long PLAYERBOT_AREZZO_FOREST_EXIT_Y = 394950;
+	// Three under the weakest monster of each (9601 of 43, 9680 of 53) and the
+	// Temple of Ochao's door for the Las.
+	const BYTE PLAYERBOT_AREZZO_CYCLOPS_MIN_LEVEL = 40;
+	const BYTE PLAYERBOT_AREZZO_PHARAOH_MIN_LEVEL = 50;
+	const BYTE PLAYERBOT_AREZZO_FOREST_MIN_LEVEL = PLAYERBOT_OCHAO_MIN_LEVEL;
+	bool IsPlayerBotArezzoMap(long mapIndex)
+	{
+		return mapIndex == PLAYERBOT_MAP_AREZZO_CYCLOPS || mapIndex == PLAYERBOT_MAP_AREZZO_PHARAOH ||
+				mapIndex == PLAYERBOT_MAP_AREZZO_FOREST;
+	}
+	// The places no bot may be taken to but by the Arezzo test: the Arezzo
+	// maps and dungeons (360-366 and their instances) and the Blue Dragon's
+	// lair (208). The owner, 30 September: no bot in the new dungeons, and on
+	// the new maps only the test cohorts, for now.
+	bool IsPlayerBotOffLimitsMap(long mapIndex)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		return base == 208 || (base >= 360 && base <= 366);
+	}
+	// The Easter event's metins (8041-8050, event_easter.quest): its kill
+	// hook pays the killer a basket and puts more metins down, and the owner
+	// wants no bot in the new events - never a bot's target.
+	bool IsPlayerBotEventStone(DWORD race)
+	{
+		return race >= 8041 && race <= 8050;
+	}
 	// The Demon Tower is not a frontier and has no hub table: a bot goes there
 	// for the Biologist's level-50 specimen and comes back. 1001-1004 stand in
 	// two clusters and this is the denser one.
@@ -3594,6 +3646,9 @@ namespace
 			case PLAYERBOT_MAP_GROTTO_V1: outX = PLAYERBOT_GROTTO_V1_ARRIVAL_X; outY = PLAYERBOT_GROTTO_V1_ARRIVAL_Y; return true;
 			case PLAYERBOT_MAP_GROTTO_V2: outX = PLAYERBOT_GROTTO_V2_ARRIVAL_X; outY = PLAYERBOT_GROTTO_V2_ARRIVAL_Y; return true;
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_ARRIVAL_X; outY = PLAYERBOT_OCHAO_ARRIVAL_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_X; outY = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_X; outY = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_FOREST: outX = PLAYERBOT_AREZZO_FOREST_ARRIVAL_X; outY = PLAYERBOT_AREZZO_FOREST_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			default: return false;
 		}
 	}
@@ -3615,6 +3670,9 @@ namespace
 			case PLAYERBOT_MAP_GROTTO_V1: outX = PLAYERBOT_GROTTO_V1_EXIT_X; outY = PLAYERBOT_GROTTO_V1_EXIT_Y; return true;
 			case PLAYERBOT_MAP_GROTTO_V2: outX = PLAYERBOT_GROTTO_V2_EXIT_X; outY = PLAYERBOT_GROTTO_V2_EXIT_Y; return true;
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_EXIT_X; outY = PLAYERBOT_OCHAO_EXIT_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_EXIT_X; outY = PLAYERBOT_AREZZO_CYCLOPS_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_EXIT_X; outY = PLAYERBOT_AREZZO_PHARAOH_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_FOREST: outX = PLAYERBOT_AREZZO_FOREST_EXIT_X; outY = PLAYERBOT_AREZZO_FOREST_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			default: return false;
 		}
 	}
@@ -3638,7 +3696,8 @@ namespace
 				mapIndex == PLAYERBOT_MAP_FOREST || mapIndex == PLAYERBOT_MAP_RED_FOREST ||
 				mapIndex == PLAYERBOT_MAP_FIRE_LAND ||
 				mapIndex == PLAYERBOT_MAP_GROTTO_V1 || mapIndex == PLAYERBOT_MAP_GROTTO_V2 ||
-				mapIndex == PLAYERBOT_MAP_OCHAO; // MT2009_PLUS_OCHAO_BOTS_V1
+				mapIndex == PLAYERBOT_MAP_OCHAO || // MT2009_PLUS_OCHAO_BOTS_V1
+				IsPlayerBotArezzoMap(mapIndex); // MT2009_PLUS_AREZZO_BOTS_V1 (only the test cohorts are sent)
 	}
 
 	// Both Spider Dungeons: the ones reached across the desert and entered
@@ -3665,6 +3724,9 @@ namespace
 			case PLAYERBOT_MAP_GROTTO_V1: return "grotto_v1";
 			case PLAYERBOT_MAP_GROTTO_V2: return "grotto_v2";
 			case PLAYERBOT_MAP_OCHAO: return "ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "arezzo_cyclops"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "arezzo_pharaoh"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_FOREST: return "arezzo_forest"; // MT2009_PLUS_AREZZO_BOTS_V1
 			default: return "frontier";
 		}
 	}
@@ -8366,6 +8428,7 @@ namespace
 				mapIndex != PLAYERBOT_MAP_DEMON_TOWER &&
 				mapIndex != PLAYERBOT_MAP_GROTTO_V1 && mapIndex != PLAYERBOT_MAP_GROTTO_V2 &&
 				mapIndex != PLAYERBOT_MAP_OCHAO; // MT2009_PLUS_OCHAO_BOTS_V1: its stone.txt is empty
+				// MT2009_PLUS_AREZZO_BOTS_V1: the Arezzo maps keep their stones (stone.txt).
 	}
 
 	// Hunting stones right now: by role for life, or by expedition for half an

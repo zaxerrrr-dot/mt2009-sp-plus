@@ -140,6 +140,9 @@ namespace
 			case PLAYERBOT_MAP_GROTTO_V1: return "do Groty Wygnancow";
 			case PLAYERBOT_MAP_GROTTO_V2: return "do Groty Wygnancow 2";
 			case PLAYERBOT_MAP_OCHAO: return "do Swiatyni Ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "do Doliny Cyklopow"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "na Pustkowie Faraona"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_FOREST: return "do Zaczarowanego Lasu"; // MT2009_PLUS_AREZZO_BOTS_V1
 			default: return "";
 		}
 	}
@@ -176,6 +179,9 @@ namespace
 			case PLAYERBOT_MAP_GROTTO_V1: return "to the Grotto of Exile";
 			case PLAYERBOT_MAP_GROTTO_V2: return "to the Grotto of Exile 2";
 			case PLAYERBOT_MAP_OCHAO: return "to the Temple of Ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "to the Cyclops Valley"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "to the Pharaoh's Wasteland"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_AREZZO_FOREST: return "to the Enchanted Forest"; // MT2009_PLUS_AREZZO_BOTS_V1
 			default: return "";
 		}
 	}

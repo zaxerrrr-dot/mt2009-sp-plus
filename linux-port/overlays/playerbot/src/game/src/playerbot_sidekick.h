@@ -1482,6 +1482,16 @@ namespace
 	bool PlacePlayerBotSidekickAt(LPCHARACTER ch, TPlayerBotAIState& state, long targetMap, long x, long y,
 			DWORD dwNow, const char* reason)
 	{
+		// MT2009_PLUS_AREZZO_BOTS_V1 (off limits): not into the new dungeons, the
+		// Blue Dragon's lair or the Arezzo maps - no bot goes there for now (the
+		// owner, 30 September). It waits where it is for its owner.
+		if (IsPlayerBotOffLimitsMap(targetMap))
+		{
+			PlayerBotLogThrottled("sidekick_off_limits", dwNow,
+					"PLAYERBOT_SIDEKICK: does not follow onto map=%ld pid=%u name=%s reason=%s",
+					targetMap, ch->GetPlayerID(), ch->GetName(), reason);
+			return false;
+		}
 		const long oldMap = ch->GetMapIndex();
 		const bool wasRiding = ch->IsRiding();
 		state.dwTargetVID = 0;
@@ -5335,6 +5345,9 @@ namespace
 	{
 		ownerFighting = IsPlayerBotSidekickOwnerTargetInFight(ch, owner);
 		LPCHARACTER target = stance == PLAYERBOT_SIDEKICK_STANCE_PASSIVE ? NULL : owner->GetTarget();
+		// MT2009_PLUS_AREZZO_BOTS_V1 (events): the owner's Easter metin is the owner's.
+		if (target && target->IsStone() && IsPlayerBotEventStone(target->GetRaceNum()))
+			target = NULL;
 		if (target && target != ch && !target->IsDead() &&
 				(target->IsMonster() || target->IsStone() || IsPlayerBotSidekickWarFoe(owner, target)) &&
 				target->GetMapIndex() == owner->GetMapIndex() &&
@@ -6443,6 +6456,27 @@ namespace
 		// A dungeon instance too - the owner is its guide, which a bot on its
 		// own never has.
 		const bool otherMap = owner->GetMapIndex() != ch->GetMapIndex();
+		// MT2009_PLUS_AREZZO_BOTS_V1 (off limits): the owner in a new dungeon,
+		// the Blue Dragon's lair or on an Arezzo map: the companion waits here,
+		// as it does while its owner warps, and says so once.
+		if (otherMap && IsPlayerBotOffLimitsMap(owner->GetMapIndex()))
+		{
+			if (ch->IsStateMove())
+				ch->Stop();
+			ch->SetVictim(NULL);
+			state.dwTargetVID = 0;
+			state.dwLastMeaningfulActivityTime = dwNow;
+			SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+			static std::map<DWORD, DWORD> s_mapToldAt;
+			std::map<DWORD, DWORD>::iterator told = s_mapToldAt.find(ch->GetPlayerID());
+			if (told == s_mapToldAt.end() || dwNow - told->second >= 600000)
+			{
+				owner->ChatPacket(CHAT_TYPE_INFO, "%s czeka na Ciebie tutaj - do tego miejsca towarzysz nie wchodzi.",
+						ch->GetName());
+				s_mapToldAt[ch->GetPlayerID()] = dwNow;
+			}
+			return true;
+		}
 		const int dist = otherMap ? INT_MAX
 				: DISTANCE_APPROX(ch->GetX() - owner->GetX(), ch->GetY() - owner->GetY());
 		if (otherMap || dist > PLAYERBOT_SIDEKICK_TELEPORT_DISTANCE)

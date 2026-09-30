@@ -816,8 +816,10 @@ namespace
 				if (m_found || !entity || !entity->IsType(ENTITY_CHARACTER))
 					return;
 				LPCHARACTER stone = static_cast<LPCHARACTER>(entity);
+				// MT2009_PLUS_AREZZO_BOTS_V1 (events): an Easter metin too - no sweep
+				// breaks one.
 				if (stone->IsStone() && !stone->IsDead() &&
-						IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()) &&
+						(IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()) || IsPlayerBotEventStone(stone->GetRaceNum())) &&
 						DISTANCE_APPROX(stone->GetX() - m_x, stone->GetY() - m_y) <= m_range)
 					m_found = true;
 			}

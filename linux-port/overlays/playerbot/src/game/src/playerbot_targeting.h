@@ -132,6 +132,7 @@ namespace
 
 				LPCHARACTER candidate = CHARACTER_MANAGER::instance().Find(it->second.dwTargetVID);
 				if (!candidate || (!candidate->IsMonster() && !candidate->IsStone()) || candidate->IsDead() ||
+						(candidate->IsStone() && IsPlayerBotEventStone(candidate->GetRaceNum())) || // MT2009_PLUS_AREZZO_BOTS_V1 (events)
 						candidate->GetMapIndex() != m_owner->GetMapIndex() ||
 						IsPlayerBotSafeZone(candidate->GetMapIndex(), candidate->GetX(), candidate->GetY()) ||
 						!IsPlayerBotReachable(m_owner->GetMapIndex(),
@@ -548,6 +549,8 @@ namespace
 	bool IsPlayerBotStoneJoinable(LPCHARACTER ch, LPCHARACTER stone)
 	{
 		if (!ch || !stone || !stone->IsStone() || stone->IsDead())
+			return false;
+		if (IsPlayerBotEventStone(stone->GetRaceNum())) // MT2009_PLUS_AREZZO_BOTS_V1 (events)
 			return false;
 		if (IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()))
 			return IsPlayerBotDungeonStoneObjective(ch, stone);
@@ -1239,6 +1242,9 @@ namespace
 
 				LPCHARACTER candidate = static_cast<LPCHARACTER>(entity);
 				if (candidate == m_owner || (!candidate->IsMonster() && !candidate->IsStone()) || candidate->IsDead())
+					return false;
+				// MT2009_PLUS_AREZZO_BOTS_V1 (events): an Easter metin is nobody's.
+				if (candidate->IsStone() && IsPlayerBotEventStone(candidate->GetRaceNum()))
 					return false;
 				if (IsPlayerBotSafeZone(candidate->GetMapIndex(), candidate->GetX(), candidate->GetY()))
 					return false;
@@ -1956,6 +1962,7 @@ namespace
 				// the bot is climbing with a player, for whom that is the point.
 				if (candidate == m_owner || candidate->GetVID() == m_primaryVID ||
 						(!candidate->IsMonster() && !candidate->IsStone()) || candidate->IsDead() ||
+						(candidate->IsStone() && IsPlayerBotEventStone(candidate->GetRaceNum())) || // MT2009_PLUS_AREZZO_BOTS_V1 (events)
 						(candidate->IsStone() && IsPlayerBotDungeonTriggerStone(candidate->GetRaceNum()) &&
 							!IsPlayerBotDungeonStoneObjective(m_owner, candidate)))
 					return false;
@@ -2131,6 +2138,9 @@ namespace
 		const bool bIsGate = primary->IsDoor() && IsPlayerBotCatacombInstance(primary->GetMapIndex());
 		const bool bIsTargetValid = (primary->IsMonster() || primary->IsStone() || bIsDuel || bIsGate);
 		if (!bIsTargetValid || primary->IsDead())
+			return 0;
+		// MT2009_PLUS_AREZZO_BOTS_V1 (events): never a blow at an Easter metin.
+		if (primary->IsStone() && IsPlayerBotEventStone(primary->GetRaceNum()))
 			return 0;
 
 		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
