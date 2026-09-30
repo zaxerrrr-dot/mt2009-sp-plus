@@ -447,7 +447,9 @@ void DungeonPanelUpdateRanking(LPCHARACTER pc, LPCHARACTER npc, const char* key,
 	const Def* d = FindKey(key);
 	if (!d)
 	{
-		sys_err("DUNGEON_PANEL: d.update_ranking(%s): no such dungeon in dungeon_info.txt", key);
+		// Not listed (the monkey/spider dungeons and the Temple of Ochao left the window on 30 September; their
+		// quests still report) - nothing to rank.
+		sys_log(0, "DUNGEON_PANEL: d.update_ranking(%s): not in dungeon_info.txt, not ranked", key);
 		return;
 	}
 	std::vector<LPCHARACTER> players;
