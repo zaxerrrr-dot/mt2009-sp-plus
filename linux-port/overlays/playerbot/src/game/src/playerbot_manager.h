@@ -3,6 +3,7 @@
 
 #include <set>
 #include <deque>
+#include "playerbot_session_rules.h" // MT2009_PLUS_BOT_SESSIONS_V1
 
 class CGuild;
 class CAsyncSQL;
@@ -27,7 +28,11 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// The bootstrap needs this before it can split one budget three ways.
 		void	CountRegisteredPerEmpire(int* out, int size);
 		void	SpawnPendingBatch(DWORD dwNow);
-		bool	Despawn(DWORD dwPlayerID);
+		// MT2009_PLUS_BOT_SESSIONS_V1: why the bot leaves, for its session
+		// row (playerbot_session_rules.h); an engine caller - a GM's command -
+		// gives none. dwRestSeconds only with OUT_REST: when it is due back.
+		bool	Despawn(DWORD dwPlayerID, BYTE bSessionOut = playerbot_session_rules::OUT_GM,
+				DWORD dwRestSeconds = 0);
 		void	TryScheduleRetirement(DWORD dwNow);
 		void	ProcessRetirementResets(DWORD dwNow);
 		void	OnRetirementPurgeAck(DWORD dwPlayerID);
