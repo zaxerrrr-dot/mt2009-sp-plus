@@ -322,6 +322,8 @@ BOT_PERSONA_LABELS = {
         # Community Patch 5, point 1: the four gamblers, drawn in purple.
         15: "Młodszy Hazardzista", 16: "Starszy Hazardzista",
         17: "Naczelny Hazardzista", 18: "Szalony Hazardzista",
+        # Baek-Go's herbalist (kuszaa, 30 September).
+        19: "Zielarz",
     },
     "en": {
         0: "Grinder", 1: "Conqueror", 2: "Trader", 3: "Gambler",
@@ -331,6 +333,7 @@ BOT_PERSONA_LABELS = {
         13: "Executioner", 14: "Mad Angler",
         15: "Junior Gambler", 16: "Senior Gambler",
         17: "Chief Gambler", 18: "Mad Gambler",
+        19: "Herbalist",
     },
 }
 BOT_MOOD_LABELS = {
@@ -1127,6 +1130,8 @@ AI_WEIGHT_KEYS = [
     ("LEVEL",   "⚔️"),
     ("FISHING", "🎣"),
     ("TRADE",   "🏪"),
+    ("MINING",  "⛏️"),
+    ("HERB",    "🌿"),
 ]
 
 
@@ -1138,6 +1143,9 @@ def read_ai_weights():
     vals["NIGHT"] = 1
     # "Boty graja jak zywi ludzie": sessions and rests. Experimental, off.
     vals["LIFE"] = 0
+    # Its hours of play a day (LIFE_HOURS, playerbot_life_rules.h); 0 is the
+    # key unset, the sessions and rests of before.
+    vals["LIFE_HOURS"] = 0
     # Guild wars between the bots' guilds (playerbot_guild_war.h). On.
     vals["WARS"] = 1
     vals["TOWER"] = 1
@@ -1203,6 +1211,12 @@ def read_ai_weights():
                     continue
                 if name == "LIFE":
                     vals["LIFE"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
+                    continue
+                if name == "LIFE_HOURS":
+                    try:
+                        vals["LIFE_HOURS"] = max(0, min(LIFE_HOURS_MAX, int(parts[1])))
+                    except ValueError:
+                        pass
                     continue
                 if name == "WARS":
                     vals["WARS"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
@@ -1317,6 +1331,10 @@ def write_ai_weights(vals):
     # Not a weight: whether bots play in sessions and log out to rest in
     # between (experimental, off by default).
     body.append("LIFE\t%d" % (1 if vals.get("LIFE", 0) else 0))
+    # Not a weight: the hours of play a day under LIFE, written only once
+    # set - without the key the core keeps the sessions and rests of before.
+    if vals.get("LIFE_HOURS"):
+        body.append("LIFE_HOURS\t%d" % max(1, min(LIFE_HOURS_MAX, int(vals["LIFE_HOURS"]))))
     # Not a weight: whether the bots' guilds fight field wars.
     body.append("WARS\t%d" % (1 if vals.get("WARS", 1) else 0))
     body.append("TOWER\t%d" % (1 if vals.get("TOWER", 1) else 0))
@@ -3989,6 +4007,13 @@ T.update({
                   "de":"Experimentell. Jeder Bot spielt eine Sitzung von 3-6 Stunden (die erste nach einem Start ab einer halben Stunde), loggt sich aus, ruht 3-9 Stunden und kommt zurück; höchstens zwei von fünf Bots ruhen gleichzeitig, also sind mindestens drei von fünf online. Aus: alle Bots bleiben wie bisher in der Welt. Greift innerhalb einer Minute; Ausschalten holt die ruhenden Bots in wenigen Minuten zurück. Ein Bot in der Gruppe eines Spielers wartet mit dem Ausloggen.",
                   "tr":"Deneysel. Her bot 3-6 saatlik bir oturum oynar (başlangıçtan sonraki ilki yarım saatten itibaren), çıkış yapar, 3-9 saat dinlenir ve geri gelir; aynı anda en fazla beşte iki bot dinlenir, yani en az beşte üçü çevrimiçidir. Kapalıyken tüm botlar eskisi gibi dünyada kalır. Bir dakika içinde uygulanır; kapatmak dinlenen botları birkaç dakika içinde geri getirir. Bir oyuncunun grubundaki bot çıkış yapmadan bekler."},
  "ai_life_on":   {"en":"Enabled (experimental)","pl":"Włączone (eksperymentalne)","de":"Eingeschaltet (experimentell)","tr":"Açık (deneysel)"},
+ "ai_life_hours": {"en":"Hours of play a day","pl":"Godziny gry na dobę","de":"Spielstunden pro Tag","tr":"Günlük oyun saati"},
+ "ai_life_hours_default": {"en":"as before","pl":"jak dotąd","de":"wie bisher","tr":"eskisi gibi"},
+ "ai_life_hours_all_day": {"en":"all day, no rests","pl":"cała doba, bez przerw","de":"den ganzen Tag, ohne Pausen","tr":"bütün gün, molasız"},
+ "ai_life_hours_help": {"en":"Works while the switch above is on. How many hours a day each bot plays: sessions of 4 hours (the whole of a shorter day) with a rest between them that makes the day add up - 12 is about three sessions of 4 hours with 4 hours off, 2 is one session of 2 hours a day. Each session and rest is drawn a quarter either way, and at most the day's share of resting bots plus a tenth rest at once. 0 keeps the sessions of 3-6 hours and rests of 3-9 hours.",
+                  "pl":"Działa, gdy przełącznik wyżej jest włączony. Ile godzin na dobę gra każdy bot: sesje po 4 godziny (przy krótszej dobie cała doba w jednej sesji) z przerwą, która dopełnia dobę - 12 to około trzech sesji po 4 godziny z 4 godzinami przerwy, 2 to jedna dwugodzinna sesja na dobę. Każda sesja i przerwa losuje się o ćwierć w górę lub w dół, a naraz odpoczywa najwyżej tyle botów, ile wynika z doby, i jeszcze jedna dziesiąta. 0 zostawia sesje 3–6 godzin i przerwy 3–9 godzin.",
+                  "de":"Wirkt, solange der Schalter oben an ist. Wie viele Stunden am Tag jeder Bot spielt: Sitzungen von 4 Stunden (bei kürzerem Tag der ganze Tag in einer) mit einer Pause dazwischen, die den Tag auffüllt - 12 sind etwa drei Sitzungen von 4 Stunden mit 4 Stunden Pause, 2 eine zweistündige Sitzung am Tag. Jede Sitzung und Pause wird um ein Viertel nach oben oder unten gezogen, und gleichzeitig ruhen höchstens so viele Bots, wie der Tag vorgibt, plus ein Zehntel. 0 behält Sitzungen von 3-6 Stunden und Pausen von 3-9 Stunden.",
+                  "tr":"Yukarıdaki anahtar açıkken çalışır. Her botun günde kaç saat oynadığı: 4 saatlik oturumlar (daha kısa bir günde günün tamamı tek oturum) ve günü tamamlayan molalar - 12, 4 saat molayla yaklaşık üç adet 4 saatlik oturumdur, 2 günde tek bir 2 saatlik oturumdur. Her oturum ve mola dörtte bir yukarı veya aşağı çekilir ve aynı anda en fazla günün payı kadar bot, bir de onda biri dinlenir. 0, 3-6 saatlik oturumları ve 3-9 saatlik molaları korur."},
  "ai_wars":      {"en":"Guild wars between the bots","pl":"Wojny gildii botów","de":"Gildenkriege der Bots","tr":"Botların lonca savaşları"},
  "ai_wars_help": {"en":"Two bot guilds of one kingdom fight a field war on that kingdom's guild map, for as long and as often as set below (thirty minutes every two hours by default), with the game's own declaration and scoring and a notice on the chat when it starts. A guild needs eight bots online to be picked. Off: no new war is declared, and the bots of a war under way leave it within a minute.",
                   "pl":"Dwie gildie botów z jednego królestwa toczą wojnę polową na mapie gildyjnej tego królestwa, tak długo i tak często, jak ustawiono niżej (domyślnie trzydzieści minut co dwie godziny), z wypowiedzeniem i punktacją gry i komunikatem na czacie przy starcie. Gildia musi mieć osiem botów online, żeby ją wylosowano. Wyłączone: nowa wojna nie jest wypowiadana, a boty z trwającej wojny wycofują się w ciągu minuty.",
@@ -4049,10 +4074,10 @@ T.update({
                   "de":"Drei zusätzliche Bots, einer pro Reich, über der Botanzahl. Sie leveln bis 15 und stehen dann ohne Waffe und Rüstung beim Gemischtwarenhändler im ersten Dorf und rufen ab und zu etwas in den Ruf-Kanal. Aus: sie loggen sofort aus.",
                   "tr":"Her krallık için bir tane olmak üzere bot sayısının üstünde üç ek bot. 15. seviyeye kadar kasarlar, sonra ilk köyün genel mağazasının yanında silahsız ve zırhsız durup ara sıra bağırma kanalına yazarlar. Kapalı: hemen çıkış yaparlar."},
  "ai_persona":   {"en":"Bot personalities (Iwakura v2)","pl":"Osobowości botów (Iwakura v2)","de":"Bot-Persönlichkeiten (Iwakura v2)","tr":"Bot kişilikleri (Iwakura v2)"},
- "ai_persona_help": {"en":"Iwakura's personality system. A bot's personality follows its situation (Grinder, Conqueror, Trader, Gambler, Perfectionist, Metin slayer, Miner, Fisherman, Mercenary, Companion) and it has a mood (poor, normal, very good) shown on its card. A Grinder holds its level at its tier (15, 23, 30-35, 40-48, 55-62) until it wears a weapon +7, an armour +6 and a shield +6 for its level, and only then may level on as a Conqueror. A bot in a poor mood pauses between packs and goes AFK now and then; only such bots rest in town. Now and then a bot becomes one of five rare personalities for a while, shown in red: Metinologist, Addict, Mad Scientist, Executioner, Mad Angler - or, among the richest bots, one of four gamblers shown in purple: Junior, Senior, Chief and Mad Gambler. Off: the bots play as they did before, with their old personalities.",
-                  "pl":"System osobowości Iwakury. Osobowość bota wynika z jego sytuacji (Grinder, Zdobywca, Handlarz, Hazardzista, Perfekcjonista, Pogromca metinów, Górnik, Rybak, Najemnik, Towarzysz), a bot ma nastrój (słaby, normalny, bardzo dobry) widoczny na jego karcie. Grinder trzyma poziom swojego tieru (15, 23, 30-35, 40-48, 55-62), dopóki nie założy broni +7, zbroi +6 i tarczy +6 na swój poziom - dopiero wtedy może dalej expić jako Zdobywca. Bot w słabym nastroju robi przerwy między grupami mobów i co jakiś czas odchodzi od komputera; tylko takie boty odpoczywają w mieście. Od czasu do czasu bot staje się na pewien czas jedną z pięciu rzadkich osobowości, widocznych na czerwono: Metinolog, Nałogowiec, Szalony Naukowiec, Egzekutor, Szalony Wędkarz - a wśród najbogatszych botów jednym z czterech Hazardzistów, widocznych na fioletowo: Młodszym, Starszym, Naczelnym i Szalonym. Wyłączone: boty grają jak wcześniej, ze starymi osobowościami.",
-                  "de":"Iwakuras Persönlichkeitssystem. Die Persönlichkeit eines Bots folgt seiner Lage (Grinder, Eroberer, Händler, Spieler, Perfektionist, Metinjäger, Bergmann, Fischer, Söldner, Gefährte), und er hat eine Stimmung (schlecht, normal, sehr gut), die auf seiner Karte steht. Ein Grinder hält die Stufe seines Tiers (15, 23, 30-35, 40-48, 55-62), bis er eine Waffe +7, eine Rüstung +6 und einen Schild +6 für seine Stufe trägt, und erst dann darf er als Eroberer weiterleveln. Ein Bot in schlechter Stimmung macht Pausen zwischen den Gruppen und ist ab und zu AFK; nur solche Bots ruhen in der Stadt. Aus: die Bots spielen wie früher, mit ihren alten Persönlichkeiten.",
-                  "tr":"Iwakura'nın kişilik sistemi. Bir botun kişiliği durumuna göre değişir (Grinder, Fatih, Tüccar, Kumarbaz, Mükemmeliyetçi, Metin avcısı, Madenci, Balıkçı, Paralı asker, Yoldaş) ve kartında görünen bir ruh hali vardır (kötü, normal, çok iyi). Bir Grinder, seviyesine uygun +7 silah, +6 zırh ve +6 kalkan giyene kadar kademesinin seviyesinde (15, 23, 30-35, 40-48, 55-62) kalır, ancak ondan sonra Fatih olarak seviye atlayabilir. Kötü ruh halindeki bot gruplar arasında durur ve ara sıra AFK olur; yalnızca bu botlar şehirde dinlenir. Kapalı: botlar eski kişilikleriyle önceki gibi oynar."},
+ "ai_persona_help": {"en":"Iwakura's personality system. A bot's personality follows its situation (Grinder, Conqueror, Trader, Gambler, Perfectionist, Metin slayer, Miner, Herbalist, Fisherman, Mercenary, Companion) and it has a mood (poor, normal, very good) shown on its card. A Grinder holds its level at its tier (15, 23, 30-35, 40-48, 55-62) until it wears a weapon +7, an armour +6 and a shield +6 for its level, and only then may level on as a Conqueror. A bot in a poor mood pauses between packs and goes AFK now and then; only such bots rest in town. Now and then a bot becomes one of five rare personalities for a while, shown in red: Metinologist, Addict, Mad Scientist, Executioner, Mad Angler - or, among the richest bots, one of four gamblers shown in purple: Junior, Senior, Chief and Mad Gambler. Off: the bots play as they did before, with their old personalities.",
+                  "pl":"System osobowości Iwakury. Osobowość bota wynika z jego sytuacji (Grinder, Zdobywca, Handlarz, Hazardzista, Perfekcjonista, Pogromca metinów, Górnik, Zielarz, Rybak, Najemnik, Towarzysz), a bot ma nastrój (słaby, normalny, bardzo dobry) widoczny na jego karcie. Grinder trzyma poziom swojego progu (15, 23, 30-35, 40-48, 55-62), dopóki nie założy broni +7, zbroi +6 i tarczy +6 na swój poziom - dopiero wtedy może dalej expić jako Zdobywca. Bot w słabym nastroju robi przerwy między grupami mobów i co jakiś czas odchodzi od komputera; tylko takie boty odpoczywają w mieście. Od czasu do czasu bot staje się na pewien czas jedną z pięciu rzadkich osobowości, widocznych na czerwono: Metinolog, Nałogowiec, Szalony Naukowiec, Egzekutor, Szalony Wędkarz - a wśród najbogatszych botów jednym z czterech Hazardzistów, widocznych na fioletowo: Młodszym, Starszym, Naczelnym i Szalonym. Wyłączone: boty grają jak wcześniej, ze starymi osobowościami.",
+                  "de":"Iwakuras Persönlichkeitssystem. Die Persönlichkeit eines Bots folgt seiner Lage (Grinder, Eroberer, Händler, Spieler, Perfektionist, Metinjäger, Bergmann, Kräuterkundiger, Fischer, Söldner, Gefährte), und er hat eine Stimmung (schlecht, normal, sehr gut), die auf seiner Karte steht. Ein Grinder hält die Stufe seines Tiers (15, 23, 30-35, 40-48, 55-62), bis er eine Waffe +7, eine Rüstung +6 und einen Schild +6 für seine Stufe trägt, und erst dann darf er als Eroberer weiterleveln. Ein Bot in schlechter Stimmung macht Pausen zwischen den Gruppen und ist ab und zu AFK; nur solche Bots ruhen in der Stadt. Aus: die Bots spielen wie früher, mit ihren alten Persönlichkeiten.",
+                  "tr":"Iwakura'nın kişilik sistemi. Bir botun kişiliği durumuna göre değişir (Grinder, Fatih, Tüccar, Kumarbaz, Mükemmeliyetçi, Metin avcısı, Madenci, Bitkici, Balıkçı, Paralı asker, Yoldaş) ve kartında görünen bir ruh hali vardır (kötü, normal, çok iyi). Bir Grinder, seviyesine uygun +7 silah, +6 zırh ve +6 kalkan giyene kadar kademesinin seviyesinde (15, 23, 30-35, 40-48, 55-62) kalır, ancak ondan sonra Fatih olarak seviye atlayabilir. Kötü ruh halindeki bot gruplar arasında durur ve ara sıra AFK olur; yalnızca bu botlar şehirde dinlenir. Kapalı: botlar eski kişilikleriyle önceki gibi oynar."},
  "ai_persona_on": {"en":"Enabled","pl":"Włączone","de":"Eingeschaltet","tr":"Açık"},
  "ai_experimental": {"en":"experimental","pl":"eksperymentalne","de":"experimentell","tr":"deneysel"},
  "ai_scrap":     {"en":"Scrap keepers","pl":"Boty złomiarze","de":"Schrotthändler-Bots","tr":"Hurdacı botlar"},
@@ -4282,6 +4307,16 @@ T.update({
                  "de":"Wie viele Bots angeln. Mit eingeschalteten Persönlichkeiten (Standard) würfelt ein Bot ab Stufe 30, außerhalb einer Gruppe, jede halbe Stunde neu gegen den Regler und seine Stimmung - am häufigsten ein Bot in schlechter Stimmung; ohne sie angelt ein fester Anteil der Bots (Sammler öfter). Erhöhen wirkt binnen Sekunden; Senken lässt laufende Sitzungen erst zu Ende gehen (bis zu einer Stunde). Ein Bot, der nach fünf Toden an einem Ort ans Wasser geschickt wird (die Kapitulation), geht unabhängig vom Regler.",
                  "tr":"Kaç botun balık tuttuğu. Kişilikler açıkken (varsayılan) 30. seviye ve üstündeki, grupta olmayan bot yarım saatte bir kaydırıcıya ve ruh haline göre yeniden zar atar - en sık kötü ruh halindeki bot; kapalıyken botların sabit bir payı balık tutar (toplayıcılar daha sık). Yükseltmek saniyeler içinde işler; düşürmek süren oturumların önce bitmesine izin verir (bir saate kadar). Bir yerde beş kez öldükten sonra suya gönderilen bot (kapitülasyon) kaydırıcıdan bağımsız gider."},
  "aiw_TRADE":    {"en":"Market stalls","pl":"Stragany","de":"Marktstände","tr":"Pazar tezgahları"},
+ "aiw_MINING":   {"en":"Mining","pl":"Górnictwo","de":"Bergbau","tr":"Madencilik"},
+ "aih_MINING":  {"en":"How many bots dig ore and how long they rest from the veins. With the personalities on (the default) every bot of level 30 with a pickaxe digs a vein in sight - under 100 the slider closes the veins to a share of them, half an hour at a time; with them off a fixed share of the bots mines (collectors more often). The rest between two sessions shrinks as the slider goes up and grows as it goes down.",
+                 "pl":"Ilu botów kopie rudę i jak długo odpoczywa od żył. Przy włączonych osobowościach (domyślnie) każdy bot od 30 poziomu z kilofem kopie żyłę w zasięgu wzroku - poniżej 100 suwak zamyka żyły dla części z nich, na pół godziny; przy wyłączonych kopie stały udział botów (zbieracze częściej). Przerwa między sesjami skraca się, gdy suwak idzie w górę, i wydłuża, gdy idzie w dół.",
+                 "de":"Wie viele Bots Erz abbauen und wie lange sie von den Adern ruhen. Mit eingeschalteten Persönlichkeiten (Standard) baut jeder Bot ab Stufe 30 mit einer Spitzhacke eine Ader in Sichtweite ab - unter 100 schließt der Regler die Adern für einen Teil von ihnen, jeweils eine halbe Stunde; ohne sie baut ein fester Anteil der Bots ab (Sammler öfter). Die Pause zwischen zwei Sitzungen wird kürzer, wenn der Regler steigt, und länger, wenn er sinkt.",
+                 "tr":"Kaç botun cevher kazdığı ve damarlardan ne kadar dinlendiği. Kişilikler açıkken (varsayılan) kazması olan 30. seviye ve üstündeki her bot görüş alanındaki bir damarı kazar - 100 altında kaydırıcı damarları bir kısmına yarım saatliğine kapatır; kapalıyken botların sabit bir payı kazar (toplayıcılar daha sık). İki oturum arasındaki mola kaydırıcı yükseldikçe kısalır, düştükçe uzar."},
+ "aiw_HERB":     {"en":"Herbalism","pl":"Zielarstwo","de":"Kräuterkunde","tr":"Bitkicilik"},
+ "aih_HERB":    {"en":"How many bots work Baek-Go's herbalism board and how often. With the personalities on (the default) it is the Conqueror's errand from level 45; under 100 the board is closed to a share of them, half an hour at a time, and over 100 a share of the bots from level 15 comes too (all of them at 250). The wait between two visits shrinks as the slider goes up. Bots do not pick plants: the herbs come from the monsters' drops.",
+                 "pl":"Ilu botów pracuje przy stole zielarskim Baek-Go i jak często. Przy włączonych osobowościach (domyślnie) to zadanie Zdobywcy od 45 poziomu; poniżej 100 stół jest zamknięty dla części z nich, na pół godziny, a powyżej 100 dochodzi część botów od 15 poziomu (przy 250 wszystkie). Przerwa między wizytami skraca się, gdy suwak idzie w górę. Boty nie zbierają roślin: zioła mają z dropu potworów.",
+                 "de":"Wie viele Bots an Baek-Gos Kräutertisch arbeiten und wie oft. Mit eingeschalteten Persönlichkeiten (Standard) ist es die Aufgabe des Eroberers ab Stufe 45; unter 100 ist der Tisch für einen Teil von ihnen jeweils eine halbe Stunde geschlossen, und über 100 kommt ein Teil der Bots ab Stufe 15 hinzu (bei 250 alle). Die Pause zwischen zwei Besuchen wird kürzer, wenn der Regler steigt. Bots pflücken keine Pflanzen: Die Kräuter stammen aus der Beute der Monster.",
+                 "tr":"Kaç botun Baek-Go'nun bitki masasında çalıştığı ve ne sıklıkla. Kişilikler açıkken (varsayılan) 45. seviyeden itibaren Fatih'in işidir; 100 altında masa bir kısmına yarım saatliğine kapanır, 100 üstünde 15. seviyeden botların bir kısmı da gelir (250 değerinde hepsi). İki ziyaret arasındaki bekleme kaydırıcı yükseldikçe kısalır. Botlar bitki toplamaz: bitkiler canavarların düşürdüklerinden gelir."},
  "aih_TRADE":   {"en":"How many bots keep a stall. The slider does not touch a Merchant personality, a bot that cannot afford its potions, a full bag, a dropper under bag pressure, nor valuable spares and a gambler's goods (the counter is how they get rid of them). It moves the rest: the surplus-books stall (already every such bot at 100, so it only goes down), the dropper's roll and the one-in-ten. On r40250 standing stalls re-check within five minutes; on the 2.x line an offline stand is never closed early - a lower slider only stops its renewal when its eight hours run out. The status says why each one is open.",
                  "pl":"Ilu botów trzyma stragan. Suwak nie rusza osobowości Handlarz, bota bez yang na mikstury, pełnego plecaka, droppera pod presją plecaka ani cennych zapasowych rzeczy i towaru hazardzisty (lada to sposób, żeby się ich pozbyć). Rusza resztę: stragan z nadmiaru ksiąg (przy 100 ma go już każdy taki bot, więc działa tylko w dół), los droppera i „jeden na dziesięciu”. Na r40250 stojące stragany sprawdzają się ponownie do pięciu minut po zmianie; na linii 2.x sklep offline nie jest zamykany wcześniej - niższy suwak tylko wstrzymuje jego odnowienie po ośmiu godzinach. Status mówi, dlaczego każdy jest otwarty.",
                  "de":"Wie viele Bots einen Stand führen. Der Regler berührt weder die Händler-Persönlichkeit noch einen Bot ohne Yang für Tränke, einen vollen Beutel, einen Dropper unter Beuteldruck oder wertvolle Ersatzstücke und die Ware eines Glücksspielers (der Stand ist ihr Weg, sie loszuwerden). Er bewegt den Rest: den Bücher-Stand (bei 100 schon jeder solche Bot, also nur nach unten), den Dropper-Wurf und den Einen-von-zehn. Auf r40250 prüfen stehende Stände sich binnen fünf Minuten neu; auf der 2.x-Linie wird ein Offline-Laden nie früher geschlossen - ein niedrigerer Regler stoppt nur seine Verlängerung nach acht Stunden. Der Status sagt, warum jeder offen ist.",
@@ -6834,6 +6869,17 @@ TPL_AI = BASE.replace("__BODY__", """
   <h3 style="margin:0 0 2px">🧑‍💻 {{t('ai_life')}} <span class="badge">{{t('ai_experimental')}}</span></h3>
   <p class="muted" style="margin:0 0 6px">{{t('ai_life_help')}}</p>
   <label><input type="checkbox" name="LIFE" value="1" {% if cur.get('LIFE', 0) %}checked{% endif %}> {{t('ai_life_on')}}</label>
+  <div style="margin-top:10px">
+    <label>{{t('ai_life_hours')}}
+      <span class="badge" id="v_LIFE_HOURS">{% if cur.get('LIFE_HOURS', 0) %}{{cur.get('LIFE_HOURS')}} h{% else %}{{t('ai_life_hours_default')}}{% endif %}</span></label>
+    <input type="range" name="LIFE_HOURS" id="s_LIFE_HOURS" min="0" max="24" step="1" value="{{cur.get('LIFE_HOURS', 0)}}" style="width:100%"
+           data-default="{{t('ai_life_hours_default')}}"
+           oninput="document.getElementById('v_LIFE_HOURS').textContent=this.value=='0'?this.dataset.default:this.value+' h'">
+    <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
+      <span>0 — {{t('ai_life_hours_default')}}</span><span>24 — {{t('ai_life_hours_all_day')}}</span>
+    </div>
+    <p class="muted" style="margin:4px 0 0">{{t('ai_life_hours_help')}}</p>
+  </div>
 </div>
 <div style="margin-bottom:18px">
   <h3 style="margin:0 0 2px">🛡 {{t('ai_wars')}}</h3>
@@ -10563,6 +10609,9 @@ GEAR_HISTORY_OFFLINE_BUY = ("bought", {"pl": "Kupione w sklepie offline", "en": 
 # A template's placeholders are {a} {b} {c} and {value}; the kind of each says
 # how the number is written (_dx_param, beside the route that reads them).
 EXPLAIN_DEFAULT_DAYS = 7       # the core's own default while the key is absent
+# The LIFE_HOURS slider: 0 the key unset, 1..24 the hours of play a day
+# (playerbot_life_rules.h; blipu, 30 September).
+LIFE_HOURS_MAX = 24
 EXPLAIN_MAX_DAYS = 30
 # The flags that make a row "unusual" (the rules header's masks).
 DECISION_LISTING_UNUSUAL = 1 | 4 | 8 | 16 | 512 | 2048
@@ -10942,6 +10991,12 @@ DECISION_GOODS = {
             "de": "Ein Gildenbaumaterial, das die Gilde des Bots nicht behält", "tr": "Botun loncasının tutmadığı bir lonca yapı malzemesi"}),
  202: ({}, {"pl": "Kamień smoka, którego bot nie użyje", "en": "A Dragon Stone the bot has no use for",
             "de": "Ein Drachenstein, den der Bot nicht braucht", "tr": "Botun kullanmadığı bir Ejderha Taşı"}),
+ # MT2009_PLUS_BOTLIFE_V1: a refine stone of the jewellery (Diament, Ebonit...).
+ 203: ({"a": "int", "b": "int"},
+      {"pl": "Przetop ponad to, co przyjmą gniazda biżuterii bota: {a} w plecaku, zapas {b}",
+       "en": "A refine stone over what the bot's jewellery sockets take: {a} in the bag, keeps {b}",
+       "de": "Ein Veredelungsstein über dem, was die Schmuckfassungen des Bots aufnehmen: {a} im Beutel, behält {b}",
+       "tr": "Botun takı yuvalarının alacağından fazla arıtma taşı: çantada {a}, saklanan {b}"}),
 }
 
 # One step of the price (STEP_*): code: (the kind of `value` when it is not the
@@ -11287,6 +11342,7 @@ DECISION_CODE_NAMES = {
   36: "GOODS_SKILL_BOOK_OWN_SPARE", 37: "GOODS_SKILL_BOOK_OTHER_CLASS", 38: "GOODS_LOW_PLUS_GEAR",
   39: "GOODS_SCRAP_KEEPER_LOW", 40: "GOODS_SURPLUS_CHEST", 41: "GOODS_SURPLUS_KEY",
   200: "GOODS_RARE_GOODS", 201: "GOODS_GUILD_MATERIAL", 202: "GOODS_DRAGON_STONE_SPARE",
+  203: "GOODS_ACCESSORY_STONE_SPARE",
  },
  "SHAPE": {
   0: "SHAPE_WHOLE_STACK", 1: "SHAPE_NATURAL_LINE", 2: "SHAPE_POTION_PACK", 3: "SHAPE_DUST_PACK",
@@ -18435,6 +18491,10 @@ def ai_weights():
         vals["BOOKS"] = 1 if request.form.get("BOOKS") else 0
         vals["NIGHT"] = 1 if request.form.get("NIGHT") else 0
         vals["LIFE"] = 1 if request.form.get("LIFE") else 0
+        try:
+            vals["LIFE_HOURS"] = max(0, min(LIFE_HOURS_MAX, int(request.form.get("LIFE_HOURS", old.get("LIFE_HOURS", 0)))))
+        except (TypeError, ValueError):
+            vals["LIFE_HOURS"] = old.get("LIFE_HOURS", 0)
         vals["WARS"] = 1 if request.form.get("WARS") else 0
         # The tower's, the Catacomb's and the ItemShop's boxes are on the
         # mt2009 page alone; elsewhere the values the file holds stay.
@@ -18518,7 +18578,9 @@ def ai_weights():
     # HUNTING drives the level-up mission goal, which is disabled on the mt2009
     # line (levelup.quest ships in quest/_unused - see playerbot_missions.h), so
     # the slider would do nothing there. LEVEL is the leveling control on 2.x.
-    keys = [k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING")]
+    # HERB moves Baek-Go's herbalism, which only the mt2009 line has.
+    keys = [k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING")
+            and not (not ENGINE_MT2009 and k[0] == "HERB")]
     cur = read_ai_weights()
     chest_off, chest_kill, chest_stone = read_chest_switch()
     if chest_off:
