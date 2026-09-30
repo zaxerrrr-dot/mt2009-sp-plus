@@ -145,6 +145,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_newpet.h"
 #include "playerbot_wheel.h" // Kolo Fortuny, "/kolo" (MT2009_PLUS_WHEEL_V1)
 #include "playerbot_goblin.h" // Poszukiwanie skarbow, "/goblin" (MT2009_PLUS_GOBLIN_V1)
+#include "playerbot_ingame_events.h" // the in-game event manager, "/ingame_event" (MT2009_PLUS_EVENT_MANAGER_V1)
 #include "playerbot_dungeon_panel.h" // the dungeon panel, "/lochy", d.update_ranking (MT2009_PLUS_DUNGEON_PANEL_V1)
 // Iwakura's Bot Mood System: the moods and the notes the loot, the chests,
 // the fishing and the blacksmith send it - early, so any of them may.

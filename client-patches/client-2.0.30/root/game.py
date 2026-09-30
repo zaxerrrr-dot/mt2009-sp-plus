@@ -440,6 +440,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uidungeoninfo").DestroyWindow()
 		# MT2009_PLUS_NEW_PET_V1: the New Pet System's window (uinewpet.py).
 		__import__("uinewpet").DestroyWindow()
+		# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub (uiingameevent.py).
+		__import__("uiingameevent").DestroyWindow()
 		# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's panel.
 		import uiguildduty
 		uiguildduty.DestroyWindow()
@@ -2312,6 +2314,9 @@ class GameWindow(ui.ScriptWindow):
 				net.SendChatPacket("/gmpanel_check_gm")
 				# The event calendar's mini icon and its schedule (uieventcalendar.py).
 				__import__("uieventcalendar").Start()
+				# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub and the hello
+				# that brings this core's event list (uiingameevent.py, ingameevent.py).
+				__import__("uiingameevent").Start()
 				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
 				__import__("uinewpet").Start()
 
@@ -2954,6 +2959,15 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["NewPet"] = self.__NewPet # MT2009_PLUS_NEW_PET_V1
 		serverCommandList["GOB"] = self.__Goblin # MT2009_PLUS_GOBLIN_V1
 		serverCommandList["DungeonInfo"] = self.__DungeonInfo # MT2009_PLUS_DUNGEON_PANEL_V1
+		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
+		# packet) and Owsap's "<flag> <value>" commands (ingameevent.py).
+		serverCommandList["IGE"] = self.__InGameEvent
+		serverCommandList["mini_game_okey"] = self.__InGameEventFlagOkey
+		serverCommandList["mini_game_okey_normal"] = self.__InGameEventFlagOkeyNormal
+		serverCommandList["mini_game_yutnori"] = self.__InGameEventFlagYutnori
+		serverCommandList["mini_game_catchking"] = self.__InGameEventFlagCatchKing
+		serverCommandList["e_flower_drop"] = self.__InGameEventFlagFlower
+		serverCommandList["easter_drop"] = self.__InGameEventFlagEaster
 
 		self.serverCommander=stringCommander.Analyzer()
 		for serverCommandItem in serverCommandList.items():
@@ -3564,6 +3578,38 @@ class GameWindow(ui.ScriptWindow):
 	def __Goblin(self, *args):
 		import uigoblin
 		uigoblin.OnCommand(self, *args)
+
+	# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event list (ingameevent.py).
+	def __InGameEvent(self, *args):
+		import ingameevent
+		ingameevent.OnCommand(*args)
+
+	def __InGameEventFlag(self, name, args):
+		import ingameevent
+		ingameevent.OnOwsapFlag(name, *args[:1])
+
+	def __InGameEventFlagOkey(self, *args):
+		self.__InGameEventFlag("mini_game_okey", args)
+
+	def __InGameEventFlagOkeyNormal(self, *args):
+		self.__InGameEventFlag("mini_game_okey_normal", args)
+
+	def __InGameEventFlagYutnori(self, *args):
+		self.__InGameEventFlag("mini_game_yutnori", args)
+
+	def __InGameEventFlagCatchKing(self, *args):
+		self.__InGameEventFlag("mini_game_catchking", args)
+
+	def __InGameEventFlagFlower(self, *args):
+		self.__InGameEventFlag("e_flower_drop", args)
+
+	def __InGameEventFlagEaster(self, *args):
+		self.__InGameEventFlag("easter_drop", args)
+
+	# The exe's list changed and no handler was set (ingameevent sets one).
+	def BINARY_RefreshInGameEvent(self):
+		import ingameevent
+		ingameevent.Notify()
 
 	# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's lines (dungeoninfo.py, the "dungeonInfo" module).
 	def __DungeonInfo(self, *args):

@@ -1,0 +1,32 @@
+[
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_EVENT_MANAGER_V1 (header)",
+  "old": "#ifdef ENABLE_IKASHOP_RENEWAL\n\tHEADER_GC_NEW_OFFLINESHOP\t\t\t\t= 214,\n#endif\n",
+  "new": "#ifdef ENABLE_IKASHOP_RENEWAL\n\tHEADER_GC_NEW_OFFLINESHOP\t\t\t\t= 214,\n#endif\n\t// MT2009_PLUS_EVENT_MANAGER_V1 (header): the in-game event list\n\t// (playerbot_ingame_events.h; the client's exe: client-patches/exe). Only to a\n\t// client that said \"/ingame_event hello 1\": an older exe stops at a header it\n\t// does not know. 181, 182, 187, 238 are kept for Rumi, Yut Nori, the Flower\n\t// Event and Catch the King.\n\tHEADER_GC_INGAME_EVENT\t\t\t\t\t= 183,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_EVENT_MANAGER_V1 (packet)",
+  "old": "\tDWORD\tdwMaxAbs;\n} TPacketAcce;\n#endif\n\n#pragma pack()\n",
+  "new": "\tDWORD\tdwMaxAbs;\n} TPacketAcce;\n#endif\n\n// MT2009_PLUS_EVENT_MANAGER_V1 (packet): the in-game event manager's list\n// (playerbot_ingame_events.h). An event is a key - the scheduler's kind name\n// (\"catchking\", \"rumi\", \"easter\" ...) or a flag event's (\"rumi_xmas\"),\n// [a-z0-9_] - so a new event is a server table row and the client's python\n// (its name, icon, window): the exe only keeps the list (client-patches/exe).\nenum\n{\n\tINGAME_EVENT_KEY_MAX_LEN = 24,\n\tINGAME_EVENT_SUBHEADER_GC_LIST = 0,\t// the whole list, in place of what the client had\n\tINGAME_EVENT_SUBHEADER_GC_UPDATE = 1,\t// these events changed, the rest stays\n};\n\ntypedef struct SPacketGCInGameEvent\n{\n\tBYTE\theader;\t\t// HEADER_GC_INGAME_EVENT\n\tWORD\tsize;\t\t// dynamic: this and count x TPacketGCInGameEventInfo\n\tBYTE\tsubheader;\n\tBYTE\tcount;\n} TPacketGCInGameEvent;\n\ntypedef struct SPacketGCInGameEventInfo\n{\n\tchar\tkey[INGAME_EVENT_KEY_MAX_LEN + 1];\t// zero-terminated\n\tBYTE\tenable;\n\tDWORD\tstart_time;\t\t\t// epoch seconds, 0 unknown\n\tDWORD\tend_time;\t\t\t// epoch seconds, 0 none (an event switched on by hand)\n\tDWORD\treward_end_time;\t// the reward window's end, 0 closed\n\tint\t\tvalue;\t\t\t\t// the event's figure: a rate's percent, a drop share, 0 none\n} TPacketGCInGameEventInfo;\n\n#pragma pack()\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_EVENT_MANAGER_V1 (declare)",
+  "old": "// MT2009_PLUS_GOBLIN_V1 (declare)\nACMD(do_goblin);\n",
+  "new": "// MT2009_PLUS_GOBLIN_V1 (declare)\nACMD(do_goblin);\n// MT2009_PLUS_EVENT_MANAGER_V1 (declare)\nACMD(do_ingame_event);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_EVENT_MANAGER_V1 (table)",
+  "old": "\t// MT2009_PLUS_GOBLIN_V1 (table)\n\t{ \"goblin\",\tdo_goblin,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t// MT2009_PLUS_GOBLIN_V1 (table)\n\t{ \"goblin\",\tdo_goblin,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_EVENT_MANAGER_V1 (table)\n\t{ \"ingame_event\",\tdo_ingame_event,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_EVENT_MANAGER_V1 (command)",
+  "old": "// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n",
+  "new": "// MT2009_PLUS_EVENT_MANAGER_V1 (command): the in-game event manager's\n// \"/ingame_event hello <caps>|info|gm\" (playerbot_ingame_events.h).\nACMD(do_ingame_event)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid InGameEventCommand(LPCHARACTER ch, const char* argument);\n\tInGameEventCommand(ch, argument);\n}\n\n// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n"
+ }
+]
