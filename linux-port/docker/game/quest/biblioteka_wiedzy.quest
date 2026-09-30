@@ -93,7 +93,7 @@ quest biblioteka_wiedzy begin
 			local stage = d.getf("stage") + 1
 			d.clear_regen()
 			biblioteka_wiedzy.purge_mobs()
-			d.setf("stage", 10 + stage)	-- between stages: no kill counts
+			d.setf("stage", 9 + stage)	-- between stages: no kill counts
 			d.notice("Biblioteka Wiedzy: Etap zaliczony. Za 5 sekund nastêpne wyzwanie.")
 			server_timer("biblioteka_stage", 5, d.get_map_index())
 		end

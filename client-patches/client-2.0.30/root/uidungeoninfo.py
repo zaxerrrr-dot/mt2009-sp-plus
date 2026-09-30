@@ -68,25 +68,48 @@ def _HasDropInfo(vnum, isMain):
 	return False
 
 # The teleport question: closes as "no" when its time is up (Arezzo's exe has SetCancelOnTimeOver).
-class TeleportQuestionDialog(uiCommon.QuestionDialogWithTimeLimit):
+# MT2009: built on QuestionDialog2 with its own countdown - our QuestionDialogWithTimeLimit skips
+# QuestionDialog.__init__ (no closeEvent), so its Close() raised and the buttons did nothing.
+class TeleportQuestionDialog(uiCommon.QuestionDialog2):
 	def __init__(self):
-		uiCommon.QuestionDialogWithTimeLimit.__init__(self)
+		uiCommon.QuestionDialog2.__init__(self)
 		self.cancelOnTimeOver = False
 		self.cancelEventMt = None
+		self.endTime = 0
+		self.key = 0
+
+	def Open(self, msg, timeout):
+		self.SetText1(msg)
+		self.endTime = app.GetTime() + timeout
+		self.__UpdateLeft()
+		uiCommon.QuestionDialog2.Open(self)
 
 	def SetCancelEvent(self, event):
 		self.cancelEventMt = event
-		uiCommon.QuestionDialogWithTimeLimit.SetCancelEvent(self, event)
+		uiCommon.QuestionDialog2.SetCancelEvent(self, event)
 
 	def SetCancelOnTimeOver(self):
 		self.cancelOnTimeOver = True
 
+	def __UpdateLeft(self):
+		left = int(max(0, self.endTime - app.GetTime()) + 0.99)
+		self.SetText2("Pozosta\xb3y czas: %d s" % left)
+
 	def OnUpdate(self):
-		uiCommon.QuestionDialogWithTimeLimit.OnUpdate(self)
+		self.__UpdateLeft()
 		if self.cancelOnTimeOver and self.endTime and app.GetTime() >= self.endTime:
 			self.cancelOnTimeOver = False
 			if self.cancelEventMt:
 				self.cancelEventMt()
+			else:
+				self.Close()
+
+	def OnPressEscapeKey(self):
+		if self.cancelEventMt:
+			self.cancelEventMt()
+		else:
+			self.Close()
+		return True
 
 TABLICA_BONUSOW_REKAWICA = []
 
@@ -1264,7 +1287,7 @@ class DungeonInfoWindow(ui.ScriptWindow):
 
 		# Create teleport question dialog.
 		self.questionDialog = TeleportQuestionDialog()
-		self.questionDialog.Open(localeInfo.DUNGEON_INFO_DO_YOU_TELEPORT % mapName, 5)
+		self.questionDialog.Open(localeInfo.DUNGEON_INFO_DO_YOU_TELEPORT % mapName, 10)
 		self.questionDialog.SetAcceptText(localeInfo.UI_ACCEPT)
 		self.questionDialog.SetCancelText(localeInfo.UI_DENY)
 		self.questionDialog.SetAcceptEvent(lambda arg = True : ui.__mem_func__(self.OnAnswerTeleport)(arg))

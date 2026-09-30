@@ -8,7 +8,6 @@
 #   xy: the entrance at x, y (world units / 100); town: the entry map's town position for the empire.
 #   The key names the results (dungeon_panel.<key>_f/_t/_d) the quests write with d.update_ranking(key).
 # drop <key> <vnum> <count> <percent>
-dungeon	malpy1	5	1	town	5/25/45	0	0	20	0	1	8	5161	-	0	0	0	£atwy_Loch_Ma³p	£atwy_Loch_Ma³p
 dungeon	biblioteka	363	1	xy	64	2852	8108	30	0	1	8	9706	biblioteka_wiedzy.entry	1800	0	0	Biblioteka_Wiedzy	Dolina_Seungryong
 drop	biblioteka	30773	3	100
 dungeon	wieza	66	1	xy	66	5900	1114	40	0	1	8	1093	-	0	0	0	Wie¿a_Demonów	Wie¿a_Demonów
@@ -28,29 +27,10 @@ drop	wieza	5123	1	10
 drop	wieza	5124	1	5
 dungeon	wukong	364	1	xy	65	5537	1450	45	0	1	8	9682	wzgorze_wukonga.entry	1800	0	0	Wzgórze_Wukonga	Œwi¹tynia_Hwang
 drop	wukong	30774	3	100
-dungeon	malpy2	108	1	town	108	0	0	40	0	1	8	5162	-	0	0	0	Normalny_Loch_Ma³p	Normalny_Loch_Ma³p
 dungeon	razador	351	1	xy	62	5979	7060	55	0	1	8	6091	razador_dungeon.entry	3600	0	0	Czyœciec_Ognia_(Razador)	Doyyumhwaji
 drop	razador	50270	5	100
-dungeon	malpy3	109	1	town	109	0	0	55	0	1	8	5163	-	0	0	0	Trudny_Loch_Ma³p	Trudny_Loch_Ma³p
 dungeon	skorpion	365	1	xy	62	5989	7058	65	0	1	8	9694	ruiny_skorpiona.entry	3600	0	0	Ruiny_Skorpiona	Doyyumhwaji
 drop	skorpion	30775	4	100
-dungeon	pajaki	71	1	town	71	0	0	60	0	1	8	2092	-	0	0	0	Loch_Paj¹ków_(Baronówna)	Loch_Paj¹ków_Poz._2
-drop	pajaki	14163	1	50
-drop	pajaki	16163	1	50
-drop	pajaki	17163	1	50
-drop	pajaki	14182	1	40
-drop	pajaki	16182	1	40
-drop	pajaki	17182	1	40
-drop	pajaki	14201	1	30
-drop	pajaki	16201	1	30
-drop	pajaki	17201	1	30
-drop	pajaki	13062	1	20
-drop	pajaki	13082	1	20
-drop	pajaki	13102	1	20
-drop	pajaki	13122	1	20
-drop	pajaki	13140	1	20
-drop	pajaki	70058	1	10
-drop	pajaki	71130	1	30
 dungeon	katakumby	216	1	xy	65	5914	992	75	0	1	8	2598	devilcatacomb_zone.last_exit_time	1800	0	0	Katakumby_Diab³a	Œwi¹tynia_Hwang
 drop	katakumby	183	1	20
 drop	katakumby	184	1	10
@@ -68,15 +48,5 @@ drop	katakumby	5123	1	20
 drop	katakumby	5124	1	10
 dungeon	nemere	352	1	xy	61	4322	1655	75	0	1	8	6191	nemere_dungeon.entry	3600	0	0	Lodowa_Kraina_(Nemere)	Góra_Sohan
 drop	nemere	50271	5	100
-dungeon	ochao	209	1	xy	64	2847	8106	95	0	1	8	6400	-	0	0	0	Œwi¹tynia_Ochao	Dolina_Seungryong
-drop	ochao	2145	1	60
-drop	ochao	11295	1	55
-drop	ochao	11495	1	55
-drop	ochao	11695	1	55
-drop	ochao	11895	1	55
-drop	ochao	70043	1	45
-drop	ochao	30015	1	15
-drop	ochao	30082	1	15
-drop	ochao	30523	1	40
 dungeon	dzungla	366	1	xy	362	3783	3954	95	0	1	8	9714	starozytna_dzungla.entry	3600	0	0	Staro¿ytna_D¿ungla	Zaczarowany_Las
 drop	dzungla	30776	5	100

@@ -79,7 +79,7 @@ quest ruiny_skorpiona begin
 			local stage = d.getf("stage") + 1
 			d.clear_regen()
 			ruiny_skorpiona.purge_mobs()
-			d.setf("stage", 10 + stage)
+			d.setf("stage", 9 + stage)
 			d.notice("Ruiny Skorpiona: Etap zaliczony. Za 5 sekund nastêpne wyzwanie.")
 			server_timer("skorpion_stage", 5, d.get_map_index())
 		end

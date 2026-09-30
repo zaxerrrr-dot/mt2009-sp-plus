@@ -82,7 +82,7 @@ quest wzgorze_wukonga begin
 			local stage = d.getf("stage") + 1
 			d.clear_regen()
 			wzgorze_wukonga.purge_mobs()
-			d.setf("stage", 10 + stage)
+			d.setf("stage", 9 + stage)
 			d.notice("Wzgórze Wukonga: Etap zaliczony. Za 5 sekund nastêpne wyzwanie.")
 			server_timer("wukong_stage", 5, d.get_map_index())
 		end

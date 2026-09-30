@@ -82,7 +82,7 @@ quest starozytna_dzungla begin
 			local stage = d.getf("stage") + 1
 			d.clear_regen()
 			starozytna_dzungla.purge_mobs()
-			d.setf("stage", 10 + stage)
+			d.setf("stage", 9 + stage)
 			d.notice("Staro¿ytna D¿ungla: Etap zaliczony. Za 5 sekund nastêpne wyzwanie.")
 			server_timer("dzungla_stage", 5, d.get_map_index())
 		end
