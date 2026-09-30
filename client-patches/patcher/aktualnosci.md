@@ -6,6 +6,18 @@
 # Dalsze linie to opis - trafia do news.json, patcher go nie wyświetla.
 # Po zmianie: python3 tools/generuj_aktualnosci.py (szczegóły w README.md).
 
+## AKTUALIZACJA | Klient 2.0.30
+autor: 30.09.2026
+link: https://metin2sp.pl/zmiany.php
+data: 2026-09-30
+Pliki nowych map i lochów (moduł Arezzo), okno „Wyprawy” (X), poprawione tekstury, tytuł Zielarza.
+
+## AKTUALIZACJA | Serwer 2.16.0
+autor: 30.09.2026
+link: https://metin2sp.pl/zmiany.php
+data: 2026-09-30
+Moduł Arezzo (domyślnie wyłączony), opłaty i limity lochów, łucznicy trafiają kilka celów, nowe suwaki botów, Towarzysz.
+
 ## AKTUALIZACJA | Klient 2.0.28
 autor: 29.09.2026
 link: https://metin2sp.pl/zmiany.php

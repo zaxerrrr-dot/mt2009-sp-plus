@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-30T08:52:43Z",
-  "statusMessage": "Serwer 2.15.0 i klient 2.0.29: boty w Swiatyni Ochao, decyzje botow w panelu, nowy patcher klienta, poprawki po 2.14.0.",
+  "publishedAt": "2026-09-30T16:03:14Z",
+  "statusMessage": "Serwer 2.16.0 i klient 2.0.30: modul Arezzo (nowe mapy i lochy, domyslnie wylaczony), oplaty i limity lochow, lucznicy, boty, Towarzysz.",
   "server": {
-    "version": "2.15.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.15.0.zip",
-    "sha256": "12DF00A5EA109E78B0B5F93F04C82E188FC7C29A8A5320A5D98482063B8C674C",
-    "size": 95605329
+    "version": "2.16.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.16.0.zip",
+    "sha256": "749FE98A95C1AF5F43DB19C2A7FBC520C97653A74735C43967722E7DE13F3E74",
+    "size": 96036604
   },
   "client": {
-    "version": "2.0.29",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.29/metin2-client-update-2.0.29.zip",
-    "sha256": "9AFC96598AEF7A49A2B6DCE6371E387BF0136F666F4435D41E8C5E584BAAD412",
-    "size": 199120545
+    "version": "2.0.30",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.30/metin2-client-update-2.0.30.zip",
+    "sha256": "2E56BC056458880DF03D87F96026E6B34A93B4C79DB88FC75B1920B29438E72C",
+    "size": 305694226
   }
 }

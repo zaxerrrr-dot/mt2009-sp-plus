@@ -17,6 +17,161 @@ every version here.
 
 ---
 
+## 2.16.0 — 2026-09-30 — Moduł Arezzo (nowe mapy i lochy), opłaty za lochy, łucznicy, boty i Towarzysz
+
+Serwer 2.16.0 i klient 2.0.30: zaktualizuj oba w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**) albo klienta
+patcherem. Zawiera wszystko z 2.15.0.
+
+### Moduł Arezzo - nowe mapy i lochy (domyślnie WYŁĄCZONY)
+
+Nowe miejsca to osobny, dobrowolny moduł. Po aktualizacji jest
+**wyłączony** - świat wygląda tak jak dotąd. Klient 2.0.30 ma już wszystkie
+pliki, więc włączenie modułu nie wymaga żadnej zmiany u graczy.
+
+**Jak włączyć** (wystarczy jeden sposób):
+
+1. **Panel WWW (klasyczny):** na stronie głównej kafelek
+   **„🗺️ Moduł Arezzo”** → zaznacz **„Moduł Arezzo włączony”** → **Zapisz**.
+   Działa od razu, bez restartu serwera.
+2. **Launcher:** przycisk **POZIOM TRUDNOŚCI** → zaznacz
+   **„Moduł Arezzo - nowe mapy i lochy”** → **Zastosuj** (serwer się
+   zrestartuje).
+3. **Plik `.env`** serwera: `M2_AREZZO=1` (0 = wyłączony), potem restart.
+
+Wyłączenie działa tak samo. Ustawienie z panelu zostaje po restarcie, dopóki
+ktoś nie zmieni `M2_AREZZO` w `.env`. Gdy moduł jest wyłączony, nie ma stron w
+Teleporterze, strażników wejść do lochów ani lochów Arezzo w oknie „Wyprawy”
+(X), a gracz stojący na mapie Arezzo wraca w kilka sekund do miasta.
+
+**Nowe mapy:**
+
+- **Dolina Cyklopów** (poziom 43–55) - Teleporter i Pierścień Teleportacji,
+  cyklopy, Arges i Polifem.
+- **Pustkowie Faraona** (poziom 55) - Teleporter, potwory z piramidy, Bastet,
+  Anubis i Metiny pustyni.
+- **Zaczarowany Las** (95+) - przez portal po Strażniku En-Tai w Świątyni
+  Ochao (wybór: Zaczarowany Las albo Dolina Orków), silniejsze lemury.
+
+**Nowe lochy:**
+
+| Loch | Poziom | Wejście |
+|---|---|---|
+| Biblioteka Wiedzy | 30+ | Strażnik Biblioteki w M2 każdego królestwa, obok Teleportera |
+| Wzgórze Wukonga | 45+ | Strażnik Wzgórza w Świątyni Hwang |
+| Ruiny Skorpiona | 65+ | Strażnik Ruin na Ognistej Ziemi, obok strażnika Razadora |
+| Starożytna Dżungla | 95+ | Strażnik Dżungli w Zaczarowanym Lesie |
+
+Każdy loch ma etapy z pieczęciami, falami, kamieniami i bossem, 1-5 skrzyń
+na gracza po wygranej, limit czasu i „Wróć do lochu” po wyjściu lub
+rozłączeniu. Tylko dla graczy - boty z drużyny zostają przed wejściem.
+
+### Opłaty i limity lochów
+
+- **Wejście kosztuje** (każdy gracz płaci za siebie przy wejściu do nowej
+  wyprawy; „Wróć do lochu” jest darmowe): Biblioteka Wiedzy 2 mln, Wzgórze
+  Wukonga 5 mln, Czyściec Ognia (Razador) 10 mln, Ruiny Skorpiona 10 mln,
+  Góra Sohan (Nemere) 15 mln, Starożytna Dżungla 15 mln Yang. Wieża Demonów i
+  Katakumby bez zmian.
+- **Najwyżej 5 wypraw dziennie** do każdego z tych sześciu lochów (licznik
+  zeruje się o północy). Wieża Demonów i Katakumby mają swoje limity jak
+  dotąd.
+- **Teleport z okna „Wyprawy” (X) kosztuje:** Biblioteka 1 mln, Wieża
+  Demonów 5 mln, Wukong 7 mln, Razador 10 mln, Katakumby 10 mln, Ruiny 12 mln,
+  Nemere 12 mln, Starożytna Dżungla 12 mln Yang. Teleport do Dżungli prowadzi
+  pod Świątynię Ochao - dalej trzeba samemu znaleźć portal do Lasu.
+- Z okna „Wyprawy” zniknęły lochy małp, Loch Pająków (Baronówna) i Świątynia
+  Ochao.
+
+### Łucznicy
+
+- **Łucznik trafia kilka celów naraz** - gracze i boty. Zwykły strzał trafia
+  do 3 celów, z umiejętnością Combo do 4 lub 5: cel główny i potwory, które
+  już atakują łucznika (do 10 m od celu). Dodatkowe strzały lecą razem z
+  główną - wcześniej rysowały się strzał później i wyglądały jak trafienia
+  bez obrażeń.
+- **Strzał nie przepada**, gdy serwer jest chwilowo zajęty botami, a Ognista
+  i Trująca Strzała nie pudłują w potwory trafione wcześniej dodatkową
+  strzałą.
+- Boty-łucznicy trafiają dodatkowe cele jak gracz; dodatkowe strzały nie
+  zużywają strzał.
+
+### Boty
+
+- **Godziny gry na dobę:** pod przełącznikiem „Boty grają jak żywi ludzie”
+  (panel WWW, strona AI) suwak 0-24. Sesje po 4 godziny, przerwy dopełniają
+  dobę; 0 = jak dotąd (sesje 3-6 h, przerwy 3-9 h), 24 = bez przerw.
+- **Suwaki „Górnictwo” i „Zielarstwo”** na stronie AI: ile botów kopie rudę
+  i jak długo odpoczywa od żył, ile botów pracuje przy stole Baek-Go i jak
+  często.
+- **Nowa osobowość: Zielarz** - bot przy stole zielarskim Baek-Go, z
+  tytułem nad głową (klient 2.0.30).
+- **Przetopy na ladach** (Diament, Ebonit i pozostałe) po cenie z cennika;
+  bot zostawia sobie tylko tyle, ile przyjmą gniazda jego biżuterii.
+- **Medal Konny i księgi w walce:** bot podbiega po medal albo księgę do
+  15 m, jeśli ma dość zdrowia i miejsca, i wraca do walki. Z pełnymi stosami
+  medali nie biega już po medal, którego nie podniesie.
+- **Rękawica Króla Przepowiedni** tylko przy ujemnej randze. Bot z ujemną
+  rangą bez Fasolki Zen nie stoi w mieście, tylko poluje i odrabia rangę.
+
+### Towarzysz
+
+- **„Nic” znaczy nic** - puszczony wolno („Wolna ręka”) albo tuż po
+  przywołaniu nie podnosi już przedmiotów właściciela.
+- **Zmiana fryzury:** połóż Wybielacz albo farbę do włosów w torbie
+  Towarzysza i kliknij prawym przyciskiem - fryzura trafia do torby i można
+  założyć inną.
+- Towarzysz nie jest już łysy po pierwszym przywołaniu.
+
+### Poziom trudności: szanse wymiany u NPC
+
+Wymiana kamieni duszy na Magiczny Pył, ksiąg na Pergamin i ulepszaczy na
+Materiały Rzemieślnicze:
+
+| Poziom | Pył | Pergamin | Materiały |
+|---|---|---|---|
+| łatwy | 100% | 100% | 55% (jak dotąd) |
+| średni | 90% | 45% | 55% |
+| trudny | 55% | 40% | 55% |
+| własny | `M2_EXCHANGE_DUST_CHANCE` | `M2_EXCHANGE_PARCHMENT_CHANCE` | `M2_EXCHANGE_MATERIAL_CHANCE` |
+
+Przy poziomie własnym liczby są w `.env` (0 = jak w paczce). Okno wymiany
+pokazuje szansę, która naprawdę obowiązuje, zmiana poziomu w panelu WWW
+działa od razu, a boty wymieniają kamienie duszy z tą samą szansą. Launcher
+(okno POZIOM TRUDNOŚCI) i panel WWW podają te liczby.
+
+### Poprawki
+
+- Lochy Wukonga i Dżungli nie stają już na etapie „7/6” bez bossa - etapy
+  idą po kolei (wcześniej loch przeskakiwał etapy 2 i 4).
+- Okno „Czy chcesz się teleportować” w panelu X: przyciski działają, a okno
+  zamyka się samo po 10 sekundach.
+- Ruiny Skorpiona o 50% trudniejsze (życie i obrażenia).
+- Klient 2.0.30: brakujące tekstury drzew w Zaczarowanym Lesie, mapy
+  Wukonga, trawy w Dżungli oraz efektów ataków bossów.
+
+### Launcher i panele
+
+- Włączanie i wyłączanie hostowania nie kończy się błędem, gdy Docker nie
+  zdążył zwolnić portu - launcher ponawia start gry do trzech razy co 5
+  sekund.
+- Panel zaawansowany: bez sekcji „Funkcje wymagające integracji” i bez
+  szarych, niedostępnych opcji.
+
+---
+
+## Klient 2.0.30 — 2026-09-30 — Moduł Arezzo, tekstury, okno „Wyprawy”
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**) albo patcherem.
+Zawiera wszystko z 2.0.29.
+
+- Pliki nowych map i lochów modułu Arezzo (mapy, potwory, efekty, tekstury).
+- Okno **„Wyprawy”** (klawisz **X** albo przycisk na pasku bocznym): lista
+  lochów, odnowienia, drop z bossa, teleport pod wejście i rankingi.
+- Tytuł „Zielarz” nad głową botów-zielarzy.
+
+---
+
 ## 2.15.0 — 2026-09-30 — Boty w Świątyni Ochao, decyzje botów w panelu, patcher klienta, poprawki po 2.14.0
 
 Serwer 2.15.0 i klient 2.0.29: zaktualizuj oba w launcherze
