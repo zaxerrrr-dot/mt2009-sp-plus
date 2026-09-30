@@ -3512,6 +3512,11 @@ T = {
  "diff_book_h": {"pl":"Księgi umiejętności — gracze, godzin:", "en":"Skill books — players, hours:"},
  "diff_bot_book_h": {"pl":"Księgi umiejętności — boty, godzin:", "en":"Skill books — bots, hours:"},
  "diff_save":   {"pl":"Zapisz poziom trudności", "en":"Save the difficulty"},
+ # MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances by the level.
+ "diff_exchange_now": {"pl":"Szanse wymiany u NPC (Magiczny Pył / Pergamin / Materiały Rzemieślnicze)",
+                       "en":"NPC exchange chances (Magic Dust / Parchment / Crafting Materials)"},
+ "diff_exchange": {"pl":"Poziom ustawia też szanse wymiany u NPC — kamieni duszy na Magiczny Pył, ksiąg na Pergamin i ulepszaczy na Materiały Rzemieślnicze: łatwy 100 / 100 / 55% (jak w paczce), średni 90 / 45 / 55%, trudny 55 / 40 / 55%. Poziom „Własny” bierze trzy liczby z .env serwera (M2_EXCHANGE_DUST_CHANCE, M2_EXCHANGE_PARCHMENT_CHANCE, M2_EXCHANGE_MATERIAL_CHANCE; 0 = jak w paczce), wczytywane przy każdym starcie. Okno wymiany pokazuje obowiązującą szansę, a boty wymieniają z tą samą.",
+                   "en":"The level also sets the NPC exchange chances - soul stones to Magic Dust, skill books to Parchment and upgrade items to Crafting Materials: easy 100 / 100 / 55% (as the package), medium 90 / 45 / 55%, hard 55 / 40 / 55%. The Custom level takes three numbers from the server's .env (M2_EXCHANGE_DUST_CHANCE, M2_EXCHANGE_PARCHMENT_CHANCE, M2_EXCHANGE_MATERIAL_CHANCE; 0 = as the package), read at every start. The exchange window shows the chance in force, and the bots exchange at the same one."},
  "diff_range":  {"pl":"Wybierz poziom i podaj godziny od 0 do 720. Nic nie zmieniono.",
                  "en":"Pick a level and hours from 0 to 720. Nothing was changed."},
  "diff_saved_live": {"pl":"✅ Zapisano! Nowy poziom trudności działa już w grze.",
@@ -4917,13 +4922,30 @@ DIFFICULTY_PRESETS = {
     "hard":   (86400, 43200, 43200, 64800, 75600, 75600, 75600),
 }
 DIFFICULTY_MAX_HOURS = 720
+# MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances in percent -
+# Magiczny Pyl, Pergamin, Materialy Rzemieslnicze - by the level: the presets
+# follow m2_difficulty (quest/m2_difficulty.lua and playerbot_config.h's
+# GetPlayerBotExchangeChance carry the same tables), custom reads the flags the
+# migrator writes from .env's M2_EXCHANGE_*_CHANCE at every start, 0 being the
+# package's number. The card shows them; a level saved here applies its own.
+MT2009_EXCHANGE_FLAGS = ("m2_exchange_dust_chance", "m2_exchange_parchment_chance", "m2_exchange_material_chance")
+EXCHANGE_PACKAGE_CHANCES = (100, 100, 55)
+EXCHANGE_PRESETS = {"easy": (100, 100, 55), "medium": (90, 45, 55), "hard": (55, 40, 55)}
+
+def exchange_chances(level, custom):
+    """The three chances in force for a level name and the custom flags' values."""
+    if level in EXCHANGE_PRESETS:
+        return EXCHANGE_PRESETS[level]
+    return tuple(min(100, int(value)) if int(value or 0) > 0 else package
+                 for value, package in zip(custom, EXCHANGE_PACKAGE_CHANCES))
 
 def read_difficulty_mt2009():
     """The level and the waits as the card shows them (hours), from player.quest."""
-    raw = {flag: 0 for flag in MT2009_DIFFICULTY_FLAGS}
+    flags = MT2009_DIFFICULTY_FLAGS + MT2009_EXCHANGE_FLAGS
+    raw = {flag: 0 for flag in flags}
     with db() as c, c.cursor() as cur:
         cur.execute("SELECT szName, lValue FROM player.quest WHERE dwPID=0 AND szName IN (%s)"
-                    % ",".join(["%s"] * len(MT2009_DIFFICULTY_FLAGS)), MT2009_DIFFICULTY_FLAGS)
+                    % ",".join(["%s"] * len(flags)), flags)
         for row in cur.fetchall():
             name = row["szName"] if isinstance(row, dict) else row[0]
             value = row["lValue"] if isinstance(row, dict) else row[1]
@@ -4934,8 +4956,10 @@ def read_difficulty_mt2009():
     def hours(seconds):
         value = round(seconds / 3600.0, 1)
         return int(value) if value == int(value) else value
+    level_name = DIFFICULTY_LEVELS[level] if 0 <= level < len(DIFFICULTY_LEVELS) else "easy"
     return {
-        "level": DIFFICULTY_LEVELS[level] if 0 <= level < len(DIFFICULTY_LEVELS) else "easy",
+        "level": level_name,
+        "exchange": exchange_chances(level_name, [raw[flag] for flag in MT2009_EXCHANGE_FLAGS]),
         "bio": hours(raw["m2_biologist_wait"]),
         "horse_buy": hours(raw["m2_horse_buy_wait"]),
         "horse_upgrade": hours(raw["m2_horse_upgrade_wait"]),
@@ -6645,6 +6669,8 @@ regenLabel("regen_boss");regenLabel("regen_mob");
 <p>{{t('diff_now')}}: <b>{{t('diff_level_' + difficulty.level)}}</b> — {{t('diff_bio')}} {{difficulty.bio}} h,
 {{t('diff_horse')}} {{difficulty.horse_buy}} / {{difficulty.horse_upgrade}} / {{difficulty.horse_train}} / {{difficulty.horse_train2}} h,
 {{t('diff_books')}}: {{t('diff_players')}} {{difficulty.book}} h, {{t('diff_bots')}} {{difficulty.bot_book}} h</p>
+<p>{{t('diff_exchange_now')}}: <b>{{difficulty.exchange[0]}}% / {{difficulty.exchange[1]}}% / {{difficulty.exchange[2]}}%</b></p>
+<p class="muted">{{t('diff_exchange')}}</p>
 <h3 style="margin-top:12px">{{t('diff_level')}}</h3>
 <select name="level">
 {% for lv in difficulty_levels %}<option value="{{lv}}"{% if difficulty.level == lv %} selected{% endif %}>{{t('diff_level_' + lv)}}</option>{% endfor %}
