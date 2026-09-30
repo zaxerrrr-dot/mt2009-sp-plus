@@ -2889,9 +2889,11 @@ CPlayerBotManager::~CPlayerBotManager()
 }
 
 #include "playerbot_ochao.h" // MT2009_PLUS_OCHAO_V1 (include): Swiatynia Ochao, the En-Tai Guardian's clock
+#include "playerbot_arezzo.h" // MT2009_PLUS_AREZZO_MODULE_V1 (include): the Arezzo module switch - guards and send-off
 void CPlayerBotManager::StartWorldClock()
 {
 	mt2009_ochao::Start(); // MT2009_PLUS_OCHAO_V1 (start): only where map 209 is hosted
+	mt2009_arezzo::Start(); // MT2009_PLUS_AREZZO_MODULE_V1 (start): every core
 	if (s_pkPlayerBotUpdateEvent || s_pkPlayerBotWorldEvent)
 		return;
 	playerbot_world_event_info* info = AllocEventInfo<playerbot_world_event_info>();

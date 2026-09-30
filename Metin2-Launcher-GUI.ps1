@@ -1037,7 +1037,7 @@ function Get-DifficultyFromEnv {
     # the keys are not there yet (an older .env, which start-server.ps1 fills in).
     $envPath = Join-Path $root 'linux-port\docker\.env'
     $level = 'easy'; $bio = '0'; $horse = '0'; $book = '0'; $botBook = '0'
-    $autoHunt = $true; $sidekick = $true; $starter = $true; $autoHuntItem = $false; $flea = $true
+    $autoHunt = $true; $sidekick = $true; $starter = $true; $autoHuntItem = $false; $flea = $true; $arezzo = $false
     if (Test-Path -LiteralPath $envPath -PathType Leaf) {
         $content = [IO.File]::ReadAllText($envPath)
         $m = [Regex]::Match($content, '(?m)^M2_DIFFICULTY=(\S+)\s*$')
@@ -1062,10 +1062,13 @@ function Get-DifficultyFromEnv {
         if ($m.Success) { $starter = ($m.Groups[1].Value.Trim() -ne '0') }
         $m = [Regex]::Match($content, '(?m)^M2_FLEA_MARKET=(\S+)\s*$')
         if ($m.Success) { $flea = ($m.Groups[1].Value.Trim() -ne '0') }
+        # The Arezzo module (MT2009_PLUS_AREZZO_MODULE_V1): off unless .env says 1.
+        $m = [Regex]::Match($content, '(?m)^M2_AREZZO=(\S+)\s*$')
+        if ($m.Success) { $arezzo = ($m.Groups[1].Value.Trim() -eq '1') }
     }
     if ($level -notin @('easy', 'medium', 'hard', 'custom')) { $level = 'easy' }
     return @{ Level = $level; Biologist = $bio; Horse = $horse; Book = $book; BotBook = $botBook
-        AutoHunt = $autoHunt; AutoHuntItem = $autoHuntItem; Sidekick = $sidekick; Starter = $starter; Flea = $flea }
+        AutoHunt = $autoHunt; AutoHuntItem = $autoHuntItem; Sidekick = $sidekick; Starter = $starter; Flea = $flea; Arezzo = $arezzo }
 }
 
 function Show-DifficultyDialog {
@@ -1085,7 +1088,7 @@ function Show-DifficultyDialog {
     param([hashtable]$Current)
     $dialog = [Windows.Forms.Form]::new()
     $dialog.Text = (T 'difficultyDialog')
-    $dialog.Size = [Drawing.Size]::new(560, 644)
+    $dialog.Size = [Drawing.Size]::new(560, 670)
     $dialog.StartPosition = 'CenterParent'
     $dialog.FormBorderStyle = 'FixedDialog'
     $dialog.MaximizeBox = $false
@@ -1264,17 +1267,24 @@ function Show-DifficultyDialog {
     $fleaCheck.Size = [Drawing.Size]::new(516, 24)
     $fleaCheck.Checked = ($Current.Flea -ne $false)
     $dialog.Controls.Add($fleaCheck)
+    $arezzoCheck = [Windows.Forms.CheckBox]::new()
+    $arezzoCheck.Name = 'arezzo'
+    $arezzoCheck.Text = 'Moduł Arezzo - nowe mapy i lochy (Dolina Cyklopów, Pustkowie, Las, 4 lochy)'
+    $arezzoCheck.Location = [Drawing.Point]::new(18, $y + 292)
+    $arezzoCheck.Size = [Drawing.Size]::new(516, 24)
+    $arezzoCheck.Checked = ($Current.Arezzo -eq $true)
+    $dialog.Controls.Add($arezzoCheck)
 
     $okButton = [Windows.Forms.Button]::new()
     $okButton.Text = (T 'apply')
-    $okButton.Location = [Drawing.Point]::new(332, $y + 308)
+    $okButton.Location = [Drawing.Point]::new(332, $y + 334)
     $okButton.Size = [Drawing.Size]::new(100, 32)
     $okButton.DialogResult = [Windows.Forms.DialogResult]::OK
     $dialog.Controls.Add($okButton)
 
     $cancelButton = [Windows.Forms.Button]::new()
     $cancelButton.Text = (T 'cancel')
-    $cancelButton.Location = [Drawing.Point]::new(438, $y + 308)
+    $cancelButton.Location = [Drawing.Point]::new(438, $y + 334)
     $cancelButton.Size = [Drawing.Size]::new(96, 32)
     $cancelButton.DialogResult = [Windows.Forms.DialogResult]::Cancel
     $dialog.Controls.Add($cancelButton)
@@ -1293,10 +1303,11 @@ function Show-DifficultyDialog {
     $sidekick = $sidekickCheck.Checked
     $starter = $starterCheck.Checked
     $flea = $fleaCheck.Checked
+    $arezzo = $arezzoCheck.Checked
     $dialog.Dispose()
     if ($result -ne [Windows.Forms.DialogResult]::OK) { return $null }
     return @{ Level = $chosen; Biologist = $bio; Horse = $horse; Book = $book; BotBook = $botBook
-        AutoHunt = $autoHunt; AutoHuntItem = $autoHuntItem; Sidekick = $sidekick; Starter = $starter; Flea = $flea }
+        AutoHunt = $autoHunt; AutoHuntItem = $autoHuntItem; Sidekick = $sidekick; Starter = $starter; Flea = $flea; Arezzo = $arezzo }
 }
 
 function Show-FreshWorldDialog {
@@ -3724,7 +3735,7 @@ $difficultyButton.Add_Click({
         'hard' { 'trudny (Biolog 24 h, koń 12-21 h, księgi 21 h)' }
         default { "własny (Biolog $($chosen.Biologist) h, Stajenny $($chosen.Horse) h, księgi: gracze $($chosen.Book) h, boty $($chosen.BotBook) h)" }
     }
-    $features = "Auto Łowy $(if (-not $chosen.AutoHunt) { 'wyłączone' } elseif ($chosen.AutoHuntItem) { 'włączone (tylko po kupnie z ItemShop)' } else { 'włączone (dla każdego)' }), Towarzysz $(if ($chosen.Sidekick) { 'włączony' } else { 'wyłączony' }), Skrzynia Ucznia $(if ($chosen.Starter) { 'tak' } else { 'nie' }), Dom Towarowy $(if ($chosen.Flea) { 'włączony' } else { 'wyłączony' })"
+    $features = "Auto Łowy $(if (-not $chosen.AutoHunt) { 'wyłączone' } elseif ($chosen.AutoHuntItem) { 'włączone (tylko po kupnie z ItemShop)' } else { 'włączone (dla każdego)' }), Towarzysz $(if ($chosen.Sidekick) { 'włączony' } else { 'wyłączony' }), Skrzynia Ucznia $(if ($chosen.Starter) { 'tak' } else { 'nie' }), Dom Towarowy $(if ($chosen.Flea) { 'włączony' } else { 'wyłączony' }), Moduł Arezzo $(if ($chosen.Arezzo) { 'włączony' } else { 'wyłączony' })"
     $answer = [Windows.Forms.MessageBox]::Show(
         "Ustawić poziom trudności: $what; $features - i zrestartować serwer teraz, aby zastosować? Baza i postęp botów pozostaną bez zmian.",
         'Poziom trudności', 'YesNoCancel', 'Question')
@@ -3734,7 +3745,8 @@ $difficultyButton.Add_Click({
         '-AutoHunt', $(if ($chosen.AutoHunt) { '1' } else { '0' }), '-AutoHuntItem', $(if ($chosen.AutoHuntItem) { '1' } else { '0' }),
         '-Sidekick', $(if ($chosen.Sidekick) { '1' } else { '0' }),
         '-StarterChest', $(if ($chosen.Starter) { '1' } else { '0' }),
-        '-FleaMarket', $(if ($chosen.Flea) { '1' } else { '0' }))
+        '-FleaMarket', $(if ($chosen.Flea) { '1' } else { '0' }),
+        '-Arezzo', $(if ($chosen.Arezzo) { '1' } else { '0' }))
     if ($answer -eq [Windows.Forms.DialogResult]::Yes) {
         Start-LauncherAction -Action 'SetDifficulty' -Yes -ExtraArgs $extra
     }

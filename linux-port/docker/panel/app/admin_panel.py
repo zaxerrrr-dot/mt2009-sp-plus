@@ -3454,6 +3454,14 @@ T = {
  "rare_sashes":  {"pl":"Szarfy","en":"Sashes"},
  "rare_sashes_help":{"pl":"Szarfy z bossów i ze skrzyń bossów. Łączenie szarf u Uriela działa zawsze.","en":"Sashes from bosses and boss chests. Combining sashes at Uriel always works."},
  "rare_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 🐉","en":"Saved and switched live, through the in-game helper. 🐉"},
+ "az_nav":       {"pl":"🗺️ Moduł Arezzo","en":"🗺️ Arezzo module"},
+ "az_open":      {"pl":"🗺️ Otwórz moduł Arezzo","en":"🗺️ Open the Arezzo module"},
+ "tip_az":       {"pl":"Włącz albo wyłącz nowe mapy i lochy z Arezzo. Działa od razu, bez restartu serwera.","en":"Switch the new Arezzo maps and dungeons on or off. Takes effect immediately, no server restart."},
+ "az_dash_hint": {"pl":"Czy na tym świecie są dostępne mapy i lochy z Arezzo (moduł dobrowolny).","en":"Whether the Arezzo maps and dungeons are open in this world (an optional module)."},
+ "az_intro":     {"pl":"Moduł dobrowolny: Dolina Cyklopów, Pustkowie Faraona, Zaczarowany Las oraz lochy Biblioteka Wiedzy, Wzgórze Wukonga, Ruiny Skorpiona i Starożytna Dżungla. Klient (2.0.30 i nowszy) ma wszystkie pliki zawsze — ten przełącznik decyduje tylko, czy serwer do nich prowadzi. Zapis działa od razu, bez restartu. Ustawienie z panelu zostaje po restarcie, dopóki ktoś nie zmieni M2_AREZZO w .env.","en":"An optional module: Dolina Cyklopow, Pustkowie Faraona, Zaczarowany Las and the dungeons Biblioteka Wiedzy, Wzgorze Wukonga, Ruiny Skorpiona and Starozytna Dzungla. The client (2.0.30 and newer) always has the files - this switch only decides whether the server leads there. Saving takes effect immediately, no restart. The panel's setting survives restarts until M2_AREZZO in .env is changed."},
+ "az_enable":    {"pl":"Moduł Arezzo włączony","en":"Arezzo module on"},
+ "az_help":      {"pl":"Włączony: strony w Teleporterze i Pierścieniu, portal do Zaczarowanego Lasu po Strażniku En-Tai, strażnicy wejść do lochów i lochy Arezzo w oknie „Wyprawy” (X). Wyłączony: nic z tego nie jest widoczne, a gracz, który stoi na mapie Arezzo albo jest w jej lochu, w ciągu kilku sekund wraca do miasta (GM może zostać).","en":"On: the Teleporter and ring pages, the Enchanted Forest portal after the En-Tai Guardian, the dungeon entrance guards and the Arezzo lines in the dungeon window (X). Off: none of it is visible, and a player standing on an Arezzo map or in one of its dungeons is sent to the town within seconds (a GM may stay)."},
+ "az_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 🗺️","en":"Saved and switched live, through the in-game helper. 🗺️"},
  "regen_title": {"pl":"Czas odradzania Metinów, bossów i potworów",
                  "en":"Respawn time of Metin stones, bosses and monsters"},
  "regen_help":  {"pl":"Procent zwykłego czasu odradzania: 100 = jak w grze, 50 = dwa razy szybciej, 10 = dziesięć razy szybciej. Działa od razu (przez pomocnika w grze), a po restarcie zostaje. Osobno dla Metinów i bossów, osobno dla zwykłych potworów.",
@@ -5086,6 +5094,24 @@ def read_rare():
             vals["alchemy" if row["szName"] == "m2_alchemy_off" else "sashes"] = 0 if off else 1
     return vals
 
+# MT2009_PLUS_AREZZO_MODULE_V1: the Arezzo module's switch, the event flag
+# mt2009_arezzo_closed (1 = off). No row yet reads as off: the module is
+# voluntary and apply.sh writes the row from M2_AREZZO (default 0) at a start.
+def read_arezzo():
+    with db() as c, c.cursor() as cur:
+        cur.execute("SELECT lValue FROM player.quest WHERE dwPID = 0 "
+                    "AND szName = 'mt2009_arezzo_closed' LIMIT 1")
+        row = cur.fetchone()
+    try:
+        return {"on": 0 if (row is None or int(row["lValue"]) > 0) else 1}
+    except (TypeError, ValueError, KeyError):
+        return {"on": 0}
+
+def persist_arezzo(cur, on):
+    """The event-flag row the db core reads at its next start."""
+    cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                "VALUES (0, 'mt2009_arezzo_closed', '', %s)", (0 if on else 1,))
+
 def persist_rare(cur, alchemy, sashes):
     """The two event-flag rows the db core reads at its next start."""
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
@@ -6276,6 +6302,11 @@ TPL_DASH = BASE.replace("__BODY__", """
 <a class="btn" href="{{url_for('rare')}}" title="{{t('tip_rare')}}">{{t('rare_open')}}</a>
 </div>
 <div class="card">
+<h3 class="help" title="{{t('tip_az')}}">{{t('az_nav')}}</h3>
+<p class="muted">{{t('az_dash_hint')}}</p>
+<a class="btn" href="{{url_for('arezzo')}}" title="{{t('tip_az')}}">{{t('az_open')}}</a>
+</div>
+<div class="card">
 <h3 class="help">{{t('se_nav')}}</h3>
 <p class="muted">{{t('se_dash_hint')}}</p>
 <a class="btn" href="{{url_for('season')}}">{{t('se_open')}}</a>
@@ -6716,6 +6747,23 @@ TPL_RARE = BASE.replace("__BODY__", """
 <h3 style="margin-top:18px">🎗️ {{t('rare_sashes')}}</h3>
 <p class="muted">{{t('rare_sashes_help')}}</p>
 <label><input type="checkbox" name="sashes" value="1" {% if cur['sashes'] %}checked{% endif %}> {{t('easter_enable')}}</label>
+<button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
+</form></div>""")
+
+# MT2009_PLUS_AREZZO_MODULE_V1: the Arezzo module page, the rare page's shape.
+TPL_AREZZO = BASE.replace("__BODY__", """
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a></p>
+<div class="card">
+<h3>{{t('az_nav')}}</h3>
+<p class="muted">{{t('az_intro')}}</p>
+<p><span class="badge">🗺️ {{t('az_nav')}}: {{t('easter_on') if cur['on'] else t('easter_off')}}</span></p>
+</div>
+
+<div class="card">
+<form method="post">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<p class="muted">{{t('az_help')}}</p>
+<label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('az_enable')}}</label>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
 
@@ -17693,6 +17741,45 @@ def rare():
     except Exception:
         flash(t("db_down"), "error")
     return render_template_string(TPL_RARE, cur=cur_rare)
+
+# MT2009_PLUS_AREZZO_MODULE_V1: the Arezzo module on or off. Live immediately, no restart.
+@app.route("/arezzo", methods=["GET", "POST"])
+@login_required
+def arezzo():
+    if not ENGINE_MT2009:
+        flash(t("rates_no_script"), "error")
+        return redirect(url_for("dash"))
+    if request.method == "POST":
+        on = 1 if request.form.get("on") else 0
+        try:
+            with db() as c, c.cursor() as cur:
+                persist_arezzo(cur, on)
+        except Exception:
+            flash(t("db_down"), "error")
+            return redirect(url_for("arezzo"))
+        try:
+            status, qid = queue_and_wait("", "AREZZO", str(on), "", wait=RARE_LIVE_WAIT)
+        except Exception:
+            status, qid = "failed", 0
+        if status == "done":
+            flash(t("az_saved_live"))
+        else:
+            if status == "timeout":
+                try:
+                    with db() as c, c.cursor() as cur:
+                        cur.execute("UPDATE player.web_admin_queue SET status='cancelled' "
+                                    "WHERE id=%s AND status='pending'", (qid,))
+                except Exception:
+                    pass
+            flash(t("easter_saved_persisted"))
+        return redirect(url_for("arezzo"))
+
+    cur_az = {"on": 0}
+    try:
+        cur_az = read_arezzo()
+    except Exception:
+        flash(t("db_down"), "error")
+    return render_template_string(TPL_AREZZO, cur=cur_az)
 
 @app.route("/rates", methods=["GET", "POST"])
 @login_required

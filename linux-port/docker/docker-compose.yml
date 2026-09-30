@@ -117,6 +117,9 @@ services:
       # The Dom Towarowy at the miscellaneous merchant in M1 (the launcher's
       # difficulty window; the migrator writes m2_flea_market_off).
       M2_FLEA_MARKET: "${M2_FLEA_MARKET:-1}"
+      # The Arezzo module (maps 360-366, their dungeons and guards): 1 on, 0 off
+      # (apply.sh writes mt2009_arezzo_closed when .env changed; the panel switches it live).
+      M2_AREZZO: "${M2_AREZZO:-0}"
 
     entrypoint: ["/bin/sh", "/opt/playerbot/apply.sh"]
 

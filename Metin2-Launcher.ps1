@@ -33,6 +33,9 @@ param(
     # SetDifficulty: the Dom Towarowy (Uxie [DSO]'s flea market at the
     # miscellaneous merchant in M1): 1 = on, 0 = off, -1 keeps what .env says.
     [int]$FleaMarket = -1,
+    # SetDifficulty: the Arezzo module (MT2009_PLUS_AREZZO_MODULE_V1 - the new maps and
+    # dungeons): 1 = on, 0 = off, -1 keeps what .env says (off when .env has nothing).
+    [int]$Arezzo = -1,
     # The rates a fresh world starts on, asked for when one is about to be
     # made (ResetWorld, and the first start of an install that has no database
     # yet). -1 leaves .env as it is, which is what every other caller wants.
@@ -1186,8 +1189,9 @@ function Set-DifficultyAction {
     $currentSidekick = (Get-DotEnvValue -Key 'M2_SIDEKICK' -Default '1') -ne '0'
     $currentStarter = (Get-DotEnvValue -Key 'M2_STARTER_CHEST' -Default '1') -ne '0'
     $currentFlea = (Get-DotEnvValue -Key 'M2_FLEA_MARKET' -Default '1') -ne '0'
+    $currentArezzo = (Get-DotEnvValue -Key 'M2_AREZZO' -Default '0') -eq '1'
     Write-Host "Aktualny poziom trudności: $current (przy 'custom': Biolog $currentBio h, Stajenny $currentHorse h, księgi: gracze $currentBook h, boty $currentBotBook h)." -ForegroundColor Gray
-    Write-Host "Auto Łowy: $(if ($currentAutoHunt) { 'włączone' } else { 'wyłączone' }) ($(if ($currentAutoHuntItem) { 'tylko po kupnie przedmiotu z ItemShop' } else { 'dla każdego' })); Towarzysz: $(if ($currentSidekick) { 'włączony' } else { 'wyłączony' }); Skrzynia Ucznia: $(if ($currentStarter) { 'tak' } else { 'nie' }); Dom Towarowy: $(if ($currentFlea) { 'włączony' } else { 'wyłączony' })." -ForegroundColor Gray
+    Write-Host "Auto Łowy: $(if ($currentAutoHunt) { 'włączone' } else { 'wyłączone' }) ($(if ($currentAutoHuntItem) { 'tylko po kupnie przedmiotu z ItemShop' } else { 'dla każdego' })); Towarzysz: $(if ($currentSidekick) { 'włączony' } else { 'wyłączony' }); Skrzynia Ucznia: $(if ($currentStarter) { 'tak' } else { 'nie' }); Dom Towarowy: $(if ($currentFlea) { 'włączony' } else { 'wyłączony' }); Moduł Arezzo: $(if ($currentArezzo) { 'włączony' } else { 'wyłączony' })." -ForegroundColor Gray
 
     # -Difficulty passed (from the GUI or scripting) is non-interactive, like
     # -BotCount: never Read-Host, restart only with -Yes.
@@ -1223,6 +1227,7 @@ function Set-DifficultyAction {
     $sidekickOn = $currentSidekick
     $starterOn = $currentStarter
     $fleaOn = $currentFlea
+    $arezzoOn = $currentArezzo
     if ($interactive) {
         $answer = Read-Host "Auto Łowy (automatyczne polowanie w kliencie, klawisz K) włączone? (T/n, Enter = $(if ($currentAutoHunt) { 'tak' } else { 'nie' }))"
         if ("$answer".Trim()) { $autoHuntOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
@@ -1239,6 +1244,8 @@ function Set-DifficultyAction {
         if ("$answer".Trim()) { $starterOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
         $answer = Read-Host "Dom Towarowy (wszystkie oferty sklepów offline u Handlarki Różności w M1) włączony? (T/n, Enter = $(if ($currentFlea) { 'tak' } else { 'nie' }))"
         if ("$answer".Trim()) { $fleaOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
+        $answer = Read-Host "Moduł Arezzo (nowe mapy: Dolina Cyklopów, Pustkowie Faraona, Zaczarowany Las i 4 lochy) włączony? (t/N, Enter = $(if ($currentArezzo) { 'tak' } else { 'nie' }))"
+        if ("$answer".Trim()) { $arezzoOn = "$answer".Trim().ToLowerInvariant() -in @('t', 'tak', 'y', 'yes', '1') }
     }
     else {
         if ($AutoHunt -ge 0) { $autoHuntOn = ($AutoHunt -ne 0) }
@@ -1246,6 +1253,7 @@ function Set-DifficultyAction {
         if ($Sidekick -ge 0) { $sidekickOn = ($Sidekick -ne 0) }
         if ($StarterChest -ge 0) { $starterOn = ($StarterChest -ne 0) }
         if ($FleaMarket -ge 0) { $fleaOn = ($FleaMarket -ne 0) }
+        if ($Arezzo -ge 0) { $arezzoOn = ($Arezzo -ne 0) }
     }
     if ($level -notin @('easy', 'medium', 'hard', 'custom')) {
         throw "Nieznany poziom trudności: '$level'. Dozwolone: easy, medium, hard, custom."
@@ -1277,8 +1285,9 @@ function Set-DifficultyAction {
     Set-DotEnvValue -Key 'M2_SIDEKICK' -Value $(if ($sidekickOn) { '1' } else { '0' })
     Set-DotEnvValue -Key 'M2_STARTER_CHEST' -Value $(if ($starterOn) { '1' } else { '0' })
     Set-DotEnvValue -Key 'M2_FLEA_MARKET' -Value $(if ($fleaOn) { '1' } else { '0' })
+    Set-DotEnvValue -Key 'M2_AREZZO' -Value $(if ($arezzoOn) { '1' } else { '0' })
     Write-Host "Zapisano: poziom trudności $level (Biolog $bio h, Stajenny $horse h, księgi: gracze $book h, boty $botBook h)." -ForegroundColor Green
-    Write-Host "Auto Łowy: $(if ($autoHuntOn) { 'włączone' } else { 'wyłączone' }) ($(if ($autoHuntItemOn) { 'tylko po kupnie przedmiotu z ItemShop' } else { 'dla każdego' })); Towarzysz: $(if ($sidekickOn) { 'włączony' } else { 'wyłączony' }); Skrzynia Ucznia: $(if ($starterOn) { 'tak' } else { 'nie' }); Dom Towarowy: $(if ($fleaOn) { 'włączony' } else { 'wyłączony' })." -ForegroundColor Green
+    Write-Host "Auto Łowy: $(if ($autoHuntOn) { 'włączone' } else { 'wyłączone' }) ($(if ($autoHuntItemOn) { 'tylko po kupnie przedmiotu z ItemShop' } else { 'dla każdego' })); Towarzysz: $(if ($sidekickOn) { 'włączony' } else { 'wyłączony' }); Skrzynia Ucznia: $(if ($starterOn) { 'tak' } else { 'nie' }); Dom Towarowy: $(if ($fleaOn) { 'włączony' } else { 'wyłączony' }); Moduł Arezzo: $(if ($arezzoOn) { 'włączony' } else { 'wyłączony' })." -ForegroundColor Green
     if ($Yes) {
         Start-Server
         Write-Host "Serwer zrestartowany z poziomem trudności: $level." -ForegroundColor Green

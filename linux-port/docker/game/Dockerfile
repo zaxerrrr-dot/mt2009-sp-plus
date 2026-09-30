@@ -684,6 +684,9 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/dungeons-add \
 #    dungeon on game2 (quest/biblioteka_wiedzy.quest, rooms in data/dungeon/biblioteka_wiedzy); its
 #    guard, Straznik Biblioteki (20430), stands in Orc Valley beside the Temple guard (a cell measured
 #    free) and in the public copy of 363 (the fallback lobby, as Razador's 351).
+# MT2009_PLUS_AREZZO_MODULE_V1: the guards on the old maps (20430 here, 20423 and 20424 below) are no
+# npc.txt lines any more - playerbot_arezzo.h spawns them while the module is on (M2_AREZZO, the panel)
+# and removes them while it is off; these steps only make sure no npc.txt line is left behind.
 # Arezzo's server_attr (cell for cell the client's attr.atr, checked) and Setting.txt; the regen is
 # every other of Arezzo's spawn points with our monsters (the level-45 cyclopes 9601-9605, the
 # stronger lemures 9611-9615) in groups 36001-36203 (group.arezzo.txt); Arezzo's C++ timed bosses and
@@ -718,9 +721,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-add \
  && cat "$A/special_item_group.arezzo.txt" >> "$f" \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(30773|95073[123])([^0-9]|$)' "$f")" = 4 \
  && F="$L/map/map_n_threeway/npc.txt" \
- && { [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; } \
- && { grep -q -E '[[:blank:]]20430[[:space:]]*$' "$F" || printf 'm\t294\t1450\t0\t0\t0\t5\t60s\t100\t1\t20430\n' >> "$F"; } \
- && grep -q -E '^m[[:blank:]]+294[[:blank:]]+1450[[:blank:]].*[[:blank:]]20430' "$F" \
+ && sed -i -E '/[[:blank:]]20430[[:space:]]*$/d' "$F" \
+ && ! grep -q -E '[[:blank:]]20430[[:space:]]*$' "$F" \
  && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
       [ -f "$f" ] || continue; \
       LC_ALL=C grep -a -q 'map_names\[360\]' "$f" && continue; \
@@ -772,11 +774,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-p58 \
  && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
  && cat "$A/special_item_group.arezzo2.txt" >> "$f" \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(3077[456]|9507[456][123])([^0-9]|$)' "$f")" = 12 \
- && for p in "metin2_map_milgyo 165 941 20423" "metin2_map_n_flame_01 101 910 20424"; do \
+ && for p in "metin2_map_milgyo 20423" "metin2_map_n_flame_01 20424"; do \
       set -- $p; F="$L/map/$1/npc.txt"; \
-      [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; \
-      grep -q -E "[[:blank:]]$4[[:space:]]*\$" "$F" || printf 'm\t%s\t%s\t0\t0\t0\t5\t60s\t100\t1\t%s\n' "$2" "$3" "$4" >> "$F"; \
-      grep -q -E "^m[[:blank:]]+$2[[:blank:]]+$3[[:blank:]].*[[:blank:]]$4" "$F"; \
+      sed -i -E "/[[:blank:]]$2[[:space:]]*\$/d" "$F"; \
+      ! grep -q -E "[[:blank:]]$2[[:space:]]*\$" "$F" || exit 1; \
     done \
  && grep -q -E '[[:blank:]]20425[[:space:]]*$' "$L/map/natural_map/npc.txt" \
  && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \

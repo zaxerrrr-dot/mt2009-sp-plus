@@ -39,6 +39,7 @@
 // any dungeon and in the level range, and bots never get a line.
 #include "locale_service.h"
 #include "dungeon.h"
+#include "questmanager.h"
 
 namespace mt2009_dpanel
 {
@@ -219,6 +220,23 @@ namespace mt2009_dpanel
 		return std::string("dungeon_panel.") + d.key + suffix;
 	}
 
+	// MT2009_PLUS_AREZZO_MODULE_V1: a dungeon on an Arezzo map (360-366) or entered from one is
+	// listed and warped to only while the module is on (event flag mt2009_arezzo_closed = 0).
+	bool IsArezzo(const Def& d)
+	{
+		if (d.map >= 360 && d.map <= 366)
+			return true;
+		for (int i = 0; i < 3; ++i)
+			if (d.entryMaps[i] >= 360 && d.entryMaps[i] <= 366)
+				return true;
+		return false;
+	}
+
+	bool Hidden(const Def& d)
+	{
+		return IsArezzo(d) && quest::CQuestManager::instance().GetEventFlag("mt2009_arezzo_closed") > 0;
+	}
+
 	int CooldownLeft(LPCHARACTER ch, const Def& d)
 	{
 		if (d.cdFlag.empty() || d.cdSec <= 0)
@@ -238,6 +256,8 @@ namespace mt2009_dpanel
 		for (size_t i = 0; i < s_defs.size(); ++i)
 		{
 			const Def& d = s_defs[i];
+			if (Hidden(d))
+				continue;
 			const long entryMap = d.entryMaps[EmpireIndex(ch)];
 			if (named.insert(d.map).second)
 				Cmd(ch, "name %ld %s", d.map, d.name.c_str());
@@ -259,7 +279,7 @@ namespace mt2009_dpanel
 		if (index < 0 || index >= (int) s_defs.size())
 			return;
 		const Def& d = s_defs[index];
-		if (ch->IsDead())
+		if (ch->IsDead() || Hidden(d))
 			return;
 		if (ch->GetMapIndex() >= 10000 || ch->GetDungeon())
 		{

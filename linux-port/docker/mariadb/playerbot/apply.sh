@@ -963,6 +963,24 @@ else
     echo "[playerbot-migrate] WARNING: could not write the alchemy and sash switches; they stay as they were" >&2
 fi
 
+# MT2009_PLUS_AREZZO_MODULE_V1: the Arezzo module (maps 360-366, their dungeons and entrance guards),
+# voluntary and off unless M2_AREZZO=1. One world flag, mt2009_arezzo_closed (1 = off), read by the
+# quests (Teleporter, ring, Ochao portal, dungeon guards) and the cores (playerbot_arezzo.h: the
+# guards and the send-off; the dungeon window). The panel switches it live (web_admin.quest AREZZO),
+# so, as with the alchemy, .env is applied only when it changed since the last start
+# (m2_arezzo_env = what it said + 1).
+case "$(printf '%s' "${M2_AREZZO:-0}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in 1|on|yes|true) arezzo_on=1 ;; *) arezzo_on=0 ;; esac
+arezzo_env=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_arezzo_env' LIMIT 1;" 2>/dev/null | tr -d ' \r')
+if [ -n "$arezzo_env" ] && [ "$arezzo_env" = "$((arezzo_on + 1))" ]; then
+    echo "[playerbot-migrate] Arezzo module: .env unchanged since the last start - the switch stays as the panel or the last start left it"
+elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'mt2009_arezzo_closed', '', $((1 - arezzo_on))),
+        (0, 'm2_arezzo_env', '', $((arezzo_on + 1)));"; then
+    echo "[playerbot-migrate] Arezzo module: $([ "$arezzo_on" = 1 ] && echo on || echo off) (from .env)"
+else
+    echo "[playerbot-migrate] WARNING: could not write the Arezzo module switch; it stays as it was" >&2
+fi
+
 echo "[playerbot-migrate] applying deterministic Playerbot seed (PID $first_pid..$last_pid)"
 result=/tmp/playerbot-seed.out
 trap 'rm -f "$result"' EXIT HUP INT TERM
