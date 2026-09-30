@@ -48,6 +48,8 @@ ap.add_argument('--ochao', default='/opt/metin2/cache/backup-ochao-test/test_bot
                 help='the Ochao test group (first column pid)')
 ap.add_argument('--per-cohort', type=int, default=100)
 ap.add_argument('--registry-skip', type=int, default=300)
+ap.add_argument('--exclude-name', action='append', default=[],
+                help='leave out characters whose name contains this (case-insensitive); repeatable')
 a = ap.parse_args()
 os.makedirs(a.outdir, exist_ok=True)
 
@@ -102,6 +104,8 @@ for r in rows:
     if pid in earlier:
         continue
     if pid in online or pid in ochao or master or grp not in (1, 2) or rank[pid] <= a.registry_skip:
+        continue
+    if any(x.lower() in name.lower() for x in a.exclude_name):
         continue
     if 30 <= lvl <= 45: c = 'A'
     elif 46 <= lvl <= 61: c = 'B'
