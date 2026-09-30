@@ -7,7 +7,7 @@ SRC = '/opt/metin2/git/mt2009-sp-plus/client-patches/client-2.0.30/root/'
 f, v, ents = m2pack.read_index(BASE + '/root.index'); d = packlib.rd(BASE + '/root.data')
 names = [e['name'] for e in ents]
 rep = {}
-for n in ('uidungeoninfo.py',):
+for n in ('uidungeoninfo.py', 'playerbot_status_tail.py'):
     k = [x for x in names if x.endswith(n)]; assert len(k) == 1, k
     new = open(SRC + n, 'rb').read()
     old = m2pack.read_entry(d, [e for e in ents if e['name'] == k[0]][0])
