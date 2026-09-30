@@ -265,7 +265,9 @@ RUN set -eux; \
     # 20426), its portal (20415) and the Bodyguard's reward (MT2009_PLUS_OCHAO_V1).
     # biblioteka_wiedzy is the Arezzo library dungeon (363) and map_warp the package's
     # Teleporter with Dolina Cyklopow (360) on its first page (MT2009_PLUS_AREZZO_V1).
-    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon goblin_skarbow biblioteka_wiedzy map_warp; do \
+    # dungeon_panel is the dungeon panel's part in the quests: the instances' start and the
+    # bosses of the open maps (MT2009_PLUS_DUNGEON_PANEL_V1, playerbot_dungeon_panel.h).
+    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -695,6 +697,9 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-add \
  && sed -i -E '/^36[0-6][[:blank:]]/d' "$L/map/index" \
  && printf '360 metin2_map_exp\n362 natural_map\n363 plechito_chamber_of_wisdom\n' >> "$L/map/index" \
  && test "$(grep -c -E '^(360[[:blank:]]+metin2_map_exp|362[[:blank:]]+natural_map|363[[:blank:]]+plechito_chamber_of_wisdom)[[:space:]]*$' "$L/map/index")" = 3 \
+ && cp "$A/dungeon_info.txt" "$L/dungeon_info.txt" \
+ && test "$(grep -c -E '^dungeon[[:blank:]]' "$L/dungeon_info.txt")" -ge 10 \
+    # MT2009_PLUS_DUNGEON_PANEL_V1 (share): the dungeon panel's list, locale/poland/dungeon_info.txt.
  && mkdir -p /opt/metin2/share/data/dungeon && rm -rf /opt/metin2/share/data/dungeon/biblioteka_wiedzy \
  && cp -a "$A/data/dungeon/biblioteka_wiedzy" /opt/metin2/share/data/dungeon/ \
  && ! grep -q -E '^Group[[:blank:]]+MT2009_arezzo_' "$L/group.txt" \

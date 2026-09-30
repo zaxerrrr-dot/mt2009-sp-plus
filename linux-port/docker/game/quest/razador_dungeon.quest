@@ -628,6 +628,7 @@ quest razador_dungeon begin
 		when 6091.kill with razador_dungeon.inside() and d.getf("boss") == 1 begin
 			d.setf("boss", 2)
 			razador_dungeon.give_chests()
+			d.update_ranking("razador") -- MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's results
 			d.clear_regen()
 			razador_dungeon.purge_mobs()
 			d.notice("Razador zosta³ pokonany! Za 60 sekund wszyscy wróc¹ na Ognist¹ Ziemiê.")

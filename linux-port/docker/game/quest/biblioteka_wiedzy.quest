@@ -554,6 +554,7 @@ quest biblioteka_wiedzy begin
 			d.clear_regen()
 			biblioteka_wiedzy.purge_mobs()
 			local took = biblioteka_wiedzy.reward()
+			d.update_ranking("biblioteka", took) -- MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's results
 			d.notice(string.format("Baronówna Paj¹ków pokonana w %d:%02d! Za 60 sekund wszyscy wróc¹ do Doliny Orków.", math.floor(took / 60), math.mod(took, 60)))
 			server_timer("biblioteka_end", 60, d.get_map_index())
 		end

@@ -625,6 +625,7 @@ quest nemere_dungeon begin
 		when 6191.kill with nemere_dungeon.inside() and d.getf("step") == 10 and d.getf("ready") == 1 begin
 			d.setf("step", 11)
 			nemere_dungeon.give_chests()
+			d.update_ranking("nemere") -- MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's results
 			d.clear_regen()
 			nemere_dungeon.purge_mobs()
 			d.notice("Nemere zosta³ pokonany! Za 60 sekund wszyscy wróc¹ na Górê Sohan.")

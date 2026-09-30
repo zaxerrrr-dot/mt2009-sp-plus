@@ -502,5 +502,41 @@
   "marker": "MT2009_PLUS_MAP_ALLOW_48_V1",
   "old": "enum eCommonDefines {\n\tMAP_ALLOW_LIMIT = 32, // 32 default\n};\n",
   "new": "enum eCommonDefines {\n\t// MT2009_PLUS_MAP_ALLOW_48_V1: game1 of the unified layout hosts 33 maps\n\t// once the Temple of Ochao (209) sits beside the bots (m2-render-config);\n\t// every core and the db core are built from this one tree.\n\tMAP_ALLOW_LIMIT = 48, // 32 default\n};\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_DUNGEON_PANEL_V1 (damage)",
+  "old": "\t\tbool\t\t\t\tDamage(LPCHARACTER pAttacker, int dam, EDamageType type = DAMAGE_TYPE_NORMAL, DWORD dwUsedSkill = 0, bool IsPenetrate = false);\n",
+  "new": "\t\tbool\t\t\t\tDamage(LPCHARACTER pAttacker, int dam, EDamageType type = DAMAGE_TYPE_NORMAL, DWORD dwUsedSkill = 0, bool IsPenetrate = false);\n\t\t// MT2009_PLUS_DUNGEON_PANEL_V1 (damage): who hurt this character and how much, for the dungeon\n\t\t// panel's ranking (d.update_ranking in a boss's kill handler, playerbot_dungeon_panel.h).\n\t\tconst TDamageMap&\tMt2009PlusGetDamageMap() const\t{ return m_map_kDamage; }\n"
+ },
+ {
+  "file": "questlua_dungeon.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_PANEL_V1 (lua)",
+  "old": "\tALUA(dungeon_new_jump_pids)\n",
+  "new": "\t// MT2009_PLUS_DUNGEON_PANEL_V1 (lua): d.update_ranking(key [, seconds]) in a boss's kill handler -\n\t// the dungeon panel's results (finished, best time, most damage) of everyone in the instance, or\n\t// on an open map of everyone who hurt the boss (playerbot_dungeon_panel.h, dungeon_info.txt).\n\tALUA(dungeon_update_ranking)\n\t{\n\t\tif (!lua_isstring(L, 1))\n\t\t\treturn 0;\n\t\tconst int seconds = lua_isnumber(L, 2) ? (int) lua_tonumber(L, 2) : 0;\n\t\tCQuestManager& q = CQuestManager::instance();\n\t\tvoid DungeonPanelUpdateRanking(LPCHARACTER pc, LPCHARACTER npc, const char* key, int seconds);\n\t\tDungeonPanelUpdateRanking(q.GetCurrentCharacterPtr(), q.GetCurrentNPCCharacterPtr(), lua_tostring(L, 1), seconds);\n\t\treturn 0;\n\t}\n\n\tALUA(dungeon_new_jump_pids)\n"
+ },
+ {
+  "file": "questlua_dungeon.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_PANEL_V1 (table)",
+  "old": "\t\t\t{ \"new_jump_pids\",\tdungeon_new_jump_pids\t},\n",
+  "new": "\t\t\t{ \"new_jump_pids\",\tdungeon_new_jump_pids\t},\n\t\t\t// MT2009_PLUS_DUNGEON_PANEL_V1 (table)\n\t\t\t{ \"update_ranking\",\tdungeon_update_ranking\t},\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_PANEL_V1 (declare)",
+  "old": "ACMD(do_goblin);\n",
+  "new": "ACMD(do_goblin);\n// MT2009_PLUS_DUNGEON_PANEL_V1 (declare)\nACMD(do_dungeon_panel);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_PANEL_V1 (table)",
+  "old": "\t{ \"goblin\",\tdo_goblin,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"goblin\",\tdo_goblin,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_DUNGEON_PANEL_V1 (table)\n\t{ \"lochy\",\tdo_dungeon_panel,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_PANEL_V1 (command)",
+  "old": "// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n",
+  "new": "// MT2009_PLUS_DUNGEON_PANEL_V1 (command): the dungeon panel,\n// \"/lochy [open|warp <i>|rank <i> <type>|reload]\" (playerbot_dungeon_panel.h).\nACMD(do_dungeon_panel)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid DungeonPanelCommand(LPCHARACTER ch, const char* argument);\n\tDungeonPanelCommand(ch, argument);\n}\n\n// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n"
  }
 ]
