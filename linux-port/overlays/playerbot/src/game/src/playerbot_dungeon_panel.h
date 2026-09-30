@@ -65,6 +65,12 @@ namespace mt2009_dpanel
 		DWORD reqVnum;
 		int reqCount;
 		std::vector<Drop> drops;
+		// MT2009_PLUS_DUNGEON_FEE_V1: the panel teleport's price ("cost" line, 0 = free) and an
+		// entrance per empire ("entry" line: x y for Shinsoo, Chunjo, Jinno; world units / 100).
+		long long warpCost;
+		bool empireXY;
+		long ex[3], ey[3];
+		Def() : warpCost(0), empireXY(false) { ex[0] = ex[1] = ex[2] = ey[0] = ey[1] = ey[2] = 0; }
 	};
 
 	static std::vector<Def> s_defs;
@@ -141,6 +147,41 @@ namespace mt2009_dpanel
 				if (!d.entryMaps[2])
 					d.entryMaps[2] = d.entryMaps[0];
 				s_defs.push_back(d);
+			}
+			else if (!strcmp(tag, "cost"))
+			{
+				// MT2009_PLUS_DUNGEON_FEE_V1: cost <key> <yang>
+				char key[32];
+				long long cost = 0;
+				if (sscanf(p, "%*s %31s %lld", key, &cost) != 2 || cost < 0)
+				{
+					sys_err("DUNGEON_PANEL: %s:%d: bad cost line", path.c_str(), lineNo);
+					continue;
+				}
+				for (size_t i = 0; i < s_defs.size(); ++i)
+					if (s_defs[i].key == key)
+						s_defs[i].warpCost = cost;
+			}
+			else if (!strcmp(tag, "entry"))
+			{
+				// MT2009_PLUS_DUNGEON_FEE_V1: entry <key> <x y> <x y> <x y> (Shinsoo, Chunjo, Jinno)
+				char key[32];
+				long v[6];
+				if (sscanf(p, "%*s %31s %ld %ld %ld %ld %ld %ld", key, &v[0], &v[1], &v[2], &v[3], &v[4], &v[5]) != 7)
+				{
+					sys_err("DUNGEON_PANEL: %s:%d: bad entry line", path.c_str(), lineNo);
+					continue;
+				}
+				for (size_t i = 0; i < s_defs.size(); ++i)
+					if (s_defs[i].key == key)
+					{
+						s_defs[i].empireXY = true;
+						for (int e = 0; e < 3; ++e)
+						{
+							s_defs[i].ex[e] = v[e * 2];
+							s_defs[i].ey[e] = v[e * 2 + 1];
+						}
+					}
 			}
 			else if (!strcmp(tag, "drop"))
 			{
@@ -283,7 +324,7 @@ namespace mt2009_dpanel
 			return;
 		if (ch->GetMapIndex() >= 10000 || ch->GetDungeon())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "Nie mo\xbfesz si\xea teleportowa\xe6 z lochu.");
+			ch->ChatPacket(CHAT_TYPE_INFO, "Nie mo\xbf" "esz si\xea teleportowa\xe6 z lochu.");
 			return;
 		}
 		if (ch->GetLevel() < d.lvMin || ch->GetLevel() > LevelMax(d))
@@ -298,7 +339,18 @@ namespace mt2009_dpanel
 		}
 		if (!ch->CanWarp() || ch->IsHack())
 			return;
+		// MT2009_PLUS_DUNGEON_FEE_V1: the teleport's price, checked before and taken on the warp.
+		if (d.warpCost > 0 && !ch->IsGM() && (long long) ch->GetGold() < d.warpCost)
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Teleport pod wej\x9c" "cie kosztuje %lld Yang - nie masz tyle przy sobie.", d.warpCost);
+			return;
+		}
 		long x = d.x * 100, y = d.y * 100;
+		if (d.empireXY)
+		{
+			x = d.ex[EmpireIndex(ch)] * 100;
+			y = d.ey[EmpireIndex(ch)] * 100;
+		}
 		if (d.town)
 		{
 			PIXEL_POSITION pos;
@@ -307,8 +359,14 @@ namespace mt2009_dpanel
 			x = pos.x;
 			y = pos.y;
 		}
-		sys_log(0, "DUNGEON_PANEL: %s warps to %s (%ld %ld)", ch->GetName(), d.key.c_str(), x, y);
-		ch->WarpSet(x, y);
+		sys_log(0, "DUNGEON_PANEL: %s warps to %s (%ld %ld), cost %lld", ch->GetName(), d.key.c_str(), x, y, d.warpCost);
+		if (!ch->WarpSet(x, y))
+			return;
+		if (d.warpCost > 0 && !ch->IsGM())
+		{
+			ch->PointChange(POINT_GOLD, -(int) d.warpCost, true);
+			ch->ChatPacket(CHAT_TYPE_INFO, "Teleport pod wej\x9c" "cie: zap\xb3" "acono %lld Yang.", d.warpCost);
+		}
 	}
 
 	// type 1: most finished, 2: best time (least), 3: most damage

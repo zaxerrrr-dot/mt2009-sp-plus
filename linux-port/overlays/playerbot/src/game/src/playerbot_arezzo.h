@@ -8,8 +8,8 @@
 //     choice (362) and the four dungeon guards (363-366) - as before;
 //   * the dungeon panel (playerbot_dungeon_panel.h, IsArezzo): no Arezzo line, no warp;
 //   * this file, on every core, every TICK_SECONDS:
-//       - the three entrance guards that stand on the old maps (Straznik Biblioteki in Orc
-//         Valley, Straznik Wzgorza in the Hwang Temple, Straznik Ruin on the Fire Land) are
+//       - the three entrance guards that stand on the old maps (Straznik Biblioteki in every
+//         empire's M2, Straznik Wzgorza in the Hwang Temple, Straznik Ruin on the Fire Land) are
 //         spawned here instead of npc.txt: on while the module is on, gone while it is off;
 //       - a player (not a GM) on an Arezzo map or in one of its dungeons while the module is
 //         off is sent to his empire's town.
@@ -47,7 +47,11 @@ namespace mt2009_arezzo
 
 	// The npc.txt lines the Dockerfile used to append (direction 5 -> 180 degrees).
 	Guard s_guards[] = {
-		{ 20430, 64, 294, 1450, 180, 0 },	// Straznik Biblioteki - Dolina Orkow (metin2_map_n_threeway)
+		// Straznik Biblioteki - M2 of every empire, beside the Teleporter (moved from Orc Valley on
+		// 30 September; cells checked walkable on each map's server_attr).
+		{ 20430,  3, 496,  575, 180, 0 },	// metin2_map_a3 (Shinsoo M2)
+		{ 20430, 23, 345,  351, 180, 0 },	// metin2_map_b3 (Chunjo M2)
+		{ 20430, 43, 476,  351, 180, 0 },	// metin2_map_c3 (Jinno M2)
 		{ 20423, 65, 165,  941, 180, 0 },	// Straznik Wzgorza - Swiatynia Hwang (metin2_map_milgyo)
 		{ 20424, 62, 101,  910, 180, 0 },	// Straznik Ruin - Ognista Ziemia (metin2_map_n_flame_01)
 	};
@@ -128,7 +132,7 @@ namespace mt2009_arezzo
 			if (it != s_warped.end() && now - it->second < (DWORD) WARP_RETRY_SECONDS)
 				continue;
 			s_warped[ch->GetPlayerID()] = now;
-			ch->ChatPacket(CHAT_TYPE_INFO, "Miejsca Arezzo s\xb9 wy\xb3\xb9czone na tym serwerze - wracasz do miasta.");
+			ch->ChatPacket(CHAT_TYPE_INFO, "Miejsca Arezzo s\xb9 wy\xb3\xb9" "czone na tym serwerze - wracasz do miasta.");
 			sys_log(0, "AREZZO: module off - %s sent from map %ld to the town", ch->GetName(), ch->GetMapIndex());
 			ch->WarpSet(EMPIRE_START_X(ch->GetEmpire()), EMPIRE_START_Y(ch->GetEmpire()));
 		}

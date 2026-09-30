@@ -1,7 +1,7 @@
 -- MT2009_PLUS_AREZZO_V1 (biblioteka): Biblioteka Wiedzy - loch paj¹ków od poziomu 30, tylko
 -- dla graczy. Mapa i uk³ad z Arezzo (plechito_chamber_of_wisdom, quest dungeon_wisdom),
 -- przebieg napisany od nowa na wzorcu razador_dungeon.quest: Stra¿nik Biblioteki (20430)
--- w Dolinie Orków (mapa 64, obok Stra¿nika Œwi¹tyni) tworzy instancjê mapy 363 na game2
+-- w M2 ka¿dego królestwa (obok Teleportera; do 30 wrzeœnia w Dolinie Orków) tworzy instancjê mapy 363 na game2
 -- (d.new_jump_pids) i od razu przenosi do niej gracza albo przywódcê z ludŸmi jego
 -- dru¿yny stoj¹cymi obok (jedno ³adowanie, boty zostaj¹ na zewn¹trz). Etapy:
 --   1: zabij 60 paj¹ków (9703) - zabójca dostaje Pieczêæ Biblioteki (30765); u¿ycie
@@ -28,11 +28,64 @@ quest biblioteka_wiedzy begin
 				near = 30,
 				cooldown = 30 * 60,
 				limit_min = 30,
+				-- MT2009_PLUS_DUNGEON_FEE_V1: the price of a new expedition (each player, paid on entering it) and
+				-- how many new expeditions a player may start a day (Polish midnight).
+				fee = 2000000, fee_text = "2 000 000",
+				daily = 5,
 				wave_kills = 60,
 				seals = 3,
 				chests_min = 1, chests_max = 3,
 				path = "data/dungeon/biblioteka_wiedzy/",
 			}
+		end
+
+		-- MT2009_PLUS_DUNGEON_FEE_V1: the entry fee and the daily limit. Checked for everyone at the guard (with
+		-- the level and the rest), paid on the first login into a new instance (every way in:
+		-- the guard, the lobby, the lobby's own timer) - no money or no runs left there sends
+		-- the player out. "Wróæ do lochu" into the same instance costs nothing. GMs are free.
+		function today()
+			return math.floor((get_global_time() + 7200) / 86400)
+		end
+
+		function runs_today()
+			if pc.getf("biblioteka_wiedzy", "day") ~= biblioteka_wiedzy.today() then
+				return 0
+			end
+			return pc.getf("biblioteka_wiedzy", "runs")
+		end
+
+		function over_limit()
+			local c = biblioteka_wiedzy.cfg()
+			return not pc.is_gm() and biblioteka_wiedzy.runs_today() >= c.daily
+		end
+
+		function too_poor()
+			local c = biblioteka_wiedzy.cfg()
+			return not pc.is_gm() and pc.get_money() < c.fee
+		end
+
+		function pay_entry()
+			local c = biblioteka_wiedzy.cfg()
+			if pc.is_gm() or pc.is_playerbot() then
+				return true
+			end
+			if biblioteka_wiedzy.over_limit() then
+				syschat("Wykorzysta³eœ ju¿ dzisiejsze wyprawy do tego lochu ("..c.daily.."). Wróæ jutro.")
+				return false
+			end
+			if pc.get_money() < c.fee then
+				syschat("Wejœcie kosztuje "..c.fee_text.." Yang - nie masz tyle przy sobie.")
+				return false
+			end
+			pc.change_money(-c.fee)
+			local day = biblioteka_wiedzy.today()
+			if pc.getf("biblioteka_wiedzy", "day") ~= day then
+				pc.setf("biblioteka_wiedzy", "day", day)
+				pc.setf("biblioteka_wiedzy", "runs", 0)
+			end
+			pc.setf("biblioteka_wiedzy", "runs", pc.getf("biblioteka_wiedzy", "runs") + 1)
+			syschat("Op³ata za wejœcie: "..c.fee_text.." Yang. Dzisiejsza wyprawa "..pc.getf("biblioteka_wiedzy", "runs").."/"..c.daily..".")
+			return true
 		end
 
 		function inside()
@@ -128,11 +181,23 @@ quest biblioteka_wiedzy begin
 		end
 
 		function finish()
-			local c = biblioteka_wiedzy.cfg()
 			d.setf("closed", 1)
 			d.setf("mt2009_keep_until", 0)
-			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			-- MT2009_PLUS_DUNGEON_FEE_V1: everyone goes back to his own empire's M2 (the location
+			-- each login inside saved with exit_xy), so no one warp location for the instance.
 			d.exit_all()
+		end
+
+		-- MT2009_PLUS_DUNGEON_FEE_V1: Straznik Biblioteki stands in every empire's M2 by the
+		-- Teleporter (playerbot_arezzo.h spawns him); the way out leads back there.
+		function exit_xy()
+			local e = pc.get_empire()
+			if e == 2 then
+				return 23, 1024 + 345, 2048 + 354
+			elseif e == 3 then
+				return 43, 8192 + 476, 2048 + 354
+			end
+			return 3, 3072 + 496, 8192 + 578
 		end
 
 		-- Chests (special_item_group.arezzo.txt) and the panel's flags for every player of the
@@ -179,6 +244,7 @@ quest biblioteka_wiedzy begin
 			say("")
 			say_reward("Wymagany poziom: "..c.min_level..". Limit "..c.limit_min.." minut, ponowne wejœcie po "..math.floor(c.cooldown / 60).." minutach.")
 			say_reward("Loch jest tylko dla graczy - boty z dru¿yny zostaj¹ tutaj.")
+			say_reward("Wejœcie: "..c.fee_text.." Yang. Najwy¿ej "..c.daily.." wypraw dziennie (dziœ: "..biblioteka_wiedzy.runs_today().."/"..c.daily..").") -- MT2009_PLUS_DUNGEON_FEE_V1
 			if select("WejdŸ do Biblioteki Wiedzy", "Nie teraz") ~= 1 then
 				return
 			end
@@ -238,9 +304,13 @@ quest biblioteka_wiedzy begin
 			local humans = {me}
 			local low = {}
 			local wait = {}
+			local full = {} -- MT2009_PLUS_DUNGEON_FEE_V1
+			local poor = {}
 			if not pc.is_gm() and now - pc.getf("biblioteka_wiedzy", "entry") < c.cooldown then
 				table.insert(wait, pc.get_name())
 			end
+			if biblioteka_wiedzy.over_limit() then table.insert(full, pc.get_name()) end
+			if biblioteka_wiedzy.too_poor() then table.insert(poor, pc.get_name()) end
 			if party.is_party() then
 				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
 				local pids = {party.get_member_pids()}
@@ -256,6 +326,8 @@ quest biblioteka_wiedzy begin
 							if not pc.is_gm() and now - pc.getf("biblioteka_wiedzy", "entry") < c.cooldown then
 								table.insert(wait, pc.get_name())
 							end
+							if biblioteka_wiedzy.over_limit() then table.insert(full, pc.get_name()) end
+							if biblioteka_wiedzy.too_poor() then table.insert(poor, pc.get_name()) end
 						end
 						q.end_other_pc_block()
 					end
@@ -265,6 +337,16 @@ quest biblioteka_wiedzy begin
 				say_title(mob_name(20430))
 				say("Za s³abi, by wejœæ (poziom "..c.min_level.."+):")
 				for i, n in next, low, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(full) > 0 then
+				say("Dzisiejsze wyprawy do tego lochu ju¿ wykorzystane ("..c.daily.." dziennie):")
+				for i, n in next, full, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(poor) > 0 then
+				say("Wejœcie kosztuje "..c.fee_text.." Yang - za ma³o przy sobie:")
+				for i, n in next, poor, nil do say(color(1,1,0).."    "..n) end
 				return
 			end
 			if table.getn(wait) > 0 then
@@ -317,7 +399,7 @@ quest biblioteka_wiedzy begin
 
 		when biblioteka_fallback.timer begin
 			local c = biblioteka_wiedzy.cfg()
-			if pc.get_map_index() ~= c.exit_map or pc.getf("biblioteka_wiedzy", "pending") == 0 then
+			if pc.get_map_index() == c.map or biblioteka_wiedzy.inside() or pc.getf("biblioteka_wiedzy", "pending") == 0 then
 				return
 			end
 			syschat("Biblioteka Wiedzy: przejœcie prowadzi przez poczekalniê.")
@@ -357,6 +439,8 @@ quest biblioteka_wiedzy begin
 			local humans = {}
 			local low = {}
 			local wait = {}
+			local full = {} -- MT2009_PLUS_DUNGEON_FEE_V1
+			local poor = {}
 			if party.is_party() then
 				local pids = {party.get_member_pids()}
 				for i, pid in next, pids, nil do
@@ -369,6 +453,8 @@ quest biblioteka_wiedzy begin
 						if not pc.is_gm() and now - pc.getf("biblioteka_wiedzy", "entry") < c.cooldown then
 							table.insert(wait, pc.get_name())
 						end
+						if biblioteka_wiedzy.over_limit() then table.insert(full, pc.get_name()) end
+						if biblioteka_wiedzy.too_poor() then table.insert(poor, pc.get_name()) end
 					end
 					q.end_other_pc_block()
 				end
@@ -380,10 +466,22 @@ quest biblioteka_wiedzy begin
 				if not pc.is_gm() and now - pc.getf("biblioteka_wiedzy", "entry") < c.cooldown then
 					table.insert(wait, pc.get_name())
 				end
+				if biblioteka_wiedzy.over_limit() then table.insert(full, pc.get_name()) end
+				if biblioteka_wiedzy.too_poor() then table.insert(poor, pc.get_name()) end
 			end
 			if table.getn(low) > 0 then
 				say("Za s³abi, by wejœæ (poziom "..c.min_level.."+):")
 				for i, n in next, low, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(full) > 0 then
+				say("Dzisiejsze wyprawy do tego lochu ju¿ wykorzystane ("..c.daily.." dziennie):")
+				for i, n in next, full, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(poor) > 0 then
+				say("Wejœcie kosztuje "..c.fee_text.." Yang - za ma³o przy sobie:")
+				for i, n in next, poor, nil do say(color(1,1,0).."    "..n) end
 				return
 			end
 			if table.getn(wait) > 0 then
@@ -425,7 +523,8 @@ quest biblioteka_wiedzy begin
 					pc.warp(c.exit_x * 100, c.exit_y * 100)
 					return
 				end
-				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				local em, ex, ey = biblioteka_wiedzy.exit_xy()
+				pc.set_warp_location(em, ex, ey)
 				pc.setf("biblioteka_wiedzy", "pending", 0)
 				if pc.getf("biblioteka_wiedzy", "auto") == 1 and not party.is_party() then
 					pc.setf("biblioteka_wiedzy", "auto", 0)
@@ -440,10 +539,15 @@ quest biblioteka_wiedzy begin
 					pc.warp(c.exit_x * 100, c.exit_y * 100)
 					return
 				end
-				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				local em, ex, ey = biblioteka_wiedzy.exit_xy()
+				pc.set_warp_location(em, ex, ey)
 				pc.setf("biblioteka_wiedzy", "inside", 1)
 				pc.setf("biblioteka_wiedzy", "pending", 0)
 				if pc.getf("biblioteka_wiedzy", "idx") ~= idx then
+					if not biblioteka_wiedzy.pay_entry() then -- MT2009_PLUS_DUNGEON_FEE_V1
+						pc.warp(ex * 100, ey * 100)
+						return
+					end
 					pc.setf("biblioteka_wiedzy", "idx", idx)
 					pc.setf("biblioteka_wiedzy", "entry", get_global_time())
 				end
@@ -451,7 +555,7 @@ quest biblioteka_wiedzy begin
 					biblioteka_wiedzy.init()
 				end
 				if d.getf("closed") == 1 then
-					pc.warp(c.exit_x * 100, c.exit_y * 100)
+					pc.warp(ex * 100, ey * 100)
 				end
 			elseif pc.getf("biblioteka_wiedzy", "inside") == 1 then
 				pc.setf("biblioteka_wiedzy", "inside", 0)
@@ -555,7 +659,7 @@ quest biblioteka_wiedzy begin
 			biblioteka_wiedzy.purge_mobs()
 			local took = biblioteka_wiedzy.reward()
 			d.update_ranking("biblioteka", took) -- MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's results
-			d.notice(string.format("Baronówna Paj¹ków pokonana w %d:%02d! Za 60 sekund wszyscy wróc¹ do Doliny Orków.", math.floor(took / 60), math.mod(took, 60)))
+			d.notice(string.format("Baronówna Paj¹ków pokonana w %d:%02d! Za 60 sekund wszyscy wróc¹ do miasta.", math.floor(took / 60), math.mod(took, 60)))
 			server_timer("biblioteka_end", 60, d.get_map_index())
 		end
 	end
