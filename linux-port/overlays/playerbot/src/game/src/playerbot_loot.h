@@ -18,6 +18,11 @@
 #if defined(PLAYERBOT_ENGINE_MT2009)
 // MT2009_PLUS_PICKUP_FILTER_V1 (char_item.cpp): the player's pick-up filter.
 bool Mt2009PlusPickupFilterAllows(LPCHARACTER ch, LPITEM item);
+// MT2009_PLUS_PICKUP_FILTER_V1 (char_item.cpp): whether Auto Lowy's kinds
+// (with "Bez bonusu", bit 13) keep an item, and the kinds a character's
+// client last sent (/pickup_filter, whether its filter is on or not).
+bool Mt2009PlusPickupKindsAllow(LPITEM item, DWORD kinds);
+bool Mt2009PlusPickupKindsOf(DWORD pid, DWORD* kinds);
 #endif
 
 namespace
@@ -149,6 +154,9 @@ namespace
 	// MT2009_PLUS_SIDEKICK_LOOT_OFF_V1 (playerbot_sidekick.h): a companion whose
 	// window says "Nic" - it picks nothing up, in any state.
 	bool IsPlayerBotSidekickLootOff(LPCHARACTER ch);
+	// MT2009_PLUS_PICKUP_FILTER_V1 (playerbot_sidekick.h): a companion whose
+	// "Filtr" is on takes only its owner's Auto Lowy kinds, and yang.
+	bool PlayerBotSidekickFilterAllows(LPCHARACTER ch, LPITEM item);
 
 	bool IsPlayerBotPartyLoot(LPCHARACTER owner, LPITEM item)
 	{
@@ -157,6 +165,10 @@ namespace
 		// MT2009_PLUS_PICKUP_FILTER_V1 (bots): a player's companion takes
 		// nothing its owner has filtered out, not even its own drop.
 		if (!PlayerBotRecipientWantsDrop(GetPlayerBotSidekickFilterOwner(owner), item))
+			return false;
+		// MT2009_PLUS_PICKUP_FILTER_V1 (companion): nor what its own "Filtr"
+		// leaves - in any state, the free hand's loot pass included.
+		if (!PlayerBotSidekickFilterAllows(owner, item))
 			return false;
 		if (item->IsOwnership(owner))
 			return true;
