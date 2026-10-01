@@ -26,8 +26,8 @@
  {
   "file": "input_main.cpp",
   "marker": "MT2009_PLUS_CATCH_KING_V1 (input)",
-  "old": "\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n\t}\n\treturn (iExtraLen);\n}\n",
-  "new": "\t\t// MT2009_PLUS_CATCH_KING_V1 (input): Catch the King (playerbot_catchking.h).\n\t\tcase HEADER_CG_MINI_GAME_CATCH_KING:\n\t\t\t{\n\t\t\t\tint CatchKingProcess(LPCHARACTER ch, const char* data, size_t len);\n\t\t\t\tif ((iExtraLen = CatchKingProcess(ch, c_pData, m_iBufferLeft)) < 0)\n\t\t\t\t\treturn -1;\n\t\t\t}\n\t\t\tbreak;\n\n\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n\t}\n\treturn (iExtraLen);\n}\n"
+  "old": "\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n",
+  "new": "\t\t// MT2009_PLUS_CATCH_KING_V1 (input): Catch the King (playerbot_catchking.h).\n\t\tcase HEADER_CG_MINI_GAME_CATCH_KING:\n\t\t\t{\n\t\t\t\tint CatchKingProcess(LPCHARACTER ch, const char* data, size_t len);\n\t\t\t\tif ((iExtraLen = CatchKingProcess(ch, c_pData, m_iBufferLeft)) < 0)\n\t\t\t\t\treturn -1;\n\t\t\t}\n\t\t\tbreak;\n\n\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n"
  },
  {
   "file": "item_manager.cpp",
