@@ -6681,6 +6681,8 @@ TPL_DASH = BASE.replace("__BODY__", """
 <h3 class="help" title="{{t('tip_seon')}}">{{t('seon_nav')}}</h3>
 <p class="muted">{{t('seon_dash_hint')}}</p>
 <a class="btn" href="{{url_for('seonhae')}}" title="{{t('tip_seon')}}">{{t('seon_open')}}</a>
+</div>
+<div class="card">
 <h3 class="help" title="{{t('tip_fl')}}">{{t('fl_nav')}}</h3>
 <p class="muted">{{t('fl_dash_hint')}}</p>
 <a class="btn" href="{{url_for('flower_event')}}" title="{{t('tip_fl')}}">{{t('fl_open')}}</a>
