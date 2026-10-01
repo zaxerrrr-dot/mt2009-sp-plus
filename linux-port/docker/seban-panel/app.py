@@ -8349,8 +8349,10 @@ CHEST_BACKUPS = CHEST_SPOOL / "backup"
 CHEST_SNAPSHOT = Path(__file__).resolve().with_name("special_item_group.snapshot.txt")
 CHEST_BACKUP_KEEP = 100
 CHEST_MAX_LINES = 1023
-# Szkatułka Blasku Księżyca: shown first, it is the chest the operator asks for.
-CHEST_FEATURED = (50011,)
+# Szkatułka Blasku Księżyca: shown first, it is the chest the operator asks for;
+# MT2009_PLUS_FLOWER_V1: then the Flower Event's five boxes (Pudełko z Chryzantemą ..
+# ze Słonecznikiem), whose rewards the operator changes.
+CHEST_FEATURED = (50011, 83023, 83024, 83025, 83026, 83027)
 CHEST_TOKENS = {
     "gold": "Yang", "exp": "Doświadczenie", "mob": "Potwór (VNUM w polu Ilość)",
     "group": "Grupa potworów (numer w polu Ilość)", "slow": "Spowolnienie",

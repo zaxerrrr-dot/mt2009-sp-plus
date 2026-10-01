@@ -2328,6 +2328,10 @@ class InventoryWindow(ui.ScriptWindow):
 
 	def __UseItem(self, slotIndex):
 		ItemVNum = player.GetItemIndex(slotIndex)
+		# MT2009_PLUS_FLOWER_V1: a flower that would replace another flower's
+		# buff asks first (uiflowerevent.py, Owsap's uiinventory question).
+		if __import__("uiflowerevent").ConfirmFlowerUse(slotIndex, ItemVNum):
+			return
 		item.SelectItem(ItemVNum)
 		if item.IsFlag(item.ITEM_FLAG_CONFIRM_WHEN_USE):
 			self.questionDialog = uiCommon.QuestionDialog()

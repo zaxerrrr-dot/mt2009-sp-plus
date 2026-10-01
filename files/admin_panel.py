@@ -3484,6 +3484,38 @@ T = {
  "az_enable":    {"pl":"Moduł Arezzo włączony","en":"Arezzo module on"},
  "az_help":      {"pl":"Włączony: strony w Teleporterze i Pierścieniu, portal do Zaczarowanego Lasu po Strażniku En-Tai, strażnicy wejść do lochów i lochy Arezzo w oknie „Wyprawy” (X). Wyłączony: nic z tego nie jest widoczne, a gracz, który stoi na mapie Arezzo albo jest w jej lochu, w ciągu kilku sekund wraca do miasta (GM może zostać).","en":"On: the Teleporter and ring pages, the Enchanted Forest portal after the En-Tai Guardian, the dungeon entrance guards and the Arezzo lines in the dungeon window (X). Off: none of it is visible, and a player standing on an Arezzo map or in one of its dungeons is sent to the town within seconds (a GM may stay)."},
  "az_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 🗺️","en":"Saved and switched live, through the in-game helper. 🗺️"},
+ # MT2009_PLUS_FLOWER_V1: the Flower Event's settings and rewards (playerbot_flower.h).
+ "fl_nav":       {"pl":"🌸 Dzieci Kwiaty","en":"🌸 Flower Event"},
+ "fl_open":      {"pl":"🌸 Otwórz ustawienia Dzieci Kwiatów","en":"🌸 Open the Flower Event settings"},
+ "tip_fl":       {"pl":"Szanse, koszty i nagrody eventu Dzieci Kwiaty. Działa w ciągu 5 sekund, bez restartu.","en":"Chances, costs and rewards of the Flower Event. Takes effect within 5 seconds, no restart."},
+ "fl_dash_hint": {"pl":"Nasiona z potworów, wymiana na latorośle i nagrody za kwiaty. Kiedy event trwa, ustawiasz w „Eventach” (rodzaj „flower”).","en":"Seeds from monsters, the exchange for shoots and the rewards for flowers. When it runs is set on the Events page (kind \"flower\")."},
+ "fl_intro":     {"pl":"Gdy event trwa, każdy potwór zabity przez gracza (nie bota) może dać Nasiona Kwiatów. W oknie eventu nasiona zamieniają się w losowe latorośle pięciu kwiatów, a latorośle jednego kwiatu – w nagrodę za ten kwiat. Po końcu eventu przez 7 dni można jeszcze wymieniać to, co zostało. Zapis działa w ciągu 5 sekund, bez restartu.","en":"While the event runs, every monster a player (not a bot) kills may give Flower Seeds. In the event window seeds become random shoots of five flowers, and shoots of one flower become that flower's reward. For 7 days after the event what is left can still be exchanged. Saving takes effect within 5 seconds, no restart."},
+ "fl_drop":      {"pl":"Nasiona","en":"Seeds"},
+ "fl_seed_chance":{"pl":"Szansa na nasiono z potwora (setne części procenta, 100 = 1%; przy równym poziomie)","en":"Seed chance per monster (hundredths of a percent, 100 = 1%; at an equal level)"},
+ "fl_min_level": {"pl":"Najniższy poziom gracza","en":"Lowest player level"},
+ "fl_counter_max":{"pl":"Najwięcej nasion / latorośli jednego rodzaju","en":"Most seeds / shoots of one kind"},
+ "fl_exchange":  {"pl":"Wymiana","en":"Exchange"},
+ "fl_seeds_per_shoot":{"pl":"Nasion za 1 latorośl","en":"Seeds per shoot"},
+ "fl_shoots_per_reward":{"pl":"Latorośli jednego kwiatu za 1 nagrodę","en":"Shoots of one flower per reward"},
+ "fl_rewards":   {"pl":"Nagrody za kwiaty","en":"Rewards for the flowers"},
+ "fl_rewards_help":{"pl":"Co gracz dostaje za latorośle danego kwiatu (numer przedmiotu i ilość za jedną wymianę). Domyślnie pudełka 83023–83027; co jest w pudełkach, zmieniasz w panelu Sebana → „Szkatułki” (grupy 83023–83027, działa po restarcie rdzeni).","en":"What a player gets for the shoots of each flower (item number and count per exchange). By default the boxes 83023-83027; what the boxes hold is the Seban panel's \"Szkatulki\" page (groups 83023-83027, applied at a core restart)."},
+ "fl_item":      {"pl":"Przedmiot (VNUM)","en":"Item (VNUM)"},
+ "fl_count":     {"pl":"Ilość","en":"Count"},
+ "fl_buff":      {"pl":"Kwiaty (bonus na 12 h)","en":"Flowers (a 12 h bonus)"},
+ "fl_buff_help": {"pl":"Jeden bonus kwiatu naraz. Szansa w procentach; nieudana próba też zużywa kwiat. Wartości bonusów to wiersze item_proto 25121–25125 (value2 = poziom 1, value4 = za każdy poziom).","en":"One flower bonus at a time. Chances in percent; a failed try uses the flower up too. The bonus values are the item_proto rows 25121-25125 (value2 = level 1, value4 = per level)."},
+ "fl_add_rate":  {"pl":"Szansa – pierwszy kwiat (%)","en":"Chance - first flower (%)"},
+ "fl_change_rate":{"pl":"Szansa – zamiana na inny kwiat (%)","en":"Chance - switching to another flower (%)"},
+ "fl_upgrade_rate":{"pl":"Szansa – ten sam kwiat, poziom wyżej (%)","en":"Chance - the same flower one level up (%)"},
+ "fl_max_level": {"pl":"Najwyższy poziom bonusu","en":"Highest bonus level"},
+ "fl_use_after": {"pl":"Kwiaty działają też przez 7 dni po evencie","en":"Flowers work for 7 days after the event too"},
+ "fl_saved":     {"pl":"Zapisano – serwer użyje nowych ustawień w ciągu 5 sekund. 🌸","en":"Saved - the server uses the new settings within 5 seconds. 🌸"},
+ "fl_bad_item":  {"pl":"Nie ma przedmiotu o numerze {v} – ta nagroda nie została zmieniona.","en":"There is no item {v} - that reward was not changed."},
+ "fl_write_fail":{"pl":"Nie udało się zapisać pliku ustawień.","en":"Could not write the settings file."},
+ "fl_flower_1":  {"pl":"Chryzantema","en":"Chrysanthemum"},
+ "fl_flower_2":  {"pl":"Konwalia","en":"May Bell"},
+ "fl_flower_3":  {"pl":"Narcyz","en":"Daffodil"},
+ "fl_flower_4":  {"pl":"Lilia","en":"Lily"},
+ "fl_flower_5":  {"pl":"Słonecznik","en":"Sunflower"},
  "regen_title": {"pl":"Czas odradzania Metinów, bossów i potworów",
                  "en":"Respawn time of Metin stones, bosses and monsters"},
  "regen_help":  {"pl":"Procent zwykłego czasu odradzania: 100 = jak w grze, 50 = dwa razy szybciej, 10 = dziesięć razy szybciej. Działa od razu (przez pomocnika w grze), a po restarcie zostaje. Osobno dla Metinów i bossów, osobno dla zwykłych potworów.",
@@ -6447,6 +6479,11 @@ TPL_DASH = BASE.replace("__BODY__", """
 <a class="btn" href="{{url_for('arezzo')}}" title="{{t('tip_az')}}">{{t('az_open')}}</a>
 </div>
 <div class="card">
+<h3 class="help" title="{{t('tip_fl')}}">{{t('fl_nav')}}</h3>
+<p class="muted">{{t('fl_dash_hint')}}</p>
+<a class="btn" href="{{url_for('flower_event')}}" title="{{t('tip_fl')}}">{{t('fl_open')}}</a>
+</div>
+<div class="card">
 <h3 class="help">{{t('se_nav')}}</h3>
 <p class="muted">{{t('se_dash_hint')}}</p>
 <a class="btn" href="{{url_for('season')}}">{{t('se_open')}}</a>
@@ -6952,6 +6989,51 @@ TPL_AREZZO = BASE.replace("__BODY__", """
 <label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('az_enable')}}</label>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
+
+# MT2009_PLUS_FLOWER_V1: the Flower Event page (flower_event.tsv, playerbot_flower.h).
+TPL_FLOWER = BASE.replace("__BODY__", """
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a></p>
+<div class="card">
+<h3>{{t('fl_nav')}}</h3>
+<p class="muted">{{t('fl_intro')}}</p>
+</div>
+
+<form method="post">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<div class="card">
+<h3>🌱 {{t('fl_drop')}}</h3>
+<p><label>{{t('fl_seed_chance')}}<br><input type="number" name="seed_chance" min="0" max="10000" value="{{cur.seed_chance}}" style="width:110px"></label></p>
+<p><label>{{t('fl_min_level')}}<br><input type="number" name="min_level" min="1" max="250" value="{{cur.min_level}}" style="width:110px"></label></p>
+<p><label>{{t('fl_counter_max')}}<br><input type="number" name="counter_max" min="1" max="999999" value="{{cur.counter_max}}" style="width:110px"></label></p>
+<h3 style="margin-top:18px">🔁 {{t('fl_exchange')}}</h3>
+<p><label>{{t('fl_seeds_per_shoot')}}<br><input type="number" name="seeds_per_shoot" min="1" max="1000" value="{{cur.seeds_per_shoot}}" style="width:110px"></label></p>
+<p><label>{{t('fl_shoots_per_reward')}}<br><input type="number" name="shoots_per_reward" min="1" max="1000" value="{{cur.shoots_per_reward}}" style="width:110px"></label></p>
+</div>
+
+<div class="card">
+<h3>🎁 {{t('fl_rewards')}}</h3>
+<p class="muted">{{t('fl_rewards_help')}}</p>
+<table>
+<tr><th></th><th>{{t('fl_item')}}</th><th>{{t('fl_count')}}</th></tr>
+{% for i in range(1, 6) %}
+<tr><td>{{t('fl_flower_%d' % i)}}</td>
+<td><input type="number" name="reward_vnum_{{i}}" min="1" value="{{cur.rewards[i][0]}}" style="width:110px"></td>
+<td><input type="number" name="reward_count_{{i}}" min="1" max="1000" value="{{cur.rewards[i][1]}}" style="width:80px"></td></tr>
+{% endfor %}
+</table>
+</div>
+
+<div class="card">
+<h3>🌸 {{t('fl_buff')}}</h3>
+<p class="muted">{{t('fl_buff_help')}}</p>
+<p><label>{{t('fl_add_rate')}}<br><input type="number" name="add_rate" min="0" max="100" value="{{cur.add_rate}}" style="width:110px"></label></p>
+<p><label>{{t('fl_change_rate')}}<br><input type="number" name="change_rate" min="0" max="100" value="{{cur.change_rate}}" style="width:110px"></label></p>
+<p><label>{{t('fl_upgrade_rate')}}<br><input type="number" name="upgrade_rate" min="0" max="100" value="{{cur.upgrade_rate}}" style="width:110px"></label></p>
+<p><label>{{t('fl_max_level')}}<br><input type="number" name="max_level" min="1" max="20" value="{{cur.max_level}}" style="width:110px"></label></p>
+<label><input type="checkbox" name="use_after_event" value="1" {% if cur.use_after_event %}checked{% endif %}> {{t('fl_use_after')}}</label>
+<button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
+</div>
+</form>""")
 
 # The season table and the record tiles. Public, like the live map: this is the
 # page an operator links to, not an admin tool.
@@ -17948,6 +18030,112 @@ def rare():
     except Exception:
         flash(t("db_down"), "error")
     return render_template_string(TPL_RARE, cur=cur_rare)
+
+# MT2009_PLUS_FLOWER_V1: the Flower Event's settings and rewards. The game cores
+# (playerbot_flower.h) stat /opt/m2spool/flower_event.tsv every five seconds; a
+# key left out is the core's default, so this page writes every key.
+FLOWER_FILE = os.path.join(AI_SPOOL, "flower_event.tsv")
+# key: (default, lowest, highest) - the core clamps to the same bounds.
+FLOWER_KEYS = (
+    ("seed_chance", 100, 0, 10000),
+    ("min_level", 1, 1, 250),
+    ("seeds_per_shoot", 1, 1, 1000),
+    ("shoots_per_reward", 10, 1, 1000),
+    ("add_rate", 50, 0, 100),
+    ("change_rate", 30, 0, 100),
+    ("upgrade_rate", 15, 0, 100),
+    ("max_level", 5, 1, 20),
+    ("counter_max", 99999, 1, 999999),
+)
+FLOWER_DEFAULT_REWARDS = {1: (83023, 1), 2: (83024, 1), 3: (83025, 1), 4: (83026, 1), 5: (83027, 1)}
+
+
+def read_flower():
+    cur = {k: d for k, d, lo, hi in FLOWER_KEYS}
+    cur["use_after_event"] = 1
+    cur["rewards"] = dict(FLOWER_DEFAULT_REWARDS)
+    try:
+        with open(FLOWER_FILE, "r", encoding="utf-8", errors="replace") as fh:
+            lines = fh.read().splitlines()
+    except OSError:
+        return cur
+    bounds = {k: (lo, hi) for k, d, lo, hi in FLOWER_KEYS}
+    for line in lines:
+        f = line.split("#", 1)[0].split()
+        if len(f) < 2:
+            continue
+        try:
+            nums = [int(x) for x in f[1:4]]
+        except ValueError:
+            continue
+        if f[0] in bounds:
+            lo, hi = bounds[f[0]]
+            cur[f[0]] = max(lo, min(hi, nums[0]))
+        elif f[0] == "use_after_event":
+            cur["use_after_event"] = 1 if nums[0] else 0
+        elif f[0] == "reward" and len(nums) == 3 and 1 <= nums[0] <= 5 and nums[1] > 0 and 1 <= nums[2] <= 1000:
+            cur["rewards"][nums[0]] = (nums[1], nums[2])
+    return cur
+
+
+def write_flower(cur):
+    body = ["# MT2009_PLUS_FLOWER_V1 - Dzieci Kwiaty, written by the panel (playerbot_flower.h reads it)"]
+    for k, d, lo, hi in FLOWER_KEYS:
+        body.append("%s %d" % (k, cur[k]))
+    body.append("use_after_event %d" % (1 if cur["use_after_event"] else 0))
+    for i in range(1, 6):
+        vnum, count = cur["rewards"][i]
+        body.append("reward %d %d %d" % (i, vnum, count))
+    tmp = FLOWER_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(body) + "\n")
+    os.replace(tmp, FLOWER_FILE)
+
+
+@app.route("/flower", methods=["GET", "POST"])
+@login_required
+def flower_event():
+    """The Flower Event's chances, costs and rewards. Live within 5 s."""
+    cur = read_flower()
+    if request.method == "POST":
+        for k, d, lo, hi in FLOWER_KEYS:
+            try:
+                cur[k] = max(lo, min(hi, int(request.form.get(k, cur[k]))))
+            except (TypeError, ValueError):
+                pass
+        cur["use_after_event"] = 1 if request.form.get("use_after_event") else 0
+        wanted = {}
+        for i in range(1, 6):
+            try:
+                vnum = int(request.form.get("reward_vnum_%d" % i, cur["rewards"][i][0]))
+                count = max(1, min(1000, int(request.form.get("reward_count_%d" % i, cur["rewards"][i][1]))))
+            except (TypeError, ValueError):
+                continue
+            if vnum > 0:
+                wanted[i] = (vnum, count)
+        # An item number the world lacks would only be skipped by the core:
+        # say so here and keep the old reward.
+        known = None
+        try:
+            with db() as c, c.cursor() as dbc:
+                vnums = sorted(set(v for v, n in wanted.values()))
+                if vnums:
+                    dbc.execute("SELECT vnum FROM world.item_proto WHERE vnum IN (%s)" % ",".join(["%s"] * len(vnums)), vnums)
+                    known = set(int(r[0] if not isinstance(r, dict) else r["vnum"]) for r in dbc.fetchall())
+        except Exception:
+            known = None
+        for i, (vnum, count) in wanted.items():
+            if known is not None and vnum not in known:
+                flash(t("fl_bad_item").replace("{v}", str(vnum)), "error")
+                continue
+            cur["rewards"][i] = (vnum, count)
+        try:
+            write_flower(cur)
+            flash(t("fl_saved"))
+        except OSError:
+            flash(t("fl_write_fail"), "error")
+        return redirect(url_for("flower_event"))
+    return render_template_string(TPL_FLOWER, cur=cur)
 
 # MT2009_PLUS_AREZZO_MODULE_V1: the Arezzo module on or off. Live immediately, no restart.
 @app.route("/arezzo", methods=["GET", "POST"])

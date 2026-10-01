@@ -206,3 +206,24 @@ z `tcm/c31`):
   nazwy Owsapa `ShowInGameEvent`, `ShowMiniMapInGameEventButton`, `HideMiniMapInGameEventButton`.
 - `uieventcalendar.py` – nazwy nowych rodzajów (9–13) i na ikonie „trwa teraz” także eventy z samej
   flagi (np. strona Wielkanocy w panelu).
+
+## Dzieci Kwiaty (`MT2009_PLUS_FLOWER_V1`)
+
+Event kwiatów Owsapa (serwer: `server-patches/flower/README.md`). Okno działa z nowym exe
+(pakiety 187, nazwy pythona Owsapa); na starym exe moduł się ładuje, a przycisk w oknie eventów
+mówi, że okno przyjdzie z aktualizacją klienta.
+
+- `root/uiflowerevent.py` (nowy) – `FlowerEventUtil` i okno `FlowerEvent` Owsapa, `ComboBoxImage`
+  (brak w naszym `ui.py`), pytanie przed zamianą bonusu kwiatu, ikona bonusu (affect 570) w pasku
+  efektów, przycisk w oknie eventów (`uiingameevent.RegisterOpener('flower', ...)`); teksty z
+  `localeInfo`, gdy locale ma klucze Owsapa, inaczej polskie z pliku.
+- `root/uiscript/flowereventwindow.py` (nowy) – układ Owsapa, teksty z `uiScriptLocale` albo polskie.
+- `root/game.py` – `FlowerEventProcess` (wołane przez exe), `Start`/`DestroyWindow`,
+  `e_flower_drop` → `player.SetFlowerEventEnable`.
+- `root/uiinventory.py` – pytanie przed użyciem kwiatu, który zastąpi bonus innego kwiatu.
+- `root/uiingameevent.py` – nagrody w wierszu `flower` (pudełka 83023, 83025, 83027).
+- `gamedata/gamedata/item_list.txt` (+10), `locale/locale/pl/itemdesc.txt` (+10): kwiaty
+  25121–25125, pudełka 83023–83027.
+- `flower_items.json` – wiersze klienckiego `item_proto` (jak `world.item_proto`) i lista plików
+  z klienta GF 26.1.11 do paczki: ikony 25121–25125, 25131–25135, `ui/minigame/flower_event/*.sub`
+  + `ui/floweralram.dds`, efekt `effect/etc/buff/buff_item15_flower.mse` + `flower_001.dds`, `leaf_001.dds`.

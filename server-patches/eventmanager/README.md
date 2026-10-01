@@ -32,7 +32,7 @@ przerywa całość, zanim cokolwiek zostanie zapisane.
 - **Flagi Owsapa** (pisze tylko rdzeń lidera, ten od ogłoszeń): start – flaga (`mini_game_okey_normal`,
   `mini_game_yutnori`, `mini_game_catchking`: epoka końca; `e_flower_drop`: drop 100;
   `easter_drop` i `easter_rabbit`: 1), `*_drop` = 100 jeśli puste, `*_reward` = 0; w trakcie flaga
-  idzie za końcem okna; koniec – flaga 0, Rumi i Yut Nori otwierają 7-dniowe okno nagród
+  idzie za końcem okna; koniec – flaga 0, Rumi, Yut Nori i Dzieci Kwiaty (`e_flower_reward`, MT2009_PLUS_FLOWER_V1) otwierają 7-dniowe okno nagród
   (`*_reward` = teraz + 7 dni). Flaga ustawiona ręcznie przez GM też uruchamia event, a lider
   kończy flagę-epokę po czasie (jak `UpdateInGameEvent` Owsapa).
 - **NPC stołów** na mapach 1/21/41 (komórki Owsapa, sprawdzone jako przechodnie na naszym

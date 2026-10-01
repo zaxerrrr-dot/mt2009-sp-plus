@@ -2858,3 +2858,13 @@
 30774	Skrzynia Wukonga	Nagroda za pokonanie WuKonga na Wzgórzu Wukonga. Kliknij prawym przyciskiem, aby otworzyæ.
 30775	Skrzynia Skorpiona	Nagroda za pokonanie Króla Skorpionów w Ruinach Skorpiona. Kliknij prawym przyciskiem, aby otworzyæ.
 30776	Skrzynia D¿ungli	Nagroda za pokonanie Królowej D¿ungli w Staro¿ytnej D¿ungli. Kliknij prawym przyciskiem, aby otworzyæ.
+25121	Chryzantema	Przedmiot u¿ytkowy. Próba mo¿e siê nie udaæ. Przy sukcesie zwiêksza na 12 godzin szansê na cios krytyczny. Efekt mo¿na podnieœæ do poziomu 5 kolejnymi chryzantemami. Dzia³a w czasie eventu Dzieci Kwiaty.
+25122	Konwalia	Przedmiot u¿ytkowy. Próba mo¿e siê nie udaæ. Przy sukcesie zwiêksza na 12 godzin si³ê ataku. Efekt mo¿na podnieœæ do poziomu 5 kolejnymi konwaliami. Dzia³a w czasie eventu Dzieci Kwiaty.
+25123	Narcyz	Przedmiot u¿ytkowy. Próba mo¿e siê nie udaæ. Przy sukcesie daje przez 12 godzin szansê na podwójne doœwiadczenie. Efekt mo¿na podnieœæ do poziomu 5 kolejnymi narcyzami. Dzia³a w czasie eventu Dzieci Kwiaty.
+25124	Lilia	Przedmiot u¿ytkowy. Próba mo¿e siê nie udaæ. Przy sukcesie zwiêksza na 12 godzin szansê na przedmioty. Efekt mo¿na podnieœæ do poziomu 5 kolejnymi liliami. Dzia³a w czasie eventu Dzieci Kwiaty.
+25125	S³onecznik	Przedmiot u¿ytkowy. Próba mo¿e siê nie udaæ. Przy sukcesie zwiêksza na 12 godzin obronê. Efekt mo¿na podnieœæ do poziomu 5 kolejnymi s³onecznikami. Dzia³a w czasie eventu Dzieci Kwiaty.
+83023	Pude³ko z Chryzantem¹	Otwórz pachn¹ce pude³ko i sprawdŸ, jaka nagroda kryje siê w œrodku.
+83024	Pude³ko z Konwali¹	Otwórz pachn¹ce pude³ko i sprawdŸ, jaka nagroda kryje siê w œrodku.
+83025	Pude³ko z Narcyzem	Otwórz pachn¹ce pude³ko i sprawdŸ, jaka nagroda kryje siê w œrodku.
+83026	Pude³ko z Lili¹	Otwórz pachn¹ce pude³ko i sprawdŸ, jaka nagroda kryje siê w œrodku.
+83027	Pude³ko ze S³onecznikiem	Otwórz pachn¹ce pude³ko i sprawdŸ, jaka nagroda kryje siê w œrodku.

@@ -1880,3 +1880,25 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 # Idempotent: the same values every start.
 db -e "UPDATE world.mob_proto SET level = 93, max_hp = 3000000, def = 250, exp = 2000000, regen_cycle = 30, regen_percent = 1 WHERE vnum = 2493;
 UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (8031, 8032, 8033, 8034);" || echo "[playerbot-migrate] WARNING: could not set up the Blue Dragon lair's dragon and stones" >&2
+
+# MT2009_PLUS_FLOWER_V1: the Flower Event "Dzieci Kwiaty" (playerbot_flower.h, server-patches/flower).
+# The five flowers 25121-25125 (Owsap's vnums; use type 3/8, value0 570 = the flower buff, value1 the
+# point - critical 40, mall attack 114, double exp 83, mall item 117, mall defence 115 - value2 the
+# level-1 value, value3 12 h, value4 the value per level, max level 5) and their gift boxes
+# 83023-83027 (type 23, opened by the special_item_group groups of game/special_item_group.flower.txt).
+# All four Owsap anti flags: no drop, give, private shop or storeroom - so no bot can be handed one.
+# The buff values are these rows (value2/value4); the chances and the rest are the classic panel's
+# "Dzieci Kwiaty" page (/opt/m2spool/flower_event.tsv). INSERT IGNORE: a row the operator changed by
+# hand is kept. UTF-8 here, SET NAMES converts to CP1250. Idempotent.
+db -e "SET NAMES utf8mb4;
+INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(25121, 'Chryzantema', 'Chryzantema', 3, 8, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 570, 40, 1, 43200, 1, 0, -1, -1, -1, -1, -1, -1),
+(25122, 'Konwalia', 'Konwalia', 3, 8, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 570, 114, 2, 43200, 2, 0, -1, -1, -1, -1, -1, -1),
+(25123, 'Narcyz', 'Narcyz', 3, 8, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 570, 83, 5, 43200, 5, 0, -1, -1, -1, -1, -1, -1),
+(25124, 'Lilia', 'Lilia', 3, 8, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 570, 117, 5, 43200, 5, 0, -1, -1, -1, -1, -1, -1),
+(25125, 'Słonecznik', 'Słonecznik', 3, 8, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 570, 115, 2, 43200, 2, 0, -1, -1, -1, -1, -1, -1),
+(83023, 'Pudełko z Chryzantemą', 'Pudełko z Chryzantemą', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(83024, 'Pudełko z Konwalią', 'Pudełko z Konwalią', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(83025, 'Pudełko z Narcyzem', 'Pudełko z Narcyzem', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(83026, 'Pudełko z Lilią', 'Pudełko z Lilią', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(83027, 'Pudełko ze Słonecznikiem', 'Pudełko ze Słonecznikiem', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || echo "[playerbot-migrate] WARNING: could not add the Flower Event's flowers and boxes" >&2

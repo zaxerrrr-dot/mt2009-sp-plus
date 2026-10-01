@@ -442,6 +442,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uinewpet").DestroyWindow()
 		# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub (uiingameevent.py).
 		__import__("uiingameevent").DestroyWindow()
+		# MT2009_PLUS_FLOWER_V1: the Flower Event's window (uiflowerevent.py).
+		__import__("uiflowerevent").DestroyWindow()
 		# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's panel.
 		import uiguildduty
 		uiguildduty.DestroyWindow()
@@ -2317,6 +2319,9 @@ class GameWindow(ui.ScriptWindow):
 				# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub and the hello
 				# that brings this core's event list (uiingameevent.py, ingameevent.py).
 				__import__("uiingameevent").Start()
+				# MT2009_PLUS_FLOWER_V1: the Flower Event's button in the hub, its
+				# buff icon and (new exe) its counters (uiflowerevent.py).
+				__import__("uiflowerevent").Start()
 				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
 				__import__("uinewpet").Start()
 
@@ -3602,6 +3607,14 @@ class GameWindow(ui.ScriptWindow):
 
 	def __InGameEventFlagFlower(self, *args):
 		self.__InGameEventFlag("e_flower_drop", args)
+		# MT2009_PLUS_FLOWER_V1: Owsap's player.SetFlowerEventEnable (uiflowerevent.py).
+		if args:
+			__import__("uiflowerevent").SetEnable(args[0])
+
+	# MT2009_PLUS_FLOWER_V1: the exe's HEADER_GC_FLOWER_EVENT (187) - Owsap's
+	# game.FlowerEventProcess(type, data) - to the Flower Event's window.
+	def FlowerEventProcess(self, type, data=None):
+		__import__("uiflowerevent").Process(type, data)
 
 	def __InGameEventFlagEaster(self, *args):
 		self.__InGameEventFlag("easter_drop", args)
