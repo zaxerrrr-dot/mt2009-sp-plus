@@ -179,6 +179,7 @@ linux-port/docker/game/src/server/game/src/packet.h
 linux-port/docker/game/src/server/game/src/packet_info.cpp
 linux-port/docker/game/src/server/game/src/questlua_dungeon.cpp
 linux-port/docker/game/src/server/game/src/questlua_game.cpp
+linux-port/docker/game/src/server/game/src/questlua_global.cpp
 linux-port/docker/game/src/server/game/src/dungeon.cpp
 linux-port/docker/game/src/server/game/src/item.cpp
 linux-port/docker/game/src/server/game/src/item_attribute.cpp

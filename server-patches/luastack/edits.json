@@ -1,0 +1,20 @@
+[
+ {
+  "file": "questlua_global.cpp",
+  "marker": "MT2009_PLUS_LUA_STACK_V1 (special item group)",
+  "old": "\t\tint count = pItemGroup->GetGroupSize();\n\n\t\tfor (int i = 0; i < count; i++)\n\t\t{\n\t\t\tlua_pushnumber(L, (int)pItemGroup->GetVnum(i));\n",
+  "new": "\t\tint count = pItemGroup->GetGroupSize();\n\n\t\t// MT2009_PLUS_LUA_STACK_V1 (special item group) (server-patches/luastack):\n\t\t// room on the Lua stack for every value pushed. A C function is promised\n\t\t// only LUA_MINSTACK (20) free slots; a group of more than 10 lines pushed\n\t\t// past the end of the coroutine's stack and wrote over the Lua heap - Catch\n\t\t// the King's Golden Loot (21 lines) crashed the core in luaV_execute and\n\t\t// left it to die later (lua_rawget at a login, target_event).\n\t\tif (!lua_checkstack(L, count * 2))\n\t\t{\n\t\t\tsys_err(\"special item group %d: %d lines do not fit on the Lua stack\", (DWORD)lua_tonumber(L, 1), count);\n\t\t\treturn 0;\n\t\t}\n\n\t\tfor (int i = 0; i < count; i++)\n\t\t{\n\t\t\tlua_pushnumber(L, (int)pItemGroup->GetVnum(i));\n"
+ },
+ {
+  "file": "questlua_global.cpp",
+  "marker": "MT2009_PLUS_LUA_STACK_V1 (quest reward)",
+  "old": "\t\tauto reward = CQuestManager::instance().GetQuestReward(questName);\n\n\t\tif (reward)\n\t\t{\n",
+  "new": "\t\tauto reward = CQuestManager::instance().GetQuestReward(questName);\n\n\t\tif (reward)\n\t\t{\n\t\t\t// MT2009_PLUS_LUA_STACK_V1 (quest reward) (server-patches/luastack): up to\n\t\t\t// 3 + 2 * QUEST_REWARD_MAX_ITEMS * 3 values, more than the 20 slots a C\n\t\t\t// function is promised.\n\t\t\tif (!lua_checkstack(L, 3 + QUEST_REWARD_MAX_ITEMS * 3 * 2))\n\t\t\t\treturn 0;\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_LUA_STACK_V1 (sig items)",
+  "old": "\t\tconst LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tint count = 0;\n\t\tfor (int i = 0; i < INVENTORY_DEFAULT_MAX_NUM; ++i)\n",
+  "new": "\t\tconst LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tint count = 0;\n\t\t// MT2009_PLUS_LUA_STACK_V1 (sig items) (server-patches/luastack): one value\n\t\t// per item, up to a whole bag - room on the Lua stack first.\n\t\tif (!ch || !lua_checkstack(L, INVENTORY_DEFAULT_MAX_NUM))\n\t\t\treturn 0;\n\t\tfor (int i = 0; i < INVENTORY_DEFAULT_MAX_NUM; ++i)\n"
+ }
+]
