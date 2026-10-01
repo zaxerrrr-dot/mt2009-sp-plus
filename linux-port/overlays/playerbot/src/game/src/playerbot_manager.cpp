@@ -2153,7 +2153,10 @@ namespace
 	bool UsePlayerBotBook(LPCHARACTER ch, WORD cell)
 	{
 #if defined(PLAYERBOT_ENGINE_MT2009)
-		if (ch->FindAffect(AFFECT_EXP_BLOCK) && (long long)ch->GetExp() < PLAYERBOT_BOOK_READ_EXP)
+		// MT2009_PLUS_BOT_BOOK_NO_EXP_V1: no bot waits for the experience a read
+		// wants any more (the official 2.2.39: "czytanie ksiegi nie wymaga juz
+		// 20 000 doswiadczenia") - the bar is lent for the read and put back.
+		if ((long long)ch->GetExp() < PLAYERBOT_BOOK_READ_EXP)
 		{
 			const DWORD exp = ch->GetExp();
 			ch->SetExp(PLAYERBOT_BOOK_READ_EXP);
@@ -2259,10 +2262,12 @@ namespace
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		// At the top level the engine asks nothing, and under the lock the
 		// read is paid by UsePlayerBotBook.
-		if (ch->GetLevel() >= gPlayerMaxLevel || ch->FindAffect(AFFECT_EXP_BLOCK))
-			return true;
-#endif
+		// MT2009_PLUS_BOT_BOOK_NO_EXP_V1: UsePlayerBotBook lends the bar to any bot.
+		(void)ch;
+		return true;
+#else
 		return (long long)ch->GetExp() >= PLAYERBOT_BOOK_READ_EXP;
+#endif
 	}
 
 	void ManagePlayerBotSkillBooks(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
