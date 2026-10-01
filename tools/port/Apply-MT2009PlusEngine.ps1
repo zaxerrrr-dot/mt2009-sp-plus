@@ -286,6 +286,19 @@ if ((Test-Path -LiteralPath $seonHaeApply -PathType Leaf) -and
         Write-Host ('Applied {0} Seon-Hae edit(s).' -f $seonHaeResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The Flower Event "Dzieci Kwiaty" (server-patches/flower): packets 187 in
+# packet.h / packet_info.cpp / input_main.cpp, the seeds on a kill in
+# item_manager.cpp and the flowers in char_item.cpp (playerbot_flower.h);
+# after eventmanager, whose packet.h lines it anchors on.
+$flowerApply = Join-Path $repo 'server-patches/flower/Apply-FlowerPatch.ps1'
+if ((Test-Path -LiteralPath $flowerApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'packet.h') -PathType Leaf)) {
+    $flowerResult = & $flowerApply -SourceDir $engineGameSource
+    if ($flowerResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Flower Event edit(s).' -f $flowerResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # A pet's magic attack % (server-patches/magicattper): PointChange had no
 # case for POINT_MAGIC_ATT_BONUS_PER, so the bonus never applied.
 $magicAttApply = Join-Path $repo 'server-patches/magicattper/Apply-MagicAttPerPatch.ps1'

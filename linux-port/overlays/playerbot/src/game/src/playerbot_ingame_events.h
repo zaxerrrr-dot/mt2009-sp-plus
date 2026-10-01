@@ -97,7 +97,9 @@ namespace mt2009_ingame_event
 		{ "rumi_xmas",	-1,								"mini_game_okey",			FLAG_END_EPOCH,	0, NULL,			"mini_game_okey_drop",		"mini_game_okey_reward",	20417, true },
 		{ "yutnori",	playerbot_events::KIND_YUTNORI,	"mini_game_yutnori",		FLAG_END_EPOCH,	0, NULL,			"mini_game_yutnori_drop",	"mini_game_yutnori_reward",	20502, true },
 		{ "catchking",	playerbot_events::KIND_CATCHKING,	"mini_game_catchking",		FLAG_END_EPOCH,	0, NULL,			"mini_game_catchking_drop",	NULL,						20506, true },
-		{ "flower",		playerbot_events::KIND_FLOWER,		"e_flower_drop",			FLAG_VALUE,		0, NULL,			NULL,						NULL,						0, true },
+		// MT2009_PLUS_FLOWER_V1: after the event a 7-day window in which the seeds
+		// and shoots left can still be exchanged (playerbot_flower.h); Owsap had none.
+		{ "flower",		playerbot_events::KIND_FLOWER,		"e_flower_drop",			FLAG_VALUE,		0, NULL,			NULL,						"e_flower_reward",			0, true },
 		// event_easter.quest's two switches (the classic panel's Easter page).
 		{ "easter",		playerbot_events::KIND_EASTER,		"easter_drop",				FLAG_VALUE,		1, "easter_rabbit",	NULL,						NULL,						0, true },
 	};

@@ -1,0 +1,241 @@
+{
+ "marker": "MT2009_PLUS_FLOWER_V1",
+ "about": "Flower Event items for the client item_proto (same values as world.item_proto rows in linux-port/docker/mariadb/playerbot/apply.sh). item_list.txt and locale/pl/itemdesc.txt rows are already appended in this folder.",
+ "items": [
+  {
+   "vnum": 25121,
+   "name": "Chryzantema",
+   "type": 3,
+   "subtype": 8,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    570,
+    40,
+    1,
+    43200,
+    1,
+    0
+   ],
+   "icon": "icon/item/25121.tga",
+   "copy_client_row_of": 71027
+  },
+  {
+   "vnum": 25122,
+   "name": "Konwalia",
+   "type": 3,
+   "subtype": 8,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    570,
+    114,
+    2,
+    43200,
+    2,
+    0
+   ],
+   "icon": "icon/item/25122.tga",
+   "copy_client_row_of": 71027
+  },
+  {
+   "vnum": 25123,
+   "name": "Narcyz",
+   "type": 3,
+   "subtype": 8,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    570,
+    83,
+    5,
+    43200,
+    5,
+    0
+   ],
+   "icon": "icon/item/25123.tga",
+   "copy_client_row_of": 71027
+  },
+  {
+   "vnum": 25124,
+   "name": "Lilia",
+   "type": 3,
+   "subtype": 8,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    570,
+    117,
+    5,
+    43200,
+    5,
+    0
+   ],
+   "icon": "icon/item/25124.tga",
+   "copy_client_row_of": 71027
+  },
+  {
+   "vnum": 25125,
+   "name": "Słonecznik",
+   "type": 3,
+   "subtype": 8,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    570,
+    115,
+    2,
+    43200,
+    2,
+    0
+   ],
+   "icon": "icon/item/25125.tga",
+   "copy_client_row_of": 71027
+  },
+  {
+   "vnum": 83023,
+   "name": "Pudełko z Chryzantemą",
+   "type": 23,
+   "subtype": 0,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "icon": "icon/item/25131.tga",
+   "model": "d:/ymir work/item/etc/jewellery_box.GR2",
+   "copy_client_row_of": 50270
+  },
+  {
+   "vnum": 83024,
+   "name": "Pudełko z Konwalią",
+   "type": 23,
+   "subtype": 0,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "icon": "icon/item/25132.tga",
+   "model": "d:/ymir work/item/etc/jewellery_box.GR2",
+   "copy_client_row_of": 50270
+  },
+  {
+   "vnum": 83025,
+   "name": "Pudełko z Narcyzem",
+   "type": 23,
+   "subtype": 0,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "icon": "icon/item/25133.tga",
+   "model": "d:/ymir work/item/etc/jewellery_box.GR2",
+   "copy_client_row_of": 50270
+  },
+  {
+   "vnum": 83026,
+   "name": "Pudełko z Lilią",
+   "type": 23,
+   "subtype": 0,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "icon": "icon/item/25134.tga",
+   "model": "d:/ymir work/item/etc/jewellery_box.GR2",
+   "copy_client_row_of": 50270
+  },
+  {
+   "vnum": 83027,
+   "name": "Pudełko ze Słonecznikiem",
+   "type": 23,
+   "subtype": 0,
+   "size": 1,
+   "stack": 200,
+   "antiflag": 204928,
+   "flag": 4,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "icon": "icon/item/25135.tga",
+   "model": "d:/ymir work/item/etc/jewellery_box.GR2",
+   "copy_client_row_of": 50270
+  }
+ ],
+ "assets_from_gf_26_1_11": [
+  "icon/item/25121.tga",
+  "icon/item/25122.tga",
+  "icon/item/25123.tga",
+  "icon/item/25124.tga",
+  "icon/item/25125.tga",
+  "icon/item/25131.tga",
+  "icon/item/25132.tga",
+  "icon/item/25133.tga",
+  "icon/item/25134.tga",
+  "icon/item/25135.tga",
+  "d:/ymir work/ui/minigame/flower_event/down_arrow.sub",
+  "d:/ymir work/ui/minigame/flower_event/drop_down_btn_default.sub",
+  "d:/ymir work/ui/minigame/flower_event/drop_down_btn_down.sub",
+  "d:/ymir work/ui/minigame/flower_event/drop_down_btn_over.sub",
+  "d:/ymir work/ui/minigame/flower_event/input_bg.sub",
+  "d:/ymir work/ui/minigame/flower_event/list_bg.sub",
+  "d:/ymir work/ui/minigame/flower_event/slot.sub",
+  "d:/ymir work/ui/floweralram.dds",
+  "d:/ymir work/effect/etc/buff/buff_item15_flower.mse",
+  "d:/ymir work/effect/etc/buff/flower_001.dds",
+  "d:/ymir work/effect/etc/buff/leaf_001.dds"
+ ],
+ "root_pack_files": [
+  "uiflowerevent.py",
+  "uiscript/flowereventwindow.py",
+  "game.py",
+  "uiinventory.py",
+  "uiingameevent.py"
+ ]
+}

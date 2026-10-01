@@ -373,6 +373,20 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && rm -rf /tmp/share-add \
  && echo "share: moonlight + starter + boss chests, M3 drops appended"
 
+# MT2009_PLUS_FLOWER_V1: the Flower Event's five gift boxes (83023-83027, Pudelko z Chryzantema ..
+# ze Slonecznikiem; playerbot_flower.h gives them for 10 shoots of a flower), opened by their
+# special_item_group groups. Appended once; the Seban panel's "Szkatulki" page edits them like any
+# other chest (m2-chests). Their items and the five flowers 25121-25125 are mariadb/playerbot/apply.sh rows.
+COPY special_item_group.flower.txt /tmp/special_item_group.flower.txt
+RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/special_item_group.flower.txt \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$a" \
+ && if ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+8302[3-7]([^0-9]|$)' "$f"; then \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; cat "$a" >> "$f"; \
+    fi \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+8302[3-7]([^0-9]|$)' "$f")" = 5 \
+ && rm -f "$a" \
+ && echo "share: Flower Event gift boxes 83023-83027"
+
 # The alchemy bonuses (server-patches/dragonsoulbalance): the package's
 # BasicApplys and AdditionalApplys groups of dragon_soul_table.txt give way to
 # the MT2009 Plus balance - no elemental resistance, a race bonus instead of

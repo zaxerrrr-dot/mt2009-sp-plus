@@ -39,7 +39,10 @@ EVENTS = {
 	'rumi': {'name': 'Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
 	'rumi_xmas': {'name': '\x8cwi\xb9teczne Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game', 'game': 'rumi'},
 	'yutnori': {'name': 'Yut Nori', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
-	'flower': {'name': 'Dzieci Kwiaty', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
+	# MT2009_PLUS_FLOWER_V1: uiflowerevent.py registers the window; the rewards are
+	# three of the five flower boxes (83023-83027, what they hold is the server's).
+	'flower': {'name': 'Dzieci Kwiaty', 'icon': CAL + 'bonus_event.tga', 'open': 'game',
+			'rewards': ((83023, 1), (83025, 1), (83027, 1))},
 	'easter': {'name': 'Event wielkanocny', 'icon': CAL + 'bonus_event.tga', 'open': 'info',
 			'desc': 'Metiny wielkanocne dropi\xb9 jajka - wymie\xf1 je u Wielkanocnego Zaj\xb9ca w mie\x9ccie.'},
 	'goblin': {'name': 'Poszukiwanie skarb\xf3w', 'icon': CAL + 'goblin_event.tga', 'open': 'goblin'},

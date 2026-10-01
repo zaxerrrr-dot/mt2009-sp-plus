@@ -1,0 +1,44 @@
+[
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_FLOWER_V1 (cg header)",
+  "old": "\tHEADER_CG_STATE_CHECKER\t\t\t= 206,\n",
+  "new": "\tHEADER_CG_STATE_CHECKER\t\t\t= 206,\n\t// MT2009_PLUS_FLOWER_V1 (cg header): the Flower Event's window (playerbot_flower.h),\n\t// Owsap's number and layout (TPacketCGFlowerEvent, 4 B).\n\tHEADER_CG_FLOWER_EVENT\t\t\t= 187,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_FLOWER_V1 (gc header)",
+  "old": "\tHEADER_GC_INGAME_EVENT\t\t\t\t\t= 183,\n",
+  "new": "\tHEADER_GC_INGAME_EVENT\t\t\t\t\t= 183,\n\t// MT2009_PLUS_FLOWER_V1 (gc header): the Flower Event's counters and messages\n\t// (playerbot_flower.h). Only to a client whose exe sent HEADER_CG_FLOWER_EVENT\n\t// in this session: an older exe stops at a header it does not know.\n\tHEADER_GC_FLOWER_EVENT\t\t\t\t\t= 187,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_FLOWER_V1 (packet)",
+  "old": "} TPacketGCInGameEventInfo;\n",
+  "new": "} TPacketGCInGameEventInfo;\n\n// MT2009_PLUS_FLOWER_V1 (packet): the Flower Event (\"Dzieci Kwiaty\", Owsap's\n// __FLOWER_EVENT__ with its layouts and names; the logic is playerbot_flower.h).\n// The seeds (the \"envelope\") and the five shoots are counters on the server.\nenum EFlowerEventShootType\n{\n\tSHOOT_ENVELOPE,\n\tSHOOT_CHRYSANTHEMUM,\n\tSHOOT_MAY_BELL,\n\tSHOOT_DAFFODIL,\n\tSHOOT_LILY,\n\tSHOOT_SUNFLOWER,\n\tSHOOT_TYPE_MAX,\n};\n\nenum EFlowerEventChatType\n{\n\tFLOWER_EVENT_CHAT_TYPE_NOT_ENOUGH_SHOOT_COUNT,\n\tFLOWER_EVENT_CHAT_TYPE_NOT_ENOUGH_EVENTORY_SPACE,\n\tFLOWER_EVENT_CHAT_TYPE_NOT_ENOUGH_SHOOT_ENVELOPE,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_ENVELOPE,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_CHRYSANTHEMUM,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_MAY_BELL,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_DAFFODIL,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_LILY,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_SUNFLOWER,\n\tFLOWER_EVENT_CHAT_TYPE_ITEM_FULL_AND_NOT_USE,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_CHRYSANTHEMUM_COUNT,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_MAY_BELL_COUNT,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_DAFFODIL_COUNT,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_LILY_COUNT,\n\tFLOWER_EVENT_CHAT_TYPE_GET_SHOOT_SUNFLOWER_COUNT,\n\tFLOWER_EVENT_CHAT_TYPE_ENVELOPE_MAX,\n\tFLOWER_EVENT_CHAT_TYPE_MAX,\n};\n\nenum EPacketGCFlowerEvent\n{\n\tFLOWER_EVENT_SUBHEADER_GC_INFO_ALL,\t// every counter (aiShootCount[0..5])\n\tFLOWER_EVENT_SUBHEADER_GC_GET_INFO,\t// a message: bChatType (+ bShootType, its count)\n\tFLOWER_EVENT_SUBHEADER_GC_UPDATE_INFO,\t// one counter: aiShootCount[bShootType]\n};\n\ntypedef struct SPacketGCFlowerEvent\n{\n\tBYTE\tbHeader;\t\t// HEADER_GC_FLOWER_EVENT\n\tBYTE\tbSubHeader;\n\tBYTE\tbChatType;\t\t// FLOWER_EVENT_CHAT_TYPE_MAX: none\n\tBYTE\tbShootType;\t\t// SHOOT_TYPE_MAX: none\n\tint\t\taiShootCount[SHOOT_TYPE_MAX + 1];\n} TPacketGCFlowerEvent;\t\t// 32 B\n\nenum EPacketCGFlowerEvent\n{\n\tFLOWER_EVENT_SUBHEADER_CG_INFO_ALL,\n\tFLOWER_EVENT_SUBHEADER_CG_EXCHANGE,\n};\n\ntypedef struct SPacketCGFlowerEvent\n{\n\tBYTE\tbHeader;\t\t// HEADER_CG_FLOWER_EVENT\n\tBYTE\tbSubHeader;\n\tBYTE\tbShootType;\t\t// checked on the server: < SHOOT_TYPE_MAX\n\tBYTE\tbExchangeKey;\t// checked on the server: 0..3 (x1, x10, x50, x100)\n} TPacketCGFlowerEvent;\t\t// 4 B\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_FLOWER_V1 (size)",
+  "old": "\tSet(HEADER_CG_REQUEST_INFO_RESPONSE, sizeof(TPacketCGRequestInfoResponse), \"RequestInfoResponse\", false);\n",
+  "new": "\tSet(HEADER_CG_REQUEST_INFO_RESPONSE, sizeof(TPacketCGRequestInfoResponse), \"RequestInfoResponse\", false);\n\t// MT2009_PLUS_FLOWER_V1 (size): the Flower Event's window (playerbot_flower.h).\n\tSet(HEADER_CG_FLOWER_EVENT, sizeof(TPacketCGFlowerEvent), \"FlowerEvent\", false);\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_FLOWER_V1 (input)",
+  "old": "\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n",
+  "new": "\t\t// MT2009_PLUS_FLOWER_V1 (input): the Flower Event's window - every field is\n\t\t// checked there (playerbot_flower.h, FlowerEventPacket).\n\t\tcase HEADER_CG_FLOWER_EVENT:\n\t\t\t{\n\t\t\t\tvoid FlowerEventPacket(LPCHARACTER ch, const char* data);\n\t\t\t\tFlowerEventPacket(ch, c_pData);\n\t\t\t}\n\t\t\tbreak;\n\n\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_FLOWER_V1 (kill)",
+  "old": "\t\t\tif ((item = CreateItem(ITEM_HANIRON, 1, 0, true)))\n\t\t\t\tvec_item.emplace_back(item);\n\t\t}\n\t}\n}\n\nvoid ITEM_MANAGER::ListSpecialItemDrop(",
+  "new": "\t\t\tif ((item = CreateItem(ITEM_HANIRON, 1, 0, true)))\n\t\t\t\tvec_item.emplace_back(item);\n\t\t}\n\t}\n\n\t// MT2009_PLUS_FLOWER_V1 (kill): the Flower Event's seeds - a counter, not an\n\t// item on the ground; players only, while the event runs (playerbot_flower.h).\n\t{\n\t\tvoid FlowerEventOnKill(LPCHARACTER victim, LPCHARACTER killer, int iDeltaPercent, int iRandRange);\n\t\tFlowerEventOnKill(pkChr, pkKiller, iDeltaPercent, iRandRange);\n\t}\n}\n\nvoid ITEM_MANAGER::ListSpecialItemDrop("
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FLOWER_V1 (use)",
+  "old": "\t\t\t\t\tcase USE_AFFECT :\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tbool addAffect = true;\n",
+  "new": "\t\t\t\t\tcase USE_AFFECT :\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tbool addAffect = true;\n\t\t\t\t\t\t\t// MT2009_PLUS_FLOWER_V1 (use): a flower of the Flower Event (value0 570,\n\t\t\t\t\t\t\t// Owsap's AFFECT_FLOWER_EVENT) - its own chances and levels (playerbot_flower.h).\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\tbool FlowerEventUseItem(LPCHARACTER ch, LPITEM item, bool& result);\n\t\t\t\t\t\t\t\tbool bFlowerResult = false;\n\t\t\t\t\t\t\t\tif (FlowerEventUseItem(this, item, bFlowerResult))\n\t\t\t\t\t\t\t\t\treturn bFlowerResult;\n\t\t\t\t\t\t\t}\n"
+ }
+]
