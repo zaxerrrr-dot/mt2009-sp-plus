@@ -1,0 +1,136 @@
+{
+ "marker": "MT2009_PLUS_SEONHAE_V1",
+ "note": "Seon-Hae's 6th/7th bonus items; the server rows are in linux-port/docker/mariadb/playerbot/apply.sh. Client record = a copy of 30000 (ITEM_MATERIAL, stack 200) with the vnum, the name, antiflag/flag and value1 set. Icons from the GF 26.1.11 client (icon/item/<vnum>.tga; GF itself maps 72065-72067 to 72064.tga).",
+ "items": [
+  {
+   "vnum": 39070,
+   "name": "Szary Odłamek",
+   "src": 30000,
+   "antiflag": 16512,
+   "flag": 8196,
+   "value1": 0,
+   "icon": "icon/item/39070.tga",
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 0-29."
+  },
+  {
+   "vnum": 39071,
+   "name": "Biały Odłamek",
+   "src": 30000,
+   "antiflag": 16512,
+   "flag": 8196,
+   "value1": 0,
+   "icon": "icon/item/39071.tga",
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 30-39."
+  },
+  {
+   "vnum": 39072,
+   "name": "Zielony Odłamek",
+   "src": 30000,
+   "antiflag": 16512,
+   "flag": 8196,
+   "value1": 0,
+   "icon": "icon/item/39072.tga",
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 40-49."
+  },
+  {
+   "vnum": 39073,
+   "name": "Żółty Odłamek",
+   "src": 30000,
+   "antiflag": 16512,
+   "flag": 8196,
+   "value1": 0,
+   "icon": "icon/item/39073.tga",
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 50-59."
+  },
+  {
+   "vnum": 39074,
+   "name": "Niebieski Odłamek",
+   "src": 30000,
+   "antiflag": 16512,
+   "flag": 8196,
+   "value1": 0,
+   "icon": "icon/item/39074.tga",
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 60-74."
+  },
+  {
+   "vnum": 39075,
+   "name": "Fioletowy Odłamek",
+   "src": 30000,
+   "antiflag": 16512,
+   "flag": 8196,
+   "value1": 0,
+   "icon": "icon/item/39075.tga",
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 75-89."
+  },
+  {
+   "vnum": 39076,
+   "name": "Czerwony Odłamek",
+   "src": 30000,
+   "antiflag": 16512,
+   "flag": 8196,
+   "value1": 0,
+   "icon": "icon/item/39076.tga",
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 90-104."
+  },
+  {
+   "vnum": 39077,
+   "name": "Tęczowy Odłamek",
+   "src": 30000,
+   "antiflag": 16512,
+   "flag": 8196,
+   "value1": 0,
+   "icon": "icon/item/39077.tga",
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 105-119."
+  },
+  {
+   "vnum": 39081,
+   "name": "Święty Odłamek",
+   "src": 30000,
+   "antiflag": 16512,
+   "flag": 8196,
+   "value1": 0,
+   "icon": "icon/item/39081.tga",
+   "desc": "Materiał, który zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae. Poziom przedmiotu: 120 i wyżej."
+  },
+  {
+   "vnum": 72064,
+   "name": "Mały Suplement",
+   "src": 30000,
+   "antiflag": 90240,
+   "flag": 8196,
+   "value1": 5,
+   "icon": "icon/item/72064.tga",
+   "desc": "Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +5% przy 5 Suplementach i 10 Odłamkach)."
+  },
+  {
+   "vnum": 72065,
+   "name": "Średni Suplement",
+   "src": 30000,
+   "antiflag": 90240,
+   "flag": 8196,
+   "value1": 10,
+   "icon": "icon/item/72064.tga",
+   "desc": "Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +10% przy 5 Suplementach i 10 Odłamkach)."
+  },
+  {
+   "vnum": 72066,
+   "name": "Duży Suplement",
+   "src": 30000,
+   "antiflag": 90240,
+   "flag": 8196,
+   "value1": 20,
+   "icon": "icon/item/72064.tga",
+   "desc": "Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +20% przy 5 Suplementach i 10 Odłamkach)."
+  },
+  {
+   "vnum": 72067,
+   "name": "Silny Suplement",
+   "src": 30000,
+   "antiflag": 90240,
+   "flag": 8196,
+   "value1": 50,
+   "icon": "icon/item/72064.tga",
+   "desc": "Zwiększa szansę na dodanie 6. lub 7. bonusu u Seon-Hae (do +50% przy 5 Suplementach i 10 Odłamkach)."
+  }
+ ]
+}

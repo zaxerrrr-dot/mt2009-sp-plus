@@ -1026,6 +1026,24 @@ else
     echo "[playerbot-migrate] WARNING: could not write the Arezzo module switch; it stays as it was" >&2
 fi
 
+# MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus (NPC 20095, quest seonhae,
+# playerbot_seonhae.h), voluntary and off unless M2_SEONHAE=1. One world flag,
+# m2_seonhae_on (1 = on); the panel switches it live (web_admin.quest SEONHAE,
+# with m2_seonhae_wait_min, the minutes Seon-Hae keeps an item - not in .env),
+# so .env is applied only when it changed since the last start (m2_seonhae_env =
+# what it said + 1). Off stops new hand-ins only; a kept item is always returned.
+case "$(printf '%s' "${M2_SEONHAE:-0}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in 1|on|yes|true) seonhae_on=1 ;; *) seonhae_on=0 ;; esac
+seonhae_env=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_seonhae_env' LIMIT 1;" 2>/dev/null | tr -d ' \r')
+if [ -n "$seonhae_env" ] && [ "$seonhae_env" = "$((seonhae_on + 1))" ]; then
+    echo "[playerbot-migrate] Seon-Hae 6/7 bonus: .env unchanged since the last start - the switch stays as the panel or the last start left it"
+elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_seonhae_on', '', $seonhae_on),
+        (0, 'm2_seonhae_env', '', $((seonhae_on + 1)));"; then
+    echo "[playerbot-migrate] Seon-Hae 6/7 bonus: $([ "$seonhae_on" = 1 ] && echo on || echo off) (from .env)"
+else
+    echo "[playerbot-migrate] WARNING: could not write the Seon-Hae switch; it stays as it was" >&2
+fi
+
 echo "[playerbot-migrate] applying deterministic Playerbot seed (PID $first_pid..$last_pid)"
 result=/tmp/playerbot-seed.out
 trap 'rm -f "$result"' EXIT HUP INT TERM
@@ -1880,3 +1898,29 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 # Idempotent: the same values every start.
 db -e "UPDATE world.mob_proto SET level = 93, max_hp = 3000000, def = 250, exp = 2000000, regen_cycle = 30, regen_percent = 1 WHERE vnum = 2493;
 UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (8031, 8032, 8033, 8034);" || echo "[playerbot-migrate] WARNING: could not set up the Blue Dragon lair's dragon and stones" >&2
+
+# MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus materials (playerbot_seonhae.h) at Owsap's vnums -
+# the Powershards ("Odlamki", materials that stack; no drop, no PK drop, tradeable) by the item's level:
+# 39070 0-29, 39071 30-39, 39072 40-49, 39073 50-59, 39074 60-74, 39075 75-89, 39076 90-104,
+# 39077 105-119, 39081 120+ (Owsap's Lucent 39078-39080 belong to its special sets and are left out);
+# and the Additives ("Suplementy", bound to the character: no drop, give or private shop) 72064-72067,
+# +5/10/20/50 (value1 for the client; the core reads its own table). The additives drop from Metins
+# and bosses, the shards from ordinary monsters, in the Grotto of Exile, the Temple of Ochao and the
+# Enchanted Forest (playerbot_seonhae.h, /opt/m2spool/seonhae_drops.tsv); no shop, no ItemShop (the
+# owner, 1 October). The names are UTF-8
+# here, SET NAMES converts them to the tables' CP1250. Idempotent: added once, never changed after.
+db -e "SET NAMES utf8mb4;
+INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(39070, 'Szary Odłamek', 'Szary Odłamek', 5, 0, 200, 0, 1, 16512, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(39071, 'Biały Odłamek', 'Biały Odłamek', 5, 0, 200, 0, 1, 16512, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(39072, 'Zielony Odłamek', 'Zielony Odłamek', 5, 0, 200, 0, 1, 16512, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(39073, 'Żółty Odłamek', 'Żółty Odłamek', 5, 0, 200, 0, 1, 16512, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(39074, 'Niebieski Odłamek', 'Niebieski Odłamek', 5, 0, 200, 0, 1, 16512, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(39075, 'Fioletowy Odłamek', 'Fioletowy Odłamek', 5, 0, 200, 0, 1, 16512, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(39076, 'Czerwony Odłamek', 'Czerwony Odłamek', 5, 0, 200, 0, 1, 16512, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(39077, 'Tęczowy Odłamek', 'Tęczowy Odłamek', 5, 0, 200, 0, 1, 16512, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(39081, 'Święty Odłamek', 'Święty Odłamek', 5, 0, 200, 0, 1, 16512, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(72064, 'Mały Suplement', 'Mały Suplement', 5, 0, 200, 0, 1, 90240, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(72065, 'Średni Suplement', 'Średni Suplement', 5, 0, 200, 0, 1, 90240, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(72066, 'Duży Suplement', 'Duży Suplement', 5, 0, 200, 0, 1, 90240, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(72067, 'Silny Suplement', 'Silny Suplement', 5, 0, 200, 0, 1, 90240, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || echo "[playerbot-migrate] WARNING: could not add Seon-Hae's shards and additives" >&2

@@ -271,7 +271,9 @@ RUN set -eux; \
     # (MT2009_PLUS_AREZZO_V1, phases 5-7).
     # blue_dragon_lair is the Blue Dragon lair (map 208) entered at the Sura's Ghost in the Grotto of
     # Exile V2 (MT2009_PLUS_BLUE_DRAGON_V1).
-    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla; do \
+    # seonhae opens Seon-Hae's 6th/7th bonus window at 20095 while m2_seonhae_on is set
+    # (MT2009_PLUS_SEONHAE_V1, playerbot_seonhae.h).
+    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla seonhae; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \

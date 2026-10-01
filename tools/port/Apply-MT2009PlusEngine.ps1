@@ -39,6 +39,7 @@ param(
 #   Cor pickup stacks  char_item.cpp             (MT2009_PLUS_COR_AUTOSTACK_V1)
 #   DS trace players   char_item.cpp             (MT2009_PLUS_DS_TRACE_PLAYERS_V1)
 #   event manager      packet.h, cmd.cpp, cmd_general.cpp (MT2009_PLUS_EVENT_MANAGER_V1)
+#   Seon-Hae 6/7 bonus cmd.cpp, cmd_general.cpp, item_manager.cpp (MT2009_PLUS_SEONHAE_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -271,6 +272,18 @@ if ((Test-Path -LiteralPath $eventManagerApply -PathType Leaf) -and
     if ($eventManagerResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} event manager edit(s).' -f $eventManagerResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Seon-Hae's 6th/7th bonus (server-patches/seonhae): "/seonhae" in cmd.cpp /
+# cmd_general.cpp and the shard/additive drop in item_manager.cpp
+# (playerbot_seonhae.h); after playerqol, whose goblin lines it anchors on.
+$seonHaeApply = Join-Path $repo 'server-patches/seonhae/Apply-SeonHaePatch.ps1'
+if ((Test-Path -LiteralPath $seonHaeApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd.cpp') -PathType Leaf)) {
+    $seonHaeResult = & $seonHaeApply -SourceDir $engineGameSource
+    if ($seonHaeResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Seon-Hae edit(s).' -f $seonHaeResult.Applied) -ForegroundColor DarkGray
     }
 }
 # A pet's magic attack % (server-patches/magicattper): PointChange had no

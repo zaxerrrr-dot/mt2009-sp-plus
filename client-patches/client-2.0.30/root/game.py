@@ -442,6 +442,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uinewpet").DestroyWindow()
 		# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub (uiingameevent.py).
 		__import__("uiingameevent").DestroyWindow()
+		# MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus window (uiseonhae.py).
+		__import__("uiseonhae").DestroyWindow()
 		# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's panel.
 		import uiguildduty
 		uiguildduty.DestroyWindow()
@@ -2959,6 +2961,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["NewPet"] = self.__NewPet # MT2009_PLUS_NEW_PET_V1
 		serverCommandList["GOB"] = self.__Goblin # MT2009_PLUS_GOBLIN_V1
 		serverCommandList["DungeonInfo"] = self.__DungeonInfo # MT2009_PLUS_DUNGEON_PANEL_V1
+		serverCommandList["SEONHAE"] = self.__SeonHae # MT2009_PLUS_SEONHAE_V1
 		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
 		# packet) and Owsap's "<flag> <value>" commands (ingameevent.py).
 		serverCommandList["IGE"] = self.__InGameEvent
@@ -3578,6 +3581,11 @@ class GameWindow(ui.ScriptWindow):
 	def __Goblin(self, *args):
 		import uigoblin
 		uigoblin.OnCommand(self, *args)
+
+	# MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus lines (uiseonhae.py).
+	def __SeonHae(self, *args):
+		import uiseonhae
+		uiseonhae.OnCommand(self, *args)
 
 	# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event list (ingameevent.py).
 	def __InGameEvent(self, *args):

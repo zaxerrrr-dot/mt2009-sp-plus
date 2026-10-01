@@ -125,6 +125,9 @@ services:
       # The Arezzo module (maps 360-366, their dungeons and guards): 1 on, 0 off
       # (apply.sh writes mt2009_arezzo_closed when .env changed; the panel switches it live).
       M2_AREZZO: "${M2_AREZZO:-0}"
+      # Seon-Hae's 6th/7th bonus at NPC 20095: 1 on, 0 off (apply.sh writes
+      # m2_seonhae_on when .env changed; the panel switches it live).
+      M2_SEONHAE: "${M2_SEONHAE:-0}"
 
     entrypoint: ["/bin/sh", "/opt/playerbot/apply.sh"]
 
