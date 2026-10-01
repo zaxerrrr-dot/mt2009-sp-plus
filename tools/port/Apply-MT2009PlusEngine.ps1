@@ -39,6 +39,8 @@ param(
 #   Cor pickup stacks  char_item.cpp             (MT2009_PLUS_COR_AUTOSTACK_V1)
 #   DS trace players   char_item.cpp             (MT2009_PLUS_DS_TRACE_PLAYERS_V1)
 #   event manager      packet.h, cmd.cpp, cmd_general.cpp (MT2009_PLUS_EVENT_MANAGER_V1)
+#   Rumi (Okey)        packet.h, packet_info.cpp, input_main.cpp, char.cpp, char_item.cpp,
+#                      item_manager.cpp, questlua_game.cpp (MT2009_PLUS_RUMI_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -271,6 +273,20 @@ if ((Test-Path -LiteralPath $eventManagerApply -PathType Leaf) -and
     if ($eventManagerResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} event manager edit(s).' -f $eventManagerResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Owsap's Rumi (Okey card game) (server-patches/rumi, MT2009_PLUS_RUMI_V1):
+# CG/GC 181 in packet.h / packet_info.cpp / input_main.cpp, the logout
+# settlement in char.cpp, the card items in char_item.cpp, the per-kill card in
+# item_manager.cpp and the table's quest functions in questlua_game.cpp
+# (playerbot_rumi.h); after the event manager, whose packet.h lines it anchors on.
+$rumiApply = Join-Path $repo 'server-patches/rumi/Apply-RumiPatch.ps1'
+if ((Test-Path -LiteralPath $rumiApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'packet.h') -PathType Leaf)) {
+    $rumiResult = & $rumiApply -SourceDir $engineGameSource
+    if ($rumiResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Rumi edit(s).' -f $rumiResult.Applied) -ForegroundColor DarkGray
     }
 }
 # A pet's magic attack % (server-patches/magicattper): PointChange had no

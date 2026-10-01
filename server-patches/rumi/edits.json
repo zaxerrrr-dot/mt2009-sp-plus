@@ -1,0 +1,62 @@
+[
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_RUMI_V1 (cg header)",
+  "old": "#ifdef ENABLE_IKASHOP_RENEWAL\n\tHEADER_CG_NEW_OFFLINESHOP\t\t= 119,\n#endif\n",
+  "new": "#ifdef ENABLE_IKASHOP_RENEWAL\n\tHEADER_CG_NEW_OFFLINESHOP\t\t= 119,\n#endif\n\t// MT2009_PLUS_RUMI_V1 (cg header): Owsap's Rumi (Okey card game), playerbot_rumi.h.\n\tHEADER_CG_MINI_GAME_RUMI\t\t= 181,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_RUMI_V1 (gc header)",
+  "old": "\tHEADER_GC_INGAME_EVENT\t\t\t\t\t= 183,\n",
+  "new": "\tHEADER_GC_INGAME_EVENT\t\t\t\t\t= 183,\n\t// MT2009_PLUS_RUMI_V1 (gc header): Owsap's Rumi (playerbot_rumi.h); sent only to a\n\t// client that sent a CG 181 itself (an older exe stops at a header it does not know).\n\tHEADER_GC_MINI_GAME_RUMI\t\t\t\t= 181,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_RUMI_V1 (packet)",
+  "old": "} TPacketGCInGameEventInfo;\n",
+  "new": "} TPacketGCInGameEventInfo;\n\n// MT2009_PLUS_RUMI_V1 (packet): Owsap's Rumi (Okey card game) packets, v6.2.6\n// layouts byte for byte (the client's exe: client-patches/exe), without the\n// constructors. CG 7 bytes; GC dynamic: this head (4 bytes) + the sub's body.\nenum EMiniGameRumiCGSubHeader\n{\n\tRUMI_CG_SUBHEADER_END,\n\tRUMI_CG_SUBHEADER_START,\n\tRUMI_CG_SUBHEADER_DECK_CARD_CLICK,\n\tRUMI_CG_SUBHEADER_HAND_CARD_CLICK,\n\tRUMI_CG_SUBHEADER_FIELD_CARD_CLICK,\n\tRUMI_CG_SUBHEADER_REQUEST_QUEST_FLAG,\n};\n\nenum EMiniGameRumiGCSubHeader\n{\n\tRUMI_GC_SUBHEADER_END,\n\tRUMI_GC_SUBHEADER_START,\n\tRUMI_GC_SUBHEADER_SET_DECK,\t\t\t// TPacketGCMiniGameRumiSetDeck\n\tRUMI_GC_SUBHEADER_SET_SCORE,\t\t// TPacketGCMiniGameRumiSetScore\n\tRUMI_GC_SUBHEADER_MOVE_CARD,\t\t// TPacketGCMiniGameRumiMoveCard\n\tRUMI_GC_SUBHEADER_SET_CARD_PIECE_FLAG,\t// TPacketGCMiniGameRumiQuestFlag (all four)\n\tRUMI_GC_SUBHEADER_SET_CARD_FLAG,\n\tRUMI_GC_SUBHEADER_SET_QUEST_FLAG,\n\tRUMI_GC_SUBHEADER_NO_MORE_GAIN,\n};\n\ntypedef struct SPacketCGMiniGameRumi\n{\n\tBYTE\tbHeader;\t// HEADER_CG_MINI_GAME_RUMI\n\tBYTE\tbSubHeader;\n\tBOOL\tbUseCard;\t// HAND_CARD_CLICK: 1 to the field, 0 discard\n\tBYTE\tbIndex;\t\t// hand 0-4 / field 0-2\n} TPacketCGMiniGameRumi;\n\ntypedef struct SPacketGCMiniGameRumi\n{\n\tBYTE\tbHeader;\t// HEADER_GC_MINI_GAME_RUMI\n\tWORD\twSize;\t\t// this and the body\n\tBYTE\tbSubHeader;\n} TPacketGCMiniGameRumi;\n\ntypedef struct SPacketGCMiniGameRumiSetDeck\n{\n\tBYTE\tbDeckCount;\n} TPacketGCMiniGameRumiSetDeck;\n\ntypedef struct SPacketGCMiniGameRumiMoveCard\n{\n\tBYTE\tbSrcPos, bSrcIndex, bSrcColor, bSrcNumber;\t// pos: 0 none, 1 deck, 2 hand, 3 field\n\tBYTE\tbDstPos, bDstIndex, bDstColor, bDstNumber;\t// colour 10 red, 20 blue, 30 yellow; number 1-8\n} TPacketGCMiniGameRumiMoveCard;\n\ntypedef struct SPacketGCMiniGameRumiSetScore\n{\n\tWORD\twScore, wTotalScore;\n} TPacketGCMiniGameRumiSetScore;\n\ntypedef struct SPacketGCMiniGameRumiQuestFlag\n{\n\tWORD\twCardPieceCount, wCardCount;\n} TPacketGCMiniGameRumiQuestFlag;\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_RUMI_V1 (size)",
+  "old": "\tSet(HEADER_CG_NEW_OFFLINESHOP, sizeof(TPacketCGNewIkarusShop), \"NewIkarusShop\", false);\n#endif\n",
+  "new": "\tSet(HEADER_CG_NEW_OFFLINESHOP, sizeof(TPacketCGNewIkarusShop), \"NewIkarusShop\", false);\n#endif\n\t// MT2009_PLUS_RUMI_V1 (size): Owsap's Rumi, 7 bytes.\n\tSet(HEADER_CG_MINI_GAME_RUMI, sizeof(TPacketCGMiniGameRumi), \"MiniGameRumi\", true);\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_RUMI_V1 (packet)",
+  "old": "\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n",
+  "new": "\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n\n\t\t// MT2009_PLUS_RUMI_V1 (packet): Owsap's Rumi (Okey card game), playerbot_rumi.h.\n\t\tcase HEADER_CG_MINI_GAME_RUMI:\n\t\t\t{\n\t\t\t\tvoid RumiPacket(LPCHARACTER ch, const char* data);\n\t\t\t\tRumiPacket(ch, c_pData);\n\t\t\t}\n\t\t\tbreak;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_RUMI_V1 (disconnect)",
+  "old": "\tsys_log(0, \"DISCONNECT: %s (%s)\", GetName(), c_pszReason ? c_pszReason : \"unset\" );\n",
+  "new": "\tsys_log(0, \"DISCONNECT: %s (%s)\", GetName(), c_pszReason ? c_pszReason : \"unset\" );\n\n\t// MT2009_PLUS_RUMI_V1 (disconnect): a game of Okey left behind is settled - its\n\t// score counts, its chest is owed (playerbot_rumi.h), before the quest flags are saved.\n\t{\n\t\tvoid RumiDisconnect(LPCHARACTER ch);\n\t\tRumiDisconnect(this);\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_RUMI_V1 (use)",
+  "old": "\t\tif (GoblinUseItem(this, item))\n\t\t\treturn true;\n\t}\n",
+  "new": "\t\tif (GoblinUseItem(this, item))\n\t\t\treturn true;\n\t}\n\t// MT2009_PLUS_RUMI_V1 (use): the Okey card (79505) and card set (79506), playerbot_rumi.h.\n\t{\n\t\tbool RumiUseItem(LPCHARACTER ch, LPITEM item);\n\t\tif (RumiUseItem(this, item))\n\t\t\treturn true;\n\t}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RUMI_V1 (kill)",
+  "old": "\t__DropEvent_RefineBox_DropItem(*pkKiller, *pkChr, *this, vec_item);\n",
+  "new": "\t__DropEvent_RefineBox_DropItem(*pkKiller, *pkChr, *this, vec_item);\n\t// MT2009_PLUS_RUMI_V1 (kill): an Okey card per kill share while the event runs\n\t// (playerbot_rumi.h, Owsap's __OKEY_EVENT_FLAG_RENEWAL__: a counter, no item on the ground).\n\t{\n\t\tvoid RumiOnKill(LPCHARACTER killer, LPCHARACTER victim, int iDeltaPercent, int iRandRange);\n\t\tRumiOnKill(pkKiller, pkChr, iDeltaPercent, iRandRange);\n\t}\n"
+ },
+ {
+  "file": "questlua_game.cpp",
+  "marker": "MT2009_PLUS_RUMI_V1 (lua)",
+  "old": "\tvoid RegisterGameFunctionTable()\n",
+  "new": "\t// MT2009_PLUS_RUMI_V1 (lua): Owsap's Rumi table (minigame_rumi.quest), playerbot_rumi.h.\n\tvoid RumiLuaScoreTable(bool total, std::vector<std::pair<std::string, DWORD> >& out);\n\tDWORD RumiLuaMyScore(LPCHARACTER ch, bool total);\n\tint RumiLuaClaim(LPCHARACTER ch, DWORD& vnum, int& count);\n\tint RumiLuaPending(LPCHARACTER ch);\n\tDWORD RumiLuaPrize();\n\n\t// game.get_minigame_rumi_score(total): { {name, score}, ... } - the season's top ten\n\tALUA(game_get_minigame_rumi_score)\n\t{\n\t\tstd::vector<std::pair<std::string, DWORD> > top;\n\t\tRumiLuaScoreTable(lua_toboolean(L, 1) != 0, top);\n\t\tlua_newtable(L);\n\t\tfor (size_t i = 0; i < top.size(); ++i)\n\t\t{\n\t\t\tlua_newtable(L);\n\t\t\tlua_pushstring(L, top[i].first.c_str());\n\t\t\tlua_rawseti(L, -2, 1);\n\t\t\tlua_pushnumber(L, top[i].second);\n\t\t\tlua_rawseti(L, -2, 2);\n\t\t\tlua_rawseti(L, -2, (int)i + 1);\n\t\t}\n\t\treturn 1;\n\t}\n\n\t// game.get_minigame_rumi_my_score(total)\n\tALUA(game_get_minigame_rumi_my_score)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tlua_pushnumber(L, ch ? RumiLuaMyScore(ch, lua_toboolean(L, 1) != 0) : 0);\n\t\treturn 1;\n\t}\n\n\t// game.minigame_rumi_claim(): code (0 given, 1 no window, 2 taken, 3 not ranked, 4 no room, 5 no row), vnum, count\n\tALUA(game_minigame_rumi_claim)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tDWORD vnum = 0;\n\t\tint count = 0;\n\t\tconst int code = ch ? RumiLuaClaim(ch, vnum, count) : 1;\n\t\tlua_pushnumber(L, code);\n\t\tlua_pushnumber(L, vnum);\n\t\tlua_pushnumber(L, count);\n\t\treturn 3;\n\t}\n\n\t// game.minigame_rumi_pending(): the chests a game left at logout owes, given now\n\tALUA(game_minigame_rumi_pending)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tlua_pushnumber(L, ch ? RumiLuaPending(ch) : 0);\n\t\treturn 1;\n\t}\n\n\t// game.minigame_rumi_prize(): the top ten's chest\n\tALUA(game_minigame_rumi_prize)\n\t{\n\t\tlua_pushnumber(L, RumiLuaPrize());\n\t\treturn 1;\n\t}\n\n\tvoid RegisterGameFunctionTable()\n"
+ },
+ {
+  "file": "questlua_game.cpp",
+  "marker": "MT2009_PLUS_RUMI_V1 (table)",
+  "old": "\t\t\t{ \"open_web_mall\",\t\t\t\tgame_web_mall\t\t\t\t\t},\n",
+  "new": "\t\t\t{ \"open_web_mall\",\t\t\t\tgame_web_mall\t\t\t\t\t},\n\t\t\t// MT2009_PLUS_RUMI_V1 (table)\n\t\t\t{ \"get_minigame_rumi_score\",\tgame_get_minigame_rumi_score\t},\n\t\t\t{ \"get_minigame_rumi_my_score\",\tgame_get_minigame_rumi_my_score\t},\n\t\t\t{ \"minigame_rumi_claim\",\t\tgame_minigame_rumi_claim\t\t},\n\t\t\t{ \"minigame_rumi_pending\",\t\tgame_minigame_rumi_pending\t\t},\n\t\t\t{ \"minigame_rumi_prize\",\t\tgame_minigame_rumi_prize\t\t},\n"
+ }
+]
