@@ -6550,6 +6550,36 @@ namespace
 
 	BYTE GetPlayerBotPersonalityByPID(DWORD dwPID);
 
+	// MT2009_PLUS_DROPPER_INVEST_V1: a dropper invests in itself. Since 15
+	// September it bought nothing off any counter, so at record yang it walked
+	// about with a +5 Battle Scythe and its skills at M1 ("sosen"). Now each
+	// service of its own counter (every forty to sixty minutes) opens a window
+	// of PLAYERBOT_DROPPER_SHOP_WINDOW_MS for the stands round it: first the
+	// materials and scrolls of the next step of its weapon, armour and shield
+	// (up to +9, CollectPlayerBotDropperInvestMissing), then what every bot
+	// buys - a level-30 weapon, better gear, books. No trip of its own for it,
+	// and no medal off another dropper's counter.
+	const DWORD PLAYERBOT_DROPPER_SHOP_WINDOW_MS = 180000;
+	const DWORD PLAYERBOT_DROPPER_SHOP_BROWSE_MS = 20000;
+	const int PLAYERBOT_DROPPER_INVEST_MAX_PLUS = 9;
+	std::map<DWORD, DWORD> s_mapPlayerBotDropperShopUntil;
+
+	void OpenPlayerBotDropperShopping(DWORD dwPID, DWORD dwNow)
+	{
+		s_mapPlayerBotDropperShopUntil[dwPID] = dwNow + PLAYERBOT_DROPPER_SHOP_WINDOW_MS;
+	}
+
+	bool IsPlayerBotDropperShopping(DWORD dwPID, DWORD dwNow)
+	{
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotDropperShopUntil.find(dwPID);
+		if (it == s_mapPlayerBotDropperShopUntil.end())
+			return false;
+		if ((int)(it->second - dwNow) > 0)
+			return true;
+		s_mapPlayerBotDropperShopUntil.erase(it);
+		return false;
+	}
+
 	// The role a bot plays in its guild's war, whether its war is in the break
 	// between two rounds, and whether it sits out the round it fell in
 	// (playerbot_guild_war.h), for the status line.

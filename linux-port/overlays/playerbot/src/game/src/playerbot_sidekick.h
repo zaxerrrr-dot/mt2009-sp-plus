@@ -3309,8 +3309,11 @@ namespace
 			mode = 2;
 		// "Gra beze mnie", "Skrzynki" and "Grupa" last: a window older than they
 		// are reads the words it knows and leaves the rest (uisidekick.ParseInfo).
+		// MT2009_PLUS_SIDEKICK_RANK_V1: the companion's rank points after them
+		// (the alignment over ten, as the character packet carries it), for the
+		// rank title on its name in the window, as the player's own shows his.
 		SendPlayerBotSidekickCommand(owner,
-				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d",
+				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d",
 				PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL,
 				inWorld ? (int)sk->GetRaceNum() : -1, inWorld ? (int)sk->GetSkillGroup() : 0,
 				inWorld ? sk->GetLevel() : 0, expPercent,
@@ -3320,7 +3323,8 @@ namespace
 				rec.bBuffs ? 1 : 0, inWorld ? (long long)sk->GetGold() : 0LL, (unsigned int)red, (unsigned int)blue,
 				inWorld && sk->IsDead() ? 1 : 0, rec.bLure ? 1 : 0, rt ? (int)rt->bLureStage : 0, rec.bSolo ? 1 : 0,
 				rec.bChests ? 1 : 0, rec.bLead ? 1 : 0, (unsigned int)rec.bRole,
-				inWorld ? sk->GetLeadershipSkillLevel() : 0, rec.bParty ? 1 : 0);
+				inWorld ? sk->GetLeadershipSkillLevel() : 0, rec.bParty ? 1 : 0,
+				inWorld ? sk->GetAlignment() / 10 : 0);
 		char doing[96] = "";
 		char place[64] = "";
 		if (inWorld)

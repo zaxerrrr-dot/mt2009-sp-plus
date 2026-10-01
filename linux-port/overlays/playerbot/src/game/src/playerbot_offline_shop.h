@@ -139,6 +139,13 @@ namespace {
     }
     void BotOfflineFinishVisit(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
         auto& o = state.offlineShop;
+        // MT2009_PLUS_DROPPER_INVEST_V1: a dropper whose counter was served
+        // has its shopping window at the stands round it.
+        if (o.visiting && ch && IsPlayerBotDropper(state.bPersonality) &&
+                o.lastServedAt != 0 && o.visitStarted != 0 && int32_t(o.lastServedAt - o.visitStarted) >= 0) {
+            OpenPlayerBotDropperShopping(ch->GetPlayerID(), now);
+            o.nextBrowse = now;
+        }
         if (o.visiting) {
             ikashop::GetManager().RecvCloseMyShopBoardClientPacket(ch);
             ikashop::GetManager().RecvShopSafeboxCloseClientPacket(ch);

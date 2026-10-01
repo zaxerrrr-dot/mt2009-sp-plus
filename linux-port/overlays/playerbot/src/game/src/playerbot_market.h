@@ -183,6 +183,17 @@ namespace
 		if (!ch || !offer)
 			return false;
 
+		// MT2009_PLUS_DROPPER_INVEST_V1: a dropper buys no medal off another
+		// dropper's counter, and in its shopping window wants the materials
+		// and scrolls of its next steps first.
+		if (IsPlayerBotDropper(GetPlayerBotPersonalityByPID(ch->GetPlayerID())))
+		{
+			if (offer->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM)
+				return false;
+			if (WantsPlayerBotDropperInvestOffer(ch, offer->GetVnum()))
+				return true;
+		}
+
 		// Cor Draconis and Dragon Stones, for an alchemy bot (playerbot_alchemy.h).
 		if (IsPlayerBotCorVnum(offer->GetVnum()) || offer->IsDragonSoul())
 			return WantsPlayerBotAlchemyOffer(ch, offer);
@@ -1099,8 +1110,11 @@ namespace
 		// reached the Monkey Dungeon ("lataja po m2", sizowski). A dropper
 		// standing out a negative rank in town may shop, for the bean that lifts
 		// it (KeepPlayerBotNegativeRankInTown).
-		if (IsPlayerBotDropper(state.bPersonality) &&
-				(ch->GetRealAlignment() >= 0 || IsPlayerBotRankHunting(ch, dwNow))) // MT2009_PLUS_BOT_RANK_GLOVE_V1
+		// MT2009_PLUS_DROPPER_INVEST_V1: in the window after its counter's
+		// service it shops at the stands round it - and makes no trip for it.
+		const bool dropperRefused = IsPlayerBotDropper(state.bPersonality) &&
+				(ch->GetRealAlignment() >= 0 || IsPlayerBotRankHunting(ch, dwNow)); // MT2009_PLUS_BOT_RANK_GLOVE_V1
+		if (dropperRefused && !IsPlayerBotDropperShopping(ch->GetPlayerID(), dwNow))
 		{
 			EndPlayerBotMarketTrip(ch, state, "dropper");
 			return false;
@@ -1109,6 +1123,11 @@ namespace
 		if (ManagePlayerBotOfflineShopping(ch, state, dwNow)) return true;
 		if (playerbot_offline::requests.count(ch->GetPlayerID())) return false;
 #endif
+		if (dropperRefused)
+		{
+			EndPlayerBotMarketTrip(ch, state, "dropper");
+			return false;
+		}
 		// A keeper minding its own counter is not also a customer.
 		if (ch->GetMyShop() || state.bVisitingBiologist || state.bVisitingStable ||
 				state.bRecoveringAfterDeath || state.bTacticalRetreat ||

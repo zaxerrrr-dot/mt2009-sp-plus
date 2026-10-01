@@ -1,0 +1,38 @@
+[
+ {
+  "file": "input.cpp",
+  "marker": "MT2009_PLUS_EARLY_PACKET_V1 (skip)",
+  "old": "int CInputHandshake::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)\n{\n",
+  "new": "// MT2009_PLUS_EARLY_PACKET_V1 (skip) (server-patches/enginefixes): a chat\n// command or a whisper that reaches a connection before it is in the game -\n// still saying hello (handshake) or loading (login phase) - is passed over\n// whole. Both phases used to read only its fixed head and took the text after\n// it for the next packets: an unknown header, and the connection was closed.\n// The Companion's window (P) polls the server with \"/towarzysz\" and its poll\n// could leave right after a channel change or a teleport had opened the new\n// connection, so every such change ended on the login screen.\nint Mt2009PlusSkipEarlyPacket(LPDESC d, BYTE bHeader, const char * c_pData, int iBufferLeft)\n{\n\tconst int iHead = bHeader == HEADER_CG_WHISPER ? (int) sizeof(TPacketCGWhisper) : (int) sizeof(TPacketCGChat);\n\tif (iBufferLeft < iHead)\n\t\treturn -1;\n\tconst WORD wSize = *reinterpret_cast<const WORD *>(c_pData + sizeof(BYTE));\n\tif ((int) wSize < iHead)\n\t{\n\t\tsys_err(\"early packet %u with a bad size %u (fd %d)\", bHeader, wSize, d->GetSocket());\n\t\td->SetPhase(PHASE_CLOSE);\n\t\treturn -1;\n\t}\n\tif (iBufferLeft < (int) wSize)\n\t\treturn -1;\n\tsys_log(0, \"early packet %u (%u bytes) passed over before the game phase (fd %d)\", bHeader, wSize, d->GetSocket());\n\treturn (int) wSize - iHead;\n}\n\nint CInputHandshake::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)\n{\n"
+ },
+ {
+  "file": "input.cpp",
+  "marker": "MT2009_PLUS_EARLY_PACKET_V1 (handshake)",
+  "old": "\tif (bHeader == 10)\n\t\treturn 0;\n",
+  "new": "\tif (bHeader == 10)\n\t\treturn 0;\n\n\t// MT2009_PLUS_EARLY_PACKET_V1 (handshake): a command before the hello.\n\tif (bHeader == HEADER_CG_CHAT || bHeader == HEADER_CG_WHISPER)\n\t\treturn Mt2009PlusSkipEarlyPacket(d, bHeader, c_pData, m_iBufferLeft);\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_EARLY_PACKET_V1 (login)",
+  "old": "\t\tcase HEADER_CG_CHAT:\n\t\tcase HEADER_CG_MOVE:\n\t\t\tbreak;\n",
+  "new": "\t\t// MT2009_PLUS_EARLY_PACKET_V1 (login): a chat command or a whisper while\n\t\t// the character loads is passed over whole, its text with it\n\t\t// (Mt2009PlusSkipEarlyPacket, input.cpp).\n\t\tcase HEADER_CG_CHAT:\n\t\tcase HEADER_CG_WHISPER:\n\t\t\t{\n\t\t\t\textern int Mt2009PlusSkipEarlyPacket(LPDESC d, BYTE bHeader, const char * c_pData, int iBufferLeft);\n\t\t\t\treturn Mt2009PlusSkipEarlyPacket(d, bHeader, c_pData, m_iBufferLeft);\n\t\t\t}\n\n\t\tcase HEADER_CG_MOVE:\n\t\t\tbreak;\n"
+ },
+ {
+  "file": "config.cpp",
+  "marker": "MT2009_PLUS_MAP_ALLOW_COPY_V1",
+  "old": "\t\tint i = *(it++);\n\t\t*(pl++) = i;\n\n\t\tif (++iCount > size)\n\t\t\tbreak;\n",
+  "new": "\t\t// MT2009_PLUS_MAP_ALLOW_COPY_V1 (server-patches/enginefixes): the bound\n\t\t// before the write. It was checked after it, so a core with one map more\n\t\t// than MAP_ALLOW_LIMIT wrote that map over the next field of the setup\n\t\t// packet - the login count, garbage logins in the db core and an endless\n\t\t// loading screen on the first teleport. A map past the limit is now\n\t\t// left out with an error, not written.\n\t\tif (iCount >= size)\n\t\t{\n\t\t\tsys_err(\"MAP_ALLOW: %u maps on this core, MAP_ALLOW_LIMIT is %d - map %d and the rest are not announced\",\n\t\t\t\t\t(unsigned int) s_set_map_allows.size(), size, *it);\n\t\t\tbreak;\n\t\t}\n\t\tint i = *(it++);\n\t\t*(pl++) = i;\n\t\t++iCount;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_MINIBOSS_V1 (rank)",
+  "old": "\t\tconst bool boss = victim->IsMonster() && victim->GetMobRank() >= MOB_RANK_BOSS;\n\t\tif (victim->IsMonster() && (boss ? !m_bBosses : !m_bMobs))\n\t\t\treturn;\n",
+  "new": "\t\tconst bool boss = victim->IsMonster() && victim->GetMobRank() >= MOB_RANK_BOSS;\n\t\t// MT2009_PLUS_AUTOHUNT_MINIBOSS_V1 (rank) (server-patches/enginefixes):\n\t\t// a miniboss - rank S_KNIGHT: Chuong, Lykos, Scrofa, Bera, Tigris, the\n\t\t// Bestial Archer and Specialist, the dungeons' elite monsters - is a\n\t\t// target with \"Moby\" and with \"Bossy\" alike (only \"Moby\" took it).\n\t\tconst bool miniboss = victim->IsMonster() && victim->GetMobRank() == MOB_RANK_S_KNIGHT;\n\t\tif (victim->IsMonster() && (boss ? !m_bBosses : (miniboss ? !(m_bMobs || m_bBosses) : !m_bMobs)))\n\t\t\treturn;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_MINIBOSS_V1 (order)",
+  "old": "\t\tif (m_bBossPriority && boss)\n\t\t\tscore -= 2000000;\n",
+  "new": "\t\tif (m_bBossPriority && boss)\n\t\t\tscore -= 2000000;\n\t\t// MT2009_PLUS_AUTOHUNT_MINIBOSS_V1 (order): with \"Bossy\", a miniboss\n\t\t// right after the boss and before the Metin.\n\t\telse if (m_bBossPriority && miniboss)\n\t\t\tscore -= 1500000;\n"
+ }
+]

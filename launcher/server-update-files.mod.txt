@@ -169,6 +169,7 @@ linux-port/docker/game/src/server/game/src/guild.cpp
 linux-port/docker/game/src/server/game/src/ikarus_shop_manager.cpp
 linux-port/docker/game/src/server/game/src/ikarus_shop_manager.h
 linux-port/docker/game/src/server/game/src/input.h
+linux-port/docker/game/src/server/game/src/input.cpp
 linux-port/docker/game/src/server/game/src/input_db.cpp
 linux-port/docker/game/src/server/game/src/input_auth.cpp
 linux-port/docker/game/src/server/game/src/input_login.cpp

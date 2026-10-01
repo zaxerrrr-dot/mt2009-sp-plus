@@ -669,6 +669,64 @@ namespace
 		return crowd.Count() >= PLAYERBOT_SPLASH_CROWD_MIN;
 	}
 
+	// MT2009_PLUS_BOT_METIN_PLAIN_V1: a Metin is hit with the plain swing, and
+	// an attack skill - any of them, not only a splash - comes out at it only
+	// when a pack stands within that skill's reach: three monsters at least.
+	// Only the splash skills used to wait for a crowd; Triple Slash, Sword Spin
+	// and the rest went into the bare stone and ate the mana potions ("sosen",
+	// 30 September). A stone the swing does not bring down - its HP has not
+	// dropped for eight seconds - gets the skills back. The Demon Tower's and
+	// the Catacomb's stones are fought as before.
+	const int PLAYERBOT_STONE_SKILL_CROWD_MIN = 3;
+	const DWORD PLAYERBOT_STONE_PLAIN_STALL_MS = 8000;
+	struct TPlayerBotStonePlainHit
+	{
+		DWORD dwVID;
+		int iHP;
+		DWORD dwSince;
+		TPlayerBotStonePlainHit() : dwVID(0), iHP(0), dwSince(0) {}
+	};
+	std::map<DWORD, TPlayerBotStonePlainHit> s_mapPlayerBotStonePlainHits;
+
+	bool IsPlayerBotStonePlainOnly(LPCHARACTER ch, LPCHARACTER stone, DWORD dwNow)
+	{
+		if (!ch || !stone || !stone->IsStone())
+			return false;
+		const long map = ch->GetMapIndex();
+		if (IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()) ||
+				map == PLAYERBOT_MAP_DEMON_TOWER || IsPlayerBotDemonTowerInstance(map) ||
+				map == PLAYERBOT_MAP_CATACOMB || IsPlayerBotCatacombInstance(map))
+			return false;
+		TPlayerBotStonePlainHit& rec = s_mapPlayerBotStonePlainHits[ch->GetPlayerID()];
+		const int hp = (int)stone->GetHP();
+		if (rec.dwVID != (DWORD)stone->GetVID() || hp < rec.iHP)
+		{
+			rec.dwVID = (DWORD)stone->GetVID();
+			rec.iHP = hp;
+			rec.dwSince = dwNow;
+			return true;
+		}
+		return dwNow - rec.dwSince < PLAYERBOT_STONE_PLAIN_STALL_MS;
+	}
+
+	// The pack within a skill's reach of a stone: round the caster for a
+	// spin, round the stone for the rest; the splash's radius, else the
+	// skill's own range, else a swing's.
+	bool IsPlayerBotPackInSkillReach(LPCHARACTER ch, LPCHARACTER stone, DWORD skillVnum, int minCount)
+	{
+		CSkillProto* proto = CSkillManager::instance().Get(skillVnum);
+		if (!ch || !stone || !proto || !ch->GetSectree())
+			return false;
+		const bool aroundCaster = IS_SET(proto->dwFlag, SKILL_FLAG_SELFONLY);
+		const long x = aroundCaster ? ch->GetX() : stone->GetX();
+		const long y = aroundCaster ? ch->GetY() : stone->GetY();
+		int reach = proto->iSplashRange > 0 ? proto->iSplashRange
+				: (proto->dwTargetRange > 0 ? (int)proto->dwTargetRange : 300);
+		FPlayerBotSplashCrowd crowd(ch, x, y, reach + PLAYERBOT_SKILL_HIT_MARGIN);
+		ch->GetSectree()->ForEachAround(crowd);
+		return crowd.Count() >= minCount;
+	}
+
 	// A melee skill's hits as a player's client sends them, in
 	// playerbot_targeting.h beside the swing's (the collector is there).
 	DWORD ApplyPlayerBotSkillHits(LPCHARACTER ch, DWORD skillVnum, LPCHARACTER target);
@@ -907,10 +965,15 @@ namespace
 
 		const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
 		const int distance = DISTANCE_APPROX(ch->GetX() - target->GetX(), ch->GetY() - target->GetY());
+		// MT2009_PLUS_BOT_METIN_PLAIN_V1: at a Metin, a skill only for a pack.
+		const bool stonePlainOnly = IsPlayerBotStonePlainOnly(ch, target, dwNow);
 		for (size_t i = 0; i < sizeof(build.dwOffensiveSkills) / sizeof(build.dwOffensiveSkills[0]); ++i)
 		{
 			const DWORD skillVnum = build.dwOffensiveSkills[i];
 			if (skillVnum == 0 || ch->GetSkillLevel(skillVnum) == 0)
+				continue;
+			if (stonePlainOnly &&
+					!IsPlayerBotPackInSkillReach(ch, target, skillVnum, PLAYERBOT_STONE_SKILL_CROWD_MIN))
 				continue;
 			if (target->IsStone() && IsPlayerBotSplashSkill(skillVnum) &&
 					!IsPlayerBotSplashWorthAtStone(ch, target, skillVnum))
