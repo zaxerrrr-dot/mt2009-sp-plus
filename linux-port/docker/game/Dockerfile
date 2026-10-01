@@ -397,6 +397,25 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt \
  && mv "$F.new" "$F" \
  && echo "share: 2493 no longer drops 50124"
 
+# MT2009_PLUS_DROP_EDIT_V1: the owner's edits of the drop workbook (1 October). The bosses' own
+# new drops (mob_drop_item.dropedit.append.txt: Baronowna 9706, WuKong 9682, Krol Skorpionow 9694,
+# Azrael 2598 - none of them has a drop-type group, so the engine's one-group-per-mob map takes
+# ours), and Beran-Setaou's (2493) Malz x10 (was 1) and Zwoj Blogoslawienstwa x5 (was 1) in its
+# drop group, chances unchanged. Razador's and Nemere's are in their quests (only yang from the
+# boss). The chests' contents are in special_item_group.dungeons.txt / arezzo/*.
+COPY mob_drop_item.dropedit.append.txt /tmp/mob_drop_item.dropedit.append.txt
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_drop_item.dropedit.append.txt \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_dropedit_' "$F" \
+ && awk '{sub(/\r$/, "")} /^[[:blank:]]*Group/{t=""; m=""} tolower($1)=="mob"{m=$2} tolower($1)=="type"{t=tolower($2)} t=="drop" && m ~ /^(9706|9682|9694|2598)$/ {print "FATAL: mob " m " already has a drop group" > "/dev/stderr"; bad=1; exit} END{exit bad}' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A" >> "$F" \
+ && awk '{cr = sub(/\r$/, "")} /^[[:blank:]]*Group/{d=0; t=""} /^[[:blank:]]*Mob[[:blank:]]+2493([^0-9]|$)/{d=1} tolower($1)=="type"{t=tolower($2)} { if (d && t=="drop" && $1 ~ /^[0-9]+$/ && $3=="1" && ($2=="27987" || $2=="25040")) { c = ($2=="27987") ? 10 : 5; sub(/^[[:blank:]]*[0-9]+[[:blank:]]+[0-9]+[[:blank:]]+1[[:blank:]]/, "\t" $1 "\t" $2 "\t" c "\t"); n++ } printf "%s%s\n", $0, (cr ? "\r" : "") } END{ if (n != 2) { print "FATAL: Beran 27987/25040 lines: " n > "/dev/stderr"; exit 1 } }' "$F" > "$F.new" \
+ && mv "$F.new" "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_dropedit_' "$F")" = 4 \
+ && rm -f "$A" \
+ && echo "share: drop edit - 4 boss groups, Beran Malz x10 / Zwoj x5"
+
 # MT2009_PLUS_FLOWER_V1: the Flower Event's five gift boxes (83023-83027, Pudelko z Chryzantema ..
 # ze Slonecznikiem; playerbot_flower.h gives them for 10 shoots of a flower), opened by their
 # special_item_group groups. Appended once; the Seban panel's "Szkatulki" page edits them like any

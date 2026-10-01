@@ -5393,8 +5393,8 @@ additive_map 72 72065 1
 additive_map 73 72065 1
 additive_map 362 72066 1
 # mob <mob vnum> <additive vnum> <count>: one monster (any rank, any map), instead of its map's rule
-# Beran-Setaou: 2 Medium
-mob 2493 72065 2
+# Beran-Setaou: 2 Large (the owner, drop workbook, 1 October)
+mob 2493 72066 2
 # SHARDS - ordinary monsters (not Metins, not bosses) of these maps, 1 shard per hit of shard_chance %:
 shard_chance 0.5
 # Grotto of Exile V2, Temple of Ochao, Enchanted Forest

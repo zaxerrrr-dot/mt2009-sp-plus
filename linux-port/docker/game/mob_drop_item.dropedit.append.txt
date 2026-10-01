@@ -1,0 +1,39 @@
+// MT2009_PLUS_DROP_EDIT_V1: the bosses' own drops the owner added in the drop workbook
+// (Drop_bossy_i_metiny, 1 October). Type drop: the chance is pct / 4 percent at the
+// server's 100% drop (5% = 20, 10% = 40, 70% = 280), with the usual level/premium factors.
+// None of these mobs has a drop group of its own in the base share (the Dockerfile checks).
+
+Group	MT2009_dropedit_9706
+{
+	mob	9706	-- Baronowna Pajakow
+	Type	drop
+	1	50255	3	20	-- Cor Draconis (Rough) x3, 5%
+	2	25040	2	40	-- Zwoj Blogoslawienstwa x2, 10%
+}
+
+Group	MT2009_dropedit_9682
+{
+	mob	9682	-- WuKong
+	Type	drop
+	1	25040	1	40	-- Zwoj Blogoslawienstwa, 10%
+	2	71084	1	20	-- Zaczarowanie Przedmiotu, 5%
+}
+
+Group	MT2009_dropedit_9694
+{
+	mob	9694	-- Krol Skorpionow
+	Type	drop
+	1	27987	5	40	-- Malz x5, 10%
+	2	50513	1	20	-- Kamien Duchowy, 5%
+	3	50255	10	20	-- Cor Draconis (Rough) x10, 5%
+	4	25040	3	40	-- Zwoj Blogoslawienstwa x3, 10%
+	5	71084	1	40	-- Zaczarowanie Przedmiotu, 10%
+	6	72065	1	280	-- Sredni Suplement (6/7), 70%
+}
+
+Group	MT2009_dropedit_2598
+{
+	mob	2598	-- Azrael
+	Type	drop
+	1	72067	1	280	-- Silny Suplement (6/7), 70%
+}
