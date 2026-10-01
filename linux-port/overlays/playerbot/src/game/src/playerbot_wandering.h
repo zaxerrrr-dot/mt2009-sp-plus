@@ -172,6 +172,40 @@ namespace
 				it->second.dwGuild == ch->GetGuild()->GetID();
 	}
 
+	// MT2009_PLUS_PROGRESSION_V1: a frontier the operator opened below its
+	// built-in entry (the panel's map table) has its hubs, planted for that
+	// entry, read this many levels lower - or a bot sent there early would
+	// find no hub of its level at all.
+	int GetPlayerBotHubLevelShift(long mapIndex)
+	{
+		using namespace playerbot_progression;
+		if (mapIndex == PLAYERBOT_MAP_ORC_VALLEY)
+			return std::max(HubLevelShift(MAP_ORC_VALLEY), HubLevelShift(MAP_ISLANDS));
+		if (mapIndex == PLAYERBOT_MAP_DESERT)
+			return HubLevelShift(MAP_DESERT);
+		if (mapIndex == PLAYERBOT_MAP_SOHAN)
+			return HubLevelShift(MAP_SOHAN);
+		if (mapIndex == PLAYERBOT_MAP_SPIDER_V1)
+			return HubLevelShift(MAP_SPIDER1);
+		if (mapIndex == PLAYERBOT_MAP_HWANG)
+			return HubLevelShift(MAP_HWANG);
+		if (mapIndex == PLAYERBOT_MAP_SPIDER_V2)
+			return HubLevelShift(MAP_SPIDER2);
+		if (mapIndex == PLAYERBOT_MAP_DEMON_TOWER)
+			return HubLevelShift(MAP_DEMON_TOWER);
+		if (mapIndex == PLAYERBOT_MAP_FOREST)
+			return HubLevelShift(MAP_FOREST);
+		if (mapIndex == PLAYERBOT_MAP_FIRE_LAND)
+			return HubLevelShift(MAP_FIRE_LAND);
+		if (mapIndex == PLAYERBOT_MAP_RED_FOREST)
+			return HubLevelShift(MAP_RED_FOREST);
+		if (mapIndex == PLAYERBOT_MAP_GROTTO_V1)
+			return HubLevelShift(MAP_GROTTO1);
+		if (mapIndex == PLAYERBOT_MAP_GROTTO_V2)
+			return HubLevelShift(MAP_GROTTO2);
+		return 0;
+	}
+
 	bool ChoosePlayerBotHuntingHub(LPCHARACTER ch, const TPlayerBotHuntingHub* hubs,
 			size_t hubCount, DWORD dwNow, size_t excludeIndex, size_t& indexOut, int& scoreOut)
 	{
@@ -184,6 +218,7 @@ namespace
 			return false;
 
 		const BYTE level = ch->GetLevel();
+		const int hubShift = GetPlayerBotHubLevelShift(ch->GetMapIndex());
 		LPPARTY party = ch->GetParty();
 		const bool bLeadsParty = party && party->GetLeaderCharacter() == ch &&
 				(int)party->GetMemberCount() >= PLAYERBOT_PARTY_CHALLENGE_MIN_MEMBERS;
@@ -208,7 +243,8 @@ namespace
 		for (size_t i = 0; i < hubCount; ++i)
 		{
 			const TPlayerBotHuntingHub& hub = hubs[i];
-			if (i == excludeIndex || level < hub.bMinLevel || level > hub.bMaxLevel)
+			if (i == excludeIndex || std::min(255, (int)level + hubShift) < (int)hub.bMinLevel ||
+					level > hub.bMaxLevel)
 				continue;
 			if (hub.bNeedsParty && !bLeadsParty)
 				continue;
@@ -1412,7 +1448,8 @@ namespace
 			}
 			if (state.wHuntingHub < hubCount && state.dwHubChosenTime != 0 &&
 					dwNow - state.dwHubChosenTime < hubStick && stickBossStanding &&
-					ch->GetLevel() >= hubs[state.wHuntingHub].bMinLevel &&
+					(int)ch->GetLevel() + GetPlayerBotHubLevelShift(ch->GetMapIndex()) >=
+						(int)hubs[state.wHuntingHub].bMinLevel &&
 					ch->GetLevel() <= hubs[state.wHuntingHub].bMaxLevel)
 			{
 				hubIndex = state.wHuntingHub;

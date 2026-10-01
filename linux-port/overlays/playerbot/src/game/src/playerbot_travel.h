@@ -291,9 +291,11 @@ namespace
 	// worth keeping a bot for either.
 	const BYTE PLAYERBOT_M2_COHORT_MAX_LEVEL = 35;
 
+	// MT2009_PLUS_PROGRESSION_V1: the second village's ceiling is the
+	// operator's ("m2" row of the panel's map table; 35 by default).
 	bool IsPlayerBotPastM2Ceiling(LPCHARACTER ch)
 	{
-		return ch && ch->GetLevel() > PLAYERBOT_M2_COHORT_MAX_LEVEL;
+		return ch && ch->GetLevel() > playerbot_progression::MapTo(playerbot_progression::MAP_M2);
 	}
 
 	// May this bot start an ordinary fight where it is standing?
@@ -335,12 +337,14 @@ namespace
 
 	bool IsPlayerBotM2LevelingCohort(LPCHARACTER ch)
 	{
-		if (!ch || ch->GetLevel() < 20 ||
-				ch->GetLevel() > PLAYERBOT_M2_COHORT_MAX_LEVEL)
+		// MT2009_PLUS_PROGRESSION_V1: from the "m2" row (20 and 35 by default).
+		const int m2From = playerbot_progression::MapFrom(playerbot_progression::MAP_M2);
+		if (!ch || (int)ch->GetLevel() < m2From ||
+				ch->GetLevel() > playerbot_progression::MapTo(playerbot_progression::MAP_M2))
 			return false;
 		// Levels 20-21 still have a little useful M1 progression, so retain a small
 		// stable minority there. At level 22 every ordinary leveler graduates to M2.
-		return ch->GetLevel() >= 22 ||
+		return (int)ch->GetLevel() >= m2From + 2 ||
 				(PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d325850U) % 10U) != 0;
 	}
 
@@ -542,6 +546,10 @@ namespace
 		if (IsPlayerBotOnMilitaryHorseTrial(ch) && !metinolog)
 			return PLAYERBOT_MAP_DEMON_TOWER;
 
+		// MT2009_PLUS_PROGRESSION_V1: every level below is the operator's
+		// (the panel's map table, playerbot_progression_rules.h); the
+		// defaults are the constants this used before.
+		using namespace playerbot_progression;
 		const BYTE level = ch->GetLevel();
 		const DWORD draw = PlayerBotNavHash(ch->GetPlayerID() ^ 0x45534f54U);
 		// Forty-eight and up: the Spider Dungeon for half, Mount Sohan for the
@@ -589,7 +597,7 @@ namespace
 		// draws in three; the Grotto keeps the third and every stone hunter.
 		if (WantsPlayerBotOchao(ch, draw, stoneHunter))
 			return PLAYERBOT_MAP_OCHAO;
-		if (level >= PLAYERBOT_FIRE_LAND_MIN_LEVEL && level <= PLAYERBOT_FIRE_LAND_MAX_LEVEL &&
+		if (level >= MapFrom(MAP_FIRE_LAND) && level <= MapTo(MAP_FIRE_LAND) &&
 				PlayerBotNavHash(ch->GetPlayerID() ^ 0x464c414dU) % 3U == 0)
 			return PLAYERBOT_MAP_FIRE_LAND;
 		// Seventy-eight and up: the Grotto of Exile, the only ground past the
@@ -601,17 +609,17 @@ namespace
 		// grotto this core does not host is passed over here rather than
 		// filtered to nothing after the draw, or a bot of eighty on such a core
 		// would have no frontier at all.
-		if (!stoneHunter && level >= PLAYERBOT_GROTTO_V2_MIN_LEVEL &&
+		if (!stoneHunter && level >= MapFrom(MAP_GROTTO2) &&
 				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V2))
 		{
 			if ((draw % 3U) != 2 || !IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V1))
 				return PLAYERBOT_MAP_GROTTO_V2;
 			return PLAYERBOT_MAP_GROTTO_V1;
 		}
-		if (!stoneHunter && level >= PLAYERBOT_GROTTO_V1_MIN_LEVEL && (draw % 3U) != 2 &&
+		if (!stoneHunter && level >= MapFrom(MAP_GROTTO1) && (draw % 3U) != 2 &&
 				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GROTTO_V1))
 			return PLAYERBOT_MAP_GROTTO_V1;
-		if (level >= PLAYERBOT_RED_FOREST_MIN_LEVEL)
+		if (level >= MapFrom(MAP_RED_FOREST))
 		{
 			switch (draw % 3U)
 			{
@@ -621,7 +629,7 @@ namespace
 			}
 		}
 		// Sixty-two and up: the Forest, 65 to 71.
-		if (level >= PLAYERBOT_FOREST_MIN_LEVEL)
+		if (level >= MapFrom(MAP_FOREST))
 		{
 			switch (draw % 3U)
 			{
@@ -636,9 +644,9 @@ namespace
 		// PlayerBotMapHasMetinStones says no anyway, so nobody is sent there to
 		// break one - the operator asked that the dungeon stay unrun until it is
 		// worked out properly.
-		if (level >= PLAYERBOT_DEMON_TOWER_MIN_LEVEL && (draw % 4U) == 0 && !stoneHunter)
+		if (level >= MapFrom(MAP_DEMON_TOWER) && (draw % 4U) == 0 && !stoneHunter)
 			return PLAYERBOT_MAP_DEMON_TOWER;
-		if (level >= PLAYERBOT_SPIDER_V2_MIN_LEVEL)
+		if (level >= MapFrom(MAP_SPIDER2))
 		{
 			switch (draw % 3U)
 			{
@@ -647,7 +655,7 @@ namespace
 				default: return PLAYERBOT_MAP_HWANG;
 			}
 		}
-		if (level >= PLAYERBOT_HWANG_MIN_LEVEL)
+		if (level >= MapFrom(MAP_HWANG))
 		{
 			switch (draw % 3U)
 			{
@@ -656,19 +664,32 @@ namespace
 				default: return PLAYERBOT_MAP_HWANG;
 			}
 		}
-		if (level >= PLAYERBOT_SPIDER_MIN_LEVEL && level >= PLAYERBOT_SOHAN_MIN_LEVEL)
-			return (draw & 1U) != 0 && !stoneHunter ? PLAYERBOT_MAP_SPIDER_V1 : PLAYERBOT_MAP_SOHAN;
+		{
+			const bool sohanOpen = level >= MapFrom(MAP_SOHAN);
+			const bool spiderOpen = level >= MapFrom(MAP_SPIDER1);
+			if (sohanOpen && spiderOpen)
+				return (draw & 1U) != 0 && !stoneHunter ? PLAYERBOT_MAP_SPIDER_V1 : PLAYERBOT_MAP_SOHAN;
+			if (sohanOpen)
+				return PLAYERBOT_MAP_SOHAN;
+			if (spiderOpen && !stoneHunter)
+				return PLAYERBOT_MAP_SPIDER_V1;
+		}
 		// Thirty-six to forty-seven: the valley and the desert share them, the
 		// same way thirty to thirty-five already do. See
 		// PLAYERBOT_DESERT_MAX_LEVEL for what was sitting unused.
-		if (level >= PLAYERBOT_ORC_VALLEY_MIN_LEVEL && level <= PLAYERBOT_DESERT_MAX_LEVEL)
-			return (draw & 1U) != 0 ? PLAYERBOT_MAP_ORC_VALLEY : PLAYERBOT_MAP_DESERT;
-		if (level >= PLAYERBOT_ORC_VALLEY_MIN_LEVEL && level <= PLAYERBOT_ORC_VALLEY_MAX_LEVEL)
-			return PLAYERBOT_MAP_ORC_VALLEY;
 		// Thirty to thirty-five: the Fanatic islands and the desert share the
 		// population. Below thirty Bokjung keeps everyone.
-		if (level >= PLAYERBOT_ORC_VALLEY_ESOTERIC_MIN_LEVEL && level < PLAYERBOT_ORC_VALLEY_MIN_LEVEL)
-			return (draw & 1U) != 0 ? PLAYERBOT_MAP_ORC_VALLEY : PLAYERBOT_MAP_DESERT;
+		{
+			const bool valley = level >= MapFrom(MAP_ORC_VALLEY) && level <= MapTo(MAP_ORC_VALLEY);
+			const bool islands = level >= MapFrom(MAP_ISLANDS) && level <= MapTo(MAP_ISLANDS);
+			const bool desert = level >= MapFrom(MAP_DESERT) && level <= MapTo(MAP_DESERT);
+			if ((valley || islands) && desert)
+				return (draw & 1U) != 0 ? PLAYERBOT_MAP_ORC_VALLEY : PLAYERBOT_MAP_DESERT;
+			if (valley || islands)
+				return PLAYERBOT_MAP_ORC_VALLEY;
+			if (desert)
+				return PLAYERBOT_MAP_DESERT;
+		}
 		return 0;
 	}
 
@@ -679,15 +700,17 @@ namespace
 	{
 		if (!ch)
 			return 0;
-		static const struct { long map; int minLevel; } rows[] = {
-			{ PLAYERBOT_MAP_GROTTO_V2, PLAYERBOT_GROTTO_V2_MIN_LEVEL },
-			{ PLAYERBOT_MAP_GROTTO_V1, PLAYERBOT_GROTTO_V1_MIN_LEVEL },
-			{ PLAYERBOT_MAP_RED_FOREST, PLAYERBOT_RED_FOREST_MIN_LEVEL },
-			{ PLAYERBOT_MAP_FOREST, PLAYERBOT_FOREST_MIN_LEVEL },
-			{ PLAYERBOT_MAP_SPIDER_V2, PLAYERBOT_SPIDER_V2_MIN_LEVEL },
-			{ PLAYERBOT_MAP_HWANG, PLAYERBOT_HWANG_MIN_LEVEL },
-			{ PLAYERBOT_MAP_SOHAN, PLAYERBOT_SOHAN_MIN_LEVEL },
-			{ PLAYERBOT_MAP_ORC_VALLEY, PLAYERBOT_ORC_VALLEY_MIN_LEVEL },
+		// MT2009_PLUS_PROGRESSION_V1: the operator's entry levels.
+		using namespace playerbot_progression;
+		const struct { long map; int minLevel; } rows[] = {
+			{ PLAYERBOT_MAP_GROTTO_V2, MapFrom(MAP_GROTTO2) },
+			{ PLAYERBOT_MAP_GROTTO_V1, MapFrom(MAP_GROTTO1) },
+			{ PLAYERBOT_MAP_RED_FOREST, MapFrom(MAP_RED_FOREST) },
+			{ PLAYERBOT_MAP_FOREST, MapFrom(MAP_FOREST) },
+			{ PLAYERBOT_MAP_SPIDER_V2, MapFrom(MAP_SPIDER2) },
+			{ PLAYERBOT_MAP_HWANG, MapFrom(MAP_HWANG) },
+			{ PLAYERBOT_MAP_SOHAN, MapFrom(MAP_SOHAN) },
+			{ PLAYERBOT_MAP_ORC_VALLEY, MapFrom(MAP_ORC_VALLEY) },
 		};
 		for (size_t i = 0; i < sizeof(rows) / sizeof(rows[0]); ++i)
 		{
@@ -2170,7 +2193,8 @@ namespace
 				return false;
 			if (state.dwNextWorldTravelTime == 0)
 			{
-				const bool graduatedFromM1 = ch->GetLevel() >= 22 && !needsHorseExpedition;
+				const bool graduatedFromM1 = (int)ch->GetLevel() >=
+						playerbot_progression::MapFrom(playerbot_progression::MAP_M2) + 2 && !needsHorseExpedition;
 				const DWORD minDelay = needsHorseExpedition ? PLAYERBOT_HORSE_TRAVEL_MIN_DELAY :
 						(graduatedFromM1 ? PLAYERBOT_LEVEL22_TRAVEL_MIN_DELAY :
 						 PLAYERBOT_WORLD_TRAVEL_MIN_DELAY);

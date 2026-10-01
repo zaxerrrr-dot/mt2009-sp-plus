@@ -6,6 +6,7 @@
 #include "playerbot_event_rules.h"
 #include "playerbot_stall_rules.h"
 #include "playerbot_persona_rules.h"
+#include "playerbot_progression_rules.h" // MT2009_PLUS_PROGRESSION_V1: the operator's map levels, early holds and checklist
 #include "playerbot_lure_order_rules.h"
 #include "playerbot_truce_rules.h"
 #include "playerbot_guild_aid_rules.h"
@@ -264,6 +265,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_bpbots.h"
 // MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages.
 #include "playerbot_shouters.h"
+// MT2009_PLUS_PROGRESSION_V1: the checklist before a level, after every
+// cohort it asks about and the whole bag it weighs.
+#include "playerbot_progression.h"
 
 namespace
 {
@@ -622,7 +626,10 @@ namespace
 		// (DistributeExp falls back to GetMostAttacked). It tells its owner.
 		LPCHARACTER ringOwner = sidekick ? GetPlayerBotSidekickOwnerHere(ch->GetPlayerID()) : NULL;
 		const bool ownerRing = ringOwner && ringOwner->FindAffect(AFFECT_EXP_BLOCK) != NULL;
-		const bool shouldLock = (lockLevel != 0 && ch->GetLevel() >= lockLevel) || ownerRing;
+		// MT2009_PLUS_PROGRESSION_V1: a gate of the checklist holds the bot
+		// where it stands until it has what the gate asks for.
+		const bool progressHeld = !sidekick && IsPlayerBotProgressionHeld(ch->GetPlayerID());
+		const bool shouldLock = (lockLevel != 0 && ch->GetLevel() >= lockLevel) || ownerRing || progressHeld;
 		const bool locked = ch->FindAffect(AFFECT_EXP_BLOCK) != NULL;
 		if (locked == shouldLock)
 			return;
@@ -640,7 +647,9 @@ namespace
 		if (ownerRing)
 			SayPlayerBotSidekick(ringOwner, "Masz Pierscien Anty-Exp, wiec ja tez nie zbieram doswiadczenia.");
 		sys_log(0, "PLAYERBOT_AI: exp locked for a %s pid=%u name=%s level=%u lock=%u personality=%u",
-				ownerRing ? "companion of an Anti-Exp Ring" : sidekick ? "companion playing alone" : persona ? "grinder" : "dropper", ch->GetPlayerID(),
+				ownerRing ? "companion of an Anti-Exp Ring" : sidekick ? "companion playing alone" :
+				(progressHeld && !(lockLevel != 0 && ch->GetLevel() >= lockLevel)) ? "progression gate" :
+				persona ? "grinder" : "dropper", ch->GetPlayerID(),
 				ch->GetName(), (unsigned)ch->GetLevel(),
 				(unsigned)lockLevel, (unsigned)state.bPersonality);
 #else
@@ -5893,6 +5902,8 @@ void CPlayerBotManager::Update()
 	// the last tick, and every bot planned below must see the same numbers.
 	RefreshPlayerBotWeights(dwNow);
 	RefreshPlayerBotItemPolicy(dwNow);
+	// MT2009_PLUS_PROGRESSION_V1: the panel's progression table and its status.
+	RefreshPlayerBotProgression(dwNow);
 	// The explanations of the bots' decisions: the queue to the log database,
 	// the cleanup EXPLAIN asks for, the minute's line (playerbot_explain.h).
 	ManagePlayerBotExplain(dwNow);
@@ -6593,6 +6604,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// A dropper that has reached its band stops earning experience, and a
 		// marble is spent on the Reaper or a raid's boss. Both are cheap tests
 		// that end on the first lines for everybody they do not concern.
+		// MT2009_PLUS_PROGRESSION_V1: the checklist first - the lock below
+		// reads whether it holds this bot.
+		ManagePlayerBotProgression(ch, state, dwNow);
 		ManagePlayerBotExpLock(ch, state);
 		MirrorPlayerBotLevel(ch);
 		ManagePlayerBotPolymorph(ch, state, dwNow);

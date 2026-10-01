@@ -1457,8 +1457,16 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 	// never closed. Its own hash, so this file still calls nothing below it.
 	const DWORD PLAYERBOT_WEIGHT_GATE_WINDOW_MS = 30 * 60 * 1000;
 
+	// MT2009_PLUS_PROGRESSION_V1 (playerbot_progression.h, included last): a
+	// bot the checklist holds has the gate of what it lacks open, and the
+	// veins' and the board's shut.
+	bool PlayerBotProgressionWeightGate(DWORD pid, BYTE weight, bool& open);
+
 	bool IsPlayerBotWeightGateOpen(DWORD dwPid, BYTE bWeight, DWORD dwSalt, DWORD dwNow)
 	{
+		bool progressionOpen = true;
+		if (PlayerBotProgressionWeightGate(dwPid, bWeight, progressionOpen))
+			return progressionOpen;
 		const int weight = GetPlayerBotWeight(bWeight);
 		if (weight >= PLAYERBOT_WEIGHT_NEUTRAL || IsPlayerBotSidekickPID(dwPid))
 			return true;
