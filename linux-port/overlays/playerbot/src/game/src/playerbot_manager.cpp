@@ -651,6 +651,41 @@ namespace
 #endif
 	}
 
+	// MT2009_PLUS_EXP_LOCK_SHOWN_V1: the lock the panel's "blokada expa na N"
+	// shows - the one in force, not the Grinder's lock written in the bot's
+	// persona: a player's companion (no lock while its owner plays), a guild or
+	// a medal dropper (its ground's lock), a bot that has advanced, all showed
+	// that written number below their level ("bot ma 32 a w opisie blokade na
+	// 26", the owner, 1 October). A bot the lock holds now is held where it
+	// stands; one it will hold shows where; any other shows none. Read only:
+	// the persona's own lock is decided by ManagePlayerBotExpLock.
+	unsigned int GetPlayerBotShownExpLock(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		if (!ch)
+			return 0;
+		if (ch->FindAffect(AFFECT_EXP_BLOCK) != NULL)
+			return (unsigned int)ch->GetLevel();
+		if (IsPlayerBotShouterPID(ch->GetPlayerID()))
+			return 0;
+		BYTE lockLevel = GetPlayerBotExpLockLevel(state.bPersonality);
+		const bool sidekick = IsPlayerBotSidekickPID(ch->GetPlayerID());
+		const bool cohort = !sidekick && CPlayerBotManager::instance().IsMedalDropperCohortPID(ch->GetPlayerID());
+		const bool persona = !cohort && !sidekick && IsPlayerBotPersonaEnabled();
+		if (state.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
+			lockLevel = GetPlayerBotGuildDropperGround(ch->GetPlayerID()).lock;
+		if (sidekick)
+			lockLevel = GetPlayerBotSidekickSoloLockLevel(ch, get_dword_time());
+		if (cohort)
+			lockLevel = CPlayerBotManager::instance().GetMedalDropperCohortLevel();
+		else if (persona && state.bPersonality == BOT_PERSONALITY_MEDAL_DROPPER)
+			lockLevel = PLAYERBOT_EXP_LOCK_MEDAL_DROPPER;
+		else if (persona && state.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
+			lockLevel = GetPlayerBotGuildDropperGround(ch->GetPlayerID()).lock;
+		else if (persona)
+			lockLevel = state.persona.bRestored && !state.persona.bAdvanced ? state.persona.bLockLevel : 0;
+		return lockLevel > ch->GetLevel() ? (unsigned int)lockLevel : 0U;
+	}
+
 	// A bot's level, where the panels read it. Both read player.player, and the
 	// db core writes a character's row out of its cache every seven minutes
 	// (g_iPlayerCacheFlushSeconds), so a young bot that levels every few
@@ -7464,7 +7499,7 @@ WritePlayerBotGuildStatus(dwNow);
 						personaShown ? (unsigned int)shownPersona.mood.mood : playerbot_persona::PERSONA_NONE,
 						personaShown && playerbot_persona::IsMoodLocked(shownPersona.mood)
 							? (unsigned int)shownPersona.mood.lockKind : 0U,
-						personaShown && !shownPersona.bAdvanced ? (unsigned int)shownPersona.bLockLevel : 0U,
+						GetPlayerBotShownExpLock(statusCh, statusState),
 						statusText);
 			}
 			fflush(snapshot);
