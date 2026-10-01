@@ -2098,3 +2098,44 @@ INSERT IGNORE INTO world.mob_proto SELECT * FROM world.yut_mob;
 UPDATE world.yut_mob SET vnum = 20505, name = 'Pałeczki Yut', locale_name = 'Pałeczki Yut', on_click = 0;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.yut_mob;
 DROP TEMPORARY TABLE world.yut_mob;" || echo "[playerbot-migrate] WARNING: could not add the Yut Nori items and NPCs" >&2
+
+# MT2009_PLUS_RARE_TABLE_V1: the 6th/7th bonus pool (world.item_attr_rare, read by Seon-Hae and
+# the Enchant 71051) as the owner set it on 1 October (Bonusy_6-7.xlsx): graded lv1-lv5 values and
+# seven more bonuses (block, strong against humans, animals, orcs, mystics, undead and devils).
+# Written ONCE per world (marker rare_6_7_v1 in world.mt2009_plus_once), so a later hand edit stays.
+db -e "CREATE TABLE IF NOT EXISTS world.mt2009_plus_once (name VARCHAR(64) NOT NULL PRIMARY KEY, done_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);" || true
+if [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare_6_7_v1'" 2>/dev/null || echo 1)" = 0 ]; then
+    db -e "START TRANSACTION;
+DELETE FROM world.item_attr_rare;
+INSERT INTO world.item_attr_rare (apply,prob,lv1,lv2,lv3,lv4,lv5,weapon,body,wrist,foots,neck,head,shield,ear,costume_body,costume_hair,costume_weapon,pendant,glove) VALUES
+('MAX_HP',1,150,250,500,800,850,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('MAX_SP',1,100,150,250,500,600,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('CON',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('INT',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('STR',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('DEX',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('CRITICAL_PCT',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('PENETRATE_PCT',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('ATT_GRADE_BONUS',1,5,10,15,20,25,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('ATT_BONUS_TO_MONSTER',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('ATT_BONUS_TO_WARRIOR',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('ATT_BONUS_TO_ASSASSIN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('ATT_BONUS_TO_SURA',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('ATT_BONUS_TO_SHAMAN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('RESIST_WARRIOR',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('RESIST_ASSASSIN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('RESIST_SURA',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('RESIST_SHAMAN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('ATT_SPEED',1,1,1,1,2,2,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('MOV_SPEED',1,2,3,4,5,8,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('BLOCK',1,1,2,3,5,8,0,0,0,0,0,0,5,0,0,0,0,0,0),
+('ATTBONUS_HUMAN',1,1,2,3,5,8,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('ATTBONUS_ANIMAL',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('ATTBONUS_ORC',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('ATTBONUS_MILGYO',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('ATTBONUS_UNDEAD',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('ATTBONUS_DEVIL',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0);
+INSERT INTO world.mt2009_plus_once (name) VALUES ('rare_6_7_v1');
+COMMIT;" && echo "[playerbot-migrate] 6th/7th bonus pool: the 1 October table (27 bonuses)" \
+        || echo "[playerbot-migrate] WARNING: could not write the 6th/7th bonus pool" >&2
+fi
