@@ -1,0 +1,116 @@
+# MT2009_PLUS_CATCH_KING_V1: the files Catch the King's window and NPC need, all from the
+# unpacked GF 26.1.11 client (/opt/metin2/cache/gf/Gameforge_26.1.11/_client, "d:/" = "d_/",
+# names matched case-insensitively). A .sub names its texture relative to d:/ymir work/ui/.
+
+# [new] the mini game's own images (no pack of ours has ui/minigame/*); the Rumi and Yut Nori
+# folders below are only the effects Catch the King borrows - the Rumi / Yut Nori ports may
+# bring the rest of those folders.
+d:/ymir work/ui/king_001.dds
+d:/ymir work/ui/minigame/catchking/bg.sub
+d:/ymir work/ui/minigame/catchking/card_bg_gold.sub
+d:/ymir work/ui/minigame/catchking/card_bg_silver.sub
+d:/ymir work/ui/minigame/catchking/card_count_bg.sub
+d:/ymir work/ui/minigame/catchking/card_cover_bingo.sub
+d:/ymir work/ui/minigame/catchking/card_number_1.sub
+d:/ymir work/ui/minigame/catchking/card_number_2.sub
+d:/ymir work/ui/minigame/catchking/card_number_3.sub
+d:/ymir work/ui/minigame/catchking/card_number_4.sub
+d:/ymir work/ui/minigame/catchking/card_number_5.sub
+d:/ymir work/ui/minigame/catchking/card_number_6.sub
+d:/ymir work/ui/minigame/catchking/card_number_k.sub
+d:/ymir work/ui/minigame/catchking/card_over_img.sub
+d:/ymir work/ui/minigame/catchking/card_pack.sub
+d:/ymir work/ui/minigame/catchking/challenge_slot_bg.sub
+d:/ymir work/ui/minigame/catchking/challenge_text_bg.sub
+d:/ymir work/ui/minigame/catchking/effect/explosion/1.sub
+d:/ymir work/ui/minigame/catchking/effect/explosion/2.sub
+d:/ymir work/ui/minigame/catchking/effect/explosion/3.sub
+d:/ymir work/ui/minigame/catchking/effect/explosion/4.sub
+d:/ymir work/ui/minigame/catchking/effect/explosion/5.sub
+d:/ymir work/ui/minigame/catchking/effect/explosion/6.sub
+d:/ymir work/ui/minigame/catchking/effect/explosion/7.sub
+d:/ymir work/ui/minigame/catchking/effect/explosion/8.sub
+d:/ymir work/ui/minigame/catchking/effect/over5/1.sub
+d:/ymir work/ui/minigame/catchking/effect/over5/2.sub
+d:/ymir work/ui/minigame/catchking/effect/over5/3.sub
+d:/ymir work/ui/minigame/catchking/effect/over5/4.sub
+d:/ymir work/ui/minigame/catchking/effect/over5/5.sub
+d:/ymir work/ui/minigame/catchking/effect/over5/6.sub
+d:/ymir work/ui/minigame/catchking/end_card_number_1.sub
+d:/ymir work/ui/minigame/catchking/end_card_number_2.sub
+d:/ymir work/ui/minigame/catchking/end_card_number_3.sub
+d:/ymir work/ui/minigame/catchking/end_card_number_4.sub
+d:/ymir work/ui/minigame/catchking/end_card_number_5.sub
+d:/ymir work/ui/minigame/catchking/end_card_number_6.sub
+d:/ymir work/ui/minigame/catchking/high_score_bg.sub
+d:/ymir work/ui/minigame/catchking/menu_text_bg.sub
+d:/ymir work/ui/minigame/catchking/score_bg.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_eff1.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_eff2.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_eff3.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_eff4.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_eff5.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_eff6.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_eff7.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_eff8.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_text_effect1.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_text_effect5.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_text_effect6.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_text_effect7.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_text_effect8.sub
+d:/ymir work/ui/minigame/rumi/card_completion_effect/card_completion_text_effect9.sub
+d:/ymir work/ui/minigame/yutnori/move_arrow/1.sub
+d:/ymir work/ui/minigame/yutnori/move_arrow/2.sub
+d:/ymir work/ui/minigame/yutnori/move_arrow/3.sub
+d:/ymir work/ui/minigame/yutnori/move_arrow/4.sub
+d:/ymir work/ui/minigame/yutnori/move_arrow/5.sub
+d:/ymir work/ui/public_effect_01.dds
+d:/ymir work/ui/public_effect_02.dds
+d:/ymir work/ui/public_effect_03.dds
+d:/ymir work/ui/yut_ui_001.dds
+
+# [new] the items' icons (item_list.add.txt maps 50968-50970 onto GF's King's Loot icons)
+icon/item/79603.tga
+icon/item/79604.tga
+icon/item/50928.tga
+icon/item/50929.tga
+icon/item/50930.tga
+
+# [new] the table NPC 20506 (npclist.add.txt: 20506 king_npc)
+d:/ymir work/npc/king_npc/king_npc.gr2
+d:/ymir work/npc/king_npc/king_npc.msm
+d:/ymir work/npc/king_npc/king_npc_01.dds
+d:/ymir work/npc/king_npc/wait.gr2
+d:/ymir work/npc/king_npc/wait.msa
+d:/ymir work/npc/king_npc/motlist.txt
+
+# [common] stock UI the windows use - add ONLY the ones the client lacks, never replace ours
+# (public.dds / public_intro.dds are atlases other .sub files of ours cut from).
+d:/ymir work/ui/event/count_bg2.sub
+d:/ymir work/ui/event_002.dds
+d:/ymir work/ui/pattern/border_a_bottom.tga
+d:/ymir work/ui/pattern/border_a_center.tga
+d:/ymir work/ui/pattern/border_a_left.tga
+d:/ymir work/ui/pattern/border_a_left_bottom.tga
+d:/ymir work/ui/pattern/border_a_left_top.tga
+d:/ymir work/ui/pattern/border_a_right.tga
+d:/ymir work/ui/pattern/border_a_right_bottom.tga
+d:/ymir work/ui/pattern/border_a_right_top.tga
+d:/ymir work/ui/pattern/border_a_top.tga
+d:/ymir work/ui/public.dds
+d:/ymir work/ui/public/arrow/large_down_arrow_default.sub
+d:/ymir work/ui/public/arrow/large_down_arrow_down.sub
+d:/ymir work/ui/public/arrow/large_down_arrow_over.sub
+d:/ymir work/ui/public/arrow/large_up_arrow_default.sub
+d:/ymir work/ui/public/arrow/large_up_arrow_down.sub
+d:/ymir work/ui/public/arrow/large_up_arrow_over.sub
+d:/ymir work/ui/public/check_image.sub
+d:/ymir work/ui/public/large_button_01.sub
+d:/ymir work/ui/public/large_button_02.sub
+d:/ymir work/ui/public/large_button_03.sub
+d:/ymir work/ui/public/parameter_slot_07.sub
+d:/ymir work/ui/public/public_intro_btn/next_btn_01.sub
+d:/ymir work/ui/public/public_intro_btn/next_btn_02.sub
+d:/ymir work/ui/public/public_intro_btn/prev_btn_01.sub
+d:/ymir work/ui/public/public_intro_btn/prev_btn_02.sub
+d:/ymir work/ui/public_intro.dds

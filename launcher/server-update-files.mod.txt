@@ -69,6 +69,7 @@ linux-port/docker/game/special_item_group.cors.txt
 linux-port/docker/game/special_item_group.dungeons.txt
 linux-port/docker/game/special_item_group.goblin.txt
 linux-port/docker/game/special_item_group.rumi.txt
+linux-port/docker/game/special_item_group.catchking.txt
 linux-port/docker/game/cube.seon_pyeong.txt
 linux-port/docker/game/costume_sets.txt
 linux-port/docker/game/dragon_soul_applys.mt2009plus.txt
@@ -181,6 +182,7 @@ linux-port/docker/game/src/server/game/src/item.cpp
 linux-port/docker/game/src/server/game/src/item_manager.cpp
 linux-port/docker/game/src/server/game/src/item_manager.h
 linux-port/docker/game/src/server/game/src/questlua_pc.cpp
+linux-port/docker/game/src/server/game/src/questlua_game.cpp
 linux-port/docker/game/src/server/game/src/main.cpp
 # Not ours to change, and shipped for that reason: a fork's companion system
 # rewrote it to call CPlayerBotManager::GetCompanionOwner, which this manager

@@ -100,6 +100,10 @@ namespace mt2009_ingame_event
 		// MT2009_PLUS_FLOWER_V1: after the event a 7-day window in which the seeds
 		// and shoots left can still be exchanged (playerbot_flower.h); Owsap had none.
 		{ "flower",		playerbot_events::KIND_FLOWER,		"e_flower_drop",			FLAG_VALUE,		0, NULL,			NULL,						"e_flower_reward",			0, true },
+		// MT2009_PLUS_CATCH_KING_V1: Catch the King's top ten collect their prize at
+		// the table in a 7-day window too (playerbot_catchking.h).
+		{ "catchking",	playerbot_events::KIND_CATCHKING,	"mini_game_catchking",		FLAG_END_EPOCH,	0, NULL,			"mini_game_catchking_drop",	"mini_game_catchking_reward",	20506, true },
+		{ "flower",		playerbot_events::KIND_FLOWER,		"e_flower_drop",			FLAG_VALUE,		0, NULL,			NULL,						NULL,						0, true },
 		// event_easter.quest's two switches (the classic panel's Easter page).
 		{ "easter",		playerbot_events::KIND_EASTER,		"easter_drop",				FLAG_VALUE,		1, "easter_rabbit",	NULL,						NULL,						0, true },
 	};

@@ -1,0 +1,5 @@
+79603	Karta Królewska	Karta do gry Z³ap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodaæ j¹ do swoich kart - 25 kart tworzy Taliê Królewsk¹. Karty i talie przepadaj¹, gdy zacznie siê nastêpny event.
+79604	Talia Królewska	Talia do gry Z³ap Króla. Kliknij prawym przyciskiem w czasie eventu, aby dodaæ j¹ do swoich talii; grê zaczniesz w oknie eventu (przycisk przy minimapie). Karty i talie przepadaj¹, gdy zacznie siê nastêpny event.
+50968	Z³oty £up Królewski	Nagroda za grê Z³ap Króla z wynikiem 550 punktów lub wiêcej i za miejsce w pierwszej dziesi¹tce rankingu. Kliknij prawym przyciskiem, aby otworzyæ.
+50969	Srebrny £up Królewski	Nagroda za grê Z³ap Króla z wynikiem od 400 do 549 punktów. Kliknij prawym przyciskiem, aby otworzyæ.
+50970	Br¹zowy £up Królewski	Nagroda za grê Z³ap Króla z wynikiem od 10 do 399 punktów. Kliknij prawym przyciskiem, aby otworzyæ.

@@ -1,0 +1,62 @@
+[
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (cg header)",
+  "old": "\tHEADER_CG_STATE_CHECKER\t\t\t= 206,\n",
+  "new": "\tHEADER_CG_STATE_CHECKER\t\t\t= 206,\n\t// MT2009_PLUS_CATCH_KING_V1 (cg header): Catch the King, Owsap's number (playerbot_catchking.h).\n\tHEADER_CG_MINI_GAME_CATCH_KING\t= 226,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (gc header)",
+  "old": "\tHEADER_GC_INGAME_EVENT\t\t\t\t\t= 183,\n",
+  "new": "\tHEADER_GC_INGAME_EVENT\t\t\t\t\t= 183,\n\t// MT2009_PLUS_CATCH_KING_V1 (gc header): Catch the King, Owsap's number (playerbot_catchking.h).\n\t// Asked-for answers, or to a client that has sent CG 226 (its exe knows it).\n\tHEADER_GC_MINI_GAME_CATCH_KING\t\t\t= 238,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (packet)",
+  "old": "} TPacketGCInGameEventInfo;\n",
+  "new": "} TPacketGCInGameEventInfo;\n\n// MT2009_PLUS_CATCH_KING_V1 (packet): Catch the King (playerbot_catchking.h), Owsap's\n// layouts (v6.2.6, __CATCH_KING_EVENT_FLAG_RENEWAL__). CG 226 is a fixed 3\n// bytes {header, sub, arg} - sub 0 start (arg = decks 1-5), 1 draw the next\n// hand card, 2 turn a field card (arg = 0-24), 3 the reward, 4 the card and\n// deck counts. GC 238 is {header, WORD size, sub} + the sub's payload -\n// 0 start (DWORD best score), 1 the hand card (BYTE 1-6, 6 = King),\n// 2 TPacketGCMiniGameCatchKingResult, 3 TPacketGCMiniGameCatchKingSetEndCard,\n// 4 the reward (BYTE 0 a Loot, 1 too few points), 5-8 the card counts\n// (TPacketGCMiniGameCatchKingQuestFlag: a card, a deck, asked, 999 decks).\ntypedef struct SPacketCGMiniGameCatchKing\n{\n\tBYTE bHeader;\n\tBYTE bSubHeader;\n\tBYTE bSubArgument;\n} TPacketCGMiniGameCatchKing;\n\ntypedef struct SPacketGCMiniGameCatchKing\n{\n\tBYTE bHeader;\n\tWORD wSize;\n\tBYTE bSubHeader;\n} TPacketGCMiniGameCatchKing;\n\ntypedef struct SPacketGCMiniGameCatchKingResult\n{\n\tDWORD dwPoints;\n\tBYTE bRowType;\n\tBYTE bCardPos;\n\tBYTE bCardValue;\n\tbool bKeepFieldCard;\n\tbool bDestroyHandCard;\n\tbool bGetReward;\n\tbool bIsFiveNearBy;\n} TPacketGCMiniGameCatchKingResult;\n\ntypedef struct SPacketGCMiniGameCatchKingSetEndCard\n{\n\tBYTE bCardPos;\n\tBYTE bCardValue;\n} TPacketGCMiniGameCatchKingSetEndCard;\n\ntypedef struct SPacketGCMiniGameCatchKingQuestFlag\n{\n\tWORD wPieceCount;\n\tWORD wPackCount;\n} TPacketGCMiniGameCatchKingQuestFlag;\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (size)",
+  "old": "#ifdef ENABLE_ACCE_COSTUME_SYSTEM\n\tSet(HEADER_CG_ACCE, sizeof(TPacketAcce), \"Acce\", true);\n#endif\n",
+  "new": "#ifdef ENABLE_ACCE_COSTUME_SYSTEM\n\tSet(HEADER_CG_ACCE, sizeof(TPacketAcce), \"Acce\", true);\n#endif\n\t// MT2009_PLUS_CATCH_KING_V1 (size): Catch the King, 3 bytes, with the sequence byte as Owsap's client sends it.\n\tSet(HEADER_CG_MINI_GAME_CATCH_KING, sizeof(TPacketCGMiniGameCatchKing), \"MiniGameCatchKing\", true);\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (input)",
+  "old": "\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n\t}\n\treturn (iExtraLen);\n}\n",
+  "new": "\t\t// MT2009_PLUS_CATCH_KING_V1 (input): Catch the King (playerbot_catchking.h).\n\t\tcase HEADER_CG_MINI_GAME_CATCH_KING:\n\t\t\t{\n\t\t\t\tint CatchKingProcess(LPCHARACTER ch, const char* data, size_t len);\n\t\t\t\tif ((iExtraLen = CatchKingProcess(ch, c_pData, m_iBufferLeft)) < 0)\n\t\t\t\t\treturn -1;\n\t\t\t}\n\t\t\tbreak;\n\n\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n\t\t\tbreak;\n\t}\n\treturn (iExtraLen);\n}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (drop)",
+  "old": "\t\tconst DWORD ITEM_SEED = 50085;\n\n\t\tif ((item = CreateItem(ITEM_SEED, 1, 0, true)))\n\t\t\tvec_item.emplace_back(item);\n\t}\n\n",
+  "new": "\t\tconst DWORD ITEM_SEED = 50085;\n\n\t\tif ((item = CreateItem(ITEM_SEED, 1, 0, true)))\n\t\t\tvec_item.emplace_back(item);\n\t}\n\n\t// MT2009_PLUS_CATCH_KING_V1 (drop): a King Card for a share of the kill while Catch the King\n\t// runs (mini_game_catchking_drop; players only, never a bot - playerbot_catchking.h).\n\t{\n\t\tvoid CatchKingOnKill(LPCHARACTER victim, LPCHARACTER killer, int iDeltaPercent, int iRandRange);\n\t\tCatchKingOnKill(pkChr, pkKiller, iDeltaPercent, iRandRange);\n\t}\n\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (logout)",
+  "old": "\tsys_log(0, \"DISCONNECT: %s (%s)\", GetName(), c_pszReason ? c_pszReason : \"unset\" );\n",
+  "new": "\tsys_log(0, \"DISCONNECT: %s (%s)\", GetName(), c_pszReason ? c_pszReason : \"unset\" );\n\n\t// MT2009_PLUS_CATCH_KING_V1 (logout): a Catch the King game in progress ends with its points,\n\t// its Loot kept for the next login (playerbot_catchking.h) - before the save below.\n\t{\n\t\tvoid CatchKingOnDisconnect(LPCHARACTER ch);\n\t\tCatchKingOnDisconnect(this);\n\t}\n"
+ },
+ {
+  "file": "questlua_game.cpp",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (declare)",
+  "old": "extern ACMD(do_in_game_mall);\n",
+  "new": "extern ACMD(do_in_game_mall);\n\n// MT2009_PLUS_CATCH_KING_V1 (declare): Catch the King's quest side (playerbot_catchking.h).\nint CatchKingRanking(bool total, std::vector<std::string>& names, std::vector<int>& empires, std::vector<DWORD>& scores);\nDWORD CatchKingMyScore(LPCHARACTER ch, bool total);\nint CatchKingClaimReward(LPCHARACTER ch);\nbool CatchKingUseItem(LPCHARACTER ch, DWORD vnum);\nvoid CatchKingDeliver(LPCHARACTER ch);\n"
+ },
+ {
+  "file": "questlua_game.cpp",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (lua)",
+  "old": "\tvoid RegisterGameFunctionTable()\n",
+  "new": "\t// MT2009_PLUS_CATCH_KING_V1 (lua): Catch the King (minigame_catchking.quest).\n\t// game.get_catchking_score(total) -> { {name, empire, score}, ... } the season's top ten\n\t// (Owsap's name and shape), game.get_catchking_myscore(total), game.catchking_claim_reward()\n\t// -> the Golden Loots given / 0 not in the top ten / -1 no window / -2 taken / -3 the event\n\t// runs / -4 a full bag, game.catchking_use_item(vnum) -> true when the card or deck counted,\n\t// game.catchking_deliver() a left game's Loot at login.\n\tALUA(game_get_catchking_score)\n\t{\n\t\tstd::vector<std::string> names;\n\t\tstd::vector<int> empires;\n\t\tstd::vector<DWORD> scores;\n\t\tconst int n = ::CatchKingRanking(lua_toboolean(L, 1) != 0, names, empires, scores);\n\t\tlua_newtable(L);\n\t\tfor (int i = 0; i < n; ++i)\n\t\t{\n\t\t\tlua_newtable(L);\n\t\t\tlua_pushstring(L, names[i].c_str());\n\t\t\tlua_rawseti(L, -2, 1);\n\t\t\tlua_pushnumber(L, empires[i]);\n\t\t\tlua_rawseti(L, -2, 2);\n\t\t\tlua_pushnumber(L, scores[i]);\n\t\t\tlua_rawseti(L, -2, 3);\n\t\t\tlua_rawseti(L, -2, i + 1);\n\t\t}\n\t\treturn 1;\n\t}\n\n\tALUA(game_get_catchking_myscore)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tlua_pushnumber(L, ch ? ::CatchKingMyScore(ch, lua_toboolean(L, 1) != 0) : 0);\n\t\treturn 1;\n\t}\n\n\tALUA(game_catchking_claim_reward)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tlua_pushnumber(L, ch ? ::CatchKingClaimReward(ch) : -1);\n\t\treturn 1;\n\t}\n\n\tALUA(game_catchking_use_item)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tlua_pushboolean(L, ch && lua_isnumber(L, 1) && ::CatchKingUseItem(ch, (DWORD)lua_tonumber(L, 1)));\n\t\treturn 1;\n\t}\n\n\tALUA(game_catchking_deliver)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tif (ch)\n\t\t\t::CatchKingDeliver(ch);\n\t\treturn 0;\n\t}\n\n\tvoid RegisterGameFunctionTable()\n"
+ },
+ {
+  "file": "questlua_game.cpp",
+  "marker": "MT2009_PLUS_CATCH_KING_V1 (table)",
+  "old": "\t\t\t{ \"open_web_mall\",\t\t\t\tgame_web_mall\t\t\t\t\t},\n",
+  "new": "\t\t\t{ \"open_web_mall\",\t\t\t\tgame_web_mall\t\t\t\t\t},\n\t\t\t// MT2009_PLUS_CATCH_KING_V1 (table)\n\t\t\t{ \"get_catchking_score\",\t\tgame_get_catchking_score\t\t},\n\t\t\t{ \"get_catchking_myscore\",\t\tgame_get_catchking_myscore\t\t},\n\t\t\t{ \"catchking_claim_reward\",\t\tgame_catchking_claim_reward\t\t},\n\t\t\t{ \"catchking_use_item\",\t\t\tgame_catchking_use_item\t\t\t},\n\t\t\t{ \"catchking_deliver\",\t\t\tgame_catchking_deliver\t\t\t},\n"
+ }
+]

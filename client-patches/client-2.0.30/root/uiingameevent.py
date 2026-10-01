@@ -41,6 +41,10 @@ EVENTS = {
 			'rewards': ((50275, 1), (50276, 1), (50277, 1))},
 	'rumi_xmas': {'name': '\x8cwi\xb9teczne Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game', 'game': 'rumi',
 			'rewards': ((50267, 1), (50268, 1), (50269, 1))},
+	# MT2009_PLUS_CATCH_KING_V1: the three King's Loots (uiminigamecatchking.py).
+	'catchking': {'name': 'Z\xb3ap Kr\xf3la', 'icon': CAL + 'bonus_event.tga', 'open': 'game', 'rewards': ((50968, 1), (50969, 1), (50970, 1))},
+	'rumi': {'name': 'Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
+	'rumi_xmas': {'name': '\x8cwi\xb9teczne Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game', 'game': 'rumi'},
 	'yutnori': {'name': 'Yut Nori', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
 	# MT2009_PLUS_FLOWER_V1: uiflowerevent.py registers the window; the rewards are
 	# three of the five flower boxes (83023-83027, what they hold is the server's).
