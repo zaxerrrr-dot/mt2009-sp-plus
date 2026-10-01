@@ -366,20 +366,17 @@ COPY src/serverfiles/share/package /opt/metin2/share/package
 #    boss chests the two dungeons' quests hand out (MT2009_PLUS_BOSS_CHESTS_V1).
 #  * special_item_group.rumi.txt - the Okey chests of Owsap's Rumi (50267-50269,
 #    50275-50277) and their pools 950401-950403 (MT2009_PLUS_RUMI_V1).
-COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt special_item_group.dungeons.txt special_item_group.goblin.txt special_item_group.rumi.txt /tmp/share-add/
 #  * special_item_group.catchking.txt - Catch the King's three King's Loots
 #    (50968-50970, MT2009_PLUS_CATCH_KING_V1).
-COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt special_item_group.dungeons.txt special_item_group.goblin.txt special_item_group.catchking.txt /tmp/share-add/
+COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt special_item_group.dungeons.txt special_item_group.goblin.txt special_item_group.rumi.txt special_item_group.catchking.txt /tmp/share-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland \
  && for f in /tmp/share-add/*.txt; do sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$f"; done \
  && m=/tmp/share-add/special_item_group.moonlight.txt; c=/tmp/share-add/special_item_group.moonlight.custom.txt \
  && if [ -s "$c" ]; then grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+50011[[:space:]]*$' "$c" || { echo "FATAL: $c defines no Vnum 50011" >&2; exit 1; }; m="$c"; echo "share: the operator's Moonlight chest"; fi \
  && cat /tmp/share-add/mob_drop_item.m3.append.txt >> "$L/mob_drop_item.txt" \
  && f="$L/special_item_group.txt" \
- && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254|50256|50257|50258|50259|50270|50271|50023|5026[789]|5027[567]|95040[123]|515[0-9][0-9]|516[0-4][0-9])([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
- && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt /tmp/share-add/special_item_group.dungeons.txt /tmp/share-add/special_item_group.goblin.txt /tmp/share-add/special_item_group.rumi.txt >> "$f.new" \
- && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254|50256|50257|50258|50259|50270|50271|50023|50968|50969|50970|515[0-9][0-9]|516[0-4][0-9])([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
- && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt /tmp/share-add/special_item_group.dungeons.txt /tmp/share-add/special_item_group.goblin.txt /tmp/share-add/special_item_group.catchking.txt >> "$f.new" \
+ && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254|50256|50257|50258|50259|50270|50271|50023|5026[789]|5027[567]|95040[123]|50968|50969|50970|515[0-9][0-9]|516[0-4][0-9])([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
+ && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt /tmp/share-add/special_item_group.dungeons.txt /tmp/share-add/special_item_group.goblin.txt /tmp/share-add/special_item_group.rumi.txt /tmp/share-add/special_item_group.catchking.txt >> "$f.new" \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(50968|50969|50970)([^0-9]|$)' "$f.new")" = 3 \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(50270|50271)([^0-9]|$)' "$f.new")" = 2 \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(515[0-9][0-9]|516[0-4][0-9])([^0-9]|$)' "$f.new")" = 146 \
