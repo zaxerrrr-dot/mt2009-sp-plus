@@ -17,6 +17,9 @@
 # never takes that place. A release that already exists is left alone.
 name: GitHub - wydanie
 
+# A push touching this file re-runs the check: a version whose release is
+# missing (e.g. a client release that failed on a missing changelog section)
+# is created then.
 on:
   push:
     branches: [main]
