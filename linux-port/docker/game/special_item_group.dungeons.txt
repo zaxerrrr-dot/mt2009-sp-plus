@@ -274,18 +274,13 @@ Group	MT2009_chest_nemere_misc
 	32	13120	1	8 -- Tarcza Smoka+0
 	33	13160	1	10 -- Tarcza Trzech Wladcow+0
 	34	7140	1	8 -- Wachlarz Zbawienia+0
-	35	18000	1	12 -- Pas Lniany+0
-	36	18010	1	8 -- Pas Skorzany+0
-	37	18020	1	5 -- Pas Przepychu+0
-	38	18030	1	3 -- Pas Madrosci+0
-	39	18080	1	2 -- Pas Dusz+0
-	40	70058	1	15 -- Pierscien Teleportacji
-	41	71130	1	20 -- Przepustka
-	42	exp	600000	25 -- EXP 600 000
-	43	exp	800000	20 -- EXP 800 000
-	44	exp	1000000	15 -- EXP 1 000 000
-	45	gold	800000	20 -- Yang 800 000
-	46	gold	1000000	15 -- Yang 1 000 000
+	35	70058	1	15 -- Pierscien Teleportacji
+	36	71130	1	20 -- Przepustka
+	37	exp	600000	25 -- EXP 600 000
+	38	exp	800000	20 -- EXP 800 000
+	39	exp	1000000	15 -- EXP 1 000 000
+	40	gold	800000	20 -- Yang 800 000
+	41	gold	1000000	15 -- Yang 1 000 000
 }
 Group	MT2009_chest_nemere_pet
 {

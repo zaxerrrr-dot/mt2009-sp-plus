@@ -1,0 +1,32 @@
+[
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_MOB_RULES_V1 (server-patches/raremobrules)",
+  "old": "static bool Mt2009PlusDungeonMob(DWORD race)\n",
+  "new": "// MT2009_PLUS_RARE_MOB_RULES_V1 (server-patches/raremobrules): the engine's Cor Draconis and +0 sash\n// rolls per mob (the owner, 1 October): a mob listed here rolls its own Cor count and\n// chance and its own sash chance (0 = none); map 0 = any map, else the map (or its\n// instances, map * 10000 ...) it must die on. Every other mob keeps the usual rules.\nstruct Mt2009PlusRareMobRule\n{\n\tDWORD race;\n\tlong map;\n\tint corCount;\n\tint corChance;\n\tint sashChance;\n};\n\nstatic long Mt2009PlusBaseMap(LPCHARACTER victim)\n{\n\tconst long mapIndex = victim->GetMapIndex();\n\treturn mapIndex >= 10000 ? mapIndex / 10000 : mapIndex;\n}\n\nstatic const Mt2009PlusRareMobRule* Mt2009PlusRareMobRuleFor(LPCHARACTER victim)\n{\n\tstatic const Mt2009PlusRareMobRule s_aRules[] =\n\t{\n\t\t{ 8006, 363, 0, 0, 0 },\t// Metin Ciemnosci in Biblioteka Wiedzy\n\t\t{ 9701, 0, 0, 0, 0 },\t// Kamien Wzgorza\n\t\t{ 9702, 0, 0, 0, 0 },\t// Jajo Feniksa\n\t\t{ 9684, 0, 0, 0, 0 },\t// Plomienny Feniks\n\t\t{ 9682, 0, 5, 15, 15 },\t// WuKong: 5 Cor at 15%, a sash at 15%\n\t};\n\tconst DWORD race = victim->GetRaceNum();\n\tfor (size_t i = 0; i < _countof(s_aRules); ++i)\n\t\tif (s_aRules[i].race == race && (s_aRules[i].map == 0 || s_aRules[i].map == Mt2009PlusBaseMap(victim)))\n\t\t\treturn &s_aRules[i];\n\treturn NULL;\n}\n\n// MT2009_PLUS_RARE_MOB_RULES_V1 (drop group): Metin Ciemnosci inside Biblioteka Wiedzy takes the drop\n// group of the pseudo mob 98006 (no such monster; mob_drop_item only keys on the number).\nstatic DWORD Mt2009PlusDropGroupRace(LPCHARACTER victim)\n{\n\tif (victim->GetRaceNum() == 8006 && victim->GetMapIndex() >= 10000 && Mt2009PlusBaseMap(victim) == 363)\n\t\treturn 98006;\n\treturn victim->GetRaceNum();\n}\n\nstatic bool Mt2009PlusDungeonMob(DWORD race)\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_MOB_RULES_V1 (drop group lookup)",
+  "old": "\t\tit = m_map_pkDropItemGroup.find(pkChr->GetRaceNum());\n",
+  "new": "\t\t// MT2009_PLUS_RARE_MOB_RULES_V1 (drop group lookup)\n\t\tit = m_map_pkDropItemGroup.find(Mt2009PlusDropGroupRace(pkChr));\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_MOB_RULES_V1 (cor)",
+  "old": "\t\t\tcorChance = 80;\n\t\t\tcorKind = \"boss\";\n\t\t}\n",
+  "new": "\t\t\tcorChance = 80;\n\t\t\tcorKind = \"boss\";\n\t\t}\n\n\t\t// MT2009_PLUS_RARE_MOB_RULES_V1 (cor): the mob's own Cor chance and count.\n\t\tconst Mt2009PlusRareMobRule* rareRule = Mt2009PlusRareMobRuleFor(pkChr);\n\t\tif (rareRule)\n\t\t{\n\t\t\tcorChance = rareRule->corChance;\n\t\t\tcorKind = \"rule\";\n\t\t}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_MOB_RULES_V1 (cor count)",
+  "old": "\t\t\t\tLPITEM cor = CreateItem(50255, 1);\n",
+  "new": "\t\t\t\t// MT2009_PLUS_RARE_MOB_RULES_V1 (cor count)\n\t\t\t\tLPITEM cor = CreateItem(50255, rareRule && rareRule->corCount > 1 ? rareRule->corCount : 1);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_MOB_RULES_V1 (sash)",
+  "old": "\t\tconst int szarfaChance = pkChr->IsStone() ? 15 : 80;\n",
+  "new": "\t\tint szarfaChance = pkChr->IsStone() ? 15 : 80;\n\t\t// MT2009_PLUS_RARE_MOB_RULES_V1 (sash): the mob's own sash chance.\n\t\tif (const Mt2009PlusRareMobRule* sashRule = Mt2009PlusRareMobRuleFor(pkChr))\n\t\t\tszarfaChance = sashRule->sashChance;\n"
+ }
+]

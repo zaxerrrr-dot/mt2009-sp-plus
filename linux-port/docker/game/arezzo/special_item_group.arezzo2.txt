@@ -386,3 +386,12 @@ Group	MT2009_chest_30776_pet
 	34	55032	1	150 -- Smakolyk
 	35	55035	1	50 -- Smakolyk+
 }
+# MT2009_PLUS_DROP_EDIT_V1: Krolowa Dzungli's (9714) random pearl (the owner, 1 October): one of the
+# three by weight, given at 100% by her drop group (mob_drop_item.dropedit.append.txt).
+Group	MT2009_dropedit_pearl
+{
+	Vnum	950764
+	1	27992	1	4 -- Biala Perla
+	2	27993	1	2 -- Niebieska Perla
+	3	27994	1	1 -- Krwawa Perla
+}

@@ -482,6 +482,19 @@ if ((Test-Path -LiteralPath $metinDropsApply -PathType Leaf) -and
         Write-Host 'Metin drops and the command limit.' -ForegroundColor DarkGray
     }
 }
+# Per-mob Cor Draconis / sash rules (server-patches/raremobrules): no Cor and no
+# sash from the Wukong Metins and the Phoenix nor from the library's Metin, WuKong
+# 5 Cor at 15% and a sash at 15%, and the library's Metin's own drop group;
+# after metindrops.
+$rareMobRulesApply = Join-Path $repo 'server-patches/raremobrules/Apply-RareMobRulesPatch.ps1'
+if ((Test-Path -LiteralPath $rareMobRulesApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_manager.cpp') -PathType Leaf)) {
+    $rareMobRulesResult = & $rareMobRulesApply -SourceDir $engineGameSource
+    if ($rareMobRulesResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} per-mob rare drop edit(s).' -f $rareMobRulesResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # The 6th/7th bonus rolls its level lv1-lv5 by the panel's odds
 # (server-patches/rarelevelroll; m2_rare_lv1..5, default 35/30/20/10/5).
 $rareLevelRollApply = Join-Path $repo 'server-patches/rarelevelroll/Apply-RareLevelRollPatch.ps1'
