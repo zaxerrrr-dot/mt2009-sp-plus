@@ -39,7 +39,9 @@ drop	razador	50270	5	100
 dungeon	skorpion	365	1	xy	62	5989	7058	65	0	1	8	9694	ruiny_skorpiona.entry	3600	0	0	Ruiny_Skorpiona	Doyyumhwaji
 cost	skorpion	12000000
 drop	skorpion	30775	4	100
-dungeon	katakumby	216	1	xy	65	5914	992	75	0	1	8	2598	devilcatacomb_zone.last_exit_time	1800	0	0	Katakumby_Diab³a	Œwi¹tynia_Hwang
+# MT2009_PLUS_CATACOMB_MAP_V1: the Catacomb lands beside its Guardian (20367 at 5924 1006 in Hwang Temple),
+# not at the quest's exit (5914 992) seventeen metres off.
+dungeon	katakumby	216	1	xy	65	5921	1003	75	0	1	8	2598	devilcatacomb_zone.last_exit_time	1800	0	0	Katakumby_Diab³a	Œwi¹tynia_Hwang
 cost	katakumby	10000000
 drop	katakumby	183	1	20
 drop	katakumby	184	1	10
