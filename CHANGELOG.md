@@ -338,6 +338,23 @@ działa od razu, a boty wymieniają kamienie duszy z tą samą szansą. Launcher
 
 ---
 
+## Klient 2.0.37 — 2026-10-01 — Minigry, okno 3D Yutnori, Seon-Hae, Katakumby, koniec zacięć przy zaczarowaniu
+
+Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**) albo patcherem.
+Potrzebny do serwera 2.17.0. Zawiera wszystko z 2.0.30.
+
+- **Nowy plik gry (exe)**: minigry Łapanie Króla, Rumi, Yutnori (z oknem 3D
+  rzutu) i Dzieci Kwiaty, menedżer eventów w grze.
+- Okno eventów przy minimapie, okna wszystkich minigier i okno **Seon-Hae**
+  (6. i 7. bonus); opis przedmiotu pokazuje 6. i 7. bonus.
+- **Mapa Katakumb Diabła** z teksturami, potworami i wrotami.
+- Nowy **dom towarowy**: kupno części stosu, filtr do 5 bonusów, zbroje według
+  klasy, sortowanie po ilości i cenie, ranga Towarzysza przy nicku.
+- **Koniec zacięć przy zaczarowaniu przedmiotu** i każdej zmianie w ekwipunku.
+- Mapa i model Niebieskiego Smoka.
+
+---
+
 ## Klient 2.0.30 — 2026-09-30 — Moduł Arezzo, tekstury, okno „Wyprawy”
 
 Zaktualizuj klienta w launcherze (**AKTUALIZUJ KLIENTA**) albo patcherem.
