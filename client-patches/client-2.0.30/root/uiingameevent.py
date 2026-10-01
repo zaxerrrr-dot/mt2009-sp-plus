@@ -50,6 +50,10 @@ EVENTS = {
 	# three of the five flower boxes (83023-83027, what they hold is the server's).
 	'flower': {'name': 'Dzieci Kwiaty', 'icon': CAL + 'bonus_event.tga', 'open': 'game',
 			'rewards': ((83023, 1), (83025, 1), (83027, 1))},
+	# MT2009_PLUS_YUTNORI_V1: uiminigameyutnori.py registers the opener; the three boxes a game gives.
+	'yutnori': {'name': 'Yut Nori', 'icon': CAL + 'bonus_event.tga', 'open': 'game',
+			'rewards': ((83030, 1), (83031, 1), (83034, 1))},
+	'flower': {'name': 'Dzieci Kwiaty', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
 	'easter': {'name': 'Event wielkanocny', 'icon': CAL + 'bonus_event.tga', 'open': 'info',
 			'desc': 'Metiny wielkanocne dropi\xb9 jajka - wymie\xf1 je u Wielkanocnego Zaj\xb9ca w mie\x9ccie.'},
 	'goblin': {'name': 'Poszukiwanie skarb\xf3w', 'icon': CAL + 'goblin_event.tga', 'open': 'goblin'},

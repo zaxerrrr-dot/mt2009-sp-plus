@@ -42,6 +42,8 @@ param(
 #   Seon-Hae 6/7 bonus cmd.cpp, cmd_general.cpp, item_manager.cpp (MT2009_PLUS_SEONHAE_V1)
 #   Rumi (Okey)        packet.h, packet_info.cpp, input_main.cpp, char.cpp, char_item.cpp,
 #                      item_manager.cpp, questlua_game.cpp (MT2009_PLUS_RUMI_V1)
+#   Yut Nori           packet.h, packet_info.cpp, input_main.cpp, char_item.cpp,
+#                      item_manager.cpp (MT2009_PLUS_YUTNORI_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -327,6 +329,19 @@ if ((Test-Path -LiteralPath $catchKingApply -PathType Leaf) -and
     if ($catchKingResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Catch the King edit(s).' -f $catchKingResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Yut Nori (server-patches/yutnori): Owsap's packets 182, their dispatch, the
+# Birch Branch and the board's use and the kill's roll for a branch
+# (playerbot_yutnori.h); after the event manager, whose packet lines it
+# anchors on.
+$yutnoriApply = Join-Path $repo 'server-patches/yutnori/Apply-YutnoriPatch.ps1'
+if ((Test-Path -LiteralPath $yutnoriApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'packet.h') -PathType Leaf)) {
+    $yutnoriResult = & $yutnoriApply -SourceDir $engineGameSource
+    if ($yutnoriResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Yut Nori edit(s).' -f $yutnoriResult.Applied) -ForegroundColor DarkGray
     }
 }
 # A pet's magic attack % (server-patches/magicattper): PointChange had no

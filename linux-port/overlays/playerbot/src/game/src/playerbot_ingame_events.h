@@ -625,6 +625,10 @@ namespace mt2009_ingame_event
 	}
 }
 
+// The mini games' own seconds (their files are included after this one).
+void YutnoriTick(DWORD dwNow);	// playerbot_yutnori.h (MT2009_PLUS_YUTNORI_V1)
+void YutnoriGmInfo(LPCHARACTER ch);
+
 // Every pass of the events (playerbot_events.h), once a second at most.
 void InGameEventTick(DWORD dwNow)
 {
@@ -633,6 +637,7 @@ void InGameEventTick(DWORD dwNow)
 		return;
 	s_dwNextSecond = dwNow + 1000;
 	EverySecond(dwNow);
+	YutnoriTick(dwNow);
 }
 
 // "/ingame_event hello <caps>" from the client's python, "/ingame_event info"
@@ -691,6 +696,7 @@ void InGameEventCommand(LPCHARACTER ch, const char* argument)
 		}
 		ch->ChatPacket(CHAT_TYPE_INFO, "Klienci z lista eventow na tym rdzeniu: %u, lider: %s.",
 				(unsigned int)s_clients.size(), IsPlayerBotEventLeader() ? "tak" : "nie");
+		YutnoriGmInfo(ch);
 	}
 }
 
