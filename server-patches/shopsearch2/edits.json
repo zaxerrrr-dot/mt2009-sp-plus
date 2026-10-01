@@ -1,0 +1,128 @@
+[
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (gd lock)",
+  "old": "\tstruct TSubPacketGDLockBuyItem {\n\t\tDWORD ownerid;\n\t\tDWORD itemid;\n\t\tDWORD guestid;\n\t\tlong long seenprice;\n\t};\n",
+  "new": "\tstruct TSubPacketGDLockBuyItem {\n\t\tDWORD ownerid;\n\t\tDWORD itemid;\n\t\tDWORD guestid;\n\t\tlong long seenprice;\n\t\t// MT2009_PLUS_SHOP_PART_STACK_V1 (gd lock), server-patches/shopsearch2: how many of\n\t\t// the stack the Dom Towarowy buys; 0 is the whole line, as before.\n\t\tDWORD quantity;\n\t};\n"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (dg buy)",
+  "old": "\tstruct TSubPacketDGBuyItem {\n\t\tDWORD ownerid;\n\t\tDWORD itemid;\n\t\tDWORD buyerid;\n\t\tbool requester;\n\t};\n",
+  "new": "\tstruct TSubPacketDGBuyItem {\n\t\tDWORD ownerid;\n\t\tDWORD itemid;\n\t\tDWORD buyerid;\n\t\tbool requester;\n\t\t// MT2009_PLUS_SHOP_PART_STACK_V1 (dg buy): a part of the stack sold - how many, and\n\t\t// what stays on the line; quantity 0 is the whole line, as before.\n\t\tDWORD quantity;\n\t\tDWORD remainingCount;\n\t\tlong long remainingYang;\n\t};\n"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (dg locked)",
+  "old": "\tstruct TSubPacketDGLockedBuyItem {\n\t\tDWORD ownerid;\n\t\tDWORD itemid;\n\t\tDWORD buyerid;\n\t};\n",
+  "new": "\tstruct TSubPacketDGLockedBuyItem {\n\t\tDWORD ownerid;\n\t\tDWORD itemid;\n\t\tDWORD buyerid;\n\t\t// MT2009_PLUS_SHOP_PART_STACK_V1 (dg locked): the part locked and its price, which\n\t\t// the buyer pays; 0 is the whole line at the line's price.\n\t\tDWORD quantity;\n\t\tlong long partYang;\n\t};\n"
+ },
+ {
+  "file": "../../db/src/ClientManager.h",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (send)",
+  "old": "\tbool SendIkarusShopBuyItemPacket(DWORD dwOwner, DWORD dwGuest, DWORD dwItem, CPeer* requester);\n\tbool SendIkarusShopBuyLockedItemPacket(CPeer* peer,DWORD dwOwner, DWORD dwGuest, DWORD dwItem);\n",
+  "new": "\t// MT2009_PLUS_SHOP_PART_STACK_V1 (send), server-patches/shopsearch2: the part of a stack.\n\tbool SendIkarusShopBuyItemPacket(DWORD dwOwner, DWORD dwGuest, DWORD dwItem, CPeer* requester,\n\t\tDWORD quantity = 0, DWORD remainingCount = 0, long long remainingYang = 0);\n\tbool SendIkarusShopBuyLockedItemPacket(CPeer* peer,DWORD dwOwner, DWORD dwGuest, DWORD dwItem,\n\t\tDWORD quantity = 0, long long partYang = 0);\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (parts)",
+  "old": "\treturn guests;\n}\n\nbool CClientManager::RecvIkarusShopLockBuyItem(CPeer* peer, const char* data)\n{\n",
+  "new": "\treturn guests;\n}\n\n// MT2009_PLUS_SHOP_PART_STACK_V1 (parts), server-patches/shopsearch2: the Dom Towarowy\n// sells a part of a stack (Uxie [DSO]'s part of a stack). The lock keeps how\n// many and for what, by (owner, item), until the purchase settles or lets go:\n// the buyer pays the part, the seller is paid the part, and the line keeps\n// the rest of the stack at the rest of the price.\nstatic std::map<std::pair<DWORD, DWORD>, std::pair<DWORD, long long>>& Mt2009PlusShopLockParts()\n{\n\tstatic std::map<std::pair<DWORD, DWORD>, std::pair<DWORD, long long>> parts;\n\treturn parts;\n}\n\n// The part's price, rounded up as the window shows it (customfleamarket.py,\n// GetStackPurchasePrice).\nstatic long long Mt2009PlusShopPartYang(long long yang, DWORD count, DWORD quantity)\n{\n\tif (count == 0)\n\t\treturn yang;\n\treturn (yang * (long long) quantity + (long long) count - 1) / (long long) count;\n}\n\nnamespace ikashop\n{\n\tstd::string CreateShopCacheUpdateItemQuery(const TShopItem& rItemPrice);\n}\n\nbool CClientManager::RecvIkarusShopLockBuyItem(CPeer* peer, const char* data)\n{\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (lock check)",
+  "old": "\tauto item = itemIter->second;\n\n\t// finally selling it\n",
+  "new": "\tauto item = itemIter->second;\n\n\t// MT2009_PLUS_SHOP_PART_STACK_V1 (lock check): a part of the stack - fewer than the line\n\t// holds, at a price that leaves the rest of the line at least 1 Yang.\n\tDWORD mt2009PartQuantity = subpack.quantity;\n\tlong long mt2009PartYang = 0;\n\tif (mt2009PartQuantity >= item->count)\n\t{\n\t\tif (mt2009PartQuantity > item->count)\n\t\t{\n\t\t\tsys_err(\"MT2009_PLUS_SHOP_PART_STACK_V1: %u of item %u (owner %u, buyer %u) asked, the line holds %u\",\n\t\t\t\tmt2009PartQuantity, subpack.itemid, subpack.ownerid, subpack.guestid, (DWORD) item->count);\n\t\t\tSendIkarusShopBuyLockedItemPacket(peer, 0, subpack.guestid, subpack.itemid);\n\t\t\treturn false;\n\t\t}\n\t\tmt2009PartQuantity = 0;\n\t}\n\tif (mt2009PartQuantity)\n\t{\n\t\tmt2009PartYang = Mt2009PlusShopPartYang(item->price.yang, item->count, mt2009PartQuantity);\n\t\tbool mt2009PartRefused = mt2009PartYang <= 0 || item->price.yang - mt2009PartYang < 1;\n#ifdef ENABLE_CHEQUE_SYSTEM\n\t\tmt2009PartRefused = mt2009PartRefused || item->price.cheque != 0;\n#endif\n\t\tif (mt2009PartRefused)\n\t\t{\n\t\t\tSendIkarusShopBuyLockedItemPacket(peer, 0, subpack.guestid, subpack.itemid);\n\t\t\treturn false;\n\t\t}\n\t}\n\n\t// finally selling it\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (lock)",
+  "old": "\t\tMt2009PlusShopLockGuests()[std::make_pair(subpack.ownerid, subpack.itemid)] = subpack.guestid;\n",
+  "new": "\t\tMt2009PlusShopLockGuests()[std::make_pair(subpack.ownerid, subpack.itemid)] = subpack.guestid;\n\t\t// MT2009_PLUS_SHOP_PART_STACK_V1 (lock): and the part it buys, if a part.\n\t\tif (mt2009PartQuantity)\n\t\t\tMt2009PlusShopLockParts()[std::make_pair(subpack.ownerid, subpack.itemid)] = std::make_pair(mt2009PartQuantity, mt2009PartYang);\n\t\telse\n\t\t\tMt2009PlusShopLockParts().erase(std::make_pair(subpack.ownerid, subpack.itemid));\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (locked)",
+  "old": "\t\tSendIkarusShopBuyLockedItemPacket(peer, subpack.ownerid, subpack.guestid, subpack.itemid);\n#ifdef EXTEND_IKASHOP_PRO\n\t\tstd::string itemPrice = fmt::format(\"{}\", item->price.yang);\n",
+  "new": "\t\t// MT2009_PLUS_SHOP_PART_STACK_V1 (locked): the buyer's core charges the part's price.\n\t\tSendIkarusShopBuyLockedItemPacket(peer, subpack.ownerid, subpack.guestid, subpack.itemid, mt2009PartQuantity, mt2009PartYang);\n#ifdef EXTEND_IKASHOP_PRO\n\t\tstd::string itemPrice = fmt::format(\"{}\", mt2009PartQuantity ? mt2009PartYang : (long long) item->price.yang);\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (settle)",
+  "old": "\t\tguests.erase(lockGuest);\n\t}\n\n\t// unlocking locked item\n\tif(!success){\n\t\tm_offlineshopShopCache.UnlockSellItem(dwOwner, dwItem);\n\t\treturn true;\n\t}\n",
+  "new": "\t\tguests.erase(lockGuest);\n\t}\n\n\t// MT2009_PLUS_SHOP_PART_STACK_V1 (settle): the part the lock was placed for, if a part.\n\tDWORD mt2009PartQuantity = 0;\n\tlong long mt2009PartYang = 0;\n\t{\n\t\tauto& parts = Mt2009PlusShopLockParts();\n\t\tauto part = parts.find(std::make_pair(dwOwner, dwItem));\n\t\tif (part != parts.end())\n\t\t{\n\t\t\tmt2009PartQuantity = part->second.first;\n\t\t\tmt2009PartYang = part->second.second;\n\t\t\tparts.erase(part);\n\t\t}\n\t}\n\n\t// unlocking locked item\n\tif(!success){\n\t\tm_offlineshopShopCache.UnlockSellItem(dwOwner, dwItem);\n\t\treturn true;\n\t}\n\n\t// The part: the seller is paid it (less the tax), the line keeps the\n\t// rest of the stack at the rest of the price and is unlocked, the private\n\t// offers made for the whole stack are refunded, and every core hears what\n\t// is left.\n\tif (mt2009PartQuantity && mt2009PartQuantity < it->second->count)\n\t{\n\t\tauto& line = it->second;\n\t\tconst long long mt2009PartTax = mt2009PartYang * tax_pct / 100;\n\t\tikashop::TValutesInfo mt2009PartValute;\n\t\tmt2009PartValute.yang = mt2009PartYang - mt2009PartTax;\n\t\tm_offlineshopSafeboxCache.AddValutes(subpack.ownerid, mt2009PartValute);\n\t\tSendIkarusShopSafeboxAddValutes(subpack.ownerid, mt2009PartValute);\n\n\t\tRemoveOfferOnShopItem(dwOwner, dwItem);\n\n\t\tline->count -= mt2009PartQuantity;\n\t\tline->price.yang -= mt2009PartYang;\n\t\tline->lock = false;\n\t\tconst auto mt2009CountQuery = fmt::format(\"UPDATE `item` SET `count`={} WHERE `id`={}\", (DWORD) line->count, dwItem);\n\t\tCDBManager::instance().DirectQuery(mt2009CountQuery.c_str());\n\t\tconst auto mt2009PriceQuery = ikashop::CreateShopCacheUpdateItemQuery(*line);\n\t\tCDBManager::instance().DirectQuery(mt2009PriceQuery.c_str());\n\n\t\tSendIkarusShopBuyItemPacket(dwOwner, subpack.guestid, dwItem, peer, mt2009PartQuantity, line->count, line->price.yang);\n\n#ifdef ENABLE_IKASHOP_LOGS\n\t\tIkarusShopLog(subpack.guestid, subpack.itemid, \"BUY_ITEM_PART\", subpack.ownerid,\n\t\t\tfmt::format(\"TAX: {} LEFT: {}\", mt2009PartTax, (DWORD) line->count), line->vnum, mt2009PartQuantity, mt2009PartYang);\n#endif\n\t\treturn true;\n\t}\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (send locked)",
+  "old": "bool CClientManager::SendIkarusShopBuyLockedItemPacket(CPeer* peer, DWORD dwOwner, DWORD dwGuest, DWORD dwItem)\n{\n\tTPacketDGNewIkarusShop pack;\n\tpack.bSubHeader\t= ikashop::SUBHEADER_DG_LOCKED_BUY_ITEM;\n\n\tikashop::TSubPacketDGLockedBuyItem subpack;\n\tsubpack.ownerid\t= dwOwner;\n\tsubpack.buyerid\t= dwGuest;\n\tsubpack.itemid\t= dwItem;\n",
+  "new": "bool CClientManager::SendIkarusShopBuyLockedItemPacket(CPeer* peer, DWORD dwOwner, DWORD dwGuest, DWORD dwItem,\n\tDWORD quantity, long long partYang)\n{\n\tTPacketDGNewIkarusShop pack;\n\tpack.bSubHeader\t= ikashop::SUBHEADER_DG_LOCKED_BUY_ITEM;\n\n\tikashop::TSubPacketDGLockedBuyItem subpack;\n\tsubpack.ownerid\t= dwOwner;\n\tsubpack.buyerid\t= dwGuest;\n\tsubpack.itemid\t= dwItem;\n\t// MT2009_PLUS_SHOP_PART_STACK_V1 (send locked)\n\tsubpack.quantity = quantity;\n\tsubpack.partYang = partYang;\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (send buy)",
+  "old": "bool CClientManager::SendIkarusShopBuyItemPacket(DWORD dwOwner, DWORD dwGuest, DWORD dwItem, CPeer* requester)\n{\n\tTPacketDGNewIkarusShop pack;\n\tpack.bSubHeader\t= ikashop::SUBHEADER_DG_BUY_ITEM;\n\n\tikashop::TSubPacketDGBuyItem subpack;\n\tsubpack.ownerid\t= dwOwner;\n\tsubpack.buyerid\t= dwGuest;\n\tsubpack.itemid\t= dwItem;\n",
+  "new": "bool CClientManager::SendIkarusShopBuyItemPacket(DWORD dwOwner, DWORD dwGuest, DWORD dwItem, CPeer* requester,\n\tDWORD quantity, DWORD remainingCount, long long remainingYang)\n{\n\tTPacketDGNewIkarusShop pack;\n\tpack.bSubHeader\t= ikashop::SUBHEADER_DG_BUY_ITEM;\n\n\tikashop::TSubPacketDGBuyItem subpack;\n\tsubpack.ownerid\t= dwOwner;\n\tsubpack.buyerid\t= dwGuest;\n\tsubpack.itemid\t= dwItem;\n\t// MT2009_PLUS_SHOP_PART_STACK_V1 (send buy)\n\tsubpack.quantity = quantity;\n\tsubpack.remainingCount = remainingCount;\n\tsubpack.remainingYang = remainingYang;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.h",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (decl)",
+  "old": "/*db*/\tvoid SendShopLockBuyItemDBPacket(LPCHARACTER buyer, DWORD ownerid, ITEM_HANDLE item, long long seenprice); //patch seen price check\n\t\t\t \n/*db*/\tbool RecvShopLockedBuyItemDBPacket(DWORD buyerid, DWORD ownerid,DWORD itemid);\n/*db*/\tbool RecvShopBuyDBPacket(DWORD buyerid, DWORD ownerid, DWORD itemid, bool requester);\n",
+  "new": "// MT2009_PLUS_SHOP_PART_STACK_V1 (decl), server-patches/shopsearch2: the part of a stack.\n/*db*/\tvoid SendShopLockBuyItemDBPacket(LPCHARACTER buyer, DWORD ownerid, ITEM_HANDLE item, long long seenprice, DWORD quantity = 0); //patch seen price check\n\t\t\t \n/*db*/\tbool RecvShopLockedBuyItemDBPacket(DWORD buyerid, DWORD ownerid,DWORD itemid, DWORD quantity = 0, long long partYang = 0);\n/*db*/\tbool RecvShopBuyDBPacket(DWORD buyerid, DWORD ownerid, DWORD itemid, bool requester,\n\t\tDWORD quantity = 0, DWORD remainingCount = 0, long long remainingYang = 0);\n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (input)",
+  "old": "\tikashop::GetManager().RecvShopBuyDBPacket(subpack.buyerid, subpack.ownerid, subpack.itemid, subpack.requester);\n}\n\nvoid IkarusShopLockedBuyItemPacket(const char* data)\n{\n\tconst auto& subpack = Decode<ikashop::TSubPacketDGLockedBuyItem>(data);\n\tikashop::GetManager().RecvShopLockedBuyItemDBPacket(subpack.buyerid, subpack.ownerid, subpack.itemid);\n",
+  "new": "\t// MT2009_PLUS_SHOP_PART_STACK_V1 (input), server-patches/shopsearch2: the part of a stack.\n\tikashop::GetManager().RecvShopBuyDBPacket(subpack.buyerid, subpack.ownerid, subpack.itemid, subpack.requester,\n\t\tsubpack.quantity, subpack.remainingCount, subpack.remainingYang);\n}\n\nvoid IkarusShopLockedBuyItemPacket(const char* data)\n{\n\tconst auto& subpack = Decode<ikashop::TSubPacketDGLockedBuyItem>(data);\n\tikashop::GetManager().RecvShopLockedBuyItemDBPacket(subpack.buyerid, subpack.ownerid, subpack.itemid,\n\t\tsubpack.quantity, subpack.partYang);\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_SEARCH_PL_V1",
+  "old": "std::string StringToLower(const char* name, size_t len)\n{\n\t// std::tolower handles ints so transform reject it as operand\n\tstatic auto lower = [](auto&& ch){ return std::tolower(ch); };\n",
+  "new": "std::string StringToLower(const char* name, size_t len)\n{\n\t// MT2009_PLUS_SHOP_SEARCH_PL_V1 (server-patches/shopsearch2): the names are CP1250, and\n\t// std::tolower knows A-Z only - a name beginning with a capital with a\n\t// diacritic (Zolc Niedzwiedzia with its dot) never matched what was typed\n\t// in small letters. The nine Polish capitals are lowered here too.\n\tstatic auto lower = [](char c) -> char {\n\t\tswitch (static_cast<unsigned char>(c))\n\t\t{\n\t\t\tcase 0xA5: return static_cast<char>(0xB9);\n\t\t\tcase 0xC6: return static_cast<char>(0xE6);\n\t\t\tcase 0xCA: return static_cast<char>(0xEA);\n\t\t\tcase 0xA3: return static_cast<char>(0xB3);\n\t\t\tcase 0xD1: return static_cast<char>(0xF1);\n\t\t\tcase 0xD3: return static_cast<char>(0xF3);\n\t\t\tcase 0x8C: return static_cast<char>(0x9C);\n\t\t\tcase 0x8F: return static_cast<char>(0x9F);\n\t\t\tcase 0xAF: return static_cast<char>(0xBF);\n\t\t\tdefault: return static_cast<char>(std::tolower(static_cast<unsigned char>(c)));\n\t\t}\n\t};\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (recv buy)",
+  "old": "\tbool CShopManager::RecvShopBuyDBPacket(DWORD buyerid, DWORD ownerid,DWORD itemid, bool requester)\n\t{\n",
+  "new": "\tbool CShopManager::RecvShopBuyDBPacket(DWORD buyerid, DWORD ownerid,DWORD itemid, bool requester,\n\t\tDWORD quantity, DWORD remainingCount, long long remainingYang)\n\t{\n\t\t// MT2009_PLUS_SHOP_PART_STACK_V1 (recv buy), server-patches/shopsearch2: a part of the\n\t\t// stack sold (the Dom Towarowy). The buyer gets the part as an item of\n\t\t// its own - in the bag, or at the buyer's feet if the bag filled while\n\t\t// the purchase was on its way - and the line, on every core, keeps the\n\t\t// rest of the stack at the rest of the price.\n\t\tif (quantity != 0)\n\t\t{\n\t\t\tauto partShop = GetShopByOwnerID(ownerid);\n\t\t\tif (!partShop)\n\t\t\t\treturn false;\n\t\t\tauto partLine = partShop->GetItem(itemid);\n\t\t\tif (!partLine)\n\t\t\t\treturn false;\n\n\t\t\tauto partInfo = partLine->GetInfo();\n\t\t\tconst DWORD partVnum = partInfo.vnum;\n\t\t\tconst long long partPaid = std::max<long long>(0, (long long) partInfo.price.yang - remainingYang);\n\t\t\tif (auto ch = CHARACTER_MANAGER::instance().FindByPID(buyerid))\n\t\t\t{\n\t\t\t\tLPITEM part = ITEM_MANAGER::instance().CreateItem(partVnum, quantity);\n\t\t\t\tif (!part)\n\t\t\t\t{\n\t\t\t\t\tsys_err(\"cannot create part of item ( itemid %u , vnum %u, count %u, shop owner %u, buyer %u )\",\n\t\t\t\t\t\titemid, partVnum, quantity, ownerid, buyerid);\n\t\t\t\t}\n\t\t\t\telse\n\t\t\t\t{\n\t\t\t\t\tpart->SetAttributes(partInfo.aAttr);\n\t\t\t\t\tpart->SetSockets(partInfo.alSockets);\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\t\t\t\tpart->SetTransmutation(partInfo.dwTransmutation);\n#endif\n\t\t\t\t\tTItemPos partPos;\n\t\t\t\t\tif (ch->CanTakeInventoryItem(part, &partPos))\n\t\t\t\t\t{\n\t\t\t\t\t\tpart->AddToCharacter(ch, partPos);\n\t\t\t\t\t\tpart->Save();\n\t\t\t\t\t\tITEM_MANAGER::instance().FlushDelayedSave(part);\n\t\t\t\t\t}\n\t\t\t\t\telse\n\t\t\t\t\t{\n\t\t\t\t\t\tpart->AddToGround(ch->GetMapIndex(), ch->GetXYZ());\n\t\t\t\t\t\tpart->StartDestroyEvent();\n\t\t\t\t\t\tpart->SetOwnership(ch, 300);\n\t\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Ekwipunek jest pelny - kupiona czesc stosu lezy pod Twoimi stopami.\");\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"FleaMarketStackUpdate %u %u %u %lld 0\",\n\t\t\t\t\townerid, itemid, remainingCount, remainingYang);\n\t\t\t}\n\n\t\t\tpartInfo.count = remainingCount;\n\t\t\tpartInfo.price.yang = remainingYang;\n\t\t\tpartLine->SetInfo(partInfo);\n\t\t\tfor (auto guest : partShop->GetGuests())\n\t\t\t\tif (auto guestCh = CHARACTER_MANAGER::instance().FindByPID(guest))\n\t\t\t\t\tSendShopOpenClientPacket(guestCh, partShop.get());\n\t\t\tpartShop->RefreshToOwner();\n\n\t\t\tauto partOwnerCh = CHARACTER_MANAGER::instance().FindByPID(ownerid);\n\t\t\tif (partOwnerCh)\n\t\t\t\tNotifyOwnerItemSold(partOwnerCh, partVnum, quantity, partPaid);\n\t\t\t// A bot's line sold in part stays on its counter (playerbot_offline::NoteSold).\n\t\t\tplayerbot_offline::NoteSold(partOwnerCh ? ownerid : 0, itemid, partVnum, quantity, partPaid, true);\n\t\t\tplayerbot_offline::Complete(buyerid, playerbot_offline::Buy, itemid);\n\t\t\treturn true;\n\t\t}\n\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (send lock)",
+  "old": "\tvoid CShopManager::SendShopLockBuyItemDBPacket(LPCHARACTER buyer, DWORD ownerid, ITEM_HANDLE item, long long TotalPriceSeen) //patch seen price check\n",
+  "new": "\t// MT2009_PLUS_SHOP_PART_STACK_V1 (send lock): quantity 0 buys the whole line.\n\tvoid CShopManager::SendShopLockBuyItemDBPacket(LPCHARACTER buyer, DWORD ownerid, ITEM_HANDLE item, long long TotalPriceSeen, DWORD quantity) //patch seen price check\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (lock quantity)",
+  "old": "\t\tsubpack.seenprice = TotalPriceSeen;\n",
+  "new": "\t\tsubpack.seenprice = TotalPriceSeen;\n\t\tsubpack.quantity = quantity; // MT2009_PLUS_SHOP_PART_STACK_V1 (lock quantity)\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (charge)",
+  "old": "\tbool CShopManager::RecvShopLockedBuyItemDBPacket(DWORD buyerid, DWORD ownerid,DWORD itemid)\n",
+  "new": "\t// MT2009_PLUS_SHOP_PART_STACK_V1 (charge): a part costs the part's price, which the db core\n\t// worked out when it locked the line.\n\tbool CShopManager::RecvShopLockedBuyItemDBPacket(DWORD buyerid, DWORD ownerid,DWORD itemid, DWORD quantity, long long partYang)\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (pay)",
+  "old": "\t\tauto item = shop->GetItem(itemid);\n\t\tif(!item || !item->CanBuy(ch))\n\t\t\treturn SendDBFeedback(false);\n\n\t\tconst auto& price = item->GetPrice();\n\t\tch->ChangeGold(-price.yang);\n",
+  "new": "\t\tauto item = shop->GetItem(itemid);\n\t\t// MT2009_PLUS_SHOP_PART_STACK_V1 (pay): the part's price for a part.\n\t\tif (item && quantity != 0)\n\t\t{\n\t\t\tif (partYang <= 0 || ch->GetGold() < partYang)\n\t\t\t\treturn SendDBFeedback(false);\n\t\t\tch->ChangeGold(-partYang);\n\t\t\treturn SendDBFeedback(true);\n\t\t}\n\t\tif(!item || !item->CanBuy(ch))\n\t\t\treturn SendDBFeedback(false);\n\n\t\tconst auto& price = item->GetPrice();\n\t\tch->ChangeGold(-price.yang);\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (buy)",
+  "old": "\t\t// The Dom Towarowy buys whole listings only: a part of a stack is not\n\t\t// carried through the database's answer (apply_flea_market).\n\t\tif (fleaRemote && g_fleaBuyQuantity != 0 && g_fleaBuyQuantity != pitem->GetInfo().count)\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Kupno czesci stosu nie jest dostepne - kup caly stos.\");\n\t\t\treturn false;\n\t\t}\n\n\t\tif (!ch->HasSlotForItem(pitem->GetVnum()))\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"INVENTORY_FULL_ERROR\"));\n\t\t\treturn false;\n\t\t}\n\n\t\tif(!pitem->CanBuy(ch))\n",
+  "new": "\t\t// MT2009_PLUS_SHOP_PART_STACK_V1 (buy), server-patches/shopsearch2: the Dom Towarowy\n\t\t// buys a part of a stack (Uxie [DSO]'s part of a stack): fewer than the\n\t\t// line holds, for its share of the price rounded up (the window's\n\t\t// preview), and the rest stays on the line. The db core locks the line,\n\t\t// checks the part again and answers with its price. A shop's own window\n\t\t// and the bots buy whole lines, as before.\n\t\tDWORD mt2009PartQuantity = 0;\n\t\tlong long mt2009PartYang = 0;\n\t\tif (fleaRemote && g_fleaBuyQuantity != 0 && g_fleaBuyQuantity != pitem->GetInfo().count)\n\t\t{\n\t\t\tif (g_fleaBuyQuantity > pitem->GetInfo().count)\n\t\t\t{\n\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"W tym stosie nie ma juz tylu sztuk.\");\n\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"FleaMarketStackUpdate %u %u %u %lld 0\",\n\t\t\t\t\townerid, itemid, (DWORD) pitem->GetInfo().count, (long long) pitem->GetPrice().yang);\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tconst long long lineYang = pitem->GetPrice().yang;\n\t\t\tconst long long lineCount = pitem->GetInfo().count;\n\t\t\tmt2009PartYang = (lineYang * (long long) g_fleaBuyQuantity + lineCount - 1) / lineCount;\n\t\t\tbool partRefused = mt2009PartYang <= 0 || lineYang - mt2009PartYang < 1;\n#ifdef ENABLE_CHEQUE_SYSTEM\n\t\t\tpartRefused = partRefused || pitem->GetPrice().cheque != 0;\n#endif\n\t\t\tif (partRefused)\n\t\t\t{\n\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Tego stosu nie da sie podzielic przy tej cenie - kup caly stos.\");\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tmt2009PartQuantity = g_fleaBuyQuantity;\n\t\t}\n\n\t\tif (!ch->HasSlotForItem(pitem->GetVnum()))\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"INVENTORY_FULL_ERROR\"));\n\t\t\treturn false;\n\t\t}\n\n\t\tif(mt2009PartQuantity ? ch->GetGold() < mt2009PartYang : !pitem->CanBuy(ch))\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (send)",
+  "old": "\t\tSendShopLockBuyItemDBPacket(ch, ownerid, pitem, seenprice);\n\t\treturn true;\n",
+  "new": "\t\tSendShopLockBuyItemDBPacket(ch, ownerid, pitem, seenprice, mt2009PartQuantity); // MT2009_PLUS_SHOP_PART_STACK_V1 (send)\n\t\treturn true;\n"
+ }
+]

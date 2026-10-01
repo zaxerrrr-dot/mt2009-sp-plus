@@ -298,3 +298,19 @@ Do zrobienia przy budowie paczek (pliki binarne / zasoby):
 - ikony `icon/item/79505.tga`, `79506.tga`, `50267.tga`, `50268.tga`, `50269.tga`;
 - model stołu `d:/ymir work/npc/okey_npc/` (`okey_npc.gr2`, `.dds`, `.msm`, `motlist.txt`,
   `wait.gr2/.msa`, `wait1.gr2/.msa`).
+
+## Dom Towarowy 2 (wydanie oficjalne, klient 2.0.60) – bez zmian exe
+
+Serwer: `server-patches/shopsearch2` (`MT2009_PLUS_SHOP_PART_STACK_V1`, `MT2009_PLUS_SHOP_SEARCH_PL_V1`).
+Pliki `root` (baza: paczka `root` 2.0.30/`tcm/c31` – nasze wersje z „Kup wiele”, scalone ze zmianami
+2.0.57 → 2.0.60; bez `playerbot_lang`, teksty tylko po polsku):
+
+- `customfleamarket.py` – kupno części stosu (ilość od 1, cena części zaokrąglona w górę, wiersz
+  od razu pokazuje resztę), polskie wielkie litery w wyszukiwaniu (`PolishLower`), Ulepszacze bez
+  „+” pokazują zwykłą wersję („+”/„+3” przywraca ulepszone), Zbroje i Hełmy rozwijane na klasy
+  (filtr po antyflagach, tylko w kliencie), okno „Filtry” (do 5 bonusów z minimalną wartością,
+  w kliencie na pobranych ofertach), sortowanie po kliknięciu nagłówków „Ilość” i „Cena” (obie
+  kolumny naraz), „R”/„C” (odśwież / wyczyść filtry) przy krzyżyku okna, krótka paginacja
+  „<< 1 / N >>”. „Kup wiele” (pola wyboru, „Kup wszystko”, „Odznacz”) zostaje – kupuje całe linie.
+- `offlineshopsearch.py` – okno ilości dla stosu otwiera się na 1.
+- `offlineshopmanage.py` – „Cena sprzedaży” w oknie wystawiania 2 px wyżej (y 57).
