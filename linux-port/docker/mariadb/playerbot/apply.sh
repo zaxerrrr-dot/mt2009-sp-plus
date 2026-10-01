@@ -633,6 +633,9 @@ fi
 # gives up - the same two bots failed on all seventeen starts of one day, with
 # no way to recover because the AI tick only ever sees bots that did spawn.
 # Put them back on Bokjung's arrival point before the game core starts.
+# MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1: 364-366 are hosted (game2) and are the
+# save point of the Arezzo dungeon test cohort (its lobby); no other bot is
+# ever saved there.
 echo "[playerbot-migrate] checking for bots parked on maps this server does not host"
 stranded=$(db -e "
     SELECT COUNT(*)
@@ -641,7 +644,8 @@ stranded=$(db -e "
      WHERE LEFT(a.login, 10) = 'playerbot_'
        AND p.map_index NOT IN (1, 3, 4, 5, 6, 107, 81, 110, 111, 112, 113, 181, 182, 183, 200, 250, 302, 304,
                                21, 23, 24, 25, 26, 61, 63, 64, 65, 69, 70, 71, 104, 108, 109, 79, 216, 217, 73,
-                               41, 43, 44, 45, 46, 62, 66, 67, 68, 72, 90, 208, 301, 303, 351);
+                               41, 43, 44, 45, 46, 62, 66, 67, 68, 72, 90, 208, 301, 303, 351,
+                               364, 365, 366);
 ")
 if [ -n "$stranded" ] && [ "$stranded" -gt 0 ] 2>/dev/null; then
     # Back to its OWN kingdom's second map, not always Chunjo's: a Jinno bot
@@ -659,7 +663,8 @@ if [ -n "$stranded" ] && [ "$stranded" -gt 0 ] 2>/dev/null; then
          WHERE LEFT(a.login, 10) = 'playerbot_'
            AND p.map_index NOT IN (1, 3, 4, 5, 6, 107, 81, 110, 111, 112, 113, 181, 182, 183, 200, 250, 302, 304,
                                21, 23, 24, 25, 26, 61, 63, 64, 65, 69, 70, 71, 104, 108, 109, 79, 216, 217, 73,
-                               41, 43, 44, 45, 46, 62, 66, 67, 68, 72, 90, 208, 301, 303, 351);
+                               41, 43, 44, 45, 46, 62, 66, 67, 68, 72, 90, 208, 301, 303, 351,
+                               364, 365, 366);
     "
     echo "[playerbot-migrate] moved $stranded bot(s) back to their own kingdom"
 fi
