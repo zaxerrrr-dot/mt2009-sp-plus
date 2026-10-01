@@ -1,7 +1,7 @@
 # MT2009_PLUS_RUMI_V1: Owsap's uiscript/minigamerumiwaitingpage.py (v6.2.6), its
 # __OKEY_EVENT_FLAG_RENEWAL__ page only (the card and card set counters). The texts
-# come from uiminigamerumi.py (Polish, CP1250).
-import uiminigamerumi as RUMI
+# are set on uiScriptLocale by uiminigamerumi.py (Polish, CP1250).
+import uiScriptLocale
 
 
 ROOT = "d:/ymir work/ui/game/"
@@ -49,7 +49,7 @@ window = {
 			"width"		: WINDOW_WIDTH,
 			"height"	: WINDOW_HEIGHT,
 		
-			"title"		: RUMI.TITLE,
+			"title"		: uiScriptLocale.MINI_GAME_RUMI_TITLE,
 		
 			"children" :
 			(
@@ -67,7 +67,7 @@ window = {
 				#
 				#	"children" :
 				#	(
-				#		{ "name":"TitleName", "type":"text", "x":0, "y":0, "text": RUMI.TITLE, "all_align":"center" },
+				#		{ "name":"TitleName", "type":"text", "x":0, "y":0, "text": uiScriptLocale.MINI_GAME_RUMI_TITLE, "all_align":"center" },
 				#	),
 				#},
 
@@ -396,7 +396,7 @@ window = {
 					"x"					: 40,
 					"y"					: 40,
 				
-					"text"				: RUMI.TEXT_START,
+					"text"				: uiScriptLocale.MINI_GAME_RUMI_START_TEXT,
 				
 					"vertical_align"	: "bottom",
 					"horizontal_align"	: "left",
@@ -429,7 +429,7 @@ window = {
 						
 							"text_horizontal_align" : "right",
 						
-							"text"					: RUMI.TEXT_SAFE_MODE,
+							"text"					: uiScriptLocale.MINI_GAME_RUMI_DISCARD_TEXT,
 						},
 					),
 				},

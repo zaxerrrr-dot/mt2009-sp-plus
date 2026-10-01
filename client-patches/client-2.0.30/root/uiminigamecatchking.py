@@ -15,7 +15,7 @@
 #    SetEndFrameEvent, SetKeyFrameEvent) are AniImage below, a plain ImageBox
 #    stepped in OnUpdate; the slots' over events take no extra argument;
 #  - the texts are Polish and here (no locale_game keys), the rules are
-#    locale/pl/catchking_event_desc.txt (event.RegisterEventSet);
+#    locale/pl/catchking_event_desc.txt (uiminigameutil.DescriptionText);
 #  - the King's Loots are 50968-50970 (Owsap's 50928-50930 are this world's
 #    "Receptura" items); the card and deck stay 79603 / 79604;
 #  - every result popup is a new dialog (ours adds lines to an old one);
@@ -34,6 +34,7 @@ import grp
 import chat
 import item
 import uiToolTip
+import uiminigameutil
 
 from _weakref import proxy
 
@@ -151,8 +152,7 @@ def LoadScript(self, fileName):
 		pyScrLoader = ui.PythonScriptLoader()
 		pyScrLoader.LoadScriptFile(self, fileName)
 	except:
-		import exception
-		exception.Abort("MiniGameCatchKing.LoadScript")
+		uiminigameutil.LoadError("MiniGameCatchKing.LoadScript")
 
 
 def Popup(old, text):
@@ -183,6 +183,8 @@ class AniImage(ui.ImageBox):
 		self.endArgs = ()
 		self.keyEvent = None
 		self.running = False
+		# our exe calls no python OnUpdate on an image box (uiminigameutil)
+		self.ticker = uiminigameutil.UpdateTicker(self)
 
 	def __del__(self):
 		ui.ImageBox.__del__(self)
@@ -218,7 +220,7 @@ class AniImage(ui.ImageBox):
 		self.running = False
 		ui.ImageBox.Hide(self)
 
-	def OnUpdate(self):
+	def TickUpdate(self):
 		if not self.running or not self.images:
 			return
 		now = app.GetTime()
@@ -240,7 +242,7 @@ class AniImage(ui.ImageBox):
 class LoopImage(AniImage):
 	"""The arrows: the same animation round and round."""
 
-	def OnUpdate(self):
+	def TickUpdate(self):
 		if not self.running or not self.images:
 			return
 		now = app.GetTime()
@@ -264,20 +266,6 @@ def MakeAni(parent, images, delay, x = 0, y = 0, loop = False):
 
 
 class CatchKingWaitingPage(ui.ScriptWindow):
-
-	class DescriptionBox(ui.Window):
-		def __init__(self):
-			ui.Window.__init__(self)
-			self.desc_index = -1
-
-		def __del__(self):
-			ui.Window.__del__(self)
-
-		def SetIndex(self, index):
-			self.desc_index = index
-
-		def OnRender(self):
-			event.RenderEventSet(self.desc_index)
 
 	VISIBLE_LINE_COUNT = 8
 
@@ -331,8 +319,7 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 			pyScrLoader = ui.PythonScriptLoader()
 			pyScrLoader.LoadScriptFile(self, "UIScript/MiniGameCatchKingWaitingPage.py")
 		except:
-			import exception
-			exception.Abort("CatchKingWaitingPage.LoadWindow.LoadObject")
+			uiminigameutil.LoadError("CatchKingWaitingPage.LoadWindow.LoadObject")
 
 		try:
 			self.GetChild("board").SetCloseEvent(ui.__mem_func__(self.Close))
@@ -341,8 +328,10 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 			self.start_button.SetEvent(ui.__mem_func__(self.__ClickStartButton))
 
 			self.desc_board = self.GetChild("desc_board")
-			self.description_box = self.DescriptionBox()
-			self.description_box.SetParent(self.desc_board)
+			# MT2009_PLUS_MINIGAME_DESC_V1: the rules as TextLines in the box
+			self.description_box = uiminigameutil.DescriptionText(self.desc_board, 7, DEFAULT_DESC_Y,
+				self.desc_board.GetWidth() - 14, self.desc_board.GetHeight() - DEFAULT_DESC_Y,
+				self.VISIBLE_LINE_COUNT, 19)
 			self.description_box.Show()
 
 			self.btn_prev = self.GetChild("prev_button")
@@ -382,8 +371,7 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 			self.card_pack_text = self.GetChild("challenge_pack_item_count_text")
 			self.card_pack_text.SetText("%d/%d" % (0, CATCHKING_CARD_COUNT_MAX))
 		except:
-			import exception
-			exception.Abort("CatchKingWaitingPage.LoadWindow.BindObject")
+			uiminigameutil.LoadError("CatchKingWaitingPage.LoadWindow.BindObject")
 
 		self.Hide()
 
@@ -396,15 +384,8 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 
 		ui.ScriptWindow.Show(self)
 
-		event.ClearEventSet(self.desc_index)
-		self.desc_index = event.RegisterEventSet(DescFile())
-
-		event.SetFontColor(self.desc_index, 0.7843, 0.7843, 0.7843)
-		event.SetVisibleLineCount(self.desc_index, self.VISIBLE_LINE_COUNT)
-		event.SetRestrictedCount(self.desc_index, DESC_WIDTH_COUNT)
-		self.desc_y = DEFAULT_DESC_Y
-
 		if self.description_box:
+			self.description_box.LoadFile(DescFile())
 			self.description_box.Show()
 
 		try:
@@ -425,10 +406,6 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 
 		self.CloseStartDlg()
 
-		event.ClearEventSet(self.desc_index)
-		self.desc_index = -1
-		self.desc_y = DEFAULT_DESC_Y
-
 		if self.description_box:
 			self.description_box.Hide()
 
@@ -439,7 +416,8 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 
 	def Destroy(self):
 		self.CloseStartDlg()
-		event.ClearEventSet(self.desc_index)
+		if self.description_box:
+			self.description_box.Destroy()
 		self.ClearDictionary()
 		self.is_loaded = 0
 
@@ -476,38 +454,13 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 		self.Close()
 		return True
 
-	def OnUpdate(self):
-		if self.desc_index < 0:
-			return
-		(xposEventSet, yposEventSet) = self.desc_board.GetGlobalPosition()
-		event.UpdateEventSet(self.desc_index, xposEventSet + 7, -(yposEventSet + self.desc_y))
-		self.description_box.SetIndex(self.desc_index)
-
 	def PrevDescriptionPage(self):
-		line_height = event.GetLineHeight(self.desc_index) + 4
-		cur_start_line = event.GetVisibleStartLine(self.desc_index)
-
-		decrease_count = self.VISIBLE_LINE_COUNT
-		if cur_start_line - decrease_count < 0:
-			return
-
-		event.SetVisibleStartLine(self.desc_index, cur_start_line - decrease_count)
-		self.desc_y += (line_height * decrease_count)
+		if self.description_box:
+			self.description_box.PrevPage()
 
 	def NextDescriptionPage(self):
-		line_height = event.GetLineHeight(self.desc_index) + 4
-		total_line_count = event.GetProcessedLineCount(self.desc_index)
-		cur_start_line = event.GetVisibleStartLine(self.desc_index)
-
-		increase_count = self.VISIBLE_LINE_COUNT
-		if cur_start_line + increase_count >= total_line_count:
-			increase_count = total_line_count - cur_start_line
-
-		if increase_count < 0 or cur_start_line + increase_count >= total_line_count:
-			return
-
-		event.SetVisibleStartLine(self.desc_index, cur_start_line + increase_count)
-		self.desc_y -= (line_height * increase_count)
+		if self.description_box:
+			self.description_box.NextPage()
 
 	def __ClickUpArrowButton(self):
 		if self.cur_challenge_count >= CATCHKING_CHALLENGE_MAX:
@@ -896,6 +849,10 @@ class CatchKingGamePage(ui.ScriptWindow):
 		self.scoreEffect3 = None
 
 		self.isLocked = False
+		# the board's lock fallback: the step a missed animation end still owes
+		self.lockTime = 0.0
+		self.pendingFiveNear = None
+		self.pendingResult = None
 
 		self.__LoadWindow()
 
@@ -972,8 +929,7 @@ class CatchKingGamePage(ui.ScriptWindow):
 
 			self.destroyCardEffect = MakeAni(self.myHandCardBg, EXPLOSION_IMAGES, 6)
 		except:
-			import exception
-			exception.Abort("CatchKingGamePage.LoadWindow.BindObject")
+			uiminigameutil.LoadError("CatchKingGamePage.LoadWindow.BindObject")
 
 		self.CreateScoreTooltip()
 		self.__ClearScoreCompletionEffect()
@@ -1044,6 +1000,8 @@ class CatchKingGamePage(ui.ScriptWindow):
 		self.scoreInfo.append(MSG_TOOLTIP_SCORE4)
 
 	def SetEndEffectCardEvent(self, func, keepFieldCard, destroyHandCard, cardValue, isFiveNear):
+		self.pendingResult = (keepFieldCard, destroyHandCard, cardValue, isFiveNear)
+		self.lockTime = app.GetTime()
 		if self.destroyCardEffect:
 			self.destroyCardEffect.SetEndFrameEvent(ui.__mem_func__(func), keepFieldCard, destroyHandCard, cardValue, isFiveNear)
 
@@ -1132,6 +1090,9 @@ class CatchKingGamePage(ui.ScriptWindow):
 		self.popupResult = Popup(self.popupResult, text)
 
 	def ResultEffectHandCard(self, keepFieldCard, destroyHandCard, cardValue, isFiveNear):
+		if self.pendingResult is None and not self.isLocked:
+			return	# done already (the fallback below came first)
+		self.pendingResult = None
 		if self.IsCheckShowPopUp():
 			self.ShowPopupDialog(self.handCardNumber, cardValue, isFiveNear)
 
@@ -1167,6 +1128,7 @@ class CatchKingGamePage(ui.ScriptWindow):
 				if (dr or dc) and 0 <= row + dr <= 4 and 0 <= col + dc <= 4:
 					checkPos.append((row + dr) * 5 + col + dc)
 
+		self.pendingFiveNear = (rowType, cardPos, cardValue, keepFieldCard, destroyHandCard, getReward, isFiveNear)
 		first = True
 		for i in checkPos:
 			# the end event once (Owsap's ran it for every neighbour)
@@ -1184,6 +1146,9 @@ class CatchKingGamePage(ui.ScriptWindow):
 			return
 
 		self.isLocked = True
+		self.lockTime = app.GetTime()
+		self.pendingResult = None
+		self.pendingFiveNear = None
 
 		self.SetScore(score)
 
@@ -1221,6 +1186,7 @@ class CatchKingGamePage(ui.ScriptWindow):
 				colStart += 5
 
 	def EndFiveNearEffect(self, rowType, cardPos, cardValue, keepFieldCard, destroyHandCard, getReward, isFiveNear):
+		self.pendingFiveNear = None
 		if self.handCardNumber == HAND_CARD_MAX:
 			self.gameCardList[cardPos].SetEndCardNumber(cardValue)
 
@@ -1241,6 +1207,30 @@ class CatchKingGamePage(ui.ScriptWindow):
 
 	def HaveCardInHand(self):
 		return self.handCardNumber
+
+	LOCK_TIMEOUT = 3.0
+
+	def OnUpdate(self):
+		# MT2009: never leave the board locked. The effects end the lock
+		# (five-near -> EndFiveNearEffect, the hand card's explosion ->
+		# ResultEffectHandCard); if an end event does not come, the step it
+		# owes runs here after LOCK_TIMEOUT seconds.
+		if not self.isLocked:
+			return
+		now = app.GetTime()
+		if now - self.lockTime < self.LOCK_TIMEOUT:
+			return
+		self.lockTime = now
+		if self.pendingFiveNear:
+			import dbg
+			dbg.TraceError("CatchKing: the five-near effect did not end - going on")
+			self.EndFiveNearEffect(*self.pendingFiveNear)
+		elif self.pendingResult:
+			import dbg
+			dbg.TraceError("CatchKing: the card effect did not end - going on")
+			self.ResultEffectHandCard(*self.pendingResult)
+		else:
+			self.isLocked = False
 
 	def OverInToolTip(self, eventType, arg):
 		if arg < 1 or arg > HAND_CARD_MAX:
@@ -1325,6 +1315,10 @@ class CatchKingGamePage(ui.ScriptWindow):
 
 		self.handCardNumber = 0
 		self.isLocked = False
+		self.pendingFiveNear = None
+		self.pendingResult = None
+		if self.destroyCardEffect:
+			self.destroyCardEffect.Hide()
 
 		if self.myHandCardImage:
 			self.myHandCardImage.Hide()
@@ -1425,8 +1419,7 @@ class MiniGameCatchKing(ui.Window):
 			self.waiting_page = CatchKingWaitingPage()
 			self.game_page = CatchKingGamePage(self)
 		except:
-			import exception
-			exception.Abort("MiniGameCatchKing.LoadWindow")
+			uiminigameutil.LoadError("MiniGameCatchKing.LoadWindow")
 
 		self.Hide()
 
@@ -1527,7 +1520,9 @@ def RequestQuestFlag():
 def GetWindow(create = True):
 	wnd = _data['window']
 	if not wnd and create and IsSupported():
-		wnd = MiniGameCatchKing()
+		wnd = uiminigameutil.SafeCreate(MiniGameCatchKing, "Z\xb3ap Kr\xf3la")
+		if not wnd:
+			return None
 		try:
 			wnd.SetItemToolTip(__import__("uiingameevent")._ItemToolTip())
 		except:

@@ -299,6 +299,34 @@ Do zrobienia przy budowie paczek (pliki binarne / zasoby):
 - model stołu `d:/ymir work/npc/okey_npc/` (`okey_npc.gr2`, `.dds`, `.msm`, `motlist.txt`,
   `wait.gr2/.msa`, `wait1.gr2/.msa`).
 
+## Poprawki po teście klienta 2.0.35 (1 października)
+
+- `uiminigameutil.py` (nowy): `UpdateTicker` – nasze exe nie woła pythonowego `OnUpdate` dla
+  `ImageBox`/`ExpandedImageBox`/`Button`/`TextLine`, więc animacje i lecące karty napisane jako
+  obrazek z `OnUpdate` stały w miejscu (Złap Króla: efekt „Moja karta” na pierwszej klatce, plansza
+  zablokowana). Ticker to zwykłe okno-dziecko, które co klatkę woła `TickUpdate()` właściciela.
+  `LoadError`/`SafeCreate` – błąd wczytania okna idzie do syserr i do czatu, okno się nie otwiera
+  (zamiast `exception.Abort`, który zamykał klienta). `DescriptionText` – zasady gier jako
+  zwykłe `TextLine` w ramce opisu (stronicowanie strzałkami, zawijanie po szerokości).
+- `uiminigamerumi.py` + `uiscript/minigamerumi*.py`: teksty okien przez `uiScriptLocale`
+  (uiscript nie może importować `uiminigamerumi` – był `None` i klient padał); bezpiecznik
+  odblokowania kart po 6 s.
+- `uiminigameyutnori.py`: `SetOnMouseLeftButtonUpEvent` dostaje zwykłą metodę (nasz `ui.py` sam
+  owija ją w `__mem_func__`).
+- `uiminigamecatchking.py`: animacje przez ticker; bezpiecznik – po 3 s bez końca animacji gra
+  wykonuje zaległy krok i odblokowuje planszę.
+- `uiflowerevent.py`: pole ilości wymiany na `public/parameter_slot_00.sub` (`cheque_slot.sub`
+  leży w wierszach 506–524 atlasu `public.dds` 256×524 i nasze exe rysowało z niego czerwony pasek
+  z wiersza 0).
+- `uitooltip.py`: 6. i 7. bonus – `world.item_attr_rare` liczy bonusy starą listą APPLY (STR = 5),
+  a nasze tooltipy (i `item_attr`) numerami `POINT_*` (STR = 12); typ z rzadkiego slotu jest
+  zamieniany na `POINT_*` (`RareAttrType`), gdy tooltip nie zna go jako `POINT_*` (STR 5, CON 3, …);
+  numery dwuznaczne (6, 8, 15, 17, 19, 53, 59–62) zostają `POINT_*` – to stosuje serwer. Właściwa
+  poprawka jest po stronie serwera (`item_attr_rare` na nazwy `POINT_*`).
+- `uiseonhae.py`: bez `item.SelectItem(0)` („Cannot find item by 0”).
+- `minigames/d_/ymir work/npc/yut/wait1.msa` … `wait6.msa`: bez efektu
+  `effect/monster2/npc_yut_result_02.mse` (nie ma go w kliencie GF ani w innych źródłach).
+
 ## Dom Towarowy 2 (wydanie oficjalne, klient 2.0.60) – bez zmian exe
 
 Serwer: `server-patches/shopsearch2` (`MT2009_PLUS_SHOP_PART_STACK_V1`, `MT2009_PLUS_SHOP_SEARCH_PL_V1`).

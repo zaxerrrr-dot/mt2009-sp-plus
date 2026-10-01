@@ -33,6 +33,7 @@ import player
 import ui
 import uiCommon
 import wndMgr
+import uiminigameutil
 
 from collections import deque
 
@@ -141,6 +142,18 @@ MSG_CARD_GAIN = _T('OKEY_EVENT_MESSAGE_CARD_GAIN', 'Otrzymujesz zestaw (zestawy)
 MSG_NO_MORE_GAIN = _T('OKEY_EVENT_MESSAGE_NO_MORE_GAIN', 'Nie mo\xbfesz otrzyma\xe6 kolejnych zestaw\xf3w kart Okey.')
 MSG_NO_EXE = 'Rumi (Okey): okno gry pojawi si\xea z aktualizacj\xb9 klienta.'
 
+# The uiscripts' texts: ui.PythonScriptLoader's sandbox lets a uiscript import
+# only uiScriptLocale, localeInfo and a few exe modules (an "import
+# uiminigamerumi" there gives None and the load fails), so the texts go on
+# uiScriptLocale under Owsap's names before any page is loaded.
+import uiScriptLocale
+for _key, _val in (('MINI_GAME_RUMI_TITLE', TITLE), ('MINI_GAME_RUMI_START_TEXT', TEXT_START),
+		('MINI_GAME_RUMI_EXIT', TEXT_EXIT), ('MINI_GAME_RUMI_SCORE', TEXT_SCORE),
+		('MINI_GAME_RUMI_DISCARD_TEXT', TEXT_SAFE_MODE), ('MINI_GAME_RUMI_LBUTTON_DESC', TEXT_LBUTTON),
+		('MINI_GAME_RUMI_RBUTTON_DESC', TEXT_RBUTTON)):
+	if not hasattr(uiScriptLocale, _key):
+		setattr(uiScriptLocale, _key, _val)
+
 
 def DescFile():
 	return "%s/mini_game_okey_desc.txt" % app.GetLocalePath()
@@ -185,6 +198,8 @@ class FrameAnimation(ui.ExpandedImageBox):
 		self.keyEvent = None
 		self.AddFlag('not_pick')
 		self.__Load()
+		# our exe calls no python OnUpdate on an image box (uiminigameutil)
+		self.ticker = uiminigameutil.UpdateTicker(self)
 
 	def __del__(self):
 		ui.ExpandedImageBox.__del__(self)
@@ -211,7 +226,7 @@ class FrameAnimation(ui.ExpandedImageBox):
 	def SetKeyFrameEvent(self, func):
 		self.keyEvent = func
 
-	def OnUpdate(self):
+	def TickUpdate(self):
 		if not self.frames:
 			return
 		self.counter += 1
@@ -242,6 +257,8 @@ class MovingCard(ui.ImageBox):
 		self.pos = (0.0, 0.0)
 		self.lastTime = 0.0
 		self.endEvent = None
+		# our exe calls no python OnUpdate on an image box (uiminigameutil)
+		self.ticker = uiminigameutil.UpdateTicker(self)
 
 	def __del__(self):
 		ui.ImageBox.__del__(self)
@@ -266,7 +283,7 @@ class MovingCard(ui.ImageBox):
 	def SetMovePosition(self, dstX, dstY):
 		self.target = (dstX, dstY)
 
-	def OnUpdate(self):
+	def TickUpdate(self):
 		if not self.moving:
 			return
 		now = app.GetTime()
@@ -355,20 +372,6 @@ class DeckBox(ui.ImageBox):
 # -------------------------------------------------------- the waiting page
 
 class RumiWaitingPage(ui.ScriptWindow):
-	class DescriptionBox(ui.Window):
-		def __init__(self):
-			ui.Window.__init__(self)
-			self.desc_index = -1
-
-		def __del__(self):
-			ui.Window.__del__(self)
-
-		def SetIndex(self, index):
-			self.desc_index = index
-
-		def OnRender(self):
-			event.RenderEventSet(self.desc_index)
-
 	def __init__(self):
 		ui.ScriptWindow.__init__(self)
 
@@ -413,8 +416,7 @@ class RumiWaitingPage(ui.ScriptWindow):
 		try:
 			LoadScript(self, "UIScript/MiniGameRumiWaitingPage.py")
 		except:
-			import exception
-			exception.Abort("MiniGameRumiWaitingPage.LoadWindow.LoadObject")
+			uiminigameutil.LoadError("MiniGameRumiWaitingPage.LoadWindow.LoadObject")
 
 		try:
 			self.GetChild("board").SetCloseEvent(ui.__mem_func__(self.Close))
@@ -423,8 +425,10 @@ class RumiWaitingPage(ui.ScriptWindow):
 			self.startButton.SetEvent(ui.__mem_func__(self.__ClickStartButton))
 
 			self.desc_board = self.GetChild("desc_board")
-			self.description_box = self.DescriptionBox()
-			self.description_box.SetParent(self.desc_board)
+			# MT2009_PLUS_MINIGAME_DESC_V1: the rules as TextLines in the box
+			self.description_box = uiminigameutil.DescriptionText(self.desc_board, 7, DEFAULT_DESC_Y,
+				self.desc_board.GetWidth() - 14, self.desc_board.GetHeight() - DEFAULT_DESC_Y,
+				SHOW_LINE_COUNT_MAX, 18)
 			self.description_box.Show()
 
 			self.confirm_window_check_button = self.GetChild("confirm_check_button")
@@ -450,8 +454,7 @@ class RumiWaitingPage(ui.ScriptWindow):
 			self.rumi_card_count_text = self.GetChild("rumi_card_count_text")
 			self.__RefreshCounters()
 		except:
-			import exception
-			exception.Abort("MiniGameRumiWaitingPage.LoadWindow.BindObject")
+			uiminigameutil.LoadError("MiniGameRumiWaitingPage.LoadWindow.BindObject")
 
 		self.Hide()
 
@@ -460,16 +463,14 @@ class RumiWaitingPage(ui.ScriptWindow):
 
 		self.CloseStartDlg()
 
-		event.ClearEventSet(self.desc_index)
-		self.desc_index = -1
-		self.desc_y = DEFAULT_DESC_Y
-
 		if self.description_box:
 			self.description_box.Hide()
 		_HideToolTip()
 
 	def Destroy(self):
 		self.Close()
+		if self.description_box:
+			self.description_box.Destroy()
 		self.isLoaded = 0
 
 		self.startButton = None
@@ -535,13 +536,6 @@ class RumiWaitingPage(ui.ScriptWindow):
 		if self.start_question_dialog:
 			self.start_question_dialog.Close()
 
-	def OnUpdate(self):
-		if not self.desc_board or self.desc_index < 0:
-			return
-		(xposEventSet, yposEventSet) = self.desc_board.GetGlobalPosition()
-		event.UpdateEventSet(self.desc_index, xposEventSet + 7, -(yposEventSet + self.desc_y))
-		self.description_box.SetIndex(self.desc_index)
-
 	def Show(self):
 		if not self.is_data_requested:
 			net.SendMiniGameRumiRequestQuestFlag()
@@ -549,15 +543,8 @@ class RumiWaitingPage(ui.ScriptWindow):
 
 		ui.ScriptWindow.Show(self)
 
-		event.ClearEventSet(self.desc_index)
-		self.desc_y = DEFAULT_DESC_Y
-		self.desc_index = event.RegisterEventSet(DescFile())
-
-		event.SetFontColor(self.desc_index, 0.7843, 0.7843, 0.7843)
-		event.SetVisibleLineCount(self.desc_index, SHOW_LINE_COUNT_MAX)
-		event.SetRestrictedCount(self.desc_index, DESC_WIDTH_COUNT)
-
 		if self.description_box:
+			self.description_box.LoadFile(DescFile())
 			self.description_box.Show()
 
 		if self.check_image:
@@ -569,32 +556,12 @@ class RumiWaitingPage(ui.ScriptWindow):
 		self.rumi_card_slot.RefreshSlot()
 
 	def __ClickPrevButton(self):
-		line_height = event.GetLineHeight(self.desc_index) + 4
-		cur_start_line = event.GetVisibleStartLine(self.desc_index)
-
-		decrease_count = SHOW_LINE_COUNT_MAX
-
-		if cur_start_line - decrease_count < 0:
-			return
-
-		event.SetVisibleStartLine(self.desc_index, cur_start_line - decrease_count)
-		self.desc_y += (line_height * decrease_count)
+		if self.description_box:
+			self.description_box.PrevPage()
 
 	def __ClickNextButton(self):
-		line_height = event.GetLineHeight(self.desc_index) + 4
-		total_line_count = event.GetProcessedLineCount(self.desc_index)
-		cur_start_line = event.GetVisibleStartLine(self.desc_index)
-
-		increase_count = SHOW_LINE_COUNT_MAX
-
-		if cur_start_line + increase_count >= total_line_count:
-			increase_count = total_line_count - cur_start_line
-
-		if increase_count < 0 or cur_start_line + increase_count >= total_line_count:
-			return
-
-		event.SetVisibleStartLine(self.desc_index, cur_start_line + increase_count)
-		self.desc_y -= (line_height * increase_count)
+		if self.description_box:
+			self.description_box.NextPage()
 
 	def __SlotOverInPiece(self, slot_index):
 		_ShowItemToolTip(ITEM_VNUM_RUMI_CARD_PIECE)
@@ -678,8 +645,7 @@ class RumiGamePage(ui.ScriptWindow):
 		try:
 			LoadScript(self, "UIScript/MiniGameRumiGamePage.py")
 		except:
-			import exception
-			exception.Abort("MiniGameRumiGamePage.LoadWindow.LoadObject")
+			uiminigameutil.LoadError("MiniGameRumiGamePage.LoadWindow.LoadObject")
 
 		try:
 			self.board = self.GetChild("board")
@@ -741,8 +707,7 @@ class RumiGamePage(ui.ScriptWindow):
 			self.move_img.SetEndMoveEvent(ui.__mem_func__(self.CardMoveEndEvnet))
 			self.move_img.Hide()
 		except:
-			import exception
-			exception.Abort("MiniGameRumiGamePage.LoadWindow.BindObject")
+			uiminigameutil.LoadError("MiniGameRumiGamePage.LoadWindow.BindObject")
 
 		self.Hide()
 
@@ -813,11 +778,42 @@ class RumiGamePage(ui.ScriptWindow):
 	def SetConfirmWindowCheck(self, bFlag):
 		self.confirm_window_on = bFlag
 
+	LOCK_TIMEOUT = 6.0
+
 	def OnUpdate(self):
 		self.__DeckFlushEffectCheck()
 
 		if len(self.card_move_queue) > 0 and self.move_img and not self.move_img.GetMove():
 			self.CardMoveStartEvent()
+
+		self.__LockFallback()
+
+	def __LockFallback(self):
+		# MT2009: never leave the cards locked. The moves and the score
+		# effects end the lock; if their end does not come (an animation that
+		# does not run), everything owed is done at once after LOCK_TIMEOUT.
+		if not self.lock:
+			self.lock_since = 0.0
+			return
+		now = app.GetTime()
+		if not getattr(self, 'lock_since', 0.0):
+			self.lock_since = now
+			return
+		if now - self.lock_since < self.LOCK_TIMEOUT:
+			return
+		import dbg
+		dbg.TraceError("Rumi: the cards stayed locked - going on")
+		self.lock_since = 0.0
+		if self.move_img:
+			self.move_img.moving = False
+		while len(self.card_move_queue) > 0:
+			self.CardMoveEndEvnet()
+		if self.__EffectShown():
+			self.__ClearScoreCompletionEffect()
+			self.__SetScore(0)
+			self.__ClearFieldCardSlot()
+		self.clear_field_after_moves = False
+		self.lock = False
 
 	def CardMoveStartEvent(self):
 		if len(self.card_move_queue) == 0:
@@ -1230,8 +1226,7 @@ class MiniGameRumi(ui.Window):
 			self.waiting_page = RumiWaitingPage()
 			self.game_page = RumiGamePage()
 		except:
-			import exception
-			exception.Abort("MiniGameRumi.LoadWindow")
+			uiminigameutil.LoadError("MiniGameRumi.LoadWindow")
 
 		self.Hide()
 
@@ -1324,7 +1319,7 @@ def SetItemToolTip(tooltip):
 
 def GetWindow():
 	if not _data['window']:
-		_data['window'] = MiniGameRumi()
+		_data['window'] = uiminigameutil.SafeCreate(MiniGameRumi, "Okey")
 	return _data['window']
 
 
@@ -1334,14 +1329,18 @@ def Open():
 	if not HasExe():
 		chat.AppendChat(chat.CHAT_TYPE_INFO, MSG_NO_EXE)
 		return
-	GetWindow().Open()
+	window = GetWindow()
+	if window:
+		window.Open()
 
 
 def OpenFromTable():
 	if not HasExe():
 		chat.AppendChat(chat.CHAT_TYPE_INFO, MSG_NO_EXE)
 		return
-	GetWindow().Open(False)
+	window = GetWindow()
+	if window:
+		window.Open(False)
 
 
 def Start():
@@ -1377,7 +1376,9 @@ def DestroyWindow():
 # What the exe calls on the game window (game.py relays these).
 
 def OnStart():
-	GetWindow().GameStart()
+	window = GetWindow()
+	if window:
+		window.GameStart()
 
 
 def OnEnd():
