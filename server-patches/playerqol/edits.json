@@ -670,5 +670,167 @@
   "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V1 (input lag poll)",
   "old": "\tt = get_dword_time();\n\tif (!io_loop(main_fdw)) return 0;\n",
   "new": "\tt = get_dword_time();\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V1 (input lag poll): see g_dwMt2009PlusInputLag.\n\t{\n\t\tstatic DWORD s_dwLastInputRound = 0;\n\t\tg_dwMt2009PlusInputLag = s_dwLastInputRound ? t - s_dwLastInputRound : 0;\n\t\ts_dwLastInputRound = t;\n\t}\n\tif (!io_loop(main_fdw)) return 0;\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (decl)",
+  "old": "\t\tvoid\t\t\t\tNoteShootSkillUsed();\n",
+  "new": "\t\tvoid\t\t\t\tNoteShootSkillUsed();\n\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (decl): one syslog line for an arrow\n\t\t// the server refused, with the check that refused it (rate-limited).\n\t\tvoid\t\t\t\tLogShootReject(DWORD dwTargetVID, BYTE bType, bool bExtra, const char* c_pszReason, const char* c_pszFormat = NULL, ...);\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why)",
+  "old": "extern DWORD g_dwMt2009PlusInputLag;\n",
+  "new": "extern DWORD g_dwMt2009PlusInputLag;\n\n// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why): which of the checks below refused\n// the hit, for the shot's syslog line (CHARACTER::LogShootReject).\nchar g_szMt2009PlusSpeedHackWhy[128] = \"\";\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why swap)",
+  "old": "\t\t\tch->ChatDebug(\"target swap faster than attackSpeed (%d < %d)\", deltaTime, attackSpeed);\n\t\t\treturn true;\n",
+  "new": "\t\t\tch->ChatDebug(\"target swap faster than attackSpeed (%d < %d)\", deltaTime, attackSpeed);\n\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why swap)\n\t\t\tsnprintf(g_szMt2009PlusSpeedHackWhy, sizeof(g_szMt2009PlusSpeedHackWhy), \"draw_too_fast %u < %u ms (lag credit %u)\", (unsigned)deltaTime, (unsigned)attackSpeed, (unsigned)dwLagCredit);\n\t\t\treturn true;\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why move)",
+  "old": "\t\t\tch->ChatDebug(\"where is move packet? (%d > %d)\", movePacketLastAttackTimeDelta, movePacketTimeLimit);\n\t\t\treturn true;\n",
+  "new": "\t\t\tch->ChatDebug(\"where is move packet? (%d > %d)\", movePacketLastAttackTimeDelta, movePacketTimeLimit);\n\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why move)\n\t\t\tsnprintf(g_szMt2009PlusSpeedHackWhy, sizeof(g_szMt2009PlusSpeedHackWhy), \"no_attack_move %u > %u ms (lag credit %u)\", (unsigned)movePacketLastAttackTimeDelta, (unsigned)movePacketTimeLimit, (unsigned)dwLagCredit);\n\t\t\treturn true;\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why victims)",
+  "old": "\t\t\tch->ChatDebug(\"SPEED_HACK: single attack had more than %d victims (%d).\", ATTACK_MAX_VICTIM, ch->playerData->victimCount);\n\t\t\treturn true;\n",
+  "new": "\t\t\tch->ChatDebug(\"SPEED_HACK: single attack had more than %d victims (%d).\", ATTACK_MAX_VICTIM, ch->playerData->victimCount);\n\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why victims)\n\t\t\tsnprintf(g_szMt2009PlusSpeedHackWhy, sizeof(g_szMt2009PlusSpeedHackWhy), \"too_many_victims %d > %d\", (int)ch->playerData->victimCount, (int)ATTACK_MAX_VICTIM);\n\t\t\treturn true;\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why interval)",
+  "old": "\t\t\t\tch->m_speed_hack_count);\n\n\t\t}\n\n\t\treturn true;\n",
+  "new": "\t\t\t\tch->m_speed_hack_count);\n\n\t\t}\n\n\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why interval)\n\t\tsnprintf(g_szMt2009PlusSpeedHackWhy, sizeof(g_szMt2009PlusSpeedHackWhy), \"attack_interval %u < %u ms (lag credit %u)\", (unsigned)deltaTime, (unsigned)attackSpeed, (unsigned)dwLagCredit);\n\t\treturn true;\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why target min)",
+  "old": "\t\t\tch->ChatDebug(\"SPEED_HACK: target_attack_delta_time < REAL_ATTACK_SPEED_MIN (%d < %d)\", target_attack_delta_time, min_attack_speed);\n\t\t\treturn true;\n",
+  "new": "\t\t\tch->ChatDebug(\"SPEED_HACK: target_attack_delta_time < REAL_ATTACK_SPEED_MIN (%d < %d)\", target_attack_delta_time, min_attack_speed);\n\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why target min)\n\t\t\tsnprintf(g_szMt2009PlusSpeedHackWhy, sizeof(g_szMt2009PlusSpeedHackWhy), \"target_min_interval %u < %d ms\", (unsigned)target_attack_delta_time, min_attack_speed);\n\t\t\treturn true;\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why hits)",
+  "old": "\t\t\t\tch->ChatDebug(\"TOO MANY HITS DETECTED!!! (cur %d max %d)\", attackLog.combo_count, average_attack_count_per_2_sec);\n\t\t\t\treturn true;\n",
+  "new": "\t\t\t\tch->ChatDebug(\"TOO MANY HITS DETECTED!!! (cur %d max %d)\", attackLog.combo_count, average_attack_count_per_2_sec);\n\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why hits)\n\t\t\t\tsnprintf(g_szMt2009PlusSpeedHackWhy, sizeof(g_szMt2009PlusSpeedHackWhy), \"too_many_hits_2s %d > %d\", (int)attackLog.combo_count, (int)average_attack_count_per_2_sec);\n\t\t\t\treturn true;\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why target)",
+  "old": "\t\t\tch->ChatDebug(\"SPEED_HACK: delta_time %d real_speed_attack %d\", target_attack_delta_time, player_attack_speed);\n\t\t\treturn true;\n",
+  "new": "\t\t\tch->ChatDebug(\"SPEED_HACK: delta_time %d real_speed_attack %d\", target_attack_delta_time, player_attack_speed);\n\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why target)\n\t\t\tsnprintf(g_szMt2009PlusSpeedHackWhy, sizeof(g_szMt2009PlusSpeedHackWhy), \"target_interval %u < %u ms (lag credit %u)\", (unsigned)target_attack_delta_time, (unsigned)player_attack_speed, (unsigned)dwLagCredit);\n\t\t\treturn true;\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (skill refused)",
+  "old": "\t\tif (false == ch->CanUseSkill(type->type))\n\t\t{\n\t\t\treturn;\n\t\t}\n",
+  "new": "\t\tif (false == ch->CanUseSkill(type->type))\n\t\t{\n\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (skill refused): a shot of a skill\n\t\t\t// that cannot be used is no silent miss either.\n\t\t\tif (HEADER_CG_SHOOT == header)\n\t\t\t\tch->LogShootReject(0, type->type, false, \"skill_unusable\");\n\t\t\treturn;\n\t\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (log)",
+  "old": "static const DWORD MT2009_PLUS_SKILL_SHOT_WAIT = 3000;\n",
+  "new": "static const DWORD MT2009_PLUS_SKILL_SHOT_WAIT = 3000;\n\n// MT2009_PLUS_ARCHER_MULTISHOT_V2 (log): an arrow the server refuses is no\n// silent miss any more - one syslog line \"ARCHER_SHOT_REJECT\" with the check\n// that refused it (IS_SPEED_HACK says which of its own in\n// g_szMt2009PlusSpeedHackWhy). Players only, no bots; at most\n// MT2009_PLUS_SHOT_LOG_LINES lines in MT2009_PLUS_SHOT_LOG_WINDOW ms a\n// player, the rest counted. s_mapMt2009PlusLastShootType: the skill (0 = a\n// normal shot) of a player's last shot, by VID (AnnounceShootTargets).\nextern char g_szMt2009PlusSpeedHackWhy[128];\nstatic std::map<DWORD, BYTE> s_mapMt2009PlusLastShootType;\nstatic const DWORD MT2009_PLUS_SHOT_LOG_WINDOW = 2000;\nstatic const DWORD MT2009_PLUS_SHOT_LOG_LINES = 6;\n\nvoid CHARACTER::LogShootReject(DWORD dwTargetVID, BYTE bType, bool bExtra, const char* c_pszReason, const char* c_pszFormat, ...)\n{\n\tif (!IsPC() || !GetDesc() || GetDesc()->IsBot())\n\t\treturn;\n\n\tstruct SWindow { DWORD dwStart; DWORD dwLines; DWORD dwDropped; };\n\tstatic std::map<DWORD, SWindow> s_mapWindow;\n\n\tconst DWORD dwNow = get_dword_time();\n\tstd::map<DWORD, SWindow>::iterator it = s_mapWindow.find(GetPlayerID());\n\tif (it == s_mapWindow.end())\n\t{\n\t\tSWindow kNew = { dwNow, 0, 0 };\n\t\tit = s_mapWindow.insert(std::make_pair(GetPlayerID(), kNew)).first;\n\t}\n\tSWindow& rkWin = it->second;\n\tif (dwNow - rkWin.dwStart >= MT2009_PLUS_SHOT_LOG_WINDOW)\n\t{\n\t\tif (rkWin.dwDropped)\n\t\t\tsys_log(0, \"ARCHER_SHOT_REJECT %s (pid %u): %u more refused arrow(s) not logged\", GetName(), GetPlayerID(), rkWin.dwDropped);\n\t\trkWin.dwStart = dwNow;\n\t\trkWin.dwLines = 0;\n\t\trkWin.dwDropped = 0;\n\t}\n\tif (rkWin.dwLines >= MT2009_PLUS_SHOT_LOG_LINES)\n\t{\n\t\t++rkWin.dwDropped;\n\t\treturn;\n\t}\n\t++rkWin.dwLines;\n\n\tchar szDetail[192] = \"\";\n\tif (c_pszFormat)\n\t{\n\t\tva_list args;\n\t\tva_start(args, c_pszFormat);\n\t\tvsnprintf(szDetail, sizeof(szDetail), c_pszFormat, args);\n\t\tva_end(args);\n\t}\n\n\tLPCHARACTER pkTarget = dwTargetVID ? CHARACTER_MANAGER::instance().Find(dwTargetVID) : NULL;\n\tsys_log(0, \"ARCHER_SHOT_REJECT %s (pid %u) %s arrow, skill %u, target %u %s: %s%s%s\",\n\t\tGetName(), GetPlayerID(), bExtra ? \"extra\" : \"main\", (unsigned)bType, dwTargetVID,\n\t\tpkTarget ? pkTarget->GetName() : \"-\", c_pszReason, szDetail[0] ? \" - \" : \"\", szDetail);\n}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why skill off)",
+  "old": "\t\t\tif (g_bSkillDisable)\n\t\t\t\treturn;\n\t\t\tm_me->m_SkillUseInfo[m_bType].SetMainTargetVID(dwTargetVID);\n",
+  "new": "\t\t\tif (g_bSkillDisable)\n\t\t\t{\n\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why skill off)\n\t\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"skills_disabled\");\n\t\t\t\treturn;\n\t\t\t}\n\t\t\tm_me->m_SkillUseInfo[m_bType].SetMainTargetVID(dwTargetVID);\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why target)",
+  "old": "\t\tLPCHARACTER pkVictim = CHARACTER_MANAGER::instance().Find(dwTargetVID);\n\t\tif (!pkVictim)\n\t\t\treturn;\n\n\t\tif (!battle_is_attackable(m_me, pkVictim))\n\t\t\treturn;\n\n\t\tif (m_me->GetMapIndex() != pkVictim->GetMapIndex())\n\t\t\treturn;\n",
+  "new": "\t\tLPCHARACTER pkVictim = CHARACTER_MANAGER::instance().Find(dwTargetVID);\n\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why target): every refusal below is\n\t\t// logged (CHARACTER::LogShootReject - players only).\n\t\tif (!pkVictim)\n\t\t{\n\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"target_gone\");\n\t\t\treturn;\n\t\t}\n\n\t\tif (!battle_is_attackable(m_me, pkVictim))\n\t\t{\n\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"not_attackable\", pkVictim->IsDead() ? \"dead\" : NULL);\n\t\t\treturn;\n\t\t}\n\n\t\tif (m_me->GetMapIndex() != pkVictim->GetMapIndex())\n\t\t{\n\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"other_map\");\n\t\t\treturn;\n\t\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why distance)",
+  "old": "\t\t\t\tm_me->ChatDebug(\"[HACK PROFILER] : Attack range bow packet... failed distance %d maxDistance %d\", distance, maxRadius);\n\t\t\t\treturn;\n",
+  "new": "\t\t\t\tm_me->ChatDebug(\"[HACK PROFILER] : Attack range bow packet... failed distance %d maxDistance %d\", distance, maxRadius);\n\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why distance)\n\t\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"distance\", \"%d > %d\", distance, maxRadius);\n\t\t\t\treturn;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why skill extra)",
+  "old": "\t\t\t\t// skill strikes its own target alone.\n\t\t\t\treturn;\n",
+  "new": "\t\t\t\t// skill strikes its own target alone.\n\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why skill extra)\n\t\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, true, \"skill_takes_no_extra\");\n\t\t\t\treturn;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why speed)",
+  "old": "\t\t\tif (IS_SPEED_HACK(m_me, pkVictim, get_dword_time(), true, m_dVictimCount, m_bType))\n\t\t\t{\n\t\t\t\treturn;\n",
+  "new": "\t\t\tif (IS_SPEED_HACK(m_me, pkVictim, get_dword_time(), true, m_dVictimCount, m_bType))\n\t\t\t{\n\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why speed)\n\t\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"speed_check\", \"%s\", g_szMt2009PlusSpeedHackWhy);\n\t\t\t\treturn;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why bow)",
+  "old": "\t\t\t\tif (m_me->GetJob() != JOB_ASSASSIN)\n\t\t\t\t\treturn;\n\n\t\t\t\tif (0 == m_me->GetArrowAndBow(&pkBow, &pkArrow))\n\t\t\t\t\treturn;\n\n\t\t\t\tif (m_me->GetSkillGroup() != 0)\n\t\t\t\t\tif (!m_me->IsNPC() && m_me->GetSkillGroup() != 2)\n\t\t\t\t\t{\n\t\t\t\t\t\tif (m_me->GetSP() < 5)\n\t\t\t\t\t\t\treturn;\n",
+  "new": "\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why bow)\n\t\t\t\tif (m_me->GetJob() != JOB_ASSASSIN)\n\t\t\t\t{\n\t\t\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"not_assassin\");\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tif (0 == m_me->GetArrowAndBow(&pkBow, &pkArrow))\n\t\t\t\t{\n\t\t\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"no_bow_or_arrow\");\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tif (m_me->GetSkillGroup() != 0)\n\t\t\t\t\tif (!m_me->IsNPC() && m_me->GetSkillGroup() != 2)\n\t\t\t\t\t{\n\t\t\t\t\t\tif (m_me->GetSP() < 5)\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"no_sp\");\n\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why magic)",
+  "old": "\t\t\tif (m_me->IsPC())\n\t\t\t\treturn;\n\n\t\t\tiDam = CalcMagicDamage(m_me, pkVictim);\n",
+  "new": "\t\t\tif (m_me->IsPC())\n\t\t\t{\n\t\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (why magic)\n\t\t\t\tm_me->LogShootReject(dwTargetVID, m_bType, m_bAdditional, \"magic_shot_from_player\");\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tiDam = CalcMagicDamage(m_me, pkVictim);\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (clear)",
+  "old": "bool CHARACTER::Shoot(BYTE bType)\n{\n\tif (!CanMove() || IsPC() && IsPolymorphed())\n\t{\n\t\tResetFlyTarget();\n\t\treturn false;\n\t}\n",
+  "new": "bool CHARACTER::Shoot(BYTE bType)\n{\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (clear): the arrow has left the bow (the\n\t// client sends the shot as it lets it go). The extra arrows it took along\n\t// are the ones the server told at the fly target (AnnounceShootTargets);\n\t// any told after that - its answer late behind a held-up round - would\n\t// wait in the shooter's client and fly with the NEXT shot, arrows that\n\t// do nothing. So the shooter's list of extra targets is cleared at every\n\t// shot; packets keep their order, so this never takes the next draw's.\n\tconst bool bMt2009PlusShooter = IsPC() && GetDesc() && !GetDesc()->IsBot() && GetJob() == JOB_ASSASSIN;\n\tif (bMt2009PlusShooter)\n\t{\n\t\tTPacketGCFlyClearTargeting packClear;\n\t\tpackClear.bHeader = HEADER_GC_CLEAR_FLY_SHOOT_TARGETING;\n\t\tpackClear.dwShooterVID = GetVID();\n\t\tGetDesc()->Packet(&packClear, sizeof(TPacketGCFlyClearTargeting));\n\t\ts_mapMt2009PlusLastShootType[GetVID()] = bType;\n\t}\n\n\tif (!CanMove() || IsPC() && IsPolymorphed())\n\t{\n\t\tLogShootReject(m_dwFlyTargetID, bType, false, CanMove() ? \"polymorphed\" : \"cannot_move\");\n\t\tResetFlyTarget();\n\t\treturn false;\n\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why cooldown)",
+  "old": "\t\tChatDebug(\"Shoot: skill on cooldown\");\n\t\treturn false;\n",
+  "new": "\t\tChatDebug(\"Shoot: skill on cooldown\");\n\t\tLogShootReject(m_dwFlyTargetID, bType, false, \"skill_cooldown\"); // MT2009_PLUS_ARCHER_MULTISHOT_V2 (why cooldown)\n\t\treturn false;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (main hit)",
+  "old": "\tconst DWORD dwMainVID = m_dwFlyTargetID;\n",
+  "new": "\tconst DWORD dwMainVID = m_dwFlyTargetID;\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (main hit): the extra arrows land only\n\t// with a main arrow that did - a refused one takes them down with it.\n\tbool bMt2009PlusMainHit = false;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (skill search)",
+  "old": "\t\t\tif (victim && m_vec_dwFlyTargets.size() == 0 && bType != 0) {\n",
+  "new": "\t\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (skill search): only the skills that\n\t\t\t// strike extras; the others refused them (\"skill extra\") and the\n\t\t\t// arrows told for them waited in the clients for the next shot.\n\t\t\tif (victim && m_vec_dwFlyTargets.size() == 0 &&\n\t\t\t\t(bType == SKILL_REPETITIVE_SHOT || bType == SKILL_ARROW_SHOWER || bType == SKILL_HORSE_WILDATTACK_RANGE)) {\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (main result)",
+  "old": "\t\t\tf.m_dVictimCount = m_vec_dwFlyTargets.size() + 1;\n\t\t\tf(m_dwFlyTargetID);\n",
+  "new": "\t\t\tf.m_dVictimCount = m_vec_dwFlyTargets.size() + 1;\n\t\t\tf(m_dwFlyTargetID);\n\t\t\tbMt2009PlusMainHit = f.m_bSucceed; // MT2009_PLUS_ARCHER_MULTISHOT_V2 (main result)\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (why no target)",
+  "old": "\t\telse\n\t\t{\n\t\t\tplayerData->m_dwRemainingShootCount = 0;\n\t\t}\n",
+  "new": "\t\telse\n\t\t{\n\t\t\tLogShootReject(0, bType, false, \"no_fly_target\"); // MT2009_PLUS_ARCHER_MULTISHOT_V2 (why no target)\n\t\t\tplayerData->m_dwRemainingShootCount = 0;\n\t\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (extras gate)",
+  "old": "\t\tfor (size_t i = 0; i < vecExtra.size(); ++i)\n\t\t\tif (vecExtra[i] != dwMainVID)\n\t\t\t\tf(vecExtra[i]);\n",
+  "new": "\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (extras gate): not without the main.\n\t\tfor (size_t i = 0; bMt2009PlusMainHit && i < vecExtra.size(); ++i)\n\t\t\tif (vecExtra[i] != dwMainVID)\n\t\t\t\tf(vecExtra[i]);\n\t\tif (!bMt2009PlusMainHit && !vecExtra.empty())\n\t\t\tLogShootReject(dwMainVID, bType, true, \"main_arrow_refused\", \"%u extra arrow(s) dropped\", (unsigned)vecExtra.size());\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (draw)",
+  "old": "\tstd::map<DWORD, DWORD>::iterator it = s_mapMt2009PlusShootSkillAt.find(GetVID());\n\tif (it != s_mapMt2009PlusShootSkillAt.end())\n\t{\n\t\tif (get_dword_time() - it->second < MT2009_PLUS_SKILL_SHOT_WAIT)\n\t\t\treturn;\n\t\ts_mapMt2009PlusShootSkillAt.erase(it);\n\t}\n\n\tif (playerData->m_dwRemainingShootCount != 0)\n\t\treturn;\n\n\tif (!m_vec_dwFlyTargets.empty())\n\t{\n\t\tm_vec_dwFlyTargets.clear();\n",
+  "new": "\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (draw): a fly target starts a new draw\n\t// (the client sends it once, as the motion begins). Its extra targets are\n\t// picked now and only now - Shoot looks for none for a normal shot - and\n\t// whatever an earlier draw left is taken back first, from every client,\n\t// always (V1 did so only when the server still held some; Shoot had\n\t// emptied that list while late ones still sat in the clients). The\n\t// arrows still owed by a normal draw that never came (the second from\n\t// the saddle) are forgotten: they kept the new draw from picking extras\n\t// and made its shot strike the old ones - extras of the NEXT shot.\n\tbool bSkillDraw = false;\n\tstd::map<DWORD, DWORD>::iterator it = s_mapMt2009PlusShootSkillAt.find(GetVID());\n\tif (it != s_mapMt2009PlusShootSkillAt.end())\n\t{\n\t\tif (get_dword_time() - it->second < MT2009_PLUS_SKILL_SHOT_WAIT)\n\t\t\tbSkillDraw = true;\n\t\telse\n\t\t\ts_mapMt2009PlusShootSkillAt.erase(it);\n\t}\n\n\tif (playerData->m_dwRemainingShootCount != 0)\n\t{\n\t\t// A skill's arrows still due (Repetitive Shot) - left as they are.\n\t\tstd::map<DWORD, BYTE>::const_iterator itType = s_mapMt2009PlusLastShootType.find(GetVID());\n\t\tif (bSkillDraw || itType == s_mapMt2009PlusLastShootType.end() || itType->second != 0)\n\t\t\treturn;\n\t\tplayerData->m_dwRemainingShootCount = 0;\n\t\t// and its target, unless MainFlyTarget just took it again.\n\t\tif (m_dwFlyTargetID != dwTargetVID)\n\t\t\tm_dwFlyTargetID = 0;\n\t}\n\n\t{\n\t\tm_vec_dwFlyTargets.clear();\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (draw skill)",
+  "old": "\t\tPacketAround(&pack, sizeof(TPacketGCFlyClearTargeting), NULL);\n\t}\n\n\t// The target MainFlyTarget took (not an invisible one, not the ground).\n",
+  "new": "\t\tPacketAround(&pack, sizeof(TPacketGCFlyClearTargeting), NULL);\n\t}\n\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (draw skill): a skill's draw finds its\n\t// own at its shot (Shoot), or none.\n\tif (bSkillDraw)\n\t\treturn;\n\n\t// The target MainFlyTarget took (not an invisible one, not the ground).\n"
  }
 ]
