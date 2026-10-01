@@ -672,6 +672,34 @@ namespace
 		return 0;
 	}
 
+	// MT2009_PLUS_SIDEKICK_TRIP_V1: the frontier under a blocked one - the
+	// highest ground the level opens that this core hosts and the companion
+	// has not given up on too - or 0, its own village.
+	long GetPlayerBotFrontierFallback(LPCHARACTER ch, long blocked)
+	{
+		if (!ch)
+			return 0;
+		static const struct { long map; int minLevel; } rows[] = {
+			{ PLAYERBOT_MAP_GROTTO_V2, PLAYERBOT_GROTTO_V2_MIN_LEVEL },
+			{ PLAYERBOT_MAP_GROTTO_V1, PLAYERBOT_GROTTO_V1_MIN_LEVEL },
+			{ PLAYERBOT_MAP_RED_FOREST, PLAYERBOT_RED_FOREST_MIN_LEVEL },
+			{ PLAYERBOT_MAP_FOREST, PLAYERBOT_FOREST_MIN_LEVEL },
+			{ PLAYERBOT_MAP_SPIDER_V2, PLAYERBOT_SPIDER_V2_MIN_LEVEL },
+			{ PLAYERBOT_MAP_HWANG, PLAYERBOT_HWANG_MIN_LEVEL },
+			{ PLAYERBOT_MAP_SOHAN, PLAYERBOT_SOHAN_MIN_LEVEL },
+			{ PLAYERBOT_MAP_ORC_VALLEY, PLAYERBOT_ORC_VALLEY_MIN_LEVEL },
+		};
+		for (size_t i = 0; i < sizeof(rows) / sizeof(rows[0]); ++i)
+		{
+			if (rows[i].map == blocked || (int)ch->GetLevel() < rows[i].minLevel)
+				continue;
+			if (!IsPlayerBotMapHostedHere(rows[i].map) || IsPlayerBotSidekickTripBlocked(ch, rows[i].map))
+				continue;
+			return rows[i].map;
+		}
+		return 0;
+	}
+
 	// The map whose ordinary spawns still sit inside this bot's useful level
 	// window, or 0 when its own village is still the right place for it.
 	long GetPlayerBotFrontierMapForLevel(LPCHARACTER ch)
@@ -702,6 +730,10 @@ namespace
 		// map the draw above gives a stone hunter in their place.
 		if (IsPlayerBotSpiderMap(map) && IsPlayerBotMetinologNow(ch))
 			map = PLAYERBOT_MAP_SOHAN;
+		// MT2009_PLUS_SIDEKICK_TRIP_V1: a companion that could not get there
+		// takes the next ground down for a while.
+		if (map != 0 && IsPlayerBotSidekickTripBlocked(ch, map))
+			return GetPlayerBotFrontierFallback(ch, map);
 		return IsPlayerBotMapHostedHere(map) ? map : 0;
 	}
 
@@ -1762,6 +1794,31 @@ namespace
 	// until it leaves M1.
 	const DWORD PLAYERBOT_M1_HOLD_RELEASE_MS = 20 * 60 * 1000;
 	std::map<DWORD, DWORD> s_mapPlayerBotM1HeldSince;
+	// MT2009_PLUS_SIDEKICK_TRIP_V1: what held it there on the last pass, for
+	// the status line ("Ide do Groty..." over a bot held in Joan for an hour)
+	// and the companion's trip watch. Index into the tables below.
+	struct TPlayerBotM1HoldWhy { DWORD dwAt; BYTE bWhy; };
+	std::map<DWORD, TPlayerBotM1HoldWhy> s_mapPlayerBotM1HoldWhy;
+	const char* const PLAYERBOT_M1_HOLD_WHY_KEY[] = { "medal", "fight_gear", "bag", "m1_services", "biologist_herbs",
+			"potions", "gambler", "town" };
+	const char* const PLAYERBOT_M1_HOLD_WHY_PL[] = { "Medal Konny", "brak broni/zbroi lub mikstur", "pelny plecak",
+			"uslugi w wiosce", "misja Biologa w wiosce", "nadmiar mikstur", "kowal", "zakupy w wiosce" };
+
+	// The hold's reason seen in the last ten seconds, or -1.
+	int GetPlayerBotM1HoldWhy(DWORD pid, DWORD dwNow)
+	{
+		std::map<DWORD, TPlayerBotM1HoldWhy>::const_iterator it = s_mapPlayerBotM1HoldWhy.find(pid);
+		if (it == s_mapPlayerBotM1HoldWhy.end() || dwNow - it->second.dwAt > 10000)
+			return -1;
+		return it->second.bWhy;
+	}
+
+	// Lets a held bot go at once, as PLAYERBOT_M1_HOLD_RELEASE_MS would.
+	void ReleasePlayerBotM1Hold(DWORD pid)
+	{
+		s_mapPlayerBotM1HeldSince[pid] = 1;
+		s_mapPlayerBotM1HoldWhy.erase(pid);
+	}
 
 	bool ManagePlayerBotWorldTravel(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
@@ -2078,6 +2135,11 @@ namespace
 					heldSince = dwNow;
 				if (dwNow - heldSince < PLAYERBOT_M1_HOLD_RELEASE_MS)
 				{
+					// MT2009_PLUS_SIDEKICK_TRIP_V1: the first reason, in the hold's order.
+					TPlayerBotM1HoldWhy& why = s_mapPlayerBotM1HoldWhy[ch->GetPlayerID()];
+					why.dwAt = dwNow;
+					why.bWhy = holdsMedalToHandIn ? 0 : fightBlocks ? 1 : bagBlocks ? 2 : needsM1OnlyServices ? 3 :
+							herbs ? 4 : potionsBlock ? 5 : gambler ? 6 : 7;
 					PlayerBotLogThrottled("m1_hold", dwNow,
 							"PLAYERBOT_WORLD: m1 hold pid=%u name=%s level=%u held_s=%u medal=%d fight=%d bag=%d m1_services=%d herbs=%d potions=%d gambler=%d town=%d visited=%d",
 							ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), (dwNow - heldSince) / 1000U,
