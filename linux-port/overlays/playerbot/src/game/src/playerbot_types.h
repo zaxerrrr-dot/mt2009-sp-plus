@@ -1746,8 +1746,11 @@ namespace
 	// members have GATHER_MS to come to a spot RALLY_MIN..+RALLY_SPREAD from
 	// him - his aggressive sight is 2000 - and a member within ARRIVED_RANGE
 	// of him counts as come. A fight whose boss has not lost half a percent
-	// of his health in STALL_MS calls REINFORCEMENTS more once, and the second
-	// stall gives him up for OUTPACED_COOLDOWN_MS; FIGHT_MAX_MS ends any
+	// of his health in STALL_MS calls REINFORCEMENTS more, up to
+	// REINFORCE_ROUNDS times and never past twice the raid's size; a stall
+	// with nobody left to call gives him up for OUTPACED_COOLDOWN_MS - unless
+	// he is under FINISH_PERCENT of his health, when the raid stays on him
+	// (2.2.51: raids gave up bosses at a dozen percent); FIGHT_MAX_MS ends any
 	// fight. The loot window after his fall is LOOT_MS. A bot is called with
 	// MIN_HP_PERCENT of its health and the potions below, and a boss is
 	// nobody's target past MAX_ATTACKERS on him - the claim a monster has kept
@@ -1774,10 +1777,17 @@ namespace
 	// kilometres from its spot), while one warped in from another map was
 	// there at once.
 	const int PLAYERBOT_BOSS_RAID_WALK_MAX = 20000;
-	const int PLAYERBOT_BOSS_RAID_MIN_HP_PERCENT = 80;
+	// MT2009_PLUS_BOSS_RAID_V2 (2.2.51): half its health is enough - the walk
+	// to him is its time for the potions (was 80).
+	const int PLAYERBOT_BOSS_RAID_MIN_HP_PERCENT = 50;
 	const size_t PLAYERBOT_BOSS_RAID_MIN_RED_POTIONS = 30;
 	const size_t PLAYERBOT_BOSS_RAID_MIN_BLUE_POTIONS = 15;
-	const int PLAYERBOT_BOSS_RAID_REINFORCEMENTS = 3;
+	// MT2009_PLUS_BOSS_RAID_V2 (2.2.51): up to three rounds of four (was one
+	// round of three), at most twice the raid's size; and a boss under this
+	// share of his health is finished off whatever the stall says.
+	const int PLAYERBOT_BOSS_RAID_REINFORCEMENTS = 4;
+	const int PLAYERBOT_BOSS_RAID_REINFORCE_ROUNDS = 3;
+	const int PLAYERBOT_BOSS_RAID_FINISH_PERCENT = 30;
 	const int PLAYERBOT_BOSS_MAX_ATTACKERS = 8;
 	// The Demon Tower raid (playerbot_demon_tower.h): one bot guild at a
 	// time on this core, the first a few minutes after a start and the next
@@ -2995,8 +3005,11 @@ namespace
 	// matches or beats is goods (IsPlayerBotFinishedSpareGoods).
 	const BYTE PLAYERBOT_SPARE_GOODS_MIN_PLUS = 7;
 	// Point 7, "Protokol Odbudowy": how long the merchant's plain piece waits
-	// for the market after the only weapon, armour or shield burnt.
-	const DWORD PLAYERBOT_REBUILD_MARKET_MS = 3 * 60 * 1000;
+	// for the market after the only weapon, armour or shield burnt -
+	// MT2009_PLUS_BOSS_RAID_V2 (2.2.52): only when a stand of the map holds a
+	// replacement (PlayerBotFindBurnReplacementToBuy), and two minutes (was
+	// three, and whatever the market held).
+	const DWORD PLAYERBOT_REBUILD_MARKET_MS = 2 * 60 * 1000;
 	// Point 6: the only gear a stone goes on (IsPlayerBotBonusCategoryAllowed) -
 	// the level-30 average-damage weapons from +4, every weapon from level 45
 	// at +7, shields from level 21 at +7 (and body armour and helmets with them,

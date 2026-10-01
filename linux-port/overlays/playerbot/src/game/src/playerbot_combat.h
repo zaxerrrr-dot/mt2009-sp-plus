@@ -947,6 +947,16 @@ namespace
 		// animation plays at somebody nothing can hurt.
 		if (target->IsPC() && !CanPlayerBotStrikeCharacter(ch, target))
 			return false;
+		// MT2009_PLUS_BOSS_RAID_V2 (2.2.52, tool in hand): no skill cast with a
+		// rod or a pickaxe in the hand - the weapon first (the next tick casts).
+		{
+			LPITEM held = ch->GetWear(WEAR_WEAPON);
+			if (held && (held->GetType() == ITEM_ROD || held->GetType() == ITEM_PICK))
+			{
+				ReadyPlayerBotHandForFight(ch, state, dwNow, "attack_skill");
+				return false;
+			}
+		}
 		LPITEM archerBow = NULL;
 		LPITEM archerArrow = NULL;
 		if (ch->GetJob() == JOB_ASSASSIN && ch->GetSkillGroup() == 2)
