@@ -234,6 +234,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // the Guardian, the key on the first floor and the six floors after it.
 // After boss_raid.h, beside the tower whose scan-free fight it borrows.
 #include "playerbot_catacomb.h"
+// MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (include): the test cohort that runs the
+// three Arezzo dungeons in a loop. After the Catacomb, whose fight it borrows.
+#include "playerbot_arezzo_dungeon_bots.h"
 // Pirate Tanaka and Zuo's Metin rain: what the timed events put into the
 // world, and the bots that answer them. After the raids, whose fight it
 // borrows and which it gives way to.
@@ -3033,6 +3036,7 @@ void CPlayerBotManager::StartWorldClock()
 	mt2009_ochao::Start(); // MT2009_PLUS_OCHAO_V1 (start): only where map 209 is hosted
 	mt2009_arezzo::Start(); // MT2009_PLUS_AREZZO_MODULE_V1 (start): every core
 	StartPlayerBotArezzoWatch(); // MT2009_PLUS_AREZZO_BOTS_V1 (start): where 360-362 are hosted
+	StartPlayerBotArezzoDungeonWatch(); // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (start): runs where 364-366 are hosted
 	if (s_pkPlayerBotUpdateEvent || s_pkPlayerBotWorldEvent)
 		return;
 	playerbot_world_event_info* info = AllocEventInfo<playerbot_world_event_info>();
@@ -3059,6 +3063,14 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 	// Being retired: out of the world until its character is new.
 	if (IsPlayerBotRetirementHold(dwPlayerID))
 		return false;
+	// MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (spawn): the Arezzo dungeon cohort lives
+	// on the core that hosts the dungeons; every other core leaves it alone.
+	if (IsPlayerBotArezzoDungeonReservedPID(dwPlayerID))
+	{
+		PlayerBotLogThrottled("arzdg_reserved", get_dword_time(),
+				"ARZ_DG: refused pid=%u here, the dungeon cohort's (playerbot_arezzo_dungeon_cohort.txt)", dwPlayerID);
+		return false;
+	}
 
 	// The kingdom comes from the registry, never from the caller. A PID whose
 	// seeded character is Jinno starts as Jinno or does not start at all -
@@ -4714,7 +4726,7 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 			continue;
 		// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): the Arezzo test's characters
 		// play for as long as the test runs.
-		if (IsPlayerBotArezzoCohortPID(pid))
+		if (IsPlayerBotArezzoCohortPID(pid) || IsPlayerBotArezzoDungeonCohortPID(pid)) // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1
 			continue;
 		std::map<DWORD, DWORD>::iterator session = m_mapLifeSessionEnd.find(pid);
 		if (session == m_mapLifeSessionEnd.end())
@@ -6134,6 +6146,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_SHOUTERS_V1: a shouter at its level stands at its post
 		// and shouts, and does nothing else (playerbot_shouters.h).
 		if (ManagePlayerBotShouterTick(ch, state, dwNow))
+			continue;
+
+		// MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (tick): the Arezzo dungeon cohort on
+		// its dungeon's map - the lobby or a run - does nothing else, ahead of
+		// every errand, quarrel and guild war (playerbot_arezzo_dungeon_bots.h).
+		if (ManagePlayerBotArezzoDungeon(ch, state, dwNow))
 			continue;
 
 		// A stone this bot hurt within PLAYERBOT_METIN_LOOT_SHARE_MS is gone:
