@@ -147,6 +147,23 @@
 // ingameEventSystem, PythonInGameEventSystemManager.cpp).
 #define ENABLE_INGAME_EVENT_MANAGER
 
+// MT2009_PLUS_MINIGAMES_V1: Owsap v6.2.6 mini games (Rumi/Okey CG+GC 181, Yut Nori CG+GC 182,
+// Catch the King CG 226 / GC 238, Flower Event CG+GC 187), see client-patches/exe/MINIGAMES.md.
+#define ENABLE_MINI_GAME_RUMI
+#define ENABLE_OKEY_EVENT_FLAG_RENEWAL
+#define ENABLE_MINI_GAME_YUTNORI
+#define ENABLE_YUTNORI_EVENT_FLAG_RENEWAL
+#define ENABLE_MINI_GAME_CATCH_KING
+#define ENABLE_CATCH_KING_EVENT_FLAG_RENEWAL
+#define ENABLE_FLOWER_EVENT
+// Owsap ui widgets / wndMgr functions (MoveImageBox, MoveScaleImageBox, MoveTextLine, Circle,
+// ResetFrame + OnKeyFrame, EnableFlash, slot cover/highlight images, ...).
+#define ENABLE_OWSAP_WNDMGR_EX
+// Render target window (wndMgr.RegisterRenderTarget, app.RENDER_TARGET_INDEX_*); the 3D Yut Nori thrower.
+#define RENDER_TARGET
+// wndMgr.SetWheelTopWindow / ClearWheelTopWindow (OnMouseWheelButtonUp/Down of that window).
+#define ENABLE_MOUSE_WHEEL_TOP_WINDOW
+
 #define __BL_CLIP_MASK__
 
 #define ENABLE_FIX_MOBS_LAG

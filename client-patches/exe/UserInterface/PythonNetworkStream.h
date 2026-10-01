@@ -709,6 +709,57 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool RecvInGameEventPacket();
 #endif
 
+		// MT2009_PLUS_MINIGAMES_V1 (Owsap v6.2.6 names)
+#if defined(ENABLE_MINI_GAME_RUMI) || defined(ENABLE_MINI_GAME_YUTNORI) || defined(ENABLE_MINI_GAME_CATCH_KING)
+		bool __RecvMiniGameBody(WORD wSize, size_t uiHeaderSize, std::vector<char>& rBody);
+#endif
+#ifdef ENABLE_MINI_GAME_RUMI
+		bool RecvMiniGameRumi();
+	public:
+		bool SendMiniGameRumiExit();
+		bool SendMiniGameRumiStart();
+		bool SendMiniGameRumiDeckCardClick();
+		bool SendMiniGameRumiHandCardClick(bool bUse, BYTE bIndex);
+		bool SendMiniGameRumiFieldCardClick(BYTE bIndex);
+#ifdef ENABLE_OKEY_EVENT_FLAG_RENEWAL
+		bool SendMiniGameRumiRequestQuestFlag();
+#endif
+	protected:
+		bool __SendMiniGameRumi(BYTE bSubHeader, bool bUse = false, BYTE bIndex = 0);
+#endif
+#ifdef ENABLE_MINI_GAME_YUTNORI
+		bool RecvMiniGameYutnori();
+	public:
+		bool SendMiniGameYutnoriStart();
+		bool SendMiniGameYutnoriGiveup();
+		bool SendMiniGameYutnoriProb(BYTE bProbIndex);
+		bool SendMiniGameYutnoriCharClick(BYTE bPlayerIndex);
+		bool SendMiniGameYutnoriThrow(BYTE bPC);
+		bool SendMiniGameYutnoriMove(BYTE bPlayerIndex);
+		bool SendMiniGameYutnoriReward();
+		bool SendMiniGameYutnoriRequestComAction();
+#ifdef ENABLE_YUTNORI_EVENT_FLAG_RENEWAL
+		bool SendMiniGameYutnoriRequestQuestFlag();
+#endif
+	protected:
+		bool __SendMiniGameYutnori(BYTE bSubHeader, BYTE bArgument = 0);
+#endif
+#ifdef ENABLE_MINI_GAME_CATCH_KING
+		bool RecvMiniGameCatchKingPacket();
+	public:
+		bool SendMiniGameCatchKing(BYTE bSubHeader, BYTE bSubArgument);
+#ifdef ENABLE_CATCH_KING_EVENT_FLAG_RENEWAL
+		bool SendMiniGameCatchKingRequestQuestFlag();
+#endif
+	protected:
+#endif
+#ifdef ENABLE_FLOWER_EVENT
+		bool RecvFlowerEventPacket();
+	public:
+		bool SendFlowerEventPacket(BYTE bSubHeader, BYTE bShootType = SHOOT_TYPE_MAX, BYTE bExchangeKey = 0);
+	protected:
+#endif
+
 		bool RecvSpecialFlagPacket();
 
 	protected:

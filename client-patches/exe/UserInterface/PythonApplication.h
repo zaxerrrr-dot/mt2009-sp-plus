@@ -53,6 +53,12 @@
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 #include "PythonInGameEventSystemManager.h" // MT2009_PLUS_EVENT_MANAGER_V1
 #endif
+#if defined(RENDER_TARGET)
+#include "../EterLib/RenderTargetManager.h" // MT2009_PLUS_MINIGAMES_V1
+#endif
+#ifdef ENABLE_MINI_GAME_YUTNORI
+#include "PythonYutnoriManager.h" // MT2009_PLUS_MINIGAMES_V1
+#endif
 
 inline bool bMarkBot = false;
 
@@ -202,6 +208,10 @@ class CPythonApplication : public CMSApplication, public CInputKeyboard, public 
 		void SetCamera(float Distance, float Pitch, float Rotation, float fDestinationHeight);
 		void SetCamera(float x, float y, float z, float Distance, float Pitch, float Rotation);
 		void GetCamera(float * Distance, float * Pitch, float * Rotation, float * DestinationHeight);
+#ifdef ENABLE_MINI_GAME_YUTNORI
+		void YutnoriCreate(); // MT2009_PLUS_MINIGAMES_V1
+		void SetYutnoriCameraPosition();
+#endif
 		void RotateCamera(int iDirection);
 		void PitchCamera(int iDirection);
 		void ZoomCamera(int iDirection);
@@ -368,6 +378,12 @@ class CPythonApplication : public CMSApplication, public CInputKeyboard, public 
 #endif
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 		CPythonInGameEventSystemManager	m_pyInGameEventSystem; // MT2009_PLUS_EVENT_MANAGER_V1
+#endif
+#if defined(RENDER_TARGET)
+		CRenderTargetManager		m_kRenderTargetManager; // MT2009_PLUS_MINIGAMES_V1
+#endif
+#ifdef ENABLE_MINI_GAME_YUTNORI
+		CPythonYutnoriManager		m_pyYutnoriManager; // MT2009_PLUS_MINIGAMES_V1
 #endif
 
 		CPythonSafeBox				m_pySafeBox;

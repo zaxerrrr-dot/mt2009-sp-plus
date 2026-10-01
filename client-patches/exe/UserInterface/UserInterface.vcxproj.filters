@@ -12,6 +12,7 @@
     <ClCompile Include="CameraProcedure.cpp" />
     <ClCompile Include="PythonAcce.cpp" />
     <ClCompile Include="PythonInGameEventSystemManager.cpp" />
+    <ClCompile Include="PythonYutnoriManager.cpp" />
     <ClCompile Include="PythonBackground.cpp" />
     <ClCompile Include="PythonBackgroundModule.cpp" />
     <ClCompile Include="PythonCharacterManager.cpp" />
@@ -110,6 +111,7 @@
     <ClInclude Include="InstanceBase.h" />
     <ClInclude Include="PythonAcce.h" />
     <ClInclude Include="PythonInGameEventSystemManager.h" />
+    <ClInclude Include="PythonYutnoriManager.h" />
     <ClInclude Include="PythonBackground.h" />
     <ClInclude Include="PythonCharacterManager.h" />
     <ClInclude Include="PythonEventManager.h" />

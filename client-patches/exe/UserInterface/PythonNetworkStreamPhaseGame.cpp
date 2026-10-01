@@ -396,6 +396,378 @@ bool CPythonNetworkStream::RecvInGameEventPacket()
 }
 #endif
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// MT2009_PLUS_MINIGAMES_V1: Owsap v6.2.6 mini games (Rumi, Yut Nori, Catch the King, Flower Event).
+// Same python callbacks as Owsap. Fix vs Owsap: every sub-packet body is size-checked before it is
+// read (a short body is skipped instead of reading past the buffer).
+#if defined(ENABLE_MINI_GAME_RUMI) || defined(ENABLE_MINI_GAME_YUTNORI) || defined(ENABLE_MINI_GAME_CATCH_KING)
+bool CPythonNetworkStream::__RecvMiniGameBody(WORD wSize, size_t uiHeaderSize, std::vector<char>& rBody)
+{
+	if (wSize < uiHeaderSize)
+		return false;
+
+	const size_t uiBodySize = wSize - uiHeaderSize;
+	rBody.assign(uiBodySize, 0);
+	if (uiBodySize && !Recv((int)uiBodySize, &rBody[0]))
+		return false;
+
+	return true;
+}
+
+template <class T>
+static const T* __MT2009_Body(const std::vector<char>& rBody, BYTE bSubHeader, const char* c_szPacket)
+{
+	if (rBody.size() < sizeof(T))
+	{
+		TraceError("%s: subheader %d body %u < %u", c_szPacket, bSubHeader, (unsigned int)rBody.size(), (unsigned int)sizeof(T));
+		return NULL;
+	}
+	return reinterpret_cast<const T*>(&rBody[0]);
+}
+#endif
+
+#ifdef ENABLE_MINI_GAME_RUMI
+bool CPythonNetworkStream::RecvMiniGameRumi()
+{
+	TPacketGCMiniGameRumi Packet;
+	if (!Recv(sizeof(Packet), &Packet))
+		return false;
+
+	std::vector<char> vBody;
+	if (!__RecvMiniGameBody(Packet.wSize, sizeof(Packet), vBody))
+		return false;
+
+	PyObject* poWnd = m_apoPhaseWnd[PHASE_WINDOW_GAME];
+	switch (Packet.bSubHeader)
+	{
+		case RUMI_GC_SUBHEADER_END:
+			PyCallClassMemberFunc(poWnd, "MiniGameRumiEnd", Py_BuildValue("()"));
+			break;
+
+		case RUMI_GC_SUBHEADER_START:
+			PyCallClassMemberFunc(poWnd, "MiniGameRumiStart", Py_BuildValue("()"));
+			break;
+
+		case RUMI_GC_SUBHEADER_SET_DECK:
+			if (const TPacketGCMiniGameRumiSetDeck* p = __MT2009_Body<TPacketGCMiniGameRumiSetDeck>(vBody, Packet.bSubHeader, "RecvMiniGameRumi"))
+				PyCallClassMemberFunc(poWnd, "MiniGameRumiSetDeckCount", Py_BuildValue("(i)", p->bDeckCount));
+			break;
+
+		case RUMI_GC_SUBHEADER_SET_SCORE:
+			if (const TPacketGCMiniGameRumiSetScore* p = __MT2009_Body<TPacketGCMiniGameRumiSetScore>(vBody, Packet.bSubHeader, "RecvMiniGameRumi"))
+				PyCallClassMemberFunc(poWnd, "MiniGameRumiIncreaseScore", Py_BuildValue("(ii)", p->wScore, p->wTotalScore));
+			break;
+
+		case RUMI_GC_SUBHEADER_MOVE_CARD:
+			if (const TPacketGCMiniGameRumiMoveCard* p = __MT2009_Body<TPacketGCMiniGameRumiMoveCard>(vBody, Packet.bSubHeader, "RecvMiniGameRumi"))
+				PyCallClassMemberFunc(poWnd, "MiniGameRumiMoveCard", Py_BuildValue("(iiiiiiii)",
+					p->bSrcPos, p->bSrcIndex, p->bSrcColor, p->bSrcNumber,
+					p->bDstPos, p->bDstIndex, p->bDstColor, p->bDstNumber));
+			break;
+
+#ifdef ENABLE_OKEY_EVENT_FLAG_RENEWAL
+		case RUMI_GC_SUBHEADER_SET_CARD_PIECE_FLAG:
+		case RUMI_GC_SUBHEADER_SET_CARD_FLAG:
+		case RUMI_GC_SUBHEADER_SET_QUEST_FLAG:
+		case RUMI_GC_SUBHEADER_NO_MORE_GAIN:
+			if (const TPacketGCMiniGameRumiQuestFlag* p = __MT2009_Body<TPacketGCMiniGameRumiQuestFlag>(vBody, Packet.bSubHeader, "RecvMiniGameRumi"))
+				PyCallClassMemberFunc(poWnd, "MiniGameRumiFlagProcess", Py_BuildValue("(i(ii))", Packet.bSubHeader, p->wCardPieceCount, p->wCardCount));
+			break;
+#endif
+
+		default:
+			TraceError("RecvMiniGameRumi: unknown subheader %d", Packet.bSubHeader);
+			break;
+	}
+
+	return true;
+}
+
+bool CPythonNetworkStream::__SendMiniGameRumi(BYTE bSubHeader, bool bUse, BYTE bIndex)
+{
+	TPacketCGMiniGameRumi Packet;
+	Packet.bHeader = HEADER_CG_MINI_GAME_RUMI;
+	Packet.bSubHeader = bSubHeader;
+	Packet.bUseCard = bUse ? TRUE : FALSE;
+	Packet.bIndex = bIndex;
+
+	if (!Send(sizeof(Packet), &Packet))
+	{
+		Tracef("SendMiniGameRumi %d Error\n", bSubHeader);
+		return false;
+	}
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendMiniGameRumiExit() { return __SendMiniGameRumi(RUMI_CG_SUBHEADER_END); }
+bool CPythonNetworkStream::SendMiniGameRumiStart() { return __SendMiniGameRumi(RUMI_CG_SUBHEADER_START); }
+bool CPythonNetworkStream::SendMiniGameRumiDeckCardClick() { return __SendMiniGameRumi(RUMI_CG_SUBHEADER_DECK_CARD_CLICK); }
+bool CPythonNetworkStream::SendMiniGameRumiHandCardClick(bool bUse, BYTE bIndex) { return __SendMiniGameRumi(RUMI_CG_SUBHEADER_HAND_CARD_CLICK, bUse, bIndex); }
+bool CPythonNetworkStream::SendMiniGameRumiFieldCardClick(BYTE bIndex) { return __SendMiniGameRumi(RUMI_CG_SUBHEADER_FIELD_CARD_CLICK, false, bIndex); }
+#ifdef ENABLE_OKEY_EVENT_FLAG_RENEWAL
+bool CPythonNetworkStream::SendMiniGameRumiRequestQuestFlag() { return __SendMiniGameRumi(RUMI_CG_SUBHEADER_REQUEST_QUEST_FLAG); }
+#endif
+#endif
+
+#ifdef ENABLE_MINI_GAME_YUTNORI
+bool CPythonNetworkStream::RecvMiniGameYutnori()
+{
+	TPacketGCMiniGameYutnori Packet;
+	if (!Recv(sizeof(Packet), &Packet))
+		return false;
+
+	std::vector<char> vBody;
+	if (!__RecvMiniGameBody(Packet.wSize, sizeof(Packet), vBody))
+		return false;
+
+	PyObject* poWnd = m_apoPhaseWnd[PHASE_WINDOW_GAME];
+	const char* c_szName = "RecvMiniGameYutnori";
+	switch (Packet.bSubHeader)
+	{
+		case YUTNORI_GC_SUBHEADER_START:
+		case YUTNORI_GC_SUBHEADER_STOP:
+			PyCallClassMemberFunc(poWnd, "YutnoriProcess", Py_BuildValue("(ii)", Packet.bSubHeader, 0));
+			break;
+
+		case YUTNORI_GC_SUBHEADER_SET_PROB:
+			if (const TPacketGCMiniGameYutnoriSetProb* p = __MT2009_Body<TPacketGCMiniGameYutnoriSetProb>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "YutnoriProcess", Py_BuildValue("(ii)", Packet.bSubHeader, p->bProbIndex));
+			break;
+
+		case YUTNORI_GC_SUBHEADER_THROW:
+			if (const TPacketGCMiniGameYutnoriThrowYut* p = __MT2009_Body<TPacketGCMiniGameYutnoriThrowYut>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "YutnoriProcess", Py_BuildValue("(i(ii))", Packet.bSubHeader, p->bPC ? 1 : 0, p->bYut));
+			break;
+
+		case YUTNORI_GC_SUBHEADER_MOVE:
+			if (const TPacketGCMiniGameYutnoriMoveYut* p = __MT2009_Body<TPacketGCMiniGameYutnoriMoveYut>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "YutnoriProcess", Py_BuildValue("(i(iiiii))", Packet.bSubHeader,
+					p->bPC ? 1 : 0, p->bUnitIndex, p->bIsCatch ? 1 : 0, p->bStartIndex, p->bDestIndex));
+			break;
+
+		case YUTNORI_GC_SUBHEADER_AVAILABLE_AREA:
+			if (const TPacketGCMiniGameYutnoriAvailableArea* p = __MT2009_Body<TPacketGCMiniGameYutnoriAvailableArea>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "YutnoriProcess", Py_BuildValue("(i(ii))", Packet.bSubHeader, p->bPlayerIndex, p->bAvailableIndex));
+			break;
+
+		case YUTNORI_GC_SUBHEADER_PUSH_CATCH_YUT:
+			if (const TPacketGCMiniGameYutnoriPushCatchYut* p = __MT2009_Body<TPacketGCMiniGameYutnoriPushCatchYut>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "YutnoriProcess", Py_BuildValue("(i(ii))", Packet.bSubHeader, p->bPC ? 1 : 0, p->bUnitIndex));
+			break;
+
+		case YUTNORI_GC_SUBHEADER_SET_SCORE:
+			if (const TPacketGCMiniGameYutnoriSetScore* p = __MT2009_Body<TPacketGCMiniGameYutnoriSetScore>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "YutnoriProcess", Py_BuildValue("(ii)", Packet.bSubHeader, p->wScore));
+			break;
+
+		case YUTNORI_GC_SUBHEADER_SET_REMAIN_COUNT:
+			if (const TPacketGCMiniGameYutnoriSetRemainCount* p = __MT2009_Body<TPacketGCMiniGameYutnoriSetRemainCount>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "YutnoriProcess", Py_BuildValue("(ii)", Packet.bSubHeader, p->bRemainCount));
+			break;
+
+		case YUTNORI_GC_SUBHEADER_PUSH_NEXT_TURN:
+			if (const TPacketGCMiniGameYutnoriPushNextTurn* p = __MT2009_Body<TPacketGCMiniGameYutnoriPushNextTurn>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "YutnoriProcess", Py_BuildValue("(i(ii))", Packet.bSubHeader, p->bPC ? 1 : 0, p->bState));
+			break;
+
+#ifdef ENABLE_YUTNORI_EVENT_FLAG_RENEWAL
+		case YUTNORI_GC_SUBHEADER_SET_YUT_PIECE_FLAG:
+		case YUTNORI_GC_SUBHEADER_SET_YUT_BOARD_FLAG:
+		case YUTNORI_GC_SUBHEADER_SET_QUEST_FLAG:
+		case YUTNORI_GC_SUBHEADER_NO_MORE_GAIN:
+			if (const TPacketGCMiniGameYutnoriQuestFlag* p = __MT2009_Body<TPacketGCMiniGameYutnoriQuestFlag>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "YutnoriFlagProcess", Py_BuildValue("(i(ii))", Packet.bSubHeader, p->wYutPieceCount, p->wYutBoardCount));
+			break;
+#endif
+
+		default:
+			TraceError("RecvMiniGameYutnori: unknown subheader %d", Packet.bSubHeader);
+			break;
+	}
+
+	return true;
+}
+
+bool CPythonNetworkStream::__SendMiniGameYutnori(BYTE bSubHeader, BYTE bArgument)
+{
+	TPacketCGMiniGameYutnori Packet;
+	Packet.bHeader = HEADER_CG_MINI_GAME_YUTNORI;
+	Packet.bSubHeader = bSubHeader;
+	Packet.bArgument = bArgument;
+
+	if (!Send(sizeof(Packet), &Packet))
+	{
+		Tracef("SendMiniGameYutnori %d Error\n", bSubHeader);
+		return false;
+	}
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendMiniGameYutnoriStart() { return __SendMiniGameYutnori(YUTNORI_CG_SUBHEADER_START); }
+bool CPythonNetworkStream::SendMiniGameYutnoriGiveup() { return __SendMiniGameYutnori(YUTNORI_CG_SUBHEADER_GIVEUP); }
+bool CPythonNetworkStream::SendMiniGameYutnoriProb(BYTE bProbIndex) { return __SendMiniGameYutnori(YUTNORI_CG_SUBHEADER_SET_PROB, bProbIndex); }
+bool CPythonNetworkStream::SendMiniGameYutnoriCharClick(BYTE bPlayerIndex) { return __SendMiniGameYutnori(YUTNORI_CG_SUBHEADER_CLICK_CHAR, bPlayerIndex); }
+bool CPythonNetworkStream::SendMiniGameYutnoriThrow(BYTE bPC) { return __SendMiniGameYutnori(YUTNORI_CG_SUBHEADER_THROW, bPC); }
+bool CPythonNetworkStream::SendMiniGameYutnoriMove(BYTE bPlayerIndex) { return __SendMiniGameYutnori(YUTNORI_CG_SUBHEADER_MOVE, bPlayerIndex); }
+bool CPythonNetworkStream::SendMiniGameYutnoriReward() { return __SendMiniGameYutnori(YUTNORI_CG_SUBHEADER_REWARD); }
+bool CPythonNetworkStream::SendMiniGameYutnoriRequestComAction() { return __SendMiniGameYutnori(YUTNORI_CG_SUBHEADER_REQUEST_COM_ACTION); }
+#ifdef ENABLE_YUTNORI_EVENT_FLAG_RENEWAL
+bool CPythonNetworkStream::SendMiniGameYutnoriRequestQuestFlag() { return __SendMiniGameYutnori(YUTNORI_CG_SUBHEADER_REQUEST_QUEST_FLAG); }
+#endif
+#endif
+
+#ifdef ENABLE_MINI_GAME_CATCH_KING
+bool CPythonNetworkStream::SendMiniGameCatchKing(BYTE bSubHeader, BYTE bSubArgument)
+{
+	if (!__CanActMainInstance())
+		return true;
+
+	TPacketCGMiniGameCatchKing Packet;
+	Packet.bHeader = HEADER_CG_MINI_GAME_CATCH_KING;
+	Packet.bSubHeader = bSubHeader;
+	Packet.bSubArgument = bSubArgument;
+
+	if (!Send(sizeof(Packet), &Packet))
+	{
+		Tracef("SendMiniGameCatchKing Send Packet Error\n");
+		return false;
+	}
+
+	return SendSequence();
+}
+
+#ifdef ENABLE_CATCH_KING_EVENT_FLAG_RENEWAL
+bool CPythonNetworkStream::SendMiniGameCatchKingRequestQuestFlag()
+{
+	TPacketCGMiniGameCatchKing Packet;
+	Packet.bHeader = HEADER_CG_MINI_GAME_CATCH_KING;
+	Packet.bSubHeader = CATCHKING_CG_REQUEST_QUEST_FLAG;
+	Packet.bSubArgument = 0;
+
+	if (!Send(sizeof(Packet), &Packet))
+	{
+		Tracef("SendMiniGameCatchKingRequestQuestFlag Error\n");
+		return false;
+	}
+
+	return SendSequence();
+}
+#endif
+
+bool CPythonNetworkStream::RecvMiniGameCatchKingPacket()
+{
+	TPacketGCMiniGameCatchKing Packet;
+	if (!Recv(sizeof(Packet), &Packet))
+		return false;
+
+	std::vector<char> vBody;
+	if (!__RecvMiniGameBody(Packet.wSize, sizeof(Packet), vBody))
+		return false;
+
+	PyObject* poWnd = m_apoPhaseWnd[PHASE_WINDOW_GAME];
+	const char* c_szName = "RecvMiniGameCatchKingPacket";
+	switch (Packet.bSubHeader)
+	{
+		case CATCHKING_GC_START:
+			if (const DWORD* p = __MT2009_Body<DWORD>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "MiniGameCatchKingEventStart", Py_BuildValue("(i)", *p));
+			break;
+
+		case CATCHKING_GC_SET_CARD:
+			if (const BYTE* p = __MT2009_Body<BYTE>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "MiniGameCatchKingSetHandCard", Py_BuildValue("(i)", *p));
+			break;
+
+		case CATCHKING_GC_RESULT_FIELD:
+			if (const TPacketGCMiniGameCatchKingResult* p = __MT2009_Body<TPacketGCMiniGameCatchKingResult>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "MiniGameCatchKingResultField", Py_BuildValue("(iiiibbbb)",
+					p->dwPoints, p->bRowType, p->bCardPos, p->bCardValue,
+					p->bKeepFieldCard, p->bDestroyHandCard, p->bGetReward, p->bIsFiveNearBy));
+			break;
+
+		case CATCHKING_GC_SET_END_CARD:
+			if (const TPacketGCMiniGameCatchKingSetEndCard* p = __MT2009_Body<TPacketGCMiniGameCatchKingSetEndCard>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "MiniGameCatchKingSetEndCard", Py_BuildValue("(ii)", p->bCardPos, p->bCardValue));
+			break;
+
+		case CATCHKING_GC_REWARD:
+			if (const BYTE* p = __MT2009_Body<BYTE>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "MiniGameCatchKingReward", Py_BuildValue("(i)", *p));
+			break;
+
+#ifdef ENABLE_CATCH_KING_EVENT_FLAG_RENEWAL
+		case CATCHKING_GC_SET_CARD_PIECE_FLAG:
+		case CATCHKING_GC_SET_CARD_FLAG:
+		case CATCHKING_GC_SET_QUEST_FLAG:
+		case CATCHKING_GC_NO_MORE_GAIN:
+			if (const TPacketGCMiniGameCatchKingQuestFlag* p = __MT2009_Body<TPacketGCMiniGameCatchKingQuestFlag>(vBody, Packet.bSubHeader, c_szName))
+				PyCallClassMemberFunc(poWnd, "CatchKingFlagProcess", Py_BuildValue("(i(ii))", Packet.bSubHeader, p->wPieceCount, p->wPackCount));
+			break;
+#endif
+
+		default:
+			TraceError("RecvMiniGameCatchKingPacket: unknown subheader %d", Packet.bSubHeader);
+			break;
+	}
+
+	return true;
+}
+#endif
+
+#ifdef ENABLE_FLOWER_EVENT
+bool CPythonNetworkStream::SendFlowerEventPacket(BYTE bSubHeader, BYTE bShootType, BYTE bExchangeKey)
+{
+	if (CPythonPlayer::Instance().GetFlowerEventEnable() == 0)
+		return false;
+
+	TPacketCGFlowerEvent Packet;
+	Packet.bHeader = HEADER_CG_FLOWER_EVENT;
+	Packet.bSubHeader = bSubHeader;
+	Packet.bShootType = bShootType;
+	Packet.bExchangeKey = bExchangeKey;
+
+	if (!Send(sizeof(Packet), &Packet))
+		return false;
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::RecvFlowerEventPacket()
+{
+	TPacketGCFlowerEvent Packet;
+	if (!Recv(sizeof(TPacketGCFlowerEvent), &Packet))
+		return false;
+
+	PyObject* poWnd = m_apoPhaseWnd[PHASE_WINDOW_GAME];
+	switch (Packet.bSubHeader)
+	{
+		case FLOWER_EVENT_SUBHEADER_GC_INFO_ALL:
+			PyCallClassMemberFunc(poWnd, "FlowerEventProcess", Py_BuildValue("(i(iiiiii))", FLOWER_EVENT_SUBHEADER_GC_INFO_ALL,
+				Packet.aiShootCount[SHOOT_ENVELOPE], Packet.aiShootCount[SHOOT_CHRYSANTHEMUM], Packet.aiShootCount[SHOOT_MAY_BELL],
+				Packet.aiShootCount[SHOOT_DAFFODIL], Packet.aiShootCount[SHOOT_LILY], Packet.aiShootCount[SHOOT_SUNFLOWER]));
+			break;
+
+		case FLOWER_EVENT_SUBHEADER_GC_GET_INFO:
+			if (Packet.bShootType >= SHOOT_TYPE_MAX)
+				PyCallClassMemberFunc(poWnd, "FlowerEventProcess", Py_BuildValue("(ii)", FLOWER_EVENT_SUBHEADER_GC_GET_INFO, Packet.bChatType));
+			else
+				PyCallClassMemberFunc(poWnd, "FlowerEventProcess", Py_BuildValue("(i(ii))", FLOWER_EVENT_SUBHEADER_GC_GET_INFO,
+					Packet.bShootType, Packet.aiShootCount[Packet.bShootType]));
+			break;
+
+		case FLOWER_EVENT_SUBHEADER_GC_UPDATE_INFO:
+			if (Packet.bShootType < SHOOT_TYPE_MAX) // fix: Owsap read aiShootCount[any byte]
+				PyCallClassMemberFunc(poWnd, "FlowerEventProcess", Py_BuildValue("(i(ii))", FLOWER_EVENT_SUBHEADER_GC_UPDATE_INFO,
+					Packet.bShootType, Packet.aiShootCount[Packet.bShootType]));
+			break;
+	}
+
+	return true;
+}
+#endif
+
 bool CPythonNetworkStream::RecvPrivateShopSearchOpen()
 {
 	TPacketGCPrivateShopSearchOpen packet;
@@ -894,6 +1266,27 @@ void CPythonNetworkStream::GamePhase()
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 			case HEADER_GC_INGAME_EVENT: // MT2009_PLUS_EVENT_MANAGER_V1
 				ret = RecvInGameEventPacket();
+				break;
+#endif
+			// MT2009_PLUS_MINIGAMES_V1
+#ifdef ENABLE_MINI_GAME_RUMI
+			case HEADER_GC_MINI_GAME_RUMI:
+				ret = RecvMiniGameRumi();
+				break;
+#endif
+#ifdef ENABLE_MINI_GAME_YUTNORI
+			case HEADER_GC_MINI_GAME_YUTNORI:
+				ret = RecvMiniGameYutnori();
+				break;
+#endif
+#ifdef ENABLE_MINI_GAME_CATCH_KING
+			case HEADER_GC_MINI_GAME_CATCH_KING:
+				ret = RecvMiniGameCatchKingPacket();
+				break;
+#endif
+#ifdef ENABLE_FLOWER_EVENT
+			case HEADER_GC_FLOWER_EVENT:
+				ret = RecvFlowerEventPacket();
 				break;
 #endif
 #ifdef ENABLE_IKASHOP_RENEWAL
