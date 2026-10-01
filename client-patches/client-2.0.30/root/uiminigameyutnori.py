@@ -43,6 +43,7 @@ import wndMgr
 import snd
 import item
 import chat
+import uiminigameutil
 
 from _weakref import proxy
 from collections import deque
@@ -406,20 +407,6 @@ def _NewAni(parent, images, delay, x, y):
 
 class YutnoriWaitingPage(ui.ScriptWindow):
 
-	class DescriptionBox(ui.Window):
-		def __init__(self):
-			ui.Window.__init__(self)
-			self.descIndex = -1
-
-		def __del__(self):
-			ui.Window.__del__(self)
-
-		def SetIndex(self, index):
-			self.descIndex = index
-
-		def OnRender(self):
-			event.RenderEventSet(self.descIndex)
-
 	def __init__(self):
 		ui.ScriptWindow.__init__(self)
 
@@ -456,8 +443,7 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 		try:
 			LoadScript(self, "UIScript/MiniGameYutnoriWaitingPage.py")
 		except:
-			import exception
-			exception.Abort("MiniGameYutnoriWaitingPage.LoadWindow.LoadObject")
+			uiminigameutil.LoadError("MiniGameYutnoriWaitingPage.LoadWindow.LoadObject")
 
 		try:
 			self.GetChild("board").SetCloseEvent(ui.__mem_func__(self.Close))
@@ -466,8 +452,10 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 			self.startButton.SetEvent(ui.__mem_func__(self.__ClickStartButton))
 
 			self.descBoard = self.GetChild("desc_board")
-			self.descriptionBox = self.DescriptionBox()
-			self.descriptionBox.SetParent(self.descBoard)
+			# MT2009_PLUS_MINIGAME_DESC_V1: the rules as TextLines in the box
+			self.descriptionBox = uiminigameutil.DescriptionText(self.descBoard, 7, DEFAULT_DESC_Y,
+				self.descBoard.GetWidth() - 14, self.descBoard.GetHeight() - DEFAULT_DESC_Y,
+				VISIBLE_LINE_COUNT, 16)
 			self.descriptionBox.Show()
 
 			self.btnPrev = self.GetChild("prev_button")
@@ -487,25 +475,21 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 			self.yut_board_text = self.GetChild("yut_board_count_text")
 			self.yut_board_text.SetText("%d/%d" % (0, YUT_BOARD_COUNT_MAX))
 		except:
-			import exception
-			exception.Abort("MiniGameYutnoriWaitingPage.LoadWindow.BindObject")
+			uiminigameutil.LoadError("MiniGameYutnoriWaitingPage.LoadWindow.BindObject")
 
 		self.Hide()
 
 	def Close(self):
 		self.Hide()
 		self.CloseStartDlg()
-		event.ClearEventSet(self.descIndex)
-		self.descIndex = -1
 
 		if self.descriptionBox:
 			self.descriptionBox.Hide()
 
-		self.desc_y = DEFAULT_DESC_Y
-
 	def Destroy(self):
 		self.CloseStartDlg()
-		event.ClearEventSet(self.descIndex)
+		if self.descriptionBox:
+			self.descriptionBox.Destroy()
 		self.ClearDictionary()
 		self.isLoaded = 0
 		self.startButton = None
@@ -560,22 +544,15 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 
 		ui.ScriptWindow.Show(self)
 
-		event.ClearEventSet(self.descIndex)
-		self.descIndex = event.RegisterEventSet("%s/%s" % (app.GetLocalePath(), DESC_FILE))
-		event.SetFontColor(self.descIndex, 0.7843, 0.7843, 0.7843)
-		event.SetVisibleLineCount(self.descIndex, VISIBLE_LINE_COUNT)
-		total_line = event.GetTotalLineCount(self.descIndex)
-		event.SetRestrictedCount(self.descIndex, DESC_WIDTH_COUNT)
-
-		if VISIBLE_LINE_COUNT >= total_line:
-			self.btnPrev.Hide()
-			self.btnNext.Hide()
-		else:
-			self.btnPrev.Show()
-			self.btnNext.Show()
-
 		if self.descriptionBox:
+			self.descriptionBox.LoadLocaleFile(DESC_FILE)
 			self.descriptionBox.Show()
+			if self.descriptionBox.HasMorePages():
+				self.btnPrev.Show()
+				self.btnNext.Show()
+			else:
+				self.btnPrev.Hide()
+				self.btnNext.Hide()
 
 		try:
 			item.SelectItem(ITEM_VNUM_YUT_PIECE)
@@ -585,38 +562,13 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 		except:
 			pass	# a client without the items' rows: the counters still show
 
-	def OnUpdate(self):
-		(xposEventSet, yposEventSet) = self.descBoard.GetGlobalPosition()
-		event.UpdateEventSet(self.descIndex, xposEventSet + 7, -(yposEventSet + self.desc_y))
-		self.descriptionBox.SetIndex(self.descIndex)
-
 	def PrevDescriptionPage(self):
-		line_height = event.GetLineHeight(self.descIndex) + 4
-		cur_start_line = event.GetVisibleStartLine(self.descIndex)
-
-		decrease_count = VISIBLE_LINE_COUNT
-
-		if cur_start_line - decrease_count < 0:
-			return
-
-		event.SetVisibleStartLine(self.descIndex, cur_start_line - decrease_count)
-		self.desc_y += (line_height * decrease_count)
+		if self.descriptionBox:
+			self.descriptionBox.PrevPage()
 
 	def NextDescriptionPage(self):
-		line_height = event.GetLineHeight(self.descIndex) + 4
-		total_line_count = event.GetProcessedLineCount(self.descIndex)
-		cur_start_line = event.GetVisibleStartLine(self.descIndex)
-
-		increase_count = VISIBLE_LINE_COUNT
-
-		if cur_start_line + increase_count >= total_line_count:
-			increase_count = total_line_count - cur_start_line
-
-		if increase_count < 0 or cur_start_line + increase_count >= total_line_count:
-			return
-
-		event.SetVisibleStartLine(self.descIndex, cur_start_line + increase_count)
-		self.desc_y -= (line_height * increase_count)
+		if self.descriptionBox:
+			self.descriptionBox.NextPage()
 
 	def __SlotOverInPiece(self, slot_index):
 		if self.tooltip_item:
@@ -1171,20 +1123,17 @@ class YutnoriGamePage(ui.ScriptWindow):
 		try:
 			LoadScript(self, "UIScript/MiniGameYutnoriGamePage.py")
 		except:
-			import exception
-			exception.Abort("YutnoriGame.LoadWindow.LoadObject")
+			uiminigameutil.LoadError("YutnoriGame.LoadWindow.LoadObject")
 
 		try:
 			self.__BindObject()
 		except:
-			import exception
-			exception.Abort("YutnoriGame.LoadWindow.__BindObject")
+			uiminigameutil.LoadError("YutnoriGame.LoadWindow.__BindObject")
 
 		try:
 			self.__BindEvent()
 		except:
-			import exception
-			exception.Abort("YutnoriGame.LoadWindow.__BindEvent")
+			uiminigameutil.LoadError("YutnoriGame.LoadWindow.__BindEvent")
 
 		self.__CreateProbSelectButton()
 		self.__CreateYutImg()
@@ -1250,7 +1199,7 @@ class YutnoriGamePage(ui.ScriptWindow):
 			self.prob_select_button.SetEvent(ui.__mem_func__(self.__ClickProbSelectButton))
 
 		if self.prob_text_window:
-			self.prob_text_window.SetOnMouseLeftButtonUpEvent(ui.__mem_func__(self.__ClickProbSelectButton))
+			self.prob_text_window.SetOnMouseLeftButtonUpEvent(self.__ClickProbSelectButton)	# our ui.py wraps it itself
 
 		if self.prob_select_text:
 			self.prob_select_text.SetText(self.prob_name_tuple[0])
@@ -2239,8 +2188,7 @@ class MiniGameYutnori(ui.Window):
 			self.waiting_page = YutnoriWaitingPage()
 			self.game_page = YutnoriGamePage()
 		except:
-			import exception
-			exception.Abort("MiniGameYutnori.LoadWindow")
+			uiminigameutil.LoadError("MiniGameYutnori.LoadWindow")
 
 		if self.tooltip_item:
 			self.waiting_page.SetItemToolTip(self.tooltip_item)
@@ -2355,8 +2303,9 @@ def _ItemToolTip():
 
 def GetWindow():
 	if not _data['window']:
-		window = MiniGameYutnori()
-		window.SetItemToolTip(_ItemToolTip())
+		window = uiminigameutil.SafeCreate(MiniGameYutnori, "Yutnori")
+		if window:
+			window.SetItemToolTip(_ItemToolTip())
 		_data['window'] = window
 	return _data['window']
 
@@ -2366,16 +2315,22 @@ def OpenWindow():
 		chat.AppendChat(chat.CHAT_TYPE_INFO, L.NEEDS_CLIENT)
 		return
 	_CreateThrower()
-	GetWindow().Open()
+	window = GetWindow()
+	if window:
+		window.Open()
 
 def Process(type, data):
 	"""game.py's YutnoriProcess (the exe, packet 182)."""
 	_CreateThrower()
-	GetWindow().YutnoriProcess(type, data)
+	window = GetWindow()
+	if window:
+		window.YutnoriProcess(type, data)
 
 def FlagProcess(type, data):
 	"""game.py's YutnoriFlagProcess (the exe, packet 182's flags)."""
-	GetWindow().YutnoriFlagProcess(type, data)
+	window = GetWindow()
+	if window:
+		window.YutnoriFlagProcess(type, data)
 
 def Register():
 	"""From game.py when the hub starts: the hub's Yut Nori button opens this."""

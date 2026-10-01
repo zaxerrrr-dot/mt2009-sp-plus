@@ -26,6 +26,7 @@ import item
 import net
 import player
 import ui
+import uiminigameutil
 import uiCommon
 import uiToolTip
 import mouseModule
@@ -116,6 +117,8 @@ _known = {}
 # Whether the client's item table has the item: an unknown vnum makes the exe
 # select 60001 instead (uigoblin.py does the same).
 def ItemKnown(vnum):
+	if not vnum:
+		return False	# item.SelectItem(0) logs "Cannot find item by 0"
 	if vnum in _known:
 		return _known[vnum]
 	known = False
@@ -170,6 +173,8 @@ def AppendChat(message):
 def MaterialVnum(itemVnum):
 	level = 0
 	try:
+		if not itemVnum:
+			raise ValueError
 		item.SelectItem(itemVnum)
 		for i in xrange(item.LIMIT_MAX_NUM):
 			(limitType, limitValue) = item.GetLimit(i)
@@ -223,7 +228,7 @@ def AttrCounts(window_type, slotIndex):
 def CanTakeExtraBonus(itemVnum, attrSlot):
 	"""For the item tooltip (uitooltip.py): a weapon or armour with five
 	bonuses and fewer than two extra ones, while Seon-Hae is on."""
-	if not IsEnabled() or not attrSlot:
+	if not IsEnabled() or not attrSlot or not itemVnum:
 		return False
 	try:
 		item.SelectItem(itemVnum)
@@ -300,8 +305,7 @@ class SeonHaeWindow(ui.ScriptWindow):
 		try:
 			ui.PythonScriptLoader().LoadScriptFile(self, 'UIScript/seonhaewindow.py')
 		except Exception:
-			import exception
-			exception.Abort('SeonHaeWindow.LoadScript')
+			uiminigameutil.LoadError('SeonHaeWindow.LoadScript')
 
 		try:
 			self.registSlot = self.GetChild('regist_slot')
@@ -317,8 +321,7 @@ class SeonHaeWindow(ui.ScriptWindow):
 			self.totalText = self.GetChild('TotalSuccessText')
 			self.questionButton = self.GetChild('question_button')
 		except Exception:
-			import exception
-			exception.Abort('SeonHaeWindow.BindObject')
+			uiminigameutil.LoadError('SeonHaeWindow.BindObject')
 
 		self.GetChild('board').SetCloseEvent(ui.__mem_func__(self.Close))
 
@@ -686,7 +689,7 @@ class SeonHaeWindow(ui.ScriptWindow):
 def GetWindow():
 	wnd = _data['window']
 	if wnd is None:
-		wnd = SeonHaeWindow()
+		wnd = uiminigameutil.SafeCreate(SeonHaeWindow, "Seon-Hae")
 		_data['window'] = wnd
 	return wnd
 
@@ -745,7 +748,9 @@ def OnCommand(game, *args):
 		if sub == 'cfg':
 			_data['on'] = 1 if (rest and ToInt(rest[0]) == 1) else 0
 		elif sub == 'open':
-			GetWindow().Open()
+			wnd = GetWindow()
+			if wnd:
+				wnd.Open()
 		elif sub == 'state':
 			__OnState(*rest)
 		elif sub == 'item':

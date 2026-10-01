@@ -3,7 +3,7 @@
 # per card on them (our exe has no slot drawn from a grpImage pointer) - and the
 # four "ani_image" effects are made in code (FrameAnimation: key frames, reset,
 # scale). The texts come from uiminigamerumi.py (Polish, CP1250).
-import uiminigamerumi as RUMI
+import uiScriptLocale
 
 ROOT = "d:/ymir work/ui/minigame/rumi/"
 
@@ -57,7 +57,7 @@ window = {
 
 					"children" :
 					(
-						{ "name":"TitleName", "type":"text", "x":0, "y":0, "text": RUMI.TITLE, "all_align":"center" },
+						{ "name":"TitleName", "type":"text", "x":0, "y":0, "text": uiScriptLocale.MINI_GAME_RUMI_TITLE, "all_align":"center" },
 					),
 				},
 	
@@ -68,7 +68,7 @@ window = {
 					"x" : 133,
 					"y" : 349,
 					
-					"text" : RUMI.TEXT_EXIT,
+					"text" : uiScriptLocale.MINI_GAME_RUMI_EXIT,
 					
 					"default_image" : "d:/ymir work/ui/public/large_button_01.sub",
 					"over_image" : "d:/ymir work/ui/public/large_button_02.sub",
@@ -243,7 +243,7 @@ window = {
 							"x" : 0,
 							"y" : 0,
 							
-							"text" : RUMI.TEXT_SCORE,
+							"text" : uiScriptLocale.MINI_GAME_RUMI_SCORE,
 							"all_align":"center",
 						},
 					),
@@ -280,7 +280,7 @@ window = {
 							"x" : 0,
 							"y" : 0,
 							
-							"text" : RUMI.TEXT_LBUTTON,
+							"text" : uiScriptLocale.MINI_GAME_RUMI_LBUTTON_DESC,
 							"text_horizontal_align" : "left",
 							"text_vertical_align" : "center",
 							
@@ -322,7 +322,7 @@ window = {
 							"x" : 0,
 							"y" : 0,
 							
-							"text" : RUMI.TEXT_RBUTTON,
+							"text" : uiScriptLocale.MINI_GAME_RUMI_RBUTTON_DESC,
 							"text_horizontal_align" : "left",
 							"text_vertical_align" : "center",
 							

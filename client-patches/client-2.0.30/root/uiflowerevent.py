@@ -25,6 +25,7 @@ import chat
 import net
 import player
 import ui
+import uiminigameutil
 import wndMgr
 import localeInfo
 
@@ -346,8 +347,7 @@ class FlowerEvent(ui.ScriptWindow):
 			pyScrLoader = ui.PythonScriptLoader()
 			pyScrLoader.LoadScriptFile(self, "UIScript/FlowerEventWindow.py")
 		except:
-			import exception
-			exception.Abort("FlowerEvent.LoadWindow.LoadScript")
+			uiminigameutil.LoadError("FlowerEvent.LoadWindow.LoadScript")
 
 		try:
 			self.board = self.GetChild("board")
@@ -367,8 +367,7 @@ class FlowerEvent(ui.ScriptWindow):
 			self.shoot_list_count_text[SHOOT_LILY] = self.GetChild("shoot_count_text_4")
 			self.shoot_list_count_text[SHOOT_SUNFLOWER] = self.GetChild("shoot_count_text_5")
 		except:
-			import exception
-			exception.Abort("FlowerEvent.LoadWindow.BindObject")
+			uiminigameutil.LoadError("FlowerEvent.LoadWindow.BindObject")
 
 		self.board.SetCloseEvent(ui.__mem_func__(self.Close))
 
@@ -384,7 +383,12 @@ class FlowerEvent(ui.ScriptWindow):
 		self.tooltip = uiToolTip.ToolTip()
 		self.tooltip.ClearToolTip()
 
-		self.exchange_window_drop_down = ComboBoxImage(self, "d:/ymir work/ui/public/cheque_slot.sub", 214, 91)
+		# The count's box: Owsap's cheque_slot.sub lies at rows 506-524 of
+		# public.dds (256x524) and our exe samples the atlas as 512 rows high,
+		# so it drew the red slot bar of row 0 (and the text looked too high).
+		# parameter_slot_00.sub is the same black box (39x18) in rows 232-250;
+		# 3 px to the left, so it still ends where the arrow button begins.
+		self.exchange_window_drop_down = ComboBoxImage(self, "d:/ymir work/ui/public/parameter_slot_00.sub", 211, 91)
 		self.exchange_window_drop_down.SetEvent(lambda key, parent=self: parent.ExchangeCountDropDown(key))
 		for key, value in enumerate(FlowerEventUtil.EXCHANGE_COUNT_TYPE_TEXT):
 			self.exchange_window_drop_down.InsertItem(key, value)
@@ -506,7 +510,9 @@ def Open():
 		return
 	window = _data['window']
 	if not window:
-		window = FlowerEvent()
+		window = uiminigameutil.SafeCreate(FlowerEvent, "Dzieci Kwiaty")
+		if not window:
+			return
 		_data['window'] = window
 	if window.IsShow():
 		window.Close()
