@@ -72,7 +72,7 @@ namespace {
         auto preview = BotOfflinePreview(*line);
         if (!preview) return -1;
         const bool want = WantsPlayerBotStallItem(ch, preview) &&
-            CanPlayerBotPayForOffer(ch, preview, price) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID()) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
         int priority = IsPlayerBotProgressionOffer(ch, preview) ? 200 : 0;
         // The class's level-30 weapon comes first, and of those the
         // highest average line, the price only breaking a tie: "12% za
@@ -162,7 +162,7 @@ namespace {
         auto price = line->GetPrice().GetTotalYangAmount();
         auto finalPreview = BotOfflinePreview(*line);
         const bool wanted = finalPreview && WantsPlayerBotStallItem(ch, finalPreview);
-        const bool payable = wanted && CanPlayerBotPayForOffer(ch, finalPreview, price);
+        const bool payable = wanted && CanPlayerBotPayForOffer(ch, finalPreview, price, shop->GetOwnerPID());
         const bool stillWanted = payable && ch->GetEmptyInventory(finalPreview->GetSize()) >= 0;
         if (finalPreview) M2_DELETE(finalPreview);
         if (!stillWanted) {
@@ -481,7 +481,7 @@ namespace {
                 if (!preview) continue;
                 const bool buyable = preview->FindEquipCell(ch) == wearCell &&
                         IsPlayerBotReadyGearOffer(ch, preview) && WantsPlayerBotStallItem(ch, preview) &&
-                        CanPlayerBotPayForOffer(ch, preview, price);
+                        CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID());
                 M2_DELETE(preview);
                 if (!buyable) continue;
                 auto& o = state.offlineShop;
@@ -530,7 +530,7 @@ namespace {
                 LPITEM preview = BotOfflinePreview(*line);
                 if (!preview) continue;
                 const bool buyable = WantsPlayerBotStallItem(ch, preview) &&
-                        CanPlayerBotPayForOffer(ch, preview, price) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+                        CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID()) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
                 M2_DELETE(preview);
                 if (!buyable) continue;
                 bestOwner = shop->GetOwnerPID();
@@ -587,7 +587,7 @@ namespace {
                     if (reach < 0)
                         reach = !haveNav || navigation.CanReach(ch->GetX(), ch->GetY(), spawn.x, spawn.y) ? 1 : 0;
                     buyable = reach == 1 && WantsPlayerBotStallItem(ch, preview) &&
-                            CanPlayerBotPayForOffer(ch, preview, price) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+                            CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID()) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
                 }
                 M2_DELETE(preview);
                 if (reach == 0) break;
@@ -646,7 +646,7 @@ namespace {
                     if (reach < 0)
                         reach = !haveNav || navigation.CanReach(ch->GetX(), ch->GetY(), spawn.x, spawn.y) ? 1 : 0;
                     buyable = reach == 1 && WantsPlayerBotStallItem(ch, preview) &&
-                            CanPlayerBotPayForOffer(ch, preview, price) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+                            CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID()) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
                 }
                 M2_DELETE(preview);
                 if (reach == 0) break;
@@ -702,7 +702,7 @@ namespace {
                 LPITEM preview = BotOfflinePreview(*line);
                 if (!preview) continue;
                 const bool buyable = IsPlayerBotProgressionOffer(ch, preview) && WantsPlayerBotStallItem(ch, preview) &&
-                        CanPlayerBotPayForOffer(ch, preview, price) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+                        CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID()) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
                 M2_DELETE(preview);
                 if (!buyable) continue;
                 bestOwner = shop->GetOwnerPID();
@@ -764,7 +764,7 @@ namespace {
                 LPITEM preview = BotOfflinePreview(*line);
                 if (!preview) continue;
                 const bool buyable = IsPlayerBotOutdatedGearOffer(ch, preview) && WantsPlayerBotStallItem(ch, preview) &&
-                        CanPlayerBotPayForOffer(ch, preview, price) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+                        CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID()) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
                 M2_DELETE(preview);
                 if (!buyable) continue;
                 bestOwner = shop->GetOwnerPID();
