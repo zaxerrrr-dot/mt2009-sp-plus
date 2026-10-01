@@ -2868,3 +2868,11 @@
 83025	Pude³ko z Narcyzem	Otwórz pachn¹ce pude³ko i sprawdŸ, jaka nagroda kryje siê w œrodku.
 83026	Pude³ko z Lili¹	Otwórz pachn¹ce pude³ko i sprawdŸ, jaka nagroda kryje siê w œrodku.
 83027	Pude³ko ze S³onecznikiem	Otwórz pachn¹ce pude³ko i sprawdŸ, jaka nagroda kryje siê w œrodku.
+79505	Karta Okey	Karta do gry w Okey. Kliknij prawym przyciskiem w czasie eventu Okey, aby dodaæ j¹ do kart (24 karty tworz¹ zestaw kart).
+79506	Zestaw kart Okey	Zestaw 24 kart Okey. Kliknij prawym przyciskiem, aby go dodaæ - jedna gra w Okey kosztuje 1 zestaw kart i 30 000 Yang.
+50275	Z³ota Skrzynia Okey	Nagroda za grê w Okey zakoñczon¹ z wynikiem 400 punktów lub wy¿szym. Kliknij prawym przyciskiem, aby otworzyæ.
+50276	Srebrna Skrzynia Okey	Nagroda za grê w Okey zakoñczon¹ z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyæ.
+50277	Br¹zowa Skrzynia Okey	Nagroda za grê w Okey zakoñczon¹ z wynikiem poni¿ej 300 punktów. Kliknij prawym przyciskiem, aby otworzyæ.
+50267	Œwi¹teczna Z³ota Skrzynia Okey	Œwi¹teczna nagroda za grê w Okey zakoñczon¹ z wynikiem 400 punktów lub wy¿szym. Kliknij prawym przyciskiem, aby otworzyæ.
+50268	Œwi¹teczna Srebrna Skrzynia Okey	Œwi¹teczna nagroda za grê w Okey zakoñczon¹ z wynikiem 300-399 punktów. Kliknij prawym przyciskiem, aby otworzyæ.
+50269	Œwi¹teczna Br¹zowa Skrzynia Okey	Œwi¹teczna nagroda za grê w Okey zakoñczon¹ z wynikiem poni¿ej 300 punktów. Kliknij prawym przyciskiem, aby otworzyæ.

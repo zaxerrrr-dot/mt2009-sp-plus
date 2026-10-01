@@ -148,6 +148,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_ingame_events.h" // the in-game event manager, "/ingame_event" (MT2009_PLUS_EVENT_MANAGER_V1)
 #include "playerbot_seonhae.h" // Seon-Hae's 6th/7th bonus, "/seonhae" (MT2009_PLUS_SEONHAE_V1)
 #include "playerbot_flower.h" // the Flower Event "Dzieci Kwiaty", packets 187 (MT2009_PLUS_FLOWER_V1)
+#include "playerbot_rumi.h" // Owsap's Rumi (Okey card game), CG/GC 181 (MT2009_PLUS_RUMI_V1)
 #include "playerbot_dungeon_panel.h" // the dungeon panel, "/lochy", d.update_ranking (MT2009_PLUS_DUNGEON_PANEL_V1)
 // Iwakura's Bot Mood System: the moods and the notes the loot, the chests,
 // the fishing and the blacksmith send it - early, so any of them may.

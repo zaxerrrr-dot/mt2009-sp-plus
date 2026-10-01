@@ -36,8 +36,11 @@ CAL = 'mt2009_ui/calendar/'
 # nothing to open; rewards: up to three (vnum, count) shown beside it.
 EVENTS = {
 	'catchking': {'name': 'Z\xb3ap Kr\xf3la', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
-	'rumi': {'name': 'Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
-	'rumi_xmas': {'name': '\x8cwi\xb9teczne Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game', 'game': 'rumi'},
+	# MT2009_PLUS_RUMI_V1: the chests a game ends with (gold, silver, bronze; uiminigamerumi.py).
+	'rumi': {'name': 'Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game',
+			'rewards': ((50275, 1), (50276, 1), (50277, 1))},
+	'rumi_xmas': {'name': '\x8cwi\xb9teczne Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game', 'game': 'rumi',
+			'rewards': ((50267, 1), (50268, 1), (50269, 1))},
 	'yutnori': {'name': 'Yut Nori', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
 	# MT2009_PLUS_FLOWER_V1: uiflowerevent.py registers the window; the rewards are
 	# three of the five flower boxes (83023-83027, what they hold is the server's).

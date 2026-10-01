@@ -42,6 +42,9 @@ void GoblinEventTick(DWORD dwNow);
 // (playerbot_ingame_events.h, included after this file): the mini games'
 // event flags, their table NPCs and the players' event list, every pass.
 void InGameEventTick(DWORD dwNow);
+// MT2009_PLUS_RUMI_V1: Rumi's seasons and its games' upkeep (playerbot_rumi.h,
+// included after this file), every pass after the event manager.
+void RumiTick(DWORD dwNow);
 
 namespace {
 	const char* const PLAYERBOT_EVENTS_DEFAULT_PATH = "/opt/m2spool/playerbot_events.tsv";
@@ -606,6 +609,8 @@ namespace {
 		// MT2009_PLUS_EVENT_MANAGER_V1: the in-game event manager follows the
 		// mini games' kinds (playerbot_ingame_events.h) - every core.
 		InGameEventTick(dwNow);
+		// MT2009_PLUS_RUMI_V1: Rumi's season flags (the leader) and games (playerbot_rumi.h).
+		RumiTick(dwNow);
 	}
 }
 

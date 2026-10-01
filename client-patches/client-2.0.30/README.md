@@ -256,3 +256,45 @@ mówi, że okno przyjdzie z aktualizacją klienta.
 - `flower_items.json` – wiersze klienckiego `item_proto` (jak `world.item_proto`) i lista plików
   z klienta GF 26.1.11 do paczki: ikony 25121–25125, 25131–25135, `ui/minigame/flower_event/*.sub`
   + `ui/floweralram.dds`, efekt `effect/etc/buff/buff_item15_flower.mse` + `flower_001.dds`, `leaf_001.dds`.
+## Rumi (Okey) Owsapa (`MT2009_PLUS_RUMI_V1`)
+
+Serwer: `server-patches/rumi`, `playerbot_rumi.h` (pakiety CG/GC 181 – opis w README łatki).
+Exe: `client-patches/exe` (osobny port; nazwy Owsapa: `net.SendMiniGameRumi*`, wywołania
+`MiniGameRumi*` na oknie gry). Bez nich przycisk eventu mówi, że okno przyjdzie z aktualizacją.
+
+- `root/uiminigamerumi.py` (nowy) – okno Owsapa (strona oczekiwania z licznikami kart i zestawów,
+  strona gry). To, czego nasze exe nie ma (`ui.MoveImageBox`, `AniImageBox.ResetFrame` /
+  `SetKeyFrameEvent` / `SetScale`, sloty rysowane z `grpImage`), jest w pythonie: każda karta to
+  osobny `ImageBox`, animacje to `FrameAnimation`, lot karty to `MovingCard`. Teksty polskie
+  (CP1250), klucz `localeInfo` o nazwie Owsapa ma pierwszeństwo.
+- `root/uiscript/minigamerumigamepage.py`, `minigamerumiwaitingpage.py` – uiscripty Owsapa (sloty
+  jako zwykłe okna, efekty w kodzie; strona oczekiwania w wersji `__OKEY_EVENT_FLAG_RENEWAL__`).
+- `root/game.py` – start (`uiminigamerumi.Start()` po `uiingameevent.Start()`: przycisk w liście
+  eventów i `REQUEST_QUEST_FLAG`, po którym serwer wysyła temu klientowi pakiety 181), zamknięcie,
+  `MiniGameRumiStart/End/MoveCard/SetDeckCount/IncreaseScore/FlagProcess`, polecenie
+  `MiniGameRumiOpen` (opcja „Zagraj w Okey” przy stole 20417).
+- `root/uiingameevent.py` – przy `rumi` / `rumi_xmas` trzy skrzynie jako nagrody.
+- `locale/locale/pl/mini_game_okey_desc.txt` (nowy, CP1250, CRLF) – opis zasad (tekst Owsapa,
+  punkt o przerwanej grze zmieniony: gra jest rozliczana).
+- `locale/locale/pl/itemdesc.txt` (+8), `gamedata/gamedata/item_list.txt` (+8): 79505, 79506,
+  50267-50269, 50275-50277 (ikony 50275-50277 = ikony 50267-50269, jak w GF).
+- `npclist.txt` ma już `20417 okey_npc`.
+
+Do zrobienia przy budowie paczek (pliki binarne / zasoby):
+
+- `item_proto` klienta: 79505 „Karta Okey”, 79506 „Zestaw kart Okey” (typ 3/10, stos 200, jak
+  70617), 50275 „Złota Skrzynia Okey”, 50276 „Srebrna Skrzynia Okey”, 50277 „Brązowa Skrzynia Okey”,
+  50267-50269 „Świąteczna Złota/Srebrna/Brązowa Skrzynia Okey” (typ 23, stos 200, jak 50270);
+  `mob_proto` klienta: 20417 „Stół Okey” (kopia 20005), jeśli go nie ma.
+- z GF 26.1.11 (`/opt/metin2/cache/gf/Gameforge_26.1.11/_client`): cały katalog
+  `d:/ymir work/ui/minigame/rumi/` (77 plików) i `ui/minigame/rumi_nor/rumi_nor_bg.tga`; atlasy,
+  do których odwołują się te `.sub`: `d:/ymir work/ui/public_minigame.dds`,
+  `public_effect_01.dds`, `public_effect_02.dds`; strona oczekiwania: `ui/event/slot.sub`,
+  `ui/event/count_bg2.sub`, `ui/event/horizontal_line_left.sub`, `horizontal_line_right.sub` (atlas
+  `ui/event_002.dds`), `ui/pattern/border_a_*.tga` (9 plików), `ui/public/public_intro_btn/prev_btn_01/02.sub`,
+  `next_btn_01/02.sub` (atlas `ui/public_intro.dds`), `ui/public/parameter_slot_07.sub`,
+  `ui/public/check_image.sub` – każdy, którego nie ma w naszych paczkach (atlasy o tej samej nazwie
+  sprawdzić, czy nasze nie są inną wersją z innym układem);
+- ikony `icon/item/79505.tga`, `79506.tga`, `50267.tga`, `50268.tga`, `50269.tga`;
+- model stołu `d:/ymir work/npc/okey_npc/` (`okey_npc.gr2`, `.dds`, `.msm`, `motlist.txt`,
+  `wait.gr2/.msa`, `wait1.gr2/.msa`).

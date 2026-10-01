@@ -127237,3 +127237,11 @@
 83025	ETC	icon/item/25133.tga	d:/ymir work/item/etc/jewellery_box.GR2
 83026	ETC	icon/item/25134.tga	d:/ymir work/item/etc/jewellery_box.GR2
 83027	ETC	icon/item/25135.tga	d:/ymir work/item/etc/jewellery_box.GR2
+79505	ETC	icon/item/79505.tga
+79506	ETC	icon/item/79506.tga
+50267	ETC	icon/item/50267.tga
+50268	ETC	icon/item/50268.tga
+50269	ETC	icon/item/50269.tga
+50275	ETC	icon/item/50267.tga
+50276	ETC	icon/item/50268.tga
+50277	ETC	icon/item/50269.tga

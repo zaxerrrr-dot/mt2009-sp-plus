@@ -1945,3 +1945,27 @@ INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, sta
 (83025, 'Pudełko z Narcyzem', 'Pudełko z Narcyzem', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (83026, 'Pudełko z Lilią', 'Pudełko z Lilią', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (83027, 'Pudełko ze Słonecznikiem', 'Pudełko ze Słonecznikiem', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || echo "[playerbot-migrate] WARNING: could not add the Flower Event's flowers and boxes" >&2
+# MT2009_PLUS_RUMI_V1: Owsap's Rumi (Okey card game) - playerbot_rumi.h, server-patches/rumi,
+# quest/minigame_rumi.quest. The card (79505, Karta Okey: +1 card towards a set while the event runs)
+# and the card set (79506, Zestaw kart Okey: +1 set), use items the engine's UseItemEx hook takes;
+# the chests a game ends with (gift boxes opened by special_item_group.rumi.txt): 50275-50277 gold,
+# silver and bronze while the scheduler's "rumi" runs, 50267-50269 the Christmas ones of the GM flag
+# mini_game_okey (Owsap's vnums, all free here); the table 20417 (Stol Okey, a copy of the NPC 20005,
+# model okey_npc) that the event manager (playerbot_ingame_events.h) puts on maps 1/21/41 while the
+# event and its reward window last; and the season scores (player.mt2009_rumi_score: a season is an
+# event and its reward window, the top ten take a prize once a season). Idempotent: added once.
+db -e "CREATE TABLE IF NOT EXISTS player.mt2009_rumi_score (pid INT UNSIGNED NOT NULL, season INT UNSIGNED NOT NULL, best_score INT UNSIGNED NOT NULL DEFAULT 0, total_score INT UNSIGNED NOT NULL DEFAULT 0, games INT UNSIGNED NOT NULL DEFAULT 0, last_play DATETIME NOT NULL, PRIMARY KEY (pid, season), KEY season_total (season, total_score), KEY season_best (season, best_score)) ENGINE=InnoDB;
+INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(79505, _cp1250 X'4B61727461204F6B6579', _cp1250 X'4B61727461204F6B6579', 3, 10, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(79506, _cp1250 X'5A6573746177206B617274204F6B6579', _cp1250 X'5A6573746177206B617274204F6B6579', 3, 10, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50275, _cp1250 X'5AB36F746120536B727A796E6961204F6B6579', _cp1250 X'5AB36F746120536B727A796E6961204F6B6579', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50276, _cp1250 X'53726562726E6120536B727A796E6961204F6B6579', _cp1250 X'53726562726E6120536B727A796E6961204F6B6579', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50277, _cp1250 X'4272B97A6F776120536B727A796E6961204F6B6579', _cp1250 X'4272B97A6F776120536B727A796E6961204F6B6579', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50267, _cp1250 X'8C7769B97465637A6E61205AB36F746120536B727A796E6961204F6B6579', _cp1250 X'8C7769B97465637A6E61205AB36F746120536B727A796E6961204F6B6579', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50268, _cp1250 X'8C7769B97465637A6E612053726562726E6120536B727A796E6961204F6B6579', _cp1250 X'8C7769B97465637A6E612053726562726E6120536B727A796E6961204F6B6579', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50269, _cp1250 X'8C7769B97465637A6E61204272B97A6F776120536B727A796E6961204F6B6579', _cp1250 X'8C7769B97465637A6E61204272B97A6F776120536B727A796E6961204F6B6579', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);
+DROP TEMPORARY TABLE IF EXISTS world.rumi_mob;
+CREATE TEMPORARY TABLE world.rumi_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20005 LIMIT 1;
+UPDATE world.rumi_mob SET vnum = 20417, name = _cp1250 X'5374F3B3204F6B6579', locale_name = _cp1250 X'5374F3B3204F6B6579', folder = 'okey_npc', ai_flag = 'NOMOVE', exp = 0, drop_item = 0, resurrection_vnum = 0;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.rumi_mob;
+DROP TEMPORARY TABLE world.rumi_mob;" || echo "[playerbot-migrate] WARNING: could not add Rumi's score table, items and table NPC" >&2

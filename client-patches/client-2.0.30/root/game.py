@@ -446,6 +446,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiseonhae").DestroyWindow()
 		# MT2009_PLUS_FLOWER_V1: the Flower Event's window (uiflowerevent.py).
 		__import__("uiflowerevent").DestroyWindow()
+		# MT2009_PLUS_RUMI_V1: Owsap's Rumi (Okey) window (uiminigamerumi.py).
+		__import__("uiminigamerumi").DestroyWindow()
 		# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's panel.
 		import uiguildduty
 		uiguildduty.DestroyWindow()
@@ -2324,6 +2326,8 @@ class GameWindow(ui.ScriptWindow):
 				# MT2009_PLUS_FLOWER_V1: the Flower Event's button in the hub, its
 				# buff icon and (new exe) its counters (uiflowerevent.py).
 				__import__("uiflowerevent").Start()
+				# MT2009_PLUS_RUMI_V1: Rumi's button in the event list and its card counters.
+				__import__("uiminigamerumi").Start()
 				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
 				__import__("uinewpet").Start()
 
@@ -2976,6 +2980,8 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["mini_game_catchking"] = self.__InGameEventFlagCatchKing
 		serverCommandList["e_flower_drop"] = self.__InGameEventFlagFlower
 		serverCommandList["easter_drop"] = self.__InGameEventFlagEaster
+		# MT2009_PLUS_RUMI_V1: the Okey table's "Zagraj w Okey" (minigame_rumi.quest).
+		serverCommandList["MiniGameRumiOpen"] = self.__MiniGameRumiOpen
 
 		self.serverCommander=stringCommander.Analyzer()
 		for serverCommandItem in serverCommandList.items():
@@ -3631,6 +3637,37 @@ class GameWindow(ui.ScriptWindow):
 	def BINARY_RefreshInGameEvent(self):
 		import ingameevent
 		ingameevent.Notify()
+
+	# MT2009_PLUS_RUMI_V1: Owsap's Rumi (Okey card game). The exe calls these on
+	# the game window (Owsap's names, HEADER_GC_MINI_GAME_RUMI 181); the window is
+	# uiminigamerumi.py.
+	def __MiniGameRumiOpen(self, *args):
+		import uiminigamerumi
+		uiminigamerumi.OpenFromTable()
+
+	def MiniGameRumiStart(self):
+		import uiminigamerumi
+		uiminigamerumi.OnStart()
+
+	def MiniGameRumiEnd(self):
+		import uiminigamerumi
+		uiminigamerumi.OnEnd()
+
+	def MiniGameRumiMoveCard(self, src_pos, src_index, src_color, src_number, dst_pos, dst_index, dst_color, dst_number):
+		import uiminigamerumi
+		uiminigamerumi.OnMoveCard(src_pos, src_index, src_color, src_number, dst_pos, dst_index, dst_color, dst_number)
+
+	def MiniGameRumiSetDeckCount(self, deck_card_count):
+		import uiminigamerumi
+		uiminigamerumi.OnSetDeckCount(deck_card_count)
+
+	def MiniGameRumiIncreaseScore(self, score, total_score):
+		import uiminigamerumi
+		uiminigamerumi.OnIncreaseScore(score, total_score)
+
+	def MiniGameRumiFlagProcess(self, process_type, data):
+		import uiminigamerumi
+		uiminigamerumi.OnFlagProcess(process_type, data)
 
 	# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's lines (dungeoninfo.py, the "dungeonInfo" module).
 	def __DungeonInfo(self, *args):
