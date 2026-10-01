@@ -448,6 +448,13 @@ namespace
 	// bot goes home.
 	const DWORD PLAYERBOT_AREZZO_DEATH_WINDOW_MS = 240000;
 	const DWORD PLAYERBOT_AREZZO_VISIT_DEATHS_LEAVE = 8;
+	// The Las is an expedition (the owner, 1.10): a bot packs for it before
+	// the road (this many reds, a caster this many blues, in stacks of 200)
+	// and once in stays - deaths, an empty belt and the errands wait this
+	// long from its arrival; only a lost weapon or armour takes it out sooner.
+	const size_t PLAYERBOT_AREZZO_LAS_KIT_RED = 600;
+	const size_t PLAYERBOT_AREZZO_LAS_KIT_BLUE = 400;
+	const DWORD PLAYERBOT_AREZZO_LAS_STAY_MS = 2 * 60 * 60 * 1000;
 	// The boss raids: a recruit is a bot on the map within this walk of the
 	// boss; the gathering waits this long; a member further from him than
 	// this walks the corners.
@@ -597,6 +604,17 @@ namespace
 		return s_mapPlayerBotArezzoCohort.find(pid) != s_mapPlayerBotArezzoCohort.end();
 	}
 
+	// In the Las and not yet PLAYERBOT_AREZZO_LAS_STAY_MS there.
+	bool IsPlayerBotArezzoLasStaying(LPCHARACTER ch)
+	{
+		if (!ch || ch->GetMapIndex() != PLAYERBOT_MAP_AREZZO_FOREST)
+			return false;
+		std::map<DWORD, TPlayerBotArezzoTrack>::const_iterator t = s_mapPlayerBotArezzoTrack.find(ch->GetPlayerID());
+		return t != s_mapPlayerBotArezzoTrack.end() && t->second.dwEntered != 0 &&
+				t->second.lMap == PLAYERBOT_MAP_AREZZO_FOREST &&
+				get_dword_time() - t->second.dwEntered < PLAYERBOT_AREZZO_LAS_STAY_MS;
+	}
+
 	bool IsPlayerBotArezzoLeaveOrdered(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -605,7 +623,7 @@ namespace
 			return true;
 		std::map<DWORD, TPlayerBotArezzoTrack>::const_iterator t = s_mapPlayerBotArezzoTrack.find(ch->GetPlayerID());
 		return t != s_mapPlayerBotArezzoTrack.end() && t->second.dwVisitDeaths >= PLAYERBOT_AREZZO_VISIT_DEATHS_LEAVE &&
-				IsPlayerBotArezzoMap(ch->GetMapIndex());
+				IsPlayerBotArezzoMap(ch->GetMapIndex()) && !IsPlayerBotArezzoLasStaying(ch);
 	}
 
 	// Sent by the test and not told to leave: the bot stays on its map (and
@@ -640,10 +658,14 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return false;
+		if (ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL)
+			return true;
+		// The Las: the belt and the arrows wait for the stay to run out.
+		if (IsPlayerBotArezzoLasStaying(ch))
+			return false;
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(ch, red, blue);
-		return ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
-				NeedsPlayerBotArrows(ch) || red < 3;
+		return NeedsPlayerBotArrows(ch) || red < 3;
 	}
 
 	bool IsPlayerBotArezzoLeaving(LPCHARACTER ch)
@@ -1599,38 +1621,41 @@ namespace
 	// than half its gold.
 	void RestockPlayerBotArezzo(LPCHARACTER ch, TPlayerBotArezzoTrack& t, DWORD dwNow)
 	{
-		if (dwNow < t.dwNextRestock || ch->IsDead() || !ch->IsItemLoaded() || !IsPlayerBotArezzoHeldHere(ch))
+		// Bound for the Las and not in it yet (town, Orc Valley, the temple):
+		// it packs the expedition's kit before and on the road.
+		const bool packing = IsPlayerBotArezzoBoundForLas(ch) && ch->GetMapIndex() != PLAYERBOT_MAP_AREZZO_FOREST;
+		if (dwNow < t.dwNextRestock || ch->IsDead() || !ch->IsItemLoaded() || !(packing || IsPlayerBotArezzoHeldHere(ch)))
 			return;
 		t.dwNextRestock = dwNow + 10000;
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(ch, red, blue);
 		const bool big = ch->GetLevel() >= PLAYERBOT_BIG_POTION_MIN_LEVEL;
 		const bool caster = ch->GetJob() == JOB_SHAMAN || ch->GetJob() == JOB_SURA;
+		const size_t wantRed = packing ? PLAYERBOT_AREZZO_LAS_KIT_RED : 60;
+		const size_t wantBlue = packing ? PLAYERBOT_AREZZO_LAS_KIT_BLUE : 40;
 		int boughtRed = 0, boughtBlue = 0;
-		if (red < 60 && ch->GetEmptyInventory(1) >= 0)
+		for (int i = 0; i < 4 && red + boughtRed < wantRed && ch->GetEmptyInventory(1) >= 0; ++i)
 		{
 			const long long cost = 200LL * (big ? 40 : 20);
-			if ((long long)ch->GetGold() >= cost * 2)
-			{
-				PlayerBotChangeGold(ch, -cost);
-				ch->AutoGiveItem(big ? 27003 : 27002, 200);
-				boughtRed = 200;
-			}
+			if ((long long)ch->GetGold() < cost * 2)
+				break;
+			PlayerBotChangeGold(ch, -cost);
+			ch->AutoGiveItem(big ? 27003 : 27002, 200);
+			boughtRed += 200;
 		}
-		if (caster && blue < 40 && ch->GetEmptyInventory(1) >= 0)
+		for (int i = 0; caster && i < 3 && blue + boughtBlue < wantBlue && ch->GetEmptyInventory(1) >= 0; ++i)
 		{
 			const long long cost = 200LL * (big ? 64 : 32);
-			if ((long long)ch->GetGold() >= cost * 2)
-			{
-				PlayerBotChangeGold(ch, -cost);
-				ch->AutoGiveItem(big ? 27006 : 27005, 200);
-				boughtBlue = 200;
-			}
+			if ((long long)ch->GetGold() < cost * 2)
+				break;
+			PlayerBotChangeGold(ch, -cost);
+			ch->AutoGiveItem(big ? 27006 : 27005, 200);
+			boughtBlue += 200;
 		}
 		if (boughtRed || boughtBlue)
-			sys_log(0, "ARZ_BOT: restock pid=%u name=%s map=%ld red=%u blue=%u bought_red=%d bought_blue=%d gold=%lld",
+			sys_log(0, "ARZ_BOT: restock pid=%u name=%s map=%ld red=%u blue=%u bought_red=%d bought_blue=%d gold=%lld kit=%d",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)red, (unsigned int)blue,
-					boughtRed, boughtBlue, (long long)ch->GetGold());
+					boughtRed, boughtBlue, (long long)ch->GetGold(), packing ? 1 : 0);
 		else if (red < 10)
 			PlayerBotLogThrottled("arezzo_restock_failed", dwNow,
 					"ARZ_BOT: restock impossible pid=%u name=%s map=%ld red=%u free_cell=%d gold=%lld",
