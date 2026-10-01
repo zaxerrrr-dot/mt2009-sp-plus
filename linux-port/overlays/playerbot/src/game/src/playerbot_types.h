@@ -65,25 +65,27 @@ namespace
 	const int PLAYERBOT_PICKUP_RANGE = 300;
 	// Keep a fresh drop visible for a human-readable moment and pick individual
 	// stacks at a believable cadence instead of clearing the floor in one tick.
-	const DWORD PLAYERBOT_LOOT_VISIBLE_DELAY_MIN = 1000;
-	const DWORD PLAYERBOT_LOOT_VISIBLE_DELAY_MAX = 1800;
+	// MT2009_PLUS_BOT_LOOT_PACE_V1: a moment, not a second and a half per
+	// drop - bots stood over a pile "thinking" while the pack came back.
+	const DWORD PLAYERBOT_LOOT_VISIBLE_DELAY_MIN = 350;
+	const DWORD PLAYERBOT_LOOT_VISIBLE_DELAY_MAX = 700;
 	// mt2009's PickupItem refuses a pickup within 500 ms of the last one, and
 	// the pass hid a refused drop for five seconds as if it had failed: a
 	// bot's full tick comes every ~480 ms, so every second try was refused and
 	// Tanaka's winner took one pile a second with five always hidden, until
 	// the pass saw an empty floor and the event let it go (26 September).
 #if defined(PLAYERBOT_ENGINE_MT2009)
-	const DWORD PLAYERBOT_LOOT_PICKUP_INTERVAL_MIN = 550;
+	const DWORD PLAYERBOT_LOOT_PICKUP_INTERVAL_MIN = 510;	// MT2009_PLUS_BOT_LOOT_PACE_V1 (550)
 #else
 	const DWORD PLAYERBOT_LOOT_PICKUP_INTERVAL_MIN = 450;
 #endif
-	const DWORD PLAYERBOT_LOOT_PICKUP_INTERVAL_MAX = 850;
+	const DWORD PLAYERBOT_LOOT_PICKUP_INTERVAL_MAX = 650;	// MT2009_PLUS_BOT_LOOT_PACE_V1 (850)
 	// Yang is taken almost at once. The pause above exists so a bot does not
 	// hoover a field the instant it drops, but a coin pile is one click a player
 	// never hesitates over, and three of them in a row had bots standing in a
 	// cleared field for six seconds instead of finding the next pack.
-	const DWORD PLAYERBOT_LOOT_MONEY_DELAY_MIN = 150;
-	const DWORD PLAYERBOT_LOOT_MONEY_DELAY_MAX = 350;
+	const DWORD PLAYERBOT_LOOT_MONEY_DELAY_MIN = 100;	// MT2009_PLUS_BOT_LOOT_PACE_V1 (150-350)
+	const DWORD PLAYERBOT_LOOT_MONEY_DELAY_MAX = 250;
 #if defined(PLAYERBOT_ENGINE_MT2009)
 	const DWORD PLAYERBOT_LOOT_MONEY_INTERVAL_MIN = 550;
 	const DWORD PLAYERBOT_LOOT_MONEY_INTERVAL_MAX = 650;
@@ -6603,6 +6605,9 @@ namespace
 	bool IsPlayerBotSidekickHolding(LPCHARACTER ch);
 	bool IsPlayerBotSidekickGift(LPCHARACTER ch, LPITEM item);
 	const char* GetPlayerBotSidekickOwnerName(LPCHARACTER ch);
+	// MT2009_PLUS_SIDEKICK_TRIP_V1: a frontier its companion gave up on for a
+	// while (playerbot_sidekick.h); GetPlayerBotFrontierMapForLevel skips it.
+	bool IsPlayerBotSidekickTripBlocked(LPCHARACTER ch, long mapIndex);
 	// What its owner did in the companion's bag window: a piece put on
 	// (pinned - kept on, never refined, its lines never changed), a piece
 	// taken off (never put back on by the AI), a pinned piece waiting in the

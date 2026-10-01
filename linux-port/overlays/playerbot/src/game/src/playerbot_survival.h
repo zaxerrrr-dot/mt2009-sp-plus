@@ -94,6 +94,8 @@ namespace
 	{
 		if (!ch || state.bRecoveringAfterDeath || state.bTacticalRetreat)
 			return;
+		// MT2009_PLUS_BOT_LOOT_PACE_V1: its drops here, to come back for.
+		NotePlayerBotLootLeftBehind(ch, state, dwNow);
 		state.bTacticalRetreat = true;
 		state.dwRetreatStartedTime = dwNow;
 		state.dwNextRetreatMoveTime = 0;

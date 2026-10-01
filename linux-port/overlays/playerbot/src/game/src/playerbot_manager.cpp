@@ -5082,6 +5082,8 @@ static void RunPlayerBotLightTick(LPDESC d, LPCHARACTER ch, TPlayerBotAIState& s
 	// monster. Without this line the battle horse trial counted roughly every
 	// other kill.
 	NotePlayerBotBattleHorseKill(ch, state, quickTarget);
+	// MT2009_PLUS_BOT_LOOT_PACE_V1: the drop the full tick queued at its feet.
+	TakePlayerBotQueuedLoot(ch, state, dwNow);
 }
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
@@ -7067,6 +7069,7 @@ WritePlayerBotGuildStatus(dwNow);
 				ch->GetHP() * 100 <= ch->GetMaxHP() * PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT)
 		{
 			s_setPlayerBotEmergencyRest.insert(ch->GetPlayerID()); // MT2009_PLUS_BOT_HELD_RETREAT_V1
+			NotePlayerBotLootLeftBehind(ch, state, dwNow); // MT2009_PLUS_BOT_LOOT_PACE_V1
 			state.bRecoveringAfterDeath = true;
 			state.dwLastDeathTime = dwNow;
 			state.lDeathX = ch->GetX();
