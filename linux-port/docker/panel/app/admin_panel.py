@@ -3476,6 +3476,11 @@ T = {
  "rare_sashes":  {"pl":"Szarfy","en":"Sashes"},
  "rare_sashes_help":{"pl":"Szarfy z bossów i ze skrzyń bossów. Łączenie szarf u Uriela działa zawsze.","en":"Sashes from bosses and boss chests. Combining sashes at Uriel always works."},
  "rare_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 🐉","en":"Saved and switched live, through the in-game helper. 🐉"},
+ "rare_ds_title":{"pl":"Odłamki Smoczego Kamienia (Alchemik)","en":"Dragon Stone Shards (the Alchemist)"},
+ "rare_ds_help": {"pl":"Od 30 poziomu Alchemik (M1 każdego królestwa) daje Moc Smoczego Oka: potwory upuszczają Odłamki, a każde 10 podniesionych odłamków samo zamienia się w Cor Draconis — tyle razy dziennie, ile ustawisz niżej, odnawiane raz dziennie u Alchemika. Boty liczą tak samo (bez odłamków w plecaku). Działa od razu.","en":"From level 30 the Alchemist (each kingdom's M1) grants the Power of the Dragon Eye: monsters drop Shards, and every 10 shards picked up turn into a Cor Draconis by themselves — as many times a day as set below, renewed once a day at the Alchemist. Bots count the same way (without shards in the bag). Applies at once."},
+ "rare_ds_drop": {"pl":"Szansa na odłamek z potwora, % (1–100, domyślnie 10):","en":"Shard chance per kill, % (1-100, default 10):"},
+ "rare_ds_day":  {"pl":"Cor Draconis z odłamków dziennie (1–20, domyślnie 5):","en":"Cor Draconis from shards a day (1-20, default 5):"},
+ "rare_ds_range":{"pl":"Szansa na odłamek 1–100%, Cor dziennie 1–20. Nic nie zmieniono.","en":"Shard chance 1-100%, Cors a day 1-20. Nothing was changed."},
  "az_nav":       {"pl":"🗺️ Moduł Arezzo","en":"🗺️ Arezzo module"},
  "az_open":      {"pl":"🗺️ Otwórz moduł Arezzo","en":"🗺️ Open the Arezzo module"},
  "tip_az":       {"pl":"Włącz albo wyłącz nowe mapy i lochy z Arezzo. Działa od razu, bez restartu serwera.","en":"Switch the new Arezzo maps and dungeons on or off. Takes effect immediately, no server restart."},
@@ -5264,18 +5269,32 @@ def persist_easter(cur, drop, rabbit):
 
 RARE_LIVE_WAIT = 12.0
 
+RARE_DS_DROP_DEFAULT = 10
+RARE_DS_COR_DAY_DEFAULT = 5
+
 def read_rare():
-    """Both switches as on (1) or off (0); a missing row reads as on."""
-    vals = {"alchemy": 1, "sashes": 1}
+    """Both switches as on (1) or off (0); a missing row reads as on. Also the
+    Alchemist's shard chance (ds_drop, 1-100) and Cors a day (ds_cor_day,
+    1-20), read the way dragon_soul.quest reads them: out of range = default."""
+    vals = {"alchemy": 1, "sashes": 1,
+            "ds_drop": RARE_DS_DROP_DEFAULT, "ds_cor_day": RARE_DS_COR_DAY_DEFAULT}
     with db() as c, c.cursor() as cur:
-        cur.execute("SELECT szName, lValue FROM player.quest WHERE dwPID=0 "
-                    "AND szName IN ('m2_alchemy_off', 'm2_sash_off')")
+        cur.execute("SELECT szName, lValue FROM player.quest WHERE dwPID=0 AND szState='' "
+                    "AND szName IN ('m2_alchemy_off', 'm2_sash_off', 'ds_drop', 'ds_cor_day')")
         for row in cur.fetchall():
             try:
-                off = int(row["lValue"]) > 0
+                v = int(row["lValue"])
             except (TypeError, ValueError):
                 continue
-            vals["alchemy" if row["szName"] == "m2_alchemy_off" else "sashes"] = 0 if off else 1
+            name = row["szName"]
+            if name == "ds_drop":
+                if 1 <= v <= 100:
+                    vals["ds_drop"] = v
+            elif name == "ds_cor_day":
+                if 1 <= v <= 20:
+                    vals["ds_cor_day"] = v
+            else:
+                vals["alchemy" if name == "m2_alchemy_off" else "sashes"] = 0 if v > 0 else 1
     return vals
 
 # MT2009_PLUS_AREZZO_MODULE_V1: the Arezzo module's switch, the event flag
@@ -5409,12 +5428,18 @@ def persist_seonhae(cur, on, wait):
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                 "VALUES (0, 'm2_seonhae_wait_min', '', %s)", (wait,))
 
-def persist_rare(cur, alchemy, sashes):
-    """The two event-flag rows the db core reads at its next start."""
+def persist_rare(cur, alchemy, sashes, ds_drop=None, ds_cor_day=None):
+    """The event-flag rows the db core reads at its next start."""
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                 "VALUES (0, 'm2_alchemy_off', '', %s)", (0 if alchemy else 1,))
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                 "VALUES (0, 'm2_sash_off', '', %s)", (0 if sashes else 1,))
+    if ds_drop is not None:
+        cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                    "VALUES (0, 'ds_drop', '', %s)", (int(ds_drop),))
+    if ds_cor_day is not None:
+        cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                    "VALUES (0, 'ds_cor_day', '', %s)", (int(ds_cor_day),))
 
 def gm_reload_mt2009():
     """Ask an online IMPLEMENTOR to run /reload a for us. True when one did.
@@ -7098,6 +7123,10 @@ TPL_RARE = BASE.replace("__BODY__", """
 <h3 style="margin-top:18px">🎗️ {{t('rare_sashes')}}</h3>
 <p class="muted">{{t('rare_sashes_help')}}</p>
 <label><input type="checkbox" name="sashes" value="1" {% if cur['sashes'] %}checked{% endif %}> {{t('easter_enable')}}</label>
+<h3 style="margin-top:18px">💎 {{t('rare_ds_title')}}</h3>
+<p class="muted">{{t('rare_ds_help')}}</p>
+<label>{{t('rare_ds_drop')}} <input type="number" name="ds_drop" min="1" max="100" step="1" value="{{cur['ds_drop']}}" style="width:90px"></label><br>
+<label>{{t('rare_ds_day')}} <input type="number" name="ds_cor_day" min="1" max="20" step="1" value="{{cur['ds_cor_day']}}" style="width:90px"></label>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
 
@@ -18149,13 +18178,23 @@ def rare():
         alchemy = 1 if request.form.get("alchemy") else 0
         sashes = 1 if request.form.get("sashes") else 0
         try:
+            ds_drop = int(request.form.get("ds_drop", RARE_DS_DROP_DEFAULT))
+            ds_cor_day = int(request.form.get("ds_cor_day", RARE_DS_COR_DAY_DEFAULT))
+        except (TypeError, ValueError):
+            ds_drop = ds_cor_day = -1
+        if not (1 <= ds_drop <= 100 and 1 <= ds_cor_day <= 20):
+            flash(t("rare_ds_range"), "error")
+            return redirect(url_for("rare"))
+        try:
             with db() as c, c.cursor() as cur:
-                persist_rare(cur, alchemy, sashes)
+                persist_rare(cur, alchemy, sashes, ds_drop, ds_cor_day)
         except Exception:
             flash(t("db_down"), "error")
             return redirect(url_for("rare"))
         try:
-            status, qid = queue_and_wait("", "RARE", "%d,%d" % (alchemy, sashes), "",
+            # arg2 = "shard chance,Cors a day" (web_admin.quest, RARE).
+            status, qid = queue_and_wait("", "RARE", "%d,%d" % (alchemy, sashes),
+                                         "%d,%d" % (ds_drop, ds_cor_day),
                                          wait=RARE_LIVE_WAIT)
         except Exception:
             status, qid = "failed", 0
@@ -18172,7 +18211,8 @@ def rare():
             flash(t("easter_saved_persisted"))
         return redirect(url_for("rare"))
 
-    cur_rare = {"alchemy": 1, "sashes": 1}
+    cur_rare = {"alchemy": 1, "sashes": 1,
+                "ds_drop": RARE_DS_DROP_DEFAULT, "ds_cor_day": RARE_DS_COR_DAY_DEFAULT}
     try:
         cur_rare = read_rare()
     except Exception:

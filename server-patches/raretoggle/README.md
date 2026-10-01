@@ -27,3 +27,19 @@ szarfy się nosi i łączy u Uriela, handel działa.
   po restarcie.
 - Panel admina, strona „Alchemia i szarfy” (`/rare`): zmiana od razu, przez
   pomocnika w grze (`web_admin.quest`, polecenie `RARE`).
+
+## Odłamki u Alchemika: szansa i limit dzienny
+
+Dwie kolejne flagi świata czyta `dragon_soul.quest` (i boty,
+`playerbot_alchemy.h`):
+
+- `ds_drop` – szansa na Odłamek Smoczego Kamienia z potwora w procentach
+  (1–100, poza zakresem 10);
+- `ds_cor_day` – ile Cor Draconis dziennie powstaje z odłamków (Moc Smoczego
+  Oka, 1–20, poza zakresem 5). Pierwszy Cor za 10 odłamków oddanych
+  Alchemikowi wlicza się do pierwszego dnia.
+
+Migracja startowa wpisuje domyślne wartości tylko raz (`INSERT IGNORE`);
+zmienia je panel (strona „Alchemia i szarfy”, od razu, polecenie `RARE`
+z drugim argumentem `szansa,limit`) albo GM komendą `/e ds_drop N`,
+`/e ds_cor_day N`.

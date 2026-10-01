@@ -1008,6 +1008,20 @@ else
     echo "[playerbot-migrate] WARNING: could not write the alchemy and sash switches; they stay as they were" >&2
 fi
 
+# The Alchemist's two numbers (dragon_soul.quest, playerbot_alchemy.h; 1 October
+# 2026): ds_drop, a Dragon Stone Shard's chance a kill in percent (1-100, the
+# quest reads anything else as 10), and ds_cor_day, the Cors a day from shards
+# (1-20, anything else reads as 5). Written once with the defaults so the panel
+# and /e show them; what the panel or a game master set stays through every start.
+if db -e "INSERT IGNORE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'ds_drop', '', 10),
+        (0, 'ds_cor_day', '', 5);"; then
+    ds_vals=$(db -N -e "SELECT GROUP_CONCAT(CONCAT(szName, '=', lValue) ORDER BY szName SEPARATOR ', ') FROM player.quest WHERE dwPID = 0 AND szState = '' AND szName IN ('ds_drop', 'ds_cor_day');" 2>/dev/null | tr -d '\r')
+    echo "[playerbot-migrate] alchemy shards: ${ds_vals:-ds_cor_day=5, ds_drop=10}"
+else
+    echo "[playerbot-migrate] WARNING: could not write the alchemy shard defaults; the quest takes 10% and 5 Cors a day" >&2
+fi
+
 # MT2009_PLUS_AREZZO_MODULE_V1: the Arezzo module (maps 360-366, their dungeons and entrance guards),
 # voluntary and off unless M2_AREZZO=1. One world flag, mt2009_arezzo_closed (1 = off), read by the
 # quests (Teleporter, ring, Ochao portal, dungeon guards) and the cores (playerbot_arezzo.h: the

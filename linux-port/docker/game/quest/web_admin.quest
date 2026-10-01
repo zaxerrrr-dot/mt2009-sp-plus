@@ -733,7 +733,9 @@ quest web_admin begin
 			-- MT2009 Plus: the rare goods' switches, same shape as EASTER.
 			-- arg1 = "alchemy,sashes", 1 on and 0 off; written as the
 			-- flags the engine and dragon_soul.quest read, m2_alchemy_off
-			-- and m2_sash_off (the inverse). arg2 unused.
+			-- and m2_sash_off (the inverse). arg2 = "ds_drop,ds_cor_day"
+			-- (the Alchemist's shard chance 1-100 and Cors a day 1-20,
+			-- dragon_soul.quest), empty from an older panel.
 			local rrows = wa_query("SELECT id, arg1, arg2 FROM player.web_admin_queue WHERE status='pending' AND cmd='RARE' ORDER BY id ASC LIMIT 3")
 			if type(rrows) == "table" then
 				local ri
@@ -758,6 +760,17 @@ quest web_admin begin
 							else
 								game.set_event_flag("m2_alchemy_off", 1 - ralch)
 								game.set_event_flag("m2_sash_off", 1 - rsash)
+								if type(rr.arg2) == "string" then
+									local _, _, d1, d2 = string.find(rr.arg2, "^(%d+),(%d+)$")
+									local rdrop = tonumber(d1)
+									local rday = tonumber(d2)
+									if rdrop ~= nil and rdrop >= 1 and rdrop <= 100 then
+										game.set_event_flag("ds_drop", rdrop)
+									end
+									if rday ~= nil and rday >= 1 and rday <= 20 then
+										game.set_event_flag("ds_cor_day", rday)
+									end
+								end
 							end
 							wa_query("UPDATE player.web_admin_queue SET status='" .. rres .. "' WHERE id=" .. rqid .. " AND status='pending' LIMIT 1")
 						end
