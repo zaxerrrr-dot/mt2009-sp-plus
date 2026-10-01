@@ -17,6 +17,17 @@ every version here.
 
 ---
 
+## 2.17.1 — 2026-10-01 — Poprawka aktualizacji 2.17.0
+
+Paczka 2.17.0 nie miała pliku nagród eventu Dzieci Kwiaty
+(`special_item_group.flower.txt`), więc budowa serwera po aktualizacji
+kończyła się błędem „special_item_group.flower.txt: not found”. Ta wersja
+go zawiera. Jeśli aktualizacja do 2.17.0 się nie udała, kliknij w launcherze
+**SPRAWDŹ AKTUALIZACJE** - pobierze 2.17.1 i dokończy budowę. Zawiera
+wszystko z 2.17.0.
+
+---
+
 ## 2.17.0 — 2026-10-01 — Minigry i menedżer eventów, Seon-Hae (6./7. bonus), Niebieski Smok, Katakumby, progresja botów, nowy dom towarowy
 
 Serwer 2.17.0 i klient 2.0.37: **zaktualizuj oba** w launcherze

@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-01T14:19:13Z",
-  "statusMessage": "Serwer 2.17.0 i klient 2.0.37: minigry i menedzer eventow, Seon-Hae (6./7. bonus), Niebieski Smok, Katakumby, progresja botow, nowy dom towarowy.",
+  "publishedAt": "2026-10-01T14:44:00Z",
+  "statusMessage": "Serwer 2.17.1: poprawka aktualizacji 2.17.0 (brakujacy plik nagrod Dzieci Kwiaty). Klient 2.0.37 bez zmian.",
   "server": {
-    "version": "2.17.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.17.0.zip",
-    "sha256": "E3D804842689215242B295CCD6FFBB5669CC701B601B6A21411AA7E9E7CAE377",
-    "size": 96457131
+    "version": "2.17.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.17.1.zip",
+    "sha256": "521C477C7F9E3CDC2D4574D9FF63D85A5F957E77717078A9A8D4E20D5E6D9B38",
+    "size": 96458600
   },
   "client": {
     "version": "2.0.37",
