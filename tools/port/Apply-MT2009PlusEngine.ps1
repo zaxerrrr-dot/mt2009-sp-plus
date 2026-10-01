@@ -529,6 +529,19 @@ if ((Test-Path -LiteralPath $engineFixesApply -PathType Leaf) -and
         Write-Host ('Applied {0} engine fix edit(s).' -f $engineFixesResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Lua stack room (server-patches/luastack): get_special_item_group and two
+# other quest functions that push many values ask Lua for the room first
+# (a group longer than 10 lines wrote past the coroutine's stack - Catch the
+# King's Golden Loot crashed the core).
+$luaStackApply = Join-Path $repo 'server-patches/luastack/Apply-LuaStackPatch.ps1'
+if ((Test-Path -LiteralPath $luaStackApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'questlua_global.cpp') -PathType Leaf)) {
+    $luaStackResult = & $luaStackApply -SourceDir $engineGameSource
+    if ($luaStackResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Lua stack edit(s).' -f $luaStackResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both
