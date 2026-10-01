@@ -2327,6 +2327,16 @@ namespace
 			return false;
 
 		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
+		// MT2009_PLUS_BOSS_RAID_V2 (2.2.52, tool in hand): a rod or a pickaxe
+		// in the hand is put away and the weapon taken out before the blow -
+		// a bot attacked at the water or the vein stood at its foe with the
+		// tool, no swing ever passing the test below, when the session's own
+		// unequip had been refused by the engine after a blow.
+		if (weapon && (weapon->GetType() == ITEM_ROD || weapon->GetType() == ITEM_PICK))
+		{
+			ReadyPlayerBotHandForFight(ch, state, dwNow, "basic_attack");
+			weapon = ch->GetWear(WEAR_WEAPON);
+		}
 		if (!weapon || weapon->GetType() != ITEM_WEAPON)
 			return false;
 

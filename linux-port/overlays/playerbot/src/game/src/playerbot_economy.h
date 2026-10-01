@@ -2889,7 +2889,15 @@ namespace
 	// trip the wait asks for is what finds the counter.
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 	bool PlayerBotFindReadyGearToBuy(LPCHARACTER ch, TPlayerBotAIState& state, int wearCell);
+	// MT2009_PLUS_BOSS_RAID_V2 (2.2.52, burn): playerbot_offline_market.h.
+	bool PlayerBotFindBurnReplacementToBuy(LPCHARACTER ch, TPlayerBotAIState& state, int wearCell, int minLevel);
 #else
+	// Without the stands' lines the market trip is what finds a counter, and
+	// the merchant waits for it as before.
+	bool PlayerBotFindBurnReplacementToBuy(LPCHARACTER, TPlayerBotAIState&, int, int)
+	{
+		return true;
+	}
 	bool PlayerBotFindReadyGearToBuy(LPCHARACTER ch, TPlayerBotAIState&, int wearCell)
 	{
 		return PlayerBotMarketHasReadyGear(ch, wearCell);
@@ -2934,6 +2942,8 @@ namespace
 				IsPlayerBotReadyGearProto(ch, offer->GetProto(), offer->GetVnum(), wearCell) &&
 				offer->GetRefineLevel() >= PLAYERBOT_READY_GEAR_MIN_PLUS;
 	}
+
+	bool IsPlayerBotHeldForCompany(LPCHARACTER ch); // playerbot_companions.h
 
 	// Iwakura's Patch 4, point 7, "Protokol Odbudowy": a bot whose only weapon,
 	// body armour or shield burnt at the anvil looks at the market for a
@@ -3537,8 +3547,33 @@ namespace
 					}
 					// The only piece of its slot gone: the market first, now
 					// (IsPlayerBotRebuildingFromMarket; Patch 4, point 7).
-					if (scrollCell < 0 && (wearCell == WEAR_WEAPON || wearCell == WEAR_BODY ||
-							wearCell == WEAR_SHIELD) && !PlayerBotHasPieceForSlot(ch, wearCell))
+					// MT2009_PLUS_BOSS_RAID_V2 (2.2.52): and only while a stand of
+					// the map holds a replacement of the burnt piece's level that
+					// the bot can pay for - and never for the Companion or a bot
+					// held for company, which do not go to the stands at all
+					// (BotOfflineBusyReason "company"): their merchant's piece
+					// waited out the three minutes for a market they never saw.
+					const bool marketReplacement = scrollCell < 0 &&
+							(wearCell == WEAR_WEAPON || wearCell == WEAR_BODY || wearCell == WEAR_SHIELD) &&
+							!PlayerBotHasPieceForSlot(ch, wearCell) &&
+							!IsPlayerBotSidekickPID(ch->GetPlayerID()) && !IsPlayerBotHeldForCompany(ch) &&
+							PlayerBotFindBurnReplacementToBuy(ch, state, wearCell,
+									GetPlayerBotProtoLevelLimit(ITEM_MANAGER::instance().GetTable(oldVnum)));
+					if (scrollCell < 0 && !marketReplacement && (wearCell == WEAR_WEAPON ||
+							wearCell == WEAR_BODY || wearCell == WEAR_SHIELD) && !PlayerBotHasPieceForSlot(ch, wearCell))
+					{
+						// Straight to the merchant: the town visit's next look at
+						// him buys the plain piece, and the anvil's next pass
+						// raises it.
+						std::map<DWORD, TPlayerBotRebuild>::iterator stale = s_mapPlayerBotRebuild.find(ch->GetPlayerID());
+						if (stale != s_mapPlayerBotRebuild.end() && stale->second.bSlot == wearCell)
+							s_mapPlayerBotRebuild.erase(stale);
+						state.dwNextShoppingTime = 0;
+						sys_log(0, "PLAYERBOT_MARKET: no market replacement after a burn, merchant now pid=%u name=%s slot=%u vnum=%u plus=%u gold=%lld",
+								ch->GetPlayerID(), ch->GetName(), (unsigned int)wearCell, oldVnum,
+								(unsigned int)plusLevel, (long long)ch->GetGold());
+					}
+					if (marketReplacement)
 					{
 						TPlayerBotRebuild& rebuild = s_mapPlayerBotRebuild[ch->GetPlayerID()];
 						rebuild.dwUntil = dwNow + PLAYERBOT_REBUILD_MARKET_MS;

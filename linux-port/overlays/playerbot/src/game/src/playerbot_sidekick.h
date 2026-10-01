@@ -5545,7 +5545,19 @@ namespace
 		if (npcs.blacksmith)
 		{
 			state.dwNextRefineCheckTime = 0;
+			const bool hadWeapon = ch->GetWear(WEAR_WEAPON) != NULL;
+			const bool hadBody = ch->GetWear(WEAR_BODY) != NULL;
+			const bool hadShield = ch->GetWear(WEAR_SHIELD) != NULL;
 			did = ManagePlayerBotRefining(ch, state, dwNow) || did;
+			// MT2009_PLUS_BOSS_RAID_V2 (2.2.52, burn): a piece burnt at the
+			// anvil is replaced on the same look when the owner stands by the
+			// merchant too, not on the next service visit.
+			// (A piece the anvil only took off is still in the bag.)
+			if (npcs.weapons && hadWeapon && !PlayerBotHasPieceForSlot(ch, WEAR_WEAPON))
+				ManagePlayerBotWeaponMerchant(ch);
+			if (npcs.armour && ((hadBody && !PlayerBotHasPieceForSlot(ch, WEAR_BODY)) ||
+					(hadShield && !PlayerBotHasPieceForSlot(ch, WEAR_SHIELD))))
+				ManagePlayerBotArmorMerchant(ch);
 		}
 		if (did)
 		{
