@@ -1,0 +1,44 @@
+[
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_YUTNORI_V1 (cg header)",
+  "old": "\tHEADER_CG_STATE_CHECKER\t\t\t= 206,\n",
+  "new": "\tHEADER_CG_STATE_CHECKER\t\t\t= 206,\n\t// MT2009_PLUS_YUTNORI_V1 (cg header): Yut Nori (playerbot_yutnori.h, server-patches/yutnori),\n\t// Owsap's number and struct.\n\tHEADER_CG_MINI_GAME_YUTNORI\t\t= 182,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_YUTNORI_V1 (gc header)",
+  "old": "\tHEADER_GC_INGAME_EVENT\t\t\t\t\t= 183,\n",
+  "new": "\tHEADER_GC_INGAME_EVENT\t\t\t\t\t= 183,\n\t// MT2009_PLUS_YUTNORI_V1 (gc header): Yut Nori, only to a client that sent its packet\n\t// (the window of a new exe).\n\tHEADER_GC_MINI_GAME_YUTNORI\t\t\t\t= 182,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_YUTNORI_V1 (packet)",
+  "old": "} TPacketGCInGameEventInfo;\n",
+  "new": "} TPacketGCInGameEventInfo;\n\n// MT2009_PLUS_YUTNORI_V1 (packet): Owsap's Yut Nori packets (v6.2.6, packet.h),\n// layouts unchanged (pack(1)): CG 3 bytes; GC dynamic, a 4-byte head and one of\n// the bodies below (START and STOP have none). playerbot_yutnori.h.\nenum EMiniGameYutnoriGCSubHeader\n{\n\tYUTNORI_GC_SUBHEADER_START,\n\tYUTNORI_GC_SUBHEADER_STOP,\n\tYUTNORI_GC_SUBHEADER_SET_PROB,\n\tYUTNORI_GC_SUBHEADER_THROW,\n\tYUTNORI_GC_SUBHEADER_MOVE,\n\tYUTNORI_GC_SUBHEADER_AVAILABLE_AREA,\n\tYUTNORI_GC_SUBHEADER_PUSH_CATCH_YUT,\n\tYUTNORI_GC_SUBHEADER_SET_SCORE,\n\tYUTNORI_GC_SUBHEADER_SET_REMAIN_COUNT,\n\tYUTNORI_GC_SUBHEADER_PUSH_NEXT_TURN,\n\tYUTNORI_GC_SUBHEADER_SET_YUT_PIECE_FLAG,\n\tYUTNORI_GC_SUBHEADER_SET_YUT_BOARD_FLAG,\n\tYUTNORI_GC_SUBHEADER_SET_QUEST_FLAG,\n\tYUTNORI_GC_SUBHEADER_NO_MORE_GAIN,\n};\n\nenum EMiniGameYutnoriCGSubHeader\n{\n\tYUTNORI_CG_SUBHEADER_START,\n\tYUTNORI_CG_SUBHEADER_GIVEUP,\n\tYUTNORI_CG_SUBHEADER_SET_PROB,\n\tYUTNORI_CG_SUBHEADER_CLICK_CHAR,\n\tYUTNORI_CG_SUBHEADER_THROW,\n\tYUTNORI_CG_SUBHEADER_MOVE,\n\tYUTNORI_CG_SUBHEADER_REQUEST_COM_ACTION,\n\tYUTNORI_CG_SUBHEADER_REWARD,\n\tYUTNORI_CG_SUBHEADER_REQUEST_QUEST_FLAG,\n};\n\ntypedef struct SPacketCGMiniGameYutnori\n{\n\tBYTE bHeader;\n\tBYTE bSubHeader;\n\tBYTE bArgument;\n} TPacketCGMiniGameYutnori;\n\ntypedef struct SPacketGCMiniGameYutnori\n{\n\tBYTE bHeader;\n\tWORD wSize;\n\tBYTE bSubHeader;\n} TPacketGCMiniGameYutnori;\n\ntypedef struct SPacketGCMiniGameYutnoriSetProb\n{\n\tBYTE bProbIndex;\n\tSPacketGCMiniGameYutnoriSetProb(BYTE bProbIndex) : bProbIndex(bProbIndex) {}\n} TPacketGCMiniGameYutnoriSetProb;\n\ntypedef struct SPacketGCMiniGameYutnoriThrow\n{\n\tbool bPC;\n\tBYTE bYut;\n\tSPacketGCMiniGameYutnoriThrow(bool bPC, BYTE bYut) : bPC(bPC), bYut(bYut) {}\n} TPacketGCMiniGameYutnoriThrow;\n\ntypedef struct SPacketGCMiniGameYutnoriMove\n{\n\tbool bPC;\n\tBYTE bUnitIndex;\n\tbool bIsCatch;\n\tBYTE bStartIndex;\n\tBYTE bDestIndex;\n\tSPacketGCMiniGameYutnoriMove(bool bPC, BYTE bUnitIndex, bool bIsCatch, BYTE bStartIndex, BYTE bDestIndex)\n\t\t: bPC(bPC), bUnitIndex(bUnitIndex), bIsCatch(bIsCatch), bStartIndex(bStartIndex), bDestIndex(bDestIndex) {}\n} TPacketGCMiniGameYutnoriMove;\n\ntypedef struct SPacketGCMiniGameYutnoriAvailableArea\n{\n\tBYTE bPlayerIndex;\n\tBYTE bAvailableIndex;\n\tSPacketGCMiniGameYutnoriAvailableArea(BYTE bPlayerIndex, BYTE bAvailableIndex)\n\t\t: bPlayerIndex(bPlayerIndex), bAvailableIndex(bAvailableIndex) {}\n} TPacketGCMiniGameYutnoriAvailableArea;\n\ntypedef struct SPacketGCMiniGameYutnoriPushCatchYut\n{\n\tbool bPC;\n\tBYTE bUnitIndex;\n\tSPacketGCMiniGameYutnoriPushCatchYut(bool bPC, BYTE bUnitIndex) : bPC(bPC), bUnitIndex(bUnitIndex) {}\n} TPacketGCMiniGameYutnoriPushCatchYut;\n\ntypedef struct SPacketGCMiniGameYutnoriSetScore\n{\n\tWORD wScore;\n\tSPacketGCMiniGameYutnoriSetScore(WORD wScore) : wScore(wScore) {}\n} TPacketGCMiniGameYutnoriSetScore;\n\ntypedef struct SPacketGCMiniGameYutnoriSetRemainCount\n{\n\tBYTE bRemainCount;\n\tSPacketGCMiniGameYutnoriSetRemainCount(BYTE bRemainCount) : bRemainCount(bRemainCount) {}\n} TPacketGCMiniGameYutnoriSetRemainCount;\n\ntypedef struct SPacketGCMiniGameYutnoriPushNextTurn\n{\n\tbool bPC;\n\tBYTE bState;\n\tSPacketGCMiniGameYutnoriPushNextTurn(bool bPC, BYTE bState) : bPC(bPC), bState(bState) {}\n} TPacketGCMiniGameYutnoriPushNextTurn;\n\ntypedef struct SPacketGCMiniGameYutnoriQuestFlag\n{\n\tWORD wYutPieceCount;\n\tWORD wYutBoardCount;\n\tSPacketGCMiniGameYutnoriQuestFlag(WORD wYutPieceCount, WORD wYutBoardCount)\n\t\t: wYutPieceCount(wYutPieceCount), wYutBoardCount(wYutBoardCount) {}\n} TPacketGCMiniGameYutnoriQuestFlag;\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_YUTNORI_V1 (size)",
+  "old": "\tSet(HEADER_CG_REFINE, sizeof(TPacketCGRefine), \"Refine\", true);\n",
+  "new": "\tSet(HEADER_CG_REFINE, sizeof(TPacketCGRefine), \"Refine\", true);\n\t// MT2009_PLUS_YUTNORI_V1 (size): Yut Nori (playerbot_yutnori.h)\n\tSet(HEADER_CG_MINI_GAME_YUTNORI, sizeof(TPacketCGMiniGameYutnori), \"MiniGameYutnori\", true);\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_YUTNORI_V1 (input)",
+  "old": "\t\tcase HEADER_CG_REFINE:\n\t\t\tRefine(ch, c_pData);\n\t\t\tbreak;\n",
+  "new": "\t\tcase HEADER_CG_REFINE:\n\t\t\tRefine(ch, c_pData);\n\t\t\tbreak;\n\n\t\t// MT2009_PLUS_YUTNORI_V1 (input): Yut Nori (playerbot_yutnori.h).\n\t\tcase HEADER_CG_MINI_GAME_YUTNORI:\n\t\t\t{\n\t\t\t\tvoid YutnoriPacket(LPCHARACTER ch, const char* data);\n\t\t\t\tYutnoriPacket(ch, c_pData);\n\t\t\t}\n\t\t\tbreak;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_YUTNORI_V1 (use)",
+  "old": "\t\t\t\t\tcase USE_SPECIAL:\n\n\t\t\t\t\t\tswitch (item->GetVnum())\n\t\t\t\t\t\t{\n",
+  "new": "\t\t\t\t\tcase USE_SPECIAL:\n\n\t\t\t\t\t\tswitch (item->GetVnum())\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t// MT2009_PLUS_YUTNORI_V1 (use): the Birch Branch (79507) and the Yut Nori\n\t\t\t\t\t\t\t// Board (79508) go into the game's counters (playerbot_yutnori.h).\n\t\t\t\t\t\t\tcase 79507:\n\t\t\t\t\t\t\tcase 79508:\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\tbool YutnoriUseItem(LPCHARACTER ch, LPITEM item);\n\t\t\t\t\t\t\t\t\tif (!YutnoriUseItem(this, item))\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_YUTNORI_V1 (drop)",
+  "old": "\tif (GetDropPerKillPct(100, 2000, iDeltaPercent, \"2007_drop\") >= number(1, iRandRange))\n",
+  "new": "\t// MT2009_PLUS_YUTNORI_V1 (drop): a birch branch for Yut Nori - a counter, not an item\n\t// on the ground (Owsap's __YUTNORI_EVENT_FLAG_RENEWAL__), real players only\n\t// (playerbot_yutnori.h).\n\t{\n\t\tvoid YutnoriKillRoll(LPCHARACTER killer, int iDeltaPercent, int iRandRange);\n\t\tYutnoriKillRoll(pkKiller, iDeltaPercent, iRandRange);\n\t}\n\n\tif (GetDropPerKillPct(100, 2000, iDeltaPercent, \"2007_drop\") >= number(1, iRandRange))\n"
+ }
+]

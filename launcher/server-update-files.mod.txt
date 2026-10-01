@@ -68,6 +68,7 @@ linux-port/docker/game/special_item_group.starter.txt
 linux-port/docker/game/special_item_group.cors.txt
 linux-port/docker/game/special_item_group.dungeons.txt
 linux-port/docker/game/special_item_group.goblin.txt
+linux-port/docker/game/special_item_group.yutnori.txt
 linux-port/docker/game/cube.seon_pyeong.txt
 linux-port/docker/game/costume_sets.txt
 linux-port/docker/game/dragon_soul_applys.mt2009plus.txt

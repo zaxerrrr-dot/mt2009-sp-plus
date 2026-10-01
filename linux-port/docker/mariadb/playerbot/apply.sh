@@ -1880,3 +1880,34 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 # Idempotent: the same values every start.
 db -e "UPDATE world.mob_proto SET level = 93, max_hp = 3000000, def = 250, exp = 2000000, regen_cycle = 30, regen_percent = 1 WHERE vnum = 2493;
 UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (8031, 8032, 8033, 8034);" || echo "[playerbot-migrate] WARNING: could not set up the Blue Dragon lair's dragon and stones" >&2
+
+# MT2009_PLUS_YUTNORI_V1: Yut Nori (Owsap's mini game; the engine half is
+# playerbot_yutnori.h and server-patches/yutnori, the table NPC's menu
+# quest/minigame_yutnori.quest). The scores per event season (the epoch the
+# event began, event flag mini_game_yutnori_season) and player; the items at
+# Owsap's vnums except his bundles 50920-50922, which are our Receptura items
+# here - the Golden/Silver/Bronze Yut Nori Bundle are 83032/83033/83034. The
+# tokens (Birch Branch 79507, Yut Nori Board 79508: ITEM_USE/USE_SPECIAL, no
+# drop/give/shop/storage) go into the game's counters when used; the trophies
+# and bundles are gift boxes (special_item_group.yutnori.txt). The table NPC
+# 20502 and the thrower 20505 (shown only in the client's window) are copies
+# of an NPC row (20094, a talk NPC). Idempotent: INSERT IGNORE keeps an
+# operator's change.
+db -e "CREATE TABLE IF NOT EXISTS player.minigame_yutnori (season INT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, best_score INT NOT NULL DEFAULT 0, total_score INT NOT NULL DEFAULT 0, games INT UNSIGNED NOT NULL DEFAULT 0, last_play DATETIME NOT NULL, PRIMARY KEY (season, pid), KEY season_total (season, total_score), KEY season_best (season, best_score)) ENGINE=InnoDB;" \
+  || echo "[playerbot-migrate] WARNING: could not create player.minigame_yutnori" >&2
+db -e "SET NAMES utf8mb4;
+INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(79507, 'Pień Brzozy', 'Pień Brzozy', 3, 10, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(79508, 'Plansza do Yutnori', 'Plansza do Yutnori', 3, 10, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(83030, 'Złote Trofeum Yutnori', 'Złote Trofeum Yutnori', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(83031, 'Srebrne Trofeum Yutnori', 'Srebrne Trofeum Yutnori', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(83032, 'Złoty Pakiet Yutnori', 'Złoty Pakiet Yutnori', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(83033, 'Srebrny Pakiet Yutnori', 'Srebrny Pakiet Yutnori', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(83034, 'Brązowy Pakiet Yutnori', 'Brązowy Pakiet Yutnori', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);
+DROP TEMPORARY TABLE IF EXISTS world.yut_mob;
+CREATE TEMPORARY TABLE world.yut_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20094 LIMIT 1;
+UPDATE world.yut_mob SET vnum = 20502, name = 'Stół do Yutnori', locale_name = 'Stół do Yutnori', rank = 0, type = 1, level = 1, ai_flag = 'NOMOVE', on_click = 2, exp = 0;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.yut_mob;
+UPDATE world.yut_mob SET vnum = 20505, name = 'Pałeczki Yut', locale_name = 'Pałeczki Yut', on_click = 0;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.yut_mob;
+DROP TEMPORARY TABLE world.yut_mob;" || echo "[playerbot-migrate] WARNING: could not add the Yut Nori items and NPCs" >&2

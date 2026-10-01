@@ -2858,3 +2858,10 @@
 30774	Skrzynia Wukonga	Nagroda za pokonanie WuKonga na Wzgórzu Wukonga. Kliknij prawym przyciskiem, aby otworzyæ.
 30775	Skrzynia Skorpiona	Nagroda za pokonanie Króla Skorpionów w Ruinach Skorpiona. Kliknij prawym przyciskiem, aby otworzyæ.
 30776	Skrzynia D¿ungli	Nagroda za pokonanie Królowej D¿ungli w Staro¿ytnej D¿ungli. Kliknij prawym przyciskiem, aby otworzyæ.
+79507	Pieñ Brzozy	Kliknij prawym przyciskiem, aby dodaæ pieñ do gry Yutnori. 28 pni ³¹czy siê w planszê do Yutnori. Dzia³a tylko w czasie eventu.
+79508	Plansza do Yutnori	Kliknij prawym przyciskiem, aby dodaæ planszê do gry Yutnori (okno wydarzeñ lub Stó³ do Yutnori). Jedna gra kosztuje planszê i 30 000 Yang.
+83030	Z³ote Trofeum Yutnori	Nagroda za grê w Yutnori z co najmniej 220 punktami. Zawiera Z³oty Pakiet Yutnori i Cor Draconis (drogocenne).
+83031	Srebrne Trofeum Yutnori	Nagroda za grê w Yutnori ze 150-219 punktami. Zawiera Srebrny Pakiet Yutnori, czasem Zwój B³ogos³awieñstwa.
+83032	Z³oty Pakiet Yutnori	Otwórz pakiet i sprawdŸ, co uda³o ci siê wygraæ.
+83033	Srebrny Pakiet Yutnori	Otwórz pakiet i sprawdŸ, co uda³o ci siê wygraæ.
+83034	Br¹zowy Pakiet Yutnori	Nagroda za udzia³ w Yutnori. Otwórz pakiet i sprawdŸ, co uda³o ci siê wygraæ.

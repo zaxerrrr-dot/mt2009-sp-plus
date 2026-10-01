@@ -38,7 +38,9 @@ EVENTS = {
 	'catchking': {'name': 'Z\xb3ap Kr\xf3la', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
 	'rumi': {'name': 'Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
 	'rumi_xmas': {'name': '\x8cwi\xb9teczne Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game', 'game': 'rumi'},
-	'yutnori': {'name': 'Yut Nori', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
+	# MT2009_PLUS_YUTNORI_V1: uiminigameyutnori.py registers the opener; the three boxes a game gives.
+	'yutnori': {'name': 'Yut Nori', 'icon': CAL + 'bonus_event.tga', 'open': 'game',
+			'rewards': ((83030, 1), (83031, 1), (83034, 1))},
 	'flower': {'name': 'Dzieci Kwiaty', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
 	'easter': {'name': 'Event wielkanocny', 'icon': CAL + 'bonus_event.tga', 'open': 'info',
 			'desc': 'Metiny wielkanocne dropi\xb9 jajka - wymie\xf1 je u Wielkanocnego Zaj\xb9ca w mie\x9ccie.'},

@@ -127227,3 +127227,10 @@
 30774	ETC	icon/item/50270.tga	d:/ymir work/item/etc/boss_box.gr2
 30775	ETC	icon/item/50270.tga	d:/ymir work/item/etc/boss_box.gr2
 30776	ETC	icon/item/50271.tga	d:/ymir work/item/etc/boss_box.gr2
+79507	ETC	icon/item/79507.tga
+79508	ETC	icon/item/79508.tga
+83030	ETC	icon/item/83030.tga	d:/ymir work/item/etc/boss_box.gr2
+83031	ETC	icon/item/83031.tga	d:/ymir work/item/etc/boss_box.gr2
+83032	ETC	icon/item/83032.tga
+83033	ETC	icon/item/83033.tga
+83034	ETC	icon/item/83034.tga

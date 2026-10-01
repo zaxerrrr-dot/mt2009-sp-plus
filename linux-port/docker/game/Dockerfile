@@ -271,7 +271,9 @@ RUN set -eux; \
     # (MT2009_PLUS_AREZZO_V1, phases 5-7).
     # blue_dragon_lair is the Blue Dragon lair (map 208) entered at the Sura's Ghost in the Grotto of
     # Exile V2 (MT2009_PLUS_BLUE_DRAGON_V1).
-    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla; do \
+    # minigame_yutnori is the Yut Nori table's menu (20502): the ranking, its prizes and the
+    # game's window (MT2009_PLUS_YUTNORI_V1, playerbot_yutnori.h).
+    for q in web_admin speed_boost starter_chest pony_levelup gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 horse_levelup deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla minigame_yutnori; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -370,6 +372,19 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && mv "$f.new" "$f" \
  && rm -rf /tmp/share-add \
  && echo "share: moonlight + starter + boss chests, M3 drops appended"
+
+# MT2009_PLUS_YUTNORI_V1: the Yut Nori trophies and bundles (83030-83034,
+# special_item_group.yutnori.txt; playerbot_yutnori.h hands them out). Appended
+# once, after any stock group of the same vnums is cut out (the reader keeps
+# the first group per vnum).
+COPY special_item_group.yutnori.txt /tmp/special_item_group.yutnori.txt
+RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/special_item_group.yutnori.txt \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$a" \
+ && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(8303[0-4])([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
+ && cat "$a" >> "$f.new" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+8303[0-4]([^0-9]|$)' "$f.new")" = 5 \
+ && mv "$f.new" "$f" && rm -f "$a" \
+ && echo "share: Yut Nori boxes 83030-83034"
 
 # The alchemy bonuses (server-patches/dragonsoulbalance): the package's
 # BasicApplys and AdditionalApplys groups of dragon_soul_table.txt give way to

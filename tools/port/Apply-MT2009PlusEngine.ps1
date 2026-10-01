@@ -39,6 +39,8 @@ param(
 #   Cor pickup stacks  char_item.cpp             (MT2009_PLUS_COR_AUTOSTACK_V1)
 #   DS trace players   char_item.cpp             (MT2009_PLUS_DS_TRACE_PLAYERS_V1)
 #   event manager      packet.h, cmd.cpp, cmd_general.cpp (MT2009_PLUS_EVENT_MANAGER_V1)
+#   Yut Nori           packet.h, packet_info.cpp, input_main.cpp, char_item.cpp,
+#                      item_manager.cpp (MT2009_PLUS_YUTNORI_V1)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -271,6 +273,19 @@ if ((Test-Path -LiteralPath $eventManagerApply -PathType Leaf) -and
     if ($eventManagerResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} event manager edit(s).' -f $eventManagerResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Yut Nori (server-patches/yutnori): Owsap's packets 182, their dispatch, the
+# Birch Branch and the board's use and the kill's roll for a branch
+# (playerbot_yutnori.h); after the event manager, whose packet lines it
+# anchors on.
+$yutnoriApply = Join-Path $repo 'server-patches/yutnori/Apply-YutnoriPatch.ps1'
+if ((Test-Path -LiteralPath $yutnoriApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'packet.h') -PathType Leaf)) {
+    $yutnoriResult = & $yutnoriApply -SourceDir $engineGameSource
+    if ($yutnoriResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Yut Nori edit(s).' -f $yutnoriResult.Applied) -ForegroundColor DarkGray
     }
 }
 # A pet's magic attack % (server-patches/magicattper): PointChange had no

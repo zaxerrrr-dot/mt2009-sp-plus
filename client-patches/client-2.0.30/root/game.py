@@ -440,6 +440,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uidungeoninfo").DestroyWindow()
 		# MT2009_PLUS_NEW_PET_V1: the New Pet System's window (uinewpet.py).
 		__import__("uinewpet").DestroyWindow()
+		# MT2009_PLUS_YUTNORI_V1: Yut Nori's window (uiminigameyutnori.py), before the hub.
+		__import__("uiminigameyutnori").Destroy()
 		# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub (uiingameevent.py).
 		__import__("uiingameevent").DestroyWindow()
 		# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's panel.
@@ -2317,6 +2319,8 @@ class GameWindow(ui.ScriptWindow):
 				# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub and the hello
 				# that brings this core's event list (uiingameevent.py, ingameevent.py).
 				__import__("uiingameevent").Start()
+				# MT2009_PLUS_YUTNORI_V1: the hub's Yut Nori button opens its window.
+				__import__("uiminigameyutnori").Register()
 				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
 				__import__("uinewpet").Start()
 
@@ -2968,6 +2972,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["mini_game_catchking"] = self.__InGameEventFlagCatchKing
 		serverCommandList["e_flower_drop"] = self.__InGameEventFlagFlower
 		serverCommandList["easter_drop"] = self.__InGameEventFlagEaster
+		serverCommandList["YutnoriOpen"] = self.__YutnoriOpen # MT2009_PLUS_YUTNORI_V1 (the table NPC)
 
 		self.serverCommander=stringCommander.Analyzer()
 		for serverCommandItem in serverCommandList.items():
@@ -3605,6 +3610,17 @@ class GameWindow(ui.ScriptWindow):
 
 	def __InGameEventFlagEaster(self, *args):
 		self.__InGameEventFlag("easter_drop", args)
+
+	# MT2009_PLUS_YUTNORI_V1: Yut Nori (uiminigameyutnori.py) - the exe's packet 182
+	# (Owsap's names) and the table NPC's "Zagraj".
+	def YutnoriProcess(self, type, data):
+		__import__("uiminigameyutnori").Process(type, data)
+
+	def YutnoriFlagProcess(self, type, data):
+		__import__("uiminigameyutnori").FlagProcess(type, data)
+
+	def __YutnoriOpen(self, *args):
+		__import__("uiminigameyutnori").OpenWindow()
 
 	# The exe's list changed and no handler was set (ingameevent sets one).
 	def BINARY_RefreshInGameEvent(self):
