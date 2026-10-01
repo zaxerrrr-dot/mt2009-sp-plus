@@ -35,7 +35,8 @@ CAL = 'mt2009_ui/calendar/'
 # (desc as a chat line); desc: the line under the name when the button has
 # nothing to open; rewards: up to three (vnum, count) shown beside it.
 EVENTS = {
-	'catchking': {'name': 'Z\xb3ap Kr\xf3la', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
+	# MT2009_PLUS_CATCH_KING_V1: the three King's Loots (uiminigamecatchking.py).
+	'catchking': {'name': 'Z\xb3ap Kr\xf3la', 'icon': CAL + 'bonus_event.tga', 'open': 'game', 'rewards': ((50968, 1), (50969, 1), (50970, 1))},
 	'rumi': {'name': 'Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},
 	'rumi_xmas': {'name': '\x8cwi\xb9teczne Rumi (Okey)', 'icon': CAL + 'bonus_event.tga', 'open': 'game', 'game': 'rumi'},
 	'yutnori': {'name': 'Yut Nori', 'icon': CAL + 'bonus_event.tga', 'open': 'game'},

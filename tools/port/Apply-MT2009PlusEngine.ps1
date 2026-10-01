@@ -273,6 +273,20 @@ if ((Test-Path -LiteralPath $eventManagerApply -PathType Leaf) -and
         Write-Host ('Applied {0} event manager edit(s).' -f $eventManagerResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Catch the King (server-patches/catchking, MT2009_PLUS_CATCH_KING_V1): packets
+# CG 226 / GC 238 in packet.h and packet_info.cpp, their case in input_main.cpp,
+# the King Card share of a kill (item_manager.cpp), a game left mid-way
+# (char.cpp) and the quest functions (questlua_game.cpp) - playerbot_catchking.h;
+# after the event manager, whose packet.h lines it anchors on.
+$catchKingApply = Join-Path $repo 'server-patches/catchking/Apply-CatchKingPatch.ps1'
+if ((Test-Path -LiteralPath $catchKingApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'packet.h') -PathType Leaf)) {
+    $catchKingResult = & $catchKingApply -SourceDir $engineGameSource
+    if ($catchKingResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Catch the King edit(s).' -f $catchKingResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # A pet's magic attack % (server-patches/magicattper): PointChange had no
 # case for POINT_MAGIC_ATT_BONUS_PER, so the bonus never applied.
 $magicAttApply = Join-Path $repo 'server-patches/magicattper/Apply-MagicAttPerPatch.ps1'

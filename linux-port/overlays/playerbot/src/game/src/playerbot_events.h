@@ -42,6 +42,9 @@ void GoblinEventTick(DWORD dwNow);
 // (playerbot_ingame_events.h, included after this file): the mini games'
 // event flags, their table NPCs and the players' event list, every pass.
 void InGameEventTick(DWORD dwNow);
+// MT2009_PLUS_CATCH_KING_V1: Catch the King's season (playerbot_catchking.h,
+// included after this file), every pass.
+void CatchKingTick(DWORD dwNow);
 
 namespace {
 	const char* const PLAYERBOT_EVENTS_DEFAULT_PATH = "/opt/m2spool/playerbot_events.tsv";
@@ -290,7 +293,8 @@ namespace {
 				snprintf(text, sizeof(text), "Event zakonczony: podwojny loot z Metinow.");
 			else if (kind == playerbot_events::KIND_GOBLIN)
 				snprintf(text, sizeof(text), "Event zakonczony: Poszukiwanie skarbow z Goblinem Skarbow.");
-			else if (kind == playerbot_events::KIND_RUMI || kind == playerbot_events::KIND_YUTNORI)
+			// MT2009_PLUS_CATCH_KING_V1: Catch the King's top ten collect too.
+			else if (kind == playerbot_events::KIND_RUMI || kind == playerbot_events::KIND_YUTNORI || kind == playerbot_events::KIND_CATCHKING)
 				snprintf(text, sizeof(text), "Event zakonczony: %s. Nagrody za ranking mozna odebrac przy stole przez 7 dni.",
 						PlayerBotMiniGameEventName(kind));
 			else if (PlayerBotMiniGameEventName(kind))
@@ -606,6 +610,8 @@ namespace {
 		// MT2009_PLUS_EVENT_MANAGER_V1: the in-game event manager follows the
 		// mini games' kinds (playerbot_ingame_events.h) - every core.
 		InGameEventTick(dwNow);
+		// MT2009_PLUS_CATCH_KING_V1: Catch the King's season flag (playerbot_catchking.h).
+		CatchKingTick(dwNow);
 	}
 }
 

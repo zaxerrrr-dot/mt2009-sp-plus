@@ -442,6 +442,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uinewpet").DestroyWindow()
 		# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub (uiingameevent.py).
 		__import__("uiingameevent").DestroyWindow()
+		# MT2009_PLUS_CATCH_KING_V1: Catch the King's window (uiminigamecatchking.py).
+		__import__("uiminigamecatchking").Destroy()
 		# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's panel.
 		import uiguildduty
 		uiguildduty.DestroyWindow()
@@ -2317,6 +2319,9 @@ class GameWindow(ui.ScriptWindow):
 				# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event hub and the hello
 				# that brings this core's event list (uiingameevent.py, ingameevent.py).
 				__import__("uiingameevent").Start()
+				# MT2009_PLUS_CATCH_KING_V1: Catch the King's window behind the hub's button
+				# (uiminigamecatchking.py; nothing without the new exe's packets).
+				__import__("uiminigamecatchking").Register()
 				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
 				__import__("uinewpet").Start()
 
@@ -3610,6 +3615,26 @@ class GameWindow(ui.ScriptWindow):
 	def BINARY_RefreshInGameEvent(self):
 		import ingameevent
 		ingameevent.Notify()
+
+	# MT2009_PLUS_CATCH_KING_V1: Catch the King's packets (GC 238), Owsap's names as the
+	# exe calls them, to uiminigamecatchking.py.
+	def MiniGameCatchKingEventStart(self, bigScore):
+		__import__("uiminigamecatchking").EventStart(bigScore)
+
+	def MiniGameCatchKingSetHandCard(self, cardNumber):
+		__import__("uiminigamecatchking").SetHandCard(cardNumber)
+
+	def MiniGameCatchKingResultField(self, score, rowType, cardPos, cardValue, keepFieldCard, destroyHandCard, getReward, isFiveNear):
+		__import__("uiminigamecatchking").ResultField(score, rowType, cardPos, cardValue, keepFieldCard, destroyHandCard, getReward, isFiveNear)
+
+	def MiniGameCatchKingSetEndCard(self, cardPos, cardNumber):
+		__import__("uiminigamecatchking").SetEndCard(cardPos, cardNumber)
+
+	def MiniGameCatchKingReward(self, rewardCode):
+		__import__("uiminigamecatchking").Reward(rewardCode)
+
+	def CatchKingFlagProcess(self, type, data):
+		__import__("uiminigamecatchking").FlagProcess(type, data)
 
 	# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's lines (dungeoninfo.py, the "dungeonInfo" module).
 	def __DungeonInfo(self, *args):

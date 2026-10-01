@@ -1880,3 +1880,30 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 # Idempotent: the same values every start.
 db -e "UPDATE world.mob_proto SET level = 93, max_hp = 3000000, def = 250, exp = 2000000, regen_cycle = 30, regen_percent = 1 WHERE vnum = 2493;
 UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (8031, 8032, 8033, 8034);" || echo "[playerbot-migrate] WARNING: could not set up the Blue Dragon lair's dragon and stones" >&2
+
+# MT2009_PLUS_CATCH_KING_V1: Catch the King (Zlap Krola, playerbot_catchking.h,
+# server-patches/catchking, quest/minigame_catchking.quest). Owsap's tokens keep
+# their vnums - Karta Krolewska (79603, +1 card when used during the event) and
+# Talia Krolewska (79604, +1 deck) - as quest-use items bound to the character;
+# Owsap's three King's Loots (50928-50930) are this world's "Receptura" items, so
+# the Loots take 50968 (Zloty, 550+ points), 50969 (Srebrny, 400-549) and 50970
+# (Brazowy, 10-399): gift boxes opened by special_item_group.catchking.txt. The
+# table NPC 20506 (Owsap's, model king_npc), a clone of the stock NPC 20005, stands
+# on maps 1/21/41 while the event runs and through its 7-day reward window
+# (playerbot_ingame_events.h). player.minigame_catchking holds the scores per
+# season (the event flag mini_game_catchking_season) and player id, and whether
+# the season's top-10 prize was taken. The names are UTF-8 here, SET NAMES converts
+# them to the tables' CP1250. Idempotent: added once, never changed after.
+db -e "SET NAMES utf8mb4;
+CREATE TABLE IF NOT EXISTS player.minigame_catchking (season INT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, name VARCHAR(24) NOT NULL DEFAULT '', empire TINYINT UNSIGNED NOT NULL DEFAULT 0, max_score INT UNSIGNED NOT NULL DEFAULT 0, total_score INT UNSIGNED NOT NULL DEFAULT 0, games INT UNSIGNED NOT NULL DEFAULT 0, claimed TINYINT UNSIGNED NOT NULL DEFAULT 0, last_play DATETIME NULL, PRIMARY KEY (season, pid), KEY season_total (season, total_score)) ENGINE=InnoDB;
+INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(79603, 'Karta Królewska', 'Karta Królewska', 18, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(79604, 'Talia Królewska', 'Talia Królewska', 18, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50968, 'Złoty Łup Królewski', 'Złoty Łup Królewski', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50969, 'Srebrny Łup Królewski', 'Srebrny Łup Królewski', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50970, 'Brązowy Łup Królewski', 'Brązowy Łup Królewski', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);
+DROP TEMPORARY TABLE IF EXISTS world.ck_mob;
+CREATE TEMPORARY TABLE world.ck_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20005 LIMIT 1;
+UPDATE world.ck_mob SET vnum = 20506, name = 'Złap Króla', locale_name = 'Złap Króla', folder = 'king_npc';
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.ck_mob;
+DROP TEMPORARY TABLE world.ck_mob;" || echo "[playerbot-migrate] WARNING: could not add Catch the King's items, table NPC and score table" >&2

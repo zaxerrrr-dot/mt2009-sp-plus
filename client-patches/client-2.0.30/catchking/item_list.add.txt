@@ -1,0 +1,5 @@
+79603	ETC	icon/item/79603.tga
+79604	ETC	icon/item/79604.tga
+50968	ETC	icon/item/50928.tga
+50969	ETC	icon/item/50929.tga
+50970	ETC	icon/item/50930.tga
