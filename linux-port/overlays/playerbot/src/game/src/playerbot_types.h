@@ -2831,7 +2831,9 @@ namespace
 	// exceptions a hundred thousand up (point 3), the bonus rows of the lines
 	// only the 2.2.31 table rolled (point 13), and the multiplier for two to
 	// four maximal lines on one piece (point 11).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 10;
+	// 11: MT2009_PLUS_OWNER_PRICES_V2 - the owner's compendium edits of
+	// 1 October (gear tops, materials, scrolls, books, the new goods).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 11;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in

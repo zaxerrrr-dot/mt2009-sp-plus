@@ -2572,25 +2572,162 @@ namespace
 		return std::max(GetPlayerBotRefineInvestment(item), GetPlayerBotBonusGoodsFloor(item));
 	}
 
+	// MT2009_PLUS_OWNER_PRICES_V2 (D): Cor Draconis and Materialy Rzemieslnicze
+	// stay at the operator's 100 000 a piece, now on a curve of three parts
+	// ("tutaj na pewno krzywa kursu trzeba dodac", the owner, 1 October):
+	//   - the market: a scarce good dearer, a flooded one cheaper. Up to
+	//     SCARCE units on the bots' counters (the ledger, every Cor vnum
+	//     together) is x2, NORMAL units x1, FLOOD and more x0.5, read straight
+	//     through on a log scale between them;
+	//   - the stack: a piece of a big line cheaper - x1 up to BULK_FROM pieces,
+	//     x0.8 from BULK_FULL, straight between;
+	//   - the buyer: a bot that needs it pays more the higher it stands - x1 up
+	//     to level LEVEL_FROM, x1.3 from LEVEL_FULL, straight between. Only the
+	//     buying side reads this (the asking price has no buyer), as the most a
+	//     bot accepts a piece (CanPlayerBotPayForAlchemyOffer,
+	//     CanPlayerBotPayForCraftMaterial).
+	// The counters' markdown still leaves both alone (operatorPriced).
+	const DWORD PLAYERBOT_OPERATOR_CURVE_SCARCE_UNITS = 10;
+	const DWORD PLAYERBOT_OPERATOR_CURVE_NORMAL_UNITS = 100;
+	const DWORD PLAYERBOT_OPERATOR_CURVE_FLOOD_UNITS = 1000;
+	const int PLAYERBOT_OPERATOR_CURVE_SCARCE_PERCENT = 200;
+	const int PLAYERBOT_OPERATOR_CURVE_FLOOD_PERCENT = 50;
+	const DWORD PLAYERBOT_OPERATOR_CURVE_BULK_FROM = 10;
+	const DWORD PLAYERBOT_OPERATOR_CURVE_BULK_FULL = 50;
+	const int PLAYERBOT_OPERATOR_CURVE_BULK_PERCENT = 80;
+	const int PLAYERBOT_OPERATOR_CURVE_LEVEL_FROM = 30;
+	const int PLAYERBOT_OPERATOR_CURVE_LEVEL_FULL = 105;
+	const int PLAYERBOT_OPERATOR_CURVE_LEVEL_PERCENT = 130;
+
+	// The units of this good on the bots' counters.
+	DWORD GetPlayerBotOperatorGoodsSupply(DWORD vnum)
+	{
+		DWORD units = 0;
+		if (IsPlayerBotCorVnum(vnum) || IsPlayerBotCorDraconisVnum(vnum))
+		{
+			for (size_t i = 0; i < sizeof(PLAYERBOT_COR_DRACONIS_VNUMS) / sizeof(PLAYERBOT_COR_DRACONIS_VNUMS[0]); ++i)
+			{
+				const TPlayerBotMarketLedgerEntry* e = GetPlayerBotMarketLedgerEntry(PLAYERBOT_COR_DRACONIS_VNUMS[i]);
+				if (e)
+					units += e->dwSupplyUnits;
+			}
+			return units;
+		}
+		const TPlayerBotMarketLedgerEntry* e = GetPlayerBotMarketLedgerEntry(vnum);
+		return e ? e->dwSupplyUnits : 0;
+	}
+
+	int GetPlayerBotOperatorSupplyPercent(DWORD vnum)
+	{
+		const double units = (double)GetPlayerBotOperatorGoodsSupply(vnum);
+		if (units <= (double)PLAYERBOT_OPERATOR_CURVE_SCARCE_UNITS)
+			return PLAYERBOT_OPERATOR_CURVE_SCARCE_PERCENT;
+		if (units >= (double)PLAYERBOT_OPERATOR_CURVE_FLOOD_UNITS)
+			return PLAYERBOT_OPERATOR_CURVE_FLOOD_PERCENT;
+		const bool low = units < (double)PLAYERBOT_OPERATOR_CURVE_NORMAL_UNITS;
+		const double from = low ? PLAYERBOT_OPERATOR_CURVE_SCARCE_UNITS : PLAYERBOT_OPERATOR_CURVE_NORMAL_UNITS;
+		const double to = low ? PLAYERBOT_OPERATOR_CURVE_NORMAL_UNITS : PLAYERBOT_OPERATOR_CURVE_FLOOD_UNITS;
+		const double pctFrom = low ? PLAYERBOT_OPERATOR_CURVE_SCARCE_PERCENT : 100.0;
+		const double pctTo = low ? 100.0 : PLAYERBOT_OPERATOR_CURVE_FLOOD_PERCENT;
+		const double t = log(units / from) / log(to / from);
+		return (int)(pctFrom * pow(pctTo / pctFrom, t) + 0.5);
+	}
+
+	int GetPlayerBotOperatorStackPercent(DWORD count)
+	{
+		if (count <= PLAYERBOT_OPERATOR_CURVE_BULK_FROM)
+			return 100;
+		if (count >= PLAYERBOT_OPERATOR_CURVE_BULK_FULL)
+			return PLAYERBOT_OPERATOR_CURVE_BULK_PERCENT;
+		return 100 - (int)((100 - PLAYERBOT_OPERATOR_CURVE_BULK_PERCENT) * (count - PLAYERBOT_OPERATOR_CURVE_BULK_FROM) /
+				(PLAYERBOT_OPERATOR_CURVE_BULK_FULL - PLAYERBOT_OPERATOR_CURVE_BULK_FROM));
+	}
+
+	int GetPlayerBotOperatorLevelPercent(int level)
+	{
+		if (level <= PLAYERBOT_OPERATOR_CURVE_LEVEL_FROM)
+			return 100;
+		if (level >= PLAYERBOT_OPERATOR_CURVE_LEVEL_FULL)
+			return PLAYERBOT_OPERATOR_CURVE_LEVEL_PERCENT;
+		return 100 + (PLAYERBOT_OPERATOR_CURVE_LEVEL_PERCENT - 100) * (level - PLAYERBOT_OPERATOR_CURVE_LEVEL_FROM) /
+				(PLAYERBOT_OPERATOR_CURVE_LEVEL_FULL - PLAYERBOT_OPERATOR_CURVE_LEVEL_FROM);
+	}
+
+	// A piece of a line of `count` at the base, as the market stands now.
+	DWORD GetPlayerBotOperatorCurveUnit(DWORD vnum, DWORD base, DWORD count)
+	{
+		const unsigned long long unit = (unsigned long long)base *
+				(unsigned long long)GetPlayerBotOperatorSupplyPercent(vnum) *
+				(unsigned long long)GetPlayerBotOperatorStackPercent(std::max<DWORD>(1, count)) / 10000ULL;
+		return (DWORD)std::max<unsigned long long>(1ULL, std::min<unsigned long long>(unit, 0xFFFFFFFFULL));
+	}
+
+	// The most a bot of this level pays a piece of such a line.
+	long long GetPlayerBotOperatorBuyCap(LPCHARACTER ch, DWORD vnum, DWORD base, DWORD count)
+	{
+		return (long long)GetPlayerBotOperatorCurveUnit(vnum, base, count) *
+				GetPlayerBotOperatorLevelPercent(ch ? (int)ch->GetLevel() : 1) / 100;
+	}
+
+	// MT2009_PLUS_OWNER_PRICES_V2 (E): a Transporter z Petem (55007) is worth
+	// the treats its pet ate - "cena zalezna od lvl peta, policz ilosc
+	// potrzebnych smakolykow na kazdy lvl i odejmij 10%" (the owner): the
+	// experience from level 1 to the pet's level (mt2009_newpet::Need, the
+	// player table), over one Smakolyk's (55032, value0 of its proto), at the
+	// Smakolyk's 400 000, less 10%. The level is socket 1 less the evolution
+	// in its thousands (playerbot_newpet.h, the packing).
+	const DWORD PLAYERBOT_PET_CARRIER_VNUM = 55007;
+	const unsigned long long PLAYERBOT_PET_TREAT_PRICE = 400000ULL;
+	const int PLAYERBOT_PET_CARRIER_PERCENT = 90;
+
+	DWORD GetPlayerBotPetCarrierPrice(LPITEM item)
+	{
+		if (!item || item->GetVnum() != PLAYERBOT_PET_CARRIER_VNUM)
+			return 0;
+		const int level = std::max(1, (int)(item->GetSocket(1) % 1000));
+		const TItemTable* treat = ITEM_MANAGER::instance().GetTable(mt2009_newpet::ITEM_TREAT);
+		const unsigned long long perTreat = treat && treat->alValues[0] > 0 ? (unsigned long long)treat->alValues[0] : 800000ULL;
+		unsigned long long need = 0;
+		for (int l = 1; l < level && l < PLAYER_MAX_LEVEL_CONST; ++l)
+			need += mt2009_newpet::Need(l);
+		const unsigned long long treats = (need + perTreat - 1) / perTreat;
+		const unsigned long long price = std::max<unsigned long long>(1ULL, treats) * PLAYERBOT_PET_TREAT_PRICE *
+				PLAYERBOT_PET_CARRIER_PERCENT / 100ULL;
+		return (DWORD)std::min<unsigned long long>(price, 0xFFFFFFFFULL);
+	}
+
 	DWORD GetPlayerBotShopAskingPriceRaw(LPITEM item)
 	{
 		if (!item)
 			return 1;
 		// Materialy Rzemieslnicze: the operator's price, a piece, as it stands
 		// (playerbot_saddlebag.h).
+		// MT2009_PLUS_OWNER_PRICES_V2: on the curve above.
 		if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
 		{
-			const DWORD craft = PLAYERBOT_CRAFT_MATERIAL_UNIT_PRICE * std::max<DWORD>(1, (DWORD)item->GetCount());
-			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, craft, PLAYERBOT_CRAFT_MATERIAL_UNIT_PRICE);
+			const DWORD count = std::max<DWORD>(1, (DWORD)item->GetCount());
+			const DWORD unit = GetPlayerBotOperatorCurveUnit(item->GetVnum(), PLAYERBOT_CRAFT_MATERIAL_UNIT_PRICE, count);
+			const DWORD craft = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL, (unsigned long long)unit * count);
+			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, craft, unit);
 			return craft;
 		}
-		// Cor Draconis and the Dragon Stones: the operator's prices as they
-		// stand (playerbot_alchemy.h, GetPlayerBotDragonSoulPrice).
+		// Cor Draconis and the Dragon Stones: the operator's prices
+		// (playerbot_alchemy.h, GetPlayerBotDragonSoulPrice), a Cor on the
+		// curve above.
 		if (IsPlayerBotCorVnum(item->GetVnum()))
 		{
-			const DWORD cor = PLAYERBOT_COR_DRACONIS_PRICE * std::max<DWORD>(1, (DWORD)item->GetCount());
-			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, cor, PLAYERBOT_COR_DRACONIS_PRICE);
+			const DWORD count = std::max<DWORD>(1, (DWORD)item->GetCount());
+			const DWORD unit = GetPlayerBotOperatorCurveUnit(item->GetVnum(), PLAYERBOT_COR_DRACONIS_PRICE, count);
+			const DWORD cor = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL, (unsigned long long)unit * count);
+			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, cor, unit);
 			return cor;
+		}
+		// The pet in its transporter, by its level.
+		if (item->GetVnum() == PLAYERBOT_PET_CARRIER_VNUM)
+		{
+			const DWORD carrier = GetPlayerBotPetCarrierPrice(item);
+			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, carrier, carrier);
+			return carrier;
 		}
 		if (item->IsDragonSoul())
 		{
@@ -2764,7 +2901,9 @@ namespace
 			priorA = bookSkill;
 			priorB = unit;
 		}
-		else if (IsPlayerBotGeneralSkillBook(item->GetVnum()))
+		// MT2009_PLUS_OWNER_PRICES_V2: his sheet's number for the six general
+		// books (609 000 each) wins over the old multiples below.
+		else if (IsPlayerBotGeneralSkillBook(item->GetVnum()) && materialBase == 0)
 		{
 			unit = ScalePlayerBotIwakuraPrice(PLAYERBOT_PRIOR_BOOK_ORDINARY *
 					(item->GetVnum() >= 50304 ? PLAYERBOT_GENERAL_BOOK_PRICE_MULT_COMBO

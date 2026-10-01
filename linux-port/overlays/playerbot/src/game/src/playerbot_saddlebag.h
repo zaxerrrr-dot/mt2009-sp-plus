@@ -320,7 +320,13 @@ namespace
 		const long long unit = price / std::max<long long>(1, (long long)item->GetCount());
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) -
 				(long long)PLAYERBOT_SHOPPING_GOLD_FLOOR;
-		return unit <= PLAYERBOT_CRAFT_MATERIAL_MAX_BUY &&
+		// MT2009_PLUS_OWNER_PRICES_V2: the curve's piece for this line, for a
+		// bot of this level (playerbot_town.h), where that is over the cap.
+		const long long cap = std::max<long long>(PLAYERBOT_CRAFT_MATERIAL_MAX_BUY *
+				GetPlayerBotOperatorLevelPercent((int)ch->GetLevel()) / 100,
+				GetPlayerBotOperatorBuyCap(ch, item->GetVnum(), PLAYERBOT_CRAFT_MATERIAL_UNIT_PRICE,
+					(DWORD)std::max<int>(1, (int)item->GetCount())));
+		return unit <= cap &&
 				price <= spare * PLAYERBOT_CRAFT_MATERIAL_PURSE_PERCENT / 100;
 	}
 

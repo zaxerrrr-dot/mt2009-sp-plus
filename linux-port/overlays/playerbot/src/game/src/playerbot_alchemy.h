@@ -410,7 +410,10 @@ namespace
 		if (IsPlayerBotCorVnum(item->GetVnum()))
 		{
 			const long long unit = price / std::max<long long>(1, (long long)item->GetCount());
-			return unit <= (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_COR_DRACONIS_PRICE) * PLAYERBOT_DS_COR_BUY_MULT &&
+			// MT2009_PLUS_OWNER_PRICES_V2: and the higher the user, the more
+			// (GetPlayerBotOperatorLevelPercent, playerbot_town.h).
+			return unit <= (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_COR_DRACONIS_PRICE) * PLAYERBOT_DS_COR_BUY_MULT *
+						GetPlayerBotOperatorLevelPercent((int)ch->GetLevel()) / 100 &&
 					price <= spare * 40 / 100;
 		}
 		return price <= (long long)GetPlayerBotDragonSoulPrice(item) * 12 / 10 && price <= spare * 25 / 100;
