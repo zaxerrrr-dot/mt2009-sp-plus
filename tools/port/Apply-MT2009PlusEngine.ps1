@@ -554,6 +554,19 @@ if ((Test-Path -LiteralPath $luaStackApply -PathType Leaf) -and
         Write-Host ('Applied {0} Lua stack edit(s).' -f $luaStackResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Entity snapshot check (server-patches/entitysnapshot): ForEachAround's
+# snapshot skips characters destroyed while it is walked (a splash skill's
+# kill ran d.purge_area and the next blow landed on a freed monster - the
+# Arezzo dungeons' core crash).
+$entitySnapshotApply = Join-Path $repo 'server-patches/entitysnapshot/Apply-EntitySnapshotPatch.ps1'
+if ((Test-Path -LiteralPath $entitySnapshotApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'sectree.cpp') -PathType Leaf)) {
+    $entitySnapshotResult = & $entitySnapshotApply -SourceDir $engineGameSource
+    if ($entitySnapshotResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} entity snapshot edit(s).' -f $entitySnapshotResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both

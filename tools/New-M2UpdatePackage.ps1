@@ -245,6 +245,8 @@ try {
             'linux-port/docker/game/src/server/game/src/packet_info.cpp' = @('MT2009_PLUS_DUNGEON_ONE_WARP_V1 (info)', 'MT2009_PLUS_FLOWER_V1 (size)', 'MT2009_PLUS_RUMI_V1 (size)', 'MT2009_PLUS_CATCH_KING_V1 (size)', 'MT2009_PLUS_YUTNORI_V1 (size)')
             'linux-port/docker/game/src/server/game/src/questlua_game.cpp' = @('MT2009_PLUS_CATCH_KING_V1 (declare)', 'MT2009_PLUS_CATCH_KING_V1 (lua)', 'MT2009_PLUS_CATCH_KING_V1 (table)', 'MT2009_PLUS_RUMI_V1 (lua)', 'MT2009_PLUS_RUMI_V1 (table)')
             'linux-port/docker/game/src/server/game/src/questlua_global.cpp' = @('MT2009_PLUS_LUA_STACK_V1 (special item group)', 'MT2009_PLUS_LUA_STACK_V1 (quest reward)')
+            'linux-port/docker/game/src/server/game/src/sectree.h' = @('MT2009_PLUS_ENTITY_SNAPSHOT_V1 (collector)')
+            'linux-port/docker/game/src/server/game/src/sectree.cpp' = @('MT2009_PLUS_ENTITY_SNAPSHOT_V1 (check)')
             'linux-port/docker/game/src/server/game/src/input_p2p.cpp' = @('MT2009_PLUS_DUNGEON_ONE_WARP_V1 (decl)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (case)', 'MT2009_PLUS_SHOUTERS_V1 (p2p)')
             'linux-port/docker/game/src/server/game/src/char.h' = @('MT2009_PLUS_DUNGEON_PANEL_V1 (damage)', 'MT2009_PLUS_ARCHER_MULTISHOT_V1 (decl)', 'MT2009_PLUS_ARCHER_MULTISHOT_V2 (decl)')
             'linux-port/docker/game/src/server/game/src/questlua_dungeon.cpp' = @('MT2009_PLUS_DUNGEON_PANEL_V1 (lua)', 'MT2009_PLUS_DUNGEON_PANEL_V1 (table)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (lua)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (table)')

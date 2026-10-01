@@ -2086,9 +2086,15 @@ namespace
 		int budget = proto->lMaxHit > 0 ? (int)proto->lMaxHit : PLAYERBOT_SKILL_MAX_HITS_UNCAPPED;
 		const int perTarget = GetPlayerBotSkillHitsPerTarget(skillVnum);
 		DWORD hits = 0;
-		for (int h = 0; h < perTarget && budget > 0 && !target->IsDead(); ++h, --budget, ++hits)
+		// MT2009_PLUS_BOT_PURGED_TARGET_V1: a kill trigger may purge the arena
+		// (d.purge_area) under any blow; the target is asked for by its VID.
+		const DWORD dwTargetVID = (DWORD)target->GetVID();
+		for (int h = 0; h < perTarget && budget > 0 && target && !target->IsDead(); ++h, --budget, ++hits)
+		{
 			ch->ComputeSkill(skillVnum, target);
-		if (budget <= 0)
+			target = CHARACTER_MANAGER::instance().Find(dwTargetVID);
+		}
+		if (budget <= 0 || !target || !ch->GetSectree())
 			return hits;
 		const int reach = std::max(PLAYERBOT_MELEE_SPLASH_RANGE, proto->iSplashRange + PLAYERBOT_SKILL_HIT_MARGIN);
 		CCollectPlayerBotMeleeTargets collector(ch, target, reach, IsPlayerBotSkillAroundCaster(skillVnum));
@@ -2167,6 +2173,7 @@ namespace
 				: CalcMeleeDamage(ch, primary, false, false);
 
 		DWORD hitCount = 1;
+		const DWORD dwPrimaryVID = (DWORD)primary->GetVID();	// MT2009_PLUS_BOT_PURGED_TARGET_V1
 		primary->Damage(ch, iDamage, DAMAGE_TYPE_NORMAL);
 		NotePlayerBotStoneHit(ch, primary);
 		// No UseArrow: a bot's quiver never empties (Tieru, 24 September), so an
@@ -2221,7 +2228,11 @@ namespace
 			}
 		}
 
-		if (!primary->IsDead())
+		// MT2009_PLUS_BOT_PURGED_TARGET_V1: an extra arrow or the sweep can
+		// kill the monster that ends a wave, and its kill trigger purges the
+		// arena (d.purge_area) - the primary with it. Asked for again by VID.
+		primary = CHARACTER_MANAGER::instance().Find(dwPrimaryVID);
+		if (primary && !primary->IsDead())
 		{
 			ch->SetVictim(primary);
 			ch->SetRotationToXY(primary->GetX(), primary->GetY());

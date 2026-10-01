@@ -1007,7 +1007,14 @@ namespace
 				// packet follows the same order as the build verified in the client.
 				// A melee skill lands on as many as a player's client would send
 				// hits for (ApplyPlayerBotSkillHits); everything else once.
+				// MT2009_PLUS_BOT_PURGED_TARGET_V1: a splash skill can kill a
+				// monster whose kill trigger purges the rest of the wave
+				// (d.purge_area), the target with it - freed memory from here
+				// on. The target is asked for again by its VID.
+				const DWORD dwTargetVID = (DWORD)target->GetVID();
+				const bool bTargetStone = target->IsStone();
 				const DWORD hits = ApplyPlayerBotSkillHits(ch, skillVnum, target);
+				target = CHARACTER_MANAGER::instance().Find(dwTargetVID);
 				SendPlayerBotSkillPacket(ch, skillVnum);
 				// The arrow is needed in the slot and never spent: a bot's quiver
 				// never empties (ExecutePlayerBotBasicAttack).
@@ -1022,8 +1029,8 @@ namespace
 						 : PLAYERBOT_SKILL_ATTACK_INTERVAL);
 				state.dwNextAttackTime = dwNow + PLAYERBOT_SKILL_ANIMATION_LOCK;
 				sys_log(0, "PLAYERBOT_AI: used attack skill pid=%u name=%s vnum=%u target_vid=%u hits=%u stone=%d",
-						ch->GetPlayerID(), ch->GetName(), skillVnum, (DWORD)target->GetVID(), hits,
-						target->IsStone() ? 1 : 0);
+						ch->GetPlayerID(), ch->GetName(), skillVnum, dwTargetVID, hits,
+						bTargetStone ? 1 : 0);
 				return true;
 			}
 		}

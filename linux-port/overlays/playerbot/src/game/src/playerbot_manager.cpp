@@ -7427,14 +7427,22 @@ WritePlayerBotGuildStatus(dwNow);
 		ch->SetPosition(POS_FIGHTING);
 		ch->SetRotationToXY(target->GetX(), target->GetY());
 
+		// MT2009_PLUS_BOT_PURGED_TARGET_V1: a blow can end a wave whose kill
+		// trigger purges the arena (d.purge_area) and frees the target with
+		// it, so the target is asked for again by its VID after each attack.
+		const DWORD dwAttackedVID = (DWORD)target->GetVID();
 		if (ExecutePlayerBotAttackSkill(ch, target, state, dwNow))
 		{
-			NotePlayerBotBattleHorseKill(ch, state, target);
+			target = CHARACTER_MANAGER::instance().Find(dwAttackedVID);
+			if (target)
+				NotePlayerBotBattleHorseKill(ch, state, target);
 			continue;
 		}
 
 		ExecutePlayerBotBasicAttack(ch, target, state, dwNow);
-		NotePlayerBotBattleHorseKill(ch, state, target);
+		target = CHARACTER_MANAGER::instance().Find(dwAttackedVID);
+		if (target)
+			NotePlayerBotBattleHorseKill(ch, state, target);
 
 	}
 
