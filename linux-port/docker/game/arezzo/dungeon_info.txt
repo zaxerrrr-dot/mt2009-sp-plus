@@ -14,7 +14,7 @@ dungeon	biblioteka	363	1	xy	3/23/43	3568	8772	30	0	1	8	9706	biblioteka_wiedzy.en
 entry	biblioteka	3568	8772	1369	2396	8668	2396
 cost	biblioteka	1000000
 drop	biblioteka	30773	3	100
-dungeon	wieza	66	1	xy	66	5900	1114	40	0	1	8	1093	-	0	0	0	Wie¿a_Demonów	Wie¿a_Demonów
+dungeon	wieza	66	1	xy	65	5900	1114	40	0	1	8	1093	-	0	0	0	Wie¿a_Demonów	Œwi¹tynia_Hwang
 cost	wieza	5000000
 drop	wieza	183	1	10
 drop	wieza	184	1	5
