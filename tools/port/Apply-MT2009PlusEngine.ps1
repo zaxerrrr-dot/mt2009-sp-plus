@@ -253,6 +253,18 @@ if ((Test-Path -LiteralPath $playerQolApply -PathType Leaf) -and
         Write-Host ('Applied {0} player convenience edit(s).' -f $playerQolResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The Dom Towarowy's part of a stack and its search with Polish capitals
+# (server-patches/shopsearch2): game core, db core and common/tables.h; after
+# playerqol, whose lock lines in ClientManagerIkarusShop.cpp it anchors on.
+$shopSearch2Apply = Join-Path $repo 'server-patches/shopsearch2/Apply-ShopSearch2Patch.ps1'
+if ((Test-Path -LiteralPath $shopSearch2Apply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'ikarus_shop_manager.cpp') -PathType Leaf)) {
+    $shopSearch2Result = & $shopSearch2Apply -SourceDir $engineGameSource
+    if ($shopSearch2Result.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Dom Towarowy edit(s).' -f $shopSearch2Result.Applied) -ForegroundColor DarkGray
+    }
+}
 # The Blue Dragon lair (server-patches/bluedragon, MT2009_PLUS_BLUE_DRAGON_V1):
 # Beran-Setaou in an instance of map 208 takes no damage while one of his four
 # stones stands, and each dragon keeps its own skill cooldowns.

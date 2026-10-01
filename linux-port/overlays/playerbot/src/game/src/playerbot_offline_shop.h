@@ -705,7 +705,8 @@ namespace {
                 ch->GetPlayerID(), ch->GetName(), vnum, skill, (unsigned int)line.count,
                 (long long)line.price, haveListing && known->second.when != 0
                     ? (int)((now - known->second.when) / 1000) : -1, slip ? 1 : 0);
-            if (haveListing) o.listed.erase(known);
+            // A part of the stack sold: the rest of the line is still up.
+            if (haveListing && !line.partial) o.listed.erase(known);
         }
         playerbot_offline::sold.erase(it);
     }
