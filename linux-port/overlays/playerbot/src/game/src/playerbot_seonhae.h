@@ -496,3 +496,226 @@ void SeonHaeCommand(LPCHARACTER ch, const char* argument)
 					ch->GetQuestFlag(F_PCT));
 	}
 }
+
+// MT2009_PLUS_SEONHAE_V1 (drops): where the Powershards and the Additives come
+// from (the owner, 1 October): Metin stones and bosses on the progression maps
+// only - the Grotto of Exile V1 and V2 (72, 73), the Temple of Ochao (209) and
+// the Enchanted Forest (362), their instances too (map / 10000). Nowhere else,
+// no shop, no ItemShop. Only for a real player: the drop's owner (the killer
+// CreateDropItem is given - the top damage dealer or his party's) must not be
+// a bot; the items join the kill's own list, so they fall with its ownership.
+// Nothing while m2_seonhae_on is off.
+//
+// The rules are a small file the classic panel's Seon-Hae page edits,
+// /opt/m2spool/seonhae_drops.tsv, re-read when it changes (looked at every
+// 5 s at most); no file, or a section missing from it, means the defaults
+// below. One rule a line, tab- or space-separated, '#' a comment:
+//   map            <map index> <shard vnum> <weight>   (a map listed = a drop map)
+//   metin_shards   <min> <max>
+//   metin_additive_chance <percent>
+//   metin_additive <vnum> <weight>
+//   boss_shards    <min> <max>
+//   boss_additives <min> <max>
+//   boss_additive  <vnum> <weight>
+// A boss is a monster of rank boss or king (MOB_RANK_BOSS and up), a Metin a stone.
+#include <sys/stat.h>
+#include <fstream>
+#include <sstream>
+
+namespace mt2009_seonhae
+{
+	const char* const DROPS_PATH = "/opt/m2spool/seonhae_drops.tsv";
+	const DWORD DROPS_RECHECK_MS = 5000;
+
+	struct WeightedVnum
+	{
+		DWORD vnum;
+		int weight;
+	};
+
+	struct DropRules
+	{
+		std::map<long, std::vector<WeightedVnum> > maps;
+		int metinShardMin, metinShardMax, metinAdditivePct;
+		std::vector<WeightedVnum> metinAdditives;
+		int bossShardMin, bossShardMax, bossAdditiveMin, bossAdditiveMax;
+		std::vector<WeightedVnum> bossAdditives;
+	};
+
+	void DefaultDropRules(DropRules& r)
+	{
+		r.maps.clear();
+		const WeightedVnum grotto[] = { { 39075, 70 }, { 39076, 30 } };
+		const WeightedVnum ochao[] = { { 39076, 100 } };
+		const WeightedVnum forest[] = { { 39076, 70 }, { 39077, 30 } };
+		r.maps[72].assign(grotto, grotto + 2);
+		r.maps[73].assign(grotto, grotto + 2);
+		r.maps[209].assign(ochao, ochao + 1);
+		r.maps[362].assign(forest, forest + 2);
+		r.metinShardMin = 1;
+		r.metinShardMax = 3;
+		r.metinAdditivePct = 20;
+		const WeightedVnum metinAdd[] = { { 72064, 60 }, { 72065, 30 }, { 72066, 10 } };
+		r.metinAdditives.assign(metinAdd, metinAdd + 3);
+		r.bossShardMin = 3;
+		r.bossShardMax = 6;
+		r.bossAdditiveMin = 1;
+		r.bossAdditiveMax = 2;
+		const WeightedVnum bossAdd[] = { { 72065, 50 }, { 72066, 35 }, { 72067, 15 } };
+		r.bossAdditives.assign(bossAdd, bossAdd + 3);
+	}
+
+	bool KnownDropVnum(DWORD vnum)
+	{
+		return (vnum >= 39070 && vnum <= 39077) || vnum == 39081 || SupportPct(vnum) > 0;
+	}
+
+	DropRules s_drops;
+	bool s_dropsLoaded = false;
+	time_t s_dropsMtime = (time_t)-1;
+	DWORD s_dropsNextCheck = 0;
+
+	void LoadDropRules(DropRules& r)
+	{
+		DefaultDropRules(r);
+		std::ifstream in(DROPS_PATH);
+		if (!in)
+			return;
+		DropRules f;
+		bool hasMaps = false, hasMetinShards = false, hasMetinPct = false, hasMetinAdd = false;
+		bool hasBossShards = false, hasBossAdds = false, hasBossAdd = false;
+		std::string line;
+		int lineNo = 0;
+		while (std::getline(in, line))
+		{
+			++lineNo;
+			const size_t hash = line.find('#');
+			if (hash != std::string::npos)
+				line.erase(hash);
+			std::istringstream ss(line);
+			std::string key;
+			if (!(ss >> key))
+				continue;
+			long a = 0, b = 0, c = 0;
+			bool ok = false;
+			if (key == "map")
+			{
+				ok = (ss >> a >> b >> c) && a > 0 && KnownDropVnum((DWORD)b) && b < 72064 && c > 0;
+				if (ok) { f.maps[a].push_back(WeightedVnum{ (DWORD)b, (int)c }); hasMaps = true; }
+			}
+			else if (key == "metin_shards" || key == "boss_shards" || key == "boss_additives")
+			{
+				ok = (ss >> a >> b) && a >= 0 && b >= a && b <= 50;
+				if (ok && key == "metin_shards") { f.metinShardMin = a; f.metinShardMax = b; hasMetinShards = true; }
+				if (ok && key == "boss_shards") { f.bossShardMin = a; f.bossShardMax = b; hasBossShards = true; }
+				if (ok && key == "boss_additives") { f.bossAdditiveMin = a; f.bossAdditiveMax = b; hasBossAdds = true; }
+			}
+			else if (key == "metin_additive_chance")
+			{
+				ok = (ss >> a) && a >= 0 && a <= 100;
+				if (ok) { f.metinAdditivePct = a; hasMetinPct = true; }
+			}
+			else if (key == "metin_additive" || key == "boss_additive")
+			{
+				ok = (ss >> a >> b) && SupportPct((DWORD)a) > 0 && b > 0;
+				if (ok && key == "metin_additive") { f.metinAdditives.push_back(WeightedVnum{ (DWORD)a, (int)b }); hasMetinAdd = true; }
+				if (ok && key == "boss_additive") { f.bossAdditives.push_back(WeightedVnum{ (DWORD)a, (int)b }); hasBossAdd = true; }
+			}
+			if (!ok)
+				sys_err("SEONHAE: %s line %d ignored: %s", DROPS_PATH, lineNo, line.c_str());
+		}
+		if (hasMaps) r.maps = f.maps;
+		if (hasMetinShards) { r.metinShardMin = f.metinShardMin; r.metinShardMax = f.metinShardMax; }
+		if (hasMetinPct) r.metinAdditivePct = f.metinAdditivePct;
+		if (hasMetinAdd) r.metinAdditives = f.metinAdditives;
+		if (hasBossShards) { r.bossShardMin = f.bossShardMin; r.bossShardMax = f.bossShardMax; }
+		if (hasBossAdds) { r.bossAdditiveMin = f.bossAdditiveMin; r.bossAdditiveMax = f.bossAdditiveMax; }
+		if (hasBossAdd) r.bossAdditives = f.bossAdditives;
+	}
+
+	const DropRules& Drops()
+	{
+		const DWORD now = get_dword_time();
+		if (!s_dropsLoaded || (int)(now - s_dropsNextCheck) >= 0)
+		{
+			s_dropsNextCheck = now + DROPS_RECHECK_MS;
+			struct stat st;
+			const time_t mtime = stat(DROPS_PATH, &st) == 0 ? st.st_mtime : (time_t)0;
+			if (!s_dropsLoaded || mtime != s_dropsMtime)
+			{
+				LoadDropRules(s_drops);
+				s_dropsMtime = mtime;
+				s_dropsLoaded = true;
+				sys_log(0, "SEONHAE: drop rules %s (%u maps)", mtime ? "read from the file" : "at their defaults",
+						(unsigned int)s_drops.maps.size());
+			}
+		}
+		return s_drops;
+	}
+
+	DWORD PickWeighted(const std::vector<WeightedVnum>& v)
+	{
+		int total = 0;
+		for (size_t i = 0; i < v.size(); ++i)
+			total += std::max(0, v[i].weight);
+		if (total <= 0)
+			return 0;
+		int roll = number(1, total);
+		for (size_t i = 0; i < v.size(); ++i)
+		{
+			roll -= std::max(0, v[i].weight);
+			if (roll <= 0)
+				return v[i].vnum;
+		}
+		return v.back().vnum;
+	}
+
+	void AddDrop(std::vector<LPITEM>& out, DWORD vnum, int count)
+	{
+		if (!vnum || count <= 0 || !ITEM_MANAGER::instance().GetTable(vnum))
+			return;
+		LPITEM item = ITEM_MANAGER::instance().CreateItem(vnum, (ITEM_COUNT)count, 0, true);
+		if (item)
+			out.emplace_back(item);
+	}
+}
+
+// Asked by the engine's ITEM_MANAGER::CreateDropItem (item_manager.cpp,
+// MT2009_PLUS_SEONHAE_V1 (drop)) for every kill that drops at all.
+void Mt2009PlusSeonHaeDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& out)
+{
+	using namespace mt2009_seonhae;
+	if (!victim || victim->IsPC() || !killer || !killer->IsPC() || !killer->GetDesc() || killer->GetDesc()->IsBot())
+		return;
+	const bool metin = victim->IsStone();
+	const bool boss = !metin && victim->GetMobRank() >= MOB_RANK_BOSS;
+	if (!metin && !boss)
+		return;
+	if (!IsOn())
+		return;
+	const long map = victim->GetMapIndex() >= 10000 ? victim->GetMapIndex() / 10000 : victim->GetMapIndex();
+	const DropRules& r = Drops();
+	std::map<long, std::vector<WeightedVnum> >::const_iterator it = r.maps.find(map);
+	if (it == r.maps.end())
+		return;
+
+	const DWORD shard = PickWeighted(it->second);
+	int shards, additives = 0;
+	const std::vector<WeightedVnum>* additivePool;
+	if (metin)
+	{
+		shards = number(r.metinShardMin, r.metinShardMax);
+		if (r.metinAdditivePct > 0 && number(1, 100) <= r.metinAdditivePct)
+			additives = 1;
+		additivePool = &r.metinAdditives;
+	}
+	else
+	{
+		shards = number(r.bossShardMin, r.bossShardMax);
+		additives = number(r.bossAdditiveMin, r.bossAdditiveMax);
+		additivePool = &r.bossAdditives;
+	}
+	AddDrop(out, shard, shards);
+	for (int i = 0; i < additives; ++i)
+		AddDrop(out, PickWeighted(*additivePool), 1);
+}

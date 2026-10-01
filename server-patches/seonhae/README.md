@@ -11,6 +11,7 @@ poleceń czatu (jak Poszukiwanie skarbów). Logika jest w nakładce
 |---|---|---|
 | `MT2009_PLUS_SEONHAE_V1 (declare)`, `(table)` | `cmd.cpp` | komenda `/seonhae` |
 | `MT2009_PLUS_SEONHAE_V1 (command)` | `cmd_general.cpp` | `ACMD(do_seonhae)` → `SeonHaeCommand` z nakładki |
+| `MT2009_PLUS_SEONHAE_V1 (drop)` | `item_manager.cpp` | `CreateDropItem` → `Mt2009PlusSeonHaeDrop` (po evencie podwójnego łupu, przed dropem z questów) |
 
 - `Apply-SeonHaePatch.ps1` – Windows (`tools/port/Apply-MT2009PlusEngine.ps1`, po event managerze;
   kotwiczy na liniach goblina z playerqol);
@@ -58,6 +59,38 @@ poleceń czatu (jak Poszukiwanie skarbów). Logika jest w nakładce
 | 39081 | Święty Odłamek | 120+ |
 | 72064–72067 | Mały / Średni / Duży / Silny Suplement | +5 / 10 / 20 / 50 |
 
-Lśniące odłamki Owsapa (39078–39080) należą do jego specjalnych zestawów – pominięte. Skąd gracze
-biorą odłamki i suplementy (drop, sklep, ItemShop) – do decyzji właściciela; cena w sklepie NPC = 0.
+Lśniące odłamki Owsapa (39078–39080) należą do jego specjalnych zestawów – pominięte.
+
+## Drop (decyzja właściciela, 1 października)
+
+Tylko z Metinów (`IsStone`) i bossów (ranga boss/król) na mapach progresji: Grota Wygnańców V1 i V2
+(72, 73), Świątynia Ochao (209), Zaczarowany Las (362) – także w ich instancjach (indeks / 10000).
+Nigdzie indziej, bez sklepu i ItemShopu. Tylko dla prawdziwego gracza: właściciel dropu (zabójca,
+którego dostaje `CreateDropItem` – największe obrażenia albo jego drużyna) nie może być botem;
+przedmioty dołączają do listy dropu, więc padają z jego zwykłą własnością. Nic, gdy `m2_seonhae_on` = 0.
+
+Reguły: `/opt/m2spool/seonhae_drops.tsv` (pisze go strona „Seon-Hae” panelu klasycznego), czytany
+ponownie po zmianie (sprawdzany co najwyżej co 5 s); brak pliku albo brak sekcji = wartości domyślne:
+
+```
+map 72 39075 70        # map <indeks> <vnum odłamka> <waga>; mapa na liście = mapa z dropem
+map 72 39076 30
+map 73 39075 70
+map 73 39076 30
+map 209 39076 100
+map 362 39076 70
+map 362 39077 30
+metin_shards 1 3       # Metin: 1-3 odłamki zawsze
+metin_additive_chance 20
+metin_additive 72064 60
+metin_additive 72065 30
+metin_additive 72066 10
+boss_shards 3 6        # boss: 3-6 odłamków, 1-2 suplementy zawsze
+boss_additives 1 2
+boss_additive 72065 50
+boss_additive 72066 35
+boss_additive 72067 15
+```
+
+Błędny wiersz rdzeń pomija (syserr), panel go nie zapisze. Leże Smoka (208) nie jest na liście.
 Klient: `client-patches/client-2.0.30/tools/seonhae` (wiersze item_proto, item_list, itemdesc).

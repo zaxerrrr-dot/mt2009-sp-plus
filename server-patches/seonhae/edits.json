@@ -16,5 +16,11 @@
   "marker": "MT2009_PLUS_SEONHAE_V1 (command)",
   "old": "// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n",
   "new": "// MT2009_PLUS_SEONHAE_V1 (command): Seon-Hae's 6th/7th bonus window\n// \"/seonhae open|add|collect|close|gm\" (playerbot_seonhae.h).\nACMD(do_seonhae)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid SeonHaeCommand(LPCHARACTER ch, const char* argument);\n\tSeonHaeCommand(ch, argument);\n}\n\n// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_SEONHAE_V1 (drop)",
+  "old": "\t} // MT2009_PLUS_DUNGEON_DROP_V1 (specials end)\n\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n",
+  "new": "\t} // MT2009_PLUS_DUNGEON_DROP_V1 (specials end)\n\t// MT2009_PLUS_SEONHAE_V1 (drop): Seon-Hae's shards and additives from Metins and\n\t// bosses on the progression maps, for a real player only (playerbot_seonhae.h,\n\t// /opt/m2spool/seonhae_drops.tsv); after the double-loot events, so never doubled.\n\t{\n\t\tvoid Mt2009PlusSeonHaeDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& out);\n\t\tMt2009PlusSeonHaeDrop(pkChr, pkKiller, vec_item);\n\t}\n\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n"
  }
 ]

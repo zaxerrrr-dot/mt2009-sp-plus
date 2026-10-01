@@ -3490,9 +3490,12 @@ T = {
  "seon_dash_hint":{"pl":"Czy Seon-Hae (NPC 20095) dodaje graczom 6. i 7. bonus (system dobrowolny).","en":"Whether Seon-Hae (NPC 20095) adds the 6th and 7th bonus for players (an optional system)."},
  "seon_intro":   {"pl":"System dobrowolny (z Owsapa): gracz oddaje Seon-Hae (NPC 20095 w pierwszych wioskach) broń albo zbroję/biżuterię z pięcioma bonusami, Odłamki poziomu przedmiotu (39070–39077, 39081; 2% szansy za każdy, do 10) i Suplementy (72064–72067; do 5, do +50%). Seon-Hae trzyma przedmiot przez ustawiony czas i oddaje go z nowym bonusem albo bez. Wymaga klienta z oknem Seon-Hae. Zapis działa od razu, bez restartu. Włączenie z panelu zostaje po restarcie, dopóki ktoś nie zmieni M2_SEONHAE w .env.","en":"An optional system (from Owsap): a player hands Seon-Hae (NPC 20095 in the first villages) a weapon or an armour/jewel with five bonuses, Powershards of the item's level (39070-39077, 39081; 2% chance each, up to 10) and Additives (72064-72067; up to 5, up to +50%). Seon-Hae keeps the item for the set time and gives it back with a new bonus or without. Needs the client with the Seon-Hae window. Saving takes effect immediately, no restart. Switching on here survives restarts until M2_SEONHAE in .env is changed."},
  "seon_enable":  {"pl":"Seon-Hae przyjmuje przedmioty","en":"Seon-Hae takes items"},
- "seon_help":    {"pl":"Wyłączenie zatrzymuje tylko nowe zlecenia — przedmiot, który Seon-Hae już trzyma, zawsze można odebrać. Odłamki i Suplementy nie wypadają same: dodaj je do sklepu, dropu albo ItemShopu.","en":"Switching off stops new hand-ins only - an item Seon-Hae already keeps can always be collected. The Powershards and Additives do not drop by themselves: add them to a shop, a drop list or the ItemShop."},
+ "seon_help":    {"pl":"Wyłączenie zatrzymuje tylko nowe zlecenia — przedmiot, który Seon-Hae już trzyma, zawsze można odebrać. Odłamki i Suplementy wypadają z Metinów i bossów w Grocie Wygnańców, Świątyni Ochao i Zaczarowanym Lesie (reguły niżej).","en":"Switching off stops new hand-ins only - an item Seon-Hae already keeps can always be collected. The Powershards and Additives drop from Metins and bosses in the Grotto of Exile, the Temple of Ochao and the Enchanted Forest (the rules below)."},
  "seon_wait":    {"pl":"Czas pracy Seon-Hae (minuty, 0 = 24 godziny)","en":"Seon-Hae's working time (minutes, 0 = 24 hours)"},
  "seon_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 💎","en":"Saved and switched live, through the in-game helper. 💎"},
+ "seon_drops":   {"pl":"Drop Odłamków i Suplementów","en":"Powershard and Additive drops"},
+ "seon_drops_help":{"pl":"Wypadają tylko z Metinów i bossów na mapach wpisanych tu jako „map”, tylko dla prawdziwych graczy (nie botów) i tylko gdy Seon-Hae jest włączony. Jedna reguła w wierszu: map <indeks mapy> <vnum odłamka> <waga> · metin_shards <min> <max> · metin_additive_chance <%> · metin_additive <vnum> <waga> · boss_shards <min> <max> · boss_additives <min> <max> · boss_additive <vnum> <waga>. Brak sekcji = wartości domyślne; puste pole = same domyślne. Serwer czyta plik w ciągu kilku sekund, bez restartu.","en":"They drop only from Metins and bosses on the maps listed here as \"map\", only for real players (not bots) and only while Seon-Hae is on. One rule a line: map <map index> <shard vnum> <weight> · metin_shards <min> <max> · metin_additive_chance <%> · metin_additive <vnum> <weight> · boss_shards <min> <max> · boss_additives <min> <max> · boss_additive <vnum> <weight>. A missing section = the defaults; an empty box = the defaults only. The server reads the file within seconds, no restart."},
+ "seon_drops_bad":{"pl":"Nie zapisano reguł dropu - błędne wiersze: %s","en":"Drop rules not saved - wrong lines: %s"},
  "regen_title": {"pl":"Czas odradzania Metinów, bossów i potworów",
                  "en":"Respawn time of Metin stones, bosses and monsters"},
  "regen_help":  {"pl":"Procent zwykłego czasu odradzania: 100 = jak w grze, 50 = dwa razy szybciej, 10 = dziesięć razy szybciej. Działa od razu (przez pomocnika w grze), a po restarcie zostaje. Osobno dla Metinów i bossów, osobno dla zwykłych potworów.",
@@ -5283,6 +5286,87 @@ def read_seonhae():
             vals["wait"] = max(0, min(SEONHAE_WAIT_MAX, v))
     return vals
 
+# MT2009_PLUS_SEONHAE_V1 (drops): the drop rules playerbot_seonhae.h re-reads
+# when the file changes; no file = its built-in defaults (the same as below).
+SEONHAE_DROPS = os.path.join(AI_SPOOL, "seonhae_drops.tsv")
+SEONHAE_DROPS_DEFAULT = """# Seon-Hae: Metins and bosses on these maps only (map / shard vnum / weight)
+# Grotto of Exile V1 and V2: Purple 70, Red 30
+map 72 39075 70
+map 72 39076 30
+map 73 39075 70
+map 73 39076 30
+# Temple of Ochao: Red
+map 209 39076 100
+# Enchanted Forest: Red 70, Rainbow 30
+map 362 39076 70
+map 362 39077 30
+# a Metin: 1-3 shards, 20% one additive (Small 60, Medium 30, Large 10)
+metin_shards 1 3
+metin_additive_chance 20
+metin_additive 72064 60
+metin_additive 72065 30
+metin_additive 72066 10
+# a boss (rank boss or king): 3-6 shards, 1-2 additives (Medium 50, Large 35, Power 15)
+boss_shards 3 6
+boss_additives 1 2
+boss_additive 72065 50
+boss_additive 72066 35
+boss_additive 72067 15
+"""
+SEONHAE_SHARDS = set(range(39070, 39078)) | {39081}
+SEONHAE_ADDITIVES = {72064, 72065, 72066, 72067}
+
+
+def read_seonhae_drops():
+    try:
+        with open(SEONHAE_DROPS, encoding="utf-8", errors="replace") as fh:
+            return fh.read()
+    except OSError:
+        return SEONHAE_DROPS_DEFAULT
+
+
+def check_seonhae_drops(text):
+    """The line numbers the core would skip (its parser's rules)."""
+    bad = []
+    for no, raw in enumerate(text.splitlines(), 1):
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        parts = line.split()
+        try:
+            nums = [int(x) for x in parts[1:]]
+        except ValueError:
+            bad.append(no)
+            continue
+        key = parts[0]
+        ok = False
+        if key == "map":
+            ok = len(nums) == 3 and nums[0] > 0 and nums[1] in SEONHAE_SHARDS and nums[2] > 0
+        elif key in ("metin_shards", "boss_shards", "boss_additives"):
+            ok = len(nums) == 2 and 0 <= nums[0] <= nums[1] <= 50
+        elif key == "metin_additive_chance":
+            ok = len(nums) == 1 and 0 <= nums[0] <= 100
+        elif key in ("metin_additive", "boss_additive"):
+            ok = len(nums) == 2 and nums[0] in SEONHAE_ADDITIVES and nums[1] > 0
+        if not ok:
+            bad.append(no)
+    return bad
+
+
+def write_seonhae_drops(text):
+    os.makedirs(AI_SPOOL, exist_ok=True)
+    text = text.replace("\r\n", "\n").strip()
+    if not text:
+        try:
+            os.remove(SEONHAE_DROPS)
+        except OSError:
+            pass
+        return
+    tmp = SEONHAE_DROPS + ".tmp"
+    with open(tmp, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(text + "\n")
+    os.replace(tmp, SEONHAE_DROPS)
+
 def persist_seonhae(cur, on, wait):
     """The two event-flag rows the db core reads at its next start."""
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
@@ -7011,6 +7095,9 @@ TPL_SEONHAE = BASE.replace("__BODY__", """
 <p class="muted">{{t('seon_help')}}</p>
 <label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('seon_enable')}}</label>
 <p><label>{{t('seon_wait')}}<br><input type="number" name="wait" min="0" max="10080" step="1" value="{{cur['wait']}}"></label></p>
+<h3 style="margin-top:18px">{{t('seon_drops')}}</h3>
+<p class="muted">{{t('seon_drops_help')}}</p>
+<textarea name="drops" rows="22" style="width:100%;font-family:monospace">{{drops}}</textarea>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
 
@@ -18063,6 +18150,16 @@ def seonhae():
         except (TypeError, ValueError):
             wait = 0
         wait = max(0, min(SEONHAE_WAIT_MAX, wait))
+        drops = request.form.get("drops")
+        if drops is not None:
+            bad = check_seonhae_drops(drops)
+            if bad:
+                flash(t("seon_drops_bad") % ", ".join(str(n) for n in bad[:20]), "error")
+            else:
+                try:
+                    write_seonhae_drops(drops)
+                except OSError:
+                    flash(t("db_down"), "error")
         try:
             with db() as c, c.cursor() as cur:
                 persist_seonhae(cur, on, wait)
@@ -18091,7 +18188,7 @@ def seonhae():
         cur_se = read_seonhae()
     except Exception:
         flash(t("db_down"), "error")
-    return render_template_string(TPL_SEONHAE, cur=cur_se)
+    return render_template_string(TPL_SEONHAE, cur=cur_se, drops=read_seonhae_drops())
 
 @app.route("/rates", methods=["GET", "POST"])
 @login_required
