@@ -3376,6 +3376,7 @@ class GameWindow(ui.ScriptWindow):
 		mapDict = (
 			"metin_icedungeon",
 			"metin2_map_devilscatacomb",
+			"metin2_map_devilsCatacomb",	# MT2009_PLUS_CATACOMB_MAP_V1: the atlas name (background.GetCurrentMapName)
 			"metin2_map_deviltower1",
 			"metin2_map_labirynth",
 			"metin2_map_monkeydungeon",
