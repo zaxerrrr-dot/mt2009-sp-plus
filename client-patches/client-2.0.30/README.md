@@ -206,3 +206,33 @@ z `tcm/c31`):
   nazwy Owsapa `ShowInGameEvent`, `ShowMiniMapInGameEventButton`, `HideMiniMapInGameEventButton`.
 - `uieventcalendar.py` – nazwy nowych rodzajów (9–13) i na ikonie „trwa teraz” także eventy z samej
   flagi (np. strona Wielkanocy w panelu).
+
+## Seon-Hae: 6. i 7. bonus (`MT2009_PLUS_SEONHAE_V1`)
+
+Okno Owsapa (`uiattr67add.py`, `uiscript/attr67adddialog.py`) na poleceniach czatu – **bez zmian
+exe** (serwer: `server-patches/seonhae`, `playerbot_seonhae.h`, quest `seonhae`). Pliki `root`
+(baza: paczka `root` z `tcm/c31`):
+
+- `uiseonhae.py` (nowy) – okno: przedmiot, Odłamki i Suplementy, szansa, „Dodaj bonus”, a gdy
+  Seon-Hae trzyma przedmiot – przedmiot z tooltipem, odliczanie i „Odbierz”. Polecenia `SEONHAE
+  cfg|open|state|item|close|done|msg`, odpowiedzi `/seonhae open|add|collect`. Teksty po polsku
+  (CP1250 jako `\x..`).
+- `uiscript/seonhaewindow.py` (nowy) – układ 312×224 jak u Owsapa. Grafika GF
+  `d:/ymir work/ui/game/attr6th7th/*.sub` (+ `d:/ymir work/ui/properties_01.dds`) jest używana, gdy
+  jest w paczkach (`app.IsExistFile`); bez niej zwykłe ramki `slot_base.sub` i przyciski `+`/`-`
+  (`xsmall_button`), więc okno działa i bez nowych grafik.
+- `game.py` – polecenie `SEONHAE` i zamknięcie okna z resztą.
+- `uitooltip.py` (nowy w łatkach, baza c31) – broń: 6. i 7. bonus w swoim kolorze po pięciu (były
+  doklejane do wartości bazowych), zbroja i biżuteria: 6. i 7. bonus wreszcie widoczne; linia
+  „Seon-Hae może dodać temu przedmiotowi dodatkowy bonus.”, gdy system jest włączony.
+
+Do spakowania przez koordynatora:
+
+- `gamedata/item_proto`, `gamedata/item_list.txt`, `locale/pl/itemdesc.txt` – 13 przedmiotów
+  (39070–39077, 39081, 72064–72067) narzędziem `tools/seonhae/patch_seonhae_client.py`
+  (dane: `tools/seonhae/seonhae_items.json`; idempotentne, w obrazie `m2pack-lzo`).
+- ikony z GF 26.1.11: `icon/item/39070.tga` … `39077.tga`, `icon/item/39081.tga`,
+  `icon/item/72064.tga` (72065–72067 używają 72064.tga, jak w GF);
+- grafika okna z GF: `d:/ymir work/ui/game/attr6th7th/` (10 plików `.sub`: `arrow_up_*`,
+  `arrow_down_*` ×3, `material_count_text`, `material_slot`, `memu_text`, `regist_slot`) i
+  `d:/ymir work/ui/properties_01.dds`.

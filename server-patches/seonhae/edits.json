@@ -1,0 +1,20 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_SEONHAE_V1 (declare)",
+  "old": "// MT2009_PLUS_GOBLIN_V1 (declare)\nACMD(do_goblin);\n",
+  "new": "// MT2009_PLUS_GOBLIN_V1 (declare)\nACMD(do_goblin);\n// MT2009_PLUS_SEONHAE_V1 (declare)\nACMD(do_seonhae);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_SEONHAE_V1 (table)",
+  "old": "\t// MT2009_PLUS_GOBLIN_V1 (table)\n\t{ \"goblin\",\tdo_goblin,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t// MT2009_PLUS_GOBLIN_V1 (table)\n\t{ \"goblin\",\tdo_goblin,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_SEONHAE_V1 (table)\n\t{ \"seonhae\",\tdo_seonhae,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_SEONHAE_V1 (command)",
+  "old": "// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n",
+  "new": "// MT2009_PLUS_SEONHAE_V1 (command): Seon-Hae's 6th/7th bonus window\n// \"/seonhae open|add|collect|close|gm\" (playerbot_seonhae.h).\nACMD(do_seonhae)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid SeonHaeCommand(LPCHARACTER ch, const char* argument);\n\tSeonHaeCommand(ch, argument);\n}\n\n// MT2009_PLUS_GOBLIN_V1 (command): the Treasure Hunt's window and island,\n"
+ }
+]

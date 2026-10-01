@@ -3484,6 +3484,15 @@ T = {
  "az_enable":    {"pl":"Moduł Arezzo włączony","en":"Arezzo module on"},
  "az_help":      {"pl":"Włączony: strony w Teleporterze i Pierścieniu, portal do Zaczarowanego Lasu po Strażniku En-Tai, strażnicy wejść do lochów i lochy Arezzo w oknie „Wyprawy” (X). Wyłączony: nic z tego nie jest widoczne, a gracz, który stoi na mapie Arezzo albo jest w jej lochu, w ciągu kilku sekund wraca do miasta (GM może zostać).","en":"On: the Teleporter and ring pages, the Enchanted Forest portal after the En-Tai Guardian, the dungeon entrance guards and the Arezzo lines in the dungeon window (X). Off: none of it is visible, and a player standing on an Arezzo map or in one of its dungeons is sent to the town within seconds (a GM may stay)."},
  "az_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 🗺️","en":"Saved and switched live, through the in-game helper. 🗺️"},
+ "seon_nav":     {"pl":"💎 Seon-Hae: 6. i 7. bonus","en":"💎 Seon-Hae: 6th and 7th bonus"},
+ "seon_open":    {"pl":"💎 Otwórz Seon-Hae","en":"💎 Open Seon-Hae"},
+ "tip_seon":     {"pl":"Włącz albo wyłącz dodawanie 6. i 7. bonusu u Seon-Hae i ustaw czas, przez jaki trzyma przedmiot. Działa od razu, bez restartu serwera.","en":"Switch Seon-Hae's 6th and 7th bonus on or off and set how long he keeps an item. Takes effect immediately, no server restart."},
+ "seon_dash_hint":{"pl":"Czy Seon-Hae (NPC 20095) dodaje graczom 6. i 7. bonus (system dobrowolny).","en":"Whether Seon-Hae (NPC 20095) adds the 6th and 7th bonus for players (an optional system)."},
+ "seon_intro":   {"pl":"System dobrowolny (z Owsapa): gracz oddaje Seon-Hae (NPC 20095 w pierwszych wioskach) broń albo zbroję/biżuterię z pięcioma bonusami, Odłamki poziomu przedmiotu (39070–39077, 39081; 2% szansy za każdy, do 10) i Suplementy (72064–72067; do 5, do +50%). Seon-Hae trzyma przedmiot przez ustawiony czas i oddaje go z nowym bonusem albo bez. Wymaga klienta z oknem Seon-Hae. Zapis działa od razu, bez restartu. Włączenie z panelu zostaje po restarcie, dopóki ktoś nie zmieni M2_SEONHAE w .env.","en":"An optional system (from Owsap): a player hands Seon-Hae (NPC 20095 in the first villages) a weapon or an armour/jewel with five bonuses, Powershards of the item's level (39070-39077, 39081; 2% chance each, up to 10) and Additives (72064-72067; up to 5, up to +50%). Seon-Hae keeps the item for the set time and gives it back with a new bonus or without. Needs the client with the Seon-Hae window. Saving takes effect immediately, no restart. Switching on here survives restarts until M2_SEONHAE in .env is changed."},
+ "seon_enable":  {"pl":"Seon-Hae przyjmuje przedmioty","en":"Seon-Hae takes items"},
+ "seon_help":    {"pl":"Wyłączenie zatrzymuje tylko nowe zlecenia — przedmiot, który Seon-Hae już trzyma, zawsze można odebrać. Odłamki i Suplementy nie wypadają same: dodaj je do sklepu, dropu albo ItemShopu.","en":"Switching off stops new hand-ins only - an item Seon-Hae already keeps can always be collected. The Powershards and Additives do not drop by themselves: add them to a shop, a drop list or the ItemShop."},
+ "seon_wait":    {"pl":"Czas pracy Seon-Hae (minuty, 0 = 24 godziny)","en":"Seon-Hae's working time (minutes, 0 = 24 hours)"},
+ "seon_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 💎","en":"Saved and switched live, through the in-game helper. 💎"},
  "regen_title": {"pl":"Czas odradzania Metinów, bossów i potworów",
                  "en":"Respawn time of Metin stones, bosses and monsters"},
  "regen_help":  {"pl":"Procent zwykłego czasu odradzania: 100 = jak w grze, 50 = dwa razy szybciej, 10 = dziesięć razy szybciej. Działa od razu (przez pomocnika w grze), a po restarcie zostaje. Osobno dla Metinów i bossów, osobno dla zwykłych potworów.",
@@ -5252,6 +5261,35 @@ def persist_arezzo(cur, on):
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                 "VALUES (0, 'mt2009_arezzo_closed', '', %s)", (0 if on else 1,))
 
+# MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus (playerbot_seonhae.h), the
+# event flags m2_seonhae_on (1 = on; no row = off, apply.sh writes it from
+# M2_SEONHAE, default 0) and m2_seonhae_wait_min (0 or no row = 24 h).
+SEONHAE_WAIT_MAX = 10080
+
+def read_seonhae():
+    with db() as c, c.cursor() as cur:
+        cur.execute("SELECT szName, lValue FROM player.quest WHERE dwPID = 0 "
+                    "AND szName IN ('m2_seonhae_on', 'm2_seonhae_wait_min')")
+        rows = cur.fetchall()
+    vals = {"on": 0, "wait": 0}
+    for row in rows:
+        try:
+            v = int(row["lValue"])
+        except (TypeError, ValueError, KeyError):
+            continue
+        if row["szName"] == "m2_seonhae_on":
+            vals["on"] = 1 if v == 1 else 0
+        else:
+            vals["wait"] = max(0, min(SEONHAE_WAIT_MAX, v))
+    return vals
+
+def persist_seonhae(cur, on, wait):
+    """The two event-flag rows the db core reads at its next start."""
+    cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                "VALUES (0, 'm2_seonhae_on', '', %s)", (1 if on else 0,))
+    cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                "VALUES (0, 'm2_seonhae_wait_min', '', %s)", (wait,))
+
 def persist_rare(cur, alchemy, sashes):
     """The two event-flag rows the db core reads at its next start."""
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
@@ -6447,6 +6485,11 @@ TPL_DASH = BASE.replace("__BODY__", """
 <a class="btn" href="{{url_for('arezzo')}}" title="{{t('tip_az')}}">{{t('az_open')}}</a>
 </div>
 <div class="card">
+<h3 class="help" title="{{t('tip_seon')}}">{{t('seon_nav')}}</h3>
+<p class="muted">{{t('seon_dash_hint')}}</p>
+<a class="btn" href="{{url_for('seonhae')}}" title="{{t('tip_seon')}}">{{t('seon_open')}}</a>
+</div>
+<div class="card">
 <h3 class="help">{{t('se_nav')}}</h3>
 <p class="muted">{{t('se_dash_hint')}}</p>
 <a class="btn" href="{{url_for('season')}}">{{t('se_open')}}</a>
@@ -6950,6 +6993,24 @@ TPL_AREZZO = BASE.replace("__BODY__", """
 <input type="hidden" name="_csrf" value="{{csrf_token}}">
 <p class="muted">{{t('az_help')}}</p>
 <label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('az_enable')}}</label>
+<button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
+</form></div>""")
+
+# MT2009_PLUS_SEONHAE_V1: Seon-Hae's page, the Arezzo page's shape plus the time.
+TPL_SEONHAE = BASE.replace("__BODY__", """
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a></p>
+<div class="card">
+<h3>{{t('seon_nav')}}</h3>
+<p class="muted">{{t('seon_intro')}}</p>
+<p><span class="badge">💎 {{t('seon_nav')}}: {{t('easter_on') if cur['on'] else t('easter_off')}}</span></p>
+</div>
+
+<div class="card">
+<form method="post">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<p class="muted">{{t('seon_help')}}</p>
+<label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('seon_enable')}}</label>
+<p><label>{{t('seon_wait')}}<br><input type="number" name="wait" min="0" max="10080" step="1" value="{{cur['wait']}}"></label></p>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
 
@@ -17987,6 +18048,50 @@ def arezzo():
     except Exception:
         flash(t("db_down"), "error")
     return render_template_string(TPL_AREZZO, cur=cur_az)
+
+# MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus on or off and his time. Live immediately, no restart.
+@app.route("/seonhae", methods=["GET", "POST"])
+@login_required
+def seonhae():
+    if not ENGINE_MT2009:
+        flash(t("rates_no_script"), "error")
+        return redirect(url_for("dash"))
+    if request.method == "POST":
+        on = 1 if request.form.get("on") else 0
+        try:
+            wait = int(request.form.get("wait") or 0)
+        except (TypeError, ValueError):
+            wait = 0
+        wait = max(0, min(SEONHAE_WAIT_MAX, wait))
+        try:
+            with db() as c, c.cursor() as cur:
+                persist_seonhae(cur, on, wait)
+        except Exception:
+            flash(t("db_down"), "error")
+            return redirect(url_for("seonhae"))
+        try:
+            status, qid = queue_and_wait("", "SEONHAE", "%d,%d" % (on, wait), "", wait=RARE_LIVE_WAIT)
+        except Exception:
+            status, qid = "failed", 0
+        if status == "done":
+            flash(t("seon_saved_live"))
+        else:
+            if status == "timeout":
+                try:
+                    with db() as c, c.cursor() as cur:
+                        cur.execute("UPDATE player.web_admin_queue SET status='cancelled' "
+                                    "WHERE id=%s AND status='pending'", (qid,))
+                except Exception:
+                    pass
+            flash(t("easter_saved_persisted"))
+        return redirect(url_for("seonhae"))
+
+    cur_se = {"on": 0, "wait": 0}
+    try:
+        cur_se = read_seonhae()
+    except Exception:
+        flash(t("db_down"), "error")
+    return render_template_string(TPL_SEONHAE, cur=cur_se)
 
 @app.route("/rates", methods=["GET", "POST"])
 @login_required
