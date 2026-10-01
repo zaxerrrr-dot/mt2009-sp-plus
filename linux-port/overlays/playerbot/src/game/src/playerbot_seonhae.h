@@ -498,26 +498,29 @@ void SeonHaeCommand(LPCHARACTER ch, const char* argument)
 }
 
 // MT2009_PLUS_SEONHAE_V1 (drops): where the Powershards and the Additives come
-// from (the owner, 1 October): Metin stones and bosses on the progression maps
-// only - the Grotto of Exile V1 and V2 (72, 73), the Temple of Ochao (209) and
-// the Enchanted Forest (362), their instances too (map / 10000). Nowhere else,
-// no shop, no ItemShop. Only for a real player: the drop's owner (the killer
-// CreateDropItem is given - the top damage dealer or his party's) must not be
-// a bot; the items join the kill's own list, so they fall with its ownership.
-// Nothing while m2_seonhae_on is off.
+// from (the owner, 1 October, revised). Only for a real player - the drop's
+// owner (the killer CreateDropItem is given: the top damage dealer or his
+// party's) must not be a bot - and nothing while m2_seonhae_on is off. The
+// items join the kill's own list, so they fall with its ownership. No shop,
+// no ItemShop.
+//  - Additives: from Metin stones and bosses (rank boss/king) on the maps of
+//    an additive_map line (instances too: map / 10000), each kill rolling
+//    additive_chance; a mob line names one monster (any rank, any map) and
+//    replaces the map rule for it.
+//  - Powershards: from ordinary monsters (not a stone, not boss/king) on the
+//    maps of a shard_map line, shard_chance percent a kill (fractions
+//    allowed), one shard, its colour drawn from the shard lines' weights.
 //
 // The rules are a small file the classic panel's Seon-Hae page edits,
 // /opt/m2spool/seonhae_drops.tsv, re-read when it changes (looked at every
-// 5 s at most); no file, or a section missing from it, means the defaults
-// below. One rule a line, tab- or space-separated, '#' a comment:
-//   map            <map index> <shard vnum> <weight>   (a map listed = a drop map)
-//   metin_shards   <min> <max>
-//   metin_additive_chance <percent>
-//   metin_additive <vnum> <weight>
-//   boss_shards    <min> <max>
-//   boss_additives <min> <max>
-//   boss_additive  <vnum> <weight>
-// A boss is a monster of rank boss or king (MOB_RANK_BOSS and up), a Metin a stone.
+// 5 s at most); no file, or a kind of line missing from it, means the
+// defaults below. One rule a line, tab- or space-separated, '#' a comment:
+//   additive_chance <percent>                         (default 60)
+//   additive_map <map index> <additive vnum> <count>  (72, 73: 1 x 72065; 362: 1 x 72066)
+//   mob <mob vnum> <additive vnum> <count>            (2493 Beran-Setaou: 2 x 72065)
+//   shard_chance <percent, e.g. 0.5>                  (default 0.5)
+//   shard_map <map index>                             (73, 209, 362)
+//   shard <shard vnum> <weight>                       (39070-39077, 39081: 1 each)
 #include <sys/stat.h>
 #include <fstream>
 #include <sstream>
@@ -526,6 +529,13 @@ namespace mt2009_seonhae
 {
 	const char* const DROPS_PATH = "/opt/m2spool/seonhae_drops.tsv";
 	const DWORD DROPS_RECHECK_MS = 5000;
+	const int SHARD_CHANCE_SCALE = 100000;	// shard_chance percent x 1000
+
+	struct VnumCount
+	{
+		DWORD vnum;
+		int count;
+	};
 
 	struct WeightedVnum
 	{
@@ -535,39 +545,37 @@ namespace mt2009_seonhae
 
 	struct DropRules
 	{
-		std::map<long, std::vector<WeightedVnum> > maps;
-		int metinShardMin, metinShardMax, metinAdditivePct;
-		std::vector<WeightedVnum> metinAdditives;
-		int bossShardMin, bossShardMax, bossAdditiveMin, bossAdditiveMax;
-		std::vector<WeightedVnum> bossAdditives;
+		int additivePermille;					// additive_chance x 10
+		std::map<long, VnumCount> additiveMaps;
+		std::map<DWORD, VnumCount> mobs;
+		int shardChance;						// per SHARD_CHANCE_SCALE
+		std::set<long> shardMaps;
+		std::vector<WeightedVnum> shards;
 	};
+
+	bool IsShardVnum(DWORD vnum)
+	{
+		return (vnum >= 39070 && vnum <= 39077) || vnum == 39081;
+	}
 
 	void DefaultDropRules(DropRules& r)
 	{
-		r.maps.clear();
-		const WeightedVnum grotto[] = { { 39075, 70 }, { 39076, 30 } };
-		const WeightedVnum ochao[] = { { 39076, 100 } };
-		const WeightedVnum forest[] = { { 39076, 70 }, { 39077, 30 } };
-		r.maps[72].assign(grotto, grotto + 2);
-		r.maps[73].assign(grotto, grotto + 2);
-		r.maps[209].assign(ochao, ochao + 1);
-		r.maps[362].assign(forest, forest + 2);
-		r.metinShardMin = 1;
-		r.metinShardMax = 3;
-		r.metinAdditivePct = 20;
-		const WeightedVnum metinAdd[] = { { 72064, 60 }, { 72065, 30 }, { 72066, 10 } };
-		r.metinAdditives.assign(metinAdd, metinAdd + 3);
-		r.bossShardMin = 3;
-		r.bossShardMax = 6;
-		r.bossAdditiveMin = 1;
-		r.bossAdditiveMax = 2;
-		const WeightedVnum bossAdd[] = { { 72065, 50 }, { 72066, 35 }, { 72067, 15 } };
-		r.bossAdditives.assign(bossAdd, bossAdd + 3);
-	}
-
-	bool KnownDropVnum(DWORD vnum)
-	{
-		return (vnum >= 39070 && vnum <= 39077) || vnum == 39081 || SupportPct(vnum) > 0;
+		r.additivePermille = 600;
+		r.additiveMaps.clear();
+		r.additiveMaps[72] = VnumCount{ 72065, 1 };
+		r.additiveMaps[73] = VnumCount{ 72065, 1 };
+		r.additiveMaps[362] = VnumCount{ 72066, 1 };
+		r.mobs.clear();
+		r.mobs[2493] = VnumCount{ 72065, 2 };
+		r.shardChance = 500;	// 0.5 %
+		r.shardMaps.clear();
+		r.shardMaps.insert(73);
+		r.shardMaps.insert(209);
+		r.shardMaps.insert(362);
+		r.shards.clear();
+		for (DWORD v = 39070; v <= 39077; ++v)
+			r.shards.push_back(WeightedVnum{ v, 1 });
+		r.shards.push_back(WeightedVnum{ 39081, 1 });
 	}
 
 	DropRules s_drops;
@@ -582,8 +590,9 @@ namespace mt2009_seonhae
 		if (!in)
 			return;
 		DropRules f;
-		bool hasMaps = false, hasMetinShards = false, hasMetinPct = false, hasMetinAdd = false;
-		bool hasBossShards = false, hasBossAdds = false, hasBossAdd = false;
+		f.additivePermille = r.additivePermille;
+		f.shardChance = r.shardChance;
+		bool hasAddPct = false, hasAddMaps = false, hasMobs = false, hasShardPct = false, hasShardMaps = false, hasShards = false;
 		std::string line;
 		int lineNo = 0;
 		while (std::getline(in, line))
@@ -597,40 +606,46 @@ namespace mt2009_seonhae
 			if (!(ss >> key))
 				continue;
 			long a = 0, b = 0, c = 0;
+			double d = 0.0;
 			bool ok = false;
-			if (key == "map")
+			if (key == "additive_chance")
 			{
-				ok = (ss >> a >> b >> c) && a > 0 && KnownDropVnum((DWORD)b) && b < 72064 && c > 0;
-				if (ok) { f.maps[a].push_back(WeightedVnum{ (DWORD)b, (int)c }); hasMaps = true; }
+				ok = (ss >> d) && d >= 0.0 && d <= 100.0;
+				if (ok) { f.additivePermille = (int)(d * 10.0 + 0.5); hasAddPct = true; }
 			}
-			else if (key == "metin_shards" || key == "boss_shards" || key == "boss_additives")
+			else if (key == "additive_map" || key == "mob")
 			{
-				ok = (ss >> a >> b) && a >= 0 && b >= a && b <= 50;
-				if (ok && key == "metin_shards") { f.metinShardMin = a; f.metinShardMax = b; hasMetinShards = true; }
-				if (ok && key == "boss_shards") { f.bossShardMin = a; f.bossShardMax = b; hasBossShards = true; }
-				if (ok && key == "boss_additives") { f.bossAdditiveMin = a; f.bossAdditiveMax = b; hasBossAdds = true; }
+				ok = (ss >> a >> b >> c) && a > 0 && SupportPct((DWORD)b) > 0 && c >= 1 && c <= 50;
+				if (ok && key == "additive_map") { f.additiveMaps[a] = VnumCount{ (DWORD)b, (int)c }; hasAddMaps = true; }
+				if (ok && key == "mob") { f.mobs[(DWORD)a] = VnumCount{ (DWORD)b, (int)c }; hasMobs = true; }
 			}
-			else if (key == "metin_additive_chance")
+			else if (key == "shard_chance")
 			{
-				ok = (ss >> a) && a >= 0 && a <= 100;
-				if (ok) { f.metinAdditivePct = a; hasMetinPct = true; }
+				ok = (ss >> d) && d >= 0.0 && d <= 100.0;
+				if (ok) { f.shardChance = (int)(d * 1000.0 + 0.5); hasShardPct = true; }
 			}
-			else if (key == "metin_additive" || key == "boss_additive")
+			else if (key == "shard_map")
 			{
-				ok = (ss >> a >> b) && SupportPct((DWORD)a) > 0 && b > 0;
-				if (ok && key == "metin_additive") { f.metinAdditives.push_back(WeightedVnum{ (DWORD)a, (int)b }); hasMetinAdd = true; }
-				if (ok && key == "boss_additive") { f.bossAdditives.push_back(WeightedVnum{ (DWORD)a, (int)b }); hasBossAdd = true; }
+				ok = (ss >> a) && a > 0;
+				if (ok) { f.shardMaps.insert(a); hasShardMaps = true; }
 			}
+			else if (key == "shard")
+			{
+				ok = (ss >> a >> b) && IsShardVnum((DWORD)a) && b > 0;
+				if (ok) { f.shards.push_back(WeightedVnum{ (DWORD)a, (int)b }); hasShards = true; }
+			}
+			std::string extra;
+			if (ok && (ss >> extra))
+				ok = false;
 			if (!ok)
 				sys_err("SEONHAE: %s line %d ignored: %s", DROPS_PATH, lineNo, line.c_str());
 		}
-		if (hasMaps) r.maps = f.maps;
-		if (hasMetinShards) { r.metinShardMin = f.metinShardMin; r.metinShardMax = f.metinShardMax; }
-		if (hasMetinPct) r.metinAdditivePct = f.metinAdditivePct;
-		if (hasMetinAdd) r.metinAdditives = f.metinAdditives;
-		if (hasBossShards) { r.bossShardMin = f.bossShardMin; r.bossShardMax = f.bossShardMax; }
-		if (hasBossAdds) { r.bossAdditiveMin = f.bossAdditiveMin; r.bossAdditiveMax = f.bossAdditiveMax; }
-		if (hasBossAdd) r.bossAdditives = f.bossAdditives;
+		if (hasAddPct) r.additivePermille = f.additivePermille;
+		if (hasAddMaps) r.additiveMaps = f.additiveMaps;
+		if (hasMobs) r.mobs = f.mobs;
+		if (hasShardPct) r.shardChance = f.shardChance;
+		if (hasShardMaps) r.shardMaps = f.shardMaps;
+		if (hasShards) r.shards = f.shards;
 	}
 
 	const DropRules& Drops()
@@ -646,8 +661,9 @@ namespace mt2009_seonhae
 				LoadDropRules(s_drops);
 				s_dropsMtime = mtime;
 				s_dropsLoaded = true;
-				sys_log(0, "SEONHAE: drop rules %s (%u maps)", mtime ? "read from the file" : "at their defaults",
-						(unsigned int)s_drops.maps.size());
+				sys_log(0, "SEONHAE: drop rules %s (additive maps %u, mobs %u, shard maps %u)",
+						mtime ? "read from the file" : "at their defaults", (unsigned int)s_drops.additiveMaps.size(),
+						(unsigned int)s_drops.mobs.size(), (unsigned int)s_drops.shardMaps.size());
 			}
 		}
 		return s_drops;
@@ -687,35 +703,28 @@ void Mt2009PlusSeonHaeDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<L
 	using namespace mt2009_seonhae;
 	if (!victim || victim->IsPC() || !killer || !killer->IsPC() || !killer->GetDesc() || killer->GetDesc()->IsBot())
 		return;
-	const bool metin = victim->IsStone();
-	const bool boss = !metin && victim->GetMobRank() >= MOB_RANK_BOSS;
-	if (!metin && !boss)
-		return;
 	if (!IsOn())
 		return;
-	const long map = victim->GetMapIndex() >= 10000 ? victim->GetMapIndex() / 10000 : victim->GetMapIndex();
 	const DropRules& r = Drops();
-	std::map<long, std::vector<WeightedVnum> >::const_iterator it = r.maps.find(map);
-	if (it == r.maps.end())
-		return;
+	const long map = victim->GetMapIndex() >= 10000 ? victim->GetMapIndex() / 10000 : victim->GetMapIndex();
+	const bool bigOne = victim->IsStone() || victim->GetMobRank() >= MOB_RANK_BOSS;
 
-	const DWORD shard = PickWeighted(it->second);
-	int shards, additives = 0;
-	const std::vector<WeightedVnum>* additivePool;
-	if (metin)
+	// the additives: a mob line first (any rank, any map), else the map's rule for Metins and bosses
+	const VnumCount* additive = NULL;
+	std::map<DWORD, VnumCount>::const_iterator mob = r.mobs.find(victim->GetRaceNum());
+	if (mob != r.mobs.end())
+		additive = &mob->second;
+	else if (bigOne)
 	{
-		shards = number(r.metinShardMin, r.metinShardMax);
-		if (r.metinAdditivePct > 0 && number(1, 100) <= r.metinAdditivePct)
-			additives = 1;
-		additivePool = &r.metinAdditives;
+		std::map<long, VnumCount>::const_iterator m = r.additiveMaps.find(map);
+		if (m != r.additiveMaps.end())
+			additive = &m->second;
 	}
-	else
-	{
-		shards = number(r.bossShardMin, r.bossShardMax);
-		additives = number(r.bossAdditiveMin, r.bossAdditiveMax);
-		additivePool = &r.bossAdditives;
-	}
-	AddDrop(out, shard, shards);
-	for (int i = 0; i < additives; ++i)
-		AddDrop(out, PickWeighted(*additivePool), 1);
+	if (additive && r.additivePermille > 0 && number(1, 1000) <= r.additivePermille)
+		AddDrop(out, additive->vnum, additive->count);
+
+	// the shards: ordinary monsters on the shard maps
+	if (!bigOne && victim->IsMonster() && r.shardChance > 0 && r.shardMaps.count(map) &&
+		number(1, SHARD_CHANCE_SCALE) <= r.shardChance)
+		AddDrop(out, PickWeighted(r.shards), 1);
 }

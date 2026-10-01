@@ -1904,9 +1904,10 @@ UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (
 # 39070 0-29, 39071 30-39, 39072 40-49, 39073 50-59, 39074 60-74, 39075 75-89, 39076 90-104,
 # 39077 105-119, 39081 120+ (Owsap's Lucent 39078-39080 belong to its special sets and are left out);
 # and the Additives ("Suplementy", bound to the character: no drop, give or private shop) 72064-72067,
-# +5/10/20/50 (value1 for the client; the core reads its own table). They drop only from Metins and
-# bosses in the Grotto of Exile, the Temple of Ochao and the Enchanted Forest (playerbot_seonhae.h,
-# /opt/m2spool/seonhae_drops.tsv); no shop, no ItemShop (the owner, 1 October). The names are UTF-8
+# +5/10/20/50 (value1 for the client; the core reads its own table). The additives drop from Metins
+# and bosses, the shards from ordinary monsters, in the Grotto of Exile, the Temple of Ochao and the
+# Enchanted Forest (playerbot_seonhae.h, /opt/m2spool/seonhae_drops.tsv); no shop, no ItemShop (the
+# owner, 1 October). The names are UTF-8
 # here, SET NAMES converts them to the tables' CP1250. Idempotent: added once, never changed after.
 db -e "SET NAMES utf8mb4;
 INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES

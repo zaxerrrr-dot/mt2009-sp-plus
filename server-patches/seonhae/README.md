@@ -61,36 +61,37 @@ poleceń czatu (jak Poszukiwanie skarbów). Logika jest w nakładce
 
 Lśniące odłamki Owsapa (39078–39080) należą do jego specjalnych zestawów – pominięte.
 
-## Drop (decyzja właściciela, 1 października)
+## Drop (decyzja właściciela, 1 października, poprawiona)
 
-Tylko z Metinów (`IsStone`) i bossów (ranga boss/król) na mapach progresji: Grota Wygnańców V1 i V2
-(72, 73), Świątynia Ochao (209), Zaczarowany Las (362) – także w ich instancjach (indeks / 10000).
-Nigdzie indziej, bez sklepu i ItemShopu. Tylko dla prawdziwego gracza: właściciel dropu (zabójca,
-którego dostaje `CreateDropItem` – największe obrażenia albo jego drużyna) nie może być botem;
-przedmioty dołączają do listy dropu, więc padają z jego zwykłą własnością. Nic, gdy `m2_seonhae_on` = 0.
+Tylko dla prawdziwego gracza: właściciel dropu (zabójca, którego dostaje `CreateDropItem` –
+największe obrażenia albo jego drużyna) nie może być botem; przedmioty dołączają do listy dropu, więc
+padają z jego zwykłą własnością. Nic, gdy `m2_seonhae_on` = 0. Bez sklepu i ItemShopu. Instancje map
+liczą się jak ich mapa (indeks / 10000).
 
-Reguły: `/opt/m2spool/seonhae_drops.tsv` (pisze go strona „Seon-Hae” panelu klasycznego), czytany
-ponownie po zmianie (sprawdzany co najwyżej co 5 s); brak pliku albo brak sekcji = wartości domyślne:
+- **Suplementy** – z Metinów (`IsStone`) i bossów (ranga boss/król) map z wiersza `additive_map`,
+  każde zabicie losuje `additive_chance` (60%): Grota Wygnańców V1 i V2 (72, 73) – 1× Średni (72065),
+  Zaczarowany Las (362) – 1× Duży (72066). Wiersz `mob` dotyczy jednego potwora (dowolnej rangi, na
+  każdej mapie) zamiast reguły mapy: Beran-Setaou (2493) – 2× Średni. „Wróżki” (9707 Leśna Wróżka?)
+  domyślnie nie ma – właściciel jeszcze nie wskazał potwora; wystarczy dopisać `mob 9707 72065 2`.
+  Żadnych innych źródeł (Mały, Silny, Ochao) domyślnie.
+- **Odłamki** – ze zwykłych potworów (nie Metin, nie boss/król) map z wiersza `shard_map`: Grota V2
+  (73), Świątynia Ochao (209), Zaczarowany Las (362); szansa `shard_chance` 0,5% (ułamki dozwolone),
+  1 odłamek, kolor losowany z wag wierszy `shard` (domyślnie równo: 39070–39077, 39081).
+
+Reguły: `/opt/m2spool/seonhae_drops.tsv` (pisze go strona „Seon-Hae” panelu klasycznego, która
+sprawdza każdy wiersz), czytany ponownie po zmianie (sprawdzany co najwyżej co 5 s). Brak pliku albo
+brak danego rodzaju wierszy = wartości domyślne (wiersze `mob` z pliku zastępują całą domyślną listę,
+więc 2493 musi w nim zostać). Błędny wiersz rdzeń pomija (syserr). Domyślny plik:
 
 ```
-map 72 39075 70        # map <indeks> <vnum odłamka> <waga>; mapa na liście = mapa z dropem
-map 72 39076 30
-map 73 39075 70
-map 73 39076 30
-map 209 39076 100
-map 362 39076 70
-map 362 39077 30
-metin_shards 1 3       # Metin: 1-3 odłamki zawsze
-metin_additive_chance 20
-metin_additive 72064 60
-metin_additive 72065 30
-metin_additive 72066 10
-boss_shards 3 6        # boss: 3-6 odłamków, 1-2 suplementy zawsze
-boss_additives 1 2
-boss_additive 72065 50
-boss_additive 72066 35
-boss_additive 72067 15
+additive_chance 60
+additive_map 72 72065 1      # additive_map <mapa> <vnum suplementu> <liczba>
+additive_map 73 72065 1
+additive_map 362 72066 1
+mob 2493 72065 2             # mob <vnum potwora> <vnum suplementu> <liczba>
+shard_chance 0.5             # procent, ułamki dozwolone
+shard_map 73
+shard_map 209
+shard_map 362
+shard 39070 1                # shard <vnum odłamka> <waga>; tak samo 39071-39077 i 39081
 ```
-
-Błędny wiersz rdzeń pomija (syserr), panel go nie zapisze. Leże Smoka (208) nie jest na liście.
-Klient: `client-patches/client-2.0.30/tools/seonhae` (wiersze item_proto, item_list, itemdesc).

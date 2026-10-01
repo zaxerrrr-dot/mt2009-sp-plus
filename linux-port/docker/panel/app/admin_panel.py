@@ -3490,11 +3490,11 @@ T = {
  "seon_dash_hint":{"pl":"Czy Seon-Hae (NPC 20095) dodaje graczom 6. i 7. bonus (system dobrowolny).","en":"Whether Seon-Hae (NPC 20095) adds the 6th and 7th bonus for players (an optional system)."},
  "seon_intro":   {"pl":"System dobrowolny (z Owsapa): gracz oddaje Seon-Hae (NPC 20095 w pierwszych wioskach) broń albo zbroję/biżuterię z pięcioma bonusami, Odłamki poziomu przedmiotu (39070–39077, 39081; 2% szansy za każdy, do 10) i Suplementy (72064–72067; do 5, do +50%). Seon-Hae trzyma przedmiot przez ustawiony czas i oddaje go z nowym bonusem albo bez. Wymaga klienta z oknem Seon-Hae. Zapis działa od razu, bez restartu. Włączenie z panelu zostaje po restarcie, dopóki ktoś nie zmieni M2_SEONHAE w .env.","en":"An optional system (from Owsap): a player hands Seon-Hae (NPC 20095 in the first villages) a weapon or an armour/jewel with five bonuses, Powershards of the item's level (39070-39077, 39081; 2% chance each, up to 10) and Additives (72064-72067; up to 5, up to +50%). Seon-Hae keeps the item for the set time and gives it back with a new bonus or without. Needs the client with the Seon-Hae window. Saving takes effect immediately, no restart. Switching on here survives restarts until M2_SEONHAE in .env is changed."},
  "seon_enable":  {"pl":"Seon-Hae przyjmuje przedmioty","en":"Seon-Hae takes items"},
- "seon_help":    {"pl":"Wyłączenie zatrzymuje tylko nowe zlecenia — przedmiot, który Seon-Hae już trzyma, zawsze można odebrać. Odłamki i Suplementy wypadają z Metinów i bossów w Grocie Wygnańców, Świątyni Ochao i Zaczarowanym Lesie (reguły niżej).","en":"Switching off stops new hand-ins only - an item Seon-Hae already keeps can always be collected. The Powershards and Additives drop from Metins and bosses in the Grotto of Exile, the Temple of Ochao and the Enchanted Forest (the rules below)."},
+ "seon_help":    {"pl":"Wyłączenie zatrzymuje tylko nowe zlecenia — przedmiot, który Seon-Hae już trzyma, zawsze można odebrać. Suplementy wypadają z Metinów i bossów, a Odłamki ze zwykłych potworów w Grocie Wygnańców, Świątyni Ochao i Zaczarowanym Lesie (reguły niżej).","en":"Switching off stops new hand-ins only - an item Seon-Hae already keeps can always be collected. The Additives drop from Metins and bosses, the Powershards from ordinary monsters, in the Grotto of Exile, the Temple of Ochao and the Enchanted Forest (the rules below)."},
  "seon_wait":    {"pl":"Czas pracy Seon-Hae (minuty, 0 = 24 godziny)","en":"Seon-Hae's working time (minutes, 0 = 24 hours)"},
  "seon_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 💎","en":"Saved and switched live, through the in-game helper. 💎"},
  "seon_drops":   {"pl":"Drop Odłamków i Suplementów","en":"Powershard and Additive drops"},
- "seon_drops_help":{"pl":"Wypadają tylko z Metinów i bossów na mapach wpisanych tu jako „map”, tylko dla prawdziwych graczy (nie botów) i tylko gdy Seon-Hae jest włączony. Jedna reguła w wierszu: map <indeks mapy> <vnum odłamka> <waga> · metin_shards <min> <max> · metin_additive_chance <%> · metin_additive <vnum> <waga> · boss_shards <min> <max> · boss_additives <min> <max> · boss_additive <vnum> <waga>. Brak sekcji = wartości domyślne; puste pole = same domyślne. Serwer czyta plik w ciągu kilku sekund, bez restartu.","en":"They drop only from Metins and bosses on the maps listed here as \"map\", only for real players (not bots) and only while Seon-Hae is on. One rule a line: map <map index> <shard vnum> <weight> · metin_shards <min> <max> · metin_additive_chance <%> · metin_additive <vnum> <weight> · boss_shards <min> <max> · boss_additives <min> <max> · boss_additive <vnum> <weight>. A missing section = the defaults; an empty box = the defaults only. The server reads the file within seconds, no restart."},
+ "seon_drops_help":{"pl":"Tylko dla prawdziwych graczy (nie botów) i tylko gdy Seon-Hae jest włączony. Suplementy: z Metinów i bossów map z wiersza additive_map, każde zabicie losuje additive_chance (%); wiersz mob <vnum potwora> <vnum suplementu> <liczba> dotyczy jednego potwora (dowolnej rangi, na każdej mapie) zamiast reguły jego mapy. Odłamki: ze zwykłych potworów (nie Metinów, nie bossów) map z wiersza shard_map, szansa shard_chance (%, ułamki dozwolone, np. 0.5), 1 odłamek, kolor według wag z wierszy shard <vnum> <waga>. Brak danego rodzaju wierszy = wartości domyślne; puste pole = same domyślne. Serwer czyta plik w ciągu kilku sekund, bez restartu.","en":"Real players only (not bots) and only while Seon-Hae is on. Additives: from Metins and bosses on the maps of an additive_map line, each kill rolling additive_chance (%); a mob <mob vnum> <additive vnum> <count> line names one monster (any rank, any map) and replaces its map's rule. Shards: from ordinary monsters (not Metins, not bosses) on the maps of a shard_map line, shard_chance (%, fractions allowed, e.g. 0.5), one shard, its colour by the weights of the shard <vnum> <weight> lines. A kind of line missing = the defaults; an empty box = the defaults only. The server reads the file within seconds, no restart."},
  "seon_drops_bad":{"pl":"Nie zapisano reguł dropu - błędne wiersze: %s","en":"Drop rules not saved - wrong lines: %s"},
  "regen_title": {"pl":"Czas odradzania Metinów, bossów i potworów",
                  "en":"Respawn time of Metin stones, bosses and monsters"},
@@ -5289,29 +5289,32 @@ def read_seonhae():
 # MT2009_PLUS_SEONHAE_V1 (drops): the drop rules playerbot_seonhae.h re-reads
 # when the file changes; no file = its built-in defaults (the same as below).
 SEONHAE_DROPS = os.path.join(AI_SPOOL, "seonhae_drops.tsv")
-SEONHAE_DROPS_DEFAULT = """# Seon-Hae: Metins and bosses on these maps only (map / shard vnum / weight)
-# Grotto of Exile V1 and V2: Purple 70, Red 30
-map 72 39075 70
-map 72 39076 30
-map 73 39075 70
-map 73 39076 30
-# Temple of Ochao: Red
-map 209 39076 100
-# Enchanted Forest: Red 70, Rainbow 30
-map 362 39076 70
-map 362 39077 30
-# a Metin: 1-3 shards, 20% one additive (Small 60, Medium 30, Large 10)
-metin_shards 1 3
-metin_additive_chance 20
-metin_additive 72064 60
-metin_additive 72065 30
-metin_additive 72066 10
-# a boss (rank boss or king): 3-6 shards, 1-2 additives (Medium 50, Large 35, Power 15)
-boss_shards 3 6
-boss_additives 1 2
-boss_additive 72065 50
-boss_additive 72066 35
-boss_additive 72067 15
+SEONHAE_DROPS_DEFAULT = """# Seon-Hae drops (the owner, 1 October). Real players only, only while Seon-Hae is on.
+# ADDITIVES - Metins and bosses (rank boss/king) of these maps, each kill rolls additive_chance:
+additive_chance 60
+# additive_map <map> <additive vnum> <count>: Grotto of Exile V1 + V2 - 1 Medium, Enchanted Forest - 1 Large
+additive_map 72 72065 1
+additive_map 73 72065 1
+additive_map 362 72066 1
+# mob <mob vnum> <additive vnum> <count>: one monster (any rank, any map), instead of its map's rule
+# Beran-Setaou: 2 Medium
+mob 2493 72065 2
+# SHARDS - ordinary monsters (not Metins, not bosses) of these maps, 1 shard per hit of shard_chance %:
+shard_chance 0.5
+# Grotto of Exile V2, Temple of Ochao, Enchanted Forest
+shard_map 73
+shard_map 209
+shard_map 362
+# shard <vnum> <weight>: the shard's colour
+shard 39070 1
+shard 39071 1
+shard 39072 1
+shard 39073 1
+shard 39074 1
+shard 39075 1
+shard 39076 1
+shard 39077 1
+shard 39081 1
 """
 SEONHAE_SHARDS = set(range(39070, 39078)) | {39081}
 SEONHAE_ADDITIVES = {72064, 72065, 72066, 72067}
@@ -5333,21 +5336,21 @@ def check_seonhae_drops(text):
         if not line:
             continue
         parts = line.split()
-        try:
-            nums = [int(x) for x in parts[1:]]
-        except ValueError:
-            bad.append(no)
-            continue
-        key = parts[0]
+        key, args = parts[0], parts[1:]
         ok = False
-        if key == "map":
-            ok = len(nums) == 3 and nums[0] > 0 and nums[1] in SEONHAE_SHARDS and nums[2] > 0
-        elif key in ("metin_shards", "boss_shards", "boss_additives"):
-            ok = len(nums) == 2 and 0 <= nums[0] <= nums[1] <= 50
-        elif key == "metin_additive_chance":
-            ok = len(nums) == 1 and 0 <= nums[0] <= 100
-        elif key in ("metin_additive", "boss_additive"):
-            ok = len(nums) == 2 and nums[0] in SEONHAE_ADDITIVES and nums[1] > 0
+        try:
+            if key in ("additive_chance", "shard_chance"):
+                ok = len(args) == 1 and 0.0 <= float(args[0]) <= 100.0
+            else:
+                nums = [int(x) for x in args]
+                if key in ("additive_map", "mob"):
+                    ok = len(nums) == 3 and nums[0] > 0 and nums[1] in SEONHAE_ADDITIVES and 1 <= nums[2] <= 50
+                elif key == "shard_map":
+                    ok = len(nums) == 1 and nums[0] > 0
+                elif key == "shard":
+                    ok = len(nums) == 2 and nums[0] in SEONHAE_SHARDS and nums[1] > 0
+        except ValueError:
+            ok = False
         if not ok:
             bad.append(no)
     return bad
