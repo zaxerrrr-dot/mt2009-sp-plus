@@ -1299,6 +1299,16 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		const int wait = quest::CQuestManager::instance().GetEventFlag("m2_bot_book_wait");
 		return wait > 0 ? wait : 0;
 	}
+
+	// MT2009_PLUS_SOUL_STONE_WAIT_V1: the bots' wait between two Soul Stones
+	// (G1 -> P) is their books' wait, at most the package's twelve hours -
+	// easy none, medium 7 h, hard 12 h, custom the bots' book hours (the
+	// players' side is server-patches/soulstonewait; NerrVoVy, Hiob, sosen).
+	int GetPlayerBotSoulStoneWaitSeconds()
+	{
+		const int wait = GetPlayerBotBookWaitSeconds();
+		return wait > 12 * 3600 ? 12 * 3600 : wait;
+	}
 #endif
 
 	// MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chance in percent,

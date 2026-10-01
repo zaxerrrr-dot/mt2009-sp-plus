@@ -2381,8 +2381,8 @@ namespace
 	// at G1..G10 on towards Perfect Master. The engine's half is
 	// LearnGrandMasterSkill (a thirty percent roll, four under the first reads);
 	// the rest is training_grandmaster_skill.quest, a dialog a bot cannot
-	// answer, so this pass does what the quest does - twelve hours between
-	// reads (waved away like the books' while the panel's BOOKS switch is on),
+	// answer, so this pass does what the quest does - the wait between reads
+	// (the difficulty's, at most twelve hours; r40250 twelve unless BOOKS is on),
 	// the stone spent either way, and the rank the training costs: 1000 plus
 	// 500 a grade over G1 on a success, a third to a half of that on a failure,
 	// twice as much for a rank already below zero. A bot trains only while the
@@ -2420,8 +2420,22 @@ namespace
 
 		const char* nextTimeFlag = "training_grandmaster_skill.next_time";
 		const int now = get_global_time();
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		// MT2009_PLUS_SOUL_STONE_WAIT_V1: the difficulty's wait, and a longer
+		// one already stored shortens to it.
+		const int stoneWait = GetPlayerBotSoulStoneWaitSeconds();
+		int readyAt = ch->GetQuestFlag(nextTimeFlag);
+		if (readyAt > now + stoneWait)
+		{
+			readyAt = now + stoneWait;
+			ch->SetQuestFlag(nextTimeFlag, readyAt);
+		}
+		if (now < readyAt)
+			return;
+#else
 		if (now < ch->GetQuestFlag(nextTimeFlag) && !IsPlayerBotFastBooksEnabled())
 			return;
+#endif
 
 		// The skill the books would pick: the build's primary first, then the
 		// highest grade.
@@ -2463,7 +2477,11 @@ namespace
 			stone->SetCount(stone->GetCount() - 1);
 		else
 			ITEM_MANAGER::instance().RemoveItem(stone, "PLAYERBOT_GRAND_MASTER_READ");
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		ch->SetQuestFlag(nextTimeFlag, now + stoneWait);
+#else
 		ch->SetQuestFlag(nextTimeFlag, now + PLAYERBOT_GRAND_MASTER_TRAIN_SECONDS);
+#endif
 		const bool learned = ch->LearnGrandMasterSkill(skillVnum);
 		ch->UpdateAlignment(-(learned ? cost : number(cost / 3, cost / 2)));
 		SetPlayerBotAction(state, BOT_ACTION_READ_BOOK, dwNow);
