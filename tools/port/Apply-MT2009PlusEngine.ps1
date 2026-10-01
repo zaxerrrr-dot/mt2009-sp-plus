@@ -541,6 +541,17 @@ if ((Test-Path -LiteralPath $soulStoneWaitApply -PathType Leaf) -and
         Write-Host 'Soul Stone wait by the difficulty.' -ForegroundColor DarkGray
     }
 }
+# The unique sash from a box opened with its key: the bosses' chests only, not
+# the Gold and Silver Caskets (server-patches/chestsash).
+$chestSashApply = Join-Path $repo 'server-patches/chestsash/Apply-ChestSashPatch.ps1'
+if ((Test-Path -LiteralPath $chestSashApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $chestSashResult = & $chestSashApply -SourceDirectory $engineGameSource
+    if ($chestSashResult.Changed) {
+        $syncedFiles++
+        Write-Host 'No unique sash from the Gold and Silver Caskets.' -ForegroundColor DarkGray
+    }
+}
 # Engine fixes of 1 October (server-patches/enginefixes): a chat command or a
 # whisper before the game phase is passed over whole (channel change with the
 # Companion's window open), the map list's bound checked before the write, and
