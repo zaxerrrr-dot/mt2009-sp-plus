@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.30",
+  "version": "2.0.37",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -14,8 +14,8 @@
     },
     {
       "path": "metin2client.exe",
-      "size": 13617152,
-      "sha256": "F86C987E9EF5B599CF53178F62CEBCE93F63CB3A9C9C947208A5653395C810FB"
+      "size": 13663232,
+      "sha256": "F719EB1DA1CA8BEB0A1370FCFED23A91720A86BBB534515348219C8FAAFDF65A"
     },
     {
       "path": "MT2009-Patcher.exe",
@@ -73,9 +73,19 @@
       "sha256": "2A9E4BE66E3620CD71DB9570BB7FFCA500B94A40ACC675F2A8B7C40C91466F2D"
     },
     {
+      "path": "pack/bd_maps.index",
+      "size": 3620,
+      "sha256": "3A3D82F74F6B555296524FB6924A1349E16673FEC0456A6ED9436B0B9D06F54C"
+    },
+    {
+      "path": "pack/catacomb_map.index",
+      "size": 45540,
+      "sha256": "91FFE0D65191E053B5938EB63E94426B10A34CB19DA54BE70294A8CD46CF2ED9"
+    },
+    {
       "path": "pack/gamedata.index",
       "size": 3764,
-      "sha256": "7F84AFD2911A100AE1712FCA7231ECD03C4B01A9D1BECC5B2CCD77E0C8839CC2"
+      "sha256": "33FED3EB2AAE7DC2DD0CD0CA098305BFF61F84DEBC99CAB96CD50308C73FE58D"
     },
     {
       "path": "pack/gf_misc.index",
@@ -109,18 +119,23 @@
     },
     {
       "path": "pack/Index",
-      "size": 704,
-      "sha256": "CBDB846540523D5CF4B572EF03514EFF727A2BDF806D6F90B05428DF23496140"
+      "size": 741,
+      "sha256": "365BAAE35F2D55DF4802BFB5A7FAEC0DA3421C3F09AD732F547846C2531A698D"
     },
     {
       "path": "pack/locale.index",
-      "size": 23484,
-      "sha256": "347D154CB8D73663F5D2B354D1E4C3B6B2DC6372906638405D1794503AB75B75"
+      "size": 23604,
+      "sha256": "AE8690EC7466E986BEA3DA5EBA2204BA6047AD94CBC6B3896720B574575162F8"
     },
     {
       "path": "pack/maps.index",
-      "size": 76188,
-      "sha256": "F1500653BE43AA97B914C315E947F8EC5F89D73AB83BA6FAA9C299CB67631489"
+      "size": 77252,
+      "sha256": "954E5D404F1AC95483497ACFDA2347CF269CB1242DE56D7A0D4B83B08FD9C483"
+    },
+    {
+      "path": "pack/minigames.index",
+      "size": 10164,
+      "sha256": "A678706546B7AD3B722BC270B75C984414259956567E389EFA8E747A7991C9E5"
     },
     {
       "path": "pack/newpet.index",
@@ -139,8 +154,8 @@
     },
     {
       "path": "pack/root.index",
-      "size": 16780,
-      "sha256": "F8EB93B06B6CEE05DC433A3D6C1B947F13B75F490803E647780C8E001484BED7"
+      "size": 17340,
+      "sha256": "0501A0004EBA5B8399FFC2226C935A54D5183557F5CE4E34592030F2E5B77C0D"
     }
   ]
 }

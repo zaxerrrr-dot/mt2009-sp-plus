@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-09-30T16:03:14Z",
-  "statusMessage": "Serwer 2.16.0 i klient 2.0.30: modul Arezzo (nowe mapy i lochy, domyslnie wylaczony), oplaty i limity lochow, lucznicy, boty, Towarzysz.",
+  "publishedAt": "2026-10-01T14:19:13Z",
+  "statusMessage": "Serwer 2.17.0 i klient 2.0.37: minigry i menedzer eventow, Seon-Hae (6./7. bonus), Niebieski Smok, Katakumby, progresja botow, nowy dom towarowy.",
   "server": {
-    "version": "2.16.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.16.0.zip",
-    "sha256": "749FE98A95C1AF5F43DB19C2A7FBC520C97653A74735C43967722E7DE13F3E74",
-    "size": 96036604
+    "version": "2.17.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.17.0.zip",
+    "sha256": "E3D804842689215242B295CCD6FFBB5669CC701B601B6A21411AA7E9E7CAE377",
+    "size": 96457131
   },
   "client": {
-    "version": "2.0.30",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.30/metin2-client-update-2.0.30.zip",
-    "sha256": "2E56BC056458880DF03D87F96026E6B34A93B4C79DB88FC75B1920B29438E72C",
-    "size": 305694226
+    "version": "2.0.37",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.37/metin2-client-update-2.0.37.zip",
+    "sha256": "3DFFFCA0A788BECDA4069709A0E7A6877DC4FFE2349636208B8156EC1B6985C2",
+    "size": 350282855
   }
 }

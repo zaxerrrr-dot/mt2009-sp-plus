@@ -17,6 +17,184 @@ every version here.
 
 ---
 
+## 2.17.0 — 2026-10-01 — Minigry i menedżer eventów, Seon-Hae (6./7. bonus), Niebieski Smok, Katakumby, progresja botów, nowy dom towarowy
+
+Serwer 2.17.0 i klient 2.0.37: **zaktualizuj oba** w launcherze
+(**SPRAWDŹ AKTUALIZACJE**, potem **AKTUALIZUJ KLIENTA**) albo klienta
+patcherem. Nowy klient ma nowy plik gry (exe) - bez niego minigry się nie
+otworzą. Zawiera wszystko z 2.16.0. Świat, postacie i ustawienia zostają.
+
+> Uwaga: boty w lochach **Ruiny Skorpiona** i **Starożytna Dżungla** (moduł
+> Arezzo) radzą sobie jeszcze średnio - zaczynają, ale rzadko kończą. Lochy
+> są już o 25% łatwiejsze; zachowanie botów w nich poprawi kolejna
+> aktualizacja. Gracze mogą je przechodzić normalnie.
+
+### Menedżer eventów w grze i minigry
+
+Nowe okno eventów (przycisk przy minimapie): lista trwających i
+zaplanowanych eventów, kalendarz, nagrody. Eventy ustawiasz w panelu WWW
+(klasycznym) → **Eventy** (harmonogram) - nowe rodzaje: `catchking`,
+`rumi`, `yutnori`, `flower`. Na czas eventu w M1 każdego królestwa staje
+stół minigry, a po evencie przez 7 dni można odebrać nagrody za ranking.
+Boty w minigrach nie biorą udziału.
+
+- **Łapanie Króla** (stół w M1): karty Królewskie z potworów, plansza 5×5,
+  złoty / srebrny / brązowy Łup Królewski, ranking i nagroda za top 10.
+- **Rumi (Okey)** (stół w M1): karty Okey z potworów, układanie trójek,
+  skrzynki za wynik, ranking.
+- **Yutnori** (stół w M1) z oknem 3D rzutu pałeczkami: pień brzozy i
+  plansza z potworów, gra z komputerem, pakiety nagród.
+- **Dzieci Kwiaty**: nasiona z potworów podczas eventu, wymiana na latorośle
+  i pudełka, kwiaty dające bonus na 12 h. Nagrody zmienisz w panelu
+  (**🌸 Dzieci Kwiaty**, działa w 5 sekund), zawartość pudełek w panelu
+  Sebana (Szkatułki).
+- Wylogowanie w trakcie gry nie zabiera nagrody - czeka do następnego
+  logowania.
+
+### Seon-Hae: 6. i 7. bonus (dobrowolne)
+
+Nowy system dodawania 6. i 7. bonusu u **Seon-Hae** (NPC w pierwszej wiosce
+każdego królestwa). **Domyślnie wyłączony** - włączasz w panelu klasycznym:
+kafelek **„💎 Seon-Hae: 6. i 7. bonus”** → **„Seon-Hae przyjmuje
+przedmioty”**.
+
+- Oddajesz przedmiot z 5 bonusami, **odłamki** (kolor według poziomu
+  przedmiotu, 1–10 sztuk) i **suplementy** (Mały/Średni/Duży/Silny, do 5) -
+  im więcej, tym większa szansa (np. 10 odłamków + 5 Silnych = 70%).
+  Seon-Hae trzyma przedmiot przez czas pracy (domyślnie 24 h, w panelu).
+- **Skąd materiały** (tylko gracze, tylko gdy Seon-Hae włączony; reguły w
+  panelu na stronie Seon-Hae):
+  - suplementy z bossów i Metinów (60%): Grota Wygnańców V1 i V2 – Średni,
+    Beran-Setaou – 2× Średni, Zaczarowany Las – Duży;
+  - odłamki ze zwykłych potworów Groty V2, Świątyni Ochao i Zaczarowanego
+    Lasu (0,5%, losowy kolor).
+- **Nowa tabela bonusów 6/7** (27 bonusów, wartości lv1–lv5) i **losowanie
+  poziomu bonusu**: lv1 35%, lv2 30%, lv3 20%, lv4 10%, lv5 5% - szanse
+  zmienisz w panelu na stronie Seon-Hae. Dotyczy też Zaczarowania 71051/71052.
+- **Naprawiony stary błąd**: tabela bonusów 6/7 z paczki numerowała bonusy
+  inaczej niż serwer, więc bonus z Zaczarowania 71051 trafiał w zły punkt
+  (np. „Siła” zmieniała bieżące PŻ). Bonusy dodane przed tą wersją
+  zostają, jakie były - przelosuj je Zaczarowaniem 71052.
+- Opis przedmiotu pokazuje 6. i 7. bonus na zbroi i biżuterii, w swoim
+  kolorze.
+
+### Niebieski Smok (loch na 90 poziom)
+
+Odnowiony loch Niebieskiego Smoka: wejście u NPC w Grocie Wygnańców V2,
+od 90 poziomu, 15 mln, 5 razy dziennie, 60 minut. Smok jest nietykalny,
+dopóki stoją jego kamienie. Teleport z okna **Wyprawy** (`/lochy`) - 10 mln,
+pod strażnika Groty. Nagrody: Smocza Łuska i Smoczy Szpon. Spróchniała
+Skrzynia już nie wypada ze smoka.
+
+### Katakumby Diabła działają
+
+Strażnik Katakumb wrócił do Świątyni Hwang (przy wejściu do Wieży Demonów),
+a nowy klient ma pełną mapę Katakumb (tekstury, potwory, wrota). Warunki:
+75 poziom, ukończone 9. piętro Wieży Demonów, 30 minut od ostatniego
+wyjścia. **Lider grupy zabiera ze sobą** członków grupy w pobliżu (do 50 m),
+którzy spełniają warunki. Teleport z okna Wyprawy prowadzi tuż obok
+strażnika.
+
+### Lochy
+
+- **Okno Wypraw teleportowało w złe miejsca** (np. Razador pod Wieżę
+  Demonów, Nemere pod Razadora), gdy moduł Arezzo był wyłączony - naprawione.
+- **Teleport z okna Wypraw pobiera koszt** - wcześniej był darmowy, choć
+  czat pisał „zapłacono”.
+- **Razador**: jeździec z bronią dwuręczną nie trafiał bossa przez kilka
+  sekund z rzędu - zasięg ciosu z konia i do dużych bossów jest większy.
+- **Biblioteka Wiedzy (30 lv)**: zamiast niewidocznych pajęczych jaj stoją
+  Metiny Ciemności (5 i 4 do zniszczenia).
+- **Ruiny Skorpiona i Starożytna Dżungla** (moduł Arezzo): potwory, bossy i
+  Metiny 25% słabsze, rzadsze fale. **Wzgórze Wukonga**: Feniks i WuKong nie
+  pojawiają się już na głowie drużyny.
+- **Naprawione padanie serwera** w lochach z falami: umiejętność obszarowa
+  bijąca potwory usuwane właśnie przez quest (koniec fali) wywracała rdzeń.
+- **Łapanie Króla**: lista nagród przy stole wywracała rdzeń (za długa lista
+  dla skryptu questu) - naprawione w silniku dla wszystkich takich list.
+
+### Dom towarowy i wyszukiwarka
+
+- **Kupno części stosu**: wpisujesz, ile sztuk chcesz - płacisz tylko za
+  nie, reszta zostaje w sklepie.
+- Wyszukiwanie z polskimi wielkimi literami, „+” / „+3” dla ulepszaczy,
+  zbroje i hełmy według klasy, **filtr do 5 bonusów** z minimalną
+  wartością, sortowanie po ilości i cenie naraz, mniejszy pasek.
+
+### Boty
+
+- **Progresja botów do ustawienia** w panelu Sebana → Gracze i boty →
+  **„Progresja botów”**:
+  - poziomy przejść na kolejne mapy (dotąd stałe w kodzie);
+  - **lista kontrolna przed awansem** - np. przed 35 poziomem broń +7,
+    zbroja +6, koń bojowy, 50 Metinów; przed 45: 2000 PŻ z przedmiotów,
+    2 umiejętności na M4, zęby orka; przed 55: lepszy sprzęt i 3
+    umiejętności. Bot bez wymagań stoi na blokadzie expa i nad nimi
+    pracuje (po 3 h przechodzi dalej, żeby świat nie stanął);
+  - **łagodniejszy start nowego świata** - wyjście z M1, M3 i M2 kosztuje
+    boty dużo mniej, krócej czekają na awans;
+  - **limit łowiących**: najwyżej 10% botów w przedziale poziomów nad wodą.
+  - podgląd: kto stoi na którym progu i czego mu brakuje.
+- **Rajdy na bossy**: Baronówna Pająków - rajd do 16 botów (z trzech
+  królestw) od 60 poziomu; do rajdów dołączają boty od 50% życia, wędkarze
+  i górnicy; posiłki do 3 rund po 4 boty; boss poniżej 30% jest dobijany.
+- **Nie przepłacają u graczy**: w sklepie gracza bot płaci najwyżej
+  1,5–2× ceny rynkowej (bliżej 2×, im bardziej potrzebuje przedmiotu).
+  Sklepy botów bez zmian.
+- **Szybsze zbieranie łupu**: najpierw walka, potem łup; kilka przedmiotów
+  naraz; po ucieczce wracają po swój łup.
+- Zaczarowany Las jako wyprawa: boty idą z zapasem 600 mikstur i siedzą w
+  Lesie ok. 2 h; Metiny bite zwykłym atakiem (umiejętności przy grupie
+  potworów); bot trzymany przez potwora wycofuje się i pije mikstury;
+  droppery robią zakupy po obsłudze straganu; nie walczą z kilofem ani
+  wędką w ręce; po spaleniu przedmiotu u kowala szybciej kupują zamiennik;
+  czytają księgi bez 20 000 doświadczenia; boty płacą za wymianę u
+  rafinera (dotąd było za darmo).
+- **Towarzysz**: zmiana kanału i teleport przy otwartym oknie Towarzysza nie
+  wyrzucają już do logowania; ranga przy nicku; w trybie „wolna ręka” gra
+  na swoim rdzeniu i nie utyka w M1; po 20 minutach bez dojścia na mapę
+  wybiera inną.
+- Panel: „blokada expa na N” pokazuje blokadę, która naprawdę obowiązuje.
+
+### Świat i rozgrywka
+
+- **Metiny**: szarfa +0 wypada z Metinów z szansą 15% (z bossów dalej 80%),
+  Cor Draconis z Metinów 20% (było 50%).
+- **Wytrzymałość potworów**: karta w panelu i pole w launcherze (POZIOM
+  TRUDNOŚCI) - np. 80% życia potworów, bossów i Metinów; `.env`
+  `M2_MONSTER_HP` (10-300). Działa od razu.
+- **Zestaw startowy nowego świata** (launcher, „Nowy świat - ustawienia na
+  start”): jak dotąd / średni (+5) / łatwy (cały zestaw +9); `.env`
+  `M2_STARTER_KIT`.
+- **Kamienie Duchowe według poziomu trudności**: łatwy bez czekania, średni
+  7 h, trudny 12 h.
+- **Alchemik**: oryginalne teksty; w panelu (Alchemia i szarfy) szansa na
+  odłamek i liczba Cor dziennie z odłamków (domyślnie 10% i 5).
+- **Auto Łowy**: minibossy (Lykos, Scrofa, Bera, Tigris, Chuong, Bestialny
+  Łucznik, Specjalista) są celem przy „Bossy”, po bossie, przed Metinem.
+- **Łucznik gracza**: dodatkowe strzały lecą razem ze strzałem, nie przy
+  następnym; odrzucona strzała zapisuje powód w logu serwera.
+- **Limit komend**: zapytania wysyłane przez sam klient nie zjadają limitu -
+  klikanie statystyk, okno Towarzysza i „lochy” już nie przepadają.
+
+### Klient 2.0.37
+
+- Nowy exe (minigry, okno 3D Yutnori) i okna wszystkich minigier.
+- **Koniec zacięć przy zaczarowaniu przedmiotu** i każdej zmianie w
+  ekwipunku (opis przedmiotu budował się ok. 90 razy przy każdym
+  odświeżeniu).
+- Mapa Katakumb, nazwa na minimapie.
+
+### Launcher i serwer
+
+- „Coś nie działa? Masz pomysł?” - przycisk **ZGŁOŚ BŁĄD / POMYSŁ** zawsze
+  na dole paska launchera.
+- Logi serwera trzymane **7 dni** (było 3) - aktualizacja zmienia 3 na 7
+  raz, inna wartość zostaje.
+- Launcher ponawia kopiowanie plików zablokowanych przez antywirusa.
+
+---
+
 ## 2.16.0 — 2026-09-30 — Moduł Arezzo (nowe mapy i lochy), opłaty za lochy, łucznicy, boty i Towarzysz
 
 Serwer 2.16.0 i klient 2.0.30: zaktualizuj oba w launcherze
