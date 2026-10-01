@@ -48,7 +48,7 @@ DESC_WESTERN_MAX_WIDTH = 220
 # POINT_MAX_HP, 8, 15, 17, 19, 53, 59-62) stays the POINT_* one - that is what
 # the server applies for it. Set RARE_ATTR_CLASSIC_APPLY to False once
 # item_attr_rare uses the POINT_* names.
-RARE_ATTR_CLASSIC_APPLY = True
+RARE_ATTR_CLASSIC_APPLY = False
 _RARE_CLASSIC_TO_POINT = {
 	1: 'POINT_MAX_HP', 2: 'POINT_MAX_SP', 3: 'POINT_HT', 4: 'POINT_IQ', 5: 'POINT_ST', 6: 'POINT_DX',
 	7: 'POINT_ATT_SPEED', 8: 'POINT_MOV_SPEED', 9: 'POINT_CASTING_SPEED', 10: 'POINT_HP_REGEN', 11: 'POINT_SP_REGEN',
