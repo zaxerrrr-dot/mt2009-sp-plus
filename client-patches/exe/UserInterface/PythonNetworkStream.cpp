@@ -221,6 +221,19 @@ class CMainPacketHeaderMap : public CNetworkPacketHeaderMap
 			// MT2009_PLUS_EVENT_MANAGER_V1
 			Set(HEADER_GC_INGAME_EVENT, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCInGameEvent), DYNAMIC_SIZE_PACKET));
 #endif
+			// MT2009_PLUS_MINIGAMES_V1
+#ifdef ENABLE_MINI_GAME_RUMI
+			Set(HEADER_GC_MINI_GAME_RUMI, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCMiniGameRumi), DYNAMIC_SIZE_PACKET));
+#endif
+#ifdef ENABLE_MINI_GAME_YUTNORI
+			Set(HEADER_GC_MINI_GAME_YUTNORI, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCMiniGameYutnori), DYNAMIC_SIZE_PACKET));
+#endif
+#ifdef ENABLE_MINI_GAME_CATCH_KING
+			Set(HEADER_GC_MINI_GAME_CATCH_KING, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCMiniGameCatchKing), DYNAMIC_SIZE_PACKET));
+#endif
+#ifdef ENABLE_FLOWER_EVENT
+			Set(HEADER_GC_FLOWER_EVENT, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCFlowerEvent), STATIC_SIZE_PACKET));
+#endif
 #ifdef ENABLE_IKASHOP_RENEWAL
 			Set(HEADER_GC_NEW_OFFLINESHOP, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCNewOfflineshop), LARGE_DYNAMIC_SIZE_PACKET));
 #endif

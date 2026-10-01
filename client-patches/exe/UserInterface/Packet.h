@@ -139,6 +139,20 @@ enum
 	HEADER_CG_PRIVATE_SHOP_SEARCH_CLOSE			= 217,
 	HEADER_CG_PRIVATE_SHOP_SEARCH_BUY_ITEM		= 218,
 
+	// MT2009_PLUS_MINIGAMES_V1 (Owsap v6.2.6 numbers and layouts)
+#ifdef ENABLE_MINI_GAME_RUMI
+	HEADER_CG_MINI_GAME_RUMI					= 181,
+#endif
+#ifdef ENABLE_MINI_GAME_YUTNORI
+	HEADER_CG_MINI_GAME_YUTNORI					= 182,
+#endif
+#ifdef ENABLE_FLOWER_EVENT
+	HEADER_CG_FLOWER_EVENT						= 187,
+#endif
+#ifdef ENABLE_MINI_GAME_CATCH_KING
+	HEADER_CG_MINI_GAME_CATCH_KING				= 226,
+#endif
+
 	HEADER_CG_KEY_AGREEMENT						= 0xfb, // _IMPROVED_PACKET_ENCRYPTION_
 	HEADER_CG_TIME_SYNC							= 0xfc,
 	//HEADER_CG_CLIENT_VERSION2					= 0xf1,
@@ -335,6 +349,19 @@ enum
 	// MT2009_PLUS_EVENT_MANAGER_V1: the in-game event list (server: playerbot_ingame_events.h).
 	// 181, 182, 187, 238 are kept for Rumi, Yut Nori, the Flower Event and Catch the King.
 	HEADER_GC_INGAME_EVENT						= 183,
+#endif
+	// MT2009_PLUS_MINIGAMES_V1 (Owsap v6.2.6 numbers and layouts)
+#ifdef ENABLE_MINI_GAME_RUMI
+	HEADER_GC_MINI_GAME_RUMI					= 181,
+#endif
+#ifdef ENABLE_MINI_GAME_YUTNORI
+	HEADER_GC_MINI_GAME_YUTNORI					= 182,
+#endif
+#ifdef ENABLE_FLOWER_EVENT
+	HEADER_GC_FLOWER_EVENT						= 187,
+#endif
+#ifdef ENABLE_MINI_GAME_CATCH_KING
+	HEADER_GC_MINI_GAME_CATCH_KING				= 238,
 #endif
 
 	HEADER_GC_KEY_AGREEMENT_COMPLETED			= 0xfa, // _IMPROVED_PACKET_ENCRYPTION_
@@ -3473,7 +3500,299 @@ typedef struct SPacketGCInGameEventInfo
 } TPacketGCInGameEventInfo;
 #endif
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// MT2009_PLUS_MINIGAMES_V1: Owsap v6.2.6 mini game packets (layouts identical to Owsap's server
+// packet.h, pack(1); BOOL = 4 bytes). See client-patches/exe/MINIGAMES.md.
+#ifdef ENABLE_MINI_GAME_CATCH_KING
+enum EMiniGameCatchKingCGSubHeader
+{
+	CATCHKING_CG_START,
+	CATCHKING_CG_CLICK_HAND,
+	CATCHKING_CG_CLICK_CARD,
+	CATCHKING_CG_REWARD,
+#ifdef ENABLE_CATCH_KING_EVENT_FLAG_RENEWAL
+	CATCHKING_CG_REQUEST_QUEST_FLAG,
+#endif
+};
+
+enum EMiniGameCatchKingGCSubHeader
+{
+	CATCHKING_GC_START,
+	CATCHKING_GC_SET_CARD,
+	CATCHKING_GC_RESULT_FIELD,
+	CATCHKING_GC_SET_END_CARD,
+	CATCHKING_GC_REWARD,
+#ifdef ENABLE_CATCH_KING_EVENT_FLAG_RENEWAL
+	CATCHKING_GC_SET_CARD_PIECE_FLAG,
+	CATCHKING_GC_SET_CARD_FLAG,
+	CATCHKING_GC_SET_QUEST_FLAG,
+	CATCHKING_GC_NO_MORE_GAIN,
+#endif
+};
+
+typedef struct SPacketCGMiniGameCatchKing
+{
+	BYTE bHeader;
+	BYTE bSubHeader;
+	BYTE bSubArgument;
+} TPacketCGMiniGameCatchKing;
+
+typedef struct SPacketGCMiniGameCatchKing
+{
+	BYTE bHeader;
+	WORD wSize;
+	BYTE bSubHeader;
+} TPacketGCMiniGameCatchKing;
+
+typedef struct SPacketGCMiniGameCatchKingResult
+{
+	DWORD dwPoints;
+	BYTE bRowType;
+	BYTE bCardPos;
+	BYTE bCardValue;
+	bool bKeepFieldCard;
+	bool bDestroyHandCard;
+	bool bGetReward;
+	bool bIsFiveNearBy;
+} TPacketGCMiniGameCatchKingResult;
+
+typedef struct SPacketGCMiniGameCatchKingSetEndCard
+{
+	BYTE bCardPos;
+	BYTE bCardValue;
+} TPacketGCMiniGameCatchKingSetEndCard;
+
+#ifdef ENABLE_CATCH_KING_EVENT_FLAG_RENEWAL
+typedef struct SPacketGCMiniGameCatchKingQuestFlag
+{
+	WORD wPieceCount, wPackCount;
+} TPacketGCMiniGameCatchKingQuestFlag;
+#endif
+#endif
+
+#ifdef ENABLE_MINI_GAME_RUMI
+enum EMiniGameRumiCGSubHeader
+{
+	RUMI_CG_SUBHEADER_END,
+	RUMI_CG_SUBHEADER_START,
+	RUMI_CG_SUBHEADER_DECK_CARD_CLICK,
+	RUMI_CG_SUBHEADER_HAND_CARD_CLICK,
+	RUMI_CG_SUBHEADER_FIELD_CARD_CLICK,
+#ifdef ENABLE_OKEY_EVENT_FLAG_RENEWAL
+	RUMI_CG_SUBHEADER_REQUEST_QUEST_FLAG,
+#endif
+};
+
+enum EMiniGameRumiGCSubHeader
+{
+	RUMI_GC_SUBHEADER_END,
+	RUMI_GC_SUBHEADER_START,
+	RUMI_GC_SUBHEADER_SET_DECK,
+	RUMI_GC_SUBHEADER_SET_SCORE,
+	RUMI_GC_SUBHEADER_MOVE_CARD,
+#ifdef ENABLE_OKEY_EVENT_FLAG_RENEWAL
+	RUMI_GC_SUBHEADER_SET_CARD_PIECE_FLAG,
+	RUMI_GC_SUBHEADER_SET_CARD_FLAG,
+	RUMI_GC_SUBHEADER_SET_QUEST_FLAG,
+	RUMI_GC_SUBHEADER_NO_MORE_GAIN,
+#endif
+};
+
+typedef struct SPacketCGMiniGameRumi
+{
+	BYTE bHeader;
+	BYTE bSubHeader;
+	BOOL bUseCard;
+	BYTE bIndex;
+	SPacketCGMiniGameRumi() : bHeader(HEADER_CG_MINI_GAME_RUMI), bSubHeader(RUMI_CG_SUBHEADER_END), bUseCard(FALSE), bIndex(0) {}
+} TPacketCGMiniGameRumi;
+
+typedef struct SPacketGCMiniGameRumiSetDeck
+{
+	BYTE bDeckCount;
+} TPacketGCMiniGameRumiSetDeck;
+
+typedef struct SPacketGCMiniGameRumiMoveCard
+{
+	BYTE bSrcPos, bSrcIndex, bSrcColor, bSrcNumber;
+	BYTE bDstPos, bDstIndex, bDstColor, bDstNumber;
+} TPacketGCMiniGameRumiMoveCard;
+
+typedef struct SPacketGCMiniGameRumiSetScore
+{
+	WORD wScore, wTotalScore;
+} TPacketGCMiniGameRumiSetScore;
+
+#ifdef ENABLE_OKEY_EVENT_FLAG_RENEWAL
+typedef struct SPacketGCMiniGameRumiQuestFlag
+{
+	WORD wCardPieceCount, wCardCount;
+} TPacketGCMiniGameRumiQuestFlag;
+#endif
+
+typedef struct SPacketGCMiniGameRumi
+{
+	BYTE bHeader;
+	WORD wSize;
+	BYTE bSubHeader;
+} TPacketGCMiniGameRumi;
+#endif
+
+#ifdef ENABLE_MINI_GAME_YUTNORI
+enum EMiniGameYutnoriGCSubHeader
+{
+	YUTNORI_GC_SUBHEADER_START,
+	YUTNORI_GC_SUBHEADER_STOP,
+	YUTNORI_GC_SUBHEADER_SET_PROB,
+	YUTNORI_GC_SUBHEADER_THROW,
+	YUTNORI_GC_SUBHEADER_MOVE,
+	YUTNORI_GC_SUBHEADER_AVAILABLE_AREA,
+	YUTNORI_GC_SUBHEADER_PUSH_CATCH_YUT,
+	YUTNORI_GC_SUBHEADER_SET_SCORE,
+	YUTNORI_GC_SUBHEADER_SET_REMAIN_COUNT,
+	YUTNORI_GC_SUBHEADER_PUSH_NEXT_TURN,
+#ifdef ENABLE_YUTNORI_EVENT_FLAG_RENEWAL
+	YUTNORI_GC_SUBHEADER_SET_YUT_PIECE_FLAG,
+	YUTNORI_GC_SUBHEADER_SET_YUT_BOARD_FLAG,
+	YUTNORI_GC_SUBHEADER_SET_QUEST_FLAG,
+	YUTNORI_GC_SUBHEADER_NO_MORE_GAIN,
+#endif
+};
+
+enum EMiniGameYutnoriCGSubHeader
+{
+	YUTNORI_CG_SUBHEADER_START,
+	YUTNORI_CG_SUBHEADER_GIVEUP,
+	YUTNORI_CG_SUBHEADER_SET_PROB,
+	YUTNORI_CG_SUBHEADER_CLICK_CHAR,
+	YUTNORI_CG_SUBHEADER_THROW,
+	YUTNORI_CG_SUBHEADER_MOVE,
+	YUTNORI_CG_SUBHEADER_REQUEST_COM_ACTION,
+	YUTNORI_CG_SUBHEADER_REWARD,
+#ifdef ENABLE_YUTNORI_EVENT_FLAG_RENEWAL
+	YUTNORI_CG_SUBHEADER_REQUEST_QUEST_FLAG,
+#endif
+};
+
+typedef struct SPacketCGMiniGameYutnori
+{
+	BYTE bHeader;
+	BYTE bSubHeader;
+	BYTE bArgument;
+} TPacketCGMiniGameYutnori;
+
+typedef struct SPacketGCMiniGameYutnori
+{
+	BYTE bHeader;
+	WORD wSize;
+	BYTE bSubHeader;
+} TPacketGCMiniGameYutnori;
+
+typedef struct SPacketGCMiniGameYutnoriSetProb { BYTE bProbIndex; } TPacketGCMiniGameYutnoriSetProb;
+typedef struct SPacketGCMiniGameYutnoriThrowYut { bool bPC; BYTE bYut; } TPacketGCMiniGameYutnoriThrowYut;
+typedef struct SPacketGCMiniGameYutnoriMoveYut
+{
+	bool bPC;
+	BYTE bUnitIndex;
+	bool bIsCatch;
+	BYTE bStartIndex;
+	BYTE bDestIndex;
+} TPacketGCMiniGameYutnoriMoveYut;
+typedef struct SPacketGCMiniGameYutnoriAvailableArea { BYTE bPlayerIndex; BYTE bAvailableIndex; } TPacketGCMiniGameYutnoriAvailableArea;
+typedef struct SPacketGCMiniGameYutnoriPushCatchYut { bool bPC; BYTE bUnitIndex; } TPacketGCMiniGameYutnoriPushCatchYut;
+typedef struct SPacketGCMiniGameYutnoriSetScore { WORD wScore; } TPacketGCMiniGameYutnoriSetScore;
+typedef struct SPacketGCMiniGameYutnoriSetRemainCount { BYTE bRemainCount; } TPacketGCMiniGameYutnoriSetRemainCount;
+typedef struct SPacketGCMiniGameYutnoriPushNextTurn { bool bPC; BYTE bState; } TPacketGCMiniGameYutnoriPushNextTurn;
+#ifdef ENABLE_YUTNORI_EVENT_FLAG_RENEWAL
+typedef struct SPacketGCMiniGameYutnoriQuestFlag { WORD wYutPieceCount; WORD wYutBoardCount; } TPacketGCMiniGameYutnoriQuestFlag;
+#endif
+#endif
+
+#ifdef ENABLE_FLOWER_EVENT
+enum EFlowerEventShootType
+{
+	SHOOT_ENVELOPE,
+	SHOOT_CHRYSANTHEMUM,
+	SHOOT_MAY_BELL,
+	SHOOT_DAFFODIL,
+	SHOOT_LILY,
+	SHOOT_SUNFLOWER,
+	SHOOT_TYPE_MAX,
+};
+
+enum EFlowerEventMisc
+{
+	FLOWER_EVENT_SHOOT_ENVELOPE_NEED_COUNT = 1,
+	FLOWER_EVENT_SHOOT_NEED_COUNT = 10,
+	FLOWER_EVENT_NEED_INVENTORY_SPACE = 1,
+	FLOWER_EVENT_EXCHANGE_COOLTIME_SEC = 1,
+	MAX_FLOWER_EVENT_ITEM_COUNT = 99999,
+};
+
+enum EFlowerEventChatType
+{
+	FLOWER_EVENT_CHAT_TYPE_NOT_ENOUGH_SHOOT_COUNT,
+	FLOWER_EVENT_CHAT_TYPE_NOT_ENOUGH_EVENTORY_SPACE,
+	FLOWER_EVENT_CHAT_TYPE_NOT_ENOUGH_SHOOT_ENVELOPE,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_ENVELOPE,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_CHRYSANTHEMUM,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_MAY_BELL,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_DAFFODIL,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_LILY,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_SUNFLOWER,
+	FLOWER_EVENT_CHAT_TYPE_ITEM_FULL_AND_NOT_USE,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_CHRYSANTHEMUM_COUNT,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_MAY_BELL_COUNT,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_DAFFODIL_COUNT,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_LILY_COUNT,
+	FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_SUNFLOWER_COUNT,
+	FLOWER_EVENT_CHAT_TYPE_ENVELOPE_MAX,
+	FLOWER_EVENT_CHAT_TYPE_MAX,
+};
+
+enum EPacketGCFlowerEvent
+{
+	FLOWER_EVENT_SUBHEADER_GC_INFO_ALL,
+	FLOWER_EVENT_SUBHEADER_GC_GET_INFO,
+	FLOWER_EVENT_SUBHEADER_GC_UPDATE_INFO
+};
+
+typedef struct SPacketGCFlowerEvent
+{
+	BYTE bHeader;
+	BYTE bSubHeader;
+	BYTE bChatType;
+	BYTE bShootType;
+	int aiShootCount[SHOOT_TYPE_MAX + 1];
+} TPacketGCFlowerEvent;
+
+enum EPacketCGFlowerEvent
+{
+	FLOWER_EVENT_SUBHEADER_CG_INFO_ALL,
+	FLOWER_EVENT_SUBHEADER_CG_EXCHANGE
+};
+
+typedef struct SPacketCGFlowerEvent
+{
+	BYTE bHeader;
+	BYTE bSubHeader;
+	BYTE bShootType;
+	BYTE bExchangeKey;
+} TPacketCGFlowerEvent;
+#endif
+
 #pragma pack(pop)
+
+#ifdef ENABLE_MINI_GAME_RUMI
+static_assert(sizeof(TPacketCGMiniGameRumi) == 7, "CG Rumi must be 7 bytes (Owsap)");
+#endif
+#ifdef ENABLE_FLOWER_EVENT
+static_assert(sizeof(TPacketGCFlowerEvent) == 32, "GC Flower must be 32 bytes (Owsap)");
+static_assert(sizeof(TPacketCGFlowerEvent) == 4, "CG Flower must be 4 bytes (Owsap)");
+#endif
+#ifdef ENABLE_MINI_GAME_CATCH_KING
+static_assert(sizeof(TPacketGCMiniGameCatchKingResult) == 11, "CatchKing result must be 11 bytes (Owsap)");
+#endif
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f
 
 // Files shared by GameCore.top

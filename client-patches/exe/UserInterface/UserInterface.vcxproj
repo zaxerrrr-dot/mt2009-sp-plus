@@ -300,6 +300,7 @@
     </ClCompile>
     <ClCompile Include="PythonAcce.cpp" />
     <ClCompile Include="PythonInGameEventSystemManager.cpp" />
+    <ClCompile Include="PythonYutnoriManager.cpp" />
     <ClCompile Include="PythonBackground.cpp" />
     <ClCompile Include="PythonBackgroundModule.cpp" />
     <ClCompile Include="PythonCaptcha.cpp" />
@@ -403,6 +404,7 @@
     <ClInclude Include="MemoryModule.h" />
     <ClInclude Include="PythonAcce.h" />
     <ClInclude Include="PythonInGameEventSystemManager.h" />
+    <ClInclude Include="PythonYutnoriManager.h" />
     <ClInclude Include="PythonBackground.h" />
     <ClInclude Include="PythonCaptcha.h" />
     <ClInclude Include="PythonCharacterManager.h" />
