@@ -483,6 +483,51 @@ namespace
 				IsPlayerBotRareNow(it->second.persona, playerbot_persona::RARE_METINOLOG, get_dword_time());
 	}
 
+	// MT2009_PLUS_PROGRESSION_V2: the owner's upper limits (the panel's map
+	// table): a map whose row ends under this level is not drawn - the bot
+	// takes the highest ground of the draw it is open for instead, Sohan when
+	// none is (a stone hunter keeps Hwang or Sohan, the maps with stones).
+	int GetPlayerBotMapCeilingRow(long map)
+	{
+		switch (map)
+		{
+			case PLAYERBOT_MAP_SPIDER_V1: return playerbot_progression::MAP_SPIDER1;
+			case PLAYERBOT_MAP_HWANG: return playerbot_progression::MAP_HWANG;
+			case PLAYERBOT_MAP_SPIDER_V2: return playerbot_progression::MAP_SPIDER2;
+			case PLAYERBOT_MAP_FOREST: return playerbot_progression::MAP_FOREST;
+			default: return -1;
+		}
+	}
+
+	bool IsPlayerBotMapOverCeiling(long map, int level)
+	{
+		const int row = GetPlayerBotMapCeilingRow(map);
+		return row >= 0 && level > (int)playerbot_progression::MapTo(row);
+	}
+
+	long PlayerBotMapUnderCeiling(long map, int level, bool stoneHunter)
+	{
+		if (!IsPlayerBotMapOverCeiling(map, level))
+			return map;
+		using namespace playerbot_progression;
+		const struct { long map; int row; bool stones; } rows[] = {
+			{ PLAYERBOT_MAP_RED_FOREST, MAP_RED_FOREST, false },
+			{ PLAYERBOT_MAP_FOREST, MAP_FOREST, false },
+			{ PLAYERBOT_MAP_SPIDER_V2, MAP_SPIDER2, false },
+			{ PLAYERBOT_MAP_HWANG, MAP_HWANG, true },
+			{ PLAYERBOT_MAP_SPIDER_V1, MAP_SPIDER1, false },
+		};
+		for (size_t i = 0; i < sizeof(rows) / sizeof(rows[0]); ++i)
+		{
+			if (rows[i].map == map || level < (int)MapFrom(rows[i].row) ||
+					IsPlayerBotMapOverCeiling(rows[i].map, level) || (stoneHunter && !rows[i].stones) ||
+					!IsPlayerBotMapHostedHere(rows[i].map))
+				continue;
+			return rows[i].map;
+		}
+		return PLAYERBOT_MAP_SOHAN;
+	}
+
 	long GetPlayerBotFrontierMapForLevelRaw(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -624,8 +669,8 @@ namespace
 			switch (draw % 3U)
 			{
 				case 0: return stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_RED_FOREST;
-				case 1: return stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_FOREST;
-				default: return PLAYERBOT_MAP_HWANG;
+				case 1: return PlayerBotMapUnderCeiling(stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_FOREST, level, stoneHunter);
+				default: return PlayerBotMapUnderCeiling(PLAYERBOT_MAP_HWANG, level, stoneHunter);
 			}
 		}
 		// Sixty-two and up: the Forest, 65 to 71.
@@ -633,9 +678,9 @@ namespace
 		{
 			switch (draw % 3U)
 			{
-				case 0: return stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_FOREST;
+				case 0: return PlayerBotMapUnderCeiling(stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_FOREST, level, stoneHunter);
 				case 1: return PLAYERBOT_MAP_SOHAN;
-				default: return PLAYERBOT_MAP_HWANG;
+				default: return PlayerBotMapUnderCeiling(PLAYERBOT_MAP_HWANG, level, stoneHunter);
 			}
 		}
 		// The Demon Tower takes one draw in four from fifty-seven up, and no
@@ -650,29 +695,29 @@ namespace
 		{
 			switch (draw % 3U)
 			{
-				case 0: return stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_SPIDER_V2;
+				case 0: return PlayerBotMapUnderCeiling(stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_SPIDER_V2, level, stoneHunter);
 				case 1: return PLAYERBOT_MAP_SOHAN;
-				default: return PLAYERBOT_MAP_HWANG;
+				default: return PlayerBotMapUnderCeiling(PLAYERBOT_MAP_HWANG, level, stoneHunter);
 			}
 		}
 		if (level >= MapFrom(MAP_HWANG))
 		{
 			switch (draw % 3U)
 			{
-				case 0: return stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_SPIDER_V1;
+				case 0: return PlayerBotMapUnderCeiling(stoneHunter ? PLAYERBOT_MAP_SOHAN : PLAYERBOT_MAP_SPIDER_V1, level, stoneHunter);
 				case 1: return PLAYERBOT_MAP_SOHAN;
-				default: return PLAYERBOT_MAP_HWANG;
+				default: return PlayerBotMapUnderCeiling(PLAYERBOT_MAP_HWANG, level, stoneHunter);
 			}
 		}
 		{
 			const bool sohanOpen = level >= MapFrom(MAP_SOHAN);
 			const bool spiderOpen = level >= MapFrom(MAP_SPIDER1);
 			if (sohanOpen && spiderOpen)
-				return (draw & 1U) != 0 && !stoneHunter ? PLAYERBOT_MAP_SPIDER_V1 : PLAYERBOT_MAP_SOHAN;
+				return PlayerBotMapUnderCeiling((draw & 1U) != 0 && !stoneHunter ? PLAYERBOT_MAP_SPIDER_V1 : PLAYERBOT_MAP_SOHAN, level, stoneHunter);
 			if (sohanOpen)
 				return PLAYERBOT_MAP_SOHAN;
 			if (spiderOpen && !stoneHunter)
-				return PLAYERBOT_MAP_SPIDER_V1;
+				return PlayerBotMapUnderCeiling(PLAYERBOT_MAP_SPIDER_V1, level, stoneHunter);
 		}
 		// Thirty-six to forty-seven: the valley and the desert share them, the
 		// same way thirty to thirty-five already do. See
@@ -714,7 +759,8 @@ namespace
 		};
 		for (size_t i = 0; i < sizeof(rows) / sizeof(rows[0]); ++i)
 		{
-			if (rows[i].map == blocked || (int)ch->GetLevel() < rows[i].minLevel)
+			if (rows[i].map == blocked || (int)ch->GetLevel() < rows[i].minLevel ||
+					IsPlayerBotMapOverCeiling(rows[i].map, (int)ch->GetLevel()))
 				continue;
 			if (!IsPlayerBotMapHostedHere(rows[i].map) || IsPlayerBotSidekickTripBlocked(ch, rows[i].map))
 				continue;
@@ -919,6 +965,13 @@ namespace
 		return (tier == 2 || skipper) && MeetsPlayerBotM3Survival(ch);
 	}
 
+	// MT2009_PLUS_PROGRESSION_V2: the level-30 weapon's purse covers one.
+	bool CanPlayerBotBuyLevel30Weapon(LPCHARACTER ch)
+	{
+		return ch && GetPlayerBotLevel30PurchaseCap(ch) >=
+				(long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_LEVEL30_BASE_PRICE);
+	}
+
 	bool ShouldPlayerBotVisitM3(LPCHARACTER ch)
 	{
 		const bool tierGrinder = IsPlayerBotM3TierGrinder(ch);
@@ -938,9 +991,10 @@ namespace
 		// One a counter holds and the purse reaches is bought, not farmed
 		// (community patch 2, point 1): the market trip is the next town
 		// visit's, and M3 is for the bots it would not serve.
-		if (!tierGrinder && PlayerBotMarketHasClassLevel30Weapon(ch) &&
-				GetPlayerBotLevel30PurchaseCap(ch) >=
-					(long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_LEVEL30_BASE_PRICE))
+		// MT2009_PLUS_PROGRESSION_V2: and one the purse reaches is never
+		// farmed, on a counter now or not ("polowanie w ogole nie powinno sie
+		// odbywac, jesli bot ma wystarczajaco pieniedzy", the owner).
+		if (!tierGrinder && CanPlayerBotBuyLevel30Weapon(ch))
 			return false;
 		// Twenty-four was the cap, and it made the weapon a thing a bot either
 		// got young or never got: past it the only route left was a counter it
@@ -990,7 +1044,7 @@ namespace
 		if (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_M2_DROPPER)
 			return ch->GetLevel() >= 25 && ch->GetLevel() <= 40;
 		if (ch->GetLevel() < 25 || ch->GetLevel() > PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL ||
-				HasPlayerBotSpecialLevel30Weapon(ch, true) ||
+				HasPlayerBotSpecialLevel30Weapon(ch, true) || CanPlayerBotBuyLevel30Weapon(ch) ||
 				ShouldPlayerBotVisitM3(ch))
 			return false;
 		// M3 already owns one third of the eligible weapon hunters. Half of the
@@ -1815,7 +1869,8 @@ namespace
 	// Since when a bot with somewhere to go has been held in M1 by the hold of
 	// the world travel below; 1 once PLAYERBOT_M1_HOLD_RELEASE_MS let it go,
 	// until it leaves M1.
-	const DWORD PLAYERBOT_M1_HOLD_RELEASE_MS = 20 * 60 * 1000;
+	// MT2009_PLUS_PROGRESSION_V2: ten minutes, was twenty (the owner).
+	const DWORD PLAYERBOT_M1_HOLD_RELEASE_MS = 10 * 60 * 1000;
 	std::map<DWORD, DWORD> s_mapPlayerBotM1HeldSince;
 	// MT2009_PLUS_SIDEKICK_TRIP_V1: what held it there on the last pass, for
 	// the status line ("Ide do Groty..." over a bot held in Joan for an hour)

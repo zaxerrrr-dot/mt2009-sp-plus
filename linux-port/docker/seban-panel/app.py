@@ -4033,11 +4033,12 @@ PROGRESSION_MAPS = [
     ("orc_valley", "Dolina Orków", 36, 55, True, 30),
     ("desert", "Pustynia Yongbi", 30, 47, True, 25),
     ("sohan", "Góra Sohan", 48, 75, False, 40),
-    ("spider1", "Loch Pająków V1", 48, 255, False, 42),
-    ("hwang", "Świątynia Hwang", 52, 255, False, 45),
-    ("spider2", "Loch Pająków V2", 54, 255, False, 48),
+    # MT2009_PLUS_PROGRESSION_V2: the owner's upper limits (1 October 2026).
+    ("spider1", "Loch Pająków V1", 48, 61, True, 42),
+    ("hwang", "Świątynia Hwang", 52, 61, True, 45),
+    ("spider2", "Loch Pająków V2", 54, 78, True, 48),
     ("demon_tower", "Wieża Demonów", 57, 255, False, 50),
-    ("forest", "Zaczarowany Las", 62, 255, False, 55),
+    ("forest", "Zaczarowany Las", 62, 72, True, 55),
     ("fire_land", "Ognista Ziemia (Doyyumhwaji)", 66, 80, True, 60),
     ("red_forest", "Czerwony Las", 71, 255, False, 65),
     ("grotto1", "Grota Wygnańców V1", 78, 255, False, 72),
@@ -4045,7 +4046,7 @@ PROGRESSION_MAPS = [
 ]
 PROGRESSION_REQS = {
     # key: (label, a label, b label)
-    "weapon": ("Broń", "min. poziom przedmiotu", "min. +"),
+    "weapon": ("Broń (kilka wierszy na bramce = wystarczy jeden)", "min. poziom przedmiotu", "min. +"),
     "armour": ("Zbroja", "min. poziom przedmiotu", "min. +"),
     "helmet": ("Hełm", "min. poziom przedmiotu", "min. +"),
     "shield": ("Tarcza (gdy bot ją nosi)", "min. poziom przedmiotu", "min. +"),
@@ -4064,12 +4065,15 @@ PROGRESSION_REQS = {
 }
 PROGRESSION_REQ_ORDER = ["weapon", "armour", "helmet", "shield", "shoes", "bracelet", "necklace", "earrings",
                          "all_worn", "hp", "skills", "horse", "metins", "orc_teeth", "quest_flag", "gold"]
+# MT2009_PLUS_PROGRESSION_V2: the owner's gates of 1 October 2026. Rows of one
+# piece at one gate are alternatives: any one met is enough.
 PROGRESSION_DEFAULT_GATES = [
-    (35, "weapon", 15, 7, ""), (35, "armour", 15, 6, ""), (35, "horse", 11, 0, ""), (35, "metins", 50, 0, ""),
-    (45, "weapon", 25, 7, ""), (45, "armour", 26, 6, ""), (45, "hp", 2000, 0, ""), (45, "skills", 2, 24, ""),
-    (45, "orc_teeth", 1, 0, ""),
-    (55, "weapon", 30, 8, ""), (55, "armour", 34, 6, ""), (55, "helmet", 0, 6, ""), (55, "shield", 0, 6, ""),
-    (55, "hp", 2500, 0, ""), (55, "skills", 3, 24, ""),
+    (35, "weapon", 15, 7, ""), (35, "weapon", 16, 6, ""), (35, "weapon", 30, 4, ""), (35, "armour", 16, 6, ""),
+    (35, "horse", 11, 0, ""), (35, "metins", 30, 0, ""),
+    (45, "weapon", 25, 7, ""), (45, "weapon", 30, 6, ""), (45, "armour", 26, 6, ""), (45, "skills", 2, 24, ""),
+    (45, "horse", 12, 0, ""),
+    (55, "weapon", 30, 7, ""), (55, "armour", 34, 6, ""), (55, "helmet", 0, 6, ""), (55, "shield", 0, 6, ""),
+    (55, "skills", 3, 24, ""),
 ]
 PROGRESSION_DEFAULT_TIERS = [
     # tier, band from, band to, lock from, lock to, label
@@ -4079,7 +4083,7 @@ PROGRESSION_DEFAULT_TIERS = [
     (5, 36, 50, 40, 48, "Dolina Orków i Pustynia"),
     (7, 51, 65, 55, 62, "Góra Sohan"),
 ]
-PROGRESSION_DEFAULT_LAWS = [(0, 5, 4, 0, 0), (19, 6, 5, 4, 0), (26, 7, 5, 5, 0), (35, 8, 6, 6, 6)]
+PROGRESSION_DEFAULT_LAWS = [(0, 5, 4, 0, 0), (19, 6, 5, 4, 0), (26, 6, 5, 5, 0), (35, 7, 6, 6, 6)]
 PROGRESSION_SETTINGS = [
     # key, label, default, min, max, kind, hint
     ("enabled", "Checklista włączona", 1, 0, 1, "bool", "Mapy i postoje na tierach działają zawsze; to przełącza tylko checklistę."),

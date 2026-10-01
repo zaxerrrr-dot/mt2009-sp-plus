@@ -3610,6 +3610,18 @@ namespace
 	const BYTE PLAYERBOT_AREZZO_CYCLOPS_MIN_LEVEL = 40;
 	const BYTE PLAYERBOT_AREZZO_PHARAOH_MIN_LEVEL = 50;
 	const BYTE PLAYERBOT_AREZZO_FOREST_MIN_LEVEL = PLAYERBOT_OCHAO_MIN_LEVEL;
+	// MT2009_PLUS_PROGRESSION_V2: and the owner's upper limits (1 October):
+	// the Cyclops to 50, the Pharaoh to 65, the temple and the Las to 120.
+	const BYTE PLAYERBOT_AREZZO_CYCLOPS_MAX_LEVEL = 50;
+	const BYTE PLAYERBOT_AREZZO_PHARAOH_MAX_LEVEL = 65;
+	const BYTE PLAYERBOT_OCHAO_MAX_LEVEL = 120;
+	const BYTE PLAYERBOT_AREZZO_FOREST_MAX_LEVEL = PLAYERBOT_OCHAO_MAX_LEVEL;
+	BYTE GetPlayerBotArezzoMaxLevel(long mapIndex)
+	{
+		return mapIndex == PLAYERBOT_MAP_AREZZO_CYCLOPS ? PLAYERBOT_AREZZO_CYCLOPS_MAX_LEVEL
+				: mapIndex == PLAYERBOT_MAP_AREZZO_PHARAOH ? PLAYERBOT_AREZZO_PHARAOH_MAX_LEVEL
+				: PLAYERBOT_AREZZO_FOREST_MAX_LEVEL;
+	}
 	bool IsPlayerBotArezzoMap(long mapIndex)
 	{
 		return mapIndex == PLAYERBOT_MAP_AREZZO_CYCLOPS || mapIndex == PLAYERBOT_MAP_AREZZO_PHARAOH ||
@@ -4018,7 +4030,11 @@ namespace
 	const BYTE PLAYERBOT_SKILL_MASTER_TRY_LEVEL = 17;
 	// How long a bot keeps farming its class's level-30 weapon before giving
 	// the map up for good. See ShouldPlayerBotVisitM3.
-	const BYTE PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL = 40;
+	// MT2009_PLUS_PROGRESSION_V2: thirty-five, was forty (the owner, 1 October);
+	// past it the bot buys the weapon from a counter with everything it has
+	// (GetPlayerBotLevel30PurchaseCap), and a bot that can pay for one does
+	// not hunt at all (CanPlayerBotBuyLevel30Weapon).
+	const BYTE PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL = 35;
 	// The old woman south of Joan, and what she does.
 	//
 	// skill_reset2.quest, NPC 9006: refuses under level five and over thirty,

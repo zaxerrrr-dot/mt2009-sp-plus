@@ -2745,9 +2745,16 @@ namespace
 	}
 
 	// What the purchase may cost: what is left of that budget.
+	// MT2009_PLUS_PROGRESSION_V2: past the hunt's last level the bot "does
+	// everything to buy it from the market" (the owner): all it can spare.
 	long long GetPlayerBotLevel30PurchaseCap(LPCHARACTER ch)
 	{
-		return GetPlayerBotLevel30BudgetLeft(ch, get_dword_time());
+		const long long budget = GetPlayerBotLevel30BudgetLeft(ch, get_dword_time());
+		if (!ch || ch->GetLevel() <= PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL)
+			return budget;
+		const long long spare = std::max<long long>(0, (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) -
+				(long long)PLAYERBOT_SHOPPING_GOLD_FLOOR);
+		return std::max(budget, spare);
 	}
 
 	// The first plus, drawn by pid so a bot keeps the same one for life.

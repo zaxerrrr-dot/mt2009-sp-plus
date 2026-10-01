@@ -470,7 +470,12 @@ namespace
 				std::string one;
 				if (playerbot_progression::Meets(req, snap, flagValue, one))
 					continue;
+				// MT2009_PLUS_PROGRESSION_V2: one of the piece's other rows.
+				if (playerbot_progression::MeetsAlternative(gate, r, snap))
+					continue;
 				holdGate = gate.level;
+				if (!playerbot_progression::IsFirstOfPiece(gate, r))
+					continue;
 				needs |= playerbot_progression::NeedOf(req.type);
 				if (!why.empty())
 					why += ", ";
