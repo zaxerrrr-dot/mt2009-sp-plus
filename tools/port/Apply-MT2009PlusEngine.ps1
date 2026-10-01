@@ -470,6 +470,29 @@ if ((Test-Path -LiteralPath $metinDropsApply -PathType Leaf) -and
         Write-Host 'Metin drops and the command limit.' -ForegroundColor DarkGray
     }
 }
+# The health of monsters, bosses and Metin stones (server-patches/mobhp): a
+# percent of max_hp from the event flag m2_mob_hp, at a spawn and live for
+# every one standing (Frelik's proposal; .env M2_MONSTER_HP, the panel's card).
+$mobHpApply = Join-Path $repo 'server-patches/mobhp/Apply-MobHpPatch.ps1'
+if ((Test-Path -LiteralPath $mobHpApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $mobHpResult = & $mobHpApply -SourceDirectory $engineGameSource
+    if ($mobHpResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Monster health from the world settings.' -ForegroundColor DarkGray
+    }
+}
+# The wait between two Soul Stones follows the difficulty, at most 12 hours
+# (server-patches/soulstonewait; the bots' side is in the overlay).
+$soulStoneWaitApply = Join-Path $repo 'server-patches/soulstonewait/Apply-SoulStoneWaitPatch.ps1'
+if ((Test-Path -LiteralPath $soulStoneWaitApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $soulStoneWaitResult = & $soulStoneWaitApply -SourceDirectory $engineGameSource
+    if ($soulStoneWaitResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Soul Stone wait by the difficulty.' -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both

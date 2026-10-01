@@ -3563,13 +3563,13 @@ T = {
  "count_saved_restart": {"pl":"Zapisano. Nikt nie jest zalogowany, więc pomocnik w grze nie odpowiedział — nowa liczba potworów zadziała po restarcie serwera (albo zapisz jeszcze raz, gdy ktoś będzie w grze).",
                          "en":"Saved. Nobody is logged in, so the in-game helper did not answer — the new counts apply after a server restart (or save again while somebody is in game)."},
  "diff_title":  {"pl":"Poziom trudności", "en":"Difficulty"},
- "diff_help":   {"pl":"Ile gracz czeka u Biologa między oddaniami i u Stajennego (kucyk, Księgi Konia, treningi medalami), i ile gracze oraz boty czekają między dwiema księgami tej samej umiejętności — Zwój Egzorcyzmu pomija to czekanie. Zmiana działa od razu, gdy ktoś jest w grze, i zostaje po restarcie, dopóki nie zmienisz poziomu trudności w launcherze (przycisk POZIOM TRUDNOŚCI).",
-                 "en":"How long a player waits at the Biologist between hand-ins and at the stable keeper (the pony, the Horse Books, the medal trainings), and how long players and bots wait between two books of one skill - an Exorcism Scroll skips that wait. A change is live at once while somebody is in game, and it stays across a restart until the difficulty is changed in the launcher (the DIFFICULTY button)."},
+ "diff_help":   {"pl":"Ile gracz czeka u Biologa między oddaniami i u Stajennego (kucyk, Księgi Konia, treningi medalami), i ile gracze oraz boty czekają między dwiema księgami tej samej umiejętności i między dwoma Kamieniami Duchowymi (G1 → P, najwyżej 12 h) — Zwój Egzorcyzmu pomija to czekanie. Zmiana działa od razu, gdy ktoś jest w grze, i zostaje po restarcie, dopóki nie zmienisz poziomu trudności w launcherze (przycisk POZIOM TRUDNOŚCI).",
+                 "en":"How long a player waits at the Biologist between hand-ins and at the stable keeper (the pony, the Horse Books, the medal trainings), and how long players and bots wait between two books of one skill and between two Soul Stones (G1 to P, at most 12 h) - an Exorcism Scroll skips that wait. A change is live at once while somebody is in game, and it stays across a restart until the difficulty is changed in the launcher (the DIFFICULTY button)."},
  "diff_now":    {"pl":"Teraz", "en":"Now"},
  "diff_level":  {"pl":"Poziom", "en":"Level"},
  "diff_level_easy":   {"pl":"Łatwy — bez czekania", "en":"Easy — no waiting"},
- "diff_level_medium": {"pl":"Średni — Biolog 8 h, koń 4–7 h, księgi 7 h", "en":"Medium — Biologist 8 h, horse 4-7 h, books 7 h"},
- "diff_level_hard":   {"pl":"Trudny — jak w oryginale: Biolog 24 h, koń 12–21 h, księgi 21 h", "en":"Hard — as the original: Biologist 24 h, horse 12-21 h, books 21 h"},
+ "diff_level_medium": {"pl":"Średni — Biolog 8 h, koń 4–7 h, księgi i Kamienie Duchowe 7 h", "en":"Medium — Biologist 8 h, horse 4-7 h, books and Soul Stones 7 h"},
+ "diff_level_hard":   {"pl":"Trudny — jak w oryginale: Biolog 24 h, koń 12–21 h, księgi 21 h, Kamienie Duchowe 12 h", "en":"Hard — as the original: Biologist 24 h, horse 12-21 h, books 21 h, Soul Stones 12 h"},
  "diff_level_custom": {"pl":"Własny — godziny poniżej", "en":"Custom — the hours below"},
  "diff_bio":    {"pl":"Biolog", "en":"Biologist"},
  "diff_horse":  {"pl":"Stajenny (kucyk / Księga / treningi)", "en":"stable keeper (pony / book / trainings)"},
@@ -3580,8 +3580,8 @@ T = {
                       "en":"The hours below count for the Custom level only (fractions allowed, 0 = no waiting). The stable keeper takes one number for every wait: the pony, the Horse Book and the trainings."},
  "diff_bio_h":  {"pl":"Biolog — godzin między oddaniami:", "en":"Biologist — hours between hand-ins:"},
  "diff_horse_h":{"pl":"Stajenny — godzin na kucyka, Księgę i trening:", "en":"Stable keeper — hours for the pony, the book and a training:"},
- "diff_book_h": {"pl":"Księgi umiejętności — gracze, godzin:", "en":"Skill books — players, hours:"},
- "diff_bot_book_h": {"pl":"Księgi umiejętności — boty, godzin:", "en":"Skill books — bots, hours:"},
+ "diff_book_h": {"pl":"Księgi umiejętności i Kamienie Duchowe — gracze, godzin:", "en":"Skill books and Soul Stones — players, hours:"},
+ "diff_bot_book_h": {"pl":"Księgi umiejętności i Kamienie Duchowe — boty, godzin:", "en":"Skill books and Soul Stones — bots, hours:"},
  "diff_save":   {"pl":"Zapisz poziom trudności", "en":"Save the difficulty"},
  # MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances by the level.
  "diff_exchange_now": {"pl":"Szanse wymiany u NPC (Magiczny Pył / Pergamin / Materiały Rzemieślnicze)",
@@ -3615,6 +3615,19 @@ T = {
  "sc_saved_live": {"pl":"✅ Zapisano! Zmiana działa już w grze.",
                    "en":"✅ Saved! The change is live in game."},
  "sc_saved_restart": {"pl":"Zapisano. Gra nie odpowiedziała (serwer jest wyłączony albo dopiero startuje) — zmiana zadziała przy następnym starcie serwera.",
+                      "en":"Saved. The game did not answer (the server is down or still starting) - the change applies at the next server start."},
+ "mh_title":    {"pl":"Wytrzymałość potworów", "en":"Monster health"},
+ "mh_help":     {"pl":"Ile życia mają potwory, bossowie i Metiny: 100% = jak w grze, 80% = łatwiej (każdy pada po mniejszej liczbie ciosów; doświadczenie i drop z jednego zabicia bez zmian, więc gra idzie szybciej — także botom). Postacie niezależne, żyły rud, krzaki ziół i bramy w lochach zostają bez zmian. Zmiana działa od razu — także na potwory, które już stoją (zachowują ten sam procent życia) — i zostaje po restarcie, dopóki nie zmienisz jej w launcherze (przycisk POZIOM TRUDNOŚCI, M2_MONSTER_HP w .env).",
+                 "en":"How much health monsters, bosses and Metin stones have: 100% = as in the game, 80% = easier (each one falls to fewer blows; the experience and the drop of one kill stay the same, so the game goes faster - for the bots too). NPCs, ore veins, herb bushes and dungeon gates stay as they are. A change is live at once - on the monsters already standing too, which keep the same share of their health - and stays across a restart until it is changed in the launcher (the DIFFICULTY button, M2_MONSTER_HP in .env)."},
+ "mh_100":      {"pl":"100% — jak w grze (domyślnie)", "en":"100% — as in the game (default)"},
+ "mh_80":       {"pl":"80% — łatwiej", "en":"80% — easier"},
+ "mh_custom":   {"pl":"{n}% — własne (z .env)", "en":"{n}% — your own (from .env)"},
+ "mh_save":     {"pl":"Zapisz wytrzymałość potworów", "en":"Save the monster health"},
+ "mh_range":    {"pl":"Wybierz wytrzymałość od 10 do 300%. Nic nie zmieniono.",
+                 "en":"Pick a health from 10 to 300%. Nothing was changed."},
+ "mh_saved_live": {"pl":"✅ Zapisano! Nowa wytrzymałość potworów działa już w grze.",
+                   "en":"✅ Saved! The new monster health is live in game."},
+ "mh_saved_restart": {"pl":"Zapisano. Gra nie odpowiedziała (serwer jest wyłączony albo dopiero startuje) — zmiana zadziała przy następnym starcie serwera.",
                       "en":"Saved. The game did not answer (the server is down or still starting) - the change applies at the next server start."},
  "ai_books_moved": {"pl":"Na tym serwerze ustawia to poziom trudności (Mnożniki serwera → Poziom trudności): osobno czas dla graczy, osobno dla botów; 0 = od razu.",
                     "en":"On this server the difficulty sets it (Server rates → Difficulty): one wait for the players, one for the bots; 0 = at once."},
@@ -5180,6 +5193,28 @@ def read_starter_chest_mt2009():
         row = cur.fetchone()
     value = (row["lValue"] if isinstance(row, dict) else row[0]) if row else 0
     return {"off": 1 if int(value or 0) > 0 else 0}
+
+# The health of monsters, bosses and Metin stones: a percent of the max_hp
+# each is born with - the event flag m2_mob_hp, which the engine applies at a
+# spawn and to every one standing when it moves (server-patches/mobhp,
+# MT2009_PLUS_MOB_HP_V1; 100, 0 or no row is the game as it was made,
+# 10..300 otherwise). The migrator applies .env's
+# M2_MONSTER_HP only when it changed since the last start (m2_mob_hp_env), so
+# what this card writes stays until the launcher's choice changes (the
+# operator, 30 September, for Frelik's "latwy 80%").
+MT2009_MOB_HP_FLAG = "m2_mob_hp"
+MOB_HP_CHOICES = (100, 80)
+MOB_HP_MIN_PERCENT, MOB_HP_MAX_PERCENT = 10, 300
+
+def read_mob_hp_mt2009():
+    """The percent as the card shows it and the choices it offers: 100 and 80,
+    and a percent of the operator's own from .env beside them."""
+    with db() as c, c.cursor() as cur:
+        cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (MT2009_MOB_HP_FLAG,))
+        row = cur.fetchone()
+    value = int((row["lValue"] if isinstance(row, dict) else row[0]) or 0) if row else 0
+    value = 100 if value <= 0 else max(MOB_HP_MIN_PERCENT, min(MOB_HP_MAX_PERCENT, value))
+    return {"pct": value, "choices": sorted(set(MOB_HP_CHOICES) | {value}, reverse=True)}
 
 def read_regen_mt2009():
     """The two flags as the page shows them (100 = normal), from player.quest."""
@@ -7054,6 +7089,18 @@ regenLabel("regen_boss");regenLabel("regen_mob");
 <p><label><input type="radio" name="off" value="0"{% if not starter_chest.off %} checked{% endif %}> {{t('sc_on')}}</label></p>
 <p><label><input type="radio" name="off" value="1"{% if starter_chest.off %} checked{% endif %}> {{t('sc_off')}}</label></p>
 <button class="big" style="margin-top:12px">{{t('sc_save')}}</button>
+</form></div>
+{% endif %}
+{% if mob_hp %}
+<div class="card">
+<form method="post" action="{{url_for('rates_mob_hp')}}">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<h3>🛡️ {{t('mh_title')}}</h3>
+<p class="muted">{{t('mh_help')}}</p>
+{% for p in mob_hp.choices %}
+<p><label><input type="radio" name="pct" value="{{p}}"{% if mob_hp.pct == p %} checked{% endif %}> {{ t('mh_100') if p == 100 else (t('mh_80') if p == 80 else t('mh_custom').replace('{n}', p|string)) }}</label></p>
+{% endfor %}
+<button class="big" style="margin-top:12px">{{t('mh_save')}}</button>
 </form></div>
 {% endif %}
 {% if channels %}
@@ -18508,6 +18555,7 @@ def rates():
     difficulty = None
     autohunt = None
     starter_chest = None
+    mob_hp = None
     if ENGINE_MT2009:
         try:
             regen = read_regen_mt2009()
@@ -18529,6 +18577,10 @@ def rates():
             starter_chest = read_starter_chest_mt2009()
         except Exception:
             starter_chest = None
+        try:
+            mob_hp = read_mob_hp_mt2009()
+        except Exception:
+            mob_hp = None
     channels = None
     if ENGINE_MT2009:
         try:
@@ -18539,7 +18591,7 @@ def rates():
                                   regen_count=regen_count, count_choices=REGEN_COUNT_CHOICES,
                                   difficulty=difficulty, difficulty_levels=DIFFICULTY_LEVELS,
                                   difficulty_max=DIFFICULTY_MAX_HOURS, autohunt=autohunt,
-                                  starter_chest=starter_chest, channels=channels,
+                                  starter_chest=starter_chest, mob_hp=mob_hp, channels=channels,
                                   intro_key="rates_intro_mt2009" if ENGINE_MT2009 else "rates_intro",
                                   state_msg=t("rates_st_" + st) if st in RATE_STATES else "")
 
@@ -18741,6 +18793,45 @@ def rates_starter_chest():
             except Exception:
                 pass
         flash(t("sc_saved_restart"))
+    return redirect(url_for("rates"))
+
+
+@app.post("/rates/mob_hp")
+@login_required
+def rates_mob_hp():
+    """How much health monsters, bosses and Metin stones have. mt2009 only: the
+    engine reads the event flag at a spawn and rescales every one standing when
+    it moves. The row is what a restart keeps; web_admin.quest's MOB_HP makes
+    it live."""
+    if not ENGINE_MT2009:
+        return redirect(url_for("rates"))
+    raw = (request.form.get("pct", "") or "").strip()
+    if not raw.isdigit() or not MOB_HP_MIN_PERCENT <= int(raw) <= MOB_HP_MAX_PERCENT:
+        flash(t("mh_range"), "error")
+        return redirect(url_for("rates"))
+    value = int(raw)
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                        "VALUES (0, %s, '', %s)", (MT2009_MOB_HP_FLAG, value))
+    except Exception:
+        flash(t("db_down"), "error")
+        return redirect(url_for("rates"))
+    try:
+        status, qid = queue_and_wait("", "MOB_HP", str(value), "", wait=RATES_LIVE_WAIT)
+    except Exception:
+        status, qid = "failed", 0
+    if status == "done":
+        flash(t("mh_saved_live"))
+    else:
+        if status == "timeout":
+            try:
+                with db() as c, c.cursor() as cur:
+                    cur.execute("UPDATE player.web_admin_queue SET status='cancelled' "
+                                "WHERE id=%s AND status='pending'", (qid,))
+            except Exception:
+                pass
+        flash(t("mh_saved_restart"))
     return redirect(url_for("rates"))
 
 

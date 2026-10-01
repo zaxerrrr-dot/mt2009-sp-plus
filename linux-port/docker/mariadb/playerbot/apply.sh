@@ -1058,6 +1058,63 @@ else
     echo "[playerbot-migrate] WARNING: could not write the Seon-Hae switch; it stays as it was" >&2
 fi
 
+# The world's monster health (the operator, 30 September, for Frelik's
+# proposal): a percent of the max_hp of every monster, boss and Metin
+# stone, which the cores apply at a spawn and to every one standing when
+# the flag moves (m2_mob_hp; server-patches/mobhp, MT2009_PLUS_MOB_HP_V1).
+# .env's M2_MONSTER_HP - default (100, the game as it was made), easy (80)
+# or a percent from 10 to 300 - is applied only when it changed since the
+# last start (m2_mob_hp_env holds what it said): the classic panel's card
+# sets the flag live (web_admin.quest MOB_HP), and a choice made there
+# outlives a restart until the launcher's is changed, the difficulty's rule.
+mobhp=$(printf '%s' "${M2_MONSTER_HP:-default}" | tr 'A-Z' 'a-z' | tr -d ' \r%')
+case "$mobhp" in
+    ''|0|default|normal) mobhp=100 ;;
+    easy) mobhp=80 ;;
+    *[!0-9]*)
+        echo "[playerbot-migrate] WARNING: M2_MONSTER_HP=$mobhp is not default, easy or a percent; the monsters keep the game's health" >&2
+        mobhp=100 ;;
+    *) mobhp=$(printf '%s\n' "$mobhp" | awk '{ p = int($1 + 0); if (p < 10) p = 10; if (p > 300) p = 300; printf "%d", p }') ;;
+esac
+mobhp_env=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_mob_hp_env' LIMIT 1;" 2>/dev/null | tr -d ' \r')
+if [ "$mobhp_env" = "$mobhp" ]; then
+    echo "[playerbot-migrate] monster health: .env unchanged since the last start - the flag stays as the panel or the last start left it"
+elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_mob_hp', '', $mobhp),
+        (0, 'm2_mob_hp_env', '', $mobhp);"; then
+    echo "[playerbot-migrate] monster health: ${mobhp}% of max_hp for monsters, bosses and Metin stones (from .env)"
+else
+    echo "[playerbot-migrate] WARNING: could not write the monster health flag; the cores keep the last one" >&2
+fi
+
+# The starter kit (the operator, 30 September, on Iwakura's proposal):
+# what a player's new character and a bot the seed makes from now on start
+# wearing - default nothing past what the game gives, medium the class's
+# level-1 weapon and body armour at +5, easy the whole level-1 set at +9.
+# .env's M2_STARTER_KIT, which the launcher's new-world window writes, is
+# the event flag m2_starter_kit (starter_kit.quest, a person's character at
+# level one) and the seed's @playerbot_seed_starter_kit below; the bots
+# already made are never pending again and keep what they have.
+kit_word=$(printf '%s' "${M2_STARTER_KIT:-default}" | tr 'A-Z' 'a-z' | tr -d ' \r')
+case "$kit_word" in
+    ''|0|default|none) starter_kit=0 ;;
+    1|medium) starter_kit=1 ;;
+    2|easy) starter_kit=2 ;;
+    *)
+        echo "[playerbot-migrate] WARNING: M2_STARTER_KIT=$kit_word is not default, medium or easy; no starter kit" >&2
+        starter_kit=0 ;;
+esac
+case "$starter_kit" in
+    1) kit_label='medium (the weapon and the body armour at +5)' ;;
+    2) kit_label='easy (the whole level-1 set at +9)' ;;
+    *) kit_label='none' ;;
+esac
+if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_starter_kit', '', $starter_kit);"; then
+    echo "[playerbot-migrate] starter kit: $kit_label, for new characters and the bots made from now on"
+else
+    echo "[playerbot-migrate] WARNING: could not write the starter kit flag; the cores keep the last one" >&2
+fi
+
 echo "[playerbot-migrate] applying deterministic Playerbot seed (PID $first_pid..$last_pid)"
 result=/tmp/playerbot-seed.out
 trap 'rm -f "$result"' EXIT HUP INT TERM
@@ -1071,10 +1128,12 @@ case "${M2_PLAYERBOT_KINGDOMS:-0}" in
 esac
 echo "[playerbot-migrate] kingdoms (Shinsoo/Jinno) cohorts: $kingdoms"
 # And whether a bot the seed makes now starts with its apprentice chest: the
-# world's switch as the step above left it (off gives none).
+# world's switch as the step above left it (off gives none); and in which
+# starter kit (STARTER_KIT above: 0 none, 1 medium, 2 easy).
 if { printf 'SET @playerbot_seed_kingdoms = %s;
 SET @playerbot_seed_starter_chest = %s;
-' "$kingdoms" "$((1 - ${starter_off:-0}))"; cat "$seed"; } |
+SET @playerbot_seed_starter_kit = %s;
+' "$kingdoms" "$((1 - ${starter_off:-0}))" "${starter_kit:-0}"; cat "$seed"; } |
         db --show-warnings >"$result" 2>&1; then
     [ ! -s "$result" ] || cat "$result"
 else
