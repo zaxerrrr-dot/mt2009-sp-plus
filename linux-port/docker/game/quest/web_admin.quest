@@ -813,7 +813,7 @@ quest web_admin begin
 			-- arg1 = "on,wait": on 1/0 and the minutes Seon-Hae keeps an item
 			-- (0 = the default, 24 h; at most 10080), written as m2_seonhae_on and
 			-- m2_seonhae_wait_min, which playerbot_seonhae.h and quest seonhae
-			-- read. Off stops new hand-ins only. arg2 unused.
+			-- read. Off stops new hand-ins only. arg2 = the 6/7 level odds.
 			local srows = wa_query("SELECT id, arg1, arg2 FROM player.web_admin_queue WHERE status='pending' AND cmd='SEONHAE' ORDER BY id ASC LIMIT 3")
 			if type(srows) == "table" then
 				local si
@@ -836,6 +836,18 @@ quest web_admin begin
 							else
 								game.set_event_flag("m2_seonhae_on", son)
 								game.set_event_flag("m2_seonhae_wait_min", swait)
+								-- MT2009_PLUS_RARE_LEVEL_ROLL_V1: arg2 "35,30,20,10,5" - the odds of
+								-- each level of a 6th/7th bonus (item_attribute.cpp reads m2_rare_lv1..5).
+								if type(sr.arg2) == "string" then
+									local _, _, l1, l2, l3, l4, l5 = string.find(sr.arg2, "^(%d+),(%d+),(%d+),(%d+),(%d+)$")
+									if l5 ~= nil then
+										game.set_event_flag("m2_rare_lv1", tonumber(l1))
+										game.set_event_flag("m2_rare_lv2", tonumber(l2))
+										game.set_event_flag("m2_rare_lv3", tonumber(l3))
+										game.set_event_flag("m2_rare_lv4", tonumber(l4))
+										game.set_event_flag("m2_rare_lv5", tonumber(l5))
+									end
+								end
 							end
 							wa_query("UPDATE player.web_admin_queue SET status='" .. sres .. "' WHERE id=" .. sqid .. " AND status='pending' LIMIT 1")
 						end

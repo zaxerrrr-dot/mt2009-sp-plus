@@ -181,6 +181,7 @@ linux-port/docker/game/src/server/game/src/questlua_dungeon.cpp
 linux-port/docker/game/src/server/game/src/questlua_game.cpp
 linux-port/docker/game/src/server/game/src/dungeon.cpp
 linux-port/docker/game/src/server/game/src/item.cpp
+linux-port/docker/game/src/server/game/src/item_attribute.cpp
 linux-port/docker/game/src/server/game/src/item_manager.cpp
 linux-port/docker/game/src/server/game/src/item_manager.h
 linux-port/docker/game/src/server/game/src/questlua_pc.cpp

@@ -482,6 +482,17 @@ if ((Test-Path -LiteralPath $metinDropsApply -PathType Leaf) -and
         Write-Host 'Metin drops and the command limit.' -ForegroundColor DarkGray
     }
 }
+# The 6th/7th bonus rolls its level lv1-lv5 by the panel's odds
+# (server-patches/rarelevelroll; m2_rare_lv1..5, default 35/30/20/10/5).
+$rareLevelRollApply = Join-Path $repo 'server-patches/rarelevelroll/Apply-RareLevelRollPatch.ps1'
+if ((Test-Path -LiteralPath $rareLevelRollApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $rareLevelRollResult = & $rareLevelRollApply -SourceDirectory $engineGameSource
+    if ($rareLevelRollResult.Changed) {
+        $syncedFiles++
+        Write-Host 'The 6th/7th bonus level by the panel odds.' -ForegroundColor DarkGray
+    }
+}
 # The health of monsters, bosses and Metin stones (server-patches/mobhp): a
 # percent of max_hp from the event flag m2_mob_hp, at a spawn and live for
 # every one standing (Frelik's proposal; .env M2_MONSTER_HP, the panel's card).

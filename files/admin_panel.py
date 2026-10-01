@@ -3498,6 +3498,8 @@ T = {
  "seon_help":    {"pl":"Wyłączenie zatrzymuje tylko nowe zlecenia — przedmiot, który Seon-Hae już trzyma, zawsze można odebrać. Suplementy wypadają z Metinów i bossów, a Odłamki ze zwykłych potworów w Grocie Wygnańców, Świątyni Ochao i Zaczarowanym Lesie (reguły niżej).","en":"Switching off stops new hand-ins only - an item Seon-Hae already keeps can always be collected. The Additives drop from Metins and bosses, the Powershards from ordinary monsters, in the Grotto of Exile, the Temple of Ochao and the Enchanted Forest (the rules below)."},
  "seon_wait":    {"pl":"Czas pracy Seon-Hae (minuty, 0 = 24 godziny)","en":"Seon-Hae's working time (minutes, 0 = 24 hours)"},
  "seon_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 💎","en":"Saved and switched live, through the in-game helper. 💎"},
+ "seon_lv":      {"pl":"Szanse poziomów 6. i 7. bonusu","en":"Odds of each level of the 6th and 7th bonus"},
+ "seon_lv_help": {"pl":"Jak często wypada wartość lv1…lv5 z tabeli bonusów 6/7 (Seon-Hae i Zaczarowanie 71051). Liczby to wagi, najlepiej w sumie 100. Poziom nie przekroczy „maks. poziomu” bonusu dla typu przedmiotu. Działa od razu.","en":"How often the lv1…lv5 value of the 6/7 bonus table drops (Seon-Hae and the Enchant 71051). Weights, best summing to 100. Never above the bonus's max level for the item type. Works at once."},
  "seon_drops":   {"pl":"Drop Odłamków i Suplementów","en":"Powershard and Additive drops"},
  "seon_drops_help":{"pl":"Tylko dla prawdziwych graczy (nie botów) i tylko gdy Seon-Hae jest włączony. Suplementy: z Metinów i bossów map z wiersza additive_map, każde zabicie losuje additive_chance (%); wiersz mob <vnum potwora> <vnum suplementu> <liczba> dotyczy jednego potwora (dowolnej rangi, na każdej mapie) zamiast reguły jego mapy. Odłamki: ze zwykłych potworów (nie Metinów, nie bossów) map z wiersza shard_map, szansa shard_chance (%, ułamki dozwolone, np. 0.5), 1 odłamek, kolor według wag z wierszy shard <vnum> <waga>. Brak danego rodzaju wierszy = wartości domyślne; puste pole = same domyślne. Serwer czyta plik w ciągu kilku sekund, bez restartu.","en":"Real players only (not bots) and only while Seon-Hae is on. Additives: from Metins and bosses on the maps of an additive_map line, each kill rolling additive_chance (%); a mob <mob vnum> <additive vnum> <count> line names one monster (any rank, any map) and replaces its map's rule. Shards: from ordinary monsters (not Metins, not bosses) on the maps of a shard_map line, shard_chance (%, fractions allowed, e.g. 0.5), one shard, its colour by the weights of the shard <vnum> <weight> lines. A kind of line missing = the defaults; an empty box = the defaults only. The server reads the file within seconds, no restart."},
  "seon_drops_bad":{"pl":"Nie zapisano reguł dropu - błędne wiersze: %s","en":"Drop rules not saved - wrong lines: %s"},
@@ -5354,11 +5356,13 @@ def persist_arezzo(cur, on):
 # event flags m2_seonhae_on (1 = on; no row = off, apply.sh writes it from
 # M2_SEONHAE, default 0) and m2_seonhae_wait_min (0 or no row = 24 h).
 SEONHAE_WAIT_MAX = 10080
+RARE_LEVEL_DEFAULT = (35, 30, 20, 10, 5)
 
 def read_seonhae():
     with db() as c, c.cursor() as cur:
         cur.execute("SELECT szName, lValue FROM player.quest WHERE dwPID = 0 "
-                    "AND szName IN ('m2_seonhae_on', 'm2_seonhae_wait_min')")
+                    "AND szName IN ('m2_seonhae_on', 'm2_seonhae_wait_min', 'm2_rare_lv1', "
+                    "'m2_rare_lv2', 'm2_rare_lv3', 'm2_rare_lv4', 'm2_rare_lv5')")
         rows = cur.fetchall()
     vals = {"on": 0, "wait": 0}
     for row in rows:
@@ -5368,8 +5372,14 @@ def read_seonhae():
             continue
         if row["szName"] == "m2_seonhae_on":
             vals["on"] = 1 if v == 1 else 0
-        else:
+        elif row["szName"] == "m2_seonhae_wait_min":
             vals["wait"] = max(0, min(SEONHAE_WAIT_MAX, v))
+        elif row["szName"].startswith("m2_rare_lv"):
+            vals[row["szName"]] = max(0, min(100, v))
+    # MT2009_PLUS_RARE_LEVEL_ROLL_V1: the odds of each level of a 6th/7th
+    # bonus (all zero = the engine's default 35/30/20/10/5).
+    lv = [vals.get("m2_rare_lv%d" % i, 0) for i in range(1, 6)]
+    vals["lv"] = lv if sum(lv) > 0 else list(RARE_LEVEL_DEFAULT)
     return vals
 
 # MT2009_PLUS_SEONHAE_V1 (drops): the drop rules playerbot_seonhae.h re-reads
@@ -5456,12 +5466,16 @@ def write_seonhae_drops(text):
         fh.write(text + "\n")
     os.replace(tmp, SEONHAE_DROPS)
 
-def persist_seonhae(cur, on, wait):
-    """The two event-flag rows the db core reads at its next start."""
+def persist_seonhae(cur, on, wait, lv=None):
+    """The event-flag rows the db core reads at its next start."""
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                 "VALUES (0, 'm2_seonhae_on', '', %s)", (1 if on else 0,))
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                 "VALUES (0, 'm2_seonhae_wait_min', '', %s)", (wait,))
+    if lv is not None:
+        for i, v in enumerate(lv):
+            cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                        "VALUES (0, %s, '', %s)", ("m2_rare_lv%d" % (i + 1), int(v)))
 
 def persist_rare(cur, alchemy, sashes, ds_drop=None, ds_cor_day=None):
     """The event-flag rows the db core reads at its next start."""
@@ -7209,6 +7223,9 @@ TPL_SEONHAE = BASE.replace("__BODY__", """
 <p class="muted">{{t('seon_help')}}</p>
 <label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('seon_enable')}}</label>
 <p><label>{{t('seon_wait')}}<br><input type="number" name="wait" min="0" max="10080" step="1" value="{{cur['wait']}}"></label></p>
+<h3 style="margin-top:18px">{{t('seon_lv')}}</h3>
+<p class="muted">{{t('seon_lv_help')}}</p>
+<p>{% for i in range(5) %}<label style="margin-right:14px">lv{{i+1}} <input type="number" name="lv{{i+1}}" min="0" max="100" value="{{cur['lv'][i]}}" style="width:70px"> %</label>{% endfor %}</p>
 <h3 style="margin-top:18px">{{t('seon_drops')}}</h3>
 <p class="muted">{{t('seon_drops_help')}}</p>
 <textarea name="drops" rows="22" style="width:100%;font-family:monospace">{{drops}}</textarea>
@@ -18425,6 +18442,14 @@ def seonhae():
         except (TypeError, ValueError):
             wait = 0
         wait = max(0, min(SEONHAE_WAIT_MAX, wait))
+        lv = []
+        for i in range(1, 6):
+            try:
+                lv.append(max(0, min(100, int(request.form.get("lv%d" % i) or 0))))
+            except (TypeError, ValueError):
+                lv.append(0)
+        if sum(lv) <= 0:
+            lv = list(RARE_LEVEL_DEFAULT)
         drops = request.form.get("drops")
         if drops is not None:
             bad = check_seonhae_drops(drops)
@@ -18437,12 +18462,12 @@ def seonhae():
                     flash(t("db_down"), "error")
         try:
             with db() as c, c.cursor() as cur:
-                persist_seonhae(cur, on, wait)
+                persist_seonhae(cur, on, wait, lv)
         except Exception:
             flash(t("db_down"), "error")
             return redirect(url_for("seonhae"))
         try:
-            status, qid = queue_and_wait("", "SEONHAE", "%d,%d" % (on, wait), "", wait=RARE_LIVE_WAIT)
+            status, qid = queue_and_wait("", "SEONHAE", "%d,%d" % (on, wait), ",".join(str(v) for v in lv), wait=RARE_LIVE_WAIT)
         except Exception:
             status, qid = "failed", 0
         if status == "done":
