@@ -493,6 +493,19 @@ if ((Test-Path -LiteralPath $soulStoneWaitApply -PathType Leaf) -and
         Write-Host 'Soul Stone wait by the difficulty.' -ForegroundColor DarkGray
     }
 }
+# Engine fixes of 1 October (server-patches/enginefixes): a chat command or a
+# whisper before the game phase is passed over whole (channel change with the
+# Companion's window open), the map list's bound checked before the write, and
+# the minibosses in Auto Lowy's "Bossy".
+$engineFixesApply = Join-Path $repo 'server-patches/enginefixes/Apply-EngineFixesPatch.ps1'
+if ((Test-Path -LiteralPath $engineFixesApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'input.cpp') -PathType Leaf)) {
+    $engineFixesResult = & $engineFixesApply -SourceDir $engineGameSource
+    if ($engineFixesResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} engine fix edit(s).' -f $engineFixesResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both

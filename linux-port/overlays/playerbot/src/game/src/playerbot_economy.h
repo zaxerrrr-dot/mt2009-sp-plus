@@ -824,6 +824,59 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_DROPPER_INVEST_V1: what a dropper's next steps lack - the
+	// weapon, the body armour and the shield it wears, each up to +9 - by
+	// vnum: the recipes' materials over the Biologist's share, and a safe
+	// scroll for each step the bag has none for. Its shopping window buys
+	// these first (ManagePlayerBotOfflineShopping).
+	void CollectPlayerBotDropperInvestMissing(LPCHARACTER ch, std::map<DWORD, int>& missing)
+	{
+		missing.clear();
+		if (!ch || !ch->IsItemLoaded())
+			return;
+		const BYTE wears[] = { WEAR_WEAPON, WEAR_BODY, WEAR_SHIELD };
+		std::map<DWORD, int> need;
+		int steps = 0;
+		for (size_t i = 0; i < sizeof(wears) / sizeof(wears[0]); ++i)
+		{
+			LPITEM piece = ch->GetWear(wears[i]);
+			if (!piece || piece->GetRefinedVnum() == 0 ||
+					(int)piece->GetRefineLevel() >= PLAYERBOT_DROPPER_INVEST_MAX_PLUS ||
+					IsPlayerBotScrollFreeGear(piece))
+				continue;
+			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(piece->GetRefineSet());
+			if (!recipe)
+				continue;
+			++steps;
+			for (int m = 0; m < recipe->material_count; ++m)
+				if (recipe->materials[m].vnum != 0 && recipe->materials[m].count > 0)
+					need[recipe->materials[m].vnum] += (int)recipe->materials[m].count;
+		}
+		for (std::map<DWORD, int>::const_iterator it = need.begin(); it != need.end(); ++it)
+		{
+			const int have = (int)ch->CountSpecifyItem(it->first) - GetPlayerBotBiologistReserve(ch, it->first);
+			if (have < it->second)
+				missing[it->first] = it->second - std::max(0, have);
+		}
+		const int scrolls = CountPlayerBotSafeRefineScrolls(ch);
+		if (steps > scrolls)
+		{
+			const DWORD scrollVnums[] = { PLAYERBOT_BLESSING_SCROLL_VNUM, 25041, 25043, 25045, 70039 };
+			for (size_t i = 0; i < sizeof(scrollVnums) / sizeof(scrollVnums[0]); ++i)
+				if (IsPlayerBotSafeRefineScroll(scrollVnums[i]))
+					missing[scrollVnums[i]] = steps - scrolls;
+		}
+	}
+
+	bool WantsPlayerBotDropperInvestOffer(LPCHARACTER ch, DWORD vnum)
+	{
+		if (!ch || !IsPlayerBotDropperShopping(ch->GetPlayerID(), get_dword_time()))
+			return false;
+		std::map<DWORD, int> missing;
+		CollectPlayerBotDropperInvestMissing(ch, missing);
+		return missing.find(vnum) != missing.end();
+	}
+
 	// How many units of a material this bot keeps back for its own anvil:
 	// twice the largest recipe count among the pieces it would raise - the
 	// same measure "short" uses above. The counter lists only what is over

@@ -255,7 +255,11 @@ namespace {
         }
         if (!o.buyOwner) {
             if (!Due(now, o.nextBrowse)) return false;
-            o.nextBrowse = now + number(120000, 240000);
+            // MT2009_PLUS_DROPPER_INVEST_V1: a dropper's window is short, so
+            // it looks again soon while the window lasts.
+            const bool dropperWindow = IsPlayerBotDropper(state.bPersonality) &&
+                    IsPlayerBotDropperShopping(ch->GetPlayerID(), now);
+            o.nextBrowse = now + (dropperWindow ? PLAYERBOT_DROPPER_SHOP_BROWSE_MS : (DWORD)number(120000, 240000));
             // A guild master whose next building lacks materials looks for
             // them on every stand of the map, the gambler's way, paying out of
             // the guild's fund - which the budget below leaves out, being
@@ -271,6 +275,18 @@ namespace {
             }
             const long long budget = Affordable(ch->GetGold(), GetPlayerBotReservedGold(ch), PLAYERBOT_SHOPPING_GOLD_FLOOR);
             if (budget <= 0) return false;
+            // MT2009_PLUS_DROPPER_INVEST_V1: a dropper's own next steps first -
+            // the materials and scrolls of its weapon, armour and shield, up
+            // to +9 - on every stand of the map, the gambler's way.
+            if (dropperWindow) {
+                std::map<DWORD, int> missing;
+                CollectPlayerBotDropperInvestMissing(ch, missing);
+                if (!missing.empty() && FindPlayerBotGambleMaterialPick(ch, state, missing, budget, now)) {
+                    sys_log(0, "PLAYERBOT_MARKET: dropper invests in itself pid=%u name=%s owner=%u item=%u lacking=%u",
+                        ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (unsigned int)missing.size());
+                    return RunPlayerBotOfflinePick(ch, state, now);
+                }
+            }
             // What the piece under Iwakura's scroll rule lacks for its next
             // step - the weapon, or the armour once the weapon is at +8 - is
             // looked for on every stand of the map, the gambler's way, before

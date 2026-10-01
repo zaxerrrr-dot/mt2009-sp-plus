@@ -7008,9 +7008,30 @@ WritePlayerBotGuildStatus(dwNow);
 					stoneTarget->GetHP() * 100 <=
 						stoneTarget->GetMaxHP() * PLAYERBOT_STONE_FINISH_STONE_HP_PERCENT;
 		}
-		if (!bFinishingStone && !state.bRecoveringAfterDeath && ch->GetMaxHP() > 0 &&
+		// MT2009_PLUS_BOT_HELD_RETREAT_V1: a bot a monster holds retreats and
+		// drinks rather than going invisible beside it (playerbot_survival.h).
+		LPCHARACTER heldBy = NULL;
+		if (!state.bRecoveringAfterDeath)
+			s_setPlayerBotEmergencyRest.erase(ch->GetPlayerID());
+		if (!bFinishingStone && !state.bTacticalRetreat && ch->GetMaxHP() > 0 &&
+				(state.bRecoveringAfterDeath
+					? s_setPlayerBotEmergencyRest.count(ch->GetPlayerID()) != 0
+					: ch->GetHP() * 100 <= ch->GetMaxHP() * PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT))
+			heldBy = FindPlayerBotHoldingMonster(ch);
+		if (heldBy)
+		{
+			if (state.bRecoveringAfterDeath)
+			{
+				s_setPlayerBotEmergencyRest.erase(ch->GetPlayerID());
+				ch->RemoveAffect(AFFECT_REVIVE_INVISIBLE);
+				EndPlayerBotRecovery(ch, state);
+			}
+			StartPlayerBotTacticalRetreat(ch, state, heldBy, dwNow);
+		}
+		if (!heldBy && !bFinishingStone && !state.bRecoveringAfterDeath && ch->GetMaxHP() > 0 &&
 				ch->GetHP() * 100 <= ch->GetMaxHP() * PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT)
 		{
+			s_setPlayerBotEmergencyRest.insert(ch->GetPlayerID()); // MT2009_PLUS_BOT_HELD_RETREAT_V1
 			state.bRecoveringAfterDeath = true;
 			state.dwLastDeathTime = dwNow;
 			state.lDeathX = ch->GetX();
