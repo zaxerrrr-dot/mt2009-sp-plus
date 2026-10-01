@@ -2104,43 +2104,53 @@ UPDATE world.yut_mob SET vnum = 20505, name = 'Pałeczki Yut', locale_name = 'Pa
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.yut_mob;
 DROP TEMPORARY TABLE world.yut_mob;" || echo "[playerbot-migrate] WARNING: could not add the Yut Nori items and NPCs" >&2
 
-# MT2009_PLUS_RARE_TABLE_V1: the 6th/7th bonus pool (world.item_attr_rare, read by Seon-Hae and
+# MT2009_PLUS_RARE_TABLE_V2: the 6th/7th bonus pool (world.item_attr_rare, read by Seon-Hae and
 # the Enchant 71051) as the owner set it on 1 October (Bonusy_6-7.xlsx): graded lv1-lv5 values and
-# seven more bonuses (block, strong against humans, animals, orcs, mystics, undead and devils).
-# Written ONCE per world (marker rare_6_7_v1 in world.mt2009_plus_once), so a later hand edit stays.
+# seven more bonuses. The package's table named its bonuses by the old APPLY_* order (STR = 5),
+# while this engine stores and applies an item's bonus as a POINT_* number (POINT_ST = 12, 5 is the
+# current HP, 1 the level): a 6th/7th bonus from it changed the wrong point. The column takes
+# item_attr's POINT_* enum, so the db core's "apply+0" is the POINT_* the item keeps. Written ONCE
+# per world (marker rare_6_7_v2 in world.mt2009_plus_once), so a later hand edit stays.
 db -e "CREATE TABLE IF NOT EXISTS world.mt2009_plus_once (name VARCHAR(64) NOT NULL PRIMARY KEY, done_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);" || true
-if [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare_6_7_v1'" 2>/dev/null || echo 1)" = 0 ]; then
-    db -e "START TRANSACTION;
-DELETE FROM world.item_attr_rare;
+if [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare_6_7_v2'" 2>/dev/null || echo 1)" = 0 ]; then
+    m2_rare_apply_type=$(db -N -e "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = 'item_attr' AND COLUMN_NAME = 'apply'" 2>/dev/null)
+    case "$m2_rare_apply_type" in
+        enum\(*POINT_ST*) ;;
+        *) m2_rare_apply_type="" ;;
+    esac
+    if [ -n "$m2_rare_apply_type" ] && db -e "DELETE FROM world.item_attr_rare;
+ALTER TABLE world.item_attr_rare MODIFY apply $m2_rare_apply_type NOT NULL;
 INSERT INTO world.item_attr_rare (apply,prob,lv1,lv2,lv3,lv4,lv5,weapon,body,wrist,foots,neck,head,shield,ear,costume_body,costume_hair,costume_weapon,pendant,glove) VALUES
-('MAX_HP',1,150,250,500,800,850,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('MAX_SP',1,100,150,250,500,600,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('CON',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('INT',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('STR',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('DEX',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('CRITICAL_PCT',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('PENETRATE_PCT',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('ATT_GRADE_BONUS',1,5,10,15,20,25,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('ATT_BONUS_TO_MONSTER',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('ATT_BONUS_TO_WARRIOR',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('ATT_BONUS_TO_ASSASSIN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('ATT_BONUS_TO_SURA',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('ATT_BONUS_TO_SHAMAN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('RESIST_WARRIOR',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('RESIST_ASSASSIN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('RESIST_SURA',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('RESIST_SHAMAN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('ATT_SPEED',1,1,1,1,2,2,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('MOV_SPEED',1,2,3,4,5,8,5,5,5,5,5,5,5,5,0,0,0,0,0),
-('BLOCK',1,1,2,3,5,8,0,0,0,0,0,0,5,0,0,0,0,0,0),
-('ATTBONUS_HUMAN',1,1,2,3,5,8,5,0,5,0,0,5,5,5,0,0,0,0,0),
-('ATTBONUS_ANIMAL',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
-('ATTBONUS_ORC',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
-('ATTBONUS_MILGYO',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
-('ATTBONUS_UNDEAD',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
-('ATTBONUS_DEVIL',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0);
-INSERT INTO world.mt2009_plus_once (name) VALUES ('rare_6_7_v1');
-COMMIT;" && echo "[playerbot-migrate] 6th/7th bonus pool: the 1 October table (27 bonuses)" \
-        || echo "[playerbot-migrate] WARNING: could not write the 6th/7th bonus pool" >&2
+('POINT_MAX_HP',1,150,250,500,800,850,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_MAX_SP',1,100,150,250,500,600,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_HT',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_IQ',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_ST',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_DX',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_CRITICAL_PCT',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_PENETRATE_PCT',1,2,5,6,8,10,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_ATT_GRADE_BONUS',1,5,10,15,20,25,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_MONSTER',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_WARRIOR',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_ASSASSIN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_SURA',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_SHAMAN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_RESIST_WARRIOR',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_RESIST_ASSASSIN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_RESIST_SURA',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_RESIST_SHAMAN',1,1,2,3,4,5,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_ATT_SPEED',1,1,1,1,2,2,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_MOV_SPEED',1,2,3,4,5,8,5,5,5,5,5,5,5,5,0,0,0,0,0),
+('POINT_BLOCK',1,1,2,3,5,8,0,0,0,0,0,0,5,0,0,0,0,0,0),
+('POINT_ATTBONUS_HUMAN',1,1,2,3,5,8,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_ANIMAL',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_ORC',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_MILGYO',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_UNDEAD',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0),
+('POINT_ATTBONUS_DEVIL',1,2,3,5,10,12,5,0,5,0,0,5,5,5,0,0,0,0,0);
+INSERT INTO world.mt2009_plus_once (name) VALUES ('rare_6_7_v2');"; then
+        echo "[playerbot-migrate] 6th/7th bonus pool: the 1 October table (27 bonuses, POINT_* numbering)"
+    else
+        echo "[playerbot-migrate] WARNING: could not write the 6th/7th bonus pool" >&2
+    fi
 fi
