@@ -364,7 +364,7 @@ namespace mt2009_dpanel
 			return;
 		if (d.warpCost > 0 && !ch->IsGM())
 		{
-			ch->PointChange(POINT_GOLD, -(int) d.warpCost, true);
+			PlayerBotChangeGold(ch, -d.warpCost);
 			ch->ChatPacket(CHAT_TYPE_INFO, "Teleport pod wej\x9c" "cie: zap\xb3" "acono %lld Yang.", d.warpCost);
 		}
 	}
