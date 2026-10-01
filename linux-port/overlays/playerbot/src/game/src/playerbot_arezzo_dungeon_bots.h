@@ -442,6 +442,47 @@ namespace
 		return best;
 	}
 
+	// MT2009_PLUS_AREZZO_DG_BOSS_BREAK_V1: the bosses (the Red Scorpions, the
+	// King, the Faethorns, the Owl, the Queen) strike one bot at a time, and the
+	// Queen took a bot of 100 from 11 600 of 20 300 health to 2 800 in two
+	// seconds: the tower's break-off at a fifth of its health came after the blow
+	// that killed it (1 October, 15:15-15:50: 188 deaths in the Jungle, 92 of
+	// them at the Queen; 134 in the Ruins, 63 at the King, 49 at the Reds). The
+	// boss's own victim breaks off at this much - it steps away hidden, heals
+	// and comes back - and the boss turns to the next one, as a party of players
+	// passes the boss between them.
+	const int PLAYERBOT_ARZDG_BOSS_BREAK_HP = 45;
+
+	bool BreakOffPlayerBotArzDgBoss(LPCHARACTER ch, TPlayerBotAIState& state, long map, DWORD dwNow)
+	{
+		if (state.bRecoveringAfterDeath || ch->GetMaxHP() <= 0 ||
+				(long long)ch->GetHP() * 100 > (long long)ch->GetMaxHP() * PLAYERBOT_ARZDG_BOSS_BREAK_HP)
+			return false;
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(map, dwNow);
+		LPCHARACTER boss = NULL;
+		for (size_t i = 0; i < scan.foes.size() && !boss; ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+			if (c && !c->IsDead() && !c->IsStone() && c->GetMobRank() >= MOB_RANK_BOSS && c->GetVictim() == ch &&
+					c->GetMapIndex() == ch->GetMapIndex())
+				boss = c;
+		}
+		if (!boss)
+			return false;
+		state.bRecoveringAfterDeath = true;
+		state.dwLastDeathTime = dwNow;
+		state.lDeathX = ch->GetX();
+		state.lDeathY = ch->GetY();
+		state.dwNextRecoveryProtectionTime = 0;
+		state.dwNextRecoveryHealTime = dwNow;
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		ClearPlayerBotRoute(state, true);
+		sys_log(0, "ARZ_DG: boss break-off pid=%u name=%s boss=%u hp=%d/%d map=%ld",
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)boss->GetRaceNum(), ch->GetHP(), ch->GetMaxHP(), map);
+		return true;
+	}
+
 	// ------------------------------------------------------------ the bot's tick
 
 	// In the lobby: healed, packed, its points spent, standing by the guard.
@@ -534,6 +575,8 @@ namespace
 		// game2 in twenty minutes (signal 11 in idle(); none in the 45 minutes of
 		// runs before it), so it is left out until that is understood.
 		if (KeepPlayerBotTowerAlive(ch, state, dwNow, PLAYERBOT_ARZDG_POTION_HP, PLAYERBOT_ARZDG_POTION_SP))
+			return true;
+		if (BreakOffPlayerBotArzDgBoss(ch, state, map, dwNow))
 			return true;
 		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch))
 		{
