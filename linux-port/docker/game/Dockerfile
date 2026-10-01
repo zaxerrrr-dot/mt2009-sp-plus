@@ -389,6 +389,14 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && rm -rf /tmp/share-add \
  && echo "share: moonlight + starter + boss chests + Okey chests, M3 drops appended"
 
+# MT2009_PLUS_DRAGON_NO_ROTTEN_CHEST_V1: Beran-Setaou / the Blue Dragon (2493) no longer drops the
+# Sprochniala Skrzynia (50124; the owner, 1 October). Its lines in the dragon's mob_drop_item groups
+# get a 0 chance (the group's numbering stays as it is); every other mob keeps the chest.
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt \
+ && awk 'BEGIN{d=0} /^[[:blank:]]*Group/{d=0} /^[[:blank:]]*Mob[[:blank:]]+2493([^0-9]|$)/{d=1} { if (d && $2 == "50124" && $1 ~ /^[0-9]+$/) { sub(/[0-9.]+([[:blank:]]*(--.*)?\r?)$/, "0" substr($0, match($0, /[[:blank:]]*(--.*)?\r?$/))); n++ } print } END{ if (n < 1) { print "FATAL: no 50124 line under mob 2493" > "/dev/stderr"; exit 1 } }' "$F" > "$F.new" \
+ && mv "$F.new" "$F" \
+ && echo "share: 2493 no longer drops 50124"
+
 # MT2009_PLUS_FLOWER_V1: the Flower Event's five gift boxes (83023-83027, Pudelko z Chryzantema ..
 # ze Slonecznikiem; playerbot_flower.h gives them for 10 shoots of a flower), opened by their
 # special_item_group groups. Appended once; the Seban panel's "Szkatulki" page edits them like any
