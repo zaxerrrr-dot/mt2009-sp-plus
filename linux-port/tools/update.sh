@@ -366,6 +366,22 @@ migrate_blessing_scroll() {
     printf 'M2_BLESSING_SCROLL_STONE_PERMILLE_DEFAULTED=1\n' >> "$_env"
 }
 
+# The server's logs were kept 3 days, and the owner wants a week (1 October,
+# "Logi serwera niech usuwaja sie po 7 dniach"). The old default is in every
+# .env, where a new one never reaches, so 3 becomes 7 here, once; any other
+# value is somebody's choice and stays.
+migrate_log_keep_days() {
+    _env="$COMPOSE_DIR/.env"
+    [ -f "$_env" ] || return 0
+    grep -q '^M2_LOG_KEEP_DAYS_DEFAULTED=' "$_env" && return 0
+    [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
+    if [ "$(kv "$_env" M2_LOG_KEEP_DAYS | tr -d ' \r')" = 3 ]; then
+        sed -i 's|^M2_LOG_KEEP_DAYS=.*|M2_LOG_KEEP_DAYS=7|' "$_env"
+        note "   the server's logs are kept 7 days: M2_LOG_KEEP_DAYS=7 (it was 3)"
+    fi
+    printf 'M2_LOG_KEEP_DAYS_DEFAULTED=1\n' >> "$_env"
+}
+
 # Channel N listens on BASE+10*(N-1)..+2 inside the container (BASE is
 # M2_GAME_PORT_BASE, 13000 unless a second stack on the host moved it -
 # m2-render-config), and compose publishes M2_GAME_PORT_RANGE onto
@@ -710,6 +726,7 @@ migrate_env() {
     migrate_world_layout
     # After the keys too: a world that never had the line gets the example's.
     migrate_blessing_scroll
+    migrate_log_keep_days
     # Before compose, because a published port range only changes at a recreate.
     sync_channel_ports
 }

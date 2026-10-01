@@ -193,7 +193,7 @@ services:
       # the classic panel's character card, which the package pointed at its
       # author's own panel.mt2009.pl (playerbotify.py, apply_gm_panel_url).
       M2_GM_PANEL_URL: "${M2_GM_PANEL_URL:-http://127.0.0.1:${M2_PANEL_PUBLIC_PORT:-7788}/}"
-      M2_LOG_KEEP_DAYS: "${M2_LOG_KEEP_DAYS:-3}"
+      M2_LOG_KEEP_DAYS: "${M2_LOG_KEEP_DAYS:-7}"
       M2_TABLE_POSTFIX: "${M2_TABLE_POSTFIX:-}"
       M2_ADMINPAGE_PASSWORD: "${M2_ADMINPAGE_PASSWORD:-}"
       M2_CORE_DUMPS: "${M2_CORE_DUMPS:-0}"

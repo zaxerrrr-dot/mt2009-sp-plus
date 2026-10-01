@@ -458,6 +458,18 @@ if ((Test-Path -LiteralPath $botSashDropApply -PathType Leaf) -and
         Write-Host 'Bots roll sashes like players.' -ForegroundColor DarkGray
     }
 }
+# Metin drops and the command flood guard (server-patches/metindrops): a
+# Metin's sash at 15% and its Cor Draconis at 20%, and the client's own polls
+# no longer eat a player's commands; after botsashdrop and raretoggle.
+$metinDropsApply = Join-Path $repo 'server-patches/metindrops/Apply-MetinDropsPatch.ps1'
+if ((Test-Path -LiteralPath $metinDropsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $metinDropsResult = & $metinDropsApply -SourceDirectory $engineGameSource
+    if ($metinDropsResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Metin drops and the command limit.' -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both
