@@ -493,6 +493,18 @@ if ((Test-Path -LiteralPath $rareLevelRollApply -PathType Leaf) -and
         Write-Host 'The 6th/7th bonus level by the panel odds.' -ForegroundColor DarkGray
     }
 }
+# A rider's reach in a normal hit and a boss's body (server-patches/mountreach):
+# battle_melee_attack no longer drops a rider's hit past 405, and a boss adds 250
+# to a player's reach (Razador's hits on a mount, 1 October).
+$mountReachApply = Join-Path $repo 'server-patches/mountreach/Apply-MountReachPatch.ps1'
+if ((Test-Path -LiteralPath $mountReachApply -PathType Leaf) -and
+    (Test-Path -LiteralPath $engineGameSource -PathType Container)) {
+    $mountReachResult = & $mountReachApply -SourceDirectory $engineGameSource
+    if ($mountReachResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Reach on a mount and at a boss.' -ForegroundColor DarkGray
+    }
+}
 # The health of monsters, bosses and Metin stones (server-patches/mobhp): a
 # percent of max_hp from the event flag m2_mob_hp, at a spawn and live for
 # every one standing (Frelik's proposal; .env M2_MONSTER_HP, the panel's card).
