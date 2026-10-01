@@ -714,6 +714,9 @@ void RumiTick(DWORD dwNow)
 
 // ---------------------------------------------------------------- the quest's
 
+// questlua_game.cpp declares these inside its namespace quest.
+namespace quest
+{
 // game.get_minigame_rumi_score(total): the season's top ten (name, score).
 void RumiLuaScoreTable(bool total, std::vector<std::pair<std::string, DWORD> >& out)
 {
@@ -812,3 +815,4 @@ DWORD RumiLuaPrize()
 		return EventNormal() ? REWARD_NORMAL_HIGH : REWARD_XMAS_HIGH;
 	return SeasonNormal() ? REWARD_NORMAL_HIGH : REWARD_XMAS_HIGH;
 }
+} // namespace quest
