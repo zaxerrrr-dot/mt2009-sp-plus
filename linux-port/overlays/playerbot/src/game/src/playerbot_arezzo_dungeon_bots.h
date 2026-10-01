@@ -87,7 +87,7 @@ namespace
 		{ "wukong", "Wzgorze Wukonga", "wukong_dgbot", 364, 264, 273, 6, 30766,
 			{ { 9690, 9691, 9692, 9693 }, { 9701 }, { 9683 }, { 9702 }, { 9684 }, { 9682 } }, 0, 0 },
 		{ "skorpion", "Ruiny Skorpiona", "skorpion_dgbot", 365, 268, 228, 5, 30767,
-			{ { 9697, 9698, 9699, 9700 }, { 9696 }, { 9695 }, { 9696 }, { 9694 }, { 0 } }, 248, 238 },
+			{ { 9697, 9698, 9699, 9700 }, { 9696 }, { 9695 }, { 9696 }, { 9694 }, { 0 } }, 258, 250 },
 		{ "dzungla", "Starozytna Dzungla", "dzungla_dgbot", 366, 384, 374, 6, 30768,
 			{ { 9707, 9708, 9709 }, { 9710 }, { 9712 }, { 9711 }, { 9713 }, { 9714 } }, 354, 368 },
 	};
@@ -498,32 +498,7 @@ namespace
 			}
 			return true;
 		}
-		if (KeepPlayerBotTowerAlive(ch, state, dwNow, PLAYERBOT_ARZDG_POTION_HP, PLAYERBOT_ARZDG_POTION_SP))
-			return true;
-		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch))
-		{
-			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "arezzo_dungeon");
-			return true;
-		}
-		if (BuffPlayerBotTowerFellows(ch, state, dwNow))
-			return true;
 		const int stage = d->GetFlag("stage");
-		// The seal: its holder breaks it at once (30766.use and the like).
-		if (stage == 1 && d->GetFlag("seal_out") == 1 && dwNow >= bot.dwNextSeal)
-		{
-			const int cell = FindPlayerBotTowerItemCell(ch, info.dwSeal);
-			if (cell >= 0)
-			{
-				bot.dwNextSeal = dwNow + 3000;
-				if (ch->IsStateMove())
-					ch->Stop();
-				const bool ok = ch->UseItem(TItemPos(INVENTORY, (WORD)cell));
-				sys_log(0, "ARZ_DG: seal used pid=%u name=%s dungeon=%s instance=%ld seals=%d ok=%d",
-						ch->GetPlayerID(), ch->GetName(), info.szKey, map, d->GetFlag("seals"), ok ? 1 : 0);
-				return true;
-			}
-		}
-		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(map, dwNow);
 		long anchorX = ch->GetX(), anchorY = ch->GetY();
 		{
 			std::map<DWORD, int>::const_iterator br = s_mapPlayerBotArzDgBotRun.find(ch->GetPlayerID());
@@ -553,6 +528,36 @@ namespace
 				maxFromAnchor = 2500;
 			}
 		}
+		// The fall and the break-off at the last fifth of health are the
+		// tower's (KeepPlayerBotTowerAlive). A walk back to the pack while
+		// recovering (round 3, 1 October 12:53) was followed by six crashes of
+		// game2 in twenty minutes (signal 11 in idle(); none in the 45 minutes of
+		// runs before it), so it is left out until that is understood.
+		if (KeepPlayerBotTowerAlive(ch, state, dwNow, PLAYERBOT_ARZDG_POTION_HP, PLAYERBOT_ARZDG_POTION_SP))
+			return true;
+		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch))
+		{
+			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "arezzo_dungeon");
+			return true;
+		}
+		if (BuffPlayerBotTowerFellows(ch, state, dwNow))
+			return true;
+		// The seal: its holder breaks it at once (30766.use and the like).
+		if (stage == 1 && d->GetFlag("seal_out") == 1 && dwNow >= bot.dwNextSeal)
+		{
+			const int cell = FindPlayerBotTowerItemCell(ch, info.dwSeal);
+			if (cell >= 0)
+			{
+				bot.dwNextSeal = dwNow + 3000;
+				if (ch->IsStateMove())
+					ch->Stop();
+				const bool ok = ch->UseItem(TItemPos(INVENTORY, (WORD)cell));
+				sys_log(0, "ARZ_DG: seal used pid=%u name=%s dungeon=%s instance=%ld seals=%d ok=%d",
+						ch->GetPlayerID(), ch->GetName(), info.szKey, map, d->GetFlag("seals"), ok ? 1 : 0);
+				return true;
+			}
+		}
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(map, dwNow);
 		LPCHARACTER foe = PickPlayerBotArzDgFoe(ch, state, info, stage, scan, anchorX, anchorY, maxFromAnchor);
 		const int fromPack = DISTANCE_APPROX(ch->GetX() - anchorX, ch->GetY() - anchorY);
 		// Strayed from the pack with nothing on it: back to the others first.

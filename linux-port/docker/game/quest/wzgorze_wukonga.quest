@@ -546,15 +546,6 @@ quest wzgorze_wukonga begin
 				if d.getf("closed") == 1 then
 					return
 				end
-				-- MT2009_PLUS_AREZZO_DUNGEON_TICK_V1: one minute clock per instance. An instance number is
-				-- reused, and a second chain of this timer (AddServerTimer refuses the name, the event runs
-				-- anyway: "already registered server timer name:wukong_tick", 30 September) halved the time
-				-- limit; the later of two ticks within 50 s ends its chain here.
-				local tick_now = get_global_time()
-				if tick_now - d.getf("tick_at") < 50 then
-					return
-				end
-				d.setf("tick_at", tick_now)
 				local left = d.getf("minutes") - 1
 				if d.getf("mt2009_dgbot") == 1 then
 					-- MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1: the test cohort's runs have no time limit.
