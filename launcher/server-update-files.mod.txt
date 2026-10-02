@@ -123,6 +123,7 @@ launcher/client-update-files.example.txt
 docs/LAUNCHER.md
 tools/New-M2UpdatePackage.ps1
 linux-port/tools/update.sh
+linux-port/tools/support-bundle.sh
 
 # ---- engine files the port changed or added (measured against the package) --
 linux-port/docker/game/src/server/common/CommonDefines.h
