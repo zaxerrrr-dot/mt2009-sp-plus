@@ -4138,12 +4138,27 @@ namespace
 		if (IsPlayerBotBonusGoodsPiece(item))
 			return PlayerBotGoods(1500 + GetPlayerBotBonusPlusLevel(item), per::GOODS_VALUABLE_BONUS, 0,
 					GetPlayerBotBonusPlusLevel(item));
-		// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: the helmets of 21 and 41 and
-		// the two shields at every plus (IsPlayerBotListedHelmShield), ahead
-		// of the low-level gear's refine floor and the merchant-only rule.
-		if (IsPlayerBotListedHelmShield(item))
-			return PlayerBotGoods(PLAYERBOT_SHOP_LOW_PLUS_GEAR_SCORE + item->GetRefineLevel(),
-					per::GOODS_LOW_LEVEL_LOW_PLUS, item->GetRefineLevel(), item->GetLevelLimit());
+		// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: a spare the anvil takes to +4 for
+		// the counter waits in the bag for it (PlayerBotRefinesSpareForSale) -
+		// while the bot's anvil is open to it at all, the bag has room, and for
+		// PLAYERBOT_SPARE_SALE_HOLD_MS at most: a bot that lives on a map with
+		// no blacksmith of its own may not stand at one for hours, and the
+		// piece goes up at what it is then, below.
+		if (ch && PlayerBotRefinesSpareForSale(ch, item) && CanPlayerBotAttemptRefineItem(ch, item) &&
+				!IsPlayerBotBagUnderPressure(ch) &&
+				IsPlayerBotWeightGateOpen(ch->GetPlayerID(), PLAYERBOT_WEIGHT_REFINE,
+					PLAYERBOT_WEIGHT_GATE_SALT_REFINE, get_dword_time()))
+		{
+			static std::map<DWORD, DWORD> s_mapHeldSince;
+			if (s_mapHeldSince.size() > 50000)
+				s_mapHeldSince.clear();
+			const DWORD now = get_dword_time();
+			DWORD& since = s_mapHeldSince[item->GetID()];
+			if (since == 0)
+				since = now != 0 ? now : 1;
+			if (now - since < PLAYERBOT_SPARE_SALE_HOLD_MS)
+				return -1;
+		}
 		// Iwakura's fifty-four weapons at +0..+3 stand on the bots' counters
 		// PLAYERBOT_JUNK_WEAPON_MARKET_CAP at a time, world-wide.
 		if (IsPlayerBotCappedJunkWeapon(item) && IsPlayerBotJunkWeaponMarketFull())
@@ -4168,6 +4183,14 @@ namespace
 		if (IsPlayerBotLowLevelGear(item))
 		{
 			if (IsPlayerBotLowPlusMarketGear(item))
+				return PlayerBotGoods(PLAYERBOT_SHOP_LOW_PLUS_GEAR_SCORE + item->GetRefineLevel(),
+						per::GOODS_LOW_LEVEL_LOW_PLUS, item->GetRefineLevel(), item->GetLevelLimit());
+			// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: every spare piece under level
+			// thirty is goods at any plus now, beside the body armours and
+			// jewels at +0..+3 above (IsPlayerBotSaleGear; starter gear keeps
+			// the operator's +7), held to PLAYERBOT_ALL_GEAR_KIND_LINES lines
+			// of a kind on a counter rather than the two of all of it.
+			if (IsPlayerBotSaleGear(item))
 				return PlayerBotGoods(PLAYERBOT_SHOP_LOW_PLUS_GEAR_SCORE + item->GetRefineLevel(),
 						per::GOODS_LOW_LEVEL_LOW_PLUS, item->GetRefineLevel(), item->GetLevelLimit());
 			return item->GetRefineLevel() >= GetPlayerBotLowGearMinRefine(item)
@@ -4471,6 +4494,12 @@ namespace
 			if (IsPlayerBotLowPlusMarketGear(item))
 				return PlayerBotGoods(PLAYERBOT_SHOP_LOW_PLUS_GEAR_SCORE + item->GetRefineLevel(), per::GOODS_LOW_PLUS_GEAR,
 						item->GetRefineLevel());
+			// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: and every other spare piece at
+			// +0..+3 the anvil did not take to +4 - the helmets, shields and
+			// boots of every family, the weapons (IsPlayerBotSaleGear).
+			if (IsPlayerBotSaleGear(item))
+				return PlayerBotGoods(PLAYERBOT_SHOP_LOW_PLUS_GEAR_SCORE + item->GetRefineLevel(), per::GOODS_LOW_PLUS_GEAR,
+						item->GetRefineLevel());
 			// A scrap keeper puts the other low refines out too, last in line
 			// after everything worth more: fodder for a player's blacksmith
 			// runs. From level thirty only - the gear under it never gets this
@@ -4629,7 +4658,7 @@ namespace
 	// already holds - an offline shop's own - so the cap counts both.
 	void CollectPlayerBotShopItems(LPCHARACTER ch,
 			std::vector<std::pair<int, WORD> >& outScored, bool merchant,
-			int lowGearOnCounter = 0)
+			int lowGearOnCounter = 0, bool keepOverflow = false)
 	{
 		outScored.clear();
 		if (!ch || !ch->IsItemLoaded())
@@ -4782,11 +4811,25 @@ namespace
 				rest.push_back(outScored[i]);
 		}
 		outScored = materials;
-		for (size_t i = 0; i < rest.size() && outScored.size() < limit; ++i)
-			outScored.push_back(rest[i]);
+		size_t restTaken = 0;
+		for (; restTaken < rest.size() && outScored.size() < limit; ++restTaken)
+			outScored.push_back(rest[restTaken]);
 		// Worth order again, so the best of whatever made the cut leads.
 		std::sort(outScored.begin(), outScored.end(),
 				std::greater<std::pair<int, WORD> >());
+		// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: an offline stand adds one line a
+		// visit, the first of these its counter takes (BotOfflineCounterRefuses).
+		// Cut to PLAYERBOT_SHOP_MAX_ITEMS, a bag whose best eight the counter
+		// refused - its lines of each already up - offered nothing else, and
+		// a helmet or boots at the low-plus score never got a turn. What did
+		// not make the cut follows it now, best first, for the stand alone.
+		if (keepOverflow)
+		{
+			// (The materials past their half of the counter are in the rest.)
+			std::vector<std::pair<int, WORD> > overflow(rest.begin() + restTaken, rest.end());
+			std::sort(overflow.begin(), overflow.end(), std::greater<std::pair<int, WORD> >());
+			outScored.insert(outScored.end(), overflow.begin(), overflow.end());
+		}
 	}
 
 	// The piece's name without the grade it has just reached. The table names

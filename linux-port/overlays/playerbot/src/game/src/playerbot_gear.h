@@ -3356,6 +3356,8 @@ namespace
 
 	// Defined in playerbot_economy.h, after the junk rule it stands beside.
 	bool PlayerBotRefinesLowArmourForSale(LPCHARACTER ch, LPITEM item);
+	// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: and its twin for every spare piece.
+	bool PlayerBotRefinesSpareForSale(LPCHARACTER ch, LPITEM item);
 	// Defined in playerbot_economy.h, after the backup rules it gives way to.
 	bool PlayerBotRisksPlainAnvil(LPCHARACTER ch, LPITEM item);
 	// Defined in playerbot_economy.h, beside the prize line it asks for.
@@ -3371,6 +3373,10 @@ namespace
 		// where that rule would have read it as a spare for the counter.
 		if (!IsPlayerBotScrollRuleArmour(ch, item) && PlayerBotRefinesLowArmourForSale(ch, item))
 			return PLAYERBOT_LOW_ARMOUR_SALE_PLUS;
+		// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: a spare piece for the counter, to
+		// +4 (PlayerBotRefinesSpareForSale).
+		if (!IsPlayerBotScrollRuleArmour(ch, item) && PlayerBotRefinesSpareForSale(ch, item))
+			return PLAYERBOT_SPARE_SALE_PLUS;
 		// A level-30 weapon of its own class in the hand, or the one it is
 		// grinding, goes to +9 whatever the personality: that is what the
 		// weapon is for. A scroll-only one gets there under scrolls or not at

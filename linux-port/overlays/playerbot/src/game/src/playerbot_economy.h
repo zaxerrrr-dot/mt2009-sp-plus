@@ -256,13 +256,10 @@ namespace
 	// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1 (the owner, 2 October: "na
 	// sklepach nie ma w ogole helmow i tarcz"): the helmets of level 21 and
 	// 41 of every class and the Pieciokatna Tarcza (13020-13029) and the
-	// Czarna Okragla Tarcza (13040-13049), at every plus, are counter goods -
-	// listed (ScorePlayerBotShopStockRules, PLAYERBOT_HELM_SHIELD_COUNTER_LINES
-	// lines a counter), not sold to the merchant while the bot has a counter
-	// and few of them, never put down as dead stock, and let out of the
-	// safebox (CollectPlayerBotLppBoxRelease). Before, a helmet or shield
-	// under +6 was merchant-only or low-level gear under its refine floor,
-	// and the box kept two of a family.
+	// Czarna Okragla Tarcza (13040-13049), at every plus, are counter goods:
+	// never put down as dead stock, and let out of the safebox
+	// (CollectPlayerBotLppBoxRelease). Their listing and the merchant's share
+	// are MT2009_PLUS_BOT_LIST_ALL_GEAR_V1's now, below, for every family.
 	bool IsPlayerBotListedHelmShieldProto(const TItemTable* proto, DWORD vnum)
 	{
 		if (!proto || proto->bType != ITEM_ARMOR)
@@ -283,17 +280,106 @@ namespace
 		return item && IsPlayerBotListedHelmShieldProto(item->GetProto(), item->GetVnum());
 	}
 
-	int CountPlayerBotListedHelmShieldsInBag(LPCHARACTER ch)
+	// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1 (the owner, 2 October: the counters
+	// had almost no boots, helmets or shields - Skorzane Kozaki +0 on 146
+	// bags of the supporters' world and 3 lines, Pieciokatna Tarcza +0 on 67
+	// bags and 3 lines, the helmets of 41 on 194 bags and 11 lines). Every
+	// spare piece of gear a bot means to sell - a weapon, a body armour, a
+	// helmet, a shield, boots or a jewel - is taken to PLAYERBOT_SPARE_SALE_PLUS
+	// at the anvil first while the purse and the bag can pay the step
+	// (PlayerBotRefinesSpareForSale), and is goods at what it is when they
+	// cannot: the boots, helmets and shields of every family and level, the
+	// gear under level thirty below its old floor of +6, and the weapons and
+	// armour from thirty at +0..+3 (ScorePlayerBotShopStockRules). A counter
+	// shows PLAYERBOT_ALL_GEAR_KIND_LINES such lines of a kind
+	// (BotOfflineCounterRefuses), the bag keeps PLAYERBOT_ALL_GEAR_BAG_KEEP of
+	// them for it from the merchant (IsPlayerBotJunkItem). Not a level-30
+	// weapon nor a Stalki, which have rules of their own, nor starter gear - a
+	// weapon, a body armour or a jewel of level one - which stays the
+	// merchant's under +7 (GetPlayerBotLowGearMinRefine). Before, a helmet,
+	// shield or boots under +6 below level thirty, and under +4 from it, was
+	// nobody's goods, so the merchant took it on the next town visit.
+	// (Its numbers are in playerbot_types.h.)
+
+	// The piece's kind for the counter's cap - 1 a weapon, 2 a body armour, 3
+	// a helmet, 4 a shield, 5 boots, 6 to 8 the bracelet, the necklace and
+	// the earrings - or 0 for what this rule leaves alone.
+	int GetPlayerBotSaleGearKindOf(const TItemTable* proto, DWORD vnum)
 	{
-		int n = 0;
-		for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		if (!proto || IsPlayerBotSpecialLevel30WeaponVnum(vnum) ||
+				playerbot_stalki_rules::KindOf(vnum) != playerbot_stalki_rules::KIND_NONE)
+			return 0;
+		int kind = 0;
+		if (proto->bType == ITEM_WEAPON)
+			kind = proto->bSubType == WEAPON_ARROW ? 0 : 1;
+		else if (proto->bType == ITEM_ARMOR)
 		{
-			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && !item->IsEquipped() && IsPlayerBotListedHelmShield(item))
-				++n;
+			switch (proto->bSubType)
+			{
+				case ARMOR_BODY: kind = 2; break;
+				case ARMOR_HEAD: kind = 3; break;
+				case ARMOR_SHIELD: kind = 4; break;
+				case ARMOR_FOOTS: kind = 5; break;
+				case ARMOR_WRIST: kind = 6; break;
+				case ARMOR_NECK: kind = 7; break;
+				case ARMOR_EAR: kind = 8; break;
+				default: break;
+			}
 		}
-		return n;
+		// Starter gear keeps the operator's rule; a helmet, a shield or boots
+		// of level one are goods like any other.
+		if ((kind == 1 || kind == 2 || kind >= 6) &&
+				GetPlayerBotProtoLevelLimit(proto) <= PLAYERBOT_SHOP_STARTER_GEAR_MAX_LEVEL)
+			return 0;
+		return kind;
 	}
+
+	int GetPlayerBotSaleGearKind(LPITEM item)
+	{
+		return item ? GetPlayerBotSaleGearKindOf(item->GetProto(), item->GetVnum()) : 0;
+	}
+
+	bool IsPlayerBotSaleGear(LPITEM item)
+	{
+		return GetPlayerBotSaleGearKind(item) != 0;
+	}
+
+	// A line this rule put up, and the ones the cap counts: under +7 below
+	// level thirty, under +4 from it. A +4 from thirty was goods before
+	// (PLAYERBOT_PRECIOUS_REFINE) and is not counted.
+	bool IsPlayerBotAllGearLowLineOf(const TItemTable* proto, DWORD vnum)
+	{
+		if (GetPlayerBotSaleGearKindOf(proto, vnum) == 0)
+			return false;
+		const int plus = (int)(vnum % 10);
+		return plus < 7 && (GetPlayerBotProtoLevelLimit(proto) < PLAYERBOT_SHOP_MIN_GEAR_LEVEL ||
+				plus < PLAYERBOT_PRECIOUS_REFINE);
+	}
+
+	bool IsPlayerBotAllGearLowLine(LPITEM item)
+	{
+		return item && IsPlayerBotAllGearLowLineOf(item->GetProto(), item->GetVnum());
+	}
+
+	// Those pieces in the bag's cells before this one: the bag keeps the
+	// first PLAYERBOT_ALL_GEAR_BAG_KEEP for its counter (IsPlayerBotJunkItem).
+	int CountPlayerBotAllGearAhead(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetWindow() != INVENTORY)
+			return 0;
+		int ahead = 0;
+		for (WORD cell = 0; cell < item->GetCell() && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM held = ch->GetInventoryItem(cell);
+			if (held && held != item && held->GetCell() == cell && !held->IsEquipped() &&
+					IsPlayerBotAllGearLowLine(held))
+				++ahead;
+		}
+		return ahead;
+	}
+
+	// Defined beside the low armour's anvil rule, below.
+	bool PlayerBotRefinesSpareForSale(LPCHARACTER ch, LPITEM item);
 
 	bool IsPlayerBotCappedLowArmour(LPITEM item)
 	{
@@ -1704,7 +1790,9 @@ namespace
 	// PLAYERBOT_SHOP_LOW_GEAR_MAX_LINES places: +7 and better does not.
 	bool CountsAgainstPlayerBotLowGearCap(LPITEM item)
 	{
-		return IsPlayerBotLowLevelGear(item) &&
+		// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: the gear that rule lists is held
+		// to its own lines of a kind (PLAYERBOT_ALL_GEAR_KIND_LINES) instead.
+		return IsPlayerBotLowLevelGear(item) && !IsPlayerBotSaleGear(item) &&
 				item->GetRefineLevel() < PLAYERBOT_SHOP_LOW_GEAR_CAP_BELOW_REFINE;
 	}
 
@@ -1725,6 +1813,36 @@ namespace
 				IsPlayerBotLowArmourMarketFull(item->GetVnum()) &&
 				!IsPlayerBotLppKeptItem(ch, item) && !IsPlayerBotKeptBackupArmour(ch, item) &&
 				CanPlayerBotPayRefineStep(ch, item);
+	}
+
+	// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: a spare piece in the bag of a bot
+	// with a counter, under PLAYERBOT_SPARE_SALE_PLUS, goes to the plain
+	// anvil for it while the purse (over the reserve) and the bag can pay the
+	// next step - the usual refine pass, last in its order - and is goods
+	// once it is there, or at what it is when the step cannot be paid. Not a
+	// piece the bot wears, means to wear, keeps for the day its own burns,
+	// keeps for the gambler or the operator, nor one another rule refines.
+	bool PlayerBotRefinesSpareForSale(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->IsEquipped() || item->GetWindow() != INVENTORY ||
+				item->GetRefinedVnum() == 0 || item->GetRefineLevel() >= PLAYERBOT_SPARE_SALE_PLUS ||
+				!IsPlayerBotSaleGear(item) || !PlayerBotHasCounter(ch) ||
+				GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE)
+			return false;
+		if (IsPlayerBotSidekickPinned(ch, item) || IsPlayerBotLppKeptItem(ch, item) ||
+				IsPlayerBotGambleForSale(ch, item) || IsPlayerBotRareGambleHeldBase(ch, item) ||
+				IsPlayerBotSashGrailProject(ch, item) || IsPlayerBotArcherStoneWeapon(ch, item) ||
+				PlayerBotRefinesLowArmourForSale(ch, item))
+			return false;
+		if (IsPlayerBotUpgradeForSelf(ch, item) || IsPlayerBotHigherTierSpare(ch, item) ||
+				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()))
+			return false;
+		if (item->GetType() == ITEM_WEAPON &&
+				(IsPlayerBotKeptBackupWeapon(ch, item) || item == FindPlayerBotLinesProject(ch)))
+			return false;
+		if (item->GetType() == ITEM_ARMOR && IsPlayerBotKeptBackupArmour(ch, item))
+			return false;
+		return CanPlayerBotPayRefineStep(ch, item);
 	}
 
 	// Iwakura's Patch 4, point 13: the mission books - Latwa, Normalna, Trudna,
@@ -1962,7 +2080,10 @@ namespace
 		// which would keep the level-65 ones for a counter that has no room.
 		if (IsPlayerBotCappedJunkWeapon(item) && IsPlayerBotJunkWeaponMarketFull() &&
 				!IsPlayerBotUpgradeForSelf(ch, item) && !IsPlayerBotHigherTierSpare(ch, item) &&
-				!IsPlayerBotKeptBackupWeapon(ch, item))
+				!IsPlayerBotKeptBackupWeapon(ch, item) &&
+				// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: nor one the anvil takes to
+				// +4 for the counter, where the cap no longer holds it.
+				!(PlayerBotHasCounter(ch) && PlayerBotRefinesSpareForSale(ch, item)))
 			return true;
 		// And a body armour at +0..+4 of a family at its cap on the market
 		// (Iwakura's Patch 3, point 4), unless the bot wears it, raises it for
@@ -2012,10 +2133,15 @@ namespace
 		// list is thrown away at the merchant (SellPlayerBotJunkAtMerchant).
 		if (IsPlayerBotUnwantedHair(ch, item))
 			return true;
-		// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: the counter's, while there is a
-		// counter and the bag holds no more than PLAYERBOT_HELM_SHIELD_BAG_KEEP.
-		if (IsPlayerBotListedHelmShield(item) && PlayerBotHasCounter(ch) &&
-				CountPlayerBotListedHelmShieldsInBag(ch) <= PLAYERBOT_HELM_SHIELD_BAG_KEEP)
+		// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: a spare piece the anvil takes to
+		// +4 for the counter, and the first PLAYERBOT_ALL_GEAR_BAG_KEEP of the
+		// gear this rule lists, wait for the counter while there is one and
+		// the bag has room - the rest is the rules' below, as before.
+		if (IsPlayerBotSaleGear(item) && PlayerBotHasCounter(ch) && !IsPlayerBotBagUnderPressure(ch) &&
+				(PlayerBotRefinesSpareForSale(ch, item) ||
+				 (IsPlayerBotAllGearLowLine(item) && CountPlayerBotAllGearAhead(ch, item) < PLAYERBOT_ALL_GEAR_BAG_KEEP &&
+				  !((IsPlayerBotCappedLowArmour(item) || IsPlayerBotCappedLowJewel(item)) &&
+					IsPlayerBotLowArmourMarketFull(item->GetVnum())))))
 			return false;
 		// A hairstyle from the ItemShop (playerbot_itemshop.h) is worn, not sold:
 		// the rule's default would vendor it on the next town trip.
@@ -2969,6 +3095,10 @@ namespace
 		// Patch 3, point 4).
 		if (PlayerBotRefinesLowArmourForSale(ch, item))
 			return item->GetRefineLevel() < PLAYERBOT_LOW_ARMOUR_SALE_PLUS;
+		// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: and any spare piece taken to +4
+		// before it goes on the counter.
+		if (PlayerBotRefinesSpareForSale(ch, item))
+			return item->GetRefineLevel() < PLAYERBOT_SPARE_SALE_PLUS;
 		// The class's own level-30 weapon, whatever the damage model makes of
 		// it today (community patch 2, point 1).
 		if (IsPlayerBotPersonaEnabled() && item == FindPlayerBotClassLevel30Weapon(ch))
@@ -3362,6 +3492,10 @@ namespace
 			const bool coreProgression = IsPlayerBotCoreProgressionItem(ch, item);
 			cand.priority = item == classLevel30 ? 0 : 1 + (personaOn ? GetPlayerBotPerfectionistRank(ch, item)
 					: (coreProgression ? 0 : 2));
+			// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: a spare for the counter comes
+			// after everything the bot refines for itself.
+			if (PlayerBotRefinesSpareForSale(ch, item))
+				cand.priority = PLAYERBOT_SPARE_SALE_REFINE_PRIORITY;
 			candidates.push_back(cand);
 		}
 
@@ -3401,9 +3535,13 @@ namespace
 			const DWORD nextVnum = item->GetRefinedVnum();
 			const BYTE plusLevel = candidates[i].plusLevel;
 
+			// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: a spare for the counter is not
+			// worn, so its level is the buyer's, and no ready piece off a
+			// counter is looked for in its stead.
+			const bool saleSpare = candidates[i].priority == PLAYERBOT_SPARE_SALE_REFINE_PRIORITY;
 			// What comes off the anvil must still fit. See IsPlayerBotWearableAtLevel
 			// for why the engine will not stop this on its own.
-			if (!IsPlayerBotWearableAtLevel(ch, nextVnum))
+			if (!saleSpare && !IsPlayerBotWearableAtLevel(ch, nextVnum))
 			{
 				PlayerBotLogThrottled("refine_outgrows", dwNow,
 						"PLAYERBOT_AI: refine would outgrow the bot pid=%u name=%s level=%u vnum=%u next=%u plus=%u",
@@ -3421,7 +3559,7 @@ namespace
 			// the anvil waits PLAYERBOT_READY_GEAR_WAIT_MS for the purchase;
 			// nothing there, or the wait over, and it refines as ever. The
 			// class's level-30 weapon is its own rule's.
-			if (personaOn && item != classLevel30 && !rulePiece && IsPlayerBotMarketPerfectionist(ch->GetPlayerID()))
+			if (personaOn && item != classLevel30 && !rulePiece && !saleSpare && IsPlayerBotMarketPerfectionist(ch->GetPlayerID()))
 			{
 				const int slot = wearCell != 255 ? (int)wearCell : item->FindEquipCell(ch);
 				const int index = GetPlayerBotReadyGearSlotIndex(slot);

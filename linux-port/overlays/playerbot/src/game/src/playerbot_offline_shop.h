@@ -1038,8 +1038,10 @@ namespace {
             if (IsPlayerBotLowLevelGear(preview) &&
                     GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
                 const bool capped = CountsAgainstPlayerBotLowGearCap(preview);
+                // MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: not a spare piece, which is
+                // goods at any plus now (IsPlayerBotSaleGear).
                 if ((preview->GetRefineLevel() < GetPlayerBotLowGearMinRefine(preview) &&
-                        !IsPlayerBotLowPlusMarketGear(preview)) ||
+                        !IsPlayerBotLowPlusMarketGear(preview) && !IsPlayerBotSaleGear(preview)) ||
                         (capped && lowGear >= PLAYERBOT_SHOP_LOW_GEAR_MAX_LINES)) {
                     if (!unwanted) { unwanted = id; reason = "low_gear"; }
                 } else if (capped) {
@@ -1302,13 +1304,18 @@ namespace {
         }
         if (item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM &&
                 BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_CHEST_COUNTER_LINES) return true;
-        // MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: a few helmet and shield lines.
-        if (IsPlayerBotListedHelmShield(item) && shop) {
-            int helmShieldLines = 0;
+        // MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: PLAYERBOT_ALL_GEAR_KIND_LINES lines
+        // of a kind of the spare gear it lists - helmets, shields, boots, the
+        // weapons, the body armours, each jewel - under +7 below level thirty
+        // and under +4 from it (IsPlayerBotAllGearLowLineOf).
+        if (shop && IsPlayerBotAllGearLowLine(item)) {
+            const int kind = GetPlayerBotSaleGearKind(item);
+            int kindLines = 0;
             for (const auto& [lid, l] : shop->GetItems())
-                if (l && IsPlayerBotListedHelmShieldProto(l->GetTable(), l->GetInfo().vnum))
-                    ++helmShieldLines;
-            if (helmShieldLines >= PLAYERBOT_HELM_SHIELD_COUNTER_LINES) return true;
+                if (l && l->GetTable() && IsPlayerBotAllGearLowLineOf(l->GetTable(), l->GetInfo().vnum) &&
+                        GetPlayerBotSaleGearKindOf(l->GetTable(), l->GetInfo().vnum) == kind)
+                    ++kindLines;
+            if (kindLines >= PLAYERBOT_ALL_GEAR_KIND_LINES) return true;
         }
         // MT2009_PLUS_SADDLEBAG_MARKET_V1: a few lines of materials a counter.
         if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED &&
@@ -1573,7 +1580,7 @@ namespace {
         int lowGear = 0;
         BotOfflineUnwantedLine(ch, shop, lowGear);
         std::vector<std::pair<int, WORD> > scored;
-        CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state), lowGear);
+        CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state), lowGear, true);   // MT2009_PLUS_BOT_LIST_ALL_GEAR_V1
         int rank = -1, refused = 0;
         for (auto [score, cell] : scored) {
             ++rank;
@@ -2030,7 +2037,7 @@ namespace {
             return false;
         }
         std::vector<std::pair<int, WORD> > scored;
-        CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state), lowGearOnCounter);
+        CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state), lowGearOnCounter, true);   // MT2009_PLUS_BOT_LIST_ALL_GEAR_V1
         // The line cut before the board opened goes first, whatever it scores
         // now: it is exactly a line, so BotOfflinePrepareLine below hands it
         // back as it is. A stale cell (the item gone, or another in its

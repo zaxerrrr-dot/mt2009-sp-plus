@@ -7173,11 +7173,19 @@ namespace
 	// (playerbot_alchemy.h).
 	const int PLAYERBOT_COR_LINE_MAX_UNITS = 20;
 	const int PLAYERBOT_COR_COUNTER_LINES = 4;
-	// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: helmet and shield lines a counter
-	// shows, and how many of them a bag holds for it before the merchant
-	// takes the rest (playerbot_economy.h).
-	const int PLAYERBOT_HELM_SHIELD_COUNTER_LINES = 3;
-	const int PLAYERBOT_HELM_SHIELD_BAG_KEEP = 6;
+	// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1 (playerbot_economy.h): the plus a spare
+	// piece is taken to at the anvil before it goes on a counter, the lines of
+	// a kind of that gear a counter shows, and how many of them a bag holds
+	// for it before the merchant takes the rest. (They replace
+	// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1's three lines and six pieces.)
+	const BYTE PLAYERBOT_SPARE_SALE_PLUS = 4;
+	const int PLAYERBOT_ALL_GEAR_KIND_LINES = 4;
+	const int PLAYERBOT_ALL_GEAR_BAG_KEEP = 8;
+	// Its place in the bag refine pass's order: after every piece of the bot's own.
+	const int PLAYERBOT_SPARE_SALE_REFINE_PRIORITY = 100;
+	// How long such a piece waits in the bag for the anvil before it goes on
+	// the counter at what it is (ScorePlayerBotShopStockRules).
+	const DWORD PLAYERBOT_SPARE_SALE_HOLD_MS = 45 * 60 * 1000;
 	void NotePlayerBotCorBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
 	const DWORD PLAYERBOT_CRAFT_UNSOLD_RECALL_MS_PRE = 12 * 60 * 60 * 1000;
 	bool IsPlayerBotSaddlebagKeeperPID(DWORD pid);
