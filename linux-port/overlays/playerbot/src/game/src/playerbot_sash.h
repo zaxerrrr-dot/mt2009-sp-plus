@@ -604,7 +604,8 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && item->GetCell() == cell && IsPlayerBotSashUsable(item))
+			if (item && item->GetCell() == cell && IsPlayerBotSashUsable(item) &&
+					!IsPlayerBotSidekickLockedItem(ch, item))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 				out.push_back(item);
 		}
 	}
@@ -1156,7 +1157,8 @@ namespace
 	{
 		if (!sash || !sash->IsEquipped())
 			return true;
-		if (ch->GetEmptyInventory(sash->GetSize()) < 0)
+		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: a locked companion's stays on.
+		if (ch->GetEmptyInventory(sash->GetSize()) < 0 || IsPlayerBotSidekickLockedItem(ch, sash))
 			return false;
 		return ch->UnequipItem(sash) && !sash->IsEquipped();
 	}

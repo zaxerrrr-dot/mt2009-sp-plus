@@ -7192,6 +7192,10 @@ WritePlayerBotGuildStatus(dwNow);
 			continue;
 		if (HandlePlayerBotMultiPull(ch, state, dwNow))
 			continue;
+		// MT2009_PLUS_BOT_CAPE_V1: Peleryna Mestwa, for a strong bot on a
+		// crowd it can take, after the pull and its own crowd beaten.
+		if (HandlePlayerBotValourCape(ch, state, dwNow))
+			continue;
 		// The Archer's luring course. It owns movement and the shot for as long
 		// as it runs - including the ticks it spends waiting for the bow - so it
 		// goes here, before target acquisition and after everything that keeps a
