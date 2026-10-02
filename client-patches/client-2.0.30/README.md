@@ -388,3 +388,20 @@ Znaczniki `MT2009_PLUS_AWAKENING_V1`, `MT2009_PLUS_SOULSTONE9_V1`, `MT2009_PLUS_
 - `root` (wpisy paczki `root`, zastępowane – bez nowych): `uitooltip.py` (opis przedmiotu pokazuje
   wszystkie 7 bonusów), `uihorseinventory.py` (rzędy juków do 30 poziomu konia – tabela questu
   `horse_inventory`), `uiattributelist.py` („Silny przeciwko potworom” w spisie bonusów – bonus konia od 21).
+
+## Ekwipunek: blokada sortowania (Alt + LPM) – bez zmian exe
+
+Znacznik `MT2009_PLUS_INVENTORY_SORT_LOCK_V1`. Serwer: `server-patches/sortlock` (`/inventory_arrange [merge]
+keep=<hex>`, `playerbot_arrange::InventoryArrangeCommand`; zablokowany przedmiot zostaje na polu, zablokowany stos
+przy łączeniu tylko przyjmuje sztuki). Pliki `root` (baza: wpisy paczki `root` 2.0.39):
+
+- `inventorysortlock.py` (nowy) – blokady po stronie klienta, osobno dla postaci (`autohunt/sortowanie/<nick>.cfg`,
+  wiersze `pole=vnum`); blokada idzie za przedmiotem przeniesionym ręcznie w całości, kończy się, gdy na polu stoi
+  inny przedmiot (puste pole – przy następnym sortowaniu); ulepszenie broni/zbroi jej nie zdejmuje.
+- `inventoryarrange.py` (wpis paczki z 2.0.24, zastępowany) – oba przyciski („Ułóż i scal”, „Tylko scal stosy”)
+  dopisują `keep=<hex>`, gdy coś jest zablokowane; serwer bez poprawki (kod 8) → komunikat o braku obsługi.
+- `uiinventory.py` – Alt + LPM na przedmiocie w plecaku przełącza blokadę (przy otwartym czacie albo pisaniu
+  szeptu Alt + LPM wkleja link jak dotąd); gwiazdka w lewym górnym rogu pola (obrazki-dzieci okna slotów
+  z `not_pick`, nad odliczaniem i podświetleniem aktywnej mikstury); wiersz „Zablokowany przy sortowaniu
+  (Alt+LPM)” w opisie przedmiotu; ręczne przeniesienie przekazuje blokadę (`__SendMoveItemPacket`).
+- `mt2009_ui/sortlock/star.tga` (nowy) – złota gwiazdka 11×11, 32-bit TGA jak `mt2009_ui/sidebar`.

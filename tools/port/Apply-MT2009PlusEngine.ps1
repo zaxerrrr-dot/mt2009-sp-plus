@@ -656,6 +656,19 @@ if ((Test-Path -LiteralPath $safeboxMergeApply -PathType Leaf) -and
         Write-Host 'The safebox merges its stacks without sorting.' -ForegroundColor DarkGray
     }
 }
+# Inventory sort lock (server-patches/sortlock): "/inventory_arrange" reads
+# "keep=<hex>", the cells locked with Alt + left click, and leaves those
+# items where they stand (playerbot_arrange::InventoryArrangeCommand); after
+# playerqol, whose "merge" lines it anchors on.
+$sortLockApply = Join-Path $repo 'server-patches/sortlock/Apply-SortLockPatch.ps1'
+if ((Test-Path -LiteralPath $sortLockApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf)) {
+    $sortLockResult = & $sortLockApply -SourceDir $engineGameSource
+    if ($sortLockResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Locked inventory items stay put when the bag is sorted.' -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both
