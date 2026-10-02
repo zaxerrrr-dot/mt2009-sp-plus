@@ -26,7 +26,7 @@ $edits = @(
     "`n// MT2009_PLUS_DUNGEON_MOB_HP_V2 (declare): char.cpp, server-patches/dungeonhp.`nextern void M2SetRegenBaseMaxHP(DWORD dwVID, int iBaseMaxHP);`n`ntemplate <class Func> Func CDungeon::ForEachMember(Func f)`n",
     'questlua_dungeon.cpp',
     "`t`t`tconst int hp = ch->GetHP();`n`t`t`tlong long newMax = (long long) oldMax * iPct / 100;`n",
-    "`t`t`tconst int hp = ch->GetHP();`n`t`t`t::M2SetRegenBaseMaxHP((DWORD) ch->GetVID(), oldMax);`t// MT2009_PLUS_DUNGEON_MOB_HP_V2 (base)`n`t`t`tlong long newMax = (long long) oldMax * iPct / 100;`n",
+    "`t`t`tconst int hp = ch->GetHP();`n`t`t`tif (iPct > 100)`t// MT2009_PLUS_DUNGEON_MOB_HP_V2 (base): a raised one only`n`t`t`t`t::M2SetRegenBaseMaxHP((DWORD) ch->GetVID(), oldMax);`n`t`t`tlong long newMax = (long long) oldMax * iPct / 100;`n",
     'char.cpp',
     "void CHARACTER::Destroy()`n{`n",
     "// MT2009_PLUS_DUNGEON_MOB_HP_V2 (server-patches/dungeonhp): a monster whose max HP a`n// dungeon rescaled (d.mob_hp_percent) heals as many points a tick as it did`n// before: the max HP it had before the first rescale, by its VID.`nstatic std::unordered_map<DWORD, int> s_mapM2RegenBaseMaxHP;`n`nvoid M2SetRegenBaseMaxHP(DWORD dwVID, int iBaseMaxHP)`n{`n`tif (iBaseMaxHP > 0)`n`t`ts_mapM2RegenBaseMaxHP.emplace(dwVID, iBaseMaxHP);`n}`n`nstatic int M2RegenMaxHP(const CHARACTER* ch)`n{`n`tif (!s_mapM2RegenBaseMaxHP.empty())`n`t{`n`t`tauto it = s_mapM2RegenBaseMaxHP.find((DWORD) ch->GetVID());`n`t`tif (it != s_mapM2RegenBaseMaxHP.end())`n`t`t`treturn it->second;`n`t}`n`treturn ch->GetMaxHP();`n}`n`nvoid CHARACTER::Destroy()`n{`n`ts_mapM2RegenBaseMaxHP.erase((DWORD) GetVID());`t// MT2009_PLUS_DUNGEON_MOB_HP_V2 (destroy)`n",

@@ -11,10 +11,11 @@ Biblioteka Wiedzy).
   zachowuje ten sam procent życia, jaki miał; zwraca, ilu zmieniono. Te same
   potwory na zwykłych mapach zostają bez zmian. W syslogu linia
   `DUNGEON_MOB_HP:`.
-- **Regeneracja (V2):** potwór zmieniony przez `d.mob_hp_percent` leczy się
-  o tyle samo punktów co przed zmianą - `regen_percent` liczy się od
+- **Regeneracja (V2):** potwór, któremu `d.mob_hp_percent` podniósł życie
+  (procent powyżej 100), leczy się o tyle samo punktów co przed zmianą - `regen_percent` liczy się od
   maksymalnego życia sprzed pierwszej zmiany (zapamiętanego po VID), nie od
-  podniesionego.
+  podniesionego. Potwór osłabiony (np. Metiny 55%) leczy się procentem
+  nowego, mniejszego życia.
 - Wytrzymałość potworów ze świata (`server-patches/mobhp`, flaga `m2_mob_hp`)
   nie nadpisuje potwora zmienionego tutaj.
 

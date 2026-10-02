@@ -8,9 +8,9 @@ monster or stone of that vnum in the instance gets its max HP times percent
 and keeps its share of health; it answers how many. The world's copies of
 the same vnum are untouched, and the world-health flag (server-patches/mobhp)
 leaves a monster rescaled here alone. MT2009_PLUS_DUNGEON_MOB_HP_V2 (the owner,
-2 October): a monster rescaled here heals as many points a tick as before it
-- its regen_percent counts from the max HP it had before the first rescale
-(char.cpp, the monsters' recovery). Applied once; a file without the
+2 October): a monster raised here heals as many points a tick as before it - its
+regen_percent counts from the max HP it had before the first raise (char.cpp,
+the monsters' recovery); a lowered one heals a percent of its new max HP. Applied once; a file without the
 expected code stops with an error, changing nothing."""
 import os
 import sys
@@ -133,7 +133,8 @@ EDITS += [
     ("questlua_dungeon.cpp",
      "\t\t\tconst int hp = ch->GetHP();\n\t\t\tlong long newMax = (long long) oldMax * iPct / 100;\n",
      "\t\t\tconst int hp = ch->GetHP();\n"
-     "\t\t\t::M2SetRegenBaseMaxHP((DWORD) ch->GetVID(), oldMax);\t// " + MARK2 + " (base)\n"
+     "\t\t\tif (iPct > 100)\t// " + MARK2 + " (base): a raised one only\n"
+     "\t\t\t\t::M2SetRegenBaseMaxHP((DWORD) ch->GetVID(), oldMax);\n"
      "\t\t\tlong long newMax = (long long) oldMax * iPct / 100;\n"),
     ("char.cpp",
      "void CHARACTER::Destroy()\n{\n",
