@@ -207,6 +207,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_weapon_goal.h"
 #include "playerbot_market.h"
 #include "playerbot_offline_market.h"
+#include "playerbot_minigames.h" // MT2009_PLUS_BOT_MINIGAMES_V1: bots in Catch the King, Rumi and Yut Nori, simulated
 #include "playerbot_guild_land.h"
 #include "playerbot_sash.h"
 #include "playerbot_saddlebag.h"
@@ -6625,6 +6626,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// deep, and opened 190 in an hour between them. Their bags were not the
 		// problem: 29 cells of 90 in use on average, none above 84.
 		ManagePlayerBotChests(ch, state, dwNow);
+		// MT2009_PLUS_BOT_MINIGAMES_V1: a deck, a card set or a board in the
+		// bag is played at once, without a table (playerbot_minigames.h).
+		ManagePlayerBotMinigames(ch, state, dwNow);
 		ManagePlayerBotStackMerge(ch, state, dwNow);
 		// The catch, wherever the bot happens to be standing. It used to be
 		// opened only between casts, so an angler that walked away from the bank

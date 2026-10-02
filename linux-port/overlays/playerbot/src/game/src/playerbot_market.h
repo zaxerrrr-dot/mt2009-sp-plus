@@ -47,6 +47,12 @@ namespace
 	// market empty of what it came for asks the world channel.
 	void AnnouncePlayerBotNeed(LPCHARACTER ch);
 
+	// MT2009_PLUS_BOT_MINIGAMES_V1 (playerbot_minigames.h, after this file):
+	// a mini game's chest off a counter, to open.
+	bool WantsPlayerBotMinigameChest(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForMinigameChest(LPCHARACTER ch, LPITEM item, long long price);
+	void NotePlayerBotMinigameChestBought(LPCHARACTER ch, DWORD dwVnum, long long price, DWORD count);
+
 	class CCollectPlayerBotStalls
 	{
 		public:
@@ -243,6 +249,11 @@ namespace
 		// A Moonlight chest, to open (WantsPlayerBotMoonlightChest).
 		if (offer->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			return WantsPlayerBotMoonlightChest(ch);
+
+		// MT2009_PLUS_BOT_MINIGAMES_V1: a mini game's chest, to open
+		// (WantsPlayerBotMinigameChest) - the gamblers most of all.
+		if (IsPlayerBotMinigameChestVnum(offer->GetVnum()))
+			return WantsPlayerBotMinigameChest(ch, offer);
 
 		// MT2009_PLUS_BOT_CAPE_V1: Peleryna Mestwa, for a bot strong enough to
 		// use it (PlayerBotWantsValourCapes, playerbot_targeting.h).
@@ -584,6 +595,10 @@ namespace
 			return CanPlayerBotPayForGuildMaterial(ch, item, price);
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		if (price > spare) return false;
+		// MT2009_PLUS_BOT_MINIGAMES_V1: no dearer than what it holds (a gambler
+		// a little over), out of a share of the purse.
+		if (IsPlayerBotMinigameChestVnum(item->GetVnum()))
+			return CanPlayerBotPayForMinigameChest(ch, item, price);
 		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
 			return CanPlayerBotPayForSashOffer(ch, item, price);
 		if (WantsPlayerBotSashPieceOffer(ch, item))
@@ -877,6 +892,7 @@ namespace
 				pick.dwSkillVnum);
 		if (pick.dwVnum == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			NotePlayerBotChestBought(ch->GetPlayerID(), get_dword_time());
+		NotePlayerBotMinigameChestBought(ch, pick.dwVnum, paid, pick.wCount); // MT2009_PLUS_BOT_MINIGAMES_V1
 		// A gambler's purchase is charged to the session's budget.
 		NotePlayerBotGamblePurchase(ch, paid);
 		NotePlayerBotGuildMaterialBought(ch, pick.dwVnum, paid);
