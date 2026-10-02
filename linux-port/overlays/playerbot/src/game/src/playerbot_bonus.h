@@ -376,9 +376,12 @@ namespace
 				// A level-30 or level-75 weapon a player hand-tuned is finished
 				// the moment it lands an average-damage or average-skill line
 				// over the lock, so the mixer leaves it alone (Ciapek).
+				// MT2009_PLUS_BOT_L30_AVG_MIX_V1: the level-30 family's average
+				// is mixed on to thirty (the target below), not stopped at the
+				// lock's twenty-five; its skill line keeps the lock.
 				const int lvl = item->GetLevelLimit();
 				if ((lvl == 30 || lvl == 75) &&
-						(average >= PLAYERBOT_BONUS_WEAPON_LOCK_PCT ||
+						((lvl == 75 && average >= PLAYERBOT_BONUS_WEAPON_LOCK_PCT) ||
 						 skill >= PLAYERBOT_BONUS_WEAPON_LOCK_PCT))
 					return true;
 				// Any weapon, not only the level-30 family: with the vnum test
@@ -811,8 +814,9 @@ namespace
 		const int plus = (int)item->GetRefineLevel();
 		if (plus < PLAYERBOT_BONUS_JEWEL_MIN_PLUS)
 			return false;
+		// MT2009_PLUS_BOT_L30_AVG_MIX_V1: the level-30 family from +7.
 		if (item->GetType() == ITEM_WEAPON)
-			return IsPlayerBotSpecialLevel30Weapon(item) ||
+			return (IsPlayerBotSpecialLevel30Weapon(item) && plus >= PLAYERBOT_BONUS_L30_MIX_MIN_PLUS) ||
 					(item->GetLevelLimit() >= PLAYERBOT_BONUS_WEAPON_MIN_LEVEL &&
 						plus >= PLAYERBOT_BONUS_WEAPON_MIN_PLUS);
 		if (item->GetType() != ITEM_ARMOR)
@@ -886,8 +890,10 @@ namespace
 		if (!CanPlayerBotTakeBonusStone(item) || IsPlayerBotBonusCategoryAllowed(item) ||
 				(int)item->GetRefineLevel() < PLAYERBOT_BONUS_JEWEL_MIN_PLUS)
 			return false;
+		// MT2009_PLUS_BOT_L30_AVG_MIX_V1: a level-30 weapon under +7 waits for
+		// its +7 (IsPlayerBotBonusCategoryAllowed takes it from there).
 		if (item->GetType() == ITEM_WEAPON)
-			return IsPlayerBotSpecialLevel30Weapon(item) ||
+			return !IsPlayerBotSpecialLevel30Weapon(item) &&
 					item->GetLevelLimit() >= PLAYERBOT_BONUS_WEAPON_MIN_LEVEL;
 		if (item->GetType() != ITEM_ARMOR)
 			return false;

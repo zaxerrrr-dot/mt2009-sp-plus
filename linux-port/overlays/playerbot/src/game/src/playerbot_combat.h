@@ -329,6 +329,11 @@ namespace
 	bool ManagePlayerBotCombatBuffs(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow,
 			bool duel = false)
 	{
+		// MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: a Shaman's INT set goes on for a
+		// person's party and comes off after a cast (playerbot_shaman_buff_set.h);
+		// the blows wait for the engine's still second while it does.
+		if (ch && !duel && MaintainPlayerBotBuffSet(ch, state, dwNow))
+			return true;
 		// Nor under a marble, where the engine refuses every skill a buff is
 		// (IsPlayerBotFightingAsMonster).
 		if (!ch || ch->GetSkillGroup() == 0 || dwNow < state.dwNextBuffCheckTime ||
@@ -441,6 +446,11 @@ namespace
 				return true;
 			}
 
+			// MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: into the INT set first, when
+			// the Shaman carries one; the cast comes on the next pass.
+			if (PreparePlayerBotBuffSetForCast(ch, state, dwNow))
+				return true;
+
 			// Self-buff if not active
 			if (PlayerBotUseSkill(ch, state, buffVnum, ch, dwNow))
 			{
@@ -530,6 +540,9 @@ namespace
 			}
 		}
 
+		// MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: nothing left to cast - a cast
+		// session in the INT set is over.
+		NotePlayerBotBuffSetNothingToCast(ch);
 		return false;
 	}
 

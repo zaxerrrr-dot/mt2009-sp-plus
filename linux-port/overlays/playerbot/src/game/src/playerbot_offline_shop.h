@@ -291,6 +291,8 @@ namespace {
     }
     bool BotOfflineValid(LPCHARACTER ch, LPITEM item, int cell) {
         if (!item || item->GetOwner() != ch || item->IsEquipped() || item->isLocked()) return false;
+        // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: never a piece of the Shaman's INT set.
+        if (IsPlayerBotBuffSetPiece(ch, item)) return false;
 #ifdef ENABLE_SOULBIND_SYSTEM
         if (item->IsSealed()) return false;
 #endif

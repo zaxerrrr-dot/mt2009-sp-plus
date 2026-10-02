@@ -90,6 +90,17 @@ namespace
 	std::vector<DWORD> s_vecPlayerBotItemShopMount;
 	DWORD s_dwNextPlayerBotItemShopScan = 0;
 
+	// MT2009_PLUS_SIDEKICK_COINS_V1: the player's companion and the shop
+	// (playerbot_sidekick.h, later in the include order). Its owner's switch
+	// "Smocze Monety: wydaje / nie wydaje" in the window decides, not the
+	// world's ISHOP; it buys only what it uses - no look of any kind - and
+	// tells its owner every voucher cashed and every purchase.
+	bool IsPlayerBotSidekickPID(DWORD pid);
+	bool IsPlayerBotSidekickCoinsOn(DWORD pid);
+	void NotePlayerBotSidekickVouchers(LPCHARACTER sk, long long coins, int balance);
+	void NotePlayerBotSidekickItemShopBuy(LPCHARACTER sk, DWORD vnum, DWORD count, DWORD price, bool marks,
+			const char* reason, int left);
+
 	unsigned int s_uPlayerBotVouchersUsed = 0;
 	unsigned int s_uPlayerBotCoinsCharged = 0;
 	unsigned int s_uPlayerBotItemShopBuys = 0;
@@ -245,6 +256,8 @@ namespace
 			return false;
 		sys_log(0, "PLAYERBOT_ISHOP: voucher cashed pid=%u name=%s vouchers=%d coins=%lld balance=%d",
 				ch->GetPlayerID(), ch->GetName(), cashed, total, state.iDragonCoins);
+		if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			NotePlayerBotSidekickVouchers(ch, total, state.iDragonCoins);
 		return true;
 	}
 
@@ -260,7 +273,10 @@ namespace
 			return;
 		state.dwNextVoucherCheckTime = dwNow + PLAYERBOT_ISHOP_VOUCHER_CHECK_INTERVAL +
 				PlayerBotNavHash(ch->GetPlayerID() ^ 0x564f5543U) % 15000U;
-		if (!IsPlayerBotItemShopEnabled() || ch->GetExchange() || !FindPlayerBotVoucher(ch))
+		// MT2009_PLUS_SIDEKICK_COINS_V1: a companion by its owner's switch.
+		const bool sidekick = IsPlayerBotSidekickPID(ch->GetPlayerID());
+		if ((sidekick ? !IsPlayerBotSidekickCoinsOn(ch->GetPlayerID()) : !IsPlayerBotItemShopEnabled()) ||
+				ch->GetExchange() || !FindPlayerBotVoucher(ch))
 			return;
 		if (!state.bDragonBalanceKnown || dwNow >= state.dwNextItemShopBalanceTime)
 			RefreshPlayerBotDragonBalance(ch, state, dwNow);
@@ -713,6 +729,10 @@ namespace
 	int CollectPlayerBotItemShopWishes(LPCHARACTER ch, const TPlayerBotAIState& state, TPlayerBotItemShopWish* wishes)
 	{
 		int n = CollectPlayerBotItemShopNeeds(ch, state, wishes);
+		// MT2009_PLUS_SIDEKICK_COINS_V1: a companion spends on what it uses
+		// alone - no hairstyle, costume, skin or pet, and nothing for a counter.
+		if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return n;
 		const long long reserve = GetPlayerBotItemShopNeedReserve(ch, state, wishes, n);
 		int look = 0;
 		const DWORD lookVnum = PickPlayerBotLook(ch, &look);
@@ -878,6 +898,9 @@ namespace
 				ch->GetPlayerID(), ch->GetName(), wish.dwVnum, entry.dwCount, entry.dwIndex, entry.dwPrice,
 				wish.bMarks ? "marks" : "coins", wish.szReason, state.iDragonCoins, state.iDragonMarks);
 		WearPlayerBotBoughtLook(ch, state);
+		if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			NotePlayerBotSidekickItemShopBuy(ch, wish.dwVnum, entry.dwCount, entry.dwPrice, wish.bMarks, wish.szReason,
+					wish.bMarks ? state.iDragonMarks : state.iDragonCoins);
 		return true;
 	}
 
@@ -933,7 +956,8 @@ namespace
 			return;
 		state.dwNextItemShopCheckTime = dwNow + PLAYERBOT_ISHOP_CHECK_INTERVAL +
 				PlayerBotNavHash(ch->GetPlayerID() ^ 0x49534850U) % 60000U;
-		if (!IsPlayerBotItemShopEnabled())
+		if (IsPlayerBotSidekickPID(ch->GetPlayerID()) ? !IsPlayerBotSidekickCoinsOn(ch->GetPlayerID()) :
+				!IsPlayerBotItemShopEnabled())
 			return;
 		if (ch->IsBusy() || ch->GetMyShop() || ch->GetExchange())
 			return;

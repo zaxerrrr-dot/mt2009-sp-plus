@@ -1166,6 +1166,10 @@ def read_ai_weights():
     # The three shouters of the first villages (playerbot_shouters.h,
     # MT2009_PLUS_SHOUTERS_V1): on top of the bot count. On.
     vals["SHOUTERS"] = 1
+    # A bot's haggle with a person over a line of the person's offline shop
+    # too dear to buy at once (playerbot_haggle.h, MT2009_PLUS_BOT_HAGGLE_V1).
+    # On; off is the market as it was.
+    vals["HAGGLE"] = 1
     vals["SCRAP"] = 0
     # Percent of bots that rest on the market ring after a town errand; 100 is
     # the author's town, 0 is "every bot hunting".
@@ -1185,6 +1189,9 @@ def read_ai_weights():
     # what the core did before there was a choice.
     vals["WAR_MINUTES"] = 30
     vals["WAR_HOURS"] = 2
+    # And the kills that win a war with a bot guild on a side before its clock
+    # runs out (0: the clock alone; MT2009_PLUS_GUILD_WAR_KILLS_V1).
+    vals["WAR_KILLS"] = 100
     # The chest event's two figures. None until the file says: the panel does
     # not know what CONFIG holds, and must not write a guess over it.
     vals["CHEST"] = None
@@ -1242,6 +1249,9 @@ def read_ai_weights():
                 if name == "SHOUTERS":
                     vals["SHOUTERS"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
                     continue
+                if name == "HAGGLE":
+                    vals["HAGGLE"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
+                    continue
                 if name == "SCRAP":
                     try:
                         vals["SCRAP"] = max(0, min(100, int(parts[1])))
@@ -1281,6 +1291,12 @@ def read_ai_weights():
                 if name == "WAR_HOURS":
                     try:
                         vals["WAR_HOURS"] = max(1, min(4, int(parts[1])))
+                    except ValueError:
+                        pass
+                    continue
+                if name == "WAR_KILLS":
+                    try:
+                        vals["WAR_KILLS"] = max(0, min(1000, int(parts[1])))
                     except ValueError:
                         pass
                     continue
@@ -1351,6 +1367,9 @@ def write_ai_weights(vals):
     body.append("PERSONA\t%d" % (1 if vals.get("PERSONA", 1) else 0))
     # Not a weight: the three shouters of the first villages (1 = in the world).
     body.append("SHOUTERS\t%d" % (1 if vals.get("SHOUTERS", 1) else 0))
+    # Not a weight: whether a bot haggles with a person over a line too dear
+    # to buy at once.
+    body.append("HAGGLE\t%d" % (1 if vals.get("HAGGLE", 1) else 0))
     # Percent of stall keepers that sell scrap gear; 0 is off.
     body.append("SCRAP\t%d" % max(0, min(100, int(vals.get("SCRAP", 0)))))
     # Percent of bots that rest in town after an errand; 0 means nobody does.
@@ -1368,6 +1387,7 @@ def write_ai_weights(vals):
     # 1-4 hours in each kingdom).
     body.append("WAR_MINUTES\t%d" % (15 if int(vals.get("WAR_MINUTES", 30)) <= 15 else 30))
     body.append("WAR_HOURS\t%d" % max(1, min(4, int(vals.get("WAR_HOURS", 2)))))
+    body.append("WAR_KILLS\t%d" % max(0, min(1000, int(vals.get("WAR_KILLS", 100)))))
     # The Moonlight chest: thousandths per kill and per Metin. Written only once
     # the operator has set them, so an untouched install keeps its CONFIG.
     for key in ("CHEST", "CHEST_STONE"):
@@ -4095,10 +4115,12 @@ T.update({
  "ai_war_hours":   {"en":"A war in each kingdom every","pl":"Wojna w każdym królestwie co","de":"Ein Krieg in jedem Königreich alle","tr":"Her krallıkta bir savaş, her"},
  "ai_war_min_unit": {"en":"minutes","pl":"minut","de":"Minuten","tr":"dakika"},
  "ai_war_hour_unit": {"en":"h","pl":"h","de":"Std.","tr":"saat"},
- "ai_war_len_help": {"en":"At 15 minutes the bots end their war early, with the winner the game would name (the higher score, a draw on a tie). A player's guild at war with the bots always fights the game's thirty.",
-                     "pl":"Przy 15 minutach boty kończą swoją wojnę wcześniej, ze zwycięzcą, jakiego wskazałaby gra (więcej punktów, remis przy równej liczbie). Gildia gracza w wojnie z botami zawsze walczy pełne trzydzieści minut gry.",
-                     "de":"Bei 15 Minuten beenden die Bots ihren Krieg früher, mit dem Sieger, den das Spiel nennen würde (mehr Punkte, Unentschieden bei Gleichstand). Eine Spielergilde im Krieg mit den Bots kämpft immer die dreißig Minuten des Spiels.",
-                     "tr":"15 dakikada botlar savaşlarını erken bitirir; kazanan, oyunun seçeceği taraftır (daha yüksek puan, eşitlikte beraberlik). Botlarla savaşan bir oyuncu loncası her zaman oyunun otuz dakikasını savaşır."},
+ "ai_war_kills": {"en":"A war is won at","pl":"Wojnę wygrywa","de":"Ein Krieg ist gewonnen bei","tr":"Savaşı kazandıran"},
+ "ai_war_kills_unit": {"en":"kills (0: by the clock alone)","pl":"zabójstw (0: tylko czas)","de":"Kills (0: nur nach Zeit)","tr":"öldürme (0: yalnızca süre)"},
+ "ai_war_len_help": {"en":"A war with a bot guild on a side is scored by its kills, one a kill. The first guild to the kills set here wins at once; otherwise at the end of the time the guild with more kills wins (a draw on a tie). The war's board in the game shows the target, the kills each side still needs and who leads. At 15 minutes the bots end their war early; a player's guild at war with the bots always has the game's thirty.",
+                     "pl":"Wojna z gildią botów po jednej ze stron jest liczona w zabójstwach, jedno za każde zabicie. Gildia, która pierwsza zabije ustawioną liczbę wrogów, wygrywa od razu; inaczej po upływie czasu wygrywa ta z większą liczbą zabójstw (remis przy równej). Tablica wojny w grze pokazuje cel, ile zabójstw brakuje każdej stronie i kto prowadzi. Przy 15 minutach boty kończą swoją wojnę wcześniej; gildia gracza w wojnie z botami zawsze ma pełne trzydzieści minut gry.",
+                     "de":"Ein Krieg mit einer Bot-Gilde auf einer Seite zählt Kills, einen pro Kill. Die Gilde, die zuerst die hier eingestellten Kills erreicht, gewinnt sofort; sonst gewinnt am Ende der Zeit die Gilde mit mehr Kills (Unentschieden bei Gleichstand). Die Kriegstafel im Spiel zeigt das Ziel, die fehlenden Kills jeder Seite und wer führt. Bei 15 Minuten beenden die Bots ihren Krieg früher; eine Spielergilde im Krieg mit den Bots hat immer die dreißig Minuten des Spiels.",
+                     "tr":"Bir tarafında bot loncası olan savaş öldürmelerle sayılır, her öldürme bir puan. Burada ayarlanan öldürme sayısına ilk ulaşan lonca hemen kazanır; aksi halde süre sonunda daha çok öldüren lonca kazanır (eşitlikte beraberlik). Oyundaki savaş tablosu hedefi, her tarafın eksik öldürmelerini ve kimin önde olduğunu gösterir. 15 dakikada botlar savaşlarını erken bitirir; botlarla savaşan bir oyuncu loncası her zaman oyunun otuz dakikasına sahiptir."},
  "ai_tower":     {"en":"Bot guilds climb the Demon Tower","pl":"Gildie botów chodzą do Wieży Demonów","de":"Bot-Gilden steigen in den Dämonenturm","tr":"Bot loncaları Şeytan Kulesi'ne çıkar"},
  "ai_tower_help": {"en":"About every hour and a half one bot guild of this core calls its members of level 55 and up to the tower's ground floor (the game says it on the chat), they break the Metin of Toughness together after four minutes and climb the floors: monsters, stones, keys and seals as in the game; from the sixth floor on a bot of 75 is needed, as for players. Whoever stands on the ground floor when the stone breaks - a bot on its errand, a player who came to watch - goes in with them. 'Now' calls a raid on the core's next check when none is under way.",
                   "pl":"Mniej więcej co półtorej godziny jedna gildia botów tego rdzenia zwołuje członków od 55. poziomu na parter Wieży (ogłoszenie na czacie), po czterech minutach razem rozbijają Metin Twardości i przechodzą piętra: potwory, kamienie, klucze i pieczęcie jak w grze; od 6. piętra potrzebny jest bot z 75. poziomem, tak jak u graczy. Kto stoi na parterze, gdy pęka kamień — bot na własnej misji albo gracz, który przyszedł popatrzeć — wchodzi razem z nimi. „Teraz” zwołuje wyprawę przy najbliższym sprawdzeniu rdzenia, jeśli żadna nie trwa.",
@@ -4133,6 +4155,12 @@ T.update({
                   "de":"Ein Bot löst die gefundenen Kupon-SM-Gutscheine (Metinsteine und Bosse lassen sie fallen, M2_DRAGON_COIN_*_PERMILLE) in Drachenmünzen seines Kontos ein und kauft höchstens einmal pro Stunde nur, was seine eigenen Regeln nutzen: einen Kamień Duchowy für eine Großmeister-Fertigkeit, einen Bonus-Wechselstein für die getragene Waffe, wenn sie noch neu gewürfelt würde, mit Drachenmarken eine Segensrolle oder die Angriffstränke des Drachengottes, und jeder vierte Bot einmal eine Frisur. Keine VIP-Gegenstände und kein Pass: jeder Bot hat das Premium-Abo bereits. Aus: die Gutscheine bleiben im Inventar.",
                   "tr":"Bot bulduğu Kupon SM kuponlarını (Metin taşları ve boss'lar düşürür, M2_DRAGON_COIN_*_PERMILLE) hesabının Ejderha Parasına çevirir ve saatte en fazla bir kez, yalnızca kendi kurallarının kullanacağı şeyi alır: Büyük Usta becerisi için Kamień Duchowy, hâlâ yeniden atılmaya değer takılı silah için bonus değiştirme taşı, Ejderha İşaretleriyle Kutsama Parşömeni ya da Ejderha Tanrısı saldırı iksirleri ve dört bottan biri bir kez bir saç modeli. VIP eşya ve geçiş kartı yok: her bot zaten premium aboneliğe sahip. Kapalı: kuponlar çantada kalır."},
  "ai_ishop_on":  {"en":"Enabled","pl":"Włączone","de":"Eingeschaltet","tr":"Açık"},
+ "ai_haggle":    {"en":"Bots haggle at people's shops","pl":"Boty targują się na sklepach graczy","de":"Bots feilschen an den Läden der Spieler","tr":"Botlar oyuncu dükkânlarında pazarlık yapar"},
+ "ai_haggle_help":{"en":"A bot that wants a finished piece of gear (+6 and up) on a person's offline shop, but finds it dearer than it would pay (the bots' cap on a person's price included: at most 1.5 to 2 times the market's price for the piece), whispers the owner - once, with the piece linked - its offer, and goes up to its last price, the most it would pay, if the owner asks more. The owner answers \"ok\", \"nie\"/\"no\" or a price of his own (\"5kk\"), or simply lowers the price on the shop; once the piece asks the price agreed (or less), the bot comes and buys it, within ten minutes. Only an owner online on the bot's core is asked, one haggle at a time with a person, three offers an hour to one person, one offer about the same piece in three hours (twelve after a no), three haggles at once on a core. What a bot buys at once is unchanged. Off: no bot whispers an offer, and every deal is forgotten.",
+                  "pl":"Bot, który chce gotowy przedmiot (od +6) ze sklepu offline gracza, ale uznaje go za droższy niż zapłaciłby (z limitem botów na cenę gracza: najwyżej 1,5-2 razy cena rynkowa przedmiotu), pisze do właściciela szeptem - raz, z podlinkowanym przedmiotem - swoją ofertę, a gdy właściciel chce więcej, podnosi do ostatniej ceny, najwyższej, jaką zapłaci. Właściciel odpisuje „ok”, „nie” albo własną cenę („5kk”) lub po prostu obniża cenę na sklepie; gdy przedmiot kosztuje tyle, ile uzgodniono (albo mniej), bot przychodzi i kupuje - w ciągu dziesięciu minut. Pyta tylko właściciela zalogowanego na rdzeniu bota; najwyżej jeden targ naraz z jedną osobą, trzy oferty na godzinę do jednej osoby, jedna oferta o ten sam przedmiot na trzy godziny (dwanaście po „nie”), trzy targi naraz na rdzeń. To, co bot kupuje od razu, się nie zmienia. Wyłączone: żaden bot nie proponuje ceny, a zawarte umowy przepadają.",
+                  "de":"Ein Bot, der ein fertiges Ausrüstungsteil (ab +6) im Offline-Laden eines Spielers will, es aber teurer findet, als er zahlen würde (mit der Obergrenze der Bots für den Preis eines Spielers: höchstens das 1,5- bis 2-Fache des Marktpreises), flüstert dem Besitzer - einmal, mit verlinktem Gegenstand - sein Angebot und geht bis zu seinem letzten Preis, dem Höchsten, das er zahlt, wenn der Besitzer mehr will. Der Besitzer antwortet \"ok\", \"no\" oder mit einem eigenen Preis (\"5kk\") oder senkt einfach den Preis im Laden; sobald der Gegenstand den vereinbarten Preis (oder weniger) kostet, kommt der Bot und kauft ihn, innerhalb von zehn Minuten. Gefragt wird nur ein Besitzer, der auf dem Kern des Bots online ist; höchstens ein Feilschen gleichzeitig mit einer Person, drei Angebote pro Stunde an eine Person, ein Angebot zum selben Gegenstand in drei Stunden (zwölf nach einem Nein), drei gleichzeitig auf einem Kern. Was ein Bot sofort kauft, bleibt unverändert. Aus: kein Bot flüstert ein Angebot, und alle Abmachungen werden vergessen.",
+                  "tr":"Bir oyuncunun çevrimdışı dükkânında bitmiş bir ekipman (+6 ve üstü) isteyen ama onu ödeyeceğinden pahalı bulan bot (botların oyuncu fiyatı sınırı dahil: eşyanın piyasa fiyatının en fazla 1,5-2 katı), sahibine bir kez, eşyanın bağlantısıyla teklifini fısıldar ve sahip daha fazlasını isterse son fiyatına, ödeyeceği en yüksek fiyata çıkar. Sahip \"ok\", \"no\" ya da kendi fiyatıyla (\"5kk\") cevap verir veya dükkândaki fiyatı düşürür; eşya anlaşılan fiyata (ya da daha azına) indiğinde bot gelip on dakika içinde satın alır. Yalnızca botun çekirdeğinde çevrimiçi olan sahibe sorulur; bir kişiyle aynı anda en fazla bir pazarlık, bir kişiye saatte üç teklif, aynı eşya için üç saatte bir teklif (bir hayırdan sonra on iki), bir çekirdekte aynı anda üç pazarlık. Botun hemen satın aldığı şeyler değişmez. Kapalı: hiçbir bot teklif fısıldamaz ve tüm anlaşmalar unutulur."},
+ "ai_haggle_on": {"en":"Enabled","pl":"Włączone","de":"Eingeschaltet","tr":"Açık"},
  "ai_shop_m2":   {"en":"Bot stands in the second villages","pl":"Sklepy botów także w drugich wioskach (M2)","de":"Bot-Stände auch in den zweiten Dörfern (M2)","tr":"Bot tezgahları ikinci köylerde de (M2)"},
  "ai_shop_m2_help": {"en":"Off (the default): a bot opens its stand only in the first villages, where the players shop; an expired stand that stood in a second village is renewed on the first village's market ring at its owner's next service visit. On: the stands stand in both villages, as before.",
                   "pl":"Wyłączone (domyślnie): bot otwiera sklep tylko w pierwszych wioskach, tam gdzie kupują gracze; sklep, który stał w drugiej wiosce, po wygaśnięciu zostaje odnowiony na rynku pierwszej wioski przy najbliższej wizycie właściciela. Włączone: sklepy stoją w obu wioskach, jak wcześniej.",
@@ -7597,6 +7625,8 @@ TPL_AI = BASE.replace("__BODY__", """
       <select name="WAR_HOURS">
         {% for h in (1, 2, 3, 4) %}<option value="{{h}}" {% if cur.get('WAR_HOURS', 2) == h %}selected{% endif %}>{{h}} {{t('ai_war_hour_unit')}}</option>{% endfor %}
       </select></label>
+    {% if engine_mt2009 %}<label>{{t('ai_war_kills')}}
+      <input type="number" name="WAR_KILLS" min="0" max="1000" step="10" style="width:80px" value="{{cur.get('WAR_KILLS', 100)}}"> {{t('ai_war_kills_unit')}}</label>{% endif %}
   </div>
   <p class="muted" style="margin:6px 0 0">{{t('ai_war_len_help')}}</p>
 </div>
@@ -7617,6 +7647,11 @@ TPL_AI = BASE.replace("__BODY__", """
   <h3 style="margin:0 0 2px">🛒 {{t('ai_ishop')}}</h3>
   <p class="muted" style="margin:0 0 6px">{{t('ai_ishop_help')}}</p>
   <label><input type="checkbox" name="ISHOP" value="1" {% if cur.get('ISHOP', 1) %}checked{% endif %}> {{t('ai_ishop_on')}}</label>
+</div>
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">🤝 {{t('ai_haggle')}}</h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_haggle_help')}}</p>
+  <label><input type="checkbox" name="HAGGLE" value="1" {% if cur.get('HAGGLE', 1) %}checked{% endif %}> {{t('ai_haggle_on')}}</label>
 </div>
 {# Not a slider: 0 is off and 1-30 the days the core keeps its explanations;
    an absent key is the core's own seven, and saving the page untouched keeps
@@ -19429,10 +19464,12 @@ def ai_weights():
             vals["TOWER"] = 1 if request.form.get("TOWER") else 0
             vals["CATACOMB"] = 1 if request.form.get("CATACOMB") else 0
             vals["ISHOP"] = 1 if request.form.get("ISHOP") else 0
+            vals["HAGGLE"] = 1 if request.form.get("HAGGLE") else 0
         else:
             vals["TOWER"] = old.get("TOWER", 1)
             vals["CATACOMB"] = old.get("CATACOMB", 1)
             vals["ISHOP"] = old.get("ISHOP", 1)
+            vals["HAGGLE"] = old.get("HAGGLE", 1)
         vals["SHOP_M2"] = 1 if request.form.get("SHOP_M2") else 0
         vals["PERSONA"] = 1 if request.form.get("PERSONA") else 0
         vals["SHOUTERS"] = 1 if request.form.get("SHOUTERS") else 0
@@ -19467,6 +19504,15 @@ def ai_weights():
             vals["WAR_HOURS"] = max(1, min(4, int(request.form.get("WAR_HOURS", 2))))
         except (TypeError, ValueError):
             vals["WAR_HOURS"] = 2
+        # The kills that win a war: on the mt2009 page alone; elsewhere the
+        # file's value stays.
+        if ENGINE_MT2009:
+            try:
+                vals["WAR_KILLS"] = max(0, min(1000, int(request.form.get("WAR_KILLS", 100))))
+            except (TypeError, ValueError):
+                vals["WAR_KILLS"] = 100
+        else:
+            vals["WAR_KILLS"] = old.get("WAR_KILLS", 100)
         for key in ("CHEST", "CHEST_STONE"):
             try:
                 vals[key] = max(0, min(1000, int(request.form.get(key))))

@@ -3094,6 +3094,11 @@ namespace
 	// from +4, earrings from +7.
 	const int PLAYERBOT_BONUS_WEAPON_MIN_LEVEL = 45;
 	const int PLAYERBOT_BONUS_WEAPON_MIN_PLUS = 7;
+	// MT2009_PLUS_BOT_L30_AVG_MIX_V1: the level-30 weapons from +7, like every
+	// other weapon ("boty mieszaja zmiankami srednie na broni z poziomu 30 od
+	// +7, az do 30%", sosen): a +4 to +6 one is a step on the way to the
+	// blacksmith's +7 and took the stones its +7 then lacked.
+	const int PLAYERBOT_BONUS_L30_MIX_MIN_PLUS = 7;
 	const int PLAYERBOT_BONUS_ARMOUR_MIN_LEVEL = 21;
 	const int PLAYERBOT_BONUS_ARMOUR_MIN_PLUS = 7;
 	// Body armour from the level-18 plates up, at +7 (Iwakura, 26 September:

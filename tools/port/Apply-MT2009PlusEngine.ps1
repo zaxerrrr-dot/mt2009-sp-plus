@@ -578,6 +578,18 @@ if ((Test-Path -LiteralPath $luaStackApply -PathType Leaf) -and
         Write-Host ('Applied {0} Lua stack edit(s).' -f $luaStackResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Guild war kills (server-patches/guildwarkills): a field war's score is its
+# kills, one a kill, not the victim's level - the bots end a war with a bot
+# guild on a side at WAR_KILLS (playerbot_guild_war.h).
+$guildWarKillsApply = Join-Path $repo 'server-patches/guildwarkills/Apply-GuildWarKillsPatch.ps1'
+if ((Test-Path -LiteralPath $guildWarKillsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'guild_manager.cpp') -PathType Leaf)) {
+    $guildWarKillsResult = & $guildWarKillsApply -SourceDir $engineGameSource
+    if ($guildWarKillsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} guild war kills edit(s).' -f $guildWarKillsResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Entity snapshot check (server-patches/entitysnapshot): ForEachAround's
 # snapshot skips characters destroyed while it is walked (a splash skill's
 # kill ran d.purge_area and the next blow landed on a freed monster - the
