@@ -1012,8 +1012,23 @@ namespace
 		const int distance = DISTANCE_APPROX(ch->GetX() - target->GetX(), ch->GetY() - target->GetY());
 		// MT2009_PLUS_BOT_METIN_PLAIN_V1: at a Metin, a skill only for a pack.
 		const bool stonePlainOnly = IsPlayerBotStonePlainOnly(ch, target, dwNow);
-		for (size_t i = 0; i < sizeof(build.dwOffensiveSkills) / sizeof(build.dwOffensiveSkills[0]); ++i)
+		// MT2009_PLUS_LEGENDS_V1 (skills): against a person a Specjalny and up
+		// opens with its strongest skill - the highest grade first, the build's
+		// order among equals - and a Legend and a Champion cast again sooner.
+		const size_t skillSlots = sizeof(build.dwOffensiveSkills) / sizeof(build.dwOffensiveSkills[0]);
+		size_t skillOrder[sizeof(build.dwOffensiveSkills) / sizeof(build.dwOffensiveSkills[0])];
+		for (size_t i = 0; i < skillSlots; ++i)
+			skillOrder[i] = i;
+		const bool legendPvp = target->IsPC() && GetPlayerBotLegendTierOf(ch) >= BOT_LEGEND_SPECIAL;
+		if (legendPvp)
+			for (size_t i = 1; i < skillSlots; ++i)
+				for (size_t j = i; j > 0 &&
+						ch->GetSkillLevel(build.dwOffensiveSkills[skillOrder[j]]) >
+						ch->GetSkillLevel(build.dwOffensiveSkills[skillOrder[j - 1]]); --j)
+					std::swap(skillOrder[j], skillOrder[j - 1]);
+		for (size_t k = 0; k < skillSlots; ++k)
 		{
+			const size_t i = skillOrder[k];
 			const DWORD skillVnum = build.dwOffensiveSkills[i];
 			if (skillVnum == 0 || ch->GetSkillLevel(skillVnum) == 0)
 				continue;
@@ -1058,10 +1073,13 @@ namespace
 				// Shamans should weave weapon attacks between spells.  Casting an
 				// offensive spell every global AI tick looks like repeated buffing
 				// in the client and leaves almost no visible normal attacks.
-				state.dwNextSkillCastTime = dwNow +
+				state.dwNextSkillCastTime = dwNow + (legendPvp ? GetPlayerBotLegendPvpSkillGap(ch,
+						ch->GetJob() == JOB_SHAMAN
+						 ? PLAYERBOT_SHAMAN_ATTACK_SKILL_INTERVAL
+						 : PLAYERBOT_SKILL_ATTACK_INTERVAL) :
 						(ch->GetJob() == JOB_SHAMAN
 						 ? PLAYERBOT_SHAMAN_ATTACK_SKILL_INTERVAL
-						 : PLAYERBOT_SKILL_ATTACK_INTERVAL);
+						 : PLAYERBOT_SKILL_ATTACK_INTERVAL));
 				state.dwNextAttackTime = dwNow + PLAYERBOT_SKILL_ANIMATION_LOCK;
 				sys_log(0, "PLAYERBOT_AI: used attack skill pid=%u name=%s vnum=%u target_vid=%u hits=%u stone=%d",
 						ch->GetPlayerID(), ch->GetName(), skillVnum, dwTargetVID, hits,
@@ -1081,8 +1099,10 @@ namespace
 	{
 		if (!ExecutePlayerBotAttackSkill(ch, foe, state, dwNow))
 			return false;
-		const DWORD interval = ch->GetJob() == JOB_SHAMAN
-				? PLAYERBOT_DUEL_SHAMAN_SKILL_INTERVAL : PLAYERBOT_DUEL_SKILL_INTERVAL;
+		// MT2009_PLUS_LEGENDS_V1 (skills): a Legend's and a Champion's gap is
+		// shorter.
+		const DWORD interval = GetPlayerBotLegendPvpSkillGap(ch, ch->GetJob() == JOB_SHAMAN
+				? PLAYERBOT_DUEL_SHAMAN_SKILL_INTERVAL : PLAYERBOT_DUEL_SKILL_INTERVAL);
 		state.dwNextSkillCastTime = std::min(state.dwNextSkillCastTime, dwNow + interval);
 		return true;
 	}

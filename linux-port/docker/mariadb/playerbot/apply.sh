@@ -396,6 +396,14 @@ db -e "ALTER TABLE player.playerbot_guild ADD COLUMN IF NOT EXISTS build_fund BI
     || echo "playerbot-migrate: could not add the building fund to player.playerbot_guild" >&2
 db -e "CREATE TABLE IF NOT EXISTS player.playerbot_guild_contribution (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, guild_id INT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, amount BIGINT NOT NULL, purpose VARCHAR(24) NOT NULL, at DATETIME NOT NULL, KEY guild_at (guild_id, at)) ENGINE=InnoDB;" \
     || echo "playerbot-migrate: could not create player.playerbot_guild_contribution" >&2
+# MT2009_PLUS_LEGENDS_V1: the System Legend (playerbot_legends.h) - a bot's
+# tier for good (1 Wyrozniajacy sie, 2 Specjalny, 3 Chodzaca Legenda, 4 Czempion
+# Krolestwa), its reputation and counters, and the events the panels' ranking
+# page shows. The core creates both as well. Idempotent.
+db -e "CREATE TABLE IF NOT EXISTS player.playerbot_legend (pid INT UNSIGNED NOT NULL PRIMARY KEY, tier TINYINT UNSIGNED NOT NULL DEFAULT 0, empire TINYINT UNSIGNED NOT NULL DEFAULT 0, reputation INT NOT NULL DEFAULT 0, player_kills INT UNSIGNED NOT NULL DEFAULT 0, player_deaths INT UNSIGNED NOT NULL DEFAULT 0, wars_won INT UNSIGNED NOT NULL DEFAULT 0, wars_lost INT UNSIGNED NOT NULL DEFAULT 0, boss_kills INT UNSIGNED NOT NULL DEFAULT 0, achievements INT UNSIGNED NOT NULL DEFAULT 0, champion_count INT UNSIGNED NOT NULL DEFAULT 0, since DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, tier_since DATETIME NULL, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, KEY tier_empire (tier, empire), KEY reputation_idx (reputation)) ENGINE=InnoDB;" \
+    || echo "playerbot-migrate: could not create player.playerbot_legend" >&2
+db -e "CREATE TABLE IF NOT EXISTS player.playerbot_legend_event (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, pid INT UNSIGNED NOT NULL DEFAULT 0, empire TINYINT UNSIGNED NOT NULL DEFAULT 0, kind VARCHAR(24) NOT NULL DEFAULT '', text VARCHAR(255) NOT NULL DEFAULT '', KEY at_idx (at)) ENGINE=InnoDB;" \
+    || echo "playerbot-migrate: could not create player.playerbot_legend_event" >&2
 # The second channel's pins (playerbot_channel_rules.h): every bot that has
 # ever kept an offline shop lives on the first channel for good, because the
 # shops are the first channel's. The table only grows - each core adds the

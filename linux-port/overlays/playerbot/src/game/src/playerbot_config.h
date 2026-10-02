@@ -219,6 +219,12 @@ namespace
 	// SHOUTERS key, playerbot_shouters.h). On by default; off logs them out.
 	bool s_bPlayerBotShouters = true;
 	bool s_bPlayerBotShoutersReported = true;
+	// MT2009_PLUS_LEGENDS_V1: the System Legend (the LEGENDS key,
+	// playerbot_legends.h) - the tiers' bonuses, titles, Champions and
+	// notices. On by default; off keeps the tiers in the table and does
+	// nothing with them.
+	bool s_bPlayerBotLegends = true;
+	bool s_bPlayerBotLegendsReported = true;
 	// What the clock last asked the DB core for, so a request is not repeated
 	// every minute while the round trip is still in flight, and so switching
 	// the clock off in the middle of a night lowers the flag it raised.
@@ -285,6 +291,7 @@ namespace
 		s_bPlayerBotItemShop = true;
 		s_bPlayerBotShopsInM2 = false;
 		s_bPlayerBotShouters = true;
+		s_bPlayerBotLegends = true; // MT2009_PLUS_LEGENDS_V1
 		s_bPlayerBotPersona = true;
 		s_bPlayerBotHaggle = true;
 		if (s_iPlayerBotChestConfigPermille < 0)
@@ -453,6 +460,18 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 				s_bPlayerBotShoutersReported = enabled;
 			}
 			s_bPlayerBotShouters = enabled;
+			return;
+		}
+		// MT2009_PLUS_LEGENDS_V1: the System Legend.
+		if (PlayerBotWeightNameEquals(szKey, "LEGENDS"))
+		{
+			const bool enabled = value != 0;
+			if (enabled != s_bPlayerBotLegendsReported)
+			{
+				sys_log(0, "PLAYERBOT_CONFIG: the System Legend %s", enabled ? "on" : "off");
+				s_bPlayerBotLegendsReported = enabled;
+			}
+			s_bPlayerBotLegends = enabled;
 			return;
 		}
 		if (PlayerBotWeightNameEquals(szKey, "PERSONA"))
@@ -706,6 +725,8 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_bPlayerBotHaggle ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "SHOUTERS"))
 			return s_bPlayerBotShouters ? 1 : 0;
+		if (PlayerBotWeightNameEquals(szKey, "LEGENDS"))
+			return s_bPlayerBotLegends ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "SCRAP"))
 			return s_iPlayerBotScrapPercent;
 		if (PlayerBotWeightNameEquals(szKey, "REST"))
@@ -774,7 +795,8 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 				PlayerBotWeightNameEquals(szKey, "SHOP_M2") ||
 				PlayerBotWeightNameEquals(szKey, "PERSONA") ||
 				PlayerBotWeightNameEquals(szKey, "HAGGLE") ||
-				PlayerBotWeightNameEquals(szKey, "SHOUTERS"))
+				PlayerBotWeightNameEquals(szKey, "SHOUTERS") ||
+				PlayerBotWeightNameEquals(szKey, "LEGENDS"))
 		{
 			value = value ? 1 : 0;
 			return true;
@@ -1313,6 +1335,14 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		if (!s_bPlayerBotWeightsInitialised)
 			ResetPlayerBotWeights();
 		return s_bPlayerBotShouters;
+	}
+
+	// MT2009_PLUS_LEGENDS_V1: the LEGENDS switch (playerbot_legends.h).
+	bool IsPlayerBotLegendsEnabled()
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return s_bPlayerBotLegends;
 	}
 
 	// The WARS switch, asked by ManagePlayerBotGuildWars.

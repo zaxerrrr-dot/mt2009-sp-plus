@@ -603,6 +603,18 @@ if ((Test-Path -LiteralPath $guildWarKillsApply -PathType Leaf) -and
         Write-Host ('Applied {0} guild war kills edit(s).' -f $guildWarKillsResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The System Legend (server-patches/legends): a bot of a tier strikes harder
+# against people and monsters, gains more experience, and its deaths and
+# kills count for the Legends (playerbot_legends.h).
+$legendsApply = Join-Path $repo 'server-patches/legends/Apply-LegendsPatch.ps1'
+if ((Test-Path -LiteralPath $legendsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'battle.cpp') -PathType Leaf)) {
+    $legendsResult = & $legendsApply -SourceDir $engineGameSource
+    if ($legendsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} System Legend edit(s).' -f $legendsResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Entity snapshot check (server-patches/entitysnapshot): ForEachAround's
 # snapshot skips characters destroyed while it is walked (a splash skill's
 # kill ran d.purge_area and the next blow landed on a freed monster - the

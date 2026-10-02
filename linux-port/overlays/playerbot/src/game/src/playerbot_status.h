@@ -1074,9 +1074,15 @@ namespace
 		const unsigned int titleId = (IsPlayerBotPersonaEnabled() && state.persona.bRestored)
 				? playerbot_persona::PERSONA_TITLE_BASE + (unsigned int)state.persona.bPersona
 				: (unsigned int)state.bPersonality;
-		char command[64];
-		int commandLen = snprintf(command, sizeof(command), "PlayerBotTitle %u %u",
-				(unsigned int)ch->GetVID(), titleId);
+		// MT2009_PLUS_LEGENDS_V1 (title): the tier of the System Legend and the
+		// kingdom as two words more - the client draws "Wyrozniajacy sie",
+		// "Specjalny", "Chodzaca Legenda" or "Czempion <kingdom>" in the tier's
+		// colour in that row (playerbot_status_tail.py); an older client
+		// reads the first two. Zero under the LEGENDS switch off.
+		const unsigned int legendTier = (unsigned int)GetPlayerBotLegendTierOf(ch);
+		char command[80];
+		int commandLen = snprintf(command, sizeof(command), "PlayerBotTitle %u %u %u %u",
+				(unsigned int)ch->GetVID(), titleId, legendTier, (unsigned int)ch->GetEmpire());
 		if (commandLen <= 0 || commandLen >= (int)sizeof(command))
 			return;
 		++commandLen;   // the trailing NUL every chat packet carries

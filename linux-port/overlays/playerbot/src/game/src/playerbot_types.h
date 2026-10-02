@@ -8858,6 +8858,92 @@ namespace
 	long GetPlayerBotGuildErrandMap(LPCHARACTER ch);
 	long long CollectPlayerBotGuildMaterialMissing(LPCHARACTER ch, std::map<DWORD, int>& out);
 	DWORD GetPlayerBotGuildMaterialBasePrice();
+
+	// --- MT2009_PLUS_LEGENDS_V1: the System Legend --------------------------
+	//
+	// The owner's design of 2 October: four tiers a bot keeps for good (in
+	// player.playerbot_legend), each with built-in bonuses no item gives and a
+	// coloured title above the nick (playerbot_legends.h,
+	// playerbot_legend_tier.h). Indexed by EPlayerBotLegendTier: none,
+	// Wyrozniajacy sie, Specjalny, Chodzaca Legenda, Czempion Krolestwa.
+	const int PLAYERBOT_LEGEND_TIER_COUNT = 5;
+	// The shares, in thousandths of the bots, drawn once from the pid's hash:
+	// forty Wyrozniajacy sie and twenty Specjalni in a thousand.
+	const int PLAYERBOT_LEGEND_DISTINGUISHED_PERMILLE = 40;
+	const int PLAYERBOT_LEGEND_SPECIAL_PERMILLE = 20;
+	// Chodzace Legendy a kingdom (of the whole world), filled from its
+	// Specjalni; a Czempion is one of them, at most one a kingdom.
+	const int PLAYERBOT_LEGEND_PER_KINGDOM = 2;
+	// A Legend no core has seen for this many days gives its place up (back
+	// to Specjalny), and a Specjalny is promoted only if it played within it
+	// and stands at this level or more.
+	const int PLAYERBOT_LEGEND_STALE_DAYS = 7;
+	const int PLAYERBOT_LEGEND_MIN_LEVEL = 30;
+	// The bonuses, built in (bots only). HP and the two "strong against" in
+	// thousandths, the experience in thousandths on top, the refine in points
+	// of chance (the blacksmith and the scrolls), and how many reads one
+	// skill book or Spirit Stone counts as.
+	const int PLAYERBOT_LEGEND_HP_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 25, 60, 125, 200 };
+	const int PLAYERBOT_LEGEND_VS_HUMAN_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 15, 35, 60, 90 };
+	const int PLAYERBOT_LEGEND_VS_MONSTER_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 15, 35, 60, 75 };
+	const int PLAYERBOT_LEGEND_EXP_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 50, 125, 250, 250 };
+	const int PLAYERBOT_LEGEND_REFINE_POINTS[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 5, 10, 15, 20 };
+	const int PLAYERBOT_LEGEND_BOOK_READS[PLAYERBOT_LEGEND_TIER_COUNT] = { 1, 1, 2, 3, 4 };
+	// The hidden affect that carries the HP (500-599: kept through a death).
+	const DWORD PLAYERBOT_LEGEND_HP_AFFECT = 591;
+	// The fighting of the Specjalni and up: a red potion in a fight with a
+	// person from this much health (a war's own 85 stands where it is
+	// higher), the fight with a person broken off under this much with no red
+	// potion left, the foe's lost health worth this many units of distance a
+	// percent and its levels over the bot's this many a level when a target
+	// is chosen (the weaker first), the skill gap in a fight with a person
+	// cut to this percent, and the gear's plus and bonuses weighed this many
+	// thousandths more a grade and a bonus.
+	const int PLAYERBOT_LEGEND_PVP_POTION_HP_PERCENT[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 0, 72, 78, 82 };
+	const int PLAYERBOT_LEGEND_PVP_RETREAT_HP_PERCENT[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 0, 25, 20, 18 };
+	const DWORD PLAYERBOT_LEGEND_PVP_RETREAT_LOCK_MS = 45 * 1000;
+	const int PLAYERBOT_LEGEND_WEAK_FOE_HP_WEIGHT[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 0, 8, 12, 15 };
+	const int PLAYERBOT_LEGEND_WEAK_FOE_LEVEL_WEIGHT[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 0, 40, 50, 60 };
+	const int PLAYERBOT_LEGEND_PVP_SKILL_GAP_PERCENT[PLAYERBOT_LEGEND_TIER_COUNT] = { 100, 100, 100, 85, 75 };
+	const int PLAYERBOT_LEGEND_GEAR_PLUS_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 0, 12, 15, 18 };
+	const int PLAYERBOT_LEGEND_GEAR_BONUS_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 0, 10, 12, 15 };
+	// A Legend's guild: the members it asks a pass and the share of the
+	// experience its members offer, over the guild's own tier.
+	const DWORD PLAYERBOT_LEGEND_GUILD_INVITES_PER_PASS = 6;
+	const int PLAYERBOT_LEGEND_GUILD_EXP_OFFER_BONUS_PERCENT = 5;
+	const DWORD PLAYERBOT_LEGEND_GUILD_CHECK_MS = 90 * 1000;
+	// The two Legends' guilds of a kingdom are its pick for a war this often,
+	// in percent, whenever both are ready and they were not its last pair.
+	const int PLAYERBOT_LEGEND_RIVAL_WAR_PERCENT = 60;
+	// Reputation ("status legendy"): a won war (the guild's master, every other
+	// bot of a tier in it), a person killed, a boss's last blow, a death by a
+	// person's hand (taken off, never under zero), the crowning, and the
+	// achievements - each counted once (EPlayerBotLegendAchievement).
+	const int PLAYERBOT_LEGEND_REP_WAR_WIN_MASTER = 60;
+	const int PLAYERBOT_LEGEND_REP_WAR_WIN_MEMBER = 15;
+	const int PLAYERBOT_LEGEND_REP_PLAYER_KILL = 12;
+	const int PLAYERBOT_LEGEND_REP_BOSS_KILL = 6;
+	const int PLAYERBOT_LEGEND_REP_DEATH_BY_PLAYER = 8;
+	const int PLAYERBOT_LEGEND_REP_CROWNED = 150;
+	const int PLAYERBOT_LEGEND_REP_WEAPON_PLUS9 = 100;
+	const int PLAYERBOT_LEGEND_REP_LEVEL75 = 40;
+	const int PLAYERBOT_LEGEND_REP_LEVEL99 = 80;
+	const int PLAYERBOT_LEGEND_REP_FIRST_BOSS = 30;
+	const int PLAYERBOT_LEGEND_REP_HUNDRED_KILLS = 120;
+	// The clocks: a bot's own upkeep, every core's reload of the table, the
+	// look for vacant places, and the Champions' hour (the first a few
+	// minutes after the start).
+	const DWORD PLAYERBOT_LEGEND_UPKEEP_MS = 10 * 1000;
+	const DWORD PLAYERBOT_LEGEND_RELOAD_MS = 2 * 60 * 1000;
+	const DWORD PLAYERBOT_LEGEND_ASSIGN_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_LEGEND_SEED_MS = 60 * 60 * 1000;
+	const DWORD PLAYERBOT_LEGEND_CHAMPION_MS = 60 * 60 * 1000;
+	const DWORD PLAYERBOT_LEGEND_FIRST_CHAMPION_MS = 5 * 60 * 1000;
+	// The notices: never two closer than this, never one about the same bot
+	// and kind closer than the second; the events kept this many days.
+	const DWORD PLAYERBOT_LEGEND_NOTICE_GAP_MS = 45 * 1000;
+	const DWORD PLAYERBOT_LEGEND_NOTICE_SAME_MS = 20 * 60 * 1000;
+	const int PLAYERBOT_LEGEND_EVENT_KEEP_DAYS = 30;
 }
 
 #endif

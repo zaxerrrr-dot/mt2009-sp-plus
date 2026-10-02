@@ -133,6 +133,9 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 // may speak to a person.
 #include "playerbot_language.h"
 #include "playerbot_config.h"
+// MT2009_PLUS_LEGENDS_V1: a bot's tier in the System Legend and the numbers
+// it changes, before everything that asks (the refine, the gear, the fight).
+#include "playerbot_legend_tier.h"
 // The explanations of the bots' decisions (log.playerbot_listing,
 // log.playerbot_equip): the recorder here, the parts that read the whole AI
 // after it (playerbot_explain_late.h, below).
@@ -274,6 +277,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // Orc Valley's first island are, after the checklist whose eligibility it
 // borrows.
 #include "playerbot_l30_dropper.h"
+// MT2009_PLUS_LEGENDS_V1: the System Legend - the tiers' table, the Legends
+// and the Champions, the reputation, the notices and the engine's hooks.
+#include "playerbot_legends.h"
 
 namespace
 {
@@ -1922,6 +1928,12 @@ namespace
 					if (candidate->GetEmpire() != m_me->GetEmpire())
 						return true;
 
+					// MT2009_PLUS_LEGENDS_V1 (party): two Legends are rivals and
+					// never hunt in one party.
+					if (ArePlayerBotLegendRivalPids(m_me->GetPlayerID(), candidate->GetPlayerID()) ||
+							(candidate->GetParty() && PlayerBotPartyHasLegendRival(m_me, candidate->GetParty())))
+						return true;
+
 					if (abs((int)candidate->GetLevel() - (int)m_me->GetLevel()) > 3)
 						return true;
 
@@ -2410,6 +2422,11 @@ namespace
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		const bool exorcised = get_global_time() < ch->GetSkillNextReadTime(bestSkillVnum);
 #endif
+		// MT2009_PLUS_LEGENDS_V1 (books): the count before the read, to see
+		// whether it landed (ApplyPlayerBotLegendBookReads).
+		char legendReadFlag[64];
+		snprintf(legendReadFlag, sizeof(legendReadFlag), "traning_master_skill.%u.read_count", bestSkillVnum);
+		const int legendReadsBefore = ch->GetQuestFlag(legendReadFlag);
 		// Rada Pustelnika makes this read certain: while AFFECT_SKILL_BOOK_BONUS
 		// is on, LearnSkillByBook rolls a hundred where it rolls thirty-five
 		// (r40250's english table: nothing against sixty-five), and it takes
@@ -2433,6 +2450,9 @@ namespace
 #if defined(PLAYERBOT_ENGINE_MT2009)
 			NotePlayerBotBookRead(ch, bestSkillVnum, exorcised);
 #endif
+			// MT2009_PLUS_LEGENDS_V1 (books): a Specjalny's book counts as two
+			// reads, a Legend's as three, a Champion's as four.
+			ApplyPlayerBotLegendBookReads(ch, bestSkillVnum, oldLevel, legendReadsBefore);
 			SetPlayerBotAction(state, BOT_ACTION_READ_BOOK, dwNow);
 			sys_log(0, "PLAYERBOT_AI: read skill book pid=%u name=%s skill=%u old_level=%u new_level=%u success=%d advice=%d",
 					ch->GetPlayerID(), ch->GetName(), bestSkillVnum, oldLevel,
@@ -2547,7 +2567,12 @@ namespace
 #else
 		ch->SetQuestFlag(nextTimeFlag, now + PLAYERBOT_GRAND_MASTER_TRAIN_SECONDS);
 #endif
-		const bool learned = ch->LearnGrandMasterSkill(skillVnum);
+		bool learned = ch->LearnGrandMasterSkill(skillVnum);
+		// MT2009_PLUS_LEGENDS_V1 (spirit stones): one stone of a bot of a tier
+		// is its tier's number of tries, the first that lands ending them.
+		for (int legendTry = 1; !learned && legendTry < GetPlayerBotLegendBookReads(ch) &&
+				ch->GetSkillLevel(skillVnum) == level; ++legendTry)
+			learned = ch->LearnGrandMasterSkill(skillVnum);
 		ch->UpdateAlignment(-(learned ? cost : number(cost / 3, cost / 2)));
 		SetPlayerBotAction(state, BOT_ACTION_READ_BOOK, dwNow);
 		sys_log(0, "PLAYERBOT_AI: grand master training %s pid=%u name=%s skill=%u level=%d->%d rank=%d->%d",
@@ -5983,6 +6008,9 @@ void CPlayerBotManager::Update()
 	// playerbot_guild_war.h).
 	RefreshPlayerBotStrengths(dwNow);
 	ManagePlayerBotGuildWars(dwNow);
+	// MT2009_PLUS_LEGENDS_V1: the System Legend - the table, the Legends'
+	// places and the Champions (playerbot_legends.h).
+	ManagePlayerBotLegends(dwNow);
 	ManagePlayerBotTowerRaids(dwNow);
 	// The world's bosses: a raid called to every one standing with none
 	// (playerbot_boss_raid.h).
@@ -6640,6 +6668,9 @@ WritePlayerBotGuildStatus(dwNow);
 		MirrorPlayerBotLevel(ch);
 		ManagePlayerBotPolymorph(ch, state, dwNow);
 		ManagePlayerBotGuild(ch, state, dwNow);
+		// MT2009_PLUS_LEGENDS_V1: its tier's row, HP and achievements, and a
+		// Legend's guild (playerbot_legends.h).
+		ManagePlayerBotLegend(ch, state, dwNow);
 		// Answered every tick and not on the party pass's own clock: the engine
 		// gives an invitation ten seconds to live, and the party pass can be
 		// three minutes away.

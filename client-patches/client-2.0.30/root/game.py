@@ -4039,8 +4039,10 @@ class GameWindow(ui.ScriptWindow):
 	def __PlayerBotTitle(self, vid="0", personality="-1", *rest):
 		# A bot's personality where a player's alignment title stands
 		# (playerbot_status_tail.py; ManagePlayerBotPersonalityTitle on the server).
+		# MT2009_PLUS_LEGENDS_V1: and the tier of the System Legend with the
+		# kingdom, the two words a newer server adds.
 		import playerbot_status_tail
-		if playerbot_status_tail.show_title(vid, personality) and not getattr(self, "playerbotTitleKeeper", None):
+		if playerbot_status_tail.show_title(vid, personality, *rest[:2]) and not getattr(self, "playerbotTitleKeeper", None):
 			self.playerbotTitleKeeper = playerbot_status_tail.GetTitleKeeper()
 			self.RegisterUpdatable(self.playerbotTitleKeeper)
 

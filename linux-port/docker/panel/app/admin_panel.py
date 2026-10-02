@@ -1170,6 +1170,10 @@ def read_ai_weights():
     # MT2009_PLUS_SHOUTERS_V1) and the three medal droppers among them, Tieru's
     # (MT2009_PLUS_MEDAL_SHOUTERS_V1): on top of the bot count. On.
     vals["SHOUTERS"] = 1
+    # MT2009_PLUS_LEGENDS_V1: the bots' legends (playerbot_legends.h) - tiers,
+    # their built-in bonuses, the titles over their heads, the Kingdom
+    # Champions and the notices. On; off keeps the tiers in the database.
+    vals["LEGENDS"] = 1
     # A bot's haggle with a person over a line of the person's offline shop
     # too dear to buy at once (playerbot_haggle.h, MT2009_PLUS_BOT_HAGGLE_V1).
     # On; off is the market as it was.
@@ -1252,6 +1256,9 @@ def read_ai_weights():
                     continue
                 if name == "SHOUTERS":
                     vals["SHOUTERS"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
+                    continue
+                if name == "LEGENDS":
+                    vals["LEGENDS"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
                     continue
                 if name == "HAGGLE":
                     vals["HAGGLE"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
@@ -1371,6 +1378,8 @@ def write_ai_weights(vals):
     body.append("PERSONA\t%d" % (1 if vals.get("PERSONA", 1) else 0))
     # Not a weight: the three shouters of the first villages (1 = in the world).
     body.append("SHOUTERS\t%d" % (1 if vals.get("SHOUTERS", 1) else 0))
+    # Not a weight: the bots' legends (MT2009_PLUS_LEGENDS_V1), 1 = on.
+    body.append("LEGENDS\t%d" % (1 if vals.get("LEGENDS", 1) else 0))
     # Not a weight: whether a bot haggles with a person over a line too dear
     # to buy at once.
     body.append("HAGGLE\t%d" % (1 if vals.get("HAGGLE", 1) else 0))
@@ -1895,6 +1904,92 @@ def read_player_guilds():
         g["empire_key"] = GUILD_EMPIRE_KEYS.get(g["empire"], "gl_empire_unknown")
         out.append(g)
     return out
+
+
+# ---- MT2009_PLUS_LEGENDS_V1: the bots' legends ---------------------------------
+# player.playerbot_legend is the game core's (playerbot_legends.h): a row a bot
+# with its tier (1 Distinguished, 2 Special, 3 Walking Legend, 4 Kingdom
+# Champion), reputation and counters; player.playerbot_legend_event its notable
+# moments. Both may be missing on a world whose core predates them.
+LEGEND_TIER_KEYS = {1: "lg_tier1", 2: "lg_tier2", 3: "lg_tier3", 4: "lg_tier4"}
+LEGEND_TIER_COLOURS = {1: "#7dd3fc", 2: "#c084fc", 3: "#f59e0b", 4: "#ef4444"}
+LEGEND_ACHIEVEMENTS = ((1, "\U0001F5E1", "lg_ach_plus9"), (2, "\u2B50", "lg_ach_lv75"),
+                       (4, "\U0001F31F", "lg_ach_lv99"), (8, "\U0001F409", "lg_ach_boss"),
+                       (16, "\u2620", "lg_ach_kills"), (32, "\U0001F451", "lg_ach_champ"))
+
+
+def legend_tier_label(tier, empire):
+    """The tier's name as the title over the bot's head says it."""
+    tier = int(tier or 0)
+    if tier == 4:
+        return "%s %s" % (t("lg_tier4"), t(GUILD_EMPIRE_KEYS.get(int(empire or 0), "gl_empire_unknown")))
+    return t(LEGEND_TIER_KEYS[tier]) if tier in LEGEND_TIER_KEYS else ""
+
+
+def read_legend_tiers(cur, pids):
+    """{pid: (tier, empire)} for the bots among pids that hold a tier; {} when
+    the table is missing or pids is empty."""
+    pids = [int(x) for x in pids if x]
+    if not pids:
+        return {}
+    out = {}
+    try:
+        for i in range(0, len(pids), 1000):
+            chunk = pids[i:i + 1000]
+            cur.execute("SELECT pid, tier, empire FROM player.playerbot_legend WHERE tier > 0 AND pid IN (%s)"
+                        % ",".join(["%s"] * len(chunk)), chunk)
+            for r in cur.fetchall():
+                out[int(r["pid"])] = (int(r["tier"] or 0), int(r["empire"] or 0))
+    except Exception:
+        return {}
+    return out
+
+
+def read_legends(empire=0, tier=0):
+    """(rows, events, missing): every tiered bot, the best first, with name,
+    level, guild and counters, and the last fifty events."""
+    rows, events = [], []
+    where, args = ["l.tier > 0"], []
+    if empire in (1, 2, 3):
+        where.append("l.empire = %s")
+        args.append(empire)
+    if tier in (1, 2, 3, 4):
+        where.append("l.tier = %s")
+        args.append(tier)
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute(
+                "SELECT l.pid, l.tier, l.empire, l.reputation, l.player_kills, l.player_deaths, l.wars_won, "
+                "l.wars_lost, l.boss_kills, l.achievements, l.champion_count, l.tier_since, "
+                "p.name, p.level, p.job, CAST(g.name AS BINARY) AS guild, g.id AS guild_id "
+                "FROM player.playerbot_legend l "
+                "LEFT JOIN player.player p ON p.id = l.pid "
+                "LEFT JOIN player.guild_member gm ON gm.pid = l.pid "
+                "LEFT JOIN player.guild g ON g.id = gm.guild_id "
+                "WHERE " + " AND ".join(where) + " "
+                "ORDER BY l.tier DESC, l.reputation DESC, p.level DESC LIMIT 2000", args)
+            rows = cur.fetchall()
+    except Exception:
+        return [], [], True
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("SELECT e.at, e.pid, e.empire, e.kind, e.text, p.name FROM player.playerbot_legend_event e "
+                        "LEFT JOIN player.player p ON p.id = e.pid ORDER BY e.id DESC LIMIT 50")
+            events = cur.fetchall()
+    except Exception:
+        events = []
+    for r in rows:
+        r["guild"] = log_text(r.get("guild")) if r.get("guild") is not None else ""
+        r["tier"] = int(r.get("tier") or 0)
+        r["empire"] = int(r.get("empire") or 0)
+        r["tier_label"] = legend_tier_label(r["tier"], r["empire"])
+        r["colour"] = LEGEND_TIER_COLOURS.get(r["tier"], "#aaa")
+        r["empire_key"] = GUILD_EMPIRE_KEYS.get(r["empire"], "gl_empire_unknown")
+        ach = int(r.get("achievements") or 0)
+        r["ach"] = [(icon, t(key)) for bit, icon, key in LEGEND_ACHIEVEMENTS if ach & bit]
+    for e in events:
+        e["empire_key"] = GUILD_EMPIRE_KEYS.get(int(e.get("empire") or 0), "gl_empire_unknown")
+    return rows, events, False
 
 
 def read_chest_switch():
@@ -4251,6 +4346,43 @@ T.update({
  "gl_empire_chunjo": {"en":"Chunjo","pl":"Chunjo","de":"Chunjo","tr":"Chunjo"},
  "gl_empire_jinno":  {"en":"Jinno","pl":"Jinno","de":"Jinno","tr":"Jinno"},
  "gl_empire_unknown":{"en":"?","pl":"?","de":"?","tr":"?"},
+ # MT2009_PLUS_LEGENDS_V1: the bots' legends (playerbot_legends.h).
+ "ai_legends":   {"en":"Bot Legend system","pl":"System Legend botów","de":"Legendensystem der Bots","tr":"Bot efsane sistemi"},
+ "ai_legends_help": {"en":"Some bots get a tier for good: Distinguished (~4%), Special (~2%), two Walking Legends per kingdom and at most one Kingdom Champion (the Legend whose guild leads its kingdom's guild ranking, checked hourly). Tiers carry built-in bonuses (HP, strong vs humans and monsters, experience, skill books and Spirit Stones counting more, refine chance), better PvP and gear choices, Legends found and lead strong guilds and treat each other as rivals. Players see a coloured title above the nick, and notable events are announced in chat. Off: no bonuses, titles or announcements - the tiers and reputation stay in the database.","pl":"Część botów dostaje stałą rangę: Wyróżniający się (~4%), Specjalny (~2%), dwie Chodzące Legendy na królestwo i najwyżej jeden Czempion Królestwa (Legenda, której gildia prowadzi w rankingu gildii królestwa, sprawdzane co godzinę). Rangi dają wbudowane bonusy (PŻ, silny na ludzi i potwory, exp, księgi i Kamienie Duchowe liczone kilkukrotnie, szansa ulepszenia), lepsze PvP i dobór ekwipunku; Legendy zakładają i prowadzą silne gildie i traktują się jak rywale. Gracze widzą kolorowy tytuł nad nickiem, a ważne wydarzenia są ogłaszane na czacie. Wyłączone: bez bonusów, tytułów i ogłoszeń – rangi i reputacja zostają w bazie.","de":"Einige Bots erhalten dauerhaft einen Rang (Ausgezeichnet, Speziell, Wandelnde Legende, Champion des Königreichs) mit eingebauten Boni, Titeln über dem Namen und Ansagen im Chat. Aus: keine Boni, Titel oder Ansagen.","tr":"Bazı botlar kalıcı bir rütbe alır (Seçkin, Özel, Yürüyen Efsane, Krallık Şampiyonu): yerleşik bonuslar, isim üstü unvan ve sohbet duyuruları. Kapalı: bonus, unvan ve duyuru yok."},
+ "lg_nav":       {"en":"\U0001F3C6 Legends","pl":"\U0001F3C6 Legendy","de":"\U0001F3C6 Legenden","tr":"\U0001F3C6 Efsaneler"},
+ "lg_open":      {"en":"Open the Legend ranking","pl":"Otwórz ranking Legend","de":"Legenden-Rangliste öffnen","tr":"Efsane sıralamasını aç"},
+ "lg_dash_hint": {"en":"The bots' tiers, the Kingdom Champions and Walking Legends, reputation and the latest legend events.","pl":"Rangi botów, Czempioni i Chodzące Legendy królestw, reputacja i ostatnie wydarzenia legend.","de":"Ränge der Bots, Champions und Legenden, Ruf und letzte Ereignisse.","tr":"Bot rütbeleri, şampiyonlar, efsaneler, itibar ve son olaylar."},
+ "lg_intro":     {"en":"Tiers are kept in player.playerbot_legend and given by the game core; reputation grows with won guild wars, killed players, boss kills and achievements.","pl":"Rangi są w player.playerbot_legend i nadaje je rdzeń gry; reputacja rośnie za wygrane wojny gildii, zabitych graczy, bossów i osiągnięcia.","de":"Ränge stehen in player.playerbot_legend; Ruf wächst durch Gildenkriege, getötete Spieler, Bosse und Erfolge.","tr":"Rütbeler player.playerbot_legend tablosunda; itibar lonca savaşları, oyuncu ve boss öldürmeleri ile artar."},
+ "lg_missing":   {"en":"The table does not exist yet (start the server with the new version).","pl":"Tabela jeszcze nie istnieje (uruchom serwer z nową wersją).","de":"Die Tabelle existiert noch nicht (Server mit der neuen Version starten).","tr":"Tablo henüz yok (sunucuyu yeni sürümle başlatın)."},
+ "lg_off":       {"en":"The Legend system is switched off in the bot behaviour settings: tiers are kept, but no bonuses, titles or announcements.","pl":"System Legend jest wyłączony w zachowaniu botów: rangi zostają, ale bez bonusów, tytułów i ogłoszeń.","de":"Das Legendensystem ist ausgeschaltet.","tr":"Efsane sistemi kapalı."},
+ "lg_tier1":     {"en":"Distinguished","pl":"Wyróżniający się","de":"Ausgezeichnet","tr":"Seçkin"},
+ "lg_tier2":     {"en":"Special","pl":"Specjalny","de":"Speziell","tr":"Özel"},
+ "lg_tier3":     {"en":"Walking Legend","pl":"Chodząca Legenda","de":"Wandelnde Legende","tr":"Yürüyen Efsane"},
+ "lg_tier4":     {"en":"Champion","pl":"Czempion","de":"Champion","tr":"Şampiyon"},
+ "lg_heads":     {"en":"Champions and Legends","pl":"Czempioni i Legendy","de":"Champions und Legenden","tr":"Şampiyonlar ve Efsaneler"},
+ "lg_no_champion":{"en":"no Champion","pl":"brak Czempiona","de":"kein Champion","tr":"şampiyon yok"},
+ "lg_no_legend": {"en":"no Legends yet","pl":"brak Legend","de":"keine Legenden","tr":"efsane yok"},
+ "lg_ranking":   {"en":"Ranking","pl":"Ranking","de":"Rangliste","tr":"Sıralama"},
+ "lg_all":       {"en":"all","pl":"wszystkie","de":"alle","tr":"hepsi"},
+ "lg_filter":    {"en":"Show","pl":"Pokaż","de":"Zeigen","tr":"Göster"},
+ "lg_col_tier":  {"en":"Tier","pl":"Ranga","de":"Rang","tr":"Rütbe"},
+ "lg_col_nick":  {"en":"Nick","pl":"Nick","de":"Name","tr":"İsim"},
+ "lg_col_rep":   {"en":"Reputation","pl":"Reputacja","de":"Ruf","tr":"İtibar"},
+ "lg_col_kills": {"en":"Players killed","pl":"Zabici gracze","de":"Getötete Spieler","tr":"Öldürülen oyuncu"},
+ "lg_col_deaths":{"en":"Died to players","pl":"Polegli od graczy","de":"Von Spielern getötet","tr":"Oyunculara ölüm"},
+ "lg_col_wars":  {"en":"Wars won/lost","pl":"Wojny wygr./przegr.","de":"Kriege gew./verl.","tr":"Savaş kaz./kay."},
+ "lg_col_boss":  {"en":"Bosses","pl":"Bossowie","de":"Bosse","tr":"Bosslar"},
+ "lg_col_ach":   {"en":"Achievements","pl":"Osiągnięcia","de":"Erfolge","tr":"Başarılar"},
+ "lg_col_since": {"en":"Tier since","pl":"Ranga od","de":"Rang seit","tr":"Rütbe tarihi"},
+ "lg_none":      {"en":"No tiered bots yet.","pl":"Jeszcze żaden bot nie ma rangi.","de":"Noch keine Bots mit Rang.","tr":"Henüz rütbeli bot yok."},
+ "lg_events":    {"en":"Latest legend events","pl":"Ostatnie wydarzenia legend","de":"Letzte Ereignisse","tr":"Son olaylar"},
+ "lg_no_events": {"en":"Nothing has happened yet.","pl":"Jeszcze nic się nie wydarzyło.","de":"Noch nichts passiert.","tr":"Henüz bir şey olmadı."},
+ "lg_ach_plus9": {"en":"+9 weapon","pl":"broń +9","de":"Waffe +9","tr":"+9 silah"},
+ "lg_ach_lv75":  {"en":"level 75","pl":"poziom 75","de":"Stufe 75","tr":"seviye 75"},
+ "lg_ach_lv99":  {"en":"level 99","pl":"poziom 99","de":"Stufe 99","tr":"seviye 99"},
+ "lg_ach_boss":  {"en":"first boss","pl":"pierwszy boss","de":"erster Boss","tr":"ilk boss"},
+ "lg_ach_kills": {"en":"100 players killed","pl":"100 zabitych graczy","de":"100 getötete Spieler","tr":"100 oyuncu"},
+ "lg_ach_champ": {"en":"was a Champion","pl":"był Czempionem","de":"war Champion","tr":"şampiyon oldu"},
  "gl_col_name":  {"en":"Guild","pl":"Gildia","de":"Gilde","tr":"Lonca"},
  "gl_col_kingdom":{"en":"Kingdom","pl":"Królestwo","de":"Königreich","tr":"Krallık"},
  "gl_col_tier":  {"en":"Tier","pl":"Klasa","de":"Stufe","tr":"Kademe"},
@@ -6747,6 +6879,11 @@ TPL_DASH = BASE.replace("__BODY__", """
 <p class="muted">{{t('gl_dash_hint')}}</p>
 <a class="btn" href="{{url_for('guilds_page')}}">{{t('gl_open')}}</a>
 </div>
+<div class="card">
+<h3 class="help">{{t('lg_nav')}}</h3>
+<p class="muted">{{t('lg_dash_hint')}}</p>
+<a class="btn" href="{{url_for('legends_page')}}">{{t('lg_open')}}</a>
+</div>
 {# The bots' explained decisions: only the 2.x line's core records them. #}
 {% if engine_mt2009 %}
 <div class="card">
@@ -6774,6 +6911,7 @@ TPL_DASH = BASE.replace("__BODY__", """
 {% for p in players %}
 <tr data-k="{{ (p.name ~ ' ' ~ (p.account or ''))|lower }}">
 <td><a href="{{url_for('player', pid=p.id)}}" title="{{t('tip_player')}}">{% if p.active %}<span class="dot on" title="{{t('tip_active')}}"></span>{% endif %}{{emoji(p.job)}} <b>{{p.name}}</b></a>
+{% if p.legend %}<span class="badge" style="font-size:11px;padding:1px 8px;color:{{p.legend[1]}};border-color:{{p.legend[1]}}">{{p.legend[0]}}</span>{% endif %}
 <div class="muted">{{jobname(p.job)}}</div></td>
 <td title="{{t('tip_acc_col')}}">👤 {{p.account or '—'}}</td>
 <td>{{p.level}}</td><td>{{"{:,}".format(p.gold)}}</td>
@@ -6847,6 +6985,7 @@ TPL_PLAYER = BASE.replace("__BODY__", """
 <p><a href="{{url_for('dash')}}">{{t('back_players')}}</a></p>
 <div class="card">
 <h3>{{emoji(p.job)}} {{p.name}}</h3>
+{% if legend %}<span class="badge" style="color:{{legend.colour}};border-color:{{legend.colour}}">🏆 {{legend.tier_label}} · {{t('lg_col_rep')}} {{legend.reputation}}{% if legend.player_kills %} · ☠ {{legend.player_kills}}{% endif %}</span>{% endif %}
 <span class="badge">{{t('level')}} {{p.level}}</span>
 <span class="badge">💰 {{"{:,}".format(p.gold)}} yang</span>
 <span class="badge">🗺️ {{t('pl_map')}} {{p.map_index}}</span>
@@ -7577,6 +7716,7 @@ TPL_AI = BASE.replace("__BODY__", """
 <p><a class="btn" href="{{url_for('ai_item_policy')}}">{{t('ai_items_open')}}</a>
    <a class="btn" href="{{url_for('events_page')}}">{{t('ev_open')}}</a>
    <a class="btn" href="{{url_for('guilds_page')}}">{{t('gl_open')}}</a>
+   <a class="btn" href="{{url_for('legends_page')}}">{{t('lg_open')}}</a>
    {% if engine_mt2009 %}<a class="btn" href="{{url_for('decisions_page')}}">{{t('dc_open')}}</a>{% endif %}</p>
 </div>
 
@@ -7682,6 +7822,11 @@ TPL_AI = BASE.replace("__BODY__", """
   <h3 style="margin:0 0 2px">📢 {{t('ai_shouters')}}</h3>
   <p class="muted" style="margin:0 0 6px">{{t('ai_shouters_help')}}</p>
   <label><input type="checkbox" name="SHOUTERS" value="1" {% if cur.get('SHOUTERS', 1) %}checked{% endif %}> {{t('ai_persona_on')}}</label>
+</div>
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">🏆 {{t('ai_legends')}} <a href="{{url_for('legends_page')}}" style="font-size:13px;font-weight:normal">{{t('lg_open')}}</a></h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_legends_help')}}</p>
+  <label><input type="checkbox" name="LEGENDS" value="1" {% if cur.get('LEGENDS', 1) %}checked{% endif %}> {{t('ai_persona_on')}}</label>
 </div>
 <div style="margin-bottom:18px">
   <h3 style="margin:0 0 2px">♻️ {{t('ai_scrap')}}
@@ -19020,6 +19165,92 @@ def guilds_page():
                                   next_wars=next_war_rows, player_guilds=read_player_guilds())
 
 
+# MT2009_PLUS_LEGENDS_V1: the bots' legends - the Champions and Walking Legends
+# of each kingdom, the ranking of every tiered bot and the latest events.
+TPL_LEGENDS = BASE.replace("__BODY__", """
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a> · <a href="{{url_for('ai_weights')}}">{{t('ai_legends')}}</a></p>
+<div class="card">
+<h3>{{t('lg_nav')}}</h3>
+<p class="muted">{{t('lg_intro')}}</p>
+{% if not enabled %}<p class="badge" style="border-color:#ef4444">{{t('lg_off')}}</p>{% endif %}
+</div>
+{% if missing %}
+<div class="card"><p class="muted">{{t('lg_missing')}}</p></div>
+{% else %}
+<div class="card">
+<h3>{{t('lg_heads')}}</h3>
+<div style="display:flex;flex-wrap:wrap;gap:12px">
+{% for e in (1, 2, 3) %}
+<div style="flex:1;min-width:220px;border:1px solid var(--line);border-radius:8px;padding:8px 12px">
+  <b>{{t(empire_keys[e])}}</b>
+  {% set champs = heads|selectattr('empire', 'equalto', e)|selectattr('tier', 'equalto', 4)|list %}
+  {% set legs = heads|selectattr('empire', 'equalto', e)|selectattr('tier', 'equalto', 3)|list %}
+  <div>{% for r in champs %}<span style="color:{{r.colour}}">\U0001F451 <a href="{{url_for('player', pid=r.pid)}}">{{r.name}}</a></span> ({{r.guild or '\u2014'}}, {{t('lg_col_rep')}} {{r.reputation}})<br>{% else %}<span class="muted">{{t('lg_no_champion')}}</span><br>{% endfor %}
+  {% for r in legs %}<span style="color:{{r.colour}}">\U0001F525 <a href="{{url_for('player', pid=r.pid)}}">{{r.name}}</a></span> ({{r.guild or '\u2014'}}, {{t('lg_col_rep')}} {{r.reputation}})<br>{% else %}{% if not champs %}<span class="muted">{{t('lg_no_legend')}}</span>{% endif %}{% endfor %}</div>
+</div>
+{% endfor %}
+</div>
+</div>
+<div class="card">
+<h3>{{t('lg_ranking')}}: {{rows|length}}</h3>
+<form method="get" action="{{url_for('legends_page')}}" class="row" style="align-items:flex-end">
+  <label>{{t('gl_col_kingdom')}} <select name="empire"><option value="0">{{t('lg_all')}}</option>{% for e in (1, 2, 3) %}<option value="{{e}}"{% if e == empire %} selected{% endif %}>{{t(empire_keys[e])}}</option>{% endfor %}</select></label>
+  <label>{{t('lg_col_tier')}} <select name="tier"><option value="0">{{t('lg_all')}}</option>{% for k in (4, 3, 2, 1) %}<option value="{{k}}"{% if k == tier %} selected{% endif %}>{{t(tier_keys[k])}}</option>{% endfor %}</select></label>
+  <button>{{t('lg_filter')}}</button>
+</form>
+{% if not rows %}<p class="muted">{{t('lg_none')}}</p>{% else %}
+<div style="overflow-x:auto">
+<table>
+<tr><th>#</th><th>{{t('lg_col_tier')}}</th><th>{{t('lg_col_nick')}}</th><th>{{t('gl_col_kingdom')}}</th><th>{{t('gl_col_name')}}</th>
+    <th>{{t('level')}}</th><th>{{t('lg_col_rep')}}</th><th>{{t('lg_col_kills')}}</th><th>{{t('lg_col_deaths')}}</th>
+    <th>{{t('lg_col_wars')}}</th><th>{{t('lg_col_boss')}}</th><th>{{t('lg_col_ach')}}</th><th>{{t('lg_col_since')}}</th></tr>
+{% for r in rows %}
+<tr><td class="muted">{{loop.index}}</td>
+  <td><span class="badge" style="font-size:12px;padding:1px 8px;color:{{r.colour}};border-color:{{r.colour}}">{{r.tier_label}}</span></td>
+  <td><a href="{{url_for('player', pid=r.pid)}}">{{r.name or ('#' ~ r.pid)}}</a></td>
+  <td>{{t(r.empire_key)}}</td><td>{{r.guild or '\u2014'}}</td><td>{{r.level or ''}}</td>
+  <td><b>{{r.reputation}}</b></td><td>{{r.player_kills}}</td><td>{{r.player_deaths}}</td>
+  <td>{{r.wars_won}}/{{r.wars_lost}}</td><td>{{r.boss_kills}}</td>
+  <td>{% for icon, label in r.ach %}<span title="{{label}}">{{icon}}</span> {% endfor %}</td>
+  <td class="muted">{{r.tier_since or ''}}</td></tr>
+{% endfor %}
+</table>
+</div>
+{% endif %}
+</div>
+<div class="card">
+<h3>{{t('lg_events')}}</h3>
+{% if not events %}<p class="muted">{{t('lg_no_events')}}</p>{% else %}
+<table>
+{% for e in events %}<tr><td class="muted" style="white-space:nowrap">{{e.at}}</td><td>{{t(e.empire_key)}}</td><td>{{e.text}}</td></tr>{% endfor %}
+</table>
+{% endif %}
+</div>
+{% endif %}
+""")
+
+
+@app.route("/legends")
+@login_required
+def legends_page():
+    """The bots' legends (MT2009_PLUS_LEGENDS_V1); read only."""
+    try:
+        empire = int(request.args.get("empire", 0) or 0)
+    except (TypeError, ValueError):
+        empire = 0
+    try:
+        tier = int(request.args.get("tier", 0) or 0)
+    except (TypeError, ValueError):
+        tier = 0
+    rows, events, missing = read_legends(empire, tier)
+    heads = rows if (empire == 0 and tier == 0) else read_legends(0, 0)[0]
+    heads = [r for r in heads if r["tier"] >= 3]
+    enabled = bool(read_ai_weights().get("LEGENDS", 1))
+    return render_template_string(TPL_LEGENDS, rows=rows, events=events, missing=missing, heads=heads,
+                                  empire=empire, tier=tier, enabled=enabled,
+                                  empire_keys=GUILD_EMPIRE_KEYS, tier_keys=LEGEND_TIER_KEYS)
+
+
 # ---- the bots' decisions, world-wide ------------------------------------------
 # Every row the core flagged in the last hours, from both explanation tables
 # (log.playerbot_equip by `time`, log.playerbot_listing by `last_at`, each on
@@ -19484,6 +19715,7 @@ def ai_weights():
         vals["SHOP_M2"] = 1 if request.form.get("SHOP_M2") else 0
         vals["PERSONA"] = 1 if request.form.get("PERSONA") else 0
         vals["SHOUTERS"] = 1 if request.form.get("SHOUTERS") else 0
+        vals["LEGENDS"] = 1 if request.form.get("LEGENDS") else 0
         try:
             vals["SCRAP"] = max(0, min(100, int(request.form.get("SCRAP", 0))))
         except (TypeError, ValueError):
@@ -20793,6 +21025,12 @@ def dash():
             players = cur.fetchall()
             states = bot_list_states(cur, [p["id"] for p in players
                                            if str(p.get("account") or "").startswith("playerbot_")])
+            # MT2009_PLUS_LEGENDS_V1: the tier beside a bot's name.
+            legends = read_legend_tiers(cur, [p["id"] for p in players
+                                              if str(p.get("account") or "").startswith("playerbot_")])
+        for p in players:
+            lt = legends.get(p["id"])
+            p["legend"] = (legend_tier_label(lt[0], lt[1]), LEGEND_TIER_COLOURS.get(lt[0], "#aaa")) if lt else None
         # 'recently in the game' marker: last_play within the last 10 minutes.
         # The game stamps it at login/logout, so this is honest about what it
         # knows - the tooltip says 'was in the game', not 'is online'.
@@ -21087,7 +21325,19 @@ def player(pid):
         except Exception:
             app.logger.exception("bot sessions of %s", pid)
             sessions = None
-    return render_template_string(TPL_PLAYER, p=p, inv=inv, sessions=sessions,
+    # MT2009_PLUS_LEGENDS_V1: the bot's tier, when it holds one.
+    legend = None
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("SELECT tier, empire, reputation, player_kills FROM player.playerbot_legend "
+                        "WHERE pid=%s AND tier > 0", (pid,))
+            legend = cur.fetchone()
+        if legend:
+            legend["tier_label"] = legend_tier_label(legend["tier"], legend["empire"])
+            legend["colour"] = LEGEND_TIER_COLOURS.get(int(legend["tier"] or 0), "#aaa")
+    except Exception:
+        legend = None
+    return render_template_string(TPL_PLAYER, p=p, inv=inv, sessions=sessions, legend=legend,
                                   emoji=lambda j: JOB_EMOJI.get(j, "🧑"),
                                   WINDOW_KEYS=ITEM_WINDOW_KEYS,
                                   cats=CATS,
