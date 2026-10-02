@@ -4709,21 +4709,34 @@ namespace
 	}
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the level-30 weapon dropper ("dropki
 	// broni 30 lv", the owner, 2 October). Two or three bots a kingdom on every
-	// channel (playerbot_l30_dropper.h picks them), held at twenty-one, hunting
-	// on their kingdom's first island of Orc Valley the two monsters there
-	// whose kill drop carries a level-30 weapon: the Elite Orc Scout (632,
-	// level 36) and the Elite Orc Warrior (633, level 39), both with the Black
-	// Leaf Knife (1170) - mob_drop_item.txt; no other monster of map 64 near
-	// any of the three entrances drops one (group_group 301 is the island's
-	// spawn). Fifteen to eighteen levels under them the engine's level fade
-	// works for the bot, not against it. The fight reaches past the usual
-	// fifteen levels to PLAYERBOT_L30_DROPPER_MAX_TARGET_LEVEL there.
+	// channel (playerbot_l30_dropper.h picks them), held at twenty-one, camping
+	// the Bestial of their kingdom's first island of Orc Valley (boss.txt of
+	// map_n_threeway, respawn 9-11 min): Shinsoo the Bestial Soldier (531,
+	// level 35), Chunjo the Bestial Maniac (532, 37), Jinno the Bestial Archer
+	// (533, 40) - each with a level-30 weapon in its kill drop (the owner's
+	// correction of 2 October; 531 and 532 got theirs in
+	// mob_drop_item.dropedit.append.txt). Between its respawns the dropper
+	// hunts the island's ordinary monsters round the spawn. The fight reaches
+	// past the usual fifteen levels to PLAYERBOT_L30_DROPPER_MAX_TARGET_LEVEL.
 	const BYTE PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER = 21;
 	const int PLAYERBOT_L30_DROPPER_MAX_TARGET_LEVEL = 40;
 
-	bool IsPlayerBotL30DropperRace(DWORD race)
+	// The Bestial of a kingdom's first island, or 0.
+	DWORD GetPlayerBotL30DropperBestial(int empire)
 	{
-		return race == 632 || race == 633;
+		switch (empire)
+		{
+			case 1: return 531;
+			case 2: return 532;
+			case 3: return 533;
+			default: return 0;
+		}
+	}
+
+	// Its own island's Bestial is the dropper's weapon target.
+	bool IsPlayerBotL30DropperRace(int empire, DWORD race)
+	{
+		return race != 0 && race == GetPlayerBotL30DropperBestial(empire);
 	}
 	// Iwakura's community patch 2, point 4 ("Grinder Lochu Malp", Tier 4).
 	// Under the personalities a drawn medal dropper stays one (it used to
@@ -6001,21 +6014,21 @@ namespace
 	// is standing there now, asked of the sector itself.
 	struct TPlayerBotHuntingHub { long x; long y; BYTE bMinLevel; BYTE bMaxLevel; bool bNeedsParty; WORD wBossRace; };
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
-	// Valley - the ground a bot of that kingdom is put down on by the
-	// Teleporter (Town.txt of map_n_threeway, PLAYERBOT_ORC_VALLEY_ARRIVAL for
-	// Chunjo). The three spawn points of group_group 301 (602, 603, 631-633,
-	// 651, 653, 2103) nearest each arrival, out of regen.txt on base
-	// (256000,665600): standable and on the arrival's own ground.
+	// Valley - the ground the Teleporter puts that kingdom down on - as spots
+	// round its Bestial's spawn (boss.txt cells x100 on base (256000,665600)),
+	// the spawn first, so the dropper keeps coming back to it. Shinsoo's two
+	// Soldier spawns (1365,110) and (1292,123) and the ground between them,
+	// 6-17k from its arrival (402100,673900); Chunjo's Maniac (244,789), 11k
+	// from (270400,739900), with two spawn points of the island (group_group
+	// 301) towards the arrival; Jinno's Archer (708,1384), 7k from
+	// (321300,808000), with two of its island's.
 	const TPlayerBotHuntingHub PLAYERBOT_L30_DROPPER_HUBS[3][3] = {
-		// Shinsoo, arrival (402100,673900)
-		{ { 396400, 677400, 1, 255, false, 0 }, { 393000, 677200, 1, 255, false, 0 },
-		  { 395400, 681000, 1, 255, false, 0 } },
-		// Chunjo, arrival (270400,739900)
-		{ { 273700, 741600, 1, 255, false, 0 }, { 274500, 739000, 1, 255, false, 0 },
-		  { 274100, 736000, 1, 255, false, 0 } },
-		// Jinno, arrival (321300,808000)
-		{ { 328300, 804700, 1, 255, false, 0 }, { 326100, 801000, 1, 255, false, 0 },
-		  { 325100, 799700, 1, 255, false, 0 } },
+		{ { 392500, 676600, 1, 255, false, 0 }, { 385200, 677900, 1, 255, false, 0 },
+		  { 388800, 677200, 1, 255, false, 0 } },
+		{ { 280400, 744500, 1, 255, false, 0 }, { 277400, 744000, 1, 255, false, 0 },
+		  { 277200, 741000, 1, 255, false, 0 } },
+		{ { 326800, 804000, 1, 255, false, 0 }, { 328300, 804700, 1, 255, false, 0 },
+		  { 326100, 801000, 1, 255, false, 0 } },
 	};
 
 	const TPlayerBotHuntingHub* GetPlayerBotL30DropperHubs(int empire, size_t& count)

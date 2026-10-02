@@ -24,8 +24,9 @@
 //     round, no Metin expedition, no fishing, no Monkey Dungeon, no M3;
 //   - where: from twenty-one its frontier is Orc Valley
 //     (GetPlayerBotFrontierMapForLevelRaw), its hubs its kingdom's first
-//     island (PLAYERBOT_L30_DROPPER_HUBS), its prey the Elite Orc Scout and
-//     Warrior (632, 633: the Black Leaf Knife, 1170) up to
+//     island (PLAYERBOT_L30_DROPPER_HUBS, round the spawn), its priority
+//     prey that island's Bestial (531/532/533, GetPlayerBotL30DropperBestial)
+//     and the island's ordinary monsters between its respawns, up to
 //     PLAYERBOT_L30_DROPPER_MAX_TARGET_LEVEL;
 //   - back to town (the frontier branch of ManagePlayerBotWorldTravel) when
 //     the potions run out, a level-30 weapon has dropped - to the first

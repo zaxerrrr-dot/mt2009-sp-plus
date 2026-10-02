@@ -1050,8 +1050,8 @@ namespace
 		if (huntM2Bestials && candidate->IsMonster() &&
 				(candidate->GetRaceNum() == 533 || candidate->GetRaceNum() == 534))
 			context.activeEquipmentTarget = true;
-		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island dropper's two orcs.
-		if (candidate->IsMonster() && IsPlayerBotL30DropperRace(candidate->GetRaceNum()) &&
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island dropper's Bestial.
+		if (candidate->IsMonster() && IsPlayerBotL30DropperRace((int)ch->GetEmpire(), candidate->GetRaceNum()) &&
 				ch->GetMapIndex() == PLAYERBOT_MAP_ORC_VALLEY && IsPlayerBotL30DropperAtWork(ch))
 			context.activeEquipmentTarget = true;
 
@@ -1329,12 +1329,12 @@ namespace
 				const bool isQuestTarget = (candidate->IsMonster() &&
 						IsPlayerBotBiologistHuntRace(m_desiredMobVnum, candidate->GetRaceNum())) ||
 						IsPlayerBotHorseTrialTarget(m_owner, candidate);
-				// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island dropper's orcs are
-				// its weapon targets the way the Bestials are the M2 dropper's.
+				// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island dropper's Bestial is
+				// its weapon target the way the Bestials are the M2 dropper's.
 				const bool isBestialWeaponTarget = candidate->IsMonster() &&
 						((m_huntM2Bestials &&
 						  (candidate->GetRaceNum() == 533 || candidate->GetRaceNum() == 534)) ||
-						 (m_huntL30Orcs && IsPlayerBotL30DropperRace(candidate->GetRaceNum())));
+						 (m_huntL30Orcs && IsPlayerBotL30DropperRace((int)m_owner->GetEmpire(), candidate->GetRaceNum())));
 
 				// Is this monster worth fighting at all?
 				//
@@ -1777,8 +1777,8 @@ namespace
 			partyChallengeMaxLevel = partyStrength.iChallengeMaxLevel;
 			maxLevel = std::max(maxLevel, partyChallengeMaxLevel);
 		}
-		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island dropper's orcs stand
-		// fifteen to eighteen levels over it.
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island dropper's Bestial
+		// stands fourteen to nineteen levels over it.
 		if (!bRecentDeath && ch->GetMapIndex() == PLAYERBOT_MAP_ORC_VALLEY && IsPlayerBotL30DropperAtWork(ch))
 			maxLevel = std::max(maxLevel, PLAYERBOT_L30_DROPPER_MAX_TARGET_LEVEL);
 		if (bRecentDeath)
