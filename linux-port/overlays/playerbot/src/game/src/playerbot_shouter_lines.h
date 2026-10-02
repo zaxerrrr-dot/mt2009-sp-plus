@@ -69,6 +69,16 @@ namespace
 		"Król małp to mój pracownik miesiąca, premia w bananach",
 		"Każde yang z lochu małp ma mój podpis, oddawać do właściciela",
 		"Wpuściłem cię raz do lochu małp i do dziś liczę straty",
+		"Pożyczyłem ci raz medal i do dziś nie oddałeś, złodzieju",
+		"Każdy medal sprzedany poza moim straganem to medal ukradziony mnie",
+		"Inni dropkowie medali to banda oszustów, kupujcie tylko u oryginału",
+		"Kto kupuje medale u konkurencji, ten wspiera przestępczość zorganizowaną",
+		"Medal z mojego straganu jest prawdziwy, reszta to chińska podróbka",
+		"Pytałeś o rabat na medale? Rabat dostała tylko moja małpa",
+		"Twój koń jeździ na moich medalach i nawet nie podziękował",
+		"Raz wszedłem z kimś do lochu małp. Wyszedłem sam. Z medalami.",
+		"Konkurencja sprzedaje medale taniej, bo kradnie je z mojego lochu",
+		"Nie ufajcie innym dropkom, ja przynajmniej oszukuję was uczciwie",
 	};
 	const int PLAYERBOT_MEDAL_SHOUTER_LINE_COUNT =
 			(int)(sizeof(PLAYERBOT_MEDAL_SHOUTER_LINES) / sizeof(PLAYERBOT_MEDAL_SHOUTER_LINES[0]));
