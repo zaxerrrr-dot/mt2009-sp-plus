@@ -687,8 +687,28 @@ function Assert-ClientNotRunning {
     }
 }
 
+function Start-ClientPatcherUpdate {
+    # A client folder with MT2009-Patcher.exe is updated by the patcher, not by
+    # the GitHub client package: it is started here and does the rest itself
+    # (it compares every file with its patch list and starts the game from its
+    # own GRAJ). True when it was started, false when the folder has none.
+    param($Config)
+    $patcher = Get-M2ClientPatcher -ClientFolder (Get-M2ClientFolder -Config $Config)
+    if (-not $patcher) { return $false }
+    Write-Host 'Aktualizacja przez patcher...' -ForegroundColor Cyan
+    try {
+        $null = Start-M2ClientPatcher -Patcher $patcher
+        Write-Host "Uruchomiono $([IO.Path]::GetFileName($patcher)) w folderze klienta - patcher sprawdzi i pobierze pliki klienta, a gre uruchomisz jego przyciskiem GRAJ." -ForegroundColor Green
+    }
+    catch {
+        throw "Nie udalo sie uruchomic patchera ($patcher): $($_.Exception.Message)"
+    }
+    return $true
+}
+
 function Update-Client {
     param($RemoteManifest, $Config)
+    if (Start-ClientPatcherUpdate -Config $Config) { return }
     $component = Get-ManifestComponent -RemoteManifest $RemoteManifest -Name 'client'
     if (-not $component) {
         Write-Host 'Manifest nie zawiera aktualizacji klienta. Pomijam.' -ForegroundColor Yellow
@@ -2668,7 +2688,8 @@ function Invoke-Action {
             $remote = Get-M2UpdateManifest -Source (Get-ManifestSource $config)
             Show-UpdateStatus -RemoteManifest $remote
             $clientComponent = Get-ManifestComponent -RemoteManifest $remote -Name 'client'
-            if ($clientComponent -and -not (Test-InstalledVersion -Installed ([string](Read-State).client) -Available ([string]$clientComponent.version))) {
+            $hasPatcher = [bool](Get-M2ClientPatcher -ClientFolder (Get-M2ClientFolder -Config $config))
+            if (-not $hasPatcher -and $clientComponent -and -not (Test-InstalledVersion -Installed ([string](Read-State).client) -Available ([string]$clientComponent.version))) {
                 Assert-ClientNotRunning -Config $config
             }
             Update-Server -RemoteManifest $remote

@@ -175,6 +175,53 @@ function Get-M2ClientExeComponent {
     return $component
 }
 
+# The client's own patcher (client-patches/patcher): from 2.0.38 the client
+# folder may carry MT2009-Patcher.exe, which checks every file against the
+# patch list on the project's server, downloads what changed and starts
+# metin2client.exe from its own GRAJ button. Where it is, the launcher hands
+# the client's update to it instead of the GitHub client package (the owner,
+# 2 October: "jesli jest patcher to patcher sie uruchamia i aktualizuje
+# klienta"); where it is not, nothing changes. It takes no arguments.
+$script:M2ClientPatcherName = 'MT2009-Patcher.exe'
+
+function Get-M2ClientFolder {
+    # The configured client folder: clientRoot, else the folder of
+    # clientExecutable. Empty when neither names an existing folder.
+    param($Config)
+    if (-not $Config) { return '' }
+    $folder = ''
+    if ($Config.PSObject.Properties['clientRoot']) { $folder = [string]$Config.clientRoot }
+    if (-not $folder -and $Config.PSObject.Properties['clientExecutable'] -and [string]$Config.clientExecutable) {
+        $folder = Split-Path -Parent ([string]$Config.clientExecutable)
+    }
+    if ($folder -and (Test-Path -LiteralPath $folder -PathType Container)) { return [IO.Path]::GetFullPath($folder) }
+    return ''
+}
+
+function Get-M2ClientPatcher {
+    # The full path of MT2009-Patcher.exe in the client folder (the name in any
+    # letter case), or '' when the folder has none.
+    param([AllowEmptyString()][string]$ClientFolder)
+    if (-not $ClientFolder -or -not (Test-Path -LiteralPath $ClientFolder -PathType Container)) { return '' }
+    $exact = Join-Path $ClientFolder $script:M2ClientPatcherName
+    if (Test-Path -LiteralPath $exact -PathType Leaf) { return [IO.Path]::GetFullPath($exact) }
+    try {
+        foreach ($file in @(Get-ChildItem -LiteralPath $ClientFolder -File -Filter '*.exe' -ErrorAction Stop)) {
+            if ($file.Name -ieq $script:M2ClientPatcherName) { return $file.FullName }
+        }
+    }
+    catch { }
+    return ''
+}
+
+function Start-M2ClientPatcher {
+    # Starts the patcher in its folder (it updates the folder it runs from)
+    # and does not wait: the player starts the game from the patcher's GRAJ,
+    # and the patcher closes when the game starts. Returns the process.
+    param([Parameter(Mandatory = $true)][string]$Patcher)
+    return (Start-Process -FilePath $Patcher -WorkingDirectory (Split-Path -Parent $Patcher) -PassThru)
+}
+
 function Repair-M2ClientExecutables {
     # Puts the client folder's executables in order: an old metin2client.exe
     # replaced by the manifest's (when $ExeComponent is given), a launcher that
@@ -2584,6 +2631,9 @@ Export-ModuleMember -Function @(
     'Test-M2ClientExeOld',
     'Get-M2ClientExeComponent',
     'Repair-M2ClientExecutables',
+    'Get-M2ClientFolder',
+    'Get-M2ClientPatcher',
+    'Start-M2ClientPatcher',
     'Protect-M2SessionLogLine',
     'Protect-M2LogFile'
 )

@@ -349,6 +349,9 @@ $script:Strings = @{
         clientPickFilter = 'Program klienta Metin2 (*.exe)|*.exe|Wszystkie pliki (*.*)|*.*'
         clientNotChosen = 'Nie wybrano klienta. Użyj przycisku „Wybierz klienta”.'
         clientStartFailed = 'Nie udało się uruchomić klienta'
+        patcherRun = 'Aktualizacja przez patcher...'
+        patcherStarted = 'Uruchomiono patcher klienta (MT2009-Patcher.exe) - sprawdzi i pobierze pliki klienta, a grę uruchomisz jego przyciskiem GRAJ.'
+        patcherStartFailed = 'Nie udało się uruchomić patchera klienta'
         stopAskTitle = 'Bezpieczne zatrzymanie'
         stopAsk = "Zatrzymać serwer? Postacie, baza i postęp botów zostaną zachowane.`r`n`r`nTak - serwer i Docker Desktop (Docker zwalnia wtedy pamięć RAM).`r`nNie - sam serwer; Docker zostaje włączony dla innych programów.`r`nAnuluj - nic nie zatrzymuj."
         clientBlockedTitle = 'Windows zablokował klienta'
@@ -426,6 +429,9 @@ $script:Strings = @{
         clientPickFilter = 'Metin2 client program (*.exe)|*.exe|All files (*.*)|*.*'
         clientNotChosen = 'No client chosen. Use the "CHOOSE CLIENT" button.'
         clientStartFailed = 'Could not start the client'
+        patcherRun = 'Updating through the patcher...'
+        patcherStarted = 'Started the client patcher (MT2009-Patcher.exe) - it checks and downloads the client files; start the game with its PLAY button.'
+        patcherStartFailed = 'Could not start the client patcher'
         stopAskTitle = 'Safe stop'
         stopAsk = "Stop the server? Characters, the database and the bots' progress are kept.`r`n`r`nYes - the server and Docker Desktop (Docker then frees its RAM).`r`nNo - the server only; Docker stays on for other programs.`r`nCancel - stop nothing."
         clientBlockedTitle = 'Windows blocked the client'
@@ -629,7 +635,46 @@ function Get-ClientStartBlock {
     return ''
 }
 
+# The client's own patcher (MT2009-Patcher.exe, client-patches/patcher): a
+# client folder that has it is updated by it, and GRAJ starts it instead of
+# metin2client.exe - it checks the files, downloads what changed and starts the
+# game from its own GRAJ. Without it, the GitHub client package as before.
+function Get-ClientPatcher {
+    try { return [string](Get-M2ClientPatcher -ClientFolder (Get-M2ClientFolder -Config (Get-LauncherConfig))) }
+    catch { return '' }
+}
+
+function Start-ClientPatcher {
+    param([Parameter(Mandatory = $true)][string]$Patcher)
+    $script:actionStatus.Text = (T 'patcherRun')
+    $script:actionStatus.ForeColor = [Drawing.Color]::LightGreen
+    Write-LocalLog (T 'patcherRun')
+    try {
+        $null = Start-M2ClientPatcher -Patcher $Patcher
+        Write-LocalLog (T 'patcherStarted')
+        return $true
+    }
+    catch {
+        $startError = $_
+        Write-LocalLog "BŁĄD uruchamiania patchera: $($startError.Exception.Message)"
+        $script:actionStatus.Text = (T 'patcherStartFailed')
+        $script:actionStatus.ForeColor = [Drawing.Color]::Tomato
+        switch (Get-ClientStartBlock -ErrorRecord $startError) {
+            'policy' { [Windows.Forms.MessageBox]::Show((T 'clientBlockedPolicy'), (T 'clientBlockedTitle'), 'OK', 'Warning') | Out-Null }
+            'virus'  { [Windows.Forms.MessageBox]::Show((T 'clientBlockedVirus'), (T 'clientBlockedTitle'), 'OK', 'Warning') | Out-Null }
+            default  { [Windows.Forms.MessageBox]::Show($startError.Exception.Message, (T 'patcherStartFailed'), 'OK', 'Error') | Out-Null }
+        }
+        return $false
+    }
+}
+
 function Start-ConfiguredClient {
+    $patcher = Get-ClientPatcher
+    if ($patcher) {
+        Confirm-ClientLanguageForLauncher -Executable (Join-Path (Split-Path -Parent $patcher) 'metin2client.exe')
+        [void](Start-ClientPatcher -Patcher $patcher)
+        return
+    }
     $executable = Find-ClientExecutable
     if (-not $executable) {
         # A client that was chosen once and has gone from its folder was, as a
@@ -1740,6 +1785,8 @@ function Get-ClientUpdateOffer {
     # ordinary client package. On r40250 it is the experimental GM panel,
     # which nobody should be nagged into at startup.
     if (-not $script:clientUpdateIsPlain -or -not $script:latestManifest) { return $null }
+    # A client with its own patcher is brought up to date by the patcher.
+    if (Get-ClientPatcher) { return $null }
     $clientProperty = $script:latestManifest.PSObject.Properties['client']
     if (-not $clientProperty -or -not $clientProperty.Value -or -not [string]$clientProperty.Value.version) { return $null }
     $available = ([string]$clientProperty.Value.version).Trim()
@@ -1838,6 +1885,8 @@ function Test-ClientExeRepairWanted {
     # full package of its day: no client package has carried the exe since
     # 2.0.35) and the manifest names the current one.
     if ($script:clientExeRepairTried) { return $false }
+    # The patcher replaces metin2client.exe itself.
+    if (Get-ClientPatcher) { return $false }
     if (-not (Get-M2ClientExeComponent -Manifest $script:latestManifest)) { return $false }
     $folder = Get-ClientFolderForRepair
     return [bool]($folder -and (Test-M2ClientExeOld -ClientFolder $folder))
@@ -2666,7 +2715,7 @@ function Read-LatestServerVersion {
 $installButton.Add_Click({ Install-Or-Prepare })
 $playButton.Add_Click({
     $withClient = $script:launchClientCheck.Checked
-    if ($withClient) {
+    if ($withClient -and -not (Get-ClientPatcher)) {
         if (-not (Find-ClientExecutable)) {
             if (-not (Select-ClientExecutable)) { return }
         }
@@ -3784,6 +3833,13 @@ $gmPanelButton.Add_Click({
     if (-not (Confirm-ClientForUpdate)) { return }
     $config = Get-M2LauncherConfig -ServerRoot $root -ConfigPath $configPath
     if ($script:clientUpdateIsPlain) {
+        # A client with MT2009-Patcher.exe is updated by the patcher, not by
+        # the client package from GitHub.
+        $patcher = Get-ClientPatcher
+        if ($patcher) {
+            [void](Start-ClientPatcher -Patcher $patcher)
+            return
+        }
         $answer = [Windows.Forms.MessageBox]::Show(
             "Zaktualizować klienta w $($config.clientRoot)?`r`n`r`nPodmienia pack\root.index i pack\root.data (skrypty gry). Poprzednie wersje trafiają do backups\client w folderze serwera.",
             'Aktualizacja klienta', 'YesNo', 'Question')
