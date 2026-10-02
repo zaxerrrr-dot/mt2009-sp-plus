@@ -603,6 +603,18 @@ if ((Test-Path -LiteralPath $entitySnapshotApply -PathType Leaf) -and
         Write-Host ('Applied {0} entity snapshot edit(s).' -f $entitySnapshotResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Safebox "Tylko scal stosy" (server-patches/safeboxmerge): "/safebox_arrange
+# merge" pours the safebox's stacks together and moves nothing else
+# (playerbot_arrange::MergeSafeboxStacks).
+$safeboxMergeApply = Join-Path $repo 'server-patches/safeboxmerge/Apply-SafeboxMergePatch.ps1'
+if ((Test-Path -LiteralPath $safeboxMergeApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf)) {
+    $safeboxMergeResult = & $safeboxMergeApply -SourceDir $engineGameSource
+    if ($safeboxMergeResult.Changed) {
+        $syncedFiles++
+        Write-Host 'The safebox merges its stacks without sorting.' -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both

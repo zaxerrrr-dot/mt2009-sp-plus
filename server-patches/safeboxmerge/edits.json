@@ -1,0 +1,8 @@
+[
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_SAFEBOX_MERGE_V1",
+  "old": "\tif (*arg1)\n\t\tresult.code = playerbot_arrange::RESULT_BAD_REQUEST;\n\telse\n\t\tresult = playerbot_arrange::ArrangeSafebox(ch, true);\n",
+  "new": "\t// MT2009_PLUS_SAFEBOX_MERGE_V1 (server-patches/safeboxmerge): \"merge\"\n\t// pours the safebox's stacks together and moves nothing else - the\n\t// safebox's \"Tylko scal stosy\" button, as \"/inventory_arrange merge\" is\n\t// the bag's (playerbot_arrange::MergeSafeboxStacks).\n\tif (!strcmp(arg1, \"merge\"))\n\t\tresult = playerbot_arrange::MergeSafeboxStacks(ch, true);\n\telse if (*arg1)\n\t\tresult.code = playerbot_arrange::RESULT_BAD_REQUEST;\n\telse\n\t\tresult = playerbot_arrange::ArrangeSafebox(ch, true);\n"
+ }
+]
