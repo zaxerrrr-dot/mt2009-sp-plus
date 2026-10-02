@@ -500,6 +500,9 @@ namespace
 	{
 		if (!item || !item->IsEquipped())
 			return true;
+		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: a locked companion's stays on.
+		if (IsPlayerBotSidekickLockedItem(ch, item))
+			return false;
 		const int cell = ch->GetEmptyDragonSoulInventory(item);
 		if (cell < 0)
 			return false;
@@ -608,6 +611,11 @@ namespace
 		LPITEM worn = GetPlayerBotWornDs(ch, kind);
 		if (worn)
 			stones.push_back(worn);
+		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: nothing a locked companion wears
+		// or was given goes to the Alchemist.
+		for (size_t i = stones.size(); i-- > 0;)
+			if (IsPlayerBotSidekickLockedItem(ch, stones[i]))
+				stones.erase(stones.begin() + i);
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch);
 		for (BYTE grade = 0; grade < t.grade; ++grade)
 		{

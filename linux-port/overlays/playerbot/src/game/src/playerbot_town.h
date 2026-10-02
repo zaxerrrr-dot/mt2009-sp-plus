@@ -1460,7 +1460,8 @@ namespace
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
 				if (!item || item->GetCell() != cell || item->IsEquipped() || item->isLocked() ||
-						!IsPlayerBotSoulStoneForDust(ch, item))
+						!IsPlayerBotSoulStoneForDust(ch, item) ||
+						IsPlayerBotSidekickLockedItem(ch, item))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 					continue;
 				const int count = std::max<int>(1, (int)item->GetCount());
 				const int gain = (GetPlayerBotSoulStoneGrade(item->GetVnum()) + 1) * count;
@@ -3907,6 +3908,11 @@ namespace
 		// MT2009_PLUS_MARKET_V3, point 8: nor Siano, which the General Store
 		// changes for Red Potions (ExchangePlayerBotHay) and buys the rest of.
 		if (item->GetVnum() == PLAYERBOT_HAY_VNUM)
+			return -1;
+		// MT2009_PLUS_BOT_CAPE_V1: nor the capes a cape build holds up to its
+		// PLAYERBOT_CAPE_KEEP - it uses them (HandlePlayerBotValourCape).
+		if (ch && IsPlayerBotValourCapeVnum(item->GetVnum()) && IsPlayerBotCapeBuild(ch) &&
+				(int)ch->CountSpecifyItem(item->GetVnum()) <= PLAYERBOT_CAPE_KEEP)
 			return -1;
 		// Nor is tackle, on any counter: a rod or a pickaxe is the tool of its
 		// bot's own sessions, and a second one is the merchant's

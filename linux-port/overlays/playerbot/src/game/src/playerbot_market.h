@@ -244,6 +244,14 @@ namespace
 		if (offer->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			return WantsPlayerBotMoonlightChest(ch);
 
+		// MT2009_PLUS_BOT_CAPE_V1: Peleryna Mestwa, for a bot strong enough to
+		// use it (PlayerBotWantsValourCapes, playerbot_targeting.h).
+		// A line that would take it over what it keeps off its own counter
+		// (PLAYERBOT_CAPE_KEEP) would only go up there again.
+		if (IsPlayerBotValourCapeVnum(offer->GetVnum()))
+			return PlayerBotWantsValourCapes(ch) &&
+					CountPlayerBotValourCapes(ch) + (int)offer->GetCount() <= PLAYERBOT_CAPE_KEEP;
+
 		// A flooded material for the refiners' exchange (playerbot_bonus.h).
 		if (IsPlayerBotExchangeBuyOffer(ch, offer))
 			return true;
@@ -438,6 +446,13 @@ namespace
 			const TPlayerBotMarketLedgerEntry* chests =
 					GetPlayerBotMarketLedgerEntry(PLAYERBOT_MOONLIGHT_CHEST_VNUM);
 			if (chests && chests->dwSupplyUnits > 0 && WantsPlayerBotMoonlightChest(ch))
+				return true;
+		}
+		// MT2009_PLUS_BOT_CAPE_V1: capes for a cape build, while a counter has
+		// them (the ledger, as for the chest).
+		{
+			const TPlayerBotMarketLedgerEntry* capes = GetPlayerBotMarketLedgerEntry(PLAYERBOT_CAPE_MARKET_VNUM);
+			if (capes && capes->dwSupplyUnits > 0 && PlayerBotWantsValourCapes(ch))
 				return true;
 		}
 		// A refine material for something it is carrying below its target. This
@@ -665,6 +680,15 @@ namespace
 			const long long fair = GetPlayerBotShopAskingPrice(item);
 			if (fair > 0 && price > fair * PLAYERBOT_MARKET_MATERIAL_FAIR_MULTIPLE)
 				return false;
+		}
+		// MT2009_PLUS_BOT_CAPE_V1: a line of capes near what the market asks for
+		// it (PLAYERBOT_CAPE_FAIR_PERCENT) and out of PLAYERBOT_CAPE_BUDGET_PERCENT
+		// of the spare gold.
+		if (IsPlayerBotValourCapeVnum(item->GetVnum()))
+		{
+			const long long fair = GetPlayerBotShopAskingPrice(item);
+			return fair > 0 && price * 100 <= fair * PLAYERBOT_CAPE_FAIR_PERCENT &&
+					price <= spare * PLAYERBOT_CAPE_BUDGET_PERCENT / 100;
 		}
 		// A Moonlight chest asks what it holds since 28 September, and a line of
 		// five is several times the median wallet's share below, so it is paid

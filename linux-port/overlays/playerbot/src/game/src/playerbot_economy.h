@@ -1277,6 +1277,10 @@ namespace
 		if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
 			return ch && (ch->GetLevel() >= PLAYERBOT_BONUS_MIN_LEVEL || PlayerBotWantsBlessingMarble(ch))
 					? PLAYERBOT_DUST_PER_MARBLE : 0;
+		// MT2009_PLUS_BOT_CAPE_V1: a bot that uses Peleryna Mestwa keeps its
+		// own off the counter (IsPlayerBotCapeBuild).
+		if (IsPlayerBotValourCapeVnum(item->GetVnum()) && ch && IsPlayerBotCapeBuild(ch))
+			return PLAYERBOT_CAPE_KEEP;
 		return 1;
 	}
 
@@ -2526,7 +2530,8 @@ namespace
 			if (!item || item->GetCell() != cell || item->IsEquipped() || item->isLocked() ||
 					!IsPlayerBotBoosterItem(item) ||
 					!IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL) ||
-					!IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_MYSHOP))
+					!IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_MYSHOP) ||
+					IsPlayerBotSidekickLockedItem(ch, item))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 				continue;
 			int& held = kept[item->GetVnum()];
 			if (held < PLAYERBOT_BOOSTER_KEEP_PER_VNUM)
@@ -2580,7 +2585,8 @@ namespace
 			// The operator said "drop": thrown away here, at the merchant,
 			// without a sale - the one place a bag is emptied on purpose.
 			if (item && !item->IsEquipped() && !item->isLocked() &&
-					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_DROP)
+					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_DROP &&
+					!IsPlayerBotSidekickLockedItem(ch, item))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 			{
 				sys_log(0, "PLAYERBOT_AI: discarded by policy pid=%u name=%s vnum=%u count=%u",
 						ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (unsigned int)item->GetCount());
@@ -3911,6 +3917,8 @@ namespace
 	{
 		attempted = false;
 		equippedAgain = false;
+		if (IsPlayerBotSidekickLockedItem(ch, piece))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
+			return NULL;
 		const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(piece->GetRefineSet());
 		const int scrollCell = FindPlayerBotRefineScrollCellFor(ch, piece, recipe ? (int)recipe->prob : 100);
 		if (scrollCell < 0 || ch->GetEmptyInventory(piece->GetSize()) < 0)

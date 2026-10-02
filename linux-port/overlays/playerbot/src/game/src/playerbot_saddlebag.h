@@ -266,7 +266,8 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (!item || item->GetCell() != cell || !IsPlayerBotCraftExchangeStock(ch, item))
+			if (!item || item->GetCell() != cell || !IsPlayerBotCraftExchangeStock(ch, item) ||
+					IsPlayerBotSidekickLockedItem(ch, item))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 				continue;
 			const int count = std::max<int>(1, (int)item->GetCount());
 			if ((long long)(units + count) * PLAYERBOT_CRAFT_EXCHANGE_FEE > spendable)

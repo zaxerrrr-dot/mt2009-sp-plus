@@ -793,7 +793,8 @@ namespace
 		// interrupted for nothing.
 		LPITEM worn = ch->GetWear(WEAR_WEAPON);
 		if (worn && worn->GetType() == ITEM_ROD && worn->GetRefinedVnum() > 0 &&
-				worn->GetSocket(0) >= worn->GetValue(2))
+				worn->GetSocket(0) >= worn->GetValue(2) &&
+				!IsPlayerBotSidekickLockedItem(ch, worn))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 		{
 			// The engine's UnequipItem does not ask for room itself, and the new
 			// rod is put in the old one's cell: a rod that stayed in the hand
@@ -808,7 +809,7 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (item && item->GetType() == ITEM_ROD && !item->IsEquipped() &&
 					item->GetRefinedVnum() > 0 &&
-					item->GetSocket(0) >= item->GetValue(2))
+					item->GetSocket(0) >= item->GetValue(2) && !IsPlayerBotSidekickLockedItem(ch, item))
 				rod = item;
 		}
 		if (!rod)

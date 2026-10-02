@@ -2610,6 +2610,61 @@ namespace
 	const int PLAYERBOT_MULTI_PULL_MAX_AGGRESSORS = 14;
 	const int PLAYERBOT_MULTI_PULL_SEARCH_RANGE = 2200;
 	const int PLAYERBOT_MULTI_PULL_GROUP_SEPARATION = 600;
+	// MT2009_PLUS_BOT_CAPE_V1: Peleryna Mestwa (playerbot_targeting.h). The
+	// cape wakes every free monster in the client's view (AggregateMonster:
+	// VIEW_RANGE and its bonus, 8500, the nearest CAPE_PULL_MAX = 80, no boss,
+	// none already fighting), so a strong bot uses one only on a spot whose
+	// crowd it can take, one a spot, and the next only after the crowd is
+	// beaten. The capes it uses are bought off the other sellers' counters.
+	const DWORD PLAYERBOT_CAPE_VNUMS[] = { 70038, 70138, 70057, 76007 };
+	const DWORD PLAYERBOT_CAPE_MARKET_VNUM = 70038;
+	const int PLAYERBOT_CAPE_MIN_LEVEL = 35;
+	const int PLAYERBOT_CAPE_PULL_RANGE = 8500;
+	const int PLAYERBOT_CAPE_PULL_MAX = 80;
+	// Fewer free monsters than this in view: the cape is not worth a use.
+	const int PLAYERBOT_CAPE_MIN_CROWD = 10;
+	// How many it takes at once: the base, a tank's extra, a +7 body armour's,
+	// and every PLAYERBOT_CAPE_EASY_LEVELS the crowd averages under the margin.
+	const int PLAYERBOT_CAPE_BASE_CAPACITY = 16;
+	const int PLAYERBOT_CAPE_TANK_CAPACITY = 10;
+	const int PLAYERBOT_CAPE_ARMOUR_CAPACITY = 6;
+	const int PLAYERBOT_CAPE_EASY_LEVELS = 5;
+	const int PLAYERBOT_CAPE_EASY_CAPACITY = 6;
+	// The crowd's average level at least this far under the bot's, and no
+	// monster in it over the bot's level.
+	const int PLAYERBOT_CAPE_LEVEL_MARGIN = 5;
+	const int PLAYERBOT_CAPE_START_HP_PERCENT = 95;
+	const int PLAYERBOT_CAPE_MIN_RED_POTIONS = 40;
+	// One cape a spot: none within this of a cape any bot used in the last
+	// PLAYERBOT_CAPE_SPOT_REST_MS (the spot respawns meanwhile).
+	const int PLAYERBOT_CAPE_SPOT_RADIUS = 3000;
+	const DWORD PLAYERBOT_CAPE_SPOT_REST_MS = 300000;
+	// The crowd counts as beaten once nothing in the cape's range fights the
+	// bot, and not before this after the use (the pulled walk in from 8500).
+	const DWORD PLAYERBOT_CAPE_CROWD_SETTLE_MS = 15000;
+	// A crowd that is still at it after this is given up on as beaten.
+	const DWORD PLAYERBOT_CAPE_CROWD_TIMEOUT_MS = 180000;
+	const DWORD PLAYERBOT_CAPE_DEATH_HOLD_MS = 600000;
+	// The market: it buys while it holds fewer than PLAYERBOT_CAPE_WANT, keeps
+	// PLAYERBOT_CAPE_KEEP off its own counter, pays near the market's price
+	// and out of a share of its spare gold, from PLAYERBOT_CAPE_MIN_SPARE_GOLD.
+	const int PLAYERBOT_CAPE_WANT = 5;
+	const int PLAYERBOT_CAPE_KEEP = 10;
+	const int PLAYERBOT_CAPE_FAIR_PERCENT = 150;
+	const int PLAYERBOT_CAPE_BUDGET_PERCENT = 15;
+	const long long PLAYERBOT_CAPE_MIN_SPARE_GOLD = 500000;
+	inline bool IsPlayerBotValourCapeVnum(DWORD vnum)
+	{
+		for (size_t i = 0; i < sizeof(PLAYERBOT_CAPE_VNUMS) / sizeof(PLAYERBOT_CAPE_VNUMS[0]); ++i)
+			if (PLAYERBOT_CAPE_VNUMS[i] == vnum)
+				return true;
+		return false;
+	}
+	// Strong enough to work with the cape at all - its level, class and gear,
+	// no world asked (playerbot_targeting.h); the market and the counter ask it.
+	bool IsPlayerBotCapeBuild(LPCHARACTER ch);
+	bool PlayerBotWantsValourCapes(LPCHARACTER ch);
+	int CountPlayerBotValourCapes(LPCHARACTER ch);
 	const DWORD PLAYERBOT_MERCHANT_WAIT_MIN = 3000;
 	const DWORD PLAYERBOT_MERCHANT_WAIT_MAX = 15000;
 	const DWORD PLAYERBOT_BLACKSMITH_WAIT_MIN = 6000;
@@ -6806,6 +6861,10 @@ namespace
 	bool IsPlayerBotSidekickLeashed(LPCHARACTER ch);
 	bool IsPlayerBotSidekickHolding(LPCHARACTER ch);
 	bool IsPlayerBotSidekickGift(LPCHARACTER ch, LPITEM item);
+	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" - a piece the
+	// companion wears or was given while its owner's lock is on: no refine,
+	// stone, crafting, swap, sale or discard by the AI.
+	bool IsPlayerBotSidekickLockedItem(LPCHARACTER ch, LPITEM item);
 	const char* GetPlayerBotSidekickOwnerName(LPCHARACTER ch);
 	// MT2009_PLUS_SIDEKICK_TRIP_V1: a frontier its companion gave up on for a
 	// while (playerbot_sidekick.h); GetPlayerBotFrontierMapForLevel skips it.
@@ -8288,6 +8347,9 @@ namespace
 		bool bRecoveringAfterDeath;
 		bool bTacticalRetreat;
 		bool bMultiPullActive;
+		// MT2009_PLUS_BOT_CAPE_V1: when the cape is next asked about
+		// (HandlePlayerBotValourCape).
+		DWORD dwNextCapeCheck = 0;
 		BYTE bMultiPullGroups;
 		BYTE bMultiPullDesiredGroups;
 		bool bLootThreatNearby;

@@ -367,6 +367,12 @@ namespace
 	// off. Kept in player.playerbot_sidekick.coins.
 	std::map<DWORD, bool> s_mapPlayerBotSidekickCoins;
 	bool s_bPlayerBotSidekickCoinsColumn = false;
+	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" in the window's
+	// Options page - the companions whose owner locked their gear, by pid (a
+	// companion is in only while its lock is on, so the passes of every bot
+	// ask an empty map). Kept in player.playerbot_sidekick.equipment_lock.
+	std::set<DWORD> s_setPlayerBotSidekickEquipLock;
+	bool s_bPlayerBotSidekickEquipLockColumn = false;
 
 	// What a companion carries between ticks that nobody else needs.
 	struct TPlayerBotSidekickRuntime
@@ -574,6 +580,14 @@ namespace
 		s_bPlayerBotSidekickCoinsColumn = coins.get() && coins->uiSQLErrno == 0;
 		if (!s_bPlayerBotSidekickCoinsColumn)
 			sys_err("PLAYERBOT_SIDEKICK: no coins column errno=%u", coins.get() ? coins->uiSQLErrno : 0U);
+		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek", off by default.
+		std::unique_ptr<SQLMsg> equipLock(AccountDB::instance().DirectQuery(
+				"ALTER TABLE player.playerbot_sidekick "
+				"ADD COLUMN IF NOT EXISTS equipment_lock TINYINT UNSIGNED NOT NULL DEFAULT 0"));
+		s_bPlayerBotSidekickEquipLockColumn = equipLock.get() && equipLock->uiSQLErrno == 0;
+		if (!s_bPlayerBotSidekickEquipLockColumn)
+			sys_err("PLAYERBOT_SIDEKICK: no equipment_lock column errno=%u",
+					equipLock.get() ? equipLock->uiSQLErrno : 0U);
 		// A companion whose owner's character was deleted would be kept out of
 		// the population for good: its record goes, and the identity plays on
 		// as the bot it was, under the name it was given.
@@ -727,6 +741,26 @@ namespace
 					if (pid != 0)
 						s_mapPlayerBotSidekickCoins[pid] = on != 0;
 				}
+			}
+		}
+		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: the locked companions.
+		if (s_bPlayerBotSidekickEquipLockColumn)
+		{
+			std::unique_ptr<SQLMsg> locks(AccountDB::instance().DirectQuery(
+					"SELECT sidekick_pid FROM player.playerbot_sidekick WHERE equipment_lock<>0"));
+			if (locks.get() && locks->uiSQLErrno == 0 && locks->Get() && locks->Get()->pSQLResult)
+			{
+				std::set<DWORD> locked;
+				MYSQL_ROW lockRow;
+				while (NULL != (lockRow = mysql_fetch_row(locks->Get()->pSQLResult)))
+				{
+					DWORD pid = 0;
+					if (lockRow[0])
+						str_to_number(pid, lockRow[0]);
+					if (pid != 0)
+						locked.insert(pid);
+				}
+				s_setPlayerBotSidekickEquipLock.swap(locked);
 			}
 		}
 	}
@@ -957,11 +991,36 @@ namespace
 		return pin == rt->second.mapPins.end() ? -1 : (int)pin->second;
 	}
 
-	// Put on by its owner: kept on, never refined, its lines never changed.
+	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" (blipu's,
+	// 2 October). With the lock on, what the companion wears and what its
+	// owner gave it are the owner's: no refine, no stone, no bonus change, no
+	// crafting or alchemy, not taken off by the AI for something better, never
+	// sold or thrown away. The owner's own hand in the bag window still moves
+	// anything (those orders do not ask this).
+	bool IsPlayerBotSidekickEquipLocked(DWORD pid)
+	{
+		// Only while it is somebody's companion: a dismissed one plays on as
+		// an ordinary bot.
+		return !s_setPlayerBotSidekickEquipLock.empty() &&
+				s_setPlayerBotSidekickEquipLock.find(pid) != s_setPlayerBotSidekickEquipLock.end() &&
+				s_mapPlayerBotSidekickOwner.find(pid) != s_mapPlayerBotSidekickOwner.end();
+	}
+
+	bool IsPlayerBotSidekickLockedItem(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !IsPlayerBotSidekickEquipLocked(ch->GetPlayerID()))
+			return false;
+		return item->IsEquipped() || IsPlayerBotSidekickGift(ch, item);
+	}
+
+	// Put on by its owner: kept on, never refined, its lines never changed -
+	// and, under the equipment lock, everything it wears or was given.
 	bool IsPlayerBotSidekickPinned(LPCHARACTER ch, LPITEM item)
 	{
 		const int pin = GetPlayerBotSidekickPinOf(ch, item);
-		return pin >= 0 && pin != PLAYERBOT_SIDEKICK_PIN_UNWANTED;
+		if (pin >= 0 && pin != PLAYERBOT_SIDEKICK_PIN_UNWANTED)
+			return true;
+		return IsPlayerBotSidekickLockedItem(ch, item);
 	}
 
 	// Taken off by its owner: the AI never puts it back on.
@@ -2979,6 +3038,9 @@ namespace
 					sk->GetMapIndex() == owner->GetMapIndex() ? "na twojej mapie" : "na innej mapie", mode,
 					GetPlayerBotSidekickStanceName(rec.bStance));
 		SayPlayerBotSidekick(owner, text);
+		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
+		if (IsPlayerBotSidekickEquipLocked(rec.dwSidekickPID))
+			SayPlayerBotSidekick(owner, "Ekwipunek zablokowany: nie ruszam tego, co mam na sobie i co dostalem od ciebie.");
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		// MT2009_PLUS_SIDEKICK_COINS_V1: what it does with its Dragon Coins.
 		if (sk)
@@ -3129,6 +3191,7 @@ namespace
 		s_mapPlayerBotSidekicks.erase(rec.dwOwnerPID);
 		s_mapPlayerBotSidekickOwner.erase(rec.dwSidekickPID);
 		s_mapPlayerBotSidekickRuntime.erase(rec.dwSidekickPID);
+		s_setPlayerBotSidekickEquipLock.erase(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 		SetPlayerBotSidekickFlag(rec.dwOwnerPID, "towarzysz.created", 0);
 		if (CPlayerBotManager::instance().IsManaged(rec.dwSidekickPID))
 		{
@@ -3245,6 +3308,24 @@ namespace
 			return "Dobra, wydaje Smocze Monety w Item Shopie na to, czego potrzebuje, i wymieniam kupony SM z plecaka. "
 					"Kazdy zakup ci zglosze.";
 		return "Dobra, nie wydaje Smoczych Monet. Kupony SM zostaja w moim plecaku - mozesz je wziac w oknie Towarzysza.";
+	}
+
+	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek", kept at once.
+	const char* SetPlayerBotSidekickEquipLock(TPlayerBotSidekick& rec, bool locked)
+	{
+		if (IsPlayerBotSidekickEquipLocked(rec.dwSidekickPID) != locked)
+		{
+			if (locked)
+				s_setPlayerBotSidekickEquipLock.insert(rec.dwSidekickPID);
+			else
+				s_setPlayerBotSidekickEquipLock.erase(rec.dwSidekickPID);
+			if (s_bPlayerBotSidekickEquipLockColumn)
+				SetPlayerBotSidekickSetting(rec, "equipment_lock", locked ? 1U : 0U);
+		}
+		if (locked)
+			return "Dobra, ekwipunek zablokowany: nie ulepszam, nie zmieniam bonusow, nie zdejmuje, nie sprzedaje "
+					"i nie wyrzucam tego, co mam na sobie i co dostalem od ciebie. Ty mozesz przekladac moje rzeczy.";
+		return "Dobra, ekwipunek odblokowany - sam dbam o swoj sprzet.";
 	}
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
@@ -3886,8 +3967,10 @@ namespace
 		// MT2009_PLUS_SIDEKICK_RANK_V1: the companion's rank points after them
 		// (the alignment over ten, as the character packet carries it), for the
 		// rank title on its name in the window, as the player's own shows his.
+		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" after the
+		// coins' balance.
 		SendPlayerBotSidekickCommand(owner,
-				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d",
+				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d %d",
 				PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL,
 				inWorld ? (int)sk->GetRaceNum() : -1, inWorld ? (int)sk->GetSkillGroup() : 0,
 				inWorld ? sk->GetLevel() : 0, expPercent,
@@ -3899,7 +3982,8 @@ namespace
 				rec.bChests ? 1 : 0, rec.bLead ? 1 : 0, (unsigned int)rec.bRole,
 				inWorld ? sk->GetLeadershipSkillLevel() : 0, rec.bParty ? 1 : 0,
 				inWorld ? sk->GetAlignment() / 10 : 0,
-				IsPlayerBotSidekickCoinsOn(rec.dwSidekickPID) ? 1 : 0, coinBalance);
+				IsPlayerBotSidekickCoinsOn(rec.dwSidekickPID) ? 1 : 0, coinBalance,
+				IsPlayerBotSidekickEquipLocked(rec.dwSidekickPID) ? 1 : 0);
 		char doing[96] = "";
 		char place[64] = "";
 		if (inWorld)
@@ -5632,6 +5716,14 @@ namespace
 			else
 				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz monety 1 (wydaje Smocze Monety w Item Shopie) albo "
 						"/towarzysz monety 0 (nie wydaje)");
+		}
+		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek".
+		else if (!strcmp(sub, "blokada"))
+		{
+			if (!strcmp(a1, "0") || !strcmp(a1, "1"))
+				SayPlayerBotSidekick(ch, SetPlayerBotSidekickEquipLock(rec->second, !strcmp(a1, "1")));
+			else
+				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz blokada 1 (nie ruszam ekwipunku) albo /towarzysz blokada 0");
 		}
 		else if (!strcmp(sub, "grupa"))
 		{

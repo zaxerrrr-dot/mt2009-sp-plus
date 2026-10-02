@@ -30,8 +30,8 @@
 #   Polecenia     the Emotions tab of the player's window: what the companion
 #                 does and where, the orders, the stance, the loot, its bag.
 #   Opcje         the Quests tab: guard, buffs, lure, "Gra beze mnie", chests,
-#                 party, who spends the stat and skill points, and the one
-#                 free reset of its stats.
+#                 party, its Dragon Coins, the equipment lock, who spends the
+#                 stat and skill points, and the one free reset of its stats.
 #
 # The tab strip is one picture per pressed tab with the four names painted in
 # (locale/<lang>/ui/windows/tab_1..4.sub), and two of them are the player's
@@ -50,7 +50,8 @@
 #   SidekickInfo <protocol> 1 <race> <group> <level> <exp%> <hp> <maxhp> <sp>
 #                <maxsp> <where> <dist> <mode> <stance> <loot> <protect>
 #                <buffs> <gold> <red> <blue> <dead> [<lure> <luring> [<solo> [<chests>
-#                [<lead> <role> <leadership> [<party> [<rank> [<coins> <balance>]]]]]]]
+#                [<lead> <role> <leadership> [<party> [<rank> [<coins> <balance>
+#                [<equipment_lock>]]]]]]]]
 #   SidekickNames <name> <place> <doing>            - hex of the CP1250 bytes
 #   SidekickGear <slot 0-7> <name>                  - hex, only when changed
 #
@@ -60,7 +61,7 @@
 # 2 everything. The orders are the letter's own commands, so the window adds
 # nothing the server did not already take from the quest: przywolaj, wolny,
 # czekaj, zakupy, stan, walka N, zbieraj N, ochrona N, buffy N, luruj N, sam N,
-# skrzynki N, grupa N, lider N, rola N, ryby, odprawa tak. lure (server 2.2.19): the companion wakes packs round
+# skrzynki N, grupa N, lider N, rola N, monety N, blokada N, ryby, odprawa tak. lure (server 2.2.19): the companion wakes packs round
 # the owner and brings them over; luring: 0 no course, 1 out to a pack, 2 back
 # with them. solo (server 2.2.30, "Gra beze mnie"): with its owner out of the
 # game it plays on alone, up to thirty levels over the owner's. chests (server
@@ -74,7 +75,11 @@
 # spends the Dragon Coins of its own account in the Item Shop on what it uses,
 # cashing the vouchers in its bag; 0 it keeps both untouched (order: monety N).
 # balance: the coins its account holds as the server last read them, -1
-# before it has.
+# before it has. equipment_lock (MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1,
+# "Zablokuj ekwipunek"): 1 the AI neither refines, reworks, takes off, sells
+# nor throws away what it wears and what its owner gave it; the owner's own
+# hand in the bag window still moves anything (order: blokada N). An older
+# server sends no such word, and the window shows no row for it.
 #
 # The status and skill pages read the answer to "/towarzysz umiejetnosci"
 # (SidekickSkillBegin with the stats, the skills, SidekickSkillEnd), which the
@@ -221,6 +226,9 @@ SWITCHES = (
 	# MT2009_PLUS_SIDEKICK_COINS_V1: "Smocze Monety: wydaje / nie wydaje".
 	('coins', 'monety', 1, 'Smocze Monety',
 		'Kupuje za nie w Item Shopie to, czego u\xbfywa (bez fryzur). Nie wydaje: nie rusza ich.'),
+	# MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek".
+	('equipment_lock', 'blokada', 0, 'Zablokuj ekwipunek',
+		'Nie ulepsza, nie zdejmuje ani nie sprzedaje tego, co nosi i dosta\xb3 od ciebie.'),
 )
 # What a switch's button says where "tak" and "nie" would not do, off and on,
 # and the button it needs for that: "nie wydaje" is wider than a small one.
@@ -244,8 +252,11 @@ TEXT_ROLE_NEEDS = 'Bonus wymaga Dowodzenia %s - daj mu Ksi\xeag\xea Dowodzenia.'
 SWITCH_TOP = 28
 ROW_STEP = 22
 # The Options page's rows: with the eighth (the Dragon Coins) a step of
-# twenty keeps every line on the page.
+# twenty keeps every line on the page. MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1:
+# with the ninth (the equipment lock) Guard and Buffs share the first row,
+# half of it each (SHARED_SWITCHES), so the page keeps its height.
 OPTION_STEP = 20
+SHARED_SWITCHES = 2
 ROW_HEIGHT = 21
 
 TEXT_WAITING = 'Czekam na odpowied\x9f serwera...'
@@ -449,6 +460,9 @@ def ParseInfo(args):
 	if len(values) >= len(names) + 11:
 		info['coins'] = ParseInt(values[len(names) + 9])
 		info['balance'] = ParseInt(values[len(names) + 10], -1)
+	# MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" after them.
+	if len(values) >= len(names) + 12:
+		info['equipment_lock'] = ParseInt(values[len(names) + 11])
 	return info
 
 
@@ -1001,11 +1015,24 @@ class SidekickWindow(ui.ScriptWindow):
 		self._Section(page, 8, TEXT_SECTION_BEHAVIOUR)
 		self.switchRows = {}
 		for i, (key, order, default, text, hint) in enumerate(SWITCHES):
-			self.switchRows[key] = self._Switch(page, SWITCH_TOP + i * OPTION_STEP, i, text, hint, self.OnSwitch, key)
+			# MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: the first SHARED_SWITCHES
+			# share a row, half of it each, with the stock small button.
+			line = max(0, i - SHARED_SWITCHES + 1)
+			row = self._Switch(page, SWITCH_TOP + line * OPTION_STEP, line, text, hint, self.OnSwitch, key)
+			if i < SHARED_SWITCHES:
+				half = SECTION_WIDTH // SHARED_SWITCHES
+				x = SECTION_X + i * half
+				y = SWITCH_TOP
+				row[0].SetPosition(x, y)
+				row[0].SetSize(half - (1 if i < SHARED_SWITCHES - 1 else 0), ROW_HEIGHT - 1)
+				row[1].SetPosition(x + LINE_X - SECTION_X + 2, y + 3)
+				row[2].SetPosition(x + half - BUTTON_WIDTHS['small'] - 2, y - 1)
+			self.switchRows[key] = row
 		# "Lider grupy": the switch and, beside it, the bonus its Leadership
 		# gives the owner.
-		leadY = SWITCH_TOP + len(SWITCHES) * OPTION_STEP
-		self.leadRow = self._Switch(page, leadY, len(SWITCHES), TEXT_LEAD, TEXT_LEAD_HINT, self.OnLead)
+		rows = len(SWITCHES) - SHARED_SWITCHES + 1
+		leadY = SWITCH_TOP + rows * OPTION_STEP
+		self.leadRow = self._Switch(page, leadY, rows, TEXT_LEAD, TEXT_LEAD_HINT, self.OnLead)
 		self.roleButton = self._Btn(page, 'middle',
 			SECTION_X + SECTION_WIDTH - BUTTON_WIDTHS['small'] - BUTTON_WIDTHS['middle'] - 4, leadY - 1, '', self.OnRole)
 		self.roleButton.ShowToolTip = ui.__mem_func__(self.OnOverRole)
