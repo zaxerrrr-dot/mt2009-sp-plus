@@ -747,6 +747,11 @@ rate_ok() {
 r_exp=$(rate_ok "${M2_RATE_EXP:-100}" 100)
 r_drop=$(rate_ok "${M2_RATE_DROP:-100}" 100)
 r_yang=$(rate_ok "${M2_RATE_YANG:-100}" 100)
+# MT2009_PLUS_YANG_RATE_CAP_V1: yang drops are never above 1000% - ten
+# thousand made every price in the world meaningless. A higher number is that
+# ceiling here and, below, in a world the panel already set.
+YANG_RATE_MAX=1000
+[ "$r_yang" -gt "$YANG_RATE_MAX" ] && r_yang=$YANG_RATE_MAX
 db -e "CREATE TABLE IF NOT EXISTS player.web_admin_rates (
         name VARCHAR(24) PRIMARY KEY, value INT NOT NULL DEFAULT 100);" >/dev/null 2>&1 \
     || echo "[playerbot-migrate] WARNING: could not make player.web_admin_rates" >&2
@@ -779,6 +784,19 @@ elif [ "$rates_set" = "0" ]; then
             printf '0\n' > /opt/m2spool/playerbot_hold 2>/dev/null || true
         fi
         chmod 0664 /opt/m2spool/playerbot_hold 2>/dev/null || true
+    fi
+fi
+# MT2009_PLUS_YANG_RATE_CAP_V1: a world the panel set over the yang ceiling
+# is brought down to it at its next start (both flags and the panel's table).
+yang_over=$(db -e "SELECT COUNT(*) FROM player.quest WHERE dwPID = 0
+        AND szName IN ('mob_gold', 'mob_gold_buyer') AND lValue > $YANG_RATE_MAX;" 2>/dev/null || echo x)
+if [ "$yang_over" != "x" ] && [ "$yang_over" != "0" ]; then
+    if db -e "UPDATE player.quest SET lValue = $YANG_RATE_MAX WHERE dwPID = 0
+            AND szName IN ('mob_gold', 'mob_gold_buyer') AND lValue > $YANG_RATE_MAX;
+        UPDATE player.web_admin_rates SET value = $YANG_RATE_MAX WHERE name = 'yang' AND value > $YANG_RATE_MAX;"; then
+        echo "[playerbot-migrate] yang drops: the world's rate was over ${YANG_RATE_MAX}% - it is ${YANG_RATE_MAX}% now"
+    else
+        echo "[playerbot-migrate] WARNING: could not bring the yang rate down to ${YANG_RATE_MAX}%" >&2
     fi
 fi
 

@@ -8242,6 +8242,9 @@ def manage_restart_config():
             values = {name: int(request.form.get(name, "")) for name in RATE_NAMES}
             if any(not 1 <= value <= 10000 for value in values.values()):
                 raise ValueError("Mnożniki muszą mieścić się w zakresie 1–10 000%.")
+            # MT2009_PLUS_YANG_RATE_CAP_V1: yang drops no higher than 1000%.
+            if values.get("yang", 0) > 1000:
+                raise ValueError("Drop Yang może być najwyżej 1000%.")
             # Older browser tabs opened before this field existed do not send
             # it -- leave the game side's current target alone rather than
             # snapping it to some default.

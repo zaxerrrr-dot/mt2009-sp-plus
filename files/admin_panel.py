@@ -1041,6 +1041,9 @@ RATES_SCRIPT = _env_path("M2PANEL_RATES_SCRIPT", os.path.join(PANEL_DIR, "apply_
 RATES_STATUS = _env_path("M2PANEL_RATES_STATUS", os.path.join(PANEL_DIR, "rates.status"))
 RATE_NAMES   = ("exp", "drop", "yang")
 RATE_MIN, RATE_MAX = 1, 10000
+# MT2009_PLUS_YANG_RATE_CAP_V1: yang drops no higher than 1000% in any world;
+# the migrator brings a world set higher down to it at its next start.
+YANG_RATE_MAX = 1000
 
 # ---- game master ranks ------------------------------------------------------
 # Granting a rank is one row in common.gmlist, but the game reads that table
@@ -3673,6 +3676,9 @@ T = {
                  "en":"✅ Saved. The channel change applies after a server restart (GRAJ in the launcher or a restart of the game container)."},
  "ch2_bad":     {"pl":"Udział botów na CH2 musi być liczbą od 10 do 90. Nic nie zmieniono.", "en":"The share of bots on CH2 has to be between 10 and 90. Nothing was changed."},
  "ch2_failed":  {"pl":"Nie udało się zapisać ustawienia kanałów w katalogu wymiany z serwerem.", "en":"Could not write the channel setting into the spool shared with the server."},
+ "rates_yang_range": {"pl":"Yang może być najwyżej 1000%. Nic nie zmieniono. 🙂","en":"Yang can be at most 1000%. Nothing was changed. 🙂",
+                  "de":"Yang darf höchstens 1000% sein. Es wurde nichts geändert. 🙂",
+                  "tr":"Yang en fazla %1000 olabilir. Hiçbir şey değiştirilmedi. 🙂"},
  "rates_range":  {"pl":"Każda z trzech wartości musi być liczbą całkowitą od 1 do 10000. Nic nie zmieniono. 🙂","en":"Each of the three has to be a whole number between 1 and 10000. Nothing was changed. 🙂",
                   "de":"Alle drei müssen ganze Zahlen zwischen 1 und 10000 sein. Es wurde nichts geändert. 🙂",
                   "tr":"Üçü de 1 ile 10000 arasında tam sayı olmalı. Hiçbir şey değiştirilmedi. 🙂"},
@@ -7044,7 +7050,7 @@ TPL_RATES = BASE.replace("__BODY__", """
        value="{{cur['drop']}}" placeholder="{{t('rates_percent')}}" required>
 <h3 style="margin-top:18px">💰 {{t('rates_yang')}}</h3>
 <p class="muted">{{t('rates_yang_help')}}</p>
-<input id="r_yang" name="yang" type="number" min="1" max="10000" step="1"
+<input id="r_yang" name="yang" type="number" min="1" max="1000" step="1"
        value="{{cur['yang']}}" placeholder="{{t('rates_percent')}}" required>
 <button class="big" style="margin-top:18px">{{t('rates_save')}}</button>
 </form></div>
@@ -18553,6 +18559,9 @@ def rates():
         vals = {n: clean_rate(request.form.get(n, "")) for n in RATE_NAMES}
         if any(v is None for v in vals.values()):
             flash(t("rates_range"), "error")
+            return redirect(url_for("rates"))
+        if vals.get("yang", 0) > YANG_RATE_MAX:
+            flash(t("rates_yang_range"), "error")
             return redirect(url_for("rates"))
         try:
             with db() as c, c.cursor() as cur:
