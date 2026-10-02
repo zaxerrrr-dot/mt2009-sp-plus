@@ -24,11 +24,18 @@
 # FORGET_SECONDS is forgotten. When the target in hand dies, the nearest one
 # remembered within PICK_DISTANCE becomes the target - a stone only when no
 # monster is left, which is the Metin whose pack it was - and nothing else ever
-# does: no player, no NPC, no monster this character did not fight. The
+# does: no player, no NPC, no monster this character did not fight - but one:
+# MT2009_PLUS_AUTO_TARGET_V2, a monster attacking this character that it has
+# not struck yet. Only the server knows those. A server that answers the probe
+# "/autotarget_aggro 0" with AutoTargetAggroReady is asked once a kill
+# ("/autotarget_aggro <tag>") and names the monsters near whose victim is this
+# character (AutoTargetAggro <tag> <vid,...>); the answer counts only for the
+# kill it was asked for and never overrides the player's hand. An older server
+# is never asked, and the module works as before. The
 # archer's extra arrows fly at the monsters already fighting the archer
 # (CHARACTER::Shoot), but only the exe hears which (HEADER_GC_ADD_FLY_SHOOT_
-# TARGETING), so a monster struck by nothing but an extra arrow is not known
-# here until it is clicked or shot at.
+# TARGETING), so a monster struck by nothing but an extra arrow is known here
+# only if clicked, shot at, or named by the server as attacking this character.
 #
 # The player's hand comes first. Nothing here attacks or walks: the target is
 # chosen, and a held space bar, a click or a skill does the rest. A click on a
@@ -57,6 +64,7 @@
 
 import chr
 import clientclock
+import net
 import player
 import sys
 import wndMgr
@@ -97,6 +105,12 @@ UNPICKABLE_SECONDS = 2.0
 PRUNE_INTERVAL = 0.5
 # The point of a candidate that must be on the screen: its middle, not its feet.
 SCREEN_TEST_HEIGHT = 100
+# MT2009_PLUS_AUTO_TARGET_V2: the server's list of the monsters attacking this
+# character - asked at most this often, waited for this long before a Metin
+# stone is taken in their place, and read up to this many.
+QUERY_INTERVAL = 0.75
+QUERY_WAIT = 0.75
+MAX_AGGRO_TARGETS = 24
 
 MONSTER = 'monster'
 STONE = 'stone'
@@ -207,6 +221,11 @@ class Keeper(object):
 	def __init__(self):
 		self.broken = False
 		self.lastClick = (None, 0)
+		# MT2009_PLUS_AUTO_TARGET_V2: whether this game window's server answers
+		# the query (None: not probed yet), and the tag of the last kill asked.
+		self.serverReady = None
+		self.requestSerial = 0
+		self.nextQuery = 0.0
 		self.Forget()
 
 	def Forget(self):
@@ -217,7 +236,8 @@ class Keeper(object):
 		self.target = 0
 		self.targetAlive = False
 		self.targetKind = None
-		# A kill whose next target is being chosen: {'fallen', 'since', 'next'}.
+		# A kill whose next target is being chosen: {'fallen', 'since', 'next',
+		# 'request', 'queried', 'queryAt', 'replied', 'aggro'}.
 		self.pending = None
 		self.unpickable = {}
 		self.nextPrune = 0.0
@@ -226,6 +246,7 @@ class Keeper(object):
 		# The game window closes: a warp or a logout. The next one starts afresh.
 		self.Forget()
 		self.lastClick = (None, 0)
+		self.serverReady = None
 
 	def CanUpdate(self):
 		return not self.broken and Mode() != MODE_OFF
@@ -265,6 +286,10 @@ class Keeper(object):
 			if self.fought or self.pending or self.target:
 				self.Forget()
 			return
+		if self.serverReady is None:
+			# Once a game window: does this server name the attackers?
+			self.serverReady = False
+			net.SendChatPacket('/autotarget_aggro 0')
 		current = player.GetTargetVID()
 		alive = IsAlive(current)
 		kind = Kind(current) if alive else None
@@ -289,7 +314,10 @@ class Keeper(object):
 		(clickTime, clickVid) = self.lastClick
 		if clickTime is not None and now - clickTime <= CLICK_RESPECT and clickVid != vid:
 			return
-		self.pending = {'fallen': vid, 'since': now, 'next': now}
+		self.requestSerial = self.requestSerial % 2147483647 + 1
+		self.pending = {'fallen': vid, 'since': now, 'next': now,
+			'request': self.requestSerial, 'queried': False, 'queryAt': None,
+			'replied': False, 'aggro': []}
 
 	def Retarget(self, now, current):
 		pending = self.pending
@@ -300,11 +328,21 @@ class Keeper(object):
 			# The player's choice, the client's, or ours that took: the wait is over.
 			self.pending = None
 			return
+		if self.serverReady and not pending['queried'] and now >= self.nextQuery:
+			pending['queried'] = True
+			pending['queryAt'] = now
+			self.nextQuery = now + QUERY_INTERVAL
+			net.SendChatPacket('/autotarget_aggro %d' % pending['request'])
 		if now < pending['next']:
 			return
 		pending['next'] = now + RETRY_INTERVAL
 		vid = self.Choose(now, pending['fallen'])
 		if not vid:
+			return
+		# A remembered Metin stone does not win before the server has named
+		# the pack attacking this character - for QUERY_WAIT at most.
+		if Kind(vid) == STONE and self.serverReady and not pending['replied'] and (
+				not pending['queried'] or now - pending['queryAt'] < QUERY_WAIT):
 			return
 		player.SetTarget(vid)
 		after = player.GetTargetVID()
@@ -323,7 +361,7 @@ class Keeper(object):
 		"""The nearest monster of the fight within PICK_DISTANCE and on the
 		screen; a stone only with no monster; 0 for none."""
 		best = None
-		for vid in list(self.fought.keys()):
+		for vid in set(list(self.fought.keys()) + self.pending['aggro']):
 			if vid == fallen or self.unpickable.get(vid, 0.0) > now:
 				continue
 			if not IsAlive(vid):
@@ -362,6 +400,37 @@ class Keeper(object):
 			if self.unpickable[vid] <= now:
 				del self.unpickable[vid]
 
+	def OnServerAggro(self, request, vids):
+		"""MT2009_PLUS_AUTO_TARGET_V2: the server's answer. Only this kill's
+		answer counts; a click, a warp, another kill, the option or Auto Lowy
+		end it."""
+		self.serverReady = True
+		pending = self.pending
+		if not pending or not pending['queried'] or not self.Active():
+			return
+		try:
+			if int(request) != pending['request']:
+				return
+		except (TypeError, ValueError):
+			return
+		if clientclock.Now() - pending['since'] > RETARGET_WINDOW:
+			return
+		current = player.GetTargetVID()
+		if current and current != pending['fallen']:
+			return
+		candidates = []
+		for text in str(vids).split(',')[:MAX_AGGRO_TARGETS]:
+			try:
+				vid = int(text)
+			except (TypeError, ValueError):
+				continue
+			if 0 < vid <= 4294967295 and vid not in candidates and Kind(vid) == MONSTER and IsAlive(vid):
+				candidates.append(vid)
+		pending['aggro'] = candidates
+		pending['replied'] = True
+		# The next try at once: the answer is what it was waiting for.
+		pending['next'] = clientclock.Now()
+
 	def NoteClick(self, vid):
 		"""A click into the world, on the character under the cursor (chr.Pick:
 		-1 for none). A click on the ground is a walk and changes nothing."""
@@ -396,3 +465,19 @@ def NoteClick(vid):
 		keeper.NoteClick(vid)
 	except Exception:
 		keeper.Break()
+
+
+def OnServerAggro(request, vids='0', *rest):
+	"""game.py's AutoTargetAggro server command (MT2009_PLUS_AUTO_TARGET_V2)."""
+	keeper = GetKeeper()
+	if keeper.broken:
+		return
+	try:
+		keeper.OnServerAggro(request, vids)
+	except Exception:
+		keeper.Break()
+
+
+def OnServerReady(*rest):
+	"""game.py's AutoTargetAggroReady server command: the probe's answer."""
+	GetKeeper().serverReady = True

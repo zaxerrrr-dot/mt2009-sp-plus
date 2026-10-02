@@ -2822,8 +2822,20 @@ class GameWindow(ui.ScriptWindow):
 	## BINARY CALLBACK
 	######################################################################################
 
+	# MT2009_PLUS_AUTO_TARGET_V2: the server names the monsters attacking the
+	# player for the next target after a kill (autotarget.py).
+	def __AutoTargetAggro(self, request="0", vids="0", *rest):
+		import autotarget
+		autotarget.OnServerAggro(request, vids)
+
+	def __AutoTargetAggroReady(self, *rest):
+		import autotarget
+		autotarget.OnServerReady()
+
 	def __ServerCommand_Build(self):
 		serverCommandList={
+			"AutoTargetAggro": self.__AutoTargetAggro,
+			"AutoTargetAggroReady": self.__AutoTargetAggroReady,
 			"OpenGarbageBin": self.interface.ToggleGarbageBinWindow,
 			"GarbageBin": self.interface.ToggleGarbageBinWindow,
 			"GarbageBinReady": self.interface.GarbageBinReady,
