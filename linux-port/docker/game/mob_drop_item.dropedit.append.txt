@@ -76,3 +76,21 @@ Group	MT2009_dropedit_9714_HL
 	3	71084	3	10	-- Zaczarowanie Przedmiotu x3
 	4	71085	3	10	-- Wzmocnienie Przedmiotu x3
 }
+
+// The owner, 2 October: Best. Zolnierz and Best. Maniak (Dolina Orkow, the kingdoms' first
+// islands) drop the level-30 weapons of the Bestialski Lucznik (533) at its chances.
+Group	MT2009_dropedit_531
+{
+	mob	531	-- Best. Zolnierz
+	Type	drop
+	1	292	1	4	-- Miecz Pelni Ksiezyca+2, 1%
+	2	2152	1	4	-- Luk Z Rogu Jelenia+2, 1%
+}
+
+Group	MT2009_dropedit_532
+{
+	mob	532	-- Best. Maniak
+	Type	drop
+	1	292	1	4	-- Miecz Pelni Ksiezyca+2, 1%
+	2	2152	1	4	-- Luk Z Rogu Jelenia+2, 1%
+}

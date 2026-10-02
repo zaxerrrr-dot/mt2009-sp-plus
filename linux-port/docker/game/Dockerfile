@@ -422,14 +422,14 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; G=/opt/metin2/
         printf "%s%s\n", $0, (cr ? "\r" : "") } \
       END{ if (n != 4) { print "FATAL: Beran lines changed: " n " (4 expected)" > "/dev/stderr"; exit 1 } }' "$F" > "$F.new" \
  && mv "$F.new" "$F" \
- && test "$(grep -c -E '^Group[[:blank:]]+MT2009_dropedit_' "$F")" = 7 \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_dropedit_' "$F")" = 9 \
  && awk '{cr = sub(/\r$/, "")} /^[[:blank:]]*Group/{v=""} tolower($1)=="vnum"{v=$2} \
       { if ($1 ~ /^[0-9]+$/ && $3=="1" && ((v=="10743" && ($2=="25040" || $2=="70038")) || (v=="10755" && $2=="25040"))) { c = ($2=="70038") ? 20 : 5; sub(/^[[:blank:]]*[0-9]+[[:blank:]]+[0-9]+[[:blank:]]+1[[:blank:]]/, "\t" $1 "\t" $2 "\t" c "\t"); n++ } \
         printf "%s%s\n", $0, (cr ? "\r" : "") } \
       END{ if (n != 3) { print "FATAL: shared boss group lines changed: " n " (3 expected)" > "/dev/stderr"; exit 1 } }' "$G" > "$G.new" \
  && mv "$G.new" "$G" \
  && rm -f "$A" \
- && echo "share: drop edit - 7 groups, Beran, shared groups 10743 / 10755"
+ && echo "share: drop edit - 9 groups, Beran, shared groups 10743 / 10755"
 
 # MT2009_PLUS_FLOWER_V1: the Flower Event's five gift boxes (83023-83027, Pudelko z Chryzantema ..
 # ze Slonecznikiem; playerbot_flower.h gives them for 10 shoots of a flower), opened by their
