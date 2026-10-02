@@ -2746,6 +2746,17 @@ class GameWindow(ui.ScriptWindow):
 		self.interface.UpdateMemberCount(guildID1, memberCount1, guildID2, memberCount2)
 		self.interface.wndMiniMap.UpdateObserverCount(observerCount)
 
+	def __GuildWar_SetKills(self, guildSelf="0", guildOpp="0", kills="0", *rest):
+		# MT2009_PLUS_GUILD_WAR_KILLS_V1: the kills that win a war the server
+		# ends by kills, for its board in the lower left; 0 takes the target
+		# back (guildwarkills.py).
+		try:
+			guildSelf, guildOpp, kills = int(guildSelf), int(guildOpp), int(kills)
+		except ValueError:
+			return
+		if self.interface:
+			self.interface.OnRecvGuildWarKills(guildSelf, guildOpp, kills)
+
 	def __GuildWar_OpenAskDialog(self, guildID, warType):
 
 		guildName = guild.GetGuildName(guildID)
@@ -2865,6 +2876,7 @@ class GameWindow(ui.ScriptWindow):
 			"horse_state"			: self.__Horse_UpdateState,
 			"hide_horse_state"		: self.__Horse_HideState,
 			"WarUC"					: self.__GuildWar_UpdateMemberCount,
+			"guild_war_kills"		: self.__GuildWar_SetKills,
 			"test_server"			: self.__EnableTestServerFlag,
 			"mall"			: self.__InGameShop_Show,
 			"SetGMFlag"				: self.__SetGMFlag,

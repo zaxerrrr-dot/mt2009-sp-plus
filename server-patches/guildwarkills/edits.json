@@ -1,0 +1,8 @@
+[
+ {
+  "file": "guild_manager.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_KILLS_V1",
+  "old": "\tSendGuildWarScore(gAttack->GetID(), gDefend->GetID(), victim->GetLevel());\n",
+  "new": "\t// MT2009_PLUS_GUILD_WAR_KILLS_V1 (server-patches/guildwarkills): a field\n\t// war's score is its kills, one a kill - the victim's level used to be\n\t// added, so the panel's \"won at 100 kills\" (WAR_KILLS, playerbot_guild_war.h)\n\t// and the war's board could not be read as kills.\n\tSendGuildWarScore(gAttack->GetID(), gDefend->GetID(), 1);\n"
+ }
+]
