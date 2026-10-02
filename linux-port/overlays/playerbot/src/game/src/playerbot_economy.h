@@ -239,11 +239,15 @@ namespace
 	// black-steel armour of sixty-six (playerbot_stalki.h): the flood was the
 	// level-34 families, and a Stalki is never the merchant's, so one the cap
 	// sent home would stand in its bag for good.
+	// MT2009_PLUS_MARKET_V3, point 5 (playerbot_bonus.h): a piece whose lines
+	// price it as a +7 or better is no low plus to any cap below.
+	bool IsPlayerBotBonusGoodsPiece(LPITEM item);
+
 	bool IsPlayerBotCappedLowArmour(LPITEM item)
 	{
 		return item && item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_BODY &&
 				item->GetRefineLevel() <= PLAYERBOT_LOW_ARMOUR_MAX_PLUS && !IsPlayerBotPrizeItem(item) &&
-				!IsPlayerBotStalkiItem(item);
+				!IsPlayerBotStalkiItem(item) && !IsPlayerBotBonusGoodsPiece(item);
 	}
 
 	// And a jewel his answer of 26 September holds to the same bound: +0..+3,
@@ -252,7 +256,8 @@ namespace
 	bool IsPlayerBotCappedLowJewel(LPITEM item)
 	{
 		return item && item->GetType() == ITEM_ARMOR && IsPlayerBotJewelSubType(item->GetSubType()) &&
-				item->GetRefineLevel() <= PLAYERBOT_LOW_PLUS_MARKET_MAX_PLUS && !IsPlayerBotPrizeItem(item);
+				item->GetRefineLevel() <= PLAYERBOT_LOW_PLUS_MARKET_MAX_PLUS && !IsPlayerBotPrizeItem(item) &&
+				!IsPlayerBotBonusGoodsPiece(item);
 	}
 
 	// A body armour or a jewel at +0..+3 is every bot's counter goods (Iwakura's
@@ -1828,6 +1833,11 @@ namespace
 		// the pickup goods, which would keep it for a counter with no room.
 		if (IsPlayerBotMissionBook(vnum) && IsPlayerBotMissionBookMarketFull(ch))
 			return !PlayerBotMissionBookGoesToSafebox(ch, vnum);
+		// MT2009_PLUS_MARKET_V3, point 8: Siano is never a counter's. What the
+		// General Store did not change for potions (ExchangePlayerBotHay) it
+		// buys - asked before the pickup goods, which would keep it for one.
+		if (vnum == PLAYERBOT_HAY_VNUM)
+			return true;
 		// The goods a player crafts further (IsPlayerBotPickupGoods) wait for a
 		// counter, and reach the merchant only from a bag under pressure that
 		// has no counter to sell from - the rule a polymorph marble keeps. Gear
@@ -3916,6 +3926,34 @@ namespace
 		return any;
 	}
 
+	// MT2009_PLUS_MARKET_V3, point 8: at the General Store a bot gives its
+	// Siano for Red Potions (D), PLAYERBOT_HAY_POTIONS a bundle, while its
+	// belt is under PLAYERBOT_POTION_FILL_RED and the bag has room for them -
+	// the room counted as the potion purchase below counts it, since
+	// AutoGiveItem puts what does not fit on the ground. Whatever is left of
+	// the hay the store then buys (IsPlayerBotJunkItem). The potions given.
+	DWORD ExchangePlayerBotHay(LPCHARACTER ch, size_t redCount)
+	{
+		if (!ch || redCount >= PLAYERBOT_POTION_FILL_RED)
+			return 0;
+		const int hay = (int)ch->CountSpecifyItem(PLAYERBOT_HAY_VNUM);
+		if (hay <= 0)
+			return 0;
+		const int freeCells = std::max(0, ch->GetEmptyInventory(1) < 0 ? 0 : CountPlayerBotFreeInventoryCells(ch));
+		const int held = (int)ch->CountSpecifyItem(PLAYERBOT_HAY_POTION_VNUM);
+		const int room = freeCells * 200 + (200 - held % 200) % 200;
+		const int wanted = (int)((PLAYERBOT_POTION_FILL_RED - redCount + PLAYERBOT_HAY_POTIONS - 1) / PLAYERBOT_HAY_POTIONS);
+		const int bundles = std::min(std::min(hay, wanted), room / PLAYERBOT_HAY_POTIONS);
+		if (bundles <= 0)
+			return 0;
+		ch->RemoveSpecifyItem(PLAYERBOT_HAY_VNUM, bundles);
+		ch->AutoGiveItem(PLAYERBOT_HAY_POTION_VNUM, bundles * PLAYERBOT_HAY_POTIONS);
+		sys_log(0, "PLAYERBOT_MARKET: hay exchanged pid=%u name=%s hay=%d potions=%d had_red=%u hay_left=%d",
+				ch->GetPlayerID(), ch->GetName(), bundles, bundles * PLAYERBOT_HAY_POTIONS,
+				(unsigned int)redCount, hay - bundles);
+		return (DWORD)(bundles * PLAYERBOT_HAY_POTIONS);
+	}
+
 	bool ManagePlayerBotMiscMerchant(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded())
@@ -3939,6 +3977,9 @@ namespace
 			else if (vnum == 27004 || vnum == 27005 || vnum == 27006 || vnum == 27052)
 				blueCount += item->GetCount();
 		}
+
+		// The hay first, for potions; the rest of it is junk below.
+		redCount += ExchangePlayerBotHay(ch, redCount);
 
 		// Miscellaneous loot belongs to Handlarka. Weapons and wearable equipment
 		// are deliberately left for their own specialist merchants.

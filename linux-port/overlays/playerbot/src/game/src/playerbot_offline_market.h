@@ -951,6 +951,16 @@ namespace {
                 }
                 if (!slip)
                     AddPlayerBotMarketSupply(item->GetVnum(), item->GetInfo().count, shop->GetSpawn().map);
+                // MT2009_PLUS_MARKET_V3, point 4: a weapon's average damage, for
+                // the census of the best copies (ReportPlayerBotTopCopies).
+                if (s_bPlayerBotTopCopyCensus && item->GetTable() && item->GetTable()->bType == ITEM_WEAPON &&
+                        item->GetTable()->bSubType != WEAPON_ARROW) {
+                    long average = 0;
+                    for (int a = 0; a < ITEM_ATTRIBUTE_MAX_NUM; ++a)
+                        if (item->GetInfo().aAttr[a].bType == APPLY_NORMAL_HIT_DAMAGE_BONUS)
+                            average += item->GetInfo().aAttr[a].sValue;
+                    NotePlayerBotAverageDamageCopy(item->GetVnum(), average);
+                }
                 if (botShop) {
                     NotePlayerBotCappedLineOnCounter(item->GetVnum(), item->GetInfo().count);
                     NotePlayerBotMissionBooksOnCounter(shop->GetSpawn().map, item->GetVnum(), item->GetInfo().count);

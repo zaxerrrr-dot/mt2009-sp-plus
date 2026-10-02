@@ -1421,13 +1421,86 @@ namespace
 	// a restart is not a change, and its first visit restocks.
 	const DWORD PLAYERBOT_OFFLINE_REPRICE_SLICE = 2;
 	const DWORD PLAYERBOT_OFFLINE_REPRICE_CATCHUP_MS = 10 * 60 * 1000;
-	const DWORD PLAYERBOT_OFFLINE_REPRICE_MS = 60 * 60 * 1000;
+	// MT2009_PLUS_MARKET_V3: every half hour, so a price the market index
+	// (below) has moved reaches the counters while it still says something.
+	// The mutations are spared by the reprice itself: a line whose new price
+	// is within PLAYERBOT_MARKET_V3_REPRICE_DEADBAND_PERCENT of what it asks
+	// is passed over without an edit, PLAYERBOT_MARKET_V3_REPRICE_LOOK_AHEAD
+	// of them a step, so the rotation edits only what moved.
+	const DWORD PLAYERBOT_OFFLINE_REPRICE_MS = 30 * 60 * 1000;
 	// Iwakura's Patch 4, point 3: a service visit that added or took off a line
 	// comes back two seconds on for another, this many times. A keeper added one
 	// line in ten to fifteen minutes, and a counter of lines of one and two
 	// would take a day to fill and never keep up with what sells ("wizyta w
 	// sklepie doklada kilka linii, a nie jedna", the operator's choice).
 	const DWORD PLAYERBOT_OFFLINE_RESTOCK_CHAIN = 3;
+	// MT2009_PLUS_MARKET_V3 (the living market of 2 October; the arithmetic
+	// is playerbot_price_rules.h's, the engine side UpdatePlayerBotMarketIndex
+	// and its neighbours in playerbot_town.h).
+	//
+	// Point 1, the market index: the refine materials, the skill books, the
+	// Forgetting Scrolls, the Spirit Stone and the Blessing Scroll ask the
+	// owner's price times an index of how the counters of the whole world
+	// stand against their usual. The usual is a day's average of the count
+	// (USUAL_TAU_MS), never under USUAL_MIN_UNITS; the target is (usual +
+	// bots short + Q0) / (on the counters + Q0) to EXPONENT, MIN to MAX
+	// percent; and the index goes towards it with a lag of TAU_MS. A pass
+	// that moved a kind's index by NOTE_PERCENT or more says so in the log.
+	const DWORD PLAYERBOT_MARKET_V3_USUAL_TAU_MS = 24 * 60 * 60 * 1000;
+	const double PLAYERBOT_MARKET_V3_USUAL_MIN_UNITS = 5.0;
+	const double PLAYERBOT_MARKET_V3_Q0 = 5.0;
+	const double PLAYERBOT_MARKET_V3_EXPONENT = 0.35;
+	const int PLAYERBOT_MARKET_V3_MIN_PERCENT = 70;
+	const int PLAYERBOT_MARKET_V3_MAX_PERCENT = 160;
+	const DWORD PLAYERBOT_MARKET_V3_TAU_MS = 2 * 60 * 60 * 1000;
+	const size_t PLAYERBOT_MARKET_V3_MAX_KINDS = 2048;
+	// Point 7, the market balancing itself: a kind is missing under
+	// MISSING_PERCENT of its usual on the counters, and too much of it over
+	// PLENTY_PERCENT - a bot then fetches the one from its storekeeper for its
+	// counter and holds the other back in the bag. A missing kind goes up
+	// MISSING_SCORE ahead of the rest of the bag.
+	const int PLAYERBOT_MARKET_V3_MISSING_PERCENT = 50;
+	const int PLAYERBOT_MARKET_V3_PLENTY_PERCENT = 250;
+	const int PLAYERBOT_MARKET_V3_MISSING_SCORE = 300;
+	// Point 2: a line's markdown by the other stock of its kind - none while
+	// the other counters hold less than the line itself, the whole of it from
+	// PLENTY_LINES lines' worth (playerbot_price_rules::SupplyMarkdownPercent).
+	// And every good's floor: FLOOR_PERCENT of the owner's price for it at
+	// this world's rate, and never under what the merchant pays.
+	const int PLAYERBOT_MARKET_V3_MARKDOWN_PLENTY_LINES = 4;
+	const int PLAYERBOT_MARKET_V3_FLOOR_PERCENT = 50;
+	// Point 3: prices a person writes (playerbot_price_rules::HumanPrice),
+	// from this many yang.
+	const long long PLAYERBOT_MARKET_V3_HUMAN_PRICE_MIN = 1000;
+	// The half-hour reprice's spares (PLAYERBOT_OFFLINE_REPRICE_MS).
+	const int PLAYERBOT_MARKET_V3_REPRICE_DEADBAND_PERCENT = 3;
+	const int PLAYERBOT_MARKET_V3_REPRICE_LOOK_AHEAD = 8;
+	// Point 4: a weapon's average damage as a plus (+6 from SIX, +7 from
+	// SEVEN), and the best copies of a family on the server: the best seen
+	// asks TOP_COPY_PREMIUM percent more, one at TOP_COPY_FROM percent of the
+	// best nothing, under TOP_COPY_MIN_AVERAGE never. Seen is the counters and
+	// the bots' hands and bags at every market report, published with it; a
+	// family with fewer than TOP_COPY_MIN_COPIES copies seen has no ranking to
+	// be the top of.
+	const long PLAYERBOT_MARKET_V3_AVERAGE_SIX = 30;
+	const long PLAYERBOT_MARKET_V3_AVERAGE_SEVEN = 40;
+	const long PLAYERBOT_MARKET_V3_TOP_COPY_MIN_AVERAGE = 20;
+	const int PLAYERBOT_MARKET_V3_TOP_COPY_FROM = 75;
+	const int PLAYERBOT_MARKET_V3_TOP_COPY_PREMIUM = 60;
+	const int PLAYERBOT_MARKET_V3_TOP_COPY_MIN_COPIES = 2;
+	// Point 5: from this plus the lines make (GetPlayerBotBonusPlusLevel) a
+	// piece is finished goods - listed rather than kept at the storekeeper,
+	// whatever its own plus.
+	const int PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS = 7;
+	// Point 6: a shaman's weapon or a shield with Intelligence asks this many
+	// percent more for every point of it.
+	const int PLAYERBOT_MARKET_V3_INT_PERCENT_PER_POINT = 5;
+	// Point 8: Siano is never listed. A bot gives it for Red Potions (D) at
+	// the General Store, HAY_POTIONS a bundle, while its belt is under the
+	// fill; what is left, and what stood on its counter, the store buys.
+	const DWORD PLAYERBOT_HAY_VNUM = 50054;
+	const DWORD PLAYERBOT_HAY_POTION_VNUM = 27003;
+	const int PLAYERBOT_HAY_POTIONS = 10;
 	// And an offline counter carries at most this share of its cells in lines
 	// of refine materials together - three fifths: 48 lines of the eighty cells
 	// a counter had, 96 of a bot's two pages since 28 September

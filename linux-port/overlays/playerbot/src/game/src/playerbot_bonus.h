@@ -675,6 +675,93 @@ namespace
 		return premium;
 	}
 
+	// MT2009_PLUS_MARKET_V3, point 5: the plus a piece's lines are worth
+	// ("bonusy licza sie bardziej niz +"). The jewellery, the boots, the body
+	// armour and the shield only - a helmet's and a weapon's lines are priced
+	// by the rows alone, a weapon's average by GetPlayerBotAverageDamagePlus.
+	// A line counts when it is one a player pays for (the list of
+	// IsPlayerBotTopBonusLine, asked for its kind alone), by how far up the top
+	// this world's table rolls for it on the piece it is
+	// (playerbot_price_rules::BonusLinePoints); an immunity has no top to be
+	// part of and counts whole. Zero for no plus, else 5, 7 or 8.
+	int GetPlayerBotBonusPlusLevel(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_ARMOR)
+			return 0;
+		switch (item->GetSubType())
+		{
+			case ARMOR_WRIST: case ARMOR_NECK: case ARMOR_EAR:
+			case ARMOR_FOOTS: case ARMOR_BODY: case ARMOR_SHIELD:
+				break;
+			default:
+				return 0;
+		}
+		int points = 0;
+		const int count = item->GetAttributeCount();
+		for (int i = 0; i < count && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+		{
+			const BYTE type = item->GetAttributeType(i);
+			const long value = item->GetAttributeValue(i);
+			if (value <= 0 || !IsPlayerBotTopBonusLine(type, 0x7FFFFFFFL))
+				continue;
+			if (type == APPLY_IMMUNE_STUN || type == APPLY_IMMUNE_SLOW)
+			{
+				points += 3;
+				continue;
+			}
+			points += playerbot_price_rules::BonusLinePoints(value, GetPlayerBotBonusMaxRoll(item, type));
+		}
+		return playerbot_price_rules::BonusPlusLevel(points);
+	}
+
+	// Point 4: a weapon's average damage as a plus (+6 or +7), zero under it.
+	int GetPlayerBotAverageDamagePlus(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_WEAPON || item->GetSubType() == WEAPON_ARROW)
+			return 0;
+		return playerbot_price_rules::AverageDamagePlusLevel(
+				SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS),
+				PLAYERBOT_MARKET_V3_AVERAGE_SIX, PLAYERBOT_MARKET_V3_AVERAGE_SEVEN);
+	}
+
+	// Point 6: a shaman's weapon - a bell or a fan - or a shield, with
+	// Intelligence, in percent over its price: what a shaman's buffs are cast
+	// with, and what every shaman of the market goes looking for.
+	int GetPlayerBotIntPremiumPercent(LPITEM item)
+	{
+		if (!item)
+			return 100;
+		const bool shamanWeapon = item->GetType() == ITEM_WEAPON &&
+				(item->GetSubType() == WEAPON_BELL || item->GetSubType() == WEAPON_FAN);
+		const bool shield = item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_SHIELD;
+		if (!shamanWeapon && !shield)
+			return 100;
+		const long intelligence = SumPlayerBotItemLines(item, APPLY_INT);
+		return intelligence > 0 ? 100 + (int)std::min<long>(100, intelligence) * PLAYERBOT_MARKET_V3_INT_PERCENT_PER_POINT
+				: 100;
+	}
+
+	// The plus a piece is priced as (points 4 and 5): the larger of what its
+	// lines and its average damage are worth, zero for neither.
+	int GetPlayerBotPricedPlus(LPITEM item)
+	{
+		return std::max(GetPlayerBotBonusPlusLevel(item), GetPlayerBotAverageDamagePlus(item));
+	}
+
+	// A piece of jewellery, boots, body armour or a shield whose lines make it
+	// a +7 or better over its own plus: finished goods, for the counter rather
+	// than the storekeeper ("takie przedmioty boty wystawiaja na lade, zamiast
+	// chowac w magazynie") - Iwakura's list keeps none (IsPlayerBotLppKeptItem),
+	// no market cap of low plus sends it home or to the merchant, and the
+	// counter ranks it with the valuable bonuses (ScorePlayerBotShopStock).
+	bool IsPlayerBotBonusGoodsPiece(LPITEM item)
+	{
+		if (!item)
+			return false;
+		const int plus = GetPlayerBotBonusPlusLevel(item);
+		return plus >= PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS && plus > (int)item->GetRefineLevel();
+	}
+
 	int ScorePlayerBotItemBonuses(LPCHARACTER ch, LPITEM item, BYTE wearCell)
 	{
 		if (!ch || !item)

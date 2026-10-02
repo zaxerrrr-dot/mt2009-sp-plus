@@ -1354,12 +1354,60 @@ namespace
 				auWorn[2], auKept[2], auShoppers[2], auBag[2], auCounters[2]);
 	}
 
+	// MT2009_PLUS_MARKET_V3, point 4: the best copies of every weapon, from the
+	// bots' hands and bags - the counters were counted on the ledger pass this
+	// report follows (AddPlayerBotOfflineLedger) - published for the
+	// prices of the next ten minutes (GetPlayerBotTopCopyPercent) and written
+	// down: how many families have a ranking, and the best of the best.
+	void ReportPlayerBotTopCopies()
+	{
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
+				it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!ch || !ch->IsItemLoaded())
+				continue;
+			LPITEM worn = ch->GetWear(WEAR_WEAPON);
+			if (worn)
+				NotePlayerBotAverageDamageCopy(worn->GetVnum(), SumPlayerBotItemLines(worn, APPLY_NORMAL_HIT_DAMAGE_BONUS));
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (item && item->GetCell() == cell && item->GetType() == ITEM_WEAPON &&
+						item->GetSubType() != WEAPON_ARROW)
+					NotePlayerBotAverageDamageCopy(item->GetVnum(),
+							SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS));
+			}
+		}
+		PublishPlayerBotTopCopies();
+		unsigned int ranked = 0;
+		long best = 0;
+		DWORD bestFamily = 0;
+		for (TPlayerBotTopCopyMap::const_iterator it = s_mapPlayerBotTopCopies.begin();
+				it != s_mapPlayerBotTopCopies.end(); ++it)
+		{
+			if (it->second.copies >= (unsigned int)PLAYERBOT_MARKET_V3_TOP_COPY_MIN_COPIES)
+				++ranked;
+			if (it->second.best > best)
+			{
+				best = it->second.best;
+				bestFamily = it->first;
+			}
+		}
+		sys_log(0, "PLAYERBOT_MARKET: top copies families=%u ranked=%u best=%ld family=%u",
+				(unsigned int)s_mapPlayerBotTopCopies.size(), ranked, best, bestFamily);
+	}
+
 	void RefreshPlayerBotMarketLedger(DWORD dwNow)
 	{
 		if (s_dwMarketLedgerTime != 0 &&
 				dwNow - s_dwMarketLedgerTime < PLAYERBOT_MARKET_LEDGER_INTERVAL)
 			return;
 		s_dwMarketLedgerTime = dwNow;
+		// MT2009_PLUS_MARKET_V3: the counters' weapons go into the census of
+		// the best copies on the pass the report below follows.
+		s_bPlayerBotTopCopyCensus = s_dwMarketReportTime == 0 ||
+				dwNow - s_dwMarketReportTime >= PLAYERBOT_MARKET_REPORT_INTERVAL;
 		s_mapMarketLedger.clear();
 		s_mapMarketLocalSupply.clear();
 		s_mapPlayerBotMissionBooksByMap.clear();
@@ -1428,6 +1476,9 @@ namespace
 		// each is looked at against the supply this pass counted (Iwakura, 28
 		// September, point 5).
 		UpdatePlayerBotShortageMarkups(dwNow);
+		// MT2009_PLUS_MARKET_V3, point 1: and every watched kind's index takes a
+		// step towards what the same counts say (UpdatePlayerBotMarketIndex).
+		UpdatePlayerBotMarketIndex(dwNow);
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 		// The slips the pass above found, put right where no keeper will -
 		// priced against the ledger and the wallets as they now stand.
@@ -1472,6 +1523,7 @@ namespace
 		ReportPlayerBotWeaponGoals(dwNow);
 		ReportPlayerBotLevel30Census();
 		ReportPlayerBotStalkiCensus();
+		ReportPlayerBotTopCopies();
 		// Iwakura's Patch 4, point 5: how much of the refine materials the bots
 		// hold stands on a counter - his mark is sixty-five percent ("przynajmniej
 		// 65% zmagazynowanych ulepszaczy"). The bags of this core's bots, their
@@ -1505,12 +1557,22 @@ namespace
 					bagUnits, boxUnits, counterUnits,
 					allUnits ? (unsigned int)(counterUnits * 100 / allUnits) : 0U);
 		}
-		sys_log(0, "PLAYERBOT_MARKET: ledger stalls=%u lines=%u vnums=%u demand_bots=%u wallet=%u junk_weapons=%d/%d decisions list=%u probe=%u no_demand=%u overstock=%u floor=%u top:%s",
+		// MT2009_PLUS_MARKET_V3: the market index beside the decisions - how many
+		// kinds it watches, how many ask over 110 and under 90 percent, what the
+		// balancing held back and fetched from the storekeepers since the last
+		// report, and the kinds furthest from their price ("index:", vnum=index
+		// with its target, the supply and the usual).
+		unsigned int indexKinds = 0, indexUp = 0, indexDown = 0;
+		std::string indexMoved;
+		DescribePlayerBotMarketIndex(indexKinds, indexUp, indexDown, indexMoved);
+		sys_log(0, "PLAYERBOT_MARKET: ledger stalls=%u lines=%u vnums=%u demand_bots=%u wallet=%u junk_weapons=%d/%d decisions list=%u probe=%u no_demand=%u overstock=%u floor=%u index_kinds=%u index_up=%u index_down=%u held_back=%u fetched=%u top:%s index:%s",
 				stalls, lines, (unsigned int)s_mapMarketLedger.size(), demandBots,
 				s_dwMarketMedianWallet, s_iPlayerBotJunkWeaponsOnCounters, PLAYERBOT_JUNK_WEAPON_MARKET_CAP,
 				s_auMarketDecisions[PLAYERBOT_LIST_LIST], s_auMarketDecisions[PLAYERBOT_LIST_PROBE],
 				s_auMarketDecisions[PLAYERBOT_LIST_NO_DEMAND], s_auMarketDecisions[PLAYERBOT_LIST_OVERSTOCK],
-				s_auMarketDecisions[PLAYERBOT_LIST_FLOOR], top.c_str());
+				s_auMarketDecisions[PLAYERBOT_LIST_FLOOR], indexKinds, indexUp, indexDown,
+				s_uPlayerBotMarketHeldBack, s_uPlayerBotMarketFetched, top.c_str(), indexMoved.c_str());
+		s_uPlayerBotMarketHeldBack = s_uPlayerBotMarketFetched = 0;
 		for (int d = 0; d < PLAYERBOT_LIST_DECISIONS; ++d)
 			s_auMarketDecisions[d] = 0;
 		sys_log(0, "PLAYERBOT_MARKET: rare goods bot_shops=%d cor=%d/%d sash=%d/%d cor_price=%u sash_price=%u",

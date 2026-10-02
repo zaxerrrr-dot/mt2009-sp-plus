@@ -111,6 +111,12 @@ namespace
 	bool IsPlayerBotLppReleased(LPCHARACTER ch, DWORD itemId);
 	void NotePlayerBotLppDeposit();
 	bool IsPlayerBotZielarz(LPCHARACTER ch);
+	// MT2009_PLUS_MARKET_V3: how the counters stand for a kind (-1 missing, 1
+	// too much of it, 0 otherwise), defined with the market index below.
+	int GetPlayerBotMarketSupplyState(DWORD vnum);
+	bool IsPlayerBotMarketIndexedVnum(DWORD vnum);
+	unsigned int s_uPlayerBotMarketHeldBack = 0;
+	unsigned int s_uPlayerBotMarketFetched = 0;
 
 	// The surplus books beyond what the bag keeps as counter goods, oldest
 	// cells first. Empty unless the bag is under pressure: a bag with room is
@@ -455,6 +461,21 @@ namespace
 							(PLAYERBOT_BAG_CELLS - freeAfter) * 100 < PLAYERBOT_BAG_CELLS * PLAYERBOT_BAG_FULL_PERCENT;
 					why = "book_counter";
 				}
+				// MT2009_PLUS_MARKET_V3, point 7: no book for a counter while the
+				// world's counters hold too many, and a surplus one of its own
+				// build too while they hold too few.
+				if (!wanted && PlayerBotHasCounter(ch) && GetPlayerBotMarketSupplyState(item->GetVnum()) < 0)
+				{
+					const int freeAfter = CountPlayerBotFreeInventoryCells(ch) - (int)item->GetSize();
+					wanted = freeAfter > PLAYERBOT_BAG_PRESSURE_FREE_CELLS &&
+							(PLAYERBOT_BAG_CELLS - freeAfter) * 100 < PLAYERBOT_BAG_CELLS * PLAYERBOT_BAG_FULL_PERCENT;
+					why = "book_missing";
+				}
+				else if (wanted && !strcmp(why, "book_counter") && GetPlayerBotMarketSupplyState(item->GetVnum()) > 0)
+				{
+					wanted = false;
+					++s_uPlayerBotMarketHeldBack;
+				}
 			}
 			else if (IsPlayerBotSafeRefineScroll(item->GetVnum()))
 			{
@@ -498,6 +519,24 @@ namespace
 							(PLAYERBOT_BAG_CELLS - freeAfter) * 100 < PLAYERBOT_BAG_CELLS * PLAYERBOT_MATERIAL_RELEASE_BAG_PERCENT &&
 							(int)ch->CountSpecifyItem(item->GetVnum()) <= GetPlayerBotRefineMaterialReserve(ch, item->GetVnum());
 					why = "market";
+					// MT2009_PLUS_MARKET_V3, point 7: a kind the world's counters
+					// hold too much of stays down here, and one they hold too
+					// little of comes out into any bag clear of pressure, a spare
+					// in the bag or not.
+					const int supplyState = GetPlayerBotMarketSupplyState(item->GetVnum());
+					if (supplyState > 0)
+					{
+						if (wanted)
+							++s_uPlayerBotMarketHeldBack;
+						wanted = false;
+						why = "market_held";
+					}
+					else if (supplyState < 0)
+					{
+						wanted = freeAfter > PLAYERBOT_BAG_PRESSURE_FREE_CELLS &&
+								(PLAYERBOT_BAG_CELLS - freeAfter) * 100 < PLAYERBOT_BAG_CELLS * PLAYERBOT_BAG_FULL_PERCENT;
+						why = "market_missing";
+					}
 				}
 				else if (pGambler && gambleMaterials.find(item->GetVnum()) != gambleMaterials.end())
 				{
@@ -613,6 +652,8 @@ namespace
 			sys_log(0, "PLAYERBOT_TOWN: safebox withdraw pid=%u name=%s vnum=%u count=%u reason=%s",
 					ch->GetPlayerID(), ch->GetName(), item->GetVnum(),
 					(unsigned int)item->GetCount(), why);
+			if (!strcmp(why, "market_missing") || !strcmp(why, "book_missing"))
+				++s_uPlayerBotMarketFetched;
 			if (!strcmp(why, "lpp_released"))
 			{
 				if (pPersona)
@@ -2317,18 +2358,21 @@ namespace
 	// Iwakura's price for this weapon or armour, or zero when his sheets do
 	// not carry the family. The base proto is this vnum less the refine - the
 	// same arithmetic GetPlayerBotRefineInvestment walks the ladder with.
-	DWORD GetPlayerBotGearAskingBase(LPITEM item)
+	// MT2009_PLUS_MARKET_V3: the same sheet at any plus of the piece's family -
+	// the price of the plus its lines or its average damage make it
+	// (GetPlayerBotPricedPlus, LiftPlayerBotGearPrice), with its stones.
+	DWORD GetPlayerBotGearSheetPriceAt(LPITEM item, int plus)
 	{
 		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR))
 			return 0;
 		const BYTE refine = item->GetRefineLevel();
-		if (refine > 9)
+		if (refine > 9 || plus < 0 || plus > 9)
 			return 0;
 		const DWORD baseVnum = item->GetVnum() - refine;
 		for (size_t i = 0; i < sizeof(PLAYERBOT_GEAR_PRICES) / sizeof(PLAYERBOT_GEAR_PRICES[0]); ++i)
 			if (PLAYERBOT_GEAR_PRICES[i].dwBaseVnum == baseVnum)
 			{
-				const DWORD price = PLAYERBOT_GEAR_PRICES[i].adwPrice[refine];
+				const DWORD price = PLAYERBOT_GEAR_PRICES[i].adwPrice[plus];
 				if (price == 0)
 					return 0;
 				return ScalePlayerBotIwakuraPrice(
@@ -2336,6 +2380,13 @@ namespace
 							(unsigned long long)GetPlayerBotSocketStonePercent(item) / 100ULL));
 			}
 		return 0;
+	}
+
+	DWORD GetPlayerBotGearAskingBase(LPITEM item)
+	{
+		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR))
+			return 0;
+		return GetPlayerBotGearSheetPriceAt(item, item->GetRefineLevel());
 	}
 
 	// Is this piece at a refine his sheet marks "do handlarki" - the jewellery,
@@ -2348,6 +2399,10 @@ namespace
 			return false;
 		const BYTE refine = item->GetRefineLevel();
 		if (refine > 9)
+			return false;
+		// MT2009_PLUS_MARKET_V3: never a piece its lines or its average price
+		// over its plus - a bracelet +0 of 1 500 health is a +7's goods.
+		if (GetPlayerBotPricedPlus(item) > (int)refine)
 			return false;
 		const DWORD baseVnum = item->GetVnum() - refine;
 		for (size_t i = 0; i < sizeof(PLAYERBOT_GEAR_PRICES) / sizeof(PLAYERBOT_GEAR_PRICES[0]); ++i)
@@ -2562,14 +2617,291 @@ namespace
 		return line > 0xFFFFFFFFULL ? 0xFFFFFFFFU : (DWORD)line;
 	}
 
+	// The Transporter z Petem, priced by its pet below (MT2009_PLUS_OWNER_PRICES_V2 (E)).
+	const DWORD PLAYERBOT_PET_CARRIER_VNUM = 55007;
+
+	// ---- MT2009_PLUS_MARKET_V3: the living market (2 October) ----
+	//
+	// Point 1. The kinds whose price the market moves: the refine materials
+	// (not the herbs and the other materials no gear recipe takes, nor the
+	// goods the operator prices himself - Cor Draconis, Materialy
+	// Rzemieslnicze, the guild's building materials), every skill book, the
+	// Forgetting Scroll, the Spirit Stone and the Blessing Scroll. A skill
+	// book is one kind here, as it is on the ledger.
+	bool IsPlayerBotMarketIndexedVnum(DWORD vnum)
+	{
+		if (vnum == 0 || IsPlayerBotCorVnum(vnum) || vnum == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
+				IsPlayerBotGuildBuildMaterial(vnum))
+			return false;
+		if (vnum == PLAYERBOT_SKILL_FORGET_SCROLL_VNUM || vnum == PLAYERBOT_GRAND_MASTER_STONE_VNUM ||
+				vnum == PLAYERBOT_BLESSING_SCROLL_VNUM || IsPlayerBotGeneralSkillBook(vnum))
+			return true;
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		if (proto && proto->bType == ITEM_SKILLBOOK)
+			return true;
+		const std::set<DWORD>& materials = GetPlayerBotRefineMaterialVnums();
+		return materials.find(vnum) != materials.end() && !IsPlayerBotNonGearMaterial(vnum);
+	}
+
+	// One kind's market: what the counters usually hold of it (a day's
+	// average), the index its price is asked at (hundredths, lagging two hours
+	// behind its target) and the target the last pass worked out. Kept on the
+	// shop channel's cores alone, like the shortage markup, and in memory like
+	// the ledger: a restart starts every kind at its own count and the owner's
+	// price.
+	struct TPlayerBotMarketIndex
+	{
+		double usual;
+		double index;
+		int target;
+		DWORD at;
+		TPlayerBotMarketIndex() : usual(0.0), index(100.0), target(100), at(0)
+		{
+		}
+	};
+	typedef std::map<DWORD, TPlayerBotMarketIndex> TPlayerBotMarketIndexMap;
+	TPlayerBotMarketIndexMap s_mapPlayerBotMarketIndex;
+
+	// Once a ledger pass, after the counts (RefreshPlayerBotMarketLedger): a
+	// kind the ledger saw - on a counter, or short in a bot's bag - is watched
+	// from then on, and every watched kind's usual and index take a step of
+	// their averages towards what this pass counted.
+	void UpdatePlayerBotMarketIndex(DWORD dwNow)
+	{
+		if (g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
+		{
+			s_mapPlayerBotMarketIndex.clear();
+			return;
+		}
+		for (TPlayerBotMarketLedger::const_iterator e = s_mapMarketLedger.begin(); e != s_mapMarketLedger.end(); ++e)
+			if ((e->second.dwSupplyUnits > 0 || e->second.dwDemandBots > 0) &&
+					s_mapPlayerBotMarketIndex.find(e->first) == s_mapPlayerBotMarketIndex.end() &&
+					s_mapPlayerBotMarketIndex.size() < PLAYERBOT_MARKET_V3_MAX_KINDS &&
+					IsPlayerBotMarketIndexedVnum(e->first))
+				s_mapPlayerBotMarketIndex[e->first];
+		for (TPlayerBotMarketIndexMap::iterator it = s_mapPlayerBotMarketIndex.begin();
+				it != s_mapPlayerBotMarketIndex.end(); ++it)
+		{
+			const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(it->first);
+			const double supply = entry ? (double)entry->dwSupplyUnits : 0.0;
+			const double demand = entry ? (double)entry->dwDemandBots : 0.0;
+			TPlayerBotMarketIndex& kind = it->second;
+			if (kind.at == 0)
+			{
+				// First seen: the count it is seen at is its usual.
+				kind.usual = std::max(PLAYERBOT_MARKET_V3_USUAL_MIN_UNITS, supply);
+				kind.at = dwNow;
+			}
+			const DWORD elapsed = dwNow - kind.at;
+			kind.at = dwNow;
+			kind.usual = std::max(PLAYERBOT_MARKET_V3_USUAL_MIN_UNITS,
+					playerbot_price_rules::SmoothTowards(kind.usual, supply, elapsed, PLAYERBOT_MARKET_V3_USUAL_TAU_MS));
+			kind.target = playerbot_price_rules::MarketIndexTargetPercent(kind.usual, supply, demand,
+					PLAYERBOT_MARKET_V3_Q0, PLAYERBOT_MARKET_V3_EXPONENT,
+					PLAYERBOT_MARKET_V3_MIN_PERCENT, PLAYERBOT_MARKET_V3_MAX_PERCENT);
+			kind.index = playerbot_price_rules::SmoothTowards(kind.index, (double)kind.target, elapsed,
+					PLAYERBOT_MARKET_V3_TAU_MS);
+		}
+	}
+
+	// The index of a kind in percent, 100 for a kind nobody watches.
+	int GetPlayerBotMarketIndexPercent(DWORD vnum)
+	{
+		TPlayerBotMarketIndexMap::const_iterator it = s_mapPlayerBotMarketIndex.find(vnum);
+		return it == s_mapPlayerBotMarketIndex.end() ? 100 : (int)(it->second.index + 0.5);
+	}
+
+	// Point 7: -1 while the counters hold under PLAYERBOT_MARKET_V3_MISSING_PERCENT
+	// of the kind's usual, 1 over PLAYERBOT_MARKET_V3_PLENTY_PERCENT of it, 0
+	// otherwise - and for a kind nobody watches.
+	int GetPlayerBotMarketSupplyState(DWORD vnum)
+	{
+		TPlayerBotMarketIndexMap::const_iterator it = s_mapPlayerBotMarketIndex.find(vnum);
+		if (it == s_mapPlayerBotMarketIndex.end())
+			return 0;
+		const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(vnum);
+		const double supply = entry ? (double)entry->dwSupplyUnits : 0.0;
+		if (supply * 100.0 < it->second.usual * PLAYERBOT_MARKET_V3_MISSING_PERCENT)
+			return -1;
+		return supply * 100.0 > it->second.usual * PLAYERBOT_MARKET_V3_PLENTY_PERCENT ? 1 : 0;
+	}
+
+	// For the ledger's report: how many kinds are watched, asked over 110 and
+	// under 90, and the furthest from 100 of them.
+	void DescribePlayerBotMarketIndex(unsigned int& kinds, unsigned int& up, unsigned int& down, std::string& moved)
+	{
+		kinds = (unsigned int)s_mapPlayerBotMarketIndex.size();
+		up = down = 0;
+		std::vector<std::pair<int, DWORD> > ranked; // distance from 100, vnum
+		for (TPlayerBotMarketIndexMap::const_iterator it = s_mapPlayerBotMarketIndex.begin();
+				it != s_mapPlayerBotMarketIndex.end(); ++it)
+		{
+			const int pct = (int)(it->second.index + 0.5);
+			if (pct >= 110)
+				++up;
+			else if (pct <= 90)
+				++down;
+			ranked.push_back(std::make_pair(std::abs(pct - 100), it->first));
+		}
+		std::sort(ranked.rbegin(), ranked.rend());
+		moved.clear();
+		for (size_t i = 0; i < ranked.size() && i < 6 && ranked[i].first > 0; ++i)
+		{
+			const TPlayerBotMarketIndex& kind = s_mapPlayerBotMarketIndex[ranked[i].second];
+			const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(ranked[i].second);
+			char buf[96];
+			snprintf(buf, sizeof(buf), " %u=%d%%(t%d S=%u U=%u)", ranked[i].second, (int)(kind.index + 0.5),
+					kind.target, entry ? entry->dwSupplyUnits : 0U, (unsigned int)(kind.usual + 0.5));
+			moved += buf;
+		}
+	}
+
+	// Point 4: the best copies of a weapon. Per family (the vnum less its
+	// plus), the best average damage seen and how many copies were seen with
+	// any: the counters and the bots' hands and bags at every report
+	// (AddPlayerBotOfflineLedger, ReportPlayerBotTopCopies), and what one
+	// report gathered is what the ten minutes after it price by.
+	struct TPlayerBotTopCopy
+	{
+		long best;
+		unsigned int copies;
+		TPlayerBotTopCopy() : best(0), copies(0)
+		{
+		}
+	};
+	typedef std::map<DWORD, TPlayerBotTopCopy> TPlayerBotTopCopyMap;
+	TPlayerBotTopCopyMap s_mapPlayerBotTopCopies;
+	TPlayerBotTopCopyMap s_mapPlayerBotTopCopiesNext;
+	// The counters are counted on the ledger pass a report follows, once - the
+	// passes between would count every line ten times over.
+	bool s_bPlayerBotTopCopyCensus = false;
+
+	void NotePlayerBotAverageDamageCopy(DWORD vnum, long average)
+	{
+		if (average <= 0)
+			return;
+		const DWORD family = vnum - vnum % 10;
+		if (s_mapPlayerBotTopCopiesNext.size() >= PLAYERBOT_MARKET_V3_MAX_KINDS &&
+				s_mapPlayerBotTopCopiesNext.find(family) == s_mapPlayerBotTopCopiesNext.end())
+			return;
+		TPlayerBotTopCopy& copy = s_mapPlayerBotTopCopiesNext[family];
+		copy.best = std::max(copy.best, average);
+		++copy.copies;
+	}
+
+	void PublishPlayerBotTopCopies()
+	{
+		s_mapPlayerBotTopCopies.swap(s_mapPlayerBotTopCopiesNext);
+		s_mapPlayerBotTopCopiesNext.clear();
+	}
+
+	// In percent over its price: the best copy of its family asks
+	// PLAYERBOT_MARKET_V3_TOP_COPY_PREMIUM more (playerbot_price_rules::TopCopyPercent).
+	// A copy better than any seen is the best, whatever the census says.
+	int GetPlayerBotTopCopyPercent(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_WEAPON || item->GetSubType() == WEAPON_ARROW)
+			return 100;
+		const long average = SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS);
+		if (average < PLAYERBOT_MARKET_V3_TOP_COPY_MIN_AVERAGE)
+			return 100;
+		TPlayerBotTopCopyMap::const_iterator it = s_mapPlayerBotTopCopies.find(item->GetVnum() - item->GetVnum() % 10);
+		if (it == s_mapPlayerBotTopCopies.end() || it->second.copies < (unsigned int)PLAYERBOT_MARKET_V3_TOP_COPY_MIN_COPIES)
+			return 100;
+		return playerbot_price_rules::TopCopyPercent(average, std::max(average, it->second.best),
+				PLAYERBOT_MARKET_V3_TOP_COPY_MIN_AVERAGE, PLAYERBOT_MARKET_V3_TOP_COPY_FROM,
+				PLAYERBOT_MARKET_V3_TOP_COPY_PREMIUM);
+	}
+
+	// Points 4, 5 and 6 on a piece's price, wherever the asking price settles
+	// it (the sheet, the flat refine prices, the scrap): never under the
+	// sheet's price of the plus its lines or its average make it - the larger
+	// of the two, not their product, so a line the rows already priced is not
+	// paid for twice - and then the best copy's and Intelligence's premiums.
+	DWORD LiftPlayerBotGearPrice(LPITEM item, DWORD price)
+	{
+		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR))
+			return price;
+		const int refine = item->GetRefineLevel();
+		const int plus = GetPlayerBotPricedPlus(item);
+		DWORD lifted = price;
+		if (plus > refine && refine <= 9)
+		{
+			DWORD like = GetPlayerBotGearSheetPriceAt(item, plus);
+			// A family the sheet does not carry asks the flat price of the plus.
+			if (like == 0 && plus >= 7)
+				like = plus >= 8 ? PLAYERBOT_SHOP_PRICE_PLUS8 : PLAYERBOT_SHOP_PRICE_PLUS7;
+			if (like > lifted)
+			{
+				lifted = like;
+				PlayerBotPriceStep(per::STEP_SHEET_GEAR, lifted, like, item->GetVnum() - refine, plus);
+			}
+		}
+		const int top = GetPlayerBotTopCopyPercent(item);
+		const int intelligence = GetPlayerBotIntPremiumPercent(item);
+		if (top == 100 && intelligence == 100)
+			return lifted;
+		const unsigned long long moved = (unsigned long long)lifted * (unsigned long long)top / 100ULL *
+				(unsigned long long)intelligence / 100ULL;
+		const DWORD after = (DWORD)std::max<unsigned long long>(1ULL, std::min<unsigned long long>(moved, 0xFFFFFFFFULL));
+		PlayerBotPriceStep(per::STEP_BONUS_PREMIUM, after, top * intelligence / 100 - 100);
+		return after;
+	}
+
+	// Point 2: every good has a floor. PLAYERBOT_MARKET_V3_FLOOR_PERCENT of the
+	// owner's price for it at this world's rate - a book by its skill, a
+	// Forgetting Scroll by its, a soul stone by its grade, a piece by its
+	// family and plus, the rest by name - and never under what the merchant
+	// pays for it. Not the goods the operator prices on his own curve, which
+	// would take them off it.
+	DWORD GetPlayerBotMarketFloor(LPITEM item)
+	{
+		if (!item)
+			return 0;
+		const DWORD vnum = item->GetVnum();
+		if (vnum == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED || IsPlayerBotCorVnum(vnum) || item->IsDragonSoul() ||
+				vnum == PLAYERBOT_PET_CARRIER_VNUM || vnum == PLAYERBOT_MOONLIGHT_CHEST_VNUM ||
+				(item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(vnum)))
+			return 0;
+		DWORD sheet = 0;
+		if (item->GetType() == ITEM_SKILLBOOK)
+			sheet = GetPlayerBotBookAskingBase(GetPlayerBotSkillBookSkillVnum(item));
+		else if (vnum == PLAYERBOT_SKILL_FORGET_SCROLL_VNUM)
+			sheet = GetPlayerBotForgetScrollAskingBase(item);
+		else if (item->GetType() == ITEM_METIN)
+			sheet = GetPlayerBotSoulStoneAskingBase(vnum);
+		else if (item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR)
+			sheet = GetPlayerBotGearAskingBase(item);
+		else
+			sheet = GetPlayerBotMaterialAskingBase(vnum);
+		const unsigned long long count = std::max<DWORD>(1, item->GetCount());
+		const unsigned long long floor = std::max<unsigned long long>(
+				(unsigned long long)sheet * (unsigned long long)PLAYERBOT_MARKET_V3_FLOOR_PERCENT / 100ULL * count,
+				(unsigned long long)GetPlayerBotNpcSellUnitPrice(item) * count);
+		return floor > 0xFFFFFFFFULL ? 0xFFFFFFFFU : (DWORD)floor;
+	}
+
+	// Point 3: a price as a person writes it (playerbot_price_rules::HumanPrice),
+	// to the nearest such number or, for a floor, up to it.
+	DWORD HumanizePlayerBotPrice(DWORD price, bool up)
+	{
+		const long long human = playerbot_price_rules::HumanPrice((long long)price, up,
+				PLAYERBOT_MARKET_V3_HUMAN_PRICE_MIN);
+		return human > 0xFFFFFFFFLL ? price : (DWORD)std::max(1LL, human);
+	}
+
 	// The least any line of this item asks once every markdown is done: what
 	// the blacksmith was paid to make it (GetPlayerBotRefineInvestment), and
 	// for the Moonlight chest and the bonus items the floor above. Every place
 	// that marks a line down or puts one up asks this, the classic stall and
 	// the offline stand alike.
+	// MT2009_PLUS_MARKET_V3: and every good's own floor (GetPlayerBotMarketFloor),
+	// written the way a person writes it, up.
 	DWORD GetPlayerBotListingFloor(LPITEM item)
 	{
-		return std::max(GetPlayerBotRefineInvestment(item), GetPlayerBotBonusGoodsFloor(item));
+		const DWORD floor = std::max(std::max(GetPlayerBotRefineInvestment(item), GetPlayerBotBonusGoodsFloor(item)),
+				GetPlayerBotMarketFloor(item));
+		return floor == 0 ? 0 : HumanizePlayerBotPrice(floor, true);
 	}
 
 	// MT2009_PLUS_OWNER_PRICES_V2 (D): Cor Draconis and Materialy Rzemieslnicze
@@ -2676,7 +3008,6 @@ namespace
 	// player table), over one Smakolyk's (55032, value0 of its proto), at the
 	// Smakolyk's 400 000, less 10%. The level is socket 1 less the evolution
 	// in its thousands (playerbot_newpet.h, the packing).
-	const DWORD PLAYERBOT_PET_CARRIER_VNUM = 55007;
 	const unsigned long long PLAYERBOT_PET_TREAT_PRICE = 400000ULL;
 	const int PLAYERBOT_PET_CARRIER_PERCENT = 90;
 
@@ -2782,8 +3113,10 @@ namespace
 				PlayerBotPriceStep(per::STEP_INVESTMENT_FLOOR, investment, investment);
 				PlayerBotPriceFlag(per::LFLAG_FLOOR_BOUND);
 			}
-			return ApplyPlayerBotPriceCompetition(item,
-					ApplyPlayerBotBonusPremium(std::max(gearBase, investment), bonusPercent));
+			// MT2009_PLUS_MARKET_V3: and the plus its lines or its average make it,
+			// the best copy's and Intelligence's premiums (LiftPlayerBotGearPrice).
+			return ApplyPlayerBotPriceCompetition(item, LiftPlayerBotGearPrice(item,
+					ApplyPlayerBotBonusPremium(std::max(gearBase, investment), bonusPercent)));
 		}
 		// A polymorph marble asks his number and nothing else (Community Patch
 		// 5, point 3): an exception its own, any other kind a draw from his
@@ -2826,7 +3159,8 @@ namespace
 				PlayerBotPriceStep(per::STEP_INVESTMENT_FLOOR, investment, investment);
 				PlayerBotPriceFlag(per::LFLAG_FLOOR_BOUND);
 			}
-			return ApplyPlayerBotPriceCompetition(item, ApplyPlayerBotBonusPremium(std::max(flat, investment), bonusPercent));
+			return ApplyPlayerBotPriceCompetition(item, LiftPlayerBotGearPrice(item,
+					ApplyPlayerBotBonusPremium(std::max(flat, investment), bonusPercent)));
 		}
 		// A skill book's own market, and the goods whose merchant price says
 		// nothing about what they are worth here. Both come from the audit of
@@ -2851,7 +3185,9 @@ namespace
 				PlayerBotPriceStep(per::STEP_INVESTMENT_FLOOR, investment, investment);
 				PlayerBotPriceFlag(per::LFLAG_FLOOR_BOUND);
 			}
-			return ApplyPlayerBotBonusPremium(std::max(scrap, investment), bonusPercent);
+			// MT2009_PLUS_MARKET_V3: scrap by its plus, not by its lines - a
+			// bracelet +0 of 1 500 health is a +7's price (LiftPlayerBotGearPrice).
+			return LiftPlayerBotGearPrice(item, ApplyPlayerBotBonusPremium(std::max(scrap, investment), bonusPercent));
 		}
 		DWORD unit = npcUnit * PLAYERBOT_SHOP_MATERIAL_MARKUP;
 		// Which prior below set the unit, for the explanation.
@@ -3110,12 +3446,33 @@ namespace
 				PlayerBotPriceFlag(per::LFLAG_MEMORY_PULL);
 		}
 
+		// MT2009_PLUS_MARKET_V3, point 1: a kind the market index watches - the
+		// refine materials, the books, the Forgetting Scroll, the Spirit Stone
+		// and the Blessing Scroll - asks at its index, which follows the
+		// counters of the whole world against their usual with a lag of hours
+		// (UpdatePlayerBotMarketIndex), in place of the ledger's instant ratio
+		// below: one regulator, not two. Said as the ledger's step, with the
+		// index for its multiplier.
+		if (unit > 0 && IsPlayerBotMarketIndexedVnum(item->GetVnum()))
+		{
+			const int index = GetPlayerBotMarketIndexPercent(item->GetVnum());
+			if (index != 100)
+			{
+				unit = (DWORD)std::max<unsigned long long>(1ULL, std::min<unsigned long long>(0xFFFFFFFFULL,
+						(unsigned long long)unit * (unsigned long long)index / 100ULL));
+				const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(item->GetVnum());
+				PlayerBotPriceStep(per::STEP_LEDGER, unit, entry ? entry->dwDemandBots : 0,
+						entry ? entry->dwSupplyUnits : 0, index);
+				if (index <= PLAYERBOT_MARKET_V3_MIN_PERCENT || index >= PLAYERBOT_MARKET_V3_MAX_PERCENT)
+					PlayerBotPriceFlag(per::LFLAG_REGULATOR_EDGE);
+			}
+		}
 		// Then the ledger, for a material: (D + q0) / (S + q0) to the fifth
 		// root, within [0.75, 1.35] - so twenty bots short of a thing against
 		// five units on the counters asks a fifth more, not four times. Nothing
 		// when the ledger has seen neither a counter nor a buyer: that is no
 		// information, not a shortage.
-		if (unit > 0 && IsPlayerBotTradeableMaterial(item))
+		else if (unit > 0 && IsPlayerBotTradeableMaterial(item))
 		{
 			const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(item->GetVnum());
 			if (entry && (entry->dwDemandBots > 0 || entry->dwSupplyUnits > 0))
@@ -3184,6 +3541,9 @@ namespace
 			unit = std::max(unit, floorUnit);
 		}
 		unit = ApplyPlayerBotBonusPremium(unit, bonusPercent);
+		// MT2009_PLUS_MARKET_V3: a piece off the sheet, by the plus its lines
+		// or its average make it (LiftPlayerBotGearPrice); nothing for the rest.
+		unit = LiftPlayerBotGearPrice(item, unit);
 		const DWORD price = unit * (DWORD)item->GetCount();
 		if (item->GetCount() > 1)
 			PlayerBotPriceStep(per::STEP_COUNT, price, item->GetCount());
@@ -3219,11 +3579,23 @@ namespace
 	// stays what it always was. A markup that would take a line to GOLD_MAX,
 	// which no counter takes (both engines refuse the add), is not asked. The
 	// markup the line got is handed back for the caller's log.
+	// MT2009_PLUS_MARKET_V3: the markdown by the supply of its kind - rare
+	// goods are not marked down, plentiful ones take the whole of it
+	// (playerbot_price_rules::SupplyMarkdownPercent; a line that stood unsold
+	// still asks no markup, marked down or not) - and the price written the way
+	// a person writes one (HumanizePlayerBotPrice), whichever way it moved.
 	DWORD GetPlayerBotListingPrice(LPITEM item, DWORD asking, int markdownPercent,
 			int* markupOut = NULL)
 	{
 		int markup = markdownPercent > 0 || !item ? 0
 				: GetPlayerBotShortageMarkupPercent(item->GetVnum());
+		if (markdownPercent > 0 && item)
+		{
+			const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(item->GetVnum());
+			markdownPercent = playerbot_price_rules::SupplyMarkdownPercent(markdownPercent,
+					entry ? (long long)entry->dwSupplyUnits : 0LL, (long long)std::max<DWORD>(1, item->GetCount()),
+					PLAYERBOT_MARKET_V3_MARKDOWN_PLENTY_LINES);
+		}
 		const long long moved = playerbot_price_rules::ApplyListingPercent((long long)asking,
 				playerbot_price_rules::ListingPercent(markdownPercent, markup));
 		DWORD price = moved > 0xFFFFFFFFLL ? 0xFFFFFFFFU : (DWORD)std::max(0LL, moved);
@@ -3264,6 +3636,16 @@ namespace
 		}
 		if (markupOut)
 			*markupOut = markup;
+		if ((long long)price < (long long)GOLD_MAX)
+		{
+			const DWORD human = HumanizePlayerBotPrice(price, false);
+			if (human != price && (long long)human < (long long)GOLD_MAX)
+			{
+				price = human;
+				if (IsPlayerBotListingTracing())
+					PlayerBotListingStep(per::STEP_ROUND, price);
+			}
+		}
 		return price;
 	}
 
@@ -3472,7 +3854,7 @@ namespace
 		return ahead;
 	}
 
-	int ScorePlayerBotShopStock(LPCHARACTER ch, LPITEM item, bool merchant, bool report)
+	int ScorePlayerBotShopStockRules(LPCHARACTER ch, LPITEM item, bool merchant, bool report)
 	{
 		if (!item)
 			return -1;
@@ -3489,6 +3871,10 @@ namespace
 			if (policy != PLAYERBOT_ITEM_POLICY_NONE)
 				return -1;
 		}
+		// MT2009_PLUS_MARKET_V3, point 8: nor Siano, which the General Store
+		// changes for Red Potions (ExchangePlayerBotHay) and buys the rest of.
+		if (item->GetVnum() == PLAYERBOT_HAY_VNUM)
+			return -1;
 		// Nor is tackle, on any counter: a rod or a pickaxe is the tool of its
 		// bot's own sessions, and a second one is the merchant's
 		// (IsPlayerBotJunkItem). A rod's grade is the plus in its name, so from
@@ -3669,6 +4055,13 @@ namespace
 		// hand (FindPlayerBotLinesProject), not to a counter.
 		if (ch && item->GetType() == ITEM_WEAPON && item == FindPlayerBotLinesProject(ch))
 			return -1;
+		// MT2009_PLUS_MARKET_V3, point 5: jewellery, boots, a body armour or a
+		// shield its lines price as a +7 or better is finished goods at any plus
+		// of its own, ahead of the caps of low plus and the low-level gear below
+		// (IsPlayerBotBonusGoodsPiece), as high as a valuable bonus.
+		if (IsPlayerBotBonusGoodsPiece(item))
+			return PlayerBotGoods(1500 + GetPlayerBotBonusPlusLevel(item), per::GOODS_VALUABLE_BONUS, 0,
+					GetPlayerBotBonusPlusLevel(item));
 		// Iwakura's fifty-four weapons at +0..+3 stand on the bots' counters
 		// PLAYERBOT_JUNK_WEAPON_MARKET_CAP at a time, world-wide.
 		if (IsPlayerBotCappedJunkWeapon(item) && IsPlayerBotJunkWeaponMarketFull())
@@ -4115,6 +4508,30 @@ namespace
 	// comes after this file because what heads a +7..+9 piece is its price).
 	bool ChoosePlayerBotShopName(LPCHARACTER ch, const std::vector<LPITEM>& goods,
 			char* out, size_t outSize, const char** how);
+
+	// MT2009_PLUS_MARKET_V3, point 7: the market balances itself. Whatever the
+	// rules above make goods of a kind the market index watches is held back
+	// in the bag while the counters of the world hold too much of it, and goes
+	// up ahead of the rest while they hold too little
+	// (GetPlayerBotMarketSupplyState). The operator's "stall" is his word and
+	// is not held. A bag under pressure sends what it holds back to the
+	// storekeeper by the deposit's own rules, and the withdrawal brings it out
+	// again when the kind runs short (WithdrawPlayerBotSafebox).
+	int ScorePlayerBotShopStock(LPCHARACTER ch, LPITEM item, bool merchant, bool report)
+	{
+		const int score = ScorePlayerBotShopStockRules(ch, item, merchant, report);
+		if (score <= 0 || !item || GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_STALL ||
+				!IsPlayerBotMarketIndexedVnum(item->GetVnum()))
+			return score;
+		const int state = GetPlayerBotMarketSupplyState(item->GetVnum());
+		if (state > 0)
+		{
+			if (report)
+				++s_uPlayerBotMarketHeldBack;
+			return -1;
+		}
+		return state < 0 ? score + PLAYERBOT_MARKET_V3_MISSING_SCORE : score;
+	}
 
 	// Everything this bot can legitimately part with, best first. OpenMyShop
 	// refuses equipped, locked and ANTI_GIVE/ANTI_MYSHOP items outright - and it
