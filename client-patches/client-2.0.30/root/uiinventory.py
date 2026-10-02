@@ -1249,6 +1249,9 @@ class InventoryWindow(ui.ScriptWindow):
 			self.attachMetinDialog = 0
 
 		self.tooltipItem = None
+		for mark in getattr(self, "sortLockMarks", None) or []:
+			mark.Hide()
+		self.sortLockMarks = None
 		self.wndItem = 0
 		self.wndEquip = 0
 		self.dlgPickMoney = 0
@@ -1555,6 +1558,78 @@ class InventoryWindow(ui.ScriptWindow):
 
 		self.inventorySlotStateMgr.RefreshAllSlots()
 
+		if wndSlot is self.wndItem:
+			self.__RefreshSortLockMarks()
+
+	# MT2009_PLUS_INVENTORY_SORT_LOCK_V1: the star in the corner of a locked
+	# item's slot (inventorysortlock.py). One image per cell of the page,
+	# children of the bag's slot window drawn over whatever the slot draws
+	# (the cooldown, an active potion's or pet seal's glow, the count) and
+	# never taking the mouse, so the slot under it works as before.
+	SORT_LOCK_IMAGE = "mt2009_ui/sortlock/star.tga"
+	SORT_LOCK_X = 1
+	SORT_LOCK_Y = 1
+	SORT_LOCK_COLUMNS = 5  # uiscript/inventorywindow.py, ItemSlot: x_count 5, x_step and y_step 32
+
+	def __IsTypingText(self):
+		interface = getattr(self, "interface", None)
+		if not interface:
+			return False
+		try:
+			if interface.IsOpenChat():
+				return True
+		except Exception:
+			pass
+		try:
+			for dialog in interface.whisperDialogDict.itervalues():
+				if dialog.IsShow() and dialog.chatLine.IsFocus():
+					return True
+		except Exception:
+			pass
+		return False
+
+	def __ToggleSortLock(self, globalSlot):
+		import inventorysortlock
+		if not inventorysortlock.IsBagCell(globalSlot):
+			return False
+		if not inventorysortlock.Toggle(globalSlot):
+			return False
+		self.__RefreshSortLockMarks()
+		snd.PlaySound("sound/ui/pick.wav")
+		return True
+
+	def __RefreshSortLockMarks(self):
+		if not self.wndItem:
+			return
+		try:
+			import inventorysortlock
+			inventorysortlock.Prune()
+		except Exception:
+			return
+		marks = getattr(self, "sortLockMarks", None)
+		if marks is None:
+			marks = []
+			try:
+				for i in xrange(player.INVENTORY_PAGE_SIZE):
+					mark = ui.ImageBox()
+					mark.SetParent(self.wndItem)
+					mark.AddFlag("not_pick")
+					mark.LoadImage(self.SORT_LOCK_IMAGE)
+					mark.SetPosition((i % self.SORT_LOCK_COLUMNS) * 32 + self.SORT_LOCK_X, (i // self.SORT_LOCK_COLUMNS) * 32 + self.SORT_LOCK_Y)
+					mark.Hide()
+					marks.append(mark)
+			except Exception:
+				for mark in marks:
+					mark.Hide()
+				marks = []  # no image in this client's packs: no stars, and no second try
+			self.sortLockMarks = marks
+		for i in xrange(len(marks)):
+			globalSlot = self.__InventoryLocalSlotPosToGlobalSlotPos(i)
+			if inventorysortlock.IsLocked(globalSlot):
+				marks[i].Show()
+			else:
+				marks[i].Hide()
+
 	def HighlightSlot(self, inventorySlot):
 		self.inventorySlotStateMgr.HighlightSlot(inventorySlot)
 
@@ -1776,8 +1851,15 @@ class InventoryWindow(ui.ScriptWindow):
 				chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.SHOP_BUY_INFO)
 
 			elif app.IsPressed(app.DIK_LALT):
-				link = player.GetItemLink(itemSlotIndex)
-				ime.PasteString(link)
+				# MT2009_PLUS_INVENTORY_SORT_LOCK_V1: Alt + left click on an
+				# item of the bag locks it against sorting (inventorysortlock.py);
+				# while a chat or whisper line is being typed it pastes the
+				# item's link, as it always did.
+				if not self.__IsTypingText() and self.__ToggleSortLock(itemSlotIndex):
+					pass
+				else:
+					link = player.GetItemLink(itemSlotIndex)
+					ime.PasteString(link)
 
 			elif app.IsPressed(app.DIK_LSHIFT):
 				itemCount = player.GetItemCount(itemSlotIndex)
@@ -2275,6 +2357,13 @@ class InventoryWindow(ui.ScriptWindow):
 				self.tooltipItem.AppendSpace(5)
 				self.tooltipItem.AppendTextLine(localeInfo.QUICK_ADD_TO_MYSHOP)
 
+			# MT2009_PLUS_INVENTORY_SORT_LOCK_V1
+			try:
+				import inventorysortlock
+				inventorysortlock.AppendToolTip(self.tooltipItem, slotIndex)
+			except Exception:
+				pass
+
 	def OnTop(self):
 		# The sidebar first: the item tooltip stays over it.
 		if self.wndSideBar:
@@ -2425,6 +2514,13 @@ class InventoryWindow(ui.ScriptWindow):
 			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.MOVE_ITEM_FAILURE_PRIVATE_SHOP)
 			return
 
+		# MT2009_PLUS_INVENTORY_SORT_LOCK_V1: a locked item moved whole by
+		# hand takes its lock along.
+		try:
+			import inventorysortlock
+			inventorysortlock.OnMove(srcSlotPos, dstSlotPos, srcItemCount)
+		except Exception:
+			pass
 		net.SendItemMovePacket(srcSlotPos, dstSlotPos, srcItemCount)
 
 	def SetDragonSoulRefineWindow(self, wndDragonSoulRefine):

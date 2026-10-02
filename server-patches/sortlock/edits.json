@@ -1,0 +1,8 @@
+[
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_INVENTORY_SORT_LOCK_V1",
+  "old": "\tif (!strcmp(arg1, \"merge\"))\n\t\tresult = playerbot_arrange::MergeInventoryStacks(ch, true);\n\telse if (*arg1)\n\t\tresult.code = playerbot_arrange::RESULT_BAD_REQUEST;\n\telse\n\t\tresult = playerbot_arrange::ArrangeInventory(ch, true);\n",
+  "new": "\t// MT2009_PLUS_INVENTORY_SORT_LOCK_V1 (server-patches/sortlock): the words\n\t// - \"merge\" and the cells the player locked with Alt + left click,\n\t// \"keep=<hex>\" - are read by playerbot_arrange::InventoryArrangeCommand,\n\t// which leaves the locked items where they stand and lays the rest of\n\t// the bag out round them; an unknown word is still RESULT_BAD_REQUEST.\n\tresult = playerbot_arrange::InventoryArrangeCommand(ch, argument);\n"
+ }
+]
