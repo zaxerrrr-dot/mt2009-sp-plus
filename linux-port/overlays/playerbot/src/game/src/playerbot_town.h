@@ -1320,12 +1320,17 @@ namespace
 	// same row.
 	bool ManagePlayerBotHerbalist(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
+		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: what the visit made so far, by pid -
+		// one craft a step now, so a visit is something to watch rather than
+		// three crafts in one tick and an "Handluje" over the bot.
+		static std::map<DWORD, int> s_mapPlayerBotHerbVisitMade;
 		if (!ch || state.bVisitingShop || state.bVisitingBiologist)
 			return false;
 		if (ch->GetLevel() < PLAYERBOT_HERBALISM_MIN_LEVEL)
 			return false;
-		// A Conqueror's errand from forty-five under Iwakura's system
-		// (IsPlayerBotZielarz); a visit already walking finishes.
+		// A Conqueror's errand from forty-five under Iwakura's system, and the
+		// herbalist by trade's from fifteen (IsPlayerBotZielarz); a visit
+		// already walking finishes.
 		if (!state.bVisitingHerbalist && !IsPlayerBotZielarz(ch))
 			return false;
 		// MT2009_PLUS_BOTLIFE_V1: and the HERB slider's gate (playerbot_herbalism.h).
@@ -1344,45 +1349,48 @@ namespace
 			return false;
 		}
 
-		// Is there anything to go there for? Asked before the walk, so nobody
-		// crosses a village for an empty board: either the onboarding the quest
-		// wants (ten Peach Blossoms) or a row the bag and the purse already
-		// cover. The bottles are not counted here - they are bought at the
-		// counter itself - so a row short of only those still brings the bot.
-		const bool unlocked = IsPlayerBotHerbalismUnlocked(ch);
-		const bool wantsOnboarding = !unlocked &&
-				(int) ch->CountSpecifyItem(PLAYERBOT_HERBALISM_ONBOARD_FLOWER) >=
-						PLAYERBOT_HERBALISM_ONBOARD_COUNT;
-		const TCraftingItem* row = unlocked ? ChoosePlayerBotCraftRow(ch) : NULL;
-		if (!wantsOnboarding && !row)
-		{
-			state.bVisitingHerbalist = false;
-			state.dwNextHerbalistCheckTime = dwNow + DrawPlayerBotHerbalistVisitGap();   // MT2009_PLUS_BOTLIFE_V1
-			return false;
-		}
-		if (CountPlayerBotFreeInventoryCells(ch) < PLAYERBOT_HERBALISM_FREE_CELLS)
-		{
-			state.bVisitingHerbalist = false;
-			state.dwNextHerbalistCheckTime = dwNow + DrawPlayerBotHerbalistVisitGap();   // MT2009_PLUS_BOTLIFE_V1
-			return false;
-		}
-
+		const bool trade = IsPlayerBotHerbalistByTrade(ch);
+		const DWORD pid = ch->GetPlayerID();
 		if (!state.bVisitingHerbalist)
 		{
+			// Is there anything to go there for? Asked before the walk, so
+			// nobody crosses a village for an empty board: either the
+			// onboarding the quest wants (ten Peach Blossoms) or a row the bag
+			// and the purse already cover. The bottles are not counted here -
+			// they are bought at the counter itself - so a row short of only
+			// those still brings the bot. And the herbalist by trade with no
+			// knife yet: Baek-Go sells it.
+			const bool unlocked = IsPlayerBotHerbalismUnlocked(ch);
+			const bool wantsOnboarding = !unlocked &&
+					(int) ch->CountSpecifyItem(PLAYERBOT_HERBALISM_ONBOARD_FLOWER) >=
+							PLAYERBOT_HERBALISM_ONBOARD_COUNT;
+			const TCraftingItem* row = unlocked ? ChoosePlayerBotCraftRow(ch) : NULL;
+			const bool wantsKnife = trade && CountPlayerBotHerbKnives(ch) == 0 &&
+					(long long)ch->GetGold() >= PLAYERBOT_HERB_KNIFE_PRICE + (long long)GetPlayerBotReservedGold(ch);
+			if ((!wantsOnboarding && !row && !wantsKnife) ||
+					CountPlayerBotFreeInventoryCells(ch) < PLAYERBOT_HERBALISM_FREE_CELLS)
+			{
+				state.dwNextHerbalistCheckTime = dwNow + DrawPlayerBotHerbalistVisitGap();   // MT2009_PLUS_BOTLIFE_V1
+				return false;
+			}
 			state.bVisitingHerbalist = true;
 			// The Zielarz's tenth of the purse is measured against this.
 			state.persona.llHerbGoldStart = (long long)ch->GetGold();
 			state.dwNextHerbalistActionTime = 0;
+			s_mapPlayerBotHerbVisitMade[pid] = 0;
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
 			ch->Stop();
 			ClearPlayerBotRoute(state, true);
-			sys_log(0, "PLAYERBOT_HERB: going to Baek-Go pid=%u name=%s onboarding=%d row=%u",
-					ch->GetPlayerID(), ch->GetName(), wantsOnboarding ? 1 : 0,
-					row ? row->vnum : 0);
+			// The herbalist by trade's visit is part of its trade: the session
+			// (and the Zielarz) runs through it and on back to the bushes.
+			TouchPlayerBotHerbSession(ch, dwNow);
+			sys_log(0, "PLAYERBOT_HERB: going to Baek-Go pid=%u name=%s onboarding=%d row=%u knife=%d trade=%d",
+					pid, ch->GetName(), wantsOnboarding ? 1 : 0, row ? row->vnum : 0,
+					wantsKnife ? 1 : 0, trade ? 1 : 0);
 		}
 
-		SetPlayerBotAction(state, BOT_ACTION_SHOP, dwNow);
+		SetPlayerBotAction(state, BOT_ACTION_HERBALISM, dwNow);
 		state.dwTargetVID = 0;
 		ch->SetVictim(NULL);
 
@@ -1396,6 +1404,7 @@ namespace
 			{
 				state.bVisitingHerbalist = false;
 				state.dwNextHerbalistCheckTime = dwNow + 30000;
+				s_mapPlayerBotHerbVisitMade.erase(pid);
 				ClearPlayerBotRoute(state, true);
 				sys_err("PLAYERBOT_HERB: route failed pid=%u name=%s from=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), ch->GetX(), ch->GetY());
@@ -1414,36 +1423,59 @@ namespace
 		if (dwNow < state.dwNextHerbalistActionTime)
 			return true;
 
-		// At the board at last. The onboarding first - it is what opens it -
-		// and then a few crafts, because walking here for one is a walk wasted.
-		int made = 0;
+		// At the board at last. The knife first for the herbalist by trade
+		// (his shop), the onboarding next - it is what opens the board - and
+		// the recipes it hands over read on the spot: the first visit used to
+		// end "crafted=0" every time, the recipe still unread in the bag.
+		if (trade)
+			EnsurePlayerBotHerbKnife(ch, "baekgo");
 		if (!IsPlayerBotHerbalismUnlocked(ch))
 			EnsurePlayerBotHerbalismStarted(ch);
+		const char* why = "no_row";
+		int& made = s_mapPlayerBotHerbVisitMade[pid];
 		if (IsPlayerBotHerbalismUnlocked(ch))
 		{
-			for (DWORD i = 0; i < PLAYERBOT_HERBALISM_CRAFTS_PER_VISIT; ++i)
+			for (int r = 0; r < PLAYERBOT_HERBALISM_BOARD_READS && ChoosePlayerBotCraftRow(ch) == NULL &&
+					ReadPlayerBotCraftRecipe(ch); ++r)
+				;
+			const DWORD perVisit = trade ? PLAYERBOT_HERBALISM_CRAFTS_PER_VISIT * 2 : PLAYERBOT_HERBALISM_CRAFTS_PER_VISIT;
+			const TCraftingItem* next = ChoosePlayerBotCraftRow(ch);
+			// "Nie wykorzystuje w tym celu wiecej niz 10% swoich Yang": the
+			// craft's fee may not take the purse under nine tenths of what the
+			// visit came with - the Conqueror's tenth; the herbalist's trade
+			// is its own (PLAYERBOT_HERBALIST_SPEND_PERCENT).
+			const int spend = trade ? PLAYERBOT_HERBALIST_SPEND_PERCENT : PLAYERBOT_ZIELARZ_SPEND_PERCENT;
+			if ((DWORD)made >= perVisit)
+				why = "visit_quota";
+			else if (next && (trade || IsPlayerBotPersonaEnabled()) && state.persona.llHerbGoldStart > 0 &&
+					(long long)ch->GetGold() - (long long)next->price <
+						state.persona.llHerbGoldStart * (100 - spend) / 100)
+				why = "purse";
+			else if (next && CraftPlayerBotPotion(ch, next))
 			{
-				const TCraftingItem* next = ChoosePlayerBotCraftRow(ch);
-				// "Nie wykorzystuje w tym celu wiecej niz 10% swoich Yang": the
-				// craft's fee may not take the purse under nine tenths of what
-				// the visit came with.
-				if (next && IsPlayerBotPersonaEnabled() && state.persona.llHerbGoldStart > 0 &&
-						(long long)ch->GetGold() - (long long)next->price <
-							state.persona.llHerbGoldStart * (100 - PLAYERBOT_ZIELARZ_SPEND_PERCENT) / 100)
-					break;
-				if (!next || !CraftPlayerBotPotion(ch, next))
-					break;
 				++made;
+				state.dwNextHerbalistActionTime = dwNow + number((int)PLAYERBOT_HERBALISM_CRAFT_STEP_MIN_MS,
+						(int)PLAYERBOT_HERBALISM_CRAFT_STEP_MAX_MS);
+				return true;
 			}
+			else if (next)
+				why = "craft_refused";
 		}
+		else
+			why = "locked";
 
+		const int total = made;
+		s_mapPlayerBotHerbVisitMade.erase(pid);
 		state.bVisitingHerbalist = false;
 		state.dwNextHerbalistActionTime = 0;
-		state.dwNextHerbalistCheckTime = dwNow + DrawPlayerBotHerbalistVisitGap();   // MT2009_PLUS_BOTLIFE_V1
+		// The herbalist by trade comes back sooner: the bushes feed it.
+		const DWORD gap = DrawPlayerBotHerbalistVisitGap();   // MT2009_PLUS_BOTLIFE_V1
+		state.dwNextHerbalistCheckTime = dwNow + (trade ? gap / 3 : gap);
 		ClearPlayerBotRoute(state, true);
-		sys_log(0, "PLAYERBOT_HERB: visit over pid=%u name=%s crafted=%d gold=%lld",
-				ch->GetPlayerID(), ch->GetName(), made, (long long) ch->GetGold());
-		return made > 0;
+		sys_log(0, "PLAYERBOT_HERB: visit over pid=%u name=%s crafted=%d gold=%lld end=%s",
+				ch->GetPlayerID(), ch->GetName(), total, (long long) ch->GetGold(),
+				total > 0 && strcmp(why, "no_row") == 0 ? "done" : why);
+		return total > 0;
 	}
 
 	// The stones the Alchemist takes, and what they cost: the fee is 500 yang
@@ -3927,7 +3959,7 @@ namespace
 		// sessions, went up first on its counter, and the next session bought
 		// another at the Rybak: rods +4 and +5 on counter after counter
 		// (Octodan, 26 September). Only the operator's "stall", above, lists one.
-		if (item->GetType() == ITEM_ROD || item->GetType() == ITEM_PICK)
+		if (IsPlayerBotToolType(item->GetType()))   // MT2009_PLUS_BOT_HERBALIST_FIX_V1: the knife too
 			return -1;
 		// A retired item is nobody's goods (IsPlayerBotRetiredItem).
 		if (IsPlayerBotRetiredItem(item->GetVnum()))
@@ -4283,8 +4315,11 @@ namespace
 		// A herb is Baek-Go's material now, so a few stay home. Without this a
 		// keeper listed the lot and then stood at the board with nothing to
 		// craft - the counters already held 12 506 Tue Mushrooms on 17 September.
+		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: the herbalist by trade keeps three
+		// times as many - a visit brews up to six rows of ten.
 		if (IsPlayerBotHerbalismHerb(item->GetVnum()) &&
-				(int) ch->CountSpecifyItem(item->GetVnum()) <= PLAYERBOT_HERBALISM_HERB_KEEP)
+				(int) ch->CountSpecifyItem(item->GetVnum()) <=
+					PLAYERBOT_HERBALISM_HERB_KEEP * (IsPlayerBotHerbalistByTrade(ch) ? 3 : 1))
 			return -1;
 		// No mission book while its village's counters hold thirty (Iwakura's
 		// Patch 4, point 13): the junk rule and the storekeeper take them.

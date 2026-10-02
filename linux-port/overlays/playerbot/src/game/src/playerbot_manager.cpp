@@ -1422,6 +1422,7 @@ namespace
 				state.bMarketTrip || state.bFishingSession || state.bTacticalRetreat ||
 				state.bRecoveringAfterDeath || ch->GetMyShop() ||
 				IsPlayerBotMiningNow(ch->GetPlayerID(), dwNow) ||
+				IsPlayerBotHerbPickingNow(ch, dwNow) ||   // MT2009_PLUS_BOT_HERBALIST_FIX_V1
 				GetPlayerBotDuelRefusal(ch, dwNow) != NULL)
 			return;
 		if (ch->GetMaxHP() <= 0 ||
@@ -2859,6 +2860,7 @@ namespace
 		// September).
 		if (moved || foughtRecently || castRecently || state.bFishingSession ||
 				IsPlayerBotMiningNow(ch->GetPlayerID(), dwNow) ||
+				IsPlayerBotHerbPickingNow(ch, dwNow) ||   // MT2009_PLUS_BOT_HERBALIST_FIX_V1
 				state.dwTownLingerUntil != 0 || IsPlayerBotBesideHumanLeader(ch) ||
 				IsPlayerBotSidekickBesideOwner(ch) ||
 				// waiting for a floor's script in the Demon Tower, or for the
@@ -6608,6 +6610,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// dropped: the same exemption a rod has, for the same reason.
 		if (!ch->GetMyShop() && !state.bVisitingShop && !state.bFishingSession &&
 				!IsPlayerBotMiningNow(ch->GetPlayerID(), dwNow) &&
+				!IsPlayerBotHerbPickingNow(ch, dwNow) &&   // MT2009_PLUS_BOT_HERBALIST_FIX_V1: the knife's hand
 				!state.bVisitingStable)
 		{
 			if (ManagePlayerBotEquipment(ch, state, dwNow))
@@ -6849,6 +6852,13 @@ WritePlayerBotGuildStatus(dwNow);
 		// sits in the weapon slot, so no combat or gear pass may run under it.
 		if (!state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotMining(ch, state, dwNow))
+			continue;
+
+		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: and the herbalists by trade pick the
+		// herb bushes with the Herbalist's Knife, the vein's shape: the knife
+		// sits in the weapon hand, so the session owns the tick while it picks.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotHerbGathering(ch, state, dwNow))
 			continue;
 
 		// The Alchemist (playerbot_town.h): the soul stones Iwakura bans from

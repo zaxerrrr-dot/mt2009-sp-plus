@@ -4165,7 +4165,7 @@ namespace
 		// for goods and went on the counter. Such a weapon is weighed against
 		// the weapon the bot goes back to - the best of its bag - instead.
 		if (wearCell == WEAR_WEAPON && item->GetType() == ITEM_WEAPON && worn &&
-				(worn->GetType() == ITEM_ROD || worn->GetType() == ITEM_PICK))
+				IsPlayerBotToolType(worn->GetType()))   // MT2009_PLUS_BOT_HERBALIST_FIX_V1
 		{
 			if ((int)item->GetLevelLimit() > (int)ch->GetLevel())
 				return false;

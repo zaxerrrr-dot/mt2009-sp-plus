@@ -475,7 +475,17 @@ namespace
 		s.fishing = state.bFishingSession;
 		s.mining = IsPlayerBotMiningNow(ch->GetPlayerID(), dwNow);
 		// MT2009_PLUS_BOTLIFE_V1: the Zielarz, on its way to Baek-Go or at his board.
-		s.herbalism = state.bVisitingHerbalist;
+		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: the herbalist by trade is the Zielarz
+		// - at the bushes, on the way to Baek-Go and back, and in the fights
+		// between two sessions - for as long as the HERB slider keeps its board
+		// open (IsPlayerBotHerbBoardOpen). It was the visit alone, so a
+		// herbalist was the Zielarz for the minute at the board and a Grinder or
+		// a Conqueror the moment it left ("po odejsciu od Baek-Go zmieniaja
+		// osobowosc", the owner, 2 October). A Conqueror's own visit is a
+		// Conqueror's errand and leaves him one.
+		s.herbalism = IsPlayerBotHerbSessionNow(ch->GetPlayerID(), dwNow) ||
+				(IsPlayerBotHerbalistByTrade(ch) &&
+				 (state.bVisitingHerbalist || IsPlayerBotHerbBoardOpen(ch, dwNow)));
 		LPCHARACTER target = state.dwTargetVID != 0
 				? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
 		s.stoneFight = (target && target->IsStone() && !target->IsDead()) ||
@@ -722,6 +732,7 @@ namespace
 				state.bVisitingHerbalist || state.bVisitingAlchemist || state.bVisitingUriel || state.bSaddlebagErrand != 0 || state.bVisitingDsAlchemist || state.bMarketTrip || state.bFishingSession ||
 				state.bRecoveringAfterDeath || state.bTacticalRetreat || ch->GetMyShop() != NULL ||
 				IsPlayerBotMiningNow(ch->GetPlayerID(), dwNow) ||
+				IsPlayerBotHerbPickingNow(ch, dwNow) ||   // MT2009_PLUS_BOT_HERBALIST_FIX_V1
 				(ch->GetMaxHP() > 0 && ch->GetHP() * 100 < ch->GetMaxHP() * PLAYERBOT_MOOD_AFK_MIN_HP_PERCENT);
 		if (busy)
 		{

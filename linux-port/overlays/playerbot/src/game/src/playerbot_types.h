@@ -6000,6 +6000,55 @@ namespace
 	// Metin stone, a Demon Tower floor - and never twice inside one fight.
 	const DWORD PLAYERBOT_HERBALISM_DRINK_RETRY_MS = 60 * 1000;
 
+	// MT2009_PLUS_BOT_HERBALIST_FIX_V1: the herbalist by trade - a share of the
+	// bots that picks the herbs with the Herbalist's Knife and brews them at
+	// Baek-Go's board. The owner's report of 2 October: the "zielarze" had no
+	// knife, never picked a single herb, stood at Baek-Go as "Handluje" and
+	// were somebody else the moment they walked away. The bushes are the
+	// quest's own (herbalism.lua: sixteen clickable races, 20602-20644, each
+	// the leader of a stone.txt group on every map from the first villages
+	// up), and so are the numbers below: the knife 29201 (Baek-Go's shop,
+	// limit level 15, its gold 20 000), three seconds a pick, 30% plus the
+	// knife's value0 plus a failure bonus of 4 a miss up to 20, two or three
+	// herbs a success, and the bush gone after its sixth pick.
+	const int PLAYERBOT_HERBALIST_PERCENT = 10;            // of the bots of 15+, by pid
+	const DWORD PLAYERBOT_HERB_KNIFE_VNUM = 29201;
+	const DWORD PLAYERBOT_HERB_KNIFE_VNUM_LAST = 29210;
+	const long long PLAYERBOT_HERB_KNIFE_PRICE = 20000;
+	const DWORD PLAYERBOT_HERB_PICK_MS = 3000;
+	const int PLAYERBOT_HERB_PICK_BASE_CHANCE = 30;
+	const int PLAYERBOT_HERB_FAIL_BONUS_STEP = 4;
+	const int PLAYERBOT_HERB_FAIL_BONUS_MAX = 20;
+	// The quest asks npc.is_near(2); a bot stands a step closer than that.
+	const int PLAYERBOT_HERB_ARRIVE = 150;
+	// How far a herbalist walks for a bush on its own map.
+	const int PLAYERBOT_HERB_SEARCH_RANGE = 25000;
+	// A session is the herbalist's trade for its length: the bushes, the walk
+	// to Baek-Go and back, the fights on the way; the rest between two is
+	// its hunting and its town errands. The bot is the Zielarz through both
+	// (DecidePlayerBotPersona), so it does not turn into a Grinder the moment
+	// it leaves the board.
+	const DWORD PLAYERBOT_HERB_SESSION_MIN_MS = 30 * 60 * 1000;
+	const DWORD PLAYERBOT_HERB_SESSION_MAX_MS = 50 * 60 * 1000;
+	const DWORD PLAYERBOT_HERB_REST_MIN_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_HERB_REST_MAX_MS = 20 * 60 * 1000;
+	// After a blow: the fight first, the bushes again this much later.
+	const DWORD PLAYERBOT_HERB_RESUME_MS = 15000;
+	// No bush in reach, no knife affordable: looked at again this much later.
+	const DWORD PLAYERBOT_HERB_RETRY_MS = 90 * 1000;
+	// The herbalist's purse at the board: its trade, so more than the
+	// Conqueror's tenth, and a reserve its own size rather than two million -
+	// the reserve above kept every bot of a young world (200-500 thousand
+	// yang) from the cheapest row for good.
+	const int PLAYERBOT_HERBALIST_SPEND_PERCENT = 40;
+	const long long PLAYERBOT_HERBALIST_GOLD_RESERVE = 50000;
+	// One craft a step at the board, so a visit is something to watch.
+	const DWORD PLAYERBOT_HERBALISM_CRAFT_STEP_MIN_MS = 2500;
+	const DWORD PLAYERBOT_HERBALISM_CRAFT_STEP_MAX_MS = 4500;
+	// Recipes read at the board before the bot picks a row (the onboarding
+	// hands one over, and a row it cannot read yet is a visit for nothing).
+	const int PLAYERBOT_HERBALISM_BOARD_READS = 5;
+
 	// What a row's hunt vnum means: every monster its item comes from on this
 	// world, not the one the quest names. The quest's own hooks and the etc
 	// table, read off the files on 17 September: the Orc Tooth from 601 (the
@@ -6742,8 +6791,23 @@ namespace
 		BOT_ACTION_TOWN_REST,
 		// Digging at an ore vein. Appended for the same reason as the one above:
 		// both panels read these ids out of playerbot_status.tsv by position.
-		BOT_ACTION_MINING
+		BOT_ACTION_MINING,
+		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: picking herbs, or at Baek-Go's
+		// board. The visit walked under BOT_ACTION_SHOP and read "Handluje".
+		BOT_ACTION_HERBALISM
 	};
+
+	// MT2009_PLUS_BOT_HERBALIST_FIX_V1: the gathering tools a bot carries in
+	// its weapon hand for a session and never fights with - the rod, the
+	// pickaxe and the Herbalist's Knife (mt2009 only; r40250 has no knife).
+	inline bool IsPlayerBotToolType(BYTE type)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		if (type == ITEM_HERB_KNIFE)
+			return true;
+#endif
+		return type == ITEM_ROD || type == ITEM_PICK;
+	}
 
 	// Where an Archer is in its course. WAIT_READY is the absence of a session
 	// rather than a stage of one, so it is LURE_STAGE_NONE.

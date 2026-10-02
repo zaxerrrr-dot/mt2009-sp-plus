@@ -2047,7 +2047,11 @@ namespace
 			return true;
 
 		// A material only the Herbalist's Knife consumes is nothing to a bot:
-		// see IsPlayerBotNonGearMaterial.
+		// see IsPlayerBotNonGearMaterial. MT2009_PLUS_BOT_HERBALIST_FIX_V1:
+		// except the herbs to the herbalist by trade, who picked them for
+		// Baek-Go's board.
+		if (IsPlayerBotHerbalismHerb(vnum) && IsPlayerBotHerbalistByTrade(ch))
+			return false;
 		if (item->GetType() == ITEM_MATERIAL && IsPlayerBotNonGearMaterial(vnum))
 			return true;
 
@@ -2174,7 +2178,7 @@ namespace
 		// 26 September). A tool is never counter goods now
 		// (ScorePlayerBotShopStock), so the merchant is where a second one goes,
 		// whatever its plus, or it would ride in the bag for good.
-		if (item->GetType() == ITEM_ROD || item->GetType() == ITEM_PICK)
+		if (IsPlayerBotToolType(item->GetType()))   // MT2009_PLUS_BOT_HERBALIST_FIX_V1: the knife too
 		{
 			const BYTE tool = item->GetType();
 			LPITEM worn = ch->GetWear(WEAR_WEAPON);

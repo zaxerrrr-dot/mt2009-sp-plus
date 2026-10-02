@@ -2357,7 +2357,7 @@ namespace
 		// a bot attacked at the water or the vein stood at its foe with the
 		// tool, no swing ever passing the test below, when the session's own
 		// unequip had been refused by the engine after a blow.
-		if (weapon && (weapon->GetType() == ITEM_ROD || weapon->GetType() == ITEM_PICK))
+		if (weapon && IsPlayerBotToolType(weapon->GetType()))   // MT2009_PLUS_BOT_HERBALIST_FIX_V1: the knife too
 		{
 			ReadyPlayerBotHandForFight(ch, state, dwNow, "basic_attack");
 			weapon = ch->GetWear(WEAR_WEAPON);

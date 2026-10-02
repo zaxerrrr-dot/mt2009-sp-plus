@@ -986,7 +986,7 @@ namespace
 		// rod or a pickaxe in the hand - the weapon first (the next tick casts).
 		{
 			LPITEM held = ch->GetWear(WEAR_WEAPON);
-			if (held && (held->GetType() == ITEM_ROD || held->GetType() == ITEM_PICK))
+			if (held && IsPlayerBotToolType(held->GetType()))   // MT2009_PLUS_BOT_HERBALIST_FIX_V1: the knife too
 			{
 				ReadyPlayerBotHandForFight(ch, state, dwNow, "attack_skill");
 				return false;

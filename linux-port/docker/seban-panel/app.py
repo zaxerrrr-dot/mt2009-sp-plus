@@ -334,12 +334,12 @@ BOT_GOALS = {0: "Zdobywanie poziomu", 1: "Przetrwanie", 2: "Wybór profesji", 3:
 # 18 (Kopie rudę) byla dopisana do playerbot_types.h u Tieru, ale nie tutaj -
 # boty kopiące rudę pokazywały gołe "#18" zamiast etykiety (audyt vs panel
 # Tieru na 7788, 2026-09-14).
-BOT_ACTIONS = {0: "Planuje następny ruch", 1: "Podróżuje", 2: "Walczy", 3: "Podnosi łup", 4: "Regeneruje się", 5: "Wybiera profesję", 6: "Handluje", 7: "Ulepsza EQ", 8: "Czyta KU", 9: "Wkłada KD", 10: "Organizuje PT", 11: "Robi Biologa", 12: "Odwiedza Stajennego", 13: "Prowadzi stragan", 14: "Łowi ryby", 15: "Przegląda stragany", 16: "Wabi potwory", 17: "Odpoczywa w mieście", 18: "Kopie rudę"}
+BOT_ACTIONS = {0: "Planuje następny ruch", 1: "Podróżuje", 2: "Walczy", 3: "Podnosi łup", 4: "Regeneruje się", 5: "Wybiera profesję", 6: "Handluje", 7: "Ulepsza EQ", 8: "Czyta KU", 9: "Wkłada KD", 10: "Organizuje PT", 11: "Robi Biologa", 12: "Odwiedza Stajennego", 13: "Prowadzi stragan", 14: "Łowi ryby", 15: "Przegląda stragany", 16: "Wabi potwory", 17: "Odpoczywa w mieście", 18: "Kopie rudę", 19: "Zbiera zioła"}  # 19: MT2009_PLUS_BOT_HERBALIST_FIX_V1
 # Akcje, w których bot stoi w miejscu z własnej woli: stragan, wędka, przegląd
 # straganów, lada NPC, kowal, trener, odpoczynek, kopanie rudy. Bez tego każdy
 # straganiarz był "Możliwie zawieszony" - a flaga z tekstu statusu łapała
 # tylko wędkarzy.
-STATIONARY_ACTIONS = {5, 6, 7, 13, 14, 15, 17, 18}
+STATIONARY_ACTIONS = {5, 6, 7, 13, 14, 15, 17, 18, 19}
 # "System osobowości v2.0" Iwakury (playerbot_persona.h/playerbot_persona_rules.h),
 # doszedł do silnika po podstawowych "osobowościach" (BOT_PERSONALITIES powyżej)
 # -- włączany/wyłączany globalnie przełącznikiem PERSONA w wagach AI. Pod
@@ -353,6 +353,13 @@ BOT_PERSONAS = {0: "Grinder", 1: "Zdobywca", 2: "Handlarz", 3: "Hazardzista", 4:
                 10: "Metinolog", 11: "Nałogowiec", 12: "Szalony Naukowiec", 13: "Egzekutor", 14: "Szalony Wędkarz",
                 15: "Młodszy Hazardzista", 16: "Starszy Hazardzista", 17: "Naczelny Hazardzista",
                 18: "Szalony Hazardzista", 19: "Zielarz"}
+# MT2009_PLUS_BOT_HERBALIST_FIX_V1: kolory person na /players/personalities
+# (Zielarz widoczny jako osobna zakładka - wcześniej strona grupowała tylko
+# po bazowej osobowości, więc zielarza nie było tam wcale).
+BOT_PERSONA_COLORS = {0: "#69a6ff", 1: "#ff6b6b", 2: "#4dd0e1", 3: "#f2c34d", 4: "#c084fc", 5: "#ff8fa3",
+                      6: "#a3a3a3", 7: "#38bdf8", 8: "#fbbf24", 9: "#79e3af", 10: "#ef4444", 11: "#ef4444",
+                      12: "#ef4444", 13: "#ef4444", 14: "#ef4444", 15: "#a855f7", 16: "#a855f7", 17: "#a855f7",
+                      18: "#a855f7", 19: "#4ade80"}
 BOT_MOODS = {0: "Słaby", 1: "Normalny", 2: "Bardzo dobry"}
 BOT_MOOD_LOCKS = {1: "euforia po ulepszeniu", 2: "kapitulacja (Anty-PK)"}
 ITEM_TYPE_NAMES = (
@@ -4006,15 +4013,24 @@ def bot_personalities():
     offline bot has none of these to show. Operator's ask, 2026-09-26."""
     query = request.args.get("q", "").strip().lower()
     selected = request.args.get("personality", "").strip()
+    # MT2009_PLUS_BOT_HERBALIST_FIX_V1: i persona z systemu osobowości
+    # Iwakury (Zielarz, Górnik, Rybak...), filtrowana parametrem persona.
+    selected_persona = request.args.get("persona", "").strip()
     roster = live_bots()
     counts = {}
+    persona_counts = {}
     for bot in roster:
         key = int(bot.get("personality") or 0)
         counts[key] = counts.get(key, 0) + 1
+        if bot.get("persona") is not None:
+            persona_key = int(bot["persona"])
+            persona_counts[persona_key] = persona_counts.get(persona_key, 0) + 1
     if query:
         roster = [bot for bot in roster if query in bot["name"].lower()]
     if selected.isdigit() and int(selected) in BOT_PERSONALITIES:
         roster = [bot for bot in roster if int(bot.get("personality") or 0) == int(selected)]
+    if selected_persona.isdigit() and int(selected_persona) in BOT_PERSONAS:
+        roster = [bot for bot in roster if bot.get("persona") is not None and int(bot["persona"]) == int(selected_persona)]
     roster.sort(key=lambda bot: (-(int(bot.get("level") or 0)), -(int(bot.get("exp") or 0))))
     total = len(roster)
     roster = roster[:200]
@@ -4022,9 +4038,13 @@ def bot_personalities():
         bot["experience"] = experience_progress(bot.get("level"), bot.get("exp"))
         bot["map_display"] = map_name(bot.get("map_index"))
         bot["personality_color"] = BOT_PERSONALITY_COLORS.get(int(bot.get("personality") or 0), "#cfe1fb")
+        bot["persona_color"] = BOT_PERSONA_COLORS.get(int(bot["persona"]), "#cfe1fb") if bot.get("persona") is not None else "#cfe1fb"
     personalities = [{"id": pid, "label": label, "color": BOT_PERSONALITY_COLORS.get(pid, "#cfe1fb"), "count": counts.get(pid, 0)}
                       for pid, label in sorted(BOT_PERSONALITIES.items())]
-    return render_template("bot_personalities.html", roster=roster, total=total, query=query, selected=selected, personalities=personalities)
+    personas = [{"id": pid, "label": label, "color": BOT_PERSONA_COLORS.get(pid, "#cfe1fb"), "count": persona_counts.get(pid, 0)}
+                for pid, label in sorted(BOT_PERSONAS.items())]
+    return render_template("bot_personalities.html", roster=roster, total=total, query=query, selected=selected, personalities=personalities,
+                           personas=personas, selected_persona=selected_persona)
 
 
 # MT2009_PLUS_PROGRESSION_V1: "Progresja botów" -- the map transition levels,

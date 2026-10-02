@@ -833,7 +833,7 @@ namespace {
                 M2_DELETE(preview);
                 continue;
             }
-            if ((preview->GetType() == ITEM_ROD || preview->GetType() == ITEM_PICK) &&
+            if (IsPlayerBotToolType(preview->GetType()) &&   // MT2009_PLUS_BOT_HERBALIST_FIX_V1
                     GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
                 if (!tackleAny) tackleAny = id;
                 if (!tackleFits && ch && ch->GetEmptyInventory(preview->GetSize()) >= 0) tackleFits = id;

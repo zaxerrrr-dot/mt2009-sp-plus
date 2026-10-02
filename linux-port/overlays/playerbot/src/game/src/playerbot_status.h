@@ -212,6 +212,7 @@ namespace
 			case BOT_ACTION_LURE: return "podciagam moby dla PT";
 			case BOT_ACTION_TOWN_REST: return "odpoczywam w miescie";
 			case BOT_ACTION_MINING: return "kopie rude";
+			case BOT_ACTION_HERBALISM: return "zbieram ziola";   // MT2009_PLUS_BOT_HERBALIST_FIX_V1
 			default: return "mysle";
 		}
 	}
@@ -829,6 +830,24 @@ namespace
 				else
 					snprintf(status, statusSize, PBT(en, "%sIde do zyly rudy", "%sGoing to an ore vein"), prefix);
 				break;
+			case BOT_ACTION_HERBALISM:
+			{
+				// MT2009_PLUS_BOT_HERBALIST_FIX_V1: Baek-Go's visit and the bushes.
+				// The visit walked under BOT_ACTION_SHOP, and a herbalist at the
+				// board read "Handluje" (the owner, 2 October).
+				playerbot_empire_rules::TPoint herbalist;
+				if (state.bVisitingHerbalist && playerbot_empire_rules::GetHerbalist(ch->GetMapIndex(), herbalist) &&
+						DISTANCE_APPROX(ch->GetX() - herbalist.x, ch->GetY() - herbalist.y) > 850)
+					snprintf(status, statusSize, PBT(en, "%sIde do Zielarza Baek-Go", "%sGoing to Baek-Go the herbalist"), prefix);
+				else if (state.bVisitingHerbalist)
+					snprintf(status, statusSize, PBT(en, "%sWarze mikstury u Baek-Go", "%sBrewing potions at Baek-Go"), prefix);
+				else if (ch->GetWear(WEAR_WEAPON) && IsPlayerBotToolType(ch->GetWear(WEAR_WEAPON)->GetType()) &&
+						ch->GetWear(WEAR_WEAPON)->GetType() != ITEM_ROD && ch->GetWear(WEAR_WEAPON)->GetType() != ITEM_PICK)
+					snprintf(status, statusSize, PBT(en, "%sZbieram ziola nozykiem zielarza", "%sPicking herbs with the herbalist's knife"), prefix);
+				else
+					snprintf(status, statusSize, PBT(en, "%sIde do krzaka ziol", "%sGoing to a herb bush"), prefix);
+				break;
+			}
 			case BOT_ACTION_TOWN_REST:
 				// The linger after a town errand. It reads as browsing only
 				// where there are counters to browse; on a world too young
