@@ -255,8 +255,10 @@ namespace playerbot_progression
 		g35.reqs.push_back(TReq(REQ_WEAPON, 16, 6));
 		g35.reqs.push_back(TReq(REQ_WEAPON, 30, 4));
 		g35.reqs.push_back(TReq(REQ_ARMOUR, 16, 6));
-		g35.reqs.push_back(TReq(REQ_HORSE, 11, 0));
-		g35.reqs.push_back(TReq(REQ_METINS, 30, 0));
+		// MT2009_PLUS_PROGRESSION_V3: a war horse of level 5 (was 11) and ten
+		// Metins (was thirty) - the owner's 2 October.
+		g35.reqs.push_back(TReq(REQ_HORSE, 5, 0));
+		g35.reqs.push_back(TReq(REQ_METINS, 10, 0));
 		gates.push_back(g35);
 		// 45: the owner's example - the Orc Teeth handed in, two skills at M4
 		// (24), 2000 HP from items - and the law's window again (a level-25

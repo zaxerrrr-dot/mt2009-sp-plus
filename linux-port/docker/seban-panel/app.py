@@ -4067,9 +4067,10 @@ PROGRESSION_REQ_ORDER = ["weapon", "armour", "helmet", "shield", "shoes", "brace
                          "all_worn", "hp", "skills", "horse", "metins", "orc_teeth", "quest_flag", "gold"]
 # MT2009_PLUS_PROGRESSION_V2: the owner's gates of 1 October 2026. Rows of one
 # piece at one gate are alternatives: any one met is enough.
+# MT2009_PLUS_PROGRESSION_V3 (2 October): gate 35 asks a horse of 5 and ten Metins.
 PROGRESSION_DEFAULT_GATES = [
     (35, "weapon", 15, 7, ""), (35, "weapon", 16, 6, ""), (35, "weapon", 30, 4, ""), (35, "armour", 16, 6, ""),
-    (35, "horse", 11, 0, ""), (35, "metins", 30, 0, ""),
+    (35, "horse", 5, 0, ""), (35, "metins", 10, 0, ""),  # MT2009_PLUS_PROGRESSION_V3
     (45, "weapon", 25, 7, ""), (45, "weapon", 30, 6, ""), (45, "armour", 26, 6, ""), (45, "skills", 2, 24, ""),
     (45, "horse", 12, 0, ""),
     (55, "weapon", 30, 7, ""), (55, "armour", 34, 6, ""), (55, "helmet", 0, 6, ""), (55, "shield", 0, 6, ""),
