@@ -862,8 +862,10 @@ function Update-ActionPhase {
     # gigabytes to clean their disks (artur554, charliee, uxietoszef, 25-26
     # September): it says RAM now, and the log says once what it means.
     if ($Line -match 'UWAGA: w maszynie Dockera wolne jest tylko') {
+        # MT2009_PLUS_LAUNCHER_LOWMEM_UPDATE_V1: the hint names the update's own
+        # save-and-stop (Stop-WorldForUpdate, Metin2-Launcher.ps1).
         if (-not $script:activeLowMemory) {
-            Write-LocalLog 'Maszynie Dockera brakuje teraz wolnej pamięci RAM (to nie jest miejsce na dysku - dysku nie trzeba czyścić). Zwykle dlatego, że aktualizacja kompiluje serwer, gdy stary serwer z botami wciąż działa. Kompilacja potrwa dłużej, ale skończy się - nie przerywaj. Przy następnej aktualizacji kliknij najpierw ZATRZYMAJ I ZAPISZ.'
+            Write-LocalLog 'Maszynie Dockera brakuje teraz wolnej pamięci RAM (to nie jest miejsce na dysku - dysku nie trzeba czyścić). Zwykle dlatego, że aktualizacja kompiluje serwer, gdy stary serwer z botami wciąż działa. Kompilacja potrwa dłużej, ale skończy się - nie przerywaj. Gdy Windowsowi brakuje pamięci, launcher przed aktualizacją sam zapisze i zatrzyma świat oraz Docker Desktop, a po niej uruchomi wszystko z powrotem; możesz też najpierw kliknąć ZATRZYMAJ I ZAPISZ.'
         }
         $script:activeLowMemory = $true
         return
@@ -917,7 +919,7 @@ function Update-ActionStatusText {
             elseif ($long) { $text += '  ⚠ dłużej niż zwykle' }
             if ($long -and -not $script:activeCompileHintNoticed) {
                 $script:activeCompileHintNoticed = $true
-                Write-LocalLog ('Kompilacja rdzenia gry trwa już {0:N0} min, a zwykle zajmuje 1–5 min. Tak długo trwa najczęściej wtedy, gdy maszynie Dockera brakuje pamięci RAM (nie miejsca na dysku): aktualizacja kompiluje, kiedy stary serwer z botami wciąż działa. Nie przerywaj — restart zaczyna kompilację od nowa. Przy następnej aktualizacji kliknij najpierw ZATRZYMAJ I ZAPISZ.' -f $inStep.TotalMinutes)
+                Write-LocalLog ('Kompilacja rdzenia gry trwa już {0:N0} min, a zwykle zajmuje 1–5 min. Tak długo trwa najczęściej wtedy, gdy maszynie Dockera brakuje pamięci RAM (nie miejsca na dysku): aktualizacja kompiluje, kiedy stary serwer z botami wciąż działa. Nie przerywaj — restart zaczyna kompilację od nowa. Gdy Windowsowi brakuje pamięci, launcher przed aktualizacją sam zapisze i zatrzyma świat oraz Docker Desktop, a po niej uruchomi wszystko z powrotem; możesz też najpierw kliknąć ZATRZYMAJ I ZAPISZ.' -f $inStep.TotalMinutes)
             }
         }
         if ($script:progress.Style -ne 'Blocks') { $script:progress.Style = 'Blocks' }

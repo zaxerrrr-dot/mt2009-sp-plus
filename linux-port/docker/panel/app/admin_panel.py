@@ -36,6 +36,16 @@ BIOLOGIST_MISSIONS = (
     # attack speed, then sixty defence - and a casket.
     ("collect_quest_lv40", 40, "Księga Klątw", 15),
     ("collect_quest_lv50", 50, "Pamiątka Po Demonie", 15),
+    # And past fifty: lv50's last state runs lv60, and the chain goes on to
+    # lv90 (quest/collect of the package; lv92 is an empty stub there and no
+    # row). The card read "9/9" over every character of fifty and up, people
+    # and companions alike, as if the Biologist ended at the Demon Souvenir
+    # ("brakuje biologa po KK", Kordyl13, 2 October).
+    ("collect_quest_lv60", 60, "Matowy Lód", 20),
+    ("collect_quest_lv70", 70, "Konar Zelkova", 25),
+    ("collect_quest_lv80", 80, "Certyfikat Tugyisa", 30),
+    ("collect_quest_lv85", 85, "Czerw. Konar Duchodrzewa", 40),
+    ("collect_quest_lv90", 90, "Notatka Przywódcy", 50),
 )
 # A row whose monster stands on no map the bots' core hosts can never be
 # finished, and the game steps over it (GetActivePlayerBotBiologistMission,
@@ -53,6 +63,21 @@ BIOLOGIST_MISSIONS = (
 BIOLOGIST_UNREACHABLE = frozenset()
 BIOLOGIST_REACHABLE = tuple(
     m for m in BIOLOGIST_MISSIONS if m[0] not in BIOLOGIST_UNREACHABLE)
+# What a person can do and what a bot's AI will do are two sets past seventy.
+# Tugyi's Tablet comes only from the Giants of metin2_map_nusluck01 (70), a map
+# no bot travels to, so the core has no home for that row and steps over it
+# (PLAYERBOT_BIOLOGIST_MISSIONS, playerbot_types.h); lv85 and lv90 follow it in
+# the chain and the core has no rows for them. A person is counted against
+# every row; a bot against the rows its AI can finish, or every bot of eighty
+# would read 11/14 for ever.
+BIOLOGIST_BOT_UNREACHABLE = frozenset(("collect_quest_lv80", "collect_quest_lv85", "collect_quest_lv90"))
+BIOLOGIST_BOT_ROWS = tuple(
+    m for m in BIOLOGIST_REACHABLE if m[0] not in BIOLOGIST_BOT_UNREACHABLE)
+
+
+def biologist_rows(is_bot):
+    """The rows a character is counted against: a bot's AI's, or every row."""
+    return BIOLOGIST_BOT_ROWS if is_bot else BIOLOGIST_REACHABLE
 # The specimen each row wants, and how far past a row the game stops hunting
 # it. Both mirror playerbot_missions.h: a row the bot has outgrown by
 # BIOLOGIST_OUTGROWN_LEVELS is stepped over unless the bag already holds the
@@ -64,6 +89,8 @@ BIOLOGIST_ITEM_VNUMS = {
     "make_herb_lv15": 50704, "make_herb_lv20": 50705, "make_herb_lv25": 50706,
     "collect_quest_lv30": 30006,
     "collect_quest_lv40": 30047, "collect_quest_lv50": 30015,
+    "collect_quest_lv60": 30050, "collect_quest_lv70": 30165, "collect_quest_lv80": 30166,
+    "collect_quest_lv85": 30167, "collect_quest_lv90": 30168,
 }
 BIOLOGIST_OUTGROWN_LEVELS = 10
 # From this level a row's specimen is a refine material too, and the core takes
@@ -76,12 +103,17 @@ BIOLOGIST_COLLECT_QUEST_LEVEL = 30
 BIOLOGIST_KEY_ITEM_STATE = -1726153001
 BIOLOGIST_KEY_VNUMS = {
     "collect_quest_lv30": 30220, "collect_quest_lv40": 30221, "collect_quest_lv50": 30222,
+    "collect_quest_lv60": 30223, "collect_quest_lv70": 30224, "collect_quest_lv80": 30225,
+    "collect_quest_lv85": 30226, "collect_quest_lv90": 30227,
 }
 # The collect rows are one chain in the quests: the Orc Tooth's last state starts
 # the Curse Book and the Curse Book's the Demon Souvenir. The core keeps that order
 # (IsPlayerBotBiologistMissionOpen, playerbot_missions.h), and so does the panel.
 BIOLOGIST_CHAIN_PREVIOUS = {
     "collect_quest_lv40": "collect_quest_lv30", "collect_quest_lv50": "collect_quest_lv40",
+    "collect_quest_lv60": "collect_quest_lv50", "collect_quest_lv70": "collect_quest_lv60",
+    "collect_quest_lv80": "collect_quest_lv70", "collect_quest_lv85": "collect_quest_lv80",
+    "collect_quest_lv90": "collect_quest_lv85",
 }
 # Where each row's monster stands (PLAYERBOT_HUNTING_MOB_HOMES): the herb rows
 # hunt village game, which every first and second village hosts.
@@ -89,6 +121,12 @@ BIOLOGIST_VILLAGE_MAPS = frozenset((1, 3, 21, 23, 41, 43))
 BIOLOGIST_MOB_MAPS = {
     "collect_quest_lv30": frozenset((64,)), "collect_quest_lv40": frozenset((64,)),
     "collect_quest_lv50": frozenset((66,)),
+    # Sohan's ice (and the Grotto of Exile's golems, 1137, which carry the
+    # same Matowy Lod); the Forest's and the Red Forest's trees; the Giants;
+    # the Red Forest alone; and lv90's bosses, one or two on each of these maps.
+    "collect_quest_lv60": frozenset((61, 72)), "collect_quest_lv70": frozenset((67, 68)),
+    "collect_quest_lv80": frozenset((70,)), "collect_quest_lv85": frozenset((68,)),
+    "collect_quest_lv90": frozenset((61, 63, 64, 65, 104)),
 }
 
 # The official ``special.levelup_quest`` choices for the M1/M2 stage.  The
@@ -8397,6 +8435,9 @@ BIOLOGIST_NAMES_EN = {
  "make_herb_lv10":"Kaki Blossom","make_herb_lv15":"Gango Root",
  "make_herb_lv20":"Lilac","make_herb_lv25":"Tue Mushroom","collect_quest_lv30":"Orc Tooth",
  "collect_quest_lv40":"Curse Book","collect_quest_lv50":"Demon Souvenir",
+ "collect_quest_lv60":"Ice Marble","collect_quest_lv70":"Zelkova Branch",
+ "collect_quest_lv80":"Tugyi's Tablet","collect_quest_lv85":"Red Ghost Tree Branch",
+ "collect_quest_lv90":"Leaders' Notes",
 }
 
 def localized_job_name(job, language=None):
@@ -8409,7 +8450,7 @@ def localized_biologist_name(quest_name, polish_name, language=None):
     return polish_name if language == "pl" else BIOLOGIST_NAMES_EN.get(quest_name, polish_name)
 
 
-def biologist_progress(level, quest_flags, held, map_index, language=None):
+def biologist_progress(level, quest_flags, held, map_index, language=None, is_bot=True):
     """The Biologist as the core plays it for one bot: (completed, stage, skipped).
 
     The card and the ranking both ask this, so they cannot disagree. The row is
@@ -8424,12 +8465,15 @@ def biologist_progress(level, quest_flags, held, map_index, language=None):
     row is done, ("next", level, name) while the next row waits for a level, and
     ("row", name, accepted, needed, key_name) otherwise, key_name set when the row
     waits for its key alone. ``skipped`` counts the open rows the bot has outgrown
-    and is not on - how a bot of seventy reads 1/9 beside the Demon Souvenir."""
+    and is not on - how a bot of seventy reads 1/9 beside the Demon Souvenir.
+    ``is_bot`` picks the rows (biologist_rows): a person is counted against
+    every row the quests have, a bot against the ones its AI can finish."""
+    rows = biologist_rows(is_bot)
     level = int(level or 1)
     completed = 0
     carrying = here = first = last = upcoming = None
     outgrown_rows = []
-    for index, (quest_name, required_level, _, required_count) in enumerate(BIOLOGIST_REACHABLE):
+    for index, (quest_name, required_level, _, required_count) in enumerate(rows):
         status = quest_flags.get((quest_name, "__status"))
         if status == BIOLOGIST_COMPLETE_STATE:
             completed += 1
@@ -8462,10 +8506,10 @@ def biologist_progress(level, quest_flags, held, map_index, language=None):
     if pick is None:
         if upcoming is None:
             return completed, None, skipped
-        quest_name, required_level, polish_name, _ = BIOLOGIST_REACHABLE[upcoming]
+        quest_name, required_level, polish_name, _ = rows[upcoming]
         return (completed, ("next", required_level,
                             localized_biologist_name(quest_name, polish_name, language)), skipped)
-    quest_name, _, polish_name, required_count = BIOLOGIST_REACHABLE[pick]
+    quest_name, _, polish_name, required_count = rows[pick]
     key_name = None
     if (quest_name in BIOLOGIST_KEY_VNUMS and
             quest_flags.get((quest_name, "__status")) == BIOLOGIST_KEY_ITEM_STATE):
@@ -10670,7 +10714,7 @@ function openBotModal(pid) {
               : '') +
               '<div><b>' + I18N.horse + ':</b> <span style="color:#c084fc;font-weight:700">Lv ' + (p.horse_level || 0) + '</span>' +
                 (p.saddlebag_rows ? ' <span style="color:#a78bfa">| ' + I18N.saddlebags + ' ' + p.saddlebag_rows + '/9</span>' : '') + '</div>' +
-              '<div><b>' + I18N.biologist + ':</b> <span style="color:#4ade80;font-weight:700">' + (p.biologist_completed || 0) + '/' + (p.biologist_total || 7) + (I18N.bio_done ? ' ' + I18N.bio_done : '') + '</span></div>' +
+              '<div><b>' + I18N.biologist + ':</b> <span style="color:#4ade80;font-weight:700">' + (p.biologist_completed || 0) + '/' + (p.biologist_total || 14) + (I18N.bio_done ? ' ' + I18N.bio_done : '') + '</span></div>' +
               '<div style="grid-column:1 / -1"><b>' + I18N.bio_stage + ':</b> <span style="color:#86efac">' + (p.biologist_label || I18N.no_data) + '</span></div>' +
               // Only when there is a hunt to report. On the mt2009 line
               // levelup.quest ships in quest/_unused, so hunting_progress_label
@@ -17756,9 +17800,10 @@ def api_bot_inventory(pid):
                     ",".join(["%s"] * len(vnum_list))),
                 (pid,) + vnum_list)
             held = {int(r["vnum"]): int(r.get("n") or 0) for r in cur.fetchall()}
+            card_is_bot = bool(int(player.get("is_bot") or 0))
             completed, stage, skipped = biologist_progress(
                 player.get("level"), quest_flags, held,
-                live.get("map_index") if live else None, language)
+                live.get("map_index") if live else None, language, card_is_bot)
             biologist_label = biologist_stage_text(stage, messages, ": ")
             if skipped:
                 biologist_label += " • " + messages["bio_skipped"].format(n=skipped)
@@ -17768,8 +17813,10 @@ def api_bot_inventory(pid):
             # How many rows there are, so the card does not carry the number in
             # its own markup. It said "/7" outright, and a chain that grew a row
             # would have reported 8/7 to everybody. Rows the world cannot host
-            # are not counted, or every bot would sit at 8/9 for ever.
-            player["biologist_total"] = len(BIOLOGIST_REACHABLE)
+            # are not counted, or every bot would sit at 8/9 for ever - and a
+            # bot is counted against the rows its AI can finish, a person
+            # against every row (biologist_rows).
+            player["biologist_total"] = len(biologist_rows(card_is_bot))
             player["biologist_label"] = biologist_label
 
             cur.execute("""
@@ -18305,7 +18352,8 @@ def api_bot_rankings():
                         {21: "m1", 23: "m2", 24: "m3", 1: "s1", 3: "s2", 4: "s3",
                          41: "j1", 43: "j2", 44: "j3"}.get(stall_map_index, ""), "")
 
-                bio_completed = max(0, min(len(BIOLOGIST_REACHABLE), int(r.get("biologist_completed") or 0)))
+                bio_rows = biologist_rows(r["id"] in bots)
+                bio_completed = max(0, min(len(bio_rows), int(r.get("biologist_completed") or 0)))
                 bio_label = ""
                 if rtype == "biologist":
                     # The count, then the row the bot is on now. The label used to
@@ -18317,17 +18365,18 @@ def api_bot_rankings():
                     entry = bio_live.get(int(r["id"])) or {}
                     bio_completed, stage, _ = biologist_progress(
                         r.get("level"), bio_flags.get(int(r["id"]), {}),
-                        bio_bags.get(int(r["id"]), {}), entry.get("map_index"), language)
+                        bio_bags.get(int(r["id"]), {}), entry.get("map_index"), language,
+                        r["id"] in bots)
                     if entry.get("personality_id") in BOT_DROPPER_PERSONALITIES:
                         bio_label = "%d/%d • %s" % (
-                            bio_completed, len(BIOLOGIST_REACHABLE), messages["bio_dropper"])
+                            bio_completed, len(bio_rows), messages["bio_dropper"])
                     elif stage is None:
                         bio_label = "%d/%d • %s" % (
-                            bio_completed, len(BIOLOGIST_REACHABLE), messages["bio_complete"])
+                            bio_completed, len(bio_rows), messages["bio_complete"])
                     else:
                         template = "bio_rank_next" if stage[0] == "next" else "bio_rank_now"
                         bio_label = messages[template].format(
-                            done=bio_completed, total=len(BIOLOGIST_REACHABLE),
+                            done=bio_completed, total=len(bio_rows),
                             stage=biologist_stage_text(stage, messages, " "))
                 hunting_complete = max(0, int(r.get("hunting_complete") or 0))
                 hunting_current = max(0, int(r.get("hunting_current") or 0))

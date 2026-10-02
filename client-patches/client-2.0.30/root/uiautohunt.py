@@ -21,8 +21,11 @@
 #
 # The client cannot list the monsters or the items round its character, so
 # it asks the server:
-#   "/autohunt_target <range> <stones> <dx> <dy> <mobs> <bosses> [<skip>]"
+#   "/autohunt_target <range> <stones> <dx> <dy> <mobs> <bosses> [<skip> [<nearest>]]"
 #     -> "AutoHuntTarget <vid>"
+# (<nearest> 1: the nearest monster plain, for a hunter boxed in - see
+# COMBAT_STUCK_SECONDS; MT2009_PLUS_AUTOHUNT_CROWD_V1 in do_autohunt_target,
+# and a server without it reads seven arguments and ignores the eighth.)
 #   "/autohunt_loot <range> <kinds> <dx> <dy>" -> "AutoHuntLoot <vid> <dx> <dy>"
 # Every place goes both ways as an offset from the character: this client
 # counts positions from its map's corner and the server from the world's.
@@ -165,6 +168,22 @@ STUCK_PAUSE = 2.0
 # on the monsters at the edge and on every far drop (teivos, 27 September).
 WALK_PROGRESS = 200
 STUCK_SKIP_SECONDS = 60.0
+# MT2009_PLUS_AUTOHUNT_CROWD_V1: boxed in on the way (2 October): a blow
+# knocked the target back, a pack closed round the character, and it ran at
+# the first monster against the pack's bodies, hitting nothing, until
+# STUCK_SECONDS let it go. While it walks to a target beyond its reach, a
+# character that has neither moved COMBAT_MOVE_THRESHOLD units nor come that
+# much nearer to the target in COMBAT_STUCK_SECONDS - a skill's motion apart -
+# stops where it stands, leaves that target for COMBAT_SKIP_SECONDS and asks
+# the server for the nearest monster plain (the eighth argument), which is
+# one of the pack round it. Both measures, because either alone lies: the
+# character's own place stands still while a monster comes to it, and the
+# distance stands still while it follows one that runs or walks round a wall.
+# The same target boxing it in twice within STUCK_SKIP_SECONDS is left for
+# that minute, as STUCK_SECONDS would have left it.
+COMBAT_STUCK_SECONDS = 0.8
+COMBAT_MOVE_THRESHOLD = 20.0
+COMBAT_SKIP_SECONDS = 2.0
 
 # A skill cast at an enemy goes only at the monster the hunter is fighting:
 # alive, in the client's own hand (player.GetTargetVID) and within reach.
@@ -526,6 +545,17 @@ class Hunter(object):
         self.targetVid = 0
         self.skipVid = 0
         self.skipUntil = 0.0
+        # MT2009_PLUS_AUTOHUNT_CROWD_V1: the target that boxed the hunter in,
+        # on a slot of its own so the minute's skip (and a corpse's) is not
+        # forgotten for its two seconds; while it runs the server is asked for
+        # the nearest monster plain.
+        self.blockedVid = 0
+        self.blockedUntil = 0.0
+        self.blockedWaiting = False
+        self.lastTargetRequestAt = -1.0
+        self.lastBlockedVid = 0
+        self.lastBlockedUntil = 0.0
+        self.ResetChaseMovement()
         self.attacking = False
         self.anchor = (0, 0)
         self.nextRequest = 0.0
@@ -615,6 +645,7 @@ class Hunter(object):
             if maxHP > 0 and curHP * 100 < maxHP * threshold:
                 self.HandleItems(now)
                 self.CastSkills(now, buffsOnly=True)
+                self.ResetChaseMovement()
                 return
             self.justRevived = False
 
@@ -701,6 +732,15 @@ class Hunter(object):
         new_vid = ParseTargetVid(value)
         if not new_vid:
             return
+        # MT2009_PLUS_AUTOHUNT_CROWD_V1: the server is told one target to
+        # leave out; a second one left is refused here (the minute's skip
+        # while the box's two seconds are the one sent, and an answer already
+        # on its way when either began).
+        now = clientclock.Now()
+        if new_vid == self.blockedVid and now < self.blockedUntil:
+            return
+        if new_vid == self.skipVid and now < self.skipUntil:
+            return
 
         if self.targetVid != 0 and new_vid != self.targetVid:
             distance = player.GetCharacterDistance(self.targetVid)
@@ -714,6 +754,8 @@ class Hunter(object):
 
         if new_vid != self.targetVid:
             self.ReleaseAttack()
+            self.ResetChaseMovement()
+            self.blockedWaiting = False
             self.targetVid = new_vid
             self.approachSince = 0.0
             self.nextMove = 0.0
@@ -741,6 +783,7 @@ class Hunter(object):
 
     def WhileDead(self, now):
         self.ReleaseAttack()
+        self.ResetChaseMovement()
         self.targetVid = 0
         self.lootVid = 0
         self.lootSweeping = False
@@ -811,30 +854,98 @@ class Hunter(object):
         net.SendChatPacket('/autohunt_loot %d %d %d %d %d' % (
             self.config['range'], LootCoarseMask(self.config), dx, dy, mask))
 
+    def RequestTarget(self, now):
+        self.nextRequest = now + TARGET_REQUEST_INTERVAL
+        self.lastTargetRequestAt = now
+        (dx, dy) = self.AnchorOffset()
+        command = '/autohunt_target %d %d %d %d %d %d' % (
+            self.config['range'],
+            1 if self.config.get('stones', 0) else 0,
+            dx, dy,
+            1 if self.config.get('mobs', 1) else 0,
+            1 if self.config.get('bosses', 0) else 0)
+        # MT2009_PLUS_AUTOHUNT_CROWD_V1: boxed in, the target that did it is
+        # left out and the nearest monster plain asked for.
+        if self.blockedVid and now < self.blockedUntil:
+            command += ' %d 1' % self.blockedVid
+        elif self.skipVid and now < self.skipUntil:
+            command += ' %d' % self.skipVid
+        net.SendChatPacket(command)
+
+    def ResetChaseMovement(self):
+        self.chasePosition = None
+        self.chaseDistance = 0
+        self.chaseStillSince = 0.0
+        self.chaseVid = 0
+
+    def NoteChaseWalk(self, now, vid, px, py, distance):
+        """The walk's measure starts at the first step ordered to this
+        target, not when it was named: a hunter that has not been told to
+        walk yet has not been boxed in."""
+        if self.chasePosition is None or self.chaseVid != vid:
+            self.chasePosition = (px, py)
+            self.chaseDistance = distance
+            self.chaseStillSince = now
+            self.chaseVid = vid
+
+    def ChaseBlocked(self, now, vid, distance):
+        """MT2009_PLUS_AUTOHUNT_CROWD_V1: whether the walk to a target beyond
+        reach is boxed in (see COMBAT_STUCK_SECONDS); if it is, the target is
+        left and the nearest asked for at once."""
+        if now < self.skillHoldUntil:
+            # The motion holds the step; the measure starts again after it.
+            self.ResetChaseMovement()
+            return False
+        if self.chasePosition is None or self.chaseVid != vid:
+            return False
+        (px, py, pz) = player.GetMainCharacterPosition()
+        (sx, sy) = self.chasePosition
+        moved = (px - sx) ** 2 + (py - sy) ** 2 >= COMBAT_MOVE_THRESHOLD ** 2
+        if moved or distance <= self.chaseDistance - COMBAT_MOVE_THRESHOLD:
+            self.chasePosition = (px, py)
+            self.chaseDistance = distance
+            self.chaseStillSince = now
+            return False
+        if now - self.chaseStillSince < COMBAT_STUCK_SECONDS:
+            return False
+        self.ReleaseAttack()
+        # A stop where it stands: the walk ordered at the target would go on
+        # into the pack the moment it gave way. No step back to the start.
+        self.WalkTo(px, py)
+        if player.GetTargetVID() != 0:
+            player.ClearTarget()
+        if vid == self.lastBlockedVid and now < self.lastBlockedUntil:
+            self.skipVid = vid
+            self.skipUntil = now + STUCK_SKIP_SECONDS
+        self.lastBlockedVid = vid
+        self.lastBlockedUntil = now + STUCK_SKIP_SECONDS
+        self.blockedVid = vid
+        self.blockedUntil = now + COMBAT_SKIP_SECONDS
+        self.blockedWaiting = True
+        self.targetVid = 0
+        self.approachSince = 0.0
+        self.targetSetSince = 0.0
+        self.targetMissFrames = 0
+        self.nextMove = 0.0
+        self.nextFace = 0.0
+        self.ResetChaseMovement()
+        if self.lastTargetRequestAt == now:
+            # This frame's question went before the box was seen; the
+            # nearest is asked on the next, not twice on this one.
+            self.nextRequest = 0.0
+        else:
+            self.RequestTarget(now)
+        return True
+
     def Chase(self, now):
         self.PickNearLoot(now)
         if self.lootSweeping:
+            self.ResetChaseMovement()
             self.HandleLootSweep(now)
             return
         if self.config['attack']:
             if now >= self.nextRequest:
-                self.nextRequest = now + TARGET_REQUEST_INTERVAL
-                (dx, dy) = self.AnchorOffset()
-
-                stones_flag = 1 if self.config.get('stones', 0) else 0
-                mobs_flag   = 1 if self.config.get('mobs', 1) else 0
-                bosses_flag = 1 if self.config.get('bosses', 0) else 0
-                command = '/autohunt_target %d %d %d %d %d %d' % (
-                    self.config['range'],
-                    stones_flag,
-                    dx, dy,
-                    mobs_flag,
-                    bosses_flag
-                )
-
-                if self.skipVid and now < self.skipUntil:
-                    command += ' %d' % self.skipVid
-                net.SendChatPacket(command)
+                self.RequestTarget(now)
         else:
             self.targetVid = 0
         vid = self.targetVid
@@ -860,6 +971,12 @@ class Hunter(object):
             return
         distance = player.GetCharacterDistance(vid) if vid else -1
         if distance < 0:
+            self.ResetChaseMovement()
+            if not vid and self.blockedWaiting and now < self.blockedUntil:
+                # Boxed in and waiting for the nearest: the answer is a
+                # monster at hand, so no walk back to the start meanwhile.
+                self.nextRequest = min(self.nextRequest, now + 0.3)
+                return
             # Grace period: the client may need a few frames to load a
             # mob the server just picked.  Clear only after five misses
             # so a mob on the edge of view is not thrown away at once.
@@ -883,6 +1000,8 @@ class Hunter(object):
         if distance > reach:
             self.targetSetSince = 0.0
             self.ReleaseAttack()
+            if self.ChaseBlocked(now, vid, distance):
+                return
             if not self.approachSince or distance < self.approachBest - WALK_PROGRESS:
                 self.approachSince = now
                 self.approachBest = distance
@@ -902,8 +1021,10 @@ class Hunter(object):
                 (tx, ty, tz) = chr.GetPixelPosition(vid)
                 (sx, sy) = StopPoint(px, py, tx, ty, reach * STOP_SHORT_SHARE)
                 self.WalkTo(sx, sy)
+                self.NoteChaseWalk(now, vid, px, py, distance)
             return
 
+        self.ResetChaseMovement()
         self.approachSince = 0.0
         if now >= self.nextFace:
             self.nextFace = now + FACE_INTERVAL

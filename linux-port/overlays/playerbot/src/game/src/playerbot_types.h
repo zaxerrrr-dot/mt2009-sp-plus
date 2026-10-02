@@ -5799,6 +5799,17 @@ namespace
 		// Zab Orka" over a bot of eighty with ten teeth handed in, hunting
 		// Elite Orcs for Jinunggyi's stone (prodnathin, 27 September).
 		const char* keyItemLabel;
+		// MT2009_PLUS_BIOLOGIST_90_V1: the rows past fifty. lv70 pays two
+		// collect affects at the key hand-in (movement speed and defence) and
+		// lv80 two more (attack speed and attack), so a row carries a second
+		// point beside the first. And from lv70 the specimen is the quest's own
+		// kill-hook drop, given only while the bag holds none of it
+		// ("pc.count_item(30165)==0"): a bot hunting for four to walk to the
+		// Biologist with would hunt for ever with one. carryMax is that cap -
+		// the hand-in walk starts at it - and zero means no cap.
+		BYTE rewardPoint2;
+		int rewardPointValue2;
+		BYTE carryMax;
 	};
 
 	// The gold and experience columns are zero on purpose, and that is this
@@ -5809,12 +5820,12 @@ namespace
 	// GivePlayerBotBiologistReward. Filling a row in here is all it takes if
 	// the quest ever gets a reward_data entry of its own.
 	const TPlayerBotBiologistMission PLAYERBOT_BIOLOGIST_MISSIONS[] = {
-		{ 4,  "make_herb_lv4",  50701, 173, 5,  90, 0, 0, "Kwiat Brzoskwini", 0, 0, 0, 0, 0, NULL },
-		{ 7,  "make_herb_lv7",  50702, 175, 5,  90, 0, 0, "Pokrzywa",         0, 0, 0, 0, 0, NULL },
-		{ 10, "make_herb_lv10", 50703, 177, 5,  90, 0, 0, "Kwiat Kaki",       0, 0, 0, 0, 0, NULL },
-		{ 15, "make_herb_lv15", 50704, 181, 5,  90, 0, 0, "Korzen Gango",     0, 0, 0, 0, 0, NULL },
-		{ 20, "make_herb_lv20", 50705, 182, 10, 80, 0, 0, "Bez",              0, 0, 0, 0, 0, NULL },
-		{ 25, "make_herb_lv25", 50706, 183, 10, 70, 0, 0, "Grzyb Tue",        0, 0, 0, 0, 0, NULL },
+		{ 4,  "make_herb_lv4",  50701, 173, 5,  90, 0, 0, "Kwiat Brzoskwini", 0, 0, 0, 0, 0, NULL, 0, 0, 0 },
+		{ 7,  "make_herb_lv7",  50702, 175, 5,  90, 0, 0, "Pokrzywa",         0, 0, 0, 0, 0, NULL, 0, 0, 0 },
+		{ 10, "make_herb_lv10", 50703, 177, 5,  90, 0, 0, "Kwiat Kaki",       0, 0, 0, 0, 0, NULL, 0, 0, 0 },
+		{ 15, "make_herb_lv15", 50704, 181, 5,  90, 0, 0, "Korzen Gango",     0, 0, 0, 0, 0, NULL, 0, 0, 0 },
+		{ 20, "make_herb_lv20", 50705, 182, 10, 80, 0, 0, "Bez",              0, 0, 0, 0, 0, NULL, 0, 0, 0 },
+		{ 25, "make_herb_lv25", 50706, 183, 10, 70, 0, 0, "Grzyb Tue",        0, 0, 0, 0, 0, NULL, 0, 0, 0 },
 		// The Orc Tooth. Ten from the Orcs (601) of the valley, one in twenty
 		// kills while the quest is open; sixty percent of what is handed in is
 		// accepted, the rest is spoiled, as in the quest without the elixir. The
@@ -5823,7 +5834,7 @@ namespace
 		// (30220), one in five hundred Elite Orc kills while the quest waits for
 		// it, and the reward is the quest's own, ten movement speed for good.
 		{ 30, "collect_quest_lv30", 30006, 601, 10, 60, 0, 0, "Zab Orka",
-				30220, 631, POINT_MOV_SPEED, 10, 50109, "Kamien Duszy Jinunggyi" },
+				30220, 631, POINT_MOV_SPEED, 10, 50109, "Kamien Duszy Jinunggyi", 0, 0, 0 },
 		// The chain does not stop at the Orc Tooth: collect_quest_lv30's last
 		// state runs lv40, and lv40 runs lv50. Both want fifteen specimens at
 		// the same sixty percent, both wait for a key item one kill in five
@@ -5839,7 +5850,7 @@ namespace
 		// (IsPlayerBotBiologistHuntRace), and the Curse Book's specimen and its
 		// key are two different families on the same Tormentor.
 		{ 40, "collect_quest_lv40", 30047, 706, 15, 60, 0, 0, "Ksiega Klatw",
-				30221, 701, POINT_ATT_SPEED, 5, 50110, "Swiatynny Kamien Duszy" },
+				30221, 701, POINT_ATT_SPEED, 5, 50110, "Swiatynny Kamien Duszy", 0, 0, 0 },
 		// The Demon Souvenir is the row this world cannot finish, and it is
 		// here so that it starts working by itself the day that changes. Its
 		// specimen (30015) drops from the Demon Soldier (1001) and its key
@@ -5853,7 +5864,38 @@ namespace
 		// The key names 1002 for the same reason: 1001 alone carries the
 		// souvenir, 1001-1004 the key.
 		{ 50, "collect_quest_lv50", 30015, 1001, 15, 60, 0, 0, "Pamiatka Po Demonie",
-				30222, 1002, POINT_DEF_GRADE_BONUS, 60, 50111, "Kamien Duszy Sagyi" }
+				30222, 1002, POINT_DEF_GRADE_BONUS, 60, 50111, "Kamien Duszy Sagyi", 0, 0, 0 },
+		// MT2009_PLUS_BIOLOGIST_90_V1: and past fifty, the way a person goes
+		// on - lv50's last state runs lv60, lv60's lv70, lv70's lv80 (the
+		// package's quest/collect, read on 2 October). Each wants more
+		// specimens at the same sixty percent, waits for a key and pays
+		// collect affects and a casket.
+		//
+		// Matowy Lod (30050) is an etc drop of the Ice Golems - 1107 on Mount
+		// Sohan (61), and 1137 in the Grotto of Exile (72), which carries it
+		// too; twenty of them. Its key (30223) is the hook on 1101-1107, Sohan's
+		// whole ice family, one kill in five hundred; named by 1102, since 1101
+		// spawns nowhere here and 1107 names the specimen's family
+		// (IsPlayerBotBiologistHuntRace). Fifty attack value, casket 50112.
+		{ 60, "collect_quest_lv60", 30050, 1107, 20, 60, 0, 0, "Matowy Lod",
+				30223, 1102, POINT_ATT_GRADE_BONUS, 50, 50112, "Kamien Duszy Aurtumryu", 0, 0, 0 },
+		// Konar Zelkova (30165): the hook on the Ghost Wood's trees 2301-2305
+		// (67) and the Red Forest's 2311-2315 (68), one kill in two hundred and
+		// only while the bag holds none - so one is carried at a time. Twenty-
+		// five; the key (30224) on the same trees, one in five hundred. Eleven
+		// movement speed and ten defence, casket 50113.
+		{ 70, "collect_quest_lv70", 30165, 2301, 25, 60, 0, 0, "Konar Zelkova",
+				30224, 2301, POINT_MOV_SPEED, 11, 50113, "Kamien Duszy Gyimok", POINT_DEF_BONUS, 10, 1 },
+		// Certyfikat Tugyisa (30166): the hook on the Giants 1401-1403 and the
+		// Ogres 1601-1603, five in a hundred and one at a time, and they stand
+		// only on metin2_map_nusluck01 (70) - a map no bot travels to, so 1401
+		// has no row in PLAYERBOT_HUNTING_MOB_HOMES and this row is stepped
+		// over (GetActivePlayerBotBiologistMission) the way the Demon Souvenir
+		// once was. It is here so that it starts by itself the day the bots go
+		// there. lv85 and lv90 follow it in the chain and have no rows: a bot
+		// can never open them while this one stands.
+		{ 80, "collect_quest_lv80", 30166, 1401, 30, 60, 0, 0, "Certyfikat Tugyisa",
+				30225, 1401, POINT_ATT_SPEED, 6, 50114, "Kamien Duszy Tugyi", POINT_ATT_BONUS, 10, 1 }
 	};
 	const DWORD PLAYERBOT_ORC_TOOTH_VNUM = 30006;
 	// How many specimens are worth a walk to Joan.
@@ -6075,6 +6117,13 @@ namespace
 			case 706: return race == 756;
 			case 701: return (race >= 702 && race <= 707) || (race >= 731 && race <= 737);
 			case 1002: return race == 1001 || race == 1003 || race == 1004;
+			// MT2009_PLUS_BIOLOGIST_90_V1: Matowy Lod's Ice Golems (Sohan's and
+			// the Grotto's), its key's ice family, the two forests' trees, and
+			// the Giants and Ogres of lv80.
+			case 1107: return race == 1137 || race == 1157 || race == 1177;
+			case 1102: return race >= 1101 && race <= 1107;
+			case 2301: return (race >= 2302 && race <= 2305) || (race >= 2311 && race <= 2315);
+			case 1401: return (race >= 1402 && race <= 1403) || (race >= 1601 && race <= 1603);
 			case PLAYERBOT_BATTLE_HORSE_MOB_SCORPION_ARCHER: return race == PLAYERBOT_BATTLE_HORSE_MOB_SNAKE_ARCHER;
 		}
 		return false;
@@ -6090,7 +6139,9 @@ namespace
 	const TPlayerBotSpecimenCarrier PLAYERBOT_BIOLOGIST_SPECIMEN_CARRIERS[] = {
 		{ 30006, 636, 11700 }, { 30006, 656, 11700 },
 		{ 30047, 706, 27000 }, { 30047, 756, 27000 },
-		{ 30015, 1001, 12600 }
+		{ 30015, 1001, 12600 },
+		// MT2009_PLUS_BIOLOGIST_90_V1: Matowy Lod, etc_drop_item 2.70.
+		{ 30050, 1107, 27000 }, { 30050, 1137, 27000 }
 	};
 
 	// Canonical ``special.levelup_quest`` entries from questlib.lua.  These are
@@ -6181,7 +6232,13 @@ namespace
 		// four carry the key (30222) through the quest's own kill hook. They
 		// stand nowhere else in this world, which is why that row was switched
 		// off until the map moved.
-		{ 1001, 66, 0 }, { 1002, 66, 0 }, { 1003, 66, 0 }, { 1004, 66, 0 }
+		{ 1001, 66, 0 }, { 1002, 66, 0 }, { 1003, 66, 0 }, { 1004, 66, 0 },
+		// MT2009_PLUS_BIOLOGIST_90_V1: the rows past fifty. Matowy Lod's Ice
+		// Golem on Mount Sohan and in the Grotto of Exile 1, its key's ice
+		// family on Sohan, and Konar Zelkova's trees in the Ghost Wood and the
+		// Red Forest (read off the maps' regen and group files). No row for
+		// the Giants' 1401: their map (70) is not one the bots go to.
+		{ 1107, 61, 72 }, { 1102, 61, 0 }, { 2301, 67, 68 }
 	};
 
 	// The map a listed monster stands on (its first home), or zero for a

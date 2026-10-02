@@ -567,8 +567,13 @@ namespace
 		const int accepted = IsPlayerBotBiologistKeyPhase(ch, missionIndex) ? 0 : std::max(0, ch->GetQuestFlag(
 				GetPlayerBotBiologistFlag(*mission, "collect_count")));
 		const int remaining = std::max(0, required - accepted);
-		return remaining > 0 && ch->CountSpecifyItem(wantedVnum) >=
-				std::min(remaining, PLAYERBOT_BIOLOGIST_MIN_HANDIN);
+		int threshold = std::min(remaining, PLAYERBOT_BIOLOGIST_MIN_HANDIN);
+		// MT2009_PLUS_BIOLOGIST_90_V1: a row whose quest gives its specimen
+		// only into an empty bag (lv70, lv80) is walked to with what the
+		// quest lets the bag hold.
+		if (mission->carryMax != 0)
+			threshold = std::min(threshold, (int)mission->carryMax);
+		return remaining > 0 && ch->CountSpecifyItem(wantedVnum) >= threshold;
 	}
 
 	// The monster the active row still wants killed, or zero: the row's own
