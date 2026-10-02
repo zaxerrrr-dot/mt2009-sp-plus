@@ -2997,6 +2997,17 @@ namespace
 	const int PLAYERBOT_INFLATION_STEP_PERCENT = 5;
 	const int PLAYERBOT_INFLATION_MAX_PERCENT = 100000;
 	const DWORD PLAYERBOT_INFLATION_REFRESH_MS = 10 * 60 * 1000;
+	// MT2009_PLUS_WORLD_YANG_PRICES_V1 (the owner, 2 October): 40% of the
+	// sheet in a new world, the sheet itself at 10 billion yang in the
+	// world's purses, then x1.10 every 2.5 billion up to 30 billion and x1.05
+	// every 2.5 billion past it (playerbot_price_rules.h WorldYangFactor).
+	// Every price the sheet sets: gear, Cor, the craft materials, the bonus
+	// add-ons. Replaces the old x1.05-a-step inflation.
+	const int PLAYERBOT_WORLD_YANG_START_PERCENT = 40;
+	const long long PLAYERBOT_WORLD_YANG_ZERO = 10000000000LL;
+	const int PLAYERBOT_WORLD_YANG_HOT_PERCENT = 10;
+	const long long PLAYERBOT_WORLD_YANG_COOL_FROM = 30000000000LL;
+	const int PLAYERBOT_WORLD_YANG_COOL_PERCENT = 5;
 	// Iwakura's tier list (playerbot_item_tiers.h, 16 September): a family's
 	// PvE tier moves the whole equipment score by this much per step from
 	// the neutral 3 (tier 6 is +24%, tier 1 is -16%), and a bonus line's PvE

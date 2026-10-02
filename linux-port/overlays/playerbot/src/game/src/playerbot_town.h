@@ -2183,8 +2183,10 @@ namespace
 			const long long before = GetPlayerBotInflationFactor();
 			const bool first = s_llPlayerBotWorldYang == 0;
 			s_llPlayerBotWorldYang = std::max(0LL, strtoll(row[0], NULL, 10));
-			s_llPlayerBotInflationFactor = playerbot_price_rules::InflationFactor(
-					GetPlayerBotInflationSteps(), PLAYERBOT_INFLATION_STEP_PERCENT,
+			// MT2009_PLUS_WORLD_YANG_PRICES_V1: the owner's curve, smooth.
+			s_llPlayerBotInflationFactor = playerbot_price_rules::WorldYangFactor(s_llPlayerBotWorldYang,
+					PLAYERBOT_WORLD_YANG_START_PERCENT, PLAYERBOT_WORLD_YANG_ZERO, PLAYERBOT_INFLATION_STEP_YANG,
+					PLAYERBOT_WORLD_YANG_HOT_PERCENT, PLAYERBOT_WORLD_YANG_COOL_FROM, PLAYERBOT_WORLD_YANG_COOL_PERCENT,
 					playerbot_price_rules::INFLATION_FACTOR_ONE * (100LL + PLAYERBOT_INFLATION_MAX_PERCENT) / 100LL);
 			const long long after = GetPlayerBotInflationFactor();
 			const long long one = playerbot_price_rules::INFLATION_FACTOR_ONE;
@@ -2260,7 +2262,10 @@ namespace
 		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: and the owner's bonus-count prices
 		// switching on or off, which moves every piece with lines.
 		return ((PLAYERBOT_PRICE_TABLE_VERSION * 1000000UL + (DWORD)std::min(rate, 999999)) ^
-				((DWORD)GetPlayerBotInflationSteps() << 24)) ^ (IsPlayerBotBonusCountPricingOn() ? 0x80000000UL : 0UL);
+				// MT2009_PLUS_WORLD_YANG_PRICES_V1: the smooth factor in 2% bands,
+				// so a counter is repriced when the level moved that far, not at
+				// every ten-minute sum.
+				((DWORD)(GetPlayerBotInflationFactor() / 200) << 20)) ^ (IsPlayerBotBonusCountPricingOn() ? 0x80000000UL : 0UL);
 	}
 
 	// Iwakura's base for a book, at this world's yang rate. The rate is the
