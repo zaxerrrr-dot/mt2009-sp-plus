@@ -1,0 +1,20 @@
+[
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_LEGENDS_V1 (attack)",
+  "old": "\tiAtk = CalcPlayerBonus(pkAttacker, pkVictim, iAtk);\n",
+  "new": "\t// MT2009_PLUS_LEGENDS_V1 (attack): a bot of a tier of the System Legend\n\t// strikes harder - against people and against monsters, its tier's\n\t// thousandths (playerbot_legends.h, PlayerBotLegendAttackBonus).\n\t{\n\t\tint PlayerBotLegendAttackBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iAtk);\n\t\tiAtk = PlayerBotLegendAttackBonus(pkAttacker, pkVictim, iAtk);\n\t}\n\n\tiAtk = CalcPlayerBonus(pkAttacker, pkVictim, iAtk);\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_LEGENDS_V1 (exp)",
+  "old": "\tiExp = iExp * CHARACTER_MANAGER::instance().GetMobExpRate(to) / 100;\n",
+  "new": "\tiExp = iExp * CHARACTER_MANAGER::instance().GetMobExpRate(to) / 100;\n\n\t// MT2009_PLUS_LEGENDS_V1 (exp): a bot of a tier of the System Legend gains\n\t// its tier's share more (playerbot_legends.h, PlayerBotLegendExpBonus).\n\t{\n\t\tint PlayerBotLegendExpBonus(LPCHARACTER to, int iExp);\n\t\tiExp = PlayerBotLegendExpBonus(to, iExp);\n\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_LEGENDS_V1 (death)",
+  "old": "\t\tCPlayerBotManager::instance().OnBossKilled(this, pkKiller);\n",
+  "new": "\t\tCPlayerBotManager::instance().OnBossKilled(this, pkKiller);\n\n\t// MT2009_PLUS_LEGENDS_V1 (death): a death for the System Legend - a person\n\t// killed by a bot of a tier, a Legend or a Champion killed by a person, a\n\t// boss's last blow (playerbot_legends.h, PlayerBotLegendOnDeath).\n\t{\n\t\tvoid PlayerBotLegendOnDeath(LPCHARACTER victim, LPCHARACTER killer);\n\t\tPlayerBotLegendOnDeath(this, pkKiller);\n\t}\n"
+ }
+]

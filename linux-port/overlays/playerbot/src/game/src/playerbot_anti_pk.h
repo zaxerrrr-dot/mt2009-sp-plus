@@ -1183,6 +1183,22 @@ namespace
 			return false;
 		if (KeepPlayerBotAliveAtWar(ch, state, dwNow))
 			return true;
+		// MT2009_PLUS_LEGENDS_V1 (retreat): a Specjalny and up does not fight to
+		// the last drop - short of health, with no red potion left and the foe
+		// fresher, it breaks off and runs, and keeps out of the fight a while.
+		if (ShouldPlayerBotLegendBreakOff(ch, foe))
+		{
+			sys_log(0, "PLAYERBOT_LEGEND: breaks off a fight pid=%u name=%s foe=%s hp=%d/%d foe_hp=%d/%d",
+					ch->GetPlayerID(), ch->GetName(), foe->GetName(), ch->GetHP(), ch->GetMaxHP(),
+					foe->GetHP(), foe->GetMaxHP());
+			if (state.persona.bFoeReason == BOT_FOE_GUILD_AID)
+				ReleasePlayerBotGuildAidDefender(ch->GetPlayerID());
+			state.persona.dwFoeVID = 0;
+			state.persona.bFoeReason = BOT_FOE_NONE;
+			state.persona.dwCapitulatedUntil = dwNow + PLAYERBOT_LEGEND_PVP_RETREAT_LOCK_MS;
+			StartPlayerBotTacticalRetreat(ch, state, foe, dwNow);
+			return false;
+		}
 		// On foot, with the horse sent away, as in a duel.
 		SendPlayerBotHorseAwayForFight(ch, state, dwNow, "anti_pk");
 		DrinkPlayerBotCraftedPotion(ch, foe, dwNow, true);

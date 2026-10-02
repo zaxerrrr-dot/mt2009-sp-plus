@@ -220,6 +220,8 @@ AI_LIVE_DEFAULTS = {"CHAT": 1, "BOOKS": 1, "NIGHT": 1, "LIFE": 0,
                      # LIFE (playerbot_life_rules.h); 0 = the key unset.
                      "LIFE_HOURS": 0, "WARS": 1, "TOWER": 1, "CATACOMB": 1, "ISHOP": 1,
                      "SHOP_M2": 0, "PERSONA": 1, "SHOUTERS": 1,
+                     # MT2009_PLUS_LEGENDS_V1: the bots' legends (playerbot_legends.h).
+                     "LEGENDS": 1,
                      # MT2009_PLUS_BOT_HAGGLE_V1: bots haggle at people's shops.
                      "HAGGLE": 1, "SCRAP": 0, "REST": 100, "KINGDOMPVP": 0, "SCROLL_FROM": 1,
                      # The three wills (playerbot_config.h): percent of what the
@@ -1508,6 +1510,84 @@ def guild_statuses():
     return result, newest
 
 
+# MT2009_PLUS_LEGENDS_V1: the bots' legends (playerbot_legends.h in the game
+# core). player.playerbot_legend holds a row a bot with its tier, reputation
+# and counters, player.playerbot_legend_event its notable moments. Both are the
+# core's and may be missing on a world whose core predates them.
+LEGEND_TIERS = {1: "Wyróżniający się", 2: "Specjalny", 3: "Chodząca Legenda", 4: "Czempion"}
+LEGEND_COLOURS = {1: "#7dd3fc", 2: "#c084fc", 3: "#f59e0b", 4: "#ef4444"}
+LEGEND_ACHIEVEMENTS = ((1, "🗡", "broń +9"), (2, "⭐", "poziom 75"), (4, "🌟", "poziom 99"),
+                       (8, "🐉", "pierwszy boss"), (16, "☠", "100 zabitych graczy"), (32, "👑", "był Czempionem"))
+
+
+def legend_label(tier, empire):
+    """The tier as the title over the bot's head says it."""
+    tier = int(tier or 0)
+    if tier == 4:
+        return "Czempion " + EMPIRES.get(int(empire or 0), {}).get("name", "Królestwa")
+    return LEGEND_TIERS.get(tier, "")
+
+
+def legend_badge(tier, empire):
+    tier = int(tier or 0)
+    if tier not in LEGEND_TIERS:
+        return None
+    return {"tier": tier, "label": legend_label(tier, empire), "colour": LEGEND_COLOURS[tier]}
+
+
+def legend_tiers(pids):
+    """{pid: badge} for the given characters that hold a tier; {} when the
+    table is missing."""
+    pids = [int(pid) for pid in pids if pid]
+    found = {}
+    try:
+        for start in range(0, len(pids), 1000):
+            chunk = pids[start:start + 1000]
+            for row in rows("SELECT pid, tier, empire FROM player.playerbot_legend WHERE tier > 0 AND pid IN ("
+                            + ",".join(["%s"] * len(chunk)) + ")", chunk):
+                found[int(row["pid"])] = legend_badge(row["tier"], row["empire"])
+    except Exception:
+        return {}
+    return found
+
+
+def legend_rows(empire=0, tier=0):
+    """(ranking, events, missing): every tiered bot, the best first, and the
+    last fifty legend events."""
+    where, args = ["l.tier > 0"], []
+    if empire in EMPIRES:
+        where.append("l.empire = %s")
+        args.append(empire)
+    if tier in LEGEND_TIERS:
+        where.append("l.tier = %s")
+        args.append(tier)
+    try:
+        ranking = rows("SELECT l.pid, l.tier, l.empire, l.reputation, l.player_kills, l.player_deaths, l.wars_won, "
+                       "l.wars_lost, l.boss_kills, l.achievements, l.champion_count, l.tier_since, "
+                       "p.name, p.level, p.job, g.name AS guild, g.id AS guild_id "
+                       "FROM player.playerbot_legend l "
+                       "LEFT JOIN player.player p ON p.id = l.pid "
+                       "LEFT JOIN player.guild_member gm ON gm.pid = l.pid "
+                       "LEFT JOIN player.guild g ON g.id = gm.guild_id "
+                       "WHERE " + " AND ".join(where) + " "
+                       "ORDER BY l.tier DESC, l.reputation DESC, p.level DESC LIMIT 2000", args)
+    except Exception:
+        return [], [], True
+    try:
+        events = rows("SELECT e.at, e.pid, e.empire, e.kind, e.text, p.name FROM player.playerbot_legend_event e "
+                      "LEFT JOIN player.player p ON p.id = e.pid ORDER BY e.id DESC LIMIT 50")
+    except Exception:
+        events = []
+    for row in ranking:
+        row["tier"] = int(row.get("tier") or 0)
+        row["empire"] = int(row.get("empire") or 0)
+        row["label"] = legend_label(row["tier"], row["empire"])
+        row["colour"] = LEGEND_COLOURS.get(row["tier"], "#cfe1fb")
+        achievements = int(row.get("achievements") or 0)
+        row["achievements_list"] = [(icon, text) for bit, icon, text in LEGEND_ACHIEVEMENTS if achievements & bit]
+    return ranking, events, False
+
+
 def player_guild_rows(query=""):
     """Gildie graczy: te, których mistrz nie gra na koncie bota
     (playerbot_NNN). Czytane z bazy, bo rdzenie raportują tylko gildie botów
@@ -2557,7 +2637,7 @@ def read_ai_weights():
             if len(fields) >= 2 and fields[0].upper() in values:
                 try:
                     key, raw_value = fields[0].upper(), fields[1]
-                    if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "ISHOP", "SHOP_M2", "PERSONA", "SHOUTERS", "HAGGLE"):
+                    if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "ISHOP", "SHOP_M2", "PERSONA", "SHOUTERS", "HAGGLE", "LEGENDS"):
                         values[key] = 0 if raw_value.lower() in ("0", "off", "no") else 1
                     elif key in ("SCRAP", "REST", "KINGDOMPVP"):
                         values[key] = max(0, min(100, int(raw_value)))
@@ -2626,6 +2706,8 @@ def write_ai_weights(values):
     content.append(f"PERSONA\t{1 if values.get('PERSONA', 1) else 0}")
     # MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages.
     content.append(f"SHOUTERS\t{1 if values.get('SHOUTERS', 1) else 0}")
+    # MT2009_PLUS_LEGENDS_V1: the bots' legends, 1 = on.
+    content.append(f"LEGENDS\t{1 if values.get('LEGENDS', 1) else 0}")
     content.append(f"HAGGLE\t{1 if values.get('HAGGLE', 1) else 0}")
     content.append(f"SCRAP\t{max(0, min(100, int(values.get('SCRAP', 0))))}")
     content.append(f"REST\t{max(0, min(100, int(values.get('REST', 100))))}")
@@ -3999,7 +4081,48 @@ def players():
         character["map_live"] = bool(state)
         if state:
             character["map_index"] = state["map_index"]
+    # MT2009_PLUS_LEGENDS_V1: a bot's tier beside its name.
+    legends = legend_tiers(character["id"] for character in roster)
+    for character in roster:
+        character["legend"] = legends.get(character["id"])
     return render_template("players.html", players=roster, query=query)
+
+
+@app.route("/legends")
+@login_required
+def legends_page():
+    """MT2009_PLUS_LEGENDS_V1: the Champions and Walking Legends of each
+    kingdom, the ranking of every tiered bot and the latest legend events."""
+    try:
+        empire = int(request.args.get("empire", 0) or 0)
+    except (TypeError, ValueError):
+        empire = 0
+    try:
+        tier = int(request.args.get("tier", 0) or 0)
+    except (TypeError, ValueError):
+        tier = 0
+    ranking, events, missing = legend_rows(empire, tier)
+    heads = ranking if (empire == 0 and tier == 0) else legend_rows()[0]
+    heads = [row for row in heads if row["tier"] >= 3]
+    return render_template("legends.html", ranking=ranking, events=events, missing=missing, heads=heads,
+                           empire=empire, tier=tier, tiers=LEGEND_TIERS, colours=LEGEND_COLOURS,
+                           enabled=bool(read_ai_weights().get("LEGENDS", 1)))
+
+
+@app.post("/legends/switch")
+@login_required
+def legends_switch():
+    """MT2009_PLUS_LEGENDS_V1: the LEGENDS key of the weights file, from the
+    ranking page - the rest of the file as it is."""
+    values = read_ai_weights()
+    values["LEGENDS"] = 1 if "1" in request.form.getlist("LEGENDS") else 0
+    try:
+        write_ai_weights(values)
+    except OSError:
+        flash("Nie udało się zapisać przełącznika Systemu Legend.", "error")
+    else:
+        flash("System Legend " + ("włączony" if values["LEGENDS"] else "wyłączony") + " — rdzeń zastosuje to do 5 sekund, bez restartu.")
+    return redirect(url_for("legends_page"))
 
 
 @app.route("/players/personalities")
@@ -5340,6 +5463,13 @@ def player(pid):
     gm_row = one("SELECT mAuthority FROM common.gmlist WHERE mName=%s LIMIT 1", (character["name"],))
     character["gm_rank"] = gm_row["mAuthority"] if gm_row else ""
     takeover_bot = takeover_account(pid) is not None
+    # MT2009_PLUS_LEGENDS_V1: the bot's tier, when it holds one.
+    try:
+        legend = one("SELECT tier, empire, reputation, player_kills FROM player.playerbot_legend WHERE pid=%s AND tier > 0", (pid,))
+    except Exception:
+        legend = {}
+    character["legend"] = dict(legend_badge(legend["tier"], legend["empire"]), reputation=legend["reputation"],
+                               player_kills=legend["player_kills"]) if legend and legend_badge(legend["tier"], legend["empire"]) else None
     return render_template("player.html", character=character, equipment=equipment, costumes=costumes, alchemy=alchemy, inventory=inventory, safebox=safebox,
                             takeover_bot=takeover_bot, takeover=takeover_status(pid) if takeover_bot else None,
                             takeover_csrf=update_csrf_token(),
@@ -8459,7 +8589,7 @@ def manage_behavior():
     values["CHAT"] = 1 if "1" in request.form.getlist("CHAT") else 0
     values["BOOKS"] = values.get("BOOKS", 1) if "BOOKS" not in request.form else (1 if "1" in request.form.getlist("BOOKS") else 0)
     for key, default in (("NIGHT", 1), ("LIFE", 0), ("WARS", 1), ("TOWER", 1), ("ISHOP", 1), ("SHOP_M2", 0), ("PERSONA", 1),
-                         ("SHOUTERS", 1), ("HAGGLE", 1)):
+                         ("SHOUTERS", 1), ("HAGGLE", 1), ("LEGENDS", 1)):
         values[key] = values.get(key, default) if key not in request.form else (1 if "1" in request.form.getlist(key) else 0)
     # MT2009_PLUS_BOTLIFE_V1: the hours of play a day under LIFE.
     try:

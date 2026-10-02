@@ -58,6 +58,12 @@ namespace
 		// The bots' war ended early (WAR_MINUTES at fifteen) - asked of the
 		// db core once, and the war is over when it answers.
 		bool bEndAsked;
+		// MT2009_PLUS_LEGENDS_V1 (wars): the two guilds' wins when the war
+		// began and the last score seen while it ran - who won, at its end.
+		int iWins1AtStart;
+		int iWins2AtStart;
+		int iLastScore1;
+		int iLastScore2;
 	};
 	// One war a kingdom at a time, a player's included: the kingdom has one
 	// battlefield.
@@ -284,6 +290,19 @@ namespace
 		std::map<BYTE, std::pair<DWORD, DWORD> >::const_iterator lastIt = s_mapPlayerBotLastWarPair.find(empire);
 		if (lastIt != s_mapPlayerBotLastWarPair.end())
 			last = lastIt->second;
+		// MT2009_PLUS_LEGENDS_V1 (wars): the two Legends of the kingdom are
+		// rivals - their guilds are its pick more often than not.
+		{
+			std::vector<CGuild*> readyGuilds;
+			for (size_t i = 0; i < ready.size(); ++i)
+				readyGuilds.push_back(ready[i].guild);
+			if (PickPlayerBotLegendRivalWarPair(readyGuilds, last, out1, out2))
+			{
+				sys_log(0, "PLAYERBOT_LEGEND: the Legends' guilds %s and %s picked for the war of empire %d",
+						out1->GetName(), out2->GetName(), (int)empire);
+				return true;
+			}
+		}
 		const bool skipLast = ready.size() >= 3;
 		const size_t start = (size_t)(PlayerBotNavHash(dwNow / 60000U ^ 0x57415250U) % ready.size());
 		bool found = false;
@@ -874,6 +893,7 @@ namespace
 		war.bStarted = false;
 		war.bPlayerWar = true;
 		war.bEndAsked = false;
+		war.iWins1AtStart = war.iWins2AtStart = war.iLastScore1 = war.iLastScore2 = 0;
 		s_mapPlayerBotGuildWars[empire] = war;
 		s_mapPlayerBotGuildLastWarAt[offer.dwTo] = stamp;
 		s_mapPlayerBotPlayerGuildLastWarAt[offer.dwFrom] = stamp;
@@ -1060,6 +1080,8 @@ namespace
 					{
 						war.bStarted = true;
 						war.dwStartedAt = dwNow;
+						war.iWins1AtStart = g1->GetGuildWarWinCount();
+						war.iWins2AtStart = g2->GetGuildWarWinCount();
 						++s_uPlayerBotGuildWarsFought;
 						char notice[200];
 						if (war.bPlayerWar)
@@ -1092,8 +1114,26 @@ namespace
 					}
 					continue;
 				}
+				if (g1->UnderWar(g2->GetID()))
+				{
+					war.iLastScore1 = g1->GetWarScoreAgainstTo(g2->GetID());
+					war.iLastScore2 = g2->GetWarScoreAgainstTo(g1->GetID());
+				}
 				if (!g1->UnderWar(g2->GetID()))
 				{
+					// MT2009_PLUS_LEGENDS_V1 (wars): the winner - a win more than
+					// at the start, else the higher last score - for the
+					// Legends' reputation and notices.
+					{
+						CGuild* winner = NULL;
+						if (g1->GetGuildWarWinCount() > war.iWins1AtStart)
+							winner = g1;
+						else if (g2->GetGuildWarWinCount() > war.iWins2AtStart)
+							winner = g2;
+						else if (war.iLastScore1 != war.iLastScore2)
+							winner = war.iLastScore1 > war.iLastScore2 ? g1 : g2;
+						NotePlayerBotLegendGuildWarOver(g1, g2, winner, war.bPlayerWar);
+					}
 					sys_log(0, "PLAYERBOT_GUILD: war over %s vs %s after %u min player=%d (wins/draws/losses %d/%d/%d and %d/%d/%d, ladder %d and %d)",
 							g1->GetName(), g2->GetName(), (unsigned int)((dwNow - war.dwStartedAt) / 60000U), (int)war.bPlayerWar,
 							g1->GetGuildWarWinCount(), g1->GetGuildWarDrawCount(), g1->GetGuildWarLossCount(),
@@ -1173,6 +1213,7 @@ namespace
 			war.bStarted = false;
 			war.bPlayerWar = false;
 			war.bEndAsked = false;
+			war.iWins1AtStart = war.iWins2AtStart = war.iLastScore1 = war.iLastScore2 = 0;
 			s_mapPlayerBotGuildWars[(BYTE)empire] = war;
 			sys_log(0, "PLAYERBOT_GUILD: war declared %s -> %s empire=%d online=%d/%d",
 					a->GetName(), b->GetName(), empire, CountPlayerBotGuildOnline(a), CountPlayerBotGuildOnline(b));
@@ -1882,6 +1923,9 @@ namespace
 							(DWORD)PLAYERBOT_GUILD_WAR_JITTER);
 			if (vid == heldVID)
 				cost -= PLAYERBOT_GUILD_WAR_KEEP_BONUS;
+			// MT2009_PLUS_LEGENDS_V1 (foe): a Specjalny and up goes for the
+			// weaker - the one already hurt, the one of fewer levels.
+			cost += GetPlayerBotLegendFoeCostAdjust(ch, foe);
 			// And whom its role goes for first (playerbot_war_rules.h).
 			cost -= playerbot_war_rules::FocusBonus(role, pattern,
 					playerbot_war_rules::KindOf(foe->GetJob(), foe->GetSkillGroup()));

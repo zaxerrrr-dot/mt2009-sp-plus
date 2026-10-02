@@ -185,6 +185,18 @@ Wukonga i Dżungli są tylko w `monster/`. Kamień Skorpiona (9696) to `monster/
   („Herbalist” w kliencie angielskim), kolor (0.45, 0.85, 0.4). Serwer wysyła go jako `PlayerBotTitle <vid> 119`
   (`PERSONA_TITLE_BASE` + `PERSONA_ZIELARZ`); starszy klient go nie zna i nic nie rysuje.
 
+## System Legend botów (`MT2009_PLUS_LEGENDS_V1`)
+
+- `root`: `playerbot_status_tail.py` – serwer wysyła `PlayerBotTitle <vid> <osobowość> <tier> <królestwo>`
+  (`ManagePlayerBotPersonalityTitle`, `playerbot_legends.h`). Bot z tierem ma w wierszu osobowości
+  (`textTail.AttachPersonality`, nad nickiem) kolorowy tytuł zamiast osobowości: „Wyróżniający się”
+  (jasnoniebieski), „Specjalny” (fioletowy), „Chodząca Legenda” (pomarańczowy), „Czempion Shinsoo/Chunjo/Jinno”
+  (złoty); w kliencie angielskim „Distinguished”, „Special”, „Walking Legend”, „Champion of …”.
+  Przełącznik „Tytuły botów” wyłącza tylko osobowości – tiery widać zawsze. Tier 0 albo starszy serwer
+  (dwa słowa) – osobowość jak dotąd.
+- `root`: `game.py` – `__PlayerBotTitle` przekazuje dwa dodatkowe słowa do `show_title`.
+- Exe bez zmian.
+
 ## Menedżer eventów w grze (`MT2009_PLUS_EVENT_MANAGER_V1`)
 
 Wspólna podstawa pod mini gry Owsapa (Złap Króla, Rumi, Yut Nori, Dzieci Kwiaty) i każdy

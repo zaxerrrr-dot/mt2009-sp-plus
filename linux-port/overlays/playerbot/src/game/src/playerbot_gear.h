@@ -1055,7 +1055,9 @@ namespace
 
 	long long GetPlayerBotEquipmentScore(LPITEM item, LPCHARACTER ch = NULL)
 	{
-		return GetPlayerBotEquipmentScoreTerms(item, ch, NULL);
+		// MT2009_PLUS_LEGENDS_V1 (gear): a Specjalny and up weighs a piece's
+		// plus and bonuses more (playerbot_legend_tier.h).
+		return AdjustPlayerBotLegendGearScore(item, ch, GetPlayerBotEquipmentScoreTerms(item, ch, NULL));
 	}
 
 	long long GetPlayerBotEquipmentScoreTerms(LPITEM item, LPCHARACTER ch, TPlayerBotScoreTerms* terms)
@@ -5125,6 +5127,10 @@ namespace
 	bool UseHealthPotion(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow,
 			int hpPercent = PLAYERBOT_POTION_HP_PERCENT)
 	{
+		// MT2009_PLUS_LEGENDS_V1 (potions): a Specjalny and up drinks sooner in
+		// a fight with a person (the tier's health, when it is higher).
+		if (GetPlayerBotLegendTierOf(ch) >= BOT_LEGEND_SPECIAL && IsPlayerBotFightingPerson(ch, state))
+			hpPercent = GetPlayerBotLegendPvpPotionPercent(ch, hpPercent);
 		if (ch->GetMaxHP() <= 0 ||
 				((long long)ch->GetHP() + ch->GetPoint(POINT_HP_RECOVERY)) * 100 >
 					(long long)ch->GetMaxHP() * hpPercent)
