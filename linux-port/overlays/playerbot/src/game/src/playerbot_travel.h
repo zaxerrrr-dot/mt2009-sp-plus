@@ -1021,6 +1021,45 @@ namespace
 				(long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_LEVEL30_BASE_PRICE);
 	}
 
+	// MT2009_PLUS_BOT_M3_WEAPON_DROP_V1: what M3's cursed animals drop of the
+	// level-30 weapons (serverfiles/mob_drop_item.m3.append.txt, the ordinary
+	// kill-drop path): the mob and the weapon family's +0 vnum.
+	struct TPlayerBotM3WeaponDrop
+	{
+		DWORD dwMob;
+		DWORD dwFamily;
+	};
+	const TPlayerBotM3WeaponDrop PLAYERBOT_M3_WEAPON_DROPS[] = {
+		{ 127, 1170 }, { 128, 2150 }, { 129, 3210 }, { 130, 5110 }, { 132, 290 },
+		{ 133, 7160 }, { 135, 1170 }, { 135, 2150 }, { 136, 3210 }, { 136, 5110 },
+	};
+	// How far over a dropper a bot may stand and still farm it: the kill-drop
+	// curve (aiPercentByDeltaLev) is at half at ten levels over the monster,
+	// and under a tenth from thirteen.
+	const int PLAYERBOT_M3_WEAPON_DROP_LEVEL_DELTA = 10;
+
+	// Whether a cursed animal of M3 can still drop this bot's class weapon at
+	// a fair chance: one of its families its build wields, from a monster no
+	// more than PLAYERBOT_M3_WEAPON_DROP_LEVEL_DELTA under the bot. "Boty
+	// 36-40 krecily sie po M3" (Charlie, prodnathin): a bot over every
+	// dropper of its weapon farmed a map that could no longer give it.
+	bool CanPlayerBotM3WeaponDropFor(LPCHARACTER ch)
+	{
+		if (!ch)
+			return false;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_M3_WEAPON_DROPS) / sizeof(PLAYERBOT_M3_WEAPON_DROPS[0]); ++i)
+		{
+			const TItemTable* proto = ITEM_MANAGER::instance().GetTable(PLAYERBOT_M3_WEAPON_DROPS[i].dwFamily);
+			if (!proto || proto->bType != ITEM_WEAPON || !IsPlayerBotWeaponSubTypeFor(ch, proto->bSubType) ||
+					!IsPlayerBotProtoForCharacter(ch, proto))
+				continue;
+			const CMob* mob = CMobManager::instance().Get(PLAYERBOT_M3_WEAPON_DROPS[i].dwMob);
+			if (mob && (int)ch->GetLevel() <= (int)mob->m_table.bLevel + PLAYERBOT_M3_WEAPON_DROP_LEVEL_DELTA)
+				return true;
+		}
+		return false;
+	}
+
 	bool ShouldPlayerBotVisitM3(LPCHARACTER ch)
 	{
 		const bool tierGrinder = IsPlayerBotM3TierGrinder(ch);
@@ -1039,6 +1078,10 @@ namespace
 		// Everything from here to the crowd is the weapon hunt's, and the
 		// tier's Grinder is not there for the weapon.
 		if (!tierGrinder && HasPlayerBotSpecialLevel30Weapon(ch, true))
+			return false;
+		// MT2009_PLUS_BOT_M3_WEAPON_DROP_V1: only for a weapon M3 can still
+		// drop for it.
+		if (!tierGrinder && !CanPlayerBotM3WeaponDropFor(ch))
 			return false;
 		// One a counter holds and the purse reaches is bought, not farmed
 		// (community patch 2, point 1): the market trip is the next town
@@ -1082,8 +1125,11 @@ namespace
 		// class-specific level-30 weapons; the rest stay in M2 for Bestials.
 		// Past thirty-five nobody is left in M2 to share the work with, so the
 		// third becomes everyone - within the share above.
+		// MT2009_PLUS_BOT_M3_WEAPON_DROP_V1: and never a bot of thirty-six and
+		// up: the hunt ends at PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL, and a
+		// bot of 36-40 on M3 is there for nothing (it buys the weapon instead).
 		if (ch->GetLevel() > 35)
-			return true;
+			return ch->GetLevel() <= PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL;
 		return (PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d335850U) % 3U) == 0;
 	}
 
@@ -2615,9 +2661,15 @@ namespace
 			// for the ones it will sell (see IsPlayerBotM3DropperOnFarm).
 			const bool weaponFound = !IsPlayerBotM3DropperOnFarm(ch) && !tierGrinder &&
 					HasPlayerBotSpecialLevel30Weapon(ch, true);
+			// MT2009_PLUS_BOT_M3_WEAPON_DROP_V1: a weapon hunter that has outgrown
+			// every dropper of its weapon, or a bot of thirty-six and up with no
+			// work of M3's own, goes back to its maps at once - the visit's clock
+			// kept a bot of 36-40 circling M3 for twenty minutes.
+			const bool nothingToDrop = !IsPlayerBotM3DropperOnFarm(ch) && !tierGrinder && !weaponFound &&
+					(!CanPlayerBotM3WeaponDropFor(ch) || ch->GetLevel() > PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL);
 			if (!visitExpired && !state.bVisitingShop &&
 					!needsCriticalTownServices && !needsM1OnlyServices &&
-					!scheduledRemoteRefine && !weaponFound)
+					!scheduledRemoteRefine && !weaponFound && !nothingToDrop)
 				return false;
 
 			// The walk does not own the goal - see the desert crossing above. This
@@ -2636,6 +2688,8 @@ namespace
 			}
 			else if (visitExpired)
 				reason = "m3_visit_complete";
+			else if (nothingToDrop)
+				reason = "m3_no_weapon_to_drop";
 			// A visit that ran out without the weapon closes the door for a
 			// while, so the M2 branch gives the valley, the horse and the river
 			// their turn instead of sending the bot straight back here.
