@@ -163,6 +163,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_combat_value_policy.h"
 #include "playerbot_battle_horse.h"
 #include "playerbot_gear.h"
+#include "playerbot_shaman_buff_set.h" // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: a Shaman's INT set for its buffs
 // The Stalki - the level-66 armours and the level-75 weapons - as the bots
 // keep and buy them: after the gear, whose candidate test and score it asks.
 #include "playerbot_stalki.h"

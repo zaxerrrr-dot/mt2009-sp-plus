@@ -117,6 +117,19 @@ namespace {
         }
     }
 
+    // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: a piece for a Shaman's INT set
+    // (playerbot_shaman_buff_set.h) out of its small share - a twentieth of
+    // what the bot can spend - and a person's line no dearer than the bots'
+    // cap on a person's price.
+    bool IsPlayerBotBuffSetOffer(LPCHARACTER ch, LPITEM item, long long price, DWORD sellerPID) {
+        if (!ch || !item || price <= 0 || !WantsPlayerBotBuffSetPiece(ch, item)) return false;
+        const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
+        if (price > spare * PLAYERBOT_BUFF_SET_BUDGET_PERCENT / 100) return false;
+        if (IsPlayerBotPriceSlipOffer(item, price)) return false;
+        return sellerPID == 0 || CPlayerBotManager::instance().IsRegisteredBotPID(sellerPID) ||
+                IsPlayerBotPersonPriceFair(ch, item, price);
+    }
+
     // The buyer's pick, taken to its stand and bought: the walk, the keeper's
     // edit mode waited out, the line asked again on arrival, and the request
     // to the db core, which delivers. True while it has the tick; false once
@@ -161,8 +174,10 @@ namespace {
         if (shop->IsEditMode()) return true;
         auto price = line->GetPrice().GetTotalYangAmount();
         auto finalPreview = BotOfflinePreview(*line);
-        const bool wanted = finalPreview && WantsPlayerBotStallItem(ch, finalPreview);
-        const bool payable = wanted && CanPlayerBotPayForOffer(ch, finalPreview, price, shop->GetOwnerPID());
+        // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: or a piece for the Shaman's INT set.
+        const bool setPiece = finalPreview && IsPlayerBotBuffSetOffer(ch, finalPreview, price, shop->GetOwnerPID());
+        const bool wanted = finalPreview && (setPiece || WantsPlayerBotStallItem(ch, finalPreview));
+        const bool payable = wanted && (setPiece || CanPlayerBotPayForOffer(ch, finalPreview, price, shop->GetOwnerPID()));
         const bool stillWanted = payable && ch->GetEmptyInventory(finalPreview->GetSize()) >= 0;
         if (finalPreview) M2_DELETE(finalPreview);
         if (!stillWanted) {
@@ -218,6 +233,12 @@ namespace {
     bool FindPlayerBotStalkiPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotBookPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotOutdatedGearPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
+    bool FindPlayerBotBuffSetPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
+    // MT2009_PLUS_BOT_HAGGLE_V1: defined in playerbot_haggle.h, after the
+    // whisper and the item link.
+    bool TryStartPlayerBotHaggle(LPCHARACTER ch, TPlayerBotAIState& state,
+            const std::vector<std::pair<int, NativeShop> >& shops, DWORD now);
+    bool WatchPlayerBotHaggle(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
 
     bool ManagePlayerBotOfflineShopping(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
         using namespace playerbot_offline;
@@ -326,6 +347,13 @@ namespace {
             if (FindPlayerBotOutdatedGearPick(ch, state, budget, now)) {
                 sys_log(0, "PLAYERBOT_MARKET: goes for a piece over outdated gear pid=%u name=%s owner=%u item=%u level=%d",
                     ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (int)ch->GetLevel());
+                return RunPlayerBotOfflinePick(ch, state, now);
+            }
+            // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: a Shaman looks on every stand
+            // of the map for a piece that betters its INT set.
+            if (FindPlayerBotBuffSetPick(ch, state, now)) {
+                sys_log(0, "PLAYERBOT_BUFFSET: goes for a piece pid=%u name=%s owner=%u item=%u gold=%lld",
+                    ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (long long)ch->GetGold());
                 return RunPlayerBotOfflinePick(ch, state, now);
             }
             // And a bot in the market for a Stalki (playerbot_stalki.h) looks on
@@ -843,6 +871,64 @@ namespace {
                 bestOwner = shop->GetOwnerPID();
                 bestItem = id;
                 bestRank = rank;
+                bestPrice = price;
+            }
+        }
+        if (!bestOwner) return false;
+        auto& o = state.offlineShop;
+        o.buyOwner = bestOwner;
+        o.buyItem = bestItem;
+        o.buyUntil = now + PLAYERBOT_MARKET_FAR_PICK_WALK_MS;
+        o.farBuy = false;
+        ClaimPlayerBotLineUntil(bestItem, ch->GetPlayerID(), now, o.buyUntil);
+        return true;
+    }
+
+    // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: the stand line that betters a
+    // Shaman's INT set most for its price, on every stand of the bot's map -
+    // looked for once in PLAYERBOT_BUFF_SET_MARKET_LOOK_MS a bot, and only a
+    // line of the set's kinds is built into an item.
+    const DWORD PLAYERBOT_BUFF_SET_MARKET_LOOK_MS = 15 * 60 * 1000;
+    std::map<DWORD, DWORD> s_mapPlayerBotBuffSetNextLook;
+
+    bool FindPlayerBotBuffSetPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
+        using namespace playerbot_offline;
+        if (!ch || ch->GetJob() != JOB_SHAMAN || ch->GetLevel() < 30 || IsPlayerBotSidekickPID(ch->GetPlayerID()))
+            return false;
+        DWORD& next = s_mapPlayerBotBuffSetNextLook[ch->GetPlayerID()];
+        if (next != 0 && !Due(now, next)) return false;
+        next = now + PLAYERBOT_BUFF_SET_MARKET_LOOK_MS;
+        const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
+                ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
+        DWORD bestOwner = 0, bestItem = 0;
+        long bestIq = 0;
+        long long bestPrice = 0;
+        for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
+            if (!shop || pid == ch->GetPlayerID() || shop->GetDuration() == 0 || shop->IsEditMode()) continue;
+            const auto spawn = shop->GetSpawn();
+            if (spawn.map != ch->GetMapIndex() || (int)spawn.channel != shopChannel) continue;
+            for (const auto& [id, line] : shop->GetItems()) {
+                const TItemTable* table = line ? line->GetTable() : NULL;
+                if (!table || line->GetInfo().count != 1 || IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
+                    continue;
+                const bool kind = table->bType == ITEM_WEAPON ||
+                        (table->bType == ITEM_ARMOR && (table->bSubType == ARMOR_SHIELD ||
+                         table->bSubType == ARMOR_EAR || table->bSubType == ARMOR_NECK));
+                if (!kind || GetPlayerBotProtoLevelLimit(table) > (int)ch->GetLevel()) continue;
+                const long long price = (long long)line->GetPrice().GetTotalYangAmount();
+                if (price <= 0) continue;
+                LPITEM preview = BotOfflinePreview(*line);
+                if (!preview) continue;
+                const long iq = SumPlayerBotItemLines(preview, APPLY_INT);
+                const bool buyable = iq >= bestIq &&
+                        IsPlayerBotBuffSetOffer(ch, preview, price, shop->GetOwnerPID()) &&
+                        ch->GetEmptyInventory(preview->GetSize()) >= 0;
+                M2_DELETE(preview);
+                if (!buyable) continue;
+                if (iq < bestIq || (iq == bestIq && bestOwner && price >= bestPrice)) continue;
+                bestOwner = shop->GetOwnerPID();
+                bestItem = id;
+                bestIq = iq;
                 bestPrice = price;
             }
         }
