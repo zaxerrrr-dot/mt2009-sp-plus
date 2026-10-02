@@ -831,7 +831,9 @@ namespace
 			return false;
 		const DWORD race = candidate->GetRaceNum();
 		return (IsPlayerBotOnBattleHorseTrial(ch) && IsPlayerBotBattleHorseTrialMob(race)) ||
-				(IsPlayerBotOnMilitaryHorseTrial(ch) && IsPlayerBotMilitaryHorseTrialMob(race));
+				(IsPlayerBotOnMilitaryHorseTrial(ch) && IsPlayerBotMilitaryHorseTrialMob(race)) ||
+				// MT2009_PLUS_HORSE30_V1: the Black Steed trial's Setaou Archers.
+				(IsPlayerBotOnBlackSteedTrial(ch) && IsPlayerBotBlackSteedTrialMob(race));
 	}
 
 	// The monster this bot's own errands want it to kill, if any. One

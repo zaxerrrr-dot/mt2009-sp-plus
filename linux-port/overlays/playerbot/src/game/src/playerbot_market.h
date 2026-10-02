@@ -302,8 +302,10 @@ namespace
 
 		// A horse medal, if this bot still has a horse to raise. Buying one is
 		// hours of the Monkey Dungeon it does not have to run.
+		// MT2009_PLUS_HORSE30_V1: while the next paid training lacks medals
+		// (playerbot_horse30.h).
 		if (offer->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM)
-			return CanPlayerBotAdvanceHorse(ch) || PlayerBotSaddlebagWantsMedal(ch);
+			return PlayerBotHorseWantsMedal(ch) || PlayerBotSaddlebagWantsMedal(ch);
 
 		// A Forgetting Scroll, while a skill stands at seventeen unmastered.
 		if (offer->GetVnum() == PLAYERBOT_SKILL_FORGET_SCROLL_VNUM)
@@ -471,8 +473,8 @@ namespace
 		// materials, because half of what a bot needs is.
 		if (PlayerBotNeedsAnyRefineMaterial(ch))
 			return true;
-		// A horse medal, while there is still a horse to raise.
-		if (CanPlayerBotAdvanceHorse(ch))
+		// A horse medal, while the next training lacks one (MT2009_PLUS_HORSE30_V1).
+		if (PlayerBotHorseWantsMedal(ch))
 			return true;
 		// Sashes for the one it builds, and the piece to fill it (playerbot_sash.h).
 		if (PlayerBotWantsSashFromMarket(ch) || PlayerBotWantsSashPieceFromMarket(ch))

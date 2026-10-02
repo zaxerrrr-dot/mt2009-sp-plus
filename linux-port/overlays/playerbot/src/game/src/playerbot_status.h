@@ -791,10 +791,16 @@ namespace
 				else if (IsPlayerBotBattleHorseEarned(ch))
 					snprintf(status, statusSize, bFar ? PBT(en, "%sIde do Stajennego po konia bojowego", "%sGoing to the Stable Boy for a battle horse")
 							: PBT(en, "%sOdbieram konia bojowego u Stajennego", "%sCollecting a battle horse from the Stable Boy"), prefix);
+				// MT2009_PLUS_HORSE30_V1: the trials to collect and the paid
+				// training (playerbot_horse30.h), to thirty.
+				else if (IsPlayerBotMilitaryHorseEarned(ch) || IsPlayerBotBlackSteedEarned(ch))
+					snprintf(status, statusSize, bFar ? PBT(en, "%sIde do Stajennego po nagrode za probe konia", "%sGoing to the Stable Boy for a horse trial's reward")
+							: PBT(en, "%sOdbieram nagrode za probe konia (%u/30)", "%sCollecting a horse trial's reward (%u/30)"), prefix,
+							(unsigned int)ch->GetHorseLevel());
 				else if (bFar)
-					snprintf(status, statusSize, PBT(en, "%sIde do Stajennego z medalem", "%sTaking a medal to the Stable Boy"), prefix);
+					snprintf(status, statusSize, PBT(en, "%sIde do Stajennego na szkolenie konia", "%sGoing to the Stable Boy to train the horse"), prefix);
 				else
-					snprintf(status, statusSize, PBT(en, "%sOddaje medal konny (%u/21)", "%sHanding in a horse medal (%u/21)"), prefix,
+					snprintf(status, statusSize, PBT(en, "%sSzkole konia u Stajennego (%u/30)", "%sTraining the horse at the Stable Boy (%u/30)"), prefix,
 							(unsigned int)ch->GetHorseLevel());
 				break;
 			}
@@ -874,6 +880,10 @@ namespace
 				else if (IsPlayerBotOnBattleHorseTrial(ch))
 					snprintf(status, statusSize, PBT(en, "%sZdobywam konia bojowego na pustyni (%d/%d)", "%sEarning a battle horse in the desert (%d/%d)"), prefix,
 							GetPlayerBotBattleHorseKills(ch), PLAYERBOT_BATTLE_HORSE_KILLS);
+				// MT2009_PLUS_HORSE30_V1: the Black Steed trial in the Grotto V2.
+				else if (IsPlayerBotOnBlackSteedTrial(ch) && ch->GetMapIndex() == PLAYERBOT_MAP_GROTTO_V2)
+					snprintf(status, statusSize, PBT(en, "%sProba Czarnego Rumaka w Grocie (%d/%d)", "%sThe Black Steed trial in the Grotto (%d/%d)"), prefix,
+							GetPlayerBotBlackSteedKills(ch), PLAYERBOT_BLACK_STEED_KILLS);
 				// M3 is the level-30 weapon's farm, whatever the planner's goal:
 				// a bot walking between its hubs read "Zbieram dla Biologa: Zab
 				// Orka" there, and the Orc Tooth is not on the guild map
@@ -888,9 +898,9 @@ namespace
 				// level thirty-five, a medal dropper carries them for its
 				// counter, and both used to announce the stable keeper on every
 				// leg they rode - "idzie do stajennego przez godzine".
-				else if (ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) > 0 &&
-						CanPlayerBotAdvanceHorse(ch))
-					snprintf(status, statusSize, PBT(en, "%sIde do najblizszego Stajennego z Medalem", "%sTaking a Medal to the nearest Stable Boy"), prefix);
+				// MT2009_PLUS_HORSE30_V1: a training paid in full or a trial's reward.
+				else if (PlayerBotHasStableBusiness(ch))
+					snprintf(status, statusSize, PBT(en, "%sIde do najblizszego Stajennego szkolic konia", "%sGoing to the nearest Stable Boy to train the horse"), prefix);
 				else if (IsPlayerBotMonkeyMap(ch->GetMapIndex()))
 				{
 					// Only when the bot has actually decided to go. This was a

@@ -390,7 +390,7 @@ namespace playerbot_bpbots
 				IsPlayerBotOnMercContract(pid) || IsPlayerBotInDungeonBusiness(ch, state) ||
 				state.bWorldEventKind != 0 || state.wBossRaidRace != 0 || state.bFishingSession ||
 				state.bRecoveringAfterDeath || state.bTacticalRetreat || ch->GetMyShop() ||
-				IsPlayerBotOnBattleHorseTrial(ch) || IsPlayerBotOnMilitaryHorseTrial(ch) ||
+				IsPlayerBotOnAnyHorseTrial(ch) /* MT2009_PLUS_HORSE30_V1 */ ||
 				!(IsPlayerBotVillageMap(ch->GetMapIndex()) || IsPlayerBotFrontierMap(ch->GetMapIndex()));
 	}
 

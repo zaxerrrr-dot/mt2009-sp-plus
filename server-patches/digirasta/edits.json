@@ -1,0 +1,80 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (declare)",
+  "old": "#include \"PetSystem.h\"\n",
+  "new": "#include \"PetSystem.h\"\n// MT2009_PLUS_AWAKENING_V1 (declare): Digi Rasta's Ritual of Awakening and soul stones +5..+9\n// (MT2009_PLUS_SOULSTONE9_V1), defined in playerbot_awakening.h (server-patches/digirasta).\nDWORD AwakeningSpecialRefineResult(DWORD dwVnum);\nDWORD AwakeningSpecialRefineSet(DWORD dwVnum);\nbool AwakeningIsAwakenedWeapon(DWORD dwVnum);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (do refine)",
+  "old": "\tconst TRefineTable * prt = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());\n\n\tif (!prt)\n\t\treturn false;\n\n\tDWORD result_vnum = item->GetRefinedVnum();\n\tint cost = ComputeRefineFee(prt->cost);\n",
+  "new": "\t// MT2009_PLUS_AWAKENING_V1 (do refine): the refines item_proto does not carry - a weapon\n\t// 75 +9 into its awakened weapon +0 (the Ritual of Awakening, recipe 7110) and a\n\t// soul stone +4..+8 one grade up (MT2009_PLUS_SOULSTONE9_V1, recipes 7204-7208) - at a\n\t// plain smith only; neither they nor an awakened weapon at a guild smith or in\n\t// the Demon Tower (its fee multiplier would overflow at these prices).\n\tconst DWORD dwAwakeningResult = (!bMoneyOnly && refineType == REFINE_TYPE_NORMAL) ? AwakeningSpecialRefineResult(item->GetVnum()) : 0;\n\tif ((dwAwakeningResult || AwakeningIsAwakenedWeapon(item->GetVnum())) && (bMoneyOnly || IsRefineThroughGuild()))\n\t\treturn false;\n\tconst TRefineTable * prt = CRefineManager::instance().GetRefineRecipe(dwAwakeningResult ? AwakeningSpecialRefineSet(item->GetVnum()) : item->GetRefineSet());\n\n\tif (!prt)\n\t\treturn false;\n\n\tDWORD result_vnum = dwAwakeningResult ? dwAwakeningResult : item->GetRefinedVnum();\n\tint cost = ComputeRefineFee(prt->cost);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (do refine proto)",
+  "old": "\tTItemTable * pProto = ITEM_MANAGER::instance().GetTable(item->GetRefinedVnum());\n\n\tif (!pProto)\n\t{\n\t\tsys_err(\"DoRefine NOT GET ITEM PROTO %d\", item->GetRefinedVnum());\n",
+  "new": "\t// MT2009_PLUS_AWAKENING_V1 (do refine proto): the result's proto, not the refined vnum's\n\t// (0 for the ritual and the soul stones).\n\tTItemTable * pProto = ITEM_MANAGER::instance().GetTable(result_vnum);\n\n\tif (!pProto)\n\t{\n\t\tsys_err(\"DoRefine NOT GET ITEM PROTO %u\", result_vnum);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (do refine no burn)",
+  "old": "\t// MT2009_PLUS_BATTLE_PASS_V1 (refine try): every refine attempt at a\n",
+  "new": "\t// MT2009_PLUS_AWAKENING_V1 (do refine no burn): an awakened weapon is neither destroyed\n\t// nor lowered by a failed refine - it stays as it was (Digi Rasta).\n\tif (AwakeningIsAwakenedWeapon(item->GetVnum()))\n\t{\n\t\tbIsDestroyOnFail = false;\n\t\tresult_fail_vnum = item->GetVnum();\n\t}\n\n\t// MT2009_PLUS_BATTLE_PASS_V1 (refine try): every refine attempt at a\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (sockets)",
+  "old": "\t\t\t// DETAIL_REFINE_LOG\n\t\t\tNotifyRefineSuccess(this, item, IsRefineThroughGuild() ? \"GUILD\"",
+  "new": "\t\t\t// MT2009_PLUS_AWAKENING_V1 (sockets): an awakened weapon has its three sockets,\n\t\t\t// whatever the weapon it came from had.\n\t\t\tif (AwakeningIsAwakenedWeapon(pkNewItem->GetVnum()))\n\t\t\t\tfor (int iAwakeningSocket = 0; iAwakeningSocket < 3; ++iAwakeningSocket)\n\t\t\t\t\tif (pkNewItem->GetSocket(iAwakeningSocket) == 0)\n\t\t\t\t\t\tpkNewItem->SetSocket(iAwakeningSocket, 1);\n\n\t\t\t// DETAIL_REFINE_LOG\n\t\t\tNotifyRefineSuccess(this, item, IsRefineThroughGuild() ? \"GUILD\""
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (scroll no burn)",
+  "old": "\tsuccess_prob += pkItemScroll->GetValue(1);\n",
+  "new": "\t// MT2009_PLUS_AWAKENING_V1 (scroll no burn): nor with a scroll.\n\tif (AwakeningIsAwakenedWeapon(item->GetVnum()))\n\t{\n\t\tbDestroyWhenFail = false;\n\t\tbLevelReductionOnFail = false;\n\t}\n\n\tsuccess_prob += pkItemScroll->GetValue(1);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (refine info)",
+  "old": "\tp.result_vnum = item->GetRefinedVnum();\n\tp.type = bType;\n",
+  "new": "\tp.result_vnum = item->GetRefinedVnum();\n\tp.type = bType;\n\n\t// MT2009_PLUS_AWAKENING_V1 (refine info): the ritual and a soul stone's step show as a refine\n\t// to their result - at a plain smith's normal window only.\n\tconst DWORD dwAwakeningResult = AwakeningSpecialRefineResult(item->GetVnum());\n\tif (dwAwakeningResult || AwakeningIsAwakenedWeapon(item->GetVnum()))\n\t{\n\t\tif (IsRefineThroughGuild() || bType == REFINE_TYPE_MONEY_ONLY || (dwAwakeningResult && bType != REFINE_TYPE_NORMAL))\n\t\t{\n\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This item cannot be advanced this way.\"));\n\t\t\treturn false;\n\t\t}\n\t\tif (dwAwakeningResult)\n\t\t\tp.result_vnum = dwAwakeningResult;\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (refine info recipe)",
+  "old": "\tconst TRefineTable* prt = rm.GetRefineRecipe(item->GetRefineSet());\n",
+  "new": "\tconst TRefineTable* prt = rm.GetRefineRecipe(dwAwakeningResult ? AwakeningSpecialRefineSet(item->GetVnum()) : item->GetRefineSet()); // MT2009_PLUS_AWAKENING_V1 (refine info recipe)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (smith takes)",
+  "old": "\t\tcase BLACKSMITH_MOB:\n\t\t\tif (item->GetRefinedVnum() && !IsEliteRefine(item->GetRefineSet()))\n",
+  "new": "\t\tcase BLACKSMITH_MOB:\n\t\t\tif ((item->GetRefinedVnum() || AwakeningSpecialRefineResult(item->GetVnum())) && !IsEliteRefine(item->GetRefineSet())) // MT2009_PLUS_AWAKENING_V1 (smith takes)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (smith window)",
+  "old": "\t\t\tif (item->GetRefinedVnum())\n\t\t\t{\n\t\t\t\tfrom->SetRefineNPC(this);\n\t\t\t\tfrom->RefineInformation(item->GetCell(), REFINE_TYPE_NORMAL);\n",
+  "new": "\t\t\tif (item->GetRefinedVnum() || AwakeningSpecialRefineResult(item->GetVnum())) // MT2009_PLUS_AWAKENING_V1 (smith window)\n\t\t\t{\n\t\t\t\tfrom->SetRefineNPC(this);\n\t\t\t\tfrom->RefineInformation(item->GetCell(), REFINE_TYPE_NORMAL);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SOULSTONE9_V1 (cracked)",
+  "old": "\t\t\t\t\tif ((dwVnum = item2->GetSocket(i)) <= 2)\n\t\t\t\t\t\tcontinue;\n",
+  "new": "\t\t\t\t\t// MT2009_PLUS_SOULSTONE9_V1 (cracked): a cracked stone stays in its socket but is\n\t\t\t\t\t// no kind - it never blocks a stone of the kind 0 it shares.\n\t\t\t\t\tif ((dwVnum = item2->GetSocket(i)) <= 2 || dwVnum == ITEM_BROKEN_METIN_VNUM)\n\t\t\t\t\t\tcontinue;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_AWAKENING_V1 (boss drop)",
+  "old": "\tif (ITEM_MANAGER::instance().CreateDropItem(this, pkAttacker, s_vec_item))\n",
+  "new": "\t// MT2009_PLUS_AWAKENING_V1 (boss drop): Kamien Przebudzenia from the bosses of Digi Rasta's\n\t// table (playerbot_awakening.h), beside the mob's own drop.\n\tbool AwakeningCreateBossDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& vec_item);\n\tconst bool bAwakeningDrop = AwakeningCreateBossDrop(this, pkAttacker, s_vec_item);\n\tif (ITEM_MANAGER::instance().CreateDropItem(this, pkAttacker, s_vec_item) || bAwakeningDrop)\n"
+ },
+ {
+  "file": "char_horse.cpp",
+  "marker": "MT2009_PLUS_HORSE30_V1 (black steed)",
+  "old": "\treturn c_aHorseStat[GetHorseLevel()].iNPCRace + delta;\n",
+  "new": "\t// MT2009_PLUS_HORSE30_V1 (black steed): the horse of level 30 is the Black Steed (race\n\t// 20119, quest konie - Digi Rasta's horse to level 30), without a guild's tint.\n\tif (GetHorseLevel() >= 30)\n\t\treturn 20119;\n\treturn c_aHorseStat[GetHorseLevel()].iNPCRace + delta;\n"
+ }
+]

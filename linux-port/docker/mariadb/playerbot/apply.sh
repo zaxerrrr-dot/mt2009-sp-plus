@@ -2220,3 +2220,142 @@ INSERT INTO world.mt2009_plus_once (name) VALUES ('rare_6_7_v2');"; then
         echo "[playerbot-migrate] WARNING: could not write the 6th/7th bonus pool" >&2
     fi
 fi
+
+# ---------------------------------------------------------------------------
+# Digi Rasta's systems (nowy-system v0.16, "Autor: Digi Rasta"), ported as our
+# own: server-patches/digirasta (engine), playerbot_awakening.h (bots),
+# client-patches/client-2.0.30/tools/digirasta (client rows - the same numbers).
+#
+# MT2009_PLUS_AWAKENING_V1: the Ritual of Awakening. A weapon 75 +9 and
+# Kamien Przebudzenia (30670) at the plain Blacksmith make the awakened weapon
+# +0 (recipe 7110: the stone and 200 000 000 yang, 100%); the awakened weapons
+# refine +0..+9 by the owner's recipes 7100-7108 (2 October: Zdobycz Dzikusa;
+# Shuriken + Serce Wojownika; 3 pearls of each colour in turn; 3 of all three;
+# Smocza Luska + Smoczy Szpon 1/8/15 - yang and chance as in the package),
+# and a failed step never destroys nor lowers one. The seven families +0..+9
+# exactly as his 10_przebudzenie.sql: levels 90..105, attack speed of the base
+# weapon, strong against people -15..-50% (no PvP weapon), against monsters
+# +2..+15%, no average/skill addon (addon_type 0), three sockets; +0 is 98% of
+# what the base weapon had at +9. The rows are rewritten on every start (a hand
+# edit does not survive), like his file; the db core reads them at boot.
+# Idempotent.
+# ---------------------------------------------------------------------------
+db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES (30670, 'Awakening Stone', _cp1250 X'4B616D6965F12050727A656275647A656E6961', 5, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);
+UPDATE world.item_proto SET flag = flag | 4, stack = 200 WHERE vnum = 30670;
+INSERT INTO world.refine_proto (id, vnum0, count0, vnum1, count1, vnum2, count2, vnum3, count3, vnum4, count4, cost, src_vnum, result_vnum, prob) VALUES
+(7100, 30092, 2, 0, 0, 0, 0, 0, 0, 0, 0, 5000000, 0, 0, 90),
+(7101, 30041, 2, 30358, 1, 0, 0, 0, 0, 0, 0, 8000000, 0, 0, 85),
+(7102, 27992, 3, 0, 0, 0, 0, 0, 0, 0, 0, 12000000, 0, 0, 80),
+(7103, 27993, 3, 0, 0, 0, 0, 0, 0, 0, 0, 16000000, 0, 0, 75),
+(7104, 27994, 3, 0, 0, 0, 0, 0, 0, 0, 0, 22000000, 0, 0, 70),
+(7105, 27992, 3, 27993, 3, 27994, 3, 0, 0, 0, 0, 30000000, 0, 0, 60),
+(7106, 71123, 1, 71129, 1, 0, 0, 0, 0, 0, 0, 50000000, 0, 0, 50),
+(7107, 71123, 8, 71129, 8, 0, 0, 0, 0, 0, 0, 100000000, 0, 0, 40),
+(7108, 71123, 15, 71129, 15, 0, 0, 0, 0, 0, 0, 200000000, 0, 0, 30),
+(7110, 30670, 1, 0, 0, 0, 0, 0, 0, 0, 0, 200000000, 0, 0, 100)
+ON DUPLICATE KEY UPDATE vnum0 = VALUES(vnum0), count0 = VALUES(count0), vnum1 = VALUES(vnum1), count1 = VALUES(count1), vnum2 = VALUES(vnum2), count2 = VALUES(count2), vnum3 = VALUES(vnum3), count3 = VALUES(count3), vnum4 = VALUES(vnum4), count4 = VALUES(count4), cost = VALUES(cost), src_vnum = VALUES(src_vnum), result_vnum = VALUES(result_vnum), prob = VALUES(prob);
+UPDATE world.item_proto SET type = 1, subtype = 0, antiflag = 32, flag = 1, wearflag = 16, gold = 12474000, shop_buy_price = 12474000,
+    refined_vnum = IF(vnum < 219, vnum + 1, 0), refine_set = IF(vnum < 219, 7100 + vnum - 210, 0),
+    magic_pct = 0, specular = ELT(vnum - 209, 0, 0, 0, 0, 30, 40, 50, 65, 80, 100), socket_pct = 3, addon_type = 0,
+    limittype0 = 1, limitvalue0 = ELT(vnum - 209, 90, 92, 93, 95, 97, 98, 100, 102, 103, 105), limittype1 = 0, limitvalue1 = 0,
+    applytype0 = 17, applyvalue0 = 26, applytype1 = 43, applyvalue1 = ELT(vnum - 209, -15, -19, -23, -27, -31, -35, -39, -43, -47, -50),
+    applytype2 = 53, applyvalue2 = ELT(vnum - 209, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15),
+    value0 = 0, value1 = 0, value2 = 0, value3 = 232, value4 = 271,
+    value5 = ROUND(181 * ELT(vnum - 209, 0, 0.04, 0.056, 0.088, 0.132, 0.2, 0.296, 0.444, 0.668, 1))
+WHERE vnum BETWEEN 210 AND 219;
+UPDATE world.item_proto SET type = 1, subtype = 0, antiflag = 44, flag = 1, wearflag = 16, gold = 12474000, shop_buy_price = 12474000,
+    refined_vnum = IF(vnum < 229, vnum + 1, 0), refine_set = IF(vnum < 229, 7100 + vnum - 220, 0),
+    magic_pct = 0, specular = ELT(vnum - 219, 0, 0, 0, 0, 30, 40, 50, 65, 80, 100), socket_pct = 3, addon_type = 0,
+    limittype0 = 1, limitvalue0 = ELT(vnum - 219, 90, 92, 93, 95, 97, 98, 100, 102, 103, 105), limittype1 = 0, limitvalue1 = 0,
+    applytype0 = 17, applyvalue0 = 26, applytype1 = 43, applyvalue1 = ELT(vnum - 219, -15, -19, -23, -27, -31, -35, -39, -43, -47, -50),
+    applytype2 = 53, applyvalue2 = ELT(vnum - 219, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15),
+    value0 = 0, value1 = 160, value2 = 205, value3 = 221, value4 = 246,
+    value5 = ROUND(192 * ELT(vnum - 219, 0, 0.04, 0.056, 0.088, 0.132, 0.2, 0.296, 0.444, 0.668, 1))
+WHERE vnum BETWEEN 220 AND 229;
+UPDATE world.item_proto SET type = 1, subtype = 1, antiflag = 52, flag = 1, wearflag = 16, gold = 12474000, shop_buy_price = 12474000,
+    refined_vnum = IF(vnum < 1169, vnum + 1, 0), refine_set = IF(vnum < 1169, 7100 + vnum - 1160, 0),
+    magic_pct = 0, specular = ELT(vnum - 1159, 0, 0, 0, 0, 30, 40, 50, 65, 80, 100), socket_pct = 3, addon_type = 0,
+    limittype0 = 1, limitvalue0 = ELT(vnum - 1159, 90, 92, 93, 95, 97, 98, 100, 102, 103, 105), limittype1 = 0, limitvalue1 = 0,
+    applytype0 = 17, applyvalue0 = 26, applytype1 = 43, applyvalue1 = ELT(vnum - 1159, -15, -19, -23, -27, -31, -35, -39, -43, -47, -50),
+    applytype2 = 53, applyvalue2 = ELT(vnum - 1159, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15),
+    value0 = 0, value1 = 0, value2 = 0, value3 = 216, value4 = 224,
+    value5 = ROUND(264 * ELT(vnum - 1159, 0, 0.04, 0.056, 0.088, 0.132, 0.2, 0.296, 0.444, 0.668, 1))
+WHERE vnum BETWEEN 1160 AND 1169;
+UPDATE world.item_proto SET type = 1, subtype = 2, antiflag = 52, flag = 1, wearflag = 16, gold = 12474000, shop_buy_price = 12474000,
+    refined_vnum = IF(vnum < 2199, vnum + 1, 0), refine_set = IF(vnum < 2199, 7100 + vnum - 2190, 0),
+    magic_pct = 0, specular = ELT(vnum - 2189, 0, 0, 0, 0, 30, 40, 50, 65, 80, 100), socket_pct = 3, addon_type = 0,
+    limittype0 = 1, limitvalue0 = ELT(vnum - 2189, 90, 92, 93, 95, 97, 98, 100, 102, 103, 105), limittype1 = 0, limitvalue1 = 0,
+    applytype0 = 17, applyvalue0 = 26, applytype1 = 43, applyvalue1 = ELT(vnum - 2189, -15, -19, -23, -27, -31, -35, -39, -43, -47, -50),
+    applytype2 = 53, applyvalue2 = ELT(vnum - 2189, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15),
+    value0 = 0, value1 = 0, value2 = 0, value3 = 274, value4 = 372,
+    value5 = ROUND(322 * ELT(vnum - 2189, 0, 0.04, 0.056, 0.088, 0.132, 0.2, 0.296, 0.444, 0.668, 1))
+WHERE vnum BETWEEN 2190 AND 2199;
+UPDATE world.item_proto SET type = 1, subtype = 3, antiflag = 56, flag = 1, wearflag = 16, gold = 12474000, shop_buy_price = 12474000,
+    refined_vnum = IF(vnum < 3179, vnum + 1, 0), refine_set = IF(vnum < 3179, 7100 + vnum - 3170, 0),
+    magic_pct = 0, specular = ELT(vnum - 3169, 0, 0, 0, 0, 30, 40, 50, 65, 80, 100), socket_pct = 3, addon_type = 0,
+    limittype0 = 1, limitvalue0 = ELT(vnum - 3169, 90, 92, 93, 95, 97, 98, 100, 102, 103, 105), limittype1 = 0, limitvalue1 = 0,
+    applytype0 = 17, applyvalue0 = 30, applytype1 = 43, applyvalue1 = ELT(vnum - 3169, -15, -19, -23, -27, -31, -35, -39, -43, -47, -50),
+    applytype2 = 53, applyvalue2 = ELT(vnum - 3169, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15),
+    value0 = 0, value1 = 0, value2 = 0, value3 = 260, value4 = 290,
+    value5 = ROUND(230 * ELT(vnum - 3169, 0, 0.04, 0.056, 0.088, 0.132, 0.2, 0.296, 0.444, 0.668, 1))
+WHERE vnum BETWEEN 3170 AND 3179;
+UPDATE world.item_proto SET type = 1, subtype = 4, antiflag = 28, flag = 1, wearflag = 16, gold = 12474000, shop_buy_price = 12474000,
+    refined_vnum = IF(vnum < 5159, vnum + 1, 0), refine_set = IF(vnum < 5159, 7100 + vnum - 5150, 0),
+    magic_pct = 0, specular = ELT(vnum - 5149, 0, 0, 0, 0, 30, 40, 50, 65, 80, 100), socket_pct = 3, addon_type = 0,
+    limittype0 = 1, limitvalue0 = ELT(vnum - 5149, 90, 92, 93, 95, 97, 98, 100, 102, 103, 105), limittype1 = 0, limitvalue1 = 0,
+    applytype0 = 17, applyvalue0 = 26, applytype1 = 43, applyvalue1 = ELT(vnum - 5149, -15, -19, -23, -27, -31, -35, -39, -43, -47, -50),
+    applytype2 = 53, applyvalue2 = ELT(vnum - 5149, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15),
+    value0 = 0, value1 = 203, value2 = 213, value3 = 207, value4 = 242,
+    value5 = ROUND(223 * ELT(vnum - 5149, 0, 0.04, 0.056, 0.088, 0.132, 0.2, 0.296, 0.444, 0.668, 1))
+WHERE vnum BETWEEN 5150 AND 5159;
+UPDATE world.item_proto SET type = 1, subtype = 5, antiflag = 28, flag = 1, wearflag = 16, gold = 12474000, shop_buy_price = 12474000,
+    refined_vnum = IF(vnum < 7179, vnum + 1, 0), refine_set = IF(vnum < 7179, 7100 + vnum - 7170, 0),
+    magic_pct = 0, specular = ELT(vnum - 7169, 0, 0, 0, 0, 30, 40, 50, 65, 80, 100), socket_pct = 3, addon_type = 0,
+    limittype0 = 1, limitvalue0 = ELT(vnum - 7169, 90, 92, 93, 95, 97, 98, 100, 102, 103, 105), limittype1 = 0, limitvalue1 = 0,
+    applytype0 = 17, applyvalue0 = 15, applytype1 = 43, applyvalue1 = ELT(vnum - 7169, -15, -19, -23, -27, -31, -35, -39, -43, -47, -50),
+    applytype2 = 53, applyvalue2 = ELT(vnum - 7169, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15),
+    value0 = 0, value1 = 208, value2 = 229, value3 = 192, value4 = 222,
+    value5 = ROUND(171 * ELT(vnum - 7169, 0, 0.04, 0.056, 0.088, 0.132, 0.2, 0.296, 0.444, 0.668, 1))
+WHERE vnum BETWEEN 7170 AND 7179;
+UPDATE player.item SET socket0 = 1, socket1 = 1, socket2 = 1 WHERE socket0 = 0 AND socket1 = 0 AND socket2 = 0
+  AND (vnum BETWEEN 210 AND 219 OR vnum BETWEEN 220 AND 229 OR vnum BETWEEN 1160 AND 1169 OR vnum BETWEEN 2190 AND 2199
+       OR vnum BETWEEN 3170 AND 3179 OR vnum BETWEEN 5150 AND 5159 OR vnum BETWEEN 7170 AND 7179);" || echo "[playerbot-migrate] WARNING: could not write the Ritual of Awakening's items and recipes" >&2
+# MT2009_PLUS_SOULSTONE9_V1: the soul stones +5..+9 as his 30_kamienie.sql
+# (+0..+4 keep their values): kinds 0..13 (Penetracji .. Przyspieszenia), +5 =
+# 28530+k, +6..+9 = 28g00+k. Each gets the kind's bonus, its wear flag (the
+# +0's) and the kind in value5 (17+k) - the package's +5 had none, so any two
+# of them blocked each other in one piece. Refined at the Blacksmith from +4
+# (server-patches/digirasta) by recipes 7204-7208: Magiczny Pyl (30360)
+# 8/12/18/25/35, yang 5/10/20/40/80 kk, 50/40/35/30/25%; a failure destroys the
+# stone. refined_vnum stays 0 (the bots' "can be refined"). Every start, idempotent.
+db -e "
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 41, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 9, 10, 11, 13, 15), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 17, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28530,28600,28700,28800,28900); -- Penetracji
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 40, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 9, 10, 11, 13, 15), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 18, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28531,28601,28701,28801,28901); -- Smierci
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 21, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 28, 31, 34, 37, 40), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 19, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28532,28602,28702,28802,28902); -- Powtorki
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 54, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 27, 29, 31, 33, 35), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 20, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28533,28603,28703,28803,28903); -- Wojownika
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 55, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 27, 29, 31, 33, 35), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 21, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28534,28604,28704,28804,28904); -- Ninja
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 56, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 27, 29, 31, 33, 35), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 22, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28535,28605,28705,28805,28905); -- Sury
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 57, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 27, 29, 31, 33, 35), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 23, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28536,28606,28706,28806,28906); -- Szamana
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 53, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 10, 12, 15, 17, 20), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 24, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28537,28607,28707,28807,28907); -- Potwora
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 1, applytype0 = 67, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 10, 11, 12, 13, 15), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 25, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28538,28608,28708,28808,28908); -- Uchylenia
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 1, applytype0 = 68, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 10, 11, 12, 13, 15), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 26, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28539,28609,28709,28809,28909); -- Uniku
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 1, applytype0 = 8, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 700, 850, 1000, 1250, 1500), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 27, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28540,28610,28710,28810,28910); -- Magii
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 1, applytype0 = 6, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 1200, 1600, 2000, 2500, 3000), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 28, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28541,28611,28711,28811,28911); -- Witalnosci
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 1, applytype0 = 96, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 40, 55, 70, 85, 100), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 29, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28542,28612,28712,28812,28912); -- Obrony
+UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 1, applytype0 = 19, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 32, 34, 36, 38, 40), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 30, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28543,28613,28713,28813,28913); -- Przyspieszenia
+DELETE FROM world.refine_proto WHERE id BETWEEN 7200 AND 7203;
+INSERT INTO world.refine_proto (id, vnum0, count0, vnum1, count1, vnum2, count2, vnum3, count3, vnum4, count4, cost, src_vnum, result_vnum, prob) VALUES
+(7204, 30360, 8, 0, 0, 0, 0, 0, 0, 0, 0, 5000000, 0, 0, 50),
+(7205, 30360, 12, 0, 0, 0, 0, 0, 0, 0, 0, 10000000, 0, 0, 40),
+(7206, 30360, 18, 0, 0, 0, 0, 0, 0, 0, 0, 20000000, 0, 0, 35),
+(7207, 30360, 25, 0, 0, 0, 0, 0, 0, 0, 0, 40000000, 0, 0, 30),
+(7208, 30360, 35, 0, 0, 0, 0, 0, 0, 0, 0, 80000000, 0, 0, 25)
+ON DUPLICATE KEY UPDATE vnum0 = VALUES(vnum0), count0 = VALUES(count0), vnum1 = 0, count1 = 0, cost = VALUES(cost), prob = VALUES(prob);" || echo "[playerbot-migrate] WARNING: could not write the soul stones +5..+9" >&2
+# MT2009_PLUS_HORSE30_V1: the horse to level 30 (his karta-kon-30-i-juki.md,
+# quest konie and horse_inventory): the level-30 horse is race 20119
+# (server-patches/digirasta, char_horse.cpp) - its name over the summoned horse
+# (the package's "NoNAme"), and, as his 60_konie.sql, the Black Horse's seal
+# (71131-71134) leaves the web ItemShop: the black horse is the reward of the
+# level-30 trial. Every start, after the shop data; idempotent.
+db -e "UPDATE world.mob_proto SET locale_name = 'Czarny Rumak' WHERE vnum = 20119 AND locale_name <> 'Czarny Rumak';" || echo "[playerbot-migrate] WARNING: could not name the Black Steed" >&2
+db -e "DELETE FROM itemshop.ishop_bundle_items WHERE vnum BETWEEN 71131 AND 71134; DELETE FROM itemshop.ishop_items WHERE vnum BETWEEN 71131 AND 71134;" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the Black Horse's seal" >&2

@@ -202,7 +202,7 @@ namespace {
         // A dropper's time is its dungeon's (ManagePlayerBotShopping refuses
         // it anyway, so the trip would be ten minutes on the square for
         // nothing), and a bot in a player's party goes where the player goes.
-        if (!ch || IsPlayerBotOnBattleHorseTrial(ch) || IsPlayerBotOnMilitaryHorseTrial(ch) ||
+        if (!ch || IsPlayerBotOnAnyHorseTrial(ch) /* MT2009_PLUS_HORSE30_V1 */ ||
                 IsPlayerBotDropper(state.bPersonality) ||
                 (ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty()))) {
             if (state.dwProgressionTripUntil) {

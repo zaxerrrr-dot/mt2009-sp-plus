@@ -166,6 +166,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_combat_value_policy.h"
 #include "playerbot_battle_horse.h"
 #include "playerbot_gear.h"
+#include "playerbot_horse30.h" // Digi Rasta's horse to level 30: paid training, the Black Steed trial, the horse bonus (MT2009_PLUS_HORSE30_V1)
 #include "playerbot_shaman_buff_set.h" // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: a Shaman's INT set for its buffs
 // The Stalki - the level-66 armours and the level-75 weapons - as the bots
 // keep and buy them: after the gear, whose candidate test and score it asks.
@@ -214,6 +215,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_guild_land.h"
 #include "playerbot_sash.h"
 #include "playerbot_saddlebag.h"
+#include "playerbot_awakening.h" // Digi Rasta's Ritual of Awakening and soul stones +5..+9: engine hooks, boss drop, bot prices and ritual (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1)
 #include "playerbot_explain_late.h"
 // Forward declaration: the trade layer falls through to the deterministic
 // conversation layer for ordinary whispers.

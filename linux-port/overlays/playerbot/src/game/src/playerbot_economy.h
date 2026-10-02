@@ -35,6 +35,15 @@ namespace
 	// twin the weapon merchant (R8 of Iwakura's audit).
 	bool NeedsPlayerBotBackupArmour(LPCHARACTER ch);
 	bool NeedsPlayerBotBackupWeapon(LPCHARACTER ch);
+	// MT2009_PLUS_AWAKENING_V1: defined in playerbot_awakening.h (Digi Rasta's
+	// awakening and soul stones +5..+9), which is included later.
+	bool IsPlayerBotAwakeningGoods(DWORD vnum);
+	bool IsPlayerBotAwakenedWeaponVnum(DWORD vnum);
+	// The Ritual of Awakening at the blacksmith, for a bot that qualifies
+	// (playerbot_awakening.h): the refining pass asks it first, and the
+	// question of a blacksmith trip counts it as a reason.
+	bool HasPlayerBotAwakeningRitual(LPCHARACTER ch);
+	bool ManagePlayerBotAwakeningRitual(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 
 	PIXEL_POSITION GetPlayerBotGeneralStorePos(long mapIndex)
 	{
@@ -1167,6 +1176,10 @@ namespace
 			for (size_t i = 0; i < protos.size(); ++i)
 				if (protos[i].wRefineSet != 0)
 					recipeIds.insert(protos[i].wRefineSet);
+			// MT2009_PLUS_AWAKENING_V1: and the Ritual of Awakening's recipe, which
+			// no item names (the engine reads it, playerbot_awakening.h) - its
+			// Kamien Przebudzenia is a counter's goods, never the merchant's.
+			recipeIds.insert(7110); // mt2009_awakening::AWAKENING_REFINE_SET, included later
 			for (std::set<DWORD>::const_iterator id = recipeIds.begin(); id != recipeIds.end(); ++id)
 			{
 				const TRefineTable* recipe =
@@ -1348,9 +1361,10 @@ namespace
 			return GetPlayerBotBonusStoneKeep(ch, item);
 		// The medal dropper is the medal shop and keeps one back; everybody else
 		// keeps the ladder's two (PLAYERBOT_HORSE_MEDAL_KEEP) and lists the rest.
+		// MT2009_PLUS_HORSE30_V1: the next trainings' medals (GetPlayerBotHorseMedalKeep).
 		if (item->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM)
 			return ch && GetPlayerBotPersonalityByPID(ch->GetPlayerID()) ==
-					BOT_PERSONALITY_MEDAL_DROPPER ? 1 : PLAYERBOT_HORSE_MEDAL_KEEP;
+					BOT_PERSONALITY_MEDAL_DROPPER ? 1 : (ch ? GetPlayerBotHorseMedalKeep(ch) : PLAYERBOT_HORSE_MEDAL_KEEP);
 		// Nobody keeps a root back: the heap is the whole of what it is for.
 		if (IsPlayerBotBulkGoods(item))
 			return 0;
@@ -2019,6 +2033,13 @@ namespace
 		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
 			return false;
 
+		// MT2009_PLUS_AWAKENING_V1 / MT2009_PLUS_SOULSTONE9_V1 (Digi Rasta's
+		// systems): the Awakening Stone, an awakened weapon and a soul stone
+		// +5..+9 are never the merchant's - a counter's or the bot's own
+		// (playerbot_awakening.h).
+		if (IsPlayerBotAwakeningGoods(item->GetVnum()))
+			return false;
+
 		// A piece Iwakura's list keeps for the storekeeper is never the
 		// merchant's, whatever the rules below would make of it.
 		if (IsPlayerBotLppKeptItem(ch, item))
@@ -2121,6 +2142,12 @@ namespace
 		// just that much of the stack (SellPlayerBotSurplusHay).
 		if (vnum == PLAYERBOT_HAY_VNUM)
 			return (int)ch->CountSpecifyItem(PLAYERBOT_HAY_VNUM) > PLAYERBOT_HAY_KEEP;
+		// MT2009_PLUS_HORSE30_V1: Marchewka and Czerwony Zen-szen are the
+		// training's feed of 11-19 and 21-28 (playerbot_horse30.h): the five
+		// the next training eats stay, the rest is the merchant's (the
+		// stable sells what the bag lacks at the training itself).
+		if (vnum == PLAYERBOT_HORSE_FEED_CARROT || vnum == PLAYERBOT_HORSE_FEED_GINSENG)
+			return (int)ch->CountSpecifyItem(vnum) > GetPlayerBotHorseFeedKeep(ch, vnum);
 		// The goods a player crafts further (IsPlayerBotPickupGoods) wait for a
 		// counter, and reach the merchant only from a bag under pressure that
 		// has no counter to sell from - the rule a polymorph marble keeps. Gear
@@ -3358,6 +3385,11 @@ namespace
 
 		state.dwNextRefineCheckTime = dwNow + PLAYERBOT_REFINE_INTERVAL;
 
+		// MT2009_PLUS_AWAKENING_V1: a worn weapon 75 +9, the Awakening Stone and
+		// the fee make the ritual this visit's first step (playerbot_awakening.h).
+		if (ManagePlayerBotAwakeningRitual(ch, state, dwNow))
+			return true;
+
 		// Iwakura's Perfectionist spends at most PERFECT_BUDGET_PERCENT of what
 		// it walked into town with ("max 80% yang"), and keeps the rest. The
 		// class's level-30 weapon is the exception: it has a budget of its own
@@ -3708,8 +3740,11 @@ namespace
 			// the bag keeps the +6 rule: its burn is the price of not spending a
 			// scarce scroll on it.
 			const TRefineTable* stepRecipe = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
+			// MT2009_PLUS_AWAKENING_V1: an awakened weapon's step never burns it
+			// (server-patches/digirasta), so it asks no scroll for that.
 			const bool wornStepCanBurn = wearCell != 255 && stepRecipe &&
-					stepRecipe->prob <= PLAYERBOT_WORN_SCROLL_MAX_PROB;
+					stepRecipe->prob <= PLAYERBOT_WORN_SCROLL_MAX_PROB &&
+					!IsPlayerBotAwakenedWeaponVnum(item->GetVnum());
 			// Every rule above gives way to the operator's floor: under
 			// SCROLL_FROM no scroll goes on the step, whatever the piece.
 			const bool scrollStepAllowed = IsPlayerBotScrollStepAllowed(plusLevel);
@@ -4768,6 +4803,10 @@ namespace
 		if (!IsPlayerBotWeightGateOpen(ch->GetPlayerID(), PLAYERBOT_WEIGHT_REFINE,
 				PLAYERBOT_WEIGHT_GATE_SALT_REFINE, get_dword_time()))
 			return false;
+
+		// MT2009_PLUS_AWAKENING_V1: the ritual is a reason for the anvil too.
+		if (HasPlayerBotAwakeningRitual(ch))
+			return true;
 
 		const BYTE wearSlots[] = {
 			WEAR_WEAPON, WEAR_BODY, WEAR_SHIELD, WEAR_HEAD,
