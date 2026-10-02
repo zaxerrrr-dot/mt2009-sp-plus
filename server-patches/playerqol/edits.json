@@ -916,5 +916,11 @@
   "marker": "MT2009_PLUS_ARCHER_MULTISHOT_DEBUG (shot)",
   "old": "\t\tfor (size_t i = 0; bMt2009PlusMainHit && i < vecExtra.size(); ++i)\n\t\t\tif (vecExtra[i] != dwMainVID)\n\t\t\t\tf(vecExtra[i]);\n",
   "new": "\t\t// MT2009_PLUS_ARCHER_MULTISHOT_DEBUG (shot): each extra arrow's result.\n\t\tconst bool bMt2009PlusDbg = GetJob() == JOB_ASSASSIN && Mt2009PlusMultishotDebugAllowed(this);\n\t\tconst bool bMt2009PlusAny = f.m_bSucceed;\n\t\tstd::string strMt2009PlusDbg;\n\t\tfor (size_t i = 0; bMt2009PlusMainHit && i < vecExtra.size(); ++i)\n\t\t\tif (vecExtra[i] != dwMainVID)\n\t\t\t{\n\t\t\t\tf.m_bSucceed = false;\n\t\t\t\tf(vecExtra[i]);\n\t\t\t\tchar szOne[48];\n\t\t\t\tsnprintf(szOne, sizeof(szOne), \" %u=%s\", vecExtra[i], f.m_bSucceed ? \"hit\" : \"refused\");\n\t\t\t\tstrMt2009PlusDbg += szOne;\n\t\t\t}\n\t\tf.m_bSucceed = f.m_bSucceed || bMt2009PlusAny;\n\t\tif (bMt2009PlusDbg)\n\t\t\tsys_log(0, \"MT2009_PLUS_ARCHER_MULTISHOT_DEBUG shot %s (pid %u) skill %u main %u %s, extras %u:%s\",\n\t\t\t\tGetName(), GetPlayerID(), (unsigned)bType, dwMainVID, bMt2009PlusMainHit ? \"hit\" : \"refused\",\n\t\t\t\t(unsigned)vecExtra.size(), strMt2009PlusDbg.empty() ? \" none\" : strMt2009PlusDbg.c_str());\n"
+ },
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_REGEN_COUNT_NO_DUNGEON_V1",
+  "old": "\tif (bOnce)\n\t\treturn regen->max_count;\n\tconst int percent = quest::CQuestManager::instance().GetEventFlag(regen->is_boss_or_stone ? \"m2_boss_count\" : \"m2_mob_count\");\n",
+  "new": "\tif (bOnce)\n\t\treturn regen->max_count;\n\t// MT2009_PLUS_REGEN_COUNT_NO_DUNGEON_V1: the panel's x2-x4 for Metins,\n\t// bosses and monsters stays out of the dungeons - an instance (its index\n\t// 10000 and up) or a map a dungeon runs on keeps its lines as written.\n\tif (regen->lMapIndex >= 10000 || CDungeonManager::instance().FindByMapIndex(regen->lMapIndex))\n\t\treturn regen->max_count;\n\tconst int percent = quest::CQuestManager::instance().GetEventFlag(regen->is_boss_or_stone ? \"m2_boss_count\" : \"m2_mob_count\");\n"
  }
 ]

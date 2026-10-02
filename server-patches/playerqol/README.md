@@ -33,6 +33,7 @@ Zmiany silnika opisane w `edits.json`, każda z własnym znacznikiem:
 | `MT2009_PLUS_AUTO_TARGET_V2` | `cmd.cpp`, `cmd_general.cpp` | Kolejny cel po zabiciu (klient `root/autotarget.py`): komenda `/autotarget_aggro` – `0` to sonda (odpowiedź `AutoTargetAggroReady 1`), `<tag>` zwraca `AutoTargetAggro <tag> <vid,...>` z żywymi potworami w promieniu 20 m, których ofiarą jest gracz (najbliższe pierwsze, najwyżej 16, jedna odpowiedź na 300 ms). Klient przełącza się po zabiciu także na potwora, który go atakuje, choć jeszcze go nie uderzył. |
 | `MT2009_PLUS_BOT_HAIR_V1` | `item.cpp` | `Mt2009PlusIsCostumeSetHair` / `Mt2009PlusIsCostumeSetPair` – listy z `costume_sets.txt` (zestawy kostiumów) dla botów: boty kupują i noszą tylko fryzury z zestawów kostiumów, najpierw z zestawu noszonego kostiumu (`playerbot_itemshop.h`). |
 
+| `MT2009_PLUS_REGEN_COUNT_NO_DUNGEON_V1` | `regen.cpp` | Liczba potworów w respie (panel: Metiny i bossowie / zwykłe potwory, ×2–×4) nie działa w lochach: instancje (indeks mapy od 10000) i mapy, na których stoi loch, mają respy jak w plikach. |
 - `Apply-PlayerQolPatch.ps1` – Windows (`tools/port/Apply-MT2009PlusEngine.ps1`);
 - `apply_playerqol.py` – Linux/VPS; oba czytają ten sam `edits.json`.
 
