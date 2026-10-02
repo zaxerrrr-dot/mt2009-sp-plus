@@ -470,6 +470,28 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_COR_ROOM_V1: the alchemy bag is a page of 32 cells for
+	// every kind and grade (DSManager::GetBasePosition), and a Cor gives a
+	// rough stone of a RANDOM kind - the bag's total said "room" while the
+	// page of the kind that came out was full, and the stone fell on the
+	// ground, where nobody picks it up (players, 2 October). A Cor is opened
+	// only while every kind's rough page has a free cell.
+	bool PlayerBotHasRoomForEveryRoughKind(LPCHARACTER ch)
+	{
+		if (!ch || !ch->DragonSoul_IsQualified())
+			return false;
+		for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
+		{
+			const int base = kind * DRAGON_SOUL_GRADE_MAX * DRAGON_SOUL_BOX_SIZE;
+			bool room = false;
+			for (int i = 0; i < DRAGON_SOUL_BOX_SIZE && !room; ++i)
+				room = ch->IsEmptyItemGrid(TItemPos(DRAGON_SOUL_INVENTORY, (WORD)(base + i)), 1);
+			if (!room)
+				return false;
+		}
+		return true;
+	}
+
 	// Its Cors opened while the alchemy bag has room: the Cor's group is one
 	// rough stone of a random kind (special_item_group.txt, 50255).
 	int OpenPlayerBotCors(LPCHARACTER ch)
@@ -484,6 +506,12 @@ namespace
 			CollectPlayerBotDragonSouls(ch, stones);
 			if ((int)stones.size() >= DRAGON_SOUL_INVENTORY_MAX_NUM - 8)
 				break;
+			if (!PlayerBotHasRoomForEveryRoughKind(ch)) // MT2009_PLUS_BOT_COR_ROOM_V1
+			{
+				PlayerBotLogThrottled("alchemy_cor_room", get_dword_time(),
+						"PLAYERBOT_ALCHEMY: cor kept, a rough page is full pid=%u name=%s", ch->GetPlayerID(), ch->GetName());
+				break;
+			}
 			if (!ch->UseItem(TItemPos(INVENTORY, (WORD)cell)))
 				break;
 			++opened;
