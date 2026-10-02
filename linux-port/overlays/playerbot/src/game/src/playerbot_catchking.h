@@ -414,7 +414,7 @@ namespace mt2009_catchking
 			return;
 		}
 		ch->SetQuestFlag(QF_PACK, packs - bet);
-		ch->PointChange(POINT_GOLD, -(int)cost);
+		PlayerBotChangeGold(ch, -(long long)cost);
 
 		TGame game = TGame();
 		BYTE deck[FIELD_CARDS];

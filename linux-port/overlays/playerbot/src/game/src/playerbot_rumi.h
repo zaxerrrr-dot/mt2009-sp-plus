@@ -553,7 +553,7 @@ namespace mt2009_rumi
 			return;
 		}
 		ch->SetQuestFlag(F_CARDS, cards - 1);
-		ch->PointChange(POINT_GOLD, -START_GOLD, true);
+		PlayerBotChangeGold(ch, -(long long)START_GOLD);
 
 		Game& g = s_games[pid];
 		g = Game();

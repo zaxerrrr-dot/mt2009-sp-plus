@@ -654,7 +654,7 @@ namespace mt2009_yutnori
 		}
 
 		ch->SetQuestFlag(QF_BOARD, boards - 1);
-		ch->PointChange(POINT_GOLD, -START_GOLD, true);
+		PlayerBotChangeGold(ch, -(long long)START_GOLD);
 
 		TGame g;
 		memset(&g, 0, sizeof(g));
