@@ -99,15 +99,20 @@ namespace
 	// this near the corpse (CPlayerBotManager::GetSidekickKillCredit): the reach
 	// of a party's shared experience.
 	const int PLAYERBOT_SIDEKICK_KILL_CREDIT_RANGE = 5000;
-	// The drops it goes for, and the step at which it takes one. The server
-	// hands a pick-up over from 600 (@fixme173), so the step stays inside it.
-	const int PLAYERBOT_SIDEKICK_LOOT_RANGE = 1200;
+	// The step at which it takes a drop (how far it goes for one is
+	// PLAYERBOT_SIDEKICK_LOOT_LEASH). The server hands a pick-up over from 600
+	// (@fixme173), so the step stays inside it.
 	const int PLAYERBOT_SIDEKICK_PICKUP_RANGE = 250;
 	const DWORD PLAYERBOT_SIDEKICK_LOOT_INTERVAL_MS = 400;
 	// A drop it could not take (the owner's bag full, somebody else's by then)
 	// is left alone this long, or the companion stands over it for good.
 	const DWORD PLAYERBOT_SIDEKICK_LOOT_FAILED_MS = 30000;
 	const DWORD PLAYERBOT_SIDEKICK_LOOT_GIVE_UP_MS = 8000;
+	// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: at its owner's side ("Przywolaj")
+	// and at a spot it keeps, the drops it goes for lie this near the owner
+	// (the spot) - fifteen metres, its own kills' within the hunt range - and
+	// it walks back after the pick-up.
+	const int PLAYERBOT_SIDEKICK_LOOT_LEASH = 1500;
 	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: a drop held for the owner whose
 	// bag is full is told at most this often.
 	const DWORD PLAYERBOT_SIDEKICK_HELD_TELL_MS = 60 * 1000;
@@ -6276,10 +6281,15 @@ namespace
 		// the drop chosen is one to hold for the owner.
 		bool keep;
 		bool bestHeld;
+		// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: the leash's centre - the owner,
+		// or the spot it keeps.
+		long centreX;
+		long centreY;
 
-		FPlayerBotSidekickLoot(LPCHARACTER s, LPCHARACTER o, const TPlayerBotSidekickRuntime& r, DWORD n, BYTE m)
+		FPlayerBotSidekickLoot(LPCHARACTER s, LPCHARACTER o, const TPlayerBotSidekickRuntime& r, DWORD n, BYTE m,
+				long cx, long cy)
 			: self(s), owner(o), rt(r), now(n), mode(m), best(NULL), bestDist(INT_MAX),
-			  keep(s && IsPlayerBotSidekickKeepingLoot(s->GetPlayerID())), bestHeld(false)
+			  keep(s && IsPlayerBotSidekickKeepingLoot(s->GetPlayerID())), bestHeld(false), centreX(cx), centreY(cy)
 		{
 		}
 
@@ -6291,7 +6301,12 @@ namespace
 			if (!item->GetSectree() || item->GetOwner())
 				return;
 			const int d = DISTANCE_APPROX(item->GetX() - self->GetX(), item->GetY() - self->GetY());
-			if (d > PLAYERBOT_SIDEKICK_LOOT_RANGE || d >= bestDist)
+			if (d >= bestDist)
+				return;
+			// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: within the leash round the
+			// owner rather than twelve metres round itself - a drop of its own
+			// kill on the far side of the owner was out of its reach.
+			if (DISTANCE_APPROX(item->GetX() - centreX, item->GetY() - centreY) > PLAYERBOT_SIDEKICK_LOOT_LEASH)
 				return;
 			std::map<DWORD, DWORD>::const_iterator failed = rt.mapLootFailed.find(item->GetVID());
 			if (failed != rt.mapLootFailed.end() && (int)(now - failed->second) < 0)
@@ -6365,8 +6380,11 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: walk false is the Z of a fight -
+	// what lies in reach is taken where it stands, nothing is walked to, and
+	// the walk under way (rt.dwLootVID) is left as it was.
 	bool PickUpPlayerBotSidekickLoot(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER owner,
-			TPlayerBotSidekickRuntime& rt, BYTE lootMode, DWORD dwNow)
+			TPlayerBotSidekickRuntime& rt, BYTE lootMode, long centreX, long centreY, bool walk, DWORD dwNow)
 	{
 		if (!ch->GetSectree() || lootMode == PLAYERBOT_SIDEKICK_LOOT_NONE)
 			return false;
@@ -6380,8 +6398,25 @@ namespace
 					++it;
 			}
 		}
-		FPlayerBotSidekickLoot loot(ch, owner, rt, dwNow, lootMode);
+		FPlayerBotSidekickLoot loot(ch, owner, rt, dwNow, lootMode, centreX, centreY);
 		ch->GetSectree()->ForEachAround(loot);
+		if (!walk)
+		{
+			if (!loot.best || loot.bestDist > PLAYERBOT_SIDEKICK_PICKUP_RANGE)
+				return false;
+			const DWORD zvid = loot.best->GetVID();
+			if (loot.bestHeld)
+			{
+				if (!HoldPlayerBotSidekickOwnerDrop(ch, owner, rt, loot.best, dwNow))
+					rt.mapLootFailed[zvid] = dwNow + PLAYERBOT_SIDEKICK_LOOT_FAILED_MS;
+				return true;
+			}
+			const DWORD zvnum = loot.best->GetVnum();
+			if (!ch->PickupItem(zvid))
+				return false;
+			sys_log(0, "PLAYERBOT_SIDEKICK: picked up pid=%u vid=%u vnum=%u how=fight", ch->GetPlayerID(), zvid, zvnum);
+			return true;
+		}
 		if (!loot.best)
 		{
 			rt.dwLootVID = 0;
@@ -6421,8 +6456,42 @@ namespace
 			}
 			return true;
 		}
-		ch->PickupItem(vid);
+		const DWORD vnum = loot.best->GetVnum();
+		if (ch->PickupItem(vid))
+			sys_log(0, "PLAYERBOT_SIDEKICK: picked up pid=%u vid=%u vnum=%u how=walk from_centre=%d", ch->GetPlayerID(),
+					vid, vnum, DISTANCE_APPROX(ch->GetX() - centreX, ch->GetY() - centreY));
 		return true;
+	}
+
+	// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: the loot pass at the owner's side
+	// and at a spot it keeps. It looked every 400 ms, and the ticks between
+	// went on to the follow below it - a walk back to the owner past four and
+	// a half metres, a stop under two - so the companion took a step to a drop
+	// and a step back, gave the drop up after eight seconds and left it for
+	// thirty ("Przywolaj" did not pick up, "Wolna reka", the ordinary loot pass
+	// of every tick, did). A walk to a drop now goes on on every tick until it
+	// is picked up or given up; only the search for a new one keeps the clock.
+	bool RunPlayerBotSidekickLootPass(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER owner,
+			TPlayerBotSidekickRuntime& rt, BYTE lootMode, long centreX, long centreY, DWORD dwNow)
+	{
+		if (rt.dwLootVID == 0 && dwNow < rt.dwNextLoot)
+			return false;
+		rt.dwNextLoot = dwNow + PLAYERBOT_SIDEKICK_LOOT_INTERVAL_MS;
+		return PickUpPlayerBotSidekickLoot(ch, state, owner, rt, lootMode, centreX, centreY, true, dwNow);
+	}
+
+	// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: in a fight, what lies at its feet
+	// (the Z a player presses between blows); the walk to a drop it had begun
+	// starts afresh after the fight, or the eight seconds ran out in the fight
+	// and the drop was given up the moment it was looked at again.
+	void TakePlayerBotSidekickLootInFight(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER owner,
+			TPlayerBotSidekickRuntime& rt, BYTE lootMode, long centreX, long centreY, DWORD dwNow)
+	{
+		rt.dwLootVID = 0;
+		if (dwNow < rt.dwNextLoot)
+			return;
+		rt.dwNextLoot = dwNow + PLAYERBOT_SIDEKICK_LOOT_INTERVAL_MS;
+		PickUpPlayerBotSidekickLoot(ch, state, owner, rt, lootMode, centreX, centreY, false, dwNow);
 	}
 
 	// The blacksmith and the merchants where the owner stands: the refine pass,
@@ -7555,19 +7624,23 @@ namespace
 		// companion never walks to it for that.
 		if (sameMapOwner && BuffPlayerBotSidekickOwner(ch, state, rec, sameMapOwner, dwNow, false))
 			return true;
+		// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: its drops before a new monster
+		// nobody fights yet, as a bot's own loot pass does.
+		if (foe && why == PLAYERBOT_SIDEKICK_FOE_NEARBY &&
+				RunPlayerBotSidekickLootPass(ch, state, sameMapOwner, rt, rec.bLoot, rt.lHoldX, rt.lHoldY, dwNow))
+			return true;
 		if (foe)
+		{
+			TakePlayerBotSidekickLootInFight(ch, state, sameMapOwner, rt, rec.bLoot, rt.lHoldX, rt.lHoldY, dwNow);
 			return FightPlayerBotSidekickFoe(ch, state, rt, foe, why, dwNow);
+		}
 		if (state.dwTargetVID != 0)
 		{
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
 		}
-		if (dwNow >= rt.dwNextLoot)
-		{
-			rt.dwNextLoot = dwNow + PLAYERBOT_SIDEKICK_LOOT_INTERVAL_MS;
-			if (PickUpPlayerBotSidekickLoot(ch, state, sameMapOwner, rt, rec.bLoot, dwNow))
-				return true;
-		}
+		if (RunPlayerBotSidekickLootPass(ch, state, sameMapOwner, rt, rec.bLoot, rt.lHoldX, rt.lHoldY, dwNow))
+			return true;
 		const int away = DISTANCE_APPROX(ch->GetX() - rt.lHoldX, ch->GetY() - rt.lHoldY);
 		if (away > PLAYERBOT_SIDEKICK_HOLD_LEASH)
 		{
@@ -7933,10 +8006,19 @@ namespace
 				FindPlayerBotSidekickFoe(ch, owner, rec->bStance, why, ownerFighting);
 		if (ownerFighting)
 			rt.dwOwnerFightSeenAt = dwNow;
+		// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: its drops before a monster
+		// nobody fights yet - in "atakuj" it went from one to the next and the
+		// drops lay till their time ran out; "Wolna reka" (HandleLoot) finishes
+		// its drop before it picks a new monster. What is on the owner or on
+		// itself, and the owner's own target, still come first.
+		if (foe && why == PLAYERBOT_SIDEKICK_FOE_NEARBY &&
+				RunPlayerBotSidekickLootPass(ch, state, owner, rt, rec->bLoot, owner->GetX(), owner->GetY(), dwNow))
+			return true;
 		if (foe)
 		{
 			if (BuffPlayerBotSidekickOwner(ch, state, *rec, owner, dwNow, false))
 				return true;
+			TakePlayerBotSidekickLootInFight(ch, state, owner, rt, rec->bLoot, owner->GetX(), owner->GetY(), dwNow);
 			return FightPlayerBotSidekickFoe(ch, state, rt, foe, why, dwNow);
 		}
 		if (state.dwTargetVID != 0)
@@ -7955,12 +8037,8 @@ namespace
 			if (ServePlayerBotSidekickAtNpcs(ch, state, owner, dwNow, rt))
 				return true;
 		}
-		if (dwNow >= rt.dwNextLoot)
-		{
-			rt.dwNextLoot = dwNow + PLAYERBOT_SIDEKICK_LOOT_INTERVAL_MS;
-			if (PickUpPlayerBotSidekickLoot(ch, state, owner, rt, rec->bLoot, dwNow))
-				return true;
-		}
+		if (RunPlayerBotSidekickLootPass(ch, state, owner, rt, rec->bLoot, owner->GetX(), owner->GetY(), dwNow))
+			return true;
 		// A bag near full is its owner's to know: the merchant takes the scrap
 		// and, from a bag under pressure, the goods only when the owner stands
 		// at one or sends it on an errand, and the owner cannot see the bag
