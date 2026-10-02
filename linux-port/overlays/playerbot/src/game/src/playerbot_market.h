@@ -1051,9 +1051,12 @@ namespace
 	bool StartPlayerBotFarMarketWalk(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow,
 			long pitchX, long pitchY)
 	{
+		// MT2009_PLUS_HORSE_ECONOMY_V2: the frontier's bots and the ones on
+		// their horse errand are held back only when the line found is no
+		// sink good (below): a bot of thirty-five short of a medal lives on
+		// the frontier, and the medals stand in the first village.
 		if (!IsPlayerBotM2Map(ch->GetMapIndex()) || dwNow < state.dwMarketM2AllowedUntil ||
-				state.lDepartureMap != 0 || GetPlayerBotFrontierMapForLevel(ch) != 0 ||
-				state.bLongTermGoal == BOT_GOAL_HORSE ||
+				state.lDepartureMap != 0 ||
 				(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) ||
 				IsPlayerBotHeldForCompany(ch) || !PlayerBotWantsAnythingFromMarket(ch))
 			return false;
@@ -1062,6 +1065,12 @@ namespace
 				playerbot_empire_rules::MAP_ROLE_M1);
 		if (!FindPlayerBotFarOfflinePick(ch, state, firstVillage))
 			return false;
+		if (!state.offlineShop.farPickSink &&
+				(GetPlayerBotFrontierMapForLevel(ch) != 0 || state.bLongTermGoal == BOT_GOAL_HORSE))
+		{
+			state.offlineShop.farPickOwner = state.offlineShop.farPickItem = 0;
+			return false;
+		}
 		// The stands are the first channel's (playerbot_channel_rules.h): a bot
 		// on the second asks to be moved, as the buyer does for a line in
 		// reach, and looks again once it is there.

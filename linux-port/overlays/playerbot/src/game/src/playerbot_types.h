@@ -5357,6 +5357,9 @@ namespace
 	// At fifty the dropper goes to its first village and opens a stand with
 	// the medals on it (IsPlayerBotMedalStockReady, playerbot_town.h).
 	const int PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK = 50;
+	// MT2009_PLUS_HORSE_ECONOMY_V2: a dropper this close to its stock does
+	// not go back into the Monkey Dungeon (playerbot_travel.h).
+	const int PLAYERBOT_MEDAL_DROPPER_STOCK_MARGIN = 3;
 	// Lines of medals (two a line) a medal dropper's counter carries, over
 	// PLAYERBOT_SHOP_SAME_VNUM_LINES for everybody else: the medals are what
 	// its stand is for.

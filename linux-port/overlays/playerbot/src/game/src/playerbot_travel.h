@@ -1185,6 +1185,16 @@ namespace
 			if (ch->IsItemLoaded() &&
 					ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >= PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK)
 				return false;
+			// MT2009_PLUS_HORSE_ECONOMY_V2: nor a few medals short of it, nor
+			// while it would walk straight out for a restock (DecideMonkeyExit
+			// RESTOCK): droppers at 48-50 medals, their bags too full for the
+			// potions, went in and out as "monkey_restock_direct" at visit_s=0,
+			// 323 times in six hours on the supporters' world.
+			if (ch->IsItemLoaded() &&
+					(ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >=
+						PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK - PLAYERBOT_MEDAL_DROPPER_STOCK_MARGIN ||
+					 NeedsPlayerBotEmergencyPotions(ch) || ch->GetWear(WEAR_WEAPON) == NULL))
+				return false;
 			return GetPlayerBotMonkeyMapFor(ch) != 0;
 		}
 		// A medal needs a cell. This gate is what the Monkey Dungeon's exit
@@ -1209,6 +1219,12 @@ namespace
 		// reach, instead of sending it at one and having the warp refused.
 		if (GetPlayerBotMonkeyMapFor(ch) == 0)
 			return false;
+		// MT2009_PLUS_HORSE_ECONOMY_V2: a bot already inside its dungeon stays
+		// on the errand - the half-hour roll below sent 45% of the visits on
+		// the supporters' world out with no medal. The dungeon's own exit
+		// (DecideMonkeyExit: a medal ready, the timeout, a restock) still ends it.
+		if (ch->GetMapIndex() == GetPlayerBotMonkeyMapFor(ch))
+			return true;
 
 		// MT2009_PLUS_PROGRESSION_V3: a bot a gate holds for its horse goes for
 		// the medal in its horse window with no roll - held bots had a horse of
@@ -1253,6 +1269,23 @@ namespace
 				chance = hasCombatHorse ? 6 : (ch->GetHorseLevel() == 0 ? 15 : 10);
 				break;
 		}
+		// MT2009_PLUS_HORSE_ECONOMY_V2: half the cut a battle horse makes - the
+		// after-horse chances above left the horses of the supporters' world
+		// at eleven or twelve: the chance a bot with a horse of one to ten
+		// would have, less half the difference.
+		if (hasCombatHorse)
+		{
+			BYTE before = chance;
+			switch (ch->GetJob())
+			{
+				case JOB_WARRIOR: before = 26; break;
+				case JOB_SURA: before = ch->GetSkillGroup() == 1 ? 25 : 9; break;
+				case JOB_ASSASSIN: before = ch->GetSkillGroup() == 2 ? 4 : 14; break;
+				case JOB_SHAMAN: before = 10; break;
+			}
+			if (before > chance)
+				chance = (BYTE)(chance + (before - chance) / 2);
+		}
 		// Twice as often before the battle horse: the chances above sent 17 of
 		// 999 bots into a dungeon (PLAYERBOT_HORSE_EXPEDITION_NO_COMBAT_HORSE_MULT).
 		if (!hasCombatHorse)
@@ -1284,6 +1317,11 @@ namespace
 		// The high-priority builds occasionally prepare the next horse level in the
 		// same visit. Other classes leave after one medal, freeing dungeon capacity
 		// and returning to ordinary experience progression much sooner.
+		// MT2009_PLUS_HORSE_ECONOMY_V2: past the battle horse a visit is worth
+		// up to three medals (never past the twentieth level), and the due
+		// saddlebag row's on top.
+		if (ch->GetHorseLevel() >= 11 && ch->GetHorseLevel() <= 19)
+			return std::min(3, 20 - (int)ch->GetHorseLevel()) + GetPlayerBotSaddlebagMedalReserve(ch);
 		const bool highPriority = ch->GetJob() == JOB_WARRIOR ||
 				(ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 1);
 		return highPriority

@@ -248,6 +248,9 @@ namespace {
     bool FindPlayerBotOutdatedGearPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotBuffSetPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
     bool FindPlayerBotSinkGoodsPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
+    // MT2009_PLUS_HORSE_ECONOMY_V2: the sink goods' scan of one map's stands.
+    bool ScanPlayerBotSinkGoods(LPCHARACTER ch, long mapIndex, DWORD now, DWORD& owner, DWORD& item,
+            DWORD& vnum, long long& unit);
     // MT2009_PLUS_BOT_HAGGLE_V1: defined in playerbot_haggle.h, after the
     // whisper and the item link.
     bool TryStartPlayerBotHaggle(LPCHARACTER ch, TPlayerBotAIState& state,
@@ -449,8 +452,26 @@ namespace {
         using namespace playerbot_offline;
         auto& o = state.offlineShop;
         o.farPickOwner = o.farPickItem = 0;
+        o.farPickSink = false;
         const long long budget = Affordable(ch->GetGold(), GetPlayerBotReservedGold(ch), PLAYERBOT_SHOPPING_GOLD_FLOOR);
         if (budget <= 0) return false;
+        // MT2009_PLUS_HORSE_ECONOMY_V2: the first village's sink goods first.
+        // Every one of the supporters' world's 1218 medal lines stood in a
+        // first village, and the bots short of a medal were on the frontier
+        // or in a second village, where the in-reach pick could not see them.
+        {
+            DWORD sinkOwner = 0, sinkItem = 0, sinkVnum = 0;
+            long long sinkUnit = 0;
+            if (ScanPlayerBotSinkGoods(ch, mapIndex, get_dword_time(), sinkOwner, sinkItem, sinkVnum, sinkUnit)) {
+                o.farPickOwner = sinkOwner;
+                o.farPickItem = sinkItem;
+                o.farPickSink = true;
+                sys_log(0, "PLAYERBOT_MARKET: far sink pick pid=%u name=%s map=%ld owner=%u item=%u vnum=%u unit=%lld lv=%d horse=%u",
+                    ch->GetPlayerID(), ch->GetName(), mapIndex, sinkOwner, sinkItem, sinkVnum, sinkUnit,
+                    (int)ch->GetLevel(), (unsigned int)ch->GetHorseLevel());
+                return true;
+            }
+        }
         // In the order of their distance from the market's middle, which does
         // not move, so the cursor means the same thing at the next look.
         long centreX = 0, centreY = 0;
@@ -939,8 +960,14 @@ namespace {
                 IsPlayerBotCorVnum(vnum) || IsPlayerBotSashVnum(vnum);
     }
 
-    bool FindPlayerBotSinkGoodsPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
+    // MT2009_PLUS_HORSE_ECONOMY_V2: the scan alone, for any map's stands (the
+    // in-reach pick below and the far pick of a walk to the first village,
+    // FindPlayerBotFarOfflinePick), on one throttle a bot.
+    bool ScanPlayerBotSinkGoods(LPCHARACTER ch, long mapIndex, DWORD now, DWORD& bestOwner, DWORD& bestItem,
+            DWORD& bestVnum, long long& bestUnit) {
         using namespace playerbot_offline;
+        bestOwner = bestItem = bestVnum = 0;
+        bestUnit = 0;
         if (!ch || IsPlayerBotSidekickPID(ch->GetPlayerID()))
             return false;
         DWORD& next = s_mapPlayerBotSinkNextLook[ch->GetPlayerID()];
@@ -954,14 +981,12 @@ namespace {
         if (!wants) return false;
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
                 ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
-        DWORD bestOwner = 0, bestItem = 0, bestVnum = 0;
-        long long bestUnit = 0;
         unsigned int looked = 0;
         for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
             if (looked > 400) break;
             if (!shop || pid == ch->GetPlayerID() || shop->GetDuration() == 0 || shop->IsEditMode()) continue;
             const auto spawn = shop->GetSpawn();
-            if (spawn.map != ch->GetMapIndex() || (int)spawn.channel != shopChannel) continue;
+            if (spawn.map != mapIndex || (int)spawn.channel != shopChannel) continue;
             for (const auto& [id, line] : shop->GetItems()) {
                 if (!line) continue;
                 const DWORD vnum = line->GetInfo().vnum;
@@ -985,7 +1010,14 @@ namespace {
                 bestUnit = unit;
             }
         }
-        if (!bestOwner) return false;
+        return bestOwner != 0;
+    }
+
+    bool FindPlayerBotSinkGoodsPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
+        DWORD bestOwner = 0, bestItem = 0, bestVnum = 0;
+        long long bestUnit = 0;
+        if (!ch || !ScanPlayerBotSinkGoods(ch, ch->GetMapIndex(), now, bestOwner, bestItem, bestVnum, bestUnit))
+            return false;
         auto& o = state.offlineShop;
         o.buyOwner = bestOwner;
         o.buyItem = bestItem;

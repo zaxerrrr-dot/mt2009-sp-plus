@@ -187,8 +187,12 @@ namespace
 			return 0;
 		const int rows = GetPlayerBotSaddlebagRows(ch);
 		const int target = std::min<int>(INVENTORY_PAGE_ROW, GetPlayerBotSaddlebagTargetRows(ch->GetPlayerID()));
+		// MT2009_PLUS_HORSE_ECONOMY_V2: two rows at most - 48 213 materials
+		// stood in the bots' bags on the supporters' world, kept for rows
+		// hours away; past the next two rows' need they are goods
+		// (IsPlayerBotKeptCraftMaterial), listed twenty a line.
 		int need = 0;
-		for (int r = rows; r < target; ++r)
+		for (int r = rows; r < target && r < rows + 2; ++r)
 		{
 			need += PLAYERBOT_SADDLEBAG_ROWS[r].materials;
 			if (nextOnly)
