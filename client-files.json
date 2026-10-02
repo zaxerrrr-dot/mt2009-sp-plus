@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.37",
+  "version": "2.0.38",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -15,7 +15,7 @@
     {
       "path": "metin2client.exe",
       "size": 13663232,
-      "sha256": "F719EB1DA1CA8BEB0A1370FCFED23A91720A86BBB534515348219C8FAAFDF65A"
+      "sha256": "402D525AF2C4CE812B29E9B08F0FFE22A0EBE73EC93730876B40699E5B080AEA"
     },
     {
       "path": "MT2009-Patcher.exe",
@@ -154,8 +154,8 @@
     },
     {
       "path": "pack/root.index",
-      "size": 17340,
-      "sha256": "0501A0004EBA5B8399FFC2226C935A54D5183557F5CE4E34592030F2E5B77C0D"
+      "size": 17420,
+      "sha256": "D259AD9A55CA13F3F525DC1659CEC397DDDD2F8289E25FE725749C0FC44A8384"
     }
   ]
 }

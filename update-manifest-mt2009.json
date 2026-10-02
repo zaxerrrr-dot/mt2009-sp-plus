@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-01T14:44:00Z",
-  "statusMessage": "Serwer 2.17.1: poprawka aktualizacji 2.17.0 (brakujacy plik nagrod Dzieci Kwiaty). Klient 2.0.37 bez zmian.",
+  "publishedAt": "2026-10-02T12:00:00Z",
+  "statusMessage": "Serwer 2.18.0: zywy rynek botow, nowa sciezka rozwoju botow, Towarzysz, wojny gildii na zabojstwa. Klient 2.0.38: brak wylaczania w walce, sortowanie magazynu, kolejny cel.",
   "server": {
-    "version": "2.17.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.17.1.zip",
-    "sha256": "521C477C7F9E3CDC2D4574D9FF63D85A5F957E77717078A9A8D4E20D5E6D9B38",
-    "size": 96458600
+    "version": "2.18.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.18.0.zip",
+    "sha256": "05E7C069EE57774B0A743DA7D3CD206E1A849C384C913150154FE7B36FC65C82",
+    "size": 96618619
   },
   "client": {
-    "version": "2.0.37",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.37/metin2-client-update-2.0.37.zip",
-    "sha256": "3DFFFCA0A788BECDA4069709A0E7A6877DC4FFE2349636208B8156EC1B6985C2",
-    "size": 350282855
+    "version": "2.0.38",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.38/metin2-client-update-2.0.38.zip",
+    "sha256": "52D1B7651E85C05A6A98C8CFE04E78DA3319C654A599C15F6A2323AAB2D88EF5",
+    "size": 350304738
   }
 }
