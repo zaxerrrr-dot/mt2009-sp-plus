@@ -342,3 +342,21 @@ Pliki `root` (baza: paczka `root` 2.0.30/`tcm/c31` – nasze wersje z „Kup wie
   „<< 1 / N >>”. „Kup wiele” (pola wyboru, „Kup wszystko”, „Odznacz”) zostaje – kupuje całe linie.
 - `offlineshopsearch.py` – okno ilości dla stosu otwiera się na 1.
 - `offlineshopmanage.py` – „Cena sprzedaży” w oknie wystawiania 2 px wyżej (y 57).
+
+## Magazyn: „Ułóż i scal” i „Tylko scal stosy” – bez zmian exe
+
+Znacznik `MT2009_PLUS_SAFEBOX_ARRANGE_V1`. Serwer: `/safebox_arrange` (było w silniku,
+`playerbot_arrange::ArrangeSafebox`) i `/safebox_arrange merge` (`server-patches/safeboxmerge`,
+`MT2009_PLUS_SAFEBOX_MERGE_V1`, `playerbot_arrange::MergeSafeboxStacks`). Pliki `root` (baza: wpisy
+paczki `root` 2.0.30–2.0.38, bez zmian od 2.0.28); wszystkie trzy są już w paczce (bez nowych wpisów):
+
+- `uiscript/safeboxwindow.py` – na pasku tytułu magazynu dwa przyciski jak w ekwipunku: po lewej
+  „Ułóż i scal” (ikona `flamewind/public/refresh_button_0x`), po prawej „Tylko scal stosy” (ikona
+  przycisku ekwipunku `flamewind/inventory/autostack_0x`).
+- `uisafebox.py` – przyciski wysyłają jedną komendę (cały magazyn, wszystkie strony, po stronie
+  serwera); pakiet przenoszenia w magazynie nie łączy stosów (`ENABLE_MT2009_DISABLE_SAFEBOX_STACK`),
+  a seria przeniesień trafiałaby w limity pakietów. Drugie kliknięcie, zanim przyjdzie odpowiedź,
+  nic nie robi (5 s bez odpowiedzi zwalnia przyciski; serwer trzyma 2 s między prośbami). Nic nie
+  idzie, gdy przedmiot wisi na kursorze albo trwa otwieranie sklepu; handel, sklep, inne okno –
+  odmawia serwer. Wynik po polsku na czacie (`OnArrangeResult`).
+- `game.py` – `SafeboxArrangeResult` → `uiSafebox.OnArrangeResult`.

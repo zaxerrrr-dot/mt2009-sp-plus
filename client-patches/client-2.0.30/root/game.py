@@ -2946,6 +2946,8 @@ class GameWindow(ui.ScriptWindow):
 			"AutoHuntLoot"					: self.__AutoHuntLoot,
 			"AutoHuntOff"					: self.__AutoHuntOff,
 			"InventoryArrangeResult"		: self.__InventoryArrangeResult,
+			# MT2009_PLUS_SAFEBOX_ARRANGE_V1: the safebox's two buttons (uisafebox.py).
+			"SafeboxArrangeResult"		: self.__SafeboxArrangeResult,
 			"SidekickInfo"					: self.__SidekickInfo,
 			"SidekickNames"					: self.__SidekickNames,
 			"SidekickGear"					: self.__SidekickGear,
@@ -4055,6 +4057,12 @@ class GameWindow(ui.ScriptWindow):
 	def __InventoryArrangeResult(self, code="0", moved="0", merged="0", units="0", *rest):
 		import inventoryarrange
 		inventoryarrange.OnResult(code, moved, merged, units)
+
+	# MT2009_PLUS_SAFEBOX_ARRANGE_V1: "/safebox_arrange [merge]" answered
+	# (server-patches/safeboxmerge, playerbot_arrange.cpp).
+	def __SafeboxArrangeResult(self, code="0", moved="0", merged="0", units="0", *rest):
+		import uiSafebox
+		uiSafebox.OnArrangeResult(code, moved, merged, units)
 
 	def __InGameShop_Show(self, url):
 		if constInfo.IN_GAME_SHOP_ENABLE:
