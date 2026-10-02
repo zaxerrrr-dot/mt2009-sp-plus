@@ -17,6 +17,57 @@ every version here.
 
 ---
 
+## 2.18.1 — 2026-10-02 — COOP dla wszystkich, Biblioteka Wiedzy, Towarzysz, poprawki botów i minigier
+
+**COOP dla wszystkich:** granie u znajomego (COOP) nie wymaga już hasła w launcherze. Jeśli chcesz, możesz wesprzeć rozwój paczki singleplayer na https://buycoffee.to/mt2009plus.
+
+Wymaga klienta **2.0.39** (launcher pobierze go sam albo zaktualizuje go patcher).
+
+### Biblioteka Wiedzy
+- Potwory w lochu zadają o 20% większe obrażenia.
+- Metiny w lochu mają o 45% mniej życia (Metiny na mapach bez zmian).
+- Baronówna Pająków ma życie i regenerację Wodza Orków, a jej życie rośnie z liczbą graczy w lochu: 2 osoby +50%, 3 osoby +100%, 4 i więcej +200%. Regeneracja zostaje taka sama w punktach, niezależnie od liczby graczy.
+- Ustawienie liczby potworów w respie (×2–×4 dla Metinów i bossów oraz zwykłych potworów) nie działa już w lochach - lochy mają respy takie, jak zostały zaprojektowane.
+
+### Minigry
+- **Łapanie Króla, Rumi (Okey) i Yutnori pobierają opłatę za grę** (30 000 yang za talię w Łapaniu Króla, 30 000 yang za grę w Rumi i Yutnori). Wcześniej opłata nie była pobierana.
+
+### Łucznik
+- **Strzały żywiołów zadają obrażenia z dystansu.** Ognista, Trująca, Lodowa i Przeklęta Strzała nie miały ustawionego zasięgu, więc każdy strzał spoza bezpośredniej bliskości zadawał 0 obrażeń. Teraz trafiają z pełną siłą na każdą odległość.
+
+### Towarzysz
+- **Blokada ekwipunku:** w oknie Towarzysza (Opcje) jest przełącznik „Zablokuj ekwipunek”. Po włączeniu Towarzysz nie ulepsza, nie przerabia, nie zdejmuje, nie sprzedaje i nie wyrzuca tego, co ma na sobie i co dostał od Ciebie. Ty nadal możesz przekładać jego rzeczy.
+- **Kamienie Duchowe:** Towarzysz z Kamieniem Duchowym w ekwipunku trenuje swoje umiejętności na G (te, które mu wybrałeś, najpierw główną) według zasad gracza: ranga i czas oczekiwania jak w queście. Gdy nie może, pisze Ci dlaczego (brak kamienia, czas oczekiwania, za niska ranga, przemiana), a po każdym czytaniu podaje wynik.
+- Boty czytają Kamienie Duchowe przy takiej samej randze jak gracze i płacą tyle samo rangi (wcześniej wymagały dziesięć razy mniej).
+
+### Boty
+- **Koniec odbijania się od Doliny Orków:** boty z pełną torbą płaciły za Teleporter, lądowały w Dolinie Orków i po kilku sekundach wracały do M1 - w kółko. Teraz pełna torba odsyła je do miasta dopiero po normalnym pobycie na mapie, a teleport na mapę, na której bot już stoi, jest zablokowany.
+- **Peleryna Męstwa:** silne boty używają Peleryny Męstwa, gdy dadzą radę przyciągniętym potworom - jedna na spot, a następna dopiero po pokonaniu tłumu. Peleryny kupują od innych sprzedających.
+
+### Alchemia
+- Okno komunikatów pokazuje tylko ostatni komunikat, zamiast dopisywać kolejne linie bez końca.
+- Uszlachetnianie, które i tak by się nie udało (puste miejsce, mieszane kamienie, zła liczba kamieni, najwyższy stopień, brak yang), okno odrzuca od razu, z informacją dlaczego.
+
+### Auto Łowy
+- Nowy przełącznik **„Autopodnoszenie: Włączone / Wyłączone”** na górze sekcji „Podnoszenie”. Wyłączone - Auto Łowy nie zbierają przedmiotów z ziemi. Wybór zapisuje się od razu dla każdej postaci.
+
+### Drop yang
+- Przy każdym ustawieniu dropu yang (panele WWW, launcher) jest ostrzeżenie: **CENY I BOTY SĄ ZOPTYMALIZOWANE POD DROP 100%, ustawiając więcej, psujesz sobie rozgrywkę, a na serwerze będzie wielka inflacja, a ceny będą przesadzone.**
+
+### Aktualizacje
+- **Zapasowy serwer aktualizacji.** Gdy GitHub jest niedostępny, launcher, aktualizator na Linuxie i aktualizator klienta pobierają manifest i paczki z naszego serwera (`http://141.94.100.53/aktualizacje/`). Każda paczka jest sprawdzana sumą SHA-256 z manifestu, tak jak dotąd.
+
+---
+
+## Klient 2.0.39 — 2026-10-02
+
+- **Auto Łowy:** przełącznik „Autopodnoszenie: Włączone / Wyłączone”.
+- **Towarzysz:** przełącznik „Zablokuj ekwipunek” w Opcjach.
+- **Alchemia:** okno pokazuje tylko ostatni komunikat i od razu odrzuca uszlachetnianie, które by się nie udało.
+- Aktualizator klienta korzysta z zapasowego serwera aktualizacji, gdy GitHub jest niedostępny.
+
+---
+
 ## 2.18.0 — 2026-10-02 — Żywy rynek, nowa ścieżka rozwoju botów, wojny gildii na zabójstwa
 
 Wymaga klienta **2.0.38** (launcher pobierze go sam albo zaktualizuje go patcher).

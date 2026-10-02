@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-02T12:00:00Z",
-  "statusMessage": "Serwer 2.18.0: zywy rynek botow, nowa sciezka rozwoju botow, Towarzysz, wojny gildii na zabojstwa. Klient 2.0.38: brak wylaczania w walce, sortowanie magazynu, kolejny cel.",
+  "publishedAt": "2026-10-02T17:00:00Z",
+  "statusMessage": "Serwer 2.18.1: COOP dla wszystkich, Biblioteka Wiedzy, Towarzysz, poprawki botow i minigier. Klient 2.0.39: autopodnoszenie, blokada ekwipunku Towarzysza, okno Alchemii.",
   "server": {
-    "version": "2.18.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.18.0.zip",
-    "sha256": "05E7C069EE57774B0A743DA7D3CD206E1A849C384C913150154FE7B36FC65C82",
-    "size": 96618619
+    "version": "2.18.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/raw/main/releases/metin2-server-update-2.18.1.zip",
+    "sha256": "B26CF18049F950989EF2D2ED859F90922D3CEF29FCB0C9F867D88CD2985E7769",
+    "size": 96646575
   },
   "client": {
-    "version": "2.0.38",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.38/metin2-client-update-2.0.38.zip",
-    "sha256": "52D1B7651E85C05A6A98C8CFE04E78DA3319C654A599C15F6A2323AAB2D88EF5",
-    "size": 350304738
+    "version": "2.0.39",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.39/metin2-client-update-2.0.39.zip",
+    "sha256": "7EE51517D60B73026E5E6F3A84C16178E1C12B4DA922BB4D3A012C361F65E41D",
+    "size": 350309337
   }
 }
