@@ -1367,10 +1367,6 @@ namespace
 		// own off the counter (IsPlayerBotCapeBuild).
 		if (IsPlayerBotValourCapeVnum(item->GetVnum()) && ch && IsPlayerBotCapeBuild(ch))
 			return PLAYERBOT_CAPE_KEEP;
-		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: a potion's split leaves the
-		// bot's reserve in the bag (GetPlayerBotCraftedPotionKeep).
-		if (IsPlayerBotCraftedPotion(item))
-			return std::max(1, GetPlayerBotCraftedPotionKeep(ch, item->GetVnum()));
 		return 1;
 	}
 
@@ -1593,13 +1589,6 @@ namespace
 		// MT2009_PLUS_BOTLIFE_V1: a refine stone's kind is its vnum.
 		if (type == ITEM_USE && IsPlayerBotAccessoryStoneVnum(vnum))
 			return vnum;
-#if defined(PLAYERBOT_ENGINE_MT2009)
-		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: a potion's kind is its vnum,
-		// so the classic stall never lists the stack that holds the bot's
-		// reserve (MayListWhole, GetPlayerBotCountedGoodsKeep).
-		if (type == ITEM_POTION)
-			return vnum;
-#endif
 		return vnum == PLAYERBOT_GRAND_MASTER_STONE_VNUM || vnum == PLAYERBOT_ZEN_BEAN_VNUM ? vnum : 0;
 	}
 
@@ -1643,9 +1632,6 @@ namespace
 		// MT2009_PLUS_BOTLIFE_V1: what the bot's jewellery still takes.
 		if (IsPlayerBotAccessoryStone(item))
 			return GetPlayerBotAccessoryStoneKeep(ch, item);
-		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: the potion reserve.
-		if (IsPlayerBotCraftedPotion(item))
-			return GetPlayerBotCraftedPotionKeep(ch, item->GetVnum());
 		return 0;
 	}
 
@@ -2188,8 +2174,9 @@ namespace
 
 		// A material only the Herbalist's Knife consumes is nothing to a bot:
 		// see IsPlayerBotNonGearMaterial. MT2009_PLUS_BOT_HERBALIST_FIX_V1:
-		// except the herbs to a gatherer, who picked them for Baek-Go's board.
-		if (IsPlayerBotHerbalismHerb(vnum) && IsPlayerBotHerbGatherer(ch))   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
+		// except the herbs to the herbalist by trade, who picked them for
+		// Baek-Go's board.
+		if (IsPlayerBotHerbalismHerb(vnum) && IsPlayerBotHerbalistByTrade(ch))
 			return false;
 		if (item->GetType() == ITEM_MATERIAL && IsPlayerBotNonGearMaterial(vnum))
 			return true;
