@@ -2001,25 +2001,6 @@ function Assert-CoopModule {
     }
 }
 
-function Assert-CoopHostAccess {
-    # Hosting is for the Patreon testers while COOP is tried out. The text menu
-    # asks for their password here; an action started by the window runs with
-    # no console to answer from, and the window asks before it starts one.
-    # Ending hosting, renewing the lease and joining a friend never ask.
-    Assert-CoopModule
-    if (Test-M2CoopAccess -ServerRoot $serverRoot) { return }
-    if ($Action -ne 'Menu') {
-        throw 'Hostowanie w COOP testują na razie patroni: odblokuj je ich hasłem w oknie COOP launchera albo w menu tekstowym.'
-    }
-    Write-Host 'Hostowanie w COOP testują na razie patroni - hasło jest w poście dla patronów.' -ForegroundColor Yellow
-    $secure = Read-Host 'Hasło testów COOP' -AsSecureString
-    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
-    try { $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr) }
-    finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
-    if (-not (Grant-M2CoopAccess -ServerRoot $serverRoot -Password $plain)) { throw 'To nie jest hasło testów COOP.' }
-    Write-Host 'Hostowanie w COOP odblokowane na tej instalacji.' -ForegroundColor Green
-}
-
 function Write-CoopNetworkReport {
     param($Report)
     Write-Host ("Karta sieciowa: {0} ({1}), brama {2}" -f $Report.LanAddress, $Report.Interface, $Report.Gateway)
@@ -2101,7 +2082,7 @@ function Show-CoopCheckAction {
 }
 
 function Protect-CoopAccountsAction {
-    Assert-CoopHostAccess
+    Assert-CoopModule
     $changed = Protect-M2CoopAccounts -ServerRoot $serverRoot
     $names = @($changed.PSObject.Properties | ForEach-Object { $_.Name })
     if ($names.Count -eq 0) {
@@ -2115,7 +2096,7 @@ function Protect-CoopAccountsAction {
 }
 
 function Add-CoopFriendAction {
-    Assert-CoopHostAccess
+    Assert-CoopModule
     $name = $FriendName
     if (-not $name) { $name = Read-Host 'Imię albo nick znajomego' }
     if (-not $name) { throw 'Nie podano imienia znajomego.' }
@@ -2131,7 +2112,7 @@ function Add-CoopFriendAction {
 
 function Set-CoopFriendBlockedAction {
     param([bool]$Blocked = $true)
-    Assert-CoopHostAccess
+    Assert-CoopModule
     $login = $FriendLogin
     if (-not $login) { $login = Read-Host 'Login znajomego' }
     if (-not $login) { throw 'Nie podano loginu.' }
@@ -2141,7 +2122,7 @@ function Set-CoopFriendBlockedAction {
 }
 
 function Show-CoopInviteAction {
-    Assert-CoopHostAccess
+    Assert-CoopModule
     $state = Read-M2CoopState -ServerRoot $serverRoot
     $target = Get-M2CoopInviteTarget -ServerRoot $serverRoot
     if (-not $target.Address) {
@@ -2240,7 +2221,7 @@ function Wait-CoopGameReady {
 }
 
 function Start-CoopHostingAction {
-    Assert-CoopHostAccess
+    Assert-CoopModule
     Write-Phase 'sprawdzanie sieci'
     $report = Get-M2CoopNetworkReport
     Write-CoopNetworkReport -Report $report
@@ -2646,16 +2627,15 @@ function Write-VpsClientAction {
 
 function Show-VpsInviteAction {
     Assert-VpsConsole
-    Assert-CoopHostAccess
     $state = Get-VpsStateForAction
     $name = $FriendName
     if (-not $name) { $name = Read-Host 'Imię albo nick znajomego (z niego powstanie login na VPS)' }
     if (-not $name) { throw 'Nie podano imienia znajomego.' }
     $status = Get-M2VpsStatus -State $state
-    $friend = New-M2VpsFriend -State $state -ServerRoot $serverRoot -Name $name
+    $friend = New-M2VpsFriend -State $state -Name $name
     Write-Host ('Konto na VPS dla {0}: login {1}, hasło {2}' -f $friend.name, $friend.login, $friend.password) -ForegroundColor Green
     Write-Host 'Kod zaproszenia (skopiuj i wyślij znajomemu w prywatnej wiadomości - zawiera hasło):'
-    Write-Host (Get-M2VpsFriendInvite -State $state -ServerRoot $serverRoot -Account $friend -Status $status) -ForegroundColor Cyan
+    Write-Host (Get-M2VpsFriendInvite -State $state -Account $friend -Status $status) -ForegroundColor Cyan
 }
 
 function Invoke-Action {
@@ -2766,10 +2746,8 @@ function Show-Menu {
         Write-Host ' 21. Zwolnij porty (gdy „port jest już zajęty” blokuje start lub aktualizację)'
         Write-Host ' 22. Poziom trudności (czekanie u Biologa i Stajennego: easy / medium / hard / własne godziny)'
         if (Get-Command Get-M2CoopNetworkReport -ErrorAction SilentlyContinue) {
+            Write-Host '     COOP jest teraz dostępny dla wszystkich. Jeśli chcesz, możesz wesprzeć rozwój paczki singleplayer: https://buycoffee.to/mt2009plus' -ForegroundColor DarkGray
             Write-Host ' 23. COOP: sprawdź sieć i stan hostowania (eksperymentalne)'
-            if (-not (Test-M2CoopAccess -ServerRoot $serverRoot)) {
-                Write-Host '     Hostowanie (24-27) testują na razie patroni - launcher zapyta o ich hasło.' -ForegroundColor DarkGray
-            }
             Write-Host ' 24. COOP: zabezpiecz konta admin i test (nowe hasła)'
             Write-Host ' 25. COOP: dodaj znajomego (konto i kod zaproszenia)'
             Write-Host ' 26. COOP: pokaż kody zaproszeń'
@@ -2788,7 +2766,7 @@ function Show-Menu {
             Write-Host ' 37. VPS: hasła kont gry (admin, test, znajomi)'
             Write-Host ' 38. VPS: dopisz serwer VPS do klienta gry'
             Write-Host ' 39. VPS: logi serwera'
-            Write-Host ' 40. VPS: konto i kod zaproszenia dla znajomego (COOP, dla patronów)'
+            Write-Host ' 40. VPS: konto i kod zaproszenia dla znajomego (COOP)'
         }
         if (Get-Command Invoke-M2Report -ErrorAction SilentlyContinue) {
             Write-Host ' 41. Zgłoś błąd, propozycję albo pytanie (do autora, z logami)'

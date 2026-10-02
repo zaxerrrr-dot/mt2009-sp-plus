@@ -1,9 +1,8 @@
 ﻿#requires -Version 5.1
 # This world on a rented Linux VPS ("Instaluj na VPS"): the launcher uploads
 # the server folder over SSH and runs linux-port/tools/vps-install.sh there.
-# Installing, updating and opening the panels are for everybody; invite codes
-# for friends are behind the COOP testers' password (Test-M2CoopAccess), like
-# the invites for a world hosted at home.
+# Installing, updating, opening the panels and invite codes for friends are
+# for everybody, like the invites for a world hosted at home.
 #
 #   state     .m2vps.json beside the launcher's other state files: the host,
 #             the user, the port, the key's path, the folder on the VPS.
@@ -1168,20 +1167,6 @@ function Write-M2VpsClientEntry {
     return [pscustomobject]@{ Path = $path; Name = $entry.name; Host = $entry.host; Replaced = $(if ($previous -and $previous -ne $entry.name) { $previous } else { '' }) }
 }
 
-function Test-M2VpsInviteAccess {
-    # Invites to the VPS world are the COOP testers', like every invite.
-    param([Parameter(Mandatory = $true)][string]$ServerRoot)
-    if (-not (Get-Command Test-M2CoopAccess -ErrorAction SilentlyContinue)) { return $false }
-    return [bool](Test-M2CoopAccess -ServerRoot $ServerRoot)
-}
-
-function Assert-M2VpsInviteAccess {
-    param([Parameter(Mandatory = $true)][string]$ServerRoot)
-    if (-not (Test-M2VpsInviteAccess -ServerRoot $ServerRoot)) {
-        throw 'Zaproszenia dla znajomych (także na VPS) testują na razie patroni: odblokuj COOP ich hasłem (okno COOP albo menu tekstowe).'
-    }
-}
-
 function ConvertTo-M2VpsAsciiName {
     # Pure: a friend's name as the VPS's account file keeps it - plain
     # letters, "Łukasz" as "Lukasz" rather than "ukasz".
@@ -1197,8 +1182,7 @@ function ConvertTo-M2VpsAsciiName {
 function New-M2VpsFriend {
     # A game account on the VPS for a friend, made there (vps-install.sh
     # add-account), its password kept only in the VPS's root-only file.
-    param([Parameter(Mandatory = $true)]$State, [Parameter(Mandatory = $true)][string]$ServerRoot, [Parameter(Mandatory = $true)][string]$Name)
-    Assert-M2VpsInviteAccess -ServerRoot $ServerRoot
+    param([Parameter(Mandatory = $true)]$State, [Parameter(Mandatory = $true)][string]$Name)
     $plain = ConvertTo-M2VpsAsciiName -Name $Name
     $base = ($plain.ToLowerInvariant() -replace '[^a-z0-9]', '')
     if ($base.Length -lt 2) { throw 'Imię znajomego: co najmniej dwie litery lub cyfry.' }
@@ -1215,9 +1199,7 @@ function New-M2VpsFriend {
 function Get-M2VpsFriendInvite {
     # A COOP invite code to the VPS world (New-M2CoopInvite): the friend
     # pastes it in the COOP window's joining tab or in Dolacz.bat.
-    param([Parameter(Mandatory = $true)]$State, [Parameter(Mandatory = $true)][string]$ServerRoot,
-        [Parameter(Mandatory = $true)]$Account, $Status = $null)
-    Assert-M2VpsInviteAccess -ServerRoot $ServerRoot
+    param([Parameter(Mandatory = $true)]$State, [Parameter(Mandatory = $true)]$Account, $Status = $null)
     if (-not (Get-Command New-M2CoopInvite -ErrorAction SilentlyContinue)) { throw 'Brak modułu COOP (launcher\Metin2Launcher.Coop.psm1).' }
     if (-not $Status) { $Status = Get-M2VpsStatus -State $State }
     $ports = Get-M2VpsGamePorts -AuthPort ([int]$Status.AuthPort) -GamePortRange ([string]$Status.GamePortRange)
@@ -1238,5 +1220,5 @@ Export-ModuleMember -Function Get-M2VpsStatePath, Get-M2VpsDefaultKeyPath, New-M
     ConvertFrom-M2VpsStatus, Get-M2VpsStatus, Compare-M2VpsVersion, Wait-M2VpsJob, Get-M2VpsInstallAddressArgument, Install-M2Vps, Update-M2Vps,
     Test-M2VpsLocalPortFree, Get-M2VpsLocalServerPorts, Get-M2VpsTunnelPlan, Get-M2VpsTunnelProcess, Get-M2VpsPanelAddresses, Close-M2VpsPanel, Open-M2VpsPanel,
     Get-M2VpsLogsScript, Get-M2VpsLogs, ConvertFrom-M2VpsAccounts, Get-M2VpsAccounts,
-    Get-M2VpsGamePorts, Get-M2VpsWorldAddress, Write-M2VpsClientEntry, Test-M2VpsInviteAccess, Assert-M2VpsInviteAccess,
+    Get-M2VpsGamePorts, Get-M2VpsWorldAddress, Write-M2VpsClientEntry,
     ConvertTo-M2VpsAsciiName, New-M2VpsFriend, Get-M2VpsFriendInvite

@@ -2549,8 +2549,8 @@ $worldBackupButton = New-Button (T 'worldBackup') 496 418 230 32 ([Drawing.Color
 # The world's difficulty - the waits at the Biologist and the stable keeper -
 # chosen here and applied at the next start (M2_DIFFICULTY in .env).
 $difficultyButton = New-Button (T 'difficulty') 28 456 218 32 ([Drawing.Color]::FromArgb(120, 95, 40))
-# COOP (experimental): this world played with friends over the Internet, the
-# hosting half for the Patreon testers behind their password (Open-CoopWindow).
+# COOP (experimental): this world played with friends over the Internet, open
+# to everybody, no password.
 # The button exists only when the optional module does.
 $coopModulePath = Join-Path $root 'launcher\Metin2Launcher.Coop.psm1'
 $coopButton = $null
@@ -2896,122 +2896,35 @@ function Get-CoopClientFolder {
     return ''
 }
 
-# The COOP windows' link to the project's support page (operator, 24 September).
+# The COOP window's note that COOP is open to everybody, with the link to the
+# project's support page (operator, 2 October).
 function New-CoopCoffeeLink {
     param([int]$X, [int]$Y, [int]$Width)
+    $url = 'https://buycoffee.to/mt2009plus'
     $link = [Windows.Forms.LinkLabel]::new()
-    $link.Text = 'Zostań wspierającym, postaw kawę'
+    $link.Text = 'COOP jest teraz dostępny dla wszystkich. Jeśli chcesz, możesz wesprzeć rozwój paczki singleplayer: ' + $url
+    $link.LinkArea = [Windows.Forms.LinkArea]::new($link.Text.Length - $url.Length, $url.Length)
     $link.Location = [Drawing.Point]::new($X, $Y)
-    $link.Size = [Drawing.Size]::new($Width, 22)
-    $link.Font = [Drawing.Font]::new('Segoe UI', 9.5, [Drawing.FontStyle]::Bold)
+    $link.Size = [Drawing.Size]::new($Width, 40)
+    $link.Font = [Drawing.Font]::new('Segoe UI', 9)
     $link.Add_LinkClicked({
         try { Start-Process 'https://buycoffee.to/mt2009plus' } catch { Write-LocalLog "COOP: nie otwarto strony wsparcia: $($_.Exception.Message)" }
     })
     return $link
 }
 
-function Show-CoopUnlockDialog {
-    # Hosting is tried by the Patreon testers first. Their password is asked
-    # once and remembered by the module (.m2coop.json); a friend who only
-    # joins needs none, so the second way out opens just the joining tab.
-    # Returns 'unlocked', 'join' or 'cancel'. Nothing typed here is logged.
-    $dialog = [Windows.Forms.Form]::new()
-    $dialog.Text = 'COOP - testy dla patronów'
-    $dialog.Size = [Drawing.Size]::new(520, 300)
-    $dialog.StartPosition = 'CenterParent'
-    $dialog.FormBorderStyle = 'FixedDialog'
-    $dialog.MaximizeBox = $false
-    $dialog.MinimizeBox = $false
-    $dialog.Tag = 'cancel'
-    $info = [Windows.Forms.Label]::new()
-    $info.Text = ('Hostowanie własnego świata w COOP testują na razie patroni. Wpisz hasło z posta dla patronów - ' +
-        'launcher zapamięta je na tej instalacji.')
-    $info.Location = [Drawing.Point]::new(14, 12)
-    $info.Size = [Drawing.Size]::new(476, 40)
-    $dialog.Controls.Add($info)
-    $box = [Windows.Forms.TextBox]::new()
-    $box.UseSystemPasswordChar = $true
-    $box.Location = [Drawing.Point]::new(14, 60)
-    $box.Size = [Drawing.Size]::new(300, 26)
-    $box.Font = [Drawing.Font]::new('Consolas', 11)
-    $dialog.Controls.Add($box)
-    $unlock = [Windows.Forms.Button]::new()
-    $unlock.Text = 'Odblokuj'
-    $unlock.Location = [Drawing.Point]::new(326, 58)
-    $unlock.Size = [Drawing.Size]::new(164, 30)
-    $dialog.Controls.Add($unlock)
-    $dialog.AcceptButton = $unlock
-    $wrong = [Windows.Forms.Label]::new()
-    $wrong.Location = [Drawing.Point]::new(14, 94)
-    $wrong.Size = [Drawing.Size]::new(476, 20)
-    $wrong.ForeColor = [Drawing.Color]::DarkRed
-    $dialog.Controls.Add($wrong)
-    $joinInfo = [Windows.Forms.Label]::new()
-    $joinInfo.Text = 'Dołączasz do świata znajomego? Hasło nie jest potrzebne - wystarczy kod zaproszenia od niego.'
-    $joinInfo.Location = [Drawing.Point]::new(14, 128)
-    $joinInfo.Size = [Drawing.Size]::new(476, 36)
-    $joinInfo.ForeColor = [Drawing.Color]::DimGray
-    $dialog.Controls.Add($joinInfo)
-    $join = [Windows.Forms.Button]::new()
-    $join.Text = 'Mam kod zaproszenia'
-    $join.Location = [Drawing.Point]::new(14, 176)
-    $join.Size = [Drawing.Size]::new(200, 32)
-    $dialog.Controls.Add($join)
-    $cancel = [Windows.Forms.Button]::new()
-    $cancel.Text = 'Anuluj'
-    $cancel.Location = [Drawing.Point]::new(390, 176)
-    $cancel.Size = [Drawing.Size]::new(100, 32)
-    $cancel.DialogResult = [Windows.Forms.DialogResult]::Cancel
-    $dialog.Controls.Add($cancel)
-    $dialog.CancelButton = $cancel
-    $dialog.Controls.Add((New-CoopCoffeeLink -X 14 -Y 220 -Width 476))
-    $unlock.Add_Click({
-        if (Grant-M2CoopAccess -ServerRoot $root -Password $box.Text) {
-            Write-LocalLog 'COOP: hostowanie odblokowane hasłem testów.'
-            $dialog.Tag = 'unlocked'
-            $dialog.Close()
-            return
-        }
-        Write-LocalLog 'COOP: podano złe hasło testów.'
-        $wrong.Text = 'To nie jest hasło testów COOP.'
-        $box.SelectAll()
-        $box.Focus()
-    })
-    $join.Add_Click({
-        $dialog.Tag = 'join'
-        $dialog.Close()
-    })
-    [void]$dialog.ShowDialog()
-    $result = [string]$dialog.Tag
-    $dialog.Dispose()
-    return $result
-}
-
-function Open-CoopWindow {
-    if ((Get-Command Test-M2CoopAccess -ErrorAction SilentlyContinue) -and -not (Test-M2CoopAccess -ServerRoot $root)) {
-        $choice = Show-CoopUnlockDialog
-        if ($choice -eq 'join') { Show-CoopDialog -JoinOnly; return }
-        if ($choice -ne 'unlocked') { return }
-    }
-    Show-CoopDialog
-}
-
 function Show-CoopDialog {
-    # Co-op over the Internet (experimental; hosting is for the Patreon testers
-    # since 2.0.80, see Open-CoopWindow). Hosting and its end restart the game
-    # container and so run as actions in the main window; everything else here
-    # is quick and in-process, and nothing that shows a password is written to
-    # any log. -JoinOnly is the window for a friend who has an invite code and
-    # no testers' password: the joining tab alone, and nothing that asks the
-    # database or Docker about a world this machine does not host.
-    param([switch]$JoinOnly)
+    # Co-op over the Internet (experimental; open to everybody). Hosting and
+    # its end restart the game container and so run as actions in the main
+    # window; everything else here is quick and in-process, and nothing that
+    # shows a password is written to any log.
     if (-not (Get-Command Get-M2CoopNetworkReport -ErrorAction SilentlyContinue)) {
         [Windows.Forms.MessageBox]::Show('Ta paczka nie ma modułu COOP.', 'COOP', 'OK', 'Information') | Out-Null
         return
     }
     $dialog = [Windows.Forms.Form]::new()
-    $dialog.Text = $(if ($JoinOnly) { 'COOP - dołączam do świata znajomego' } else { 'COOP - gra ze znajomymi przez internet (eksperymentalne)' })
-    $dialog.Size = [Drawing.Size]::new(660, 600)
+    $dialog.Text = 'COOP - gra ze znajomymi przez internet (eksperymentalne)'
+    $dialog.Size = [Drawing.Size]::new(660, 620)
     $dialog.StartPosition = 'CenterParent'
     $dialog.FormBorderStyle = 'FixedDialog'
     $dialog.MaximizeBox = $false
@@ -3025,7 +2938,7 @@ function Show-CoopDialog {
     $hostTab.Text = 'Hostuję swój świat'
     $joinTab = [Windows.Forms.TabPage]::new()
     $joinTab.Text = 'Dołączam do znajomego'
-    if (-not $JoinOnly) { $tabs.TabPages.Add($hostTab) }
+    $tabs.TabPages.Add($hostTab)
     $tabs.TabPages.Add($joinTab)
 
     # ------------------------------------------------------------ host tab
@@ -3074,23 +2987,21 @@ function Show-CoopDialog {
     [void]$viaBox.Items.Add('Internet (porty w routerze, UPnP)')
     $viaValues.Add('internet')
     $viaFound = @()
-    if (-not $JoinOnly) { try { $viaFound = @(Get-M2CoopVpnAdapters) } catch { $viaFound = @() } }
+    try { $viaFound = @(Get-M2CoopVpnAdapters) } catch { $viaFound = @() }
     foreach ($vpn in $viaFound) {
         [void]$viaBox.Items.Add(('{0} - adres {1}' -f $vpn.Name, $vpn.Address))
         $viaValues.Add([string]$vpn.Kind)
     }
     $viaBox.SelectedIndex = 0
-    if (-not $JoinOnly) {
-        # The way the world was last hosted, while that VPN is still here.
-        try {
-            $lastHosting = (Read-M2CoopState -ServerRoot $root).hosting
-            if ($lastHosting -and (@($lastHosting.PSObject.Properties.Name) -contains 'vpn')) {
-                $lastIndex = $viaValues.IndexOf([string]$lastHosting.vpn)
-                if ($lastIndex -ge 2) { $viaBox.SelectedIndex = $lastIndex }
-            }
+    # The way the world was last hosted, while that VPN is still here.
+    try {
+        $lastHosting = (Read-M2CoopState -ServerRoot $root).hosting
+        if ($lastHosting -and (@($lastHosting.PSObject.Properties.Name) -contains 'vpn')) {
+            $lastIndex = $viaValues.IndexOf([string]$lastHosting.vpn)
+            if ($lastIndex -ge 2) { $viaBox.SelectedIndex = $lastIndex }
         }
-        catch { }
     }
+    catch { }
 
     $addButton = [Windows.Forms.Button]::new()
     $addButton.Text = 'Dodaj znajomego'
@@ -3192,10 +3103,12 @@ function Show-CoopDialog {
     $closeButton.DialogResult = [Windows.Forms.DialogResult]::Cancel
     $dialog.Controls.Add($closeButton)
     $dialog.CancelButton = $closeButton
-    $dialog.Controls.Add((New-CoopCoffeeLink -X 12 -Y 524 -Width 500))
+    $dialog.Controls.Add((New-CoopCoffeeLink -X 12 -Y 516 -Width 512))
 
     $refresh = {
-        if (-not $JoinOnly) {
+        # The host half asks Docker and the database; the joining tab below
+        # is filled even when neither answers (a friend who only joins).
+        try {
             $state = Read-M2CoopState -ServerRoot $root
             $bindings = Get-M2CoopGameBindings -ServerRoot $root
             $lines = @()
@@ -3231,6 +3144,7 @@ function Show-CoopDialog {
                 [void]$list.Items.Add($item)
             }
         }
+        catch { $status.Text = "Nie udało się odczytać stanu: $($_.Exception.Message)" }
         $client = Get-CoopClientFolder
         $cfg = $(if ($client) { Join-Path $client 'coop.cfg' } else { '' })
         if ($cfg -and (Test-Path -LiteralPath $cfg -PathType Leaf)) {
@@ -3506,7 +3420,7 @@ function Show-VpsDialog {
     $help = [Windows.Forms.Label]::new()
     $help.Text = ('Kolejność: POŁĄCZ, SPRAWDŹ VPS, ZAINSTALUJ. Gracze łączą się z adresem VPS (porty 11000 i 13000-13002 muszą być otwarte ' +
         'w zaporze dostawcy VPS, jeśli ją ma). Panele WWW słuchają tylko na VPS - otwiera je tunel SSH (przycisk OTWÓRZ PANEL). ' +
-        'DOPISZ DO KLIENTA dodaje VPS jako drugi serwer na liście w Twoim kliencie. Kody dla znajomych są dla patronów (hasło COOP).')
+        'DOPISZ DO KLIENTA dodaje VPS jako drugi serwer na liście w Twoim kliencie. KOD DLA ZNAJOMEGO zakłada mu konto na VPS i daje kod zaproszenia.')
     $help.Location = [Drawing.Point]::new(14, 412)
     $help.Size = [Drawing.Size]::new(660, 62)
     $help.ForeColor = [Drawing.Color]::DimGray
@@ -3676,12 +3590,9 @@ function Show-VpsDialog {
     $buttons['invite'].Add_Click({
         $vps = & $saveFields
         if (-not $vps) { return }
-        if (-not (Test-M2VpsInviteAccess -ServerRoot $root)) {
-            if (-not (Get-Command Show-CoopUnlockDialog -ErrorAction SilentlyContinue) -or -not (Get-Command Grant-M2CoopAccess -ErrorAction SilentlyContinue)) {
-                [Windows.Forms.MessageBox]::Show('Ta paczka nie ma modułu COOP, a kody zaproszeń idą przez niego.', 'VPS', 'OK', 'Information') | Out-Null
-                return
-            }
-            if ((Show-CoopUnlockDialog) -ne 'unlocked') { return }
+        if (-not (Get-Command New-M2CoopInvite -ErrorAction SilentlyContinue)) {
+            [Windows.Forms.MessageBox]::Show('Ta paczka nie ma modułu COOP, a kody zaproszeń idą przez niego.', 'VPS', 'OK', 'Information') | Out-Null
+            return
         }
         $name = [Microsoft.VisualBasic.Interaction]::InputBox("Imię albo nick znajomego - z niego powstanie jego login na VPS.`r`n`r`nPuste pole pokaże kody dla znajomych, którzy już mają konta.", 'Kod dla znajomego (VPS)', '')
         # InputBox answers "" for Cancel and for an empty OK alike, and what
@@ -3694,15 +3605,15 @@ function Show-VpsDialog {
             $vpsStatus = Get-M2VpsStatus -State $vps
             $codes = @()
             if ($name) {
-                $friend = New-M2VpsFriend -State $vps -ServerRoot $root -Name $name
+                $friend = New-M2VpsFriend -State $vps -Name $name
                 Write-LocalLog ('VPS: konto znajomego na VPS, login {0}.' -f $friend.login)
                 $codes += ('{0} (login {1}, hasło {2}):' -f $friend.name, $friend.login, $friend.password)
-                $codes += (Get-M2VpsFriendInvite -State $vps -ServerRoot $root -Account $friend -Status $vpsStatus)
+                $codes += (Get-M2VpsFriendInvite -State $vps -Account $friend -Status $vpsStatus)
             }
             else {
                 foreach ($account in @(Get-M2VpsAccounts -State $vps | Where-Object { $_.Note -like 'znajomy*' })) {
                     $codes += ('{0} (login {1}, hasło {2}):' -f $account.Note, $account.Login, $account.Password)
-                    $codes += (Get-M2VpsFriendInvite -State $vps -ServerRoot $root -Account $account -Status $vpsStatus)
+                    $codes += (Get-M2VpsFriendInvite -State $vps -Account $account -Status $vpsStatus)
                     $codes += ''
                 }
             }
@@ -3975,7 +3886,7 @@ $difficultyButton.Add_Click({
         Start-LauncherAction -Action 'SetDifficulty' -ExtraArgs $extra
     }
 })
-if ($coopButton) { $coopButton.Add_Click({ Open-CoopWindow }) }
+if ($coopButton) { $coopButton.Add_Click({ Show-CoopDialog }) }
 if ($vpsButton) { $vpsButton.Add_Click({ Show-VpsDialog }) }
 $importDbButton.Add_Click({
     if (-not (Confirm-DockerReady)) { return }
