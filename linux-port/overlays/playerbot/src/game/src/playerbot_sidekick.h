@@ -6651,6 +6651,11 @@ namespace
 	{
 		if (!rec.bBuffs || !owner || owner->IsDead() || owner->GetMapIndex() != ch->GetMapIndex())
 			return false;
+		// MT2009_PLUS_SIDEKICK_POLYMORPH_V1: under a marble the engine refuses
+		// every buff (IsPlayerBotFightingAsMonster), so it neither walks up to
+		// the owner for one nor asks; the buffs come back with its own shape.
+		if (IsPlayerBotFightingAsMonster(ch))
+			return false;
 		return ManagePlayerBotBuffPerson(ch, state, owner, dwNow, mayWalk, true);
 	}
 
@@ -7840,6 +7845,188 @@ namespace
 		}
 	}
 
+	// ------------------------------------------- the owner's transformation
+	//
+	// MT2009_PLUS_SIDEKICK_POLYMORPH_V1: "towarzysz razem z nami uzywa marmura
+	// polimorfii jesli ma go w eq" (the owner, 3 October). When its owner
+	// transforms - a Polymorph Marble, the Polymorph book or a quest's
+	// transformation, whatever puts the owner under AFFECT_POLYMORPH - a
+	// companion at the owner's side ("Przywolaj", not let off the leash, not on
+	// an errand or at the water) takes a marble of its own from its bag and
+	// transforms with it, the way a player's use does: CHARACTER::UseItem, one
+	// marble spent, five minutes and the engine's damage bonus (more with its
+	// own Polymorph skill).
+	//
+	// Which marble: one of the owner's own monster if it carries that, or else
+	// the highest monster the engine lets it become (ItemProcess_Polymorph
+	// refuses a monster at or above its level plus MAX(0, 20 - level*3/10) and
+	// throws away a marble whose monster does not exist, so both are asked here
+	// first). Never one it holds for its owner (IsPlayerBotSidekickHeld). The
+	// "Zablokuj ekwipunek" lock does not stop it: the lock keeps what it wears
+	// and was given from the blacksmith, the merchant and the ground, and a
+	// marble handed over is there to be used - at the owner's own move.
+	//
+	// One marble for one transformation of the owner's: should its own run out
+	// first (its five minutes against an owner's longer skill, or it fell) it
+	// does not spend another. And it ends with the owner's: when the owner is
+	// back in its own shape the companion's transformation is taken off at
+	// once, as long as it was the one taken for the owner. A transformation of
+	// its own for the Reaper or a raid's boss (ManagePlayerBotPolymorph) runs
+	// its own course - unless the owner transforms during it, when it is
+	// counted as the owner's company and ends with the owner's too. While the
+	// owner warps it changes nothing.
+	//
+	// A transformed companion fights as the bots under a marble already do
+	// (IsPlayerBotFightingAsMonster): hand to hand, no skill and no buff, which
+	// the engine refuses (char_skill.cpp); its gear is frozen
+	// (IsPlayerBotGearFrozen) and it does not mount (StartRiding refuses).
+	struct TPlayerBotSidekickPolymorph
+	{
+		// This transformation of the owner's has had its marble.
+		bool bOwnerSeen;
+		// The companion's own transformation keeps the owner company.
+		bool bWithOwner;
+		// The owner heard once that the only marbles it has are too high.
+		bool bToldTooHigh;
+		DWORD dwNextTry;
+		TPlayerBotSidekickPolymorph() : bOwnerSeen(false), bWithOwner(false), bToldTooHigh(false), dwNextTry(0)
+		{
+		}
+	};
+	// By companion pid. Outside the runtime, which a logout drops: a
+	// companion that left the world for a moment comes back to the same answer.
+	std::map<DWORD, TPlayerBotSidekickPolymorph> s_mapPlayerBotSidekickPolymorph;
+	const DWORD PLAYERBOT_SIDEKICK_POLYMORPH_RETRY_MS = 5000;
+	const DWORD PLAYERBOT_SIDEKICK_POLYMORPH_DISMOUNT_MS = 600;
+
+	// The cell of the marble it takes, or -1. tooHigh: it carries one whose
+	// monster its level does not allow yet.
+	int FindPlayerBotSidekickPolymorphMarble(LPCHARACTER ch, DWORD ownerMob, bool& tooHigh)
+	{
+		tooHigh = false;
+		const int limit = ch->GetLevel() + MAX(0, 20 - ch->GetLevel() * 3 / 10);
+		int best = -1;
+		int bestLevel = -1;
+		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetType() != ITEM_POLYMORPH || item->isLocked() || IsPlayerBotSidekickHeld(ch, item))
+				continue;
+			bool known = false;
+			for (size_t i = 0; i < sizeof(PLAYERBOT_POLYMORPH_MARBLE_VNUMS) /
+					sizeof(PLAYERBOT_POLYMORPH_MARBLE_VNUMS[0]); ++i)
+				if (PLAYERBOT_POLYMORPH_MARBLE_VNUMS[i] == item->GetVnum())
+					known = true;
+			if (!known)
+				continue;
+			const DWORD mob = (DWORD)item->GetSocket(0);
+			const CMob* pMob = mob != 0 ? CMobManager::instance().Get(mob) : NULL;
+			if (!pMob)
+				continue;
+			if ((int)pMob->m_table.bLevel >= limit)
+			{
+				tooHigh = true;
+				continue;
+			}
+			if (ownerMob != 0 && mob == ownerMob)
+				return cell;
+			if ((int)pMob->m_table.bLevel > bestLevel)
+			{
+				bestLevel = pMob->m_table.bLevel;
+				best = cell;
+			}
+		}
+		return best;
+	}
+
+	void FollowPlayerBotSidekickOwnerPolymorph(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotSidekick& rec,
+			const TPlayerBotSidekickRuntime& rt, DWORD dwNow)
+	{
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
+		std::map<DWORD, TPlayerBotSidekickPolymorph>::iterator it = s_mapPlayerBotSidekickPolymorph.find(ch->GetPlayerID());
+		// Nothing under way, and the owner in its own shape: the whole of it for
+		// nearly every tick.
+		if (it == s_mapPlayerBotSidekickPolymorph.end() && (!owner || !owner->IsPolymorphed()))
+			return;
+		// A warp, or the owner gone: nothing changes until the owner is back.
+		if (!owner || !owner->GetSectree())
+			return;
+		if (!owner->IsPolymorphed())
+		{
+			if (it->second.bWithOwner && ch->IsPolymorphed())
+			{
+				ch->RemoveAffect(AFFECT_POLYMORPH);
+				sys_log(0, "PLAYERBOT_SIDEKICK: polymorph ended with the owner's pid=%u name=%s owner=%u still=%d",
+						ch->GetPlayerID(), ch->GetName(), rec.dwOwnerPID, ch->IsPolymorphed() ? 1 : 0);
+			}
+			s_mapPlayerBotSidekickPolymorph.erase(it);
+			return;
+		}
+		TPlayerBotSidekickPolymorph& poly = s_mapPlayerBotSidekickPolymorph[ch->GetPlayerID()];
+		// Its own ran out, or it fell: the owner's goes on without it.
+		if (poly.bWithOwner && !ch->IsPolymorphed())
+		{
+			poly.bWithOwner = false;
+			sys_log(0, "PLAYERBOT_SIDEKICK: polymorph over before the owner's pid=%u name=%s owner=%u",
+					ch->GetPlayerID(), ch->GetName(), rec.dwOwnerPID);
+		}
+		if (poly.bOwnerSeen)
+			return;
+		// Already transformed (the Reaper, or back from a logout under the
+		// owner's transformation): that one keeps the owner company.
+		if (ch->IsPolymorphed())
+		{
+			poly.bOwnerSeen = true;
+			poly.bWithOwner = true;
+			return;
+		}
+		// At the owner's side, and free to use an item.
+		if (rec.bMode != PLAYERBOT_SIDEKICK_FOLLOW || IsPlayerBotSidekickPlayingAlone(rec, dwNow) ||
+				rt.bErrand || rt.bFishing || rt.bTrading)
+			return;
+		if (ch->IsDead() || ch->GetExchange() || ch->GetMyShop() || !ch->IsItemLoaded() ||
+				owner->GetMapIndex() != ch->GetMapIndex() ||
+				DISTANCE_APPROX(ch->GetX() - owner->GetX(), ch->GetY() - owner->GetY()) > PLAYERBOT_SIDEKICK_TELEPORT_DISTANCE)
+			return;
+		if (dwNow < poly.dwNextTry)
+			return;
+		poly.dwNextTry = dwNow + PLAYERBOT_SIDEKICK_POLYMORPH_RETRY_MS;
+		bool tooHigh = false;
+		const int cell = FindPlayerBotSidekickPolymorphMarble(ch, owner->GetPolymorphVnum(), tooHigh);
+		if (cell < 0)
+		{
+			if (tooHigh && !poly.bToldTooHigh)
+			{
+				poly.bToldTooHigh = true;
+				SayPlayerBotSidekick(owner, "Mam marmur polimorfii, ale w tego potwora nie moge sie jeszcze "
+						"zmienic - mam za niski poziom.");
+			}
+			return;
+		}
+		// ItemProcess_Polymorph refuses a rider: down from the horse or the
+		// mount first, the marble a moment later.
+		if (ch->IsRiding())
+		{
+			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "sidekick_polymorph");
+			poly.dwNextTry = dwNow + PLAYERBOT_SIDEKICK_POLYMORPH_DISMOUNT_MS;
+			return;
+		}
+		LPITEM item = ch->GetInventoryItem(cell);
+		const DWORD vnum = item->GetVnum();
+		const DWORD mob = (DWORD)item->GetSocket(0);
+		// The marble may be its last of the stack: nothing of it is read after.
+		if (!ch->UseItem(TItemPos(INVENTORY, cell)) || !ch->IsPolymorphed())
+		{
+			sys_log(0, "PLAYERBOT_SIDEKICK: polymorph refused pid=%u name=%s marble=%u mob=%u",
+					ch->GetPlayerID(), ch->GetName(), vnum, mob);
+			return;
+		}
+		poly.bOwnerSeen = true;
+		poly.bWithOwner = true;
+		sys_log(0, "PLAYERBOT_SIDEKICK: polymorphed with the owner pid=%u name=%s owner=%u marble=%u mob=%u owner_mob=%u",
+				ch->GetPlayerID(), ch->GetName(), rec.dwOwnerPID, vnum, mob, (unsigned)owner->GetPolymorphVnum());
+	}
+
 	// MT2009_PLUS_SIDEKICK_REDRESS_V1: bald after its first summons (upstream
 	// 2.2.44, urtopy). A companion comes into the world, and is shown to the
 	// players round it, as the character loads - before the db core has sent a
@@ -7882,6 +8069,7 @@ namespace
 		TopUpPlayerBotSidekickSkillPoints(ch);
 		TPlayerBotSidekickRuntime& rt = s_mapPlayerBotSidekickRuntime[ch->GetPlayerID()];
 		ResendPlayerBotSidekickView(ch, rt, dwNow);	// MT2009_PLUS_SIDEKICK_REDRESS_V1
+		FollowPlayerBotSidekickOwnerPolymorph(ch, state, *rec, rt, dwNow);	// MT2009_PLUS_SIDEKICK_POLYMORPH_V1
 		ReadPlayerBotSidekickForgetBook(ch, *rec, rt, dwNow);
 		if (HandlePlayerBotSidekickTrade(ch, state, *rec, rt, dwNow))
 			return true;

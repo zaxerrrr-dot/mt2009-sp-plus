@@ -807,6 +807,10 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item->GetType() != ITEM_POLYMORPH || item->GetSocket(0) == 0)
 				continue;
+			// MT2009_PLUS_SIDEKICK_POLYMORPH_V1: nor a companion's marble it
+			// holds for its owner, whose bag was full - that one is the owner's.
+			if (IsPlayerBotSidekickHeld(ch, item))
+				continue;
 			bool known = false;
 			for (size_t i = 0; i < sizeof(PLAYERBOT_POLYMORPH_MARBLE_VNUMS) /
 					sizeof(PLAYERBOT_POLYMORPH_MARBLE_VNUMS[0]); ++i)
