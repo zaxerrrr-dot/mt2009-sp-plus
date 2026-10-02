@@ -1617,6 +1617,12 @@ DROP TEMPORARY TABLE world.dg_item;" || echo "[playerbot-migrate] WARNING: could
 # of the Fire Land's guard; the library's seal (30765) a copy of the Nemere key, its boss chest
 # (30773) a copy of Razador's (special_item_group.arezzo.txt). Rows are added once; the values are
 # written every start (PROTO_FROM_DB: read at the db core's boot). Idempotent.
+# MT2009_PLUS_BIBLIOTEKA_BALANCE_V1 (owner, 2 October): the library's monsters hit 20% harder -
+# dam_multiply 9703 1.2 -> 1.44, 9705 1.8 -> 2.16, 9706 2.0 -> 2.4 (the egg 9704 is no longer
+# spawned, the Metins 8006 deal none); the Baroness (9706) has the Orc Chief's (691) health and
+# regeneration - max_hp 150000 -> 39850, regen_cycle 15 -> 19, regen_percent 5 -> 22 - and the
+# quest raises her health by the players inside (+50/+100/+200% for 2/3/4+), and the Metins' to
+# 55% in the dungeon only (server-patches/dungeonhp, d.mob_hp_percent).
 db -e "DROP TEMPORARY TABLE IF EXISTS world.az_mob;
 CREATE TEMPORARY TABLE world.az_mob AS SELECT * FROM world.mob_proto WHERE vnum = 3101 LIMIT 1;
 UPDATE world.az_mob SET vnum = 9601;
@@ -1682,7 +1688,7 @@ CREATE TEMPORARY TABLE world.az_mob AS SELECT * FROM world.mob_proto WHERE vnum 
 UPDATE world.az_mob SET vnum = 9703;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.az_mob;
 DROP TEMPORARY TABLE world.az_mob;
-UPDATE world.mob_proto SET name = _cp1250 X'5472756AB963792050616AB96B', locale_name = _cp1250 X'5472756AB963792050616AB96B', folder = 'spider_nipper', rank = 1, level = 30, st = 40, dx = 25, ht = 35, iq = 10, damage_min = 70, damage_max = 105, max_hp = 1600, def = 40, exp = 700, gold_min = 90, gold_max = 140, regen_cycle = 6, regen_percent = 7, sp_berserk = 0, sp_stoneskin = 0, enchant_poison = 0, enchant_critical = 0, resist_poison = 0, ai_flag = 'AGGR', dam_multiply = 1.2, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 9703;
+UPDATE world.mob_proto SET name = _cp1250 X'5472756AB963792050616AB96B', locale_name = _cp1250 X'5472756AB963792050616AB96B', folder = 'spider_nipper', rank = 1, level = 30, st = 40, dx = 25, ht = 35, iq = 10, damage_min = 70, damage_max = 105, max_hp = 1600, def = 40, exp = 700, gold_min = 90, gold_max = 140, regen_cycle = 6, regen_percent = 7, sp_berserk = 0, sp_stoneskin = 0, enchant_poison = 0, enchant_critical = 0, resist_poison = 0, ai_flag = 'AGGR', dam_multiply = 1.44, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 9703;
 CREATE TEMPORARY TABLE world.az_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2095 LIMIT 1;
 UPDATE world.az_mob SET vnum = 9704;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.az_mob;
@@ -1692,12 +1698,12 @@ CREATE TEMPORARY TABLE world.az_mob AS SELECT * FROM world.mob_proto WHERE vnum 
 UPDATE world.az_mob SET vnum = 9705;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.az_mob;
 DROP TEMPORARY TABLE world.az_mob;
-UPDATE world.mob_proto SET name = _cp1250 X'4B72F36C6F77612050616AB96BF377', locale_name = _cp1250 X'4B72F36C6F77612050616AB96BF377', folder = 'spider_queen', rank = 4, level = 33, st = 45, dx = 30, ht = 45, iq = 12, damage_min = 90, damage_max = 130, max_hp = 25000, def = 45, exp = 8000, gold_min = 3000, gold_max = 5000, summon = 9703, drain_sp = 0, regen_cycle = 10, regen_percent = 5, sp_berserk = 5, sp_stoneskin = 5, skill_level0 = 10, enchant_poison = 10, enchant_stun = 0, enchant_critical = 5, enchant_penetrate = 5, resist_fire = 0, resist_poison = 0, dam_multiply = 1.8, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 9705;
+UPDATE world.mob_proto SET name = _cp1250 X'4B72F36C6F77612050616AB96BF377', locale_name = _cp1250 X'4B72F36C6F77612050616AB96BF377', folder = 'spider_queen', rank = 4, level = 33, st = 45, dx = 30, ht = 45, iq = 12, damage_min = 90, damage_max = 130, max_hp = 25000, def = 45, exp = 8000, gold_min = 3000, gold_max = 5000, summon = 9703, drain_sp = 0, regen_cycle = 10, regen_percent = 5, sp_berserk = 5, sp_stoneskin = 5, skill_level0 = 10, enchant_poison = 10, enchant_stun = 0, enchant_critical = 5, enchant_penetrate = 5, resist_fire = 0, resist_poison = 0, dam_multiply = 2.16, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 9705;
 CREATE TEMPORARY TABLE world.az_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2092 LIMIT 1;
 UPDATE world.az_mob SET vnum = 9706;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.az_mob;
 DROP TEMPORARY TABLE world.az_mob;
-UPDATE world.mob_proto SET name = _cp1250 X'4261726F6EF3776E612050616AB96BF377', locale_name = _cp1250 X'4261726F6EF3776E612050616AB96BF377', folder = 'spider_king', rank = 5, level = 35, st = 55, dx = 35, ht = 55, iq = 14, damage_min = 100, damage_max = 150, max_hp = 150000, def = 55, exp = 30000, gold_min = 8000, gold_max = 12000, summon = 9703, drain_sp = 0, regen_cycle = 15, regen_percent = 5, sp_berserk = 10, sp_stoneskin = 5, sp_deathblow = 0, sp_revive = 0, skill_level0 = 15, enchant_poison = 10, enchant_slow = 5, enchant_stun = 5, enchant_critical = 10, enchant_penetrate = 10, attack_speed = 120, move_speed = 130, attack_range = 250, ai_flag = 'AGGR,BERSERK', dam_multiply = 2.0, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 9706;
+UPDATE world.mob_proto SET name = _cp1250 X'4261726F6EF3776E612050616AB96BF377', locale_name = _cp1250 X'4261726F6EF3776E612050616AB96BF377', folder = 'spider_king', rank = 5, level = 35, st = 55, dx = 35, ht = 55, iq = 14, damage_min = 100, damage_max = 150, max_hp = 39850, def = 55, exp = 30000, gold_min = 8000, gold_max = 12000, summon = 9703, drain_sp = 0, regen_cycle = 19, regen_percent = 22, sp_berserk = 10, sp_stoneskin = 5, sp_deathblow = 0, sp_revive = 0, skill_level0 = 15, enchant_poison = 10, enchant_slow = 5, enchant_stun = 5, enchant_critical = 10, enchant_penetrate = 10, attack_speed = 120, move_speed = 130, attack_range = 250, ai_flag = 'AGGR,BERSERK', dam_multiply = 2.4, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 9706;
 CREATE TEMPORARY TABLE world.az_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20394 LIMIT 1;
 UPDATE world.az_mob SET vnum = 20430;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.az_mob;

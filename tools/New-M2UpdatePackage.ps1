@@ -250,7 +250,7 @@ try {
             'linux-port/docker/game/src/server/game/src/sectree.cpp' = @('MT2009_PLUS_ENTITY_SNAPSHOT_V1 (check)')
             'linux-port/docker/game/src/server/game/src/input_p2p.cpp' = @('MT2009_PLUS_DUNGEON_ONE_WARP_V1 (decl)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (case)', 'MT2009_PLUS_SHOUTERS_V1 (p2p)')
             'linux-port/docker/game/src/server/game/src/char.h' = @('MT2009_PLUS_DUNGEON_PANEL_V1 (damage)', 'MT2009_PLUS_ARCHER_MULTISHOT_V1 (decl)', 'MT2009_PLUS_ARCHER_MULTISHOT_V2 (decl)', 'MT2009_PLUS_ARCHER_MULTISHOT_V3 (decl)')
-            'linux-port/docker/game/src/server/game/src/questlua_dungeon.cpp' = @('MT2009_PLUS_DUNGEON_PANEL_V1 (lua)', 'MT2009_PLUS_DUNGEON_PANEL_V1 (table)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (lua)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (table)')
+            'linux-port/docker/game/src/server/game/src/questlua_dungeon.cpp' = @('MT2009_PLUS_DUNGEON_PANEL_V1 (lua)', 'MT2009_PLUS_DUNGEON_PANEL_V1 (table)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (lua)', 'MT2009_PLUS_DUNGEON_ONE_WARP_V1 (table)', 'MT2009_PLUS_DUNGEON_MOB_HP_V1 (server-patches/dungeonhp)', 'MT2009_PLUS_DUNGEON_MOB_HP_V1 (register)')
             'linux-port/docker/game/src/server/game/src/dungeon.cpp' = @('MT2009_PLUS_DUNGEON_RETURN_V1')
             'linux-port/docker/game/src/server/db/src/ClientManagerIkarusShop.cpp' = @('MT2009_PLUS_SHOP_LOCK_OWNER_V1 (map)', 'MT2009_PLUS_SHOP_LOCK_OWNER_V1 (lock)', 'MT2009_PLUS_SHOP_LOCK_OWNER_V1 (settle)', 'MT2009_PLUS_SHOP_PART_STACK_V1 (parts)', 'MT2009_PLUS_SHOP_PART_STACK_V1 (lock check)', 'MT2009_PLUS_SHOP_PART_STACK_V1 (settle)', 'MT2009_PLUS_SHOP_PART_STACK_V1 (send buy)')
             'linux-port/docker/game/src/server/common/CommonDefines.h' = @('MT2009_PLUS_MAP_ALLOW_48_V1')

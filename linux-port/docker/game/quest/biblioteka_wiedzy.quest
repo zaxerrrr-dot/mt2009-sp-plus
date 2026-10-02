@@ -16,6 +16,11 @@
 -- przeniesione (warunki "or"/"and" bez nawiasów, brak return po pc.can_warp, przepustki
 -- zabierane czêœci dru¿yny). Dla panelu lochów (faza 4) ka¿dy gracz ma flagi
 -- biblioteka_wiedzy.finish (ukoñczenia), .best_time i .last_time (sekundy).
+-- MT2009_PLUS_BIBLIOTEKA_BALANCE_V1 (w³aœciciel, 2 paŸdziernika): potwory lochu (9703, 9705, 9706)
+-- bij¹ o 20% mocniej (dam_multiply w playerbot/apply.sh), Metiny (8006) maj¹ tu 55% ¿ycia,
+-- a Baronówna ¿ycie i regeneracjê Wodza Orków (691) razy liczba graczy w instancji przy jej
+-- pojawieniu siê (boty licz¹ siê tak¿e): 1 - 100%, 2 - 150%, 3 - 200%, 4 i wiêcej - 300%.
+-- d.count_players i d.mob_hp_percent: server-patches/dungeonhp (MT2009_PLUS_DUNGEON_MOB_HP_V1).
 quest biblioteka_wiedzy begin
 	state start begin
 		function cfg()
@@ -114,6 +119,37 @@ quest biblioteka_wiedzy begin
 			return "Pokonajcie Baronównê Paj¹ków!"
 		end
 
+		-- MT2009_PLUS_BIBLIOTEKA_BALANCE_V1: the Metins of stages 2 and 4 at 55% of their health
+		-- (only here - the world's 8006 keep theirs).
+		function weaken_metins()
+			if d.mob_hp_percent then
+				d.mob_hp_percent(8006, 55)
+			end
+		end
+
+		-- MT2009_PLUS_BIBLIOTEKA_BALANCE_V1: the Baroness's health by the players in the instance
+		-- when she comes (bots too): 1 - as she is, 2 - +50%, 3 - +100%, 4 or more - +200%.
+		-- Her regeneration stays a percent of her health (mob_proto).
+		function boss_hp_percent(players)
+			if players >= 4 then return 300
+			elseif players == 3 then return 200
+			elseif players == 2 then return 150
+			end
+			return 100
+		end
+
+		function scale_boss()
+			if not d.count_players or not d.mob_hp_percent then
+				return
+			end
+			local n = d.count_players()
+			local pct = biblioteka_wiedzy.boss_hp_percent(n)
+			if pct > 100 then
+				d.mob_hp_percent(9706, pct)
+				d.notice("Biblioteka Wiedzy: Baronówna wyczuwa "..n.." œmia³ków - ma "..(pct - 100).."% wiêcej ¿ycia.")
+			end
+		end
+
 		-- The stages. Each one clears what the previous left and spawns its own.
 		function start_stage(stage)
 			local c = biblioteka_wiedzy.cfg()
@@ -127,6 +163,7 @@ quest biblioteka_wiedzy begin
 			elseif stage == 2 then
 				d.setf("left", 5)
 				d.regen_file(c.path.."eggs5.txt")
+				biblioteka_wiedzy.weaken_metins()
 				d.set_regen_file(c.path.."guards.txt")
 			elseif stage == 3 then
 				d.setf("left", 3)
@@ -135,9 +172,11 @@ quest biblioteka_wiedzy begin
 			elseif stage == 4 then
 				d.setf("left", 4)
 				d.regen_file(c.path.."eggs4.txt")
+				biblioteka_wiedzy.weaken_metins()
 				d.set_regen_file(c.path.."guards.txt")
 			elseif stage == 5 then
 				d.spawn_mob(9706, c.boss[1], c.boss[2])
+				biblioteka_wiedzy.scale_boss()
 				d.set_regen_file(c.path.."guards.txt")
 			end
 			d.notice("Biblioteka Wiedzy ("..stage.."/5): "..biblioteka_wiedzy.stage_text(stage))

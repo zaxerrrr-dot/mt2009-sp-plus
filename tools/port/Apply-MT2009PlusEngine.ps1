@@ -578,6 +578,18 @@ if ((Test-Path -LiteralPath $luaStackApply -PathType Leaf) -and
         Write-Host ('Applied {0} Lua stack edit(s).' -f $luaStackResult.Applied) -ForegroundColor DarkGray
     }
 }
+# A dungeon's own monster health (server-patches/dungeonhp): d.count_players()
+# and d.mob_hp_percent(vnum, percent) - the Biblioteka Wiedzy's Metins at 55%
+# and its Baroness by the players inside (the owner, 2 October).
+$dungeonHpApply = Join-Path $repo 'server-patches/dungeonhp/Apply-DungeonHpPatch.ps1'
+if ((Test-Path -LiteralPath $dungeonHpApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'questlua_dungeon.cpp') -PathType Leaf)) {
+    $dungeonHpResult = & $dungeonHpApply -SourceDirectory $engineGameSource
+    if ($dungeonHpResult.Changed) {
+        $syncedFiles++
+        Write-Host 'Dungeon monster health from the quests.' -ForegroundColor DarkGray
+    }
+}
 # Guild war kills (server-patches/guildwarkills): a field war's score is its
 # kills, one a kill, not the victim's level - the bots end a war with a bot
 # guild on a side at WAR_KILLS (playerbot_guild_war.h).

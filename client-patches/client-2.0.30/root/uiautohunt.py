@@ -45,6 +45,13 @@
 # picks up every kind; the per-character loot_* keys of the older files are
 # read once, for a client with no filtr.cfg (Hunter.LoadConfig).
 #
+# MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1: that switch is a row of its own at
+# the top of the "Podnoszenie" board, "Autopodnoszenie: Wlaczone /
+# Wylaczone" (the owner, 2 October). Off, the hunt asks no /autohunt_loot
+# and picks nothing up (LootMask); the choice goes into the character's
+# file at once (Hunter.SavePickupChoice), without the rest of the unsaved
+# window.
+#
 # game.py registers the Hunter with its updateables, K opens the windows.
 # Python 2.7 as the client has it, and 3 for tests/uiautohunt_test.py.
 # Player-visible strings are CP1250 escapes, so the file itself is ASCII.
@@ -355,7 +362,7 @@ def ConfigLootKinds(config):
     return mask
 
 def LootMask(config):
-    """What the hunt asks for: nothing without "Podnies", else the pick-up
+    """What the hunt asks for: nothing without "Autopodnoszenie", else the pick-up
     filter's kinds (every kind with the filter off)."""
     if not config.get('pickup'):
         return 0
@@ -475,6 +482,10 @@ def YesNo(value):
 
 def WlWyl(value):
     return 'W\xa3' if value else 'WY\xa3'
+
+# MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1
+def OnOff(value):
+    return 'W\xb3\xb9czone' if value else 'Wy\xb3\xb9czone'
 
 
 class Hunter(object):
@@ -1207,6 +1218,31 @@ class Hunter(object):
         except (IOError, OSError):
             pass
 
+    # MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1: only the pick-up switch into
+    # the character's file - what it saved before stays as it was.
+    def SavePickupChoice(self):
+        if not os.path.exists(CONFIG_CHAR_DIR):
+            try:
+                os.makedirs(CONFIG_CHAR_DIR)
+            except (IOError, OSError):
+                pass
+
+        path = ConfigPath(self.configName)
+        saved = DefaultConfig()
+        try:
+            with open(path, 'r') as handle:
+                saved = ConfigFromText(handle.read())
+        except (IOError, OSError):
+            saved = dict(self.config)
+        saved['pickup'] = 1 if self.config.get('pickup') else 0
+
+        try:
+            with open(path, 'w') as handle:
+                handle.write(ConfigText(saved))
+            return True
+        except (IOError, OSError):
+            return False
+
     def SaveConfig(self):
         if not os.path.exists(CONFIG_CHAR_DIR):
             try:
@@ -1742,12 +1778,15 @@ class AutoHuntWindow(ui.BoardWithTitleBar):
         self.toggles = {}
 
 
-LOOT_ROWS = (len(LOOT_KINDS) + 2 + 2) // 3   # "Podnie\x9c", the kinds and "Filtr", three a row
+# MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1: "Autopodnoszenie" has a row of its
+# own above the grid.
+LOOT_ROWS = (len(LOOT_KINDS) + 1 + 2) // 3   # the kinds and "Filtr", three a row
+LOOT_PICKUP_ROW_H = 22
 
 
 class AutoHuntLootWindow(ui.BoardWithTitleBar):
     WIDTH = 300
-    HEIGHT = 179 + LOOT_ROWS * 22
+    HEIGHT = 179 + LOOT_ROWS * 22 + LOOT_PICKUP_ROW_H
 
     def __init__(self, hunter):
         ui.BoardWithTitleBar.__init__(self)
@@ -1756,6 +1795,7 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         self.toggles = {}
         self.kindToggles = {}
         self.filterBtn = None
+        self.pickupBtn = None
         self.AddFlag('movable')
         self.AddFlag('float')
         self.SetSize(self.WIDTH, self.HEIGHT)
@@ -1768,21 +1808,23 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         BW = self.WIDTH - 2 * BL
         y = 32
 
-        pd_btn_start = 24
+        pd_btn_start = 24 + LOOT_PICKUP_ROW_H
         pd_h = pd_btn_start + LOOT_ROWS * 22 + 8
         pdBoard = self._Board(BL, y, BW, pd_h)
         self._Label(pdBoard, 14, 4, 'Podnoszenie (filtr jak pod Ctrl+Z)')
 
-        # "Podnies" is Auto Lowy's own; the kinds and "Filtr" (the last cell
-        # of the last row) are the pick-up filter's (uipickupfilter.py).
+        # MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1: "Autopodnoszenie" is Auto
+        # Lowy's own, a row like the "Ustawienia Walki" ones; the kinds and
+        # "Filtr" (the last cell of the last row) are the pick-up filter's
+        # (uipickupfilter.py).
+        self._PickupRow(pdBoard, 4, 24, BW - 8, LOOT_PICKUP_ROW_H - 2)
         pdy = pd_btn_start
-        self._FlagBtn(pdBoard, 4, pdy, 'Podnie\x9c', 'pickup')
         for idx, (key, label, bit) in enumerate(LOOT_KINDS):
-            pos = idx + 1
+            pos = idx
             col = pos % 3
             row = pos // 3
             self._KindBtn(pdBoard, 4 + col * 92, pdy + row * 22, label, bit)
-        pos = len(LOOT_KINDS) + 1
+        pos = len(LOOT_KINDS)
         self.filterBtn = self._Btn(pdBoard, 'large', 4 + (pos % 3) * 92, pdy + (pos // 3) * 22,
             '', self.OnToggleFilter)
 
@@ -1846,6 +1888,21 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         self.toggles[key] = (btn, label, False)
         return btn
 
+    # MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1
+    def _PickupRow(self, board, x, y, w, h):
+        bar = ui.Bar()
+        bar.SetParent(board)
+        bar.SetPosition(x, y)
+        bar.SetSize(w, h)
+        bar.SetColor(0xC0000000)
+        bar.Show()
+        self.widgets.append(bar)
+
+        btn_w = 88
+        self.pickupLabel = self._Label(board, x + (w - btn_w - 4) // 2, y + (h - 12) // 2, 'Autopodnoszenie:')
+        self.pickupLabel.SetHorizontalAlignCenter()
+        self.pickupBtn = self._Btn(board, 'large', x + w - btn_w, y, '', self.OnTogglePickup)
+
     def _KindBtn(self, parent, x, y, label, bit):
         btn = self._Btn(parent, 'large', x, y, '', self.OnToggleKind, bit)
         self.kindToggles[bit] = (btn, label)
@@ -1861,6 +1918,7 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
 
         for key, (btn, label, wyl) in self.toggles.items():
             btn.SetText('%s: %s' % (label, YesNo(config[key])))
+        self.pickupBtn.SetText(OnOff(config['pickup']))
 
         pickupFilter = PickupFilter()
         kinds = pickupFilter.GetKinds()
@@ -1890,6 +1948,17 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         if self.hunter.mainWindow:
             self.hunter.mainWindow.ReadEdits()
         self.hunter.config[key] = 0 if self.hunter.config[key] else 1
+        self.Refresh()
+
+    # MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1: saved for the character at once.
+    def OnTogglePickup(self):
+        if self.hunter.mainWindow:
+            self.hunter.mainWindow.ReadEdits()
+        hunter = self.hunter
+        # Off, AskForLoot and HandleLootSweep let the loot go next frame.
+        hunter.config['pickup'] = 0 if hunter.config['pickup'] else 1
+        hunter.SavePickupChoice()
+        chat.AppendChat(chat.CHAT_TYPE_INFO, 'Auto \xa3owy: autopodnoszenie %s.' % OnOff(hunter.config['pickup']).lower())
         self.Refresh()
 
     # The pick-up filter's kinds and switch: saved, sent to the server and
@@ -1928,6 +1997,7 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         self.toggles = {}
         self.kindToggles = {}
         self.filterBtn = None
+        self.pickupBtn = None
 
 
 _hunter = None
