@@ -215,6 +215,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 // conversation layer for ordinary whispers.
 namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* playerName, LPCHARACTER bot, const char* text); }
 #include "playerbot_chat_trade.h"
+#include "playerbot_haggle.h" // MT2009_PLUS_BOT_HAGGLE_V1: a bot haggles over a person's shop line by whisper
 #include "playerbot_loot.h"
 #include "playerbot_gift_trade.h"
 #include "playerbot_survival.h"
@@ -8018,6 +8019,11 @@ void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const
 	// A companion's owner gives its orders by whisper too (playerbot_sidekick.h).
 	if (HandlePlayerBotSidekickWhisper(from, bot, szText))
 		return;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+	// MT2009_PLUS_BOT_HAGGLE_V1: the answer of a person the bot haggles with.
+	if (HandlePlayerBotHaggleWhisper(from, bot, szText))
+		return;
+#endif
 	HandlePlayerWhisperToBot(from, bot, szText);
 }
 

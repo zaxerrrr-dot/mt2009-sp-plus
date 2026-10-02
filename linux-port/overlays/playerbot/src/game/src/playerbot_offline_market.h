@@ -262,6 +262,10 @@ namespace {
         }
         long pitchX = 0, pitchY = 0;
         if (!GetPlayerBotShopCentre(ch->GetMapIndex(), pitchX, pitchY)) return false;
+        // MT2009_PLUS_BOT_HAGGLE_V1: a person's line the bot haggled for, at
+        // the price agreed now, is this buyer's pick before anything else.
+        if (!o.buyOwner && WatchPlayerBotHaggle(ch, state, now))
+            return RunPlayerBotOfflinePick(ch, state, now);
         // The finished piece the anvil is waiting for, found line by line while
         // the bot stood at the blacksmith, is this buyer's pick before any
         // browse: it may stand anywhere on the map's ring, where a browse of
@@ -407,6 +411,10 @@ namespace {
             // that wants no material.
             if (!o.buyOwner && IsPlayerBotM1Map(ch->GetMapIndex()))
                 AnnouncePlayerBotNeed(ch);
+            // MT2009_PLUS_BOT_HAGGLE_V1: nothing to buy at once - a person's
+            // finished piece too dear for the purse is haggled for by whisper.
+            if (!o.buyOwner)
+                TryStartPlayerBotHaggle(ch, state, shops, now);
         }
         if (!o.buyOwner) return false;
         return RunPlayerBotOfflinePick(ch, state, now);
