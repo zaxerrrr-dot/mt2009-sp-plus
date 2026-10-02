@@ -832,5 +832,47 @@
   "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V2 (draw skill)",
   "old": "\t\tPacketAround(&pack, sizeof(TPacketGCFlyClearTargeting), NULL);\n\t}\n\n\t// The target MainFlyTarget took (not an invisible one, not the ground).\n",
   "new": "\t\tPacketAround(&pack, sizeof(TPacketGCFlyClearTargeting), NULL);\n\t}\n\n\t// MT2009_PLUS_ARCHER_MULTISHOT_V2 (draw skill): a skill's draw finds its\n\t// own at its shot (Shoot), or none.\n\tif (bSkillDraw)\n\t\treturn;\n\n\t// The target MainFlyTarget took (not an invisible one, not the ground).\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V3 (decl)",
+  "old": "\t\tbool\t\t\tIsStoneSpawed() const { return m_pkChrStone != nullptr; }\n",
+  "new": "\t\tbool\t\t\tIsStoneSpawed() const { return m_pkChrStone != nullptr; }\n\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V3 (decl): the Metin that summoned this\n\t\t// monster, or NULL (an Archer's extra arrows, char_battle.cpp).\n\t\tLPCHARACTER\t\tGetSpawnerStone() const { return m_pkChrStone; }\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V3 (who)",
+  "old": "class CFuncFindShootTargetsAround\n{\n",
+  "new": "// MT2009_PLUS_ARCHER_MULTISHOT_V3 (who): whom a normal shot's extra arrows\n// may go to besides its target. A monster attacking the archer, as before;\n// now also one attacking somebody of the archer's party, or the archer's\n// Companion (a playerbot whose kills the archer is credited with,\n// GetSidekickKillCredit), and one the Metin the archer is fighting summoned\n// (the shot's target is that Metin, or another of its summons). How many\n// extra arrows fly does not change (GetShootMaxTargetCount).\nstatic bool Mt2009PlusIsShootExtraFoe(LPCHARACTER archer, LPCHARACTER target, LPCHARACTER monster)\n{\n\tif (!archer || !target || !monster)\n\t\treturn false;\n\tif (monster->m_kVIDVictim == archer->GetVID())\n\t\treturn true;\n\tLPCHARACTER hit = monster->GetVictim();\n\tif (hit && hit != monster && hit != archer && hit->IsPC() && !hit->IsDead())\n\t{\n\t\tif (archer->GetParty() && hit->GetParty() == archer->GetParty())\n\t\t\treturn true;\n\t\tif (CPlayerBotManager::instance().GetSidekickKillCredit(hit, monster) == archer)\n\t\t\treturn true;\n\t}\n\tLPCHARACTER stone = monster->GetSpawnerStone();\n\tif (stone && !stone->IsDead() && (stone == target || stone == target->GetSpawnerStone()))\n\t\treturn true;\n\treturn false;\n}\n\nclass CFuncFindShootTargetsAround\n{\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ARCHER_MULTISHOT_V3 (filter)",
+  "old": "\t\tif (!bIsArrowShower && victimNeighbor->m_kVIDVictim != m_attacker->GetVID())\n\t\t\treturn;\n",
+  "new": "\t\t// MT2009_PLUS_ARCHER_MULTISHOT_V3 (filter): the archer's foes, its\n\t\t// party's and its Companion's, and its Metin's summons.\n\t\tif (!bIsArrowShower && !Mt2009PlusIsShootExtraFoe(m_attacker, m_victim, victimNeighbor))\n\t\t\treturn;\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AUTO_TARGET_V2 (declare)",
+  "old": "ACMD(do_garbage);\n",
+  "new": "ACMD(do_garbage);\n// MT2009_PLUS_AUTO_TARGET_V2 (declare)\nACMD(do_autotarget_aggro);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AUTO_TARGET_V2 (table)",
+  "old": "\t{ \"garbage\",\tdo_garbage,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"garbage\",\tdo_garbage,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_AUTO_TARGET_V2 (table)\n\t{ \"autotarget_aggro\",\tdo_autotarget_aggro,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTO_TARGET_V2 (command)",
+  "old": "ACMD(do_garbage)\n{\n",
+  "new": "// MT2009_PLUS_AUTO_TARGET_V2 (command): the client's next target after a\n// kill (root/autotarget.py) may be a monster attacking the player that the\n// player has not struck yet - which only the server knows. \"/autotarget_aggro\n// 0\" is the probe, answered \"AutoTargetAggroReady 1\"; \"/autotarget_aggro <req>\"\n// (req > 0, the client's tag of one kill) is answered \"AutoTargetAggro <req>\n// <vid,vid,...>\" (or \"0\") with the living monsters near the player whose\n// victim is the player, nearest first, at most MT2009_PLUS_AGGRO_MAX. At most\n// one answer a MT2009_PLUS_AGGRO_GAP_MS a player; the client asks once a kill.\nstatic const DWORD MT2009_PLUS_AGGRO_GAP_MS = 300;\nstatic const size_t MT2009_PLUS_AGGRO_MAX = 16;\nstatic const int MT2009_PLUS_AGGRO_RANGE = 2000;\nstatic std::map<DWORD, DWORD> s_mapMt2009PlusAggroAskedAt;\n\nstruct FMt2009PlusFindAggressors\n{\n\tLPCHARACTER m_me;\n\tstd::vector<std::pair<int, DWORD> > m_found;\n\n\tFMt2009PlusFindAggressors(LPCHARACTER me) : m_me(me) {}\n\n\tvoid operator () (LPENTITY ent)\n\t{\n\t\tif (!ent || !ent->IsType(ENTITY_CHARACTER))\n\t\t\treturn;\n\t\tLPCHARACTER mob = (LPCHARACTER) ent;\n\t\tif (mob == m_me || !mob->IsMonster() || mob->IsDead() || mob->m_kVIDVictim != m_me->GetVID())\n\t\t\treturn;\n\t\tconst int distance = DISTANCE_APPROX(mob->GetX() - m_me->GetX(), mob->GetY() - m_me->GetY());\n\t\tif (distance > MT2009_PLUS_AGGRO_RANGE)\n\t\t\treturn;\n\t\tm_found.push_back(std::make_pair(distance, (DWORD) mob->GetVID()));\n\t}\n};\n\nACMD(do_autotarget_aggro)\n{\n\tif (!ch || !ch->GetDesc() || !ch->GetSectree())\n\t\treturn;\n\n\tchar arg1[32];\n\tone_argument(argument, arg1, sizeof(arg1));\n\tlong request = 0;\n\tif (*arg1)\n\t\trequest = strtol(arg1, NULL, 10);\n\tif (request <= 0)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoTargetAggroReady 1\");\n\t\treturn;\n\t}\n\n\tconst DWORD now = get_dword_time();\n\tstd::map<DWORD, DWORD>::iterator asked = s_mapMt2009PlusAggroAskedAt.find(ch->GetPlayerID());\n\tif (asked != s_mapMt2009PlusAggroAskedAt.end() && now - asked->second < MT2009_PLUS_AGGRO_GAP_MS)\n\t\treturn;\n\ts_mapMt2009PlusAggroAskedAt[ch->GetPlayerID()] = now;\n\tif (s_mapMt2009PlusAggroAskedAt.size() > 4096)\n\t\ts_mapMt2009PlusAggroAskedAt.clear();\n\n\tFMt2009PlusFindAggressors f(ch);\n\tch->GetSectree()->ForEachAround(f);\n\tstd::sort(f.m_found.begin(), f.m_found.end());\n\n\tstd::string vids;\n\tfor (size_t i = 0; i < f.m_found.size() && i < MT2009_PLUS_AGGRO_MAX; ++i)\n\t{\n\t\tif (!vids.empty())\n\t\t\tvids += \",\";\n\t\tvids += std::to_string(f.m_found[i].second);\n\t}\n\tif (vids.empty())\n\t\tvids = \"0\";\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoTargetAggro %ld %s\", request, vids.c_str());\n}\n\nACMD(do_garbage)\n{\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_BOT_HAIR_V1 (sets query)",
+  "old": "void Mt2009PlusCheckCostumeSet(LPCHARACTER ch, LPITEM leaving)\n{\n\tif (!ch || !ch->IsPC())\n\t\treturn;\n",
+  "new": "// MT2009_PLUS_BOT_HAIR_V1 (sets query): the playerbots ask the same lists -\n// a bot buys and wears only a hairstyle of a costume set\n// (playerbot_itemshop.h), and prefers the one of its costume's set.\nbool Mt2009PlusIsCostumeSetHair(DWORD hairVnum)\n{\n\tconst TMt2009PlusCostumeSets& sets = Mt2009PlusCostumeSets();\n\treturn sets.hairs.find(hairVnum) != sets.hairs.end();\n}\n\nbool Mt2009PlusIsCostumeSetPair(DWORD bodyVnum, DWORD hairVnum)\n{\n\tconst TMt2009PlusCostumeSets& sets = Mt2009PlusCostumeSets();\n\tstd::map<DWORD, std::vector<int> >::const_iterator b = sets.bodies.find(bodyVnum);\n\tstd::map<DWORD, std::vector<int> >::const_iterator h = sets.hairs.find(hairVnum);\n\tif (b == sets.bodies.end() || h == sets.hairs.end())\n\t\treturn false;\n\tfor (size_t i = 0; i < b->second.size(); ++i)\n\t\tif (std::find(h->second.begin(), h->second.end(), b->second[i]) != h->second.end())\n\t\t\treturn true;\n\treturn false;\n}\n\nvoid Mt2009PlusCheckCostumeSet(LPCHARACTER ch, LPITEM leaving)\n{\n\tif (!ch || !ch->IsPC())\n\t\treturn;\n"
  }
 ]

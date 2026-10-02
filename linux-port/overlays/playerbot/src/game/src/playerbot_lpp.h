@@ -554,6 +554,13 @@ namespace
 				held.limit = 0;
 				held.obsolete = false;
 			}
+			else if (IsPlayerBotListedHelmShield(item))
+			{
+				// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: the counter's goods,
+				// not the box's - let out like any piece nothing keeps.
+				held.limit = 0;
+				held.obsolete = false;
+			}
 			else
 			{
 				held.limit = GetPlayerBotHeldFamilyLimit(ch, item);

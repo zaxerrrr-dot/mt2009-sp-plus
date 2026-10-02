@@ -1060,10 +1060,20 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_M3_WEAPON_DROP_V2: no bot over this level hunts on M3 -
+	// nothing drops for it there ("boty 36-40 krecily sie po M3"). The guild
+	// map still has them for a guild war, Tanaka, the Metin rain and a
+	// player's call: those passes take the tick before the world travel
+	// (ManagePlayerBotGuildWar, ManagePlayerBotWorldEvent, a person's party)
+	// and none of them asks this.
+	const int PLAYERBOT_M3_HUNT_MAX_LEVEL = 25;
+
 	bool ShouldPlayerBotVisitM3(LPCHARACTER ch)
 	{
+		if (!ch || ch->GetLevel() > PLAYERBOT_M3_HUNT_MAX_LEVEL)
+			return false;
 		const bool tierGrinder = IsPlayerBotM3TierGrinder(ch);
-		if (!ch || (!tierGrinder && !HasPlayerBotM3ReadyEquipment(ch)))
+		if (!tierGrinder && !HasPlayerBotM3ReadyEquipment(ch))
 			return false;
 		// The farm is for a drop, and a full bag has no cell for it.
 		if (IsPlayerBotBagFull(ch))
@@ -1123,13 +1133,6 @@ namespace
 			return true;
 		// A stable third of the young population farms infected animals for
 		// class-specific level-30 weapons; the rest stay in M2 for Bestials.
-		// Past thirty-five nobody is left in M2 to share the work with, so the
-		// third becomes everyone - within the share above.
-		// MT2009_PLUS_BOT_M3_WEAPON_DROP_V1: and never a bot of thirty-six and
-		// up: the hunt ends at PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL, and a
-		// bot of 36-40 on M3 is there for nothing (it buys the weapon instead).
-		if (ch->GetLevel() > 35)
-			return ch->GetLevel() <= PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL;
 		return (PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d335850U) % 3U) == 0;
 	}
 
@@ -2011,11 +2014,23 @@ namespace
 		s_mapPlayerBotM1HoldWhy.erase(pid);
 	}
 
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+	// MT2009_PLUS_BOT_HAGGLE_V2: defined in playerbot_haggle.h.
+	bool IsPlayerBotHaggleHoldingMap(LPCHARACTER ch);
+#endif
+
 	bool ManagePlayerBotWorldTravel(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || state.bVisitingShop || state.bVisitingBiologist ||
 				state.bVisitingStable || state.bRecoveringAfterDeath || state.bTacticalRetreat)
 			return false;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		// MT2009_PLUS_BOT_HAGGLE_V2: a deal agreed with a person keeps the bot
+		// on the map of his shop until it has bought or the deal is over -
+		// it left for the frontier and the deal lapsed with the price set.
+		if (IsPlayerBotHaggleHoldingMap(ch) && !BlocksPlayerBotTravel(ch))
+			return false;
+#endif
 		// A gambler whose visit was cut short (a death, the watchdog) is back at
 		// the anvil when the town check comes round again in a minute or two;
 		// the road would take it to another map for the rest of its session.
@@ -2665,8 +2680,11 @@ namespace
 			// every dropper of its weapon, or a bot of thirty-six and up with no
 			// work of M3's own, goes back to its maps at once - the visit's clock
 			// kept a bot of 36-40 circling M3 for twenty minutes.
-			const bool nothingToDrop = !IsPlayerBotM3DropperOnFarm(ch) && !tierGrinder && !weaponFound &&
-					(!CanPlayerBotM3WeaponDropFor(ch) || ch->GetLevel() > PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL);
+			// MT2009_PLUS_BOT_M3_WEAPON_DROP_V2: and every bot over
+			// PLAYERBOT_M3_HUNT_MAX_LEVEL, the dropper and the Grinder included.
+			const bool nothingToDrop = ch->GetLevel() > PLAYERBOT_M3_HUNT_MAX_LEVEL ||
+					(!IsPlayerBotM3DropperOnFarm(ch) && !tierGrinder && !weaponFound &&
+					(!CanPlayerBotM3WeaponDropFor(ch) || ch->GetLevel() > PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL));
 			if (!visitExpired && !state.bVisitingShop &&
 					!needsCriticalTownServices && !needsM1OnlyServices &&
 					!scheduledRemoteRefine && !weaponFound && !nothingToDrop)

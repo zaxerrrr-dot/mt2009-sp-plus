@@ -794,6 +794,28 @@ namespace {
                 M2_DELETE(preview);
                 continue;
             }
+            // MT2009_PLUS_SADDLEBAG_MARKET_V1: a line of materials bigger than
+            // PLAYERBOT_CRAFT_MATERIAL_LINE_UNITS (the stacks of two hundred of
+            // older releases) comes home, a line a visit, to go up again cut.
+            // MT2009_PLUS_MARKET_SINK_V1: a Cor line over PLAYERBOT_COR_LINE_MAX_UNITS too.
+            if (((preview->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED &&
+                    (int)preview->GetCount() > PLAYERBOT_CRAFT_MATERIAL_LINE_UNITS) ||
+                    (IsPlayerBotCorVnum(preview->GetVnum()) && (int)preview->GetCount() > PLAYERBOT_COR_LINE_MAX_UNITS)) &&
+                    GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
+                if (!unwanted) { unwanted = id; reason = "craft_material_stack"; }
+                M2_DELETE(preview);
+                continue;
+            }
+            // MT2009_PLUS_BOT_HAIR_V1: a hairstyle on the counter that is not
+            // the keeper's own replaced one comes home, a line a visit, and the
+            // merchant throws it away (IsPlayerBotUnwantedHair).
+            if (preview->GetType() == ITEM_COSTUME && preview->GetSubType() == COSTUME_HAIR &&
+                    (!ch || !IsPlayerBotReplacedHair(ch, preview)) &&
+                    GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
+                if (!unwanted) { unwanted = id; reason = "hairstyle"; }
+                M2_DELETE(preview);
+                continue;
+            }
             // An ordinary or brilliant Dragon Stone comes home, one a visit:
             // those are material now, never goods (IsPlayerBotSurplusDragonSoul).
             if (preview->IsDragonSoul() && (preview->GetVnum() / 1000) % 10 < 2) {
@@ -1280,6 +1302,20 @@ namespace {
         }
         if (item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM &&
                 BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_CHEST_COUNTER_LINES) return true;
+        // MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: a few helmet and shield lines.
+        if (IsPlayerBotListedHelmShield(item) && shop) {
+            int helmShieldLines = 0;
+            for (const auto& [lid, l] : shop->GetItems())
+                if (l && IsPlayerBotListedHelmShieldProto(l->GetTable(), l->GetInfo().vnum))
+                    ++helmShieldLines;
+            if (helmShieldLines >= PLAYERBOT_HELM_SHIELD_COUNTER_LINES) return true;
+        }
+        // MT2009_PLUS_SADDLEBAG_MARKET_V1: a few lines of materials a counter.
+        if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED &&
+                BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_CRAFT_MATERIAL_COUNTER_LINES) return true;
+        // MT2009_PLUS_MARKET_SINK_V1: and of Cors.
+        if (IsPlayerBotCorVnum(item->GetVnum()) &&
+                BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_COR_COUNTER_LINES) return true;
         // Nor a refine material past the materials' share of the counter
         // (PLAYERBOT_OFFLINE_MATERIAL_LINES_MAX, three fifths of its cells).
         if (IsPlayerBotTradeableMaterial(item) && !IsPlayerBotSafeRefineScroll(item->GetVnum()) &&
@@ -1356,6 +1392,26 @@ namespace {
             TPlayerBotLineCut* out; TPlayerBotLineCut* note;
             ~TCutOut() { if (out) *out = *note; }
         } cutGuard = { cutOut, &cutNote };
+        // MT2009_PLUS_SADDLEBAG_MARKET_V1: Materialy Rzemieslnicze go up
+        // PLAYERBOT_CRAFT_MATERIAL_LINE_UNITS at most a line, never the
+        // saddlebag rows' own (IsPlayerBotKeptCraftMaterial: the pieces the
+        // listing rule lets go are the stack's last).
+        // MT2009_PLUS_MARKET_SINK_V1: and a Cor Draconis PLAYERBOT_COR_LINE_MAX_UNITS.
+        if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED || IsPlayerBotCorVnum(item->GetVnum())) {
+            const int take = std::min<int>(item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED
+                    ? PLAYERBOT_CRAFT_MATERIAL_LINE_UNITS : PLAYERBOT_COR_LINE_MAX_UNITS, (int)item->GetCount());
+            cutNote.shape = per::SHAPE_NATURAL_LINE;
+            cutNote.keep = 0;
+            if (take <= 0) return -1;
+            if (take >= (int)item->GetCount()) { cutNote.from = 0; return cell; }
+            if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
+            const int to = ch->GetEmptyInventory(item->GetSize());
+            if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
+                return -1;
+            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u capped_line=1",
+                ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
+            return to;
+        }
         // Iwakura's Patch 3, point 5: a green or purple potion goes up as the
         // largest pack of 20, 50, 100 or 200 that the spare over the bot's own
         // keep fills out of this stack; the merge pass pours the small stacks

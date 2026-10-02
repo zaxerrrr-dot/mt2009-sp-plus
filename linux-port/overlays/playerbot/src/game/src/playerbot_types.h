@@ -1501,6 +1501,9 @@ namespace
 	const DWORD PLAYERBOT_HAY_VNUM = 50054;
 	const DWORD PLAYERBOT_HAY_POTION_VNUM = 27003;
 	const int PLAYERBOT_HAY_POTIONS = 10;
+	// MT2009_PLUS_BOT_HORSE_HAY_V1: a bot keeps this much Siano for its horse -
+	// never sold, changed for potions or put into the safebox.
+	const int PLAYERBOT_HAY_KEEP = 5;
 	// And an offline counter carries at most this share of its cells in lines
 	// of refine materials together - three fifths: 48 lines of the eighty cells
 	// a counter had, 96 of a bot's two pages since 28 September
@@ -7007,6 +7010,24 @@ namespace
 	// The horse saddlebags and the Dozorca's exchange (playerbot_saddlebag.h).
 	const DWORD PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED = 30378;
 	const DWORD PLAYERBOT_CRAFT_MATERIAL_UNIT_PRICE = 100000;
+	// MT2009_PLUS_SADDLEBAG_MARKET_V1: a counter's line of them is at most
+	// this many pieces (BotOfflinePrepareLine), and a counter shows at most
+	// this many such lines (BotOfflineCounterRefuses) - lines of two hundred
+	// at twenty million filled 775 pages and no bot could pay for one.
+	const int PLAYERBOT_CRAFT_MATERIAL_LINE_UNITS = 20;
+	const int PLAYERBOT_CRAFT_MATERIAL_COUNTER_LINES = 4;
+	// MT2009_PLUS_MARKET_SINK_V1: a Cor Draconis line is at most this many
+	// (lines of 50-67 filled 50 pages), and a counter shows at most this many
+	// Cor lines. The Cors bought off a counter, for the census
+	// (playerbot_alchemy.h).
+	const int PLAYERBOT_COR_LINE_MAX_UNITS = 20;
+	const int PLAYERBOT_COR_COUNTER_LINES = 4;
+	// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: helmet and shield lines a counter
+	// shows, and how many of them a bag holds for it before the merchant
+	// takes the rest (playerbot_economy.h).
+	const int PLAYERBOT_HELM_SHIELD_COUNTER_LINES = 3;
+	const int PLAYERBOT_HELM_SHIELD_BAG_KEEP = 6;
+	void NotePlayerBotCorBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
 	const DWORD PLAYERBOT_CRAFT_UNSOLD_RECALL_MS_PRE = 12 * 60 * 60 * 1000;
 	bool IsPlayerBotSaddlebagKeeperPID(DWORD pid);
 	int GetPlayerBotSaddlebagMedalReserve(LPCHARACTER ch);
@@ -7020,7 +7041,7 @@ namespace
 	bool CanPlayerBotPayForCraftGoods(LPCHARACTER ch, LPITEM item, long long price);
 	bool PlayerBotSaddlebagWantsMedal(LPCHARACTER ch);
 	bool PlayerBotWantsSaddlebagGoods(LPCHARACTER ch);
-	void NotePlayerBotSaddlebagBought(LPCHARACTER ch, DWORD vnum, long long price);
+	void NotePlayerBotSaddlebagBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
 	void LogPlayerBotSaddlebagCensus();
 
 	// Alchemy and the daily Cors (playerbot_alchemy.h).

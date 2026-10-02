@@ -56,6 +56,15 @@ namespace
 	const DWORD PLAYERBOT_HAGGLE_BOT_GAP_MS = 30 * 60 * 1000;
 	const DWORD PLAYERBOT_HAGGLE_MUTE_MS = 12 * 60 * 60 * 1000;
 	const size_t PLAYERBOT_HAGGLE_CORE_OPEN = 3;
+	// MT2009_PLUS_BOT_HAGGLE_V2: once the shop asks the price agreed, the bot
+	// waits a moment (the owner may still be at his stand's edit window) and
+	// then buys; the deal no longer runs out on the answer's clock but holds
+	// PLAYERBOT_HAGGLE_MET_WAIT_MS for the bot to get to the stand, and while
+	// a deal is open the bot does not leave the shop's map (the world travel
+	// asks IsPlayerBotHaggleHoldingMap).
+	const DWORD PLAYERBOT_HAGGLE_BUY_DELAY_MS = 3 * 1000;
+	const DWORD PLAYERBOT_HAGGLE_MET_WAIT_MS = 20 * 60 * 1000;
+	const DWORD PLAYERBOT_HAGGLE_CHANNEL_ASK_MS = 30 * 1000;
 
 	enum EPlayerBotHaggleStep
 	{
@@ -78,6 +87,8 @@ namespace
 		bool bUnsureSaid;
 		DWORD dwStartedAt;
 		DWORD dwSaidAt;
+		DWORD dwMetAt;          // MT2009_PLUS_BOT_HAGGLE_V2: when the shop first asked the price, 0 while it does not
+		DWORD dwChannelAskAt;
 	};
 	std::map<DWORD, TPlayerBotHaggle> s_mapPlayerBotHaggles;   // by the bot's pid
 	std::map<DWORD, std::deque<DWORD> > s_mapPlayerBotHaggleOffersTo; // by the person's pid
@@ -280,6 +291,8 @@ namespace
 		h.bUnsureSaid = false;
 		h.dwStartedAt = now;
 		h.dwSaidAt = now;
+		h.dwMetAt = 0;
+		h.dwChannelAskAt = 0;
 		s_mapPlayerBotHaggles[ch->GetPlayerID()] = h;
 		s_mapPlayerBotHaggleOffersTo[h.dwOwner].push_back(now);
 		++s_kPlayerBotHaggleCensus.offers;
@@ -430,23 +443,44 @@ namespace
 		const DWORD wait = h.bStep == PLAYERBOT_HAGGLE_AGREED ? PLAYERBOT_HAGGLE_DEAL_WAIT_MS : PLAYERBOT_HAGGLE_ANSWER_WAIT_MS;
 		const long long price = (long long)line->GetPrice().GetTotalYangAmount();
 		const long long buyAt = h.llAgreed > 0 ? h.llAgreed : h.llOffer;
-		if (price > 0 && price <= buyAt)
+		const bool met = price > 0 && price <= buyAt;
+		// MT2009_PLUS_BOT_HAGGLE_V2: the moment the shop first asks the price.
+		if (met && h.dwMetAt == 0)
+		{
+			h.dwMetAt = now;
+			sys_log(0, "PLAYERBOT_HAGGLE: price met pid=%u name=%s owner=%u item=%u price=%lld agreed=%lld edit=%d map=%ld shop_map=%ld",
+					ch->GetPlayerID(), ch->GetName(), h.dwOwner, h.dwItem, price, h.llAgreed,
+					shop->IsEditMode() ? 1 : 0, ch->GetMapIndex(), (long)shop->GetSpawn().map);
+		}
+		else if (!met)
+			h.dwMetAt = 0;
+		if (met && now - h.dwMetAt >= PLAYERBOT_HAGGLE_BUY_DELAY_MS && !shop->IsEditMode())
 		{
 			const auto spawn = shop->GetSpawn();
 			const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
 					? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
-			if (spawn.map == ch->GetMapIndex() && (int)spawn.channel == shopChannel && !shop->IsEditMode())
+			// A bot on another channel asks to be moved to the stands' and
+			// keeps the deal: the purchase is made there, by this same watch.
+			if ((int)g_bChannel != shopChannel && spawn.map == ch->GetMapIndex() &&
+					(h.dwChannelAskAt == 0 || now - h.dwChannelAskAt >= PLAYERBOT_HAGGLE_CHANNEL_ASK_MS))
+			{
+				h.dwChannelAskAt = now;
+				CPlayerBotManager::instance().RequestShopChannel(ch->GetPlayerID());
+			}
+			if (spawn.map == ch->GetMapIndex() && (int)spawn.channel == shopChannel && (int)g_bChannel == shopChannel)
 			{
 				auto& o = state.offlineShop;
 				o.buyOwner = h.dwOwner;
 				o.buyItem = h.dwItem;
 				o.buyUntil = now + PLAYERBOT_MARKET_FAR_PICK_WALK_MS;
 				o.farBuy = false;
+				o.haggleItem = h.dwItem;
+				o.hagglePrice = buyAt;
 				ClaimPlayerBotLineUntil(h.dwItem, ch->GetPlayerID(), now, o.buyUntil);
 				++s_kPlayerBotHaggleCensus.bought;
-				sys_log(0, "PLAYERBOT_HAGGLE: buys pid=%u name=%s owner=%u to=%s item=%u vnum=%u price=%lld agreed=%lld",
+				sys_log(0, "PLAYERBOT_HAGGLE: buys pid=%u name=%s owner=%u to=%s item=%u vnum=%u price=%lld agreed=%lld waited_ms=%u",
 						ch->GetPlayerID(), ch->GetName(), h.dwOwner, h.strOwnerName.c_str(), h.dwItem, h.dwVnum,
-						price, h.llAgreed);
+						price, h.llAgreed, (unsigned int)(now - h.dwMetAt));
 				LPCHARACTER person = CHARACTER_MANAGER::instance().FindByPID(h.dwOwner);
 				if (person && person->GetDesc())
 					SayPlayerBotHaggle(ch, person, "Widze nowa cene - ide kupic, dzieki!");
@@ -454,16 +488,39 @@ namespace
 				return true;
 			}
 		}
-		if (now - h.dwSaidAt >= wait)
+		// The clocks. A deal whose price the shop already asks waits for the
+		// bot up to PLAYERBOT_HAGGLE_MET_WAIT_MS from that moment; the bot
+		// never says the price did not change when it did.
+		const bool lapsed = met ? now - h.dwMetAt >= PLAYERBOT_HAGGLE_MET_WAIT_MS
+				: now - h.dwSaidAt >= wait;
+		if (lapsed)
 		{
 			++s_kPlayerBotHaggleCensus.lapsed;
 			LPCHARACTER person = CHARACTER_MANAGER::instance().FindByPID(h.dwOwner);
 			if (person && person->GetDesc() && h.bStep == PLAYERBOT_HAGGLE_AGREED)
-				SayPlayerBotHaggle(ch, person, "Cena na sklepie sie nie zmienila, wiec odpuszczam. Moze innym razem!");
-			EndPlayerBotHaggle(ch->GetPlayerID(), h.bStep == PLAYERBOT_HAGGLE_AGREED ? "deal_lapsed" : "no_answer",
+				SayPlayerBotHaggle(ch, person, met
+						? "Nie dam rady dojsc do Twojego sklepu, wiec odpuszczam. Sorki i moze innym razem!"
+						: "Cena na sklepie sie nie zmienila, wiec odpuszczam. Moze innym razem!");
+			EndPlayerBotHaggle(ch->GetPlayerID(), met ? "met_unreached" :
+					h.bStep == PLAYERBOT_HAGGLE_AGREED ? "deal_lapsed" : "no_answer",
 					PLAYERBOT_HAGGLE_SAME_LINE_MS);
 		}
 		return false;
+	}
+
+	// MT2009_PLUS_BOT_HAGGLE_V2: declared in playerbot_travel.h - a bot with a
+	// deal agreed (or its price already on the shop) stays on the shop's map
+	// until it has bought or the deal is over.
+	bool IsPlayerBotHaggleHoldingMap(LPCHARACTER ch)
+	{
+		if (!ch || s_mapPlayerBotHaggles.empty())
+			return false;
+		std::map<DWORD, TPlayerBotHaggle>::const_iterator it = s_mapPlayerBotHaggles.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotHaggles.end() ||
+				(it->second.bStep != PLAYERBOT_HAGGLE_AGREED && it->second.dwMetAt == 0))
+			return false;
+		auto shop = ikashop::GetManager().GetShopByOwnerID(it->second.dwOwner);
+		return shop && shop->GetSpawn().map == ch->GetMapIndex();
 	}
 }
 #endif

@@ -199,6 +199,9 @@ namespace
 				continue;
 			if (item->GetRefineLevel() <= PLAYERBOT_SHOP_UNSOLD_SCRAP_MAX_REFINE)
 				continue;   // the merchant's rule has that one
+			// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: the counter's, not the box's.
+			if (IsPlayerBotListedHelmShield(item))
+				continue;
 			// Nor a finished spare, which the box would give straight back to
 			// the counter (IsPlayerBotFinishedSpareGoods; Patch 4, point 7).
 			if (IsPlayerBotFinishedSpareGoods(ch, item))
@@ -4062,6 +4065,12 @@ namespace
 		if (IsPlayerBotBonusGoodsPiece(item))
 			return PlayerBotGoods(1500 + GetPlayerBotBonusPlusLevel(item), per::GOODS_VALUABLE_BONUS, 0,
 					GetPlayerBotBonusPlusLevel(item));
+		// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: the helmets of 21 and 41 and
+		// the two shields at every plus (IsPlayerBotListedHelmShield), ahead
+		// of the low-level gear's refine floor and the merchant-only rule.
+		if (IsPlayerBotListedHelmShield(item))
+			return PlayerBotGoods(PLAYERBOT_SHOP_LOW_PLUS_GEAR_SCORE + item->GetRefineLevel(),
+					per::GOODS_LOW_LEVEL_LOW_PLUS, item->GetRefineLevel(), item->GetLevelLimit());
 		// Iwakura's fifty-four weapons at +0..+3 stand on the bots' counters
 		// PLAYERBOT_JUNK_WEAPON_MARKET_CAP at a time, world-wide.
 		if (IsPlayerBotCappedJunkWeapon(item) && IsPlayerBotJunkWeaponMarketFull())
@@ -4276,11 +4285,14 @@ namespace
 #endif
 				))
 			return -1;
-		// A hairstyle the bot cannot wear: an item-shop head a keeper bought
-		// for its counter (playerbot_itemshop.h). One it can wear is its own,
-		// on its way to its head.
+		// MT2009_PLUS_BOT_HAIR_V1: a hairstyle goes up in one case alone - the
+		// one the bot wore until a costume set's replaced it
+		// (IsPlayerBotReplacedHair, playerbot_economy.h). Every other one -
+		// its own on the way to its head, a head for another class, a plain
+		// one - is never a line (the merchant throws the unwanted ones away).
 		if (item->GetType() == ITEM_COSTUME && item->GetSubType() == COSTUME_HAIR)
-			return item->CanUsedBy(ch) ? -1 : PlayerBotGoods(PLAYERBOT_SHOP_ISHOP_HAIR_SCORE, per::GOODS_ISHOP_HAIRSTYLE);
+			return IsPlayerBotReplacedHair(ch, item)
+					? PlayerBotGoods(PLAYERBOT_SHOP_ISHOP_HAIR_SCORE, per::GOODS_ISHOP_HAIRSTYLE) : -1;
 		// A Forgetting Scroll sells well; the keeper keeps it only while one of
 		// its own skills is waiting for it.
 		if (item->GetVnum() == PLAYERBOT_SKILL_FORGET_SCROLL_VNUM)

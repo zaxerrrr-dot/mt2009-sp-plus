@@ -14,6 +14,13 @@
 // above it, and reopens the same anonymous namespace. Include it exactly once,
 // after playerbot_gear.h - it prices and sells what that file decides to wear.
 
+#if defined(PLAYERBOT_ENGINE_MT2009)
+// MT2009_PLUS_BOT_HAIR_V1: the costume sets' lists (item.cpp,
+// server-patches/playerqol, MT2009_PLUS_COSTUME_SET_V1's costume_sets.txt).
+bool Mt2009PlusIsCostumeSetHair(DWORD hairVnum);
+bool Mt2009PlusIsCostumeSetPair(DWORD bodyVnum, DWORD hairVnum);
+#endif
+
 namespace
 {
 	// Defined with the market-stall code, which comes later because it needs
@@ -242,6 +249,48 @@ namespace
 	// MT2009_PLUS_MARKET_V3, point 5 (playerbot_bonus.h): a piece whose lines
 	// price it as a +7 or better is no low plus to any cap below.
 	bool IsPlayerBotBonusGoodsPiece(LPITEM item);
+
+	// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1 (the owner, 2 October: "na
+	// sklepach nie ma w ogole helmow i tarcz"): the helmets of level 21 and
+	// 41 of every class and the Pieciokatna Tarcza (13020-13029) and the
+	// Czarna Okragla Tarcza (13040-13049), at every plus, are counter goods -
+	// listed (ScorePlayerBotShopStockRules, PLAYERBOT_HELM_SHIELD_COUNTER_LINES
+	// lines a counter), not sold to the merchant while the bot has a counter
+	// and few of them, never put down as dead stock, and let out of the
+	// safebox (CollectPlayerBotLppBoxRelease). Before, a helmet or shield
+	// under +6 was merchant-only or low-level gear under its refine floor,
+	// and the box kept two of a family.
+	bool IsPlayerBotListedHelmShieldProto(const TItemTable* proto, DWORD vnum)
+	{
+		if (!proto || proto->bType != ITEM_ARMOR)
+			return false;
+		const DWORD family = vnum - vnum % 10;
+		if (proto->bSubType == ARMOR_SHIELD)
+			return family == 13020 || family == 13040;
+		if (proto->bSubType != ARMOR_HEAD)
+			return false;
+		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+			if (proto->aLimits[i].bType == LIMIT_LEVEL)
+				return proto->aLimits[i].lValue == 21 || proto->aLimits[i].lValue == 41;
+		return false;
+	}
+
+	bool IsPlayerBotListedHelmShield(LPITEM item)
+	{
+		return item && IsPlayerBotListedHelmShieldProto(item->GetProto(), item->GetVnum());
+	}
+
+	int CountPlayerBotListedHelmShieldsInBag(LPCHARACTER ch)
+	{
+		int n = 0;
+		for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && !item->IsEquipped() && IsPlayerBotListedHelmShield(item))
+				++n;
+		}
+		return n;
+	}
 
 	bool IsPlayerBotCappedLowArmour(LPITEM item)
 	{
@@ -1725,6 +1774,86 @@ namespace
 				PlayerBotNavHash(ch->GetPlayerID() ^ (vnum << 8) ^ 0x4d495342U));
 	}
 
+	// MT2009_PLUS_BOT_HAIR_V1 (the owner, 2 October): bots bought plain
+	// hairstyles from the ItemShop and listed them by the hundred (750 pages
+	// of "Dlugie Wlosy" and "Modnie Sciete" at 2 100 000 yang each). A bot
+	// buys and wears only a hairstyle of a costume set now - one that
+	// costume_sets.txt names, the set bonus's own lists - and the one of its
+	// worn costume's set first (playerbot_itemshop.h). A hairstyle goes on
+	// a counter in one case alone: the one the bot wore until a set one
+	// replaced it. Every other hairstyle off its head - one for another
+	// class or sex, a plain one, a stand's old stock - comes home and is
+	// thrown away at the merchant, for nothing (no yang made of it).
+	bool IsPlayerBotHairItem(LPITEM item)
+	{
+		return item && item->GetType() == ITEM_COSTUME && item->GetSubType() == COSTUME_HAIR;
+	}
+
+	bool IsPlayerBotSetHairVnum(DWORD vnum)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return Mt2009PlusIsCostumeSetHair(vnum);
+#else
+		(void)vnum;
+		return true;
+#endif
+	}
+
+	bool IsPlayerBotHairOfBodySet(DWORD bodyVnum, DWORD hairVnum)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return Mt2009PlusIsCostumeSetPair(bodyVnum, hairVnum);
+#else
+		(void)bodyVnum;
+		(void)hairVnum;
+		return false;
+#endif
+	}
+
+	// Whether this hairstyle would be better on the bot's head than what is
+	// there: a set one over none or over a plain one, and the worn costume's
+	// own set's over another set's.
+	bool IsPlayerBotHairUpgrade(LPCHARACTER ch, DWORD hairVnum)
+	{
+		if (!ch || !IsPlayerBotSetHairVnum(hairVnum))
+			return false;
+		LPITEM worn = ch->GetWear(WEAR_COSTUME_HAIR);
+		if (!worn)
+			return true;
+		if (worn->GetVnum() == hairVnum)
+			return false;
+		if (!IsPlayerBotSetHairVnum(worn->GetVnum()))
+			return true;
+		LPITEM body = ch->GetWear(WEAR_COSTUME_BODY);
+		return body && !IsPlayerBotHairOfBodySet(body->GetVnum(), worn->GetVnum()) &&
+				IsPlayerBotHairOfBodySet(body->GetVnum(), hairVnum);
+	}
+
+	// A hairstyle in the bag on its way to the bot's head.
+	bool IsPlayerBotHairToWear(LPCHARACTER ch, LPITEM item)
+	{
+		return IsPlayerBotHairItem(item) && !item->IsEquipped() && item->CanUsedBy(ch) &&
+				IsPlayerBotHairUpgrade(ch, item->GetVnum());
+	}
+
+	// The hairstyle the bot wore until a set one replaced it: the only one
+	// that goes on a counter. Asked of a counter's line too (a preview).
+	bool IsPlayerBotReplacedHair(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !IsPlayerBotHairItem(item) || item->IsEquipped() || !item->CanUsedBy(ch))
+			return false;
+		LPITEM worn = ch->GetWear(WEAR_COSTUME_HAIR);
+		return worn && worn != item && IsPlayerBotSetHairVnum(worn->GetVnum()) &&
+				!IsPlayerBotHairUpgrade(ch, item->GetVnum());
+	}
+
+	// Any other hairstyle off the bot's head: thrown away at the merchant.
+	bool IsPlayerBotUnwantedHair(LPCHARACTER ch, LPITEM item)
+	{
+		return IsPlayerBotHairItem(item) && !item->IsEquipped() &&
+				!IsPlayerBotHairToWear(ch, item) && !IsPlayerBotReplacedHair(ch, item);
+	}
+
 	bool IsPlayerBotJunkItem(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked())
@@ -1836,8 +1965,11 @@ namespace
 		// MT2009_PLUS_MARKET_V3, point 8: Siano is never a counter's. What the
 		// General Store did not change for potions (ExchangePlayerBotHay) it
 		// buys - asked before the pickup goods, which would keep it for one.
+		// MT2009_PLUS_BOT_HORSE_HAY_V1: the horse's PLAYERBOT_HAY_KEEP stay in
+		// the bag; only the hay over them is junk, and the sale below sells
+		// just that much of the stack (SellPlayerBotSurplusHay).
 		if (vnum == PLAYERBOT_HAY_VNUM)
-			return true;
+			return (int)ch->CountSpecifyItem(PLAYERBOT_HAY_VNUM) > PLAYERBOT_HAY_KEEP;
 		// The goods a player crafts further (IsPlayerBotPickupGoods) wait for a
 		// counter, and reach the merchant only from a bag under pressure that
 		// has no counter to sell from - the rule a polymorph marble keeps. Gear
@@ -1859,6 +1991,15 @@ namespace
 		// A pet seal from the ItemShop (MT2009 Plus, playerbot_itemshop.h) is the
 		// bot's own pet, summoned from the bag: never the merchant's.
 		if (item->GetType() == ITEM_PET)
+			return false;
+		// MT2009_PLUS_BOT_HAIR_V1: a hairstyle the bot will neither wear nor
+		// list is thrown away at the merchant (SellPlayerBotJunkAtMerchant).
+		if (IsPlayerBotUnwantedHair(ch, item))
+			return true;
+		// MT2009_PLUS_BOT_LIST_HELM_SHIELD_V1: the counter's, while there is a
+		// counter and the bag holds no more than PLAYERBOT_HELM_SHIELD_BAG_KEEP.
+		if (IsPlayerBotListedHelmShield(item) && PlayerBotHasCounter(ch) &&
+				CountPlayerBotListedHelmShieldsInBag(ch) <= PLAYERBOT_HELM_SHIELD_BAG_KEEP)
 			return false;
 		// A hairstyle from the ItemShop (playerbot_itemshop.h) is worn, not sold:
 		// the rule's default would vendor it on the next town trip.
@@ -2387,6 +2528,29 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_HORSE_HAY_V1: the General Store buys the Siano over the
+	// horse's PLAYERBOT_HAY_KEEP - by count, so a stack of two hundred leaves
+	// five behind instead of going whole. The yang it paid.
+	long long SellPlayerBotSurplusHay(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		const int surplus = (int)ch->CountSpecifyItem(PLAYERBOT_HAY_VNUM) - PLAYERBOT_HAY_KEEP;
+		if (surplus <= 0)
+			return 0;
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(PLAYERBOT_HAY_VNUM);
+		long long unit = proto ? (long long)proto->dwShopBuyPrice : 0;
+		if (unit <= 0)
+			unit = proto ? (long long)proto->dwGold : 100;
+		const long long price = std::max<long long>(10, unit * surplus / 5);
+		ch->RemoveSpecifyItem(PLAYERBOT_HAY_VNUM, surplus);
+		PlayerBotChangeGold(ch, price);
+		sys_log(0, "PLAYERBOT_MARKET: hay sold pid=%u name=%s hay=%d gold=%lld hay_left=%d",
+				ch->GetPlayerID(), ch->GetName(), surplus, price,
+				(int)ch->CountSpecifyItem(PLAYERBOT_HAY_VNUM));
+		return price;
+	}
+
 	bool SellPlayerBotJunkAtMerchant(LPCHARACTER ch, EPlayerBotMerchantCategory category,
 			const char* merchantName)
 	{
@@ -2411,9 +2575,32 @@ namespace
 				ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_DISCARD");
 				continue;
 			}
+			// MT2009_PLUS_BOT_HAIR_V1: a hairstyle the bot will neither wear nor
+			// list goes for nothing, at whichever merchant: the ItemShop's
+			// heads are worth no yang the world should mint.
+			if (item && !item->isLocked() && IsPlayerBotUnwantedHair(ch, item) &&
+					!IsPlayerBotSidekickGift(ch, item) && !IsPlayerBotSidekickPinned(ch, item) &&
+					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_NONE)
+			{
+				sys_log(0, "PLAYERBOT_ISHOP: hairstyle thrown away pid=%u name=%s vnum=%u",
+						ch->GetPlayerID(), ch->GetName(), item->GetVnum());
+				ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_HAIR_DISCARD");
+				continue;
+			}
 			if (!item || !IsPlayerBotJunkItem(ch, item) ||
 					GetPlayerBotJunkMerchant(item) != category)
 				continue;
+			// MT2009_PLUS_BOT_HORSE_HAY_V1: hay by count, the horse's share kept.
+			if (item->GetVnum() == PLAYERBOT_HAY_VNUM)
+			{
+				const long long hayGold = SellPlayerBotSurplusHay(ch);
+				if (hayGold > 0)
+				{
+					totalSoldGold += hayGold;
+					++soldCount;
+				}
+				continue;
+			}
 
 			DWORD price = item->GetShopBuyPrice();
 			if (price == 0)
@@ -3936,7 +4123,8 @@ namespace
 	{
 		if (!ch || redCount >= PLAYERBOT_POTION_FILL_RED)
 			return 0;
-		const int hay = (int)ch->CountSpecifyItem(PLAYERBOT_HAY_VNUM);
+		// MT2009_PLUS_BOT_HORSE_HAY_V1: the horse's share is never changed.
+		const int hay = (int)ch->CountSpecifyItem(PLAYERBOT_HAY_VNUM) - PLAYERBOT_HAY_KEEP;
 		if (hay <= 0)
 			return 0;
 		const int freeCells = std::max(0, ch->GetEmptyInventory(1) < 0 ? 0 : CountPlayerBotFreeInventoryCells(ch));
@@ -3950,7 +4138,7 @@ namespace
 		ch->AutoGiveItem(PLAYERBOT_HAY_POTION_VNUM, bundles * PLAYERBOT_HAY_POTIONS);
 		sys_log(0, "PLAYERBOT_MARKET: hay exchanged pid=%u name=%s hay=%d potions=%d had_red=%u hay_left=%d",
 				ch->GetPlayerID(), ch->GetName(), bundles, bundles * PLAYERBOT_HAY_POTIONS,
-				(unsigned int)redCount, hay - bundles);
+				(unsigned int)redCount, hay - bundles + PLAYERBOT_HAY_KEEP);
 		return (DWORD)(bundles * PLAYERBOT_HAY_POTIONS);
 	}
 

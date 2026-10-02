@@ -531,10 +531,12 @@ namespace
 		return total - placeGain + newGain >= PLAYERBOT_BUFF_SET_MIN_TOTAL;
 	}
 
-	// A set piece is bought out of a small share: a twentieth of what the bot
-	// can spend, and a person's piece no dearer than the bots' cap on a
-	// person's price (IsPlayerBotPersonPriceFair, playerbot_market.h).
-	const long long PLAYERBOT_BUFF_SET_BUDGET_PERCENT = 5;
+	// A set piece is bought out of a share of what the bot can spend, and a
+	// person's piece no dearer than the bots' cap on a person's price
+	// (IsPlayerBotPersonPriceFair, playerbot_market.h).
+	// MT2009_PLUS_BOT_SHAMAN_INT_SET_V2: up to 40% of the bot's gold (it was
+	// a twentieth, which bought almost nothing).
+	const long long PLAYERBOT_BUFF_SET_BUDGET_PERCENT = 40;
 
 	// The buff pass found nothing more to cast: a cast session is over.
 	void NotePlayerBotBuffSetNothingToCast(LPCHARACTER ch)
