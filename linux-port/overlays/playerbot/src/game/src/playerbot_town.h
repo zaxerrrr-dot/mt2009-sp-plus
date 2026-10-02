@@ -2256,8 +2256,10 @@ namespace
 	DWORD GetPlayerBotPriceGeneration()
 	{
 		const int rate = std::max(1, GetPlayerBotPriceYangRate());
-		return (PLAYERBOT_PRICE_TABLE_VERSION * 1000000UL + (DWORD)std::min(rate, 999999)) ^
-				((DWORD)GetPlayerBotInflationSteps() << 24);
+		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: and the owner's bonus-count prices
+		// switching on or off, which moves every piece with lines.
+		return ((PLAYERBOT_PRICE_TABLE_VERSION * 1000000UL + (DWORD)std::min(rate, 999999)) ^
+				((DWORD)GetPlayerBotInflationSteps() << 24)) ^ (IsPlayerBotBonusCountPricingOn() ? 0x80000000UL : 0UL);
 	}
 
 	// Iwakura's base for a book, at this world's yang rate. The rate is the
@@ -2406,6 +2408,10 @@ namespace
 		// MT2009_PLUS_MARKET_V3: never a piece its lines or its average price
 		// over its plus - a bracelet +0 of 1 500 health is a +7's goods.
 		if (GetPlayerBotPricedPlus(item) > (int)refine)
+			return false;
+		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: nor one the owner's add-on prices
+		// by its lines while no Moonlight chests are in the world.
+		if (GetPlayerBotBonusCountAddon(item) > 0)
 			return false;
 		const DWORD baseVnum = item->GetVnum() - refine;
 		for (size_t i = 0; i < sizeof(PLAYERBOT_GEAR_PRICES) / sizeof(PLAYERBOT_GEAR_PRICES[0]); ++i)
@@ -2840,6 +2846,24 @@ namespace
 				PlayerBotPriceStep(per::STEP_SHEET_GEAR, lifted, like, item->GetVnum() - refine, plus);
 			}
 		}
+		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: while no Moonlight chests are in
+		// the world, the piece's own price with the owner's add-on for each of
+		// its lines on top - or the "like a +N" above, whichever is more: both
+		// price the same lines, so they are never added together
+		// (playerbot_price_rules::BonusCountAddon).
+		{
+			const DWORD addon = GetPlayerBotBonusCountAddon(item);
+			if (addon > 0)
+			{
+				const unsigned long long counted = std::min<unsigned long long>(0xFFFFFFFFULL,
+						(unsigned long long)price + addon);
+				if (counted > lifted)
+				{
+					lifted = (DWORD)counted;
+					PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, lifted, addon);
+				}
+			}
+		}
 		const int top = GetPlayerBotTopCopyPercent(item);
 		const int intelligence = GetPlayerBotIntPremiumPercent(item);
 		if (top == 100 && intelligence == 100)
@@ -2878,6 +2902,12 @@ namespace
 		else
 			sheet = GetPlayerBotMaterialAskingBase(vnum);
 		const unsigned long long count = std::max<DWORD>(1, item->GetCount());
+		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: a piece's floor carries the same
+		// share of the owner's add-on for its lines, so no markdown takes a
+		// bracelet of two lines back to a plain one's price.
+		if (item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR)
+			sheet = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL,
+					(unsigned long long)sheet + GetPlayerBotBonusCountAddon(item));
 		const unsigned long long floor = std::max<unsigned long long>(
 				(unsigned long long)sheet * (unsigned long long)PLAYERBOT_MARKET_V3_FLOOR_PERCENT / 100ULL * count,
 				(unsigned long long)GetPlayerBotNpcSellUnitPrice(item) * count);

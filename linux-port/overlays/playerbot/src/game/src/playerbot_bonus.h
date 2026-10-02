@@ -751,6 +751,67 @@ namespace
 		return std::max(GetPlayerBotBonusPlusLevel(item), GetPlayerBotAverageDamagePlus(item));
 	}
 
+	// MT2009_PLUS_BONUS_COUNT_PRICE_V1: the owner's add-on for every bonus line
+	// of a piece, while no Moonlight chests are in the world
+	// (IsPlayerBotBonusCountPricingOn, playerbot_events.h). Which of his three
+	// rows a piece is read by: bracelet, necklace, earrings, boots and shields
+	// one; body armour, helmet and weapon the other, and a weapon of level 30
+	// or 75 the same with its first two lines free. Its level is its limit
+	// level. The owner's yang through the same yang-rate curve and inflation
+	// as every sheet price (ScalePlayerBotIwakuraPrice). Zero while the rule is
+	// off, for anything else, and for a piece with no line.
+	DWORD ScalePlayerBotIwakuraPrice(DWORD base);
+	bool IsPlayerBotBonusCountPricingOn();
+
+	int GetPlayerBotBonusCountClass(LPITEM item)
+	{
+		if (!item)
+			return playerbot_price_rules::BONUS_COUNT_NONE;
+		if (item->GetType() == ITEM_WEAPON)
+		{
+			if (item->GetSubType() == WEAPON_ARROW)
+				return playerbot_price_rules::BONUS_COUNT_NONE;
+			const int level = item->GetLevelLimit();
+			return level == 30 || level == 75 ? playerbot_price_rules::BONUS_COUNT_WEAPON_30_75
+					: playerbot_price_rules::BONUS_COUNT_GEAR;
+		}
+		if (item->GetType() != ITEM_ARMOR)
+			return playerbot_price_rules::BONUS_COUNT_NONE;
+		switch (item->GetSubType())
+		{
+			case ARMOR_WRIST: case ARMOR_NECK: case ARMOR_EAR:
+			case ARMOR_FOOTS: case ARMOR_SHIELD:
+				return playerbot_price_rules::BONUS_COUNT_ACCESSORY;
+			case ARMOR_BODY: case ARMOR_HEAD:
+				return playerbot_price_rules::BONUS_COUNT_GEAR;
+		}
+		return playerbot_price_rules::BONUS_COUNT_NONE;
+	}
+
+	// The ordinary lines (the first five slots) that carry a bonus.
+	int CountPlayerBotBonusCountLines(LPITEM item)
+	{
+		int lines = 0;
+		for (int i = 0; item && i < playerbot_price_rules::BONUS_COUNT_MAX_LINES && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (item->GetAttributeType(i) != 0 && item->GetAttributeValue(i) != 0)
+				++lines;
+		return lines;
+	}
+
+	DWORD GetPlayerBotBonusCountAddon(LPITEM item)
+	{
+		if (!item || !IsPlayerBotBonusCountPricingOn())
+			return 0;
+		const int cls = GetPlayerBotBonusCountClass(item);
+		if (cls == playerbot_price_rules::BONUS_COUNT_NONE)
+			return 0;
+		const long long addon = playerbot_price_rules::BonusCountAddon(cls, item->GetLevelLimit(),
+				CountPlayerBotBonusCountLines(item));
+		if (addon <= 0)
+			return 0;
+		return ScalePlayerBotIwakuraPrice((DWORD)std::min<long long>(addon, 0xFFFFFFFFLL));
+	}
+
 	// A piece of jewellery, boots, body armour or a shield whose lines make it
 	// a +7 or better over its own plus: finished goods, for the counter rather
 	// than the storekeeper ("takie przedmioty boty wystawiaja na lade, zamiast
@@ -762,7 +823,13 @@ namespace
 		if (!item)
 			return false;
 		const int plus = GetPlayerBotBonusPlusLevel(item);
-		return plus >= PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS && plus > (int)item->GetRefineLevel();
+		if (plus >= PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS && plus > (int)item->GetRefineLevel())
+			return true;
+		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: and, while the owner's bonus-count
+		// prices hold, every piece its lines add yang to - a bracelet of two
+		// weak lines included: the counter's goods, never the merchant's or
+		// the storekeeper's.
+		return GetPlayerBotBonusCountAddon(item) > 0;
 	}
 
 	int ScorePlayerBotItemBonuses(LPCHARACTER ch, LPITEM item, BYTE wearCell)

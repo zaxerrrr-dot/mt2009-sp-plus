@@ -235,10 +235,13 @@ namespace
 	// point 13). One rolled with prize lines is not low quality: a Krwawy
 	// Miecz +0 with a forty percent average is what players cross a market
 	// for, and the cap was written against the ones nobody buys.
+	bool IsPlayerBotBonusGoodsPiece(LPITEM item);
 	bool IsPlayerBotCappedJunkWeapon(LPITEM item)
 	{
+		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: nor one whose lines the owner's
+		// bonus-count prices pay for (IsPlayerBotBonusGoodsPiece).
 		return item && item->GetType() == ITEM_WEAPON && IsPlayerBotJunkWeaponVnum(item->GetVnum()) &&
-				!IsPlayerBotPrizeItem(item);
+				!IsPlayerBotPrizeItem(item) && !IsPlayerBotBonusGoodsPiece(item);
 	}
 
 	// A body armour Iwakura's Patch 3, point 4 caps on the market: +0..+4, and
@@ -1898,6 +1901,15 @@ namespace
 		// of its merchant price, and the level rule under it sold the armour a
 		// bot of sixty-four had just picked up for the level it was reaching.
 		if (IsPlayerBotStalkiItem(item))
+			return false;
+		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: nor a piece whose lines are its
+		// worth - a +7's by MARKET_V3, or the owner's add-on a line while no
+		// Moonlight chests are in the world (IsPlayerBotBonusGoodsPiece): the
+		// counter's, and the merchant's only from a bag under pressure that
+		// has no counter, the rule a polymorph marble keeps. The merchant paid
+		// a few thousand for a bracelet a player pays millions for.
+		if ((item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR) && IsPlayerBotBonusGoodsPiece(item) &&
+				!(IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch)))
 			return false;
 
 		// A Cor Draconis or a sash (MT2009 Plus) is the counter's. The
