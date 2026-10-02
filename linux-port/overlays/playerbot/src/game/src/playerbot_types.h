@@ -6769,6 +6769,9 @@ namespace
 	// MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages
 	// (playerbot_shouters.h), kept out of everything the population does.
 	bool IsPlayerBotShouterPID(DWORD pid);
+	// MT2009_PLUS_MEDAL_SHOUTERS_V1: Tieru's three, medal droppers that shout
+	// (playerbot_shouters.h); not counted by IsPlayerBotShouterPID.
+	bool IsPlayerBotMedalShouterPID(DWORD pid);
 	// MT2009_PLUS_PROGRESSION_V3: what a bot a gate holds works on while it is
 	// held (playerbot_progression.h, included last): the Metins, the horse's
 	// medals, the gear - or nothing in particular. Asked by the travel, the

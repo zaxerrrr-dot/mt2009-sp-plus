@@ -3090,6 +3090,10 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 	// Being retired: out of the world until its character is new.
 	if (IsPlayerBotRetirementHold(dwPlayerID))
 		return false;
+	// MT2009_PLUS_MEDAL_SHOUTERS_V1: giving one of Tieru's names up
+	// (playerbot_shouters.h): out of the world until it wears another.
+	if (IsPlayerBotShouterNameHold(dwPlayerID))
+		return false;
 	// MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (spawn): the Arezzo dungeon cohort lives
 	// on the core that hosts the dungeons; every other core leaves it alone.
 	if (IsPlayerBotArezzoDungeonReservedPID(dwPlayerID))
@@ -3686,8 +3690,9 @@ size_t CPlayerBotManager::SpawnRegistered(size_t count, BYTE bEmpire)
 			continue;
 		if (m_setScheduledBots.find(*it) != m_setScheduledBots.end())
 			continue;
-		// MT2009_PLUS_SHOUTERS_V1: on top of the number, never part of it.
-		if (IsPlayerBotShouterPID(*it))
+		// MT2009_PLUS_SHOUTERS_V1: on top of the number, never part of it
+		// (and Tieru's kind, MT2009_PLUS_MEDAL_SHOUTERS_V1).
+		if (IsPlayerBotShouterPID(*it) || IsPlayerBotMedalShouterPID(*it))
 			continue;
 		m_dequePendingSpawns.push_back(*it);
 		m_setScheduledBots.insert(*it);
@@ -3812,14 +3817,20 @@ size_t CPlayerBotManager::ScheduleExtraBots(const std::vector<DWORD>& pids)
 	return selected;
 }
 
+// MT2009_PLUS_MEDAL_SHOUTERS_V1: Tieru, Tiieru and Tiiieru, the krzykacze
+// that drop medals (playerbot_shouters.h), are the operator's medal droppers
+// too - everything this answers for the cohort holds for them.
 bool CPlayerBotManager::IsMedalDropperCohortPID(DWORD dwPlayerID) const
 {
-	return m_setMedalDropperCohort.find(dwPlayerID) != m_setMedalDropperCohort.end();
+	return m_setMedalDropperCohort.find(dwPlayerID) != m_setMedalDropperCohort.end() ||
+			IsPlayerBotMedalShouterPID(dwPlayerID);
 }
 
+// And with no cohort asked for (PLAYERBOT_MEDAL_DROPPERS=0) they stop where
+// any medal dropper does.
 BYTE CPlayerBotManager::GetMedalDropperCohortLevel() const
 {
-	return m_bMedalDropperCohortLevel;
+	return m_bMedalDropperCohortLevel != 0 ? m_bMedalDropperCohortLevel : PLAYERBOT_EXP_LOCK_MEDAL_DROPPER;
 }
 
 // One batch from the queue, if one is due. Called from Update every tick and
@@ -3899,7 +3910,8 @@ size_t CPlayerBotManager::ScheduleLateJoiners(size_t count, BYTE bEmpire, DWORD 
 			continue;
 		if (m_setScheduledBots.find(*it) != m_setScheduledBots.end() ||
 				m_setMedalDropperCohort.find(*it) != m_setMedalDropperCohort.end() ||
-				waiting.find(*it) != waiting.end() || IsPlayerBotShouterPID(*it))
+				waiting.find(*it) != waiting.end() || IsPlayerBotShouterPID(*it) ||
+				IsPlayerBotMedalShouterPID(*it)) // MT2009_PLUS_MEDAL_SHOUTERS_V1
 			continue;
 		chosen.push_back(*it);
 	}
@@ -3929,7 +3941,8 @@ void CPlayerBotManager::SpawnLateJoiners(DWORD dwNow)
 	{
 		const DWORD pid = m_dequeLateJoiners.front().second;
 		m_dequeLateJoiners.pop_front();
-		if (m_setScheduledBots.find(pid) != m_setScheduledBots.end() || IsPlayerBotShouterPID(pid))
+		if (m_setScheduledBots.find(pid) != m_setScheduledBots.end() || IsPlayerBotShouterPID(pid) ||
+				IsPlayerBotMedalShouterPID(pid)) // MT2009_PLUS_MEDAL_SHOUTERS_V1
 			continue;
 		m_setScheduledBots.insert(pid);
 		// A banned or resting one is scheduled and not spawned: the top-up
@@ -4748,8 +4761,9 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 	{
 		const DWORD pid = it->first;
 		// A player's companion keeps its owner's hours, not a schedule; a
-		// shouter of the first villages is always there.
-		if (IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid))
+		// shouter of the first villages is always there (and Tieru's kind,
+		// MT2009_PLUS_MEDAL_SHOUTERS_V1).
+		if (IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid) || IsPlayerBotMedalShouterPID(pid))
 			continue;
 		// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): the Arezzo test's characters
 		// play for as long as the test runs.
