@@ -29,6 +29,15 @@ $script:ManifestUrl = 'https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-
 # dodaj-do-paczki.py with each client release). Hashing them at start tells
 # whether this folder is that client, even with no CLIENT_VERSION.
 $script:FileListUrl = 'https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main/client-files.json'
+# The fallback server: when GitHub does not answer (network error, non-200,
+# not JSON), the manifest, client-files.json and the client zip are read from
+# here under the same file names. The zip passes the same size and SHA-256
+# check. A manifest's "mirrors": [base URLs] are tried before this one.
+$script:MirrorBase = 'http://141.94.100.53/aktualizacje/'
+$script:MirrorNotice = 'GitHub niedostępny - pobieram z serwera zapasowego'
+$script:ManifestMirrors = @()
+# The mirror base the last manifest or file list came from; '' for GitHub.
+$script:LastMirrorUsed = ''
 # The installed client version, one line. The launcher writes it after an
 # update; the client update zip carries it as well, so a zip unpacked by hand
 # leaves the right value behind.
@@ -181,7 +190,72 @@ function ConvertFrom-AktManifestText {
     return $parsed
 }
 
+function Get-AktMirrorUrls {
+    # Each mirror base + the file name of a GitHub URL.
+    param([Parameter(Mandatory = $true)][string]$Url)
+    $uri = $null
+    if (-not [Uri]::TryCreate($Url, [UriKind]::Absolute, [ref]$uri)) { return @() }
+    $name = [Uri]::UnescapeDataString(($uri.AbsolutePath.TrimEnd('/') -split '/')[-1])
+    if (-not $name -or $name -notmatch '^[0-9A-Za-z._-]+$') { return @() }
+    $urls = @()
+    foreach ($candidate in @($script:ManifestMirrors) + @($script:MirrorBase)) {
+        $base = ([string]$candidate).Trim()
+        if (-not $base) { continue }
+        if (-not $base.EndsWith('/')) { $base += '/' }
+        $baseUri = $null
+        if (-not [Uri]::TryCreate($base, [UriKind]::Absolute, [ref]$baseUri)) { continue }
+        if ($baseUri.Scheme -ne 'http' -and $baseUri.Scheme -ne 'https') { continue }
+        $full = $base + $name
+        if ($full -ne $uri.AbsoluteUri -and $urls -notcontains $full) { $urls += $full }
+    }
+    return $urls
+}
+
+function Register-AktManifestMirrors {
+    param($Manifest)
+    if ($null -eq $Manifest -or $Manifest -isnot [psobject]) { return }
+    $property = $Manifest.PSObject.Properties['mirrors']
+    if (-not $property -or $null -eq $property.Value) { return }
+    $script:ManifestMirrors = @(@($property.Value) | ForEach-Object { [string]$_ } | Where-Object { $_ })
+}
+
 function Get-AktManifest {
+    # GitHub first, with a short wait; on any failure the same file from the
+    # mirror (Get-AktManifestFromGitHub does the GitHub part).
+    param([Parameter(Mandatory = $true)][string]$Source, [int]$TimeoutSec = 20)
+    if (Test-Path -LiteralPath $Source -PathType Leaf) {
+        return Get-AktManifestFromGitHub -Source $Source -TimeoutSec $TimeoutSec
+    }
+    $script:LastMirrorUsed = ''
+    try {
+        $manifest = Get-AktManifestFromGitHub -Source $Source -TimeoutSec ([Math]::Min($TimeoutSec, 12))
+        Register-AktManifestMirrors -Manifest $manifest
+        return $manifest
+    }
+    catch {
+        $githubError = $_
+        $mirrorUrls = @()
+        $uri = $null
+        if ([Uri]::TryCreate($Source, [UriKind]::Absolute, [ref]$uri) -and $uri.Scheme -eq 'https') {
+            $mirrorUrls = @(Get-AktMirrorUrls -Url $Source)
+        }
+        foreach ($url in $mirrorUrls) {
+            try {
+                $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec $TimeoutSec -Headers @{ 'User-Agent' = 'MT2009-Aktualizator' }
+                $content = $response.Content
+                $text = if ($content -is [byte[]]) { [Text.Encoding]::UTF8.GetString($content) } else { [string]$content }
+                $manifest = ConvertFrom-AktManifestText -Text $text -Origin $url
+                $script:LastMirrorUsed = $url.Substring(0, $url.LastIndexOf('/') + 1)
+                Register-AktManifestMirrors -Manifest $manifest
+                return $manifest
+            }
+            catch { }
+        }
+        throw $githubError
+    }
+}
+
+function Get-AktManifestFromGitHub {
     # A local file (tests) or the HTTPS address. For the repository's raw URL
     # the GitHub contents API is asked first: raw.githubusercontent.com caches
     # for five minutes and hands out the previous manifest after a release.
@@ -511,24 +585,53 @@ function Invoke-AktDownload {
     # Three attempts, five seconds apart, as the full launcher: GitHub release
     # assets answer 500 or drop the connection now and then and serve the
     # same file a minute later. An antivirus block or a cancel is final.
+    # Each attempt tries the manifest's address, then the mirror (same file
+    # name); with -ExpectedSha256 a file whose hash differs counts as failed.
     param(
         [Parameter(Mandatory = $true)][string]$Source,
         [Parameter(Mandatory = $true)][string]$Destination,
         [long]$ExpectedSize = 0,
+        [string]$ExpectedSha256 = '',
         [scriptblock]$OnProgress = {},
         [int]$Attempts = 3,
-        [int]$RetryDelaySec = 5
+        [int]$RetryDelaySec = 5,
+        [string]$LogRoot = ''
     )
     Enable-AktTls12
+    $sources = @($Source)
+    if (-not (Test-Path -LiteralPath $Source -PathType Leaf)) { $sources += @(Get-AktMirrorUrls -Url $Source) }
+    $expected = ([string]$ExpectedSha256).ToUpperInvariant()
+    $noticeShown = $false
     for ($attempt = 1; $attempt -le $Attempts; $attempt++) {
-        try {
-            return (Receive-AktFile -Source $Source -Destination $Destination -ExpectedSize $ExpectedSize -OnProgress $OnProgress)
+        $failure = $null
+        for ($index = 0; $index -lt $sources.Count; $index++) {
+            if ($index -gt 0 -and -not $noticeShown) {
+                $noticeShown = $true
+                Write-AktLog $LogRoot "$($script:MirrorNotice): $($sources[$index])"
+                $null = & $OnProgress 'mirror' 0 0
+            }
+            try {
+                $hash = Receive-AktFile -Source $sources[$index] -Destination $Destination -ExpectedSize $ExpectedSize -OnProgress $OnProgress
+                if ($expected -and $hash -ne $expected) {
+                    throw "Suma kontrolna SHA-256 pliku z $($sources[$index]) się nie zgadza (oczekiwano $expected, jest $hash)."
+                }
+                if ($ExpectedSize -gt 0) {
+                    $length = (Get-Item -LiteralPath $Destination).Length
+                    if ($length -ne $ExpectedSize) {
+                        throw "Plik z $($sources[$index]) ma zły rozmiar ($length zamiast $ExpectedSize bajtów)."
+                    }
+                }
+                return $hash
+            }
+            catch {
+                $failure = $_
+                Remove-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
+                if ($script:CancelRequested) { throw 'Anulowano pobieranie. Nic nie zostało zmienione.' }
+                if (Test-AktAntivirusError $failure) { throw (Get-AktFileErrorText $failure 'pobierany plik') }
+                Write-AktLog $LogRoot ("Pobieranie z $($sources[$index]) nie powiodło się: " + (Get-AktErrorMessage $failure))
+            }
         }
-        catch {
-            $failure = $_
-            Remove-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
-            if ($script:CancelRequested) { throw 'Anulowano pobieranie. Nic nie zostało zmienione.' }
-            if (Test-AktAntivirusError $failure) { throw (Get-AktFileErrorText $failure 'pobierany plik') }
+        if ($null -ne $failure) {
             if ($attempt -ge $Attempts) {
                 throw ("Nie udało się pobrać aktualizacji (próby: $Attempts). Nic nie zostało zmienione. Szczegóły: " + (Get-AktErrorMessage $failure))
             }
@@ -689,7 +792,7 @@ function Install-AktClientUpdate {
 
         $zip = Join-Path $staging 'aktualizacja.zip'
         $hash = Invoke-AktDownload -Source $Component.Url -Destination $zip -ExpectedSize $Component.Size `
-            -OnProgress $OnProgress -RetryDelaySec $RetryDelaySec
+            -ExpectedSha256 $Component.Sha256 -OnProgress $OnProgress -RetryDelaySec $RetryDelaySec -LogRoot $root
         $null = & $OnProgress 'verify' 0 0
         $length = (Get-Item -LiteralPath $zip).Length
         if ($Component.Size -gt 0 -and $length -ne $Component.Size) {
@@ -1234,6 +1337,11 @@ function Invoke-AktCheck {
     [Windows.Forms.Application]::DoEvents()
     try {
         $manifest = Get-AktManifest -Source $script:ManifestUrl
+        if ($script:LastMirrorUsed) {
+            Write-AktLog $script:Root "$($script:MirrorNotice): $($script:LastMirrorUsed)"
+            $lblStatus.Text = $script:MirrorNotice + '...'
+            [Windows.Forms.Application]::DoEvents()
+        }
         $script:Component = Get-AktClientComponent -Manifest $manifest
         $script:FileList = $null
         if ($script:Component) {
@@ -1272,6 +1380,10 @@ $onProgress = {
             $script:ProgressStarted = [DateTime]::Now
         }
         'wait' { }
+        'mirror' {
+            $lblProgress.Text = $script:MirrorNotice + '...'
+            $script:ProgressStarted = [DateTime]::Now
+        }
         'verify' {
             $script:Downloading = $false
             $btnUpdate.Enabled = $false

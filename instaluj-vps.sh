@@ -41,6 +41,12 @@ FOLDER=${M2_FOLDER:-/opt/mt2009plus}
 REPO=zaxerrrr-dot/mt2009-sp-plus
 BRANCH=main
 MANIFEST=update-manifest-mt2009.json
+# Serwer zapasowy aktualizacji (MT2009_PLUS_UPDATE_MIRROR_V1): gdy GitHub nie
+# odpowiada, manifest i paczka są brane stąd (te same nazwy plików, ta sama
+# kontrola SHA-256). Puste M2_UPDATE_MIRROR wyłącza.
+MIRROR=${M2_UPDATE_MIRROR-http://141.94.100.53/aktualizacje/}
+case "$MIRROR" in ''|*/) ;; *) MIRROR="$MIRROR/" ;; esac
+MIRROR_NOTICE='GitHub niedostępny - pobieram z serwera zapasowego'
 
 ADDRESS=''
 BOTS=''
@@ -134,11 +140,16 @@ if [ "$UPDATE" = 0 ]; then
     info "Pominięta (--bez-aktualizacji)."
 else
     WORK2=$(mktemp -d /tmp/mt2009plus-upd.XXXXXX) || die "mktemp"
-    curl -fsSL --connect-timeout 20 --max-time 60 -H 'Accept: application/vnd.github.raw+json' \
+    manifest_ok() { python3 -c 'import json,sys; sys.exit(0 if isinstance(json.load(open(sys.argv[1], encoding="utf-8-sig")).get("server"), dict) else 1)' "$1" 2>/dev/null; }
+    { curl -fsSL --connect-timeout 15 --max-time 30 -H 'Accept: application/vnd.github.raw+json' \
             "https://api.github.com/repos/$REPO/contents/$MANIFEST?ref=$BRANCH" -o "$WORK2/manifest.json" 2>/dev/null \
-        || curl -fsSL --connect-timeout 20 --max-time 60 "https://raw.githubusercontent.com/$REPO/$BRANCH/$MANIFEST" \
-            -o "$WORK2/manifest.json" \
-        || die "nie mogę pobrać $MANIFEST z GitHuba"
+            && manifest_ok "$WORK2/manifest.json"; } \
+        || { curl -fsSL --connect-timeout 15 --max-time 30 "https://raw.githubusercontent.com/$REPO/$BRANCH/$MANIFEST" \
+            -o "$WORK2/manifest.json" 2>/dev/null && manifest_ok "$WORK2/manifest.json"; } \
+        || { [ -n "$MIRROR" ] && info "$MIRROR_NOTICE ($MIRROR)" \
+            && curl -fsSL --connect-timeout 20 --max-time 60 "$MIRROR$MANIFEST" -o "$WORK2/manifest.json" \
+            && manifest_ok "$WORK2/manifest.json"; } \
+        || die "nie mogę pobrać $MANIFEST ani z GitHuba, ani z serwera zapasowego"
     eval "$(python3 - "$WORK2/manifest.json" <<'PY'
 import json, sys, shlex
 m = json.load(open(sys.argv[1]))["server"]
@@ -156,10 +167,20 @@ print(1 if v(sys.argv[2]) > v(sys.argv[1]) else 0)" "${HAVE:-0}" "${NEW_VERSION:
         info "Paczka ma już najnowszą wersję ($HAVE)."
     else
         info "Wersja w paczce: $HAVE, najnowsza: $NEW_VERSION - pobieram aktualizację."
-        wget -q --show-progress --tries=5 --timeout=60 -O "$WORK2/update.zip" "$NEW_URL" \
-            || die "pobieranie aktualizacji nie udało się"
-        got=$(sha256sum "$WORK2/update.zip" | awk '{print toupper($1)}')
         want=$(printf '%s' "$NEW_SHA256" | tr 'a-f' 'A-F')
+        zip_name=${NEW_URL%%\?*}; zip_name=${zip_name##*/}
+        got=''
+        if wget -q --show-progress --tries=3 --timeout=60 -O "$WORK2/update.zip" "$NEW_URL"; then
+            got=$(sha256sum "$WORK2/update.zip" | awk '{print toupper($1)}')
+        fi
+        if [ "$got" != "$want" ] && [ -n "$MIRROR" ] && [ -n "$zip_name" ]; then
+            info "$MIRROR_NOTICE ($MIRROR$zip_name)"
+            got=''
+            if wget -q --show-progress --tries=3 --timeout=60 -O "$WORK2/update.zip" "$MIRROR$zip_name"; then
+                got=$(sha256sum "$WORK2/update.zip" | awk '{print toupper($1)}')
+            fi
+        fi
+        [ -n "$got" ] || die "pobieranie aktualizacji nie udało się (GitHub i serwer zapasowy)"
         [ "$got" = "$want" ] || die "suma SHA-256 aktualizacji się nie zgadza (pobrany plik uszkodzony) - uruchom jeszcze raz"
         # .env i inne ustawienia serwera nie są w paczce aktualizacji, więc
         # zostają; pliki z paczki są podmieniane.

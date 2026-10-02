@@ -11,6 +11,98 @@ $script:M2_DEFAULT_SUPPORT_CONTACT = 'https://metin2sp.pl/discord'
 $script:M2_MOD_REPOSITORY = 'zaxerrrr-dot/mt2009-sp-plus'
 $script:M2_MOD_MANIFEST_URL = "https://raw.githubusercontent.com/$($script:M2_MOD_REPOSITORY)/main/update-manifest-mt2009.json"
 
+# MT2009_PLUS_UPDATE_MIRROR_V1: the fallback update source. Everything above
+# comes from GitHub; when GitHub does not answer (network error, non-200, a
+# body that is not JSON) the same file names are read from this server
+# instead: update-manifest-mt2009.json, client-files.json and the zips the
+# manifest names (base + the file name of the manifest's URL). A zip from the
+# mirror passes the same SHA-256 check as one from GitHub. The manifest may
+# list more bases in "mirrors": [...]; they are tried before this one.
+# Filled by tools/publish-update-mirror.sh with every release.
+$script:M2_UPDATE_MIRROR_BASE = 'http://141.94.100.53/aktualizacje/'
+$script:M2_UPDATE_MIRROR_NOTICE = 'GitHub niedostępny - pobieram z serwera zapasowego'
+# GitHub's own answer is waited for this long before the mirror is asked.
+$script:M2_GITHUB_TIMEOUT_SEC = 12
+$script:M2ManifestMirrors = @()
+# 'github', a mirror base, or '' before the first read.
+$script:M2LastUpdateSource = ''
+
+function Get-M2UpdateMirrorBases {
+    # The mirror bases, the manifest's "mirrors" first, each ending in '/',
+    # http(s) only, no duplicates.
+    $bases = @()
+    foreach ($candidate in @($script:M2ManifestMirrors) + @($script:M2_UPDATE_MIRROR_BASE)) {
+        $value = ([string]$candidate).Trim()
+        if (-not $value) { continue }
+        if (-not $value.EndsWith('/')) { $value += '/' }
+        $uri = $null
+        if (-not [Uri]::TryCreate($value, [UriKind]::Absolute, [ref]$uri)) { continue }
+        if ($uri.Scheme -ne 'http' -and $uri.Scheme -ne 'https') { continue }
+        if ($bases -notcontains $value) { $bases += $value }
+    }
+    return $bases
+}
+
+function Register-M2ManifestMirrors {
+    # Remembers a manifest's optional "mirrors": [base URLs] for the downloads
+    # that follow in this session.
+    param($Manifest)
+    if ($null -eq $Manifest -or $Manifest -isnot [psobject]) { return }
+    $property = $Manifest.PSObject.Properties['mirrors']
+    if (-not $property -or $null -eq $property.Value) { return }
+    $script:M2ManifestMirrors = @(@($property.Value) | ForEach-Object { [string]$_ } | Where-Object { $_ })
+}
+
+function Get-M2MirrorUrls {
+    # The mirror addresses of a GitHub URL: each base + the URL's file name.
+    param([Parameter(Mandatory = $true)][string]$Url)
+    $uri = $null
+    if (-not [Uri]::TryCreate($Url, [UriKind]::Absolute, [ref]$uri)) { return @() }
+    $name = [Uri]::UnescapeDataString(($uri.AbsolutePath.TrimEnd('/') -split '/')[-1])
+    if (-not $name -or $name -notmatch '^[0-9A-Za-z._-]+$') { return @() }
+    $urls = @()
+    foreach ($base in @(Get-M2UpdateMirrorBases)) {
+        $candidate = $base + $name
+        if ($candidate -ne $uri.AbsoluteUri -and $urls -notcontains $candidate) { $urls += $candidate }
+    }
+    return $urls
+}
+
+function Write-M2MirrorNotice {
+    Write-Host $script:M2_UPDATE_MIRROR_NOTICE -ForegroundColor Yellow
+}
+
+function Get-M2UpdateSource {
+    # Where the last manifest came from: 'github', a mirror base, or ''.
+    return $script:M2LastUpdateSource
+}
+
+function Get-M2ManifestFromMirror {
+    # The manifest (or any JSON file of the channel) read from the mirrors;
+    # $null when none of them has a readable one.
+    param(
+        [Parameter(Mandatory = $true)][string]$Source,
+        [int]$TimeoutSec = 30
+    )
+    foreach ($url in @(Get-M2MirrorUrls -Url $Source)) {
+        try {
+            $response = Invoke-WebRequest -Uri $url -Method Get -UseBasicParsing -TimeoutSec $TimeoutSec `
+                -Headers @{ 'User-Agent' = 'metin2-playerbots-launcher' }
+            $content = $response.Content
+            $text = if ($content -is [byte[]]) { [Text.Encoding]::UTF8.GetString($content) } else { [string]$content }
+            $manifest = ConvertFrom-M2ManifestText -Text $text -Origin $url
+            Write-M2MirrorNotice
+            $script:M2LastUpdateSource = $url.Substring(0, $url.LastIndexOf('/') + 1)
+            Register-M2ManifestMirrors -Manifest $manifest
+            return $manifest
+        }
+        catch {
+            Write-Verbose "Serwer zapasowy $url nie odpowiedział: $($_.Exception.Message)"
+        }
+    }
+    return $null
+}
+
 function Test-M2ForeignManifestUrl {
     # True for a manifest address this package must not follow: empty (what
     # the mod saved while updates were off), upstream's repository, or the
@@ -252,7 +344,7 @@ function Repair-M2ClientExecutables {
         else {
             $temp = Join-Path ([IO.Path]::GetTempPath()) ('m2-client-exe-' + [Guid]::NewGuid().ToString('N') + '.exe')
             try {
-                Get-M2Download -Source ([string]$ExeComponent.url) -Destination $temp
+                Get-M2Download -Source ([string]$ExeComponent.url) -Destination $temp -ExpectedSha256 ([string]$ExeComponent.sha256)
                 $hash = Get-M2FileSha256 -Path $temp
                 if ($hash -ne ([string]$ExeComponent.sha256).ToUpperInvariant()) {
                     throw "błędna suma SHA-256 pobranego pliku ($hash)"
@@ -371,6 +463,8 @@ function Get-M2UpdateManifest {
     # minute), so for the repository's own manifest it is asked first, with
     # the raw URL as the fallback - the API's anonymous budget is sixty
     # requests an hour per address, and a session reads the manifest once.
+    # GitHub gets a short wait: when it does not answer, the mirror below does.
+    $githubTimeout = [Math]::Max(1, [Math]::Min($TimeoutSec, $script:M2_GITHUB_TIMEOUT_SEC))
     $apiUri = $null
     if ($uri.Host -eq 'raw.githubusercontent.com') {
         $parts = $uri.AbsolutePath.Trim('/') -split '/', 4
@@ -381,7 +475,7 @@ function Get-M2UpdateManifest {
     }
     if ($null -ne $apiUri) {
         try {
-            $response = Invoke-WebRequest -Uri $apiUri -Method Get -UseBasicParsing -TimeoutSec $TimeoutSec `
+            $response = Invoke-WebRequest -Uri $apiUri -Method Get -UseBasicParsing -TimeoutSec $githubTimeout `
                 -Headers @{ Accept = 'application/vnd.github.raw+json'; 'User-Agent' = 'metin2-playerbots-launcher' }
             # Windows PowerShell 5.1 hands this media type back as a byte[],
             # and [string] of one is its numbers joined by spaces - so this
@@ -390,51 +484,63 @@ function Get-M2UpdateManifest {
             $content = $response.Content
             $text = if ($content -is [byte[]]) { [Text.Encoding]::UTF8.GetString($content) } else { [string]$content }
             if ($text.TrimStart().StartsWith('{')) {
-                return ConvertFrom-M2ManifestText -Text $text -Origin ([string]$apiUri)
+                $manifest = ConvertFrom-M2ManifestText -Text $text -Origin ([string]$apiUri)
+                $script:M2LastUpdateSource = 'github'
+                Register-M2ManifestMirrors -Manifest $manifest
+                return $manifest
             }
         }
         catch { }
     }
+    $githubError = $null
     try {
         # Invoke-WebRequest, not Invoke-RestMethod: the REST variant parses for
         # us and silently degrades to a string when it cannot, which is exactly
         # the failure that has to be visible here.
-        $response = Invoke-WebRequest -Uri $uri -Method Get -UseBasicParsing -TimeoutSec $TimeoutSec
-        return ConvertFrom-M2ManifestText -Text ([string]$response.Content) -Origin $Source
+        $response = Invoke-WebRequest -Uri $uri -Method Get -UseBasicParsing -TimeoutSec $githubTimeout
+        $manifest = ConvertFrom-M2ManifestText -Text ([string]$response.Content) -Origin $Source
+        $script:M2LastUpdateSource = 'github'
+        Register-M2ManifestMirrors -Manifest $manifest
+        return $manifest
     }
-    catch {
-        $statusCode = 0
-        try {
-            if ($null -ne $_.Exception.Response) {
-                $statusCode = [int]$_.Exception.Response.StatusCode
-            }
-        }
-        catch { $statusCode = 0 }
+    catch { $githubError = $_ }
 
-        # GitHub serves raw manifests from an anonymous, per-IP budget. A player
-        # who clicks the button a few times in a row spends it, and the bare
-        # transport error that came back ("Operacja nie powiodla sie") told them
-        # nothing about waiting an hour - or that their install was fine.
-        if ($statusCode -eq 403 -or $statusCode -eq 429) {
-            throw 'GitHub chwilowo ogranicza liczbe zapytan z Twojego adresu IP (limit anonimowy). Nie jest to blad Twojej instalacji - serwer dziala dalej. Sprobuj ponownie za kilkanascie minut.'
-        }
+    # GitHub did not answer, answered with an error or with something that is
+    # not a manifest: the mirror has the same file under the same name.
+    $mirrored = Get-M2ManifestFromMirror -Source $Source -TimeoutSec $TimeoutSec
+    if ($null -ne $mirrored) { return $mirrored }
 
-        # The stable channel may intentionally be empty between releases. A
-        # missing manifest must never make the launcher reinstall the server,
-        # create another Compose project or touch the user's database.
-        if ($statusCode -eq 404) {
-            return [pscustomobject]@{
-                schema = 1
-                channel = 'unavailable'
-                publishedAt = $null
-                server = $null
-                client = $null
-                statusMessage = 'Kanał aktualizacji nie został jeszcze opublikowany. Obecna instalacja pozostaje bez zmian.'
-            }
+    $statusCode = 0
+    try {
+        if ($null -ne $githubError.Exception.Response) {
+            $statusCode = [int]$githubError.Exception.Response.StatusCode
         }
-
-        throw "Nie można sprawdzić aktualizacji pod adresem $Source. Sprawdź internet, zaporę i ustawienia DNS. Szczegóły: $($_.Exception.Message)"
     }
+    catch { $statusCode = 0 }
+
+    # GitHub serves raw manifests from an anonymous, per-IP budget. A player
+    # who clicks the button a few times in a row spends it, and the bare
+    # transport error that came back ("Operacja nie powiodla sie") told them
+    # nothing about waiting an hour - or that their install was fine.
+    if ($statusCode -eq 403 -or $statusCode -eq 429) {
+        throw 'GitHub chwilowo ogranicza liczbe zapytan z Twojego adresu IP (limit anonimowy). Nie jest to blad Twojej instalacji - serwer dziala dalej. Sprobuj ponownie za kilkanascie minut.'
+    }
+
+    # The stable channel may intentionally be empty between releases. A
+    # missing manifest must never make the launcher reinstall the server,
+    # create another Compose project or touch the user's database.
+    if ($statusCode -eq 404) {
+        return [pscustomobject]@{
+            schema = 1
+            channel = 'unavailable'
+            publishedAt = $null
+            server = $null
+            client = $null
+            statusMessage = 'Kanał aktualizacji nie został jeszcze opublikowany. Obecna instalacja pozostaje bez zmian.'
+        }
+    }
+
+    throw "Nie można sprawdzić aktualizacji pod adresem $Source ani na serwerze zapasowym. Sprawdź internet, zaporę i ustawienia DNS. Szczegóły: $($githubError.Exception.Message)"
 }
 
 function Test-M2Sha256 {
@@ -673,7 +779,10 @@ function New-M2AccessDeniedError {
 function Get-M2Download {
     param(
         [Parameter(Mandatory = $true)][string]$Source,
-        [Parameter(Mandatory = $true)][string]$Destination
+        [Parameter(Mandatory = $true)][string]$Destination,
+        # When given, a download whose SHA-256 differs counts as a failed one
+        # and the next source is tried. The caller still checks it as well.
+        [string]$ExpectedSha256 = ''
     )
 
     if (Test-Path -LiteralPath $Source -PathType Leaf) {
@@ -685,27 +794,55 @@ function Get-M2Download {
     if (-not [Uri]::TryCreate($Source, [UriKind]::Absolute, [ref]$uri) -or $uri.Scheme -ne 'https') {
         throw 'Pakiet aktualizacji musi pochodzić z lokalnego pliku albo adresu HTTPS.'
     }
+    # The manifest's address first, then the mirrors (MT2009_PLUS_UPDATE_MIRROR_V1):
+    # the same file name on the fallback server. Plain HTTP is accepted there
+    # only because the SHA-256 from the manifest has to match either way.
+    $sources = @($uri.AbsoluteUri) + @(Get-M2MirrorUrls -Url $uri.AbsoluteUri)
+    $expected = ([string]$ExpectedSha256).ToUpperInvariant()
+    # Windows PowerShell 5.1 applies -TimeoutSec to the connection and the
+    # response headers only (the body has its own five-minute read timeout),
+    # so a GitHub that does not answer is given up after a minute, not five.
+    # PowerShell 7 counts the whole transfer in it, so it keeps 300 s there.
+    $timeout = if ($PSVersionTable.PSVersion.Major -le 5) { 60 } else { 300 }
     # Three attempts: a release asset on GitHub answered "(500) Wewnetrzny
     # blad serwera" and "Polaczenie zostalo nieoczekiwanie zakonczone" a
     # second into the download, twice in two minutes, and served the same
     # file minutes later (Hiob, 17 September). One request, one failure was
     # the whole update. An antivirus block is raised at once - it does not
-    # mend itself.
+    # mend itself. Each attempt goes through every source: GitHub first, the
+    # mirror at once when GitHub fails.
     $attempts = 3
+    $noticeShown = $false
+    $lastError = $null
     for ($attempt = 1; $attempt -le $attempts; $attempt++) {
-        try {
-            Invoke-WebRequest -Uri $uri -OutFile $Destination -UseBasicParsing -TimeoutSec 300
-            return
-        }
-        catch {
-            if (Test-M2AntivirusBlock -ErrorRecord $_) {
-                throw (New-M2AntivirusError -Path $Destination -ErrorRecord $_)
+        for ($index = 0; $index -lt $sources.Count; $index++) {
+            if ($index -gt 0 -and -not $noticeShown) {
+                Write-M2MirrorNotice
+                $noticeShown = $true
             }
-            if ($attempt -ge $attempts) { throw }
-            Write-Warning ('Pobieranie nie powiodlo sie (proba ' + $attempt + ' z ' + $attempts + '): ' + $_.Exception.Message + ' - ponawiam za 5 s.')
-            Remove-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
-            Start-Sleep -Seconds 5
+            try {
+                Invoke-WebRequest -Uri $sources[$index] -OutFile $Destination -UseBasicParsing -TimeoutSec $timeout
+                if ($expected) {
+                    $actual = (Get-FileHash -LiteralPath $Destination -Algorithm SHA256).Hash.ToUpperInvariant()
+                    if ($actual -ne $expected) {
+                        throw "Błędna suma SHA-256 pliku z $($sources[$index]). Oczekiwano $expected, otrzymano $actual."
+                    }
+                }
+                if ($index -gt 0) { Write-Host "Pobrano z serwera zapasowego: $($sources[$index])" -ForegroundColor Yellow }
+                return
+            }
+            catch {
+                if (Test-M2AntivirusBlock -ErrorRecord $_) {
+                    throw (New-M2AntivirusError -Path $Destination -ErrorRecord $_)
+                }
+                $lastError = $_
+                Remove-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
+                Write-Warning ('Pobieranie z ' + $sources[$index] + ' nie powiodlo sie (proba ' + $attempt + ' z ' + $attempts + '): ' + $_.Exception.Message)
+            }
         }
+        if ($attempt -ge $attempts) { throw $lastError }
+        Write-Warning 'Ponawiam za 5 s.'
+        Start-Sleep -Seconds 5
     }
 }
 
@@ -817,7 +954,7 @@ function Invoke-M2PackageUpdate {
 
     try {
         $downloadWatch = [Diagnostics.Stopwatch]::StartNew()
-        Get-M2Download -Source $url -Destination $download
+        Get-M2Download -Source $url -Destination $download -ExpectedSha256 $expectedHash
         $actualHash = (Get-FileHash -LiteralPath $download -Algorithm SHA256).Hash.ToUpperInvariant()
         if ($actualHash -ne $expectedHash) {
             throw "Błędna suma SHA-256. Oczekiwano $expectedHash, otrzymano $actualHash."
@@ -2603,6 +2740,8 @@ Export-ModuleMember -Function @(
     'Get-M2LauncherConfig',
     'Save-M2LauncherConfig',
     'Get-M2UpdateManifest',
+    'Get-M2UpdateSource',
+    'Get-M2ManifestFromMirror',
     'Invoke-M2PackageUpdate',
     'New-M2SupportBundle',
     'Send-M2SupportBundle',

@@ -9,6 +9,7 @@ updater Seban Panelu czytają aktualizacje **tylko** z repozytorium moda:
 | Powiadomienie w panelu admina (7788) | `VERSION` i `CHANGELOG.md` z gałęzi `main` tego repozytorium |
 | Powiadomienie w Seban Panelu (7790) | najnowszy GitHub Release tego repozytorium (tag `vX.Y.Z`) |
 | Paczka ZIP | adres `url` z manifestu, zwykle załącznik GitHub Release |
+| Serwer zapasowy (gdy GitHub nie odpowiada) | `http://141.94.100.53/aktualizacje/` — te same nazwy plików, patrz niżej |
 
 Adres z oficjalnego repozytorium (`TieruYT/metin2-playerbots`) jest odrzucany.
 Pusty `manifestUrl` zapisany w `.m2launcher.json` z czasów, gdy aktualizacje
@@ -99,6 +100,32 @@ manifeście. Bez bloku `client` launcher klienta nie rusza.
 Dopóki manifest nie ma bloku `server`, launcher mówi, że w kanale nie ma
 wersji, i niczego nie zmienia.
 
+## Serwer zapasowy aktualizacji
+
+Gdy GitHub nie odpowiada (błąd sieci, kod inny niż 200, odpowiedź, która nie
+jest JSON-em), launcher, aktualizator klienta, `update.sh`, `instaluj-vps.sh`
+i updater Seban biorą pliki z `http://141.94.100.53/aktualizacje/` — pod tymi
+samymi nazwami: `update-manifest-mt2009.json`, `client-files.json` i nazwa
+pliku z adresu `url` w manifeście (`metin2-server-update-<V>.zip`,
+`metin2-client-update-<V>.zip`). Paczka z serwera zapasowego przechodzi tę
+samą kontrolę SHA-256 (i rozmiaru w aktualizatorze klienta). W logu pojawia
+się „GitHub niedostępny - pobieram z serwera zapasowego”. Opcjonalne pole
+manifestu `"mirrors": ["https://.../"]` dodaje kolejne adresy (sprawdzane
+przed wbudowanym).
+
+**Przy każdym wydaniu**, po wypchnięciu manifestu i `client-files.json`,
+na serwerze (vps1) z tego repozytorium:
+
+```sh
+sh tools/publish-update-mirror.sh ../wydania/metin2-server-update-2.2.1.zip ../wydania/metin2-client-update-2.0.39.zip
+sh tools/publish-update-mirror.sh ../wydania/metin2-server-update-2.2.1.zip -   # bez nowego klienta
+```
+
+Skrypt sprawdza SHA-256 paczek z manifestem, kopiuje je, potem
+`client-files.json`, a manifest na końcu (każdy plik przez `.tmp` + `mv`) do
+`/opt/metin2/dist/aktualizacje`, i zostawia tylko dwie najnowsze paczki
+serwera i dwie klienta.
+
 ## Na serwerze Linux / VPS
 
 ```sh
@@ -111,6 +138,8 @@ Przycisk aktualizacji w panelu działa po włączeniu `M2_UPDATE_APPLY=1` w
 `.env` i uruchomieniu updatera:
 `docker compose --profile update up -d updater` (patrz `UPDATING.md`).
 Inne repozytorium lub gałąź: zmienne `M2_UPDATE_REPO` i `M2_UPDATE_BRANCH`.
+Serwer zapasowy: `M2_UPDATE_MIRROR` (adresy oddzielone spacją; puste wyłącza),
+czas czekania na GitHub: `M2_UPDATE_GITHUB_TIMEOUT` (domyślnie 15 s).
 
 Baza danych (postacie, boty, przedmioty) nie jest ruszana przez żadną z tych
 dróg.

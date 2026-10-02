@@ -2698,6 +2698,17 @@ function Update-VersionFooter {
     $script:versionLabel.ForeColor = $script:versionBaseColor
 }
 
+$script:lastUpdateSourceNotice = ''
+function Write-UpdateSourceNotice {
+    # The manifest came from the fallback server (MT2009_PLUS_UPDATE_MIRROR_V1):
+    # said once per source in the on-screen log, so a slow check is explained.
+    $source = [string](Get-M2UpdateSource)
+    if (-not $source -or $source -eq 'github') { return }
+    if ($script:lastUpdateSourceNotice -eq $source) { return }
+    $script:lastUpdateSourceNotice = $source
+    Write-LocalLog "GitHub niedostępny - pobieram z serwera zapasowego ($source)."
+}
+
 function Read-LatestServerVersion {
     param([switch]$Force)
     if ($script:latestVersionChecked -and -not $Force) { return }
@@ -2705,6 +2716,7 @@ function Read-LatestServerVersion {
     try {
         $config = Get-M2LauncherConfig -ServerRoot $root -ConfigPath $configPath
         $manifest = Get-M2UpdateManifest -Source ([string]$config.manifestUrl) -TimeoutSec 8
+        Write-UpdateSourceNotice
         $script:latestManifest = $manifest
         Set-LatestVersionsFromManifest -Manifest $manifest
     }
@@ -3787,6 +3799,7 @@ $updateButton.Add_Click({
     try {
         $config = Get-M2LauncherConfig -ServerRoot $root -ConfigPath $configPath
         $manifest = Get-M2UpdateManifest -Source ([string]$config.manifestUrl)
+        Write-UpdateSourceNotice
     }
     catch {
         Write-LocalLog "Nie udało się sprawdzić aktualizacji: $($_.Exception.Message)"
