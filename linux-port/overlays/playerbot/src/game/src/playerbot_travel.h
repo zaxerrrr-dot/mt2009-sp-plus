@@ -1690,6 +1690,17 @@ namespace
 	{
 		if (!ch)
 			return false;
+		// MT2009_PLUS_SAME_MAP_PORTAL_GUARD_V1: a portal or Teleporter walk to
+		// the map the bot already stands on is a broken decision - the engine
+		// would only put it down again where it is. Refused, logged once a bot.
+		if (targetMap == ch->GetMapIndex())
+		{
+			static std::set<DWORD> s_setSameMapLogged;
+			if (s_setSameMapLogged.insert(ch->GetPlayerID()).second)
+				sys_err("PLAYERBOT_WORLD: same-map portal refused pid=%u name=%s map=%ld reason=%s",
+						ch->GetPlayerID(), ch->GetName(), targetMap, reason ? reason : "?");
+			return false;
+		}
 		SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
 		state.dwTargetVID = 0;
 		ch->SetVictim(NULL);
@@ -2812,11 +2823,19 @@ namespace
 			// five times in forty minutes for that column, 97 to 426 s a stay
 			// (GumbASSx, m2zip 17 September), and the town visit could not make
 			// one either.
-			const bool blocked = onBattleTrialHere
-					? (ch->IsItemLoaded() &&
-						(ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
-						 NeedsPlayerBotEmergencyPotions(ch) || NeedsPlayerBotArrows(ch)))
-					: BlocksPlayerBotTravel(ch);
+			// MT2009_PLUS_FRONTIER_BOUNCE_FIX_V1: the bag with no free three-cell
+			// column is not a fight stop either. The first village lets a bot
+			// out with it once its town visit could not empty the bag (or the
+			// M1 hold timed out - the Biologist's herb row, 580 releases an
+			// hour), and the frontier sent it straight back for it: 41 -> 64
+			// -> 41 every 13 s, the Teleporter fee paid each time, the bot seen
+			// "teleporting to its own village" (Banan, 2.18.0, 2 October). The
+			// bag now sends it home only once it has settled in and played.
+			const bool fightStops = ch->IsItemLoaded() &&
+					(ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
+					 NeedsPlayerBotEmergencyPotions(ch) || NeedsPlayerBotArrows(ch));
+			const bool blocked = onBattleTrialHere ? fightStops
+					: (fightStops || (settledIn && BlocksPlayerBotTravel(ch)));
 			// The Biologist hand-in a trial bot carries sent it home for the
 			// hand-in every few minutes: 75 desert stays of 344 s on average in
 			// an hour, 67 under ten minutes, the trial's kills 25 at a time half
@@ -2838,8 +2857,11 @@ namespace
 				const size_t junk = CountPlayerBotJunkItems(ch);
 				const bool potions = NeedsPlayerBotPotions(ch);
 				const bool bagFull = IsPlayerBotBagFull(ch);
-				if (!blocked && !potions && goods == 0 && !bagFull &&
-						junk < PLAYERBOT_SELL_RUN_JUNK_ITEMS)
+				// MT2009_PLUS_FRONTIER_BOUNCE_FIX_V1: scrap and a full bag wait
+				// until the dropper has played here; at the gate they bounced it
+				// straight back to M2 (60 "l30_dropper_junk" stays under 30 s).
+				if (!blocked && !potions && goods == 0 &&
+						(!settledIn || (!bagFull && junk < PLAYERBOT_SELL_RUN_JUNK_ITEMS)))
 					return false;
 				const char* why = blocked ? "l30_dropper_blocked" : potions ? "l30_dropper_potions" :
 						goods > 0 ? "l30_dropper_weapon_to_sell" : "l30_dropper_junk";
