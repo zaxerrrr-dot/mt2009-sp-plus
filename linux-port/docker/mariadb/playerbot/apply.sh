@@ -558,6 +558,29 @@ db -e "UPDATE world.skill_proto SET szPointPoly = '-(1.5*atk + (2.8*atk + number
 # every brochure took a cell (NerrVoVy, 27 September), as Tanaka's ear did.
 # PROTO_FROM_DB: the db core reads it at boot. Idempotent.
 db -e "UPDATE world.item_proto SET flag = flag | 4 WHERE vnum = 70031 AND (flag & 4) = 0;" || echo "[playerbot-migrate] WARNING: could not make Broszura Szermierki stack" >&2
+# MT2009_PLUS_POGROMCA_V1: Pogromca Nieb. Smoka +0..+9 (3180-3189), the
+# two-handed level-80 weapon, was an empty skeleton in the package (level 0,
+# no attack, no bonus) that nothing gave. Seon-Pyeong now makes it from
+# Partyzana+9 (cube.seon_pyeong.txt), so it is filled like his other level-80
+# weapons (Miecz Trytona 270-279 and the rest): their levels (80..90), their
+# attack-speed / strong-against-devils / strong-against-humans lines, their
+# prices, ANTI_SELL, socket_pct 3, their refine chain 502-510 and the +9 into
+# the level-87 two-handed Ostrze Slonca (3190) by 610. Attack from the server
+# wiki: 273-321 (Partyzana+9's) plus the refine bonus 0..55. Only from the
+# package's skeleton (limit level 0, attack 0), so a later hand edit stays;
+# the client's item_proto carries the same rows
+# (client-patches/client-2.0.30/tools/pogromca). PROTO_FROM_DB. Idempotent.
+db -e "UPDATE world.item_proto SET
+    limittype0 = 1, limitvalue0 = ELT(vnum - 3179, 80, 80, 82, 82, 84, 84, 86, 86, 88, 90),
+    applytype0 = 17, applyvalue0 = ELT(vnum - 3179, 15, 15, 16, 17, 18, 20, 22, 24, 27, 30),
+    applytype1 = 48, applyvalue1 = ELT(vnum - 3179, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12),
+    applytype2 = 43, applyvalue2 = ELT(vnum - 3179, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12),
+    value3 = 273, value4 = 321, value5 = ELT(vnum - 3179, 0, 3, 7, 11, 15, 20, 25, 31, 41, 55),
+    gold = ELT(vnum - 3179, 360000, 395000, 435000, 500000, 600000, 750000, 975000, 1320000, 1845000, 2770000),
+    shop_buy_price = ELT(vnum - 3179, 360000, 395000, 435000, 500000, 600000, 750000, 975000, 1320000, 1845000, 2770000),
+    antiflag = antiflag | 256, socket_pct = 3,
+    refined_vnum = IF(vnum = 3189, 3190, vnum + 1), refine_set = IF(vnum = 3189, 610, vnum - 3180 + 502)
+WHERE vnum BETWEEN 3180 AND 3189 AND limitvalue0 = 0 AND value3 = 0;" || echo "[playerbot-migrate] WARNING: could not fill Pogromca Nieb. Smoka" >&2
 # The ItemShop's marriage page (indexes 201-299, which the client's
 # ITEMSHOP_CATEGORY_MARRIAGE lists and client 2.0.47 shows) had no line at
 # all: the engagement ring (the Old Lady's ring quest gives one too), the
