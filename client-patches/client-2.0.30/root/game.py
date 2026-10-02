@@ -89,12 +89,24 @@ FIXED_TIMESTEP_UPDATE = 167 # (0.0167f) assuming game is running in 60fps
 
 testAlignment = 0
 
+# MT2009_PLUS_GAME_WINDOW_OWNER_V1: the exe keeps one borrowed pointer to the
+# game window (player.SetGameWindow) and calls it back for the target board of
+# a clicked character (SetPCTargetBoard: trade, duel, equipment view, party
+# invite), affects, "cannot attack" notices and so on. After a warp or a
+# character change the old GameWindow is often freed by the cycle collector
+# only after the new one has registered - and its __del__ used to clear the
+# pointer unconditionally, i.e. the NEW window's. From then on every right
+# click on a character showed nothing until the next warp. A window now clears
+# the registration only while it is still its own, like net.ClearPhaseWindow.
+_playerGameWindow = {"id": 0}
+
 class GameWindow(ui.ScriptWindow):
 	def __init__(self, stream):
 		ui.ScriptWindow.__init__(self, "GAME")
 		self.SetWindowName("game")
 		net.SetPhaseWindow(net.PHASE_WINDOW_GAME, self)
 		player.SetGameWindow(self)
+		_playerGameWindow["id"] = id(self)
 
 		# Panel GM: constInfo.IsGM to zwykla flaga modulu - nie resetuje sie
 		# sama miedzy postaciami w tej samej sesji klienta. Zerowana tu, przy
@@ -195,7 +207,12 @@ class GameWindow(ui.ScriptWindow):
 		self.partyInviteQuestionDialog = None
 
 	def __del__(self):
-		player.SetGameWindow(0)
+		# Only this window's own registration (MT2009_PLUS_GAME_WINDOW_OWNER_V1).
+		# A module torn down at exit has no dictionary left to ask.
+		registered = _playerGameWindow
+		if registered and registered.get("id") == id(self):
+			player.SetGameWindow(0)
+			registered["id"] = 0
 		net.ClearPhaseWindow(net.PHASE_WINDOW_GAME, self)
 		ui.ScriptWindow.__del__(self)
 
@@ -460,6 +477,9 @@ class GameWindow(ui.ScriptWindow):
 
 	def CreateUpdateables(self):
 		self.updateable = []
+		# MT2009_PLUS_AUTO_TARGET_V1: the next target after a kill (autotarget.py).
+		import autotarget
+		self.RegisterUpdatable(autotarget.GetKeeper())
 		self.RegisterUpdatable(updateable.PickUpOnDownKey())
 		import uipickupfilter
 		self.RegisterUpdatable(uipickupfilter.PickupFilterSync())
@@ -2000,6 +2020,10 @@ class GameWindow(ui.ScriptWindow):
 			else:
 				self.CheckFocus()
 				player.SetMouseState(player.MBT_LEFT, player.MBS_PRESS);
+				# A click on a character is the player choosing a target, which the
+				# next target after a kill leaves alone (MT2009_PLUS_AUTO_TARGET_V1).
+				import autotarget
+				autotarget.NoteClick(self.PickingCharacterIndex)
 
 		return True
 
