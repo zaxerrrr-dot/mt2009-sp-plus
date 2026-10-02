@@ -108,6 +108,9 @@ namespace
 	// is left alone this long, or the companion stands over it for good.
 	const DWORD PLAYERBOT_SIDEKICK_LOOT_FAILED_MS = 30000;
 	const DWORD PLAYERBOT_SIDEKICK_LOOT_GIVE_UP_MS = 8000;
+	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: a drop held for the owner whose
+	// bag is full is told at most this often.
+	const DWORD PLAYERBOT_SIDEKICK_HELD_TELL_MS = 60 * 1000;
 	// The blacksmith and the three merchants, when the owner stands this near
 	// one of them, and how often the companion does its business there.
 	const int PLAYERBOT_SIDEKICK_NPC_RANGE = 900;
@@ -373,6 +376,15 @@ namespace
 	// ask an empty map). Kept in player.playerbot_sidekick.equipment_lock.
 	std::set<DWORD> s_setPlayerBotSidekickEquipLock;
 	bool s_bPlayerBotSidekickEquipLockColumn = false;
+	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ" in the window's
+	// Options page (on by default) - with its owner's bag too full for a drop
+	// of the owner's, the companion picks that drop up into its own bag and
+	// holds it there for the owner. The companions whose owner switched it off,
+	// by pid; kept in player.playerbot_sidekick.keep_loot. What it holds so is
+	// marked in player.playerbot_sidekick_gift.held.
+	std::set<DWORD> s_setPlayerBotSidekickNoKeep;
+	bool s_bPlayerBotSidekickKeepColumn = false;
+	bool s_bPlayerBotSidekickHeldColumn = false;
 
 	// What a companion carries between ticks that nobody else needs.
 	struct TPlayerBotSidekickRuntime
@@ -388,6 +400,12 @@ namespace
 		std::set<DWORD> setBagBeforeTrade;
 		// What the owner handed it: kept, never sold (IsPlayerBotSidekickGift).
 		std::set<DWORD> setGifts;
+		// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: the owner's drops it picked up
+		// while the owner's bag was full - gifts as well, and more: the AI does
+		// not put them on, refine, rework, open or spend them
+		// (IsPlayerBotSidekickHeld).
+		std::set<DWORD> setHeld;
+		DWORD dwHeldToldAt;	// when the owner last heard of a drop held for it
 		std::map<DWORD, DWORD> mapLootFailed;	// item vid -> until
 		// The foes it took up, by why (EPlayerBotSidekickFoeWhy): the self-test
 		// reads them to see a stance hold.
@@ -480,6 +498,7 @@ namespace
 			  dwViewResendAt(0), bViewResent(false)
 		{
 			memset(adwFoes, 0, sizeof(adwFoes));
+			dwHeldToldAt = 0;	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
 		}
 	};
 	std::map<DWORD, TPlayerBotSidekickRuntime> s_mapPlayerBotSidekickRuntime;
@@ -588,6 +607,20 @@ namespace
 		if (!s_bPlayerBotSidekickEquipLockColumn)
 			sys_err("PLAYERBOT_SIDEKICK: no equipment_lock column errno=%u",
 					equipLock.get() ? equipLock->uiSQLErrno : 0U);
+		// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ", on by default, and
+		// the mark of what it holds for its owner.
+		std::unique_ptr<SQLMsg> keepLoot(AccountDB::instance().DirectQuery(
+				"ALTER TABLE player.playerbot_sidekick "
+				"ADD COLUMN IF NOT EXISTS keep_loot TINYINT UNSIGNED NOT NULL DEFAULT 1"));
+		s_bPlayerBotSidekickKeepColumn = keepLoot.get() && keepLoot->uiSQLErrno == 0;
+		if (!s_bPlayerBotSidekickKeepColumn)
+			sys_err("PLAYERBOT_SIDEKICK: no keep_loot column errno=%u", keepLoot.get() ? keepLoot->uiSQLErrno : 0U);
+		std::unique_ptr<SQLMsg> held(AccountDB::instance().DirectQuery(
+				"ALTER TABLE player.playerbot_sidekick_gift "
+				"ADD COLUMN IF NOT EXISTS held TINYINT UNSIGNED NOT NULL DEFAULT 0"));
+		s_bPlayerBotSidekickHeldColumn = held.get() && held->uiSQLErrno == 0;
+		if (!s_bPlayerBotSidekickHeldColumn)
+			sys_err("PLAYERBOT_SIDEKICK: no held column errno=%u", held.get() ? held->uiSQLErrno : 0U);
 		// A companion whose owner's character was deleted would be kept out of
 		// the population for good: its record goes, and the identity plays on
 		// as the bot it was, under the name it was given.
@@ -761,6 +794,26 @@ namespace
 						locked.insert(pid);
 				}
 				s_setPlayerBotSidekickEquipLock.swap(locked);
+			}
+		}
+		// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: the companions with "Pelne EQ" off.
+		if (s_bPlayerBotSidekickKeepColumn)
+		{
+			std::unique_ptr<SQLMsg> keeps(AccountDB::instance().DirectQuery(
+					"SELECT sidekick_pid FROM player.playerbot_sidekick WHERE keep_loot=0"));
+			if (keeps.get() && keeps->uiSQLErrno == 0 && keeps->Get() && keeps->Get()->pSQLResult)
+			{
+				std::set<DWORD> off;
+				MYSQL_ROW keepRow;
+				while (NULL != (keepRow = mysql_fetch_row(keeps->Get()->pSQLResult)))
+				{
+					DWORD pid = 0;
+					if (keepRow[0])
+						str_to_number(pid, keepRow[0]);
+					if (pid != 0)
+						off.insert(pid);
+				}
+				s_setPlayerBotSidekickNoKeep.swap(off);
 			}
 		}
 	}
@@ -979,6 +1032,25 @@ namespace
 	// wear slot the owner put it on, PLAYERBOT_SIDEKICK_PIN_UNWANTED for one
 	// the owner took off, -1 for none. Asked by the equipment, refine, bonus
 	// and junk passes of every bot, so the empty case is one test.
+	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: the owner's drop it picked up
+	// for the owner whose bag was full.
+	bool IsPlayerBotSidekickHeld(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || s_mapPlayerBotSidekickRuntime.empty())
+			return false;
+		std::map<DWORD, TPlayerBotSidekickRuntime>::const_iterator rt = s_mapPlayerBotSidekickRuntime.find(ch->GetPlayerID());
+		return rt != s_mapPlayerBotSidekickRuntime.end() &&
+				rt->second.setHeld.find(item->GetID()) != rt->second.setHeld.end();
+	}
+
+	// "Pelne EQ": on unless its owner switched it off, and only while it is
+	// somebody's companion.
+	bool IsPlayerBotSidekickKeepingLoot(DWORD pid)
+	{
+		return s_mapPlayerBotSidekickOwner.find(pid) != s_mapPlayerBotSidekickOwner.end() &&
+				s_setPlayerBotSidekickNoKeep.find(pid) == s_setPlayerBotSidekickNoKeep.end();
+	}
+
 	int GetPlayerBotSidekickPinOf(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || s_mapPlayerBotSidekickRuntime.empty())
@@ -1008,6 +1080,10 @@ namespace
 
 	bool IsPlayerBotSidekickLockedItem(LPCHARACTER ch, LPITEM item)
 	{
+		// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: what it holds for its owner is
+		// the owner's, lock or no lock.
+		if (IsPlayerBotSidekickHeld(ch, item))
+			return true;
 		if (!ch || !item || !IsPlayerBotSidekickEquipLocked(ch->GetPlayerID()))
 			return false;
 		return item->IsEquipped() || IsPlayerBotSidekickGift(ch, item);
@@ -1026,6 +1102,9 @@ namespace
 	// Taken off by its owner: the AI never puts it back on.
 	bool IsPlayerBotSidekickUnwanted(LPCHARACTER ch, LPITEM item)
 	{
+		// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: nor what it holds for its owner.
+		if (IsPlayerBotSidekickHeld(ch, item))
+			return true;
 		return GetPlayerBotSidekickPinOf(ch, item) == PLAYERBOT_SIDEKICK_PIN_UNWANTED;
 	}
 
@@ -1899,8 +1978,10 @@ namespace
 				"DELETE g FROM player.playerbot_sidekick_gift AS g LEFT JOIN player.item AS i ON i.id=g.item_id "
 				"WHERE g.sidekick_pid=%u AND i.id IS NULL AND g.given_at < NOW() - INTERVAL 1 DAY", sidekickPid);
 		std::unique_ptr<SQLMsg> prune(AccountDB::instance().DirectQuery(query));
-		snprintf(query, sizeof(query), "SELECT item_id FROM player.playerbot_sidekick_gift WHERE sidekick_pid=%u",
-				sidekickPid);
+		// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: and which of them it holds for
+		// its owner.
+		snprintf(query, sizeof(query), "SELECT item_id, %s FROM player.playerbot_sidekick_gift WHERE sidekick_pid=%u",
+				s_bPlayerBotSidekickHeldColumn ? "held" : "0", sidekickPid);
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 			return;
@@ -1908,10 +1989,17 @@ namespace
 		while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
 		{
 			DWORD id = 0;
+			unsigned int held = 0;
 			if (row[0])
 				str_to_number(id, row[0]);
+			if (row[1])
+				str_to_number(held, row[1]);
 			if (id != 0)
+			{
 				rt.setGifts.insert(id);
+				if (held != 0)
+					rt.setHeld.insert(id);
+			}
 		}
 		if (!s_bPlayerBotSidekickPinTable)
 			return;
@@ -3192,6 +3280,7 @@ namespace
 		s_mapPlayerBotSidekickOwner.erase(rec.dwSidekickPID);
 		s_mapPlayerBotSidekickRuntime.erase(rec.dwSidekickPID);
 		s_setPlayerBotSidekickEquipLock.erase(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
+		s_setPlayerBotSidekickNoKeep.erase(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
 		SetPlayerBotSidekickFlag(rec.dwOwnerPID, "towarzysz.created", 0);
 		if (CPlayerBotManager::instance().IsManaged(rec.dwSidekickPID))
 		{
@@ -3326,6 +3415,24 @@ namespace
 			return "Dobra, ekwipunek zablokowany: nie ulepszam, nie zmieniam bonusow, nie zdejmuje, nie sprzedaje "
 					"i nie wyrzucam tego, co mam na sobie i co dostalem od ciebie. Ty mozesz przekladac moje rzeczy.";
 		return "Dobra, ekwipunek odblokowany - sam dbam o swoj sprzet.";
+	}
+
+	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ", kept at once.
+	const char* SetPlayerBotSidekickKeepLoot(TPlayerBotSidekick& rec, bool keep)
+	{
+		if (IsPlayerBotSidekickKeepingLoot(rec.dwSidekickPID) != keep)
+		{
+			if (keep)
+				s_setPlayerBotSidekickNoKeep.erase(rec.dwSidekickPID);
+			else
+				s_setPlayerBotSidekickNoKeep.insert(rec.dwSidekickPID);
+			if (s_bPlayerBotSidekickKeepColumn)
+				SetPlayerBotSidekickSetting(rec, "keep_loot", keep ? 1U : 0U);
+		}
+		if (keep)
+			return "Dobra, gdy nie zmiescisz swojego dropu, podnosze go do swojego plecaka i trzymam dla ciebie. "
+					"Prawy klik na nim w moim plecaku oddaje ci go.";
+		return "Dobra, twojego dropu przy pelnym ekwipunku nie podnosze - zostaje na ziemi.";
 	}
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
@@ -3968,9 +4075,10 @@ namespace
 		// (the alignment over ten, as the character packet carries it), for the
 		// rank title on its name in the window, as the player's own shows his.
 		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" after the
-		// coins' balance.
+		// coins' balance, and MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1's "Pelne
+		// EQ" after it.
 		SendPlayerBotSidekickCommand(owner,
-				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d %d",
+				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d %d %d",
 				PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL,
 				inWorld ? (int)sk->GetRaceNum() : -1, inWorld ? (int)sk->GetSkillGroup() : 0,
 				inWorld ? sk->GetLevel() : 0, expPercent,
@@ -3983,7 +4091,8 @@ namespace
 				inWorld ? sk->GetLeadershipSkillLevel() : 0, rec.bParty ? 1 : 0,
 				inWorld ? sk->GetAlignment() / 10 : 0,
 				IsPlayerBotSidekickCoinsOn(rec.dwSidekickPID) ? 1 : 0, coinBalance,
-				IsPlayerBotSidekickEquipLocked(rec.dwSidekickPID) ? 1 : 0);
+				IsPlayerBotSidekickEquipLocked(rec.dwSidekickPID) ? 1 : 0,
+				IsPlayerBotSidekickKeepingLoot(rec.dwSidekickPID) ? 1 : 0);
 		char doing[96] = "";
 		char place[64] = "";
 		if (inWorld)
@@ -4116,15 +4225,32 @@ namespace
 					"VALUES (%u, %u, NOW())", itemId, sidekickPid);
 	}
 
+	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: an owner's drop it picked up for
+	// the owner, a gift that the AI leaves alone altogether.
+	void AddPlayerBotSidekickHeld(DWORD sidekickPid, TPlayerBotSidekickRuntime& rt, DWORD itemId)
+	{
+		rt.setGifts.insert(itemId);
+		rt.setHeld.insert(itemId);
+		if (s_bPlayerBotSidekickHeldColumn)
+			DBManager::instance().Query("INSERT INTO player.playerbot_sidekick_gift (item_id, sidekick_pid, given_at, held) "
+					"VALUES (%u, %u, NOW(), 1) ON DUPLICATE KEY UPDATE sidekick_pid=%u, held=1", itemId, sidekickPid,
+					sidekickPid);
+		else
+			DBManager::instance().Query("INSERT IGNORE INTO player.playerbot_sidekick_gift (item_id, sidekick_pid, given_at) "
+					"VALUES (%u, %u, NOW())", itemId, sidekickPid);
+	}
+
 	void ClearPlayerBotSidekickGift(DWORD sidekickPid, TPlayerBotSidekickRuntime& rt, DWORD itemId)
 	{
+		rt.setHeld.erase(itemId);	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
 		if (rt.setGifts.erase(itemId))
 			DBManager::instance().Query("DELETE FROM player.playerbot_sidekick_gift WHERE item_id=%u AND sidekick_pid=%u",
 					itemId, sidekickPid);
 	}
 
 	// The window's marks on a piece: 1 put on by the owner, 2 the owner's gift,
-	// 4 taken off by the owner.
+	// 4 taken off by the owner, 8 the owner's drop it holds for the owner
+	// (MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1).
 	int GetPlayerBotSidekickEqFlags(const TPlayerBotSidekickRuntime& rt, LPITEM item)
 	{
 		int flags = 0;
@@ -4133,6 +4259,8 @@ namespace
 			flags |= pin->second == PLAYERBOT_SIDEKICK_PIN_UNWANTED ? 4 : 1;
 		if (rt.setGifts.find(item->GetID()) != rt.setGifts.end())
 			flags |= 2;
+		if (rt.setHeld.find(item->GetID()) != rt.setHeld.end())
+			flags |= 8;
 		return flags;
 	}
 
@@ -5725,6 +5853,15 @@ namespace
 			else
 				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz blokada 1 (nie ruszam ekwipunku) albo /towarzysz blokada 0");
 		}
+		// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ".
+		else if (!strcmp(sub, "przechowuj"))
+		{
+			if (!strcmp(a1, "0") || !strcmp(a1, "1"))
+				SayPlayerBotSidekick(ch, SetPlayerBotSidekickKeepLoot(rec->second, !strcmp(a1, "1")));
+			else
+				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz przechowuj 1 (zbieram twoj drop, gdy masz pelny ekwipunek) "
+						"albo /towarzysz przechowuj 0");
+		}
 		else if (!strcmp(sub, "grupa"))
 		{
 			if (!strcmp(a1, "0") || !strcmp(a1, "1"))
@@ -6070,6 +6207,59 @@ namespace
 		return NULL;
 	}
 
+	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: whether the owner's own pick-up
+	// would find this drop a place - the engine's party branch of PickupItem
+	// pours it onto a stack of the same thing first (AutoStackItem: the same
+	// vnum and sockets, room left) and puts the rest on an empty cell
+	// (GetEmptyInventoryEx, which knows the special pages).
+	bool PlayerBotSidekickOwnerTakesDrop(LPCHARACTER owner, LPITEM item)
+	{
+		if (!owner || !item)
+			return false;
+		if (IsPlayerBotMoneyDrop(item))
+			return true;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		if (owner->GetEmptyInventoryEx(item) != -1)
+			return true;
+		if (!item->IsStackable() || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK))
+			return false;
+		for (int i = 0; i < owner->GetInventoryMaxCount(); ++i)
+		{
+			LPITEM stack = owner->GetInventoryItem(i);
+			if (!stack || stack->GetVnum() != item->GetVnum() || stack->GetCount() >= stack->GetMaxStack())
+				continue;
+			int j = 0;
+			for (; j < ITEM_SOCKET_MAX_NUM; ++j)
+				if (stack->GetSocket(j) != item->GetSocket(j))
+					break;
+			if (j == ITEM_SOCKET_MAX_NUM)
+				return true;
+		}
+		return false;
+#else
+		return PlayerBotBagTakesDrop(owner, item);
+#endif
+	}
+
+	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "jak u nas sie zapelni EQ" - an
+	// owner's drop the owner's bag has no place for, which the companion
+	// picks up into its own bag and holds for the owner (AddPlayerBotSidekickHeld)
+	// until the owner takes it in the window (a right click in its bag). Not
+	// what the AI spends by the item's number, which no mark of a piece can
+	// stop: a Cor Draconis (the alchemy opens every one), a skill book (read by
+	// its number); nor a dragon stone (the window cannot hand one back) or a
+	// quest item (the owner's quest hears of its pick-up only in the owner's
+	// own bag). Yang never needs a place.
+	bool CanPlayerBotSidekickHoldOwnerDrop(LPCHARACTER sk, LPITEM item)
+	{
+		if (!sk || !item || IsPlayerBotMoneyDrop(item) || item->IsDragonSoul() || item->GetType() == ITEM_QUEST ||
+				item->GetType() == ITEM_SKILLBOOK || item->GetType() == ITEM_SKILLFORGET ||
+				IsPlayerBotGeneralSkillBook(item->GetVnum()) || IsPlayerBotExtraSkillBook(item->GetVnum()) ||
+				IsPlayerBotCorDraconisVnum(item->GetVnum()))
+			return false;
+		return sk->GetEmptyInventory(item->GetSize()) >= 0;
+	}
+
 	// The drops worth going for: the owner's, which the engine hands to the
 	// owner when a party member picks them up (CHARACTER::PickupItem, the party
 	// branch), and what is the companion's own to take.
@@ -6082,9 +6272,14 @@ namespace
 		BYTE mode;	// EPlayerBotSidekickLoot
 		LPITEM best;
 		int bestDist;
+		// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ" on, and whether
+		// the drop chosen is one to hold for the owner.
+		bool keep;
+		bool bestHeld;
 
 		FPlayerBotSidekickLoot(LPCHARACTER s, LPCHARACTER o, const TPlayerBotSidekickRuntime& r, DWORD n, BYTE m)
-			: self(s), owner(o), rt(r), now(n), mode(m), best(NULL), bestDist(INT_MAX)
+			: self(s), owner(o), rt(r), now(n), mode(m), best(NULL), bestDist(INT_MAX),
+			  keep(s && IsPlayerBotSidekickKeepingLoot(s->GetPlayerID())), bestHeld(false)
 		{
 		}
 
@@ -6107,7 +6302,18 @@ namespace
 			if (!PlayerBotRecipientWantsDrop(owner ? owner : GetPlayerBotSidekickFilterOwner(self), item))
 				return;
 			const bool ownersOnly = owner && item->IsOwnership(owner) && !item->IsOwnership(self);
-			if (ownersOnly)
+			bool held = false;
+			// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: the owner's drop the
+			// owner's bag cannot take is held for the owner ("Pelne EQ"), or
+			// left alone - the party branch would refuse it anyway, and the
+			// companion ran to it and back for eight seconds.
+			if (ownersOnly && !PlayerBotSidekickOwnerTakesDrop(owner, item))
+			{
+				if (!keep || !CanPlayerBotSidekickHoldOwnerDrop(self, item))
+					return;
+				held = true;
+			}
+			else if (ownersOnly)
 			{
 				// The party branch hands over only what may change hands - and
 				// not the owner's yang, which it would put into the owner's bag
@@ -6123,8 +6329,41 @@ namespace
 				return;
 			best = item;
 			bestDist = d;
+			bestHeld = held;
 		}
 	};
+
+	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: the owner's drop off the ground
+	// and into the companion's bag, held for the owner; the owner is told once
+	// a minute at most.
+	bool HoldPlayerBotSidekickOwnerDrop(LPCHARACTER ch, LPCHARACTER owner, TPlayerBotSidekickRuntime& rt, LPITEM item,
+			DWORD dwNow)
+	{
+		if (!item->GetSectree() || !CanPlayerBotSidekickHoldOwnerDrop(ch, item) || !ch->CanHandleItem())
+			return false;
+		const int cell = ch->GetEmptyInventory(item->GetSize());
+		if (cell < 0)
+			return false;
+		item->RemoveFromGround();
+		item->AddToCharacter(ch, TItemPos(INVENTORY, cell));
+		ITEM_MANAGER::instance().FlushDelayedSave(item);
+		AddPlayerBotSidekickHeld(ch->GetPlayerID(), rt, item->GetID());
+		char hint[64];
+		snprintf(hint, sizeof(hint), "%s %u %u", item->GetName(), (unsigned int)item->GetCount(), item->GetOriginalVnum());
+		LogManager::instance().ItemLog(ch, item, "PLAYERBOT_SIDEKICK_HOLD", owner ? owner->GetName() : hint);
+		sys_log(0, "PLAYERBOT_SIDEKICK: held for the owner pid=%u owner=%u item=%u vnum=%u count=%u cell=%d",
+				ch->GetPlayerID(), owner ? owner->GetPlayerID() : 0, item->GetID(), item->GetVnum(),
+				(unsigned int)item->GetCount(), cell);
+		if (owner && (rt.dwHeldToldAt == 0 || dwNow - rt.dwHeldToldAt >= PLAYERBOT_SIDEKICK_HELD_TELL_MS))
+		{
+			rt.dwHeldToldAt = dwNow;
+			char text[192];
+			snprintf(text, sizeof(text), "Masz pelny ekwipunek - %s trzymam dla ciebie w swoim plecaku "
+					"(okno Towarzysza, prawy klik oddaje).", item->GetName());
+			SayPlayerBotSidekick(owner, text);
+		}
+		return true;
+	}
 
 	bool PickUpPlayerBotSidekickLoot(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER owner,
 			TPlayerBotSidekickRuntime& rt, BYTE lootMode, DWORD dwNow)
@@ -6171,6 +6410,17 @@ namespace
 		}
 		if (ch->IsStateMove())
 			ch->Stop();
+		// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: the owner's drop the owner's
+		// bag cannot take goes into the companion's.
+		if (loot.bestHeld)
+		{
+			if (!HoldPlayerBotSidekickOwnerDrop(ch, owner, rt, loot.best, dwNow))
+			{
+				rt.mapLootFailed[vid] = dwNow + PLAYERBOT_SIDEKICK_LOOT_FAILED_MS;
+				rt.dwLootVID = 0;
+			}
+			return true;
+		}
 		ch->PickupItem(vid);
 		return true;
 	}

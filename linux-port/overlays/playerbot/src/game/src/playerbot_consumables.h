@@ -274,6 +274,7 @@ namespace
 		{
 			LPITEM box = ch->GetInventoryItem(boxCell);
 			if (!box || box->GetType() != ITEM_TREASURE_BOX || box->isLocked() ||
+					IsPlayerBotSidekickHeld(ch, box) ||	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
 					GetPlayerBotRareGoodsKind(box->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE ||
 					IsPlayerBotChestRefused(ch->GetPlayerID(), box->GetVnum(), dwNow))
 				continue;
@@ -281,7 +282,7 @@ namespace
 			{
 				LPITEM key = ch->GetInventoryItem(keyCell);
 				if (!key || key->GetType() != ITEM_TREASURE_KEY || key->GetValue(0) != box->GetValue(0) ||
-						key->isLocked())
+						key->isLocked() || IsPlayerBotSidekickHeld(ch, key))	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
 					continue;
 				// Miejsce na caly zestaw, a nie na jeden przedmiot: patrz
 				// PLAYERBOT_CHEST_FREE_CELLS. Wysokie przedmioty potrzebuja
@@ -328,6 +329,9 @@ namespace
 			// world - so opening one that is for sale would stop the whole
 			// population opening that kind of box for the next few minutes.
 			if (item->isLocked())
+				continue;
+			// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: the owner's, held for it.
+			if (IsPlayerBotSidekickHeld(ch, item))
 				continue;
 			// The apprentice chain is giftboxes too, and with the world's
 			// apprentice chest off none of it is opened: the progression pass
@@ -578,7 +582,7 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (!item)
+			if (!item || IsPlayerBotSidekickHeld(ch, item))	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
 				continue;
 			const DWORD affect = GetPlayerBotAutoPotionAffect(item->GetVnum());
 			if (affect == 0 || ch->FindAffect(affect) || IsPlayerBotAutoPotionEmpty(item))
@@ -652,7 +656,8 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (!item || !IsPlayerBotBoosterItem(item))
+			if (!item || !IsPlayerBotBoosterItem(item) ||
+					IsPlayerBotSidekickHeld(ch, item))	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
 				continue;
 			const long line = item->GetSubType() * 1000L + item->GetValue(1);
 			if (!triedLines.insert(line).second)

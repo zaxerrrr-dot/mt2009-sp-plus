@@ -6936,6 +6936,10 @@ namespace
 	bool IsPlayerBotSidekickLeashed(LPCHARACTER ch);
 	bool IsPlayerBotSidekickHolding(LPCHARACTER ch);
 	bool IsPlayerBotSidekickGift(LPCHARACTER ch, LPITEM item);
+	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: an owner's drop the companion
+	// picked up and holds for its owner, whose bag was full: never put on,
+	// refined, reworked, opened, used or sold by the AI.
+	bool IsPlayerBotSidekickHeld(LPCHARACTER ch, LPITEM item);
 	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" - a piece the
 	// companion wears or was given while its owner's lock is on: no refine,
 	// stone, crafting, swap, sale or discard by the AI.
