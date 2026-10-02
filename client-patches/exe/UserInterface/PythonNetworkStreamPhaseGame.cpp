@@ -813,11 +813,24 @@ void CPythonNetworkStream::GamePhase()
 	const DWORD MAX_RECV_COUNT = 8; // @warme669
 	const DWORD SAFE_RECV_BUFSIZE = 8192;
 	DWORD dwRecvCount = 0;
+#ifdef ENABLE_RECV_TIME_BUDGET
+	// MT2009_PLUS_RECV_TIME_BUDGET_V1: the 8-packets-a-frame cap left a crowd
+	// of bots' packets (moves, damage, the archer's extra-arrow targets) queued
+	// for frames, so the extra arrows flew with the NEXT shot. Past the first
+	// 8 packets the frame keeps reading while it has spent less than
+	// RECV_TIME_BUDGET_MS on them.
+	const DWORD RECV_TIME_BUDGET_MS = 5;
+	const DWORD dwRecvBeginTime = ELTimer_GetMSec();
+#endif
 
     while (ret)
 	{
 		if(dwRecvCount++ >= MAX_RECV_COUNT-1 && GetRecvBufferSize() < SAFE_RECV_BUFSIZE
-			&& m_strPhase == "Game")
+			&& m_strPhase == "Game"
+#ifdef ENABLE_RECV_TIME_BUDGET
+			&& ELTimer_GetMSec() - dwRecvBeginTime >= RECV_TIME_BUDGET_MS
+#endif
+			)
 			break;
 
 		if (!CheckPacket(&header))
@@ -3247,6 +3260,14 @@ bool CPythonNetworkStream::RecvDamageInfoPacket()
 	CInstanceBase * pInstTarget = CPythonCharacterManager::Instance().GetInstancePtr(DamageInfoPacket.dwVID);
 	bool bSelf = (pInstTarget == CPythonCharacterManager::Instance().GetMainInstancePtr());
 	bool bTarget = (pInstTarget==m_pInstTarget);
+
+#ifdef ENABLE_DAMAGE_INFO_NULL_GUARD
+	// MT2009_PLUS_DAMAGE_INFO_GUARD_V1: a damage packet for a character this
+	// client no longer has (gone from view, dead and removed) while another
+	// one is targeted dereferenced NULL here and closed the client mid-fight.
+	if (!pInstTarget)
+		return true;
+#endif
 
 	if (!bTarget)
 		bTarget = pInstTarget->IsPC() || pInstTarget->IsNPC();

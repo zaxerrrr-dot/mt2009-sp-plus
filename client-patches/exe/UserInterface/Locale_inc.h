@@ -164,6 +164,13 @@
 // wndMgr.SetWheelTopWindow / ClearWheelTopWindow (OnMouseWheelButtonUp/Down of that window).
 #define ENABLE_MOUSE_WHEEL_TOP_WINDOW
 
+// MT2009_PLUS_DAMAGE_INFO_GUARD_V1: RecvDamageInfoPacket no longer dereferences a missing
+// character (random client shutdowns in combat).
+#define ENABLE_DAMAGE_INFO_NULL_GUARD
+// MT2009_PLUS_RECV_TIME_BUDGET_V1: GamePhase reads past 8 packets a frame for up to 5 ms
+// (crowds of bots; the archer's extra arrows fly with the shot).
+#define ENABLE_RECV_TIME_BUDGET
+
 #define __BL_CLIP_MASK__
 
 #define ENABLE_FIX_MOBS_LAG
