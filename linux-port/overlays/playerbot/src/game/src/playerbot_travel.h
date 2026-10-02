@@ -40,6 +40,38 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: a level-30 weapon dropper at its
+	// working level, whose ground is its kingdom's first island of Orc Valley.
+	// Under it it plays and levels as any bot of its level does.
+	bool IsPlayerBotL30DropperAtWork(LPCHARACTER ch)
+	{
+		return ch && ch->GetLevel() >= PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER &&
+				GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_L30_WEAPON_DROPPER;
+	}
+
+	// The level-30 weapons in its bag, not in its hand: its goods.
+	int CountPlayerBotL30DropperGoods(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return 0;
+		int count = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && !item->IsEquipped() && IsPlayerBotSpecialLevel30Weapon(item))
+				++count;
+		}
+		return count;
+	}
+
+	// What it carried out of town and how long a village has kept it for its
+	// counter: a weapon the counter could not take (no free line, no stand)
+	// is not a reason to come straight back for it, and the counter's round
+	// gets PLAYERBOT_L30_DROPPER_TOWN_HOLD_MS to put it up.
+	struct TPlayerBotL30DropperTown { int carried; DWORD since; TPlayerBotL30DropperTown() : carried(0), since(0) {} };
+	std::map<DWORD, TPlayerBotL30DropperTown> s_mapPlayerBotL30DropperTown;
+	const DWORD PLAYERBOT_L30_DROPPER_TOWN_HOLD_MS = 20 * 60 * 1000;
+
 	// The belt a potion trip sets out at, moved by the RESTOCK weight: 25 waits
 	// for a quarter of it, 250 goes at two and a half times - never past `cap`.
 	// The weight used to reach the planner alone, whose goal is only the word
@@ -284,7 +316,11 @@ namespace
 		// fifteen (Tieru, 16 September). The wander then picks the hubs for
 		// the row's level (GetPlayerBotVillageHuntLevel).
 		const DWORD huntMob = GetPlayerBotBiologistHuntMob(ch);
-		return huntMob != 0 && huntMob < 500 && !IsPlayerBotM1Map(ch->GetMapIndex());
+		// MT2009_PLUS_PROGRESSION_V3: not for a bot a gate holds at work on
+		// the gate (PlayerBotHuntsVillageHerbs) - "m1_only_service" was 34.5k
+		// of 89k map changes on the fresh test world.
+		return huntMob != 0 && huntMob < 500 && !IsPlayerBotM1Map(ch->GetMapIndex()) &&
+				GetPlayerBotProgressionFarmGoal(ch, dwNow) == PLAYERBOT_PROGRESS_FARM_NONE;
 	}
 
 	// Above this level Bokjung has nothing left to offer, so nothing there is
@@ -551,6 +587,10 @@ namespace
 		// errands wait for it; a stone hunter by role keeps them, because its
 		// role is for life.
 		const bool metinolog = IsPlayerBotMetinologNow(ch);
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the level-30 weapon dropper's
+		// ground is its first island, before every errand's map.
+		if (IsPlayerBotL30DropperAtWork(ch) && IsPlayerBotMapHostedHere(PLAYERBOT_MAP_ORC_VALLEY))
+			return PLAYERBOT_MAP_ORC_VALLEY;
 		// A bot working on its battle horse hunts where the trial is, whatever
 		// its level would otherwise say. By level 36 it would be off to Orc
 		// Valley, and the Black Wind band it needs lives in the desert.
@@ -836,6 +876,7 @@ namespace
 			case BOT_PERSONALITY_WANDERER:
 				return 7; // explorer: almost always out on the far maps
 			case BOT_PERSONALITY_GUILD_DROPPER:
+			case BOT_PERSONALITY_L30_WEAPON_DROPPER: // MT2009_PLUS_L30_WEAPON_DROPPER_V1
 				return 8; // its ground is out there: always
 			case BOT_PERSONALITY_METIN_BREAKER:
 				return 6; // both frontier maps carry their own Metin spawns
@@ -890,6 +931,14 @@ namespace
 		// lock gives them none of.
 		if (personality == BOT_PERSONALITY_MEDAL_DROPPER)
 			return false;
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: its island, always.
+		if (personality == BOT_PERSONALITY_L30_WEAPON_DROPPER)
+			return true;
+		// MT2009_PLUS_PROGRESSION_V3: a bot a gate holds for its Metins goes
+		// where the stones of its level are, whatever its appetite: the second
+		// village's reserve is for bots that earn experience there.
+		if (GetPlayerBotProgressionFarmGoal(ch, get_dword_time()) == PLAYERBOT_PROGRESS_FARM_METINS)
+			return true;
 		// Above the Bokjung ceiling there is nothing there left to stay behind
 		// for, so the reserve rule has nothing to protect and only strands bots.
 		if (IsPlayerBotPastM2Ceiling(ch))
@@ -979,6 +1028,9 @@ namespace
 			return false;
 		// The farm is for a drop, and a full bag has no cell for it.
 		if (IsPlayerBotBagFull(ch))
+			return false;
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island's dropper farms its own.
+		if (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_L30_WEAPON_DROPPER)
 			return false;
 		// The M3 dropper is there for the weapons it will sell, so owning one
 		// changes nothing, and it stays as long as the map can still be hunted.
@@ -1093,6 +1145,10 @@ namespace
 			return false;
 		if (!CanPlayerBotAdvanceHorse(ch))
 			return false;
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: nor the island's dropper - its
+		// time is its island's, as the other droppers' is their ground's.
+		if (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_L30_WEAPON_DROPPER)
+			return false;
 
 		// There is a dungeon for every level from eighteen up - see
 		// GetPlayerBotMonkeyMapFor for why the easy one alone gave a bot of
@@ -1104,6 +1160,17 @@ namespace
 		// reach, instead of sending it at one and having the warp refused.
 		if (GetPlayerBotMonkeyMapFor(ch) == 0)
 			return false;
+
+		// MT2009_PLUS_PROGRESSION_V3: a bot a gate holds for its horse goes for
+		// the medal in its horse window with no roll - held bots had a horse of
+		// level 0 - and not in its Metin window (GetPlayerBotProgressionFarmGoal).
+		{
+			const BYTE farm = GetPlayerBotProgressionFarmGoal(ch, dwNow);
+			if (farm == PLAYERBOT_PROGRESS_FARM_HORSE)
+				return true;
+			if (farm == PLAYERBOT_PROGRESS_FARM_METINS)
+				return false;
+		}
 
 		// A combat horse matters most to Warriors and weapon Suras, but it must be
 		// one goal among several rather than a compulsory conveyor belt through the
@@ -2147,6 +2214,32 @@ namespace
 				return ochao != 0;
 		}
 
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: back in a village with a level-30
+		// weapon, the island's dropper waits for its counter to take it
+		// (ManagePlayerBotOfflineService serves the counter at once), for
+		// PLAYERBOT_L30_DROPPER_TOWN_HOLD_MS at most; what it still carries
+		// when it leaves is no reason to come back.
+		if (IsPlayerBotL30DropperAtWork(ch) && IsPlayerBotVillageMap(mapIndex))
+		{
+			TPlayerBotL30DropperTown& town = s_mapPlayerBotL30DropperTown[ch->GetPlayerID()];
+			const int goods = CountPlayerBotL30DropperGoods(ch);
+			town.carried = goods;
+			if (goods <= 0)
+				town.since = 0;
+			else
+			{
+				if (town.since == 0)
+					town.since = dwNow;
+				if (dwNow - town.since < PLAYERBOT_L30_DROPPER_TOWN_HOLD_MS && !BlocksPlayerBotTravel(ch))
+				{
+					PlayerBotLogThrottled("l30_dropper_counter", dwNow,
+							"PLAYERBOT_L30_DROPPER: waits for its counter pid=%u name=%s map=%ld weapons=%d waited_s=%u",
+							ch->GetPlayerID(), ch->GetName(), mapIndex, goods, (dwNow - town.since) / 1000U);
+					return false;
+				}
+			}
+		}
+
 		if (!IsPlayerBotM1Map(mapIndex))
 			s_mapPlayerBotM1HeldSince.erase(ch->GetPlayerID());
 		if (IsPlayerBotM1Map(mapIndex))
@@ -2576,7 +2669,11 @@ namespace
 					IsPlayerBotOnBattleHorseTrial(ch);
 			// The personality's visit clock ended a trial two-thirds done
 			// ("frontier_visit_complete" after 41 minutes, m2zip 17 September).
-			const bool visitExpired = (!onBattleTrialHere && stayed >=
+			// MT2009_PLUS_PROGRESSION_V3: nor a bot a gate holds for its Metins on
+			// a map with stones - the stones are its work, the town its needs.
+			const bool heldStoneWork = PlayerBotMapHasMetinStones(mapIndex) &&
+					GetPlayerBotProgressionFarmGoal(ch, dwNow) == PLAYERBOT_PROGRESS_FARM_METINS;
+			const bool visitExpired = (!onBattleTrialHere && !heldStoneWork && stayed >=
 					GetPlayerBotFrontierVisitTime(state.bPersonality)) ||
 					(mapIndex == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaveOrdered(ch)) || // MT2009_PLUS_OCHAO_BOTS_V1 (test)
 					(IsPlayerBotArezzoMap(mapIndex) && IsPlayerBotArezzoLeaveOrdered(ch)); // MT2009_PLUS_AREZZO_BOTS_V1 (test)
@@ -2617,6 +2714,44 @@ namespace
 			// (m2zip, 17 September). The hand-in waits for the horse.
 			const bool needsTown = blocked ||
 					(settledIn && ((needsM1OnlyServices && !onBattleTrialHere) || needsEssentialWeaponSupply));
+			// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island's dropper goes back
+			// to town for three things and nothing else - the potions run out, a
+			// level-30 weapon has dropped (its counter sells it, the other bots
+			// buy it there), or the bag holds a lot of scrap - and the frontier
+			// draw brings it straight back to the island. No visit clock, no
+			// medal, no M3, no river.
+			if (mapIndex == PLAYERBOT_MAP_ORC_VALLEY && IsPlayerBotL30DropperAtWork(ch))
+			{
+				// Only a weapon dropped since it left town.
+				const int goods = std::max(0, CountPlayerBotL30DropperGoods(ch) -
+						s_mapPlayerBotL30DropperTown[ch->GetPlayerID()].carried);
+				const size_t junk = CountPlayerBotJunkItems(ch);
+				const bool potions = NeedsPlayerBotPotions(ch);
+				const bool bagFull = IsPlayerBotBagFull(ch);
+				if (!blocked && !potions && goods == 0 && !bagFull &&
+						junk < PLAYERBOT_SELL_RUN_JUNK_ITEMS)
+					return false;
+				const char* why = blocked ? "l30_dropper_blocked" : potions ? "l30_dropper_potions" :
+						goods > 0 ? "l30_dropper_weapon_to_sell" : "l30_dropper_junk";
+				sys_log(0, "PLAYERBOT_L30_DROPPER: to town pid=%u name=%s level=%u reason=%s weapons=%d junk=%u bag_full=%d stayed_s=%u",
+						ch->GetPlayerID(), ch->GetName(), (unsigned)ch->GetLevel(), why, goods,
+						(unsigned)junk, bagFull ? 1 : 0, stayed / 1000U);
+				// A weapon is sold at the counter: its next service is now
+				// (ManagePlayerBotOfflineService), not at the dropper's round.
+				if (goods > 0 && state.offlineShop.nextService > dwNow + 30000)
+					state.offlineShop.nextService = dwNow + 30000;
+				long exitX = 0, exitY = 0;
+				GetPlayerBotFrontierExitFor(ch, mapIndex, exitX, exitY);
+				// The counters are the first village's: a weapon goes there.
+				long destMap = 0, destX = 0, destY = 0;
+				if (!GetPlayerBotVillageReturn(ch, goods > 0 ? playerbot_empire_rules::MAP_ROLE_M1
+							: playerbot_empire_rules::MAP_ROLE_M2, destMap, destX, destY))
+					return false;
+				if (blocked && TryPlayerBotTeleportRingHome(ch, state, dwNow, destMap, destX, destY, why))
+					return true;
+				return MovePlayerBotToWorldPortal(ch, state, exitX, exitY,
+						destMap, destX, destY, dwNow, why);
+			}
 			// The Monkey Dungeons are reached from Bokjung, and nothing here ever
 			// went back for one: the roll that sends a bot for a medal was only
 			// read in town, and a bot past forty lives out here - which is how

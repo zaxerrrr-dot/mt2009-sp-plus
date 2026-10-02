@@ -1594,6 +1594,11 @@ namespace {
         const bool medalLines = BotOfflineWantsMedalLines(ch, state);
         if (medalLines && !o.visiting && o.nextService > now + 40000)
             o.nextService = now + 30000 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d45444cU) % 10000;
+        // MT2009_PLUS_L30_WEAPON_DROPPER_V1: nor the island's dropper back in
+        // town with a level-30 weapon - it came for the counter.
+        if (!o.visiting && o.nextService > now + 40000 && IsPlayerBotL30DropperAtWork(ch) &&
+                IsPlayerBotVillageMap(ch->GetMapIndex()) && CountPlayerBotL30DropperGoods(ch) > 0)
+            o.nextService = now + 30000 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x4c333044U) % 10000;
         const char* busy = BotOfflineBusyReason(ch, state);
         if (busy || !db_clientdesc || !db_clientdesc->IsPhase(PHASE_DBCLIENT)) {
             if (o.visiting) BotOfflineInterruptVisit(ch, state, now, busy ? busy : "db");

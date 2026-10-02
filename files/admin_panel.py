@@ -291,12 +291,15 @@ BOT_PERSONALITY_LABELS = {
         3: "Mistrz ekwipunku", 4: "Rozważny zbieracz", 5: "Handlarz",
         6: "Wędrowiec", 7: "Dropek Metinów", 8: "Dropek z M3",
         9: "Dropek z M2", 10: "Dropek medali", 11: "Dropek surowców",
+        # MT2009_PLUS_L30_WEAPON_DROPPER_V1
+        12: "Dropek broni 30 lv",
     },
     "en": {
         0: "Steady adventurer", 1: "Metin breaker", 2: "Team companion",
         3: "Gear specialist", 4: "Careful collector", 5: "Merchant",
         6: "Wanderer", 7: "Metin dropper", 8: "M3 weapon dropper",
         9: "M2 Bestial dropper", 10: "Medal dropper",
+        11: "Guild materials dropper", 12: "Level-30 weapon dropper",
     },
 }
 # The status file's columns before Iwakura's personalities (2.0.85): a core of
@@ -349,7 +352,7 @@ BOT_MOOD_LOCK_LABELS = {
 # the operator's rule of 15 September - so its Biologist card reads "does not
 # apply" instead of a 0/7 that looks like a bot stuck for good (GG1249125 and
 # OptimusPrime001 on Urtopy's world, 18 September).
-BOT_DROPPER_PERSONALITIES = frozenset((7, 8, 9, 10))
+BOT_DROPPER_PERSONALITIES = frozenset((7, 8, 9, 10, 11, 12))  # MT2009_PLUS_L30_WEAPON_DROPPER_V1: 11, 12
 BOT_AMBITION_LABELS = {
     "pl": {
         0: "Poziom", 1: "Ekwipunek", 2: "Metiny", 3: "Koń",

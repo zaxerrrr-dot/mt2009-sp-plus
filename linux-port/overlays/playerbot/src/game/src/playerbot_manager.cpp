@@ -268,6 +268,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_PROGRESSION_V1: the checklist before a level, after every
 // cohort it asks about and the whole bag it weighs.
 #include "playerbot_progression.h"
+// MT2009_PLUS_L30_WEAPON_DROPPER_V1: who the level-30 weapon droppers of
+// Orc Valley's first island are, after the checklist whose eligibility it
+// borrows.
+#include "playerbot_l30_dropper.h"
 
 namespace
 {
@@ -370,6 +374,7 @@ namespace
 			case BOT_PERSONALITY_MEDAL_DROPPER:
 				return BOT_AMBITION_HORSE;
 			case BOT_PERSONALITY_GUILD_DROPPER:
+			case BOT_PERSONALITY_L30_WEAPON_DROPPER: // MT2009_PLUS_L30_WEAPON_DROPPER_V1
 				return BOT_AMBITION_TRADE;
 			case BOT_PERSONALITY_WANDERER:
 				return BOT_AMBITION_HORSE;
@@ -565,6 +570,7 @@ namespace
 			case BOT_PERSONALITY_M3_DROPPER:    return PLAYERBOT_EXP_LOCK_M3_DROPPER;
 			case BOT_PERSONALITY_M2_DROPPER:    return PLAYERBOT_EXP_LOCK_M2_DROPPER;
 			case BOT_PERSONALITY_MEDAL_DROPPER: return PLAYERBOT_EXP_LOCK_MEDAL_DROPPER;
+			case BOT_PERSONALITY_L30_WEAPON_DROPPER: return PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER; // MT2009_PLUS_L30_WEAPON_DROPPER_V1
 			default: return 0;
 		}
 	}
@@ -617,6 +623,9 @@ namespace
 		else if (persona && state.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
 			// Its ground's lock, as without the personalities.
 			lockLevel = GetPlayerBotGuildDropperGround(ch->GetPlayerID()).lock;
+		else if (persona && state.bPersonality == BOT_PERSONALITY_L30_WEAPON_DROPPER)
+			// MT2009_PLUS_L30_WEAPON_DROPPER_V1: twenty-one, as without them.
+			lockLevel = PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER;
 		else if (persona)
 			lockLevel = GetPlayerBotPersonaLockLevel(ch, state);
 #if defined(PLAYERBOT_ENGINE_MT2009)
@@ -693,6 +702,8 @@ namespace
 			lockLevel = PLAYERBOT_EXP_LOCK_MEDAL_DROPPER;
 		else if (persona && state.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
 			lockLevel = GetPlayerBotGuildDropperGround(ch->GetPlayerID()).lock;
+		else if (persona && state.bPersonality == BOT_PERSONALITY_L30_WEAPON_DROPPER) // MT2009_PLUS_L30_WEAPON_DROPPER_V1
+			lockLevel = PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER;
 		else if (persona)
 			lockLevel = state.persona.bRestored && !state.persona.bAdvanced ? state.persona.bLockLevel : 0;
 		return lockLevel > ch->GetLevel() ? (unsigned int)lockLevel : 0U;
@@ -5897,6 +5908,8 @@ void CPlayerBotManager::Update()
 	ManagePlayerBotSidekicks(dwNow);
 	// MT2009_PLUS_SHOUTERS_V1: the shouters of the first villages.
 	ManagePlayerBotShouters(dwNow);
+	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: two or three island droppers a kingdom.
+	ManagePlayerBotL30WeaponDroppers(dwNow);
 
 	// Once for the whole population: the panel may have moved a weight since
 	// the last tick, and every bot planned below must see the same numbers.

@@ -4707,6 +4707,24 @@ namespace
 	{
 		return PLAYERBOT_GUILD_DROPPER_GROUNDS[((pid ^ 0x47445250U) * 2654435761U >> 16) % 3U];
 	}
+	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the level-30 weapon dropper ("dropki
+	// broni 30 lv", the owner, 2 October). Two or three bots a kingdom on every
+	// channel (playerbot_l30_dropper.h picks them), held at twenty-one, hunting
+	// on their kingdom's first island of Orc Valley the two monsters there
+	// whose kill drop carries a level-30 weapon: the Elite Orc Scout (632,
+	// level 36) and the Elite Orc Warrior (633, level 39), both with the Black
+	// Leaf Knife (1170) - mob_drop_item.txt; no other monster of map 64 near
+	// any of the three entrances drops one (group_group 301 is the island's
+	// spawn). Fifteen to eighteen levels under them the engine's level fade
+	// works for the bot, not against it. The fight reaches past the usual
+	// fifteen levels to PLAYERBOT_L30_DROPPER_MAX_TARGET_LEVEL there.
+	const BYTE PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER = 21;
+	const int PLAYERBOT_L30_DROPPER_MAX_TARGET_LEVEL = 40;
+
+	bool IsPlayerBotL30DropperRace(DWORD race)
+	{
+		return race == 632 || race == 633;
+	}
 	// Iwakura's community patch 2, point 4 ("Grinder Lochu Malp", Tier 4).
 	// Under the personalities a drawn medal dropper stays one (it used to
 	// become a Wanderer, and 26 bots in a thousand farmed medals), and this
@@ -5982,6 +6000,32 @@ namespace
 	// Queen's hubs were never chosen in a day of logs - but by whether the boss
 	// is standing there now, asked of the sector itself.
 	struct TPlayerBotHuntingHub { long x; long y; BYTE bMinLevel; BYTE bMaxLevel; bool bNeedsParty; WORD wBossRace; };
+	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
+	// Valley - the ground a bot of that kingdom is put down on by the
+	// Teleporter (Town.txt of map_n_threeway, PLAYERBOT_ORC_VALLEY_ARRIVAL for
+	// Chunjo). The three spawn points of group_group 301 (602, 603, 631-633,
+	// 651, 653, 2103) nearest each arrival, out of regen.txt on base
+	// (256000,665600): standable and on the arrival's own ground.
+	const TPlayerBotHuntingHub PLAYERBOT_L30_DROPPER_HUBS[3][3] = {
+		// Shinsoo, arrival (402100,673900)
+		{ { 396400, 677400, 1, 255, false, 0 }, { 393000, 677200, 1, 255, false, 0 },
+		  { 395400, 681000, 1, 255, false, 0 } },
+		// Chunjo, arrival (270400,739900)
+		{ { 273700, 741600, 1, 255, false, 0 }, { 274500, 739000, 1, 255, false, 0 },
+		  { 274100, 736000, 1, 255, false, 0 } },
+		// Jinno, arrival (321300,808000)
+		{ { 328300, 804700, 1, 255, false, 0 }, { 326100, 801000, 1, 255, false, 0 },
+		  { 325100, 799700, 1, 255, false, 0 } },
+	};
+
+	const TPlayerBotHuntingHub* GetPlayerBotL30DropperHubs(int empire, size_t& count)
+	{
+		count = 0;
+		if (empire < 1 || empire > 3)
+			return NULL;
+		count = 3;
+		return PLAYERBOT_L30_DROPPER_HUBS[empire - 1];
+	}
 	// How long a "boss alive" answer is trusted, and what a hub with a living
 	// boss scores: above any camp, so the crowd (the Orc Chief) or the party
 	// (the Spider Queen) goes.
@@ -6569,7 +6613,10 @@ namespace
 		// September): farms Kamien Wegielny, Pien or Dykta for the guilds'
 		// buildings (PLAYERBOT_GUILD_DROPPER_GROUNDS) and sells them on the
 		// counters. Appended, never inserted - the panels read the id.
-		BOT_PERSONALITY_GUILD_DROPPER
+		BOT_PERSONALITY_GUILD_DROPPER,
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the level-30 weapon dropper of
+		// Orc Valley's first island (playerbot_l30_dropper.h). Appended too.
+		BOT_PERSONALITY_L30_WEAPON_DROPPER
 	};
 
 	bool IsPlayerBotDropper(BYTE personality)
@@ -6578,7 +6625,8 @@ namespace
 				personality == BOT_PERSONALITY_M3_DROPPER ||
 				personality == BOT_PERSONALITY_M2_DROPPER ||
 				personality == BOT_PERSONALITY_MEDAL_DROPPER ||
-				personality == BOT_PERSONALITY_GUILD_DROPPER;
+				personality == BOT_PERSONALITY_GUILD_DROPPER ||
+				personality == BOT_PERSONALITY_L30_WEAPON_DROPPER; // MT2009_PLUS_L30_WEAPON_DROPPER_V1
 	}
 
 	BYTE GetPlayerBotPersonalityByPID(DWORD dwPID);
@@ -6627,6 +6675,18 @@ namespace
 	// MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages
 	// (playerbot_shouters.h), kept out of everything the population does.
 	bool IsPlayerBotShouterPID(DWORD pid);
+	// MT2009_PLUS_PROGRESSION_V3: what a bot a gate holds works on while it is
+	// held (playerbot_progression.h, included last): the Metins, the horse's
+	// medals, the gear - or nothing in particular. Asked by the travel, the
+	// herb errand and the Monkey Dungeon gate, which all come before it.
+	enum EPlayerBotProgressFarm
+	{
+		PLAYERBOT_PROGRESS_FARM_NONE = 0,
+		PLAYERBOT_PROGRESS_FARM_METINS,
+		PLAYERBOT_PROGRESS_FARM_HORSE,
+		PLAYERBOT_PROGRESS_FARM_GEAR
+	};
+	BYTE GetPlayerBotProgressionFarmGoal(LPCHARACTER ch, DWORD dwNow);
 	// The level it levels to and then stands at its post.
 	const BYTE PLAYERBOT_SHOUTER_LEVEL = 15;
 	// Sent fishing by its owner (playerbot_sidekick.h, "Na ryby").
