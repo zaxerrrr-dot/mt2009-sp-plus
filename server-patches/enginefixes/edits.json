@@ -34,5 +34,11 @@
   "marker": "MT2009_PLUS_AUTOHUNT_MINIBOSS_V1 (order)",
   "old": "\t\tif (m_bBossPriority && boss)\n\t\t\tscore -= 2000000;\n",
   "new": "\t\tif (m_bBossPriority && boss)\n\t\t\tscore -= 2000000;\n\t\t// MT2009_PLUS_AUTOHUNT_MINIBOSS_V1 (order): with \"Bossy\", a miniboss\n\t\t// right after the boss and before the Metin.\n\t\telse if (m_bBossPriority && miniboss)\n\t\t\tscore -= 1500000;\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ARROW_RANGE_V1",
+  "old": "\tint iPercent = 100;\n\tif (iDist > minDistance)\n",
+  "new": "\tint iPercent = 100;\n\t// MT2009_PLUS_ARROW_RANGE_V1: the fade below runs from value4 (full\n\t// strength) to value5 (value2 per cent, twice that against a monster). The\n\t// elemental arrows - Ognista, Trujaca, Lodowa, Przekleta Strzala (8006-8009)\n\t// - carry 0 in all three, so every shot of theirs past point-blank came to\n\t// 0 per cent: an archer with one of them dealt no damage at all. An arrow\n\t// without a fade range (value5 not past value4) strikes at full strength,\n\t// as a silver arrow does against a monster at any distance.\n\tif (pkArrow->GetValue(5) > pkArrow->GetValue(4) && iDist > minDistance)\n"
  }
 ]
