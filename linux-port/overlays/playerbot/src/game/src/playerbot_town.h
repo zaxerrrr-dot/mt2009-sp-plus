@@ -3816,8 +3816,11 @@ namespace
 		// horse of exactly ten past level thirty-five - a battle-horse candidate,
 		// which may spend no medal at all - was refused by both halves of the
 		// rule and carried whatever it found: forty medals in one player's bag.
+		// MT2009_PLUS_HORSE30_V1: the keep is the next two trainings' medals
+		// and the due row's when that is more than PLAYERBOT_HORSE_MEDAL_KEEP
+		// (GetPlayerBotHorseMedalKeep) - 2 or 3 a level since the paid training.
 		if (ch && (int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >
-				PLAYERBOT_HORSE_MEDAL_KEEP)
+				GetPlayerBotHorseMedalKeep(ch))
 			return true;
 		return ch && ch->GetHorseLevel() >= 10 &&
 				ch->GetLevel() < GetPlayerBotNextHorseRequiredLevel(ch->GetHorseLevel());
@@ -4283,9 +4286,10 @@ namespace
 			const int medals = ch ? (int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) : 0;
 			const int medalWhy = merchant ? per::MEDAL_MERCHANT
 					: (ch && GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_MEDAL_DROPPER
-						? per::MEDAL_DROPPER : (medals > PLAYERBOT_HORSE_MEDAL_KEEP ? per::MEDAL_OVER_KEEP
+						? per::MEDAL_DROPPER : (medals > GetPlayerBotHorseMedalKeep(ch) ? per::MEDAL_OVER_KEEP
 							: per::MEDAL_HORSE_TOP));
-			return PlayerBotGoods(900, per::GOODS_HORSE_MEDAL, medals, PLAYERBOT_HORSE_MEDAL_KEEP, medalWhy);
+			// MT2009_PLUS_HORSE30_V1: the training's keep.
+			return PlayerBotGoods(900, per::GOODS_HORSE_MEDAL, medals, ch ? GetPlayerBotHorseMedalKeep(ch) : PLAYERBOT_HORSE_MEDAL_KEEP, medalWhy);
 		}
 		// Refine materials: what every other bot is short of and would otherwise
 		// have to farm for an hour. Only the ones some recipe actually consumes

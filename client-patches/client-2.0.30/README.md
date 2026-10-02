@@ -372,3 +372,19 @@ paczki `root` 2.0.30–2.0.38, bez zmian od 2.0.28); wszystkie trzy są już w p
   idzie, gdy przedmiot wisi na kursorze albo trwa otwieranie sklepu; handel, sklep, inne okno –
   odmawia serwer. Wynik po polsku na czacie (`OnArrangeResult`).
 - `game.py` – `SafeboxArrangeResult` → `uiSafebox.OnArrangeResult`.
+
+## Systemy Digi Rasty: Przebudzenie, kamienie duchowe +9, koń do 30 – bez zmian exe
+
+**Autor: Digi Rasta** (paczka „nowy-system” v0.16; jego `klient.py` pokazywał, czego potrzebuje klient).
+Znaczniki `MT2009_PLUS_AWAKENING_V1`, `MT2009_PLUS_SOULSTONE9_V1`, `MT2009_PLUS_HORSE30_V1`; serwer:
+`server-patches/digirasta`, `apply.sh`, questy `konie` i `horse_inventory`.
+
+- `tools/digirasta/patch_digirasta_client.py` (obraz `m2pack-lzo`, idempotentne) – `gamedata/item_proto`:
+  siedem rodzin broni przebudzonych +0…+9 (210, 220, 1160, 2190, 3170, 5150, 7170) tymi samymi wartościami
+  co `apply.sh`, kamienie duchowe +5…+9 (28530+k, 28g00+k: typ, bonus, `value5`), nowy rekord Kamienia
+  Przebudzenia 30670 (kopia 30228, stos 200); `gamedata/item_list.txt` i `locale/pl/itemdesc.txt` – wiersz
+  30670 (ikona 30228); `gamedata/mob_proto` – nazwa 20119 „Czarny Rumak”. Nowych wpisów paczek nie ma.
+  Sprawdzone rekord po rekordzie (141) z `world.item_proto` po `apply.sh`.
+- `root` (wpisy paczki `root`, zastępowane – bez nowych): `uitooltip.py` (opis przedmiotu pokazuje
+  wszystkie 7 bonusów), `uihorseinventory.py` (rzędy juków do 30 poziomu konia – tabela questu
+  `horse_inventory`), `uiattributelist.py` („Silny przeciwko potworom” w spisie bonusów – bonus konia od 21).

@@ -12,8 +12,9 @@
 //
 //   * horse_inventory_init.quest, the Stajenny (20349): the first row, for a
 //     horse of level 1, one horse medal and five Materialy Rzemieslnicze;
-//   * horse_inventory.quest: each next row, for a higher horse - 4, 6, 9, 11,
-//     14, 16, 19, 21 - and 1-5 medals and 20-60 materials; 25 medals and 325
+//   * horse_inventory.quest: each next row, for a higher horse - since
+//     MT2009_PLUS_HORSE30_V1 (Digi Rasta's horse to 30) 4, 8, 12, 16, 20, 24,
+//     27, 30 - and 1-6 medals and 20-200 materials; 25 medals and 685
 //     materials for all nine;
 //   * xyz_refine_exchange.quest, the Dozorca (9005): refine goods (30000-30092,
 //     30192-30199, 30343-30359, 30367) into Materialy Rzemieslnicze (30378),
@@ -83,8 +84,9 @@ namespace
 	// Indexed by the rows already open: [0] is horse_inventory_init.quest,
 	// [1..8] horse_inventory.quest's table.
 	const TPlayerBotSaddlebagRow PLAYERBOT_SADDLEBAG_ROWS[INVENTORY_PAGE_ROW] = {
-		{ 1, 1, 5 }, { 4, 1, 20 }, { 6, 2, 20 }, { 9, 2, 20 }, { 11, 3, 40 },
-		{ 14, 3, 40 }, { 16, 4, 60 }, { 19, 4, 60 }, { 21, 5, 60 },
+		// MT2009_PLUS_HORSE30_V1: horse_inventory.quest's rows to thirty.
+		{ 1, 1, 5 }, { 4, 1, 20 }, { 8, 1, 30 }, { 12, 2, 40 }, { 16, 2, 60 },
+		{ 20, 3, 80 }, { 24, 4, 100 }, { 27, 5, 150 }, { 30, 6, 200 },
 	};
 
 	enum
@@ -206,6 +208,16 @@ namespace
 		return ch ? (int)ch->CountSpecifyItem(PLAYERBOT_CRAFT_MATERIAL_VNUM) : 0;
 	}
 
+	// MT2009_PLUS_HORSE30_V1: every bot's horse training takes materials too
+	// (5 / 10 / 20 a level, playerbot_horse30.h), so what a bot keeps, buys
+	// and exchanges for is its rows' and its next training's together - a bot
+	// that raises no saddlebag still keeps its training's.
+	int GetPlayerBotCraftMaterialsWanted(LPCHARACTER ch, bool nextOnly)
+	{
+		return GetPlayerBotSaddlebagMaterialsWanted(ch, nextOnly) +
+				GetPlayerBotHorseTrainingMaterialsWanted(ch);
+	}
+
 	bool IsPlayerBotCraftExchangeVnum(DWORD vnum)
 	{
 		return (vnum >= 30000 && vnum <= 30092) || (vnum >= 30192 && vnum <= 30199) ||
@@ -251,8 +263,8 @@ namespace
 			return true;
 		// A saddlebag bot short of materials takes every one its anvil does not
 		// need - the ones it bought off the counters for this among them.
-		if (IsPlayerBotSaddlebagKeeper(ch) &&
-				CountPlayerBotCraftMaterials(ch) < GetPlayerBotSaddlebagMaterialsWanted(ch, false))
+		// MT2009_PLUS_HORSE30_V1: and any bot short of its horse training's.
+		if (CountPlayerBotCraftMaterials(ch) < GetPlayerBotCraftMaterialsWanted(ch, false))
 			return true;
 		if (!IsPlayerBotSurplusMaterial(ch, item))
 			return false;
@@ -287,7 +299,7 @@ namespace
 	{
 		if (!ch || !item || item->GetVnum() != PLAYERBOT_CRAFT_MATERIAL_VNUM)
 			return false;
-		const int wanted = GetPlayerBotSaddlebagMaterialsWanted(ch, false);
+		const int wanted = GetPlayerBotCraftMaterialsWanted(ch, false); // MT2009_PLUS_HORSE30_V1
 		if (wanted <= 0)
 			return false;
 		// Counted in cell order, like the other stocks: the first `wanted`
@@ -316,7 +328,7 @@ namespace
 	// full market every row it still wants.
 	int GetPlayerBotCraftMaterialBuyTarget(LPCHARACTER ch)
 	{
-		return GetPlayerBotSaddlebagMaterialsWanted(ch, !IsPlayerBotCraftMaterialMarketFull());
+		return GetPlayerBotCraftMaterialsWanted(ch, !IsPlayerBotCraftMaterialMarketFull()); // MT2009_PLUS_HORSE30_V1
 	}
 
 	bool WantsPlayerBotCraftMaterialOffer(LPCHARACTER ch, LPITEM offer)
@@ -343,7 +355,7 @@ namespace
 		if (!ch || !offer || !IsPlayerBotCraftExchangeVnum(offer->GetVnum()) ||
 				!IsPlayerBotTradeableMaterial(offer) || PlayerBotNeedsRefineMaterial(ch, offer->GetVnum()))
 			return false;
-		const int want = GetPlayerBotSaddlebagMaterialsWanted(ch, true);
+		const int want = GetPlayerBotCraftMaterialsWanted(ch, true); // MT2009_PLUS_HORSE30_V1
 		return want > 0 && CountPlayerBotCraftMaterials(ch) < want &&
 				CountPlayerBotFreeInventoryCells(ch) > 6;
 	}
@@ -399,7 +411,9 @@ namespace
 	// Asked before a market walk without reading a counter.
 	bool PlayerBotWantsSaddlebagGoods(LPCHARACTER ch)
 	{
-		if (!IsPlayerBotSaddlebagKeeper(ch))
+		// MT2009_PLUS_HORSE30_V1: the materials of the horse's next training
+		// for every bot, the rows' for a saddlebag bot.
+		if (!IsPlayerBotSaddlebagKeeper(ch) && GetPlayerBotHorseTrainingMaterialsWanted(ch) <= 0)
 			return false;
 		if (PlayerBotSaddlebagWantsMedal(ch))
 		{
@@ -602,8 +616,9 @@ namespace
 			{
 				long long fee = 0;
 				const int units = CollectPlayerBotCraftExchangeStock(ch, NULL, &fee);
-				const bool shortOfMaterials = IsPlayerBotSaddlebagKeeper(ch) &&
-						CountPlayerBotCraftMaterials(ch) < GetPlayerBotSaddlebagMaterialsWanted(ch, true);
+				// MT2009_PLUS_HORSE30_V1: a horse training's materials count too.
+				const bool shortOfMaterials =
+						CountPlayerBotCraftMaterials(ch) < GetPlayerBotCraftMaterialsWanted(ch, true);
 				if (units <= 0 || (units < PLAYERBOT_CRAFT_EXCHANGE_MIN_UNITS && !shortOfMaterials) ||
 						CountPlayerBotFreeInventoryCells(ch) < 2)
 					return false;
@@ -693,7 +708,8 @@ namespace
 		// MT2009_PLUS_HORSE_ECONOMY_V1: the horses of every bot - how many at
 		// each stage, the medals in bags, and who holds medals it could hand in.
 		{
-			unsigned stage[6] = { 0 };   // 0, 1-9, 10, 11-19, 20, 21
+			// MT2009_PLUS_HORSE30_V1: to thirty.
+			unsigned stage[8] = { 0 };   // 0, 1-9, 10, 11-19, 20, 21-28, 29, 30
 			unsigned bots = 0, medalHolders = 0, canAdvance = 0, canWithMedal = 0, candidates = 0;
 			unsigned long long medals = 0, horseSum = 0;
 			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
@@ -705,7 +721,7 @@ namespace
 				++bots;
 				const int h = ch->GetHorseLevel();
 				horseSum += h;
-				++stage[h <= 0 ? 0 : h < 10 ? 1 : h == 10 ? 2 : h < 20 ? 3 : h == 20 ? 4 : 5];
+				++stage[h <= 0 ? 0 : h < 10 ? 1 : h == 10 ? 2 : h < 20 ? 3 : h == 20 ? 4 : h < 29 ? 5 : h == 29 ? 6 : 7];
 				const int held = (int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM);
 				medals += held;
 				if (held > 0)
@@ -713,13 +729,14 @@ namespace
 				const bool can = CanPlayerBotAdvanceHorse(ch);
 				if (can)
 					++canAdvance;
-				if (can && held > GetPlayerBotSaddlebagMedalReserve(ch))
+				if (can && CanPlayerBotPayHorseTraining(ch)) // MT2009_PLUS_HORSE30_V1
 					++canWithMedal;
 				if (IsPlayerBotBattleHorseCandidate(ch))
 					++candidates;
 			}
-			sys_log(0, "PLAYERBOT_HORSE: census bots_25plus=%u avg_horse=%.1f stages(0/1-9/10/11-19/20/21)=%u/%u/%u/%u/%u/%u medals_in_bags=%llu medal_holders=%u can_advance=%u can_advance_with_medal=%u battle_candidates=%u medals_bought=%u",
+			sys_log(0, "PLAYERBOT_HORSE: census bots_25plus=%u avg_horse=%.1f stages(0/1-9/10/11-19/20/21-28/29/30)=%u/%u/%u/%u/%u/%u/%u/%u medals_in_bags=%llu medal_holders=%u can_advance=%u can_pay_training=%u battle_candidates=%u medals_bought=%u",
 					bots, bots ? (double)horseSum / bots : 0.0, stage[0], stage[1], stage[2], stage[3], stage[4], stage[5],
+					stage[6], stage[7],
 					medals, medalHolders, canAdvance, canWithMedal, candidates, s_kPlayerBotSaddlebagStats.medalsBought);
 		}
 		char dist[96] = "";

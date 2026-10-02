@@ -920,7 +920,7 @@ class ItemToolTip(ToolTip):
 
 		return "\n".join(formatted_lines)
 
-	def __AppendAttributeInformation(self, attrSlot, itemAbsChance = 0, slotCount = player.ATTRIBUTE_SLOT_NORM_NUM):
+	def __AppendAttributeInformation(self, attrSlot, itemAbsChance = 0, slotCount = player.ATTRIBUTE_SLOT_MAX_NUM): # MT2009_PLUS_SOULSTONE9_V1: all 7 bonuses (Digi Rasta)
 		if 0 != attrSlot:
 			# MT2009_PLUS_SEONHAE_V1: never past the list a caller gave
 			for i in xrange(min(slotCount, len(attrSlot))):

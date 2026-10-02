@@ -44,6 +44,9 @@ param(
 #                      item_manager.cpp, questlua_game.cpp (MT2009_PLUS_RUMI_V1)
 #   Yut Nori           packet.h, packet_info.cpp, input_main.cpp, char_item.cpp,
 #                      item_manager.cpp (MT2009_PLUS_YUTNORI_V1)
+#   Digi Rasta's systems char_item.cpp, char_battle.cpp, char_horse.cpp
+#                      (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1,
+#                      MT2009_PLUS_HORSE30_V1; server-patches/digirasta)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -613,6 +616,19 @@ if ((Test-Path -LiteralPath $legendsApply -PathType Leaf) -and
     if ($legendsResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} System Legend edit(s).' -f $legendsResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Digi Rasta's systems (server-patches/digirasta, "Autor: Digi Rasta"): the
+# Ritual of Awakening and the awakened weapons that never burn, the soul
+# stones refined to +9, the awakening stone from the bosses and the Black
+# Steed of the horse's level 30 (playerbot_awakening.h, quest konie).
+$digiRastaApply = Join-Path $repo 'server-patches/digirasta/Apply-DigiRastaPatch.ps1'
+if ((Test-Path -LiteralPath $digiRastaApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_horse.cpp') -PathType Leaf)) {
+    $digiRastaResult = & $digiRastaApply -SourceDir $engineGameSource
+    if ($digiRastaResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Digi Rasta system edit(s).' -f $digiRastaResult.Applied) -ForegroundColor DarkGray
     }
 }
 # Entity snapshot check (server-patches/entitysnapshot): ForEachAround's

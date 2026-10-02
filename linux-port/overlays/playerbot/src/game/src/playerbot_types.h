@@ -1514,6 +1514,8 @@ namespace
 	const int PLAYERBOT_HAY_POTIONS = 10;
 	// MT2009_PLUS_BOT_HORSE_HAY_V1: a bot keeps this much Siano for its horse -
 	// never sold, changed for potions or put into the safebox.
+	// MT2009_PLUS_HORSE30_V1: five is exactly one paid training of levels 1-9
+	// (konie.quest, playerbot_horse30.h); what the bag lacks the stable sells.
 	const int PLAYERBOT_HAY_KEEP = 5;
 	// And an offline counter carries at most this share of its cells in lines
 	// of refine materials together - three fifths: 48 lines of the eighty cells

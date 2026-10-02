@@ -3955,7 +3955,9 @@ namespace
 	// hundreds digit, and reading it from the last digit (as this once did)
 	// made every stone a +0 and switched the grade rules off.
 	int GetPlayerBotSoulStoneGrade(DWORD vnum) { return (int)((vnum / 100) % 10); }
-	int GetPlayerBotSoulStoneKind(DWORD vnum) { return (int)(vnum % 100); }
+	// MT2009_PLUS_SOULSTONE9_V1 (Digi Rasta's soul stones +5..+9): +6..+9 are
+	// 28g00+k, not 28g30+k - read them as the same kind (30 + k).
+	int GetPlayerBotSoulStoneKind(DWORD vnum) { const int k = (int)(vnum % 100); return ((vnum / 100) % 10 >= 6 && k < 14) ? k + 30 : k; }
 	bool IsPlayerBotWeaponSoulStoneKind(int kind) { return kind >= 30 && kind <= 37; }
 	bool IsPlayerBotArmorSoulStoneKind(int kind) { return kind >= 38 && kind <= 43; }
 
@@ -4068,7 +4070,7 @@ namespace
 	// would read them as nonsense grades.
 	bool IsPlayerBotSoulStoneVnum(DWORD vnum)
 	{
-		return vnum >= 28000 && vnum < 28500 &&
+		return vnum >= 28000 && vnum < 29000 && // MT2009_PLUS_SOULSTONE9_V1: +5..+9 too
 				GetPlayerBotSoulStoneKind(vnum) >= 30 && GetPlayerBotSoulStoneKind(vnum) <= 43;
 	}
 

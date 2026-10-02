@@ -246,7 +246,7 @@ namespace
 		// status "Zdobywam konia bojowego na pustyni" - 88 of 124 trial bots
 		// on m2zip had the Biologist as their goal (17 September). The herbs
 		// wait for the horse; a hand-in already carried still walks.
-		if (IsPlayerBotOnBattleHorseTrial(ch) || IsPlayerBotOnMilitaryHorseTrial(ch))
+		if (IsPlayerBotOnAnyHorseTrial(ch) /* MT2009_PLUS_HORSE30_V1 */)
 			return false;
 		const DWORD pid = ch->GetPlayerID();
 		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotHerbErrand.find(pid);
@@ -344,7 +344,7 @@ namespace
 	// errand's question above and for the same reason.
 	bool PlayerBotMayTakeCollectErrand(LPCHARACTER ch, DWORD dwNow)
 	{
-		if (IsPlayerBotOnBattleHorseTrial(ch) || IsPlayerBotOnMilitaryHorseTrial(ch))
+		if (IsPlayerBotOnAnyHorseTrial(ch) /* MT2009_PLUS_HORSE30_V1 */)
 			return false;
 		const DWORD pid = ch->GetPlayerID();
 		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotCollectErrand.find(pid);
@@ -588,7 +588,7 @@ namespace
 		// wanted the desert - 35 such bots on map 3, and the same on every
 		// other village map. While a horse trial is open the row's monster is
 		// not a destination; the row waits, and the hand-in still walks.
-		if (IsPlayerBotOnBattleHorseTrial(ch) || IsPlayerBotOnMilitaryHorseTrial(ch))
+		if (IsPlayerBotOnAnyHorseTrial(ch) /* MT2009_PLUS_HORSE30_V1 */)
 			return 0;
 		// The BIOLOG weight under neutral leaves the row unhunted for a share of
 		// the bots, before a place is taken (IsPlayerBotWeightGateOpen); what a

@@ -630,6 +630,10 @@ namespace
 		// bot hunts where the trial is, whatever its level would otherwise say.
 		if (IsPlayerBotOnMilitaryHorseTrial(ch) && !metinolog)
 			return PLAYERBOT_MAP_DEMON_TOWER;
+		// MT2009_PLUS_HORSE30_V1: and the Black Steed trial in the Grotto of
+		// Exile V2, where the Setaou Archers (2412) stand.
+		if (IsPlayerBotOnBlackSteedTrial(ch) && !metinolog)
+			return PLAYERBOT_MAP_GROTTO_V2;
 
 		// MT2009_PLUS_PROGRESSION_V1: every level below is the operator's
 		// (the panel's map table, playerbot_progression_rules.h); the
@@ -1154,6 +1158,8 @@ namespace
 		return (PlayerBotNavHash(ch->GetPlayerID() ^ 0x42455354U) % 2U) == 0;
 	}
 
+	int GetPlayerBotDesiredHorseMedalStock(LPCHARACTER ch); // below
+
 	bool ShouldPlayerBotPursueHorseExpedition(LPCHARACTER ch, DWORD dwNow)
 	{
 		if (!ch)
@@ -1202,7 +1208,14 @@ namespace
 		// full bag finishes its medal and leaves.
 		if (IsPlayerBotBagFull(ch))
 			return false;
-		if (!CanPlayerBotAdvanceHorse(ch))
+		// MT2009_PLUS_HORSE30_V1: only for a horse whose next step is a paid
+		// training - a trial (10, 20, 29) asks no medal - and not with the
+		// medals of the next trainings already in the bag: then it is the
+		// materials or the yang it lacks, and those come from elsewhere.
+		if (!CanPlayerBotAdvanceHorse(ch) || GetPlayerBotHorseTrainingMedals(ch, 1) <= 0)
+			return false;
+		if (ch->GetMapIndex() != GetPlayerBotMonkeyMapFor(ch) &&
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >= GetPlayerBotDesiredHorseMedalStock(ch))
 			return false;
 		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: nor the island's dropper - its
 		// time is its island's, as the other droppers' is their ground's.
@@ -1317,16 +1330,15 @@ namespace
 		// The high-priority builds occasionally prepare the next horse level in the
 		// same visit. Other classes leave after one medal, freeing dungeon capacity
 		// and returning to ordinary experience progression much sooner.
-		// MT2009_PLUS_HORSE_ECONOMY_V2: past the battle horse a visit is worth
-		// up to three medals (never past the twentieth level), and the due
-		// saddlebag row's on top.
-		if (ch->GetHorseLevel() >= 11 && ch->GetHorseLevel() <= 19)
-			return std::min(3, 20 - (int)ch->GetHorseLevel()) + GetPlayerBotSaddlebagMedalReserve(ch);
+		// MT2009_PLUS_HORSE30_V1: in medals of the paid training
+		// (playerbot_horse30.h) - two trainings past the battle horse (2 or 3
+		// medals each, never across a trial), the next one or two before it -
+		// and the due saddlebag row's on top.
 		const bool highPriority = ch->GetJob() == JOB_WARRIOR ||
 				(ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 1);
-		return highPriority
-				? 1 + (PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d454441U) % 2U)
-				: 1;
+		const int levels = ch->GetHorseLevel() >= 11 ? 2
+				: (highPriority ? 1 + (int)(PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d454441U) % 2U) : 1);
+		return std::max(1, GetPlayerBotHorseTrainingMedals(ch, levels)) + GetPlayerBotSaddlebagMedalReserve(ch);
 	}
 
 	// A warp that half worked, and the only kind of damage a bot cannot walk off.
@@ -2120,7 +2132,7 @@ namespace
 		}
 
 		const long mapIndex = ch->GetMapIndex();
-		const bool hasMedal = ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) > 0;
+		// MT2009_PLUS_HORSE30_V1: the medal alone no longer decides (holdsMedalToHandIn).
 		// A medal in a medal dropper's bag is stock for its counter, not an errand
 		// at the stable: neither village holds such a bot back for one, and its
 		// expedition goes on past it (GetPlayerBotDesiredHorseMedalStock).
@@ -2128,9 +2140,12 @@ namespace
 		// back: one it cannot hand in (a battle-horse candidate's, a horse at
 		// the cap) is stock for a counter, and a village that held it for one
 		// would hold it for good.
-		const bool holdsMedalToHandIn = hasMedal &&
-				state.bPersonality != BOT_PERSONALITY_MEDAL_DROPPER &&
-				(!IsPlayerBotPersonaEnabled() || CanPlayerBotAdvanceHorse(ch));
+		// MT2009_PLUS_HORSE30_V1: a medal alone is no stable errand any more -
+		// a training asks the materials and the yang too, and a village that
+		// held a bot for a medal it cannot spend would hold it for good. Only
+		// a training paid in full or a trial to collect (PlayerBotHasStableBusiness).
+		const bool holdsMedalToHandIn = state.bPersonality != BOT_PERSONALITY_MEDAL_DROPPER &&
+				PlayerBotHasStableBusiness(ch);
 		// A trader does not down tools to go and farm horse medals in the Monkey
 		// Dungeon. That errand takes a bot right across the world for the better
 		// part of an hour, and it is exactly the striving this personality exists
@@ -2786,8 +2801,10 @@ namespace
 			// The battle-horse trial is a hundred kills of two archers on this one
 			// map; everything below that would send the bot home before the
 			// hundredth waits for it (2.0.66, 2.0.67).
-			const bool onBattleTrialHere = mapIndex == PLAYERBOT_MAP_DESERT &&
-					IsPlayerBotOnBattleHorseTrial(ch);
+			const bool onBattleTrialHere = (mapIndex == PLAYERBOT_MAP_DESERT &&
+					IsPlayerBotOnBattleHorseTrial(ch)) ||
+					// MT2009_PLUS_HORSE30_V1: the Black Steed's fifty archers too.
+					(mapIndex == PLAYERBOT_MAP_GROTTO_V2 && IsPlayerBotOnBlackSteedTrial(ch));
 			// The personality's visit clock ended a trial two-thirds done
 			// ("frontier_visit_complete" after 41 minutes, m2zip 17 September).
 			// MT2009_PLUS_PROGRESSION_V3: nor a bot a gate holds for its Metins on
