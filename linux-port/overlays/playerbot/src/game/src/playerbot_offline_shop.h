@@ -1423,11 +1423,15 @@ namespace {
         // largest pack of 20, 50, 100 or 200 that the spare over the bot's own
         // keep fills out of this stack; the merge pass pours the small stacks
         // together first, and under twenty nothing goes up.
+        // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: over the bot's potion reserve
+        // (GetPlayerBotCraftedPotionKeep - the belt it buys up to, and what its
+        // next row brews from), not a flat five.
         if (IsPlayerBotPackedPotion(item)) {
-            const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - PLAYERBOT_HERBALISM_POTION_KEEP;
+            const int keep = GetPlayerBotCraftedPotionKeep(ch, item->GetVnum());
+            const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - keep;
             const int take = GetPlayerBotPotionPackUnits(std::min(spare, (int)item->GetCount()));
             cutNote.shape = per::SHAPE_POTION_PACK;
-            cutNote.keep = PLAYERBOT_HERBALISM_POTION_KEEP;
+            cutNote.keep = keep;
             if (take <= 0) return -1;
             if (take >= (int)item->GetCount()) { cutNote.from = 0; return cell; }
             if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
@@ -1436,6 +1440,27 @@ namespace {
                 return -1;
             sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u potion_pack=1",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
+            return to;
+        }
+        // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: every other brew of Baek-Go's
+        // board - the Juices, Waters and Dews, the Slayer's and the Runner's
+        // potions - goes up a craft's yield at a time
+        // (PLAYERBOT_SHOP_CRAFTED_POTION_LINE_UNITS) out of what is over the
+        // reserve; the whole stack went up before, the reserve with it.
+        if (IsPlayerBotCraftedPotion(item)) {
+            const int keep = GetPlayerBotCraftedPotionKeep(ch, item->GetVnum());
+            const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - keep;
+            const int take = std::min(std::min(spare, (int)item->GetCount()), PLAYERBOT_SHOP_CRAFTED_POTION_LINE_UNITS);
+            cutNote.shape = per::SHAPE_POTION_PACK;
+            cutNote.keep = keep;
+            if (take <= 0) return -1;
+            if (take >= (int)item->GetCount()) { cutNote.from = 0; return cell; }
+            if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
+            const int to = ch->GetEmptyInventory(item->GetSize());
+            if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
+                return -1;
+            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d crafted_potion=1",
+                ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount(), keep);
             return to;
         }
         const int units = GetPlayerBotStallLineUnits(item);

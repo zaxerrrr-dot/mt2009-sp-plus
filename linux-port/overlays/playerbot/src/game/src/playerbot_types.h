@@ -5996,6 +5996,11 @@ namespace
 	// pack the spare fills is the line; under the smallest nothing goes up.
 	const int PLAYERBOT_SHOP_POTION_PACKS[] = { 200, 100, 50, 20 };
 	const int PLAYERBOT_SHOP_POTION_PACK_MIN = 20;
+	// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: every other potion of Baek-Go's
+	// board goes up at most this many a line - one craft's yield - out of
+	// what is over the bot's reserve (GetPlayerBotCraftedPotionKeep), so a
+	// counter shows the brew as a player cuts it and never the reserve.
+	const int PLAYERBOT_SHOP_CRAFTED_POTION_LINE_UNITS = 5;
 	// Drinking: only where it pays for the ten minutes it lasts - a boss, a
 	// Metin stone, a Demon Tower floor - and never twice inside one fight.
 	const DWORD PLAYERBOT_HERBALISM_DRINK_RETRY_MS = 60 * 1000;
@@ -6011,7 +6016,20 @@ namespace
 	// limit level 15, its gold 20 000), three seconds a pick, 30% plus the
 	// knife's value0 plus a failure bonus of 4 a miss up to 20, two or three
 	// herbs a success, and the bush gone after its sixth pick.
-	const int PLAYERBOT_HERBALIST_PERCENT = 10;            // of the bots of 15+, by pid
+	// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: picking is an activity, the way
+	// the water and the veins are, and not a trade a share of the bots is
+	// born to ("zielarze maja normalnie grac, a zbieranie ziol to zajecie jak
+	// gornictwo i wedkarstwo", the owner, 2 October). Any bot from the knife's
+	// level fifteen may take it up: every half hour (the Rybak's window) a
+	// roll by pid against this share - a collector's larger, a bot that
+	// already owns a knife a little larger again - stretched or shrunk by the
+	// HERB slider ("Zielarstwo"), and only once the rest after its last
+	// session is over. Between sessions it levels, hunts, does its quests and
+	// keeps its counter like any other bot.
+	const int PLAYERBOT_HERB_ACTIVITY_PERCENT = 8;
+	const int PLAYERBOT_HERB_ACTIVITY_COLLECTOR_PERCENT = 25;
+	const int PLAYERBOT_HERB_ACTIVITY_KNIFE_BONUS = 4;
+	const DWORD PLAYERBOT_HERB_ACTIVITY_WINDOW_MS = 30 * 60 * 1000;
 	const DWORD PLAYERBOT_HERB_KNIFE_VNUM = 29201;
 	const DWORD PLAYERBOT_HERB_KNIFE_VNUM_LAST = 29210;
 	const long long PLAYERBOT_HERB_KNIFE_PRICE = 20000;
@@ -6023,15 +6041,16 @@ namespace
 	const int PLAYERBOT_HERB_ARRIVE = 150;
 	// How far a herbalist walks for a bush on its own map.
 	const int PLAYERBOT_HERB_SEARCH_RANGE = 25000;
-	// A session is the herbalist's trade for its length: the bushes, the walk
-	// to Baek-Go and back, the fights on the way; the rest between two is
-	// its hunting and its town errands. The bot is the Zielarz through both
-	// (DecidePlayerBotPersona), so it does not turn into a Grinder the moment
-	// it leaves the board.
-	const DWORD PLAYERBOT_HERB_SESSION_MIN_MS = 30 * 60 * 1000;
-	const DWORD PLAYERBOT_HERB_SESSION_MAX_MS = 50 * 60 * 1000;
-	const DWORD PLAYERBOT_HERB_REST_MIN_MS = 10 * 60 * 1000;
-	const DWORD PLAYERBOT_HERB_REST_MAX_MS = 20 * 60 * 1000;
+	// A session is an episode between the bot's ordinary play, the length of
+	// a fishing one (PLAYERBOT_FISHING_SESSION_*) rather than the 30-50 min of
+	// the herbalist by trade; the rest is a mining rest and up, both scaled by
+	// the HERB slider as the MINING one scales the veins'. The bot is the
+	// Zielarz for the session alone, as it is the Gornik at the vein and the
+	// Rybak at the water (DecidePlayerBotPersona).
+	const DWORD PLAYERBOT_HERB_SESSION_MIN_MS = 12 * 60 * 1000;
+	const DWORD PLAYERBOT_HERB_SESSION_MAX_MS = 25 * 60 * 1000;
+	const DWORD PLAYERBOT_HERB_REST_MIN_MS = 40 * 60 * 1000;
+	const DWORD PLAYERBOT_HERB_REST_MAX_MS = 90 * 60 * 1000;
 	// After a blow: the fight first, the bushes again this much later.
 	const DWORD PLAYERBOT_HERB_RESUME_MS = 15000;
 	// No bush in reach, no knife affordable: looked at again this much later.

@@ -475,17 +475,15 @@ namespace
 		s.fishing = state.bFishingSession;
 		s.mining = IsPlayerBotMiningNow(ch->GetPlayerID(), dwNow);
 		// MT2009_PLUS_BOTLIFE_V1: the Zielarz, on its way to Baek-Go or at his board.
-		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: the herbalist by trade is the Zielarz
-		// - at the bushes, on the way to Baek-Go and back, and in the fights
-		// between two sessions - for as long as the HERB slider keeps its board
-		// open (IsPlayerBotHerbBoardOpen). It was the visit alone, so a
-		// herbalist was the Zielarz for the minute at the board and a Grinder or
-		// a Conqueror the moment it left ("po odejsciu od Baek-Go zmieniaja
-		// osobowosc", the owner, 2 October). A Conqueror's own visit is a
-		// Conqueror's errand and leaves him one.
+		// (FIX_V1 made the herbalist by trade the Zielarz throughout; a
+		// Conqueror's own visit is a Conqueror's errand and leaves him one.)
+		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: picking is an activity now,
+		// so the Zielarz is the activity's, as the Gornik is the vein's and the
+		// Rybak the water's: the session at the bushes, and a gatherer's own
+		// visit to the board with what it picked - and between two sessions
+		// the bot is whatever its play makes it.
 		s.herbalism = IsPlayerBotHerbSessionNow(ch->GetPlayerID(), dwNow) ||
-				(IsPlayerBotHerbalistByTrade(ch) &&
-				 (state.bVisitingHerbalist || IsPlayerBotHerbBoardOpen(ch, dwNow)));
+				(state.bVisitingHerbalist && IsPlayerBotHerbGatherer(ch));
 		LPCHARACTER target = state.dwTargetVID != 0
 				? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
 		s.stoneFight = (target && target->IsStone() && !target->IsDead()) ||

@@ -282,7 +282,11 @@ namespace
 		// and the visit only ever fires for a bot already standing in M1. The
 		// gate is deliberately the whole shopping list, so this can never
 		// become the crowd at the gates that 2.0.60 was.
-		if (PlayerBotHasReadyCraftRow(ch))
+		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: and only once the board's
+		// visit is due (dwNextHerbalistCheckTime): every bot that picked herbs
+		// is a brewer now, and one with herbs left over after a visit would
+		// otherwise be called back to the first village for the whole gap.
+		if (dwNow >= state.dwNextHerbalistCheckTime && PlayerBotHasReadyCraftRow(ch))
 			return true;
 		// Her too: a skill stuck at seventeen with no points left to try
 		// anything else is worth a trip to Joan while the character is still

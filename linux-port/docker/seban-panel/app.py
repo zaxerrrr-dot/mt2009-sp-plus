@@ -210,7 +210,7 @@ AI_WEIGHT_HINTS = {
     "SASH": "Pula botów od 30 lv, które budują szarfy. 100 = 80% z nich, od 125 = wszystkie, 0 = nikt (reszta sprzedaje szarfy). Przy następnym sprawdzeniu szarf (3–6 min).",
     "ALCHEMY": "Pula botów od 30 lv, które używają alchemii smoka. 100 = 75% z nich, od 135 = wszystkie, 0 = nikt (reszta sprzedaje Cory i zbędne kamienie). Od razu.",
     "MINING": "Ilu botów kopie rudę i jak długo odpoczywa od żył. Przy osobowościach każdy bot od 30 lv z kilofem kopie żyłę w zasięgu wzroku - poniżej 100 suwak zamyka żyły części z nich na pół godziny; bez osobowości kopie stały udział botów (zbieracze częściej). Przerwa między sesjami skraca się przy wyższym suwaku i wydłuża przy niższym.",
-    "HERB": "Ilu botów pracuje przy stole zielarskim Baek-Go i jak często. Przy osobowościach to zadanie Zdobywcy od 45 lv; poniżej 100 stół jest zamknięty dla części z nich na pół godziny, powyżej 100 dochodzi część botów od 15 lv (przy 250 wszystkie). Przerwa między wizytami skraca się przy wyższym suwaku. Zioła boty mają z dropu.",
+    "HERB": "Zbieranie ziół to zajęcie jak wędkarstwo/górnictwo: co pół godziny bot od 15 lv bez grupy losuje (8% przy 100, zbieracze 25%), sesja 12–25 min jako Zielarz z nożykiem, potem warzy u Baek-Go i gra normalnie; przerwa 40–90 min skraca się przy wyższym suwaku. Nadwyżkę mikstur ponad zapas wystawia po cenach z cennika. Poniżej 100 stół i krzaki zamknięte dla części botów na pół godziny.",
     "TRADE": "Ilu botów trzyma stragan (bez Handlarza, biednych, pełnego plecaka, droppera pod presją i cennych zapasów). Na 2.x stojący sklep offline tylko nie jest odnawiany po 8 h.",
 }
 # These values share the live weight file with goal weights, but the core treats

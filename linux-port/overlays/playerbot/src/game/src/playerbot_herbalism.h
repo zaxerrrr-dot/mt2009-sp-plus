@@ -75,14 +75,18 @@ namespace
 		return vnum >= PLAYERBOT_HERB_VNUM_FIRST && vnum <= PLAYERBOT_HERB_VNUM_LAST;
 	}
 
-	// MT2009_PLUS_BOT_HERBALIST_FIX_V1: the herbalist by trade. A share of
-	// the bots of Baek-Go's own level fifteen, drawn by pid like the anglers
-	// and the miners, stretched or shrunk by the HERB slider ("Zielarstwo"):
-	// it carries the Herbalist's Knife, picks the bushes of whatever map it
-	// stands on, brews at Baek-Go, and is the Zielarz for the whole of its
-	// session (DecidePlayerBotPersona). Never a dropper (its farm is one
-	// thing), nor a player's companion.
-	bool IsPlayerBotHerbalistByTrade(LPCHARACTER ch)
+	int CountPlayerBotHerbKnives(LPCHARACTER ch);
+
+	// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: there is no herbalist by trade
+	// any more (the FIX_V1 share of 10% by pid that spent three quarters of
+	// its time at the bushes and was the Zielarz throughout). Picking is an
+	// activity of any bot (IsPlayerBotHerbalistNow, below) and a bot that has
+	// taken it up - it bought the Herbalist's Knife for its first session -
+	// is a gatherer: it keeps its herbs for Baek-Go's board, brews them there
+	// with its own purse's rules and keeps the knife in the bag between two
+	// sessions, the way an angler keeps its rod. Never a dropper (its farm is
+	// one thing), nor a player's companion, nor a shouter.
+	bool IsPlayerBotHerbGatherer(LPCHARACTER ch)
 	{
 		if (!ch || ch->GetLevel() < PLAYERBOT_HERBALISM_MIN_LEVEL)
 			return false;
@@ -90,17 +94,16 @@ namespace
 		if (it == s_mapPlayerBotAIStates.end() || IsPlayerBotDropper(it->second.bPersonality) ||
 				IsPlayerBotSidekickPID(ch->GetPlayerID()) || IsPlayerBotShouterPID(ch->GetPlayerID()))
 			return false;
-		const DWORD roll = PlayerBotNavHash(ch->GetPlayerID() ^ 0x48524254U) % 100U;
-		return PlayerBotWeightedRoll(roll, PLAYERBOT_HERBALIST_PERCENT, PLAYERBOT_WEIGHT_HERB);
+		return CountPlayerBotHerbKnives(ch) > 0;
 	}
 
 	// What a craft leaves in the purse. Two million was the Conqueror's
-	// reserve and stays his; for the herbalist by trade it is its own reserve
-	// (the teleporter fare, the battle horse, the guild's fund) and a little
-	// over, or no bot of a young world ever brewed the cheapest row.
+	// reserve and stays his; for a gatherer it is its own reserve (the
+	// teleporter fare, the battle horse, the guild's fund) and a little over,
+	// or no bot of a young world ever brewed the cheapest row.
 	long long GetPlayerBotHerbalismGoldReserve(LPCHARACTER ch)
 	{
-		if (IsPlayerBotHerbalistByTrade(ch))
+		if (IsPlayerBotHerbGatherer(ch))   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
 			return std::max<long long>(PLAYERBOT_HERBALIST_GOLD_RESERVE,
 					(long long)GetPlayerBotReservedGold(ch) + PLAYERBOT_HERBALIST_GOLD_RESERVE);
 		return PLAYERBOT_HERBALISM_GOLD_RESERVE;
@@ -419,6 +422,8 @@ namespace
 		if (!ch)
 			return NULL;
 		const TCraftingItem* best = NULL;
+		// The reserve once, not once a row: a gatherer's is asked of its bag.
+		const long long reserve = GetPlayerBotHerbalismGoldReserve(ch);   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
 		for (size_t i = 0; i < PLAYERBOT_HERBALISM_ROW_COUNT; ++i)
 		{
 			const TCraftingItem* row =
@@ -427,7 +432,7 @@ namespace
 				continue;
 			if (!PlayerBotKnowsCraftRow(ch, row))
 				continue;
-			if ((long long) ch->GetGold() < (long long) row->price + GetPlayerBotHerbalismGoldReserve(ch))   // MT2009_PLUS_BOT_HERBALIST_FIX_V1
+			if ((long long) ch->GetGold() < (long long) row->price + reserve)   // MT2009_PLUS_BOT_HERBALIST_FIX_V1
 				continue;
 			if (!PreparePlayerBotCraftMaterials(ch, row, false))
 				continue;
@@ -452,9 +457,9 @@ namespace
 			return true;
 		if (!ch)
 			return false;
-		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: the herbalist by trade, at any level
-		// from Baek-Go's fifteen.
-		if (IsPlayerBotHerbalistByTrade(ch))
+		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: a gatherer brews what it
+		// picked, at any level from Baek-Go's fifteen.
+		if (IsPlayerBotHerbGatherer(ch))
 			return true;
 		// MT2009_PLUS_BOTLIFE_V1: over 100 the HERB slider ("Zielarstwo")
 		// brings a share of the other bots from Baek-Go's own level fifteen
@@ -530,13 +535,45 @@ namespace
 		return true;
 	}
 
-	// How many of a potion a bot keeps for itself; the rest is what a counter
-	// can carry, because until now no player could buy one anywhere.
+	// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: how many of a potion a bot keeps
+	// for itself - its reserve - before the rest goes on a counter ("boty
+	// zostawiaja sobie to, czego potrzebuja, a reszte wystawiaja", the owner,
+	// 2 October). PLAYERBOT_HERBALISM_POTION_KEEP of every brew for the fights
+	// worth a buff; of a green or purple potion the belt the bot buys up to at
+	// the General Store (GetPlayerBotPotionSupplyLimit), or it listed the
+	// potions it walked to the merchant for an hour later; and of a potion the
+	// next row it knows is brewed from - a Water eats ten Juices - that row's
+	// count over the keep, or the counter sold the chain out from under the
+	// board.
+	int GetPlayerBotCraftedPotionKeep(LPCHARACTER ch, DWORD vnum)
+	{
+		int keep = PLAYERBOT_HERBALISM_POTION_KEEP;
+		const EPlayerBotPotionSupply supply = GetPlayerBotPotionSupply(vnum);
+		if (supply != PLAYERBOT_POTION_SUPPLY_NONE)
+			keep = std::max(keep, (int)GetPlayerBotPotionSupplyLimit(ch, supply));
+		if (!ch || !IsPlayerBotHerbalismUnlocked(ch))
+			return keep;
+		for (size_t i = 0; i < PLAYERBOT_HERBALISM_ROW_COUNT; ++i)
+		{
+			const TCraftingItem* row =
+					CCraftingManager::instance().GetCraftingRecipe(PLAYERBOT_HERBALISM_ROWS[i]);
+			if (!row || row->itemVnum == 0 || !PlayerBotKnowsCraftRow(ch, row))
+				continue;
+			for (int m = 0; m < CRAFTING_MATERIAL_MAX_NUM; ++m)
+				if (row->materials[m].vnum == vnum && row->materials[m].count > 0)
+					keep = std::max(keep, PLAYERBOT_HERBALISM_POTION_KEEP + (int)row->materials[m].count);
+		}
+		return keep;
+	}
+
+	// The rest is what a counter can carry, because until now no player could
+	// buy one anywhere.
 	bool IsPlayerBotSurplusPotion(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !IsPlayerBotCraftedPotion(item))
 			return false;
-		const int spare = (int) ch->CountSpecifyItem(item->GetVnum()) - PLAYERBOT_HERBALISM_POTION_KEEP;
+		const int spare = (int) ch->CountSpecifyItem(item->GetVnum()) -
+				GetPlayerBotCraftedPotionKeep(ch, item->GetVnum());   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
 		// A packed potion is goods once the spare fills the smallest pack.
 		if (IsPlayerBotPackedPotion(item))
 			return GetPlayerBotPotionPackUnits(spare) > 0;
@@ -665,6 +702,7 @@ namespace
 	// The session's clocks, by pid (the mining pass's reason: no new fields in
 	// TPlayerBotAIState and its initialiser list).
 	std::map<DWORD, DWORD> s_mapPlayerBotHerbUntil;    // session end; the Zielarz until then
+	std::map<DWORD, DWORD> s_mapPlayerBotHerbStarted;  // session start, for the log's minutes
 	std::map<DWORD, DWORD> s_mapPlayerBotHerbNext;     // when to consider a session again
 	std::map<DWORD, DWORD> s_mapPlayerBotHerbBush;     // the bush this bot is on
 	std::map<DWORD, DWORD> s_mapPlayerBotHerbBushSince;// since when (a bush out of reach is dropped)
@@ -679,22 +717,6 @@ namespace
 	{
 		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotHerbUntil.find(pid);
 		return it != s_mapPlayerBotHerbUntil.end() && (int)(it->second - dwNow) > 0;
-	}
-
-	// A visit to Baek-Go by the herbalist by trade is part of its trade: it
-	// opens a session if none runs, so the bot leaving the board is still the
-	// Zielarz on its way back to the bushes.
-	void TouchPlayerBotHerbSession(LPCHARACTER ch, DWORD dwNow)
-	{
-		if (!ch || !IsPlayerBotHerbalistByTrade(ch))
-			return;
-		const DWORD pid = ch->GetPlayerID();
-		if (IsPlayerBotHerbSessionNow(pid, dwNow))
-			return;
-		s_mapPlayerBotHerbUntil[pid] = dwNow + (DWORD)number((int)PLAYERBOT_HERB_SESSION_MIN_MS,
-				(int)PLAYERBOT_HERB_SESSION_MAX_MS);
-		sys_log(0, "PLAYERBOT_HERB: session start pid=%u name=%s map=%ld level=%d via=baekgo",
-				pid, ch->GetName(), ch->GetMapIndex(), (int)ch->GetLevel());
 	}
 
 	bool IsPlayerBotHoldingHerbKnife(LPCHARACTER ch)
@@ -787,6 +809,10 @@ namespace
 		if (!ch)
 			return;
 		const DWORD pid = ch->GetPlayerID();
+		std::map<DWORD, DWORD>::iterator started = s_mapPlayerBotHerbStarted.find(pid);
+		const int minutes = started != s_mapPlayerBotHerbStarted.end() ? (int)((dwNow - started->second) / 60000U) : -1;
+		if (started != s_mapPlayerBotHerbStarted.end())
+			s_mapPlayerBotHerbStarted.erase(started);
 		s_mapPlayerBotHerbUntil.erase(pid);
 		s_mapPlayerBotHerbBush.erase(pid);
 		s_mapPlayerBotHerbBushSince.erase(pid);
@@ -798,8 +824,12 @@ namespace
 				(DWORD)number((int)PLAYERBOT_HERB_REST_MIN_MS, (int)PLAYERBOT_HERB_REST_MAX_MS),
 				PLAYERBOT_WEIGHT_HERB));
 		ClearPlayerBotRoute(state, true);
-		sys_log(0, "PLAYERBOT_HERB: session end pid=%u name=%s reason=%s",
-				pid, ch->GetName(), szReason ? szReason : "done");
+		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: what it picked goes to the
+		// board when it next stands in Baek-Go's village, not a visit gap later.
+		if ((int)(state.dwNextHerbalistCheckTime - dwNow) > 0)
+			state.dwNextHerbalistCheckTime = dwNow;
+		sys_log(0, "PLAYERBOT_HERB: session end pid=%u name=%s reason=%s minutes=%d level=%d activity=1",
+				pid, ch->GetName(), szReason ? szReason : "done", minutes, (int)ch->GetLevel());
 	}
 
 	// Is a bush on this bot already? Another herbalist's bush is left to it.
@@ -930,6 +960,41 @@ namespace
 		return ChoosePlayerBotCraftRow(ch) != NULL;
 	}
 
+	// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: whether this bot takes the bushes
+	// up now. The anglers' and the miners' scheduler, not a trade: from the
+	// knife's own level (fifteen; asked of the item, as the rod's thirty is),
+	// never a dropper, a companion or a shouter, never on a horse trial or
+	// answering a world event (IsPlayerBotAngler's reasons), never in a party
+	// (the Rybak's: "jesli bot jest w PT nie powinien lowic"), and then a roll
+	// by pid for every half-hour window - spread by pid so the bots do not all
+	// turn at once - against PLAYERBOT_HERB_ACTIVITY_PERCENT, a collector's
+	// larger share and a little more for a bot that owns a knife already, all
+	// of it stretched or shrunk by the HERB slider (PlayerBotWeightedRoll: 0
+	// is nobody, 250 two and a half times the share). The rest after a
+	// session and the slider's half-hour gate (IsPlayerBotHerbBoardOpen) are
+	// the caller's, as the veins' are.
+	bool IsPlayerBotHerbalistNow(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || ch->GetLevel() < PLAYERBOT_HERBALISM_MIN_LEVEL || ch->GetParty())
+			return false;
+		TItemTable* knife = ITEM_MANAGER::instance().GetTable(PLAYERBOT_HERB_KNIFE_VNUM);
+		if (!knife || GetPlayerBotProtoLevelLimit(knife) > (int)ch->GetLevel())
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		if (IsPlayerBotDropper(state.bPersonality) || IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid))
+			return false;
+		if (IsPlayerBotOnBattleHorseTrial(ch) || IsPlayerBotOnMilitaryHorseTrial(ch) || state.bWorldEventKind != 0)
+			return false;
+		const DWORD window = (dwNow + (pid * 7919U) % PLAYERBOT_HERB_ACTIVITY_WINDOW_MS) /
+				PLAYERBOT_HERB_ACTIVITY_WINDOW_MS;
+		const DWORD roll = PlayerBotNavHash(pid ^ 0x48524254U ^ (window * 0x9E3779B1U)) % 100U;
+		int chance = state.bPersonality == BOT_PERSONALITY_CAREFUL_COLLECTOR
+				? PLAYERBOT_HERB_ACTIVITY_COLLECTOR_PERCENT : PLAYERBOT_HERB_ACTIVITY_PERCENT;
+		if (CountPlayerBotHerbKnives(ch) > 0)
+			chance += PLAYERBOT_HERB_ACTIVITY_KNIFE_BONUS;
+		return PlayerBotWeightedRoll(roll, chance, PLAYERBOT_WEIGHT_HERB);
+	}
+
 	// The session. It owns the tick the way the vein's does - the knife sits
 	// in the weapon hand - and lets go of it for a fight (a blow, then the
 	// bushes again PLAYERBOT_HERB_RESUME_MS later), for Baek-Go when a row is
@@ -969,7 +1034,8 @@ namespace
 			if (next != s_mapPlayerBotHerbNext.end() && (int)(dwNow - next->second) < 0)
 				return false;
 			s_mapPlayerBotHerbNext[pid] = dwNow + PLAYERBOT_HERB_RETRY_MS;
-			if (!IsPlayerBotHerbalistByTrade(ch) || !IsPlayerBotHerbBoardOpen(ch, dwNow))
+			// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: an activity's roll, not a trade.
+			if (!IsPlayerBotHerbalistNow(ch, state, dwNow) || !IsPlayerBotHerbBoardOpen(ch, dwNow))
 				return false;
 			// Never walk off mid-fight.
 			LPCHARACTER victim = state.dwTargetVID != 0
@@ -996,6 +1062,7 @@ namespace
 			}
 			s_mapPlayerBotHerbUntil[pid] = dwNow + (DWORD)number((int)PLAYERBOT_HERB_SESSION_MIN_MS,
 					(int)PLAYERBOT_HERB_SESSION_MAX_MS);
+			s_mapPlayerBotHerbStarted[pid] = dwNow;
 			s_mapPlayerBotHerbBush[pid] = (DWORD)bush->GetVID();
 			s_mapPlayerBotHerbBushSince[pid] = dwNow;
 			s_mapPlayerBotHerbPickAt.erase(pid);
@@ -1003,9 +1070,10 @@ namespace
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
 			ClearPlayerBotRoute(state, true);
-			sys_log(0, "PLAYERBOT_HERB: session start pid=%u name=%s map=%ld level=%d bush=%u dist=%ld",
+			sys_log(0, "PLAYERBOT_HERB: session start pid=%u name=%s map=%ld level=%d bush=%u dist=%ld minutes=%u activity=1",
 					pid, ch->GetName(), ch->GetMapIndex(), (int)ch->GetLevel(),
-					(unsigned int)bush->GetRaceNum(), distance);
+					(unsigned int)bush->GetRaceNum(), distance,
+					(unsigned int)((s_mapPlayerBotHerbUntil[pid] - dwNow) / 60000U));
 		}
 
 		// After a blow the fight is the bot's, and the bushes wait.
@@ -1162,7 +1230,8 @@ namespace
 	bool PlayerBotHasReadyCraftRow(LPCHARACTER) { return false; }
 	void ManagePlayerBotCraftRecipes(LPCHARACTER, DWORD) { }
 	bool DrinkPlayerBotCraftedPotion(LPCHARACTER, LPCHARACTER, DWORD, bool = false) { return false; }
-	bool IsPlayerBotHerbalistByTrade(LPCHARACTER) { return false; }
+	bool IsPlayerBotHerbGatherer(LPCHARACTER) { return false; }
+	int GetPlayerBotCraftedPotionKeep(LPCHARACTER, DWORD) { return 0; }
 	bool IsPlayerBotHerbBoardOpen(LPCHARACTER, DWORD) { return false; }
 	bool IsPlayerBotHerbSessionNow(DWORD, DWORD) { return false; }
 	bool IsPlayerBotHerbPickingNow(LPCHARACTER, DWORD) { return false; }

@@ -1328,9 +1328,9 @@ namespace
 			return false;
 		if (ch->GetLevel() < PLAYERBOT_HERBALISM_MIN_LEVEL)
 			return false;
-		// A Conqueror's errand from forty-five under Iwakura's system, and the
-		// herbalist by trade's from fifteen (IsPlayerBotZielarz); a visit
-		// already walking finishes.
+		// A Conqueror's errand from forty-five under Iwakura's system, and a
+		// gatherer's from fifteen (IsPlayerBotZielarz); a visit already
+		// walking finishes.
 		if (!state.bVisitingHerbalist && !IsPlayerBotZielarz(ch))
 			return false;
 		// MT2009_PLUS_BOTLIFE_V1: and the HERB slider's gate (playerbot_herbalism.h).
@@ -1349,8 +1349,13 @@ namespace
 			return false;
 		}
 
-		const bool trade = IsPlayerBotHerbalistByTrade(ch);
+		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: the gatherer (a bot that took
+		// the bushes up and owns a knife) brews with its own purse's rules; a
+		// bot in a session comes back to the board sooner, and one whose
+		// session found it without a knife buys it here.
+		const bool trade = IsPlayerBotHerbGatherer(ch);
 		const DWORD pid = ch->GetPlayerID();
+		const bool picking = IsPlayerBotHerbSessionNow(pid, dwNow);
 		if (!state.bVisitingHerbalist)
 		{
 			// Is there anything to go there for? Asked before the walk, so
@@ -1358,14 +1363,14 @@ namespace
 			// onboarding the quest wants (ten Peach Blossoms) or a row the bag
 			// and the purse already cover. The bottles are not counted here -
 			// they are bought at the counter itself - so a row short of only
-			// those still brings the bot. And the herbalist by trade with no
+			// those still brings the bot. And a bot at the bushes with no
 			// knife yet: Baek-Go sells it.
 			const bool unlocked = IsPlayerBotHerbalismUnlocked(ch);
 			const bool wantsOnboarding = !unlocked &&
 					(int) ch->CountSpecifyItem(PLAYERBOT_HERBALISM_ONBOARD_FLOWER) >=
 							PLAYERBOT_HERBALISM_ONBOARD_COUNT;
 			const TCraftingItem* row = unlocked ? ChoosePlayerBotCraftRow(ch) : NULL;
-			const bool wantsKnife = trade && CountPlayerBotHerbKnives(ch) == 0 &&
+			const bool wantsKnife = picking && CountPlayerBotHerbKnives(ch) == 0 &&
 					(long long)ch->GetGold() >= PLAYERBOT_HERB_KNIFE_PRICE + (long long)GetPlayerBotReservedGold(ch);
 			if ((!wantsOnboarding && !row && !wantsKnife) ||
 					CountPlayerBotFreeInventoryCells(ch) < PLAYERBOT_HERBALISM_FREE_CELLS)
@@ -1382,9 +1387,6 @@ namespace
 			ch->SetVictim(NULL);
 			ch->Stop();
 			ClearPlayerBotRoute(state, true);
-			// The herbalist by trade's visit is part of its trade: the session
-			// (and the Zielarz) runs through it and on back to the bushes.
-			TouchPlayerBotHerbSession(ch, dwNow);
 			sys_log(0, "PLAYERBOT_HERB: going to Baek-Go pid=%u name=%s onboarding=%d row=%u knife=%d trade=%d",
 					pid, ch->GetName(), wantsOnboarding ? 1 : 0, row ? row->vnum : 0,
 					wantsKnife ? 1 : 0, trade ? 1 : 0);
@@ -1423,11 +1425,11 @@ namespace
 		if (dwNow < state.dwNextHerbalistActionTime)
 			return true;
 
-		// At the board at last. The knife first for the herbalist by trade
-		// (his shop), the onboarding next - it is what opens the board - and
+		// At the board at last. The knife first for a bot at the bushes
+		// without one (his shop), the onboarding next - it is what opens the board - and
 		// the recipes it hands over read on the spot: the first visit used to
 		// end "crafted=0" every time, the recipe still unread in the bag.
-		if (trade)
+		if (picking && !trade)
 			EnsurePlayerBotHerbKnife(ch, "baekgo");
 		if (!IsPlayerBotHerbalismUnlocked(ch))
 			EnsurePlayerBotHerbalismStarted(ch);
@@ -1468,9 +1470,9 @@ namespace
 		s_mapPlayerBotHerbVisitMade.erase(pid);
 		state.bVisitingHerbalist = false;
 		state.dwNextHerbalistActionTime = 0;
-		// The herbalist by trade comes back sooner: the bushes feed it.
+		// A bot at the bushes comes back sooner: the session feeds it.
 		const DWORD gap = DrawPlayerBotHerbalistVisitGap();   // MT2009_PLUS_BOTLIFE_V1
-		state.dwNextHerbalistCheckTime = dwNow + (trade ? gap / 3 : gap);
+		state.dwNextHerbalistCheckTime = dwNow + (IsPlayerBotHerbSessionNow(pid, dwNow) ? gap / 3 : gap);   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
 		ClearPlayerBotRoute(state, true);
 		sys_log(0, "PLAYERBOT_HERB: visit over pid=%u name=%s crafted=%d gold=%lld end=%s",
 				ch->GetPlayerID(), ch->GetName(), total, (long long) ch->GetGold(),
@@ -4338,11 +4340,11 @@ namespace
 		// A herb is Baek-Go's material now, so a few stay home. Without this a
 		// keeper listed the lot and then stood at the board with nothing to
 		// craft - the counters already held 12 506 Tue Mushrooms on 17 September.
-		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: the herbalist by trade keeps three
-		// times as many - a visit brews up to six rows of ten.
+		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: a gatherer (ACTIVITY_V1) keeps
+		// three times as many - a visit brews up to six rows of ten.
 		if (IsPlayerBotHerbalismHerb(item->GetVnum()) &&
 				(int) ch->CountSpecifyItem(item->GetVnum()) <=
-					PLAYERBOT_HERBALISM_HERB_KEEP * (IsPlayerBotHerbalistByTrade(ch) ? 3 : 1))
+					PLAYERBOT_HERBALISM_HERB_KEEP * (IsPlayerBotHerbGatherer(ch) ? 3 : 1))   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
 			return -1;
 		// No mission book while its village's counters hold thirty (Iwakura's
 		// Patch 4, point 13): the junk rule and the storekeeper take them.
@@ -6261,6 +6263,167 @@ namespace
 		return mapIndex == PLAYERBOT_MAP_CHUNJO_M1;
 	}
 
+	// MT2009_PLUS_BOT_TOWN_SPREAD_V1: bots at a counter stand side by side, not
+	// inside one another.
+	//
+	// The owner's screenshot of M1 (2 October): bots of nineteen to twenty-three
+	// piled one on top of another beside a merchant and the anvil, reading
+	// "Ide do miasta (cel: ulepszanie)" and "Handluje bronia (cel: ulepszanie)".
+	// GetPlayerBotNpcApproach does give each bot its own place in front of the
+	// NPC - eleven lanes of 90 units by six rows of 80 - but the leg there was
+	// over as soon as the bot came within 500 to 850 units of it, wider than the
+	// whole fan, so every bot riding in along the same road stopped on the same
+	// spot of that road, where the radius first took it. The anvil's fan was
+	// halved besides, to 45 by 40 units, smaller than a body. Pairs ten to
+	// fifty units apart stood at every counter of both worlds' M1 snapshots.
+	//
+	// So the leg ends where it always did, and then the bot takes the last
+	// steps to its own place - straight, over open ground only, and never for
+	// longer than PLAYERBOT_TOWN_STAND_STEP_MS. A place another body already
+	// holds (a bot, or a person) is traded for a free one beside it.
+	const int PLAYERBOT_TOWN_STAND_ARRIVE = 70;
+	const int PLAYERBOT_TOWN_STAND_CROWD = 65;
+	const DWORD PLAYERBOT_TOWN_STAND_STEP_MS = 5000;
+	// The gate run's own bound past the far point (MovePlayerBotAcrossTownGate).
+	const DWORD PLAYERBOT_TOWN_GATE_CROSS_MAX_MS = 6000;
+
+	struct TPlayerBotTownStand
+	{
+		long goalX, goalY;
+		long standX, standY;
+		DWORD until;
+	};
+	std::map<DWORD, TPlayerBotTownStand> s_mapPlayerBotTownStand;
+	std::map<DWORD, DWORD> s_mapPlayerBotGateCrossSince;
+	unsigned int s_uPlayerBotTownStandSteps = 0;
+	unsigned int s_uPlayerBotTownStandMoved = 0;
+	unsigned int s_uPlayerBotGateCrossBound = 0;
+	// Whether the anvil took a step for this visit, and when a gambler at it
+	// last clicked (HandlePlayerBotTownVisit's two blacksmith phases).
+	std::map<DWORD, bool> s_mapPlayerBotAnvilRefined;
+	std::map<DWORD, DWORD> s_mapPlayerBotGambleStepAt;
+	const DWORD PLAYERBOT_TOWN_GAMBLE_IDLE_MS = 30000;
+
+	// Another character - a bot or a person - standing within `radius` of a
+	// point. Walkers count too: one passing through a place is about to be in
+	// it.
+	struct FPlayerBotTownStandCrowd
+	{
+		LPCHARACTER me;
+		long x, y;
+		int radius;
+		bool found;
+		FPlayerBotTownStandCrowd(LPCHARACTER ch, long px, long py, int r)
+			: me(ch), x(px), y(py), radius(r), found(false) {}
+		void operator()(LPENTITY ent)
+		{
+			if (found || !ent || !ent->IsType(ENTITY_CHARACTER))
+				return;
+			LPCHARACTER other = static_cast<LPCHARACTER>(ent);
+			if (other == me || !other->IsPC() || other->IsDead())
+				return;
+			if (DISTANCE_APPROX(other->GetX() - x, other->GetY() - y) <= radius)
+				found = true;
+		}
+	};
+
+	// The place to stand: the bot's own place in the fan if it is open ground,
+	// reached in a straight line from where the bot is and nobody holds it,
+	// else the first such of the rings round it. False when none is - the bot
+	// then stays where the leg left it, as before.
+	bool PickPlayerBotTownStandPoint(LPCHARACTER ch, long goalX, long goalY, long& outX, long& outY)
+	{
+		if (!ch || !ch->GetSectree())
+			return false;
+		CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(ch->GetMapIndex());
+		if (!navigation.Init(ch->GetMapIndex()))
+			return false;
+		static const int kRing[][2] = {
+			{ 0, 0 },
+			{ 100, 0 }, { -100, 0 }, { 0, -100 }, { 0, 100 },
+			{ 75, -75 }, { -75, -75 }, { 75, 75 }, { -75, 75 },
+			{ 190, 0 }, { -190, 0 }, { 0, -190 }, { 0, 190 },
+			{ 135, -135 }, { -135, -135 }, { 135, 135 }, { -135, 135 },
+		};
+		// Where the ring is walked from depends on the bot, so two bots whose
+		// places coincide do not both try the same neighbour next.
+		const unsigned int count = sizeof(kRing) / sizeof(kRing[0]);
+		const unsigned int start = 1 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x53505244U) % (count - 1);
+		for (unsigned int k = 0; k < count; ++k)
+		{
+			const unsigned int i = k == 0 ? 0 : 1 + (start - 1 + k - 1) % (count - 1);
+			const long x = goalX + kRing[i][0];
+			const long y = goalY + kRing[i][1];
+			if (IsPlayerBotPositionBlocked(ch->GetMapIndex(), x, y) ||
+					!navigation.SegmentClearWorld(ch->GetX(), ch->GetY(), x, y))
+				continue;
+			FPlayerBotTownStandCrowd crowd(ch, x, y, PLAYERBOT_TOWN_STAND_CROWD);
+			ch->GetSectree()->ForEachAround(crowd);
+			if (crowd.found)
+				continue;
+			outX = x;
+			outY = y;
+			return true;
+		}
+		return false;
+	}
+
+	// MovePlayerBotTownLeg, and then the last steps to the bot's own place
+	// (above). True once the bot stands there, or where it could get to.
+	bool MovePlayerBotTownStand(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow,
+			long goalX, long goalY, int arrivalDistance)
+	{
+		if (!ch)
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		std::map<DWORD, TPlayerBotTownStand>::iterator it = s_mapPlayerBotTownStand.find(pid);
+		// A step of another leg, or one an interruption left behind, is
+		// forgotten: the leg is walked again from wherever the bot is.
+		if (it != s_mapPlayerBotTownStand.end() &&
+				(it->second.goalX != goalX || it->second.goalY != goalY ||
+				 (int)(dwNow - it->second.until) > 2000))
+		{
+			s_mapPlayerBotTownStand.erase(it);
+			it = s_mapPlayerBotTownStand.end();
+		}
+		if (it == s_mapPlayerBotTownStand.end())
+		{
+			if (!MovePlayerBotTownLeg(ch, state, dwNow, goalX, goalY, arrivalDistance))
+				return false;
+			++s_uPlayerBotTownStandSteps;
+			long standX = 0, standY = 0;
+			if (!PickPlayerBotTownStandPoint(ch, goalX, goalY, standX, standY) ||
+					DISTANCE_APPROX(ch->GetX() - standX, ch->GetY() - standY) <= PLAYERBOT_TOWN_STAND_ARRIVE)
+				return true;
+			ch->SetRotationToXY(standX, standY);
+			if (!ch->Goto(standX, standY))
+				return true;
+			ch->SendMovePacket(FUNC_MOVE, 0, standX, standY, ch->GetCurrentMoveDuration(), dwNow);
+			TPlayerBotTownStand& stand = s_mapPlayerBotTownStand[pid];
+			stand.goalX = goalX;
+			stand.goalY = goalY;
+			stand.standX = standX;
+			stand.standY = standY;
+			stand.until = dwNow + PLAYERBOT_TOWN_STAND_STEP_MS;
+			++s_uPlayerBotTownStandMoved;
+			PlayerBotLogThrottled("town_stand_step", dwNow,
+					"PLAYERBOT_TOWN: stand step pid=%u name=%s phase=%u from=(%ld,%ld) to=(%ld,%ld) steps=%u moved=%u",
+					pid, ch->GetName(), (unsigned int)state.bTownVisitPhase, ch->GetX(), ch->GetY(),
+					standX, standY, s_uPlayerBotTownStandSteps, s_uPlayerBotTownStandMoved);
+			return false;
+		}
+		const TPlayerBotTownStand& stand = it->second;
+		if (DISTANCE_APPROX(ch->GetX() - stand.standX, ch->GetY() - stand.standY) <= PLAYERBOT_TOWN_STAND_ARRIVE ||
+				(int)(dwNow - stand.until) >= 0 || !ch->IsStateMove())
+		{
+			s_mapPlayerBotTownStand.erase(it);
+			ch->Stop();
+			ch->SetPosition(POS_STANDING);
+			return true;
+		}
+		return false;
+	}
+
 	bool MovePlayerBotAcrossTownGate(LPCHARACTER ch, TPlayerBotAIState& state,
 			DWORD dwNow, long goalY)
 	{
@@ -6268,12 +6431,44 @@ namespace
 			return false;
 		const int distance = DISTANCE_APPROX(
 				ch->GetX() - PLAYERBOT_TOWN_GATE_X, ch->GetY() - goalY);
+		// MT2009_PLUS_BOT_TOWN_SPREAD_V1: across means off the gate's own
+		// cells. Four hundred and fifty units short of the far point is still
+		// inside the opening, on blocked ground, and a crossing out that ended
+		// there ended the visit there: the next tick found a bot without an
+		// errand standing in a wall and "locally rescued" it onto one of the
+		// four free cells beside the gate - 1857 times in three and a half
+		// hours for 263 bots of one 2.18.0 world, 721 in four hours on the
+		// supporters' world, every one a jump and a pile on the same cells.
+		// The run goes on to open ground, for PLAYERBOT_TOWN_GATE_CROSS_MAX_MS
+		// at most, so a refused Goto cannot hold the bot in the opening.
 		if (distance <= 450)
 		{
-			ch->Stop();
-			ch->SetPosition(POS_STANDING);
+			const bool onGateCells = IsPlayerBotPositionBlocked(ch->GetMapIndex(), ch->GetX(), ch->GetY());
+			DWORD& since = s_mapPlayerBotGateCrossSince[ch->GetPlayerID()];
+			if (since == 0 || dwNow - since > 4 * PLAYERBOT_TOWN_GATE_CROSS_MAX_MS)
+				since = dwNow;
+			const bool bound = dwNow - since >= PLAYERBOT_TOWN_GATE_CROSS_MAX_MS;
+			if (!onGateCells || bound)
+			{
+				if (onGateCells)
+				{
+					++s_uPlayerBotGateCrossBound;
+					PlayerBotLogThrottled("town_gate_bound", dwNow,
+							"PLAYERBOT_TOWN: gate run bound reached pid=%u name=%s pos=(%ld,%ld) goal_y=%ld count=%u",
+							ch->GetPlayerID(), ch->GetName(), ch->GetX(), ch->GetY(), goalY,
+							s_uPlayerBotGateCrossBound);
+				}
+				s_mapPlayerBotGateCrossSince.erase(ch->GetPlayerID());
+				ch->Stop();
+				ch->SetPosition(POS_STANDING);
+				ClearPlayerBotRoute(state, true);
+				return true;
+			}
 			ClearPlayerBotRoute(state, true);
-			return true;
+			if (ch->Goto(PLAYERBOT_TOWN_GATE_X, goalY))
+				ch->SendMovePacket(FUNC_MOVE, 0, PLAYERBOT_TOWN_GATE_X, goalY,
+						ch->GetCurrentMoveDuration(), dwNow);
+			return false;
 		}
 
 		// server_attr separates the two sides of Joan's decorative gate into
@@ -6458,7 +6653,7 @@ namespace
 				state.dwTownWaitUntil = dwNow;
 				return true;
 			}
-			if (MovePlayerBotTownLeg(ch, state, dwNow, trainerX, trainerY, 550))
+			if (MovePlayerBotTownStand(ch, state, dwNow, trainerX, trainerY, 550))
 			{
 				if (ChoosePlayerBotSkillGroup(ch))
 					state.bTownNeedTrainer = false;
@@ -6498,7 +6693,7 @@ namespace
 				weaponNpcY, 0x57454150U, weaponMerchantX, weaponMerchantY);
 		if (state.bTownVisitPhase == BOT_TOWN_PHASE_WEAPON_MERCHANT)
 		{
-			if (MovePlayerBotTownLeg(ch, state, dwNow,
+			if (MovePlayerBotTownStand(ch, state, dwNow,
 					weaponMerchantX, weaponMerchantY, 850))
 			{
 				ManagePlayerBotWeaponMerchant(ch);
@@ -6552,7 +6747,7 @@ namespace
 				armorNpcY, 0x41524d52U, armorMerchantX, armorMerchantY);
 		if (state.bTownVisitPhase == BOT_TOWN_PHASE_ARMOR_MERCHANT)
 		{
-			if (MovePlayerBotTownLeg(ch, state, dwNow,
+			if (MovePlayerBotTownStand(ch, state, dwNow,
 					armorMerchantX, armorMerchantY, 850))
 			{
 				ManagePlayerBotArmorMerchant(ch);
@@ -6601,7 +6796,7 @@ namespace
 			const long keeperY = svc.storekeeper.y;
 			long goalX = 0, goalY = 0;
 			GetPlayerBotNpcApproach(ch->GetPlayerID(), keeperX, keeperY, 0x53414645U, goalX, goalY);
-			if (MovePlayerBotTownLeg(ch, state, dwNow, goalX, goalY, 650))
+			if (MovePlayerBotTownStand(ch, state, dwNow, goalX, goalY, 650))
 			{
 				// One try a session for the gambler, whatever the box says: a
 				// page not ready or a purse short of the fee is not a reason to
@@ -6834,7 +7029,7 @@ namespace
 				miscNpcY, 0x4d495343U, merchantX, merchantY);
 		if (state.bTownVisitPhase == BOT_TOWN_PHASE_MISC_MERCHANT)
 		{
-			if (MovePlayerBotTownLeg(ch, state, dwNow, merchantX, merchantY, 650))
+			if (MovePlayerBotTownStand(ch, state, dwNow, merchantX, merchantY, 650))
 			{
 				ManagePlayerBotMiscMerchant(ch);
 				state.bTownNeedMisc = false;
@@ -6883,16 +7078,18 @@ namespace
 		long blacksmithX = 0, blacksmithY = 0;
 		GetPlayerBotNpcApproach(ch->GetPlayerID(), blacksmithNpcX,
 				blacksmithNpcY, 0x4b4f574cU, blacksmithX, blacksmithY);
-		// Keep the per-PID spread, but halve it specifically at the blacksmith.
-		// Together with the tighter arrival radius this keeps every refiner close
-		// enough to look like it is actually interacting with the NPC.
-		blacksmithX = blacksmithNpcX + (blacksmithX - blacksmithNpcX) / 2;
-		blacksmithY = blacksmithNpcY + (blacksmithY - blacksmithNpcY) / 2;
+		// MT2009_PLUS_BOT_TOWN_SPREAD_V1: the anvil's fan is the counters' fan.
+		// It was halved here, to lanes of 45 units and rows of 40 - less than a
+		// body - so that a refiner would look close to the smith; with the leg
+		// ending 500 units out that put every refiner on one spot. The last
+		// steps of MovePlayerBotTownStand now bring each to its own place, the
+		// nearest row 240 units in front of the smith.
 		if (state.bTownVisitPhase == BOT_TOWN_PHASE_BLACKSMITH)
 		{
-			if (MovePlayerBotTownLeg(ch, state, dwNow, blacksmithX, blacksmithY, 500))
+			if (MovePlayerBotTownStand(ch, state, dwNow, blacksmithX, blacksmithY, 500))
 			{
-				ManagePlayerBotRefining(ch, state, dwNow);
+				s_mapPlayerBotAnvilRefined[ch->GetPlayerID()] =
+						ManagePlayerBotRefining(ch, state, dwNow);
 				// The gambler's pieces, after the bot's own (playerbot_gambler.h).
 				ManagePlayerBotGamble(ch, state, dwNow);
 				// The blacksmith is where a player rerolls bonus lines too, and the
@@ -6918,18 +7115,64 @@ namespace
 			// Use the time spent at the NPC like a real player: make further regular
 			// refine attempts instead of clicking only once and idling.  This cadence
 			// never extends dwTownWaitUntil; the visit has one absolute 6-24 s limit.
-			ManagePlayerBotRefining(ch, state, dwNow);
+			if (ManagePlayerBotRefining(ch, state, dwNow))
+				s_mapPlayerBotAnvilRefined[ch->GetPlayerID()] = true;
 			// The gambler stays at the anvil for as long as its session has a
 			// piece and a purse left - the visit's six to twenty-four seconds
 			// are a player's quick refine, not a gambler's evening
 			// (IsPlayerBotGambling bounds it by its own clock).
-			if (ManagePlayerBotGamble(ch, state, dwNow) || IsPlayerBotGambling(state, dwNow))
-				state.dwTownWaitUntil = std::max<DWORD>(state.dwTownWaitUntil, dwNow + 2500);
+			// MT2009_PLUS_BOT_TOWN_SPREAD_V1: and for as long as it is clicking.
+			// The session's clock runs twenty minutes to an hour, and a step
+			// that finds nothing to do returns without ending it; the anvil held
+			// such a bot for the whole of that clock. Half a minute without a
+			// step ends the session and the visit.
+			{
+				DWORD& lastStep = s_mapPlayerBotGambleStepAt[ch->GetPlayerID()];
+				if (ManagePlayerBotGamble(ch, state, dwNow) || lastStep == 0 ||
+						dwNow - lastStep > 4 * PLAYERBOT_TOWN_GAMBLE_IDLE_MS)
+					lastStep = dwNow;
+				if (IsPlayerBotGambling(state, dwNow))
+				{
+					if (dwNow - lastStep < PLAYERBOT_TOWN_GAMBLE_IDLE_MS)
+						state.dwTownWaitUntil = std::max<DWORD>(state.dwTownWaitUntil, dwNow + 2500);
+					else
+					{
+						sys_log(0, "PLAYERBOT_TOWN: gambler idle at the anvil, session ended pid=%u name=%s idle_ms=%u",
+								ch->GetPlayerID(), ch->GetName(), dwNow - lastStep);
+						EndPlayerBotGamble(ch, state, dwNow, "anvil_idle");
+					}
+				}
+			}
 			ManagePlayerBotBonusReroll(ch, state, dwNow);
 			if (!HasPlayerBotRefineOpportunity(ch))
 				RestorePlayerBotEquipmentAfterRefining(ch, state, dwNow);
 			if (dwNow >= state.dwTownWaitUntil)
 			{
+				// MT2009_PLUS_BOT_TOWN_SPREAD_V1: a visit that refined nothing
+				// while the planner still says there is something to refine is
+				// a promise the anvil refuses (the engine's own test - a
+				// material short, a state - that the planner's does not ask).
+				// It was kept every fifteen to twenty seconds: Mieczplus9 of the
+				// supporters' world stood at Bokjung's anvil from 17:24 to past
+				// 17:33 on 2 October, "refine SKIPPED vnum=11837 plus=7
+				// materials=30006:2/0" sixty-three times. The anvil is closed to
+				// that bot for a while (IsPlayerBotAnvilFutile), and goes on
+				// with whatever else it has to do.
+				{
+					std::map<DWORD, bool>::iterator refined = s_mapPlayerBotAnvilRefined.find(ch->GetPlayerID());
+					const bool anyRefined = refined != s_mapPlayerBotAnvilRefined.end() && refined->second;
+					if (refined != s_mapPlayerBotAnvilRefined.end())
+						s_mapPlayerBotAnvilRefined.erase(refined);
+					s_mapPlayerBotGambleStepAt.erase(ch->GetPlayerID());
+					if (!anyRefined && !IsPlayerBotGambling(state, dwNow) && HasPlayerBotRefineOpportunity(ch))
+					{
+						const DWORD cooldown = (DWORD)number((int)PLAYERBOT_ANVIL_FUTILE_MIN_MS,
+								(int)PLAYERBOT_ANVIL_FUTILE_MAX_MS);
+						s_mapPlayerBotAnvilFutileUntil[ch->GetPlayerID()] = dwNow + cooldown;
+						sys_log(0, "PLAYERBOT_TOWN: anvil refused every step, closed for a while pid=%u name=%s goal=%u cooldown_ms=%u",
+								ch->GetPlayerID(), ch->GetName(), (unsigned int)state.bLongTermGoal, cooldown);
+					}
+				}
 				// Always leave the NPC wearing the best surviving/refined equipment,
 				// even if materials, Yang or a failed roll ended the session early.
 				RestorePlayerBotEquipmentAfterRefining(ch, state, dwNow);
