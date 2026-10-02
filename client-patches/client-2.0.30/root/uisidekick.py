@@ -51,7 +51,7 @@
 #                <maxsp> <where> <dist> <mode> <stance> <loot> <protect>
 #                <buffs> <gold> <red> <blue> <dead> [<lure> <luring> [<solo> [<chests>
 #                [<lead> <role> <leadership> [<party> [<rank> [<coins> <balance>
-#                [<equipment_lock>]]]]]]]]
+#                [<equipment_lock> [<keep_loot>]]]]]]]]]
 #   SidekickNames <name> <place> <doing>            - hex of the CP1250 bytes
 #   SidekickGear <slot 0-7> <name>                  - hex, only when changed
 #
@@ -78,7 +78,10 @@
 # before it has. equipment_lock (MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1,
 # "Zablokuj ekwipunek"): 1 the AI neither refines, reworks, takes off, sells
 # nor throws away what it wears and what its owner gave it; the owner's own
-# hand in the bag window still moves anything (order: blokada N). An older
+# hand in the bag window still moves anything (order: blokada N). keep_loot
+# (MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1, "Pelne EQ", on by default): 1 with
+# the owner's bag too full for a drop of the owner's, the companion picks it up
+# into its own bag and holds it for the owner (order: przechowuj N). An older
 # server sends no such word, and the window shows no row for it.
 #
 # The status and skill pages read the answer to "/towarzysz umiejetnosci"
@@ -229,6 +232,10 @@ SWITCHES = (
 	# MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek".
 	('equipment_lock', 'blokada', 0, 'Zablokuj ekwipunek',
 		'Nie ulepsza, nie zdejmuje ani nie sprzedaje tego, co nosi i dosta\xb3 od ciebie.'),
+	# MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ" - shares the row of
+	# "Skrzynki" (SHARED_ROWS).
+	('keep_loot', 'przechowuj', 1, 'Pe\xb3ne EQ',
+		'Przy twoim pe\xb3nym EQ zbiera tw\xf3j drop i trzyma go dla ciebie.'),
 )
 # What a switch's button says where "tak" and "nie" would not do, off and on,
 # and the button it needs for that: "nie wydaje" is wider than a small one.
@@ -257,6 +264,10 @@ ROW_STEP = 22
 # half of it each (SHARED_SWITCHES), so the page keeps its height.
 OPTION_STEP = 20
 SHARED_SWITCHES = 2
+# MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ" shares the row of
+# "Skrzynki" the same way, half of it each, so the page keeps its height:
+# a switch named here goes to the right half of the row of the one it names.
+SHARED_ROWS = {'keep_loot': 'chests'}
 ROW_HEIGHT = 21
 
 TEXT_WAITING = 'Czekam na odpowied\x9f serwera...'
@@ -463,6 +474,9 @@ def ParseInfo(args):
 	# MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" after them.
 	if len(values) >= len(names) + 12:
 		info['equipment_lock'] = ParseInt(values[len(names) + 11])
+	# MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ" after it.
+	if len(values) >= len(names) + 13:
+		info['keep_loot'] = ParseInt(values[len(names) + 12])
 	return info
 
 
@@ -1014,23 +1028,36 @@ class SidekickWindow(ui.ScriptWindow):
 		page = self.pages[PAGE_OPTIONS]
 		self._Section(page, 8, TEXT_SECTION_BEHAVIOUR)
 		self.switchRows = {}
+		half = SECTION_WIDTH // SHARED_SWITCHES
+		lines = {}
+		nextLine = 0
 		for i, (key, order, default, text, hint) in enumerate(SWITCHES):
 			# MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: the first SHARED_SWITCHES
 			# share a row, half of it each, with the stock small button.
-			line = max(0, i - SHARED_SWITCHES + 1)
-			row = self._Switch(page, SWITCH_TOP + line * OPTION_STEP, line, text, hint, self.OnSwitch, key)
+			# MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: and a switch of SHARED_ROWS
+			# takes the right half of the row of the switch it names.
+			partner = SHARED_ROWS.get(key)
 			if i < SHARED_SWITCHES:
-				half = SECTION_WIDTH // SHARED_SWITCHES
-				x = SECTION_X + i * half
-				y = SWITCH_TOP
+				switchLine, side = 0, i
+				nextLine = 1
+			elif partner in lines:
+				switchLine, side = lines[partner], 1
+			else:
+				switchLine, side = nextLine, (0 if key in SHARED_ROWS.values() else -1)
+				nextLine += 1
+			lines[key] = switchLine
+			y = SWITCH_TOP + switchLine * OPTION_STEP
+			row = self._Switch(page, y, switchLine, text, hint, self.OnSwitch, key)
+			if side >= 0:
+				x = SECTION_X + side * half
 				row[0].SetPosition(x, y)
-				row[0].SetSize(half - (1 if i < SHARED_SWITCHES - 1 else 0), ROW_HEIGHT - 1)
+				row[0].SetSize(half - (1 if side == 0 else 0), ROW_HEIGHT - 1)
 				row[1].SetPosition(x + LINE_X - SECTION_X + 2, y + 3)
 				row[2].SetPosition(x + half - BUTTON_WIDTHS['small'] - 2, y - 1)
 			self.switchRows[key] = row
 		# "Lider grupy": the switch and, beside it, the bonus its Leadership
 		# gives the owner.
-		rows = len(SWITCHES) - SHARED_SWITCHES + 1
+		rows = nextLine
 		leadY = SWITCH_TOP + rows * OPTION_STEP
 		self.leadRow = self._Switch(page, leadY, rows, TEXT_LEAD, TEXT_LEAD_HINT, self.OnLead)
 		self.roleButton = self._Btn(page, 'middle',

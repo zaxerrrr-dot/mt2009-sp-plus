@@ -2304,7 +2304,32 @@ class InventoryWindow(ui.ScriptWindow):
 			garbageBin.AddItemToGarbageBin(player.INVENTORY, globalSlot)
 			self.OverOutItem()
 			return
+		# MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: with the companion's bag window
+		# open, a right click gives the item to the companion, as the safebox's
+		# does - after every window of the player's own that takes the click.
+		if self.__QuickGiveToSidekick(slotIndex):
+			return
 		self.UseItemSlot(slotIndex)
+
+	def __QuickGiveToSidekick(self, slotIndex):
+		if mouseModule.mouseController.isAttached() or constInfo.GET_ITEM_QUESTION_DIALOG_STATUS():
+			return False
+		if app.GetCursor() == app.SELL:
+			return False
+		if any(getattr(self, flag, False) for flag in ("isExchangeDialogOpen", "isOfflineShopBuilderOpen", "isOfflineShopManageOpen", "isSafeboxOpen", "isExchangeItemOpen", "isRechargePotion")):
+			return False
+		if app.ENABLE_DRAGON_SOUL_SYSTEM and self.wndDragonSoulRefine.IsShow():
+			return False
+		if app.ENABLE_ACCE_COSTUME_SYSTEM and self.isShowAcceWindow():
+			return False
+		try:
+			import uisidekickinventory
+		except ImportError:
+			return False
+		if not uisidekickinventory.QuickGive(self.__InventoryLocalSlotPosToGlobalSlotPos(slotIndex)):
+			return False
+		self.OverOutItem()
+		return True
 
 	def UseItemSlot(self, slotIndex):
 		curCursorNum = app.GetCursor()
