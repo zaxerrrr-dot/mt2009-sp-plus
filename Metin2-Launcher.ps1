@@ -444,6 +444,11 @@ function Start-Docker {
 
 function Stop-DockerAndServer {
     Stop-Server
+    Stop-DockerDesktop
+    Write-Host 'Serwer i Docker Desktop zatrzymane. Dane pozostają zapisane w wolumenach.' -ForegroundColor Green
+}
+
+function Stop-DockerDesktop {
     $dockerCli = Join-Path $env:ProgramFiles 'Docker\Docker\DockerCli.exe'
     if (Test-Path -LiteralPath $dockerCli -PathType Leaf) {
         $previousPreference = $ErrorActionPreference
@@ -457,7 +462,79 @@ function Stop-DockerAndServer {
         Get-Process -Name 'Docker Desktop', 'com.docker.backend' -ErrorAction SilentlyContinue |
             Stop-Process -ErrorAction SilentlyContinue
     }
-    Write-Host 'Serwer i Docker Desktop zatrzymane. Dane pozostają zapisane w wolumenach.' -ForegroundColor Green
+}
+
+function Test-GameRunning {
+    # Whether this installation's game container runs - the question the
+    # window's "Serwer: DZIALA" asks.
+    if (-not (Test-M2DockerRunning)) { return $false }
+    $composeDir = Join-Path $serverRoot 'linux-port\docker'
+    $composeFile = Join-Path $composeDir 'docker-compose.yml'
+    $previousPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $services = @(docker compose --project-directory $composeDir -f $composeFile ps --services --status running 2>$null)
+        return ($LASTEXITCODE -eq 0 -and @($services | Where-Object { ([string]$_).Trim() -eq 'game' }).Count -gt 0)
+    }
+    catch { return $false }
+    finally { $ErrorActionPreference = $previousPreference }
+}
+
+# MT2009_PLUS_LAUNCHER_LOWMEM_UPDATE_V1: a server update with the world running
+# and Windows short of memory first does what a player did by hand (2 October,
+# "przy zwiekszonej liczbie kanalow i aktualizacji wlaczonego systemu wyskakuje
+# blad z brakiem wolnej pamieci RAM"): the world saved and stopped (as
+# ZATRZYMAJ I ZAPISZ), and Docker Desktop shut down, because its machine keeps
+# the memory its containers took until it stops. The update's build starts
+# Docker again (Rebuild-Server) and its compose up brings the world back. With
+# memory to spare nothing changes: the game goes down only right before
+# compose up, as it always has. Docker stays up when containers of other
+# projects run in it (STOP must not end the player's other projects). Returns
+# what was done, for Restore-WorldAfterUpdate.
+function Stop-WorldForUpdate {
+    $done = [pscustomobject]@{ Stopped = $false; DockerStopped = $false }
+    if (-not (Get-Command Get-M2WindowsMemory -ErrorAction SilentlyContinue)) { return $done }
+    if (-not (Test-GameRunning)) { return $done }
+    $memory = Get-M2WindowsMemory
+    if (-not $memory -or -not (Test-M2UpdateMemoryLow -TotalBytes $memory.TotalBytes -FreeBytes $memory.FreeBytes -CommitFreeBytes $memory.CommitFreeBytes)) { return $done }
+    $freeGb = ([Math]::Round($memory.FreeBytes / 1GB, 1)).ToString([Globalization.CultureInfo]::InvariantCulture)
+    $totalGb = ([Math]::Round($memory.TotalBytes / 1GB, 1)).ToString([Globalization.CultureInfo]::InvariantCulture)
+    Write-Phase 'Mało wolnej pamięci RAM - zapisuję i zatrzymuję świat przed aktualizacją'
+    Write-Host ('Wolne {0} GB RAM z {1} GB, a świat działa. Zapisuję i zatrzymuję serwer (jak ZATRZYMAJ I ZAPISZ); po aktualizacji wystartuje sam.' -f $freeGb, $totalGb) -ForegroundColor Yellow
+    Stop-Server
+    $done.Stopped = $true
+    $others = @()
+    $previousPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $others = @(docker ps --format '{{.Names}}' 2>$null | Where-Object { ([string]$_).Trim() })
+    }
+    catch { $others = @('?') }
+    finally { $ErrorActionPreference = $previousPreference }
+    if ($others.Count -gt 0) {
+        Write-Host ('Docker Desktop zostaje włączony - działają w nim inne kontenery ({0}).' -f ((@($others) | Select-Object -First 5) -join ', ')) -ForegroundColor Yellow
+        return $done
+    }
+    Write-Host 'Zamykam Docker Desktop, żeby oddał pamięć Windowsowi; aktualizacja uruchomi go znowu.' -ForegroundColor Yellow
+    Stop-DockerDesktop
+    # The build asks whether the engine runs and starts it if not: an engine
+    # still going down at that moment would die under the build.
+    $deadline = (Get-Date).AddSeconds(90)
+    while ((Get-Date) -lt $deadline -and (Test-M2DockerRunning)) { Start-Sleep -Seconds 3 }
+    $done.DockerStopped = $true
+    return $done
+}
+
+function Restore-WorldAfterUpdate {
+    # An update that stopped the world (Stop-WorldForUpdate) and then failed
+    # before its build - the download, the check, the files - starts it again
+    # as GRAJ would. A build that fails after the files were swapped leaves
+    # it stopped, as it always did: GRAJ finishes the build.
+    param($Suspended)
+    if (-not $Suspended -or -not $Suspended.Stopped) { return }
+    Write-Host 'Aktualizacja się nie udała - uruchamiam świat z powrotem.' -ForegroundColor Yellow
+    try { Start-Server }
+    catch { Write-Host ('Świata nie udało się uruchomić ({0}) - kliknij GRAJ.' -f $_.Exception.Message) -ForegroundColor Yellow }
 }
 
 function Rebuild-Server {
@@ -639,6 +716,8 @@ function Update-Server {
     # drive whose room was the likeliest cause of the failure. Finish the build.
     if ((Test-RebuildPending) -and (Test-InstalledVersion -Installed ([string](Read-RecordedState).server) -Available ([string]$component.version))) {
         Write-Host "Pliki serwera w wersji $($component.version) są już na dysku - dokańczam budowanie bez ponownego pobierania." -ForegroundColor Yellow
+        # MT2009_PLUS_LAUNCHER_LOWMEM_UPDATE_V1
+        [void](Stop-WorldForUpdate)
         Rebuild-Server
         Write-Host "Serwer działa w wersji $($component.version)." -ForegroundColor Green
         return
@@ -649,7 +728,16 @@ function Update-Server {
         Write-Host 'Anulowano.' -ForegroundColor Yellow
         return
     }
-    $result = Invoke-M2PackageUpdate -Component $component -TargetRoot $serverRoot -BackupRoot (Join-Path $serverRoot 'backups')
+    # MT2009_PLUS_LAUNCHER_LOWMEM_UPDATE_V1: a running world on a PC short of
+    # memory is saved and stopped first (Stop-WorldForUpdate), and started
+    # again if the update fails before its build.
+    $suspended = Stop-WorldForUpdate
+    try { $result = Invoke-M2PackageUpdate -Component $component -TargetRoot $serverRoot -BackupRoot (Join-Path $serverRoot 'backups') }
+    catch {
+        $failure = $_
+        Restore-WorldAfterUpdate -Suspended $suspended
+        throw $failure
+    }
     Write-Host "Podmieniono $($result.Files) plików. Kopia: $($result.Backup)" -ForegroundColor Green
     Write-Phase 'Pliki aktualizacji pobrane i podmienione'
     # From here the files on disk are the new version whatever happens to the

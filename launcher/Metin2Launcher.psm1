@@ -1983,6 +1983,45 @@ function Test-M2DockerRunning {
     finally { $ErrorActionPreference = $previous }
 }
 
+# MT2009_PLUS_LAUNCHER_LOWMEM_UPDATE_V1: Windows' own count of its memory, for
+# the update that saves and stops a running world first when the PC is short
+# of it (Stop-WorldForUpdate, Metin2-Launcher.ps1).
+function Get-M2WindowsMemory {
+    # In bytes: the memory, what is free of it, and what is left of the commit
+    # limit (RAM and the page file) - the number whose end is Windows' "too
+    # little memory" window. $null when Windows does not answer. Docker's
+    # machine (vmmem) holds what its containers took and gives it back slowly
+    # or never while it runs, so a world of four channels is gigabytes of this
+    # PC's memory that stopping the containers alone does not return.
+    try {
+        $os = Get-CimInstance -ClassName Win32_OperatingSystem -ErrorAction Stop
+        return [pscustomobject]@{
+            TotalBytes = [long]$os.TotalVisibleMemorySize * 1KB
+            FreeBytes = [long]$os.FreePhysicalMemory * 1KB
+            CommitFreeBytes = [long]$os.FreeVirtualMemory * 1KB
+        }
+    }
+    catch { return $null }
+}
+
+function Test-M2UpdateMemoryLow {
+    <#
+        Pure: whether a server update should first save the running world and
+        give Docker's memory back (2 October: with more channels, updating a
+        running world ended in Windows' "out of memory" error, and the player
+        stopped the server and Docker by hand, updated and started again). Low
+        is less free memory than 2 GB or 15% of the whole, whichever is more,
+        or less than 2 GB left of the commit limit. No answer from Windows (0)
+        is not low.
+    #>
+    param([long]$TotalBytes = 0, [long]$FreeBytes = 0, [long]$CommitFreeBytes = -1)
+    if ($TotalBytes -le 0 -or $FreeBytes -lt 0) { return $false }
+    $floor = [Math]::Max([long]2GB, [long]($TotalBytes * 0.15))
+    if ($FreeBytes -lt $floor) { return $true }
+    if ($CommitFreeBytes -ge 0 -and $CommitFreeBytes -lt [long]2GB) { return $true }
+    return $false
+}
+
 function Get-M2DbDataVolumes {
     $previous = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
     try {
@@ -2763,6 +2802,8 @@ Export-ModuleMember -Function @(
     'Get-M2RequiredGameContext',
     'Restore-M2EmptyGameContextDirs',
     'Test-M2DockerRunning',
+    'Get-M2WindowsMemory',
+    'Test-M2UpdateMemoryLow',
     'Sync-M2PlayerbotOverlay',
     'Set-M2PlayerbotsVersionEnvironment',
     'Invoke-M2EnginePatches',

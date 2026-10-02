@@ -1251,6 +1251,17 @@ namespace
 				ch->AddAffect(AFFECT_COLLECT, mission->rewardPoint, lValue, 0,
 						INFINITE_AFFECT_DURATION, 0, true, true);
 			}
+			// MT2009_PLUS_BIOLOGIST_90_V1: the second affect of lv70 and lv80,
+			// paid the same way (added to one already there, IsCube true).
+			if (mission->rewardPoint2 != 0)
+			{
+				long lValue = mission->rewardPointValue2;
+				const CAffect* pkAffect = ch->FindAffect(AFFECT_COLLECT, mission->rewardPoint2);
+				if (pkAffect)
+					lValue += pkAffect->lApplyValue;
+				ch->AddAffect(AFFECT_COLLECT, mission->rewardPoint2, lValue, 0,
+						INFINITE_AFFECT_DURATION, 0, true, true);
+			}
 			if (mission->rewardBoxVnum != 0)
 				ch->AutoGiveItem(mission->rewardBoxVnum, 1, -1, false);
 			sys_log(0, "PLAYERBOT_BIOLOGIST: key item handed in pid=%u name=%s quest=%s point=%u value=+%d box=%u",

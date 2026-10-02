@@ -868,7 +868,10 @@ namespace
 			// same Tormentor that carries the specimen.
 			if (IsPlayerBotBiologistKeyPhase(ch, biologistIndex))
 				desiredBiologistMobVnum = biologistMission->keyMobVnum;
-			else if (ch->CountSpecifyItem(biologistMission->itemVnum) < remaining)
+			else if (ch->CountSpecifyItem(biologistMission->itemVnum) < (biologistMission->carryMax != 0
+					? std::min<int>(remaining, biologistMission->carryMax) : remaining))
+				// MT2009_PLUS_BIOLOGIST_90_V1: with the quest's one-at-a-time
+				// specimen in the bag, the row's trees are nothing to it.
 				desiredBiologistMobVnum = biologistMission->mobVnum;
 		}
 		const DWORD desiredHuntingMobVnum =

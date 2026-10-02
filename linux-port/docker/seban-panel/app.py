@@ -238,11 +238,11 @@ BIOLOGIST_RESEARCH_MISSIONS = (
     {"quest": "collect_quest_lv30", "level": 30, "specimen": "Ząb Orka", "specimen_vnum": 30006, "target": 10, "key": "Kamień Duchowy Jinunggyi", "key_vnum": 30220},
     {"quest": "collect_quest_lv40", "level": 40, "specimen": "Księga Klątw", "specimen_vnum": 30047, "target": 15, "key": "Świątynny Kamień Duchowy", "key_vnum": 30221},
     {"quest": "collect_quest_lv50", "level": 50, "specimen": "Pamiątka po Demonie", "specimen_vnum": 30015, "target": 15, "key": "Kamień Duchowy Sagyi", "key_vnum": 30222},
-    {"quest": "collect_quest_lv60", "level": 60, "specimen": "Lodowa Kulka", "specimen_vnum": 30050, "target": 20, "key": "Kamień Duchowy Aurtumryu", "key_vnum": 30223},
-    {"quest": "collect_quest_lv70", "level": 70, "specimen": "Konar Zelkova", "specimen_vnum": 30165, "target": 25, "key": "Kamień Duchowy Gyimok", "key_vnum": 30224},
-    {"quest": "collect_quest_lv80", "level": 80, "specimen": "Certyfikat Tugyisa", "specimen_vnum": 30166, "target": 30, "key": "Kamień Duchowy Tugyi", "key_vnum": 30225},
-    {"quest": "collect_quest_lv85", "level": 85, "specimen": "Czerwony Konar Duchodrzewa", "specimen_vnum": 30167, "target": 40, "key": "Kamień Duchowy Lasu", "key_vnum": 30226},
-    {"quest": "collect_quest_lv90", "level": 90, "specimen": "Notatka Przywódcy", "specimen_vnum": 30168, "target": 50, "key": "Kamień Duchowy Liderów", "key_vnum": 30227},
+    {"quest": "collect_quest_lv60", "level": 60, "specimen": "Matowy Lód", "specimen_vnum": 30050, "target": 20, "key": "Kamień Duszy Aurtumryu", "key_vnum": 30223},
+    {"quest": "collect_quest_lv70", "level": 70, "specimen": "Konar Zelkova", "specimen_vnum": 30165, "target": 25, "key": "Kamień Duszy Gyimok", "key_vnum": 30224},
+    {"quest": "collect_quest_lv80", "level": 80, "specimen": "Certyfikat Tugyisa", "specimen_vnum": 30166, "target": 30, "key": "Kamień Duszy Tugyi", "key_vnum": 30225},
+    {"quest": "collect_quest_lv85", "level": 85, "specimen": "Czerw. Konar Duchodrzewa", "specimen_vnum": 30167, "target": 40, "key": "Kamień Duszy Lasu", "key_vnum": 30226},
+    {"quest": "collect_quest_lv90", "level": 90, "specimen": "Notatka Przywódcy", "specimen_vnum": 30168, "target": 50, "key": "Kamień Liderów", "key_vnum": 30227},
 )
 RATE_PRESETS = (
     ("🎯 Normalnie — dokładnie jak w oryginalnej grze", 100, 100, 100),
@@ -273,6 +273,12 @@ PLAYER_ADMIN_WARPS = (
 BIOLOGIST_FALLBACK_MISSIONS = (
     "make_herb_lv4", "make_herb_lv7", "make_herb_lv10", "make_herb_lv15",
     "make_herb_lv20", "make_herb_lv25", "collect_quest_lv30",
+    # MT2009_PLUS_BIOLOGIST_90_V1: the chain goes on to lv90 (lv30 runs lv40,
+    # lv50 runs lv60 ... lv85 runs lv90), so the scale is fourteen rows from the
+    # start and does not stop at "9/9" for everybody of fifty and up.
+    "collect_quest_lv40", "collect_quest_lv50", "collect_quest_lv60",
+    "collect_quest_lv70", "collect_quest_lv80", "collect_quest_lv85",
+    "collect_quest_lv90",
 )
 PANEL_VERSION_FILE = Path(__file__).parent / "VERSION"
 GM_JOB_OPTIONS = ((0, "Wojownik"), (1, "Ninja"), (2, "Sura"), (3, "Szaman"))
