@@ -1479,7 +1479,7 @@ function Show-FreshWorldDialog {
     # @{ Exp; Drop; Yang; Hold; Starter } or $null.
     $dialog = [Windows.Forms.Form]::new()
     $dialog.Text = 'Nowy świat - ustawienia na start'
-    $dialog.Size = [Drawing.Size]::new(560, 426)
+    $dialog.Size = [Drawing.Size]::new(560, 476)
     $dialog.StartPosition = 'CenterParent'
     $dialog.FormBorderStyle = 'FixedDialog'
     $dialog.MaximizeBox = $false
@@ -1537,6 +1537,14 @@ function Show-FreshWorldDialog {
         $x += 160
     }
     $y += 70
+    $yangWarn = [Windows.Forms.Label]::new()
+    $yangWarn.Text = 'Yang: CENY I BOTY SĄ ZOPTYMALIZOWANE POD DROP 100%, ustawiając więcej, psujesz sobie rozgrywkę, a na serwerze będzie wielka inflacja, a ceny będą przesadzone.'
+    $yangWarn.ForeColor = [Drawing.Color]::Red
+    $yangWarn.Font = [Drawing.Font]::new($dialog.Font, [Drawing.FontStyle]::Bold)
+    $yangWarn.Location = [Drawing.Point]::new(18, $y)
+    $yangWarn.Size = [Drawing.Size]::new(516, 48)
+    $dialog.Controls.Add($yangWarn)
+    $y += 50
 
     $holdBox = [Windows.Forms.CheckBox]::new()
     $holdBox.Text = 'Wstrzymaj boty po starcie (wpuszczę je sam, przyciskiem w panelu)'

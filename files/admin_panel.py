@@ -7051,6 +7051,7 @@ TPL_RATES = BASE.replace("__BODY__", """
        value="{{cur['drop']}}" placeholder="{{t('rates_percent')}}" required>
 <h3 style="margin-top:18px">💰 {{t('rates_yang')}}</h3>
 <p class="muted">{{t('rates_yang_help')}}</p>
+<p style="color:#d32f2f;font-weight:bold">⚠️ CENY I BOTY SĄ ZOPTYMALIZOWANE POD DROP 100%, ustawiając więcej, psujesz sobie rozgrywkę, a na serwerze będzie wielka inflacja, a ceny będą przesadzone.</p>
 <input id="r_yang" name="yang" type="number" min="1" max="1000" step="1"
        value="{{cur['yang']}}" placeholder="{{t('rates_percent')}}" required>
 <button class="big" style="margin-top:18px">{{t('rates_save')}}</button>

@@ -1613,6 +1613,7 @@ function Set-FreshWorldSettings {
         Write-Host ' 3. Szybko         - 1000% / 500% / 500%'
         Write-Host ' 4. Własne liczby'
         Write-Host ' 5. Nie zmieniaj   - zostaw to, co jest w .env'
+        Write-Host 'UWAGA (yang): CENY I BOTY SĄ ZOPTYMALIZOWANE POD DROP 100%, ustawiając więcej, psujesz sobie rozgrywkę, a na serwerze będzie wielka inflacja, a ceny będą przesadzone.' -ForegroundColor Red
         $answer = Read-Host 'Wybierz (1-5)'
         switch ($answer) {
             '1' { $exp = 100;  $drop = 100; $yang = 100 }
@@ -1621,6 +1622,7 @@ function Set-FreshWorldSettings {
             '4' {
                 $exp = [int](Read-Host 'Doświadczenie w procentach (100 = normalnie)')
                 $drop = [int](Read-Host 'Drop przedmiotów w procentach')
+                Write-Host 'CENY I BOTY SĄ ZOPTYMALIZOWANE POD DROP 100%, ustawiając więcej, psujesz sobie rozgrywkę, a na serwerze będzie wielka inflacja, a ceny będą przesadzone.' -ForegroundColor Red
                 $yang = [int](Read-Host 'Yang w procentach')
             }
             default { $exp = -1; $drop = -1; $yang = -1 }
