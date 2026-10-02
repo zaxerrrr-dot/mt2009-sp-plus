@@ -7,12 +7,40 @@ the selected instance - and d.mob_hp_percent(vnum, percent) - every living
 monster or stone of that vnum in the instance gets its max HP times percent
 and keeps its share of health; it answers how many. The world's copies of
 the same vnum are untouched, and the world-health flag (server-patches/mobhp)
-leaves a monster rescaled here alone. Applied once; a file without the
+leaves a monster rescaled here alone. MT2009_PLUS_DUNGEON_MOB_HP_V2 (the owner,
+2 October): a monster rescaled here heals as many points a tick as before it
+- its regen_percent counts from the max HP it had before the first rescale
+(char.cpp, the monsters' recovery). Applied once; a file without the
 expected code stops with an error, changing nothing."""
 import os
 import sys
 
 MARK = "MT2009_PLUS_DUNGEON_MOB_HP_V1"
+MARK2 = "MT2009_PLUS_DUNGEON_MOB_HP_V2"
+REGEN_HELPERS = (
+    "// " + MARK2 + " (server-patches/dungeonhp): a monster whose max HP a\n"
+    "// dungeon rescaled (d.mob_hp_percent) heals as many points a tick as it did\n"
+    "// before: the max HP it had before the first rescale, by its VID.\n"
+    "static std::unordered_map<DWORD, int> s_mapM2RegenBaseMaxHP;\n"
+    "\n"
+    "void M2SetRegenBaseMaxHP(DWORD dwVID, int iBaseMaxHP)\n"
+    "{\n"
+    "\tif (iBaseMaxHP > 0)\n"
+    "\t\ts_mapM2RegenBaseMaxHP.emplace(dwVID, iBaseMaxHP);\n"
+    "}\n"
+    "\n"
+    "static int M2RegenMaxHP(const CHARACTER* ch)\n"
+    "{\n"
+    "\tif (!s_mapM2RegenBaseMaxHP.empty())\n"
+    "\t{\n"
+    "\t\tauto it = s_mapM2RegenBaseMaxHP.find((DWORD) ch->GetVID());\n"
+    "\t\tif (it != s_mapM2RegenBaseMaxHP.end())\n"
+    "\t\t\treturn it->second;\n"
+    "\t}\n"
+    "\treturn ch->GetMaxHP();\n"
+    "}\n"
+    "\n"
+)
 FUNCS = (
     "\t// " + MARK + " (server-patches/dungeonhp): the players in the selected\n"
     "\t// instance, bots included - a dungeon sizes its boss by them.\n"
@@ -96,6 +124,31 @@ EDITS = [
 ]
 
 
+EDITS += [
+    ("questlua_dungeon.cpp",
+     "\ntemplate <class Func> Func CDungeon::ForEachMember(Func f)\n",
+     "\n// " + MARK2 + " (declare): char.cpp, server-patches/dungeonhp.\n"
+     "extern void M2SetRegenBaseMaxHP(DWORD dwVID, int iBaseMaxHP);\n"
+     "\ntemplate <class Func> Func CDungeon::ForEachMember(Func f)\n"),
+    ("questlua_dungeon.cpp",
+     "\t\t\tconst int hp = ch->GetHP();\n\t\t\tlong long newMax = (long long) oldMax * iPct / 100;\n",
+     "\t\t\tconst int hp = ch->GetHP();\n"
+     "\t\t\t::M2SetRegenBaseMaxHP((DWORD) ch->GetVID(), oldMax);\t// " + MARK2 + " (base)\n"
+     "\t\t\tlong long newMax = (long long) oldMax * iPct / 100;\n"),
+    ("char.cpp",
+     "void CHARACTER::Destroy()\n{\n",
+     REGEN_HELPERS + "void CHARACTER::Destroy()\n{\n"
+     "\ts_mapM2RegenBaseMaxHP.erase((DWORD) GetVID());\t// " + MARK2 + " (destroy)\n"),
+    ("char.cpp",
+     "\t\t\tch->MonsterLog(\"HP_REGEN +%d\", MAX(1, (ch->GetMaxHP() * ch->GetMobTable().bRegenPercent) / 100));\n"
+     "\t\t\tch->PointChange(POINT_HP, MAX(1, (ch->GetMaxHP() * ch->GetMobTable().bRegenPercent) / 100));\n",
+     "\t\t\t// " + MARK2 + " (regen): the max HP before a dungeon's rescale.\n"
+     "\t\t\tconst int iRegenMaxHP = M2RegenMaxHP(ch);\n"
+     "\t\t\tch->MonsterLog(\"HP_REGEN +%d\", MAX(1, (iRegenMaxHP * ch->GetMobTable().bRegenPercent) / 100));\n"
+     "\t\t\tch->PointChange(POINT_HP, MAX(1, (iRegenMaxHP * ch->GetMobTable().bRegenPercent) / 100));\n"),
+]
+
+
 def main():
     if len(sys.argv) != 2:
         sys.exit(__doc__)
@@ -107,7 +160,7 @@ def main():
     for name, old, new in EDITS:
         path = os.path.join(sys.argv[1], name)
         text = files[path]
-        marked = [l for l in new.split("\n") if MARK in l]
+        marked = [l for l in new.split("\n") if MARK in l or MARK2 in l]
         if marked and marked[0] in text.replace("\r\n", "\n"):
             continue
         crlf = "\r\n" in text

@@ -1,8 +1,8 @@
 # Życie potworów w lochu
 
-Poprawka silnika (`game/src/questlua_dungeon.cpp`), znacznik
-`MT2009_PLUS_DUNGEON_MOB_HP_V1` (właściciel, 2 października: Biblioteka
-Wiedzy).
+Poprawka silnika (`game/src/questlua_dungeon.cpp`, `game/src/char.cpp`),
+znaczniki `MT2009_PLUS_DUNGEON_MOB_HP_V1` i `_V2` (właściciel, 2 października:
+Biblioteka Wiedzy).
 
 - **`d.count_players()`** - ilu graczy (razem z botami) jest teraz w
   wybranej instancji lochu (`d.select` albo loch postaci).
@@ -11,6 +11,10 @@ Wiedzy).
   zachowuje ten sam procent życia, jaki miał; zwraca, ilu zmieniono. Te same
   potwory na zwykłych mapach zostają bez zmian. W syslogu linia
   `DUNGEON_MOB_HP:`.
+- **Regeneracja (V2):** potwór zmieniony przez `d.mob_hp_percent` leczy się
+  o tyle samo punktów co przed zmianą - `regen_percent` liczy się od
+  maksymalnego życia sprzed pierwszej zmiany (zapamiętanego po VID), nie od
+  podniesionego.
 - Wytrzymałość potworów ze świata (`server-patches/mobhp`, flaga `m2_mob_hp`)
   nie nadpisuje potwora zmienionego tutaj.
 

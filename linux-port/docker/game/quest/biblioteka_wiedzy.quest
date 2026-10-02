@@ -19,7 +19,8 @@
 -- MT2009_PLUS_BIBLIOTEKA_BALANCE_V1 (w³aœciciel, 2 paŸdziernika): potwory lochu (9703, 9705, 9706)
 -- bij¹ o 20% mocniej (dam_multiply w playerbot/apply.sh), Metiny (8006) maj¹ tu 55% ¿ycia,
 -- a Baronówna ¿ycie i regeneracjê Wodza Orków (691) razy liczba graczy w instancji przy jej
--- pojawieniu siê (boty licz¹ siê tak¿e): 1 - 100%, 2 - 150%, 3 - 200%, 4 i wiêcej - 300%.
+-- pojawieniu siê (boty licz¹ siê tak¿e): 1 - 100%, 2 - 150%, 3 - 200%, 4 i wiêcej - 300%;
+-- regeneracja leczy tyle punktów co przy jednym graczu.
 -- d.count_players i d.mob_hp_percent: server-patches/dungeonhp (MT2009_PLUS_DUNGEON_MOB_HP_V1).
 quest biblioteka_wiedzy begin
 	state start begin
@@ -129,7 +130,8 @@ quest biblioteka_wiedzy begin
 
 		-- MT2009_PLUS_BIBLIOTEKA_BALANCE_V1: the Baroness's health by the players in the instance
 		-- when she comes (bots too): 1 - as she is, 2 - +50%, 3 - +100%, 4 or more - +200%.
-		-- Her regeneration stays a percent of her health (mob_proto).
+		-- Her regeneration heals the same points as with one player: the engine counts regen_percent
+		-- from her health before the rescale (MT2009_PLUS_DUNGEON_MOB_HP_V2).
 		function boss_hp_percent(players)
 			if players >= 4 then return 300
 			elseif players == 3 then return 200

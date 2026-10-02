@@ -580,7 +580,8 @@ if ((Test-Path -LiteralPath $luaStackApply -PathType Leaf) -and
 }
 # A dungeon's own monster health (server-patches/dungeonhp): d.count_players()
 # and d.mob_hp_percent(vnum, percent) - the Biblioteka Wiedzy's Metins at 55%
-# and its Baroness by the players inside (the owner, 2 October).
+# and its Baroness by the players inside (the owner, 2 October); V2: a rescaled
+# monster heals as many points a tick as before the rescale (char.cpp).
 $dungeonHpApply = Join-Path $repo 'server-patches/dungeonhp/Apply-DungeonHpPatch.ps1'
 if ((Test-Path -LiteralPath $dungeonHpApply -PathType Leaf) -and
     (Test-Path -LiteralPath (Join-Path $engineGameSource 'questlua_dungeon.cpp') -PathType Leaf)) {

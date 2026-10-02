@@ -1621,7 +1621,8 @@ DROP TEMPORARY TABLE world.dg_item;" || echo "[playerbot-migrate] WARNING: could
 # dam_multiply 9703 1.2 -> 1.44, 9705 1.8 -> 2.16, 9706 2.0 -> 2.4 (the egg 9704 is no longer
 # spawned, the Metins 8006 deal none); the Baroness (9706) has the Orc Chief's (691) health and
 # regeneration - max_hp 150000 -> 39850, regen_cycle 15 -> 19, regen_percent 5 -> 22 - and the
-# quest raises her health by the players inside (+50/+100/+200% for 2/3/4+), and the Metins' to
+# quest raises her health by the players inside (+50/+100/+200% for 2/3/4+; her regen heals the
+# points of one player's Baroness, MT2009_PLUS_DUNGEON_MOB_HP_V2), and the Metins' to
 # 55% in the dungeon only (server-patches/dungeonhp, d.mob_hp_percent).
 db -e "DROP TEMPORARY TABLE IF EXISTS world.az_mob;
 CREATE TEMPORARY TABLE world.az_mob AS SELECT * FROM world.mob_proto WHERE vnum = 3101 LIMIT 1;
