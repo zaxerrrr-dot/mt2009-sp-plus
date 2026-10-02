@@ -1065,7 +1065,15 @@ namespace
 			bush = FindPlayerBotHerbBush(ch, &distance);
 			if (!bush)
 			{
-				EndPlayerBotHerbSession(ch, state, dwNow, "no_bush", PLAYERBOT_HERB_RETRY_MS);
+				// Every bush in reach picked bare or taken: the session goes on
+				// (a herbalist hunts while its bushes grow back, as a player
+				// does) and looks again in a minute. Ending it here ended 207
+				// of 264 sessions on the test world within minutes.
+				StowPlayerBotHerbKnife(ch);
+				s_mapPlayerBotHerbResume[pid] = dwNow + 60000;
+				PlayerBotLogThrottled("herb_wait_bush", dwNow,
+						"PLAYERBOT_HERB: waiting for a bush pid=%u name=%s map=%ld",
+						pid, ch->GetName(), ch->GetMapIndex());
 				return false;
 			}
 			s_mapPlayerBotHerbBush[pid] = (DWORD)bush->GetVID();
