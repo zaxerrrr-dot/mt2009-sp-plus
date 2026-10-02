@@ -2515,7 +2515,7 @@ namespace
 			const int level = ch->GetSkillLevel(vnum);
 			if (level < 30 || level >= 40)
 				continue;
-			if (ch->GetRealAlignment() < 1000 + 500 * (level - 30)) continue;
+			if (ch->GetRealAlignment() < GetPlayerBotGrandMasterRankCost(level)) continue;
 			const int priority = (vnum == build.dwPrimaryMaxSkill ? 10000 : 0) + level;
 			if (priority > bestPriority)
 			{
@@ -2528,7 +2528,7 @@ namespace
 
 		const int level = ch->GetSkillLevel(skillVnum);
 		const int rank = ch->GetRealAlignment();
-		const int cost = (1000 + 500 * (level - 30)) * (rank < 0 ? 2 : 1);
+		const int cost = GetPlayerBotGrandMasterRankCost(level) * (rank < 0 ? 2 : 1);
 		if (rank - cost < 0)
 		{
 			PlayerBotLogThrottled("grand_master_rank", dwNow,

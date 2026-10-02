@@ -2025,6 +2025,7 @@ namespace
 	void HandlePlayerBotSidekickCommand(LPCHARACTER ch, const char* argument);
 	void SendPlayerBotSidekickWindow(LPCHARACTER owner, bool fullGear);
 	DWORD GetPlayerBotSidekickSkillBase(LPCHARACTER sk);
+	std::string DescribePlayerBotSidekickGrandMaster(LPCHARACTER sk);
 	std::string GetPlayerBotSidekickWearRefusal(LPCHARACTER sk, LPITEM item, LPITEM replacing);
 	std::string GetPlayerBotSidekickHandOverRefusal(LPITEM item);
 	int CountPlayerBotSidekickChasers(LPCHARACTER ch);
@@ -2987,6 +2988,14 @@ namespace
 				SayPlayerBotSidekick(owner, DescribePlayerBotSidekickCoins(sk, st->second, rec).c_str());
 		}
 #endif
+		// MT2009_PLUS_SIDEKICK_GRAND_MASTER_V1: its Grand Master training, and
+		// what holds it.
+		if (sk)
+		{
+			const std::string gm = DescribePlayerBotSidekickGrandMaster(sk);
+			if (!gm.empty())
+				SayPlayerBotSidekick(owner, gm.c_str());
+		}
 	}
 
 	// The stance, kept in the record at once: the table is read again every
@@ -6293,6 +6302,292 @@ namespace
 #else
 		return 25;	// 1 in 21 - 17
 #endif
+	}
+
+	// ------------------------------------ MT2009_PLUS_SIDEKICK_GRAND_MASTER_V1
+	//
+	// Kamien Duchowy in a companion's bag. Its skills are the ones its owner
+	// put points into in the window (base..base+5 of its path), so the stone
+	// trains the one of those at G1..G10 that comes first: the build's primary
+	// skill, then the highest grade. The rules are training_grandmaster_skill
+	// .quest's, as a player meets them: the players' wait between two stones
+	// (m2_book_wait, at most twelve hours - server-patches/soulstonewait), an
+	// Exorcism Scroll's affect waving it once, and the rank, 1000 + 500 a grade
+	// over G1, taken in full on a success and a third to a half of it on a
+	// failure. Like every bot it never trains its rank below zero (the rank
+	// that lets a player hunt it for its gear). Whatever holds it - no stone,
+	// the wait, the rank - its owner hears once, again when it changes or
+	// every half hour while a stone waits, and in its report ("raport").
+	enum EPlayerBotSidekickGrandMaster
+	{
+		PLAYERBOT_SIDEKICK_GM_NOTHING,	// no skill at G1..G10
+		PLAYERBOT_SIDEKICK_GM_NO_STONE,
+		PLAYERBOT_SIDEKICK_GM_POLYMORPHED,
+		PLAYERBOT_SIDEKICK_GM_BOOK,	// a Rada on, for a class book it reads now
+		PLAYERBOT_SIDEKICK_GM_WAIT,
+		PLAYERBOT_SIDEKICK_GM_RANK,
+		PLAYERBOT_SIDEKICK_GM_READY,
+	};
+
+	struct TPlayerBotSidekickGrandMasterView
+	{
+		BYTE bStatus;
+		DWORD dwSkill;
+		int iLevel;
+		int iRank;		// shown, as the quest reads it
+		int iNeed;		// shown
+		int iReadyAt;
+		int iStones;
+		LPITEM pStone;
+	};
+
+	struct TPlayerBotSidekickGrandMasterTold
+	{
+		BYTE bStatus;
+		DWORD dwSkill;
+		DWORD dwToldAt;
+	};
+	std::map<DWORD, TPlayerBotSidekickGrandMasterTold> s_mapPlayerBotSidekickGrandMasterTold;
+	const DWORD PLAYERBOT_SIDEKICK_GM_TELL_MS = 30 * 60 * 1000;
+
+	// The players' wait between two stones (questlua_pc's M2SoulStoneQuestFlag).
+	int GetPlayerBotSidekickSoulStoneWaitSeconds()
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		const int wait = quest::CQuestManager::instance().GetEventFlag("m2_book_wait");
+		return wait <= 0 ? 0 : (wait > 12 * 3600 ? 12 * 3600 : wait);
+#else
+		return PLAYERBOT_GRAND_MASTER_TRAIN_SECONDS;
+#endif
+	}
+
+	const char* const PLAYERBOT_SIDEKICK_GM_FLAG = "training_grandmaster_skill.next_time";
+
+	TPlayerBotSidekickGrandMasterView AssessPlayerBotSidekickGrandMaster(LPCHARACTER sk)
+	{
+		TPlayerBotSidekickGrandMasterView v;
+		memset(&v, 0, sizeof(v));
+		v.bStatus = PLAYERBOT_SIDEKICK_GM_NOTHING;
+		const DWORD base = sk ? GetPlayerBotSidekickSkillBase(sk) : 0;
+		if (base == 0 || !sk->IsItemLoaded())
+			return v;
+		const TJobSkillBuild build = GetPlayerBotSkillBuild(sk->GetJob(), sk->GetSkillGroup(), sk->GetPlayerID());
+		int best = INT_MIN;
+		for (DWORD vnum = base; vnum < base + 6; ++vnum)
+		{
+			if (!CSkillManager::instance().Get(vnum) || sk->GetSkillMasterType(vnum) != SKILL_GRAND_MASTER)
+				continue;
+			const int level = sk->GetSkillLevel(vnum);
+			if (level < 30 || level >= 40 || !sk->IsLearnableSkill(vnum))
+				continue;
+			const int priority = (vnum == build.dwPrimaryMaxSkill ? 100000 : 0) + level * 10 - (int)(vnum - base);
+			if (priority > best)
+			{
+				best = priority;
+				v.dwSkill = vnum;
+			}
+		}
+		if (v.dwSkill == 0)
+			return v;
+		v.iLevel = sk->GetSkillLevel(v.dwSkill);
+		v.iRank = sk->GetRealAlignment() / 10;
+		v.iNeed = GetPlayerBotGrandMasterRankCost(v.iLevel) / 10;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = sk->GetInventoryItem(cell);
+			if (!item || item->GetVnum() != PLAYERBOT_GRAND_MASTER_STONE_VNUM)
+				continue;
+			v.iStones += item->GetCount();
+			if (!v.pStone && !item->isLocked())
+				v.pStone = item;
+		}
+		if (!v.pStone)
+		{
+			v.bStatus = PLAYERBOT_SIDEKICK_GM_NO_STONE;
+			return v;
+		}
+		if (sk->IsPolymorphed())
+		{
+			v.bStatus = PLAYERBOT_SIDEKICK_GM_POLYMORPHED;
+			return v;
+		}
+		// The quest's wait, shortened to the world's as the engine does it.
+		const int now = get_global_time();
+		const int wait = GetPlayerBotSidekickSoulStoneWaitSeconds();
+		v.iReadyAt = sk->GetQuestFlag(PLAYERBOT_SIDEKICK_GM_FLAG);
+		if (v.iReadyAt > now + wait)
+			v.iReadyAt = now + wait;
+		if (now < v.iReadyAt && !sk->FindAffect(AFFECT_SKILL_NO_BOOK_DELAY))
+		{
+			v.bStatus = PLAYERBOT_SIDEKICK_GM_WAIT;
+			return v;
+		}
+		if (sk->GetRealAlignment() < GetPlayerBotGrandMasterRankCost(v.iLevel))
+		{
+			v.bStatus = PLAYERBOT_SIDEKICK_GM_RANK;
+			return v;
+		}
+		// A Rada's affect waits for the class book it was taken for, when that
+		// book is read now: the stone's read would take it off for nothing.
+		if (sk->FindAffect(AFFECT_SKILL_BOOK_BONUS))
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = sk->GetInventoryItem(cell);
+				if (!item || item->GetType() != ITEM_SKILLBOOK)
+					continue;
+				const DWORD skill = GetPlayerBotSkillBookSkillVnum(item);
+				if (!IsPlayerBotOwnSkill(sk, skill) || sk->GetSkillMasterType(skill) != SKILL_MASTER ||
+						sk->GetSkillLevel(skill) < 20 || sk->GetSkillLevel(skill) >= 30)
+					continue;
+				if (IsPlayerBotFastBooksEnabled() || now >= sk->GetSkillNextReadTime(skill))
+				{
+					v.bStatus = PLAYERBOT_SIDEKICK_GM_BOOK;
+					return v;
+				}
+			}
+		v.bStatus = PLAYERBOT_SIDEKICK_GM_READY;
+		return v;
+	}
+
+	std::string GetPlayerBotSidekickGradeName(int level)
+	{
+		char grade[8];
+		if (level >= 40)
+			snprintf(grade, sizeof(grade), "P");
+		else
+			snprintf(grade, sizeof(grade), "G%d", level - 29);
+		return grade;
+	}
+
+	std::string GetPlayerBotSidekickWaitWords(int seconds)
+	{
+		char text[32];
+		if (seconds < 60)
+			snprintf(text, sizeof(text), "mniej niz minute");
+		else if (seconds < 3600)
+			snprintf(text, sizeof(text), "%d min", seconds / 60);
+		else
+			snprintf(text, sizeof(text), "%d h %d min", seconds / 3600, seconds % 3600 / 60);
+		return text;
+	}
+
+	std::string DescribePlayerBotSidekickGrandMasterView(const TPlayerBotSidekickGrandMasterView& v)
+	{
+		char text[320];
+		const std::string grade = GetPlayerBotSidekickGradeName(v.iLevel);
+		const char* skill = v.dwSkill ? GetPlayerBotSkillName(v.dwSkill) : "";
+		switch (v.bStatus)
+		{
+			case PLAYERBOT_SIDEKICK_GM_NO_STONE:
+				snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) czeka na Kamien Duchowy - "
+						"nie mam zadnego w plecaku. Daj mi go w handlu albo w oknie Towarzysza.", skill, grade.c_str());
+				break;
+			case PLAYERBOT_SIDEKICK_GM_POLYMORPHED:
+				snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) czeka, az skonczy sie przemiana.",
+						skill, grade.c_str());
+				break;
+			case PLAYERBOT_SIDEKICK_GM_WAIT:
+				snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) - Kamien Duchowy mam (%d), "
+						"ale nastepny moge uzyc dopiero za %s.", skill, grade.c_str(), v.iStones,
+						GetPlayerBotSidekickWaitWords(v.iReadyAt - get_global_time()).c_str());
+				break;
+			case PLAYERBOT_SIDEKICK_GM_RANK:
+				snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) - Kamien Duchowy mam (%d), "
+						"ale ranga za niska: mam %d, trening kosztuje %d. Ranga rosnie za zabijanie potworow.",
+						skill, grade.c_str(), v.iStones, v.iRank, v.iNeed);
+				break;
+			case PLAYERBOT_SIDEKICK_GM_BOOK:
+				snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) - najpierw czytam ksiege pod "
+						"Rade Pustelnika, potem Kamien Duchowy.", skill, grade.c_str());
+				break;
+			case PLAYERBOT_SIDEKICK_GM_READY:
+				snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) - zaraz uzywam Kamienia Duchowego "
+						"(mam %d).", skill, grade.c_str(), v.iStones);
+				break;
+			default:
+				return std::string();
+		}
+		return text;
+	}
+
+	std::string DescribePlayerBotSidekickGrandMaster(LPCHARACTER sk)
+	{
+		return DescribePlayerBotSidekickGrandMasterView(AssessPlayerBotSidekickGrandMaster(sk));
+	}
+
+	// Called by ManagePlayerBotGrandMasterTraining for a companion, every
+	// PLAYERBOT_GRAND_MASTER_CHECK_INTERVAL, wherever it is.
+	void TrainPlayerBotSidekickGrandMaster(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
+		if (!rec || !rec->bSetupDone)
+			return;
+		TPlayerBotSidekickGrandMasterView v = AssessPlayerBotSidekickGrandMaster(ch);
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID);
+		if (v.bStatus != PLAYERBOT_SIDEKICK_GM_READY)
+		{
+			// Nothing to say without a Grand Master skill, nor while it reads
+			// the book first; no stone is told once, when that changes, and the
+			// rest again every half hour while a stone waits in its bag.
+			if (v.bStatus == PLAYERBOT_SIDEKICK_GM_NOTHING || v.bStatus == PLAYERBOT_SIDEKICK_GM_BOOK)
+				return;
+			TPlayerBotSidekickGrandMasterTold& told = s_mapPlayerBotSidekickGrandMasterTold[ch->GetPlayerID()];
+			const bool changed = told.bStatus != v.bStatus || told.dwSkill != v.dwSkill;
+			const bool again = v.bStatus != PLAYERBOT_SIDEKICK_GM_NO_STONE &&
+					dwNow - told.dwToldAt >= PLAYERBOT_SIDEKICK_GM_TELL_MS;
+			if (!owner || (!changed && !again))
+				return;
+			told.bStatus = v.bStatus;
+			told.dwSkill = v.dwSkill;
+			told.dwToldAt = dwNow;
+			const std::string text = DescribePlayerBotSidekickGrandMasterView(v);
+			SayPlayerBotSidekick(owner, text.c_str());
+			sys_log(0, "PLAYERBOT_SIDEKICK: grand master waits pid=%u name=%s owner=%u skill=%u level=%d "
+					"status=%u rank=%d need=%d stones=%d ready_in=%d",
+					ch->GetPlayerID(), ch->GetName(), rec->dwOwnerPID, v.dwSkill, v.iLevel,
+					(unsigned int)v.bStatus, v.iRank, v.iNeed, v.iStones,
+					v.iReadyAt > get_global_time() ? v.iReadyAt - get_global_time() : 0);
+			return;
+		}
+		if (ch->IsDead() || ch->GetExchange() || ch->GetMyShop())
+			return;
+
+		// The quest, in its order: an Exorcism Scroll's affect waves a wait
+		// still running and goes, the next wait is set, the stone is spent,
+		// then the roll and the rank.
+		const int now = get_global_time();
+		const int wait = GetPlayerBotSidekickSoulStoneWaitSeconds();
+		if (now < v.iReadyAt)
+			ch->RemoveAffect(AFFECT_SKILL_NO_BOOK_DELAY);
+		ch->SetQuestFlag(PLAYERBOT_SIDEKICK_GM_FLAG, now + wait);
+		if (v.pStone->GetCount() > 1)
+			v.pStone->SetCount(v.pStone->GetCount() - 1);
+		else
+			ITEM_MANAGER::instance().RemoveItem(v.pStone, "PLAYERBOT_SIDEKICK_GRAND_MASTER_READ");
+		const int rankBefore = ch->GetRealAlignment() / 10;
+		const bool learned = ch->LearnGrandMasterSkill(v.dwSkill);
+		const int paid = learned ? v.iNeed : number(v.iNeed / 3, v.iNeed / 2);
+		ch->UpdateAlignment(-paid * 10);
+		SetPlayerBotAction(state, BOT_ACTION_READ_BOOK, dwNow);
+		const int levelNow = ch->GetSkillLevel(v.dwSkill);
+		sys_log(0, "PLAYERBOT_SIDEKICK: grand master training %s pid=%u name=%s owner=%u skill=%u level=%d->%d "
+				"rank=%d->%d stones_left=%d",
+				learned ? "SUCCESS" : "FAILED", ch->GetPlayerID(), ch->GetName(), rec->dwOwnerPID, v.dwSkill,
+				v.iLevel, levelNow, rankBefore, ch->GetRealAlignment() / 10, v.iStones - 1);
+		s_mapPlayerBotSidekickGrandMasterTold.erase(ch->GetPlayerID());
+		if (!owner)
+			return;
+		char text[320];
+		const std::string waitWords = wait > 0 ? GetPlayerBotSidekickWaitWords(wait) : std::string("od razu");
+		if (learned)
+			snprintf(text, sizeof(text), "Kamien Duchowy uzyty: %s - udalo sie, teraz %s (ranga -%d). "
+					"Kamieni zostalo: %d, nastepny trening: %s.", GetPlayerBotSkillName(v.dwSkill),
+					GetPlayerBotSidekickGradeName(levelNow).c_str(), paid, v.iStones - 1, waitWords.c_str());
+		else
+			snprintf(text, sizeof(text), "Kamien Duchowy uzyty: %s - nie udalo sie, zostaje %s (ranga -%d). "
+					"Kamieni zostalo: %d, nastepna proba: %s.", GetPlayerBotSkillName(v.dwSkill),
+					GetPlayerBotSidekickGradeName(levelNow).c_str(), paid, v.iStones - 1, waitWords.c_str());
+		SayPlayerBotSidekick(owner, text);
 	}
 
 	// A skill at seventeen that did not turn Master, and the Forgetting Book

@@ -30,7 +30,7 @@ namespace {
             if (!skill || ch->GetSkillMasterType(skill) != SKILL_GRAND_MASTER) continue;
             const int level = ch->GetSkillLevel(skill);
             if (level < 30 || level >= 40) continue;
-            if (ch->GetRealAlignment() >= 1000 + 500 * (level - 30)) return false;
+            if (ch->GetRealAlignment() >= GetPlayerBotGrandMasterRankCost(level)) return false;
             blocked = true;
         }
         return blocked;

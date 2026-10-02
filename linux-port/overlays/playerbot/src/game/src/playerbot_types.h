@@ -360,6 +360,17 @@ namespace
 	const DWORD PLAYERBOT_GRAND_MASTER_STONE_VNUM = 50513;
 	const DWORD PLAYERBOT_GRAND_MASTER_CHECK_INTERVAL = 30000;
 	const int PLAYERBOT_GRAND_MASTER_TRAIN_SECONDS = 12 * 3600;
+	// MT2009_PLUS_SIDEKICK_GRAND_MASTER_V1: the rank a read at this level
+	// costs, in the engine's units. training_grandmaster_skill.quest asks
+	// 1000 + 500 a grade over G1 of pc.get_real_alignment(), which is
+	// GetRealAlignment() / 10, and takes it with pc.change_alignment(), which
+	// is UpdateAlignment() times ten; the passes compared and took the
+	// quest's number against the engine's, so a bot trained on a tenth of the
+	// rank a player needs and paid a tenth of the price.
+	inline int GetPlayerBotGrandMasterRankCost(int level)
+	{
+		return (1000 + 500 * (level - 30)) * 10;
+	}
 	const DWORD PLAYERBOT_ZEN_BEAN_VNUM = 70102;
 	// What a bot keeps of its beans: ten to fifteen, drawn by pid, "pod
 	// robienie skilli na P" - the Grand Master's reads cost rank, and a bean
