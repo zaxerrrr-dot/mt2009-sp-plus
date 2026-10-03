@@ -19,7 +19,7 @@ Source: aktualnosci.md (next to this folder's README), entries in order:
     data: 2026-09-29
     Any further lines = "message".
 
---changelog CHANGELOG.md --ile N adds the N newest CHANGELOG entries after
+--changelog CHANGELOG.md --ile N puts the N newest CHANGELOG entries before
 them (type AKTUALIZACJA, title "Serwer X.Y.Z" / "Klient X.Y.Z", the date as
 the author, link to the change list).
 """
@@ -66,18 +66,32 @@ def parse_md(path):
 
 
 def from_changelog(path, count):
+    # MT2009_PLUS_PATCHER_NEWS_AUTO_V1: "## X.Y.Z - date - title" and
+    # "## Klient X.Y.Z - date[ - title]"; a client entry without a title takes
+    # its first bullet as the message.
     items = []
     with open(path, encoding='utf-8') as f:
-        for line in f:
-            m = re.match(r'^## (Klient )?([0-9][0-9.]*) \S (\d{4})-(\d\d)-(\d\d) \S (.*)$', line.strip())
-            if not m:
-                continue
-            client, ver, y, mo, d, title = m.groups()
-            items.append({'newsType': 2, 'topic': ('Klient ' if client else 'Serwer ') + ver,
-                          'creator': '%s.%s.%s' % (d, mo, y), 'threadUrl': CHANGES_URL,
-                          'date': '%s-%s-%s' % (y, mo, d), 'message': title.strip(), 'avatarLink': ''})
-            if len(items) >= count:
-                break
+        lines = f.read().splitlines()
+    for i, line in enumerate(lines):
+        m = re.match(r'^## (Klient )?([0-9][0-9.]*) \S (\d{4})-(\d\d)-(\d\d)(?: \S (.*))?$', line.strip())
+        if not m:
+            continue
+        client, ver, y, mo, d, title = m.groups()
+        title = (title or '').strip()
+        if not title:
+            for nxt in lines[i + 1:]:
+                if nxt.startswith('## '):
+                    break
+                if nxt.lstrip().startswith('- '):
+                    title = re.sub(r'\*\*|`', '', nxt.lstrip()[2:]).strip()
+                    if len(title) > 200:
+                        title = title[:197].rstrip() + '...'
+                    break
+        items.append({'newsType': 2, 'topic': ('Klient ' if client else 'Serwer ') + ver,
+                      'creator': '%s.%s.%s' % (d, mo, y), 'threadUrl': CHANGES_URL,
+                      'date': '%s-%s-%s' % (y, mo, d), 'message': title, 'avatarLink': ''})
+        if len(items) >= count:
+            break
     return items
 
 
@@ -92,7 +106,8 @@ def main():
 
     items = parse_md(args.zrodlo) if args.zrodlo and os.path.exists(args.zrodlo) else []
     if args.changelog:
-        items += from_changelog(args.changelog, args.ile)
+        # The newest releases first, then the standing entries of aktualnosci.md.
+        items = from_changelog(args.changelog, args.ile) + items
     for it in items:
         if len(it['topic']) > MAX_TOPIC:
             print('UWAGA: długi tytuł (%d znaków, zmieści się ok. %d): %s' % (len(it['topic']), MAX_TOPIC, it['topic']))

@@ -116,3 +116,13 @@ rm -f "$DEST"/*.tmp
 
 say "Serwer zapasowy gotowy: $DEST"
 ls -l "$DEST"
+
+# MT2009_PLUS_PATCHER_NEWS_AUTO_V1: the client patcher's news box - the four
+# newest CHANGELOG entries, then the standing ones of aktualnosci.md. Without
+# it the patcher showed "Klient 2.0.30" three releases later.
+PATCHER_DIR=${PATCHER_DIR:-/opt/metin2/dist/patcher}
+if [ -d "$PATCHER_DIR" ]; then
+    python3 "$REPO_ROOT/client-patches/patcher/tools/generuj_aktualnosci.py" \
+        --changelog "$REPO_ROOT/CHANGELOG.md" --ile 4 --wyjscie "$PATCHER_DIR/news.json" ||
+        say "UWAGA: nie udalo sie odswiezyc aktualnosci patchera ($PATCHER_DIR/news.json)"
+fi
