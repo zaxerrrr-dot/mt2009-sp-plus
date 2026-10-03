@@ -8951,7 +8951,8 @@ def events():
             return redirect(url_for("events"))
         if action == "save":
             new_rows = []
-            for index in range(16):
+            # MT2009_PLUS_EVENTS_64_V1: 64 rows, as the admin panel and the core take.
+            for index in range(64):
                 kind = request.form.get(f"r{index}_kind")
                 if kind is None:
                     break
