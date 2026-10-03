@@ -1,0 +1,8 @@
+[
+ {
+  "file": "messenger_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_FRIENDS_V1",
+  "old": "\tm_set_requestToAdd.emplace(dwComplex);\n\n\ttarget->ChatPacket(CHAT_TYPE_COMMAND, \"messenger_auth %s\", ch->GetName());\n}\n",
+  "new": "\tm_set_requestToAdd.emplace(dwComplex);\n\n\t// MT2009_PLUS_BOT_FRIENDS_V1 (server-patches/botfriends): a playerbot has no\n\t// client to show the \"messenger_auth\" question to - its descriptor drops\n\t// every packet - so a person's invitation stayed unanswered for good. The\n\t// bot answers it at once instead (playerbot_bot_friends.h), through the\n\t// same AuthToAdd a person's \"Tak\" or \"Nie\" goes through.\n\tif (target->GetDesc() && target->GetDesc()->IsBot())\n\t{\n\t\tbool Mt2009BotFriendRequest(LPCHARACTER from, LPCHARACTER bot);\n\t\tconst bool accepted = Mt2009BotFriendRequest(ch, target);\n\t\tAuthToAdd(target->GetName(), ch->GetName(), !accepted);\n\t\treturn;\n\t}\n\n\ttarget->ChatPacket(CHAT_TYPE_COMMAND, \"messenger_auth %s\", ch->GetName());\n}\n"
+ }
+]
