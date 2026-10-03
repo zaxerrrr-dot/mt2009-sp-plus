@@ -383,6 +383,8 @@ class SidebarWindow(ui.Window):
 		("wheel", "Ko\xb3o Fortuny (F12)", "OnClickWheel"),
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
 		("dungeon", "Wyprawy (X)", "OnClickDungeonInfo"),
+		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
+		("teleport", "Zapisane pozycje", "OnClickTpBookmarks"),
 	)
 
 	def __init__(self, wndInventory):
@@ -645,6 +647,10 @@ class SidebarWindow(ui.Window):
 	def OnClickDungeonInfo(self):
 		import uidungeoninfo
 		uidungeoninfo.ToggleWindow()
+
+	def OnClickTpBookmarks(self):
+		import uitpbookmarks
+		uitpbookmarks.ToggleWindow()
 
 class GridSlotStateManager():
 	SLOT_STATE_NONE = 0

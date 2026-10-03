@@ -458,3 +458,26 @@ Towarowy – brak odpowiedzi. Z rozszerzenia przeniesione tylko jego zmiany (jeg
   (`systemSetting.GetLanguage()`); bez `AnswerServer` rozszerzenia (serwer nie zna `/playerbot_lang`).
 - `game.py` – `FleaPriceQuote`/`FleaPriceRange`/`FleaPriceSales` przekazują też do `shopautoprice`
   (id zapytań kreatorów od 1 500 000 000).
+
+## Zapisane pozycje (teleport, 6 miejsc) – bez zmian exe
+
+Znacznik `MT2009_PLUS_TP_BOOKMARKS_V1`. Okno Arezzo `root/uilocation.py` (25 pozycji na 5 stronach, tabela w
+bazie, pakiety i `net.SendLocationManagerPacket`, których exe 2.0.25 nie ma) przerobione na 6 pozycji na
+poleceniach czatu. Serwer: quest `tp_bookmarks` (`linux-port/docker/game/quest/tp_bookmarks.quest`, lista
+w Dockerfile), bez zmian silnika. Dla gracza: przycisk „Zapisane pozycje” na pasku ikon przy ekwipunku
+otwiera okno; „Zapisz” zapisuje obecne miejsce (nazwa do 15 znaków), „Teleport” przenosi na zapisane
+miejsce, „Usuń” czyści pozycję. Teleport zużywa 1 czysty Zwój Powrotu z ItemShopu (22010, także 22020
+Zwój Teleportacji; czysty = bez zapisanej w nim pozycji), co 15 minut; bez czystego zwoju w ekwipunku nie
+działa ani zapis, ani teleport. Zwykłe użycie zwoju działa jak dotąd. Pozycje są w flagach questa postaci
+(zostają po relogu). Tylko mapy otwarte (miasta własnego królestwa, mapy M3, 61–70 bez Wieży Demonów, 104,
+301–304 od 90 poz., 209 i 362 od 95 poz., 360–361); nigdy lochy, instancje, mapy eventów, wojen,
+przepustek (71–73). Serwer sprawdza wszystko jeszcze raz przy teleporcie. Pliki `root`:
+
+- `uitpbookmarks.py` (nowy) – okno 470×(6 wierszy), linia czystych zwojów i odliczanie do następnego
+  teleportu, pytania przed teleportem/nadpisaniem/usunięciem, okno nazwy. Wysyła `/tpzapis
+  lista|zapisz|usun|tp` tylko po kliknięciu i tylko w fazie gry (`warpsafe.InGame()`); odbiera `TPBM
+  begin|slot|end`.
+- `uiinventory.py` – przycisk `teleport` na pasku ikon (`SidebarWindow.BUTTONS`).
+- `game.py` – polecenie `TPBM` i zamknięcie okna z resztą.
+- `mt2009_ui/sidebar/teleport_01.tga`, `_02`, `_03` (nowe) – ikona: ramka przycisku lochów i zwój
+  `icon/item/22000.tga`, zrobione `tools/tpbookmarks/make_icons.py`.
