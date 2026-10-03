@@ -17,6 +17,10 @@ every version here.
 
 ---
 
+## 2.20.1 — 2026-10-03 — Poprawa UX Panelu zaawansowanego
+
+Poprawa UX Panelu zaawansowanego. Klient bez zmian (2.0.50).
+
 ## 2.20.0 — 2026-10-03 — Ranking tygodniowy z tytułami, Magazyn kolekcjonera, skróty klawiszowe, stakowanie, Towarzysz na zakupach
 
 Wymaga klienta **2.0.50** (launcher pobierze go sam albo zaktualizuje go patcher).

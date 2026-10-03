@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-03T20:00:00Z",
-  "statusMessage": "MT2009 PLUS 2.20.0: ranking tygodniowy, magazyn kolekcjonera, skroty klawiszowe, stakowanie. Klient 2.0.50.",
+  "publishedAt": "2026-10-03T21:00:00Z",
+  "statusMessage": "MT2009 PLUS 2.20.1: poprawa UX Panelu zaawansowanego. Klient 2.0.50.",
   "server": {
-    "version": "2.20.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.20.0/metin2-server-update-2.20.0.zip",
-    "sha256": "CD2C3BA4121EA3554BB9426DF367B506C0C400C594D8AF18AFAD238D2FA471F1",
-    "size": 101889867
+    "version": "2.20.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.20.1/metin2-server-update-2.20.1.zip",
+    "sha256": "445E3A6492CA7EE4C5D9E93E3CC7A1106E63B4912C2C09BBFD4F986734D4B7B4",
+    "size": 104881816
   },
   "client": {
     "version": "2.0.50",
