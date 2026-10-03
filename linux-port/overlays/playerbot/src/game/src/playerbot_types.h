@@ -9089,13 +9089,10 @@ namespace
 	// forty Wyrozniajacy sie and twenty Specjalni in a thousand.
 	const int PLAYERBOT_LEGEND_DISTINGUISHED_PERMILLE = 40;
 	const int PLAYERBOT_LEGEND_SPECIAL_PERMILLE = 20;
-	// Chodzace Legendy a kingdom (of the whole world), filled from its
-	// Specjalni; a Czempion is one of them, at most one a kingdom.
-	const int PLAYERBOT_LEGEND_PER_KINGDOM = 2;
-	// A Legend no core has seen for this many days gives its place up (back
-	// to Specjalny), and a Specjalny is promoted only if it played within it
-	// and stands at this level or more.
-	const int PLAYERBOT_LEGEND_STALE_DAYS = 7;
+	// MT2009_PLUS_LEGEND_NAMES_V1: the Chodzace Legendy are the 27 names of
+	// PLAYERBOT_LEGEND_NAMES (playerbot_legend_tier.h), spread over the
+	// kingdoms and kept for good; a Czempion is one of them, at most one a
+	// kingdom. A bot takes a Legend's place only at this level or more.
 	const int PLAYERBOT_LEGEND_MIN_LEVEL = 30;
 	// The bonuses, built in (bots only). HP and the two "strong against" in
 	// thousandths, the experience in thousandths on top, the refine in points

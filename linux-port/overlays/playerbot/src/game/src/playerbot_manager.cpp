@@ -3144,6 +3144,10 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 	// (playerbot_shouters.h): out of the world until it wears another.
 	if (IsPlayerBotShouterNameHold(dwPlayerID))
 		return false;
+	// MT2009_PLUS_LEGEND_NAMES_V1: picked for a Legend's place and waiting
+	// for its new name (playerbot_legends.h).
+	if (IsPlayerBotLegendNameHold(dwPlayerID))
+		return false;
 	// MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (spawn): the Arezzo dungeon cohort lives
 	// on the core that hosts the dungeons; every other core leaves it alone.
 	if (IsPlayerBotArezzoDungeonReservedPID(dwPlayerID))

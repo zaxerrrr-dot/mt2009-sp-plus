@@ -1094,6 +1094,10 @@ bool IsPlayerBotRetirementCandidate(LPCHARACTER ch, BYTE bLevelLo, BYTE bLevelHi
 	// apka2009's three and Tieru's.
 	if (IsPlayerBotShouterPID(ch->GetPlayerID()) || IsPlayerBotMedalShouterPID(ch->GetPlayerID()))
 		return false;
+	// MT2009_PLUS_LEGEND_NAMES_V1: nor one of the 27 Legends.
+	if (IsPlayerBotLegendTier(GetPlayerBotLegendTier(ch->GetPlayerID())) ||
+			GetPlayerBotLegendNameSlot(ch->GetName()) >= 0)
+		return false;
 	// MT2009_PLUS_BOT_RETIREMENT_FIX_V1: nor a player's companion (its owner
 	// would find a level-1 stranger at his side), an Arezzo test cohort or a
 	// bot a person has taken over from the panel.

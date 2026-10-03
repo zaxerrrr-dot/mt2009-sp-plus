@@ -10,10 +10,9 @@
 //     upkeep writes its row the first time a core sees it, and the first
 //     channel writes the rows of every registered bot once an hour, so a
 //     bot that never logged in since is in the ranking as well;
-//   - Chodzaca Legenda: PLAYERBOT_LEGEND_PER_KINGDOM a kingdom of the whole
-//     world, filled from the kingdom's Specjalni (the highest level that has
-//     played in PLAYERBOT_LEGEND_STALE_DAYS) whenever a place is vacant - a
-//     Legend nobody has seen for that long goes back to Specjalny;
+//   - Chodzaca Legenda: the 27 of PLAYERBOT_LEGEND_NAMES (MT2009_PLUS_LEGEND_NAMES_V1,
+//     playerbot_legend_tier.h), always all 27 and no other, each wearing its
+//     place's name - see AssignPlayerBotLegends;
 //   - Czempion Krolestwa: at most one a kingdom - the Legend whose guild is
 //     the first of its kingdom's guild ranking (the ladder points, then the
 //     level and the experience, as the guild window ranks them), looked at
@@ -122,6 +121,11 @@ namespace
 				"pid INT UNSIGNED NOT NULL DEFAULT 0, empire TINYINT UNSIGNED NOT NULL DEFAULT 0, "
 				"kind VARCHAR(24) NOT NULL DEFAULT '', text VARCHAR(255) NOT NULL DEFAULT '', "
 				"KEY at_idx (at)) ENGINE=InnoDB"));
+		// MT2009_PLUS_LEGEND_NAMES_V1: who holds which of the 27 places.
+		std::unique_ptr<SQLMsg> names(AccountDB::instance().DirectQuery(
+				"CREATE TABLE IF NOT EXISTS player.playerbot_legend_name ("
+				"slot TINYINT UNSIGNED NOT NULL PRIMARY KEY, pid INT UNSIGNED NOT NULL DEFAULT 0, "
+				"name VARCHAR(24) NOT NULL DEFAULT '', updated_at DATETIME NULL) ENGINE=InnoDB"));
 		if (!legend.get() || legend->uiSQLErrno != 0 || !events.get() || events->uiSQLErrno != 0)
 		{
 			sys_err("PLAYERBOT_LEGEND: player.playerbot_legend cannot be created; the System Legend waits");
@@ -358,110 +362,335 @@ namespace
 		RebuildPlayerBotLegendIndex();
 	}
 
-	// The Legends' places: a Legend nobody has seen for
-	// PLAYERBOT_LEGEND_STALE_DAYS (or gone from the registry) back to
-	// Specjalny, a second Champion of one kingdom back to Legend, and a
-	// vacant place given to the kingdom's best Specjalny that plays.
-	void AssignPlayerBotLegends()
+	// MT2009_PLUS_LEGEND_NAMES_V1: the Legends' places are the 27 names of
+	// PLAYERBOT_LEGEND_NAMES (the owner, 3 October), the most legendary
+	// first, and the world always has those 27 and no other Legend:
+	//
+	//   - a bot that wears a place's name is its Legend (Chodzaca Legenda, or
+	//     the Champion it is already) - unless it is under
+	//     PLAYERBOT_LEGEND_MIN_LEVEL, a companion, a krzykacz or a medal
+	//     dropper: then it gives the name up (MovePlayerBotOffShouterName) and
+	//     the place is filled as a vacant one; a person's character that wears
+	//     it is reported and that place waits;
+	//   - a vacant place goes to the best bot of the kingdom with the fewest
+	//     Legends - a former Legend first, then the highest level - which is
+	//     logged out, held out of the world and renamed once its save is old
+	//     enough (PLAYERBOT_SHOUTER_IDLE_MINUTES, as the krzykacze);
+	//   - a Legend never loses its place for being away (no stale rule any
+	//     more); every other bot of the tiers above Specjalny goes back to
+	//     Specjalny.
+	//
+	// player.playerbot_legend_name keeps who holds which place, for the panels.
+	struct TPlayerBotLegendWearer
 	{
-		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(
-				"SELECT l.pid, l.tier, l.empire, IFNULL(p.name, ''), "
-				"IFNULL(TIMESTAMPDIFF(DAY, p.last_play, NOW()), 9999), IF(s.pid IS NULL, 0, 1), l.reputation "
-				"FROM player.playerbot_legend AS l "
-				"LEFT JOIN player.player AS p ON p.id=l.pid "
-				"LEFT JOIN common.playerbot_seed_state AS s ON s.pid=l.pid "
-				"WHERE l.tier >= 3 ORDER BY l.tier DESC, l.reputation DESC"));
-		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
-			return;
-		std::vector<TPlayerBotLegendPlace> places[4];
-		MYSQL_ROW row;
-		while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+		DWORD pid;
+		BYTE bEmpire;
+		int iLevel;
+		bool bBot;
+		bool bExact;
+		std::string strLogin;
+	};
+
+	std::map<int, DWORD> s_mapPlayerBotLegendPending;
+
+	void PromotePlayerBotLegendRow(DWORD pid, BYTE empire)
+	{
+		DBManager::instance().Query(
+				"INSERT INTO player.playerbot_legend (pid, tier, empire, since, tier_since) VALUES (%u, %u, %u, NOW(), NOW()) "
+				"ON DUPLICATE KEY UPDATE tier_since=IF(tier < %u, NOW(), tier_since), tier=GREATEST(tier, %u), empire=%u",
+				pid, (unsigned int)BOT_LEGEND_WALKING, (unsigned int)empire,
+				(unsigned int)BOT_LEGEND_WALKING, (unsigned int)BOT_LEGEND_WALKING, (unsigned int)empire);
+		TPlayerBotLegendRow* row = FindPlayerBotLegendRow(pid);
+		if (row)
 		{
-			TPlayerBotLegendPlace place;
-			DWORD tier = 0, empire = 0, registered = 0;
-			place.pid = 0;
-			place.iDaysAway = 9999;
-			place.iReputation = 0;
-			if (row[0]) str_to_number(place.pid, row[0]);
-			if (row[1]) str_to_number(tier, row[1]);
-			if (row[2]) str_to_number(empire, row[2]);
-			place.strName = row[3] ? row[3] : "";
-			if (row[4]) str_to_number(place.iDaysAway, row[4]);
-			if (row[5]) str_to_number(registered, row[5]);
-			if (row[6]) str_to_number(place.iReputation, row[6]);
-			place.bTier = (BYTE)tier;
-			place.bRegistered = registered != 0;
-			if (place.pid == 0 || empire < 1 || empire > 3)
-				continue;
-			places[empire].push_back(place);
+			if (row->bTier < BOT_LEGEND_WALKING)
+				row->bTier = BOT_LEGEND_WALKING;
+			row->bEmpire = empire;
+		}
+		else
+		{
+			TPlayerBotLegendRow fresh;
+			fresh.bTier = BOT_LEGEND_WALKING;
+			fresh.bEmpire = empire;
+			s_mapPlayerBotLegendRows[pid] = fresh;
+		}
+		RebuildPlayerBotLegendIndex();
+	}
+
+	bool IsPlayerBotLegendSpecialPID(DWORD pid)
+	{
+		CPlayerBotManager& mgr = CPlayerBotManager::instance();
+		return IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid) || IsPlayerBotMedalShouterPID(pid) ||
+				mgr.IsMedalDropperCohortPID(pid) || IsPlayerBotArezzoCohortPID(pid) ||
+				IsPlayerBotArezzoDungeonCohortPID(pid) || IsPlayerBotTakeoverHold(pid) || IsPlayerBotRetirementHold(pid);
+	}
+
+	// One vacant place: the pending pick renamed when it can be, or a new
+	// pick. True when the place has its Legend now.
+	bool FillPlayerBotLegendPlace(int slot, std::set<DWORD>& holders, int (&perEmpire)[4], DWORD& holderOut, BYTE& empireOut)
+	{
+		const char* name = PLAYERBOT_LEGEND_NAMES[slot];
+		CPlayerBotManager& mgr = CPlayerBotManager::instance();
+		char query[1400];
+
+		DWORD pick = 0;
+		std::map<int, DWORD>::iterator pending = s_mapPlayerBotLegendPending.find(slot);
+		if (pending != s_mapPlayerBotLegendPending.end())
+		{
+			pick = pending->second;
+			if (holders.count(pick) || IsPlayerBotLegendSpecialPID(pick) || !mgr.IsRegisteredBotPID(pick))
+			{
+				s_mapPlayerBotLegendPending.erase(pending);
+				s_mapPlayerBotLegendNameHold.erase(pick);
+				pick = 0;
+			}
+		}
+		if (pick == 0)
+		{
+			// The kingdom with the fewest Legends, then the others.
+			int order[3] = { 1, 2, 3 };
+			for (int a = 0; a < 3; ++a)
+				for (int b = a + 1; b < 3; ++b)
+					if (perEmpire[order[b]] < perEmpire[order[a]])
+						std::swap(order[a], order[b]);
+			for (int k = 0; k < 3 && pick == 0; ++k)
+			{
+				const int empire = order[k];
+				snprintf(query, sizeof(query),
+						"SELECT p.id FROM common.playerbot_seed_state AS s "
+						"JOIN player.player AS p ON p.id=s.pid "
+						"JOIN account.account AS a ON a.id=p.account_id "
+						"JOIN player.player_index AS pi ON pi.id=p.account_id "
+						"LEFT JOIN player.playerbot_legend AS l ON l.pid=p.id "
+						"WHERE pi.empire=%d AND p.level >= %d AND a.login LIKE 'playerbot\\_%%' "
+						"ORDER BY (IFNULL(l.tier, 0) >= %u) DESC, p.level DESC, IFNULL(l.tier, 0) DESC, p.exp DESC, p.id ASC LIMIT 80",
+						empire, PLAYERBOT_LEGEND_MIN_LEVEL, (unsigned int)BOT_LEGEND_WALKING);
+				std::unique_ptr<SQLMsg> cand(AccountDB::instance().DirectQuery(query));
+				if (!cand.get() || cand->uiSQLErrno != 0 || !cand->Get() || !cand->Get()->pSQLResult)
+					continue;
+				MYSQL_ROW row;
+				while (NULL != (row = mysql_fetch_row(cand->Get()->pSQLResult)))
+				{
+					DWORD pid = 0;
+					if (row[0]) str_to_number(pid, row[0]);
+					if (pid == 0 || holders.count(pid) || IsPlayerBotLegendSpecialPID(pid) || !mgr.IsRegisteredBotPID(pid))
+						continue;
+					bool pendingElsewhere = false;
+					for (std::map<int, DWORD>::const_iterator it = s_mapPlayerBotLegendPending.begin();
+							it != s_mapPlayerBotLegendPending.end(); ++it)
+						if (it->second == pid)
+							pendingElsewhere = true;
+					if (pendingElsewhere)
+						continue;
+					// Playing on another core: the next one.
+					if (!mgr.IsManaged(pid) && (CHARACTER_MANAGER::instance().FindByPID(pid) || P2P_MANAGER::instance().FindByPID(pid)))
+						continue;
+					pick = pid;
+					break;
+				}
+			}
+			if (pick == 0)
+			{
+				sys_err("PLAYERBOT_LEGEND: no bot of level %d+ for the Legend's place %d (%s)",
+						PLAYERBOT_LEGEND_MIN_LEVEL, slot + 1, name);
+				return false;
+			}
+			s_mapPlayerBotLegendPending[slot] = pick;
+			sys_log(0, "PLAYERBOT_LEGEND: place %d (%s) goes to pid=%u", slot + 1, name, pick);
 		}
 
-		for (int empire = 1; empire <= 3; ++empire)
+		// Out of the world first, then a save old enough to rename under.
+		s_mapPlayerBotLegendNameHold[pick] = get_dword_time() + 2 * 60 * 60 * 1000;
+		if (mgr.IsManaged(pick))
 		{
-			int kept = 0;
-			bool champion = false;
-			for (size_t i = 0; i < places[empire].size(); ++i)
-			{
-				const TPlayerBotLegendPlace& p = places[empire][i];
-				// Online on this core is seen, whatever last_play says.
-				const bool here = CHARACTER_MANAGER::instance().FindByPID(p.pid) != NULL;
-				const bool stale = !p.bRegistered || (!here && p.iDaysAway >= PLAYERBOT_LEGEND_STALE_DAYS);
-				if (stale || kept >= PLAYERBOT_LEGEND_PER_KINGDOM)
-				{
-					SetPlayerBotLegendTier(p.pid, BOT_LEGEND_SPECIAL);
-					char text[200];
-					snprintf(text, sizeof(text), "[Legenda] %s (%s) nie jest juz Chodzaca Legenda (%s).",
-							p.strName.c_str(), GetPlayerBotKingdomName((BYTE)empire),
-							stale ? "dawno nieobecny" : "nadmiarowe miejsce");
-					NotePlayerBotLegendEvent(p.pid, (BYTE)empire, "legend_lost", text, false, false);
-					continue;
-				}
-				if (p.bTier == BOT_LEGEND_CHAMPION)
-				{
-					if (champion)
-						SetPlayerBotLegendTier(p.pid, BOT_LEGEND_WALKING);
-					champion = true;
-				}
-				++kept;
-			}
-			const int need = PLAYERBOT_LEGEND_PER_KINGDOM - kept;
-			if (need <= 0)
-				continue;
-			char query[1024];
-			snprintf(query, sizeof(query),
-					"SELECT l.pid, p.name FROM player.playerbot_legend AS l "
-					"JOIN common.playerbot_seed_state AS s ON s.pid=l.pid "
-					"JOIN player.player AS p ON p.id=l.pid "
-					"WHERE l.tier=2 AND l.empire=%d AND p.level >= %d "
-					"AND p.last_play > NOW() - INTERVAL %d DAY "
-					"ORDER BY p.level DESC, l.reputation DESC, p.exp DESC, l.pid ASC LIMIT %d",
-					empire, PLAYERBOT_LEGEND_MIN_LEVEL, PLAYERBOT_LEGEND_STALE_DAYS, need + 4);
-			std::unique_ptr<SQLMsg> cand(AccountDB::instance().DirectQuery(query));
-			if (!cand.get() || cand->uiSQLErrno != 0 || !cand->Get() || !cand->Get()->pSQLResult)
-				continue;
-			int promoted = 0;
-			while (promoted < need && NULL != (row = mysql_fetch_row(cand->Get()->pSQLResult)))
-			{
-				DWORD pid = 0;
-				if (row[0]) str_to_number(pid, row[0]);
-				if (pid == 0 || IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid))
-					continue;
-				SetPlayerBotLegendTier(pid, BOT_LEGEND_WALKING);
-				if (!FindPlayerBotLegendRow(pid))
-				{
-					TPlayerBotLegendRow fresh;
-					fresh.bTier = BOT_LEGEND_WALKING;
-					fresh.bEmpire = (BYTE)empire;
-					s_mapPlayerBotLegendRows[pid] = fresh;
-					RebuildPlayerBotLegendIndex();
-				}
-				++promoted;
-				char text[200];
-				snprintf(text, sizeof(text), "[Legenda] %s z krolestwa %s zostaje Chodzaca Legenda!",
-						row[1] ? row[1] : "?", GetPlayerBotKingdomName((BYTE)empire));
-				NotePlayerBotLegendEvent(pid, (BYTE)empire, "legend", text, true, false, NULL);
-			}
+			mgr.Despawn(pick);
+			return false;
 		}
+		if (CHARACTER_MANAGER::instance().FindByPID(pick) || P2P_MANAGER::instance().FindByPID(pick))
+			return false;
+		snprintf(query, sizeof(query),
+				"SELECT IFNULL(p.name,''), (p.last_play < NOW() - INTERVAL %d MINUTE), IFNULL(pi.empire,0) FROM player.player AS p "
+				"JOIN player.player_index AS pi ON pi.id=p.account_id WHERE p.id=%u",
+				PLAYERBOT_SHOUTER_IDLE_MINUTES, pick);
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+		MYSQL_ROW row = NULL;
+		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult ||
+				!(row = mysql_fetch_row(msg->Get()->pSQLResult)))
+			return false;
+		if (!row[1] || strcmp(row[1], "1") != 0)
+			return false;
+		const std::string oldName = row[0] ? row[0] : "";
+		DWORD empire = 0;
+		if (row[2]) str_to_number(empire, row[2]);
+		if (empire < 1 || empire > 3 || !IsPlayerBotShouterNameFree(name))
+			return false;
+		// The name history keeps the old name as the bot's own, so the name
+		// pool reads the Legend's as a deliberate one and never renames it.
+		snprintf(query, sizeof(query),
+				"INSERT IGNORE INTO common.playerbot_name_history (pid, seed_name, human_name, pool_version, renamed_at) "
+				"SELECT id, name, name, 'legend', NOW() FROM player.player WHERE id=%u", pick);
+		std::unique_ptr<SQLMsg> history(AccountDB::instance().DirectQuery(query));
+		snprintf(query, sizeof(query), "UPDATE player.player SET name='%s' WHERE id=%u", name, pick);
+		std::unique_ptr<SQLMsg> rename(AccountDB::instance().DirectQuery(query));
+		if (!rename.get() || rename->uiSQLErrno != 0)
+		{
+			sys_err("PLAYERBOT_LEGEND: cannot rename pid=%u to %s errno=%u", pick, name,
+					rename.get() ? rename->uiSQLErrno : 0U);
+			return false;
+		}
+		s_mapPlayerBotLegendPending.erase(slot);
+		s_mapPlayerBotLegendNameHold.erase(pick);
+		PromotePlayerBotLegendRow(pick, (BYTE)empire);
+		holders.insert(pick);
+		++perEmpire[empire];
+		holderOut = pick;
+		empireOut = (BYTE)empire;
+		sys_log(0, "PLAYERBOT_LEGEND: pid=%u %s is now the Legend %s (place %d)", pick, oldName.c_str(), name, slot + 1);
+		char text[200];
+		snprintf(text, sizeof(text), "[Legenda] %s z krolestwa %s zostaje Chodzaca Legenda!",
+				name, GetPlayerBotKingdomName((BYTE)empire));
+		NotePlayerBotLegendEvent(pick, (BYTE)empire, "legend", text, true, false, NULL);
+		return true;
+	}
+
+	void AssignPlayerBotLegends()
+	{
+		// Who wears each name now (the name column compares without case).
+		std::string list;
+		for (int i = 0; i < PLAYERBOT_LEGEND_NAME_COUNT; ++i)
+		{
+			list += i ? ",'" : "'";
+			list += PLAYERBOT_LEGEND_NAMES[i];
+			list += "'";
+		}
+		std::string query = "SELECT p.id, p.name, IFNULL(pi.empire,0), p.level, IFNULL(a.login,'') FROM player.player AS p "
+				"LEFT JOIN account.account AS a ON a.id=p.account_id "
+				"LEFT JOIN player.player_index AS pi ON pi.id=p.account_id WHERE p.name IN (" + list + ")";
+		std::unique_ptr<SQLMsg> worn(AccountDB::instance().DirectQuery(query.c_str()));
+		if (!worn.get() || worn->uiSQLErrno != 0 || !worn->Get() || !worn->Get()->pSQLResult)
+		{
+			sys_err("PLAYERBOT_LEGEND: cannot read who wears the Legends' names; the places wait");
+			return;
+		}
+		std::vector<TPlayerBotLegendWearer> wearers[PLAYERBOT_LEGEND_NAME_COUNT];
+		MYSQL_ROW row;
+		while (NULL != (row = mysql_fetch_row(worn->Get()->pSQLResult)))
+		{
+			const int slot = GetPlayerBotLegendNameSlot(row[1]);
+			if (slot < 0)
+				continue;
+			TPlayerBotLegendWearer w;
+			DWORD empire = 0;
+			w.pid = 0;
+			w.iLevel = 0;
+			if (row[0]) str_to_number(w.pid, row[0]);
+			if (row[2]) str_to_number(empire, row[2]);
+			if (row[3]) str_to_number(w.iLevel, row[3]);
+			w.bEmpire = (BYTE)std::min<DWORD>(empire, 3);
+			w.strLogin = row[4] ? row[4] : "";
+			w.bBot = strncmp(w.strLogin.c_str(), "playerbot_", 10) == 0;
+			w.bExact = row[1] && strcmp(row[1], PLAYERBOT_LEGEND_NAMES[slot]) == 0;
+			wearers[slot].push_back(w);
+		}
+
+		CPlayerBotManager& mgr = CPlayerBotManager::instance();
+		std::set<DWORD> holders;
+		DWORD holderOf[PLAYERBOT_LEGEND_NAME_COUNT] = {};
+		int perEmpire[4] = { 0, 0, 0, 0 };
+		bool vacant[PLAYERBOT_LEGEND_NAME_COUNT] = {};
+		bool blocked[PLAYERBOT_LEGEND_NAME_COUNT] = {};
+
+		// The places worn already.
+		for (int slot = 0; slot < PLAYERBOT_LEGEND_NAME_COUNT; ++slot)
+		{
+			const char* name = PLAYERBOT_LEGEND_NAMES[slot];
+			for (size_t i = 0; i < wearers[slot].size(); ++i)
+			{
+				const TPlayerBotLegendWearer& w = wearers[slot][i];
+				if (!w.bBot)
+				{
+					sys_err("PLAYERBOT_LEGEND: the Legend's name %s is worn by a person's character pid=%u login=%s; "
+							"place %d waits (rename that character)", name, w.pid, w.strLogin.c_str(), slot + 1);
+					blocked[slot] = true;
+					continue;
+				}
+				const bool fit = holderOf[slot] == 0 && w.bExact && w.bEmpire >= 1 && w.bEmpire <= 3 &&
+						w.iLevel >= PLAYERBOT_LEGEND_MIN_LEVEL && mgr.IsRegisteredBotPID(w.pid) &&
+						!IsPlayerBotLegendSpecialPID(w.pid);
+				if (fit)
+				{
+					holderOf[slot] = w.pid;
+					holders.insert(w.pid);
+					++perEmpire[w.bEmpire];
+					if (GetPlayerBotLegendTier(w.pid) < BOT_LEGEND_WALKING)
+						PromotePlayerBotLegendRow(w.pid, w.bEmpire);
+					s_mapPlayerBotLegendPending.erase(slot);
+					continue;
+				}
+				// Any other bot gives the name up.
+				if (MovePlayerBotOffShouterName(w.pid, name, "PLAYERBOT_LEGEND"))
+					sys_log(0, "PLAYERBOT_LEGEND: pid=%u gave the Legend's name %s up", w.pid, name);
+				else
+					blocked[slot] = true;
+			}
+			if (holderOf[slot] == 0 && !blocked[slot])
+				vacant[slot] = true;
+		}
+
+		// The vacant places, the most legendary first.
+		for (int slot = 0; slot < PLAYERBOT_LEGEND_NAME_COUNT; ++slot)
+		{
+			if (!vacant[slot])
+				continue;
+			BYTE empire = 0;
+			FillPlayerBotLegendPlace(slot, holders, perEmpire, holderOf[slot], empire);
+		}
+
+		// Every other Legend or Champion back to Specjalny; a pick waiting for
+		// its rename keeps its tier until it has the name.
+		std::set<DWORD> keep = holders;
+		for (std::map<int, DWORD>::const_iterator it = s_mapPlayerBotLegendPending.begin();
+				it != s_mapPlayerBotLegendPending.end(); ++it)
+			keep.insert(it->second);
+		std::vector<std::pair<DWORD, BYTE> > demote;
+		for (std::map<DWORD, TPlayerBotLegendRow>::const_iterator it = s_mapPlayerBotLegendRows.begin();
+				it != s_mapPlayerBotLegendRows.end(); ++it)
+			if (it->second.bTier >= BOT_LEGEND_WALKING && !keep.count(it->first))
+				demote.push_back(std::make_pair(it->first, it->second.bEmpire));
+		for (size_t i = 0; i < demote.size(); ++i)
+		{
+			SetPlayerBotLegendTier(demote[i].first, BOT_LEGEND_SPECIAL);
+			NotePlayerBotLegendEvent(demote[i].first, demote[i].second, "legend_lost",
+					"[Legenda] Miejsce Chodzacej Legendy przechodzi na jedna z 27 Legend.", false, false);
+		}
+
+		// One Champion a kingdom at most.
+		bool champion[4] = { false, false, false, false };
+		for (int slot = 0; slot < PLAYERBOT_LEGEND_NAME_COUNT; ++slot)
+		{
+			const DWORD pid = holderOf[slot];
+			TPlayerBotLegendRow* r = pid ? FindPlayerBotLegendRow(pid) : NULL;
+			if (!r || r->bTier != BOT_LEGEND_CHAMPION || r->bEmpire < 1 || r->bEmpire > 3)
+				continue;
+			if (champion[r->bEmpire])
+				SetPlayerBotLegendTier(pid, BOT_LEGEND_WALKING);
+			champion[r->bEmpire] = true;
+		}
+
+		// The places, for the panels.
+		std::string values;
+		for (int slot = 0; slot < PLAYERBOT_LEGEND_NAME_COUNT; ++slot)
+		{
+			char one[96];
+			snprintf(one, sizeof(one), "%s(%d,%u,'%s',NOW())", slot ? "," : "", slot + 1, holderOf[slot],
+					PLAYERBOT_LEGEND_NAMES[slot]);
+			values += one;
+		}
+		DBManager::instance().Query("REPLACE INTO player.playerbot_legend_name (slot, pid, name, updated_at) VALUES %s",
+				values.c_str());
+		sys_log(0, "PLAYERBOT_LEGEND: places %u of %d held (Shinsoo %d, Chunjo %d, Jinno %d), %u waiting for a rename",
+				(unsigned int)holders.size(), PLAYERBOT_LEGEND_NAME_COUNT, perEmpire[1], perEmpire[2], perEmpire[3],
+				(unsigned int)s_mapPlayerBotLegendPending.size());
 	}
 
 	// ------------------------------------------------------------ the Champions

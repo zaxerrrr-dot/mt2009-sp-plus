@@ -5,8 +5,8 @@
 // knows it, and the numbers each tier changes.
 //
 // The tiers are the owner's (2 October): Wyrozniajacy sie (about four bots in
-// a hundred), Specjalny (about two), Chodzaca Legenda (two a kingdom, from the
-// Specjalni) and Czempion Krolestwa (one of a kingdom's Legends, the one whose
+// a hundred), Specjalny (about two), Chodzaca Legenda (the 27 of
+// PLAYERBOT_LEGEND_NAMES, MT2009_PLUS_LEGEND_NAMES_V1) and Czempion Krolestwa (one of a kingdom's Legends, the one whose
 // guild leads the kingdom's ranking). A bot keeps its tier for good: it is a
 // row of player.playerbot_legend, which every core reads again every
 // PLAYERBOT_LEGEND_RELOAD_MS - the row is the truth, and a bot without one
@@ -42,6 +42,48 @@ namespace
 		BOT_LEGEND_ACH_HUNDRED_KILLS = 16,
 		BOT_LEGEND_ACH_CROWNED = 32,
 	};
+
+	// MT2009_PLUS_LEGEND_NAMES_V1: the owner's 27 Legends (3 October), the
+	// most legendary first. The world always has these 27 Chodzace Legendy
+	// (or Champions) and no other: each name is worn by one bot, the Legend
+	// of that place (playerbot_legends.h, AssignPlayerBotLegends), and by no
+	// ordinary bot - the name pool leaves them out (playerbot_names.sql) and
+	// a bot that wears one when its place goes to another gives it up.
+	const int PLAYERBOT_LEGEND_NAME_COUNT = 27;
+	const char* const PLAYERBOT_LEGEND_NAMES[PLAYERBOT_LEGEND_NAME_COUNT] = {
+		"FuBu", "Wallander4ever", "SirMamutPOL", "Zwierz", "IsAmU", "GoToSleep", "Kasanga",
+		"Loth", "SQRCZYBYKU", "KAPRAL", "BumBum", "NinjaxesPL", "Xuminnek", "ShiveR",
+		"Scoobany", "Schenk", "Kosikredki", "Tream", "Sabal", "Gimper", "BuenaCosta",
+		"Uzurpator", "DIIIM2", "TNT", "Asfen", "LifeIsDeath", "ZAXEP",
+	};
+
+	// The place (0 = the most legendary) of a Legend's name, or -1.
+	int GetPlayerBotLegendNameSlot(const char* name)
+	{
+		if (!name || !*name)
+			return -1;
+		for (int i = 0; i < PLAYERBOT_LEGEND_NAME_COUNT; ++i)
+			if (strcasecmp(name, PLAYERBOT_LEGEND_NAMES[i]) == 0)
+				return i;
+		return -1;
+	}
+
+	// A bot picked for a Legend's place and logged out to be renamed: out of
+	// the world until the rename (or until the hold runs out).
+	std::map<DWORD, DWORD> s_mapPlayerBotLegendNameHold;
+
+	bool IsPlayerBotLegendNameHold(DWORD pid)
+	{
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotLegendNameHold.find(pid);
+		if (it == s_mapPlayerBotLegendNameHold.end())
+			return false;
+		if (get_dword_time() >= it->second)
+		{
+			s_mapPlayerBotLegendNameHold.erase(it);
+			return false;
+		}
+		return true;
+	}
 
 	struct TPlayerBotLegendRow
 	{

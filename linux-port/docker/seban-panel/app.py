@@ -1721,6 +1721,12 @@ def legend_tiers(pids):
     return found
 
 
+# MT2009_PLUS_LEGEND_NAMES_V1: the 27 Legends, the most legendary first (the
+# game core's PLAYERBOT_LEGEND_NAMES, playerbot_legend_tier.h); the ranking
+# lists them in this order.
+LEGEND_NAME_ORDER_SQL = "IF(l.tier >= 3 AND FIELD(p.name, 'FuBu', 'Wallander4ever', 'SirMamutPOL', 'Zwierz', 'IsAmU', 'GoToSleep', 'Kasanga', 'Loth', 'SQRCZYBYKU', 'KAPRAL', 'BumBum', 'NinjaxesPL', 'Xuminnek', 'ShiveR', 'Scoobany', 'Schenk', 'Kosikredki', 'Tream', 'Sabal', 'Gimper', 'BuenaCosta', 'Uzurpator', 'DIIIM2', 'TNT', 'Asfen', 'LifeIsDeath', 'ZAXEP') > 0, FIELD(p.name, 'FuBu', 'Wallander4ever', 'SirMamutPOL', 'Zwierz', 'IsAmU', 'GoToSleep', 'Kasanga', 'Loth', 'SQRCZYBYKU', 'KAPRAL', 'BumBum', 'NinjaxesPL', 'Xuminnek', 'ShiveR', 'Scoobany', 'Schenk', 'Kosikredki', 'Tream', 'Sabal', 'Gimper', 'BuenaCosta', 'Uzurpator', 'DIIIM2', 'TNT', 'Asfen', 'LifeIsDeath', 'ZAXEP'), 99)"
+
+
 def legend_rows(empire=0, tier=0):
     """(ranking, events, missing): every tiered bot, the best first, and the
     last fifty legend events."""
@@ -1740,7 +1746,7 @@ def legend_rows(empire=0, tier=0):
                        "LEFT JOIN player.guild_member gm ON gm.pid = l.pid "
                        "LEFT JOIN player.guild g ON g.id = gm.guild_id "
                        "WHERE " + " AND ".join(where) + " "
-                       "ORDER BY l.tier DESC, l.reputation DESC, p.level DESC LIMIT 2000", args)
+                       "ORDER BY (l.tier >= 3) DESC, " + LEGEND_NAME_ORDER_SQL + ", l.tier DESC, l.reputation DESC, p.level DESC LIMIT 2000", args)
     except Exception:
         return [], [], True
     try:
