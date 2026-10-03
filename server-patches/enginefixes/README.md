@@ -19,3 +19,5 @@ Zmiany silnika opisane w `edits.json`, każda z własnym znacznikiem:
 
 Zmiana już nałożona (jest jej znacznik) jest pomijana; zmiana, której kodu nie
 ma dokładnie raz, przerywa całość, zanim cokolwiek zostanie zapisane.
+
+- `MT2009_PLUS_CUBE_FOR_PLAYERS_V1` (`cmd.cpp`): komenda `cube` dostępna dla graczy (była tylko dla GM), więc okno wytwarzania u Seon-Pyeonga i innych NPC otwiera się zwykłemu graczowi. `Cube_open` dalej sprawdza NPC i odległość.
