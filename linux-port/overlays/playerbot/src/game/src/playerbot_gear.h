@@ -2418,6 +2418,19 @@ namespace
 		return IsPlayerBotSpecialLevel30WeaponVnum(item->GetVnum());
 	}
 
+	// MT2009_PLUS_L30_WEAPON_DROPPER_V2: the island's dropper is there to put
+	// level-30 weapons on the market, and it never wears one - it is held at
+	// twenty-one and let go at twenty-four. Its class's own blade was kept for
+	// an anvil it would never use (PlayerBotKeepsLevel30ForAnvil, the class's
+	// own and PLAYERBOT_LEVEL30_KEEP_PERCENT of the rest) and another class's
+	// for the grind for sale, so its counter took none of them: PrecelekxD
+	// stood twenty minutes in Yongan with three Black Leaf Knives, and the
+	// island stood empty. Every one it holds is counter goods as it dropped.
+	bool IsPlayerBotL30WeaponSeller(LPCHARACTER ch)
+	{
+		return ch && GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_L30_WEAPON_DROPPER;
+	}
+
 	// What a bot picks up and keeps for a player's crafting whatever the
 	// merchant pays for it (PLAYERBOT_PICKUP_GOODS_VNUMS): the herbalist's
 	// Gango Root and Tue Mushroom, the Crystal Earrings and the Ghost Face
@@ -2563,6 +2576,7 @@ namespace
 	bool PlayerBotRefinesLevel30ForSale(LPCHARACTER ch, LPITEM item, DWORD itemId)
 	{
 		if (!ch || !item || !IsPlayerBotSpecialLevel30Weapon(item) || item->CanUsedBy(ch) ||
+				IsPlayerBotL30WeaponSeller(ch) || // MT2009_PLUS_L30_WEAPON_DROPPER_V2
 				IsPlayerBotScrollOnlyWeapon(item) || !IsPlayerBotLevel30SaleDraw(ch, itemId))
 			return false;
 		// The bow or fan a keeper builds for its sash is not goods.
@@ -2687,6 +2701,9 @@ namespace
 	LPITEM FindPlayerBotClassLevel30Weapon(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded())
+			return NULL;
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V2: none is the island dropper's own.
+		if (IsPlayerBotL30WeaponSeller(ch))
 			return NULL;
 		LPITEM best = NULL;
 		long long bestPotential = -1;
@@ -2930,6 +2947,9 @@ namespace
 	bool PlayerBotKeepsLevel30ForAnvil(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || !IsPlayerBotSpecialLevel30Weapon(item))
+			return false;
+		// MT2009_PLUS_L30_WEAPON_DROPPER_V2: the island's dropper keeps none.
+		if (IsPlayerBotL30WeaponSeller(ch))
 			return false;
 		TPlayerBotLevel30View view;
 		ReadPlayerBotLevel30View(ch, view);
