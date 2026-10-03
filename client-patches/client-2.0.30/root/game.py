@@ -464,6 +464,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiingameevent").DestroyWindow()
 		# MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus window (uiseonhae.py).
 		__import__("uiseonhae").DestroyWindow()
+		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
+		__import__("uitpbookmarks").DestroyWindow()
 		# MT2009_PLUS_FLOWER_V1: the Flower Event's window (uiflowerevent.py).
 		__import__("uiflowerevent").DestroyWindow()
 		# MT2009_PLUS_RUMI_V1: Owsap's Rumi (Okey) window (uiminigamerumi.py).
@@ -473,8 +475,8 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's panel.
 		import uiguildduty
 		uiguildduty.DestroyWindow()
-		# MT2009_PLUS_DIGI_SERVER_QOL_V1: the kill bar and Seon-Hae's book exchange (digiqol.py).
-		__import__("digiqol").DestroyWindows()
+		# MT2009_PLUS_DIGI_SERVER_QOL_V1: the kill bar and Seon-Hae's book exchange (digiserverqol.py).
+		__import__("digiserverqol").DestroyWindows()
 		# MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: the companion's windows and their
 		# queue go with the game window at every warp, channel change and logout,
 		# also when no keeper of theirs was registered (the inventory's button
@@ -2397,6 +2399,7 @@ class GameWindow(ui.ScriptWindow):
 			self.interface.fishingGameDialog.OnFixedUpdate(FIXED_TIMESTEP_UPDATE)
 
 		self.tweenMgr.OnUpdate()
+		__import__("uiopcjedodatkowe").Apply()  # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): Opcje dodatkowe, once a second
 
 		if self.mapNameShower.IsShow():
 			self.mapNameShower.Update()
@@ -3041,7 +3044,10 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["NewPet"] = self.__NewPet # MT2009_PLUS_NEW_PET_V1
 		serverCommandList["GOB"] = self.__Goblin # MT2009_PLUS_GOBLIN_V1
 		serverCommandList["DungeonInfo"] = self.__DungeonInfo # MT2009_PLUS_DUNGEON_PANEL_V1
+		# MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): "PickupSound <vnum>" after a pick-up (digiqol.py)
+		serverCommandList["PickupSound"] = __import__("digiqol").PLAYER.OnCommand
 		serverCommandList["SEONHAE"] = self.__SeonHae # MT2009_PLUS_SEONHAE_V1
+		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
 		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
 		# packet) and Owsap's "<flag> <value>" commands (ingameevent.py).
 		serverCommandList["IGE"] = self.__InGameEvent
@@ -3061,8 +3067,8 @@ class GameWindow(ui.ScriptWindow):
 				serverCommandItem[0], serverCommandItem[1]
 			)
 		# MT2009_PLUS_DIGI_SERVER_QOL_V1 (Autor: Digi Rasta): RefineFailedType, KillBar, KillSound,
-		# SkillCoolTimeReset, DeadTime, NOWY_KSIEGI (digiqol.py).
-		__import__("digiqol").Register(self)
+		# SkillCoolTimeReset, DeadTime, NOWY_KSIEGI (digiserverqol.py).
+		__import__("digiserverqol").Register(self)
 
 	def BINARY_ServerCommand_Run(self, line):
 		try:
@@ -3673,6 +3679,11 @@ class GameWindow(ui.ScriptWindow):
 	def __SeonHae(self, *args):
 		import uiseonhae
 		uiseonhae.OnCommand(self, *args)
+
+	# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions' lines (uitpbookmarks.py).
+	def __TpBookmarks(self, *args):
+		import uitpbookmarks
+		uitpbookmarks.OnCommand(*args)
 
 	# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event list (ingameevent.py).
 	def __InGameEvent(self, *args):

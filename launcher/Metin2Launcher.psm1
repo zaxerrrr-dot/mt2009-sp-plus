@@ -2022,6 +2022,390 @@ function Test-M2UpdateMemoryLow {
     return $false
 }
 
+# MT2009_PLUS_LAUNCHER_DOCKER_RAM_V1: how much memory Docker's machine has, and
+# the .wslconfig that gives it more. A 2.18.1 -> 2.19.0 update (3 October)
+# wrote the new files and then could not build them: Docker Desktop's WSL
+# machine had 3.7 GB in all (half of an 8 GB PC, WSL's default), the game
+# core's compile ran out of it ("Killed signal terminated program cc1plus" on
+# playerbot_manager.o), the retry from GRAJ died the same way, and the server
+# did not start. What helped was %USERPROFILE%\.wslconfig with [wsl2]
+# memory=..., wsl --shutdown and Docker Desktop started again. The update, the
+# build GRAJ finishes and the launcher's start now say so before the build,
+# with that file ready to write.
+#
+# "Less than 6 GB": the machine shows a little less than .wslconfig gives it
+# (memory=6GB is about 5.8 GB of MemTotal), so the line is 5.5 GB - and a
+# machine already at what this PC can spare (memory=5GB on 8 GB) is not
+# warned about again.
+$script:M2_DOCKER_RAM_MIN_BYTES = [long](5.5 * 1GB)
+
+function Get-M2WslConfigPath {
+    $profileDir = ''
+    try { $profileDir = [Environment]::GetFolderPath('UserProfile') } catch { }
+    if (-not $profileDir) { $profileDir = [string]$env:USERPROFILE }
+    if (-not $profileDir) { return '' }
+    return (Join-Path $profileDir '.wslconfig')
+}
+
+function ConvertFrom-M2WslMemoryValue {
+    # A .wslconfig size - 8GB, 8G, 8192MB, a bare number of bytes - in GB, or
+    # $null when it is not one.
+    param([AllowEmptyString()][string]$Value)
+    $text = ([string]$Value).Trim().Trim('"').Trim()
+    $match = [regex]::Match($text, '^(?<n>\d+(?:[.,]\d+)?)\s*(?<u>[KMGT]?)B?$', [Text.RegularExpressions.RegexOptions]::IgnoreCase)
+    if (-not $match.Success) { return $null }
+    $number = [double]::Parse(($match.Groups['n'].Value -replace ',', '.'), [Globalization.CultureInfo]::InvariantCulture)
+    switch ($match.Groups['u'].Value.ToUpperInvariant()) {
+        'T' { return ($number * 1024) }
+        'G' { return $number }
+        'M' { return ($number / 1024) }
+        'K' { return ($number / 1024 / 1024) }
+    }
+    return ($number / 1GB)
+}
+
+function Get-M2WslConfigMemory {
+    # Pure: memory= of the [wsl2] section of a .wslconfig's text, as
+    # @{ Raw; Gb }, or $null when it says nothing. The last one counts.
+    param([AllowEmptyString()][string]$Content)
+    $section = ''
+    $found = $null
+    foreach ($line in @(([string]$Content) -split '\r?\n')) {
+        $trim = $line.Trim()
+        if ($trim -match '^\[([^\]]+)\]') { $section = $Matches[1].Trim(); continue }
+        if ($section -ne 'wsl2') { continue }
+        if ($trim -match '^memory\s*=\s*([^#;]*)') { $found = $Matches[1].Trim() }
+    }
+    if ($null -eq $found) { return $null }
+    return [pscustomobject]@{ Raw = $found; Gb = (ConvertFrom-M2WslMemoryValue -Value $found) }
+}
+
+function Set-M2WslConfigMemoryText {
+    <#
+        Pure: a .wslconfig's text with memory=<Value> in its [wsl2] section and
+        every other line as it was - the line that said memory= is rewritten,
+        a section without one gets it right under its header, and a file
+        without the section gets it at the end. The file's own line ends are
+        kept (CRLF for a new one).
+    #>
+    param(
+        [AllowEmptyString()][string]$Content,
+        [Parameter(Mandatory = $true)][string]$Value
+    )
+    $text = [string]$Content
+    $newline = "`r`n"
+    if ($text -and $text -notmatch "`r`n" -and $text -match "`n") { $newline = "`n" }
+    $lines = New-Object System.Collections.Generic.List[string]
+    if ($text.Length -gt 0) {
+        foreach ($line in ($text -split '\r?\n')) { $lines.Add($line) }
+        if ($lines.Count -gt 0 -and $lines[$lines.Count - 1] -eq '') { $lines.RemoveAt($lines.Count - 1) }
+    }
+    $section = ''
+    $header = -1
+    $replaced = $false
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        $trim = $lines[$i].Trim()
+        if ($trim -match '^\[([^\]]+)\]') {
+            $section = $Matches[1].Trim()
+            if ($section -eq 'wsl2' -and $header -lt 0) { $header = $i }
+            continue
+        }
+        if ($section -eq 'wsl2' -and $trim -match '^memory\s*=') {
+            $lines[$i] = "memory=$Value"
+            $replaced = $true
+        }
+    }
+    if (-not $replaced) {
+        if ($header -ge 0) { $lines.Insert($header + 1, "memory=$Value") }
+        else {
+            if ($lines.Count -gt 0 -and $lines[$lines.Count - 1].Trim()) { $lines.Add('') }
+            $lines.Add('[wsl2]')
+            $lines.Add("memory=$Value")
+        }
+    }
+    return (($lines.ToArray() -join $newline) + $newline)
+}
+
+function Set-M2WslConfigMemory {
+    <#
+        Writes memory=<MemoryGb>GB into the [wsl2] section of
+        %USERPROFILE%\.wslconfig and nothing else of it: the old file is
+        copied to .wslconfig.bak first (.wslconfig.bak-<time> when a .bak is
+        already there - the first one is the player's own). Always written as
+        UTF-8 without a BOM: WSL's parser chokes on a BOM or UTF-16, so a file
+        that had one is read in its own encoding and written back without it
+        (the .bak keeps the original bytes). A value already as large is left
+        alone (Changed = $false). Only ever called after the player asked.
+    #>
+    param(
+        [Parameter(Mandatory = $true)][ValidateRange(2, 512)][int]$MemoryGb,
+        [string]$Path = ''
+    )
+    if (-not $Path) { $Path = Get-M2WslConfigPath }
+    if (-not $Path) { throw 'Nie znaleziono folderu profilu użytkownika (%USERPROFILE%), więc nie wiem, gdzie zapisać .wslconfig.' }
+    $encoding = New-Object System.Text.UTF8Encoding($false)
+    $preambleLength = 0
+    $content = ''
+    $exists = Test-Path -LiteralPath $Path -PathType Leaf
+    if ($exists) {
+        $bytes = [IO.File]::ReadAllBytes($Path)
+        if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
+            $encoding = New-Object System.Text.UTF8Encoding($true)
+        }
+        elseif ($bytes.Length -ge 2 -and $bytes[0] -eq 0xFF -and $bytes[1] -eq 0xFE) { $encoding = New-Object System.Text.UnicodeEncoding($false, $true) }
+        elseif ($bytes.Length -ge 2 -and $bytes[0] -eq 0xFE -and $bytes[1] -eq 0xFF) { $encoding = New-Object System.Text.UnicodeEncoding($true, $true) }
+        $preambleLength = ([byte[]]$encoding.GetPreamble()).Length
+        $content = $encoding.GetString($bytes, $preambleLength, $bytes.Length - $preambleLength)
+    }
+    $previous = Get-M2WslConfigMemory -Content $content
+    $previousRaw = if ($previous) { [string]$previous.Raw } else { '' }
+    if ($previous -and $null -ne $previous.Gb -and $previous.Gb -ge $MemoryGb) {
+        return [pscustomobject]@{ Path = $Path; Backup = ''; Changed = $false; Previous = $previousRaw; Value = $previousRaw }
+    }
+    $value = '{0}GB' -f $MemoryGb
+    $updated = Set-M2WslConfigMemoryText -Content $content -Value $value
+    $backup = ''
+    if ($exists) {
+        $backup = $Path + '.bak'
+        if (Test-Path -LiteralPath $backup) { $backup = $Path + '.bak-' + (Get-Date -Format 'yyyyMMdd-HHmmss') }
+        Copy-Item -LiteralPath $Path -Destination $backup -Force -ErrorAction Stop
+    }
+    [IO.File]::WriteAllText($Path, $updated, (New-Object System.Text.UTF8Encoding($false)))
+    return [pscustomobject]@{ Path = $Path; Backup = $backup; Changed = $true; Previous = $previousRaw; Value = $value }
+}
+
+function Get-M2RecommendedDockerMemoryGb {
+    # Pure: what to give Docker's machine on a PC with this much memory, as
+    # Windows counts it (a little under the label: 16 GB shows as 15.8, less
+    # where a graphics chip takes its share). 0 is "not known".
+    param([long]$PhysicalBytes = 0)
+    if ($PhysicalBytes -le 0) { return 6 }
+    $gb = $PhysicalBytes / 1GB
+    if ($gb -ge 13.5) { return 8 }
+    if ($gb -ge 10) { return 6 }
+    if ($gb -ge 6.5) { return 5 }
+    return [int][Math]::Max(2, [Math]::Floor($gb * 0.6))
+}
+
+function Test-M2DockerMemoryLow {
+    # Pure: whether Docker's machine is short of memory for the build - under
+    # the 5.5 GB line, and under what this PC could give it (90% of the
+    # recommendation, the room the kernel takes from it). 0 is "not known",
+    # which is not low.
+    param([long]$MemTotalBytes = 0, [int]$RecommendedGb = 0)
+    if ($MemTotalBytes -le 0) { return $false }
+    if ($MemTotalBytes -ge $script:M2_DOCKER_RAM_MIN_BYTES) { return $false }
+    if ($RecommendedGb -gt 0 -and $MemTotalBytes -ge [long]($RecommendedGb * 1GB * 0.9)) { return $false }
+    return $true
+}
+
+function Get-M2DockerDesktopSettings {
+    # Docker Desktop's own settings (settings-store.json, settings.json in
+    # older ones): whether it runs on WSL 2 and the memory it gives a Hyper-V
+    # machine. $null when there are none.
+    $appData = ''
+    try { $appData = [Environment]::GetFolderPath('ApplicationData') } catch { }
+    if (-not $appData) { return $null }
+    foreach ($name in @('settings-store.json', 'settings.json')) {
+        $path = Join-Path (Join-Path $appData 'Docker') $name
+        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { continue }
+        try {
+            $settings = Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+            $wsl = $null
+            $memoryMiB = 0
+            foreach ($property in @($settings.PSObject.Properties)) {
+                if ($property.Name -match '(?i)^wslEngineEnabled$') { $wsl = [bool]$property.Value }
+                elseif ($property.Name -match '(?i)^memoryMiB$') { try { $memoryMiB = [long]$property.Value } catch { } }
+            }
+            return [pscustomobject]@{ WslEngine = $wsl; MemoryMiB = $memoryMiB }
+        }
+        catch { }
+    }
+    return $null
+}
+
+function Get-M2DockerVmMemory {
+    <#
+        What Docker's machine has: MemTotal from `docker info' and the backend
+        it runs on - 'wsl' (the WSL 2 kernel, so .wslconfig decides), 'hyperv'
+        (Docker Desktop on its own machine: Settings > Resources) or 'other'.
+        With the engine down it is estimated from Docker Desktop's settings
+        and .wslconfig (WSL gives half of the PC's memory unless .wslconfig
+        says otherwise), Estimated = $true; Known = $false when not even that.
+    #>
+    param([long]$PhysicalBytes = 0, [string]$WslConfigPath = '', [int]$TimeoutMilliseconds = 6000)
+    $result = [pscustomobject]@{
+        Known = $false; Running = $false; Estimated = $false; MemTotalBytes = [long]0
+        Backend = ''; OperatingSystem = ''; KernelVersion = ''
+    }
+    $exe = if ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT) { 'docker.exe' } else { 'docker' }
+    $process = $null
+    try {
+        $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+        $startInfo.FileName = $exe
+        $startInfo.Arguments = 'info --format "{{.MemTotal}}|{{.OperatingSystem}}|{{.KernelVersion}}"'
+        $startInfo.UseShellExecute = $false
+        $startInfo.CreateNoWindow = $true
+        $startInfo.RedirectStandardOutput = $true
+        $startInfo.RedirectStandardError = $true
+        $process = [Diagnostics.Process]::Start($startInfo)
+        $stdout = $process.StandardOutput.ReadToEndAsync()
+        $stderr = $process.StandardError.ReadToEndAsync()
+        if ($process.WaitForExit($TimeoutMilliseconds)) {
+            $text = [string]$stdout.GetAwaiter().GetResult()
+            [void]$stderr.GetAwaiter().GetResult()
+            $line = @($text -split '\r?\n' | Where-Object { $_ -match '^\s*\d+\|' }) | Select-Object -First 1
+            if ($process.ExitCode -eq 0 -and $line) {
+                $parts = ([string]$line).Trim() -split '\|', 3
+                $result.Running = $true
+                $result.MemTotalBytes = [long]$parts[0]
+                $result.OperatingSystem = if ($parts.Count -gt 1) { $parts[1].Trim() } else { '' }
+                $result.KernelVersion = if ($parts.Count -gt 2) { $parts[2].Trim() } else { '' }
+                $result.Known = $result.MemTotalBytes -gt 0
+                if ($result.KernelVersion -match '(?i)microsoft-standard-WSL2|WSL2') { $result.Backend = 'wsl' }
+                elseif ($result.OperatingSystem -match '(?i)Docker Desktop') { $result.Backend = 'hyperv' }
+                else { $result.Backend = 'other' }
+                return $result
+            }
+        }
+        else { try { $process.Kill() } catch { } }
+    }
+    catch { }
+    finally { if ($process) { $process.Dispose() } }
+
+    # The engine is down (or did not answer): what Docker Desktop will start with.
+    $settings = Get-M2DockerDesktopSettings
+    if (-not $settings) { return $result }
+    if ($settings.WslEngine -eq $false) {
+        if ($settings.MemoryMiB -gt 0) {
+            $result.Known = $true; $result.Estimated = $true; $result.Backend = 'hyperv'
+            $result.MemTotalBytes = [long]$settings.MemoryMiB * 1MB
+        }
+        return $result
+    }
+    $result.Backend = 'wsl'
+    if (-not $WslConfigPath) { $WslConfigPath = Get-M2WslConfigPath }
+    $configured = $null
+    if ($WslConfigPath -and (Test-Path -LiteralPath $WslConfigPath -PathType Leaf)) {
+        try { $configured = Get-M2WslConfigMemory -Content ([IO.File]::ReadAllText($WslConfigPath)) } catch { }
+    }
+    if ($configured -and $null -ne $configured.Gb -and $configured.Gb -gt 0) {
+        $result.MemTotalBytes = [long]($configured.Gb * 1GB)
+    }
+    elseif ($PhysicalBytes -gt 0) { $result.MemTotalBytes = [long]($PhysicalBytes / 2) }
+    $result.Known = $result.MemTotalBytes -gt 0
+    $result.Estimated = $result.Known
+    return $result
+}
+
+function Format-M2GbText {
+    param([double]$Gb)
+    return ([Math]::Round($Gb, 1)).ToString('0.0', [Globalization.CultureInfo]::InvariantCulture).Replace('.', ',')
+}
+
+function Get-M2DockerMemoryAdvice {
+    <#
+        The whole answer for the launcher's warnings: whether Docker's machine
+        is short (Low), what to give it on this PC (RecommendedGb, from
+        Windows' own count of its memory - Get-M2WindowsMemory), whether the
+        launcher can write it itself (CanAutoFix: the WSL 2 backend, whose
+        memory is .wslconfig's), and the Polish text - Summary (a line),
+        Instructions (the steps with the file's exact content) and Text (both).
+        Vm and PhysicalBytes are asked for when not given. Instructions are
+        there even when nothing is low: the message after a build killed for
+        want of memory uses them too. One line per step, and no step says
+        "wsl" with "error", "failed" or "exit status" after it on its line
+        (Get-M2LauncherErrorGuidance reads whole outputs).
+    #>
+    param($Vm = $null, [long]$PhysicalBytes = -1, [string]$WslConfigPath = '')
+    if ($PhysicalBytes -lt 0) {
+        $PhysicalBytes = 0
+        $windows = Get-M2WindowsMemory
+        if ($windows) { $PhysicalBytes = [long]$windows.TotalBytes }
+    }
+    if (-not $WslConfigPath) { $WslConfigPath = Get-M2WslConfigPath }
+    if (-not $Vm) { $Vm = Get-M2DockerVmMemory -PhysicalBytes $PhysicalBytes -WslConfigPath $WslConfigPath }
+    $recommended = Get-M2RecommendedDockerMemoryGb -PhysicalBytes $PhysicalBytes
+    $low = $false
+    if ($Vm.Known) { $low = Test-M2DockerMemoryLow -MemTotalBytes ([long]$Vm.MemTotalBytes) -RecommendedGb $recommended }
+
+    $current = $null
+    if ($WslConfigPath -and (Test-Path -LiteralPath $WslConfigPath -PathType Leaf)) {
+        try { $current = Get-M2WslConfigMemory -Content ([IO.File]::ReadAllText($WslConfigPath)) } catch { }
+    }
+    $currentRaw = if ($current) { [string]$current.Raw } else { '' }
+    $alreadyEnough = [bool]($current -and $null -ne $current.Gb -and $current.Gb -ge $recommended)
+    $backend = [string]$Vm.Backend
+    $canFix = [bool]($backend -eq 'wsl' -and $WslConfigPath)
+
+    $memText = if ($Vm.Known) { Format-M2GbText -Gb ($Vm.MemTotalBytes / 1GB) } else { '?' }
+    $physText = if ($PhysicalBytes -gt 0) { Format-M2GbText -Gb ($PhysicalBytes / 1GB) } else { '' }
+    $notes = @()
+    if ($physText) { $notes += ('komputer ma {0} GB' -f $physText) }
+    if ($Vm.Estimated) { $notes += 'szacunek - silnik Dockera jest teraz zatrzymany' }
+    $noteText = if ($notes.Count -gt 0) { ' (' + ($notes -join '; ') + ')' } else { '' }
+    $summary = ('Docker ma tylko {0} GB pamięci RAM{1}. Do budowy serwera zalecane jest co najmniej 6 GB - z mniejszą ilością kompilacja rdzenia gry potrafi zostać przerwana z braku pamięci i serwer po aktualizacji nie wystartuje.' -f $memText, $noteText)
+
+    $lines = New-Object System.Collections.Generic.List[string]
+    $finish = 'Kliknij GRAJ (albo ponów aktualizację) - launcher dokończy budowanie bez ponownego pobierania.'
+    if ($backend -eq 'hyperv') {
+        $lines.Add('Jak dać Dockerowi więcej pamięci (Docker Desktop na Hyper-V, bez WSL 2 - tu plik .wslconfig nic nie zmienia):')
+        $lines.Add('1. Zamknij grę (klienta Metin2).')
+        $lines.Add('2. Otwórz Docker Desktop → Settings (koło zębate) → Resources → Advanced.')
+        $lines.Add(('3. Ustaw Memory na {0} GB i kliknij „Apply & restart”.' -f $recommended))
+        $lines.Add('4. Poczekaj, aż Docker Desktop pokaże „Engine running”.')
+        $lines.Add('5. ' + $finish)
+    }
+    else {
+        if ($backend -eq 'wsl') { $lines.Add('Jak dać Dockerowi więcej pamięci (Docker Desktop z WSL 2):') }
+        else { $lines.Add('Jak dać Dockerowi więcej pamięci (Docker Desktop z WSL 2 - w Docker Desktop na Hyper-V zamiast tego: Settings → Resources → Advanced → Memory):') }
+        $lines.Add(('1. Otwórz w Notatniku plik {0} (jeśli go nie ma, utwórz go - nazwa zaczyna się od kropki i nie ma końcówki .txt).' -f $WslConfigPath))
+        $lines.Add('2. Wpisz w nim te dwa wiersze (inne ustawienia, jeśli już tam są, zostaw):')
+        $lines.Add('   [wsl2]')
+        $lines.Add(('   memory={0}GB' -f $recommended))
+        $lines.Add('3. Zamknij grę (klienta Metin2).')
+        $lines.Add('4. Zamknij Docker Desktop (ikona w zasobniku → Quit Docker Desktop), otwórz PowerShell i wpisz: wsl --shutdown')
+        $lines.Add('5. Uruchom ponownie Docker Desktop i poczekaj na „Engine running”.')
+        $lines.Add('6. ' + $finish)
+        if ($currentRaw) {
+            if ($alreadyEnough) { $lines.Add(('Plik .wslconfig ma już memory={0}, ale Docker jeszcze tego nie widzi - wystarczą kroki 3-6.' -f $currentRaw)) }
+            else { $lines.Add(('Plik .wslconfig ma teraz memory={0} - zmień tę wartość na {1}GB.' -f $currentRaw, $recommended)) }
+        }
+    }
+    if ($physText) {
+        if ($recommended -ge 6) { $lines.Add(('Ten komputer ma {0} GB RAM - zalecane {1} GB dla Dockera.' -f $physText, $recommended)) }
+        elseif ($recommended -eq 5) { $lines.Add(('Ten komputer ma {0} GB RAM, więc Dockerowi można dać ok. 5 GB, żeby został RAM dla Windowsa. Budowa potrwa dłużej - na czas aktualizacji zamknij przeglądarkę i inne programy.' -f $physText)) }
+        else { $lines.Add(('Ten komputer ma tylko {0} GB RAM - {1} GB to najwięcej, co można bezpiecznie dać Dockerowi; budowa serwera może się mimo to nie udać.' -f $physText, $recommended)) }
+    }
+    $instructions = $lines.ToArray() -join [Environment]::NewLine
+    return [pscustomobject]@{
+        Known = [bool]$Vm.Known
+        Low = [bool]$low
+        Running = [bool]$Vm.Running
+        Estimated = [bool]$Vm.Estimated
+        MemTotalBytes = [long]$Vm.MemTotalBytes
+        MemText = $memText
+        PhysicalBytes = [long]$PhysicalBytes
+        RecommendedGb = [int]$recommended
+        Backend = $backend
+        WslConfigPath = $WslConfigPath
+        WslConfigMemory = $currentRaw
+        WslConfigEnough = $alreadyEnough
+        CanAutoFix = $canFix
+        Summary = $summary
+        Instructions = $instructions
+        Text = ($summary + [Environment]::NewLine + [Environment]::NewLine + $instructions)
+    }
+}
+
+function Test-M2BuildOutOfMemory {
+    # Pure: whether a build's output is the compiler killed for want of memory
+    # (the kernel's OOM killer inside Docker's machine) or BuildKit saying it
+    # ran out of resources.
+    param([AllowEmptyString()][string]$Text)
+    return ([string]$Text -match '(?i)Killed signal terminated program|internal compiler error: Killed|ResourceExhausted|virtual memory exhausted|cannot allocate memory')
+}
+
 function Get-M2DbDataVolumes {
     $previous = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
     try {
@@ -2804,6 +3188,15 @@ Export-ModuleMember -Function @(
     'Test-M2DockerRunning',
     'Get-M2WindowsMemory',
     'Test-M2UpdateMemoryLow',
+    'Get-M2WslConfigPath',
+    'Get-M2WslConfigMemory',
+    'Set-M2WslConfigMemoryText',
+    'Set-M2WslConfigMemory',
+    'Get-M2RecommendedDockerMemoryGb',
+    'Test-M2DockerMemoryLow',
+    'Get-M2DockerVmMemory',
+    'Get-M2DockerMemoryAdvice',
+    'Test-M2BuildOutOfMemory',
     'Sync-M2PlayerbotOverlay',
     'Set-M2PlayerbotsVersionEnvironment',
     'Invoke-M2EnginePatches',

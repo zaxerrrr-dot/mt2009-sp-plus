@@ -65,10 +65,10 @@ w `tools/New-M2UpdatePackage.ps1`.
 
 | Plik | Co |
 |---|---|
-| `digiqol.py` (nowy) | komendy serwera: `RefineFailedType`, `KillBar`, `KillSound`, `SkillCoolTimeReset`, `DeadTime`, `NOWY_KSIEGI` – wpisywane prosto do `serverCommander` okna gry |
+| `digiserverqol.py` (nowy) | komendy serwera: `RefineFailedType`, `KillBar`, `KillSound`, `SkillCoolTimeReset`, `DeadTime`, `NOWY_KSIEGI` – wpisywane prosto do `serverCommander` okna gry |
 | `uikillbar.py` (nowy) | pasek zabójstw |
 | `uiskillbookexchange.py` (nowy) | okno wymiany ksiąg |
-| `game.py` | 2 linie: `digiqol.Register(self)` po komendach i `digiqol.DestroyWindows()` przy zamknięciu okna gry |
+| `game.py` | 2 linie: `digiserverqol.Register(self)` po komendach i `digiserverqol.DestroyWindows()` przy zamknięciu okna gry |
 | `uichat.py` (nowy w repo, z paczki) | „@nick tekst” w zwykłym czacie = szept (jak z okna szeptu); czat handlowy zostaje: w trybie handlu (TAB) i dla „@ tekst” linia idzie na czat handlowy jak dotąd |
 | `uirestart.py` (nowy w repo, z paczki) | odliczanie na przyciskach okna śmierci |
 | `uichestpreview.py` | „Otwórz” / „Otwórz 10” w podglądzie skrzynki: jedna co 0,25 s (`net.SendItemUsePacket`), stop: drugie kliknięcie, brak skrzynek w polu, serwer nie otworzył (liczba w polu bez zmian), zamknięcie okna / inna skrzynka; tylko w fazie gry (`warpsafe.InGame()`) |

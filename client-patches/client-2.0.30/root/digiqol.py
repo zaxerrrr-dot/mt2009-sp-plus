@@ -1,149 +1,212 @@
-# MT2009_PLUS_DIGI_SERVER_QOL_V1 - Digi Rasta's server conveniences, the
-# client's commands. Autor: Digi Rasta (nowy-system v0.23.0, the "Biore"
-# systems of 3 October; his klient.py patched game.py for them).
-#
-# game.py calls Register(self) once its own commands are in (one line), and
-# DestroyWindows() when the game window closes. The commands come from the
-# core (playerbot_digi_qol.h, server-patches/digirasta-qol):
-#
-#   RefineFailedType <0|1|2>   after "RefineFailed": the item lost a level /
-#                              was destroyed (or one piece of its stack) /
-#                              stayed as it was - the popup says which
-#   KillBar <killer race> <weapon> <victim race> <killer> <victim>
-#                              the map's kill bar (uikillbar.py)
-#   KillSound <1..13>          the kill streak's sound, mt2009_ui/killstreak/N.wav
-#   SkillCoolTimeReset         skills are ready again after death: an exe with
-#                              player.ResetSkillCoolTimes clears its timers
-#                              (exe patch digi-server-qol); the shipped exe has
-#                              no way to, so there the server alone resets and the
-#                              client keeps its own countdown as before
-#   DeadTime <here> <town>     the death window's countdown (uirestart.py)
-#   NOWY_KSIEGI open|done <vnum>
-#                              Seon-Hae's book exchange (uiskillbookexchange.py)
-#
-# The commands go straight into the game window's serverCommander: a callable
-# with the window as a weak proxy (stringCommander's own callbacks need a bound
-# method of the window, which would have been one more method each in game.py).
-#
-# Python 2.7 as the client has it; the texts are CP1250 escapes.
-from _weakref import proxy
-
+# MT2009_PLUS_DIGI_CLIENT_QOL_V1 - small client conveniences (Autor: Digi Rasta; nowy-system 0.19.0,
+# paczki Biore). Kept here so the shared windows get only one-line hooks:
+#   PLAYER.OnCommand    "PickupSound <vnum>" from the server (Pick-Up-Sound-Effect, game.py)
+#   AnimateMoney        the inventory's Yang counter runs to the new amount in ~0.4 s
+#                       (Refresh-Money-With-Sleep, uiinventory.py RefreshGold)
+#   UpdateCompare/HideCompare   ALT over a weapon or armour shows the worn one next to it
+#                       (Compare-Item-Tooltip, uitooltip.py ItemToolTip)
+# Python 2.7 as the client has it; texts CP1250 as escapes.
+import app
+import item
 import player
 import snd
+import ui
+import wndMgr
+import localeInfo
+from _weakref import proxy
 
-REFINE_FAILED_TEXTS = {
-	"0": "Ulepszenie nie powiod\xb3o si\xea - przedmiot straci\xb3 poziom ulepszenia.",
-	"1": "Ulepszenie nie powiod\xb3o si\xea - przedmiot zosta\xb3 zniszczony.",
-	"2": "Ulepszenie nie powiod\xb3o si\xea - przedmiot pozosta\xb3 nienaruszony.",
-}
-KILL_SOUND = "mt2009_ui/killstreak/%d.wav"
-KILL_SOUND_MAX = 13
-# The slots of a character window skill page (CPythonPlayer SKILL_MAX_NUM is 255; a page uses far fewer).
-SKILL_PAGE_SLOTS = 64
-
-
-def _RefineFailedType(game, kind="-1", *rest):
-	text = REFINE_FAILED_TEXTS.get(kind)
-	if text:
-		game.PopupMessage(text)
+################################################################################
+# Pick-up sound: one sound by the item's kind, at most once per 0.15 s (Z picks up many at once).
+PICKUP_SOUND_GAP = 0.15
+PICKUP_YANG_VNUM = 1
 
 
-def _KillBar(game, killerRace="0", weapon="255", victimRace="0", killer="", victim="", *rest):
-	try:
-		killerRace, weapon, victimRace = int(killerRace), int(weapon), int(victimRace)
-	except ValueError:
-		return
-	import uikillbar
-	uikillbar.Add(killerRace, weapon, victimRace, killer, victim)
+def PickupSoundFile(vnum):
+	if vnum == PICKUP_YANG_VNUM:
+		return "sound/ui/money.wav"
+	item.SelectItem(vnum)
+	itemType = item.GetItemType()
+	itemSubType = item.GetItemSubType()
+	if itemType == item.ITEM_TYPE_WEAPON:
+		if itemSubType in (item.WEAPON_BOW, item.WEAPON_ARROW, getattr(item, "WEAPON_QUIVER", -99)):
+			return "sound/ui/equip_bow.wav"
+		return "sound/ui/equip_metal_weapon.wav"
+	if itemType == item.ITEM_TYPE_ARMOR:
+		if itemSubType in (item.ARMOR_NECK, item.ARMOR_EAR, item.ARMOR_WRIST):
+			return "sound/ui/equip_ring_amulet.wav"
+		return "sound/ui/equip_metal_armor.wav"
+	return "sound/ui/pick.wav"
 
 
-def _KillSound(game, stage="1", *rest):
-	try:
-		stage = max(1, min(KILL_SOUND_MAX, int(stage)))
-	except ValueError:
-		return
-	snd.PlaySound(KILL_SOUND % stage)
+class PickupSoundPlayer(object):
+	def __init__(self):
+		self.next = 0.0
 
-
-def _ClearCharacterSkillCoolTimes(interface):
-	"""The character window's skill pages keep their slots' cooltime sweeps over
-	a refresh (uicharacter.py, ENABLE_SLOT_WINDOW_EX); the reset takes them away."""
-	window = getattr(interface, "wndCharacter", None)
-	pages = getattr(window, "skillPageDict", None) if window else None
-	if not pages:
-		return
-	for page in pages.values():
+	def OnCommand(self, vnum="0", *rest):
+		now = app.GetTime()
+		if now < self.next:
+			return
 		try:
-			start = page.GetStartIndex()
-			for slot in xrange(start, start + SKILL_PAGE_SLOTS):
-				page.SetSlotCoolTime(slot, 0.0, 0.0)
-		except Exception:
-			continue
+			vnum = int(vnum)
+		except ValueError:
+			return
+		if vnum <= 0:
+			return
+		self.next = now + PICKUP_SOUND_GAP
+		snd.PlaySound(PickupSoundFile(vnum))
 
 
-def _SkillCoolTimeReset(game, *rest):
-	if not hasattr(player, "ResetSkillCoolTimes"):
-		return
-	player.ResetSkillCoolTimes()
-	interface = getattr(game, "interface", None)
-	if interface:
-		_ClearCharacterSkillCoolTimes(interface)
-		interface.RefreshSkill()
+PLAYER = PickupSoundPlayer()  # stringCommander keeps a weak reference to the bound method's object
+
+################################################################################
+# Yang counter: the text line gets a tiny child window whose OnUpdate counts (it runs only
+# while the inventory is shown; opened later, the time is long past and it shows the amount).
+MONEY_TIME = 0.4
 
 
-def _DeadTime(game, here="0", town="0", *rest):
-	try:
-		here, town = int(here), int(town)
-	except ValueError:
-		return
-	import uiRestart
-	uiRestart.SetDeadTimes(here, town)
+class _MoneyCounter(ui.Window):
+	def __init__(self, textLine):
+		ui.Window.__init__(self)
+		self.textLine = proxy(textLine)
+		self.shown = None
+		self.start = 0.0
+		self.source = 0
+		self.target = 0
+		self.SetParent(textLine)
+		self.AddFlag("not_pick")
+		self.SetSize(0, 0)
+		self.Show()
 
+	def __del__(self):
+		ui.Window.__del__(self)
 
-def _SkillBooks(game, *args):
-	import uiskillbookexchange
-	uiskillbookexchange.OnServer(*args)
-
-
-COMMANDS = (
-	("RefineFailedType", _RefineFailedType),
-	("KillBar", _KillBar),
-	("KillSound", _KillSound),
-	("SkillCoolTimeReset", _SkillCoolTimeReset),
-	("DeadTime", _DeadTime),
-	("NOWY_KSIEGI", _SkillBooks),
-)
-
-
-class _Command:
-	def __init__(self, game, func):
-		self.game = proxy(game)
-		self.func = func
-
-	def __call__(self, *args):
+	def __SetText(self, value):
+		self.shown = value
 		try:
-			return self.func(self.game, *args)
+			self.textLine.SetText(localeInfo.NumberToMoneyString(value))
 		except ReferenceError:
-			return None
+			pass
 
-	def GetArgumentCount(self):
-		# stringCommander.Analyzer asks it only without variadic commands
-		# (constInfo.ENABLE_CMDCHAT_VARIADIC_ARGS is on in this client).
-		return 1
+	def SetTarget(self, gold):
+		if self.shown is None or self.shown == gold:
+			self.target = gold
+			self.__SetText(gold)
+			return
+		self.source = self.shown
+		self.target = gold
+		self.start = app.GetTime()
+
+	def OnUpdate(self):
+		if self.shown is None or self.shown == self.target:
+			return
+		progress = (app.GetTime() - self.start) / MONEY_TIME
+		if progress >= 1.0 or progress < 0.0:
+			value = self.target
+		else:
+			value = self.source + long((self.target - self.source) * progress)
+		self.__SetText(value)
 
 
-def Register(game):
-	commander = getattr(game, "serverCommander", None)
-	if commander is None or not hasattr(commander, "cmdDict"):
+def AnimateMoney(textLine, gold):
+	counter = getattr(textLine, "digiMoneyCounter", None)
+	if counter is None:
+		try:
+			counter = _MoneyCounter(textLine)
+		except Exception:
+			textLine.SetText(localeInfo.NumberToMoneyString(gold))
+			return
+		textLine.digiMoneyCounter = counter
+	counter.SetTarget(gold)
+
+################################################################################
+# Compare tooltip: the worn item's description next to the hovered weapon/armour while ALT is held.
+COMPARE_LABEL = "[ Za\xb3o\xbfony ]"
+
+
+def CompareEquipSlot(itemVnum):
+	item.SelectItem(itemVnum)
+	itemType = item.GetItemType()
+	itemSubType = item.GetItemSubType()
+	if itemType == item.ITEM_TYPE_WEAPON:
+		if itemSubType in (item.WEAPON_ARROW, getattr(item, "WEAPON_QUIVER", -99)):
+			return -1
+		return item.EQUIPMENT_WEAPON
+	if itemType == item.ITEM_TYPE_ARMOR:
+		return {
+			item.ARMOR_BODY: item.EQUIPMENT_BODY,
+			item.ARMOR_HEAD: item.EQUIPMENT_HEAD,
+			item.ARMOR_SHIELD: item.EQUIPMENT_SHIELD,
+			item.ARMOR_WRIST: item.EQUIPMENT_WRIST,
+			item.ARMOR_FOOTS: item.EQUIPMENT_SHOES,
+			item.ARMOR_NECK: item.EQUIPMENT_NECK,
+			item.ARMOR_EAR: item.EQUIPMENT_EAR,
+		}.get(itemSubType, -1)
+	return -1
+
+
+def _AltPressed():
+	return app.IsPressed(app.DIK_LALT) or app.IsPressed(getattr(app, "DIK_RALT", app.DIK_LALT))
+
+
+def _ItemToolTipClass(tooltip):
+	# The plain ItemToolTip even for a subclass (HyperlinkItemToolTip has its own board and size).
+	for cls in type(tooltip).__mro__:
+		if cls.__name__ == "ItemToolTip":
+			return cls
+	return type(tooltip)
+
+
+def HideCompare(tooltip):
+	tip = getattr(tooltip, "compareToolTip", None)
+	if tip and tip.IsShow():
+		tip.Hide()
+
+
+def UpdateCompare(tooltip):
+	owner = getattr(tooltip, "compareOwner", None)
+	if owner is not None:
+		# This is the compare tooltip itself: it leaves when its owner is gone or ALT is let go.
+		try:
+			if not owner.IsShow() or not _AltPressed():
+				tooltip.Hide()
+		except ReferenceError:
+			tooltip.Hide()
 		return
-	for name, func in COMMANDS:
-		if name not in commander.cmdDict:
-			commander.cmdDict[name] = _Command(game, func)
 
-
-def DestroyWindows():
-	"""The game window closes (a warp, a channel change, the logout)."""
-	import uikillbar
-	import uiskillbookexchange
-	uikillbar.DestroyWindow()
-	uiskillbookexchange.DestroyWindow()
+	tip = getattr(tooltip, "compareToolTip", None)
+	itemVnum = getattr(tooltip, "itemVnum", 0)
+	show = False
+	if itemVnum and tooltip.IsShow() and _AltPressed():
+		shown = getattr(tooltip, "compareShown", None)
+		if shown and shown[0] == itemVnum:
+			show = True
+		else:
+			slot = CompareEquipSlot(itemVnum)
+			if slot >= 0 and slot != getattr(tooltip, "compareSourceSlot", -1) and player.GetItemIndex(slot):
+				if not tip:
+					tip = _ItemToolTipClass(tooltip)()
+					tip.compareOwner = proxy(tooltip)
+					tip.SetFollow(False)
+					tooltip.compareToolTip = tip
+				tip.SetInventoryItem(slot)
+				tip.AppendTextLine(COMPARE_LABEL, tooltip.POSITIVE_COLOR)
+				tip.ResizeToolTip()
+				tooltip.compareShown = (itemVnum, slot)
+				show = True
+	if not tip:
+		return
+	if not show:
+		if tip.IsShow():
+			tip.Hide()
+		return
+	(x, y) = tooltip.GetGlobalPosition()
+	width = tip.GetWidth()
+	if x - width - 2 >= 0:
+		x = x - width - 2
+	else:
+		x = x + tooltip.GetWidth() + 2
+	y = max(0, min(y, wndMgr.GetScreenHeight() - tip.GetHeight()))
+	tip.SetPosition(x, y)
+	if not tip.IsShow():
+		tip.Show()
+	tip.SetTop()

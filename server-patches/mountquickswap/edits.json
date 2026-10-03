@@ -1,0 +1,44 @@
+[
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_MOUNT_QUICKSWAP_V1 (dismount)",
+  "old": "\t\tif (ch->GetMountVnum())\n\t\t{\n\t\t\tsys_log(1, \"[DO_RIDE] unmount\");\n\t\t\tdo_unmount(ch, NULL, 0, 0);\n\t\t\treturn;\n\t\t}\n",
+  "new": "\t\tif (ch->GetMountVnum())\n\t\t{\n#ifdef ENABLE_MOUNT_COSTUME_SYSTEM\n\t\t\t// MT2009_PLUS_MOUNT_QUICKSWAP_V1 (dismount), server-patches/mountquickswap:\n\t\t\t// Ctrl+G gets off a seal mount the way it gets off a horse - the\n\t\t\t// seal stays worn and the mount stands beside the rider again\n\t\t\t// (CMountSystem::Unmount, what the bots already do), so the next\n\t\t\t// Ctrl+G is back in the saddle at once. Before, do_unmount took the\n\t\t\t// seal off into the bag and getting on again meant equipping it,\n\t\t\t// which EquipItem refuses for 1.5 s after any attack or skill\n\t\t\t// (\"You have to stand still to equip the item.\") - get off, cast\n\t\t\t// an aura, and the mount would not take you back. The owner,\n\t\t\t// 3 October: \"aby dzialal jak konie\". A quest mount\n\t\t\t// (pc.set_mount) or an old ride item keeps the old way below.\n\t\t\tLPITEM pkWornSeal = ch->GetWear(WEAR_COSTUME_MOUNT);\n\t\t\tCMountSystem* pkMounts = ch->GetMountSystem();\n\t\t\tif (pkWornSeal && pkMounts && (DWORD)pkWornSeal->GetValue(1) == ch->GetMountVnum() &&\n\t\t\t\t\tpkMounts->GetByVnum(ch->GetMountVnum()))\n\t\t\t{\n\t\t\t\t// the horse's own refusal (StopRiding): not with a trade, a shop\n\t\t\t\t// or the storeroom open\n\t\t\t\tif (ch->IsBusy())\n\t\t\t\t{\n\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"CANNOT_CONTINUE_WHEN_BUSY\"));\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tsys_log(1, \"[DO_RIDE] get off the seal mount, the seal stays worn\");\n\t\t\t\tpkMounts->Unmount(ch->GetMountVnum());\n\t\t\t\t// the movement check's allowance for a rider who gets off in a\n\t\t\t\t// run, as do_unmount and StopRiding give it\n\t\t\t\tch->OnStopRiding();\n\t\t\t\treturn;\n\t\t\t}\n#endif\n\t\t\tsys_log(1, \"[DO_RIDE] unmount\");\n\t\t\tdo_unmount(ch, NULL, 0, 0);\n\t\t\treturn;\n\t\t}\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_MOUNT_QUICKSWAP_V1 (mount)",
+  "old": "\t\t\tCMountSystem* mountSystem = ch->GetMountSystem();\n\t\t\tDWORD mobVnum = mountItem->GetValue(1);\n\n\t\t\tif (mountSystem && mobVnum && mountSystem->CountSummoned() == 1)\n\t\t\t{\n\t\t\t\tsys_log(1, \"[DO_RIDE] mount\");\n\t\t\t\tmountSystem->Mount(mobVnum, mountItem);\n\t\t\t}\n\t\t\treturn;\n",
+  "new": "\t\t\tCMountSystem* mountSystem = ch->GetMountSystem();\n\t\t\tDWORD mobVnum = mountItem->GetValue(1);\n\n\t\t\t// MT2009_PLUS_MOUNT_QUICKSWAP_V1 (mount): a worn seal whose mount is not\n\t\t\t// standing beside the rider (it was sent away, the rider came\n\t\t\t// back to life) is called first, so Ctrl+G is never a dead key;\n\t\t\t// MountSummon keeps its own refusals (OX map, arena).\n\t\t\tif (mountSystem && mobVnum && mountSystem->CountSummoned() == 0)\n\t\t\t\tch->MountSummon(mountItem);\n\n\t\t\tif (mountSystem && mobVnum && mountSystem->CountSummoned() == 1)\n\t\t\t{\n\t\t\t\t// the horse's own pace: 1 s between two mounts (ePulse::HorseUse,\n\t\t\t\t// the clock do_ride and do_user_horse_ride use for a horse)\n\t\t\t\tif (!PulseManager::Instance().IncreaseClock(ch->GetPlayerID(), ePulse::HorseUse, std::chrono::seconds(1)))\n\t\t\t\t\treturn;\n\n\t\t\t\tsys_log(1, \"[DO_RIDE] mount\");\n\t\t\t\tmountSystem->Mount(mobVnum, mountItem);\n\t\t\t}\n\t\t\treturn;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_MOUNT_QUICKSWAP_V1 (same keypress)",
+  "old": "\t\t\t\tif (item->IsNewMountItem() && item->IsEquipped())\n",
+  "new": "\t\t\t\t// MT2009_PLUS_MOUNT_QUICKSWAP_V1 (same keypress): EquipItem has already put a\n\t\t\t\t// player in the saddle (MT2009_PLUS_MOUNT_ON_EQUIP_V1); a second\n\t\t\t\t// Mount took him off and on again - two re-sends of the rider\n\t\t\t\t// to everyone around in one tick.\n\t\t\t\tif (item->IsNewMountItem() && item->IsEquipped() && !ch->GetMountVnum())\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MOUNT_QUICKSWAP_V1 (stand still)",
+  "old": "\tif (iWearCell != WEAR_ARROW\n\t\t&& (dwCurTime - GetLastAttackTime() <= 1500 || dwCurTime - m_dwLastSkillTime <= 1500))\n",
+  "new": "\t// MT2009_PLUS_MOUNT_QUICKSWAP_V1 (stand still), server-patches/mountquickswap:\n\t// a mount seal is put on at once, also right after an attack or a skill,\n\t// as a horse is called and ridden at once - the 1.5 s wait is there\n\t// against swapping weapons and armour in a fight, and a seal only\n\t// calls the mount (Ctrl+G with the seal in the bag, a click on it).\n\t// The equip counter (CanEquipNow, 5 in 500 ms) and FAST_ITEM_SWAP stay.\n\tbool bStandStillCheck = iWearCell != WEAR_ARROW;\n#ifdef ENABLE_MOUNT_COSTUME_SYSTEM\n\tif (item->IsNewMountItem())\n\t\tbStandStillCheck = false;\n#endif\n\tif (bStandStillCheck\n\t\t&& (dwCurTime - GetLastAttackTime() <= 1500 || dwCurTime - m_dwLastSkillTime <= 1500))\n"
+ },
+ {
+  "file": "MountSystem.cpp",
+  "marker": "MT2009_PLUS_MOUNT_CRASH_FIX_V1 (unsummon)",
+  "old": "\t\tif (NULL != m_pkChar)\n\t\t\tM2_DESTROY_CHARACTER(m_pkChar);\n",
+  "new": "\t\t// MT2009_PLUS_MOUNT_CRASH_FIX_V1 (unsummon), server-patches/mountquickswap (Autor: Digi Rasta):\n\t\t// a mount character destroyed from outside stayed in m_pkChar, and\n\t\t// destroying it a second time here took the core down. It is ours only\n\t\t// while the character manager still knows it under our VID.\n\t\tif (NULL != m_pkChar && CHARACTER_MANAGER::instance().Find(m_dwVID) == m_pkChar)\n\t\t\tM2_DESTROY_CHARACTER(m_pkChar);\n"
+ },
+ {
+  "file": "MountSystem.cpp",
+  "marker": "MT2009_PLUS_MOUNT_CRASH_FIX_V1 (summon)",
+  "old": "\tif (0 != m_pkChar)\n\t{\n\t\tm_pkChar->Show(m_pkOwner->GetMapIndex(), x, y);\n",
+  "new": "\t// MT2009_PLUS_MOUNT_CRASH_FIX_V1 (summon), server-patches/mountquickswap (Autor: Digi Rasta):\n\t// a mount character destroyed from outside stayed in m_pkChar, and\n\t// Show() on the freed memory took the core down. One gone meanwhile is\n\t// forgotten and a new one spawned below.\n\tif (0 != m_pkChar && CHARACTER_MANAGER::instance().Find(m_dwVID) != m_pkChar)\n\t{\n\t\tm_pkChar = 0;\n\t\tm_dwVID = 0;\n\t}\n\n\tif (0 != m_pkChar)\n\t{\n\t\tm_pkChar->Show(m_pkOwner->GetMapIndex(), x, y);\n"
+ },
+ {
+  "file": "MountSystem.cpp",
+  "marker": "MT2009_PLUS_MOUNT_CRASH_FIX_V1 (update)",
+  "old": "\t\t\tif (NULL == CHARACTER_MANAGER::instance().Find(pMount->GetVID()))\n",
+  "new": "\t\t\t// MT2009_PLUS_MOUNT_CRASH_FIX_V1 (update), server-patches/mountquickswap (Autor: Digi Rasta):\n\t\t\t// pMount->GetVID() read a character destroyed from outside. The VID the\n\t\t\t// actor kept is looked up and the pointer only compared.\n\t\t\tif (NULL == pMount || CHARACTER_MANAGER::instance().Find(mountActor->GetVID()) != pMount)\n"
+ }
+]

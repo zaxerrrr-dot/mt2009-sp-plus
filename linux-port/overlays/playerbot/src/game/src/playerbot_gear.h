@@ -3854,6 +3854,23 @@ namespace
 		return std::max<int>(0, (int)arrow->GetValue(3));
 	}
 
+	// MT2009_PLUS_QUIVER_V1: a quiver - Kolczan (8010), the ItemShop's, 14 days -
+	// is an arrow with a real-time limit, the engine's own rule
+	// (Mt2009PlusIsQuiver, server-patches/quiver): its arrows never run out, so
+	// one worn is a full quiver for every count below, the equipment pass never
+	// trades it for a stack, and one in the bag is nocked before any stack and
+	// never junk. Bots never buy one (playerbot_itemshop.h has no wish for it);
+	// this is for one a GM hands over.
+	bool IsPlayerBotQuiver(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_WEAPON || item->GetSubType() != WEAPON_ARROW)
+			return false;
+		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+			if (item->GetLimitType(i) == LIMIT_REAL_TIME)
+				return true;
+		return false;
+	}
+
 	// Arrows this bot can nock now. A progression chest hands an archer the
 	// next tier early - 8003 wants level forty, 8004 forty-five - and counting
 	// those said "a hundred arrows, no need to buy" to a bot of thirty-four
@@ -3876,7 +3893,8 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!IsPlayerBotUsableArrow(ch, item))
 				continue;
-			const int grade = GetPlayerBotArrowGrade(item);
+			// MT2009_PLUS_QUIVER_V1: a quiver before any stack.
+			const int grade = GetPlayerBotArrowGrade(item) + (IsPlayerBotQuiver(item) ? 1000 : 0);
 			if (grade > bestGrade)
 			{
 				best = item;
@@ -3893,7 +3911,7 @@ namespace
 		int count = 0;
 		LPITEM worn = ch->GetWear(WEAR_ARROW);
 		if (IsPlayerBotUsableArrow(ch, worn))
-			count += worn->GetCount();
+			count += IsPlayerBotQuiver(worn) ? 1000 : worn->GetCount(); // MT2009_PLUS_QUIVER_V1
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
@@ -3923,9 +3941,12 @@ namespace
 		if (!ch)
 			return false;
 		LPITEM worn = ch->GetWear(WEAR_ARROW);
+		// MT2009_PLUS_QUIVER_V1: a worn quiver stays; one in the bag goes in.
+		if (IsPlayerBotUsableArrow(ch, worn) && IsPlayerBotQuiver(worn))
+			return false;
 		const int wornGrade = IsPlayerBotUsableArrow(ch, worn) ? GetPlayerBotArrowGrade(worn) : -1;
 		LPITEM best = FindPlayerBotBestBagArrow(ch);
-		if (!best || GetPlayerBotArrowGrade(best) <= wornGrade)
+		if (!best || (!IsPlayerBotQuiver(best) && GetPlayerBotArrowGrade(best) <= wornGrade))
 			return false;
 		const DWORD oldVnum = worn ? worn->GetVnum() : 0;
 		const DWORD newVnum = best->GetVnum();

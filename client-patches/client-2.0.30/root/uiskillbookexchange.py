@@ -4,7 +4,7 @@
 # of the player's own class and skill group.
 #
 # The quest ksiegi_seonhae opens the window at Seon-Hae (20095) - "NOWY_KSIEGI
-# open" (digiqol.py). "Wymien" sends "/nowy_ksiegi <10 cells>" and the core
+# open" (digiserverqol.py). "Wymien" sends "/nowy_ksiegi <10 cells>" and the core
 # checks everything again: the NPC, the books, the Yang (playerbot_digi_qol.h).
 # Its answer: "NOWY_KSIEGI done <vnum>".
 #

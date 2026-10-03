@@ -1,0 +1,20 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_CLIENT_QOL_V1 (pickup sound)",
+  "old": "void ChatPacketRecieveItem(LPCHARACTER ch, LPITEM item, ITEM_COUNT count)\n{\n\tif (!ch || !item)\n\t\treturn;\n",
+  "new": "// MT2009_PLUS_DIGI_CLIENT_QOL_V1 (pickup sound): Digi Rasta's Pick-Up-Sound-Effect (Autor: Digi Rasta; nowy-system\n// 0.19.0). While CHARACTER::PickupItem runs, every item it hands to the picker ends here, and the\n// picker's client hears it: \"PickupSound <vnum>\" (1 = yang), a sound by the item's kind, at most\n// one in 0.15 s (game.py, digiqol.py). Real players only - a bot's desc never gets the line.\nstatic int s_iMt2009DigiPickupDepth = 0;\n\nstruct Mt2009DigiPickupScope\n{\n\tMt2009DigiPickupScope() { ++s_iMt2009DigiPickupDepth; }\n\t~Mt2009DigiPickupScope() { --s_iMt2009DigiPickupDepth; }\n};\n\nstatic void Mt2009DigiPickupSound(LPCHARACTER ch, DWORD dwVnum)\n{\n\tif (!ch || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot())\n\t\treturn;\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"PickupSound %u\", dwVnum);\n}\n\nvoid ChatPacketRecieveItem(LPCHARACTER ch, LPITEM item, ITEM_COUNT count)\n{\n\tif (!ch || !item)\n\t\treturn;\n\n\tif (s_iMt2009DigiPickupDepth > 0) // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (pickup sound)\n\t\tMt2009DigiPickupSound(ch, item->GetVnum());\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_CLIENT_QOL_V1 (pickup scope)",
+  "old": "bool CHARACTER::PickupItem(DWORD dwVID)\n{\n",
+  "new": "bool CHARACTER::PickupItem(DWORD dwVID)\n{\n\tMt2009DigiPickupScope digiPickupScope; // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (pickup scope): the items handed over make a sound\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_CLIENT_QOL_V1 (pickup yang)",
+  "old": "\t\t\tGiveGold(item->GetCount());\n",
+  "new": "\t\t\tGiveGold(item->GetCount());\n\t\t\tMt2009DigiPickupSound(this, 1); // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (pickup yang)\n"
+ }
+]

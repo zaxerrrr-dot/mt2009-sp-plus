@@ -3,7 +3,7 @@
 // 3 October: nowy_system.cpp, nowy_system_biore.h, zastosuj.py). Ported as our
 // own code: no hooks script, the engine calls in through
 // server-patches/digirasta-qol (edits.json), the client's side is ordinary
-// files of the client root (digiqol.py, uikillbar.py, uiskillbookexchange.py,
+// files of the client root (digiserverqol.py, uikillbar.py, uiskillbookexchange.py,
 // game.py, uichat.py, uirestart.py, uichestpreview.py).
 //
 // What the engine calls (each declared where it is called, as the other

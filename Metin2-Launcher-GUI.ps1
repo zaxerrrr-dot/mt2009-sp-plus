@@ -999,6 +999,10 @@ function Complete-LauncherAction {
     }
 
     $action = $script:activeAction
+    # MT2009_PLUS_LAUNCHER_DOCKER_RAM_V1: the action a restart of WSL was for,
+    # taken before anything below can set the next one.
+    $chained = $script:chainedAction
+    $script:chainedAction = $null
     $launchClient = $script:launchClientAfterAction
     $openSupport = $script:openSupportAfterAction
     $contactUrl = $script:openContactAfterAction
@@ -1018,12 +1022,21 @@ function Complete-LauncherAction {
 
     if ($exitCode -ne 0) {
         $guidance = Get-M2LauncherErrorGuidance -Text $output -ServerRoot $ServerRoot
-        $message = $guidance.Message + [Environment]::NewLine + [Environment]::NewLine + 'Jak naprawić:' + [Environment]::NewLine + $guidance.Remedy
-        [Windows.Forms.MessageBox]::Show(
-            $message,
-            $guidance.Title,
-            'OK',
-            'Warning') | Out-Null
+        # MT2009_PLUS_LAUNCHER_DOCKER_RAM_V1: a build killed for want of
+        # memory gets the .wslconfig dialog and its "Ustaw automatycznie".
+        $shown = $false
+        if ($guidance.Code -eq 'DOCKER_MEMORY_LOW') {
+            try { $shown = Show-DockerMemoryFailure -Guidance $guidance -LaunchClient $launchClient }
+            catch { Write-LocalLog "Okno pamięci Dockera: $($_.Exception.Message)" -FileOnly; $shown = $false }
+        }
+        if (-not $shown) {
+            $message = $guidance.Message + [Environment]::NewLine + [Environment]::NewLine + 'Jak naprawić:' + [Environment]::NewLine + $guidance.Remedy
+            [Windows.Forms.MessageBox]::Show(
+                $message,
+                $guidance.Title,
+                'OK',
+                'Warning') | Out-Null
+        }
     }
     if ($exitCode -eq 0 -and $action -like 'Update*' -and (Get-LauncherFingerprint) -ne $script:launcherFingerprint) {
         # The startup question said the launcher restarts by itself, and a
@@ -1041,6 +1054,12 @@ function Complete-LauncherAction {
             return
         }
         $script:launcherFingerprint = Get-LauncherFingerprint
+    }
+    if ($exitCode -eq 0 -and $chained -and $action -eq 'RestartDockerWsl') {
+        Write-LocalLog ('Docker uruchomiony ponownie - wznawiam: {0}.' -f $chained.Action)
+        $script:restartAfterUpdate = [bool]$chained.RestartAfterUpdate
+        Start-LauncherAction -Action $chained.Action -Yes:([bool]$chained.Yes) -LaunchClient:([bool]$chained.LaunchClient) -ExtraArgs @($chained.ExtraArgs)
+        return
     }
     if ($exitCode -eq 0 -and $launchClient) { Start-ConfiguredClient }
     if ($exitCode -eq 0 -and $openSupport -and (Test-Path $supportDirectory)) {
@@ -2301,6 +2320,187 @@ function Get-GuiTargetVolume {
     return ''
 }
 
+# MT2009_PLUS_LAUNCHER_DOCKER_RAM_V1: Docker's machine short of memory for the
+# build (3 October: 3.7 GB in all, the game core's compile killed, and GRAJ
+# failed the same way). Said before a server update and before the build GRAJ
+# finishes, in a dialog with the ready .wslconfig, its "Ustaw automatycznie"
+# and "Kontynuuj mimo to"; said once in the log when the window opens; and
+# offered again when a build fails for want of memory. The action the restart
+# of WSL was for runs again by itself once Docker is back ($script:chainedAction).
+$script:dockerMemoryNoticeDone = $false
+$script:chainedAction = $null
+
+function Get-DockerMemoryAdviceSafe {
+    if (-not (Get-Command Get-M2DockerMemoryAdvice -ErrorAction SilentlyContinue)) { return $null }
+    try { return Get-M2DockerMemoryAdvice }
+    catch {
+        Write-LocalLog "Nie udało się sprawdzić pamięci Dockera: $($_.Exception.Message)" -FileOnly
+        return $null
+    }
+}
+
+function Test-DockerMemoryCheckWanted {
+    # The actions that build the server: an update, and GRAJ while a build
+    # is outstanding.
+    param([Parameter(Mandatory = $true)][string]$Action)
+    if ($Action -eq 'UpdateServer' -or $Action -eq 'UpdateAll') { return $true }
+    if ($Action -eq 'Start') { return (Test-Path -LiteralPath (Join-Path $root '.m2launcher-rebuild-pending') -PathType Leaf) }
+    return $false
+}
+
+function Show-DockerMemoryNotice {
+    # Once, when the window opens: a notice in the log and nothing more.
+    if ($script:dockerMemoryNoticeDone) { return }
+    $script:dockerMemoryNoticeDone = $true
+    $advice = Get-DockerMemoryAdviceSafe
+    if (-not $advice -or -not $advice.Low) { return }
+    Write-LocalLog ('UWAGA: ' + $advice.Summary)
+    foreach ($line in @($advice.Instructions -split '\r?\n')) { if ($line.Trim()) { Write-LocalLog $line } }
+    if ($advice.CanAutoFix) {
+        Write-LocalLog 'Przed aktualizacją launcher pokaże tę instrukcję jeszcze raz, z przyciskiem USTAW AUTOMATYCZNIE.'
+    }
+}
+
+function Show-DockerMemoryDialog {
+    # 'fix' (Ustaw automatycznie), 'continue' (Kontynuuj mimo to, only
+    # before a build) or 'cancel'. The steps are in a text box, so the file's
+    # content can be copied from it.
+    param(
+        [Parameter(Mandatory = $true)]$Advice,
+        [ValidateSet('before', 'after')][string]$Mode = 'before',
+        [string]$Heading = ''
+    )
+    $nl = [Environment]::NewLine
+    $dialog = [Windows.Forms.Form]::new()
+    $dialog.Text = if ($Mode -eq 'before') { 'Za mało pamięci RAM dla Dockera' } else { 'Dockerowi zabrakło pamięci RAM' }
+    $dialog.StartPosition = 'CenterParent'
+    $dialog.FormBorderStyle = 'FixedDialog'
+    $dialog.MaximizeBox = $false
+    $dialog.MinimizeBox = $false
+    $dialog.ShowInTaskbar = $false
+
+    $headingText = if ($Heading) { $Heading } else { [string]$Advice.Summary }
+    if ($Mode -eq 'before') { $headingText += $nl + $nl + 'Możesz to naprawić teraz albo mimo to kontynuować.' }
+    $info = [Windows.Forms.Label]::new()
+    $info.Text = $headingText
+    $info.Location = [Drawing.Point]::new(16, 14)
+    $infoHeight = $info.GetPreferredSize([Drawing.Size]::new(600, 0)).Height
+    $info.Size = [Drawing.Size]::new(600, $infoHeight)
+    $dialog.Controls.Add($info)
+
+    $y = 14 + $infoHeight + 10
+    $steps = [Windows.Forms.TextBox]::new()
+    $steps.Multiline = $true
+    $steps.ReadOnly = $true
+    $steps.WordWrap = $true
+    $steps.ScrollBars = 'Vertical'
+    $steps.Font = [Drawing.Font]::new('Consolas', 9)
+    $steps.Text = (@([string]$Advice.Instructions -split '\r?\n') -join "`r`n")
+    $steps.Location = [Drawing.Point]::new(16, $y)
+    $steps.Size = [Drawing.Size]::new(600, 230)
+    $dialog.Controls.Add($steps)
+    $y += 230 + 8
+
+    if ($Advice.CanAutoFix) {
+        $note = [Windows.Forms.Label]::new()
+        $note.Text = ('Ustaw automatycznie: launcher wpisze memory={0}GB do sekcji [wsl2] pliku {1} (inne ustawienia zostaną, stary plik trafi do .wslconfig.bak), a potem zapyta o restart WSL i Dockera.' -f $Advice.RecommendedGb, $Advice.WslConfigPath)
+        $note.ForeColor = [Drawing.Color]::DimGray
+        $note.Location = [Drawing.Point]::new(16, $y)
+        $noteHeight = $note.GetPreferredSize([Drawing.Size]::new(600, 0)).Height
+        $note.Size = [Drawing.Size]::new(600, $noteHeight)
+        $dialog.Controls.Add($note)
+        $y += $noteHeight + 10
+    }
+
+    $buttons = @()
+    if ($Advice.CanAutoFix) { $buttons += ,@('Ustaw automatycznie', [Windows.Forms.DialogResult]::Yes, 170) }
+    if ($Mode -eq 'before') {
+        $buttons += ,@('Kontynuuj mimo to', [Windows.Forms.DialogResult]::No, 160)
+        $buttons += ,@('Anuluj', [Windows.Forms.DialogResult]::Cancel, 110)
+    }
+    else { $buttons += ,@('Zamknij', [Windows.Forms.DialogResult]::Cancel, 110) }
+    $x = 16 + 600
+    $accept = $null
+    for ($i = $buttons.Count - 1; $i -ge 0; $i--) {
+        $spec = $buttons[$i]
+        $button = [Windows.Forms.Button]::new()
+        $button.Text = $spec[0]
+        $button.DialogResult = $spec[1]
+        $x -= $spec[2]
+        $button.Location = [Drawing.Point]::new($x, $y)
+        $button.Size = [Drawing.Size]::new($spec[2] - 8, 30)
+        $button.TabIndex = $i
+        $dialog.Controls.Add($button)
+        if ($i -eq 0) { $accept = $button }
+        if ($spec[1] -eq [Windows.Forms.DialogResult]::Cancel) { $dialog.CancelButton = $button }
+    }
+    $dialog.AcceptButton = $accept
+    $dialog.ActiveControl = $accept
+    $dialog.ClientSize = [Drawing.Size]::new(632, $y + 30 + 14)
+
+    if ($script:form -and $script:form.Visible) { $answer = $dialog.ShowDialog($script:form) }
+    else { $answer = $dialog.ShowDialog() }
+    $dialog.Dispose()
+    if ($answer -eq [Windows.Forms.DialogResult]::Yes) { return 'fix' }
+    if ($answer -eq [Windows.Forms.DialogResult]::No) { return 'continue' }
+    return 'cancel'
+}
+
+function Invoke-DockerMemoryFix {
+    # "Ustaw automatycznie": memory= under [wsl2] in .wslconfig
+    # (Set-M2WslConfigMemory keeps the file's other settings and the old file
+    # as .wslconfig.bak), then the restart of WSL and Docker it needs - asked
+    # first, because it stops Docker and whatever runs in it. -Then is the
+    # action to run once Docker is back (the update, or GRAJ to finish the
+    # build). The action that asked is not started now either way.
+    param([Parameter(Mandatory = $true)]$Advice, [hashtable]$Then = $null)
+    $nl = [Environment]::NewLine
+    try { $written = Set-M2WslConfigMemory -MemoryGb $Advice.RecommendedGb -Path $Advice.WslConfigPath }
+    catch {
+        Write-LocalLog "Nie udało się zapisać .wslconfig: $($_.Exception.Message)"
+        [Windows.Forms.MessageBox]::Show(
+            ('Nie udało się zapisać pliku {0}:{1}{2}{1}{1}Zrób to ręcznie według instrukcji z poprzedniego okna.' -f $Advice.WslConfigPath, $nl, $_.Exception.Message),
+            'Pamięć Dockera', 'OK', 'Warning') | Out-Null
+        return
+    }
+    if ($written.Changed) {
+        $what = 'Zapisano memory={0} w pliku {1}.' -f $written.Value, $written.Path
+        if ($written.Backup) { $what += ' Poprzedni plik: ' + $written.Backup + '.' }
+    }
+    else { $what = 'Plik {0} ma już memory={1} - niczego nie zmieniam.' -f $written.Path, $written.Value }
+    Write-LocalLog $what
+    $resume = ''
+    if ($Then) {
+        $resume = if ($Then.Action -eq 'Start') { ' Potem launcher sam kliknie GRAJ i dokończy budowanie.' } else { ' Potem launcher sam wznowi aktualizację.' }
+    }
+    $answer = [Windows.Forms.MessageBox]::Show(
+        ($what + $nl + $nl + 'Docker zobaczy nową pamięć dopiero po restarcie WSL. Zrestartować teraz?' + $nl + $nl +
+         'Tak: launcher zapisze i zatrzyma serwer, zamknie Docker Desktop (także inne działające w nim kontenery), wykona wsl --shutdown i uruchomi Dockera ponownie.' + $resume + ' Najpierw zamknij grę.' + $nl + $nl +
+         'Nie: zrobisz to później sam - zamknij grę i Docker Desktop, w PowerShell wpisz: wsl --shutdown, uruchom Docker Desktop i kliknij GRAJ.'),
+        'Pamięć Dockera', 'YesNo', 'Question')
+    if ($answer -eq [Windows.Forms.DialogResult]::Yes) {
+        $script:chainedAction = $Then
+        Start-LauncherAction -Action 'RestartDockerWsl' -Yes
+        return
+    }
+    Write-LocalLog 'Restart WSL i Dockera odłożony. Gdy go zrobisz (wsl --shutdown, Docker Desktop od nowa), kliknij GRAJ albo ponów aktualizację.'
+}
+
+function Show-DockerMemoryFailure {
+    # A build killed for want of memory (Get-M2LauncherErrorGuidance:
+    # DOCKER_MEMORY_LOW): the same dialog, its "Ustaw automatycznie", and GRAJ
+    # after the restart. $false when the launcher cannot say more than the
+    # plain message box would.
+    param([Parameter(Mandatory = $true)]$Guidance, [bool]$LaunchClient = $false)
+    $advice = Get-DockerMemoryAdviceSafe
+    if (-not $advice) { return $false }
+    $choice = Show-DockerMemoryDialog -Advice $advice -Mode 'after' -Heading ([string]$Guidance.Message)
+    if ($choice -eq 'fix') {
+        Invoke-DockerMemoryFix -Advice $advice -Then @{ Action = 'Start'; Yes = $false; LaunchClient = $LaunchClient; ExtraArgs = @(); RestartAfterUpdate = $false }
+    }
+    return $true
+}
+
 function Start-LauncherAction {
     param(
         [Parameter(Mandatory = $true)][string]$Action,
@@ -2312,6 +2512,26 @@ function Start-LauncherAction {
     if ($script:activeProcess -and -not $script:activeProcess.HasExited) {
         [Windows.Forms.MessageBox]::Show('Poczekaj na zakończenie bieżącej operacji.', 'Launcher pracuje', 'OK', 'Information') | Out-Null
         return
+    }
+    # MT2009_PLUS_LAUNCHER_DOCKER_RAM_V1: before a build, Docker's memory.
+    if (Test-DockerMemoryCheckWanted -Action $Action) {
+        $memoryAdvice = Get-DockerMemoryAdviceSafe
+        if ($memoryAdvice -and $memoryAdvice.Low) {
+            Write-LocalLog ('UWAGA: ' + $memoryAdvice.Summary)
+            $memoryChoice = Show-DockerMemoryDialog -Advice $memoryAdvice -Mode 'before'
+            if ($memoryChoice -eq 'fix') {
+                $resumeWith = @{ Action = $Action; Yes = [bool]$Yes; LaunchClient = [bool]$LaunchClient; ExtraArgs = @($ExtraArgs); RestartAfterUpdate = [bool]$script:restartAfterUpdate }
+                $script:restartAfterUpdate = $false
+                Invoke-DockerMemoryFix -Advice $memoryAdvice -Then $resumeWith
+                return
+            }
+            if ($memoryChoice -ne 'continue') {
+                $script:restartAfterUpdate = $false
+                Write-LocalLog 'Anulowano - Docker ma za mało pamięci RAM do budowy serwera.'
+                return
+            }
+            Write-LocalLog 'Kontynuuję mimo ostrzeżenia o pamięci Dockera.'
+        }
     }
 
     $stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
@@ -4219,6 +4439,8 @@ $statusTimer.Interval = 8000
 $statusTimer.Add_Tick({
     if ($script:activeProcess) { return }
     Refresh-Status
+    # MT2009_PLUS_LAUNCHER_DOCKER_RAM_V1: once, a notice in the log.
+    try { Show-DockerMemoryNotice } catch { }
     # One manifest read per session: on the first quiet tick rather than during
     # form startup, so the window is already usable while it happens.
     Read-LatestServerVersion
