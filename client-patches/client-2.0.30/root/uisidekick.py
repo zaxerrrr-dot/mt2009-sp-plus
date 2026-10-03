@@ -61,7 +61,7 @@
 # 2 everything. The orders are the letter's own commands, so the window adds
 # nothing the server did not already take from the quest: przywolaj, wolny,
 # czekaj, zakupy, stan, walka N, zbieraj N, ochrona N, buffy N, luruj N, sam N,
-# skrzynki N, grupa N, lider N, rola N, monety N, blokada N, ryby, odprawa tak. lure (server 2.2.19): the companion wakes packs round
+# skrzynki N, grupa N, lider N, rola N, monety N, blokada N, ryby, kup <towar> <ile> [tak], odprawa tak. lure (server 2.2.19): the companion wakes packs round
 # the owner and brings them over; luring: 0 no course, 1 out to a pack, 2 back
 # with them. solo (server 2.2.30, "Gra beze mnie"): with its owner out of the
 # game it plays on alone, up to thirty levels over the owner's. chests (server
