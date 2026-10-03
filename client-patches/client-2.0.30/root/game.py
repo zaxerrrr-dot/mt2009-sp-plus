@@ -2395,6 +2395,7 @@ class GameWindow(ui.ScriptWindow):
 			self.interface.fishingGameDialog.OnFixedUpdate(FIXED_TIMESTEP_UPDATE)
 
 		self.tweenMgr.OnUpdate()
+		__import__("uiopcjedodatkowe").Apply()  # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): Opcje dodatkowe, once a second
 
 		if self.mapNameShower.IsShow():
 			self.mapNameShower.Update()
@@ -3039,6 +3040,8 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["NewPet"] = self.__NewPet # MT2009_PLUS_NEW_PET_V1
 		serverCommandList["GOB"] = self.__Goblin # MT2009_PLUS_GOBLIN_V1
 		serverCommandList["DungeonInfo"] = self.__DungeonInfo # MT2009_PLUS_DUNGEON_PANEL_V1
+		# MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): "PickupSound <vnum>" after a pick-up (digiqol.py)
+		serverCommandList["PickupSound"] = __import__("digiqol").PLAYER.OnCommand
 		serverCommandList["SEONHAE"] = self.__SeonHae # MT2009_PLUS_SEONHAE_V1
 		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
 		# packet) and Owsap's "<flag> <value>" commands (ingameevent.py).

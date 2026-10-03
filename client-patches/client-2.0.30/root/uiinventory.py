@@ -1724,7 +1724,7 @@ class InventoryWindow(ui.ScriptWindow):
 		if gold < 0:
 			gold = player.GetGold()
 
-		self.wndMoney.SetText(localeInfo.NumberToMoneyString(gold))
+		__import__("digiqol").AnimateMoney(self.wndMoney, gold)  # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): ~0.4 s count
 
 		# if app.ENABLE_CHEQUE_SYSTEM:
 		# 	cheque = player.GetCheque()
