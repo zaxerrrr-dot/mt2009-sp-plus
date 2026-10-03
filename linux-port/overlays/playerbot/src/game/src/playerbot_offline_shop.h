@@ -1784,6 +1784,84 @@ namespace {
         }
         return false;
     }
+    // MT2009_PLUS_BOT_REPRICE_NOW_V1: what a counter line asks under the price
+    // rules as they stand now. The reprice of a keeper's visit (below) and the
+    // panel's "reprice now" pass (playerbot_reprice_now.h) both ask it here, so
+    // the two cannot drift apart. `listedLines` is the keeper's clock of its
+    // lines, NULL when the keeper is not on this core: a line nobody here holds
+    // a clock for is priced as a visit prices one it sees first - unmarked.
+    // The caller holds the keeper's TPlayerBotPricingKeeper and the trace.
+    struct TBotOfflineRepriceTarget {
+        long long price = 0, floor = 0;
+        int discount = 0, markup = 0;
+        uint32_t standing = 0;
+    };
+    TBotOfflineRepriceTarget BotOfflineRepriceTarget(LPITEM preview, uint32_t id,
+            std::map<uint32_t, playerbot_offline::ListedLine>* listedLines, DWORD now,
+            TPlayerBotPriceTraceScope& priceTrace, bool generationMoved) {
+        // A line nobody has bought comes down a step for every
+        // PLAYERBOT_OFFLINE_UNSOLD_STEP_MS it has stood - ten percent
+        // every three hours to forty since Iwakura's answer of 28
+        // September - to the ceiling the classic stall's markdown has
+        // and never under what the blacksmith was paid (the owner, 16
+        // September), nor under what a Moonlight chest holds or a
+        // bonus item is worth (GetPlayerBotListingFloor, blipu, 28
+        // September). A line not marked down asks its kind's markup
+        // instead, never both (GetPlayerBotListingPrice). The clock is
+        // the listing's own (o.listed); a line from before this core
+        // started is clocked from the first visit that sees it.
+        playerbot_offline::ListedLine scratch{ preview->GetVnum(), 0u, 0u, 0u };
+        playerbot_offline::ListedLine* line = &scratch;
+        if (listedLines) {
+            auto listed = listedLines->find(id);
+            if (listed == listedLines->end())
+                listed = listedLines->emplace(id, playerbot_offline::ListedLine{
+                    preview->GetVnum(),
+                    preview->GetType() == ITEM_SKILLBOOK ? (uint32_t)preview->GetSocket(0) : 0u,
+                    now, (uint8_t)preview->GetRefineLevel() }).first;
+            line = &listed->second;
+        } else
+            scratch.observedSince = now; // nobody here holds its clock: unmarked, as a line first seen
+        // Unknown age after restart is not the process uptime.
+        if (line->when == 0 && line->observedSince == 0)
+            line->observedSince = now;
+        const uint32_t since = line->when ? line->when : line->observedSince;
+        const uint32_t standing = now - since;
+        int discount = playerbot_price_rules::UnsoldMarkdownPercent(standing,
+                PLAYERBOT_OFFLINE_UNSOLD_STEP_MS, PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT,
+                PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL);
+        // Materialy Rzemieslnicze, Cor Draconis, the Dragon Stones and
+        // the sashes keep the operator's prices: no markdown, no markup.
+        const bool operatorPriced = preview->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
+                IsPlayerBotCorVnum(preview->GetVnum()) || preview->IsDragonSoul() ||
+                (preview->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(preview->GetVnum()));
+        if (operatorPriced)
+            discount = 0;
+        int markup = 0;
+        const long long askingNow = (long long)GetPlayerBotShopAskingPrice(preview);
+        if (priceTrace.On() && !operatorPriced) {
+            // The generation the counter was priced under, and the
+            // clock of the markdown - said at the price they leave.
+            priceTrace.Step(per::STEP_GENERATION, askingNow,
+                    generationMoved ? 1 : 0);
+            priceTrace.Step(per::STEP_MARKDOWN_CLOCK, askingNow, standing / 60000U, per::CLOCK_MINUTES,
+                    line->when == 0 ? 1 : 0);
+        }
+        const long long asking = operatorPriced ? askingNow
+                : (long long)GetPlayerBotListingPrice(preview, (DWORD)askingNow, discount, &markup);
+        const long long repriceFloor = (long long)GetPlayerBotListingFloor(preview);
+        if (repriceFloor > asking) {
+            priceTrace.Step(per::STEP_LISTING_FLOOR, repriceFloor, repriceFloor);
+            priceTrace.trace.flags |= per::LFLAG_FLOOR_BOUND;
+        }
+        TBotOfflineRepriceTarget out;
+        out.price = std::max(asking, repriceFloor);
+        out.floor = repriceFloor;
+        out.discount = discount;
+        out.markup = markup;
+        out.standing = standing;
+        return out;
+    }
     bool ManagePlayerBotOfflineService(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
         using namespace playerbot_offline;
         if (!ch) return false;
@@ -2493,58 +2571,15 @@ namespace {
                         // The keeper's own spread, as when the line went up.
                         TPlayerBotPricingKeeper pricing(ch->GetPlayerID());
                         ikashop::TPriceInfo price{};
-                        // A line nobody has bought comes down a step for every
-                        // PLAYERBOT_OFFLINE_UNSOLD_STEP_MS it has stood - ten percent
-                        // every three hours to forty since Iwakura's answer of 28
-                        // September - to the ceiling the classic stall's markdown has
-                        // and never under what the blacksmith was paid (Tieru, 16
-                        // September), nor under what a Moonlight chest holds or a
-                        // bonus item is worth (GetPlayerBotListingFloor, blipu, 28
-                        // September). A line not marked down asks its kind's markup
-                        // instead, never both (GetPlayerBotListingPrice). The clock is
-                        // the listing's own (o.listed); a line from before this core
-                        // started is clocked from the first visit that sees it.
-                        auto listed = o.listed.find(it->first);
-                        if (listed == o.listed.end())
-                            listed = o.listed.emplace(it->first, playerbot_offline::ListedLine{
-                                    preview->GetVnum(),
-                                    preview->GetType() == ITEM_SKILLBOOK ? (uint32_t)preview->GetSocket(0) : 0u,
-                                    now, (uint8_t)preview->GetRefineLevel() }).first;
-                        // Unknown age after restart is not the process uptime.
-                        if (listed->second.when == 0 && listed->second.observedSince == 0)
-                            listed->second.observedSince = now;
-                        const uint32_t since = listed->second.when ? listed->second.when : listed->second.observedSince;
-                        const uint32_t standing = now - since;
-                        int discount = playerbot_price_rules::UnsoldMarkdownPercent(standing,
-                                PLAYERBOT_OFFLINE_UNSOLD_STEP_MS, PLAYERBOT_SHOP_UNSOLD_DISCOUNT_PERCENT,
-                                PLAYERBOT_SHOP_UNSOLD_DISCOUNT_MAX_TOTAL);
-                        // Materialy Rzemieslnicze, Cor Draconis, the Dragon Stones and
-                        // the sashes keep the operator's prices: no markdown, no markup.
-                        const bool operatorPriced = preview->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
-                                IsPlayerBotCorVnum(preview->GetVnum()) || preview->IsDragonSoul() ||
-                                (preview->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(preview->GetVnum()));
-                        if (operatorPriced)
-                            discount = 0;
-                        int markup = 0;
                         // The reprice traced step by step for the line's explanation.
                         TPlayerBotPriceTraceScope priceTrace;
-                        const long long askingNow = (long long)GetPlayerBotShopAskingPrice(preview);
-                        if (priceTrace.On() && !operatorPriced) {
-                            // The generation the counter was priced under, and the
-                            // clock of the markdown - said at the price they leave.
-                            priceTrace.Step(per::STEP_GENERATION, askingNow,
-                                    o.priceGeneration != GetPlayerBotPriceGeneration() ? 1 : 0);
-                            priceTrace.Step(per::STEP_MARKDOWN_CLOCK, askingNow, standing / 60000U, per::CLOCK_MINUTES,
-                                    listed->second.when == 0 ? 1 : 0);
-                        }
-                        const long long asking = operatorPriced ? askingNow
-                                : (long long)GetPlayerBotListingPrice(preview, (DWORD)askingNow, discount, &markup);
-                        const long long repriceFloor = (long long)GetPlayerBotListingFloor(preview);
-                        if (repriceFloor > asking) {
-                            priceTrace.Step(per::STEP_LISTING_FLOOR, repriceFloor, repriceFloor);
-                            priceTrace.trace.flags |= per::LFLAG_FLOOR_BOUND;
-                        }
-                        price.yang = std::max(asking, repriceFloor);
+                        const TBotOfflineRepriceTarget target = BotOfflineRepriceTarget(preview, it->first,
+                                &o.listed, now, priceTrace, o.priceGeneration != GetPlayerBotPriceGeneration());
+                        const int discount = target.discount;
+                        const int markup = target.markup;
+                        const uint32_t standing = target.standing;
+                        const long long repriceFloor = target.floor;
+                        price.yang = target.price;
                         const unsigned int repriceFlags = priceTrace.On()
                                 ? priceTrace.trace.flags | priceTrace.trace.PriceFlags(price.yang, preview->GetCount()) : 0;
                         const std::string repriceSteps = priceTrace.On() ? priceTrace.trace.Encode() : std::string();
