@@ -458,3 +458,12 @@ Towarowy – brak odpowiedzi. Z rozszerzenia przeniesione tylko jego zmiany (jeg
   (`systemSetting.GetLanguage()`); bez `AnswerServer` rozszerzenia (serwer nie zna `/playerbot_lang`).
 - `game.py` – `FleaPriceQuote`/`FleaPriceRange`/`FleaPriceSales` przekazują też do `shopautoprice`
   (id zapytań kreatorów od 1 500 000 000).
+
+## Kołczan z ItemShopu (MT2009_PLUS_QUIVER_V1)
+
+`tools/quiver/patch_quiver_client.py` – nowy przedmiot 8010 „Kołczan” (ItemShop, 100 SM, 14 dni): rekord
+`item_proto` (kopia Srebrnej Strzały 8005: WEAPON/ARROW, slot strzał, tylko ninja, bez handlu/sprzedaży/
+wyrzucania, limit `LIMIT_REAL_TIME` 1 209 600 s, wartości 0/0/100/25/1300/2250), wiersz `item_list.txt`
+(`icon/item/08010.tga`) i wiersz `itemdesc.txt`. Ikona `tools/quiver/08010.tga` (32×32 RGBA, narysowana – GF
+26.1.11 nie ma ikony kołczanu) to **nowy wpis paczki `icon`**. Klient 2.0.x nie zna `WEAPON_QUIVER`, więc
+kołczan jest strzałą z limitem czasu; nielimitowane strzały daje serwer (`server-patches/quiver`).
