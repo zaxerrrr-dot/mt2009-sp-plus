@@ -277,6 +277,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_bpbots.h"
 // MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages.
 #include "playerbot_shouters.h"
+// MT2009_PLUS_BOT_FRIENDS_V1: a bot answers a person's friend invitation
+// (server-patches/botfriends), after the shouters and the companion it asks.
+#include "playerbot_bot_friends.h"
 // MT2009_PLUS_PROGRESSION_V1: the checklist before a level, after every
 // cohort it asks about and the whole bag it weighs.
 #include "playerbot_progression.h"

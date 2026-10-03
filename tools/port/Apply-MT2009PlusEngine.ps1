@@ -616,6 +616,18 @@ if ((Test-Path -LiteralPath $guildWarKillsApply -PathType Leaf) -and
         Write-Host ('Applied {0} guild war kills edit(s).' -f $guildWarKillsResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Bot friends (server-patches/botfriends): a friend invitation sent to a bot
+# is answered by the bot at once - it has no client for the question
+# (MT2009_PLUS_BOT_FRIENDS_V1, playerbot_bot_friends.h).
+$botFriendsApply = Join-Path $repo 'server-patches/botfriends/Apply-BotFriendsPatch.ps1'
+if ((Test-Path -LiteralPath $botFriendsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'messenger_manager.cpp') -PathType Leaf)) {
+    $botFriendsResult = & $botFriendsApply -SourceDir $engineGameSource
+    if ($botFriendsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} bot friends edit(s).' -f $botFriendsResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # The System Legend (server-patches/legends): a bot of a tier strikes harder
 # against people and monsters, gains more experience, and its deaths and
 # kills count for the Legends (playerbot_legends.h).
