@@ -76,6 +76,7 @@ namespace
 	}
 
 	int CountPlayerBotHerbKnives(LPCHARACTER ch);
+	bool IsPlayerBotRecipeReaderBrewer(LPCHARACTER ch);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
 
 	// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: there is no herbalist by trade
 	// any more (the FIX_V1 share of 10% by pid that spent three quarters of
@@ -103,7 +104,10 @@ namespace
 	// or no bot of a young world ever brewed the cheapest row.
 	long long GetPlayerBotHerbalismGoldReserve(LPCHARACTER ch)
 	{
-		if (IsPlayerBotHerbGatherer(ch))   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
+		// MT2009_PLUS_BOT_HERBALIST_BREW_V2: and so is a reader's - the
+		// Conqueror's two million kept every bot that read a recipe off the
+		// board unless it was also a gatherer.
+		if (IsPlayerBotHerbGatherer(ch) || IsPlayerBotRecipeReaderBrewer(ch))   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
 			return std::max<long long>(PLAYERBOT_HERBALIST_GOLD_RESERVE,
 					(long long)GetPlayerBotReservedGold(ch) + PLAYERBOT_HERBALIST_GOLD_RESERVE);
 		return PLAYERBOT_HERBALISM_GOLD_RESERVE;
@@ -162,6 +166,66 @@ namespace
 	bool IsPlayerBotHerbalismUnlocked(LPCHARACTER ch)
 	{
 		return ch && ch->GetQuestFlag("herbalism_onboarding.completed") > 0;
+	}
+
+	// MT2009_PLUS_BOT_HERBALIST_BREW_V2: what the census counts between two
+	// reports (LogPlayerBotHerbalistCensus).
+	DWORD s_dwPlayerBotHerbCensusCrafts = 0;
+	DWORD s_dwPlayerBotHerbCensusCraftsOK = 0;
+	DWORD s_dwPlayerBotHerbCensusJuiceCrafts = 0;   // anything but the General Store's 27xxx
+	DWORD s_dwPlayerBotHerbCensusReads = 0;
+	DWORD s_dwPlayerBotHerbCensusLearnt = 0;
+	DWORD s_dwPlayerBotHerbCensusRecipesBought = 0;
+	DWORD s_dwPlayerBotHerbCensusTime = 0;
+
+	// MT2009_PLUS_BOT_HERBALIST_BREW_V2: has this bot read anything past the
+	// onboarding's one recipe (row 11 at its first point)? Asked by the
+	// scheduler on every tick, so the answer - some twenty quest flags - is
+	// kept a minute.
+	bool PlayerBotKnowsLearntCraftRecipe(LPCHARACTER ch)
+	{
+		static std::map<DWORD, std::pair<DWORD, bool> > s_mapKnows;
+		if (!ch)
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		const DWORD dwNow = get_dword_time();
+		std::map<DWORD, std::pair<DWORD, bool> >::const_iterator it = s_mapKnows.find(pid);
+		if (it != s_mapKnows.end() && dwNow - it->second.first < PLAYERBOT_HERBALISM_KNOWLEDGE_CACHE_MS)
+			return it->second.second;
+		bool knows = false;
+		DWORD last = 0;
+		for (size_t i = 0; i < PLAYERBOT_HERBALISM_ROW_COUNT && !knows; ++i)
+		{
+			const TCraftingItem* row = CCraftingManager::instance().GetCraftingRecipe(PLAYERBOT_HERBALISM_ROWS[i]);
+			if (!row || row->recipeVnum == 0 || row->recipeVnum == last)
+				continue;
+			last = row->recipeVnum;
+			const int need = row->recipeVnum == PLAYERBOT_HERBALISM_ONBOARD_ROW_RECIPE ? 2 : 1;
+			knows = GetPlayerBotCraftProgress(ch, row->recipeVnum) >= need;
+		}
+		s_mapKnows[pid] = std::make_pair(dwNow, knows);
+		return knows;
+	}
+
+	// A bot that read a recipe brews it: a fixed share of them by pid,
+	// stretched or shrunk by the HERB slider, never a dropper, a companion or
+	// a shouter - the gatherer's exclusions. Under the PERSONA switch the
+	// board used to be a gatherer's or a Conqueror of forty-five's alone, so
+	// the readers of the test world (twenty-odd a row) knew rows nobody brewed.
+	bool IsPlayerBotRecipeReaderBrewer(LPCHARACTER ch)
+	{
+		if (!ch || ch->GetLevel() < PLAYERBOT_HERBALISM_MIN_LEVEL || !IsPlayerBotHerbalismUnlocked(ch))
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		if (IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid))
+			return false;
+		TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.find(pid);
+		if (it == s_mapPlayerBotAIStates.end() || IsPlayerBotDropper(it->second.bPersonality))
+			return false;
+		if (!PlayerBotWeightedRoll(PlayerBotNavHash(pid ^ 0x52454144U) % 100U,
+				PLAYERBOT_HERBALISM_READER_BREW_PERCENT, PLAYERBOT_WEIGHT_HERB))
+			return false;
+		return PlayerBotKnowsLearntCraftRecipe(ch);
 	}
 
 	bool EnsurePlayerBotHerbalismStarted(LPCHARACTER ch)
@@ -253,8 +317,10 @@ namespace
 			if (learnPotion)
 				ch->RemoveAffect(learnPotion);
 			const bool learnt = number(1, 100) <= rolled;
+			++s_dwPlayerBotHerbCensusReads;   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
 			if (learnt)
 			{
+				++s_dwPlayerBotHerbCensusLearnt;
 				SetPlayerBotCraftProgress(ch, recipeVnum, progress + 1);
 				if (GetPlayerBotRecipeLearnDelay(ch, recipeVnum) != 0)
 					SetPlayerBotRecipeLearnDelay(ch, recipeVnum, 0);
@@ -461,6 +527,9 @@ namespace
 		// picked, at any level from Baek-Go's fifteen.
 		if (IsPlayerBotHerbGatherer(ch))
 			return true;
+		// MT2009_PLUS_BOT_HERBALIST_BREW_V2: and a reader brews what it read.
+		if (IsPlayerBotRecipeReaderBrewer(ch))
+			return true;
 		// MT2009_PLUS_BOTLIFE_V1: over 100 the HERB slider ("Zielarstwo")
 		// brings a share of the other bots from Baek-Go's own level fifteen
 		// too - a fixed share by pid, every one of them at 250.
@@ -528,6 +597,12 @@ namespace
 		const bool made = number(1, 100) <= row->chance;
 		if (made)
 			ch->AutoGiveItem(row->itemVnum, row->count);
+		// MT2009_PLUS_BOT_HERBALIST_BREW_V2: the census's brews.
+		++s_dwPlayerBotHerbCensusCrafts;
+		if (made)
+			++s_dwPlayerBotHerbCensusCraftsOK;
+		if (row->itemVnum < 27000 || row->itemVnum > 27999)
+			++s_dwPlayerBotHerbCensusJuiceCrafts;
 		sys_log(0, "PLAYERBOT_HERB: craft pid=%u name=%s row=%u item=%u count=%d chance=%d price=%lld %s",
 				ch->GetPlayerID(), ch->GetName(), row->vnum, row->itemVnum,
 				made ? (int) row->count : 0, row->chance, (long long) row->price,
@@ -661,7 +736,175 @@ namespace
 		// does not have (Mikstura Nietykalnosci, 50931, names row 70).
 		if (recipeVnum == 0 || maxRead <= 0 || !GetPlayerBotRecipeRow(item))
 			return true;
+		// MT2009_PLUS_BOT_HERBALIST_BREW_V2: and a recipe its holder can
+		// never read - it never showed Baek-Go the ten Peach Blossoms, has not
+		// the ten to show him now and does not pick herbs - is the brewers'
+		// goods: on the test world 457 of 462 recipe stacks stood in such bags
+		// for good. A gatherer keeps its own; the bushes bring the blossoms.
+		if (!IsPlayerBotHerbalismUnlocked(ch))
+			return !IsPlayerBotHerbGatherer(ch) &&
+					(int)ch->CountSpecifyItem(PLAYERBOT_HERBALISM_ONBOARD_FLOWER) < PLAYERBOT_HERBALISM_ONBOARD_COUNT;
 		return GetPlayerBotCraftProgress(ch, recipeVnum) >= maxRead;
+	}
+
+	// MT2009_PLUS_BOT_HERBALIST_BREW_V2: buying recipes off the counters.
+	//
+	// The recipe is the one thing no NPC sells: it drops off a Metin stone
+	// (special group 50901, "Receptury") to whoever broke it. So the way to
+	// the board's knowledge for a brewer is the market a player would use -
+	// the holders above put theirs up at the price list's 450 000 and a
+	// brewer buys one it can still learn from. One at a time (none unread in
+	// the bag), a purchase every PLAYERBOT_HERBALISM_RECIPE_BUY_GAP_MS at
+	// most, out of PLAYERBOT_HERBALISM_RECIPE_BUY_PERCENT of what it can spare.
+	bool PlayerBotCanLearnRecipeProto(LPCHARACTER ch, DWORD recipeVnum, long chance, long maxRead)
+	{
+		if (!ch || recipeVnum == 0 || chance <= 0 || maxRead <= 0)
+			return false;
+		const TCraftingItem* row = CCraftingManager::instance().GetCraftingRecipe(recipeVnum);
+		if (!row || row->itemVnum == 0 || ch->GetLevel() < row->reqLevel)
+			return false;
+		return GetPlayerBotCraftProgress(ch, recipeVnum) < maxRead;
+	}
+
+	bool PlayerBotHoldsReadableRecipe(LPCHARACTER ch)
+	{
+		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (IsPlayerBotCraftRecipeItem(item) &&
+					PlayerBotCanLearnRecipeProto(ch, item->GetValue(0), item->GetValue(1), item->GetValue(2)))
+				return true;
+		}
+		return false;
+	}
+
+	std::map<DWORD, DWORD> s_mapPlayerBotRecipeBuyNext;
+
+	bool IsPlayerBotRecipeShopper(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || !IsPlayerBotHerbalismUnlocked(ch) ||
+				ch->GetLevel() < PLAYERBOT_HERBALISM_MIN_LEVEL)
+			return false;
+		if (!IsPlayerBotHerbGatherer(ch) && !IsPlayerBotRecipeReaderBrewer(ch))
+			return false;
+		std::map<DWORD, DWORD>::const_iterator next = s_mapPlayerBotRecipeBuyNext.find(ch->GetPlayerID());
+		if (next != s_mapPlayerBotRecipeBuyNext.end() && (int)(get_dword_time() - next->second) < 0)
+			return false;
+		if ((long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch) < PLAYERBOT_HERBALISM_RECIPE_BUY_MIN_SPARE)
+			return false;
+		return !PlayerBotHoldsReadableRecipe(ch);
+	}
+
+	bool WantsPlayerBotRecipeOffer(LPCHARACTER ch, LPITEM offer)
+	{
+		if (!IsPlayerBotCraftRecipeItem(offer) || !IsPlayerBotRecipeShopper(ch))
+			return false;
+		return PlayerBotCanLearnRecipeProto(ch, offer->GetValue(0), offer->GetValue(1), offer->GetValue(2));
+	}
+
+	// Before the walk, without reading a counter: the ledger's recipes.
+	bool PlayerBotWantsRecipeFromMarket(LPCHARACTER ch)
+	{
+		if (!IsPlayerBotRecipeShopper(ch))
+			return false;
+		for (DWORD vnum = PLAYERBOT_HERBALISM_RECIPE_FIRST; vnum <= PLAYERBOT_HERBALISM_RECIPE_LAST; ++vnum)
+		{
+			const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(vnum);
+			if (!entry || entry->dwSupplyUnits == 0)
+				continue;
+			const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+			if (proto && proto->bType == ITEM_USE && proto->bSubType == USE_CRAFT_RECIPE &&
+					PlayerBotCanLearnRecipeProto(ch, (DWORD)proto->alValues[0], proto->alValues[1], proto->alValues[2]))
+				return true;
+		}
+		return false;
+	}
+
+	void NotePlayerBotRecipeBought(LPCHARACTER ch, DWORD vnum, long long price)
+	{
+		if (!ch || vnum < PLAYERBOT_HERBALISM_RECIPE_FIRST || vnum > PLAYERBOT_HERBALISM_RECIPE_LAST)
+			return;
+		s_mapPlayerBotRecipeBuyNext[ch->GetPlayerID()] = get_dword_time() + PLAYERBOT_HERBALISM_RECIPE_BUY_GAP_MS;
+		++s_dwPlayerBotHerbCensusRecipesBought;
+		sys_log(0, "PLAYERBOT_HERB: recipe bought pid=%u name=%s vnum=%u price=%lld gold=%lld",
+				ch->GetPlayerID(), ch->GetName(), vnum, price, (long long)ch->GetGold());
+	}
+
+	// The census, with the market's ten-minute report: who brews, who knows
+	// what, what the board made since the last one and what of it stands on a
+	// counter. "herbalists" are the gatherers (a knife in the bag),
+	// "onboarded" the bots Baek-Go opened his board to, "knowers" those that
+	// read past the onboarding's recipe, "brewers" every bot the board's visit
+	// would take (IsPlayerBotZielarz and onboarded).
+	void LogPlayerBotHerbalistCensus(DWORD dwNow)
+	{
+		unsigned int bots = 0, herbalists = 0, onboarded = 0, knowers = 0, brewers = 0;
+		unsigned int recipesReadable = 0, recipesStranded = 0, potionsBag = 0;
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
+				it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!ch || !ch->IsItemLoaded() || ch->GetLevel() < PLAYERBOT_HERBALISM_MIN_LEVEL)
+				continue;
+			++bots;
+			const bool unlocked = IsPlayerBotHerbalismUnlocked(ch);
+			if (IsPlayerBotHerbGatherer(ch))
+				++herbalists;
+			if (unlocked)
+			{
+				++onboarded;
+				if (PlayerBotKnowsLearntCraftRecipe(ch))
+					++knowers;
+				if (IsPlayerBotZielarz(ch))
+					++brewers;
+			}
+			for (int cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (!item || item->GetCell() != cell)
+					continue;
+				if (IsPlayerBotCraftRecipeItem(item))
+				{
+					if (!unlocked)
+						recipesStranded += item->GetCount();
+					else if (PlayerBotCanLearnRecipeProto(ch, item->GetValue(0), item->GetValue(1), item->GetValue(2)))
+						recipesReadable += item->GetCount();
+				}
+				else if (item->GetVnum() >= 51700 && item->GetVnum() <= 51807)
+					potionsBag += item->GetCount();
+			}
+		}
+		unsigned int listedJuices = 0, listedAll = 0, listedRecipes = 0;
+		for (size_t i = 0; i < PLAYERBOT_HERBALISM_ROW_COUNT; ++i)
+		{
+			const TCraftingItem* row = CCraftingManager::instance().GetCraftingRecipe(PLAYERBOT_HERBALISM_ROWS[i]);
+			if (!row || row->itemVnum == 0)
+				continue;
+			const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(row->itemVnum);
+			if (!entry)
+				continue;
+			listedAll += entry->dwSupplyUnits;
+			if (row->itemVnum >= 51700 && row->itemVnum <= 51807)
+				listedJuices += entry->dwSupplyUnits;
+		}
+		for (DWORD vnum = PLAYERBOT_HERBALISM_RECIPE_FIRST; vnum <= PLAYERBOT_HERBALISM_RECIPE_LAST; ++vnum)
+		{
+			const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(vnum);
+			if (entry)
+				listedRecipes += entry->dwSupplyUnits;
+		}
+		const DWORD elapsed = s_dwPlayerBotHerbCensusTime != 0 ? dwNow - s_dwPlayerBotHerbCensusTime : 0;
+		const unsigned int perHour = elapsed > 0
+				? (unsigned int)((unsigned long long)s_dwPlayerBotHerbCensusCrafts * 3600000ULL / elapsed) : 0;
+		sys_log(0, "PLAYERBOT_HERB: census bots15=%u herbalists=%u onboarded=%u knowers=%u brewers=%u brews=%u ok=%u juice_brews=%u brews_hour=%u minutes=%u reads=%u learnt=%u recipes_bought=%u recipes_readable=%u recipes_stranded=%u recipes_listed=%u potions_bag=%u potions_listed=%u potions_listed_all=%u",
+				bots, herbalists, onboarded, knowers, brewers, s_dwPlayerBotHerbCensusCrafts,
+				s_dwPlayerBotHerbCensusCraftsOK, s_dwPlayerBotHerbCensusJuiceCrafts, perHour,
+				(unsigned int)(elapsed / 60000U), s_dwPlayerBotHerbCensusReads, s_dwPlayerBotHerbCensusLearnt,
+				s_dwPlayerBotHerbCensusRecipesBought, recipesReadable, recipesStranded, listedRecipes,
+				potionsBag, listedJuices, listedAll);
+		s_dwPlayerBotHerbCensusCrafts = s_dwPlayerBotHerbCensusCraftsOK = s_dwPlayerBotHerbCensusJuiceCrafts = 0;
+		s_dwPlayerBotHerbCensusReads = s_dwPlayerBotHerbCensusLearnt = s_dwPlayerBotHerbCensusRecipesBought = 0;
+		s_dwPlayerBotHerbCensusTime = dwNow;
 	}
 
 	// ---------------------------------------------------------------------
@@ -856,6 +1099,8 @@ namespace
 				(int)(skipUntil->second - dwNow) > 0) ? skip->second : 0;
 		LPCHARACTER best = NULL;
 		long bestDistance = 0;
+		const bool peachFirst = !IsPlayerBotHerbalismUnlocked(ch) &&
+				(int)ch->CountSpecifyItem(PLAYERBOT_HERBALISM_ONBOARD_FLOWER) < PLAYERBOT_HERBALISM_ONBOARD_COUNT;
 		for (size_t r = 0; r < PLAYERBOT_HERB_BUSH_RACE_COUNT; ++r)
 		{
 			CharacterVectorInteractor bushes;
@@ -872,9 +1117,14 @@ namespace
 				const DWORD vid = (DWORD)bush->GetVID();
 				if (vid == skipVid || IsPlayerBotHerbBushTaken(pid, vid))
 					continue;
-				const long distance = DISTANCE_APPROX(ch->GetX() - bush->GetX(), ch->GetY() - bush->GetY());
+				long distance = DISTANCE_APPROX(ch->GetX() - bush->GetX(), ch->GetY() - bush->GetY());
 				if (distance > PLAYERBOT_HERB_SEARCH_RANGE)
 					continue;
+				// MT2009_PLUS_BOT_HERBALIST_BREW_V2: a gatherer Baek-Go has
+				// not opened his board to yet wants the ten Peach Blossoms
+				// that open it, so their bush counts a third as far.
+				if (peachFirst && bush->GetRaceNum() == PLAYERBOT_HERBALISM_PEACH_BUSH)
+					distance /= 3;
 				if (!best || distance < bestDistance)
 				{
 					best = bush;
@@ -1236,6 +1486,10 @@ namespace
 	bool IsPlayerBotHerbSessionNow(DWORD, DWORD) { return false; }
 	bool IsPlayerBotHerbPickingNow(LPCHARACTER, DWORD) { return false; }
 	bool ManagePlayerBotHerbGathering(LPCHARACTER, TPlayerBotAIState&, DWORD) { return false; }
+	bool WantsPlayerBotRecipeOffer(LPCHARACTER, LPITEM) { return false; }
+	bool PlayerBotWantsRecipeFromMarket(LPCHARACTER) { return false; }
+	void NotePlayerBotRecipeBought(LPCHARACTER, DWORD, long long) { }
+	void LogPlayerBotHerbalistCensus(DWORD) { }
 
 #endif
 }

@@ -1,0 +1,20 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_COLLECTOR_STORAGE_V1 (unthrottled)",
+  "old": "\tstatic const char* const s_apszUnthrottled[] = { \"autohunt_target\", \"autohunt_loot\", \"gmpanel_check_gm\", \"kalendarz\", \"ingame_event\", NULL };\n",
+  "new": "\t// MT2009_PLUS_COLLECTOR_STORAGE_V1 (unthrottled): the collector's storage keeps its own\n\t// limit (playerbot_collector.cpp), so a run of right clicks is never dropped.\n\tstatic const char* const s_apszUnthrottled[] = { \"autohunt_target\", \"autohunt_loot\", \"gmpanel_check_gm\", \"kalendarz\", \"ingame_event\", \"kolekcjoner\", NULL };\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_COLLECTOR_STORAGE_V1 (declare)",
+  "old": "ACMD(do_safebox_arrange);\n",
+  "new": "ACMD(do_safebox_arrange);\n// MT2009_PLUS_COLLECTOR_STORAGE_V1 (declare): \"/kolekcjoner\", the collector's storage\n// (playerbot_collector.cpp in the overlay defines it).\nACMD(do_collector);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_COLLECTOR_STORAGE_V1 (table)",
+  "old": "\t{ \"safebox_arrange\",\tdo_safebox_arrange,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"safebox_arrange\",\tdo_safebox_arrange,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_COLLECTOR_STORAGE_V1 (table)\n\t{ \"kolekcjoner\",\tdo_collector,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ }
+]

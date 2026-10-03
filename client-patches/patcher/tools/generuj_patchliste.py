@@ -26,6 +26,12 @@ Sources are applied in order, a later source replaces the same path:
 A source is a .zip or a folder; "::" adds a comma separated list of paths /
 glob patterns to take from it (default: everything). Player files are never
 published (coop*.cfg, *.cfg, UserData/, screenshot/, mark/, logs, ...).
+
+CLIENT_VERSION: the release zips carry one at their root, and the patcher
+writes it into the client folder - that is how the server launcher learns that
+the patcher brought the client up to date. It is published from the last
+source that has one (whatever the "::" patterns), as "<version>\\r\\n";
+--client-version overrides it, --bez-client-version leaves it out.
 """
 import argparse
 import datetime
@@ -34,6 +40,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -47,7 +54,7 @@ NEVER = [
     '*.log', 'syserr.txt', 'log.txt', 'errorlog.txt', '*.dmp', 'crash*',
     'mt2009-aktualizator.tmp/*', 'mt2009-aktualizator.log',
     '*.bak', '*.tmp', 'thumbs.db', 'desktop.ini',
-    'client_version',       # written only with --client-version
+    'client_version',       # published on its own (see read_client_version)
 ]
 CHUNK = 1 << 20
 
@@ -91,6 +98,31 @@ def iter_source(path, patterns):
                 yield rel, (lambda i=info: zf.open(i))
     else:
         sys.exit('Nie znaleziono źródła (zip albo folder): %s' % path)
+
+
+def read_client_version(path):
+    """The version in the root CLIENT_VERSION of a zip or folder, or None."""
+    data = None
+    if os.path.isdir(path):
+        for name in os.listdir(path):
+            full = os.path.join(path, name)
+            if name.lower() == 'client_version' and os.path.isfile(full):
+                with open(full, 'rb') as f:
+                    data = f.read(256)
+                break
+    elif zipfile.is_zipfile(path):
+        with zipfile.ZipFile(path) as zf:
+            for info in zf.infolist():
+                if not info.is_dir() and info.filename.replace('\\', '/').lower() == 'client_version':
+                    with zf.open(info) as f:
+                        data = f.read(256)
+                    break
+    if data is None:
+        return None
+    text = data.decode('utf-8-sig', 'replace').strip()
+    if not re.match(r'^[0-9A-Za-z._-]{1,32}$', text):
+        sys.exit('CLIENT_VERSION w %s nie jest wersją: %r' % (path, text))
+    return text
 
 
 def check_rel(rel):
@@ -146,7 +178,9 @@ def main():
     ap.add_argument('--usun', action='append', default=[], metavar='ŚCIEŻKA',
                     help='plik klienta do usunięcia u graczy (wpis "delete")')
     ap.add_argument('--client-version', metavar='WERSJA',
-                    help='dopisuje plik CLIENT_VERSION z tą wersją (dla MT2009-Aktualizatora)')
+                    help='wersja w publikowanym CLIENT_VERSION (domyślnie: z CLIENT_VERSION ostatniego źródła, które go ma)')
+    ap.add_argument('--bez-client-version', action='store_true',
+                    help='nie publikuj CLIENT_VERSION')
     ap.add_argument('--wyjscie', default='/opt/metin2/dist/patcher', help='drzewo serwera (domyślnie %(default)s)')
     ap.add_argument('--bez-sprzatania', action='store_true', help='nie usuwaj starych plików z files/')
     args = ap.parse_args()
@@ -165,10 +199,17 @@ def main():
             sys.exit('Brak MT2009-Patcher.exe w %s' % args.patcher)
         sources.append((args.patcher, pats))
     skipped = []
+    client_version = None
+    client_version_from = None
     for path, patterns in sources:
+        found = read_client_version(path)
+        if found:
+            client_version, client_version_from = found, path
         count = 0
         for rel, opener in iter_source(path, patterns):
             check_rel(rel)
+            if rel.lower() == 'client_version':
+                continue    # read by read_client_version, published below
             if is_never(rel):
                 skipped.append(rel)
                 continue
@@ -189,9 +230,16 @@ def main():
         items.append({'name': rel.replace('/', '\\'), 'size': size, 'md5': md5, 'uid': md5.lower(), 'delete': 0})
         total += size
     if args.client_version:
-        data = (args.client_version.strip() + '\r\n').encode('ascii')
+        client_version, client_version_from = args.client_version.strip(), '--client-version'
+    if args.bez_client_version:
+        client_version = None
+    if client_version:
+        print('CLIENT_VERSION %s (z %s)' % (client_version, client_version_from))
+        data = (client_version + '\r\n').encode('ascii')
         md5, size = store(lambda: io.BytesIO(data), files_dir)
         items.append({'name': 'CLIENT_VERSION', 'size': size, 'md5': md5, 'uid': md5.lower(), 'delete': 0})
+    else:
+        print('UWAGA: bez CLIENT_VERSION - launcher serwera rozpozna klienta z patchera tylko po sumach z client-files.json')
     for rel in args.usun:
         rel = rel.replace('\\', '/')
         check_rel(rel)
@@ -215,6 +263,7 @@ def main():
     write_json(os.path.join(out, 'patchlist-info.json'), {
         'wygenerowano': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'zrodla': [p + ('' if pats is None else '::' + ','.join(pats)) for p, pats in sources],
+        'client_version': client_version,
         'plikow': len(items),
         'bajtow': total,
     })

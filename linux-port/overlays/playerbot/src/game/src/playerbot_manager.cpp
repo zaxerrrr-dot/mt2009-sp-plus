@@ -263,6 +263,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // fights, the owner's drops, the owner's trades. Before companions.h, whose
 // IsPlayerBotHeldForCompany asks whether a bot is one.
 #include "playerbot_sidekick.h"
+// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: the owner's "Kup" errand - potions and
+// arrows at the merchants, capes and the like off the stands.
+#include "playerbot_sidekick_shop.h"
 // Iwakura's social personalities: the companion's phase and its invitations
 // to people, a companion Shaman's party buffs, and the mercenary's contracts.
 #include "playerbot_companions.h"
@@ -278,6 +281,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_bpbots.h"
 // MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages.
 #include "playerbot_shouters.h"
+// MT2009_PLUS_BOT_FRIENDS_V1: a bot answers a person's friend invitation
+// (server-patches/botfriends), after the shouters and the companion it asks.
+#include "playerbot_bot_friends.h"
 // MT2009_PLUS_PROGRESSION_V1: the checklist before a level, after every
 // cohort it asks about and the whole bag it weighs.
 #include "playerbot_progression.h"

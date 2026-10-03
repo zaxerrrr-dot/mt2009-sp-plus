@@ -24,6 +24,13 @@
 #  no new client in this release.
 #
 #  DEST=/other/dir sh tools/publish-update-mirror.sh ...  publishes elsewhere.
+#
+#  With a client zip it also rebuilds the client patcher's list
+#  ($PATCHER_DIR/patchlist.json, generuj_patchliste.py) from that zip, with
+#  its CLIENT_VERSION, which the patcher writes into the client folder and the
+#  server launcher reads to say the client is up to date. The zip carries
+#  MT2009-Patcher.exe itself; PATCHER_APP=<folder> takes the patcher from that
+#  folder instead. PATCHER_LIST=0 leaves the list alone.
 # =============================================================================
 set -eu
 
@@ -125,4 +132,15 @@ if [ -d "$PATCHER_DIR" ]; then
     python3 "$REPO_ROOT/client-patches/patcher/tools/generuj_aktualnosci.py" \
         --changelog "$REPO_ROOT/CHANGELOG.md" --ile 4 --wyjscie "$PATCHER_DIR/news.json" ||
         say "UWAGA: nie udalo sie odswiezyc aktualnosci patchera ($PATCHER_DIR/news.json)"
+fi
+
+# MT2009_PLUS_PATCHER_CLIENT_VERSION_V1: the patcher's file list of the new
+# client, CLIENT_VERSION included (read from the zip's own CLIENT_VERSION).
+# Without it a client the patcher updated stayed "nieaktualny" in the launcher.
+PATCHER_APP=${PATCHER_APP:-}
+if [ "$CLIENT_ZIP" != "-" ] && [ "${PATCHER_LIST:-1}" != "0" ] && [ -d "$PATCHER_DIR" ]; then
+    set -- --wyjscie "$PATCHER_DIR" --zrodlo "$CLIENT_ZIP"
+    [ -n "$PATCHER_APP" ] && set -- "$@" --patcher "$PATCHER_APP"
+    python3 "$REPO_ROOT/client-patches/patcher/tools/generuj_patchliste.py" "$@" ||
+        say "UWAGA: nie udalo sie odswiezyc listy plikow patchera ($PATCHER_DIR/patchlist.json)"
 fi

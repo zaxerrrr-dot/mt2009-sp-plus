@@ -618,6 +618,18 @@ if ((Test-Path -LiteralPath $guildWarKillsApply -PathType Leaf) -and
         Write-Host ('Applied {0} guild war kills edit(s).' -f $guildWarKillsResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Bot friends (server-patches/botfriends): a friend invitation sent to a bot
+# is answered by the bot at once - it has no client for the question
+# (MT2009_PLUS_BOT_FRIENDS_V1, playerbot_bot_friends.h).
+$botFriendsApply = Join-Path $repo 'server-patches/botfriends/Apply-BotFriendsPatch.ps1'
+if ((Test-Path -LiteralPath $botFriendsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'messenger_manager.cpp') -PathType Leaf)) {
+    $botFriendsResult = & $botFriendsApply -SourceDir $engineGameSource
+    if ($botFriendsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} bot friends edit(s).' -f $botFriendsResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # The System Legend (server-patches/legends): a bot of a tier strikes harder
 # against people and monsters, gains more experience, and its deaths and
 # kills count for the Legends (playerbot_legends.h).
@@ -801,6 +813,16 @@ if ((Test-Path -LiteralPath $guildWarJoinApply -PathType Leaf) -and
         Write-Host ('Applied {0} guild war entry edit(s).' -f $guildWarJoinResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The collector's storage (server-patches/collector,
+# MT2009_PLUS_COLLECTOR_STORAGE_V1): "/kolekcjoner" in the command table and
+# off the engine's flood guard; the work is playerbot_collector.cpp (overlay).
+$collectorApply = Join-Path $repo 'server-patches/collector/Apply-CollectorPatch.ps1'
+if ((Test-Path -LiteralPath $collectorApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd.cpp') -PathType Leaf)) {
+    $collectorResult = & $collectorApply -SourceDir $engineGameSource
+    if ($collectorResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} collector storage edit(s).' -f $collectorResult.Applied) -ForegroundColor DarkGray
 # The weekly ranking and its titles (server-patches/weeklyrank,
 # MT2009_PLUS_WEEKLY_RANKING_V1, on the basis of the Arezzo files' weekly
 # ranking): /ranking for the client's window, the alchemy count at a Dragon
