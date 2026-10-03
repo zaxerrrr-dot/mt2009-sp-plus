@@ -6262,6 +6262,11 @@ WritePlayerBotGuildStatus(dwNow);
 		}
 		// Every bot of the pass, before the light/full split halves them.
 		NotePlayerBotPersonaCensus(state, dwNow);
+		// MT2009_PLUS_BOT_DS_EXTEND_V1: the alchemy deck on for a fight and
+		// off a minute after it (playerbot_alchemy.h), on every tick and
+		// before every errand that ends the tick early.
+		if (d->IsPhase(PHASE_GAME))
+			ManagePlayerBotDsDeckTick(ch, state, dwNow);
 
 		// Keep expensive decisions staggered over two ticks, but let an already
 		// engaged bot continue its basic combo on the intervening tick.  This makes
@@ -7016,9 +7021,10 @@ WritePlayerBotGuildStatus(dwNow);
 				ManagePlayerBotSaddlebag(ch, state, dwNow))
 			continue;
 
-		// Alchemy (playerbot_alchemy.h): Cors opened, stones worn and the deck
-		// on outside the safe zones on a short clock; refines and the Time
-		// Elixir at the Alchemist of a first village.
+		// Alchemy (playerbot_alchemy.h): Cors opened and stones worn on a
+		// short clock; refines and the Time Elixir (an expired good stone
+		// too, MT2009_PLUS_BOT_DS_EXTEND_V1) at the Alchemist of a first
+		// village. The deck's switch is ManagePlayerBotDsDeckTick above.
 		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotAlchemy(ch, state, dwNow))
 			continue;
