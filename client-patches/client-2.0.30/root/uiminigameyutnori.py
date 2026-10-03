@@ -1637,8 +1637,12 @@ class YutnoriGamePage(ui.ScriptWindow):
 		self.ArrowImgHide()
 		_DisableFlash(self.yut_throw_button)
 
+		# MT2009_PLUS_HEAVEN_OIL_V1 (client fixes, Autor: Digi Rasta, nowy-system v0.17.2):
+		# the re-throw popup's accept event is this very method, and its Close() calls
+		# the event again - a recursion to Python's limit (RuntimeError in syserr) and
+		# hundreds of throw packets. Hide() closes it without the event.
 		if self.re_throw_popup:
-			self.re_throw_popup.Close()
+			self.re_throw_popup.Hide()
 
 	def __UpdateToolTip(self):
 		if not self.toolTip:

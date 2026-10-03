@@ -60,9 +60,32 @@ ich questów (sami nie dają przedmiotów).
 
 ## Kamienie duchowe +0…+9
 
-Od +4 u Kowala: Magiczny Pył 8/12/18/25/35, 5/10/20/40/80 mln Yang, 50/40/35/30/25%; porażka niszczy kamień.
+Od +4 u Kowala: Magiczny Pył 8/12/18/25/35 i (od v0.17) Olejek Niebios 1/1/2/2/3, 5/10/20/40/80 mln Yang,
+50/40/35/30/25%; porażka niszczy kamień.
 Wartości +5…+9 jak w jego `30_kamienie.sql`; każdy +5…+9 ma swój „rodzaj” (`value5`), więc dwa różne nie
 blokują się nawzajem. Klient pokazuje wszystkie 7 bonusów przedmiotu (`root/uitooltip.py`).
+
+## Olejek Niebios (v0.17) i poprawki klienta (v0.17.2)
+
+**Autor: Digi Rasta** (paczka „nowy-system” v0.17 / v0.17.2: `66_olejek.sql`, receptury w `30_kamienie.sql`,
+wiersz `BOSS_DROP_TABLE`, `klient.py`), przeniesione jako nasz kod, bez haków `zastosuj.py`. Znacznik
+`MT2009_PLUS_HEAVEN_OIL_V1`.
+
+- **Olejek Niebios (71056)** – w danych moda unikat na 5 dni bez działania; teraz zwykły materiał (typ 5, bez
+  limitu czasu, handlowalny, stos 200) i drugi składnik ulepszania kamieni duchowych u Kowala: +4→+5: 1,
+  +5→+6: 1, +6→+7: 2, +7→+8: 2, +8→+9: 3 (obok Magicznego Pyłu; Yang i szanse bez zmian) – `apply.sh`.
+- **Drop** (`HEAVEN_OIL_BOSS_DROPS` w `playerbot_awakening.h`, ten sam hak co Kamień Przebudzenia, jednostki
+  na 10 000): Silna Lodowa Wiedźma (1192, Grota Wygnańców 1) 3% – jak w jego paczce; Beran-Setaou (2493, Leże
+  Smoka) 3%; Królowa Dżungli (9714, Starożytna Dżungla – najtrudniejszy loch Arezzo, od 95 poziomu) 10%.
+- **Boty**: cena 5 000 000 Yang (`playerbot_price_tables.h`), nigdy do kupca (`IsPlayerBotAwakeningGoods`), towar
+  na stragan (materiał ulepszania). Bot od 75 poziomu z kamieniem duchowym +4…+8 w plecaku sam ulepsza go
+  u Kowala (`ManagePlayerBotSoulStoneStep`, najniższy stopień najpierw) – tylko gdy ma pył, olejek i dwa razy
+  opłatę ponad rezerwę; po każdej próbie lub odmowie 10 minut przerwy (bez pętli przy braku olejku). Olejek
+  na najbliższy krok trzyma w plecaku, resztę wystawia; kupuje go ze straganów, gdy brakuje tylko olejku.
+- **Klient** (`client-patches/client-2.0.30`): rekord 71056 i nowy opis w `itemdesc.txt`; poprawki z v0.17.2 –
+  Yut Nori: okienko „rzuć jeszcze raz” bez rekurencji (`uiminigameyutnori.py`, `Hide()` zamiast `Close()`),
+  podgląd skrzynki: duże liczby skracane i od prawej (`uichestpreview.py`), ikony w `item_list.txt` (7170 →
+  `07180.tga`, nowy wiersz 22030).
 
 ## Koń do 30 poziomu
 

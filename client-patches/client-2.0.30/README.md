@@ -389,6 +389,27 @@ Znaczniki `MT2009_PLUS_AWAKENING_V1`, `MT2009_PLUS_SOULSTONE9_V1`, `MT2009_PLUS_
   wszystkie 7 bonusów), `uihorseinventory.py` (rzędy juków do 30 poziomu konia – tabela questu
   `horse_inventory`), `uiattributelist.py` („Silny przeciwko potworom” w spisie bonusów – bonus konia od 21).
 
+## Olejek Niebios i poprawki klienta Digi Rasty (v0.17 / 0.17.2) – bez zmian exe
+
+**Autor: Digi Rasta** (paczka „nowy-system” v0.17 i v0.17.2: `66_olejek.sql`, `OLEJEK_NIEBIOS`,
+`OPISY_ZMIENIONE`, `IKONY_POPRAWKI`/`IKONY_DODATKOWE` i `ROOT_PATCHES` jego `klient.py`), przeniesione jako nasz kod.
+Znacznik `MT2009_PLUS_HEAVEN_OIL_V1`; serwer: `apply.sh` (blok kamieni duchowych), `playerbot_awakening.h`.
+
+- `tools/digirasta/patch_digirasta_client.py` (to samo narzędzie, nadal idempotentne):
+  - `gamedata/item_proto` – Olejek Niebios (71056) jak na serwerze: typ 5/0, stos 200, antiflag 0, flag 4, wear 0,
+    wartości 0 (wcześniej unikat na 5 dni);
+  - `locale/pl/itemdesc.txt` – wiersz 71056 zastąpiony: składnik ulepszania Kamieni Duszy (1, 1, 2, 2, 3 sztuki
+    od +4, obok Magicznego Pyłu), skąd wypada (Silna Lodowa Wiedźma, Beran-Setaou, Królowa Dżungli);
+  - `gamedata/item_list.txt` – 7170 (Wachlarz Leżąc. Smoka+0) dostaje ikonę swojej rodziny `icon/item/07180.tga`
+    zamiast ikony Wachlarza 8 Trygramów (`07170.tga` istnieje, ale to ikona 7180–7189; tylko kolumna ikony),
+    dopisany brakujący wiersz `22030\tETC\ticon/item/22000.tga` (Zwój Teleportu).
+- `root/uiminigameyutnori.py` – Yut Nori: okienko „rzuć jeszcze raz” zamykane przez `Hide()` zamiast `Close()`
+  (jego akcja to ten sam przycisk – rekurencja do limitu Pythona i setki pakietów rzutu).
+- `root/uichestpreview.py` (nowy w tym katalogu – kopia `client-2.0.18/root/uichestpreview.py`, ta sama co wpis
+  paczki `root` klienta 2.0.42, poprawiona):
+  podgląd skrzynki – duże liczby skracane (10k, 1.5M) i ustawiane od prawej krawędzi slotu, bez nachodzenia
+  na sąsiednie sloty.
+
 ## Ekwipunek: blokada sortowania (Alt + LPM) – bez zmian exe
 
 Znacznik `MT2009_PLUS_INVENTORY_SORT_LOCK_V1`. Serwer: `server-patches/sortlock` (`/inventory_arrange [merge]

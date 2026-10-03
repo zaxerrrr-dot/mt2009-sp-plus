@@ -14,7 +14,17 @@
 #                              METIN, the kind's bonus and wear flag, the kind in
 #                              value5 (17+k);
 #   MT2009_PLUS_HORSE30_V1     the level-30 horse (race 20119) is "Czarny Rumak"
-#                              in mob_proto.
+#                              in mob_proto;
+#   MT2009_PLUS_HEAVEN_OIL_V1  (Autor: Digi Rasta, nowy-system v0.17 / 0.17.2)
+#                              Olejek Niebios (71056) a plain material as the
+#                              server makes it (type 5/0, stack 200, flag 4, no
+#                              values - his OLEJEK_NIEBIOS) and its itemdesc.txt
+#                              line rewritten (the old one promised a better
+#                              refine chance); and his item_list fixes: 7170
+#                              (Wachlarz Lezac. Smoka+0) takes its family's icon
+#                              07180.tga instead of the 8 Trigrams' 07170.tga
+#                              (icon column only), and 22030 (Zwoj Teleportu)
+#                              gets the row it lacks (icon of 22000).
 #
 # His klient.py carried the same tables (FAMILIES, STONES, MOB_NAZWY); keep
 # them equal to apply.sh.
@@ -86,6 +96,17 @@ STONES = (
 )
 MOB_NAMES = ((20119, u'Czarny Rumak'),)
 
+# MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17): = 71056 in apply.sh and
+# HEAVEN_OIL_BOSS_DROPS in playerbot_awakening.h (the three bosses below).
+OIL_VNUM = 71056
+OIL_NAME = u'Olejek Niebios'
+OIL_DESC = (u'Składnik ulepszania Kamieni Duszy u Kowala (od +4): potrzeba 1, 1, 2, 2, 3 sztuk '
+            u'na kolejne stopnie, obok Magicznego Pyłu. Wypada z Silnej Lodowej Wiedźmy '
+            u'(Grota Wygnańców), Beran-Setaou (Leże Smoka) i Królowej Dżungli (Starożytna Dżungla).')
+# His item_list fixes (v0.17.2, IKONY_POPRAWKI / IKONY_DODATKOWE): vnum -> icon.
+ICON_FIXES = {7170: 'icon/item/07180.tga'}   # Wachlarz Lezac. Smoka+0: its family's icon, not the 8 Trigrams'
+ICON_ROWS = ['22030\tETC\ticon/item/22000.tga']  # Zwoj Teleportu: the mod has no item_list row
+
 
 def fixed(text, size):
     b = text.encode('cp1250')
@@ -133,6 +154,15 @@ def item_proto(b):
             if bytes(r) != recs[vnum]:
                 recs[vnum] = bytes(r)
                 changed += 1
+    # MT2009_PLUS_HEAVEN_OIL_V1: Olejek Niebios as the server's 66_olejek row.
+    if OIL_VNUM in recs:
+        r = bytearray(recs[OIL_VNUM])
+        struct.pack_into('<BB', r, 74, 5, 0)
+        struct.pack_into('<IIIII', r, 78, 200, 0, 4, 0, 0)
+        struct.pack_into('<6i', r, 139, 0, 0, 0, 0, 0, 0)
+        if bytes(r) != recs[OIL_VNUM]:
+            recs[OIL_VNUM] = bytes(r)
+            changed += 1
     if STONE_VNUM not in recs:
         r = bytearray(recs[STONE_TEMPLATE])
         struct.pack_into('<II', r, 0, STONE_VNUM, 0)
@@ -190,13 +220,60 @@ def append_rows(b, rows):
     return nl.join(lines).encode('cp1250'), added
 
 
+def set_rows(b, rows):
+    """Every line whose first column is a row's replaced by that row (or the row
+    appended): the itemdesc lines whose text we change on purpose."""
+    text = b.decode('cp1250')
+    nl = '\r\n' if '\r\n' in text else '\n'
+    lines = text.split(nl)
+    changed = 0
+    for r in rows:
+        key = r.split('\t')[0]
+        hit = False
+        for i, l in enumerate(lines):
+            if l.split('\t')[0].strip() == key:
+                hit = True
+                if l != r:
+                    lines[i] = r
+                    changed += 1
+        if not hit:
+            nb, added = append_rows(nl.join(lines).encode('cp1250'), [r])
+            lines = nb.decode('cp1250').split(nl)
+            changed += added
+    return nl.join(lines).encode('cp1250'), changed
+
+
+def fix_icons(b):
+    """MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17.2): ICON_FIXES - the
+    icon column (the third) of those rows only."""
+    text = b.decode('cp1250')
+    nl = '\r\n' if '\r\n' in text else '\n'
+    lines = text.split(nl)
+    changed = 0
+    for i, l in enumerate(lines):
+        p = l.split('\t')
+        if len(p) > 2 and p[0].strip().isdigit() and int(p[0]) in ICON_FIXES and p[2].strip() != ICON_FIXES[int(p[0])]:
+            p[2] = ICON_FIXES[int(p[0])]
+            lines[i] = '\t'.join(p)
+            changed += 1
+    return nl.join(lines).encode('cp1250'), changed
+
+
 def item_list_rows(b):
     text = b.decode('cp1250')
     icon = 'icon/item/30228.tga'
     for l in text.splitlines():
         if l.startswith('%d\t' % STONE_TEMPLATE):
             icon = l.split('\t')[2].strip()
-    return append_rows(b, ['%d\tETC\t%s' % (STONE_VNUM, icon)])
+    b, added = append_rows(b, ['%d\tETC\t%s' % (STONE_VNUM, icon)] + ICON_ROWS)
+    b, fixed_n = fix_icons(b)
+    return b, added + fixed_n
+
+
+def itemdesc_rows(b):
+    b, added = append_rows(b, [u'%d\t%s\t%s' % (STONE_VNUM, STONE_NAME, STONE_DESC)])
+    b, set_n = set_rows(b, [u'%d\t%s\t%s' % (OIL_VNUM, OIL_NAME, OIL_DESC)])
+    return b, added + set_n
 
 
 def main():
@@ -207,7 +284,7 @@ def main():
     jobs = [
         (proto_p, item_proto),
         (list_p, item_list_rows),
-        (desc_p, lambda b: append_rows(b, [u'%d\t%s\t%s' % (STONE_VNUM, STONE_NAME, STONE_DESC)])),
+        (desc_p, itemdesc_rows),
         (mob_p, mob_proto),
     ]
     for path, fn in jobs:

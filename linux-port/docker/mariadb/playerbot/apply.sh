@@ -2328,7 +2328,16 @@ UPDATE player.item SET socket0 = 1, socket1 = 1, socket2 = 1 WHERE socket0 = 0 A
 # (server-patches/digirasta) by recipes 7204-7208: Magiczny Pyl (30360)
 # 8/12/18/25/35, yang 5/10/20/40/80 kk, 50/40/35/30/25%; a failure destroys the
 # stone. refined_vnum stays 0 (the bots' "can be refined"). Every start, idempotent.
+# MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, nowy-system v0.17, his 66_olejek.sql
+# and 30_kamienie.sql): Olejek Niebios (71056) - in the mod's data a 5-day unique
+# that does nothing - is a plain material (type 5, no time limit, tradeable,
+# stack 200, like Magiczny Pyl) and the steps' second ingredient: 1/1/2/2/3 for
+# +4..+8 (vnum1 of 7204-7208), chances and yang unchanged. It drops from Silna
+# Lodowa Wiedzma 3%, Beran-Setaou 3% and Krolowa Dzungli 10%
+# (playerbot_awakening.h, HEAVEN_OIL_BOSS_DROPS). = OLEJEK_NIEBIOS in
+# client-patches/client-2.0.30/tools/digirasta.
 db -e "
+UPDATE world.item_proto SET type = 5, subtype = 0, stack = 200, antiflag = 0, flag = 4, wearflag = 0, value0 = 0, value1 = 0, value2 = 0 WHERE vnum = 71056; -- Olejek Niebios
 UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 41, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 9, 10, 11, 13, 15), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 17, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28530,28600,28700,28800,28900); -- Penetracji
 UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 40, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 9, 10, 11, 13, 15), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 18, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28531,28601,28701,28801,28901); -- Smierci
 UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 16, applytype0 = 21, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 28, 31, 34, 37, 40), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 19, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28532,28602,28702,28802,28902); -- Powtorki
@@ -2345,12 +2354,12 @@ UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 1, applytype0 = 9
 UPDATE world.item_proto SET type = 10, subtype = 0, wearflag = 1, applytype0 = 19, applyvalue0 = ELT(FLOOR(vnum / 100) - 284, 32, 34, 36, 38, 40), applytype1 = 0, applyvalue1 = 0, value0 = 0, value5 = 30, refined_vnum = 0, refine_set = 0 WHERE vnum IN (28543,28613,28713,28813,28913); -- Przyspieszenia
 DELETE FROM world.refine_proto WHERE id BETWEEN 7200 AND 7203;
 INSERT INTO world.refine_proto (id, vnum0, count0, vnum1, count1, vnum2, count2, vnum3, count3, vnum4, count4, cost, src_vnum, result_vnum, prob) VALUES
-(7204, 30360, 8, 0, 0, 0, 0, 0, 0, 0, 0, 5000000, 0, 0, 50),
-(7205, 30360, 12, 0, 0, 0, 0, 0, 0, 0, 0, 10000000, 0, 0, 40),
-(7206, 30360, 18, 0, 0, 0, 0, 0, 0, 0, 0, 20000000, 0, 0, 35),
-(7207, 30360, 25, 0, 0, 0, 0, 0, 0, 0, 0, 40000000, 0, 0, 30),
-(7208, 30360, 35, 0, 0, 0, 0, 0, 0, 0, 0, 80000000, 0, 0, 25)
-ON DUPLICATE KEY UPDATE vnum0 = VALUES(vnum0), count0 = VALUES(count0), vnum1 = 0, count1 = 0, cost = VALUES(cost), prob = VALUES(prob);" || echo "[playerbot-migrate] WARNING: could not write the soul stones +5..+9" >&2
+(7204, 30360, 8, 71056, 1, 0, 0, 0, 0, 0, 0, 5000000, 0, 0, 50),
+(7205, 30360, 12, 71056, 1, 0, 0, 0, 0, 0, 0, 10000000, 0, 0, 40),
+(7206, 30360, 18, 71056, 2, 0, 0, 0, 0, 0, 0, 20000000, 0, 0, 35),
+(7207, 30360, 25, 71056, 2, 0, 0, 0, 0, 0, 0, 40000000, 0, 0, 30),
+(7208, 30360, 35, 71056, 3, 0, 0, 0, 0, 0, 0, 80000000, 0, 0, 25)
+ON DUPLICATE KEY UPDATE vnum0 = VALUES(vnum0), count0 = VALUES(count0), vnum1 = VALUES(vnum1), count1 = VALUES(count1), cost = VALUES(cost), prob = VALUES(prob);" || echo "[playerbot-migrate] WARNING: could not write the soul stones +5..+9 and Olejek Niebios" >&2
 # MT2009_PLUS_HORSE30_V1: the horse to level 30 (his karta-kon-30-i-juki.md,
 # quest konie and horse_inventory): the level-30 horse is race 20119
 # (server-patches/digirasta, char_horse.cpp) - its name over the summoned horse

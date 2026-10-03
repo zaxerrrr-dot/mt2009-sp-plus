@@ -361,6 +361,13 @@ namespace
 	const TPlayerBotMaterialPrice PLAYERBOT_EXTRA_MATERIAL_PRICES[] = {
 		{ 25040,   1375000 },	// Zwoj Blogoslawienstwa
 		{ 30670,  40000000 },	// Kamien Przebudzenia (MT2009_PLUS_AWAKENING_V1, Digi Rasta's 40 kk)
+		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17): Olejek Niebios, the soul
+		// stone steps' oil (1/1/2/2/3 for +4..+8). 5 kk: the first step's own fee, a third
+		// of a +5 stone (15 kk base), over a Biala Perla (4 kk) and the dragon's scale and
+		// claw (1.5 kk) - three bosses at 3/3/10% drop it - and well under the Awakening
+		// Stone (40 kk, eighteen bosses but one ritual of 200 kk). A full +4 -> +9 chain
+		// takes nine of them (45 kk) beside 155 kk of fees.
+		{ 71056,   5000000 },	// Olejek Niebios (MT2009_PLUS_HEAVEN_OIL_V1)
 		{ 25043,  6500000 },	// Podrecznik Kowala
 		{ 25044,   1400000 },	// Zwoj Wojny
 		{ 25045,  3000000 },	// Zwoj Boga Smokow

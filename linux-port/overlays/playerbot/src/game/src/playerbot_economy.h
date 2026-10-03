@@ -44,6 +44,13 @@ namespace
 	// question of a blacksmith trip counts it as a reason.
 	bool HasPlayerBotAwakeningRitual(LPCHARACTER ch);
 	bool ManagePlayerBotAwakeningRitual(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17): a bag soul stone
+	// +4..+8 raised at the blacksmith with the dust and Olejek Niebios, and
+	// the oil kept and wanted for that step (playerbot_awakening.h).
+	bool HasPlayerBotSoulStoneStep(LPCHARACTER ch);
+	bool ManagePlayerBotSoulStoneStep(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	int GetPlayerBotHeavenOilKeep(LPCHARACTER ch);
+	bool PlayerBotWantsHeavenOil(LPCHARACTER ch);
 
 	PIXEL_POSITION GetPlayerBotGeneralStorePos(long mapIndex)
 	{
@@ -892,6 +899,13 @@ namespace
 	{
 		if (!ch)
 			return false;
+		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): Olejek Niebios feeds no gear recipe, only
+		// the soul stone steps - short of it when a bag stone, the fee and the
+		// dust wait for nothing else. Asked of the oil by name only: the
+		// looser question (zero, "walk to the market") leaves it out, so a
+		// world without oil on any counter sends nobody there for it.
+		if (materialVnum == PLAYERBOT_HEAVEN_OIL_VNUM)
+			return PlayerBotWantsHeavenOil(ch);
 
 		const BYTE wearSlots[] = {
 			WEAR_WEAPON, WEAR_BODY, WEAR_SHIELD, WEAR_HEAD,
@@ -1040,6 +1054,10 @@ namespace
 	{
 		if (!ch || materialVnum == 0)
 			return 0;
+		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): the oil of the next soul stone step while a
+		// bag stone waits for one; the counter lists the rest.
+		if (materialVnum == PLAYERBOT_HEAVEN_OIL_VNUM)
+			return GetPlayerBotHeavenOilKeep(ch);
 		const BYTE wearSlots[] = {
 			WEAR_WEAPON, WEAR_BODY, WEAR_SHIELD, WEAR_HEAD,
 			WEAR_FOOTS, WEAR_WRIST, WEAR_NECK, WEAR_EAR
@@ -1180,6 +1198,10 @@ namespace
 			// no item names (the engine reads it, playerbot_awakening.h) - its
 			// Kamien Przebudzenia is a counter's goods, never the merchant's.
 			recipeIds.insert(7110); // mt2009_awakening::AWAKENING_REFINE_SET, included later
+			// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): Olejek Niebios, which only the soul stone
+			// steps 7204-7208 consume - a counter's goods. The steps' dust stays
+			// out: it has rules of its own (the marble's keep, the Alchemist).
+			s_materials.insert(PLAYERBOT_HEAVEN_OIL_VNUM);
 			for (std::set<DWORD>::const_iterator id = recipeIds.begin(); id != recipeIds.end(); ++id)
 			{
 				const TRefineTable* recipe =
@@ -3389,6 +3411,10 @@ namespace
 		// the fee make the ritual this visit's first step (playerbot_awakening.h).
 		if (ManagePlayerBotAwakeningRitual(ch, state, dwNow))
 			return true;
+		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): then one soul stone step, when the bag holds
+		// a stone +4..+8, the dust, the oil and the fee (playerbot_awakening.h).
+		if (ManagePlayerBotSoulStoneStep(ch, state, dwNow))
+			return true;
 
 		// Iwakura's Perfectionist spends at most PERFECT_BUDGET_PERCENT of what
 		// it walked into town with ("max 80% yang"), and keeps the rest. The
@@ -4806,6 +4832,10 @@ namespace
 
 		// MT2009_PLUS_AWAKENING_V1: the ritual is a reason for the anvil too.
 		if (HasPlayerBotAwakeningRitual(ch))
+			return true;
+		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): and a soul stone step with everything in the
+		// bag (resting after any attempt, so a refusal is no loop).
+		if (HasPlayerBotSoulStoneStep(ch))
 			return true;
 
 		const BYTE wearSlots[] = {

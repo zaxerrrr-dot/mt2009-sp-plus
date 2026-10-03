@@ -959,6 +959,9 @@ namespace
 	const int PLAYERBOT_SOUL_STONE_DUST_MAX_GRADE = 2;
 	const int PLAYERBOT_SOUL_STONE_MARKET_PERCENT = 15;
 	const DWORD PLAYERBOT_MAGIC_DUST_VNUM = 30360;
+	// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17): Olejek Niebios, the soul
+	// stone steps' second ingredient (= mt2009_awakening::HEAVEN_OIL_VNUM).
+	const DWORD PLAYERBOT_HEAVEN_OIL_VNUM = 71056;
 	const long long PLAYERBOT_MAGIC_DUST_FEE = 500;
 	// A walk to the Alchemist is for a handful of stones, not for each one
 	// the bot picks up, and it is asked again on this clock.
