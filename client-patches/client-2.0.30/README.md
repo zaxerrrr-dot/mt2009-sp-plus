@@ -573,3 +573,29 @@ reszta przedmiotów bez zmian). Pliki `root`:
 Pominięte z paczki: Shift + klik w torbie towarzysza (`uisidekickinventory.py`) – to samo robi już nasz
 prawy klik (`MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1`); `XMAS_SNOW_SHOW` w
 `game.py` (wyłączał śnieg i świąteczną muzykę z nocnej flagi) – nie był częścią zgłoszenia.
+
+## Usuwanie misji (/usunmisje) – bez zmian exe i silnika
+
+Znacznik `MT2009_PLUS_CLEAR_MISSIONS_V1`. Gracz wpisuje na czacie `/usunmisje`: otwiera się okno z misjami,
+które ma teraz otwarte (z listem na liście misji), każda z polem wyboru (domyślnie zaznaczona). „Usuń
+zaznaczone” (z pytaniem) ustawia je w ich własny stan ukończenia – bez nagród, bez rozmów, jakby były zrobione
+dawno temu – więc nie wracają. Jeśli ukończenie misji uruchamia następną część łańcucha (fabuła, Biolog), ta
+część startuje tak, jak przy zwykłym ukończeniu: otworzy się na swoim poziomie (np. 55), a gdy gracz ma już
+ten poziom – od razu, i okno pokaże ją po odświeżeniu. Przedmioty samej misji (np. strona pamiętnika, list)
+znikają z nią; przedmioty do oddania Biologowi zostają. Na koniec postać jest teleportowana w to samo miejsce
+(krótkie wczytanie) – lista misji, listy i strzałki budują się od nowa ze stanów questów. Nie działa w lochach
+i instancjach. Flaga eventu `mt2009_usunmisje_off 1` wyłącza.
+
+Usuwalne (tabela w quescie, z `tools/gen_usun_misje.py`): fabuła `main_quest_lv*`, `find_squareguard`,
+`find_brother_article`, `patrol_townaround`; poboczne `subquest_*`, `new_quest_lv*`, `new_quest_premium_lv4`;
+Biolog `collect_quest_lv*`; zioła Baek-Go `make_herb_lv*`. Nigdy: Towarzysz, Cor Draconis (`dragon_soul*`),
+konie, gildia, umiejętności, samouczki łowienia/zielarstwa, reputacja, księgi misji, polowania, eventy, lochy,
+Seon-Hae, `hwang_introduction` (jego ukończenie otwiera sklep), `trade_chat`, `warehouse_expand`,
+`black_steel_crafting` i nasze questy systemowe. Serwer: quest `usun_misje`
+(`linux-port/docker/game/quest/usun_misje.quest`, lista w Dockerfile). Pliki `root`:
+
+- `uiusunmisje.py` (nowy) – okno 12 wierszy na stronę, „Zaznacz/Odznacz wszystkie”, licznik. Wysyła
+  `/usunmisje usun <id…>` (do 20 na linię) i `/usunmisje gotowe` tylko po kliknięciu i tylko w fazie gry
+  (`warpsafe.InGame()`); odbiera `MISJE begin|m|end`. Po odświeżeniu otwiera się samo tylko dla misji,
+  których nie było w poprzednim oknie.
+- `game.py` – polecenie `MISJE` i zamknięcie okna z resztą.
