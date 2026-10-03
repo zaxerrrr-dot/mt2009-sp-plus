@@ -17,6 +17,91 @@ every version here.
 
 ---
 
+## 2.19.0 — 2026-10-03 — Rytuał Przebudzenia, koń do 30, System Legend, boty w minigrach, podatek od sprzedaży
+
+Wymaga klienta **2.0.43** (launcher pobierze go sam albo zaktualizuje go patcher).
+
+### Nowy system (Autor: Digi Rasta)
+- **Rytuał Przebudzenia u Kowala:** broń 75. poziomu +9 + Kamień Przebudzenia + 200 000 000 Yang (szansa 100%) zmienia się w broń przebudzoną +0. Bonusy i kamienie przechodzą na nową broń. Pary: Zatruty Miecz → Śmiercionośne Ostrze, Lwi Miecz → Księżycowy Miecz, Skrzydła Demona → Nóż Strumienia, Stalowy Łuk Kruka → Upiorna Kusza, Miecz Żalu → Zabójca Żółtego Smoka, Bambusowy Dzwon → Hibiskusowy Dzwon, Wachlarz 8 Trigramów → Wachlarz Leżącego Smoka.
+- **Bronie przebudzone +0…+9:** poziom 90–105, Silny przeciwko potworom +2…+15%, Silny przeciwko ludziom −15…−50% (to broń do PvE). Zawsze 3 gniazda. Nieudane ulepszenie nigdy jej nie niszczy ani nie obniża (także ze zwojami). Tylko u zwykłego Kowala.
+
+  | Krok | Materiały | Yang | Szansa |
+  |---|---|---|---|
+  | +0→+1 | 2× Zdobycz Dzikusa | 5 mln | 90% |
+  | +1→+2 | 2× Shuriken + 1× Serce Wojownika | 8 mln | 85% |
+  | +2→+3 | 3× Biała Perła | 12 mln | 80% |
+  | +3→+4 | 3× Niebieska Perła | 16 mln | 75% |
+  | +4→+5 | 3× Krwawa Perła | 22 mln | 70% |
+  | +5→+6 | po 3× Biała, Niebieska i Krwawa Perła | 30 mln | 60% |
+  | +6→+7 | 1× Smocza Łuska + 1× Smoczy Szpon | 50 mln | 50% |
+  | +7→+8 | 8× Smocza Łuska + 8× Smoczy Szpon | 100 mln | 40% |
+  | +8→+9 | 15× Smocza Łuska + 15× Smoczy Szpon | 200 mln | 30% |
+
+- **Kamień Przebudzenia** wypada z bossów 75+ (3–4%), Beran-Setaou w Leżu Smoka (10%), bossów 103–107 (5–7%), Królowej Dżungli w Starożytnej Dżungli (12%) oraz Razadora i Nemere (15%).
+- **Kamienie Duchowe do +9:** nowe stopnie +5…+9. Ulepszanie od +4 u Kowala: Magiczny Pył, Olejek Niebios (1/1/2/2/3 sztuki) i Yang. Pęknięty kamień w gnieździe nie blokuje już innego rodzaju kamienia.
+- **Olejek Niebios** to teraz zwykły materiał (stos 200, handlowalny). Wypada z Silnej Lodowej Wiedźmy (3%), Beran-Setaou (3%) i Królowej Dżungli (10%).
+- **Koń do 30. poziomu:** trening u Stajennego za medale, paszę, Materiały Rzemieślnicze i Yang. Na 30. poziomie próba Czarnego Rumaka (50× Łucznik Setaou w 30 minut, od 75. poziomu postaci). Od 21. poziomu koń daje bonus przeciwko Potworom, Bossom i Metinom, do 5/5/5% na 30. poziomie. Juki: wymagania kolejnych rzędów rozłożone do 30. poziomu konia. Pieczęcie Czarnego Konia zniknęły z ItemShopu WWW.
+- **Pogromca Niebieskiego Smoka +0…+9** do wyrobienia u Seon-Pyeonga: Partyzana +9 + Broszura Szermierki + po 2 Perły każdego koloru + 2 mln Yang. Statystyki jak pozostałych broni 80. poziomu.
+- **Broszura Szermierki** wypada z Żelaznego Pudełka (~1%).
+- **Klient:** okienko ponownego rzutu w Yut Nori nie wpada już w pętlę. Duże liczby w podglądzie skrzynki są skracane (10k, 1.5M). Wachlarz Leżącego Smoka +0 i Zwój Teleportu mają poprawne ikony.
+- Boty przechodzą Rytuał (od 90. poziomu), trenują konia do 30, kupują i osadzają kamienie +5…+9, a Olejek i Kamień Przebudzenia wystawiają na rynek. Boty od 75. poziomu ulepszają kamienie +4…+8 u Kowala, gdy mają pył, olejek i Yang.
+
+### System Legend
+- Część botów to Legendy: Wyróżniający się (~4%), Specjalni (~2%), Chodzące Legendy (2 na królestwo) i Czempion Królestwa – Legenda, której gildia prowadzi w rankingu królestwa.
+- Legendy są silniejsze, mądrzej walczą z graczami, zakładają i rozwijają silne gildie, toczą wojny i zdobywają reputację. Nad nickiem mają kolorowy tytuł swojej rangi.
+- Ranking Legend w obu panelach i przełącznik systemu.
+
+### Boty
+- **Boty w minigrach:** Łapanie Króla, Rumi i Yut Nori. Z kart zbieranych z potworów składają talie, płacą za grę i otwierają skrzynki (brązowa 60%, srebrna 30%, złota 10%). Część skrzynek trafia na stragany.
+- **Ceny zależą od ilości Yang na świecie:** nowy świat zaczyna od 40% cennika, przy 10 mld Yang ceny są równe cennikowi, potem rosną ×1,10 za każde 2,5 mld do 30 mld i ×1,05 za każde 2,5 mld powyżej.
+- **Koniec stania w stosach w mieście:** boty przy sklepach i Kowalu stają obok siebie, przechodzą bramę Joan na wolne miejsce, a Kowal, który odmawia ulepszenia, nie ściąga już bota co kilkanaście sekund.
+- **Zielarze:** zbieranie ziół to aktywność jak wędkarstwo i górnictwo – sesja 12–25 minut, potem zwykła gra. Uwarzone mikstury trafiają na stragany po cenach z cennika.
+- **Pełne wyposażenie na straganach:** boty ulepszają zapasowe hełmy, tarcze i buty do +4 i wystawiają wszystkie.
+- Boty otwierają Cor Draconis tylko wtedy, gdy w Alchemii jest miejsce na kamień.
+- **Biolog** do 90. poziomu (zadania na 60 i 70).
+- **Dropki broni 30. poziomu na Dolinie Orków** stoją na wyspie zamiast w mieście: nie wracają w kółko do miasta po złom i mikstury (bez Yang polują z tym, co mają), przy ladzie czekają 3 minuty zamiast 20 i wystawiają każdą broń 30. poziomu, także na swoją klasę.
+- **Gildia „Pomocy!”:** boty z gildii pomagają w Twojej walce – najpierw Twój cel, potem potwory przy Tobie.
+
+### Towarzysz
+- **Teleport i zmiana kanału przy otwartym oknie Towarzysza nie wyrzucają już do logowania.** Okno odpytywało serwer także w trakcie przełączania rdzeni. Teraz Towarzysz i pozostałe okna, które same pytają serwer (Auto Łowy, celowanie, Dom Towarowy, kalendarz eventów, filtr podnoszenia, minigry, magazyn), nic nie wysyłają między teleportem a wczytaniem mapy.
+- Szybkie przekładanie przedmiotów do i od Towarzysza prawym przyciskiem myszy.
+- W trybie „Przywołaj” podnosi przedmioty jak spuszczony ze smyczy, a gdy masz pełną torbę, zbiera Twój drop.
+- Przemienia się razem z Tobą Marmurem Polimorfii ze swojego ekwipunku i odmienia razem z Tobą.
+
+### Ekwipunek i interfejs
+- **Blokada przy sortowaniu:** Alt + LPM na przedmiocie zostawia go na miejscu przy „Ułóż i scal” i „Tylko scal stosy”. Zablokowany slot ma małą gwiazdkę.
+- **Mapa (M):** obie Groty Wygnańców mają mapę, a mapy obu Grot Pająków pokazują tylko przejścia, którymi da się chodzić.
+- **Auto Łowy:** zamknięty w tłumie łowca szuka najbliższego wolnego potwora. Ikonka czasu Auto Łowów kupionych w IS pokazuje pozostały czas.
+
+### Skrzynki eventowe
+- **Rumi:** złota pula – Zaczarowanie Przedmiotu ×5 (było ×10), Wzmocnienie ×3 (było ×5); srebrna pula – Zaczarowanie ×3 (było ×5), Wzmocnienie ×1 (było ×3).
+- **Yut Nori – Złoty Pakiet:** Wzmocnienie ×3 i Zaczarowanie ×5 (było po 1); zamiast Cor Draconis (mityczne) i kolczyków – 100 000 doświadczenia i 500 000 Yang. **Srebrny Pakiet:** Cor Draconis (zwyczajne) ×3 (było 1).
+
+### Lochy Arezzo
+- Po pokonaniu ostatniego bossa odliczanie 5…0 i koniec lochu. Do ukończonego przejścia nie da się wrócić.
+
+### Ekonomia i panele
+- **Podatek od sprzedaży (suwak 0–50%, domyślnie 0%):** część ceny przedmiotu sprzedanego innemu graczowi lub botowi (stragany, lady offline, Dom Towarowy, oferty, licytacje) znika z gry – ogranicza ilość Yang w obiegu. Sprzedaż NPC bez podatku. Lady offline pobierają ponadto własny podatek (domyślnie 5%).
+- **Panel seban, mapa na żywo:** Świątynia Ochao i 7 map Arezzo. Boty w lochach są teraz widoczne na mapie.
+
+### Launcher i serwer
+- Przy małej ilości wolnej pamięci aktualizacja najpierw zapisuje i zatrzymuje świat.
+- **Pakiet diagnostyczny na Linux/VPS:** `sh linux-port/tools/support-bundle.sh` zbiera logi wszystkich rdzeni do jednego pliku (bez haseł i bazy danych).
+
+---
+
+## Klient 2.0.43 — 2026-10-03
+
+- Rytuał Przebudzenia, bronie przebudzone, Kamienie Duchowe do +9, Olejek Niebios, koń do 30 i juki, Pogromca Niebieskiego Smoka (Autor: Digi Rasta).
+- Poprawki od Digi Rasty: okienko ponownego rzutu w Yut Nori, liczby w podglądzie skrzynki, ikony Wachlarza Leżącego Smoka +0 i Zwoju Teleportu.
+- Blokada przedmiotu przy sortowaniu (Alt + LPM, gwiazdka).
+- Mapa (M) w Grotach Wygnańców, mapy Grot Pająków tylko z przejściami.
+- Tytuły Legend nad nickiem botów.
+- Towarzysz: przekładanie prawym przyciskiem myszy.
+- Teleport i zmiana kanału przy otwartym oknie Towarzysza (i innych oknach) nie wyrzucają do logowania.
+- Auto Łowy: łowca wychodzi z tłumu, ikonka czasu Auto Łowów z IS.
+- „Silny przeciwko potworom” w spisie bonusów postaci.
+
 ## 2.18.1 — 2026-10-02 — COOP dla wszystkich, Biblioteka Wiedzy, Towarzysz, poprawki botów i minigier
 
 **COOP dla wszystkich:** granie u znajomego (COOP) nie wymaga już hasła w launcherze. Jeśli chcesz, możesz wesprzeć rozwój paczki singleplayer na https://buycoffee.to/mt2009plus.
