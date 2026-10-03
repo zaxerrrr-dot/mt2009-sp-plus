@@ -1261,6 +1261,11 @@ class EquipmentWindow(_Window):
 	def OnUpdate(self):
 		ReleaseIcon()
 		self.UpdateStatusClock()
+		# MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: no polls on the way to another
+		# core (uisidekick.InGame) - the bag's 'eq' every 1.5 s was the poll
+		# a teleport with this window open met most often.
+		if not uisidekick.InGame():
+			return
 		if uisidekick.PumpCommands():
 			return
 		now = clientclock.Now()

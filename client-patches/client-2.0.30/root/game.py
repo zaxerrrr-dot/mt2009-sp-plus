@@ -472,6 +472,12 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's panel.
 		import uiguildduty
 		uiguildduty.DestroyWindow()
+		# MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: the companion's windows and their
+		# queue go with the game window at every warp, channel change and logout,
+		# also when no keeper of theirs was registered (the inventory's button
+		# opens the window without one). The keepers' Destroy did it before;
+		# a second call finds nothing left.
+		__import__("uisidekick").Destroy()
 
 		print("---------------------------------------------------------------------------- CLOSE GAME WINDOW")
 
