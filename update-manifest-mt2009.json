@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-03T10:30:00Z",
-  "statusMessage": "Serwer 2.19.0: Rytual Przebudzenia, kon do 30, System Legend, boty w minigrach, podatek od sprzedazy. Klient 2.0.43: blokada sortowania, mapy Grot, poprawki okien przy teleporcie.",
+  "publishedAt": "2026-10-03T20:00:00Z",
+  "statusMessage": "MT2009 PLUS 2.20.0: ranking tygodniowy, magazyn kolekcjonera, skroty klawiszowe, stakowanie. Klient 2.0.50.",
   "server": {
-    "version": "2.19.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.19.0/metin2-server-update-2.19.0.zip",
-    "sha256": "A690C7521EC783919DBD0853A722A49B118E20DCB53981DED7912C94F60E599D",
-    "size": 101654011
+    "version": "2.20.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.20.0/metin2-server-update-2.20.0.zip",
+    "sha256": "CD2C3BA4121EA3554BB9426DF367B506C0C400C594D8AF18AFAD238D2FA471F1",
+    "size": 101889867
   },
   "client": {
-    "version": "2.0.43",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.43/metin2-client-update-2.0.43.zip",
-    "sha256": "4259C5FA63E005E321523E922DD1579D42C5EEB12A865E6EA3B9FFBB2DAC03D1",
-    "size": 350675344
+    "version": "2.0.50",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.50/metin2-client-update-2.0.50.zip",
+    "sha256": "82307C88995CCB3462E7DBDAF997A02F5D52548AC71A38D69E4C55449C4535B7",
+    "size": 355232661
   }
 }

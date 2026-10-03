@@ -17,6 +17,106 @@ every version here.
 
 ---
 
+## 2.20.0 — 2026-10-03 — Ranking tygodniowy z tytułami, Magazyn kolekcjonera, skróty klawiszowe, stakowanie, Towarzysz na zakupach
+
+Wymaga klienta **2.0.50** (launcher pobierze go sam albo zaktualizuje go patcher).
+
+### Ranking tygodniowy i tytuły (na podstawie systemu z plików Arezzo)
+- Nowe okno „Ranking tygodniowy” (korona w pasku bocznym ekwipunku): 8 kategorii, top 50 bieżącego sezonu z oznaczeniem **[Bot] / [Gracz]**, Twoje miejsce, posiadacze tytułów i licznik do końca sezonu.
+- Sezon trwa 7 dni (kończy się w poniedziałek o 0:00). Top 3 każdej kategorii dostaje tytuł nad nickiem i bonus na cały następny sezon (1. / 2. / 3. miejsce):
+
+  | Kategoria | Tytuł | Bonus |
+  |---|---|---|
+  | Zabite potwory | Łowca | silny przeciwko potworom 15 / 8 / 4% |
+  | Metiny | Niszczyciel | silny przeciwko potworom 15 / 8 / 4% |
+  | Bossy | Pogromca Bossów | silny przeciwko bossom 15 / 8 / 4% |
+  | Zabici gracze | Zabójca | silny przeciwko ludziom 15 / 8 / 4% |
+  | Lochy | Podróżnik | silny przeciwko potworom 15 / 8 / 4% |
+  | Udane ulepszenia | Kowal | max PŻ +2500 / +2000 / +1500 |
+  | Alchemia | Alchemik | +75 wartości ataku |
+  | Poziom | Mistrz Poziomów | silny przeciwko potworom i ludziom 15 / 8 / 4% |
+
+- Boty i gracze liczą się tak samo. Panele: strona „Ranking tygodniowy” (włączanie, długość sezonu, „zakończ sezon teraz”).
+
+### Magazyn kolekcjonera
+- Przycisk „Kolekcjoner” w oknie magazynu: jeden magazyn na konto, 500 miejsc na start, rozbudowa za Yang do 10 000.
+- Wkładanie i wyjmowanie **natychmiast**: PPM, przeciąganie, Ctrl = wszystkie stosy danego przedmiotu, Shift = wybrana ilość. Kategorie, wyszukiwarka, pasek zajętości.
+
+### Skróty klawiszowe i wygoda (Autor: Vekirion)
+- **Menu „Skróty klawiszowe”** (ESC): każda akcja może mieć dwa klawisze, także z Ctrl/Shift/Alt; „Domyślne” przywraca ustawienia. Sprint zostaje domyślnie na Shift.
+- **Szybkie otwieranie paczek:** Ctrl + PPM na stosie skrzynek otwiera do 50, potem kolejne stosy (pełna torba – reszta zostaje zamknięta).
+- **Alchemia „Wszystkie”:** ulepsza wszystkie pełne zestawy na stronie.
+- Enter przy edycji ceny w sklepie nie otwiera już czatu w tle.
+- Ctrl+J zsiada z wierzchowca, samo J otwiera kosz.
+
+### Systemy od Digi Rasty (Autor: Digi Rasta)
+- **Stakowanie:** Kamienie Duchowe, szkatułki i skrzynie w stosach po 200; Odłamek bez limitu 24 h. Ulepszanie u Kowala i osadzanie biorą jedną sztukę ze stosu.
+- **Opcje dodatkowe** (ESC): ukrywanie efektów, aur, sklepów graczy, drzew, budynków, chmur i wody; zapis czatu do pliku.
+- **Porównanie pod Alt**, płynny licznik Yang, tanie rzeczy w sklepie NPC podświetlone, dźwięki podnoszenia.
+- **Powód nieudanego ulepszenia**, blokada z komunikatora obejmuje handel, grupę, gildię, emocje i pojedynki.
+- **„Otwórz” / „Otwórz 10”** w podglądzie skrzynki.
+- **Awans:** gratulacje na czacie, co 10 poziomów ogłoszenie dla wszystkich.
+- **`@nick tekst`** w czacie = szept.
+- **Pasek zabójstw** i dźwięki serii (tylko zabójstwa z udziałem gracza).
+- **Po śmierci umiejętności od razu gotowe**, okno śmierci z odliczaniem.
+- **Wymiana ksiąg u Seon-Hae:** 10 ksiąg + 250 000 Yang = losowa księga „Instr.” Twojej klasy i drogi.
+- Poprawki: magazyn nie gubi pól przy powiększeniu, `/reload c` od razu odświeża okno kostki, ogłoszenia bez kodów kolorów, poprawki wywrotek rdzenia przy wierzchowcach.
+
+### Nowości
+- **Usuń misje** (pasek boczny lub `/usunmisje`): wybierasz misje, które znikają bez nagród (Towarzysz i Cor Draconis nie są ruszane). Kolejne misje pojawiają się z poziomem.
+- **Zapisane pozycje teleportu:** 6 miejsc na postać, teleport co 15 minut, każdy zużywa czysty Zwój Powrotu.
+- **Wierzchowiec jak koń:** Ctrl+G zsiadasz, rzucasz aurę i od razu wsiadasz.
+- **Kołczan** w ItemShopie (Wyposażenie, 100 SM, 14 dni, od 35 poziomu): ninja strzela bez zużywania strzał.
+- **Filtr podnoszenia:** opcja „Bonus” (tylko przedmioty z co najmniej N bonusami); ustawienia osobno dla każdej postaci.
+- **Auto ceny w sklepach:** przycisk „Ceny” przy wystawianiu, 6 trybów, „Zmień ceny wszystkich”.
+- **Wojna gildii:** przycisk „Wejdź na wojnę” na tablicy wojny.
+- **Mapy pod M** w Grotach Wygnańców; Groty Pająków pokazują tylko przejścia.
+- **Fasolka Smocza (zielona)** wypada z metinów od 70 poziomu (2,5%).
+
+### Towarzysz
+- **Zakupy:** Polecenia → „Kup…” – mikstury, strzały, peleryny; płacisz Ty, reszta Yang wraca.
+- **Obrona:** atakuje boty i graczy z wrogiego królestwa, którzy biją Ciebie lub jego.
+- **Polimorfia:** przemienia się razem z Tobą Marmurem Polimorfii.
+- Boty można dodawać do **znajomych**.
+- Teleport i zmiana kanału przy otwartym oknie Towarzysza nie wyrzucają już do logowania.
+
+### Koń, ItemShop, drop
+- Szkolenie konia bez paszy: tylko medale, Materiały Rzemieślnicze i Yang.
+- ItemShop „Wyposażenie”: Kołczan, Medal Konny (100 SM).
+- Kamień Przebudzenia nie wypada już z Razadora i Nemere.
+- Wzgórze Wukonga: odepchnięcie nie wyrzuca już poza platformę, Obrońcy Chmur wracają na miejsca.
+- Okno wytwarzania (Seon-Pyeong i inni) działa dla zwykłych graczy – wcześniej „Ta komenda nie istnieje”.
+
+### Boty i gospodarka
+- **Medale i Materiały Rzemieślnicze na rynku:** boty poniżej 25 lvl trzymają tylko na konia 1 lvl, 25–35 na konia 11 lvl, powyżej 35 zapas na jeden poziom konia – reszta idzie na lady.
+- **Tarcze, hełmy i buty** wystawiane w pierwszej kolejności.
+- **Szarfy:** boty łączą pary albo wystawiają nadwyżkę zamiast trzymać setki w torbie.
+- **Alchemia botów:** nie zdejmują dobrych kamieni (zdjęcie niszczy kamień), doładowują je Eliksirem Czasu, włączają alchemię tylko do walki.
+- **Battle Pass:** boty robią miejsce na nagrody zamiast gubić je na ziemi.
+- **Zielarze** czytają receptury i warzą soki u Baek-Go.
+- **Dropki broni 30 lvl** stoją na wyspie, nie w mieście.
+- **Lady botów** przedłużane od razu po wygaśnięciu.
+- **Emerytury botów** działają na każdym układzie świata; przycisk „Zatrzymaj partię”.
+- **Raty Yang poniżej 100%** nie obniżają już cen na rynku.
+- Podatek od sprzedaży między graczami (suwak 0–50%, domyślnie 0%).
+
+### Panele i launcher
+- **„Przelicz ceny w sklepach botów teraz”** (panel admina → Raty; seban → Mnożniki serwera); samo po zmianie raty Yang lub aktualizacji.
+- Launcher: ostrzeżenie i automatyczna poprawka `.wslconfig`, gdy Docker ma za mało RAM do aktualizacji.
+- Launcher rozpoznaje klienta zaktualizowanego patcherem.
+- Patcher: aktualności same pokazują najnowsze wydania.
+
+---
+
+## Klient 2.0.50 — 2026-10-03
+
+- Ranking tygodniowy, Magazyn kolekcjonera, Usuń misje, Zapisane pozycje teleportu.
+- Skróty klawiszowe, szybkie otwieranie paczek, „Wszystkie” w Alchemii (Autor: Vekirion).
+- Opcje dodatkowe, porównanie pod Alt, licznik Yang, pasek zabójstw, okno śmierci, wymiana ksiąg, stakowanie (Autor: Digi Rasta).
+- Towarzysz: zakupy; Kołczan; auto ceny; filtr podnoszenia z bonusem.
+- Mapy Grot Wygnańców i Pająków; przycisk „Wejdź na wojnę”.
+- Teleport przy otwartych oknach (Towarzysz, Auto Łowy, Dom Towarowy…) nie wyrzuca do logowania.
+
 ## 2.19.0 — 2026-10-03 — Rytuał Przebudzenia, koń do 30, System Legend, boty w minigrach, podatek od sprzedaży
 
 Wymaga klienta **2.0.43** (launcher pobierze go sam albo zaktualizuje go patcher).

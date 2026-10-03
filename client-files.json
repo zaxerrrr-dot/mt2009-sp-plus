@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.43",
+  "version": "2.0.50",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -14,8 +14,8 @@
     },
     {
       "path": "metin2client.exe",
-      "size": 13663232,
-      "sha256": "402D525AF2C4CE812B29E9B08F0FFE22A0EBE73EC93730876B40699E5B080AEA"
+      "size": 13667328,
+      "sha256": "A5F3E6A0634C05CF252FD4DDF015B54AF3ED8B92BB31C0247657D6A6057D14CC"
     },
     {
       "path": "MT2009-Patcher.exe",
@@ -84,8 +84,8 @@
     },
     {
       "path": "pack/gamedata.index",
-      "size": 3756,
-      "sha256": "0C65371D6F323907C4955D741D8F5D2B664FC57C539DFFC12173289481FC8203"
+      "size": 3764,
+      "sha256": "B0A1B4E64D093EE98513E36703CAAB81E897F3DDEC68AFC493724D3E2AEC9C9B"
     },
     {
       "path": "pack/gf_misc.index",
@@ -114,8 +114,8 @@
     },
     {
       "path": "pack/icon.index",
-      "size": 69292,
-      "sha256": "986698F689513534507C0DD208C1D1328CF77B5F7D47F265C7922805131D6727"
+      "size": 69316,
+      "sha256": "382971BCDDBF191CB8A0C20834DE0392C77717D25222A17BE961BC2CADAFAAE4"
     },
     {
       "path": "pack/Index",
@@ -125,7 +125,7 @@
     {
       "path": "pack/locale.index",
       "size": 23604,
-      "sha256": "BEE636E7FA47FE080F6EC8899823D3D256D9AD71C67C3CAB72BA325A8E69748D"
+      "sha256": "5C35D7D137B432889CF223CD0142BE49F5232993804796559C69941FC5565DD4"
     },
     {
       "path": "pack/maps.index",
@@ -154,8 +154,8 @@
     },
     {
       "path": "pack/root.index",
-      "size": 17868,
-      "sha256": "F20D7D950161B6B28587EC4653B6D01BA677C693FC1CBF82E21A4EA0EC7CE085"
+      "size": 21908,
+      "sha256": "74086A7FD30FA7DF8255F9B9B9E9E8EB932758B161C153956224AA3E389DF5C3"
     }
   ]
 }
