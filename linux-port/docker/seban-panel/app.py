@@ -262,7 +262,7 @@ AI_LIVE_DEFAULTS = {"CHAT": 1, "BOOKS": 1, "NIGHT": 1, "LIFE": 0,
                      "BATTLEPASS": 100, "SASH": 100, "ALCHEMY": 100,
                      "WAR_MINUTES": 30, "WAR_HOURS": 2,
                      # MT2009_PLUS_GUILD_WAR_KILLS_V1: kills that win a war (0: time only).
-                     "WAR_KILLS": 100, "CHEST": None, "CHEST_STONE": None,
+                     "WAR_KILLS": 200, "CHEST": None, "CHEST_STONE": None,
                      # MT2009_PLUS_SALE_TAX_V1: percent of a sale between players
                      # and bots that leaves the game (playerbot_sale_tax.h); 0 = none.
                      "SALE_TAX": 0}
@@ -3007,7 +3007,7 @@ def write_ai_weights(values):
     content.append(f"SCROLL_FROM\t{max(1, min(9, int(values.get('SCROLL_FROM', 1))))}")
     content.append(f"WAR_MINUTES\t{max(5, min(180, int(values.get('WAR_MINUTES', 30))))}")
     content.append(f"WAR_HOURS\t{max(1, min(24, int(values.get('WAR_HOURS', 2))))}")
-    content.append(f"WAR_KILLS\t{max(0, min(1000, int(values.get('WAR_KILLS', 100))))}")
+    content.append(f"WAR_KILLS\t{max(0, min(1000, int(values.get('WAR_KILLS', 200))))}")
     for key in ("CHEST", "CHEST_STONE"):
         if values.get(key) is not None:
             content.append(f"{key}\t{max(0, min(1000, int(values[key])))}")
@@ -3793,22 +3793,44 @@ def cached_dashboard_ranking(kind, limit=10, ttl=300):
     bot_ranking() directly and stays live; only the dashboard's top-10
     carousel reads through this cache.
     """
+    # MT2009_PLUS_DASHBOARD_RANK_ASYNC_V1: never computed inside the request.
+    # refine_rate grew to ~50 s on a world with 27M log rows (the supporters'
+    # server, 3 October) and the dashboard's deferred fetch ran into the
+    # gate's timeout (504) - the VPS, the bots-by-map and the rankings cards
+    # stayed empty. A stale or missing entry is now refreshed by a thread,
+    # claimed in the table first so only one worker runs it, and the request
+    # gets what is there (nothing yet on the very first look).
+    if kind == "refine_rate":
+        ttl = max(ttl, 3600)
     name = f"dash_rank_cache_{kind}"
+    payload = None
     try:
         row = one("SELECT value FROM player.web_seban_query_cache WHERE name=%s", (name,))
         if row and row.get("value"):
             payload = json.loads(row["value"])
-            if time.time() - payload.get("at", 0) < ttl:
-                return payload["rows"]
     except (pymysql.MySQLError, ValueError, KeyError):
-        pass
-    data = bot_ranking(kind)[:limit]
+        payload = None
+    now = time.time()
+    if payload and now - payload.get("at", 0) < ttl:
+        return payload.get("rows") or []
+    stale = (payload or {}).get("rows") or []
     try:
+        # The claim: the entry looks fresh for ten more minutes to everybody else.
         rows("REPLACE INTO player.web_seban_query_cache (name,value) VALUES (%s,%s)",
-             (name, json.dumps({"at": time.time(), "rows": data}, default=str)))
+             (name, json.dumps({"at": now - ttl + 600, "rows": stale}, default=str)))
     except pymysql.MySQLError:
-        pass
-    return data
+        return stale
+
+    def refresh():
+        try:
+            data = bot_ranking(kind)[:limit]
+            rows("REPLACE INTO player.web_seban_query_cache (name,value) VALUES (%s,%s)",
+                 (name, json.dumps({"at": time.time(), "rows": data}, default=str)))
+        except Exception:
+            pass
+
+    threading.Thread(target=refresh, name=f"dash-rank-{kind}", daemon=True).start()
+    return stale
 
 
 def bot_ranking(kind, sort_by="avg", people_only=False, weapon_type=None):
@@ -9500,7 +9522,7 @@ def manage_behavior():
         values["SCROLL_FROM"] = max(1, min(9, int(request.form.get("SCROLL_FROM", values.get("SCROLL_FROM", 1)))))
     except (TypeError, ValueError):
         values["SCROLL_FROM"] = 1
-    for key, minimum, maximum, default in (("WAR_MINUTES", 5, 180, 30), ("WAR_HOURS", 1, 24, 2), ("WAR_KILLS", 0, 1000, 100)):
+    for key, minimum, maximum, default in (("WAR_MINUTES", 5, 180, 30), ("WAR_HOURS", 1, 24, 2), ("WAR_KILLS", 0, 1000, 200)):
         try:
             values[key] = max(minimum, min(maximum, int(request.form.get(key, values.get(key, default)))))
         except (TypeError, ValueError):
