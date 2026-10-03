@@ -1,0 +1,306 @@
+--- a/SourceClient/EffectLib/EffectInstance.cpp
++++ b/SourceClient/EffectLib/EffectInstance.cpp
+@@ -90,6 +90,7 @@
+ 
+ void CEffectInstance::OnRender()
+ {
++	{ bool Mt2009DigiQol_IsEffectHidden(const CEffectData*); if (Mt2009DigiQol_IsEffectHidden(m_pkEftData)) return; } // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta)
+ 	STATEMANAGER.SaveSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_NONE);
+ 	STATEMANAGER.SaveSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_NONE);
+ 	STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+--- a/SourceClient/UserInterface/Locale_inc.h
++++ b/SourceClient/UserInterface/Locale_inc.h
+@@ -85,6 +85,10 @@
+ //if you want to see highlighted a new item when dropped or when exchanged
+ #define ENABLE_HIGHLIGHT_NEW_ITEM
+ 
++// MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): app.SetHideEffects, app.SetChatLog, chrmgr.SetShopsVisible
++// for the "Opcje dodatkowe" window (code in PythonChat.cpp)
++#define ENABLE_DIGI_CLIENT_QOL
++
+ // it shows emojis in the textlines
+ #define ENABLE_EMOJI_SYSTEM
+ 
+--- a/SourceClient/UserInterface/PythonChat.cpp
++++ b/SourceClient/UserInterface/PythonChat.cpp
+@@ -433,8 +433,16 @@
+ 	}
+ }
+ 
++#ifdef ENABLE_DIGI_CLIENT_QOL
++static void Mt2009DigiQol_OnChat(const char* c_szName, const char* c_szChat); // MT2009_PLUS_DIGI_CLIENT_QOL_V1
++#endif
++
+ void CPythonChat::AppendChat(int iType, const char * c_szChat)
+ {
++#ifdef ENABLE_DIGI_CLIENT_QOL
++	if (iType != CHAT_TYPE_COMMAND)
++		Mt2009DigiQol_OnChat(NULL, c_szChat); // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): chat log
++#endif
+ 	// DEFAULT_FONT
+ 	//static CResource * s_pResource = CResourceManager::Instance().GetResourcePointer(g_strDefaultFontName.c_str());
+ 
+@@ -548,6 +556,9 @@
+ 
+ void CPythonChat::AppendWhisper(int iType, const char * c_szName, const char * c_szChat)
+ {
++#ifdef ENABLE_DIGI_CLIENT_QOL
++	Mt2009DigiQol_OnChat(c_szName ? c_szName : "", c_szChat); // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): chat log
++#endif
+ 	TWhisperMap::iterator itor = m_WhisperMap.find(c_szName);
+ 
+ 	CWhisper * pWhisper;
+@@ -840,3 +851,209 @@
+ //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f
+ 
+ // Files shared by GameCore.top
++
++// ---------------------------------------------------------------------------------------------
++// MT2009_PLUS_DIGI_CLIENT_QOL_V1 - "Opcje dodatkowe" (Autor: Digi Rasta; nowy-system 0.19.0, paczki
++// BL_HIDE_EFFECT, Hide-Objects, Chat-Log-Viewer). Python (uiopcjedodatkowe.py) checks hasattr:
++//   app.SetHideEffects(buff, skill)  hides the shaman's buff effects / the skill auras (CEffectInstance::OnRender)
++//   app.SetChatLog(on)               chat and whispers to logs/czat_YYYY-MM-DD.txt
++//   chrmgr.SetShopsVisible(on)       player shops (ikashop entities and classic shop characters) hidden/shown
++// ---------------------------------------------------------------------------------------------
++#include "../EffectLib/EffectData.h"
++#include "InstanceBase.h"
++#include <cctype>
++#include <ctime>
++#include <map>
++#include <string>
++
++namespace
++{
++	enum { DIGI_EFFECT_NONE, DIGI_EFFECT_BUFF, DIGI_EFFECT_SKILL };
++	bool s_bDigiHideBuff = false;
++	bool s_bDigiHideSkill = false;
++	bool s_bDigiChatLog = false;
++	bool s_bDigiShopsHidden = false;
++	std::map<std::string, int> s_mapDigiEffectKind;	// by file name (effect data may be reloaded at another address)
++
++#ifdef ENABLE_DIGI_CLIENT_QOL
++	// The package's lists: the shaman's buffs on the target, and the warrior's, sura's, ninja's and shaman's skill auras.
++	const char* const c_aszDigiBuffEffects[] =
++	{
++		"pc/shaman/effect/3hosin_loop.mse",
++		"pc/shaman/effect/boho_loop.mse",
++		"pc/shaman/effect/6gicheon_hand.mse",
++		"pc/shaman/effect/jeungryeok_hand.mse",
++	};
++	const char* const c_aszDigiSkillEffects[] =
++	{
++		"pc/shaman/effect/10kwaesok_loop.mse",
++		"pc/sura/effect/gwigeom_loop.mse",
++		"pc/sura/effect/fear_loop.mse",
++		"pc/sura/effect/jumagap_loop.mse",
++		"pc/sura/effect/muyeong_loop.mse",
++		"pc/sura/effect/heuksin_loop.mse",
++		"pc/warrior/effect/gyeokgongjang_loop.mse",
++		"pc/warrior/effect/geom_sword_loop.mse",
++		"pc/assassin/effect/gyeonggong_loop.mse",
++	};
++
++	bool DigiEndsWith(const std::string& s, const char* c_szSuffix)
++	{
++		const size_t n = strlen(c_szSuffix);
++		return s.size() >= n && s.compare(s.size() - n, n, c_szSuffix) == 0;
++	}
++
++	int DigiEffectKind(const CEffectData* c_pData)
++	{
++		std::string name = c_pData->GetFileName() ? c_pData->GetFileName() : "";
++		std::map<std::string, int>::iterator it = s_mapDigiEffectKind.find(name);
++		if (it != s_mapDigiEffectKind.end())
++			return it->second;
++
++		std::string low = name;
++		for (size_t i = 0; i < low.size(); ++i)
++			low[i] = low[i] == '\\' ? '/' : (char) tolower((unsigned char) low[i]);
++
++		int kind = DIGI_EFFECT_NONE;
++		for (size_t i = 0; i < _countof(c_aszDigiBuffEffects) && kind == DIGI_EFFECT_NONE; ++i)
++			if (DigiEndsWith(low, c_aszDigiBuffEffects[i]))
++				kind = DIGI_EFFECT_BUFF;
++		for (size_t i = 0; i < _countof(c_aszDigiSkillEffects) && kind == DIGI_EFFECT_NONE; ++i)
++			if (DigiEndsWith(low, c_aszDigiSkillEffects[i]))
++				kind = DIGI_EFFECT_SKILL;
++		s_mapDigiEffectKind[name] = kind;
++		return kind;
++	}
++
++	// Chat lines carry colour/link codes (|cAARRGGBB, |r, |H...|h, |h); the log gets plain text.
++	std::string DigiPlainText(const char* c_szText)
++	{
++		std::string out;
++		for (const char* p = c_szText; *p; )
++		{
++			if (p[0] == '|' && p[1] == 'c' && strlen(p) >= 10) { p += 10; continue; }
++			if (p[0] == '|' && (p[1] == 'r' || p[1] == 'h')) { p += 2; continue; }
++			if (p[0] == '|' && p[1] == 'H')
++			{
++				const char* e = strstr(p, "|h");
++				p = e ? e + 2 : p + 2;
++				continue;
++			}
++			out += *p++;
++		}
++		return out;
++	}
++#endif
++}
++
++// EffectLib (CEffectInstance::OnRender) declares this where it calls it; without the define it never hides.
++bool Mt2009DigiQol_IsEffectHidden(const CEffectData* c_pData)
++{
++#ifdef ENABLE_DIGI_CLIENT_QOL
++	if (!c_pData || (!s_bDigiHideBuff && !s_bDigiHideSkill))
++		return false;
++	const int kind = DigiEffectKind(c_pData);
++	return (kind == DIGI_EFFECT_BUFF && s_bDigiHideBuff) || (kind == DIGI_EFFECT_SKILL && s_bDigiHideSkill);
++#else
++	return false;
++#endif
++}
++
++#ifdef ENABLE_DIGI_CLIENT_QOL
++bool Mt2009DigiQol_ShopsHidden()
++{
++	return s_bDigiShopsHidden;
++}
++
++static void Mt2009DigiQol_OnChat(const char* c_szName, const char* c_szChat)
++{
++	if (!s_bDigiChatLog || !c_szChat || !*c_szChat)
++		return;
++
++	CreateDirectoryA("logs", NULL);
++	const time_t now = time(NULL);
++	struct tm lt = *localtime(&now);
++	char szFile[64];
++	strftime(szFile, sizeof(szFile), "logs/czat_%Y-%m-%d.txt", &lt);
++	if (FILE* fp = fopen(szFile, "ab"))
++	{
++		char szTime[16];
++		strftime(szTime, sizeof(szTime), "%H:%M:%S", &lt);
++		const std::string text = DigiPlainText(c_szChat);
++		if (c_szName)
++			fprintf(fp, "[%s] [szept: %s] %s\r\n", szTime, c_szName, text.c_str());
++		else
++			fprintf(fp, "[%s] %s\r\n", szTime, text.c_str());
++		fclose(fp);
++	}
++}
++
++static PyObject* digiAppSetHideEffects(PyObject* poSelf, PyObject* poArgs)
++{
++	int iBuff, iSkill;
++	if (!PyTuple_GetInteger(poArgs, 0, &iBuff) || !PyTuple_GetInteger(poArgs, 1, &iSkill))
++		return Py_BuildException();
++	s_bDigiHideBuff = iBuff != 0;
++	s_bDigiHideSkill = iSkill != 0;
++	return Py_BuildNone();
++}
++
++static PyObject* digiAppSetChatLog(PyObject* poSelf, PyObject* poArgs)
++{
++	int iOn;
++	if (!PyTuple_GetInteger(poArgs, 0, &iOn))
++		return Py_BuildException();
++	s_bDigiChatLog = iOn != 0;
++	return Py_BuildNone();
++}
++
++static PyObject* digiChrmgrSetShopsVisible(PyObject* poSelf, PyObject* poArgs)
++{
++	int iVisible;
++	if (!PyTuple_GetInteger(poArgs, 0, &iVisible))
++		return Py_BuildException();
++
++	s_bDigiShopsHidden = iVisible == 0;	// ikashop entities: CPythonIkarusShop::RenderEntities
++
++	CPythonCharacterManager& rkChrMgr = CPythonCharacterManager::Instance();
++	CInstanceBase* pkMain = rkChrMgr.GetMainInstancePtr();
++	for (CPythonCharacterManager::CharacterIterator it = rkChrMgr.CharacterInstanceBegin(); it != rkChrMgr.CharacterInstanceEnd(); ++it)
++	{
++		CInstanceBase* pkInst = *it;
++		if (!pkInst || pkInst == pkMain || !pkInst->IsShop())
++			continue;
++		if (iVisible)
++			pkInst->Show();
++		else
++			pkInst->Hide();
++	}
++	return Py_BuildNone();
++}
++
++static void Mt2009DigiQol_AddFunctions(const char* c_szModule, PyMethodDef* pMethods)
++{
++	PyObject* poModule = PyImport_AddModule(c_szModule);	// borrowed; Py_InitModule later reuses it
++	if (!poModule)
++		return;
++	for (PyMethodDef* p = pMethods; p->ml_name; ++p)
++		PyModule_AddObject(poModule, p->ml_name, PyCFunction_New(p, NULL));
++}
++
++// UserInterface.cpp (RunMainScript's module init) declares this where it calls it.
++void Mt2009DigiQol_RegisterPython()
++{
++	static PyMethodDef s_appMethods[] =
++	{
++		{ "SetHideEffects",		digiAppSetHideEffects,		METH_VARARGS, NULL },
++		{ "SetChatLog",			digiAppSetChatLog,			METH_VARARGS, NULL },
++		{ NULL, NULL, 0, NULL },
++	};
++	static PyMethodDef s_chrmgrMethods[] =
++	{
++		{ "SetShopsVisible",	digiChrmgrSetShopsVisible,	METH_VARARGS, NULL },
++		{ NULL, NULL, 0, NULL },
++	};
++	Mt2009DigiQol_AddFunctions("app", s_appMethods);
++	Mt2009DigiQol_AddFunctions("chrmgr", s_chrmgrMethods);
++}
++#endif
+--- a/SourceClient/UserInterface/PythonIkarusShop.cpp
++++ b/SourceClient/UserInterface/PythonIkarusShop.cpp
+@@ -1118,8 +1118,18 @@
+ #endif
+ 
+ 	CPythonGraphic::Instance().SetDiffuseOperation();
++#ifdef ENABLE_DIGI_CLIENT_QOL
++	bool Mt2009DigiQol_ShopsHidden(); // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): chrmgr.SetShopsVisible(0)
++	const bool bDigiShopsHidden = Mt2009DigiQol_ShopsHidden();
++#endif
+ 	for (auto & iter : m_shopInstances)
+ 	{
++#ifdef ENABLE_DIGI_CLIENT_QOL
++		if (bDigiShopsHidden) {
++			iter->FarFromView(true);
++			continue;
++		}
++#endif
+ #ifdef EXTEND_IKASHOP_PRO
+ 		if (!mainInstance || mainInstance->GetDistance(iter->GetThingInstancePtr()->GetPosition()) > CPythonSystem::instance().GetShopRangeView()) {
+ 			iter->FarFromView(true);
+@@ -1150,6 +1160,10 @@
+ 			if (instance->IsFarFromView())
+ 				continue;
+ #endif
++#ifdef ENABLE_DIGI_CLIENT_QOL
++			if (bDigiShopsHidden)
++				continue;
++#endif
+ 			instance->RenderText();
+ 		}
+ 		graphic.PopState();
+--- a/SourceClient/UserInterface/UserInterface.cpp
++++ b/SourceClient/UserInterface/UserInterface.cpp
+@@ -789,6 +789,9 @@
+ #ifdef ENABLE_INGAME_EVENT_MANAGER
+ 	initInGameEventSystem(); // MT2009_PLUS_EVENT_MANAGER_V1
+ #endif
++#ifdef ENABLE_DIGI_CLIENT_QOL
++	{ void Mt2009DigiQol_RegisterPython(); Mt2009DigiQol_RegisterPython(); } // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta)
++#endif
+ 	initsafebox();
+ 	initguild();
+ 	initServerStateChecker();
