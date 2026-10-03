@@ -399,7 +399,10 @@ def live_positions():
             if time.time() - path.stat().st_mtime > 25:
                 continue
             for n, _status in parse_status_rows(path.read_text(encoding="cp1250", errors="replace")):
-                result[n["pid"]] = (n.get("map", 0), n.get("x", 0), n.get("y", 0), channel)
+                # A dungeon run's copy of a map (base * 10000 + n) counts as the base map,
+                # as the panel's live map shows it (MT2009_PLUS_SEBAN_MAPS_V1).
+                index = n.get("map", 0)
+                result[n["pid"]] = (index // 10000 if index >= 10000 else index, n.get("x", 0), n.get("y", 0), channel)
         except (OSError, ValueError):
             continue
     return result
