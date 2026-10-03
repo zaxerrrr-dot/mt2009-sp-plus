@@ -47,6 +47,7 @@ param(
 #   Digi Rasta's systems char_item.cpp, char_battle.cpp, char_horse.cpp
 #                      (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1,
 #                      MT2009_PLUS_HORSE30_V1; server-patches/digirasta)
+#   Kolczan (quiver)   char_battle.cpp           (MT2009_PLUS_QUIVER_V1; server-patches/quiver)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -683,6 +684,19 @@ if ((Test-Path -LiteralPath $saleTaxApply -PathType Leaf) -and
     if ($saleTaxResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} sale tax edit(s).' -f $saleTaxResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Kolczan, the ItemShop's quiver (server-patches/quiver, MT2009_PLUS_QUIVER_V1):
+# an arrow with a real-time limit never runs out - GetArrowAndBow hands out
+# every arrow a shot asks while it has time left and UseArrow spends none
+# (char_battle.cpp; the bots' twin is IsPlayerBotQuiver in playerbot_gear.h).
+$quiverApply = Join-Path $repo 'server-patches/quiver/Apply-QuiverPatch.ps1'
+if ((Test-Path -LiteralPath $quiverApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $quiverResult = & $quiverApply -SourceDir $engineGameSource
+    if ($quiverResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} quiver edit(s).' -f $quiverResult.Applied) -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
