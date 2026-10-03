@@ -1,8 +1,8 @@
 // MT2009_PLUS_COLLECTOR_STORAGE_V1: the collector's storage ("Magazyn
 // kolekcjonera"), the server's half (playerbot_collector.h has the protocol;
-// the window is the client's uicollector.py). Based on the upstream Metin2
-// Playerbots project's system; this one is written for a move that is
-// instant, as the companion's quick transfer is.
+// the window is the client's uicollector.py). The upstream window's features,
+// written here for a move that is instant, as the companion's quick transfer
+// is.
 //
 // Why the upstream one waited: its window allowed one move at a time, sent
 // nothing sooner than 0.2 s after the last command (the engine's flood guard

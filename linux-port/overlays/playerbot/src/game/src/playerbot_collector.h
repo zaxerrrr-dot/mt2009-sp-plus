@@ -1,8 +1,8 @@
 // MT2009_PLUS_COLLECTOR_STORAGE_V1: "Magazyn kolekcjonera", the collector's
 // storage - one store for the whole account beside the classic safebox, at
 // the storekeeper, opened from the safebox window (client uicollector.py).
-// Based on the upstream Metin2 Playerbots project's system, rewritten so that
-// a move is instant (playerbot_collector.cpp, the design).
+// The upstream window's features, rewritten so that a move is instant
+// (playerbot_collector.cpp, the design; server-patches/collector/README.md).
 //
 // "/kolekcjoner <word> ..." (cmd.cpp, server-patches/collector):
 //   open                                   the safebox must be open

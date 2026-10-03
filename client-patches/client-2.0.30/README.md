@@ -573,3 +573,25 @@ reszta przedmiotów bez zmian). Pliki `root`:
 Pominięte z paczki: Shift + klik w torbie towarzysza (`uisidekickinventory.py`) – to samo robi już nasz
 prawy klik (`MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1`); `XMAS_SNOW_SHOW` w
 `game.py` (wyłączał śnieg i świąteczną muzykę z nocnej flagi) – nie był częścią zgłoszenia.
+
+## Magazyn kolekcjonera (natychmiastowy) – bez zmian exe
+
+Znacznik `MT2009_PLUS_COLLECTOR_STORAGE_V1`. Na podstawie systemu z projektu upstream (based on the
+upstream Metin2 Playerbots project), przepisany tak, by wkładanie i wyjmowanie było natychmiastowe.
+Serwer, zapis, protokół i powody opóźnień upstream: `server-patches/collector/README.md`.
+
+- `uicollector.py` (nowy) – okno: kategorie z ikonami i licznikami, wyszukiwarka, siatka 10 × 10
+  ze stronami, podpowiedzi, pasek zajętości, „Rozbuduj”; cały magazyn w pamięci okna, ruch pokazany
+  od razu i wysłany jedną komendą (`warpsafe.InGame()`), serwer odsyła tylko zmieniony wpis.
+- `uisafebox.py` – przycisk „Kolekcjoner” nad „Zmień hasło” (okno magazynu o 23 px wyższe).
+- `uiinventory.py` – przy otwartym magazynie kolekcjonera PPM chowa przedmiot (Ctrl – wszystkie
+  stosy rodzaju, Shift – ilość), upuszczenie wpisu na ekwipunek go wyjmuje.
+- `game.py` – komenda serwera `COLL` → `uicollector.OnServer`.
+- Nowe wpisy paczki `root`: `uicollector.py` i `mt2009_ui/collector/*` – ikony kategorii
+  `cat_<all|equipment|materials|upgrade|books|stones|herbs|consumables|chests|gathering|quests|appearance|other>_<1|2|3>.tga`
+  (25×25; sześć okrągłych ikon z paczki Arezzo `ekenvanter`, siedem złożonych w tej samej ramce z
+  ikon przedmiotów), `catbtn_01..03.tga` (Arezzo `collections/button0x`), `header.tga`
+  (Arezzo `new_weekly_rank/header_small`), `slot.tga` (GF `belt_inventory/slot_normal`),
+  `search_01..03.tga` (GF `pattern/btn_search_0x`), `bar_empty.tga` / `bar_full.tga` (Arezzo
+  `collections/total_progress_*`), `input.png` (Arezzo `collect_input`). Brak którejś grafiki w
+  paczce gracza = zastępstwo z paczek klienta albo jej pominięcie (`pack.Exist`, `try`).

@@ -1,8 +1,8 @@
 # MT2009_PLUS_COLLECTOR_STORAGE_V1: "Magazyn kolekcjonera", the collector's
 # storage - one store for the whole account beside the classic safebox,
 # opened with the "Kolekcjoner" button of the safebox window (uisafebox.py).
-# Based on the upstream Metin2 Playerbots project's system, rewritten so that
-# a move is instant, as the companion's quick transfer is (the owner, 3
+# The upstream window's features (server-patches/collector/README.md),
+# rewritten so that a move is instant, as the companion's quick transfer is (the owner, 3
 # October: "to ma byc instant, tak jak przerzucanie miedzy towarzyszem a
 # naszym eq").
 #
