@@ -23,6 +23,11 @@ quest wzgorze_wukonga begin
 				seals = 3,
 				chests_min = 1, chests_max = 3,
 				path = "data/dungeon/wzgorze_wukonga/",
+				-- MT2009_PLUS_WUKONG_GUARDIANS_V1: the Cloud Defenders' places (guardians.txt before), all
+				-- at least 8 cells inside the arena's edge, and how long stage 3 may go without a
+				-- Defender falling before one at full health is put back on its place.
+				guardians = {{277, 289}, {253, 260}, {251, 286}},
+				guardian_idle = 180,
 			}
 		end
 
@@ -182,7 +187,7 @@ quest wzgorze_wukonga begin
 				d.set_regen_file(c.path.."guards.txt")
 			elseif stage == 3 then
 				d.setf("left", 3)
-				d.regen_file(c.path.."guardians.txt")
+				wzgorze_wukonga.spawn_guardians()
 				d.set_regen_file(c.path.."guards.txt")
 			elseif stage == 4 then
 				d.setf("left", 4)
@@ -195,6 +200,58 @@ quest wzgorze_wukonga begin
 				d.spawn_mob(9682, 268, 256)
 			end
 			d.notice("Wzgórze Wukonga ("..stage.."/6): "..wzgorze_wukonga.stage_text(stage))
+		end
+
+		-- MT2009_PLUS_WUKONG_GUARDIANS_V1 (3 October): the Cloud Defenders one by one, each an instance
+		-- unique. On the supporters' server a Defender's push carried a player's companion over the edge
+		-- of the arena, a Defender went after it and stayed out there: nobody could reach it, the cape
+		-- pulls no boss, and the run stood at "Pozosta³o: 1" until the players gave up. The core no
+		-- longer pushes anyone onto blocked ground (char_skill.cpp, the same marker); this is the net
+		-- under it. When no Defender has fallen for guardian_idle seconds, each one still at full
+		-- health - nobody is hitting it - is put back on its place.
+		function spawn_guardian(i)
+			local c = wzgorze_wukonga.cfg()
+			local vid = d.spawn_mob(9683, c.guardians[i][1], c.guardians[i][2])
+			d.set_unique("wukong_guardian"..i, vid)
+			d.setf("guardian"..i, vid)
+		end
+
+		function spawn_guardians()
+			local c = wzgorze_wukonga.cfg()
+			for i = 1, table.getn(c.guardians) do
+				wzgorze_wukonga.spawn_guardian(i)
+			end
+			d.setf("guardian_time", get_global_time())
+		end
+
+		function guardian_down(vid)
+			local c = wzgorze_wukonga.cfg()
+			for i = 1, table.getn(c.guardians) do
+				if d.getf("guardian"..i) == vid then
+					d.setf("guardian"..i, 0)
+				end
+			end
+			d.setf("guardian_time", get_global_time())
+		end
+
+		function guardians_check()
+			local c = wzgorze_wukonga.cfg()
+			if get_global_time() - d.getf("guardian_time") < c.guardian_idle then
+				return
+			end
+			d.setf("guardian_time", get_global_time())
+			local back = 0
+			for i = 1, table.getn(c.guardians) do
+				local key = "wukong_guardian"..i
+				if d.getf("guardian"..i) ~= 0 and d.unique_get_hp_perc(key) >= 100 then
+					d.purge_unique(key)
+					wzgorze_wukonga.spawn_guardian(i)
+					back = back + 1
+				end
+			end
+			if back > 0 then
+				d.notice("Wzgórze Wukonga: Obroñcy Chmur wracaj¹ na swoje miejsca.")
+			end
 		end
 
 		function next_stage()
@@ -678,6 +735,9 @@ quest wzgorze_wukonga begin
 				if left == 15 or left == 10 or left == 5 or left == 1 then
 					d.notice("Wzgórze Wukonga: Pozosta³o "..left.." min.")
 				end
+				if d.getf("stage") == 3 then
+					wzgorze_wukonga.guardians_check() -- MT2009_PLUS_WUKONG_GUARDIANS_V1
+				end
 				server_timer("wukong_tick", 60, get_server_timer_arg())
 			end
 		end
@@ -739,6 +799,7 @@ quest wzgorze_wukonga begin
 		end
 
 		when 9683.kill with wzgorze_wukonga.inside() and d.getf("stage") == 3 begin
+			wzgorze_wukonga.guardian_down(npc.get_vid()) -- MT2009_PLUS_WUKONG_GUARDIANS_V1
 			local left = d.getf("left") - 1
 			d.setf("left", left)
 			if left <= 0 then
