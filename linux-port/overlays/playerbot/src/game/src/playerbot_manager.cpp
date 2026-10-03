@@ -160,6 +160,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_catchking.h" // Catch the King, packets CG 226 / GC 238 (MT2009_PLUS_CATCH_KING_V1)
 #include "playerbot_yutnori.h" // Yut Nori, packets 182 (MT2009_PLUS_YUTNORI_V1)
 #include "playerbot_dungeon_panel.h" // the dungeon panel, "/lochy", d.update_ranking (MT2009_PLUS_DUNGEON_PANEL_V1)
+#include "playerbot_weekly_rank.h" // the weekly ranking and its titles, "/ranking" (MT2009_PLUS_WEEKLY_RANKING_V1)
 // Iwakura's Bot Mood System: the moods and the notes the loot, the chests,
 // the fishing and the blacksmith send it - early, so any of them may.
 #include "playerbot_mood.h"

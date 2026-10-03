@@ -1613,6 +1613,101 @@ def legend_rows(empire=0, tier=0):
     return ranking, events, False
 
 
+# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking and its titles. The game
+# creates player.weekly_rank_state (one row, id=1: on/off, length in days,
+# season number, start/end as unix time; end 0 = the game sets the next Monday
+# 00:00), player.weekly_rank_score (a season's counters per category and
+# character) and player.weekly_rank_title (the holders of the titles DURING a
+# season, i.e. the winners of the one before, places 1..3). A world whose core
+# predates them has none of the three.
+# (cat, category, title as the game shows it, bonus, values for place 1..3, unit)
+WEEKLY_RANK_CATS = (
+    (1, "Zabite potwory", "Łowca", "silny przeciwko potworom", (15, 8, 4), "%"),
+    (2, "Zniszczone metiny", "Niszczyciel", "silny przeciwko potworom", (15, 8, 4), "%"),
+    (3, "Pokonane bossy", "Pogromca Bossów", "silny przeciwko bossom", (15, 8, 4), "%"),
+    (4, "Zabici gracze (PvP)", "Zabójca", "silny przeciwko ludziom", (15, 8, 4), "%"),
+    (5, "Ukończone wyprawy (dungeony)", "Podróżnik", "silny przeciwko potworom", (15, 8, 4), "%"),
+    (6, "Udane ulepszenia przedmiotów", "Kowal", "max PŻ", (2500, 2000, 1500), ""),
+    (7, "Alchemia (udane ulepszenia Smoczych Kamieni)", "Alchemik", "wartość ataku", (75, 75, 75), ""),
+    (8, "Poziom", "Mistrz Poziomów", "silny przeciwko potworom i ludziom", (15, 8, 4), "%"),
+)
+WEEKLY_RANK_CAT = {c[0]: c for c in WEEKLY_RANK_CATS}
+WEEKLY_RANK_ROMAN = {1: "I", 2: "II", 3: "III"}
+
+
+def weekly_fmt_ts(ts):
+    try:
+        ts = int(ts or 0)
+    except (TypeError, ValueError):
+        ts = 0
+    return datetime.fromtimestamp(ts).strftime("%d.%m.%Y %H:%M") if ts > 0 else ""
+
+
+def weekly_time_left(end):
+    try:
+        end = int(end or 0)
+    except (TypeError, ValueError):
+        end = 0
+    if end <= 0:
+        return ""
+    left = end - int(time.time())
+    if left <= 0:
+        return "kończy się (w ciągu ~2 min)"
+    days, rest = divmod(left, 86400)
+    hours, rest = divmod(rest, 3600)
+    return f"{days} d {hours} h {rest // 60} min"
+
+
+def weekly_tidy(row):
+    row["empire"] = int(row.get("empire") or 0)
+    row["is_bot"] = bool(int(row.get("is_bot") or 0))
+    return row
+
+
+def weekly_rank_rows(cat=1):
+    """(state, holders, ranking, missing): the state row (defaults while it is
+    not there), the current season's title holders by category and the live
+    top 50 of one category. Read only."""
+    state = {"enabled": 1, "season_days": 7, "season": 1, "season_start": 0, "season_end": 0}
+    holders = {}
+    try:
+        found = one("SELECT enabled, season_days, season, season_start, season_end "
+                    "FROM player.weekly_rank_state WHERE id = 1")
+        if found:
+            state.update({key: int(found[key] or 0) for key in state})
+        season = state["season"]
+        for row in rows("SELECT cat, place, pid, name, level, empire, value, is_bot FROM player.weekly_rank_title "
+                        "WHERE season = %s ORDER BY cat, place", (season,)):
+            row = weekly_tidy(row)
+            info = WEEKLY_RANK_CAT.get(int(row["cat"]))
+            place = int(row["place"] or 0)
+            row["title"] = f"{info[2]} {WEEKLY_RANK_ROMAN.get(place, '')}".strip() if info else ""
+            row["bonus"] = f"{info[3]} +{info[4][place - 1]}{info[5]}" if info and place in (1, 2, 3) else ""
+            holders.setdefault(int(row["cat"]), []).append(row)
+        if cat == 8:
+            ranking = rows("SELECT p.id AS pid, p.name, p.level, p.exp AS value, pi.empire, "
+                           "(LEFT(a.login, 10) = 'playerbot_') AS is_bot "
+                           "FROM player.player p "
+                           "LEFT JOIN account.account a ON a.id = p.account_id "
+                           "LEFT JOIN player.player_index pi ON pi.id = p.account_id "
+                           "WHERE LEFT(p.name, 1) <> '[' "
+                           "ORDER BY p.level DESC, p.exp DESC LIMIT 50")
+        else:
+            ranking = rows("SELECT s.pid, s.value, s.is_bot, p.name, p.level, pi.empire "
+                           "FROM player.weekly_rank_score s "
+                           "LEFT JOIN player.player p ON p.id = s.pid "
+                           "LEFT JOIN player.player_index pi ON pi.id = p.account_id "
+                           "WHERE s.season = %s AND s.cat = %s "
+                           "ORDER BY s.value DESC LIMIT 50", (season, cat))
+        ranking = [weekly_tidy(row) for row in ranking]
+    except Exception:
+        return state, {}, [], True
+    state["start_text"] = weekly_fmt_ts(state["season_start"])
+    state["end_text"] = weekly_fmt_ts(state["season_end"])
+    state["left_text"] = weekly_time_left(state["season_end"])
+    return state, holders, ranking, False
+
+
 def player_guild_rows(query=""):
     """Gildie graczy: te, których mistrz nie gra na koncie bota
     (playerbot_NNN). Czytane z bazy, bo rdzenie raportują tylko gildie botów
@@ -4152,6 +4247,47 @@ def legends_switch():
     else:
         flash("System Legend " + ("włączony" if values["LEGENDS"] else "wyłączony") + " — rdzeń zastosuje to do 5 sekund, bez restartu.")
     return redirect(url_for("legends_page"))
+
+
+@app.route("/weekly-ranking", methods=["GET", "POST"])
+@login_required
+def weekly_ranking():
+    """MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking - its switch and
+    length, ending the season now, the current season, the title holders and
+    the live top 50 of a category."""
+    if request.method == "POST":
+        if request.form.get("weekly_csrf", "") != session.get("seban_update_csrf", ""):
+            flash("Sesja formularza wygasła - odśwież stronę i spróbuj jeszcze raz.", "error")
+            return redirect(url_for("weekly_ranking"))
+        action = request.form.get("action", "save")
+        try:
+            rows("INSERT IGNORE INTO player.weekly_rank_state (id) VALUES (1)")
+            if action == "end":
+                rows("UPDATE player.weekly_rank_state SET season_end = UNIX_TIMESTAMP() WHERE id = 1")
+            else:
+                try:
+                    days = max(1, min(28, int(request.form.get("season_days", 7) or 7)))
+                except (TypeError, ValueError):
+                    days = 7
+                enabled = 1 if "1" in request.form.getlist("enabled") else 0
+                rows("UPDATE player.weekly_rank_state SET enabled = %s, season_days = %s WHERE id = 1", (enabled, days))
+        except Exception:
+            flash("Nie udało się zapisać – tabele rankingu tygodniowego jeszcze nie istnieją (uruchom serwer gry).", "error")
+            return redirect(url_for("weekly_ranking"))
+        if action == "end":
+            flash("Sezon kończy się teraz – gra przełączy go w ciągu ok. 2 minut i ogłosi wyniki.")
+        else:
+            flash("Zapisano. Gra zastosuje to w ciągu ok. 2 minut.")
+        return redirect(url_for("weekly_ranking"))
+    try:
+        cat = int(request.args.get("cat", 1) or 1)
+    except (TypeError, ValueError):
+        cat = 1
+    if cat not in WEEKLY_RANK_CAT:
+        cat = 1
+    state, holders, ranking, missing = weekly_rank_rows(cat)
+    return render_template("weekly_ranking.html", state=state, holders=holders, ranking=ranking, missing=missing,
+                           cat=cat, cats=WEEKLY_RANK_CATS, cats_by_id=WEEKLY_RANK_CAT, weekly_csrf=update_csrf_token())
 
 
 @app.route("/players/personalities")

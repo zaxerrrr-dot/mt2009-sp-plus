@@ -404,6 +404,18 @@ db -e "CREATE TABLE IF NOT EXISTS player.playerbot_legend (pid INT UNSIGNED NOT 
     || echo "playerbot-migrate: could not create player.playerbot_legend" >&2
 db -e "CREATE TABLE IF NOT EXISTS player.playerbot_legend_event (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, pid INT UNSIGNED NOT NULL DEFAULT 0, empire TINYINT UNSIGNED NOT NULL DEFAULT 0, kind VARCHAR(24) NOT NULL DEFAULT '', text VARCHAR(255) NOT NULL DEFAULT '', KEY at_idx (at)) ENGINE=InnoDB;" \
     || echo "playerbot-migrate: could not create player.playerbot_legend_event" >&2
+# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking and its titles
+# (playerbot_weekly_rank.h; on the basis of the Arezzo files' weekly ranking) -
+# the settings' row (on/off, season length in days, the season and its end as
+# unix time, 0 = the game sets the next Monday 00:00), the season's counts of
+# every character (players and bots) and the title holders of each season
+# (season = the season the title is held in). The core creates them as well.
+# Idempotent.
+db -e "CREATE TABLE IF NOT EXISTS player.weekly_rank_state (id TINYINT UNSIGNED NOT NULL PRIMARY KEY, enabled TINYINT UNSIGNED NOT NULL DEFAULT 1, season_days TINYINT UNSIGNED NOT NULL DEFAULT 7, season INT UNSIGNED NOT NULL DEFAULT 1, season_start INT UNSIGNED NOT NULL DEFAULT 0, season_end INT UNSIGNED NOT NULL DEFAULT 0) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS player.weekly_rank_score (season INT UNSIGNED NOT NULL, cat TINYINT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, value INT UNSIGNED NOT NULL DEFAULT 0, is_bot TINYINT UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY (season, cat, pid), KEY rank_idx (season, cat, value)) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS player.weekly_rank_title (season INT UNSIGNED NOT NULL, cat TINYINT UNSIGNED NOT NULL, place TINYINT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, name VARCHAR(24) NOT NULL DEFAULT '', level SMALLINT UNSIGNED NOT NULL DEFAULT 0, empire TINYINT UNSIGNED NOT NULL DEFAULT 0, value BIGINT UNSIGNED NOT NULL DEFAULT 0, is_bot TINYINT UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY (season, cat, place)) ENGINE=InnoDB;
+INSERT IGNORE INTO player.weekly_rank_state (id) VALUES (1);" \
+    || echo "playerbot-migrate: could not create the weekly ranking tables" >&2
 # The second channel's pins (playerbot_channel_rules.h): every bot that has
 # ever kept an offline shop lives on the first channel for good, because the
 # shops are the first channel's. The table only grows - each core adds the

@@ -801,6 +801,20 @@ if ((Test-Path -LiteralPath $guildWarJoinApply -PathType Leaf) -and
         Write-Host ('Applied {0} guild war entry edit(s).' -f $guildWarJoinResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The weekly ranking and its titles (server-patches/weeklyrank,
+# MT2009_PLUS_WEEKLY_RANKING_V1, on the basis of the Arezzo files' weekly
+# ranking): /ranking for the client's window, the alchemy count at a Dragon
+# Stone refine that took (DragonSoul.cpp) and the title holder's bonuses at
+# login (input_login.cpp). The rest is the overlay's playerbot_weekly_rank.h.
+$weeklyRankApply = Join-Path $repo 'server-patches/weeklyrank/Apply-WeeklyRankPatch.ps1'
+if ((Test-Path -LiteralPath $weeklyRankApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'DragonSoul.cpp') -PathType Leaf)) {
+    $weeklyRankResult = & $weeklyRankApply -SourceDir $engineGameSource
+    if ($weeklyRankResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} weekly ranking edit(s).' -f $weeklyRankResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both
