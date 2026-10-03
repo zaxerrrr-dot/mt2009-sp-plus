@@ -610,6 +610,17 @@ class ItemToolTip(ToolTip):
 		self.isShopItem = False
 		self.toolTipWidth = self.TOOL_TIP_WIDTH
 		ToolTip.ClearToolTip(self)
+		self.compareSourceSlot = -1  # MT2009_PLUS_DIGI_CLIENT_QOL_V1
+		self.compareShown = None
+
+	# MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): ALT shows the worn item next to this one (digiqol.py)
+	def HideToolTip(self):
+		ToolTip.HideToolTip(self)
+		__import__("digiqol").HideCompare(self)
+
+	def OnUpdate(self):
+		ToolTip.OnUpdate(self)
+		__import__("digiqol").UpdateCompare(self)
 
 	def SetRawItem(self, itemVnum, metinSlot=None, attrSlot=None, isClearToolTip=True):
 		if 0 == itemVnum:
@@ -630,6 +641,7 @@ class ItemToolTip(ToolTip):
 			return
 
 		self.ClearToolTip()
+		self.compareSourceSlot = slotIndex if window_type == player.INVENTORY else -1  # MT2009_PLUS_DIGI_CLIENT_QOL_V1
 		if shop.IsOpen():
 			if not shop.IsPrivateShop():
 				item.SelectItem(itemVnum)

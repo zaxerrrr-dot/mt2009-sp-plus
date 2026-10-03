@@ -47,6 +47,10 @@ param(
 #   Digi Rasta's systems char_item.cpp, char_battle.cpp, char_horse.cpp
 #                      (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1,
 #                      MT2009_PLUS_HORSE30_V1; server-patches/digirasta)
+#   Kolczan (quiver)   char_battle.cpp           (MT2009_PLUS_QUIVER_V1; server-patches/quiver)
+#   mount quick swap   cmd_general.cpp, char_item.cpp, MountSystem.cpp
+#                      (MT2009_PLUS_MOUNT_QUICKSWAP_V1, MT2009_PLUS_MOUNT_CRASH_FIX_V1;
+#                      server-patches/mountquickswap)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -631,6 +635,19 @@ if ((Test-Path -LiteralPath $digiRastaApply -PathType Leaf) -and
         Write-Host ('Applied {0} Digi Rasta system edit(s).' -f $digiRastaResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Digi Rasta's client conveniences, server side (server-patches/digirasta-client,
+# MT2009_PLUS_DIGI_CLIENT_QOL_V1, "Autor: Digi Rasta"): a real player's pick-up
+# (item or yang) sends "PickupSound <vnum>" and the client plays a sound by the
+# item's kind (game.py, digiqol.py).
+$digiRastaClientApply = Join-Path $repo 'server-patches/digirasta-client/Apply-DigiRastaClientPatch.ps1'
+if ((Test-Path -LiteralPath $digiRastaClientApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $digiRastaClientResult = & $digiRastaClientApply -SourceDir $engineGameSource
+    if ($digiRastaClientResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Digi Rasta client convenience edit(s).' -f $digiRastaClientResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Entity snapshot check (server-patches/entitysnapshot): ForEachAround's
 # snapshot skips characters destroyed while it is walked (a splash skill's
 # kill ran d.purge_area and the next blow landed on a freed monster - the
@@ -683,6 +700,37 @@ if ((Test-Path -LiteralPath $saleTaxApply -PathType Leaf) -and
     if ($saleTaxResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} sale tax edit(s).' -f $saleTaxResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Kolczan, the ItemShop's quiver (server-patches/quiver, MT2009_PLUS_QUIVER_V1):
+# an arrow with a real-time limit never runs out - GetArrowAndBow hands out
+# every arrow a shot asks while it has time left and UseArrow spends none
+# (char_battle.cpp; the bots' twin is IsPlayerBotQuiver in playerbot_gear.h).
+$quiverApply = Join-Path $repo 'server-patches/quiver/Apply-QuiverPatch.ps1'
+if ((Test-Path -LiteralPath $quiverApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $quiverResult = & $quiverApply -SourceDir $engineGameSource
+    if ($quiverResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} quiver edit(s).' -f $quiverResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Seal mounts like a horse (server-patches/mountquickswap,
+# MT2009_PLUS_MOUNT_QUICKSWAP_V1): Ctrl+G gets off a seal mount and leaves the
+# seal worn, the next Ctrl+G is back in the saddle at once (do_ride,
+# cmd_general.cpp); a seal is put on right after an attack or a skill too
+# (EquipItem, char_item.cpp). With Digi Rasta's three crash fixes for a mount
+# character destroyed from outside (MountSystem.cpp,
+# MT2009_PLUS_MOUNT_CRASH_FIX_V1). After mountbonus/mountpermanent and
+# playerqol; its anchors are the engine's own lines.
+$mountQuickswapApply = Join-Path $repo 'server-patches/mountquickswap/Apply-MountQuickswapPatch.ps1'
+if ((Test-Path -LiteralPath $mountQuickswapApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'MountSystem.cpp') -PathType Leaf)) {
+    $mountQuickswapResult = & $mountQuickswapApply -SourceDir $engineGameSource
+    if ($mountQuickswapResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} mount quick swap edit(s).' -f $mountQuickswapResult.Applied) -ForegroundColor DarkGray
     }
 }
 # Digi Rasta's fixes and stacking (server-patches/digirasta-fixes, "Autor: Digi

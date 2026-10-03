@@ -2518,6 +2518,9 @@ namespace
 		// hit, and nothing keeps an arrow that cannot (GetPlayerBotArrowGrade).
 		if (item->GetType() == ITEM_WEAPON && item->GetSubType() == WEAPON_ARROW)
 		{
+			// MT2009_PLUS_QUIVER_V1: a quiver is never scrap (nor sellable).
+			if (IsPlayerBotQuiver(item))
+				return false;
 			const bool isOrWillBeArcher = ch->GetJob() == JOB_ASSASSIN &&
 					(ch->GetSkillGroup() == 2 ||
 					 (ch->GetSkillGroup() == 0 && (ch->GetPlayerID() % 2) != 0));

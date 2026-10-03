@@ -2391,3 +2391,38 @@ UPDATE player.item SET socket0 = 0 WHERE vnum = 30270 AND socket0 <> 0;" || echo
 # level-30 trial. Every start, after the shop data; idempotent.
 db -e "UPDATE world.mob_proto SET locale_name = 'Czarny Rumak' WHERE vnum = 20119 AND locale_name <> 'Czarny Rumak';" || echo "[playerbot-migrate] WARNING: could not name the Black Steed" >&2
 db -e "DELETE FROM itemshop.ishop_bundle_items WHERE vnum BETWEEN 71131 AND 71134; DELETE FROM itemshop.ishop_items WHERE vnum BETWEEN 71131 AND 71134;" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the Black Horse's seal" >&2
+
+# ---------------------------------------------------------------------------
+# MT2009_PLUS_QUIVER_V1: Kolczan (8010), the ItemShop's quiver - 100 SM, 14
+# days (the owner, 3 October: "kolczan na strzaly, za 100 SM na 14 dni; po
+# zalozeniu w miejsce strzaly ninja ma nielimitowane strzaly"). An arrow
+# (ITEM_WEAPON / WEAPON_ARROW, the arrow slot) with a real-time limit of
+# 1 209 600 s: the engine (server-patches/quiver, char_battle.cpp) counts such
+# an arrow a quiver - GetArrowAndBow hands out every arrow a shot asks and
+# UseArrow spends none - and the expiry event takes it after 14 days. The
+# Silver Arrow's (8005) values with no level floor: value2 100 / value4 1300 /
+# value5 2250 are CalcArrowDamage's fade (MT2009_PLUS_ARROW_RANGE_V1), value3 25
+# the bonus added to the bow's roll. Ninja only (antiflag 52), not stackable,
+# never dropped, sold, traded, put on a stall or lost on a PK death (the
+# safebox takes it). The row is rewritten on every start; the db core reads
+# the protos at boot. On sale: in-game line 10 (Ekwipunek, 1-99) and the web
+# shop's "Kon i pomoc" page - INSERT IGNORE / NOT EXISTS, so a price the
+# operator changed is kept. The client rows: client-patches/client-2.0.30/
+# tools/quiver. Idempotent.
+# ---------------------------------------------------------------------------
+db -e "DROP TEMPORARY TABLE IF EXISTS world.quiver_item;
+CREATE TEMPORARY TABLE world.quiver_item AS SELECT * FROM world.item_proto WHERE vnum = 8005 LIMIT 1;
+UPDATE world.quiver_item SET vnum = 8010;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.quiver_item;
+DROP TEMPORARY TABLE IF EXISTS world.quiver_item;
+UPDATE world.item_proto SET name = 'Quiver', locale_name = _cp1250 X'4B6FB3637A616E', type = 1, subtype = 6, stack = 1, size = 1,
+    antiflag = 123316, flag = 0, wearflag = 512, gold = 0, shop_buy_price = 0, refined_vnum = 0, refine_set = 0,
+    limittype0 = 7, limitvalue0 = 1209600, limittype1 = 1, limitvalue1 = 35,
+    applytype0 = 0, applyvalue0 = 0, applytype1 = 0, applyvalue1 = 0, applytype2 = 0, applyvalue2 = 0,
+    value0 = 0, value1 = 0, value2 = 100, value3 = 25, value4 = 1300, value5 = 2250
+WHERE vnum = 8010;
+INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (10, 8010, 1, 100, 'DRAGON_COIN', 35);
+UPDATE common.itemshop_items SET minLevel = 35 WHERE vnum = 8010 AND minLevel = 0;" || echo "[playerbot-migrate] WARNING: could not add Kolczan (the ItemShop's quiver)" >&2
+db -e "INSERT INTO itemshop.ishop_items (category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon)
+SELECT 3, _utf8mb4 X'4B6FC582637A616E2028313420646E6929', 'Nielimitowane strzaly dla ninja z lukiem: zakladany w miejsce strzal, zadna strzala sie nie zuzywa. Dziala 14 dni.', 100, 'cash', 8010, 1, 0, 0, 0, '08010'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 8010);" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Kolczan" >&2
