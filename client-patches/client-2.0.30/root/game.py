@@ -471,6 +471,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiseonhae").DestroyWindow()
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
 		__import__("uitpbookmarks").DestroyWindow()
+		# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window (uiusunmisje.py).
+		__import__("uiusunmisje").DestroyWindow()
 		# MT2009_PLUS_FLOWER_V1: the Flower Event's window (uiflowerevent.py).
 		__import__("uiflowerevent").DestroyWindow()
 		# MT2009_PLUS_RUMI_V1: Owsap's Rumi (Okey) window (uiminigamerumi.py).
@@ -3148,6 +3150,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["PickupSound"] = __import__("digiqol").PLAYER.OnCommand
 		serverCommandList["SEONHAE"] = self.__SeonHae # MT2009_PLUS_SEONHAE_V1
 		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
+		serverCommandList["MISJE"] = self.__ClearMissions # MT2009_PLUS_CLEAR_MISSIONS_V1
 		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
 		# packet) and Owsap's "<flag> <value>" commands (ingameevent.py).
 		serverCommandList["IGE"] = self.__InGameEvent
@@ -3784,6 +3787,11 @@ class GameWindow(ui.ScriptWindow):
 	def __TpBookmarks(self, *args):
 		import uitpbookmarks
 		uitpbookmarks.OnCommand(*args)
+
+	# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window's lines (uiusunmisje.py).
+	def __ClearMissions(self, *args):
+		import uiusunmisje
+		uiusunmisje.OnCommand(*args)
 
 	# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event list (ingameevent.py).
 	def __InGameEvent(self, *args):
