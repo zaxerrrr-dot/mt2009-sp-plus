@@ -48,6 +48,9 @@ param(
 #                      (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1,
 #                      MT2009_PLUS_HORSE30_V1; server-patches/digirasta)
 #   Kolczan (quiver)   char_battle.cpp           (MT2009_PLUS_QUIVER_V1; server-patches/quiver)
+#   mount quick swap   cmd_general.cpp, char_item.cpp, MountSystem.cpp
+#                      (MT2009_PLUS_MOUNT_QUICKSWAP_V1, MT2009_PLUS_MOUNT_CRASH_FIX_V1;
+#                      server-patches/mountquickswap)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -697,6 +700,24 @@ if ((Test-Path -LiteralPath $quiverApply -PathType Leaf) -and
     if ($quiverResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} quiver edit(s).' -f $quiverResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Seal mounts like a horse (server-patches/mountquickswap,
+# MT2009_PLUS_MOUNT_QUICKSWAP_V1): Ctrl+G gets off a seal mount and leaves the
+# seal worn, the next Ctrl+G is back in the saddle at once (do_ride,
+# cmd_general.cpp); a seal is put on right after an attack or a skill too
+# (EquipItem, char_item.cpp). With Digi Rasta's three crash fixes for a mount
+# character destroyed from outside (MountSystem.cpp,
+# MT2009_PLUS_MOUNT_CRASH_FIX_V1). After mountbonus/mountpermanent and
+# playerqol; its anchors are the engine's own lines.
+$mountQuickswapApply = Join-Path $repo 'server-patches/mountquickswap/Apply-MountQuickswapPatch.ps1'
+if ((Test-Path -LiteralPath $mountQuickswapApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'MountSystem.cpp') -PathType Leaf)) {
+    $mountQuickswapResult = & $mountQuickswapApply -SourceDir $engineGameSource
+    if ($mountQuickswapResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} mount quick swap edit(s).' -f $mountQuickswapResult.Applied) -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
