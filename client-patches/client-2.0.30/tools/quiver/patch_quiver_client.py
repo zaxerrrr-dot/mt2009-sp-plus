@@ -48,6 +48,8 @@ ICON = 'icon/item/08010.tga'
 
 ANTIFLAG = 123316   # 52 (ninja only) | drop | sell | give | PK drop | stack | stall
 LIMIT_REAL_TIME = 7
+LIMIT_LEVEL = 1
+MIN_LEVEL = 35   # the owner, 3 October: "wymagany poziom kolczanu 35"
 DAYS14 = 14 * 86400
 VALUES = (0, 0, 100, 25, 1300, 2250)
 
@@ -65,7 +67,7 @@ def set_quiver(r):
     struct.pack_into('<BB', r, 74, 1, 6)
     struct.pack_into('<IIII', r, 78, 1, ANTIFLAG, 0, 512)
     struct.pack_into('<qq', r, 98, 0, 0)
-    struct.pack_into('<BiBi', r, 114, LIMIT_REAL_TIME, DAYS14, 0, 0)
+    struct.pack_into('<BiBi', r, 114, LIMIT_REAL_TIME, DAYS14, LIMIT_LEVEL, MIN_LEVEL)
     struct.pack_into('<BiBiBi', r, 124, 0, 0, 0, 0, 0, 0)
     struct.pack_into('<6i', r, 139, *VALUES)
     struct.pack_into('<IH', r, 175, 0, 0)
