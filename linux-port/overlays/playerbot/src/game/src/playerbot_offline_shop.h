@@ -1362,8 +1362,15 @@ namespace {
             const int rareKind = GetPlayerBotRareGoodsKind(item->GetVnum());
             if (rareKind != PLAYERBOT_RARE_GOODS_NONE) {
                 const int rareLines = BotOfflineRareLinesOf(shop, rareKind);
-                if (rareLines >= PLAYERBOT_RARE_GOODS_LINES_PER_SHOP ||
-                        (rareLines == 0 && IsPlayerBotRareGoodsShopQuotaFull(rareKind)))
+                // MT2009_PLUS_BOT_SASH_FLOW_V1: a bag holding two or more sashes
+                // it does not combine puts them up - more lines, and the
+                // counters' share not asked ("zawsze gdy bot ma dwie lub wiecej
+                // szarf, powinien albo je wystawic na sprzedaz albo ulepszac").
+                const bool sashFlow = rareKind == PLAYERBOT_RARE_GOODS_SASH &&
+                        GetPlayerBotSashGoodsInBag(item->GetOwner()) >= 2;
+                const int cap = sashFlow ? PLAYERBOT_SASH_FLOW_COUNTER_LINES : PLAYERBOT_RARE_GOODS_LINES_PER_SHOP;
+                if (rareLines >= cap ||
+                        (rareLines == 0 && !sashFlow && IsPlayerBotRareGoodsShopQuotaFull(rareKind)))
                     return true;
             }
         }

@@ -7242,6 +7242,15 @@ namespace
 	bool PlayerBotWantsSashFromMarket(LPCHARACTER ch);
 	void NotePlayerBotSashBought(LPCHARACTER ch, DWORD vnum, long long price);
 	void LogPlayerBotSashCensus();
+	// MT2009_PLUS_BOT_SASH_FLOW_V1 (playerbot_sash.h): two or more sashes in a
+	// bag are combined or go on the counter. The unworn sashes of the bag that
+	// are goods (not kept for the combining), whether one is the merchant's (a
+	// bag under pressure, past what its counter holds), and the counter's room
+	// for them while the bag holds two or more: this many sash lines, the
+	// share of counters (IsPlayerBotRareGoodsShopQuotaFull) not asked.
+	const int PLAYERBOT_SASH_FLOW_COUNTER_LINES = 6;
+	int GetPlayerBotSashGoodsInBag(LPCHARACTER ch);
+	bool IsPlayerBotSashForMerchant(LPCHARACTER ch, LPITEM item);
 
 	// The horse saddlebags and the Dozorca's exchange (playerbot_saddlebag.h).
 	const DWORD PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED = 30378;

@@ -4016,7 +4016,8 @@ namespace
 		// the merchant's (IsPlayerBotJunkItem). Which counters may carry it is
 		// the counter's own question (BotOfflineCounterRefuses).
 		if (GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
-			return ch && IsPlayerBotRareGoodsForMerchant(ch->GetPlayerID(), item->GetVnum(), get_dword_time())
+			return ch && (IsPlayerBotRareGoodsForMerchant(ch->GetPlayerID(), item->GetVnum(), get_dword_time()) ||
+					IsPlayerBotSashForMerchant(ch, item))	// MT2009_PLUS_BOT_SASH_FLOW_V1
 					? -1 : PlayerBotGoods(PLAYERBOT_SHOP_RARE_GOODS_SCORE, per::GOODS_RARE_GOODS);
 		// Community Patch 5, point 1: what a gambler's session made, and the
 		// piece it took off for it, goes on the counter at any plus

@@ -6243,6 +6243,12 @@ WritePlayerBotGuildStatus(dwNow);
 		if (ManagePlayerBotArezzoDungeon(ch, state, dwNow))
 			continue;
 
+		// MT2009_PLUS_BOT_SASH_FLOW_V1: two or more sashes in the bag are
+		// combined or go on the counter (playerbot_sash.h); a look every few
+		// minutes, in place only for a bot the Arezzo test holds on its map.
+		ManagePlayerBotSashFlow(ch, dwNow, IsPlayerBotArezzoHeldHere(ch) ? (BYTE)PLAYERBOT_SASH_FLOW_HELD
+				: (BYTE)PLAYERBOT_SASH_FLOW_TOWN);
+
 		// A stone this bot hurt within PLAYERBOT_METIN_LOOT_SHARE_MS is gone:
 		// the loot window opens here, at the top of the pass. Stamped where the
 		// target section notices a broken stone, it came after every errand
