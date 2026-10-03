@@ -902,6 +902,17 @@ class GameWindow(ui.ScriptWindow):
 			state = "EMOTICON"
 			self.interface.ToggleCharacterWindow(state)
 
+	# MT2009_PLUS_COLLECTOR_STORAGE_V1: every "COLL ..." line of the collector's
+	# storage (uicollector.py); its keeper closes the window with this one.
+	def __Collector(self, *args):
+		import uicollector
+		for keeper in self.updateable:
+			if isinstance(keeper, uicollector.Keeper):
+				break
+		else:
+			self.RegisterUpdatable(uicollector.GetKeeper())
+		uicollector.OnServer(*args)
+
 	def __SidekickVid(self, vid="0", *rest):
 		# The keeper ends with the game window; the next one hears the
 		# VID again, because a warp is a new login on the server.
@@ -3127,6 +3138,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["GlobalRankingWipe"] = self.__Global_Ranking__RecvWipe
 		serverCommandList["GlobalRankingUpdatePacket"] = self.__Global_Ranking__RecvData
 		serverCommandList["SidekickVid"] = self.__SidekickVid
+		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["GlobalRankingUpdatePacketMyPos"] = self.__Global_Ranking__RecvSelfData
 		serverCommandList["SidekickEqNone"] = self.__SidekickEqNone
 		serverCommandList["SidekickEqBegin"] = self.__SidekickEqBegin
