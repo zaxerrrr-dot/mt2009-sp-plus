@@ -5,28 +5,30 @@
     links follow the panel's address (a sub-path behind a proxy too).
     "parents" maps detail pages (one character, one guild...) to the list
     they were opened from; "sections" are anchors inside long settings pages
-    that the quick search can jump to directly. -#}
+    that the quick search can jump to directly. Pages marked 'index' are read
+    by the quick search in the background, so it finds their individual
+    settings (labels and help texts) too. -#}
 {%- set nav_groups = [
   {'id': 'swiat', 'icon': '🗺', 'label': 'Świat', 'items': [
     {'ep': 'maps', 'label': 'Aktywność map', 'desc': 'natężenie na mapach w czasie, mapa cieplna', 'kw': 'mapy heatmapa natezenie mapa cieplna'},
-    {'ep': 'respawns', 'label': 'Respawny', 'desc': 'tempo i liczebność potworów, metiny, bossy', 'kw': 'spawn potwory metiny bossy respawn'},
+    {'ep': 'respawns', 'index': 1, 'label': 'Respawny', 'desc': 'tempo i liczebność potworów, metiny, bossy', 'kw': 'spawn potwory metiny bossy respawn'},
     {'ep': 'world_feed', 'label': 'Wiadomości ze świata', 'desc': 'oś czasu zdarzeń w grze', 'kw': 'feed news ogloszenia wydarzenia'},
     {'ep': 'live_chat', 'label': 'Czat na żywo', 'desc': 'protokół wiadomości z gry', 'kw': 'chat rozmowy wiadomosci'},
   ]},
   {'id': 'gracze', 'icon': '♙', 'label': 'Gracze i boty', 'items': [
     {'ep': 'players', 'label': 'Postacie', 'desc': 'lista graczy i botów, wyszukiwarka', 'kw': 'gracze boty nick id szukaj postac'},
-    {'ep': 'legends_page', 'label': 'Legendy botów', 'desc': 'ranking legend, Czempioni, przełącznik', 'kw': 'czempioni legendy chodzace'},
+    {'ep': 'legends_page', 'index': 1, 'label': 'Legendy botów', 'desc': 'ranking legend, Czempioni, przełącznik', 'kw': 'czempioni legendy chodzace'},
     {'ep': 'guilds', 'label': 'Gildie', 'desc': 'gildie botów i graczy, wojny gildii', 'kw': 'gildia wojna klan'},
     {'ep': 'accounts', 'label': 'Konta', 'desc': 'konta serwera, zakładanie kont', 'kw': 'login konto rejestracja'},
     {'ep': 'bot_personalities', 'label': 'Osobowości botów', 'desc': 'charaktery zalogowanych botów', 'kw': 'osobowosc charakter'},
-    {'ep': 'bot_progression', 'label': 'Progresja botów', 'desc': 'kto stoi i dlaczego, checklista, postoje w wioskach', 'kw': 'postoj checklista wedkowanie przejscia mapy grinder'},
-    {'ep': 'bot_names', 'label': 'Nazwy botów', 'desc': 'kolejka nicków, blokady, priorytety', 'kw': 'nick nazwy kolejka'},
-    {'ep': 'retired_bots', 'label': 'Emerytury botów', 'desc': 'boty, które zakończyły grę', 'kw': 'emerytura zakonczenie gry retired'},
+    {'ep': 'bot_progression', 'index': 1, 'label': 'Progresja botów', 'desc': 'kto stoi i dlaczego, checklista, postoje w wioskach', 'kw': 'postoj checklista wedkowanie przejscia mapy grinder'},
+    {'ep': 'bot_names', 'index': 1, 'label': 'Nazwy botów', 'desc': 'kolejka nicków, blokady, priorytety', 'kw': 'nick nazwy kolejka'},
+    {'ep': 'retired_bots', 'index': 1, 'label': 'Emerytury botów', 'desc': 'boty, które zakończyły grę', 'kw': 'emerytura zakonczenie gry retired'},
   ]},
   {'id': 'wydarzenia', 'icon': '🏆', 'label': 'Wydarzenia', 'items': [
-    {'ep': 'events', 'label': 'Planer eventów', 'desc': 'eventy teraz i w harmonogramie', 'kw': 'event harmonogram kalendarz'},
-    {'ep': 'battlepass', 'label': 'Battle Pass', 'desc': 'misje i nagroda sezonu', 'kw': 'przepustka misje'},
-    {'ep': 'wheel', 'label': 'Koło Fortuny', 'desc': 'koszt obrotu i pula nagród', 'kw': 'kolo fortuny losowanie'},
+    {'ep': 'events', 'index': 1, 'label': 'Planer eventów', 'desc': 'eventy teraz i w harmonogramie', 'kw': 'event harmonogram kalendarz'},
+    {'ep': 'battlepass', 'index': 1, 'label': 'Battle Pass', 'desc': 'misje i nagroda sezonu', 'kw': 'przepustka misje'},
+    {'ep': 'wheel', 'index': 1, 'label': 'Koło Fortuny', 'desc': 'koszt obrotu i pula nagród', 'kw': 'kolo fortuny losowanie'},
     {'ep': 'rankings', 'label': 'Rankingi', 'desc': 'poziom, umiejętności, +9, gildie', 'kw': 'ranking top'},
     {'ep': 'season', 'label': 'Sezon i rekordy', 'desc': 'ranking tygodnia, rekordy świata', 'kw': 'sezon rekordy tydzien'},
   ]},
@@ -36,13 +38,13 @@
     {'ep': 'economy_itemshop', 'label': 'ItemShop i Smocze Monety', 'desc': 'waluty kont i zakupy', 'kw': 'itemshop sm smocze monety znaki'},
     {'ep': 'drops', 'label': 'Drop z potworów', 'desc': 'edytor dropu potworów', 'kw': 'drop potwory mob loot'},
     {'ep': 'chests', 'label': 'Szkatułki', 'desc': 'edytor zawartości skrzynek', 'kw': 'skrzynie szkatulki chest'},
-    {'ep': 'manage_items', 'label': 'Nadawanie przedmiotów', 'desc': 'masowe nadawanie przedmiotów botom i graczom', 'kw': 'nadaj daj przedmiot vnum grant'},
+    {'ep': 'manage_items', 'index': 1, 'label': 'Nadawanie przedmiotów', 'desc': 'masowe nadawanie przedmiotów botom i graczom', 'kw': 'nadaj daj przedmiot vnum grant'},
     {'ep': 'items_database', 'label': 'Baza przedmiotów', 'desc': 'katalog VNUM z aktualnej bazy', 'kw': 'vnum id przedmiotow katalog'},
   ]},
   {'id': 'ustawienia', 'icon': '⚙', 'label': 'Ustawienia', 'items': [
-    {'ep': 'manage', 'label': 'Gra i serwer', 'desc': 'raty, restart, zachowanie botów, aktualizator', 'kw': 'zarzadzanie rates mnozniki restart suwaki ustawienia'},
-    {'ep': 'manage_panel', 'label': 'Panel webowy', 'desc': 'wygląd, motyw, odznaki, ogłoszenia', 'kw': 'motyw kolorystyka wyglad nazwa panelu'},
-    {'ep': 'world_reset', 'label': 'Reset świata', 'desc': 'reset botów albo całego świata', 'kw': 'reset wipe'},
+    {'ep': 'manage', 'index': 1, 'label': 'Gra i serwer', 'desc': 'raty, restart, zachowanie botów, aktualizator', 'kw': 'zarzadzanie rates mnozniki restart suwaki ustawienia'},
+    {'ep': 'manage_panel', 'index': 1, 'label': 'Panel webowy', 'desc': 'wygląd, motyw, odznaki, ogłoszenia', 'kw': 'motyw kolorystyka wyglad nazwa panelu'},
+    {'ep': 'world_reset', 'index': 1, 'label': 'Reset świata', 'desc': 'reset botów albo całego świata', 'kw': 'reset wipe'},
   ]},
   {'id': 'narzedzia', 'icon': '🛠', 'label': 'Narzędzia', 'items': [
     {'ep': 'character_creator', 'label': 'Kreator postaci', 'desc': 'nowa postać na wybranym koncie', 'kw': 'stworz postac'},

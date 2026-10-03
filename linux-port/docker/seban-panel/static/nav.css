@@ -124,3 +124,41 @@ body[data-theme="empire"] .cmdk-item.is-sel a{background:color-mix(in srgb,var(-
   .cmdk-foot span:last-child{display:none}
 }
 @media(prefers-reduced-motion:reduce){.sn-chev{transition:none}}
+
+/* "Postaw kawę" - the owner's support link, quiet but always in view. */
+.sn-coffee{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0 4px;padding:8px 12px;border:1px solid color-mix(in srgb,#e8a33d 55%,var(--edge));border-radius:999px;background:color-mix(in srgb,#e8a33d 14%,transparent);color:#f3cf8f;font-size:13.5px;font-weight:700;text-decoration:none;flex:0 0 auto;transition:background .15s ease,transform .15s ease}
+.sn-coffee:hover,.sn-coffee:focus-visible{background:color-mix(in srgb,#e8a33d 26%,transparent);color:#ffe6b8;transform:translateY(-1px)}
+.sn-coffee span{font-size:16px}
+
+/* Tabs on long detail pages (character card). Sticky like the section bar. */
+.page-tabs{position:sticky;top:var(--toc-top);z-index:60;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;margin:18px 0 16px;padding:7px;border:1px solid var(--edge);border-radius:12px;background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 6px 18px #0005}
+.page-tabs a{flex:0 0 auto;padding:8px 13px;border-radius:9px;color:var(--sn-ink);text-decoration:none;font-size:13.5px;font-weight:600;white-space:nowrap}
+.page-tabs a:hover{background:color-mix(in srgb,var(--sn-accent) 14%,transparent);color:var(--text)}
+.page-tabs a.is-active{background:color-mix(in srgb,var(--sn-accent) 30%,var(--panel));color:var(--sn-ink-strong);box-shadow:inset 0 0 0 1px var(--sn-accent)}
+body[data-theme="empire"] .page-tabs a.is-active{color:#201705;background:linear-gradient(180deg,#f6dfa0,#e8b93f);box-shadow:none}
+.tab-panel[hidden]{display:none}
+.tab-panel>.panel:first-child,.tab-panel>section:first-child{margin-top:0}
+
+/* Grouped admin forms: one card per action, same shape everywhere. */
+.admin-group>h2{margin-bottom:4px}
+.admin-group>p.muted{margin:0 0 14px}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;align-items:start}
+.admin-grid>form{height:100%;align-content:start}
+.admin-grid>form>button,.danger-zone form>button{justify-self:start}
+.danger-zone{border-color:color-mix(in srgb,#d64545 55%,var(--edge))!important;background:color-mix(in srgb,#d64545 6%,var(--panel))!important}
+.danger-zone>h2{color:#ff8a80}
+.danger-zone .danger-form{max-width:520px}
+
+/* A setting found with the quick search lights up for a moment. */
+.search-hit{animation:search-hit 3s ease-out;border-radius:8px}
+@keyframes search-hit{0%,40%{box-shadow:0 0 0 3px var(--sn-accent-ink),0 0 24px color-mix(in srgb,var(--sn-accent-ink) 60%,transparent);background-color:color-mix(in srgb,var(--sn-accent-ink) 14%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
+@media(prefers-reduced-motion:reduce){.search-hit{animation:none;outline:3px solid var(--sn-accent-ink)}}
+@media(min-width:1101px){.page-tabs{margin-right:52px}}
+/* The tab strip scrolls sideways instead of stretching its column: a grid
+   item keeps its content's width unless it may shrink below it. */
+.page-tabs{min-width:0;max-width:100%}
+.bot-profile-head>article,:is(article,div,section):has(>.page-tabs){min-width:0}
+/* Plain links inside pages ("Podgląd pliku zmian", "← Wszystkie szkatułki")
+   fell back to the browser's dark blue, unreadable on every dark theme. */
+main a:not([class]){color:var(--sn-accent-ink)}
+main a:not([class]):visited{color:var(--sn-accent-ink)}

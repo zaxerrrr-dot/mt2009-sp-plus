@@ -28,6 +28,8 @@
 {%- set _ = nav.palette.insert(0, {'l': 'Pulpit', 'g': 'Start', 'i': '⌂', 'd': 'mapa świata na żywo, statystyki, rankingi', 'k': 'dashboard start strona glowna', 'u': url_for('dashboard')}) -%}
 {%- for s in nav_sections %}{% set _ = nav.palette.append({'l': s.label, 'g': ('Gra i serwer' if s.ep == 'manage' else 'Panel webowy') ~ (' · ' ~ s.part if s.part else ''), 'i': '§', 'd': 'sekcja strony ustawień', 'k': 'ustawienia sekcja', 'u': url_for(s.ep) ~ '#' ~ s.anchor}) %}{% endfor -%}
 {%- set nav_page_sections = nav_sections|selectattr('ep', 'equalto', nav_ep)|list -%}
+{%- set nav.index = [] -%}
+{%- for g in nav_groups %}{% for it in g['items'] if it.get('index') %}{% set _ = nav.index.append({'u': url_for(it.ep), 'l': it.label, 'g': g.label}) %}{% endfor %}{% endfor -%}
 <aside class="site-nav sn" id="site-nav"><a class="brand" href="{{ url_for('dashboard') }}">{{ panel_brand }}<span>Seban Control Center</span></a>
 <button type="button" class="sn-search" data-cmdk-open aria-label="Szukaj w panelu (Ctrl+K)"><span aria-hidden="true">⌕</span><span class="sn-search-label">Szukaj w panelu…</span><kbd>Ctrl K</kbd></button>
 <div class="sn-nav" role="navigation" aria-label="Menu panelu">
@@ -37,8 +39,9 @@
 {%- for it in g['items'] %}<a class="sn-link{% if it.ep == nav_active %} is-active{% endif %}" href="{{ url_for(it.ep) }}" title="{{ it.desc }}"{% if it.ep == nav_ep %} aria-current="page"{% endif %}>{{ it.label }}</a>{% endfor -%}
 </div></details>
 {%- endfor %}
-<details class="sn-group sn-group--ext" data-group="linki"><summary><span class="sn-ico" aria-hidden="true">↗</span><span class="sn-label">Linki zewnętrzne</span><span class="sn-chev" aria-hidden="true"></span></summary><div class="sn-items"><a class="sn-link" href="{{ tieru_url }}" target="_blank" rel="noopener">Panel klasyczny ↗</a><a class="sn-link" href="{{ discord_url }}" target="_blank" rel="noopener noreferrer">Discord MT2009 PLUS ↗</a><a class="sn-link" href="{{ website_url }}" target="_blank" rel="noopener noreferrer">metin2sp.pl ↗</a></div></details>
+<details class="sn-group sn-group--ext" data-group="linki" open><summary><span class="sn-ico" aria-hidden="true">↗</span><span class="sn-label">Linki zewnętrzne</span><span class="sn-chev" aria-hidden="true"></span></summary><div class="sn-items"><a class="sn-link" href="{{ tieru_url }}" target="_blank" rel="noopener">Panel klasyczny ↗</a><a class="sn-link" href="{{ discord_url }}" target="_blank" rel="noopener noreferrer">Discord MT2009 PLUS ↗</a><a class="sn-link" href="{{ website_url }}" target="_blank" rel="noopener noreferrer">metin2sp.pl ↗</a></div></details>
 </div>
+<a class="sn-coffee" href="https://buycoffee.to/mt2009plus" target="_blank" rel="noopener noreferrer" title="Wesprzyj rozwój MT2009 PLUS na buycoffee.to"><span aria-hidden="true">☕</span> Postaw kawę</a>
 <form class="nav-logout" action="{{ url_for('logout') }}" method="post"><button class="quiet">Wyloguj</button></form></aside>
 <main>{%- set nav_detail = (self.title()|striptags).split(' · ')[0]|trim -%}
 {%- if nav.item and nav_detail == nav.item.label and request.view_args %}{% set nav_detail = '#' ~ (request.view_args.values()|join(' · ')) %}{% endif -%}
@@ -58,7 +61,7 @@
   {'l': 'Szukaj w bazie przedmiotów', 'i': '▦', 'u': url_for('items_database')},
   {'l': 'Szukaj przedmiotu w obiegu', 'i': '◇', 'u': url_for('economy')},
   {'l': 'Szukaj na rynku (sklepy offline)', 'i': '🏪', 'u': url_for('economy_shops')}
-], 'current': {'l': (nav.item.label if nav.item and nav_ep == nav_active else nav_detail), 'g': (nav.group.label if nav.group else 'Start'), 'i': (nav.group.icon if nav.group else '⌂')}}|tojson }}</script>
+], 'index': nav.index, 'current': {'l': (nav.item.label if nav.item and nav_ep == nav_active else nav_detail), 'g': (nav.group.label if nav.group else 'Start'), 'i': (nav.group.icon if nav.group else '⌂')}}|tojson }}</script>
 <script defer src="{{ static_asset_url('nav.js') }}"></script>
 <script defer src="{{ static_asset_url('action-toast.js') }}"></script>
 <script defer src="{{ static_asset_url('ajax-forms.js') }}"></script>

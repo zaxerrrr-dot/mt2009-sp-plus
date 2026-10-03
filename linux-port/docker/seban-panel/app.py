@@ -4099,7 +4099,9 @@ def players():
            " FROM player.player p LEFT JOIN player.player_index pi ON pi.id=p.account_id LEFT JOIN account.account a ON a.id=p.account_id")
     args = []
     if query:
-        sql += " WHERE p.name LIKE %s OR p.id=%s"
+        # player.name is latin1: a query with Polish letters compared in its own
+        # utf8mb4 collation stopped the page with "Illegal mix of collations".
+        sql += " WHERE CONVERT(p.name USING utf8mb4) LIKE %s OR p.id=%s"
         args = [f"%{query}%", query if query.isdigit() else -1]
     sql += " ORDER BY p.level DESC, p.exp DESC LIMIT 250"
     roster, live = rows(sql, args), live_statuses()
