@@ -507,6 +507,27 @@ wyrzucania, limit `LIMIT_REAL_TIME` 1 209 600 s, wartości 0/0/100/25/1300/2250)
 (`icon/item/08010.tga`) i wiersz `itemdesc.txt`. Ikona `tools/quiver/08010.tga` (32×32 RGBA, narysowana – GF
 26.1.11 nie ma ikony kołczanu) to **nowy wpis paczki `icon`**. Klient 2.0.x nie zna `WEAPON_QUIVER`, więc
 kołczan jest strzałą z limitem czasu; nielimitowane strzały daje serwer (`server-patches/quiver`).
+
+## Zbroja „warrior king03” i miecz – kostium i nakładka z ItemShopu (MT2009_PLUS_WARRIOR_KING03_V1)
+
+`tools/king03/patch_king03_client.py` – dwa nowe przedmioty z paczek właściciela (3 października), 100 SM, 30 dni:
+
+- **41986 „Zbroja Króla Wojowników+”** – kostium (COSTUME/BODY), kopia Wikinga Światła+ (41982), **tylko
+  wojownik, tylko postać męska** (antiflag 49337 = 49281 + ninja 8 + sura 16 + szaman 32). Paczka nie ma
+  modelu żeńskiego (jej README: brak `pc2/warrior/warrior_king03.dds`). Kształt 41986 tylko w
+  `gamedata/warrior_m.msm`: model z paczki jako `warrior_king03.gr2` (+ `_lod_01..03`), skóra
+  `warrior_king01.dds` (plik bazowy pc_1, który model wskazuje) zamieniona na nowy `warrior_king03.dds`.
+- **40233 „Święty Miecz Bogów+”** – nakładka na broń (COSTUME/WEAPON), kopia Miecza Smoka Północy+ (40227):
+  miecz jednoręczny (value3 0), wojownik/ninja/sura (antiflag 49312). Model z paczki (`07300.gr2`) jako
+  `d:/ymir work/item/weapon/costume/40233.gr2` (GF ma swój, inny `07300.gr2`), tekstura
+  `d:/ymir work/item/weapon/bamboomt2_0005.dds` (ścieżka zapisana w gr2).
+
+Wiersze: `gamedata/gf_official_costumes.txt` (klient czyta kosmetyki 40xxx/41xxx z tej tabeli, nie z
+`item_proto`), `item_list.txt` (ikony, model miecza), `itemdesc.txt` (opisy), `gamedata/warrior_m.msm`
+(nowa grupa ShapeData, ShapeDataCount + 1). **Nowe wpisy paczek** (`tools/king03/assets`): `icon` –
+`icon/item/41986.tga`, `icon/item/40233.tga`; `gamedata` – `d_/ymir work/...` jako `d:/ymir work/...`
+(model i tekstura zbroi, model i tekstura miecza). Serwer: `apply.sh` (MT2009_PLUS_WARRIOR_KING03_V1).
+Paczka robocza do budowy klienta: `/opt/metin2/cache/c53-staging` (README.txt tam).
 ## Wygody Digi Rasty: serwer i jego komendy (nowy-system v0.23.0) – exe opcjonalnie
 
 **Autor: Digi Rasta.** Znacznik `MT2009_PLUS_DIGI_SERVER_QOL_V1`; serwer i decyzje:

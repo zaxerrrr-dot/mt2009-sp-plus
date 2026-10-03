@@ -2444,6 +2444,60 @@ INSERT INTO itemshop.ishop_items (category, name_item, \`desc\`, price, currency
 SELECT 10, _utf8mb4 X'4B6FC582637A616E2028313420646E6929', 'Nielimitowane strzaly dla ninja z lukiem: zakladany w miejsce strzal, zadna strzala sie nie zuzywa. Dziala 14 dni.', 100, 'cash', 8010, 1, 0, 0, 0, '08010'
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 8010);
 UPDATE itemshop.ishop_items SET category = 10 WHERE vnum = 8010 AND category = 3;" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Kolczan" >&2
+
+# ---------------------------------------------------------------------------
+# MT2009_PLUS_WARRIOR_KING03_V1: two ItemShop cosmetics from the owner's
+# packages (3 October: "Dodaj ta zbroje i bron jako kostium i nakladke. Zbroja
+# to warrior king03. Dodaj standardowo do itemshopa"):
+#   41986 Zbroja Krola Wojownikow+ - costume body (28/0), a copy of Wiking
+#         Swiatla+ (41982): 30 days real time, no drop / PK drop / stack;
+#         MALE WARRIOR ONLY, antiflag 49337 = 49281 + assassin 8 + sura 16 +
+#         shaman 32 (the package has no female model); shape 41986 (value3),
+#         gamedata/warrior_m.msm in the client;
+#   40233 Swiety Miecz Bogow+ - weapon skin (28/4), a copy of Miecz Smoka
+#         Polnocy+ (40227): one-handed sword (value3 0), warrior / ninja /
+#         sura (antiflag 49312), 30 days.
+# On sale as every costume and skin: 100 SM; in-game lines 20212 (Kostiumy,
+# 20000-29999) and 30054 (Nakladki na bron, 30000-39999); the web shop's
+# categories 6 (Kostiumy) and 7 (Nakladki na bron), ids 1000000 + vnum. The
+# item rows are rewritten on every start (the db core reads the protos at
+# boot); the shop lines are INSERT IGNORE / NOT EXISTS, so a price the
+# operator changed is kept, and only once the item exists. The client rows:
+# client-patches/client-2.0.30/tools/king03. Idempotent.
+# ---------------------------------------------------------------------------
+db -e "SET NAMES utf8mb4;
+DROP TEMPORARY TABLE IF EXISTS world.king03_item;
+CREATE TEMPORARY TABLE world.king03_item AS SELECT * FROM world.item_proto WHERE vnum = 41982 LIMIT 1;
+UPDATE world.king03_item SET vnum = 41986;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.king03_item;
+DROP TEMPORARY TABLE IF EXISTS world.king03_item;
+CREATE TEMPORARY TABLE world.king03_item AS SELECT * FROM world.item_proto WHERE vnum = 40227 LIMIT 1;
+UPDATE world.king03_item SET vnum = 40233;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.king03_item;
+DROP TEMPORARY TABLE IF EXISTS world.king03_item;
+UPDATE world.item_proto SET name = 'Zbroja Króla Wojowników+', locale_name = 'Zbroja Króla Wojowników+', type = 28, subtype = 0,
+    stack = 1, size = 2, antiflag = 49337, flag = 0, wearflag = 0, gold = 0, shop_buy_price = 0,
+    limittype0 = 7, limitvalue0 = 2592000, limittype1 = 0, limitvalue1 = 0,
+    applytype0 = 0, applyvalue0 = 0, applytype1 = 0, applyvalue1 = 0, applytype2 = 0, applyvalue2 = 0,
+    value0 = 0, value1 = 0, value2 = 0, value3 = 41986, value4 = 0, value5 = 0
+WHERE vnum = 41986;
+UPDATE world.item_proto SET name = 'Święty Miecz Bogów+', locale_name = 'Święty Miecz Bogów+', type = 28, subtype = 4,
+    stack = 1, size = 2, antiflag = 49312, flag = 0, wearflag = 0, gold = 0, shop_buy_price = 0,
+    limittype0 = 7, limitvalue0 = 2592000, limittype1 = 0, limitvalue1 = 0,
+    applytype0 = 0, applyvalue0 = 0, applytype1 = 0, applyvalue1 = 0, applytype2 = 0, applyvalue2 = 0,
+    value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0
+WHERE vnum = 40233;
+INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel)
+SELECT 20212, 41986, 1, 100, 'DRAGON_COIN', 0 FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 41986);
+INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel)
+SELECT 30054, 40233, 1, 100, 'DRAGON_COIN', 0 FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233);" || echo "[playerbot-migrate] WARNING: could not add Zbroja Krola Wojownikow / Swiety Miecz Bogow" >&2
+db -e "SET NAMES utf8mb4;
+INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+SELECT 1041986, 6, 'Zbroja Króla Wojowników+ (męski, 30 dni)', 'Czas: 30 dni.<br />Tylko dla wojownika (postać męska).', 100, 'cash', 41986, 1, 0, 0, 0, '41986', NOW()
+FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 41986) AND NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 41986);
+INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+SELECT 1040233, 7, 'Święty Miecz Bogów+ (30 dni)', 'Czas: 30 dni.<br />Klasa: Wojownik, Ninja, Sura.', 100, 'cash', 40233, 1, 0, 0, 0, '40233', NOW()
+FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233) AND NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 40233);" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Zbroja Krola Wojownikow / Swiety Miecz Bogow" >&2
 # MT2009_PLUS_COLLECTOR_STORAGE_V1: the collector's storage (Magazyn
 # kolekcjonera, overlay playerbot_collector.cpp). Its entries are rows of
 # player.item - window SAFEBOX, owner_id 2000000000 + the account id, so no
