@@ -81,6 +81,9 @@ namespace mt2009_digi_qol
 
 	// ---------------------------------------------------------- level up, gift
 	const int LEVEL_NOTICE_EVERY = 10;
+	// The owner, 3 October: switched off for now, the code stays for later -
+	// set to true to hand the daily gift out again.
+	const bool GIFT_ENABLED = false;
 	const int GIFT_MIN_LEVEL = 10;
 	const int GIFT_YANG_PER_LEVEL = 500;
 	const DWORD GIFT_POTIONS[] = { 27003, 27006 };	// Red / Blue Potion (D)
@@ -236,6 +239,8 @@ void Mt2009DigiLevelUp(LPCHARACTER ch, int oldLevel)
 
 void Mt2009DigiDailyGift(LPCHARACTER ch)
 {
+	if (!mt2009_digi_qol::GIFT_ENABLED)
+		return;
 	using namespace mt2009_digi_qol;
 	if (!RealPlayer(ch))
 		return;
