@@ -47,6 +47,9 @@ param(
 #   Digi Rasta's systems char_item.cpp, char_battle.cpp, char_horse.cpp
 #                      (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1,
 #                      MT2009_PLUS_HORSE30_V1; server-patches/digirasta)
+#   mount quick swap   cmd_general.cpp, char_item.cpp, MountSystem.cpp
+#                      (MT2009_PLUS_MOUNT_QUICKSWAP_V1, MT2009_PLUS_MOUNT_CRASH_FIX_V1;
+#                      server-patches/mountquickswap)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -683,6 +686,24 @@ if ((Test-Path -LiteralPath $saleTaxApply -PathType Leaf) -and
     if ($saleTaxResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} sale tax edit(s).' -f $saleTaxResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Seal mounts like a horse (server-patches/mountquickswap,
+# MT2009_PLUS_MOUNT_QUICKSWAP_V1): Ctrl+G gets off a seal mount and leaves the
+# seal worn, the next Ctrl+G is back in the saddle at once (do_ride,
+# cmd_general.cpp); a seal is put on right after an attack or a skill too
+# (EquipItem, char_item.cpp). With Digi Rasta's three crash fixes for a mount
+# character destroyed from outside (MountSystem.cpp,
+# MT2009_PLUS_MOUNT_CRASH_FIX_V1). After mountbonus/mountpermanent and
+# playerqol; its anchors are the engine's own lines.
+$mountQuickswapApply = Join-Path $repo 'server-patches/mountquickswap/Apply-MountQuickswapPatch.ps1'
+if ((Test-Path -LiteralPath $mountQuickswapApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'MountSystem.cpp') -PathType Leaf)) {
+    $mountQuickswapResult = & $mountQuickswapApply -SourceDir $engineGameSource
+    if ($mountQuickswapResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} mount quick swap edit(s).' -f $mountQuickswapResult.Applied) -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
