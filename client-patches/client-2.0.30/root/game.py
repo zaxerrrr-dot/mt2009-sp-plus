@@ -2347,7 +2347,10 @@ class GameWindow(ui.ScriptWindow):
 
 		# Panel GM: patrz __gmCheckSent w __init__ - kilkaset klatek po wejsciu
 		# do swiata pytamy serwer, czy ta postac jest GM (odpowiedz: SetGMFlag).
-		if not self.__gmCheckSent:
+		# MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: the frames count only in the game
+		# phase - a warp soon after entering kept counting on the way to the
+		# next core and sent the check and the hellos there (warpsafe.py).
+		if not self.__gmCheckSent and __import__("warpsafe").InGame():
 			self.__gmCheckFrames += 1
 			if self.__gmCheckFrames > 300:
 				self.__gmCheckSent = True

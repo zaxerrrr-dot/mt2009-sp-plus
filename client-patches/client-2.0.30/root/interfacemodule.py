@@ -929,6 +929,10 @@ class GMPanelWindow(ui.BoardWithTitleBar):
 	# EditLine has no per-keystroke event in this engine, but OnUpdate is
 	# called every frame on any visible window.
 	def OnUpdate(self):
+		# MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: the next fetch waits for the game
+		# phase (warpsafe.py).
+		if not __import__("warpsafe").InGame():
+			return
 		if self._itemListBusy:
 			self._itemListBusyFrames += 1
 			if self._itemListBusyFrames > 180:

@@ -628,6 +628,11 @@ class Hunter(object):
         chat.AppendChat(chat.CHAT_TYPE_INFO, 'Auto \xa3owy: wznowione po ponownym zalogowaniu.')
 
     def OnUpdate(self):
+        # MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: no packet (target, loot, potion,
+        # restart) on the way to another core (warpsafe.py).
+        import warpsafe
+        if not warpsafe.InGame():
+            return
         now = clientclock.Now()
 
         if player.GetStatus(player.HP) <= 0:

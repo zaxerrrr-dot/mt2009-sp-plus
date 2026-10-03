@@ -658,6 +658,11 @@ class SafeboxWindow(ui.ScriptWindow):
 		return True
 
 	def OnUpdate(self):
+		# MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: Close sends "/safebox_close"; not
+		# on the way to another core, where the character is gone (warpsafe.py).
+		import warpsafe
+		if not warpsafe.InGame():
+			return
 
 		USE_SAFEBOX_LIMIT_RANGE = 1000
 
@@ -821,6 +826,11 @@ class MallWindow(ui.ScriptWindow):
 		return True
 
 	def OnUpdate(self):
+		# MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: Close sends "/safebox_close"; not
+		# on the way to another core, where the character is gone (warpsafe.py).
+		import warpsafe
+		if not warpsafe.InGame():
+			return
 
 		USE_SAFEBOX_LIMIT_RANGE = 1000
 

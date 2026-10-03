@@ -1419,6 +1419,11 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
         self.__Request()
 
     def OnUpdate(self):
+        # MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: no query or purchase on the way
+        # to another core (warpsafe.py).
+        import warpsafe
+        if not warpsafe.InGame():
+            return
         now = app.GetTime()
         if self.searchAt is not None and now >= self.searchAt:
             self.searchAt = None
