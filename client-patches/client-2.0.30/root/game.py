@@ -2985,6 +2985,19 @@ class GameWindow(ui.ScriptWindow):
 		import autotarget
 		autotarget.OnServerReady()
 
+	# MT2009_PLUS_BOSS_SKULL_V1: a boss or a miniboss came into view - a small
+	# skull over its head (the server's "BossMark <vid>", char.cpp), the
+	# emoticon slot 120 with a looping effect (mt2009/boss_skull.mse), so it
+	# moves with the monster and goes with it.
+	def __BossMark(self, vid="0", *args):
+		try:
+			if not getattr(GameWindow, "_bossSkullRegistered", False):
+				chrmgr.RegisterEffect(chrmgr.EFFECT_EMOTICON + 120, "", "d:/ymir work/effect/etc/mt2009/boss_skull.mse")
+				GameWindow._bossSkullRegistered = True
+			chrmgr.SetEmoticon(int(vid), 120)
+		except Exception:
+			pass
+
 	# MT2009_PLUS_DROP_WIKI_V1: the drop wiki's answers (uidropwiki.py).
 	def __DropWiki(self, *args):
 		import uidropwiki
@@ -3213,6 +3226,7 @@ class GameWindow(ui.ScriptWindow):
 
 		self.serverCommander=stringCommander.Analyzer()
 		serverCommandList["DropWiki"] = self.__DropWiki # MT2009_PLUS_DROP_WIKI_V1
+		serverCommandList["BossMark"] = self.__BossMark # MT2009_PLUS_BOSS_SKULL_V1
 		for serverCommandItem in serverCommandList.items():
 			self.serverCommander.SAFE_RegisterCallBack(
 				serverCommandItem[0], serverCommandItem[1]
