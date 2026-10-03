@@ -4957,6 +4957,30 @@ namespace
 	// is dropped and asked for again at the next service visit
 	// (BotOfflinePoll): it carries no goods, so a second ask cannot double any.
 	const DWORD PLAYERBOT_OFFLINE_RENEW_ABANDON_MS = 5 * 60 * 1000;
+	// MT2009_PLUS_BOT_COUNTER_RENEW_V1: 259 of 1797 bot counters of the
+	// supporters' world stood expired on 3 October, 12 538 lines on them. 161
+	// were owned by bots on the second channel, which waited 45 to 75 minutes
+	// there before asking for the shop channel (an expired stand's owner was
+	// also the cheapest for the coordinator to send there), and those on the
+	// first channel were refused 650 times in twelve hours because another
+	// stand stood within the engine's sixty units of the old spot. So: an
+	// expired counter its owner would renew is looked for every
+	// PLAYERBOT_OFFLINE_RENEW_PROBE_MS and calls a visit at once, whatever the
+	// round says - at most once every PLAYERBOT_OFFLINE_RENEW_HOLD_MS, which
+	// also follows a renewal refused at the counter; on the second channel it
+	// asks for the shop channel PLAYERBOT_OFFLINE_RENEW_CHANNEL_MIN_MS to
+	// +SPREAD after its arrival; and at a crowded spot the owner steps to the
+	// nearest one with no stand within PLAYERBOT_OFFLINE_RENEW_SPOT_CLEAR
+	// (at most PLAYERBOT_OFFLINE_RENEW_SPOT_TRIES steps a visit, none further
+	// than PLAYERBOT_OFFLINE_RENEW_SPOT_MAX from the old spot).
+	const DWORD PLAYERBOT_OFFLINE_RENEW_PROBE_MS = 60 * 1000;
+	const DWORD PLAYERBOT_OFFLINE_RENEW_HOLD_MS = 15 * 60 * 1000;
+	const DWORD PLAYERBOT_OFFLINE_RENEW_CHANNEL_MIN_MS = 3 * 60 * 1000;
+	const DWORD PLAYERBOT_OFFLINE_RENEW_CHANNEL_SPREAD_MS = 7 * 60 * 1000;
+	const int PLAYERBOT_OFFLINE_RENEW_SPOT_CLEAR = 110;
+	const int PLAYERBOT_OFFLINE_RENEW_SPOT_MAX = 600;
+	const unsigned PLAYERBOT_OFFLINE_RENEW_SPOT_TRIES = 3;
+	const DWORD PLAYERBOT_OFFLINE_RENEW_STEP_MS = 8000;
 	// A slipped price stands four hours at most (Community Patch 5, point 6;
 	// playerbot_stall_rules::PRICE_SLIP_HOLD_MS). Its keeper looks its counter
 	// over this often and is called this long before the four hours are out,

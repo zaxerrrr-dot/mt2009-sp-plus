@@ -5515,6 +5515,15 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 #if defined(ENABLE_IKASHOP_RENEWAL)
 		auto stand = ikashop::GetManager().GetShopByOwnerID(pid);
 		liveStand = stand && stand->GetDuration() != 0;
+		// MT2009_PLUS_BOT_COUNTER_RENEW_V1: on the shop channel an expired
+		// stand with goods on it costs what a running one does - its owner is
+		// there to renew it, and as the cheapest bot to send away it was the
+		// one sent: 161 of the 259 expired counters of the supporters' world
+		// on 3 October were owned by bots of the second channel. There it
+		// costs nothing, so the roam brings such an owner back first.
+		if (!liveStand && stand && g_bChannel == playerbot_channel_rules::SHOP_CHANNEL &&
+				!stand->GetItems().empty())
+			liveStand = true;
 		// A shop operation in flight, and a service visit with the board open.
 		pinned = pinned || playerbot_offline::requests.count(pid) != 0 ||
 				(state && state->offlineShop.visiting);
