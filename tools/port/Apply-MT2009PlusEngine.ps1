@@ -51,6 +51,10 @@ param(
 #   mount quick swap   cmd_general.cpp, char_item.cpp, MountSystem.cpp
 #                      (MT2009_PLUS_MOUNT_QUICKSWAP_V1, MT2009_PLUS_MOUNT_CRASH_FIX_V1;
 #                      server-patches/mountquickswap)
+#   Digi Rasta's conveniences char_item.cpp, input_main.cpp, exchange.cpp, char.cpp,
+#                      guild.cpp, cmd_general.cpp, cmd_emotion.cpp, input_login.cpp,
+#                      char_battle.cpp, cmd.cpp (MT2009_PLUS_DIGI_SERVER_QOL_V1;
+#                      server-patches/digirasta-qol)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -747,6 +751,22 @@ if ((Test-Path -LiteralPath $digiRastaFixesApply -PathType Leaf) -and
     if ($digiRastaFixesResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Digi Rasta fix and stacking edit(s).' -f $digiRastaFixesResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Digi Rasta's server conveniences (server-patches/digirasta-qol, "Autor:
+# Digi Rasta", MT2009_PLUS_DIGI_SERVER_QOL_V1): the refine failure's reason,
+# the messenger block over trade / party / guild / emotes / duel, the level-up
+# congratulation and announcement, the daily gift, the kill bar and streak,
+# skills ready after death, the death window's countdown and Seon-Hae's book
+# exchange (playerbot_digi_qol.h); after seonhae, whose cmd.cpp lines it
+# anchors on.
+$digiQolApply = Join-Path $repo 'server-patches/digirasta-qol/Apply-DigiRastaQolPatch.ps1'
+if ((Test-Path -LiteralPath $digiQolApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_emotion.cpp') -PathType Leaf)) {
+    $digiQolResult = & $digiQolApply -SourceDir $engineGameSource
+    if ($digiQolResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Digi Rasta convenience edit(s).' -f $digiQolResult.Applied) -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

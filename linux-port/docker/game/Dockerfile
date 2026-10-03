@@ -284,13 +284,15 @@ RUN set -eux; \
     # (MT2009_PLUS_CATCH_KING_V1, playerbot_catchking.h; the game functions are added above).
     # minigame_yutnori is the Yut Nori table's menu (20502): the ranking, its prizes and the
     # game's window (MT2009_PLUS_YUTNORI_V1, playerbot_yutnori.h).
+    # ksiegi_seonhae is Seon-Hae's book exchange (20095): the window, then "/nowy_ksiegi"
+    # (MT2009_PLUS_DIGI_SERVER_QOL_V1, playerbot_digi_qol.h, Autor: Digi Rasta).
     # starter_kit dresses a player's new character in the world's starter kit,
     # M2_STARTER_KIT (the operator, 30 September, on Iwakura's proposal); the
     # seed dresses the bots it makes.
     # tp_bookmarks is the six saved teleport positions of the inventory sidebar's window
     # ("/tpzapis", a clean ItemShop Zwoj Powrotu each teleport, 15 minutes apart;
     # MT2009_PLUS_TP_BOOKMARKS_V1, client root uitpbookmarks.py).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \

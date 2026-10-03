@@ -1,0 +1,78 @@
+--- a/SourceClient/UserInterface/Locale_inc.h
++++ b/SourceClient/UserInterface/Locale_inc.h
+@@ -171,6 +171,10 @@
+ // (crowds of bots; the archer's extra arrows fly with the shot).
+ #define ENABLE_RECV_TIME_BUDGET
+ 
++// MT2009_PLUS_DIGI_SERVER_QOL_V1 (Autor: Digi Rasta, "Skill-CoolTime-Update"): player.ResetSkillCoolTimes(),
++// the client's skill timers cleared when the server makes the skills ready after death ("SkillCoolTimeReset").
++#define ENABLE_SKILL_COOLTIME_RESET
++
+ #define __BL_CLIP_MASK__
+ 
+ #define ENABLE_FIX_MOBS_LAG
+--- a/SourceClient/UserInterface/PythonPlayer.cpp
++++ b/SourceClient/UserInterface/PythonPlayer.cpp
+@@ -1109,6 +1109,21 @@
+ 	m_playerStatus.aSkill[dwSlotIndex].isCoolTime=false;
+ }
+ 
++#ifdef ENABLE_SKILL_COOLTIME_RESET
++// MT2009_PLUS_DIGI_SERVER_QOL_V1 (Autor: Digi Rasta, "Skill-CoolTime-Update"): the server makes
++// a player's skills ready again at death and says "SkillCoolTimeReset" (game.py -> digiqol.py);
++// the client's own countdown (__CheckRestSkillCoolTime) and the cooltime flags go with it.
++void CPythonPlayer::ResetSkillCoolTimes()
++{
++	for (int i = 0; i < SKILL_MAX_NUM; ++i)
++	{
++		m_playerStatus.aSkill[i].fLastUsedTime = 0.0f;
++		m_playerStatus.aSkill[i].fCoolTime = 0.0f;
++		m_playerStatus.aSkill[i].isCoolTime = false;
++	}
++}
++#endif
++
+ float CPythonPlayer::GetSkillCoolTime(DWORD dwSlotIndex)
+ {
+ 	if (dwSlotIndex >= SKILL_MAX_NUM)
+--- a/SourceClient/UserInterface/PythonPlayer.h
++++ b/SourceClient/UserInterface/PythonPlayer.h
+@@ -352,6 +352,10 @@
+ 
+ 		void	SetSkillCoolTime(DWORD dwSkillIndex);
+ 		void	EndSkillCoolTime(DWORD dwSkillIndex);
++#ifdef ENABLE_SKILL_COOLTIME_RESET
++		// MT2009_PLUS_DIGI_SERVER_QOL_V1: every skill ready again (the server resets them at death).
++		void	ResetSkillCoolTimes();
++#endif
+ 
+ 		float	GetSkillCoolTime(DWORD dwSlotIndex);
+ 		float	GetSkillElapsedCoolTime(DWORD dwSlotIndex);
+--- a/SourceClient/UserInterface/PythonPlayerModule.cpp
++++ b/SourceClient/UserInterface/PythonPlayerModule.cpp
+@@ -587,6 +587,15 @@
+ 	return Py_BuildValue("ff", fCoolTime, fElapsedCoolTime);
+ }
+ 
++#ifdef ENABLE_SKILL_COOLTIME_RESET
++// MT2009_PLUS_DIGI_SERVER_QOL_V1: player.ResetSkillCoolTimes() - every skill ready again.
++PyObject * playerResetSkillCoolTimes(PyObject* poSelf, PyObject* poArgs)
++{
++	CPythonPlayer::Instance().ResetSkillCoolTimes();
++	return Py_BuildNone();
++}
++#endif
++
+ PyObject * playerIsSkillActive(PyObject* poSelf, PyObject* poArgs)
+ {
+ 	int iSlotIndex;
+@@ -2534,6 +2543,9 @@
+ 		{ "GetCoolTimeReduction",		playerGetCoolTimeReduction,		    METH_VARARGS },
+ 		{ "IsSkillCoolTime",			playerIsSkillCoolTime,				METH_VARARGS },
+ 		{ "GetSkillCoolTime",			playerGetSkillCoolTime,				METH_VARARGS },
++#ifdef ENABLE_SKILL_COOLTIME_RESET
++		{ "ResetSkillCoolTimes",		playerResetSkillCoolTimes,			METH_VARARGS },
++#endif
+ 		{ "IsSkillActive",				playerIsSkillActive,				METH_VARARGS },
+ 		{ "UseGuildSkill",				playerUseGuildSkill,				METH_VARARGS },
+ 		{ "AffectIndexToSkillIndex",	playerAffectIndexToSkillIndex,		METH_VARARGS },

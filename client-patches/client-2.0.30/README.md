@@ -507,3 +507,22 @@ wyrzucania, limit `LIMIT_REAL_TIME` 1 209 600 s, wartości 0/0/100/25/1300/2250)
 (`icon/item/08010.tga`) i wiersz `itemdesc.txt`. Ikona `tools/quiver/08010.tga` (32×32 RGBA, narysowana – GF
 26.1.11 nie ma ikony kołczanu) to **nowy wpis paczki `icon`**. Klient 2.0.x nie zna `WEAPON_QUIVER`, więc
 kołczan jest strzałą z limitem czasu; nielimitowane strzały daje serwer (`server-patches/quiver`).
+## Wygody Digi Rasty: serwer i jego komendy (nowy-system v0.23.0) – exe opcjonalnie
+
+**Autor: Digi Rasta.** Znacznik `MT2009_PLUS_DIGI_SERVER_QOL_V1`; serwer i decyzje:
+`server-patches/digirasta-qol/README.md`. Pliki `root`:
+
+- `digiserverqol.py` (nowy; `digiqol.py` to część kliencka Digi Rasty) – komendy serwera `RefineFailedType`, `KillBar`, `KillSound`, `SkillCoolTimeReset`,
+  `DeadTime`, `NOWY_KSIEGI`, wpisywane do `serverCommander` okna gry.
+- `uikillbar.py` (nowy) – pasek zabójstw w prawym górnym rogu (5 wierszy po 6 s), ikony
+  `mt2009_ui/killbar/*.png` (16, z jego paczki).
+- `uiskillbookexchange.py` (nowy) – okno wymiany ksiąg u Seon-Hae (`/nowy_ksiegi`).
+- `mt2009_ui/killstreak/1..13.wav` (nowe, 5,3 MB) – dźwięki serii zabójstw (z jego paczki).
+- `game.py` – `digiserverqol.Register(self)` po komendach serwera, `digiserverqol.DestroyWindows()` przy zamknięciu okna gry.
+- `uichat.py` (wpis paczki `root`, zastępowany) – „@nick tekst” w zwykłym czacie = szept; w trybie handlu
+  (TAB) i dla „@ tekst” dalej czat handlowy.
+- `uirestart.py` (wpis paczki `root`, zastępowany) – okno śmierci odlicza sekundy na przyciskach, nieaktywne do zera.
+- `uichestpreview.py` – „Otwórz” / „Otwórz 10” w podglądzie skrzynki (co 0,25 s, `warpsafe.InGame()`).
+
+Reset odnowień po śmierci w samym kliencie potrzebuje `player.ResetSkillCoolTimes()` (łatka exe
+`server-patches/digirasta-qol/digi-server-qol-exe.patch`, `ENABLE_SKILL_COOLTIME_RESET`); bez niej serwer i tak zeruje odnowienia.

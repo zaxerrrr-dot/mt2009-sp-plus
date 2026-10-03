@@ -475,6 +475,8 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_GUILD_DUTY_V1: the guild leader's panel.
 		import uiguildduty
 		uiguildduty.DestroyWindow()
+		# MT2009_PLUS_DIGI_SERVER_QOL_V1: the kill bar and Seon-Hae's book exchange (digiserverqol.py).
+		__import__("digiserverqol").DestroyWindows()
 		# MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: the companion's windows and their
 		# queue go with the game window at every warp, channel change and logout,
 		# also when no keeper of theirs was registered (the inventory's button
@@ -3068,6 +3070,9 @@ class GameWindow(ui.ScriptWindow):
 			self.serverCommander.SAFE_RegisterCallBack(
 				serverCommandItem[0], serverCommandItem[1]
 			)
+		# MT2009_PLUS_DIGI_SERVER_QOL_V1 (Autor: Digi Rasta): RefineFailedType, KillBar, KillSound,
+		# SkillCoolTimeReset, DeadTime, NOWY_KSIEGI (digiserverqol.py).
+		__import__("digiserverqol").Register(self)
 
 	def BINARY_ServerCommand_Run(self, line):
 		try:
