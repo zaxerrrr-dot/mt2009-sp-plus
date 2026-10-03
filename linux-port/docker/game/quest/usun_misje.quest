@@ -13,10 +13,11 @@
 -- chain (set_quest_state(next, "run") - the story, the Biologist) starts it
 -- here too, so the next part opens at its level as it always would; a next
 -- part whose level the player already has opens at once and the window shows
--- it after the refresh. The quest's own items (a diary page, a letter) go
--- with it. Then the character is warped to the same spot (a short loading):
--- the client's quest list, the letters and the arrows are made again from
--- the quests' new states, which needs no engine change.
+-- it right after the removal. The quest's own items (a diary page, a letter) go
+-- with it. Each removed quest's letter leaves the client's quest list, its
+-- letter button and its arrows at once (pc.clear_quest_letter, engine patch
+-- server-patches/clearmissions): no warp, no loading screen. A next part that
+-- opens at once sends its own letter as it always does.
 --
 -- Only the quests of the generated table below are ever listed or touched:
 -- the story (main_quest_lv*, find_squareguard, find_brother_article,
@@ -29,9 +30,10 @@
 --
 --   client -> "/usunmisje" | "/usunmisje lista" | "/usunmisje usun <id> ..." |
 --             "/usunmisje gotowe"
---   server -> "MISJE begin <0 asked | 1 after a removal | 2 not here>",
+--   server -> "MISJE begin <0 asked | 1 after a removal>",
 --             "MISJE m <id> <category> <level> <letter text, _ for a space>",
---             "MISJE end"; the messages as chat lines.
+--             "MISJE end"; "MISJE gone <quest index>" for a removed letter's
+--             button; the messages as chat lines.
 -- Event flag mt2009_usunmisje_off 1 switches it off. Bots never come here.
 -- Kompiluje go Dockerfile. Plik w cp1250.
 quest usun_misje begin
@@ -259,17 +261,7 @@ quest usun_misje begin
 			return t
 		end
 
-		function blocked()
-			local idx = pc.get_map_index()
-			return pc.in_dungeon() or idx >= 10000
-		end
-
 		function send_list(mode)
-			if usun_misje.blocked() then
-				cmdchat("MISJE begin 2")
-				cmdchat("MISJE end")
-				return
-			end
 			cmdchat("MISJE begin " .. mode)
 			local list = usun_misje.data()
 			for i = 1, table.getn(list) do
@@ -284,10 +276,6 @@ quest usun_misje begin
 
 		-- the checked ones of one window (a few chat lines of ids)
 		function remove(args)
-			if usun_misje.blocked() then
-				syschat("Misje mo¿esz usuwaæ tylko poza lochem.")
-				return
-			end
 			local list = usun_misje.data()
 			local byname = {}
 			for i = 1, table.getn(list) do
@@ -323,6 +311,13 @@ quest usun_misje begin
 			end
 			for q, s in pairs(target) do
 				set_quest_state(q, s)
+			end
+			-- the letter, its button and its arrows go now
+			for k = 1, table.getn(done) do
+				local idx = pc.clear_quest_letter(done[k][1])
+				if idx ~= nil and idx > 0 then
+					cmdchat("MISJE gone " .. idx)
+				end
 			end
 			-- the quest's own items, unless a listed quest still open uses them
 			local users = usun_misje.item_users()
@@ -360,9 +355,9 @@ quest usun_misje begin
 				syschat("Nie usuniêto ¿adnej misji.")
 				return
 			end
-			syschat(string.format("Usuniêto misje: %d (bez nagród). Lista misji odœwie¿y siê za chwilê.", n))
-			pc.setqf("try", 0)
-			timer("usun_misje_odswiez", 2)
+			syschat(string.format("Usuniêto misje: %d (bez nagród).", n))
+			-- what opened since (the next part of a chain) in the window
+			usun_misje.send_list(1)
 		end
 
 		when write with mes.get_message() == "usunmisje" begin
@@ -382,35 +377,6 @@ quest usun_misje begin
 			else
 				usun_misje.send_list(0)
 			end
-		end
-
-		-- the warp to the same spot: the client builds its quest list again
-		when usun_misje_odswiez.timer begin
-			if pc.is_dead() or usun_misje.blocked() or not pc.can_warp() then
-				local t = pc.getqf("try") + 1
-				pc.setqf("try", t)
-				if t < 5 then
-					timer("usun_misje_odswiez", 3)
-				else
-					syschat("Lista misji odœwie¿y siê po teleportacji albo ponownym zalogowaniu.")
-				end
-				return
-			end
-			pc.setqf("reopen", 1)
-			if not pc.warp(pc.get_x() * 100, pc.get_y() * 100) then
-				pc.setqf("reopen", 0)
-				syschat("Lista misji odœwie¿y siê po teleportacji albo ponownym zalogowaniu.")
-			end
-		end
-
-		-- after the refresh: what opened since (the next parts) in the window
-		when login with pc.getqf("reopen") == 1 begin
-			pc.setqf("reopen", 0)
-			timer("usun_misje_lista", 3)
-		end
-
-		when usun_misje_lista.timer begin
-			usun_misje.send_list(1)
 		end
 	end
 end

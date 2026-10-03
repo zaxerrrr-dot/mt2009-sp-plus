@@ -7,19 +7,22 @@
 # (linux-port/docker/game/quest/usun_misje.quest): it lists the missions the
 # player has open now (the story, side quests, the Biologist, Baek-Go's herbs
 # - never the Companion or Cor Draconis), sets the checked ones to their
-# finished state without a reward and warps the character to the same spot,
-# which makes the quest list and the letters again.
+# finished state without a reward and takes their letters, letter buttons and
+# arrows off at once (pc.clear_quest_letter, server-patches/clearmissions) -
+# no warp, no loading screen.
 #
 #   chat "/usunmisje" (the player) or "/usunmisje lista" -> the list
-#   server -> "MISJE begin <0 asked | 1 after a removal | 2 not here>",
+#   server -> "MISJE begin <0 asked | 1 after a removal>",
 #             "MISJE m <id> <category> <level> <letter text, _ for a space>",
-#             "MISJE end" (game.py passes them here)
+#             "MISJE end", "MISJE gone <quest index>" - the removed quest's
+#             letter button goes (the interface's BINARY_ClearQuest)
+#             (game.py passes them here, with its interface)
 #   window -> "/usunmisje usun <id> ..." (up to 20 ids a line), then
 #             "/usunmisje gotowe"
 #
-# After the refresh the server sends the list again (mode 1): the window opens
+# After a removal the server sends the list again (mode 1): the window opens
 # only for missions that were not in the last window - the next part of a
-# chain, a quest the login started - never for the ones the player kept.
+# chain the player's level already opens - never for the ones he kept.
 # It sends only on a click, never by itself, and only in the game phase
 # (warpsafe.InGame).
 #
@@ -40,7 +43,7 @@ CHECKED_IMAGE = "mt2009_ui/checkbox/checked.tga"
 
 TEXT_TITLE = "Usu\xf1 misje"
 TEXT_INFO1 = "Zaznaczone misje znikn\xb9 z listy tak, jakby ich nigdy nie by\xb3o."
-TEXT_INFO2 = "Nagrody nie s\xb9 przyznawane. Po usuni\xeaciu posta\xe6 prze\xb3aduje si\xea (ekran \xb3adowania)."
+TEXT_INFO2 = "Nagrody nie s\xb9 przyznawane. Nowe misje pojawi\xb9 si\xea z kolejnym poziomem."
 TEXT_INFO3 = "Towarzysz, Cor Draconis i misje system\xf3w nie s\xb9 tu pokazywane."
 TEXT_AFTER = "Pojawi\xb3y si\xea kolejne misje (np. nast\xeapna cz\xea\x9c\xe6 \xb3a\xf1cucha):"
 TEXT_PAGE = "Strona %d / %d"
@@ -50,12 +53,8 @@ TEXT_NONE = "Odznacz wszystkie"
 TEXT_REMOVE = "Usu\xf1 zaznaczone"
 TEXT_CANCEL = "Anuluj"
 TEXT_ASK1 = "Usun\xb9\xe6 zaznaczone misje (%d)?"
-TEXT_ASK2 = "Bez nagr\xf3d, bez cofni\xeacia. Posta\xe6 prze\xb3aduje si\xea (ekran \xb3adowania)."
-# Shown in chat right after the removal is sent: the warp to the same spot
-# rebuilds the quest list and can take several seconds (the owner, 3 October).
-TEXT_RELOAD = "Usuwanie misji: za chwil\xea posta\xe6 zniknie i prze\xb3aduje si\xea w tym samym miejscu (ekran \xb3adowania, kilka-kilkana\x9ccie sekund). To normalne - nie wylogowuj si\xea."
+TEXT_ASK2 = "Bez nagr\xf3d - tego nie mo\xbfna cofn\xb9\xe6."
 TEXT_NOTHING = "Nie masz teraz misji, kt\xf3re mo\xbfna usun\xb9\xe6."
-TEXT_NOT_HERE = "Misje mo\xbfesz usuwa\xe6 tylko poza lochem."
 TEXT_NONE_CHECKED = "Nie zaznaczono \xbfadnej misji."
 
 CATEGORY = {
@@ -75,7 +74,16 @@ _state = {
 	'mode': 0,
 	'kept': set(),    # ids the player left unchecked in the last removal
 	'shown': set(),   # ids of the last window
+	'interface': None,
 }
+
+
+def SetInterface(interface):
+	try:
+		from _weakref import proxy
+		_state['interface'] = proxy(interface)
+	except Exception:
+		_state['interface'] = None
 
 
 def ToInt(value, default=0):
@@ -337,7 +345,6 @@ class ClearMissionsWindow(ui.BoardWithTitleBar):
 		for i in xrange(0, len(ids), IDS_PER_LINE):
 			Send("usun " + " ".join([str(x) for x in ids[i:i + IDS_PER_LINE]]))
 		Send("gotowe")
-		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_RELOAD)
 		_state['kept'] = set(m[0] for m in self.missions if m[0] not in self.checked)
 		self.Close()
 
@@ -367,9 +374,6 @@ class ClearMissionsWindow(ui.BoardWithTitleBar):
 
 
 def __ShowList(missions, mode):
-	if mode == 2:
-		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NOT_HERE)
-		return
 	if mode == 1:
 		# after a removal: only what was not in the last window
 		missions = [m for m in missions if m[0] not in _state['kept'] and m[0] not in _state['shown']]
@@ -406,6 +410,12 @@ def OnCommand(*args):
 			if incoming is None or len(rest) < 4:
 				return
 			incoming.append((ToInt(rest[0]), ToInt(rest[1]), ToInt(rest[2]), "_".join(rest[3:])))
+		elif sub == 'gone':
+			# the removed quest's letter button (its quest list row went with
+			# the server's quest-info packet)
+			interface = _state['interface']
+			if interface is not None and rest:
+				interface.BINARY_ClearQuest(ToInt(rest[0]))
 		elif sub == 'end':
 			missions = _state['incoming']
 			_state['incoming'] = None

@@ -602,7 +602,7 @@ Okno jest nasze, na poleceniach czatu (`/ranking info|lista <kat>`, linie `WRANK
 - `mt2009_ui/sidebar/ranking_01/02/03.tga` (nowe) – ikona: ramka przycisku lochów i korona z
   `image-example-005.png` Arezzo, zrobione `tools/ranking/make_icons.py`.
 
-## Usuwanie misji (/usunmisje) – bez zmian exe i silnika
+## Usuwanie misji (/usunmisje) – bez zmian exe
 
 Znacznik `MT2009_PLUS_CLEAR_MISSIONS_V1`. Gracz wpisuje na czacie `/usunmisje`: otwiera się okno z misjami,
 które ma teraz otwarte (z listem na liście misji), każda z polem wyboru (domyślnie zaznaczona). „Usuń
@@ -610,9 +610,10 @@ zaznaczone” (z pytaniem) ustawia je w ich własny stan ukończenia – bez nag
 dawno temu – więc nie wracają. Jeśli ukończenie misji uruchamia następną część łańcucha (fabuła, Biolog), ta
 część startuje tak, jak przy zwykłym ukończeniu: otworzy się na swoim poziomie (np. 55), a gdy gracz ma już
 ten poziom – od razu, i okno pokaże ją po odświeżeniu. Przedmioty samej misji (np. strona pamiętnika, list)
-znikają z nią; przedmioty do oddania Biologowi zostają. Na koniec postać jest teleportowana w to samo miejsce
-(krótkie wczytanie) – lista misji, listy i strzałki budują się od nowa ze stanów questów. Nie działa w lochach
-i instancjach. Flaga eventu `mt2009_usunmisje_off 1` wyłącza.
+znikają z nią; przedmioty do oddania Biologowi zostają. List usuniętej misji znika od razu z listy misji,
+jej przycisk z lewej strony ekranu i jej strzałki z mapy (`pc.clear_quest_letter`, poprawka silnika
+`server-patches/clearmissions`) – bez teleportu i ekranu ładowania. Flaga eventu `mt2009_usunmisje_off 1`
+wyłącza.
 
 Usuwalne (tabela w quescie, z `tools/gen_usun_misje.py`): fabuła `main_quest_lv*`, `find_squareguard`,
 `find_brother_article`, `patrol_townaround`; poboczne `subquest_*`, `new_quest_lv*`, `new_quest_premium_lv4`;
@@ -624,9 +625,10 @@ Seon-Hae, `hwang_introduction` (jego ukończenie otwiera sklep), `trade_chat`, `
 
 - `uiusunmisje.py` (nowy) – okno 12 wierszy na stronę, „Zaznacz/Odznacz wszystkie”, licznik. Wysyła
   `/usunmisje usun <id…>` (do 20 na linię) i `/usunmisje gotowe` tylko po kliknięciu i tylko w fazie gry
-  (`warpsafe.InGame()`); odbiera `MISJE begin|m|end`. Po odświeżeniu otwiera się samo tylko dla misji,
-  których nie było w poprzednim oknie.
-- `game.py` – polecenie `MISJE` i zamknięcie okna z resztą.
+  (`warpsafe.InGame()`); odbiera `MISJE begin|m|end` i `MISJE gone <indeks questa>` (zdejmuje przycisk
+  listu przez `BINARY_ClearQuest` interfejsu). Po usunięciu otwiera się samo tylko dla misji, których nie
+  było w poprzednim oknie (np. następna część łańcucha).
+- `game.py` – polecenie `MISJE` (z interfejsem) i zamknięcie okna z resztą.
 
 ## Magazyn kolekcjonera (natychmiastowy) – bez zmian exe
 

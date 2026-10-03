@@ -823,6 +823,20 @@ if ((Test-Path -LiteralPath $collectorApply -PathType Leaf) -and
     if ($collectorResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} collector storage edit(s).' -f $collectorResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The /usunmisje window (server-patches/clearmissions,
+# MT2009_PLUS_CLEAR_MISSIONS_V1): pc.clear_quest_letter takes another quest's
+# letter off the client's quest list and its arrows off the map (questlua_pc.cpp).
+$clearMissionsApply = Join-Path $repo 'server-patches/clearmissions/Apply-ClearMissionsPatch.ps1'
+if ((Test-Path -LiteralPath $clearMissionsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'questlua_pc.cpp') -PathType Leaf)) {
+    $clearMissionsResult = & $clearMissionsApply -SourceDir $engineGameSource
+    if ($clearMissionsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} mission removal edit(s).' -f $clearMissionsResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # The weekly ranking and its titles (server-patches/weeklyrank,
 # MT2009_PLUS_WEEKLY_RANKING_V1, on the basis of the Arezzo files' weekly
 # ranking): /ranking for the client's window, the alchemy count at a Dragon

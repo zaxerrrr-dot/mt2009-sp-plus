@@ -3827,6 +3827,7 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window's lines (uiusunmisje.py).
 	def __ClearMissions(self, *args):
 		import uiusunmisje
+		uiusunmisje.SetInterface(self.interface)
 		uiusunmisje.OnCommand(*args)
 
 	# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event list (ingameevent.py).
