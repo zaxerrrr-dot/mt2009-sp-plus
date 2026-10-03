@@ -92,7 +92,6 @@
   </article>
   <aside class="inventory-panel">
     <h2>⚔ Zawartość ekwipunku</h2>
-    <div class="storage-tabs"><button class="active" data-storage="inventory">Ekwipunek</button><button data-storage="safebox">Magazyn{% if not has_safebox %} (pusty){% endif %}</button><button data-storage="horse" {% if not has_horse_bag %}disabled title="Ta postać nie ma odblokowanych juków konnych"{% endif %}>Juki konne</button></div>
     <div id="inventory-live-region">{% set gold = character.gold %}{% include '_inventory_fragment.html' %}</div>
   </aside>
 </section>
@@ -108,6 +107,7 @@ document.body.dataset.ajaxForms='1';
 if(window.__playerRefreshInterval)clearInterval(window.__playerRefreshInterval);
 if(window.__playerLiveLogTimer)clearInterval(window.__playerLiveLogTimer);
 let invPage=0, safeboxPage=0, activeStorage='inventory';
+let dsKind=0, dsPage=0, dsDeck=0;
 function setPage(n){invPage=n;document.querySelectorAll('.inv-tabs button').forEach(x=>x.classList.toggle('active',x.dataset.page===String(n)));const slots=document.querySelectorAll('.inv-slot[data-page]');slots.forEach(x=>x.hidden=x.dataset.page!==String(n));document.getElementById('inventory-empty').hidden=[...slots].some(x=>x.dataset.page===String(n))}
 function setSafeboxPage(n){safeboxPage=n;document.querySelectorAll('.safebox-tabs button').forEach(x=>x.classList.toggle('active',x.dataset.page===String(n)));const slots=document.querySelectorAll('.safebox-slot[data-page]');slots.forEach(x=>x.hidden=x.dataset.page!==String(n));document.getElementById('safebox-empty').hidden=[...slots].some(x=>x.dataset.page===String(n))}
 function bindInventoryFragment(){
@@ -118,8 +118,33 @@ function bindInventoryFragment(){
   document.getElementById('safebox-storage').hidden=activeStorage!=='safebox';
   const horseStorage=document.getElementById('horse-storage');
   if (horseStorage) horseStorage.hidden=activeStorage!=='horse';
+  const dragonStorage=document.getElementById('dragon-soul-storage');
+  if (dragonStorage) dragonStorage.hidden=activeStorage!=='dragon';
+  document.querySelectorAll('[data-storage]').forEach(b=>b.onclick=()=>{activeStorage=b.dataset.storage;bindInventoryFragment()});
+  bindDragonSoul();
 }
-document.querySelectorAll('.storage-tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.storage-tabs button').forEach(x=>x.classList.toggle('active',x===b));activeStorage=b.dataset.storage;bindInventoryFragment()});
+function bindDragonSoul(){
+  const win=document.querySelector('.dragon-soul-window'); if(!win)return;
+  win.dataset.dsKind=String(dsKind); win.dataset.dsPage=String(dsPage); win.dataset.dsDeck=String(dsDeck);
+  const brand=win.querySelector('[data-brand-lock]');
+  if(brand&&brand.dataset.brandLock==='viaSeban'&&!brand.textContent.trim())brand.innerHTML='<span aria-hidden="true">viaSeban</span><span class="sr-only">viaSeban</span>';
+  const kindNames=['Smoczy Diament','Smoczy Rubin','Smoczy Jadeit','Smoczy Szafir','Smoczy Granat','Smoczy Onyks','Smoczy Ametyst'];
+  const render=()=>{
+    const kind=Number(win.dataset.dsKind||0), page=Number(win.dataset.dsPage||0), deck=Number(win.dataset.dsDeck||0);
+    // The client art has six kind tabs; the Amethyst (7th) has its own button over it.
+    const art=win.querySelector('.ds-kind-art'); if(art){art.hidden=kind>5;if(kind<=5)art.src=`${window.SEBAN_ROOT||''}/static/dragon-soul-ui/tap${String(kind+1).padStart(2,'0')}.png`;}
+    const label=win.querySelector('.ds-kind-name'); if(label)label.textContent=kindNames[kind];
+    win.querySelectorAll('[data-ds-kind-button]').forEach(b=>b.classList.toggle('active',Number(b.dataset.dsKindButton)===kind));
+    win.querySelectorAll('[data-ds-page-button]').forEach(b=>{const on=Number(b.dataset.dsPageButton)===page;b.classList.toggle('active',on);const img=b.querySelector('img');if(img)img.src=on?img.dataset.active:img.dataset.normal});
+    win.querySelectorAll('[data-ds-deck-button]').forEach(b=>{const on=Number(b.dataset.dsDeckButton)===deck;b.classList.toggle('active',on);const img=b.querySelector('img');if(img)img.src=on?img.dataset.active:img.dataset.normal});
+    win.querySelectorAll('.ds-equipment').forEach(x=>x.hidden=Number(x.dataset.dsDeck)!==deck);
+    win.querySelectorAll('.ds-bag-slot').forEach(x=>x.hidden=Number(x.dataset.dsKind)!==kind||Number(x.dataset.dsPage)!==page);
+  };
+  win.querySelectorAll('[data-ds-kind-button]').forEach(b=>b.onclick=()=>{dsKind=Number(b.dataset.dsKindButton);win.dataset.dsKind=String(dsKind);render()});
+  win.querySelectorAll('[data-ds-page-button]').forEach(b=>b.onclick=()=>{dsPage=Number(b.dataset.dsPageButton);win.dataset.dsPage=String(dsPage);render()});
+  win.querySelectorAll('[data-ds-deck-button]').forEach(b=>b.onclick=()=>{dsDeck=Number(b.dataset.dsDeckButton);win.dataset.dsDeck=String(dsDeck);render()});
+  render();
+}
 bindInventoryFragment();
 // Wired straight to the same always-live SQL the full page render uses (see
 // load_character_items in app.py) -- no separate cache, no waiting for a

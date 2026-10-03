@@ -230,6 +230,32 @@ body[data-theme="empire"]{--live-surface:#241a12;--live-surface-strong:#1a1109;-
 .map-insight-card{display:grid;gap:9px;padding:11px;border:1px solid var(--live-border);border-radius:7px;background:var(--live-surface-strong)}
 .map-insight-card h3{margin:0;color:var(--live-accent-text);font-size:14px}
 .map-insight-chart{display:flex;align-items:center;gap:12px}
+.map-insight-list{max-height:220px;overflow-y:auto}
+.map-insight-list{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--live-accent) 75%,var(--live-accent-text)) color-mix(in srgb,var(--live-surface-strong) 70%,transparent)}
+.map-insight-list::-webkit-scrollbar{width:7px}
+.map-insight-list::-webkit-scrollbar-track{background:color-mix(in srgb,var(--live-surface-strong) 70%,transparent);border-radius:999px}
+.map-insight-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,color-mix(in srgb,var(--live-accent) 85%,var(--live-accent-text)),var(--live-accent));border:1px solid color-mix(in srgb,var(--live-surface-strong) 70%,transparent);border-radius:999px}
+.map-insight-list::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,color-mix(in srgb,var(--live-accent) 65%,var(--live-accent-text)),color-mix(in srgb,var(--live-accent) 92%,var(--live-accent-text)))}
+.insight-empire-filter{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:2px}
+.insight-empire-filter button{padding:4px 9px;border:1px solid var(--live-border);border-radius:14px;background:var(--live-filter);color:var(--live-accent-text);font-size:11px;cursor:pointer}
+.insight-empire-filter button.active{background:var(--live-accent);color:#fff}
+/* "Aktywności w świecie" + "Boty wg poziomu" used to be two separate,
+   always-visible cards stacked with their own scrollbars -- cramped and
+   broke out of the sidebar's width on desktop (screenshot, 2026-10-02).
+   One card, two tabs, same switcher pattern as the existing Ranking/
+   Aktywności tabs on this page (live-sidebar[data-sidebar-tab]). */
+.map-insight-card--world{gap:7px}
+/* Rozciąga się do dołu .live-insights (wysokość tej kolumny jest teraz
+   dopasowana do mapy przez JS, patrz live-widget.js) zamiast zostawiać
+   lukę/schodek pod Ranking/Aktywności. */
+#world-insights-card{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+#world-insights-card .world-tab-panel{flex:1 1 auto;max-height:280px;min-height:0;overflow-y:auto}
+.insight-tabs{display:flex;gap:5px;margin-bottom:2px}
+.insight-tabs button{flex:1;padding:6px 4px;border:1px solid var(--live-border);border-radius:6px;background:var(--live-filter);color:var(--live-accent-text);font-size:11px;cursor:pointer}
+.insight-tabs button.active{background:var(--live-accent);color:#fff}
+.world-tab-panel{display:none}
+#world-insights-card[data-world-tab="activity"] #world-activity-chart{display:block}
+#world-insights-card[data-world-tab="levels"] #world-level-chart{display:block}
 .map-donut{width:78px;aspect-ratio:1;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(circle at center,var(--live-surface) 0 57%,transparent 59%),var(--map-donut);flex:0 0 auto}
 .map-donut b{display:block;color:var(--live-accent-text);font-size:12px;line-height:1.05}
 .map-donut small{display:block;margin-top:2px;color:var(--live-number);font-size:16px;font-weight:800}
