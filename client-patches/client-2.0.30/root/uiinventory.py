@@ -388,6 +388,10 @@ class SidebarWindow(ui.Window):
 		("dungeon", "Wyprawy", "OnClickDungeonInfo", "dungeon_info"),
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
 		("teleport", "Zapisane pozycje", "OnClickTpBookmarks", "tp_bookmarks"),
+		# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window (uiusunmisje.py).
+		("missions", "Usuñ misje", "OnClickClearMissions", None),
+		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
+		("ranking", "Ranking tygodniowy", "OnClickWeeklyRank", "weekly_rank"),
 	)
 
 	def __init__(self, wndInventory):
@@ -668,9 +672,19 @@ class SidebarWindow(ui.Window):
 		import uidungeoninfo
 		uidungeoninfo.ToggleWindow()
 
+	def OnClickClearMissions(self):
+		# MT2009_PLUS_CLEAR_MISSIONS_V1: the same as typing /usunmisje.
+		import warpsafe, net
+		if warpsafe.InGame():
+			net.SendChatPacket("/usunmisje")
+
 	def OnClickTpBookmarks(self):
 		import uitpbookmarks
 		uitpbookmarks.ToggleWindow()
+
+	def OnClickWeeklyRank(self):
+		import uiweeklyrank
+		uiweeklyrank.ToggleWindow()
 
 class GridSlotStateManager():
 	SLOT_STATE_NONE = 0
@@ -2269,6 +2283,11 @@ class InventoryWindow(ui.ScriptWindow):
 			if uisidekickinventory.DropIntoPlayerBag(attachedSlotType, attachedSlotPos, selectedSlotPos):
 				mouseModule.mouseController.DeattachObject()
 				return
+			# MT2009_PLUS_COLLECTOR_STORAGE_V1: an entry of the collector's storage.
+			import uicollector
+			if uicollector.DropIntoPlayerBag(attachedSlotType, attachedSlotPos, selectedSlotPos):
+				mouseModule.mouseController.DeattachObject()
+				return
 			if player.SLOT_TYPE_INVENTORY == attachedSlotType:
 				#@fixme011 BEGIN (block ds equip)
 				attachedInvenType = player.SlotTypeToInvenType(attachedSlotType)
@@ -2321,6 +2340,11 @@ class InventoryWindow(ui.ScriptWindow):
 			# The companion's item (uisidekickinventory.py): "/towarzysz eq wez".
 			import uisidekickinventory
 			if uisidekickinventory.DropIntoPlayerBag(attachedSlotType, attachedSlotPos, itemSlotIndex):
+				mouseModule.mouseController.DeattachObject()
+				return
+			# MT2009_PLUS_COLLECTOR_STORAGE_V1: an entry of the collector's storage.
+			import uicollector
+			if uicollector.DropIntoPlayerBag(attachedSlotType, attachedSlotPos, itemSlotIndex):
 				mouseModule.mouseController.DeattachObject()
 				return
 
@@ -2879,6 +2903,11 @@ class InventoryWindow(ui.ScriptWindow):
 		return True
 
 	def OnRightClickBagItem(self, slotIndex):
+		# MT2009_PLUS_COLLECTOR_STORAGE_V1: with the collector's storage open, a
+		# right click stores the item at once (Ctrl: every stack of the kind,
+		# Shift: how many) - uicollector.py, before every other window.
+		if self.__QuickPutToCollector(slotIndex):
+			return
 		garbageBin = getattr(self.interface, "wndGarbageBin", None)
 		if garbageBin and garbageBin.IsShow():
 			# An open bin consumes this click even when adding is rejected.
@@ -2902,6 +2931,18 @@ class InventoryWindow(ui.ScriptWindow):
 		if self.__QuickGiveToSidekick(slotIndex):
 			return
 		self.UseItemSlot(slotIndex)
+
+	def __QuickPutToCollector(self, slotIndex):
+		if constInfo.GET_ITEM_QUESTION_DIALOG_STATUS() or app.GetCursor() == app.SELL:
+			return False
+		try:
+			import uicollector
+		except ImportError:
+			return False
+		if not uicollector.QuickPut(self.__InventoryLocalSlotPosToGlobalSlotPos(slotIndex)):
+			return False
+		self.OverOutItem()
+		return True
 
 	def __QuickGiveToSidekick(self, slotIndex):
 		if mouseModule.mouseController.isAttached() or constInfo.GET_ITEM_QUESTION_DIALOG_STATUS():

@@ -74,8 +74,13 @@ python3 tools/generuj_aktualnosci.py      # jeśli zmieniły się aktualności
 - `--patcher` - dokłada `MT2009-Patcher.exe` i `.exe.config` (samoaktualizacja
   patchera: gracz dostaje nową wersję przy następnym uruchomieniu).
 - `--usun <ścieżka>` - plik do usunięcia u graczy (np. stara paczka).
-- `--client-version <V>` - dokłada `CLIENT_VERSION` (dla MT2009-Aktualizatora);
-  domyślnie nie, bo paczki testowe nie są wydaniem `<V>`.
+- `CLIENT_VERSION` jest publikowany domyślnie: z `CLIENT_VERSION` ostatniego
+  źródła, które go ma w katalogu głównym (zip wydania go ma; wzorce po `::` go
+  nie ograniczają). Patcher zapisuje go w folderze klienta, a launcher serwera
+  po nim (albo po sumach z `client-files.json`) wie, że klient jest aktualny.
+  `--client-version <V>` podaje wersję ręcznie, `--bez-client-version` go pomija.
+- `tools/publish-update-mirror.sh <serwer.zip> <klient.zip>` przebudowuje tę
+  listę sam z zipa klienta (`PATCHER_LIST=0` - nie ruszaj listy).
 - Pliki gracza nigdy nie trafiają na serwer: `*.cfg` (coop.cfg, coop2.cfg,
   metin2.cfg, config.cfg...), `UserData/`, `screenshot/`, `mark/`, logi,
   `syserr.txt`, `*.bak`, `*.tmp`.

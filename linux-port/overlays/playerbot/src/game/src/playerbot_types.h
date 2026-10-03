@@ -6138,6 +6138,29 @@ namespace
 	// Recipes read at the board before the bot picks a row (the onboarding
 	// hands one over, and a row it cannot read yet is a visit for nothing).
 	const int PLAYERBOT_HERBALISM_BOARD_READS = 5;
+	// MT2009_PLUS_BOT_HERBALIST_BREW_V2: the recipes reach the board. A
+	// player's report of 3 October ("boty nie czytaja receptur i nie
+	// wytwarzaja mikstur") held on both servers: the recipes drop off Metin
+	// stones to whoever broke them, and 98% of them (472 on the test world,
+	// 424 on the supporters') sat in the bags of bots that had never shown
+	// Baek-Go ten Peach Blossoms and so could never read one; the brewers
+	// themselves knew the onboarding's purple potion and little else (795
+	// bots against five to nineteen a row on the test world), so 96% of its
+	// brews were a General Store potion. Now a recipe its holder cannot read
+	// goes on its counter, a brewer buys one off a counter it can still learn
+	// from - one at a time, out of a share of its spare purse - and a share
+	// of the bots that read past the onboarding brew at the board as the
+	// gatherers do.
+	const int PLAYERBOT_HERBALISM_READER_BREW_PERCENT = 60;
+	const DWORD PLAYERBOT_HERBALISM_RECIPE_BUY_GAP_MS = 2 * 60 * 60 * 1000;
+	const int PLAYERBOT_HERBALISM_RECIPE_BUY_PERCENT = 25;
+	const int PLAYERBOT_HERBALISM_RECIPE_FAIR_PERCENT = 150;
+	const long long PLAYERBOT_HERBALISM_RECIPE_BUY_MIN_SPARE = 1500000;
+	const DWORD PLAYERBOT_HERBALISM_RECIPE_FIRST = 50909;
+	const DWORD PLAYERBOT_HERBALISM_RECIPE_LAST = 50947;
+	const DWORD PLAYERBOT_HERBALISM_ONBOARD_ROW_RECIPE = 11;  // 50909's: the purple potion
+	const DWORD PLAYERBOT_HERBALISM_PEACH_BUSH = 20620;       // Kwitnaca Brzoskwinia, drops 50721
+	const DWORD PLAYERBOT_HERBALISM_KNOWLEDGE_CACHE_MS = 60 * 1000;
 
 	// What a row's hunt vnum means: every monster its item comes from on this
 	// world, not the one the quest names. The quest's own hooks and the etc
@@ -8063,6 +8086,8 @@ namespace
 			dwNextDsCheckTime(0),
 			dwNextDsActionTime(0),
 			dwNextDsLocalTime(0),
+			dwNextDsDeckTime(0),
+			dwLastDsDeckToggle(0),
 			dwNextHorseCheckTime(0),
 			dwNextHorseActionTime(0),
 			dwNextHorseRideCheckTime(0),
@@ -8403,6 +8428,9 @@ namespace
 		DWORD dwNextDsCheckTime;
 		DWORD dwNextDsActionTime;
 		DWORD dwNextDsLocalTime;
+		// MT2009_PLUS_BOT_DS_EXTEND_V1: the deck's combat switch (ManagePlayerBotDsDeckTick).
+		DWORD dwNextDsDeckTime;
+		DWORD dwLastDsDeckToggle;
 		DWORD dwNextHorseCheckTime;
 		DWORD dwNextHorseActionTime;
 		DWORD dwNextHorseRideCheckTime;

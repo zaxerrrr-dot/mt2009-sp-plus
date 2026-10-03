@@ -963,8 +963,13 @@ int PlayerBotLegendExpBonus(LPCHARACTER to, int iExp)
 
 // A death: a person killed by a bot of a tier, a Legend or a Champion killed
 // by a person (the notice, nothing more), a boss's last blow.
+// MT2009_PLUS_WEEKLY_RANKING_V1: a player killed, for the weekly ranking
+// (playerbot_weekly_rank.h, included later) - whatever the LEGENDS switch says.
+void WeeklyRankOnPlayerDeath(LPCHARACTER victim, LPCHARACTER killer);
+
 void PlayerBotLegendOnDeath(LPCHARACTER victim, LPCHARACTER killer)
 {
+	WeeklyRankOnPlayerDeath(victim, killer);
 	if (!victim || !killer || victim == killer || !IsPlayerBotLegendsEnabled())
 		return;
 	const bool killerBot = IsPlayerBotLegendBot(killer);

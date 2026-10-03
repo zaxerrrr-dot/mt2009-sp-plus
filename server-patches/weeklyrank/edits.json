@@ -1,0 +1,38 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_WEEKLY_RANKING_V1 (declare)",
+  "old": "// MT2009_PLUS_DIGI_SERVER_QOL_V1 (declare): Seon-Hae's book exchange (playerbot_digi_qol.h, Autor: Digi Rasta)\nACMD(do_nowy_ksiegi);\n",
+  "new": "// MT2009_PLUS_DIGI_SERVER_QOL_V1 (declare): Seon-Hae's book exchange (playerbot_digi_qol.h, Autor: Digi Rasta)\nACMD(do_nowy_ksiegi);\n// MT2009_PLUS_WEEKLY_RANKING_V1 (declare): the weekly ranking's window, \"/ranking\" (playerbot_weekly_rank.h)\nACMD(do_weekly_rank);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_WEEKLY_RANKING_V1 (table)",
+  "old": "\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (table)\n\t{ \"nowy_ksiegi\",\tdo_nowy_ksiegi,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (table)\n\t{ \"nowy_ksiegi\",\tdo_nowy_ksiegi,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_WEEKLY_RANKING_V1 (table)\n\t{ \"ranking\",\tdo_weekly_rank,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "DragonSoul.cpp",
+  "marker": "MT2009_PLUS_WEEKLY_RANKING_V1 (grade)",
+  "old": "\t\tLogManager::instance().ItemLog(ch, pResultItem, \"DS_GRADE_REFINE_SUCCESS\", buf);\n",
+  "new": "\t\tLogManager::instance().ItemLog(ch, pResultItem, \"DS_GRADE_REFINE_SUCCESS\", buf);\n\t\t// MT2009_PLUS_WEEKLY_RANKING_V1 (grade): a Dragon Stone refine that took, for the weekly ranking's\n\t\t// alchemy (playerbot_weekly_rank.h, WeeklyRankOnAlchemy).\n\t\t{ void WeeklyRankOnAlchemy(LPCHARACTER); WeeklyRankOnAlchemy(ch); }\n"
+ },
+ {
+  "file": "DragonSoul.cpp",
+  "marker": "MT2009_PLUS_WEEKLY_RANKING_V1 (step)",
+  "old": "\t\tLogManager::instance().ItemLog(ch, pResultItem, \"DS_STEP_REFINE_SUCCESS\", buf);\n",
+  "new": "\t\tLogManager::instance().ItemLog(ch, pResultItem, \"DS_STEP_REFINE_SUCCESS\", buf);\n\t\t// MT2009_PLUS_WEEKLY_RANKING_V1 (step): a Dragon Stone refine that took, for the weekly ranking's\n\t\t// alchemy (playerbot_weekly_rank.h, WeeklyRankOnAlchemy).\n\t\t{ void WeeklyRankOnAlchemy(LPCHARACTER); WeeklyRankOnAlchemy(ch); }\n"
+ },
+ {
+  "file": "DragonSoul.cpp",
+  "marker": "MT2009_PLUS_WEEKLY_RANKING_V1 (strength)",
+  "old": "\t\tLogManager::instance().ItemLog(ch, pDragonSoul, \"DS_STRENGTH_REFINE_SUCCESS\", buf);\n",
+  "new": "\t\tLogManager::instance().ItemLog(ch, pDragonSoul, \"DS_STRENGTH_REFINE_SUCCESS\", buf);\n\t\t// MT2009_PLUS_WEEKLY_RANKING_V1 (strength): a Dragon Stone refine that took, for the weekly ranking's\n\t\t// alchemy (playerbot_weekly_rank.h, WeeklyRankOnAlchemy).\n\t\t{ void WeeklyRankOnAlchemy(LPCHARACTER); WeeklyRankOnAlchemy(ch); }\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_WEEKLY_RANKING_V1 (login)",
+  "old": "\t{ void Mt2009DigiDailyGift(LPCHARACTER); Mt2009DigiDailyGift(ch); }\n",
+  "new": "\t{ void Mt2009DigiDailyGift(LPCHARACTER); Mt2009DigiDailyGift(ch); }\n\t// MT2009_PLUS_WEEKLY_RANKING_V1 (login): the title holder's bonuses as the season says, a\n\t// season that turned while the character was away taking the old ones off (playerbot_weekly_rank.h).\n\t{ void WeeklyRankOnLogin(LPCHARACTER); WeeklyRankOnLogin(ch); }\n"
+ }
+]

@@ -1482,7 +1482,12 @@ namespace
 		state.bVisitingHerbalist = false;
 		state.dwNextHerbalistActionTime = 0;
 		// A bot at the bushes comes back sooner: the session feeds it.
-		const DWORD gap = DrawPlayerBotHerbalistVisitGap();   // MT2009_PLUS_BOTLIFE_V1
+		DWORD gap = DrawPlayerBotHerbalistVisitGap();   // MT2009_PLUS_BOTLIFE_V1
+		// MT2009_PLUS_BOT_HERBALIST_BREW_V2: a reader that does not pick
+		// herbs brews what the drops bring it, at half a gatherer's pace -
+		// and its next visit may be a walk from a second village.
+		if (!trade && IsPlayerBotRecipeReaderBrewer(ch))
+			gap *= 2;
 		state.dwNextHerbalistCheckTime = dwNow + (IsPlayerBotHerbSessionNow(pid, dwNow) ? gap / 3 : gap);   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
 		ClearPlayerBotRoute(state, true);
 		sys_log(0, "PLAYERBOT_HERB: visit over pid=%u name=%s crafted=%d gold=%lld end=%s",

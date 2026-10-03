@@ -204,6 +204,11 @@ namespace
 		if (IsPlayerBotCorVnum(offer->GetVnum()) || offer->IsDragonSoul())
 			return WantsPlayerBotAlchemyOffer(ch, offer);
 
+		// MT2009_PLUS_BOT_HERBALIST_BREW_V2: a recipe a brewer can still
+		// learn from (playerbot_herbalism.h), one at a time.
+		if (IsPlayerBotCraftRecipeItem(offer))
+			return WantsPlayerBotRecipeOffer(ch, offer);
+
 		// The guild building materials, for a master whose next building
 		// lacks them (playerbot_guild_land.h); nobody else buys them.
 		if (IsPlayerBotGuildBuildMaterial(offer->GetVnum()))
@@ -491,6 +496,10 @@ namespace
 		// A Forgetting Scroll for a skill stuck at seventeen.
 		if (GetPlayerBotStuckSkill(ch) != 0)
 			return true;
+		// MT2009_PLUS_BOT_HERBALIST_BREW_V2: a recipe for a brewer, while a
+		// counter has one it can learn from (the ledger).
+		if (PlayerBotWantsRecipeFromMarket(ch))
+			return true;
 		// A socket open on a piece it keeps.
 		if (PlayerBotHasOpenSoulStoneSocket(ch))
 			return true;
@@ -604,6 +613,14 @@ namespace
 		// a little over), out of a share of the purse.
 		if (IsPlayerBotMinigameChestVnum(item->GetVnum()))
 			return CanPlayerBotPayForMinigameChest(ch, item, price);
+		// MT2009_PLUS_BOT_HERBALIST_BREW_V2: a recipe near the price list's
+		// 450 000, out of a quarter of what the brewer can spare.
+		if (IsPlayerBotCraftRecipeItem(item))
+		{
+			const long long fair = GetPlayerBotShopAskingPrice(item);
+			return fair > 0 && price <= fair * PLAYERBOT_HERBALISM_RECIPE_FAIR_PERCENT / 100 &&
+					price <= spare * PLAYERBOT_HERBALISM_RECIPE_BUY_PERCENT / 100;
+		}
 		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
 			return CanPlayerBotPayForSashOffer(ch, item, price);
 		if (WantsPlayerBotSashPieceOffer(ch, item))
@@ -898,6 +915,7 @@ namespace
 		if (pick.dwVnum == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			NotePlayerBotChestBought(ch->GetPlayerID(), get_dword_time());
 		NotePlayerBotMinigameChestBought(ch, pick.dwVnum, paid, pick.wCount); // MT2009_PLUS_BOT_MINIGAMES_V1
+		NotePlayerBotRecipeBought(ch, pick.dwVnum, paid);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
 		// A gambler's purchase is charged to the session's budget.
 		NotePlayerBotGamblePurchase(ch, paid);
 		NotePlayerBotGuildMaterialBought(ch, pick.dwVnum, paid);
@@ -1574,6 +1592,7 @@ namespace
 		LogPlayerBotSashCensus();
 		LogPlayerBotSaddlebagCensus();
 		LogPlayerBotAlchemyCensus();
+		LogPlayerBotHerbalistCensus(dwNow);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
 		ReportPlayerBotWeaponGoals(dwNow);
 		ReportPlayerBotLevel30Census();
 		ReportPlayerBotStalkiCensus();

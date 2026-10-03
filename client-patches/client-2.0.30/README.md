@@ -573,3 +573,81 @@ reszta przedmiotów bez zmian). Pliki `root`:
 Pominięte z paczki: Shift + klik w torbie towarzysza (`uisidekickinventory.py`) – to samo robi już nasz
 prawy klik (`MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1`); `XMAS_SNOW_SHOW` w
 `game.py` (wyłączał śnieg i świąteczną muzykę z nocnej flagi) – nie był częścią zgłoszenia.
+
+## Ranking tygodniowy i tytuły – bez zmian exe
+
+Znacznik `MT2009_PLUS_WEEKLY_RANKING_V1`. Na podstawie systemu rankingu tygodniowego z plików Arezzo
+(`new_uiweeklyrank.py`, `uiscript/weeklyrank.py`; ich okno czytało pakiety, których exe 2.0.25 nie ma).
+Okno jest nasze, na poleceniach czatu (`/ranking info|lista <kat>`, linie `WRANK`); serwer:
+`playerbot_weekly_rank.h` i `server-patches/weeklyrank`. Pliki `root`:
+
+- `uiweeklyrank.py` (nowy) – okno „Ranking tygodniowy”: 8 kategorii (zabite potwory, Metiny, bossy,
+  zabici gracze, ukończone wyprawy, udane ulepszenia, alchemia, poziom), top 50 z przewijaniem
+  (miejsce, korona top 3, nick z dopiskiem [Bot]/[Gracz], poziom, królestwo, wynik), własne miejsce
+  i wynik, posiadacze tytułów wybranej kategorii (zwycięzcy poprzedniego sezonu) z bonusem, numer
+  sezonu, odliczanie do końca, własne tytuły. Pasek pod oknem postaci z tytułami gracza
+  (`AttachCharacterWindow`). Wysyła tylko po kliknięciu/otwarciu i tylko w fazie gry (`warpsafe.InGame()`).
+- `playerbot_status_tail.py` – tytuł z rankingu nad nickiem posiadacza (gracza i bota) w wierszu
+  tytułów botów (`textTail.AttachPersonality`): „Łowca I” w kolorze miejsca; tier Systemu Legend
+  zostaje przed nim („Chodząca Legenda | Łowca I”), osobowość bota ustępuje.
+- `game.py` – polecenie `WRANK` (`tail` do `playerbot_status_tail.show_rank_title`), akcja klawisza
+  `weekly_rank`, zamknięcie okna z resztą.
+- `keybind.py` – akcja „Ranking tygodniowy” (bez domyślnego klawisza, do ustawienia w „Skróty klawiszowe”).
+- `uiinventory.py` – przycisk `ranking` na pasku ikon przy ekwipunku.
+- `interfacemodule.py` – pasek tytułów pod oknem postaci.
+- `mt2009_ui/ranking/` (nowe) – obrazki okna z plików Arezzo (`d:/ymir work/ui/new_weekly_rank/`):
+  `row_1..4.png` (wiersze: złoty, srebrny, brązowy, zwykły), `title_1..4.png`, `crown_1..3.png`,
+  `header_big.png`, `header_small.png`, `cat_0..2.tga` (przyciski kategorii). Każdy obrazek jest
+  sprawdzany `pack.Exist` i ma zwykły zamiennik.
+- `mt2009_ui/sidebar/ranking_01/02/03.tga` (nowe) – ikona: ramka przycisku lochów i korona z
+  `image-example-005.png` Arezzo, zrobione `tools/ranking/make_icons.py`.
+
+## Usuwanie misji (/usunmisje) – bez zmian exe
+
+Znacznik `MT2009_PLUS_CLEAR_MISSIONS_V1`. Gracz wpisuje na czacie `/usunmisje`: otwiera się okno z misjami,
+które ma teraz otwarte (z listem na liście misji), każda z polem wyboru (domyślnie zaznaczona). „Usuń
+zaznaczone” (z pytaniem) ustawia je w ich własny stan ukończenia – bez nagród, bez rozmów, jakby były zrobione
+dawno temu – więc nie wracają. Jeśli ukończenie misji uruchamia następną część łańcucha (fabuła, Biolog), ta
+część startuje tak, jak przy zwykłym ukończeniu: otworzy się na swoim poziomie (np. 55), a gdy gracz ma już
+ten poziom – od razu, i okno pokaże ją po odświeżeniu. Przedmioty samej misji (np. strona pamiętnika, list)
+znikają z nią; przedmioty do oddania Biologowi zostają. List usuniętej misji znika od razu z listy misji,
+jej przycisk z lewej strony ekranu i jej strzałki z mapy (`pc.clear_quest_letter`, poprawka silnika
+`server-patches/clearmissions`) – bez teleportu i ekranu ładowania. Flaga eventu `mt2009_usunmisje_off 1`
+wyłącza.
+
+Usuwalne (tabela w quescie, z `tools/gen_usun_misje.py`): fabuła `main_quest_lv*`, `find_squareguard`,
+`find_brother_article`, `patrol_townaround`; poboczne `subquest_*`, `new_quest_lv*`, `new_quest_premium_lv4`;
+Biolog `collect_quest_lv*`; zioła Baek-Go `make_herb_lv*`. Nigdy: Towarzysz, Cor Draconis (`dragon_soul*`),
+konie, gildia, umiejętności, samouczki łowienia/zielarstwa, reputacja, księgi misji, polowania, eventy, lochy,
+Seon-Hae, `hwang_introduction` (jego ukończenie otwiera sklep), `trade_chat`, `warehouse_expand`,
+`black_steel_crafting` i nasze questy systemowe. Serwer: quest `usun_misje`
+(`linux-port/docker/game/quest/usun_misje.quest`, lista w Dockerfile). Pliki `root`:
+
+- `uiusunmisje.py` (nowy) – okno 12 wierszy na stronę, „Zaznacz/Odznacz wszystkie”, licznik. Wysyła
+  `/usunmisje usun <id…>` (do 20 na linię) i `/usunmisje gotowe` tylko po kliknięciu i tylko w fazie gry
+  (`warpsafe.InGame()`); odbiera `MISJE begin|m|end` i `MISJE gone <indeks questa>` (zdejmuje przycisk
+  listu przez `BINARY_ClearQuest` interfejsu). Po usunięciu otwiera się samo tylko dla misji, których nie
+  było w poprzednim oknie (np. następna część łańcucha).
+- `game.py` – polecenie `MISJE` (z interfejsem) i zamknięcie okna z resztą.
+
+## Magazyn kolekcjonera (natychmiastowy) – bez zmian exe
+
+Znacznik `MT2009_PLUS_COLLECTOR_STORAGE_V1`. Na podstawie systemu z projektu upstream (based on the
+upstream Metin2 Playerbots project), przepisany tak, by wkładanie i wyjmowanie było natychmiastowe.
+Serwer, zapis, protokół i powody opóźnień upstream: `server-patches/collector/README.md`.
+
+- `uicollector.py` (nowy) – okno: kategorie z ikonami i licznikami, wyszukiwarka, siatka 10 × 10
+  ze stronami, podpowiedzi, pasek zajętości, „Rozbuduj”; cały magazyn w pamięci okna, ruch pokazany
+  od razu i wysłany jedną komendą (`warpsafe.InGame()`), serwer odsyła tylko zmieniony wpis.
+- `uisafebox.py` – przycisk „Kolekcjoner” nad „Zmień hasło” (okno magazynu o 23 px wyższe).
+- `uiinventory.py` – przy otwartym magazynie kolekcjonera PPM chowa przedmiot (Ctrl – wszystkie
+  stosy rodzaju, Shift – ilość), upuszczenie wpisu na ekwipunek go wyjmuje.
+- `game.py` – komenda serwera `COLL` → `uicollector.OnServer`.
+- Nowe wpisy paczki `root`: `uicollector.py` i `mt2009_ui/collector/*` – ikony kategorii
+  `cat_<all|equipment|materials|upgrade|books|stones|herbs|consumables|chests|gathering|quests|appearance|other>_<1|2|3>.tga`
+  (25×25; sześć okrągłych ikon z paczki Arezzo `ekenvanter`, siedem złożonych w tej samej ramce z
+  ikon przedmiotów), `catbtn_01..03.tga` (Arezzo `collections/button0x`), `header.tga`
+  (Arezzo `new_weekly_rank/header_small`), `slot.tga` (GF `belt_inventory/slot_normal`),
+  `search_01..03.tga` (GF `pattern/btn_search_0x`), `bar_empty.tga` / `bar_full.tga` (Arezzo
+  `collections/total_progress_*`), `input.png` (Arezzo `collect_input`). Brak którejś grafiki w
+  paczce gracza = zastępstwo z paczek klienta albo jej pominięcie (`pack.Exist`, `try`).

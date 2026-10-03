@@ -1,0 +1,20 @@
+[
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_CLEAR_MISSIONS_V1 (include)",
+  "old": "#include \"fishing.h\"\n",
+  "new": "#include \"fishing.h\"\n#include \"target.h\" // MT2009_PLUS_CLEAR_MISSIONS_V1 (include): pc.clear_quest_letter\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_CLEAR_MISSIONS_V1 (letter)",
+  "old": "\tvoid RegisterPCFunctionTable()\n",
+  "new": "\t// MT2009_PLUS_CLEAR_MISSIONS_V1 (letter): pc.clear_quest_letter(\"quest\") for the\n\t// /usunmisje window (quest usun_misje). Another quest's letter goes off the\n\t// client's quest list at once - the quest-info \"end\" packet q.done() would send\n\t// from inside that quest - and its arrows off the map (its targets), so no\n\t// warp or relog is needed. Returns the quest's index (0: no such quest); the\n\t// client takes its letter button off with it.\n\tALUA(pc_clear_quest_letter)\n\t{\n\t\tCQuestManager& q = CQuestManager::instance();\n\t\tPC* pPC = q.GetCurrentPC();\n\t\tLPCHARACTER ch = q.GetCurrentCharacterPtr();\n\t\tif (!lua_isstring(L, 1) || !pPC || !ch || !ch->GetDesc())\n\t\t{\n\t\t\tlua_pushnumber(L, 0);\n\t\t\treturn 1;\n\t\t}\n\t\tconst DWORD dwIndex = q.GetQuestIndexByName(lua_tostring(L, 1));\n\t\tif (!dwIndex)\n\t\t{\n\t\t\tlua_pushnumber(L, 0);\n\t\t\treturn 1;\n\t\t}\n\t\tCTargetManager::instance().DeleteTarget(ch->GetPlayerID(), dwIndex, NULL);\n\t\tPC::QuestInfoIterator it = pPC->quest_find(dwIndex);\n\t\tif (it != pPC->quest_end())\n\t\t\tit->second.bStart = false;\n\n\t\tpacket_quest_info qi;\n\t\tqi.header = HEADER_GC_QUEST_INFO;\n\t\tqi.size = sizeof(struct packet_quest_info) + sizeof(BYTE);\n\t\tqi.index = dwIndex;\n#ifdef ENABLE_QUEST_CATEGORY\n\t\tqi.c_index = q.ReadQuestCategoryFile(dwIndex);\n#endif\n\t\tqi.flag = PC::QUEST_SEND_ISBEGIN;\n\t\tconst BYTE bBegin = 0;\n\t\tch->GetDesc()->BufferedPacket(&qi, sizeof(qi));\n\t\tch->GetDesc()->Packet(&bBegin, sizeof(bBegin));\n\t\tlua_pushnumber(L, dwIndex);\n\t\treturn 1;\n\t}\n\n\tvoid RegisterPCFunctionTable()\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_CLEAR_MISSIONS_V1 (table)",
+  "old": "\t\t\t{ \"is_playerbot\",\t\tpc_is_playerbot\t},\n",
+  "new": "\t\t\t{ \"is_playerbot\",\t\tpc_is_playerbot\t},\n\t\t\t{ \"clear_quest_letter\",\tpc_clear_quest_letter\t}, // MT2009_PLUS_CLEAR_MISSIONS_V1 (table)\n"
+ }
+]

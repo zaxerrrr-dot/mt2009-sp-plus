@@ -1201,7 +1201,10 @@ class ItemToolTip(ToolTip):
 
 			self.AppendWearableInformation()
 
-			if app.ENABLE_QUIVER_SYSTEM and item.WEAPON_QUIVER == itemSubType:
+			# MT2009_PLUS_QUIVER_TOOLTIP_V1: arrows/quivers and other real-time
+			# weapons keep their expiry timestamp in socket0 - never draw it as a
+			# metin stone (it showed a random item name in a stone slot).
+			if (app.ENABLE_QUIVER_SYSTEM and item.WEAPON_QUIVER == itemSubType) or self.__IsRealTimeSocketItem(itemSubType == item.WEAPON_ARROW):
 				self.AppendLastTimeInformation(metinSlot)
 			else:
 				self.__AppendMetinSlotInfo(metinSlot)
@@ -1227,6 +1230,9 @@ class ItemToolTip(ToolTip):
 
 			if itemSubType in (item.ARMOR_WRIST, item.ARMOR_NECK, item.ARMOR_EAR):
 				self.__AppendAccessoryMetinSlotInfo(metinSlot, constInfo.GET_ACCESSORY_MATERIAL_VNUM(itemVnum, itemSubType))
+			elif self.__IsRealTimeSocketItem():
+				# MT2009_PLUS_QUIVER_TOOLTIP_V1: socket0 = expiry timestamp.
+				self.AppendLastTimeInformation(metinSlot)
 			else:
 				self.__AppendMetinSlotInfo(metinSlot)
 
@@ -1919,6 +1925,17 @@ class ItemToolTip(ToolTip):
 			self.AppendTextLine(localeInfo.TOOLTIP_ANTIFLAG_GIVE, self.NEGATIVE_COLOR)
 		elif blockMyShop:
 			self.AppendTextLine(localeInfo.TOOLTIP_ANTIFLAG_MYSHOP, self.NEGATIVE_COLOR)
+
+	# MT2009_PLUS_QUIVER_TOOLTIP_V1: the selected item stores a timestamp
+	# (not metin stones) in socket0 when it has a real-time limit.
+	def __IsRealTimeSocketItem(self, forceArrow = False):
+		if forceArrow:
+			return True
+		for i in xrange(item.LIMIT_MAX_NUM):
+			(limitType, limitValue) = item.GetLimit(i)
+			if limitType in (item.LIMIT_REAL_TIME, item.LIMIT_REAL_TIME_START_FIRST_USE):
+				return True
+		return False
 
 	def AppendLastTimeInformation(self, metinSlot):
 		bHasRealtimeFlag = False

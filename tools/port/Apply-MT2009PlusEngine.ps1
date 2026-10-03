@@ -57,6 +57,8 @@ param(
 #                      server-patches/digirasta-qol)
 #   quick chest opening char_item.cpp         (MT2009_PLUS_VEKIRION_V1; server-patches/vekirion,
 #                      Autor: Vekirion)
+#   guild war entry    guild_war.cpp, cmd.cpp, cmd_general.cpp
+#                      (MT2009_PLUS_GUILD_WAR_JOIN_V1; server-patches/guildwarjoin)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -616,6 +618,18 @@ if ((Test-Path -LiteralPath $guildWarKillsApply -PathType Leaf) -and
         Write-Host ('Applied {0} guild war kills edit(s).' -f $guildWarKillsResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Bot friends (server-patches/botfriends): a friend invitation sent to a bot
+# is answered by the bot at once - it has no client for the question
+# (MT2009_PLUS_BOT_FRIENDS_V1, playerbot_bot_friends.h).
+$botFriendsApply = Join-Path $repo 'server-patches/botfriends/Apply-BotFriendsPatch.ps1'
+if ((Test-Path -LiteralPath $botFriendsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'messenger_manager.cpp') -PathType Leaf)) {
+    $botFriendsResult = & $botFriendsApply -SourceDir $engineGameSource
+    if ($botFriendsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} bot friends edit(s).' -f $botFriendsResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # The System Legend (server-patches/legends): a bot of a tier strikes harder
 # against people and monsters, gains more experience, and its deaths and
 # kills count for the Legends (playerbot_legends.h).
@@ -783,6 +797,58 @@ if ((Test-Path -LiteralPath $vekirionApply -PathType Leaf) -and
     if ($vekirionResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} quick chest opening edit(s).' -f $vekirionResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The guild war's "Wejdz na wojne" (server-patches/guildwarjoin,
+# MT2009_PLUS_GUILD_WAR_JOIN_V1): /guild_war_enter for the client's button,
+# and a field war on a bot guild entered at the guild's camp on the kingdom's
+# guild map (GuildWarEntryAccept returned at once for every field war). Its
+# anchors are the engine's own lines.
+$guildWarJoinApply = Join-Path $repo 'server-patches/guildwarjoin/Apply-GuildWarJoinPatch.ps1'
+if ((Test-Path -LiteralPath $guildWarJoinApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'guild_war.cpp') -PathType Leaf)) {
+    $guildWarJoinResult = & $guildWarJoinApply -SourceDir $engineGameSource
+    if ($guildWarJoinResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} guild war entry edit(s).' -f $guildWarJoinResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The collector's storage (server-patches/collector,
+# MT2009_PLUS_COLLECTOR_STORAGE_V1): "/kolekcjoner" in the command table and
+# off the engine's flood guard; the work is playerbot_collector.cpp (overlay).
+$collectorApply = Join-Path $repo 'server-patches/collector/Apply-CollectorPatch.ps1'
+if ((Test-Path -LiteralPath $collectorApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd.cpp') -PathType Leaf)) {
+    $collectorResult = & $collectorApply -SourceDir $engineGameSource
+    if ($collectorResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} collector storage edit(s).' -f $collectorResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The /usunmisje window (server-patches/clearmissions,
+# MT2009_PLUS_CLEAR_MISSIONS_V1): pc.clear_quest_letter takes another quest's
+# letter off the client's quest list and its arrows off the map (questlua_pc.cpp).
+$clearMissionsApply = Join-Path $repo 'server-patches/clearmissions/Apply-ClearMissionsPatch.ps1'
+if ((Test-Path -LiteralPath $clearMissionsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'questlua_pc.cpp') -PathType Leaf)) {
+    $clearMissionsResult = & $clearMissionsApply -SourceDir $engineGameSource
+    if ($clearMissionsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} mission removal edit(s).' -f $clearMissionsResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The weekly ranking and its titles (server-patches/weeklyrank,
+# MT2009_PLUS_WEEKLY_RANKING_V1, on the basis of the Arezzo files' weekly
+# ranking): /ranking for the client's window, the alchemy count at a Dragon
+# Stone refine that took (DragonSoul.cpp) and the title holder's bonuses at
+# login (input_login.cpp). The rest is the overlay's playerbot_weekly_rank.h.
+$weeklyRankApply = Join-Path $repo 'server-patches/weeklyrank/Apply-WeeklyRankPatch.ps1'
+if ((Test-Path -LiteralPath $weeklyRankApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'DragonSoul.cpp') -PathType Leaf)) {
+    $weeklyRankResult = & $weeklyRankApply -SourceDir $engineGameSource
+    if ($weeklyRankResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} weekly ranking edit(s).' -f $weeklyRankResult.Applied) -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

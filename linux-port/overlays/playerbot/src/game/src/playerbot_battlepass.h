@@ -821,9 +821,16 @@ namespace { void NoteOchaoBotKill(LPCHARACTER killer, LPCHARACTER victim); }
 // MT2009_PLUS_AREZZO_BOTS_V1 (kills): and the Arezzo maps' (playerbot_arezzo_bots.h).
 namespace { void NoteArezzoBotKill(LPCHARACTER killer, LPCHARACTER victim); }
 
+// MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking counts the same deeds
+// (playerbot_weekly_rank.h, included later).
+void WeeklyRankOnKill(LPCHARACTER killer, LPCHARACTER victim);
+void WeeklyRankOnKillShared(LPCHARACTER killer, LPCHARACTER victim, const std::vector<LPCHARACTER>& hurt);
+void WeeklyRankOnStat(LPCHARACTER ch, DWORD stat, long long value);
+
 // The engine's calls (server-patches/playerqol, MT2009_PLUS_BATTLE_PASS_V1).
 void BattlePassOnKill(LPCHARACTER killer, LPCHARACTER victim)
 {
+	WeeklyRankOnKill(killer, victim); // MT2009_PLUS_WEEKLY_RANKING_V1
 	NoteOchaoBotKill(killer, victim); // MT2009_PLUS_OCHAO_BOTS_V1 (kills)
 	NoteArezzoBotKill(killer, victim); // MT2009_PLUS_AREZZO_BOTS_V1 (kills)
 	if (!killer || !victim || victim->IsPC() || !mt2009_battlepass::Counts(killer))
@@ -868,6 +875,7 @@ namespace mt2009_battlepass
 
 void BattlePassOnKillShared(LPCHARACTER killer, LPCHARACTER victim, const std::vector<LPCHARACTER>& hurt)
 {
+	WeeklyRankOnKillShared(killer, victim, hurt); // MT2009_PLUS_WEEKLY_RANKING_V1
 	if (!victim || victim->IsPC() || !(victim->IsStone() || victim->GetMobRank() >= MOB_RANK_BOSS))
 		return;
 	std::set<DWORD> done;
@@ -884,6 +892,7 @@ void BattlePassOnKillShared(LPCHARACTER killer, LPCHARACTER victim, const std::v
 
 void BattlePassOnStat(LPCHARACTER ch, DWORD stat, long long value)
 {
+	WeeklyRankOnStat(ch, stat, value); // MT2009_PLUS_WEEKLY_RANKING_V1: a refine that took
 	using namespace mt2009_battlepass;
 	BYTE type = 0;
 	switch (stat)

@@ -142,6 +142,8 @@ CATEGORIES = (
 		('dungeon_info', 'Wyprawy', ((0, 'DIK_X'),), False),
 		('battle_pass', 'Battle Pass', (), False),
 		('tp_bookmarks', 'Zapisane pozycje', (), False),
+		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py), no key by default.
+		('weekly_rank', 'Ranking tygodniowy', (), False),
 		('hide_ui', 'Ukryj interfejs', ((CTRL, 'DIK_TAB'),), False),
 		('quest_buttons', 'Ukryj/poka\xbf ikony zada\xf1', ((CTRL, 'DIK_Q'),), False),
 		('screenshot', 'Zrzut ekranu', ((0, 'DIK_SYSRQ'),), False),

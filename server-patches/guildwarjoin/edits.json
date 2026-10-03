@@ -1,0 +1,32 @@
+[
+ {
+  "file": "guild_war.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_JOIN_V1 (include)",
+  "old": "#include \"guild_manager.h\"\n",
+  "new": "#include \"guild_manager.h\"\n#include \"playerbot_manager.h\" // MT2009_PLUS_GUILD_WAR_JOIN_V1 (include)\n"
+ },
+ {
+  "file": "guild_war.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_JOIN_V1 (field)",
+  "old": "\tif (gw.type == GUILD_WAR_TYPE_FIELD)\n\t\treturn;\n\n\tif (gw.state != GUILD_WAR_ON_WAR)\n",
+  "new": "\tif (gw.type == GUILD_WAR_TYPE_FIELD)\n\t{\n\t\t// MT2009_PLUS_GUILD_WAR_JOIN_V1 (field): a field war has no war map. A war on a bot guild\n\t\t// is fought on the kingdom's guild map, and joining takes the player\n\t\t// to its guild's camp there (EnterPlayerBotFieldWar); any other field\n\t\t// war is told it is fought wherever the guilds meet.\n\t\tif (gw.state == GUILD_WAR_ON_WAR)\n\t\t\tCPlayerBotManager::instance().OnPlayerFieldWarEntry(ch, GetID(), dwOppGID);\n\t\telse\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"The war is already over.\"));\n\t\treturn;\n\t}\n\n\tif (gw.state != GUILD_WAR_ON_WAR)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_JOIN_V1 (decl)",
+  "old": "ACMD(do_stop_guild_war);\n",
+  "new": "ACMD(do_stop_guild_war);\nACMD(do_guild_war_enter); // MT2009_PLUS_GUILD_WAR_JOIN_V1 (decl)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_JOIN_V1 (table)",
+  "old": "\t{ \"nowar\",\t\tdo_nowar,\t\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"nowar\",\t\tdo_nowar,\t\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"guild_war_enter\",\tdo_guild_war_enter,\t0,\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_GUILD_WAR_JOIN_V1 (table)\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_JOIN_V1 (command)",
+  "old": "ACMD(do_war)\n{\n",
+  "new": "// MT2009_PLUS_GUILD_WAR_JOIN_V1 (command): the client's \"Wejdz na wojne\" button (the guild\n// war board and the notice at the war's start, uiguild.py / game.py). The\n// same entry as the guild_war_join letter's \"Tak\": the war map of an arena\n// war, the guild's camp on the kingdom's guild map in a war on a bot guild.\nACMD(do_guild_war_enter)\n{\n\tCGuild* g = ch->GetGuild();\n\tif (!g)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Wojna] Nie nalezysz do gildii.\");\n\t\treturn;\n\t}\n\tconst DWORD dwOppGID = g->UnderAnyWar();\n\tif (!dwOppGID)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Wojna] Twoja gildia nie prowadzi teraz wojny.\");\n\t\treturn;\n\t}\n\tif (ch->GetWarMap())\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Wojna] Jestes juz na polu wojny.\");\n\t\treturn;\n\t}\n\tif (ch->IsDead() || !ch->CanWarp())\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.\");\n\t\treturn;\n\t}\n\tg->GuildWarEntryAccept(dwOppGID, ch);\n}\n\nACMD(do_war)\n{\n"
+ }
+]

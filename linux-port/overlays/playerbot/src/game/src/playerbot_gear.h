@@ -3880,7 +3880,8 @@ namespace
 	bool IsPlayerBotUsableArrow(LPCHARACTER ch, LPITEM item)
 	{
 		return item && GetPlayerBotArrowGrade(item) >= 0 &&
-				item->GetCount() > 0 && item->GetLevelLimit() <= ch->GetLevel();
+				item->GetCount() > 0 && item->GetLevelLimit() <= ch->GetLevel() &&
+				!IsPlayerBotSidekickHeld(ch, item); // MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: not what a companion holds for its owner
 	}
 
 	// The bag's best arrow this bot can nock now, by grade; the first of equals.
@@ -4293,7 +4294,7 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && GetPlayerBotPotionSupply(item->GetVnum()) == supply)
+			if (item && !IsPlayerBotSidekickHeld(ch, item) && GetPlayerBotPotionSupply(item->GetVnum()) == supply)
 				count += item->GetCount();
 		}
 		return count;
@@ -4339,7 +4340,9 @@ namespace
 				GetPlayerBotPotionSupply(destination->GetVnum()) == PLAYERBOT_POTION_SUPPLY_NONE ||
 				!destination->IsStackable() || !source->IsStackable() ||
 				IS_SET(destination->GetAntiFlag(), ITEM_ANTIFLAG_STACK) ||
-				IS_SET(source->GetAntiFlag(), ITEM_ANTIFLAG_STACK))
+				IS_SET(source->GetAntiFlag(), ITEM_ANTIFLAG_STACK) ||
+				IsPlayerBotSidekickHeld(destination->GetOwner(), destination) || // MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: not what a companion holds for its owner
+				IsPlayerBotSidekickHeld(source->GetOwner(), source))
 			return false;
 		for (int socket = 0; socket < ITEM_SOCKET_MAX_NUM; ++socket)
 			if (destination->GetSocket(socket) != source->GetSocket(socket))
@@ -4368,7 +4371,7 @@ namespace
 		for (WORD destinationCell = 0; destinationCell < PLAYERBOT_BAG_CELLS; ++destinationCell)
 		{
 			LPITEM destination = ch->GetInventoryItem(destinationCell);
-			if (!destination ||
+			if (!destination || IsPlayerBotSidekickHeld(ch, destination) ||
 					GetPlayerBotPotionSupply(destination->GetVnum()) == PLAYERBOT_POTION_SUPPLY_NONE)
 				continue;
 			const DWORD maxStack = (DWORD)std::max(1, PlayerBotMaxStack(destination));
@@ -4434,7 +4437,7 @@ namespace
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && excess > 0; ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
-				if (!item || item->GetVnum() != personalVnums[v])
+				if (!item || item->GetVnum() != personalVnums[v] || IsPlayerBotSidekickHeld(ch, item))
 					continue;
 				const DWORD unitPrice = GetPlayerBotNpcSellUnitPrice(item);
 				if (unitPrice == 0)
@@ -4466,7 +4469,7 @@ namespace
 				for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && excess > 0; ++cell)
 				{
 					LPITEM item = ch->GetInventoryItem(cell);
-					if (!item || item->GetVnum() != saleOrder[order])
+					if (!item || item->GetVnum() != saleOrder[order] || IsPlayerBotSidekickHeld(ch, item))
 						continue;
 					const DWORD unitPrice = GetPlayerBotNpcSellUnitPrice(item);
 					if (unitPrice == 0)
@@ -4507,7 +4510,8 @@ namespace
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
-				if (!item || item->GetVnum() != potionVnums[v] || item->GetCount() <= reserve)
+				if (!item || item->GetVnum() != potionVnums[v] || item->GetCount() <= reserve ||
+						IsPlayerBotSidekickHeld(ch, item))
 					continue;
 
 				const DWORD price = GetPlayerBotNpcSellUnitPrice(item);
@@ -5202,7 +5206,7 @@ namespace
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
-				if (!item || item->GetVnum() != redPotionVnums[potionIndex])
+				if (!item || item->GetVnum() != redPotionVnums[potionIndex] || IsPlayerBotSidekickHeld(ch, item))
 					continue;
 
 				const DWORD potionVnum = item->GetVnum();
@@ -5245,7 +5249,7 @@ namespace
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
-				if (!item || item->GetVnum() != bluePotionVnums[potionIndex])
+				if (!item || item->GetVnum() != bluePotionVnums[potionIndex] || IsPlayerBotSidekickHeld(ch, item))
 					continue;
 
 				const DWORD potionVnum = item->GetVnum();
@@ -5291,7 +5295,7 @@ namespace
 				for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 				{
 					LPITEM item = ch->GetInventoryItem(cell);
-					if (!item || item->GetVnum() != greenPotionVnums[i])
+					if (!item || item->GetVnum() != greenPotionVnums[i] || IsPlayerBotSidekickHeld(ch, item))
 						continue;
 
 					const DWORD potionVnum = item->GetVnum();
@@ -5323,7 +5327,7 @@ namespace
 				for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 				{
 					LPITEM item = ch->GetInventoryItem(cell);
-					if (!item || item->GetVnum() != purplePotionVnums[i])
+					if (!item || item->GetVnum() != purplePotionVnums[i] || IsPlayerBotSidekickHeld(ch, item))
 						continue;
 
 					const DWORD potionVnum = item->GetVnum();

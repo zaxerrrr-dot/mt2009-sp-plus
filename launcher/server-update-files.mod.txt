@@ -164,6 +164,7 @@ linux-port/docker/game/src/server/game/src/config.cpp
 linux-port/docker/game/src/server/game/src/config.h
 linux-port/docker/game/src/server/game/src/constants.cpp
 linux-port/docker/game/src/server/game/src/dragon_soul_table.cpp
+linux-port/docker/game/src/server/game/src/DragonSoul.cpp
 linux-port/docker/game/src/server/game/src/desc.cpp
 linux-port/docker/game/src/server/game/src/desc.h
 linux-port/docker/game/src/server/game/src/desc_client.cpp

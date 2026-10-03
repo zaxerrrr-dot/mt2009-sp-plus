@@ -202,6 +202,7 @@ namespace {
         if (boughtVnum == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
             NotePlayerBotChestBought(ch->GetPlayerID(), now);
         NotePlayerBotMinigameChestBought(ch, boughtVnum, (long long)price, (DWORD)line->GetInfo().count); // MT2009_PLUS_BOT_MINIGAMES_V1
+        NotePlayerBotRecipeBought(ch, boughtVnum, (long long)price);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
         if (IsPlayerBotSashVnum(boughtVnum))
             NotePlayerBotSashBought(ch, boughtVnum, (long long)price);
         NotePlayerBotSaddlebagBought(ch, boughtVnum, (long long)price, (DWORD)line->GetInfo().count);

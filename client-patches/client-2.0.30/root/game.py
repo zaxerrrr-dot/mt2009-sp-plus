@@ -471,6 +471,10 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiseonhae").DestroyWindow()
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
 		__import__("uitpbookmarks").DestroyWindow()
+		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
+		__import__("uiweeklyrank").DestroyWindow()
+		# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window (uiusunmisje.py).
+		__import__("uiusunmisje").DestroyWindow()
 		# MT2009_PLUS_FLOWER_V1: the Flower Event's window (uiflowerevent.py).
 		__import__("uiflowerevent").DestroyWindow()
 		# MT2009_PLUS_RUMI_V1: Owsap's Rumi (Okey) window (uiminigamerumi.py).
@@ -488,6 +492,7 @@ class GameWindow(ui.ScriptWindow):
 		# opens the window without one). The keepers' Destroy did it before;
 		# a second call finds nothing left.
 		__import__("uisidekick").Destroy()
+		__import__("uicollector").Destroy() # MT2009_PLUS_COLLECTOR_STORAGE_V1
 
 		print("---------------------------------------------------------------------------- CLOSE GAME WINDOW")
 
@@ -496,6 +501,9 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_AUTO_TARGET_V1: the next target after a kill (autotarget.py).
 		import autotarget
 		self.RegisterUpdatable(autotarget.GetKeeper())
+		# MT2009_PLUS_COLLECTOR_STORAGE_V1: the collector's storage window goes
+		# with the game window (uicollector.py).
+		self.RegisterUpdatable(__import__("uicollector").GetKeeper())
 		self.RegisterUpdatable(updateable.PickUpOnDownKey())
 		import uipickupfilter
 		self.RegisterUpdatable(uipickupfilter.PickupFilterSync())
@@ -768,6 +776,8 @@ class GameWindow(ui.ScriptWindow):
 			# The inventory bar's windows that never had a key (none by default).
 			"battle_pass"		: (lambda : Window("uibattlepass"), None),
 			"tp_bookmarks"		: (lambda : Window("uitpbookmarks"), None),
+			# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
+			"weekly_rank"		: (lambda : Window("uiweeklyrank"), None),
 			"hide_ui"			: (lambda : self.__HideUserInterface(), None),
 			"quest_buttons"		: (QuestButtons, None),
 			"screenshot"		: (lambda : self.SaveScreen(), None),
@@ -902,6 +912,12 @@ class GameWindow(ui.ScriptWindow):
 			state = "EMOTICON"
 			self.interface.ToggleCharacterWindow(state)
 
+	# MT2009_PLUS_COLLECTOR_STORAGE_V1: every "COLL ..." line of the collector's
+	# storage (uicollector.py); its keeper (CreateUpdateables) closes the
+	# window with this one.
+	def __Collector(self, *args):
+		__import__("uicollector").OnServer(*args)
+
 	def __SidekickVid(self, vid="0", *rest):
 		# The keeper ends with the game window; the next one hears the
 		# VID again, because a warp is a new login on the server.
@@ -1032,6 +1048,11 @@ class GameWindow(ui.ScriptWindow):
 	def __SidekickGear(self, slot="0", name="-", *rest):
 		import uisidekick
 		uisidekick.OnServerGear(slot, name)
+
+	def __SidekickShopQuote(self, *args):
+		self.__KeepSidekickWindow()
+		import uisidekick
+		uisidekick.OnServerShopQuote(*args)
 
 
 	def __AutoHuntTarget(self, vid="0", *rest):
@@ -2858,6 +2879,9 @@ class GameWindow(ui.ScriptWindow):
 
 	def BINARY_GuildWar_OnStart(self, guildSelf, guildOpp):
 		self.interface.OnStartGuildWar(guildSelf, guildOpp)
+		# MT2009_PLUS_GUILD_WAR_JOIN_V1: where the way onto the war is.
+		if background.GetCurrentMapName() not in ("metin2_map_t1", "metin2_map_t2", "metin2_map_t3", "metin2_map_t4"):
+			chat.AppendChat(chat.CHAT_TYPE_INFO, "[Wojna] Twoja gildia jest na wojnie - kliknij \"Wejd\x9f na wojn\xea\" na tablicy wojny (lewy dolny r\xf3g).")
 
 		if background.GetCurrentMapName() in ("metin2_map_t3","metin2_map_t4"):
 			self.interface.wndGameButton.SetWarMode(True)
@@ -3076,6 +3100,8 @@ class GameWindow(ui.ScriptWindow):
 			"SidekickNames"					: self.__SidekickNames,
 			"SidekickGear"					: self.__SidekickGear,
 			"SidekickWindow"				: self.__SidekickWindow,
+			# MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: what a "Kup" errand would cost (uisidekick.py).
+			"SidekickShopQuote"			: self.__SidekickShopQuote,
 
 			# fishing
 			"FishingGameStart": self.FishingGameStart,
@@ -3127,6 +3153,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["GlobalRankingWipe"] = self.__Global_Ranking__RecvWipe
 		serverCommandList["GlobalRankingUpdatePacket"] = self.__Global_Ranking__RecvData
 		serverCommandList["SidekickVid"] = self.__SidekickVid
+		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["GlobalRankingUpdatePacketMyPos"] = self.__Global_Ranking__RecvSelfData
 		serverCommandList["SidekickEqNone"] = self.__SidekickEqNone
 		serverCommandList["SidekickEqBegin"] = self.__SidekickEqBegin
@@ -3145,6 +3172,8 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["PickupSound"] = __import__("digiqol").PLAYER.OnCommand
 		serverCommandList["SEONHAE"] = self.__SeonHae # MT2009_PLUS_SEONHAE_V1
 		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
+		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
+		serverCommandList["MISJE"] = self.__ClearMissions # MT2009_PLUS_CLEAR_MISSIONS_V1
 		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
 		# packet) and Owsap's "<flag> <value>" commands (ingameevent.py).
 		serverCommandList["IGE"] = self.__InGameEvent
@@ -3781,6 +3810,25 @@ class GameWindow(ui.ScriptWindow):
 	def __TpBookmarks(self, *args):
 		import uitpbookmarks
 		uitpbookmarks.OnCommand(*args)
+
+	# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking's lines (uiweeklyrank.py); "tail" is
+	# a title holder's title above its nick, in the row the bots' titles use
+	# (playerbot_status_tail.py, kept fresh by the same keeper).
+	def __WeeklyRank(self, *args):
+		if args and args[0] == "tail":
+			import playerbot_status_tail
+			if playerbot_status_tail.show_rank_title(*args[1:4]) and not getattr(self, "playerbotTitleKeeper", None):
+				self.playerbotTitleKeeper = playerbot_status_tail.GetTitleKeeper()
+				self.RegisterUpdatable(self.playerbotTitleKeeper)
+			return
+		import uiweeklyrank
+		uiweeklyrank.OnCommand(*args)
+
+	# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window's lines (uiusunmisje.py).
+	def __ClearMissions(self, *args):
+		import uiusunmisje
+		uiusunmisje.SetInterface(self.interface)
+		uiusunmisje.OnCommand(*args)
 
 	# MT2009_PLUS_EVENT_MANAGER_V1: the in-game event list (ingameevent.py).
 	def __InGameEvent(self, *args):

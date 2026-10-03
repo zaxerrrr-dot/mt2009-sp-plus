@@ -2050,6 +2050,119 @@ def read_legends(empire=0, tier=0):
     return rows, events, False
 
 
+# ---- MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking and its titles ----------
+# player.weekly_rank_state (one row, id=1): on/off, the season's length in days,
+# its number and its start/end (unix time; end 0 = the game sets the next Monday
+# 00:00). player.weekly_rank_score: a season's counters per category and
+# character. player.weekly_rank_title: the holders of the titles DURING a season
+# (the winners of the one before), places 1..3. The game creates all three; a
+# world whose core predates them has none.
+# (cat, name key, title as the game shows it, bonus key, values for place 1..3, unit)
+WEEKLY_RANK_CATS = (
+    (1, "wr_cat1", "\u0141owca", "wr_b_monsters", (15, 8, 4), "%"),
+    (2, "wr_cat2", "Niszczyciel", "wr_b_monsters", (15, 8, 4), "%"),
+    (3, "wr_cat3", "Pogromca Boss\u00f3w", "wr_b_bosses", (15, 8, 4), "%"),
+    (4, "wr_cat4", "Zab\u00f3jca", "wr_b_humans", (15, 8, 4), "%"),
+    (5, "wr_cat5", "Podr\u00f3\u017cnik", "wr_b_monsters", (15, 8, 4), "%"),
+    (6, "wr_cat6", "Kowal", "wr_b_maxhp", (2500, 2000, 1500), ""),
+    (7, "wr_cat7", "Alchemik", "wr_b_attack", (75, 75, 75), ""),
+    (8, "wr_cat8", "Mistrz Poziom\u00f3w", "wr_b_both", (15, 8, 4), "%"),
+)
+WEEKLY_RANK_CAT = {c[0]: c for c in WEEKLY_RANK_CATS}
+WEEKLY_RANK_ROMAN = {1: "I", 2: "II", 3: "III"}
+
+
+def weekly_title_text(cat, place):
+    c = WEEKLY_RANK_CAT.get(int(cat or 0))
+    return ("%s %s" % (c[2], WEEKLY_RANK_ROMAN.get(int(place or 0), ""))).strip() if c else ""
+
+
+def weekly_bonus_text(cat, place):
+    c = WEEKLY_RANK_CAT.get(int(cat or 0))
+    place = int(place or 0)
+    if not c or place not in (1, 2, 3):
+        return ""
+    return "%s +%d%s" % (t(c[3]), c[4][place - 1], c[5])
+
+
+def weekly_fmt_ts(ts):
+    try:
+        ts = int(ts or 0)
+    except (TypeError, ValueError):
+        ts = 0
+    if ts <= 0:
+        return ""
+    return datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M")
+
+
+def weekly_time_left(end):
+    """'2d 5h 10min' till the season's end; '' when the end is not set yet."""
+    try:
+        end = int(end or 0)
+    except (TypeError, ValueError):
+        end = 0
+    if end <= 0:
+        return ""
+    left = end - int(time.time())
+    if left <= 0:
+        return t("wr_ending")
+    d, rest = divmod(left, 86400)
+    h, rest = divmod(rest, 3600)
+    return "%dd %dh %dmin" % (d, h, rest // 60)
+
+
+def weekly_tidy(r):
+    r["empire"] = int(r.get("empire") or 0)
+    r["empire_key"] = GUILD_EMPIRE_KEYS.get(r["empire"], "gl_empire_unknown")
+    r["is_bot"] = bool(int(r.get("is_bot") or 0))
+    return r
+
+
+def read_weekly_ranking(cat=1):
+    """(state, holders, ranking, missing): the state row (defaults when it is
+    not there yet), the title holders of the current season by category, and
+    the live top 50 of one category. Read only."""
+    state = {"enabled": 1, "season_days": 7, "season": 1, "season_start": 0, "season_end": 0}
+    holders, ranking = {}, []
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("SELECT enabled, season_days, season, season_start, season_end "
+                        "FROM player.weekly_rank_state WHERE id = 1")
+            row = cur.fetchone()
+            if row:
+                state.update({k: int(row[k] or 0) for k in state})
+            season = state["season"]
+            cur.execute("SELECT t.cat, t.place, t.pid, t.name, t.level, t.empire, t.value, t.is_bot "
+                        "FROM player.weekly_rank_title t WHERE t.season = %s ORDER BY t.cat, t.place", (season,))
+            for r in cur.fetchall():
+                r = weekly_tidy(r)
+                r["title"] = weekly_title_text(r["cat"], r["place"])
+                r["bonus"] = weekly_bonus_text(r["cat"], r["place"])
+                holders.setdefault(int(r["cat"]), []).append(r)
+            if cat == 8:
+                cur.execute("SELECT p.id AS pid, p.name, p.level, p.exp AS value, pi.empire, "
+                            "(LEFT(a.login, 10) = 'playerbot_') AS is_bot "
+                            "FROM player.player p "
+                            "LEFT JOIN account.account a ON a.id = p.account_id "
+                            "LEFT JOIN player.player_index pi ON pi.id = p.account_id "
+                            "WHERE LEFT(p.name, 1) <> '[' "
+                            "ORDER BY p.level DESC, p.exp DESC LIMIT 50")
+            else:
+                cur.execute("SELECT s.pid, s.value, s.is_bot, p.name, p.level, pi.empire "
+                            "FROM player.weekly_rank_score s "
+                            "LEFT JOIN player.player p ON p.id = s.pid "
+                            "LEFT JOIN player.player_index pi ON pi.id = p.account_id "
+                            "WHERE s.season = %s AND s.cat = %s "
+                            "ORDER BY s.value DESC LIMIT 50", (season, cat))
+            ranking = [weekly_tidy(r) for r in cur.fetchall()]
+    except Exception:
+        return state, {}, [], True
+    state["start_text"] = weekly_fmt_ts(state["season_start"])
+    state["end_text"] = weekly_fmt_ts(state["season_end"])
+    state["left_text"] = weekly_time_left(state["season_end"])
+    return state, holders, ranking, False
+
+
 def read_chest_switch():
     """(off, saved_kill, saved_stone); the saved values are None until set."""
     off, kill, stone = False, None, None
@@ -4292,6 +4405,10 @@ T.update({
                   "pl":"Mniej więcej co dwie godziny drużyna od czterech do ośmiu botów jednego królestwa - od 80. poziomu, z przejściem 9. piętra Wieży Demonów i Zasuszoną Głową w plecaku, jak loch wymaga od gracza - zbiera się przy Strażniku Katakumb w Świątyni Hwang (ogłoszenie na czacie), na pierwszym piętrze zdobywa klucz i schodzi piętrami jak w grze: wrota, Metiny Zemsty, labirynt, Tartar, Charon i Azrael. Gdy w środku jest gracz, to on klika, a boty walczą. „Teraz” zwołuje rajd przy najbliższym sprawdzeniu rdzenia (do minuty), jeśli żaden nie trwa i są boty, które mogą iść.",
                   "de":"Etwa alle zwei Stunden sammelt sich eine Gruppe von vier bis acht Bots eines Königreichs - ab Stufe 80, mit geschaffter neunter Etage des Dämonenturms und einem Getrockneten Kopf im Inventar, wie der Dungeon es von Spielern verlangt - beim Wächter der Katakomben im Hwang-Tempel (Ansage im Chat), holt im ersten Stock den Schlüssel und steigt die Etagen hinab wie im Spiel: Tore, Metine der Rache, Labyrinth, Tartar, Charon und Azrael. Ist ein Spieler drin, klickt der Spieler und die Bots kämpfen. 'Jetzt' ruft beim nächsten Check des Kerns (binnen einer Minute) einen Raid, wenn keiner läuft und Bots gehen dürfen.",
                   "tr":"Yaklaşık iki saatte bir, bir krallığın dört ila sekiz botundan oluşan bir grup - 80 ve üzeri seviye, Şeytan Kulesi'nin 9. katını bitirmiş ve çantasında Kurutulmuş Kafa olan, zindanın oyuncudan istediği gibi - Hwang Tapınağı'ndaki Yeraltı Mezarı Muhafızı'nda toplanır (sohbette duyurulur), birinci katta anahtarı bulur ve oyundaki gibi katları iner: kapılar, İntikam Metinleri, labirent, Tartar, Charon ve Azrael. İçeride bir oyuncu varsa tıklayan oyuncudur, botlar savaşır. 'Şimdi', hiçbiri sürmüyorsa ve gidebilecek botlar varsa çekirdeğin bir sonraki kontrolünde (bir dakika içinde) bir baskın çağırır."},
+ "rates_reprice_title": {"en":"Bots' shop prices","pl":"Ceny w sklepach botów","de":"Preise in den Läden der Bots","tr":"Botların dükkân fiyatları"},
+ "rates_reprice_help": {"en":"After a change of the rates or an update the bots reprice their counters slowly, on their own visits. This makes every bot reprice all its listed lines to the current price rules right away: the core edits the prices in place, a few bots a second, and leaves lines whose price is already within 1%. It also runs by itself a few minutes after an update and a minute after the yang rate changes.","pl":"Po zmianie rat lub aktualizacji boty przeliczają swoje sklepy powoli, przy własnych wizytach. Ten przycisk każe każdemu botowi od razu przeliczyć wszystkie wystawione przedmioty według obecnych zasad cen: rdzeń zmienia ceny na miejscu, kilka botów na sekundę, i pomija linie, których cena różni się o mniej niż 1%. Uruchamia się też sam kilka minut po aktualizacji i minutę po zmianie raty yang.","de":"Nach einer Änderung der Raten oder einem Update passen die Bots ihre Preise langsam an, bei ihren eigenen Besuchen. Damit berechnet jeder Bot sofort alle ausgestellten Posten nach den aktuellen Preisregeln neu: der Kern ändert die Preise an Ort und Stelle, einige Bots pro Sekunde, und lässt Posten aus, deren Preis schon innerhalb von 1% liegt. Läuft auch von selbst einige Minuten nach einem Update und eine Minute nach einer Änderung der Yang-Rate.","tr":"Oranlar değiştikten veya bir güncellemeden sonra botlar dükkânlarını kendi ziyaretlerinde yavaşça yeniden fiyatlar. Bu düğme her botun listelediği tüm ürünleri şimdiki fiyat kurallarına göre hemen yeniden fiyatlamasını sağlar: çekirdek fiyatları yerinde değiştirir, saniyede birkaç bot, ve fiyatı zaten %1 içinde olanları atlar. Bir güncellemeden birkaç dakika ve yang oranı değiştikten bir dakika sonra kendiliğinden de çalışır."},
+ "rates_reprice_now": {"en":"Reprice the bots' shops now","pl":"Przelicz ceny w sklepach botów teraz","de":"Preise in den Läden der Bots jetzt neu berechnen","tr":"Botların dükkân fiyatlarını şimdi yeniden hesapla"},
+ "rates_reprice_done": {"en":"Requested: every core starts repricing its bots' shops within a few seconds; the game log says PLAYERBOT_REPRICE_NOW: done with the bots, the lines changed and the time it took.","pl":"Zlecone: każdy rdzeń w ciągu kilku sekund zaczyna przeliczać sklepy swoich botów; w logu gry PLAYERBOT_REPRICE_NOW: done podaje boty, zmienione linie i czas.","de":"Angefordert: jeder Kern beginnt binnen weniger Sekunden, die Läden seiner Bots neu zu bepreisen; das Spiellog meldet PLAYERBOT_REPRICE_NOW: done mit Bots, geänderten Posten und Dauer.","tr":"İstendi: her çekirdek birkaç saniye içinde botlarının dükkânlarını yeniden fiyatlamaya başlar; oyun günlüğü PLAYERBOT_REPRICE_NOW: done ile botları, değişen satırları ve süreyi yazar."},
  "ai_catacomb_now": {"en":"Call a raid on Azrael now","pl":"Rajd na Azraela teraz","de":"Jetzt einen Azrael-Raid rufen","tr":"Şimdi bir Azrael baskını çağır"},
  "ai_catacomb_now_done": {"en":"Requested: the core calls a raid on its next check (within a minute) if none is under way and there are bots who may go.","pl":"Zlecone: rdzeń zwoła rajd przy najbliższym sprawdzeniu (do minuty), jeśli żaden nie trwa i są boty, które mogą iść.","de":"Angefordert: der Kern ruft beim nächsten Check (binnen einer Minute) einen Raid, wenn keiner läuft und Bots gehen dürfen.","tr":"İstendi: hiçbiri sürmüyorsa ve gidebilecek botlar varsa çekirdek bir sonraki kontrolde (bir dakika içinde) bir baskın çağırır."},
  "ai_bots_held_title": {"pl":"Boty czekają przy drzwiach","en":"The bots are waiting at the door",
@@ -4447,6 +4564,56 @@ T.update({
  "lg_ach_boss":  {"en":"first boss","pl":"pierwszy boss","de":"erster Boss","tr":"ilk boss"},
  "lg_ach_kills": {"en":"100 players killed","pl":"100 zabitych graczy","de":"100 getötete Spieler","tr":"100 oyuncu"},
  "lg_ach_champ": {"en":"was a Champion","pl":"był Czempionem","de":"war Champion","tr":"şampiyon oldu"},
+ # MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking and its titles.
+ "wr_nav":       {"en":"\U0001F947 Weekly ranking","pl":"\U0001F947 Ranking tygodniowy","de":"\U0001F947 Wochenrangliste","tr":"\U0001F947 Haftalık sıralama"},
+ "wr_open":      {"en":"Open the weekly ranking","pl":"Otwórz ranking tygodniowy","de":"Wochenrangliste öffnen","tr":"Haftalık sıralamayı aç"},
+ "wr_dash_hint": {"en":"Weekly seasons in eight categories; the top three of each get a title with a bonus for the whole next season.","pl":"Tygodniowe sezony w ośmiu kategoriach; najlepsza trójka każdej dostaje tytuł z bonusem na cały następny sezon.","de":"Wöchentliche Saisons in acht Kategorien; die besten drei erhalten einen Titel mit Bonus für die nächste Saison.","tr":"Sekiz kategoride haftalık sezonlar; ilk üç, sonraki sezon için bonuslu bir unvan alır."},
+ "wr_missing":   {"en":"The weekly ranking tables do not exist yet - start the game server (the new version creates them).","pl":"Tabele rankingu tygodniowego jeszcze nie istnieją – uruchom serwer gry (nowa wersja je tworzy).","de":"Die Tabellen existieren noch nicht - den Spielserver starten.","tr":"Tablolar henüz yok - oyun sunucusunu başlatın."},
+ "wr_settings":  {"en":"Settings","pl":"Ustawienia","de":"Einstellungen","tr":"Ayarlar"},
+ "wr_enabled":   {"en":"Weekly ranking on","pl":"Ranking tygodniowy włączony","de":"Wochenrangliste an","tr":"Haftalık sıralama açık"},
+ "wr_days":      {"en":"Season length (days, 1-28)","pl":"Długość sezonu (dni, 1-28)","de":"Saisonlänge (Tage, 1-28)","tr":"Sezon uzunluğu (gün, 1-28)"},
+ "wr_save":      {"en":"Save","pl":"Zapisz","de":"Speichern","tr":"Kaydet"},
+ "wr_end_now":   {"en":"End the season now","pl":"Zakończ sezon teraz","de":"Saison jetzt beenden","tr":"Sezonu şimdi bitir"},
+ "wr_end_confirm":{"en":"End the current season now? The game hands out the titles within about 2 minutes.","pl":"Zakończyć bieżący sezon teraz? Gra rozda tytuły w ciągu ok. 2 minut.","de":"Die Saison jetzt beenden?","tr":"Sezon şimdi bitirilsin mi?"},
+ "wr_help":      {"en":"A changed length takes effect from the next season. By default the season resets on Monday at 00:00 (7 days). Off: nothing is counted, no bonuses, the titles are hidden.","pl":"Zmieniona długość obowiązuje od następnego sezonu. Domyślnie sezon resetuje się w poniedziałek o 00:00 (7 dni). Wyłączony: nic nie jest liczone, brak bonusów, tytuły są ukryte.","de":"Eine geänderte Länge gilt ab der nächsten Saison. Standard: Reset Montag 00:00 (7 Tage). Aus: keine Zählung, keine Boni, Titel verborgen.","tr":"Değişen uzunluk sonraki sezondan geçerlidir. Varsayılan: pazartesi 00:00 (7 gün). Kapalı: sayım yok, bonus yok, unvanlar gizli."},
+ "wr_saved":     {"en":"Saved. The game applies it within about 2 minutes.","pl":"Zapisano. Gra zastosuje to w ciągu ok. 2 minut.","de":"Gespeichert.","tr":"Kaydedildi."},
+ "wr_ended":     {"en":"The season ends now - the game rolls it over within about 2 minutes and announces the results.","pl":"Sezon kończy się teraz – gra przełączy go w ciągu ok. 2 minut i ogłosi wyniki.","de":"Die Saison endet jetzt.","tr":"Sezon şimdi bitiyor."},
+ "wr_failed":    {"en":"Could not save - the weekly ranking tables do not exist yet (start the game server).","pl":"Nie udało się zapisać – tabele rankingu tygodniowego jeszcze nie istnieją (uruchom serwer gry).","de":"Speichern fehlgeschlagen.","tr":"Kaydedilemedi."},
+ "wr_off":       {"en":"The weekly ranking is switched off: nothing is counted, no bonuses, titles hidden.","pl":"Ranking tygodniowy jest wyłączony: nic nie jest liczone, brak bonusów, tytuły ukryte.","de":"Die Wochenrangliste ist aus.","tr":"Haftalık sıralama kapalı."},
+ "wr_season":    {"en":"Current season","pl":"Bieżący sezon","de":"Aktuelle Saison","tr":"Mevcut sezon"},
+ "wr_season_no": {"en":"Season","pl":"Sezon","de":"Saison","tr":"Sezon"},
+ "wr_start":     {"en":"Start","pl":"Początek","de":"Beginn","tr":"Başlangıç"},
+ "wr_end":       {"en":"End","pl":"Koniec","de":"Ende","tr":"Bitiş"},
+ "wr_left":      {"en":"Time left","pl":"Pozostało","de":"Verbleibend","tr":"Kalan"},
+ "wr_end_unset": {"en":"not set yet (the game sets the next Monday 00:00)","pl":"jeszcze nie ustawiony (gra ustawi najbliższy poniedziałek 00:00)","de":"noch nicht gesetzt (nächster Montag 00:00)","tr":"henüz yok (sonraki pazartesi 00:00)"},
+ "wr_ending":    {"en":"ending (within ~2 min)","pl":"kończy się (w ciągu ~2 min)","de":"endet (~2 Min.)","tr":"bitiyor (~2 dk)"},
+ "wr_holders":   {"en":"Current title holders","pl":"Obecni posiadacze tytułów","de":"Aktuelle Titelträger","tr":"Mevcut unvan sahipleri"},
+ "wr_no_holders":{"en":"no titles this season","pl":"brak tytułów w tym sezonie","de":"keine Titel","tr":"unvan yok"},
+ "wr_live":      {"en":"Live ranking (top 50)","pl":"Ranking na żywo (top 50)","de":"Live-Rangliste (Top 50)","tr":"Canlı sıralama (ilk 50)"},
+ "wr_category":  {"en":"Category","pl":"Kategoria","de":"Kategorie","tr":"Kategori"},
+ "wr_col_place": {"en":"Place","pl":"Miejsce","de":"Platz","tr":"Sıra"},
+ "wr_col_type":  {"en":"Type","pl":"Typ","de":"Typ","tr":"Tür"},
+ "wr_col_value": {"en":"Value","pl":"Wynik","de":"Wert","tr":"Değer"},
+ "wr_col_exp":   {"en":"Experience","pl":"Doświadczenie","de":"Erfahrung","tr":"Tecrübe"},
+ "wr_col_title": {"en":"Title","pl":"Tytuł","de":"Titel","tr":"Unvan"},
+ "wr_col_bonus": {"en":"Bonus","pl":"Bonus","de":"Bonus","tr":"Bonus"},
+ "wr_bot":       {"en":"Bot","pl":"Bot","de":"Bot","tr":"Bot"},
+ "wr_player":    {"en":"Player","pl":"Gracz","de":"Spieler","tr":"Oyuncu"},
+ "wr_none":      {"en":"Nobody has scored in this category yet this season.","pl":"W tej kategorii nikt jeszcze nie zdobył punktów w tym sezonie.","de":"Noch keine Punkte in dieser Kategorie.","tr":"Bu kategoride henüz puan yok."},
+ "wr_cat1":      {"en":"Monsters killed","pl":"Zabite potwory","de":"Getötete Monster","tr":"Öldürülen canavar"},
+ "wr_cat2":      {"en":"Metin stones destroyed","pl":"Zniszczone metiny","de":"Zerstörte Metinsteine","tr":"Yok edilen metin taşı"},
+ "wr_cat3":      {"en":"Bosses defeated","pl":"Pokonane bossy","de":"Besiegte Bosse","tr":"Yenilen boss"},
+ "wr_cat4":      {"en":"Players killed (PvP)","pl":"Zabici gracze (PvP)","de":"Getötete Spieler (PvP)","tr":"Öldürülen oyuncu (PvP)"},
+ "wr_cat5":      {"en":"Dungeons completed","pl":"Ukończone wyprawy (dungeony)","de":"Abgeschlossene Dungeons","tr":"Tamamlanan zindan"},
+ "wr_cat6":      {"en":"Successful item upgrades","pl":"Udane ulepszenia przedmiotów","de":"Erfolgreiche Verbesserungen","tr":"Başarılı yükseltme"},
+ "wr_cat7":      {"en":"Alchemy (successful Dragon Stone upgrades)","pl":"Alchemia (udane ulepszenia Smoczych Kamieni)","de":"Alchemie (Drachensteine verbessert)","tr":"Simya (ejderha taşı yükseltme)"},
+ "wr_cat8":      {"en":"Level","pl":"Poziom","de":"Stufe","tr":"Seviye"},
+ "wr_b_monsters":{"en":"strong against monsters","pl":"silny przeciwko potworom","de":"stark gegen Monster","tr":"canavarlara karşı güçlü"},
+ "wr_b_bosses":  {"en":"strong against bosses","pl":"silny przeciwko bossom","de":"stark gegen Bosse","tr":"bosslara karşı güçlü"},
+ "wr_b_humans":  {"en":"strong against humans","pl":"silny przeciwko ludziom","de":"stark gegen Menschen","tr":"insanlara karşı güçlü"},
+ "wr_b_maxhp":   {"en":"max HP","pl":"max PŻ","de":"max. TP","tr":"maks. HP"},
+ "wr_b_attack":  {"en":"attack value","pl":"wartość ataku","de":"Angriffswert","tr":"saldırı değeri"},
+ "wr_b_both":    {"en":"strong against monsters and humans","pl":"silny przeciwko potworom i ludziom","de":"stark gegen Monster und Menschen","tr":"canavar ve insanlara karşı güçlü"},
  "gl_col_name":  {"en":"Guild","pl":"Gildia","de":"Gilde","tr":"Lonca"},
  "gl_col_kingdom":{"en":"Kingdom","pl":"Królestwo","de":"Königreich","tr":"Krallık"},
  "gl_col_tier":  {"en":"Tier","pl":"Klasa","de":"Stufe","tr":"Kademe"},
@@ -6948,6 +7115,12 @@ TPL_DASH = BASE.replace("__BODY__", """
 <p class="muted">{{t('lg_dash_hint')}}</p>
 <a class="btn" href="{{url_for('legends_page')}}">{{t('lg_open')}}</a>
 </div>
+{# MT2009_PLUS_WEEKLY_RANKING_V1 #}
+<div class="card">
+<h3 class="help">{{t('wr_nav')}}</h3>
+<p class="muted">{{t('wr_dash_hint')}}</p>
+<a class="btn" href="{{url_for('weekly_ranking_page')}}">{{t('wr_open')}}</a>
+</div>
 {# The bots' explained decisions: only the 2.x line's core records them. #}
 {% if engine_mt2009 %}
 <div class="card">
@@ -7266,6 +7439,13 @@ function m2rates(e,d,y){
   document.getElementById('r_yang').value=y;
 }
 </script>
+<div class="card">
+<form method="post" action="{{url_for('rates_bot_reprice_now')}}">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<h3>🏷️ {{t('rates_reprice_title')}}</h3>
+<p class="muted">{{t('rates_reprice_help')}}</p>
+<button class="big">{{t('rates_reprice_now')}}</button>
+</form></div>
 {% if regen %}
 <div class="card">
 <form method="post" action="{{url_for('rates_regen')}}">
@@ -7781,6 +7961,7 @@ TPL_AI = BASE.replace("__BODY__", """
    <a class="btn" href="{{url_for('events_page')}}">{{t('ev_open')}}</a>
    <a class="btn" href="{{url_for('guilds_page')}}">{{t('gl_open')}}</a>
    <a class="btn" href="{{url_for('legends_page')}}">{{t('lg_open')}}</a>
+   <a class="btn" href="{{url_for('weekly_ranking_page')}}">{{t('wr_open')}}</a>{# MT2009_PLUS_WEEKLY_RANKING_V1 #}
    {% if engine_mt2009 %}<a class="btn" href="{{url_for('decisions_page')}}">{{t('dc_open')}}</a>{% endif %}</p>
 </div>
 
@@ -18906,6 +19087,23 @@ def rates():
                                   state_msg=t("rates_st_" + st) if st in RATE_STATES else "")
 
 
+@app.post("/rates/bot_reprice_now")
+@login_required
+def rates_bot_reprice_now():
+    """MT2009_PLUS_BOT_REPRICE_NOW_V1: every bot reprices all its listed lines
+    now. The cores watch this file's mtime (PLAYERBOT_REPRICE_NOW_PATH in
+    playerbot_reprice_now.h), as they watch playerbot_catacomb_now."""
+    path = os.path.join(AI_SPOOL, "playerbot_reprice_now")
+    try:
+        with open(path, "a", encoding="utf-8"):
+            pass
+        os.utime(path, None)
+        flash(t("rates_reprice_done"))
+    except OSError as e:
+        flash("%s: %s" % (t("rates_reprice_now"), e), "error")
+    return redirect(url_for("rates"))
+
+
 @app.post("/rates/regen")
 @login_required
 def rates_regen():
@@ -19336,6 +19534,122 @@ def legends_page():
     return render_template_string(TPL_LEGENDS, rows=rows, events=events, missing=missing, heads=heads,
                                   empire=empire, tier=tier, enabled=enabled,
                                   empire_keys=GUILD_EMPIRE_KEYS, tier_keys=LEGEND_TIER_KEYS)
+
+
+# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking - its switch and length,
+# the current season, the title holders and the live top 50 of a category.
+TPL_WEEKLY_RANKING = BASE.replace("__BODY__", """
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a> · <a href="{{url_for('legends_page')}}">{{t('lg_nav')}}</a></p>
+<div class="card">
+<h3>{{t('wr_nav')}}</h3>
+<p class="muted">{{t('wr_dash_hint')}}</p>
+{% if missing %}<p class="badge" style="border-color:#ef4444">{{t('wr_missing')}}</p>
+{% elif not state.enabled %}<p class="badge" style="border-color:#ef4444">{{t('wr_off')}}</p>{% endif %}
+</div>
+<div class="card">
+<h3>{{t('wr_settings')}}</h3>
+<form method="post" action="{{url_for('weekly_ranking_page')}}" class="row" style="align-items:flex-end">
+  <input type="hidden" name="_csrf" value="{{csrf_token}}">
+  <input type="hidden" name="action" value="save">
+  <label><input type="checkbox" name="enabled" value="1" {% if state.enabled %}checked{% endif %}> {{t('wr_enabled')}}</label>
+  <label>{{t('wr_days')}} <input type="number" name="season_days" min="1" max="28" value="{{state.season_days}}" style="width:80px"></label>
+  <button>{{t('wr_save')}}</button>
+</form>
+<form method="post" action="{{url_for('weekly_ranking_page')}}" style="margin-top:8px" onsubmit='return confirm({{t("wr_end_confirm")|tojson}})'>
+  <input type="hidden" name="_csrf" value="{{csrf_token}}">
+  <input type="hidden" name="action" value="end">
+  <button style="border-color:#ef4444">{{t('wr_end_now')}}</button>
+</form>
+<p class="muted">{{t('wr_help')}}</p>
+</div>
+{% if not missing %}
+<div class="card">
+<h3>{{t('wr_season')}}</h3>
+<table>
+<tr><th>{{t('wr_season_no')}}</th><td><b>{{state.season}}</b></td></tr>
+<tr><th>{{t('wr_start')}}</th><td>{{state.start_text or '\u2014'}}</td></tr>
+<tr><th>{{t('wr_end')}}</th><td>{{state.end_text or t('wr_end_unset')}}</td></tr>
+<tr><th>{{t('wr_left')}}</th><td>{{state.left_text or '\u2014'}}</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>{{t('wr_holders')}}</h3>
+<div style="overflow-x:auto">
+<table>
+<tr><th>{{t('wr_category')}}</th><th>{{t('wr_col_place')}}</th><th>{{t('lg_col_nick')}}</th><th>{{t('wr_col_type')}}</th><th>{{t('gl_col_kingdom')}}</th>
+    <th>{{t('level')}}</th><th>{{t('wr_col_value')}}</th><th>{{t('wr_col_title')}}</th><th>{{t('wr_col_bonus')}}</th></tr>
+{% for c in cats %}
+{% for r in holders.get(c[0], []) %}
+<tr><td>{% if loop.first %}<b>{{t(c[1])}}</b>{% endif %}</td><td>{{r.place}}</td>
+  <td><a href="{{url_for('player', pid=r.pid)}}">{{r.name or ('#' ~ r.pid)}}</a></td>
+  <td>{% if r.is_bot %}<span class="badge">{{t('wr_bot')}}</span>{% else %}<span class="badge" style="border-color:var(--green)">{{t('wr_player')}}</span>{% endif %}</td>
+  <td>{{t(r.empire_key)}}</td><td>{{r.level or ''}}</td><td>{{r.value}}</td><td><b>{{r.title}}</b></td><td>{{r.bonus}}</td></tr>
+{% else %}
+<tr><td><b>{{t(c[1])}}</b></td><td colspan="8" class="muted">{{t('wr_no_holders')}}</td></tr>
+{% endfor %}
+{% endfor %}
+</table>
+</div>
+</div>
+<div class="card">
+<h3>{{t('wr_live')}}: {{t(cats_by_id[cat][1])}}</h3>
+<form method="get" action="{{url_for('weekly_ranking_page')}}" class="row" style="align-items:flex-end">
+  <label>{{t('wr_category')}} <select name="cat">{% for c in cats %}<option value="{{c[0]}}"{% if c[0] == cat %} selected{% endif %}>{{t(c[1])}}</option>{% endfor %}</select></label>
+  <button>{{t('lg_filter')}}</button>
+</form>
+{% if not ranking %}<p class="muted">{{t('wr_none')}}</p>{% else %}
+<div style="overflow-x:auto">
+<table>
+<tr><th>#</th><th>{{t('lg_col_nick')}}</th><th>{{t('wr_col_type')}}</th><th>{{t('gl_col_kingdom')}}</th><th>{{t('level')}}</th>
+    <th>{% if cat == 8 %}{{t('wr_col_exp')}}{% else %}{{t('wr_col_value')}}{% endif %}</th></tr>
+{% for r in ranking %}
+<tr><td class="muted">{{loop.index}}</td>
+  <td><a href="{{url_for('player', pid=r.pid)}}">{{r.name or ('#' ~ r.pid)}}</a></td>
+  <td>{% if r.is_bot %}<span class="badge">{{t('wr_bot')}}</span>{% else %}<span class="badge" style="border-color:var(--green)">{{t('wr_player')}}</span>{% endif %}</td>
+  <td>{{t(r.empire_key)}}</td><td>{{r.level or ''}}</td><td><b>{{r.value}}</b></td></tr>
+{% endfor %}
+</table>
+</div>
+{% endif %}
+</div>
+{% endif %}
+""")
+
+
+@app.route("/weekly-ranking", methods=["GET", "POST"])
+@login_required
+def weekly_ranking_page():
+    """The weekly ranking (MT2009_PLUS_WEEKLY_RANKING_V1): its switch, its
+    length and ending the season now; everything else read only."""
+    if request.method == "POST":
+        action = request.form.get("action", "save")
+        try:
+            with db() as c, c.cursor() as cur:
+                cur.execute("INSERT IGNORE INTO player.weekly_rank_state (id) VALUES (1)")
+                if action == "end":
+                    cur.execute("UPDATE player.weekly_rank_state SET season_end = UNIX_TIMESTAMP() WHERE id = 1")
+                else:
+                    try:
+                        days = max(1, min(28, int(request.form.get("season_days", 7) or 7)))
+                    except (TypeError, ValueError):
+                        days = 7
+                    enabled = 1 if request.form.get("enabled") else 0
+                    cur.execute("UPDATE player.weekly_rank_state SET enabled = %s, season_days = %s WHERE id = 1",
+                                (enabled, days))
+        except Exception:
+            flash(t("wr_failed"), "error")
+            return redirect(url_for("weekly_ranking_page"))
+        flash(t("wr_ended") if action == "end" else t("wr_saved"))
+        return redirect(url_for("weekly_ranking_page"))
+    try:
+        cat = int(request.args.get("cat", 1) or 1)
+    except (TypeError, ValueError):
+        cat = 1
+    if cat not in WEEKLY_RANK_CAT:
+        cat = 1
+    state, holders, ranking, missing = read_weekly_ranking(cat)
+    return render_template_string(TPL_WEEKLY_RANKING, state=state, holders=holders, ranking=ranking,
+                                  missing=missing, cat=cat, cats=WEEKLY_RANK_CATS, cats_by_id=WEEKLY_RANK_CAT)
 
 
 # ---- the bots' decisions, world-wide ------------------------------------------

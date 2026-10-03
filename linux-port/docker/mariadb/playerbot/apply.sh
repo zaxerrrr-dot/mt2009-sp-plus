@@ -404,6 +404,18 @@ db -e "CREATE TABLE IF NOT EXISTS player.playerbot_legend (pid INT UNSIGNED NOT 
     || echo "playerbot-migrate: could not create player.playerbot_legend" >&2
 db -e "CREATE TABLE IF NOT EXISTS player.playerbot_legend_event (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, pid INT UNSIGNED NOT NULL DEFAULT 0, empire TINYINT UNSIGNED NOT NULL DEFAULT 0, kind VARCHAR(24) NOT NULL DEFAULT '', text VARCHAR(255) NOT NULL DEFAULT '', KEY at_idx (at)) ENGINE=InnoDB;" \
     || echo "playerbot-migrate: could not create player.playerbot_legend_event" >&2
+# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking and its titles
+# (playerbot_weekly_rank.h; on the basis of the Arezzo files' weekly ranking) -
+# the settings' row (on/off, season length in days, the season and its end as
+# unix time, 0 = the game sets the next Monday 00:00), the season's counts of
+# every character (players and bots) and the title holders of each season
+# (season = the season the title is held in). The core creates them as well.
+# Idempotent.
+db -e "CREATE TABLE IF NOT EXISTS player.weekly_rank_state (id TINYINT UNSIGNED NOT NULL PRIMARY KEY, enabled TINYINT UNSIGNED NOT NULL DEFAULT 1, season_days TINYINT UNSIGNED NOT NULL DEFAULT 7, season INT UNSIGNED NOT NULL DEFAULT 1, season_start INT UNSIGNED NOT NULL DEFAULT 0, season_end INT UNSIGNED NOT NULL DEFAULT 0) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS player.weekly_rank_score (season INT UNSIGNED NOT NULL, cat TINYINT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, value INT UNSIGNED NOT NULL DEFAULT 0, is_bot TINYINT UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY (season, cat, pid), KEY rank_idx (season, cat, value)) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS player.weekly_rank_title (season INT UNSIGNED NOT NULL, cat TINYINT UNSIGNED NOT NULL, place TINYINT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, name VARCHAR(24) NOT NULL DEFAULT '', level SMALLINT UNSIGNED NOT NULL DEFAULT 0, empire TINYINT UNSIGNED NOT NULL DEFAULT 0, value BIGINT UNSIGNED NOT NULL DEFAULT 0, is_bot TINYINT UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY (season, cat, place)) ENGINE=InnoDB;
+INSERT IGNORE INTO player.weekly_rank_state (id) VALUES (1);" \
+    || echo "playerbot-migrate: could not create the weekly ranking tables" >&2
 # The second channel's pins (playerbot_channel_rules.h): every bot that has
 # ever kept an offline shop lives on the first channel for good, because the
 # shops are the first channel's. The table only grows - each core adds the
@@ -2432,3 +2444,12 @@ INSERT INTO itemshop.ishop_items (category, name_item, \`desc\`, price, currency
 SELECT 10, _utf8mb4 X'4B6FC582637A616E2028313420646E6929', 'Nielimitowane strzaly dla ninja z lukiem: zakladany w miejsce strzal, zadna strzala sie nie zuzywa. Dziala 14 dni.', 100, 'cash', 8010, 1, 0, 0, 0, '08010'
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 8010);
 UPDATE itemshop.ishop_items SET category = 10 WHERE vnum = 8010 AND category = 3;" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Kolczan" >&2
+# MT2009_PLUS_COLLECTOR_STORAGE_V1: the collector's storage (Magazyn
+# kolekcjonera, overlay playerbot_collector.cpp). Its entries are rows of
+# player.item - window SAFEBOX, owner_id 2000000000 + the account id, so no
+# character load and no classic safebox ever reads them - and need no schema;
+# this table keeps an account's expansion tier (0-6, bought with yang).
+# Idempotent; a missing table only leaves the store at 500 entries and its
+# "Rozbuduj" refused.
+db -e "CREATE TABLE IF NOT EXISTS player.collector_storage (account_id INT UNSIGNED NOT NULL PRIMARY KEY, tier TINYINT UNSIGNED NOT NULL DEFAULT 0, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB;" \
+  || echo "[playerbot-migrate] WARNING: could not create player.collector_storage (the collector's storage stays at 500 entries)" >&2

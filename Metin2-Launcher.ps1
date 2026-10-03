@@ -859,8 +859,31 @@ function Rebuild-Server {
     if (Test-RebuildPending) { Remove-Item -LiteralPath $rebuildMarkerPath -Force -ErrorAction SilentlyContinue }
 }
 
+function Sync-ClientVersionFromFolder {
+    # MT2009_PLUS_CLIENT_VERSION_FROM_FOLDER_V1: MT2009-Patcher.exe updates
+    # the client folder alone, so the version is read from there too - its
+    # CLIENT_VERSION, else its files against client-files.json - and recorded
+    # in the state file before anything compares it with the manifest.
+    param($RemoteManifest)
+    try {
+        $clientComponent = Get-ManifestComponent -RemoteManifest $RemoteManifest -Name 'client'
+        $latest = if ($clientComponent) { ([string]$clientComponent.version).Trim() } else { '' }
+        $config = Get-Config
+        $folder = Get-M2ClientFolder -Config $config
+        if (-not $latest -or -not $folder) { return }
+        $known = [string](Resolve-M2InstalledClientVersion -ServerRoot $serverRoot -ClientFolder $folder -LatestVersion $latest -Record)
+        if ($known.Equals($latest, [StringComparison]::OrdinalIgnoreCase)) { return }
+        $fileList = Get-M2ClientFileList -ManifestSource (Get-ManifestSource $config) -TimeoutSec 15
+        if ($fileList) {
+            $null = Resolve-M2InstalledClientVersion -ServerRoot $serverRoot -ClientFolder $folder -LatestVersion $latest -FileList $fileList -Record
+        }
+    }
+    catch { }
+}
+
 function Show-UpdateStatus {
     param($RemoteManifest)
+    Sync-ClientVersionFromFolder -RemoteManifest $RemoteManifest
     $state = Read-State
     $serverComponent = Get-ManifestComponent -RemoteManifest $RemoteManifest -Name 'server'
     $clientComponent = Get-ManifestComponent -RemoteManifest $RemoteManifest -Name 'client'
