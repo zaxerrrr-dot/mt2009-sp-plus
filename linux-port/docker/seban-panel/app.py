@@ -3747,8 +3747,14 @@ def not_game_master(alias="p"):
     IMPLEMENTOR there, and so does r40250's [SA]Admin; the operator's own
     character on the admin account does not, and is ranked like anybody's."""
     ref = (alias + ".") if alias else ""
+    # MT2009_PLUS_RANKING_NO_GM_ACCOUNT_V1: and every character of an account
+    # that holds a rank - the operator's own on the admin account too (the
+    # owner, 3 October: "wywalic z rankingu postacie admin i wszystkie
+    # postacie z gm").
     return ("NOT EXISTS (SELECT 1 FROM common.gmlist rg"
-            " WHERE rg.mName = " + ref + "name AND rg.mAuthority <> 'PLAYER')")
+            " WHERE rg.mName = " + ref + "name AND rg.mAuthority <> 'PLAYER')"
+            " AND NOT EXISTS (SELECT 1 FROM common.gmlist rga JOIN account.account gacc ON gacc.login = rga.mAccount"
+            " WHERE gacc.id = " + ref + "account_id AND rga.mAuthority <> 'PLAYER')")
 
 
 def ranking_scope_sql(alias="p", people_only=False):

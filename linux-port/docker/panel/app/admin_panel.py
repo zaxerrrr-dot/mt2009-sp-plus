@@ -11570,8 +11570,14 @@ def rankings_count_people():
 
 def _not_game_master(alias):
     ref = (alias + ".") if alias else ""
+    # MT2009_PLUS_RANKING_NO_GM_ACCOUNT_V1: and every character of an account
+    # that holds a rank - the operator's own on the admin account too (the
+    # owner, 3 October: "wywalic z rankingu postacie admin i wszystkie
+    # postacie z gm").
     return ("NOT EXISTS (SELECT 1 FROM common.gmlist rg"
-            " WHERE rg.mName = " + ref + "name AND rg.mAuthority <> 'PLAYER')")
+            " WHERE rg.mName = " + ref + "name AND rg.mAuthority <> 'PLAYER')"
+            " AND NOT EXISTS (SELECT 1 FROM common.gmlist rga JOIN account.account gacc ON gacc.login = rga.mAccount"
+            " WHERE gacc.id = " + ref + "account_id AND rga.mAuthority <> 'PLAYER')")
 
 
 def _ranked(alias, pct, people_only):
