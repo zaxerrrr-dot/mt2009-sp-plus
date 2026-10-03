@@ -392,6 +392,8 @@ class SidebarWindow(ui.Window):
 		("missions", "Usuñ misje", "OnClickClearMissions", None),
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 		("ranking", "Ranking tygodniowy", "OnClickWeeklyRank", "weekly_rank"),
+		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
+		("dropwiki", "Drop wiki", "OnClickDropWiki", "drop_wiki"),
 	)
 
 	def __init__(self, wndInventory):
@@ -685,6 +687,10 @@ class SidebarWindow(ui.Window):
 	def OnClickWeeklyRank(self):
 		import uiweeklyrank
 		uiweeklyrank.ToggleWindow()
+
+	def OnClickDropWiki(self):
+		import uidropwiki
+		uidropwiki.ToggleWindow()
 
 class GridSlotStateManager():
 	SLOT_STATE_NONE = 0

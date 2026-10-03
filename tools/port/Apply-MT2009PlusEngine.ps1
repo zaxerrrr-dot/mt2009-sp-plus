@@ -850,7 +850,18 @@ if ((Test-Path -LiteralPath $weeklyRankApply -PathType Leaf) -and
         $syncedFiles++
         Write-Host ('Applied {0} weekly ranking edit(s).' -f $weeklyRankResult.Applied) -ForegroundColor DarkGray
     }
+}# The drop wiki (server-patches/dropwiki, MT2009_PLUS_DROP_WIKI_V1): /drop_wiki
+# for the client's window uidropwiki.py and ITEM_MANAGER::GetDropWikiRows.
+$dropWikiApply = Join-Path $repo 'server-patches/dropwiki/Apply-DropWikiPatch.ps1'
+if ((Test-Path -LiteralPath $dropWikiApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_manager.cpp') -PathType Leaf)) {
+    $dropWikiResult = & $dropWikiApply -SourceDir $engineGameSource
+    if ($dropWikiResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} drop wiki edit(s).' -f $dropWikiResult.Applied) -ForegroundColor DarkGray
+    }
 }
+
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both

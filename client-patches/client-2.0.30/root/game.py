@@ -336,6 +336,8 @@ class GameWindow(ui.ScriptWindow):
 
 	def Close(self):
 		self.Hide()
+		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
+		__import__("uidropwiki").DestroyWindow()
 
 		self.oneSecondTimer = 0
 
@@ -778,6 +780,8 @@ class GameWindow(ui.ScriptWindow):
 			"tp_bookmarks"		: (lambda : Window("uitpbookmarks"), None),
 			# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 			"weekly_rank"		: (lambda : Window("uiweeklyrank"), None),
+			# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
+			"drop_wiki"			: (lambda : __import__("uidropwiki").ToggleWindow(), None),
 			"hide_ui"			: (lambda : self.__HideUserInterface(), None),
 			"quest_buttons"		: (QuestButtons, None),
 			"screenshot"		: (lambda : self.SaveScreen(), None),
@@ -2981,6 +2985,11 @@ class GameWindow(ui.ScriptWindow):
 		import autotarget
 		autotarget.OnServerReady()
 
+	# MT2009_PLUS_DROP_WIKI_V1: the drop wiki's answers (uidropwiki.py).
+	def __DropWiki(self, *args):
+		import uidropwiki
+		uidropwiki.OnCommand(*args)
+
 	def __ServerCommand_Build(self):
 		serverCommandList={
 			"CubeReload": self.__CubeReload,  # MT2009_PLUS_DIGI_FIXES_V1 (Autor: Digi Rasta)
@@ -3203,6 +3212,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["YutnoriOpen"] = self.__YutnoriOpen # MT2009_PLUS_YUTNORI_V1 (the table NPC)
 
 		self.serverCommander=stringCommander.Analyzer()
+		serverCommandList["DropWiki"] = self.__DropWiki # MT2009_PLUS_DROP_WIKI_V1
 		for serverCommandItem in serverCommandList.items():
 			self.serverCommander.SAFE_RegisterCallBack(
 				serverCommandItem[0], serverCommandItem[1]
