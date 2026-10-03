@@ -573,3 +573,31 @@ reszta przedmiotów bez zmian). Pliki `root`:
 Pominięte z paczki: Shift + klik w torbie towarzysza (`uisidekickinventory.py`) – to samo robi już nasz
 prawy klik (`MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1`); `XMAS_SNOW_SHOW` w
 `game.py` (wyłączał śnieg i świąteczną muzykę z nocnej flagi) – nie był częścią zgłoszenia.
+
+## Ranking tygodniowy i tytuły – bez zmian exe
+
+Znacznik `MT2009_PLUS_WEEKLY_RANKING_V1`. Na podstawie systemu rankingu tygodniowego z plików Arezzo
+(`new_uiweeklyrank.py`, `uiscript/weeklyrank.py`; ich okno czytało pakiety, których exe 2.0.25 nie ma).
+Okno jest nasze, na poleceniach czatu (`/ranking info|lista <kat>`, linie `WRANK`); serwer:
+`playerbot_weekly_rank.h` i `server-patches/weeklyrank`. Pliki `root`:
+
+- `uiweeklyrank.py` (nowy) – okno „Ranking tygodniowy”: 8 kategorii (zabite potwory, Metiny, bossy,
+  zabici gracze, ukończone wyprawy, udane ulepszenia, alchemia, poziom), top 50 z przewijaniem
+  (miejsce, korona top 3, nick z dopiskiem [Bot]/[Gracz], poziom, królestwo, wynik), własne miejsce
+  i wynik, posiadacze tytułów wybranej kategorii (zwycięzcy poprzedniego sezonu) z bonusem, numer
+  sezonu, odliczanie do końca, własne tytuły. Pasek pod oknem postaci z tytułami gracza
+  (`AttachCharacterWindow`). Wysyła tylko po kliknięciu/otwarciu i tylko w fazie gry (`warpsafe.InGame()`).
+- `playerbot_status_tail.py` – tytuł z rankingu nad nickiem posiadacza (gracza i bota) w wierszu
+  tytułów botów (`textTail.AttachPersonality`): „Łowca I” w kolorze miejsca; tier Systemu Legend
+  zostaje przed nim („Chodząca Legenda | Łowca I”), osobowość bota ustępuje.
+- `game.py` – polecenie `WRANK` (`tail` do `playerbot_status_tail.show_rank_title`), akcja klawisza
+  `weekly_rank`, zamknięcie okna z resztą.
+- `keybind.py` – akcja „Ranking tygodniowy” (bez domyślnego klawisza, do ustawienia w „Skróty klawiszowe”).
+- `uiinventory.py` – przycisk `ranking` na pasku ikon przy ekwipunku.
+- `interfacemodule.py` – pasek tytułów pod oknem postaci.
+- `mt2009_ui/ranking/` (nowe) – obrazki okna z plików Arezzo (`d:/ymir work/ui/new_weekly_rank/`):
+  `row_1..4.png` (wiersze: złoty, srebrny, brązowy, zwykły), `title_1..4.png`, `crown_1..3.png`,
+  `header_big.png`, `header_small.png`, `cat_0..2.tga` (przyciski kategorii). Każdy obrazek jest
+  sprawdzany `pack.Exist` i ma zwykły zamiennik.
+- `mt2009_ui/sidebar/ranking_01/02/03.tga` (nowe) – ikona: ramka przycisku lochów i korona z
+  `image-example-005.png` Arezzo, zrobione `tools/ranking/make_icons.py`.

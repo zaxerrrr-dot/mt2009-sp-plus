@@ -4406,6 +4406,9 @@ class Interface(object):
 
 	def __MakeWindows(self):
 		wndCharacter = uiCharacter.CharacterWindow()
+		# MT2009_PLUS_WEEKLY_RANKING_V1: the player's ranking titles in a strip under the
+		# character window (uiweeklyrank.py).
+		__import__("uiweeklyrank").AttachCharacterWindow(wndCharacter)
 		wndInventory = uiInventory.InventoryWindow()
 		wndInventory.BindInterfaceClass(self)
 		if app.ENABLE_DRAGON_SOUL_SYSTEM:

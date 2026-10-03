@@ -388,6 +388,8 @@ class SidebarWindow(ui.Window):
 		("dungeon", "Wyprawy", "OnClickDungeonInfo", "dungeon_info"),
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
 		("teleport", "Zapisane pozycje", "OnClickTpBookmarks", "tp_bookmarks"),
+		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
+		("ranking", "Ranking tygodniowy", "OnClickWeeklyRank", "weekly_rank"),
 	)
 
 	def __init__(self, wndInventory):
@@ -671,6 +673,10 @@ class SidebarWindow(ui.Window):
 	def OnClickTpBookmarks(self):
 		import uitpbookmarks
 		uitpbookmarks.ToggleWindow()
+
+	def OnClickWeeklyRank(self):
+		import uiweeklyrank
+		uiweeklyrank.ToggleWindow()
 
 class GridSlotStateManager():
 	SLOT_STATE_NONE = 0
