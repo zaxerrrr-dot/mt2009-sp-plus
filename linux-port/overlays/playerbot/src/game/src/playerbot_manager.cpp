@@ -5515,6 +5515,15 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 #if defined(ENABLE_IKASHOP_RENEWAL)
 		auto stand = ikashop::GetManager().GetShopByOwnerID(pid);
 		liveStand = stand && stand->GetDuration() != 0;
+		// MT2009_PLUS_BOT_COUNTER_RENEW_V1: on the shop channel an expired
+		// stand with goods on it costs what a running one does - its owner is
+		// there to renew it, and as the cheapest bot to send away it was the
+		// one sent: 161 of the 259 expired counters of the supporters' world
+		// on 3 October were owned by bots of the second channel. There it
+		// costs nothing, so the roam brings such an owner back first.
+		if (!liveStand && stand && g_bChannel == playerbot_channel_rules::SHOP_CHANNEL &&
+				!stand->GetItems().empty())
+			liveStand = true;
 		// A shop operation in flight, and a service visit with the board open.
 		pinned = pinned || playerbot_offline::requests.count(pid) != 0 ||
 				(state && state->offlineShop.visiting);
@@ -6242,6 +6251,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// every errand, quarrel and guild war (playerbot_arezzo_dungeon_bots.h).
 		if (ManagePlayerBotArezzoDungeon(ch, state, dwNow))
 			continue;
+
+		// MT2009_PLUS_BOT_SASH_FLOW_V1: two or more sashes in the bag are
+		// combined or go on the counter (playerbot_sash.h); a look every few
+		// minutes, in place only for a bot the Arezzo test holds on its map.
+		ManagePlayerBotSashFlow(ch, dwNow, IsPlayerBotArezzoHeldHere(ch) ? (BYTE)PLAYERBOT_SASH_FLOW_HELD
+				: (BYTE)PLAYERBOT_SASH_FLOW_TOWN);
 
 		// A stone this bot hurt within PLAYERBOT_METIN_LOOT_SHARE_MS is gone:
 		// the loot window opens here, at the top of the pass. Stamped where the

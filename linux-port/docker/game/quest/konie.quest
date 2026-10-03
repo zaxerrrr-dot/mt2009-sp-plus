@@ -4,6 +4,7 @@
 --
 -- Stajenny (20349) szkoli konia za op³atê zamiast misji treningowych (pony_levelup
 -- 1-10 i horse_levelup 11-20 nie s¹ ju¿ kompilowane, ich obiekty usuwa Dockerfile):
+--   (3 Oct: no feed any more - medals, materials and Yang only; the owner)
 --   1-9   -> +1: Medal Konny, 5x Siano (50054), 5 Materia³ów Rzemieœlniczych, 200 tys.-1 kk Yang
 --   11-19 -> +1: 2 Medale, 5x Marchewka (50055), 10 Materia³ów, 2-10 kk Yang
 --   21-28 -> +1: 3 Medale, 5x Czerwony ¯eñ-szeñ (50056), 20 Materia³ów, 15-50 kk Yang
@@ -20,11 +21,11 @@ quest konie begin
 		function koszt(l)
 			-- { Medale, karma, ile karmy, Materia³y, Yang }
 			if l >= 1 and l <= 9 then
-				return { 1, 50054, 5, 5, 100000 * (l + 1) }
+				return { 1, 50054, 0, 5, 100000 * (l + 1) }
 			elseif l >= 11 and l <= 19 then
-				return { 2, 50055, 5, 10, 2000000 + (l - 11) * 1000000 }
+				return { 2, 50055, 0, 10, 2000000 + (l - 11) * 1000000 }
 			elseif l >= 21 and l <= 28 then
-				return { 3, 50056, 5, 20, 15000000 + (l - 21) * 5000000 }
+				return { 3, 50056, 0, 20, 15000000 + (l - 21) * 5000000 }
 			end
 			return nil
 		end
@@ -153,7 +154,9 @@ quest konie begin
 			say("Poziom konia: " .. l .. " -> " .. (l + 1))
 			say_reward("Koszt szkolenia:")
 			say("  " .. k[1] .. "x Medal Konny")
-			say("  " .. k[3] .. "x " .. konie.nazwa_karmy(k[2]))
+			if k[3] > 0 then
+				say("  " .. k[3] .. "x " .. konie.nazwa_karmy(k[2]))
+			end
 			say("  " .. k[4] .. "x Materia³y Rzemieœlnicze ")
 			say("  " .. konie.yang(k[5]))
 			if not (horse.is_summon() or horse.is_riding()) then
@@ -163,7 +166,7 @@ quest konie begin
 			if select("Szkol konia", "Anuluj") ~= 1 then
 				return
 			end
-			if pc.countitem(50050) < k[1] or pc.countitem(k[2]) < k[3] or pc.countitem(30378) < k[4] then
+			if pc.countitem(50050) < k[1] or (k[3] > 0 and pc.countitem(k[2]) < k[3]) or pc.countitem(30378) < k[4] then
 				say_title("Stajenny")
 				say("Brakuje ci przedmiotów.")
 				return
@@ -174,7 +177,9 @@ quest konie begin
 				return
 			end
 			pc.removeitem(50050, k[1])
-			pc.removeitem(k[2], k[3])
+			if k[3] > 0 then
+				pc.removeitem(k[2], k[3])
+			end
 			pc.removeitem(30378, k[4])
 			pc.change_gold(-k[5])
 			konie.awansuj()

@@ -34,7 +34,8 @@ for ($i = 0; $i -lt $edits.Count; $i += 3) {
     $text = $texts[$file]
     $old = $edits[$i + 1]; $new = $edits[$i + 2]
     $lines = $new.Split("`n")
-    if ($text.Contains($lines[0]) -and $text.Contains($lines[1])) { continue }
+    # The marker comment line is enough: raremobrules rewrites the line under it.
+    if ($text.Contains($lines[0])) { continue }
     if ($text.Contains("`r`n")) { $old = $old.Replace("`n", "`r`n"); $new = $new.Replace("`n", "`r`n") }
     if (([regex]::Matches($text, [regex]::Escape($old))).Count -ne 1) {
         throw "Nie mozna zastosowac poprawki dropu z metinow i limitu komend: nie znaleziono oczekiwanego kodu w $($edits[$i])."

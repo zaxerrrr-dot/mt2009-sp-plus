@@ -87,7 +87,7 @@ namespace
 		{
 			out.medals = 1;
 			out.feedVnum = PLAYERBOT_HORSE_FEED_HAY;
-			out.feedCount = 5;
+			out.feedCount = 0;	// MT2009_PLUS_HORSE_NO_FEED_V1: no feed since 3 October (the owner)
 			out.materials = 5;
 			out.yang = 100000LL * (level + 1);
 			return true;
@@ -96,7 +96,7 @@ namespace
 		{
 			out.medals = 2;
 			out.feedVnum = PLAYERBOT_HORSE_FEED_CARROT;
-			out.feedCount = 5;
+			out.feedCount = 0;	// MT2009_PLUS_HORSE_NO_FEED_V1: no feed since 3 October (the owner)
 			out.materials = 10;
 			out.yang = 2000000LL + (long long)(level - 11) * 1000000LL;
 			return true;
@@ -105,7 +105,7 @@ namespace
 		{
 			out.medals = 3;
 			out.feedVnum = PLAYERBOT_HORSE_FEED_GINSENG;
-			out.feedCount = 5;
+			out.feedCount = 0;	// MT2009_PLUS_HORSE_NO_FEED_V1: no feed since 3 October (the owner)
 			out.materials = 20;
 			out.yang = 15000000LL + (long long)(level - 21) * 5000000LL;
 			return true;

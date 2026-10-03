@@ -62,6 +62,11 @@ namespace playerbot_bpbots
 	void OnProgressSettled(DWORD pid);
 	// On a Battle Pass errand now: no bot party for it meanwhile.
 	bool IsOnErrand(DWORD pid);
+	// MT2009_PLUS_BOT_BP_ROOM_V1: room in a bot's bag for a reward's items
+	// (up to three vnums and counts; mission 0 is the season's final reward).
+	// The junk worth less than the reward is sold to make it; false - nothing
+	// sold - when even that would not do, and the claim waits (Settle, below).
+	bool EnsureRewardRoom(LPCHARACTER ch, const DWORD* vnums, const DWORD* counts, int n, DWORD mission);
 }
 
 namespace mt2009_battlepass
@@ -600,6 +605,15 @@ namespace mt2009_battlepass
 			Progress& p = cache.missions[m.id];
 			if (p.value < m.count || p.claimed)
 				continue;
+			// MT2009_PLUS_BOT_BP_ROOM_V1: a bot's reward never falls on the
+			// ground for want of a cell (the operator, 3 October: "nagrody z
+			// battle passa sa na pewno bardziej drogocenne niz zlom w eq"):
+			// room is made out of its junk first, or the claim stays open in
+			// the database and is tried again (playerbot_bpbots.h). A player's
+			// reward is given as it always was.
+			if (IsBot(ch) && HasReward(m) &&
+					!playerbot_bpbots::EnsureRewardRoom(ch, m.rewardVnum, m.rewardCount, 3, m.id))
+				continue;
 			if (!TakeClaim(pid, cache.season, m.id))
 			{
 				p.claimed = true;
@@ -621,7 +635,8 @@ namespace mt2009_battlepass
 		// (playerbot_bpbots.h) (MT2009_PLUS_BP_BOTS_V1).
 		if (IsBot(ch))
 		{
-			if (AllDone(cache) && !cache.final.claimed)
+			if (AllDone(cache) && !cache.final.claimed &&
+					playerbot_bpbots::EnsureRewardRoom(ch, s_adwFinalVnum, s_adwFinalCount, 3, 0))	// MT2009_PLUS_BOT_BP_ROOM_V1
 				GiveFinal(ch, cache);
 			playerbot_bpbots::OnProgressSettled(pid);
 		}

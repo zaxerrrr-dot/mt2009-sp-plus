@@ -17,9 +17,11 @@ import ui
 from _weakref import proxy
 
 CONFIG_FILE = "opcje_dodatkowe.cfg"
-# The client's quest check box (etc pack) - the same picture the package shipped as refine/checkbox.tga.
-CHECKBOX_IMAGE = "d:/ymir work/ui/game/quest/quest_checkbox.tga"
-CHECKED_IMAGE = "d:/ymir work/ui/game/quest/quest_checked.tga"
+# The package's check box pictures (its ui/game/refine/checkbox.tga / checked.tga), in our root pack.
+# The client's d:/ymir work/ui/game/quest/quest_check*.tga are not in the players' packs (2.0.46
+# syserr: "Failed to load image"); a picture that cannot be loaded falls back to "[x]" / "[ ]".
+CHECKBOX_IMAGE = "mt2009_ui/checkbox/checkbox.tga"
+CHECKED_IMAGE = "mt2009_ui/checkbox/checked.tga"
 
 
 def _HasEffects():
@@ -145,17 +147,34 @@ class OptionRow(ui.Window):
 		ui.Window.__init__(self)
 		self.owner = proxy(owner)
 		self.key = key
-		box = ui.ImageBox()
-		box.SetParent(self)
-		box.AddFlag("not_pick")
-		box.LoadImage(CHECKBOX_IMAGE)
-		box.SetPosition(0, 3)
-		box.Show()
-		mark = ui.ImageBox()
-		mark.SetParent(self)
-		mark.AddFlag("not_pick")
-		mark.LoadImage(CHECKED_IMAGE)
-		mark.SetPosition(0, -1)
+		self.textMark = None
+		box = mark = None
+		try:
+			box = ui.ImageBox()
+			box.SetParent(self)
+			box.AddFlag("not_pick")
+			box.LoadImage(CHECKBOX_IMAGE)
+			box.SetPosition(0, 3)
+			box.Show()
+			mark = ui.ImageBox()
+			mark.SetParent(self)
+			mark.AddFlag("not_pick")
+			mark.LoadImage(CHECKED_IMAGE)
+			mark.SetPosition(0, -1)
+		except Exception:
+			# No picture: a text mark, so a missing file never stops the window.
+			for image in (box, mark):
+				if image:
+					image.Hide()
+			box = mark = None
+			textMark = ui.TextLine()
+			textMark.SetParent(self)
+			textMark.AddFlag("not_pick")
+			textMark.SetPosition(0, 1)
+			textMark.SetText("[ ]")
+			textMark.SetOutline()
+			textMark.Show()
+			self.textMark = textMark
 		label = ui.TextLine()
 		label.SetParent(self)
 		label.AddFlag("not_pick")
@@ -172,7 +191,9 @@ class OptionRow(ui.Window):
 		ui.Window.__del__(self)
 
 	def SetChecked(self, checked):
-		if checked:
+		if self.textMark:
+			self.textMark.SetText("[x]" if checked else "[ ]")
+		elif checked:
 			self.mark.Show()
 		else:
 			self.mark.Hide()

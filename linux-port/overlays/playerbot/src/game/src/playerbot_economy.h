@@ -2107,9 +2107,19 @@ namespace
 				return false;
 			const int rareKind = GetPlayerBotRareGoodsKind(item->GetVnum());
 			if (rareKind != PLAYERBOT_RARE_GOODS_NONE)
-				return IsPlayerBotRareGoodsForMerchant(ch->GetPlayerID(), item->GetVnum(), get_dword_time()) ||
-						(IsPlayerBotBagUnderPressure(ch) &&
-						 (!PlayerBotHasCounter(ch) || IsPlayerBotRareGoodsShopQuotaFull(rareKind)));
+			{
+				if (IsPlayerBotRareGoodsForMerchant(ch->GetPlayerID(), item->GetVnum(), get_dword_time()))
+					return true;
+				// MT2009_PLUS_BOT_SASH_FLOW_V1: two or more sashes for a counter
+				// go up whatever the counters' share (BotOfflineCounterRefuses);
+				// under pressure the merchant takes only the plain +0 ones past
+				// what the counter holds (IsPlayerBotSashForMerchant).
+				if (rareKind == PLAYERBOT_RARE_GOODS_SASH && PlayerBotHasCounter(ch) &&
+						GetPlayerBotSashGoodsInBag(ch) >= 2)
+					return IsPlayerBotSashForMerchant(ch, item);
+				return IsPlayerBotBagUnderPressure(ch) &&
+						(!PlayerBotHasCounter(ch) || IsPlayerBotRareGoodsShopQuotaFull(rareKind));
+			}
 		}
 
 		const DWORD vnum = item->GetVnum();
@@ -2769,6 +2779,25 @@ namespace
 		return price;
 	}
 
+	// What the merchant pays for a piece of junk (the whole line). Also what a
+	// bot is paid for the junk it lets go to make room for a Battle Pass
+	// reward (playerbot_bpbots.h, MT2009_PLUS_BOT_BP_ROOM_V1).
+	long long GetPlayerBotJunkSalePrice(LPITEM item)
+	{
+		DWORD price = item->GetShopBuyPrice();
+		if (price == 0)
+			price = item->GetProto() ? item->GetProto()->dwGold : 100;
+		price = std::max<DWORD>(10, price / 5);
+		// MT2009_PLUS_DIGI_STACK_V1: a soul stone, a gift box or a treasure
+		// box stacks to 200 now - the stack goes whole, so it is paid by
+		// count (it was one unit's price for the stack).
+		long long salePrice = (long long)price;
+		if (item->GetCount() > 1 && (item->GetType() == ITEM_METIN ||
+				item->GetType() == ITEM_GIFTBOX || item->GetType() == ITEM_TREASURE_BOX))
+			salePrice *= (long long)item->GetCount();
+		return salePrice;
+	}
+
 	bool SellPlayerBotJunkAtMerchant(LPCHARACTER ch, EPlayerBotMerchantCategory category,
 			const char* merchantName)
 	{
@@ -2821,17 +2850,7 @@ namespace
 				continue;
 			}
 
-			DWORD price = item->GetShopBuyPrice();
-			if (price == 0)
-				price = item->GetProto() ? item->GetProto()->dwGold : 100;
-			price = std::max<DWORD>(10, price / 5);
-			// MT2009_PLUS_DIGI_STACK_V1: a soul stone, a gift box or a treasure
-			// box stacks to 200 now - the stack goes whole, so it is paid by
-			// count (it was one unit's price for the stack).
-			long long salePrice = (long long)price;
-			if (item->GetCount() > 1 && (item->GetType() == ITEM_METIN ||
-					item->GetType() == ITEM_GIFTBOX || item->GetType() == ITEM_TREASURE_BOX))
-				salePrice *= (long long)item->GetCount();
+			const long long salePrice = GetPlayerBotJunkSalePrice(item);
 			totalSoldGold += salePrice;
 			PlayerBotChangeGold(ch, salePrice);
 			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_SHOP_SELL");

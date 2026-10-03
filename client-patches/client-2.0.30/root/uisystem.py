@@ -189,7 +189,7 @@ class SystemDialog(ui.ScriptWindow):
 			self.eventOpenHelpWindow()
 
 	def __ClickSupportButton(self):
-		utils.open_url("https://discord.gg/pt5tvnrN6")
+		utils.open_url("https://metin2sp.pl/discord")
 
 	def __OnMouseOverSupportButton(self):
 		if self.toolTip:
