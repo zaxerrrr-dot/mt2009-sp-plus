@@ -1906,7 +1906,9 @@ class AutoHuntWindow(ui.BoardWithTitleBar):
 
 # MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1: "Autopodnoszenie" has a row of its
 # own above the grid.
-LOOT_ROWS = (len(LOOT_KINDS) + 1 + 2) // 3   # the kinds and "Filtr", three a row
+# MT2009_PLUS_PICKUP_BONUS_FILTER_V1: and "Min. bonusow" after "Filtr" - the
+# pick-up filter's (uipickupfilter.CycleBonusMin).
+LOOT_ROWS = (len(LOOT_KINDS) + 2 + 2) // 3   # the kinds, "Filtr" and "Min. bonusow", three a row
 LOOT_PICKUP_ROW_H = 22
 
 
@@ -1921,6 +1923,7 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         self.toggles = {}
         self.kindToggles = {}
         self.filterBtn = None
+        self.bonusMinBtn = None
         self.pickupBtn = None
         self.AddFlag('movable')
         self.AddFlag('float')
@@ -1953,6 +1956,9 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         pos = len(LOOT_KINDS)
         self.filterBtn = self._Btn(pdBoard, 'large', 4 + (pos % 3) * 92, pdy + (pos // 3) * 22,
             '', self.OnToggleFilter)
+        pos += 1
+        self.bonusMinBtn = self._Btn(pdBoard, 'large', 4 + (pos % 3) * 92, pdy + (pos // 3) * 22,
+            '', self.OnCycleBonusMin)
 
         y += pd_h + 5
 
@@ -2047,10 +2053,11 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         self.pickupBtn.SetText(OnOff(config['pickup']))
 
         pickupFilter = PickupFilter()
-        kinds = pickupFilter.GetKinds()
         for bit, (btn, label) in self.kindToggles.items():
-            btn.SetText('%s: %s' % (label, YesNo(kinds & bit)))
+            # MT2009_PLUS_PICKUP_BONUS_FILTER_V1: tak / nie / bonus.
+            btn.SetText('%s: %s' % (label, pickupFilter.KindText(bit, YesNo(1), YesNo(0), 'bonus')))
         self.filterBtn.SetText('Filtr: %s' % YesNo(pickupFilter.IsActive()))
+        self.bonusMinBtn.SetText(pickupFilter.BonusMinText())
 
     def OnChangeRange(self):
         if self.hunter.mainWindow:
@@ -2102,6 +2109,13 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         PickupFilter().ToggleOn()
         self.Refresh()
 
+    # MT2009_PLUS_PICKUP_BONUS_FILTER_V1
+    def OnCycleBonusMin(self):
+        if self.hunter.mainWindow:
+            self.hunter.mainWindow.ReadEdits()
+        PickupFilter().CycleBonusMin()
+        self.Refresh()
+
     def Close(self):
         try:
             player.SetAutoHuntRangeCircle(0)
@@ -2123,6 +2137,7 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         self.toggles = {}
         self.kindToggles = {}
         self.filterBtn = None
+        self.bonusMinBtn = None
         self.pickupBtn = None
 
 
