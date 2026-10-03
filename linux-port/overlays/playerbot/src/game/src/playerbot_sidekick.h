@@ -391,6 +391,40 @@ namespace
 	bool s_bPlayerBotSidekickKeepColumn = false;
 	bool s_bPlayerBotSidekickHeldColumn = false;
 
+	// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: "Kup" in the window - the owner's
+	// errand for one kind of goods (playerbot_sidekick_shop.h). Kept in the
+	// runtime: an errand cut off by a logout leaves what it bought held in the
+	// bag (playerbot_sidekick_gift.held) and the owner's yang in its purse.
+	struct TPlayerBotSidekickShopErrand
+	{
+		bool bActive = false;
+		BYTE bStage = 0;
+		BYTE bGood = 0;
+		int iWanted = 0;
+		int iGot = 0;
+		// The owner's yang it was handed for this, and its purse right after.
+		long long llEscrow = 0;
+		long long llGoldStart = 0;
+		// Where it buys: the merchant's counter, or the stand it walks to.
+		long lMap = 0;
+		long lX = 0;
+		long lY = 0;
+		DWORD dwSince = 0;
+		DWORD dwStageSince = 0;
+		DWORD dwShopOwner = 0;
+		DWORD dwShopItem = 0;
+		// A purchase from a stand the db core has not answered yet: the line,
+		// its count and price, and the purse just before it was asked for.
+		DWORD dwPendingItem = 0;
+		int iPendingCount = 0;
+		long long llPendingPrice = 0;
+		long long llGoldBeforeBuy = 0;
+		DWORD dwPendingSince = 0;
+		std::set<DWORD> setTried;
+		std::vector<DWORD> vecItems;
+		const char* szWhy = "";
+	};
+
 	// What a companion carries between ticks that nobody else needs.
 	struct TPlayerBotSidekickRuntime
 	{
@@ -492,6 +526,8 @@ namespace
 		// 1 October).
 		long long llLastServiceGold = -1;
 		DWORD dwLastServiceLog = 0;
+		// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: the owner's "Kup" errand.
+		TPlayerBotSidekickShopErrand shop;
 		TPlayerBotSidekickRuntime()
 			: dwNextPartyCheck(0), dwNextService(0), dwNextLoot(0), dwNextCatchUp(0), dwLootVID(0),
 			  dwLootSince(0), dwNextProtect(0), bTrading(false), dwLastFoeVID(0), bHold(false), lHoldMap(0),
@@ -507,6 +543,18 @@ namespace
 		}
 	};
 	std::map<DWORD, TPlayerBotSidekickRuntime> s_mapPlayerBotSidekickRuntime;
+
+	// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: the owner's "Kup" errand, defined in
+	// playerbot_sidekick_shop.h (included right after this file).
+	void OrderPlayerBotSidekickShopErrand(LPCHARACTER owner, TPlayerBotSidekick& rec, const char* key,
+			const char* countText, const char* confirm, DWORD dwNow);
+	bool ManagePlayerBotSidekickShopErrand(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotSidekick& rec,
+			TPlayerBotSidekickRuntime& rt, DWORD dwNow);
+	void SettlePlayerBotSidekickShopErrand(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotSidekick& rec,
+			TPlayerBotSidekickRuntime& rt, DWORD dwNow, const char* why, bool comeBack);
+	void PollPlayerBotSidekickShopPurchase(LPCHARACTER ch, TPlayerBotSidekick& rec, TPlayerBotSidekickRuntime& rt,
+			DWORD dwNow);
+	bool DescribePlayerBotSidekickShopErrand(const TPlayerBotSidekickRuntime& rt, char* out, size_t size);
 
 	// The world's switch: M2_SIDEKICK=0 in .env (the launcher's difficulty
 	// window) is the event flag m2_sidekick_off, which the migrator writes at a
@@ -3975,6 +4023,9 @@ namespace
 			snprintf(out, size, "lezy - zaraz wstanie");
 			return;
 		}
+		// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: what it was sent for, and how many so far.
+		if (rt && rt->bErrand && DescribePlayerBotSidekickShopErrand(*rt, out, size))
+			return;
 		if (rt && rt->bErrand)
 		{
 			snprintf(out, size, "robi zakupy %s", playerbot_conv::GetMapWords(sk->GetMapIndex()).at);
@@ -5709,7 +5760,7 @@ namespace
 	//            | eq [1 | ruch <z> <na> | daj <z> <na> | wez <z> <na> | odepnij <pozycja>]
 	//            | umiejetnosci [dodaj <vnum> | reczne <0|1>]
 	//            | statystyki [dodaj <ht|iq|st|dx> [ile] | reczne <0|1> | odnow]
-	//            | luruj <0|1>
+	//            | luruj <0|1> | kup <towar> <ile> [tak]
 	void HandlePlayerBotSidekickCommand(LPCHARACTER ch, const char* argument)
 	{
 		if (!ch || !ch->GetDesc() || (ch->GetDesc()->IsBot() && !s_bPlayerBotSidekickSelfTest))
@@ -5788,6 +5839,9 @@ namespace
 			HoldPlayerBotSidekick(ch, rec->second, dwNow);
 		else if (!strcmp(sub, "zakupy"))
 			SendPlayerBotSidekickShopping(ch, rec->second, dwNow);
+		// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: "kup <towar> <ile> [tak]".
+		else if (!strcmp(sub, "kup"))
+			OrderPlayerBotSidekickShopErrand(ch, rec->second, a1, a2, a3, dwNow);
 		else if (!strcmp(sub, "ryby"))
 			SendPlayerBotSidekickFishing(ch, rec->second, dwNow);
 		else if (!strcmp(sub, "luruj"))
@@ -8351,6 +8405,13 @@ namespace
 		ResendPlayerBotSidekickView(ch, rt, dwNow);	// MT2009_PLUS_SIDEKICK_REDRESS_V1
 		FollowPlayerBotSidekickOwnerPolymorph(ch, state, *rec, rt, dwNow);	// MT2009_PLUS_SIDEKICK_POLYMORPH_V1
 		ReadPlayerBotSidekickForgetBook(ch, *rec, rt, dwNow);
+		// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: a "Kup" errand the call, the leash
+		// or the owner's logout ended (they clear bErrand) is settled here - the
+		// goods handed over, the rest of the owner's yang given back - and a
+		// purchase from a stand answered late is taken in.
+		if (rt.shop.bActive && !rt.bErrand)
+			SettlePlayerBotSidekickShopErrand(ch, state, *rec, rt, dwNow, "called", false);
+		PollPlayerBotSidekickShopPurchase(ch, *rec, rt, dwNow);
 		if (HandlePlayerBotSidekickTrade(ch, state, *rec, rt, dwNow))
 			return true;
 		if (KeepPlayerBotSidekickFishing(ch, state, *rec, rt, dwNow))
@@ -8376,6 +8437,8 @@ namespace
 		}
 		if (rt.bAlone)
 			EndPlayerBotSidekickAlone(ch, state, *rec, rt);
+		if (rt.bErrand && rt.shop.bActive)
+			return ManagePlayerBotSidekickShopErrand(ch, state, *rec, rt, dwNow);
 		if (rt.bErrand)
 			return ManagePlayerBotSidekickErrand(ch, state, *rec, rt, dwNow);
 		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID);
