@@ -54,7 +54,9 @@ def main():
     for name, old, new in EDITS:
         path = os.path.join(sys.argv[1], name)
         text = files[path]
-        if new.split("\n")[0] in text and new.split("\n")[1] in text:
+        # The marker comment line is enough: a later patch (raremobrules) rewrites
+        # the line under it, and the edit is still in place.
+        if new.split("\n")[0] in text:
             continue
         crlf = "\r\n" in text
         o, n = (old.replace("\n", "\r\n"), new.replace("\n", "\r\n")) if crlf else (old, new)
