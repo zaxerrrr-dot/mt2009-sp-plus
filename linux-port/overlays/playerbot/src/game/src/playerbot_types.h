@@ -8063,6 +8063,8 @@ namespace
 			dwNextDsCheckTime(0),
 			dwNextDsActionTime(0),
 			dwNextDsLocalTime(0),
+			dwNextDsDeckTime(0),
+			dwLastDsDeckToggle(0),
 			dwNextHorseCheckTime(0),
 			dwNextHorseActionTime(0),
 			dwNextHorseRideCheckTime(0),
@@ -8403,6 +8405,9 @@ namespace
 		DWORD dwNextDsCheckTime;
 		DWORD dwNextDsActionTime;
 		DWORD dwNextDsLocalTime;
+		// MT2009_PLUS_BOT_DS_EXTEND_V1: the deck's combat switch (ManagePlayerBotDsDeckTick).
+		DWORD dwNextDsDeckTime;
+		DWORD dwLastDsDeckToggle;
 		DWORD dwNextHorseCheckTime;
 		DWORD dwNextHorseActionTime;
 		DWORD dwNextHorseRideCheckTime;
