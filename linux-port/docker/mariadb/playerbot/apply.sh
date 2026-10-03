@@ -2406,7 +2406,8 @@ db -e "DELETE FROM itemshop.ishop_bundle_items WHERE vnum BETWEEN 71131 AND 7113
 # never dropped, sold, traded, put on a stall or lost on a PK death (the
 # safebox takes it). The row is rewritten on every start; the db core reads
 # the protos at boot. On sale: in-game line 10 (Wyposazenie, 1-99) and the web
-# shop's "Wyposazenie" page (category 10, the owner, 3 October) - INSERT IGNORE / NOT EXISTS, so a price the
+# shop's "Wyposazenie" page (category 10, the owner, 3 October); the web shop's "Kon i
+# pomoc" goods (hay, carrots, medal, glove, cape) also in-game, Wyposazenie 11-15, - INSERT IGNORE / NOT EXISTS, so a price the
 # operator changed is kept. The client rows: client-patches/client-2.0.30/
 # tools/quiver. Idempotent.
 # ---------------------------------------------------------------------------
@@ -2422,7 +2423,10 @@ UPDATE world.item_proto SET name = 'Quiver', locale_name = _cp1250 X'4B6FB3637A6
     value0 = 0, value1 = 0, value2 = 100, value3 = 25, value4 = 1300, value5 = 2250
 WHERE vnum = 8010;
 INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (10, 8010, 1, 100, 'DRAGON_COIN', 35);
-UPDATE common.itemshop_items SET minLevel = 35 WHERE vnum = 8010 AND minLevel = 0;" || echo "[playerbot-migrate] WARNING: could not add Kolczan (the ItemShop's quiver)" >&2
+UPDATE common.itemshop_items SET minLevel = 35 WHERE vnum = 8010 AND minLevel = 0;
+INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
+ (11, 50054, 10, 5, 'DRAGON_COIN', 0), (12, 50055, 10, 5, 'DRAGON_COIN', 0), (13, 50050, 1, 40, 'DRAGON_COIN', 0),
+ (14, 70043, 1, 15, 'DRAGON_COIN', 0), (15, 70048, 1, 10, 'DRAGON_COIN', 0);" || echo "[playerbot-migrate] WARNING: could not add Kolczan (the ItemShop's quiver)" >&2
 db -e "INSERT IGNORE INTO itemshop.ishop_category (id, name) VALUES (10, 'Wyposazenie');
 INSERT INTO itemshop.ishop_items (category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon)
 SELECT 10, _utf8mb4 X'4B6FC582637A616E2028313420646E6929', 'Nielimitowane strzaly dla ninja z lukiem: zakladany w miejsce strzal, zadna strzala sie nie zuzywa. Dziala 14 dni.', 100, 'cash', 8010, 1, 0, 0, 0, '08010'
