@@ -46,6 +46,7 @@
 #include "item_manager.h"
 #include "questmanager.h"
 #include "questpc.h"
+#include "packet.h"
 #include "desc.h"
 #include "desc_client.h"
 #include "db.h"

@@ -18,9 +18,7 @@
 // An entry is "id,vnum,count,s0,s1,s2[,type:value;...x7]".
 #pragma once
 
-#include "../../common/tables.h"
-
-class CHARACTER;
+// A normal header, included after stdafx.h (LPCHARACTER, DWORD).
 
 namespace playerbot_collector {
 
@@ -75,6 +73,6 @@ const DWORD MAX_ENTRY_COUNT = 2000000000u;
 // A move must be within this of where the window was opened.
 const int MAX_DISTANCE = 1500;
 
-void Command(CHARACTER* ch, const char* argument);
+void Command(LPCHARACTER ch, const char* argument);
 
 }  // namespace playerbot_collector
