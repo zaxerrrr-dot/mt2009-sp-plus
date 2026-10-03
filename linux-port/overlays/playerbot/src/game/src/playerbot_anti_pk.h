@@ -48,6 +48,9 @@ namespace
 {
 	// Defined in playerbot_manager.cpp beside the duel it was written for.
 	const char* GetPlayerBotDuelUnreadiness(LPCHARACTER ch, DWORD dwNow);
+	// MT2009_PLUS_SIDEKICK_DEFEND_V1: defined in playerbot_sidekick.h - a blow
+	// of another kingdom at a companion or at its owner, for its defence.
+	void NotePlayerBotSidekickDefendBlow(LPCHARACTER victim, LPCHARACTER attacker, DWORD dwNow);
 
 	const char* GetPlayerBotFoeReasonName(BYTE reason)
 	{
@@ -457,6 +460,10 @@ namespace
 				attackerState->second.dwTargetVID != (DWORD)victim->GetVID() &&
 				attackerState->second.persona.dwFoeVID != (DWORD)victim->GetVID())
 			return;
+		// MT2009_PLUS_SIDEKICK_DEFEND_V1: a meant blow at a companion or its
+		// owner, for the companion's answer - before the guild's return below,
+		// which an owner in a guild and no party would otherwise take.
+		NotePlayerBotSidekickDefendBlow(victim, attacker, dwNow);
 		// A blow at a person of a guild: the guild's call for the person. A
 		// person who stands in a guild and in no party reaches this function
 		// for its guild alone (playerbotify apply_guild_person_struck), so the
