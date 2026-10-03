@@ -55,8 +55,8 @@ Ulepszanie +0 → +9 (receptury właściciela, Yang i szansa z paczki; porażka 
 | +8→+9 | 15× Smocza Łuska + 15× Smoczy Szpon | 200 mln | 30% |
 
 Kamień Przebudzenia: bossowie 75–97 3–4%, Beran-Setaou (Leże Smoka) i Azrael 10%, bossowie 103–107 5–7%,
-Królowa Dżungli (Starożytna Dżungla) 12% – `playerbot_awakening.h`; Razador i Nemere 15% – w `boss_drop`
-ich questów (sami nie dają przedmiotów).
+Królowa Dżungli (Starożytna Dżungla) 12% – `playerbot_awakening.h`. Razador i Nemere go nie dają
+(decyzja właściciela z 3 października; wcześniej 15% w `boss_drop` ich questów).
 
 ## Kamienie duchowe +0…+9
 

@@ -23,8 +23,8 @@
 //   * A soul stone +4..+8 is refined at the Blacksmith by recipe 7200 + grade
 //     (Magiczny Pyl and yang); a failure destroys the stone, as before.
 //   * Kamien Przebudzenia drops from the bosses of AWAKENING_BOSS_DROPS (his
-//     table, plus Krolowa Dzungli); Razador and Nemere give it through their
-//     dungeon quests' boss_drop (their bosses drop no items, item_manager.cpp).
+//     table, plus Krolowa Dzungli); Razador and Nemere give none (the owner,
+//     3 October - it was their dungeon quests' boss_drop at 15%).
 //   * MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, nowy-system v0.17):
 //     Olejek Niebios (71056) is a plain material (apply.sh) and the second
 //     ingredient of the soul stone steps 7204-7208 (1/1/2/2/3 beside the
@@ -122,9 +122,8 @@ namespace mt2009_awakening
 
 	// The boss drop of Kamien Przebudzenia: per 10 000 kills, whatever
 	// mob_drop_item.txt says. Digi Rasta's table (chapters III-IV) without
-	// Razador (6091) and Nemere (6191) - their dungeon quests roll it at 15%
-	// (razador_dungeon.quest, nemere_dungeon.quest) - and with the Ancient
-	// Jungle's last boss.
+	// Razador (6091) and Nemere (6191), which give none (the owner, 3 October),
+	// and with the Ancient Jungle's last boss.
 	struct TBossDrop
 	{
 		DWORD dwMobVnum;
