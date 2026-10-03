@@ -2107,9 +2107,19 @@ namespace
 				return false;
 			const int rareKind = GetPlayerBotRareGoodsKind(item->GetVnum());
 			if (rareKind != PLAYERBOT_RARE_GOODS_NONE)
-				return IsPlayerBotRareGoodsForMerchant(ch->GetPlayerID(), item->GetVnum(), get_dword_time()) ||
-						(IsPlayerBotBagUnderPressure(ch) &&
-						 (!PlayerBotHasCounter(ch) || IsPlayerBotRareGoodsShopQuotaFull(rareKind)));
+			{
+				if (IsPlayerBotRareGoodsForMerchant(ch->GetPlayerID(), item->GetVnum(), get_dword_time()))
+					return true;
+				// MT2009_PLUS_BOT_SASH_FLOW_V1: two or more sashes for a counter
+				// go up whatever the counters' share (BotOfflineCounterRefuses);
+				// under pressure the merchant takes only the plain +0 ones past
+				// what the counter holds (IsPlayerBotSashForMerchant).
+				if (rareKind == PLAYERBOT_RARE_GOODS_SASH && PlayerBotHasCounter(ch) &&
+						GetPlayerBotSashGoodsInBag(ch) >= 2)
+					return IsPlayerBotSashForMerchant(ch, item);
+				return IsPlayerBotBagUnderPressure(ch) &&
+						(!PlayerBotHasCounter(ch) || IsPlayerBotRareGoodsShopQuotaFull(rareKind));
+			}
 		}
 
 		const DWORD vnum = item->GetVnum();
