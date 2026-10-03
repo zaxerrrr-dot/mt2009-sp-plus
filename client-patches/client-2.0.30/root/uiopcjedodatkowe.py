@@ -111,6 +111,12 @@ def Set(key, value):
 
 def Apply(force=False):
 	now = app.GetTime()
+	# MT2009_PLUS_EXTRA_OPTIONS_CLOCK_V1: the game's clock starts again after a
+	# channel change or a warp - the old "next" lay far ahead, so nothing was
+	# applied and the hidden trees came back until it caught up (the owner,
+	# 3 October). A clock that went back resets the throttle.
+	if now + 2.0 < _state["next"] - 1.0:
+		_state["next"] = 0.0
 	if not force and now < _state["next"]:
 		return
 	_state["next"] = now + 1.0
