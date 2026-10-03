@@ -38,6 +38,8 @@ REFINE_FAILED_TEXTS = {
 }
 KILL_SOUND = "mt2009_ui/killstreak/%d.wav"
 KILL_SOUND_MAX = 13
+# The slots of a character window skill page (CPythonPlayer SKILL_MAX_NUM is 255; a page uses far fewer).
+SKILL_PAGE_SLOTS = 64
 
 
 def _RefineFailedType(game, kind="-1", *rest):
@@ -63,12 +65,29 @@ def _KillSound(game, stage="1", *rest):
 	snd.PlaySound(KILL_SOUND % stage)
 
 
+def _ClearCharacterSkillCoolTimes(interface):
+	"""The character window's skill pages keep their slots' cooltime sweeps over
+	a refresh (uicharacter.py, ENABLE_SLOT_WINDOW_EX); the reset takes them away."""
+	window = getattr(interface, "wndCharacter", None)
+	pages = getattr(window, "skillPageDict", None) if window else None
+	if not pages:
+		return
+	for page in pages.values():
+		try:
+			start = page.GetStartIndex()
+			for slot in xrange(start, start + SKILL_PAGE_SLOTS):
+				page.SetSlotCoolTime(slot, 0.0, 0.0)
+		except Exception:
+			continue
+
+
 def _SkillCoolTimeReset(game, *rest):
 	if not hasattr(player, "ResetSkillCoolTimes"):
 		return
 	player.ResetSkillCoolTimes()
 	interface = getattr(game, "interface", None)
 	if interface:
+		_ClearCharacterSkillCoolTimes(interface)
 		interface.RefreshSkill()
 
 
