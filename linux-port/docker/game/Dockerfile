@@ -447,6 +447,17 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; G=/opt/metin2/
  && mv "$G.new" "$G" \
  && rm -f "$A" \
  && echo "share: drop edit - 9 groups, Beran, shared groups 10743 / 10755"
+# MT2009_PLUS_METIN_BEANS_V1: Green Dragon Bean (100300) at 2.5% from every Metin of level 70+
+# (the owner, 3 October) - one small drop group per Metin, merged by the engine with any group
+# the Metin already has.
+COPY mob_drop_item.metinbeans.append.txt /tmp/mob_drop_item.metinbeans.append.txt
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_drop_item.metinbeans.append.txt \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_metinbean_' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A" >> "$F" \
+ && rm -f "$A" \
+ && echo "share: metin beans - $(grep -c -E '^Group[[:blank:]]+MT2009_metinbean_' "$F") groups"
 
 # MT2009_PLUS_FLOWER_V1: the Flower Event's five gift boxes (83023-83027, Pudelko z Chryzantema ..
 # ze Slonecznikiem; playerbot_flower.h gives them for 10 shoots of a flower), opened by their
