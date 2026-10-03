@@ -1033,6 +1033,11 @@ class GameWindow(ui.ScriptWindow):
 		import uisidekick
 		uisidekick.OnServerGear(slot, name)
 
+	def __SidekickShopQuote(self, *args):
+		self.__KeepSidekickWindow()
+		import uisidekick
+		uisidekick.OnServerShopQuote(*args)
+
 
 	def __AutoHuntTarget(self, vid="0", *rest):
 		import uiautohunt
@@ -3076,6 +3081,8 @@ class GameWindow(ui.ScriptWindow):
 			"SidekickNames"					: self.__SidekickNames,
 			"SidekickGear"					: self.__SidekickGear,
 			"SidekickWindow"				: self.__SidekickWindow,
+			# MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: what a "Kup" errand would cost (uisidekick.py).
+			"SidekickShopQuote"			: self.__SidekickShopQuote,
 
 			# fishing
 			"FishingGameStart": self.FishingGameStart,

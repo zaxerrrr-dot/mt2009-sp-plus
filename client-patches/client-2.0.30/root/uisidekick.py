@@ -317,6 +317,32 @@ ORDERS = (
 	('Raport', 'stan'),
 )
 TEXT_DISMISS = 'Odpraw'
+# MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: "Kup..." sends the companion for one kind
+# of goods (playerbot_sidekick_shop.h): "kup <key> <count>" is answered with
+# "SidekickShopQuote <key> <count> <cost> <market>" - the most the owner pays
+# up front, the rest coming back - and "kup <key> <count> tak" sends it.
+TEXT_SHOP = 'Kup...'
+TEXT_SHOP_TITLE = 'Zakupy towarzysza'
+TEXT_SHOP_COUNT = 'Ile? %s'
+TEXT_SHOP_ASK = '%d x %s'
+TEXT_SHOP_ASK_COST = 'Zap\xb3acisz z g\xf3ry %s%s Yang - reszta wr\xf3ci.'
+TEXT_SHOP_ASK_MAX = 'najwy\xbfej '
+TEXT_SHOP_HINTS = (
+	'Czerwone, niebieskie: Handlarka (cena NPC).',
+	'Strza\xb3y: Handlarz Broni\xb9 (cena NPC).',
+	'Zielone, fioletowe, peleryny: z targu.',
+	'P\xb3acisz ty, reszta yang wraca do ciebie.',
+	'Zakupy w\xb3o\xbfy ci do torby albo do swojej.',
+)
+SHOP_POTIONS = (('Czerwona', 'czerwona'), ('Niebieska', 'niebieska'), ('Zielona', 'zielona'),
+	('Fioletowa', 'fioletowa'))
+SHOP_SIZES = (('M', '1'), ('\x8c', '2'), ('D', '3'))
+SHOP_OTHER = (('Strza\xb3y', 'strzaly'), ('Peleryny', 'peleryna'))
+SHOP_NAMES = {'strzaly': 'Drewniana Strza\xb3a', 'peleryna': 'Peleryna M\xeastwa'}
+for _label, _key in SHOP_POTIONS:
+	for _size, _digit in SHOP_SIZES:
+		SHOP_NAMES[_key + _digit] = '%s Mikstura (%s)' % (_label, _size)
+SHOP_MAX_DIGITS = 4
 TEXT_DISMISS_ASK = 'Odprawi\xe6 towarzysza na dobre? Tego nie da si\xea cofn\xb9\xe6.'
 TEXT_INVENTORY = 'Ekwipunek'
 TEXT_STAT_MANUAL = 'Statystyki rozdaj\xea sam'
@@ -763,6 +789,10 @@ class SidekickWindow(ui.ScriptWindow):
 		self.nextSkillPoll = 0.0
 		self.question = None
 		self.statDialog = None
+		self.shopBoard = None
+		self.shopDialog = None
+		self.shopDialogKey = ''
+		self.shopQuote = None
 		self.statDialogKey = ''
 		self.resetVnum = 0
 		self.chosenSkill = 0
@@ -1009,10 +1039,11 @@ class SidekickWindow(ui.ScriptWindow):
 		self.lootButtons = []
 		for i, text in enumerate(LOOTS):
 			self.lootButtons.append(self._Btn(page, 'middle', ORDER_COLUMNS[i], 239, text, self.OnLoot, i))
-		# Six orders fill both rows: "Odpraw" stands beside the bag.
-		left = PAGE_WIDTH // 2 - BUTTON_WIDTHS['large'] - 4
-		self.inventoryButton = self._Btn(page, 'large', left, 266, TEXT_INVENTORY, self.OnInventory)
-		self.dismissButton = self._Btn(page, 'large', PAGE_WIDTH // 2 + 4, 266, TEXT_DISMISS, self.OnDismiss)
+		# Six orders fill both rows: the bag, "Kup..." and "Odpraw" stand under
+		# them (MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1).
+		self.inventoryButton = self._Btn(page, 'middle', ORDER_COLUMNS[0], 266, TEXT_INVENTORY, self.OnInventory)
+		self.shopButton = self._Btn(page, 'middle', ORDER_COLUMNS[1], 266, TEXT_SHOP, self.OnShop)
+		self.dismissButton = self._Btn(page, 'middle', ORDER_COLUMNS[2], 266, TEXT_DISMISS, self.OnDismiss)
 		self.inventoryButton.ShowToolTip = ui.__mem_func__(self.OnOverBag)
 		self.inventoryButton.HideToolTip = ui.__mem_func__(self.HideToolTip)
 		self.ordersStatus = StatusLines([self._CenteredLabel(page, 291)], PAGE_WIDTH - 20)
@@ -1731,16 +1762,80 @@ class SidekickWindow(ui.ScriptWindow):
 	def OnDismissCancel(self):
 		self.CloseQuestion()
 
+	# MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: what to buy, how many, and yes to
+	# the price the server names.
+	def OnShop(self):
+		self.CloseShopDialogs()
+		board = ShopBoard(ui.__mem_func__(self.OnShopGood))
+		board.Open()
+		self.shopBoard = board
+
+	def OnShopGood(self, key):
+		import uiCommon
+		self.CloseShopDialogs()
+		dialog = uiCommon.InputDialog()
+		dialog.SetTitle(TEXT_SHOP_COUNT % SHOP_NAMES.get(key, key))
+		dialog.SetNumberMode()
+		dialog.SetMaxLength(SHOP_MAX_DIGITS)
+		dialog.SetAcceptEvent(ui.__mem_func__(self.OnShopCountAccept))
+		dialog.SetCancelEvent(ui.__mem_func__(self.CloseShopDialogs))
+		dialog.Open()
+		self.shopDialog = dialog
+		self.shopDialogKey = key
+
+	def OnShopCountAccept(self):
+		dialog = self.shopDialog
+		key = self.shopDialogKey
+		count = ParseInt(dialog.GetText(), 0) if dialog else 0
+		self.CloseShopDialogs()
+		if key in SHOP_NAMES and count > 0:
+			self.SendCommand('kup %s %d' % (key, count))
+
+	def AskShopQuote(self, key, count, cost, market):
+		import uiCommon
+		if key not in SHOP_NAMES or count <= 0 or cost <= 0:
+			return
+		self.CloseQuestion()
+		self.CloseShopDialogs()
+		question = uiCommon.QuestionDialog2()
+		question.SetText1(TEXT_SHOP_ASK % (count, SHOP_NAMES[key]))
+		question.SetText2(TEXT_SHOP_ASK_COST % (TEXT_SHOP_ASK_MAX if market else '', FormatGold(cost)))
+		question.SetAcceptEvent(ui.__mem_func__(self.OnShopQuoteAccept))
+		question.SetCancelEvent(ui.__mem_func__(self.CloseQuestion))
+		question.Open()
+		self.question = question
+		self.shopQuote = (key, count)
+
+	def OnShopQuoteAccept(self):
+		quote = self.shopQuote
+		self.CloseQuestion()
+		if quote:
+			self.SendCommand('kup %s %d tak' % quote)
+			self.nextPoll = 0.0
+
+	def CloseShopDialogs(self):
+		board = self.shopBoard
+		dialog = self.shopDialog
+		self.shopBoard = None
+		self.shopDialog = None
+		self.shopDialogKey = ''
+		if board:
+			board.Destroy()
+		if dialog:
+			dialog.Close()
+
 	def CloseQuestion(self):
 		question = self.question
 		self.question = None
 		self.resetVnum = 0
+		self.shopQuote = None
 		if question:
 			question.Close()
 
 	def CloseDialogs(self):
 		self.CloseQuestion()
 		self.CloseStatDialog()
+		self.CloseShopDialogs()
 
 	# -------------------------------------------------------------- the clock
 
@@ -1834,6 +1929,12 @@ def OnServerGear(slot='0', name='-', *rest):
 	GetWindow().OnServerGear(slot, name)
 
 
+def OnServerShopQuote(key='', count='0', cost='0', market='0', *rest):
+	# MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: the price of a "Kup" errand, asked
+	# of the owner before the companion goes.
+	GetWindow().AskShopQuote(key, ParseInt(count), ParseInt(cost), ParseInt(market) != 0)
+
+
 def RefreshSkills():
 	"""The skill list and the stats changed (uisidekickinventory.py)."""
 	window = _window['window']
@@ -1859,6 +1960,85 @@ def Destroy():
 	if 'uisidekickinventory' in sys.modules:
 		sys.modules['uisidekickinventory'].Destroy()
 	ResetCommands()
+
+
+class ShopBoard(ui.BoardWithTitleBar):
+	"""MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: the goods a "Kup" errand may be
+	for - a potion of each colour in three sizes, arrows and capes; a click
+	names one and closes the board."""
+
+	WIDTH = 236
+
+	def __init__(self, event):
+		ui.BoardWithTitleBar.__init__(self)
+		self.widgets = []
+		self.event = event
+		rows = len(SHOP_POTIONS) + 1
+		self.AddFlag('movable')
+		self.AddFlag('float')
+		self.SetSize(self.WIDTH, 36 + rows * 24 + 8 + len(TEXT_SHOP_HINTS) * 14 + 12)
+		self.SetTitleName(TEXT_SHOP_TITLE)
+		self.SetCloseEvent(ui.__mem_func__(self.Close))
+		self.Build()
+		self.SetCenterPosition()
+
+	def Build(self):
+		y = 36
+		for label, key in SHOP_POTIONS:
+			self._Label(16, y + 3, label)
+			for i, (size, digit) in enumerate(SHOP_SIZES):
+				self._Btn('small', 90 + i * 46, y, size, key + digit)
+			y += 24
+		for i, (label, key) in enumerate(SHOP_OTHER):
+			self._Btn('large', 16 + i * 104, y, label, key)
+		y += 32
+		for hint in TEXT_SHOP_HINTS:
+			line = self._Label(16, y, hint)
+			line.SetPackedFontColor(COLOR_HINT)
+			y += 14
+
+	def _Label(self, x, y, text):
+		line = ui.TextLine()
+		line.SetParent(self)
+		line.SetPosition(x, y)
+		line.SetText(text)
+		line.Show()
+		self.widgets.append(line)
+		return line
+
+	def _Btn(self, size, x, y, text, key):
+		button = ui.Button()
+		button.SetParent(self)
+		button.SetPosition(x, y)
+		button.SetUpVisual(BUTTON_IMAGE % (size, 1))
+		button.SetOverVisual(BUTTON_IMAGE % (size, 2))
+		button.SetDownVisual(BUTTON_IMAGE % (size, 3))
+		button.SetText(text)
+		button.SAFE_SetEvent(self.OnPick, key)
+		button.Show()
+		self.widgets.append(button)
+		return button
+
+	def OnPick(self, key):
+		event = self.event
+		if event:
+			event(key)
+
+	def Open(self):
+		self.Show()
+		self.SetTop()
+
+	def Close(self):
+		self.Hide()
+
+	def OnPressEscapeKey(self):
+		self.Close()
+		return True
+
+	def Destroy(self):
+		self.Hide()
+		self.event = None
+		self.widgets = []
 
 
 class Keeper(object):
