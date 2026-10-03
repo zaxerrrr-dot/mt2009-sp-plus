@@ -266,23 +266,110 @@ namespace
 		return GetPlayerBotNextHorseTraining(ch, cost) ? cost.materials : 0;
 	}
 
+	// MT2009_PLUS_HORSE_GOODS_MARKET_V1 (the owner, 3 October): what a bot keeps
+	// of the Medale Konne and Materialy Rzemieslnicze, by its own level -
+	//   * under 25: what its horse still needs to reach level 1;
+	//   * 25 to 35: what its horse still needs to reach level 11;
+	//   * past 35: the next two trainings (and the due saddlebag row), the rest
+	//     bought on the market as the horse goes.
+	// Everything over that is goods. On the test world 15 956 materials and
+	// 1 437 medals stood in the bags and none on the counters: every bot kept
+	// two saddlebag rows and two trainings ahead, from its first level.
+	const BYTE PLAYERBOT_HORSE_GOODS_YOUNG_BELOW = 25;
+	const BYTE PLAYERBOT_HORSE_GOODS_MID_UNTIL = 35;
+	const int PLAYERBOT_HORSE_GOODS_YOUNG_HORSE = 1;
+	const int PLAYERBOT_HORSE_GOODS_MID_HORSE = 11;
+
+	// The horse level a bot of 35 or less keeps towards; 0 past 35.
+	int GetPlayerBotHorseGoodsTargetLevel(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		if (ch->GetLevel() < PLAYERBOT_HORSE_GOODS_YOUNG_BELOW)
+			return PLAYERBOT_HORSE_GOODS_YOUNG_HORSE;
+		if (ch->GetLevel() <= PLAYERBOT_HORSE_GOODS_MID_UNTIL)
+			return PLAYERBOT_HORSE_GOODS_MID_HORSE;
+		return 0;
+	}
+
+	// The paid trainings from the horse's level up to `target` (the trials
+	// cost no medal and no material).
+	void SumPlayerBotHorseTrainingTo(LPCHARACTER ch, int target, int& medals, int& materials)
+	{
+		medals = 0;
+		materials = 0;
+		if (!ch)
+			return;
+		for (int l = ch->GetHorseLevel(); l < target; ++l)
+		{
+			TPlayerBotHorseTraining cost;
+			if (!GetPlayerBotHorseTrainingCost(l, cost))
+				continue;
+			medals += cost.medals;
+			materials += cost.materials;
+		}
+	}
+
+	// Materials of the next `levels` trainings, stopping at a trial like the
+	// medals above.
+	int GetPlayerBotHorseTrainingMaterials(LPCHARACTER ch, int levels)
+	{
+		if (!ch || !CanPlayerBotAdvanceHorse(ch))
+			return 0;
+		int materials = 0;
+		for (int l = ch->GetHorseLevel(), n = 0; n < levels; ++l, ++n)
+		{
+			TPlayerBotHorseTraining cost;
+			if (!GetPlayerBotHorseTrainingCost(l, cost))
+				break;
+			materials += cost.materials;
+		}
+		return materials;
+	}
+
+	// The materials the horse keeps (and buys towards) by the band above.
+	int GetPlayerBotHorseGoodsMaterialsWanted(LPCHARACTER ch, bool nextOnly)
+	{
+		const int target = GetPlayerBotHorseGoodsTargetLevel(ch);
+		if (target > 0)
+		{
+			int medals = 0, materials = 0;
+			SumPlayerBotHorseTrainingTo(ch, target, medals, materials);
+			return materials;
+		}
+		return nextOnly ? GetPlayerBotHorseTrainingMaterialsWanted(ch) : GetPlayerBotHorseTrainingMaterials(ch, 2);
+	}
+
 	// A medal off a counter for the horse: the next training's, over the due
 	// saddlebag row's.
+	int GetPlayerBotHorseMedalKeep(LPCHARACTER ch);
+
 	bool PlayerBotHorseWantsMedal(LPCHARACTER ch)
 	{
 		TPlayerBotHorseTraining cost;
 		if (!GetPlayerBotNextHorseTraining(ch, cost))
 			return false;
-		return (int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <
-				cost.medals + GetPlayerBotSaddlebagMedalReserve(ch);
+		// MT2009_PLUS_HORSE_GOODS_MARKET_V1: never past its band's keep - what it
+		// bought over that would go straight back on its counter.
+		const int have = (int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM);
+		return have < cost.medals + GetPlayerBotSaddlebagMedalReserve(ch) &&
+				have < GetPlayerBotHorseMedalKeep(ch);
 	}
 
-	// The medals a bot never puts up: PLAYERBOT_HORSE_MEDAL_KEEP, or the next
-	// two trainings and the due row when that is more.
+	// The medals a bot never puts up. MT2009_PLUS_HORSE_GOODS_MARKET_V1: up to
+	// 35 what the horse needs to reach its band's level (1 under 25, 11 to 35);
+	// past 35 the next two trainings and the due row - no floor, the owner's
+	// "at most two horse levels ahead".
 	int GetPlayerBotHorseMedalKeep(LPCHARACTER ch)
 	{
-		return std::max(PLAYERBOT_HORSE_MEDAL_KEEP,
-				GetPlayerBotHorseTrainingMedals(ch, 2) + GetPlayerBotSaddlebagMedalReserve(ch));
+		const int target = GetPlayerBotHorseGoodsTargetLevel(ch);
+		if (target > 0)
+		{
+			int medals = 0, materials = 0;
+			SumPlayerBotHorseTrainingTo(ch, target, medals, materials);
+			return medals;
+		}
+		return GetPlayerBotHorseTrainingMedals(ch, 2) + GetPlayerBotSaddlebagMedalReserve(ch);
 	}
 
 	// The feed of this kind the next training eats; the bag keeps that much.

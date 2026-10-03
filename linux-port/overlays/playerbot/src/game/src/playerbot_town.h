@@ -3812,7 +3812,10 @@ namespace
 			return true;
 		// A saddlebag bot's medals are its rows' and its horse's
 		// (playerbot_saddlebag.h): none is goods while either can use one.
+		// MT2009_PLUS_HORSE_GOODS_MARKET_V1: past 35 only - a younger keeper lists
+		// what is over its band's keep like everybody else.
 		if (ch && IsPlayerBotSaddlebagKeeperPID(ch->GetPlayerID()) &&
+				GetPlayerBotHorseGoodsTargetLevel(ch) == 0 &&
 				GetPlayerBotPersonalityByPID(ch->GetPlayerID()) != BOT_PERSONALITY_MEDAL_DROPPER &&
 				(GetPlayerBotSaddlebagMedalReserve(ch) > 0 || CanPlayerBotAdvanceHorse(ch)))
 			return false;

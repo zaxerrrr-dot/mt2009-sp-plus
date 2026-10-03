@@ -177,6 +177,10 @@ namespace
 	// eleven or twelve with the medals for the next levels in its bag.
 	int GetPlayerBotSaddlebagMedalReserve(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_HORSE_GOODS_MARKET_V1: rows only past 35 (the band rule,
+		// GetPlayerBotHorseGoodsTargetLevel); a younger bot keeps its horse's.
+		if (GetPlayerBotHorseGoodsTargetLevel(ch) > 0)
+			return 0;
 		const TPlayerBotSaddlebagRow* row = GetPlayerBotNextSaddlebagRow(ch);
 		return row && IsPlayerBotSaddlebagRowDue(ch) && CountPlayerBotCraftMaterials(ch) >= row->materials
 				? row->medals : 0;
@@ -185,22 +189,18 @@ namespace
 	// The materials the rows this bot still wants will take.
 	int GetPlayerBotSaddlebagMaterialsWanted(LPCHARACTER ch, bool nextOnly)
 	{
+		(void)nextOnly;
 		if (!IsPlayerBotSaddlebagKeeper(ch))
 			return 0;
-		const int rows = GetPlayerBotSaddlebagRows(ch);
-		const int target = std::min<int>(INVENTORY_PAGE_ROW, GetPlayerBotSaddlebagTargetRows(ch->GetPlayerID()));
-		// MT2009_PLUS_HORSE_ECONOMY_V2: two rows at most - 48 213 materials
-		// stood in the bots' bags on the supporters' world, kept for rows
-		// hours away; past the next two rows' need they are goods
-		// (IsPlayerBotKeptCraftMaterial), listed twenty a line.
-		int need = 0;
-		for (int r = rows; r < target && r < rows + 2; ++r)
-		{
-			need += PLAYERBOT_SADDLEBAG_ROWS[r].materials;
-			if (nextOnly)
-				break;
-		}
-		return need;
+		// MT2009_PLUS_HORSE_GOODS_MARKET_V1: up to 35 none; past 35 only the due
+		// row's, bought when the row is due. (HORSE_ECONOMY_V2 kept two rows
+		// ahead - 48 213 materials stood in the bags of the supporters' world;
+		// on the test world every bot from its first level kept them and the
+		// counters had none.)
+		if (GetPlayerBotHorseGoodsTargetLevel(ch) > 0)
+			return 0;
+		const TPlayerBotSaddlebagRow* row = GetPlayerBotNextSaddlebagRow(ch);
+		return row && IsPlayerBotSaddlebagRowDue(ch) ? row->materials : 0;
 	}
 
 	int CountPlayerBotCraftMaterials(LPCHARACTER ch)
@@ -215,7 +215,7 @@ namespace
 	int GetPlayerBotCraftMaterialsWanted(LPCHARACTER ch, bool nextOnly)
 	{
 		return GetPlayerBotSaddlebagMaterialsWanted(ch, nextOnly) +
-				GetPlayerBotHorseTrainingMaterialsWanted(ch);
+				GetPlayerBotHorseGoodsMaterialsWanted(ch, nextOnly); // MT2009_PLUS_HORSE_GOODS_MARKET_V1
 	}
 
 	bool IsPlayerBotCraftExchangeVnum(DWORD vnum)
@@ -403,6 +403,8 @@ namespace
 	// A medal for the due row, over what the horse pass would spend.
 	bool PlayerBotSaddlebagWantsMedal(LPCHARACTER ch)
 	{
+		if (GetPlayerBotHorseGoodsTargetLevel(ch) > 0)	// MT2009_PLUS_HORSE_GOODS_MARKET_V1
+			return false;
 		const TPlayerBotSaddlebagRow* row = GetPlayerBotNextSaddlebagRow(ch);
 		return row && IsPlayerBotSaddlebagRowDue(ch) &&
 				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) < row->medals;
