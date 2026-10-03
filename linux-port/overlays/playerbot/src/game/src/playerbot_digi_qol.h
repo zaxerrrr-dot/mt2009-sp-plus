@@ -45,7 +45,7 @@
 //    buttons (uirestart.py).
 //  - do_nowy_ksiegi, "/nowy_ksiegi <10 cells>": the book exchange at
 //    Seon-Hae (quest ksiegi_seonhae, 20095): ten skill books of any kind +
-//    1 000 000 Yang = a random "Instr." book (50400 + skill) of the player's
+//    250 000 Yang = a random "Instr." book (50400 + skill) of the player's
 //    own class and skill group, only the ones our item_proto has. Everything
 //    is checked here again: the NPC by the vid the quest wrote (same map,
 //    25 m, talked to in the last 10 minutes), no other window, the ten
@@ -106,7 +106,7 @@ namespace mt2009_digi_qol
 	const DWORD BOOK_NPC = 20095;	// Seon-Hae
 	const int BOOK_NPC_RANGE = 2500;
 	const int BOOK_NPC_TALK_SECONDS = 600;
-	const long long BOOK_COST = 1000000;
+	const long long BOOK_COST = 250000;	// the owner, 3 October (was 1 000 000)
 	const int BOOK_COUNT = 10;
 	const DWORD BOOK_INSTR_BASE = 50400;	// "Instr." book = 50400 + skill vnum
 
@@ -361,7 +361,7 @@ ACMD(do_nowy_ksiegi)
 	}
 	if ((long long)ch->GetGold() < BOOK_COST)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, "Za ma" "\xb3" "o Yang (1 000 000).");
+		ch->ChatPacket(CHAT_TYPE_INFO, "Za ma" "\xb3" "o Yang (250 000).");
 		return;
 	}
 

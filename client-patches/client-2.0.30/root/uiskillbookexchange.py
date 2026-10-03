@@ -1,6 +1,6 @@
 # MT2009_PLUS_DIGI_SERVER_QOL_V1 - Seon-Hae's book exchange. Autor: Digi Rasta
 # (nowy-system v0.23.0, uiksiegi.py; his "SKILLBOOK_COMB_SYSTEM" of the Biore
-# list). Ten skill books of any kind + 1 000 000 Yang = a random "Instr." book
+# list). Ten skill books of any kind + 250 000 Yang = a random "Instr." book
 # of the player's own class and skill group.
 #
 # The quest ksiegi_seonhae opens the window at Seon-Hae (20095) - "NOWY_KSIEGI
@@ -16,18 +16,18 @@ import net
 import player
 import ui
 
-COST = 1000000
+COST = 250000
 SLOTS = 10
 TEXT_TITLE = "Wymiana ksi\xb9g umiej\xeatno\x9cci"
 TEXT_INFO = (
 	"Przeci\xb9gnij 10 dowolnych ksi\xb9g umiej\xeatno\x9cci.",
 	"Seon-Hae da za nie losow\xb9 ksi\xeag\xea Twojej klasy",
-	"i drogi. Op\xb3ata: 1 000 000 Yang.",
+	"i drogi. Op\xb3ata: 250 000 Yang.",
 )
 TEXT_BUTTON = "Wymie\xf1"
 TEXT_NOT_BOOK = "To nie jest ksi\xeaga umiej\xeatno\x9cci."
 TEXT_NEED_TEN = "Potrzeba 10 ksi\xb9g."
-TEXT_NO_GOLD = "Za ma\xb3o Yang (1 000 000)."
+TEXT_NO_GOLD = "Za ma\xb3o Yang (250 000)."
 TEXT_DONE = "Seon-Hae da\xb3 Ci: %s."
 
 
