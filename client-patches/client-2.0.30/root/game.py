@@ -1067,6 +1067,13 @@ class GameWindow(ui.ScriptWindow):
 		import uiautohunt
 		uiautohunt.OnServerOff(*rest)
 
+	# MT2009_PLUS_UPSTREAM_2_0_76: the way round a wall from the server
+	# ("AutoHuntPath <seq> <ok|direct|none|wait|off> <kind> [points]"); a
+	# server without /autohunt_path never sends it and the hunt walks straight.
+	def __AutoHuntPath(self, *args):
+		import uiautohunt
+		uiautohunt.OnServerPath(*args)
+
 	def __ToggleSprint(self):
 		slotIndex = 105 # sprint slot index
 		skillIndex = player.GetSkillIndex(slotIndex)
@@ -2094,6 +2101,13 @@ class GameWindow(ui.ScriptWindow):
 		if release:
 			release()
 
+	# MT2009_PLUS_UPSTREAM_2_0_76: called by an exe that clears its pressed
+	# keys when the window loses focus (upstream exe 2.0.76); ours does not
+	# call it yet, and then nothing changes.
+	def OnAutoHuntFocusLost(self):
+		import uiautohunt
+		uiautohunt.OnFocusLost()
+
 	def OnKeyUp(self, key):
 		# MT2009_PLUS_VEKIRION_V1: a lone Shift tapped while Skroty
 		# klawiszowe waits for a key is that key.
@@ -3093,6 +3107,7 @@ class GameWindow(ui.ScriptWindow):
 			"AutoHuntTarget"				: self.__AutoHuntTarget,
 			"AutoHuntLoot"					: self.__AutoHuntLoot,
 			"AutoHuntOff"					: self.__AutoHuntOff,
+			"AutoHuntPath"					: self.__AutoHuntPath,
 			"InventoryArrangeResult"		: self.__InventoryArrangeResult,
 			# MT2009_PLUS_SAFEBOX_ARRANGE_V1: the safebox's two buttons (uisafebox.py).
 			"SafeboxArrangeResult"		: self.__SafeboxArrangeResult,

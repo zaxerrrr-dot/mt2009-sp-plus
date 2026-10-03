@@ -473,8 +473,9 @@ class OfflineShopBuilder(ui.ScriptWindow):
 		if inputPrice <= 0:
 			return True	# MT2009_PLUS_VEKIRION_V1: Enter handled, no chat behind the window
 
-		if inputPrice > player.GOLD_MAX:
-			inputPrice = player.GOLD_MAX
+		# MT2009_PLUS_UPSTREAM_2_0_76: the server sells for less than GOLD_MAX only.
+		if inputPrice >= player.GOLD_MAX:
+			inputPrice = player.GOLD_MAX - 1
 
 		attachedInvenType = self.priceInputBoard.sourceWindowType
 		sourceSlotPos = self.priceInputBoard.sourceSlotPos
