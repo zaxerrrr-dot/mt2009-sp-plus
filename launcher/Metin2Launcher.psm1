@@ -824,6 +824,20 @@ function Test-M2FileInUse {
     return $false
 }
 
+function Test-M2SameFile {
+    # True when both files exist with the same length and SHA-256. Any error
+    # (a file held open even for reading) answers false: copy as before.
+    param([string]$Source, [string]$Destination)
+    try {
+        $a = Get-Item -LiteralPath $Source -ErrorAction Stop
+        $b = Get-Item -LiteralPath $Destination -ErrorAction Stop
+        if ($a.Length -ne $b.Length) { return $false }
+        return (Get-FileHash -LiteralPath $Source -Algorithm SHA256 -ErrorAction Stop).Hash -eq
+            (Get-FileHash -LiteralPath $Destination -Algorithm SHA256 -ErrorAction Stop).Hash
+    }
+    catch { return $false }
+}
+
 function Invoke-M2FileRetry {
     # MT2009_PLUS_UPDATE_RETRY_V1: a file the antivirus (or Docker Desktop's
     # file sharing) holds open for a moment - "Proces nie moze uzyskac dostepu
@@ -840,8 +854,9 @@ function Invoke-M2FileRetry {
             return
         }
         catch {
-            if ($attempt -ge 8 -or -not (Test-M2FileInUse -ErrorRecord $_)) { throw }
-            Start-Sleep -Milliseconds 500
+            # MT2009_PLUS_UPDATE_SKIP_SAME_V1: twenty tries, a second apart.
+            if ($attempt -ge 20 -or -not (Test-M2FileInUse -ErrorRecord $_)) { throw }
+            Start-Sleep -Milliseconds 1000
         }
     }
 }
@@ -1191,11 +1206,19 @@ function Invoke-M2PackageUpdate {
             if (-not $destination.StartsWith($target + '\', [StringComparison]::OrdinalIgnoreCase)) {
                 throw "Niedozwolona ścieżka aktualizacji: $relative"
             }
+            $existed = Test-Path -LiteralPath $destination -PathType Leaf
+            # MT2009_PLUS_UPDATE_SKIP_SAME_V1: a file already identical on disk
+            # is neither backed up nor written. Most of a package is unchanged
+            # (icons, quests), and each needless copy was one more chance to
+            # meet a file Docker Desktop's sharing or the antivirus holds open -
+            # "Proces nie moze uzyskac dostepu do pliku 30065.png" on an icon
+            # that had not changed since September (3 October).
+            if ($existed -and (Test-M2SameFile -Source $file.FullName -Destination $destination)) { continue }
             $changes += [pscustomobject]@{
                 Relative = $relative
                 Source = $file.FullName
                 Destination = $destination
-                Existed = Test-Path -LiteralPath $destination -PathType Leaf
+                Existed = $existed
             }
         }
 
