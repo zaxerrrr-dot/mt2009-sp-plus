@@ -635,6 +635,19 @@ if ((Test-Path -LiteralPath $digiRastaApply -PathType Leaf) -and
         Write-Host ('Applied {0} Digi Rasta system edit(s).' -f $digiRastaResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Digi Rasta's client conveniences, server side (server-patches/digirasta-client,
+# MT2009_PLUS_DIGI_CLIENT_QOL_V1, "Autor: Digi Rasta"): a real player's pick-up
+# (item or yang) sends "PickupSound <vnum>" and the client plays a sound by the
+# item's kind (game.py, digiqol.py).
+$digiRastaClientApply = Join-Path $repo 'server-patches/digirasta-client/Apply-DigiRastaClientPatch.ps1'
+if ((Test-Path -LiteralPath $digiRastaClientApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $digiRastaClientResult = & $digiRastaClientApply -SourceDir $engineGameSource
+    if ($digiRastaClientResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Digi Rasta client convenience edit(s).' -f $digiRastaClientResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Entity snapshot check (server-patches/entitysnapshot): ForEachAround's
 # snapshot skips characters destroyed while it is walked (a splash skill's
 # kill ran d.purge_area and the next blow landed on a freed monster - the
