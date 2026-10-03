@@ -158,6 +158,7 @@ linux-port/docker/game/src/server/game/src/char_state.cpp
 linux-port/docker/game/src/server/game/src/cmd.cpp
 linux-port/docker/game/src/server/game/src/cmd_general.cpp
 linux-port/docker/game/src/server/game/src/cmd_gm.cpp
+linux-port/docker/game/src/server/game/src/cube.cpp
 linux-port/docker/game/src/server/game/src/config.cpp
 linux-port/docker/game/src/server/game/src/config.h
 linux-port/docker/game/src/server/game/src/constants.cpp
@@ -186,6 +187,7 @@ linux-port/docker/game/src/server/game/src/questlua_game.cpp
 linux-port/docker/game/src/server/game/src/questlua_global.cpp
 linux-port/docker/game/src/server/game/src/sectree.h
 linux-port/docker/game/src/server/game/src/sectree.cpp
+linux-port/docker/game/src/server/game/src/safebox.cpp
 linux-port/docker/game/src/server/game/src/dungeon.cpp
 linux-port/docker/game/src/server/game/src/item.cpp
 linux-port/docker/game/src/server/game/src/item_attribute.cpp

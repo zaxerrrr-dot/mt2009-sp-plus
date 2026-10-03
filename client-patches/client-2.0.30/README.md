@@ -410,6 +410,23 @@ Znacznik `MT2009_PLUS_HEAVEN_OIL_V1`; serwer: `apply.sh` (blok kamieni duchowych
   podgląd skrzynki – duże liczby skracane (10k, 1.5M) i ustawiane od prawej krawędzi slotu, bez nachodzenia
   na sąsiednie sloty.
 
+## Stosy 200 i poprawki Digi Rasty (v0.23.0) – bez zmian exe
+
+**Autor: Digi Rasta** (paczka „nowy-system” v0.23.0: `20_stakowanie.sql`, `STACK_*` i `ROOT_PATCHES` jego
+`klient.py`), przeniesione jako nasz kod. Znaczniki `MT2009_PLUS_DIGI_STACK_V1`, `MT2009_PLUS_DIGI_FIXES_V1`;
+serwer: `server-patches/digirasta-fixes`, `apply.sh`.
+
+- `tools/digirasta/patch_digirasta_stack.py` (obraz `m2pack-lzo`, idempotentne) – `gamedata/item_proto`: każdy
+  kamień duchowy (typ 10), każda skrzynia-prezent (typ 23) i szkatułki / skrzynie z listy `apply.sh` – flaga 4,
+  bez `ANTI_STACK`, stos 200; Odłamek Smoczego Kamienia (30270) bez limitu 24 h. Nowych wpisów paczek nie ma.
+- `root/uiinventory.py` – kamień duchowy upuszczony na ten sam kamień łączy stos (wcześniej pytał o gniazdo
+  i serwer odmawiał).
+- `root/game.py` – komenda `CubeReload` (`/reload c`): klient zapomina listy receptur kostki i przy następnym
+  otwarciu prosi o nowe.
+- `root/uitip.py` (nowy w tym katalogu – wpis paczki `root` klienta 2.0.44, poprawiony) – ogłoszenia
+  (TipBoard, BigBoard) bez kodów koloru `|c…|r` i linków `|H…|h`: pole tekstowe ich nie rysuje, szły dosłownie
+  i psuły środkowanie.
+
 ## Ekwipunek: blokada sortowania (Alt + LPM) – bez zmian exe
 
 Znacznik `MT2009_PLUS_INVENTORY_SORT_LOCK_V1`. Serwer: `server-patches/sortlock` (`/inventory_arrange [merge]

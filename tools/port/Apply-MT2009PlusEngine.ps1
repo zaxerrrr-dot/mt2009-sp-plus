@@ -685,6 +685,22 @@ if ((Test-Path -LiteralPath $saleTaxApply -PathType Leaf) -and
         Write-Host ('Applied {0} sale tax edit(s).' -f $saleTaxResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Digi Rasta's fixes and stacking (server-patches/digirasta-fixes, "Autor: Digi
+# Rasta", nowy-system v0.23): the safebox's grid rebuilt when an open safebox
+# grows and "/reload c" rebuilding the cube window's recipe lists
+# (MT2009_PLUS_DIGI_FIXES_V1, safebox.cpp, cube.cpp); a refine and a socket
+# taking one piece of a stack (MT2009_PLUS_DIGI_STACK_V1, char_item.cpp - the
+# stacks of 200 are apply.sh's). After the existing patches.
+$digiRastaFixesApply = Join-Path $repo 'server-patches/digirasta-fixes/Apply-DigiRastaFixesPatch.ps1'
+if ((Test-Path -LiteralPath $digiRastaFixesApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'safebox.cpp') -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cube.cpp') -PathType Leaf)) {
+    $digiRastaFixesResult = & $digiRastaFixesApply -SourceDir $engineGameSource
+    if ($digiRastaFixesResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Digi Rasta fix and stacking edit(s).' -f $digiRastaFixesResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both
