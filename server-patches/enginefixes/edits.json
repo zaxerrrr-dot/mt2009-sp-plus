@@ -70,5 +70,35 @@
   "marker": "MT2009_PLUS_CUBE_FOR_PLAYERS_V1",
   "old": "\t{ \"cube\",\t\t\t\tdo_cube,\t\t\t\t0,\tPOS_DEAD,\tGM_IMPLEMENTOR },\n",
   "new": "\t{ \"cube\",\t\t\t\tdo_cube,\t\t\t\t0,\tPOS_DEAD,\tGM_PLAYER }, // MT2009_PLUS_CUBE_FOR_PLAYERS_V1 (server-patches/enginefixes): the quests open the cube window with command(\"cube open\") (Seon-Pyeong 20091 and the other crafting NPCs) - at GM_IMPLEMENTOR every player got \"command does not exist\"; Cube_open still checks the NPC and the distance.\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (struct)",
+  "old": "\tbool\t\tm_bNearest;\n",
+  "new": "\tbool\t\tm_bNearest;\n\t// MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (struct): the targets the client gave up on in the last minute\n\t// (upstream 2.0.76, uiautohunt.py: up to 32 VIDs, the ninth argument).\n\tstd::set<DWORD>\tm_setSkip;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (skip)",
+  "old": "\t\tif (m_dwSkipVID && (DWORD) victim->GetVID() == m_dwSkipVID)\n\t\t\treturn;\n",
+  "new": "\t\tif (m_dwSkipVID && (DWORD) victim->GetVID() == m_dwSkipVID)\n\t\t\treturn;\n\t\t// MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (skip)\n\t\tif (!m_setSkip.empty() && m_setSkip.count((DWORD) victim->GetVID()))\n\t\t\treturn;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (argument)",
+  "old": "\t\tone_argument(more, arg8, sizeof(arg8));\n",
+  "new": "\t\tmore = one_argument(more, arg8, sizeof(arg8));\n\t\t// MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (argument): \"123,456,...\" ninth.\n\t\tone_argument(more, skipList, sizeof(skipList));\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (declare)",
+  "old": "\tint nearest = 0;\n\t{\n",
+  "new": "\tint nearest = 0;\n\tchar skipList[512] = \"\"; // MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (declare)\n\t{\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (fill)",
+  "old": "\tf.m_bNearest = nearest == 1;\n",
+  "new": "\tf.m_bNearest = nearest == 1;\n\t// MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (fill)\n\tfor (char* p = skipList; *p && f.m_setSkip.size() < 32; )\n\t{\n\t\tDWORD vid = (DWORD) strtoul(p, &p, 10);\n\t\tif (vid)\n\t\t\tf.m_setSkip.insert(vid);\n\t\twhile (*p && (*p < '0' || *p > '9'))\n\t\t\t++p;\n\t}\n"
  }
 ]
