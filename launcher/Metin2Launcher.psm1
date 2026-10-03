@@ -314,6 +314,216 @@ function Start-M2ClientPatcher {
     return (Start-Process -FilePath $Patcher -WorkingDirectory (Split-Path -Parent $Patcher) -PassThru)
 }
 
+# MT2009_PLUS_CLIENT_VERSION_FROM_FOLDER_V1: the installed client version as
+# the client folder shows it. The launcher used to know it only from
+# .m2launcher-state.json (its own client update) or CLIENT_VERSION beside
+# VERSION in the server folder - and MT2009-Patcher.exe updates the client
+# folder alone, so a client the patcher had just brought up to date was still
+# "nieaktualny" in the launcher. Now: CLIENT_VERSION in the client folder (the
+# patcher writes it), else the folder's files compared with client-files.json
+# of the manifest's client version. What is found is recorded in the state
+# file, so everything that reads it says "aktualny".
+$script:M2ClientFileListName = 'client-files.json'
+$script:M2ClientHashCacheName = '.m2launcher-client-hashes.json'
+
+function Compare-M2Version {
+    # -1, 0 or 1: the numeric parts compared in order ("2.0.9" < "2.0.10"),
+    # the text as a tie-break.
+    param([AllowEmptyString()][string]$Left, [AllowEmptyString()][string]$Right)
+    $a = @([regex]::Matches([string]$Left, '\d+') | ForEach-Object { [long]$_.Value })
+    $b = @([regex]::Matches([string]$Right, '\d+') | ForEach-Object { [long]$_.Value })
+    $count = [Math]::Max($a.Count, $b.Count)
+    for ($i = 0; $i -lt $count; $i++) {
+        $x = if ($i -lt $a.Count) { $a[$i] } else { 0 }
+        $y = if ($i -lt $b.Count) { $b[$i] } else { 0 }
+        if ($x -lt $y) { return -1 }
+        if ($x -gt $y) { return 1 }
+    }
+    return [Math]::Sign([string]::Compare(([string]$Left).Trim(), ([string]$Right).Trim(), [StringComparison]::OrdinalIgnoreCase))
+}
+
+function Read-M2VersionMarker {
+    # A one-line version file (VERSION, CLIENT_VERSION), or '' when missing,
+    # unreadable or not a version.
+    param([AllowEmptyString()][string]$Path)
+    if (-not $Path -or -not (Test-Path -LiteralPath $Path -PathType Leaf)) { return '' }
+    try {
+        $text = ([IO.File]::ReadAllText($Path)).Trim([char]0xFEFF, ' ', "`t", "`r", "`n")
+        if ($text -match '^[0-9A-Za-z._-]{1,32}$') { return $text }
+    }
+    catch { }
+    return ''
+}
+
+function Get-M2ClientFileListSource {
+    # client-files.json beside the manifest: the same folder of a local file,
+    # the same directory of a URL.
+    param([AllowEmptyString()][string]$ManifestSource)
+    if (-not $ManifestSource) { return '' }
+    if (Test-Path -LiteralPath $ManifestSource -PathType Leaf) {
+        return (Join-Path (Split-Path -Parent ([IO.Path]::GetFullPath($ManifestSource))) $script:M2ClientFileListName)
+    }
+    $uri = $null
+    if (-not [Uri]::TryCreate($ManifestSource, [UriKind]::Absolute, [ref]$uri)) { return '' }
+    return ([Uri]::new($uri, $script:M2ClientFileListName)).AbsoluteUri
+}
+
+function ConvertTo-M2ClientFileList {
+    # The parsed client-files.json, validated: {Version, Files = [{Path,
+    # Size, Sha256}]}; $null when it is not one.
+    param($List)
+    if ($null -eq $List -or $List -isnot [psobject]) { return $null }
+    $versionProperty = $List.PSObject.Properties['version']
+    $filesProperty = $List.PSObject.Properties['files']
+    if (-not $versionProperty -or -not $filesProperty) { return $null }
+    $version = ([string]$versionProperty.Value).Trim()
+    if ($version -notmatch '^[0-9A-Za-z._-]{1,32}$') { return $null }
+    $files = @()
+    foreach ($entry in @($filesProperty.Value)) {
+        if ($null -eq $entry -or $entry -isnot [psobject]) { return $null }
+        $pathProperty = $entry.PSObject.Properties['path']
+        $shaProperty = $entry.PSObject.Properties['sha256']
+        $sizeProperty = $entry.PSObject.Properties['size']
+        if (-not $pathProperty -or -not $shaProperty -or -not $sizeProperty) { return $null }
+        $path = ([string]$pathProperty.Value).Replace('\', '/').Trim()
+        $sha = ([string]$shaProperty.Value).Trim().ToUpperInvariant()
+        [long]$size = -1
+        if (-not [long]::TryParse([string]$sizeProperty.Value, [ref]$size)) { return $null }
+        if (-not $path -or $path.StartsWith('/') -or $path -match '(^|/)\.\.(/|$)' -or $path -match ':' -or
+            $sha -notmatch '^[A-F0-9]{64}$' -or $size -lt 0) { return $null }
+        $files += [pscustomobject]@{ Path = $path; Size = $size; Sha256 = $sha }
+    }
+    if ($files.Count -eq 0) { return $null }
+    return [pscustomobject]@{ Version = $version; Files = $files }
+}
+
+function Get-M2ClientFileList {
+    # client-files.json of the channel (GitHub, else the mirror, as the
+    # manifest), validated; $null when it cannot be read.
+    param([AllowEmptyString()][string]$ManifestSource, [int]$TimeoutSec = 10)
+    $source = Get-M2ClientFileListSource -ManifestSource $ManifestSource
+    if (-not $source) { return $null }
+    try { return (ConvertTo-M2ClientFileList -List (Get-M2UpdateManifest -Source $source -TimeoutSec $TimeoutSec)) }
+    catch { return $null }
+}
+
+function Test-M2ClientFilesMatch {
+    # Whether every file of the list is in the client folder with its size
+    # and SHA-256. Hashes are cached by full path, size and write time, so a
+    # check of an unchanged folder reads no file.
+    param(
+        [Parameter(Mandatory = $true)][string]$ClientFolder,
+        [Parameter(Mandatory = $true)]$FileList,
+        [AllowEmptyString()][string]$CachePath = ''
+    )
+    if (-not $FileList -or -not (Test-Path -LiteralPath $ClientFolder -PathType Container)) { return $false }
+    $cache = @{}
+    if ($CachePath -and (Test-Path -LiteralPath $CachePath -PathType Leaf)) {
+        try {
+            $saved = [IO.File]::ReadAllText($CachePath) | ConvertFrom-Json
+            foreach ($property in @($saved.PSObject.Properties)) { $cache[$property.Name] = $property.Value }
+        }
+        catch { $cache = @{} }
+    }
+    $changed = $false
+    $match = $true
+    foreach ($file in @($FileList.Files)) {
+        $local = Join-Path $ClientFolder ($file.Path.Replace('/', [IO.Path]::DirectorySeparatorChar))
+        if (-not (Test-Path -LiteralPath $local -PathType Leaf)) { $match = $false; break }
+        $item = Get-Item -LiteralPath $local -Force
+        if ([long]$item.Length -ne [long]$file.Size) { $match = $false; break }
+        $key = ([IO.Path]::GetFullPath($local)).ToLowerInvariant()
+        $ticks = [string]$item.LastWriteTimeUtc.Ticks
+        $hash = ''
+        if ($cache.ContainsKey($key)) {
+            $entry = $cache[$key]
+            if ([string]$entry.size -eq [string]$item.Length -and [string]$entry.mtime -eq $ticks) { $hash = [string]$entry.sha256 }
+        }
+        if (-not $hash) {
+            $hash = Get-M2FileSha256 -Path $local
+            if (-not $hash) { $match = $false; break }
+            $cache[$key] = [pscustomobject]@{ size = [string]$item.Length; mtime = $ticks; sha256 = $hash }
+            $changed = $true
+        }
+        if ($hash -ne $file.Sha256) { $match = $false; break }
+    }
+    if ($changed -and $CachePath) {
+        try { [IO.File]::WriteAllText($CachePath, ([pscustomobject]$cache | ConvertTo-Json -Depth 3)) }
+        catch { }
+    }
+    return $match
+}
+
+function Save-M2RecordedClientVersion {
+    # Writes the client version into .m2launcher-state.json and keeps the
+    # rest of it (the server's version above all).
+    param([Parameter(Mandatory = $true)][string]$ServerRoot, [Parameter(Mandatory = $true)][string]$Version)
+    $statePath = Join-Path $ServerRoot '.m2launcher-state.json'
+    $state = [ordered]@{ schema = 1; server = ''; client = '' }
+    if (Test-Path -LiteralPath $statePath -PathType Leaf) {
+        try {
+            $saved = [IO.File]::ReadAllText($statePath) | ConvertFrom-Json
+            foreach ($property in @($saved.PSObject.Properties)) { $state[$property.Name] = $property.Value }
+        }
+        catch { }
+    }
+    $state['client'] = $Version
+    [pscustomobject]$state | ConvertTo-Json | Set-Content -LiteralPath $statePath -Encoding UTF8
+}
+
+function Resolve-M2InstalledClientVersion {
+    # The installed client version, 'unknown' when nothing says. In order:
+    #  - the client folder's CLIENT_VERSION when it is the newest version;
+    #  - the newest version when the folder's files match client-files.json
+    #    of that version (-FileList);
+    #  - what the state file recorded, else CLIENT_VERSION beside VERSION -
+    #    or the client folder's CLIENT_VERSION when that one is newer.
+    # -Record writes a version found in the client folder into the state file.
+    param(
+        [Parameter(Mandatory = $true)][string]$ServerRoot,
+        [AllowEmptyString()][string]$ClientFolder = '',
+        [AllowEmptyString()][string]$LatestVersion = '',
+        $FileList = $null,
+        [switch]$Record
+    )
+    $root = [IO.Path]::GetFullPath($ServerRoot)
+    $recorded = ''
+    $statePath = Join-Path $root '.m2launcher-state.json'
+    if (Test-Path -LiteralPath $statePath -PathType Leaf) {
+        try {
+            $saved = [IO.File]::ReadAllText($statePath) | ConvertFrom-Json
+            if ($saved -and $saved.PSObject.Properties['client']) { $recorded = ([string]$saved.client).Trim() }
+        }
+        catch { }
+    }
+    if ($recorded -eq 'unknown') { $recorded = '' }
+    $base = if ($recorded) { $recorded } else { Read-M2VersionMarker -Path (Join-Path $root 'CLIENT_VERSION') }
+    $latest = ([string]$LatestVersion).Trim()
+    $detected = ''
+    if ($ClientFolder -and (Test-Path -LiteralPath $ClientFolder -PathType Container)) {
+        $marker = Read-M2VersionMarker -Path (Join-Path $ClientFolder 'CLIENT_VERSION')
+        if ($latest -and $marker -and $marker.Equals($latest, [StringComparison]::OrdinalIgnoreCase)) {
+            $detected = $latest
+        }
+        elseif ($latest -and $FileList -and ([string]$FileList.Version).Equals($latest, [StringComparison]::OrdinalIgnoreCase) -and
+                -not $base.Equals($latest, [StringComparison]::OrdinalIgnoreCase)) {
+            $match = $false
+            try { $match = Test-M2ClientFilesMatch -ClientFolder $ClientFolder -FileList $FileList -CachePath (Join-Path $root $script:M2ClientHashCacheName) }
+            catch { $match = $false }
+            if ($match) { $detected = $latest }
+        }
+        if (-not $detected -and $marker -and (-not $base -or (Compare-M2Version $marker $base) -gt 0)) { $detected = $marker }
+    }
+    if ($detected) {
+        if ($Record -and -not $detected.Equals($recorded, [StringComparison]::OrdinalIgnoreCase)) {
+            try { Save-M2RecordedClientVersion -ServerRoot $root -Version $detected } catch { }
+        }
+        return $detected
+    }
+    if ($base) { return $base }
+    return 'unknown'
+}
+
 function Repair-M2ClientExecutables {
     # Puts the client folder's executables in order: an old metin2client.exe
     # replaced by the manifest's (when $ExeComponent is given), a launcher that
@@ -907,6 +1117,7 @@ function Test-M2ProtectedPath {
         'linux-port\docker\.env',
         '.m2launcher.json',
         '.m2launcher-state.json',
+        '.m2launcher-client-hashes.json',
         '.m2install.json',
         # COOP: the friends' accounts and passwords, the hosting state.
         '.m2coop.json',
@@ -3207,6 +3418,12 @@ Export-ModuleMember -Function @(
     'Get-M2ClientFolder',
     'Get-M2ClientPatcher',
     'Start-M2ClientPatcher',
+    'Compare-M2Version',
+    'Get-M2ClientFileList',
+    'ConvertTo-M2ClientFileList',
+    'Test-M2ClientFilesMatch',
+    'Save-M2RecordedClientVersion',
+    'Resolve-M2InstalledClientVersion',
     'Protect-M2SessionLogLine',
     'Protect-M2LogFile'
 )

@@ -1739,7 +1739,23 @@ function Get-InstalledServerVersion {
     return 'unknown'
 }
 
+# client-files.json of the newest client, read with the manifest when the
+# client folder does not already say it is that version (see
+# Read-LatestServerVersion); $null otherwise.
+$script:clientFileList = $null
+
 function Get-InstalledClientVersion {
+    # The client folder first (MT2009_PLUS_CLIENT_VERSION_FROM_FOLDER_V1):
+    # MT2009-Patcher.exe updates that folder alone, and a client it had just
+    # brought up to date was still "nieaktualny" here. Its CLIENT_VERSION, or
+    # its files compared with client-files.json, and what is found is
+    # recorded in .m2launcher-state.json.
+    try {
+        $latest = if ($script:latestClientVersion) { [string]$script:latestClientVersion } else { '' }
+        return [string](Resolve-M2InstalledClientVersion -ServerRoot $root -ClientFolder (Get-M2ClientFolder -Config (Get-LauncherConfig)) `
+            -LatestVersion $latest -FileList $script:clientFileList -Record)
+    }
+    catch { }
     # What a client update recorded, else what the full package shipped
     # (CLIENT_VERSION beside VERSION, put there by New-M2DeployTree.ps1).
     $statePath = Join-Path $root '.m2launcher-state.json'
@@ -2939,6 +2955,23 @@ function Write-UpdateSourceNotice {
     Write-LocalLog "GitHub niedostępny - pobieram z serwera zapasowego ($source)."
 }
 
+function Read-LatestClientFileList {
+    # The hashes of the newest client, so a client folder the patcher brought
+    # up to date is recognised by its files. Read only when the folder does
+    # not already say it is the newest version.
+    param($Config)
+    $script:clientFileList = $null
+    if (-not $script:latestClientVersion) { return }
+    try {
+        $folder = Get-M2ClientFolder -Config $Config
+        if (-not $folder) { return }
+        $known = [string](Resolve-M2InstalledClientVersion -ServerRoot $root -ClientFolder $folder -LatestVersion $script:latestClientVersion)
+        if ($known.Equals($script:latestClientVersion, [StringComparison]::OrdinalIgnoreCase)) { return }
+        $script:clientFileList = Get-M2ClientFileList -ManifestSource ([string]$Config.manifestUrl) -TimeoutSec 8
+    }
+    catch { $script:clientFileList = $null }
+}
+
 function Read-LatestServerVersion {
     param([switch]$Force)
     if ($script:latestVersionChecked -and -not $Force) { return }
@@ -2949,6 +2982,7 @@ function Read-LatestServerVersion {
         Write-UpdateSourceNotice
         $script:latestManifest = $manifest
         Set-LatestVersionsFromManifest -Manifest $manifest
+        Read-LatestClientFileList -Config $config
     }
     catch { }
     Update-VersionFooter
