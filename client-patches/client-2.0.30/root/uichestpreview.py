@@ -29,12 +29,14 @@
 import math
 from _weakref import CallableProxyType, ProxyType, proxy
 
+import app
 import chat
 import item
 import mouseModule
 import net
 import player
 import ui
+import warpsafe
 
 def WindowProxy(window):
 	"""A weak proxy of the window - the window itself when it is one already.
@@ -55,6 +57,16 @@ EFFECT_NAMES = {1: "Yang", 2: "EXP", 3: "Potw\xf3r", 4: "Spowol.", 5: "Wyssanie"
 
 # The server stops at four hundred lines (playerbotify's apply_chest_preview).
 MAX_REWARDS = 400
+
+# MT2009_PLUS_DIGI_SERVER_QOL_V1 (Autor: Digi Rasta, nowy-system v0.23.0: his
+# "Chest View Drop"): "Otw\xf3rz" / "Otw\xf3rz 10" open the previewed chest from the
+# window - one chest every OPEN_EVERY seconds (net.SendItemUsePacket, as a
+# right click in the bag), never all at once. It stops on a second click of
+# either button, when the cell has no more of that chest, when the server did
+# not open the last one (the cell's count did not change), and when the window
+# closes or another chest is dropped in. Sent only in the game phase
+# (warpsafe.InGame).
+OPEN_EVERY = 0.25
 
 
 class ChestInputSlot(ui.Window):
@@ -218,6 +230,14 @@ class ChestPreviewWindow(ui.BoardWithTitleBar):
 		self.widgets.append(self.chestIcon)
 		self.chestName = self.__Text(self.WIDTH // 2, 103, "")
 		self.chestName.SetHorizontalAlignCenter()
+		# MT2009_PLUS_DIGI_SERVER_QOL_V1: opening from the preview.
+		self.openSlot = -1
+		self.openVnum = 0
+		self.openLeft = 0
+		self.openCount = -1
+		self.openNext = 0.0
+		self.openOneButton = self.__OpenButton(14, 1)
+		self.openTenButton = self.__OpenButton(self.WIDTH - 14 - 61, 10)
 		self.gridPanel = ui.Window()
 		self.gridPanel.SetParent(self)
 		self.gridPanel.SetPosition((self.WIDTH - self.cols * self.CELL) // 2, self.GRID_Y)
@@ -261,6 +281,7 @@ class ChestPreviewWindow(ui.BoardWithTitleBar):
 		self.headerText.SetPosition(width // 2, 38)
 		self.chestSlot.SetPosition(width // 2 - 20, 61)
 		self.chestName.SetPosition(width // 2, 103)
+		self.openTenButton.SetPosition(width - 14 - 61, 70)  # MT2009_PLUS_DIGI_SERVER_QOL_V1
 		self.status.SetPosition(width // 2, 126)
 		self.pageText.SetPosition(width // 2, 126)
 		self.nextButton.SetPosition(width - 43, 123)
@@ -383,6 +404,12 @@ class ChestPreviewWindow(ui.BoardWithTitleBar):
 
 	def __Reset(self):
 		self.__ClearPage()
+		# MT2009_PLUS_DIGI_SERVER_QOL_V1: no chest to open any more.
+		self.openLeft = 0
+		self.openSlot = -1
+		self.openVnum = 0
+		self.openOneButton.Hide()
+		self.openTenButton.Hide()
 		self.currentVnum = 0
 		self.pendingVnum = 0
 		self.rewards = []
@@ -411,6 +438,11 @@ class ChestPreviewWindow(ui.BoardWithTitleBar):
 			self.chestName.SetText("Skrzynka")
 			self.chestIcon.Hide()
 		net.SendChatPacket("/chest_preview %d" % inventorySlot)
+		# MT2009_PLUS_DIGI_SERVER_QOL_V1: this chest can be opened from here.
+		self.openSlot = inventorySlot
+		self.openVnum = vnum
+		self.openOneButton.Show()
+		self.openTenButton.Show()
 
 	def ReceiveBegin(self, data):
 		try:
@@ -468,6 +500,51 @@ class ChestPreviewWindow(ui.BoardWithTitleBar):
 		else:
 			self.status.SetText("To nie jest skrzynka.")
 		self.status.Show()
+
+	# MT2009_PLUS_DIGI_SERVER_QOL_V1: "Otw\xf3rz" / "Otw\xf3rz 10" (Autor: Digi Rasta).
+	def __OpenButton(self, x, amount):
+		button = ui.Button()
+		button.SetParent(self)
+		button.SetPosition(x, 70)
+		button.SetUpVisual("d:/ymir work/ui/public/middle_button_01.sub")
+		button.SetOverVisual("d:/ymir work/ui/public/middle_button_02.sub")
+		button.SetDownVisual("d:/ymir work/ui/public/middle_button_03.sub")
+		if amount > 1:
+			button.SetText("Otw\xf3rz %d" % amount)
+		else:
+			button.SetText("Otw\xf3rz")
+		button.SAFE_SetEvent(self.__StartOpening, amount)
+		button.Hide()
+		self.widgets.append(button)
+		return button
+
+	def __StartOpening(self, amount):
+		if self.openLeft:
+			self.openLeft = 0  # the second click stops it
+			return
+		if self.openSlot < 0 or player.GetItemIndex(self.openSlot) != self.openVnum:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, "Nie ma ju\xbf tej skrzynki w tym miejscu ekwipunku.")
+			return
+		self.openLeft = amount
+		self.openCount = -1
+		self.openNext = 0.0
+
+	def OnUpdate(self):
+		if not self.openLeft or app.GetTime() < self.openNext:
+			return
+		if not warpsafe.InGame():
+			self.openLeft = 0
+			return
+		count = 0
+		if player.GetItemIndex(self.openSlot) == self.openVnum:
+			count = player.GetItemCount(self.openSlot)
+		if count <= 0 or count == self.openCount:
+			self.openLeft = 0  # none left, or the server did not open the last one
+			return
+		self.openCount = count
+		net.SendItemUsePacket(self.openSlot)
+		self.openLeft -= 1
+		self.openNext = app.GetTime() + OPEN_EVERY
 
 	def Open(self):
 		self.Show()
