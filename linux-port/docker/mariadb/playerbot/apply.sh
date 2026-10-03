@@ -2432,3 +2432,12 @@ INSERT INTO itemshop.ishop_items (category, name_item, \`desc\`, price, currency
 SELECT 10, _utf8mb4 X'4B6FC582637A616E2028313420646E6929', 'Nielimitowane strzaly dla ninja z lukiem: zakladany w miejsce strzal, zadna strzala sie nie zuzywa. Dziala 14 dni.', 100, 'cash', 8010, 1, 0, 0, 0, '08010'
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 8010);
 UPDATE itemshop.ishop_items SET category = 10 WHERE vnum = 8010 AND category = 3;" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Kolczan" >&2
+# MT2009_PLUS_COLLECTOR_STORAGE_V1: the collector's storage (Magazyn
+# kolekcjonera, overlay playerbot_collector.cpp). Its entries are rows of
+# player.item - window SAFEBOX, owner_id 2000000000 + the account id, so no
+# character load and no classic safebox ever reads them - and need no schema;
+# this table keeps an account's expansion tier (0-6, bought with yang).
+# Idempotent; a missing table only leaves the store at 500 entries and its
+# "Rozbuduj" refused.
+db -e "CREATE TABLE IF NOT EXISTS player.collector_storage (account_id INT UNSIGNED NOT NULL PRIMARY KEY, tier TINYINT UNSIGNED NOT NULL DEFAULT 0, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB;" \
+  || echo "[playerbot-migrate] WARNING: could not create player.collector_storage (the collector's storage stays at 500 entries)" >&2

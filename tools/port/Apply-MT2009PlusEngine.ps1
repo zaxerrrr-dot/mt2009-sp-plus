@@ -785,6 +785,18 @@ if ((Test-Path -LiteralPath $vekirionApply -PathType Leaf) -and
         Write-Host ('Applied {0} quick chest opening edit(s).' -f $vekirionResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The collector's storage (server-patches/collector,
+# MT2009_PLUS_COLLECTOR_STORAGE_V1): "/kolekcjoner" in the command table and
+# off the engine's flood guard; the work is playerbot_collector.cpp (overlay).
+$collectorApply = Join-Path $repo 'server-patches/collector/Apply-CollectorPatch.ps1'
+if ((Test-Path -LiteralPath $collectorApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd.cpp') -PathType Leaf)) {
+    $collectorResult = & $collectorApply -SourceDir $engineGameSource
+    if ($collectorResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} collector storage edit(s).' -f $collectorResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both
