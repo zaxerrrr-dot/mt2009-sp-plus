@@ -347,6 +347,11 @@ class GameWindow(ui.ScriptWindow):
 
 		self.onPressKeyDict = None
 		self.onClickKeyDict = None
+		# MT2009_PLUS_VEKIRION_V1: no key runs an action of the closed window,
+		# and the keybind window and its wait for a key go with it.
+		self.keyActions = {}
+		self.keyActionsHeld = {}
+		__import__("uikeybind").DestroyWindow()
 
 		chat.Close()
 		snd.StopAllSound()
@@ -646,142 +651,175 @@ class GameWindow(ui.ScriptWindow):
 		net.SendChatPacket("/pickup_nearby")
 
 	def __BuildKeyDict(self):
-		onPressKeyDict = {}
+		# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion): Skroty klawiszowe -
+		# keybind.py holds which keys run which action (the Esc menu's window,
+		# uikeybind.py, rebinds them; saved for the PC in autohunt/klawisze.cfg)
+		# and this builds {action: (press, release)}. The defaults are the
+		# keys this client always had, Ctrl+G, Ctrl+Z, X (Wyprawy) and the
+		# rest, with a tap of Left Shift for the sprint as before - Shift held
+		# with another key is that key's modifier (Shift+M) and no sprint.
+		# Ctrl, Shift and Alt held have their own doings (names, cursor) in
+		# OnKeyDown / OnKeyUp below; a key pressed with modifiers that make no
+		# binding of their own runs the key alone, as the old dictionaries did.
+		import keybind
 
+		def Cinema(num):
+			if app.ENABLE_CINEMACHINE and self.isCinemaMode:
+				self.TestFreeCamera(num)
+				return True
+			return False
 
-		onPressKeyDict[app.DIK_1]	= lambda : self.__PressNumKey(1)
-		onPressKeyDict[app.DIK_2]	= lambda : self.__PressNumKey(2)
-		onPressKeyDict[app.DIK_3]	= lambda : self.__PressNumKey(3)
-		onPressKeyDict[app.DIK_4]	= lambda : self.__PressNumKey(4)
-		onPressKeyDict[app.DIK_5]	= lambda : self.__PressNumKey(5)
-		onPressKeyDict[app.DIK_6]	= lambda : self.__PressNumKey(6)
-		onPressKeyDict[app.DIK_7]	= lambda : self.__PressNumKey(7)
-		onPressKeyDict[app.DIK_8]	= lambda : self.__PressNumKey(8)
-		onPressKeyDict[app.DIK_9]	= lambda : self.__PressNumKey(9)
-		onPressKeyDict[app.DIK_F1]	= lambda : self.__PressQuickSlot(6)
-		onPressKeyDict[app.DIK_F2]	= lambda : self.__PressQuickSlot(7)
-		onPressKeyDict[app.DIK_F3]	= lambda : self.__PressQuickSlot(8)
-		onPressKeyDict[app.DIK_F4]	= lambda : self.__PressQuickSlot(9)
+		def QuickNumber(num):
+			if not Cinema(num):
+				self.pressNumber(num - 1)
+
+		def Emote(num):
+			if Cinema(num):
+				return
+			if chrmgr.IsPossibleEmoticon(-1):
+				chrmgr.SetEmoticon(-1, num - 1)
+				net.SendEmoticon(num - 1)
+
+		def Channel(num):
+			if not Cinema(num):
+				self.__QuickChangeChannel(num)
+
+		def Minimap():
+			wndMiniMap = self.interface.wndMiniMap
+			if False == wndMiniMap.isShowMiniMap():
+				wndMiniMap.ShowMiniMap()
+				wndMiniMap.SetTop()
+			else:
+				wndMiniMap.HideMiniMap()
+
+		def QuestButtons():
+			if 0 == interfaceModule.IsQBHide:
+				interfaceModule.IsQBHide = 1
+				self.interface.HideAllQuestButton()
+			else:
+				interfaceModule.IsQBHide = 0
+				self.interface.ShowAllQuestButton()
+
+		def PickupFilter():
+			import uipickupfilter
+			uipickupfilter.ToggleWindow()
+
+		def Unmount():
+			if player.IsMountingHorse():
+				net.SendChatPacket("/unmount")
+
+		def Window(name):
+			__import__(name).ToggleWindow()
+
+		actions = {
+			"move_up"			: (lambda : self.MoveUp(), lambda : self.StopUp()),
+			"move_down"			: (lambda : self.MoveDown(), lambda : self.StopDown()),
+			"move_left"			: (lambda : self.MoveLeft(), lambda : self.StopLeft()),
+			"move_right"		: (lambda : self.MoveRight(), lambda : self.StopRight()),
+			"attack"			: (lambda : self.StartAttack(), lambda : self.EndAttack()),
+			"sprint"			: (lambda : self.__ToggleSprint(), None),
+			# Z: the server picks up what lies around (through the pick-up
+			# filter when it is on); ~: the nearest item (PickUpItem). Held,
+			# both repeat (updateable.PickUpOnDownKey).
+			"pickup"			: (lambda : net.SendChatPacket("/pickup_nearby"), None),
+			"pickup_near"		: (lambda : self.PickUpItem(), None),
+			"pickup_filter"		: (PickupFilter, None),
+
+			"quick_1"			: (lambda : QuickNumber(1), None),
+			"quick_2"			: (lambda : QuickNumber(2), None),
+			"quick_3"			: (lambda : QuickNumber(3), None),
+			"quick_4"			: (lambda : QuickNumber(4), None),
+			"quick_5"			: (lambda : QuickNumber(5), None),
+			"quick_6"			: (lambda : self.__PressQuickSlot(5), None),
+			"quick_7"			: (lambda : self.__PressQuickSlot(6), None),
+			"quick_8"			: (lambda : self.__PressQuickSlot(7), None),
+			"quick_9"			: (lambda : self.__PressQuickSlot(8), None),
+			"quick_10"			: (lambda : self.__PressQuickSlot(9), None),
+
+			"character"			: (lambda : self.interface.ToggleCharacterWindow("STATUS"), None),
+			"skills"			: (lambda : self.interface.ToggleCharacterWindow("SKILL"), None),
+			"emote_window"		: (lambda : self.interface.ToggleCharacterWindow("EMOTICON"), None),
+			"quests"			: (lambda : self.interface.ToggleCharacterWindow("QUEST"), None),
+			"inventory"			: (lambda : self.interface.ToggleInventoryWindow(), None),
+			"dragon_soul"		: (lambda : self.interface.ToggleDragonSoulWindowWithNoInfo(), None),
+			"atlas"				: (lambda : self.interface.wndMiniMap.ToggleAtlasWindow(), None),
+			"minimap"			: (Minimap, None),
+			"minimap_in"		: (lambda : self.interface.MiniMapScaleUp(), None),
+			"minimap_out"		: (lambda : self.interface.MiniMapScaleDown(), None),
+			"messenger"			: (lambda : self.interface.ToggleMessenger(), None),
+			"guild"				: (lambda : self.interface.ToggleGuildWindow(), None),
+			"chat_log"			: (lambda : self.interface.ToggleChatLogWindow(), None),
+			"help"				: (lambda : self.interface.OpenHelpWindow(), None),
+			"player_stat"		: (lambda : self.interface.wndPlayerStat.Open(), None),
+			"companion"			: (lambda : self.__ToggleSidekick(), None),
+			"autohunt"			: (lambda : self.__ToggleAutoHunt(), None),
+			"garbage_bin"		: (lambda : self.interface.ToggleGarbageBinWindow(), None),
+			"shop_search"		: (lambda : self.__PressF5Key(), None),
+			# F11: the event calendar (uieventcalendar.py).
+			"event_calendar"	: (lambda : Window("uieventcalendar"), None),
+			# MT2009_PLUS_WHEEL_V1: Kolo Fortuny (uiwheel.py).
+			"wheel"				: (lambda : Window("uiwheel"), None),
+			# MT2009_PLUS_NEW_PET_V1: the New Pet System's window (uinewpet.py).
+			"new_pet"			: (lambda : Window("uinewpet"), None),
+			# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel ("Wyprawy", uidungeoninfo.py).
+			"dungeon_info"		: (lambda : Window("uidungeoninfo"), None),
+			# The inventory bar's windows that never had a key (none by default).
+			"battle_pass"		: (lambda : Window("uibattlepass"), None),
+			"tp_bookmarks"		: (lambda : Window("uitpbookmarks"), None),
+			"hide_ui"			: (lambda : self.__HideUserInterface(), None),
+			"quest_buttons"		: (QuestButtons, None),
+			"screenshot"		: (lambda : self.SaveScreen(), None),
+			# Panel GM (F9) i admin botow (F10): kazde nacisniecie pyta serwer, ktory
+			# sprawdza gm_level (cmd.cpp) i dopiero odsyla OpenGMPanelWindow /
+			# OpenPlayerbotAdminWindow - zwyklemu graczowi nic sie nie otworzy.
+			"gm_panel"			: (lambda : net.SendChatPacket("/gmpanel_open"), None),
+			"bot_admin"			: (lambda : net.SendChatPacket("/botadmin"), None),
+			"console"			: (lambda : self.ShowConsole(), None),
+
+			# Ctrl+G: horse or seal mount (MT2009_PLUS_MOUNT_QUICKSWAP_V1),
+			# Ctrl+J: the seal off into the bag (/unmount).
+			"ride"				: (lambda : net.SendChatPacket("/ride"), None),
+			"unmount"			: (Unmount, None),
+			"horse_call"		: (lambda : net.SendChatPacket("/user_horse_ride"), None),
+			"horse_back"		: (lambda : net.SendChatPacket("/user_horse_back"), None),
+			"horse_feed"		: (lambda : net.SendChatPacket("/user_horse_feed"), None),
+
+			# Alt+1 / Alt+2: straight to channel 1 or 2 (the operator, 28 September).
+			"channel_1"			: (lambda : Channel(1), None),
+			"channel_2"			: (lambda : Channel(2), None),
+
+			"cam_rot_left"		: (lambda : app.RotateCamera(app.CAMERA_TO_NEGATIVE), lambda : app.RotateCamera(app.CAMERA_STOP)),
+			"cam_rot_right"		: (lambda : app.RotateCamera(app.CAMERA_TO_POSITIVE), lambda : app.RotateCamera(app.CAMERA_STOP)),
+			"cam_zoom_in"		: (lambda : app.ZoomCamera(app.CAMERA_TO_NEGATIVE), lambda : app.ZoomCamera(app.CAMERA_STOP)),
+			"cam_zoom_out"		: (lambda : app.ZoomCamera(app.CAMERA_TO_POSITIVE), lambda : app.ZoomCamera(app.CAMERA_STOP)),
+			"cam_pitch_up"		: (lambda : app.PitchCamera(app.CAMERA_TO_NEGATIVE), lambda : app.PitchCamera(app.CAMERA_STOP)),
+			"cam_pitch_down"	: (lambda : app.PitchCamera(app.CAMERA_TO_POSITIVE), lambda : app.PitchCamera(app.CAMERA_STOP)),
+			"movie_reset"		: (lambda : app.MovieResetCamera(), None),
+			"movie_rot_left"	: (lambda : app.MovieRotateCamera(app.CAMERA_TO_NEGATIVE), lambda : app.MovieRotateCamera(app.CAMERA_STOP)),
+			"movie_rot_right"	: (lambda : app.MovieRotateCamera(app.CAMERA_TO_POSITIVE), lambda : app.MovieRotateCamera(app.CAMERA_STOP)),
+			"movie_zoom_in"		: (lambda : app.MovieZoomCamera(app.CAMERA_TO_NEGATIVE), lambda : app.MovieZoomCamera(app.CAMERA_STOP)),
+			"movie_zoom_out"	: (lambda : app.MovieZoomCamera(app.CAMERA_TO_POSITIVE), lambda : app.MovieZoomCamera(app.CAMERA_STOP)),
+			"movie_pitch_up"	: (lambda : app.MoviePitchCamera(app.CAMERA_TO_NEGATIVE), lambda : app.MoviePitchCamera(app.CAMERA_STOP)),
+			"movie_pitch_down"	: (lambda : app.MoviePitchCamera(app.CAMERA_TO_POSITIVE), lambda : app.MoviePitchCamera(app.CAMERA_STOP)),
+		}
+		for num in xrange(1, 10):
+			actions["emote_%d" % num] = (lambda num = num : Emote(num), None)
 
 		if app.ENABLE_CINEMACHINE:
-			# onPressKeyDict[app.DIK_F5] = lambda: self.interface.potionRechargeDialog.Open()
-			onPressKeyDict[app.DIK_F5] = lambda: self.__PressF5Key()
-			onPressKeyDict[app.DIK_F6]	= lambda : self.__AddFreeCameraSpeed()
-			onPressKeyDict[app.DIK_F7] = lambda: self.__SubtractFreeCameraSpeed()
-			onPressKeyDict[app.DIK_F8] = lambda: self.__AddCameraFov()
-			onPressKeyDict[app.DIK_F9] = lambda: self.__SubtractCameraFov()
+			actions["cine_speed_up"]	= (lambda : self.__AddFreeCameraSpeed(), None)
+			actions["cine_speed_down"]	= (lambda : self.__SubtractFreeCameraSpeed(), None)
+			actions["cine_fov_up"]		= (lambda : self.__AddCameraFov(), None)
+			actions["cine_fov_down"]	= (lambda : self.__SubtractCameraFov(), None)
 
-		onPressKeyDict[app.DIK_LALT]		= lambda : self.ShowName()
-		onPressKeyDict[app.DIK_LCONTROL]	= lambda : self.ShowMouseImage()
-		onPressKeyDict[app.DIK_SYSRQ]		= lambda : self.SaveScreen()
-		onPressKeyDict[app.DIK_SPACE]		= lambda : self.StartAttack()
+		self.keyActions = actions
+		# The key that started each held action, for its release.
+		self.keyActionsHeld = {}
+		keybind.SetAvailable(actions.keys())
 
-		onPressKeyDict[app.DIK_UP]			= lambda : self.MoveUp()
-		onPressKeyDict[app.DIK_DOWN]		= lambda : self.MoveDown()
-		onPressKeyDict[app.DIK_LEFT]		= lambda : self.MoveLeft()
-		onPressKeyDict[app.DIK_RIGHT]		= lambda : self.MoveRight()
-		onPressKeyDict[app.DIK_W]			= lambda : self.MoveUp()
-		onPressKeyDict[app.DIK_S]			= lambda : self.MoveDown()
-		onPressKeyDict[app.DIK_A]			= lambda : self.MoveLeft()
-		onPressKeyDict[app.DIK_D]			= lambda : self.MoveRight()
-
-		onPressKeyDict[app.DIK_E]			= lambda: app.RotateCamera(app.CAMERA_TO_POSITIVE)
-		onPressKeyDict[app.DIK_R]			= lambda: app.ZoomCamera(app.CAMERA_TO_NEGATIVE)
-		#onPressKeyDict[app.DIK_F]			= lambda: app.ZoomCamera(app.CAMERA_TO_POSITIVE)
-		onPressKeyDict[app.DIK_T]			= lambda: app.PitchCamera(app.CAMERA_TO_NEGATIVE)
-		onPressKeyDict[app.DIK_G]			= self.__PressGKey
-		onPressKeyDict[app.DIK_Q]			= self.__PressQKey
-
-		onPressKeyDict[app.DIK_NUMPAD9]		= lambda: app.MovieResetCamera()
-		onPressKeyDict[app.DIK_NUMPAD4]		= lambda: app.MovieRotateCamera(app.CAMERA_TO_NEGATIVE)
-		onPressKeyDict[app.DIK_NUMPAD6]		= lambda: app.MovieRotateCamera(app.CAMERA_TO_POSITIVE)
-		onPressKeyDict[app.DIK_PGUP]		= lambda: app.MovieZoomCamera(app.CAMERA_TO_NEGATIVE)
-		onPressKeyDict[app.DIK_PGDN]		= lambda: app.MovieZoomCamera(app.CAMERA_TO_POSITIVE)
-		onPressKeyDict[app.DIK_NUMPAD8]		= lambda: app.MoviePitchCamera(app.CAMERA_TO_NEGATIVE)
-		onPressKeyDict[app.DIK_NUMPAD2]		= lambda: app.MoviePitchCamera(app.CAMERA_TO_POSITIVE)
-		onPressKeyDict[app.DIK_GRAVE]		= lambda : self.PickUpItem()
-		onPressKeyDict[app.DIK_Z]			= lambda : self.__PressZKey()
-		onPressKeyDict[app.DIK_F5]			= lambda : self.__PressF5Key()
-		onPressKeyDict[app.DIK_C]			= lambda state = "STATUS": self.interface.ToggleCharacterWindow(state)
-		onPressKeyDict[app.DIK_V]			= lambda state = "SKILL": self.interface.ToggleCharacterWindow(state)
-		#onPressKeyDict[app.DIK_B]			= lambda state = "EMOTICON": self.interface.ToggleCharacterWindow(state)
-		onPressKeyDict[app.DIK_N]			= lambda state = "QUEST": self.interface.ToggleCharacterWindow(state)
-		onPressKeyDict[app.DIK_I]			= lambda : self.interface.ToggleInventoryWindow()
-		onPressKeyDict[app.DIK_O]			= lambda : self.interface.ToggleDragonSoulWindowWithNoInfo()
-		onPressKeyDict[app.DIK_M]			= lambda : self.interface.PressMKey()
-		#onPressKeyDict[app.DIK_H]			= lambda : self.interface.OpenHelpWindow()
-		onPressKeyDict[app.DIK_ADD]			= lambda : self.interface.MiniMapScaleUp()
-		onPressKeyDict[app.DIK_SUBTRACT]	= lambda : self.interface.MiniMapScaleDown()
-		onPressKeyDict[app.DIK_L]			= lambda : self.interface.ToggleChatLogWindow()
-		# Panel GM (F9) i admin botow (F10): kazde nacisniecie pyta serwer, ktory
-		# sprawdza gm_level (cmd.cpp) i dopiero odsyla OpenGMPanelWindow /
-		# OpenPlayerbotAdminWindow - zwyklemu graczowi nic sie nie otworzy.
-		onPressKeyDict[app.DIK_F9]			= lambda : net.SendChatPacket("/gmpanel_open")
-		onPressKeyDict[app.DIK_F10]			= lambda : net.SendChatPacket("/botadmin")
-		# F11: the event calendar (uieventcalendar.py).
-		onPressKeyDict[app.DIK_F11]			= lambda : __import__("uieventcalendar").ToggleWindow()
-		# MT2009_PLUS_WHEEL_V1: F12 - Kolo Fortuny (uiwheel.py).
-		onPressKeyDict[app.DIK_F12]			= lambda : __import__("uiwheel").ToggleWindow()
-		# MT2009_PLUS_NEW_PET_V1: U - the New Pet System's window (uinewpet.py).
-		onPressKeyDict[app.DIK_U]			= lambda : __import__("uinewpet").ToggleWindow()
-		# MT2009_PLUS_DUNGEON_PANEL_V1: X - the dungeon panel ("Wyprawy", uidungeoninfo.py).
-		onPressKeyDict[app.DIK_X]			= lambda : __import__("uidungeoninfo").ToggleWindow()
-		onPressKeyDict[app.DIK_COMMA]		= lambda : self.ShowConsole()		# "`" key
-		onPressKeyDict[app.DIK_LSHIFT]		= lambda : self.__ToggleSprint()
-
-		onPressKeyDict[app.DIK_TAB]			 = self.__PressTABKey
-
-		onPressKeyDict[app.DIK_J] = lambda : self.interface.ToggleGarbageBinWindow()
-		onPressKeyDict[app.DIK_H]			= lambda : self.__PressHKey()
-		onPressKeyDict[app.DIK_B]			= lambda : self.__PressBKey()
-		onPressKeyDict[app.DIK_F]			= lambda : self.__PressFKey()
-		onPressKeyDict[app.DIK_Y] 			= lambda : self.interface.wndPlayerStat.Open()
-		onPressKeyDict[app.DIK_P]			= lambda : self.__ToggleSidekick()
-		# if app.ENABLE_IKASHOP_RENEWAL:
-		# 	onPressKeyDict[app.DIK_F8]		= lambda : self.__PressF8Key()
-
-
-
-
-
-		# CUBE_TEST
-		#onPressKeyDict[app.DIK_K]			= lambda : self.interface.OpenCubeWindow()
-		onPressKeyDict[app.DIK_K]			= lambda : self.__ToggleAutoHunt()
-		# CUBE_TEST_END
-
-		self.onPressKeyDict = onPressKeyDict
-
-		onClickKeyDict = {}
-		onClickKeyDict[app.DIK_UP] = lambda : self.StopUp()
-		onClickKeyDict[app.DIK_DOWN] = lambda : self.StopDown()
-		onClickKeyDict[app.DIK_LEFT] = lambda : self.StopLeft()
-		onClickKeyDict[app.DIK_RIGHT] = lambda : self.StopRight()
-		onClickKeyDict[app.DIK_SPACE] = lambda : self.EndAttack()
-
-		onClickKeyDict[app.DIK_W] = lambda : self.StopUp()
-		onClickKeyDict[app.DIK_S] = lambda : self.StopDown()
-		onClickKeyDict[app.DIK_A] = lambda : self.StopLeft()
-		onClickKeyDict[app.DIK_D] = lambda : self.StopRight()
-		onClickKeyDict[app.DIK_Q] = lambda: app.RotateCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_E] = lambda: app.RotateCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_R] = lambda: app.ZoomCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_F] = lambda: app.ZoomCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_T] = lambda: app.PitchCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_G] = lambda: self.__ReleaseGKey()
-		onClickKeyDict[app.DIK_NUMPAD4] = lambda: app.MovieRotateCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_NUMPAD6] = lambda: app.MovieRotateCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_PGUP] = lambda: app.MovieZoomCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_PGDN] = lambda: app.MovieZoomCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_NUMPAD8] = lambda: app.MoviePitchCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_NUMPAD2] = lambda: app.MoviePitchCamera(app.CAMERA_STOP)
-		onClickKeyDict[app.DIK_LALT] = lambda: self.HideName()
-		onClickKeyDict[app.DIK_LCONTROL] = lambda: self.HideMouseImage()
-		onClickKeyDict[app.DIK_LSHIFT] = lambda: self.__SetQuickSlotMode()
-
-		#if constInfo.PVPMODE_ACCELKEY_ENABLE:
-		#	onClickKeyDict[app.DIK_B] = lambda: self.ChangePKMode()
-
-		self.onClickKeyDict=onClickKeyDict
+		# Kept for anything that still looks at them; the keys go through
+		# keybind now (OnKeyDown / OnKeyUp).
+		self.onPressKeyDict = {}
+		self.onClickKeyDict = {}
 	# if app.ENABLE_IKASHOP_RENEWAL:
 	# 	def __PressYKey(self):
 	# 		self.interface.ToggleIkashopBusinessBoard()
@@ -1995,24 +2033,69 @@ class GameWindow(ui.ScriptWindow):
 			self.RequestDropItem(False)
 			constInfo.SET_ITEM_QUESTION_DIALOG_STATUS(0)
 
-		if self.onPressKeyDict:
-			try:
-				self.onPressKeyDict[key]()
-			except KeyError:
-				pass
-			except:
-				raise
+		# MT2009_PLUS_VEKIRION_V1: Skroty klawiszowe waiting for a key
+		# (uikeybind.py) - the key is taken there, as a DirectInput code, and
+		# runs no action.
+		import keybind
+		if keybind.CaptureKey(key):
+			return True
+		# A Shift press starts a tap (the sprint); any other key ends it.
+		keybind.NoteKeyDown(key)
+
+		# The modifiers' own doings while held; never a binding of their own
+		# when pressed (a tap of Shift runs on its release, OnKeyUp).
+		if key == app.DIK_LALT:
+			self.ShowName()
+			return True
+		if key == app.DIK_LCONTROL:
+			self.ShowMouseImage()
+			return True
+		if keybind.IsModifierKey(key):
+			return True
+
+		action = keybind.Resolve(key)
+		entry = getattr(self, "keyActions", {}).get(action) if action else None
+		if entry:
+			# A key pressed again before its release (a lost key-up) ends
+			# the hold it started first.
+			self.__ReleaseKeyAction(key)
+			press, release = entry
+			if release:
+				self.keyActionsHeld[key] = release
+			press()
 
 		return True
 
+	def __ReleaseKeyAction(self, key):
+		release = getattr(self, "keyActionsHeld", {}).pop(key, None)
+		if release:
+			release()
+
 	def OnKeyUp(self, key):
-		if self.onClickKeyDict:
-			try:
-				self.onClickKeyDict[key]()
-			except KeyError:
-				pass
-			except:
-				raise
+		# MT2009_PLUS_VEKIRION_V1: a lone Shift tapped while Skroty
+		# klawiszowe waits for a key is that key.
+		import keybind
+		if keybind.CaptureKeyUp(key):
+			return True
+
+		if key == app.DIK_LALT:
+			self.HideName()
+		elif key == app.DIK_LCONTROL:
+			self.HideMouseImage()
+		elif key == app.DIK_LSHIFT:
+			self.__SetQuickSlotMode()
+
+		self.__ReleaseKeyAction(key)
+
+		# Shift pressed and let go with nothing between: its own action
+		# (the sprint by default).
+		action = keybind.TakeTap(key)
+		entry = getattr(self, "keyActions", {}).get(action) if action else None
+		if entry:
+			press, release = entry
+			press()
+			if release:
+				release()
 
 		return True
 
@@ -2500,6 +2583,15 @@ class GameWindow(ui.ScriptWindow):
 		textTail.HideAllTextTail()
 
 	def OnPressEscapeKey(self):
+		# MT2009_PLUS_VEKIRION_V1: the Esc that cancels Skroty klawiszowe's
+		# wait for a key opens no system menu (keybind.py).
+		import keybind
+		if keybind.IsCapturing():
+			keybind.CaptureKey(app.DIK_ESC)
+			return True
+		if keybind.EscapeJustUsed():
+			return True
+
 		if app.TARGET == app.GetCursor():
 			app.SetCursor(app.NORMAL)
 
@@ -2512,6 +2604,7 @@ class GameWindow(ui.ScriptWindow):
 		return True
 
 	def OnIMEReturn(self):
+		__import__("keybind").NoteOtherInput()	# MT2009_PLUS_VEKIRION_V1: Shift+Enter is no sprint tap
 		if app.IsPressed(app.DIK_LSHIFT):
 			self.interface.OpenWhisperDialogWithoutTarget()
 		else:

@@ -1,0 +1,26 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_VEKIRION_V1 (chest keys)",
+  "old": "bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)\n{\n",
+  "new": "// MT2009_PLUS_VEKIRION_V1 (chest keys), server-patches/vekirion (Autor: Vekirion):\n// two PulseManager keys of their own, past the names of ePulse (the enum has\n// an int underneath, so any int is a valid key and common/PulseManager.h stays\n// as it is): the count of boxes opened (UseItem) and the clock of the box's\n// refusal line (ITEM_GIFTBOX below).\nstatic const ePulse MT2009_PLUS_PULSE_CHEST_OPEN = static_cast<ePulse>(0x4D540001);\nstatic const ePulse MT2009_PLUS_PULSE_CHEST_NOTICE = static_cast<ePulse>(0x4D540002);\n// Boxes a player may open in 500 ms; every other item stays at the engine's 5.\nstatic const int MT2009_PLUS_CHEST_OPEN_PER_500MS = 60;\n\nbool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)\n{\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_VEKIRION_V1 (chest rate)",
+  "old": "\tif (!PulseManager::Instance().IncreaseCount(GetPlayerID(), ePulse::ItemUse, std::chrono::milliseconds(500), 5))\n\t{\n\t\treturn false;\n\t}\n",
+  "new": "\t// MT2009_PLUS_VEKIRION_V1 (chest rate): a box opened by a plain use\n\t// (ITEM_GIFTBOX - the chests, the Cor Draconis, the ItemShop boxes, all\n\t// through DropSpecialItemGroup) counts on its own key, up to 60 in\n\t// 500 ms: the client's quick opening (Ctrl + right click on a stack,\n\t// uiinventory.py) and the chest preview's buttons open them as fast as\n\t// the bag takes them. Everything else - potions, scrolls, other items -\n\t// keeps the engine's 5 uses in 500 ms on ePulse::ItemUse, and a box uses\n\t// none of that budget. Each box still asks for its 3 free slots (and a\n\t// Cor Draconis for the Alchemy quest) one by one, in UseItemEx.\n\tif (item->GetType() == ITEM_GIFTBOX)\n\t{\n\t\tif (!PulseManager::Instance().IncreaseCount(GetPlayerID(), MT2009_PLUS_PULSE_CHEST_OPEN, std::chrono::milliseconds(500), MT2009_PLUS_CHEST_OPEN_PER_500MS))\n\t\t\treturn false;\n\t}\n\telse if (!PulseManager::Instance().IncreaseCount(GetPlayerID(), ePulse::ItemUse, std::chrono::milliseconds(500), 5))\n\t{\n\t\treturn false;\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_VEKIRION_V1 (chest notice ds)",
+  "old": "\t\t\t\t\tif( !(this->DragonSoul_IsQualified()) )\n\t\t\t\t\t{\n\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO,LC_TEXT(\"Before you open the Cor Draconis, you have to complete the Dragon Stone quest and activate the Dragon Stone Alchemy.\"));\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t}\n",
+  "new": "\t\t\t\t\tif( !(this->DragonSoul_IsQualified()) )\n\t\t\t\t\t{\n\t\t\t\t\t\t// MT2009_PLUS_VEKIRION_V1 (chest notice ds): once a second,\n\t\t\t\t\t\t// not once a box - 60 refused boxes were 60 lines.\n\t\t\t\t\t\tif (PulseManager::Instance().IncreaseClock(GetPlayerID(), MT2009_PLUS_PULSE_CHEST_NOTICE, std::chrono::milliseconds(1000)))\n\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO,LC_TEXT(\"Before you open the Cor Draconis, you have to complete the Dragon Stone quest and activate the Dragon Stone Alchemy.\"));\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_VEKIRION_V1 (chest notice room)",
+  "old": "\t\t\t\tif (GetEmptyInventory(3) < 0)\n\t\t\t\t{\n\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You need room for atleast 3 slot item to open the box.\"));\n\t\t\t\t\treturn false;\n\t\t\t\t}\n",
+  "new": "\t\t\t\tif (GetEmptyInventory(3) < 0)\n\t\t\t\t{\n\t\t\t\t\t// MT2009_PLUS_VEKIRION_V1 (chest notice room): the bag is full -\n\t\t\t\t\t// the box stays shut, nothing falls to the ground; the line\n\t\t\t\t\t// once a second, not once for each box still on its way.\n\t\t\t\t\tif (PulseManager::Instance().IncreaseClock(GetPlayerID(), MT2009_PLUS_PULSE_CHEST_NOTICE, std::chrono::milliseconds(1000)))\n\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You need room for atleast 3 slot item to open the box.\"));\n\t\t\t\t\treturn false;\n\t\t\t\t}\n"
+ }
+]

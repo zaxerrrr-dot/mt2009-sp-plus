@@ -1013,6 +1013,16 @@ class AffectShower(ui.Window):
 		if IsVIPAffect(type) and affectDict.has_key(chr.NEW_AFFECT_SUBSCRIPTION):
 			return
 
+		# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion): an affect whose point has no
+		# entry in AFFECT_SHOW_DATA has no "icon" and used to crash with
+		# KeyError: 'icon' (AffectImage). Skip it and log which one.
+		if type != chr.NEW_AFFECT_AUTO_HP_RECOVERY and type != chr.NEW_AFFECT_AUTO_SP_RECOVERY:
+			_data = GetAffectData(view_type, pointIdx)
+			if _data == None or not _data.has_key("icon"):
+				import dbg
+				dbg.TraceError("AffectBar: no icon for affect %d point %d value %d" % (view_type, pointIdx, value))
+				return
+
 		if not affectDict.has_key(type):
 			affectDict[type] = {}
 

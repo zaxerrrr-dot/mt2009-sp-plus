@@ -454,19 +454,20 @@ class PrivateShopBuilder(ui.ScriptWindow):
 		if app.ENABLE_CHEQUE_SYSTEM:
 			text = self.priceInputBoard.GetText()
 			cheque = self.priceInputBoard.GetTextCheque()
+			# MT2009_PLUS_VEKIRION_V1: True - Enter handled, no chat behind the window.
 			if not text:
-				return
+				return True
 			if not text.isdigit():
-				return
+				return True
 
 			if not cheque:
-				return
+				return True
 			if not cheque.isdigit():
-				return
+				return True
 
 			if int(cheque) <=0 and int(text)<=0:
 				chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.CHEQUE_NO_ADD_SALE_PRICE)
-				return
+				return True
 		else:
 			text = self.priceInputBoard.GetText()
 

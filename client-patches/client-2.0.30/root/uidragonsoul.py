@@ -23,6 +23,15 @@ if app.ENABLE_DS_GRADE_MYTH:
 	import wndMgr, uiToolTip
 ITEM_FLAG_APPLICABLE = 1 << 14
 
+# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion), MT2009_PLUS_REFINE_ALL_V1:
+# texts of the "Wszystkie" button (cp1250).
+REFINE_ALL_TEXT = "Wszystkie"
+REFINE_ALL_STOP_TEXT = "Stop"
+REFINE_ALL_NOTHING = "Brak kamieni do uszlachetnienia."
+REFINE_ALL_ONLY_MODES = "Wszystkie: tylko %s lub %s."
+REFINE_ALL_QUESTION = "Uszlachetni\xe6 %d razy za %s?"
+REFINE_ALL_SUMMARY = "Wszystkie: %d pr\xf3b (udane: %d, nieudane: %d)."
+
 # MT2009_PLUS_ALCHEMY_MSG_V1: the Alchemy's message window shows the latest
 # message only. The stock uiCommon.PopupDialog.SetText adds a line to the
 # lines already there (even after Close), so every refusal of the refine
@@ -1042,6 +1051,18 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 			self.refineChoiceButtonTitleDict = None
 		self.doRefineButton = None
 		self.wndMoney = None
+		# MT2009_PLUS_REFINE_ALL_V1
+		self.refineAllButton = None
+		self.refineAllQuestion = None
+		self.refineAllPending = None
+		self.refineAllQueue = None
+		self.refineAllType = 0
+		self.refineAllWaiting = False
+		self.refineAllSentTime = 0.0
+		self.refineAllNextTime = 0.0
+		self.refineAllInFlight = []
+		self.refineAllDone = 0
+		self.refineAllSucceeded = 0
 		self.SetWindowName("DragonSoulRefineWindow")
 		self.__LoadWindow()
 
@@ -1110,6 +1131,7 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		self.refineChoiceButtonDict[self.REFINE_TYPE_STEP].SetToggleUpEvent(ui.__mem_func__(self.__ToggleUpButton), self.REFINE_TYPE_STEP)
 		self.refineChoiceButtonDict[self.REFINE_TYPE_STRENGTH].SetToggleUpEvent(ui.__mem_func__(self.__ToggleUpButton), self.REFINE_TYPE_STRENGTH)
 		self.doRefineButton.SetEvent(ui.__mem_func__(self.__PressDoRefineButton))
+		self.__CreateRefineAllButton()	# MT2009_PLUS_REFINE_ALL_V1
 
 		## Dialog
 		self.wndPopupDialog = OneMessagePopupDialog()	# MT2009_PLUS_ALCHEMY_MSG_V1
@@ -1142,6 +1164,9 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		if None != self.tooltipItem:
 			self.tooltipItem.HideToolTip()
 
+		self.__StopRefineAll()	# MT2009_PLUS_REFINE_ALL_V1
+		if self.refineAllQuestion:
+			self.refineAllQuestion.Close()
 		self.__FlushRefineItemSlot()
 		player.SendDragonSoulRefine(player.DRAGON_SOUL_REFINE_CLOSE)
 		self.Hide()
@@ -1208,6 +1233,7 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		if self.REFINE_TYPE_GRADE == self.currentRefineType:
 			return
 
+		self.__StopRefineAll()	# MT2009_PLUS_REFINE_ALL_V1
 		self.refineChoiceButtonDict[self.currentRefineType].SetUp()
 		self.currentRefineType = self.REFINE_TYPE_GRADE
 		self.__FlushRefineItemSlot()
@@ -1217,6 +1243,7 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		if self.REFINE_TYPE_STEP == self.currentRefineType:
 			return
 
+		self.__StopRefineAll()	# MT2009_PLUS_REFINE_ALL_V1
 		self.refineChoiceButtonDict[self.currentRefineType].SetUp()
 		self.currentRefineType = self.REFINE_TYPE_STEP
 		self.__FlushRefineItemSlot()
@@ -1226,6 +1253,7 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		if self.REFINE_TYPE_STRENGTH == self.currentRefineType:
 			return
 
+		self.__StopRefineAll()	# MT2009_PLUS_REFINE_ALL_V1
 		self.refineChoiceButtonDict[self.currentRefineType].SetUp()
 		self.currentRefineType = self.REFINE_TYPE_STRENGTH
 		self.__FlushRefineItemSlot()
@@ -1236,6 +1264,8 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		self.wndPopupDialog.Open()
 
 	def __SetItem(self, inven, dstSlotIndex, itemCount):
+		if self.__IsRefineAllRunning():	# MT2009_PLUS_REFINE_ALL_V1
+			return False
 		invenType, invenPos = inven
 
 		if app.ENABLE_DS_CHANGE_ATTR:
@@ -1652,6 +1682,8 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		return getattr(localeInfo, key, None) or localeInfo.DRAGON_SOUL_CANNOT_REFINE
 
 	def __PressDoRefineButton(self):
+		if self.__IsRefineAllRunning():	# MT2009_PLUS_REFINE_ALL_V1
+			return
 		# MT2009_PLUS_ALCHEMY_MSG_V1: refused here what the server would refuse.
 		changeAttr = app.ENABLE_DS_CHANGE_ATTR and DragonSoulRefineWindow.REFINE_TYPE_CHANGE_ATTR == self.currentRefineType
 		if not changeAttr:
@@ -1691,6 +1723,233 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		self.lastEnterRefineTime = now
 		self.__PressDoRefineButton()
 		return True
+
+	# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion) - "Ulepsz wszystkie", his
+	# MT2009_PLUS_REFINE_ALL_V1: the "Wszystkie" button left of "Uszlachetnij".
+	# In the Klasa or Stopien mode it refines every stone on the page the
+	# Alchemy window shows (the kind tab and the class page picked there), in
+	# as many full recipes as the stones make: Klasa groups by kind and class
+	# (the stones of lowest step and strength go first, so the best are kept
+	# for last), Stopien by kind, class and step. The groups are taken from the
+	# page as it is on the click, so stones a refine gives back are not
+	# refined again in the same run. MT2009_PLUS_REFINE_ALL_V3: up to
+	# REFINE_ALL_IN_FLIGHT requests are on their way at once (each uses its
+	# own stones, and the server has no rate limit on alchemy refines), a new
+	# one going out as each answer comes back, at most REFINE_ALL_PER_FRAME
+	# per frame (V1/V2 sent one, waited for its answer, then 0.15 s more).
+	# The Yang of the requests still on their way is kept aside before the
+	# next goes out. A refusal (no Yang, a stone moved) or no answer in
+	# REFINE_ALL_TIMEOUT stops the run, and the button reads "Stop" while it
+	# runs. Poziom is not batched: a failed strength refine destroys the stone
+	# at strength 0.
+	REFINE_ALL_IN_FLIGHT = 10
+	REFINE_ALL_PER_FRAME = 5
+	REFINE_ALL_TIMEOUT = 5.0
+
+	def __CreateRefineAllButton(self):
+		try:
+			button = ui.Button()
+			button.SetParent(self.GetChild("board"))
+			button.SetUpVisual("d:/ymir work/ui/dragonsoul/l_button01.tga")
+			button.SetOverVisual("d:/ymir work/ui/dragonsoul/l_button02.tga")
+			button.SetDownVisual("d:/ymir work/ui/dragonsoul/l_button03.tga")
+			(x, y) = self.doRefineButton.GetLocalPosition()
+			button.SetPosition(x - button.GetWidth() - 4, y)
+			button.SetText(REFINE_ALL_TEXT)
+			button.SetEvent(ui.__mem_func__(self.__PressRefineAllButton))
+			button.Show()
+			self.refineAllButton = button
+		except Exception, e:
+			dbg.TraceError("Exception : __CreateRefineAllButton, %s" % e)
+			self.refineAllButton = None
+
+	def __IsRefineAllRunning(self):
+		return None != self.refineAllQueue
+
+	def __PressRefineAllButton(self):
+		if self.__IsRefineAllRunning():
+			return	# MT2009_PLUS_REFINE_ALL_V3: a click while it runs is ignored
+
+		if not self.currentRefineType in (self.REFINE_TYPE_GRADE, self.REFINE_TYPE_STEP):
+			self.__PopUp(REFINE_ALL_ONLY_MODES % (uiScriptLocale.GRADE_SELECT, uiScriptLocale.STEP_SELECT))
+			return
+
+		try:
+			wndDS = self.wndDragonSoul
+			kind = wndDS.DSKindIndex
+			page = wndDS.inventoryPageIndex
+		except Exception:
+			return
+
+		# whatever was put in the slots by hand goes back first
+		self.__FlushRefineItemSlot()
+		self.Refresh()
+
+		queue = self.__BuildRefineAllQueue(kind, page)
+		if not queue:
+			self.__PopUp(REFINE_ALL_NOTHING)
+			return
+
+		totalFee = 0
+		for stones, fee in queue:
+			totalFee += fee
+
+		# MT2009_PLUS_REFINE_ALL_V2: starts at once, no question (the owner, 2 October).
+		self.refineAllPending = (self.currentRefineType, queue)
+		self.__AcceptRefineAll()
+
+	def __CancelRefineAll(self):
+		self.refineAllPending = None
+		if self.refineAllQuestion:
+			self.refineAllQuestion.Close()
+
+	def __AcceptRefineAll(self):
+		if self.refineAllQuestion:
+			self.refineAllQuestion.Close()
+		pending = self.refineAllPending
+		self.refineAllPending = None
+		if not pending or not self.IsShow():
+			return
+		refineType, queue = pending
+		if refineType != self.currentRefineType:
+			return
+
+		self.refineAllType = refineType
+		self.refineAllQueue = queue
+		self.refineAllWaiting = False
+		self.refineAllNextTime = 0.0
+		self.refineAllInFlight = []	# the fee of each request on its way
+		self.refineAllSentTime = app.GetTime()
+		self.refineAllDone = 0
+		self.refineAllSucceeded = 0
+		# MT2009_PLUS_REFINE_ALL_V3: the button keeps its "Wszystkie" label
+		# while the run goes (the owner, 3 October: too fast to need "Stop").
+		self.__SendNextRefineAll()
+
+	def __BuildRefineAllQueue(self, kind, page):
+		try:
+			import dragon_soul_refine_settings as settings
+		except Exception:
+			return []
+
+		if app.ENABLE_DS_GRADE_MYTH:
+			pageCount = player.DRAGON_SOUL_PAGE_COUNT
+		else:
+			pageCount = 5
+		start = (kind * pageCount + page) * player.DRAGON_SOUL_PAGE_SIZE
+
+		isGrade = self.REFINE_TYPE_GRADE == self.currentRefineType
+		groups = {}
+		order = []
+		for pos in xrange(start, start + player.DRAGON_SOUL_PAGE_SIZE):
+			vnum = player.GetItemIndex(player.DRAGON_SOUL_INVENTORY, pos)
+			if not vnum or not self.__IsDragonSoul(vnum):
+				continue
+			if player.GetItemCount(player.DRAGON_SOUL_INVENTORY, pos) <= 0:
+				continue
+			ds_type, grade, step, strength = self.__GetDragonSoulTypeInfo(vnum)
+			if isGrade:
+				key = (ds_type, grade)
+			else:
+				key = (ds_type, grade, step)
+			if not key in groups:
+				groups[key] = []
+				order.append(key)
+			groups[key].append((step, strength, pos, vnum))
+
+		queue = []
+		for key in order:
+			ds_type, grade = key[0], key[1]
+			try:
+				recipe = settings.dragon_soul_refine_info[ds_type]
+				if isGrade:
+					need = recipe["grade_need_count"][grade]
+					fee = recipe["grade_fee"][grade]
+				else:
+					need = recipe["step_need_count"][key[2]]
+					fee = recipe["step_fee"][key[2]]
+			except (KeyError, IndexError, TypeError, ValueError):
+				continue
+			if need <= 0:
+				continue
+
+			stones = groups[key]
+			stones.sort()
+			for i in xrange(0, len(stones) - need + 1, need):
+				queue.append(([(pos, vnum) for (step, strength, pos, vnum) in stones[i:i + need]], fee))
+
+		return queue
+
+	def __SendNextRefineAll(self):
+		sent = 0
+		while self.refineAllQueue and len(self.refineAllInFlight) < self.REFINE_ALL_IN_FLIGHT \
+				and sent < self.REFINE_ALL_PER_FRAME:
+			stones, fee = self.refineAllQueue[0]
+
+			stillThere = True
+			for pos, vnum in stones:
+				if player.GetItemIndex(player.DRAGON_SOUL_INVENTORY, pos) != vnum:
+					stillThere = False
+					break
+			if not stillThere:
+				self.refineAllQueue.pop(0)
+				continue
+
+			# the Yang of the requests on their way is not spent yet
+			if player.GetElk() - sum(self.refineAllInFlight) < fee:
+				if not self.refineAllInFlight:
+					self.__StopRefineAll()
+					self.__PopUp(self.__ValidationText("DRAGON_SOUL_NOT_ENOUGH_MONEY"))
+				return
+
+			self.refineAllQueue.pop(0)
+			refineInfo = {}
+			for i in xrange(len(stones)):
+				refineInfo[i] = (player.DRAGON_SOUL_INVENTORY, stones[i][0], 1)
+
+			if not self.refineAllInFlight:
+				self.refineAllSentTime = app.GetTime()
+			self.refineAllInFlight.append(fee)
+			sent += 1
+			player.SendDragonSoulRefine(DragonSoulRefineWindow.DS_SUB_HEADER_DIC[self.refineAllType], refineInfo)
+
+		if not self.refineAllQueue and not self.refineAllInFlight:
+			self.__StopRefineAll()
+
+	def __OnRefineAllResult(self, succeeded, refused):
+		if not self.__IsRefineAllRunning() or not self.refineAllInFlight:
+			return
+		self.refineAllInFlight.pop(0)
+		self.refineAllSentTime = app.GetTime()
+		if refused:
+			self.__StopRefineAll()
+			return
+		self.refineAllDone += 1
+		if succeeded:
+			self.refineAllSucceeded += 1
+
+	def __StopRefineAll(self):
+		if not self.__IsRefineAllRunning():
+			return
+		self.refineAllQueue = None
+		self.refineAllInFlight = []
+		self.refineAllWaiting = False
+		if self.refineAllButton:
+			self.refineAllButton.SetText(REFINE_ALL_TEXT)
+		if self.refineAllDone > 0:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, REFINE_ALL_SUMMARY % (self.refineAllDone, self.refineAllSucceeded, self.refineAllDone - self.refineAllSucceeded))
+
+	def OnUpdate(self):
+		if not self.__IsRefineAllRunning():
+			return
+		# MT2009_PLUS_VEKIRION_V1: no request goes out on the way to another core.
+		if not __import__("warpsafe").InGame():
+			self.__StopRefineAll()
+			return
+		if self.refineAllInFlight and app.GetTime() - self.refineAllSentTime > self.REFINE_ALL_TIMEOUT:
+			self.__StopRefineAll()
+			return
+		self.__SendNextRefineAll()
 
 	def OnPressEscapeKey(self):
 		self.Close()
@@ -1796,6 +2055,12 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		if -1 == emptySlot:
 			return
 
+		# MT2009_PLUS_STRENGTH_HOLD_V1: in Poziom the strength stone (bean)
+		# goes in with its whole stack, as a dragged stack does; the server
+		# takes one per refine whatever the stack holds.
+		if DragonSoulRefineWindow.REFINE_TYPE_STRENGTH == self.currentRefineType and itemVnum and not self.__IsDragonSoul(itemVnum):
+			itemCount = max(itemCount, player.GetItemCount(invenType, invenPos))
+
 		self.__SetItem((invenType, invenPos), emptySlot, itemCount)
 
 	def __ClearResultItemSlot(self):
@@ -1803,24 +2068,78 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 		self.resultItemInfo = {}
 
 	def RefineSucceed(self, inven_type, inven_pos):
+		held = self.__RememberStrengthBean()	# MT2009_PLUS_STRENGTH_HOLD_V1
 		self.__Initialize()
 		self.Refresh()
+		self.__RearmStrength(held, inven_type, inven_pos)
 
 		itemCount = player.GetItemCount(inven_type, inven_pos)
 		if itemCount > 0:
 			self.resultItemInfo[0] = (inven_type, inven_pos, itemCount)
 			self.wndResultSlot.SetItemSlot(0, player.GetItemIndex(inven_type, inven_pos), itemCount)
+		self.__OnRefineAllResult(True, False)	# MT2009_PLUS_REFINE_ALL_V1
 
 	def	RefineFail(self, reason, inven_type, inven_pos):
 		if net.DS_SUB_HEADER_REFINE_FAIL == reason:
+			held = self.__RememberStrengthBean()	# MT2009_PLUS_STRENGTH_HOLD_V1
 			self.__Initialize()
 			self.Refresh()
+			self.__RearmStrength(held, inven_type, inven_pos)
 			itemCount = player.GetItemCount(inven_type, inven_pos)
 			if itemCount > 0:
 				self.resultItemInfo[0] = (inven_type, inven_pos, itemCount)
 				self.wndResultSlot.SetItemSlot(0, player.GetItemIndex(inven_type, inven_pos), itemCount)
+			self.__OnRefineAllResult(False, False)	# MT2009_PLUS_REFINE_ALL_V1
 		else:
 			self.Refresh()
+			self.__OnRefineAllResult(False, True)	# MT2009_PLUS_REFINE_ALL_V1
+
+	# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion), his
+	# MT2009_PLUS_STRENGTH_HOLD_V1: in Poziom the window keeps what it can
+	# after a refine: the strength stone stack (less the one the server took)
+	# goes back in slot 0, and the dragon stone the refine gave back (one
+	# strength up on success, one down on a failure) goes back in slot 1 while
+	# it can still be strengthened, so the next refine is one more click on
+	# "Uszlachetnij" (or Enter). A stone at its cap, or one a failure at +0
+	# destroyed, leaves slot 1 empty for the next stone.
+	def __RememberStrengthBean(self):
+		if DragonSoulRefineWindow.REFINE_TYPE_STRENGTH != self.currentRefineType:
+			return None
+		if self.__IsRefineAllRunning():
+			return None
+		if not DragonSoulRefineWindow.REFINE_STONE_SLOT in self.refineItemInfo:
+			return None
+		invenType, invenPos, itemCount = self.refineItemInfo[DragonSoulRefineWindow.REFINE_STONE_SLOT]
+		vnum = self.refineItemVnums.get(DragonSoulRefineWindow.REFINE_STONE_SLOT, 0)
+		return (invenType, invenPos, vnum)
+
+	def __CanStrengthenQuietly(self, vnum):
+		try:
+			import dragon_soul_refine_settings
+			ds_type, grade, step, strength = self.__GetDragonSoulTypeInfo(vnum)
+			return strength < dragon_soul_refine_settings.dragon_soul_refine_info[ds_type]["strength_max_table"][grade][step]
+		except Exception:
+			return False
+
+	def __RearmStrength(self, held, inven_type, inven_pos):
+		if not held or DragonSoulRefineWindow.REFINE_TYPE_STRENGTH != self.currentRefineType:
+			return
+		try:
+			invenType, invenPos, vnum = held
+			count = player.GetItemCount(invenType, invenPos)
+			if not vnum or player.GetItemIndex(invenType, invenPos) != vnum or count <= 0:
+				return
+			if not self.__SetItem((invenType, invenPos), DragonSoulRefineWindow.REFINE_STONE_SLOT, count):
+				return
+
+			if inven_type != player.DRAGON_SOUL_INVENTORY:
+				return
+			dsVnum = player.GetItemIndex(inven_type, inven_pos)
+			if dsVnum and self.__IsDragonSoul(dsVnum) and player.GetItemCount(inven_type, inven_pos) > 0 \
+					and self.__CanStrengthenQuietly(dsVnum):
+				self.__SetItem((inven_type, inven_pos), DragonSoulRefineWindow.DRAGON_SOUL_SLOT, 1)
+		except Exception, e:
+			dbg.TraceError("Exception : __RearmStrength, %s" % e)
 
 	def SetInventoryWindows(self, Inventory, DragonSoul):
 		from _weakref import proxy
@@ -1829,6 +2148,7 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 
 	if app.ENABLE_DS_CHANGE_ATTR:
 		def SetWindowType(self, type):
+			self.__StopRefineAll()	# MT2009_PLUS_REFINE_ALL_V1
 			self.currentRefineType = type
 
 			if type == self.REFINE_TYPE_CHANGE_ATTR:

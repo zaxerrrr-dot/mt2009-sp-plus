@@ -490,3 +490,49 @@ wyrzucania, limit `LIMIT_REAL_TIME` 1 209 600 s, wartości 0/0/100/25/1300/2250)
 (`icon/item/08010.tga`) i wiersz `itemdesc.txt`. Ikona `tools/quiver/08010.tga` (32×32 RGBA, narysowana – GF
 26.1.11 nie ma ikony kołczanu) to **nowy wpis paczki `icon`**. Klient 2.0.x nie zna `WEAPON_QUIVER`, więc
 kołczan jest strzałą z limitem czasu; nielimitowane strzały daje serwer (`server-patches/quiver`).
+
+## Pakiet Vekiriona: skróty klawiszowe, szybkie otwieranie, „Wszystkie” w Alchemii – bez zmian exe
+
+Znacznik `MT2009_PLUS_VEKIRION_V1`. **Autor: Vekirion** (paczka z 3 października 2026). Jego pliki były
+pełnymi kopiami starszego `root` (ok. 2.0.41); przeniesione tylko jego zmiany, dopasowane do naszych
+klawiszy. Serwer: `server-patches/vekirion` (limit 60 skrzynek na 500 ms tylko dla `ITEM_GIFTBOX`,
+reszta przedmiotów bez zmian). Pliki `root`:
+
+- `keybind.py` (nowy) – wszystkie skróty okna gry jako akcje (2 klawisze na akcję, kombinacje
+  Ctrl/Shift/Alt), zapis dla komputera w `autohunt/klawisze.cfg` (tylko zmienione akcje; brak/uszkodzony
+  plik albo wiersz = domyślne). Domyślne = klawisze, które klient miał: X Wyprawy, Ctrl+G jazda, Ctrl+J
+  zdjęcie pieczęci (wcześniej README mountquickswap obiecywało, a klawisz otwierał kosz), Z i ~ podnoszenie,
+  Ctrl+Z filtr, F11/F12, K Auto Łowy, P towarzysz itd. **Sprint: Lewy Shift jak dawniej** – stuknięcie
+  samego Shifta (wciśnięty i puszczony bez innego klawisza, Entera ani kliknięcia w plecaku) włącza/wyłącza
+  sprint przy puszczeniu; Shift+M, Shift+Enter, Shift+klik są tylko modyfikatorem. Gracz może przenieść
+  sprint np. na Caps Lock. Okna bez klawisza (Battle Pass, Zapisane pozycje) mają akcję bez klawisza.
+- `uikeybind.py` (nowy) – okno „Skróty klawiszowe” (Esc → przycisk nad „Sklep z przedmiotami”): lista
+  po kategoriach, klik na klawisz czeka na nowy (Esc anuluje, Backspace/PPM czyści), klawisz zabrany innej
+  akcji jest wypisany, „Domyślne”, „Zapisz” (bez zapisu zmiany przepadają), stałe klawisze i kliknięcia
+  okien (Alt + LPM blokada sortowania, Ctrl + PPM otwieranie skrzynek…) na końcu listy.
+- `game.py` – `__BuildKeyDict` buduje akcje zamiast słowników `DIK_*`; `OnKeyDown`/`OnKeyUp` pytają
+  `keybind` (stuknięcie Shifta, przechwytywanie klawisza dla okna), Esc anulujący czekanie nie otwiera menu.
+- `uisystem.py`, `uiscript/systemdialog.py` – przycisk „Skróty klawiszowe” (obok „Opcje dodatkowe” Digi
+  Rasty; `Recalculate` układa przyciski).
+- `uihelp.py` (wpis paczki `root`, zastępowany) – okno pomocy (H) pokazuje aktualne klawisze w wierszach
+  z klawiszem, gdy gracz je zmienił; zamyka się swoim klawiszem.
+- `updateable.py` (wpis paczki `root`, zastępowany) – trzymane podnoszenie według `keybind` (Ctrl+Z nie
+  podnosi).
+- `uiinventory.py` – podpowiedzi paska ikon z aktualnym klawiszem („Kosz (J)”); **Ctrl + PPM** na stosie
+  skrzynek (`ITEM_GIFTBOX`, bez pytania przed użyciem) otwiera do 50 sztuk (50 użyć na 0,5 s, ponowienie
+  odrzuconych, stop przy pełnej stronie Alchemii dla Cor Draconis, ponowne Ctrl + PPM zatrzymuje);
+  Shift + LPM: pole „Paczki po:” dzieli stos na paczki po N sztuk w wolne pola; obie serie stają przy
+  teleporcie (`warpsafe.InGame()`).
+- `uidragonsoul.py` – przycisk „Wszystkie” obok „Uszlachetnij” (tryb Klasa lub Stopień): uszlachetnia
+  wszystkie pełne zestawy kamieni ze strony Alchemii (do 10 żądań naraz, Yang liczony z wysłanymi,
+  odmowa serwera albo brak odpowiedzi 5 s kończy, podsumowanie w czacie); Poziom: kamień i stos kamieni
+  wzmocnienia wracają do okna po próbie. Zgodne z jednym komunikatem okna i sprawdzaniem przed wysłaniem
+  (2.18.1): ręczne „Uszlachetnij” podczas serii nic nie robi.
+- `offlineshopmanage.py`, `offlineshopbuilder.py`, `uiprivateshopbuilder.py` – Enter w oknie ceny nie
+  otwiera już czatu pod spodem (funkcje akceptacji zwracają `True` na każdej ścieżce), Enter w oknie
+  zmiany ceny działa jak OK.
+- `uiaffectbar.py` – efekt bez ikony w `AFFECT_SHOW_DATA` nie wywraca paska (log zamiast `KeyError`).
+
+Pominięte z paczki: Shift + klik w torbie towarzysza (`uisidekickinventory.py`) – to samo robi już nasz
+prawy klik (`MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1`); `XMAS_SNOW_SHOW` w
+`game.py` (wyłączał śnieg i świąteczną muzykę z nocnej flagi) – nie był częścią zgłoszenia.

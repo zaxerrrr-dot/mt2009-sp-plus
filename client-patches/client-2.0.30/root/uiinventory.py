@@ -371,20 +371,23 @@ class SidebarWindow(ui.Window):
 	TOOLTIP_UNFOLD = "Rozwi\xf1 pasek"
 	FOLDED_KEY = "pasek_boczny_zwiniety"
 
-	# (image, tooltip, handler) - the tooltips are CP1250.
+	# (image, tooltip, handler, keybind action) - the tooltips are CP1250.
+	# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion): the key in brackets is the
+	# action's current one (keybind.py, rebound in the Esc menu's "Skroty
+	# klawiszowe"), refreshed when it changes; no action, no key shown.
 	BUTTONS = (
-		("companion", "Towarzysz (P)", "OnClickCompanion"),
-		("autohunt", "Auto\xb3owy (K)", "OnClickAutoHunt"),
-		("pickup", "Sortowanie autopickup (Ctrl+Z)", "OnClickPickupFilter"),
-		("trash", "Kosz (J)", "OnClickGarbageBin"),
-		("shopsearch", "Wyszukiwarka sklep\xf3w (F5)", "OnClickShopSearch"),
-		("battlepass", "Battle Pass", "OnClickBattlePass"),
-		("calendar", "Kalendarz event\xf3w (F11)", "OnClickEventCalendar"),
-		("wheel", "Ko\xb3o Fortuny (F12)", "OnClickWheel"),
+		("companion", "Towarzysz", "OnClickCompanion", "companion"),
+		("autohunt", "Auto\xb3owy", "OnClickAutoHunt", "autohunt"),
+		("pickup", "Sortowanie autopickup", "OnClickPickupFilter", "pickup_filter"),
+		("trash", "Kosz", "OnClickGarbageBin", "garbage_bin"),
+		("shopsearch", "Wyszukiwarka sklep\xf3w", "OnClickShopSearch", "shop_search"),
+		("battlepass", "Battle Pass", "OnClickBattlePass", None),
+		("calendar", "Kalendarz event\xf3w", "OnClickEventCalendar", "event_calendar"),
+		("wheel", "Ko\xb3o Fortuny", "OnClickWheel", "wheel"),
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
-		("dungeon", "Wyprawy (X)", "OnClickDungeonInfo"),
+		("dungeon", "Wyprawy", "OnClickDungeonInfo", "dungeon_info"),
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
-		("teleport", "Zapisane pozycje", "OnClickTpBookmarks"),
+		("teleport", "Zapisane pozycje", "OnClickTpBookmarks", "tp_bookmarks"),
 	)
 
 	def __init__(self, wndInventory):
@@ -400,6 +403,7 @@ class SidebarWindow(ui.Window):
 		self.folded = False
 		self.foldedLoaded = False
 		self.buttons = []
+		self.keybindVersion = -1
 		self.board = None
 		self.tab = None
 		self.__CreateBoard()
@@ -428,7 +432,7 @@ class SidebarWindow(ui.Window):
 		self.board = board
 
 		y = self.BUTTON_GAP_Y
-		for name, text, handler in self.BUTTONS:
+		for name, text, handler, action in self.BUTTONS:
 			button = ui.Button()
 			button.SetParent(board)
 			button.SetUpVisual(SIDEBAR_IMAGE % (name, 1))
@@ -447,6 +451,21 @@ class SidebarWindow(ui.Window):
 
 		board.SetSize(self.BUTTON_GAP_X + self.BUTTON_WIDTH + self.BUTTON_GAP_X, y)
 		board.Show()
+		self.__RefreshToolTips()
+
+	# "Kosz (J)": the key each window has now (keybind.py).
+	def __RefreshToolTips(self):
+		try:
+			import keybind
+			version = keybind.GetVersion()
+		except Exception:
+			return
+		if version == self.keybindVersion:
+			return
+		self.keybindVersion = version
+		for button, (name, text, handler, action) in zip(self.buttons, self.BUTTONS):
+			if action:
+				button.SetToolTipText(keybind.DecorateLabel(text, action))
 
 	def __CreateTab(self):
 		tab = ui.Button()
@@ -590,6 +609,7 @@ class SidebarWindow(ui.Window):
 			return
 		if self.__GetLayout() != self.lastLayout:
 			self.AdjustPosition()
+		self.__RefreshToolTips()
 
 	def __GetInterface(self):
 		try:
@@ -974,6 +994,445 @@ class InventorySlotManager(GridSlotStateManager):
 			self.slotStates[globalSlot] = self.SLOT_STATE_NONE
 			self.GetSlotWindow(globalSlot).DeactivateSlot(slot)
 
+# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion) - quick box opening, his
+# MT2009_PLUS_OPEN_ALL_V3: Ctrl + right click on a stack of boxes that open
+# by a plain use (item type GIFTBOX: the Cor Draconis and the other chests)
+# opens up to OPEN_LIMIT of them, from that stack and then the other stacks
+# of the same item. The server takes at most 60 box uses per 500 ms
+# (server-patches/vekirion, CHARACTER::UseItem; every other item keeps the
+# engine's 5) and silently drops the rest: so uses go out at most RATE_COUNT
+# per RATE_WINDOW seconds (under the server's limit even with some lag), up to
+# IN_FLIGHT unanswered at a time, and uses not answered in LOST_AFTER are
+# taken as dropped and sent again. It stops when the limit is reached or
+# none is left, when MAX_RETRIES rounds in a row get no answer (the server
+# says why in the chat: no 3 free slots, the Alchemy quest not done...),
+# when an item is
+# held on the cursor or a question window is open, on a Ctrl + right click
+# again, and - for a Cor Draconis - before a stone would have no room in the
+# Alchemy inventory (the server would drop it on the ground). Boxes that ask
+# before use are not opened.
+OPEN_ALL_START = "Otwieranie: %d szt. (Ctrl + PPM ponownie - stop)"
+OPEN_ALL_DONE = "Otwarto: %d szt."
+OPEN_ALL_STOPPED = "Otwieranie przerwane, otwarto: %d szt."
+OPEN_ALL_DS_FULL = "Brak miejsca w Alchemii (zak\xb3adka %d, strona %d), otwarto: %d szt."
+# the Cor Draconis whose stones are of one grade (special_item_group.cors.txt);
+# any other Cor is checked against all the grade pages it could fill
+COR_DRACONIS_GRADES = {
+	50255 : (0,), 51501 : (0,), 51502 : (0,),
+	50256 : (1,), 51507 : (1,),
+	50257 : (2,), 51508 : (2,),
+	50258 : (3,), 51509 : (3,),
+	50259 : (4,), 51510 : (4,),
+}
+
+def IsCorDraconisVnum(vnum):
+	return 50252 == vnum or (50255 <= vnum and vnum <= 50260) or (51501 <= vnum and vnum <= 51699)
+
+def InventoryUsableSize():
+	return getattr(player, "INVENTORY_DEFAULT_MAX_NUM", player.INVENTORY_MAX_NUM)
+
+def IsInventoryBusy():
+	return mouseModule.mouseController.isAttached() or constInfo.GET_ITEM_QUESTION_DIALOG_STATUS() \
+		or uiPrivateShopBuilder.IsBuildingPrivateShop()
+
+class ItemOpenAllRunner(ui.Window):
+	OPEN_LIMIT = 50
+	IN_FLIGHT = 50
+	RATE_COUNT = 50
+	RATE_WINDOW = 0.5
+	LOST_AFTER = 0.8
+	MAX_RETRIES = 2
+	DS_KIND_COUNT = 7
+
+	def __init__(self):
+		ui.Window.__init__(self)
+		self.__Reset()
+
+	def __del__(self):
+		ui.Window.__del__(self)
+
+	def __Reset(self):
+		self.vnum = 0
+		self.slot = -1
+		self.slotCount = 0
+		self.inFlight = 0
+		self.opened = 0
+		self.target = 0
+		self.lastProgress = 0.0
+		self.sendTimes = []
+		self.retries = 0
+
+	def IsRunning(self):
+		return 0 != self.vnum
+
+	def __CountAll(self, vnum):
+		total = 0
+		for i in xrange(InventoryUsableSize()):
+			if player.GetItemIndex(i) == vnum:
+				total += player.GetItemCount(i)
+		return total
+
+	def Start(self, slot):
+		vnum = player.GetItemIndex(slot)
+		if not vnum:
+			return False
+		item.SelectItem(vnum)
+		if item.GetItemType() != getattr(item, "ITEM_TYPE_GIFTBOX", 23):
+			return False
+		if item.IsFlag(item.ITEM_FLAG_CONFIRM_WHEN_USE):
+			return False
+		total = max(self.__CountAll(vnum), player.GetItemCount(slot))
+		if total <= 0:
+			return False
+
+		self.__Reset()
+		self.vnum = vnum
+		self.slot = slot
+		self.slotCount = player.GetItemCount(slot)
+		self.target = min(total, self.OPEN_LIMIT)
+		chat.AppendChat(chat.CHAT_TYPE_INFO, OPEN_ALL_START % self.target)
+		self.Show()
+		return True
+
+	def Stop(self, message = None):
+		if not self.IsRunning():
+			return
+		if None == message:
+			message = OPEN_ALL_STOPPED % self.opened
+		self.__Reset()
+		self.Hide()
+		chat.AppendChat(chat.CHAT_TYPE_INFO, message)
+
+	def __FindSlot(self):
+		if player.GetItemIndex(self.slot) == self.vnum and player.GetItemCount(self.slot) > 0:
+			return self.slot
+		for i in xrange(InventoryUsableSize()):
+			if player.GetItemIndex(i) == self.vnum and player.GetItemCount(i) > 0:
+				return i
+		return -1
+
+	# (free slots, tab, page) of the fullest Alchemy page a stone of this
+	# Cor could land on (tab and page counted from 1), or None for other boxes
+	def __TightestDragonSoulPage(self):
+		if not IsCorDraconisVnum(self.vnum):
+			return None
+		try:
+			if app.ENABLE_DS_GRADE_MYTH:
+				pageCount = player.DRAGON_SOUL_PAGE_COUNT
+			else:
+				pageCount = 5
+			pageSize = player.DRAGON_SOUL_PAGE_SIZE
+		except Exception:
+			return None
+		tightest = None
+		for kind in xrange(self.DS_KIND_COUNT):
+			for grade in COR_DRACONIS_GRADES.get(self.vnum, (0, 1, 2, 3, 4)):
+				base = (kind * pageCount + grade) * pageSize
+				free = 0
+				for i in xrange(pageSize):
+					if 0 == player.GetItemIndex(player.DRAGON_SOUL_INVENTORY, base + i):
+						free += 1
+						if free > self.IN_FLIGHT:
+							break
+				if None == tightest or free < tightest[0]:
+					tightest = (free, kind + 1, grade + 1)
+		return tightest
+
+	def OnUpdate(self):
+		if not self.IsRunning():
+			return
+		# MT2009_PLUS_VEKIRION_V1: no use goes out on the way to another core
+		# (warpsafe.py); a warp ends the run.
+		if not __import__("warpsafe").InGame():
+			self.Stop()
+			return
+		now = app.GetTime()
+
+		# what the server took since the last frame
+		if player.GetItemIndex(self.slot) == self.vnum:
+			count = player.GetItemCount(self.slot)
+		else:
+			count = 0
+		if count < self.slotCount:
+			# counted even when late, after its use was taken as dropped
+			taken = self.slotCount - count
+			self.opened += taken
+			self.inFlight = max(0, self.inFlight - taken)
+			self.lastProgress = now
+			self.retries = 0
+		if 0 == count:
+			self.inFlight = 0	# uses past the end of the stack fall through on the server
+		self.slotCount = count
+
+		# uses the server dropped (over its rate limit) are sent again
+		if self.inFlight > 0 and now - self.lastProgress > self.LOST_AFTER:
+			self.retries += 1
+			if self.retries > self.MAX_RETRIES:
+				self.Stop()
+				return
+			self.inFlight = 0
+			self.lastProgress = now
+		if self.opened >= self.target:
+			self.Stop(OPEN_ALL_DONE % self.opened)
+			return
+		if IsInventoryBusy():
+			self.Stop()
+			return
+
+		tightest = self.__TightestDragonSoulPage()
+		self.sendTimes = [t for t in self.sendTimes if now - t < self.RATE_WINDOW]
+		while self.opened + self.inFlight < self.target and self.inFlight < self.IN_FLIGHT \
+				and len(self.sendTimes) < self.RATE_COUNT:
+			if 0 == self.inFlight and 0 == self.slotCount:
+				slot = self.__FindSlot()
+				if slot < 0:
+					self.Stop(OPEN_ALL_DONE % self.opened)
+					return
+				self.slot = slot
+				self.slotCount = player.GetItemCount(slot)
+			if self.inFlight >= self.slotCount:
+				break
+			if tightest and tightest[0] <= self.inFlight:
+				if 0 == self.inFlight:
+					self.Stop(OPEN_ALL_DS_FULL % (tightest[1], tightest[2], self.opened))
+					return
+				break
+			if 0 == self.inFlight:
+				self.lastProgress = now
+			self.inFlight += 1
+			self.sendTimes.append(now)
+			net.SendItemUsePacket(self.slot)
+
+# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion), his
+# MT2009_PLUS_SPLIT_PACKS_V1: the Shift + left click window gets a second
+# field, "Paczki po:" (pack size). Left empty, the window picks up items as
+# before. Filled with Y, it splits the stack into packs of Y moved to free
+# slots (the current inventory page first, then the others), the rest
+# staying in the original slot: 100 by 15 gives 6 packs of 15 and 10 left.
+# The upper field then is the number of packs wanted; 1 there (its default)
+# means as many as the stack and the free slots allow. Up to IN_FLIGHT moves
+# are on their way at a time, each to its own free slot; it stops when done,
+# when no free slot is left, or when the server takes no move in
+# ANSWER_TIMEOUT.
+SPLIT_LABEL = "Paczki po:"
+SPLIT_START = "Dzielenie: %d paczek po %d szt."
+SPLIT_DONE = "Podzielono: %d paczek po %d szt."
+SPLIT_NO_SPACE = "Brak wolnego miejsca w ekwipunku, podzielono: %d paczek po %d szt."
+SPLIT_STOPPED = "Dzielenie przerwane, podzielono: %d paczek po %d szt."
+SPLIT_TOO_BIG = "Paczka musi by\xe6 mniejsza ni\xbf ca\xb3y stos (%d szt.)."
+INVENTORY_COLUMNS = 5
+
+def AddSplitPackRow(dlg):
+	try:
+		rowY = dlg.acceptButton.GetLocalPosition()[1]
+		dy = 26
+		dlg.SetSize(dlg.GetWidth(), dlg.GetHeight() + dy)
+		dlg.board.SetSize(dlg.GetWidth(), dlg.GetHeight())
+		for button in (dlg.acceptButton, dlg.cancelButton):
+			(x, y) = button.GetLocalPosition()
+			button.SetPosition(x, y + dy)
+
+		slot = ui.ImageBox()
+		slot.SetParent(dlg.board)
+		slot.LoadImage("d:/ymir work/ui/public/Parameter_Slot_02.sub")
+		slotX = max(85, dlg.GetWidth() - 20 - slot.GetWidth())
+		slot.SetPosition(slotX, rowY)
+		slot.Show()
+
+		label = ui.TextLine()
+		label.SetParent(dlg.board)
+		label.SetPosition(20, rowY + 3)
+		label.SetText(SPLIT_LABEL)
+		label.Show()
+
+		edit = ui.EditLine()
+		edit.SetParent(slot)
+		edit.SetSize(max(30, slot.GetWidth() - 6), 18)
+		edit.SetPosition(3, 2)
+		edit.SetMax(6)
+		edit.SetNumberMode()
+		edit.SetText("")
+		edit.Show()
+
+		# the second field must lose the keyboard however the window closes
+		main = dlg.pickValueEditLine
+		def CloseBoth():
+			edit.KillFocus()
+			dlg.Close()
+		def AcceptBoth():
+			edit.KillFocus()
+			dlg.OnAccept()
+		edit.SetReturnEvent(AcceptBoth)
+		edit.SetEscapeEvent(CloseBoth)
+		edit.SetTabEvent(lambda: main.SetFocus())
+		main.SetReturnEvent(AcceptBoth)
+		main.SetEscapeEvent(CloseBoth)
+		main.SetTabEvent(lambda: edit.SetFocus())
+		dlg.acceptButton.SetEvent(AcceptBoth)
+		dlg.cancelButton.SetEvent(CloseBoth)
+		dlg.board.SetCloseEvent(CloseBoth)
+
+		dlg.splitPackSlot = slot
+		dlg.splitPackLabel = label
+		dlg.splitPackEditLine = edit
+	except Exception, e:
+		dbg.TraceError("Exception : AddSplitPackRow, %s" % e)
+
+def GetSplitPackSize(dlg):
+	edit = getattr(dlg, "splitPackEditLine", None)
+	if not edit:
+		return 0
+	text = edit.GetText()
+	if text and text.isdigit():
+		return int(text)
+	return 0
+
+def ClearSplitPackSize(dlg):
+	edit = getattr(dlg, "splitPackEditLine", None)
+	if edit:
+		edit.KillFocus()
+		edit.SetText("")
+
+class ItemSplitRunner(ui.Window):
+	IN_FLIGHT = 4
+	ANSWER_TIMEOUT = 2.0
+
+	def __init__(self):
+		ui.Window.__init__(self)
+		self.__Reset()
+
+	def __del__(self):
+		ui.Window.__del__(self)
+
+	def __Reset(self):
+		self.vnum = 0
+		self.src = -1
+		self.packSize = 0
+		self.height = 1
+		self.target = 0
+		self.done = 0
+		self.pending = {}
+		self.lastProgress = 0.0
+
+	def IsRunning(self):
+		return 0 != self.vnum
+
+	def Start(self, src, packSize, packCount):
+		vnum = player.GetItemIndex(src)
+		count = player.GetItemCount(src)
+		if not vnum or count <= 1 or packSize <= 0:
+			return False
+		if packSize >= count:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, SPLIT_TOO_BIG % count)
+			return False
+
+		moves = count / packSize
+		if 0 == count % packSize:
+			moves -= 1	# the original slot keeps the last pack
+		if packCount > 1:
+			if packCount * packSize < count:
+				moves = min(moves, packCount)
+			else:
+				moves = min(moves, packCount - 1)
+		if moves <= 0:
+			return False
+
+		item.SelectItem(vnum)
+		(width, height) = item.GetItemSize()
+
+		self.__Reset()
+		self.vnum = vnum
+		self.src = src
+		self.packSize = packSize
+		self.height = max(1, height)
+		self.target = moves
+		chat.AppendChat(chat.CHAT_TYPE_INFO, SPLIT_START % (moves, packSize))
+		self.Show()
+		return True
+
+	def Stop(self, message = None):
+		if not self.IsRunning():
+			return
+		if None == message:
+			message = SPLIT_STOPPED % (self.done, self.packSize)
+		self.__Reset()
+		self.Hide()
+		chat.AppendChat(chat.CHAT_TYPE_INFO, message)
+
+	def __FindFreeSlot(self):
+		pageSize = player.INVENTORY_PAGE_SIZE
+		pageCount = max(1, InventoryUsableSize() / pageSize)
+		srcPage = min(self.src / pageSize, pageCount - 1)
+		for p in xrange(pageCount):
+			page = (srcPage + p) % pageCount
+			base = page * pageSize
+			taken = set()
+			for i in xrange(base, base + pageSize):
+				vnum = player.GetItemIndex(i)
+				if vnum:
+					item.SelectItem(vnum)
+					h = max(1, item.GetItemSize()[1])
+					for k in xrange(h):
+						taken.add(i + k * INVENTORY_COLUMNS)
+			for i in self.pending.keys():
+				for k in xrange(self.height):
+					taken.add(i + k * INVENTORY_COLUMNS)
+			for i in xrange(base, base + pageSize):
+				last = i + (self.height - 1) * INVENTORY_COLUMNS
+				if last >= base + pageSize:
+					continue
+				free = True
+				for k in xrange(self.height):
+					if (i + k * INVENTORY_COLUMNS) in taken:
+						free = False
+						break
+				if free:
+					return i
+		return -1
+
+	def OnUpdate(self):
+		if not self.IsRunning():
+			return
+		# MT2009_PLUS_VEKIRION_V1: no move goes out on the way to another core.
+		if not __import__("warpsafe").InGame():
+			self.Stop()
+			return
+		now = app.GetTime()
+
+		for dst in self.pending.keys():
+			if player.GetItemIndex(dst) == self.vnum and player.GetItemCount(dst) > 0:
+				del self.pending[dst]
+				self.done += 1
+				self.lastProgress = now
+
+		if self.pending and now - self.lastProgress > self.ANSWER_TIMEOUT:
+			self.Stop()
+			return
+		if self.done >= self.target and not self.pending:
+			self.Stop(SPLIT_DONE % (self.done, self.packSize))
+			return
+		if IsInventoryBusy():
+			self.Stop()
+			return
+		if player.GetItemIndex(self.src) != self.vnum:
+			if not self.pending:
+				self.Stop()
+			return
+
+		srcCount = player.GetItemCount(self.src)
+		while self.done + len(self.pending) < self.target and len(self.pending) < self.IN_FLIGHT:
+			if srcCount - self.packSize * (len(self.pending) + 1) < 1:
+				break
+			dst = self.__FindFreeSlot()
+			if dst < 0:
+				if not self.pending:
+					self.Stop(SPLIT_NO_SPACE % (self.done, self.packSize))
+				return
+			if not self.pending:
+				self.lastProgress = now
+			self.pending[dst] = now
+			net.SendItemMovePacket(self.src, dst, self.packSize)
+
 class InventoryWindow(ui.ScriptWindow):
 
 	USE_TYPE_TUPLE = ("USE_CLEAN_SOCKET", "USE_CHANGE_ATTRIBUTE", "USE_ADD_ATTRIBUTE", "USE_ADD_ATTRIBUTE2", "USE_ADD_ACCESSORY_SOCKET", "USE_PUT_INTO_ACCESSORY_SOCKET", "USE_PUT_INTO_BELT_SOCKET", "USE_PUT_INTO_RING_SOCKET")
@@ -1159,12 +1618,15 @@ class InventoryWindow(ui.ScriptWindow):
 		dlgPickMoney = uiPickMoney.PickMoneyDialog()
 		dlgPickMoney.LoadDialog()
 		dlgPickMoney.Hide()
+		if not app.ENABLE_CHEQUE_SYSTEM:
+			AddSplitPackRow(dlgPickMoney)	# MT2009_PLUS_SPLIT_PACKS_V1
 
 		## PickETCDialog
 		if app.ENABLE_CHEQUE_SYSTEM:
 			dlgPickETC = uiPickETC.PickETCDialog()
 			dlgPickETC.LoadDialog()
 			dlgPickETC.Hide()
+			AddSplitPackRow(dlgPickETC)	# MT2009_PLUS_SPLIT_PACKS_V1
 
 		## RefineDialog
 		self.refineDialog = uiRefine.RefineDialog()
@@ -1237,6 +1699,15 @@ class InventoryWindow(ui.ScriptWindow):
 	@ui.WindowDestroy
 	def Destroy(self):
 		self.ClearDictionary()
+
+		# MT2009_PLUS_OPEN_ALL_V1
+		if getattr(self, "openAllRunner", None):
+			self.openAllRunner.Hide()
+			self.openAllRunner = None
+		# MT2009_PLUS_SPLIT_PACKS_V1
+		if getattr(self, "splitRunner", None):
+			self.splitRunner.Hide()
+			self.splitRunner = None
 
 		if self.dlgPickMoney:
 			self.dlgPickMoney.Destroy()
@@ -1323,10 +1794,12 @@ class InventoryWindow(ui.ScriptWindow):
 			self.wndSideBar.Hide()
 
 		if self.dlgPickMoney:
+			ClearSplitPackSize(self.dlgPickMoney)	# MT2009_PLUS_SPLIT_PACKS_V1
 			self.dlgPickMoney.Close()
 
 		if app.ENABLE_CHEQUE_SYSTEM:
 			if self.dlgPickETC:
+				ClearSplitPackSize(self.dlgPickETC)	# MT2009_PLUS_SPLIT_PACKS_V1
 				self.dlgPickETC.Close()
 
 		if self.wndChestPreview:
@@ -1474,8 +1947,23 @@ class InventoryWindow(ui.ScriptWindow):
 	def OnPickItem(self, count):
 		if app.ENABLE_CHEQUE_SYSTEM:
 			itemSlotIndex = self.dlgPickETC.itemGlobalSlotIndex
+			dlg = self.dlgPickETC
 		else:
 			itemSlotIndex = self.dlgPickMoney.itemGlobalSlotIndex
+			dlg = self.dlgPickMoney
+
+		# MT2009_PLUS_SPLIT_PACKS_V1: a pack size splits the stack instead
+		packSize = GetSplitPackSize(dlg)
+		ClearSplitPackSize(dlg)
+		if packSize > 0:
+			runner = getattr(self, "splitRunner", None)
+			if runner and runner.IsRunning():
+				return
+			if not runner:
+				runner = ItemSplitRunner()
+				self.splitRunner = runner
+			runner.Start(itemSlotIndex, packSize, count)
+			return
 		selectedItemVNum = player.GetItemIndex(itemSlotIndex)
 		mouseModule.mouseController.AttachObject(self, player.SLOT_TYPE_INVENTORY, itemSlotIndex, selectedItemVNum, count)
 
@@ -1868,18 +2356,21 @@ class InventoryWindow(ui.ScriptWindow):
 					ime.PasteString(link)
 
 			elif app.IsPressed(app.DIK_LSHIFT):
+				__import__("keybind").NoteOtherInput()	# MT2009_PLUS_VEKIRION_V1: Shift + click is no sprint tap
 				itemCount = player.GetItemCount(itemSlotIndex)
 
 				if app.ENABLE_CHEQUE_SYSTEM:
 					if itemCount > 1:
 						self.dlgPickETC.SetTitleName(localeInfo.PICK_ITEM_TITLE)
 						self.dlgPickETC.SetAcceptEvent(ui.__mem_func__(self.OnPickItem))
+						ClearSplitPackSize(self.dlgPickETC)	# MT2009_PLUS_SPLIT_PACKS_V1
 						self.dlgPickETC.Open(itemCount)
 						self.dlgPickETC.itemGlobalSlotIndex = itemSlotIndex
 				else:
 					if itemCount > 1:
 						self.dlgPickMoney.SetTitleName(localeInfo.PICK_ITEM_TITLE)
 						self.dlgPickMoney.SetAcceptEvent(ui.__mem_func__(self.OnPickItem))
+						ClearSplitPackSize(self.dlgPickMoney)	# MT2009_PLUS_SPLIT_PACKS_V1
 						self.dlgPickMoney.Open(itemCount)
 						self.dlgPickMoney.itemGlobalSlotIndex = itemSlotIndex
 				#else:
@@ -2464,9 +2955,34 @@ class InventoryWindow(ui.ScriptWindow):
 				acce.Add(player.INVENTORY, slotIndex, 255)
 				return
 
+		if self.__OpenAllByCtrl(slotIndex):	# MT2009_PLUS_OPEN_ALL_V1
+			return
+
 		self.__UseItem(slotIndex)
 		mouseModule.mouseController.DeattachObject()
 		self.OverOutItem()
+
+	# MT2009_PLUS_OPEN_ALL_V1: Ctrl + right click opens the whole stack
+	# (ItemOpenAllRunner above); again while it runs, stops it.
+	def __OpenAllByCtrl(self, slotIndex):
+		ctrl = app.IsPressed(app.DIK_LCONTROL) or app.IsPressed(getattr(app, "DIK_RCONTROL", app.DIK_LCONTROL))
+		runner = getattr(self, "openAllRunner", None)
+		if runner and runner.IsRunning():
+			if ctrl:
+				runner.Stop()
+				self.OverOutItem()
+				return True
+			return False
+		if not ctrl:
+			return False
+		if not runner:
+			runner = ItemOpenAllRunner()
+			self.openAllRunner = runner
+		if runner.Start(slotIndex):
+			mouseModule.mouseController.DeattachObject()
+			self.OverOutItem()
+			return True
+		return False
 
 	def __UseItem(self, slotIndex):
 		ItemVNum = player.GetItemIndex(slotIndex)
