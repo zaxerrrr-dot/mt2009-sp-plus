@@ -270,8 +270,9 @@ namespace
 	// of the Medale Konne and Materialy Rzemieslnicze, by its own level -
 	//   * under 25: what its horse still needs to reach level 1;
 	//   * 25 to 35: what its horse still needs to reach level 11;
-	//   * past 35: the next two trainings (and the due saddlebag row), the rest
-	//     bought on the market as the horse goes.
+	//   * past 35: the next training (and the due saddlebag row), the rest
+	//     bought on the market as the horse goes (one level, not two - the
+	//     owner, 3 October, after the first count on the test world).
 	// Everything over that is goods. On the test world 15 956 materials and
 	// 1 437 medals stood in the bags and none on the counters: every bot kept
 	// two saddlebag rows and two trainings ahead, from its first level.
@@ -337,7 +338,10 @@ namespace
 			SumPlayerBotHorseTrainingTo(ch, target, medals, materials);
 			return materials;
 		}
-		return nextOnly ? GetPlayerBotHorseTrainingMaterialsWanted(ch) : GetPlayerBotHorseTrainingMaterials(ch, 2);
+		// Past 35 one training ahead (the owner, 3 October: "zapas na jeden
+		// poziom konia zamiast dwoch"); short of it, the market.
+		(void)nextOnly;
+		return GetPlayerBotHorseTrainingMaterialsWanted(ch);
 	}
 
 	// A medal off a counter for the horse: the next training's, over the due
@@ -358,8 +362,7 @@ namespace
 
 	// The medals a bot never puts up. MT2009_PLUS_HORSE_GOODS_MARKET_V1: up to
 	// 35 what the horse needs to reach its band's level (1 under 25, 11 to 35);
-	// past 35 the next two trainings and the due row - no floor, the owner's
-	// "at most two horse levels ahead".
+	// past 35 the next training and the due row - no floor.
 	int GetPlayerBotHorseMedalKeep(LPCHARACTER ch)
 	{
 		const int target = GetPlayerBotHorseGoodsTargetLevel(ch);
@@ -369,7 +372,7 @@ namespace
 			SumPlayerBotHorseTrainingTo(ch, target, medals, materials);
 			return medals;
 		}
-		return GetPlayerBotHorseTrainingMedals(ch, 2) + GetPlayerBotSaddlebagMedalReserve(ch);
+		return GetPlayerBotHorseTrainingMedals(ch, 1) + GetPlayerBotSaddlebagMedalReserve(ch);
 	}
 
 	// The feed of this kind the next training eats; the bag keeps that much.
