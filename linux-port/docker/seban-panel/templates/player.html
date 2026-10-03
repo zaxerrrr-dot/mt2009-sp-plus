@@ -153,7 +153,13 @@ async function refreshInventory(){
   try {
     const res = await fetch((window.SEBAN_ROOT||'')+'/api/player/{{character.id}}/inventory-fragment', {cache:'no-store'});
     if (!res.ok) return;
-    document.getElementById('inventory-live-region').innerHTML = await res.text();
+    // Swap the window only when it really changed and the mouse is not on
+    // it: rebuilding it every 5 s under the pointer made the window buttons
+    // and item tooltips blink and vanish while hovered.
+    const region = document.getElementById('inventory-live-region'), html = await res.text();
+    if (html === window.__playerInventoryHtml || region.matches(':hover')) return;
+    window.__playerInventoryHtml = html;
+    region.innerHTML = html;
     bindInventoryFragment();
   } catch (_) {}
 }
