@@ -248,6 +248,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // the Guardian, the key on the first floor and the six floors after it.
 // After boss_raid.h, beside the tower whose scan-free fight it borrows.
 #include "playerbot_catacomb.h"
+// MT2009_PLUS_BOT_REPRICE_NOW_V1 (include): the panel's "reprice the bots'
+// shops now" and its automatic twin after a rate change or an update. After
+// the offline shop and market, whose pricing it asks.
+#include "playerbot_reprice_now.h"
 // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (include): the test cohort that runs the
 // three Arezzo dungeons in a loop. After the Catacomb, whose fight it borrows.
 #include "playerbot_arezzo_dungeon_bots.h"
@@ -6111,6 +6115,9 @@ void CPlayerBotManager::Update()
 	ManagePlayerBotBossRaids(dwNow);
 	// The Devil's Catacomb (playerbot_catacomb.h).
 	ManagePlayerBotCatacombRaids(dwNow);
+	// MT2009_PLUS_BOT_REPRICE_NOW_V1 (pass): every keeper's counter repriced
+	// at once, a few keepers a second (playerbot_reprice_now.h).
+	ManagePlayerBotRepriceNow(dwNow);
 	// Pirate Tanaka and Zuo: what they put into the world, and who is called
 	// to it (playerbot_world_events.h).
 	ManagePlayerBotWorldEvents(dwNow);

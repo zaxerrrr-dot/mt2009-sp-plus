@@ -2995,6 +2995,15 @@ def queue_catacomb_now():
     os.utime(path, None)
 
 
+def queue_bot_reprice_now():
+    """MT2009_PLUS_BOT_REPRICE_NOW_V1: every bot reprices all its listed lines
+    now -- the cores watch this file's mtime (PLAYERBOT_REPRICE_NOW_PATH)."""
+    RATES_SPOOL.mkdir(parents=True, exist_ok=True)
+    path = RATES_SPOOL / "playerbot_reprice_now"
+    path.touch(exist_ok=True)
+    os.utime(path, None)
+
+
 def port_open(port):
     try:
         with socket.create_connection((GAME_HOST, port), timeout=0.4):
@@ -8912,6 +8921,17 @@ def manage_tower_now():
         flash("Zlecono najazd na Wieżę Demonów — rdzeń wywoła go przy najbliższym sprawdzeniu, jeśli żaden akurat nie trwa.")
     except OSError:
         flash("Nie udało się zlecić najazdu (spool nie do zapisu).", "error")
+    return redirect(url_for("manage"))
+
+
+@app.post("/manage/bot-reprice-now")
+@login_required
+def manage_bot_reprice_now():
+    try:
+        queue_bot_reprice_now()
+        flash("Zlecono przeliczenie cen — każdy rdzeń w ciągu kilku sekund zaczyna przeliczać sklepy botów (kilka botów na sekundę); podsumowanie w logu gry: PLAYERBOT_REPRICE_NOW: done.")
+    except OSError:
+        flash("Nie udało się zlecić przeliczenia cen (spool nie do zapisu).", "error")
     return redirect(url_for("manage"))
 
 

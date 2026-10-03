@@ -4405,6 +4405,10 @@ T.update({
                   "pl":"Mniej więcej co dwie godziny drużyna od czterech do ośmiu botów jednego królestwa - od 80. poziomu, z przejściem 9. piętra Wieży Demonów i Zasuszoną Głową w plecaku, jak loch wymaga od gracza - zbiera się przy Strażniku Katakumb w Świątyni Hwang (ogłoszenie na czacie), na pierwszym piętrze zdobywa klucz i schodzi piętrami jak w grze: wrota, Metiny Zemsty, labirynt, Tartar, Charon i Azrael. Gdy w środku jest gracz, to on klika, a boty walczą. „Teraz” zwołuje rajd przy najbliższym sprawdzeniu rdzenia (do minuty), jeśli żaden nie trwa i są boty, które mogą iść.",
                   "de":"Etwa alle zwei Stunden sammelt sich eine Gruppe von vier bis acht Bots eines Königreichs - ab Stufe 80, mit geschaffter neunter Etage des Dämonenturms und einem Getrockneten Kopf im Inventar, wie der Dungeon es von Spielern verlangt - beim Wächter der Katakomben im Hwang-Tempel (Ansage im Chat), holt im ersten Stock den Schlüssel und steigt die Etagen hinab wie im Spiel: Tore, Metine der Rache, Labyrinth, Tartar, Charon und Azrael. Ist ein Spieler drin, klickt der Spieler und die Bots kämpfen. 'Jetzt' ruft beim nächsten Check des Kerns (binnen einer Minute) einen Raid, wenn keiner läuft und Bots gehen dürfen.",
                   "tr":"Yaklaşık iki saatte bir, bir krallığın dört ila sekiz botundan oluşan bir grup - 80 ve üzeri seviye, Şeytan Kulesi'nin 9. katını bitirmiş ve çantasında Kurutulmuş Kafa olan, zindanın oyuncudan istediği gibi - Hwang Tapınağı'ndaki Yeraltı Mezarı Muhafızı'nda toplanır (sohbette duyurulur), birinci katta anahtarı bulur ve oyundaki gibi katları iner: kapılar, İntikam Metinleri, labirent, Tartar, Charon ve Azrael. İçeride bir oyuncu varsa tıklayan oyuncudur, botlar savaşır. 'Şimdi', hiçbiri sürmüyorsa ve gidebilecek botlar varsa çekirdeğin bir sonraki kontrolünde (bir dakika içinde) bir baskın çağırır."},
+ "rates_reprice_title": {"en":"Bots' shop prices","pl":"Ceny w sklepach botów","de":"Preise in den Läden der Bots","tr":"Botların dükkân fiyatları"},
+ "rates_reprice_help": {"en":"After a change of the rates or an update the bots reprice their counters slowly, on their own visits. This makes every bot reprice all its listed lines to the current price rules right away: the core edits the prices in place, a few bots a second, and leaves lines whose price is already within 1%. It also runs by itself a few minutes after an update and a minute after the yang rate changes.","pl":"Po zmianie rat lub aktualizacji boty przeliczają swoje sklepy powoli, przy własnych wizytach. Ten przycisk każe każdemu botowi od razu przeliczyć wszystkie wystawione przedmioty według obecnych zasad cen: rdzeń zmienia ceny na miejscu, kilka botów na sekundę, i pomija linie, których cena różni się o mniej niż 1%. Uruchamia się też sam kilka minut po aktualizacji i minutę po zmianie raty yang.","de":"Nach einer Änderung der Raten oder einem Update passen die Bots ihre Preise langsam an, bei ihren eigenen Besuchen. Damit berechnet jeder Bot sofort alle ausgestellten Posten nach den aktuellen Preisregeln neu: der Kern ändert die Preise an Ort und Stelle, einige Bots pro Sekunde, und lässt Posten aus, deren Preis schon innerhalb von 1% liegt. Läuft auch von selbst einige Minuten nach einem Update und eine Minute nach einer Änderung der Yang-Rate.","tr":"Oranlar değiştikten veya bir güncellemeden sonra botlar dükkânlarını kendi ziyaretlerinde yavaşça yeniden fiyatlar. Bu düğme her botun listelediği tüm ürünleri şimdiki fiyat kurallarına göre hemen yeniden fiyatlamasını sağlar: çekirdek fiyatları yerinde değiştirir, saniyede birkaç bot, ve fiyatı zaten %1 içinde olanları atlar. Bir güncellemeden birkaç dakika ve yang oranı değiştikten bir dakika sonra kendiliğinden de çalışır."},
+ "rates_reprice_now": {"en":"Reprice the bots' shops now","pl":"Przelicz ceny w sklepach botów teraz","de":"Preise in den Läden der Bots jetzt neu berechnen","tr":"Botların dükkân fiyatlarını şimdi yeniden hesapla"},
+ "rates_reprice_done": {"en":"Requested: every core starts repricing its bots' shops within a few seconds; the game log says PLAYERBOT_REPRICE_NOW: done with the bots, the lines changed and the time it took.","pl":"Zlecone: każdy rdzeń w ciągu kilku sekund zaczyna przeliczać sklepy swoich botów; w logu gry PLAYERBOT_REPRICE_NOW: done podaje boty, zmienione linie i czas.","de":"Angefordert: jeder Kern beginnt binnen weniger Sekunden, die Läden seiner Bots neu zu bepreisen; das Spiellog meldet PLAYERBOT_REPRICE_NOW: done mit Bots, geänderten Posten und Dauer.","tr":"İstendi: her çekirdek birkaç saniye içinde botlarının dükkânlarını yeniden fiyatlamaya başlar; oyun günlüğü PLAYERBOT_REPRICE_NOW: done ile botları, değişen satırları ve süreyi yazar."},
  "ai_catacomb_now": {"en":"Call a raid on Azrael now","pl":"Rajd na Azraela teraz","de":"Jetzt einen Azrael-Raid rufen","tr":"Şimdi bir Azrael baskını çağır"},
  "ai_catacomb_now_done": {"en":"Requested: the core calls a raid on its next check (within a minute) if none is under way and there are bots who may go.","pl":"Zlecone: rdzeń zwoła rajd przy najbliższym sprawdzeniu (do minuty), jeśli żaden nie trwa i są boty, które mogą iść.","de":"Angefordert: der Kern ruft beim nächsten Check (binnen einer Minute) einen Raid, wenn keiner läuft und Bots gehen dürfen.","tr":"İstendi: hiçbiri sürmüyorsa ve gidebilecek botlar varsa çekirdek bir sonraki kontrolde (bir dakika içinde) bir baskın çağırır."},
  "ai_bots_held_title": {"pl":"Boty czekają przy drzwiach","en":"The bots are waiting at the door",
@@ -7435,6 +7439,13 @@ function m2rates(e,d,y){
   document.getElementById('r_yang').value=y;
 }
 </script>
+<div class="card">
+<form method="post" action="{{url_for('rates_bot_reprice_now')}}">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<h3>🏷️ {{t('rates_reprice_title')}}</h3>
+<p class="muted">{{t('rates_reprice_help')}}</p>
+<button class="big">{{t('rates_reprice_now')}}</button>
+</form></div>
 {% if regen %}
 <div class="card">
 <form method="post" action="{{url_for('rates_regen')}}">
@@ -19074,6 +19085,23 @@ def rates():
                                   starter_chest=starter_chest, mob_hp=mob_hp, channels=channels,
                                   intro_key="rates_intro_mt2009" if ENGINE_MT2009 else "rates_intro",
                                   state_msg=t("rates_st_" + st) if st in RATE_STATES else "")
+
+
+@app.post("/rates/bot_reprice_now")
+@login_required
+def rates_bot_reprice_now():
+    """MT2009_PLUS_BOT_REPRICE_NOW_V1: every bot reprices all its listed lines
+    now. The cores watch this file's mtime (PLAYERBOT_REPRICE_NOW_PATH in
+    playerbot_reprice_now.h), as they watch playerbot_catacomb_now."""
+    path = os.path.join(AI_SPOOL, "playerbot_reprice_now")
+    try:
+        with open(path, "a", encoding="utf-8"):
+            pass
+        os.utime(path, None)
+        flash(t("rates_reprice_done"))
+    except OSError as e:
+        flash("%s: %s" % (t("rates_reprice_now"), e), "error")
+    return redirect(url_for("rates"))
 
 
 @app.post("/rates/regen")
