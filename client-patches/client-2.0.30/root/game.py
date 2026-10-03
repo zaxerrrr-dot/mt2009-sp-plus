@@ -2588,6 +2588,9 @@ class GameWindow(ui.ScriptWindow):
 
 			self.interface.wndCube.Refresh()
 
+	def __CubeReload(self):  # MT2009_PLUS_DIGI_FIXES_V1 (Autor: Digi Rasta): /reload c - the recipe lists are asked again
+		self.cubeInformation = {}
+
 	def BINARY_Cube_Close(self):
 		self.interface.CloseCubeWindow()
 
@@ -2844,6 +2847,7 @@ class GameWindow(ui.ScriptWindow):
 
 	def __ServerCommand_Build(self):
 		serverCommandList={
+			"CubeReload": self.__CubeReload,  # MT2009_PLUS_DIGI_FIXES_V1 (Autor: Digi Rasta)
 			"AutoTargetAggro": self.__AutoTargetAggro,
 			"AutoTargetAggroReady": self.__AutoTargetAggroReady,
 			"OpenGarbageBin": self.interface.ToggleGarbageBinWindow,

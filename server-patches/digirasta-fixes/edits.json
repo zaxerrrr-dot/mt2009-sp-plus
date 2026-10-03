@@ -1,0 +1,56 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_STACK_V1 (refine stack helpers)",
+  "old": "bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly, BYTE refineType)\n{\n",
+  "new": "// MT2009_PLUS_DIGI_STACK_V1 (refine stack helpers): Autor: Digi Rasta (nowy-system v0.23,\n// stacking; server-patches/digirasta-fixes). Soul stones stack now (apply.sh), so the\n// Blacksmith may be handed a stack: the stack keeps ONE piece in its cell for the refine\n// and the rest moves to a free cell first - the success, the failure and the lowered\n// result below only ever touch that one piece, never the whole stack and never a copy.\n// The rest moves only after every check and payment passed (DoRefine,\n// DoRefineWithScroll), and only when a free cell is there (checked before anything is\n// taken).\nstatic bool DigiStackRefineAllowed(LPCHARACTER ch, LPITEM item, const TRefineTable* prt)\n{\n\tif (!ch || !item || item->GetCount() <= 1)\n\t\treturn true;\n\t// A recipe taking the item's own vnum could take the very piece being refined.\n\tfor (int i = 0; prt && i < prt->material_count; ++i)\n\t\tif (prt->materials[i].vnum == item->GetVnum())\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"This item cannot be improved.\"));\n\t\t\treturn false;\n\t\t}\n\tif (item->IsExchanging() || item->isLocked() || ch->GetEmptyInventory(item->GetSize()) < 0)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"There isn't enough space in your inventory.\"));\n\t\treturn false;\n\t}\n\treturn true;\n}\n\nstatic bool DigiStackRefineSplit(LPCHARACTER ch, LPITEM item)\n{\n\tif (!ch || !item || item->GetCount() <= 1)\n\t\treturn true;\n\tconst int iCell = ch->GetEmptyInventory(item->GetSize());\n\tif (iCell < 0)\n\t\treturn false;\n\tLPITEM pkRest = ITEM_MANAGER::instance().CreateItem(item->GetVnum(), item->GetCount() - 1, 0, false);\n\tif (!pkRest)\n\t\treturn false;\n\tpkRest->SetSockets(item->GetSockets());\n\tpkRest->SetAttributes(item->GetAttributes());\n\tif (!pkRest->AddToCharacter(ch, TItemPos(INVENTORY, iCell)))\n\t{\n\t\tM2_DESTROY_ITEM(pkRest);\n\t\treturn false;\n\t}\n\titem->SetCount(1);\n\tITEM_MANAGER::instance().FlushDelayedSave(pkRest);\n\tLogManager::instance().ItemLog(ch, pkRest, \"REFINE STACK REST\", pkRest->GetName());\n\treturn true;\n}\n\nbool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly, BYTE refineType)\n{\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_STACK_V1 (do refine room)",
+  "old": "\t// REFINE_COST\n\tif (GetGold() < cost)\n",
+  "new": "\t// MT2009_PLUS_DIGI_STACK_V1 (do refine room): a stack needs a free cell for its rest.\n\tif (!DigiStackRefineAllowed(this, item, prt))\n\t\treturn false;\n\n\t// REFINE_COST\n\tif (GetGold() < cost)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_STACK_V1 (do refine split)",
+  "old": "\t// END_OF_REFINE_COST\n\n\tint prob = number(1, 100);\n\n\tif (IsRefineThroughGuild())\n",
+  "new": "\t// END_OF_REFINE_COST\n\n\t// MT2009_PLUS_DIGI_STACK_V1 (do refine split): paid - one piece of a stack stays for\n\t// the roll, the rest moves out of the way (never refined, never destroyed).\n\tif (!DigiStackRefineSplit(this, item))\n\t{\n\t\tsys_err(\"DIGI_STACK: refine split failed pid=%u vnum=%u count=%u\", GetPlayerID(), item->GetVnum(), (unsigned)item->GetCount());\n\t\treturn false;\n\t}\n\n\tint prob = number(1, 100);\n\n\tif (IsRefineThroughGuild())\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_STACK_V1 (scroll room)",
+  "old": "\tif (GetGold() < prt->cost)\n\t{\n",
+  "new": "\t// MT2009_PLUS_DIGI_STACK_V1 (scroll room): a stack needs a free cell for its rest.\n\tif (!DigiStackRefineAllowed(this, item, prt))\n\t\treturn false;\n\n\tif (GetGold() < prt->cost)\n\t{\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_STACK_V1 (scroll split)",
+  "old": "\tpkItemScroll->SetCount(pkItemScroll->GetCount() - 1);\n",
+  "new": "\t// MT2009_PLUS_DIGI_STACK_V1 (scroll split): one piece of a stack takes the scroll.\n\tif (!DigiStackRefineSplit(this, item))\n\t{\n\t\tsys_err(\"DIGI_STACK: scroll refine split failed pid=%u vnum=%u count=%u\", GetPlayerID(), item->GetVnum(), (unsigned)item->GetCount());\n\t\treturn false;\n\t}\n\n\tpkItemScroll->SetCount(pkItemScroll->GetCount() - 1);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_STACK_V1 (socket one stone)",
+  "old": "\t\t\t\t\t\tITEM_MANAGER::instance().RemoveItem(item, \"REMOVE (METIN)\");\n",
+  "new": "\t\t\t\t\t\t// MT2009_PLUS_DIGI_STACK_V1 (socket one stone): one stone of a stack (Digi Rasta).\n\t\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n"
+ },
+ {
+  "file": "safebox.cpp",
+  "marker": "MT2009_PLUS_DIGI_FIXES_V1 (safebox grid)",
+  "old": "\tif (m_pkGrid.get())\n\t\tm_pkGrid = std::make_unique<CGrid>(pkOldGrid.get(), SAFEBOX_PAGE_WIDTH, m_iSize * SAFEBOX_PAGE_HEIGHT);\n\telse\n\t\tm_pkGrid = std::make_unique<CGrid>(SAFEBOX_PAGE_WIDTH, m_iSize * SAFEBOX_PAGE_HEIGHT);\n",
+  "new": "\t// MT2009_PLUS_DIGI_FIXES_V1 (safebox grid): Autor: Digi Rasta. m_pkGrid was asked after\n\t// the std::move above, so it was always empty and the new grid never knew the occupied\n\t// cells of an open safebox that grew (CGrid's copy also left the new rows unset): an\n\t// item could be put over another. The grid is rebuilt from the items.\n\tm_pkGrid = std::make_unique<CGrid>(SAFEBOX_PAGE_WIDTH, m_iSize * SAFEBOX_PAGE_HEIGHT);\n\tfor (int i = 0; i < SAFEBOX_MAX_NUM; ++i)\n\t\tif (m_pkItems[i])\n\t\t\tm_pkGrid->Put(i, 1, m_pkItems[i]->GetSize());\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_DIGI_FIXES_V1 (cube reload include)",
+  "old": "#include \"item_manager.h\"\n",
+  "new": "#include \"item_manager.h\"\n#include \"desc.h\" // MT2009_PLUS_DIGI_FIXES_V1 (cube reload include)\n#include \"desc_manager.h\"\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_DIGI_FIXES_V1 (cube reload)",
+  "old": "\tif (false == Cube_load(file_name))\n\t\tsys_err(\"Cube_Init failed\");\n",
+  "new": "\tif (false == Cube_load(file_name))\n\t\tsys_err(\"Cube_Init failed\");\n\n\t// MT2009_PLUS_DIGI_FIXES_V1 (cube reload): Autor: Digi Rasta. /reload c read the recipes\n\t// again, but the window's recipe lists (cube_info_map) were built once - the window kept\n\t// showing the old ones. On a reload they are built again, every open cube window is\n\t// closed and the client forgets its lists (\"CubeReload\", game.py).\n\tif (s_isInitializedCubeMaterialInformation)\n\t{\n\t\tcube_info_map.clear();\n\t\tcube_result_info_map_by_npc.clear();\n\t\tCube_InformationInitialize();\n\t\tconst DESC_MANAGER::DESC_SET& c_set_desc = DESC_MANAGER::instance().GetClientSet();\n\t\tfor (DESC_MANAGER::DESC_SET::const_iterator it = c_set_desc.begin(); it != c_set_desc.end(); ++it)\n\t\t{\n\t\t\tLPCHARACTER ch = (*it)->GetCharacter();\n\t\t\tif (!ch)\n\t\t\t\tcontinue;\n\t\t\tCube_close(ch);\n\t\t\tif (!(*it)->IsBot())\n\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"CubeReload\");\n\t\t}\n\t}\n"
+ }
+]

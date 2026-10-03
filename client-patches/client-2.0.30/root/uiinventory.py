@@ -1945,6 +1945,12 @@ class InventoryWindow(ui.ScriptWindow):
 			self.__SendMoveItemPacket(srcItemSlotPos, dstItemSlotPos, 0)
 			return
 
+		# MT2009_PLUS_DIGI_STACK_V1 (Autor: Digi Rasta): soul stones stack now - a stone dropped
+		# on the same stone joins its stack instead of asking for a socket.
+		if item.IsMetin(srcItemVID) and player.GetItemIndex(dstItemSlotPos) == srcItemVID:
+			self.__SendMoveItemPacket(srcItemSlotPos, dstItemSlotPos, 0)
+			return
+
 		# cyh itemseal 2013 11 08
 		if app.ENABLE_SOULBIND_SYSTEM and item.IsSealScroll(srcItemVID):
 			self.__SendUseItemToItemPacket(srcItemSlotPos, dstItemSlotPos)

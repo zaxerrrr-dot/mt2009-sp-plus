@@ -2360,6 +2360,29 @@ INSERT INTO world.refine_proto (id, vnum0, count0, vnum1, count1, vnum2, count2,
 (7207, 30360, 25, 71056, 2, 0, 0, 0, 0, 0, 0, 40000000, 0, 0, 30),
 (7208, 30360, 35, 71056, 3, 0, 0, 0, 0, 0, 0, 80000000, 0, 0, 25)
 ON DUPLICATE KEY UPDATE vnum0 = VALUES(vnum0), count0 = VALUES(count0), vnum1 = VALUES(vnum1), count1 = VALUES(count1), cost = VALUES(cost), prob = VALUES(prob);" || echo "[playerbot-migrate] WARNING: could not write the soul stones +5..+9 and Olejek Niebios" >&2
+# MT2009_PLUS_DIGI_STACK_V1 (Autor: Digi Rasta, nowy-system v0.23, his
+# 20_stakowanie.sql; server-patches/digirasta-fixes): stacks of 200 - every
+# soul stone (type 10, the cracked piece and Kamien Przebudzenia included),
+# every gift box (type 23: the boss caskets, Cors, the Ebonit caskets...) and
+# the caskets and chests of his list (types 3, 5, 18, 20). The engine stacks
+# only with STACKABLE (4) and without ANTI_STACK (32768), up to stack, and only
+# onto a piece with the same sockets: ANTI_STACK goes too (his file left it,
+# so 222 gift boxes never stacked). The refine and the socket take one piece
+# of a stack (char_item.cpp, MT2009_PLUS_DIGI_STACK_V1). Odlamek Smoczego
+# Kamienia (30270) loses its 24 h limit, which wrote a different end time into
+# every piece's socket0 (no two ever stacked) - the pieces held lose it too.
+# The client's item_proto carries the same (patch_digirasta_client.py).
+# Every start; idempotent.
+db -e "UPDATE world.item_proto SET flag = flag | 4, antiflag = antiflag & ~32768, stack = 200
+WHERE (type IN (10, 23) OR vnum IN (30118, 50006, 50007, 50011, 50012, 50013, 50033, 50034, 50037,
+               50070, 50071, 50072, 50073, 50074, 50075, 50076, 50077, 50078, 50079,
+               50080, 50081, 50082, 50090, 50097, 50098,
+               50109, 50110, 50111, 50112, 50113, 50114, 50115, 50120, 50218,
+               70009, 70619, 30670,
+               30300, 38054, 38056, 38057, 50130, 50132, 50133, 50134, 50135, 50136, 50137))
+  AND ((flag & 4) = 0 OR (antiflag & 32768) <> 0 OR stack <> 200);
+UPDATE world.item_proto SET limittype0 = 0, limitvalue0 = 0 WHERE vnum = 30270 AND limittype0 = 7;
+UPDATE player.item SET socket0 = 0 WHERE vnum = 30270 AND socket0 <> 0;" || echo "[playerbot-migrate] WARNING: could not write the stacks of 200 (soul stones, caskets, chests)" >&2
 # MT2009_PLUS_HORSE30_V1: the horse to level 30 (his karta-kon-30-i-juki.md,
 # quest konie and horse_inventory): the level-30 horse is race 20119
 # (server-patches/digirasta, char_horse.cpp) - its name over the summoned horse
