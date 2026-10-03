@@ -57,6 +57,8 @@ param(
 #                      server-patches/digirasta-qol)
 #   quick chest opening char_item.cpp         (MT2009_PLUS_VEKIRION_V1; server-patches/vekirion,
 #                      Autor: Vekirion)
+#   guild war entry    guild_war.cpp, cmd.cpp, cmd_general.cpp
+#                      (MT2009_PLUS_GUILD_WAR_JOIN_V1; server-patches/guildwarjoin)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -783,6 +785,20 @@ if ((Test-Path -LiteralPath $vekirionApply -PathType Leaf) -and
     if ($vekirionResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} quick chest opening edit(s).' -f $vekirionResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The guild war's "Wejdz na wojne" (server-patches/guildwarjoin,
+# MT2009_PLUS_GUILD_WAR_JOIN_V1): /guild_war_enter for the client's button,
+# and a field war on a bot guild entered at the guild's camp on the kingdom's
+# guild map (GuildWarEntryAccept returned at once for every field war). Its
+# anchors are the engine's own lines.
+$guildWarJoinApply = Join-Path $repo 'server-patches/guildwarjoin/Apply-GuildWarJoinPatch.ps1'
+if ((Test-Path -LiteralPath $guildWarJoinApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'guild_war.cpp') -PathType Leaf)) {
+    $guildWarJoinResult = & $guildWarJoinApply -SourceDir $engineGameSource
+    if ($guildWarJoinResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} guild war entry edit(s).' -f $guildWarJoinResult.Applied) -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.

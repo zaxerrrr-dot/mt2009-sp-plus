@@ -2858,6 +2858,9 @@ class GameWindow(ui.ScriptWindow):
 
 	def BINARY_GuildWar_OnStart(self, guildSelf, guildOpp):
 		self.interface.OnStartGuildWar(guildSelf, guildOpp)
+		# MT2009_PLUS_GUILD_WAR_JOIN_V1: where the way onto the war is.
+		if background.GetCurrentMapName() not in ("metin2_map_t1", "metin2_map_t2", "metin2_map_t3", "metin2_map_t4"):
+			chat.AppendChat(chat.CHAT_TYPE_INFO, "[Wojna] Twoja gildia jest na wojnie - kliknij \"Wejd\x9f na wojn\xea\" na tablicy wojny (lewy dolny r\xf3g).")
 
 		if background.GetCurrentMapName() in ("metin2_map_t3","metin2_map_t4"):
 			self.interface.wndGameButton.SetWarMode(True)
