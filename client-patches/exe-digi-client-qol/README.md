@@ -14,11 +14,12 @@ Przeniesione do MT2009 PLUS jako nasz kod: moduły w paczce `root` (bez jego oso
 | **Sklep NPC**: towar tańszy niż 500 Yang podświetlony (Shop-Low-Price-Icon – podświetlenie pola zamiast ikony z C++) | `uishop.py` (`Refresh`) | każde |
 | **Dźwięk podnoszenia** (Pick-Up-Sound-Effect): `PickupSound <vnum>` od serwera, dźwięk według rodzaju, najwyżej raz na 0,15 s | `game.py` (komenda), `digiqol.py`; serwer: `server-patches/digirasta-client` | każde |
 
-Grafiki i dźwięki: **żadnych nowych**. Pole wyboru to `d:/ymir work/ui/game/quest/quest_checkbox.tga`
-i `quest_checked.tga` z paczki `etc` (bajt w bajt te same pliki, które paczka dawała jako
-`ui/game/refine/checkbox.tga` / `checked.tga`); dźwięki z `sound/ui/` klienta (`money.wav`,
-`equip_metal_weapon.wav`, `equip_bow.wav`, `equip_metal_armor.wav`, `equip_ring_amulet.wav`,
-`pick.wav` – zamiast `itemget.wav` z paczki, którego nasz klient nie używa).
+Grafiki: pole wyboru z paczki (jego `ui/game/refine/checkbox.tga` / `checked.tga`) jako
+`mt2009_ui/checkbox/checkbox.tga` i `checked.tga` w paczce `root` – `d:/ymir work/ui/game/quest/quest_check*.tga`
+nie ma w paczkach graczy (2.0.46: „Failed to load image”, okno się nie otwierało); gdy obrazka brak,
+okno pokazuje `[x]` / `[ ]`. Dźwięki z `sound/ui/` klienta (`money.wav`, `equip_metal_weapon.wav`,
+`equip_bow.wav`, `equip_metal_armor.wav`, `equip_ring_amulet.wav`, `pick.wav` – zamiast `itemget.wav`
+z paczki, którego nasz klient nie używa).
 
 Nowe pliki `root`: `digiqol.py`, `uiopcjedodatkowe.py`; zmienione: `game.py`, `uiinventory.py`,
 `uitooltip.py`, oraz (do tej pory nie w repozytorium, wzięte z paczki `root` 2.0.43) `uishop.py`,
