@@ -6012,9 +6012,10 @@ namespace
 	// the owner, then what is hitting itself, then - with nothing of that - the
 	// nearest monster within PLAYERBOT_SIDEKICK_HUNT_RANGE of the owner. A
 	// monster only, and a stone only when the owner hits it: a person is the
-	// owner's business, a duel above all, and the Anti-PK protocol answers a
-	// person who strikes the owner. A boss is fought when it fights one of the
-	// two, never looked for.
+	// owner's business, a duel above all - save one of another kingdom who
+	// strikes the owner or the companion, answered before all of it
+	// (MT2009_PLUS_SIDEKICK_DEFEND_V1, FindPlayerBotSidekickDefendFoe). A boss
+	// is fought when it fights one of the two, never looked for.
 	// The ranges are measured from a centre: the owner at its side, the spot
 	// when it was told to wait ("Czekaj tutaj"), where the owner - when it
 	// is on that map at all - may be far away.
@@ -6085,6 +6086,260 @@ namespace
 		if (!owner || !target || !target->IsPC() || !owner->GetGuild() || !target->GetGuild())
 			return false;
 		return owner->GetGuild() != target->GetGuild() && owner->GetGuild()->UnderWar(target->GetGuild()->GetID());
+	}
+
+	// ------------------------------------------- MT2009_PLUS_SIDEKICK_DEFEND_V1
+	//
+	// "Gdy gracza atakuja boty z krolestwa przeciwnego, towarzysz pomaga w
+	// obronie i ich atakuje rowniez" (the owner, 3 October). A character of
+	// another kingdom - a bot or a person, one rule for both - that struck the
+	// owner or the companion lately, or a bot of another kingdom in a fight
+	// with either of them now, is the companion's foe before any monster: it
+	// fights it with its usual fight (skills, potions, buffs) while the threat
+	// lasts, and goes back to its owner and the monsters after it.
+	//
+	// An answer only, never a first blow; never the owner's own kingdom, party
+	// or guild, whoever struck first; never one in a duel or a guild war with
+	// the owner (that is the owner's business, and the war's foe the owner has
+	// in hand is fought above); never a person under a truce with the bots;
+	// and only where the engine lets the blow land (battle_is_attackable: the
+	// safe zones, PK protection on a kingdom's own ground). A blow at another
+	// kingdom puts nobody in killer mode (CPVPManager::CanAttack) and a kill
+	// there costs no alignment (CHARACTER::Dead's empire branch).
+	//
+	// The blows come from CHARACTER::Damage through the manager
+	// (CPlayerBotManager::OnPlayerStruck, NotePlayerBotStruck - a bot's blow
+	// only when it was meant): at the companion always, at the owner while the
+	// owner is in a party or a guild, which at its side the owner is (the
+	// companion's party). The aim of another kingdom's bots (their AI state)
+	// covers the rest.
+	const DWORD PLAYERBOT_SIDEKICK_DEFEND_MEMORY_MS = 12000;
+	const size_t PLAYERBOT_SIDEKICK_DEFEND_MAX = 8;
+	const DWORD PLAYERBOT_SIDEKICK_DEFEND_LOG_MS = 15000;
+	const DWORD PLAYERBOT_SIDEKICK_DEFEND_LOG_SWITCH_MS = 3000;
+
+	struct TPlayerBotSidekickDefendBlow
+	{
+		DWORD dwVID;
+		DWORD dwAt;
+	};
+	// The struck (an owner or a companion) by pid -> the attacker's pid -> its
+	// last blow.
+	std::map<DWORD, std::map<DWORD, TPlayerBotSidekickDefendBlow> > s_mapPlayerBotSidekickDefendBlows;
+	// A companion's pid -> the attacker it last said it fought, and when.
+	std::map<DWORD, std::pair<DWORD, DWORD> > s_mapPlayerBotSidekickDefendLogged;
+
+	bool IsPlayerBotSidekickDefendBlowFresh(const TPlayerBotSidekickDefendBlow& blow, DWORD dwNow)
+	{
+		return blow.dwAt >= dwNow || dwNow - blow.dwAt <= PLAYERBOT_SIDEKICK_DEFEND_MEMORY_MS;
+	}
+
+	void PrunePlayerBotSidekickDefendBlows(std::map<DWORD, TPlayerBotSidekickDefendBlow>& blows, DWORD dwNow)
+	{
+		for (std::map<DWORD, TPlayerBotSidekickDefendBlow>::iterator it = blows.begin(); it != blows.end();)
+		{
+			if (!IsPlayerBotSidekickDefendBlowFresh(it->second, dwNow))
+				blows.erase(it++);
+			else
+				++it;
+		}
+	}
+
+	// From NotePlayerBotStruck (playerbot_anti_pk.h), for a blow that counts:
+	// kept when it lands on an owner or a companion and comes from another
+	// kingdom.
+	void NotePlayerBotSidekickDefendBlow(LPCHARACTER victim, LPCHARACTER attacker, DWORD dwNow)
+	{
+		if (!victim || !attacker || victim == attacker || s_mapPlayerBotSidekicks.empty() || !attacker->IsPC() ||
+				attacker->GetEmpire() == victim->GetEmpire())
+			return;
+		const DWORD pid = victim->GetPlayerID();
+		if (s_mapPlayerBotSidekicks.find(pid) == s_mapPlayerBotSidekicks.end() &&
+				s_mapPlayerBotSidekickOwner.find(pid) == s_mapPlayerBotSidekickOwner.end())
+			return;
+		if (s_mapPlayerBotSidekickDefendBlows.size() >= 256)
+			for (std::map<DWORD, std::map<DWORD, TPlayerBotSidekickDefendBlow> >::iterator it =
+					s_mapPlayerBotSidekickDefendBlows.begin(); it != s_mapPlayerBotSidekickDefendBlows.end();)
+			{
+				PrunePlayerBotSidekickDefendBlows(it->second, dwNow);
+				if (it->second.empty())
+					s_mapPlayerBotSidekickDefendBlows.erase(it++);
+				else
+					++it;
+			}
+		std::map<DWORD, TPlayerBotSidekickDefendBlow>& blows = s_mapPlayerBotSidekickDefendBlows[pid];
+		PrunePlayerBotSidekickDefendBlows(blows, dwNow);
+		if (blows.size() >= PLAYERBOT_SIDEKICK_DEFEND_MAX && blows.find(attacker->GetPlayerID()) == blows.end())
+			return;
+		TPlayerBotSidekickDefendBlow& blow = blows[attacker->GetPlayerID()];
+		blow.dwVID = (DWORD)attacker->GetVID();
+		blow.dwAt = dwNow;
+	}
+
+	// Who struck this character lately, still in the world under the same vid.
+	void CollectPlayerBotSidekickDefendBlows(DWORD pid, DWORD dwNow, std::vector<LPCHARACTER>& out)
+	{
+		std::map<DWORD, std::map<DWORD, TPlayerBotSidekickDefendBlow> >::iterator v =
+				s_mapPlayerBotSidekickDefendBlows.find(pid);
+		if (v == s_mapPlayerBotSidekickDefendBlows.end())
+			return;
+		PrunePlayerBotSidekickDefendBlows(v->second, dwNow);
+		if (v->second.empty())
+		{
+			s_mapPlayerBotSidekickDefendBlows.erase(v);
+			return;
+		}
+		for (std::map<DWORD, TPlayerBotSidekickDefendBlow>::const_iterator it = v->second.begin();
+				it != v->second.end(); ++it)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(it->second.dwVID);
+			if (c && c->IsPC() && c->GetPlayerID() == it->first)
+				out.push_back(c);
+		}
+	}
+
+	// Another kingdom's bots round the companion in a fight with the owner or
+	// with the companion now: their own foe (the Anti-PK protocol's), or the
+	// target of a fight under way.
+	struct FPlayerBotSidekickDefendScan
+	{
+		LPCHARACTER self;
+		LPCHARACTER owner;
+		std::vector<LPCHARACTER> onOwner;
+		std::vector<LPCHARACTER> onSelf;
+
+		FPlayerBotSidekickDefendScan(LPCHARACTER s, LPCHARACTER o) : self(s), owner(o)
+		{
+		}
+
+		void operator()(LPENTITY ent)
+		{
+			if (!ent || !ent->IsType(ENTITY_CHARACTER) ||
+					onOwner.size() + onSelf.size() >= PLAYERBOT_SIDEKICK_DEFEND_MAX * 2)
+				return;
+			LPCHARACTER c = (LPCHARACTER)ent;
+			if (c == self || c == owner || !c->IsPC() || c->IsDead() || !c->GetDesc() || !c->GetDesc()->IsBot() ||
+					c->GetEmpire() == self->GetEmpire())
+				return;
+			TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.find(c->GetPlayerID());
+			if (it == s_mapPlayerBotAIStates.end())
+				return;
+			const TPlayerBotAIState& st = it->second;
+			const bool fighting = st.bCurrentAction == BOT_ACTION_FIGHT;
+			if (owner && (st.persona.dwFoeVID == (DWORD)owner->GetVID() ||
+					(fighting && st.dwTargetVID == (DWORD)owner->GetVID())))
+				onOwner.push_back(c);
+			else if (st.persona.dwFoeVID == (DWORD)self->GetVID() ||
+					(fighting && st.dwTargetVID == (DWORD)self->GetVID()))
+				onSelf.push_back(c);
+		}
+	};
+
+	// One the companion may answer now. centreX/Y: the owner at its side, the
+	// spot it keeps ("Czekaj tutaj").
+	bool IsPlayerBotSidekickDefendFoe(LPCHARACTER ch, LPCHARACTER owner, LPCHARACTER foe, long centreX, long centreY)
+	{
+		if (!foe || foe == ch || foe == owner || !foe->IsPC() || foe->IsDead() || foe->IsObserverMode() ||
+				foe->GetMapIndex() != ch->GetMapIndex() || !foe->GetSectree())
+			return false;
+		// Another kingdom only: the owner's own - the companion's - never.
+		if (foe->GetEmpire() == ch->GetEmpire() || (owner && foe->GetEmpire() == owner->GetEmpire()))
+			return false;
+		if (owner)
+		{
+			if ((owner->GetParty() && foe->GetParty() == owner->GetParty()) ||
+					(owner->GetGuild() && foe->GetGuild() == owner->GetGuild()) ||
+					IsPlayerBotBlowConsensual(owner, foe))
+				return false;
+		}
+		if ((ch->GetParty() && foe->GetParty() == ch->GetParty()) ||
+				(ch->GetGuild() && foe->GetGuild() == ch->GetGuild()) || IsPlayerBotBlowConsensual(ch, foe))
+			return false;
+		if (IsPlayerBotWarFoeRecovering(foe) || IsPlayerBotPersonTruced(foe, get_dword_time()))
+			return false;
+		if (DISTANCE_APPROX(foe->GetX() - centreX, foe->GetY() - centreY) > PLAYERBOT_SIDEKICK_ASSIST_RANGE)
+			return false;
+		if (IsPlayerBotSafeZone(ch->GetMapIndex(), ch->GetX(), ch->GetY()) ||
+				IsPlayerBotSafeZone(foe->GetMapIndex(), foe->GetX(), foe->GetY()))
+			return false;
+		// The engine's own word on the blow. A companion on a mount is refused
+		// every blow by it (CPVPManager::CanAttack) until the fight takes it
+		// down - a character is fought on foot (CanPlayerBotFightOnHorse) - so
+		// on one the foe's blow at it is asked: between two kingdoms the rules
+		// are the same both ways.
+		if (battle_is_attackable(ch, foe))
+			return true;
+		return ch->IsRiding() && battle_is_attackable(foe, ch);
+	}
+
+	// The one the companion keeps fighting (its victim) while it still may,
+	// else the nearest of the owner's attackers, else the nearest of its own.
+	// Passive ("nie walcz") answers only its own. why: AT_OWNER or AT_SELF.
+	LPCHARACTER FindPlayerBotSidekickDefendFoe(LPCHARACTER ch, LPCHARACTER owner, BYTE stance, long centreX,
+			long centreY, int& why)
+	{
+		if (!ch || !ch->GetSectree())
+			return NULL;
+		const DWORD dwNow = get_dword_time();
+		const bool guardOwner = owner && stance != PLAYERBOT_SIDEKICK_STANCE_PASSIVE && !owner->IsDead() &&
+				owner->GetMapIndex() == ch->GetMapIndex() &&
+				DISTANCE_APPROX(owner->GetX() - centreX, owner->GetY() - centreY) <= PLAYERBOT_SIDEKICK_GUARD_RANGE;
+		FPlayerBotSidekickDefendScan scan(ch, guardOwner ? owner : NULL);
+		ch->GetSectree()->ForEachAround(scan);
+		if (guardOwner)
+			CollectPlayerBotSidekickDefendBlows(owner->GetPlayerID(), dwNow, scan.onOwner);
+		CollectPlayerBotSidekickDefendBlows(ch->GetPlayerID(), dwNow, scan.onSelf);
+		if (scan.onOwner.empty() && scan.onSelf.empty())
+			return NULL;
+		LPCHARACTER current = ch->GetVictim();
+		const std::vector<LPCHARACTER>* lists[2] = { &scan.onOwner, &scan.onSelf };
+		const int whys[2] = { PLAYERBOT_SIDEKICK_FOE_AT_OWNER, PLAYERBOT_SIDEKICK_FOE_AT_SELF };
+		if (current)
+			for (int l = 0; l < 2; ++l)
+				for (size_t i = 0; i < lists[l]->size(); ++i)
+					if ((*lists[l])[i] == current && IsPlayerBotSidekickDefendFoe(ch, owner, current, centreX, centreY))
+					{
+						why = whys[l];
+						return current;
+					}
+		for (int l = 0; l < 2; ++l)
+		{
+			LPCHARACTER best = NULL;
+			int bestDist = INT_MAX;
+			for (size_t i = 0; i < lists[l]->size(); ++i)
+			{
+				LPCHARACTER c = (*lists[l])[i];
+				const int d = DISTANCE_APPROX(c->GetX() - ch->GetX(), c->GetY() - ch->GetY());
+				if (d < bestDist && IsPlayerBotSidekickDefendFoe(ch, owner, c, centreX, centreY))
+				{
+					best = c;
+					bestDist = d;
+				}
+			}
+			if (best)
+			{
+				why = whys[l];
+				return best;
+			}
+		}
+		return NULL;
+	}
+
+	// Said once per attacker, again only after PLAYERBOT_SIDEKICK_DEFEND_LOG_MS.
+	void LogPlayerBotSidekickDefend(LPCHARACTER ch, LPCHARACTER owner, LPCHARACTER foe, int why, DWORD dwNow)
+	{
+		std::pair<DWORD, DWORD>& last = s_mapPlayerBotSidekickDefendLogged[ch->GetPlayerID()];
+		const DWORD since = dwNow - last.second;
+		if (last.second != 0 && (last.first == foe->GetPlayerID() ? since < PLAYERBOT_SIDEKICK_DEFEND_LOG_MS
+				: since < PLAYERBOT_SIDEKICK_DEFEND_LOG_SWITCH_MS))
+			return;
+		last.first = foe->GetPlayerID();
+		last.second = dwNow;
+		sys_log(0, "PLAYERBOT_SIDEKICK: defends %s pid=%u name=%s owner=%u attacker_pid=%u attacker=%s "
+				"attacker_empire=%u person=%d map=%ld hp=%d/%d",
+				why == PLAYERBOT_SIDEKICK_FOE_AT_OWNER ? "owner" : "itself", ch->GetPlayerID(), ch->GetName(),
+				owner ? owner->GetPlayerID() : 0, foe->GetPlayerID(), foe->GetName(), (unsigned int)foe->GetEmpire(),
+				foe->GetDesc() && !foe->GetDesc()->IsBot() ? 1 : 0, ch->GetMapIndex(), ch->GetHP(), ch->GetMaxHP());
 	}
 
 	// What is hitting a losing owner turns on the companion.
@@ -6173,6 +6428,16 @@ namespace
 			bool& ownerFighting)
 	{
 		ownerFighting = IsPlayerBotSidekickOwnerTargetInFight(ch, owner);
+		// MT2009_PLUS_SIDEKICK_DEFEND_V1: another kingdom's attackers come
+		// before the owner's target and every monster.
+		LPCHARACTER defend = FindPlayerBotSidekickDefendFoe(ch, owner, stance, owner->GetX(), owner->GetY(), why);
+		if (defend)
+		{
+			if (why == PLAYERBOT_SIDEKICK_FOE_AT_OWNER)
+				ownerFighting = true;
+			LogPlayerBotSidekickDefend(ch, owner, defend, why, get_dword_time());
+			return defend;
+		}
 		LPCHARACTER target = stance == PLAYERBOT_SIDEKICK_STANCE_PASSIVE ? NULL : owner->GetTarget();
 		// MT2009_PLUS_AREZZO_BOTS_V1 (events): the owner's Easter metin is the owner's.
 		if (target && target->IsStone() && IsPlayerBotEventStone(target->GetRaceNum()))
@@ -7625,6 +7890,21 @@ namespace
 		}
 		else if (foes.idle && rec.bStance == PLAYERBOT_SIDEKICK_STANCE_ATTACK)
 			foe = foes.idle;
+		// MT2009_PLUS_SIDEKICK_DEFEND_V1: another kingdom's attackers of the
+		// owner near the spot, or of itself, before any monster.
+		{
+			int defendWhy = PLAYERBOT_SIDEKICK_FOE_AT_SELF;
+			LPCHARACTER defend = FindPlayerBotSidekickDefendFoe(ch, sameMapOwner, rec.bStance, rt.lHoldX, rt.lHoldY,
+					defendWhy);
+			if (defend)
+			{
+				foe = defend;
+				why = defendWhy;
+				if (why == PLAYERBOT_SIDEKICK_FOE_AT_OWNER)
+					rt.dwOwnerFightSeenAt = dwNow;
+				LogPlayerBotSidekickDefend(ch, sameMapOwner, defend, why, dwNow);
+			}
+		}
 		// The owner near the spot is buffed as at its side, but a waiting
 		// companion never walks to it for that.
 		if (sameMapOwner && BuffPlayerBotSidekickOwner(ch, state, rec, sameMapOwner, dwNow, false))
@@ -8190,8 +8470,13 @@ namespace
 			return true;
 		int why = PLAYERBOT_SIDEKICK_FOE_NEARBY;
 		bool ownerFighting = false;
-		LPCHARACTER foe = owner->IsDead() ? NULL :
-				FindPlayerBotSidekickFoe(ch, owner, rec->bStance, why, ownerFighting);
+		// MT2009_PLUS_SIDEKICK_DEFEND_V1: over a fallen owner it still answers
+		// another kingdom's blows at itself.
+		LPCHARACTER foe = owner->IsDead()
+				? FindPlayerBotSidekickDefendFoe(ch, NULL, rec->bStance, ch->GetX(), ch->GetY(), why)
+				: FindPlayerBotSidekickFoe(ch, owner, rec->bStance, why, ownerFighting);
+		if (foe && owner->IsDead())
+			LogPlayerBotSidekickDefend(ch, owner, foe, why, dwNow);
 		if (ownerFighting)
 			rt.dwOwnerFightSeenAt = dwNow;
 		// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: its drops before a monster
