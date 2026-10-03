@@ -4106,17 +4106,32 @@ void RefreshPlayerBotRetireControl(DWORD dwNow)
 	if (row[1]) str_to_number(count, row[1]);
 	if (row[2]) str_to_number(windowMinutes, row[2]);
 	if (row[3]) str_to_number(shopMinutes, row[3]);
-	if (batchId == 0 || count == 0 || count > 2500 ||
+	// MT2009_PLUS_BOT_RETIREMENT_FIX_V1: a count of 0 is the panel's "stop"
+	// (no more picks; the bots already picked finish their sale), so it is
+	// no longer an invalid row the core complained about every five seconds.
+	if (batchId == 0 || count > 2500 ||
 			windowMinutes == 0 || windowMinutes > 10080 ||
 			shopMinutes == 0 || shopMinutes > 10080)
 	{
-		sys_err("PLAYERBOT_RETIRE: invalid panel control batch=%u count=%u window=%u shop=%u",
+		PlayerBotLogThrottled("retire_bad_control", dwNow,
+				"PLAYERBOT_RETIRE: invalid panel control batch=%u count=%u window=%u shop=%u",
 				(unsigned int)batchId, (unsigned int)count,
 				(unsigned int)windowMinutes, (unsigned int)shopMinutes);
 		return;
 	}
 	if (batchId == s_dwPlayerBotRetireBatchId)
+	{
+		// The same batch, stopped or shortened from the panel.
+		if (count != s_dwPlayerBotRetireCount)
+		{
+			s_dwPlayerBotRetireCount = count;
+			s_bPlayerBotRetireBatchDone = s_uPlayerBotRetireBatchQueued >= count;
+			sys_log(0, "PLAYERBOT_RETIRE: panel changed batch=%u count=%u (queued %u)",
+					(unsigned int)batchId, (unsigned int)count,
+					(unsigned int)s_uPlayerBotRetireBatchQueued);
+		}
 		return;
+	}
 
 	s_dwPlayerBotRetireBatchId = batchId;
 	s_dwPlayerBotRetireCount = count;
@@ -4136,10 +4151,17 @@ void RefreshPlayerBotRetireControl(DWORD dwNow)
 void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 {
 	LoadPlayerBotRetireConfig();
-	// One world, one scheduler: channel 1 owns the shops, so it owns the batch
-	// and only picks bots that are in ITS world - there is nothing to migrate.
+	// Channel 1 owns the shops, so it owns the batch and only picks bots that
+	// are in ITS world - there is nothing to migrate.
+	// MT2009_PLUS_BOT_RETIREMENT_FIX_V1: this asked for the three towns (1, 21,
+	// 41) on ONE core. Under M2_PLAYERBOT_WORLD_LAYOUT=split (kept by the
+	// launcher for worlds over 1500 bots) each town is on a core of its own, so
+	// no core ever ran the scheduler: the panel's batch sat at "trwa" with
+	// nobody picked, for ever. Every channel-1 core hosting a kingdom's town
+	// now picks among its own bots, and the batch's count is claimed in the
+	// database (ClaimPlayerBotRetireSlot), so together they never pick more.
 	if (g_bChannel != playerbot_channel_rules::SHOP_CHANNEL ||
-			!map_allow_find(1) || !map_allow_find(21) || !map_allow_find(41))
+			(!map_allow_find(1) && !map_allow_find(21) && !map_allow_find(41)))
 		return;
 	RefreshPlayerBotRetireControl(dwNow);
 
@@ -4187,7 +4209,7 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 		else
 		{
 			snprintf(query, sizeof(query),
-					"INSERT INTO common.playerbot_retire_batch (id, queued_count, started_at) "
+					"INSERT IGNORE INTO common.playerbot_retire_batch (id, queued_count, started_at) "
 					"VALUES (%u, 0, UNIX_TIMESTAMP())", s_dwPlayerBotRetireBatchId);
 			AccountDB::instance().DirectQuery(query);
 			s_uPlayerBotRetireBatchQueued = 0;
@@ -4207,10 +4229,12 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 			s_uPlayerBotRetireBatchQueued -= back;
 			s_bPlayerBotRetireBatchDone = false;
 			s_dwPlayerBotRetireNextPickTime = 0;
-			char requeueQuery[160];
+			// Relative: another core may have claimed slots of the same batch.
+			char requeueQuery[200];
 			snprintf(requeueQuery, sizeof(requeueQuery),
-					"UPDATE common.playerbot_retire_batch SET queued_count=%u WHERE id=%u",
-					(unsigned int)s_uPlayerBotRetireBatchQueued, s_dwPlayerBotRetireBatchId);
+					"UPDATE common.playerbot_retire_batch SET queued_count="
+					"IF(queued_count>%u,queued_count-%u,0) WHERE id=%u",
+					(unsigned int)back, (unsigned int)back, s_dwPlayerBotRetireBatchId);
 			AccountDB::instance().AsyncQuery(requeueQuery);
 			sys_log(0, "PLAYERBOT_RETIRE: %u called-off pick(s) given back to batch id=%u",
 					(unsigned int)back, s_dwPlayerBotRetireBatchId);
@@ -4235,7 +4259,13 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 	}
 	// Too small a world for "the middle" to mean anything.
 	if (live.size() < 10)
+	{
+		s_dwPlayerBotRetireNextPickTime = dwNow + 60000;
+		PlayerBotLogThrottled("retire_small_world", dwNow,
+				"PLAYERBOT_RETIRE: only %u bots on this core, at least 10 are needed to pick",
+				(unsigned int)live.size());
 		return;
+	}
 	std::sort(live.begin(), live.end());
 	const size_t lo = live.size() * 35 / 100;
 	const size_t hi = std::min(live.size(), std::max(lo + 1, live.size() * 65 / 100));
@@ -4249,6 +4279,9 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 	{
 		if (live[i].first < bLevelLo || live[i].first > bLevelHi)
 			continue;
+		// A bot of this manager, not a person in its character (takeover).
+		if (m_mapBots.find(live[i].second) == m_mapBots.end())
+			continue;
 		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(live[i].second);
 		if (IsPlayerBotRetirementCandidate(ch, bLevelLo, bLevelHi))
 			candidates.push_back(live[i].second);
@@ -4256,6 +4289,9 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 	if (candidates.empty())
 	{
 		s_dwPlayerBotRetireNextPickTime = dwNow + 60000;
+		PlayerBotLogThrottled("retire_no_candidate", dwNow,
+				"PLAYERBOT_RETIRE: no bot of levels %u-%u can be picked right now (pool=%u), looking again in a minute",
+				(unsigned int)bLevelLo, (unsigned int)bLevelHi, (unsigned int)live.size());
 		return;
 	}
 
@@ -4264,10 +4300,39 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 	if (!pickedCh)
 		return;
 
+	// MT2009_PLUS_BOT_RETIREMENT_FIX_V1: the slot is claimed in the database
+	// first - one statement, so two cores of a split world never both take
+	// the last one - and given back if the pick row cannot be written.
+	{
+		char claim[256];
+		snprintf(claim, sizeof(claim),
+				"UPDATE common.playerbot_retire_batch SET queued_count=queued_count+1 "
+				"WHERE id=%u AND queued_count<%u",
+				s_dwPlayerBotRetireBatchId, (unsigned int)s_dwPlayerBotRetireCount);
+		std::unique_ptr<SQLMsg> claimed(AccountDB::instance().DirectQuery(claim));
+		if (!claimed.get() || claimed->uiSQLErrno != 0 || !claimed->Get())
+		{
+			s_dwPlayerBotRetireNextPickTime = dwNow + 60000;
+			return;
+		}
+		if (claimed->Get()->uiAffectedRows == 0)
+		{
+			// Every slot of the batch is taken (here or on another core).
+			s_bPlayerBotRetireBatchDone = true;
+			sys_log(0, "PLAYERBOT_RETIRE: batch id=%u has no free slot left",
+					s_dwPlayerBotRetireBatchId);
+			return;
+		}
+	}
 	// Never advance the durable counter without a durable pick row.
 	if (!RecordPlayerBotRetirePick(dwPID, s_dwPlayerBotRetireBatchId, pickedCh->GetName(),
 			pickedCh->GetLevel()))
 	{
+		char release[200];
+		snprintf(release, sizeof(release),
+				"UPDATE common.playerbot_retire_batch SET queued_count="
+				"IF(queued_count>0,queued_count-1,0) WHERE id=%u", s_dwPlayerBotRetireBatchId);
+		AccountDB::instance().AsyncQuery(release);
 		s_dwPlayerBotRetireNextPickTime = dwNow + 60000;
 		return;
 	}
@@ -4289,12 +4354,6 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 	const size_t left = s_dwPlayerBotRetireCount > s_uPlayerBotRetireBatchQueued
 			? s_dwPlayerBotRetireCount - s_uPlayerBotRetireBatchQueued : 0;
 	s_dwPlayerBotRetireNextPickTime = dwNow + (left > 0 ? remaining / (DWORD)left : 0);
-
-	char updateQuery[160];
-	snprintf(updateQuery, sizeof(updateQuery),
-			"UPDATE common.playerbot_retire_batch SET queued_count=%u WHERE id=%u",
-			(unsigned int)s_uPlayerBotRetireBatchQueued, s_dwPlayerBotRetireBatchId);
-	AccountDB::instance().AsyncQuery(updateQuery);
 
 	sys_log(0, "PLAYERBOT_RETIRE: picked pid=%u name=%s level=%u (%u/%u batch id=%u, band %u-%u, pool=%u)",
 			dwPID, pickedCh->GetName(), (unsigned int)pickedCh->GetLevel(),
@@ -4814,6 +4873,11 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 		// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): the Arezzo test's characters
 		// play for as long as the test runs.
 		if (IsPlayerBotArezzoCohortPID(pid) || IsPlayerBotArezzoDungeonCohortPID(pid)) // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1
+			continue;
+		// MT2009_PLUS_BOT_RETIREMENT_FIX_V1: a bot on its way to its last stall
+		// is not sent to rest: out of the world for hours, its retirement was
+		// called off as "lost" after 30 minutes and its slot went round again.
+		if (IsPlayerBotRetiring(pid))
 			continue;
 		std::map<DWORD, DWORD>::iterator session = m_mapLifeSessionEnd.find(pid);
 		if (session == m_mapLifeSessionEnd.end())
