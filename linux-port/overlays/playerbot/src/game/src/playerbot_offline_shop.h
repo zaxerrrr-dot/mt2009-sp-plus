@@ -1380,6 +1380,55 @@ namespace {
                 IsPlayerBotLowArmourMarketFull(item->GetVnum())) return true;
         return false;
     }
+    // MT2009_PLUS_BOT_SHIELD_LISTING_V1 (the owner, 3 October: "sprawdzic,
+    // dlaczego 297 tarcz z torb nie trafia na lady"). On the supporters' world
+    // 223 of the shields in the bots' bags - Bojowa Tarcza +6 of a bot that
+    // wears a better one, Pieciokatna - and 553 of its 1228 helmets were spare
+    // goods at their low score (PLAYERBOT_SHOP_LOW_PLUS_GEAR_SCORE plus the
+    // plus, 480..489), on bots whose counters had room and no line of the
+    // kind. A visit adds the first candidate its counter takes, best first,
+    // and every visit had one that scored more - a book, a precious spare, a
+    // material at its floor - or one of the materials the collector keeps
+    // half of its first block for (CollectPlayerBotShopItems), which sort
+    // ahead of the overflow the shield sat in: their owners put materials up
+    // at 470 while the shield stayed in the bag. The best helmet, shield or
+    // boots of the bag goes up ahead of every candidate under
+    // PLAYERBOT_SHOP_PRIZE_SCORE now, while the counter shows fewer than
+    // PLAYERBOT_ALL_GEAR_KIND_LINES lines of its kind at any plus - a line a
+    // visit, twelve at most, and the order as it was once they stand.
+    bool IsPlayerBotHoistedSpareGearKind(int kind) {
+        return kind == 3 || kind == 4 || kind == 5;   // a helmet, a shield, boots
+    }
+    int BotOfflineSpareGearKindLines(NativeShop shop, int kind) {
+        int lines = 0;
+        if (shop)
+            for (const auto& [lid, l] : shop->GetItems())
+                if (l && l->GetTable() && GetPlayerBotSaleGearKindOf(l->GetTable(), l->GetInfo().vnum) == kind)
+                    ++lines;
+        return lines;
+    }
+    void BotOfflineHoistSpareGear(LPCHARACTER ch, NativeShop shop, std::vector<std::pair<int, WORD> >& scored) {
+        if (!ch || !shop || scored.size() < 2) return;
+        int lines[9] = { -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+        for (size_t i = 0; i < scored.size(); ++i) {
+            if (scored[i].first >= PLAYERBOT_SHOP_PRIZE_SCORE) continue;
+            LPITEM item = ch->GetInventoryItem(scored[i].second);
+            const int kind = GetPlayerBotSaleGearKind(item);
+            if (!IsPlayerBotHoistedSpareGearKind(kind) ||
+                    GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_STALL) continue;
+            if (lines[kind] < 0) lines[kind] = BotOfflineSpareGearKindLines(shop, kind);
+            if (lines[kind] >= PLAYERBOT_ALL_GEAR_KIND_LINES || BotOfflineCounterRefuses(shop, item)) continue;
+            // Ahead of the first candidate under the prize score.
+            size_t at = 0;
+            while (at < i && scored[at].first >= PLAYERBOT_SHOP_PRIZE_SCORE) ++at;
+            if (at < i) {
+                const std::pair<int, WORD> hoisted = scored[i];
+                scored.erase(scored.begin() + i);
+                scored.insert(scored.begin() + at, hoisted);
+            }
+            return;
+        }
+    }
     // The lines of this vnum a counter carries, and how many of them are small
     // (two or fewer): the shape GetPlayerBotNaturalLineUnits cuts the next by.
     void BotOfflineCountLinesOf(NativeShop shop, DWORD vnum, int& lines, int& small) {
@@ -1624,6 +1673,7 @@ namespace {
         BotOfflineUnwantedLine(ch, shop, lowGear);
         std::vector<std::pair<int, WORD> > scored;
         CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state), lowGear, true);   // MT2009_PLUS_BOT_LIST_ALL_GEAR_V1
+        BotOfflineHoistSpareGear(ch, shop, scored);   // MT2009_PLUS_BOT_SHIELD_LISTING_V1
         int rank = -1, refused = 0;
         for (auto [score, cell] : scored) {
             ++rank;
@@ -2081,6 +2131,7 @@ namespace {
         }
         std::vector<std::pair<int, WORD> > scored;
         CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state), lowGearOnCounter, true);   // MT2009_PLUS_BOT_LIST_ALL_GEAR_V1
+        BotOfflineHoistSpareGear(ch, shop, scored);   // MT2009_PLUS_BOT_SHIELD_LISTING_V1
         // The line cut before the board opened goes first, whatever it scores
         // now: it is exactly a line, so BotOfflinePrepareLine below hands it
         // back as it is. A stale cell (the item gone, or another in its
