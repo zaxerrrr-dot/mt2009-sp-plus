@@ -2129,7 +2129,8 @@ namespace
 		if (!ch->UnequipItem(bestGear) || bestGear->IsEquipped())
 			return;
 
-		// UseItemEx deletes the stone whichever way the roll goes, so nothing
+		// UseItemEx takes the stone whichever way the roll goes - one of a
+		// stack (MT2009_PLUS_DIGI_STACK_V1), the last one deleted - so nothing
 		// below may touch bestStone.
 		ch->UseItemEx(bestStone, TItemPos(INVENTORY, bestGear->GetCell()));
 		const DWORD after = (DWORD)bestGear->GetSocket(bestSocket);

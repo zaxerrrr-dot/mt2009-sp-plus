@@ -1348,6 +1348,12 @@ namespace
 			return playerbot_stall_rules::IsHeapLine(count);
 		if (IsPlayerBotSafeRefineScroll(item->GetVnum()) || IsPlayerBotTradeableMaterial(item))
 			return playerbot_stall_rules::IsSmallGoodsLine(count);
+		// MT2009_PLUS_DIGI_STACK_V1 (Autor: Digi Rasta's stacking): the soul
+		// stones stack to 200 now, and a buyer wants one for one socket - a
+		// stone line is one stone (GetPlayerBotStallLineUnits); a stack is no
+		// line, it is cut (SplitPlayerBotStallSingles, BotOfflinePrepareLine).
+		if (item->GetType() == ITEM_METIN)
+			return count == 1;
 		return true;
 	}
 
@@ -2816,8 +2822,15 @@ namespace
 			if (price == 0)
 				price = item->GetProto() ? item->GetProto()->dwGold : 100;
 			price = std::max<DWORD>(10, price / 5);
-			totalSoldGold += price;
-			PlayerBotChangeGold(ch, price);
+			// MT2009_PLUS_DIGI_STACK_V1: a soul stone, a gift box or a treasure
+			// box stacks to 200 now - the stack goes whole, so it is paid by
+			// count (it was one unit's price for the stack).
+			long long salePrice = (long long)price;
+			if (item->GetCount() > 1 && (item->GetType() == ITEM_METIN ||
+					item->GetType() == ITEM_GIFTBOX || item->GetType() == ITEM_TREASURE_BOX))
+				salePrice *= (long long)item->GetCount();
+			totalSoldGold += salePrice;
+			PlayerBotChangeGold(ch, salePrice);
 			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_SHOP_SELL");
 			++soldCount;
 		}

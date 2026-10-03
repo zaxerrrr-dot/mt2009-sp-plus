@@ -994,6 +994,15 @@ namespace {
                 M2_DELETE(preview);
                 continue;
             }
+            // MT2009_PLUS_DIGI_STACK_V1: nor a soul stone line of more than one
+            // stone (they stack to 200 now; a buyer takes one for a socket) - it
+            // comes home to go up a stone at a time.
+            if (preview->GetType() == ITEM_METIN && (int)preview->GetCount() > 1 &&
+                    GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
+                if (!unwanted) { unwanted = id; reason = "soul_stone_stack"; }
+                M2_DELETE(preview);
+                continue;
+            }
             // A scroll line of more than PLAYERBOT_SHOP_SCROLL_LINE_UNITS went
             // up as a whole stack before 2.0.55; since Iwakura's Patch 4 a line
             // is one, two or five, and a line of three or four comes home to be
@@ -1552,7 +1561,9 @@ namespace {
                 (unsigned int)(GetPlayerBotStallKindKey(item) & 0x7fffffffU), total);
             return to;
         }
-        const bool cut = (units == 1 && item->GetType() == ITEM_TREASURE_KEY) ||
+        // MT2009_PLUS_DIGI_STACK_V1: a soul stone (a stack of up to 200 now)
+        // goes up a stone at a time, as a key does.
+        const bool cut = (units == 1 && (item->GetType() == ITEM_TREASURE_KEY || item->GetType() == ITEM_METIN)) ||
             item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM;
         if (!cut || (int)item->GetCount() <= units) { cutNote.from = 0; return cell; }
         cutNote.shape = item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM ? per::SHAPE_CHEST_PACK : per::SHAPE_KEY_SINGLE;

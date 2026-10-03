@@ -313,8 +313,11 @@ namespace
 
 		// A soul stone of its set, at a grade its piece deserves, for a socket
 		// it has open.
+		// MT2009_PLUS_DIGI_STACK_V1: one stone, never a stack of them (they
+		// stack to 200 now; the socket takes one).
 		if (offer->GetType() == ITEM_METIN)
-			return WantsPlayerBotSoulStone(ch, offer->GetVnum(), (DWORD)offer->GetValue(5));
+			return offer->GetCount() == 1 &&
+					WantsPlayerBotSoulStone(ch, offer->GetVnum(), (DWORD)offer->GetValue(5));
 
 		// A Stalki for its slot, while it holds nothing of the tier and is at
 		// the level or PLAYERBOT_STALKI_BUY_AHEAD_LEVELS short of it

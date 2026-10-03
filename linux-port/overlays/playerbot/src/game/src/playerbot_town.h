@@ -3628,7 +3628,11 @@ namespace
 		// MT2009_PLUS_MARKET_V3: a piece off the sheet, by the plus its lines
 		// or its average make it (LiftPlayerBotGearPrice); nothing for the rest.
 		unit = LiftPlayerBotGearPrice(item, unit);
-		const DWORD price = unit * (DWORD)item->GetCount();
+		// MT2009_PLUS_DIGI_STACK_V1: in 64 bits - a stack of 200 soul stones
+		// wrapped a DWORD (200 x +6 asked a twentieth of its worth). Over the
+		// DWORD it stays at the top, which no counter takes (GOLD_MAX).
+		const DWORD price = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL,
+				(unsigned long long)unit * (unsigned long long)item->GetCount());
 		if (item->GetCount() > 1)
 			PlayerBotPriceStep(per::STEP_COUNT, price, item->GetCount());
 		return price == 0 ? 1U : price;
