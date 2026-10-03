@@ -104,7 +104,7 @@ bindInventoryFragment();
 // manual reload to see a bot's gear change after it equips/unequips something.
 async function refreshInventory(){
   try {
-    const res = await fetch('/api/player/{{character.id}}/inventory-fragment', {cache:'no-store'});
+    const res = await fetch((window.SEBAN_ROOT||'')+'/api/player/{{character.id}}/inventory-fragment', {cache:'no-store'});
     if (!res.ok) return;
     document.getElementById('inventory-live-region').innerHTML = await res.text();
     bindInventoryFragment();
@@ -114,7 +114,7 @@ window.__playerRefreshInterval=setInterval(refreshInventory, 5000);
 async function runTeleport(btn, statusEl, payload){
   btn.disabled = true; statusEl.textContent = '⏳ Teleportowanie Twojej postaci w grze...';
   try {
-    const res = await fetch('/api/admin/teleport-me', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    const res = await fetch((window.SEBAN_ROOT||'')+'/api/admin/teleport-me', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
     const data = await res.json();
     if (data.ok) statusEl.textContent = `✅ Przeteleportowano ${data.name} do bota w grze!`;
     else if (data.error === 'bot_offline') statusEl.textContent = '⛔ Ten bot nie jest teraz online, nie znam jego pozycji.';
@@ -149,7 +149,7 @@ function renderLiveLogs(){
 }
 async function fetchLiveLogs(){
   try{
-    const res=await fetch(`/api/bot-logs/${liveLogToggle.dataset.pid}`,{cache:'no-store'});
+    const res=await fetch((window.SEBAN_ROOT||'')+`/api/bot-logs/${liveLogToggle.dataset.pid}`,{cache:'no-store'});
     const data=await res.json();
     if (data.logs && data.logs.length){
       data.logs.forEach(line=>{if(!seenLogs[line]){seenLogs[line]=true;collectedLogs.push(line)}});
@@ -184,7 +184,7 @@ let itemSearchTimer;
 async function searchAdminItems(){
   const q=document.getElementById('admin-item-search')?.value||'', category=document.getElementById('admin-item-category')?.value||'all';
   try{
-    const response=await fetch(`/api/admin/item-search?q=${encodeURIComponent(q)}&category=${encodeURIComponent(category)}`,{cache:'no-store'});
+    const response=await fetch((window.SEBAN_ROOT||'')+`/api/admin/item-search?q=${encodeURIComponent(q)}&category=${encodeURIComponent(category)}`,{cache:'no-store'});
     const data=await response.json(), select=document.getElementById('admin-item-results');
     select.innerHTML=data.items.length?data.items.map(item=>`<option value="${item.vnum}">${escapeHtml(item.name)} · ${item.vnum}</option>`).join(''):'<option value="">Brak wyników</option>';
   }catch(_){}

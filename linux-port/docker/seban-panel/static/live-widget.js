@@ -103,7 +103,7 @@
   })();
   const levelOK = (level) => { if (currentLevel === 'all') return true; if (currentLevel.endsWith('+')) return level >= Number.parseInt(currentLevel, 10); const [from, to] = currentLevel.split('-').map(Number); return level >= from && level <= to; };
   const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const portrait = job => { const files = ["warrior_m.bmp","assassin_w.bmp","sura_m.bmp","shaman_w.bmp","warrior_w.bmp","assassin_m.bmp","sura_w.bmp","shaman_m.bmp"]; const index = Number.isInteger(Number(job)) && Number(job) >= 0 && Number(job) < files.length ? Number(job) : 0; return `/static/class-portraits/${files[index]}`; };
+  const portrait = job => { const files = ["warrior_m.bmp","assassin_w.bmp","sura_m.bmp","shaman_w.bmp","warrior_w.bmp","assassin_m.bmp","sura_w.bmp","shaman_m.bmp"]; const index = Number.isInteger(Number(job)) && Number(job) >= 0 && Number(job) < files.length ? Number(job) : 0; return (window.SEBAN_ROOT||'')+`/static/class-portraits/${files[index]}`; };
   const empireFlag = empire => ({ 1: 'shinsoo.png', 2: 'chunjo.png', 3: 'jinno.png' })[Number(empire)] || 'chunjo.png';
   const levelMarkup = bot => topLevelRanks[bot.id] ? `<span class="top-level-badge top-level-badge--compact" title="Top 10 poziomu · #${topLevelRanks[bot.id]}">Lv ${bot.level}</span>` : `Lv ${bot.level}`;
   // Audyt 2026-09-19: goal 0 (`BOT_GOALS[0]`) to bazowe "Zdobywanie poziomu",
@@ -165,22 +165,22 @@
     map.querySelectorAll('.bot-point,.heat-point').forEach(node => node.remove());
     bots.forEach(bot => {
       const point = document.createElement('a'); point.className = `bot-point ch-${bot.channel || 1} ${bot.in_party ? 'is-pt' : ''}${bot.stuck ? ' is-stuck' : ''}${bot.fighting_metin ? ' is-metin' : ''}`;
-      point.href = `/player/${bot.id}`; point.style.left = `${Math.max(1,Math.min(99,bot.px))}%`; point.style.top = `${Math.max(1,Math.min(99,bot.py))}%`;
+      point.href = (window.SEBAN_ROOT||'')+`/player/${bot.id}`; point.style.left = `${Math.max(1,Math.min(99,bot.px))}%`; point.style.top = `${Math.max(1,Math.min(99,bot.py))}%`;
       point.title = `${bot.name} · poziom ${bot.level}${knownChannels.length > 1 ? ' · CH' + (bot.channel || 1) : ''}${bot.in_party ? ' · PT' : ''}${bot.stuck ? ' · możliwie zablokowany' : ''}${bot.fighting_metin ? ' · walczy z Metinem' : ''}`;
-      point.innerHTML = `<img class="bot-point-flag" src="/static/empires/${empireFlag(bot.empire)}" alt="" aria-hidden="true">${bot.stuck ? '<i class="bot-point-stuck" aria-label="Możliwie zawieszony">!</i>' : ''}${$('show-names').checked ? `<em>${escape(bot.name)} ${levelMarkup(bot)}</em>` : ''}`;
+      point.innerHTML = `<img class="bot-point-flag" src="${window.SEBAN_ROOT||''}/static/empires/${empireFlag(bot.empire)}" alt="" aria-hidden="true">${bot.stuck ? '<i class="bot-point-stuck" aria-label="Możliwie zawieszony">!</i>' : ''}${$('show-names').checked ? `<em>${escape(bot.name)} ${levelMarkup(bot)}</em>` : ''}`;
       map.appendChild(point);
     });
     const average = bots.length ? (bots.reduce((sum,b)=>sum+b.level,0)/bots.length).toFixed(1) : '—';
     $('stat-visible').textContent = bots.length; $('stat-pt').textContent = bots.filter(b=>b.in_party).length; $('stat-avg').textContent = average; $('stat-max').textContent = bots.length ? Math.max(...bots.map(b=>b.level)) : '—';
     $('live-count').textContent = `Zaktualizowano ${new Date().toLocaleTimeString('pl-PL', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}`;
     $('map-caption').textContent = select.options[select.selectedIndex].text;
-$('live-ranking').innerHTML = bots.sort((a,b)=>b.level-a.level||a.name.localeCompare(b.name)).slice(0,10).map((b,i)=>`<a class="${b.id === globalTopId ? 'is-global-leader' : ''}" href="/player/${b.id}"><b>#${i+1}</b><img class="class-portrait class-portrait--live" src="${portrait(b.job)}" alt=""> ${escape(b.name)}${b.in_party?'<mark class="pt-mark">PT</mark>':''}${b.stuck?'<mark class="stuck-mark">⚠</mark>':''} <span>${levelMarkup(b)}</span></a>`).join('') || '<p class="muted">Brak botów spełniających filtr.</p>';
+$('live-ranking').innerHTML = bots.sort((a,b)=>b.level-a.level||a.name.localeCompare(b.name)).slice(0,10).map((b,i)=>`<a class="${b.id === globalTopId ? 'is-global-leader' : ''}" href="${window.SEBAN_ROOT||''}/player/${b.id}"><b>#${i+1}</b><img class="class-portrait class-portrait--live" src="${portrait(b.job)}" alt=""> ${escape(b.name)}${b.in_party?'<mark class="pt-mark">PT</mark>':''}${b.stuck?'<mark class="stuck-mark">⚠</mark>':''} <span>${levelMarkup(b)}</span></a>`).join('') || '<p class="muted">Brak botów spełniających filtr.</p>';
     renderActivities(bots);
     insights(mapId,bots);
   }
   async function load() {
     try {
-      const response = await fetch('/api/live-bots', {cache:'no-store'}), data = await response.json();
+      const response = await fetch((window.SEBAN_ROOT||'')+'/api/live-bots', {cache:'no-store'}), data = await response.json();
       if (!data.ok) return;
       globalTopId = data.global_top_id; topLevelRanks = data.top_level_ranks || {}; snapshot = data.bots.map(bot => { const b = data.bounds[String(bot.map_index)] || data.bounds[bot.map_index]; return b ? {...bot, px:(bot.x-b[0])/b[2]*100, py:(bot.y-b[1])/b[3]*100} : bot; });
       ensureChannelUI(data.channels || [1]);
@@ -196,7 +196,7 @@ $('live-ranking').innerHTML = bots.sort((a,b)=>b.level-a.level||a.name.localeCom
   async function loadHeat() {
     try {
       const mapId = Number(select.value);
-      const response = await fetch(`/api/heat-events?type=${encodeURIComponent(mode.value)}&map=${mapId}`, {cache:'no-store'}), data = await response.json();
+      const response = await fetch((window.SEBAN_ROOT||'')+`/api/heat-events?type=${encodeURIComponent(mode.value)}&map=${mapId}`, {cache:'no-store'}), data = await response.json();
       if (!data.ok) return;
       const events = data.events || [];
       map.dataset.mapIndex = String(mapId);
@@ -212,7 +212,7 @@ $('live-ranking').innerHTML = bots.sort((a,b)=>b.level-a.level||a.name.localeCom
   }
   async function refreshRestartInfo() {
     try {
-      const data = await fetch('/api/manage-status',{cache:'no-store'}).then(r=>r.json());
+      const data = await fetch((window.SEBAN_ROOT||'')+'/api/manage-status',{cache:'no-store'}).then(r=>r.json());
       const time = Number(data.last_restart_time || 0); const label=time ? new Date(time * 1000).toLocaleString('pl-PL') : 'Brak danych';
       restartInfo.textContent = time ? `Ostatni restart: ${label}` : ''; if ($('overview-restart')) $('overview-restart').textContent=label;
       Object.entries(data.rates || {}).forEach(([name,value]) => { const node=$(`overview-rate-${name}`); if (node) node.textContent=`${value}%`; });

@@ -5,7 +5,7 @@
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const portrait = job => {
     const files = ['warrior_m.bmp','assassin_w.bmp','sura_m.bmp','shaman_w.bmp','warrior_w.bmp','assassin_m.bmp','sura_w.bmp','shaman_m.bmp'];
-    return `/static/class-portraits/${files[Math.max(0, Math.min(files.length - 1, Number(job) || 0))]}`;
+    return (window.SEBAN_ROOT||'')+`/static/class-portraits/${files[Math.max(0, Math.min(files.length - 1, Number(job) || 0))]}`;
   };
   const shimmer = (label, compact = false) => `<div class="dashboard-widget-loader ld-shimmer${compact ? ' ld-shimmer--compact' : ''}" aria-label="${escape(label)}"><i></i>${compact ? '' : '<i></i><i></i>'}</div>`;
   widgets.querySelectorAll('.panel').forEach(panel => {
@@ -43,7 +43,7 @@
     if (guild) guild.textContent = summary.guilds ?? 0;
     const empireBreakdown = document.querySelector('.empire-bots-breakdown');
     if (empireBreakdown && Array.isArray(summary.empire_counts)) {
-      empireBreakdown.innerHTML = summary.empire_counts.map(empire => `<span class="empire-bots-item">${empire.flag ? `<img class="empire-flag-inline" src="/static/empires/${escape(empire.flag)}" alt="${escape(empire.name)}" title="${escape(empire.name)}">` : ''}${escape(empire.count)}</span>`).join('');
+      empireBreakdown.innerHTML = summary.empire_counts.map(empire => `<span class="empire-bots-item">${empire.flag ? `<img class="empire-flag-inline" src="${window.SEBAN_ROOT||''}/static/empires/${escape(empire.flag)}" alt="${escape(empire.name)}" title="${escape(empire.name)}">` : ''}${escape(empire.count)}</span>`).join('');
       document.querySelector('.empire-bots-cell')?.classList.remove('is-loading');
     }
     const channelBreakdown = document.querySelector('.channel-bots-breakdown');
@@ -80,7 +80,7 @@
     if (!panel) return;
     const title = panel.querySelector('#quick-rank-title');
     const subtitle = panel.querySelector('#quick-rank-subtitle');
-    const slides = rankings.map((ranking, index) => `<ol class="quick-rank-slide" data-title="${escape(ranking.title)}" data-subtitle="${escape(ranking.subtitle)}" ${index ? 'hidden' : ''}>${(ranking.items || []).map(row => { const levelLeader = ranking.title === 'Poziom' && row.top_level_rank; return `<li class="${row.id === globalTopId ? 'quick-leader' : ''}"><a href="/player/${Number(row.id)}"><img class="class-portrait class-portrait--carousel" src="${portrait(row.job)}" alt="" aria-hidden="true">${row.is_person ? '<span title="Postać gracza">👤</span> ' : ''}${escape(row.name)}</a><b class="${levelLeader ? 'top-level-badge top-level-badge--compact' : ''}"${levelLeader ? ` title="Top 10 poziomu · #${row.top_level_rank}"` : ''}>${escape(row.value)}</b></li>`; }).join('') || '<li class="quick-rank-empty muted">Brak danych — jeszcze nikt tego nie zrobił.</li>'}</ol>`).join('');
+    const slides = rankings.map((ranking, index) => `<ol class="quick-rank-slide" data-title="${escape(ranking.title)}" data-subtitle="${escape(ranking.subtitle)}" ${index ? 'hidden' : ''}>${(ranking.items || []).map(row => { const levelLeader = ranking.title === 'Poziom' && row.top_level_rank; return `<li class="${row.id === globalTopId ? 'quick-leader' : ''}"><a href="${window.SEBAN_ROOT||''}/player/${Number(row.id)}"><img class="class-portrait class-portrait--carousel" src="${portrait(row.job)}" alt="" aria-hidden="true">${row.is_person ? '<span title="Postać gracza">👤</span> ' : ''}${escape(row.name)}</a><b class="${levelLeader ? 'top-level-badge top-level-badge--compact' : ''}"${levelLeader ? ` title="Top 10 poziomu · #${row.top_level_rank}"` : ''}>${escape(row.value)}</b></li>`; }).join('') || '<li class="quick-rank-empty muted">Brak danych — jeszcze nikt tego nie zrobił.</li>'}</ol>`).join('');
     const dots = rankings.map((_, index) => `<button class="${index ? '' : 'active'}" data-slide="${index}"></button>`).join('');
     panel.querySelector('#quick-rank-slides').innerHTML = slides;
     panel.querySelector('.carousel-dots').innerHTML = dots;
@@ -111,12 +111,12 @@
       if (existingChart) existingChart.destroy();
     }
     const script = document.createElement('script');
-    script.src = '/static/dashboard-charts.js?v=deferred';
+    script.src = (window.SEBAN_ROOT||'')+'/static/dashboard-charts.js?v=deferred';
     script.onload = () => widgets.querySelectorAll('.panel').forEach(panel => panel.classList.remove('is-loading'));
     document.body.appendChild(script);
   }
 
-  fetch('/api/dashboard-deferred', {cache: 'no-store'})
+  fetch((window.SEBAN_ROOT||'')+'/api/dashboard-deferred', {cache: 'no-store'})
     .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
     .then(renderDeferred)
     .catch(() => widgets.querySelectorAll('.panel').forEach(panel => {

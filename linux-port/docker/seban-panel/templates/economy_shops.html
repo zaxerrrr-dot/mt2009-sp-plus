@@ -52,8 +52,8 @@ function renderSaleFeed(sales){
     const icon=s.icon_url?`<img src="${esc(s.icon_url)}" loading="lazy" alt="">`:'';
     const flagSrc=EMPIRE_FLAGS[s.empire];
     const flag=flagSrc?`<img class="empire-flag-inline" src="${esc(flagSrc)}" alt="${esc(EMPIRE_NAMES[s.empire]||'')}" title="${esc(EMPIRE_NAMES[s.empire]||'')}">`:'';
-    const seller=s.seller_id?`<a href="/player/${Number(s.seller_id)}">${esc(s.seller)}</a>`:esc(s.seller);
-    return `<tr><td>${esc(s.time)}</td><td class="item-cell">${icon}<a href="/economy/item/${s.vnum}">${esc(s.item_name)}</a></td><td>${seller}</td><td>${flag}</td><td>${s.qty}</td><td>${s.price.toLocaleString('pl-PL')}</td></tr>`;
+    const seller=s.seller_id?`<a href="${window.SEBAN_ROOT||''}/player/${Number(s.seller_id)}">${esc(s.seller)}</a>`:esc(s.seller);
+    return `<tr><td>${esc(s.time)}</td><td class="item-cell">${icon}<a href="${window.SEBAN_ROOT||''}/economy/item/${s.vnum}">${esc(s.item_name)}</a></td><td>${seller}</td><td>${flag}</td><td>${s.qty}</td><td>${s.price.toLocaleString('pl-PL')}</td></tr>`;
   }).join('');
 }
 window.__shopFeedInterval=setInterval(()=>{
