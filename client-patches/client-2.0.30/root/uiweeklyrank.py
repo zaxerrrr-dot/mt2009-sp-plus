@@ -109,7 +109,7 @@ TEXT_ME = "Twoje miejsce: %d   (wynik: %s)"
 TEXT_ME_NONE = "Nie masz jeszcze miejsca w tej kategorii."
 TEXT_HOLDERS = "Tytu\xb3: %s  -  zwyci\xeazcy poprzedniego sezonu"
 TEXT_NO_HOLDERS = "Brak posiadaczy - tytu\xb3y dostaje top 3 po ko\xf1cu sezonu."
-TEXT_REFRESH_NOTE = "Wyniki od\x9bwie\xbfaj\xb9 si\xea co minut\xea."
+TEXT_REFRESH_NOTE = "Wyniki od\x9cwie\xbfaj\xb9 si\xea co minut\xea."
 TEXT_BOT = "Bot"
 TEXT_PLAYER = "Gracz"
 TEXT_HEAD_POS = "#"
@@ -117,7 +117,7 @@ TEXT_HEAD_NAME = "Posta\xe6"
 TEXT_HEAD_LEVEL = "Poz."
 TEXT_HEAD_KINGDOM = "Kr\xf3lestwo"
 TEXT_HEAD_VALUE = "Wynik"
-TEXT_HEAD_EXP = "Do\x9bwiadczenie"
+TEXT_HEAD_EXP = "Do\x9cw."
 TEXT_STRIP = "Tytu\xb3y rankingu:"
 
 COLOR_GOLD = 0xffffd040
@@ -283,9 +283,11 @@ class RankRow(ui.Window):
 				self.crowns[place] = crown
 		self.posLine = self.__Text(16, True)
 		self.nameLine = self.__Text(70)
-		self.tagLine = self.__Text(190)
-		self.levelLine = self.__Text(250, True)
-		self.kingdomLine = self.__Text(305, True)
+		self.tagLine = self.__Text(184)
+		# MT2009_PLUS_WEEKLY_RANKING_UX_V1: the level and the kingdom moved left,
+		# so a long value (the experience) never runs into the kingdom.
+		self.levelLine = self.__Text(240, True)
+		self.kingdomLine = self.__Text(288, True)
 		self.valueLine = self.__Text(390)
 		self.valueLine.SetHorizontalAlignRight()
 
@@ -364,11 +366,15 @@ class HolderRow(ui.Window):
 			crown.Show()
 			self.crown = crown
 		self.place = place
+		# MT2009_PLUS_WEEKLY_RANKING_UX_V1: the name, the tag and the title -
+		# the bonus of each place is said once, under the three rows; in the
+		# row it ran over the title.
 		self.nameLine = self.__Text(46)
-		self.tagLine = self.__Text(150)
-		self.titleLine = self.__Text(205)
-		self.bonusLine = self.__Text(390)
-		self.bonusLine.SetHorizontalAlignRight()
+		self.tagLine = self.__Text(176)
+		self.titleLine = self.__Text(390)
+		self.titleLine.SetHorizontalAlignRight()
+		self.bonusLine = self.__Text(0)
+		self.bonusLine.Hide()
 
 	def __Text(self, x):
 		line = ui.TextLine()
@@ -384,8 +390,6 @@ class HolderRow(ui.Window):
 			self.tagLine.SetText("")
 			self.titleLine.SetText(TitleText(cat, self.place))
 			self.titleLine.SetPackedFontColor(COLOR_DIM)
-			self.bonusLine.SetText(BonusShort(cat, self.place))
-			self.bonusLine.SetPackedFontColor(COLOR_DIM)
 			return
 		pid, bot, level, empire, value, name = holder
 		self.nameLine.SetText("%s (%d)" % (name, level))
@@ -394,13 +398,12 @@ class HolderRow(ui.Window):
 		self.tagLine.SetPackedFontColor(COLOR_BOT if bot else COLOR_PLAYER)
 		self.titleLine.SetText(TitleText(cat, self.place))
 		self.titleLine.SetPackedFontColor(PLACE_COLORS.get(self.place, COLOR_TEXT))
-		self.bonusLine.SetText(BonusShort(cat, self.place))
-		self.bonusLine.SetPackedFontColor(COLOR_TEXT)
+
 
 
 class WeeklyRankWindow(ui.BoardWithTitleBar):
 	WIDTH = 618
-	HEIGHT = 560
+	HEIGHT = 600
 	LEFT_X = 10
 	LEFT_Y = 34
 	LEFT_W = 166
@@ -510,8 +513,8 @@ class WeeklyRankWindow(ui.BoardWithTitleBar):
 		self.__Header(self, x, self.HEAD_Y, 405, False)
 		self.__Label(self, x + 16, self.HEAD_Y + 4, TEXT_HEAD_POS, COLOR_TEXT, True)
 		self.__Label(self, x + 70, self.HEAD_Y + 4, TEXT_HEAD_NAME, COLOR_TEXT)
-		self.__Label(self, x + 250, self.HEAD_Y + 4, TEXT_HEAD_LEVEL, COLOR_TEXT, True)
-		self.__Label(self, x + 305, self.HEAD_Y + 4, TEXT_HEAD_KINGDOM, COLOR_TEXT, True)
+		self.__Label(self, x + 240, self.HEAD_Y + 4, TEXT_HEAD_LEVEL, COLOR_TEXT, True)
+		self.__Label(self, x + 288, self.HEAD_Y + 4, TEXT_HEAD_KINGDOM, COLOR_TEXT, True)
 		self.valueHead = self.__Label(self, x + 390, self.HEAD_Y + 4, TEXT_HEAD_VALUE, COLOR_TEXT)
 		self.valueHead.SetHorizontalAlignRight()
 
@@ -551,9 +554,9 @@ class WeeklyRankWindow(ui.BoardWithTitleBar):
 			row.Show()
 			self.holderRows.append(row)
 			y += self.ROW_STEP
-		self.noHoldersLine = self.__Label(self, x + 202, y + 2, "", COLOR_DIM, True)
-		self.bonusLine = self.__Label(self, x + 202, y + 18, "", COLOR_TEXT, True)
-		self.__Label(self, x + 202, y + 34, TEXT_REFRESH_NOTE, COLOR_DIM, True)
+		self.bonusLine = self.__Label(self, x + 202, y + 4, "", COLOR_GOLD, True)
+		self.noHoldersLine = self.__Label(self, x + 202, y + 22, "", COLOR_DIM, True)
+		self.__Label(self, x + 202, y + 40, TEXT_REFRESH_NOTE, COLOR_DIM, True)
 		self.__SelectButton()
 
 	# ------------------------------------------------------------ refreshing

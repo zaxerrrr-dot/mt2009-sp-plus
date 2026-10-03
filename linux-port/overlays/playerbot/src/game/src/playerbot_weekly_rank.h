@@ -180,7 +180,9 @@ namespace mt2009_wrank
 	// or a bot's.
 	bool Counts(LPCHARACTER ch)
 	{
-		return ch && ch->IsPC() && ch->GetDesc();
+		// MT2009_PLUS_WEEKLY_RANKING_UX_V1: never a GM's character (the
+		// owner, 3 October: admin and every GM out of the ranking).
+		return ch && ch->IsPC() && ch->GetDesc() && ch->GetGMLevel() <= GM_PLAYER;
 	}
 
 	// A person who opens the window.
@@ -560,13 +562,16 @@ namespace mt2009_wrank
 					"SELECT p.id, IF(LEFT(IFNULL(a.login,''),10)='playerbot_',1,0), p.level, IFNULL(pi.empire,0), p.exp, p.name "
 					"FROM player.player p LEFT JOIN player.player_index pi ON pi.id=p.account_id "
 					"LEFT JOIN account.account a ON a.id=p.account_id "
-					"WHERE p.name NOT LIKE '[%%' ORDER BY p.level DESC, p.exp DESC, p.id ASC LIMIT %d", limit);
+					"WHERE p.name NOT LIKE '[%%'"
+					" AND p.name NOT IN (SELECT mName FROM common.gmlist) AND IFNULL(a.login,'') NOT IN (SELECT mAccount FROM common.gmlist) ORDER BY p.level DESC, p.exp DESC, p.id ASC LIMIT %d", limit);
 		else
 			snprintf(query, sizeof(query),
 					"SELECT s.pid, s.is_bot, p.level, IFNULL(pi.empire,0), s.value, p.name "
 					"FROM player.weekly_rank_score s JOIN player.player p ON p.id=s.pid "
 					"LEFT JOIN player.player_index pi ON pi.id=p.account_id "
+					"LEFT JOIN account.account a ON a.id=p.account_id "
 					"WHERE s.season=%u AND s.cat=%u AND s.value>0 AND p.name NOT LIKE '[%%' "
+					"AND p.name NOT IN (SELECT mName FROM common.gmlist) AND IFNULL(a.login,'') NOT IN (SELECT mAccount FROM common.gmlist) "
 					"ORDER BY s.value DESC, s.pid ASC LIMIT %d", season, (unsigned int)cat, limit);
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
@@ -780,12 +785,13 @@ namespace mt2009_wrank
 	{
 		pos = 0;
 		value = 0;
-		char query[400];
+		char query[600];
 		if (cat == CAT_LEVEL)
 		{
 			value = (long long)ch->GetExp();
 			snprintf(query, sizeof(query),
-					"SELECT COUNT(*) FROM player.player WHERE name NOT LIKE '[%%' AND id<>%u AND "
+					"SELECT COUNT(*) FROM player.player p LEFT JOIN account.account a ON a.id=p.account_id "
+					"WHERE p.name NOT LIKE '[%%' AND p.id<>%u AND p.name NOT IN (SELECT mName FROM common.gmlist) AND IFNULL(a.login,'') NOT IN (SELECT mAccount FROM common.gmlist) AND "
 					"(level>%d OR (level=%d AND exp>%lld))",
 					ch->GetPlayerID(), ch->GetLevel(), ch->GetLevel(), value);
 		}

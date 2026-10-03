@@ -30,8 +30,19 @@ COPY = {
 
 def crown(src):
     w, h, rows = pngread.read_png(os.path.join(src, 'image-example-005.png'))
-    # the crown, without the coin beside it
-    return [[rows[y][x] for x in range(2, 19)] for y in range(2, 21)]
+    # The crown without the coin beside it. The coin covers the crown's right
+    # point, so the crown is its left half mirrored about its middle point
+    # (x = 14): the old crop (x 2..18) cut the right point off and the icon
+    # looked pushed to the left (the owner, 3 October).
+    mid = 14
+    out = []
+    for y in range(3, 20):
+        line = []
+        for x in range(mid - 12, mid + 13):
+            sx = x if x <= mid else 2 * mid - x
+            line.append(rows[y][sx])
+        out.append(line)
+    return out
 
 
 def make(frame, art, gain):
