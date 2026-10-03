@@ -458,3 +458,23 @@ Towarowy – brak odpowiedzi. Z rozszerzenia przeniesione tylko jego zmiany (jeg
   (`systemSetting.GetLanguage()`); bez `AnswerServer` rozszerzenia (serwer nie zna `/playerbot_lang`).
 - `game.py` – `FleaPriceQuote`/`FleaPriceRange`/`FleaPriceSales` przekazują też do `shopautoprice`
   (id zapytań kreatorów od 1 500 000 000).
+
+## Wygody Digi Rasty: serwer i jego komendy (nowy-system v0.23.0) – exe opcjonalnie
+
+**Autor: Digi Rasta.** Znacznik `MT2009_PLUS_DIGI_SERVER_QOL_V1`; serwer i decyzje:
+`server-patches/digirasta-qol/README.md`. Pliki `root`:
+
+- `digiqol.py` (nowy) – komendy serwera `RefineFailedType`, `KillBar`, `KillSound`, `SkillCoolTimeReset`,
+  `DeadTime`, `NOWY_KSIEGI`, wpisywane do `serverCommander` okna gry.
+- `uikillbar.py` (nowy) – pasek zabójstw w prawym górnym rogu (5 wierszy po 6 s), ikony
+  `mt2009_ui/killbar/*.png` (16, z jego paczki).
+- `uiskillbookexchange.py` (nowy) – okno wymiany ksiąg u Seon-Hae (`/nowy_ksiegi`).
+- `mt2009_ui/killstreak/1..13.wav` (nowe, 5,3 MB) – dźwięki serii zabójstw (z jego paczki).
+- `game.py` – `digiqol.Register(self)` po komendach serwera, `digiqol.DestroyWindows()` przy zamknięciu okna gry.
+- `uichat.py` (wpis paczki `root`, zastępowany) – „@nick tekst” w zwykłym czacie = szept; w trybie handlu
+  (TAB) i dla „@ tekst” dalej czat handlowy.
+- `uirestart.py` (wpis paczki `root`, zastępowany) – okno śmierci odlicza sekundy na przyciskach, nieaktywne do zera.
+- `uichestpreview.py` – „Otwórz” / „Otwórz 10” w podglądzie skrzynki (co 0,25 s, `warpsafe.InGame()`).
+
+Reset odnowień po śmierci w samym kliencie potrzebuje `player.ResetSkillCoolTimes()` (łatka exe
+`server-patches/digirasta-qol/digi-server-qol-exe.patch`, `ENABLE_SKILL_COOLTIME_RESET`); bez niej serwer i tak zeruje odnowienia.
