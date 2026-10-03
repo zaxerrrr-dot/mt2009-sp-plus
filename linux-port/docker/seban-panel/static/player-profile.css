@@ -284,3 +284,20 @@
 .ds-kind-tabs{grid-template-columns:repeat(6,36px) 26px;width:auto}
 .ds-kind-tabs .ds-kind-extra{width:26px;display:grid;place-items:center;background:rgba(40,24,60,.85);box-shadow:inset 0 0 0 1px #9b7be0}
 .ds-kind-tabs .ds-kind-extra img{width:20px;height:20px;object-fit:contain}
+/* MT2009 PLUS: the window buttons where the game client has them
+   (uiscript/inventorywindow.py of our client). The rule above with
+   ".inventory-native-tabs .inventory-native-button" and top:auto won over
+   the per-button tops, so the buttons fell back to their flow position on
+   top of the shield, bracelet and weapon slots. Coordinates are the
+   client's, relative to the 176 x 565 window:
+   - DSSButton: Equipment_Base (10,33) + (114,120), 38 x 34;
+   - horse bag / deposit / shop: InventoryAdditionalButtons, right/bottom
+     aligned 55/23 inside the 156 x 188 equipment base, buttons at +2/+17/+32. */
+.metin-inventory .inventory-native-tabs .inventory-native-button.inventory-ds-button{left:124px!important;top:153px!important;width:38px!important;height:34px!important;padding:0!important;border:0!important;background:transparent!important}
+.metin-inventory .inventory-native-tabs .inventory-ds-button img{width:auto!important;height:34px!important;max-width:38px!important;max-height:34px!important;object-fit:contain}
+.metin-inventory .inventory-native-tabs .inventory-native-button.inventory-horse-button{left:113px!important;top:200px!important}
+.metin-inventory .inventory-native-tabs .inventory-native-button.inventory-deposit-button{left:128px!important;top:200px!important}
+.metin-inventory .inventory-native-tabs .inventory-native-button.inventory-shop-button{left:143px!important;top:200px!important}
+.metin-inventory .inventory-native-tabs :is(.inventory-horse-button,.inventory-deposit-button,.inventory-shop-button){width:15px!important;height:15px!important;padding:0!important;border:0!important;background:transparent!important}
+.metin-inventory .inventory-native-tabs :is(.inventory-horse-button,.inventory-deposit-button,.inventory-shop-button) img{width:15px!important;height:15px!important}
+.metin-inventory .inventory-native-tabs :is(.inventory-horse-button,.inventory-deposit-button,.inventory-shop-button):hover{filter:brightness(1.35)}
