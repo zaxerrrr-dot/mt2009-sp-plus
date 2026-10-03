@@ -54,6 +54,7 @@ import debugInfo
 import stringCommander
 
 import offlineShopBuilder
+import shopautoprice # MT2009_PLUS_SHOP_AUTO_PRICE_V1
 from _weakref import proxy
 
 import updateable
@@ -3835,7 +3836,11 @@ class GameWindow(ui.ScriptWindow):
 		if self.interface:
 			self.interface.OpenFleaMarket()
 
-	def FleaPriceQuote(self, requestID, suggestedPrice, observedPrice, sampleCount):
+	# MT2009_PLUS_SHOP_AUTO_PRICE_V1: the shop builders' price windows ask
+	# too (shopautoprice.py, request ids from 1 500 000 000 up), and each side
+	# takes only the answers to its own requests.
+	def FleaPriceQuote(self, requestID, suggestedPrice, observedPrice, sampleCount, *rest):
+		shopautoprice.SetQuote(int(requestID), int(suggestedPrice), int(observedPrice), int(sampleCount))
 		if self.interface:
 			self.interface.offlineShopManage.SetFleaMarketPriceQuote(
 				int(requestID), int(suggestedPrice), int(observedPrice), int(sampleCount))
@@ -3846,11 +3851,13 @@ class GameWindow(ui.ScriptWindow):
 				int(ownerID), int(itemID), int(remainingCount), int(remainingYang), int(remainingCheque))
 
 	def FleaPriceRange(self, requestID, minPrice, maxPrice, *rest):
+		shopautoprice.SetRange(int(requestID), int(minPrice), int(maxPrice))
 		if self.interface:
 			self.interface.offlineShopManage.SetFleaMarketPriceRange(
 				int(requestID), int(minPrice), int(maxPrice))
 
 	def FleaPriceSales(self, requestID, lastSalePrice, medianPrice, medianUnits, *rest):
+		shopautoprice.SetSales(int(requestID), int(lastSalePrice), int(medianPrice), int(medianUnits))
 		if self.interface:
 			self.interface.offlineShopManage.SetFleaMarketPriceSales(
 				int(requestID), int(lastSalePrice), int(medianPrice), int(medianUnits))

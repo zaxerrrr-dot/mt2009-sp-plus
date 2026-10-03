@@ -426,3 +426,35 @@ przy łączeniu tylko przyjmuje sztuki). Pliki `root` (baza: wpisy paczki `root`
   z `not_pick`, nad odliczaniem i podświetleniem aktywnej mikstury); wiersz „Zablokowany przy sortowaniu
   (Alt+LPM)” w opisie przedmiotu; ręczne przeniesienie przekazuje blokadę (`__SendMoveItemPacket`).
 - `mt2009_ui/sortlock/star.tga` (nowy) – złota gwiazdka 11×11, 32-bit TGA jak `mt2009_ui/sidebar`.
+
+## Auto-cena przy wystawianiu (rozszerzenie „Auto-cena Extension”) – bez zmian exe
+
+Znacznik `MT2009_PLUS_SHOP_AUTO_PRICE_V1`. Serwer bez zmian: `/flea_price <id> <okno> <pole> 3` (`cmd_gm.cpp`
+`do_flea_price`, `playerbot_manager` `SendFleaMarketPriceQuote`/`SendFleaMarketShopItemPriceQuote`,
+`server-patches/playerqol` `MT2009_PLUS_FLEA_SALES_V1`) odpowiada `FleaPriceRange` (min/maks podobnych ofert
+innych sklepów dla takiego stosu), `FleaPriceSales` (ostatnia sprzedaż i mediana botów) i `FleaPriceQuote`
+(cena wystawiania botów). Okno 255 = linia własnego sklepu po id; inne okno niż ekwipunek i wyłączony Dom
+Towarowy – brak odpowiedzi. Z rozszerzenia przeniesione tylko jego zmiany (jego `game.py` i
+`offlineshopmanage.py` miały starszą bazę); pliki `root`:
+
+- `shopautoprice.py` (nowy) – przycisk „Ceny” i okno cen dla okna ceny w kreatorach sklepu
+  (`offlineshopbuilder.py`, `uiprivateshopbuilder.py`); tryby: Minimalna, Nieaktywna, Maksymalna, Mediana,
+  Sugerowana, Ostatnia (jedno ustawienie `shop_auto_price.cfg` z oknem własnego sklepu). Cena wpisywana tylko,
+  gdy gracz nie zmienił ceny w oknie. Poprawki względem rozszerzenia: tylko słabe referencje do okna ceny
+  (cykl przycisk↔okno trzymał okno ceny prywatnego sklepu na ekranie po akceptacji), okno smoczego kamienia
+  nie wysyła zapytania (serwer go nie obsłuży), brak odpowiedzi po 6 s – komunikat zamiast „Pobieranie…”,
+  okno „Ceny” zamyka się samo, gdy okno ceny zniknie (zamknięty kreator, teleport), Esc z okna „Ceny”
+  zamyka oba (także po zmianie przedmiotu), cena przycinana do 9 cyfr w oknie prywatnego sklepu.
+- `offlineshopmanage.py` – okno „Ceny” własnego sklepu: sześć przycisków trybu zamiast jednego
+  przełączanego, „Zmień ceny wszystkich” (cena każdej linii wg trybu, przez `shoppricepump`; pytanie
+  przed zmianą, odrzucane przy łącznej wartości ≥ 2 mld, przerwane przy zamknięciu okna sklepu), tekst
+  „Pobieranie danych cenowych…” i po 6 s „Serwer nie podał cen…”, odpowiedź na pojedyncze okno nie gubi
+  się po starcie zmiany wszystkich, opis przedmiotu pod kursorem odświeżany po zmianie ceny, Esc z „Ceny” zamyka też okno ceny.
+- `offlineshopbuilder.py`, `uiprivateshopbuilder.py` (wpisy paczki `root`, zastępowane) – wywołania
+  `shopautoprice`, poprzednie okno ceny zamykane przy nowym przedmiocie, zamknięciu i zniszczeniu kreatora.
+- `shoppricepump.py` (wpis paczki `root`, zastępowany) – nic nie wysyła poza fazą gry (`warpsafe.InGame()`),
+  komunikat dwujęzyczny.
+- `playerbot_lang.py` (nowy) – `T(pl, en)`: polski dla klienta po polsku, angielski dla każdego innego
+  (`systemSetting.GetLanguage()`); bez `AnswerServer` rozszerzenia (serwer nie zna `/playerbot_lang`).
+- `game.py` – `FleaPriceQuote`/`FleaPriceRange`/`FleaPriceSales` przekazują też do `shopautoprice`
+  (id zapytań kreatorów od 1 500 000 000).
