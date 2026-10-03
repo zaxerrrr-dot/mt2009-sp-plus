@@ -471,7 +471,7 @@ class OfflineShopBuilder(ui.ScriptWindow):
 
 		inputPrice = localeInfo.MoneyStringToNumber(self.priceInputBoard.GetText())
 		if inputPrice <= 0:
-			return
+			return True	# MT2009_PLUS_VEKIRION_V1: Enter handled, no chat behind the window
 
 		if inputPrice > player.GOLD_MAX:
 			inputPrice = player.GOLD_MAX

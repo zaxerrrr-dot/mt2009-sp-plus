@@ -596,7 +596,8 @@ class OfflineShopManage(ui.ScriptWindow):
 				dialog.SetTitle(localeInfo.PRIVATE_SHOP_INPUT_EDIT_PRICE_DIALOG_TITLE)
 			dialog.SetMaxLength(10)
 			dialog.SetCancelEvent(ui.__mem_func__(self.__CloseAddInput))
-			dialog.acceptButton.SAFE_SetEvent(self.AcceptEditItemDialog, shopSlotIndex, massEdit)
+			# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion): Enter in the price box accepts like OK (and never falls through to the chat)
+			dialog.SetAcceptEvent(lambda arg1=shopSlotIndex, arg2=massEdit: self.AcceptEditItemDialog(arg1, arg2))
 			dialog.closeEvent = lambda arg1=itemSlotList: self.DeactivateItems(arg1)
 			dialog.inputValue.OnPressEscapeKey = ui.__mem_func__(self.__CloseAddInput)
 			dialog.Open()
@@ -1154,7 +1155,7 @@ class OfflineShopManage(ui.ScriptWindow):
 
 	def AcceptAddItemDialog(self, inventorySlotIndex, shopSlotIndex, inventoryWindowType):
 		if not self.addItemDialog:
-			return
+			return True
 
 		text = self.addItemDialog.GetText()
 
@@ -1163,7 +1164,7 @@ class OfflineShopManage(ui.ScriptWindow):
 
 		inputPrice = localeInfo.MoneyStringToNumber(self.addItemDialog.GetText())
 		if inputPrice <= 0:
-			return
+			return True
 
 		# The server sells for less than GOLD_MAX only (IsGoodSalePrice).
 		if inputPrice >= player.GOLD_MAX:
@@ -1179,9 +1180,12 @@ class OfflineShopManage(ui.ScriptWindow):
 		offlineShopBuilder.SetPrivateShopItemPrice(itemVnum, itemCount, inputPrice, sockets)
 		self.AddItem(inventorySlotIndex, shopSlotIndex, inventoryWindowType, inputPrice)
 
+		# MT2009_PLUS_VEKIRION_V1: Enter handled - a falsy return here lets the key reach the game, which opens the chat
+		return True
+
 	def AcceptEditItemDialog(self, shopSlotIndex, massEdit):
 		if not self.addItemDialog:
-			return
+			return True
 
 		text = self.addItemDialog.GetText()
 		if not text:
@@ -1189,7 +1193,7 @@ class OfflineShopManage(ui.ScriptWindow):
 
 		inputPrice = localeInfo.MoneyStringToNumber(self.addItemDialog.GetText())
 		if inputPrice <= 0:
-			return
+			return True
 
 		# The server sells for less than GOLD_MAX only (IsGoodSalePrice).
 		if inputPrice >= player.GOLD_MAX:
@@ -1213,13 +1217,16 @@ class OfflineShopManage(ui.ScriptWindow):
 						shop_total_value = shop_total_value - v["price"] + inputPrice
 						if shop_total_value > player.GOLD_MAX:
 							chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.TOO_HIGH_SHOP_VALUE)
-							return
+							return True
 				# One edit every quarter second, checked against the shop
 				# list afterwards (shoppricepump.py): the server takes one
 				# shop action per 200 ms and refused the rest of a burst.
 				shoppricepump.Queue([(i, inputPrice) for i in item_list])
 			else:
 				self.__SendEditItemPricePacket(itemData, inputPrice)
+
+		# MT2009_PLUS_VEKIRION_V1: Enter handled - a falsy return here lets the key reach the game, which opens the chat
+		return True
 
 	def __SendEditItemPricePacket(self, itemData, itemPrice):
 		ikashop.SendEditItem(itemData["id"], itemPrice)

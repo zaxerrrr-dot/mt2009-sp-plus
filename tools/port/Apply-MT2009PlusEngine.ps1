@@ -55,6 +55,8 @@ param(
 #                      guild.cpp, cmd_general.cpp, cmd_emotion.cpp, input_login.cpp,
 #                      char_battle.cpp, cmd.cpp (MT2009_PLUS_DIGI_SERVER_QOL_V1;
 #                      server-patches/digirasta-qol)
+#   quick chest opening char_item.cpp         (MT2009_PLUS_VEKIRION_V1; server-patches/vekirion,
+#                      Autor: Vekirion)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -767,6 +769,20 @@ if ((Test-Path -LiteralPath $digiQolApply -PathType Leaf) -and
     if ($digiQolResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Digi Rasta convenience edit(s).' -f $digiQolResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Quick chest opening (server-patches/vekirion, MT2009_PLUS_VEKIRION_V1,
+# "Autor: Vekirion"): a box opened by a plain use (ITEM_GIFTBOX) has its own
+# limit of 60 in 500 ms for the client's Ctrl + right click on a stack, every
+# other item keeps the engine's 5; a full bag's refusal line once a second
+# (UseItem, UseItemEx, char_item.cpp). Its anchors are the engine's own lines.
+$vekirionApply = Join-Path $repo 'server-patches/vekirion/Apply-VekirionPatch.ps1'
+if ((Test-Path -LiteralPath $vekirionApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $vekirionResult = & $vekirionApply -SourceDir $engineGameSource
+    if ($vekirionResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} quick chest opening edit(s).' -f $vekirionResult.Applied) -ForegroundColor DarkGray
     }
 }
 # Death Ruler wings (85101..85104) use broken assets in this client.
