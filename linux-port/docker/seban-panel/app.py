@@ -2282,7 +2282,21 @@ EVENT_ICONS = {"chest": "🎁", "exp": "⚡", "drop": "📦", "yang": "💰", "t
                "goblin": "🪙",  # goblin: MT2009_PLUS_GOBLIN_V1
                "catchking": "👑", "rumi": "🃏", "yutnori": "🎲", "flower": "🌸", "easter": "🐇"}  # MT2009_PLUS_EVENT_MANAGER_V1
 EVENT_DAY_NAMES = ("Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd")
-EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360)
+EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360, 720, 1440, 2880, 4320, 7200, 10080)  # MT2009_PLUS_EVENTS_7_DAYS_V1: up to 7 days
+
+def event_minutes_label(minutes):
+    """MT2009_PLUS_EVENTS_7_DAYS_V1: "45 min", "6 h", "3 dni" for the "now" lists."""
+    minutes = int(minutes)
+    if minutes < 60:
+        return "%d min" % minutes
+    if minutes < 1440 or minutes % 1440:
+        return "%d h" % (minutes // 60) if minutes % 60 == 0 else "%d min" % minutes
+    days = minutes // 1440
+    return "1 dzie\u0144" if days == 1 else "%d dni" % days
+
+
+app.jinja_env.globals["minutes_label"] = event_minutes_label  # MT2009_PLUS_EVENTS_7_DAYS_V1
+
 EVENT_HHMM = re.compile(r"^([01]?\d|2[0-4]):([0-5]\d)$")
 
 
@@ -8992,7 +9006,7 @@ def events():
             return redirect(url_for("events"))
         if action == "now":
             try:
-                minutes = max(5, min(1440, int(request.form.get("minutes") or 60)))
+                minutes = max(5, min(10080, int(request.form.get("minutes") or 60)))
                 value = max(1, min(1000, int(request.form.get("value") or 50)))
             except ValueError:
                 minutes, value = 60, 50

@@ -1556,7 +1556,18 @@ GUILD_STATUS_FILES = [
 ]
 GUILD_TIER_KEYS = ("gl_tier_elite", "gl_tier_strong", "gl_tier_medium", "gl_tier_ordinary")
 GUILD_EMPIRE_KEYS = {1: "gl_empire_shinsoo", 2: "gl_empire_chunjo", 3: "gl_empire_jinno"}
-EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360)
+EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360, 720, 1440, 2880, 4320, 7200, 10080)  # MT2009_PLUS_EVENTS_7_DAYS_V1: up to 7 days
+
+def event_minutes_label(minutes):
+    """MT2009_PLUS_EVENTS_7_DAYS_V1: "45 min", "6 h", "3 dni" for the "now" lists."""
+    minutes = int(minutes)
+    if minutes < 60:
+        return "%d min" % minutes
+    if minutes < 1440 or minutes % 1440:
+        return "%d h" % (minutes // 60) if minutes % 60 == 0 else "%d min" % minutes
+    days = minutes // 1440
+    return "1 dzie\u0144" if days == 1 else "%d dni" % days
+
 _EVENT_HHMM = re.compile(r"^([01]?\d|2[0-4]):([0-5]\d)$")
 
 
@@ -5110,6 +5121,7 @@ app = Flask(__name__)
 app.jinja_env.globals["DISCORD"] = DISCORD_URL
 app.jinja_env.globals["WEBSITE"] = WEBSITE_URL
 app.jinja_env.globals["COFFEE"] = COFFEE_URL
+app.jinja_env.globals["minutes_label"] = event_minutes_label  # MT2009_PLUS_EVENTS_7_DAYS_V1
 app.secret_key = CONF["flask_secret"]
 
 
@@ -7822,7 +7834,7 @@ TPL_EVENTS = BASE.replace("__BODY__", """
 <input type="hidden" name="action" value="now">
 <input type="hidden" name="kind" value="{{k}}">
 {{t('ev_now_minutes')}}
-<select name="minutes">{% for m in minutes %}<option value="{{m}}" {% if m == 60 %}selected{% endif %}>{{m}}</option>{% endfor %}</select>
+<select name="minutes">{% for m in minutes %}<option value="{{m}}" {% if m == 60 %}selected{% endif %}>{{minutes_label(m)}}</option>{% endfor %}</select>
 {% if k in world_kinds %}{{t('ev_now_' + k)}} <input type="number" name="value" min="1" max="{{world_max[k]}}" value="{{world_default[k]}}" style="width:60px">
 <select name="map">{% for m in maps %}<option value="{{m[0]}}">{{map_name(m[0])}}</option>{% endfor %}</select>
 {% elif k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %}{{t('ev_now_value')}} <input type="number" name="value" min="1" max="1000" value="50" style="width:70px">{% endif %}
@@ -20016,7 +20028,7 @@ def events_page():
             return redirect(url_for("events_page"))
         if action == "now":
             try:
-                minutes = max(5, min(1440, int(request.form.get("minutes") or 60)))
+                minutes = max(5, min(10080, int(request.form.get("minutes") or 60)))
                 value = max(1, min(1000, int(request.form.get("value") or 50)))
             except ValueError:
                 minutes, value = 60, 50

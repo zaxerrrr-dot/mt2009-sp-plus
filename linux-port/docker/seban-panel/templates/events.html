@@ -33,7 +33,7 @@
       {% for run in runs %}<form method="post" style="display:contents"><input type="hidden" name="kind" value="{{ kind }}"><input type="hidden" name="map" value="{{ run.map }}"><p>📍 {{ run.map_label }} · do {{ run.until_text }}</p>{% if run.manual %}<button name="action" value="stop" class="secondary">Zatrzymaj</button>{% endif %}</form>{% endfor %}
       <form method="post" style="display:contents">
         <input type="hidden" name="kind" value="{{ kind }}">
-        <label>Czas<select name="minutes">{% for minute in now_minutes %}<option value="{{ minute }}" {% if minute == 60 %}selected{% endif %}>{{ minute }} min</option>{% endfor %}</select></label>
+        <label>Czas<select name="minutes">{% for minute in now_minutes %}<option value="{{ minute }}" {% if minute == 60 %}selected{% endif %}>{{ minutes_label(minute) }}</option>{% endfor %}</select></label>
         <label>{{ 'Piraci naraz' if kind == 'tanaka' else 'Metiny w fali' }}<input name="value" type="number" min="1" max="{{world_max[kind]}}" value="{{world_defaults[kind]}}"></label><label>Mapa<select name="map">{% for map_id,map_label in event_maps %}<option value="{{map_id}}">{{map_label}}</option>{% endfor %}</select></label>
         <button name="action" value="now">Aktywuj teraz</button>
       </form>
@@ -43,7 +43,7 @@
       <input type="hidden" name="kind" value="{{ kind }}">
       <div><span>{{ event_icons[kind] }}</span><b>{{ event_labels[kind] }}</b></div>
       {% if now and now.until > now_epoch %}<p>Aktywny do {{ status.get(kind,{}).until_text or 'końca odliczania' }}</p>{% else %}<p>Uruchom jednorazowo</p>{% endif %}
-      <label>Czas<select name="minutes">{% for minute in now_minutes %}<option value="{{ minute }}" {% if minute == 60 %}selected{% endif %}>{{ minute }} min</option>{% endfor %}</select></label>
+      <label>Czas<select name="minutes">{% for minute in now_minutes %}<option value="{{ minute }}" {% if minute == 60 %}selected{% endif %}>{{ minutes_label(minute) }}</option>{% endfor %}</select></label>
       {% if kind not in flag_kinds %}<label>Bonus<input name="value" type="number" min="1" max="1000" value="50"><small>% ponad ratę serwera</small></label>{% endif %}
       {% if now and now.until > now_epoch %}<button name="action" value="stop" class="secondary">Zatrzymaj</button>{% else %}<button name="action" value="now">Aktywuj teraz</button>{% endif %}
     </form>
