@@ -1715,6 +1715,11 @@ class YutnoriGamePage(ui.ScriptWindow):
 	def __UpdateEvent(self):
 		if not self.event_deque:
 			return
+		# MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: the queued throws and the
+		# computer's moves wait while not in the game phase (warpsafe.py).
+		import warpsafe
+		if not warpsafe.InGame():
+			return
 
 		[event_type, data] = self.event_deque[0]
 

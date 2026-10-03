@@ -188,7 +188,9 @@ class PickupFilterSync(object):
         return not self.sent
 
     def OnUpdate(self):
-        if player.GetMainCharacterName():
+        # MT2009_PLUS_SIDEKICK_WARP_SAFE_V1: only in the game phase (warpsafe.py).
+        import warpsafe
+        if player.GetMainCharacterName() and warpsafe.InGame():
             self.sent = True
             Send()
 
