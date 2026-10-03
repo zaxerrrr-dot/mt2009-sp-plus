@@ -6188,7 +6188,8 @@ def retirement_control_status():
     ensure_retirement_tables()
     defaults = {"batch_id": 0, "bot_count": 50, "window_minutes": 15,
                 "shop_minutes": 30, "requested_at": 0, "queued_count": 0,
-                "active_count": 0, "reset_count": 0, "state": "ready"}
+                "active_count": 0, "reset_count": 0, "state": "ready",
+                "seen": False, "not_seen": False}
     try:
         control = one("""SELECT batch_id,bot_count,window_minutes,shop_minutes,requested_at
                          FROM common.playerbot_retire_control WHERE id=1""")
@@ -6201,17 +6202,24 @@ def retirement_control_status():
                    ("batch_id", "bot_count", "window_minutes", "shop_minutes", "requested_at")})
     progress = one("""SELECT COALESCE(b.queued_count,0) AS queued_count,
         SUM(p.stage IN ('shopping','selling','closing')) AS active_count,
-        SUM(p.stage='reset') AS reset_count
+        SUM(p.stage='reset') AS reset_count, MAX(b.id IS NOT NULL) AS seen
       FROM common.playerbot_retire_control c
       LEFT JOIN common.playerbot_retire_batch b ON b.id=c.batch_id
       LEFT JOIN common.playerbot_retire_pick p ON p.batch_id=c.batch_id
-      WHERE c.id=1 GROUP BY c.batch_id,b.queued_count""")
+      WHERE c.id=1 GROUP BY c.batch_id,b.queued_count""") or {}
     for key in ("queued_count", "active_count", "reset_count"):
         result[key] = int(progress.get(key) or 0)
+    result["seen"] = bool(int(progress.get("seen") or 0))
     if result["active_count"] or result["queued_count"] < result["bot_count"]:
         result["state"] = "active"
     elif result["batch_id"]:
         result["state"] = "complete"
+    # MT2009_PLUS_BOT_RETIREMENT_FIX_V1: the core writes the batch row the
+    # moment it takes a batch up. None two minutes after the click means no
+    # core is picking (server down, or a core older than the fix on a world
+    # whose kingdoms live on different cores) - say so instead of "trwa".
+    result["not_seen"] = (result["state"] == "active" and not result["seen"]
+                          and result["requested_at"] and time.time() - result["requested_at"] > 120)
     return result
 
 
@@ -6264,6 +6272,31 @@ def retired_bots_start():
         flash("Nie udało się zapisać nowej partii w bazie danych.", "error")
     else:
         flash(f"Partia #{batch_id} uruchomiona. Rdzeń CH1 odbierze ją w ciągu pięciu sekund.", "success")
+    return redirect(url_for("retired_bots"))
+
+
+@app.post("/advanced/retired-bots/stop")
+@login_required
+def retired_bots_stop():
+    """MT2009_PLUS_BOT_RETIREMENT_FIX_V1: a batch that could not fill (too few
+    bots in the middle of the level table, a core that never took it up) kept
+    the start button locked for good. Stop = no more picks: bot_count drops to
+    what is already picked, so the bots already selling finish their sale and
+    the core (which re-reads the row every five seconds) picks nobody else."""
+    supplied = request.form.get("retirement_csrf", "")
+    expected = session.get("seban_update_csrf", "")
+    if not expected or not hmac.compare_digest(supplied, expected):
+        abort(403)
+    ensure_retirement_tables()
+    try:
+        rows("""UPDATE common.playerbot_retire_control c
+            LEFT JOIN common.playerbot_retire_batch b ON b.id=c.batch_id
+            SET c.bot_count=LEAST(c.bot_count, COALESCE(b.queued_count,0))
+            WHERE c.id=1""")
+    except pymysql.MySQLError:
+        flash("Nie udało się zatrzymać partii.", "error")
+    else:
+        flash("Partia zatrzymana: nowe boty nie będą wybierane. Boty, które już sprzedają, dokończą sklep.", "success")
     return redirect(url_for("retired_bots"))
 
 
