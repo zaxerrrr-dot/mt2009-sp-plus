@@ -16,6 +16,9 @@
 
 namespace
 {
+	// MT2009_PLUS_GUILD_WAR_ARENA_V1: the war's count of blows (playerbot_guild_war.h).
+	void NotePlayerBotWarBlow(LPCHARACTER ch, bool skill);
+
 	void SendPlayerBotFlyTargetPacket(LPCHARACTER ch, LPCHARACTER target)
 	{
 		if (!ch || !target || !ch->GetSectree() ||
@@ -1099,6 +1102,8 @@ namespace
 	{
 		if (!ExecutePlayerBotAttackSkill(ch, foe, state, dwNow))
 			return false;
+		if (state.dwGuildWarEnemyGID != 0)
+			NotePlayerBotWarBlow(ch, true); // MT2009_PLUS_GUILD_WAR_ARENA_V1
 		// MT2009_PLUS_LEGENDS_V1 (skills): a Legend's and a Champion's gap is
 		// shorter.
 		const DWORD interval = GetPlayerBotLegendPvpSkillGap(ch, ch->GetJob() == JOB_SHAMAN

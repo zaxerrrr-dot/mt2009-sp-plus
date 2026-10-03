@@ -62,6 +62,13 @@ def _KillSound(game, stage="1", *rest):
 		stage = max(1, min(KILL_SOUND_MAX, int(stage)))
 	except ValueError:
 		return
+	# MT2009_PLUS_KILL_SOUND_SWITCH_V1: only when ticked in "Opcje dodatkowe".
+	try:
+		import uiopcjedodatkowe
+		if not uiopcjedodatkowe.Settings().get("killsound", False):
+			return
+	except Exception:
+		return
 	snd.PlaySound(KILL_SOUND % stage)
 
 

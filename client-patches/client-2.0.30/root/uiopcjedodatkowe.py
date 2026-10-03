@@ -50,6 +50,10 @@ OPTIONS = (
 	("clouds", "Ukryj chmury", _HasParts),
 	("water", "Ukryj wod\xea", _HasParts),
 	("chatlog", "Zapisuj czat do pliku (folder logs)", _HasChatLog),
+	# MT2009_PLUS_KILL_SOUND_SWITCH_V1: the kill streak's sounds after a boss, a
+	# metin or a player (digiserverqol.py, KillSound) - off unless ticked (the
+	# owner, 3 October).
+	("killsound", "D\x9fwi\xeaki zab\xf3jstw (boss, metin, gracz)", lambda: True),
 )
 PARTS = (
 	("trees", "PART_TREE"),

@@ -166,7 +166,7 @@ namespace
 	// MT2009_PLUS_GUILD_WAR_KILLS_V1: the kills that win a war with a bot
 	// guild on a side before its clock runs out (the WAR_KILLS key; 0 is the
 	// clock alone). The default is the operator's hundred.
-	int s_iPlayerBotWarKills = 100;
+	int s_iPlayerBotWarKills = 200; // MT2009_PLUS_GUILD_WAR_ARENA_V1: 200 (the owner, 3 October)
 	// Whether a bot reads its books without the engine's day between them.
 	// On by default: the day is what makes a book a month's project, and the
 	// books were rotting in the bags of bots that could not read them yet.
@@ -282,7 +282,7 @@ namespace
 		s_iPlayerBotScrollFromPlus = 1;
 		s_iPlayerBotWarMinutes = 30;
 		s_iPlayerBotWarEveryHours = 2;
-		s_iPlayerBotWarKills = 100;
+		s_iPlayerBotWarKills = 200;
 		s_bPlayerBotFastBooks = true;
 		s_bPlayerBotNight = true;
 		s_bPlayerBotLifeSchedule = false;

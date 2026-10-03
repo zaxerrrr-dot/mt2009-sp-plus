@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "war_map.h" // MT2009_PLUS_GUILD_WAR_ARENA_V1
 #include "playerbot_manager.h"
 #include "playerbot_empire_rules.h"
 #include "playerbot_channel_rules.h"

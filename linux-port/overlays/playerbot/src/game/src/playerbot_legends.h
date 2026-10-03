@@ -1199,6 +1199,9 @@ void WeeklyRankOnPlayerDeath(LPCHARACTER victim, LPCHARACTER killer);
 void PlayerBotLegendOnDeath(LPCHARACTER victim, LPCHARACTER killer)
 {
 	WeeklyRankOnPlayerDeath(victim, killer);
+	// MT2009_PLUS_GUILD_WAR_ARENA_V1: a kill of one of the bots' wars, for its
+	// reward and the map of the arena's deaths (playerbot_guild_war.h).
+	PlayerBotGuildWarOnDeath(victim, killer);
 	if (!victim || !killer || victim == killer || !IsPlayerBotLegendsEnabled())
 		return;
 	const bool killerBot = IsPlayerBotLegendBot(killer);

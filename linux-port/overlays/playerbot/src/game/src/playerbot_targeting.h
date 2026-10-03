@@ -2416,6 +2416,10 @@ namespace
 			CollectPlayerBotExtraArrows(ch, target, extraArrows);
 		SendPlayerBotAttackPacket(ch, target, state.bComboMotion, &extraArrows);
 		AttackPlayerBotMeleeGroup(ch, target, &extraArrows);
+		// MT2009_PLUS_GUILD_WAR_ARENA_V1: every blow of a bot at war, for the
+		// war's numbers (playerbot_guild_war.h).
+		if (state.dwGuildWarEnemyGID != 0)
+			NotePlayerBotWarBlow(ch, false);
 
 		if (isBow)
 			state.bComboMotion = MOTION_COMBO_ATTACK_1;
