@@ -388,6 +388,8 @@ class SidebarWindow(ui.Window):
 		("dungeon", "Wyprawy", "OnClickDungeonInfo", "dungeon_info"),
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
 		("teleport", "Zapisane pozycje", "OnClickTpBookmarks", "tp_bookmarks"),
+		# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window (uiusunmisje.py).
+		("missions", "Usuñ misje", "OnClickClearMissions", None),
 	)
 
 	def __init__(self, wndInventory):
@@ -667,6 +669,12 @@ class SidebarWindow(ui.Window):
 	def OnClickDungeonInfo(self):
 		import uidungeoninfo
 		uidungeoninfo.ToggleWindow()
+
+	def OnClickClearMissions(self):
+		# MT2009_PLUS_CLEAR_MISSIONS_V1: the same as typing /usunmisje.
+		import warpsafe, net
+		if warpsafe.InGame():
+			net.SendChatPacket("/usunmisje")
 
 	def OnClickTpBookmarks(self):
 		import uitpbookmarks
