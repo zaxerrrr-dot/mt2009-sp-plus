@@ -40,7 +40,7 @@ CHECKED_IMAGE = "mt2009_ui/checkbox/checked.tga"
 
 TEXT_TITLE = "Usu\xf1 misje"
 TEXT_INFO1 = "Zaznaczone misje znikn\xb9 z listy tak, jakby ich nigdy nie by\xb3o."
-TEXT_INFO2 = "Nagrody nie s\xb9 przyznawane. Nowe misje pojawi\xb9 si\xea z kolejnym poziomem."
+TEXT_INFO2 = "Nagrody nie s\xb9 przyznawane. Po usuni\xeaciu posta\xe6 prze\xb3aduje si\xea (ekran \xb3adowania)."
 TEXT_INFO3 = "Towarzysz, Cor Draconis i misje system\xf3w nie s\xb9 tu pokazywane."
 TEXT_AFTER = "Pojawi\xb3y si\xea kolejne misje (np. nast\xeapna cz\xea\x9c\xe6 \xb3a\xf1cucha):"
 TEXT_PAGE = "Strona %d / %d"
@@ -50,7 +50,10 @@ TEXT_NONE = "Odznacz wszystkie"
 TEXT_REMOVE = "Usu\xf1 zaznaczone"
 TEXT_CANCEL = "Anuluj"
 TEXT_ASK1 = "Usun\xb9\xe6 zaznaczone misje (%d)?"
-TEXT_ASK2 = "Bez nagr\xf3d - tego nie mo\xbfna cofn\xb9\xe6."
+TEXT_ASK2 = "Bez nagr\xf3d, bez cofni\xeacia. Posta\xe6 prze\xb3aduje si\xea (ekran \xb3adowania)."
+# Shown in chat right after the removal is sent: the warp to the same spot
+# rebuilds the quest list and can take several seconds (the owner, 3 October).
+TEXT_RELOAD = "Usuwanie misji: za chwil\xea posta\xe6 zniknie i prze\xb3aduje si\xea w tym samym miejscu (ekran \xb3adowania, kilka-kilkana\x9ccie sekund). To normalne - nie wylogowuj si\xea."
 TEXT_NOTHING = "Nie masz teraz misji, kt\xf3re mo\xbfna usun\xb9\xe6."
 TEXT_NOT_HERE = "Misje mo\xbfesz usuwa\xe6 tylko poza lochem."
 TEXT_NONE_CHECKED = "Nie zaznaczono \xbfadnej misji."
@@ -334,6 +337,7 @@ class ClearMissionsWindow(ui.BoardWithTitleBar):
 		for i in xrange(0, len(ids), IDS_PER_LINE):
 			Send("usun " + " ".join([str(x) for x in ids[i:i + IDS_PER_LINE]]))
 		Send("gotowe")
+		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_RELOAD)
 		_state['kept'] = set(m[0] for m in self.missions if m[0] not in self.checked)
 		self.Close()
 
