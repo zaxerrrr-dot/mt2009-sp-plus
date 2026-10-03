@@ -552,6 +552,16 @@ namespace
 			// (playerbot_demon_tower.h).
 			if (!g || g->UnderAnyWar() != 0 || IsPlayerBotGuildRaidingTower(it->first))
 				continue;
+			// MT2009_PLUS_GUILD_WAR_ARENA_V1 (kingdoms): nor one of a war declared
+			// by another kingdom's turn and not yet accepted.
+			{
+				bool taken = false;
+				for (std::map<BYTE, TPlayerBotGuildWar>::const_iterator w = s_mapPlayerBotGuildWars.begin();
+						w != s_mapPlayerBotGuildWars.end() && !taken; ++w)
+					taken = w->second.dwGuild1 == it->first || w->second.dwGuild2 == it->first;
+				if (taken)
+					continue;
+			}
 			const int online = CountPlayerBotGuildOnline(g);
 			if (online < PLAYERBOT_GUILD_WAR_MIN_ONLINE)
 				continue;
@@ -1418,6 +1428,28 @@ namespace
 		// every kingdom's turn; each war is fought in its own copy of it.
 		if (!IsPlayerBotMapHostedHere(PLAYERBOT_GUILD_WAR_ARENA_MAP))
 			return;
+		// MT2009_PLUS_GUILD_WAR_NOW_V1: touching /opt/m2spool/playerbot_war_now
+		// brings every kingdom's next war to now (the test of three wars at
+		// once, and a panel button later) - only a newer touch than the one
+		// seen, so a file left behind does nothing after a restart.
+		{
+			static time_t s_tSeen = (time_t)-1;
+			struct stat st;
+			const time_t at = stat("/opt/m2spool/playerbot_war_now", &st) == 0 ? st.st_mtime : 0;
+			if (s_tSeen == (time_t)-1)
+				s_tSeen = at;
+			else if (at > s_tSeen)
+			{
+				s_tSeen = at;
+				for (int e = playerbot_empire_rules::EMPIRE_SHINSOO; e <= playerbot_empire_rules::EMPIRE_JINNO; ++e)
+					if (s_mapPlayerBotGuildWars.find((BYTE)e) == s_mapPlayerBotGuildWars.end())
+					{
+						s_adwPlayerBotNextGuildWarTime[e] = dwNow;
+						s_abPlayerBotGuildWarNoPair[e] = false;
+					}
+				sys_log(0, "PLAYERBOT_GUILD: wars now (playerbot_war_now) - every free kingdom's turn brought to now");
+			}
+		}
 		for (int empire = playerbot_empire_rules::EMPIRE_SHINSOO;
 				empire <= playerbot_empire_rules::EMPIRE_JINNO; ++empire)
 		{
