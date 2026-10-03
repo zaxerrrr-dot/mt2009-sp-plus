@@ -2,9 +2,9 @@
 # storage - one store for the whole account beside the classic safebox,
 # opened with the "Kolekcjoner" button of the safebox window (uisafebox.py).
 # The upstream window's features (server-patches/collector/README.md),
-# rewritten so that a move is instant, as the companion's quick transfer is (the owner, 3
-# October: "to ma byc instant, tak jak przerzucanie miedzy towarzyszem a
-# naszym eq").
+# rewritten so that a move is instant, as the companion's quick transfer is
+# (the owner, 3 October: "to ma byc instant, tak jak przerzucanie miedzy
+# towarzyszem a naszym eq").
 #
 # The window holds the whole store: the server sends it once when it opens
 # and from then on only what a move changed (playerbot_collector.cpp):
@@ -645,6 +645,7 @@ class CollectorWindow(ui.BoardWithTitleBar):
 		self.openPos = None
 		self.nextDistanceCheck = 0.0
 		self.tooltip = None
+		self.shown = {}
 		self.pickDialog = None
 		self.pickTarget = None
 		self.question = None
@@ -863,12 +864,12 @@ class CollectorWindow(ui.BoardWithTitleBar):
 	# ------------------------------------------------------------ server
 
 	def OnBegin(self, tier, capacity, entries, tiersOk=1, *rest):
+		if not self.IsShow():
+			self.OpenRequested()
 		self.store.Reset()
 		self.store.tier = _Int(tier)
 		self.store.capacity = _Int(capacity, TIERS[0][0])
 		self.store.tiersOk = _Int(tiersOk, 1) != 0
-		if not self.IsShow():
-			self.OpenRequested()
 		self.dirty = True
 
 	def OnEntries(self, *tokens):
@@ -900,6 +901,8 @@ class CollectorWindow(ui.BoardWithTitleBar):
 		if code == RESULT_DONE:
 			if pending and pending[0] == 'expand':
 				self.__SetStatus(TEXT_EXPANDED % self.store.capacity)
+			elif pending and pending[0] == 'putall':
+				self.__SetStatus(TEXT_STORED % Money(_Int(units)))
 			return
 		if code in (RESULT_NO_SESSION, RESULT_TOO_FAR):
 			return		# the close line follows
