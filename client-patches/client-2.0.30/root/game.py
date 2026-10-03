@@ -490,6 +490,7 @@ class GameWindow(ui.ScriptWindow):
 		# opens the window without one). The keepers' Destroy did it before;
 		# a second call finds nothing left.
 		__import__("uisidekick").Destroy()
+		__import__("uicollector").Destroy() # MT2009_PLUS_COLLECTOR_STORAGE_V1
 
 		print("---------------------------------------------------------------------------- CLOSE GAME WINDOW")
 
@@ -498,6 +499,9 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_AUTO_TARGET_V1: the next target after a kill (autotarget.py).
 		import autotarget
 		self.RegisterUpdatable(autotarget.GetKeeper())
+		# MT2009_PLUS_COLLECTOR_STORAGE_V1: the collector's storage window goes
+		# with the game window (uicollector.py).
+		self.RegisterUpdatable(__import__("uicollector").GetKeeper())
 		self.RegisterUpdatable(updateable.PickUpOnDownKey())
 		import uipickupfilter
 		self.RegisterUpdatable(uipickupfilter.PickupFilterSync())
@@ -903,6 +907,12 @@ class GameWindow(ui.ScriptWindow):
 		else:
 			state = "EMOTICON"
 			self.interface.ToggleCharacterWindow(state)
+
+	# MT2009_PLUS_COLLECTOR_STORAGE_V1: every "COLL ..." line of the collector's
+	# storage (uicollector.py); its keeper (CreateUpdateables) closes the
+	# window with this one.
+	def __Collector(self, *args):
+		__import__("uicollector").OnServer(*args)
 
 	def __SidekickVid(self, vid="0", *rest):
 		# The keeper ends with the game window; the next one hears the
@@ -3139,6 +3149,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["GlobalRankingWipe"] = self.__Global_Ranking__RecvWipe
 		serverCommandList["GlobalRankingUpdatePacket"] = self.__Global_Ranking__RecvData
 		serverCommandList["SidekickVid"] = self.__SidekickVid
+		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["GlobalRankingUpdatePacketMyPos"] = self.__Global_Ranking__RecvSelfData
 		serverCommandList["SidekickEqNone"] = self.__SidekickEqNone
 		serverCommandList["SidekickEqBegin"] = self.__SidekickEqBegin
