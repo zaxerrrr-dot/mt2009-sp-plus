@@ -46,7 +46,7 @@
   restartInfo.id = 'last-restart';
   document.querySelector('.live-shell header > div').appendChild(restartInfo);
   [...document.querySelectorAll('.live-shell footer span')].filter(node => node.textContent.includes('Podkład graficzny')).forEach(node => node.remove());
-  const mapLabels = {21:'Chunjo M1 — Joan',23:'Chunjo M2 — Bokjung',24:'Chunjo M3 — Waryong',25:'Loch Małp Chunjo',61:'Góra Sohan',64:'Dolina Orków',63:'Pustynia Yongbi',104:'Loch Pająków V1',108:'Loch Małp Normalny',109:'Loch Małp Trudny',65:'Świątynia Hwang',4:'Shinsoo M3 — Jungrang',44:'Jinno M3 — Imha',5:'Loch Małp Shinsoo',45:'Loch Małp Jinno',1:'Shinsoo M1 — Yongan',3:'Shinsoo M2 — Jayang',41:'Jinno M1 — Pyongmoo',43:'Jinno M2 — Bakra',67:'Las',68:'Czerwony Las',66:'Wieża Demonów'};
+  const mapLabels = {21:'Chunjo M1 — Joan',23:'Chunjo M2 — Bokjung',24:'Chunjo M3 — Waryong',25:'Loch Małp Chunjo',61:'Góra Sohan',64:'Dolina Orków',63:'Pustynia Yongbi',104:'Loch Pająków V1',108:'Loch Małp Normalny',109:'Loch Małp Trudny',65:'Świątynia Hwang',4:'Shinsoo M3 — Jungrang',44:'Jinno M3 — Imha',5:'Loch Małp Shinsoo',45:'Loch Małp Jinno',1:'Shinsoo M1 — Yongan',3:'Shinsoo M2 — Jayang',41:'Jinno M1 — Pyongmoo',43:'Jinno M2 — Bakra',67:'Las',68:'Czerwony Las',66:'Wieża Demonów',62:'Ognista Ziemia',71:'Loch Pająków V2',72:'Grota Wygnańców V1',73:'Grota Wygnańców V2',209:'Świątynia Ochao',360:'Dolina Cyklopów',361:'Pustkowie Faraona',362:'Zaczarowany Las',363:'Biblioteka Wiedzy',364:'Wzgórze Wukonga',365:'Ruiny Skorpiona',366:'Starożytna Dżungla'};
   Object.entries(mapLabels).forEach(([id,label]) => {
     const option = select.querySelector(`option[value="${id}"]`);
     if (option) option.textContent = label;

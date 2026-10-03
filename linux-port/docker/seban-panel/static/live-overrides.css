@@ -304,3 +304,15 @@ body[data-theme="empire"]{--live-surface:#241a12;--live-surface-strong:#1a1109;-
 @container (min-width:451px) and (max-width:600px){
   .bot-point{width:15px!important;height:15px!important}
 }
+
+/* MT2009_PLUS_SEBAN_MAPS_V1: the Temple of Ochao and the Arezzo places, stitched from each map's client minimap tiles. */
+.world-map[data-map-index="209"]{background-image:linear-gradient(#00000012,#00000012),url('/static/maps/ochao-temple.png')}
+.world-map[data-map-index="360"]{background-image:linear-gradient(#00000012,#00000012),url('/static/maps/arezzo-cyclops-valley.png')}
+.world-map[data-map-index="361"]{background-image:linear-gradient(#00000012,#00000012),url('/static/maps/arezzo-pharaoh-wastes.png')}
+.world-map[data-map-index="362"]{background-image:linear-gradient(#00000012,#00000012),url('/static/maps/arezzo-enchanted-forest.png')}
+.world-map[data-map-index="363"]{background-image:linear-gradient(#00000012,#00000012),url('/static/maps/arezzo-library.png')}
+.world-map[data-map-index="364"]{background-image:linear-gradient(#00000012,#00000012),url('/static/maps/arezzo-wukong-hill.png')}
+.world-map[data-map-index="365"]{background-image:linear-gradient(#00000012,#00000012),url('/static/maps/arezzo-scorpion-ruins.png')}
+.world-map[data-map-index="366"]{background-image:linear-gradient(#00000012,#00000012),url('/static/maps/arezzo-ancient-jungle.png')}
+.world-map[data-map-index="209"],.world-map[data-map-index="360"],.world-map[data-map-index="361"],.world-map[data-map-index="362"],.world-map[data-map-index="363"],.world-map[data-map-index="364"],.world-map[data-map-index="365"],.world-map[data-map-index="366"]{aspect-ratio:1!important}
+@media(min-width:1351px) and (max-width:2199px){.world-map[data-map-index="209"],.world-map[data-map-index="360"],.world-map[data-map-index="361"],.world-map[data-map-index="362"],.world-map[data-map-index="363"],.world-map[data-map-index="364"],.world-map[data-map-index="365"],.world-map[data-map-index="366"]{max-width:min(520px,100%)!important}}

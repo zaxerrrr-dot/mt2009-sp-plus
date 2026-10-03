@@ -28,4 +28,4 @@ function switchChannel(channel){activeChannel=channel;mapHistory=allCharts[chann
 document.querySelectorAll('#maps-channel-tabs button').forEach(btn=>btn.addEventListener('click',()=>switchChannel(btn.dataset.channel)));
 renderFilters();bindCurrentTableRows();
 document.getElementById('maps-all').addEventListener('click',()=>{mapHistory.series.forEach(s=>checked.add(s.id));render()});render();
-</script><script src="{{url_for('static',filename='heat-layer.js')}}"></script><script src="{{url_for('static',filename='heatmap.js')}}"></script>{% endblock %}
+</script><script src="{{url_for('static',filename='heat-layer.js')}}"></script><script src="{{ static_asset_url('heatmap.js') }}"></script>{% endblock %}

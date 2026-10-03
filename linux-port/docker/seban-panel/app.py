@@ -46,6 +46,9 @@ MAP_NAMES = {
     108: "Loch Małp Normalny", 109: "Loch Małp Trudny",
     67: "Las", 68: "Czerwony Las", 66: "Wieża Demonów",
     72: "Grota Wygnańców V1", 73: "Grota Wygnańców V2",
+    # MT2009_PLUS_SEBAN_MAPS_V1: the Temple of Ochao and the Arezzo places.
+    209: "Świątynia Ochao", 360: "Dolina Cyklopów", 361: "Pustkowie Faraona", 362: "Zaczarowany Las",
+    363: "Biblioteka Wiedzy", 364: "Wzgórze Wukonga", 365: "Ruiny Skorpiona", 366: "Starożytna Dżungla",
 }
 MAP_BOUNDS = {
     1: (409600, 896000, 102400, 128000), 3: (307200, 819200, 102400, 102400),
@@ -68,6 +71,12 @@ MAP_BOUNDS = {
     67: (281600, 0, 51200, 51200), 68: (1049600, 0, 76800, 76800),
     66: (128000, 793600, 76800, 76800),
     72: (0, 1203200, 153600, 153600), 73: (153600, 1203200, 153600, 153600),
+    # MT2009_PLUS_SEBAN_MAPS_V1: BasePosition + MapSize x 25600 from each map's Setting.txt.
+    209: (844800, 1408000, 76800, 76800),
+    360: (230400, 281600, 102400, 102400), 361: (230400, 384000, 102400, 102400),
+    362: (332800, 384000, 102400, 102400), 363: (947200, 614400, 51200, 51200),
+    364: (844800, 537600, 51200, 51200), 365: (844800, 588800, 51200, 51200),
+    366: (768000, 537600, 76800, 76800),
 }
 # "Boty CH1/CH2 na mapach" tile (dashboard-charts.js) used to draw the full
 # map name under each bar in 9px text -- fine for "M1"/"M2"/"M3" (matched by
@@ -1433,6 +1442,11 @@ def live_statuses():
                     entry = {name: int(row[name]) for name in _LIVE_STATUS_INT_FIELDS if name in row}
                 except (KeyError, ValueError):
                     continue
+                # MT2009_PLUS_SEBAN_MAPS_V1: a dungeon run's own copy of a map is
+                # base * 10000 + n (3660002 is a Starozytna Dzungla run) on the
+                # base map's coordinates, so it is shown as that map.
+                if entry.get("map_index", 0) >= 10000:
+                    entry["map_index"] //= 10000
                 entry["in_party"] = bool(int(row.get("in_party", 0) or 0))
                 entry["status"] = row.get("status", "")
                 entry["channel"] = channel
