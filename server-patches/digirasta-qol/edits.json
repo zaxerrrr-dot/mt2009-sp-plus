@@ -1,0 +1,92 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (refine note)",
+  "old": "\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"RefineFailed\");\n",
+  "new": "\t\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (refine note): what the item was, for RefineFailedType (playerbot_digi_qol.h, Autor: Digi Rasta).\n\t\t{ void Mt2009DigiRefineFailNoted(LPCHARACTER, LPITEM); Mt2009DigiRefineFailNoted(ch, item); }\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"RefineFailed\");\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (refine report)",
+  "old": "\tch->ClearRefineMode();\n\n\tif (bKeepRefineOpen)\n",
+  "new": "\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (refine report): \"RefineFailedType <0 lost a level | 1 destroyed | 2 untouched>\"\n\t// after a failed refine (playerbot_digi_qol.h, Autor: Digi Rasta).\n\t{ void Mt2009DigiRefineFailReport(LPCHARACTER); Mt2009DigiRefineFailReport(ch); }\n\tch->ClearRefineMode();\n\n\tif (bKeepRefineOpen)\n"
+ },
+ {
+  "file": "exchange.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (trade block)",
+  "old": "\tif (victim->IsBlockMode(BLOCK_EXCHANGE))\n",
+  "new": "\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (trade block): the messenger's block list stops a trade both ways (Autor: Digi Rasta).\n\t{ bool Mt2009DigiBlocked(LPCHARACTER, LPCHARACTER); if (Mt2009DigiBlocked(this, victim)) return false; }\n\tif (victim->IsBlockMode(BLOCK_EXCHANGE))\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (party block)",
+  "old": "\tPartyJoinErrCode errcode = IsPartyJoinableCondition(this, pchInvitee);\n",
+  "new": "\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (party block): the messenger's block list stops a party invitation both ways (Autor: Digi Rasta).\n\t{ bool Mt2009DigiBlocked(LPCHARACTER, LPCHARACTER); if (Mt2009DigiBlocked(this, pchInvitee)) return; }\n\tPartyJoinErrCode errcode = IsPartyJoinableCondition(this, pchInvitee);\n"
+ },
+ {
+  "file": "guild.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (guild block)",
+  "old": "\tif ( pchInvitee->IsBlockMode( BLOCK_GUILD_INVITE ) )\n",
+  "new": "\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (guild block): the messenger's block list stops a guild invitation both ways (Autor: Digi Rasta).\n\t{ bool Mt2009DigiBlocked(LPCHARACTER, LPCHARACTER); if (Mt2009DigiBlocked(pchInviter, pchInvitee)) return; }\n\tif ( pchInvitee->IsBlockMode( BLOCK_GUILD_INVITE ) )\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (duel block)",
+  "old": "\tif (pkVictim->IsNPC())\n\t\treturn;\n\n\tif (pkVictim->GetArena() != NULL)\n",
+  "new": "\tif (pkVictim->IsNPC())\n\t\treturn;\n\n\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (duel block): the messenger's block list stops a duel request both ways (Autor: Digi Rasta).\n\t{ bool Mt2009DigiBlocked(LPCHARACTER, LPCHARACTER); if (Mt2009DigiBlocked(ch, pkVictim)) return; }\n\tif (pkVictim->GetArena() != NULL)\n"
+ },
+ {
+  "file": "cmd_emotion.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (emote block)",
+  "old": "\t\tif (!victim->IsPC() || victim == ch)\n\t\t\treturn;\n",
+  "new": "\t\tif (!victim->IsPC() || victim == ch)\n\t\t\treturn;\n\t\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (emote block): the messenger's block list stops an emote for two both ways (Autor: Digi Rasta).\n\t\t{ bool Mt2009DigiBlocked(LPCHARACTER, LPCHARACTER); if (Mt2009DigiBlocked(ch, victim)) return; }\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (level up)",
+  "old": "\t\t\t\t\tGetParty()->RequestSetMemberLevel(GetPlayerID(), GetLevel());\n\t\t\t\t}\n\t\t\t}\n",
+  "new": "\t\t\t\t\tGetParty()->RequestSetMemberLevel(GetPlayerID(), GetLevel());\n\t\t\t\t}\n\t\t\t\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (level up): a real player's congratulation, \"[Awans] ...\" to all\n\t\t\t\t// every tenth level; never a bot (playerbot_digi_qol.h, Autor: Digi Rasta).\n\t\t\t\t{ void Mt2009DigiLevelUp(LPCHARACTER, int); Mt2009DigiLevelUp(this, oldLevel); }\n\t\t\t}\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (daily gift)",
+  "old": "\t_send_bonus_info(ch);\n",
+  "new": "\t_send_bonus_info(ch);\n\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (daily gift): once per 24 h from level 10, players only (playerbot_digi_qol.h, Autor: Digi Rasta).\n\t{ void Mt2009DigiDailyGift(LPCHARACTER); Mt2009DigiDailyGift(ch); }\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (skills ready)",
+  "old": "\tbool isAgreedPVP = false;\n",
+  "new": "\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (skills ready): a real player's skills are ready again after death, as on the\n\t// official servers; \"SkillCoolTimeReset\" clears the client's timers. Bots keep theirs (Autor: Digi Rasta).\n\tif (IsPC() && GetDesc() && !GetDesc()->IsBot())\n\t{\n\t\tfor (std::map<int, TSkillUseInfo>::iterator itSkill = m_SkillUseInfo.begin(); itSkill != m_SkillUseInfo.end(); ++itSkill)\n\t\t\titSkill->second.dwNextSkillUsableTime = 0;\n\t\tChatPacket(CHAT_TYPE_COMMAND, \"SkillCoolTimeReset\");\n\t}\n\n\tbool isAgreedPVP = false;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (kill sound)",
+  "old": "\tif (pkKiller && pkKiller->IsPC())\n\t{\n\t\tif (pkKiller->m_pkChrTarget == this)\n",
+  "new": "\tif (pkKiller && pkKiller->IsPC())\n\t{\n\t\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (kill sound): a real player's kill streak of characters and bosses (Autor: Digi Rasta).\n\t\t{ void Mt2009DigiKillSound(LPCHARACTER, LPCHARACTER); Mt2009DigiKillSound(pkKiller, this); }\n\t\tif (pkKiller->m_pkChrTarget == this)\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (kill bar)",
+  "old": "\t\t\tCGuildManager::instance().Kill(pkKiller, this);\n",
+  "new": "\t\t\tCGuildManager::instance().Kill(pkKiller, this);\n\t\t\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (kill bar): the map's kill bar, only with a real player on one side (Autor: Digi Rasta).\n\t\t\t{ void Mt2009DigiKillBar(LPCHARACTER, LPCHARACTER); Mt2009DigiKillBar(pkKiller, this); }\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (dead time)",
+  "old": "\t\t\tm_pkDeadEvent = event_create(dead_event, pEventInfo, PASSES_PER_SEC(180));\n",
+  "new": "\t\t\tm_pkDeadEvent = event_create(dead_event, pEventInfo, PASSES_PER_SEC(180));\n\t\t\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (dead time): \"DeadTime <here> <town>\" for the death window's countdown (Autor: Digi Rasta).\n\t\t\t{ void Mt2009DigiDeadTime(LPCHARACTER); Mt2009DigiDeadTime(this); }\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (declare)",
+  "old": "// MT2009_PLUS_SEONHAE_V1 (declare)\nACMD(do_seonhae);\n",
+  "new": "// MT2009_PLUS_SEONHAE_V1 (declare)\nACMD(do_seonhae);\n// MT2009_PLUS_DIGI_SERVER_QOL_V1 (declare): Seon-Hae's book exchange (playerbot_digi_qol.h, Autor: Digi Rasta)\nACMD(do_nowy_ksiegi);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_DIGI_SERVER_QOL_V1 (table)",
+  "old": "\t// MT2009_PLUS_SEONHAE_V1 (table)\n\t{ \"seonhae\",\tdo_seonhae,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t// MT2009_PLUS_SEONHAE_V1 (table)\n\t{ \"seonhae\",\tdo_seonhae,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_DIGI_SERVER_QOL_V1 (table)\n\t{ \"nowy_ksiegi\",\tdo_nowy_ksiegi,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ }
+]

@@ -157,6 +157,7 @@ linux-port/docker/game/src/server/game/src/char_skill.cpp
 linux-port/docker/game/src/server/game/src/char_state.cpp
 linux-port/docker/game/src/server/game/src/cmd.cpp
 linux-port/docker/game/src/server/game/src/cmd_general.cpp
+linux-port/docker/game/src/server/game/src/cmd_emotion.cpp
 linux-port/docker/game/src/server/game/src/cmd_gm.cpp
 linux-port/docker/game/src/server/game/src/config.cpp
 linux-port/docker/game/src/server/game/src/config.h
