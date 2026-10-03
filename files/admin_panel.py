@@ -1159,6 +1159,9 @@ def write_ai_item_policy(text):
         fh.write(text.replace("\r\n", "\n").rstrip("\n") + "\n")
     os.replace(tmp, AI_ITEM_POLICY)
 AI_W_MIN, AI_W_MAX, AI_W_NEUTRAL = 25, 250, 100
+# MT2009_PLUS_SALE_TAX_V1: the sale tax slider's top, the core's own
+# (playerbot_sale_tax.h MAX_PERCENT).
+SALE_TAX_MAX = 50
 # Errands the bots already take at every chance at 100, so their sliders can
 # only make them rarer (playerbot_config.h's IsPlayerBotWeightGateOpen): the
 # page stops them at 100, where the core does too.
@@ -1221,6 +1224,10 @@ def read_ai_weights():
     # On; off is the market as it was.
     vals["HAGGLE"] = 1
     vals["SCRAP"] = 0
+    # MT2009_PLUS_SALE_TAX_V1: the percent of a sale between players and bots
+    # that leaves the game (playerbot_sale_tax.h, server-patches/saletax);
+    # 0 is no tax, the world as it was.
+    vals["SALE_TAX"] = 0
     # Percent of bots that rest on the market ring after a town errand; 100 is
     # the author's town, 0 is "every bot hunting".
     vals["REST"] = 100
@@ -1308,6 +1315,12 @@ def read_ai_weights():
                 if name == "SCRAP":
                     try:
                         vals["SCRAP"] = max(0, min(100, int(parts[1])))
+                    except ValueError:
+                        pass
+                    continue
+                if name == "SALE_TAX":
+                    try:
+                        vals["SALE_TAX"] = max(0, min(SALE_TAX_MAX, int(parts[1])))
                     except ValueError:
                         pass
                     continue
@@ -1427,6 +1440,9 @@ def write_ai_weights(vals):
     body.append("HAGGLE\t%d" % (1 if vals.get("HAGGLE", 1) else 0))
     # Percent of stall keepers that sell scrap gear; 0 is off.
     body.append("SCRAP\t%d" % max(0, min(100, int(vals.get("SCRAP", 0)))))
+    # MT2009_PLUS_SALE_TAX_V1: percent of a sale between players and bots that
+    # leaves the game; 0 is no tax.
+    body.append("SALE_TAX\t%d" % max(0, min(SALE_TAX_MAX, int(vals.get("SALE_TAX", 0)))))
     # Percent of bots that rest in town after an errand; 0 means nobody does.
     body.append("REST\t%d" % max(0, min(100, int(vals.get("REST", 100)))))
     # Percent of bots hostile to the other kingdoms; 0 means the world is at
@@ -4330,6 +4346,12 @@ T.update({
                   "tr":"Tezgâhçıların, düşük yükseltmelerini (+0 ile +3) NPC'ye satmak yerine ucuza tezgâha koyan payı - demircide yakmalık, hard sunuculardaki gibi. Varsayılan olarak kapalı."},
  "ai_scrap_off": {"en":"off","pl":"wyłączone","de":"aus","tr":"kapalı"},
  "ai_scrap_all": {"en":"every keeper","pl":"każdy straganiarz","de":"jeder Händler","tr":"her tezgâhçı"},
+ "ai_sale_tax":  {"en":"Tax on sales between players (%)","pl":"Podatek od sprzedaży między graczami (%)","de":"Steuer auf Verkäufe zwischen Spielern (%)","tr":"Oyuncular arası satış vergisi (%)"},
+ "ai_sale_tax_help": {"en":"A part of the price of an item sold to another player or bot (shops, the market, the bots' counters) leaves the game - it limits the amount of yang in circulation. 0% = no tax. Sales to NPCs are not taxed. The offline counters also keep their own tax (5% by default). Applies within seconds, no restart.",
+                  "pl":"Część ceny przedmiotu sprzedanego innemu graczowi lub botowi (sklepy, targ, lady botów) znika z gry - ogranicza ilość yang w obiegu. 0% = bez podatku. Sprzedaż NPC bez podatku. Lady offline pobierają ponadto swój własny podatek (domyślnie 5%). Działa po kilku sekundach, bez restartu.",
+                  "de":"Ein Teil des Preises eines Gegenstands, der an einen anderen Spieler oder Bot verkauft wird (Läden, Markt, Theken der Bots), verschwindet aus dem Spiel - das begrenzt die Menge an Yang im Umlauf. 0% = keine Steuer. Verkäufe an NPCs sind steuerfrei. Die Offline-Theken behalten zusätzlich ihre eigene Steuer (standardmäßig 5%). Wirkt nach wenigen Sekunden, ohne Neustart.",
+                  "tr":"Başka bir oyuncuya veya bota satılan bir eşyanın fiyatının bir kısmı (dükkanlar, pazar, botların tezgâhları) oyundan silinir - dolaşımdaki yang miktarını sınırlar. %0 = vergi yok. NPC'ye satışlar vergilendirilmez. Çevrimdışı tezgâhlar ayrıca kendi vergilerini alır (varsayılan %5). Birkaç saniye içinde, yeniden başlatmadan geçerli olur."},
+ "ai_sale_tax_off": {"en":"no tax","pl":"bez podatku","de":"keine Steuer","tr":"vergi yok"},
  "ai_rest":      {"en":"Resting in town","pl":"Odpoczynek w mieście","de":"Ausruhen in der Stadt","tr":"Şehirde dinlenme"},
  "ai_rest_help": {"en":"The share of bots that stay on the market ring for about three minutes after finishing their business in the first village, strolling between the stalls. 0 - nobody rests: the bots hunt all the time and only come to town on errands. Whatever the slider says, a bot under level 18 never rests, and with no stall open nobody browses stalls. With the bot personalities on, only bots in a poor mood rest, and the slider is the share of them.",
                   "pl":"Udział botów, które po załatwieniu spraw w pierwszej wiosce zostają na rynku około trzech minut i spacerują między straganami. 0 - nikt nie odpoczywa: boty cały czas expią, a do miasta przychodzą tylko w sprawach. Niezależnie od suwaka bot poniżej 18 poziomu nie odpoczywa nigdy, a bez wystawionego straganu nikt nie ogląda straganów. Przy włączonych osobowościach botów odpoczywają tylko boty w słabym nastroju, a suwak to ich udział.",
@@ -7880,6 +7902,18 @@ TPL_AI = BASE.replace("__BODY__", """
     <span>0 — {{t('ai_scrap_off')}}</span><span>100 — {{t('ai_scrap_all')}}</span>
   </div>
 </div>
+{% if engine_mt2009 %}{# MT2009_PLUS_SALE_TAX_V1 #}
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">💸 {{t('ai_sale_tax')}}
+      <span class="badge" id="v_SALE_TAX">{{cur.get('SALE_TAX', 0)}}%</span></h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_sale_tax_help')}}</p>
+  <input type="range" name="SALE_TAX" id="s_SALE_TAX" min="0" max="{{sale_tax_max}}" step="1" value="{{cur.get('SALE_TAX', 0)}}" style="width:100%"
+         oninput="document.getElementById('v_SALE_TAX').textContent=this.value+'%'">
+  <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
+    <span>0% — {{t('ai_sale_tax_off')}}</span><span>{{sale_tax_max}}%</span>
+  </div>
+</div>
+{% endif %}
 <div style="margin-bottom:18px">
   <h3 style="margin:0 0 2px">🛋️ {{t('ai_rest')}}
       <span class="badge" id="v_REST">{{cur.get('REST', 100)}}%</span></h3>
@@ -19773,6 +19807,12 @@ def ai_weights():
             vals["SCRAP"] = max(0, min(100, int(request.form.get("SCRAP", 0))))
         except (TypeError, ValueError):
             vals["SCRAP"] = 0
+        # MT2009_PLUS_SALE_TAX_V1: on the mt2009 page alone (the engine patch
+        # is that line's); a form without it keeps the file's.
+        try:
+            vals["SALE_TAX"] = max(0, min(SALE_TAX_MAX, int(request.form.get("SALE_TAX", old.get("SALE_TAX", 0)))))
+        except (TypeError, ValueError):
+            vals["SALE_TAX"] = old.get("SALE_TAX", 0)
         try:
             vals["REST"] = max(0, min(100, int(request.form.get("REST", 100))))
         except (TypeError, ValueError):
@@ -19861,7 +19901,8 @@ def ai_weights():
                                   keys=keys, wmin=AI_W_MIN, bots_held=read_bot_hold(),
                                   wmax=AI_W_MAX, wneutral=AI_W_NEUTRAL, wcapped=AI_W_CAPPED,
                                   engine_mt2009=ENGINE_MT2009,
-                                  explain_default=EXPLAIN_DEFAULT_DAYS, explain_max=EXPLAIN_MAX_DAYS)
+                                  explain_default=EXPLAIN_DEFAULT_DAYS, explain_max=EXPLAIN_MAX_DAYS,
+                                  sale_tax_max=SALE_TAX_MAX)
 
 
 @app.route("/ai/tower_now", methods=["POST"])

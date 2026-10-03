@@ -669,6 +669,22 @@ if ((Test-Path -LiteralPath $sortLockApply -PathType Leaf) -and
         Write-Host 'Locked inventory items stay put when the bag is sorted.' -ForegroundColor DarkGray
     }
 }
+# The sale tax between players and bots (server-patches/saletax,
+# MT2009_PLUS_SALE_TAX_V1): the panels' SALE_TAX slider (playerbot_sale_tax.h)
+# taken off what a stall, an offline counter, an accepted offer or an auction
+# pays its seller - game core (shop.cpp, ikarus_shop_manager.cpp, char_item.cpp)
+# and db core (ClientManagerIkarusShop.cpp). Last: it anchors on shopsearch2's
+# part-stack lines.
+$saleTaxApply = Join-Path $repo 'server-patches/saletax/Apply-SaleTaxPatch.ps1'
+if ((Test-Path -LiteralPath $saleTaxApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'shop.cpp') -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'ikarus_shop_manager.cpp') -PathType Leaf)) {
+    $saleTaxResult = & $saleTaxApply -SourceDir $engineGameSource
+    if ($saleTaxResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} sale tax edit(s).' -f $saleTaxResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both

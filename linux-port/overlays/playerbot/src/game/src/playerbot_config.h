@@ -274,6 +274,8 @@ namespace
 		s_iPlayerBotBattlePassPercent = 100;
 		s_iPlayerBotSashPercent = 100;
 		s_iPlayerBotAlchemyPercent = 100;
+		// MT2009_PLUS_SALE_TAX_V1: no tax unless the file says so.
+		playerbot_sale_tax::percent = 0;
 		s_iPlayerBotExplainDays = PLAYERBOT_EXPLAIN_DEFAULT_DAYS;
 		s_iPlayerBotTickBudgetMs = PLAYERBOT_TICK_BUDGET_MS_DEFAULT;
 		s_iPlayerBotKingdomPvpPercent = 0;
@@ -546,6 +548,18 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			wanted = percent;
 			return;
 		}
+		// MT2009_PLUS_SALE_TAX_V1: the share of a sale between players and bots
+		// that leaves the game (playerbot_sale_tax.h), 0-50 percent.
+		if (PlayerBotWeightNameEquals(szKey, "SALE_TAX"))
+		{
+			const int percent = value < 0 ? 0 : (value > playerbot_sale_tax::MAX_PERCENT
+					? playerbot_sale_tax::MAX_PERCENT : (int)value);
+			if (percent != playerbot_sale_tax::percent)
+				sys_log(0, "PLAYERBOT_CONFIG: sale tax between players and bots %d%%%s", percent,
+						percent ? "" : " (none)");
+			playerbot_sale_tax::percent = percent;
+			return;
+		}
 		if (PlayerBotWeightNameEquals(szKey, "EXPLAIN"))
 		{
 			const int days = value < 0 ? 0 : (value > PLAYERBOT_EXPLAIN_MAX_DAYS
@@ -737,6 +751,8 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_iPlayerBotSashPercent;
 		if (PlayerBotWeightNameEquals(szKey, "ALCHEMY"))
 			return s_iPlayerBotAlchemyPercent;
+		if (PlayerBotWeightNameEquals(szKey, "SALE_TAX"))
+			return playerbot_sale_tax::percent;
 		if (PlayerBotWeightNameEquals(szKey, "EXPLAIN"))
 			return s_iPlayerBotExplainDays;
 		if (PlayerBotWeightNameEquals(szKey, "KINGDOMPVP"))
@@ -804,6 +820,11 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		if (PlayerBotWeightNameEquals(szKey, "SCRAP"))
 		{
 			value = value < 0 ? 0 : (value > 100 ? 100 : value);
+			return true;
+		}
+		if (PlayerBotWeightNameEquals(szKey, "SALE_TAX"))
+		{
+			value = value < 0 ? 0 : (value > playerbot_sale_tax::MAX_PERCENT ? playerbot_sale_tax::MAX_PERCENT : value);
 			return true;
 		}
 		if (PlayerBotWeightNameEquals(szKey, "EXPLAIN"))

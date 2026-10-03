@@ -238,7 +238,12 @@ AI_LIVE_DEFAULTS = {"CHAT": 1, "BOOKS": 1, "NIGHT": 1, "LIFE": 0,
                      "BATTLEPASS": 100, "SASH": 100, "ALCHEMY": 100,
                      "WAR_MINUTES": 30, "WAR_HOURS": 2,
                      # MT2009_PLUS_GUILD_WAR_KILLS_V1: kills that win a war (0: time only).
-                     "WAR_KILLS": 100, "CHEST": None, "CHEST_STONE": None}
+                     "WAR_KILLS": 100, "CHEST": None, "CHEST_STONE": None,
+                     # MT2009_PLUS_SALE_TAX_V1: percent of a sale between players
+                     # and bots that leaves the game (playerbot_sale_tax.h); 0 = none.
+                     "SALE_TAX": 0}
+# MT2009_PLUS_SALE_TAX_V1: the slider's top, the core's own (MAX_PERCENT).
+SALE_TAX_MAX = 50
 AI_SPECIAL_WEIGHT_KEYS = frozenset(AI_LIVE_DEFAULTS)
 AI_LIFE_HOURS_MAX = 24
 BIOLOGIST_COMPLETE_STATE = 557528158
@@ -2661,6 +2666,8 @@ def read_ai_weights():
                         values[key] = 0 if raw_value.lower() in ("0", "off", "no") else 1
                     elif key in ("SCRAP", "REST", "KINGDOMPVP"):
                         values[key] = max(0, min(100, int(raw_value)))
+                    elif key == "SALE_TAX":
+                        values[key] = max(0, min(SALE_TAX_MAX, int(raw_value)))
                     elif key == "LIFE_HOURS":
                         values[key] = max(0, min(AI_LIFE_HOURS_MAX, int(raw_value)))
                     elif key in ("BATTLEPASS", "SASH", "ALCHEMY"):
@@ -2732,6 +2739,8 @@ def write_ai_weights(values):
     content.append(f"SCRAP\t{max(0, min(100, int(values.get('SCRAP', 0))))}")
     content.append(f"REST\t{max(0, min(100, int(values.get('REST', 100))))}")
     content.append(f"KINGDOMPVP\t{max(0, min(100, int(values.get('KINGDOMPVP', 0))))}")
+    # MT2009_PLUS_SALE_TAX_V1: the sale tax between players and bots, 0 = none.
+    content.append(f"SALE_TAX\t{max(0, min(SALE_TAX_MAX, int(values.get('SALE_TAX', 0) or 0)))}")
     for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
         content.append(f"{key}\t{max(0, min(250, int(values.get(key, 100))))}")
     content.append(f"SCROLL_FROM\t{max(1, min(9, int(values.get('SCROLL_FROM', 1))))}")
@@ -8223,7 +8232,7 @@ def manage():
     bot_channels = sorted(per_channel.items()) if len(per_channel) > 1 else []
     updater = update_status()
     updater["protected"] = current_settings.get("auth_enabled") == "1" and bool(session.get("seban_admin"))
-    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES)
+    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES)
 
 
 @app.post("/manage/difficulty")
@@ -8628,6 +8637,12 @@ def manage_behavior():
         values["KINGDOMPVP"] = max(0, min(100, int(request.form.get("KINGDOMPVP", values.get("KINGDOMPVP", 0)))))
     except (TypeError, ValueError):
         values["KINGDOMPVP"] = 0
+    # MT2009_PLUS_SALE_TAX_V1: on the mt2009 page alone; a form without it
+    # keeps the file's value.
+    try:
+        values["SALE_TAX"] = max(0, min(SALE_TAX_MAX, int(request.form.get("SALE_TAX", values.get("SALE_TAX", 0)))))
+    except (TypeError, ValueError):
+        values["SALE_TAX"] = values.get("SALE_TAX", 0) or 0
     # The three wills: a field the page did not render keeps the file's value.
     for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
         try:

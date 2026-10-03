@@ -1,0 +1,74 @@
+[
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (shop include)",
+  "old": "#include \"locale_service.h\"\n",
+  "new": "#include \"locale_service.h\"\n// MT2009_PLUS_SALE_TAX_V1 (shop include), server-patches/saletax: the panels' sale tax.\n#include \"playerbot_sale_tax.h\"\n"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (stall)",
+  "old": "\t\tr_item.pkItem = NULL;\n\t\tBroadcastUpdateItem(pos);\n\n\t\tm_pkPC->ChangeGold(dwPrice);\n",
+  "new": "\t\tr_item.pkItem = NULL;\n\t\tBroadcastUpdateItem(pos);\n\n\t\t// MT2009_PLUS_SALE_TAX_V1 (stall): the panels' share of a sale between players and\n\t\t// bots leaves the game; the buyer paid the whole price above\n\t\t// (playerbot_sale_tax.h, 0 = the world as it was).\n\t\tdwPrice = (YANG) playerbot_sale_tax::Keep((long long) dwPrice);\n\t\tm_pkPC->ChangeGold(dwPrice);\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (ikashop include)",
+  "old": "#include \"playerbot_offline_policy.h\"\n",
+  "new": "#include \"playerbot_offline_policy.h\"\n// MT2009_PLUS_SALE_TAX_V1 (ikashop include), server-patches/saletax: the panels' sale tax.\n#include \"playerbot_sale_tax.h\"\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (buy)",
+  "old": "\t\tsubpack.success = success;\n\n\t\tint tax = quest::CQuestManager::instance().GetEventFlag(\"offline_shop_tax\");\n\t\tsubpack.tax = tax == 0 ? OFFLINESHOP_DEFAULT_TAX_PCT : tax;\n",
+  "new": "\t\tsubpack.success = success;\n\n\t\tint tax = quest::CQuestManager::instance().GetEventFlag(\"offline_shop_tax\");\n\t\t// MT2009_PLUS_SALE_TAX_V1 (buy): the panels' sale tax on top of the counter's own;\n\t\t// the db core takes the sum off what the seller is paid (99% at most).\n\t\tsubpack.tax = (tax == 0 ? OFFLINESHOP_DEFAULT_TAX_PCT : tax) + playerbot_sale_tax::Percent();\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (owner window)",
+  "old": "\t\tTSubPacketGCShopOpenOwner subpack{};\n\t\tint tax = quest::CQuestManager::instance().GetEventFlag(\"offline_shop_tax\");\n\t\tsubpack.tax = tax == 0 ? OFFLINESHOP_DEFAULT_TAX_PCT : tax;\n",
+  "new": "\t\tTSubPacketGCShopOpenOwner subpack{};\n\t\tint tax = quest::CQuestManager::instance().GetEventFlag(\"offline_shop_tax\");\n\t\t// MT2009_PLUS_SALE_TAX_V1 (owner window): the tax the owner is shown is the one taken.\n\t\tsubpack.tax = (tax == 0 ? OFFLINESHOP_DEFAULT_TAX_PCT : tax) + playerbot_sale_tax::Percent();\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (count part)",
+  "old": "\t\t\tch->ChangeGold(-partYang);\n\t\t\treturn SendDBFeedback(true);\n",
+  "new": "\t\t\tch->ChangeGold(-partYang);\n\t\t\t// MT2009_PLUS_SALE_TAX_V1 (count part): only counted here - the db core takes the\n\t\t\t// tax off with the counter's own (SendShopBuyDBPacket).\n\t\t\tplayerbot_sale_tax::Note(partYang, playerbot_sale_tax::TaxOf(partYang));\n\t\t\treturn SendDBFeedback(true);\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (count line)",
+  "old": "\t\tconst auto& price = item->GetPrice();\n\t\tch->ChangeGold(-price.yang);\n",
+  "new": "\t\tconst auto& price = item->GetPrice();\n\t\tch->ChangeGold(-price.yang);\n\t\t// MT2009_PLUS_SALE_TAX_V1 (count line): counted for the summary line, taken by the db core.\n\t\tplayerbot_sale_tax::Note((long long) price.yang, playerbot_sale_tax::TaxOf((long long) price.yang));\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (char_item include)",
+  "old": "#include \"shop.h\"\n",
+  "new": "#include \"shop.h\"\n// MT2009_PLUS_SALE_TAX_V1 (char_item include), server-patches/saletax: the panels' sale tax.\n#include \"playerbot_sale_tax.h\"\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (open shop)",
+  "old": "\tChatPacket(CHAT_TYPE_COMMAND, \"OpenPrivateShop %d\", tax == 0 ? OFFLINESHOP_DEFAULT_TAX_PCT : tax);\n",
+  "new": "\t// MT2009_PLUS_SALE_TAX_V1 (open shop): the tax a sale will cost, the panels' share included.\n\tChatPacket(CHAT_TYPE_COMMAND, \"OpenPrivateShop %d\", (tax == 0 ? OFFLINESHOP_DEFAULT_TAX_PCT : tax) + playerbot_sale_tax::Percent());\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (db reader)",
+  "old": "static long long Mt2009PlusShopPartYang(",
+  "new": "// MT2009_PLUS_SALE_TAX_V1 (db reader), server-patches/saletax: the panels' sale\n// tax for the two sales the db core settles alone - a private offer the owner\n// accepts and an auction's best offer. The game cores take it off a counter's\n// sales themselves (SendShopBuyDBPacket); this process cannot see theirs, so\n// it reads the same SALE_TAX line of the weights file the panels write, on the\n// same five-second clock (playerbot_config.h). 0-50 percent; 0 or no line, no\n// file - no tax.\n#include <strings.h>\n#include <sys/stat.h>\nstatic int Mt2009PlusSaleTaxPercent()\n{\n\tstatic time_t s_nextCheck = 0;\n\tstatic time_t s_mtime = 0;\n\tstatic long long s_size = -1;\n\tstatic int s_percent = 0;\n\tconst time_t now = time(0);\n\tif (now < s_nextCheck)\n\t\treturn s_percent;\n\ts_nextCheck = now + 5;\n\tconst char* path = getenv(\"PLAYERBOT_WEIGHTS_FILE\");\n\tif (!path || !*path)\n\t\tpath = \"/opt/m2spool/playerbot_weights.tsv\";\n\tstruct stat st;\n\tint percent = 0;\n\tif (stat(path, &st) == 0)\n\t{\n\t\tif (st.st_mtime == s_mtime && (long long) st.st_size == s_size)\n\t\t\treturn s_percent;\n\t\ts_mtime = st.st_mtime;\n\t\ts_size = (long long) st.st_size;\n\t\tif (FILE* fp = fopen(path, \"r\"))\n\t\t{\n\t\t\tchar line[256];\n\t\t\twhile (fgets(line, sizeof(line), fp))\n\t\t\t{\n\t\t\t\tchar key[64];\n\t\t\t\tlong value = 0;\n\t\t\t\tif (sscanf(line, \" %63s %ld\", key, &value) == 2 && strcasecmp(key, \"SALE_TAX\") == 0)\n\t\t\t\t\tpercent = value < 0 ? 0 : (value > 50 ? 50 : (int) value);\n\t\t\t}\n\t\t\tfclose(fp);\n\t\t}\n\t}\n\telse\n\t{\n\t\ts_mtime = 0;\n\t\ts_size = -1;\n\t}\n\tif (percent != s_percent)\n\t\tsys_log(0, \"MT2009_SALE_TAX: db core - %d%% of accepted offers and auctions leaves the game\", percent);\n\ts_percent = percent;\n\treturn percent;\n}\n\n// What the seller keeps of an offer or an auction of `gross`.\nstatic long long Mt2009PlusSaleTaxKeep(long long gross, const char* what, DWORD owner)\n{\n\tconst long long tax = gross > 0 ? gross * Mt2009PlusSaleTaxPercent() / 100 : 0;\n\tif (tax > 0)\n\t\tsys_log(0, \"MT2009_SALE_TAX: %s owner %u gross %lld tax %lld\", what, owner, gross, tax);\n\treturn gross - tax;\n}\n\nstatic long long Mt2009PlusShopPartYang("
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (offer)",
+  "old": "\tikashop::TValutesInfo valute;\n\tvalute.yang = offerCache->price.GetTotalYangAmount();\n",
+  "new": "\tikashop::TValutesInfo valute;\n\tvalute.yang = offerCache->price.GetTotalYangAmount();\n\t// MT2009_PLUS_SALE_TAX_V1 (offer): the panels' sale tax leaves the game.\n\tvalute.yang = Mt2009PlusSaleTaxKeep(valute.yang, \"offer accepted\", offerCache->ownerid);\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SALE_TAX_V1 (auction)",
+  "old": "\t\tvalute.yang = winoffer->price.GetTotalYangAmount();\n",
+  "new": "\t\tvalute.yang = winoffer->price.GetTotalYangAmount();\n\t\t// MT2009_PLUS_SALE_TAX_V1 (auction): the panels' sale tax leaves the game.\n\t\tvalute.yang = Mt2009PlusSaleTaxKeep(valute.yang, \"auction sold\", ownerid);\n"
+ }
+]

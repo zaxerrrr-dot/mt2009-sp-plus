@@ -122,6 +122,9 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_party_policy.h"
 #include "playerbot_pvp_policy.h"
 #include "playerbot_monkey_policy.h"
+// MT2009_PLUS_SALE_TAX_V1: the SALE_TAX slider, read by the weights reload
+// below (playerbot_config.h) and by the engine's shops (server-patches/saletax).
+#include "playerbot_sale_tax.h"
 #include "pvp.h"
 #include "playerbot_types.h"
 #include "playerbot_price_tables.h"
