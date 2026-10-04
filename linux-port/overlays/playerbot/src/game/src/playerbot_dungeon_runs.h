@@ -1865,7 +1865,14 @@ namespace
 			any = any || slot.ok;
 		}
 		if (!any)
+		{
+			// A forced call says why nothing happened: the dungeon is hidden
+			// (the Arezzo module off hides 363-366), not hosted here, at its cap,
+			// or the tower.
+			if (forced != -1)
+				sys_log(0, "BOT_DGRUN: no call (%s) - no open dungeon (hidden by the panel/Arezzo switch, not hosted here, at its cap or the Demon Tower)", why);
 			return;
+		}
 		std::vector<playerbot_dgrun::TCand> buckets[sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0])][4];
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
