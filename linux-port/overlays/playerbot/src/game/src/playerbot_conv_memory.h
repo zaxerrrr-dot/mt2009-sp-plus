@@ -52,7 +52,8 @@ namespace playerbot_conv
 		ASK_TOPIC,         // "A ty lubisz zime?" - botAskTopic says which
 		ASK_JOIN,          // "Idziesz na exp?"
 		ASK_FOUND,         // "Znalazles cos ciekawego?"
-		ASK_SUMMON         // "Po co mam przyjsc?" - a stranger called the bot over
+		ASK_SUMMON,        // "Po co mam przyjsc?" - a stranger called the bot over
+		ASK_REAL           // MT2009_PLUS_BOT_CHAT_V2: "a ty skad jestes?" after the bot's own city
 	};
 
 	enum ETier
@@ -148,6 +149,23 @@ namespace playerbot_conv
 		u32 gearReasonAt;
 		// Generic answers in a row ("Aha, rozumiem."): the second one steers.
 		int fallbackStreak;
+		// MT2009_PLUS_BOT_CHAT_V2: the bot's patience with this person, 0..100.
+		// Insults, spam, the same question over and over and lines nothing
+		// understood wear it down; time and kindness bring it back
+		// (UpdatePatience). Low, the bot answers shortly, then rarely, then
+		// not at all.
+		int patience;
+		u32 patienceAt;
+		// How often each of these was asked lately: the answer moves on
+		// ("serio, jestem botem, beep boop xd" the third time).
+		int botAsked;
+		int begAsked;
+		int jokesTold;
+		// The rate limit: lines in the current minute, and the bot ignoring
+		// the person until mutedUntil after it said it would.
+		u32 rateStart;
+		int rateLines;
+		u32 mutedUntil;
 
 		TConvMemory() : playerPID(0), botPID(0), firstAt(0), lastPlayerAt(0), lastBotAt(0),
 			lastInitiativeAt(0), lastCheckAt(0), talks(0), sessions(0), positive(0), negative(0),
@@ -156,7 +174,8 @@ namespace playerbot_conv
 			botAskTopic(T_NONE), botAskAt(0), recentIndex(0), moodMentionAt(0), greetedAt(0),
 			lastKnownLevel(0), repeatCount(0), quietUntil(0), lastSaidMap(0), lastSaidMapAt(0),
 			prevSaidMap(0), prevSaidMapAt(0), levelSaidAt(0), levelSaid(0), gearSaidAt(0), gearReasonAt(0),
-			fallbackStreak(0)
+			fallbackStreak(0), patience(100), patienceAt(0), botAsked(0), begAsked(0), jokesTold(0),
+			rateStart(0), rateLines(0), mutedUntil(0)
 		{
 			for (size_t i = 0; i < CONV_RECENT_TEMPLATES; ++i)
 				recentTemplates[i] = 0;
@@ -208,6 +227,25 @@ namespace playerbot_conv
 	inline bool IsQuiet(const TConvMemory& m, u32 now)
 	{
 		return m.quietUntil != 0 && (int)(m.quietUntil - now) > 0;
+	}
+
+	// MT2009_PLUS_BOT_CHAT_V2: patience. A point back every 20 s of quiet, up
+	// to a hundred; `delta` is what this line costs (negative) or gives.
+	const u32 CONV_PATIENCE_REGEN_MS = 20 * 1000;
+
+	inline void UpdatePatience(TConvMemory& m, int delta, u32 now)
+	{
+		if (m.patienceAt != 0 && now - m.patienceAt >= CONV_PATIENCE_REGEN_MS)
+		{
+			const u32 regained = (now - m.patienceAt) / CONV_PATIENCE_REGEN_MS;
+			m.patience += regained > 100 ? 100 : (int)regained;
+		}
+		m.patienceAt = now;
+		m.patience += delta;
+		if (m.patience > 100)
+			m.patience = 100;
+		if (m.patience < 0)
+			m.patience = 0;
 	}
 
 	// A map the bot has just named in a reply.
@@ -283,6 +321,53 @@ namespace playerbot_conv
 				a.repeated = true;
 		}
 
+		// MT2009_PLUS_BOT_CHAT_V2: "jeszcze jeden", "dawaj kolejny", "jeszcze"
+		// after a joke is another joke; "a na 45?" after a question about
+		// where the Metins or the exp of a level are is the same question for
+		// another level.
+		if (base == I_JOKE && a.tokens.words.size() <= 5 && a.intent != I_JOKE &&
+				(a.concepts.Has(C_MORE) || a.tokens.Has("jeszcze") || a.tokens.Has("dawaj") ||
+				 a.tokens.Has("kolejny") || a.tokens.Has("nastepny")) && !IsColdIntent((EIntent)a.intent))
+		{
+			a.intent = I_JOKE;
+			a.subject = I_JOKE;
+			return;
+		}
+		if ((base == I_WHERE_METIN || base == I_WHERE_EXP) && a.tokens.words.size() <= 5 &&
+				(a.intent == I_UNKNOWN_QUESTION || a.intent == I_UNKNOWN_STATEMENT || a.intent == I_FOLLOW_UP ||
+				 a.intent == I_LEVEL))
+		{
+			for (size_t i = 0; i < a.tokens.words.size(); ++i)
+			{
+				const std::string& w = a.tokens.words[i];
+				int v = 0;
+				bool digits = !w.empty() && w.size() <= 3;
+				for (size_t k = 0; k < w.size() && digits; ++k)
+				{
+					if (w[k] < '0' || w[k] > '9')
+						digits = false;
+					else
+						v = v * 10 + (w[k] - '0');
+				}
+				if (digits && v >= 1 && v <= 120)
+				{
+					a.intent = base;
+					a.subject = base;
+					a.levelAsked = v;
+					return;
+				}
+			}
+		}
+		// "a w real?" after the bot's empire or its map: real life.
+		if ((base == I_ORIGIN || base == I_LOCATION || base == I_REAL_LIFE) && a.tokens.words.size() <= 4 &&
+				(a.tokens.Has("real") || a.tokens.Has("realu") || a.tokens.Has("irl") ||
+				 (a.concepts.Has(C_CITY) && IsQuestionLine(a))))
+		{
+			a.intent = I_REAL_LIFE;
+			a.subject = I_REAL_LIFE;
+			return;
+		}
+
 		// An answer to what the bot asked. Only when the line is not a new
 		// question and not one of the fixed social moves. The summon and its
 		// release are moves of their own too ("chodz tu" again, "mozesz isc");
@@ -304,7 +389,11 @@ namespace playerbot_conv
 				!IsArgumentIntent((EIntent)a.intent) && a.intent != I_MATH &&
 				a.intent != I_BUY && a.intent != I_SELL &&
 				(a.intent != I_PARTY_REQUEST || m.botAsk == ASK_SUMMON) &&
-				a.intent != I_SUMMON && a.intent != I_DISMISS && a.intent != I_THANKS)
+				a.intent != I_SUMMON && a.intent != I_DISMISS && a.intent != I_THANKS &&
+				// MT2009_PLUS_BOT_CHAT_V2: requests of their own, never an answer
+				a.intent != I_JOKE && a.intent != I_BEG && a.intent != I_MEET && a.intent != I_GENDER &&
+				a.intent != I_WHERE_METIN && a.intent != I_WHERE_EXP && a.intent != I_IS_BOT &&
+				(a.intent != I_REAL_LIFE || m.botAsk == ASK_REAL))
 		{
 			a.subject = (EIntent)a.intent;
 			a.intent = I_ANSWER_TO_BOT;
@@ -493,6 +582,31 @@ namespace playerbot_conv
 			m.quietUntil = 0;
 		if (a.repeated)
 			++m.repeatCount;
+		// MT2009_PLUS_BOT_CHAT_V2: what the line does to the bot's patience.
+		{
+			int delta = 0;
+			if (a.intent == I_INSULT || a.concepts.Has(C_INSULT))
+				delta -= 18;
+			else if (a.intent == I_THREAT)
+				delta -= 12;
+			else if (a.intent == I_MOCK)
+				delta -= 5;
+			if (a.repeated)
+				delta -= 8;
+			if (a.intent == I_UNKNOWN_QUESTION || a.intent == I_UNKNOWN_STATEMENT)
+				delta -= 3;
+			if (a.intent == I_BEG)
+				delta -= 6;
+			if (a.intent == I_THANKS || a.intent == I_PRAISE || a.thanksToo)
+				delta += 10;
+			if (a.intent == I_APOLOGY)
+				delta += 35;
+			UpdatePatience(m, delta, now);
+			if (a.intent == I_IS_BOT)
+				++m.botAsked;
+			if (a.intent == I_BEG)
+				++m.begAsked;
+		}
 		// "lubie zime" - one thing to remember about the person.
 		const int lubie = a.tokens.Find("lubie");
 		if (lubie >= 0)

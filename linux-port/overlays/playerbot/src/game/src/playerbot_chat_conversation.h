@@ -56,6 +56,13 @@
 
 namespace
 {
+	// MT2009_PLUS_BOT_CHAT_V2: defined later in the unit - the spot quarrel
+	// (playerbot_spot_defense.h) and the places a level is advised to
+	// (playerbot_chat_world.h, after the Battle Pass bots' stone table).
+	int GetPlayerBotSpotQuarrel(DWORD botPID, DWORD personPID, bool& gaveUp);
+	bool DescribePlayerBotExpPlace(int level, int empire, std::string& out);
+	bool DescribePlayerBotMetinPlace(int level, int empire, std::string& out);
+
 	const DWORD PLAYERBOT_CONV_SWITCH_CHECK_MS = 30000;
 	const DWORD PLAYERBOT_CONV_STATS_INTERVAL_MS = 10 * 60 * 1000;
 	const int PLAYERBOT_CONV_AROUND_RADIUS = 2500;
@@ -188,6 +195,44 @@ namespace
 			case BOT_PERSONALITY_L30_WEAPON_DROPPER: return S_DROPPER; // MT2009_PLUS_L30_WEAPON_DROPPER_V1
 			default: return S_ADVENTURER;
 		}
+	}
+
+	// MT2009_PLUS_BOT_CHAT_V2: the timed events running now (playerbot_events.h),
+	// named as a player would: "event na expa, skrzynie".
+	std::string DescribePlayerBotEventsNow()
+	{
+		std::string out;
+		for (int kind = 0; kind < playerbot_events::KIND_MAX; ++kind)
+		{
+			if (!s_aPlayerBotEventState[kind].active)
+				continue;
+			const char* name = NULL;
+			switch (kind)
+			{
+				case playerbot_events::KIND_CHEST: name = "skrzynie z Ksiezycowego Swiatla"; break;
+				case playerbot_events::KIND_EXP: name = "event na expa"; break;
+				case playerbot_events::KIND_DROP: name = "event na drop"; break;
+				case playerbot_events::KIND_YANG: name = "event na yang"; break;
+				case playerbot_events::KIND_TANAKA: name = "piraci Tanaki"; break;
+				case playerbot_events::KIND_ZUO: name = "deszcz metinow"; break;
+				case playerbot_events::KIND_BOSS_LOOT: name = "lepszy drop z bossow"; break;
+				case playerbot_events::KIND_METIN_LOOT: name = "lepszy drop z metinow"; break;
+				case playerbot_events::KIND_GOBLIN: name = "poszukiwanie skarbow"; break;
+				case playerbot_events::KIND_CATCHKING: name = "Catch the King"; break;
+				case playerbot_events::KIND_RUMI: name = "Rumi"; break;
+				case playerbot_events::KIND_YUTNORI: name = "Yut Nori"; break;
+				case playerbot_events::KIND_FLOWER: name = "Dzieci Kwiaty"; break;
+				case playerbot_events::KIND_EASTER: name = "event wielkanocny"; break;
+				case playerbot_events::KIND_CHESTDROP: name = "skrzynki z mobow"; break;
+				default: break;
+			}
+			if (!name)
+				continue;
+			if (!out.empty())
+				out += ", ";
+			out += name;
+		}
+		return out;
 	}
 
 	int MapPlayerBotConvMood(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
@@ -1281,6 +1326,19 @@ namespace
 				return EndPlayerBotSummonBy(m_bot, m_player, get_dword_time());
 			}
 
+			// MT2009_PLUS_BOT_CHAT_V2: "gdzie expic na 40?", "gdzie metki na
+			// 30?" - the progression table's maps and the stones' spawns, in
+			// the bot's kingdom's words.
+			bool ExpPlaceFor(int level, std::string& out)
+			{
+				return DescribePlayerBotExpPlace(level, m_bot ? (int)m_bot->GetEmpire() : 0, out);
+			}
+
+			bool MetinPlaceFor(int level, std::string& out)
+			{
+				return DescribePlayerBotMetinPlace(level, m_bot ? (int)m_bot->GetEmpire() : 0, out);
+			}
+
 		private:
 			LPCHARACTER m_bot;
 			LPCHARACTER m_player;
@@ -1572,6 +1630,10 @@ namespace
 				else
 					s.summonBlock = AskerOnOtherChannel(s) ? SB_OTHER_CHANNEL : SB_OTHER_MAP;
 				s.afk = state.persona.dwAfkUntil != 0 && now < state.persona.dwAfkUntil;
+				// MT2009_PLUS_BOT_CHAT_V2: how far a quarrel over the bot's spot
+				// with this person went (playerbot_spot_defense.h).
+				s.spotQuarrel = GetPlayerBotSpotQuarrel(botPID, playerPID, s.spotGaveUp);
+				s.eventsNow = DescribePlayerBotEventsNow();
 				{
 					const time_t t = time(0);
 					const struct tm* lt = localtime(&t);

@@ -672,12 +672,19 @@ namespace playerbot_bpbots
 		CHAT_METIN,
 		CHAT_BOSS,
 		CHAT_GEAR,
+		// MT2009_PLUS_BOT_CHAT_V2: what is going on - an event, a guild war.
+		CHAT_EVENT,
+		CHAT_WAR,
 		CHAT_TALK,
 		CHAT_KIND_COUNT
 	};
 	// The draw's weights, in that order ("!BP" only for a bot with a shout
 	// mission open; a kind with nothing to say falls through to small talk).
-	const int CHATTER_WEIGHTS[CHAT_KIND_COUNT] = { 35, 12, 12, 10, 8, 5, 6, 12 };
+	// MT2009_PLUS_BOT_CHAT_V2: the talk weighs more (a bigger bank, the
+	// questions another bot answers), and the buying and selling goes to the
+	// trade chat while that is on (ChatterWeight).
+	const int CHATTER_WEIGHTS[CHAT_KIND_COUNT] = { 30, 10, 10, 11, 8, 5, 6, 6, 4, 22 };
+	typedef char TChatterKindsFit[CHAT_KIND_COUNT <= 10 ? 1 : -1];
 
 	template <size_t N>
 	const char* PickLine(const char* const (&pool)[N])
@@ -731,6 +738,11 @@ namespace playerbot_bpbots
 		snprintf(out, size, "%s", PickLine(pool));
 		return true;
 	}
+
+	// MT2009_PLUS_BOT_CHAT_V2: defined in playerbot_chat_world.h - a question
+	// on the channel for another bot to answer (SHOUT_Q_*).
+	void EnqueueBotShoutQuestion(BYTE empire, BYTE kind, int level, DWORD askerPID, const char* asker,
+			const std::string& object);
 
 	// What the bot is short of (the market's own list), asked for.
 	bool LineBuy(LPCHARACTER ch, char* out, size_t size)
@@ -790,14 +802,21 @@ namespace playerbot_bpbots
 		if (party && party->GetLeaderPID() == ch->GetPlayerID())
 		{
 			const int missing = std::max(1, 8 - (int)party->GetMemberCount());
-			snprintf(out, size, "PT na %s, brakuje %d osob, %d+ lvl, wbijac", place, missing,
-					std::max(1, (int)ch->GetLevel() - 5));
+			const int from = std::max(1, (int)ch->GetLevel() - 5);
+			switch (number(0, 3))
+			{
+				case 0: snprintf(out, size, "PT na %s, brakuje %d osob, %d+ lvl, wbijac", place, missing, from); break;
+				case 1: snprintf(out, size, "Zbieram pt na %s, wszystkie klasy, %d+ lvl", place, from); break;
+				case 2: snprintf(out, size, "pt %s, jeszcze %d miejsc, pw", place, missing); break;
+				default: snprintf(out, size, "kto do pt? %s, od %d lvl, szaman mile widziany", place, from); break;
+			}
 			return true;
 		}
 		if (party)
 			return false;
 		static const char* const pool[] = {
 			"Szukam PT na %s, %d lvl %s", "Kto da PT? %s, %d lvl, %s", "%s - ktos expi? %d lvl %s, dolacze",
+			"szukam pt na %s, %d %s", "wezmie ktos do pt? %s, %d lvl %s", "pt %s? %d lvl, %s, pw",
 		};
 		snprintf(out, size, PickLine(pool), place, (int)ch->GetLevel(), JobName(ch));
 		return true;
@@ -820,6 +839,8 @@ namespace playerbot_bpbots
 			return false;
 		static const char* const pool[] = {
 			"Kto na metiny w %s?", "Zbijam metiny w %s, kto chetny?", "Ile metinow stoi teraz w %s?",
+			"metki w %s, ktos idzie?", "kto ksuje metiny w %s? nieladnie", "metin padl w %s, nastepny gdzie?",
+			"ide na metki w %s, kto dolaczy?",
 		};
 		snprintf(out, size, PickLine(pool), place);
 		return true;
@@ -831,7 +852,8 @@ namespace playerbot_bpbots
 			return false;
 		static const char* const pool[] = {
 			"Kto idzie na bossa? robie misje BP", "Ktos zna respa bossa?", "Zbieram ekipe na bossa, pw",
-			"Boss padl? kto bil?",
+			"Boss padl? kto bil?", "kto na bossa? brakuje mi dps xd", "ostatni boss padl w 2 min, mocna ekipa byla",
+			"boss jeszcze stoi? ide",
 		};
 		snprintf(out, size, "%s", PickLine(pool));
 		return true;
@@ -844,7 +866,7 @@ namespace playerbot_bpbots
 			return false;
 		static const char* const pool[] = {
 			"Mam %s, ile to warte?", "Ulepszac %s dalej czy nie ryzykowac?", "Ktos da cos za %s?",
-			"%s, kowal znowu mnie oskubal",
+			"%s, kowal znowu mnie oskubal", "%s, pchac dalej czy stop?", "wbilem %s, nastepny + czy odpuscic?",
 		};
 		snprintf(out, size, PickLine(pool), weapon->GetProto()->szLocaleName);
 		return true;
@@ -852,19 +874,188 @@ namespace playerbot_bpbots
 
 	void LineTalk(LPCHARACTER ch, char* out, size_t size)
 	{
+		// MT2009_PLUS_BOT_CHAT_V2: a bigger bank, some of it the bot's own
+		// situation (the hour, its map, its class), and now and then a
+		// question another bot answers (EnqueueBotShoutQuestion).
+		const int roll = number(1, 100);
+		const int level = (int)ch->GetLevel();
+		if (roll <= 12)
+		{
+			// A question for the channel.
+			const int ask = std::max(5, level + number(0, 8));
+			switch (number(0, 2))
+			{
+				case 0:
+					snprintf(out, size, number(0, 1) ? "gdzie najlepiej expic na %d lvl?" : "co polecacie na %d lvl?", ask);
+					EnqueueBotShoutQuestion(ch->GetEmpire(), 2, ask, ch->GetPlayerID(), ch->GetName(), std::string());
+					return;
+				case 1:
+					snprintf(out, size, number(0, 1) ? "gdzie sa metki na %d?" : "ktos wie gdzie metiny %d lvl?", ask);
+					EnqueueBotShoutQuestion(ch->GetEmpire(), 1, ask, ch->GetPlayerID(), ch->GetName(), std::string());
+					return;
+				default:
+				{
+					static const char* const items[][2] = {
+						{ "bodzie", "zwoj blogoslawienstwa" }, { "kd", "kamien duszy" }, { "perly", "perla" },
+						{ "fms", "fms" }, { "12d", "12d" }, { "ebo", "ebo" }, { "pd", "pd" } };
+					const int k = number(0, (int)(sizeof(items) / sizeof(items[0])) - 1);
+					snprintf(out, size, number(0, 1) ? "ile teraz stoja %s?" : "po ile %s na straganach?", items[k][0]);
+					EnqueueBotShoutQuestion(ch->GetEmpire(), 3, 0, ch->GetPlayerID(), ch->GetName(), items[k][1]);
+					return;
+				}
+			}
+		}
+		const time_t t = time(0);
+		const struct tm* lt = localtime(&t);
+		const int hour = lt ? lt->tm_hour : 12;
+		if (roll <= 20)
+		{
+			if (hour >= 23 || hour < 4)
+			{
+				static const char* const k[] = { "kto jeszcze nie spi? xd", "nocna zmiana melduje sie", "dobranoc wszystkim, jeszcze jeden lvl i ide",
+					"nocny exp najlepszy, nikt nie ksuje" };
+				snprintf(out, size, "%s", PickLine(k));
+				return;
+			}
+			if (hour >= 6 && hour < 10)
+			{
+				static const char* const k[] = { "dzien dobry ekipa", "kawa i expik, idealnie", "rano a tu juz tlok xd" };
+				snprintf(out, size, "%s", PickLine(k));
+				return;
+			}
+		}
+		if (roll <= 30)
+		{
+			switch (ch->GetJob())
+			{
+				case JOB_WARRIOR:
+				{
+					static const char* const k[] = { "wojek z dwureczna to jest cos", "jakie bonusy na wojka?", "body czy mental na woja?" };
+					snprintf(out, size, "%s", PickLine(k));
+					return;
+				}
+				case JOB_ASSASSIN:
+				{
+					static const char* const k[] = { "archer czy dagger, co lepsze?", "ninja to najlepsza klasa i tyle", "strzaly mi sie koncza xd" };
+					snprintf(out, size, "%s", PickLine(k));
+					return;
+				}
+				case JOB_SURA:
+				{
+					static const char* const k[] = { "kto gra sura? xD", "sura bm czy wp?", "sura to najlepszy dps, nie dyskutuje" };
+					snprintf(out, size, "%s", PickLine(k));
+					return;
+				}
+				default:
+				{
+					static const char* const k[] = { "szaman szuka pt, buffy gratis", "kto chce buffa? stoje przy wiosce",
+						"smok czy heal na start?" };
+					snprintf(out, size, "%s", PickLine(k));
+					return;
+				}
+			}
+		}
 		static const char* const pool[] = {
 			"siema wszystkim", "elo", "jaki dzis drop?", "ktos cos dropnal ciekawego?", "nudy dzis",
 			"kto gra wieczorem?", "lag czy tylko u mnie?", "kowal dzis zly jak nigdy", "jak tam expienie?",
-			"ile jeszcze do konca BP?", "kto robi BP?", "gdzie najlepiej expic na %d lvl?",
+			"ile jeszcze do konca BP?", "kto robi BP?",
 			"pozdro dla ekipy", "ale dzis tlok na mapie", "kto na wojne?", "sprzedam wszystko xd",
-			"ile teraz stoi Cor Draconis?", "ktos ma wolny slot w gildii?", "szukam gildii, %d lvl",
-			"dzieki za pomoc przy metinie", "hmm", "kto mi pomoze z misja?",
+			"ktos ma wolny slot w gildii?", "szukam gildii, %d lvl",
+			"dzieki za pomoc przy metinie", "hmm", "kto mi pomoze z misja?", "ladnie ladnie",
+			"kto lubi pustynie? nikt? tak myslalem", "ile jeszcze do 99? wieki xd", "spalilem +8, nie pytajcie",
+			"biolog znowu nie przyjal xd", "pajaki w lochu to zlo", "kto byl w wiezy demonow? jak bylo?",
+			"dolina orkow znowu pelna", "M1 dzis pelne ludzi", "warto robic biologa?", "kiedy jakis event?",
+			"%d lvl i dalej bez konia xd", "kto tez nie ma potek? xd", "kupilem pd, exp leci",
+			"ktos widzial ladny drop z metina?", "ide na metki, kto chetny?", "gratki dla wszystkich co dzis wbili lvl",
+			"co tak cicho na czacie?", "gram od rana i dalej %d lvl xd", "jak ja nie lubie tych pajakow",
+			"dzis szczescie mi sprzyja", "dzis pech, trzeci raz padlem", "a ja dalej na m1 xd",
 		};
 		const char* line = PickLine(pool);
 		if (strstr(line, "%d"))
-			snprintf(out, size, line, (int)ch->GetLevel());
+			snprintf(out, size, line, level);
 		else
 			snprintf(out, size, "%s", line);
+	}
+
+	// MT2009_PLUS_BOT_CHAT_V2: the events the leader core has running
+	// (playerbot_events.h), as a bot would comment on them.
+	bool LineEvent(char* out, size_t size)
+	{
+		std::vector<int> active;
+		for (int k = 0; k < playerbot_events::KIND_MAX; ++k)
+			if (s_aPlayerBotEventState[k].active)
+				active.push_back(k);
+		if (active.empty())
+			return false;
+		switch (active[number(0, (int)active.size() - 1)])
+		{
+			case playerbot_events::KIND_EXP:
+			{
+				static const char* const k[] = { "event na expa trwa, kto expi?", "exp event, lece na dolinie", "ale exp dzis leci, event robi robote" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
+			case playerbot_events::KIND_DROP: case playerbot_events::KIND_METIN_LOOT: case playerbot_events::KIND_BOSS_LOOT:
+			{
+				static const char* const k[] = { "event na drop, lecimy na metki!", "drop event, ktos juz cos wydropil?", "dropi dzis lepiej, idziemy na bossy" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
+			case playerbot_events::KIND_YANG:
+			{
+				static const char* const k[] = { "event yangowy, biore wszystko xd", "yang leci jak szalony, event trwa" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
+			case playerbot_events::KIND_CHEST: case playerbot_events::KIND_CHESTDROP:
+			{
+				static const char* const k[] = { "skrzynie dropia, ktos juz cos wylowil?", "otworzylem skrzynke i nic xd", "skrzynki event, kto ma szczescie?" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
+			case playerbot_events::KIND_TANAKA: case playerbot_events::KIND_ZUO:
+			{
+				static const char* const k[] = { "Tanaka znowu na mapie, kto idzie?", "kto bije piratow? dawac", "event z bossem trwa, ide" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
+			case playerbot_events::KIND_GOBLIN:
+			{
+				static const char* const k[] = { "kto szuka skarbow? goblin dzis hojny", "skarby event, mapa w reke i lecimy" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
+			case playerbot_events::KIND_CATCHKING: case playerbot_events::KIND_RUMI: case playerbot_events::KIND_YUTNORI:
+			{
+				static const char* const k[] = { "ktos gra w minigierki? :D", "rumi trwa, kto gra?", "przegralem w karty, znowu xd" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
+			case playerbot_events::KIND_FLOWER: case playerbot_events::KIND_EASTER:
+			{
+				static const char* const k[] = { "event trwa, zbieram co sie da", "kwiaty dzis wszedzie xd", "kto robi event? ile macie?" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
+			default:
+				return false;
+		}
+	}
+
+	// A guild war of the kingdom, commented.
+	bool LineWar(BYTE empire, char* out, size_t size)
+	{
+		std::map<BYTE, TPlayerBotGuildWar>::const_iterator it = s_mapPlayerBotGuildWars.find(empire);
+		if (it == s_mapPlayerBotGuildWars.end())
+			return false;
+		CGuild* a = CGuildManager::instance().FindGuild(it->second.dwGuild1);
+		CGuild* b = CGuildManager::instance().FindGuild(it->second.dwGuild2);
+		if (!a || !b)
+			return false;
+		static const char* const k[] = { "wojna %s vs %s! kto wygra?", "%s na %s, ide popatrzec", "stawiam na %s, %s nie ma szans xd",
+			"%s i %s znowu sie leja, popcorn gotowy" };
+		snprintf(out, size, PickLine(k), a->GetName(), b->GetName());
+		return true;
 	}
 
 	// A bot that may shout now: its tick running, its kingdom, the engine's
@@ -926,16 +1117,25 @@ namespace playerbot_bpbots
 				continue;
 			}
 			TBot& b = s_mapBots[bestPid];
+			// MT2009_PLUS_BOT_CHAT_V2: with the trade chat on, the buying and
+			// selling is said there (playerbot_chat_world.h), not here.
+			const bool tradeChat = IsPlayerBotTradeChatOn();
+			int weights[CHAT_KIND_COUNT];
 			int total = 0;
 			for (int k = 0; k < CHAT_KIND_COUNT; ++k)
-				total += (k == CHAT_BP && !b.bShout) ? 0 : CHATTER_WEIGHTS[k];
+			{
+				weights[k] = CHATTER_WEIGHTS[k];
+				if ((k == CHAT_BP && !b.bShout) || (tradeChat && (k == CHAT_BUY || k == CHAT_SELL)))
+					weights[k] = 0;
+				total += weights[k];
+			}
 			int roll = number(1, total);
 			int kind = 0;
 			for (; kind < CHAT_KIND_COUNT - 1; ++kind)
 			{
-				if (kind == CHAT_BP && !b.bShout)
+				if (weights[kind] == 0)
 					continue;
-				roll -= CHATTER_WEIGHTS[kind];
+				roll -= weights[kind];
 				if (roll <= 0)
 					break;
 			}
@@ -954,6 +1154,8 @@ namespace playerbot_bpbots
 				case CHAT_METIN: said = LineMetin(best, b, text, sizeof(text)); break;
 				case CHAT_BOSS: said = LineBoss(b, text, sizeof(text)); break;
 				case CHAT_GEAR: said = LineGear(best, text, sizeof(text)); break;
+				case CHAT_EVENT: said = LineEvent(text, sizeof(text)); break;
+				case CHAT_WAR: said = LineWar(empire, text, sizeof(text)); break;
 				default: break;
 			}
 			if (!said)
@@ -1013,9 +1215,10 @@ namespace playerbot_bpbots
 				s_uRolls, s_uByTheWay, s_uFollow, s_uNothing, s_uMetinBudget, s_uMetinFar, s_uMetinCrowd,
 				s_auAdoptedGoal[GOAL_METIN], s_auAdoptedGoal[GOAL_FISH], s_auAdoptedGoal[GOAL_REFINE],
 				s_auAdoptedGoal[GOAL_BOSS]);
-		sys_log(0, "PLAYERBOT_BP: chatter bp=%u buy=%u sell=%u party=%u metin=%u boss=%u gear=%u talk=%u",
+		sys_log(0, "PLAYERBOT_BP: chatter bp=%u buy=%u sell=%u party=%u metin=%u boss=%u gear=%u event=%u war=%u talk=%u",
 				s_auChatter[CHAT_BP], s_auChatter[CHAT_BUY], s_auChatter[CHAT_SELL], s_auChatter[CHAT_PARTY],
-				s_auChatter[CHAT_METIN], s_auChatter[CHAT_BOSS], s_auChatter[CHAT_GEAR], s_auChatter[CHAT_TALK]);
+				s_auChatter[CHAT_METIN], s_auChatter[CHAT_BOSS], s_auChatter[CHAT_GEAR], s_auChatter[CHAT_EVENT],
+				s_auChatter[CHAT_WAR], s_auChatter[CHAT_TALK]);
 		// MT2009_PLUS_BOT_BP_ROOM_V1
 		if (s_uRoomMade || s_uRoomDeferred)
 			sys_log(0, "PLAYERBOT_BP: reward room made=%u deferred=%u", s_uRoomMade, s_uRoomDeferred);

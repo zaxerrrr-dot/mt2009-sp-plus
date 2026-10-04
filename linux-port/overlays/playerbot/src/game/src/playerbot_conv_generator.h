@@ -18,6 +18,7 @@
 // are playerbot_conv_engine.h.
 
 #include "playerbot_conv_general.h"
+#include "playerbot_conv_banks.h" // MT2009_PLUS_BOT_CHAT_V2
 
 namespace playerbot_conv
 {
@@ -643,6 +644,19 @@ namespace playerbot_conv
 
 	inline std::string GenClass(TGen& g)
 	{
+		// MT2009_PLUS_BOT_CHAT_V2: "jaka klasa najlepsza?", "sura czy ninja?" -
+		// an opinion, from the bot's own class.
+		if (g.a && (g.a->concepts.Has(C_RECOMMEND) || g.a->concepts.Has(C_OR) || g.a->concepts.Has(C_ADVICE) ||
+				g.a->tokens.Has("najlepsza") || g.a->tokens.Has("najmocniejsza") || g.a->tokens.Has("lepsza")))
+		{
+			static const char* const k[] = { "Kazda ma swoje. Ja gram $KLASA i nie narzekam.",
+				"Na start woj najprostszy, a potem jak lubisz. Ja gram $KLASA.",
+				"Sura w pvp robi robote, szaman zawsze znajdzie pt. Ja wybralem gre $KLASA.",
+				"Zalezy co lubisz - bic z bliska, z luku czy buffowac. Ja gram $KLASA od poczatku." };
+			std::string out = PBC_SAY(g, k);
+			ReplaceAll(out, "$KLASA", ClassNameInstr(g.s.job));
+			return out;
+		}
 		static const char* const k[] = { "Gram $CLASSI.", "Jestem $CLASSI.", "$CLASSI, od poczatku." };
 		std::string out = Pick(g, k, 3);
 		const int build = g.s.Build();
@@ -843,6 +857,19 @@ namespace playerbot_conv
 		const TBotSnapshot& s = g.s;
 		if (s.weaponName.empty())
 			return "Na razie bez porzadnej broni.";
+		// MT2009_PLUS_BOT_CHAT_V2: "skad masz taki eq?" - where it came from.
+		if (g.a && g.a->concepts.Has(C_ORIGIN))
+		{
+			if (s.weaponPlus >= 7)
+			{
+				static const char* const k[] = { "$WEAPON? Z kowala, po kilku probach i paru lzach xd",
+					"Kupilem bazowke na targu i pchalem u kowala. Kosztowalo :P" };
+				return PBC_SAY(g, k);
+			}
+			static const char* const k[] = { "Polowa z dropu, reszta z targu.", "Z mobow i ze straganow, nic specjalnego.",
+				"Sam wyexpilem, troche dokupilem na targu." };
+			return PBC_SAY(g, k);
+		}
 		const bool again = g.m.gearSaidAt != 0 && g.now - g.m.gearSaidAt < CONV_FACT_TTL_MS;
 		g.m.gearSaidAt = g.now != 0 ? g.now : 1;
 		if (again)
@@ -1032,6 +1059,16 @@ namespace playerbot_conv
 
 	inline std::string GenDemonTower(TGen& g)
 	{
+		// MT2009_PLUS_BOT_CHAT_V2: "warto isc do wiezy na 45?" - advice.
+		if (g.a && (g.a->concepts.Has(C_RECOMMEND) || g.a->levelAsked > 0))
+		{
+			const int level = g.a->levelAsked > 0 ? g.a->levelAsked : (g.s.askerLevel > 0 ? g.s.askerLevel : g.s.level);
+			if (level < 50)
+				return "Na " + ToString((long long)level) + " to za wczesnie, wieza zjada slabych. Lepiej od 55+ i z ekipa.";
+			if (level < 65)
+				return "Na " + ToString((long long)level) + " juz mozna, ale tylko z ekipa i z potkami.";
+			return "Jasne, na " + ToString((long long)level) + " spokojnie dasz rade, gora wiezy daje dobry drop.";
+		}
 		if (g.s.demonTower)
 			return g.s.mapIndex == 66 ? "Tak, jestem w Wiezy Demonow." : "Tak, mam sprawy w Wiezy Demonow.";
 		return g.s.level >= 40 ? "Teraz nie, moze kiedys z ekipa." : "Jeszcze za slaby jestem na Wieze.";
@@ -1571,43 +1608,186 @@ namespace playerbot_conv
 
 	inline std::string GenHelp(TGen& g)
 	{
-		(void)g;
-		return "Pytaj normalnie, jak czlowieka :) Moge powiedziec co robie, gdzie jestem, ile jest mobow, jaki mam lvl, EQ, gildie, PT i plany. A jak chcesz, pogadamy o czymkolwiek.";
+		static const char* const k[] = {
+			"Pytaj normalnie, jak czlowieka :) Co robie, gdzie jestem, ile jest mobow, jaki mam lvl, EQ, gildie, PT. Moge ci tez powiedziec gdzie expic albo gdzie sa metki na twoj lvl, ile cos chodzi, a jak chcesz, to opowiem kawal xd",
+			"Pisz jak do kumpla :) Moge powiedziec co robie i gdzie, gdzie expic albo bic metiny na jakis lvl, ile stoi item, co mam na straganie. Mozemy tez pogadac o czymkolwiek." };
+		return PBC_SAY(g, k);
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2: asked again and again, the answer moves on -
+	// and each voice says it its own way.
 	inline std::string GenIsBot(TGen& g)
 	{
-		static const char* const k[] = { "A co, tak slabo gram? xD", "Bot to ty jestes :P", "Hehe, gram po prostu duzo." };
-		return PBC_SAY(g, k);
+		if (g.m.botAsked >= 4)
+		{
+			static const char* const k[] = { "Tak, jestem botem, beep boop xd", "No jasne, a ty jestes kosmita :P",
+				"Pytasz juz ktorys raz, odpowiedz sie nie zmieni xd", "Bot, robot, terminator, co tylko chcesz :D" };
+			return PBC_SAY(g, k);
+		}
+		if (g.m.botAsked >= 2)
+		{
+			static const char* const k[] = { "Przeciez pisze z toba, bot by tak nie umial :P", "Znowu? Nie, normalnie gram xd",
+				"Serio, ile razy jeszcze? :D", "Nie, po prostu malo spie xd" };
+			return PBC_SAY(g, k);
+		}
+		if (Fighting(g) && g.rng.Chance(35))
+		{
+			static const char* const k[] = { "Bot? To czemu odpisuje ci w trakcie bicia mobow xd",
+				"Gdybym byl botem, to bym ci nie odpisywal tylko bil dalej :P" };
+			return PBC_SAY(g, k);
+		}
+		switch (g.voice)
+		{
+			case V_GRINDER:
+			{
+				static const char* const k[] = { "Bot? Po prostu duzo expie xd", "Nie, po prostu nie mam zycia :P",
+					"Jakbym byl botem, to bym juz mial 99 lvl xd" };
+				return PBC_SAY(g, k);
+			}
+			case V_MERCHANT:
+			{
+				static const char* const k[] = { "Bot by tak dobrze nie handlowal :P", "Nie, ale chetnie ci cos sprzedam xd" };
+				return PBC_SAY(g, k);
+			}
+			case V_FIGHTER:
+			{
+				static const char* const k[] = { "Bot? Chodz na pvp, to zobaczysz :P", "Bot to ty jestes xd" };
+				return PBC_SAY(g, k);
+			}
+			case V_SOCIAL:
+			{
+				static const char* const k[] = { "Hehe nie, czemu tak myslisz?", "Nie, normalny czlowiek :) A co, dziwnie pisze?" };
+				return PBC_SAY(g, k);
+			}
+			default:
+			{
+				static const char* const k[] = { "A co, tak slabo gram? xD", "Bot to ty jestes :P", "Hehe, gram po prostu duzo.",
+					"Nie, czemu?" };
+				return PBC_SAY(g, k);
+			}
+		}
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2: an insult, by the bot's voice and temper, by
+	// how many there were, and in the middle of a quarrel over its spot.
 	inline std::string GenInsult(TGen& g)
 	{
-		if (g.m.negative >= 4)
+		if (g.m.negative >= 5)
 			return std::string(); // stops answering an abusive line
+		const int temper = TemperOf(g.s.style);
+		if (g.s.spotQuarrel > 0)
+		{
+			if (temper >= 2)
+			{
+				static const char* const k[] = { "Ciekawe kto tu komu moby kradnie", "Wyzywaj dalej, a moby i tak moje xd",
+					"I co, lepiej ci? Dalej to moj spot", "Krzycz sobie, ja tu zostaje" };
+				return PBC_SAY(g, k);
+			}
+			if (temper == 0)
+			{
+				static const char* const k[] = { "Dobra, juz sobie ide, nie musisz od razu wyzywac",
+					"Spokojnie, juz zmieniam spot" };
+				return PBC_SAY(g, k);
+			}
+			static const char* const k[] = { "Bez wyzwisk. Po prostu nie bij moich mobow", "Wyzywac umiesz, a spota sobie nie znajdziesz?" };
+			return PBC_SAY(g, k);
+		}
+		if (g.m.negative >= 4)
+		{
+			static const char* const k[] = { "Pa.", "Nie gadam z toba.", "Dobra, koniec." };
+			return PBC_SAY(g, k);
+		}
 		if (g.m.negative >= 3)
-			return "Nie mam ochoty tak rozmawiac.";
-		static const char* const k[] = { "Spokojnie, bez nerwow.", "Nie musisz tak od razu.", "Ok, jak uwazasz." };
-		return PBC_SAY(g, k);
+		{
+			static const char* const k[] = { "Nie mam ochoty tak rozmawiac.", "Dobra, koniec rozmowy.", "Jak sie uspokoisz, to pogadamy." };
+			return PBC_SAY(g, k);
+		}
+		if (g.a && g.a->concepts.Has(C_WHY))
+		{
+			static const char* const k[] = { "A czemu ty taki niemily?", "Bo tak :P A ty czemu taki zly?",
+				"Nie wiem, moze masz gorszy dzien xd" };
+			return PBC_SAY(g, k);
+		}
+		if (g.m.negative >= 2)
+		{
+			if (temper >= 2)
+			{
+				static const char* const k[] = { "Sam jestes.", "Chyba sie zapomniales.", "Uwazaj troche." };
+				return PBC_SAY(g, k);
+			}
+			if (temper == 0)
+			{
+				static const char* const k[] = { "Ej, cos sie stalo?", "Czemu jestes taki zly?" };
+				return PBC_SAY(g, k);
+			}
+			static const char* const k[] = { "Serio? To nie bylo mile.", "Znowu to samo?", "Mhm. Cos jeszcze?" };
+			return PBC_SAY(g, k);
+		}
+		switch (g.voice)
+		{
+			case V_FIGHTER:
+			{
+				static const char* const k[] = { "Powiedz to na arenie :P", "Uwazaj, bo sie doigrasz.", "Sam taki jestes." };
+				return PBC_SAY(g, k);
+			}
+			case V_GRINDER:
+			{
+				static const char* const k[] = { "Nie mam czasu na takie gadki, expie.", "Ok, to ja wracam do expa." };
+				return PBC_SAY(g, k);
+			}
+			case V_MERCHANT:
+			{
+				static const char* const k[] = { "Obrazanie klientow to slaby biznes :P", "Taki grzeczny, a nic nie kupi xd" };
+				return PBC_SAY(g, k);
+			}
+			case V_SOCIAL:
+			{
+				static const char* const k[] = { "Ej, czemu taki niemily?", "Spokojnie, co ci zrobilem?" };
+				return PBC_SAY(g, k);
+			}
+			default:
+			{
+				static const char* const k[] = { "Spokojnie, bez nerwow.", "Nie musisz tak od razu.", "A co ja ci zrobilem?",
+					"Ok, jak uwazasz." };
+				return PBC_SAY(g, k);
+			}
+		}
 	}
 
 	inline std::string GenPraise(TGen& g)
 	{
-		static const char* const k[] = { "Dzieki! Ty tez spoko.", "Hehe, dzieki.", "Milo slyszec." };
+		if (g.voice == V_FIGHTER && g.rng.Chance(40))
+		{
+			static const char* const k[] = { "Wiem, ze jestem dobry xd", "No ba :P" };
+			return PBC_SAY(g, k);
+		}
+		static const char* const k[] = { "Dzieki! Ty tez spoko.", "Hehe, dzieki.", "Milo slyszec.", "Oo dzieki, od razu lepszy dzien :)",
+			"Dzieki, staram sie.", "Hehe, przestan, bo sie zarumienie xd" };
 		return PBC_SAY(g, k);
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2: a bot has an age of its own (AgeOf), said to
+	// somebody it knows; a stranger may get a joke instead.
 	inline std::string GenAge(TGen& g)
 	{
-		static const char* const k[] = { "Wystarczajaco, zeby grac do rana :)", "O wieku sie nie rozmawia, hehe.", "A co, wygladam staro?" };
-		return PBC_SAY(g, k);
+		if (g.tier <= TIER_STRANGER && OpinionRoll(g, "age", 7) < 40)
+		{
+			static const char* const k[] = { "Wystarczajaco, zeby grac do rana :)", "O wieku sie nie rozmawia, hehe.",
+				"A co, ile dajesz? :P" };
+			return PBC_SAY(g, k);
+		}
+		static const char* const k[] = { "Mam $AGE lat.", "$AGE, a ty?", "$AGE na karku xd", "$AGE, stary juz jestem :P" };
+		std::string out = PBC_SAY(g, k);
+		ReplaceAll(out, "$AGE", ToString((long long)AgeOf(g.s.name)));
+		return out;
 	}
 
 	inline std::string GenOrigin(TGen& g)
 	{
 		if (!*EmpireName(g.s.empire))
 			return "Stad i stamtad.";
-		static const char* const k[] = { "Z $EMPIRE.", "Jestem z $EMPIRE. A ty?", "$EMPIRE, od urodzenia." };
+		static const char* const k[] = { "Z $EMPIRE.", "Jestem z $EMPIRE. A ty?", "$EMPIRE, od urodzenia.",
+			"W grze z $EMPIRE, a w realu to inna sprawa :P" };
 		return PBC_SAY(g, k);
 	}
 
@@ -1623,6 +1803,28 @@ namespace playerbot_conv
 
 	inline std::string GenKs(TGen& g)
 	{
+		// MT2009_PLUS_BOT_CHAT_V2: accused in the middle of a quarrel over
+		// its own spot (playerbot_spot_defense.h).
+		if (g.s.spotGaveUp)
+			return "Juz ci zostawilem ten spot, wiec o co chodzi?";
+		if (g.s.spotQuarrel > 0)
+		{
+			g.reason = "Bo bylem tu pierwszy i bije te moby od dawna.";
+			const int temper = TemperOf(g.s.style);
+			if (temper >= 2)
+			{
+				static const char* const k[] = { "Ja ci kradne? Bylem tu pierwszy xd", "To ty mi kradniesz, nie odwracaj kota ogonem",
+					"Hahaha dobre, to moj spot od godziny" };
+				return PBC_SAY(g, k);
+			}
+			if (temper == 0)
+			{
+				static const char* const k[] = { "Sorki, juz ide gdzie indziej.", "Dobra, zostawiam ci ten spot." };
+				return PBC_SAY(g, k);
+			}
+			static const char* const k[] = { "Bylem tu pierwszy, ale dobra, mozemy sie podzielic.", "Expie tu od dawna, poszukaj czegos obok." };
+			return PBC_SAY(g, k);
+		}
 		if (g.tier == TIER_HOSTILE)
 			return "Nie widzialem tam twojego imienia.";
 		static const char* const k[] = {
@@ -2335,7 +2537,9 @@ namespace playerbot_conv
 			for (size_t i = 0; i < a->tokens.words.size(); ++i)
 			{
 				const std::string& w = a->tokens.words[i];
-				if (w == "zawijaj" || w == "zawijajcie" || w == "wypad" || w == "spadaj")
+				if (w == "zawijaj" || w == "zawijajcie" || w == "wypad" || w == "spadaj" || w == "wypadaj" ||
+						w == "zjezdzaj" || w == "spieprzaj" || w == "zmiataj" || w == "won" || w == "sio" ||
+						w == "wynocha" || StartsWith(w, "spierd") || StartsWith(w, "wypierd"))
 					leave = true;
 				if (w == "wart" || w == "warta" || w == "warty")
 					worth = true;
@@ -2350,7 +2554,35 @@ namespace playerbot_conv
 		}
 		if (leave)
 		{
-			static const char* const k[] = { "Haha, dobra, juz sie zwijam :P", "Dobra, dobra, juz mnie nie ma :D" };
+			// MT2009_PLUS_BOT_CHAT_V2: "spadaj stad" said to a bot that is
+			// hunting beside the person - its spot - is answered by its temper.
+			// It already gave the spot up (playerbot_spot_defense.h).
+			if (g.s.spotGaveUp)
+			{
+				static const char* const k[] = { "Przeciez juz ide, spokojnie", "No ide juz, ide. Masz ten spot" };
+				return PBC_SAY(g, k);
+			}
+			if (g.s.spotQuarrel > 0 || (Fighting(g) && g.s.askerNear))
+			{
+				g.reason = "Bo to moj spot, bylem tu pierwszy.";
+				const int temper = TemperOf(g.s.style);
+				if (temper >= 2)
+				{
+					static const char* const k[] = { "Sam spadaj, bylem tu pierwszy", "Chyba ty xd to moj spot",
+						"Nigdzie nie ide, szukaj se innego spota", "Hahaha nie. Ty spadaj" };
+					return PBC_SAY(g, k);
+				}
+				if (temper == 0)
+				{
+					static const char* const k[] = { "Dobra, dobra, juz ide gdzie indziej", "Spoko, nie bede przeszkadzal" };
+					return PBC_SAY(g, k);
+				}
+				static const char* const k[] = { "Bylem tu pierwszy, ale niech ci bedzie", "Eh, dobra, poszukam innego spota",
+					"A moze grzeczniej? Ale dobra, ide" };
+				return PBC_SAY(g, k);
+			}
+			static const char* const k[] = { "Haha, dobra, juz sie zwijam :P", "Dobra, dobra, juz mnie nie ma :D",
+				"A gdzie mam isc? xd", "Spokojnie, i tak zaraz ide" };
 			return PBC_SAY(g, k);
 		}
 		if (worth)
@@ -2494,6 +2726,17 @@ namespace playerbot_conv
 					return PickField(g, pack->why, 2);
 				break;
 			}
+			// MT2009_PLUS_BOT_CHAT_V2
+			case I_INSULT: case I_THREAT: case I_MOCK:
+			{
+				static const char* const k[] = { "Bo mnie wyzywasz bez powodu.", "Bo tak sie nie rozmawia.",
+					"A jak myslisz? Bo jestes niemily." };
+				return PBC_SAY(g, k);
+			}
+			case I_JOKE:
+				return "Bo poprosiles o kawal xd";
+			case I_BEG:
+				return "Bo sam na wszystko zapracowalem.";
 			default:
 				break;
 		}
@@ -2569,9 +2812,30 @@ namespace playerbot_conv
 		}
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2: "slaby", "suchar", "znam go" right after the
+	// bot's joke - wherever the line ends up, it is about the joke.
+	inline bool IsJokeCritique(const TGen& g, const TAnalysis& a)
+	{
+		if (g.m.lastAnswered != I_JOKE || g.now - g.m.lastAnsweredAt >= CONV_CONTEXT_TTL_MS)
+			return false;
+		const TTokens& t = a.tokens;
+		return a.concepts.Has(C_NEGATIVE) || t.Has("slaby") || t.Has("slabe") || t.Has("suchy") || t.Has("suchar") ||
+				t.Has("cienki") || t.Has("znam") || t.Has("stary") || t.Has("nudny") || t.Has("niesmieszny") ||
+				(t.Has("nie") && t.Has("smieszne"));
+	}
+
+	inline std::string GenJokeCritique(TGen& g)
+	{
+		static const char* const k[] = { "No dobra, nie kazdy kawal musi byc smieszny xd", "Pff, wybredny :P",
+			"To sam opowiedz lepszy xd", "Ej, staralem sie :(" };
+		return PBC_SAY(g, k);
+	}
+
 	inline std::string GenAnswerToBot(TGen& g, const TAnalysis& a)
 	{
 		const TConceptSet& c = a.concepts;
+		if (IsJokeCritique(g, a))
+			return GenJokeCritique(g);
 		const bool yes = c.Has(C_YES) || c.Has(C_ACK) || c.Has(C_POSITIVE) || c.Has(C_HAPPY);
 		const bool no = c.Has(C_NO) || c.Has(C_NEGATIVE) || c.Has(C_SAD);
 		// The question the line answers travels with it: the memory has
@@ -2624,6 +2888,28 @@ namespace playerbot_conv
 				if (yes || c.Has(C_POSITIVE))
 					return "O, gratki!";
 				return "Nastepnym razem sie uda.";
+			case ASK_REAL:
+			{
+				// MT2009_PLUS_BOT_CHAT_V2: "a ty skad jestes?" answered.
+				const std::string mine = FoldName(CityOf(g.s.name));
+				for (size_t i = 0; i < a.tokens.words.size(); ++i)
+				{
+					const std::string& w = a.tokens.words[i];
+					if (w.size() >= 4 && mine.find(w.substr(0, w.size() - 1)) != std::string::npos &&
+							w != "polski" && w != "polska" && w != "jestem")
+						return "No co ty, ja tez! Swiat jest maly xd";
+				}
+				if (a.tokens.Has("polski") || a.tokens.Has("polska") || a.tokens.Has("pl"))
+				{
+					static const char* const k[] = { "No to jak ja xd", "Hehe, tu chyba kazdy z polski :P" };
+					return PBC_SAY(g, k);
+				}
+				if (a.tokens.Has("nie") && a.tokens.Has("powiem"))
+					return "Hehe, tajemniczy :P";
+				static const char* const k[] = { "O, kawal drogi ode mnie.", "Fajnie, nigdy tam nie bylem.",
+					"Spoko, slyszalem ze ladnie tam.", "Aha, to wcale nie tak daleko." };
+				return PBC_SAY(g, k);
+			}
 			case ASK_SUMMON:
 				// "Po co mam przyjsc?" - a reason is what was asked for.
 				if (SummonHasReason(a))
@@ -2660,6 +2946,13 @@ namespace playerbot_conv
 		{
 			case I_LAUGH:
 			{
+				// MT2009_PLUS_BOT_CHAT_V2: a laugh at the bot's own joke.
+				if (g.m.lastAnswered == I_JOKE && g.now - g.m.lastAnsweredAt < CONV_CONTEXT_TTL_MS)
+				{
+					static const char* const kJoke[] = { "Hehe, wiedzialem ze sie spodoba", "Mam ich wiecej xd",
+						"No nie? :D", "Hehe, dawno go slyszalem" };
+					return PBC_SAY(g, kJoke);
+				}
 				if (g.rng.Chance(g.Bad() ? 70 : 40))
 					return std::string();
 				static const char* const k[] = { "Hehe", "xD", "Haha", ":D" };
@@ -2693,19 +2986,34 @@ namespace playerbot_conv
 	// says what it can talk about.
 	inline std::string GenUnknownQuestion(TGen& g, const TAnalysis& a)
 	{
+		// MT2009_PLUS_BOT_CHAT_V2: short of patience, short answers.
+		if (g.m.patience < 35)
+		{
+			static const char* const k[] = { "Nie wiem.", "Nwm.", "Nie mam pojecia." };
+			return PBC_SAY(g, k);
+		}
+		if (g.m.fallbackStreak >= 2)
+		{
+			static const char* const k[] = {
+				"Dobra, nie ogarniam :D Zapytaj o exp, metki, drop, ceny albo co robie. Moge tez opowiedziec kawal xd",
+				"Hmm, dalej nie wiem o co ci chodzi xd Napisz prosciej?" };
+			return PBC_SAY(g, k);
+		}
 		if (g.m.fallbackStreak >= 1)
 		{
 			static const char* const k[] = { "Chyba sie nie rozumiemy :) Zapytaj mnie o exp, sprzet albo mape.",
-				"Nie lapie, o co chodzi. Zapytaj jakos inaczej?" };
+				"Nie lapie, o co chodzi. Zapytaj jakos inaczej?", "Hm? Nie bardzo wiem, o co pytasz xd" };
 			return PBC_SAY(g, k);
 		}
 		if (a.concepts.Has(C_YOU))
 		{
-			static const char* const k[] = { "Hm, nie bardzo rozumiem, o co pytasz. Mozesz inaczej?", "A czemu pytasz? :)" };
+			static const char* const k[] = { "Hm, nie bardzo rozumiem, o co pytasz. Mozesz inaczej?", "A czemu pytasz? :)",
+				"A co, ciekawy jestes? :P" };
 			return PBC_SAY(g, k);
 		}
 		static const char* const kSteer[] = {
-			"Dobre pytanie. Sam nie wiem.", "Nie wiem, nigdy sie nad tym nie zastanawialem.", "Nie mam pojecia, szczerze." };
+			"Dobre pytanie. Sam nie wiem.", "Nie wiem, nigdy sie nad tym nie zastanawialem.", "Nie mam pojecia, szczerze.",
+			"A skad mam wiedziec xd", "Pierwsze slysze.", "Hmm, ciezko powiedziec." };
 		std::string out = PBC_SAY(g, kSteer);
 		if (g.rng.Chance(25) && g.askBack.empty())
 		{
@@ -2718,6 +3026,22 @@ namespace playerbot_conv
 	inline std::string GenUnknownStatement(TGen& g, const TAnalysis& a)
 	{
 		const TConceptSet& c = a.concepts;
+		// MT2009_PLUS_BOT_CHAT_V2: "a ja z Krakowa", "ja z polski" after the
+		// bot told where it is from.
+		if (g.m.lastAnswered == I_REAL_LIFE && g.now - g.m.lastAnsweredAt < CONV_CONTEXT_TTL_MS &&
+				(a.tokens.Has("ja") || c.Has(C_CITY)))
+		{
+			if (a.tokens.Has("polski") || a.tokens.Has("polska"))
+			{
+				static const char* const k[] = { "No to jak ja xd", "Hehe, tu chyba kazdy z polski :P" };
+				return PBC_SAY(g, k);
+			}
+			static const char* const k[] = { "O, fajnie.", "Spoko, to niedaleko.", "O, nigdy tam nie bylem." };
+			return PBC_SAY(g, k);
+		}
+		// MT2009_PLUS_BOT_CHAT_V2: "slaby ten kawal", "suchar" after the bot's joke.
+		if (IsJokeCritique(g, a))
+			return GenJokeCritique(g);
 		if (c.Has(C_POSITIVE))
 		{
 			static const char* const k[] = { "O, fajnie!", "Gratki!", "No to super." };
@@ -2758,6 +3082,354 @@ namespace playerbot_conv
 		return out;
 	}
 
+	// ------------------------------------------- MT2009_PLUS_BOT_CHAT_V2
+
+	// "opowiedz kawal", "jeszcze jeden": a joke from the bank, never the same
+	// twice in a row to one person (Pick remembers what the pair heard).
+	inline std::string GenJoke(TGen& g)
+	{
+		if (g.tier == TIER_HOSTILE)
+			return "Nie mam nastroju do zartow.";
+		if (g.s.dead)
+			return "Lezac na ziemi to ja zartow nie opowiadam xd";
+		if (g.LowHp())
+			return "Chwila, najpierw sie wylecze, ledwo zyje xd";
+		if (g.m.jokesTold >= 6)
+		{
+			g.m.jokesTold = 0;
+			static const char* const k[] = { "Dobra, koniec kabaretu na dzis xd", "Skonczyly mi sie, serio :D",
+				"Ej, nie jestem stand-uperem xd" };
+			return PBC_SAY(g, k);
+		}
+		size_t n = 0;
+		const char* const* jokes = JokeBank(n);
+		std::string joke = Pick(g, jokes, n);
+		++g.m.jokesTold;
+		std::string intro;
+		if (g.rng.Chance(45))
+		{
+			static const char* const k[] = { "Dobra, sluchaj: ", "Znasz ten? ", "Ok: ", "Hehe, mam jeden: ", "Masz: " };
+			intro = Pick(g, k, sizeof(k) / sizeof(k[0]));
+		}
+		if (g.voice == V_GRINDER && g.rng.Chance(25))
+			intro = "Szybki, bo expie: ";
+		if (!intro.empty())
+			LowerFirst(joke);
+		if (g.askBack.empty() && g.m.jokesTold == 1 && g.rng.Chance(20))
+		{
+			g.askBack = "A ty znasz jakis?";
+			g.askBackKind = ASK_TOPIC;
+			g.askBackTopic = T_HUMOR;
+		}
+		return intro + joke;
+	}
+
+	// "a w real?", "z jakiego miasta jestes", "gdzie mieszkasz", "ile masz lat
+	// w realu": the bot's own city and age, fixed for the bot.
+	inline std::string GenRealLife(TGen& g)
+	{
+		const TAnalysis* a = g.a;
+		if (a && a->concepts.Has(C_AGE))
+			return GenAge(g);
+		if (a && a->concepts.Has(C_GENDER))
+		{
+			if (IsGirl(g.s.name))
+				return "Dziewczyna, a co? :P";
+			return "Chlopak, a co?";
+		}
+		if (g.tier == TIER_HOSTILE)
+			return "Nie twoja sprawa.";
+		std::string city = CityOf(g.s.name);
+		if (g.tier <= TIER_STRANGER && OpinionRoll(g, "city", 3) < 25)
+		{
+			static const char* const k[] = { "Hehe, takich rzeczy obcym nie mowie :P Z polski, tyle ci powiem.",
+				"A co, chcesz mnie odwiedzic? xd Z polski." };
+			return PBC_SAY(g, k);
+		}
+		static const char* const k[] = { "$CITY.", "Jestem $CITY.", "W realu? $CITY.", "$CITY, a co?", "Mieszkam $CITY." };
+		std::string out = PBC_SAY(g, k);
+		// "Mieszkam z Krakowa" is not Polish: the city as "from", said as one.
+		if (out.find("Mieszkam") != std::string::npos)
+			out = "Jestem $CITY.";
+		ReplaceAll(out, "$CITY", city);
+		CapitalizeFirst(out);
+		if (g.askBack.empty() && g.rng.Chance(60))
+		{
+			static const char* const kq[] = { "A ty skad jestes?", "A ty skad?", "A ty z jakiego miasta?" };
+			g.askBack = PBC_SAY(g, kq);
+			g.askBackKind = ASK_REAL;
+		}
+		g.reason = "Bo tam sie urodzilem.";
+		return out;
+	}
+
+	inline std::string GenGender(TGen& g)
+	{
+		if (g.tier <= TIER_STRANGER && OpinionRoll(g, "plec", 5) < 15)
+			return "A co to zmienia? :P";
+		if (IsGirl(g.s.name))
+		{
+			static const char* const k[] = { "Dziewczyna, a co? :P", "Dziewczyna, zdziwiony? xd", "Dziewczyna. Tak, dziewczyny tez graja :P" };
+			return PBC_SAY(g, k);
+		}
+		static const char* const k[] = { "Chlopak.", "Facet, a co?", "Chlopak xd A co, wygladam na dziewczyne?" };
+		return PBC_SAY(g, k);
+	}
+
+	// "daj yang", "pozycz 100k", "dasz cos?": nobody gets anything for free,
+	// and each voice says no its own way - grounded in what is in its purse.
+	inline std::string GenBeg(TGen& g)
+	{
+		const TBotSnapshot& s = g.s;
+		g.reason = "Bo sam na wszystko zapracowalem.";
+		if (g.m.begAsked >= 3)
+		{
+			static const char* const k[] = { "Nie, i nie pytaj juz.", "Juz mowilem, ze nie xd", "Zebrac to idz pod magazyn :P" };
+			return PBC_SAY(g, k);
+		}
+		if (s.gold < 50000)
+		{
+			static const char* const k[] = { "Sam jestem goly, mam $GOLD xd", "Bieda u mnie, $GOLD w kieszeni.",
+				"Z czego? Mam $GOLD yang :D" };
+			return PBC_SAY(g, k);
+		}
+		switch (g.voice)
+		{
+			case V_MERCHANT:
+			{
+				static const char* const k[] = { "Za darmo to w morde mozna dostac :P Ale moge ci cos tanio sprzedac.",
+					"Nic za darmo, ale ceny mam dobre xd" };
+				return PBC_SAY(g, k);
+			}
+			case V_GRINDER:
+			{
+				static const char* const k[] = { "Sam sobie wyexp, ja tez musialem.", "Idz bij moby, yang sam wpadnie." };
+				return PBC_SAY(g, k);
+			}
+			case V_FIGHTER:
+			{
+				static const char* const k[] = { "Wygraj ze mna na pvp, to pogadamy xd", "Zasluz sobie najpierw :P" };
+				return PBC_SAY(g, k);
+			}
+			case V_SOCIAL:
+				if (g.tier >= TIER_FRIEND)
+				{
+					static const char* const k[] = { "Sorki, sam mam malo, ale moge pomoc na expie.",
+						"Nie mam za duzo, ale jak bede mial wiecej, to cos wymyslimy." };
+					return PBC_SAY(g, k);
+				}
+				break;
+			default:
+				break;
+		}
+		static const char* const k[] = { "Nie mam za duzo, sorki.", "A co ja, bank? xd", "Nie rozdaje, sorki.",
+			"Hehe, dobry jestes :P Nie." };
+		return PBC_SAY(g, k);
+	}
+
+	// The level an advice question is about: the one it names, the asker's
+	// own, or the bot's.
+	inline int AdviceLevel(const TGen& g)
+	{
+		if (g.a && g.a->levelAsked > 0)
+			return g.a->levelAsked;
+		if (g.s.askerLevel > 0)
+			return g.s.askerLevel;
+		return g.s.level;
+	}
+
+	// "gdzie sa metki na 30?" - where the stones of a level stand.
+	inline std::string GenWhereMetin(TGen& g)
+	{
+		const int level = AdviceLevel(g);
+		std::string place;
+		if (!g.world || !g.world->MetinPlaceFor(level, place) || place.empty())
+			place = MetinPlaceFallback(level);
+		g.reason = "Bo tam stoja metiny na ten poziom.";
+		std::string out;
+		if (g.a && g.a->levelAsked == 0 && g.s.askerLevel > 0)
+		{
+			static const char* const k[] = { "Na twoj lvl metki stoja $P.", "Na $L lvl szukaj $P." };
+			out = PBC_SAY(g, k);
+		}
+		else
+		{
+			static const char* const k[] = { "Metki na $L stoja $P.", "Na $L lvl metiny masz $P.", "$P, tam sa metiny na $L.",
+				"Szukaj $P, tam sie respia na $L." };
+			out = PBC_SAY(g, k);
+		}
+		ReplaceAll(out, "$L", ToString((long long)level));
+		ReplaceAll(out, "$P", place);
+		CapitalizeFirst(out);
+		if (Fighting(g) && g.s.targetStone && g.rng.Chance(50))
+			Append(out, "Ja wlasnie jednego bije xd");
+		else if (level > g.s.level + 15)
+			Append(out, "Ja tam jeszcze nie bywam, za wysoko dla mnie.");
+		return out;
+	}
+
+	// "gdzie expic na 45?" - where the bots of that level hunt.
+	inline std::string GenWhereExp(TGen& g)
+	{
+		const int level = AdviceLevel(g);
+		std::string place;
+		if (!g.world || !g.world->ExpPlaceFor(level, place) || place.empty())
+			place = ExpPlaceFallback(level);
+		g.reason = "Bo tam sa moby na ten poziom i dobry exp.";
+		static const char* const k[] = { "Na $L lvl najlepiej $P.", "$P, tam jest dobry exp na $L.", "Ja na $L expilem $P.",
+			"Polecam $P, na $L akurat." };
+		std::string out = PBC_SAY(g, k);
+		ReplaceAll(out, "$L", ToString((long long)level));
+		ReplaceAll(out, "$P", place);
+		CapitalizeFirst(out);
+		if (level >= g.s.level - 2 && level <= g.s.level + 2 && Fighting(g) && IsKnownMap(g.s.mapIndex))
+			Append(out, Fill(g, "Sam teraz expie $MAPIN."));
+		return out;
+	}
+
+	inline std::string GenChannel(TGen& g)
+	{
+		if (AskerOnOtherChannel(g.s))
+			return Fill(g, "Na CH$CH, ty chyba jestes na innym.");
+		static const char* const k[] = { "Na CH$CH.", "CH$CH.", "Jestem na CH$CH, tak jak ty." };
+		if (g.s.askerChannel > 0 && g.s.askerChannel == g.s.channel)
+			return PBC_SAY(g, k);
+		return Fill(g, "Na CH$CH.");
+	}
+
+	// "dawaj na ch1 m1", "wbijaj do Joan", "przyjdz na m2", "spotkajmy sie":
+	// the bot goes only where it already is, and says honestly why not.
+	inline std::string GenMeet(TGen& g)
+	{
+		const TBotSnapshot& s = g.s;
+		const TAnalysis* a = g.a;
+		if (g.tier == TIER_HOSTILE)
+			return "Nie, dzieki.";
+		if (s.summonedByAsker)
+			return s.summonArrived ? "Przeciez jestem obok :)" : "Juz ide, juz!";
+		const long target = MentionedMap(g);
+		const int channel = a ? a->channelNamed : 0;
+		if (target == MAP_ALIAS_UNLISTED)
+			return "Tam to ja nawet nie bywam xd";
+		const bool sameMap = target == 0 || target == s.mapIndex;
+		const bool sameChannel = channel == 0 || s.channel == 0 || channel == s.channel;
+		g.saidMap = true;
+		if (sameMap && sameChannel && target != 0)
+		{
+			if (s.askerNear)
+				return "Przeciez stoje obok ciebie xd";
+			if (s.askerOnMap && s.summonBlock == SB_NONE && g.tier >= TIER_KNOWN)
+				return SummonGo(g);
+			static const char* const k[] = { "Jestem juz $MAPIN, napisz gdzie dokladnie stoisz.", "Jestem $MAPIN, gdzie cie szukac?" };
+			return PBC_SAY(g, k);
+		}
+		g.reason = "Bo mam swoje sprawy tam, gdzie jestem.";
+		if (!sameChannel && sameMap && target != 0)
+			return Fill(g, "Jestem $MAPIN na CH$CH, kanalu nie zmieniam w trakcie expa, sorki.");
+		if (s.shopStanding)
+			return "Stoje ze straganem, nie moge odejsc.";
+		if (Fighting(g))
+		{
+			static const char* const k[] = { "Nie moge teraz, expie $MAPIN na CH$CH.", "Teraz nie dam rady, bije sie $MAPIN.",
+				"Expie teraz $MAPIN, moze pozniej." };
+			return PBC_SAY(g, k);
+		}
+		if (s.action == A_TRAVEL && IsKnownMap(s.travelMap))
+			return Fill(g, "Ide wlasnie $DEST, moze pozniej.");
+		if (g.tier >= TIER_FRIEND)
+		{
+			static const char* const k[] = { "Teraz nie dam rady, jestem $MAPIN na CH$CH. Moze pozniej wpadne.",
+				"Chcialbym, ale siedze $MAPIN. Zgadamy sie pozniej?" };
+			return PBC_SAY(g, k);
+		}
+		static const char* const k[] = { "A po co? :P Jestem $MAPIN, mam swoje sprawy.", "Nie, siedze $MAPIN na CH$CH.",
+			"Raczej nie, jestem $MAPIN i tu zostaje." };
+		return PBC_SAY(g, k);
+	}
+
+	// "jak zrobic konia?", "jak sie robi biologa" - the game's own ways, as a
+	// player who has done them tells them.
+	inline std::string GenHowTo(TGen& g)
+	{
+		const TConceptSet& c = g.a ? g.a->concepts : TConceptSet();
+		if (c.Has(C_BIO))
+			return c.Has(C_WHERE) ? "Biolog stoi w wiosce, zerknij na mape. Misje daje od 30 lvl."
+					: "U Biologa od 30 lvl: przynosisz mu rzeczy z mobow (najpierw zeby orkow), czasem odrzuca, wiec trzeba miec zapas. Nagroda to staly bonus.";
+		if (c.Has(C_HORSE))
+			return "Kon jest u stajennego w wiosce. Najpierw egzamin na jezdzca, potem medale konskie z Lochu Malp na kolejne poziomy.";
+		if (c.Has(C_UPGRADE) || c.Has(C_GEAR) || c.Has(C_ITEMWORD))
+			return "U kowala w wiosce albo zwojem blogoslawienstwa (bodzie). Z bodziem mniej ryzykujesz, ale i tak potrafi spalic xd";
+		if (c.Has(C_SKILL))
+			return "Do M1 wbijasz punktami, od M1 czytasz ksiegi (KU), a od G1 potrzebne kamienie duszy. Ksiegi czytasz raz na jakis czas.";
+		if (c.Has(C_GOLD) || c.Has(C_MONEY))
+			return "Bij metki i sprzedawaj drop na straganie. Handel na targu w wiosce robi najwiecej yang.";
+		if (c.Has(C_GUILD))
+			return "Gildie zaklada sie u straznika w wiosce, trzeba miec troche lvl i yang. Albo dolacz do jakiejs, latwiej.";
+		if (c.Has(C_FISH))
+			return "Kupujesz wedke i przynete u rybaka, stajesz przy wodzie i lowisz. Spacja jak sie zatrzesie xd";
+		if (c.Has(C_MINE))
+			return "Kilof do reki i szukasz zyl rudy na mapach. Ruda idzie do kowala albo na targ.";
+		if (c.Has(C_DT))
+			return "Do Wiezy Demonow wchodzi sie z Doliny Orkow. Bez ekipy przed 55 lvl nie ma sensu.";
+		if (c.Has(C_LEVEL) || c.Has(C_EXP))
+		{
+			const int level = AdviceLevel(g);
+			std::string place;
+			if (!g.world || !g.world->ExpPlaceFor(level, place) || place.empty())
+				place = ExpPlaceFallback(level);
+			return "Bij moby na swoj lvl w pt, metki daja duzo expa, a pd pomaga. Na " + ToString((long long)level) +
+					" najlepiej " + place + ".";
+		}
+		if (c.Has(C_METIN))
+			return "Metiny respia sie na mapach co jakis czas. Bij te na swoj lvl, najlepiej w pt.";
+		static const char* const k[] = { "Hmm, nie wiem dokladnie. Zapytaj na wolaj, ktos na pewno wie.",
+			"Nie pamietam juz jak to bylo xd Zerknij w pomoc gry." };
+		return PBC_SAY(g, k);
+	}
+
+	// "o ktorej event?", "jaki jest event?" - the ones running now, else the
+	// calendar (F11).
+	inline std::string GenEvent(TGen& g)
+	{
+		if (!g.s.eventsNow.empty())
+		{
+			static const char* const k[] = { "Teraz trwa: $EV. Reszta w kalendarzu (F11).", "Teraz jest $EV, korzystaj xd",
+				"Leci $EV. Kolejne zobaczysz w kalendarzu pod F11." };
+			std::string out = PBC_SAY(g, k);
+			ReplaceAll(out, "$EV", g.s.eventsNow);
+			return out;
+		}
+		static const char* const k[] = { "Teraz nic nie trwa. Zerknij w kalendarz eventow (F11).",
+			"Chyba nic teraz nie ma, sprawdz pod F11 kiedy nastepny." };
+		return PBC_SAY(g, k);
+	}
+
+	// "co dropi z metina?", "z czego leci kosc?" - what the game is known to drop.
+	inline std::string GenDropInfo(TGen& g)
+	{
+		const TConceptSet& c = g.a ? g.a->concepts : TConceptSet();
+		if (c.Has(C_METIN))
+			return "Z metinow leca kamienie duszy, ksiegi, czasem bodzie i perly. I duzo expa xd";
+		if (c.Has(C_BOSS))
+			return "Z bossow skrzynie i bron, jak masz szczescie. Zawsze warto isc z ekipa.";
+		if (c.Has(C_DT))
+			return "W wiezy na gorze dobre skrzynie i bron, nizej glownie smieci.";
+		if (c.Has(C_ITEMWORD) || c.Has(C_WHERE) || c.Has(C_WHO))
+		{
+			static const char* const k[] = { "Nie pamietam dokladnie, zerknij w wiki dropu w grze, tam wszystko pisze.",
+				"Hmm, nwm na pewno. Wiki dropu w grze ci powie." };
+			return PBC_SAY(g, k);
+		}
+		return "Z mobow glownie yang i smieci, czasem cos dla Biologa xd";
+	}
+
+	inline std::string GenPing(TGen& g)
+	{
+		static const char* const k[] = { "U mnie ping spoko, nie laguje.", "Nie, u mnie dziala dobrze.",
+			"Czasem przytnie, ale ogolnie ok." };
+		return PBC_SAY(g, k);
+	}
+
 	// -------------------------------------------------------------- dispatch
 
 	inline std::string GenerateOne(TGen& g, const TAnalysis& a)
@@ -2787,8 +3459,41 @@ namespace playerbot_conv
 				break;
 			}
 			case I_APOLOGY:
+				// MT2009_PLUS_BOT_CHAT_V2: sorry for the bot's monsters.
+				if (g.s.spotQuarrel > 0)
+				{
+					const int temper = TemperOf(g.s.style);
+					if (temper >= 2)
+					{
+						static const char* const k[] = { "No ja mysle.", "Dobra, tylko zeby to byl ostatni raz." };
+						out = PBC_SAY(g, k);
+					}
+					else if (temper == 0)
+					{
+						static const char* const k[] = { "Spoko, nic sie nie stalo :)", "Luz, kazdemu sie zdarza." };
+						out = PBC_SAY(g, k);
+					}
+					else
+					{
+						static const char* const k[] = { "Spoko, tylko nie bij moich mobow.", "Ok, nie ma sprawy, podzielimy sie spotem." };
+						out = PBC_SAY(g, k);
+					}
+					break;
+				}
 				out = g.m.negative > 0 ? "No dobra, zapomnijmy." : "Spoko, nic sie nie stalo.";
 				break;
+			case I_JOKE: out = GenJoke(g); break;
+			case I_REAL_LIFE: out = GenRealLife(g); break;
+			case I_GENDER: out = GenGender(g); break;
+			case I_BEG: out = GenBeg(g); break;
+			case I_WHERE_METIN: out = GenWhereMetin(g); break;
+			case I_WHERE_EXP: out = GenWhereExp(g); break;
+			case I_CHANNEL: out = GenChannel(g); break;
+			case I_MEET: out = GenMeet(g); break;
+			case I_HOWTO: out = GenHowTo(g); break;
+			case I_EVENT: out = GenEvent(g); break;
+			case I_DROP_INFO: out = GenDropInfo(g); break;
+			case I_PING: out = GenPing(g); break;
 			case I_HOW_ARE_YOU: out = GenHowAreYou(g); break;
 			case I_HELP: out = GenHelp(g); break;
 			case I_IS_BOT: out = GenIsBot(g); break;
