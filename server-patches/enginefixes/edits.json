@@ -196,5 +196,11 @@
   "marker": "MT2009_PLUS_MOUNT_HORSE_STATS_V1 (armor)",
   "old": "\t\tif( true == IsHorseRiding() )\n\t\t{\n\t\t\tif (iArmor < GetHorseArmor())\n\t\t\t\tiArmor = GetHorseArmor();\n",
   "new": "\t\t// MT2009_PLUS_MOUNT_HORSE_STATS_V1 (armor): and the horse's armour on a costume mount.\n\t\tif( true == IsHorseRiding() || (GetMountVnum() && GetWear(WEAR_COSTUME_MOUNT)) )\n\t\t{\n\t\t\tif (iArmor < GetHorseArmor())\n\t\t\t\tiArmor = GetHorseArmor();\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_CHEST_DROP_EVENT_V1",
+  "old": "\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n",
+  "new": "\t// MT2009_PLUS_CHEST_DROP_EVENT_V1: the panel's chest drop event - any chest the\n\t// operator names, with its chance a kill (playerbot_events.h).\n\t{\n\t\tvoid Mt2009PlusChestDrops(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& vec_item);\n\t\tMt2009PlusChestDrops(pkChr, pkKiller, vec_item);\n\t}\n\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n"
  }
 ]
