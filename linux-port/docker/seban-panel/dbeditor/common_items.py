@@ -23,7 +23,14 @@ table:
     common_items.pending_count()     # -> int, 0 when nothing waits
     common_items.pending_changes()   # -> [{tbl,row_key,label,col,old_value,new_value,changed_at}]
     common_items.mark_applied()      # -> number of history rows marked
+
+Tables whose rows are added and removed (shops.py: world.shop_item,
+refine.py: world.refine_proto clones) register their row_cols and write
+through write_rows(): one history row per added/removed row, col ROW_COL
+("*"), old_value / new_value = the whole row as JSON (NULL = no such row).
+The undo, pending_changes() and "Zastosuj" treat them like any field.
 """
+import json
 import uuid
 
 from flask import flash, redirect, render_template, request, session, url_for
@@ -43,20 +50,35 @@ def init(ctx):
     _CTX.update(ctx)
 
 
-def register_table(name, key, cols, title, edit_endpoint=None, formatter=None):
-    TABLES[name] = {"key": key, "cols": cols, "title": title, "edit_endpoint": edit_endpoint, "formatter": formatter}
+def register_table(name, key, cols, title, edit_endpoint=None, formatter=None, row_cols=None, row_label=None):
+    """key: the column (or a tuple of columns) a row is found by. row_cols:
+    every column of a whole row, for the tables write_rows() adds rows to /
+    removes rows from (MT2009_PLUS_DB_EDITOR_V1)."""
+    TABLES[name] = {"key": key, "cols": cols, "title": title, "edit_endpoint": edit_endpoint, "formatter": formatter,
+                    "row_cols": tuple(row_cols) if row_cols else None, "row_label": row_label}
+
+
+# The history's col for a whole row added (old_value NULL) or removed (new_value NULL).
+ROW_COL = "*"
 
 
 def column_label(table, col):
     meta = TABLES.get(table)
+    if col == ROW_COL:
+        return (meta.get("row_label") if meta else None) or "cały wiersz"
     return (meta["cols"].get(col, {}).get("label") if meta else None) or col
+
+
+def table_title(table):
+    meta = TABLES.get(table)
+    return meta["title"] if meta else table
 
 
 def format_value(table, col, value):
     """A history value as the operator reads it (a bonus by its name...)."""
     meta = TABLES.get(table)
     if value is None:
-        return "—"
+        return "— (brak)" if col == ROW_COL else "—"
     if meta and meta.get("formatter"):
         try:
             shown = meta["formatter"](col, value)
@@ -288,8 +310,24 @@ def revert(batch=None, history_id=None, force=False):
     if not targets:
         return None, "Ta zmiana została już cofnięta albo nie istnieje.", False
     conflicts, updates = [], {}
+    row_ops = {}  # table -> {"inserts": [...], "deletes": [...]} (whole rows, ROW_COL)
     for row in targets:
         meta = TABLES.get(row["tbl"])
+        if meta and row["col"] == ROW_COL and meta.get("row_cols"):
+            ops = row_ops.setdefault(row["tbl"], {"inserts": [], "deletes": []})
+            current = read_whole_row(row["tbl"], row["row_key"])
+            if row["new_value"] is not None:  # the save added this row: undo removes it
+                if current is None or row_json(row["tbl"], current) != row["new_value"]:
+                    conflicts.append(f"{row['label'] or row['row_key']}: wiersz dodany tą zmianą "
+                                     + ("już nie istnieje" if current is None else "zmieniono później"))
+                if current is not None:
+                    ops["deletes"].append(key_values(row["tbl"], row["row_key"]))
+            if row["old_value"] is not None:  # the save removed this row: undo adds it back
+                if current is not None and row["new_value"] is None:
+                    conflicts.append(f"{row['label'] or row['row_key']}: usunięty wiersz dodano później ponownie")
+                elif current is None or row["new_value"] is not None:
+                    ops["inserts"].append(json.loads(row["old_value"]))
+            continue
         if not meta or row["col"] not in meta["cols"]:
             return None, f"Tabela {row['tbl']}.{row['col']} nie jest edytowalna w tym panelu.", False
         spec = meta["cols"][row["col"]]
@@ -312,10 +350,105 @@ def revert(batch=None, history_id=None, force=False):
     for table in {t for t, _k in updates}:
         save_rows(table, [(k, v) for (t, k), v in updates.items() if t == table], note=note,
                   label_of=lambda k, t=table: labels.get((t, str(k)), ""), batch=new_batch)
+    for table, ops in row_ops.items():
+        # A row removed and added back by one batch (a count changed) is undone as one swap.
+        write_rows(table, inserts=ops["inserts"], deletes=ops["deletes"], note=note,
+                   label_of=lambda k, t=table: labels.get((t, str(k)), ""), batch=new_batch, force=force)
     ids = [r["id"] for r in targets]
     marks = ",".join(["%s"] * len(ids))
     _CTX["rows"](f"UPDATE {HISTORY_TABLE} SET reverted_in=%s WHERE id IN ({marks})", [new_batch] + ids)
     return new_batch, f"Cofnięto {len(targets)} zmian(y). Zmiany czekają na zastosowanie (restart gry).", True
+
+
+# ---- whole rows (added / removed) ------------------------------------------------
+
+def key_cols(table):
+    key = TABLES[table]["key"]
+    return tuple(key) if isinstance(key, (tuple, list)) else (key,)
+
+
+def row_key_of(table, values):
+    """The history's row_key of a row: its key columns joined by ':'."""
+    return ":".join(str(int(values[c])) for c in key_cols(table))
+
+
+def key_values(table, row_key):
+    return dict(zip(key_cols(table), (int(v) for v in str(row_key).split(":"))))
+
+
+def row_json(table, values):
+    meta = TABLES[table]
+    return json.dumps({c: int(values.get(c) or 0) for c in meta["row_cols"]}, sort_keys=True)
+
+
+def _where_key(table):
+    return " AND ".join(f"`{c}`=%s" for c in key_cols(table))
+
+
+def read_whole_row(table, row_key, cur=None):
+    meta = TABLES[table]
+    keys = key_values(table, row_key)
+    sql = (f"SELECT {', '.join('`%s`' % c for c in meta['row_cols'])} FROM {table} WHERE {_where_key(table)}")
+    params = [keys[c] for c in key_cols(table)]
+    if cur is None:
+        found = _CTX["rows"](sql, params)
+        return found[0] if found else None
+    cur.execute(sql + " FOR UPDATE", params)
+    return cur.fetchone()
+
+
+def write_rows(table, inserts=(), deletes=(), note="", label_of=None, batch=None, force=False):
+    """Remove rows (dicts holding at least the key columns) and add rows
+    (dicts holding every row column) in one transaction - removals first,
+    so a row removed and added again (another count) is one save - and
+    record each as one history row (col ROW_COL). A missing row to remove
+    or an existing row to add is an error, skipped instead with force.
+    Values must already be validated. Returns (batch, [(row_key, 'insert'|'delete')])."""
+    ensure_table()
+    meta = TABLES[table]
+    cols = meta["row_cols"]
+    batch = batch or uuid.uuid4().hex[:16]
+    author = who()
+    done = []
+    con = _CTX["db"]()
+
+    def record(cur, key, old, new):
+        label = (label_of(key) if label_of else "") or ""
+        cur.execute(f"INSERT INTO {HISTORY_TABLE} (who,tbl,row_key,label,col,old_value,new_value,batch,note) "
+                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                    (author, table, key, label[:100], ROW_COL, old, new, batch, note[:255]))
+
+    try:
+        con.begin()
+        with con.cursor() as cur:
+            for values in deletes:
+                key = row_key_of(table, values)
+                current = read_whole_row(table, key, cur)
+                if current is None:
+                    if force:
+                        continue
+                    raise LookupError(f"{meta['title']} {key} już nie istnieje.")
+                params = [int(values[c]) for c in key_cols(table)]
+                cur.execute(f"DELETE FROM {table} WHERE {_where_key(table)} LIMIT 1", params)
+                record(cur, key, row_json(table, current), None)
+                done.append((key, "delete"))
+            for values in inserts:
+                key = row_key_of(table, values)
+                if read_whole_row(table, key, cur) is not None:
+                    if force:
+                        continue
+                    raise LookupError(f"{meta['title']} {key} już istnieje.")
+                cur.execute(f"INSERT INTO {table} ({', '.join('`%s`' % c for c in cols)}) "
+                            f"VALUES ({', '.join(['%s'] * len(cols))})", [int(values.get(c) or 0) for c in cols])
+                record(cur, key, None, row_json(table, values))
+                done.append((key, "insert"))
+        con.commit()
+    except Exception:
+        con.rollback()
+        raise
+    finally:
+        con.close()
+    return batch, done
 
 
 # ---- pending ------------------------------------------------------------------

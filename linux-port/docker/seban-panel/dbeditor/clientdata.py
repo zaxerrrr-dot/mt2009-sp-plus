@@ -105,7 +105,7 @@ def install(bp, ctx):
             "dbeditor/clientdata.html", items=items, files=files, last=_read_json(last_apply, {}),
             build=_read_json(build_log, {}), csrf=common_items.csrf_token(), client_version=base_version(),
             restart=restart_state(), column_label=common_items.column_label,
-            format_value=common_items.format_value)
+            format_value=common_items.format_value, table_title=common_items.table_title)
 
     @bp.route("/apply", methods=["POST"])
     @login_required
