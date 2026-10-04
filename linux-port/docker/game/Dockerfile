@@ -154,10 +154,15 @@ ARG STRIP_BINARIES=1
 # looked stuck at "game builder 2/3 (67%)" again (Drip, 24 September). So:
 # room for the heavy file and 700 MB a job after it, out of MemAvailable, and
 # a line in the log when even the heavy file does not fit.
+# MT2009_PLUS_FAST_BUILD_V1: an image whose binaries are stripped anyway
+# (STRIP_BINARIES=1, every player's) compiles without -g - the debug info was
+# written only to be thrown away, and it is most of what playerbot_manager.cpp,
+# the bots' whole AI in one file, costs in time and memory.
 COPY src/server/game game
 RUN --mount=type=cache,target=/root/.ccache set -eux; \
     sed -i 's/\r$//' game/src/Makefile; \
     rm -rf game/src/.obj game/src/Depend; \
+    if [ "${STRIP_BINARIES}" = "1" ]; then sed -i -E '/^CFLAGS  = /s/ -g( |$)/ \1/' game/src/Makefile; echo "debug info off (STRIP_BINARIES=1): no -g"; fi; \
     T="$(awk '/^MemTotal:/ { print int($2 / 1024) }' /proc/meminfo)"; \
     A="$(awk '/^MemAvailable:/ { print int($2 / 1024) }' /proc/meminfo)"; [ -n "$A" ] && [ "$A" -gt 0 ] || A="$T"; \
     J="${MAKE_JOBS:-}"; if [ -z "$J" ]; then J="$(nproc)"; M=$(( 1 + (A - 2600) / 700 )); [ "$M" -ge 1 ] || M=1; [ "$M" -ge "$J" ] || J="$M"; fi; \

@@ -156,10 +156,27 @@ done
 # than a world that refuses to start at all.
 if [ -n "${M2_DB_ROOT_PASSWORD:-}" ]; then
     repair_log=/tmp/playerbot-repair.log
-    if MYSQL_PWD="$M2_DB_ROOT_PASSWORD" mariadb-check \
-            --protocol=tcp --host="$M2_DB_HOST" --port="$M2_DB_PORT" --user=root \
-            --auto-repair --fast --silent \
-            --databases account common player log >"$repair_log" 2>&1; then
+    # MT2009_PLUS_FAST_START_V1: the MyISAM tables only - the ones an unclean
+    # stop marks crashed. InnoDB recovers itself, and mariadb-check gave each of
+    # its 150-odd tables a full CHECK (--fast is MyISAM's), 25 of the 26 seconds
+    # this step took on every start; the MyISAM twelve take some 40 ms.
+    myisam_ok=1
+    : >"$repair_log"
+    for check_db in account common player log; do
+        check_tables=$(MYSQL_PWD="$M2_DB_ROOT_PASSWORD" mariadb --protocol=tcp --host="$M2_DB_HOST" \
+                --port="$M2_DB_PORT" --user=root --batch --skip-column-names -e \
+                "SELECT table_name FROM information_schema.tables WHERE table_schema = '$check_db' AND engine = 'MyISAM';" 2>>"$repair_log") \
+            || { myisam_ok=0; continue; }
+        [ -n "$check_tables" ] || continue
+        # shellcheck disable=SC2086
+        MYSQL_PWD="$M2_DB_ROOT_PASSWORD" mariadb-check \
+                --protocol=tcp --host="$M2_DB_HOST" --port="$M2_DB_PORT" --user=root \
+                --auto-repair --fast --silent \
+                "$check_db" $check_tables >>"$repair_log" 2>&1 || myisam_ok=0
+    done
+    # The client's own notices (the SSL one on every connection) are not repairs.
+    { grep -v -e 'ssl-verify-server-cert' -e '^$' "$repair_log" || true; } >"$repair_log.f" 2>/dev/null; mv -f "$repair_log.f" "$repair_log"
+    if [ "$myisam_ok" = 1 ]; then
         if [ -s "$repair_log" ]; then
             echo "[playerbot-migrate] repaired tables left crashed by an unclean stop:"
             head -20 "$repair_log"
@@ -167,6 +184,24 @@ if [ -n "${M2_DB_ROOT_PASSWORD:-}" ]; then
     else
         echo "[playerbot-migrate] WARNING: table check failed; continuing" >&2
         head -5 "$repair_log" >&2
+    fi
+fi
+
+# MT2009_PLUS_FAST_START_V1: a start with nothing new skips the rest. The
+# fingerprint is every file this step reads (/opt/playerbot), this script and
+# the M2_/PLAYERBOT_ settings; it is written at the very end of a full run and
+# trusted for a day at most, so a run that went wrong somewhere is repeated by
+# the next day's start anyway. A fresh world has no fingerprint and runs it
+# all. The table check above runs every time. PLAYERBOT_MIGRATE_ALWAYS=1 turns
+# the skip off.
+migrate_fp=$( { cat "$0" 2>/dev/null; find /opt/playerbot -type f 2>/dev/null | LC_ALL=C sort | xargs cat 2>/dev/null; \
+    env | grep -E '^(M2_|PLAYERBOT_)' | LC_ALL=C sort; } | sha256sum | cut -c1-64)
+db -e "CREATE TABLE IF NOT EXISTS common.playerbot_migrate_state (id TINYINT UNSIGNED NOT NULL PRIMARY KEY, fingerprint CHAR(64) NOT NULL, done_at DATETIME NOT NULL) ENGINE=InnoDB;" >/dev/null 2>&1 || true
+if [ "${PLAYERBOT_MIGRATE_ALWAYS:-0}" != "1" ]; then
+    migrate_seen=$(db -e "SELECT fingerprint FROM common.playerbot_migrate_state WHERE id = 1 AND done_at > NOW() - INTERVAL 1 DAY;" 2>/dev/null || true)
+    if [ -n "$migrate_fp" ] && [ "$migrate_seen" = "$migrate_fp" ]; then
+        echo "[playerbot-migrate] nothing changed since the last full run (fingerprint $(printf %s "$migrate_fp" | cut -c1-12)) - skipping the rest"
+        exit 0
     fi
 fi
 
@@ -2507,3 +2542,7 @@ FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233) AND N
 # "Rozbuduj" refused.
 db -e "CREATE TABLE IF NOT EXISTS player.collector_storage (account_id INT UNSIGNED NOT NULL PRIMARY KEY, tier TINYINT UNSIGNED NOT NULL DEFAULT 0, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB;" \
   || echo "[playerbot-migrate] WARNING: could not create player.collector_storage (the collector's storage stays at 500 entries)" >&2
+
+# MT2009_PLUS_FAST_START_V1: the full run is done - its fingerprint for the next start.
+db -e "REPLACE INTO common.playerbot_migrate_state (id, fingerprint, done_at) VALUES (1, '$migrate_fp', NOW());" >/dev/null 2>&1 \
+    || echo "[playerbot-migrate] WARNING: could not record the run's fingerprint (the next start runs it all again)" >&2
