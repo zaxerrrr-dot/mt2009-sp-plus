@@ -259,7 +259,7 @@ class ShopTests(Base):
         pending = common_items.pending_changes()
         self.assertEqual(len(pending), 4)  # 27001x5 out, 27001x10 in, 50200 out, 27002x20 in
         apply_page = self.client.get("/db/apply").get_data(as_text=True)
-        self.assertIn("towar w sklepie npc", apply_page)
+        self.assertIn("towar w sklepie NPC", apply_page)
         self.assertIn("w ofercie ×20", apply_page)
         self.assertIn("Tobolek", self.client.get("/db/historia").get_data(as_text=True))
         res = self.post("/db/historia/cofnij", {"batch": hist[0]["batch"]}, follow_redirects=True)

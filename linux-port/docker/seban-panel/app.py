@@ -11166,7 +11166,8 @@ def dbeditor_queue_restart():
 dbeditor.install(app, {"app": app, "db": db, "rows": rows, "one": one,
                        "login_required": login_required, "game_text": game_text,
                        "queue_restart": dbeditor_queue_restart, "read_rates": read_rates,
-                       "restart_progress": restart_progress, "spool": RATES_SPOOL})
+                       "restart_progress": restart_progress, "spool": RATES_SPOOL,
+                       "panel_name": lambda: settings().get("panel_name") or "MT2009 PLUS"})
 
 
 if __name__ == "__main__":

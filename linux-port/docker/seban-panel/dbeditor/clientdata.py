@@ -82,7 +82,15 @@ def install(bp, ctx):
 
     def build_zip(original=False):
         """(file name, zip bytes, summary) of the client files."""
-        server = request.host.split(":")[0]
+        # The zip's name and CZYTAJ_MNIE say which server it is for: the panel's
+        # name, plus the address when it is not this machine's own.
+        host = request.host.split(":")[0]
+        try:
+            server = (ctx.get("panel_name") or (lambda: ""))() or "MT2009 PLUS"
+        except Exception:
+            server = "MT2009 PLUS"
+        if host and host not in ("127.0.0.1", "localhost", "::1", "[::1]"):
+            server = "%s (%s)" % (server, host)
         if original:
             base = dbdata.latest_base()
             index, data = base.original()
