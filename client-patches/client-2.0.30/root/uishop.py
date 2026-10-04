@@ -74,10 +74,9 @@ class ShopDialog(ui.ScriptWindow):
 				itemCount = 0
 			setItemID(i, getItemID(idx), itemCount)
 			# MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): NPC goods under 500 Yang lit up
-			# MT2009_PLUS_NPC_CHEAP_MARK_V1: and a green cover over the slot - the slot's own
-			# glow did not show in the NPC shop (the owner, 4 October); "Opcje dodatkowe"
-			# switches both off.
-			cheap = bool(getItemID(idx)) and not self.isPlayerShop and 0 < shop.GetItemPrice(idx) < 500 and _CheapMarkOn()
+			# MT2009_PLUS_SHOP_CHEAP_MARK_V1: no longer at the NPC merchants - the cheap
+			# offers are lit up in the offline shops instead (offlineshopguest.py).
+			cheap = False
 			if cheap:
 				self.itemSlotWindow.ActivateSlot(i)
 			else:
