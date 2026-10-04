@@ -31,6 +31,17 @@ if ($UiSelfTest) {
 }
 $supportDirectory = Join-Path $root 'support-bundles'
 $composeFile = Join-Path $root 'linux-port\docker\docker-compose.yml'
+# MT2009_CLASSIC_EDITION_V1: the edition of this package (M2_EDITION in
+# linux-port\docker\.env, or .env.example before the first start) - a MT2009
+# Classic package names itself so in the window's title and header.
+$script:M2LauncherClassic = $false
+foreach ($editionFile in @('.env', '.env.example')) {
+    $editionPath = Join-Path $root ('linux-port\docker\' + $editionFile)
+    if (Test-Path -LiteralPath $editionPath -PathType Leaf) {
+        $editionMatch = [Regex]::Match([IO.File]::ReadAllText($editionPath), '(?m)^M2_EDITION=(.*)$')
+        if ($editionMatch.Success) { $script:M2LauncherClassic = ($editionMatch.Groups[1].Value.Trim().ToLowerInvariant() -eq 'classic'); break }
+    }
+}
 $sessionLog = Join-Path $logDirectory ('launcher-{0}.log' -f (Get-Date -Format 'yyyyMMdd'))
 # Protect-M2SessionLogLine's memory of a heading whose password is on the next line.
 $script:sessionLogRedaction = @{}
@@ -2676,7 +2687,7 @@ function Install-Or-Prepare {
     if (-not (Find-ClientExecutable)) { [void](Select-ClientExecutable) }
     try {
         $desktop = [Environment]::GetFolderPath('Desktop')
-        $shortcutPath = Join-Path $desktop 'Metin2 Playerbots.lnk'
+        $shortcutPath = Join-Path $desktop $(if ($script:M2LauncherClassic) { 'MT2009 Classic.lnk' } else { 'Metin2 Playerbots.lnk' })
         $shell = New-Object -ComObject WScript.Shell
         $shortcut = $shell.CreateShortcut($shortcutPath)
         $shortcut.TargetPath = Join-Path $root 'Metin2-Launcher-GUI.bat'
@@ -2694,7 +2705,8 @@ function Install-Or-Prepare {
 $script:launcherFingerprint = Get-LauncherFingerprint
 
 $script:form = [Windows.Forms.Form]::new()
-$script:form.Text = (T 'formTitle')
+# MT2009_CLASSIC_EDITION_V1: a MT2009 Classic package says so in its title.
+$script:form.Text = $(if ($script:M2LauncherClassic) { 'MT2009 Classic - ' + (T 'formTitle') } else { (T 'formTitle') })
 $script:form.Size = [Drawing.Size]::new(780, 806)
 $script:form.MinimumSize = [Drawing.Size]::new(780, 764)
 $script:form.StartPosition = 'CenterScreen'

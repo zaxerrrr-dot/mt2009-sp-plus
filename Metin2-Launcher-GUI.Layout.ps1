@@ -249,7 +249,7 @@ $subtitle.Text = 'SINGLEPLAYER  /  MT2009  /  BY TIERU EDITED BY ZAXEP'
 $subtitle.Dock = 'Top'; $subtitle.Height = 24
 $subtitle.Font = [Drawing.Font]::new('Segoe UI', 9); $subtitle.ForeColor = $script:ui.Muted
 $brand.Controls.Add($subtitle)
-$title.Text = 'MT2009 PLUS'; $title.Dock = 'Top'; $title.Height = 37; $title.Font = [Drawing.Font]::new('Georgia', 25, [Drawing.FontStyle]::Bold)
+$title.Text = $(if ($script:M2LauncherClassic) { 'MT2009 CLASSIC' } else { 'MT2009 PLUS' }); $title.Dock = 'Top'; $title.Height = 37; $title.Font = [Drawing.Font]::new('Georgia', 25, [Drawing.FontStyle]::Bold)
 $title.ForeColor = $script:ui.Gold; $brand.Controls.Add($title)
 $brand.Controls.SetChildIndex($title, 0)
 $website = New-Button 'metin2sp.pl  >' 0 0 240 44
@@ -449,7 +449,7 @@ $script:ui.LogToggle.Add_Click({ Switch-UILog })
 $logHeader.Controls.Add($script:ui.LogToggle)
 $footer.Dock = 'Bottom'; $footer.Height = 34
 $footer.BackColor = [Drawing.Color]::FromArgb(240, 10, 16, 20)
-$footer.Text = UI-Text 'Twój świat. Twoje tempo.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl' 'Your world. Your pace.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl'
+$footer.Text = UI-Text $(if ($script:M2LauncherClassic) { 'Twój świat. Twoje tempo.    •    MT2009 Classic by ZAXEP    •    metin2sp.pl' } else { 'Twój świat. Twoje tempo.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl' }) 'Your world. Your pace.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl'
 $footer.ForeColor = $script:ui.Muted; $footer.Padding = [Windows.Forms.Padding]::new(28, 6, 0, 0)
 $main.Controls.Add($footer)
 
@@ -569,7 +569,7 @@ $script:versionLabel.Add_ForeColorChanged({
         $footer.Text = UI-Text 'Dostępna aktualizacja — przejdź do pulpitu.' 'Update available — open Overview.'
         $footer.ForeColor = $script:ui.Gold
     } else {
-        $footer.Text = UI-Text 'Twój świat. Twoje tempo.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl' 'Your world. Your pace.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl'
+        $footer.Text = UI-Text $(if ($script:M2LauncherClassic) { 'Twój świat. Twoje tempo.    •    MT2009 Classic by ZAXEP    •    metin2sp.pl' } else { 'Twój świat. Twoje tempo.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl' }) 'Your world. Your pace.    •    MT2009 PLUS by ZAXEP    •    metin2sp.pl'
         $footer.ForeColor = $script:ui.Muted
     }
     $script:ui.VersionTip.SetToolTip($script:ui.SideVersions, $script:versionLabel.Text)
