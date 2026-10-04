@@ -42,7 +42,8 @@ _STATE = {"table_ready": False, "history_installed": False}
 # The tables this editor may write, filled by items.py and skills.py:
 # "world.item_proto" -> {"key": "vnum", "cols": {col: spec}, "title": ...}.
 # spec = {"kind": "int", "min": .., "max": ..} | {"kind": "cp1250", "max": n}
-#      | {"kind": "ascii", "max": n}; "label" is what the history shows.
+#      | {"kind": "ascii", "max": n} | {"kind": "set", "members": [...]} (a SET
+#      column, mobs.py); "label" is what the history shows.
 TABLES = {}
 
 
@@ -164,6 +165,18 @@ def validate(spec, raw, label):
         if not spec["min"] <= value <= spec["max"]:
             return None, f"{label}: dozwolone {spec['min']}…{spec['max']}, podano {value}."
         return value, None
+    if kind == "set":
+        # MT2009_PLUS_DB_EDITOR_V1 (mobs.py): a MariaDB SET column (mob_proto
+        # ai_flag ...) - a comma list of the spec's members, kept in their order.
+        if isinstance(raw, (set, list, tuple)):
+            parts = [str(p).strip().upper() for p in raw]
+        else:
+            parts = [p.strip().upper() for p in str(raw if raw is not None else "").split(",")]
+        parts = [p for p in parts if p]
+        unknown = [p for p in parts if p not in spec["members"]]
+        if unknown:
+            return None, f"{label}: nieznana flaga {', '.join(unknown)}."
+        return ",".join(m for m in spec["members"] if m in parts), None
     text = str(raw if raw is not None else "")
     if kind == "cp1250":
         text = text.strip()
@@ -193,6 +206,10 @@ def _same(spec, a, b):
             return int(a) == int(b)
         except (TypeError, ValueError):
             return False
+    if spec["kind"] == "set":  # MT2009_PLUS_DB_EDITOR_V1 (mobs.py): order does not matter
+        def members(value):
+            return {p.strip().upper() for p in (text_of(value) or "").split(",") if p.strip()}
+        return members(a) == members(b)
     return text_of(a or "") == text_of(b or "")
 
 
@@ -200,6 +217,8 @@ def _select_expr(col, spec):
     # Names are read as their bytes and decoded as cp1250 - right for the
     # cp1250 column of this world and for a latin1 column holding cp1250 bytes
     # (an older dump) alike.
+    if spec["kind"] == "set":  # MT2009_PLUS_DB_EDITOR_V1 (mobs.py): a SET column as plain text
+        return f"CAST(`{col}` AS CHAR) AS `{col}`"
     return f"CAST(`{col}` AS BINARY) AS `{col}`" if spec["kind"] == "cp1250" else f"`{col}`"
 
 
@@ -510,7 +529,9 @@ def pending_context():
     changes = pending_changes()
     return {"pending_total": len(changes),
             "pending_items": len({c["row_key"] for c in changes if c["tbl"] == "world.item_proto"}),
-            "pending_skills": len({c["row_key"] for c in changes if c["tbl"] == "world.skill_proto"})}
+            "pending_skills": len({c["row_key"] for c in changes if c["tbl"] == "world.skill_proto"}),
+            # MT2009_PLUS_DB_EDITOR_V1 (mobs.py)
+            "pending_mobs": len({c["row_key"] for c in changes if c["tbl"] == "world.mob_proto"})}
 
 
 # ---- the history page -----------------------------------------------------------

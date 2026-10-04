@@ -8,9 +8,11 @@ Pending changes come from the editor's parts themselves:
     yet applied, net per field); common_items.mark_applied() once the
     restart is queued;
   * drop files and chests: dropfiles.pending_changes(<spool>) - the files
-    the game does not run yet.
+    the game does not run yet;
   * map spawns: regen.pending_changes(<spool>) - the maps' regen.txt the
-    game does not run yet (MT2009_PLUS_DB_EDITOR_V1, m2-regen).
+    game does not run yet (MT2009_PLUS_DB_EDITOR_V1, m2-regen);
+  * monsters (mobs.py): the same history as items/skills (tbl world.mob_proto);
+  * respawn files (spawns.py): spawnfiles.pending_changes(<spool>).
 
 Client files (m2clientpack.dbdata): nothing is downloaded automatically - a
 player's client may list several servers (localhost, COOP 1, COOP 2). The
@@ -69,6 +71,11 @@ def install(bp, ctx):
         try:
             from dbeditor import regen
             files = files + regen.pending_changes(spool)
+        except Exception:
+            pass
+        try:  # MT2009_PLUS_DB_EDITOR_V1: the respawn files (spawns.py / spawnfiles.py)
+            from dbeditor import spawnfiles
+            files = files + spawnfiles.pending_changes(spool)
         except Exception:
             pass
         return items, files
