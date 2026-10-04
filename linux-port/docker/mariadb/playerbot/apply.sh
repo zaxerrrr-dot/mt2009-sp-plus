@@ -2599,14 +2599,14 @@ if [ "$CLASSIC" = 1 ]; then
     # seed's bags included; the cores never make a new one (server-patches/
     # classic). The same rule as Mt2009ClassicBansItem: costumes, Dragon Stones,
     # pets (type 28, 29, 30, 37) and the listed vnums.
-    db -e "DELETE i FROM player.item i JOIN world.item_proto p ON p.vnum = i.vnum WHERE p.type IN (28, 29, 30, 37)
-            OR i.vnum BETWEEN 53001 AND 53999 OR i.vnum BETWEEN 55001 AND 55999 OR i.vnum IN (38200, 38201)
-            OR i.vnum BETWEEN 71114 AND 71121 OR i.vnum BETWEEN 50255 AND 50259 OR i.vnum IN (30270, 100300)
-            OR i.vnum BETWEEN 70063 AND 70065 OR i.vnum IN (80030, 72199, 30670, 71056)
-            OR i.vnum BETWEEN 28530 AND 28543 OR i.vnum BETWEEN 28600 AND 28613 OR i.vnum BETWEEN 28700 AND 28713
-            OR i.vnum BETWEEN 28800 AND 28813 OR i.vnum BETWEEN 28900 AND 28913
-            OR i.vnum BETWEEN 210 AND 229 OR i.vnum BETWEEN 1160 AND 1169 OR i.vnum BETWEEN 2190 AND 2199
-            OR i.vnum BETWEEN 3170 AND 3179 OR i.vnum BETWEEN 5150 AND 5159 OR i.vnum BETWEEN 7170 AND 7179;" \
+    db -e "DELETE FROM player.item WHERE vnum IN (SELECT vnum FROM world.item_proto WHERE type IN (28, 29, 30, 37))
+            OR vnum BETWEEN 53001 AND 53999 OR vnum BETWEEN 55001 AND 55999 OR vnum IN (38200, 38201)
+            OR vnum BETWEEN 71114 AND 71121 OR vnum BETWEEN 50255 AND 50259 OR vnum IN (30270, 100300)
+            OR vnum BETWEEN 70063 AND 70065 OR vnum IN (80030, 72199, 30670, 71056)
+            OR vnum BETWEEN 28530 AND 28543 OR vnum BETWEEN 28600 AND 28613 OR vnum BETWEEN 28700 AND 28713
+            OR vnum BETWEEN 28800 AND 28813 OR vnum BETWEEN 28900 AND 28913
+            OR vnum BETWEEN 210 AND 229 OR vnum BETWEEN 1160 AND 1169 OR vnum BETWEEN 2190 AND 2199
+            OR vnum BETWEEN 3170 AND 3179 OR vnum BETWEEN 5150 AND 5159 OR vnum BETWEEN 7170 AND 7179;" \
         || echo "[playerbot-migrate] WARNING: could not take the Classic's left-out items out of the world" >&2
     db -e "UPDATE player.wheel_config SET enabled = 0;" >/dev/null 2>&1 || true
     db -e "UPDATE player.weekly_rank_state SET enabled = 0;" >/dev/null 2>&1 || true
