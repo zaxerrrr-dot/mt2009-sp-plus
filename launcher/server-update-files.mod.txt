@@ -70,6 +70,7 @@ linux-port/docker/game/special_item_group.dungeons.txt
 linux-port/docker/game/special_item_group.goblin.txt
 linux-port/docker/game/special_item_group.rumi.txt
 linux-port/docker/game/special_item_group.catchking.txt
+linux-port/docker/game/special_item_group.unique_attr.txt
 linux-port/docker/game/special_item_group.yutnori.txt
 linux-port/docker/game/special_item_group.flower.txt
 linux-port/docker/game/mob_drop_item.dropedit.append.txt

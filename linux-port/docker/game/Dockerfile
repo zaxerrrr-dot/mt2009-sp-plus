@@ -379,6 +379,8 @@ COPY src/serverfiles/share/package /opt/metin2/share/package
 #    their Moonlight chest (50011) instead of ours. No package, update or
 #    launcher writes it, so an edit there survives them all (Piciu713,
 #    26 September: an edit of the shipped file came back as the 16.09 one);
+#  * special_item_group.unique_attr.txt - the ItemShop rings' and amulets' bonuses
+#    (attr groups 100000-100005, MT2009_PLUS_UNIQUE_RING_BONUS_V1);
 #  * special_item_group.starter.txt - the starter chest chain the playerbot
 #    seed hands out and the package has no group for.
 #  * special_item_group.cors.txt - the higher Cor Draconis grades (50256-50259)
@@ -393,7 +395,7 @@ COPY src/serverfiles/share/package /opt/metin2/share/package
 #    50275-50277) and their pools 950401-950403 (MT2009_PLUS_RUMI_V1).
 #  * special_item_group.catchking.txt - Catch the King's three King's Loots
 #    (50968-50970, MT2009_PLUS_CATCH_KING_V1).
-COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt special_item_group.dungeons.txt special_item_group.goblin.txt special_item_group.rumi.txt special_item_group.catchking.txt /tmp/share-add/
+COPY special_item_group.moonlight.custom*.txt mob_drop_item.m3.append.txt special_item_group.moonlight.txt special_item_group.starter.txt special_item_group.cors.txt special_item_group.dungeons.txt special_item_group.goblin.txt special_item_group.rumi.txt special_item_group.catchking.txt special_item_group.unique_attr.txt /tmp/share-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland \
  && for f in /tmp/share-add/*.txt; do sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$f"; done \
  && m=/tmp/share-add/special_item_group.moonlight.txt; c=/tmp/share-add/special_item_group.moonlight.custom.txt \
@@ -401,7 +403,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && cat /tmp/share-add/mob_drop_item.m3.append.txt >> "$L/mob_drop_item.txt" \
  && f="$L/special_item_group.txt" \
  && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(50011|50187|50212|50213|50188|50189|50190|50191|50192|50193|50194|50195|50196|50186|50254|50256|50257|50258|50259|50270|50271|50023|5026[789]|5027[567]|95040[123]|50968|50969|50970|515[0-9][0-9]|516[0-4][0-9])([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
- && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt /tmp/share-add/special_item_group.dungeons.txt /tmp/share-add/special_item_group.goblin.txt /tmp/share-add/special_item_group.rumi.txt /tmp/share-add/special_item_group.catchking.txt >> "$f.new" \
+ && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt /tmp/share-add/special_item_group.dungeons.txt /tmp/share-add/special_item_group.goblin.txt /tmp/share-add/special_item_group.rumi.txt /tmp/share-add/special_item_group.catchking.txt /tmp/share-add/special_item_group.unique_attr.txt >> "$f.new" \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(50968|50969|50970)([^0-9]|$)' "$f.new")" = 3 \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(50270|50271)([^0-9]|$)' "$f.new")" = 2 \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(515[0-9][0-9]|516[0-4][0-9])([^0-9]|$)' "$f.new")" = 146 \
