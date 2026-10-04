@@ -11151,6 +11151,11 @@ def drop_file_view():
 from item_grants import install as install_item_grants
 install_item_grants(app, db, login_required, game_text)
 
+# MT2009_PLUS_DB_EDITOR_V1: "Edytor bazy danych" (dbeditor/).
+import dbeditor
+dbeditor.install(app, {"app": app, "db": db, "rows": rows, "one": one,
+                       "login_required": login_required, "game_text": game_text})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=7789)

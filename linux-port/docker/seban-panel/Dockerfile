@@ -18,6 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # copy of the game's file, shown until the game publishes its own; starred
 # for the same reason as VERSION.
 COPY app.py collector.py item_grants.py decisions.py decision_tables.py event_autogen.py gm_commands.txt CHANGELOG.md VERSION* special_item_group.snapshot*.txt ./
+COPY dbeditor ./dbeditor
 COPY templates ./templates
 COPY static ./static
 ENV PYTHONUNBUFFERED=1

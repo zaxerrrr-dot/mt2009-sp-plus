@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_V1: the database editor's hub (dbeditor/__init__.py). #}
+{% block title %}Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% block content %}
+<section class="panel">
+  <p class="eyebrow">EDYTOR BAZY DANYCH</p>
+  <h1>🗄️ Edytor bazy danych</h1>
+  <p class="muted">Zmiany przedmiotów, umiejętności, dropu i szkatułek bez programowania. Po zapisaniu kliknij <strong>Zastosuj</strong> – gra wczyta nowe dane po restarcie, a klienci graczy pobiorą nowe opisy sami przy następnym uruchomieniu.</p>
+  <div class="dbe-tiles">
+  {% for endpoint, icon, title, description in sections %}
+    <a class="dbe-tile" href="{{ url_for(endpoint) }}"><span class="dbe-icon">{{ icon }}</span><strong>{{ title }}</strong><small>{{ description }}</small></a>
+  {% else %}
+    <p class="muted">Żadna część edytora nie jest jeszcze zainstalowana.</p>
+  {% endfor %}
+  </div>
+</section>
+<style>
+.dbe-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px}
+.dbe-tile{display:flex;flex-direction:column;gap:6px;padding:18px;border-radius:12px;background:var(--panel-2,#131a24);border:1px solid var(--line,#253042);text-decoration:none;color:inherit}
+.dbe-tile:hover{border-color:var(--accent,#d6a74a)}
+.dbe-icon{font-size:28px}
+.dbe-tile small{color:var(--muted,#8a96a8)}
+</style>
+{% endblock %}
