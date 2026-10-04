@@ -174,6 +174,7 @@ linux-port/docker/game/src/server/game/src/desc_manager.cpp
 linux-port/docker/game/src/server/game/src/desc_manager.h
 linux-port/docker/game/src/server/game/src/event.cpp
 linux-port/docker/game/src/server/game/src/exchange.cpp
+linux-port/docker/game/src/server/game/src/exchange.h
 linux-port/docker/game/src/server/game/src/guild.cpp
 linux-port/docker/game/src/server/game/src/guild.h
 linux-port/docker/game/src/server/game/src/ikarus_shop_manager.cpp

@@ -17,6 +17,79 @@ every version here.
 
 ---
 
+## 2.22.0 — 2026-10-04 — Boty w dungeonach, rozmowy z botami, Edytor bazy danych
+
+Wymaga klienta **2.0.52** (pobierze go launcher albo patcher).
+
+### 🧪 Funkcje eksperymentalne
+
+> **Szepty z botami i wyszukiwarka botów na dungeony to opcje eksperymentalne.** Jeśli coś nie działa albo bot odpisuje bez sensu – wyślijcie screenshot rozmowy na kanale **#bugi-i-błędy** w temacie **CHAT I WIADOMOŚCI**. Każdy screen pomaga nam poprawić rozmowy.
+
+**Mądrzejsze rozmowy z botami (szept, wołaj, handlowy @)**
+- Boty odpowiadają na szepty z sensem: o expie, spotach, eventach, dropie, poradach i sprzęcie.
+- Bronią swojego spota („Spadaj”, „To mój spot”…), a jak ustąpią – mówią to.
+- Na czacie handlowym @ wystawiają ogłoszenia K>/S> z podlinkowanymi przedmiotami; księgi z nazwą umiejętności (np. „S> KU Aura Miecza”).
+- Pamiętają, co same napisały na wołaj i @ – rozumieją odpowiedź na swoje ogłoszenie („jest aktualne?”, „kupię ten naszyjnik”).
+- Bot, który ma przedmiot na straganie, mówi dokładnie gdzie stoi i za ile (np. „stoi w M1 Joan przy kowalu za 2.7kk”).
+- Handel przez szept: bot się targuje, mówi, czemu bierze mniej sztuk, umawia się w konkretnym miejscu („jestem w M1 Yongan, będę czekać przy kowalu”, z kanałem, gdy jesteś na innym) i w wymianie przyjmuje dokładnie umówiony przedmiot i ilość. Księgi rozróżnia po umiejętności.
+- Na Twój szept odpowiada tylko bot, do którego piszesz – inne się nie wtrącają.
+- Bot w dungeonie albo w grupie z innym graczem nie handluje, tylko mówi, że jest zajęty.
+- „!BP” na czacie dużo rzadziej.
+
+**Wyszukiwarka botów na dungeony**
+- Napisz na czacie np. „chcę iść na bibliotekę kto chętny” albo „ktoś na smoka?” – odpisze Ci 1–3 botów Twojego królestwa w widełkach poziomu dungeonu (od jego poziomu do +15), np. „Cześć, mogę iść z tobą, mam 47 lvl, sura wp, mogę przyjść?”.
+- Odpowiedz „tak” – bot teleportuje się pod wejście i czeka 5 minut. Zaproś go do grupy, a wejdzie z Tobą do środka.
+
+### ⚔️ Boty w dungeonach
+- **Boty same chodzą na dungeony** według swojego poziomu: zwołują drużynę na czacie królestwa („zbieram ekipę na razadora, kto chętny?”), zbierają się pod wejściem, wchodzą i przechodzą dungeon – z tymi samymi czasami odnowienia co gracze. Biblioteka Wiedzy, Wzgórze Wukonga, Ruiny Skorpiona, Starożytna Dżungla (gdy moduł Arezzo jest włączony), Razador, Nemere i Leże Smoka. Wieża Demonów i Katakumby zostają przy swoich rajdach botów. Można to wyłączyć w panelu Seban („Dungeony botów”).
+- **Boty z Twojej grupy wchodzą z Tobą do każdego dungeonu** – dodane normalnie do grupy, z wyszukiwarki i Towarzysz. W środku walczą obok Ciebie, przechodzą za Tobą między salami, nie zabierają Twojego dropu, same używają pieczęci i kluczy, które im wypadną, i wychodzą razem z Tobą.
+
+### 🛠️ Edytor bazy danych (panel Seban)
+Nowy dział **„Edytor bazy danych”** – zmiany gry w przeglądarce, z historią i cofaniem:
+- **Przedmioty** (nazwy, poziomy, bonusy, obrażenia) i **umiejętności** (czas działania, odnowienie, obrażenia).
+- **Drop z potworów** (całe grupy naraz) i **szkatułki**.
+- **Potwory i bossowie**, **respawn bossów i metinów** (uwzględnia ustawienie respawnu z panelu) i **spawny potworów na mapach** z podglądem mapy.
+- **Sklepy NPC**, **ulepszanie u kowala**, **bonusy do zmiany i 6/7**, **tabela doświadczenia**, **łowienie ryb**.
+- „Zastosuj” wczytuje zmiany restartem gry. Pliki klienta (nazwy, bonusy, opisy) pobierasz w panelu jako zip – rozpakuj w folderze gry albo wyślij znajomemu, który gra na tym serwerze. Jest też przycisk „oryginalne pliki”.
+
+### 💰 Gospodarka
+- **Księgi umiejętności:** żadna tańsza niż 100k; kolejne księgi każdej ścieżki tanieją w kolejności, w jakiej boty je czytają (najważniejsze ceny zostają, Odbicie 180k). Ceny ksiąg idą za inflacją – na starcie serwera taniej, im więcej yang w świecie, tym drożej.
+- **Skarbiec gildii** (wpłaty i zrzutki botów) można wydać tylko na gildię – kupno ziemi i budynki. Wypłata do ekwipunku jest wyłączona; za ziemię i budynki najpierw płaci skarbiec, resztę lider.
+- **Wymiana ksiąg u Seon-Hae:** prawy klik wkłada księgę do okna, całe stosy, wiele wymian naraz.
+
+### 🎉 Eventy (panel)
+- **Event szkatułek:** dowolna szkatułka (vnum) wypada z potworów z wybraną szansą – od razu albo o zaplanowanej godzinie.
+- **„Generuj tydzień”** układa tygodniowy harmonogram eventów.
+
+### 👗 Kostiumy i przedmioty
+- **Zestawy kostiumów** jak na wiki Metin2 (Bonus Zestawu) – 50 zestawów, także wersje „+” (np. Pancerz Horroru+ z Rogami Horroru+): +800 HP i +15 ataku, z podpowiedzią bonusu zestawu.
+- **Pierścienie, lizak i amulety z ItemShopu** dają wreszcie swoje bonusy (wartości jak na wiki) i mają je w opisie.
+- **Pieczęcie wierzchowców** bez „UNKNOWN_TYPE[109]”.
+- **Wierzchowiec z kostiumu** daje statystyki konia (ST/DX/HT/IQ i obrona wg poziomu konia).
+- **Okno kostiumów:** sloty wierzchowca i szarfy na swoich miejscach.
+
+### 🧑‍🤝‍🧑 Towarzysz
+- Nowe panele **Kostiumy** i **Alchemia** w opcjach Towarzysza.
+- Towarzysz na wierzchowcu buffuje i walczy normalnie.
+
+### 🏹 Inne
+- **Auto Łowy:** szybki start/stop bez okna – **Shift+K** albo przycisk na pasku bocznym.
+- **Wojna królestw wyłączona**; zwykłe wojny gildii działają dalej, także z gildiami z innych królestw.
+- **Wykonawca Bitew** pokazuje wojny gildii botów i pozwala je oglądać.
+- **Emerytura botów** zawsze się kończy.
+- **Lepsze logi błędów połączenia** – przy nagłym rozłączeniu serwer zapisuje szczegóły, co pomoże szybciej znaleźć przyczynę.
+
+## Klient 2.0.52 — 2026-10-04 — Zestawy kostiumów, Auto Łowy Shift+K, paczka dbdata
+
+- Zestawy kostiumów z wiki z podpowiedzią bonusu zestawu; okno kostiumów z poprawionymi slotami wierzchowca i szarfy.
+- Auto Łowy: szybki start/stop Shift+K i przycisk na pasku bocznym.
+- Wymiana ksiąg u Seon-Hae: prawy klik, stosy, wiele naraz.
+- Towarzysz: panele Kostiumy i Alchemia.
+- Opisy bonusów pierścieni i amuletów z ItemShopu; pieczęcie wierzchowców bez „UNKNOWN_TYPE[109]”.
+- Okno gildii bez przycisku „Wypłać”.
+- Nowa paczka `pack/dbdata` na pliki z Edytora bazy danych (patcher jej nie nadpisuje).
+- MT2009-Patcher 1.1: nie nadpisuje plików z Edytora bazy danych.
+
 ## 2.21.1 — 2026-10-04 — Czaszka tylko nad bossami, poprawka panelu
 
 Bez zmian w kliencie (zostaje **2.0.51**).

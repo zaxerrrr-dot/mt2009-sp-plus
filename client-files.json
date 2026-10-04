@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.51",
+  "version": "2.0.52",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -19,8 +19,8 @@
     },
     {
       "path": "MT2009-Patcher.exe",
-      "size": 37385216,
-      "sha256": "3D3CB07AD6D8ACA879F5C3C7047CC71B54962E4BAC018CDF40B00709063F9FE7"
+      "size": 37385728,
+      "sha256": "9445086B4712D0D63C519BCD3D24A9DCA3BA748844B2AAB12523C36ACB0E0E50"
     },
     {
       "path": "MT2009-Patcher.exe.config",
@@ -84,8 +84,8 @@
     },
     {
       "path": "pack/gamedata.index",
-      "size": 4180,
-      "sha256": "D4ABB507DD7EECB14A23782602955A08FC8EE6717091E596E8F3583C62474797"
+      "size": 4068,
+      "sha256": "D1ADB1524A73D61B8EDEE86255B9108DA2CFFC61A92339AF878747F1C9236DF4"
     },
     {
       "path": "pack/gf_misc.index",
@@ -119,13 +119,13 @@
     },
     {
       "path": "pack/Index",
-      "size": 741,
-      "sha256": "365BAAE35F2D55DF4802BFB5A7FAEC0DA3421C3F09AD732F547846C2531A698D"
+      "size": 750,
+      "sha256": "6EEC011A9ECE9BEBCBE93359F77EBD700F698FF52C789D551C2063D300B96051"
     },
     {
       "path": "pack/locale.index",
-      "size": 23604,
-      "sha256": "89D05DBAE47018F9B71F8A8AED4B56BA92747F4EAADC7772F28CFAA9A3E1F406"
+      "size": 23508,
+      "sha256": "1B4956BFF3952199B398D117842A4C3B997A1E7D1489135C34D39B526B1CFD63"
     },
     {
       "path": "pack/maps.index",
@@ -154,8 +154,8 @@
     },
     {
       "path": "pack/root.index",
-      "size": 22068,
-      "sha256": "39C53F834F8AD4F8BB6C5A57F5B9DAA06A896B4FB9F0FB8D0E2764E0B65BB7FD"
+      "size": 22268,
+      "sha256": "4080FFD4AD1682695A3A913DC27F032F93C30D3E6AB021834350C6EAEE990356"
     }
   ]
 }

@@ -1,18 +1,18 @@
 {
-  "schema": 1,
-  "channel": "stable",
-  "publishedAt": "2026-10-04T11:08:06Z",
-  "statusMessage": "MT2009 PLUS 2.21.1: czaszka tylko nad bossami i mini-bossami, poprawka panelu.",
-  "server": {
-    "version": "2.21.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.21.1/metin2-server-update-2.21.1.zip",
-    "sha256": "0CE9D88D7493EACA0F2E7DDA05B0073CC9AA02C876AE3EFF7BFFD07854986669",
-    "size": 104925840
-  },
-  "client": {
-    "version": "2.0.51",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.51/metin2-client-update-2.0.51.zip",
-    "sha256": "75EDEE1C6082821BE1E41B56F02BB4C9A457288B408D4E87E3BFA9C0A8DA3FC4",
-    "size": 357316167
-  }
+ "schema": 1,
+ "channel": "stable",
+ "publishedAt": "2026-10-04T21:22:39Z",
+ "statusMessage": "MT2009 PLUS 2.22.0: boty w dungeonach, rozmowy z botami, Edytor bazy danych. Klient 2.0.52.",
+ "server": {
+  "version": "2.22.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.22.0/metin2-server-update-2.22.0.zip",
+  "sha256": "3F2F84721E07B928A1910DE01A159350E77A63C670C6013D48B65D8BBBBF9FD8",
+  "size": 106531229
+ },
+ "client": {
+  "version": "2.0.52",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.52/metin2-client-update-2.0.52.zip",
+  "sha256": "97EF5DE55B8BA9A495E205A3DC9C2E9BE6DF2A166FC27ADD9724396CA1A9852B",
+  "size": 357334948
+ }
 }
