@@ -347,8 +347,16 @@ namespace
 		s_PlayerBotTradeMeaning.vnum = item->GetVnum();
 		s_PlayerBotTradeMeaning.count = (int)item->GetCount();
 		s_PlayerBotTradeMeaning.unit = price / (item->GetCount() ? item->GetCount() : 1);
-		s_PlayerBotTradeMeaning.name = item->GetProto()->szLocaleName;
+		// A skill book says which skill it teaches: "Ksiega Umiejetnosci" alone
+		// told nobody what was for sale (the owner, 4 October).
 		std::string name = item->GetProto()->szLocaleName;
+		if (item->GetType() == ITEM_SKILLBOOK && item->GetSocket(0) > 0)
+		{
+			const char* skill = GetPlayerBotSkillName((DWORD)item->GetSocket(0));
+			if (skill && strcmp(skill, "?") != 0)
+				name = std::string("KU ") + skill;
+		}
+		s_PlayerBotTradeMeaning.name = name;
 		if (item->GetCount() > 1)
 			name += " x" + playerbot_conv::ToString((long long)item->GetCount());
 		static const char* const k[] = { "S> %s - %s, pw", "Sprzedam %s, %s, pisz pw", "S> %s %s do negocjacji, pw",

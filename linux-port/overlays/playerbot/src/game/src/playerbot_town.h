@@ -23,6 +23,8 @@
 
 namespace
 {
+	// playerbot_chat_trade.h, below: a skill's Polish name ("KU Aura Miecza" on a sign).
+	const char* GetPlayerBotSkillName(DWORD skillVnum);
 	// Iwakura's gambler, defined in playerbot_gambler.h after this file: a
 	// session that takes pieces from the storekeeper and the bag to the anvil
 	// and refines them for the counter. It runs inside a town visit - the
@@ -5909,6 +5911,7 @@ namespace
 		// Iwakura's rules (playerbot_shop_signs.h), and the best line's name for
 		// the world channel. The counter is sorted best first.
 		const char* pszBestName = NULL;
+		char szBestBookName[64] = { 0 };
 		std::vector<LPITEM> signGoods;
 		bool grid[PLAYERBOT_SHOP_GRID_CELLS];
 		memset(grid, 0, sizeof(grid));
@@ -6080,7 +6083,20 @@ namespace
 				countedListed[countedKind] += (int)item->GetCount();
 
 			if (!pszBestName)
+			{
 				pszBestName = proto->szLocaleName;
+				// A skill book by its skill ("KU Aura Miecza"), not "Ksiega
+				// Umiejetnosci" that names none (the owner, 4 October).
+				if (offer.dwSkillVnum)
+				{
+					const char* skill = GetPlayerBotSkillName(offer.dwSkillVnum);
+					if (skill && strcmp(skill, "?") != 0)
+					{
+						snprintf(szBestBookName, sizeof(szBestBookName), "KU %s", skill);
+						pszBestName = szBestBookName;
+					}
+				}
+			}
 			signGoods.push_back(item);
 		}
 		// Asked again here rather than trusting the scan above: the inventory

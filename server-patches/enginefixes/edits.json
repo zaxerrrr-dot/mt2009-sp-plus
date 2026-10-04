@@ -244,5 +244,29 @@
   "marker": "MT2009_PLUS_GUILD_TREASURY_V1 (cmd_gm.cpp pay)",
   "old": "\t\t\t\t{\n\t\t\t\t\tch->ChangeGold(-t->dwPrice);\n",
   "new": "\t\t\t\t{\n\t\t\t\t\t// MT2009_PLUS_GUILD_TREASURY_V1 (cmd_gm.cpp pay): the treasury's\n\t\t\t\t\t// part first (it can only have grown since the check), the\n\t\t\t\t\t// rest from the master's bag.\n\t\t\t\t\tYANG fromTreasury = ch->GetGuild() ? MIN((YANG)t->dwPrice, ch->GetGuild()->GetGuildMoneyAvailable()) : 0;\n\t\t\t\t\tif (fromTreasury > 0 && !ch->GetGuild()->SpendGuildMoney(ch, fromTreasury, \"building\"))\n\t\t\t\t\t\tfromTreasury = 0;\n\t\t\t\t\tch->ChangeGold(-((YANG)t->dwPrice - fromTreasury));\n\t\t\t\t\tif (fromTreasury > 0)\n\t\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.\", (long long)fromTreasury, (long long)((YANG)t->dwPrice - fromTreasury));\n"
+ },
+ {
+  "file": "desc.h",
+  "marker": "MT2009_PLUS_PACKET_TRACE_V1 (desc.h)",
+  "old": "\t\tbool\t\t\tm_bBot;\n\t\tbool\t\t\tm_bChannelStatusRequested;\n",
+  "new": "\t\tbool\t\t\tm_bBot;\n\t\tbool\t\t\tm_bChannelStatusRequested;\n\n\t// MT2009_PLUS_PACKET_TRACE_V1 (desc.h): the last packets this server sent\n\t// to the connection, dumped to syserr when the client's own stream breaks\n\t// (input.cpp, \"UNKNOWN HEADER\"). The supporters' server lost every player\n\t// of one core at once twice on 4 October and nothing said what the core\n\t// had sent them; the next time the dump does.\n\tpublic:\n\t\tvoid\t\t\tMt2009NoteSent(const void* c_pvData, int iSize);\n\t\tvoid\t\t\tMt2009DumpSent(const char* c_pszWhy);\n\tprotected:\n\t\tstruct TMt2009Sent { DWORD dwTime; int iSize; BYTE bHeader; BYTE bSub; char szText[48]; };\n\t\tenum { MT2009_SENT_TRACE = 48 };\n\t\tTMt2009Sent\t\tm_aMt2009Sent[MT2009_SENT_TRACE] = {};\n\t\tunsigned int\tm_uMt2009SentNext = 0;\n"
+ },
+ {
+  "file": "desc.cpp",
+  "marker": "MT2009_PLUS_PACKET_TRACE_V1 (desc.cpp)",
+  "old": "void DESC::BufferedPacket(const void * c_pvData, int iSize)\n{\n\tif (m_bBot)\n\t\treturn;\n",
+  "new": "// MT2009_PLUS_PACKET_TRACE_V1 (desc.cpp): one line of the connection's trace -\n// the header, the size, for a chat line its type and the start of its text\n// (the bots' chat commands travel there); and any packet that is suspicious on\n// its own - a chat line whose size field is not its real size, or anything\n// over 16 KB - goes to syserr at once with the receiver.\nvoid DESC::Mt2009NoteSent(const void* c_pvData, int iSize)\n{\n\tif (!c_pvData || iSize <= 0)\n\t\treturn;\n\tconst BYTE* p = static_cast<const BYTE*>(c_pvData);\n\tTMt2009Sent& s = m_aMt2009Sent[m_uMt2009SentNext++ % MT2009_SENT_TRACE];\n\ts.dwTime = get_dword_time();\n\ts.iSize = iSize;\n\ts.bHeader = p[0];\n\ts.bSub = 0;\n\ts.szText[0] = '\\0';\n\tconst char* who = GetCharacter() ? GetCharacter()->GetName() : GetHostName();\n\tif (p[0] == HEADER_GC_CHAT && iSize >= (int)sizeof(TPacketGCChat))\n\t{\n\t\tconst TPacketGCChat* chat = reinterpret_cast<const TPacketGCChat*>(p);\n\t\ts.bSub = chat->type;\n\t\tconst int textLen = MIN((int)sizeof(s.szText) - 1, iSize - (int)sizeof(TPacketGCChat));\n\t\tfor (int i = 0; i < textLen; ++i)\n\t\t{\n\t\t\tconst BYTE c = p[sizeof(TPacketGCChat) + i];\n\t\t\ts.szText[i] = (c < 32 || c == 127) ? '.' : (char)c;\n\t\t}\n\t\ts.szText[MAX(0, textLen)] = '\\0';\n\t\tif ((int)chat->size != iSize)\n\t\t\tsys_err(\"PACKET_TRACE: chat size field %u != real size %d to %s type %u text '%s'\",\n\t\t\t\t\t(unsigned int)chat->size, iSize, who, (unsigned int)chat->type, s.szText);\n\t}\n\tif (iSize > 16384)\n\t\tsys_err(\"PACKET_TRACE: big packet header %u size %d to %s\", (unsigned int)p[0], iSize, who);\n}\n\nvoid DESC::Mt2009DumpSent(const char* c_pszWhy)\n{\n\tconst DWORD now = get_dword_time();\n\tsys_err(\"PACKET_TRACE: %s - %s (%s) phase %d, the last packets sent to it, oldest first:\",\n\t\t\tc_pszWhy ? c_pszWhy : \"?\", GetCharacter() ? GetCharacter()->GetName() : \"-\", GetHostName(), m_iPhase);\n\tconst unsigned int count = MIN((unsigned int)MT2009_SENT_TRACE, m_uMt2009SentNext);\n\tfor (unsigned int k = 0; k < count; ++k)\n\t{\n\t\tconst TMt2009Sent& s = m_aMt2009Sent[(m_uMt2009SentNext - count + k) % MT2009_SENT_TRACE];\n\t\tif (s.bHeader == HEADER_GC_CHAT)\n\t\t\tsys_err(\"PACKET_TRACE:   -%ums header %u size %d chat type %u '%s'\", now - s.dwTime,\n\t\t\t\t\t(unsigned int)s.bHeader, s.iSize, (unsigned int)s.bSub, s.szText);\n\t\telse\n\t\t\tsys_err(\"PACKET_TRACE:   -%ums header %u size %d\", now - s.dwTime, (unsigned int)s.bHeader, s.iSize);\n\t}\n}\n\nvoid DESC::BufferedPacket(const void * c_pvData, int iSize)\n{\n\tif (m_bBot)\n\t\treturn;\n\tMt2009NoteSent(c_pvData, iSize); // MT2009_PLUS_PACKET_TRACE_V1 (desc.cpp buffered)\n"
+ },
+ {
+  "file": "desc.cpp",
+  "marker": "MT2009_PLUS_PACKET_TRACE_V1 (desc.cpp packet)",
+  "old": "#ifdef ENABLE_SYSLOG_PACKET_SENT\n\tstd::string stName = GetCharacter()? GetCharacter()->GetName() : GetHostName();",
+  "new": "\t// MT2009_PLUS_PACKET_TRACE_V1 (desc.cpp packet): every packet into the trace.\n\tMt2009NoteSent(c_pvData, iSize);\n\n#ifdef ENABLE_SYSLOG_PACKET_SENT\n\tstd::string stName = GetCharacter()? GetCharacter()->GetName() : GetHostName();"
+ },
+ {
+  "file": "input.cpp",
+  "marker": "MT2009_PLUS_PACKET_TRACE_V1 (input.cpp)",
+  "old": "\t\t\tsys_err(\"UNKNOWN HEADER: %d, LAST HEADER: %d(%d), REMAIN BYTES: %d, fd: %d\",\n\t\t\t\t\tbHeader, bLastHeader, iLastPacketLen, m_iBufferLeft, lpDesc->GetSocket());\n",
+  "new": "\t\t\tsys_err(\"UNKNOWN HEADER: %d, LAST HEADER: %d(%d), REMAIN BYTES: %d, fd: %d\",\n\t\t\t\t\tbHeader, bLastHeader, iLastPacketLen, m_iBufferLeft, lpDesc->GetSocket());\n\t\t\t// MT2009_PLUS_PACKET_TRACE_V1 (input.cpp): who it was and what the\n\t\t\t// server had sent it just before - the client's stream breaks after\n\t\t\t// a packet it could not read.\n\t\t\tlpDesc->Mt2009DumpSent(\"UNKNOWN HEADER\");\n"
  }
 ]
