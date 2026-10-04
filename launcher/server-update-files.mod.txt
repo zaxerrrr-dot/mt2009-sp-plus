@@ -196,6 +196,7 @@ linux-port/docker/game/src/server/game/src/item.cpp
 linux-port/docker/game/src/server/game/src/item_attribute.cpp
 linux-port/docker/game/src/server/game/src/item_manager.cpp
 linux-port/docker/game/src/server/game/src/item_manager.h
+linux-port/docker/game/src/server/game/src/questlua.cpp
 linux-port/docker/game/src/server/game/src/questlua_pc.cpp
 linux-port/docker/game/src/server/game/src/main.cpp
 # Not ours to change, and shipped for that reason: a fork's companion system

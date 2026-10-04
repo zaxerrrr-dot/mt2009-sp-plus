@@ -28,5 +28,29 @@
   "marker": "MT2009_PLUS_GUILD_WAR_JOIN_V1 (command)",
   "old": "ACMD(do_war)\n{\n",
   "new": "// MT2009_PLUS_GUILD_WAR_JOIN_V1 (command): the client's \"Wejdz na wojne\" button (the guild\n// war board and the notice at the war's start, uiguild.py / game.py). The\n// same entry as the guild_war_join letter's \"Tak\": the war map of an arena\n// war, the guild's camp on the kingdom's guild map in a war on a bot guild.\nACMD(do_guild_war_enter)\n{\n\tCGuild* g = ch->GetGuild();\n\tif (!g)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Wojna] Nie nalezysz do gildii.\");\n\t\treturn;\n\t}\n\tconst DWORD dwOppGID = g->UnderAnyWar();\n\tif (!dwOppGID)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Wojna] Twoja gildia nie prowadzi teraz wojny.\");\n\t\treturn;\n\t}\n\tif (ch->GetWarMap())\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Wojna] Jestes juz na polu wojny.\");\n\t\treturn;\n\t}\n\tif (ch->IsDead() || !ch->CanWarp())\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Wojna] Teraz nie mozesz sie przeniesc - sprobuj za chwile.\");\n\t\treturn;\n\t}\n\tg->GuildWarEntryAccept(dwOppGID, ch);\n}\n\nACMD(do_war)\n{\n"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_OBSERVE_V1 (include)",
+  "old": "#include \"guild_manager.h\"\n",
+  "new": "#include \"guild_manager.h\"\n#include \"playerbot_manager.h\" // MT2009_PLUS_GUILD_WAR_OBSERVE_V1 (include)\n"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_OBSERVE_V1 (list)",
+  "old": "\t\tif (g->GetGuildWarType(g2) == GUILD_WAR_TYPE_FIELD)\n\t\t\treturn;\n",
+  "new": "\t\t// MT2009_PLUS_GUILD_WAR_OBSERVE_V1 (list): a field war has no war map - but the bots'\n\t\t// arena war is a field war with its own copy of the arena, and the Battle\n\t\t// Executor lists it (playerbot_guild_war.h).\n\t\tif (g->GetGuildWarType(g2) == GUILD_WAR_TYPE_FIELD && !CPlayerBotManager::instance().IsPlayerBotArenaWar(g1, g2))\n\t\t\treturn;\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_OBSERVE_V1 (pc include)",
+  "old": "#include \"war_map.h\"\n",
+  "new": "#include \"war_map.h\"\n#include \"playerbot_manager.h\" // MT2009_PLUS_GUILD_WAR_OBSERVE_V1 (pc include)\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_OBSERVE_V1 (watch)",
+  "old": "\t\tPIXEL_POSITION pos;\n\n\t\tDWORD dwMapIndex = g1->GetGuildWarMapIndex(gid2);\n",
+  "new": "\t\tPIXEL_POSITION pos;\n\n\t\t// MT2009_PLUS_GUILD_WAR_OBSERVE_V1 (watch): an onlooker of the bots' arena war goes to\n\t\t// its copy of the arena (playerbot_guild_war.h), not to a war map it has none of.\n\t\t{\n\t\t\tlong lArena = 0, lX = 0, lY = 0;\n\t\t\tif (g1->GetGuildWarType(gid2) == GUILD_WAR_TYPE_FIELD &&\n\t\t\t\t\tCPlayerBotManager::instance().GetPlayerBotArenaObserverPos(gid1, gid2, lArena, lX, lY))\n\t\t\t{\n\t\t\t\tLPCHARACTER chWatch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\t\t\tif (!chWatch || chWatch->IsHack())\n\t\t\t\t\treturn 0;\n\t\t\t\tchWatch->SetQuestFlag(\"war.is_war_member\", 0);\n\t\t\t\tchWatch->SaveExitLocation();\n\t\t\t\tchWatch->WarpSet(lX, lY, lArena);\n\t\t\t\treturn 0;\n\t\t\t}\n\t\t}\n\n\t\tDWORD dwMapIndex = g1->GetGuildWarMapIndex(gid2);\n"
  }
 ]

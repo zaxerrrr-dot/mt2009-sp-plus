@@ -4309,6 +4309,41 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 				candidates.push_back(live[i].second);
 		}
 	}
+	// MT2009_PLUS_BOT_RETIREMENT_FORCE_V1: a batch always ends with its bots'
+	// game over (the owner, 4 October: "wybor musi zakonczyc sie wyborem i
+	// koncem gry botow"). When no bot of any level can be sent to a market,
+	// any bot in this core's world is taken, whatever it is doing and whatever
+	// its level - and it skips the sale (bForced, straight to the wipe). Only
+	// the identities that must stay are spared: the shouters, the 27 Legends,
+	// a player's companion, a test cohort, a bot a person has taken over;
+	// a guild's leader only when there is nobody else.
+	bool bForcedPick = false;
+	if (candidates.empty())
+	{
+		std::vector<DWORD> masters;
+		for (size_t i = 0; i < live.size(); ++i)
+		{
+			const DWORD pid = live[i].second;
+			if (m_mapBots.find(pid) == m_mapBots.end())
+				continue;
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+			if (!ch || !ch->IsItemLoaded())
+				continue;
+			if (IsPlayerBotShouterPID(pid) || IsPlayerBotMedalShouterPID(pid) ||
+					IsPlayerBotLegendTier(GetPlayerBotLegendTier(pid)) || GetPlayerBotLegendNameSlot(ch->GetName()) >= 0 ||
+					IsPlayerBotSidekickPID(pid) || IsPlayerBotArezzoCohortPID(pid) ||
+					IsPlayerBotArezzoDungeonCohortPID(pid) || IsPlayerBotTakeoverHold(pid))
+				continue;
+			CGuild* guild = ch->GetGuild();
+			if (guild && guild->GetMasterPID() == pid)
+				masters.push_back(pid);
+			else
+				candidates.push_back(pid);
+		}
+		if (candidates.empty())
+			candidates.swap(masters);
+		bForcedPick = !candidates.empty();
+	}
 	if (candidates.empty())
 	{
 		s_dwPlayerBotRetireNextPickTime = dwNow + 60000;
@@ -4368,6 +4403,10 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 	entry.dwLastSeen = dwNow;
 	s_mapPlayerBotRetiring[dwPID] = entry;
 	AuditPlayerBotRetireEvent(entry.dwBatchId, dwPID, "picked", pickedCh->GetName());
+	// MT2009_PLUS_BOT_RETIREMENT_FORCE_V1: a forced pick sells nothing - its game
+	// ends at once (wiped and logged out by ProcessRetirementResets).
+	if (bForcedPick)
+		BeginPlayerBotRetirementClose(dwPID, s_mapPlayerBotRetiring[dwPID], "forced: no bot could go to a market");
 	++s_uPlayerBotRetireBatchQueued;
 	if (s_uPlayerBotRetireBatchQueued >= s_dwPlayerBotRetireCount)
 		s_bPlayerBotRetireBatchDone = true;
@@ -4380,8 +4419,8 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 			? s_dwPlayerBotRetireCount - s_uPlayerBotRetireBatchQueued : 0;
 	s_dwPlayerBotRetireNextPickTime = dwNow + (left > 0 ? remaining / (DWORD)left : 0);
 
-	sys_log(0, "PLAYERBOT_RETIRE: picked pid=%u name=%s level=%u (%u/%u batch id=%u, band %u-%u, pool=%u)",
-			dwPID, pickedCh->GetName(), (unsigned int)pickedCh->GetLevel(),
+	sys_log(0, "PLAYERBOT_RETIRE: picked pid=%u name=%s level=%u%s (%u/%u batch id=%u, band %u-%u, pool=%u)",
+			dwPID, pickedCh->GetName(), (unsigned int)pickedCh->GetLevel(), bForcedPick ? " FORCED" : "",
 			(unsigned int)s_uPlayerBotRetireBatchQueued, (unsigned int)s_dwPlayerBotRetireCount,
 			s_dwPlayerBotRetireBatchId, (unsigned int)bLevelLo, (unsigned int)bLevelHi,
 			(unsigned int)candidates.size());
@@ -4437,7 +4476,9 @@ void CPlayerBotManager::ProcessRetirementResets(DWORD dwNow)
 			if (entry.stage == PLAYERBOT_RETIRE_SHOPPING && !entry.bStallSeen &&
 					playerbot_offline::requests.find(pid) == playerbot_offline::requests.end() &&
 					dwNow - entry.dwPickedAt > PLAYERBOT_RETIRE_GIVE_UP_MS)
-				AbortPlayerBotRetirement(pid, "no stall could be opened in 30 minutes");
+				// MT2009_PLUS_BOT_RETIREMENT_FORCE_V1: no stall in 30 minutes ends the
+				// game without a sale, instead of calling the retirement off.
+				BeginPlayerBotRetirementClose(pid, entry, "no stall could be opened in 30 minutes");
 			break;
 
 		case PLAYERBOT_RETIRE_SELLING:
@@ -8147,6 +8188,41 @@ void CPlayerBotManager::OnGuildWarDeclared(DWORD dwGuildFrom, DWORD dwGuildTo, B
 void CPlayerBotManager::OnPlayerFieldWarEntry(LPCHARACTER ch, DWORD dwMyGuild, DWORD dwOppGuild)
 {
 	EnterPlayerBotFieldWar(ch, dwMyGuild, dwOppGuild);
+}
+
+// MT2009_PLUS_GUILD_WAR_OBSERVE_V1: the bots' wars are field wars, which the
+// engine's war list left out ("w tej chwili nie ma zadnych wojen" at the
+// Battle Executor while three were being fought, the owner, 4 October). One
+// with its arena copy on this core is listed, and an onlooker is put at the
+// arena's own observer start (the war map's third position), or by the
+// middle ground when the map has none.
+bool CPlayerBotManager::IsPlayerBotArenaWar(DWORD dwGuild1, DWORD dwGuild2)
+{
+	return GetPlayerBotWarArena(CGuildManager::instance().FindGuild(dwGuild1),
+			CGuildManager::instance().FindGuild(dwGuild2)) != 0;
+}
+
+bool CPlayerBotManager::GetPlayerBotArenaObserverPos(DWORD dwGuild1, DWORD dwGuild2, long& lMapIndex, long& x, long& y)
+{
+	const long arena = GetPlayerBotWarArena(CGuildManager::instance().FindGuild(dwGuild1),
+			CGuildManager::instance().FindGuild(dwGuild2));
+	if (arena == 0)
+		return false;
+	PIXEL_POSITION pos;
+	if (CWarMapManager::instance().GetStartPosition(PLAYERBOT_GUILD_WAR_ARENA_MAP, 2, pos))
+	{
+		x = pos.x;
+		y = pos.y;
+	}
+	else if (const TPlayerBotWarSide* sides = GetPlayerBotArenaSides())
+	{
+		x = sides->groundX;
+		y = sides->groundY;
+	}
+	else
+		return false;
+	lMapIndex = arena;
+	return true;
 }
 
 // A player's blow at a bot, or at a person in a party or a guild
