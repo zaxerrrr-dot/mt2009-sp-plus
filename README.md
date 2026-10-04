@@ -8,19 +8,18 @@
 [![Wesprzyj projekt](https://img.shields.io/badge/Wesprzyj_projekt_–_postaw_kawkę-1E88E5?style=for-the-badge&logo=buymeacoffee&logoColor=white)](https://buycoffee.to/mt2009plus)
 
 Lokalny świat Metin2 singleplayer z autonomicznymi postaciami (Playerbots),
-oparty na oficjalnym wydaniu **Metin2 Playerbots** autorstwa Tieru (pliki
-serwerowe mt2009, wersja 2.2.0) — **rozszerzony o systemy, których oficjalne
-wydanie nie ma**: kostiumy, fryzury, nakładki na broń, szarfy, mounty, pety
-i alchemię (Smocze Kamienie), razem ponad 2 200 nowych przedmiotów.
+oparty na oficjalnym wydaniu **Metin2 Playerbots** (pliki
+serwerowe mt2009) — **rozszerzony o systemy, których oficjalne
+wydanie nie ma**: kostiumy, fryzury, nakładki na broń, szarfy, mounty, pety, nowe mapy, dungeonony i alchemię (Smocze Kamienie), razem ponad 3 200 nowych przedmiotów.
 
-Boty działają dokładnie tak jak w oficjalnym wydaniu: zdobywają poziomy, walczą
+Boty zdobywają poziomy, walczą
 solo i w party, zbierają łup, ulepszają ekwipunek u Kowala, polują na Metiny
 i handlują między sobą. Ta paczka dokłada do tego świata nowe przedmioty
 i systemy oraz kilka poprawek botów.
 
 ## 💬 Społeczność
 
-- **[Discord](https://discord.com/invite/vGE3T9gpm)** — pomoc, zgłoszenia błędów, pomysły i nowości o paczce.
+- **[Discord](https://discord.com/invite/metin2singleplauer)** — pomoc, zgłoszenia błędów, pomysły i nowości o paczce.
 - **[metin2sp.pl](https://metin2sp.pl/)** — strona projektu.
 - **[Wiki](https://metin2sp.pl/wiki)** — poradniki, FAQ, przedmioty i systemy MT2009 PLUS.
 - **[Wesprzyj projekt – postaw kawkę](https://buycoffee.to/mt2009plus)** — jeśli chcesz wesprzeć rozwój paczki.
@@ -194,18 +193,12 @@ Metin2 Playerbots - Tieru - https://github.com/TieruYT/metin2-playerbots - CC BY
 
 ## 🤝 Podziękowania i oryginalny projekt
 
-Ta paczka jest modyfikacją projektu **Metin2 Playerbots** autorstwa **Tieru**,
+Ta paczka jest modyfikacją projektu **Metin2 Playerbots** (licencja MIT),
 który jest rdzeniem (core) MT2009 PLUS. Wszystkie dodatkowe zmiany dodaje
 **ZAXEP/SIZOWSKI**.
 
-- **Oryginalny projekt (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
-
-Oraz autorzy i pomocnicy, na których pracy opiera się oficjalne wydanie:
-- **AzzlackSyndicate** — autor pierwotnej bazy linuksowego portu, instalatorów i panelu. Repozytorium źródłowe jest obecnie prywatne; zachowujemy historię Git i pełną atrybucję.
-- **OskarPWA** — okno magazynu bota i ikony umiejętności na stronie pochodzą z panelu, który zbudował i udostępnił do przeniesienia.
-- **seban latino** — autor Metin2 Singleplayer Panel (`linux-port/docker/seban-panel`), drugiego panelu w tej instalacji: mapa na żywo, profile, rankingi, gospodarka, telemetria i masowe nadania.
-- **Iwakura** — pomoc przy systemach cen i nazw sklepów, nickach botów oraz algorytmach wartości przedmiotów.
-- **ĹŌŞƬĒĶ** — nowy ekran logowania klienta (od 2.0.6): animowane tło, logo i Discord Rich Presence.
-- **Colide** — nowe okno Auto Łowów w kliencie (od 2.0.17): 12 umiejętności, 6 mikstur na % HP albo PE, 6 przedmiotów na czas, czekanie na HP po wskrzeszeniu i umiejętności niezależne od ataku.
-- **Digi Rasta** — autor systemów z paczki „nowy-system” (v0.16), przeniesionych do MT2009 PLUS jako nasz kod (`server-patches/digirasta`): Rytuał Przebudzenia u Kowala i bronie przebudzone +0…+9, kamienie duchowe do +9 oraz koń do 30 poziomu z płatnym szkoleniem u Stajennego, Próbą Czarnego Rumaka i jukami do 30 poziomu.
-- [DadsMmoLab/dads-mmo-lab](https://github.com/DadsMmoLab/dads-mmo-lab) — inspiracja dla autonomicznych agentów w grach MMO.
+Szczególne podziękowania dla współautorów wydania mt2009 plus
+- **Digi Rasta** — Rytuał Przebudzenia u Kowala i bronie przebudzone +0…+9, kamienie duchowe do +9 oraz koń do 30 poziomu z płatnym szkoleniem u Stajennego, Próbą Czarnego Rumaka i jukami do 30 poziomu.
+- **Vekirion** — wikipedia dropu, keybindy, ulepszanie alchemii
+- **blaki** — autor ulepszonego systemu autołowów
+- **Podstawowy projekt PlayerBots (Licencja MIT) (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
