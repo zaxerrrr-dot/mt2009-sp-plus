@@ -690,3 +690,21 @@ najpierw – z włączonym atakiem. Czat: „Auto Łowy: szybki start, zasięg N
   zielona (strzałka) albo czerwona (kwadrat) w trakcie polowania, jakkolwiek je włączono.
 - `mt2009_ui/sidebar/autohuntgo_01..03.tga`, `autohuntstop_01..03.tga` (nowe) – ikona Autołowów z
   plakietką, zrobione `tools/autohuntquick/make_icons.py` z `client-2.0.28` `autohunt_0N.tga`.
+
+## Opcje Gry z zakładkami – bez zmian exe
+
+Znacznik `MT2009_PLUS_OPTIONS_TABS_V1` (propozycja właściciela, 5 października). Menu Esc ma jeden przycisk
+„Opcje Gry” zamiast czterech („Opcje Systemowe”, „Opcje Gry”, „Opcje dodatkowe”, „Skróty klawiszowe”).
+Nad otwartym oknem stoi pasek zakładek **Gra / System / Dodatkowe / Skróty**; każda zakładka to dotychczasowe
+okno (ustawienia, zapis i działanie bez zmian). Klik w zakładkę zamyka pokazane okno i otwiera wybrane w tym
+samym miejscu (ten sam środek i górna krawędź), pasek idzie za przeciąganym oknem i znika, gdy okno się zamknie
+(X, Esc, „Zapisz” skrótów). Szkic skrótów (niezapisane klawisze) zostaje przy przechodzeniu między zakładkami;
+zamknięcie opcji go odrzuca, jak dotąd. Ostatnia zakładka i miejsce są pamiętane do wyjścia z gry.
+
+- `uioptionstabs.py` (nowy) – pasek zakładek (`d:/ymir work/ui/game/windows/tab_button_large_01..03.sub`
+  z paczki etc).
+- `uisystem.py`, `uiscript/systemdialog.py` – przycisk `options_button` w miejscu „Opcje Systemowe”, cztery
+  stare przyciski usunięte z listy (`Recalculate` układa resztę); `SystemDialog.GetOptionPage` tworzy okna
+  tak jak wcześniej ich przyciski.
+- `uikeybind.py` – `GetWindow`, `KeybindWindow.Suspend/Resume` (ukrycie ze szkicem przy innej zakładce).
+- `uiopcjedodatkowe.py` – okno szersze (270 → 305), jak Opcje Systemowe pod paskiem zakładek.
