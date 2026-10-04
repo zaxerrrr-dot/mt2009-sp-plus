@@ -1,56 +1,41 @@
 """Writes base/<client version>/ from a released client's pack folder - run
-once per client release (the server package then carries ~0.6 MB):
+once per client release from 2.0.52 on (the client with the "dbdata" pack):
 
-    python3 -m m2clientpack.make_base <client>/pack 2.0.52
+    python3 -m m2clientpack.make_base <client>/pack 2.0.53
 
-base.json  the client version, per pack the release's index (SHA-256, size)
-           and the length of its .data; per patched file its pack and hash.
-<pack>.index, files/<name>: the release's index and the files the overlay
-patches (FILES), taken out of the packs.
+base.json  the client version, the release's dbdata.index/.data (size,
+           SHA-256) and per file of the pack its size, hash and type.
+dbdata.index, dbdata.data: the release's pack as it is (the "original
+files" download); files/<name>: its contents, which the edits patch.
 """
 import json
 import os
 import sys
 
-from . import eterpack, overlay
-
-FILES = (
-    ('gamedata', 'gamedata/item_proto'),
-    ('gamedata', 'gamedata/skilltable.txt'),
-    ('locale', 'locale/pl/itemdesc.txt'),
-    ('locale', 'locale/pl/skilldesc.txt'),
-)
+from . import dbdata, eterpack
 
 
-def make_base(pack_dir, version, root=overlay.BASE_ROOT):
+def make_base(pack_dir, version, root=dbdata.BASE_ROOT):
     out = os.path.join(root, version)
     os.makedirs(os.path.join(out, 'files'), exist_ok=True)
-    meta = {'client': version, 'packs': {}, 'files': {}}
-    for pack in sorted(set(p for p, _ in FILES)):
-        with open(os.path.join(pack_dir, pack + '.index'), 'rb') as f:
-            index_blob = f.read()
-        data_size = os.path.getsize(os.path.join(pack_dir, pack + '.data'))
-        _, entries = eterpack.read_index_bytes(index_blob)
-        end = max(e.pos + e.real for e in entries)
-        if end > data_size:
-            raise SystemExit('%s.data is shorter than its index says' % pack)
-        meta['packs'][pack] = {'indexSha256': overlay.sha256(index_blob), 'indexSize': len(index_blob),
-                               'dataSize': data_size, 'entries': len(entries)}
-        with open(os.path.join(out, pack + '.index'), 'wb') as f:
-            f.write(index_blob)
-        by_name = dict((e.name, e) for e in entries)
-        with open(os.path.join(pack_dir, pack + '.data'), 'rb') as f:
-            for p, name in FILES:
-                if p != pack:
-                    continue
-                e = by_name[name]
-                f.seek(e.pos)
-                data = eterpack.decode_entry(f.read(e.size), e.ctype)
-                path = os.path.join(out, 'files', *name.split('/'))
-                os.makedirs(os.path.dirname(path), exist_ok=True)
-                with open(path, 'wb') as g:
-                    g.write(data)
-                meta['files'][name] = {'pack': pack, 'size': len(data), 'sha256': overlay.sha256(data)}
+    blobs = {}
+    for ext in ('index', 'data'):
+        with open(os.path.join(pack_dir, '%s.%s' % (dbdata.PACK, ext)), 'rb') as f:
+            blobs[ext] = f.read()
+    _ver, entries = eterpack.read_index_bytes(blobs['index'])
+    meta = {'client': version, 'pack': {}, 'files': {}}
+    for ext in ('index', 'data'):
+        meta['pack'][ext + 'Sha256'] = dbdata.sha256(blobs[ext])
+        meta['pack'][ext + 'Size'] = len(blobs[ext])
+        with open(os.path.join(out, '%s.%s' % (dbdata.PACK, ext)), 'wb') as f:
+            f.write(blobs[ext])
+    for e in entries:
+        data = eterpack.read_entry(blobs['data'], e)
+        path = os.path.join(out, 'files', *e.name.split('/'))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, 'wb') as g:
+            g.write(data)
+        meta['files'][e.name] = {'size': len(data), 'sha256': dbdata.sha256(data), 'ctype': e.ctype}
     with open(os.path.join(out, 'base.json'), 'w', encoding='utf-8') as f:
         json.dump(meta, f, indent=1, sort_keys=True)
     return out

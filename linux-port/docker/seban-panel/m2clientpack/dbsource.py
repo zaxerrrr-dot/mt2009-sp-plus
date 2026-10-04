@@ -63,7 +63,7 @@ def _skill_rows(query, vnums):
 
 def client_files(query, base, items, skills, notes=None):
     """({entry name: bytes}, summary) of the client files the edits change
-    (equal ones included; overlay.build drops them)."""
+    (equal ones included; dbdata.build keeps the release's bytes for them)."""
     notes = [] if notes is None else notes
     files = {}
     summary = {'items': [], 'skills': [], 'itemdesc': [], 'notes': notes}
@@ -95,12 +95,13 @@ def client_files(query, base, items, skills, notes=None):
     return files, summary
 
 
-def build_from_db(query, out_dir, changes, base=None):
-    """The whole build: history rows -> client files -> overlay in out_dir.
-    Returns the manifest."""
-    from . import overlay
-    base = base or overlay.latest_base()
+def build_dbdata(query, changes, base=None):
+    """The whole build: history rows -> patched client files -> the dbdata
+    pack. Returns (base, index bytes, data bytes, changed names, summary)."""
+    from . import dbdata
+    base = base or dbdata.latest_base()
     items, skills = targets(changes)
     notes = []
     files, summary = client_files(query, base, items, skills, notes)
-    return overlay.build(base, files, out_dir, summary)
+    index, data, changed = dbdata.build(base, files)
+    return base, index, data, changed, summary

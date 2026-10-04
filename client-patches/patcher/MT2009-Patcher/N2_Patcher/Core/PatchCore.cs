@@ -19,6 +19,8 @@ namespace N2_Patcher.Core
 	// - md5: compared as text with the upper-case MD5 of the local file.
 	// - uid: the file is downloaded from Clientdata + uid.
 	// - delete: > 0 = delete the local file if it exists (never downloaded).
+	// - keep: > 0 = download only when missing; an existing file is never
+	//   compared (pack\dbdata.*, unpacked by the player from the panel's zip).
 	public static class PatchCore
 	{
 		public static List<PatchItem> ParsePatchlist(string json)
@@ -108,6 +110,10 @@ namespace N2_Patcher.Core
 					else if (patchItem.Delete > 0)
 					{
 						File.Delete(path);
+					}
+					else if (patchItem.Keep > 0)
+					{
+						// there and the player's own: left as it is
 					}
 					else if (!string.Equals(PatchCore.GetMD5(path), patchItem.Md5Hash, StringComparison.Ordinal))
 					{

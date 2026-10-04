@@ -9,7 +9,8 @@ client file list (client-files.json in the repository root) from that zip.
 --tylko-lista only writes client-files.json (the zip is not changed).
 client-files.json lists the small files that change with every client
 release (metin2client.exe, Dolacz.*, pack/Index, pack/*.index - not the big
-.data files, whose .index changes with them); the launcher hashes them at start
+.data files, whose .index changes with them, and not pack/dbdata.*, which the
+player replaces from his server's panel); the launcher hashes them at start
 to recognise a client with no CLIENT_VERSION. Commit it with the release.
 
 Entries of the same names already in the zip are replaced. The zip must not
@@ -39,6 +40,11 @@ def listed(name):
     if name.endswith("/") or lower.endswith(".data"):
         return False
     if name in LAUNCHER_FILES or name == "CLIENT_VERSION" or lower in FORBIDDEN:
+        return False
+    # MT2009_PLUS_DB_EDITOR_V1: pack/dbdata.* is the player's to replace (the
+    # zip of his server's database editor), so a client with it unpacked
+    # still counts as up to date.
+    if lower.startswith("pack/dbdata."):
         return False
     return True
 

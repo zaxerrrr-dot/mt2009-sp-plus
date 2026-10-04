@@ -64,6 +64,7 @@ internal static class Program
 		File.WriteAllText(dir + "same.txt", "hello");
 		File.WriteAllText(dir + "other.txt", "changed");
 		File.WriteAllText(dir + "old.txt", "remove me");
+		File.WriteAllText(dir + "kept.txt", "the player's own");
 		File.WriteAllText(Path.Combine(dir, "pack", "x.index"), "hello");
 		string md5Hello = "5D41402ABC4B2A76B9719D911017C592";
 		Check(PatchCore.GetMD5(dir + "same.txt") == md5Hello, "MD5 wielkimi literami (BitConverter)");
@@ -76,12 +77,14 @@ internal static class Program
 			new { name = "zero.txt", size = 0, md5 = md5Hello, uid = "d", delete = 0 },
 			new { name = "..\\evil.txt", size = 5, md5 = md5Hello, uid = "e", delete = 0 },
 			new { name = "pack\\x.index", size = 3, md5 = md5Hello.ToLowerInvariant(), uid = "f", delete = 0 },
+			new { name = "kept.txt", size = 5, md5 = md5Hello, uid = "g", delete = 0, keep = 1 },
+			new { name = "keptmissing.txt", size = 5, md5 = md5Hello, uid = "h", delete = 0, keep = 1 },
 		});
 		List<PatchItem> list = PatchCore.ParsePatchlist(json);
 		int checkedCount = 0;
 		List<PatchItem> need = PatchCore.SelectForDownload(list, dir, () => checkedCount++);
 		string names = string.Join(",", need.Select(i => i.Filename));
-		Check(names == "other.txt,missing.txt,pack\\x.index", "do pobrania: inny MD5, brakujący, md5 małymi literami = różny (" + names + ")");
+		Check(names == "other.txt,missing.txt,pack\\x.index,keptmissing.txt", "do pobrania: inny MD5, brakujący, md5 małymi literami = różny, keep tylko brakujący (" + names + ")");
 		Check(!File.Exists(dir + "old.txt"), "wpis delete usunął plik");
 		Check(checkedCount == list.Count, "postęp sprawdzania: 1 na wpis (" + checkedCount + ")");
 		Check(PatchCore.ParsePatchlist("[]").Count == 0, "pusta lista");

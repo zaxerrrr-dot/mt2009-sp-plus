@@ -171,3 +171,20 @@ def decode_entry(blob, ctype):
 
 def read_entry(data, entry):
     return decode_entry(data[entry.pos:entry.pos + entry.size], entry.ctype)
+
+
+def write_pack(entries, ver=2):
+    """(index bytes, data bytes) of a new pack: entries = [(name, raw bytes,
+    compressed type)], ids in order, every blob in a 256-byte slot."""
+    data = bytearray()
+    out = []
+    for i, (name, raw, ctype) in enumerate(entries):
+        blob = encode_entry(raw, ctype)
+        slot = (len(blob) + 255) // 256 * 256
+        rec = bytearray(ENTRY)
+        e = Entry(bytes(rec))
+        e.id, e.name, e.fcrc, e.real, e.size = i, name, name_crc(name), slot, len(blob)
+        e.dcrc, e.pos, e.ctype = zlib.crc32(blob) & M32, len(data), ctype
+        out.append(e)
+        data += blob + b'\0' * (slot - len(blob))
+    return write_index_bytes(ver, out), bytes(data)
