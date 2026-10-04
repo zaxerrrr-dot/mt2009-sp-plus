@@ -830,7 +830,7 @@ namespace
 		{  92,  234000 },	// Strzelajacy Smok
 		{  93,  546000 },	// Smoczy Skowyt
 		{  94,  1274571 },	// Blogoslawienstwo
-		{  95,   890877 },	// Odbicie
+		{  95,   180000 },	// Odbicie (owner, 4 October)
 		{  96,  2187039 },	// Pomoc Smoka
 		{ 106,  170000 },	// Blyskawiczny Rzut
 		{ 107,  496000 },	// Przywolanie Blyskawicy
