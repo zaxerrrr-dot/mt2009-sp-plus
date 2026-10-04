@@ -44,6 +44,7 @@ class _PolishOnly:
 
 translations = _PolishOnly()
 import decisions
+import event_autogen  # MT2009_PLUS_EVENTS_AUTOGEN_V1
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SEBAN_SESSION_SECRET", "change-this-before-public-use")
@@ -9058,7 +9059,63 @@ def events():
                            now_epoch=int(time.time()), event_history=event_history,
                            event_icons=EVENT_ICONS, world_kinds=EVENT_WORLD_KINDS, flag_kinds=EVENT_FLAG_KINDS,
                            world_defaults=EVENT_WORLD_DEFAULT, world_max=EVENT_WORLD_MAX,
-                           event_maps=EVENT_MAPS, event_settings=read_event_settings())
+                           event_maps=EVENT_MAPS, event_settings=read_event_settings(),
+                           autogen_lengths=event_autogen.LENGTHS)  # MT2009_PLUS_EVENTS_AUTOGEN_V1
+
+# MT2009_PLUS_EVENTS_AUTOGEN_V1: the planner's "Generuj tydzień" - the modal
+# sends the pool and the options, this answers the drawn week as schedule rows
+# (event_autogen.py) and writes nothing: the page shows them, and on the
+# admin's OK puts them in place of the schedule or beside it and saves them
+# through the calendar's own "save" above, which checks every row again.
+EVENT_AUTOGEN_MAX_EXISTING = 64
+
+
+def event_autogen_existing(raw_rows):
+    """The schedule the page holds (with its unsaved edits), cleaned the way
+    the save would: the rows an appended week must keep clear of."""
+    existing = []
+    for raw in (raw_rows if isinstance(raw_rows, list) else [])[:EVENT_AUTOGEN_MAX_EXISTING]:
+        if not isinstance(raw, dict) or raw.get("kind") not in EVENT_KINDS:
+            continue
+        start, end = event_hhmm(raw.get("start")), event_hhmm(raw.get("end"))
+        if not start or not end:
+            continue
+        try:
+            days = sorted({int(day) for day in raw.get("days") or () if 1 <= int(day) <= 7})
+        except (TypeError, ValueError):
+            days = []
+        existing.append({"kind": raw["kind"], "days": days, "start": start, "end": end,
+                         "on": raw.get("on") is not False})
+    return existing
+
+
+@app.post("/events/autogen")
+@login_required
+def events_autogen():
+    data = request.get_json(silent=True) or {}
+    try:
+        kinds = [kind for kind in data.get("kinds") or () if kind in EVENT_KINDS]
+        count = int(data.get("count") or 0)
+        length = int(data.get("length") or 0)
+        hour_from, hour_to = int(data.get("from", 18)), int(data.get("to", 24))
+        days = [int(day) for day in data.get("days") or ()]
+        bonus = max(1, min(1000, int(data.get("bonus") or 50)))
+        seed = int(data.get("seed") or 0)
+    except (TypeError, ValueError):
+        return jsonify(ok=False, error="Nieprawidłowe ustawienia generatora."), 400
+    append = data.get("mode") == "append"
+    existing = event_autogen_existing(data.get("existing")) if append else []
+    values = {kind: (EVENT_WORLD_DEFAULT[kind] if kind in EVENT_WORLD_KINDS else
+                     0 if kind in EVENT_FLAG_KINDS else bonus) for kind in kinds}
+    try:
+        result = event_autogen.generate_week(
+            kinds, count, length, hour_from, hour_to, days=days, values=values,
+            weekend_bias=bool(data.get("weekend")), exclusive=bool(data.get("exclusive")),
+            existing=existing, max_rows=64, seed=seed)
+    except ValueError as error:
+        return jsonify(ok=False, error=str(error)), 400
+    return jsonify(ok=True, mode="append" if append else "replace", existing_rows=len(existing), **result)
+
 
 @app.route("/manage")
 @login_required
