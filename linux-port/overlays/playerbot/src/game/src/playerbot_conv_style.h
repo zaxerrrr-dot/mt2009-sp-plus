@@ -175,7 +175,7 @@ namespace playerbot_conv
 		static const char* const k[] = {
 			"Mam", "Mamy", "Jestem", "Jestes", "Sprzedam", "Kupie", "Bije", "Expie", "Ide", "Szukam", "Wlasnie",
 			"Teraz", "Tak", "Nie", "No", "Na", "W", "Z", "A", "O", "Moj", "Moja", "Moje", "Mieszkam", "Bylem",
-			"Siedze", "Stoje", "Gram", "Lece", "Jade", "Ja", "Ty", "Tu", "Tam", "Jak", "Co", "Juz", "Dalej"
+			"Siedze", "Stoje", "Gram", "Lece", "Jade", "Ja", "Ty", "Tu", "Tam", "Jak", "Co", "Juz", "Dalej", "U"
 		};
 		for (size_t i = 0; i < sizeof(k) / sizeof(k[0]); ++i)
 			if (w == k[i])

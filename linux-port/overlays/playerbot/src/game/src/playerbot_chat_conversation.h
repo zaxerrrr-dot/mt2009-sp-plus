@@ -197,6 +197,44 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2: the timed events running now (playerbot_events.h),
+	// named as a player would: "event na expa, skrzynie".
+	std::string DescribePlayerBotEventsNow()
+	{
+		std::string out;
+		for (int kind = 0; kind < playerbot_events::KIND_MAX; ++kind)
+		{
+			if (!s_aPlayerBotEventState[kind].active)
+				continue;
+			const char* name = NULL;
+			switch (kind)
+			{
+				case playerbot_events::KIND_CHEST: name = "skrzynie z Ksiezycowego Swiatla"; break;
+				case playerbot_events::KIND_EXP: name = "event na expa"; break;
+				case playerbot_events::KIND_DROP: name = "event na drop"; break;
+				case playerbot_events::KIND_YANG: name = "event na yang"; break;
+				case playerbot_events::KIND_TANAKA: name = "piraci Tanaki"; break;
+				case playerbot_events::KIND_ZUO: name = "deszcz metinow"; break;
+				case playerbot_events::KIND_BOSS_LOOT: name = "lepszy drop z bossow"; break;
+				case playerbot_events::KIND_METIN_LOOT: name = "lepszy drop z metinow"; break;
+				case playerbot_events::KIND_GOBLIN: name = "poszukiwanie skarbow"; break;
+				case playerbot_events::KIND_CATCHKING: name = "Catch the King"; break;
+				case playerbot_events::KIND_RUMI: name = "Rumi"; break;
+				case playerbot_events::KIND_YUTNORI: name = "Yut Nori"; break;
+				case playerbot_events::KIND_FLOWER: name = "Dzieci Kwiaty"; break;
+				case playerbot_events::KIND_EASTER: name = "event wielkanocny"; break;
+				case playerbot_events::KIND_CHESTDROP: name = "skrzynki z mobow"; break;
+				default: break;
+			}
+			if (!name)
+				continue;
+			if (!out.empty())
+				out += ", ";
+			out += name;
+		}
+		return out;
+	}
+
 	int MapPlayerBotConvMood(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
 	{
 		switch (GetPlayerBotPlayMood(ch, state, dwNow))
@@ -1595,6 +1633,7 @@ namespace
 				// MT2009_PLUS_BOT_CHAT_V2: how far a quarrel over the bot's spot
 				// with this person went (playerbot_spot_defense.h).
 				s.spotQuarrel = GetPlayerBotSpotQuarrel(botPID, playerPID, s.spotGaveUp);
+				s.eventsNow = DescribePlayerBotEventsNow();
 				{
 					const time_t t = time(0);
 					const struct tm* lt = localtime(&t);

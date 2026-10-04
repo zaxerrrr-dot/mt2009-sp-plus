@@ -353,6 +353,9 @@ namespace playerbot_conv
 		// last; and whether it gave the spot up.
 		int spotQuarrel;
 		bool spotGaveUp;
+		// The timed events running now, as a bot names them ("event na
+		// expa, skrzynie"), empty when none (playerbot_events.h).
+		std::string eventsNow;
 
 		TBotSnapshot() : level(1), job(0), empire(0), mapIndex(0), inTown(false), safeZone(false),
 			inDungeon(false), action(A_IDLE), goal(G_LEVEL), travelMap(0), riding(false),

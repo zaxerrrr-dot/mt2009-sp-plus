@@ -40,6 +40,8 @@ namespace playerbot_conv
 		// MT2009_PLUS_BOT_CHAT_V2: a joke asked for, real life (the city, the
 		// age), boy or girl, begging for yang or an item
 		I_JOKE, I_REAL_LIFE, I_GENDER, I_BEG,
+		// "jak zrobic konia?", "o ktorej event?", "co dropi z metina?", "lagi masz?"
+		I_HOWTO, I_EVENT, I_DROP_INFO, I_PING,
 		// identity
 		I_NAME, I_LEVEL, I_CLASS, I_EMPIRE, I_PERSONALITY, I_MOOD,
 		// state
@@ -173,7 +175,7 @@ namespace playerbot_conv
 
 	inline bool IsSocialIntent(EIntent i)
 	{
-		return i >= I_GREETING && i <= I_BEG;
+		return i >= I_GREETING && i <= I_PING;
 	}
 
 	// A line that talks at the bot rather than to it: the reply is short and
@@ -231,7 +233,7 @@ namespace playerbot_conv
 			"NONE", "GREETING", "FAREWELL", "THANKS", "APOLOGY", "HOW_ARE_YOU", "HELP",
 			"IS_BOT", "INSULT", "PRAISE", "AGE", "ORIGIN", "KS", "READY", "GOOD_LUCK", "BRB",
 			"STOP_TALKING", "THREAT", "MOCK", "MATH", "CONTRADICTION",
-			"JOKE", "REAL_LIFE", "GENDER", "BEG",
+			"JOKE", "REAL_LIFE", "GENDER", "BEG", "HOWTO", "EVENT", "DROP_INFO", "PING",
 			"NAME", "LEVEL", "CLASS", "EMPIRE", "PERSONALITY", "MOOD",
 			"CURRENT_ACTIVITY", "ACTIVITY_LOCATION", "LOCATION", "TARGET", "MOB_COUNT",
 			"GOAL", "NEXT_PLAN", "HP", "GOLD", "HORSE", "EQUIPMENT", "INVENTORY",
@@ -539,8 +541,27 @@ namespace playerbot_conv
 			{ PBC_R(I_MEET, 0, 82), { C_JOIN, C_MAPNAME }, { 0 }, { C_HYPO, C_PARTY, C_LIKE }, { 0 } },
 			{ PBC_R(I_MEET, 0, 70), { C_MEET }, { C_WANT, C_CAN, C_WE, C_TELL }, { C_HYPO }, { 0 } },
 			// "gdzie sa metki na 30?", "gdzie metiny 45" - advice, not the bot's own hunt
-			{ PBC_R(I_WHERE_METIN, 0, 84), { C_WHERE, C_METIN }, { 0 }, { C_YOU, C_HIT, C_LIKE }, { 0 } },
-			{ PBC_R(I_WHERE_METIN, 0, 82), { C_METIN, C_RECOMMEND }, { 0 }, { C_YOU }, { 0 } },
+			{ PBC_R(I_WHERE_METIN, 0, 84), { C_WHERE, C_METIN }, { 0 }, { C_YOU, C_HIT, C_LIKE, C_DROP }, { 0 } },
+			{ PBC_R(I_WHERE_METIN, 0, 82), { C_METIN, C_RECOMMEND }, { 0 }, { C_YOU, C_DROP }, { 0 } },
+			// "jak zrobic konia?", "jak sie robi biologa", "jak zarobic yang"
+			{ PBC_R(I_HOWTO, 0, 88), { C_HOWTO }, { 0 }, { C_HYPO, C_YOU }, { 0 } },
+			{ PBC_R(I_HOWTO, 0, 84), { C_WHERE, C_BIO }, { 0 }, { C_YOU, C_HYPO }, { 0 } },
+			// "o ktorej event?", "jaki jest teraz event?", "kiedy event"
+			{ PBC_R(I_EVENT, 0, 80), { C_EVENT }, { 0 }, { C_LIKE, C_HYPO }, { C_WHEN, C_WHICH, C_NOW } },
+			// "co dropi z metina 30?", "co leci z bossa", "gdzie dropi kosc"
+			{ PBC_R(I_DROP_INFO, 0, 84), { C_DROP, C_WHAT }, { C_METIN, C_BOSS, C_MOB, C_ITEMWORD, C_DT },
+				{ C_YOU, C_TODAY, C_LUCK }, { 0 } },
+			{ PBC_R(I_DROP_INFO, 0, 84), { C_DROP, C_WHERE }, { 0 }, { C_YOU, C_TODAY }, { 0 } },
+			{ PBC_R(I_DROP_INFO, 0, 80), { C_DROP, C_WHO }, { 0 }, { C_YOU, C_TODAY }, { 0 } },
+			// "masz lagi?", "jaki masz ping?"
+			{ PBC_R(I_PING, 0, 78), { C_PING }, { 0 }, { 0 }, { 0 } },
+			// "skad masz taki eq?" - the gear's story, not the bot's kingdom
+			{ PBC_R(I_EQUIPMENT, 0, 86), { C_ORIGIN, C_GEAR }, { 0 }, { 0 }, { 0 } },
+			{ PBC_R(I_EQUIPMENT, 0, 86), { C_ORIGIN, C_EQ }, { 0 }, { 0 }, { 0 } },
+			{ PBC_R(I_EQUIPMENT, 0, 84), { C_ORIGIN, C_ITEMWORD }, { 0 }, { 0 }, { 0 } },
+			// "dasz pt?", "dawaj pt"
+			{ PBC_R(I_PARTY_REQUEST, 0, 80), { C_GIVE, C_PARTY }, { 0 }, { C_HYPO }, { 0 } },
+			{ PBC_R(I_PARTY_REQUEST, 0, 80), { C_TELL, C_PARTY }, { 0 }, { C_HYPO }, { 0 } },
 			// "gdzie najlepiej expic?", "gdzie mam expic na moim lvl", "co polecasz na 40?"
 			{ PBC_R(I_WHERE_EXP, 0, 84), { C_EXP, C_RECOMMEND }, { 0 }, { C_LIKE, C_HYPO }, { C_WHERE } },
 			{ PBC_R(I_WHERE_EXP, 0, 82), { C_MAP, C_RECOMMEND }, { 0 }, { C_LIKE, C_HYPO, C_THINK }, { C_WHERE } },
@@ -966,7 +987,7 @@ namespace playerbot_conv
 			const std::string& w = tok.words[i];
 			if (w == "expic" || w == "expiec" || w == "ekspic" || w == "isc" || w == "bic" || w == "zbijac" ||
 					w == "farmic" || w == "levelowac" || w == "lvlowac" || w == "szukac" || w == "polowac" ||
-					w == "expowac" || w == "grindowac")
+					w == "expowac" || w == "grindowac" || w == "robic")
 				return true;
 		}
 		return false;
@@ -986,13 +1007,14 @@ namespace playerbot_conv
 			return;
 		}
 		const bool advice = a.levelAsked > 0 || HasAdviceInfinitive(a.tokens) || c.Has(C_RECOMMEND);
-		if (!advice)
+		if (!advice || c.Has(C_DROP) || c.Has(C_HOWTO) || c.Has(C_DT) || c.Has(C_CLASS))
 			return;
 		if (c.Has(C_METIN) && (a.intent == I_METIN || a.intent == I_ACTIVITY_LOCATION || a.intent == I_LOCATION ||
 				a.intent == I_UNKNOWN_QUESTION || a.intent == I_UNKNOWN_STATEMENT || a.intent == I_FOLLOW_UP ||
 				a.intent == I_LEVEL))
 			a.intent = a.rawIntent = I_WHERE_METIN;
-		else if ((c.Has(C_EXP) || (c.Has(C_WHERE) && a.levelAsked > 0)) &&
+		else if ((c.Has(C_EXP) || (c.Has(C_WHERE) && a.levelAsked > 0) ||
+				(c.Has(C_DO) && c.Has(C_WHAT) && a.levelAsked > 0)) &&
 				(a.intent == I_ACTIVITY_LOCATION || a.intent == I_ACTIVITY || a.intent == I_LOCATION ||
 				 a.intent == I_UNKNOWN_QUESTION || a.intent == I_UNKNOWN_STATEMENT || a.intent == I_FOLLOW_UP ||
 				 a.intent == I_LEVEL || a.intent == I_MAP_OPINION))

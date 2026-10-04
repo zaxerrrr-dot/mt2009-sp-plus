@@ -212,7 +212,10 @@ namespace
 			q.calledFriends = true;
 			FPlayerBotSpotFriend finder(ch);
 			ch->GetSectree()->ForEachAround(finder);
-			if (finder.m_found && !IsPlayerBotSpotExempt(finder.m_found, state, person))
+			TPlayerBotAIStateMap::const_iterator friendState = finder.m_found
+					? s_mapPlayerBotAIStates.find(finder.m_found->GetPlayerID()) : s_mapPlayerBotAIStates.end();
+			if (friendState != s_mapPlayerBotAIStates.end() &&
+					!IsPlayerBotSpotExempt(finder.m_found, friendState->second, person))
 			{
 				SayPlayerBotSpotLine(finder.m_found, person, playerbot_spot::FriendLine((unsigned int)number(0, 1 << 20)),
 						"Bo to nasz spot, a ty kradniesz moby mojemu kumplowi.", 4000 + number(0, 4000));

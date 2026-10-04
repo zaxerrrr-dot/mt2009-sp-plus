@@ -244,7 +244,8 @@ namespace playerbot_spot
 				static const char* const kGentle[] = { "hej, bije tu, mozesz poszukac innego spota?", "ej, to byly moje moby :(",
 					"sorki, ale ja tu expie, moglbys troche obok?" };
 				static const char* const kNormal[] = { "ej, to moj mob", "hej, nie kradnij mobow", "zostaw mi te moby co?",
-					"ej, bije tu, poszukaj se innego spota", "halo, to moje moby", "ej, zostaw mi nastepnego, co?" };
+					"ej, bije tu, poszukaj se innego spota", "halo, to moje moby", "ej, zostaw mi nastepnego, co?",
+					"ej, daj mi dokonczyc mojego moba", "ej, ja tu expie od godziny" };
 				static const char* const kHot[] = { "ej, to moj spot", "wypad z moich mobow", "nie kradnij mobow",
 					"ej ty, to moj mob!", "ej, nie ksuj" };
 				if (temper == TEMPER_GENTLE)

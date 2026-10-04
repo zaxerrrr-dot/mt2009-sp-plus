@@ -644,6 +644,19 @@ namespace playerbot_conv
 
 	inline std::string GenClass(TGen& g)
 	{
+		// MT2009_PLUS_BOT_CHAT_V2: "jaka klasa najlepsza?", "sura czy ninja?" -
+		// an opinion, from the bot's own class.
+		if (g.a && (g.a->concepts.Has(C_RECOMMEND) || g.a->concepts.Has(C_OR) || g.a->concepts.Has(C_ADVICE) ||
+				g.a->tokens.Has("najlepsza") || g.a->tokens.Has("najmocniejsza") || g.a->tokens.Has("lepsza")))
+		{
+			static const char* const k[] = { "Kazda ma swoje. Ja gram $KLASA i nie narzekam.",
+				"Na start woj najprostszy, a potem jak lubisz. Ja gram $KLASA.",
+				"Sura w pvp robi robote, szaman zawsze znajdzie pt. Ja wybralem gre $KLASA.",
+				"Zalezy co lubisz - bic z bliska, z luku czy buffowac. Ja gram $KLASA od poczatku." };
+			std::string out = PBC_SAY(g, k);
+			ReplaceAll(out, "$KLASA", ClassNameInstr(g.s.job));
+			return out;
+		}
 		static const char* const k[] = { "Gram $CLASSI.", "Jestem $CLASSI.", "$CLASSI, od poczatku." };
 		std::string out = Pick(g, k, 3);
 		const int build = g.s.Build();
@@ -844,6 +857,19 @@ namespace playerbot_conv
 		const TBotSnapshot& s = g.s;
 		if (s.weaponName.empty())
 			return "Na razie bez porzadnej broni.";
+		// MT2009_PLUS_BOT_CHAT_V2: "skad masz taki eq?" - where it came from.
+		if (g.a && g.a->concepts.Has(C_ORIGIN))
+		{
+			if (s.weaponPlus >= 7)
+			{
+				static const char* const k[] = { "$WEAPON? Z kowala, po kilku probach i paru lzach xd",
+					"Kupilem bazowke na targu i pchalem u kowala. Kosztowalo :P" };
+				return PBC_SAY(g, k);
+			}
+			static const char* const k[] = { "Polowa z dropu, reszta z targu.", "Z mobow i ze straganow, nic specjalnego.",
+				"Sam wyexpilem, troche dokupilem na targu." };
+			return PBC_SAY(g, k);
+		}
 		const bool again = g.m.gearSaidAt != 0 && g.now - g.m.gearSaidAt < CONV_FACT_TTL_MS;
 		g.m.gearSaidAt = g.now != 0 ? g.now : 1;
 		if (again)
@@ -1033,6 +1059,16 @@ namespace playerbot_conv
 
 	inline std::string GenDemonTower(TGen& g)
 	{
+		// MT2009_PLUS_BOT_CHAT_V2: "warto isc do wiezy na 45?" - advice.
+		if (g.a && (g.a->concepts.Has(C_RECOMMEND) || g.a->levelAsked > 0))
+		{
+			const int level = g.a->levelAsked > 0 ? g.a->levelAsked : (g.s.askerLevel > 0 ? g.s.askerLevel : g.s.level);
+			if (level < 50)
+				return "Na " + ToString((long long)level) + " to za wczesnie, wieza zjada slabych. Lepiej od 55+ i z ekipa.";
+			if (level < 65)
+				return "Na " + ToString((long long)level) + " juz mozna, ale tylko z ekipa i z potkami.";
+			return "Jasne, na " + ToString((long long)level) + " spokojnie dasz rade, gora wiezy daje dobry drop.";
+		}
 		if (g.s.demonTower)
 			return g.s.mapIndex == 66 ? "Tak, jestem w Wiezy Demonow." : "Tak, mam sprawy w Wiezy Demonow.";
 		return g.s.level >= 40 ? "Teraz nie, moze kiedys z ekipa." : "Jeszcze za slaby jestem na Wieze.";
@@ -3303,6 +3339,89 @@ namespace playerbot_conv
 		return PBC_SAY(g, k);
 	}
 
+	// "jak zrobic konia?", "jak sie robi biologa" - the game's own ways, as a
+	// player who has done them tells them.
+	inline std::string GenHowTo(TGen& g)
+	{
+		const TConceptSet& c = g.a ? g.a->concepts : TConceptSet();
+		if (c.Has(C_BIO))
+			return c.Has(C_WHERE) ? "Biolog stoi w wiosce, zerknij na mape. Misje daje od 30 lvl."
+					: "U Biologa od 30 lvl: przynosisz mu rzeczy z mobow (najpierw zeby orkow), czasem odrzuca, wiec trzeba miec zapas. Nagroda to staly bonus.";
+		if (c.Has(C_HORSE))
+			return "Kon jest u stajennego w wiosce. Najpierw egzamin na jezdzca, potem medale konskie z Lochu Malp na kolejne poziomy.";
+		if (c.Has(C_UPGRADE) || c.Has(C_GEAR) || c.Has(C_ITEMWORD))
+			return "U kowala w wiosce albo zwojem blogoslawienstwa (bodzie). Z bodziem mniej ryzykujesz, ale i tak potrafi spalic xd";
+		if (c.Has(C_SKILL))
+			return "Do M1 wbijasz punktami, od M1 czytasz ksiegi (KU), a od G1 potrzebne kamienie duszy. Ksiegi czytasz raz na jakis czas.";
+		if (c.Has(C_GOLD) || c.Has(C_MONEY))
+			return "Bij metki i sprzedawaj drop na straganie. Handel na targu w wiosce robi najwiecej yang.";
+		if (c.Has(C_GUILD))
+			return "Gildie zaklada sie u straznika w wiosce, trzeba miec troche lvl i yang. Albo dolacz do jakiejs, latwiej.";
+		if (c.Has(C_FISH))
+			return "Kupujesz wedke i przynete u rybaka, stajesz przy wodzie i lowisz. Spacja jak sie zatrzesie xd";
+		if (c.Has(C_MINE))
+			return "Kilof do reki i szukasz zyl rudy na mapach. Ruda idzie do kowala albo na targ.";
+		if (c.Has(C_DT))
+			return "Do Wiezy Demonow wchodzi sie z Doliny Orkow. Bez ekipy przed 55 lvl nie ma sensu.";
+		if (c.Has(C_LEVEL) || c.Has(C_EXP))
+		{
+			const int level = AdviceLevel(g);
+			std::string place;
+			if (!g.world || !g.world->ExpPlaceFor(level, place) || place.empty())
+				place = ExpPlaceFallback(level);
+			return "Bij moby na swoj lvl w pt, metki daja duzo expa, a pd pomaga. Na " + ToString((long long)level) +
+					" najlepiej " + place + ".";
+		}
+		if (c.Has(C_METIN))
+			return "Metiny respia sie na mapach co jakis czas. Bij te na swoj lvl, najlepiej w pt.";
+		static const char* const k[] = { "Hmm, nie wiem dokladnie. Zapytaj na wolaj, ktos na pewno wie.",
+			"Nie pamietam juz jak to bylo xd Zerknij w pomoc gry." };
+		return PBC_SAY(g, k);
+	}
+
+	// "o ktorej event?", "jaki jest event?" - the ones running now, else the
+	// calendar (F11).
+	inline std::string GenEvent(TGen& g)
+	{
+		if (!g.s.eventsNow.empty())
+		{
+			static const char* const k[] = { "Teraz trwa: $EV. Reszta w kalendarzu (F11).", "Teraz jest $EV, korzystaj xd",
+				"Leci $EV. Kolejne zobaczysz w kalendarzu pod F11." };
+			std::string out = PBC_SAY(g, k);
+			ReplaceAll(out, "$EV", g.s.eventsNow);
+			return out;
+		}
+		static const char* const k[] = { "Teraz nic nie trwa. Zerknij w kalendarz eventow (F11).",
+			"Chyba nic teraz nie ma, sprawdz pod F11 kiedy nastepny." };
+		return PBC_SAY(g, k);
+	}
+
+	// "co dropi z metina?", "z czego leci kosc?" - what the game is known to drop.
+	inline std::string GenDropInfo(TGen& g)
+	{
+		const TConceptSet& c = g.a ? g.a->concepts : TConceptSet();
+		if (c.Has(C_METIN))
+			return "Z metinow leca kamienie duszy, ksiegi, czasem bodzie i perly. I duzo expa xd";
+		if (c.Has(C_BOSS))
+			return "Z bossow skrzynie i bron, jak masz szczescie. Zawsze warto isc z ekipa.";
+		if (c.Has(C_DT))
+			return "W wiezy na gorze dobre skrzynie i bron, nizej glownie smieci.";
+		if (c.Has(C_ITEMWORD) || c.Has(C_WHERE) || c.Has(C_WHO))
+		{
+			static const char* const k[] = { "Nie pamietam dokladnie, zerknij w wiki dropu w grze, tam wszystko pisze.",
+				"Hmm, nwm na pewno. Wiki dropu w grze ci powie." };
+			return PBC_SAY(g, k);
+		}
+		return "Z mobow glownie yang i smieci, czasem cos dla Biologa xd";
+	}
+
+	inline std::string GenPing(TGen& g)
+	{
+		static const char* const k[] = { "U mnie ping spoko, nie laguje.", "Nie, u mnie dziala dobrze.",
+			"Czasem przytnie, ale ogolnie ok." };
+		return PBC_SAY(g, k);
+	}
+
 	// -------------------------------------------------------------- dispatch
 
 	inline std::string GenerateOne(TGen& g, const TAnalysis& a)
@@ -3363,6 +3482,10 @@ namespace playerbot_conv
 			case I_WHERE_EXP: out = GenWhereExp(g); break;
 			case I_CHANNEL: out = GenChannel(g); break;
 			case I_MEET: out = GenMeet(g); break;
+			case I_HOWTO: out = GenHowTo(g); break;
+			case I_EVENT: out = GenEvent(g); break;
+			case I_DROP_INFO: out = GenDropInfo(g); break;
+			case I_PING: out = GenPing(g); break;
 			case I_HOW_ARE_YOU: out = GenHowAreYou(g); break;
 			case I_HELP: out = GenHelp(g); break;
 			case I_IS_BOT: out = GenIsBot(g); break;

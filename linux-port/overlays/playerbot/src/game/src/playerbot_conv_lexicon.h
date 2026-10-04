@@ -65,6 +65,8 @@ namespace playerbot_conv
 		// channel, a meeting somewhere ("dawaj na ch1 m1"), a place
 		// recommended ("gdzie najlepiej", "polecasz"), "jeszcze jeden"
 		C_JOKE, C_TELL, C_REAL, C_CITY, C_GENDER, C_BEG, C_CHANNEL, C_MEET, C_RECOMMEND, C_MORE,
+		// "jak zrobic konia", "jak sie robi biologa"; an event; a ping or a lag
+		C_HOWTO, C_EVENT, C_PING,
 		C_COUNT
 	};
 
@@ -671,6 +673,17 @@ namespace playerbot_conv
 			{ "jeszcze jeden", C_MORE, M_PHRASE }, { "jeszcze jedno", C_MORE, M_PHRASE }, { "kolejny", C_MORE, M_EXACT },
 			{ "kolejne", C_MORE, M_EXACT }, { "nastepny", C_MORE, M_EXACT }, { "jeszcze raz", C_MORE, M_PHRASE },
 			{ "dawaj jeszcze", C_MORE, M_PHRASE }, { "jakis inny", C_MORE, M_PHRASE }, { "jeszcze cos", C_MORE, M_PHRASE },
+			{ "jak zrobic", C_HOWTO, M_PHRASE }, { "jak sie robi", C_HOWTO, M_PHRASE }, { "jak zdobyc", C_HOWTO, M_PHRASE },
+			{ "jak dostac", C_HOWTO, M_PHRASE }, { "jak zarobic", C_HOWTO, M_PHRASE }, { "jak wbic", C_HOWTO, M_PHRASE },
+			{ "jak zalozyc", C_HOWTO, M_PHRASE }, { "jak ulepszyc", C_HOWTO, M_PHRASE }, { "jak najszybciej", C_HOWTO, M_PHRASE },
+			{ "jak szybko", C_HOWTO, M_PHRASE }, { "co zrobic zeby", C_HOWTO, M_PHRASE }, { "jak sie dostac", C_HOWTO, M_PHRASE },
+			{ "jak sie zdobywa", C_HOWTO, M_PHRASE }, { "jak sie robi", C_HOWTO, M_PHRASE }, { "jak zaczac", C_HOWTO, M_PHRASE },
+			{ "jak sie robilo", C_HOWTO, M_PHRASE }, { "jak expic", C_HOWTO, M_PHRASE }, { "jak levelowac", C_HOWTO, M_PHRASE },
+			{ "jak lowic", C_HOWTO, M_PHRASE }, { "jak kopac", C_HOWTO, M_PHRASE }, { "jak czytac", C_HOWTO, M_PHRASE },
+			{ "event", C_EVENT, M_PREFIX }, { "evencie", C_EVENT, M_EXACT }, { "ivent", C_EVENT, M_PREFIX },
+			{ "wydarzeni", C_EVENT, M_PREFIX }, { "kalendarz", C_EVENT, M_PREFIX },
+			{ "ping", C_PING, M_EXACT }, { "pinga", C_PING, M_EXACT }, { "lag", C_PING, M_PREFIX }, { "laguje", C_PING, M_EXACT },
+			{ "lagi", C_PING, M_EXACT }, { "przycina", C_PING, M_PREFIX }, { "zacina", C_PING, M_PREFIX },
 			// ---- sentiment of a statement
 			{ "super", C_POSITIVE, M_EXACT }, { "fajnie", C_POSITIVE, M_EXACT }, { "ekstra", C_POSITIVE, M_EXACT },
 			{ "wbilem", C_POSITIVE, M_EXACT }, { "dropnalem", C_POSITIVE, M_EXACT }, { "dropnelo", C_POSITIVE, M_EXACT },

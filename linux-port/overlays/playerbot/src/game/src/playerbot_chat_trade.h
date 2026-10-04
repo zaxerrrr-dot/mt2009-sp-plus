@@ -658,9 +658,14 @@ namespace
 			{ "sprzedam", PLAYERBOT_TRADE_SELL }, { "sprzedaje", PLAYERBOT_TRADE_SELL },
 			{ "oddam", PLAYERBOT_TRADE_SELL }, { "s>", PLAYERBOT_TRADE_SELL },
 			{ "k>", PLAYERBOT_TRADE_BUY },
-			// MT2009_PLUS_BOT_CHAT_V2: the trade chat's other shorthands.
+			// MT2009_PLUS_BOT_CHAT_V2: the trade chat's other shorthands, and
+			// the question way of asking ("kto sprzeda tanio bodzie?").
 			{ "b>", PLAYERBOT_TRADE_BUY }, { "wtb", PLAYERBOT_TRADE_BUY }, { "wts", PLAYERBOT_TRADE_SELL },
 			{ "s >", PLAYERBOT_TRADE_SELL }, { "k >", PLAYERBOT_TRADE_BUY }, { "b >", PLAYERBOT_TRADE_BUY },
+			{ "kto sprzeda", PLAYERBOT_TRADE_BUY }, { "ktos sprzeda", PLAYERBOT_TRADE_BUY },
+			{ "sprzeda ktos", PLAYERBOT_TRADE_BUY }, { "ma ktos", PLAYERBOT_TRADE_BUY }, { "ktos ma", PLAYERBOT_TRADE_BUY },
+			{ "kto ma", PLAYERBOT_TRADE_BUY }, { "kto kupi", PLAYERBOT_TRADE_SELL }, { "ktos kupi", PLAYERBOT_TRADE_SELL },
+			{ "kupi ktos", PLAYERBOT_TRADE_SELL },
 		};
 		EPlayerBotTradeVerb verb = PLAYERBOT_TRADE_NONE;
 		for (size_t i = 0; i < sizeof(kVerbs) / sizeof(kVerbs[0]); ++i)
@@ -708,6 +713,42 @@ namespace
 		size_t n = strlen(outQuery);
 		while (n > 0 && IsPlayerBotChatSeparator(outQuery[n - 1]))
 			outQuery[--n] = 0;
+		// MT2009_PLUS_BOT_CHAT_V2: the words round the item that are not its
+		// name - "tanio bodzie, byku", "pilnie fms pls".
+		{
+			static const char* const kFill[] = { "tanio", "pilnie", "szybko", "byku", "mordo", "ziom", "ziomek",
+				"pls", "plz", "prosze", "moze", "jakis", "jakas", "jakies", "tu", "tutaj", "teraz", "ktos", "?" };
+			bool trimmed = true;
+			while (trimmed && n > 0)
+			{
+				trimmed = false;
+				for (size_t i = 0; i < sizeof(kFill) / sizeof(kFill[0]); ++i)
+				{
+					const size_t lf = strlen(kFill[i]);
+					// At the front.
+					if (n > lf && strncmp(outQuery, kFill[i], lf) == 0 && IsPlayerBotChatSeparator(outQuery[lf]))
+					{
+						size_t k = lf;
+						while (k < n && IsPlayerBotChatSeparator(outQuery[k]))
+							++k;
+						memmove(outQuery, outQuery + k, n - k + 1);
+						n -= k;
+						trimmed = true;
+						break;
+					}
+					// At the end.
+					if (n > lf && strcmp(outQuery + n - lf, kFill[i]) == 0 && IsPlayerBotChatSeparator(outQuery[n - lf - 1]))
+					{
+						n -= lf;
+						outQuery[n] = 0;
+						while (n > 0 && IsPlayerBotChatSeparator(outQuery[n - 1]))
+							outQuery[--n] = 0;
+						trimmed = true;
+						break;
+					}
+				}
+			}
+		}
 		// "Kupie KK", "Sprzedam KD": two letters are too few to search names
 		// with, but a word of the players' dictionary names the item exactly.
 		// "Kupie KZ" names the Forgetting Book with nothing after it.
