@@ -3,12 +3,12 @@
 # windows then show no button, key or window of a system Classic leaves out
 # (costumes, pets, mounts, alchemy, sashes, Battle Pass, the Wheel, the event
 # calendar, the weekly ranking, the companion, the saved positions, "Usun
-# misje", the collector's storage).
+# misje", the collector's storage, the dungeon window "Wyprawy").
 EDITION = "plus"
 CLASSIC = (EDITION == "classic")
 
 # The keybind actions and inventory sidebar buttons Classic has none of.
 CLASSIC_ACTIONS = ("dragon_soul", "companion", "event_calendar", "wheel", "new_pet",
-	"battle_pass", "tp_bookmarks", "weekly_rank", "unmount")
+	"battle_pass", "tp_bookmarks", "weekly_rank", "unmount", "dungeon_info")
 CLASSIC_SIDEBAR = ("companion", "battlepass", "calendar", "wheel", "teleport",
-	"missions", "ranking")
+	"missions", "ranking", "dungeon")
