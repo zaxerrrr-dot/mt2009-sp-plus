@@ -291,6 +291,14 @@ $script:Strings = @{
         stop         = 'ZATRZYMAJ I ZAPISZ'
         panel        = 'OTWORZ PANEL WWW'
         client       = 'WYBIERZ KLIENTA'
+        dbEdit       = 'DANE Z EDYTORA BAZY'
+        dbEditDialog = "Edytor bazy danych w panelu Seban zmienia nazwy, poziomy i bonusy przedmiotów oraz umiejętności. Launcher przed GRAJ pobiera te zmiany z serwera do plików klienta (pack\gamedata, pack\locale), a oryginały trzyma w pack\.dbedit.`r`n`r`nTeraz: {0}`r`n`r`nTak - przywróć oryginalne dane klienta i nie pobieraj zmian.`r`nNie - włącz dane z serwera i pobierz je teraz.`r`nAnuluj - nic nie zmieniaj."
+        dbEditOn     = 'klient ma dane z serwera ({0}, znacznik {1}, {2}).'
+        dbEditOff    = 'wyłączone - klient używa oryginalnych danych.'
+        dbEditNone   = 'klient ma oryginalne dane.'
+        dbEditRestored = 'Dane edytora bazy wyłączone - klient ma oryginalne dane, dopóki ich nie włączysz.'
+        dbEditNothing = 'Dane edytora bazy włączone. Serwer nie ma teraz zmian dla klienta albo nie działa - pobiorą się przy GRAJ.'
+        dbEditNoPatcher = 'Dane edytora bazy są na kliencie - uruchamiam grę bez MT2009-Patchera (przywróciłby oryginalne paczki).'
         update       = 'SPRAWDZ AKTUALIZACJE'
         bundle       = 'ZBIERZ / WYSLIJ LOGI'
         diagnostics  = 'DIAGNOSTYKA'
@@ -371,6 +379,14 @@ $script:Strings = @{
         stop         = 'STOP AND SAVE'
         panel        = 'OPEN WEB PANEL'
         client       = 'CHOOSE CLIENT'
+        dbEdit       = 'DATABASE EDITOR DATA'
+        dbEditDialog = "The Seban panel's database editor changes item and skill names, levels and bonuses. Before PLAY the launcher downloads those changes from the server into the client's files (pack\gamedata, pack\locale) and keeps the originals in pack\.dbedit.`r`n`r`nNow: {0}`r`n`r`nYes - restore the client's original data and stop downloading the changes.`r`nNo - turn the server's data on and download it now.`r`nCancel - change nothing."
+        dbEditOn     = "the client has the server's data ({0}, stamp {1}, {2})."
+        dbEditOff    = "turned off - the client uses its original data."
+        dbEditNone   = 'the client has its original data.'
+        dbEditRestored = "Database editor data turned off - the client keeps its original data until you turn it on."
+        dbEditNothing = "Database editor data turned on. The server has no changes for the client right now or is not running - they download on PLAY."
+        dbEditNoPatcher = "The database editor data is on the client - starting the game without MT2009-Patcher (it would restore the original packs)."
         update       = 'CHECK FOR UPDATES'
         bundle       = 'COLLECT / SEND LOGS'
         diagnostics  = 'DIAGNOSTICS'
@@ -668,10 +684,63 @@ function Start-ClientPatcher {
     }
 }
 
+# MT2009_PLUS_DB_EDITOR_V1: the item and skill changes made in the Seban
+# panel's database editor, laid onto the client's packs before it starts
+# (Sync-M2DbEditorClientData). Returns whether they are on the client.
+function Sync-DbEditorClientData {
+    param([Parameter(Mandatory = $true)][string]$ClientFolder, [AllowEmptyString()][string]$BaseUrl = '')
+    if (-not (Get-Command Sync-M2DbEditorClientData -ErrorAction SilentlyContinue)) { return $false }
+    try {
+        if (-not $BaseUrl) { $BaseUrl = Get-M2DbEditorDataUrl -ServerRoot $root }
+        $sync = Sync-M2DbEditorClientData -ClientFolder $ClientFolder -BaseUrl $BaseUrl -TimeoutSec 8
+        foreach ($note in @($sync.Notes)) { Write-LocalLog $note }
+        if ($sync.Status -eq 'unreachable') { Write-LocalLog 'Dane edytora bazy: panel Seban nie odpowiada - klient zostaje z tym, co pobrał ostatnio.' }
+        return [bool]$sync.Active
+    }
+    catch {
+        Write-LocalLog "Dane edytora bazy: $($_.Exception.Message)"
+        return $false
+    }
+}
+
+function Show-DbEditorClientDataDialog {
+    # "Przywróć oryginalne dane": the client's own gamedata/locale back, and
+    # kept until the player turns the server's data on again.
+    $executable = Find-ClientExecutable
+    if (-not $executable) { $executable = Select-ClientExecutable }
+    if (-not $executable) { return }
+    $folder = Split-Path -Parent $executable
+    $status = Get-M2DbEditorClientDataStatus -ClientFolder $folder
+    $now = if ($status.Disabled) { (T 'dbEditOff') } elseif ($status.Applied) { ((T 'dbEditOn') -f $status.Packs, $status.Stamp, $status.When) } else { (T 'dbEditNone') }
+    $answer = [Windows.Forms.MessageBox]::Show(((T 'dbEditDialog') -f $now), (T 'dbEdit'), 'YesNoCancel', 'Question')
+    if ($answer -eq [Windows.Forms.DialogResult]::Yes) {
+        foreach ($note in @(Set-M2DbEditorClientDataEnabled -ClientFolder $folder -Enabled $false)) { Write-LocalLog $note }
+        Write-LocalLog (T 'dbEditRestored')
+    }
+    elseif ($answer -eq [Windows.Forms.DialogResult]::No) {
+        $null = Set-M2DbEditorClientDataEnabled -ClientFolder $folder -Enabled $true
+        if (-not (Sync-DbEditorClientData -ClientFolder $folder)) { Write-LocalLog (T 'dbEditNothing') }
+    }
+}
+
 function Start-ConfiguredClient {
     $patcher = Get-ClientPatcher
     if ($patcher) {
         Confirm-ClientLanguageForLauncher -Executable (Join-Path (Split-Path -Parent $patcher) 'metin2client.exe')
+        # MT2009-Patcher checks the packs against the release and would put
+        # the original gamedata/locale back (and download 40 MB to do it).
+        # While the server's editor data is on the client, the game starts
+        # without the patcher; otherwise the patcher as before.
+        $patcherClient = Join-Path (Split-Path -Parent $patcher) 'metin2client.exe'
+        if ((Test-Path -LiteralPath $patcherClient -PathType Leaf) -and (Sync-DbEditorClientData -ClientFolder (Split-Path -Parent $patcher))) {
+            Write-LocalLog (T 'dbEditNoPatcher')
+            try {
+                Start-Process -FilePath $patcherClient -WorkingDirectory (Split-Path -Parent $patcherClient)
+                Write-LocalLog "Uruchomiono klienta: $([IO.Path]::GetFileName($patcherClient))"
+                return
+            }
+            catch { Write-LocalLog "BŁĄD uruchamiania klienta: $($_.Exception.Message) - uruchamiam patcher." }
+        }
         [void](Start-ClientPatcher -Patcher $patcher)
         return
     }
@@ -709,6 +778,7 @@ function Start-ConfiguredClient {
     catch { Write-LocalLog "Porządki w plikach klienta nieudane: $($_.Exception.Message)" }
     if (Start-ClientExeRepairIfWanted -LaunchClient) { return }
     Confirm-ClientLanguageForLauncher -Executable $executable
+    [void](Sync-DbEditorClientData -ClientFolder (Split-Path -Parent $executable))
     try {
         Start-Process -FilePath $executable -WorkingDirectory (Split-Path -Parent $executable)
         Write-LocalLog "Uruchomiono klienta: $([IO.Path]::GetFileName($executable))"
@@ -2810,8 +2880,16 @@ if (Test-Path -LiteralPath $vpsModulePath -PathType Leaf) {
 # somebody who cannot read the window needs to find it without reading anything.
 $languageButton = New-Button (T 'language') 508 702 218 28 ([Drawing.Color]::FromArgb(60, 70, 95))
 $languageButton.Add_Click({ Switch-LauncherLanguage })
+# MT2009_PLUS_DB_EDITOR_V1: "Przywróć oryginalne dane" of the database
+# editor's client data (Show-DbEditorClientDataDialog).
+$dbEditButton = $null
+if (Get-Command Sync-M2DbEditorClientData -ErrorAction SilentlyContinue) {
+    $dbEditButton = New-Button (T 'dbEdit') 268 702 218 28 ([Drawing.Color]::FromArgb(70, 100, 130))
+    $dbEditButton.Add_Click({ Show-DbEditorClientDataDialog })
+}
 
-foreach ($button in @($installButton, $playButton, $dockerButton, $stopButton, $panelButton, $clientButton, $updateButton, $bundleButton, $diagnosticsButton, $openLogButton, $folderButton, $botCountButton, $importDbButton, $repairDbButton, $dbAccessButton, $gmPanelButton, $worldBackupButton, $difficultyButton, $languageButton)) {
+foreach ($button in @($installButton, $playButton, $dockerButton, $stopButton, $panelButton, $clientButton, $updateButton, $bundleButton, $diagnosticsButton, $openLogButton, $folderButton, $botCountButton, $importDbButton, $repairDbButton, $dbAccessButton, $gmPanelButton, $worldBackupButton, $difficultyButton, $languageButton, $dbEditButton)) {
+    if (-not $button) { continue }
     $script:form.Controls.Add($button)
 }
 if ($coopButton) { $script:form.Controls.Add($coopButton) }

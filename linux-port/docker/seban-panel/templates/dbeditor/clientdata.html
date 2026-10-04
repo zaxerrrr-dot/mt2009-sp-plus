@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_V1: "Zastosuj" - pending changes, restart and client data (dbeditor/clientdata.py). #}
+{% block title %}Zastosuj zmiany · Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% block content %}
+<style>
+.dbe-apply-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.dbe-list{width:100%;border-collapse:collapse;font-size:14px}
+.dbe-list td,.dbe-list th{padding:6px 8px;border-bottom:1px solid var(--line,#253042);text-align:left;vertical-align:top}
+.dbe-kind{display:inline-block;padding:1px 8px;border-radius:9px;font-size:12px;background:color-mix(in srgb,var(--blue2,#4a7bd6) 20%,transparent)}
+.dbe-state{border-left:4px solid var(--muted,#8a96a8);padding:10px 14px;margin:10px 0}
+.dbe-state.ok{border-left-color:#39e890}.dbe-state.pending{border-left-color:#f5b83d}.dbe-state.error{border-left-color:#ff5757}
+.dbe-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:12px}
+.dbe-actions label{display:grid;gap:4px;color:var(--muted,#8a96a8);font-size:13px}
+.dbe-notes li{margin:.2em 0}
+.dbe-url{font-family:monospace;font-size:13px;word-break:break-all}
+</style>
+<p class="eyebrow">EDYTOR BAZY DANYCH · ZASTOSUJ</p>
+<h1>✅ Zastosuj zmiany</h1>
+<p class="muted"><a href="{{ url_for('dbeditor.index') }}">← Edytor bazy danych</a></p>
+
+<section class="panel">
+  <h2>Oczekujące zmiany</h2>
+  {% if last.time %}<p class="muted">Ostatnie „Zastosuj”: {{ last.when or last.time }} → {{ last.changes }} zmian.</p>{% endif %}
+  {% if not history and not flags %}
+    <div class="dbe-state ok"><p>Nic nie czeka na zastosowanie{% if not history_table %} (edytor nie zapisał jeszcze żadnej zmiany w bazie){% endif %}.</p></div>
+  {% else %}
+    <div class="dbe-state pending"><p><b>{{ history|length + flags|length }}</b> zmian czeka na restart gry.</p></div>
+    <table class="dbe-list">
+      <thead><tr><th>Kiedy</th><th>Co</th><th>Numer</th><th>Opis</th><th>Kto</th></tr></thead>
+      <tbody>
+      {% for h in history %}
+        <tr><td>{{ h.time or '—' }}</td><td><span class="dbe-kind">{{ {'item': 'przedmiot', 'skill': 'umiejętność', 'drop': 'drop', 'chest': 'szkatułka'}.get(h.kind, h.kind) }}</span></td>
+          <td>{{ h.key if h.key is not none else '—' }}</td><td>{{ h.summary or (h.fields|join(', ') if h.fields else '') }}</td><td>{{ h.user or '' }}</td></tr>
+      {% endfor %}
+      {% for f in flags %}
+        <tr><td>{{ f.time }}</td><td><span class="dbe-kind">plik</span></td><td>—</td><td>{{ f.text }}</td><td></td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+  <form method="post" action="{{ url_for('dbeditor.apply_post') }}" class="dbe-actions" onsubmit="return confirm('Zbudować dane klienta i zrestartować rdzenie gry? Gracze online zostaną rozłączeni na ok. minutę.');">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="action" value="apply">
+    <label>Wpisz RESTART, aby potwierdzić<input name="confirmation" autocomplete="off" placeholder="RESTART" required></label>
+    <button>✅ Zastosuj (dane klienta + restart rdzeni)</button>
+  </form>
+  <p class="muted">Gra wczytuje przedmioty, umiejętności, drop i szkatułki tylko przy starcie rdzeni. Postęp restartu: {{ restart.stage or '—' }}{% if restart.percent is defined %} ({{ restart.percent }}%){% endif %}.</p>
+</section>
+
+<div class="dbe-apply-grid">
+<section class="panel">
+  <h2>Dane klienta dla graczy</h2>
+  <p class="muted">Nazwy, poziomy, bonusy i opisy umiejętności widzi klient gry ze swoich plików. Panel buduje z bazy małą łatkę na pliki
+    <code>gamedata</code> i <code>locale</code> wydanego klienta; launcher gracza pobiera ją sam przy GRAJ (z kopią oryginału i opcją „Przywróć oryginalne dane”).</p>
+  {% if build and not build.ok %}<div class="dbe-state error"><p>Ostatnie budowanie nie udało się: {{ build.error }}</p></div>{% endif %}
+  {% if manifest %}
+    <div class="dbe-state {% if manifest.packs %}ok{% endif %}">
+      <p>Znacznik <b>{{ manifest.stamp }}</b> · klient {{ manifest.client }} · zbudowano {{ manifest.built }}</p>
+      {% if manifest.packs %}
+        <p>Paczki: {% for p in manifest.packs %}<b>{{ p.name }}</b> ({{ (p.tail.size / 1024)|round(0)|int }} KB: {{ p.entries|join(', ') }}){% if not loop.last %}, {% endif %}{% endfor %}</p>
+      {% else %}<p>Baza nie zmienia niczego, co widzi klient - launchery przywrócą oryginalne pliki.</p>{% endif %}
+      {% set s = manifest.summary or {} %}
+      {% if s['items'] %}<p>Przedmioty ({{ s['items']|length }}): {{ s['items'][:40]|join(', ') }}{% if s['items']|length > 40 %} …{% endif %}</p>{% endif %}
+      {% if s.skills %}<p>Umiejętności: {{ s.skills|join(', ') }}</p>{% endif %}
+      {% if s.itemdesc %}<p>Opisy przedmiotów: {{ s.itemdesc|length }}</p>{% endif %}
+      {% if s.skilldesc %}<p>Opisy umiejętności: {{ s.skilldesc|length }}</p>{% endif %}
+      {% if s.notes %}<ul class="dbe-notes">{% for n in s.notes[:30] %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+  {% else %}
+    <div class="dbe-state"><p>Dane klienta nie były jeszcze budowane.</p></div>
+  {% endif %}
+  <form method="post" action="{{ url_for('dbeditor.apply_post') }}" class="dbe-actions">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="action" value="client">
+    <button>🔧 Zbuduj tylko dane klienta (bez restartu)</button>
+  </form>
+</section>
+<section class="panel">
+  <h2>Jak gracze je dostają</h2>
+  <p>Launcher MT2009 przed uruchomieniem klienta pyta ten panel o:</p>
+  <p class="dbe-url">{{ client_url }}</p>
+  <p class="muted">Jeśli znacznik się zmienił, pobiera łatkę (zwykle kilkaset KB), zachowuje oryginalne indeksy w <code>pack\.dbedit</code> i nakłada zmiany. Gracze grający przez COOP pobierają ją z serwera, do którego dołączają, gdy host udostępnia port panelu.</p>
+  <p class="muted">Klient uruchamiany przez MT2009-Patcher (bez launchera) sprawdza pliki paczek i przywróciłby oryginał - patcher nie nakłada jeszcze tych danych.</p>
+</section>
+</div>
+{% endblock %}

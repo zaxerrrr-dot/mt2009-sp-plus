@@ -19,6 +19,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # for the same reason as VERSION.
 COPY app.py collector.py item_grants.py decisions.py decision_tables.py event_autogen.py gm_commands.txt CHANGELOG.md VERSION* special_item_group.snapshot*.txt ./
 COPY dbeditor ./dbeditor
+# MT2009_PLUS_DB_EDITOR_V1: the client data builder (pure Python), with the
+# released client's base files in m2clientpack/base/<client version>/.
+COPY m2clientpack ./m2clientpack
 COPY templates ./templates
 COPY static ./static
 ENV PYTHONUNBUFFERED=1

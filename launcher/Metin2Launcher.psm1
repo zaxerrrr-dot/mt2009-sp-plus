@@ -429,6 +429,11 @@ function Test-M2ClientFilesMatch {
     $match = $true
     foreach ($file in @($FileList.Files)) {
         $local = Join-Path $ClientFolder ($file.Path.Replace('/', [IO.Path]::DirectorySeparatorChar))
+        # MT2009_PLUS_DB_EDITOR_V1: with the database editor's data laid on,
+        # the release's index is the kept copy (pack\.dbedit\oryginal).
+        if ([string]$file.Path -match '^pack/(gamedata|locale)\.index$') {
+            $local = Get-M2DbEditorOriginalIndex -ClientFolder $ClientFolder -Pack $Matches[1]
+        }
         if (-not (Test-Path -LiteralPath $local -PathType Leaf)) { $match = $false; break }
         $item = Get-Item -LiteralPath $local -Force
         if ([long]$item.Length -ne [long]$file.Size) { $match = $false; break }
@@ -3392,6 +3397,307 @@ function Reset-M2WorldToFreshInstall {
     }
 }
 
+# MT2009_PLUS_DB_EDITOR_V1: the database editor's client data. The Seban
+# panel's "Zastosuj" builds, from the items and skills edited in the
+# database, a small overlay for the released client's gamedata and locale
+# packs (linux-port/docker/seban-panel/m2clientpack/overlay.py):
+#   <base>/manifest.json            stamp, client version, per pack the
+#                                   release's index SHA-256 and data length
+#   <base>/<stamp>/<pack>.index     the release's index, changed entries
+#                                   pointing past the release's data
+#   <base>/<stamp>/<pack>.tail      the bytes that go after the release's data
+# Laying it on: the release's <pack>.index is kept in pack\.dbedit\oryginal,
+# <pack>.data is cut back to the release's length, the tail is appended and
+# the new index put in place. Undoing it is the same two steps back, so no
+# 20 MB copy of a .data is ever needed. A marker file pack\.dbedit\wylaczone
+# ("Przywróć oryginalne dane") keeps the originals until it is removed.
+$script:M2DbEditFolder = '.dbedit'
+$script:M2DbEditPacks = @('gamedata', 'locale')
+
+function Get-M2DbEditorDataUrl {
+    # The local world's panel: http://127.0.0.1:<M2_SEBAN_PANEL_PORT>/db/clientdata
+    param([Parameter(Mandatory = $true)][string]$ServerRoot, [AllowEmptyString()][string]$HostAddress = '127.0.0.1')
+    $port = 7790
+    $envPath = Join-Path $ServerRoot 'linux-port\docker\.env'
+    if (Test-Path -LiteralPath $envPath -PathType Leaf) {
+        $match = Select-String -LiteralPath $envPath -Pattern '^M2_SEBAN_PANEL_PORT=(\d+)\s*$' | Select-Object -First 1
+        if ($match) { $port = [int]$match.Matches[0].Groups[1].Value }
+    }
+    if (-not $HostAddress) { $HostAddress = '127.0.0.1' }
+    return ('http://{0}:{1}/db/clientdata' -f $HostAddress, $port)
+}
+
+function Get-M2DbEditorPaths {
+    param([Parameter(Mandatory = $true)][string]$ClientFolder)
+    $pack = Join-Path $ClientFolder 'pack'
+    $dir = Join-Path $pack $script:M2DbEditFolder
+    return [pscustomobject]@{
+        Pack = $pack; Folder = $dir; State = (Join-Path $dir 'state.json')
+        Originals = (Join-Path $dir 'oryginal'); Downloads = (Join-Path $dir 'pobrane')
+        Disabled = (Join-Path $dir 'wylaczone')
+    }
+}
+
+function Read-M2DbEditorState {
+    param([Parameter(Mandatory = $true)][string]$ClientFolder)
+    $paths = Get-M2DbEditorPaths -ClientFolder $ClientFolder
+    if (-not (Test-Path -LiteralPath $paths.State -PathType Leaf)) { return $null }
+    try { return ([IO.File]::ReadAllText($paths.State) | ConvertFrom-Json) }
+    catch { return $null }
+}
+
+function Save-M2DbEditorState {
+    param([Parameter(Mandatory = $true)][string]$ClientFolder, [Parameter(Mandatory = $true)]$State)
+    $paths = Get-M2DbEditorPaths -ClientFolder $ClientFolder
+    if (-not (Test-Path -LiteralPath $paths.Folder)) { $null = New-Item -ItemType Directory -Path $paths.Folder -Force }
+    $temporary = $paths.State + '.new'
+    [IO.File]::WriteAllText($temporary, ($State | ConvertTo-Json -Depth 5))
+    Move-Item -LiteralPath $temporary -Destination $paths.State -Force
+}
+
+function Set-M2FileLength {
+    param([Parameter(Mandatory = $true)][string]$Path, [Parameter(Mandatory = $true)][long]$Length)
+    $stream = [IO.File]::Open($Path, [IO.FileMode]::Open, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
+    try { $stream.SetLength($Length) }
+    finally { $stream.Dispose() }
+}
+
+function Get-M2DbEditorOriginalIndex {
+    # The release's index of a pack as the overlay state knows it: the kept
+    # copy while the overlay is on, else the index in the pack folder.
+    param([Parameter(Mandatory = $true)][string]$ClientFolder, [Parameter(Mandatory = $true)][string]$Pack)
+    $paths = Get-M2DbEditorPaths -ClientFolder $ClientFolder
+    $kept = Join-Path $paths.Originals ($Pack + '.index')
+    $index = Join-Path $paths.Pack ($Pack + '.index')
+    $state = Read-M2DbEditorState -ClientFolder $ClientFolder
+    $entry = $(if ($state) { @($state.packs) | Where-Object { $_.name -eq $Pack } | Select-Object -First 1 } else { $null })
+    # the kept copy only while our index is the one in place
+    if ($entry -and (Test-Path -LiteralPath $kept -PathType Leaf) -and
+        (Get-M2FileSha256 -Path $index) -eq ([string]$entry.indexSha256).ToUpperInvariant()) { return $kept }
+    return $index
+}
+
+function Restore-M2DbEditorClientData {
+    # Puts the release's packs back: the kept index in place, the .data cut
+    # back to the release's length. Returns notes; nothing to do = none.
+    param([Parameter(Mandatory = $true)][string]$ClientFolder)
+    $paths = Get-M2DbEditorPaths -ClientFolder $ClientFolder
+    $state = Read-M2DbEditorState -ClientFolder $ClientFolder
+    $notes = @()
+    if (-not $state) { return $notes }
+    $left = @()
+    foreach ($p in @($state.packs)) {
+        $kept = Join-Path $paths.Originals ([string]$p.name + '.index')
+        $index = Join-Path $paths.Pack ([string]$p.name + '.index')
+        $data = Join-Path $paths.Pack ([string]$p.name + '.data')
+        $current = Get-M2FileSha256 -Path $index
+        $length = $(if (Test-Path -LiteralPath $data -PathType Leaf) { [long](Get-Item -LiteralPath $data).Length } else { -1 })
+        if ($current -ne ([string]$p.indexSha256).ToUpperInvariant()) {
+            # Not our index any more: the patcher or a client update put
+            # other files there. A release index with our tail still on its
+            # data only loses the tail; anything else is left alone - an older
+            # kept index must never land on a newer client's data.
+            if ($current -eq ([string]$p.baseIndexSha256).ToUpperInvariant() -and $length -eq [long]$p.dataLength) {
+                try { Set-M2FileLength -Path $data -Length ([long]$p.baseDataSize) } catch { }
+            }
+            continue
+        }
+        if (-not (Test-Path -LiteralPath $kept -PathType Leaf) -or (Get-M2FileSha256 -Path $kept) -ne ([string]$p.baseIndexSha256).ToUpperInvariant()) {
+            $notes += "Dane edytora bazy: brak kopii oryginalnego $($p.name).index - zostawiam plik bez zmian (pomoże pełna aktualizacja klienta)."
+            $left += $p
+            continue
+        }
+        try {
+            if ($length -gt [long]$p.baseDataSize) {
+                Set-M2FileLength -Path $data -Length ([long]$p.baseDataSize)
+            }
+            Copy-Item -LiteralPath $kept -Destination $index -Force
+        }
+        catch {
+            $notes += "Dane edytora bazy: nie przywrócono $($p.name) ($($_.Exception.Message)) - zamknij grę i spróbuj ponownie."
+            $left += $p
+        }
+    }
+    if ($left.Count -gt 0) {
+        $state.packs = @($left)
+        Save-M2DbEditorState -ClientFolder $ClientFolder -State $state
+    }
+    else {
+        Remove-Item -LiteralPath $paths.State -Force -ErrorAction SilentlyContinue
+        $notes += 'Dane edytora bazy: przywrócono oryginalne pliki klienta.'
+    }
+    return $notes
+}
+
+function Test-M2DbEditorStateIntact {
+    # Whether the packs still hold what the launcher laid on them.
+    param([Parameter(Mandatory = $true)][string]$ClientFolder, [Parameter(Mandatory = $true)]$State)
+    $paths = Get-M2DbEditorPaths -ClientFolder $ClientFolder
+    foreach ($p in @($State.packs)) {
+        $index = Join-Path $paths.Pack ([string]$p.name + '.index')
+        $data = Join-Path $paths.Pack ([string]$p.name + '.data')
+        if ((Get-M2FileSha256 -Path $index) -ne ([string]$p.indexSha256).ToUpperInvariant()) { return $false }
+        if (-not (Test-Path -LiteralPath $data -PathType Leaf) -or (Get-Item -LiteralPath $data).Length -ne [long]$p.dataLength) { return $false }
+    }
+    return $true
+}
+
+function Sync-M2DbEditorClientData {
+    # Brings the client folder's packs to what the server's panel publishes.
+    # Status: unchanged | applied | restored | disabled | unreachable |
+    # mismatch | noclient | error; Notes for the log. Never throws.
+    param(
+        [Parameter(Mandatory = $true)][string]$ClientFolder,
+        [Parameter(Mandatory = $true)][string]$BaseUrl,
+        [int]$TimeoutSec = 5
+    )
+    $result = [pscustomobject]@{ Status = 'unchanged'; Notes = @(); Stamp = ''; Active = $false }
+    try {
+        $paths = Get-M2DbEditorPaths -ClientFolder $ClientFolder
+        if (-not (Test-Path -LiteralPath $paths.Pack -PathType Container)) { $result.Status = 'noclient'; return $result }
+        $state = Read-M2DbEditorState -ClientFolder $ClientFolder
+        if (Test-Path -LiteralPath $paths.Disabled) {
+            $result.Notes += @(Restore-M2DbEditorClientData -ClientFolder $ClientFolder)
+            $result.Status = 'disabled'
+            return $result
+        }
+        $BaseUrl = $BaseUrl.TrimEnd('/')
+        try {
+            $response = Invoke-WebRequest -Uri ($BaseUrl + '/manifest.json') -UseBasicParsing -TimeoutSec $TimeoutSec
+            $manifest = [string]$response.Content | ConvertFrom-Json
+        }
+        catch {
+            # The panel is not up (yet): what was laid on last time stays.
+            $result.Status = 'unreachable'
+            $result.Active = [bool]($state -and @($state.packs).Count -gt 0)
+            return $result
+        }
+        $stamp = [string]$manifest.stamp
+        if ([int]$manifest.schema -ne 1 -or $stamp -notmatch '^([0-9a-f]{16}|oryginal)$') {
+            $result.Status = 'error'; $result.Notes += 'Dane edytora bazy: serwer podał nieznany format - pomijam.'
+            return $result
+        }
+        $result.Stamp = $stamp
+        $packs = @($manifest.packs | Where-Object { $_ })
+        foreach ($p in $packs) {
+            if ($script:M2DbEditPacks -notcontains [string]$p.name -or
+                [string]$p.index.file -notmatch '^[0-9a-f]{16}/(gamedata|locale)\.index$' -or
+                [string]$p.tail.file -notmatch '^[0-9a-f]{16}/(gamedata|locale)\.tail$') {
+                $result.Status = 'error'; $result.Notes += 'Dane edytora bazy: nieprawidłowa lista plików z serwera - pomijam.'
+                return $result
+            }
+        }
+        if ($state -and [string]$state.stamp -eq $stamp -and [string]$state.server -eq $BaseUrl -and
+            (Test-M2DbEditorStateIntact -ClientFolder $ClientFolder -State $state)) {
+            $result.Active = (@($state.packs).Count -gt 0)
+            return $result
+        }
+        if ($packs.Count -eq 0) {
+            $result.Notes += @(Restore-M2DbEditorClientData -ClientFolder $ClientFolder)
+            $result.Status = 'restored'
+            return $result
+        }
+        # The client must be the release the server built for - checked
+        # before anything is touched.
+        foreach ($p in $packs) {
+            $original = Get-M2DbEditorOriginalIndex -ClientFolder $ClientFolder -Pack ([string]$p.name)
+            if ((Get-M2FileSha256 -Path $original) -ne ([string]$p.baseIndexSha256).ToUpperInvariant()) {
+                $result.Notes += @(Restore-M2DbEditorClientData -ClientFolder $ClientFolder)
+                $result.Status = 'mismatch'
+                $result.Notes += "Dane edytora bazy: serwer zbudował je dla klienta $($manifest.client), a Twój pack\$($p.name).index jest inny - klient zostaje z oryginalnymi danymi. Zaktualizuj klienta (albo serwer) do tej samej wersji."
+                return $result
+            }
+        }
+        $download = Join-Path $paths.Downloads $stamp
+        if (-not (Test-Path -LiteralPath $download)) { $null = New-Item -ItemType Directory -Path $download -Force }
+        foreach ($p in $packs) {
+            foreach ($part in @($p.index, $p.tail)) {
+                $target = Join-Path $download ([IO.Path]::GetFileName([string]$part.file))
+                if (-not ((Test-Path -LiteralPath $target -PathType Leaf) -and (Get-M2FileSha256 -Path $target) -eq ([string]$part.sha256).ToUpperInvariant())) {
+                    Invoke-WebRequest -Uri ($BaseUrl + '/' + [string]$part.file) -OutFile $target -UseBasicParsing -TimeoutSec 60
+                }
+                if ((Get-Item -LiteralPath $target).Length -ne [long]$part.size -or (Get-M2FileSha256 -Path $target) -ne ([string]$part.sha256).ToUpperInvariant()) {
+                    throw "pobrany plik $($part.file) jest uszkodzony"
+                }
+            }
+        }
+        $result.Notes += @(Restore-M2DbEditorClientData -ClientFolder $ClientFolder | Where-Object { $_ -notmatch 'przywrócono oryginalne' })
+        if (Read-M2DbEditorState -ClientFolder $ClientFolder) {
+            $result.Status = 'error'; $result.Notes += 'Dane edytora bazy: poprzednich danych nie dało się zdjąć - nowych nie nakładam.'
+            return $result
+        }
+        if (-not (Test-Path -LiteralPath $paths.Originals)) { $null = New-Item -ItemType Directory -Path $paths.Originals -Force }
+        $state = [pscustomobject]@{ schema = 1; stamp = $stamp; client = [string]$manifest.client; server = $BaseUrl
+            applied = (Get-Date).ToString('s'); packs = @() }
+        foreach ($p in $packs) {
+            $name = [string]$p.name
+            $index = Join-Path $paths.Pack ($name + '.index')
+            $data = Join-Path $paths.Pack ($name + '.data')
+            $baseSize = [long]$p.baseDataSize
+            if (-not (Test-Path -LiteralPath $data -PathType Leaf) -or (Get-Item -LiteralPath $data).Length -lt $baseSize) {
+                throw "pack\$name.data jest krótszy niż w wersji klienta $($manifest.client)"
+            }
+            Copy-Item -LiteralPath $index -Destination (Join-Path $paths.Originals ($name + '.index')) -Force
+            $tail = [IO.File]::ReadAllBytes((Join-Path $download ($name + '.tail')))
+            $entry = [pscustomobject]@{ name = $name; baseIndexSha256 = ([string]$p.baseIndexSha256).ToUpperInvariant()
+                baseDataSize = $baseSize; indexSha256 = ([string]$p.index.sha256).ToUpperInvariant()
+                dataLength = $baseSize + $tail.Length }
+            # recorded before the pack is touched, so a failure half-way is undone by Restore
+            $state.packs = @($state.packs) + $entry
+            Save-M2DbEditorState -ClientFolder $ClientFolder -State $state
+            $stream = [IO.File]::Open($data, [IO.FileMode]::Open, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
+            try {
+                $stream.SetLength($baseSize)
+                $null = $stream.Seek($baseSize, [IO.SeekOrigin]::Begin)
+                $stream.Write($tail, 0, $tail.Length)
+            }
+            finally { $stream.Dispose() }
+            Copy-Item -LiteralPath (Join-Path $download ($name + '.index')) -Destination $index -Force
+        }
+        Get-ChildItem -LiteralPath $paths.Downloads -Directory -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -ne $stamp } | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+        $result.Status = 'applied'
+        $result.Active = $true
+        $result.Notes += "Dane edytora bazy: nałożono zmiany serwera ($(@($packs | ForEach-Object { $_.name }) -join ', '), znacznik $stamp)."
+        return $result
+    }
+    catch {
+        $result.Status = 'error'
+        $result.Notes += "Dane edytora bazy: $($_.Exception.Message)"
+        try { $result.Notes += @(Restore-M2DbEditorClientData -ClientFolder $ClientFolder) } catch { }
+        $result.Active = $false
+        return $result
+    }
+}
+
+function Set-M2DbEditorClientDataEnabled {
+    # "Przywróć oryginalne dane": -Enabled $false restores the release's packs
+    # and keeps them until the data is enabled again.
+    param([Parameter(Mandatory = $true)][string]$ClientFolder, [Parameter(Mandatory = $true)][bool]$Enabled)
+    $paths = Get-M2DbEditorPaths -ClientFolder $ClientFolder
+    if ($Enabled) {
+        Remove-Item -LiteralPath $paths.Disabled -Force -ErrorAction SilentlyContinue
+        return @()
+    }
+    if (-not (Test-Path -LiteralPath $paths.Folder)) { $null = New-Item -ItemType Directory -Path $paths.Folder -Force }
+    [IO.File]::WriteAllText($paths.Disabled, 'Dane edytora bazy wyłączone w launcherze.')
+    return @(Restore-M2DbEditorClientData -ClientFolder $ClientFolder)
+}
+
+function Get-M2DbEditorClientDataStatus {
+    param([Parameter(Mandatory = $true)][string]$ClientFolder)
+    $paths = Get-M2DbEditorPaths -ClientFolder $ClientFolder
+    $state = Read-M2DbEditorState -ClientFolder $ClientFolder
+    return [pscustomobject]@{
+        Disabled = (Test-Path -LiteralPath $paths.Disabled)
+        Applied = [bool]($state -and @($state.packs).Count -gt 0)
+        Stamp = $(if ($state) { [string]$state.stamp } else { '' })
+        Server = $(if ($state) { [string]$state.server } else { '' })
+        When = $(if ($state) { [string]$state.applied } else { '' })
+        Packs = $(if ($state) { @($state.packs | ForEach-Object { $_.name }) -join ', ' } else { '' })
+    }
+}
+
 Export-ModuleMember -Function @(
     'Get-M2DefaultLauncherConfig',
     'Get-M2LauncherConfig',
@@ -3448,5 +3754,13 @@ Export-ModuleMember -Function @(
     'Save-M2RecordedClientVersion',
     'Resolve-M2InstalledClientVersion',
     'Protect-M2SessionLogLine',
-    'Protect-M2LogFile'
+    'Protect-M2LogFile',
+    'Get-M2DbEditorDataUrl',
+    'Get-M2DbEditorPaths',
+    'Read-M2DbEditorState',
+    'Restore-M2DbEditorClientData',
+    'Test-M2DbEditorStateIntact',
+    'Sync-M2DbEditorClientData',
+    'Set-M2DbEditorClientDataEnabled',
+    'Get-M2DbEditorClientDataStatus'
 )
