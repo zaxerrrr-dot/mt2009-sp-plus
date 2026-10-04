@@ -34,6 +34,7 @@ Zmiany silnika opisane w `edits.json`, każda z własnym znacznikiem:
 | `MT2009_PLUS_BOT_HAIR_V1` | `item.cpp` | `Mt2009PlusIsCostumeSetHair` / `Mt2009PlusIsCostumeSetPair` – listy z `costume_sets.txt` (zestawy kostiumów) dla botów: boty kupują i noszą tylko fryzury z zestawów kostiumów, najpierw z zestawu noszonego kostiumu (`playerbot_itemshop.h`). |
 | `MT2009_PLUS_REGEN_COUNT_NO_DUNGEON_V1` | `regen.cpp` | Liczba potworów w respie (panel: Metiny i bossowie / zwykłe potwory, ×2–×4) nie działa w lochach: instancje (indeks mapy od 10000) i mapy, na których stoi loch, mają respy jak w plikach. |
 | `MT2009_PLUS_BOT_CHAT_V2 (trade chat)` | `input_main.cpp` | Linia gracza na czacie handlowym (`@ tekst`, `CHAT_TYPE_TRADE`) trafia też do botów (`CPlayerBotManager::OnPlayerTradeChat`): na „K> …”, „S> …”, „B> …”, „Kupię …”, „Sprzedam …” odpisuje na priv bot, który ma to na straganie albo tego szuka (`playerbot_chat_world.h`). Sam czat handlowy bez zmian. |
+| `MT2009_PLUS_BOT_CHAT_V2 (exchange gold)` | `exchange.h` | `CExchange::Mt2009PlusGetGold()` – ile yang dana strona włożyła do okna wymiany. Bot sprzedający coś graczowi z ręki (umowa z priva, `playerbot_chat_deals.h`) akceptuje dopiero, gdy w oknie leży uzgodniona kwota. |
 
 - `Apply-PlayerQolPatch.ps1` – Windows (`tools/port/Apply-MT2009PlusEngine.ps1`);
 - `apply_playerqol.py` – Linux/VPS; oba czytają ten sam `edits.json`.

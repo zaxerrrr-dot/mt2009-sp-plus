@@ -42,6 +42,8 @@ namespace playerbot_conv
 		I_JOKE, I_REAL_LIFE, I_GENDER, I_BEG,
 		// "jak zrobic konia?", "o ktorej event?", "co dropi z metina?", "lagi masz?"
 		I_HOWTO, I_EVENT, I_DROP_INFO, I_PING,
+		// a trade talked over (TDeal), and a line about the bot's own public post
+		I_DEAL, I_POST_REF,
 		// identity
 		I_NAME, I_LEVEL, I_CLASS, I_EMPIRE, I_PERSONALITY, I_MOOD,
 		// state
@@ -157,13 +159,18 @@ namespace playerbot_conv
 		// "kanal 2"), 0 when none.
 		int levelAsked;
 		int channelNamed;
+		// A deal's count named ("mam 7", "x10"), 0 none; the bot's own post
+		// this line answers (TPublicLine index + 1), 0 none - set when the
+		// reply is composed (ApplyPublicContext).
+		int dealCount;
+		int postRef;
 
 		TAnalysis() : intent(I_NONE), rawIntent(I_NONE), subject(I_NONE), follow(F_NONE),
 			topic(T_NONE), qtype(Q_STATEMENT), score(0), question(false), greetingToo(false),
 			thanksToo(false), returnToTopic(false), topicChange(false), repeated(false),
 			polarityNegative(false), at(0), gapBefore(0), offerYang(0), mentionMap(0), answeredAsk(0),
 			objectPlus(-1), levelNamed(0), itemLink(false), mathMixed(false), mathDivZero(false),
-			mathTooBig(false), levelAsked(0), channelNamed(0) {}
+			mathTooBig(false), levelAsked(0), channelNamed(0), dealCount(0), postRef(0) {}
 	};
 
 	// The summon and its release are requests, not a subject the conversation
@@ -175,7 +182,7 @@ namespace playerbot_conv
 
 	inline bool IsSocialIntent(EIntent i)
 	{
-		return i >= I_GREETING && i <= I_PING;
+		return i >= I_GREETING && i <= I_POST_REF;
 	}
 
 	// A line that talks at the bot rather than to it: the reply is short and
@@ -233,7 +240,7 @@ namespace playerbot_conv
 			"NONE", "GREETING", "FAREWELL", "THANKS", "APOLOGY", "HOW_ARE_YOU", "HELP",
 			"IS_BOT", "INSULT", "PRAISE", "AGE", "ORIGIN", "KS", "READY", "GOOD_LUCK", "BRB",
 			"STOP_TALKING", "THREAT", "MOCK", "MATH", "CONTRADICTION",
-			"JOKE", "REAL_LIFE", "GENDER", "BEG", "HOWTO", "EVENT", "DROP_INFO", "PING",
+			"JOKE", "REAL_LIFE", "GENDER", "BEG", "HOWTO", "EVENT", "DROP_INFO", "PING", "DEAL", "POST_REF",
 			"NAME", "LEVEL", "CLASS", "EMPIRE", "PERSONALITY", "MOOD",
 			"CURRENT_ACTIVITY", "ACTIVITY_LOCATION", "LOCATION", "TARGET", "MOB_COUNT",
 			"GOAL", "NEXT_PLAN", "HP", "GOLD", "HORSE", "EQUIPMENT", "INVENTORY",
@@ -346,7 +353,10 @@ namespace playerbot_conv
 			{ PBC_R(I_INVENTORY_SPACE, 0, 72), { C_PLACE, C_EQ }, { 0 }, { 0 }, { C_HOWMUCH } },
 			{ PBC_R(I_INVENTORY, 0, 64), { C_EQ }, { C_WHAT, C_HAVE }, { C_FREE, C_PLACE }, { 0 } },
 			{ PBC_R(I_INVENTORY, 0, 52), { C_EQ }, { 0 }, { 0 }, { 0 } },
-			{ PBC_R(I_EQUIPMENT, 0, 60), { C_GEAR }, { 0 }, { C_BUYME, C_SELLYOU, C_TRADE, C_SHOP, C_UPGRADE }, { C_WHICH, C_WHAT, C_HAVE } },
+			// MT2009_PLUS_BOT_CHAT_V2: only a question about the bot's own gear -
+			// an item named in a line ("buty ognistego ptaka") is not one.
+			{ PBC_R(I_EQUIPMENT, 0, 60), { C_GEAR }, { C_WHICH, C_WHAT, C_YOU, C_HAVE, C_SHOWOFF },
+				{ C_BUYME, C_SELLYOU, C_TRADE, C_SHOP, C_UPGRADE }, { C_WHICH, C_WHAT, C_HAVE } },
 			{ PBC_R(I_PARTY, 0, 62), { C_PARTY }, { 0 }, { C_JOIN, C_WANT, C_CAN, C_WITHME }, { C_BE, C_HAVE } },
 			{ PBC_R(I_PARTY, 0, 70), { C_WITHWHO }, { C_BE, C_EXP, C_PLAY, C_YOU, C_HIT }, { 0 }, { 0 } },
 			{ PBC_R(I_PARTY, 0, 66), { C_ALONE }, { C_BE, C_EXP, C_PLAY, C_YOU, C_HIT }, { C_LONELY }, { 0 } },
@@ -452,7 +462,7 @@ namespace playerbot_conv
 				{ C_TRAVEL, C_LIKE, C_THINK, C_HYPO, C_TRAVELG }, { 0 } },
 			{ PBC_R(I_TRAVEL, 0, 78), { C_MAPNAME, C_TRAVEL }, { 0 }, { C_HYPO }, { 0 } },
 			{ PBC_R(I_MAP_OPINION, 0, 80), { C_MAPNAME, C_LIKE }, { 0 }, { 0 }, { 0 } },
-			{ PBC_R(I_EQUIPMENT, 0, 62), { C_BONUS }, { 0 }, { C_BUYME, C_SELLYOU }, { C_HAVE, C_WHICH } },
+			{ PBC_R(I_EQUIPMENT, 0, 62), { C_BONUS }, { C_HAVE, C_WHICH, C_WHAT, C_YOU }, { C_BUYME, C_SELLYOU }, { C_HAVE, C_WHICH } },
 			{ PBC_R(I_MOB_COUNT, 0, 62), { C_MOB, C_HOW }, { 0 }, { C_HIT, C_LIKE }, { 0 } },
 			// "masz tarcze?" - is it in the bag (the engine looks), not "what do you wear"
 			{ PBC_R(I_ITEM_OWN, 0, 68), { C_HAVE, C_GEAR }, { 0 }, { C_WHICH, C_WHAT, C_FREE }, { 0 } },
@@ -673,7 +683,11 @@ namespace playerbot_conv
 			"ciekawego", "w", "eq", "ekwipunku", "plecaku", "a", "no", "hej", "stoi", "chodzi", "warte", "wart",
 			"teraz", "jeszcze", "tam", "tu", "u", "dla", "mnie", "wycenisz", "wycen", "ty", "ziomek", "prosze",
 			"zobacz", "sprawdz", "moglbys", "mozesz", "sprzedalbys", "wiesz", "chodza", "sa", "jakiegos", "jakas",
-			"gdzie"
+			"gdzie",
+			// MT2009_PLUS_BOT_CHAT_V2: the deal's own words
+			"mam", "moge", "sprzedania", "do", "dasz", "dajesz", "dalej", "wciaz", "jeszcze", "nadal", "kupujesz",
+			"aktualne", "aktualny", "aktualna", "tez", "odkupisz", "kupi", "kto", "ktos", "chce", "chcialbym", "biore",
+			"wezme", "kupuje"
 		};
 		size_t i = (size_t)from;
 		for (; i < tok.words.size(); ++i)
@@ -785,7 +799,7 @@ namespace playerbot_conv
 			if (i == C_MANY || i == C_ALONE || i == C_ACK || i == C_LAUGH || i == C_SURPRISE ||
 					i == C_YES || i == C_NO || i == C_BUDDY || i == C_OR || i == C_NEXT ||
 					i == C_TODAY || i == C_NOW || i == C_POSITIVE || i == C_NEGATIVE || i == C_GIVE ||
-					i == C_SWEAR)
+					i == C_SWEAR || i == C_STILL || i == C_AGREE)
 				continue;
 			if (c.Has(i))
 				return true;
@@ -898,6 +912,44 @@ namespace playerbot_conv
 	}
 
 	// ------------------------------------------------ MT2009_PLUS_BOT_CHAT_V2
+
+	// "mam 7", "7 szt", "x10", "10x", "10 sztuk po 20k": how many pieces a
+	// line about a deal names, 0 none. A bare small number in a short line
+	// counts too ("7"); money ("20k", "15000") never.
+	inline int FindDealCount(const TTokens& tok)
+	{
+		const std::vector<std::string>& w = tok.words;
+		for (size_t i = 0; i < w.size(); ++i)
+		{
+			const std::string& x = w[i];
+			std::string digits = x;
+			if (!digits.empty() && digits[0] == 'x')
+				digits = digits.substr(1);
+			else if (!digits.empty() && digits[digits.size() - 1] == 'x')
+				digits = digits.substr(0, digits.size() - 1);
+			if (digits.empty() || digits.size() > 3)
+				continue;
+			int v = 0;
+			bool ok = true;
+			for (size_t k = 0; k < digits.size(); ++k)
+			{
+				if (digits[k] < '0' || digits[k] > '9')
+					ok = false;
+				else
+					v = v * 10 + (digits[k] - '0');
+			}
+			if (!ok || v <= 0 || v > 500)
+				continue;
+			const std::string next = i + 1 < w.size() ? w[i + 1] : std::string();
+			const std::string prev = i > 0 ? w[i - 1] : std::string();
+			if (next == "k" || next == "kk" || next == "tys" || next == "yang")
+				continue;
+			if (digits != x || StartsWith(next, "szt") || next == "x" || prev == "mam" || prev == "masz" ||
+					prev == "x" || StartsWith(next, "kaw") || next == "razy" || w.size() <= 3)
+				return v;
+		}
+		return 0;
+	}
 
 	// "metki na 30", "gdzie expic 45", "co na 70 lvl": a level the line asks
 	// about. A number named as a level wins (FindLevelNamed); otherwise a bare
@@ -1043,6 +1095,7 @@ namespace playerbot_conv
 		a.levelNamed = FindLevelNamed(a.tokens);
 		a.levelAsked = FindLevelAsked(a.tokens, c);
 		a.channelNamed = FindChannelNamed(a.tokens);
+		a.dealCount = FindDealCount(a.tokens);
 
 		// A sum that is the whole line ("ile to 2+2") is answered as one;
 		// read as words it was "ile" and nothing, and the bot said "Ale czego?"

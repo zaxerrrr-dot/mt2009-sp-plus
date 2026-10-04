@@ -904,5 +904,11 @@
   "marker": "MT2009_PLUS_BOT_CHAT_V2 (trade chat)",
   "old": "\t\telse\n\t\t{\n\t\t\tSendTrade(chatbuf);\n\t\t}\n",
   "new": "\t\telse\n\t\t{\n\t\t\tSendTrade(chatbuf);\n\n\t\t\t// MT2009_PLUS_BOT_CHAT_V2 (trade chat): a person's '@' line reaches the playerbots too -\n\t\t\t// \"K> ...\" or \"S> ...\" is answered by whisper by the bot best placed to (playerbot_chat_world.h).\n\t\t\tif (ch->GetDesc() && !ch->GetDesc()->IsBot())\n\t\t\t\tCPlayerBotManager::instance().OnPlayerTradeChat(ch, buf);\n\t\t}\n"
+ },
+ {
+  "file": "exchange.h",
+  "marker": "MT2009_PLUS_BOT_CHAT_V2 (exchange gold)",
+  "old": "\t\tbool\t\tGetAcceptStatus() { return m_bAccept; }\n",
+  "new": "\t\tbool\t\tGetAcceptStatus() { return m_bAccept; }\n\t\t// MT2009_PLUS_BOT_CHAT_V2 (exchange gold): the yang this side put in, for a playerbot that sells\n\t\t// by hand and must see the price before it accepts (playerbot_chat_deals.h).\n\t\tYANG\t\tMt2009PlusGetGold() const { return m_lGold; }\n"
  }
 ]

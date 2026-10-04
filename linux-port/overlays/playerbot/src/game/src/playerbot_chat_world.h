@@ -199,6 +199,18 @@ namespace
 
 	// ------------------------------------------------------- the trade chat
 
+	// What a trade line means, for the bot's memory of its own posts.
+	struct TPlayerBotTradeMeaning
+	{
+		BYTE kind;
+		DWORD vnum;
+		int count;
+		DWORD unit;
+		std::string name;
+		TPlayerBotTradeMeaning() : kind(0), vnum(0), count(0), unit(0) {}
+	};
+	TPlayerBotTradeMeaning s_PlayerBotTradeMeaning;
+
 	DWORD s_dwPlayerBotTradeChatNext = 0;
 	std::map<DWORD, DWORD> s_mapPlayerBotTradeChatLast; // by bot pid
 	unsigned int s_uPlayerBotTradeChatLines = 0;
@@ -261,6 +273,12 @@ namespace
 		for (size_t i = order.size(); i > 1; --i)
 			std::swap(order[i - 1], order[number(0, (int)i - 1)]);
 		const TPlayerBotStallLine& a = stall.lines[order[0]];
+		s_PlayerBotTradeMeaning = TPlayerBotTradeMeaning();
+		s_PlayerBotTradeMeaning.kind = playerbot_conv::PL_SELL;
+		s_PlayerBotTradeMeaning.vnum = a.vnum;
+		s_PlayerBotTradeMeaning.count = (int)a.count;
+		s_PlayerBotTradeMeaning.unit = (DWORD)(a.price / (a.count ? a.count : 1));
+		s_PlayerBotTradeMeaning.name = a.name;
 		const char* town = GetPlayerBotTownName(stall.mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN
 				? stall.mapIndex / 10000 : stall.mapIndex);
 		char buf[CHAT_MAX_LEN + 1];
@@ -324,6 +342,12 @@ namespace
 		const DWORD price = GetPlayerBotShopAskingPrice(item);
 		if (price == 0)
 			return false;
+		s_PlayerBotTradeMeaning = TPlayerBotTradeMeaning();
+		s_PlayerBotTradeMeaning.kind = playerbot_conv::PL_SELL;
+		s_PlayerBotTradeMeaning.vnum = item->GetVnum();
+		s_PlayerBotTradeMeaning.count = (int)item->GetCount();
+		s_PlayerBotTradeMeaning.unit = price / (item->GetCount() ? item->GetCount() : 1);
+		s_PlayerBotTradeMeaning.name = item->GetProto()->szLocaleName;
 		std::string name = item->GetProto()->szLocaleName;
 		if (item->GetCount() > 1)
 			name += " x" + playerbot_conv::ToString((long long)item->GetCount());
@@ -355,6 +379,12 @@ namespace
 		const DWORD unit = GetPlayerBotWantedUnitPrice(*it, dwNow);
 		const bool stack = IS_SET(proto->dwFlags, ITEM_FLAG_STACKABLE);
 		const int count = stack ? (number(0, 2) == 0 ? 5 : (number(0, 1) ? 10 : 20)) : 1;
+		s_PlayerBotTradeMeaning = TPlayerBotTradeMeaning();
+		s_PlayerBotTradeMeaning.kind = playerbot_conv::PL_BUY;
+		s_PlayerBotTradeMeaning.vnum = *it;
+		s_PlayerBotTradeMeaning.count = count;
+		s_PlayerBotTradeMeaning.unit = unit;
+		s_PlayerBotTradeMeaning.name = proto->szLocaleName;
 		char buf[CHAT_MAX_LEN + 1];
 		if (unit > 0)
 		{
@@ -387,6 +417,12 @@ namespace
 		if (price <= 0 || (long long)ch->GetGold() < price / 2)
 			return false;
 		const std::string name = playerbot_conv::GearName(proto->szLocaleName, 0);
+		s_PlayerBotTradeMeaning = TPlayerBotTradeMeaning();
+		s_PlayerBotTradeMeaning.kind = playerbot_conv::PL_BUY;
+		s_PlayerBotTradeMeaning.vnum = proto->dwVnum;
+		s_PlayerBotTradeMeaning.count = 1;
+		s_PlayerBotTradeMeaning.unit = (DWORD)price;
+		s_PlayerBotTradeMeaning.name = proto->szLocaleName;
 		static const char* const k[] = { "K> %s, dam do %s, pw", "Kupie %s, mam %s, kto sprzeda?", "B> %s za %s, moze byc z plusem" };
 		char buf[CHAT_MAX_LEN + 1];
 		snprintf(buf, sizeof(buf), PickPlayerBotChatLine(k), name.c_str(), playerbot_conv::FormatYang(price).c_str());
@@ -447,6 +483,8 @@ namespace
 			if (!BuildPlayerBotTradeChatLine(pick, dwNow, line) || line.empty())
 				continue;
 			SendPlayerBotTradeChat(pick, line.c_str());
+			NotePlayerBotPublicLine(pick, s_PlayerBotTradeMeaning.kind, true, line.c_str(), s_PlayerBotTradeMeaning.vnum,
+					s_PlayerBotTradeMeaning.count, s_PlayerBotTradeMeaning.unit, 0, 0, s_PlayerBotTradeMeaning.name.c_str());
 			// The kingdom's trade shout keeps its distance from it.
 			s_dwPlayerBotTradeShoutTime = dwNow;
 			++s_uPlayerBotTradeChatLines;
@@ -643,6 +681,7 @@ namespace
 				snprintf(msg, sizeof(msg), "%s : %s", pick->GetName(), text.c_str());
 				SendPlayerBotShout(msg, q.bEmpire);
 				BattlePassOnShout(pick);
+				NotePlayerBotPublicLine(pick, playerbot_conv::PL_TALK, false, text.c_str());
 				s_adwPlayerBotShoutAnswerAt[q.bEmpire] = dwNow;
 				++s_uPlayerBotShoutAnswers;
 				sys_log(0, "PLAYERBOT_SHOUT_ANSWER: pid=%u name=%s empire=%u to=%s kind=%u text=\"%s\"",

@@ -67,6 +67,8 @@ namespace playerbot_conv
 		C_JOKE, C_TELL, C_REAL, C_CITY, C_GENDER, C_BEG, C_CHANNEL, C_MEET, C_RECOMMEND, C_MORE,
 		// "jak zrobic konia", "jak sie robi biologa"; an event; a ping or a lag
 		C_HOWTO, C_EVENT, C_PING,
+		// a deal: "jeszcze aktualne?", "biore", "pasuje"
+		C_STILL, C_AGREE,
 		C_COUNT
 	};
 
@@ -242,7 +244,12 @@ namespace playerbot_conv
 			{ "bron", C_GEAR, M_EXACT }, { "broni", C_GEAR, M_EXACT }, { "bronia", C_GEAR, M_EXACT },
 			{ "zbroj", C_GEAR, M_PREFIX }, { "miecz", C_GEAR, M_PREFIX }, { "luk", C_GEAR, M_EXACT },
 			{ "tarcz", C_GEAR, M_PREFIX }, { "helm", C_GEAR, M_PREFIX }, { "buty", C_GEAR, M_EXACT },
-			{ "sprzet", C_GEAR, M_PREFIX }, { "item", C_GEAR, M_PREFIX }, { "nosisz", C_GEAR, M_EXACT },
+			// MT2009_PLUS_BOT_CHAT_V2: "sprzet" only in its own forms - as a
+			// stem one typo from "sprzed..." it made "mam do sprzedania X" a
+			// question about the bot's gear.
+			{ "sprzet", C_GEAR, M_EXACT }, { "sprzetu", C_GEAR, M_EXACT }, { "sprzetem", C_GEAR, M_EXACT },
+			{ "sprzecie", C_GEAR, M_EXACT }, { "na sobie", C_GEAR, M_PHRASE },
+			{ "item", C_GEAR, M_PREFIX }, { "nosisz", C_GEAR, M_EXACT },
 			{ "set", C_GEAR, M_EXACT }, { "seta", C_GEAR, M_EXACT }, { "sztylet", C_GEAR, M_PREFIX },
 			{ "ostrz", C_GEAR, M_PREFIX }, { "dzwon", C_GEAR, M_PREFIX }, { "wachlarz", C_GEAR, M_PREFIX },
 			{ "naszyjnik", C_GEAR, M_PREFIX }, { "bransolet", C_GEAR, M_PREFIX }, { "kolczyk", C_GEAR, M_PREFIX },
@@ -265,7 +272,7 @@ namespace playerbot_conv
 			{ "zielar", C_HERB, M_PREFIX }, { "ziol", C_HERB, M_PREFIX }, { "mikstur", C_HERB, M_PREFIX },
 			{ "potk", C_HERB, M_PREFIX }, { "potek", C_HERB, M_EXACT }, { "alchemi", C_HERB, M_PREFIX },
 			{ "biolog", C_BIO, M_PREFIX },
-			{ "metin", C_METIN, M_PREFIX }, { "kamien", C_METIN, M_PREFIX }, { "stone", C_METIN, M_EXACT },
+			{ "metin", C_METIN, M_PREFIX }, { "metk", C_METIN, M_PREFIX }, { "kamien", C_METIN, M_PREFIX }, { "stone", C_METIN, M_EXACT },
 			{ "wiez", C_DT, M_PREFIX }, { "dt", C_DT, M_EXACT }, { "demon", C_DT, M_PREFIX },
 			{ "tower", C_DT, M_EXACT },
 			{ "wojn", C_WAR, M_PREFIX },
@@ -682,6 +689,25 @@ namespace playerbot_conv
 			{ "jak lowic", C_HOWTO, M_PHRASE }, { "jak kopac", C_HOWTO, M_PHRASE }, { "jak czytac", C_HOWTO, M_PHRASE },
 			{ "event", C_EVENT, M_PREFIX }, { "evencie", C_EVENT, M_EXACT }, { "ivent", C_EVENT, M_PREFIX },
 			{ "wydarzeni", C_EVENT, M_PREFIX }, { "kalendarz", C_EVENT, M_PREFIX },
+			// ---- deals (MT2009_PLUS_BOT_CHAT_V2): the person selling, the
+			// post still meant, a price agreed
+			{ "moge ci sprzedac", C_SELLYOU, M_PHRASE }, { "moge sprzedac", C_SELLYOU, M_PHRASE },
+			{ "sprzedac ci", C_SELLYOU, M_PHRASE }, { "ci sprzedac", C_SELLYOU, M_PHRASE },
+			{ "mam do sprzedania", C_SELLYOU, M_PHRASE }, { "mam na sprzedaz", C_SELLYOU, M_PHRASE },
+			{ "do sprzedania", C_SELLYOU, M_PHRASE }, { "odkupisz", C_SELLYOU, M_EXACT },
+			{ "kupisz moje", C_SELLYOU, M_PHRASE }, { "chcesz kupic", C_SELLYOU, M_PHRASE },
+			{ "ile dasz", C_SELLYOU, M_PHRASE }, { "ile mi dasz", C_SELLYOU, M_PHRASE }, { "ile dajesz", C_SELLYOU, M_PHRASE },
+			{ "dalej kupujesz", C_SELLYOU, M_PHRASE }, { "wciaz kupujesz", C_SELLYOU, M_PHRASE },
+			{ "jeszcze kupujesz", C_SELLYOU, M_PHRASE }, { "nadal kupujesz", C_SELLYOU, M_PHRASE },
+			{ "dalej sprzedajesz", C_BUYME, M_PHRASE }, { "wciaz sprzedajesz", C_BUYME, M_PHRASE },
+			{ "jeszcze sprzedajesz", C_BUYME, M_PHRASE }, { "nadal sprzedajesz", C_BUYME, M_PHRASE },
+			{ "jeszcze", C_STILL, M_EXACT }, { "dalej", C_STILL, M_EXACT }, { "wciaz", C_STILL, M_EXACT },
+			{ "nadal", C_STILL, M_EXACT }, { "aktualn", C_STILL, M_PREFIX }, { "pisales", C_STILL, M_EXACT },
+			{ "pisalas", C_STILL, M_EXACT }, { "na wolaj", C_STILL, M_PHRASE }, { "na handlowym", C_STILL, M_PHRASE },
+			{ "biore", C_AGREE, M_EXACT }, { "wezme", C_AGREE, M_EXACT }, { "pasuje", C_AGREE, M_EXACT },
+			{ "zgoda", C_AGREE, M_EXACT }, { "umowa", C_AGREE, M_EXACT }, { "stoi", C_AGREE, M_EXACT },
+			{ "zgadzam", C_AGREE, M_PREFIX }, { "moze byc", C_AGREE, M_PHRASE }, { "niech bedzie", C_AGREE, M_PHRASE },
+			{ "dobra cena", C_AGREE, M_PHRASE }, { "deal", C_AGREE, M_EXACT },
 			{ "ping", C_PING, M_EXACT }, { "pinga", C_PING, M_EXACT }, { "lag", C_PING, M_PREFIX }, { "laguje", C_PING, M_EXACT },
 			{ "lagi", C_PING, M_EXACT }, { "przycina", C_PING, M_PREFIX }, { "zacina", C_PING, M_PREFIX },
 			// ---- sentiment of a statement
