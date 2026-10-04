@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "version": "classic-2.0.51",
+  "files": [
+    {
+      "path": "Dolacz.bat",
+      "size": 92,
+      "sha256": "CAD0B604D8CC39C7475F3D4FF8F29E76C4F7FA4F7713A4032F9D208C6931A8E8"
+    },
+    {
+      "path": "Dolacz.ps1",
+      "size": 6038,
+      "sha256": "9CDB49ADB74E4EA740C8DB0150987F2DB48F64A8973C1BB4C26FE82CE6C9DDD2"
+    },
+    {
+      "path": "metin2client.exe",
+      "size": 13667328,
+      "sha256": "A5F3E6A0634C05CF252FD4DDF015B54AF3ED8B92BB31C0247657D6A6057D14CC"
+    },
+    {
+      "path": "MT2009-Patcher.exe",
+      "size": 37385216,
+      "sha256": "3D3CB07AD6D8ACA879F5C3C7047CC71B54962E4BAC018CDF40B00709063F9FE7"
+    },
+    {
+      "path": "MT2009-Patcher.exe.config",
+      "size": 1809,
+      "sha256": "F090128A9AE87EC995C016D02E0CE8C1F2DEA6C5DD6D4403947446D812608F06"
+    },
+    {
+      "path": "pack/az_fix1.index",
+      "size": 2620,
+      "sha256": "04BF6F7401240E189BD76B313B885DD44FFEFA4E430000A389E389698ADF4787"
+    },
+    {
+      "path": "pack/az_maps.index",
+      "size": 7988,
+      "sha256": "23FA75282DFA8156937A3168E7C5874F0D2DC137D6387B62A0BE6980B3670F78"
+    },
+    {
+      "path": "pack/az_maps2.index",
+      "size": 4900,
+      "sha256": "140AB99245B49FCD064B8ED1EF03F264652707E461023425EB62E80F1AE0762F"
+    },
+    {
+      "path": "pack/az_maps3.index",
+      "size": 4980,
+      "sha256": "249DF3E839F5BD868CDB28CEEAF0949496BC9BC66BDE99F665AE9DE938069202"
+    },
+    {
+      "path": "pack/az_mobs.index",
+      "size": 3628,
+      "sha256": "C0BD4B26228D4BCAA824C286372C8D1F546AED3EC5079B12346054C7F66CBA6D"
+    },
+    {
+      "path": "pack/az_mobs2.index",
+      "size": 7052,
+      "sha256": "465726644D909468751D2C9C9D229F13DB1621437F736AE6B2936E8A7CF566EB"
+    },
+    {
+      "path": "pack/az_mobs3.index",
+      "size": 8332,
+      "sha256": "C25708CC957A5BBB05D941BF991912911E84F298A1859BB0D3929B404E4C0BA2"
+    },
+    {
+      "path": "pack/az_mobs4.index",
+      "size": 10740,
+      "sha256": "63AA5BB3E6016E421C2CE6E7BBA19DABA6AC896C6B65F55DF1F2A632B53B6B0C"
+    },
+    {
+      "path": "pack/az_ui.index",
+      "size": 1764,
+      "sha256": "2A9E4BE66E3620CD71DB9570BB7FFCA500B94A40ACC675F2A8B7C40C91466F2D"
+    },
+    {
+      "path": "pack/bd_maps.index",
+      "size": 3620,
+      "sha256": "3A3D82F74F6B555296524FB6924A1349E16673FEC0456A6ED9436B0B9D06F54C"
+    },
+    {
+      "path": "pack/catacomb_map.index",
+      "size": 45540,
+      "sha256": "91FFE0D65191E053B5938EB63E94426B10A34CB19DA54BE70294A8CD46CF2ED9"
+    },
+    {
+      "path": "pack/gamedata.index",
+      "size": 4180,
+      "sha256": "D4ABB507DD7EECB14A23782602955A08FC8EE6717091E596E8F3583C62474797"
+    },
+    {
+      "path": "pack/gf_misc.index",
+      "size": 8108,
+      "sha256": "1EA2DE044A03B56DCFF1A84C4CC5F6C8721A6AF36A2C5706D85E26062E812121"
+    },
+    {
+      "path": "pack/gf_mobs.index",
+      "size": 49076,
+      "sha256": "5B5A57CCBC7405F8B746D702F302799F742470FA47D60ECCCF3060793845995D"
+    },
+    {
+      "path": "pack/gf_nemere.index",
+      "size": 19876,
+      "sha256": "4074BFC37D08C2FCEDA98C0C8B715937CB796FE00F3E26AE4CFFC30804E7AFFD"
+    },
+    {
+      "path": "pack/gf_razador.index",
+      "size": 25028,
+      "sha256": "7B62A4D86D53C49A8CEDE64594CE80581F212D5943F43FE8CB49FD24EC329AE8"
+    },
+    {
+      "path": "pack/goblin.index",
+      "size": 5956,
+      "sha256": "B6B5149B314DBB7EC0E714E6535E2920008E3F9990FD3EC03E6D809AA2B7DA76"
+    },
+    {
+      "path": "pack/icon.index",
+      "size": 78548,
+      "sha256": "40005C4E5B7CA85C922F5F70F9BF4FD7332F5EB42D5AAEB1576161BDC8E5B185"
+    },
+    {
+      "path": "pack/Index",
+      "size": 741,
+      "sha256": "365BAAE35F2D55DF4802BFB5A7FAEC0DA3421C3F09AD732F547846C2531A698D"
+    },
+    {
+      "path": "pack/locale.index",
+      "size": 23604,
+      "sha256": "89D05DBAE47018F9B71F8A8AED4B56BA92747F4EAADC7772F28CFAA9A3E1F406"
+    },
+    {
+      "path": "pack/maps.index",
+      "size": 77252,
+      "sha256": "954E5D404F1AC95483497ACFDA2347CF269CB1242DE56D7A0D4B83B08FD9C483"
+    },
+    {
+      "path": "pack/minigames.index",
+      "size": 10164,
+      "sha256": "A678706546B7AD3B722BC270B75C984414259956567E389EFA8E747A7991C9E5"
+    },
+    {
+      "path": "pack/newpet.index",
+      "size": 5828,
+      "sha256": "380AD994503E1155A88C56928A2C07275CE84B20D5D735DB39235E5C6F91BB84"
+    },
+    {
+      "path": "pack/ochao.index",
+      "size": 19556,
+      "sha256": "619DEAFF5F30D5DA5D0BF2A782C7640EAE2BCC36D2910E43A3CB728281748A9F"
+    },
+    {
+      "path": "pack/property.index",
+      "size": 52948,
+      "sha256": "0793927A06865AFEBF2E9B1436BA27A5F96C5F6CD8428BD0C3811A17DC8E7B19"
+    },
+    {
+      "path": "pack/root.index",
+      "size": 22100,
+      "sha256": "CC2FC7F53733DA1A341536981AFF0876AD04EFEC6763930DD4810C9E963D1492"
+    }
+  ]
+}

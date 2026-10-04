@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "channel": "classic",
+  "publishedAt": "2026-10-04T13:11:37Z",
+  "statusMessage": "MT2009 Classic 2.21.1 - pierwsze wydanie. Klient classic-2.0.51.",
+  "server": {
+    "version": "2.21.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/classic-v2.21.1/metin2-server-update-2.21.1.zip",
+    "sha256": "F43BEB5B7248994252FFD4AC39AB0C7C772CC3B81B9B894A70E01957056386F2",
+    "size": 104943772
+  },
+  "client": {
+    "version": "classic-2.0.51",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/classic-klient-v2.0.51/metin2-client-update-classic-2.0.51.zip",
+    "sha256": "57EDC429F388173B6000143E28CF2E7BA5F29053711DA438EB45CE292BD7A354",
+    "size": 357336155
+  }
+}
