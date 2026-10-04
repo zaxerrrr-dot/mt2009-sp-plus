@@ -17,6 +17,14 @@ every version here.
 
 ---
 
+## 2.21.1 — 2026-10-04 — Czaszka tylko nad bossami, poprawka panelu
+
+Bez zmian w kliencie (zostaje **2.0.51**).
+
+- **Czaszka tylko nad bossami i mini-bossami** — mocne zwykłe potwory (np. Czarne Orki) już jej nie mają.
+- Panel zaawansowany: przycisk **OK** w okienku po nadaniu VIP-a / Premium znów je zamyka (wcześniej sypał błędami „Coś poszło nie tak (405)”).
+- Nowe README projektu.
+
 ## 2.21.0 — 2026-10-04 — Wojny gildii na arenie, 27 Legend, Drop wiki, czaszka nad bossem
 
 Wymaga klienta **2.0.51** (pobierze go launcher albo patcher).

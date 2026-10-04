@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-04T09:30:00Z",
-  "statusMessage": "MT2009 PLUS 2.21.0: wojny gildii na arenie, 27 Legend, Drop wiki, czaszka nad bossem, Auto Lowy. Klient 2.0.51.",
+  "publishedAt": "2026-10-04T11:08:06Z",
+  "statusMessage": "MT2009 PLUS 2.21.1: czaszka tylko nad bossami i mini-bossami, poprawka panelu.",
   "server": {
-    "version": "2.21.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.21.0/metin2-server-update-2.21.0.zip",
-    "sha256": "453374773196F2C7B9B2F3D4C4BA20C99772B7C1CFBCDFE28BA303F914DE2B46",
-    "size": 104925534
+    "version": "2.21.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.21.1/metin2-server-update-2.21.1.zip",
+    "sha256": "0CE9D88D7493EACA0F2E7DDA05B0073CC9AA02C876AE3EFF7BFFD07854986669",
+    "size": 104925840
   },
   "client": {
     "version": "2.0.51",
