@@ -30,6 +30,15 @@ EVENT_STOP_MASS_SELL = "EVENT_STOP_MASS_SELL" # args |
 
 ###################################################################################################
 ## Shop
+# MT2009_PLUS_NPC_CHEAP_MARK_V1: the cheap NPC goods' mark, unless switched off in
+# "Opcje dodatkowe" (uiopcjedodatkowe.py, "npccheap_off").
+def _CheapMarkOn():
+	try:
+		import uiopcjedodatkowe
+		return not uiopcjedodatkowe.Settings().get("npccheap_off", False)
+	except Exception:
+		return True
+
 class ShopDialog(ui.ScriptWindow):
 
 	def __init__(self):
@@ -65,12 +74,34 @@ class ShopDialog(ui.ScriptWindow):
 				itemCount = 0
 			setItemID(i, getItemID(idx), itemCount)
 			# MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): NPC goods under 500 Yang lit up
-			if getItemID(idx) and not shop.IsPrivateShop() and 0 < shop.GetItemPrice(idx) < 500:
+			# MT2009_PLUS_NPC_CHEAP_MARK_V1: and a green cover over the slot - the slot's own
+			# glow did not show in the NPC shop (the owner, 4 October); "Opcje dodatkowe"
+			# switches both off.
+			cheap = bool(getItemID(idx)) and not self.isPlayerShop and 0 < shop.GetItemPrice(idx) < 500 and _CheapMarkOn()
+			if cheap:
 				self.itemSlotWindow.ActivateSlot(i)
 			else:
 				self.itemSlotWindow.DeactivateSlot(i)
+			self.__SetCheapMark(i, cheap)
 
 		wndMgr.RefreshSlot(self.itemSlotWindow.GetWindowHandle())
+
+	def __SetCheapMark(self, i, on):
+		marks = self.__dict__.setdefault("cheapMarks", {})
+		bar = marks.get(i)
+		if not on:
+			if bar:
+				bar.Hide()
+			return
+		if not bar:
+			bar = ui.Bar()
+			bar.SetParent(self.itemSlotWindow)
+			bar.AddFlag("not_pick")
+			bar.SetPosition((i % 5) * 32 + 1, (i // 5) * 32 + 1)
+			bar.SetSize(30, 30)
+			bar.SetColor(0x4033ff33)
+			marks[i] = bar
+		bar.Show()
 
 	def SetItemData(self, pos, itemID, itemCount, itemPrice):
 		shop.SetItemData(pos, itemID, itemCount, itemPrice)

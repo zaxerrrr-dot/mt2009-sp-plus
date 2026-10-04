@@ -54,6 +54,8 @@ OPTIONS = (
 	# metin or a player (digiserverqol.py, KillSound) - off unless ticked (the
 	# owner, 3 October).
 	("killsound", "D\x9fwi\xeaki zab\xf3jstw (boss, metin, gracz)", lambda: True),
+	# MT2009_PLUS_NPC_CHEAP_MARK_V1: the cheap goods' mark in the NPC shops (uishop.py).
+	("npccheap_off", "Nie pod\x9cwietlaj tanich rzeczy u handlarzy", lambda: True),
 )
 PARTS = (
 	("trees", "PART_TREE"),
