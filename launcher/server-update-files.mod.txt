@@ -175,6 +175,7 @@ linux-port/docker/game/src/server/game/src/desc_manager.h
 linux-port/docker/game/src/server/game/src/event.cpp
 linux-port/docker/game/src/server/game/src/exchange.cpp
 linux-port/docker/game/src/server/game/src/guild.cpp
+linux-port/docker/game/src/server/game/src/guild.h
 linux-port/docker/game/src/server/game/src/ikarus_shop_manager.cpp
 linux-port/docker/game/src/server/game/src/ikarus_shop_manager.h
 linux-port/docker/game/src/server/game/src/input.h
@@ -189,6 +190,7 @@ linux-port/docker/game/src/server/game/src/packet_info.cpp
 linux-port/docker/game/src/server/game/src/questlua_dungeon.cpp
 linux-port/docker/game/src/server/game/src/questlua_game.cpp
 linux-port/docker/game/src/server/game/src/questlua_global.cpp
+linux-port/docker/game/src/server/game/src/questlua_guild.cpp
 linux-port/docker/game/src/server/game/src/sectree.h
 linux-port/docker/game/src/server/game/src/sectree.cpp
 linux-port/docker/game/src/server/game/src/safebox.cpp

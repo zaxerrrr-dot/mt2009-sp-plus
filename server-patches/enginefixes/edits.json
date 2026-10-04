@@ -202,5 +202,47 @@
   "marker": "MT2009_PLUS_CHEST_DROP_EVENT_V1",
   "old": "\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n",
   "new": "\t// MT2009_PLUS_CHEST_DROP_EVENT_V1: the panel's chest drop event - any chest the\n\t// operator names, with its chance a kill (playerbot_events.h).\n\t{\n\t\tvoid Mt2009PlusChestDrops(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& vec_item);\n\t\tMt2009PlusChestDrops(pkChr, pkKiller, vec_item);\n\t}\n\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n"
+ },
+ {
+  "file": "guild.h",
+  "marker": "MT2009_PLUS_GUILD_TREASURY_V1 (guild.h)",
+  "old": "\t\tYANG\t\tGetGuildMoney() const\t{ return m_data.gold; }\n",
+  "new": "\t\tYANG\t\tGetGuildMoney() const\t{ return m_data.gold; }\n\t\t// MT2009_PLUS_GUILD_TREASURY_V1 (guild.h) (owner, 4 October): the treasury - what\n\t\t// the members and the bots' collections (\"Zrzutka yang\") paid in - is\n\t\t// spent only on the guild: its land and its buildings. Nobody takes it\n\t\t// out into a bag (RequestWithdrawMoney refuses); SpendGuildMoney takes\n\t\t// it through the db core's withdrawal, whose \"give\" this core answers\n\t\t// by giving nothing (RecvWithdrawMoneyGive). Available = the gold less\n\t\t// what this core has asked for and the db core has not taken yet.\n\t\tYANG\t\tGetGuildMoneyAvailable() const\t{ return m_data.gold > m_llMt2009SpendPending ? m_data.gold - m_llMt2009SpendPending : 0; }\n\t\tbool\t\tSpendGuildMoney(LPCHARACTER ch, YANG iGold, const char* c_pszWhat);\n\t\tYANG\t\tm_llMt2009SpendPending = 0;\n"
+ },
+ {
+  "file": "guild.cpp",
+  "marker": "MT2009_PLUS_GUILD_TREASURY_V1 (guild.cpp withdraw)",
+  "old": "void CGuild::RequestWithdrawMoney(LPCHARACTER ch, YANG iGold)\n{\n\tif (false==ch->CanDeposit())",
+  "new": "void CGuild::RequestWithdrawMoney(LPCHARACTER ch, YANG iGold)\n{\n\t// MT2009_PLUS_GUILD_TREASURY_V1 (guild.cpp withdraw): the treasury is the\n\t// guild's - it pays the land and the buildings, never a bag.\n\tif (ch)\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Gildia] Yang ze skarbca gildii mozna wydac tylko na gildie: zakup ziemi i budynki. Nie da sie go wyplacic.\");\n\treturn;\n\n\tif (false==ch->CanDeposit())"
+ },
+ {
+  "file": "guild.cpp",
+  "marker": "MT2009_PLUS_GUILD_TREASURY_V1 (guild.cpp give)",
+  "old": "void CGuild::RecvWithdrawMoneyGive(YANG iChangeGold)\n{\n\tLPCHARACTER ch = GetMasterCharacter();\n\n\tif (ch)\n\t{\n\t\tch->ChangeGold(iChangeGold);\n\t\tsys_log(0, \"GUILD: WITHDRAW %s:%u player %s[%u] gold %lld\", GetName(), GetID(), ch->GetName(), ch->GetPlayerID(), iChangeGold);\n\t}\n\n\tTPacketGDGuildMoneyWithdrawGiveReply p;\n\tp.dwGuild = GetID();\n\tp.iChangeGold = iChangeGold;\n\tp.bGiveSuccess = ch ? 1 : 0;\n\tdb_clientdesc->DBPacket(HEADER_GD_GUILD_WITHDRAW_MONEY_GIVE_REPLY, 0, &p, sizeof(p));\n}\n",
+  "new": "void CGuild::RecvWithdrawMoneyGive(YANG iChangeGold)\n{\n\t// MT2009_PLUS_GUILD_TREASURY_V1 (guild.cpp give): the db core took the\n\t// sum out of the treasury. It was this core's spending on the guild\n\t// (SpendGuildMoney) - nobody gets it, the db core keeps it out. Anything\n\t// else (a withdrawal from before the rule) is refused, and the db core\n\t// puts it back into the treasury.\n\tconst bool spent = iChangeGold > 0 && m_llMt2009SpendPending >= iChangeGold;\n\tif (spent)\n\t\tm_llMt2009SpendPending -= iChangeGold;\n\tsys_log(0, \"GUILD: TREASURY %s %s:%u gold %lld\", spent ? \"SPENT\" : \"WITHDRAW REFUSED\", GetName(), GetID(), iChangeGold);\n\n\tTPacketGDGuildMoneyWithdrawGiveReply p;\n\tp.dwGuild = GetID();\n\tp.iChangeGold = iChangeGold;\n\tp.bGiveSuccess = spent ? 1 : 0;\n\tdb_clientdesc->DBPacket(HEADER_GD_GUILD_WITHDRAW_MONEY_GIVE_REPLY, 0, &p, sizeof(p));\n}\n\n// MT2009_PLUS_GUILD_TREASURY_V1 (guild.cpp spend): pays iGold of the guild's\n// land or buildings out of the treasury. False when the treasury lacks it.\nbool CGuild::SpendGuildMoney(LPCHARACTER ch, YANG iGold, const char* c_pszWhat)\n{\n\tif (iGold <= 0)\n\t\treturn true;\n\tif (GetGuildMoneyAvailable() < iGold)\n\t\treturn false;\n\tm_llMt2009SpendPending += iGold;\n\n\tTPacketGDGuildMoney p;\n\tp.dwGuild = GetID();\n\tp.iGold = iGold;\n\tdb_clientdesc->DBPacket(HEADER_GD_GUILD_WITHDRAW_MONEY, 0, &p, sizeof(p));\n\n\tchar buf[96 + 1];\n\tsnprintf(buf, sizeof(buf), \"%u %s %s\", GetID(), GetName(), c_pszWhat ? c_pszWhat : \"\");\n\tif (ch)\n\t\tLogManager::instance().CharLog(ch, iGold, \"GUILD_TREASURY_SPEND\", buf);\n\tsys_log(0, \"GUILD: TREASURY SPEND %s:%u gold %lld for %s\", GetName(), GetID(), iGold, c_pszWhat ? c_pszWhat : \"?\");\n\treturn true;\n}\n"
+ },
+ {
+  "file": "questlua_guild.cpp",
+  "marker": "MT2009_PLUS_GUILD_TREASURY_V1 (questlua_guild.cpp)",
+  "old": "\tALUA(guild_get_max_member0)\n\t{",
+  "new": "\t// MT2009_PLUS_GUILD_TREASURY_V1 (questlua_guild.cpp): the treasury the\n\t// guild_building quest pays a land from - what it holds now, and paying\n\t// a sum out of it (the master only; true when paid).\n\tALUA(guild_treasury_available)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tCGuild* pGuild = ch ? ch->GetGuild() : NULL;\n\t\tlua_pushnumber(L, pGuild ? (double)pGuild->GetGuildMoneyAvailable() : 0);\n\t\treturn 1;\n\t}\n\n\tALUA(guild_treasury_spend)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tCGuild* pGuild = ch ? ch->GetGuild() : NULL;\n\t\tconst YANG gold = lua_isnumber(L, 1) ? (YANG)lua_tonumber(L, 1) : 0;\n\t\tconst char* what = lua_isstring(L, 2) ? lua_tostring(L, 2) : \"quest\";\n\t\tlua_pushboolean(L, pGuild && pGuild->GetMasterPID() == ch->GetPlayerID() && gold >= 0 &&\n\t\t\t\tpGuild->SpendGuildMoney(ch, gold, what));\n\t\treturn 1;\n\t}\n\n\tALUA(guild_get_max_member0)\n\t{"
+ },
+ {
+  "file": "questlua_guild.cpp",
+  "marker": "MT2009_PLUS_GUILD_TREASURY_V1 (questlua_guild.cpp list)",
+  "old": "\t\t\t{ \"level\",\t\t\t\t\tguild_level\t\t\t\t\t},\n",
+  "new": "\t\t\t{ \"level\",\t\t\t\t\tguild_level\t\t\t\t\t},\n\t\t\t{ \"treasury_available\",\t\tguild_treasury_available\t},\t// MT2009_PLUS_GUILD_TREASURY_V1 (questlua_guild.cpp list)\n\t\t\t{ \"treasury_spend\",\t\t\tguild_treasury_spend\t\t},\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GUILD_TREASURY_V1 (cmd_gm.cpp check)",
+  "old": "\t\t\t\t\tif (ch->GetGold() < (int)t->dwPrice)\n\t\t\t\t\t{\n\t\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Your guild does not have enough Yang to erect this building.\"));\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n",
+  "new": "\t\t\t\t\t// MT2009_PLUS_GUILD_TREASURY_V1 (cmd_gm.cpp check): the guild's\n\t\t\t\t\t// treasury pays first, the master's own yang the rest.\n\t\t\t\t\tconst YANG treasuryPart = ch->GetGuild() ? MIN((YANG)t->dwPrice, ch->GetGuild()->GetGuildMoneyAvailable()) : 0;\n\t\t\t\t\tif (ch->GetGold() < (YANG)t->dwPrice - treasuryPart)\n\t\t\t\t\t{\n\t\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Your guild does not have enough Yang to erect this building.\"));\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GUILD_TREASURY_V1 (cmd_gm.cpp pay)",
+  "old": "\t\t\t\t{\n\t\t\t\t\tch->ChangeGold(-t->dwPrice);\n",
+  "new": "\t\t\t\t{\n\t\t\t\t\t// MT2009_PLUS_GUILD_TREASURY_V1 (cmd_gm.cpp pay): the treasury's\n\t\t\t\t\t// part first (it can only have grown since the check), the\n\t\t\t\t\t// rest from the master's bag.\n\t\t\t\t\tYANG fromTreasury = ch->GetGuild() ? MIN((YANG)t->dwPrice, ch->GetGuild()->GetGuildMoneyAvailable()) : 0;\n\t\t\t\t\tif (fromTreasury > 0 && !ch->GetGuild()->SpendGuildMoney(ch, fromTreasury, \"building\"))\n\t\t\t\t\t\tfromTreasury = 0;\n\t\t\t\t\tch->ChangeGold(-((YANG)t->dwPrice - fromTreasury));\n\t\t\t\t\tif (fromTreasury > 0)\n\t\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"[Gildia] Ze skarbca gildii zaplacono %lld Yang, z Twojego ekwipunku %lld Yang.\", (long long)fromTreasury, (long long)((YANG)t->dwPrice - fromTreasury));\n"
  }
 ]

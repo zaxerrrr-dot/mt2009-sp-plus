@@ -21,3 +21,4 @@ Zmiana już nałożona (jest jej znacznik) jest pomijana; zmiana, której kodu n
 ma dokładnie raz, przerywa całość, zanim cokolwiek zostanie zapisane.
 
 - `MT2009_PLUS_CUBE_FOR_PLAYERS_V1` (`cmd.cpp`): komenda `cube` dostępna dla graczy (była tylko dla GM), więc okno wytwarzania u Seon-Pyeonga i innych NPC otwiera się zwykłemu graczowi. `Cube_open` dalej sprawdza NPC i odległość.
+- `MT2009_PLUS_GUILD_TREASURY_V1` (`guild.h`, `guild.cpp`, `questlua_guild.cpp`, `cmd_gm.cpp`): skarbiec gildii (wpłaty członków i zrzutki botów) można wydać tylko na gildię. Wypłata do ekwipunku jest odrzucana. Za budynek (`/build`) i ziemię (quest `guild_building`, funkcje `guild.treasury_available` / `guild.treasury_spend`) najpierw płaci skarbiec, resztę lider ze swojego yang.
