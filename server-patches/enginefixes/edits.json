@@ -268,5 +268,11 @@
   "marker": "MT2009_PLUS_PACKET_TRACE_V1 (input.cpp)",
   "old": "\t\t\tsys_err(\"UNKNOWN HEADER: %d, LAST HEADER: %d(%d), REMAIN BYTES: %d, fd: %d\",\n\t\t\t\t\tbHeader, bLastHeader, iLastPacketLen, m_iBufferLeft, lpDesc->GetSocket());\n",
   "new": "\t\t\tsys_err(\"UNKNOWN HEADER: %d, LAST HEADER: %d(%d), REMAIN BYTES: %d, fd: %d\",\n\t\t\t\t\tbHeader, bLastHeader, iLastPacketLen, m_iBufferLeft, lpDesc->GetSocket());\n\t\t\t// MT2009_PLUS_PACKET_TRACE_V1 (input.cpp): who it was and what the\n\t\t\t// server had sent it just before - the client's stream breaks after\n\t\t\t// a packet it could not read.\n\t\t\tlpDesc->Mt2009DumpSent(\"UNKNOWN HEADER\");\n"
+ },
+ {
+  "file": "input.cpp",
+  "marker": "MT2009_PLUS_PACKET_TRACE_V1 (input.cpp bytes)",
+  "old": "\t\t\tlpDesc->Mt2009DumpSent(\"UNKNOWN HEADER\");\n",
+  "new": "\t\t\tlpDesc->Mt2009DumpSent(\"UNKNOWN HEADER\");\n\t\t\t// MT2009_PLUS_PACKET_TRACE_V1 (input.cpp bytes): and the first bytes\n\t\t\t// it sent, so the next time says whether it was a real packet or noise.\n\t\t\t{\n\t\t\t\tchar hex[3 * 48 + 1];\n\t\t\t\tint n = 0;\n\t\t\t\tconst int show = MIN(48, m_iBufferLeft);\n\t\t\t\tfor (int i = 0; i < show; ++i)\n\t\t\t\t\tn += snprintf(hex + n, sizeof(hex) - n, \"%02x \", (unsigned int)(BYTE)c_pData[i]);\n\t\t\t\thex[n] = '\\0';\n\t\t\t\tsys_err(\"PACKET_TRACE:   received %d bytes, first %d: %s\", m_iBufferLeft, show, hex);\n\t\t\t}\n"
  }
 ]
