@@ -3560,10 +3560,54 @@ namespace playerbot_conv
 
 #define PBC_DEAL(g, arr) DealSay((g), (arr), sizeof(arr) / sizeof((arr)[0]))
 
+	// MT2009_PLUS_BOT_CHAT_V2 (deals): a bot in a dungeon, or in a party with
+	// somebody else, is playing - it does not haggle and walk off for a trade
+	// (the owner, 4 October: "mowi ze kupi bojowy, jest realnie na dungeonie
+	// z swoim pt"). Empty when it is free to trade.
+	inline std::string DealBusyAnswer(TGen& g)
+	{
+		if (g.s.inDungeon)
+		{
+			g.reason = "Bo jestem w dungeonie.";
+			static const char* const k[] = { "Teraz nie, jestem na dungu z ekipa. Napisz pozniej.",
+				"Siedze w dungu, nie handluje teraz. Odezwij sie jak wyjde.", "Jestem w srodku dunga, pozniej pogadamy o tym.",
+				"Nie teraz, robimy dunga. Za jakis czas." };
+			return PBC_SAY(g, k);
+		}
+		if (g.s.partyWithOtherPerson)
+		{
+			g.reason = "Bo gram z kims w grupie.";
+			static const char* const k[] = { "Teraz gram z ekipa, nie odejde na handel. Pozniej?",
+				"Sorki, jestem w pt i expimy razem. Napisz pozniej.", "Nie teraz, gram w grupie. Odezwe sie jak skonczymy." };
+			return PBC_SAY(g, k);
+		}
+		return std::string();
+	}
+
+	// Where to come for the window: the map (with the channel when it is not
+	// the asker's - Fill adds it to $MAPIN), or only the channel on a map it
+	// has no name for. "na CH2 na CH2" was both at once.
+	inline std::string DealMeetPlace(TGen& g)
+	{
+		if (IsKnownMap(g.s.mapIndex))
+			return Fill(g, "Jestem $MAPIN");
+		if (AskerOnOtherChannel(g.s))
+			return Fill(g, "Jestem na CH$CH");
+		return "Jestem niedaleko";
+	}
+
 	// Settled: the engine holds the deal for the window and says how the two
 	// meet.
 	inline std::string CloseDeal(TGen& g)
 	{
+		{
+			const std::string busy = DealBusyAnswer(g);
+			if (!busy.empty())
+			{
+				g.m.deal = TDeal();
+				return busy;
+			}
+		}
 		TDeal& d = g.m.deal;
 		d.state = DEAL_AGREED;
 		d.at = g.now;
@@ -3586,7 +3630,7 @@ namespace playerbot_conv
 						: "Ide do ciebie, daj wymiane jak bede obok.");
 				break;
 			case DEAL_MEET_COME_TO_ME:
-				Append(head, Fill(g, "Jestem $MAPIN na CH$CH, podejdz i daj wymiane."));
+				Append(head, DealMeetPlace(g) + ", podejdz i daj wymiane.");
 				break;
 			default:
 				d.state = DEAL_FAILED;
@@ -3601,6 +3645,14 @@ namespace playerbot_conv
 	// The person sells, the bot buys: what it pays, if it wants it at all.
 	inline std::string OpenBuyDeal(TGen& g, const std::string& obj)
 	{
+		{
+			const std::string busy = DealBusyAnswer(g);
+			if (!busy.empty())
+			{
+				g.m.deal = TDeal();
+				return busy;
+			}
+		}
 		const TPublicLine* post = PostOf(g);
 		TDealQuote q;
 		if (!g.world || !g.world->QuoteItem(obj, post ? post->vnum : 0, q) || !q.found)
@@ -3682,6 +3734,14 @@ namespace playerbot_conv
 		if (!g.world || !g.world->QuoteItem(obj, post ? post->vnum : 0, q) || !q.found || q.botHas <= 0 ||
 				q.sellUnit <= 0)
 			return std::string();
+		{
+			const std::string busy = DealBusyAnswer(g);
+			if (!busy.empty())
+			{
+				g.m.deal = TDeal();
+				return busy;
+			}
+		}
 		TDeal& d = g.m.deal;
 		d = TDeal();
 		d.state = DEAL_OPEN;
@@ -3727,7 +3787,7 @@ namespace playerbot_conv
 		if (d.state == DEAL_AGREED)
 		{
 			if (t.Has("gdzie") || c.Has(C_WHERE))
-				return Fill(g, "Jestem $MAPIN na CH$CH. Podejdz i daj wymiane.");
+				return DealMeetPlace(g) + ". Podejdz i daj wymiane.";
 			static const char* const k[] = { "Juz sie dogadalismy - daj wymiane i po sprawie.", "Czekam na wymiane :)" };
 			return PBC_SAY(g, k);
 		}

@@ -308,6 +308,9 @@ namespace playerbot_conv
 		std::string partyLeader;
 		bool leaderIsMe;
 		bool askerInParty;
+		// MT2009_PLUS_BOT_CHAT_V2 (deals): a person other than the asker in the
+		// bot's party - it is playing with them, not trading.
+		bool partyWithOtherPerson;
 		bool inGuild;
 		std::string guildName;
 		int guildMembers;
@@ -400,7 +403,7 @@ namespace playerbot_conv
 			inDungeon(false), action(A_IDLE), goal(G_LEVEL), travelMap(0), riding(false),
 			targetStone(false), targetBoss(false), targetPlayer(false), hpPct(100), spPct(100),
 			dead(false), expPct(-1), gold(0), horseLevel(0), inParty(false), partySize(0),
-			leaderIsMe(false), askerInParty(false), inGuild(false), guildMembers(0), freeCells(0),
+			leaderIsMe(false), askerInParty(false), partyWithOtherPerson(false), inGuild(false), guildMembers(0), freeCells(0),
 			bagCells(0), weaponPlus(0), armorPlus(0), fishing(false), mining(false),
 			herbUnlocked(false), metinHunter(false), demonTower(false), guildWar(false),
 			mercContract(false), luring(false), luringForAsker(false), shopOpen(false), shopStanding(false), shopMapIndex(0),

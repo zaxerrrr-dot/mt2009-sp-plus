@@ -1475,6 +1475,7 @@ namespace
 					s.leaderIsMe = party->GetLeaderPID() == botPID;
 					// A party holds its members on every core (the P2P party).
 					s.askerInParty = player ? player->GetParty() == party : party->IsMember(playerPID);
+					s.partyWithOtherPerson = PlayerBotPartyHasOtherPerson(party, player);
 				}
 				CGuild* guild = bot->GetGuild();
 				if (guild)
