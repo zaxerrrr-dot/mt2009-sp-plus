@@ -39,7 +39,10 @@ function Get-M2PackageEdition {
 }
 $script:M2_EDITION = Get-M2PackageEdition
 if ($script:M2_EDITION -eq 'classic') {
-    $script:M2_MOD_MANIFEST_URL = "https://raw.githubusercontent.com/$($script:M2_MOD_REPOSITORY)/main/classic/update-manifest-mt2009.json"
+    # Classic's own repository (4 October 2026): its releases and manifest,
+    # the mirror's classic/ folder behind them.
+    $script:M2_MOD_REPOSITORY = 'zaxerrrr-dot/mt2009-sp-classic'
+    $script:M2_MOD_MANIFEST_URL = "https://raw.githubusercontent.com/$($script:M2_MOD_REPOSITORY)/main/update-manifest-mt2009.json"
     $script:M2_UPDATE_MIRROR_BASE = $script:M2_UPDATE_MIRROR_BASE + 'classic/'
 }
 # GitHub's own answer is waited for this long before the mirror is asked.
@@ -132,7 +135,7 @@ function Test-M2ForeignManifestUrl {
     if ([string]::IsNullOrWhiteSpace($Url)) { return $true }
     if ($Url -match '(?i)TieruYT/metin2-playerbots') { return $true }
     # MT2009_CLASSIC_EDITION_V1: the other edition's line is foreign too.
-    $isClassicLine = $Url -match '(?i)/classic/update-manifest-mt2009\.json$'
+    $isClassicLine = $Url -match '(?i)zaxerrrr-dot/mt2009-sp-classic/'
     if ($Url -match '(?i)update-manifest-mt2009\.json$' -and ($isClassicLine -ne ($script:M2_EDITION -eq 'classic'))) { return $true }
     return ($Url -match '(?i)zaxerrrr-dot/mt2009-sp-plus/.*/update-manifest\.json$')
 }

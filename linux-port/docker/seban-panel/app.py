@@ -185,7 +185,11 @@ try:
 except OSError:
     pass
 UPDATE_WATCHER_MAX_AGE_SECONDS = 90
-PLAYERBOTS_RELEASE_URL = "https://api.github.com/repos/zaxerrrr-dot/mt2009-sp-plus/releases/latest"
+# MT2009_CLASSIC_EDITION_V1: a MT2009 Classic world reads Classic's own repository.
+M2_REPOSITORY = ("zaxerrrr-dot/mt2009-sp-classic"
+                 if os.environ.get("M2_EDITION", "plus").strip().lower() == "classic"
+                 else "zaxerrrr-dot/mt2009-sp-plus")
+PLAYERBOTS_RELEASE_URL = f"https://api.github.com/repos/{M2_REPOSITORY}/releases/latest"
 PLAYERBOTS_RELEASE_CACHE_SECONDS = 900
 _playerbots_release_cache = {"checked_at": 0.0, "latest": None, "error": None}
 PANEL_VERSION_URL = "https://raw.githubusercontent.com/krajevsky/metin2-playerbots-advanced-webpanel/main/VERSION"
@@ -742,7 +746,7 @@ def map_name(index):
 # is the fallback when GitHub cannot be reached.
 MT2009_PLUS_CHANGELOG_URL = os.environ.get(
     "MT2009_PLUS_CHANGELOG_URL",
-    "https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main/CHANGELOG.md")
+    f"https://raw.githubusercontent.com/{M2_REPOSITORY}/main/CHANGELOG.md")
 MT2009_PLUS_DISCORD_URL = "https://metin2sp.pl/discord"
 MT2009_PLUS_WEBSITE_URL = "https://metin2sp.pl/"
 _mt2009_changelog_cache = {"at": 0.0, "entries": None}
@@ -2656,9 +2660,9 @@ def check_version_notification():
         # BIGINT UNSIGNED) -- bez tego dwa równoległe żądania omijałyby
         # UNIQUE(kind,ref_id) na ref_id=NULL (NULL nigdy nie koliduje samo ze
         # sobą w unikalnym indeksie) i dalej dublowałyby to powiadomienie.
-        create_notification("version_update", f"Nowa wersja MT2009 PLUS: {latest}",
+        create_notification("version_update", f"Nowa wersja {'MT2009 Classic' if M2_CLASSIC else 'MT2009 PLUS'}: {latest}",
                              f"Masz zainstalowaną {release.get('installed')}.",
-                             "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/latest",
+                             f"https://github.com/{M2_REPOSITORY}/releases/latest",
                              zlib.crc32(latest.encode()))
     except pymysql.MySQLError:
         pass

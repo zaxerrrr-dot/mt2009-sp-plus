@@ -56,7 +56,13 @@ ROOT=${M2_UPDATE_STACK_DIR:-$(cd "$HERE/../.." && pwd)}
 COMPOSE_DIR="$ROOT/linux-port/docker"
 # Written after an unpack, removed after a build that finished (build_and_start).
 BUILD_PENDING="$ROOT/.update-build-pending"
-REPO=${M2_UPDATE_REPO:-zaxerrrr-dot/mt2009-sp-plus}
+# MT2009_CLASSIC_EDITION_V1: a MT2009 Classic server (M2_EDITION=classic in
+# .env) follows the Classic line - its own repository and the mirror's
+# classic/ folder.
+M2_EDITION_NOW=$(sed -n 's/^M2_EDITION=//p' "$COMPOSE_DIR/.env" 2>/dev/null | tail -1 | tr -d ' \r' | tr 'A-Z' 'a-z')
+if [ "$M2_EDITION_NOW" = classic ]; then M2_REPO_DEFAULT=zaxerrrr-dot/mt2009-sp-classic; M2_MIRROR_DEFAULT=http://141.94.100.53/aktualizacje/classic/
+else M2_REPO_DEFAULT=zaxerrrr-dot/mt2009-sp-plus; M2_MIRROR_DEFAULT=http://141.94.100.53/aktualizacje/; fi
+REPO=${M2_UPDATE_REPO:-$M2_REPO_DEFAULT}
 case "$REPO" in
     *TieruYT/metin2-playerbots*)
         echo "M2_UPDATE_REPO wskazuje oficjalne repozytorium; ta paczka aktualizuje się tylko z repozytorium MT2009 Plus (zaxerrrr-dot/mt2009-sp-plus)."
@@ -64,12 +70,6 @@ case "$REPO" in
 esac
 BRANCH=${M2_UPDATE_BRANCH:-main}
 MANIFEST_NAME=update-manifest-mt2009.json
-# MT2009_CLASSIC_EDITION_V1: a MT2009 Classic server (M2_EDITION=classic in
-# .env) follows the Classic line - the same file under classic/ in the
-# repository and on the mirror.
-case "$(sed -n 's/^M2_EDITION=//p' "$COMPOSE_DIR/.env" 2>/dev/null | tail -1 | tr -d ' \r' | tr 'A-Z' 'a-z')" in
-    classic) MANIFEST_NAME=classic/update-manifest-mt2009.json ;;
-esac
 SPOOL=${M2_UPDATE_SPOOL:-/opt/m2update}
 POLL=${M2_UPDATE_POLL:-5}
 # MT2009_PLUS_UPDATE_MIRROR_V1: the fallback update source. When GitHub does
@@ -77,7 +77,7 @@ POLL=${M2_UPDATE_POLL:-5}
 # and the zip are read from here under the same file names; the zip passes
 # the same SHA-256 check. Space-separated bases; empty turns it off. The
 # manifest's optional "mirrors": [...] are tried before these.
-MIRROR_BASES=${M2_UPDATE_MIRROR-http://141.94.100.53/aktualizacje/}
+MIRROR_BASES=${M2_UPDATE_MIRROR-$M2_MIRROR_DEFAULT}
 GITHUB_TIMEOUT=${M2_UPDATE_GITHUB_TIMEOUT:-15}
 MIRROR_NOTICE='GitHub niedostępny - pobieram z serwera zapasowego'
 MANIFEST_MIRRORS=''

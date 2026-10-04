@@ -2858,7 +2858,9 @@ UPDATE_ENGINE = os.environ.get("M2PANEL_ENGINE", "r40250").strip().lower()
 # player's tree, so the mt2009 VERSION is the root one.
 UPDATE_BASE_URL = _env_path(
     "M2PANEL_UPDATE_URL",
-    "https://raw.githubusercontent.com/zaxerrrr-dot/mt2009-sp-plus/main")
+    # MT2009_CLASSIC_EDITION_V1: a MT2009 Classic world reads Classic's own repository.
+    "https://raw.githubusercontent.com/zaxerrrr-dot/%s/main" % (
+        "mt2009-sp-classic" if os.environ.get("M2_EDITION", "plus").strip().lower() == "classic" else "mt2009-sp-plus"))
 # Where this engine's VERSION lives under that base; the changelog is shared.
 UPDATE_VERSION_PATH = "/VERSION"
 # The other line's VERSION, so a 1.x panel can say that 2.x exists. Only the
