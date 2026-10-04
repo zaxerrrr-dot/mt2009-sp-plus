@@ -61,6 +61,9 @@ linux-port/docker/game/Dockerfile
 linux-port/docker/game/.dockerignore
 linux-port/docker/game/build-deps-mt2009.sh
 linux-port/docker/game/bin/*
+# MT2009_CLASSIC_EDITION_V1: the Classic edition (its .env values, image steps and quests).
+linux-port/docker/editions/*
+linux-port/docker/game/classic/*
 linux-port/docker/game/quest/*
 linux-port/docker/game/mob_drop_item.m3.append.txt
 linux-port/docker/game/special_item_group.moonlight.txt
