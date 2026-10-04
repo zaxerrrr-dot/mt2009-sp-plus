@@ -178,16 +178,13 @@ Launcher ma przycisk **KOPIA ŚWIATA** — zapisuje cały świat do pliku zip.
 
 ## 📜 Licencja
 
-MT2009 PLUS jest przeróbką projektu Metin2 Playerbots (Tieru) i od wersji
-opartej na Tieru 2.2.17 jest udostępniany na licencji **CC BY-NC-SA 4.0**
-(Uznanie autorstwa – Użycie niekomercyjne – Na tych samych warunkach), plik
-[LICENSE](LICENSE). Wolno kopiować, udostępniać i zmieniać paczkę, jeśli poda
-się autorów, nie zarabia się na niej, a przeróbkę udostępnia się na tej samej
-licencji. Starsze części na MIT: [LICENSE-MIT.txt](LICENSE-MIT.txt).
+MT2009 PLUS jest projektem całkwoicie open source, udostępnianym na licencji:
+**CC BY-NC-SA 4.0** (Uznanie autorstwa – Użycie niekomercyjne – Na tych samych
+warunkach), plik [LICENSE](LICENSE). Wolno kopiować, udostępniać i zmieniać
+paczkę, jeśli poda się autorów, nie zarabia się na niej, a przeróbkę udostępnia
+się na tej samej licencji. Starsze części na MIT: [LICENSE-MIT.txt](LICENSE-MIT.txt).
 Kod serwera gry, dane gry i klient nie należą ani do autorów projektu, ani do
 nas – przeczytaj [NOTICE.md](NOTICE.md) przed dalszym udostępnianiem.
-
-Metin2 Playerbots - Tieru - https://github.com/TieruYT/metin2-playerbots - CC BY-NC-SA 4.0
 
 ---
 
