@@ -197,6 +197,11 @@ command -v m2-drops >/dev/null 2>&1 \
 # fishing_drop.lua) the database editor's "Łowienie ryb" page edits (m2-fishing).
 command -v m2-fishing >/dev/null 2>&1 \
   && { m2-fishing prepare || log "could not prepare the fishing table (the panel's Łowienie ryb page will say so)"; }
+# MT2009_PLUS_DB_EDITOR_V1: the same for the maps' spawns (regen.txt) the
+# Seban panel's database editor edits - the image's files kept as
+# regen.image.txt, the live ones writable by the service account (m2-regen).
+command -v m2-regen >/dev/null 2>&1 \
+  && { m2-regen prepare || log "could not prepare the map spawn files (the panel's Spawny potworów page will say so)"; }
 
 # -----------------------------------------------------------------------------
 # 3. Resource limits.
