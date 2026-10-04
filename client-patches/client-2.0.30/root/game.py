@@ -765,6 +765,8 @@ class GameWindow(ui.ScriptWindow):
 			"player_stat"		: (lambda : self.interface.wndPlayerStat.Open(), None),
 			"companion"			: (lambda : self.__ToggleSidekick(), None),
 			"autohunt"			: (lambda : self.__ToggleAutoHunt(), None),
+			# MT2009_PLUS_AUTOHUNT_QUICK_V1: Shift+K starts/stops the hunt, no window.
+			"autohunt_quick"	: (lambda : __import__("uiautohunt").QuickToggle(), None),
 			"garbage_bin"		: (lambda : self.interface.ToggleGarbageBinWindow(), None),
 			"shop_search"		: (lambda : self.__PressF5Key(), None),
 			# F11: the event calendar (uieventcalendar.py).

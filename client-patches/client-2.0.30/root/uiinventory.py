@@ -378,6 +378,9 @@ class SidebarWindow(ui.Window):
 	BUTTONS = (
 		("companion", "Towarzysz", "OnClickCompanion", "companion"),
 		("autohunt", "Auto\xb3owy", "OnClickAutoHunt", "autohunt"),
+		# MT2009_PLUS_AUTOHUNT_QUICK_V1: start/stop with the saved settings,
+		# no window; its badge is a green arrow, a red square while hunting.
+		("autohuntgo", "Auto\xb3owy - szybki start/stop", "OnClickAutoHuntQuick", "autohunt_quick"),
 		("pickup", "Sortowanie autopickup", "OnClickPickupFilter", "pickup_filter"),
 		("trash", "Kosz", "OnClickGarbageBin", "garbage_bin"),
 		("shopsearch", "Wyszukiwarka sklep\xf3w", "OnClickShopSearch", "shop_search"),
@@ -410,6 +413,8 @@ class SidebarWindow(ui.Window):
 		self.foldedLoaded = False
 		self.buttons = []
 		self.keybindVersion = -1
+		self.quickHuntButton = None	# MT2009_PLUS_AUTOHUNT_QUICK_V1
+		self.quickHuntRunning = False
 		self.board = None
 		self.tab = None
 		self.__CreateBoard()
@@ -423,6 +428,7 @@ class SidebarWindow(ui.Window):
 		for button in self.buttons:
 			button.Hide()
 		self.buttons = []
+		self.quickHuntButton = None
 		if self.tab:
 			self.tab.Hide()
 			self.tab = None
@@ -453,6 +459,8 @@ class SidebarWindow(ui.Window):
 			button.SetPosition(self.BUTTON_GAP_X, y)
 			button.Show()
 			self.buttons.append(button)
+			if name == "autohuntgo":
+				self.quickHuntButton = button
 			y += self.BUTTON_HEIGHT + self.BUTTON_GAP_Y
 
 		board.SetSize(self.BUTTON_GAP_X + self.BUTTON_WIDTH + self.BUTTON_GAP_X, y)
@@ -616,6 +624,26 @@ class SidebarWindow(ui.Window):
 		if self.__GetLayout() != self.lastLayout:
 			self.AdjustPosition()
 		self.__RefreshToolTips()
+		self.__RefreshQuickHunt()
+
+	# MT2009_PLUS_AUTOHUNT_QUICK_V1: the quick button's badge follows the
+	# hunt, however it was started or stopped (K's window, a server's
+	# refusal, a dropped connection).
+	def __RefreshQuickHunt(self):
+		if not self.quickHuntButton:
+			return
+		try:
+			import uiautohunt
+			running = uiautohunt.IsRunning()
+		except Exception:
+			return
+		if running == self.quickHuntRunning:
+			return
+		self.quickHuntRunning = running
+		name = "autohuntstop" if running else "autohuntgo"
+		self.quickHuntButton.SetUpVisual(SIDEBAR_IMAGE % (name, 1))
+		self.quickHuntButton.SetOverVisual(SIDEBAR_IMAGE % (name, 2))
+		self.quickHuntButton.SetDownVisual(SIDEBAR_IMAGE % (name, 3))
 
 	def __GetInterface(self):
 		try:
@@ -632,6 +660,12 @@ class SidebarWindow(ui.Window):
 	def OnClickAutoHunt(self):
 		import uiautohunt
 		uiautohunt.ToggleWindow()
+
+	# MT2009_PLUS_AUTOHUNT_QUICK_V1: as Shift+K - the hunt starts or stops.
+	def OnClickAutoHuntQuick(self):
+		import uiautohunt
+		uiautohunt.QuickToggle()
+		self.__RefreshQuickHunt()
 
 	# Filtr podnoszenia (Ctrl+Z).
 	def OnClickPickupFilter(self):
