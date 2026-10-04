@@ -2608,6 +2608,22 @@ INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, sta
 (72323, 'New Order Card', _cp1250 X'4B61727461204E6F7765676F20556BB3616475', 5, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" \
   || echo "[playerbot-migrate] WARNING: could not add the Monster Card tables or items (Karty Potworow)" >&2
 
+# MT2009_PLUS_DUNGEON_RANKING_FINISH_V1: the dungeon panel credits a run only to
+# those who hurt the final boss (playerbot_dungeon_panel.h, DungeonFinishers);
+# before, everyone standing in the instance at the boss's fall was credited -
+# whoever had just walked in as well ("Wystarczy wejscie na dunga", the owner).
+# A run leaves no record of who fought in it, so the old rows cannot be told
+# apart one by one, but a character whose best damage to a dungeon's boss
+# (dungeon_panel.<key>_d) was never above zero hurt that boss in none of its
+# credited runs: its finished count and best time there (<key>_f, <key>_t) go.
+# A character that hurt the boss at least once keeps its rows whole. Every
+# credit written since carries a damage above zero, so this is idempotent.
+# The weekly ranking's dungeon counts are sums of the season and stay.
+db -e "DELETE FROM player.quest WHERE dwPID > 0 AND szName = 'dungeon_panel' AND RIGHT(szState, 2) IN ('_f', '_t')
+  AND NOT EXISTS (SELECT 1 FROM (SELECT dwPID, szState FROM player.quest WHERE szName = 'dungeon_panel' AND RIGHT(szState, 2) = '_d' AND lValue > 0) d
+    WHERE d.dwPID = player.quest.dwPID AND d.szState = CONCAT(LEFT(player.quest.szState, CHAR_LENGTH(player.quest.szState) - 2), '_d'));" \
+  || echo "[playerbot-migrate] WARNING: could not clear the dungeon panel's results of characters who never hurt a boss" >&2
+
 # MT2009_PLUS_FAST_START_V1: the full run is done - its fingerprint for the next start.
 db -e "REPLACE INTO common.playerbot_migrate_state (id, fingerprint, done_at) VALUES (1, '$migrate_fp', NOW());" >/dev/null 2>&1 \
     || echo "[playerbot-migrate] WARNING: could not record the run's fingerprint (the next start runs it all again)" >&2
