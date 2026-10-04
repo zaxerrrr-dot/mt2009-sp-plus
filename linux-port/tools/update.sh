@@ -795,6 +795,11 @@ build_and_start() {
     restore_empty_context_dirs
     stage_panel_context || { fail "the panel's build context could not be staged from files/"; return 1; }
     step "building and starting the new version (docker compose up -d --build)"
+    # MT2009_PLUS_SLOW_BUILD_NOTICE_V1: said before the longest step, so nobody
+    # takes a quiet terminal for a hang and breaks it off (the owner, 4 October).
+    _slow="UWAGA: teraz kompiluje sie silnik gry i startuje serwer - to moze potrwac nawet do 15 minut (na slabszym VPS dluzej). Nie przerywaj i nie zamykaj tego okna, nawet jesli przez dluzszy czas nic sie nie wypisuje."
+    say "$_slow"
+    [ "$WATCHING" = 1 ] && printf '%s [update] %s\n' "$(now)" "$_slow" >> "$LOG" 2>/dev/null
     # By hand the build talks to the terminal; under the panel it goes to the
     # spool's log, which is what the panel's progress page tails.
     if [ "$WATCHING" = 1 ]; then
