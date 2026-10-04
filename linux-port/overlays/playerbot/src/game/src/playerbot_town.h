@@ -2318,6 +2318,13 @@ namespace
 				((DWORD)(GetPlayerBotInflationFactor() / 200) << 20)) ^ (IsPlayerBotBonusCountPricingOn() ? 0x80000000UL : 0UL);
 	}
 
+	// MT2009_PLUS_BOOK_PRICE_LADDER_V1: the goods PLAYERBOT_BOOK_PRICE_FLOOR
+	// holds - a skill book (ITEM_SKILLBOOK) or one of the six general books.
+	bool IsPlayerBotBookPriceFloored(LPITEM item)
+	{
+		return item && (item->GetType() == ITEM_SKILLBOOK || IsPlayerBotGeneralSkillBook(item->GetVnum()));
+	}
+
 	// Iwakura's base for a book, at this world's yang rate. The rate is the
 	// mob_gold multiplier in percent (100 when nothing set it), the same
 	// number the panel's rates page writes.
@@ -3615,6 +3622,13 @@ namespace
 			if (spread != 100)
 				PlayerBotPriceStep(per::STEP_SPREAD, unit, spread);
 		}
+		// MT2009_PLUS_BOOK_PRICE_LADDER_V1: no skill book under 100 000 apiece,
+		// whatever the curve, the memory or the spread took it to.
+		if (IsPlayerBotBookPriceFloored(item) && unit < PLAYERBOT_BOOK_PRICE_FLOOR)
+		{
+			unit = PLAYERBOT_BOOK_PRICE_FLOOR;
+			PlayerBotPriceFlag(per::LFLAG_FLOOR_BOUND);
+		}
 		// And never under what a Moonlight chest holds, or what a bonus item
 		// is worth on the sheet (GetPlayerBotBonusGoodsFloorUnit): the memory
 		// of a hundred-thousand chest, the limiter's drift from it and the
@@ -3738,6 +3752,15 @@ namespace
 				if (IsPlayerBotListingTracing())
 					PlayerBotListingStep(per::STEP_ROUND, price);
 			}
+		}
+		// MT2009_PLUS_BOOK_PRICE_LADDER_V1: a markdown never takes a skill book
+		// under 100 000 apiece either.
+		if (IsPlayerBotBookPriceFloored(item))
+		{
+			const unsigned long long floorPrice = (unsigned long long)PLAYERBOT_BOOK_PRICE_FLOOR *
+					(unsigned long long)std::max<DWORD>(1, item->GetCount());
+			if ((unsigned long long)price < floorPrice && floorPrice < (unsigned long long)GOLD_MAX)
+				price = (DWORD)floorPrice;
 		}
 		return price;
 	}

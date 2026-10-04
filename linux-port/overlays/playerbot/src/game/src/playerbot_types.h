@@ -2940,6 +2940,9 @@ namespace
 	const DWORD PLAYERBOT_PRIOR_BOOK_STRONG_BODY = 180000; // Silne Cialo (19)
 	const DWORD PLAYERBOT_PRIOR_BOOK_KEY = 140000;         // inne kluczowe dla buildu
 	const DWORD PLAYERBOT_PRIOR_BOOK_ORDINARY = 45000;
+	// MT2009_PLUS_BOOK_PRICE_LADDER_V1: what a skill book is never offered under,
+	// apiece, whatever the yang curve, the spread or a markdown (owner, 4 October).
+	const DWORD PLAYERBOT_BOOK_PRICE_FLOOR = 100000;
 	// Iwakura's book prices are in playerbot_price_tables.h with the rest of
 	// his sheet, scaled along the same yang-rate curve as every other price
 	// there (his v1.0 dropped the books' own x1.1 line). A listing then draws
@@ -2980,7 +2983,9 @@ namespace
 	// four maximal lines on one piece (point 11).
 	// 11: MT2009_PLUS_OWNER_PRICES_V2 - the owner's compendium edits of
 	// 1 October (gear tops, materials, scrolls, books, the new goods).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 11;
+	// 12: MT2009_PLUS_BOOK_PRICE_LADDER_V1 - the skill books' ladder down to
+	// 100 000 (owner, 4 October).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 12;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
