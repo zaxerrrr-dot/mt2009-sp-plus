@@ -1675,6 +1675,10 @@ class InventoryWindow(ui.ScriptWindow):
 
 		for i in xrange(player.INVENTORY_PAGE_COUNT-1):
 			self.inventoryTab[i].SAFE_SetEvent(self.SetInventoryPage, i)
+			# MT2009_CLASSIC_EDITION_V1: MT2009 Classic's bag has the package's two
+			# pages (the server keeps pages three and four empty), plus the saddlebags.
+			if m2edition.CLASSIC and i >= 2:
+				self.inventoryTab[i].Hide()
 		self.inventoryTab[0].Down()
 
 		self.equipmentTab[0].SAFE_SetEvent(self.SetEquipmentPage, 0)

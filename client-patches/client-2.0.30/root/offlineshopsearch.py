@@ -638,6 +638,14 @@ SHOP_SEARCH_CATEGORY_SORT = [
 	ikashop.SHOP_SEARCH_CATEGORY_WEAPON,
 	ikashop.SHOP_SEARCH_CATEGORY_JEWELRY,
 ]
+# MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Cor Draconis, sashes or
+# alchemy, so no "MT2009 Plus" tab.
+try:
+	import m2edition
+	if m2edition.CLASSIC:
+		SHOP_SEARCH_CATEGORY_SORT.remove(SHOP_SEARCH_CATEGORY_PLUS)
+except ImportError:
+	pass
 
 def is_wearable_search(category):
 	return category in (ikashop.SHOP_SEARCH_CATEGORY_ARMOR, ikashop.SHOP_SEARCH_CATEGORY_WEAPON, ikashop.SHOP_SEARCH_CATEGORY_JEWELRY)

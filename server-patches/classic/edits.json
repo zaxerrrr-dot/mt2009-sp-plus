@@ -16,5 +16,11 @@
   "marker": "MT2009_CLASSIC_EDITION_V1 (declare)",
   "old": "class ITEM_MANAGER",
   "new": "// MT2009_CLASSIC_EDITION_V1 (declare): server-patches/classic, item_manager.cpp.\nbool Mt2009IsClassic();\nbool Mt2009ClassicBansItem(DWORD vnum, BYTE bType);\n\nclass ITEM_MANAGER"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_CLASSIC_EDITION_V1 (bag pages)",
+  "old": "\t\t\telse if (bCell >= MAX_INVENTORY)\n\t\t\t\treturn false;\n\n\t\t\tWORD* gridPtr = m_PlayerSlots->bItemGrid.data();\n",
+  "new": "\t\t\telse if (bCell >= MAX_INVENTORY)\n\t\t\t\treturn false;\n\t\t\t// MT2009_CLASSIC_EDITION_V1 (bag pages): MT2009 Classic's bag is the package's\n\t\t\t// two pages - cells 90-179 (pages three and four) take nothing; the saddlebag\n\t\t\t// page after them stays.\n\t\t\telse if (bCell >= INVENTORY_PAGE_SIZE * 2 && bCell < INVENTORY_DEFAULT_MAX_NUM && Mt2009IsClassic())\n\t\t\t\treturn false;\n\n\t\t\tWORD* gridPtr = m_PlayerSlots->bItemGrid.data();\n"
  }
 ]
