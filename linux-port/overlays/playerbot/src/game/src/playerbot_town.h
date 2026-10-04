@@ -2325,6 +2325,15 @@ namespace
 		return item && (item->GetType() == ITEM_SKILLBOOK || IsPlayerBotGeneralSkillBook(item->GetVnum()));
 	}
 
+	// The floor itself: the sheet's 100 000 through the yang-rate curve and the
+	// world's yang like every book on the sheet (owner, 4 October: "na
+	// poczatku serwera kosztuja mniej") - 40 000 in a new world, 100 000 at
+	// ten billion, more past it.
+	DWORD GetPlayerBotBookPriceFloor()
+	{
+		return ScalePlayerBotIwakuraPrice(PLAYERBOT_BOOK_PRICE_FLOOR);
+	}
+
 	// Iwakura's base for a book, at this world's yang rate. The rate is the
 	// mob_gold multiplier in percent (100 when nothing set it), the same
 	// number the panel's rates page writes.
@@ -3622,11 +3631,12 @@ namespace
 			if (spread != 100)
 				PlayerBotPriceStep(per::STEP_SPREAD, unit, spread);
 		}
-		// MT2009_PLUS_BOOK_PRICE_LADDER_V1: no skill book under 100 000 apiece,
-		// whatever the curve, the memory or the spread took it to.
-		if (IsPlayerBotBookPriceFloored(item) && unit < PLAYERBOT_BOOK_PRICE_FLOOR)
+		// MT2009_PLUS_BOOK_PRICE_LADDER_V1: no skill book under the sheet's
+		// 100 000 apiece at this world's yang (GetPlayerBotBookPriceFloor),
+		// whatever the memory or the spread took it to.
+		if (IsPlayerBotBookPriceFloored(item) && unit < GetPlayerBotBookPriceFloor())
 		{
-			unit = PLAYERBOT_BOOK_PRICE_FLOOR;
+			unit = GetPlayerBotBookPriceFloor();
 			PlayerBotPriceFlag(per::LFLAG_FLOOR_BOUND);
 		}
 		// And never under what a Moonlight chest holds, or what a bonus item
@@ -3754,10 +3764,10 @@ namespace
 			}
 		}
 		// MT2009_PLUS_BOOK_PRICE_LADDER_V1: a markdown never takes a skill book
-		// under 100 000 apiece either.
+		// under the floor either.
 		if (IsPlayerBotBookPriceFloored(item))
 		{
-			const unsigned long long floorPrice = (unsigned long long)PLAYERBOT_BOOK_PRICE_FLOOR *
+			const unsigned long long floorPrice = (unsigned long long)GetPlayerBotBookPriceFloor() *
 					(unsigned long long)std::max<DWORD>(1, item->GetCount());
 			if ((unsigned long long)price < floorPrice && floorPrice < (unsigned long long)GOLD_MAX)
 				price = (DWORD)floorPrice;

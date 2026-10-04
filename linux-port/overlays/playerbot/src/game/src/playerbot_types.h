@@ -2941,7 +2941,9 @@ namespace
 	const DWORD PLAYERBOT_PRIOR_BOOK_KEY = 140000;         // inne kluczowe dla buildu
 	const DWORD PLAYERBOT_PRIOR_BOOK_ORDINARY = 45000;
 	// MT2009_PLUS_BOOK_PRICE_LADDER_V1: what a skill book is never offered under,
-	// apiece, whatever the yang curve, the spread or a markdown (owner, 4 October).
+	// apiece, on the sheet - scaled by the yang curve and the world's yang like
+	// the sheet's books, then held against the spread and a markdown (owner,
+	// 4 October).
 	const DWORD PLAYERBOT_BOOK_PRICE_FLOOR = 100000;
 	// Iwakura's book prices are in playerbot_price_tables.h with the rest of
 	// his sheet, scaled along the same yang-rate curve as every other price
