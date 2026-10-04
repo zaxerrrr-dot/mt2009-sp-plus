@@ -708,3 +708,34 @@ zamknięcie opcji go odrzuca, jak dotąd. Ostatnia zakładka i miejsce są pami�
   tak jak wcześniej ich przyciski.
 - `uikeybind.py` – `GetWindow`, `KeybindWindow.Suspend/Resume` (ukrycie ze szkicem przy innej zakładce).
 - `uiopcjedodatkowe.py` – okno szersze (270 → 305), jak Opcje Systemowe pod paskiem zakładek.
+
+## Karty Potworów (Monster Card System) – bez zmian exe
+
+**Autor systemu: Digi Rasta** (paczka „nowy-system” v0.25.2 – jego port paczki „Official-Monster-Card-System”,
+Best Studio). Znacznik `MT2009_PLUS_MONSTER_CARDS_V1`; serwer: `server-patches/monstercard`, nakładka
+`playerbot_monster_card.h` (+ `_data.h`), `apply.sh` (tabele `player.nowy_karty_*`, przedmioty
+50283/50284/72322/72323), przełącznik `M2_MONSTER_CARDS`. Okno otwiera przycisk „Karty Potworów” w menu pod Esc
+(klawisz domyślnie żaden – J paczki to u nas Kosz; akcja `monster_card` w Skrótach klawiszowych).
+
+- Nowe wpisy paczki `root`: `monstercard.py` (funkcje `player.*`/`net.*`, których okno paczki chce od exe,
+  w Pythonie; komenda serwera `MONSTERCARDSYSTEM`; opis kart 50283/50284; podgląd potwora – obrazek karty ×2,
+  model 3D dopiero z exe z `player.Mt2009Model*`), `monstercard_data.py` (pule, kolekcja, zestawy – bliźniak
+  `playerbot_monster_card_data.h`), `monstercard_text.py` (polskie teksty), `uimonstercard.py` (okno paczki),
+  `uiscript/monstercardwindow.py`, `uiscript/monstercardachievdetailwindow.py`; ikony `icon/item/50283.tga`,
+  `50284.tga`, `72322.tga`, `72323.tga` (z klienta oficjalnego 26.1.11).
+- Zastępowane wpisy `root`: `ui.py` (pierwszy raz w repo – kopia `ui.py` klienta 2.0.52 i metody `ui.py`
+  klienta oficjalnego, których brakowało: `ui.MoveImageBox` w Pythonie, `Button.SetShowToolTipEvent` /
+  `SetHideToolTipEvent` / `SetAlwaysToolTip` / `EnableFlash` / `DisableFlash`, `AniImageBox.ResetFrame`,
+  `Window.LeftRightReverse`; funkcje `wndMgr` tylko gdy exe je ma), `uitooltip.py` (`ToolTip.SetThinBoardSize`,
+  opis karty: potwór i obrazek), `game.py` (komenda `MONSTERCARDSYSTEM`, akcja klawisza), `keybind.py`
+  (akcja `monster_card` bez klawisza), `uiscript/systemdialog.py` + `uisystem.py` (przycisk w menu pod Esc).
+- `atlas/d_/ymir work/ui/game/monster_card/**` (244 `.sub`) i `atlas/d_/ymir work/ui/public_mcard_001.dds`,
+  `public_mcard_card_001.dds` – grafiki okna z paczki, w buildzie jako `d:/ymir work/...` (paczka `root`).
+- `tools/monstercard/patch_monstercard_client.py` (obraz `m2pack-lzo`, idempotentne) – `gamedata/item_proto`
+  (od 2.0.52 w paczce `dbdata`): cztery nowe rekordy jak w `apply.sh`; `gamedata/item_list.txt` – ikony;
+  `locale/pl/itemdesc.txt` (paczka `dbdata`) – opisy. Po buildzie klienta: nowa baza edytora bazy danych
+  (`python3 -m m2clientpack.make_base <klient>/pack <wersja>` w `linux-port/docker/seban-panel`).
+- Exe (później, na Windows): model 3D potwora w polu podglądu wymaga `player.Mt2009ModelShow/Select/Rotation/
+  Zoom/UpDown/Reset/Motion` i `app.RENDER_TARGET_INDEX_ILLUSTRATED` (w paczce Digi Rasty: `CModelViewer`
+  w jego `Mt2009Window.cpp`); nasze exe ma render target Yut Nori (`PythonYutnoriManager`, rasa 20505) –
+  trzeba go uogólnić na dowolną rasę. Bez tego okno pokazuje obrazek karty ×2, przyciski kamery są ukryte.
