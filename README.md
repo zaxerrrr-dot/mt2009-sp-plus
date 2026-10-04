@@ -178,7 +178,7 @@ Launcher ma przycisk **KOPIA ŚWIATA** — zapisuje cały świat do pliku zip.
 
 ## 📜 Licencja
 
-MT2009 PLUS jest projektem całkwoicie open source, udostępnianym na licencji:
+MT2009 PLUS jest projektem całkowicie open source, udostępnianym na licencji:
 **CC BY-NC-SA 4.0** (Uznanie autorstwa – Użycie niekomercyjne – Na tych samych
 warunkach), plik [LICENSE](LICENSE). Wolno kopiować, udostępniać i zmieniać
 paczkę, jeśli poda się autorów, nie zarabia się na niej, a przeróbkę udostępnia
