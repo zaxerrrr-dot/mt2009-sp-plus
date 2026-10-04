@@ -1038,6 +1038,20 @@ namespace
 		const DWORD pid = ch->GetPlayerID();
 		const long fromMap = ch->GetMapIndex();
 		const long targetBase = targetMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? targetMap / 10000 : targetMap;
+		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: a bot with a person of its party
+		// goes where the person goes - into the Blue Dragon's lair and the
+		// Arezzo dungeons, across the Las to the Jungle's guard - and out of a
+		// party dungeon's instance whatever brought it there. On its own it
+		// is held to the rules below as ever.
+		if (IsPlayerBotDungeonPartyMove(ch, targetMap, reason))
+		{
+			s_mapPlayerBotArezzoPending.erase(pid);
+			if (IsPlayerBotOffLimitsMap(targetMap) || IsPlayerBotOffLimitsMap(fromMap))
+				PlayerBotLogThrottled("arezzo_party_move", dwNow,
+						"ARZ_BOT: with its party pid=%u name=%s from=%ld to=%ld reason=%s",
+						pid, ch->GetName(), fromMap, targetMap, reason ? reason : "?");
+			return -1;
+		}
 		// Off one of the maps: from its Teleporter, with the ring, when the
 		// module closes, or after a walk out that did not get there.
 		if (IsPlayerBotArezzoMap(fromMap) && targetMap != fromMap)

@@ -3801,11 +3801,39 @@ namespace
 	// maps and dungeons (360-366 and their instances) and the Blue Dragon's
 	// lair (208). The owner, 30 September: no bot in the new dungeons, and on
 	// the new maps only the test cohorts, for now.
+	// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: still so for a bot on its own - none
+	// wanders into these. A bot with a person of its party goes where the
+	// person goes (IsPlayerBotDungeonPartyMove below), into a dungeon too
+	// ("trzeba to naprawic aby boty mogly wchodzic na wszystkie dungeony", the
+	// owner, 4 October).
 	bool IsPlayerBotOffLimitsMap(long mapIndex)
 	{
 		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
 		return base == 208 || (base >= 360 && base <= 366);
 	}
+	// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: the dungeons whose guard jumps the
+	// people of a party into a new instance (d.new_jump_pids) and leaves the
+	// party's bots outside - Leze Smoka (208), Czysciec Ognia (351), Lodowa
+	// Kraina (352) and the four Arezzo dungeons (363-366). A bot of the party
+	// is taken after its person into the same instance, fights there beside it
+	// and comes out with it (playerbot_party_dungeon.h). The Demon Tower (66)
+	// and the Catacomb (216) jump the whole party themselves
+	// (CDungeon::JumpParty through CPlayerBotManager::WarpBot).
+	bool IsPlayerBotPartyDungeonMap(long mapIndex)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		return base == 208 || base == 351 || base == 352 || (base >= 363 && base <= 366);
+	}
+	// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: both defined in playerbot_party_dungeon.h.
+	// A person (not a bot) of the bot's party online on this core - standing on
+	// that map index when mapIndex is not 0 - the party's leader first.
+	LPCHARACTER FindPlayerBotPartyPerson(LPCHARACTER ch, long mapIndex);
+	// A map change the routes of the Arezzo maps and of the Temple of Ochao
+	// let through whatever they would say to the bot alone: out of a party
+	// dungeon's instance, onto the map a person of the bot's party stands on
+	// (the follow), or a dungeon's own jump of a person's party into one of the
+	// party dungeons.
+	bool IsPlayerBotDungeonPartyMove(LPCHARACTER ch, long targetMap, const char* reason);
 	// The Easter event's metins (8041-8050, event_easter.quest): its kill
 	// hook pays the killer a basket and puts more metins down, and the owner
 	// wants no bot in the new events - never a bot's target.

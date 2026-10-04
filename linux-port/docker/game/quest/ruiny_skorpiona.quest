@@ -3,6 +3,11 @@
 -- Stra¿nik Ruin (20424) na Ognistej Ziemi obok stra¿nika Razadora. Etapy: 3 fale po 40 skorpionów (Pieczêæ Ruin
 -- 30767), 6 Metinów Skorpiona, 3 Czerwone Skorpiony, 4 Metiny, Król Skorpionów; potem 2-4 Skrzynie Skorpiona
 -- (30775) dla ka¿dego gracza. Limit 45 minut, ponowne wejœcie po 60 minutach.
+-- MT2009_PLUS_BOT_DUNGEONS_ALL_V1: mapa lochu jest od teraz na rdzeniu game1, razem z botami
+-- (m2-render-config) - gdzie ni¿ej mowa o game2, chodzi o rdzeñ, który hostuje mapê:
+-- d.new_jump_pids tworzy instancjê na miejscu i przenosi do niej ludzi z dru¿yny, a boty
+-- z dru¿yny gracza wchodz¹ za nim do tej samej instancji, walcz¹ przy nim i wychodz¹ z nim
+-- (playerbot_party_dungeon.h). Op³ata, limit dzienny, poziom i odpoczynek s¹ tylko dla ludzi.
 quest ruiny_skorpiona begin
 	state start begin
 		function cfg()
@@ -75,6 +80,26 @@ quest ruiny_skorpiona begin
 			pc.setf("ruiny_skorpiona", "runs", pc.getf("ruiny_skorpiona", "runs") + 1)
 			syschat("Op³ata za wejœcie: "..c.fee_text.." Yang. Dzisiejsza wyprawa "..pc.getf("ruiny_skorpiona", "runs").."/"..c.daily..".")
 			return true
+		end
+
+		-- MT2009_PLUS_BOT_DUNGEONS_ALL_V1: a party a bot leads (a person's companion takes the person
+		-- into its own party) is the person's to open - its leader is nobody to ask. The leader is
+		-- looked at only among the members on this map (get_member_pids), as everywhere here.
+		function bot_leads()
+			local lp = party.get_leader_pid()
+			if lp == nil or lp == 0 or lp == pc.get_player_id() then
+				return false
+			end
+			local bot = false
+			local pids = {party.get_member_pids()}
+			for i, pid in next, pids, nil do
+				if pid == lp then
+					q.begin_other_pc_block(pid)
+					bot = pc.is_playerbot()
+					q.end_other_pc_block()
+				end
+			end
+			return bot
 		end
 
 		function inside()
@@ -280,7 +305,7 @@ quest ruiny_skorpiona begin
 			say("który myœla³, ¿e poradzi sobie z Razadorem.")
 			say("")
 			say_reward("Wymagany poziom: "..c.min_level..". Limit "..c.limit_min.." minut, ponowne wejœcie po "..math.floor(c.cooldown / 60).." minutach.")
-			say_reward("Loch jest tylko dla graczy - boty z dru¿yny zostaj¹ tutaj.")
+			say_reward("Boty z Twojej dru¿yny wejd¹ do lochu razem z Tob¹.")
 			say_reward("Wejœcie: "..c.fee_text.." Yang. Najwy¿ej "..c.daily.." wypraw dziennie (dziœ: "..ruiny_skorpiona.runs_today().."/"..c.daily..").") -- MT2009_PLUS_DUNGEON_FEE_V1
 			if select("WejdŸ do lochu", "Nie teraz") ~= 1 then
 				return
@@ -324,7 +349,7 @@ quest ruiny_skorpiona begin
 					return
 				end
 			end
-			if party.is_party() and not party.is_leader() then
+			if party.is_party() and not party.is_leader() and not ruiny_skorpiona.bot_leads() then
 				say_title(mob_name(20424))
 				say("Tylko przywódca dru¿yny mo¿e otworzyæ przejœcie.")
 				say("Stañ przy mnie - przywódca zabierze dru¿ynê stoj¹c¹ obok.")
@@ -482,7 +507,7 @@ quest ruiny_skorpiona begin
 				end
 				pc.setf("ruiny_skorpiona", "idx", 0)
 			end
-			if party.is_party() and not party.is_leader() then
+			if party.is_party() and not party.is_leader() and not ruiny_skorpiona.bot_leads() then
 				say("Tylko przywódca dru¿yny mo¿e otworzyæ przejœcie.")
 				say("Poczekaj tu na niego - zabierze ca³¹ dru¿ynê.")
 				return

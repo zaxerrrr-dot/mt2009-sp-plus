@@ -1515,8 +1515,14 @@ namespace
 		// A dungeon's jump into its instance (WarpBot's "dungeon_jump") keeps it:
 		// CDungeon::JumpParty walks the party's member list while it warps each
 		// member, and the Catacomb's key is what such a party is for.
+		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: and a bot party with a person in it
+		// (a bot leads it) is the person's as much while it follows the person
+		// into a party dungeon and out of one (playerbot_party_dungeon.h).
+		const bool partyDungeonMove = (reason && strncmp(reason, "party_dungeon", 13) == 0) ||
+				(ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN && IsPlayerBotPartyDungeonMap(ch->GetMapIndex()));
 		if (ch->GetParty() && !IsPlayerBotHumanLedParty(ch->GetParty()) &&
-				!(reason && strcmp(reason, "dungeon_jump") == 0))
+				!(reason && strcmp(reason, "dungeon_jump") == 0) &&
+				!(partyDungeonMove && FindPlayerBotPartyPerson(ch, 0)))
 			LeavePlayerBotParty(ch);
 		state.dwTargetVID = 0;
 		ch->SetVictim(NULL);

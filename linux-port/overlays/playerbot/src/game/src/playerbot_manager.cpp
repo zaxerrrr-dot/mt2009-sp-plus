@@ -269,6 +269,11 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (include): the test cohort that runs the
 // three Arezzo dungeons in a loop. After the Catacomb, whose fight it borrows.
 #include "playerbot_arezzo_dungeon_bots.h"
+// MT2009_PLUS_BOT_DUNGEONS_ALL_V1 (include): a person's party bots in every
+// dungeon - in after the person, the fight beside the person, out with the
+// person. After the Arezzo dungeon cohort, whose scan and boss break-off it
+// borrows with the tower's fight.
+#include "playerbot_party_dungeon.h"
 // Pirate Tanaka and Zuo's Metin rain: what the timed events put into the
 // world, and the bots that answer them. After the raids, whose fight it
 // borrows and which it gives way to.
@@ -1616,6 +1621,10 @@ namespace
 		// and no way out a bot knows, and the Demon Tower is one), and a spider
 		// map whose desert crossing is already under way, which the transition
 		// would otherwise restart from the desert's doorstep on every retry.
+		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: a leader in the instance of a dungeon
+		// whose guard jumps the people alone (the Blue Dragon, Razador, Nemere,
+		// the Arezzo dungeons) is followed in by ManagePlayerBotPartyDungeon,
+		// higher in the tick; the Demon Tower and the Catacomb jump the party.
 		if (leader->GetMapIndex() != ch->GetMapIndex())
 		{
 			const long leaderMap = leader->GetMapIndex();
@@ -6433,6 +6442,14 @@ WritePlayerBotGuildStatus(dwNow);
 		// its dungeon's map - the lobby or a run - does nothing else, ahead of
 		// every errand, quarrel and guild war (playerbot_arezzo_dungeon_bots.h).
 		if (ManagePlayerBotArezzoDungeon(ch, state, dwNow))
+			continue;
+
+		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1 (tick): a bot whose person (its party's
+		// leader, or any person of the party) stands in one of the dungeons the
+		// guard jumps people alone into goes in after the person, and inside it
+		// fights beside the person and comes out with the person - ahead of
+		// every errand, quarrel and guild war (playerbot_party_dungeon.h).
+		if (ManagePlayerBotPartyDungeon(ch, state, dwNow))
 			continue;
 
 		// MT2009_PLUS_BOT_SASH_FLOW_V1: two or more sashes in the bag are

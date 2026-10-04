@@ -42,10 +42,16 @@
 //     what attacks it, and is "held for company" (IsPlayerBotHeldForCompany),
 //     which keeps the market, the travel, the town errands and the party
 //     rotation off it. The person's party invitation is accepted as any is
-//     (AcceptPlayerBotPartyInvite) and the follow pass takes the bot along -
-//     into the dungeon too where the dungeon's own jump takes the party in
-//     (CDungeon::JumpParty through WarpBot). Five minutes with no party and
-//     it whispers "nie doczekalem sie, lece dalej" and goes back to its life.
+//     (AcceptPlayerBotPartyInvite) and from then on the bot is a party bot
+//     like any a person invited: the follow pass takes it along, and into
+//     every dungeon with the person - the Demon Tower and the Catacomb by the
+//     dungeon's own jump of the party (CDungeon::JumpParty through WarpBot),
+//     the dungeons whose guard jumps the people alone (the Blue Dragon,
+//     Razador, Nemere, the four Arezzo dungeons) by the party dungeon pass,
+//     which puts it beside the person in the same instance, fights there and
+//     brings it out (MT2009_PLUS_BOT_DUNGEONS_ALL_V1, playerbot_party_dungeon.h).
+//     Five minutes with no party and it whispers "nie doczekalem sie, lece
+//     dalej" and goes back to its life.
 //
 // Which dungeons: the panel's (dungeon_info.txt, read at runtime through
 // mt2009_dpanel - so a Classic image, whose file has no Biblioteka, Wukong,
@@ -53,9 +59,14 @@
 // the Arezzo rows go with the module's switch), and the open maps that left
 // the panel: the three Monkey Dungeons (the person's kingdom's easy one, the
 // shared medium and hard ones) and the Spider Dungeon, waited for at the
-// desert's gate to it. Every entrance on a map this core does not host, or on
-// the Temple of Ochao or an Arezzo map - where a bot may only go by the
-// operator's own routes - is answered by nobody.
+// desert's gate to it. Every dungeon of this world is on game1 with the bots
+// since MT2009_PLUS_BOT_DUNGEONS_ALL_V1 (m2-render-config), so each is
+// answered; the Jungle is waited for at the Temple of Ochao's gate, where the
+// panel puts a person (a bot of its level gets in as the Guardian's warp puts
+// one), and the person takes it through the temple and the Las to the guard.
+// An entrance on a map this core does not host, or on an Arezzo map - where a
+// bot on its own may only go by the operator's own routes - is answered by
+// nobody.
 //
 // The FILE playerbot_lfg_off in the game core's directory switches the finder
 // off (checked every 30 s, as the conversation's switches).
@@ -201,9 +212,12 @@ namespace
 	}
 
 	// The maps a bot reaches only by the operator's own routes.
+	// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: no longer the Temple of Ochao - the
+	// Jungle's entrance; a bot is put at its gate (RoutePlayerBotOchaoTransition,
+	// "dungeon_lfg", from the temple's level - the Jungle's own).
 	bool IsPlayerBotLfgClosedMap(long mapIndex)
 	{
-		return mapIndex == PLAYERBOT_MAP_OCHAO || IsPlayerBotArezzoMap(mapIndex);
+		return IsPlayerBotArezzoMap(mapIndex);
 	}
 
 	// The dungeon a key names, for a person of this kingdom and level. False
@@ -311,7 +325,11 @@ namespace
 		if (IsPlayerBotRetiring(pid))
 			return "retiring";
 		if (IsPlayerBotArezzoCohortPID(pid) || IsPlayerBotArezzoDungeonCohortPID(pid) ||
-				IsPlayerBotArezzoDungeonReservedPID(pid) || IsPlayerBotArezzoBound(ch) || IsPlayerBotOchaoBot(ch))
+				IsPlayerBotArezzoDungeonReservedPID(pid) || IsPlayerBotArezzoBound(ch) ||
+				// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: the Temple of Ochao's test group.
+				// IsPlayerBotOchaoBot answered yes for every bot (it asks only
+				// whether the character is a bot), so no bot ever answered a call.
+				IsPlayerBotOchaoForced(ch))
 			return "cohort";
 		const long mapIndex = ch->GetMapIndex();
 		if (mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN || IsPlayerBotLfgClosedMap(mapIndex) ||

@@ -23,14 +23,16 @@
 // stage's objective (the stones, the defenders, the eggs, the boss), then
 // the nearest monster - and the seal used as soon as a squad member holds it.
 //
-// Where: the dungeons live on game2 of channel 1 (MAP_ALLOW 364 365 366) and
-// a bot cannot cross cores, so the cohort lives there too. Each character's
+// Where: the cohort lives on the core that hosts the dungeons, since a bot
+// cannot cross cores - game2 until MT2009_PLUS_BOT_DUNGEONS_ALL_V1 moved 364-366
+// onto game1 beside every bot (m2-render-config), game1 since; nothing here
+// names the core, the watch asks SECTREE_MANAGER. Each character's
 // save point is the dungeon map itself, beside its guard - the lobby the
 // quests already have for a player whose one-load entry falls back
 // ("Otworz przejscie", map 364/365/366 not in an instance). The cohort file
 // "playerbot_arezzo_dungeon_cohort.txt" ("<wukong|skorpion|dzungla> <pid>"
 // a line) is read on the core that hosts the maps (its bots are logged in on
-// top of nothing - game2 has no population) and on every other core, which
+// top of the hosting core's own population) and on every other core, which
 // refuses those pids (CPlayerBotManager::Spawn), so no character is loaded
 // twice. tools/arezzo_dungeon_cohort.py picks and equips the characters.
 //
@@ -718,8 +720,8 @@ namespace
 		const long map = ch->GetMapIndex();
 		if (GetPlayerBotArzDgIndex(map) != dg)
 		{
-			// Somewhere else on this core (another dungeon's lobby, game2's
-			// other maps): home to its own lobby.
+			// Somewhere else on this core (another dungeon's lobby, the
+			// core's other maps): home to its own lobby.
 			if (dwNow >= bot.dwNextHome)
 			{
 				bot.dwNextHome = dwNow + 30000;
