@@ -57,6 +57,8 @@ TEXT_ASK2 = "Bez nagr\xf3d - tego nie mo\xbfna cofn\xb9\xe6."
 TEXT_NOTHING = "Nie masz teraz misji, kt\xf3re mo\xbfna usun\xb9\xe6."
 TEXT_NONE_CHECKED = "Nie zaznaczono \xbfadnej misji."
 
+TEXT_BIO_ASK1 = "Czy na pewno chcesz usun\xb9\xe6 misj\xea Biologa? (zaznaczone: %d)"
+TEXT_BIO_ASK2 = "Biolog daje sta\xb3e bonusy, a usuni\xeatego kroku nie da si\xea cofn\xb9\xe6."
 CATEGORY = {
 	1: "Fabu\xb3a",
 	2: "Poboczna",
@@ -329,6 +331,26 @@ class ClearMissionsWindow(ui.BoardWithTitleBar):
 			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NONE_CHECKED)
 			return
 		self.__CloseDialog()
+		# MT2009_PLUS_CLEAR_MISSIONS_BIOLOGIST_V1: a Biologist's mission checked asks
+		# first on its own (the owner, 4 October) - his chain gives the lasting
+		# bonuses, and a removed step is not given back.
+		bio = [m for m in self.missions if m[0] in self.checked and m[1] == 3]
+		if bio:
+			dialog = uiCommon.QuestionDialog2()
+			dialog.SetText1(TEXT_BIO_ASK1 % len(bio))
+			dialog.SetText2(TEXT_BIO_ASK2)
+			dialog.SetAcceptEvent(ui.__mem_func__(self.OnAcceptBiologist))
+			dialog.SetCancelEvent(ui.__mem_func__(self.OnCancelDialog))
+			dialog.Open()
+			self.dialog = dialog
+			return
+		self.__AskRemove()
+
+	def OnAcceptBiologist(self):
+		self.__CloseDialog()
+		self.__AskRemove()
+
+	def __AskRemove(self):
 		dialog = uiCommon.QuestionDialog2()
 		dialog.SetText1(TEXT_ASK1 % len(self.checked))
 		dialog.SetText2(TEXT_ASK2)
