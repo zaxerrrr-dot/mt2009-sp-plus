@@ -378,9 +378,8 @@ class SidebarWindow(ui.Window):
 	BUTTONS = (
 		("companion", "Towarzysz", "OnClickCompanion", "companion"),
 		("autohunt", "Auto\xb3owy", "OnClickAutoHunt", "autohunt"),
-		# MT2009_PLUS_AUTOHUNT_QUICK_V1: start/stop with the saved settings,
-		# no window; its badge is a green arrow, a red square while hunting.
-		("autohuntgo", "Auto\xb3owy - szybki start/stop", "OnClickAutoHuntQuick", "autohunt_quick"),
+		# MT2009_PLUS_AUTOHUNT_QUICK_V1: the quick start/stop has no sidebar button any more
+		# (the owner, 5 October) - Shift+K (keybind "autohunt_quick") stays.
 		("pickup", "Sortowanie autopickup", "OnClickPickupFilter", "pickup_filter"),
 		("trash", "Kosz", "OnClickGarbageBin", "garbage_bin"),
 		("shopsearch", "Wyszukiwarka sklep\xf3w", "OnClickShopSearch", "shop_search"),
