@@ -1905,6 +1905,11 @@ class ItemToolTip(ToolTip):
 				continue
 			if app.ENABLE_MOUNT_COSTUME_SYSTEM and hasattr(item, "APPLY_MOUNT") and affectType==item.APPLY_MOUNT:
 				continue
+			# MT2009_PLUS_MOUNT_TOOLTIP_V1: a mount seal's slot holding POINT_MOUNT
+			# (109) carries the ridden monster's vnum, not a bonus - the tooltip
+			# showed it as "UNKNOWN_TYPE[109] 20209".
+			if affectType == 109:
+				continue
 			affectString = localeInfo.GetApplyString(affectType, affectValue)
 			if affectString:
 				if affectValue < 0:
