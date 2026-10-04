@@ -1245,7 +1245,7 @@ def read_ai_weights():
     # start of one to the next in a kingdom (1-4). DUDU's ask; the defaults are
     # what the core did before there was a choice.
     vals["WAR_MINUTES"] = 30
-    vals["WAR_HOURS"] = 2
+    vals["WAR_HOURS"] = 1
     # And the kills that win a war with a bot guild on a side before its clock
     # runs out (0: the clock alone; MT2009_PLUS_GUILD_WAR_KILLS_V1).
     vals["WAR_KILLS"] = 200
@@ -1457,7 +1457,7 @@ def write_ai_weights(vals):
     # The bots' guild wars: how long (15 or 30 minutes) and how often (every
     # 1-4 hours in each kingdom).
     body.append("WAR_MINUTES\t%d" % (15 if int(vals.get("WAR_MINUTES", 30)) <= 15 else 30))
-    body.append("WAR_HOURS\t%d" % max(1, min(4, int(vals.get("WAR_HOURS", 2)))))
+    body.append("WAR_HOURS\t%d" % max(1, min(4, int(vals.get("WAR_HOURS", 1)))))
     body.append("WAR_KILLS\t%d" % max(0, min(1000, int(vals.get("WAR_KILLS", 200)))))
     # The Moonlight chest: thousandths per kill and per Metin. Written only once
     # the operator has set them, so an untouched install keeps its CONFIG.
@@ -8034,7 +8034,7 @@ TPL_AI = BASE.replace("__BODY__", """
       </select></label>
     <label>{{t('ai_war_hours')}}
       <select name="WAR_HOURS">
-        {% for h in (1, 2, 3, 4) %}<option value="{{h}}" {% if cur.get('WAR_HOURS', 2) == h %}selected{% endif %}>{{h}} {{t('ai_war_hour_unit')}}</option>{% endfor %}
+        {% for h in (1, 2, 3, 4) %}<option value="{{h}}" {% if cur.get('WAR_HOURS', 1) == h %}selected{% endif %}>{{h}} {{t('ai_war_hour_unit')}}</option>{% endfor %}
       </select></label>
     {% if engine_mt2009 %}<label>{{t('ai_war_kills')}}
       <input type="number" name="WAR_KILLS" min="0" max="1000" step="10" style="width:80px" value="{{cur.get('WAR_KILLS', 200)}}"> {{t('ai_war_kills_unit')}}</label>{% endif %}
@@ -20175,9 +20175,9 @@ def ai_weights():
         except (TypeError, ValueError):
             vals["WAR_MINUTES"] = 30
         try:
-            vals["WAR_HOURS"] = max(1, min(4, int(request.form.get("WAR_HOURS", 2))))
+            vals["WAR_HOURS"] = max(1, min(4, int(request.form.get("WAR_HOURS", 1))))
         except (TypeError, ValueError):
-            vals["WAR_HOURS"] = 2
+            vals["WAR_HOURS"] = 1
         # The kills that win a war: on the mt2009 page alone; elsewhere the
         # file's value stays.
         if ENGINE_MT2009:

@@ -162,7 +162,7 @@ namespace
 	// miedzy 15min a 30min czasu trwania i czestotliwosc 1/2/3/4 h"); the
 	// defaults are the world as it was, thirty minutes every two hours.
 	int s_iPlayerBotWarMinutes = 30;
-	int s_iPlayerBotWarEveryHours = 2;
+	int s_iPlayerBotWarEveryHours = 1; // MT2009_PLUS_GUILD_WAR_HOURLY_V1: every hour (the owner, 4 October)
 	// MT2009_PLUS_GUILD_WAR_KILLS_V1: the kills that win a war with a bot
 	// guild on a side before its clock runs out (the WAR_KILLS key; 0 is the
 	// clock alone). The default is the operator's hundred.
@@ -281,7 +281,7 @@ namespace
 		s_iPlayerBotKingdomPvpPercent = 0;
 		s_iPlayerBotScrollFromPlus = 1;
 		s_iPlayerBotWarMinutes = 30;
-		s_iPlayerBotWarEveryHours = 2;
+		s_iPlayerBotWarEveryHours = 1;
 		s_iPlayerBotWarKills = 200;
 		s_bPlayerBotFastBooks = true;
 		s_bPlayerBotNight = true;

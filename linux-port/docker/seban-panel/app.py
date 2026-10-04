@@ -260,7 +260,7 @@ AI_LIVE_DEFAULTS = {"CHAT": 1, "BOOKS": 1, "NIGHT": 1, "LIFE": 0,
                      # The three wills (playerbot_config.h): percent of what the
                      # build does, 100 = as before, 0 = none of it.
                      "BATTLEPASS": 100, "SASH": 100, "ALCHEMY": 100,
-                     "WAR_MINUTES": 30, "WAR_HOURS": 2,
+                     "WAR_MINUTES": 30, "WAR_HOURS": 1,
                      # MT2009_PLUS_GUILD_WAR_KILLS_V1: kills that win a war (0: time only).
                      "WAR_KILLS": 200, "CHEST": None, "CHEST_STONE": None,
                      # MT2009_PLUS_SALE_TAX_V1: percent of a sale between players
@@ -3020,7 +3020,7 @@ def write_ai_weights(values):
         content.append(f"{key}\t{max(0, min(250, int(values.get(key, 100))))}")
     content.append(f"SCROLL_FROM\t{max(1, min(9, int(values.get('SCROLL_FROM', 1))))}")
     content.append(f"WAR_MINUTES\t{max(5, min(180, int(values.get('WAR_MINUTES', 30))))}")
-    content.append(f"WAR_HOURS\t{max(1, min(24, int(values.get('WAR_HOURS', 2))))}")
+    content.append(f"WAR_HOURS\t{max(1, min(24, int(values.get('WAR_HOURS', 1))))}")
     content.append(f"WAR_KILLS\t{max(0, min(1000, int(values.get('WAR_KILLS', 200))))}")
     for key in ("CHEST", "CHEST_STONE"):
         if values.get(key) is not None:
@@ -9543,7 +9543,7 @@ def manage_behavior():
         values["SCROLL_FROM"] = max(1, min(9, int(request.form.get("SCROLL_FROM", values.get("SCROLL_FROM", 1)))))
     except (TypeError, ValueError):
         values["SCROLL_FROM"] = 1
-    for key, minimum, maximum, default in (("WAR_MINUTES", 5, 180, 30), ("WAR_HOURS", 1, 24, 2), ("WAR_KILLS", 0, 1000, 200)):
+    for key, minimum, maximum, default in (("WAR_MINUTES", 5, 180, 30), ("WAR_HOURS", 1, 24, 1), ("WAR_KILLS", 0, 1000, 200)):
         try:
             values[key] = max(minimum, min(maximum, int(request.form.get(key, values.get(key, default)))))
         except (TypeError, ValueError):

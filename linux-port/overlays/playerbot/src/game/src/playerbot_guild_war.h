@@ -185,10 +185,12 @@ namespace
 	const long PLAYERBOT_GUILD_WAR_ARENA_MAP = 110;
 	const DWORD PLAYERBOT_GUILD_WAR_ARENA_RETRY_MS = 5 * 1000;
 	const DWORD PLAYERBOT_GUILD_WAR_ARENA_CLEAR_MS = 3 * 60 * 1000;
-	// The reward (the owner, 3 October): 30 Szkatulek Blasku Ksiezyca for the
-	// winning guild, shared by its members' kills in the war.
+	// The reward (the owner, 3 and 4 October): 20 Szkatulek Blasku Ksiezyca for
+	// the winning guild, shared by its members' kills in the war - once a day a
+	// guild; a later win the same day gives the guild experience only.
 	const DWORD PLAYERBOT_GUILD_WAR_REWARD_VNUM = 50011;
-	const int PLAYERBOT_GUILD_WAR_REWARD_COUNT = 30;
+	const int PLAYERBOT_GUILD_WAR_REWARD_COUNT = 20;
+	const int PLAYERBOT_GUILD_WAR_REPEAT_GUILD_EXP = 50000;
 
 	bool IsPlayerBotWarArenaMap(long lMapIndex)
 	{
@@ -341,10 +343,41 @@ namespace
 	// the members' kills in the war (the largest remainders first), to those
 	// on this core - a bot, or a person in the game here. With no kill
 	// counted, the master's.
-	void GivePlayerBotGuildWarReward(CGuild* winner)
+	// MT2009_PLUS_GUILD_WAR_REWARD_DAILY_V1: whether the guild has had its boxes
+	// today (player.playerbot_guild_war_reward, kept over a restart); asking
+	// also books today for it when it has not.
+	bool TakePlayerBotGuildWarRewardToday(DWORD guildId)
+	{
+		std::unique_ptr<SQLMsg> make(AccountDB::instance().DirectQuery(
+				"CREATE TABLE IF NOT EXISTS player.playerbot_guild_war_reward (guild_id INT UNSIGNED NOT NULL PRIMARY KEY, "
+				"day DATE NOT NULL) ENGINE=InnoDB"));
+		char query[256];
+		snprintf(query, sizeof(query),
+				"SELECT COUNT(*) FROM player.playerbot_guild_war_reward WHERE guild_id=%u AND day=CURDATE()", guildId);
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+		MYSQL_ROW row = (msg.get() && msg->uiSQLErrno == 0 && msg->Get() && msg->Get()->pSQLResult)
+				? mysql_fetch_row(msg->Get()->pSQLResult) : NULL;
+		if (row && row[0] && atoi(row[0]) > 0)
+			return false;
+		snprintf(query, sizeof(query),
+				"REPLACE INTO player.playerbot_guild_war_reward (guild_id, day) VALUES (%u, CURDATE())", guildId);
+		std::unique_ptr<SQLMsg> book(AccountDB::instance().DirectQuery(query));
+		return true;
+	}
+
+	// The winner's prize: true when it was the boxes, false when it was the
+	// guild experience of a repeated win the same day.
+	bool GivePlayerBotGuildWarReward(CGuild* winner)
 	{
 		if (!winner)
-			return;
+			return false;
+		if (!TakePlayerBotGuildWarRewardToday(winner->GetID()))
+		{
+			winner->GuildPointChange(POINT_EXP, PLAYERBOT_GUILD_WAR_REPEAT_GUILD_EXP, true);
+			sys_log(0, "PLAYERBOT_GUILD: war reward guild=%s repeated win today, guild exp +%d only",
+					winner->GetName(), PLAYERBOT_GUILD_WAR_REPEAT_GUILD_EXP);
+			return false;
+		}
 		std::map<DWORD, int>& kills = s_mapPlayerBotWarKillsBy[winner->GetID()];
 		std::vector<std::pair<int, DWORD> > ranked;
 		int total = 0;
@@ -390,6 +423,7 @@ namespace
 			sys_log(0, "PLAYERBOT_GUILD: war reward guild=%s pid=%u name=%s kills=%d boxes=%d",
 					winner->GetName(), shares[i].first, c->GetName(), kills[shares[i].first], shares[i].second);
 		}
+		return true;
 	}
 
 	void NotePlayerBotWarBlow(LPCHARACTER ch, bool skill)
@@ -1531,12 +1565,18 @@ namespace
 						// the war's numbers for the log.
 						if (winner)
 						{
-							GivePlayerBotGuildWarReward(winner);
-							char notice[200];
-							snprintf(notice, sizeof(notice), "Wojna gildii: %s wygrywa z %s (%d:%d) i dostaje %d Szkatulek Blasku Ksiezyca!",
-									winner->GetName(), winner == g1 ? g2->GetName() : g1->GetName(),
-									winner == g1 ? war.iLastScore1 : war.iLastScore2,
-									winner == g1 ? war.iLastScore2 : war.iLastScore1, PLAYERBOT_GUILD_WAR_REWARD_COUNT);
+							const bool boxes = GivePlayerBotGuildWarReward(winner);
+							char notice[220];
+							if (boxes)
+								snprintf(notice, sizeof(notice), "Wojna gildii: %s wygrywa z %s (%d:%d) i dostaje %d Szkatulek Blasku Ksiezyca!",
+										winner->GetName(), winner == g1 ? g2->GetName() : g1->GetName(),
+										winner == g1 ? war.iLastScore1 : war.iLastScore2,
+										winner == g1 ? war.iLastScore2 : war.iLastScore1, PLAYERBOT_GUILD_WAR_REWARD_COUNT);
+							else
+								snprintf(notice, sizeof(notice), "Wojna gildii: %s wygrywa z %s (%d:%d) - nagrode dnia juz ma, dostaje doswiadczenie gildii.",
+										winner->GetName(), winner == g1 ? g2->GetName() : g1->GetName(),
+										winner == g1 ? war.iLastScore1 : war.iLastScore2,
+										winner == g1 ? war.iLastScore2 : war.iLastScore1);
 							BroadcastNotice(notice);
 						}
 						LogPlayerBotGuildWarStats(g1, g2, war.lArena);
