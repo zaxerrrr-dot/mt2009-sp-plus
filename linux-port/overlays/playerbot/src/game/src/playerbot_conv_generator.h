@@ -1138,12 +1138,91 @@ namespace playerbot_conv
 		return FormatYang(v);
 	}
 
+	// Where the stall stands, as exactly as a person needs to walk up to it:
+	// "w M1 Joan przy kowalu", the channel when it is not the asker's. The
+	// offline one stays there while the bot hunts elsewhere.
 	inline std::string ShopWhere(const TGen& g)
 	{
-		std::string out = Fill(g, "$SHOPAT");
+		const char* village = VillageTag(g.s.shopMapIndex);
+		std::string out = *village ? "w " + std::string(village) : Fill(g, "$SHOPAT");
+		if (!g.s.shopSpot.empty())
+			out += " " + g.s.shopSpot;
 		if (g.s.shopOtherChannel)
-			out += " (inny kanal)";
+			out += g.s.shopChannel > 0 ? " na CH" + ToString((long long)g.s.shopChannel) : std::string(" (inny kanal)");
 		return out;
+	}
+
+	// MT2009_PLUS_BOT_CHAT_V2 (deals): "ku", "ksiega", "ksiazke" with no
+	// skill after it - a skill book, but which one?
+	inline bool IsBareBookObject(const std::string& obj)
+	{
+		std::vector<std::string> words;
+		SplitWords(obj, words);
+		if (words.empty())
+			return false;
+		static const char* const kBook[] = { "ku", "ksiega", "ksiege", "ksiegi", "ksiag", "ksiazka", "ksiazke", "ksiazki",
+			"ksiazek", "instr", "instr.", "umiejetnosci", "skill", "skilla", "book", "booka" };
+		for (size_t i = 0; i < words.size(); ++i)
+		{
+			bool book = false;
+			for (size_t k = 0; k < sizeof(kBook) / sizeof(kBook[0]) && !book; ++k)
+				book = words[i] == kBook[k];
+			if (!book)
+				return false;
+		}
+		return true;
+	}
+
+	// The skill books of the stall's summary ("Instr. Aura Miecza za 1kk"),
+	// for "ktora?".
+	inline std::string ShopBooks(const TGen& g)
+	{
+		std::string out;
+		const std::string& sum = g.s.shopSummary;
+		for (size_t at = 0; at < sum.size(); )
+		{
+			size_t end = sum.find(", ", at);
+			if (end == std::string::npos)
+				end = sum.size();
+			const std::string piece = sum.substr(at, end - at);
+			if (piece.compare(0, 7, "Instr. ") == 0 || piece.compare(0, 3, "KU ") == 0)
+			{
+				if (!out.empty())
+					out += ", ";
+				out += piece;
+			}
+			at = end + 2;
+		}
+		return out;
+	}
+
+	// "kupie ku" - which skill? The ones the bot has to offer, if any.
+	inline std::string AskWhichBook(TGen& g, bool personBuys, const std::string& booksHad)
+	{
+		const std::string onStall = personBuys ? ShopBooks(g) : std::string();
+		if (!onStall.empty())
+		{
+			static const char* const k[] = { "Ktora? Na straganie mam: $LIST.", "A jaka umiejetnosc? Mam na straganie $LIST." };
+			std::string out = PBC_PICK(g, k);
+			ReplaceAll(out, "$LIST", onStall);
+			return out;
+		}
+		if (personBuys && !booksHad.empty())
+		{
+			static const char* const k[] = { "Ktora? Mam przy sobie $LIST.", "Jaka umiejetnosc? Z ksiag mam $LIST." };
+			std::string out = PBC_PICK(g, k);
+			ReplaceAll(out, "$LIST", booksHad);
+			return out;
+		}
+		if (personBuys)
+		{
+			static const char* const k[] = { "A jaka ksiega? Napisz umiejetnosc, np. KU Aura Miecza.",
+				"Ktora KU? Napisz jaka umiejetnosc, to sprawdze." };
+			return PBC_SAY(g, k);
+		}
+		static const char* const k[] = { "A jaka to ksiega? Napisz umiejetnosc, to powiem czy wezme.",
+			"Jaka KU? Napisz jaka umiejetnosc, np. KU Aura Miecza." };
+		return PBC_SAY(g, k);
 	}
 
 	// One line of the bot's own stall, and what to say about it - with a
@@ -1185,10 +1264,19 @@ namespace playerbot_conv
 			}
 		}
 		else if (count > 1)
-			out = "Tak, na straganie $WHERE stoi $ITEM x$COUNT, $PRICE za calosc.";
+		{
+			static const char* const k[] = { "Tak, na straganie $WHERE stoi $ITEM x$COUNT, $PRICE za calosc. Kup normalnie ze straganu.",
+				"Mam, $ITEM x$COUNT za $PRICE calosc - stragan $WHERE, wejdz i kup." };
+			out = PBC_PICK(g, k);
+		}
 		else
 		{
-			static const char* const k[] = { "Tak, na straganie $WHERE stoi $ITEM za $PRICE.", "Mam. $ITEM, $PRICE, stragan $WHERE." };
+			// MT2009_PLUS_BOT_CHAT_V2: said as a seller says it - yes, where
+			// exactly, how much, and how to buy (the owner, 4 October).
+			static const char* const k[] = { "Tak, $ITEM stoi na moim straganie $WHERE, $PRICE. Kup normalnie ze straganu.",
+				"Mam $ITEM za $PRICE, stragan $WHERE - kupisz prosto ze straganu.",
+				"Jest, $ITEM za $PRICE. Stragan stoi $WHERE, wejdz i kup.",
+				"Aktualne, $ITEM dalej stoi $WHERE za $PRICE. Kupuj smialo ze straganu." };
 			out = PBC_PICK(g, k);
 		}
 		ReplaceAll(out, "$OFFER", SayMoney(offer));
@@ -1295,6 +1383,7 @@ namespace playerbot_conv
 	// MT2009_PLUS_BOT_CHAT_V2 (deals): defined with the deal talk below.
 	inline std::string OpenSellDeal(TGen& g, const std::string& obj);
 	inline std::string OpenBuyDeal(TGen& g, const std::string& obj);
+	inline const TPublicLine* PostOf(const TGen& g);
 
 	inline std::string GenBuy(TGen& g)
 	{
@@ -1303,6 +1392,14 @@ namespace playerbot_conv
 			return g.s.shopOpen && !g.s.shopSummary.empty()
 					? "Na straganie mam: " + g.s.shopSummary + ". Co cie interesuje?"
 					: std::string("Co konkretnie chcesz kupic?");
+		// MT2009_PLUS_BOT_CHAT_V2 (deals): "kupie ku" - which skill?
+		if (IsBareBookObject(obj))
+		{
+			TDealQuote q;
+			if (g.world)
+				g.world->QuoteItem(obj, 0, 0, q);
+			return AskWhichBook(g, true, q.booksHad);
+		}
 		std::string name;
 		long long price = 0;
 		unsigned int count = 0;
@@ -1317,8 +1414,24 @@ namespace playerbot_conv
 		}
 		if (g.world && g.world->FindItem(obj, name, count))
 			return "W EQ lezy " + name + ", ale tego nie sprzedaje.";
+		// Its own "S>" post, gone from the counter since: sold.
+		if (const TPublicLine* post = PostOf(g))
+			if (post->kind == PL_SELL && !post->itemName.empty())
+			{
+				static const char* const k[] = { "Sorki, $ITEM juz zeszlo, ktos byl szybszy.",
+					"$ITEM juz sprzedane, nie zdazyles. Sorki." };
+				std::string out = PBC_PICK(g, k);
+				ReplaceAll(out, "$ITEM", post->itemName);
+				CapitalizeFirst(out);
+				return out;
+			}
 		if (g.s.shopOpen)
-			return "Tego nie mam na straganie.";
+		{
+			std::string out = "Tego nie mam na straganie.";
+			if (!g.s.shopSummary.empty())
+				Append(out, "Mam za to: " + g.s.shopSummary + ".");
+			return out;
+		}
 		static const char* const k[] = { "Nie mam tego teraz na sprzedaz.", "Nie mam, sorki. Popytaj na @, ktos pewnie ma.",
 			"Nie, tego nie mam. Zerknij w wyszukiwarke sklepow." };
 		return PBC_SAY(g, k);
@@ -1329,6 +1442,9 @@ namespace playerbot_conv
 		const std::string obj = g.a ? g.a->object : std::string();
 		if (obj.empty())
 			return "Co chcesz mi sprzedac?";
+		// MT2009_PLUS_BOT_CHAT_V2 (deals): "sprzedam ku" - which skill?
+		if (IsBareBookObject(obj))
+			return AskWhichBook(g, false, std::string());
 		// MT2009_PLUS_BOT_CHAT_V2 (deals): what the bot would pay, and the talk.
 		return OpenBuyDeal(g, obj);
 	}
@@ -3799,7 +3915,7 @@ namespace playerbot_conv
 		d.state = DEAL_AGREED;
 		d.at = g.now;
 		d.meet = TDealMeetPlace();
-		const int meet = g.world ? g.world->DealAgreed(d.side, d.vnum, d.count, d.offer, d.meet) : (int)DEAL_MEET_FAILED;
+		const int meet = g.world ? g.world->DealAgreed(d.side, d.vnum, d.skill, d.count, d.offer, d.meet) : (int)DEAL_MEET_FAILED;
 		d.meet.kind = meet;
 		g.reason = "Bo sie dogadalismy.";
 		std::string head;
@@ -3840,7 +3956,14 @@ namespace playerbot_conv
 		}
 		const TPublicLine* post = PostOf(g);
 		TDealQuote q;
-		if (!g.world || !g.world->QuoteItem(obj, post ? post->vnum : 0, q) || !q.found)
+		const bool known = g.world && g.world->QuoteItem(obj, post ? post->vnum : 0, post ? post->skill : 0, q);
+		// "sprzedam ksiege" - a skill book, but of what?
+		if (q.needSkill)
+		{
+			g.m.deal = TDeal();
+			return AskWhichBook(g, false, std::string());
+		}
+		if (!known || !q.found)
 		{
 			static const char* const k[] = { "A co to jest? Nie kojarze takiego itemu xd", "Hm, nie wiem co to, napisz pelna nazwe?" };
 			return PBC_SAY(g, k);
@@ -3865,6 +3988,7 @@ namespace playerbot_conv
 		d.state = DEAL_OPEN;
 		d.side = DEAL_BOT_BUYS;
 		d.vnum = q.vnum;
+		d.skill = q.skill;
 		d.name = q.name;
 		d.fair = q.fair;
 		d.limit = q.maxBuyUnit;
@@ -3925,8 +4049,10 @@ namespace playerbot_conv
 	{
 		const TPublicLine* post = PostOf(g);
 		TDealQuote q;
-		if (!g.world || !g.world->QuoteItem(obj, post ? post->vnum : 0, q) || !q.found || q.botHas <= 0 ||
-				q.sellUnit <= 0)
+		const bool known = g.world && g.world->QuoteItem(obj, post ? post->vnum : 0, post ? post->skill : 0, q);
+		if (q.needSkill)
+			return AskWhichBook(g, true, q.booksHad);
+		if (!known || !q.found || q.botHas <= 0 || q.sellUnit <= 0)
 			return std::string();
 		{
 			const std::string busy = DealBusyAnswer(g);
@@ -3941,6 +4067,7 @@ namespace playerbot_conv
 		d.state = DEAL_OPEN;
 		d.side = DEAL_BOT_SELLS;
 		d.vnum = q.vnum;
+		d.skill = q.skill;
 		d.name = q.name;
 		d.fair = q.fair;
 		d.limit = RoundDealPrice(q.minSellUnit);
@@ -4271,6 +4398,44 @@ namespace playerbot_conv
 		return IsItemAliasWord(a.tokens.norm) && ItemNameMatches(post.itemName.c_str(), a.tokens.norm);
 	}
 
+	// A line that names an item of its own, other than the post's: "kupie ku
+	// czarowane ostrze" after "S> Instr. Ognisty Duch, Instr. Czarowane
+	// Ostrze" is the second book, not the first. A pointing word ("ten",
+	// "to"), a count, a price or a bare "ku" names nothing of its own.
+	inline bool LineNamesOtherItem(const TAnalysis& a, const TPublicLine& post)
+	{
+		if (a.object.empty() || IsBareBookObject(a.object))
+			return false;
+		std::vector<std::string> words;
+		SplitWords(a.object, words);
+		bool own = false;
+		for (size_t i = 0; i < words.size() && !own; ++i)
+		{
+			const std::string& w = words[i];
+			if (w.size() < 3 || (w[0] >= '0' && w[0] <= '9') || w[0] == '+' || IsFillerWord(w))
+				continue;
+			own = true;
+		}
+		return own && !LineNamesPostItem(a, post);
+	}
+
+	// The post's item as a query the world's lookups take: folded, a skill
+	// book by its skill ("ku aura miecza"). The name as the post printed it
+	// ("Ebonitowy Naszyjnik+4") matched no stall line - those are folded -
+	// and the bot answered "tego nie mam na straganie" of its own post.
+	inline std::string PostItemQuery(const TPublicLine& post)
+	{
+		std::string name = FoldName(post.itemName.c_str());
+		if (post.skill)
+		{
+			if (name.compare(0, 7, "instr. ") == 0)
+				name = "ku " + name.substr(7);
+			else if (name.compare(0, 3, "ku ") != 0)
+				name = "ku " + name;
+		}
+		return name;
+	}
+
 	// Before a line is answered: is it about what the bot itself said in
 	// public lately? A trade post answered becomes the trade (a sale or a
 	// purchase about that item); a party, a Metin or a question post the
@@ -4283,6 +4448,17 @@ namespace playerbot_conv
 		const bool tradeWords = c.Has(C_SELLYOU) || c.Has(C_BUYME) || c.Has(C_PRICEQ) || c.Has(C_STILL) ||
 				c.Has(C_AGREE) || b.tokens.Has("mam") || b.tokens.Has("kupisz") || b.tokens.Has("sprzedam") ||
 				b.offerYang > 0 || b.dealCount > 0;
+		// A bare "ku" after a post of two books: which one is asked (GenBuy),
+		// not taken to be the first.
+		if (IsBareBookObject(b.object))
+		{
+			int books = 0;
+			for (size_t i = 0; i < g.s.publicLines.size(); ++i)
+				if (g.s.publicLines[i].open && g.s.publicLines[i].skill && g.s.publicLines[i].ageMin <= 60)
+					++books;
+			if (books > 1)
+				return;
+		}
 		const bool replaceable = b.intent == I_SELL || b.intent == I_BUY || b.intent == I_PRICE || b.intent == I_ITEM_OWN ||
 				b.intent == I_UNKNOWN_QUESTION || b.intent == I_UNKNOWN_STATEMENT || b.intent == I_GREETING ||
 				b.intent == I_ACK || b.intent == I_YES || b.intent == I_FOLLOW_UP || b.intent == I_EQUIPMENT ||
@@ -4298,6 +4474,8 @@ namespace playerbot_conv
 				continue;
 			if (!(names || (tradeWords && fresh)))
 				continue;
+			if (!names && LineNamesOtherItem(b, p))
+				continue;
 			// A person selling answers a "K>"; one buying, an "S>".
 			const bool personSells = c.Has(C_SELLYOU) || b.tokens.Has("mam") || b.tokens.Has("sprzedam") ||
 					b.intent == I_SELL;
@@ -4305,14 +4483,14 @@ namespace playerbot_conv
 			if (p.kind == PL_BUY && (personSells || !personBuys))
 			{
 				b.intent = I_SELL;
-				b.object = p.itemName;
+				b.object = PostItemQuery(p);
 				b.postRef = (int)i + 1;
 				return;
 			}
 			if (p.kind == PL_SELL && (personBuys || !personSells))
 			{
 				b.intent = I_BUY;
-				b.object = p.itemName;
+				b.object = PostItemQuery(p);
 				b.postRef = (int)i + 1;
 				return;
 			}

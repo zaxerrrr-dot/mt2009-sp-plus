@@ -121,6 +121,7 @@ namespace playerbot_conv
 		unsigned char state;
 		unsigned char side;
 		u32 vnum;
+		u32 skill;            // a skill book's skill (socket 0), 0 any other item
 		std::string name;
 		int count;            // pieces settled on, 0 not yet
 		int maxCount;         // the most the bot takes / has
@@ -134,7 +135,7 @@ namespace playerbot_conv
 		int capWhy;           // EDealCap: what maxCount stands for
 		TDealMeetPlace meet;  // once agreed: where the window is
 		u32 at;
-		TDeal() : state(DEAL_NONE), side(0), vnum(0), count(0), maxCount(0), offer(0), ask(0), limit(0), fair(0),
+		TDeal() : state(DEAL_NONE), side(0), vnum(0), skill(0), count(0), maxCount(0), offer(0), ask(0), limit(0), fair(0),
 			rounds(0), priceSettled(false), fromPost(false), capWhy(DEAL_CAP_NONE), at(0) {}
 		bool Live(u32 now) const
 		{

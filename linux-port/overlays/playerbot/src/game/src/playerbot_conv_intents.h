@@ -203,6 +203,14 @@ namespace playerbot_conv
 
 	// A line arguing with the bot about what it has, where it is or what it
 	// said: never an answer to a question the bot asked.
+	// MT2009_PLUS_BOT_CHAT_V2: buying, selling, a price, a stall, a deal, the
+	// bot's own trade post - answered as a trader answers, no small talk.
+	inline bool IsTradeIntent(EIntent i)
+	{
+		return i == I_BUY || i == I_SELL || i == I_PRICE || i == I_SHOP || i == I_MARKET || i == I_DEAL ||
+				i == I_POST_REF || i == I_ITEM_OWN || i == I_ITEMSHOP;
+	}
+
 	inline bool IsArgumentIntent(EIntent i)
 	{
 		return i == I_GEAR_WHY || i == I_GEAR_ADVICE || i == I_GEAR_OPINION || i == I_MAP_ADVICE ||
@@ -696,7 +704,13 @@ namespace playerbot_conv
 			// MT2009_PLUS_BOT_CHAT_V2: the deal's own words
 			"mam", "moge", "sprzedania", "do", "dasz", "dajesz", "dalej", "wciaz", "jeszcze", "nadal", "kupujesz",
 			"aktualne", "aktualny", "aktualna", "tez", "odkupisz", "kupi", "kto", "ktos", "chce", "chcialbym", "biore",
-			"wezme", "kupuje"
+			"wezme", "kupuje",
+			// "kupie ten naszyjnik", "to ku ognisty duch": the pointing word is
+			// not the name - with it the name matched nothing on the stall and
+			// the bot said "tego nie mam na straganie" of its own post (the
+			// owner, 4 October).
+			"ten", "to", "te", "ta", "tego", "tej", "tych", "tamten", "tamto", "tamta", "tamtego", "twoje",
+			"twojego", "twoj", "swoj", "ktory", "ktora", "ktore", "tutaj"
 		};
 		size_t i = (size_t)from;
 		for (; i < tok.words.size(); ++i)

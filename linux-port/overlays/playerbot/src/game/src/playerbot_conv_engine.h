@@ -374,6 +374,10 @@ namespace playerbot_conv
 			Append(out, "Spoko.");
 
 		bool returned = false;
+		// MT2009_PLUS_BOT_CHAT_V2: a trade's answer is a seller's line - no
+		// "humor mi dzis dopisuje!" after "tego nie mam na straganie" (the
+		// owner, 4 October).
+		bool trade = g.m.deal.Live(now);
 		for (size_t i = 0; i < todo.size(); ++i)
 		{
 			const TAnalysis& a = *todo[i];
@@ -387,6 +391,8 @@ namespace playerbot_conv
 			// in public is answered in that context (ApplyPublicContext).
 			TAnalysis withPost = a;
 			ApplyPublicContext(g, withPost);
+			if (IsTradeIntent(withPost.intent))
+				trade = true;
 			std::string piece = GenerateOne(g, withPost);
 			if (piece.empty())
 				continue;
@@ -425,7 +431,7 @@ namespace playerbot_conv
 		}
 		// The mood shows, sometimes - never after a jibe ("daleko zajdziesz"
 		// answered with "Humor mi dzis dopisuje!" was a non sequitur).
-		if (!spam && !cold && !argued && res.answered > 0 && (mem.moodMentionAt == 0 || now - mem.moodMentionAt > CONV_MOOD_MENTION_MS))
+		if (!spam && !cold && !argued && !trade && res.answered > 0 && (mem.moodMentionAt == 0 || now - mem.moodMentionAt > CONV_MOOD_MENTION_MS))
 		{
 			bool moodSaid = false;
 			for (size_t i = 0; i < todo.size(); ++i)
