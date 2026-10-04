@@ -315,6 +315,47 @@ namespace
 	};
 #endif
 
+	// Where the people of this core stand, once a second: a bot with nobody
+	// near skips its look round, which is the costly part (a few people
+	// against a thousand bots).
+	struct TPlayerBotSpotPerson
+	{
+		long map;
+		long x;
+		long y;
+	};
+	std::vector<TPlayerBotSpotPerson> s_vecPlayerBotSpotPersons;
+	DWORD s_dwPlayerBotSpotPersonsAt = 0;
+
+	bool IsPlayerBotSpotPersonNear(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (s_dwPlayerBotSpotPersonsAt == 0 || dwNow - s_dwPlayerBotSpotPersonsAt >= 1000)
+		{
+			s_dwPlayerBotSpotPersonsAt = dwNow;
+			s_vecPlayerBotSpotPersons.clear();
+			const DESC_MANAGER::DESC_SET& descs = DESC_MANAGER::instance().GetClientSet();
+			for (DESC_MANAGER::DESC_SET::const_iterator d = descs.begin(); d != descs.end(); ++d)
+			{
+				LPCHARACTER c = (*d)->GetCharacter();
+				if (!c || !IsPlayerBotPersonCharacter(c) || c->IsDead())
+					continue;
+				TPlayerBotSpotPerson p;
+				p.map = c->GetMapIndex();
+				p.x = c->GetX();
+				p.y = c->GetY();
+				s_vecPlayerBotSpotPersons.push_back(p);
+			}
+		}
+		const long map = ch->GetMapIndex();
+		for (size_t i = 0; i < s_vecPlayerBotSpotPersons.size(); ++i)
+		{
+			const TPlayerBotSpotPerson& p = s_vecPlayerBotSpotPersons[i];
+			if (p.map == map && DISTANCE_APPROX(p.x - ch->GetX(), p.y - ch->GetY()) <= PLAYERBOT_SPOT_PERSON_RANGE + 600)
+				return true;
+		}
+		return false;
+	}
+
 	// The forgotten quarrels and the bots no longer here.
 	void PrunePlayerBotSpotQuarrels(DWORD dwNow)
 	{
@@ -368,6 +409,13 @@ namespace
 		const std::map<DWORD, DWORD>::const_iterator fought = s_mapPlayerBotSpotFoughtAt.find(pid);
 		const bool hunting = fought != s_mapPlayerBotSpotFoughtAt.end() &&
 				dwNow - fought->second < PLAYERBOT_SPOT_FIGHT_RECENT_MS;
+		// A bot that has not fought for a while has no spot and no monster of
+		// its own to lose: no look round (most of the population, most of the
+		// time - the scan is the costly part).
+		if (!hunting && state.dwTargetVID == 0)
+			return;
+		if (!IsPlayerBotSpotPersonNear(ch, dwNow))
+			return;
 		FPlayerBotSpotScan scan(ch, state, dwNow, hunting);
 		ch->GetSectree()->ForEachAround(scan);
 		std::set<DWORD> stepped;

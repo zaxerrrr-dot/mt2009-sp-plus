@@ -286,6 +286,18 @@ namespace
 					town, stall.channel ? stall.channel : (int)g_bChannel);
 		}
 		out = buf;
+		// The headline item shown as a player's Alt-click shows it - a link
+		// with its grade and bonuses on a click - while the client's line
+		// has room for it (the name in the trade chat's own colour frame).
+		if (!a.link.empty())
+		{
+			std::vector<playerbot_item_link::TEntry> links(1);
+			links[0].name = a.name;
+			links[0].link = a.link;
+			const size_t frame = 32 + 2 * strlen(ch->GetName());
+			const size_t room = playerbot_item_link::WHISPER_LINE_MAX > frame ? playerbot_item_link::WHISPER_LINE_MAX - frame : 0;
+			out = playerbot_item_link::Substitute(out, links, room);
+		}
 		return true;
 	}
 

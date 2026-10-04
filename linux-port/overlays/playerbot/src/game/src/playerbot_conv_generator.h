@@ -1805,6 +1805,8 @@ namespace playerbot_conv
 	{
 		// MT2009_PLUS_BOT_CHAT_V2: accused in the middle of a quarrel over
 		// its own spot (playerbot_spot_defense.h).
+		if (g.s.spotGaveUp)
+			return "Juz ci zostawilem ten spot, wiec o co chodzi?";
 		if (g.s.spotQuarrel > 0)
 		{
 			g.reason = "Bo bylem tu pierwszy i bije te moby od dawna.";
@@ -2554,6 +2556,12 @@ namespace playerbot_conv
 		{
 			// MT2009_PLUS_BOT_CHAT_V2: "spadaj stad" said to a bot that is
 			// hunting beside the person - its spot - is answered by its temper.
+			// It already gave the spot up (playerbot_spot_defense.h).
+			if (g.s.spotGaveUp)
+			{
+				static const char* const k[] = { "Przeciez juz ide, spokojnie", "No ide juz, ide. Masz ten spot" };
+				return PBC_SAY(g, k);
+			}
 			if (g.s.spotQuarrel > 0 || (Fighting(g) && g.s.askerNear))
 			{
 				g.reason = "Bo to moj spot, bylem tu pierwszy.";
