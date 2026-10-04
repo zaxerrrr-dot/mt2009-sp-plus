@@ -85,7 +85,10 @@ namespace playerbot_bpbots
 	const DWORD CHATTER_BOT_COOLDOWN_MIN_MS = 3 * 60 * 1000;
 	const DWORD CHATTER_BOT_COOLDOWN_MAX_MS = 6 * 60 * 1000;
 	const DWORD CHATTER_REGULAR_COOLDOWN_MS = 45 * 1000;
-	const int CHATTER_REGULAR_PERCENT = 30;
+	// MT2009_PLUS_BOT_CHAT_V2: 10, was 30 - a channel of "!BP" in a row (the
+	// owner, 4 October); any line counts for the shout missions, so the
+	// regular says ordinary things too (LineBP's bank).
+	const int CHATTER_REGULAR_PERCENT = 10;
 	// A trade shout (playerbot_chat_trade.h) this recent holds the next line.
 	const DWORD CHATTER_QUIET_MS = 5 * 1000;
 	// A bot whose tick has not come round for this long is not a speaker.
@@ -683,7 +686,7 @@ namespace playerbot_bpbots
 	// MT2009_PLUS_BOT_CHAT_V2: the talk weighs more (a bigger bank, the
 	// questions another bot answers), and the buying and selling goes to the
 	// trade chat while that is on (ChatterWeight).
-	const int CHATTER_WEIGHTS[CHAT_KIND_COUNT] = { 30, 10, 10, 11, 8, 5, 6, 6, 4, 22 };
+	const int CHATTER_WEIGHTS[CHAT_KIND_COUNT] = { 8, 10, 10, 13, 10, 6, 7, 7, 5, 28 };
 	typedef char TChatterKindsFit[CHAT_KIND_COUNT <= 10 ? 1 : -1];
 
 	template <size_t N>
@@ -731,13 +734,23 @@ namespace playerbot_bpbots
 	{
 		if (!b.bShout)
 			return false;
+		// MT2009_PLUS_BOT_CHAT_V2: rarer and different - any shout counts for
+		// the mission, so "!BP" is one line of many.
 		static const char* const pool[] = {
-			"!BP", "!BP", "!BP", "!BP", "!BP", "!BP", "!BP", "!BP",
-			"!BP robie misje", "!BP kto jeszcze robi?", "!BP !BP", "!bp",
+			"!BP", "robie bp, ile wam zostalo?", "kto jeszcze robi battle passa?", "bp idzie powoli, ale idzie",
+			"ostatnie misje bp, ktos pomoze?", "nagroda z bp warta zachodu?", "znowu misja na krzyki w bp xd",
+			"bp w tym miesiacu latwy czy mi sie wydaje?", "!bp ktos?", "ile macie misji bp zrobionych?",
 		};
 		snprintf(out, size, "%s", PickLine(pool));
 		return true;
 	}
+
+	// MT2009_PLUS_BOT_CHAT_V2: what the last chatter line meant, for the
+	// bot's memory of its own public lines (NotePlayerBotPublicLine).
+	BYTE s_bChatterKind = 0;
+	DWORD s_dwChatterVnum = 0;
+	int s_iChatterLevel = 0;
+	std::string s_strChatterItem;
 
 	// MT2009_PLUS_BOT_CHAT_V2: defined in playerbot_chat_world.h - a question
 	// on the channel for another bot to answer (SHOUT_Q_*).
@@ -756,6 +769,7 @@ namespace playerbot_bpbots
 		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(*it);
 		if (!proto)
 			return false;
+		s_dwChatterVnum = *it;
 		static const char* const pool[] = {
 			"Kupie %s, pw", "Kupie %s, place dobrze", "Ktos ma %s? kupie", "Szukam %s, oferty na pw",
 		};
@@ -783,6 +797,7 @@ namespace playerbot_bpbots
 		if (goods.empty())
 			return false;
 		LPITEM item = goods[number(0, (int)goods.size() - 1)];
+		s_dwChatterVnum = item->GetVnum();
 		const int pick = number(0, 3);
 		if (pick == 3)
 			snprintf(out, size, "Sprzedam %s tanio, jestem w %s", item->GetProto()->szLocaleName,
@@ -886,10 +901,14 @@ namespace playerbot_bpbots
 			switch (number(0, 2))
 			{
 				case 0:
+					s_bChatterKind = playerbot_conv::PL_EXP_ASK;
+					s_iChatterLevel = ask;
 					snprintf(out, size, number(0, 1) ? "gdzie najlepiej expic na %d lvl?" : "co polecacie na %d lvl?", ask);
 					EnqueueBotShoutQuestion(ch->GetEmpire(), 2, ask, ch->GetPlayerID(), ch->GetName(), std::string());
 					return;
 				case 1:
+					s_bChatterKind = playerbot_conv::PL_METIN_ASK;
+					s_iChatterLevel = ask;
 					snprintf(out, size, number(0, 1) ? "gdzie sa metki na %d?" : "ktos wie gdzie metiny %d lvl?", ask);
 					EnqueueBotShoutQuestion(ch->GetEmpire(), 1, ask, ch->GetPlayerID(), ch->GetName(), std::string());
 					return;
@@ -899,6 +918,8 @@ namespace playerbot_bpbots
 						{ "bodzie", "zwoj blogoslawienstwa" }, { "kd", "kamien duszy" }, { "perly", "perla" },
 						{ "fms", "fms" }, { "12d", "12d" }, { "ebo", "ebo" }, { "pd", "pd" } };
 					const int k = number(0, (int)(sizeof(items) / sizeof(items[0])) - 1);
+					s_bChatterKind = playerbot_conv::PL_PRICE_ASK;
+					s_strChatterItem = items[k][0];
 					snprintf(out, size, number(0, 1) ? "ile teraz stoja %s?" : "po ile %s na straganach?", items[k][0]);
 					EnqueueBotShoutQuestion(ch->GetEmpire(), 3, 0, ch->GetPlayerID(), ch->GetName(), items[k][1]);
 					return;
@@ -1139,12 +1160,20 @@ namespace playerbot_bpbots
 				if (roll <= 0)
 					break;
 			}
-			// The regular is there for the mission: "!BP" mostly.
-			if (regular && b.bShout && number(1, 100) <= 70)
+			// The regular is there for the mission - a Battle Pass line now and
+			// then, never twice in a row on one kingdom's channel.
+			if (regular && b.bShout && number(1, 100) <= 30)
 				kind = CHAT_BP;
+			static bool s_abLastWasBP[4] = { false, false, false, false };
+			if (kind == CHAT_BP && s_abLastWasBP[empire])
+				kind = CHAT_TALK;
 			char text[CHAT_MAX_LEN + 1];
 			text[0] = 0;
 			bool said = false;
+			s_bChatterKind = 0;
+			s_dwChatterVnum = 0;
+			s_iChatterLevel = 0;
+			s_strChatterItem.clear();
 			switch (kind)
 			{
 				case CHAT_BP: said = LineBP(b, text, sizeof(text)); break;
@@ -1160,7 +1189,7 @@ namespace playerbot_bpbots
 			}
 			if (!said)
 			{
-				kind = b.bShout && number(0, 1) == 0 ? CHAT_BP : CHAT_TALK;
+				kind = b.bShout && !s_abLastWasBP[empire] && number(0, 3) == 0 ? CHAT_BP : CHAT_TALK;
 				if (kind == CHAT_BP)
 					LineBP(b, text, sizeof(text));
 				else
@@ -1170,6 +1199,31 @@ namespace playerbot_bpbots
 			snprintf(msg, sizeof(msg), "%s : %s", best->GetName(), text);
 			SendPlayerBotShout(msg, empire);
 			BattlePassOnShout(best);
+			s_abLastWasBP[empire] = kind == CHAT_BP;
+			// MT2009_PLUS_BOT_CHAT_V2: the bot remembers what it said.
+			{
+				BYTE meaning = s_bChatterKind;
+				if (!meaning)
+				{
+					switch (kind)
+					{
+						case CHAT_BUY: meaning = playerbot_conv::PL_BUY; break;
+						case CHAT_SELL: meaning = playerbot_conv::PL_SELL; break;
+						case CHAT_PARTY: meaning = playerbot_conv::PL_PARTY; break;
+						case CHAT_METIN: meaning = playerbot_conv::PL_METIN; break;
+						case CHAT_BOSS: meaning = playerbot_conv::PL_BOSS; break;
+						case CHAT_GEAR: meaning = playerbot_conv::PL_GEAR; break;
+						case CHAT_EVENT: meaning = playerbot_conv::PL_EVENT; break;
+						case CHAT_WAR: meaning = playerbot_conv::PL_WAR; break;
+						default: meaning = playerbot_conv::PL_TALK; break;
+					}
+				}
+				NotePlayerBotPublicLine(best, meaning, false, text, s_dwChatterVnum,
+						meaning == playerbot_conv::PL_BUY ? 10 : 0, 0,
+						(meaning == playerbot_conv::PL_PARTY || meaning == playerbot_conv::PL_METIN) ? best->GetMapIndex() : 0,
+						s_iChatterLevel ? s_iChatterLevel : (meaning == playerbot_conv::PL_PARTY ? (int)best->GetLevel() : 0),
+						s_strChatterItem.empty() ? NULL : s_strChatterItem.c_str());
+			}
 			++b.dwShoutProgress;
 			++s_uShouts;
 			++s_auChatter[kind];

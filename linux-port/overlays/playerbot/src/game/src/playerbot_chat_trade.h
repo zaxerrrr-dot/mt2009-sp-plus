@@ -37,6 +37,8 @@
 
 // The players' names for items (FMS, 12D, bodzio ...) - pure, playerbot_conv_aliases.h.
 #include "playerbot_conv_aliases.h"
+// MT2009_PLUS_BOT_CHAT_V2: the public line's meaning (TPublicLine, EPublicKind).
+#include "playerbot_conv_state.h"
 
 namespace
 {
@@ -58,6 +60,105 @@ namespace
 	const DWORD PLAYERBOT_TRADE_SKILL_BOOK_LAST = 50511;
 
 	DWORD s_dwPlayerBotTradeShoutTime = 0;
+
+	// MT2009_PLUS_BOT_CHAT_V2: what each bot itself said in public lately -
+	// on its kingdom's shout and on the '@' trade chat - with what it meant
+	// (playerbot_conv::TPublicLine): a whisper that refers to it ("jeszcze
+	// szukasz pt?", "dalej kupujesz?", "mam do sprzedania X" after its
+	// "K> X") is answered in that context, and the bot itself names it to a
+	// stranger who greets it soon after. The newest few, for an hour; a
+	// trade post is closed when its deal is done (ClosePlayerBotPublicPost).
+	const size_t PLAYERBOT_PUBLIC_LINES_MAX = 6;
+	const DWORD PLAYERBOT_PUBLIC_LINE_TTL_MS = 60 * 60 * 1000;
+	struct TPlayerBotPublicLine
+	{
+		DWORD at;
+		BYTE kind;          // playerbot_conv::EPublicKind
+		bool trade;
+		std::string text;
+		std::string itemName;
+		DWORD vnum;
+		int count;
+		DWORD unit;
+		long map;
+		int level;
+		bool open;
+		TPlayerBotPublicLine() : at(0), kind(0), trade(false), vnum(0), count(0), unit(0), map(0), level(0), open(true) {}
+	};
+	std::map<DWORD, std::deque<TPlayerBotPublicLine> > s_mapPlayerBotPublicLines;
+
+	void NotePlayerBotPublicLine(LPCHARACTER bot, BYTE kind, bool trade, const char* text, DWORD vnum = 0, int count = 0,
+			DWORD unit = 0, long map = 0, int level = 0, const char* itemName = NULL)
+	{
+		if (!bot || !text)
+			return;
+		std::deque<TPlayerBotPublicLine>& lines = s_mapPlayerBotPublicLines[bot->GetPlayerID()];
+		TPlayerBotPublicLine line;
+		line.at = get_dword_time();
+		line.kind = kind;
+		line.trade = trade;
+		line.text = text;
+		line.vnum = vnum;
+		line.count = count;
+		line.unit = unit;
+		line.map = map >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? map / 10000 : map;
+		line.level = level;
+		if (itemName && *itemName)
+			line.itemName = itemName;
+		else if (vnum)
+		{
+			const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+			if (proto)
+				line.itemName = proto->szLocaleName;
+		}
+		// A new post of the same item replaces the old one.
+		if (vnum)
+			for (std::deque<TPlayerBotPublicLine>::iterator it = lines.begin(); it != lines.end(); )
+				it = it->vnum == vnum && it->kind == kind ? lines.erase(it) : it + 1;
+		lines.push_front(line);
+		while (lines.size() > PLAYERBOT_PUBLIC_LINES_MAX)
+			lines.pop_back();
+	}
+
+	// A trade post's deal done: the post is not meant any more.
+	void ClosePlayerBotPublicPost(DWORD botPID, DWORD vnum)
+	{
+		std::map<DWORD, std::deque<TPlayerBotPublicLine> >::iterator it = s_mapPlayerBotPublicLines.find(botPID);
+		if (it == s_mapPlayerBotPublicLines.end())
+			return;
+		for (size_t i = 0; i < it->second.size(); ++i)
+			if (it->second[i].vnum == vnum)
+				it->second[i].open = false;
+	}
+
+	// The bot's lines for the conversation's snapshot, newest first.
+	void GetPlayerBotPublicLines(DWORD botPID, std::vector<playerbot_conv::TPublicLine>& out)
+	{
+		out.clear();
+		std::map<DWORD, std::deque<TPlayerBotPublicLine> >::iterator it = s_mapPlayerBotPublicLines.find(botPID);
+		if (it == s_mapPlayerBotPublicLines.end())
+			return;
+		const DWORD now = get_dword_time();
+		while (!it->second.empty() && now - it->second.back().at > PLAYERBOT_PUBLIC_LINE_TTL_MS)
+			it->second.pop_back();
+		for (size_t i = 0; i < it->second.size(); ++i)
+		{
+			const TPlayerBotPublicLine& l = it->second[i];
+			playerbot_conv::TPublicLine p;
+			p.kind = l.kind;
+			p.trade = l.trade;
+			p.text = l.text;
+			p.itemName = l.itemName;
+			p.vnum = l.vnum;
+			p.count = l.count;
+			p.unitPrice = l.unit;
+			p.map = l.map;
+			p.level = l.level;
+			p.ageMin = (now - l.at) / 60000;
+			p.open = l.open;
+			out.push_back(p);
+		}
+	}
 	// MT2009_PLUS_BOT_CHAT_V2: the engine's own floor for the trade chat
 	// (CInputMain::Chat: level 20).
 	const int PLAYERBOT_TRADECHAT_MIN_LEVEL = 20;
@@ -364,7 +465,8 @@ namespace
 		char trade[CHAT_MAX_LEN + 1];
 		snprintf(trade, sizeof(trade), "S> %s, stragan %s ch%d", pszItemName, GetPlayerBotTownName(ch->GetMapIndex()),
 				(int)g_bChannel);
-		ShoutPlayerBotTrade(ch, text, get_dword_time(), trade);
+		if (ShoutPlayerBotTrade(ch, text, get_dword_time(), trade))
+			NotePlayerBotPublicLine(ch, playerbot_conv::PL_SELL, IsPlayerBotTradeChatOn(), trade, 0, 0, 0, 0, 0, pszItemName);
 	}
 
 	// MT2009_PLUS_BOT_CHAT_V2: what the market pays for it (playerbot_chat_world.h).
@@ -401,7 +503,9 @@ namespace
 		else
 			snprintf(trade, sizeof(trade), "K> %s, kto ma niech wystawi w %s albo pw", proto->szLocaleName,
 					GetPlayerBotTownName(ch->GetMapIndex()));
-		ShoutPlayerBotTrade(ch, text, get_dword_time(), trade);
+		if (ShoutPlayerBotTrade(ch, text, get_dword_time(), trade))
+			NotePlayerBotPublicLine(ch, playerbot_conv::PL_BUY, IsPlayerBotTradeChatOn(), trade, *wanted.begin(),
+					proto->dwFlags & ITEM_FLAG_STACKABLE ? 10 : 1, unit);
 	}
 
 	// The skill a folded name means, from the per-skill books' names.

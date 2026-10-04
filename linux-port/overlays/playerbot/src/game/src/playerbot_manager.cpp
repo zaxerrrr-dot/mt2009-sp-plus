@@ -239,6 +239,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_wandering.h"
 #include "playerbot_status.h"
 #include "playerbot_chat_conversation.h"
+// MT2009_PLUS_BOT_CHAT_V2 (deals): a trade talked over on the whisper, done in
+// the exchange window. After the conversation, which talks it over, and the
+// gift trade, whose look at the window it borrows.
+#include "playerbot_chat_deals.h"
 #include "playerbot_targeting.h"
 #include "playerbot_guild_war.h"
 // Iwakura's Anti-PK protocol and the stone hunter: the war's fight, turned on
@@ -6500,6 +6504,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// A player's trade window, ahead of everything: the bot stands still
 		// until the player accepts, then takes what it would pick up off the
 		// ground (playerbot_gift_trade.h). The companion's is its own.
+		// MT2009_PLUS_BOT_CHAT_V2 (deals): a deal settled on the whisper - the
+		// bot opens the window by the person and checks it, pays or sells
+		// (playerbot_chat_deals.h). Ahead of the gift trade, which takes any
+		// other window.
+		if (HandlePlayerBotDealTrade(ch, state, dwNow))
+			continue;
 		if (HandlePlayerBotGiftTrade(ch, state, dwNow))
 			continue;
 

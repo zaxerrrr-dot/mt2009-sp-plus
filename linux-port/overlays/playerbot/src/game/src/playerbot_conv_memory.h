@@ -44,6 +44,50 @@ namespace playerbot_conv
 	const size_t CONV_TURNS = 4;
 	const size_t CONV_RECENT_TEMPLATES = 12;
 
+	// MT2009_PLUS_BOT_CHAT_V2 (deals): a trade talked over on the whisper -
+	// the bot buying what a person sells (its own "K> ..." post answered, or
+	// an offer) or selling what it has in its bag. The talk is here; the
+	// exchange window that completes it is the engine's
+	// (playerbot_chat_deals.h), told of the agreement by IConvWorld::DealAgreed.
+	const u32 CONV_DEAL_TTL_MS = 12 * 60 * 1000;
+	enum EDealState
+	{
+		DEAL_NONE = 0,
+		DEAL_OPEN,       // talking: price and count
+		DEAL_AGREED,     // both settled, waiting for the exchange window
+		DEAL_DONE,
+		DEAL_FAILED
+	};
+	enum EDealSide
+	{
+		DEAL_BOT_BUYS = 1,
+		DEAL_BOT_SELLS = 2
+	};
+
+	struct TDeal
+	{
+		unsigned char state;
+		unsigned char side;
+		u32 vnum;
+		std::string name;
+		int count;            // pieces settled on, 0 not yet
+		int maxCount;         // the most the bot takes / has
+		long long offer;      // the bot's price per piece now
+		long long ask;        // the person's last price per piece, 0 none
+		long long limit;      // the most the bot pays / the least it takes, per piece
+		long long fair;       // what the market says a piece is worth
+		int rounds;           // counter-offers made
+		bool priceSettled;
+		bool fromPost;        // an answer to the bot's own public post
+		u32 at;
+		TDeal() : state(DEAL_NONE), side(0), vnum(0), count(0), maxCount(0), offer(0), ask(0), limit(0), fair(0),
+			rounds(0), priceSettled(false), fromPost(false), at(0) {}
+		bool Live(u32 now) const
+		{
+			return (state == DEAL_OPEN || state == DEAL_AGREED) && at != 0 && now - at < CONV_DEAL_TTL_MS;
+		}
+	};
+
 	enum EBotAsk
 	{
 		ASK_NONE = 0,
@@ -166,6 +210,8 @@ namespace playerbot_conv
 		u32 rateStart;
 		int rateLines;
 		u32 mutedUntil;
+		// The trade talked over now (TDeal).
+		TDeal deal;
 
 		TConvMemory() : playerPID(0), botPID(0), firstAt(0), lastPlayerAt(0), lastBotAt(0),
 			lastInitiativeAt(0), lastCheckAt(0), talks(0), sessions(0), positive(0), negative(0),
@@ -319,6 +365,56 @@ namespace playerbot_conv
 			const TTurn* t = m.Prev(now, i);
 			if (t && now - t->at < 60000 && a.tokens.norm.size() > 2 && t->norm == a.tokens.norm)
 				a.repeated = true;
+		}
+
+		// MT2009_PLUS_BOT_CHAT_V2 (deals): while a trade is talked over, a
+		// price, a count, a yes or a no is about that trade - unless the line
+		// names another item, which is a new one.
+		if (m.deal.Live(now) && a.tokens.words.size() <= 12)
+		{
+			const TConceptSet& c = a.concepts;
+			const bool otherItem = !a.object.empty() && !m.deal.name.empty() &&
+					!ItemNameMatches(m.deal.name.c_str(), a.object) && (a.intent == I_BUY || a.intent == I_SELL);
+			const bool dealish = a.offerYang > 0 || a.dealCount > 0 || c.Has(C_AGREE) || c.Has(C_YES) ||
+					c.Has(C_NO) || c.Has(C_ACK) || c.Has(C_PRICEQ) || c.Has(C_HOWMUCH) || c.Has(C_STILL) ||
+					a.intent == I_BUY || a.intent == I_SELL || a.intent == I_PRICE || a.intent == I_GOLD ||
+					a.tokens.Has("drogo") || a.tokens.Has("malo") || a.tokens.Has("tanio") || a.tokens.Has("wiecej") ||
+					a.tokens.Has("mniej") || a.tokens.Has("taniej") || a.tokens.Has("drozej") || a.tokens.Has("gdzie") ||
+					a.tokens.Has("wymiane") || a.tokens.Has("wymiana") || a.tokens.Has("handel");
+			if (dealish && !otherItem && !IsColdIntent((EIntent)a.intent) && a.intent != I_FAREWELL &&
+					a.intent != I_THANKS && a.intent != I_MATH)
+			{
+				a.intent = I_DEAL;
+				a.subject = I_DEAL;
+				return;
+			}
+		}
+		// A trade talked about and then just the item's name ("buty ognistego
+		// ptaka", "a fms?"), or "a moge ci sprzedac?" with the item a line
+		// before: the same trade, about that item.
+		if ((base == I_BUY || base == I_SELL || base == I_SHOP || base == I_PRICE || base == I_ITEM_OWN ||
+				base == I_MARKET || base == I_DEAL) && prev)
+		{
+			if ((a.intent == I_SELL || a.intent == I_BUY || a.intent == I_PRICE) && a.object.empty() &&
+					!prev->object.empty())
+			{
+				a.object = prev->object;
+				a.subject = a.intent;
+				return;
+			}
+			const bool bareItem = a.tokens.words.size() <= 6 && !a.question && !a.concepts.Has(C_YOU) &&
+					(a.concepts.Has(C_ITEMWORD) || a.concepts.Has(C_GEAR) || a.intent == I_EQUIPMENT ||
+					 a.intent == I_UNKNOWN_STATEMENT);
+			const bool bareItemAsked = a.tokens.words.size() <= 6 && (a.concepts.Has(C_ITEMWORD) ||
+					a.concepts.Has(C_GEAR)) && (a.intent == I_EQUIPMENT || a.intent == I_UNKNOWN_QUESTION ||
+					a.intent == I_ITEM_OWN || a.intent == I_FOLLOW_UP);
+			if (bareItem || bareItemAsked)
+			{
+				a.intent = base == I_SELL ? I_SELL : (base == I_PRICE ? I_PRICE : I_BUY);
+				a.subject = a.intent;
+				a.object = ExtractTradeObject(a.tokens, 0);
+				return;
+			}
 		}
 
 		// MT2009_PLUS_BOT_CHAT_V2: "jeszcze jeden", "dawaj kolejny", "jeszcze"

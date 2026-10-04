@@ -62,6 +62,11 @@ namespace
 	int GetPlayerBotSpotQuarrel(DWORD botPID, DWORD personPID, bool& gaveUp);
 	bool DescribePlayerBotExpPlace(int level, int empire, std::string& out);
 	bool DescribePlayerBotMetinPlace(int level, int empire, std::string& out);
+	// MT2009_PLUS_BOT_CHAT_V2 (deals): playerbot_chat_deals.h - an item a
+	// whisper names, priced and judged; a deal both sides settled.
+	bool QuotePlayerBotDealItem(LPCHARACTER bot, const std::string& query, DWORD vnumHint, playerbot_conv::TDealQuote& out);
+	int RegisterPlayerBotDeal(LPCHARACTER bot, DWORD personPID, LPCHARACTER person, BYTE side, DWORD vnum, int count,
+			long long unit);
 
 	const DWORD PLAYERBOT_CONV_SWITCH_CHECK_MS = 30000;
 	const DWORD PLAYERBOT_CONV_STATS_INTERVAL_MS = 10 * 60 * 1000;
@@ -1151,7 +1156,7 @@ namespace
 	class CPlayerBotConvWorld : public playerbot_conv::IConvWorld
 	{
 		public:
-			CPlayerBotConvWorld() : m_bot(NULL), m_player(NULL), m_channel(0) {}
+			CPlayerBotConvWorld() : m_bot(NULL), m_player(NULL), m_channel(0), m_personPID(0) {}
 			// `player` is NULL for a person on another core; `channel` is the
 			// one the person plays on, whose counters "ile chodzi" reads.
 			void Bind(LPCHARACTER bot, LPCHARACTER player, int channel)
@@ -1339,10 +1344,24 @@ namespace
 				return DescribePlayerBotMetinPlace(level, m_bot ? (int)m_bot->GetEmpire() : 0, out);
 			}
 
+			// MT2009_PLUS_BOT_CHAT_V2 (deals).
+			bool QuoteItem(const std::string& query, playerbot_conv::u32 vnumHint, playerbot_conv::TDealQuote& out)
+			{
+				return m_bot && QuotePlayerBotDealItem(m_bot, query, vnumHint, out);
+			}
+
+			int DealAgreed(unsigned char side, playerbot_conv::u32 vnum, int count, long long unit)
+			{
+				return RegisterPlayerBotDeal(m_bot, m_personPID, m_player, side, vnum, count, unit);
+			}
+
+			void SetPersonPID(DWORD pid) { m_personPID = pid; }
+
 		private:
 			LPCHARACTER m_bot;
 			LPCHARACTER m_player;
 			int m_channel;
+			DWORD m_personPID;
 	};
 
 	// ---------------------------------------------------------------- host
@@ -1634,6 +1653,7 @@ namespace
 				// with this person went (playerbot_spot_defense.h).
 				s.spotQuarrel = GetPlayerBotSpotQuarrel(botPID, playerPID, s.spotGaveUp);
 				s.eventsNow = DescribePlayerBotEventsNow();
+				GetPlayerBotPublicLines(botPID, s.publicLines);
 				{
 					const time_t t = time(0);
 					const struct tm* lt = localtime(&t);
@@ -1649,6 +1669,7 @@ namespace
 				const int channel = person.Channel();
 				m_world.Bind(CHARACTER_MANAGER::instance().FindByPID(botPID), person.local,
 						channel ? channel : (int)g_bChannel);
+				m_world.SetPersonPID(playerPID);
 				return &m_world;
 			}
 

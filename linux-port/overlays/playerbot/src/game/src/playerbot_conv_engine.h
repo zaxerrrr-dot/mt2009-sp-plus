@@ -382,7 +382,11 @@ namespace playerbot_conv
 				++res.skipped;
 				continue;
 			}
-			std::string piece = GenerateOne(g, a);
+			// MT2009_PLUS_BOT_CHAT_V2: a line about what the bot itself said
+			// in public is answered in that context (ApplyPublicContext).
+			TAnalysis withPost = a;
+			ApplyPublicContext(g, withPost);
+			std::string piece = GenerateOne(g, withPost);
 			if (piece.empty())
 				continue;
 			CapitalizeFirst(piece);
@@ -398,7 +402,7 @@ namespace playerbot_conv
 				continue;
 			Append(out, piece);
 			++res.answered;
-			res.lastIntent = a.intent;
+			res.lastIntent = withPost.intent;
 		}
 
 		// Nothing to say (a laugh let pass, an ignored insult).

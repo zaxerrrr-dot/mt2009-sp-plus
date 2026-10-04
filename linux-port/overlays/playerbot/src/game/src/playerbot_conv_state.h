@@ -241,6 +241,41 @@ namespace playerbot_conv
 		return e >= 0 && e < SUMMON_END_COUNT ? k[e] : "?";
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2: one line the bot said in public.
+	enum EPublicKind
+	{
+		PL_NONE = 0,
+		PL_SELL,        // "S> ..." - it sells
+		PL_BUY,         // "K> ...", "B> ..." - it buys
+		PL_PARTY,       // looking for a party, or members
+		PL_METIN,       // breaking Metins somewhere, asking who joins
+		PL_METIN_ASK,   // "gdzie sa metki na 30?"
+		PL_EXP_ASK,     // "gdzie expic na 40?"
+		PL_PRICE_ASK,   // "ile stoi bodzie?"
+		PL_BOSS,
+		PL_GEAR,        // its weapon shown off or asked about
+		PL_EVENT,
+		PL_WAR,
+		PL_TALK
+	};
+
+	struct TPublicLine
+	{
+		int kind;
+		bool trade;            // on the '@' trade chat, else the kingdom's shout
+		std::string text;
+		std::string itemName;  // the item a trade or price line is about
+		u32 vnum;
+		int count;
+		long long unitPrice;   // per piece, 0 none named
+		long map;              // the map a party or Metin line named, 0 none
+		int level;             // the level a line named, 0 none
+		u32 ageMin;
+		bool open;             // still meant (a trade not yet done)
+		TPublicLine() : kind(PL_NONE), trade(false), vnum(0), count(0), unitPrice(0), map(0), level(0), ageMin(0),
+			open(true) {}
+	};
+
 	// --------------------------------------------------------------- snapshot
 
 	struct TBotSnapshot
@@ -356,6 +391,10 @@ namespace playerbot_conv
 		// The timed events running now, as a bot names them ("event na
 		// expa, skrzynie"), empty when none (playerbot_events.h).
 		std::string eventsNow;
+		// What the bot itself said on the shout channel and the '@' trade
+		// chat lately, newest first (TPublicLine): a whisper that refers to
+		// it is answered in its context.
+		std::vector<TPublicLine> publicLines;
 
 		TBotSnapshot() : level(1), job(0), empire(0), mapIndex(0), inTown(false), safeZone(false),
 			inDungeon(false), action(A_IDLE), goal(G_LEVEL), travelMap(0), riding(false),
@@ -383,6 +422,28 @@ namespace playerbot_conv
 		}
 
 		int Build() const { return BuildOf(job, skillGroup); }
+	};
+
+	// What the engine knows of an item a whisper names, for a deal.
+	struct TDealQuote
+	{
+		bool found;
+		u32 vnum;
+		std::string name;
+		bool stackable;
+		long long fair;        // the market's price per piece, 0 unknown
+		bool botWants;         // the bot would buy it
+		int wantCount;         // how many it takes at most
+		long long maxBuyUnit;  // the most it pays per piece
+		int botHas;            // pieces in its bag it would sell (not worn, not its counter's)
+		long long minSellUnit; // the least it takes per piece
+		long long sellUnit;    // what it asks per piece
+		bool onStall;          // it is on the bot's counter (sold there, not by hand)
+		long long stallUnit;
+		std::string stallWhere;
+		long long botGold;
+		TDealQuote() : found(false), vnum(0), stackable(false), fair(0), botWants(false), wantCount(0), maxBuyUnit(0),
+			botHas(0), minSellUnit(0), sellUnit(0), onStall(false), stallUnit(0), botGold(0) {}
 	};
 
 	// Whether the asker plays on the other channel than the bot.
@@ -424,6 +485,30 @@ namespace playerbot_conv
 			// False: the pure tables below answer.
 			virtual bool ExpPlaceFor(int level, std::string& out) { (void)level; (void)out; return false; }
 			virtual bool MetinPlaceFor(int level, std::string& out) { (void)level; (void)out; return false; }
+			// MT2009_PLUS_BOT_CHAT_V2 (deals): an item a whisper names (or the
+			// bot's own post's item, `vnumHint`), priced and judged: would the
+			// bot buy it, does it have it to sell, at what prices.
+			virtual bool QuoteItem(const std::string& query, u32 vnumHint, TDealQuote& out)
+			{
+				(void)query; (void)vnumHint; (void)out;
+				return false;
+			}
+			// Both settled (EDealMeet): the engine holds the deal for the
+			// exchange window and says how the two meet.
+			virtual int DealAgreed(unsigned char side, u32 vnum, int count, long long unit)
+			{
+				(void)side; (void)vnum; (void)count; (void)unit;
+				return -1;
+			}
+	};
+
+	// How the two of a settled deal meet.
+	enum EDealMeet
+	{
+		DEAL_MEET_FAILED = -1,
+		DEAL_MEET_NEAR = 0,       // standing by each other: the window now
+		DEAL_MEET_COMING = 1,     // the bot walks over
+		DEAL_MEET_COME_TO_ME = 2  // another map or channel: the person comes
 	};
 
 	// MT2009_PLUS_BOT_CHAT_V2: how a bot takes a quarrel, from its style:

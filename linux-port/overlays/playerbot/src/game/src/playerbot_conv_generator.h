@@ -1292,6 +1292,10 @@ namespace playerbot_conv
 		return "Handluje troche, jak mam cos na zbyciu.";
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2 (deals): defined with the deal talk below.
+	inline std::string OpenSellDeal(TGen& g, const std::string& obj);
+	inline std::string OpenBuyDeal(TGen& g, const std::string& obj);
+
 	inline std::string GenBuy(TGen& g)
 	{
 		const std::string obj = g.a ? g.a->object : std::string();
@@ -1304,11 +1308,20 @@ namespace playerbot_conv
 		unsigned int count = 0;
 		if (g.world && g.world->FindShopItem(obj, name, price, count))
 			return ShopLineAnswer(g, name, price, count);
+		// MT2009_PLUS_BOT_CHAT_V2 (deals): in the bag, not on the counter -
+		// sold by hand, through the exchange window.
+		{
+			const std::string deal = OpenSellDeal(g, obj);
+			if (!deal.empty())
+				return deal;
+		}
 		if (g.world && g.world->FindItem(obj, name, count))
-			return "W EQ lezy " + name + ", ale nie wystawilem tego na sprzedaz.";
+			return "W EQ lezy " + name + ", ale tego nie sprzedaje.";
 		if (g.s.shopOpen)
 			return "Tego nie mam na straganie.";
-		return "Nie mam tego teraz na sprzedaz.";
+		static const char* const k[] = { "Nie mam tego teraz na sprzedaz.", "Nie mam, sorki. Popytaj na @, ktos pewnie ma.",
+			"Nie, tego nie mam. Zerknij w wyszukiwarke sklepow." };
+		return PBC_SAY(g, k);
 	}
 
 	inline std::string GenSell(TGen& g)
@@ -1316,8 +1329,8 @@ namespace playerbot_conv
 		const std::string obj = g.a ? g.a->object : std::string();
 		if (obj.empty())
 			return "Co chcesz mi sprzedac?";
-		std::string r = g.world ? g.world->AnswerSell(obj) : std::string();
-		return r.empty() ? std::string("Nie potrzebuje teraz tego.") : r;
+		// MT2009_PLUS_BOT_CHAT_V2 (deals): what the bot would pay, and the talk.
+		return OpenBuyDeal(g, obj);
 	}
 
 	inline std::string GenSkills(TGen& g)
@@ -3430,6 +3443,562 @@ namespace playerbot_conv
 		return PBC_SAY(g, k);
 	}
 
+	// ------------------------------------------- MT2009_PLUS_BOT_CHAT_V2: deals
+
+	// A price as a person names one: two figures that matter.
+	inline long long RoundDealPrice(long long v)
+	{
+		if (v <= 0)
+			return 0;
+		// Steps the way FormatYang says it ("13k", "1.5kk"), so the price
+		// said is the price paid.
+		long long step = 1;
+		if (v >= 10000000) step = 1000000;
+		else if (v >= 1000000) step = 100000;
+		else if (v >= 1000) step = 1000;
+		else if (v >= 100) step = 10;
+		const long long r = (v + step / 2) / step * step;
+		return r > 0 ? r : step;
+	}
+
+	// The bot's own post this line answers, when there is one.
+	inline const TPublicLine* PostOf(const TGen& g)
+	{
+		if (!g.a || g.a->postRef <= 0 || (size_t)g.a->postRef > g.s.publicLines.size())
+			return NULL;
+		return &g.s.publicLines[g.a->postRef - 1];
+	}
+
+	inline std::string DealText(const TGen& g, const char* tpl)
+	{
+		const TDeal& d = g.m.deal;
+		std::string out = Fill(g, tpl);
+		ReplaceAll(out, "$ITEM", d.name);
+		ReplaceAll(out, "$UNIT", FormatYang(d.offer));
+		ReplaceAll(out, "$LIMIT", FormatYang(d.limit));
+		ReplaceAll(out, "$ASK", FormatYang(d.ask));
+		ReplaceAll(out, "$N", ToString((long long)d.count));
+		ReplaceAll(out, "$MAXN", ToString((long long)d.maxCount));
+		ReplaceAll(out, "$TOTAL", FormatYang(d.offer * (d.count > 0 ? d.count : 1)));
+		return out;
+	}
+
+	inline std::string DealSay(TGen& g, const char* const* variants, size_t n)
+	{
+		return DealText(g, Pick(g, variants, n));
+	}
+
+#define PBC_DEAL(g, arr) DealSay((g), (arr), sizeof(arr) / sizeof((arr)[0]))
+
+	// Settled: the engine holds the deal for the window and says how the two
+	// meet.
+	inline std::string CloseDeal(TGen& g)
+	{
+		TDeal& d = g.m.deal;
+		d.state = DEAL_AGREED;
+		d.at = g.now;
+		const int meet = g.world ? g.world->DealAgreed(d.side, d.vnum, d.count, d.offer) : (int)DEAL_MEET_FAILED;
+		g.reason = "Bo sie dogadalismy.";
+		std::string head;
+		{
+			static const char* const k[] = { "Dobra, $N szt po $UNIT, razem $TOTAL.", "Stoi. $N x $ITEM po $UNIT, razem $TOTAL.",
+				"Umowa: $N szt, $TOTAL za wszystko." };
+			static const char* const kOne[] = { "Dobra, $ITEM za $UNIT.", "Stoi, $UNIT za $ITEM." };
+			head = d.count > 1 ? PBC_DEAL(g, k) : PBC_DEAL(g, kOne);
+		}
+		switch (meet)
+		{
+			case DEAL_MEET_NEAR:
+				Append(head, d.side == DEAL_BOT_SELLS ? "Stoje obok, otwieram wymiane." : "Stoje obok, daj wymiane.");
+				break;
+			case DEAL_MEET_COMING:
+				Append(head, d.side == DEAL_BOT_SELLS ? "Ide do ciebie, otworze wymiane jak bede obok."
+						: "Ide do ciebie, daj wymiane jak bede obok.");
+				break;
+			case DEAL_MEET_COME_TO_ME:
+				Append(head, Fill(g, "Jestem $MAPIN na CH$CH, podejdz i daj wymiane."));
+				break;
+			default:
+				d.state = DEAL_FAILED;
+				Append(head, "Hmm, cos mi nie pasuje, sprobujmy pozniej.");
+				break;
+		}
+		return head;
+	}
+
+	inline std::string GenDeal(TGen& g, const TAnalysis& a);
+
+	// The person sells, the bot buys: what it pays, if it wants it at all.
+	inline std::string OpenBuyDeal(TGen& g, const std::string& obj)
+	{
+		const TPublicLine* post = PostOf(g);
+		TDealQuote q;
+		if (!g.world || !g.world->QuoteItem(obj, post ? post->vnum : 0, q) || !q.found)
+		{
+			static const char* const k[] = { "A co to jest? Nie kojarze takiego itemu xd", "Hm, nie wiem co to, napisz pelna nazwe?" };
+			return PBC_SAY(g, k);
+		}
+		TDeal& d = g.m.deal;
+		if (!q.botWants || q.maxBuyUnit <= 0 || q.wantCount <= 0)
+		{
+			d = TDeal();
+			g.reason = "Bo tego nie potrzebuje.";
+			if (q.fair > 0)
+			{
+				static const char* const kFair[] = { "Tego nie kupuje, sorki. Na targu pojdzie po jakies $FAIR.",
+					"Nie potrzebuje tego. Wystaw na straganie, za $FAIR ktos wezmie." };
+				std::string out = PBC_SAY(g, kFair);
+				ReplaceAll(out, "$FAIR", FormatYang(RoundDealPrice(q.fair)));
+				return out;
+			}
+			static const char* const k[] = { "Nie, tego nie potrzebuje.", "Sorki, tego nie kupuje.", "Nie, dzieki. Sprobuj na @." };
+			return PBC_SAY(g, k);
+		}
+		d = TDeal();
+		d.state = DEAL_OPEN;
+		d.side = DEAL_BOT_BUYS;
+		d.vnum = q.vnum;
+		d.name = q.name;
+		d.fair = q.fair;
+		d.limit = q.maxBuyUnit;
+		long long start = q.fair > 0 ? q.fair * 85 / 100 : q.maxBuyUnit * 80 / 100;
+		if (post && post->unitPrice > 0)
+			start = post->unitPrice;
+		d.offer = RoundDealPrice(std::min(start, q.maxBuyUnit));
+		d.maxCount = q.wantCount;
+		if (post && post->count > 0 && post->count < d.maxCount)
+			d.maxCount = post->count;
+		// A purse it does not empty for one trade.
+		if (d.offer > 0 && q.botGold > 0)
+		{
+			const long long affordable = q.botGold * 60 / 100 / d.offer;
+			if (affordable < d.maxCount)
+				d.maxCount = (int)affordable;
+		}
+		if (d.maxCount <= 0)
+		{
+			d = TDeal();
+			return "Chcialbym, ale nie mam teraz tyle yang.";
+		}
+		if (!q.stackable)
+			d.maxCount = 1;
+		d.fromPost = post != NULL;
+		d.at = g.now;
+		d.count = g.a && g.a->dealCount > 0 ? std::min(g.a->dealCount, d.maxCount) : (q.stackable ? 0 : 1);
+		g.reason = "Bo tego potrzebuje.";
+		if (g.a && g.a->offerYang > 0)
+			return GenDeal(g, *g.a);
+		if (d.count > 0 && q.stackable)
+		{
+			static const char* const k[] = { "$N szt? Dam po $UNIT, razem $TOTAL. Pasuje?", "Wezme $N, po $UNIT za sztuke. Stoi?" };
+			return PBC_DEAL(g, k);
+		}
+		if (q.stackable)
+		{
+			static const char* const k[] = { "Tak, kupuje $ITEM. Daje $UNIT/szt, ile masz?", "Jasne, biore $ITEM po $UNIT za sztuke. Ile masz?",
+				"Kupuje, $UNIT/szt. Ile sztuk masz?" };
+			return PBC_DEAL(g, k);
+		}
+		static const char* const k[] = { "Tak, kupie $ITEM. Dam $UNIT, pasuje?", "Moge wziac $ITEM za $UNIT. Stoi?" };
+		return PBC_DEAL(g, k);
+	}
+
+	// The person buys, the bot sells from its bag (its counter answers for
+	// itself, ShopLineAnswer).
+	inline std::string OpenSellDeal(TGen& g, const std::string& obj)
+	{
+		const TPublicLine* post = PostOf(g);
+		TDealQuote q;
+		if (!g.world || !g.world->QuoteItem(obj, post ? post->vnum : 0, q) || !q.found || q.botHas <= 0 ||
+				q.sellUnit <= 0)
+			return std::string();
+		TDeal& d = g.m.deal;
+		d = TDeal();
+		d.state = DEAL_OPEN;
+		d.side = DEAL_BOT_SELLS;
+		d.vnum = q.vnum;
+		d.name = q.name;
+		d.fair = q.fair;
+		d.limit = RoundDealPrice(q.minSellUnit);
+		d.offer = RoundDealPrice(std::max(q.sellUnit, q.minSellUnit));
+		if (post && post->unitPrice > 0)
+			d.offer = RoundDealPrice(std::max(post->unitPrice, q.minSellUnit));
+		d.maxCount = q.botHas;
+		if (!q.stackable)
+			d.maxCount = 1;
+		d.fromPost = post != NULL;
+		d.at = g.now;
+		d.count = g.a && g.a->dealCount > 0 ? std::min(g.a->dealCount, d.maxCount) : (d.maxCount == 1 ? 1 : 0);
+		g.reason = "Bo mam tego za duzo.";
+		if (g.a && g.a->offerYang > 0)
+			return GenDeal(g, *g.a);
+		if (d.count == 0)
+		{
+			static const char* const k[] = { "Mam $ITEM, $MAXN szt. Po $UNIT za sztuke, ile chcesz?", "Mam, $UNIT/szt. Ile ci trzeba? Mam $MAXN." };
+			return PBC_DEAL(g, k);
+		}
+		static const char* const k[] = { "Mam $ITEM, za $TOTAL moge oddac. Bierzesz?", "Tak, mam. $TOTAL i jest twoje, pasuje?" };
+		return PBC_DEAL(g, k);
+	}
+
+	// The talk once a deal is open: a price, a count, a yes, a no.
+	inline std::string GenDeal(TGen& g, const TAnalysis& a)
+	{
+		TDeal& d = g.m.deal;
+		if (!d.Live(g.now))
+		{
+			d = TDeal();
+			static const char* const k[] = { "Ale o co chodzi? Co chcesz kupic albo sprzedac?", "Hm? Napisz jeszcze raz co i za ile." };
+			return PBC_SAY(g, k);
+		}
+		d.at = g.now;
+		const TTokens& t = a.tokens;
+		const TConceptSet& c = a.concepts;
+		if (d.state == DEAL_AGREED)
+		{
+			if (t.Has("gdzie") || c.Has(C_WHERE))
+				return Fill(g, "Jestem $MAPIN na CH$CH. Podejdz i daj wymiane.");
+			static const char* const k[] = { "Juz sie dogadalismy - daj wymiane i po sprawie.", "Czekam na wymiane :)" };
+			return PBC_SAY(g, k);
+		}
+		// How many.
+		if (a.dealCount > 0)
+		{
+			d.count = a.dealCount > d.maxCount ? d.maxCount : a.dealCount;
+		}
+		// The price, per piece. "150k za wszystko" is a total.
+		long long ask = a.offerYang;
+		if (ask > 0)
+		{
+			const bool total = t.Has("wszystko") || t.Has("calosc") || t.Has("razem") || t.Has("lacznie") ||
+					t.Has("wszystkie") || (t.Has("sumie"));
+			const bool unit = t.Has("szt") || t.Has("sztuke") || t.Has("sztuka") || t.Has("po") || t.Has("kazda") ||
+					t.Has("kazdy");
+			if (total && d.count > 1)
+				ask = ask / d.count;
+			else if (!unit && d.count > 1 && d.fair > 0 && ask > d.fair * 3)
+				ask = ask / d.count; // plainly the whole sum
+			d.ask = ask;
+		}
+		const bool agree = c.Has(C_AGREE) || c.Has(C_YES) || (c.Has(C_ACK) && !c.Has(C_NO) && t.words.size() <= 3);
+		const bool refuse = (c.Has(C_NO) && ask == 0) || t.Has("drogo") || (t.Has("za") && t.Has("malo")) ||
+				t.Has("przesadzasz") || t.Has("zdzierstwo");
+		std::string out;
+		if (ask > 0)
+		{
+			if (d.side == DEAL_BOT_BUYS)
+			{
+				if (ask <= d.offer)
+				{
+					d.offer = ask;
+					d.priceSettled = true;
+				}
+				else if (ask <= d.limit)
+				{
+					if (d.rounds < 2 && ask > d.offer + d.offer / 20)
+					{
+						++d.rounds;
+						d.offer = RoundDealPrice(std::min(d.limit, (d.offer + ask) / 2));
+						if (d.offer < ask)
+						{
+							static const char* const k[] = { "$ASK to troche duzo. Dam $UNIT/szt.", "Hmm, $UNIT/szt moge dac, nie wiecej.",
+								"Spotkajmy sie w polowie - $UNIT za sztuke?" };
+							return PBC_DEAL(g, k);
+						}
+						d.offer = ask;
+						d.priceSettled = true;
+					}
+					d.offer = ask;
+					d.priceSettled = true;
+				}
+				else if (ask <= d.limit * 13 / 10)
+				{
+					d.offer = d.limit;
+					++d.rounds;
+					static const char* const k[] = { "Za drogo. Max $LIMIT/szt, wiecej nie dam.", "$ASK? Nie, moge dac najwyzej $LIMIT." };
+					return PBC_DEAL(g, k);
+				}
+				else
+				{
+					++d.rounds;
+					static const char* const k[] = { "Hahaha nie, za tyle to sam kupie na targu xd", "$ASK? Chyba zartujesz. Daje $UNIT.",
+						"Za tyle to nie, sorki. Moja cena to $UNIT." };
+					return PBC_DEAL(g, k);
+				}
+			}
+			else
+			{
+				if (ask >= d.offer)
+					d.priceSettled = true;
+				else if (ask >= d.limit)
+				{
+					if (d.rounds < 2 && ask < d.offer - d.offer / 20)
+					{
+						++d.rounds;
+						d.offer = RoundDealPrice(std::max(d.limit, (d.offer + ask) / 2));
+						if (d.offer > ask)
+						{
+							static const char* const k[] = { "$ASK to malo. Dla ciebie $UNIT.", "Taniej nie bardzo... $UNIT i jest twoje.",
+								"Moze $UNIT? Nizej nie schodze." };
+							return PBC_DEAL(g, k);
+						}
+						d.offer = ask;
+						d.priceSettled = true;
+					}
+					d.offer = ask;
+					d.priceSettled = true;
+				}
+				else if (ask >= d.limit * 7 / 10)
+				{
+					d.offer = d.limit;
+					++d.rounds;
+					static const char* const k[] = { "Za malo. Najnizej $LIMIT.", "$ASK? Nie zejde ponizej $LIMIT." };
+					return PBC_DEAL(g, k);
+				}
+				else
+				{
+					++d.rounds;
+					static const char* const k[] = { "Za $ASK? Hahaha nie xd", "Za darmo to ja nie rozdaje. $UNIT.",
+						"Nie ma mowy, $UNIT albo nic." };
+					return PBC_DEAL(g, k);
+				}
+			}
+		}
+		else if (refuse)
+		{
+			if (d.side == DEAL_BOT_BUYS && d.rounds < 2 && d.offer < d.limit)
+			{
+				++d.rounds;
+				d.offer = RoundDealPrice(std::min(d.limit, d.offer * 115 / 100));
+				static const char* const k[] = { "No dobra, dam $UNIT, ale wiecej nie.", "Ok, $UNIT/szt, ostatnia oferta." };
+				return PBC_DEAL(g, k);
+			}
+			if (d.side == DEAL_BOT_SELLS && d.rounds < 2 && d.offer > d.limit)
+			{
+				++d.rounds;
+				d.offer = RoundDealPrice(std::max(d.limit, d.offer * 90 / 100));
+				static const char* const k[] = { "Dobra, $UNIT, taniej nie bede.", "No to $UNIT, ostatnia cena." };
+				return PBC_DEAL(g, k);
+			}
+			d.state = DEAL_FAILED;
+			static const char* const k[] = { "No trudno, to nie handlujemy.", "Ok, to nie. Jak zmienisz zdanie, pisz.",
+				"Szkoda. Gdybys zmienil zdanie, wiesz gdzie mnie szukac." };
+			return PBC_SAY(g, k);
+		}
+		else if (agree)
+			d.priceSettled = true;
+		else if (a.dealCount == 0)
+		{
+			// Neither price nor count nor yes: say the offer again.
+			static const char* const k[] = { "To jak? $UNIT/szt, pasuje?", "Moja oferta dalej stoi: $UNIT za sztuke." };
+			return PBC_DEAL(g, k);
+		}
+		if (d.priceSettled && d.count > 0)
+			return CloseDeal(g);
+		if (d.count == 0)
+		{
+			static const char* const kBuy[] = { "Ok, $UNIT/szt. Ile masz? Wezme do $MAXN.", "Dobra, po $UNIT. Ile sztuk?" };
+			static const char* const kSell[] = { "Ok, $UNIT/szt. Ile chcesz? Mam $MAXN.", "Dobra, po $UNIT. Ile ci dac?" };
+			return d.side == DEAL_BOT_BUYS ? PBC_DEAL(g, kBuy) : PBC_DEAL(g, kSell);
+		}
+		static const char* const k[] = { "$N szt po $UNIT, razem $TOTAL. Pasuje?", "To $TOTAL za $N szt. Stoi?" };
+		out = PBC_DEAL(g, k);
+		return out;
+	}
+
+	// "jeszcze szukasz pt?", "co z tymi metkami?" - the bot's own public line.
+	inline std::string GenPostRef(TGen& g, const TAnalysis& a)
+	{
+		const TPublicLine* post = PostOf(g);
+		if (!post)
+			return "A, to tak sobie pisalem na wolaj xd";
+		const bool greet = a.rawIntent == I_GREETING || a.greetingToo;
+		std::string out = greet ? "Siema!" : std::string();
+		const std::string place = post->map ? std::string(GetMapWords(post->map).at) : std::string();
+		const std::string item = post->itemName.empty() ? std::string("to") : post->itemName;
+		// "siema" right after the post: the post, offered.
+		if (a.rawIntent == I_GREETING && a.intent == I_POST_REF)
+		{
+			switch (post->kind)
+			{
+				case PL_BUY:
+					Append(out, post->unitPrice > 0 ? "Piszesz w sprawie " + item + "? Kupuje po " + FormatYang(post->unitPrice) + "/szt."
+							: "Piszesz w sprawie " + item + "? Dalej kupuje.");
+					return out;
+				case PL_SELL:
+					Append(out, post->unitPrice > 0 ? "Chcesz kupic " + item + "? Oddam za " + FormatYang(post->unitPrice) + "."
+							: "Chcesz kupic " + item + "? Dalej mam.");
+					return out;
+				case PL_PARTY:
+					Append(out, place.empty() ? "Chodzi o pt? Dalej szukam, wbijasz?" : "Chodzi o pt? Szukam " + place + ", wbijasz?");
+					return out;
+				case PL_METIN:
+					Append(out, "Pisalem na wolaj, bije metki, wbijasz?");
+					return out;
+				default:
+					break;
+			}
+		}
+		switch (post->kind)
+		{
+			case PL_PARTY:
+				if (g.s.inParty && !g.s.leaderIsMe && !g.s.askerInParty)
+					Append(out, "Juz znalazlem pt, sorki.");
+				else if (g.s.askerInParty)
+					Append(out, "Przeciez juz jestesmy razem :)");
+				else
+				{
+					std::string line = place.empty() ? "Tak, dalej szukam pt. Wbijasz? Zapros mnie albo daj znac."
+							: "Tak, dalej szukam pt " + place + ". Wbijasz? Zapros mnie albo daj znac.";
+					Append(out, line);
+				}
+				break;
+			case PL_METIN:
+				Append(out, Fill(g, "Tak, bije metki $MAPIN. Wbijaj, razem szybciej."));
+				break;
+			case PL_METIN_ASK:
+			case PL_EXP_ASK:
+				if (a.mentionMap)
+					Append(out, "O, dzieki! Zajrze tam.");
+				else
+				{
+					std::string line = post->kind == PL_METIN_ASK ? "No, szukam metek" : "No, szukam spota na exp";
+					if (post->level > 0)
+						line += " na " + ToString((long long)post->level);
+					line += ". Wiesz gdzie?";
+					Append(out, line);
+				}
+				break;
+			case PL_PRICE_ASK:
+				if (a.offerYang > 0)
+					Append(out, "Dzieki, czyli " + FormatYang(a.offerYang) + ". Dobrze wiedziec.");
+				else
+					Append(out, "Pytalem ile stoi " + (post->itemName.empty() ? std::string("to") : post->itemName) + ". Wiesz?");
+				break;
+			case PL_BOSS:
+				Append(out, "Zbieramy ekipe na bossa, wbijasz?");
+				break;
+			case PL_SELL:
+				Append(out, "Tak, dalej sprzedaje " + (post->itemName.empty() ? std::string("to") : post->itemName) + ". Chcesz kupic?");
+				break;
+			case PL_BUY:
+				Append(out, "Tak, dalej kupuje " + (post->itemName.empty() ? std::string("to") : post->itemName) + ". Masz?");
+				break;
+			default:
+				Append(out, "A, to tak sobie pisalem na wolaj xd");
+				break;
+		}
+		return out;
+	}
+
+	// Whether a line names the item of a post: its words, or its alias.
+	inline bool LineNamesPostItem(const TAnalysis& a, const TPublicLine& post)
+	{
+		if (post.itemName.empty())
+			return false;
+		if (!a.object.empty() && ItemNameMatches(post.itemName.c_str(), a.object))
+			return true;
+		const std::string folded = FoldName(post.itemName.c_str());
+		std::vector<std::string> nameWords;
+		SplitWords(folded, nameWords);
+		for (size_t i = 0; i < a.tokens.words.size(); ++i)
+		{
+			const std::string& w = a.tokens.words[i];
+			if (w.size() < 4)
+				continue;
+			for (size_t k = 0; k < nameWords.size(); ++k)
+				if (nameWords[k].size() >= 4 && w.compare(0, 4, nameWords[k], 0, 4) == 0)
+					return true;
+		}
+		return IsItemAliasWord(a.tokens.norm) && ItemNameMatches(post.itemName.c_str(), a.tokens.norm);
+	}
+
+	// Before a line is answered: is it about what the bot itself said in
+	// public lately? A trade post answered becomes the trade (a sale or a
+	// purchase about that item); a party, a Metin or a question post the
+	// post's own answer; a bare "siema" soon after a post, the post offered.
+	inline void ApplyPublicContext(TGen& g, TAnalysis& b)
+	{
+		if (b.intent == I_DEAL || g.m.deal.Live(g.now) || g.s.publicLines.empty())
+			return;
+		const TConceptSet& c = b.concepts;
+		const bool tradeWords = c.Has(C_SELLYOU) || c.Has(C_BUYME) || c.Has(C_PRICEQ) || c.Has(C_STILL) ||
+				c.Has(C_AGREE) || b.tokens.Has("mam") || b.tokens.Has("kupisz") || b.tokens.Has("sprzedam") ||
+				b.offerYang > 0 || b.dealCount > 0;
+		const bool replaceable = b.intent == I_SELL || b.intent == I_BUY || b.intent == I_PRICE || b.intent == I_ITEM_OWN ||
+				b.intent == I_UNKNOWN_QUESTION || b.intent == I_UNKNOWN_STATEMENT || b.intent == I_GREETING ||
+				b.intent == I_ACK || b.intent == I_YES || b.intent == I_FOLLOW_UP || b.intent == I_EQUIPMENT ||
+				b.intent == I_INVENTORY || b.intent == I_SHOP || b.intent == I_MARKET || b.intent == I_HOW_ARE_YOU;
+		for (size_t i = 0; i < g.s.publicLines.size(); ++i)
+		{
+			const TPublicLine& p = g.s.publicLines[i];
+			if (!p.open || p.ageMin > 60 || (p.kind != PL_BUY && p.kind != PL_SELL))
+				continue;
+			const bool names = LineNamesPostItem(b, p);
+			const bool fresh = p.ageMin <= 20 && g.m.talks <= 3;
+			if (!replaceable && !names)
+				continue;
+			if (!(names || (tradeWords && fresh)))
+				continue;
+			// A person selling answers a "K>"; one buying, an "S>".
+			const bool personSells = c.Has(C_SELLYOU) || b.tokens.Has("mam") || b.tokens.Has("sprzedam") ||
+					b.intent == I_SELL;
+			const bool personBuys = c.Has(C_BUYME) || b.intent == I_BUY || b.tokens.Has("kupie") || b.tokens.Has("biore");
+			if (p.kind == PL_BUY && (personSells || !personBuys))
+			{
+				b.intent = I_SELL;
+				b.object = p.itemName;
+				b.postRef = (int)i + 1;
+				return;
+			}
+			if (p.kind == PL_SELL && (personBuys || !personSells))
+			{
+				b.intent = I_BUY;
+				b.object = p.itemName;
+				b.postRef = (int)i + 1;
+				return;
+			}
+		}
+		for (size_t i = 0; i < g.s.publicLines.size(); ++i)
+		{
+			const TPublicLine& p = g.s.publicLines[i];
+			if (p.ageMin > 30)
+				continue;
+			bool refers = c.Has(C_STILL) && (b.tokens.Has("szukasz") || b.tokens.Has("pisales") || b.tokens.Has("pisalas") ||
+					b.question);
+			switch (p.kind)
+			{
+				case PL_PARTY: refers = refers || c.Has(C_PARTY) || (c.Has(C_JOIN) && b.intent != I_SUMMON); break;
+				case PL_METIN: refers = refers || (c.Has(C_METIN) && (c.Has(C_JOIN) || c.Has(C_WHATWITH))); break;
+				case PL_METIN_ASK: refers = refers || (c.Has(C_METIN) && (c.Has(C_WHATWITH) || b.mentionMap != 0)) ||
+						(b.mentionMap != 0 && b.tokens.words.size() <= 4); break;
+				case PL_EXP_ASK: refers = refers || (c.Has(C_EXP) && c.Has(C_WHATWITH)) || (b.mentionMap != 0 && b.tokens.words.size() <= 4); break;
+				case PL_PRICE_ASK: refers = refers || (b.offerYang > 0 && b.tokens.words.size() <= 5); break;
+				case PL_BOSS: refers = refers || c.Has(C_BOSS); break;
+				default: break;
+			}
+			if (!refers)
+				continue;
+			if (p.kind == PL_SELL || p.kind == PL_BUY)
+				continue; // handled above when it was a trade
+			if (!replaceable && b.intent != I_PARTY && b.intent != I_PARTY_REQUEST && b.intent != I_METIN &&
+					b.intent != I_WHERE_METIN && b.intent != I_WHERE_EXP && b.intent != I_ACTIVITY_LOCATION)
+				continue;
+			b.intent = I_POST_REF;
+			b.postRef = (int)i + 1;
+			return;
+		}
+		// "siema" from a stranger a few minutes after a post: the post offered.
+		if (b.intent == I_GREETING && g.m.talks <= 2 && g.s.publicLines[0].ageMin <= 10 &&
+				g.s.publicLines[0].kind != PL_TALK && g.s.publicLines[0].kind != PL_EVENT &&
+				g.s.publicLines[0].kind != PL_WAR && g.s.publicLines[0].kind != PL_GEAR)
+		{
+			b.intent = I_POST_REF;
+			b.rawIntent = I_GREETING;
+			b.postRef = 1;
+		}
+	}
+
 	// -------------------------------------------------------------- dispatch
 
 	inline std::string GenerateOne(TGen& g, const TAnalysis& a)
@@ -3494,6 +4063,8 @@ namespace playerbot_conv
 			case I_EVENT: out = GenEvent(g); break;
 			case I_DROP_INFO: out = GenDropInfo(g); break;
 			case I_PING: out = GenPing(g); break;
+			case I_DEAL: out = GenDeal(g, a); break;
+			case I_POST_REF: out = GenPostRef(g, a); break;
 			case I_HOW_ARE_YOU: out = GenHowAreYou(g); break;
 			case I_HELP: out = GenHelp(g); break;
 			case I_IS_BOT: out = GenIsBot(g); break;
