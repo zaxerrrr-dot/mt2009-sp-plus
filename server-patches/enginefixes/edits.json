@@ -124,5 +124,65 @@
   "marker": "MT2009_PLUS_AUTOHUNT_PATH_V1 (hello)",
   "old": "\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntTarget %u\",\n\t\t\tf.m_pkBest ? (unsigned int) (DWORD) f.m_pkBest->GetVID() : 0);\n}\n",
   "new": "\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntTarget %u\",\n\t\t\tf.m_pkBest ? (unsigned int) (DWORD) f.m_pkBest->GetVID() : 0);\n\t// MT2009_PLUS_AUTOHUNT_PATH_V1 (hello): once a map, the ground's kind for /autohunt_path -\n\t// \"AutoHuntPath 0 hello <0 none|1 grid|2 corridors>\" (uiautohunt.py).\n\t{\n\t\tstatic std::map<DWORD, long> s_mapHelloMap;\n\t\tlong& said = s_mapHelloMap[ch->GetPlayerID()];\n\t\tif (said != ch->GetMapIndex())\n\t\t{\n\t\t\tsaid = ch->GetMapIndex();\n\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntPath 0 hello %d\",\n\t\t\t\t\tCPlayerBotManager::instance().GetHumanPathKind(ch->GetMapIndex()));\n\t\t}\n\t}\n}\n\n// MT2009_PLUS_AUTOHUNT_PATH_V1 (command): \"/autohunt_path <seq> <vid> <dx> <dy>\" - the way round\n// the walls to a monster (its VID, read here) or to a point given as an offset\n// from the character (the hunt's start), from the bots' route planner\n// (CPlayerBotManager::PlanHumanPath). Answered \"AutoHuntPath <seq> <ok|direct|\n// none|wait|off> <kind> [<dx>,<dy>;...]\", every point an offset from the\n// character as the client counts them (upstream 2.0.76's protocol).\nACMD(do_autohunt_path)\n{\n\tif (!ch || !ch->GetDesc() || !ch->GetSectree())\n\t\treturn;\n\tchar a1[64], a2[64], a3[64], a4[64];\n\tconst char* rest = two_arguments(argument, a1, sizeof(a1), a2, sizeof(a2));\n\ttwo_arguments(rest, a3, sizeof(a3), a4, sizeof(a4));\n\tunsigned int seq = 0;\n\tDWORD vid = 0;\n\tlong dx = 0, dy = 0;\n\tstr_to_number(seq, a1);\n\tstr_to_number(vid, a2);\n\tstr_to_number(dx, a3);\n\tstr_to_number(dy, a4);\n\tconst int kind = CPlayerBotManager::instance().GetHumanPathKind(ch->GetMapIndex());\n\tif (kind == 0)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntPath %u off 0\", seq);\n\t\treturn;\n\t}\n\tlong tx = ch->GetX() + dx, ty = ch->GetY() + dy;\n\tif (vid)\n\t{\n\t\tLPCHARACTER target = CHARACTER_MANAGER::instance().Find(vid);\n\t\tif (target && target->GetMapIndex() == ch->GetMapIndex())\n\t\t{\n\t\t\ttx = target->GetX();\n\t\t\tty = target->GetY();\n\t\t}\n\t}\n\tstd::vector<std::pair<long, long> > points;\n\tconst int r = CPlayerBotManager::instance().PlanHumanPath(ch, tx, ty, points);\n\tif (r == -1)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntPath %u wait %d\", seq, kind);\n\t\treturn;\n\t}\n\tif (r <= 0 || points.empty())\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntPath %u none %d\", seq, kind);\n\t\treturn;\n\t}\n\tif (points.size() <= 1)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntPath %u direct %d\", seq, kind);\n\t\treturn;\n\t}\n\t// The chat line holds about 450 characters: at most 24 points, spread evenly\n\t// over the route, the target last.\n\tstd::string line;\n\tconst size_t keep = std::min<size_t>(points.size(), 24);\n\tfor (size_t i = 0; i < keep; ++i)\n\t{\n\t\tconst size_t k = keep <= 1 ? points.size() - 1 : (i * (points.size() - 1)) / (keep - 1);\n\t\tchar one[32];\n\t\tsnprintf(one, sizeof(one), \"%s%ld,%ld\", line.empty() ? \"\" : \";\",\n\t\t\t\tpoints[k].first - ch->GetX(), points[k].second - ch->GetY());\n\t\tline += one;\n\t}\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntPath %u ok %d %s\", seq, kind, line.c_str());\n}\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (struct)",
+  "old": "\tstd::set<DWORD>\tm_setSkip;\n",
+  "new": "\tstd::set<DWORD>\tm_setSkip;\n\t// MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (struct) (Autor: blaki): the client's order, the tenth\n\t// argument: 1 Boss>Metin>Mob, 2 Boss>Mob>Metin, 3 Metin>Boss>Mob, 4 Metin>Mob>Boss,\n\t// 5 Mob>Boss>Metin, 6 Mob>Metin>Boss; 0 (or none) the ranking below.\n\tint\t\tm_iPriorityOrder = 0;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (score)",
+  "old": "\t\tint score = DISTANCE_APPROX(victim->GetX() - m_ch->GetX(), victim->GetY() - m_ch->GetY());\n\t\t// MT2009_PLUS_AUTOHUNT_CROWD_V1 (score): asked for the nearest, the\n",
+  "new": "\t\tint score = DISTANCE_APPROX(victim->GetX() - m_ch->GetX(), victim->GetY() - m_ch->GetY());\n\t\t// MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (score) (Autor: blaki): the nearest within the first\n\t\t// category of the order that has a target. 0 boss (a miniboss too with \"Bossy\"),\n\t\t// 1 Metin, 2 any other monster; the six orders are every permutation.\n\t\tif (!m_bNearest && m_iPriorityOrder >= 1 && m_iPriorityOrder <= 6)\n\t\t{\n\t\t\tstatic const int s_aiOrder[6][3] = {\n\t\t\t\t{0, 1, 2}, {0, 2, 1}, {1, 0, 2},\n\t\t\t\t{1, 2, 0}, {2, 0, 1}, {2, 1, 0}\n\t\t\t};\n\t\t\tconst int category = (boss || (miniboss && m_bBosses)) ? 0 : (victim->IsStone() ? 1 : 2);\n\t\t\tfor (int rank = 0; rank < 3; ++rank)\n\t\t\t\tif (s_aiOrder[m_iPriorityOrder - 1][rank] == category)\n\t\t\t\t{\n\t\t\t\t\tscore += rank * 1000000;\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\tif (score < m_iBestScore)\n\t\t\t{\n\t\t\t\tm_iBestScore = score;\n\t\t\t\tm_pkBest = victim;\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\t\t// MT2009_PLUS_AUTOHUNT_CROWD_V1 (score): asked for the nearest, the\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (declare)",
+  "old": "\tchar skipList[512] = \"\"; // MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (declare)\n",
+  "new": "\tchar skipList[512] = \"\"; // MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (declare)\n\tchar priorityArg[64] = \"\"; // MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (declare) (Autor: blaki)\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (argument)",
+  "old": "\t\t// MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (argument): \"123,456,...\" ninth.\n\t\tone_argument(more, skipList, sizeof(skipList));\n",
+  "new": "\t\t// MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (argument): \"123,456,...\" ninth.\n\t\tmore = one_argument(more, skipList, sizeof(skipList));\n\t\t// MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (argument) (Autor: blaki): the order tenth; a client\n\t\t// that sends it sends the ninth too (\"0\" for no skips). Fewer arguments: as before.\n\t\tone_argument(more, priorityArg, sizeof(priorityArg));\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (fill)",
+  "old": "\tf.m_bNearest = nearest == 1;\n\t// MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (fill)\n",
+  "new": "\tf.m_bNearest = nearest == 1;\n\t// MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (fill) (Autor: blaki): 0 the nearest plain, 1-6 an order.\n\tif (categories && *priorityArg)\n\t{\n\t\tint order = 0;\n\t\tstr_to_number(order, priorityArg);\n\t\torder = MAX(0, MIN(order, 6));\n\t\tif (order == 0)\n\t\t\tf.m_bNearest = true;\n\t\telse\n\t\t\tf.m_iPriorityOrder = order;\n\t}\n\t// MT2009_PLUS_AUTOHUNT_SKIPLIST_V1 (fill)\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_MOUNT_V1 (command)",
+  "old": "ACMD(do_autohunt_target)\n{\n",
+  "new": "// MT2009_PLUS_AUTOHUNT_MOUNT_V1 (command) (Autor: blaki): Auto Lowy gets off and back on a\n// mount that holds the hunter in place (uiautohunt.py, MOUNT_STUCK_SECONDS). /ride is a\n// toggle, and a retry after a late success would get the rider off again: \"off\" and \"on\"\n// do something only when needed, and every call answers \"AutoHuntMount <action> <mounted>\".\n// \"on\" brings back only the summoned horse or the worn mount seal, never a ride item from\n// the bag.\nACMD(do_autohunt_mount)\n{\n\tif (!ch || ch->IsDead() || !ch->GetSectree())\n\t\treturn;\n\tchar action[32];\n\tone_argument(argument, action, sizeof(action));\n\tif (strcmp(action, \"off\") && strcmp(action, \"on\"))\n\t\treturn;\n\tconst bool mounted = ch->IsHorseRiding() || ch->GetMountVnum() != 0;\n\tif (!strcmp(action, \"off\") && mounted)\n\t\tdo_ride(ch, \"\", 0, 0);\n\telse if (!strcmp(action, \"on\") && !mounted)\n\t{\n\t\tbool available = ch->GetHorse() != NULL;\n#ifdef ENABLE_MOUNT_COSTUME_SYSTEM\n\t\tavailable = available || ch->GetWear(WEAR_COSTUME_MOUNT) != NULL;\n#endif\n\t\tif (available)\n\t\t\tdo_ride(ch, \"\", 0, 0);\n\t}\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntMount %s %d\", action,\n\t\t\t(ch->IsHorseRiding() || ch->GetMountVnum() != 0) ? 1 : 0);\n}\n\nACMD(do_autohunt_target)\n{\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_BLOCKED_V1 (segment)",
+  "old": "ACMD(do_autohunt_target)\n{\n",
+  "new": "// MT2009_PLUS_AUTOHUNT_BLOCKED_V1 (segment) (Autor: blaki): whether a wall, a rock or a\n// building (ATTR_BLOCK | ATTR_OBJECT, the map's own 50-unit grid) stands on the straight\n// line from the hunter to its target - the target stays selectable, the client asks\n// /autohunt_path for the way round. The two ends are not tested: a monster may stand on\n// the edge of a blocked cell.\nstatic bool AutoHuntSegmentBlocked(long lMapIndex, long sx, long sy, long tx, long ty)\n{\n\tconst long dx = tx - sx;\n\tconst long dy = ty - sy;\n\tconst long length = DISTANCE_APPROX(dx, dy);\n\tif (length <= 100)\n\t\treturn false;\n\tfor (long step = 50; step <= length - 50; step += 50)\n\t{\n\t\tconst long x = sx + dx * step / length;\n\t\tconst long y = sy + dy * step / length;\n\t\tif (!SECTREE_MANAGER::instance().IsMovablePosition(lMapIndex, x, y))\n\t\t\treturn true;\n\t}\n\treturn false;\n}\n\nACMD(do_autohunt_target)\n{\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_BLOCKED_V1 (reply)",
+  "old": "\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntTarget %u\",\n\t\t\tf.m_pkBest ? (unsigned int) (DWORD) f.m_pkBest->GetVID() : 0);\n\t// MT2009_PLUS_AUTOHUNT_PATH_V1 (hello)",
+  "new": "\t// MT2009_PLUS_AUTOHUNT_BLOCKED_V1 (reply) (Autor: blaki): \"AutoHuntTarget <vid> <blocked>\";\n\t// a client before it reads the VID alone.\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntTarget %u %d\",\n\t\t\tf.m_pkBest ? (unsigned int) (DWORD) f.m_pkBest->GetVID() : 0,\n\t\t\t(f.m_pkBest && AutoHuntSegmentBlocked(ch->GetMapIndex(), ch->GetX(), ch->GetY(),\n\t\t\t\t\tf.m_pkBest->GetX(), f.m_pkBest->GetY())) ? 1 : 0);\n\t// MT2009_PLUS_AUTOHUNT_PATH_V1 (hello)"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_MOUNT_V1 (declare)",
+  "old": "ACMD(do_autohunt_path);\t// MT2009_PLUS_AUTOHUNT_PATH_V1 (declare)\n",
+  "new": "ACMD(do_autohunt_path);\t// MT2009_PLUS_AUTOHUNT_PATH_V1 (declare)\nACMD(do_autohunt_mount);\t// MT2009_PLUS_AUTOHUNT_MOUNT_V1 (declare) (Autor: blaki)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_MOUNT_V1 (table)",
+  "old": "\t{ \"autohunt_target\",\tdo_autohunt_target,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"autohunt_target\",\tdo_autohunt_target,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"autohunt_mount\",\tdo_autohunt_mount,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_AUTOHUNT_MOUNT_V1 (table) (Autor: blaki)\n"
  }
 ]

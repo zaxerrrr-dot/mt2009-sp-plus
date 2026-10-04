@@ -1059,9 +1059,17 @@ class GameWindow(ui.ScriptWindow):
 		uisidekick.OnServerShopQuote(*args)
 
 
+	# MT2009_PLUS_AUTOHUNT_BLOCKED_V1 (Autor: blaki): "AutoHuntTarget <vid>
+	# <blocked>" - a server before it sends the VID alone, read as not blocked.
 	def __AutoHuntTarget(self, vid="0", *rest):
 		import uiautohunt
-		uiautohunt.OnServerTarget(vid)
+		uiautohunt.OnServerTarget(vid, rest[0] if rest else "0")
+
+	# MT2009_PLUS_AUTOHUNT_MOUNT_V1 (Autor: blaki): "AutoHuntMount <on|off>
+	# <mounted>", the answer to /autohunt_mount.
+	def __AutoHuntMount(self, action="", mounted="0", *rest):
+		import uiautohunt
+		uiautohunt.OnServerMount(action, mounted)
 
 	def __AutoHuntLoot(self, vid="0", x="0", y="0", *rest):
 		import uiautohunt
@@ -3127,6 +3135,7 @@ class GameWindow(ui.ScriptWindow):
 			"PlayerBotStatus"				: self.__PlayerBotStatus,
 			"Top1Badge"							: self.__OnTop1Badge,
 			"AutoHuntTarget"				: self.__AutoHuntTarget,
+			"AutoHuntMount"					: self.__AutoHuntMount,
 			"AutoHuntLoot"					: self.__AutoHuntLoot,
 			"AutoHuntOff"					: self.__AutoHuntOff,
 			"AutoHuntPath"					: self.__AutoHuntPath,

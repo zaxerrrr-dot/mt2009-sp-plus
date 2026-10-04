@@ -28,13 +28,22 @@
 #
 # The client cannot list the monsters or the items round its character, so
 # it asks the server:
-#   "/autohunt_target <range> <stones> <dx> <dy> <mobs> <bosses> [<skip> [<nearest> [<skips>]]]"
-#     -> "AutoHuntTarget <vid>"
+#   "/autohunt_target <range> <stones> <dx> <dy> <mobs> <bosses> [<skip> [<nearest> [<skips> [<order>]]]]"
+#     -> "AutoHuntTarget <vid> [<blocked>]"
 # (<nearest> 1: the nearest monster plain, for a hunter boxed in - see
 # COMBAT_STUCK_SECONDS; MT2009_PLUS_AUTOHUNT_CROWD_V1 in do_autohunt_target, and a server
 # without it reads seven arguments and ignores the eighth. <skips>: the
 # targets left for a minute, "123,456", at most TARGET_BLOCK_CAPACITY -
-# apply_auto_hunt_skip_list; a server before it ignores the ninth.)
+# apply_auto_hunt_skip_list; a server before it ignores the ninth.
+# <order>: MT2009_PLUS_AUTOHUNT_PRIORITY_V1, the "Priorytet" of the settings
+# window, 0 the nearest plain, 1-6 the orders of PRIORITY_LABELS; the ninth
+# is then always sent, "0" for no skips. <blocked>: 1 when a wall or a rock
+# stands on the straight line to the target - MT2009_PLUS_AUTOHUNT_BLOCKED_V1,
+# the way round is then asked at once by /autohunt_path below; a server
+# before it sends the VID alone.)
+#   "/autohunt_mount <off|on>" -> "AutoHuntMount <off|on> <mounted>"
+# (MT2009_PLUS_AUTOHUNT_MOUNT_V1: off and back on a mount that holds the
+# hunter in place; both idempotent - a retry never undoes a late success.)
 #   "/autohunt_loot <range> <kinds> <dx> <dy>" -> "AutoHuntLoot <vid> <dx> <dy>"
 #   "/autohunt_path <seq> <vid> <dx> <dy>"
 #     -> "AutoHuntPath <seq> <ok|direct|none|wait|off> <kind> [<dx>,<dy>;...]"
@@ -183,11 +192,9 @@ ARCHER_REACH = 2400
 STOP_SHORT_SHARE = 0.6
 ANCHOR_LEASH = 600
 STUCK_SECONDS = 8.0
-# While the hunter walks after a target beyond its reach, the server's pick
-# is taken only when it stands this much nearer: the nearest monster is hit
-# rather than one chased across the map, and two monsters at about the same
-# distance do not turn the hunter back and forth (Buby, 23 September).
-CHASE_SWITCH_MARGIN = 300
+# CHASE_SWITCH_MARGIN (Buby, 23 September) is gone: the target modes
+# "Najblizszy" and "Fokus" (MT2009_PLUS_AUTOHUNT_PRIORITY_V1) say when the
+# server's pick is taken.
 STUCK_PAUSE = 2.0
 # A walk that still gains ground is not stuck: the target's and the drop's
 # clocks start again at every WALK_PROGRESS units closer. Counted from the
@@ -285,6 +292,50 @@ ESCAPE_TARGET_INTERVAL = 0.8
 RETURN_MOUNTED_TRAIL_REACH = 150.0
 RETURN_MOUNTED_STUCK_SECONDS = 2.0
 
+# MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): the target's mode and the
+# order of what is attacked first, both saved for the character (the settings
+# window, "Dodatkowe ustawienia"). "Najblizszy" asks the server every
+# NEAREST_REQUEST_INTERVAL and takes a different VID it names at once;
+# "Fokus" keeps its live target (the old CHASE_SWITCH_MARGIN is gone) and
+# lets it go - for STUCK_SKIP_SECONDS - when its health has not fallen for
+# FOCUS_IDLE_SECONDS while in reach, asking for the nearest one plain for
+# FOCUS_FALLBACK_SECONDS. The order: the server takes the nearest within the
+# first category that has a target (do_autohunt_target, the tenth argument).
+TARGET_MODE_NEAREST = 0
+TARGET_MODE_FOCUS = 1
+NEAREST_REQUEST_INTERVAL = 0.25
+FOCUS_IDLE_SECONDS = 3.0
+FOCUS_FALLBACK_SECONDS = 1.0
+PRIORITY_LABELS = (
+    T('Bez priorytetu (najbli\xbfszy)', 'No priority (nearest)'),
+    T('Bossy > Metiny > Moby', 'Bosses > Metins > Monsters'),
+    T('Bossy > Moby > Metiny', 'Bosses > Monsters > Metins'),
+    T('Metiny > Bossy > Moby', 'Metins > Bosses > Monsters'),
+    T('Metiny > Moby > Bossy', 'Metins > Monsters > Bosses'),
+    T('Moby > Bossy > Metiny', 'Monsters > Bosses > Metins'),
+    T('Moby > Metiny > Bossy', 'Monsters > Metins > Bosses'),
+)
+# The server reads a command line of 256 characters (interpret_command): the
+# skip list is cut so the order after it always arrives.
+TARGET_COMMAND_MAX = 240
+
+# MT2009_PLUS_AUTOHUNT_MOUNT_V1 (Autor: blaki): a mounted hunter that walks
+# (to a target, a drop or back to its start) and gains no
+# COMBAT_MOVE_THRESHOLD units in MOUNT_STUCK_SECONDS stops, gets off
+# ("/autohunt_mount off"), waits MOUNT_RECOVERY_DELAY at least for the
+# server's word and gets on again ("/autohunt_mount on", every
+# MOUNT_RECOVERY_RETRY until the server and the client both say mounted).
+# No remount in MOUNT_RECOVERY_REMOUNT_TIMEOUT stops the hunt with a word in
+# the chat; one attempt in MOUNT_RECOVERY_COOLDOWN. A walk counts while a
+# step was ordered within MOUNT_WALK_INTENT_SECONDS; a fight in place never.
+MOUNT_STUCK_SECONDS = 3.0
+MOUNT_WALK_INTENT_SECONDS = 1.5
+MOUNT_RECOVERY_DELAY = 1.2
+MOUNT_RECOVERY_RETRY = 1.5
+MOUNT_RECOVERY_DISMOUNT_TIMEOUT = 8.0
+MOUNT_RECOVERY_REMOUNT_TIMEOUT = 15.0
+MOUNT_RECOVERY_COOLDOWN = 12.0
+
 # A skill cast at an enemy goes only at the monster the hunter is fighting:
 # alive, in the client's own hand (player.GetTargetVID) and within reach.
 # Anything less the client settles by itself, and badly for a character
@@ -338,6 +389,9 @@ DEFAULTS = [
     # The bojowiec (the rider section below); a file without the key, every
     # file before it, reads it off.
     ('rider', 0),
+    # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): a file without them
+    # reads "Fokus" and no priority.
+    ('target_mode', TARGET_MODE_FOCUS), ('priority_order', 0),
 ]
 for i in xrange(USE_ITEM_SLOTS):
     DEFAULTS.append(('item%d_vnum' % i, 0))
@@ -629,6 +683,10 @@ def WlWyl(value):
 # MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1
 def OnOff(value):
     return T('W\xb3\xb9czone', 'On') if value else T('Wy\xb3\xb9czone', 'Off')
+
+# MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki)
+def TargetModeText(mode):
+    return T('Najbli\xbfszy', 'Nearest') if mode == TARGET_MODE_NEAREST else T('Fokus', 'Focus')
 
 
 # ---------------------------------------------------------------------------
@@ -954,6 +1012,12 @@ class Hunter(object):
         """The target's health from the server (game.py "TargetHP"). At 0
         the monster is dead, whatever the exe can tell: this one has no
         player.IsTargetDead, and a corpse stays two or three seconds."""
+        # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): a fall of the
+        # target's health is "Fokus"'s proof that the blows land.
+        if vid and vid == self.targetVid:
+            if self.targetLastHP is None or hp < self.targetLastHP:
+                self.focusLastProgress = clientclock.Now()
+            self.targetLastHP = hp
         if hp <= 0 and vid:
             if not hasattr(self, 'deadVids'):
                 self.deadVids = {}
@@ -971,6 +1035,21 @@ class Hunter(object):
 
     def ResetState(self):
         self.targetVid = 0
+        # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki)
+        self.targetLastHP = None
+        self.focusLastProgress = 0.0
+        self.forceNearestUntil = 0.0
+        # MT2009_PLUS_AUTOHUNT_MOUNT_V1 (Autor: blaki): a recovery under way
+        # outlives a new start (it ends by itself).
+        self.mountRecoveryPhase = getattr(self, 'mountRecoveryPhase', 0)
+        if not self.mountRecoveryPhase:
+            self.mountRecoveryAt = 0.0
+            self.mountRecoveryStarted = 0.0
+            self.mountRecoveryRemountStarted = 0.0
+            self.mountRecoveryOffConfirmed = False
+            self.mountRecoveryOnConfirmed = False
+        self.mountRecoveryCooldownUntil = getattr(self, 'mountRecoveryCooldownUntil', 0.0)
+        self.ResetMountWatch()
         self.skipVid = 0
         self.skipUntil = 0.0
         # The target that boxed the hunter in, on a slot of its own so the
@@ -1066,7 +1145,9 @@ class Hunter(object):
             self.ResumeAfterAutoLogin()
         if self.pendingSession is not None:
             self.OnGameSession(self.pendingSession)
-        return self.running
+        # MT2009_PLUS_AUTOHUNT_MOUNT_V1: a remount begun is finished even
+        # when the hunt is stopped while the character stands on foot.
+        return self.running or self.mountRecoveryPhase != 0
 
     def OnGameSession(self, reconnected):
         """The first frame of a game phase with a named character. Back after
@@ -1104,8 +1185,15 @@ class Hunter(object):
         # restart) on the way to another core (warpsafe.py).
         import warpsafe
         if not warpsafe.InGame():
+            self.mountRecoveryPhase = 0
             return
         now = clientclock.Now()
+
+        # MT2009_PLUS_AUTOHUNT_MOUNT_V1: the remount takes the whole frame.
+        if self.HandleMountRecovery(now):
+            return
+        if not self.running:
+            return
 
         if player.GetStatus(player.HP) <= 0:
             
@@ -1137,6 +1225,8 @@ class Hunter(object):
         
         if not self.RiderFrame(now):
             self.CheckPathPending(now)
+            if self.WatchMountStuck(now):
+                return
             if not self.EscapeFrame(now):
                 self.RememberWalkPosition()
                 self.CastSkills(now)
@@ -1239,8 +1329,10 @@ class Hunter(object):
         chat.AppendChat(chat.CHAT_TYPE_INFO, T('Auto \xa3owy s\xb9 wy\xb3\xb9czone na tym serwerze (ustawienia \x9cwiata w launcherze).',
             'Auto Hunt is switched off on this server (the world settings in the launcher).'))
 
-    def OnServerTarget(self, value):
+    def OnServerTarget(self, value, blocked='0'):
         if not self.running or not self.config.get('attack', 1):
+            return
+        if self.mountRecoveryPhase:
             return
         if self.RiderActive():
             self.RiderOnServerTarget(value)
@@ -1282,15 +1374,13 @@ class Hunter(object):
         if self.IsTargetBlocked(new_vid, now):
             return
 
+        # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): "Fokus" keeps a
+        # live target whatever the server names; "Najblizszy" takes the new
+        # one at once.
         if self.targetVid != 0 and new_vid != self.targetVid:
-            distance = player.GetCharacterDistance(self.targetVid)
-            if distance >= 0:
-                reach_limit = self.Reach() + 200 
-                if distance > reach_limit:
-                    # Chasing: a clearly nearer monster is hit instead.
-                    new_distance = player.GetCharacterDistance(new_vid)
-                    if new_distance < 0 or new_distance + CHASE_SWITCH_MARGIN > distance:
-                        return
+            if self.TargetMode() == TARGET_MODE_FOCUS:
+                if player.GetCharacterDistance(self.targetVid) >= 0 and not self.IsKnownDead(self.targetVid):
+                    return
 
         if new_vid != self.targetVid:
             self.returning = False
@@ -1310,11 +1400,165 @@ class Hunter(object):
                 self.ResetChaseMovement()
             self.blockedWaiting = False
             self.targetVid = new_vid
+            self.targetLastHP = None
+            self.focusLastProgress = now
+            self.forceNearestUntil = 0.0
             self.approachSince = 0.0
             self.nextMove = 0.0
             self.nextFace = 0.0
             self.targetMissFrames = 0
             self.targetSetSince = 0.0
+        # MT2009_PLUS_AUTOHUNT_BLOCKED_V1 (Autor: blaki): a wall or a rock on
+        # the straight line - the way round is asked at once from the
+        # existing /autohunt_path (not upstream's /autohunt_route).
+        if str(blocked) == '1' and new_vid == self.targetVid:
+            self.AskBlockedPath(now, new_vid)
+
+    # MT2009_PLUS_AUTOHUNT_BLOCKED_V1 (Autor: blaki)
+    def AskBlockedPath(self, now, vid):
+        if self.pathPoints and self.pathPurpose == 'target' and self.pathVid == vid:
+            return False
+        if not self.PathAskable(vid, now):
+            return False
+        distance = player.GetCharacterDistance(vid)
+        if 0 <= distance <= self.Reach():
+            return False
+        (tx, ty, tz) = chr.GetPixelPosition(vid)
+        return self.AskPath(now, 'target', vid, tx, ty)
+
+    # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki)
+    def TargetMode(self):
+        if self.config.get('target_mode', TARGET_MODE_FOCUS) == TARGET_MODE_NEAREST:
+            return TARGET_MODE_NEAREST
+        return TARGET_MODE_FOCUS
+
+    def PriorityOrder(self):
+        return max(0, min(len(PRIORITY_LABELS) - 1, self.config.get('priority_order', 0)))
+
+    def FocusIdle(self, now, vid):
+        """The target in reach whose health has not fallen for
+        FOCUS_IDLE_SECONDS: let go for the minute, the nearest asked for."""
+        if now - self.focusLastProgress < FOCUS_IDLE_SECONDS:
+            return False
+        self.ReleaseAttack()
+        if player.GetTargetVID() != 0:
+            player.ClearTarget()
+        self.BlockTarget(vid, now)
+        self.skipVid = vid
+        self.skipUntil = now + STUCK_SKIP_SECONDS
+        self.targetVid = 0
+        self.targetLastHP = None
+        self.approachSince = 0.0
+        self.targetSetSince = 0.0
+        self.targetMissFrames = 0
+        self.forceNearestUntil = now + FOCUS_FALLBACK_SECONDS
+        self.nextRequest = 0.0
+        return True
+
+    # MT2009_PLUS_AUTOHUNT_MOUNT_V1 (Autor: blaki) ---------------------------
+    def ResetMountWatch(self):
+        self.mountWatchPosition = None
+        self.mountWatchSince = 0.0
+        self.walkIntentAt = 0.0
+
+    def OnServerMount(self, action, mounted):
+        try:
+            mounted = int(mounted) != 0
+        except (TypeError, ValueError):
+            return
+        if action == 'off' and self.mountRecoveryPhase == 1 and not mounted:
+            self.mountRecoveryOffConfirmed = True
+        elif action == 'on' and self.mountRecoveryPhase == 2:
+            self.mountRecoveryOnConfirmed = mounted
+
+    def WatchMountStuck(self, now):
+        """A mounted walk that gains nothing for MOUNT_STUCK_SECONDS starts
+        the remount; True when it did (the frame is taken)."""
+        if (not IsMounted() or self.riderPhase != RIDE or
+                now - self.walkIntentAt > MOUNT_WALK_INTENT_SECONDS):
+            self.mountWatchPosition = None
+            return False
+        (px, py, pz) = player.GetMainCharacterPosition()
+        if (self.mountWatchPosition is None or
+                (px - self.mountWatchPosition[0]) ** 2 +
+                (py - self.mountWatchPosition[1]) ** 2 >= COMBAT_MOVE_THRESHOLD ** 2):
+            self.mountWatchPosition = (px, py)
+            self.mountWatchSince = now
+            return False
+        if now - self.mountWatchSince < MOUNT_STUCK_SECONDS:
+            return False
+        return self.TryMountRecovery(now)
+
+    def TryMountRecovery(self, now):
+        if (self.mountRecoveryPhase or now < self.mountRecoveryCooldownUntil or
+                not IsMounted()):
+            return False
+        self.ReleaseAttack()
+        (px, py, pz) = player.GetMainCharacterPosition()
+        self.WalkTo(px, py)
+        self.ResetChaseMovement()
+        self.ResetMountWatch()
+        self.nextMove = 0.0
+        self.mountRecoveryPhase = 1
+        self.mountRecoveryStarted = now
+        self.mountRecoveryAt = now + MOUNT_RECOVERY_RETRY
+        self.mountRecoveryOffConfirmed = False
+        self.mountRecoveryOnConfirmed = False
+        self.mountRecoveryCooldownUntil = now + MOUNT_RECOVERY_COOLDOWN
+        chat.AppendChat(chat.CHAT_TYPE_INFO, T('Auto \xa3owy: wierzchowiec utkn\xb9\xb3 - zsiadam i wsiadam ponownie.',
+            'Auto Hunt: the mount is stuck - getting off and on again.'))
+        self.Command('/autohunt_mount off', now)
+        return True
+
+    def HandleMountRecovery(self, now):
+        if not self.mountRecoveryPhase:
+            return False
+        if player.GetStatus(player.HP) <= 0:
+            self.mountRecoveryPhase = 0
+            return False
+        if self.mountRecoveryPhase == 1:
+            if (self.mountRecoveryOffConfirmed and
+                    now - self.mountRecoveryStarted >= MOUNT_RECOVERY_DELAY):
+                self.mountRecoveryPhase = 2
+                self.mountRecoveryRemountStarted = now
+                self.mountRecoveryAt = now + MOUNT_RECOVERY_RETRY
+                self.Command('/autohunt_mount on', now)
+                return True
+            if now - self.mountRecoveryStarted >= MOUNT_RECOVERY_DISMOUNT_TIMEOUT:
+                # Still in the saddle: nothing to restore. Off without the
+                # server's word: go on to the remount.
+                if IsMounted():
+                    self.mountRecoveryPhase = 0
+                    return False
+                self.mountRecoveryOffConfirmed = True
+                return True
+            if now >= self.mountRecoveryAt and not self.mountRecoveryOffConfirmed:
+                self.Command('/autohunt_mount off', now)
+                self.mountRecoveryAt = now + MOUNT_RECOVERY_RETRY
+            return True
+        if self.mountRecoveryOnConfirmed and IsMounted():
+            self.mountRecoveryPhase = 0
+            # The target is kept; a way round it is asked again.
+            self.ResetChaseMovement()
+            self.ResetMountWatch()
+            if self.pathPoints:
+                self.ResetPath()
+            self.pathTriedAt.pop(self.targetVid, None)
+            self.nextMove = 0.0
+            self.nextRequest = 0.0
+            return False
+        if now - self.mountRecoveryRemountStarted >= MOUNT_RECOVERY_REMOUNT_TIMEOUT:
+            self.mountRecoveryPhase = 0
+            wasRunning = self.running
+            self.Stop(quiet=True, remount=False)
+            chat.AppendChat(chat.CHAT_TYPE_INFO, T('Auto \xa3owy: nie uda\xb3o si\xea ponownie wsi\xb9\x9c\xe6 na wierzchowca po utkni\xeaciu - \xb3owy zatrzymane.' if wasRunning else 'Auto \xa3owy: nie uda\xb3o si\xea ponownie wsi\xb9\x9c\xe6 na wierzchowca po utkni\xeaciu.',
+                'Auto Hunt: could not get back on the mount after it got stuck - hunting stopped.'))
+            return True
+        if now >= self.mountRecoveryAt:
+            # Idempotent on the server: a late success stays mounted.
+            self.Command('/autohunt_mount on', now)
+            self.mountRecoveryAt = now + MOUNT_RECOVERY_RETRY
+        return True
 
     def OnServerLoot(self, vid, x, y):
         if not self.running or clientclock.Now() < self.lootPausedUntil or not LootMask(self.config):
@@ -1413,7 +1657,12 @@ class Hunter(object):
             self.config['range'], LootCoarseMask(self.config), dx, dy, mask), now)
 
     def RequestTarget(self, now):
-        self.nextRequest = now + TARGET_REQUEST_INTERVAL
+        # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): "Najblizszy" asks
+        # four times a second.
+        if self.TargetMode() == TARGET_MODE_NEAREST:
+            self.nextRequest = now + NEAREST_REQUEST_INTERVAL
+        else:
+            self.nextRequest = now + TARGET_REQUEST_INTERVAL
         self.lastTargetRequestAt = now
         (dx, dy) = self.AnchorOffset()
         command = '/autohunt_target %d %d %d %d %d %d' % (
@@ -1431,12 +1680,21 @@ class Hunter(object):
             skip = 0
         
         left = [vid for vid in self.BlockedTargetVids(now) if vid != skip]
-        if left:
-            command += ' %d %d %s' % (skip, 1 if boxed else 0, ','.join(str(vid) for vid in left))
-        elif boxed:
-            command += ' %d 1' % skip
-        elif skip:
-            command += ' %d' % skip
+        # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): every argument up
+        # to the tenth, the order; the skip list ("0" for none) cut to what
+        # the server's line holds. Boxed in, or "Fokus" falling back, the
+        # nearest plain.
+        nearest = boxed or now < self.forceNearestUntil
+        order = 0 if nearest else self.PriorityOrder()
+        command += ' %d %d' % (skip, 1 if nearest else 0)
+        tail = ' %d' % order
+        skips = ''
+        for vid in left:
+            piece = (',' if skips else '') + str(vid)
+            if len(command) + 1 + len(skips) + len(piece) + len(tail) > TARGET_COMMAND_MAX:
+                break
+            skips += piece
+        command += ' ' + (skips or '0') + tail
         self.Command(command, now)
 
     def ResetChaseMovement(self):
@@ -2048,6 +2306,8 @@ class Hunter(object):
 
         reach = self.Reach()
         if distance > reach:
+            # MT2009_PLUS_AUTOHUNT_PRIORITY_V1: "Fokus" measures in reach only.
+            self.focusLastProgress = now
             self.targetSetSince = 0.0
             self.ReleaseAttack()
             pending = self.pathPending
@@ -2096,6 +2356,10 @@ class Hunter(object):
         
         self.targetBlockAttempts.pop(vid, None)
         self.approachSince = 0.0
+        # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): no fall of its
+        # health for FOCUS_IDLE_SECONDS in reach - another target.
+        if self.FocusIdle(now, vid):
+            return
         if now >= self.nextFace:
             self.nextFace = now + FACE_INTERVAL
             self.Face(vid)
@@ -2404,6 +2668,11 @@ class Hunter(object):
                 self.returnStillSince = now
 
     def WalkTo(self, x, y):
+        # MT2009_PLUS_AUTOHUNT_MOUNT_V1: a step ordered somewhere (not a stop
+        # where it stands) is a walk WatchMountStuck measures.
+        (px, py, pz) = player.GetMainCharacterPosition()
+        if (px - x) ** 2 + (py - y) ** 2 >= (2 * COMBAT_MOVE_THRESHOLD) ** 2:
+            self.walkIntentAt = clientclock.Now()
         chr.MoveToDestPosition(player.GetMainCharacterIndex(), int(x), int(y))
 
     def Face(self, vid):
@@ -3340,6 +3609,8 @@ class Hunter(object):
         self.lootWindow.Refresh()
         self.lootWindow.Show()
         self.lootWindow.SetTop()
+        if self.mainWindow:
+            self.mainWindow.RefreshSettingsButton()
 
     def ToggleWindow(self):
         self.EnsureLoaded()
@@ -3355,22 +3626,24 @@ class Hunter(object):
             self.CreateWindows()
             is_show = False
 
+        # MT2009_PLUS_AUTOHUNT_WINDOWS_V1 (Autor: blaki): K opens the fight
+        # window alone; its "Dodatkowe ustawienia" row opens the settings
+        # window, and closing K closes both.
         if is_show:
             self.mainWindow.Close()
-            self.lootWindow.Close()
         else:
             self.mainWindow.Refresh()
             self.lootWindow.Refresh()
             self.mainWindow.Show()
-            self.lootWindow.Show()
             self.mainWindow.SetTop()
-            self.lootWindow.SetTop()
+            self.mainWindow.RefreshSettingsButton()
             self.SaveGlobalConfig()
 
 
 class AutoHuntWindow(ui.BoardWithTitleBar):
     WIDTH = 300
-    HEIGHT = 555
+    # MT2009_PLUS_AUTOHUNT_WINDOWS_V1: 25 more for "Dodatkowe ustawienia".
+    HEIGHT = 580
     GRID_ROWS = 4
     SLOT_STEP = 40
     SLOTS_PER_ROW = 6
@@ -3524,6 +3797,35 @@ class AutoHuntWindow(ui.BoardWithTitleBar):
         self.startButton = self._Btn(self, 'large', bx, y, 'Start', self.OnStart)
         bx += bw + gap
         self.stopButton = self._Btn(self, 'large', bx, y, T('Zatrzymaj', 'Stop'), self.OnStop)
+
+        # MT2009_PLUS_AUTOHUNT_WINDOWS_V1 (Autor: blaki): the settings window
+        # (pick-up, targets, mode, priority) opens only from here.
+        self._Label(self, 22, y + 29, T('Dodatkowe ustawienia', 'More settings'))
+        self.settingsButton = self._Btn(self, 'large', 202, y + 25, T('Otw\xf3rz', 'Open'),
+            self.ToggleExtraWindow)
+
+    # MT2009_PLUS_AUTOHUNT_WINDOWS_V1 (Autor: blaki)
+    def RefreshSettingsButton(self):
+        loot = self.hunter.lootWindow if self.hunter else None
+        try:
+            shown = bool(loot and loot.IsShow())
+        except RuntimeError:
+            shown = False
+        self.settingsButton.SetText(T('Zamknij', 'Close') if shown else T('Otw\xf3rz', 'Open'))
+
+    def ToggleExtraWindow(self):
+        loot = self.hunter.lootWindow if self.hunter else None
+        if not loot:
+            return
+        if loot.IsShow():
+            loot.Close()
+        else:
+            self.ReadEdits()
+            loot.Refresh()
+            loot.Show()
+            loot.SetTop()
+        self.RefreshSettingsButton()
+        self.hunter.SaveGlobalConfig()
 
     def _Board(self, x, y, w, h):
         board = ui.ThinBoard()
@@ -3749,6 +4051,9 @@ class AutoHuntWindow(ui.BoardWithTitleBar):
         if hunter.pathPoints:
             self.statusText.SetText(T('Id\xea drog\xb9 dooko\xb3a', 'Taking the way round'))
             return
+        if hunter.mountRecoveryPhase:
+            self.statusText.SetText(T('Wierzchowiec utkn\xb9\xb3 - wsiadam ponownie', 'Mount stuck - getting on again'))
+            return
         phase = hunter.riderPhase
         if phase in (DISMOUNT, TO_FOOT):
             self.statusText.SetText(T('Zsiadam po skille', 'Dismounting for skills') if hunter.mountedSkillCycle else T('Bojowiec: zsiadam po buffy', 'Rider: getting off for buffs'))
@@ -3861,6 +4166,9 @@ class AutoHuntWindow(ui.BoardWithTitleBar):
         self.ReadEdits()
         if self.hunter:
             self.hunter.SaveGlobalConfig()
+            # MT2009_PLUS_AUTOHUNT_WINDOWS_V1: closing K closes both.
+            if self.hunter.lootWindow:
+                self.hunter.lootWindow.Close()
         self.Hide()
 
     def OnPressEscapeKey(self):
@@ -3873,6 +4181,7 @@ class AutoHuntWindow(ui.BoardWithTitleBar):
         self.widgets = []
         self.edits = {}
         self.toggles = {}
+        self.settingsButton = None
 
 
 # MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1: "Autopodnoszenie" has a row of its
@@ -3885,7 +4194,9 @@ LOOT_PICKUP_ROW_H = 22
 
 class AutoHuntLootWindow(ui.BoardWithTitleBar):
     WIDTH = 300
-    HEIGHT = 179 + LOOT_ROWS * 22 + LOOT_PICKUP_ROW_H
+    # MT2009_PLUS_AUTOHUNT_PRIORITY_V1: 88 more for the target's mode and
+    # the priority.
+    HEIGHT = 267 + LOOT_ROWS * 22 + LOOT_PICKUP_ROW_H
 
     def __init__(self, hunter):
         ui.BoardWithTitleBar.__init__(self)
@@ -3896,6 +4207,9 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         self.filterBtn = None
         self.bonusMinBtn = None
         self.pickupBtn = None
+        self.targetModeBtn = None
+        self.priorityBtn = None
+        self.priorityText = None
         self.AddFlag('movable')
         self.AddFlag('float')
         self.SetSize(self.WIDTH, self.HEIGHT)
@@ -3934,13 +4248,24 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         y += pd_h + 5
 
         tg_btn_start = 24
-        tg_h = tg_btn_start + 22 + 8
+        tg_h = tg_btn_start + 5 * 22 + 8
         tgBoard = self._Board(BL, y, BW, tg_h)
         self._Label(tgBoard, 14, 4, T('Cele do atakowania', 'What to attack'))
 
         self._FlagBtn(tgBoard, 4 + 0 * 92, tg_btn_start, T('Moby', 'Monsters'), 'mobs')
         self._FlagBtn(tgBoard, 4 + 1 * 92, tg_btn_start, T('Metiny', 'Metins'), 'stones')
         self._FlagBtn(tgBoard, 4 + 2 * 92, tg_btn_start, T('Bossy', 'Bosses'), 'bosses')
+        # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): the target's mode
+        # and the order, saved for the character at once.
+        self._Label(tgBoard, 14, tg_btn_start + 26, T('Tryb celu:', 'Target mode:'))
+        self.targetModeBtn = self._Btn(tgBoard, 'large', BW - 92,
+            tg_btn_start + 22, '', self.OnToggleTargetMode)
+        self._Label(tgBoard, 14, tg_btn_start + 48, T('Priorytet:', 'Priority:'))
+        self.priorityBtn = self._Btn(tgBoard, 'large', BW - 92,
+            tg_btn_start + 44, T('Zmie\xf1', 'Change'), self.OnCyclePriority)
+        self.priorityText = self._Label(tgBoard, 14, tg_btn_start + 70, '')
+        self._Label(tgBoard, 14, tg_btn_start + 92,
+            T('Fokus: brak obra\xbfe\xf1 3 s -> nowy cel', 'Focus: no damage for 3 s -> new target'))
 
         y += tg_h + 10
 
@@ -4022,6 +4347,10 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         for key, (btn, label, wyl) in self.toggles.items():
             btn.SetText('%s: %s' % (label, YesNo(config[key])))
         self.pickupBtn.SetText(OnOff(config['pickup']))
+        # MT2009_PLUS_AUTOHUNT_PRIORITY_V1
+        self.targetModeBtn.SetText(TargetModeText(config.get('target_mode', TARGET_MODE_FOCUS)))
+        order = max(0, min(len(PRIORITY_LABELS) - 1, config.get('priority_order', 0)))
+        self.priorityText.SetText(PRIORITY_LABELS[order])
 
         pickupFilter = PickupFilter()
         for bit, (btn, label) in self.kindToggles.items():
@@ -4067,6 +4396,31 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         self.hunter.config[key] = 0 if self.hunter.config[key] else 1
         self.Refresh()
 
+    # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): saved for the
+    # character at once, the mode said in the chat.
+    def OnToggleTargetMode(self):
+        if self.hunter.mainWindow:
+            self.hunter.mainWindow.ReadEdits()
+        hunter = self.hunter
+        mode = hunter.config.get('target_mode', TARGET_MODE_FOCUS)
+        mode = TARGET_MODE_NEAREST if mode == TARGET_MODE_FOCUS else TARGET_MODE_FOCUS
+        hunter.config['target_mode'] = mode
+        hunter.nextRequest = 0.0
+        hunter.SaveKeys(('target_mode',))
+        chat.AppendChat(chat.CHAT_TYPE_INFO, T('Auto \xa3owy: tryb celu - %s.', 'Auto Hunt: target mode - %s.') % TargetModeText(mode))
+        self.Refresh()
+
+    def OnCyclePriority(self):
+        if self.hunter.mainWindow:
+            self.hunter.mainWindow.ReadEdits()
+        hunter = self.hunter
+        order = (hunter.config.get('priority_order', 0) + 1) % len(PRIORITY_LABELS)
+        hunter.config['priority_order'] = order
+        hunter.nextRequest = 0.0
+        hunter.SaveKeys(('priority_order',))
+        chat.AppendChat(chat.CHAT_TYPE_INFO, T('Auto \xa3owy: priorytet - %s.', 'Auto Hunt: priority - %s.') % PRIORITY_LABELS[order])
+        self.Refresh()
+
     # MT2009_PLUS_AUTOHUNT_PICKUP_TOGGLE_V1: saved for the character at once.
     def OnTogglePickup(self):
         if self.hunter.mainWindow:
@@ -4109,6 +4463,9 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         if self.hunter:
             self.hunter.SaveGlobalConfig()
         self.Hide()
+        # MT2009_PLUS_AUTOHUNT_WINDOWS_V1: "Zamknij" back to "Otworz".
+        if self.hunter and self.hunter.mainWindow:
+            self.hunter.mainWindow.RefreshSettingsButton()
 
     def OnPressEscapeKey(self):
         self.Close()
@@ -4123,6 +4480,9 @@ class AutoHuntLootWindow(ui.BoardWithTitleBar):
         self.filterBtn = None
         self.bonusMinBtn = None
         self.pickupBtn = None
+        self.targetModeBtn = None
+        self.priorityBtn = None
+        self.priorityText = None
 
 
 _hunter = None
@@ -4139,8 +4499,12 @@ def ToggleWindow():
 def ShowLootWindow():
     GetHunter().ShowLootWindow()
 
-def OnServerTarget(value):
-    GetHunter().OnServerTarget(value)
+def OnServerTarget(value, blocked='0'):
+    GetHunter().OnServerTarget(value, blocked)
+
+# MT2009_PLUS_AUTOHUNT_MOUNT_V1 (Autor: blaki)
+def OnServerMount(action, mounted):
+    GetHunter().OnServerMount(action, mounted)
 
 def OnServerLoot(vid, x, y):
     GetHunter().OnServerLoot(vid, x, y)
