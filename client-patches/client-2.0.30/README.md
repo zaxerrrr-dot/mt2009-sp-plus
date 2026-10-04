@@ -672,3 +672,21 @@ Serwer, zapis, protokół i powody opóźnień upstream: `server-patches/collect
   `search_01..03.tga` (GF `pattern/btn_search_0x`), `bar_empty.tga` / `bar_full.tga` (Arezzo
   `collections/total_progress_*`), `input.png` (Arezzo `collect_input`). Brak którejś grafiki w
   paczce gracza = zastępstwo z paczek klienta albo jej pominięcie (`pack.Exist`, `try`).
+
+## Auto Łowy: szybki start/stop (Shift+K) – bez zmian exe
+
+Znacznik `MT2009_PLUS_AUTOHUNT_QUICK_V1`. Shift+K (akcja `autohunt_quick` w Skrótach klawiszowych,
+do przepięcia) albo nowy przycisk na pasku ikon przy ekwipunku od razu zaczyna polowanie bez
+otwierania okna K; drugie naciśnięcie je zatrzymuje. Ustawienia są brane tak jak przy „Start” w oknie:
+plik postaci wczytany raz (`EnsureLoaded`, także gdy okna nie otwierano), pola otwartego okna
+najpierw – z włączonym atakiem. Czat: „Auto Łowy: szybki start, zasięg N (Shift+K - stop).” /
+„Auto Łowy: stop.”. Odmowa serwera (`AutoHuntOff`: świat bez Auto Łowów albo brak czasu z
+„Auto Łowy (8h)”) zatrzymuje polowanie tak samo jak przy starcie z okna.
+
+- `uiautohunt.py` – `Hunter.QuickToggle`, `Start(startText)`, moduł: `QuickToggle()`, `IsRunning()`.
+- `keybind.py` – akcja `autohunt_quick` (domyślnie Shift+K; samo K dalej otwiera okno).
+- `game.py` – akcja w `__BuildKeyDict`.
+- `uiinventory.py` – przycisk `autohuntgo` pod „Autołowy” (`SidebarWindow.BUTTONS`); plakietka
+  zielona (strzałka) albo czerwona (kwadrat) w trakcie polowania, jakkolwiek je włączono.
+- `mt2009_ui/sidebar/autohuntgo_01..03.tga`, `autohuntstop_01..03.tga` (nowe) – ikona Autołowów z
+  plakietką, zrobione `tools/autohuntquick/make_icons.py` z `client-2.0.28` `autohunt_0N.tga`.
