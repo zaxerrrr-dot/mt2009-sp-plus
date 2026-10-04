@@ -8,7 +8,9 @@ Pending changes come from the editor's parts themselves:
     yet applied, net per field); common_items.mark_applied() once the
     restart is queued;
   * drop files and chests: dropfiles.pending_changes(<spool>) - the files
-    the game does not run yet.
+    the game does not run yet;
+  * monsters (mobs.py): the same history as items/skills (tbl world.mob_proto);
+  * respawn files (spawns.py): spawnfiles.pending_changes(<spool>).
 
 Client files (m2clientpack.dbdata): nothing is downloaded automatically - a
 player's client may list several servers (localhost, COOP 1, COOP 2). The
@@ -62,6 +64,11 @@ def install(bp, ctx):
             files = dropfiles.pending_changes(spool)
         except Exception:  # never break the page over a spool folder
             files = []
+        try:  # MT2009_PLUS_DB_EDITOR_V1: the respawn files (spawns.py / spawnfiles.py)
+            from dbeditor import spawnfiles
+            files = files + spawnfiles.pending_changes(spool)
+        except Exception:
+            pass
         return items, files
 
     def build_zip(original=False):

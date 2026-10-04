@@ -193,6 +193,11 @@ command -v m2-chests >/dev/null 2>&1 \
 # the service account, the spool folder (m2-drops).
 command -v m2-drops >/dev/null 2>&1 \
   && { m2-drops prepare || log "could not prepare the drop files (the panel's Drop z potworów page will say so)"; }
+# MT2009_PLUS_DB_EDITOR_V1: the same for the respawn files the Seban panel's
+# "Respawn bossów i metinów" edits - special_spawns.txt and every map's
+# boss.txt / stone.txt kept aside, the live ones writable (m2-spawns).
+command -v m2-spawns >/dev/null 2>&1 \
+  && { m2-spawns prepare || log "could not prepare the respawn files (the panel's Respawn page will say so)"; }
 
 # -----------------------------------------------------------------------------
 # 3. Resource limits.
