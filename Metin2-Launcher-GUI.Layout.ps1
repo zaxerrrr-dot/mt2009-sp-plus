@@ -245,7 +245,7 @@ $header = [Windows.Forms.Panel]::new(); $header.Dock = 'Top'; $header.Height = 9
 $header.BackColor = UI-Color '#0D141A'; $header.Padding = [Windows.Forms.Padding]::new(26, 14, 26, 10)
 $script:form.Controls.Add($header)
 $brand = [Windows.Forms.Panel]::new(); $brand.Dock = 'Fill'; $header.Controls.Add($brand)
-$subtitle.Text = 'SINGLEPLAYER  /  MT2009  /  BY TIERU EDITED BY ZAXEP'
+$subtitle.Text = 'SINGLEPLAYER  /  MT2009 PLUS  /  BY ZAXEP'
 $subtitle.Dock = 'Top'; $subtitle.Height = 24
 $subtitle.Font = [Drawing.Font]::new('Segoe UI', 9); $subtitle.ForeColor = $script:ui.Muted
 $brand.Controls.Add($subtitle)
