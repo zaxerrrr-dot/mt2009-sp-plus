@@ -24,7 +24,13 @@
 //     market, nor what it is short of itself, nor what it wears.
 //   - RegisterPlayerBotDeal: the settled deal, held for PLAYERBOT_DEAL_TTL_MS,
 //     and the meeting - near (the window now), on the same map (the bot walks
-//     over, the summon's walk), elsewhere (the person comes).
+//     over, the summon's walk), on another map of this core the bot may go to
+//     (it goes over, then the summon's walk), anywhere else a village's
+//     blacksmith: the village the person stands in, else the person's
+//     kingdom's M1, else the bot's own - the bot goes there and waits
+//     PLAYERBOT_DEAL_MEET_WAIT_MS, and says exactly where ("jestem w M1
+//     Yongan, bede czekac przy kowalu"; the channel too when the person
+//     plays on the other one). A bot that cannot leave its stall waits there.
 //   - HandlePlayerBotDealTrade: the bot's tick while a deal waits. Near the
 //     person it opens the window itself; in the window it checks what the
 //     person put in - only the item, no more than agreed - and pays exactly
@@ -32,7 +38,13 @@
 //     to the count) and waits for the person's yang
 //     (CExchange::Mt2009PlusGetGold, server-patches/playerqol); it accepts
 //     only after the person has, and only while the window still holds what
-//     was checked. Done: a thanks, the post closed, the memory told.
+//     was checked. Done: a thanks, the post closed, the memory told. The
+//     yang goes in only for the agreed count; a count other than agreed is
+//     said as it is ("umawialismy sie na 2 szt, a dales 5"), and "zmieniles
+//     ilosc" only when the pieces changed after the yang went in.
+//   - ManagePlayerBotDealMeeting (inside HandlePlayerBotDealTrade): the way
+//     to the landmark and the wait there, the bot held for company
+//     meanwhile (IsPlayerBotDealMeeting).
 //
 // An implementation fragment: include it once, after
 // playerbot_chat_conversation.h and playerbot_gift_trade.h; the manager's
@@ -46,6 +58,22 @@ namespace
 	const DWORD PLAYERBOT_DEAL_WINDOW_MAX_MS = 3 * 60 * 1000;
 	const DWORD PLAYERBOT_DEAL_GLANCE_MIN_MS = 700;
 	const DWORD PLAYERBOT_DEAL_GLANCE_MAX_MS = 1600;
+	// The meeting at a landmark: a moment before it sets off (a scroll read),
+	// the walk from the village's square to the smith, and the wait there.
+	const DWORD PLAYERBOT_DEAL_MEET_LEAVE_MIN_MS = 2500;
+	const DWORD PLAYERBOT_DEAL_MEET_LEAVE_MAX_MS = 5000;
+	const DWORD PLAYERBOT_DEAL_MEET_WALK_MAX_MS = 90 * 1000;
+	const DWORD PLAYERBOT_DEAL_MEET_WAIT_MS = 5 * 60 * 1000;
+	const DWORD PLAYERBOT_DEAL_MEET_RETRY_MS = 5000;
+	const int PLAYERBOT_DEAL_MEET_TRIES = 3;
+	const int PLAYERBOT_DEAL_MEET_STAY = 300;       // at the spot within this
+	const int PLAYERBOT_DEAL_MEET_SPOT_OFFSET = 250; // beside the smith, not in it
+	// A person on a hunting map of this core is gone over to only by a bot
+	// not this many levels under them (the map is theirs to survive).
+	const int PLAYERBOT_DEAL_CROSS_LEVEL_SLACK = 5;
+	// The person accepted the window with fewer pieces than agreed and keeps
+	// it so this long after being told: the bot pays for those.
+	const DWORD PLAYERBOT_DEAL_SHORT_ACCEPT_MS = 6000;
 
 	struct TPlayerBotDeal
 	{
@@ -61,8 +89,26 @@ namespace
 		int paidPieces;
 		bool offered;       // the bot's pieces are in the window
 		DWORD warnedAt;
+		int lastPieces;     // the person's pieces at the last look
+		DWORD shortSince;   // told "doloz", the person still accepted with fewer
+		// The meeting (playerbot_conv::EDealMeet, TDealMeetPlace).
+		int meet;
+		long meetMap;       // the village it waits in
+		BYTE spot;          // playerbot_conv::EDealSpot
+		long spotX, spotY;
+		bool otherChannel;
+		bool crossToPerson; // going over to the person's map of this core first
+		DWORD leaveAt;      // sets off then
+		DWORD walkSince;
+		DWORD arrivedAt;    // at the spot; the wait runs from here
+		DWORD nextTryAt;
+		int tries;
+		bool travelled;     // it went somewhere for this meeting (said on arrival)
 		TPlayerBotDeal() : side(0), vnum(0), count(0), unit(0), at(0), nextOpenAt(0), windowSince(0), decideAt(0),
-			paid(false), paidPieces(0), offered(false), warnedAt(0) {}
+			paid(false), paidPieces(0), offered(false), warnedAt(0), lastPieces(0), shortSince(0),
+			meet(playerbot_conv::DEAL_MEET_FAILED), meetMap(0), spot(playerbot_conv::DEAL_SPOT_NONE), spotX(0), spotY(0),
+			otherChannel(false), crossToPerson(false), leaveAt(0), walkSince(0), arrivedAt(0), nextTryAt(0), tries(0),
+			travelled(false) {}
 	};
 	typedef std::pair<DWORD, DWORD> TPlayerBotDealKey; // (bot pid, person pid)
 	std::map<TPlayerBotDealKey, TPlayerBotDeal> s_mapPlayerBotDeals;
@@ -260,13 +306,87 @@ namespace
 
 	// --------------------------------------------------------- the meeting
 
+	// The bot's own place beside a village's blacksmith (20016, the town
+	// services' table): each bot a side of its own, so two waiting there do
+	// not stand in one another.
+	bool GetPlayerBotDealSmithSpot(long mapIndex, DWORD botPID, long& x, long& y)
+	{
+		playerbot_empire_rules::TTownServices services;
+		if (!playerbot_empire_rules::GetTownServices(mapIndex, services))
+			return false;
+		static const int kSide[8][2] = {
+			{ 200, 0 }, { 141, 141 }, { 0, 200 }, { -141, 141 }, { -200, 0 }, { -141, -141 }, { 0, -200 }, { 141, -141 } };
+		const int* side = kSide[botPID % 8];
+		x = services.blacksmith.x + side[0] * PLAYERBOT_DEAL_MEET_SPOT_OFFSET / 200;
+		y = services.blacksmith.y + side[1] * PLAYERBOT_DEAL_MEET_SPOT_OFFSET / 200;
+		return true;
+	}
+
+	bool IsPlayerBotDealVillage(long mapIndex)
+	{
+		playerbot_empire_rules::TTownServices services;
+		return mapIndex > 0 && *playerbot_conv::VillageTag(mapIndex) && map_allow_find(mapIndex) &&
+				playerbot_empire_rules::GetTownServices(mapIndex, services);
+	}
+
+	// The village of a meeting: the one the person stands in (on either
+	// channel - the same village on the other is a channel switch away), the
+	// bot's own when it already stands in one of the person's kingdom, the
+	// person's kingdom's M1 (a person goes into another kingdom's village
+	// only with trouble), then the bot's village or its own M1. Only a
+	// village this core hosts; 0 none.
+	long PickPlayerBotDealVillage(LPCHARACTER bot, int personEmpire, long personMap)
+	{
+		using namespace playerbot_empire_rules;
+		const long botMap = bot->GetMapIndex();
+		if (IsPlayerBotDealVillage(personMap))
+			return personMap;
+		if (IsPlayerBotDealVillage(botMap) && GetMapOwnerEmpire(botMap) == personEmpire)
+			return botMap;
+		const long personM1 = GetHomeMap(personEmpire, MAP_ROLE_M1);
+		if (IsPlayerBotDealVillage(personM1))
+			return personM1;
+		if (IsPlayerBotDealVillage(botMap))
+			return botMap;
+		const long botM1 = GetHomeMap((int)bot->GetEmpire(), MAP_ROLE_M1);
+		return IsPlayerBotDealVillage(botM1) ? botM1 : 0;
+	}
+
+	// A person on another map of this core the bot may simply go over to: a
+	// plain hunting map the bot can stand (not a village - the smith there
+	// is the place - nor the tower, an instance or a place no bot is taken).
+	bool CanPlayerBotDealCrossTo(LPCHARACTER bot, LPCHARACTER person)
+	{
+		const long map = person->GetMapIndex();
+		return map > 0 && map < PLAYERBOT_INSTANCE_MAP_INDEX_MIN && map != bot->GetMapIndex() &&
+				playerbot_conv::IsKnownMap(map) && !playerbot_conv::GetMapWords(map).town &&
+				!IsPlayerBotDemonTowerInstance(map) && !IsPlayerBotOffLimitsMap(map) && map_allow_find(map) &&
+				(int)bot->GetLevel() + PLAYERBOT_DEAL_CROSS_LEVEL_SLACK >= (int)person->GetLevel() &&
+				!person->IsWarping() && person->GetSectree();
+	}
+
+	void FillPlayerBotDealMeetPlace(const TPlayerBotDeal& d, LPCHARACTER bot, playerbot_conv::TDealMeetPlace& out)
+	{
+		out = playerbot_conv::TDealMeetPlace();
+		out.kind = d.meet;
+		out.map = d.meetMap ? d.meetMap : bot->GetMapIndex();
+		out.spot = d.spot;
+		out.channel = g_bChannel;
+		out.otherChannel = d.otherChannel;
+		out.arrived = d.arrivedAt != 0;
+	}
+
 	int RegisterPlayerBotDeal(LPCHARACTER bot, DWORD personPID, LPCHARACTER person, BYTE side, DWORD vnum, int count,
-			long long unit)
+			long long unit, playerbot_conv::TDealMeetPlace& place)
 	{
 		using namespace playerbot_conv;
+		place = TDealMeetPlace();
 		if (!bot || !personPID || count <= 0 || unit <= 0)
 			return DEAL_MEET_FAILED;
 		if (side == DEAL_BOT_BUYS && (long long)bot->GetGold() < unit * count)
+			return DEAL_MEET_FAILED;
+		TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(bot->GetPlayerID());
+		if (st == s_mapPlayerBotAIStates.end())
 			return DEAL_MEET_FAILED;
 		const DWORD now = get_dword_time();
 		TPlayerBotDeal& d = s_mapPlayerBotDeals[std::make_pair(bot->GetPlayerID(), personPID)];
@@ -276,15 +396,103 @@ namespace
 		d.count = count;
 		d.unit = unit;
 		d.at = now;
-		sys_log(0, "PLAYERBOT_DEAL: agreed pid=%u name=%s person_pid=%u side=%s vnum=%u count=%d unit=%lld",
-				bot->GetPlayerID(), bot->GetName(), personPID, side == DEAL_BOT_BUYS ? "buys" : "sells", vnum, count, unit);
-		// Another core holds the person: they have to come over.
-		if (!person || person->GetMapIndex() != bot->GetMapIndex())
-			return DEAL_MEET_COME_TO_ME;
-		if (DISTANCE_APPROX(person->GetX() - bot->GetX(), person->GetY() - bot->GetY()) <= PLAYERBOT_DEAL_NEAR)
-			return DEAL_MEET_NEAR;
-		const int code = StartPlayerBotSummon(bot, person, now);
-		return code == SUMMON_START_OK || code == SUMMON_START_RENEWED ? DEAL_MEET_COMING : DEAL_MEET_COME_TO_ME;
+		// The person: a character of this core, or the P2P table's line of
+		// one on another core - its channel, kingdom and map.
+		const CCI* peer = person ? NULL : P2P_MANAGER::instance().FindByPID(personPID);
+		const int personChannel = person ? (int)g_bChannel : peer ? (int)peer->bChannel : 0;
+		const int personEmpire = person ? (int)person->GetEmpire() : peer ? (int)peer->bEmpire : (int)bot->GetEmpire();
+		const long personMap = person ? person->GetMapIndex() : peer ? peer->lMapIndex : 0;
+		d.otherChannel = personChannel > 0 && personChannel != (int)g_bChannel;
+
+		// Near, or on the same map: the window now, or the summon's walk over.
+		if (person && person->GetMapIndex() == bot->GetMapIndex())
+		{
+			if (DISTANCE_APPROX(person->GetX() - bot->GetX(), person->GetY() - bot->GetY()) <= PLAYERBOT_DEAL_NEAR)
+				d.meet = DEAL_MEET_NEAR;
+			else
+			{
+				const int code = StartPlayerBotSummon(bot, person, now);
+				if (code == SUMMON_START_OK || code == SUMMON_START_RENEWED)
+					d.meet = DEAL_MEET_COMING;
+			}
+		}
+		if (d.meet == DEAL_MEET_FAILED)
+		{
+			// What keeps it where it stands (GetPlayerBotSummonBlock, any map;
+			// the bot itself stands in for a person of another core).
+			const int block = GetPlayerBotSummonBlock(bot, st->second, person ? person : bot, now, true);
+			if (block == SB_STALL && IsPlayerBotDealVillage(bot->GetMapIndex()))
+			{
+				// Behind its counter it waits for them there.
+				d.meet = DEAL_MEET_AT_SPOT;
+				d.meetMap = bot->GetMapIndex();
+				d.spot = DEAL_SPOT_STALL;
+				d.spotX = bot->GetX();
+				d.spotY = bot->GetY();
+				d.arrivedAt = now;
+			}
+			else if (block != SB_NONE)
+				d.meet = DEAL_MEET_COME_TO_ME;
+			else if (person && CanPlayerBotDealCrossTo(bot, person))
+			{
+				d.meet = DEAL_MEET_COMING;
+				d.crossToPerson = true;
+				d.leaveAt = now + number(PLAYERBOT_DEAL_MEET_LEAVE_MIN_MS, PLAYERBOT_DEAL_MEET_LEAVE_MAX_MS);
+			}
+			else
+			{
+				const long village = PickPlayerBotDealVillage(bot, personEmpire, personMap);
+				long x = 0, y = 0;
+				if (village && GetPlayerBotDealSmithSpot(village, bot->GetPlayerID(), x, y))
+				{
+					d.meet = DEAL_MEET_AT_SPOT;
+					d.meetMap = village;
+					d.spot = DEAL_SPOT_SMITH;
+					d.spotX = x;
+					d.spotY = y;
+					if (bot->GetMapIndex() == village &&
+							DISTANCE_APPROX(bot->GetX() - x, bot->GetY() - y) <= PLAYERBOT_DEAL_MEET_STAY)
+						d.arrivedAt = now;
+					else
+						d.leaveAt = now + number(PLAYERBOT_DEAL_MEET_LEAVE_MIN_MS, PLAYERBOT_DEAL_MEET_LEAVE_MAX_MS);
+				}
+				else
+					d.meet = DEAL_MEET_COME_TO_ME;
+			}
+		}
+		FillPlayerBotDealMeetPlace(d, bot, place);
+		sys_log(0, "PLAYERBOT_DEAL: agreed pid=%u name=%s person_pid=%u side=%s vnum=%u count=%d unit=%lld meet=%d "
+				"map=%ld spot=%d channel=%d person_channel=%d cross=%d",
+				bot->GetPlayerID(), bot->GetName(), personPID, side == DEAL_BOT_BUYS ? "buys" : "sells", vnum, count, unit,
+				d.meet, place.map, (int)d.spot, (int)g_bChannel, personChannel, d.crossToPerson ? 1 : 0);
+		return d.meet;
+	}
+
+	// The meeting as it stands, for "gdzie jestes?".
+	bool GetPlayerBotDealMeet(LPCHARACTER bot, DWORD personPID, playerbot_conv::TDealMeetPlace& place)
+	{
+		if (!bot)
+			return false;
+		std::map<TPlayerBotDealKey, TPlayerBotDeal>::const_iterator it =
+				s_mapPlayerBotDeals.find(std::make_pair(bot->GetPlayerID(), personPID));
+		if (it == s_mapPlayerBotDeals.end())
+			return false;
+		FillPlayerBotDealMeetPlace(it->second, bot, place);
+		return true;
+	}
+
+	// On its way to, or waiting at, a deal's meeting: held for company, as a
+	// summoned bot is (IsPlayerBotHeldForCompany) - the market, the world
+	// travel and the events leave it alone.
+	bool IsPlayerBotDealMeeting(DWORD botPID)
+	{
+		std::map<TPlayerBotDealKey, TPlayerBotDeal>::const_iterator it =
+				s_mapPlayerBotDeals.lower_bound(std::make_pair(botPID, (DWORD)0));
+		for (; it != s_mapPlayerBotDeals.end() && it->first.first == botPID; ++it)
+			if ((it->second.meet == playerbot_conv::DEAL_MEET_AT_SPOT && it->second.spot == playerbot_conv::DEAL_SPOT_SMITH) ||
+					it->second.crossToPerson)
+				return true;
+		return false;
 	}
 
 	void EndPlayerBotDeal(LPCHARACTER bot, DWORD personPID, unsigned char state, const char* why)
@@ -305,17 +513,38 @@ namespace
 
 	// --------------------------------------------------------- the window
 
-	void SayPlayerBotDealLine(LPCHARACTER bot, LPCHARACTER person, const char* text)
+	// A line of the deal to the person by pid - a character of this core or
+	// of another (the conversation's queue answers either, by the relay).
+	void SayPlayerBotDealLineTo(LPCHARACTER bot, DWORD personPID, const char* text)
 	{
 		playerbot_conv::TBotSnapshot snap;
-		if (!s_PlayerBotConvHost.BuildSnapshot(person->GetPlayerID(), bot->GetPlayerID(), snap))
+		if (!bot || !personPID || !s_PlayerBotConvHost.BuildSnapshot(personPID, bot->GetPlayerID(), snap))
 		{
-			SendPlayerBotWhisper(bot, person, text);
+			LPCHARACTER person = bot ? CHARACTER_MANAGER::instance().FindByPID(personPID) : NULL;
+			if (person)
+				SendPlayerBotWhisper(bot, person, text);
 			return;
 		}
-		s_PlayerBotConvEngine.QueueBotLine(s_PlayerBotConvHost, person->GetPlayerID(), bot->GetPlayerID(), text,
+		s_PlayerBotConvEngine.QueueBotLine(s_PlayerBotConvHost, personPID, bot->GetPlayerID(), text,
 				std::string(), playerbot_conv::I_DEAL, snap, get_dword_time(), 200);
 		EnsurePlayerBotConvTimer();
+	}
+
+	void SayPlayerBotDealLine(LPCHARACTER bot, LPCHARACTER person, const char* text)
+	{
+		if (bot && person)
+			SayPlayerBotDealLineTo(bot, person->GetPlayerID(), text);
+	}
+
+	// One of a few ways to say a line with the deal's numbers in it.
+	void SayPlayerBotDealVariant(LPCHARACTER bot, LPCHARACTER person, const char* const* variants, int n, ...)
+	{
+		char line[CHAT_MAX_LEN + 1];
+		va_list args;
+		va_start(args, n);
+		vsnprintf(line, sizeof(line), variants[number(0, n - 1)], args);
+		va_end(args);
+		SayPlayerBotDealLine(bot, person, line);
 	}
 
 	// The bot's pieces of the deal into its side of the window, a stack split
@@ -365,6 +594,181 @@ namespace
 		return true;
 	}
 
+	// The way to a deal's meeting and the wait there, the bot's tick while
+	// no window is open. A meeting at the smith: a moment, then the village
+	// (TransitionPlayerBotMap onto its square, as every trip of a bot ends),
+	// the walk to the smith, and PLAYERBOT_DEAL_MEET_WAIT_MS standing there,
+	// off the horse; arrived from elsewhere, it says so. A person on a
+	// hunting map of this core: the bot goes over and the summon's walk
+	// takes it the rest of the way. True while it claims the tick.
+	bool ManagePlayerBotDealMeeting(LPCHARACTER ch, TPlayerBotAIState& state, DWORD personPID, DWORD dwNow)
+	{
+		using namespace playerbot_conv;
+		std::map<TPlayerBotDealKey, TPlayerBotDeal>::iterator it =
+				s_mapPlayerBotDeals.find(std::make_pair(ch->GetPlayerID(), personPID));
+		if (it == s_mapPlayerBotDeals.end() || ch->IsDead())
+			return false;
+		TPlayerBotDeal& d = it->second;
+		const char* village = VillageTag(d.meetMap);
+		char line[CHAT_MAX_LEN + 1];
+
+		// Over to the person's map, then their summon.
+		if (d.crossToPerson)
+		{
+			if (dwNow < d.leaveAt || dwNow < d.nextTryAt)
+			{
+				ch->SetVictim(NULL);
+				if (ch->IsStateMove())
+					ch->Stop();
+				SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+				state.dwLastMeaningfulActivityTime = dwNow;
+				return true;
+			}
+			LPCHARACTER person = CHARACTER_MANAGER::instance().FindByPID(personPID);
+			if (!person || !person->GetDesc() || !CanPlayerBotDealCrossTo(ch, person) || ++d.tries > PLAYERBOT_DEAL_MEET_TRIES)
+			{
+				d.crossToPerson = false;
+				if (person && person->GetDesc() && person->GetMapIndex() == ch->GetMapIndex())
+				{
+					// The person came onto the bot's map meanwhile: the walk
+					// over, and the near check opens the window.
+					StartPlayerBotSummon(ch, person, dwNow);
+					return false;
+				}
+				SayPlayerBotDealLineTo(ch, personPID, "Nie moge cie znalezc. Napisz gdzie jestes, to sie umowimy jeszcze raz.");
+				EndPlayerBotDeal(ch, personPID, DEAL_FAILED, "cross_failed");
+				return false;
+			}
+			d.nextTryAt = dwNow + PLAYERBOT_DEAL_MEET_RETRY_MS;
+			static const int kSide[4][2] = { { 300, 0 }, { 0, 300 }, { -300, 0 }, { 0, -300 } };
+			const int* side = kSide[ch->GetPlayerID() % 4];
+			if (!TransitionPlayerBotMap(ch, state, person->GetMapIndex(), person->GetX() + side[0], person->GetY() + side[1],
+					dwNow, "deal_meet"))
+				return true;
+			d.crossToPerson = false;
+			const int code = StartPlayerBotSummon(ch, person, dwNow);
+			sys_log(0, "PLAYERBOT_DEAL: crossed pid=%u name=%s person=%s map=%ld summon=%d", ch->GetPlayerID(), ch->GetName(),
+					person->GetName(), person->GetMapIndex(), code);
+			return true;
+		}
+		if (d.meet != DEAL_MEET_AT_SPOT || d.spot != DEAL_SPOT_SMITH)
+			return false;
+
+		// The wait is over.
+		if (d.arrivedAt != 0 && dwNow - d.arrivedAt > PLAYERBOT_DEAL_MEET_WAIT_MS)
+		{
+			static const char* const kGone[] = {
+				"Nie doczekalem sie, wracam do swoich spraw. Jak bedziesz chcial handlowac, napisz.",
+				"Stalem przy kowalu %d minut i nic. Ide dalej, napisz jak bedziesz mial czas.",
+				"Dluzej nie czekam, sorki. Odezwij sie jak bedziesz gotowy." };
+			snprintf(line, sizeof(line), kGone[number(0, 2)], (int)(PLAYERBOT_DEAL_MEET_WAIT_MS / 60000));
+			SayPlayerBotDealLineTo(ch, personPID, line);
+			EndPlayerBotDeal(ch, personPID, DEAL_FAILED, "meet_timeout");
+			return false;
+		}
+		state.dwLastMeaningfulActivityTime = dwNow;
+		state.lLastX = ch->GetX();
+		state.lLastY = ch->GetY();
+		ch->SetVictim(NULL);
+		state.dwTargetVID = 0;
+
+		// A moment before it sets off.
+		if (d.arrivedAt == 0 && dwNow < d.leaveAt)
+		{
+			if (ch->IsStateMove())
+				ch->Stop();
+			SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+			return true;
+		}
+
+		// Into the village.
+		if (ch->GetMapIndex() != d.meetMap)
+		{
+			if (d.walkSince != 0 || d.arrivedAt != 0)
+			{
+				// Taken off the village by something with the better claim.
+				SayPlayerBotDealLineTo(ch, personPID, "Musialem odejsc, sorki. Napisz jak bedziesz chcial jeszcze handlowac.");
+				EndPlayerBotDeal(ch, personPID, DEAL_FAILED, "meet_moved_away");
+				return false;
+			}
+			if (dwNow < d.nextTryAt)
+				return true;
+			d.nextTryAt = dwNow + PLAYERBOT_DEAL_MEET_RETRY_MS;
+			if (++d.tries > PLAYERBOT_DEAL_MEET_TRIES)
+			{
+				SayPlayerBotDealLineTo(ch, personPID, "Cos mnie zatrzymalo, nie dojde teraz. Sorki, sprobujmy pozniej.");
+				EndPlayerBotDeal(ch, personPID, DEAL_FAILED, "meet_unreachable");
+				return false;
+			}
+			playerbot_empire_rules::TPoint square;
+			if (!playerbot_empire_rules::GetTownPitch(d.meetMap, square))
+			{
+				square.x = d.spotX;
+				square.y = d.spotY;
+			}
+			if (TransitionPlayerBotMap(ch, state, d.meetMap, square.x, square.y, dwNow, "deal_meet"))
+			{
+				d.travelled = true;
+				d.walkSince = dwNow;
+				sys_log(0, "PLAYERBOT_DEAL: to the meeting pid=%u name=%s map=%ld", ch->GetPlayerID(), ch->GetName(), d.meetMap);
+			}
+			return true;
+		}
+
+		// To the smith.
+		const int distance = DISTANCE_APPROX(ch->GetX() - d.spotX, ch->GetY() - d.spotY);
+		if (d.arrivedAt == 0)
+		{
+			if (d.walkSince == 0)
+				d.walkSince = dwNow;
+			if (distance > PLAYERBOT_DEAL_MEET_STAY && dwNow - d.walkSince < PLAYERBOT_DEAL_MEET_WALK_MAX_MS)
+			{
+				d.travelled = true;
+				MovePlayerBot(ch, d.spotX, d.spotY, dwNow, 6, true, true, false, false);
+				SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+				return true;
+			}
+			// There - or as near as the walk got in its time, which is in
+			// sight of the smith all the same.
+			d.arrivedAt = dwNow;
+			sys_log(0, "PLAYERBOT_DEAL: at the meeting pid=%u name=%s map=%ld distance=%d walk_s=%u", ch->GetPlayerID(),
+					ch->GetName(), d.meetMap, distance, (dwNow - d.walkSince) / 1000);
+			if (d.travelled)
+			{
+				if (d.otherChannel)
+				{
+					static const char* const kThere[] = { "Jestem juz przy kowalu w %s na CH%d, czekam.",
+						"Stoje przy kowalu w %s (CH%d). Czekam na ciebie." };
+					snprintf(line, sizeof(line), kThere[number(0, 1)], village, (int)g_bChannel);
+				}
+				else
+				{
+					static const char* const kThere[] = { "Jestem juz przy kowalu w %s, czekam.", "Stoje przy kowalu w %s, czekam na ciebie.",
+						"Doszedlem, jestem przy kowalu w %s." };
+					snprintf(line, sizeof(line), kThere[number(0, 2)], village);
+				}
+				SayPlayerBotDealLineTo(ch, personPID, line);
+			}
+		}
+
+		// Waiting: back to its place when something pushed it off, else
+		// standing there off the horse.
+		if (distance > PLAYERBOT_DEAL_MEET_STAY * 3)
+		{
+			MovePlayerBot(ch, d.spotX, d.spotY, dwNow, 6, true, true, false, false);
+			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+			return true;
+		}
+		if (!state.vecRoute.empty())
+			ClearPlayerBotRoute(state, true);
+		if (ch->IsStateMove())
+			ch->Stop();
+		if (ch->IsRiding())
+			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "deal_wait");
+		SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+		return true;
+	}
+
 	// true while a deal holds the bot in an exchange (or it just opened one).
 	bool HandlePlayerBotDealTrade(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
@@ -377,6 +781,7 @@ namespace
 		{
 			// The bot's deals: the stale ones go; a person standing near gets
 			// the window opened.
+			DWORD meetingWith = 0;
 			std::map<TPlayerBotDealKey, TPlayerBotDeal>::iterator it = s_mapPlayerBotDeals.lower_bound(std::make_pair(pid, (DWORD)0));
 			while (it != s_mapPlayerBotDeals.end() && it->first.first == pid)
 			{
@@ -388,6 +793,8 @@ namespace
 					EndPlayerBotDeal(ch, personPID, DEAL_FAILED, "expired");
 					return false;
 				}
+				if (meetingWith == 0 && ((d.meet == DEAL_MEET_AT_SPOT && d.spot == DEAL_SPOT_SMITH) || d.crossToPerson))
+					meetingWith = personPID;
 				LPCHARACTER person = CHARACTER_MANAGER::instance().FindByPID(personPID);
 				if (person && person->GetDesc() && person->GetMapIndex() == ch->GetMapIndex() && !person->GetExchange() &&
 						!person->IsDead() && dwNow >= d.nextOpenAt &&
@@ -404,7 +811,7 @@ namespace
 				}
 				++it;
 			}
-			return false;
+			return meetingWith != 0 && ManagePlayerBotDealMeeting(ch, state, meetingWith, dwNow);
 		}
 		CExchange* other = exchange->GetCompany();
 		LPCHARACTER partner = other ? other->GetOwner() : NULL;
@@ -448,20 +855,70 @@ namespace
 				else
 					++others;
 			}
-			char line[CHAT_MAX_LEN + 1];
-			if ((others > 0 || pieces > d.count) && dwNow - d.warnedAt > 8000)
+			if (pieces != d.lastPieces)
 			{
-				d.warnedAt = dwNow;
-				if (others > 0)
-					snprintf(line, sizeof(line), "Daj tylko %s, reszte zabierz.", name);
-				else
-					snprintf(line, sizeof(line), "Mialo byc %d szt, zabierz reszte.", d.count);
-				SayPlayerBotDealLine(ch, partner, line);
+				d.lastPieces = pieces;
+				d.shortSince = 0;
 			}
-			if (others > 0 || pieces == 0 || pieces > d.count)
+			// Paid for what lay there: a change since is a change after the
+			// yang went in, and only then is it said so.
+			if (d.paid && pieces != d.paidPieces)
+			{
+				exchange->Cancel();
+				d.paid = false;
+				d.windowSince = 0;
+				d.shortSince = 0;
+				static const char* const kChanged[] = {
+					"Zmieniles ilosc po tym jak dalem yang (bylo %d szt, jest %d). Daj wymiane jeszcze raz.",
+					"Po moim yang zmienila sie ilosc - %d szt, teraz %d. Zamykam, daj wymiane od nowa." };
+				SayPlayerBotDealVariant(ch, partner, kChanged, 2, d.paidPieces, pieces);
 				return true;
+			}
+			if (others > 0)
+			{
+				if (dwNow - d.warnedAt > 8000)
+				{
+					d.warnedAt = dwNow;
+					static const char* const kOthers[] = { "Daj tylko %s, reszte zabierz.", "Kupuje tylko %s - inne rzeczy zabierz z okna." };
+					SayPlayerBotDealVariant(ch, partner, kOthers, 2, name);
+				}
+				return true;
+			}
 			if (!d.paid)
 			{
+				if (pieces > d.count)
+				{
+					if (dwNow - d.warnedAt > 8000)
+					{
+						d.warnedAt = dwNow;
+						static const char* const kMore[] = {
+							"Umawialismy sie na %d szt, a dales %d - daj dokladnie %d.",
+							"Mialo byc %d szt, w oknie jest %d. Zostaw dokladnie %d, reszte zabierz.",
+							"Biore %d szt, nie %d. Podziel stack i daj %d." };
+						SayPlayerBotDealVariant(ch, partner, kMore, 3, d.count, pieces, d.count);
+					}
+					return true;
+				}
+				if (pieces == 0)
+					return true;
+				if (pieces < d.count)
+				{
+					// Maybe more is coming. Accepted with fewer: told once; kept
+					// accepted after that, the bot pays for what lies there.
+					if (!other->GetAcceptStatus())
+						return true;
+					if (d.shortSince == 0)
+					{
+						d.shortSince = dwNow;
+						static const char* const kFewer[] = {
+							"Umawialismy sie na %d szt, a dales %d - doloz jeszcze %d. Jak wiecej nie masz, zostaw tak, zaplace za %d.",
+							"Mialo byc %d szt, dales %d. Doloz %d albo zostaw zaakceptowane, to wezme %d." };
+						SayPlayerBotDealVariant(ch, partner, kFewer, 2, d.count, pieces, d.count - pieces, pieces);
+						return true;
+					}
+					if (dwNow - d.shortSince < PLAYERBOT_DEAL_SHORT_ACCEPT_MS)
+						return true;
+				}
 				const long long pay = d.unit * pieces;
 				if ((long long)ch->GetGold() < pay || !exchange->AddGold(pay))
 				{
@@ -473,14 +930,6 @@ namespace
 				d.paid = true;
 				d.paidPieces = pieces;
 				d.decideAt = 0;
-				return true;
-			}
-			if (pieces != d.paidPieces)
-			{
-				exchange->Cancel();
-				d.paid = false;
-				d.windowSince = 0;
-				SayPlayerBotDealLine(ch, partner, "Zmieniles ilosc po tym jak dalem yang. Daj wymiane jeszcze raz.");
 				return true;
 			}
 		}
@@ -507,7 +956,16 @@ namespace
 				snprintf(line, sizeof(line), "Mialo byc %s yang, doloz brakujace.", playerbot_conv::FormatYang(due).c_str());
 				SayPlayerBotDealLine(ch, partner, line);
 			}
-			if (other->Mt2009PlusGetGold() < due || !offer.empty())
+			if (other->Mt2009PlusGetGold() > due && dwNow - d.warnedAt > 8000)
+			{
+				// More than agreed is not taken either.
+				d.warnedAt = dwNow;
+				char line[CHAT_MAX_LEN + 1];
+				snprintf(line, sizeof(line), "Dales za duzo yang - mialo byc %s. Popraw kwote.",
+						playerbot_conv::FormatYang(due).c_str());
+				SayPlayerBotDealLine(ch, partner, line);
+			}
+			if (other->Mt2009PlusGetGold() != due || !offer.empty())
 			{
 				// Yang only from the person's side: an item in it is not the deal.
 				if (!offer.empty() && dwNow - d.warnedAt > 8000)

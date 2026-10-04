@@ -67,6 +67,55 @@ namespace playerbot_conv
 		DEAL_BOT_SELLS = 2
 	};
 
+	// MT2009_PLUS_BOT_CHAT_V2 (deals): why the bot takes or gives fewer pieces
+	// than the person named - said, never silently cut (the owner, 4 October:
+	// "5" answered with "2 szt po 158k" and no word why).
+	enum EDealCap
+	{
+		DEAL_CAP_NONE = 0,
+		DEAL_CAP_NEED,    // it does not need more (its post's count, its want)
+		DEAL_CAP_PURSE,   // its yang does not stretch further
+		DEAL_CAP_HAVE     // it has only so many to sell
+	};
+
+	// The landmark a bot waits at for a deal's window.
+	enum EDealSpot
+	{
+		DEAL_SPOT_NONE = 0,
+		DEAL_SPOT_SMITH,  // the village's blacksmith (20016)
+		DEAL_SPOT_STALL   // its own stall, which it does not leave
+	};
+
+	// Where the two of a settled deal meet, as the engine arranged it
+	// (IConvWorld::DealAgreed, IConvWorld::DealMeet). The owner, 4 October:
+	// "Boty niech podaja dokladna lokalizacje ... typu jestem w m1 yongan
+	// bede czekac przy kowalu" - a village, a landmark in it, and the channel
+	// when it is not the person's.
+	struct TDealMeetPlace
+	{
+		int kind;           // EDealMeet (playerbot_conv_state.h)
+		long map;           // the village (or the bot's map) it waits on, 0 none
+		int spot;           // EDealSpot
+		int channel;        // the bot's channel
+		bool otherChannel;  // the person plays on another one
+		bool arrived;       // standing at the spot (or never had to go)
+		TDealMeetPlace() : kind(-1), map(0), spot(DEAL_SPOT_NONE), channel(0), otherChannel(false), arrived(false) {}
+	};
+
+	// "ide", "czekaj", "zaraz bede", "chwila" - the person on the way to a
+	// meeting, or asking the bot to wait for them.
+	inline bool DealComingWords(const TTokens& t)
+	{
+		static const char* const k[] = { "ide", "idziemy", "czekaj", "poczekaj", "zaczekaj", "czekej", "chwila",
+			"chwile", "chwilka", "chwileczke", "moment", "sek", "sec", "zaraz", "bede", "lece", "biegne", "jade",
+			"dojde", "dochodze", "przychodze", "teleportuje", "tepam", "przelaczam", "zmieniam", "przelacze",
+			"zmienie", "toba", "kowala", "kowalu", "jestem" };
+		for (size_t i = 0; i < sizeof(k) / sizeof(k[0]); ++i)
+			if (t.Has(k[i]))
+				return true;
+		return false;
+	}
+
 	struct TDeal
 	{
 		unsigned char state;
@@ -82,9 +131,11 @@ namespace playerbot_conv
 		int rounds;           // counter-offers made
 		bool priceSettled;
 		bool fromPost;        // an answer to the bot's own public post
+		int capWhy;           // EDealCap: what maxCount stands for
+		TDealMeetPlace meet;  // once agreed: where the window is
 		u32 at;
 		TDeal() : state(DEAL_NONE), side(0), vnum(0), count(0), maxCount(0), offer(0), ask(0), limit(0), fair(0),
-			rounds(0), priceSettled(false), fromPost(false), at(0) {}
+			rounds(0), priceSettled(false), fromPost(false), capWhy(DEAL_CAP_NONE), at(0) {}
 		bool Live(u32 now) const
 		{
 			return (state == DEAL_OPEN || state == DEAL_AGREED) && at != 0 && now - at < CONV_DEAL_TTL_MS;
@@ -424,7 +475,16 @@ namespace playerbot_conv
 					a.tokens.Has("drogo") || a.tokens.Has("malo") || a.tokens.Has("tanio") || a.tokens.Has("wiecej") ||
 					a.tokens.Has("mniej") || a.tokens.Has("taniej") || a.tokens.Has("drozej") || a.tokens.Has("gdzie") ||
 					a.tokens.Has("wymiane") || a.tokens.Has("wymiana") || a.tokens.Has("handel");
-			if (dealish && !otherItem && !IsColdIntent((EIntent)a.intent) && a.intent != I_FAREWELL &&
+			// Agreed and waiting for the window: "czekaj ide za toba", "juz
+			// ide", "zaraz bede", "chwila", "gdzie jestes?" are about the
+			// meeting (the small talk answered them "hehe, moze", and "juz
+			// ide" read as a purchase of "ide").
+			const bool meeting = (m.deal.state == DEAL_AGREED && a.tokens.words.size() <= 8 &&
+					(DealComingWords(a.tokens) || c.Has(C_WHERE) || a.tokens.Has("jestes") ||
+					 a.tokens.Has("kanal") || a.tokens.Has("ch"))) ||
+					// Still talking: "czekaj", "chwila" - a moment to think.
+					(m.deal.state == DEAL_OPEN && a.tokens.words.size() <= 3 && DealComingWords(a.tokens));
+			if ((meeting || (dealish && !otherItem)) && !IsColdIntent((EIntent)a.intent) && a.intent != I_FAREWELL &&
 					a.intent != I_THANKS && a.intent != I_MATH)
 			{
 				a.intent = I_DEAL;
