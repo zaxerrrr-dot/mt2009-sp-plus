@@ -1847,8 +1847,10 @@ namespace
 			if (!panel || mt2009_dpanel::Hidden(*panel) || !IsPlayerBotMapHostedHere(def.lMap) ||
 					!SECTREE_MANAGER::instance().GetMap(def.lMap) || CountPlayerBotDgRuns(i) >= def.iCap)
 				continue;
-			// The tower: not while a guild raids it.
-			if (def.bKind == DGRUN_KIND_TOWER && s_PlayerBotTowerRaid.bPhase != TOWER_PHASE_NONE)
+			// The Demon Tower keeps its own bot raids (playerbot_demon_tower.h;
+			// the owner, 4 October: "wieza demonow tez niech zostanie przy swoich
+			// rajdach botow, to juz dobrze dzialalo") - never a run of this pass.
+			if (def.bKind == DGRUN_KIND_TOWER)
 				continue;
 			TPlayerBotDgRunSlot& slot = slots[i];
 			slot.lvMin = std::max(panel->lvMin, PLAYERBOT_DGRUN_MIN_LEVEL);
