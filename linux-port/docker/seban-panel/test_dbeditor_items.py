@@ -547,7 +547,7 @@ class DbEditorItemsTests(unittest.TestCase):
         self.assertEqual(common_items.pending_count(), 0)
         res = self.client.get("/db/clientdata.zip")
         self.assertEqual(res.status_code, 200)
-        self.assertIn("attachment; filename=\"dbdata-localhost-klient-", res.headers["Content-Disposition"])
+        self.assertIn("attachment; filename=\"dbdata-MT2009-PLUS-klient-", res.headers["Content-Disposition"])
         with zipfile.ZipFile(io.BytesIO(res.get_data())) as z:
             self.assertEqual(sorted(z.namelist()), ["CZYTAJ_MNIE.txt", "pack/dbdata.data", "pack/dbdata.index"])
             index, data = z.read("pack/dbdata.index"), z.read("pack/dbdata.data")
