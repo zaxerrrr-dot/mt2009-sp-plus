@@ -17,6 +17,78 @@ every version here.
 
 ---
 
+## 2.21.0 — 2026-10-04 — Wojny gildii na arenie, 27 Legend, Drop wiki, czaszka nad bossem
+
+Wymaga klienta **2.0.51** (pobierze go launcher albo patcher).
+
+### Wojny gildii na arenie wojen
+- **Wojny botów toczą się na arenie wojen (mapa 110)**, nie na mapie gildyjnej. Każda wojna ma własną kopię areny, więc kilka wojen może trwać naraz.
+- Boty idą z obozu przez mosty na środek, walczą przy bramach na środkowej wyspie, odradzają się w obozie i po wojnie wracają do miasta.
+- **Wojny między królestwami:** gildie botów walczą też z gildiami innych królestw. Gracze mogą wypowiedzieć wojnę gildii botów z dowolnego królestwa.
+- **Wojna co godzinę**, do 20 uczestników na stronę, zwycięża pierwsza gildia z 200 zabójstwami.
+- **Nagroda:** 20 Szkatułek Blasku Księżyca dla zwycięskiej gildii, rozdzielonych według zabójstw jej członków — raz dziennie na gildię. Kolejna wygrana tego samego dnia daje doświadczenie gildii.
+- Pary gildii dobierane są także po średnim poziomie botów.
+- Gracze wchodzą na arenę przyciskiem „Wejdź na wojnę” na tablicy wojny (kanał 1).
+
+### 27 Legend
+- Na świecie jest zawsze 27 Chodzących Legend, każda pod stałym nickiem (od najbardziej legendarnej): FuBu, Wallander4ever, SirMamutPOL, Zwierz, IsAmU, GoToSleep, Kasanga, Loth, SQRCZYBYKU, KAPRAL, BumBum, NinjaxesPL, Xuminnek, ShiveR, Scoobany, Schenk, Kosikredki, Tream, Sabal, Gimper, BuenaCosta, Uzurpator, DIIIM2, TNT, Asfen, LifeIsDeath, ZAXEP.
+- Te nicki są zarezerwowane dla Legend — zwykłe boty ich nie dostają. Legendy nie tracą miejsca i nie idą na emeryturę.
+- Ranking Legend w panelach w tej kolejności.
+
+### Nowości
+- **Drop wiki** (przycisk w pasku bocznym, klawisz `/`): wpisz przedmiot, a zobaczysz, które potwory go dropią, ile i z jaką szansą; wpisz potwora, a zobaczysz, co z niego wypada. Dane prosto z tabel dropu serwera, z portretami potworów.
+- **Czaszka nad bossem i mini-bossem** — łatwiej znaleźć go wśród potworów.
+- **Kostium „Zbroja Króla Wojowników+”** (wojownik, postać męska) i **nakładka „Święty Miecz Bogów+”** w ItemShopie (100 SM, 30 dni).
+
+### Auto Łowy
+Autor zmian w Auto Łowach: blaki.
+- **Kolejność celów:** do wyboru 6 kolejności (np. Boss > Metin > Moby) albo zawsze najbliższy.
+- **Tryb „Najbliższy” lub „Fokus”** — Fokus trzyma cel, a gdy mimo ataku jego HP nie spada przez 3 s, zmienia go.
+- **Utknięcie na koniu:** postać sama zsiada i wsiada z powrotem; po 15 s bez skutku Auto Łowy zatrzymują się i mówią dlaczego.
+- **Nowe okno:** K otwiera całe okno walki, ustawienia podnoszenia i celów są w osobnym oknie „Dodatkowe ustawienia”.
+- **Cel za ścianą:** serwer od razu wyznacza do niego trasę.
+- **Tryb „Bojowiec”** — łowy z konia bojowego: postać bije z konia, używa jego umiejętności, po buffy zsiada na chwilę.
+- Umiejętności także podczas jazdy, ucieczka od ściany, pomijanie celu, który blokuje drogę, atak potworów stojących na drodze, powrót do punktu startu po przebytej drodze.
+- **Droga od serwera:** gdy postać nie może dojść do celu prosto, serwer wyznacza jej trasę omijającą przeszkody.
+- Mikstury i buffy nie są używane ponownie, dopóki działają.
+
+### Dom Towarowy
+- Średnia cena w opisie oferty, filtr „Min. liczba bonusów”, ceny skrótami (np. 1.5kk).
+- Enter potwierdza zakup, Tab i Ctrl+A w wyszukiwarce, prawy klik zaznacza ofertę do „Kup wszystko”, lista zostaje na tej samej stronie po zakupie.
+
+### Poprawki i wygoda
+- **Opcje dodatkowe:** wyłącznik dźwięków zabójstw (domyślnie wyłączone) i podświetlania tanich ofert.
+- **Tanie oferty w sklepikach offline** podświetlone na zielono (poniżej 500 Yang za sztukę albo poniżej ceny NPC); u handlarzy NPC bez podświetlenia.
+- Ukryte drzewa, budynki, chmury i woda zostają ukryte po zmianie kanału.
+- Opis umiejętności peta po najechaniu myszką.
+- Ranking tygodniowy: czytelniejsze okno, wyśrodkowana korona w pasku bocznym, bez postaci admina i GM.
+- Wymiana ksiąg u Seon-Hae pokazuje właściwą cenę 250 000 Yang.
+- Usuń misje: osobne pytanie przed usunięciem misji Biologa.
+- Battle Pass botów: bot powyżej 45 poziomu zalicza misję metinową dowolnym metinem i nie wraca już do M1.
+- Emerytura botów: gdy w środkowym przedziale poziomów żaden bot się nie nadaje, przedział się rozszerza (wcześniej partia stała w miejscu).
+
+### Panele
+- **Eventy do 7 dni** w obu panelach (wcześniej najwyżej 6 godzin).
+- Harmonogram eventów w panelu seban: do 64 eventów (wcześniej 16).
+- Pulpit panelu seban nie zawiesza się już na wolnym rankingu („Ładowanie…” w kafelkach).
+- Rankingi bez postaci z kont GM.
+
+### Aktualizacja i start serwera
+- **Szybszy start serwera:** migracja bazy sprawdza tylko tabele, które tego wymagają, i pomija powtarzanie, gdy nic się nie zmieniło (start do kilkunastu razy szybszy).
+- Szybsza kompilacja silnika przy aktualizacji.
+- Launcher nie kopiuje plików, które już są takie same, i dłużej czeka na plik zajęty przez inny program (błąd „Proces nie może uzyskać dostępu do pliku”).
+- VPS: ostrzeżenie, że budowa przy aktualizacji może potrwać do 15 minut i nie wolno jej przerywać.
+
+---
+
+## Klient 2.0.51 — 2026-10-04
+
+- Drop wiki z portretami potworów, czaszka nad bossami, kostium „Zbroja Króla Wojowników+” i nakładka „Święty Miecz Bogów+”.
+- Auto Łowy (autor: blaki): kolejność celów, tryb Najbliższy/Fokus, ratowanie po utknięciu na koniu, nowe okno z osobnymi ustawieniami; tryb „Bojowiec”, omijanie przeszkód.
+- Dom Towarowy: średnia cena, filtr bonusów, skróty klawiszowe, „Kup wszystko” prawym klikiem.
+- Opcje dodatkowe: wyłącznik dźwięków zabójstw i podświetlania tanich ofert; ukrywanie elementów tła działa po zmianie kanału.
+- Opis umiejętności peta, poprawione okno rankingu tygodniowego, cena wymiany ksiąg 250 000, pytanie przy misji Biologa.
+
 ## 2.20.1 — 2026-10-03 — Poprawa UX Panelu zaawansowanego
 
 Poprawa UX Panelu zaawansowanego. Klient bez zmian (2.0.50).

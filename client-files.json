@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.50",
+  "version": "2.0.51",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -84,8 +84,8 @@
     },
     {
       "path": "pack/gamedata.index",
-      "size": 3764,
-      "sha256": "B0A1B4E64D093EE98513E36703CAAB81E897F3DDEC68AFC493724D3E2AEC9C9B"
+      "size": 4180,
+      "sha256": "D4ABB507DD7EECB14A23782602955A08FC8EE6717091E596E8F3583C62474797"
     },
     {
       "path": "pack/gf_misc.index",
@@ -114,8 +114,8 @@
     },
     {
       "path": "pack/icon.index",
-      "size": 69316,
-      "sha256": "382971BCDDBF191CB8A0C20834DE0392C77717D25222A17BE961BC2CADAFAAE4"
+      "size": 78548,
+      "sha256": "40005C4E5B7CA85C922F5F70F9BF4FD7332F5EB42D5AAEB1576161BDC8E5B185"
     },
     {
       "path": "pack/Index",
@@ -125,7 +125,7 @@
     {
       "path": "pack/locale.index",
       "size": 23604,
-      "sha256": "5C35D7D137B432889CF223CD0142BE49F5232993804796559C69941FC5565DD4"
+      "sha256": "89D05DBAE47018F9B71F8A8AED4B56BA92747F4EAADC7772F28CFAA9A3E1F406"
     },
     {
       "path": "pack/maps.index",
@@ -154,8 +154,8 @@
     },
     {
       "path": "pack/root.index",
-      "size": 21908,
-      "sha256": "74086A7FD30FA7DF8255F9B9B9E9E8EB932758B161C153956224AA3E389DF5C3"
+      "size": 22068,
+      "sha256": "39C53F834F8AD4F8BB6C5A57F5B9DAA06A896B4FB9F0FB8D0E2764E0B65BB7FD"
     }
   ]
 }

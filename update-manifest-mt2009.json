@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-03T21:00:00Z",
-  "statusMessage": "MT2009 PLUS 2.20.1: poprawa UX Panelu zaawansowanego. Klient 2.0.50.",
+  "publishedAt": "2026-10-04T09:30:00Z",
+  "statusMessage": "MT2009 PLUS 2.21.0: wojny gildii na arenie, 27 Legend, Drop wiki, czaszka nad bossem, Auto Lowy. Klient 2.0.51.",
   "server": {
-    "version": "2.20.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.20.1/metin2-server-update-2.20.1.zip",
-    "sha256": "445E3A6492CA7EE4C5D9E93E3CC7A1106E63B4912C2C09BBFD4F986734D4B7B4",
-    "size": 104881816
+    "version": "2.21.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.21.0/metin2-server-update-2.21.0.zip",
+    "sha256": "453374773196F2C7B9B2F3D4C4BA20C99772B7C1CFBCDFE28BA303F914DE2B46",
+    "size": 104925534
   },
   "client": {
-    "version": "2.0.50",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.50/metin2-client-update-2.0.50.zip",
-    "sha256": "82307C88995CCB3462E7DBDAF997A02F5D52548AC71A38D69E4C55449C4535B7",
-    "size": 355232661
+    "version": "2.0.51",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.51/metin2-client-update-2.0.51.zip",
+    "sha256": "75EDEE1C6082821BE1E41B56F02BB4C9A457288B408D4E87E3BFA9C0A8DA3FC4",
+    "size": 357316167
   }
 }
