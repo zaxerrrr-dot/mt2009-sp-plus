@@ -59,8 +59,8 @@ try:
 	if m2edition.CLASSIC:
 		SERVER_LOCALHOST["name"] = TextColor("MT2009 Classic", "ffd500")
 		SERVER_LOCALHOST["auth_base_port"] = 12000
-		SERVER_LOCALHOST["channel_base_port"] = 14000
-		SERVER_LOCALHOST["mark"] = 14000
+		SERVER_LOCALHOST["channel_base_port"] = 13100
+		SERVER_LOCALHOST["mark"] = 13100
 except ImportError:
 	pass
 
