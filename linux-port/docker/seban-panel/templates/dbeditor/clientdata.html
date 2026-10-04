@@ -46,7 +46,7 @@
     <label>Wpisz RESTART, aby potwierdzić<input name="confirmation" autocomplete="off" placeholder="RESTART" required></label>
     <button>✅ Zastosuj (restart rdzeni)</button>
   </form>
-  <p class="muted">Gra wczytuje przedmioty, umiejętności, drop i szkatułki tylko przy starcie rdzeni. Postęp restartu: {{ restart.stage or '—' }}{% if restart.percent is defined %} ({{ restart.percent }}%){% endif %}.</p>
+  <p class="muted">Gra wczytuje przedmioty, umiejętności, drop, szkatułki i spawny potworów tylko przy starcie rdzeni. Postęp restartu: {{ restart.stage or '—' }}{% if restart.percent is defined %} ({{ restart.percent }}%){% endif %}.</p>
 </section>
 
 <section class="panel">
