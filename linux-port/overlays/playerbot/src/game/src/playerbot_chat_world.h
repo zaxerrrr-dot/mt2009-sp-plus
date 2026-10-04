@@ -207,7 +207,15 @@ namespace
 		int count;
 		DWORD unit;
 		std::string name;
-		TPlayerBotTradeMeaning() : kind(0), vnum(0), count(0), unit(0) {}
+		DWORD skill;        // a skill book's skill (socket 0)
+		// The second item of a two-item "S> A - x, B - y" line, noted as a
+		// post of its own: "kupie ku czarowane ostrze" answers it too.
+		DWORD vnum2;
+		int count2;
+		DWORD unit2;
+		std::string name2;
+		DWORD skill2;
+		TPlayerBotTradeMeaning() : kind(0), vnum(0), count(0), unit(0), skill(0), vnum2(0), count2(0), unit2(0), skill2(0) {}
 	};
 	TPlayerBotTradeMeaning s_PlayerBotTradeMeaning;
 
@@ -279,6 +287,7 @@ namespace
 		s_PlayerBotTradeMeaning.count = (int)a.count;
 		s_PlayerBotTradeMeaning.unit = (DWORD)(a.price / (a.count ? a.count : 1));
 		s_PlayerBotTradeMeaning.name = a.name;
+		s_PlayerBotTradeMeaning.skill = a.forget ? 0 : a.skill;
 		const char* town = GetPlayerBotTownName(stall.mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN
 				? stall.mapIndex / 10000 : stall.mapIndex);
 		char buf[CHAT_MAX_LEN + 1];
@@ -288,6 +297,11 @@ namespace
 		if (order.size() > 1 && number(0, 1) == 0)
 		{
 			const TPlayerBotStallLine& b = stall.lines[order[1]];
+			s_PlayerBotTradeMeaning.vnum2 = b.vnum;
+			s_PlayerBotTradeMeaning.count2 = (int)b.count;
+			s_PlayerBotTradeMeaning.unit2 = (DWORD)(b.price / (b.count ? b.count : 1));
+			s_PlayerBotTradeMeaning.name2 = b.name;
+			s_PlayerBotTradeMeaning.skill2 = b.forget ? 0 : b.skill;
 			std::string second = b.name;
 			if (b.count > 1)
 				second += " x" + playerbot_conv::ToString((long long)b.count);
@@ -350,11 +364,14 @@ namespace
 		// A skill book says which skill it teaches: "Ksiega Umiejetnosci" alone
 		// told nobody what was for sale (the owner, 4 October).
 		std::string name = item->GetProto()->szLocaleName;
-		if (item->GetType() == ITEM_SKILLBOOK && item->GetSocket(0) > 0)
+		if (item->GetType() == ITEM_SKILLBOOK && GetPlayerBotSkillBookSkillVnum(item) > 0)
 		{
-			const char* skill = GetPlayerBotSkillName((DWORD)item->GetSocket(0));
+			const char* skill = GetPlayerBotSkillName(GetPlayerBotSkillBookSkillVnum(item));
 			if (skill && strcmp(skill, "?") != 0)
+			{
 				name = std::string("KU ") + skill;
+				s_PlayerBotTradeMeaning.skill = GetPlayerBotSkillBookSkillVnum(item);
+			}
 		}
 		s_PlayerBotTradeMeaning.name = name;
 		if (item->GetCount() > 1)
@@ -491,8 +508,12 @@ namespace
 			if (!BuildPlayerBotTradeChatLine(pick, dwNow, line) || line.empty())
 				continue;
 			SendPlayerBotTradeChat(pick, line.c_str());
-			NotePlayerBotPublicLine(pick, s_PlayerBotTradeMeaning.kind, true, line.c_str(), s_PlayerBotTradeMeaning.vnum,
-					s_PlayerBotTradeMeaning.count, s_PlayerBotTradeMeaning.unit, 0, 0, s_PlayerBotTradeMeaning.name.c_str());
+			// The second item first, so the headline is the newest post - the
+			// one a bare "to" / "ten" refers to.
+			const TPlayerBotTradeMeaning& m = s_PlayerBotTradeMeaning;
+			if (m.vnum2)
+				NotePlayerBotPublicLine(pick, m.kind, true, line.c_str(), m.vnum2, m.count2, m.unit2, 0, 0, m.name2.c_str(), m.skill2);
+			NotePlayerBotPublicLine(pick, m.kind, true, line.c_str(), m.vnum, m.count, m.unit, 0, 0, m.name.c_str(), m.skill);
 			// The kingdom's trade shout keeps its distance from it.
 			s_dwPlayerBotTradeShoutTime = dwNow;
 			++s_uPlayerBotTradeChatLines;

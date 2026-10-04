@@ -64,9 +64,10 @@ namespace
 	bool DescribePlayerBotMetinPlace(int level, int empire, std::string& out);
 	// MT2009_PLUS_BOT_CHAT_V2 (deals): playerbot_chat_deals.h - an item a
 	// whisper names, priced and judged; a deal both sides settled.
-	bool QuotePlayerBotDealItem(LPCHARACTER bot, const std::string& query, DWORD vnumHint, playerbot_conv::TDealQuote& out);
-	int RegisterPlayerBotDeal(LPCHARACTER bot, DWORD personPID, LPCHARACTER person, BYTE side, DWORD vnum, int count,
-			long long unit, playerbot_conv::TDealMeetPlace& place);
+	bool QuotePlayerBotDealItem(LPCHARACTER bot, const std::string& query, DWORD vnumHint, DWORD skillHint,
+			playerbot_conv::TDealQuote& out);
+	int RegisterPlayerBotDeal(LPCHARACTER bot, DWORD personPID, LPCHARACTER person, BYTE side, DWORD vnum, DWORD skill,
+			int count, long long unit, playerbot_conv::TDealMeetPlace& place);
 	bool GetPlayerBotDealMeet(LPCHARACTER bot, DWORD personPID, playerbot_conv::TDealMeetPlace& place);
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: playerbot_dungeon_lfg.h - the yes to a
 	// bot's dungeon offer, the no, and the dungeon named to "na jaki dung?".
@@ -1173,10 +1174,11 @@ namespace
 				m_channel = channel;
 			}
 
-			bool FindItem(const std::string& query, std::string& outName, unsigned int& outCount)
+			bool FindItem(const std::string& rawQuery, std::string& outName, unsigned int& outCount)
 			{
 				if (!m_bot || !m_bot->IsItemLoaded())
 					return false;
+				const std::string query = playerbot_conv::FoldName(rawQuery.c_str());
 				for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 				{
 					LPITEM item = m_bot->GetInventoryItem(cell);
@@ -1206,11 +1208,15 @@ namespace
 
 			// "masz na straganie X?": the bot's own stall - classic or the Ikarus
 			// offline shop (GetPlayerBotStall, playerbot_chat_trade.h).
-			bool FindShopItem(const std::string& query, std::string& outName, long long& outPrice,
+			bool FindShopItem(const std::string& rawQuery, std::string& outName, long long& outPrice,
 					unsigned int& outCount)
 			{
 				if (!m_bot)
 					return false;
+				// Folded as the stall's names are: the bot's own post's item
+				// came here as the post printed it ("Ebonitowy Naszyjnik+4")
+				// and matched none of them (the owner, 4 October).
+				const std::string query = playerbot_conv::FoldName(rawQuery.c_str());
 				TPlayerBotStall stall;
 				if (!GetPlayerBotStall(m_bot->GetPlayerID(), m_bot, stall))
 					return false;
@@ -1235,9 +1241,10 @@ namespace
 			// "ile chodzi X?": the cheapest line of X on the asker's channel's
 			// stalls (the other bots' and, on mt2009, every offline shop), else
 			// the sale memory's median for it.
-			bool FindMarketPrice(const std::string& query, std::string& outName, long long& outPrice,
+			bool FindMarketPrice(const std::string& rawQuery, std::string& outName, long long& outPrice,
 					unsigned int& outSellers)
 			{
+				const std::string query = playerbot_conv::FoldName(rawQuery.c_str());
 				std::string rest;
 				bool forget = false;
 				const DWORD skill = GetPlayerBotStallBookQuery(query, rest, forget);
@@ -1352,15 +1359,16 @@ namespace
 			}
 
 			// MT2009_PLUS_BOT_CHAT_V2 (deals).
-			bool QuoteItem(const std::string& query, playerbot_conv::u32 vnumHint, playerbot_conv::TDealQuote& out)
+			bool QuoteItem(const std::string& query, playerbot_conv::u32 vnumHint, playerbot_conv::u32 skillHint,
+					playerbot_conv::TDealQuote& out)
 			{
-				return m_bot && QuotePlayerBotDealItem(m_bot, query, vnumHint, out);
+				return m_bot && QuotePlayerBotDealItem(m_bot, query, vnumHint, skillHint, out);
 			}
 
-			int DealAgreed(unsigned char side, playerbot_conv::u32 vnum, int count, long long unit,
+			int DealAgreed(unsigned char side, playerbot_conv::u32 vnum, playerbot_conv::u32 skill, int count, long long unit,
 					playerbot_conv::TDealMeetPlace& place)
 			{
-				return RegisterPlayerBotDeal(m_bot, m_personPID, m_player, side, vnum, count, unit, place);
+				return RegisterPlayerBotDeal(m_bot, m_personPID, m_player, side, vnum, skill, count, unit, place);
 			}
 
 			bool DealMeet(playerbot_conv::TDealMeetPlace& place)
@@ -1607,6 +1615,10 @@ namespace
 						s.shopMapIndex = stall.mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? stall.mapIndex / 10000 : stall.mapIndex;
 						// Another channel than the asker's, who may be on either.
 						s.shopOtherChannel = stall.channel != s.askerChannel;
+						// MT2009_PLUS_BOT_CHAT_V2: beside what it stands, for "jest
+						// na straganie w M1 Joan przy kowalu".
+						s.shopChannel = stall.channel;
+						s.shopSpot = DescribePlayerBotStallSpot(s.shopMapIndex, stall.x, stall.y);
 						s.shopItems = (int)stall.lines.size();
 						for (size_t i = 0; i < stall.lines.size() && i < PLAYERBOT_CONV_SHOP_SUMMARY_ITEMS; ++i)
 						{
@@ -1801,6 +1813,20 @@ namespace
 				text, now, playerName, bot->GetName());
 		EnsurePlayerBotConvTimer();
 		return true;
+	}
+
+	// MT2009_PLUS_BOT_CHAT_V2: whether a person is in the middle of a talk
+	// with a bot - a line within PLAYERBOT_TRADE_TALK_MS, or a deal open -
+	// so a trade line of theirs on the channel is that talk's, and no other
+	// bot cuts in with its own offer (AnswerPlayerBotTradeLine).
+	bool IsPlayerBotTalkingWith(DWORD personPID, DWORD botPID, DWORD now)
+	{
+		playerbot_conv::TConvPair* pair = s_PlayerBotConvEngine.FindPair(personPID, botPID);
+		if (!pair)
+			return false;
+		if (pair->mem.deal.Live(now))
+			return true;
+		return pair->mem.lastPlayerAt != 0 && now - pair->mem.lastPlayerAt < PLAYERBOT_TRADE_TALK_MS;
 	}
 
 	// The same for a character of this core. Inline because the whisper path

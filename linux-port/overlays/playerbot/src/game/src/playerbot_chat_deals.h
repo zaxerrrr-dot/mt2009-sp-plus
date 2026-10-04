@@ -79,6 +79,7 @@ namespace
 	{
 		BYTE side;          // playerbot_conv::EDealSide
 		DWORD vnum;
+		DWORD skill;        // a skill book's skill (socket 0), 0 any other item
 		int count;
 		long long unit;
 		DWORD at;
@@ -104,7 +105,7 @@ namespace
 		DWORD nextTryAt;
 		int tries;
 		bool travelled;     // it went somewhere for this meeting (said on arrival)
-		TPlayerBotDeal() : side(0), vnum(0), count(0), unit(0), at(0), nextOpenAt(0), windowSince(0), decideAt(0),
+		TPlayerBotDeal() : side(0), vnum(0), skill(0), count(0), unit(0), at(0), nextOpenAt(0), windowSince(0), decideAt(0),
 			paid(false), paidPieces(0), offered(false), warnedAt(0), lastPieces(0), shortSince(0),
 			meet(playerbot_conv::DEAL_MEET_FAILED), meetMap(0), spot(playerbot_conv::DEAL_SPOT_NONE), spotX(0), spotY(0),
 			otherChannel(false), crossToPerson(false), leaveAt(0), walkSince(0), arrivedAt(0), nextTryAt(0), tries(0),
@@ -115,12 +116,41 @@ namespace
 
 	// ------------------------------------------------------------ pricing
 
+	// MT2009_PLUS_BOT_CHAT_V2 (deals): every skill book is one vnum with the
+	// skill in socket 0 (GetPlayerBotSkillBookSkillVnum) - a deal's piece is
+	// the item of the vnum and, for a book, of the deal's skill.
+	const DWORD PLAYERBOT_DEAL_SKILL_BOOK_VNUM = 50300;
+
+	bool IsPlayerBotDealPiece(LPITEM item, DWORD vnum, DWORD skill)
+	{
+		if (!item || !item->GetProto())
+			return false;
+		if (skill)
+			return item->GetType() == ITEM_SKILLBOOK && GetPlayerBotSkillBookSkillVnum(item) == skill;
+		return item->GetVnum() == vnum;
+	}
+
+	// How a deal names its item: "KU Aura Miecza" for a book.
+	std::string GetPlayerBotDealItemName(DWORD vnum, DWORD skill)
+	{
+		if (skill)
+		{
+			const char* name = GetPlayerBotSkillName(skill);
+			if (name && strcmp(name, "?") != 0)
+				return std::string("KU ") + name;
+		}
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		return proto ? std::string(proto->szLocaleName) : std::string("to");
+	}
+
 	// The market's price of one piece: what was paid lately, the cheapest
-	// counter, else what a keeper would ask for it.
-	long long GetPlayerBotDealFairPrice(DWORD vnum)
+	// counter, else what a keeper would ask for it. A book by its skill:
+	// the sale memory's, a counter's line of that skill, else Iwakura's
+	// sheet for the skill (PLAYERBOT_BOOK_PRICES).
+	long long GetPlayerBotDealFairPrice(DWORD vnum, DWORD skill = 0)
 	{
 		size_t samples = 0;
-		long long unit = GetPlayerBotSaleUnitPrice(vnum, 0, get_dword_time(), &samples);
+		long long unit = GetPlayerBotSaleUnitPrice(vnum, 0, get_dword_time(), &samples, skill);
 		if (unit > 0)
 			return unit;
 		TPlayerBotStall stall;
@@ -131,7 +161,8 @@ namespace
 				continue;
 			for (size_t i = 0; i < stall.lines.size(); ++i)
 			{
-				if (stall.lines[i].vnum != vnum || stall.lines[i].price <= 0)
+				if (stall.lines[i].vnum != vnum || stall.lines[i].price <= 0 ||
+						(skill && (stall.lines[i].skill != skill || stall.lines[i].forget)))
 					continue;
 				const long long per = stall.lines[i].price / (stall.lines[i].count ? stall.lines[i].count : 1);
 				if (unit == 0 || per < unit)
@@ -140,6 +171,8 @@ namespace
 		}
 		if (unit > 0)
 			return unit;
+		if (skill)
+			return (long long)GetPlayerBotBookAskingBase(skill);
 		LPITEM probe = ITEM_MANAGER::instance().CreateItem(vnum, 1, 0, false);
 		if (!probe)
 			return 0;
@@ -198,7 +231,7 @@ namespace
 	}
 
 	// The bot's own open "K>" post of this item, if any.
-	const TPlayerBotPublicLine* FindPlayerBotOpenBuyPost(DWORD botPID, DWORD vnum)
+	const TPlayerBotPublicLine* FindPlayerBotOpenBuyPost(DWORD botPID, DWORD vnum, DWORD skill = 0)
 	{
 		std::map<DWORD, std::deque<TPlayerBotPublicLine> >::const_iterator it = s_mapPlayerBotPublicLines.find(botPID);
 		if (it == s_mapPlayerBotPublicLines.end())
@@ -207,7 +240,8 @@ namespace
 		for (size_t i = 0; i < it->second.size(); ++i)
 		{
 			const TPlayerBotPublicLine& l = it->second[i];
-			if (l.vnum == vnum && l.kind == playerbot_conv::PL_BUY && l.open && now - l.at < PLAYERBOT_PUBLIC_LINE_TTL_MS)
+			if (l.vnum == vnum && l.skill == skill && l.kind == playerbot_conv::PL_BUY && l.open &&
+					now - l.at < PLAYERBOT_PUBLIC_LINE_TTL_MS)
 				return &l;
 		}
 		return NULL;
@@ -219,33 +253,118 @@ namespace
 				!IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_GIVE) && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_MYSHOP);
 	}
 
-	bool QuotePlayerBotDealItem(LPCHARACTER bot, const std::string& query, DWORD vnumHint,
+	// The skill books in the bot's bag it would sell, "KU Aura Miecza, KU
+	// Berserk", for "ktora?".
+	std::string ListPlayerBotDealBooks(LPCHARACTER bot)
+	{
+		std::string out;
+		std::set<DWORD> seen;
+		if (!bot || !bot->IsItemLoaded())
+			return out;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && seen.size() < 4; ++cell)
+		{
+			LPITEM item = bot->GetInventoryItem(cell);
+			const DWORD skill = item && item->GetCell() == cell && IsPlayerBotDealSellable(item) ?
+					GetPlayerBotSkillBookSkillVnum(item) : 0;
+			if (!skill || !seen.insert(skill).second)
+				continue;
+			if (!out.empty())
+				out += ", ";
+			out += GetPlayerBotDealItemName(item->GetVnum(), skill);
+		}
+		return out;
+	}
+
+	bool QuotePlayerBotDealItem(LPCHARACTER bot, const std::string& query, DWORD vnumHint, DWORD skillHint,
 			playerbot_conv::TDealQuote& out)
 	{
 		out = playerbot_conv::TDealQuote();
 		if (!bot)
 			return false;
-		const DWORD vnum = vnumHint ? vnumHint : FindPlayerBotDealVnum(bot, playerbot_conv::FoldName(query.c_str()));
+		const std::string folded = playerbot_conv::FoldName(query.c_str());
+		// MT2009_PLUS_BOT_CHAT_V2 (deals): a skill book by its skill - the
+		// post's, or the query's "ku aura miecza" / "ksiega aura miecza" /
+		// "instr. aura miecza". Matched by name, "ku aura miecza" found the
+		// per-skill proto (50401..) that no bag holds, and a bare "ku" any
+		// book at all: every book is 50300 with the skill in socket 0.
+		DWORD skill = skillHint;
+		if (!skill && !vnumHint && playerbot_conv::IsBareBookObject(folded))
+		{
+			out.needSkill = true;
+			out.booksHad = ListPlayerBotDealBooks(bot);
+			return false;
+		}
+		if (!skill)
+		{
+			std::string rest;
+			bool forget = false;
+			const DWORD named = GetPlayerBotStallBookQuery(folded, rest, forget);
+			if (!forget)
+				skill = named;
+		}
+		DWORD vnum = vnumHint;
+		if (!skill && !vnumHint)
+		{
+			vnum = FindPlayerBotDealVnum(bot, folded);
+			const TItemTable* named = vnum ? ITEM_MANAGER::instance().GetTable(vnum) : NULL;
+			if (named && named->bType == ITEM_SKILLBOOK)
+			{
+				// A per-skill book's name ("Instr. Aura Miecza") is its skill;
+				// the general one's ("Ksiega Umiejetnosci", "ku") is none.
+				skill = vnum != PLAYERBOT_DEAL_SKILL_BOOK_VNUM ? (DWORD)named->alValues[0] : 0;
+				if (!skill)
+				{
+					out.needSkill = true;
+					out.booksHad = ListPlayerBotDealBooks(bot);
+					return false;
+				}
+			}
+		}
+		if (skill)
+			vnum = PLAYERBOT_DEAL_SKILL_BOOK_VNUM;
 		const TItemTable* proto = vnum ? ITEM_MANAGER::instance().GetTable(vnum) : NULL;
 		if (!proto)
 			return false;
 		TPlayerBotAIStateMap::const_iterator st = s_mapPlayerBotAIStates.find(bot->GetPlayerID());
 		out.found = true;
 		out.vnum = vnum;
-		out.name = proto->szLocaleName;
+		out.skill = skill;
+		out.name = skill ? GetPlayerBotDealItemName(vnum, skill) : std::string(proto->szLocaleName);
 		out.stackable = IS_SET(proto->dwFlags, ITEM_FLAG_STACKABLE);
-		out.fair = GetPlayerBotDealFairPrice(vnum);
+		out.fair = GetPlayerBotDealFairPrice(vnum, skill);
 		out.botGold = (long long)bot->GetGold();
 
 		// Would it buy it, and at what most.
 		std::set<DWORD> wanted;
 		CollectPlayerBotWantedMaterials(bot, wanted);
-		const TPlayerBotPublicLine* post = FindPlayerBotOpenBuyPost(bot->GetPlayerID(), vnum);
+		const TPlayerBotPublicLine* post = FindPlayerBotOpenBuyPost(bot->GetPlayerID(), vnum, skill);
+		// A book of its own path's skill, while it still reads them (Master,
+		// 20..29): the one book a bot reliably buys off anybody.
+		const bool bookNeeded = skill && IsPlayerBotOwnSkill(bot, skill) &&
+				bot->GetSkillMasterType(skill) == SKILL_MASTER && bot->GetSkillLevel(skill) >= 20 &&
+				bot->GetSkillLevel(skill) < 30;
 		if (post)
 		{
 			out.botWants = true;
 			out.wantCount = post->count > 0 ? post->count : (out.stackable ? 10 : 1);
 			out.maxBuyUnit = std::max<long long>(post->unit, out.fair) * 110 / 100;
+		}
+		else if (bookNeeded)
+		{
+			out.botWants = out.fair > 0;
+			out.wantCount = 1;
+			out.maxBuyUnit = out.fair * 105 / 100;
+		}
+		else if (skill)
+		{
+			// Another skill's book: a merchant only, for its counter.
+			if (st != s_mapPlayerBotAIStates.end() && MapPlayerBotConvStyle(st->second) == playerbot_conv::S_MERCHANT &&
+					out.fair > 0)
+			{
+				out.botWants = true;
+				out.wantCount = 1;
+				out.maxBuyUnit = out.fair * 70 / 100;
+			}
 		}
 		else if (wanted.count(vnum) || (GetPlayerBotRefineMaterialVnums().count(vnum) && PlayerBotNeedsRefineMaterial(bot, vnum)))
 		{
@@ -276,12 +395,12 @@ namespace
 
 		// Would it sell it, and at what least: its bag, never what it wears,
 		// what it is short of, or what its counter holds.
-		if (!wanted.count(vnum) && out.fair > 0 && bot->IsItemLoaded())
+		if (!wanted.count(vnum) && !bookNeeded && out.fair > 0 && bot->IsItemLoaded())
 		{
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 			{
 				LPITEM item = bot->GetInventoryItem(cell);
-				if (item && item->GetVnum() == vnum && item->GetCell() == cell && IsPlayerBotDealSellable(item))
+				if (item && IsPlayerBotDealPiece(item, vnum, skill) && item->GetCell() == cell && IsPlayerBotDealSellable(item))
 					out.botHas += (int)item->GetCount();
 			}
 			out.minSellUnit = out.fair * 85 / 100;
@@ -292,7 +411,7 @@ namespace
 		{
 			for (size_t i = 0; i < stall.lines.size(); ++i)
 			{
-				if (stall.lines[i].vnum != vnum)
+				if (stall.lines[i].vnum != vnum || (skill && (stall.lines[i].skill != skill || stall.lines[i].forget)))
 					continue;
 				out.onStall = true;
 				out.stallUnit = stall.lines[i].price / (stall.lines[i].count ? stall.lines[i].count : 1);
@@ -376,8 +495,8 @@ namespace
 		out.arrived = d.arrivedAt != 0;
 	}
 
-	int RegisterPlayerBotDeal(LPCHARACTER bot, DWORD personPID, LPCHARACTER person, BYTE side, DWORD vnum, int count,
-			long long unit, playerbot_conv::TDealMeetPlace& place)
+	int RegisterPlayerBotDeal(LPCHARACTER bot, DWORD personPID, LPCHARACTER person, BYTE side, DWORD vnum, DWORD skill,
+			int count, long long unit, playerbot_conv::TDealMeetPlace& place)
 	{
 		using namespace playerbot_conv;
 		place = TDealMeetPlace();
@@ -393,6 +512,7 @@ namespace
 		d = TPlayerBotDeal();
 		d.side = side;
 		d.vnum = vnum;
+		d.skill = skill;
 		d.count = count;
 		d.unit = unit;
 		d.at = now;
@@ -461,9 +581,9 @@ namespace
 			}
 		}
 		FillPlayerBotDealMeetPlace(d, bot, place);
-		sys_log(0, "PLAYERBOT_DEAL: agreed pid=%u name=%s person_pid=%u side=%s vnum=%u count=%d unit=%lld meet=%d "
+		sys_log(0, "PLAYERBOT_DEAL: agreed pid=%u name=%s person_pid=%u side=%s vnum=%u skill=%u count=%d unit=%lld meet=%d "
 				"map=%ld spot=%d channel=%d person_channel=%d cross=%d",
-				bot->GetPlayerID(), bot->GetName(), personPID, side == DEAL_BOT_BUYS ? "buys" : "sells", vnum, count, unit,
+				bot->GetPlayerID(), bot->GetName(), personPID, side == DEAL_BOT_BUYS ? "buys" : "sells", vnum, skill, count, unit,
 				d.meet, place.map, (int)d.spot, (int)g_bChannel, personChannel, d.crossToPerson ? 1 : 0);
 		return d.meet;
 	}
@@ -501,10 +621,11 @@ namespace
 				s_mapPlayerBotDeals.find(std::make_pair(bot->GetPlayerID(), personPID));
 		if (it != s_mapPlayerBotDeals.end())
 		{
-			sys_log(0, "PLAYERBOT_DEAL: %s pid=%u name=%s person_pid=%u vnum=%u count=%d unit=%lld", why,
-					bot->GetPlayerID(), bot->GetName(), personPID, it->second.vnum, it->second.count, it->second.unit);
+			sys_log(0, "PLAYERBOT_DEAL: %s pid=%u name=%s person_pid=%u vnum=%u skill=%u count=%d unit=%lld", why,
+					bot->GetPlayerID(), bot->GetName(), personPID, it->second.vnum, it->second.skill, it->second.count,
+					it->second.unit);
 			if (state == playerbot_conv::DEAL_DONE)
-				ClosePlayerBotPublicPost(bot->GetPlayerID(), it->second.vnum);
+				ClosePlayerBotPublicPost(bot->GetPlayerID(), it->second.vnum, it->second.skill);
 			s_mapPlayerBotDeals.erase(it);
 		}
 		if (playerbot_conv::TConvPair* pair = s_PlayerBotConvEngine.FindPair(personPID, bot->GetPlayerID()))
@@ -549,22 +670,27 @@ namespace
 
 	// The bot's pieces of the deal into its side of the window, a stack split
 	// to the count when it has to be. False when it has not got them.
-	bool OfferPlayerBotDealPieces(LPCHARACTER ch, CExchange* exchange, DWORD vnum, int count)
+	// A book only of the deal's skill (socket 0): every book is one vnum,
+	// and "KU Aura Miecza" agreed must not hand over a KU Berserk.
+	bool OfferPlayerBotDealPieces(LPCHARACTER ch, CExchange* exchange, DWORD vnum, DWORD skill, int count)
 	{
 		std::vector<LPITEM> chosen;
 		int pieces = 0;
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && pieces < count; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (!item || item->GetVnum() != vnum || item->GetCell() != cell || !IsPlayerBotDealSellable(item))
+			if (!item || !IsPlayerBotDealPiece(item, vnum, skill) || item->GetCell() != cell || !IsPlayerBotDealSellable(item))
 				continue;
 			const int left = count - pieces;
 			if ((int)item->GetCount() > left)
 			{
-				// Split: the rest stays, the deal's part goes to a cell of its own.
-				LPITEM part = ITEM_MANAGER::instance().CreateItem(vnum, left, 0, false);
+				// Split: the rest stays, the deal's part goes to a cell of its own
+				// - a book's with its skill.
+				LPITEM part = ITEM_MANAGER::instance().CreateItem(item->GetVnum(), left, 0, false);
 				if (!part)
 					return false;
+				if (skill)
+					part->SetSocket(0, item->GetSocket(0));
 				const int free = ch->GetEmptyInventory(part->GetSize());
 				if (free < 0)
 				{
@@ -822,8 +948,8 @@ namespace
 		if (found == s_mapPlayerBotDeals.end())
 			return false; // not a deal: the gift trade's
 		TPlayerBotDeal& d = found->second;
-		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(d.vnum);
-		const char* name = proto ? proto->szLocaleName : "to";
+		const std::string dealName = GetPlayerBotDealItemName(d.vnum, d.skill);
+		const char* name = dealName.c_str();
 
 		// Standing still at the window, as the gift trade does.
 		ch->SetVictim(NULL);
@@ -848,9 +974,11 @@ namespace
 		if (d.side == DEAL_BOT_BUYS)
 		{
 			int pieces = 0, others = 0;
+			// A book of another skill is not the deal's piece: it is told to
+			// go as anything else is ("Daj tylko KU Aura Miecza").
 			for (size_t i = 0; i < offer.size(); ++i)
 			{
-				if (offer[i]->GetVnum() == d.vnum)
+				if (IsPlayerBotDealPiece(offer[i], d.vnum, d.skill))
 					pieces += (int)offer[i]->GetCount();
 				else
 					++others;
@@ -937,7 +1065,7 @@ namespace
 		{
 			if (!d.offered)
 			{
-				if (!OfferPlayerBotDealPieces(ch, exchange, d.vnum, d.count))
+				if (!OfferPlayerBotDealPieces(ch, exchange, d.vnum, d.skill, d.count))
 				{
 					exchange->Cancel();
 					SayPlayerBotDealLine(ch, partner, "Ups, juz tego nie mam. Sorki.");

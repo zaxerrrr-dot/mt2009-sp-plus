@@ -53,6 +53,10 @@ namespace
 	const DWORD PLAYERBOT_TRADE_REPLY_INTERVAL = 8000;
 	// Fewer letters than this after the verb is not a thing anybody meant.
 	const size_t PLAYERBOT_TRADE_QUERY_MIN = 3;
+	// MT2009_PLUS_BOT_CHAT_V2: a person who whispered with a bot this lately
+	// is still talking to it (IsPlayerBotTalkingWith, playerbot_chat_conversation.h).
+	const DWORD PLAYERBOT_TRADE_TALK_MS = 10 * 60 * 1000;
+	bool IsPlayerBotTalkingWith(DWORD personPID, DWORD botPID, DWORD now);
 	// The skill books the proto names one skill each - "Instr. Aura Miecza",
 	// value 0 the skill - which is the only place the server has a skill's
 	// Polish name. skill_proto holds the Korean ones.
@@ -83,12 +87,15 @@ namespace
 		long map;
 		int level;
 		bool open;
-		TPlayerBotPublicLine() : at(0), kind(0), trade(false), vnum(0), count(0), unit(0), map(0), level(0), open(true) {}
+		// A skill book's skill: every book is one vnum, the skill in socket 0.
+		DWORD skill;
+		TPlayerBotPublicLine() : at(0), kind(0), trade(false), vnum(0), count(0), unit(0), map(0), level(0), open(true),
+			skill(0) {}
 	};
 	std::map<DWORD, std::deque<TPlayerBotPublicLine> > s_mapPlayerBotPublicLines;
 
 	void NotePlayerBotPublicLine(LPCHARACTER bot, BYTE kind, bool trade, const char* text, DWORD vnum = 0, int count = 0,
-			DWORD unit = 0, long map = 0, int level = 0, const char* itemName = NULL)
+			DWORD unit = 0, long map = 0, int level = 0, const char* itemName = NULL, DWORD skill = 0)
 	{
 		if (!bot || !text)
 			return;
@@ -103,6 +110,7 @@ namespace
 		line.unit = unit;
 		line.map = map >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? map / 10000 : map;
 		line.level = level;
+		line.skill = skill;
 		if (itemName && *itemName)
 			line.itemName = itemName;
 		else if (vnum)
@@ -111,23 +119,25 @@ namespace
 			if (proto)
 				line.itemName = proto->szLocaleName;
 		}
-		// A new post of the same item replaces the old one.
+		// A new post of the same item replaces the old one - a book of the
+		// same skill (all books are one vnum).
 		if (vnum)
 			for (std::deque<TPlayerBotPublicLine>::iterator it = lines.begin(); it != lines.end(); )
-				it = it->vnum == vnum && it->kind == kind ? lines.erase(it) : it + 1;
+				it = it->vnum == vnum && it->kind == kind && it->skill == skill ? lines.erase(it) : it + 1;
 		lines.push_front(line);
 		while (lines.size() > PLAYERBOT_PUBLIC_LINES_MAX)
 			lines.pop_back();
 	}
 
-	// A trade post's deal done: the post is not meant any more.
-	void ClosePlayerBotPublicPost(DWORD botPID, DWORD vnum)
+	// A trade post's deal done: the post is not meant any more. A book's
+	// post by its skill: selling KU Berserk does not close "S> KU Aura".
+	void ClosePlayerBotPublicPost(DWORD botPID, DWORD vnum, DWORD skill = 0)
 	{
 		std::map<DWORD, std::deque<TPlayerBotPublicLine> >::iterator it = s_mapPlayerBotPublicLines.find(botPID);
 		if (it == s_mapPlayerBotPublicLines.end())
 			return;
 		for (size_t i = 0; i < it->second.size(); ++i)
-			if (it->second[i].vnum == vnum)
+			if (it->second[i].vnum == vnum && (skill == 0 || it->second[i].skill == 0 || it->second[i].skill == skill))
 				it->second[i].open = false;
 	}
 
@@ -156,6 +166,7 @@ namespace
 			p.level = l.level;
 			p.ageMin = (now - l.at) / 60000;
 			p.open = l.open;
+			p.skill = l.skill;
 			out.push_back(p);
 		}
 	}
@@ -676,6 +687,49 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2: beside what in its village a stall stands, as a
+	// person finds it - "przy kowalu", "kolo magazyniera" - from the town's
+	// services (playerbot_empire_rules.h). Empty off a village or unknown.
+	const long PLAYERBOT_STALL_SPOT_NEAR = 1500;
+	const long PLAYERBOT_STALL_SPOT_FAR = 5000;
+	std::string DescribePlayerBotStallSpot(long mapIndex, long x, long y)
+	{
+		playerbot_empire_rules::TTownServices services;
+		if (mapIndex <= 0 || (x == 0 && y == 0) || !playerbot_empire_rules::GetTownServices(mapIndex, services))
+			return std::string();
+		// The stall ring's middle, under the kingdom's guard, is where most of
+		// them stand.
+		playerbot_empire_rules::TPoint pitch = { 0, 0 };
+		playerbot_empire_rules::GetTownPitch(mapIndex, pitch);
+		const struct { const playerbot_empire_rules::TPoint* at; const char* near; const char* by; } kSpots[] = {
+			{ &pitch, "na placu przy strazniku", "na placu kolo straznika" },
+			{ &services.blacksmith, "przy kowalu", "kolo kowala" },
+			{ &services.storekeeper, "przy magazynierze", "kolo magazyniera" },
+			{ &services.weaponMerchant, "przy sprzedawcy broni", "kolo sprzedawcy broni" },
+			{ &services.armourMerchant, "przy sprzedawcy zbroi", "kolo sprzedawcy zbroi" },
+			{ &services.miscMerchant, "przy sklepie z miksami", "kolo sklepu z miksami" },
+			{ &services.stableKeeper, "przy stajennym", "kolo stajennego" },
+			{ &services.skillReset, "przy starej kobiecie", "kolo starej kobiety" },
+			{ &services.teleporter, "przy teleporterze", "kolo teleportera" },
+		};
+		long best = -1;
+		size_t bestAt = 0;
+		for (size_t i = 0; i < sizeof(kSpots) / sizeof(kSpots[0]); ++i)
+		{
+			if (kSpots[i].at->x == 0 && kSpots[i].at->y == 0)
+				continue;
+			const long d = DISTANCE_APPROX(kSpots[i].at->x - x, kSpots[i].at->y - y);
+			if (best < 0 || d < best)
+			{
+				best = d;
+				bestAt = i;
+			}
+		}
+		if (best < 0 || best > PLAYERBOT_STALL_SPOT_FAR)
+			return std::string();
+		return best <= PLAYERBOT_STALL_SPOT_NEAR ? kSpots[bestAt].near : kSpots[bestAt].by;
+	}
+
 	// A folded query against a stall line: the skill of a book ("ku aura") -
 	// a skill book's or a Forgetting Book's (forget, "kz aura"), never the one
 	// for the other - or the name with the players' aliases ("fms", "12d",
@@ -715,7 +769,9 @@ namespace
 				return FindPlayerBotSkillByName(rest.c_str());
 			}
 		}
-		static const char* const kBook[] = { "ku ", "ksiega ", "ksiege ", "ksiegi ", "instr " };
+		// "instr. " too: the proto's own name of a book, which is what the
+		// bot's post printed and a person copies back.
+		static const char* const kBook[] = { "ku ", "ksiega ", "ksiege ", "ksiegi ", "instr. ", "instr " };
 		for (size_t i = 0; i < sizeof(kBook) / sizeof(kBook[0]); ++i)
 		{
 			const size_t n = strlen(kBook[i]);
@@ -787,6 +843,25 @@ namespace
 			return verb;
 		while (*p && IsPlayerBotChatSeparator(*p))
 			++p;
+		// MT2009_PLUS_BOT_CHAT_V2: "kupie to ku ognisty duch", "kupie ten
+		// naszyjnik": the pointing word is not the item, and before "ku" it hid
+		// the book (book=0 query="to ku ognisty duch", 4 October).
+		{
+			static const char* const kPoint[] = { "to", "ten", "te", "ta", "tego", "tej", "tych", "twoj", "twoja",
+				"twoje", "twojego" };
+			for (bool skipped = true; skipped; )
+			{
+				skipped = false;
+				for (size_t i = 0; i < sizeof(kPoint) / sizeof(kPoint[0]) && !skipped; ++i)
+					if (PlayerBotTextOpensWithWord(p, kPoint[i]))
+					{
+						p += strlen(kPoint[i]);
+						while (*p && IsPlayerBotChatSeparator(*p))
+							++p;
+						skipped = true;
+					}
+			}
+		}
 		if (PlayerBotTextOpensWithWord(p, "kz"))
 		{
 			outBook = true;
@@ -860,6 +935,54 @@ namespace
 				? verb : PLAYERBOT_TRADE_NONE;
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2: a bot's open trade post of this item (a book
+	// of this skill), younger than an hour.
+	bool HasPlayerBotOpenPostOf(DWORD botPID, BYTE kind, DWORD vnum, DWORD skill)
+	{
+		std::map<DWORD, std::deque<TPlayerBotPublicLine> >::const_iterator it = s_mapPlayerBotPublicLines.find(botPID);
+		if (it == s_mapPlayerBotPublicLines.end() || !vnum)
+			return false;
+		const DWORD now = get_dword_time();
+		for (size_t i = 0; i < it->second.size(); ++i)
+		{
+			const TPlayerBotPublicLine& l = it->second[i];
+			if (l.open && l.kind == kind && l.vnum == vnum && l.skill == skill && now - l.at < PLAYERBOT_PUBLIC_LINE_TTL_MS)
+				return true;
+		}
+		return false;
+	}
+
+	// The bot whose open post of the item a trade line names is already
+	// talking with the person (a whisper lately, a deal): the line is that
+	// talk's, and no other bot cuts in with an offer of its own - "Kupie ku
+	// ognisty duch" whispered to DzikiRycerz2 after its "S> Instr. Ognisty
+	// Duch" was answered by traviden's "Mam [Instr. Ognisty Duch] na
+	// straganie w Yongan" and never by DzikiRycerz2 (the owner, 4 October).
+	DWORD FindPlayerBotPostOwnerInTalk(DWORD personPID, BYTE kind, const char* query, bool book, bool forget,
+			DWORD skillVnum)
+	{
+		if (!personPID || forget)
+			return 0;
+		std::vector<std::string> candidates;
+		playerbot_conv::ExpandItemQuery(query ? query : "", candidates);
+		const DWORD now = get_dword_time();
+		for (std::map<DWORD, std::deque<TPlayerBotPublicLine> >::const_iterator it = s_mapPlayerBotPublicLines.begin();
+				it != s_mapPlayerBotPublicLines.end(); ++it)
+		{
+			for (size_t i = 0; i < it->second.size(); ++i)
+			{
+				const TPlayerBotPublicLine& l = it->second[i];
+				if (!l.open || l.kind != kind || now - l.at >= PLAYERBOT_PUBLIC_LINE_TTL_MS || l.itemName.empty())
+					continue;
+				const bool names = book ? l.skill != 0 && l.skill == skillVnum
+						: playerbot_conv::ItemNameMatchesAny(playerbot_conv::FoldName(l.itemName.c_str()), candidates);
+				if (names && IsPlayerBotTalkingWith(personPID, it->first, now))
+					return it->first;
+			}
+		}
+		return 0;
+	}
+
 	// "Kupie X": the nearest open counter with X on it answers with where and
 	// how much. The player's own map first, then any.
 	bool AnswerPlayerBotBuyShout(const TPlayerBotPerson& player, const char* query, bool book, bool forget,
@@ -893,7 +1016,11 @@ namespace
 					distance = player.local
 							? (long long)DISTANCE_APPROX(player.local->GetX() - stall.x, player.local->GetY() - stall.y)
 							: 500000LL;
-				if (bestDistance < 0 || distance < bestDistance)
+				// MT2009_PLUS_BOT_CHAT_V2: "kupie X" right after a bot's own
+				// "S> X" is that post's answer - its keeper answers it.
+				if (HasPlayerBotOpenPostOf(it->first, playerbot_conv::PL_SELL, line.vnum, line.skill))
+					distance = -1;
+				if (!bestKeeper || distance < bestDistance)
 				{
 					bestDistance = distance;
 					bestKeeper = keeper;
@@ -1180,6 +1307,16 @@ namespace
 			forget = false;
 		}
 		const DWORD dwNow = get_dword_time();
+		{
+			const DWORD owner = FindPlayerBotPostOwnerInTalk(player.pid,
+					verb == PLAYERBOT_TRADE_BUY ? playerbot_conv::PL_SELL : playerbot_conv::PL_BUY, query, book, forget, skillVnum);
+			if (owner)
+			{
+				sys_log(0, "PLAYERBOT_TRADE: shout from=%s left to the post's bot pid=%u query=\"%s\"",
+						player.name.c_str(), owner, query);
+				return false;
+			}
+		}
 		if (!PlayerBotTradeReplyAllowed(player.pid, dwNow))
 			return false;
 		const bool answered = verb == PLAYERBOT_TRADE_BUY
@@ -1450,23 +1587,17 @@ namespace
 		const EPlayerBotTradeVerb verb = ParsePlayerBotTradeText(text, query, sizeof(query), book, forget);
 		if (verb != PLAYERBOT_TRADE_NONE)
 		{
-			// The 8-second trade clock is for shouts - one bot to one door. A
-			// whisper inside it used to vanish without a word; now this bot
-			// answers it itself from its own counter and needs (conversation
-			// layer, I_BUY / I_SELL), so nothing a person writes is lost.
-			std::map<DWORD, DWORD>::const_iterator last =
-					s_mapPlayerBotTradeReplyTime.find(player.pid);
-			if (last != s_mapPlayerBotTradeReplyTime.end() && last->second != 0 &&
-					dwNow - last->second < PLAYERBOT_TRADE_REPLY_INTERVAL &&
-					HandlePlayerBotConversationWith(player.pid, player.name.c_str(), bot, text))
-				return;
-			if (AnswerPlayerBotTradeLine(player, text))
-				return;
-			// Nobody on this core has the thing on a counter or wants it. The
-			// line used to be left without a word, as a shout nobody can answer
-			// is; whispered, it is this bot's to answer from its own counter and
-			// needs. A person on the other channel meets that most: that
-			// channel's counters are mostly the other core's bots'.
+			// MT2009_PLUS_BOT_CHAT_V2: a trade line whispered to a bot is this
+			// bot's to answer - from its own counter, bag, posts and needs
+			// (conversation layer, I_BUY / I_SELL, the deals). It used to be
+			// answered as a shout, by whichever bot was best placed: the
+			// owner whispered DzikiRycerz2 "Kupie to ku ognisty duch" after
+			// its own post of that book, traviden whispered back an offer of
+			// its own and DzikiRycerz2 said nothing (4 October). A private
+			// whisper is nobody else's business.
+			sys_log(0, "PLAYERBOT_TRADE: whisper trade line pid=%u name=%s from=%s verb=%s book=%d query=\"%s\"",
+					bot->GetPlayerID(), bot->GetName(), player.name.c_str(), verb == PLAYERBOT_TRADE_BUY ? "buy" : "sell",
+					book ? 1 : 0, query);
 			HandlePlayerBotConversationWith(player.pid, player.name.c_str(), bot, text);
 			return;
 		}

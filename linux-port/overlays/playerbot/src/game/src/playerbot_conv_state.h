@@ -272,8 +272,11 @@ namespace playerbot_conv
 		int level;             // the level a line named, 0 none
 		u32 ageMin;
 		bool open;             // still meant (a trade not yet done)
+		// A skill book's skill (all of them are one vnum, the skill in socket
+		// 0): "S> KU Aura Miecza" is that book and no other.
+		u32 skill;
 		TPublicLine() : kind(PL_NONE), trade(false), vnum(0), count(0), unitPrice(0), map(0), level(0), ageMin(0),
-			open(true) {}
+			open(true), skill(0) {}
 	};
 
 	// --------------------------------------------------------------- snapshot
@@ -333,6 +336,8 @@ namespace playerbot_conv
 		bool shopOpen;          // a stall of any kind is up (classic or the offline shop)
 		bool shopStanding;      // the classic one: the bot itself stands behind it
 		long shopMapIndex;      // where the stall stands (the offline one stays while the bot hunts)
+		int shopChannel;        // the channel it stands on, 0 unknown
+		std::string shopSpot;   // beside what in the village, "przy kowalu" - empty unknown
 		bool shopOtherChannel;
 		int shopItems;
 		std::string shopSummary;
@@ -407,7 +412,7 @@ namespace playerbot_conv
 			bagCells(0), weaponPlus(0), armorPlus(0), fishing(false), mining(false),
 			herbUnlocked(false), metinHunter(false), demonTower(false), guildWar(false),
 			mercContract(false), luring(false), luringForAsker(false), shopOpen(false), shopStanding(false), shopMapIndex(0),
-			shopOtherChannel(false), shopItems(0),
+			shopChannel(0), shopOtherChannel(false), shopItems(0),
 			marketTrip(false), mobsNear(-1), playersNear(0), style(S_ADVENTURER), mood(MOOD_NEUTRAL),
 			unlucky(false), euphoria(false), affinity(0), onlineMinutes(0), goalMinutes(0),
 			actionMinutes(0), recentDeaths(0), minutesSinceDeath(0xFFFFFFFFu), askerLevel(0),
@@ -445,8 +450,14 @@ namespace playerbot_conv
 		long long stallUnit;
 		std::string stallWhere;
 		long long botGold;
+		// A skill book: the skill (socket 0 of the one book vnum), and the
+		// bare "ku" / "ksiega" with no skill named (needSkill) - with the
+		// books the bot itself has, "KU Aura Miecza, KU Berserk", to ask which.
+		u32 skill;
+		bool needSkill;
+		std::string booksHad;
 		TDealQuote() : found(false), vnum(0), stackable(false), fair(0), botWants(false), wantCount(0), maxBuyUnit(0),
-			botHas(0), minSellUnit(0), sellUnit(0), onStall(false), stallUnit(0), botGold(0) {}
+			botHas(0), minSellUnit(0), sellUnit(0), onStall(false), stallUnit(0), botGold(0), skill(0), needSkill(false) {}
 	};
 
 	// Whether the asker plays on the other channel than the bot.
@@ -491,17 +502,19 @@ namespace playerbot_conv
 			// MT2009_PLUS_BOT_CHAT_V2 (deals): an item a whisper names (or the
 			// bot's own post's item, `vnumHint`), priced and judged: would the
 			// bot buy it, does it have it to sell, at what prices.
-			virtual bool QuoteItem(const std::string& query, u32 vnumHint, TDealQuote& out)
+			// A skill book's skill comes with the hint (the post's), else from
+			// the query's words ("ku aura miecza").
+			virtual bool QuoteItem(const std::string& query, u32 vnumHint, u32 skillHint, TDealQuote& out)
 			{
-				(void)query; (void)vnumHint; (void)out;
+				(void)query; (void)vnumHint; (void)skillHint; (void)out;
 				return false;
 			}
 			// Both settled (EDealMeet): the engine holds the deal for the
 			// exchange window and says how the two meet - and, for a meeting
 			// at a landmark, where (`place`).
-			virtual int DealAgreed(unsigned char side, u32 vnum, int count, long long unit, TDealMeetPlace& place)
+			virtual int DealAgreed(unsigned char side, u32 vnum, u32 skill, int count, long long unit, TDealMeetPlace& place)
 			{
-				(void)side; (void)vnum; (void)count; (void)unit;
+				(void)side; (void)vnum; (void)skill; (void)count; (void)unit;
 				place = TDealMeetPlace();
 				return -1;
 			}
