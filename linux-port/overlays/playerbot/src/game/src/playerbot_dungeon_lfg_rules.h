@@ -136,7 +136,7 @@ namespace playerbot_lfg
 			{ "biblioteka", { "bibliotek`e", "biblio", "bibliotek`e wiedzy" }, { "biblioteki", "biblioteki" } },
 			{ "wieza", { "wie`z`e", "wie`z`e demon`ow", "dt" }, { "wie`zy", "wie`zy demon`ow" } },
 			{ "wukong", { "wukonga", "wzg`orze wukonga", "wukonga" }, { "wukonga", "wzg`orza wukonga" } },
-			{ "razador", { "razadora", "czy`s`ciec ognia", "razadora" }, { "razadora", "czy`s`cca ognia" } },
+			{ "razador", { "razadora", "czy`sciec ognia", "razadora" }, { "razadora", "czy`s`cca ognia" } },
 			{ "skorpion", { "skorpiona", "ruiny skorpiona", "skorpiona" }, { "ruin skorpiona", "skorpiona" } },
 			{ "katakumby", { "katakumby", "kata", "katakumby diab`la" }, { "katakumb", "katakumb" } },
 			{ "nemere", { "nemere", "nemere", "lodow`a krain`e" }, { "nemere", "lodowej krainy" } },

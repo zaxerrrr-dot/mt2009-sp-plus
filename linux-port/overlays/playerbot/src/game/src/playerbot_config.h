@@ -193,6 +193,11 @@ namespace
 	// The Devil's Catacomb's raids (the CATACOMB key), playerbot_catacomb.h.
 	bool s_bPlayerBotCatacombRaids = true;
 	bool s_bPlayerBotCatacombRaidsReported = true;
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the bots' own dungeon runs (the DUNGEONS
+	// key, the panel's "Dungeony botow"), playerbot_dungeon_runs.h. On unless
+	// the panel says otherwise.
+	bool s_bPlayerBotDungeonRuns = true;
+	bool s_bPlayerBotDungeonRunsReported = true;
 // The bots' ItemShop purchases (the ISHOP key), playerbot_itemshop.h.
 	bool s_bPlayerBotItemShop = true;
 	bool s_bPlayerBotItemShopReported = true;
@@ -308,6 +313,7 @@ namespace
 		s_bPlayerBotGuildWars = true;
 		s_bPlayerBotTowerRaids = true;
 		s_bPlayerBotCatacombRaids = true;
+		s_bPlayerBotDungeonRuns = true; // MT2009_PLUS_BOT_DUNGEON_RUNS_V1
 		s_bPlayerBotItemShop = true;
 		s_bPlayerBotShopsInM2 = false;
 		s_bPlayerBotShouters = true;
@@ -463,6 +469,18 @@ namespace
 				s_bPlayerBotCatacombRaidsReported = enabled;
 			}
 			s_bPlayerBotCatacombRaids = enabled;
+			return;
+		}
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V1
+		if (PlayerBotWeightNameEquals(szKey, "DUNGEONS"))
+		{
+			const bool enabled = value != 0;
+			if (enabled != s_bPlayerBotDungeonRunsReported)
+			{
+				sys_log(0, "PLAYERBOT_CONFIG: bot dungeon runs %s", enabled ? "on" : "off");
+				s_bPlayerBotDungeonRunsReported = enabled;
+			}
+			s_bPlayerBotDungeonRuns = enabled;
 			return;
 		}
 if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
@@ -786,6 +804,8 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_bPlayerBotTowerRaids ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "CATACOMB"))
 			return s_bPlayerBotCatacombRaids ? 1 : 0;
+		if (PlayerBotWeightNameEquals(szKey, "DUNGEONS"))
+			return s_bPlayerBotDungeonRuns ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_bPlayerBotItemShop ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "SHOP_M2"))
@@ -873,6 +893,7 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 				PlayerBotWeightNameEquals(szKey, "WARS") ||
 				PlayerBotWeightNameEquals(szKey, "TOWER") ||
 				PlayerBotWeightNameEquals(szKey, "CATACOMB") ||
+				PlayerBotWeightNameEquals(szKey, "DUNGEONS") ||
 				PlayerBotWeightNameEquals(szKey, "ISHOP") ||
 				PlayerBotWeightNameEquals(szKey, "SHOP_M2") ||
 				PlayerBotWeightNameEquals(szKey, "PERSONA") ||
@@ -1495,6 +1516,13 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 	bool IsPlayerBotCatacombRaidsEnabled()
 	{
 		return s_bPlayerBotCatacombRaids;
+	}
+
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the DUNGEONS switch, asked by
+	// ManagePlayerBotDungeonRuns (with the file playerbot_dungeon_runs_off).
+	bool IsPlayerBotDungeonRunsPanelEnabled()
+	{
+		return s_bPlayerBotDungeonRuns;
 	}
 
 	// The ISHOP switch, asked by ManagePlayerBotItemShop.

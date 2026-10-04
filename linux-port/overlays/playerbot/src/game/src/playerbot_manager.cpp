@@ -313,6 +313,12 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // the entrance. After the chat world, the conversation, the companions, the
 // raids and the cohorts, whose business it asks about.
 #include "playerbot_dungeon_lfg.h"
+// MT2009_PLUS_BOT_DUNGEON_RUNS_V1 (include): the bots' own dungeon runs - the
+// call on the kingdom's shout, the party at the entrance, the instance, the
+// stages and the way out. After the dungeon finder, whose places, words and
+// refusals it borrows, and the party dungeon pass and the Arezzo cohort,
+// whose fights and items it uses.
+#include "playerbot_dungeon_runs.h"
 // MT2009_PLUS_BOT_FRIENDS_V1: a bot answers a person's friend invitation
 // (server-patches/botfriends), after the shouters and the companion it asks.
 #include "playerbot_bot_friends.h"
@@ -477,6 +483,10 @@ namespace
 	bool IsPlayerBotPartyEligible(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		if (!ch)
+			return false;
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: a bot of a dungeon run is in the
+		// run's party and no other (playerbot_dungeon_runs.h).
+		if (IsPlayerBotOnDungeonRun(ch->GetPlayerID()))
 			return false;
 		// MT2009_PLUS_BP_BOTS_V1: a Battle Pass errand is played alone for its
 		// while, as a rare state is (playerbot_bpbots.h).
@@ -4981,6 +4991,10 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 		// play for as long as the test runs.
 		if (IsPlayerBotArezzoCohortPID(pid) || IsPlayerBotArezzoDungeonCohortPID(pid)) // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1
 			continue;
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: nor is a bot of a dungeon run sent
+		// to rest in the middle of it; its rest waits for the way out.
+		if (IsPlayerBotOnDungeonRun(pid))
+			continue;
 		// MT2009_PLUS_BOT_RETIREMENT_FIX_V1: a bot on its way to its last stall
 		// is not sent to rest: out of the world for hours, its retirement was
 		// called off as "lost" after 30 minutes and its slot went round again.
@@ -6224,6 +6238,10 @@ void CPlayerBotManager::Update()
 	ManagePlayerBotBossRaids(dwNow);
 	// The Devil's Catacomb (playerbot_catacomb.h).
 	ManagePlayerBotCatacombRaids(dwNow);
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V1 (pass): the bots' own dungeon runs - the
+	// next call when its time has come, the gatherings, the runs under way
+	// and their ends (playerbot_dungeon_runs.h).
+	ManagePlayerBotDungeonRuns(dwNow);
 	// MT2009_PLUS_BOT_REPRICE_NOW_V1 (pass): every keeper's counter repriced
 	// at once, a few keepers a second (playerbot_reprice_now.h).
 	ManagePlayerBotRepriceNow(dwNow);
@@ -6442,6 +6460,14 @@ WritePlayerBotGuildStatus(dwNow);
 		// its dungeon's map - the lobby or a run - does nothing else, ahead of
 		// every errand, quarrel and guild war (playerbot_arezzo_dungeon_bots.h).
 		if (ManagePlayerBotArezzoDungeon(ch, state, dwNow))
+			continue;
+
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V1 (tick): a bot of one of the bots' own
+		// dungeon runs - on its way to the gathering, waiting there, inside the
+		// run's instance - does nothing else, ahead of the party dungeon pass,
+		// which would walk a bot with no person out of the instance
+		// (playerbot_dungeon_runs.h).
+		if (ManagePlayerBotDungeonRun(ch, state, dwNow))
 			continue;
 
 		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1 (tick): a bot whose person (its party's

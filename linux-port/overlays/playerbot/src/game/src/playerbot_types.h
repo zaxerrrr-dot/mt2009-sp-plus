@@ -3806,6 +3806,9 @@ namespace
 	// person goes (IsPlayerBotDungeonPartyMove below), into a dungeon too
 	// ("trzeba to naprawic aby boty mogly wchodzic na wszystkie dungeony", the
 	// owner, 4 October).
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: and the bots' own dungeon runs go in
+	// with their party (IsPlayerBotDungeonRunMove, playerbot_dungeon_runs.h:
+	// "niech wszystkie boty lataja na dungeony", the owner, 4 October).
 	bool IsPlayerBotOffLimitsMap(long mapIndex)
 	{
 		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
@@ -3834,6 +3837,13 @@ namespace
 	// (the follow), or a dungeon's own jump of a person's party into one of the
 	// party dungeons.
 	bool IsPlayerBotDungeonPartyMove(LPCHARACTER ch, long targetMap, const char* reason);
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: both defined in playerbot_dungeon_runs.h.
+	// A bot called to, gathering for or inside one of the bots' own dungeon
+	// runs - every other pass that would take it somewhere leaves it alone -
+	// and a map change of such a run (to the gathering, into its instance,
+	// out of it and home), which the Arezzo and Ochao routes let through.
+	bool IsPlayerBotOnDungeonRun(DWORD pid);
+	bool IsPlayerBotDungeonRunMove(LPCHARACTER ch, long targetMap, const char* reason);
 	// The Easter event's metins (8041-8050, event_easter.quest): its kill
 	// hook pays the killer a basket and puts more metins down, and the owner
 	// wants no bot in the new events - never a bot's target.
@@ -9074,7 +9084,10 @@ namespace
 				state.dwTowerRaidGuild != 0 || state.bTowerSummoned || state.wBossRaidRace != 0 ||
 				// And the Devil's Catacomb's raid (playerbot_catacomb.h).
 				(ch && (IsPlayerBotCatacombInstance(ch->GetMapIndex()) ||
-					IsPlayerBotCatacombRaider(ch->GetPlayerID())));
+					IsPlayerBotCatacombRaider(ch->GetPlayerID()))) ||
+				// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: and the bots' own dungeon
+				// runs, from the call to the way out (playerbot_dungeon_runs.h).
+				(ch && IsPlayerBotOnDungeonRun(ch->GetPlayerID()));
 	}
 
 	// A dungeon's business: the tower's and a raid's, and any dungeon instance.
