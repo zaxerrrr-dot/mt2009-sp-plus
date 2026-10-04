@@ -4276,31 +4276,47 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 		return;
 	}
 	std::sort(live.begin(), live.end());
-	const size_t lo = live.size() * 35 / 100;
-	const size_t hi = std::min(live.size(), std::max(lo + 1, live.size() * 65 / 100));
-	const BYTE bLevelLo = live[lo].first;
-	const BYTE bLevelHi = live[hi - 1].first;
 
 	// Who of them is standing in this channel's world right now and can be sent
-	// to a market without any help from the ordinary AI.
+	// to a market without any help from the ordinary AI. MT2009_PLUS_BOT_RETIREMENT_WIDEN_V1:
+	// the middle first (35th-65th percentile); on a world where none of the
+	// middle can go - most of them keep a stall by then, the players' batches
+	// stood at "no bot can be picked" (3 October) - the 20th-80th, then any level.
+	static const int s_aBands[3][2] = { { 35, 65 }, { 20, 80 }, { 0, 100 } };
 	std::vector<DWORD> candidates;
-	for (size_t i = 0; i < live.size(); ++i)
+	BYTE bLevelLo = 0, bLevelHi = 0;
+	unsigned int inBand = 0, here = 0;
+	memset(s_auPlayerBotRetireRefused, 0, sizeof(s_auPlayerBotRetireRefused));
+	for (int band = 0; band < 3 && candidates.empty(); ++band)
 	{
-		if (live[i].first < bLevelLo || live[i].first > bLevelHi)
-			continue;
-		// A bot of this manager, not a person in its character (takeover).
-		if (m_mapBots.find(live[i].second) == m_mapBots.end())
-			continue;
-		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(live[i].second);
-		if (IsPlayerBotRetirementCandidate(ch, bLevelLo, bLevelHi))
-			candidates.push_back(live[i].second);
+		const size_t lo = live.size() * s_aBands[band][0] / 100;
+		const size_t hi = std::min(live.size(), std::max(lo + 1, live.size() * s_aBands[band][1] / 100));
+		bLevelLo = live[lo].first;
+		bLevelHi = live[hi - 1].first;
+		inBand = here = 0;
+		memset(s_auPlayerBotRetireRefused, 0, sizeof(s_auPlayerBotRetireRefused));
+		for (size_t i = 0; i < live.size(); ++i)
+		{
+			if (live[i].first < bLevelLo || live[i].first > bLevelHi)
+				continue;
+			++inBand;
+			// A bot of this manager, not a person in its character (takeover).
+			if (m_mapBots.find(live[i].second) == m_mapBots.end())
+				continue;
+			++here;
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(live[i].second);
+			if (IsPlayerBotRetirementCandidate(ch, bLevelLo, bLevelHi))
+				candidates.push_back(live[i].second);
+		}
 	}
 	if (candidates.empty())
 	{
 		s_dwPlayerBotRetireNextPickTime = dwNow + 60000;
 		PlayerBotLogThrottled("retire_no_candidate", dwNow,
-				"PLAYERBOT_RETIRE: no bot of levels %u-%u can be picked right now (pool=%u), looking again in a minute",
-				(unsigned int)bLevelLo, (unsigned int)bLevelHi, (unsigned int)live.size());
+				"PLAYERBOT_RETIRE: no bot of levels %u-%u can be picked right now (pool=%u in_band=%u in_game=%u; refused: offline=%u busy=%u party=%u guild_master=%u stall=%u other=%u), looking again in a minute",
+				(unsigned int)bLevelLo, (unsigned int)bLevelHi, (unsigned int)live.size(), inBand, here,
+				s_auPlayerBotRetireRefused[0], s_auPlayerBotRetireRefused[1], s_auPlayerBotRetireRefused[2],
+				s_auPlayerBotRetireRefused[3], s_auPlayerBotRetireRefused[4], s_auPlayerBotRetireRefused[5]);
 		return;
 	}
 

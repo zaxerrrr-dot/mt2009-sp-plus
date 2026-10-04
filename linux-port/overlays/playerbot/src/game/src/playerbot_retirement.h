@@ -1084,7 +1084,34 @@ void BeginPlayerBotRetirementClose(DWORD dwPlayerID, TPlayerBotRetireEntry& entr
 
 // A pick worth acting on: alive, standing where the plain "warp to my own
 // town" works, and not tied up in anything the retirement would break.
+// MT2009_PLUS_BOT_RETIREMENT_WIDEN_V1: why the last look refused its bots, for
+// the "no bot can be picked" line (offline, busy, party, guild master, stall, other).
+unsigned int s_auPlayerBotRetireRefused[6];
+
+bool IsPlayerBotRetirementCandidateInner(LPCHARACTER ch, BYTE bLevelLo, BYTE bLevelHi);
+
 bool IsPlayerBotRetirementCandidate(LPCHARACTER ch, BYTE bLevelLo, BYTE bLevelHi)
+{
+	const bool ok = IsPlayerBotRetirementCandidateInner(ch, bLevelLo, bLevelHi);
+	if (!ok)
+	{
+		int why = 5;
+		if (!ch)
+			why = 0;
+		else if (ch->GetExchange() || ch->GetShop() || ch->GetSafebox() || ch->IsBusy() || ch->IsDead())
+			why = 1;
+		else if (ch->GetParty())
+			why = 2;
+		else if (ch->GetGuild() && ch->GetGuild()->GetMasterPID() == ch->GetPlayerID())
+			why = 3;
+		else if (HasPlayerBotOfflineShop(ch))
+			why = 4;
+		++s_auPlayerBotRetireRefused[why];
+	}
+	return ok;
+}
+
+bool IsPlayerBotRetirementCandidateInner(LPCHARACTER ch, BYTE bLevelLo, BYTE bLevelHi)
 {
 	if (!ch || ch->IsDead() || ch->IsStun() || !ch->IsItemLoaded())
 		return false;
