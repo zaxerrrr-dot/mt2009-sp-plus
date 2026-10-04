@@ -1233,6 +1233,14 @@ def read_ai_weights():
     vals["REST"] = 100
     # Percent of bots that pick fights with bots of another kingdom; 0 is off.
     vals["KINGDOMPVP"] = 0
+    # MT2009_PLUS_BOT_CHAT_V2 (playerbot_config.h): a bot's whispers at a
+    # person on its spot, the bots' '@' trade chat (seconds between two lines
+    # on a core, 0 off; minutes between one bot's lines) and the share of the
+    # shout channel's questions they answer.
+    vals["SPOT"] = 1
+    vals["TRADECHAT"] = 75
+    vals["TRADECHAT_BOT"] = 20
+    vals["SHOUT_ANSWER"] = 100
     # The three wills (playerbot_config.h): percent of what the build does -
     # the Battle Pass errands, the sash keepers, the Dragon Soul users.
     vals["BATTLEPASS"] = 100
@@ -1333,6 +1341,29 @@ def read_ai_weights():
                 if name == "KINGDOMPVP":
                     try:
                         vals["KINGDOMPVP"] = max(0, min(100, int(parts[1])))
+                    except ValueError:
+                        pass
+                    continue
+                # MT2009_PLUS_BOT_CHAT_V2
+                if name == "SPOT":
+                    vals["SPOT"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
+                    continue
+                if name == "TRADECHAT":
+                    try:
+                        v = int(parts[1])
+                        vals["TRADECHAT"] = 0 if v <= 0 else max(15, min(3600, v))
+                    except ValueError:
+                        pass
+                    continue
+                if name == "TRADECHAT_BOT":
+                    try:
+                        vals["TRADECHAT_BOT"] = max(1, min(240, int(parts[1])))
+                    except ValueError:
+                        pass
+                    continue
+                if name == "SHOUT_ANSWER":
+                    try:
+                        vals["SHOUT_ANSWER"] = max(0, min(100, int(parts[1])))
                     except ValueError:
                         pass
                     continue
@@ -1448,6 +1479,14 @@ def write_ai_weights(vals):
     # Percent of bots hostile to the other kingdoms; 0 means the world is at
     # peace with itself, which is the default the core also starts from.
     body.append("KINGDOMPVP\t%d" % max(0, min(100, int(vals.get("KINGDOMPVP", 0)))))
+    # MT2009_PLUS_BOT_CHAT_V2: the bots' chat - the spot's whispers (1 on),
+    # the '@' trade chat (seconds between two lines on a core, 0 off; minutes
+    # between one bot's lines) and the percent of shout questions answered.
+    body.append("SPOT\t%d" % (1 if vals.get("SPOT", 1) else 0))
+    tc = int(vals.get("TRADECHAT", 75))
+    body.append("TRADECHAT\t%d" % (0 if tc <= 0 else max(15, min(3600, tc))))
+    body.append("TRADECHAT_BOT\t%d" % max(1, min(240, int(vals.get("TRADECHAT_BOT", 20)))))
+    body.append("SHOUT_ANSWER\t%d" % max(0, min(100, int(vals.get("SHOUT_ANSWER", 100)))))
     # The three wills, percent of the build's: 100 is the world as it was.
     for key in ("BATTLEPASS", "SASH", "ALCHEMY"):
         body.append("%s\t%d" % (key, max(0, min(250, int(vals.get(key, 100))))))
@@ -4513,6 +4552,15 @@ T.update({
                   "tr":"Ortak arazide - Ork Vadisi, çöl, Sohan Dağı, zindanlar - başka krallıktan bir botla karşılaştığında düello başlatacak botların oranı. Asla köyde, asla bir oyuncuya karşı ve asla yaralı ya da zaten dövüşen bir bota karşı değil. Hangi botların saldırgan olduğu karaktere sabittir, yani her yeniden başlatmadan sonra aynıları kavga eder. Varsayılan olarak kapalı. Yalnızca ortak dünya düzeninde çalışır (unified, 1500 bota kadar varsayılan): split'te her çekirdek tek krallığın botlarını tutar, dövüşecek kimse yoktur."},
  "ai_kpvp_off":  {"en":"peace","pl":"pokój","de":"Frieden","tr":"barış"},
  "ai_kpvp_all":  {"en":"every bot","pl":"każdy bot","de":"jeder Bot","tr":"her bot"},
+ # MT2009_PLUS_BOT_CHAT_V2
+ "ai_botchat":   {"en":"Bots' chat","pl":"Czat botów"},
+ "ai_botchat_help": {"en":"A bot whispers at a person who hits it or takes the monsters it is fighting (a warning first, then \"to moj spot\", \"spadaj\", \"SPIEEEEEEEE STAD\"; gentle bots leave the spot instead, hot-headed ones call a friend). The bots of every kingdom write on the '@' trade chat when they really sell or buy something (\"S> ... - price\", \"K> ... place .../szt\"); a person's '@ K> ...' is answered by whisper. On the shout channel a bot answers questions like \"gdzie metki na 30?\" or \"ile stoi fms?\".",
+                     "pl":"Bot pisze na priv do gracza, który go bije albo zabiera mu moby (najpierw ostrzeżenie, potem „to mój spot”, „spadaj”, „SPIEEEEEEEE STĄD”; łagodne boty zamiast tego zmieniają spot, porywcze wołają kolegę). Boty wszystkich królestw piszą na czacie handlowym „@”, kiedy naprawdę coś sprzedają albo kupują („S> … – cena”, „K> … płacę …/szt”); na „@ K> …” gracza odpisują na priv. Na wołaj bot odpowiada na pytania typu „gdzie metki na 30?” albo „ile stoi fms?”."},
+ "ai_spot_on":   {"en":"Bots defend their spot (whispers)","pl":"Boty bronią swojego spota (priv)"},
+ "ai_tradechat": {"en":"Bots' trade chat '@' - one line every","pl":"Czat handlowy botów „@” – jedna linia co"},
+ "ai_tradechat_off": {"en":"off","pl":"wyłączony"},
+ "ai_tradechat_bot": {"en":"One bot's next trade line after","pl":"Ten sam bot znowu po"},
+ "ai_shout_answer": {"en":"Shout questions the bots answer","pl":"Pytania na wołaj, na które boty odpowiadają"},
  "ai_scroll":    {"en":"Blessing and Dragon God Scrolls","pl":"Zwoje Błogosławieństwa i Boga Smoków","de":"Segens- und Drachengott-Schriftrollen","tr":"Kutsama ve Ejderha Tanrısı parşömenleri"},
  "ai_scroll_help":{"en":"The lowest plus a bot upgrades to under a Blessing Scroll or a Dragon God Scroll. At +7 a scroll goes only on the upgrades to +7, +8 and +9, and every lower one is done at the blacksmith without a scroll, like a player who has none - so the item can burn. At +1 nothing is restricted and the bots use scrolls as before: from +7, and earlier on a worn item that could burn and on an item with valuable bonuses. Applies within five seconds.",
                   "pl":"Najniższy plus, na jaki bot ulepsza pod Zwojem Błogosławieństwa albo Zwojem Boga Smoków. Przy +7 zwój idzie tylko na ulepszenia na +7, +8 i +9, a każde niższe bot robi u kowala bez zwoju, jak gracz, który zwojów nie ma - więc przedmiot może spłonąć. Przy +1 nie ma ograniczenia i boty używają zwojów tak jak dotąd: od +7, a wcześniej na założonym przedmiocie, który mógłby spłonąć, i na przedmiocie z cennymi bonusami. Działa w pięć sekund.",
@@ -8132,6 +8180,27 @@ TPL_AI = BASE.replace("__BODY__", """
   <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
     <span>0 — {{t('ai_kpvp_off')}}</span><span>100 — {{t('ai_kpvp_all')}}</span>
   </div>
+</div>
+<div style="margin-bottom:18px">{# MT2009_PLUS_BOT_CHAT_V2 #}
+  <input type="hidden" name="BOTCHAT_FORM" value="1">
+  <h3 style="margin:0 0 2px">💬 {{t('ai_botchat')}}</h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_botchat_help')}}</p>
+  <label><input type="checkbox" name="SPOT" value="1" {% if cur.get('SPOT', 1) %}checked{% endif %}> {{t('ai_spot_on')}}</label>
+  <h4 style="margin:10px 0 2px">{{t('ai_tradechat')}}
+      <span class="badge" id="v_TRADECHAT">{% if cur.get('TRADECHAT', 75) %}{{cur.get('TRADECHAT', 75)}} s{% else %}{{t('ai_tradechat_off')}}{% endif %}</span></h4>
+  <input type="range" name="TRADECHAT" id="s_TRADECHAT" min="0" max="600" step="15" value="{{cur.get('TRADECHAT', 75)}}" style="width:100%"
+         oninput="document.getElementById('v_TRADECHAT').textContent=(this.value>0?this.value+' s':'{{t('ai_tradechat_off')}}')">
+  <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
+    <span>0 — {{t('ai_tradechat_off')}}</span><span>600 s</span>
+  </div>
+  <h4 style="margin:10px 0 2px">{{t('ai_tradechat_bot')}}
+      <span class="badge" id="v_TRADECHAT_BOT">{{cur.get('TRADECHAT_BOT', 20)}} min</span></h4>
+  <input type="range" name="TRADECHAT_BOT" id="s_TRADECHAT_BOT" min="1" max="120" step="1" value="{{cur.get('TRADECHAT_BOT', 20)}}" style="width:100%"
+         oninput="document.getElementById('v_TRADECHAT_BOT').textContent=this.value+' min'">
+  <h4 style="margin:10px 0 2px">{{t('ai_shout_answer')}}
+      <span class="badge" id="v_SHOUT_ANSWER">{{cur.get('SHOUT_ANSWER', 100)}}%</span></h4>
+  <input type="range" name="SHOUT_ANSWER" id="s_SHOUT_ANSWER" min="0" max="100" step="5" value="{{cur.get('SHOUT_ANSWER', 100)}}" style="width:100%"
+         oninput="document.getElementById('v_SHOUT_ANSWER').textContent=this.value+'%'">
 </div>
 <div style="margin-bottom:18px">
   <h3 style="margin:0 0 2px">📜 {{t('ai_scroll')}}
@@ -20159,6 +20228,20 @@ def ai_weights():
             vals["KINGDOMPVP"] = max(0, min(100, int(request.form.get("KINGDOMPVP", 0))))
         except (TypeError, ValueError):
             vals["KINGDOMPVP"] = 0
+        # MT2009_PLUS_BOT_CHAT_V2: a form without the chat's fields (a tab
+        # opened before they existed) keeps the file's.
+        if "BOTCHAT_FORM" in request.form:
+            vals["SPOT"] = 1 if request.form.get("SPOT") else 0
+        else:
+            vals["SPOT"] = old.get("SPOT", 1)
+        for key, lo, hi, dflt in (("TRADECHAT", 0, 3600, 75), ("TRADECHAT_BOT", 1, 240, 20), ("SHOUT_ANSWER", 0, 100, 100)):
+            try:
+                v = int(request.form.get(key, old.get(key, dflt)))
+                if key == "TRADECHAT" and 0 < v < 15:
+                    v = 15
+                vals[key] = max(lo, min(hi, v))
+            except (TypeError, ValueError):
+                vals[key] = old.get(key, dflt)
         # The three wills are on the mt2009 page alone; a form without them
         # (r40250, or a tab opened before they existed) keeps the file's.
         for key in ("BATTLEPASS", "SASH", "ALCHEMY"):

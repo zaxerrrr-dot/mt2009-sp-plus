@@ -219,6 +219,24 @@ namespace
 	// SHOUTERS key, playerbot_shouters.h). On by default; off logs them out.
 	bool s_bPlayerBotShouters = true;
 	bool s_bPlayerBotShoutersReported = true;
+	// MT2009_PLUS_BOT_CHAT_V2: the bots' chat (playerbot_spot_defense.h,
+	// playerbot_chat_world.h).
+	//   SPOT          - 1: a bot whispers at a person who hits it or takes its
+	//                   monsters ("to moj spot", "SPIEEEEEEEE STAD"); 0: never.
+	//   TRADECHAT     - seconds between two lines of the bots on the '@' trade
+	//                   chat (every kingdom reads it) on one core; 0 is off,
+	//                   and the bots' buying and selling goes back to their
+	//                   kingdom's shout as before.
+	//   TRADECHAT_BOT - minutes before one bot says another trade line.
+	//   SHOUT_ANSWER  - percent of the questions on the shout channel ("gdzie
+	//                   metki na 30?", "ile stoi fms?") a bot answers; 0 none.
+	const int PLAYERBOT_TRADECHAT_DEFAULT_SECONDS = 75;
+	const int PLAYERBOT_TRADECHAT_BOT_DEFAULT_MINUTES = 20;
+	const int PLAYERBOT_SHOUT_ANSWER_DEFAULT_PERCENT = 100;
+	bool s_bPlayerBotSpotDefense = true;
+	int s_iPlayerBotTradeChatSeconds = PLAYERBOT_TRADECHAT_DEFAULT_SECONDS;
+	int s_iPlayerBotTradeChatBotMinutes = PLAYERBOT_TRADECHAT_BOT_DEFAULT_MINUTES;
+	int s_iPlayerBotShoutAnswerPercent = PLAYERBOT_SHOUT_ANSWER_DEFAULT_PERCENT;
 	// MT2009_PLUS_LEGENDS_V1: the System Legend (the LEGENDS key,
 	// playerbot_legends.h) - the tiers' bonuses, titles, Champions and
 	// notices. On by default; off keeps the tiers in the table and does
@@ -293,6 +311,11 @@ namespace
 		s_bPlayerBotItemShop = true;
 		s_bPlayerBotShopsInM2 = false;
 		s_bPlayerBotShouters = true;
+		// MT2009_PLUS_BOT_CHAT_V2
+		s_bPlayerBotSpotDefense = true;
+		s_iPlayerBotTradeChatSeconds = PLAYERBOT_TRADECHAT_DEFAULT_SECONDS;
+		s_iPlayerBotTradeChatBotMinutes = PLAYERBOT_TRADECHAT_BOT_DEFAULT_MINUTES;
+		s_iPlayerBotShoutAnswerPercent = PLAYERBOT_SHOUT_ANSWER_DEFAULT_PERCENT;
 		s_bPlayerBotLegends = true; // MT2009_PLUS_LEGENDS_V1
 		s_bPlayerBotPersona = true;
 		s_bPlayerBotHaggle = true;
@@ -451,6 +474,40 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 				s_bPlayerBotItemShopReported = enabled;
 			}
 			s_bPlayerBotItemShop = enabled;
+			return;
+		}
+		// MT2009_PLUS_BOT_CHAT_V2: the bots' chat. Reported only when moved.
+		if (PlayerBotWeightNameEquals(szKey, "SPOT"))
+		{
+			const bool enabled = value != 0;
+			if (enabled != s_bPlayerBotSpotDefense)
+				sys_log(0, "PLAYERBOT_CONFIG: spot defence whispers %s", enabled ? "on" : "off");
+			s_bPlayerBotSpotDefense = enabled;
+			return;
+		}
+		if (PlayerBotWeightNameEquals(szKey, "TRADECHAT"))
+		{
+			const int seconds = value <= 0 ? 0 : (value < 15 ? 15 : (value > 3600 ? 3600 : (int)value));
+			if (seconds != s_iPlayerBotTradeChatSeconds)
+				sys_log(0, "PLAYERBOT_CONFIG: bots' trade chat %s%d%s", seconds ? "every " : "", seconds,
+						seconds ? " s" : " (off)");
+			s_iPlayerBotTradeChatSeconds = seconds;
+			return;
+		}
+		if (PlayerBotWeightNameEquals(szKey, "TRADECHAT_BOT"))
+		{
+			const int minutes = value < 1 ? 1 : (value > 240 ? 240 : (int)value);
+			if (minutes != s_iPlayerBotTradeChatBotMinutes)
+				sys_log(0, "PLAYERBOT_CONFIG: a bot's trade line every %d min at most", minutes);
+			s_iPlayerBotTradeChatBotMinutes = minutes;
+			return;
+		}
+		if (PlayerBotWeightNameEquals(szKey, "SHOUT_ANSWER"))
+		{
+			const int percent = value < 0 ? 0 : (value > 100 ? 100 : (int)value);
+			if (percent != s_iPlayerBotShoutAnswerPercent)
+				sys_log(0, "PLAYERBOT_CONFIG: bots answer %d%% of the shout channel's questions", percent);
+			s_iPlayerBotShoutAnswerPercent = percent;
 			return;
 		}
 		if (PlayerBotWeightNameEquals(szKey, "SHOUTERS"))
@@ -739,6 +796,15 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_bPlayerBotHaggle ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "SHOUTERS"))
 			return s_bPlayerBotShouters ? 1 : 0;
+		// MT2009_PLUS_BOT_CHAT_V2
+		if (PlayerBotWeightNameEquals(szKey, "SPOT"))
+			return s_bPlayerBotSpotDefense ? 1 : 0;
+		if (PlayerBotWeightNameEquals(szKey, "TRADECHAT"))
+			return s_iPlayerBotTradeChatSeconds;
+		if (PlayerBotWeightNameEquals(szKey, "TRADECHAT_BOT"))
+			return s_iPlayerBotTradeChatBotMinutes;
+		if (PlayerBotWeightNameEquals(szKey, "SHOUT_ANSWER"))
+			return s_iPlayerBotShoutAnswerPercent;
 		if (PlayerBotWeightNameEquals(szKey, "LEGENDS"))
 			return s_bPlayerBotLegends ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "SCRAP"))
@@ -812,9 +878,26 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 				PlayerBotWeightNameEquals(szKey, "PERSONA") ||
 				PlayerBotWeightNameEquals(szKey, "HAGGLE") ||
 				PlayerBotWeightNameEquals(szKey, "SHOUTERS") ||
-				PlayerBotWeightNameEquals(szKey, "LEGENDS"))
+				PlayerBotWeightNameEquals(szKey, "LEGENDS") ||
+				PlayerBotWeightNameEquals(szKey, "SPOT"))
 		{
 			value = value ? 1 : 0;
+			return true;
+		}
+		// MT2009_PLUS_BOT_CHAT_V2
+		if (PlayerBotWeightNameEquals(szKey, "TRADECHAT"))
+		{
+			value = value <= 0 ? 0 : (value < 15 ? 15 : (value > 3600 ? 3600 : value));
+			return true;
+		}
+		if (PlayerBotWeightNameEquals(szKey, "TRADECHAT_BOT"))
+		{
+			value = value < 1 ? 1 : (value > 240 ? 240 : value);
+			return true;
+		}
+		if (PlayerBotWeightNameEquals(szKey, "SHOUT_ANSWER"))
+		{
+			value = value < 0 ? 0 : (value > 100 ? 100 : value);
 			return true;
 		}
 		if (PlayerBotWeightNameEquals(szKey, "SCRAP"))
@@ -1356,6 +1439,36 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		if (!s_bPlayerBotWeightsInitialised)
 			ResetPlayerBotWeights();
 		return s_bPlayerBotShouters;
+	}
+
+	// MT2009_PLUS_BOT_CHAT_V2: the SPOT, TRADECHAT, TRADECHAT_BOT and
+	// SHOUT_ANSWER keys.
+	bool IsPlayerBotSpotDefenseEnabled()
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return s_bPlayerBotSpotDefense;
+	}
+
+	int GetPlayerBotTradeChatSeconds()
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return s_iPlayerBotTradeChatSeconds;
+	}
+
+	int GetPlayerBotTradeChatBotMinutes()
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return s_iPlayerBotTradeChatBotMinutes;
+	}
+
+	int GetPlayerBotShoutAnswerPercent()
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return s_iPlayerBotShoutAnswerPercent;
 	}
 
 	// MT2009_PLUS_LEGENDS_V1: the LEGENDS switch (playerbot_legends.h).

@@ -58,6 +58,9 @@ namespace
 	const DWORD PLAYERBOT_TRADE_SKILL_BOOK_LAST = 50511;
 
 	DWORD s_dwPlayerBotTradeShoutTime = 0;
+	// MT2009_PLUS_BOT_CHAT_V2: the engine's own floor for the trade chat
+	// (CInputMain::Chat: level 20).
+	const int PLAYERBOT_TRADECHAT_MIN_LEVEL = 20;
 	std::map<DWORD, DWORD> s_mapPlayerBotTradeShoutTime;
 	std::map<DWORD, DWORD> s_mapPlayerBotTradeReplyTime;
 
@@ -273,8 +276,57 @@ namespace
 				playerbot_item_link::WhisperRoom(strlen(sender->GetName())));
 	}
 
+	// MT2009_PLUS_BOT_CHAT_V2: the '@' trade chat. On this server a line a
+	// person types after "@ " (TAB's trade mode, uichat.py) goes to every
+	// kingdom - CInputMain::Chat's CHAT_TYPE_TRADE: the name in its kingdom's
+	// colour, linked for a whisper, sent to every core (TPacketGGShout with
+	// bChatType CHAT_TYPE_TRADE, which CInputP2P::Shout hands to SendTrade)
+	// and to this core's clients (SendTrade). "@nick tekst" with no space
+	// after the '@' is Digi Rasta's whisper shortcut instead, done by the
+	// client alone - nothing a bot sends. A bot's line here is built exactly
+	// as a person's is, so it reads and clicks the same. On an engine
+	// without the trade chat it is the kingdom's shout, as before.
+	bool IsPlayerBotTradeChatOn()
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return GetPlayerBotTradeChatSeconds() > 0;
+#else
+		return false;
+#endif
+	}
+
+	void SendPlayerBotTradeChat(LPCHARACTER bot, const char* text)
+	{
+		if (!bot || !text || !*text)
+			return;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		static const char* const kColour[4] = { "", "ff5959", "ffdb3b", "4590ff" };
+		const BYTE empire = bot->GetEmpire() <= 3 ? bot->GetEmpire() : 0;
+		char chatbuf[CHAT_MAX_LEN + 1];
+		snprintf(chatbuf, sizeof(chatbuf), "[|cff%s|Hmsg:%s,%d|h%s|h|r]: %s", kColour[empire], bot->GetName(),
+				(int)empire, bot->GetName(), text);
+		TPacketGGShout p;
+		memset(&p, 0, sizeof(p));
+		p.bHeader = HEADER_GG_SHOUT;
+		p.bEmpire = 0;
+		p.bChatType = CHAT_TYPE_TRADE;
+		strlcpy(p.szText, chatbuf, sizeof(p.szText));
+		P2P_MANAGER::instance().Send(&p, sizeof(TPacketGGShout));
+		SendTrade(chatbuf);
+#else
+		char msg[CHAT_MAX_LEN + 1];
+		snprintf(msg, sizeof(msg), "%s : %s", bot->GetName(), text);
+		SendPlayerBotShout(msg, bot->GetEmpire());
+#endif
+		sys_log(0, "PLAYERBOT_TRADECHAT: pid=%u name=%s empire=%u text=\"%s\"",
+				bot->GetPlayerID(), bot->GetName(), (unsigned int)bot->GetEmpire(), text);
+	}
+
 	// A line on the world channel in the bot's name, within the two throttles.
-	bool ShoutPlayerBotTrade(LPCHARACTER bot, const char* text, DWORD dwNow)
+	// MT2009_PLUS_BOT_CHAT_V2: with the trade chat on, the trade chat - in
+	// the "S> ... / K> ..." shape players write there - and the kingdom's
+	// shout keeps its talk.
+	bool ShoutPlayerBotTrade(LPCHARACTER bot, const char* text, DWORD dwNow, const char* tradeText = NULL)
 	{
 		if (!bot || !text || !*text)
 			return false;
@@ -285,6 +337,11 @@ namespace
 		if (last != 0 && dwNow - last < PLAYERBOT_TRADE_SHOUT_BOT_INTERVAL)
 			return false;
 		s_dwPlayerBotTradeShoutTime = last = dwNow;
+		if (IsPlayerBotTradeChatOn() && (int)bot->GetLevel() >= PLAYERBOT_TRADECHAT_MIN_LEVEL)
+		{
+			SendPlayerBotTradeChat(bot, tradeText && *tradeText ? tradeText : text);
+			return true;
+		}
 		char msg[CHAT_MAX_LEN + 1];
 		snprintf(msg, sizeof(msg), "%s : %s", bot->GetName(), text);
 		SendPlayerBotShout(msg, bot->GetEmpire());
@@ -303,8 +360,15 @@ namespace
 		char text[CHAT_MAX_LEN + 1];
 		snprintf(text, sizeof(text), "Sprzedam %s - stragan w %s",
 				pszItemName, GetPlayerBotTownName(ch->GetMapIndex()));
-		ShoutPlayerBotTrade(ch, text, get_dword_time());
+		// MT2009_PLUS_BOT_CHAT_V2: the trade chat's shape of it.
+		char trade[CHAT_MAX_LEN + 1];
+		snprintf(trade, sizeof(trade), "S> %s, stragan %s ch%d", pszItemName, GetPlayerBotTownName(ch->GetMapIndex()),
+				(int)g_bChannel);
+		ShoutPlayerBotTrade(ch, text, get_dword_time(), trade);
 	}
+
+	// MT2009_PLUS_BOT_CHAT_V2: what the market pays for it (playerbot_chat_world.h).
+	DWORD GetPlayerBotWantedUnitPrice(DWORD vnum, DWORD dwNow);
 
 	// The bot walked the market for a material and found none: it asks. Called
 	// from the market code when a trip ends with nothing on offer.
@@ -329,7 +393,15 @@ namespace
 		char text[CHAT_MAX_LEN + 1];
 		snprintf(text, sizeof(text), "Kupie %s - kto ma, niech wystawi w %s",
 				proto->szLocaleName, GetPlayerBotTownName(ch->GetMapIndex()));
-		ShoutPlayerBotTrade(ch, text, get_dword_time());
+		char trade[CHAT_MAX_LEN + 1];
+		const DWORD unit = IsPlayerBotTradeChatOn() ? GetPlayerBotWantedUnitPrice(*wanted.begin(), get_dword_time()) : 0;
+		if (unit > 0)
+			snprintf(trade, sizeof(trade), "K> %s, place %s/szt, wystaw w %s albo pw", proto->szLocaleName,
+					playerbot_conv::FormatYang(unit).c_str(), GetPlayerBotTownName(ch->GetMapIndex()));
+		else
+			snprintf(trade, sizeof(trade), "K> %s, kto ma niech wystawi w %s albo pw", proto->szLocaleName,
+					GetPlayerBotTownName(ch->GetMapIndex()));
+		ShoutPlayerBotTrade(ch, text, get_dword_time(), trade);
 	}
 
 	// The skill a folded name means, from the per-skill books' names.
@@ -586,6 +658,9 @@ namespace
 			{ "sprzedam", PLAYERBOT_TRADE_SELL }, { "sprzedaje", PLAYERBOT_TRADE_SELL },
 			{ "oddam", PLAYERBOT_TRADE_SELL }, { "s>", PLAYERBOT_TRADE_SELL },
 			{ "k>", PLAYERBOT_TRADE_BUY },
+			// MT2009_PLUS_BOT_CHAT_V2: the trade chat's other shorthands.
+			{ "b>", PLAYERBOT_TRADE_BUY }, { "wtb", PLAYERBOT_TRADE_BUY }, { "wts", PLAYERBOT_TRADE_SELL },
+			{ "s >", PLAYERBOT_TRADE_SELL }, { "k >", PLAYERBOT_TRADE_BUY }, { "b >", PLAYERBOT_TRADE_BUY },
 		};
 		EPlayerBotTradeVerb verb = PLAYERBOT_TRADE_NONE;
 		for (size_t i = 0; i < sizeof(kVerbs) / sizeof(kVerbs[0]); ++i)

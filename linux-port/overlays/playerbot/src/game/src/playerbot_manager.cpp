@@ -74,6 +74,11 @@ extern int passes_per_sec;
 // Declared in input_p2p.cpp. ChatPacket would be useless for a bot - it has no
 // client descriptor of its own to send to.
 extern void SendShout(const char* szText, BYTE bEmpire);
+#if defined(PLAYERBOT_ENGINE_MT2009)
+// MT2009_PLUS_BOT_CHAT_V2: the '@' trade chat's delivery to this core's
+// clients (input_p2p.cpp), for the bots' own trade lines.
+extern void SendTrade(const char* szText);
+#endif
 
 // A bot's shout goes where a player's does (CInputMain::Chat): to the other
 // cores as the P2P shout, and to this core's own clients through SendShout.
@@ -239,6 +244,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // Iwakura's Anti-PK protocol and the stone hunter: the war's fight, turned on
 // whoever struck the bot or is breaking its stone for another kingdom.
 #include "playerbot_anti_pk.h"
+// MT2009_PLUS_BOT_CHAT_V2: a bot's whispered complaint at a person who hits
+// it or takes its monsters. After the Anti-PK protocol, whose report of a
+// blow it hears, and the conversation, through which it speaks.
+#include "playerbot_spot_defense.h"
 #include "playerbot_rare_persona.h"
 #include "playerbot_demon_tower.h"
 // The world's bosses, broken by a crowd of one kingdom: the call, the
@@ -286,6 +295,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_bpbots.h"
 // MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages.
 #include "playerbot_shouters.h"
+// MT2009_PLUS_BOT_CHAT_V2: the '@' trade chat, the shout channel's questions
+// answered, and the advice of where to exp and where the Metins stand. After
+// the Battle Pass bots, whose stone table and chatter it uses.
+#include "playerbot_chat_world.h"
 // MT2009_PLUS_BOT_FRIENDS_V1: a bot answers a person's friend invitation
 // (server-patches/botfriends), after the shouters and the companion it asks.
 #include "playerbot_bot_friends.h"
@@ -6115,6 +6128,9 @@ void CPlayerBotManager::Update()
 	ManagePlayerBotSidekicks(dwNow);
 	// MT2009_PLUS_SHOUTERS_V1: the shouters of the first villages.
 	ManagePlayerBotShouters(dwNow);
+	// MT2009_PLUS_BOT_CHAT_V2: the bots' '@' trade lines and the shout
+	// channel's answers (playerbot_chat_world.h).
+	ManagePlayerBotChatWorld(dwNow);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: two or three island droppers a kingdom.
 	ManagePlayerBotL30WeaponDroppers(dwNow);
 
@@ -6522,6 +6538,11 @@ WritePlayerBotGuildStatus(dwNow);
 			if (HandleLoot(ch, state, dwNow))
 				continue;
 		}
+
+		// MT2009_PLUS_BOT_CHAT_V2: a person hitting the bot's monsters or the
+		// bot itself gets a word on the whisper (playerbot_spot_defense.h).
+		// It only watches and talks, and never takes the tick.
+		ManagePlayerBotSpotDefense(ch, state, dwNow);
 
 		// A player who struck the bot, or its party, or is breaking its stone
 		// for another kingdom (playerbot_anti_pk.h): ahead of every errand,
@@ -8307,6 +8328,19 @@ void CPlayerBotManager::OnPlayerShout(LPCHARACTER ch, const char* szText)
 	// MT2009_PLUS_SHOUTERS_V1: a line of the channel for the shouters' count.
 	if (ch && ch->GetEmpire() >= 1 && ch->GetEmpire() <= 3)
 		++s_auPlayerBotShoutsSeen[ch->GetEmpire()];
+	HandlePlayerShoutForTrade(ch, szText);
+	// MT2009_PLUS_BOT_CHAT_V2: "gdzie metki na 30?", "ile stoi fms?" - a bot
+	// of the kingdom answers on the channel (playerbot_chat_world.h).
+	ReadPlayerShoutForQuestion(ch, szText);
+}
+
+// MT2009_PLUS_BOT_CHAT_V2: a person's '@' trade chat line, after it has gone
+// out (CInputMain::Chat, server-patches/playerqol): a "K> ..." or "S> ..."
+// is answered by whisper by the bot best placed to, as a trade shout is.
+void CPlayerBotManager::OnPlayerTradeChat(LPCHARACTER ch, const char* szText)
+{
+	if (!ch || !szText || !*szText || (ch->GetDesc() && ch->GetDesc()->IsBot()))
+		return;
 	HandlePlayerShoutForTrade(ch, szText);
 }
 

@@ -56,6 +56,13 @@
 
 namespace
 {
+	// MT2009_PLUS_BOT_CHAT_V2: defined later in the unit - the spot quarrel
+	// (playerbot_spot_defense.h) and the places a level is advised to
+	// (playerbot_chat_world.h, after the Battle Pass bots' stone table).
+	int GetPlayerBotSpotQuarrel(DWORD botPID, DWORD personPID, bool& gaveUp);
+	bool DescribePlayerBotExpPlace(int level, int empire, std::string& out);
+	bool DescribePlayerBotMetinPlace(int level, int empire, std::string& out);
+
 	const DWORD PLAYERBOT_CONV_SWITCH_CHECK_MS = 30000;
 	const DWORD PLAYERBOT_CONV_STATS_INTERVAL_MS = 10 * 60 * 1000;
 	const int PLAYERBOT_CONV_AROUND_RADIUS = 2500;
@@ -1281,6 +1288,19 @@ namespace
 				return EndPlayerBotSummonBy(m_bot, m_player, get_dword_time());
 			}
 
+			// MT2009_PLUS_BOT_CHAT_V2: "gdzie expic na 40?", "gdzie metki na
+			// 30?" - the progression table's maps and the stones' spawns, in
+			// the bot's kingdom's words.
+			bool ExpPlaceFor(int level, std::string& out)
+			{
+				return DescribePlayerBotExpPlace(level, m_bot ? (int)m_bot->GetEmpire() : 0, out);
+			}
+
+			bool MetinPlaceFor(int level, std::string& out)
+			{
+				return DescribePlayerBotMetinPlace(level, m_bot ? (int)m_bot->GetEmpire() : 0, out);
+			}
+
 		private:
 			LPCHARACTER m_bot;
 			LPCHARACTER m_player;
@@ -1572,6 +1592,9 @@ namespace
 				else
 					s.summonBlock = AskerOnOtherChannel(s) ? SB_OTHER_CHANNEL : SB_OTHER_MAP;
 				s.afk = state.persona.dwAfkUntil != 0 && now < state.persona.dwAfkUntil;
+				// MT2009_PLUS_BOT_CHAT_V2: how far a quarrel over the bot's spot
+				// with this person went (playerbot_spot_defense.h).
+				s.spotQuarrel = GetPlayerBotSpotQuarrel(botPID, playerPID, s.spotGaveUp);
 				{
 					const time_t t = time(0);
 					const struct tm* lt = localtime(&t);

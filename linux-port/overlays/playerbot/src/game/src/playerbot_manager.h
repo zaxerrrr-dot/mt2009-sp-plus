@@ -56,6 +56,9 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// a bot. Both from patch 0007 in input_main.cpp; playerbot_chat_trade.h
 		// decides whether and which bot answers.
 		void	OnPlayerShout(LPCHARACTER ch, const char* szText);
+		// MT2009_PLUS_BOT_CHAT_V2: a person's '@' trade chat line
+		// (CInputMain::Chat's CHAT_TYPE_TRADE, server-patches/playerqol).
+		void	OnPlayerTradeChat(LPCHARACTER ch, const char* szText);
 		void	OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const char* szText);
 		// A whisper to a bot of this core from a person another core holds -
 		// the other channel's, or a map this core does not host - by name, as

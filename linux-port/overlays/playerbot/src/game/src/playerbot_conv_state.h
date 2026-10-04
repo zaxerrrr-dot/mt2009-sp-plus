@@ -347,6 +347,12 @@ namespace playerbot_conv
 		// own channel's Joan, where the bot is not (AskerOnOtherChannel).
 		int channel;
 		int askerChannel;
+		// MT2009_PLUS_BOT_CHAT_V2: the spot quarrel with the asker
+		// (playerbot_spot_defense.h): how far the bot's complaints about the
+		// asker hitting it or its monsters went, 0 none, 1 a warning .. 4 the
+		// last; and whether it gave the spot up.
+		int spotQuarrel;
+		bool spotGaveUp;
 
 		TBotSnapshot() : level(1), job(0), empire(0), mapIndex(0), inTown(false), safeZone(false),
 			inDungeon(false), action(A_IDLE), goal(G_LEVEL), travelMap(0), riding(false),
@@ -363,7 +369,8 @@ namespace playerbot_conv
 			askerNear(false), hour(12), afk(false), huntRemaining(0), dragonCoins(0), dragonKnown(false),
 			skillGroup(0), mainSkill(0), summonBlock(SB_NONE), summoned(false), summonedByAsker(false),
 			summonArrived(false), askerOnMap(false), askerDistance(-1), weaponLevel(0), weaponGoalPrice(0),
-			weaponOutclassed(false), weaponIsGoal(false), channel(0), askerChannel(0)
+			weaponOutclassed(false), weaponIsGoal(false), channel(0), askerChannel(0), spotQuarrel(0),
+			spotGaveUp(false)
 		{
 			for (int i = 0; i < 6; ++i)
 			{
@@ -408,7 +415,28 @@ namespace playerbot_conv
 			virtual int StartSummon() { return SUMMON_START_FAILED; }
 			// "mozesz isc" - the bot goes back to its own life (ESummonEnd).
 			virtual int EndSummon() { return SUMMON_END_NOT_SUMMONED; }
+			// MT2009_PLUS_BOT_CHAT_V2: "gdzie expic na 30?", "gdzie metki na 45?"
+			// - the world's own answer (the progression table's maps, the
+			// stones' spawns), as a short phrase ("Dolina Orkow albo Pustynia").
+			// False: the pure tables below answer.
+			virtual bool ExpPlaceFor(int level, std::string& out) { (void)level; (void)out; return false; }
+			virtual bool MetinPlaceFor(int level, std::string& out) { (void)level; (void)out; return false; }
 	};
+
+	// MT2009_PLUS_BOT_CHAT_V2: how a bot takes a quarrel, from its style:
+	// 0 lets it go and leaves, 1 says its piece, 2 gives as good as it gets.
+	inline int TemperOf(int style)
+	{
+		switch (style)
+		{
+			case S_COMPANION: case S_FISHER: case S_COLLECTOR: case S_MINER: case S_WANDERER:
+				return 0;
+			case S_CONQUEROR: case S_METIN: case S_MERC: case S_GAMBLER:
+				return 2;
+			default:
+				return 1;
+		}
+	}
 
 	// ------------------------------------------------------------------ maps
 
