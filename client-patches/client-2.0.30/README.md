@@ -537,7 +537,7 @@ Paczka robocza do budowy klienta: `/opt/metin2/cache/c53-staging` (README.txt ta
   `DeadTime`, `NOWY_KSIEGI`, wpisywane do `serverCommander` okna gry.
 - `uikillbar.py` (nowy) – pasek zabójstw w prawym górnym rogu (5 wierszy po 6 s), ikony
   `mt2009_ui/killbar/*.png` (16, z jego paczki).
-- `uiskillbookexchange.py` (nowy) – okno wymiany ksiąg u Seon-Hae (`/nowy_ksiegi`).
+- `uiskillbookexchange.py` (nowy) – okno wymiany ksiąg u Seon-Hae (`/nowy_ksiegi`). MT2009_PLUS_BOOK_EXCHANGE_V2: 20 pól na całe stosy, prawy klik w ekwipunku dodaje księgę (Ctrl: wszystkie z torby; `uiinventory.py`, `OnRightClickBagItem`), prawy klik na polu okna ją wyjmuje, przyciski „Wymień” / „x10” / „Wszystko” (pytanie przed wymianą wielokrotną).
 - `mt2009_ui/killstreak/1..13.wav` (nowe, 5,3 MB) – dźwięki serii zabójstw (z jego paczki).
 - `game.py` – `digiserverqol.Register(self)` po komendach serwera, `digiserverqol.DestroyWindows()` przy zamknięciu okna gry.
 - `uichat.py` (wpis paczki `root`, zastępowany) – „@nick tekst” w zwykłym czacie = szept; w trybie handlu

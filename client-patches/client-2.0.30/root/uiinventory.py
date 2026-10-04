@@ -2914,6 +2914,11 @@ class InventoryWindow(ui.ScriptWindow):
 		# Shift: how many) - uicollector.py, before every other window.
 		if self.__QuickPutToCollector(slotIndex):
 			return
+		# MT2009_PLUS_BOOK_EXCHANGE_V2: with Seon-Hae's book exchange open, a
+		# right click puts a skill book into it (Ctrl: every book of the bag) -
+		# uiskillbookexchange.py; anything else is used as ever.
+		if self.__QuickPutToBookExchange(slotIndex):
+			return
 		garbageBin = getattr(self.interface, "wndGarbageBin", None)
 		if garbageBin and garbageBin.IsShow():
 			# An open bin consumes this click even when adding is rejected.
@@ -2946,6 +2951,20 @@ class InventoryWindow(ui.ScriptWindow):
 		except ImportError:
 			return False
 		if not uicollector.QuickPut(self.__InventoryLocalSlotPosToGlobalSlotPos(slotIndex)):
+			return False
+		self.OverOutItem()
+		return True
+
+	# MT2009_PLUS_BOOK_EXCHANGE_V2: the right click's way into Seon-Hae's book
+	# exchange (uiskillbookexchange.QuickPut); False with the window shut.
+	def __QuickPutToBookExchange(self, slotIndex):
+		if constInfo.GET_ITEM_QUESTION_DIALOG_STATUS() or app.GetCursor() == app.SELL:
+			return False
+		try:
+			import uiskillbookexchange
+		except ImportError:
+			return False
+		if not uiskillbookexchange.QuickPut(self.__InventoryLocalSlotPosToGlobalSlotPos(slotIndex)):
 			return False
 		self.OverOutItem()
 		return True
