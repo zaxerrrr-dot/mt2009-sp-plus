@@ -1139,10 +1139,16 @@ namespace
 		// target section and the tower mount for one (mounted_combat,
 		// tower_stone), and a missing buff still takes the rider down for a
 		// moment and puts it back (ManagePlayerBotCombatBuffs).
+		// MT2009_PLUS_SIDEKICK_METIN_SKILLS_V1: a player's companion too. Since
+		// Tieru 2.2.22 ("the companion on foot") it climbed down for a stone as
+		// for a monster, and its owner watched it break Metins on foot beside
+		// the mount it had just ridden up on ("szamanka ... mimo ze ma mounta to
+		// metina bije z buta", the owner, 5 October). A monster and a character
+		// it still fights on foot, with its skills (prodnathin, 26 September).
 		if (HasPlayerBotStandingMount(ch))
 			return true;
 		if (target && target->IsStone())
-			return HasPlayerBotBattleHorse(ch) && !IsPlayerBotSidekickPID(ch->GetPlayerID());
+			return HasPlayerBotBattleHorse(ch);
 		// A character - a player or another bot - is fought on foot
 		// (SendPlayerBotHorseAwayForFight), so nothing that asks about the foe
 		// in hand puts the bot back in the saddle in the middle of a duel.

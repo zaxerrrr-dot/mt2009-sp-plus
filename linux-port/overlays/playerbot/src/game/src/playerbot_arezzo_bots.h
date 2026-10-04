@@ -1003,7 +1003,11 @@ namespace
 		std::map<DWORD, TPlayerBotArezzoPending>::iterator it = s_mapPlayerBotArezzoPending.find(ch->GetPlayerID());
 		if (it == s_mapPlayerBotArezzoPending.end())
 			return false;
-		if (!IsPlayerBotArezzoMap(ch->GetMapIndex()))
+		// MT2009_PLUS_SIDEKICK_AREZZO_V1: nor a player's companion at its
+		// owner's side: an errand called off on the map left it walking to the
+		// Teleporter on the errand's old warp, away from its owner and ahead of
+		// the companion's own pass. Where it goes is its owner's business.
+		if (!IsPlayerBotArezzoMap(ch->GetMapIndex()) || IsPlayerBotSidekickLeashed(ch))
 		{
 			s_mapPlayerBotArezzoPending.erase(it);
 			return false;
@@ -1829,9 +1833,11 @@ namespace
 				}
 				// A second death within the window: the next revival at the
 				// arrival, not in the pack that killed it (not on the way out).
+				// MT2009_PLUS_SIDEKICK_AREZZO_V1: not a player's companion, which
+				// stands up beside its owner.
 				if (t.bWasDead && !ch->IsDead() && t.adwDeathAt[0] != 0 &&
 						!s_mapPlayerBotArezzoExit.count(pid) && !s_mapPlayerBotArezzoPending.count(pid) &&
-						dwNow - t.adwDeathAt[0] <= PLAYERBOT_AREZZO_DEATH_WINDOW_MS)
+						dwNow - t.adwDeathAt[0] <= PLAYERBOT_AREZZO_DEATH_WINDOW_MS && !IsPlayerBotSidekickLeashed(ch))
 				{
 					const TPlayerBotArezzoMap* info = GetPlayerBotArezzoMapInfo(map);
 					state.dwTargetVID = 0;

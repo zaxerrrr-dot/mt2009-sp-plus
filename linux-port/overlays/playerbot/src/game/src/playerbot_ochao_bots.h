@@ -747,7 +747,9 @@ namespace
 		std::map<DWORD, TPlayerBotOchaoPending>::iterator it = s_mapPlayerBotOchaoPending.find(ch->GetPlayerID());
 		if (it == s_mapPlayerBotOchaoPending.end())
 			return false;
-		if (ch->GetMapIndex() != PLAYERBOT_MAP_OCHAO)
+		// MT2009_PLUS_SIDEKICK_AREZZO_V1: nor a player's companion at its
+		// owner's side (the temple is its owner's road to the Las).
+		if (ch->GetMapIndex() != PLAYERBOT_MAP_OCHAO || IsPlayerBotSidekickLeashed(ch))
 		{
 			s_mapPlayerBotOchaoPending.erase(it);
 			return false;

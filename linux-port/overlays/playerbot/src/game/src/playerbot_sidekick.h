@@ -1229,10 +1229,97 @@ namespace
 			pc->SetFlag(flag, value);
 	}
 
+	// MT2009_PLUS_SIDEKICK_WHISPER_V1: the companion's word to its owner is a
+	// whisper from it, as a player's would be - its name on the whisper
+	// window, and the owner's answer goes straight back to it (its orders are
+	// whispered anyway) - not an info line in the chat ("Wszystkie
+	// powiadomienia towarzysza ... niech beda wysylane szeptem", the owner,
+	// 5 October). The name: the companion in this world, else another core's
+	// line for it, else its row (it may not be in the game yet - "za chwile
+	// bede w grze"); kept per companion.
+	const DWORD PLAYERBOT_SIDEKICK_WHISPER_REPEAT_MS = 20000;
+	std::map<DWORD, std::string> s_mapPlayerBotSidekickWhisperName;	// companion pid -> name
+	std::map<DWORD, std::map<std::string, DWORD> > s_mapPlayerBotSidekickWhisperSent;	// owner pid -> text -> when
+
+	const char* GetPlayerBotSidekickWhisperName(DWORD ownerPid)
+	{
+		TPlayerBotSidekickMap::const_iterator rec = s_mapPlayerBotSidekicks.find(ownerPid);
+		if (rec == s_mapPlayerBotSidekicks.end() || rec->second.dwSidekickPID == 0)
+			return NULL;
+		const DWORD pid = rec->second.dwSidekickPID;
+		std::string& name = s_mapPlayerBotSidekickWhisperName[pid];
+		LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(pid);
+		CCI* peer = sk ? NULL : P2P_MANAGER::instance().FindByPID(pid);
+		if (sk)
+			name = sk->GetName();
+		else if (peer)
+			name = peer->szName;
+		else if (name.empty())
+		{
+			char query[128];
+			snprintf(query, sizeof(query), "SELECT name FROM player.player WHERE id=%u", pid);
+			std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+			MYSQL_ROW row = NULL;
+			if (msg.get() && msg->uiSQLErrno == 0 && msg->Get() && msg->Get()->pSQLResult &&
+					(row = mysql_fetch_row(msg->Get()->pSQLResult)) && row[0])
+				name = row[0];
+		}
+		return name.empty() ? NULL : name.c_str();
+	}
+
+	// The same text again within PLAYERBOT_SIDEKICK_WHISPER_REPEAT_MS is not
+	// whispered twice: a refusal asked for every second, an order clicked
+	// twice.
+	bool IsPlayerBotSidekickWhisperRepeat(DWORD ownerPid, const char* text, DWORD dwNow)
+	{
+		std::map<std::string, DWORD>& sent = s_mapPlayerBotSidekickWhisperSent[ownerPid];
+		if (sent.size() > 32)
+			for (std::map<std::string, DWORD>::iterator it = sent.begin(); it != sent.end();)
+			{
+				if (dwNow - it->second >= PLAYERBOT_SIDEKICK_WHISPER_REPEAT_MS)
+					sent.erase(it++);
+				else
+					++it;
+			}
+		std::map<std::string, DWORD>::iterator it = sent.find(text);
+		if (it != sent.end() && dwNow - it->second < PLAYERBOT_SIDEKICK_WHISPER_REPEAT_MS)
+			return true;
+		sent[text] = dwNow;
+		return false;
+	}
+
+	// The packet CInputMain::Whisper gives a player's whisper, under the
+	// companion's name (SendPlayerBotWhisperPacket, which wants the companion
+	// in this world).
+	void SendPlayerBotSidekickWhisperPacket(LPCHARACTER owner, const char* name, const char* text)
+	{
+		const size_t len = std::min<size_t>(strlen(text), CHAT_MAX_LEN);
+		TPacketGCWhisper pack;
+		pack.bHeader = HEADER_GC_WHISPER;
+		pack.bType = WHISPER_TYPE_NORMAL;
+		pack.wSize = (WORD)(sizeof(TPacketGCWhisper) + len);
+		strlcpy(pack.szNameFrom, name, sizeof(pack.szNameFrom));
+		TEMP_BUFFER tmpbuf;
+		tmpbuf.write(&pack, sizeof(pack));
+		tmpbuf.write(text, (int)len);
+		owner->GetDesc()->Packet(tmpbuf.read_peek(), tmpbuf.size());
+	}
+
 	void SayPlayerBotSidekick(LPCHARACTER owner, const char* text)
 	{
+		if (!text || !*text)
+			return;
 		if (owner && owner->GetDesc() && !owner->GetDesc()->IsBot())
-			owner->ChatPacket(CHAT_TYPE_INFO, "[Towarzysz] %s", text);
+		{
+			const DWORD dwNow = get_dword_time();
+			if (IsPlayerBotSidekickWhisperRepeat(owner->GetPlayerID(), text, dwNow))
+				return;
+			const char* name = GetPlayerBotSidekickWhisperName(owner->GetPlayerID());
+			if (name)
+				SendPlayerBotSidekickWhisperPacket(owner, name, text);
+			else
+				owner->ChatPacket(CHAT_TYPE_INFO, "[Towarzysz] %s", text);	// no companion of record to speak
+		}
 		// The self-test's owner is a bot with no client, and an order it gave
 		// that was refused would otherwise leave no trace at all.
 		else if (owner && s_bPlayerBotSidekickSelfTest)
@@ -1858,7 +1945,8 @@ namespace
 			// What CHARACTER::PartyJoin does (protected as well).
 			own->Join(owner->GetPlayerID());
 			own->Link(owner);
-			owner->ChatPacket(CHAT_TYPE_INFO, "[Grupa] %s zaprasza cie do swojej grupy - jest jej liderem.", ch->GetName());
+			// MT2009_PLUS_SIDEKICK_WHISPER_V1: in its whisper, as the rest of its words.
+			SayPlayerBotSidekick(owner, "[Grupa] Zapraszam cie do mojej grupy - jestem jej liderem.");
 			sys_log(0, "PLAYERBOT_SIDEKICK: leads its owner's party pid=%u name=%s owner=%u leadership=%d",
 					ch->GetPlayerID(), ch->GetName(), owner->GetPlayerID(), ch->GetLeadershipSkillLevel());
 			return;
@@ -1963,6 +2051,13 @@ namespace
 		// there - the companion goes into every dungeon with its owner (the
 		// owner, 4 October), and through the Las to the Jungle's guard. On its
 		// own errands it keeps out as ever.
+		// MT2009_PLUS_SIDEKICK_AREZZO_V1: the Arezzo maps (360-362) included -
+		// "towarzysz nie wchodzi na doline cyklopow / pustkowie faraona" (the
+		// owner, 5 October) was the rule above, in force to 2.21: this check
+		// refused them and ManagePlayerBotSidekick held the companion where it
+		// stood ("czeka na Ciebie tutaj - do tego miejsca towarzysz nie
+		// wchodzi"). With the module off (M2_AREZZO=0) nobody but a GM stands
+		// there, and the module's send-off takes the owner out.
 		LPCHARACTER placeOwner = IsPlayerBotOffLimitsMap(targetMap) ? GetPlayerBotSidekickOwnerHere(ch->GetPlayerID()) : NULL;
 		if (IsPlayerBotOffLimitsMap(targetMap) && !(placeOwner && placeOwner->GetMapIndex() == targetMap))
 		{
