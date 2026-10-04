@@ -44,6 +44,9 @@ namespace playerbot_conv
 		I_HOWTO, I_EVENT, I_DROP_INFO, I_PING,
 		// a trade talked over (TDeal), and a line about the bot's own public post
 		I_DEAL, I_POST_REF,
+		// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the answer to the bot's own offer to
+		// come along to a dungeon (TConvMemory::lfg, playerbot_dungeon_lfg.h)
+		I_LFG_ANSWER,
 		// identity
 		I_NAME, I_LEVEL, I_CLASS, I_EMPIRE, I_PERSONALITY, I_MOOD,
 		// state
@@ -164,13 +167,19 @@ namespace playerbot_conv
 		// reply is composed (ApplyPublicContext).
 		int dealCount;
 		int postRef;
+		// MT2009_PLUS_BOT_DUNGEON_LFG_V1 (I_LFG_ANSWER): the answer
+		// (playerbot_lfg::EAnswer), and for ANSWER_CHOOSE the dungeon named
+		// and the Monkey Dungeon's difficulty when the line says it.
+		int lfgAnswer;
+		int lfgDifficulty;
+		std::string lfgKey;
 
 		TAnalysis() : intent(I_NONE), rawIntent(I_NONE), subject(I_NONE), follow(F_NONE),
 			topic(T_NONE), qtype(Q_STATEMENT), score(0), question(false), greetingToo(false),
 			thanksToo(false), returnToTopic(false), topicChange(false), repeated(false),
 			polarityNegative(false), at(0), gapBefore(0), offerYang(0), mentionMap(0), answeredAsk(0),
 			objectPlus(-1), levelNamed(0), itemLink(false), mathMixed(false), mathDivZero(false),
-			mathTooBig(false), levelAsked(0), channelNamed(0), dealCount(0), postRef(0) {}
+			mathTooBig(false), levelAsked(0), channelNamed(0), dealCount(0), postRef(0), lfgAnswer(0), lfgDifficulty(0) {}
 	};
 
 	// The summon and its release are requests, not a subject the conversation
@@ -182,7 +191,7 @@ namespace playerbot_conv
 
 	inline bool IsSocialIntent(EIntent i)
 	{
-		return i >= I_GREETING && i <= I_POST_REF;
+		return i >= I_GREETING && i <= I_LFG_ANSWER;
 	}
 
 	// A line that talks at the bot rather than to it: the reply is short and
@@ -240,7 +249,7 @@ namespace playerbot_conv
 			"NONE", "GREETING", "FAREWELL", "THANKS", "APOLOGY", "HOW_ARE_YOU", "HELP",
 			"IS_BOT", "INSULT", "PRAISE", "AGE", "ORIGIN", "KS", "READY", "GOOD_LUCK", "BRB",
 			"STOP_TALKING", "THREAT", "MOCK", "MATH", "CONTRADICTION",
-			"JOKE", "REAL_LIFE", "GENDER", "BEG", "HOWTO", "EVENT", "DROP_INFO", "PING", "DEAL", "POST_REF",
+			"JOKE", "REAL_LIFE", "GENDER", "BEG", "HOWTO", "EVENT", "DROP_INFO", "PING", "DEAL", "POST_REF", "LFG_ANSWER",
 			"NAME", "LEVEL", "CLASS", "EMPIRE", "PERSONALITY", "MOOD",
 			"CURRENT_ACTIVITY", "ACTIVITY_LOCATION", "LOCATION", "TARGET", "MOB_COUNT",
 			"GOAL", "NEXT_PLAN", "HP", "GOLD", "HORSE", "EQUIPMENT", "INVENTORY",
