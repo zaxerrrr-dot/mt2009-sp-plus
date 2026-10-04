@@ -8139,6 +8139,7 @@ bool CPlayerBotManager::WarpBot(LPCHARACTER bot, long x, long y, long lPrivateMa
 		{
 			sys_err("PLAYERBOT_WORLD: warpset pid=%u name=%s private map %ld is not a child of %ld",
 					bot->GetPlayerID(), bot->GetName(), lPrivateMapIndex, lMapIndex);
+			s_szPlayerBotTransitionRefusal = "warpset_private_map";
 			return false;
 		}
 		lMapIndex = lPrivateMapIndex;
@@ -8148,6 +8149,8 @@ bool CPlayerBotManager::WarpBot(LPCHARACTER bot, long x, long y, long lPrivateMa
 	{
 		sys_log(0, "PLAYERBOT_WORLD: warpset refused pid=%u name=%s to=(%ld,%ld) map=%ld private=%ld from=%ld",
 				bot->GetPlayerID(), bot->GetName(), x, y, lMapIndex, lPrivateMapIndex, bot->GetMapIndex());
+		s_szPlayerBotTransitionRefusal = lMapIndex == 0 ? "warpset_no_map" :
+				(it == s_mapPlayerBotAIStates.end() ? "warpset_no_ai_state" : "warpset_map_not_hosted");
 		return false;
 	}
 	LPDUNGEON before = bot->GetDungeon();

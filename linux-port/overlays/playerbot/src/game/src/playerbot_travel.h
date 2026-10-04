@@ -1443,11 +1443,15 @@ namespace
 		// left by its Teleporter (playerbot_arezzo_bots.h).
 		{
 			const int arezzo = RoutePlayerBotArezzoTransition(ch, state, targetMap, targetX, targetY, dwNow, reason);
+			if (arezzo == 0 && !s_szPlayerBotTransitionRefusal)
+				s_szPlayerBotTransitionRefusal = "arezzo_route";
 			if (arezzo >= 0)
 				return arezzo != 0;
 		}
 		{
 			const int ochao = RoutePlayerBotOchaoTransition(ch, state, targetMap, targetX, targetY, dwNow, reason);
+			if (ochao == 0 && !s_szPlayerBotTransitionRefusal)
+				s_szPlayerBotTransitionRefusal = "ochao_route";
 			if (ochao >= 0)
 				return ochao != 0;
 		}
@@ -1497,6 +1501,7 @@ namespace
 			PlayerBotLogThrottled(szTag, dwNow,
 					"PLAYERBOT_WORLD: target navigation unavailable pid=%u name=%s map=%ld reason=%s",
 					ch->GetPlayerID(), ch->GetName(), targetMap, reason ? reason : "?");
+			s_szPlayerBotTransitionRefusal = "no_navigation";
 			return false;
 		}
 
@@ -1555,6 +1560,7 @@ namespace
 				ch->StartRiding();
 			sys_err("PLAYERBOT_WORLD: transition failed pid=%u name=%s from=%ld to=%ld reason=%s",
 					ch->GetPlayerID(), ch->GetName(), oldMap, targetMap, reason ? reason : "?");
+			s_szPlayerBotTransitionRefusal = "show_failed";
 			return false;
 		}
 		ch->Stop();

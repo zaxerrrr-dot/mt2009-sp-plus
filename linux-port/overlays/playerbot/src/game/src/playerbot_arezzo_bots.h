@@ -84,6 +84,17 @@ namespace
 	bool IsPlayerBotHeldForCompany(LPCHARACTER ch);
 	bool IsPlayerBotOnMercContract(DWORD pid);
 	bool FightPlayerBotTowerObjective(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER foe, DWORD dwNow);
+	// From playerbot_arezzo_dungeon_bots.h, which comes later: a move of the
+	// Arezzo dungeon test cohort onto its own dungeon's map (the lobby or an
+	// instance of it), on the core that hosts it.
+	bool IsPlayerBotArezzoDungeonCohortMove(LPCHARACTER ch, long targetMap);
+
+	// Why the last map change asked for a bot was refused: a short tag set by
+	// TransitionPlayerBotMap's gates (the routes here and in the temple, the
+	// navigation, Show) and by CPlayerBotManager::WarpBot, for a caller that
+	// has to say why (the dungeon cohort's warp to its lobby). The caller
+	// clears it before it asks; NULL afterwards means nobody said.
+	const char* s_szPlayerBotTransitionRefusal = NULL;
 
 	// ------------------------------------------------------------ the maps
 
@@ -1052,6 +1063,21 @@ namespace
 						pid, ch->GetName(), fromMap, targetMap, reason ? reason : "?");
 			return -1;
 		}
+		// MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (lobby): the operator's dungeon test
+		// cohort goes to its own dungeon's map - the lobby, or an instance of
+		// it - from wherever it stands on the core that hosts it. Since
+		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1 put 364-366 on game1 beside the maps
+		// round them, the quests' login (a bot on the lobby map is sent to the
+		// dungeon's exit), the module's send-off and a stranded recovery land a
+		// cohort bot on the Fire Land, in Hwang or in a town, which on game2
+		// they never could; the way back fell to the rule below ("dungeon") and
+		// the cohort stood on the exit for good. Every other bot is held to
+		// that rule as ever.
+		if (IsPlayerBotArezzoDungeonCohortMove(ch, targetMap))
+		{
+			s_mapPlayerBotArezzoPending.erase(pid);
+			return -1;
+		}
 		// Off one of the maps: from its Teleporter, with the ring, when the
 		// module closes, or after a walk out that did not get there.
 		if (IsPlayerBotArezzoMap(fromMap) && targetMap != fromMap)
@@ -1076,6 +1102,7 @@ namespace
 						"ARZ_BOT: errand refused pid=%u name=%s map=%ld to=%ld reason=%s (held by the test)",
 						pid, ch->GetName(), fromMap, targetMap, reason ? reason : "?");
 				s_mapPlayerBotArezzoPending.erase(pid);
+				s_szPlayerBotTransitionRefusal = "arezzo_held_by_test";
 				return 0;
 			}
 			if (!atTeleporter && !gaveUp && !ring && !closed)
@@ -1125,6 +1152,7 @@ namespace
 			PlayerBotLogThrottled(tag, dwNow,
 					"ARZ_BOT: errand refused pid=%u name=%s map=%ld to=%ld reason=%s (on the road to the Las)",
 					pid, ch->GetName(), fromMap, targetMap, reason ? reason : "?");
+			s_szPlayerBotTransitionRefusal = "arezzo_las_road";
 			return 0;
 		}
 		if (!IsPlayerBotOffLimitsMap(targetMap) || targetBase == fromMap ||
@@ -1134,14 +1162,16 @@ namespace
 		// only for a bot the operator sent there, while the module is open.
 		const long forced = GetPlayerBotArezzoForcedMap(ch);
 		const char* why = NULL;
+		const char* refusal = NULL;
 		if (!IsPlayerBotArezzoMap(targetBase))
-			why = "dungeon";
+			why = "dungeon", refusal = "arezzo_route_dungeon";
 		else if (!IsPlayerBotArezzoOpen())
-			why = "module_closed";
+			why = "module_closed", refusal = "arezzo_route_module_closed";
 		else if (forced != targetBase)
-			why = "not_sent";
+			why = "not_sent", refusal = "arezzo_route_not_sent";
 		if (why)
 		{
+			s_szPlayerBotTransitionRefusal = refusal;
 			++s_uPlayerBotArezzoRefused;
 			char tag[48];
 			snprintf(tag, sizeof(tag), "arezzo_refused:%ld:%s", targetBase, why);
