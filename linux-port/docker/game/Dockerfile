@@ -620,6 +620,17 @@ RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
  && ! find "$O" -path "$O/state" -prune -o -name 'monkey_curse*' -print | grep -q . \
  && echo "share: monkey curse removed ($n handlers)"
 
+# MT2009_PLUS_KINGDOM_WAR_OFF_V1: the Kingdom War (the package's forked_road, the Battle
+# Executor's "Wojna Krolestw" and its GM start) is switched off - its maps (114,
+# 118-128) are hosted by no core and no client of this world has them, so "Wejdz"
+# went nowhere (the owner, 4 October: "Po prostu wylacz ja"). Its handlers go,
+# its state table stays; the Executor keeps its other options.
+RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
+ && n=$(find "$O" -path "$O/state" -prune -o -type f -name 'forked_road.*' -print | wc -l) \
+ && find "$O" -path "$O/state" -prune -o -type f -name 'forked_road.*' -exec rm -f {} + \
+ && ! find "$O" -path "$O/state" -prune -o -type f -name 'forked_road.*' -print | grep -q . \
+ && echo "share: Kingdom War switched off ($n handlers)"
+
 # MT2009_PLUS_HORSE30_V1 (Digi Rasta's horse to level 30, quest konie): the stable
 # keeper trains the horse for a fee, so the package's training missions -
 # pony_levelup (1-10) and horse_levelup (11-20), no longer compiled above - lose

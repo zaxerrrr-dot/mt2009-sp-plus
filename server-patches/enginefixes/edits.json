@@ -184,5 +184,17 @@
   "marker": "MT2009_PLUS_AUTOHUNT_MOUNT_V1 (table)",
   "old": "\t{ \"autohunt_target\",\tdo_autohunt_target,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
   "new": "\t{ \"autohunt_target\",\tdo_autohunt_target,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"autohunt_mount\",\tdo_autohunt_mount,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_AUTOHUNT_MOUNT_V1 (table) (Autor: blaki)\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_MOUNT_HORSE_STATS_V1 (stats)",
+  "old": "\t\tif (GetMountVnum() && !GetWear(WEAR_COSTUME_MOUNT))\n#else\n",
+  "new": "\t\t// MT2009_PLUS_MOUNT_HORSE_STATS_V1 (stats): a costume mount gives the rider the\n\t\t// horse's ST/DX/HT/IQ by the character's horse level too, as riding the\n\t\t// horse does (the owner, 4 October); the mount's own bonuses come on top.\n\t\tif (GetMountVnum())\n#else\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_MOUNT_HORSE_STATS_V1 (armor)",
+  "old": "\t\tif( true == IsHorseRiding() )\n\t\t{\n\t\t\tif (iArmor < GetHorseArmor())\n\t\t\t\tiArmor = GetHorseArmor();\n",
+  "new": "\t\t// MT2009_PLUS_MOUNT_HORSE_STATS_V1 (armor): and the horse's armour on a costume mount.\n\t\tif( true == IsHorseRiding() || (GetMountVnum() && GetWear(WEAR_COSTUME_MOUNT)) )\n\t\t{\n\t\t\tif (iArmor < GetHorseArmor())\n\t\t\t\tiArmor = GetHorseArmor();\n"
  }
 ]
