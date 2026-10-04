@@ -8043,6 +8043,42 @@ bool CPlayerBotManager::WarpBot(LPCHARACTER bot, long x, long y, long lPrivateMa
 	return true;
 }
 
+// MT2009_PLUS_AUTOHUNT_PATH_V1: the ground a person's Auto Lowy may ask its
+// way on - the maps the bots' navigation knows; the Monkey and Spider dungeons
+// are rooms and corridors, where the way is asked for every target.
+int CPlayerBotManager::GetHumanPathKind(long lMapIndex)
+{
+	const long base = lMapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? lMapIndex / 10000 : lMapIndex;
+	CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(base);
+	if (!navigation.Init(base))
+		return 0;
+	return (IsPlayerBotMonkeyMap(base) || IsPlayerBotSpiderMap(base)) ? 2 : 1;
+}
+
+// The route from the character to the point: 1 found (out holds its points,
+// the last one the target), 0 none, -1 deferred (the planner's budget is spent
+// this tick - ask again), -2 no grid here.
+int CPlayerBotManager::PlanHumanPath(LPCHARACTER ch, long targetX, long targetY, std::vector<std::pair<long, long> >& out)
+{
+	out.clear();
+	if (!ch)
+		return 0;
+	const long lMapIndex = ch->GetMapIndex();
+	if (GetHumanPathKind(lMapIndex) == 0)
+		return -2;
+	CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(lMapIndex);
+	std::vector<PIXEL_POSITION> waypoints;
+	const EPlayerBotNavPlanResult result = navigation.FindRoute(ch->GetX(), ch->GetY(), targetX, targetY,
+			ch->GetPlayerID(), get_dword_time(), 300, true, waypoints);
+	if (result == PLAYERBOT_NAV_PLAN_DEFERRED)
+		return -1;
+	if (result != PLAYERBOT_NAV_PLAN_FOUND || waypoints.empty())
+		return 0;
+	for (size_t i = 0; i < waypoints.size(); ++i)
+		out.push_back(std::make_pair((long)waypoints[i].x, (long)waypoints[i].y));
+	return 1;
+}
+
 bool CPlayerBotManager::TransferBot(LPCHARACTER bot, LPCHARACTER to)
 {
 	if (!bot || !to)
