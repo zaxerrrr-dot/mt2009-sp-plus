@@ -1959,7 +1959,12 @@ namespace
 		// MT2009_PLUS_AREZZO_BOTS_V1 (off limits): not into the new dungeons, the
 		// Blue Dragon's lair or the Arezzo maps - no bot goes there for now (the
 		// owner, 30 September). It waits where it is for its owner.
-		if (IsPlayerBotOffLimitsMap(targetMap))
+		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: except beside its owner, who stands
+		// there - the companion goes into every dungeon with its owner (the
+		// owner, 4 October), and through the Las to the Jungle's guard. On its
+		// own errands it keeps out as ever.
+		LPCHARACTER placeOwner = IsPlayerBotOffLimitsMap(targetMap) ? GetPlayerBotSidekickOwnerHere(ch->GetPlayerID()) : NULL;
+		if (IsPlayerBotOffLimitsMap(targetMap) && !(placeOwner && placeOwner->GetMapIndex() == targetMap))
 		{
 			PlayerBotLogThrottled("sidekick_off_limits", dwNow,
 					"PLAYERBOT_SIDEKICK: does not follow onto map=%ld pid=%u name=%s reason=%s",
@@ -8869,27 +8874,12 @@ namespace
 		// A dungeon instance too - the owner is its guide, which a bot on its
 		// own never has.
 		const bool otherMap = owner->GetMapIndex() != ch->GetMapIndex();
-		// MT2009_PLUS_AREZZO_BOTS_V1 (off limits): the owner in a new dungeon,
-		// the Blue Dragon's lair or on an Arezzo map: the companion waits here,
-		// as it does while its owner warps, and says so once.
-		if (otherMap && IsPlayerBotOffLimitsMap(owner->GetMapIndex()))
-		{
-			if (ch->IsStateMove())
-				ch->Stop();
-			ch->SetVictim(NULL);
-			state.dwTargetVID = 0;
-			state.dwLastMeaningfulActivityTime = dwNow;
-			SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
-			static std::map<DWORD, DWORD> s_mapToldAt;
-			std::map<DWORD, DWORD>::iterator told = s_mapToldAt.find(ch->GetPlayerID());
-			if (told == s_mapToldAt.end() || dwNow - told->second >= 600000)
-			{
-				owner->ChatPacket(CHAT_TYPE_INFO, "%s czeka na Ciebie tutaj - do tego miejsca towarzysz nie wchodzi.",
-						ch->GetName());
-				s_mapToldAt[ch->GetPlayerID()] = dwNow;
-			}
-			return true;
-		}
+		// MT2009_PLUS_AREZZO_BOTS_V1 (off limits) waited here for an owner in a
+		// new dungeon, the Blue Dragon's lair or on an Arezzo map.
+		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: no more - the companion goes with its
+		// owner into every dungeon and across the Las to the Jungle's guard (the
+		// owner, 4 October); PlacePlayerBotSidekickAt keeps it out of those
+		// places only without its owner there.
 		const int dist = otherMap ? INT_MAX
 				: DISTANCE_APPROX(ch->GetX() - owner->GetX(), ch->GetY() - owner->GetY());
 		if (otherMap || dist > PLAYERBOT_SIDEKICK_TELEPORT_DISTANCE)
