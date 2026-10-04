@@ -171,6 +171,13 @@ namespace
 	// is one answer and a runaway is still bounded.
 	const int PLAYERBOT_SIDEKICK_EQ_PROTOCOL = 1;
 	const int PLAYERBOT_SIDEKICK_EQ_WEAR_BASE = 1000;
+	// MT2009_PLUS_SIDEKICK_PANELS_V1: the companion's Alchemy window - a cell of
+	// its Dragon Soul inventory is 2000 + the engine's cell, a worn stone
+	// 1000 + WEAR_MAX_NUM + deck * DS_SLOT_MAX + kind (the engine's own wear
+	// index past the gear), and -2 in an order is "into its Alchemy, wherever
+	// the stone goes".
+	const int PLAYERBOT_SIDEKICK_EQ_DS_BASE = 2000;
+	const int PLAYERBOT_SIDEKICK_EQ_DS_AUTO = -2;
 	const int PLAYERBOT_SIDEKICK_EQ_PAGE_CELLS = 45;
 	const BYTE PLAYERBOT_SIDEKICK_PIN_UNWANTED = 255;
 	const DWORD PLAYERBOT_SIDEKICK_EQUIP_WAIT_MS = 4000;
@@ -4232,6 +4239,36 @@ namespace
 		return pos >= PLAYERBOT_SIDEKICK_EQ_WEAR_BASE && pos < PLAYERBOT_SIDEKICK_EQ_WEAR_BASE + WEAR_MAX_NUM;
 	}
 
+	// MT2009_PLUS_SIDEKICK_PANELS_V1: a worn Dragon Stone's place, either deck.
+	bool IsPlayerBotSidekickEqDsWearPos(int pos)
+	{
+		const int first = PLAYERBOT_SIDEKICK_EQ_WEAR_BASE + WEAR_MAX_NUM;
+		return pos >= first && pos < first + (int)DS_SLOT_MAX * (int)DRAGON_SOUL_DECK_MAX_NUM;
+	}
+
+	// A cell of its Dragon Soul inventory.
+	bool IsPlayerBotSidekickEqDsCellPos(int pos)
+	{
+		return pos >= PLAYERBOT_SIDEKICK_EQ_DS_BASE && pos < PLAYERBOT_SIDEKICK_EQ_DS_BASE + DRAGON_SOUL_INVENTORY_MAX_NUM;
+	}
+
+	bool IsPlayerBotSidekickEqDsPos(int pos)
+	{
+		return IsPlayerBotSidekickEqDsWearPos(pos) || IsPlayerBotSidekickEqDsCellPos(pos);
+	}
+
+	// What stands at one of those places of the companion's, or NULL.
+	LPITEM GetPlayerBotSidekickDsAt(LPCHARACTER sk, int pos)
+	{
+		if (IsPlayerBotSidekickEqDsWearPos(pos))
+			return sk->GetWear((BYTE)(pos - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE));
+		if (!IsPlayerBotSidekickEqDsCellPos(pos))
+			return NULL;
+		const WORD cell = (WORD)(pos - PLAYERBOT_SIDEKICK_EQ_DS_BASE);
+		LPITEM item = sk->GetItem(TItemPos(DRAGON_SOUL_INVENTORY, cell));
+		return item && item->GetWindow() == DRAGON_SOUL_INVENTORY && item->GetCell() == cell ? item : NULL;
+	}
+
 	// A position as the window writes it; INT_MIN for nothing a window writes.
 	int ParsePlayerBotSidekickEqPos(const char* text)
 	{
@@ -4243,6 +4280,9 @@ namespace
 		int pos = INT_MIN;
 		str_to_number(pos, text);
 		if (pos == -1 || IsPlayerBotSidekickEqBagPos(pos) || IsPlayerBotSidekickEqWearPos(pos))
+			return pos;
+		// MT2009_PLUS_SIDEKICK_PANELS_V1: the Alchemy window's places.
+		if (pos == PLAYERBOT_SIDEKICK_EQ_DS_AUTO || IsPlayerBotSidekickEqDsPos(pos))
 			return pos;
 		return INT_MIN;
 	}
@@ -4411,6 +4451,32 @@ namespace
 			e.flags = GetPlayerBotSidekickEqFlags(rt, item);
 			e.hash = HashPlayerBotSidekickEqItem(item, e.flags);
 		}
+		// MT2009_PLUS_SIDEKICK_PANELS_V1: its Dragon Stones, worn and in its
+		// Alchemy, for the Alchemy window - while the Alchemy is in the game.
+		const bool alchemy = !ArePlayerBotAlchemyOff();
+		if (alchemy)
+		{
+			for (int i = 0; i < (int)DS_SLOT_MAX * (int)DRAGON_SOUL_DECK_MAX_NUM; ++i)
+			{
+				LPITEM item = sk->GetWear((BYTE)(WEAR_MAX_NUM + i));
+				if (!item)
+					continue;
+				TPlayerBotSidekickEqEntry& e = now[PLAYERBOT_SIDEKICK_EQ_WEAR_BASE + WEAR_MAX_NUM + i];
+				e.item = item;
+				e.flags = GetPlayerBotSidekickEqFlags(rt, item);
+				e.hash = HashPlayerBotSidekickEqItem(item, e.flags);
+			}
+			for (int cell = 0; cell < DRAGON_SOUL_INVENTORY_MAX_NUM; ++cell)
+			{
+				LPITEM item = sk->GetItem(TItemPos(DRAGON_SOUL_INVENTORY, (WORD)cell));
+				if (!item || item->GetWindow() != DRAGON_SOUL_INVENTORY || item->GetCell() != cell)
+					continue;
+				TPlayerBotSidekickEqEntry& e = now[PLAYERBOT_SIDEKICK_EQ_DS_BASE + cell];
+				e.item = item;
+				e.flags = GetPlayerBotSidekickEqFlags(rt, item);
+				e.hash = HashPlayerBotSidekickEqItem(item, e.flags);
+			}
+		}
 		const long long gold = (long long)sk->GetGold();
 		const bool begin = full || rt.dwEqGen == 0;
 		if (!begin)
@@ -4428,8 +4494,12 @@ namespace
 		if (begin)
 		{
 			rt.mapEqSent.clear();
-			SendPlayerBotSidekickCommand(owner, "SidekickEqBegin %d %u %d %d", PLAYERBOT_SIDEKICK_EQ_PROTOCOL, rt.dwEqGen,
-					PLAYERBOT_BAG_CELLS, PLAYERBOT_SIDEKICK_EQ_PAGE_CELLS);
+			// MT2009_PLUS_SIDEKICK_PANELS_V1: and the cells of its Alchemy and
+			// the stones of one deck (0 0 with the Alchemy out of the game); a
+			// window that does not know them reads the first four words.
+			SendPlayerBotSidekickCommand(owner, "SidekickEqBegin %d %u %d %d %d %d", PLAYERBOT_SIDEKICK_EQ_PROTOCOL,
+					rt.dwEqGen, PLAYERBOT_BAG_CELLS, PLAYERBOT_SIDEKICK_EQ_PAGE_CELLS,
+					alchemy ? (int)DRAGON_SOUL_INVENTORY_MAX_NUM : 0, alchemy ? (int)DS_SLOT_MAX : 0);
 		}
 		size_t lines = 0;
 		for (std::map<int, DWORD>::iterator sent = rt.mapEqSent.begin(); sent != rt.mapEqSent.end();)
@@ -4716,6 +4786,21 @@ namespace
 
 	// Takes a worn piece off for its owner, to a cell or to the first that
 	// fits, and marks it: the AI does not put it back on.
+	// MT2009_PLUS_SIDEKICK_MOUNT_FIX_V1: a mount seal its owner takes off a
+	// companion that rides it - the companion is set down first, as Ctrl+G
+	// sets a player down (the unequip then sends the mount away).
+	void StopPlayerBotSidekickMountFor(LPCHARACTER sk, LPITEM worn)
+	{
+#if defined(ENABLE_MOUNT_COSTUME_SYSTEM)
+		if (!sk || !worn || !worn->IsNewMountItem() || !sk->IsRiding())
+			return;
+		sk->Stop();
+		StopPlayerBotRiding(sk);
+		sys_log(0, "PLAYERBOT_SIDEKICK: off the mount for its owner pid=%u name=%s seal=%u riding=%d", sk->GetPlayerID(),
+				sk->GetName(), worn->GetVnum(), sk->IsRiding() ? 1 : 0);
+#endif
+	}
+
 	int UnequipPlayerBotSidekickForOwner(LPCHARACTER owner, LPCHARACTER sk, TPlayerBotSidekickRuntime& rt, int wear,
 			int toCell, std::string& answer)
 	{
@@ -4730,6 +4815,9 @@ namespace
 			answer = "Tego nie da sie zdjac.";
 			return 2;
 		}
+		// MT2009_PLUS_SIDEKICK_MOUNT_FIX_V1: down from the seal's mount first,
+		// the way Ctrl+G gets a player off before the seal comes off.
+		StopPlayerBotSidekickMountFor(sk, worn);
 		bool done = false;
 		if (toCell >= 0)
 			done = sk->MoveItem(TItemPos(INVENTORY, INVENTORY_MAX_NUM + wear), TItemPos(INVENTORY, toCell),
@@ -5010,6 +5098,8 @@ namespace
 		// A worn piece comes off into the companion's bag first: the engine
 		// unequips a piece only there (CItem::RemoveFromCharacter would leave
 		// it with two owners).
+		if (fromWear)
+			StopPlayerBotSidekickMountFor(sk, item);	// MT2009_PLUS_SIDEKICK_MOUNT_FIX_V1
 		if (fromWear && (sk->GetEmptyInventory(item->GetSize()) < 0 || !sk->UnequipItem(item) || item->IsEquipped()))
 		{
 			answer = sk->GetEmptyInventory(item->GetSize()) < 0 ?
@@ -5027,6 +5117,287 @@ namespace
 				owner->GetPlayerID(), id, item->GetVnum(), fromWear ? 1 : 0, cell);
 		answer = std::string("Wziete od towarzysza: ") + pieceName + ".";
 		return 0;
+	}
+
+	// ------------------------------------------- MT2009_PLUS_SIDEKICK_PANELS_V1
+	//
+	// The companion's Alchemy window (uisidekickinventory.py, AlchemyWindow,
+	// opened from the Options page of its window): its two decks and the
+	// stones of its Dragon Soul inventory, which its owner gives it from the
+	// owner's own Alchemy, puts on, takes off and takes back. The companion
+	// never buys, opens, refines or swaps a stone by itself
+	// (IsPlayerBotAlchemyUser leaves it out); its deck goes on for its fights
+	// (ManagePlayerBotDsDeckTick). A stone comes off a deck the way the
+	// owner's own does - DSManager::PullOut, the Alchemy's odds of keeping it,
+	// better with a Dragon Soul extractor, which it takes from its own bag or,
+	// with none there, from its owner's.
+
+	LPITEM FindPlayerBotSidekickDsExtractor(LPCHARACTER ch)
+	{
+		for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && item->GetType() == ITEM_EXTRACT &&
+					item->GetSubType() == EXTRACT_DRAGON_SOUL && !item->isLocked() && !item->IsExchanging())
+				return item;
+		}
+		return NULL;
+	}
+
+	// Off a deck into its own Alchemy: 0 off, 2 refused (the answer says why),
+	// 4 lost to the Alchemy's odds - item is NULL then.
+	int PullOutPlayerBotSidekickDs(LPCHARACTER owner, LPCHARACTER sk, LPITEM& item, std::string& answer)
+	{
+		if (IS_SET(item->GetFlag(), ITEM_FLAG_IRREMOVABLE) || item->isLocked() || item->IsExchanging())
+		{
+			answer = "Tego kamienia nie da sie teraz zdjac.";
+			return 2;
+		}
+		if (!sk->DragonSoul_IsQualified())
+			sk->DragonSoul_GiveQualification();
+		if (sk->GetEmptyDragonSoulInventory(item) < 0)
+		{
+			answer = "W alchemii towarzysza nie ma miejsca na ten kamien.";
+			return 2;
+		}
+		LPITEM extractor = FindPlayerBotSidekickDsExtractor(sk);
+		if (!extractor)
+			extractor = FindPlayerBotSidekickDsExtractor(owner);
+		const DWORD vnum = item->GetVnum();
+		const bool ok = DSManager::instance().PullOut(sk, NPOS, item, extractor);
+		if (!item)
+		{
+			sys_log(0, "PLAYERBOT_SIDEKICK: ds pull-out lost pid=%u owner=%u vnum=%u extractor=%d", sk->GetPlayerID(),
+					owner->GetPlayerID(), vnum, extractor ? 1 : 0);
+			answer = "Kamien pekl przy zdejmowaniu - szansa alchemii, jak przy twoim (Szczypce Smoka ja podnosza).";
+			return 4;
+		}
+		if (!ok || item->IsEquipped())
+		{
+			answer = "Nie da sie go teraz zdjac - sprobuj za chwile.";
+			return 2;
+		}
+		return 0;
+	}
+
+	// Onto a deck: wantWear the engine's wear index of a deck's place, or -1
+	// for the first deck whose place for the kind is free.
+	int EquipPlayerBotSidekickDs(LPCHARACTER sk, LPITEM item, int wantWear, std::string& answer)
+	{
+		if (item->isLocked() || item->IsExchanging())
+		{
+			answer = "Ten przedmiot jest teraz zajety.";
+			return 2;
+		}
+		if (item->GetSubType() >= DS_SLOT_MAX)
+		{
+			answer = "Tego kamienia nie da sie zalozyc.";
+			return 2;
+		}
+		int wear = -1;
+		if (wantWear >= 0)
+		{
+			if (item->FindEquipCell(sk, wantWear) != wantWear)
+			{
+				answer = "Ten kamien nie pasuje w to miejsce.";
+				return 2;
+			}
+			if (sk->GetWear((BYTE)wantWear))
+			{
+				answer = "Tu juz jest kamien - zdejmij go najpierw.";
+				return 2;
+			}
+			wear = wantWear;
+		}
+		else
+			for (int deck = 0; deck < DRAGON_SOUL_DECK_MAX_NUM && wear < 0; ++deck)
+			{
+				const int w = WEAR_MAX_NUM + deck * DS_SLOT_MAX + item->GetSubType();
+				if (item->FindEquipCell(sk, w) == w && !sk->GetWear((BYTE)w))
+					wear = w;
+			}
+		if (wear < 0)
+		{
+			answer = "Oba zestawy maja juz kamien tego rodzaju - zdejmij jeden najpierw.";
+			return 2;
+		}
+		if (!sk->DragonSoul_IsQualified())
+			sk->DragonSoul_GiveQualification();
+		if (!PlayerBotEquipItem(sk, item, wear) || !item->IsEquipped())
+		{
+			answer = "Nie da sie go teraz zalozyc - sprobuj za chwile.";
+			return 2;
+		}
+		char text[96];
+		snprintf(text, sizeof(text), "Zalozony w zestawie %d.", (wear - WEAR_MAX_NUM) / DS_SLOT_MAX + 1);
+		answer = text;
+		return 0;
+	}
+
+	// From the owner's Alchemy (its cell) into the companion's, and onto a
+	// deck when it was dropped on one.
+	int GivePlayerBotSidekickDs(LPCHARACTER owner, LPCHARACTER sk, TPlayerBotSidekickRuntime& rt, int ownerCell, int to,
+			std::string& answer)
+	{
+		if (ArePlayerBotAlchemyOff())
+		{
+			answer = "Alchemia jest wylaczona na tym serwerze.";
+			return 2;
+		}
+		LPITEM item = ownerCell >= 0 && ownerCell < DRAGON_SOUL_INVENTORY_MAX_NUM
+				? owner->GetItem(TItemPos(DRAGON_SOUL_INVENTORY, (WORD)ownerCell)) : NULL;
+		if (!item || item->GetWindow() != DRAGON_SOUL_INVENTORY || item->GetCell() != ownerCell || !item->IsDragonSoul())
+		{
+			answer = "Nie ma tego w twojej alchemii.";
+			return 3;
+		}
+		if (item->isLocked() || item->IsExchanging())
+		{
+			answer = "Ten przedmiot jest teraz zajety.";
+			return 2;
+		}
+		const bool toWear = IsPlayerBotSidekickEqDsWearPos(to);
+		const int wantWear = toWear ? to - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE : -1;
+		if (toWear && item->FindEquipCell(sk, wantWear) != wantWear)
+		{
+			answer = "Ten kamien nie pasuje w to miejsce.";
+			return 2;
+		}
+		if (toWear && sk->GetWear((BYTE)wantWear))
+		{
+			answer = "Tu juz jest kamien - zdejmij go najpierw.";
+			return 2;
+		}
+		if (!sk->DragonSoul_IsQualified())
+			sk->DragonSoul_GiveQualification();
+		const int cell = sk->GetEmptyDragonSoulInventory(item);
+		if (cell < 0)
+		{
+			answer = "W alchemii towarzysza nie ma miejsca na ten kamien.";
+			return 2;
+		}
+		const std::string pieceName = item->GetName() ? item->GetName() : "";
+		item->RemoveFromCharacter();
+		item->AddToCharacter(sk, TItemPos(DRAGON_SOUL_INVENTORY, (WORD)cell));
+		ITEM_MANAGER::instance().FlushDelayedSave(item);
+		AddPlayerBotSidekickGift(sk->GetPlayerID(), rt, item->GetID());
+		LogManager::instance().ItemLog(sk, item, "PLAYERBOT_GIFT_IN", owner->GetName());
+		sys_log(0, "PLAYERBOT_SIDEKICK: ds given pid=%u owner=%u item=%u vnum=%u cell=%d wear=%d", sk->GetPlayerID(),
+				owner->GetPlayerID(), item->GetID(), item->GetVnum(), cell, wantWear);
+		if (toWear)
+		{
+			std::string worn;
+			const int code = EquipPlayerBotSidekickDs(sk, item, wantWear, worn);
+			answer = std::string("Dany: ") + pieceName + ". " + worn;
+			return code;
+		}
+		answer = std::string("Dany do alchemii towarzysza: ") + pieceName + ".";
+		return 0;
+	}
+
+	// From the companion's Alchemy or deck into the owner's Alchemy.
+	int TakePlayerBotSidekickDs(LPCHARACTER owner, LPCHARACTER sk, TPlayerBotSidekickRuntime& rt, int from,
+			std::string& answer)
+	{
+		LPITEM item = GetPlayerBotSidekickDsAt(sk, from);
+		if (!item)
+		{
+			answer = "Tam nic nie ma.";
+			return 3;
+		}
+		if (item->isLocked() || item->IsExchanging())
+		{
+			answer = "Ten przedmiot jest teraz zajety.";
+			return 2;
+		}
+		if (!owner->DragonSoul_IsQualified())
+		{
+			answer = "Twoja alchemia nie jest jeszcze otwarta (list od Alchemika).";
+			return 2;
+		}
+		if (owner->GetEmptyDragonSoulInventory(item) < 0)
+		{
+			answer = "W twojej alchemii nie ma miejsca na ten kamien.";
+			return 2;
+		}
+		const std::string pieceName = item->GetName() ? item->GetName() : "";
+		const DWORD id = item->GetID();
+		if (item->IsEquipped())
+		{
+			const int code = PullOutPlayerBotSidekickDs(owner, sk, item, answer);
+			if (code == 4)
+			{
+				ClearPlayerBotSidekickGift(sk->GetPlayerID(), rt, id);
+				ClearPlayerBotSidekickPin(rt, id);
+				return 2;
+			}
+			if (code != 0)
+				return code;
+		}
+		const int cell = owner->GetEmptyDragonSoulInventory(item);
+		if (cell < 0)
+		{
+			answer = "W twojej alchemii nie ma miejsca - kamien zostal w alchemii towarzysza.";
+			return 2;
+		}
+		item->RemoveFromCharacter();
+		item->AddToCharacter(owner, TItemPos(DRAGON_SOUL_INVENTORY, (WORD)cell));
+		ITEM_MANAGER::instance().FlushDelayedSave(item);
+		ClearPlayerBotSidekickGift(sk->GetPlayerID(), rt, id);
+		ClearPlayerBotSidekickPin(rt, id);
+		LogManager::instance().ItemLog(owner, item, "PLAYERBOT_SIDEKICK_TAKE", sk->GetName());
+		sys_log(0, "PLAYERBOT_SIDEKICK: ds taken pid=%u owner=%u item=%u vnum=%u cell=%d", sk->GetPlayerID(),
+				owner->GetPlayerID(), id, item->GetVnum(), cell);
+		answer = std::string("Wziety od towarzysza: ") + pieceName + ".";
+		return 0;
+	}
+
+	// Within the companion: from its Alchemy onto a deck (-1: the first deck
+	// with the place free), and off a deck into its Alchemy.
+	int MovePlayerBotSidekickDs(LPCHARACTER owner, LPCHARACTER sk, TPlayerBotSidekickRuntime& rt, int from, int to,
+			std::string& answer)
+	{
+		LPITEM item = GetPlayerBotSidekickDsAt(sk, from);
+		if (!item)
+		{
+			answer = "Tam nic nie ma.";
+			return 3;
+		}
+		if (IsPlayerBotSidekickEqDsCellPos(from))
+		{
+			if (to == -1 || IsPlayerBotSidekickEqDsWearPos(to))
+			{
+				if (ArePlayerBotAlchemyOff())
+				{
+					answer = "Alchemia jest wylaczona na tym serwerze.";
+					return 2;
+				}
+				return EquipPlayerBotSidekickDs(sk, item, to == -1 ? -1 : to - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE, answer);
+			}
+			if (to == PLAYERBOT_SIDEKICK_EQ_DS_AUTO || IsPlayerBotSidekickEqDsCellPos(to))
+			{
+				answer = "Kamien juz lezy w alchemii towarzysza.";
+				return 0;
+			}
+			answer = "Kamien idzie do zestawu albo do twojej torby (trafi do twojej alchemii).";
+			return 2;
+		}
+		if (to == -1 || to == PLAYERBOT_SIDEKICK_EQ_DS_AUTO || IsPlayerBotSidekickEqDsCellPos(to))
+		{
+			const DWORD id = item->GetID();
+			const int code = PullOutPlayerBotSidekickDs(owner, sk, item, answer);
+			if (code == 4)
+			{
+				ClearPlayerBotSidekickGift(sk->GetPlayerID(), rt, id);
+				ClearPlayerBotSidekickPin(rt, id);
+				return 2;
+			}
+			if (code == 0)
+				answer = "Zdjety do alchemii towarzysza.";
+			return code;
+		}
+		answer = "Zdejmij go najpierw do alchemii towarzysza.";
+		return 2;
 	}
 
 	// "1500000", "1.5kk", "500k", "2kkk": the amount the window's yang dialog
@@ -5184,6 +5555,13 @@ namespace
 				answer = "Towarzysz jest teraz przemieniony - zmiana sprzetu poczeka do konca przemiany.";
 			else if (twoBags && !owner->CanHandleItem())
 				answer = "Zamknij najpierw handel, sklep albo magazyn.";
+			// MT2009_PLUS_SIDEKICK_PANELS_V1: the stones of the Alchemy window.
+			else if (!strcmp(op, "daj") && IsPlayerBotSidekickEqDsCellPos(from))
+				code = GivePlayerBotSidekickDs(owner, sk, rt, from - PLAYERBOT_SIDEKICK_EQ_DS_BASE, to, answer);
+			else if (!strcmp(op, "wez") && IsPlayerBotSidekickEqDsPos(from))
+				code = TakePlayerBotSidekickDs(owner, sk, rt, from, answer);
+			else if (!strcmp(op, "ruch") && IsPlayerBotSidekickEqDsPos(from))
+				code = MovePlayerBotSidekickDs(owner, sk, rt, from, to, answer);
 			else if (!strcmp(op, "ruch"))
 			{
 				if (IsPlayerBotSidekickEqBagPos(from) && IsPlayerBotSidekickEqBagPos(to))
@@ -5228,6 +5606,7 @@ namespace
 			else
 			{
 				LPITEM item = IsPlayerBotSidekickEqWearPos(from) ? sk->GetWear(from - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE)
+						: IsPlayerBotSidekickEqDsPos(from) ? GetPlayerBotSidekickDsAt(sk, from)	// MT2009_PLUS_SIDEKICK_PANELS_V1
 						: (IsPlayerBotSidekickEqBagPos(from) ? sk->GetInventoryItem(from) : NULL);
 				if (!item || (IsPlayerBotSidekickEqBagPos(from) && item->GetCell() != from))
 				{

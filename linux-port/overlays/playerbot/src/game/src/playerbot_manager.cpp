@@ -1741,8 +1741,14 @@ namespace
 				continue;
 			// From any saddle: a battle horse casts no skill of a class
 			// either (PLAYERBOT_SADDLE_SKILL_LEVEL), and the cast below would
-			// be refused without a word.
-			if (ch->IsRiding())
+			// be refused without a word. A standing mount (a Wukong cloud, the
+			// surfboard, a drakkar) casts every skill, and its rider never
+			// climbs down for "leader_buff" (IsPlayerBotSaddleOnlyReason) - so
+			// this asked to climb down, was refused and claimed the tick
+			// without a cast, every 1.2 s for good: a companion on a cloud
+			// never buffed its owner again and lost a fight's tick to it each
+			// time (MT2009_PLUS_SIDEKICK_MOUNT_FIX_V1).
+			if (ch->IsRiding() && !IsPlayerBotOnStandingMount(ch))
 			{
 				SetPlayerBotRidingForTravel(ch, state, false, dwNow, "leader_buff");
 				next = dwNow + PLAYERBOT_BUFF_RECHECK_FAST;
