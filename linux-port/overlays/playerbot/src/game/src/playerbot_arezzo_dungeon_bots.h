@@ -622,8 +622,11 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the bots' own runs of these dungeons
+	// (playerbot_dungeon_runs.h) fight the same way and hand in their pack's
+	// middle (packN of them standing) where the cohort's run would give it.
 	bool ManagePlayerBotArzDgInside(LPCHARACTER ch, TPlayerBotAIState& state, int dg, TPlayerBotArzDgBot& bot,
-			DWORD dwNow)
+			DWORD dwNow, long packX = 0, long packY = 0, int packN = 0)
 	{
 		const TPlayerBotArzDg& info = PLAYERBOT_ARZDG[dg];
 		const long map = ch->GetMapIndex();
@@ -654,6 +657,11 @@ namespace
 			{
 				anchorX = r->second.lPackX;
 				anchorY = r->second.lPackY;
+			}
+			else if (packN >= 2)
+			{
+				anchorX = packX;
+				anchorY = packY;
 			}
 		}
 		// The waves of the Ruins and the Jungle: sixteen groups of three or
@@ -837,6 +845,31 @@ namespace
 
 	// ------------------------------------------------------------ the runs
 
+	// MT2009_PLUS_AREZZO_DG_NO_BOSS_REGEN_V1: in the bots' instances a boss
+	// does not heal back what it lost (the owner, 1 October: the King and
+	// the Queen regained 5 % every 15-20 s, more than five bots took off -
+	// 91-99 % health after half an hour). Players' instances are untouched.
+	// Asked once a second for every run of the cohort, and of the bots' own
+	// dungeon runs (MT2009_PLUS_BOT_DUNGEON_RUNS_V1, playerbot_dungeon_runs.h).
+	void HoldPlayerBotArzDgBossRegen(long instance, DWORD dwNow)
+	{
+		static std::map<DWORD, int> s_mapBossLowHP;
+		const TPlayerBotArzDgScan& sc = ScanPlayerBotArzDg(instance, dwNow);
+		for (size_t i = 0; i < sc.foes.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(sc.foes[i].dwVID);
+			if (!c || c->IsDead() || c->IsStone() || c->GetMobRank() < MOB_RANK_BOSS)
+				continue;
+			std::map<DWORD, int>::iterator low = s_mapBossLowHP.find(sc.foes[i].dwVID);
+			if (low == s_mapBossLowHP.end() || c->GetHP() < low->second)
+				s_mapBossLowHP[sc.foes[i].dwVID] = c->GetHP();
+			else if (c->GetHP() > low->second)
+				c->PointChange(POINT_HP, low->second - c->GetHP());
+		}
+		if (s_mapBossLowHP.size() > 512)
+			s_mapBossLowHP.clear();
+	}
+
 	void ClosePlayerBotArzDgRun(TPlayerBotArzDgRun& run, const char* result, DWORD dwNow)
 	{
 		const TPlayerBotArzDg& info = PLAYERBOT_ARZDG[run.iDg];
@@ -1009,27 +1042,8 @@ namespace
 			PullPlayerBotArzDgRun(run, "after_the_end");
 			return true;
 		}
-		// MT2009_PLUS_AREZZO_DG_NO_BOSS_REGEN_V1: in the bots' instances a boss
-		// does not heal back what it lost (the owner, 1 October: the King and
-		// the Queen regained 5 % every 15-20 s, more than five bots took off -
-		// 91-99 % health after half an hour). Players' instances are untouched.
-		{
-			static std::map<DWORD, int> s_mapBossLowHP;
-			const TPlayerBotArzDgScan& sc = ScanPlayerBotArzDg(run.lInstance, dwNow);
-			for (size_t i = 0; i < sc.foes.size(); ++i)
-			{
-				LPCHARACTER c = CHARACTER_MANAGER::instance().Find(sc.foes[i].dwVID);
-				if (!c || c->IsDead() || c->IsStone() || c->GetMobRank() < MOB_RANK_BOSS)
-					continue;
-				std::map<DWORD, int>::iterator low = s_mapBossLowHP.find(sc.foes[i].dwVID);
-				if (low == s_mapBossLowHP.end() || c->GetHP() < low->second)
-					s_mapBossLowHP[sc.foes[i].dwVID] = c->GetHP();
-				else if (c->GetHP() > low->second)
-					c->PointChange(POINT_HP, low->second - c->GetHP());
-			}
-			if (s_mapBossLowHP.size() > 512)
-				s_mapBossLowHP.clear();
-		}
+		// MT2009_PLUS_AREZZO_DG_NO_BOSS_REGEN_V1 (HoldPlayerBotArzDgBossRegen).
+		HoldPlayerBotArzDgBossRegen(run.lInstance, dwNow);
 		// MT2009_PLUS_AREZZO_DG_STALL_DETAIL_V1 (boss): the bosses' health once a minute.
 		{
 			static std::map<int, DWORD> s_mapNextBossLog;

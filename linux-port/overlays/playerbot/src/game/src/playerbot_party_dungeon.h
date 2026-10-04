@@ -51,7 +51,9 @@
 // The player's own companion (playerbot_sidekick.h) places itself beside its
 // owner, a dungeon instance included; here it only uses and hands in the
 // dungeons' items. The Arezzo dungeon test cohort (playerbot_arezzo_dungeon_bots.h)
-// runs its own instances and is not this pass's.
+// runs its own instances and is not this pass's; nor are the bots' own dungeon
+// runs (playerbot_dungeon_runs.h, MT2009_PLUS_BOT_DUNGEON_RUNS_V1), which use
+// its fight round their leader (a bot - its target is its AI's) and its items.
 //
 // An implementation fragment in the sense playerbot_types.h describes:
 // include it once, after playerbot_arezzo_dungeon_bots.h (whose scan, boss
@@ -196,6 +198,10 @@ namespace
 	{
 		if (!ch)
 			return false;
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the bots' own runs - to the
+		// gathering, into the run's instance and home again.
+		if (IsPlayerBotDungeonRunMove(ch, targetMap, reason))
+			return true;
 		const long fromMap = ch->GetMapIndex();
 		// Out of a party dungeon's instance: always - a bot is never kept in one.
 		if (fromMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN && IsPlayerBotPartyDungeonMap(fromMap) &&
@@ -590,6 +596,14 @@ namespace
 			}
 		}
 		LPCHARACTER aimed = person->GetTarget();
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: a bot leads the bots' own runs, and
+		// a bot has no client's target - what it fights is its AI's.
+		if (!aimed && person->GetDesc() && person->GetDesc()->IsBot())
+		{
+			TPlayerBotAIStateMap::const_iterator ps = s_mapPlayerBotAIStates.find(person->GetPlayerID());
+			if (ps != s_mapPlayerBotAIStates.end() && ps->second.dwTargetVID != 0)
+				aimed = CHARACTER_MANAGER::instance().Find(ps->second.dwTargetVID);
+		}
 		if (!IsPlayerBotPdgFoe(ch, aimed) || (dragonShielded && aimed->GetRaceNum() == PLAYERBOT_PDG_BLUE_DRAGON) ||
 				DISTANCE_APPROX(person->GetX() - aimed->GetX(), person->GetY() - aimed->GetY()) > PLAYERBOT_PDG_HUNT_RANGE)
 			aimed = NULL;
@@ -712,8 +726,9 @@ namespace
 				return false;
 			return FollowPlayerBotPersonIntoDungeon(ch, state, person, dwNow);
 		}
-		// The Arezzo dungeon cohort runs its own instances.
-		if (IsPlayerBotArezzoDungeonCohortPID(pid) && s_bPlayerBotArzDgHosting)
+		// The Arezzo dungeon cohort runs its own instances, and so do the
+		// bots' own dungeon runs (MT2009_PLUS_BOT_DUNGEON_RUNS_V1).
+		if ((IsPlayerBotArezzoDungeonCohortPID(pid) && s_bPlayerBotArzDgHosting) || IsPlayerBotOnDungeonRun(pid))
 			return false;
 		TPlayerBotPdgBot& b = s_mapPlayerBotPdg[pid];
 		if (b.lInstance != map)

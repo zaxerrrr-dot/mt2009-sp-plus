@@ -253,6 +253,9 @@ AI_LIVE_DEFAULTS = {"CHAT": 1, "BOOKS": 1, "NIGHT": 1, "LIFE": 0,
                      # MT2009_PLUS_BOTLIFE_V1: the hours of play a day under
                      # LIFE (playerbot_life_rules.h); 0 = the key unset.
                      "LIFE_HOURS": 0, "WARS": 1, "TOWER": 1, "CATACOMB": 1, "ISHOP": 1,
+                     # MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the bots' own dungeon
+                     # runs (playerbot_dungeon_runs.h), 1 = on.
+                     "DUNGEONS": 1,
                      "SHOP_M2": 0, "PERSONA": 1, "SHOUTERS": 1,
                      # MT2009_PLUS_LEGENDS_V1: the bots' legends (playerbot_legends.h).
                      "LEGENDS": 1,
@@ -3077,7 +3080,7 @@ def read_ai_weights():
             if len(fields) >= 2 and fields[0].upper() in values:
                 try:
                     key, raw_value = fields[0].upper(), fields[1]
-                    if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "ISHOP", "SHOP_M2", "PERSONA", "SHOUTERS", "HAGGLE", "LEGENDS"):
+                    if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "DUNGEONS", "ISHOP", "SHOP_M2", "PERSONA", "SHOUTERS", "HAGGLE", "LEGENDS"):
                         values[key] = 0 if raw_value.lower() in ("0", "off", "no") else 1
                     elif key in ("SCRAP", "REST", "KINGDOMPVP"):
                         values[key] = max(0, min(100, int(raw_value)))
@@ -3143,6 +3146,8 @@ def write_ai_weights(values):
     content.append(f"WARS\t{1 if values.get('WARS', 1) else 0}")
     content.append(f"TOWER\t{1 if values.get('TOWER', 1) else 0}")
     content.append(f"CATACOMB\t{1 if values.get('CATACOMB', 1) else 0}")
+    # MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the bots' own dungeon runs, 1 = on.
+    content.append(f"DUNGEONS\t{1 if values.get('DUNGEONS', 1) else 0}")
     content.append(f"ISHOP\t{1 if values.get('ISHOP', 1) else 0}")
     content.append(f"SHOP_M2\t{1 if values.get('SHOP_M2', 0) else 0}")
     content.append(f"PERSONA\t{1 if values.get('PERSONA', 1) else 0}")
@@ -9923,6 +9928,22 @@ def manage_catacomb():
         flash("Rajdy botów na Azraela zostały " + ("włączone." if values["CATACOMB"] else "wyłączone."))
     except OSError:
         flash("Nie udało się zapisać ustawienia rajdów na Azraela.", "error")
+    return redirect(url_for("manage"))
+
+
+# MT2009_PLUS_BOT_DUNGEON_RUNS_V1: "Dungeony botow" - the bots gather their own
+# parties on the kingdom's shout and run every dungeon of their level
+# (playerbot_dungeon_runs.h). Live, no restart.
+@app.post("/manage/bot-dungeons")
+@login_required
+def manage_bot_dungeons():
+    values = read_ai_weights()
+    values["DUNGEONS"] = 1 if "1" in request.form.getlist("DUNGEONS") else 0
+    try:
+        write_ai_weights(values)
+        flash("Dungeony botów zostały " + ("włączone." if values["DUNGEONS"] else "wyłączone."))
+    except OSError:
+        flash("Nie udało się zapisać ustawienia dungeonów botów.", "error")
     return redirect(url_for("manage"))
 
 

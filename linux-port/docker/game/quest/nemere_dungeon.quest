@@ -691,6 +691,35 @@ quest nemere_dungeon begin
 			end
 		end
 
+		-- MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the start of an ordinary bot party's run (playerbot_dungeon_runs.h).
+		-- The bots cannot answer the guard's dialog, so the core makes the instance itself, marks it with
+		-- the dungeon flag mt2009_dgrun - nothing a player can set - and asks for this. Unlike the test
+		-- cohort's (mt2009_dgbot) such a run keeps the player's time limit and the player's way out.
+		when nemere_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					nemere_dungeon.init()
+				end
+			end
+		end
+
+		-- MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the stone lion's start for a bots' run, asked by the core once the
+		-- instance is set up: what the leader's "Rozpocznij wyprawê na Nemere" does, without the dialog (the
+		-- lion stays standing - an NPC no bot looks at).
+		when nemere_dgrun_next.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") ~= 1 or d.getf("init") == 0 or d.getf("closed") == 1 or d.getf("step") ~= 0 then
+					return
+				end
+				local c = nemere_dungeon.cfg()
+				d.setf("step", 1)
+				d.setf("kills", 0)
+				d.setf("ready", 1)
+				d.regen_file(c.path.."zone_1.txt")
+				d.notice("Nemere: "..nemere_dungeon.step_text(1))
+			end
+		end
+
 		when nemere_end.server_timer begin
 			if d.select(get_server_timer_arg()) then
 				nemere_dungeon.finish()

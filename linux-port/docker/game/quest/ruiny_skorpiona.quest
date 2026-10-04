@@ -130,7 +130,8 @@ quest ruiny_skorpiona begin
 			end
 			d.setf("ended", 1)
 			d.setqf2("ruiny_skorpiona", "idx", 0)
-			if d.getf("mt2009_dgbot") ~= 1 then
+			-- MT2009_PLUS_BOT_DUNGEON_RUNS_V1: nor for the bots' own runs (no player waits on their slot).
+			if d.getf("mt2009_dgbot") ~= 1 and d.getf("mt2009_dgrun") ~= 1 then
 				game.set_event_flag(ruiny_skorpiona.end_flag(d.get_map_index()), get_global_time())
 			end
 		end
@@ -711,6 +712,18 @@ quest ruiny_skorpiona begin
 		when skorpion_dgbot.server_timer begin
 			if d.select(get_server_timer_arg()) then
 				if d.getf("mt2009_dgbot") == 1 and d.getf("init") == 0 then
+					ruiny_skorpiona.init()
+				end
+			end
+		end
+
+		-- MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the start of an ordinary bot party's run (playerbot_dungeon_runs.h).
+		-- The bots cannot answer the guard's dialog, so the core makes the instance itself, marks it with
+		-- the dungeon flag mt2009_dgrun - nothing a player can set - and asks for this. Unlike the test
+		-- cohort's (mt2009_dgbot) such a run keeps the player's time limit and the player's way out.
+		when skorpion_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
 					ruiny_skorpiona.init()
 				end
 			end

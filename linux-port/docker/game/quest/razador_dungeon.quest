@@ -723,6 +723,40 @@ quest razador_dungeon begin
 			end
 		end
 
+		-- MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the start of an ordinary bot party's run (playerbot_dungeon_runs.h).
+		-- The bots cannot answer the guard's dialog, so the core makes the instance itself, marks it with
+		-- the dungeon flag mt2009_dgrun - nothing a player can set - and asks for this. Unlike the test
+		-- cohort's (mt2009_dgbot) such a run keeps the player's time limit and the player's way out.
+		when razador_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					razador_dungeon.init()
+				end
+			end
+		end
+
+		-- MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the statue Am-heh's next task (or the hall of Razador after the
+		-- sixth) for a bots' run, asked by the core whenever no task runs: what the leader's "Zadanie Am-heh"
+		-- does in the dialog above, without the dialog.
+		when razador_dgrun_next.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") ~= 1 or d.getf("init") == 0 or d.getf("closed") == 1 then
+					return
+				end
+				if d.getf("active") == 1 or d.getf("boss") >= 1 then
+					return
+				end
+				if d.getf("done") >= 6 then
+					d.setf("boss", 1)
+					d.setf("step", 7)
+					d.notice("Razador: W¹wóz Am-heh budzi siê! Za chwilê staniecie przed Razadorem.")
+					server_timer("razador_boss", 5, d.get_map_index())
+					return
+				end
+				razador_dungeon.start_step(math.mod(d.getf("order") - 1 + d.getf("done"), 6) + 1)
+			end
+		end
+
 		when razador_end.server_timer begin
 			if d.select(get_server_timer_arg()) then
 				razador_dungeon.finish()
