@@ -57,6 +57,8 @@ class SystemDialog(ui.ScriptWindow):
 		# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion): Skroty klawiszowe (uikeybind.py).
 		if self.GetChild2("keybind_button"):
 			self.GetChild2("keybind_button").SAFE_SetEvent(self.__ClickKeybindButton)
+		if self.GetChild2("monster_card_button"):  # MT2009_PLUS_MONSTER_CARDS_V1 (Autor: Digi Rasta)
+			self.GetChild2("monster_card_button").SAFE_SetEvent(self.__ClickMonsterCardButton)
 		if self.GetChild2("extra_option_button"):  # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta)
 			self.GetChild2("extra_option_button").SAFE_SetEvent(self.__ClickExtraOptionButton)
 		self.GetChild("change_button").SAFE_SetEvent(self.__ClickChangeCharacterButton)
@@ -160,6 +162,10 @@ class SystemDialog(ui.ScriptWindow):
 	def __ClickKeybindButton(self):  # MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion): Skroty klawiszowe
 		self.Close()
 		__import__("uikeybind").OpenWindow()
+
+	def __ClickMonsterCardButton(self):  # MT2009_PLUS_MONSTER_CARDS_V1 (Autor: Digi Rasta): Karty Potworow
+		self.Close()
+		__import__("monstercard").Toggle()
 
 	def __ClickExtraOptionButton(self):  # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): Opcje dodatkowe
 		self.Close()

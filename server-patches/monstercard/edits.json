@@ -1,0 +1,32 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_MONSTER_CARDS_V1 (declare)",
+  "old": "ACMD(do_drop_wiki);\t// MT2009_PLUS_DROP_WIKI_V1 (declare)\n",
+  "new": "ACMD(do_drop_wiki);\t// MT2009_PLUS_DROP_WIKI_V1 (declare)\nACMD(do_cardmonster);\t// MT2009_PLUS_MONSTER_CARDS_V1 (declare): Karty Potworow (Autor: Digi Rasta), playerbot_monster_card.h\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_MONSTER_CARDS_V1 (table)",
+  "old": "\t{ \"drop_wiki\",\tdo_drop_wiki,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_DROP_WIKI_V1 (table)\n",
+  "new": "\t{ \"drop_wiki\",\tdo_drop_wiki,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_DROP_WIKI_V1 (table)\n\t{ \"cardmonster\",\tdo_cardmonster,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_MONSTER_CARDS_V1 (table)\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_MONSTER_CARDS_V1 (kill)",
+  "old": "\t\tCHARACTER_MANAGER::instance().KillLog(GetRaceNum());\n",
+  "new": "\t\tCHARACTER_MANAGER::instance().KillLog(GetRaceNum());\n\t\t// MT2009_PLUS_MONSTER_CARDS_V1 (kill): Karty Potworow (Autor: Digi Rasta) - a monster of the card pools drops\n\t\t// its card and counts for the killer's card mission (playerbot_monster_card.h).\n\t\t{ void MonsterCardOnKill(LPCHARACTER, LPCHARACTER); MonsterCardOnKill(pkQuestKiller, this); }\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_MONSTER_CARDS_V1 (use)",
+  "old": "\t\tbool RumiUseItem(LPCHARACTER ch, LPITEM item);\n\t\tif (RumiUseItem(this, item))\n\t\t\treturn true;\n\t}\n",
+  "new": "\t\tbool RumiUseItem(LPCHARACTER ch, LPITEM item);\n\t\tif (RumiUseItem(this, item))\n\t\t\treturn true;\n\t}\n\t// MT2009_PLUS_MONSTER_CARDS_V1 (use): the Monster Cards 50283/50284 (Karty Potworow, Autor: Digi Rasta),\n\t// before the item's own limits and type (playerbot_monster_card.h).\n\t{\n\t\tint MonsterCardUseItem(LPCHARACTER ch, LPITEM item);\n\t\tconst int iMonsterCardUse = MonsterCardUseItem(this, item);\n\t\tif (iMonsterCardUse >= 0)\n\t\t\treturn iMonsterCardUse != 0;\n\t}\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_MONSTER_CARDS_V1 (login)",
+  "old": "\t{ void WeeklyRankOnLogin(LPCHARACTER); WeeklyRankOnLogin(ch); }\n",
+  "new": "\t{ void WeeklyRankOnLogin(LPCHARACTER); WeeklyRankOnLogin(ch); }\n\t// MT2009_PLUS_MONSTER_CARDS_V1 (login): the account's Monster Card set bonuses on this character, or off\n\t// with the system switched off (playerbot_monster_card.h, Autor: Digi Rasta).\n\t{ void MonsterCardOnLogin(LPCHARACTER); MonsterCardOnLogin(ch); }\n"
+ }
+]

@@ -2547,6 +2547,67 @@ db -e "CREATE TABLE IF NOT EXISTS player.collector_storage (account_id INT UNSIG
 # game master had started before stays off.
 db -e "UPDATE player.quest SET lValue = 0 WHERE dwPID = 0 AND szName = 'threeway_war';" >/dev/null 2>&1 || true
 
+# ---------------------------------------------------------------------------
+# MT2009_PLUS_MONSTER_CARDS_V1: Karty Potworow, the Monster Card System
+# (Autor: Digi Rasta - nowy-system v0.25.2, his port of the
+# "Official-Monster-Card-System" package; overlay playerbot_monster_card.h,
+# engine calls server-patches/monstercard, client root monstercard.py and
+# uimonstercard.py). The progress is the account's: the mission (level, its
+# three targets and its deck), every monster's collected cards, kills, stars
+# and cooldowns, and the sets registered and worn. The tables keep the names
+# of his package (80_karty_potworow.sql), so a world that ran it keeps its
+# progress. The items: 50283 Karta Potwora (from a mission or a drop, the
+# monster in socket 1; no drop, trade or shop - antiflag 73856), 50284 Karta
+# Potwora (handlowalna) (the monster in socket 0, tradable), 72322 Karta Nowego
+# Poczatku (a mission reset past the free one a day) and 72323 Karta Nowego
+# Ukladu (new targets) - stack 200, only cards of the same monster merge (the
+# engine compares the sockets). The names as _cp1250 literals (db() speaks
+# latin1). INSERT IGNORE: a row the operator changed is kept; the client
+# carries the same four rows (client-patches/client-2.0.30/tools/monstercard).
+# M2_MONSTER_CARDS=0 switches the system off in the game core, the tables and
+# items stay. Idempotent.
+# ---------------------------------------------------------------------------
+db -e "CREATE TABLE IF NOT EXISTS player.nowy_karty_misja (
+  account_id INT UNSIGNED NOT NULL,
+  glowny0 INT UNSIGNED NOT NULL DEFAULT 0, glowny1 INT UNSIGNED NOT NULL DEFAULT 0, glowny2 INT UNSIGNED NOT NULL DEFAULT 0,
+  talia0 INT UNSIGNED NOT NULL DEFAULT 0, talia1 INT UNSIGNED NOT NULL DEFAULT 0, talia2 INT UNSIGNED NOT NULL DEFAULT 0,
+  talia3 INT UNSIGNED NOT NULL DEFAULT 0, talia4 INT UNSIGNED NOT NULL DEFAULT 0, talia5 INT UNSIGNED NOT NULL DEFAULT 0,
+  talia6 INT UNSIGNED NOT NULL DEFAULT 0, talia7 INT UNSIGNED NOT NULL DEFAULT 0, talia8 INT UNSIGNED NOT NULL DEFAULT 0,
+  talia9 INT UNSIGNED NOT NULL DEFAULT 0, talia10 INT UNSIGNED NOT NULL DEFAULT 0, talia11 INT UNSIGNED NOT NULL DEFAULT 0,
+  talia12 INT UNSIGNED NOT NULL DEFAULT 0, talia13 INT UNSIGNED NOT NULL DEFAULT 0, talia14 INT UNSIGNED NOT NULL DEFAULT 0,
+  talia15 INT UNSIGNED NOT NULL DEFAULT 0,
+  zabity0 TINYINT UNSIGNED NOT NULL DEFAULT 0, zabity1 TINYINT UNSIGNED NOT NULL DEFAULT 0, zabity2 TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  poziom INT UNSIGNED NOT NULL DEFAULT 0,
+  reset_misji BIGINT NOT NULL DEFAULT 0, reset_kolejnosci BIGINT NOT NULL DEFAULT 0,
+  okno_start BIGINT NOT NULL DEFAULT 0, okno_liczba INT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (account_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS player.nowy_karty_status (
+  account_id INT UNSIGNED NOT NULL,
+  vnum INT UNSIGNED NOT NULL,
+  zebrane INT UNSIGNED NOT NULL DEFAULT 0,
+  zabicia INT UNSIGNED NOT NULL DEFAULT 0,
+  gwiazdki TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  teleport BIGINT NOT NULL DEFAULT 0,
+  przemiana BIGINT NOT NULL DEFAULT 0,
+  przywolanie BIGINT NOT NULL DEFAULT 0,
+  rekrutacja BIGINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (account_id, vnum)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS player.nowy_karty_osiagniecia (
+  account_id INT UNSIGNED NOT NULL,
+  vnum INT UNSIGNED NOT NULL,
+  zalozone TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  ranga TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (account_id, vnum)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(50283, 'Monster Card', _cp1250 X'4B6172746120506F74776F7261', 3, 10, 200, 0, 1, 73856, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50284, 'Monster Card (Tradable)', _cp1250 X'4B6172746120506F74776F7261202868616E646C6F77616C6E6129', 3, 10, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(72322, 'New Start Card', _cp1250 X'4B61727461204E6F7765676F20506F637AB9746B75', 5, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(72323, 'New Order Card', _cp1250 X'4B61727461204E6F7765676F20556BB3616475', 5, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" \
+  || echo "[playerbot-migrate] WARNING: could not add the Monster Card tables or items (Karty Potworow)" >&2
+
 # MT2009_PLUS_FAST_START_V1: the full run is done - its fingerprint for the next start.
 db -e "REPLACE INTO common.playerbot_migrate_state (id, fingerprint, done_at) VALUES (1, '$migrate_fp', NOW());" >/dev/null 2>&1 \
     || echo "[playerbot-migrate] WARNING: could not record the run's fingerprint (the next start runs it all again)" >&2

@@ -201,6 +201,22 @@ ElementAddBefore(MAIN_BOARD["children"], "mall_button",
 					"down_image" : ROOT + "XLarge_Button_03.sub",
 				})
 
+# MT2009_PLUS_MONSTER_CARDS_V1 (Autor: Digi Rasta): "Karty Potworow" (monstercard.py, uimonstercard.py)
+ElementAddBefore(MAIN_BOARD["children"], "escape_button",
+				{
+					"name" : "monster_card_button",
+					"type" : "button",
+
+					"x" : 10,
+					"y" : -1,
+
+					"text" : "Karty Potwor\xf3w",
+
+					"default_image" : ROOT + "XLarge_Button_01.sub",
+					"over_image" : ROOT + "XLarge_Button_02.sub",
+					"down_image" : ROOT + "XLarge_Button_03.sub",
+				})
+
 # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): "Opcje dodatkowe" (uiopcjedodatkowe.py)
 ElementAddBefore(MAIN_BOARD["children"], "escape_button",
 				{

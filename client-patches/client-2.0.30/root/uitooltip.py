@@ -177,6 +177,12 @@ class ToolTip(ui.Window):
 	def __del__(self):
 		ui.Window.__del__(self)
 
+	# MT2009_PLUS_MONSTER_CARDS_V1: the official client's ThinBoard tooltip size, which the
+	# Monster Card window (uimonstercard.py) sets for its button tooltips.
+	def SetThinBoardSize(self, width, height = 12):
+		self.toolTipWidth = width
+		self.toolTipHeight = height
+
 	def ClearToolTip(self):
 		self.toolTipHeight = 12
 		self.childrenList = []
@@ -1108,6 +1114,13 @@ class ItemToolTip(ToolTip):
 			self.AppendDescription(item.GetItemDescription(), 26)
 			self.AppendDescription(item.GetItemSummary(), 26, self.CONDITION_COLOR)
 			self.__AppendSealInformation(window_type, slotIndex) ## cyh itemseal 2013 11 11
+			self.AdditionalTips(window_type, itemVnum, metinSlot, slotIndex)
+			self.ShowToolTip()
+			return
+		# MT2009_PLUS_MONSTER_CARDS_V1 (Autor: Digi Rasta): every Monster Card has the same name
+		# and icon - the tooltip names its monster and shows its card (monstercard.py).
+		elif 50283 == itemVnum or 50284 == itemVnum:
+			__import__("monstercard").CardTooltip(self, itemVnum, metinSlot)
 			self.AdditionalTips(window_type, itemVnum, metinSlot, slotIndex)
 			self.ShowToolTip()
 			return

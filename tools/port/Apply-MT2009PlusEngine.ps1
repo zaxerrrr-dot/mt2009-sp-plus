@@ -59,6 +59,9 @@ param(
 #                      Autor: Vekirion)
 #   guild war entry    guild_war.cpp, cmd.cpp, cmd_general.cpp
 #                      (MT2009_PLUS_GUILD_WAR_JOIN_V1; server-patches/guildwarjoin)
+#   Monster Cards      cmd.cpp, char_battle.cpp, char_item.cpp, input_login.cpp
+#                      (MT2009_PLUS_MONSTER_CARDS_V1; server-patches/monstercard,
+#                      Autor: Digi Rasta)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -859,6 +862,21 @@ if ((Test-Path -LiteralPath $dropWikiApply -PathType Leaf) -and
     if ($dropWikiResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} drop wiki edit(s).' -f $dropWikiResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Karty Potworow, the Monster Card System (server-patches/monstercard,
+# MT2009_PLUS_MONSTER_CARDS_V1, "Autor: Digi Rasta"): /cardmonster for the
+# client's window, a card monster's kill (char_battle.cpp), the cards' use
+# (char_item.cpp) and the set bonuses at login (input_login.cpp); after the
+# drop wiki and the weekly ranking, whose lines it anchors on. The rest is the
+# overlay's playerbot_monster_card.h.
+$monsterCardApply = Join-Path $repo 'server-patches/monstercard/Apply-MonsterCardPatch.ps1'
+if ((Test-Path -LiteralPath $monsterCardApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'input_login.cpp') -PathType Leaf)) {
+    $monsterCardResult = & $monsterCardApply -SourceDir $engineGameSource
+    if ($monsterCardResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Monster Card edit(s).' -f $monsterCardResult.Applied) -ForegroundColor DarkGray
     }
 }
 

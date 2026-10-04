@@ -782,6 +782,8 @@ class GameWindow(ui.ScriptWindow):
 			"tp_bookmarks"		: (lambda : Window("uitpbookmarks"), None),
 			# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 			"weekly_rank"		: (lambda : Window("uiweeklyrank"), None),
+			# MT2009_PLUS_MONSTER_CARDS_V1: the Monster Cards (monstercard.py), no key by default.
+			"monster_card"		: (lambda : Window("monstercard"), None),
 			# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
 			"drop_wiki"			: (lambda : __import__("uidropwiki").ToggleWindow(), None),
 			"hide_ui"			: (lambda : self.__HideUserInterface(), None),
@@ -923,6 +925,11 @@ class GameWindow(ui.ScriptWindow):
 	# window with this one.
 	def __Collector(self, *args):
 		__import__("uicollector").OnServer(*args)
+
+	# MT2009_PLUS_MONSTER_CARDS_V1 (Autor: Digi Rasta): every "MONSTERCARDSYSTEM ..." line of
+	# the Monster Cards (/cardmonster on the server, the window uimonstercard.py).
+	def __MonsterCardSystem(self, *args):
+		__import__("monstercard").OnServer(*args)
 
 	def __SidekickVid(self, vid="0", *rest):
 		# The keeper ends with the game window; the next one hears the
@@ -3202,6 +3209,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["GlobalRankingUpdatePacket"] = self.__Global_Ranking__RecvData
 		serverCommandList["SidekickVid"] = self.__SidekickVid
 		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
+		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
 		serverCommandList["GlobalRankingUpdatePacketMyPos"] = self.__Global_Ranking__RecvSelfData
 		serverCommandList["SidekickEqNone"] = self.__SidekickEqNone
 		serverCommandList["SidekickEqBegin"] = self.__SidekickEqBegin
