@@ -200,7 +200,12 @@ RUN set -eux; \
 FROM builder AS quests
 
 COPY quest/ /quest-add/
+COPY classic/quest/ /quest-classic/
 COPY src/serverfiles/share/locale/poland/quest/quest_functions /quest-src/quest_functions
+# MT2009_CLASSIC_EDITION_V1: plus or classic (compose passes M2_EDITION). Classic
+# compiles no quest of a system it leaves out and the package's own horse
+# training missions (classic/quest, as before MT2009_PLUS_HORSE30_V1).
+ARG EDITION=plus
 
 RUN set -eux; \
     mkdir -p /out-quest/poland/quest; \
@@ -305,7 +310,19 @@ RUN set -eux; \
     # once with pc.clear_quest_letter (MT2009_PLUS_CLEAR_MISSIONS_V1,
     # server-patches/clearmissions, client root uiusunmisje.py; its table from
     # tools/gen_usun_misje.py).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje; do \
+    # MT2009_CLASSIC_EDITION_V1: Classic leaves out the companion, the sashes,
+    # Ah-Yu's costumes and the costume bonus transfer, the alchemy, the
+    # anti-experience ring, Ochao, Razador, Nemere, the Blue Dragon, the Arezzo
+    # dungeons, Seon-Hae (bonus and books), the saved
+    # positions, "Usun misje" and the horse to level 30 (konie, our
+    # horse_inventory); it compiles the package's pony_levelup and horse_levelup.
+    classic_skip=" towarzysz acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop antiexp_ring temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair biblioteka_wiedzy wzgorze_wukonga ruiny_skorpiona starozytna_dzungla seonhae ksiegi_seonhae tp_bookmarks usun_misje konie horse_inventory "; \
+    if [ "${EDITION}" = "classic" ]; then \
+      for q in pony_levelup horse_levelup; do sed 's/\r$//' "/quest-classic/$q.quest" > "/quest-add/$q.quest"; done; \
+      extra="pony_levelup horse_levelup"; echo "edition: classic"; \
+    else extra=""; classic_skip=""; fi; \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje $extra; do \
+      case "$classic_skip" in *" $q "*) continue ;; esac; \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1117,6 +1134,13 @@ RUN set -eu; \
       echo "FATAL: still not readable by the server account:"; echo "$bad"; exit 1; \
     fi; \
     echo "share tree is readable by the server account"
+
+# MT2009_CLASSIC_EDITION_V1: a MT2009 Classic image (EDITION=classic, from
+# M2_EDITION) leaves the newer places' rows and people out of the share
+# (classic/classic-share.sh); a plus image is untouched.
+ARG EDITION=plus
+COPY classic/classic-share.sh /tmp/classic-share.sh
+RUN set -eu; if [ "${EDITION}" = "classic" ]; then sed -i 's/\r$//' /tmp/classic-share.sh && sh /tmp/classic-share.sh; else echo "edition: plus"; fi; rm -f /tmp/classic-share.sh
 
 # The three quests compiled in the quests stage, as a pure addition on top of
 # the package's own object tree (new files under quest/object/, the sources

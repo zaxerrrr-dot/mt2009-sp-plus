@@ -253,6 +253,8 @@ void Mt2009DigiDailyGift(LPCHARACTER ch)
 
 void Mt2009DigiKillBar(LPCHARACTER killer, LPCHARACTER victim)
 {
+	if (Mt2009IsClassic())
+		return;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no kill bar.
 	using namespace mt2009_digi_qol;
 	if (!killer || !victim || !killer->IsPC() || !victim->IsPC())
 		return;

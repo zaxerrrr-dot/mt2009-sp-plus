@@ -315,6 +315,8 @@ namespace playerbot_bpbots
 
 	bool IsOnErrand(DWORD pid)
 	{
+		if (Mt2009IsClassic())
+			return false;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Battle Pass.
 		const TBot* b = FindBot(pid);
 		return b && IsActive(*b, get_dword_time());
 	}
@@ -1351,6 +1353,8 @@ namespace playerbot_bpbots
 	// Every tick of every bot, before the planner: cheap until its next look.
 	void Think(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
+		if (Mt2009IsClassic())
+			return;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Battle Pass.
 		if (!ch || !mt2009_battlepass::IsBot(ch))
 			return;
 		using namespace mt2009_battlepass;

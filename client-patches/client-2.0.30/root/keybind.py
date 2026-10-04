@@ -467,6 +467,13 @@ def SetAvailable(actions):
 	"""The actions game.py runs (its __BuildKeyDict); the rest are not shown
 	and take no keys."""
 	_state['available'] = set(actions)
+	# MT2009_CLASSIC_EDITION_V1: no key for a system MT2009 Classic leaves out.
+	try:
+		import m2edition
+		if m2edition.CLASSIC:
+			_state['available'] -= set(m2edition.CLASSIC_ACTIONS)
+	except ImportError:
+		pass
 	Load()
 	_RebuildLookup()
 

@@ -187,6 +187,21 @@ if [ -n "${M2_DB_ROOT_PASSWORD:-}" ]; then
     fi
 fi
 
+# MT2009_CLASSIC_EDITION_V1: the edition this world is (M2_EDITION, written by
+# the package's .env.example): plus, or classic - MT2009 Classic, without the
+# costumes, pets, mounts, alchemy, sashes, Arezzo, Seon-Hae, the companion and
+# the newer systems. Classic forces its switches here, whatever .env or a
+# panel says, and the block at the very end trims the shops.
+case "$(printf '%s' "${M2_EDITION:-plus}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in
+    classic) CLASSIC=1 ;;
+    *)       CLASSIC=0 ;;
+esac
+if [ "$CLASSIC" = 1 ]; then
+    M2_ALCHEMY=0; M2_SASHES=0; M2_AREZZO=0; M2_SEONHAE=0; M2_SIDEKICK=0
+    M2_AUTOHUNT=1; M2_AUTOHUNT_ITEM=1
+    echo "[playerbot-migrate] edition: MT2009 Classic"
+fi
+
 # MT2009_PLUS_FAST_START_V1: a start with nothing new skips the rest. The
 # fingerprint is every file this step reads (/opt/playerbot), this script and
 # the M2_/PLAYERBOT_ settings; it is written at the very end of a full run and
@@ -1157,6 +1172,21 @@ elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
     echo "[playerbot-migrate] Seon-Hae 6/7 bonus: $([ "$seonhae_on" = 1 ] && echo on || echo off) (from .env)"
 else
     echo "[playerbot-migrate] WARNING: could not write the Seon-Hae switch; it stays as it was" >&2
+fi
+
+# MT2009_CLASSIC_EDITION_V1: Classic's switches, written on every start (the
+# blocks above keep a panel's choice; Classic has no choice). m2_classic is the
+# one flag the quests, the cores and the client's login line read.
+if [ "$CLASSIC" = 1 ]; then
+    db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_classic', '', 1),
+        (0, 'm2_alchemy_off', '', 1), (0, 'm2_sash_off', '', 1),
+        (0, 'mt2009_arezzo_closed', '', 1), (0, 'm2_seonhae_on', '', 0),
+        (0, 'm2_sidekick_off', '', 1), (0, 'm2_autohunt_off', '', 0),
+        (0, 'm2_autohunt_item', '', 1);" \
+        || echo "[playerbot-migrate] WARNING: could not write the Classic switches" >&2
+else
+    db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_classic', '', 0);" >/dev/null 2>&1 || true
 fi
 
 # The world's monster health (the operator, 30 September, for Frelik's
@@ -2542,6 +2572,33 @@ FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233) AND N
 # "Rozbuduj" refused.
 db -e "CREATE TABLE IF NOT EXISTS player.collector_storage (account_id INT UNSIGNED NOT NULL PRIMARY KEY, tier TINYINT UNSIGNED NOT NULL DEFAULT 0, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB;" \
   || echo "[playerbot-migrate] WARNING: could not create player.collector_storage (the collector's storage stays at 500 entries)" >&2
+
+# ---------------------------------------------------------------------------
+# MT2009_CLASSIC_EDITION_V1: Classic's shops, trimmed on every start (after
+# every insert above, so nothing later puts a line back). The in-game ItemShop
+# keeps the package's own lines and, of ours, only Auto Lowy (8h) (6) and
+# Kolczan (10): no hairstyles (301-450), no costumes, skins, pets, mounts or
+# new pets (10000+), no rings 7-8, Wheel ticket 9, Medal Konny 13, wedding page
+# 201-211 or the Battle Pass's Przepustka Triumfu (113). The web shop loses
+# its cosmetic pages (5-9). The General Store stops selling the costume
+# reagents (70063-70065), the Ritual of Awakening's and the soul stones +5..+9
+# recipes go (7110, 7204-7208). The Wheel and the weekly ranking are switched off.
+# ---------------------------------------------------------------------------
+if [ "$CLASSIC" = 1 ]; then
+    db -e "DELETE FROM common.itemshop_items WHERE \`index\` >= 1000 OR \`index\` BETWEEN 301 AND 450
+            OR \`index\` BETWEEN 201 AND 211 OR \`index\` IN (7, 8, 9, 11, 12, 13, 14, 15, 113);
+        INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0);
+        DELETE FROM world.shop_item WHERE item_vnum IN (70063, 70064, 70065);
+        DELETE FROM world.refine_proto WHERE id = 7110 OR id BETWEEN 7204 AND 7208;" \
+        || echo "[playerbot-migrate] WARNING: could not trim the Classic ItemShop" >&2
+    db -e "DELETE FROM itemshop.ishop_bundle_items WHERE item_id IN (SELECT id FROM itemshop.ishop_items WHERE category BETWEEN 5 AND 9);
+        DELETE FROM itemshop.ishop_items WHERE category BETWEEN 5 AND 9;
+        DELETE FROM itemshop.ishop_category WHERE id BETWEEN 5 AND 9;" 2>/dev/null \
+        || echo "[playerbot-migrate] note: could not trim the Classic web ItemShop" >&2
+    db -e "UPDATE player.wheel_config SET enabled = 0;" >/dev/null 2>&1 || true
+    db -e "UPDATE player.weekly_rank_state SET enabled = 0;" >/dev/null 2>&1 || true
+    echo "[playerbot-migrate] Classic: ItemShop $(db -e 'SELECT COUNT(*) FROM common.itemshop_items;' 2>/dev/null || echo '?') line(s)"
+fi
 
 # MT2009_PLUS_FAST_START_V1: the full run is done - its fingerprint for the next start.
 db -e "REPLACE INTO common.playerbot_migrate_state (id, fingerprint, done_at) VALUES (1, '$migrate_fp', NOW());" >/dev/null 2>&1 \

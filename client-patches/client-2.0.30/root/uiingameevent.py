@@ -17,6 +17,11 @@
 # until then. Python 2.7, CP1250 escapes for the Polish letters.
 
 import app
+try:
+	import m2edition	# MT2009_CLASSIC_EDITION_V1
+	_M2_CLASSIC = m2edition.CLASSIC
+except ImportError:
+	_M2_CLASSIC = False
 import chat
 import localeInfo
 import net
@@ -165,7 +170,8 @@ def OpenEvent(key):
 	elif how == 'goblin':
 		CloseDialog()
 		net.SendChatPacket('/goblin')
-	elif how == 'info':
+	elif how == 'info' or _M2_CLASSIC:
+		# MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no event calendar.
 		chat.AppendChat(chat.CHAT_TYPE_INFO, entry.get('desc', EventName(key)))
 	else:
 		__import__('uieventcalendar').ToggleWindow()
@@ -306,7 +312,8 @@ class InGameEventDialog(ui.BoardWithTitleBar):
 		calendar.SetDownVisual('d:/ymir work/ui/public/large_button_03.sub')
 		calendar.SetText(CALENDAR_BUTTON)
 		calendar.SetEvent(ui.__mem_func__(self.__OnCalendar))
-		calendar.Show()
+		if not _M2_CLASSIC:	# MT2009_CLASSIC_EDITION_V1: no event calendar
+			calendar.Show()
 		self.calendar = calendar
 
 		self.SetPosition(wndMgr.GetScreenWidth() - 136 - BOARD_WIDTH - 10, 40)

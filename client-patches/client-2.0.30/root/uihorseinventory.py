@@ -29,6 +29,24 @@ UNLOCK_REQUIREMENT_DATA = {
 	7: {"horse": 27, "items": [50050, 5, 30378, 150]},
 	8: {"horse": 30, "items": [50050, 6, 30378, 200]},
 }
+# MT2009_CLASSIC_EDITION_V1: MT2009 Classic keeps the package's horse and its
+# saddlebag rows (the stock quest horse_inventory): to horse level 21.
+try:
+	import m2edition
+	if m2edition.CLASSIC:
+		UNLOCK_REQUIREMENT_DATA = {
+			0: {"horse": 1, "items":[]},
+			1: {"horse": 4, "items": [50050, 1, 30378, 20]},
+			2: {"horse": 6, "items": [50050, 2, 30378, 20]},
+			3: {"horse": 9, "items": [50050, 2, 30378, 20]},
+			4: {"horse": 11, "items": [50050, 3, 30378, 40]},
+			5: {"horse": 14, "items": [50050, 3, 30378, 40]},
+			6: {"horse": 16, "items": [50050, 4, 30378, 60]},
+			7: {"horse": 19, "items": [50050, 4, 30378, 60]},
+			8: {"horse": 21, "items": [50050, 5, 30378, 60]},
+		}
+except ImportError:
+	pass
 
 class HorseInventoryWindow(ui.ScriptWindow):
 	class HorseInventoryButton(ui.Window):

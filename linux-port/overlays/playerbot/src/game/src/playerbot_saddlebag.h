@@ -88,6 +88,12 @@ namespace
 		{ 1, 1, 5 }, { 4, 1, 20 }, { 8, 1, 30 }, { 12, 2, 40 }, { 16, 2, 60 },
 		{ 20, 3, 80 }, { 24, 4, 100 }, { 27, 5, 150 }, { 30, 6, 200 },
 	};
+	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic's rows are the package's own
+	// (horse_inventory_init and the stock horse_inventory), to horse level 21.
+	const TPlayerBotSaddlebagRow PLAYERBOT_SADDLEBAG_ROWS_CLASSIC[INVENTORY_PAGE_ROW] = {
+		{ 1, 1, 5 }, { 4, 1, 20 }, { 6, 2, 20 }, { 9, 2, 20 }, { 11, 3, 40 },
+		{ 14, 3, 40 }, { 16, 4, 60 }, { 19, 4, 60 }, { 21, 5, 60 },
+	};
 
 	enum
 	{
@@ -155,7 +161,7 @@ namespace
 		const int rows = GetPlayerBotSaddlebagRows(ch);
 		if (rows >= INVENTORY_PAGE_ROW || rows >= GetPlayerBotSaddlebagTargetRows(ch->GetPlayerID()))
 			return NULL;
-		return &PLAYERBOT_SADDLEBAG_ROWS[rows];
+		return Mt2009IsClassic() ? &PLAYERBOT_SADDLEBAG_ROWS_CLASSIC[rows] : &PLAYERBOT_SADDLEBAG_ROWS[rows];
 	}
 
 	// The next row can be opened now, resources aside: the horse is there and

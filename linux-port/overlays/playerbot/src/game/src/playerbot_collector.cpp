@@ -818,5 +818,7 @@ void Command(LPCHARACTER ch, const char* argument)
 
 ACMD(do_collector)
 {
+	if (Mt2009IsClassic())
+		return;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no collector's storage.
 	playerbot_collector::Command(ch, argument);
 }

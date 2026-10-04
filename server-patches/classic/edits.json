@@ -1,0 +1,20 @@
+[
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_CLASSIC_EDITION_V1 (server-patches/classic)",
+  "old": "\nITEM_MANAGER::ITEM_MANAGER()",
+  "new": "\n// MT2009_CLASSIC_EDITION_V1 (server-patches/classic): the edition this core runs,\n// from M2_EDITION (compose, .env). MT2009 Classic leaves out the costumes,\n// hairstyles, weapon skins, mounts, pets (seals, boxes, the new pets and their\n// eggs), the alchemy (Dragon Stones, Cor Draconis, shards), the sashes, the Wheel\n// ticket, the Battle Pass's pass, the costume reagents and Digi Rasta's\n// awakening goods (Kamien Przebudzenia, Olejek Niebios, soul stones +5..+9,\n// awakened weapons): no such item is ever made, from a drop, a box, a shop, a\n// quest or a game master's /i alike.\nbool Mt2009IsClassic()\n{\n\tstatic int s_iClassic = -1;\n\tif (s_iClassic < 0)\n\t{\n\t\tconst char* e = getenv(\"M2_EDITION\");\n\t\ts_iClassic = (e && (0 == strcasecmp(e, \"classic\"))) ? 1 : 0;\n\t}\n\treturn s_iClassic == 1;\n}\n\nbool Mt2009ClassicBansItem(DWORD vnum, BYTE bType)\n{\n\tif (!Mt2009IsClassic())\n\t\treturn false;\n\tswitch (bType)\n\t{\n\t\tcase ITEM_COSTUME:\n\t\tcase ITEM_DS:\n\t\tcase ITEM_SPECIAL_DS:\n\t\tcase ITEM_PET:\n\t\t\treturn true;\n\t}\n\tif ((vnum >= 53001 && vnum <= 53999) || (vnum >= 55001 && vnum <= 55999) || vnum == 38200 || vnum == 38201)\n\t\treturn true;\t// pets, pet boxes, new pets and eggs\n\tif (vnum >= 71114 && vnum <= 71121)\n\t\treturn true;\t// mount seals\n\tif ((vnum >= 50255 && vnum <= 50259) || vnum == 30270 || vnum == 100300)\n\t\treturn true;\t// Cor Draconis, Dragon Stone shards, dragon beans\n\tif ((vnum >= 70063 && vnum <= 70065) || vnum == 80030 || vnum == 72199)\n\t\treturn true;\t// costume reagents, Wheel ticket, Battle Pass pass\n\tif (vnum == 30670 || vnum == 71056)\n\t\treturn true;\t// Kamien Przebudzenia, Olejek Niebios\n\tif ((vnum >= 28530 && vnum <= 28543) || (vnum >= 28600 && vnum <= 28613) || (vnum >= 28700 && vnum <= 28713)\n\t\t|| (vnum >= 28800 && vnum <= 28813) || (vnum >= 28900 && vnum <= 28913))\n\t\treturn true;\t// soul stones +5..+9\n\tif ((vnum >= 210 && vnum <= 229) || (vnum >= 1160 && vnum <= 1169) || (vnum >= 2190 && vnum <= 2199)\n\t\t|| (vnum >= 3170 && vnum <= 3179) || (vnum >= 5150 && vnum <= 5159) || (vnum >= 7170 && vnum <= 7179))\n\t\treturn true;\t// the awakened weapons\n\treturn false;\n}\n\nITEM_MANAGER::ITEM_MANAGER()"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_CLASSIC_EDITION_V1 (create)",
+  "old": "\tconst TItemTable* table = GetTable(vnum);\n\tif (NULL == table)\n\t\treturn NULL;\n\n\tLPITEM item = NULL;\n",
+  "new": "\tconst TItemTable* table = GetTable(vnum);\n\tif (NULL == table)\n\t\treturn NULL;\n\n\t// MT2009_CLASSIC_EDITION_V1 (create): MT2009 Classic never makes an item it\n\t// leaves out; one already saved (id != 0) still loads.\n\tif (0 == id && Mt2009ClassicBansItem(vnum, table->bType))\n\t\treturn NULL;\n\n\tLPITEM item = NULL;\n"
+ },
+ {
+  "file": "item_manager.h",
+  "marker": "MT2009_CLASSIC_EDITION_V1 (declare)",
+  "old": "class ITEM_MANAGER",
+  "new": "// MT2009_CLASSIC_EDITION_V1 (declare): server-patches/classic, item_manager.cpp.\nbool Mt2009IsClassic();\nbool Mt2009ClassicBansItem(DWORD vnum, BYTE bType);\n\nclass ITEM_MANAGER"
+ }
+]

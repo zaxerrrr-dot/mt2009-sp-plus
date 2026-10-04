@@ -1,5 +1,10 @@
 import ui
 import mouseModule
+try:
+	import m2edition	# MT2009_CLASSIC_EDITION_V1
+	_M2_CLASSIC = m2edition.CLASSIC
+except ImportError:
+	_M2_CLASSIC = False
 import player
 import net
 import snd
@@ -418,7 +423,9 @@ class SafeboxWindow(ui.ScriptWindow):
 		collectorButton.SetText("Kolekcjoner")
 		collectorButton.SetToolTipText("Magazyn kolekcjonera")
 		collectorButton.SetEvent(ui.__mem_func__(self.__OnCollectorButton))
-		collectorButton.Show()
+		# MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no collector's storage.
+		if not _M2_CLASSIC:
+			collectorButton.Show()
 		self.collectorButton = collectorButton
 
 		self.wndItem = wndItem
@@ -477,7 +484,7 @@ class SafeboxWindow(ui.ScriptWindow):
 			button.SetDownVisual("d:/ymir work/ui/game/windows/tab_button_middle_03.sub")
 			button.SetWindowHorizontalAlignCenter()
 			button.SetWindowVerticalAlignBottom()
-			button.SetPosition(pos, 108) # MT2009_PLUS_COLLECTOR_STORAGE_V1: was 85, under the Kolekcjoner button
+			button.SetPosition(pos, 85 if _M2_CLASSIC else 108) # MT2009_PLUS_COLLECTOR_STORAGE_V1: was 85, under the Kolekcjoner button
 			button.SetText(text)
 			button.SetEvent(lambda arg=i: self.SelectPage(arg))
 			button.Show()
@@ -509,7 +516,7 @@ class SafeboxWindow(ui.ScriptWindow):
 		self.wndItem.RefreshSlot()
 		self.wndItem.SetSlotBaseImage("d:/ymir work/ui/public/Slot_Base.sub", 1.0, 1.0, 1.0, 1.0)
 
-		wnd_height = 153 + 32 * size # MT2009_PLUS_COLLECTOR_STORAGE_V1: was 130, the Kolekcjoner button
+		wnd_height = (130 if _M2_CLASSIC else 153) + 32 * size # MT2009_PLUS_COLLECTOR_STORAGE_V1: was 130, the Kolekcjoner button
 		self.wndBoard.SetSize(self.BOX_WIDTH, wnd_height)
 		self.SetSize(self.BOX_WIDTH, wnd_height)
 		self.UpdateRect()

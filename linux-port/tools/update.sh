@@ -64,6 +64,12 @@ case "$REPO" in
 esac
 BRANCH=${M2_UPDATE_BRANCH:-main}
 MANIFEST_NAME=update-manifest-mt2009.json
+# MT2009_CLASSIC_EDITION_V1: a MT2009 Classic server (M2_EDITION=classic in
+# .env) follows the Classic line - the same file under classic/ in the
+# repository and on the mirror.
+case "$(sed -n 's/^M2_EDITION=//p' "$COMPOSE_DIR/.env" 2>/dev/null | tail -1 | tr -d ' \r' | tr 'A-Z' 'a-z')" in
+    classic) MANIFEST_NAME=classic/update-manifest-mt2009.json ;;
+esac
 SPOOL=${M2_UPDATE_SPOOL:-/opt/m2update}
 POLL=${M2_UPDATE_POLL:-5}
 # MT2009_PLUS_UPDATE_MIRROR_V1: the fallback update source. When GitHub does

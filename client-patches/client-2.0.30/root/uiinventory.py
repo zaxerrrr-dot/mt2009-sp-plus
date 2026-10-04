@@ -30,6 +30,7 @@ import safebox
 import offlineShopManage
 import uiPotionRecharge
 import uiHorseInventory
+import m2edition	# MT2009_CLASSIC_EDITION_V1
 
 if app.ENABLE_CHEQUE_SYSTEM:
 	import uiToolTip
@@ -395,6 +396,14 @@ class SidebarWindow(ui.Window):
 		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
 		("dropwiki", "Drop wiki", "OnClickDropWiki", "drop_wiki"),
 	)
+	# MT2009_CLASSIC_EDITION_V1: MT2009 Classic's sidebar has no button of a
+	# system it leaves out (m2edition.py).
+	try:
+		import m2edition
+		if m2edition.CLASSIC:
+			BUTTONS = tuple([b for b in BUTTONS if b[0] not in m2edition.CLASSIC_SIDEBAR])
+	except ImportError:
+		pass
 
 	def __init__(self, wndInventory):
 		ui.Window.__init__(self)
@@ -1593,7 +1602,8 @@ class InventoryWindow(ui.ScriptWindow):
 			self.equipmentTab.append(self.GetChild("Equipment_Tab_01"))
 			self.equipmentTab.append(self.GetChild("Equipment_Tab_02"))
 
-			if self.costumeButton and not app.ENABLE_COSTUME_SYSTEM:
+			if self.costumeButton and (not app.ENABLE_COSTUME_SYSTEM or m2edition.CLASSIC):
+				# MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no costumes.
 				self.costumeButton.Hide()
 				self.costumeButton.Destroy()
 				self.costumeButton = 0
@@ -1697,6 +1707,9 @@ class InventoryWindow(ui.ScriptWindow):
 
 		if self.DSSButton:
 			self.DSSButton.SetEvent(ui.__mem_func__(self.ClickDSSButton))
+			# MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no alchemy.
+			if m2edition.CLASSIC:
+				self.DSSButton.Hide()
 
 		# Costume Button.  MSS32 crashes on this client's click sample for this
 		# lazily-created window, so invoke only this button without that sample.

@@ -1003,6 +1003,8 @@ namespace
 	// achievements, a rival in its party, and a Legend's guild.
 	void ManagePlayerBotLegend(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
+		if (Mt2009IsClassic())
+			return;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Legends.
 		if (!ch || ch->IsDead() || !s_bPlayerBotLegendLoadedOnce)
 			return;
 		const DWORD pid = ch->GetPlayerID();

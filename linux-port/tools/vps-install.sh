@@ -377,7 +377,7 @@ host_timezone() {
 
 db_volume_exists() {
     _project=$(env_get M2_COMPOSE_PROJECT_NAME)
-    [ -n "$_project" ] || _project=metin2
+    [ -n "$_project" ] || { [ "$(env_get M2_EDITION)" = classic ] && _project=mt2009classic || _project=metin2; }
     docker volume inspect "${_project}_db-data" >/dev/null 2>&1
 }
 
@@ -404,6 +404,12 @@ write_new_env() {
     # The panel's updater (a compose profile) mounts the folder at the same
     # path it has here; the example says /opt/metin2.
     env_set M2_UPDATE_STACK_DIR "$ROOT"
+    # MT2009_CLASSIC_EDITION_V1: MT2009 Classic gets its own Docker project, so
+    # its containers and volumes never meet a MT2009 PLUS on the same VPS.
+    if [ "$(env_get M2_EDITION)" = classic ]; then
+        env_set M2_COMPOSE_PROJECT_NAME mt2009classic
+        env_set M2_CONTAINER_PREFIX mt2009classic
+    fi
     _zone=$(host_timezone)
     if [ -n "$_zone" ]; then
         env_set M2_TZ "$_zone"

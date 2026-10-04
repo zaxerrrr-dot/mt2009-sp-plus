@@ -1363,7 +1363,9 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 	{
 		if (!s_bPlayerBotWeightsInitialised)
 			ResetPlayerBotWeights();
-		return s_bPlayerBotLegends;
+		// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Legends, whatever the
+		// weights file says.
+		return s_bPlayerBotLegends && !Mt2009IsClassic();
 	}
 
 	// The WARS switch, asked by ManagePlayerBotGuildWars.

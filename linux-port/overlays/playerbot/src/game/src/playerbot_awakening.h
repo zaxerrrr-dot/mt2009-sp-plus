@@ -174,6 +174,8 @@ namespace mt2009_awakening
 // The result of a refine item_proto does not carry, or 0.
 DWORD AwakeningSpecialRefineResult(DWORD dwVnum)
 {
+	if (Mt2009IsClassic())
+		return 0;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Ritual of Awakening or soul stones past +4.
 	if (DWORD dwAwaken = mt2009_awakening::AwakeningResult(dwVnum))
 		return dwAwaken;
 	int grade = 0, kind = 0;
@@ -228,6 +230,8 @@ static bool AwakeningRollBossTable(const mt2009_awakening::TBossDrop* table, siz
 // true = something dropped.
 bool AwakeningCreateBossDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& vec_item)
 {
+	if (Mt2009IsClassic())
+		return false;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Ritual of Awakening.
 	if (!victim || !killer || victim->IsPC())
 		return false;
 
@@ -299,6 +303,8 @@ namespace
 	// one's bonuses and stones; it goes straight back on.
 	bool ManagePlayerBotAwakeningRitual(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
+		if (Mt2009IsClassic())
+			return false;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Ritual of Awakening.
 		LPITEM weapon = GetPlayerBotAwakeningWeapon(ch);
 		if (!weapon)
 			return false;
@@ -467,6 +473,8 @@ namespace
 	// destroys the stone.
 	bool ManagePlayerBotSoulStoneStep(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
+		if (Mt2009IsClassic())
+			return false;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no soul stones past +4.
 		if (!ch || IsPlayerBotSoulStoneStepResting(ch, dwNow))
 			return false;
 		LPITEM stone = FindPlayerBotSoulStoneStep(ch, PLAYERBOT_STONE_STEP_DO, NULL);

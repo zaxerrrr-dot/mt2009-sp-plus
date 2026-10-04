@@ -21,6 +21,27 @@ $script:M2_MOD_MANIFEST_URL = "https://raw.githubusercontent.com/$($script:M2_MO
 # Filled by tools/publish-update-mirror.sh with every release.
 $script:M2_UPDATE_MIRROR_BASE = 'http://141.94.100.53/aktualizacje/'
 $script:M2_UPDATE_MIRROR_NOTICE = 'GitHub niedostępny - pobieram z serwera zapasowego'
+# MT2009_CLASSIC_EDITION_V1: a MT2009 Classic package (M2_EDITION=classic in
+# its linux-port\docker\.env, or .env.example before the first start) has its
+# own update line: the manifest and client-files.json under classic/ in the
+# same repository, and the mirror's classic/ folder. A PLUS package never
+# follows the Classic line, nor Classic the PLUS one (Test-M2ForeignManifestUrl).
+function Get-M2PackageEdition {
+    $docker = Join-Path (Split-Path -Parent $PSScriptRoot) 'linux-port\docker'
+    foreach ($name in @('.env', '.env.example')) {
+        $path = Join-Path $docker $name
+        if (Test-Path -LiteralPath $path -PathType Leaf) {
+            $m = [Regex]::Match([IO.File]::ReadAllText($path), '(?m)^M2_EDITION=(.*)$')
+            if ($m.Success) { return $(if ($m.Groups[1].Value.Trim().ToLowerInvariant() -eq 'classic') { 'classic' } else { 'plus' }) }
+        }
+    }
+    return 'plus'
+}
+$script:M2_EDITION = Get-M2PackageEdition
+if ($script:M2_EDITION -eq 'classic') {
+    $script:M2_MOD_MANIFEST_URL = "https://raw.githubusercontent.com/$($script:M2_MOD_REPOSITORY)/main/classic/update-manifest-mt2009.json"
+    $script:M2_UPDATE_MIRROR_BASE = $script:M2_UPDATE_MIRROR_BASE + 'classic/'
+}
 # GitHub's own answer is waited for this long before the mirror is asked.
 $script:M2_GITHUB_TIMEOUT_SEC = 12
 $script:M2ManifestMirrors = @()
@@ -110,6 +131,9 @@ function Test-M2ForeignManifestUrl {
     param([AllowEmptyString()][string]$Url)
     if ([string]::IsNullOrWhiteSpace($Url)) { return $true }
     if ($Url -match '(?i)TieruYT/metin2-playerbots') { return $true }
+    # MT2009_CLASSIC_EDITION_V1: the other edition's line is foreign too.
+    $isClassicLine = $Url -match '(?i)/classic/update-manifest-mt2009\.json$'
+    if ($Url -match '(?i)update-manifest-mt2009\.json$' -and ($isClassicLine -ne ($script:M2_EDITION -eq 'classic'))) { return $true }
     return ($Url -match '(?i)zaxerrrr-dot/mt2009-sp-plus/.*/update-manifest\.json$')
 }
 

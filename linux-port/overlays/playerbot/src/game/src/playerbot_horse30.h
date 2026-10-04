@@ -78,6 +78,9 @@ namespace
 		out.feedCount = 0;
 		out.materials = 0;
 		out.yang = 0;
+		// MT2009_CLASSIC_EDITION_V1: MT2009 Classic keeps the package's horse - up to the military horse (21), no horse bonus.
+		if (Mt2009IsClassic() && level >= 21)
+			return false;
 		if (level == 0)
 		{
 			out.medals = 1;
@@ -131,6 +134,8 @@ namespace
 
 	bool IsPlayerBotBlackSteedCandidate(LPCHARACTER ch)
 	{
+		if (Mt2009IsClassic())
+			return false;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic keeps the package's horse - up to the military horse (21), no horse bonus.
 		return ch &&
 				ch->GetLevel() >= PLAYERBOT_BLACK_STEED_MIN_LEVEL &&
 				ch->GetHorseLevel() == PLAYERBOT_BLACK_STEED_FROM_HORSE_LEVEL &&
@@ -189,6 +194,8 @@ namespace
 	// each point (affect_add_collect, questlua_affect.cpp). Idempotent.
 	void SyncPlayerBotHorseBonus(LPCHARACTER ch)
 	{
+		if (Mt2009IsClassic())
+			return;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic keeps the package's horse - up to the military horse (21), no horse bonus.
 		if (!ch || !ch->IsPC())
 			return;
 		const int level = std::min<int>(30, ch->GetHorseLevel());
@@ -221,6 +228,8 @@ namespace
 
 	void EnsurePlayerBotHorseBonus(LPCHARACTER ch)
 	{
+		if (Mt2009IsClassic())
+			return;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic keeps the package's horse - up to the military horse (21), no horse bonus.
 		if (!ch || !ch->IsItemLoaded())
 			return;
 		if (!s_setPlayerBotHorseBonusSynced.insert(ch->GetPlayerID()).second)

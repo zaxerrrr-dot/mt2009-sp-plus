@@ -247,6 +247,25 @@ function Get-InstallationEngine {
     return 'r40250'
 }
 
+function Get-InstallationEdition {
+    # MT2009_CLASSIC_EDITION_V1: the edition of an installation (plus or
+    # classic), from M2_EDITION in its .env - or in our own .env.example when
+    # no .env exists yet. None written means plus, every install before Classic.
+    param([AllowEmptyString()][string]$EnvPath)
+    if ($EnvPath -and (Test-Path -LiteralPath $EnvPath -PathType Leaf)) {
+        $value = (Get-DotEnvValue -Content ([IO.File]::ReadAllText($EnvPath)) -Name 'M2_EDITION').ToLowerInvariant()
+        if ($value -eq 'classic') { return 'classic' }
+    }
+    return 'plus'
+}
+
+function Get-ServerEdition {
+    $dockerDir = Join-Path $PSScriptRoot 'linux-port\docker'
+    $envPath = Join-Path $dockerDir '.env'
+    if (-not (Test-Path -LiteralPath $envPath -PathType Leaf)) { $envPath = Join-Path $dockerDir '.env.example' }
+    return Get-InstallationEdition -EnvPath $envPath
+}
+
 function Select-SameEngineInstallations {
     # Only a stack of the same engine can be adopted. An mt2009 tree taking
     # over an r40250 project would start against a database volume whose
@@ -256,10 +275,14 @@ function Select-SameEngineInstallations {
     # being the one existing stack on the PC. Another line's stack is simply
     # somebody else's server, side by side, and never counts as ambiguity.
     param([object[]]$Candidates)
+    # MT2009_CLASSIC_EDITION_V1: and only one of the same edition - MT2009
+    # Classic and MT2009 PLUS side by side on one PC are two servers, never one.
     $mine = Get-ServerEngine
+    $myEdition = Get-ServerEdition
     return @($Candidates | Where-Object {
         $directory = if ($_.environmentPath) { Split-Path -Parent ([string]$_.environmentPath) } else { [string]$_.workingDirectory }
-        (Get-InstallationEngine -DockerDirectory $directory) -eq $mine
+        (Get-InstallationEngine -DockerDirectory $directory) -eq $mine -and
+            (Get-InstallationEdition -EnvPath ([string]$_.environmentPath)) -eq $myEdition
     })
 }
 
@@ -859,7 +882,7 @@ function Initialize-InstallationIdentity {
         }
     }
 
-    if (-not $project) { $project = 'm2pb-' + [Guid]::NewGuid().ToString('N').Substring(0, 8) }
+    if (-not $project) { $project = $(if ((Get-ServerEdition) -eq 'classic') { 'm2c-' } else { 'm2pb-' }) + [Guid]::NewGuid().ToString('N').Substring(0, 8) }
     if (-not $prefix) { $prefix = $project }
     if ($project -notmatch '^[a-z0-9][a-z0-9_-]+$' -or $prefix -notmatch '^[a-z0-9][a-z0-9_-]+$') {
         throw 'Installation identity contains unsupported characters.'

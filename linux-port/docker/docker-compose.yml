@@ -114,6 +114,10 @@ services:
       M2_STARTER_KIT: "${M2_STARTER_KIT:-default}"
       # The world's switches for the Cor Draconis and the sashes (apply.sh
       # writes m2_alchemy_off / m2_sash_off when .env changed).
+      # MT2009_CLASSIC_EDITION_V1: plus (MT2009 PLUS) or classic (MT2009 Classic:
+      # no costumes, pets, mounts, alchemy, sashes, Battle Pass, Legends...).
+      # Set by the package; a world is made for one edition only.
+      M2_EDITION: "${M2_EDITION:-plus}"
       M2_ALCHEMY: "${M2_ALCHEMY:-1}"
       M2_SASHES: "${M2_SASHES:-1}"
       M2_PLAYERBOT_DISABLE_STUDENT_CHEST: "${M2_PLAYERBOT_DISABLE_STUDENT_CHEST:-0}"
@@ -164,6 +168,7 @@ services:
         BASE_IMAGE: "${M2_BASE_IMAGE:-ubuntu:24.04}"
         MAKE_JOBS: "${M2_MAKE_JOBS:-}"
         STRIP_BINARIES: "${M2_STRIP_BINARIES:-1}"
+        EDITION: "${M2_EDITION:-plus}"
         # The apt mirror the image build installs from. Gdansk by default: on
         # 11 September 2026 archive.ubuntu.com served Polish players at a few
         # kilobytes a second and every first build "hung" at deps 7/7 for
@@ -171,7 +176,7 @@ services:
         # .env takes this default too, so an install made before it needs no
         # edit. Set M2_APT_MIRROR to another mirror for another country.
         APT_MIRROR: "${M2_APT_MIRROR:-http://ubuntu.task.gda.pl/ubuntu/}"
-    image: metin2/game:mt2009
+    image: ${M2_IMAGE_NAMESPACE:-metin2}/game:mt2009
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-game"
     restart: unless-stopped
     stop_grace_period: 90s
@@ -289,7 +294,7 @@ services:
     build:
       context: ./panel
       dockerfile: Dockerfile
-    image: metin2/panel:latest
+    image: ${M2_IMAGE_NAMESPACE:-metin2}/panel:latest
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-panel"
     restart: unless-stopped
 
@@ -309,6 +314,7 @@ services:
       M2_PANEL_PASSWORD: "${M2_PANEL_PASSWORD:-}"
       M2_PANEL_PORT: "7788"
       M2PANEL_ENGINE: mt2009
+      M2_EDITION: "${M2_EDITION:-plus}"
       # The address the panel is published on, and the explicit answer to
       # "may anybody else reach it": empty lets the panel decide from the
       # address (loopback = local, no passphrase), 0 or 1 overrides that.
@@ -496,7 +502,7 @@ services:
     build:
       context: ./seban-panel
       dockerfile: Dockerfile
-    image: metin2/seban-panel:latest
+    image: ${M2_IMAGE_NAMESPACE:-metin2}/seban-panel:latest
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-seban-panel"
     restart: unless-stopped
     depends_on:
@@ -508,8 +514,9 @@ services:
       DB_PASSWORD: "${M2_DB_PASSWORD:?set M2_DB_PASSWORD in .env}"
       PLAYERBOTS_GAME_HOST: game
       PLAYERBOTS_ENGINE: mt2009
+      M2_EDITION: "${M2_EDITION:-plus}"
       PLAYERBOTS_LOGIN_PORT: "11000"
-      PLAYERBOTS_WORLD_PORT: "13000"
+      PLAYERBOTS_WORLD_PORT: "${M2_GAME_PORT_BASE:-13000}"
       PLAYERBOTS_STATUS_GLOB: "/opt/metin2/var/channel*/*/playerbot_status.tsv"
       # Opened by the visitor's browser, so the address the classic panel is
       # reachable at from outside - not a container name.
@@ -548,7 +555,7 @@ services:
     build:
       context: ./itemshop
       dockerfile: Dockerfile
-    image: metin2/itemshop:latest
+    image: ${M2_IMAGE_NAMESPACE:-metin2}/itemshop:latest
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-itemshop"
     restart: unless-stopped
     depends_on:
@@ -573,7 +580,7 @@ services:
   # updating on Windows, 18 September; Compose 5.5 here never pulls it).
   # Never pulled: the build in the same `up` makes it before they start.
   seban-collector:
-    image: metin2/seban-panel:latest
+    image: ${M2_IMAGE_NAMESPACE:-metin2}/seban-panel:latest
     pull_policy: never
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-seban-collector"
     restart: unless-stopped
@@ -589,7 +596,7 @@ services:
     networks: [backend]
 
   seban-item-grants:
-    image: metin2/seban-panel:latest
+    image: ${M2_IMAGE_NAMESPACE:-metin2}/seban-panel:latest
     pull_policy: never
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-seban-item-grants"
     restart: unless-stopped
@@ -603,7 +610,7 @@ services:
     build:
       context: ./updater
       dockerfile: Dockerfile
-    image: metin2/updater:latest
+    image: ${M2_IMAGE_NAMESPACE:-metin2}/updater:latest
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-updater"
     profiles: ["update"]
     restart: unless-stopped

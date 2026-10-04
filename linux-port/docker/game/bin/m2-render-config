@@ -165,6 +165,20 @@ MAPS_game2="$MAPS_game2 364 365 366"
 # (playerbot_guild_war.h), and a bot cannot cross cores. 111 (the flags) stays on
 # first for the people's own wars.
 MAPS_game1="$MAPS_game1 110"
+# MT2009_CLASSIC_EDITION_V1: MT2009 Classic hosts none of the newer places -
+# the Temple of Ochao (209), Nemere's dungeon (352) and the Arezzo maps
+# (360-366); a character saved on one goes to its kingdom's start at the next
+# login (ENABLE_GOHOME_IF_MAP_NOT_EXIST).
+case "$(printf '%s' "${M2_EDITION:-plus}" | tr 'A-Z' 'a-z')" in
+  classic)
+    m2_drop_maps() { out=""; for m in $1; do case " $2 " in *" $m "*) ;; *) out="$out $m" ;; esac; done; echo $out; }
+    classic_off="209 352 360 361 362 363 364 365 366"
+    MAPS_first=$(m2_drop_maps "$MAPS_first" "$classic_off")
+    MAPS_game1=$(m2_drop_maps "$MAPS_game1" "$classic_off")
+    MAPS_game2=$(m2_drop_maps "$MAPS_game2" "$classic_off")
+    log "edition: classic (no Ochao, Nemere, Arezzo maps)"
+    ;;
+esac
 # The difficulty is acted on by the migrate service (event flags the quests
 # read); said here so a support bundle carries it next to the layout.
 log "difficulty: ${M2_DIFFICULTY:-easy} (Biologist and stable keeper waits; apply.sh writes the flags)"

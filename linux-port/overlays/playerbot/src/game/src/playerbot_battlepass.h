@@ -174,6 +174,8 @@ namespace mt2009_battlepass
 	// Who opens the window and gives the commands: a player.
 	bool Eligible(LPCHARACTER ch)
 	{
+		if (Mt2009IsClassic())
+			return false;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Battle Pass.
 		return ch && ch->IsPC() && ch->GetDesc() && !ch->GetDesc()->IsBot();
 	}
 
@@ -185,11 +187,15 @@ namespace mt2009_battlepass
 	// Whose deeds count: a player's and a bot's alike (MT2009_PLUS_BP_BOTS_V1).
 	bool Counts(LPCHARACTER ch)
 	{
+		if (Mt2009IsClassic())
+			return false;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Battle Pass.
 		return ch && ch->IsPC() && ch->GetDesc();
 	}
 
 	bool EnsureTables()
 	{
+		if (Mt2009IsClassic())
+			return false;	// MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Battle Pass.
 		if (s_bTables)
 			return true;
 		std::unique_ptr<SQLMsg> m(AccountDB::instance().DirectQuery(
