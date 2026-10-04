@@ -5231,10 +5231,16 @@ def csrf_protect():
         flash(t("csrf_bad"), "error")
         return redirect(url_for("login"))
 
+# MT2009_CLASSIC_EDITION_V1: a MT2009 Classic world (M2_EDITION, compose) - the
+# dashboard leaves out the cards of the systems Classic has none of.
+M2_CLASSIC = os.environ.get("M2_EDITION", "plus").strip().lower() == "classic"
+
+
 @app.context_processor
 def inject_i18n():
     _cf = client_facts()
     return {"t": t, "langs": LANGS, "curlang": lang(), "csrf_token": csrf_token(),
+            "m2_classic": M2_CLASSIC,
             "brand": BRAND, "srv": server_status(), "rates": public_rates(),
             "dlsize": human_size(_cf["size"]) if _cf["size"] else "",
             "dlsha": _cf["sha256"],
@@ -7088,21 +7094,21 @@ TPL_DASH = BASE.replace("__BODY__", """
 <p class="muted">{{t('easter_dash_hint')}}</p>
 <a class="btn" href="{{url_for('easter')}}" title="{{t('tip_easter')}}">{{t('easter_open')}}</a>
 </div>
-<div class="card">
+{% if not m2_classic %}<div class="card">
 <h3 class="help" title="{{t('tip_rare')}}">{{t('rare_nav')}}</h3>
 <p class="muted">{{t('rare_dash_hint')}}</p>
 <a class="btn" href="{{url_for('rare')}}" title="{{t('tip_rare')}}">{{t('rare_open')}}</a>
-</div>
-<div class="card">
+</div>{% endif %}
+{% if not m2_classic %}<div class="card">
 <h3 class="help" title="{{t('tip_az')}}">{{t('az_nav')}}</h3>
 <p class="muted">{{t('az_dash_hint')}}</p>
 <a class="btn" href="{{url_for('arezzo')}}" title="{{t('tip_az')}}">{{t('az_open')}}</a>
-</div>
-<div class="card">
+</div>{% endif %}
+{% if not m2_classic %}<div class="card">
 <h3 class="help" title="{{t('tip_seon')}}">{{t('seon_nav')}}</h3>
 <p class="muted">{{t('seon_dash_hint')}}</p>
 <a class="btn" href="{{url_for('seonhae')}}" title="{{t('tip_seon')}}">{{t('seon_open')}}</a>
-</div>
+</div>{% endif %}
 <div class="card">
 <h3 class="help" title="{{t('tip_fl')}}">{{t('fl_nav')}}</h3>
 <p class="muted">{{t('fl_dash_hint')}}</p>
@@ -7128,17 +7134,17 @@ TPL_DASH = BASE.replace("__BODY__", """
 <p class="muted">{{t('gl_dash_hint')}}</p>
 <a class="btn" href="{{url_for('guilds_page')}}">{{t('gl_open')}}</a>
 </div>
-<div class="card">
+{% if not m2_classic %}<div class="card">
 <h3 class="help">{{t('lg_nav')}}</h3>
 <p class="muted">{{t('lg_dash_hint')}}</p>
 <a class="btn" href="{{url_for('legends_page')}}">{{t('lg_open')}}</a>
-</div>
+</div>{% endif %}
 {# MT2009_PLUS_WEEKLY_RANKING_V1 #}
-<div class="card">
+{% if not m2_classic %}<div class="card">
 <h3 class="help">{{t('wr_nav')}}</h3>
 <p class="muted">{{t('wr_dash_hint')}}</p>
 <a class="btn" href="{{url_for('weekly_ranking_page')}}">{{t('wr_open')}}</a>
-</div>
+</div>{% endif %}
 {# The bots' explained decisions: only the 2.x line's core records them. #}
 {% if engine_mt2009 %}
 <div class="card">

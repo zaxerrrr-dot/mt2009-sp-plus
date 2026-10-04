@@ -56,6 +56,12 @@
     {'ep': 'changelog', 'label': 'Changelog', 'desc': 'zmiany serwera i klienta', 'kw': 'zmiany wersje historia'},
   ]},
 ] -%}
+{#- MT2009_CLASSIC_EDITION_V1: MT2009 Classic has no Legends, Battle Pass, Wheel or weekly ranking. -#}
+{%- if m2_classic is defined and m2_classic -%}
+{%- set _classic_ns = namespace(groups=[]) -%}
+{%- for g in nav_groups -%}{%- set _ = _classic_ns.groups.append({'id': g.id, 'icon': g.icon, 'label': g.label, 'items': g['items']|rejectattr('ep', 'in', ['legends_page', 'battlepass', 'wheel', 'weekly_ranking'])|list}) -%}{%- endfor -%}
+{%- set nav_groups = _classic_ns.groups -%}
+{%- endif -%}
 {%- set nav_parents = {
   'player': 'players', 'account_detail': 'accounts', 'guild': 'guilds',
   'economy_item': 'economy', 'chest_edit': 'chests', 'drop_edit': 'drops',

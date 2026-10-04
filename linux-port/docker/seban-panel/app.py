@@ -4208,6 +4208,11 @@ def write_shop_explain_enabled(enabled):
         ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0",))
 
 
+# MT2009_CLASSIC_EDITION_V1: a MT2009 Classic world (M2_EDITION, compose) - the
+# menu leaves out the pages of the systems Classic has none of.
+M2_CLASSIC = os.environ.get("M2_EDITION", "plus").strip().lower() == "classic"
+
+
 @app.context_processor
 def globals_for_templates():
     tieru_url = os.environ.get("TIERU_PANEL_URL", "http://127.0.0.1:7788")
@@ -4245,7 +4250,7 @@ def globals_for_templates():
         if not rank:
             return escape(label)
         return Markup('<span class="top-level-badge" title="Top 10 poziomu · #%d">%s</span>') % (rank, escape(label))
-    return {"tieru_url": tieru_url, "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag, "static_asset_url": static_asset_url, "level_badge": level_badge, "top_level_rank": lambda pid: top_level_rank_map().get(int(pid or 0)), "feature_enabled": lambda name: panel_feature_enabled(name, current_settings), "panel_features": panel_feature_states(current_settings), "class_label": class_label, "ui_language": "pl", "i18n_payload": None, "ds_kind_count": 7 if ENGINE_MT2009 else 6}
+    return {"tieru_url": tieru_url, "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag, "static_asset_url": static_asset_url, "level_badge": level_badge, "top_level_rank": lambda pid: top_level_rank_map().get(int(pid or 0)), "feature_enabled": lambda name: panel_feature_enabled(name, current_settings), "panel_features": panel_feature_states(current_settings), "class_label": class_label, "ui_language": "pl", "i18n_payload": None, "ds_kind_count": 7 if ENGINE_MT2009 else 6, "m2_classic": M2_CLASSIC}
 
 
 @app.after_request

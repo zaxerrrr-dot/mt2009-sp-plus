@@ -20,7 +20,7 @@
 </div>
 <div id="notif-toast-stack" class="notif-toast-stack"></div>
 <div id="action-toast-stack" class="action-toast-stack"></div>
-{%- from '_nav.html' import nav_groups, nav_parents, nav_sections -%}
+{%- from '_nav.html' import nav_groups, nav_parents, nav_sections with context -%}
 {%- set nav_ep = request.endpoint or '' -%}
 {%- set nav_active = nav_parents.get(nav_ep, nav_ep) -%}
 {%- set nav = namespace(group=None, item=None, palette=[]) -%}
