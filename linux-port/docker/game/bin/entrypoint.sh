@@ -193,6 +193,10 @@ command -v m2-chests >/dev/null 2>&1 \
 # the service account, the spool folder (m2-drops).
 command -v m2-drops >/dev/null 2>&1 \
   && { m2-drops prepare || log "could not prepare the drop files (the panel's Drop z potworów page will say so)"; }
+# MT2009_PLUS_DB_EDITOR_V1: the same for the fishing table (quest/libs/fishing/
+# fishing_drop.lua) the database editor's "Łowienie ryb" page edits (m2-fishing).
+command -v m2-fishing >/dev/null 2>&1 \
+  && { m2-fishing prepare || log "could not prepare the fishing table (the panel's Łowienie ryb page will say so)"; }
 
 # -----------------------------------------------------------------------------
 # 3. Resource limits.

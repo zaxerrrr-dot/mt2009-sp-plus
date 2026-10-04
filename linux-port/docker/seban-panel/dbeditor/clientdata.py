@@ -97,6 +97,13 @@ def install(bp, ctx):
         except Exception:
             return {}
 
+    def table_kind(tbl):
+        # MT2009_PLUS_DB_EDITOR_V1: what a history row is (Przedmiot, Umiejętność,
+        # Bonus 1-5, Tabela doświadczenia ...) - common_items.register_table's title.
+        meta = common_items.TABLES.get(tbl)
+        title = (meta or {}).get("title") or ("umiejętność" if "skill" in tbl else "przedmiot")
+        return title[:1].lower() + title[1:]
+
     @bp.route("/apply", methods=["GET"])
     @login_required
     def apply_page():
@@ -105,7 +112,7 @@ def install(bp, ctx):
             "dbeditor/clientdata.html", items=items, files=files, last=_read_json(last_apply, {}),
             build=_read_json(build_log, {}), csrf=common_items.csrf_token(), client_version=base_version(),
             restart=restart_state(), column_label=common_items.column_label,
-            format_value=common_items.format_value)
+            format_value=common_items.format_value, table_kind=table_kind)
 
     @bp.route("/apply", methods=["POST"])
     @login_required
