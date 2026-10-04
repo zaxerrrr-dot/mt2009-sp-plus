@@ -49,3 +49,11 @@ SETS = (
 	((41916,41917,41918,41919,), (45656,45657,45658,45659,)),	# Zestaw_Zwycieskiego_i_Szczodrego
 	((41948,41949,41950,41951,), (45688,45689,45690,45691,)),	# Zestaw_Straznikow_Piasku
 )
+
+BODY_SETS = {}
+HAIR_SETS = {}
+for _i, (_bodies, _hairs) in enumerate(SETS):
+	for _v in _bodies:
+		BODY_SETS.setdefault(_v, []).append(_i)
+	for _v in _hairs:
+		HAIR_SETS.setdefault(_v, []).append(_i)
