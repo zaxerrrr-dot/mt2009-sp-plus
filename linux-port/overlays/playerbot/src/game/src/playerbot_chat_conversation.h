@@ -67,6 +67,12 @@ namespace
 	bool QuotePlayerBotDealItem(LPCHARACTER bot, const std::string& query, DWORD vnumHint, playerbot_conv::TDealQuote& out);
 	int RegisterPlayerBotDeal(LPCHARACTER bot, DWORD personPID, LPCHARACTER person, BYTE side, DWORD vnum, int count,
 			long long unit);
+	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: playerbot_dungeon_lfg.h - the yes to a
+	// bot's dungeon offer, the no, and the dungeon named to "na jaki dung?".
+	int AcceptPlayerBotDungeonLfg(LPCHARACTER bot, DWORD personPID);
+	void DeclinePlayerBotDungeonLfg(LPCHARACTER bot, DWORD personPID);
+	int ChoosePlayerBotDungeonLfg(LPCHARACTER bot, DWORD personPID, const std::string& key, int difficulty,
+			std::string& resolved);
 
 	const DWORD PLAYERBOT_CONV_SWITCH_CHECK_MS = 30000;
 	const DWORD PLAYERBOT_CONV_STATS_INTERVAL_MS = 10 * 60 * 1000;
@@ -1353,6 +1359,25 @@ namespace
 			int DealAgreed(unsigned char side, playerbot_conv::u32 vnum, int count, long long unit)
 			{
 				return RegisterPlayerBotDeal(m_bot, m_personPID, m_player, side, vnum, count, unit);
+			}
+
+			// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the dungeon finder's answers, made
+			// at the moment the reply is composed - the teleport to the
+			// entrance with it. The person by pid: a yes may come from another
+			// core.
+			int LfgAccept()
+			{
+				return AcceptPlayerBotDungeonLfg(m_bot, m_personPID);
+			}
+
+			void LfgDecline()
+			{
+				DeclinePlayerBotDungeonLfg(m_bot, m_personPID);
+			}
+
+			int LfgChoose(const std::string& key, int difficulty, std::string& resolved)
+			{
+				return ChoosePlayerBotDungeonLfg(m_bot, m_personPID, key, difficulty, resolved);
 			}
 
 			void SetPersonPID(DWORD pid) { m_personPID = pid; }

@@ -20,6 +20,9 @@
 // longer (CONV_MEMORY_TTL_MS) and is capped in count by the engine side.
 
 #include "playerbot_conv_intents.h"
+// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the dungeon finder's words (TTalk, the yes
+// and the no, the dungeons' names) - pure, like this file.
+#include "playerbot_dungeon_lfg_rules.h"
 
 namespace playerbot_conv
 {
@@ -212,6 +215,13 @@ namespace playerbot_conv
 		u32 mutedUntil;
 		// The trade talked over now (TDeal).
 		TDeal deal;
+		// MT2009_PLUS_BOT_DUNGEON_LFG_V1: what the bot asked the person about
+		// a dungeon (playerbot_dungeon_lfg.h): "moge przyjsc?", "na jaki
+		// dung?", or that it waits at the entrance. Set by the engine when the
+		// offer goes out, read by ResolveContext, moved on by the answer's
+		// generator (GenLfgAnswer) and cleared by the engine when it is over.
+		// Kept through ClearContext, as the deal is: it has its own clock.
+		playerbot_lfg::TTalk lfg;
 
 		TConvMemory() : playerPID(0), botPID(0), firstAt(0), lastPlayerAt(0), lastBotAt(0),
 			lastInitiativeAt(0), lastCheckAt(0), talks(0), sessions(0), positive(0), negative(0),
@@ -365,6 +375,39 @@ namespace playerbot_conv
 			const TTurn* t = m.Prev(now, i);
 			if (t && now - t->at < 60000 && a.tokens.norm.size() > 2 && t->norm == a.tokens.norm)
 				a.repeated = true;
+		}
+
+		// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the bot offered to come along to a
+		// dungeon, asked which one, or waits at its entrance. A yes, a no, or
+		// (to "na jaki dung?") the dungeon's name is the answer to that,
+		// whatever the line would read as alone: "chodz" is not "come over to
+		// me" here, "nie" not a reaction, "ok" not a nod. Anything else - a
+		// question of its own, "nie wiem" - is answered as ever and the offer
+		// keeps its clock.
+		if (m.lfg.Live(now) && a.tokens.words.size() <= playerbot_lfg::MAX_ANSWER_WORDS)
+		{
+			int difficulty = 0;
+			const std::string named = m.lfg.state == playerbot_lfg::TALK_ASKED
+					? playerbot_lfg::FindDungeonKey(a.tokens, difficulty) : std::string();
+			const int yesNo = playerbot_lfg::ParseYesNo(a.tokens);
+			int answer = playerbot_lfg::ANSWER_NONE;
+			if (!named.empty() && yesNo >= 0)
+			{
+				answer = playerbot_lfg::ANSWER_CHOOSE;
+				a.lfgKey = named;
+				a.lfgDifficulty = difficulty;
+			}
+			else if (yesNo < 0)
+				answer = playerbot_lfg::ANSWER_NO;
+			else if (yesNo > 0)
+				answer = m.lfg.state == playerbot_lfg::TALK_ASKED ? playerbot_lfg::ANSWER_WHICH : playerbot_lfg::ANSWER_YES;
+			if (answer != playerbot_lfg::ANSWER_NONE)
+			{
+				a.intent = I_LFG_ANSWER;
+				a.subject = I_LFG_ANSWER;
+				a.lfgAnswer = answer;
+				return;
+			}
 		}
 
 		// MT2009_PLUS_BOT_CHAT_V2 (deals): while a trade is talked over, a

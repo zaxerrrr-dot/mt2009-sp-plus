@@ -324,7 +324,8 @@ namespace playerbot_conv
 				thanks = true;
 			if (IsColdIntent(it))
 				cold = true;
-			if (IsArgumentIntent(it) || it == I_ANSWER_TO_BOT || it == I_MATH)
+			// MT2009_PLUS_BOT_DUNGEON_LFG_V1: nor after the dungeon's yes or no.
+			if (IsArgumentIntent(it) || it == I_ANSWER_TO_BOT || it == I_MATH || it == I_LFG_ANSWER)
 				argued = true;
 		}
 		std::vector<const TAnalysis*> todo;

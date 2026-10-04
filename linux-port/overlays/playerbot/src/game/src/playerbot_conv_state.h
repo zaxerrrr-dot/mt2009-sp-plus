@@ -500,6 +500,20 @@ namespace playerbot_conv
 				(void)side; (void)vnum; (void)count; (void)unit;
 				return -1;
 			}
+			// MT2009_PLUS_BOT_DUNGEON_LFG_V1 (playerbot_dungeon_lfg.h): the yes
+			// to the bot's offer - the bot goes to the dungeon's entrance and
+			// waits there (playerbot_lfg::EGo says how it went); the no, or the
+			// person calling it off while it waits; and the dungeon named to
+			// "na jaki dung?" - whether this bot fits it (EChoose), and the
+			// dungeon the engine made of the name ("malpy" is one of three).
+			virtual int LfgAccept() { return playerbot_lfg::GO_GONE; }
+			virtual void LfgDecline() {}
+			virtual int LfgChoose(const std::string& key, int difficulty, std::string& resolved)
+			{
+				(void)key; (void)difficulty;
+				resolved.clear();
+				return playerbot_lfg::CHOOSE_UNKNOWN;
+			}
 	};
 
 	// How the two of a settled deal meet.

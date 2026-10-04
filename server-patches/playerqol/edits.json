@@ -906,6 +906,12 @@
   "new": "\t\telse\n\t\t{\n\t\t\tSendTrade(chatbuf);\n\n\t\t\t// MT2009_PLUS_BOT_CHAT_V2 (trade chat): a person's '@' line reaches the playerbots too -\n\t\t\t// \"K> ...\" or \"S> ...\" is answered by whisper by the bot best placed to (playerbot_chat_world.h).\n\t\t\tif (ch->GetDesc() && !ch->GetDesc()->IsBot())\n\t\t\t\tCPlayerBotManager::instance().OnPlayerTradeChat(ch, buf);\n\t\t}\n"
  },
  {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_BOT_DUNGEON_LFG_V1 (local chat)",
+  "old": "\t\tdefault:\n\t\t\tsys_err(\"Unknown chat type %d\", pinfo->type);\n\t\t\tbreak;\n\t}\n\n\treturn (iExtraLen);\n}\n",
+  "new": "\t\tdefault:\n\t\t\tsys_err(\"Unknown chat type %d\", pinfo->type);\n\t\t\tbreak;\n\t}\n\n\t// MT2009_PLUS_BOT_DUNGEON_LFG_V1 (local chat): a person's normal and guild chat line reaches the\n\t// playerbots too - \"ktos na biblioteke?\" is answered by whisper by bots of the dungeon's level\n\t// (playerbot_dungeon_lfg.h). The shout and the '@' trade line reach them above.\n\tif ((pinfo->type == CHAT_TYPE_TALKING || pinfo->type == CHAT_TYPE_GUILD) && ch->GetDesc() && !ch->GetDesc()->IsBot())\n\t\tCPlayerBotManager::instance().OnPlayerLocalChat(ch, buf, pinfo->type);\n\n\treturn (iExtraLen);\n}\n"
+ },
+ {
   "file": "exchange.h",
   "marker": "MT2009_PLUS_BOT_CHAT_V2 (exchange gold)",
   "old": "\t\tbool\t\tGetAcceptStatus() { return m_bAccept; }\n",

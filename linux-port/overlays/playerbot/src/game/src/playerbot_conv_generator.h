@@ -2699,6 +2699,76 @@ namespace playerbot_conv
 
 	inline std::string GenerateOne(TGen& g, const TAnalysis& a);
 
+	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the answer to the bot's dungeon offer
+	// (I_LFG_ANSWER). The engine does what the answer asks at the moment the
+	// reply is composed - the teleport to the entrance on a yes, the wait
+	// called off on a no (IConvWorld::LfgAccept / LfgDecline / LfgChoose) -
+	// and the reply says what came of it, in the words of
+	// playerbot_dungeon_lfg_rules.h: "Czekam pod wejsciem, bede tutaj 5
+	// minut", "ok, spoko", "kurde, nie dam rady teraz przyjsc".
+	inline std::string GenLfgAnswer(TGen& g, const TAnalysis& a)
+	{
+		playerbot_lfg::TFacts f;
+		f.level = g.s.level;
+		f.job = g.s.job;
+		f.group = g.s.skillGroup;
+		f.botName = g.s.name;
+		f.playerName = g.s.askerName;
+		f.key = g.m.lfg.key;
+		switch (a.lfgAnswer)
+		{
+			case playerbot_lfg::ANSWER_YES:
+			{
+				const int go = g.world ? g.world->LfgAccept() : playerbot_lfg::GO_GONE;
+				switch (go)
+				{
+					case playerbot_lfg::GO_TELEPORTED:
+					case playerbot_lfg::GO_WALKING:
+						g.m.lfg.state = playerbot_lfg::TALK_WAITING;
+						g.m.lfg.at = g.now;
+						return playerbot_lfg::WaitLine(g.rng, f, go == playerbot_lfg::GO_WALKING);
+					case playerbot_lfg::GO_ALREADY:
+						return playerbot_lfg::AlreadyLine(g.rng, f);
+					case playerbot_lfg::GO_FAILED:
+						g.m.lfg = playerbot_lfg::TTalk();
+						return playerbot_lfg::CantComeLine(g.rng, f);
+					default:
+						g.m.lfg = playerbot_lfg::TTalk();
+						return playerbot_lfg::GoneLine(g.rng, f);
+				}
+			}
+			case playerbot_lfg::ANSWER_NO:
+			{
+				const bool waiting = g.m.lfg.state == playerbot_lfg::TALK_WAITING;
+				if (g.world)
+					g.world->LfgDecline();
+				g.m.lfg = playerbot_lfg::TTalk();
+				return waiting ? playerbot_lfg::LeaveLine(g.rng, f) : playerbot_lfg::DeclineLine(g.rng, f);
+			}
+			case playerbot_lfg::ANSWER_CHOOSE:
+			{
+				std::string resolved;
+				const int fit = g.world ? g.world->LfgChoose(a.lfgKey, a.lfgDifficulty, resolved)
+						: playerbot_lfg::CHOOSE_UNKNOWN;
+				f.key = resolved.empty() ? a.lfgKey : resolved;
+				if (fit == playerbot_lfg::CHOOSE_OK)
+				{
+					g.m.lfg.state = playerbot_lfg::TALK_OFFERED;
+					g.m.lfg.key = f.key;
+					g.m.lfg.at = g.now;
+					return playerbot_lfg::ChosenLine(g.rng, f);
+				}
+				g.m.lfg = playerbot_lfg::TTalk();
+				return playerbot_lfg::ChosenWrongLine(g.rng, f, fit);
+			}
+			case playerbot_lfg::ANSWER_WHICH:
+				// The question stands, on the clock it was asked on.
+				return playerbot_lfg::WhichAgainLine(g.rng, f);
+			default:
+				return std::string();
+		}
+	}
+
 	inline std::string GenWhy(TGen& g, EIntent subject)
 	{
 		if (!g.m.lastReason.empty() && g.now - g.m.lastAnsweredAt < CONV_CONTEXT_TTL_MS)
@@ -3919,7 +3989,7 @@ namespace playerbot_conv
 	// post's own answer; a bare "siema" soon after a post, the post offered.
 	inline void ApplyPublicContext(TGen& g, TAnalysis& b)
 	{
-		if (b.intent == I_DEAL || g.m.deal.Live(g.now) || g.s.publicLines.empty())
+		if (b.intent == I_DEAL || b.intent == I_LFG_ANSWER || g.m.deal.Live(g.now) || g.s.publicLines.empty())
 			return;
 		const TConceptSet& c = b.concepts;
 		const bool tradeWords = c.Has(C_SELLYOU) || c.Has(C_BUYME) || c.Has(C_PRICEQ) || c.Has(C_STILL) ||
@@ -4065,6 +4135,7 @@ namespace playerbot_conv
 			case I_PING: out = GenPing(g); break;
 			case I_DEAL: out = GenDeal(g, a); break;
 			case I_POST_REF: out = GenPostRef(g, a); break;
+			case I_LFG_ANSWER: out = GenLfgAnswer(g, a); break;
 			case I_HOW_ARE_YOU: out = GenHowAreYou(g); break;
 			case I_HELP: out = GenHelp(g); break;
 			case I_IS_BOT: out = GenIsBot(g); break;

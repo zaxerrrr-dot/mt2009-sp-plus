@@ -59,6 +59,10 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// MT2009_PLUS_BOT_CHAT_V2: a person's '@' trade chat line
 		// (CInputMain::Chat's CHAT_TYPE_TRADE, server-patches/playerqol).
 		void	OnPlayerTradeChat(LPCHARACTER ch, const char* szText);
+		// MT2009_PLUS_BOT_DUNGEON_LFG_V1: a person's normal or guild chat line
+		// (CInputMain::Chat's CHAT_TYPE_TALKING / CHAT_TYPE_GUILD,
+		// server-patches/playerqol), for the bots' dungeon finder.
+		void	OnPlayerLocalChat(LPCHARACTER ch, const char* szText, BYTE bType);
 		void	OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const char* szText);
 		// A whisper to a bot of this core from a person another core holds -
 		// the other channel's, or a map this core does not host - by name, as
