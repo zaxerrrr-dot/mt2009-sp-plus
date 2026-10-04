@@ -66,7 +66,8 @@ namespace
 	// whisper names, priced and judged; a deal both sides settled.
 	bool QuotePlayerBotDealItem(LPCHARACTER bot, const std::string& query, DWORD vnumHint, playerbot_conv::TDealQuote& out);
 	int RegisterPlayerBotDeal(LPCHARACTER bot, DWORD personPID, LPCHARACTER person, BYTE side, DWORD vnum, int count,
-			long long unit);
+			long long unit, playerbot_conv::TDealMeetPlace& place);
+	bool GetPlayerBotDealMeet(LPCHARACTER bot, DWORD personPID, playerbot_conv::TDealMeetPlace& place);
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: playerbot_dungeon_lfg.h - the yes to a
 	// bot's dungeon offer, the no, and the dungeon named to "na jaki dung?".
 	int AcceptPlayerBotDungeonLfg(LPCHARACTER bot, DWORD personPID);
@@ -1356,9 +1357,15 @@ namespace
 				return m_bot && QuotePlayerBotDealItem(m_bot, query, vnumHint, out);
 			}
 
-			int DealAgreed(unsigned char side, playerbot_conv::u32 vnum, int count, long long unit)
+			int DealAgreed(unsigned char side, playerbot_conv::u32 vnum, int count, long long unit,
+					playerbot_conv::TDealMeetPlace& place)
 			{
-				return RegisterPlayerBotDeal(m_bot, m_personPID, m_player, side, vnum, count, unit);
+				return RegisterPlayerBotDeal(m_bot, m_personPID, m_player, side, vnum, count, unit, place);
+			}
+
+			bool DealMeet(playerbot_conv::TDealMeetPlace& place)
+			{
+				return GetPlayerBotDealMeet(m_bot, m_personPID, place);
 			}
 
 			// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the dungeon finder's answers, made

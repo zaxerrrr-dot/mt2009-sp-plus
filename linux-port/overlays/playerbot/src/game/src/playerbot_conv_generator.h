@@ -3584,9 +3584,10 @@ namespace playerbot_conv
 		return std::string();
 	}
 
-	// Where to come for the window: the map (with the channel when it is not
-	// the asker's - Fill adds it to $MAPIN), or only the channel on a map it
-	// has no name for. "na CH2 na CH2" was both at once.
+	// Where to come for the window when the bot cannot move: the map (with
+	// the channel when it is not the asker's - Fill adds it to $MAPIN), or
+	// only the channel on a map it has no name for. "na CH2 na CH2" was both
+	// at once.
 	inline std::string DealMeetPlace(TGen& g)
 	{
 		if (IsKnownMap(g.s.mapIndex))
@@ -3594,6 +3595,192 @@ namespace playerbot_conv
 		if (AskerOnOtherChannel(g.s))
 			return Fill(g, "Jestem na CH$CH");
 		return "Jestem niedaleko";
+	}
+
+	// The meeting as it stands now: the engine's word when it has one (the
+	// bot may have reached the smith since), else what was agreed.
+	inline const TDealMeetPlace& CurrentDealMeet(TGen& g)
+	{
+		TDealMeetPlace now;
+		if (g.world && g.world->DealMeet(now) && now.kind >= 0)
+			g.m.deal.meet = now;
+		return g.m.deal.meet;
+	}
+
+	// The exact place in words: $VIL "M1 Yongan", $SPOTTO "do kowala",
+	// $SPOT "przy kowalu", $CHN "CH2" - the channel only ever in the lines
+	// written for a person on the other one.
+	inline std::string DealPlaceText(const TGen& g, const TDealMeetPlace& p, const char* tpl)
+	{
+		// Before Fill, whose $SP and $CH would eat $SPOT and $CHN.
+		std::string out = tpl ? tpl : "";
+		const char* village = VillageTag(p.map);
+		ReplaceAll(out, "$VIL", *village ? std::string(village) : std::string(GetMapWords(p.map).name));
+		ReplaceAll(out, "$SPOTTO", p.spot == DEAL_SPOT_STALL ? "do mojego straganu" : "do kowala");
+		ReplaceAll(out, "$SPOT", p.spot == DEAL_SPOT_STALL ? "przy moim straganie" : "przy kowalu");
+		ReplaceAll(out, "$CHN", "CH" + ToString((long long)(p.channel > 0 ? p.channel : 1)));
+		return DealText(g, out.c_str());
+	}
+
+#define PBC_PLACE(g, p, arr) DealPlaceText((g), (p), Pick((g), (arr), sizeof(arr) / sizeof((arr)[0])))
+
+	enum EDealPlaceLine
+	{
+		DPL_AGREED = 0,   // said with the agreement
+		DPL_WHERE,        // "gdzie jestes?"
+		DPL_COMING        // "czekaj ide", "juz ide", "zaraz bede"
+	};
+
+	// The meeting said: where the bot waits (or walks), for the agreement,
+	// for "gdzie?" and for "juz ide". The owner, 4 October: "jestem w m1
+	// yongan bede czekac przy kowalu"; a bot on the other channel says which
+	// one once, and how to get there ("przelacz sie na CH2").
+	inline std::string DealPlaceLine(TGen& g, int which)
+	{
+		const TDeal& d = g.m.deal;
+		const TDealMeetPlace& p = CurrentDealMeet(g);
+		const bool sells = d.side == DEAL_BOT_SELLS;
+		switch (p.kind)
+		{
+			case DEAL_MEET_NEAR:
+			{
+				if (which == DPL_AGREED)
+					return sells ? "Stoje obok, otwieram wymiane." : "Stoje obok, daj wymiane.";
+				static const char* const k[] = { "Jestem obok ciebie, daj wymiane.", "Stoje tuz obok, daj wymiane :)",
+					"Przeciez stoje obok, dawaj wymiane." };
+				return PBC_SAY(g, k);
+			}
+			case DEAL_MEET_COMING:
+			{
+				if (which == DPL_AGREED)
+					return sells ? "Ide do ciebie, otworze wymiane jak bede obok." : "Ide do ciebie, daj wymiane jak bede obok.";
+				if (which == DPL_WHERE)
+				{
+					static const char* const k[] = { "Ide do ciebie, zaraz bede obok.", "Juz ide w twoja strone, stoj gdzie stoisz.",
+						"Zaraz bede przy tobie, nie odchodz." };
+					return PBC_SAY(g, k);
+				}
+				static const char* const k[] = { "Stoj, ja do ciebie ide.", "Nie ruszaj sie, zaraz bede obok.",
+					"Spoko, ja ide do ciebie - stoj w miejscu." };
+				return PBC_SAY(g, k);
+			}
+			case DEAL_MEET_AT_SPOT:
+				break;
+			default:
+			{
+				// It cannot move: the person comes to where it stands.
+				if (which == DPL_AGREED)
+					return DealMeetPlace(g) + ", podejdz i daj wymiane.";
+				if (which == DPL_WHERE)
+					return DealMeetPlace(g) + ". Podejdz i daj wymiane.";
+				return "Ok, czekam. " + DealMeetPlace(g) + ".";
+			}
+		}
+		if (which == DPL_AGREED)
+		{
+			if (p.otherChannel)
+			{
+				if (!p.arrived)
+				{
+					static const char* const k[] = {
+						"Jestem na $CHN - ide $SPOTTO w $VIL i tam poczekam. Przelacz sie na $CHN i daj wymiane.",
+						"Spotkajmy sie na $CHN w $VIL $SPOT, juz tam ide. Zmien kanal na $CHN.",
+						"Gram na $CHN. Ide $SPOTTO w $VIL, bede tam czekac - przelacz sie na $CHN i podejdz." };
+					return PBC_PLACE(g, p, k);
+				}
+				static const char* const k[] = {
+					"Jestem na $CHN, w $VIL - czekam $SPOT. Przelacz sie na $CHN i daj wymiane.",
+					"Czekam $SPOT w $VIL, ale na $CHN - zmien kanal na $CHN i podejdz.",
+					"Stoje $SPOT w $VIL na $CHN. Przelacz sie na $CHN i daj wymiane." };
+				return PBC_PLACE(g, p, k);
+			}
+			if (!p.arrived)
+			{
+				static const char* const k[] = {
+					"Ide $SPOTTO w $VIL, bede za chwile. Podejdz tam i daj wymiane.",
+					"Spotkajmy sie w $VIL $SPOT, juz tam ide. Daj wymiane jak mnie zobaczysz.",
+					"Lece do $VIL, bede czekac $SPOT. Tam daj wymiane." };
+				return PBC_PLACE(g, p, k);
+			}
+			static const char* const k[] = {
+				"Jestem w $VIL, bede czekac $SPOT. Podejdz i daj wymiane.",
+				"Stoje $SPOT w $VIL, czekam na ciebie. Daj wymiane jak podejdziesz.",
+				"Czekam w $VIL $SPOT, podejdz i daj wymiane." };
+			return PBC_PLACE(g, p, k);
+		}
+		if (which == DPL_WHERE)
+		{
+			if (p.otherChannel)
+			{
+				if (!p.arrived)
+				{
+					static const char* const k[] = { "Na $CHN, ide $SPOTTO w $VIL - tam poczekam.",
+						"Jeszcze ide. $CHN, $VIL, $SPOT - przelacz sie na $CHN." };
+					return PBC_PLACE(g, p, k);
+				}
+				static const char* const k[] = { "Na $CHN, w $VIL $SPOT.", "$CHN, $VIL, stoje $SPOT. Przelacz sie na $CHN.",
+					"W $VIL $SPOT, ale na $CHN - zmien kanal." };
+				return PBC_PLACE(g, p, k);
+			}
+			if (!p.arrived)
+			{
+				static const char* const k[] = { "Ide do $VIL, bede czekac $SPOT.", "Jeszcze ide - bede $SPOT w $VIL.",
+					"W drodze, za chwile bede $SPOT w $VIL." };
+				return PBC_PLACE(g, p, k);
+			}
+			static const char* const k[] = { "W $VIL $SPOT.", "Stoje $SPOT w $VIL.", "$VIL, $SPOT - czekam na ciebie." };
+			return PBC_PLACE(g, p, k);
+		}
+		// "czekaj ide", "juz ide", "zaraz bede".
+		if (p.otherChannel)
+		{
+			if (!p.arrived)
+			{
+				static const char* const k[] = { "Ok, ja tez juz ide - widzimy sie $SPOT w $VIL na $CHN.",
+					"Spoko, za chwile bede $SPOT. Pamietaj: $CHN." };
+				return PBC_PLACE(g, p, k);
+			}
+			static const char* const k[] = { "Ok, czekam $SPOT w $VIL na $CHN.", "Jasne, czekam. Pamietaj, ze jestem na $CHN.",
+				"Spoko, stoje $SPOT w $VIL - tylko przelacz sie na $CHN." };
+			return PBC_PLACE(g, p, k);
+		}
+		if (!p.arrived)
+		{
+			static const char* const k[] = { "Ok, ja tez juz ide - widzimy sie $SPOT w $VIL.", "Spoko, za chwile bede $SPOT.",
+				"Jasne, spotkamy sie $SPOT w $VIL." };
+			return PBC_PLACE(g, p, k);
+		}
+		static const char* const k[] = { "Ok, czekam $SPOT.", "Jasne, stoje tu $SPOT.", "Spoko, czekam w $VIL $SPOT.",
+			"Dobra, czekam na ciebie." };
+		return PBC_PLACE(g, p, k);
+	}
+
+	// Why fewer pieces than the person named (EDealCap).
+	inline std::string DealCapNote(TGen& g)
+	{
+		switch (g.m.deal.capWhy)
+		{
+			case DEAL_CAP_PURSE:
+			{
+				static const char* const k[] = { "Mam yang tylko na $MAXN szt, wiecej nie wezme.",
+					"Na wiecej niz $MAXN szt mnie teraz nie stac.", "Wiecej niz $MAXN szt nie kupie, nie mam tyle yang." };
+				return PBC_DEAL(g, k);
+			}
+			case DEAL_CAP_HAVE:
+			{
+				static const char* const k[] = { "Mam tylko $MAXN szt.", "Wiecej nie mam, moge dac $MAXN szt.",
+					"Mam ich $MAXN, wiecej nie dam rady." };
+				return PBC_DEAL(g, k);
+			}
+			case DEAL_CAP_NEED:
+			{
+				static const char* const k[] = { "Wiecej mi nie trzeba, wezme $MAXN.", "Potrzebuje tylko $MAXN szt.",
+					"$MAXN szt mi wystarczy, wiecej nie wezme." };
+				return PBC_DEAL(g, k);
+			}
+			default:
+				return std::string();
+		}
 	}
 
 	// Settled: the engine holds the deal for the window and says how the two
@@ -3611,7 +3798,9 @@ namespace playerbot_conv
 		TDeal& d = g.m.deal;
 		d.state = DEAL_AGREED;
 		d.at = g.now;
-		const int meet = g.world ? g.world->DealAgreed(d.side, d.vnum, d.count, d.offer) : (int)DEAL_MEET_FAILED;
+		d.meet = TDealMeetPlace();
+		const int meet = g.world ? g.world->DealAgreed(d.side, d.vnum, d.count, d.offer, d.meet) : (int)DEAL_MEET_FAILED;
+		d.meet.kind = meet;
 		g.reason = "Bo sie dogadalismy.";
 		std::string head;
 		{
@@ -3623,14 +3812,10 @@ namespace playerbot_conv
 		switch (meet)
 		{
 			case DEAL_MEET_NEAR:
-				Append(head, d.side == DEAL_BOT_SELLS ? "Stoje obok, otwieram wymiane." : "Stoje obok, daj wymiane.");
-				break;
 			case DEAL_MEET_COMING:
-				Append(head, d.side == DEAL_BOT_SELLS ? "Ide do ciebie, otworze wymiane jak bede obok."
-						: "Ide do ciebie, daj wymiane jak bede obok.");
-				break;
 			case DEAL_MEET_COME_TO_ME:
-				Append(head, DealMeetPlace(g) + ", podejdz i daj wymiane.");
+			case DEAL_MEET_AT_SPOT:
+				Append(head, DealPlaceLine(g, DPL_AGREED));
 				break;
 			default:
 				d.state = DEAL_FAILED;
@@ -3688,6 +3873,7 @@ namespace playerbot_conv
 			start = post->unitPrice;
 		d.offer = RoundDealPrice(std::min(start, q.maxBuyUnit));
 		d.maxCount = q.wantCount;
+		d.capWhy = DEAL_CAP_NEED;
 		if (post && post->count > 0 && post->count < d.maxCount)
 			d.maxCount = post->count;
 		// A purse it does not empty for one trade.
@@ -3695,7 +3881,10 @@ namespace playerbot_conv
 		{
 			const long long affordable = q.botGold * 60 / 100 / d.offer;
 			if (affordable < d.maxCount)
+			{
 				d.maxCount = (int)affordable;
+				d.capWhy = DEAL_CAP_PURSE;
+			}
 		}
 		if (d.maxCount <= 0)
 		{
@@ -3703,7 +3892,10 @@ namespace playerbot_conv
 			return "Chcialbym, ale nie mam teraz tyle yang.";
 		}
 		if (!q.stackable)
+		{
 			d.maxCount = 1;
+			d.capWhy = DEAL_CAP_NEED;
+		}
 		d.fromPost = post != NULL;
 		d.at = g.now;
 		d.count = g.a && g.a->dealCount > 0 ? std::min(g.a->dealCount, d.maxCount) : (q.stackable ? 0 : 1);
@@ -3712,8 +3904,10 @@ namespace playerbot_conv
 			return GenDeal(g, *g.a);
 		if (d.count > 0 && q.stackable)
 		{
+			std::string out = g.a && g.a->dealCount > d.maxCount ? DealCapNote(g) : std::string();
 			static const char* const k[] = { "$N szt? Dam po $UNIT, razem $TOTAL. Pasuje?", "Wezme $N, po $UNIT za sztuke. Stoi?" };
-			return PBC_DEAL(g, k);
+			Append(out, PBC_DEAL(g, k));
+			return out;
 		}
 		if (q.stackable)
 		{
@@ -3754,6 +3948,7 @@ namespace playerbot_conv
 		if (post && post->unitPrice > 0)
 			d.offer = RoundDealPrice(std::max(post->unitPrice, q.minSellUnit));
 		d.maxCount = q.botHas;
+		d.capWhy = DEAL_CAP_HAVE;
 		if (!q.stackable)
 			d.maxCount = 1;
 		d.fromPost = post != NULL;
@@ -3767,12 +3962,29 @@ namespace playerbot_conv
 			static const char* const k[] = { "Mam $ITEM, $MAXN szt. Po $UNIT za sztuke, ile chcesz?", "Mam, $UNIT/szt. Ile ci trzeba? Mam $MAXN." };
 			return PBC_DEAL(g, k);
 		}
+		std::string out = g.a && g.a->dealCount > d.maxCount ? DealCapNote(g) : std::string();
 		static const char* const k[] = { "Mam $ITEM, za $TOTAL moge oddac. Bierzesz?", "Tak, mam. $TOTAL i jest twoje, pasuje?" };
-		return PBC_DEAL(g, k);
+		Append(out, PBC_DEAL(g, k));
+		return out;
 	}
 
-	// The talk once a deal is open: a price, a count, a yes, a no.
+	inline std::string GenDealTalk(TGen& g, const TAnalysis& a);
+
+	// The talk once a deal is open: a price, a count, a yes, a no. A count
+	// over what the bot takes or has is cut, and the reply says why first.
 	inline std::string GenDeal(TGen& g, const TAnalysis& a)
+	{
+		const bool capped = g.m.deal.Live(g.now) && g.m.deal.state == DEAL_OPEN && a.dealCount > 0 &&
+				g.m.deal.maxCount > 0 && a.dealCount > g.m.deal.maxCount;
+		const std::string out = GenDealTalk(g, a);
+		if (!capped || (g.m.deal.state != DEAL_OPEN && g.m.deal.state != DEAL_AGREED))
+			return out;
+		std::string note = DealCapNote(g);
+		Append(note, out);
+		return note;
+	}
+
+	inline std::string GenDealTalk(TGen& g, const TAnalysis& a)
 	{
 		TDeal& d = g.m.deal;
 		if (!d.Live(g.now))
@@ -3786,8 +3998,18 @@ namespace playerbot_conv
 		const TConceptSet& c = a.concepts;
 		if (d.state == DEAL_AGREED)
 		{
-			if (t.Has("gdzie") || c.Has(C_WHERE))
-				return DealMeetPlace(g) + ". Podejdz i daj wymiane.";
+			const bool channelAsked = t.Has("kanal") || t.Has("kanale") || t.Has("ch") || a.channelNamed > 0;
+			if (channelAsked && !CurrentDealMeet(g).otherChannel && d.meet.kind == DEAL_MEET_AT_SPOT)
+			{
+				// Asked outright: the same channel is said too, once.
+				static const char* const k[] = { "Na tym samym co ty, $CHN. Spotkamy sie w $VIL $SPOT.",
+					"Ten sam kanal co ty ($CHN), w $VIL $SPOT." };
+				return PBC_PLACE(g, d.meet, k);
+			}
+			if (t.Has("gdzie") || c.Has(C_WHERE) || t.Has("jestes") || channelAsked)
+				return DealPlaceLine(g, DPL_WHERE);
+			if (DealComingWords(t))
+				return DealPlaceLine(g, DPL_COMING);
 			static const char* const k[] = { "Juz sie dogadalismy - daj wymiane i po sprawie.", "Czekam na wymiane :)" };
 			return PBC_SAY(g, k);
 		}
@@ -3917,6 +4139,12 @@ namespace playerbot_conv
 		}
 		else if (agree)
 			d.priceSettled = true;
+		else if (a.dealCount == 0 && t.words.size() <= 3 && DealComingWords(t))
+		{
+			// "czekaj", "chwila": a moment to think (or to look in the bag).
+			static const char* const k[] = { "Spoko, czekam. Daj znac.", "Jasne, nie spiesz sie.", "Ok, napisz jak bedziesz wiedzial." };
+			return PBC_SAY(g, k);
+		}
 		else if (a.dealCount == 0)
 		{
 			// Neither price nor count nor yes: say the offer again.

@@ -880,6 +880,10 @@ namespace
 		// entrance, for the same reason.
 		if (IsPlayerBotDungeonLfgHeld(pid))
 			return true;
+		// MT2009_PLUS_BOT_CHAT_V2 (deals): on its way to, or waiting at, the
+		// blacksmith a deal's window was agreed at (playerbot_chat_deals.h).
+		if (IsPlayerBotDealMeeting(pid))
+			return true;
 		// A player's companion at its owner's side (playerbot_sidekick.h).
 		if (IsPlayerBotSidekickLeashed(ch))
 			return true;

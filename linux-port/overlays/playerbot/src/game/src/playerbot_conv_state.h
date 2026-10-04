@@ -497,11 +497,21 @@ namespace playerbot_conv
 				return false;
 			}
 			// Both settled (EDealMeet): the engine holds the deal for the
-			// exchange window and says how the two meet.
-			virtual int DealAgreed(unsigned char side, u32 vnum, int count, long long unit)
+			// exchange window and says how the two meet - and, for a meeting
+			// at a landmark, where (`place`).
+			virtual int DealAgreed(unsigned char side, u32 vnum, int count, long long unit, TDealMeetPlace& place)
 			{
 				(void)side; (void)vnum; (void)count; (void)unit;
+				place = TDealMeetPlace();
 				return -1;
+			}
+			// The settled deal's meeting as it stands now - still on the way
+			// to the landmark or already there ("gdzie jestes?"). False when
+			// the engine holds no deal with this person.
+			virtual bool DealMeet(TDealMeetPlace& place)
+			{
+				(void)place;
+				return false;
 			}
 			// MT2009_PLUS_BOT_DUNGEON_LFG_V1 (playerbot_dungeon_lfg.h): the yes
 			// to the bot's offer - the bot goes to the dungeon's entrance and
@@ -525,8 +535,25 @@ namespace playerbot_conv
 		DEAL_MEET_FAILED = -1,
 		DEAL_MEET_NEAR = 0,       // standing by each other: the window now
 		DEAL_MEET_COMING = 1,     // the bot walks over
-		DEAL_MEET_COME_TO_ME = 2  // another map or channel: the person comes
+		DEAL_MEET_COME_TO_ME = 2, // the bot cannot move: the person comes to where it stands
+		DEAL_MEET_AT_SPOT = 3     // the bot goes to a village's landmark and waits there (TDealMeetPlace)
 	};
+
+	// A village as players name it: "M1 Yongan", "M2 Bokjung". Empty for
+	// any other map.
+	inline const char* VillageTag(long mapIndex)
+	{
+		switch (mapIndex)
+		{
+			case 1: return "M1 Yongan";
+			case 3: return "M2 Jayang";
+			case 21: return "M1 Joan";
+			case 23: return "M2 Bokjung";
+			case 41: return "M1 Pyongmoo";
+			case 43: return "M2 Bakra";
+			default: return "";
+		}
+	}
 
 	// MT2009_PLUS_BOT_CHAT_V2: how a bot takes a quarrel, from its style:
 	// 0 lets it go and leaves, 1 says its piece, 2 gives as good as it gets.
