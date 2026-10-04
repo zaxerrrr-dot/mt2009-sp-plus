@@ -16,19 +16,16 @@ BASE = overlay.latest_base()
 
 
 def fake_query(tables):
-    """query(sql, params) over {qualified table: [rows]}."""
+    """query(sql, params) over {qualified table: [rows]} (SELECT ... FROM t WHERE key IN (...))."""
     def query(sql, params=()):
-        if 'information_schema.TABLES' in sql:
-            return [{'1': 1}] if '%s.%s' % params in tables else []
         table = sql.split(' FROM ', 1)[1].split()[0]
-        data = tables.get(table, [])
-        if ' IN (' in sql:
-            key = sql.split(' WHERE ', 1)[1].split()[0]
-            return [r for r in data if r[key] in params]
-        if ' WHERE id > ' in sql:
-            return [r for r in data if r['id'] > params[0]]
-        return list(data)
+        key = sql.split(' WHERE ', 1)[1].split()[0]
+        return [dict(r) for r in tables.get(table, []) if r[key] in params]
     return query
+
+
+def change(tbl, key, col, old='0', new='1'):
+    return {'tbl': tbl, 'row_key': str(key), 'col': col, 'old_value': old, 'new_value': new}
 
 
 def item_row(vnum, **values):
@@ -86,37 +83,38 @@ class BuildTests(unittest.TestCase):
         ver, stride, self.recs = clientfiles.read_item_proto(BASE.file('gamedata/item_proto'))
         self.vnum = 19 if 19 in self.recs else sorted(self.recs)[0]
         self.old_type = self.recs[self.vnum][74]
+        desc = BASE.file('locale/pl/itemdesc.txt').decode('cp1250')
+        self.vnum_in_desc = any(l.split('\t')[0] == str(self.vnum) for l in desc.splitlines())
 
     def tearDown(self):
         self.tmp.cleanup()
 
-    def build(self, tables):
+    def build(self, tables, changes):
         out = os.path.join(self.tmp.name, 'out')
-        return out, dbsource.build_from_db(fake_query(tables), out, BASE)
+        return out, dbsource.build_from_db(fake_query(tables), out, changes, BASE)
 
     def test_nothing_edited(self):
-        out, m = self.build({})
+        out, m = self.build({}, [])
         self.assertEqual(m['packs'], [])
         self.assertEqual(m['stamp'], 'oryginal')
 
     def test_items_skills_and_texts(self):
+        changes = [
+            change('world.item_proto', self.vnum, 'locale_name', 'a', 'b'),
+            change('world.item_proto', self.vnum, 'applyvalue0'),
+            change('world.item_proto', self.vnum, 'addon_type'),  # not in the client record
+            change('world.skill_proto', 1, 'szCooldownPoly'),
+            change('world.item_proto', 999001, 'limitvalue0'),
+        ]
         tables = {
-            dbsource.HISTORY: [
-                {'id': 1, 'created_at': '2026-10-04 12:00', 'table_name': 'item_proto', 'vnum': self.vnum,
-                 'changes': '{"locale_name": {"old": "a", "new": "b"}, "applyvalue0": {"old": 1, "new": 2}}'},
-                {'id': 2, 'table_name': 'skill_proto', 'vnum': 1, 'field': 'szCooldownPoly'},
-                {'id': 3, 'table_name': 'item_proto', 'vnum': 999001, 'summary': 'nowy'},
-            ],
-            'player.item_proto': [
-                item_row(self.vnum, locale_name=u'Miecz Próby', applytype0=7, applyvalue0=33, type=34),
-                item_row(999001, locale_name=u'Nowość', type=3, stack=200, limittype0=1, limitvalue0=50),
+            'world.item_proto': [
+                item_row(self.vnum, locale_name=u'Miecz Próby'.encode('cp1250'), applytype0=7, applyvalue0=33, type=34),
+                item_row(999001, locale_name=u'Nowość'.encode('cp1250'), type=3, stack=200, limittype0=1, limitvalue0=50),
             ],
             'world.skill_proto': [skill_row(1, szCooldownPoly='99')],
-            dbsource.ITEMDESC: [{'vnum': self.vnum, 'description': u'Opis z panelu', 'summary': None}],
-            dbsource.SKILLDESC: [{'vnum': 1, 'name1': u'Cięcie Testowe', 'name2': None, 'name3': '', 'description': None}],
         }
-        out, m = self.build(tables)
-        self.assertEqual(sorted(p['name'] for p in m['packs']), ['gamedata', 'locale'])
+        out, m = self.build(tables, changes)
+        self.assertEqual(sorted(p['name'] for p in m['packs']), ['gamedata', 'locale'] if self.vnum_in_desc else ['gamedata'])
         self.assertEqual(m['summary']['items'], [self.vnum, 999001])
         self.assertEqual(m['summary']['skills'], [1])
 
@@ -128,7 +126,7 @@ class BuildTests(unittest.TestCase):
                 f.write(BASE.index_bytes(pack))
             with open(os.path.join(packdir, pack + '.data'), 'wb') as f:
                 f.truncate(meta['dataSize'])
-        self.assertEqual(sorted(overlay.apply_to_folder(m, out, packdir)), ['gamedata', 'locale'])
+        self.assertEqual(sorted(overlay.apply_to_folder(m, out, packdir)), sorted(p['name'] for p in m['packs']))
 
         def read(pack, name):
             with open(os.path.join(packdir, pack + '.index'), 'rb') as f:
@@ -149,38 +147,32 @@ class BuildTests(unittest.TestCase):
         line = [l for l in table.split('\r\n') if l.split('\t')[0] == '1'][0].split('\t')
         self.assertEqual(len(line), len(clientfiles.SKILL_COLUMNS))
         self.assertEqual(line[11], '99')
-        desc = read('locale', 'locale/pl/itemdesc.txt').decode('cp1250')
-        self.assertIn(u'\t'.join([str(self.vnum), u'Miecz Próby', u'Opis z panelu']), desc)
-        sdesc = read('locale', 'locale/pl/skilldesc.txt').decode('cp1250')
-        cols = [l for l in sdesc.splitlines() if l.split('\t')[0] == '1'][0].split('\t')
-        self.assertEqual(cols[2], u'Cięcie Testowe')
+        if self.vnum_in_desc:
+            desc = read('locale', 'locale/pl/itemdesc.txt').decode('cp1250')
+            line = [l for l in desc.split('\r\n') if l.split('\t')[0] == str(self.vnum)][0]
+            self.assertEqual(line.split('\t')[1], u'Miecz Próby')
 
         # unchanged entries keep their place in the release's data
         for pack in BASE.meta['packs']:
             _, old = eterpack.read_index_bytes(BASE.index_bytes(pack))
             with open(os.path.join(packdir, pack + '.index'), 'rb') as f:
                 new = dict((e.name, e) for e in eterpack.read_index_bytes(f.read())[1])
-            touched = [p['entries'] for p in m['packs'] if p['name'] == pack][0]
+            touched = ([p['entries'] for p in m['packs'] if p['name'] == pack] or [[]])[0]
             for e in old:
                 if e.name not in touched:
                     self.assertEqual(new[e.name].raw, e.raw)
 
         # the same database builds the same stamp
-        out2, m2 = self.build(tables)
+        out2, m2 = self.build(tables, changes)
         self.assertEqual(m2['stamp'], m['stamp'])
 
-    def test_history_shapes(self):
-        rows = [
-            {'id': 5, 'tbl': 'ITEM_PROTO', 'row_key': '27001', 'fields': 'gold, shop_buy_price'},
-            {'id': 6, 'kind': 'drop', 'summary': 'Metin'},
-            {'id': 7, 'target': 'item', 'record_key': 27002},
-        ]
-        norm = [dbsource.normalize(r) for r in rows]
-        self.assertEqual([n['kind'] for n in norm], ['item', 'drop', 'item'])
-        items, skills = dbsource.edited_targets(norm)
-        self.assertEqual(items[27001], {'gold', 'shop_buy_price'})
-        self.assertEqual(items[27002], set(clientfiles.SAFE_FIELDS))
-        self.assertEqual(dbsource.history(fake_query({})), [])
+    def test_targets(self):
+        items, skills = dbsource.targets([
+            change('world.item_proto', 27001, 'gold'), change('world.item_proto', 27001, 'shop_buy_price'),
+            change('world.item_proto', 27002, 'socket5'), change('world.skill_proto', 4, 'szPointPoly'),
+            change('world.mob_proto', 101, 'exp')])
+        self.assertEqual(items, {27001: {'gold', 'shop_buy_price'}})
+        self.assertEqual(skills, {4})
 
 
 if __name__ == '__main__':

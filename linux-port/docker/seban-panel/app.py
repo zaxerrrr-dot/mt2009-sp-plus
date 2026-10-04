@@ -11153,8 +11153,20 @@ install_item_grants(app, db, login_required, game_text)
 
 # MT2009_PLUS_DB_EDITOR_V1: "Edytor bazy danych" (dbeditor/).
 import dbeditor
+
+
+def dbeditor_queue_restart():
+    # The editor's "Zastosuj": the same queued core restart as "Gra i serwer"
+    # and the chests' "Zastosuj teraz"; refused while one is under way.
+    if restart_in_flight():
+        raise FileExistsError("a restart is already under way")
+    queue_rate_restart(read_rates())
+
+
 dbeditor.install(app, {"app": app, "db": db, "rows": rows, "one": one,
-                       "login_required": login_required, "game_text": game_text})
+                       "login_required": login_required, "game_text": game_text,
+                       "queue_restart": dbeditor_queue_restart, "read_rates": read_rates,
+                       "restart_progress": restart_progress, "spool": RATES_SPOOL})
 
 
 if __name__ == "__main__":

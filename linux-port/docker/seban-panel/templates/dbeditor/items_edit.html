@@ -16,6 +16,18 @@
   </div>
 </section>
 
+{% if boot_rules %}
+<section class="panel dbe-boot-warning" style="border-left:4px solid {{ '#ff5757' if boot_always else '#f5b83d' }}">
+  {% if boot_always %}<p><strong>⚠️ {{ boot_warning }}</strong>: {{ boot_always|join(', ') }}.</p>{% endif %}
+  <ul class="muted">
+  {% for r in boot_rules %}
+    <li>{{ r.note }} – {% if r.kind == 'always' %}przy każdym starcie ustawiane{% elif r.kind == 'partial' %}przy każdym starcie poprawiane częściowo{% else %}ustawiane tylko, gdy pole ma jeszcze starą wartość{% endif %}: {{ r.cols|join(', ') }}</li>
+  {% endfor %}
+  </ul>
+  <p class="muted">Tak ustawia go skrypt startowy bazy (apply.sh). Zmień te pola w paczce, nie tutaj – pozostałe pola edytujesz normalnie.</p>
+</section>
+{% endif %}
+
 <form method="post" class="dbe-form" id="dbe-item-form">
   <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}">
 

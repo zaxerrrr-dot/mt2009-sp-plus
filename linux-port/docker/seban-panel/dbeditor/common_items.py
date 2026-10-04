@@ -320,15 +320,17 @@ def revert(batch=None, history_id=None, force=False):
 
 # ---- pending ------------------------------------------------------------------
 
-def pending_changes():
-    """Every field whose value now differs from what the game booted with:
-    for each (table, key, column) among the history rows not yet applied,
-    the oldest old_value against the newest new_value - a change undone
-    before a restart is therefore not pending."""
+def net_changes(include_applied=False):
+    """For each (table, key, column) of the history, the oldest old_value
+    against the newest new_value; only the fields where they differ. Without
+    include_applied only the rows not yet applied (pending_changes); with it
+    the whole history - what the client data (clientdata.py) must carry
+    against the released client."""
     try:
         ensure_table()
+        where = "" if include_applied else "WHERE applied_at IS NULL "
         found = _CTX["rows"](f"""SELECT id,tbl,row_key,label,col,old_value,new_value,changed_at
-            FROM {HISTORY_TABLE} WHERE applied_at IS NULL ORDER BY id""")
+            FROM {HISTORY_TABLE} {where}ORDER BY id""")
     except Exception:  # no database: nothing to report, never break a page
         return []
     net = {}
@@ -339,6 +341,14 @@ def pending_changes():
         else:
             net[key].update(new_value=row["new_value"], changed_at=row["changed_at"], label=row["label"] or net[key]["label"])
     return [row for row in net.values() if (row["old_value"] or "") != (row["new_value"] or "")]
+
+
+def pending_changes():
+    """Every field whose value now differs from what the game booted with:
+    for each (table, key, column) among the history rows not yet applied,
+    the oldest old_value against the newest new_value - a change undone
+    before a restart is therefore not pending."""
+    return net_changes(include_applied=False)
 
 
 def pending_count():

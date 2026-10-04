@@ -6,8 +6,10 @@ FakeDB below - a small interpreter of exactly the statements these modules
 send: world.item_proto, world.skill_proto, common.locale and the history
 table player.web_dbeditor_history."""
 import datetime
+import json
 import os
 import re
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -15,6 +17,9 @@ os.environ.setdefault("DB_USER", "test")
 os.environ.setdefault("DB_PASSWORD", "test")
 os.environ.setdefault("DB_HOST", "127.0.0.1")
 os.environ.setdefault("DB_PORT", "1")
+# "Zastosuj" (clientdata.py) builds the client data under <spool>/dbeditor.
+SPOOL = tempfile.mkdtemp(prefix="dbe-spool-")
+os.environ["DBEDITOR_SPOOL_ROOT"] = SPOOL
 
 import app as panel  # noqa: E402
 from dbeditor import common_items, items, skills  # noqa: E402
@@ -191,10 +196,13 @@ class FakeDB:
     def project(cols, row):
         out = {}
         for part in re.split(r",\s*", cols):
-            cast = re.match(r"CAST\(`(\w+)` AS BINARY\) AS `\w+`", part)
+            if part == "*":
+                out.update(row)
+                continue
+            cast = re.match(r"CAST\(`(\w+)` AS BINARY\) AS `(\w+)`", part)
             if cast:
-                value = row[cast.group(1)]
-                out[cast.group(1)] = value if isinstance(value, bytes) else str(value).encode("cp1250")
+                value = row.get(cast.group(1), b"")
+                out[cast.group(2)] = value if isinstance(value, bytes) else str(value).encode("cp1250")
                 continue
             name = part.strip("`")
             value = row[name]
@@ -224,6 +232,10 @@ class FakeDB:
                 ok = like(params.pop(0), name(row))
             elif part in ("type=%s", "subtype=%s"):
                 ok = row[part[:-3]] == int(params.pop(0))
+            elif re.fullmatch(r"(vnum|dwVnum) IN \((%s,?)+\)", part):
+                count = part.count("%s")
+                wanted, params[:] = params[:count], params[count:]
+                ok = row["vnum" if part.startswith("vnum") else "dwVnum"] in wanted
             elif part == "vnum BETWEEN %s AND %s":
                 low, high = params.pop(0), params.pop(0)
                 ok = low <= row["vnum"] <= high
@@ -259,6 +271,8 @@ class FakeDB:
             return [dict(r) for r in reversed(rows) if r["batch"] == params[0] and r["reverted_in"] is None]
         if "WHERE applied_at IS NULL" in sql:
             return [dict(r) for r in rows if r["applied_at"] is None]
+        if re.search(r"FROM player\.web_dbeditor_history ORDER BY id$", sql):
+            return [dict(r) for r in rows]
         raise AssertionError("FakeDB: history query " + sql)
 
 
@@ -511,6 +525,48 @@ class DbEditorItemsTests(unittest.TestCase):
                 self.assertIsNotNone(error, bad)
         _rpn, _e, warnings, _r = skills.check_formula("atk*k", "szCooldownPoly")
         self.assertTrue(warnings)
+
+
+    # ---- "Zastosuj" and the client data (clientdata.py) --------------------
+    def test_apply_restarts_marks_and_builds_client_data(self):
+        self.post("/db/items/149", self.item_form(149, locale_name="Miecz Próby+9"))
+        page = self.client.get("/db/apply").get_data(as_text=True)
+        self.assertIn("1</b> zmian czeka", page)
+        self.assertIn("Miecz Próby+9", page)
+        queued = []
+        with patch.object(panel, "restart_in_flight", return_value=False), \
+                patch.object(panel, "queue_rate_restart", side_effect=lambda rates: queued.append(rates)), \
+                patch.object(panel, "read_rates", return_value={"exp": 100, "drop": 100, "yang": 100}):
+            res = self.post("/db/apply", {"action": "apply", "confirmation": "restart"}, follow_redirects=True)
+        self.assertIn("Restart rdzeni zlecony", res.get_data(as_text=True))
+        self.assertEqual(len(queued), 1)
+        self.assertTrue(all(r["applied_at"] for r in self.fake.history))
+        self.assertEqual(common_items.pending_count(), 0)
+        manifest = self.client.get("/db/clientdata/manifest.json").get_json()
+        self.assertIn(149, manifest["summary"]["items"])
+        files = [p["index"]["file"] for p in manifest["packs"]] + [p["tail"]["file"] for p in manifest["packs"]]
+        self.assertTrue(files)
+        for name in files:
+            self.assertEqual(self.client.get("/db/clientdata/" + name).status_code, 200)
+        self.assertEqual(self.client.get("/db/clientdata/../app.py").status_code, 404)
+        with open(os.path.join(SPOOL, "dbeditor", "last-apply.json"), encoding="utf-8") as f:
+            self.assertEqual(json.load(f)["changes"], 1)
+
+    def test_apply_needs_confirmation_and_waits_for_a_running_restart(self):
+        self.post("/db/items/149", self.item_form(149, locale_name="Miecz Próby+9"))
+        res = self.post("/db/apply", {"action": "apply", "confirmation": ""}, follow_redirects=True)
+        self.assertIn("wpisz RESTART", res.get_data(as_text=True))
+        with patch.object(panel, "restart_in_flight", return_value=True):
+            res = self.post("/db/apply", {"action": "apply", "confirmation": "RESTART"}, follow_redirects=True)
+        self.assertIn("Poprzedni restart jeszcze trwa", res.get_data(as_text=True))
+        self.assertEqual(common_items.pending_count(), 1)
+
+    def test_item_overwritten_at_start_is_flagged(self):
+        self.fake.tables["world.item_proto"][215] = dict(self.fake.tables["world.item_proto"][149], vnum=215)
+        page = self.client.get("/db/items/215").get_data(as_text=True)
+        self.assertIn("ustawiany przy każdym starcie serwera", page)
+        page = self.client.get("/db/items/149").get_data(as_text=True)
+        self.assertNotIn("ustawiany przy każdym starcie serwera", page)
 
 
 if __name__ == "__main__":

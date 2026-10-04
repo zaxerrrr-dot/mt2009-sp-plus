@@ -19,6 +19,7 @@ import re
 from flask import abort, flash, redirect, render_template, request, url_for
 
 from dbeditor import common_items as common
+from dbeditor import protected
 
 TABLE = "world.item_proto"
 
@@ -431,6 +432,10 @@ def install(bp, ctx):
                     flash(f"Nie udało się zapisać: {exc}", "error")
                     return redirect(url_for("dbeditor.item_edit", vnum=vnum))
                 touched = len({key for key, *_rest in saved})
+                lost = sorted({col for key, col, *_rest in saved
+                               if col in protected.overwritten_cols(key, item.get("type") if int(key) == vnum else None)})
+                if lost:
+                    flash(f"{protected.WARNING}: {', '.join(lost)}.", "warning")
                 flash(f"Zapisano {len(saved)} zmian w {touched} przedmiot(ach). "
                       "Zmiany czekają na zastosowanie (restart gry).", "success")
                 return redirect(url_for("dbeditor.item_edit", vnum=vnum))
@@ -439,6 +444,7 @@ def install(bp, ctx):
         except Exception:
             history = []
         regular, technical = point_options()
+        boot_rules = protected.rules_for(vnum, item.get("type"))
         slot = level_slot(item)
         friendly = friendly_columns(item)
         return render_template(
@@ -446,6 +452,8 @@ def install(bp, ctx):
             value_fields=value_fields(int(item["type"]), int(item["subtype"])), level_slot=slot,
             advanced=[c for c in ADVANCED_ORDER if c not in friendly], specs=SPECS, limit_types=LIMIT_TYPES,
             point_regular=regular, point_technical=technical, point_labels=POINT_LABELS,
+            boot_rules=boot_rules, boot_always=protected.overwritten_cols(vnum, item.get("type")),
+            boot_warning=protected.WARNING,
             dbe_csrf=common.csrf_token(), **common.template_helpers(), **page_context())
 
     import dbeditor
