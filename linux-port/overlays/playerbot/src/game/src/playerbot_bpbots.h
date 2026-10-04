@@ -514,7 +514,10 @@ namespace playerbot_bpbots
 		const int botLevel = (int)ch->GetLevel();
 		plan.goal = GOAL_METIN;
 		plan.mission = &m;
-		if (m.target == 0 && m.targetLevel == 0)
+		// MT2009_PLUS_BP_BOT_ANY_METIN_V1: over level 45 any Metin counts for
+		// the bot (mt2009_battlepass::Add), so it breaks the stones where it
+		// hunts and never travels back to the villages for a named one.
+		if ((m.target == 0 && m.targetLevel == 0) || botLevel > mt2009_battlepass::PLAYERBOT_BP_ANY_METIN_LEVEL)
 		{
 			// Any stone: where it stands, when there are stones here.
 			if (!PlayerBotMapHasMetinStones(ch->GetMapIndex()))

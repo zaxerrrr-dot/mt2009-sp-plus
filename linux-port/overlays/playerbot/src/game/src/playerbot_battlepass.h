@@ -642,6 +642,8 @@ namespace mt2009_battlepass
 		}
 	}
 
+	const int PLAYERBOT_BP_ANY_METIN_LEVEL = 45;	// MT2009_PLUS_BP_BOT_ANY_METIN_V1
+
 	void Add(LPCHARACTER ch, BYTE type, DWORD target, long long amount, DWORD level = 0)
 	{
 		if (amount <= 0 || !Counts(ch))
@@ -660,11 +662,16 @@ namespace mt2009_battlepass
 		for (size_t i = 0; i < s_vecMissions.size(); ++i)
 			locked[i] = IsLocked(cache, s_vecMissions[i]);
 		bool reached = false;
+		// MT2009_PLUS_BP_BOT_ANY_METIN_V1: a bot over level 45 no longer goes
+		// back to the first village for the Metin a mission names - any Metin
+		// it breaks counts for its Metin missions (the owner, 4 October).
+		const bool anyStone = type == TYPE_METIN && ch->GetDesc() && ch->GetDesc()->IsBot() &&
+				ch->GetLevel() > PLAYERBOT_BP_ANY_METIN_LEVEL;
 		for (size_t i = 0; i < s_vecMissions.size(); ++i)
 		{
 			const Mission& m = s_vecMissions[i];
-			if (m.type != type || (m.target != 0 && m.target != target) ||
-					(m.targetLevel != 0 && m.targetLevel != level) || locked[i])
+			if (m.type != type || locked[i] || (!anyStone &&
+					((m.target != 0 && m.target != target) || (m.targetLevel != 0 && m.targetLevel != level))))
 				continue;
 			Progress& p = cache.missions[m.id];
 			const DWORD have = p.value + p.delta;
