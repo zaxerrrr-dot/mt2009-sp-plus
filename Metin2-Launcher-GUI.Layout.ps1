@@ -553,8 +553,6 @@ UI-Card 'database' $dbAccessButton (UI-Text 'Dane połączenia dla Navicat i inn
 UI-Card 'database' $repairDbButton (UI-Text 'Przywróć dostęp narzędzi do bazy serwera.' 'Restore database access for external tools.')
 UI-Card 'database' $importDbButton (UI-Text 'Przenieś bazę z innej instalacji.' 'Bring a database from another installation.')
 UI-Card 'database' $worldBackupButton (UI-Text 'Utwórz kopię, przywróć zapis lub nowy świat.' 'Back up, restore a save or create a new world.')
-# MT2009_PLUS_DB_EDITOR_V1: the database editor's client data - on, or the original data back.
-if ($dbEditButton) { UI-Card 'database' $dbEditButton (UI-Text 'Zmiany z edytora bazy w kliencie albo przywróć oryginalne dane.' "The database editor's changes in the client, or restore the original data.") }
 
 UI-Card 'logs' $diagnosticsButton (UI-Text 'Sprawdź środowisko i możliwe przyczyny błędów.' 'Check the environment and possible causes of errors.')
 UI-Card 'logs' $bundleButton (UI-Text 'Przygotuj paczkę logów do zgłoszenia.' 'Prepare a log bundle for a support request.')
@@ -681,7 +679,6 @@ function Invoke-LayoutSelfTest([string]$OutputDirectory) {
     if ($coopButton) { $expected += $coopButton }
     if ($vpsButton) { $expected += $vpsButton }
     if ($reportButton) { $expected += $reportButton }
-    if ($dbEditButton) { $expected += $dbEditButton }
     foreach ($button in $expected) {
         if (@($script:ui.Cards | Where-Object { $_.Button -eq $button }).Count -ne 1) { throw "Missing/duplicate action: $($button.Text)" }
     }

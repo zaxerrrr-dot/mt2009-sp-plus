@@ -1,18 +1,18 @@
 """MT2009_PLUS_DB_EDITOR_V1: python3 test_dbeditor_clientdata.py
 
-The client data builder (m2clientpack) without a database or the client:
-the pure-Python LZO1X and XTEA, the released client's index read and
-written back, and a whole build from a mocked history and item/skill
-tables, laid onto a stand-in pack folder (the release's index + a .data
-of the release's length) and read back entry by entry."""
+The client files builder (m2clientpack) without a database or the client:
+the pure-Python LZO1X and XTEA, the release's dbdata pack read and written
+back, and a whole build from a mocked history and item/skill tables - the
+new dbdata pack read back entry by entry and the zip the panel hands out."""
+import io
 import os
 import random
-import tempfile
 import unittest
+import zipfile
 
-from m2clientpack import clientfiles, dbsource, eterpack, lzo1x, overlay
+from m2clientpack import clientfiles, dbdata, dbsource, eterpack, lzo1x
 
-BASE = overlay.latest_base()
+BASE = dbdata.latest_base()
 
 
 def fake_query(tables):
@@ -64,12 +64,15 @@ class LzoTests(unittest.TestCase):
 
 
 class PackTests(unittest.TestCase):
-    def test_base_index_round_trip(self):
-        for pack in BASE.meta['packs']:
-            ver, entries = eterpack.read_index_bytes(BASE.index_bytes(pack))
-            self.assertEqual(len(entries), BASE.meta['packs'][pack]['entries'])
-            again = eterpack.write_index_bytes(ver, entries)
-            self.assertEqual([e.raw for e in eterpack.read_index_bytes(again)[1]], [e.raw for e in entries])
+    def test_release_pack_round_trip(self):
+        index, data = BASE.original()
+        ver, entries = eterpack.read_index_bytes(index)
+        self.assertEqual(sorted(e.name for e in entries), BASE.names())
+        for e in entries:
+            self.assertEqual(eterpack.read_entry(data, e), BASE.file(e.name))
+            self.assertEqual(e.ctype, BASE.ctype(e.name))
+        index2, data2 = eterpack.write_pack([(n, BASE.file(n), BASE.ctype(n)) for n in BASE.names()])
+        dbdata.verify(index2, data2, dict((n, BASE.file(n)) for n in BASE.names()))
 
     def test_item_proto_round_trip(self):
         ver, stride, recs = clientfiles.read_item_proto(BASE.file('gamedata/item_proto'))
@@ -79,24 +82,29 @@ class PackTests(unittest.TestCase):
 
 class BuildTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
         ver, stride, self.recs = clientfiles.read_item_proto(BASE.file('gamedata/item_proto'))
         self.vnum = 19 if 19 in self.recs else sorted(self.recs)[0]
         self.old_type = self.recs[self.vnum][74]
         desc = BASE.file('locale/pl/itemdesc.txt').decode('cp1250')
         self.vnum_in_desc = any(l.split('\t')[0] == str(self.vnum) for l in desc.splitlines())
 
-    def tearDown(self):
-        self.tmp.cleanup()
-
     def build(self, tables, changes):
-        out = os.path.join(self.tmp.name, 'out')
-        return out, dbsource.build_from_db(fake_query(tables), out, changes, BASE)
+        return dbsource.build_dbdata(fake_query(tables), changes, BASE)
 
-    def test_nothing_edited(self):
-        out, m = self.build({}, [])
-        self.assertEqual(m['packs'], [])
-        self.assertEqual(m['stamp'], 'oryginal')
+    def test_nothing_edited_is_the_release(self):
+        base, index, data, changed, _summary = self.build({}, [])
+        self.assertEqual(changed, [])
+        self.assertEqual((index, data), BASE.original())
+        name, blob = dbdata.make_zip(base, index, data, 'localhost', changed)
+        self.assertTrue(name.startswith('dbdata-localhost-klient-%s-' % BASE.version) and name.endswith('.zip'), name)
+        with zipfile.ZipFile(io.BytesIO(blob)) as z:
+            self.assertEqual(sorted(z.namelist()), ['CZYTAJ_MNIE.txt', 'pack/dbdata.data', 'pack/dbdata.index'])
+            self.assertEqual(z.read('pack/dbdata.index'), index)
+            readme = z.read('CZYTAJ_MNIE.txt').decode('utf-8-sig')
+        self.assertIn('Działa z klientem %s' % BASE.version, readme)
+        self.assertIn('znajomemu', readme)
+        name, _blob = dbdata.make_zip(base, index, data, 'localhost', [], original=True)
+        self.assertIn('oryginal', name)
 
     def test_items_skills_and_texts(self):
         changes = [
@@ -113,28 +121,19 @@ class BuildTests(unittest.TestCase):
             ],
             'world.skill_proto': [skill_row(1, szCooldownPoly='99')],
         }
-        out, m = self.build(tables, changes)
-        self.assertEqual(sorted(p['name'] for p in m['packs']), ['gamedata', 'locale'] if self.vnum_in_desc else ['gamedata'])
-        self.assertEqual(m['summary']['items'], [self.vnum, 999001])
-        self.assertEqual(m['summary']['skills'], [1])
+        base, index, data, changed, summary = self.build(tables, changes)
+        expect = ['gamedata/item_proto', 'gamedata/skilltable.txt'] + (['locale/pl/itemdesc.txt'] if self.vnum_in_desc else [])
+        self.assertEqual(changed, sorted(expect))
+        self.assertEqual(summary['items'], [self.vnum, 999001])
+        self.assertEqual(summary['skills'], [1])
 
-        # the launcher's work on a stand-in client: release index + data of the release's length
-        packdir = os.path.join(self.tmp.name, 'pack')
-        os.makedirs(packdir)
-        for pack, meta in BASE.meta['packs'].items():
-            with open(os.path.join(packdir, pack + '.index'), 'wb') as f:
-                f.write(BASE.index_bytes(pack))
-            with open(os.path.join(packdir, pack + '.data'), 'wb') as f:
-                f.truncate(meta['dataSize'])
-        self.assertEqual(sorted(overlay.apply_to_folder(m, out, packdir)), sorted(p['name'] for p in m['packs']))
+        _ver, entries = eterpack.read_index_bytes(index)
+        self.assertEqual(sorted(e.name for e in entries), BASE.names())  # the same names, nothing else
 
-        def read(pack, name):
-            with open(os.path.join(packdir, pack + '.index'), 'rb') as f:
-                entry = [e for e in eterpack.read_index_bytes(f.read())[1] if e.name == name][0]
-            with open(os.path.join(packdir, pack + '.data'), 'rb') as f:
-                return eterpack.read_entry(f.read(), entry)
+        def read(name):
+            return eterpack.read_entry(data, [e for e in entries if e.name == name][0])
 
-        recs = clientfiles.read_item_proto(read('gamedata', 'gamedata/item_proto'))[2]
+        recs = clientfiles.read_item_proto(read('gamedata/item_proto'))[2]
         rec = recs[self.vnum]
         self.assertEqual(clientfiles.get_field(rec, 'locale_name'), u'Miecz Próby')
         self.assertEqual(clientfiles.get_field(rec, 'applyvalue0'), 33)
@@ -143,28 +142,18 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(clientfiles.get_field(recs[999001], 'limitvalue0'), 50)
         self.assertEqual(clientfiles.get_field(recs[999001], 'socket0'), 0)
 
-        table = read('gamedata', 'gamedata/skilltable.txt').decode('cp1250')
+        table = read('gamedata/skilltable.txt').decode('cp1250')
         line = [l for l in table.split('\r\n') if l.split('\t')[0] == '1'][0].split('\t')
         self.assertEqual(len(line), len(clientfiles.SKILL_COLUMNS))
         self.assertEqual(line[11], '99')
         if self.vnum_in_desc:
-            desc = read('locale', 'locale/pl/itemdesc.txt').decode('cp1250')
+            desc = read('locale/pl/itemdesc.txt').decode('cp1250')
             line = [l for l in desc.split('\r\n') if l.split('\t')[0] == str(self.vnum)][0]
             self.assertEqual(line.split('\t')[1], u'Miecz Próby')
+        self.assertEqual(read('locale/pl/skilldesc.txt'), BASE.file('locale/pl/skilldesc.txt'))
 
-        # unchanged entries keep their place in the release's data
-        for pack in BASE.meta['packs']:
-            _, old = eterpack.read_index_bytes(BASE.index_bytes(pack))
-            with open(os.path.join(packdir, pack + '.index'), 'rb') as f:
-                new = dict((e.name, e) for e in eterpack.read_index_bytes(f.read())[1])
-            touched = ([p['entries'] for p in m['packs'] if p['name'] == pack] or [[]])[0]
-            for e in old:
-                if e.name not in touched:
-                    self.assertEqual(new[e.name].raw, e.raw)
-
-        # the same database builds the same stamp
-        out2, m2 = self.build(tables, changes)
-        self.assertEqual(m2['stamp'], m['stamp'])
+        # the same database builds the same pack
+        self.assertEqual(self.build(tables, changes)[1:3], (index, data))
 
     def test_targets(self):
         items, skills = dbsource.targets([

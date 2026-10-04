@@ -239,40 +239,21 @@ Okna WPF nie da się uruchomić na Linuksie - trzeba je raz obejrzeć na Windows
   pierwszej klatki (błędy dekompilacji źródeł) poprawione; zamknięcie okna
   kończy proces.
 
-## Dane edytora bazy danych - czego patcher jeszcze nie umie
+## Paczka `pack\dbdata` (edytor bazy danych, od klienta 2.0.52)
 
-Edytor bazy danych w panelu Seban (MT2009_PLUS_DB_EDITOR_V1) buduje z bazy
-łatkę na `pack\gamedata` i `pack\locale` wydanego klienta
-(`linux-port/docker/seban-panel/m2clientpack/overlay.py`), a launcher serwera
-nakłada ją przed GRAJ (`Sync-M2DbEditorClientData` w
-`launcher/Metin2Launcher.psm1`): oryginalny `<paczka>.index` idzie do
-`pack\.dbedit\oryginal`, `<paczka>.data` jest przycinany do długości z wydania
-i dostaje na końcu `<paczka>.tail`, nowy indeks wchodzi na miejsce; stan w
-`pack\.dbedit\state.json`, wyłączenie przez plik `pack\.dbedit\wylaczone`.
+Pliki, które zmienia edytor bazy danych w panelu Seban (`gamedata/item_proto`,
+`gamedata/skilltable.txt`, `locale/pl/itemdesc.txt`, `locale/pl/skilldesc.txt`),
+są w osobnej paczce `pack\dbdata.index` + `pack\dbdata.data`. Gracz podmienia
+ją sam - rozpakowując zip „Pobierz aktualne pliki klienta” z panelu swojego
+serwera - więc patcher nie może jej „naprawiać”:
 
-Patcher porównuje MD5 tych plików z listą i **cofnąłby** łatkę (pobierając
-~40 MB `gamedata.data` + `locale.data`), dlatego launcher, gdy łatka jest na
-kliencie, uruchamia `metin2client.exe` z pominięciem patchera. Żeby patcher
-sam to obsługiwał (gracz bez launchera, VPS, COOP), potrzeba:
-
-1. **Przed** `PatchCore.SelectForDownload`: jeśli jest `state.json`, a
-   `<paczka>.index` ma SHA-256 = `indexSha256` ze stanu - przyciąć
-   `<paczka>.data` do `baseDataSize` (`FileStream.SetLength`) i skopiować
-   `pack\.dbedit\oryginal\<paczka>.index` z powrotem; usunąć stan. Wtedy MD5
-   zgadzają się z listą i nic się nie pobiera. (Indeks inny niż nasz = klient
-   podmieniony - niczego nie ruszać, tylko usunąć stan.)
-2. **Po** sprawdzeniu/pobraniu, przed włączeniem GRAJ: pobrać
-   `http://<serwer>:7790/db/clientdata/manifest.json` (serwer z `coop.cfg`,
-   bez niego 127.0.0.1; port panelu Seban - najlepiej osobny klucz w
-   `coop.cfg`), sprawdzić `schema` = 1, nazwy plików
-   (`^[0-9a-f]{16}/(gamedata|locale)\.(index|tail)$`), że SHA-256 obecnego
-   `<paczka>.index` = `baseIndexSha256`, a `.data` ma co najmniej
-   `baseDataSize`; pobrać `index` i `tail`, sprawdzić `size`/`sha256`, i
-   nałożyć jak wyżej (zapis stanu przed dotknięciem paczki). Pusta lista
-   `packs` = tylko krok 1. Plik `wylaczone` = tylko krok 1.
-3. Testy w `MT2009-Patcher.Tests` (nałożenie, cofnięcie, klient innej wersji,
-   uszkodzone pobranie) na kopii `gamedata.*`/`locale.*` - wzorem testów
-   launchera (pwsh) z opisu zmiany.
-
-To ok. 150-200 wierszy C# (WebClient/HttpClient, SHA256, FileStream) - ten
-sam algorytm co `Sync-M2DbEditorClientData`/`Restore-M2DbEditorClientData`.
+- `generuj_patchliste.py` daje plikom `pack/dbdata.*` wpis `"keep": 1`
+  (domyślna lista `KEEP`; `--zachowaj WZORZEC` dokłada, `--bez-zachowania`
+  wyłącza). Patcher pobiera taki plik tylko, gdy go brak (np. aktualizacja z
+  klienta 2.0.51, który paczki dbdata nie miał), a istniejącego nie porównuje.
+- `--pomin WZORZEC` w ogóle nie publikuje pasujących plików.
+- Patcher sprzed tej zmiany nie zna pola `keep` i nadal przywraca oryginał -
+  do czasu samoaktualizacji (opublikuj nowe `MT2009-Patcher.exe` razem z
+  listą, `--patcher`).
+- `client-files.json` (`launcher-klienta/dodaj-do-paczki.py`) też pomija
+  `pack/dbdata.*`, więc klient z rozpakowanym zipem nadal jest „aktualny”.

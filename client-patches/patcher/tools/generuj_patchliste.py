@@ -10,6 +10,8 @@ The patcher (MT2009-Patcher.exe, N2Play Patcher format) downloads
                                    (the patcher compares the text exactly)
      "uid": "5d41402abc4b2a76...", the file is downloaded from <Clientdata> + uid
      "delete": 0}                  1 = delete this file in the client folder
+     ("keep": 1)                   only when missing; the player's copy is never
+                                   compared (default for pack/dbdata.*, --zachowaj)
 
 A client file that is missing or has another MD5 is downloaded. Files are
 stored content-addressed (files/<md5 lower case>): publishing a new version
@@ -57,6 +59,11 @@ NEVER = [
     'client_version',       # published on its own (see read_client_version)
 ]
 CHUNK = 1 << 20
+# MT2009_PLUS_DB_EDITOR_V1: the player's own copy wins ("keep": 1 - the
+# patcher downloads it only when missing, never "repairs" it): pack/dbdata.*
+# holds the database editor's files, which the player unpacks from the zip of
+# his server's panel. --zachowaj adds patterns, --bez-zachowania drops these.
+KEEP = ['pack/dbdata.*']
 
 
 def is_never(path):
@@ -177,6 +184,11 @@ def main():
                     help='folder z MT2009-Patcher.exe (+ .exe.config) - dołącza patcher do listy (samoaktualizacja)')
     ap.add_argument('--usun', action='append', default=[], metavar='ŚCIEŻKA',
                     help='plik klienta do usunięcia u graczy (wpis "delete")')
+    ap.add_argument('--zachowaj', action='append', default=[], metavar='WZORZEC',
+                    help='plik gracza: pobierany tylko gdy go brak (wpis "keep"); domyślnie też ' + ', '.join(KEEP))
+    ap.add_argument('--bez-zachowania', action='store_true', help='bez domyślnej listy "keep" (%s)' % ', '.join(KEEP))
+    ap.add_argument('--pomin', action='append', default=[], metavar='WZORZEC',
+                    help='nie publikuj tych plików wcale (ścieżka klienta, wzorzec glob)')
     ap.add_argument('--client-version', metavar='WERSJA',
                     help='wersja w publikowanym CLIENT_VERSION (domyślnie: z CLIENT_VERSION ostatniego źródła, które go ma)')
     ap.add_argument('--bez-client-version', action='store_true',
@@ -184,6 +196,8 @@ def main():
     ap.add_argument('--wyjscie', default='/opt/metin2/dist/patcher', help='drzewo serwera (domyślnie %(default)s)')
     ap.add_argument('--bez-sprzatania', action='store_true', help='nie usuwaj starych plików z files/')
     args = ap.parse_args()
+    keep = ([] if args.bez_zachowania else list(KEEP)) + [k.replace('\\', '/') for k in args.zachowaj]
+    omit = [k.replace('\\', '/').lower() for k in args.pomin]
 
     out = os.path.abspath(args.wyjscie)
     files_dir = os.path.join(out, 'files')
@@ -210,7 +224,7 @@ def main():
             check_rel(rel)
             if rel.lower() == 'client_version':
                 continue    # read by read_client_version, published below
-            if is_never(rel):
+            if is_never(rel) or any(fnmatch.fnmatchcase(rel.lower(), pat) for pat in omit):
                 skipped.append(rel)
                 continue
             chosen[rel.lower()] = (rel, opener, path)
@@ -227,7 +241,11 @@ def main():
         if size == 0:
             print('UWAGA: pusty plik %s pominięty (patcher ignoruje wpisy o rozmiarze 0)' % rel)
             continue
-        items.append({'name': rel.replace('/', '\\'), 'size': size, 'md5': md5, 'uid': md5.lower(), 'delete': 0})
+        item = {'name': rel.replace('/', '\\'), 'size': size, 'md5': md5, 'uid': md5.lower(), 'delete': 0}
+        if any(fnmatch.fnmatchcase(rel.lower(), pat.lower()) for pat in keep):
+            item['keep'] = 1
+            print('keep (tylko gdy brak): %s' % rel)
+        items.append(item)
         total += size
     if args.client_version:
         client_version, client_version_from = args.client_version.strip(), '--client-version'

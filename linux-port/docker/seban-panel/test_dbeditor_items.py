@@ -6,11 +6,13 @@ FakeDB below - a small interpreter of exactly the statements these modules
 send: world.item_proto, world.skill_proto, common.locale and the history
 table player.web_dbeditor_history."""
 import datetime
+import io
 import json
 import os
 import re
 import tempfile
 import unittest
+import zipfile
 from unittest.mock import patch
 
 os.environ.setdefault("DB_USER", "test")
@@ -23,6 +25,7 @@ os.environ["DBEDITOR_SPOOL_ROOT"] = SPOOL
 
 import app as panel  # noqa: E402
 from dbeditor import common_items, items, skills  # noqa: E402
+from m2clientpack import clientfiles, dbdata, eterpack  # noqa: E402
 
 
 def item(vnum, name, type_=1, subtype=0, level=0, applies=((17, 22), (0, 0), (0, 0)), values=(0, 15, 19, 13, 15, 0)):
@@ -528,7 +531,7 @@ class DbEditorItemsTests(unittest.TestCase):
 
 
     # ---- "Zastosuj" and the client data (clientdata.py) --------------------
-    def test_apply_restarts_marks_and_builds_client_data(self):
+    def test_apply_restarts_marks_and_zips_client_files(self):
         self.post("/db/items/149", self.item_form(149, locale_name="Miecz Próby+9"))
         page = self.client.get("/db/apply").get_data(as_text=True)
         self.assertIn("1</b> zmian czeka", page)
@@ -542,13 +545,21 @@ class DbEditorItemsTests(unittest.TestCase):
         self.assertEqual(len(queued), 1)
         self.assertTrue(all(r["applied_at"] for r in self.fake.history))
         self.assertEqual(common_items.pending_count(), 0)
-        manifest = self.client.get("/db/clientdata/manifest.json").get_json()
-        self.assertIn(149, manifest["summary"]["items"])
-        files = [p["index"]["file"] for p in manifest["packs"]] + [p["tail"]["file"] for p in manifest["packs"]]
-        self.assertTrue(files)
-        for name in files:
-            self.assertEqual(self.client.get("/db/clientdata/" + name).status_code, 200)
-        self.assertEqual(self.client.get("/db/clientdata/../app.py").status_code, 404)
+        res = self.client.get("/db/clientdata.zip")
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("attachment; filename=\"dbdata-localhost-klient-", res.headers["Content-Disposition"])
+        with zipfile.ZipFile(io.BytesIO(res.get_data())) as z:
+            self.assertEqual(sorted(z.namelist()), ["CZYTAJ_MNIE.txt", "pack/dbdata.data", "pack/dbdata.index"])
+            index, data = z.read("pack/dbdata.index"), z.read("pack/dbdata.data")
+        entry = [e for e in eterpack.read_index_bytes(index)[1] if e.name == "gamedata/item_proto"][0]
+        recs = clientfiles.read_item_proto(eterpack.read_entry(data, entry))[2]
+        self.assertEqual(clientfiles.get_field(recs[149], "locale_name"), "Miecz Próby+9")
+        res = self.client.get("/db/clientdata.zip?oryginal=1")
+        with zipfile.ZipFile(io.BytesIO(res.get_data())) as z:
+            self.assertEqual((z.read("pack/dbdata.index"), z.read("pack/dbdata.data")), dbdata.latest_base().original())
+        page = self.client.get("/db/apply").get_data(as_text=True)
+        self.assertIn("Pobierz aktualne pliki klienta (zip)", page)
+        self.assertIn(dbdata.latest_base().version, page)
         with open(os.path.join(SPOOL, "dbeditor", "last-apply.json"), encoding="utf-8") as f:
             self.assertEqual(json.load(f)["changes"], 1)
 

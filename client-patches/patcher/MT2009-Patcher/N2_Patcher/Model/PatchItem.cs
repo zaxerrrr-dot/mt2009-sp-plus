@@ -13,6 +13,17 @@ namespace N2_Patcher.Model
 			set;
 		}
 
+		// MT2009 PLUS: 1 = the player's own copy wins - downloaded only when
+		// missing, never "repaired" (pack\dbdata.*, the database editor's
+		// files the player unpacks from the server's panel). Older patchers
+		// ignore the field.
+		[JsonProperty("keep")]
+		public byte Keep
+		{
+			get;
+			set;
+		}
+
 		[JsonProperty("name")]
 		public string Filename
 		{
@@ -45,4 +56,4 @@ namespace N2_Patcher.Model
 		{
 		}
 	}
-}
+}
