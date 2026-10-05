@@ -244,6 +244,19 @@ namespace
 	// it for that.
 	const DWORD PLAYERBOT_SIDEKICK_LURE_GATHERED_MS = 25000;
 	const int PLAYERBOT_SIDEKICK_LURE_GATHERED_MIN = 2;
+	// MT2009_PLUS_SIDEKICK_SHAMAN_REBUFF_V1: a Shaman companion fighting from
+	// a saddle (RebuffPlayerBotSidekickShaman) climbs down when a buff - its
+	// own or its owner's - is gone or has this little left, looks for one
+	// this often, stays on foot this long at most, waits for a cooldown this
+	// short rather than ride off with the buff undone, and rides on for this
+	// long before it climbs down again. A cast the engine refused is not
+	// tried again for the last.
+	const long PLAYERBOT_SIDEKICK_REBUFF_DUE_SECONDS = 10;
+	const DWORD PLAYERBOT_SIDEKICK_REBUFF_CHECK_MS = 1000;
+	const DWORD PLAYERBOT_SIDEKICK_REBUFF_MAX_MS = 15000;
+	const DWORD PLAYERBOT_SIDEKICK_REBUFF_COOL_WAIT_MS = 3000;
+	const DWORD PLAYERBOT_SIDEKICK_REBUFF_GAP_MS = 20000;
+	const DWORD PLAYERBOT_SIDEKICK_REBUFF_FAIL_MS = 60000;
 	// A skill of its path standing at seventeen without Master: a Forgetting
 	// Book in its bag naming that skill is read within the first, and its
 	// owner is asked for one at most once per the second, per skill
@@ -535,6 +548,14 @@ namespace
 		DWORD dwLastServiceLog = 0;
 		// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: the owner's "Kup" errand.
 		TPlayerBotSidekickShopErrand shop;
+		// MT2009_PLUS_SIDEKICK_SHAMAN_REBUFF_V1: a Shaman off its saddle for
+		// the buffs until this (0 when it is not), its next cast, its next look
+		// from the saddle, and the casts the engine refused (vnum * 2, + 1 for
+		// its own) -> until when they are left alone.
+		DWORD dwRebuffUntil = 0;
+		DWORD dwRebuffNextCast = 0;
+		DWORD dwNextRebuffCheck = 0;
+		std::map<DWORD, DWORD> mapRebuffFailedUntil;
 		TPlayerBotSidekickRuntime()
 			: dwNextPartyCheck(0), dwNextService(0), dwNextLoot(0), dwNextCatchUp(0), dwLootVID(0),
 			  dwLootSince(0), dwNextProtect(0), bTrading(false), dwLastFoeVID(0), bHold(false), lHoldMap(0),
@@ -7457,6 +7478,238 @@ namespace
 		return ManagePlayerBotBuffPerson(ch, state, owner, dwNow, mayWalk, true);
 	}
 
+	// MT2009_PLUS_SIDEKICK_SHAMAN_REBUFF_V1: a Shaman companion in the saddle.
+	//
+	// "Szamanka na koniu ma bic zwyklym atakiem, zsiadac aby dac sobie i
+	// swojemu towarzyszowi buffy jak sie skoncza i znowu wejsc i bic" (the
+	// owner, 5 October). From a battle horse or a seal's mount that is not a
+	// standing one it breaks a Metin with the swing alone
+	// (CanPlayerBotFightOnHorse) - no skill of a class is cast from that
+	// saddle - and the buffs came down one at a time: the owner's pass
+	// (ManagePlayerBotBuffPerson) climbed down for one the owner had already
+	// lost and renewed nothing that was about to go, the companion's own pass
+	// (ManagePlayerBotCombatBuffs) climbed down for its own copy two seconds
+	// later, once the skill had cooled from the owner's cast, and a buff
+	// running out a moment after the saddle took it back took it down again.
+	//
+	// So once a second it looks from the saddle: a buff of its path gone or
+	// with PLAYERBOT_SIDEKICK_REBUFF_DUE_SECONDS left on the owner (in the
+	// skill's reach, its "buffy" on) or on itself, off its cooldown and paid
+	// for, takes it down - with no mana for it, a blue potion first and the
+	// saddle kept. On foot it puts up everything of the owner's and its own
+	// with PLAYERBOT_SADDLE_BUFF_REFRESH_SECONDS or less left, one cast a pass,
+	// waits out a cooldown of PLAYERBOT_SIDEKICK_REBUFF_COOL_WAIT_MS (the
+	// owner's copy and its own are one skill), and with nothing left lets the
+	// fight put it back in the saddle at once (FightPlayerBotTowerObjective).
+	// Then PLAYERBOT_SIDEKICK_REBUFF_GAP_MS before it looks again, and a cast
+	// the engine refused is left alone for PLAYERBOT_SIDEKICK_REBUFF_FAIL_MS,
+	// so no buff takes it up and down in a loop. An owner out of the skill's
+	// reach is not waited for: its own buffs only, the owner's when it is
+	// back in reach. Its own Swiftness is a walking buff, which the horse
+	// outruns: renewed on foot, never a reason to climb down. Cure is a heal,
+	// for one of the two under its health share.
+	struct TPlayerBotSidekickRebuffPick
+	{
+		LPCHARACTER target;
+		DWORD vnum;
+		bool cooling;		// a buff that is due waits for its cooldown
+		DWORD coolWaitMs;	// the shortest such wait
+		bool shortOfMana;	// a buff that is due is off cooldown but not paid for
+	};
+
+	bool IsPlayerBotSidekickRebuffDue(LPCHARACTER ch, const TPlayerBotAIState& state, LPCHARACTER target,
+			DWORD vnum, long marginSeconds, DWORD dwNow)
+	{
+		if (vnum == 109) // Cure / Heal
+		{
+			const long long limit = target == ch ? 60 : PLAYERBOT_PARTY_LEADER_CURE_HP_PERCENT;
+			return target->GetMaxHP() > 0 && (long long)target->GetHP() * 100 / target->GetMaxHP() <= limit;
+		}
+		const bool up = target == ch ? IsPlayerBotBuffActive(ch, vnum, dwNow, state)
+				: IsPlayerBotBuffAffectOn(target, vnum);
+		if (!up)
+			return true;
+		// A toggle is never renewed: UseSkill takes an active one off.
+		const CSkillProto* proto = CSkillManager::instance().Get(vnum);
+		if (!proto || (proto->dwFlag & SKILL_FLAG_TOGGLE))
+			return false;
+		const CAffect* affect = target->FindAffect(vnum);
+		return affect && affect->lDuration > 0 && affect->lDuration <= marginSeconds;
+	}
+
+	// The first buff due, the owner's copy before its own, in its build's
+	// order; climbingDown leaves out what is no reason to leave the saddle.
+	void PickPlayerBotSidekickRebuff(LPCHARACTER ch, const TPlayerBotAIState& state, LPCHARACTER owner,
+			const TPlayerBotSidekickRuntime& rt, long marginSeconds, bool climbingDown, DWORD dwNow,
+			TPlayerBotSidekickRebuffPick& pick)
+	{
+		pick.target = NULL;
+		pick.vnum = 0;
+		pick.cooling = false;
+		pick.coolWaitMs = 0;
+		pick.shortOfMana = false;
+		const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
+		for (size_t i = 0; i < sizeof(build.dwBuffSkills) / sizeof(build.dwBuffSkills[0]); ++i)
+		{
+			const DWORD vnum = build.dwBuffSkills[i];
+			if (vnum == 0 || ch->GetSkillLevel(vnum) == 0)
+				continue;
+			CSkillProto* proto = CSkillManager::instance().Get(vnum);
+			if (!proto)
+				continue;
+			LPCHARACTER targets[2] = { NULL, ch };
+			if (owner && !IS_SET(proto->dwFlag, SKILL_FLAG_SELFONLY) &&
+					(proto->dwTargetRange == 0 ||
+					 DISTANCE_APPROX(ch->GetX() - owner->GetX(), ch->GetY() - owner->GetY()) <=
+							(int)proto->dwTargetRange))
+				targets[0] = owner;
+			for (int t = 0; t < 2; ++t)
+			{
+				LPCHARACTER target = targets[t];
+				if (!target)
+					continue;
+				if (climbingDown && target == ch && vnum != 109 && IsPlayerBotOutOfCombatBuff(vnum))
+					continue;
+				std::map<DWORD, DWORD>::const_iterator failed =
+						rt.mapRebuffFailedUntil.find(vnum * 2 + (target == ch ? 1 : 0));
+				if (failed != rt.mapRebuffFailedUntil.end() && dwNow < failed->second)
+					continue;
+				if (!IsPlayerBotSidekickRebuffDue(ch, state, target, vnum, marginSeconds, dwNow))
+					continue;
+				// Not while it cools, and not without the mana: the engine
+				// would take the mana and refuse the cast (PlayerBotUseSkill).
+				if (!IsPlayerBotSkillReady(state, vnum, dwNow))
+				{
+					std::map<DWORD, DWORD>::const_iterator ready = state.mapSkillReadyAt.find(vnum);
+					const DWORD wait = ready != state.mapSkillReadyAt.end() ? ready->second - dwNow : 0;
+					if (!pick.cooling || wait < pick.coolWaitMs)
+						pick.coolWaitMs = wait;
+					pick.cooling = true;
+					continue;
+				}
+				if (ch->GetSP() < GetPlayerBotSkillSPCost(ch, vnum))
+				{
+					pick.shortOfMana = true;
+					continue;
+				}
+				pick.target = target;
+				pick.vnum = vnum;
+				return;
+			}
+		}
+	}
+
+	void EndPlayerBotSidekickRebuff(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotSidekickRuntime& rt,
+			DWORD dwNow, const char* why)
+	{
+		rt.dwRebuffUntil = 0;
+		rt.dwNextRebuffCheck = dwNow + PLAYERBOT_SIDEKICK_REBUFF_GAP_MS;
+		// Back in the saddle on the fight's next look, not after the flip hold.
+		if (!ch->IsRiding())
+			state.dwNextHorseRideCheckTime = dwNow;
+		sys_log(0, "PLAYERBOT_SIDEKICK: shaman rebuff done pid=%u name=%s why=%s", ch->GetPlayerID(),
+				ch->GetName(), why);
+	}
+
+	// True while it claims the tick: the climb-down, a cast, or standing for
+	// the next one.
+	bool RebuffPlayerBotSidekickShaman(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotSidekick& rec,
+			TPlayerBotSidekickRuntime& rt, LPCHARACTER owner, LPCHARACTER foe, DWORD dwNow)
+	{
+		// Under a marble the engine refuses every buff (IsPlayerBotFightingAsMonster).
+		if (ch->GetJob() != JOB_SHAMAN || ch->GetSkillGroup() == 0 || ch->IsDead() ||
+				IsPlayerBotFightingAsMonster(ch))
+		{
+			if (rt.dwRebuffUntil != 0)
+				EndPlayerBotSidekickRebuff(ch, state, rt, dwNow, "cannot_cast");
+			return false;
+		}
+		LPCHARACTER person = (rec.bBuffs && owner && owner != ch && !owner->IsDead() &&
+				owner->GetMapIndex() == ch->GetMapIndex()) ? owner : NULL;
+		TPlayerBotSidekickRebuffPick pick;
+		if (rt.dwRebuffUntil == 0)
+		{
+			// Only in a fight from a saddle that casts nothing; a standing
+			// mount casts from where it stands, and on foot the ordinary
+			// passes buff as they always did.
+			if (!foe || !ch->IsRiding() || IsPlayerBotOnStandingMount(ch) || dwNow < rt.dwNextRebuffCheck)
+				return false;
+			rt.dwNextRebuffCheck = dwNow + PLAYERBOT_SIDEKICK_REBUFF_CHECK_MS;
+			PickPlayerBotSidekickRebuff(ch, state, person, rt, PLAYERBOT_SIDEKICK_REBUFF_DUE_SECONDS, true, dwNow,
+					pick);
+			if (!pick.target)
+			{
+				if (pick.shortOfMana)
+					UseManaPotion(ch, state, dwNow, 100);
+				return false;
+			}
+			if (!SetPlayerBotRidingForTravel(ch, state, false, dwNow, "buff"))
+			{
+				rt.dwNextRebuffCheck = dwNow + PLAYERBOT_SIDEKICK_REBUFF_GAP_MS;
+				return false;
+			}
+			rt.dwRebuffUntil = dwNow + PLAYERBOT_SIDEKICK_REBUFF_MAX_MS;
+			rt.dwRebuffNextCast = dwNow + PLAYERBOT_BUFF_RECHECK_FAST;
+			// On foot until the set is up; EndPlayerBotSidekickRebuff lets the
+			// saddle back the moment it is.
+			if (state.dwNextHorseRideCheckTime < rt.dwRebuffUntil)
+				state.dwNextHorseRideCheckTime = rt.dwRebuffUntil;
+			state.dwLastMeaningfulActivityTime = dwNow;
+			sys_log(0, "PLAYERBOT_SIDEKICK: shaman rebuff climbs down pid=%u name=%s vnum=%u for=%s",
+					ch->GetPlayerID(), ch->GetName(), pick.vnum, pick.target == ch ? "self" : "owner");
+			return true;
+		}
+		// Something else put it back in the saddle: the next look decides again.
+		if (ch->IsRiding() && !IsPlayerBotOnStandingMount(ch))
+		{
+			EndPlayerBotSidekickRebuff(ch, state, rt, dwNow, "remounted");
+			return false;
+		}
+		if (dwNow >= rt.dwRebuffUntil)
+		{
+			EndPlayerBotSidekickRebuff(ch, state, rt, dwNow, "time");
+			return false;
+		}
+		if (ch->IsStateMove())
+			ch->Stop();
+		state.dwLastMeaningfulActivityTime = dwNow;
+		if (dwNow < rt.dwRebuffNextCast)
+			return true;
+		PickPlayerBotSidekickRebuff(ch, state, person, rt, PLAYERBOT_SADDLE_BUFF_REFRESH_SECONDS, false, dwNow, pick);
+		if (pick.target)
+		{
+			if (PlayerBotUseSkill(ch, state, pick.vnum, pick.target, dwNow))
+			{
+				SendPlayerBotSkillPacket(ch, pick.vnum);
+				state.dwLastBotSkillTime = dwNow;
+				state.dwNextAttackTime = dwNow + PLAYERBOT_SKILL_ANIMATION_LOCK;
+				// The self pass's fallback clock (IsPlayerBotBuffActive).
+				if (pick.target == ch)
+					state.mapBuffActiveUntil[pick.vnum] = dwNow +
+							(pick.vnum == 109 ? 10000 : PLAYERBOT_BUFF_FALLBACK_DURATION);
+				sys_log(0, "PLAYERBOT_SIDEKICK: shaman rebuff cast pid=%u name=%s vnum=%u on=%s",
+						ch->GetPlayerID(), ch->GetName(), pick.vnum, pick.target == ch ? "self" : "owner");
+			}
+			else
+				rt.mapRebuffFailedUntil[pick.vnum * 2 + (pick.target == ch ? 1 : 0)] =
+						dwNow + PLAYERBOT_SIDEKICK_REBUFF_FAIL_MS;
+			rt.dwRebuffNextCast = dwNow + PLAYERBOT_BUFF_RECHECK_FAST;
+			return true;
+		}
+		if (pick.shortOfMana && UseManaPotion(ch, state, dwNow, 100))
+		{
+			rt.dwRebuffNextCast = dwNow + PLAYERBOT_BUFF_RECHECK_FAST;
+			return true;
+		}
+		if (pick.cooling && pick.coolWaitMs <= PLAYERBOT_SIDEKICK_REBUFF_COOL_WAIT_MS)
+		{
+			rt.dwRebuffNextCast = dwNow + std::max<DWORD>(pick.coolWaitMs, 200);
+			return true;
+		}
+		EndPlayerBotSidekickRebuff(ch, state, rt, dwNow, pick.shortOfMana ? "no_mana" : "all_up");
+		return false;
+	}
+
 	// The path the owner chose, the moment the engine allows one:
 	// CHARACTER::SetSkillGroup refuses a character under level five
 	// (char_skill.cpp), so a companion made at the start of the game takes it at
@@ -9006,6 +9259,11 @@ namespace
 			LogPlayerBotSidekickDefend(ch, owner, foe, why, dwNow);
 		if (ownerFighting)
 			rt.dwOwnerFightSeenAt = dwNow;
+		// MT2009_PLUS_SIDEKICK_SHAMAN_REBUFF_V1: a Shaman fighting from the
+		// saddle climbs down for its own and its owner's buffs, puts them all
+		// up and rides on - before the loot, the owner's pass and the blow.
+		if (RebuffPlayerBotSidekickShaman(ch, state, *rec, rt, owner, foe, dwNow))
+			return true;
 		// MT2009_PLUS_SIDEKICK_FOLLOW_LOOT_V1: its drops before a monster
 		// nobody fights yet - in "atakuj" it went from one to the next and the
 		// drops lay till their time ran out; "Wolna reka" (HandleLoot) finishes
