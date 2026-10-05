@@ -1,18 +1,18 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-05T10:47:57Z",
- "statusMessage": "MT2009 PLUS 2.23.0: Karty Potworow, tansze dungeony z lepszym dropem, boty lepiej ubrane. Klient 2.0.54.",
+ "publishedAt": "2026-10-05T18:09:21Z",
+ "statusMessage": "MT2009 PLUS 2.23.1: poprawka swiezej instalacji, wyrzucanie z CH1, boty, alchemia w edytorze. Klient 2.0.55.",
  "server": {
-  "version": "2.23.0",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.23.0/metin2-server-update-2.23.0.zip",
-  "sha256": "1EC3F941A0E75A95E97F1250CF7CD1998CF549EEC0607F444A9A79E1A91FD9D0",
-  "size": 107321231
+  "version": "2.23.1",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.23.1/metin2-server-update-2.23.1.zip",
+  "sha256": "6BF9F0DBCDD20B6E127C7B631BBB3DFD85F911C90B2475167F4F682146F8FD5F",
+  "size": 107356585
  },
  "client": {
-  "version": "2.0.54",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.54/metin2-client-update-2.0.54.zip",
-  "sha256": "35E2363A722FC001FD764C0DC53DF59F8CB0F109A43354655ED68C88D5F26BA0",
-  "size": 358430799
+  "version": "2.0.55",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.55/metin2-client-update-2.0.55.zip",
+  "sha256": "86F33304E0BDF1B388E17B0A2F7D3A5084FD1F63230EAF3377753928DAA1FFD5",
+  "size": 358436211
  }
 }

@@ -17,6 +17,31 @@ every version here.
 
 ---
 
+## 2.23.1 — 2026-10-05 — Poprawka świeżej instalacji, wyrzucanie z CH1, boty i alchemia w edytorze
+
+Wymaga klienta **2.0.55** (pobierze go launcher albo patcher).
+
+### 🐛 Poprawki
+- **Świeża instalacja 2.23.0 nie startowała** („there is no item 30774”) – skrzynie dungeonów powstawały przed skrzyniami Razadora i Nemere, z których są kopiowane. Teraz kolejność jest poprawna, a serwer, który już ma ten problem, naprawi się sam przy pierwszym starcie po aktualizacji.
+- **Przygotowanie bazy** wypisuje każdy krok, który się nie udał, i zapisuje „zrobione” dopiero po udanym przebiegu – niedokończona baza nie zostanie już pominięta przy kolejnym starcie.
+- **Gra nie wyłącza się przez brakujący przedmiot w dropie** – taka linia jest pomijana z ostrzeżeniem w logu.
+- **Wyrzucanie z kanału 1** („UNKNOWN HEADER”, ciągłe rozłączanie po zalogowaniu) – naprawiony błąd pamięci w silniku przy dużej porcji danych od gracza.
+- **Boty nie zbierają już cudzych broni** i nie ulepszają ich do +4 – trzymają tylko sprzęt, który mogą założyć i który jest lepszy od noszonego. To, co już nazbierały, wystawiają na straganie, a jeśli nikt nie kupi w ciągu 6 godzin – sprzedają u handlarki.
+
+### 🛠️ Edytor bazy danych
+- **Alchemia (Smocze Kamienie)** – nowa część edytora: bonusy stałe i losowe każdego kamienia, wartości stopni, wagi, ulepszanie (opłaty i szanse) oraz przyciski „Pomnóż bonusy” i „Pomnóż wagi”. Działa z historią, „Zastosuj” i eksportem/importem konfiguracji.
+
+### 🧑‍🤝‍🧑 Towarzysz
+- **Wyciszanie wiadomości** – w oknie Towarzysza (Opcje → „Szepty”): wszystkie / ważne (domyślnie) / żadne. Rzadsze przypomnienia o cennych rzeczach i pełnym ekwipunku, zbiorcze „zbiłem N metinów” co 10 minut.
+
+### 💰 Gospodarka
+- **Słabe bonusy na broniach i kolczykach** są w cenniku botów o 35% tańsze niż na pozostałych przedmiotach.
+
+## Klient 2.0.55 — 2026-10-05 — Wyciszanie Towarzysza
+
+- Przełącznik „Szepty” w oknie Towarzysza (wszystkie / ważne / żadne).
+- Pliki z Edytora bazy danych (`pack/dbdata`) bez zmian – nie trzeba ich pobierać ponownie.
+
 ## 2.23.0 — 2026-10-05 — Karty Potworów, tańsze dungeony z lepszym dropem, boty lepiej ubrane
 
 Wymaga klienta **2.0.54** (pobierze go launcher albo patcher).
