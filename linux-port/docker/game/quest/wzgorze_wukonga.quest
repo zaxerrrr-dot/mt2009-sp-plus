@@ -10,6 +10,18 @@
 -- (playerbot_party_dungeon.h). Op³ata, limit dzienny, poziom i odpoczynek s¹ tylko dla ludzi.
 quest wzgorze_wukonga begin
 	state start begin
+		-- MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1: the rest between expeditions is the bots' only (the owner, 5 October: "Usuñ
+		-- równie¿ ca³kowicie limit czekania na dungi dla graczy, teraz czekaj¹ tylko boty"). A person
+		-- never waits - the fee, the level and the day's count stay; a bot (pc.is_playerbot) still rests
+		-- c.cooldown from its entry, so it does other things too. The entry flag itself is still
+		-- written: the rejoin ("Wróæ do lochu") and the core's bot runs read it.
+		function must_rest(now)
+			if not pc.is_playerbot() then
+				return false
+			end
+			return now - pc.getf("wzgorze_wukonga", "entry") < wzgorze_wukonga.cfg().cooldown
+		end
+
 		function cfg()
 			return {
 				map = 364,
@@ -374,7 +386,7 @@ quest wzgorze_wukonga begin
 			say("Ich stra¿nicy pilnuj¹ P³omiennego Feniksa,")
 			say("a sam WuKong czeka na œmia³ków na szczycie.")
 			say("")
-			say_reward("Wymagany poziom: "..c.min_level..". Limit "..c.limit_min.." minut, ponowne wejœcie po "..math.floor(c.cooldown / 60).." minutach.")
+			say_reward("Wymagany poziom: "..c.min_level..". Limit "..c.limit_min.." minut, bez czekania miêdzy wyprawami.") -- MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1
 			say_reward("Boty z Twojej dru¿yny wejd¹ do lochu razem z Tob¹.")
 			say_reward("Wejœcie: "..c.fee_text.." Yang. Najwy¿ej "..c.daily.." wypraw dziennie (dziœ: "..wzgorze_wukonga.runs_today().."/"..c.daily..").") -- MT2009_PLUS_DUNGEON_FEE_V1
 			say_reward("P³acisz tylko za siebie - boty z dru¿yny i towarzysz wchodz¹ bez op³aty.") -- MT2009_PLUS_DUNGEON_FEE_LEADER_V1
@@ -397,13 +409,9 @@ quest wzgorze_wukonga begin
 			if idx > 0 and now - pc.getf("wzgorze_wukonga", "entry") < c.limit_min * 60 then
 				say_title(mob_name(20423))
 				say("Twoja wyprawa wci¹¿ trwa. Czy chcesz do niej wróciæ?")
-				local s
-				if pc.is_gm() then
-					s = select("Wróæ do lochu", "Nowa wyprawa (GM)", "Nie teraz")
-				else
-					s = select("Wróæ do lochu", "Nie teraz")
-					if s == 2 then s = 3 end
-				end
+				-- MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1: a new expedition for everybody (it was the GM's only), so the last one
+				-- finished or left does not hold a player back until its time limit runs out.
+				local s = select("Wróæ do lochu", "Nowa wyprawa", "Nie teraz")
 				if s == 3 then
 					return
 				elseif s == 1 then
@@ -447,7 +455,7 @@ quest wzgorze_wukonga begin
 			local wait = {}
 			local full = {} -- MT2009_PLUS_DUNGEON_FEE_V1
 			local poor = {}
-			if not pc.is_gm() and now - pc.getf("wzgorze_wukonga", "entry") < c.cooldown then
+			if wzgorze_wukonga.must_rest(now) then
 				table.insert(wait, pc.get_name())
 			end
 			if wzgorze_wukonga.over_limit() then table.insert(full, pc.get_name()) end
@@ -464,7 +472,7 @@ quest wzgorze_wukonga begin
 							if pc.get_level() < c.min_level then
 								table.insert(low, pc.get_name())
 							end
-							if not pc.is_gm() and now - pc.getf("wzgorze_wukonga", "entry") < c.cooldown then
+							if wzgorze_wukonga.must_rest(now) then
 								table.insert(wait, pc.get_name())
 							end
 							if wzgorze_wukonga.over_limit() then table.insert(full, pc.get_name()) end
@@ -597,7 +605,7 @@ quest wzgorze_wukonga begin
 						if pc.get_level() < c.min_level then
 							table.insert(low, pc.get_name())
 						end
-						if not pc.is_gm() and now - pc.getf("wzgorze_wukonga", "entry") < c.cooldown then
+						if wzgorze_wukonga.must_rest(now) then
 							table.insert(wait, pc.get_name())
 						end
 						if wzgorze_wukonga.over_limit() then table.insert(full, pc.get_name()) end
@@ -610,7 +618,7 @@ quest wzgorze_wukonga begin
 				if pc.get_level() < c.min_level then
 					table.insert(low, pc.get_name())
 				end
-				if not pc.is_gm() and now - pc.getf("wzgorze_wukonga", "entry") < c.cooldown then
+				if wzgorze_wukonga.must_rest(now) then
 					table.insert(wait, pc.get_name())
 				end
 				if wzgorze_wukonga.over_limit() then table.insert(full, pc.get_name()) end
@@ -652,7 +660,7 @@ quest wzgorze_wukonga begin
 				return
 			end
 			local now = get_global_time()
-			if pc.get_level() < c.min_level or (not pc.is_gm() and now - pc.getf("wzgorze_wukonga", "entry") < c.cooldown) then
+			if pc.get_level() < c.min_level or (wzgorze_wukonga.must_rest(now)) then
 				syschat("Wzgórze Wukonga: porozmawiaj ze stra¿nikiem, aby otworzyæ przejœcie.")
 				return
 			end

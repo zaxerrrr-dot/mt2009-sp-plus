@@ -297,6 +297,17 @@ namespace mt2009_dpanel
 		return left > 0 ? left : 0;
 	}
 
+	// MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1: a person waits for no dungeon any more (the quests'
+	// must_rest asks pc.is_playerbot), so the window shows him none - no clock, no "Odczekaj". The
+	// flag and the seconds stay in dungeon_info.txt: CooldownLeft is the bots' rest
+	// (playerbot_dungeon_runs.h), and only a bot's line would carry it.
+	int PersonCooldownLeft(LPCHARACTER ch, const Def& d)
+	{
+		if (!ch->GetDesc() || !ch->GetDesc()->IsBot())
+			return 0;
+		return CooldownLeft(ch, d);
+	}
+
 	std::vector<int> VisibleRows()
 	{
 		std::vector<int> rows;
@@ -333,7 +344,7 @@ namespace mt2009_dpanel
 			if (named.insert(entryMap).second)
 				Cmd(ch, "name %ld %s", entryMap, d.entryName.c_str());
 			Cmd(ch, "add %u %d %ld %ld %d %d %d %d %u %d %d %d %d %u %d", (unsigned) r, d.type, d.map, entryMap,
-					d.lvMin, LevelMax(d), d.partyMin, d.partyMax, d.boss, CooldownLeft(ch, d),
+					d.lvMin, LevelMax(d), d.partyMin, d.partyMax, d.boss, PersonCooldownLeft(ch, d),
 					ch->GetQuestFlag(Flag(d, "_f")), ch->GetQuestFlag(Flag(d, "_t")), ch->GetQuestFlag(Flag(d, "_d")),
 					d.reqVnum, d.reqCount);
 			for (size_t j = 0; j < d.drops.size(); ++j)
