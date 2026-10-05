@@ -470,6 +470,19 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_dro
  && cat "$A" >> "$F" \
  && rm -f "$A" \
  && echo "share: metin beans - $(grep -c -E '^Group[[:blank:]]+MT2009_metinbean_' "$F") groups"
+# MT2009_PLUS_DT_DROPS_V1: the Demon Tower's brutal demons (1061-1071, the second life of every
+# demon of floors 2-9) drop the tower's upgrade items 30086 / 30087 and level-65 weapons +0 as junk
+# (the owner, 5 October) - one drop group each, merged by the engine with any group the mob has.
+# The level fade inside the tower is server-patches/raremobrules (MT2009_PLUS_DT_DROPS_V1 (delta)).
+COPY mob_drop_item.dtdrops.append.txt /tmp/mob_drop_item.dtdrops.append.txt
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_drop_item.dtdrops.append.txt \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_dtdrop_' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_dtdrop_10(6[1-9]|7[01])([^0-9]|$)' "$F")" = 11 \
+ && rm -f "$A" \
+ && echo "share: Demon Tower brutal demons - 11 drop groups"
 
 # MT2009_PLUS_FLOWER_V1: the Flower Event's five gift boxes (83023-83027, Pudelko z Chryzantema ..
 # ze Slonecznikiem; playerbot_flower.h gives them for 10 shoots of a flower), opened by their
