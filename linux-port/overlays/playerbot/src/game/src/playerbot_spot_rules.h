@@ -226,7 +226,7 @@ namespace playerbot_spot
 			static const char* const kNormal[] = { "przestan mnie bic albo zawolam gildie", "serio, odczep sie ode mnie",
 				"SPADAJ, nie bede sie z toba bil caly dzien", "dobra, starczy tego, wypad" };
 			static const char* const kHot[] = { "chodz, dokoncz to jak taki mocny", "zaraz cie polozymy, zobaczysz",
-				"SPIEEEEEEEE STAD", "myslisz ze sie boje? dawaj" };
+				"SPIEEEEEEEE STAD", "myslisz ze sie boje? dawaj", "spierdalaj bo przyjde wojem" };
 			return temper == TEMPER_HOT ? PickOf(kHot, roll) : PickOf(kNormal, roll);
 		}
 		if (gaveUp)
@@ -265,14 +265,14 @@ namespace playerbot_spot
 				static const char* const kNormal[] = { "spadaj", "wypad stad", "TO MOJ SPOT", "idz sobie gdzie indziej, serio",
 					"nie kradnij mobow ksiarzu", "spadaj z mojego spota" };
 				static const char* const kHot[] = { "SPIEEEEEEEE STAD", "WYPAD Z MOJEGO SPOTA", "spadaj ksiarzu",
-					"zaraz zawolam ekipe, to zobaczysz", "SPADAJ STAD" };
+					"zaraz zawolam ekipe, to zobaczysz", "SPADAJ STAD", "spierdalaj bo przyjde wojem" };
 				return temper == TEMPER_HOT ? PickOf(kHot, roll) : PickOf(kNormal, roll);
 			}
 			default:
 			{
-				static const char* const kNormal[] = { "SPADAJ", "dobra, mam dosc, zglaszam cie za ks", "WYPAD" };
+				static const char* const kNormal[] = { "SPADAJ", "dobra, mam dosc, zglaszam cie za ks", "WYPAD", "spierdalaj bo przyjde wojem" };
 				static const char* const kHot[] = { "SPIEEEEEEEEEEEE", "ZJEZDZAJ Z MOJEGO SPOTA",
-					"nie rozumiesz po polsku? WYPAD", "SPIEEEEEEEE STAD, KSIARZU" };
+					"nie rozumiesz po polsku? WYPAD", "SPIEEEEEEEE STAD, KSIARZU", "spierdalaj bo przyjde wojem" };
 				return temper == TEMPER_HOT ? PickOf(kHot, roll) : PickOf(kNormal, roll);
 			}
 		}
