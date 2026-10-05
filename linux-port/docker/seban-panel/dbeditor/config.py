@@ -16,7 +16,7 @@ Where the stock value comes from, per part:
     export time, so a field put back by hand, by an undo or by apply.sh at
     a start is not exported. Whole rows (shop goods, refine clones, extra
     bonus lines) are exported the same way as JSON rows ("-" = no row).
-  * spool files (drop groups, common/etc drop, chests, fishing, boss and
+  * spool files (drop groups, common/etc drop, chests, fishing, alchemy (dragon_soul_table), boss and
     metin respawn files, map spawns): the panel's custom file IS the change
     against the image's file (which the game publishes as *.base.* /
     base/... next to it); a custom file is exported whole, as a block, when
@@ -101,6 +101,7 @@ FILE_PARTS = (
     ("drops", "Drop potworów, zwykły i specjalny"),
     ("chests", "Szkatułki"),
     ("fishing", "Łowienie ryb"),
+    ("dragonsoul", "Alchemia (Smocze Kamienie)"),  # MT2009_PLUS_DB_EDITOR_DRAGONSOUL_V1
     ("spawns", "Respawn bossów i metinów"),
     ("regen", "Spawny potworów na mapach"),
 )
@@ -283,13 +284,20 @@ class FilePart:
 
 
 class DropFiles(FilePart):
-    KEYS = {"drops": ("mob", "common", "etc"), "chests": ("chest",), "fishing": ("fishing",)}
+    KEYS = {"drops": ("mob", "common", "etc"), "chests": ("chest",), "fishing": ("fishing",),
+            "dragonsoul": ("dragonsoul",)}
 
     def available(self):
         if self.part == "fishing":
             try:
                 from dbeditor import fishing
                 fishing.register_file()
+            except ImportError:
+                return False
+        if self.part == "dragonsoul":
+            try:
+                from dbeditor import dragonsoul
+                dragonsoul.register_file()
             except ImportError:
                 return False
         return True
@@ -310,6 +318,9 @@ class DropFiles(FilePart):
         if data is None and key == "fishing":
             from dbeditor import fishing
             data = _read(fishing.SNAPSHOT)
+        if data is None and key == "dragonsoul":
+            from dbeditor import dragonsoul
+            data = _read(dragonsoul.SNAPSHOT)
         return data
 
     def write(self, spool, key, data, reason):
@@ -326,6 +337,8 @@ class DropFiles(FilePart):
         if key == "fishing":
             from dbeditor import fishing
             return bool(fishing.parse_custom(data.decode("latin-1")))
+        if key == "dragonsoul":
+            return b"BasicApplys" in data
         return True
 
     def check(self, spool, key, data, lookup):
@@ -364,6 +377,9 @@ class DropFiles(FilePart):
             items.update(int(e["item"]) for e in entries if e["item"].isdigit())
             problems = fishing.validate(entries, None, dict(fishing.ROD_BONUS_DEFAULT))
             errors += [str(p) for p in problems[:10]]
+        elif key == "dragonsoul":
+            from dbeditor import dragonsoul
+            errors += dragonsoul.validate(data, self.base(spool, key))[:10]
         unknown_items = sorted(items - lookup("item", sorted(items))) if items else []
         unknown_mobs = sorted(mobs - lookup("mob", sorted(mobs))) if mobs else []
         if unknown_items:
@@ -500,6 +516,7 @@ class RegenFiles(FilePart):
 
 
 FILE_ADAPTERS = {"drops": DropFiles("drops"), "chests": DropFiles("chests"), "fishing": DropFiles("fishing"),
+                 "dragonsoul": DropFiles("dragonsoul"),
                  "spawns": SpawnFiles("spawns"), "regen": RegenFiles("regen")}
 
 

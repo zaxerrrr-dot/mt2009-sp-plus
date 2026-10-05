@@ -219,6 +219,11 @@ boot_cores() {
   if [ "${HAVE_FISHING:-0}" = "1" ]; then
     m2-fishing apply || log "the panel's fishing table could not be applied -- the image's table stays"
   fi
+  # MT2009_PLUS_DB_EDITOR_DRAGONSOUL_V1: the alchemy table as the Seban panel
+  # saved it (m2-dragonsoul), put into dragon_soul_table.txt the same way.
+  if [ "${HAVE_DRAGONSOUL:-0}" = "1" ]; then
+    m2-dragonsoul apply || log "the panel's alchemy table could not be applied -- the image's table stays"
+  fi
   # MT2009_PLUS_DB_EDITOR_V1: the maps' spawns as the Seban panel's database
   # editor saved them (m2-regen), put into map/<map>/regen.txt the same way.
   if [ "${HAVE_REGEN:-0}" = "1" ]; then
@@ -299,6 +304,11 @@ command -v m2-regen >/dev/null 2>&1 && HAVE_REGEN=1
 # editor's "Łowienie ryb" page (m2-fishing; boot_cores calls it). Absent on older images.
 HAVE_FISHING=0
 command -v m2-fishing >/dev/null 2>&1 && HAVE_FISHING=1
+
+# MT2009_PLUS_DB_EDITOR_DRAGONSOUL_V1: the alchemy table from the database
+# editor's "Alchemia" page (m2-dragonsoul; boot_cores calls it). Absent on older images.
+HAVE_DRAGONSOUL=0
+command -v m2-dragonsoul >/dev/null 2>&1 && HAVE_DRAGONSOUL=1
 
 # MT2009_PLUS_DB_EDITOR_V1: the respawn files from the Seban panel's "Respawn
 # bossów i metinów" page (m2-spawns; boot_cores calls it). Absent on older images.

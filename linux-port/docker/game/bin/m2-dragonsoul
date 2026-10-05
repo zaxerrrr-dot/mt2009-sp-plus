@@ -1,0 +1,154 @@
+#!/bin/sh
+# =============================================================================
+#  m2-dragonsoul -- the Dragon Soul (alchemy) table as the Seban panel's
+#  "Alchemia" page (database editor, dbeditor/dragonsoul.py) saved it
+#  (MT2009_PLUS_DB_EDITOR_DRAGONSOUL_V1).
+#
+#  Every core reads $LOCALE_DIR/dragon_soul_table.txt while it boots. The file
+#  lives in the image (the Dockerfile already swaps its bonus groups), so an
+#  edit made in the container would be lost on the next update.
+#
+#  The panel therefore writes the whole table (EUC-KR, the image's file with
+#  its numbers changed) into the spool volume both containers share:
+#      $SPOOL/dragonsoul/dragon_soul_table.custom.txt
+#  and before the cores boot (m2-supervise, boot_cores) `apply' puts it in
+#  place of the live file. No file means the image's table. The image's file
+#  goes back to the panel as $SPOOL/dragonsoul/dragon_soul_table.base.txt; how
+#  the last apply went: $SPOOL/dragonsoul/status (state, time, groups, sha,
+#  message - like m2-fishing).
+#
+#  Checked before anything is used (a failing file is not used at all, the
+#  cores boot with the image's table and the panel is told why): at most
+#  512 KB, every "{" closed, the groups the engine needs are there and the
+#  stone list (Group VnumMapper) is exactly the image's. The values
+#  themselves were checked by the panel.
+#
+#  Subcommands
+#      prepare   as root, at container start: keep the image's file, make the
+#                live one writable by the service account, the spool folder
+#      apply     put the panel's table in place (run by m2-supervise before a boot)
+# =============================================================================
+set -u
+LC_ALL=C
+export LC_ALL
+
+SHARE_DIR="${M2_SHARE_DIR:-/opt/metin2/share}"
+VAR_DIR="${M2_VAR_DIR:-/opt/metin2/var}"
+LOCALE_DIR="$SHARE_DIR/locale/${M2_LOCALE_NAME:-poland}"
+SPOOL="${M2_RATES_SPOOL:-/opt/m2spool}/dragonsoul"
+
+LIVE="$LOCALE_DIR/dragon_soul_table.txt"
+IMAGE="$LOCALE_DIR/dragon_soul_table.image.txt"
+CUSTOM="$SPOOL/dragon_soul_table.custom.txt"
+STATUS="$SPOOL/status"
+WORK="$VAR_DIR/dragonsoul"
+MAX_BYTES=524288
+GROUPS_NEEDED="vnummapper basicapplys additionalapplys applynumsettings weighttables refinegradetables refinesteptables refinestrengthtables dragonheartexttables dragonsoulexttables"
+
+say() { printf '%s [dragonsoul] %s\n' "$(date -u '+%Y-%m-%d %H:%M:%SZ')" "$1"; }
+
+write_status() { # write_status STATE GROUPS SHA MESSAGE
+    _tmp="$STATUS.new.$$"
+    { printf 'state=%s\n' "$1"
+      printf 'time=%s\n' "$(date +%s 2>/dev/null)"
+      printf 'groups=%s\n' "$2"
+      printf 'sha=%s\n' "$3"
+      printf 'message=%s\n' "$4"
+    } > "$_tmp" 2>/dev/null || { rm -f "$_tmp"; return 1; }
+    chmod 0664 "$_tmp" 2>/dev/null
+    mv -f "$_tmp" "$STATUS" 2>/dev/null || rm -f "$_tmp"
+    return 0
+}
+
+publish() { # publish SOURCE NAME -- a read-only copy of the image's file for the panel
+    [ -d "$SPOOL" ] && [ -f "$1" ] || return 0
+    cmp -s "$1" "$SPOOL/$2" && return 0
+    cp "$1" "$SPOOL/$2.new.$$" 2>/dev/null && chmod 0664 "$SPOOL/$2.new.$$" 2>/dev/null \
+        && mv -f "$SPOOL/$2.new.$$" "$SPOOL/$2" 2>/dev/null || rm -f "$SPOOL/$2.new.$$"
+}
+
+# The live file is rewritten in place: the folder belongs to root, the file
+# itself to the service account (prepare).
+put_live() { # put_live SOURCE
+    cmp -s "$1" "$LIVE" && return 0
+    cat "$1" > "$LIVE"
+}
+
+reject() { # reject SHA WHY
+    say "the panel's alchemy table was NOT used: $2"
+    put_live "$IMAGE"
+    write_status rejected 0 "$1" "$2"
+    return 0
+}
+
+# structure FILE -- one line per top-level group (lower case) and the
+# VnumMapper rows as "M <row>", or "E <why>"
+structure() {
+    tr -d '\r' < "$1" | awk '
+    { line = $0; sub(/^[[:blank:]]+/, "", line); sub(/[[:blank:]]+$/, "", line) }
+    line == "" || substr(line, 1, 1) == "#" { next }
+    tolower(substr(line, 1, 5)) == "group" { split(line, t, /[[:blank:]]+/); pending = tolower(t[2]); next }
+    substr(line, 1, 1) == "{" { depth++; name[depth] = pending; if (depth == 1) print "G " pending; next }
+    substr(line, 1, 1) == "}" { if (depth == 0) { print "E a \"}\" too many"; bad = 1; exit } depth--; next }
+    depth == 1 && name[1] == "vnummapper" { gsub(/[[:blank:]]+/, " ", line); print "M " line }
+    END { if (!bad && depth != 0) print "E a group is not closed (\"}\" missing)" }
+    '
+}
+
+cmd_prepare() {
+    [ -f "$LIVE" ] || { say "no $LIVE -- nothing to prepare"; return 0; }
+    # The first start of a container: the file is still the image's.
+    [ -f "$IMAGE" ] || cp -p "$LIVE" "$IMAGE" || return 1
+    chown metin2:metin2 "$LIVE" 2>/dev/null
+    chmod 0644 "$LIVE" 2>/dev/null
+    mkdir -p "$WORK" 2>/dev/null && chown metin2:metin2 "$WORK" 2>/dev/null
+    if mkdir -p "$SPOOL" 2>/dev/null; then
+        chgrp m2spool "$SPOOL" 2>/dev/null && chmod 2770 "$SPOOL" 2>/dev/null
+        chgrp -R m2spool "$SPOOL"/* 2>/dev/null
+        chmod g+rw "$SPOOL"/* 2>/dev/null
+    fi
+    return 0
+}
+
+cmd_apply() {
+    [ -f "$IMAGE" ] || { say "no $IMAGE (m2-dragonsoul prepare did not run) -- alchemy left as the image has it"; return 0; }
+    mkdir -p "$WORK" 2>/dev/null
+    publish "$IMAGE" dragon_soul_table.base.txt
+
+    if [ ! -s "$CUSTOM" ] || ! grep -q 'BasicApplys' "$CUSTOM"; then
+        put_live "$IMAGE" || { say "could not write $LIVE"; return 1; }
+        write_status base 0 "" "no change in the panel -- the image's alchemy table is live"
+        return 0
+    fi
+    _sha=$(sha256sum "$CUSTOM" | cut -d' ' -f1)
+    _size=$(wc -c < "$CUSTOM" | tr -d ' ')
+    [ "$_size" -le "$MAX_BYTES" ] || { reject "$_sha" "the file is larger than $MAX_BYTES bytes"; return 0; }
+
+    structure "$CUSTOM" > "$WORK/custom.struct"
+    structure "$IMAGE" > "$WORK/image.struct"
+    _why=$(sed -n 's/^E //p' "$WORK/custom.struct" | head -1)
+    [ -n "$_why" ] && { reject "$_sha" "$_why"; return 0; }
+    for _g in $GROUPS_NEEDED; do
+        grep -qx "G $_g" "$WORK/custom.struct" || { reject "$_sha" "no group $_g"; return 0; }
+    done
+    grep '^M ' "$WORK/custom.struct" > "$WORK/custom.mapper"
+    grep '^M ' "$WORK/image.struct" > "$WORK/image.mapper"
+    cmp -s "$WORK/custom.mapper" "$WORK/image.mapper" \
+        || { reject "$_sha" "the stone list (Group VnumMapper) differs from the image's"; return 0; }
+    _groups=$(grep -c '^G ' "$WORK/custom.struct")
+
+    if ! put_live "$CUSTOM"; then
+        say "could not write $LIVE -- alchemy left as it was"
+        write_status failed 0 "$_sha" "the game container could not write dragon_soul_table.txt"
+        return 1
+    fi
+    say "alchemy table from the panel applied ($_groups groups)"
+    write_status ok "$_groups" "$_sha" "applied: the panel's dragon_soul_table.txt"
+    return 0
+}
+
+case "${1:-}" in
+    prepare) cmd_prepare ;;
+    apply)   cmd_apply ;;
+    *) echo "usage: m2-dragonsoul prepare|apply"; exit 1 ;;
+esac
