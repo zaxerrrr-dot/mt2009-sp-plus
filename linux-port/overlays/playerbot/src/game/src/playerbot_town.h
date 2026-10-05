@@ -961,7 +961,8 @@ namespace
 		state.bTownNeedWeaponMerchant = HasPlayerBotJunkForMerchant(
 				ch, BOT_MERCHANT_WEAPON) || ch->GetWear(WEAR_WEAPON) == NULL ||
 				NeedsPlayerBotProgressionWeapon(ch) || NeedsPlayerBotArrows(ch) ||
-				NeedsPlayerBotProperWeapon(ch) || NeedsPlayerBotBackupWeapon(ch);
+				NeedsPlayerBotProperWeapon(ch) || NeedsPlayerBotBackupWeapon(ch) ||
+				PlayerBotWantsMerchantWeaponUpgrade(ch);   // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
 		state.bTownNeedArmorMerchant = HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR) ||
 				NeedsPlayerBotProgressionArmor(ch) || NeedsPlayerBotProgressionShield(ch) ||
 				NeedsPlayerBotProgressionHelmet(ch) || NeedsPlayerBotBackupArmour(ch);

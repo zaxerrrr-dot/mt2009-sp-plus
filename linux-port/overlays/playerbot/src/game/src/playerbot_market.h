@@ -350,6 +350,14 @@ namespace
 		if (offer->GetType() == ITEM_TREASURE_KEY)
 			return PlayerBotWantsTreasureKey(ch, offer);
 
+		// MT2009_PLUS_BOT_GEAR_UPGRADE_V1: a weapon at any plus whose blow beats
+		// the best one the bot owns by a tenth, and which the equipment pass
+		// would put on (IsPlayerBotWeaponUpgradeOffer). The +6 rule below is
+		// for a finished piece worn as it is; a weapon two tiers over the hand
+		// at +4 is the anvil's next project and hits harder already.
+		if (offer->GetType() == ITEM_WEAPON && IsPlayerBotWeaponUpgradeOffer(ch, offer, NULL))
+			return true;
+
 		// Gear only when it is genuinely better than what is worn. A bot that
 		// buys sideways upgrades spends its yang on nothing.
 		if (!IsPlayerBotEquipmentCandidate(ch, offer))
@@ -525,6 +533,10 @@ namespace
 		// A scroll for a weapon that is refined under one.
 		if (PlayerBotNeedsScrollForWeapon(ch))
 			return true;
+		// MT2009_PLUS_BOT_GEAR_UPGRADE_V1: a weapon on its first village's stands
+		// it would buy now (playerbot_gear_upgrade.h).
+		if (PlayerBotWantsWeaponUpgradeFromMarket(ch))
+			return true;
 		// A weapon the atlas says it has outgrown, when it could pay for the one
 		// it is after (playerbot_weapon_goal.h).
 		{
@@ -607,6 +619,17 @@ namespace
 		// the reserve below keeps from everything else (playerbot_guild_land.h).
 		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
 			return CanPlayerBotPayForGuildMaterial(ch, item, price);
+		// MT2009_PLUS_BOT_GEAR_UPGRADE_V1: a weapon upgrade out of its own share
+		// of the purse, over PLAYERBOT_WEAPON_UPGRADE_GOLD_FLOOR - half of it,
+		// four fifths for a gain of a quarter or more. Refused here, it may
+		// still be paid by a rule below (the level-30 weapon's, the
+		// Perfectionist's).
+		{
+			long long gain = 0;
+			if (item->GetType() == ITEM_WEAPON && IsPlayerBotWeaponUpgradeOffer(ch, item, &gain) &&
+					price <= GetPlayerBotWeaponUpgradeBudget(ch, gain))
+				return true;
+		}
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		if (price > spare) return false;
 		// MT2009_PLUS_BOT_MINIGAMES_V1: no dearer than what it holds (a gambler
@@ -1594,6 +1617,7 @@ namespace
 		LogPlayerBotAlchemyCensus();
 		LogPlayerBotHerbalistCensus(dwNow);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
 		ReportPlayerBotWeaponGoals(dwNow);
+		ReportPlayerBotWeaponUpgrades(dwNow); // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
 		ReportPlayerBotLevel30Census();
 		ReportPlayerBotStalkiCensus();
 		ReportPlayerBotTopCopies();

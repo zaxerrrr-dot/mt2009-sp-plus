@@ -188,6 +188,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_activities.h"
 #include "playerbot_mining.h"
 #include "playerbot_herbalism.h"
+#include "playerbot_gear_upgrade.h" // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: counter weapons at any plus by the damage model, the merchant's best weapon, the tool guard
 #include "playerbot_unique_slots.h"
 #include "playerbot_missions.h"
 #include "playerbot_skills.h"
@@ -6452,6 +6453,12 @@ WritePlayerBotGuildStatus(dwNow);
 
 		if (!d->IsPhase(PHASE_GAME))
 			continue;
+
+		// MT2009_PLUS_BOT_GEAR_UPGRADE_V1: a rod, a pickaxe or a knife outside
+		// its own session, or in a dungeon, goes back in the bag and the best
+		// weapon in the hand - above every pass that claims the tick
+		// (playerbot_gear_upgrade.h).
+		ManagePlayerBotToolHand(ch, state, dwNow);
 
 		// MT2009_PLUS_SHOUTERS_V1: a shouter at its level stands at its post
 		// and shouts, and does nothing else (playerbot_shouters.h).

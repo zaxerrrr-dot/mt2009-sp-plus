@@ -4588,6 +4588,13 @@ namespace
 		if (NeedsPlayerBotProperWeapon(ch) && !IsPlayerBotRebuildingFromMarket(ch, WEAR_WEAPON) &&
 				(!isArcher || CountPlayerBotArrows(ch) >= PLAYERBOT_ARROW_RESTOCK_THRESHOLD))
 			bought = BuyPlayerBotProperWeapon(ch) || bought;
+		// MT2009_PLUS_BOT_GEAR_UPGRADE_V1: and the merchant's best weapon for
+		// the bot whenever it hits a tenth harder than the best one it owns -
+		// the ladder above names the family's own tier for the level, which
+		// the merchants stock at 15, 25 and 36 only (playerbot_gear_upgrade.h).
+		if (!IsPlayerBotRebuildingFromMarket(ch, WEAR_WEAPON) &&
+				(!isArcher || CountPlayerBotArrows(ch) >= PLAYERBOT_ARROW_RESTOCK_THRESHOLD))
+			bought = BuyPlayerBotMerchantWeaponUpgrade(ch) || bought;
 		// The weapon in the hand held at a step that can burn it for want of a
 		// backup and a scroll (R8 of Iwakura's audit): the merchant's copy is
 		// that backup, bought only where the step can still be paid after it.
