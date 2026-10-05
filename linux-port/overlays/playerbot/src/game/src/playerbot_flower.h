@@ -329,7 +329,7 @@ namespace mt2009_flower
 			Message(ch, FLOWER_EVENT_CHAT_TYPE_GET_SHOOT_ENVELOPE, SHOOT_ENVELOPE);
 		}
 		else
-			ch->ChatPacket(CHAT_TYPE_INFO, "Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d). Okno eventu otworzysz po aktualizacji klienta.", have + 1);
+			ch->ChatPacket(CHAT_TYPE_INFO, "Dzieci Kwiaty: zdobywasz Nasiona Kwiatow (masz %d).", have + 1);
 	}
 
 	const BYTE SHOOT_GET_ONE[SHOOT_TYPE_MAX] =
