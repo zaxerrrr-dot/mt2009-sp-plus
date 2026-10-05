@@ -246,10 +246,15 @@ namespace
 		// MT2009_PLUS_BOT_RANK_GLOVE_V1: not while it hunts the rank back
 		// (IsPlayerBotRankHunting) - the town gave it no bean, and a trip back
 		// for one would only stand it there again.
+		// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: and up to its keep for a
+		// Kamien Duchowy waiting on rank (PlayerBotNeedsTrainingRank, the beans
+		// it holds already counted), the beans being how that rank is bridged.
 		if (offer->GetVnum() == PLAYERBOT_ZEN_BEAN_VNUM)
-			return ch->GetRealAlignment() < 0 &&
+			return (ch->GetRealAlignment() < 0 &&
 					ch->CountSpecifyItem(PLAYERBOT_ZEN_BEAN_VNUM) == 0 &&
-					!IsPlayerBotRankHunting(ch, get_dword_time());
+					!IsPlayerBotRankHunting(ch, get_dword_time())) ||
+					(ch->GetRealAlignment() >= 0 && PlayerBotNeedsTrainingRank(ch) &&
+					(int)ch->CountSpecifyItem(PLAYERBOT_ZEN_BEAN_VNUM) < GetPlayerBotZenBeanKeep(ch));
 
 		// A Moonlight chest, to open (WantsPlayerBotMoonlightChest).
 		if (offer->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM)

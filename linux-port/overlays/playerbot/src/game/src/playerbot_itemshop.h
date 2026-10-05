@@ -316,7 +316,8 @@ namespace
 			if (level < 30 || level >= 40)
 				continue;
 			const int cost = GetPlayerBotGrandMasterRankCost(level);
-			if (ch->GetRealAlignment() - cost >= 0)
+			// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: the beans in the bag count.
+			if (ch->GetRealAlignment() + GetPlayerBotZenBeanLift(ch) - cost >= 0)
 				return true;
 		}
 		return false;

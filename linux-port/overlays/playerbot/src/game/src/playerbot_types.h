@@ -383,6 +383,21 @@ namespace
 	const int PLAYERBOT_ZEN_BEAN_KEEP_MAX = 15;
 	const int PLAYERBOT_ZEN_BEAN_LINE_UNITS = 5;
 	const DWORD PLAYERBOT_ZEN_BEAN_CHECK_INTERVAL = 10000;
+	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1 ("Towarzysz nie wie o
+	// istnieniu fasolki zen i czeka az wbije range zamiast wejsc na chwile na
+	// negatywna i zredukowac fasolkami", the owner, 5 October; then every
+	// bot): the rank the beans in a bot's bag can give back, in the engine's
+	// units, counted the way the engine eats them - each lifts a negative
+	// rank by min(value0, -rank) (CHARACTER::UseItem, 70102/70103), so beans
+	// worth L in all bring a rank of R - cost back to zero whenever
+	// R + L >= cost. A Kamien Duchowy is read on that, and the beans are eaten
+	// straight after the read (UsePlayerBotZenBeansNow) until the rank is at
+	// zero or the beans are gone. Not counted: a bean locked, held for a
+	// companion's owner or under its owner's lock, and any bean while the
+	// shown rank is not the real one (the engine checks the shown one).
+	bool IsPlayerBotZenBeanUsable(LPCHARACTER ch, LPITEM item);
+	int GetPlayerBotZenBeanLift(LPCHARACTER ch);
+	int UsePlayerBotZenBeansNow(LPCHARACTER ch);
 	// A bot with a negative rank waits inside its village's safe ring
 	// (KeepPlayerBotNegativeRankInTown): the rest mark that keeps the inactivity
 	// watchdog off a bot standing still on purpose is renewed for this long, and
@@ -3027,7 +3042,9 @@ namespace
 	// 100 000 (owner, 4 October).
 	// 13: MT2009_PLUS_WEAK_BONUS_WEAPON_EAR_V1 - weak bonus lines on weapons
 	// and earrings 35% cheaper (owner, 5 October).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 13;
+	// 14: MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1 - Fasolka Zen at a third
+	// of a Kamien Duchowy (owner, 5 October).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 14;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in

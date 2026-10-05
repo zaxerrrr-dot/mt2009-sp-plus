@@ -8149,6 +8149,7 @@ namespace
 		int iReadyAt;
 		int iStones;
 		LPITEM pStone;
+		int iBeanLift;	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1, shown as the quest reads it
 	};
 
 	struct TPlayerBotSidekickGrandMasterTold
@@ -8178,6 +8179,7 @@ namespace
 		TPlayerBotSidekickGrandMasterView v;
 		memset(&v, 0, sizeof(v));
 		v.bStatus = PLAYERBOT_SIDEKICK_GM_NOTHING;
+		v.iBeanLift = 0;
 		const DWORD base = sk ? GetPlayerBotSidekickSkillBase(sk) : 0;
 		if (base == 0 || !sk->IsItemLoaded())
 			return v;
@@ -8232,7 +8234,12 @@ namespace
 			v.bStatus = PLAYERBOT_SIDEKICK_GM_WAIT;
 			return v;
 		}
-		if (sk->GetRealAlignment() < GetPlayerBotGrandMasterRankCost(v.iLevel))
+		// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: the Zen beans in its bag
+		// count - the read takes the rank under zero and the beans bring it
+		// back at once (ManagePlayerBotGrandMasterTraining).
+		const int beanLift = GetPlayerBotZenBeanLift(sk);
+		v.iBeanLift = beanLift / 10;
+		if (sk->GetRealAlignment() + beanLift < GetPlayerBotGrandMasterRankCost(v.iLevel))
 		{
 			v.bStatus = PLAYERBOT_SIDEKICK_GM_RANK;
 			return v;
@@ -8302,9 +8309,16 @@ namespace
 						GetPlayerBotSidekickWaitWords(v.iReadyAt - get_global_time()).c_str());
 				break;
 			case PLAYERBOT_SIDEKICK_GM_RANK:
-				snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) - Kamien Duchowy mam (%d), "
-						"ale ranga za niska: mam %d, trening kosztuje %d. Ranga rosnie za zabijanie potworow.",
-						skill, grade.c_str(), v.iStones, v.iRank, v.iNeed);
+				if (v.iBeanLift > 0)
+					snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) - Kamien Duchowy mam (%d), "
+							"ale ranga za niska: mam %d, fasolki Zen dadza %d, trening kosztuje %d. Ranga rosnie "
+							"za zabijanie potworow, wiecej fasolek tez pomoze.",
+							skill, grade.c_str(), v.iStones, v.iRank, v.iBeanLift, v.iNeed);
+				else
+					snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) - Kamien Duchowy mam (%d), "
+							"ale ranga za niska: mam %d, trening kosztuje %d. Ranga rosnie za zabijanie potworow "
+							"albo daj mi Fasolki Zen - zejde na chwile pod zero i od razu je zjem.",
+							skill, grade.c_str(), v.iStones, v.iRank, v.iNeed);
 				break;
 			case PLAYERBOT_SIDEKICK_GM_BOOK:
 				snprintf(text, sizeof(text), "Trening Wielkiego Mistrza: %s (%s) - najpierw czytam ksiege pod "
@@ -8378,6 +8392,7 @@ namespace
 		const bool learned = ch->LearnGrandMasterSkill(v.dwSkill);
 		const int paid = learned ? v.iNeed : number(v.iNeed / 3, v.iNeed / 2);
 		ch->UpdateAlignment(-paid * 10);
+		UsePlayerBotZenBeansNow(ch);	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1
 		SetPlayerBotAction(state, BOT_ACTION_READ_BOOK, dwNow);
 		const int levelNow = ch->GetSkillLevel(v.dwSkill);
 		sys_log(0, "PLAYERBOT_SIDEKICK: grand master training %s pid=%u name=%s owner=%u skill=%u level=%d->%d "

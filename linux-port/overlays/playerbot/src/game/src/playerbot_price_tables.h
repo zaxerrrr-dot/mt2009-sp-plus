@@ -358,6 +358,9 @@ namespace
 		{ 30367,   151300 },	// Luski Smoka
 		{ 35002,   104302 },	// Nieznane Lekarstwo
 	};
+	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: a Fasolka Zen is a third of a
+	// Kamien Duchowy (owner, 5 October), so the two rows move together.
+	const DWORD PLAYERBOT_SPIRIT_STONE_PRICE = 750000;
 	const TPlayerBotMaterialPrice PLAYERBOT_EXTRA_MATERIAL_PRICES[] = {
 		{ 25040,   1375000 },	// Zwoj Blogoslawienstwa
 		{ 30670,  40000000 },	// Kamien Przebudzenia (MT2009_PLUS_AWAKENING_V1, Digi Rasta's 40 kk)
@@ -444,7 +447,7 @@ namespace
 		{ 50319,   120000 },	// Ksiega Misji (Normalna)
 		{ 50320,   250000 },	// Ksiega Misji (Trudna)
 		{ 50321,   500000 },	// Ksiega Misji (ekspert)
-		{ 50513,   750000 },	// Kamien duchowy
+		{ 50513,   PLAYERBOT_SPIRIT_STONE_PRICE },	// Kamien duchowy
 		{ 50600,    90000 },	// Przewodnik do zbieractwa
 		{ 50601,     3184 },	// Diamentowy Kamien
 		{ 50603,      290 },	// Skamienialy Pien
@@ -547,7 +550,7 @@ namespace
 		{ 70050,    65000 },	// Symb. Krola Przepowiedni
 		{ 70051,    65000 },	// Rekawica Krola Przepow.
 		{ 70057,    55000 },	// Peleryna Mestwa
-		{ 70102,    140000 },	// Fasolka zen
+		{ 70102,   PLAYERBOT_SPIRIT_STONE_PRICE / 3 },	// Fasolka zen (a third of a Kamien duchowy)
 		{ 70138,    55000 },	// Peleryna Mestwa
 		{ 70201,    20000 },	// Wybielacz
 		{ 70202,    25000 },	// Biala Farba Do Wlosow

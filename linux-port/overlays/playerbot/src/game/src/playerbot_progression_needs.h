@@ -25,12 +25,14 @@ namespace {
         if (!PlayerBotHasGrandMasterToTrain(ch) || !ch->CountSpecifyItem(PLAYERBOT_GRAND_MASTER_STONE_VNUM)) return false;
         const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
         bool blocked = false;
+        // MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: the beans in the bag count.
+        const int beanLift = GetPlayerBotZenBeanLift(ch);
         for (BYTE i = 0; i < build.bSkillCount; ++i) {
             DWORD skill = build.dwSkills[i];
             if (!skill || ch->GetSkillMasterType(skill) != SKILL_GRAND_MASTER) continue;
             const int level = ch->GetSkillLevel(skill);
             if (level < 30 || level >= 40) continue;
-            if (ch->GetRealAlignment() >= GetPlayerBotGrandMasterRankCost(level)) return false;
+            if (ch->GetRealAlignment() + beanLift >= GetPlayerBotGrandMasterRankCost(level)) return false;
             blocked = true;
         }
         return blocked;

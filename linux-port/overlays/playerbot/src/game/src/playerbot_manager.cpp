@@ -2556,6 +2556,55 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1 (playerbot_types.h): what of a
+	// bot's beans it may eat, what they give back, and eating them at once.
+	bool IsPlayerBotZenBeanUsable(LPCHARACTER ch, LPITEM item)
+	{
+		return ch && item && item->GetVnum() == PLAYERBOT_ZEN_BEAN_VNUM && !item->isLocked() &&
+				!item->IsExchanging() && !IsPlayerBotSidekickHeld(ch, item) &&
+				!IsPlayerBotSidekickLockedItem(ch, item);
+	}
+
+	int GetPlayerBotZenBeanLift(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || ch->GetAlignment() != ch->GetRealAlignment())
+			return 0;
+		long long lift = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (IsPlayerBotZenBeanUsable(ch, item) && item->GetValue(0) > 0)
+				lift += (long long)item->GetValue(0) * item->GetCount();
+			if (lift >= 400000)
+				return 400000;
+		}
+		return (int)lift;
+	}
+
+	int UsePlayerBotZenBeansNow(LPCHARACTER ch)
+	{
+		int eaten = 0;
+		while (ch && ch->GetAlignment() < 0 && eaten < 200)
+		{
+			bool ate = false;
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && !ate; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (!IsPlayerBotZenBeanUsable(ch, item))
+					continue;
+				const int before = ch->GetRealAlignment();
+				ch->UseItem(TItemPos(INVENTORY, cell));
+				if (ch->GetRealAlignment() == before)
+					return eaten;	// the engine refused it; the interval tries again
+				ate = true;
+				++eaten;
+			}
+			if (!ate)
+				break;
+		}
+		return eaten;
+	}
+
 	// Kamien Duchowy (50513) is the Grand Master's book: one read trains a skill
 	// at G1..G10 on towards Perfect Master. The engine's half is
 	// LearnGrandMasterSkill (a thirty percent roll, four under the first reads);
@@ -2565,7 +2614,9 @@ namespace
 	// the stone spent either way, and the rank the training costs: 1000 plus
 	// 500 a grade over G1 on a success, a third to a half of that on a failure,
 	// twice as much for a rank already below zero. A bot trains only while the
-	// full price leaves its rank at zero or above, so it never walks about with
+	// full price leaves its rank at zero or above - counting what the Zen beans
+	// in its bag give back (MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1), eaten
+	// straight after a read that took it under - so it never walks about with
 	// a negative rank - the rank that lets a player hunt it for its gear
 	// (ItemDropPenalty). The stones used to go to the merchant for 194 yang,
 	// because nothing kept an ITEM_QUEST out of the junk rule ("Boty sprzedaja
@@ -2619,6 +2670,7 @@ namespace
 		// The skill the books would pick: the build's primary first, then the
 		// highest grade.
 		const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
+		const int beanLift = GetPlayerBotZenBeanLift(ch);
 		DWORD skillVnum = 0;
 		int bestPriority = INT_MIN;
 		for (BYTE i = 0; i < build.bSkillCount; ++i)
@@ -2629,7 +2681,8 @@ namespace
 			const int level = ch->GetSkillLevel(vnum);
 			if (level < 30 || level >= 40)
 				continue;
-			if (ch->GetRealAlignment() < GetPlayerBotGrandMasterRankCost(level)) continue;
+			// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: the beans in the bag count.
+			if (ch->GetRealAlignment() + beanLift < GetPlayerBotGrandMasterRankCost(level)) continue;
 			const int priority = (vnum == build.dwPrimaryMaxSkill ? 10000 : 0) + level;
 			if (priority > bestPriority)
 			{
@@ -2643,13 +2696,15 @@ namespace
 		const int level = ch->GetSkillLevel(skillVnum);
 		const int rank = ch->GetRealAlignment();
 		const int cost = GetPlayerBotGrandMasterRankCost(level) * (rank < 0 ? 2 : 1);
-		if (rank - cost < 0)
+		if (rank + beanLift - cost < 0)
 		{
 			PlayerBotLogThrottled("grand_master_rank", dwNow,
-					"PLAYERBOT_AI: grand master training waits for rank pid=%u name=%s skill=%u level=%d rank=%d cost=%d",
-					ch->GetPlayerID(), ch->GetName(), skillVnum, level, rank, cost);
+					"PLAYERBOT_AI: grand master training waits for rank pid=%u name=%s skill=%u level=%d rank=%d "
+					"cost=%d bean_lift=%d",
+					ch->GetPlayerID(), ch->GetName(), skillVnum, level, rank, cost, beanLift);
 			return;
 		}
+		const bool onBeans = rank - cost < 0;
 
 		// item.remove(1): the quest spends the stone before the roll.
 		if (stone->GetCount() > 1)
@@ -2672,13 +2727,27 @@ namespace
 		sys_log(0, "PLAYERBOT_AI: grand master training %s pid=%u name=%s skill=%u level=%d->%d rank=%d->%d",
 				learned ? "SUCCESS" : "FAILED", ch->GetPlayerID(), ch->GetName(), skillVnum,
 				level, (int)ch->GetSkillLevel(skillVnum), rank, ch->GetRealAlignment());
+		// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: a read the beans paid for
+		// leaves the rank below zero only until they are eaten - now, not on
+		// ManagePlayerBotZenBeans' clock.
+		if (ch->GetAlignment() < 0)
+		{
+			const int below = ch->GetRealAlignment();
+			const int eaten = UsePlayerBotZenBeansNow(ch);
+			sys_log(0, "PLAYERBOT_AI: grand master training on zen beans pid=%u name=%s sidekick=%d planned=%d "
+					"rank=%d->%d beans_eaten=%d beans_left=%d",
+					ch->GetPlayerID(), ch->GetName(), IsPlayerBotSidekickPID(ch->GetPlayerID()) ? 1 : 0,
+					onBeans ? 1 : 0, below, ch->GetRealAlignment(), eaten,
+					(int)ch->CountSpecifyItem(PLAYERBOT_ZEN_BEAN_VNUM));
+		}
 	}
 
 	// A rank below zero is what lets another player hunt a character for its
 	// gear, and Fasolka Zen lifts it by up to its value0 - the engine takes a
-	// bean only then. The training above never takes a bot under zero, so this
-	// is the net for whatever else might ("boty powinny unikac biegania z
-	// negatywna ranga", Tieru, 15 September).
+	// bean only then. The training above eats its own beans at once after a
+	// read that took the rank under zero, so this is the net for whatever else
+	// might ("boty powinny unikac biegania z negatywna ranga", Tieru, 15
+	// September).
 	void ManagePlayerBotZenBeans(LPCHARACTER ch, DWORD dwNow)
 	{
 		static std::map<DWORD, DWORD> s_mapPlayerBotZenBeanNext;
@@ -2691,7 +2760,7 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (!item || item->GetVnum() != PLAYERBOT_ZEN_BEAN_VNUM || item->isLocked())
+			if (!IsPlayerBotZenBeanUsable(ch, item))
 				continue;
 			const int before = ch->GetRealAlignment();
 			ch->UseItem(TItemPos(INVENTORY, cell));
