@@ -56,9 +56,10 @@
 //    REQUEST_QUEST_FLAG when the game window starts); before that, chat lines.
 //  - Bots get no packets; they collect cards from their kills and "play" a
 //    set without a table (MT2009_PLUS_BOT_MINIGAMES_V1, playerbot_minigames.h);
-//    some of those games go into the season's scores like a player's
-//    (MT2009_PLUS_MINIGAME_BOT_RANKING_V1), but the top ten's prize goes by
-//    the place among the players only (RumiLuaClaim).
+//    some of those games go into the season's scores like a player's, and a
+//    bot of the season's top ten gets its place's prize in the reward window
+//    (MT2009_PLUS_MINIGAME_BOT_RANKING_V1, marked with F_CLAIMED as a
+//    player's claim is).
 #include "packet.h"
 #include <random>
 
@@ -792,29 +793,15 @@ int RumiLuaClaim(LPCHARACTER ch, DWORD& vnum, int& count)
 		return 1;
 	if ((DWORD)ch->GetQuestFlag(F_CLAIMED) == season)
 		return 2;
-	// MT2009_PLUS_MINIGAME_BOT_RANKING_V1: the prize place is the place among
-	// the players - the list the table shows has the bots' scores too, but a
-	// bot (an account named playerbot_*) takes no prize place from a player.
-	std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
-			"SELECT s.pid FROM player.mt2009_rumi_score s JOIN player.player p ON p.id = s.pid "
-			"LEFT JOIN account.account a ON a.id = p.account_id "
-			"WHERE s.season = %u AND s.total_score > 0 AND p.name NOT LIKE '[%%' AND LEFT(IFNULL(a.login, ''), 10) <> 'playerbot_' "
-			"ORDER BY s.total_score DESC, s.last_play ASC LIMIT 10", (unsigned int)season));
-	if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
-		return 3;
+	std::vector<std::pair<std::string, DWORD> > top;
+	RumiLuaScoreTable(true, top);
 	int rank = -1;
-	MYSQL_ROW row;
-	for (int i = 0; NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)); ++i)
-	{
-		DWORD pid = 0;
-		if (row[0])
-			str_to_number(pid, row[0]);
-		if (pid == ch->GetPlayerID())
+	for (size_t i = 0; i < top.size(); ++i)
+		if (top[i].first == ch->GetName())
 		{
-			rank = i;
+			rank = (int)i;
 			break;
 		}
-	}
 	if (rank < 0)
 		return 3;
 	vnum = SeasonNormal() ? REWARD_NORMAL_HIGH : REWARD_XMAS_HIGH;
