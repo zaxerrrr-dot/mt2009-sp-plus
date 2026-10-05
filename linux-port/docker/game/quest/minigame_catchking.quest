@@ -86,7 +86,6 @@ quest minigame_catchking begin
 				say_reward("2. miejsce: 5x " .. get_item_name(50968))
 				say_reward("3. miejsce: 3x " .. get_item_name(50968))
 				say_reward("4.-10. miejsce: 1x " .. get_item_name(50968))
-				say("Do nagrod liczy sie miejsce wsrod graczy (boty pomijane).") -- MT2009_PLUS_MINIGAME_BOT_RANKING_V1
 			elseif sel == 2 or sel == 3 then
 				local total = sel == 2
 				if total then

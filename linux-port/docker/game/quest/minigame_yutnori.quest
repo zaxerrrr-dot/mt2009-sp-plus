@@ -14,19 +14,12 @@ quest minigame_yutnori begin
 
 		-- The ten best of the season by column ("total_score" or "best_score"):
 		-- a list of {pid, name, score}, game masters ([...]) left out.
-		-- MT2009_PLUS_MINIGAME_BOT_RANKING_V1: the bots' scores are in the table
-		-- too (playerbot_minigames.h); players_only leaves them out (accounts
-		-- playerbot_*) - the prize places are the players' own.
-		function ranking(column, players_only)
+		function ranking(column)
 			local s = minigame_yutnori.season()
 			if s <= 0 then
 				return {}
 			end
-			local bots = ""
-			if players_only then
-				bots = " AND p.account_id NOT IN (SELECT a.id FROM account.account a WHERE LEFT(a.login, 10) = 'playerbot_')"
-			end
-			local q = string.format("SELECT y.pid AS pid, p.name AS name, y.%s AS score FROM player.minigame_yutnori y JOIN player.player p ON p.id = y.pid WHERE y.season = %d AND y.%s > 0 AND p.name NOT LIKE '[%%'%s ORDER BY y.%s DESC, y.last_play ASC LIMIT 10", column, s, column, bots, column)
+			local q = string.format("SELECT y.pid AS pid, p.name AS name, y.%s AS score FROM player.minigame_yutnori y JOIN player.player p ON p.id = y.pid WHERE y.season = %d AND y.%s > 0 AND p.name NOT LIKE '[%%' ORDER BY y.%s DESC, y.last_play ASC LIMIT 10", column, s, column, column)
 			local n, rows = mysql_direct_query(q)
 			if rows == nil then
 				return {}
@@ -95,7 +88,7 @@ quest minigame_yutnori begin
 				return
 			end
 			local rank = 0
-			local rows = minigame_yutnori.ranking("total_score", true)
+			local rows = minigame_yutnori.ranking("total_score")
 			for i = 1, table.getn(rows) do
 				if rows[i].pid == pc.get_player_id() then
 					rank = i
@@ -116,7 +109,7 @@ quest minigame_yutnori begin
 			pc.setqf("reward_season", s)
 			pc.give_item2(83030, count)
 			say_title("Stó³ do Yutnori")
-			say(string.format("Zaj¹³eœ %d. miejsce wœród graczy w rankingu!", rank))
+			say(string.format("Zaj¹³eœ %d. miejsce w rankingu!", rank))
 			say_item_vnum(83030)
 			say_reward(string.format("Otrzymujesz: %dx Z³ote Trofeum Yutnori", count))
 		end
@@ -167,7 +160,6 @@ quest minigame_yutnori begin
 				say_reward("2. miejsce: 5x Z³ote Trofeum Yutnori")
 				say_reward("3. miejsce: 3x Z³ote Trofeum Yutnori")
 				say_reward("4. - 10. miejsce: 1x Z³ote Trofeum Yutnori")
-				say("Do nagrod liczy sie miejsce wsrod graczy (boty pomijane).") -- MT2009_PLUS_MINIGAME_BOT_RANKING_V1
 			elseif sel == 2 then
 				minigame_yutnori.show_ranking("total_score", "£¹czny wynik")
 			elseif sel == 3 then

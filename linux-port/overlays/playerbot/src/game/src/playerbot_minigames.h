@@ -66,10 +66,29 @@
 //    event runs and its season is known and open - the seasons' own reset
 //    (a new season id per event) starts the bots from nothing too.
 //    The top-ten prizes of the three tables (10/5/3/1... gold chests) go by
-//    the place among the PLAYERS only (the claims skip accounts named
-//    playerbot_*): a bot never visits a table to claim, and a bot above a
-//    player in the list takes no prize place from them - the prizes' count
-//    and the economy stay as before the bots ranked.
+//    the real place in the full ranking, bots included (the owner, 5
+//    October: "boty niech normalnie dostaja nagrody"). A player claims his
+//    own at the table as before; a bot never visits a table, so a bot of the
+//    top ten is handed its place's prize by its next pass while the reward
+//    window is open (GivePlayerBotMinigamePrizes): the same items and counts
+//    the claim gives, marked claimed the claim's own way first (Rumi
+//    minigame_rumi.claimed, Catch the King the "claimed = 0" UPDATE, Yut Nori
+//    minigame_yutnori.reward_season), so neither the bot nor a second core
+//    can take it twice. AutoGiveItem puts it in the bag; a full bag gets it
+//    on the ground with the bot's ownership (the engine's overflow), where the
+//    bot's loot pass picks it up. From there it is ordinary bot loot - the
+//    chest pass and the counters, as for any of these chests.
+//  - Dzieci Kwiaty (MT2009_PLUS_BOT_FLOWER_V1, the owner, 5 October: "Naucz
+//    boty grac w Dzieci Kwiaty", every bot): a bot's kill rolls the seed with
+//    a player's chance (FlowerEventOnKill) onto the same counter
+//    (flower_event.envelope); while the event window is open (the event and
+//    its reward window) each pass exchanges the seeds for shoots and every
+//    ten shoots of one flower for its box, through the window's own
+//    ExchangeSeeds / ExchangeShoots (counters, limits and the room check as a
+//    player's); the boxes are gift boxes the chest pass opens. Seeds and
+//    shoots are counters, never items, so nothing of them can be sold or
+//    dropped; what is left after the window waits for the next event, as a
+//    player's does.
 //  - Chests are opened, listed and bought any time; cards drop and games are
 //    played only while the event runs.
 //  - "PLAYERBOT_MINIGAME:" lines: every token made, every game, every chest
@@ -142,6 +161,14 @@ namespace
 		long long rankedScore;
 	};
 	TPlayerBotMinigameCensus s_aPlayerBotMgCensus[PLAYERBOT_MG_GAMES];
+	// MT2009_PLUS_BOT_FLOWER_V1
+	struct TPlayerBotFlowerCensus
+	{
+		DWORD seeds, seedsExchanged, shoots, boxes, opened, noRoom;
+	};
+	TPlayerBotFlowerCensus s_kPlayerBotFlowerCensus;
+	// MT2009_PLUS_MINIGAME_BOT_RANKING_V1: the bots' top-ten prizes handed out.
+	DWORD s_adwPlayerBotMgPrizes[PLAYERBOT_MG_GAMES];
 	DWORD s_dwPlayerBotMgNextCensus = 0;
 	int s_iPlayerBotMgFitListPercent = 75;	// until the first census works it out
 	std::map<DWORD, DWORD> s_mapPlayerBotMgNextPass;
@@ -275,6 +302,93 @@ namespace
 				(unsigned int)ch->CountSpecifyItem(mg.token));
 	}
 
+	// ------------------------------------------------------------ Dzieci Kwiaty
+	// MT2009_PLUS_BOT_FLOWER_V1 (see the head of the file).
+
+	// A bot's kill gave a seed (FlowerEventOnKill rolled the players' chance).
+	void PlayerBotFlowerSeed(LPCHARACTER ch)
+	{
+		using namespace mt2009_flower;
+		if (!ch || IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return;
+		const TSettings& s = Settings();
+		const int have = Counter(ch, SHOOT_ENVELOPE);
+		if (have >= s.counterMax)
+			return;
+		SetCounter(ch, SHOOT_ENVELOPE, have + 1);
+		++s_kPlayerBotFlowerCensus.seeds;
+	}
+
+	bool IsPlayerBotFlowerBoxVnum(DWORD dwVnum)
+	{
+		const mt2009_flower::TSettings& s = mt2009_flower::Settings();
+		for (int t = SHOOT_CHRYSANTHEMUM; t <= SHOOT_SUNFLOWER; ++t)
+			if (dwVnum && s.rewardVnum[t] == dwVnum)
+				return true;
+		return false;
+	}
+
+	// The window's exchange, as a player clicks it: the seeds into shoots (the
+	// biggest of the window's amounts the seeds cover), then every flower with
+	// enough shoots into its box, one box a flower a pass.
+	bool ManagePlayerBotFlower(LPCHARACTER ch)
+	{
+		using namespace mt2009_flower;
+		if (!WindowOpen() || ch->GetExchange() || ch->GetMyShop() || ch->GetShop() || ch->IsOpenSafebox() ||
+				ch->IsCubeOpen() || ch->IsWarping() || ch->IsDead())
+			return false;
+		const TSettings& s = Settings();
+		const int seeds = Counter(ch, SHOOT_ENVELOPE);
+		int seedsUsed = 0, shootsMade = 0;
+		if (seeds >= s.seedsPerShoot)
+		{
+			int wanted = 0;
+			for (int k = 0; k < EXCHANGE_KEY_COUNT; ++k)
+				if ((long long)EXCHANGE_KEYS[k] * s.seedsPerShoot <= seeds)
+					wanted = EXCHANGE_KEYS[k];
+			int shootsBefore = 0;
+			for (int t = SHOOT_CHRYSANTHEMUM; t <= SHOOT_SUNFLOWER; ++t)
+				shootsBefore += Counter(ch, t);
+			if (wanted > 0)
+				ExchangeSeeds(ch, wanted, s);
+			seedsUsed = seeds - Counter(ch, SHOOT_ENVELOPE);
+			for (int t = SHOOT_CHRYSANTHEMUM; t <= SHOOT_SUNFLOWER; ++t)
+				shootsMade += Counter(ch, t);
+			shootsMade -= shootsBefore;
+		}
+		int boxes = 0;
+		bool noRoom = false;
+		for (int t = SHOOT_CHRYSANTHEMUM; t <= SHOOT_SUNFLOWER; ++t)
+		{
+			const int have = Counter(ch, t);
+			if (have < s.shootsPerReward)
+				continue;
+			ExchangeShoots(ch, t, 1, s);
+			if (Counter(ch, t) >= have)
+			{
+				noRoom = true;	// the bag had no room: the next pass asks again
+				break;
+			}
+			++boxes;
+			sys_log(0, "PLAYERBOT_MINIGAME: flower box pid=%u name=%s flower=%s vnum=%u count=%d shoots_left=%d",
+					ch->GetPlayerID(), ch->GetName(), SHOOT_NAME[t], s.rewardVnum[t], s.rewardCount[t], Counter(ch, t));
+		}
+		TPlayerBotFlowerCensus& c = s_kPlayerBotFlowerCensus;
+		c.seedsExchanged += seedsUsed;
+		c.shoots += shootsMade;
+		c.boxes += boxes;
+		if (noRoom)
+		{
+			++c.noRoom;
+			PlayerBotLogThrottled("minigame_flower_room", get_dword_time(),
+					"PLAYERBOT_MINIGAME: flower no room pid=%u name=%s", ch->GetPlayerID(), ch->GetName());
+		}
+		if (seedsUsed > 0)
+			sys_log(0, "PLAYERBOT_MINIGAME: flower seeds pid=%u name=%s seeds=%d shoots=%d seeds_left=%d",
+					ch->GetPlayerID(), ch->GetName(), seedsUsed, shootsMade, Counter(ch, SHOOT_ENVELOPE));
+		return seedsUsed > 0 || boxes > 0;
+	}
+
 	// ------------------------------------------------------------ the census
 
 	void UpdatePlayerBotMinigameCensus(DWORD dwNow)
@@ -311,10 +425,25 @@ namespace
 					c.tier[0], c.tier[1], c.tier[2], c.held, c.opened, c.bought, c.feesPaid, c.boughtYang,
 					total, fit, s_iPlayerBotMgFitListPercent, c.ranked, c.rankedScore);
 		}
+		for (int g = 0; g < PLAYERBOT_MG_GAMES; ++g)
+			if (s_adwPlayerBotMgPrizes[g])
+				sys_log(0, "PLAYERBOT_MINIGAME: census prizes game=%s bots_paid=%u", PLAYERBOT_MINIGAMES[g].name,
+						s_adwPlayerBotMgPrizes[g]);
+		const TPlayerBotFlowerCensus& f = s_kPlayerBotFlowerCensus;
+		if (mt2009_flower::WindowOpen() || f.seeds || f.boxes || f.opened)
+			sys_log(0, "PLAYERBOT_MINIGAME: census game=flower event=%d window=%d seeds=%u seeds_exchanged=%u shoots=%u "
+					"boxes=%u opened=%u no_room=%u",
+					mt2009_flower::Running() ? 1 : 0, mt2009_flower::WindowOpen() ? 1 : 0, f.seeds, f.seedsExchanged,
+					f.shoots, f.boxes, f.opened, f.noRoom);
 	}
 
 	void NotePlayerBotMinigameChestOpened(LPCHARACTER ch, DWORD dwVnum)
 	{
+		if (IsPlayerBotFlowerBoxVnum(dwVnum))	// MT2009_PLUS_BOT_FLOWER_V1
+		{
+			++s_kPlayerBotFlowerCensus.opened;
+			return;
+		}
 		const int game = GetPlayerBotMinigameOfChest(dwVnum);
 		if (game < 0)
 			return;
@@ -421,6 +550,163 @@ namespace
 		return score;
 	}
 
+	// ------------------------------------------------------------ the prizes
+	// MT2009_PLUS_MINIGAME_BOT_RANKING_V1 (see the head of the file).
+
+	const DWORD PLAYERBOT_MG_TOP_READ_MS = 300000;
+	// Yut Nori's prize counts (quest/minigame_yutnori.quest, prize_count).
+	const int PLAYERBOT_MG_YUT_PRIZE[10] = { 10, 5, 3, 1, 1, 1, 1, 1, 1, 1 };
+	const char* const PLAYERBOT_MG_CK_PRIZE_QF = "mt2009_botmg.ck_prize_season";
+	const char* const PLAYERBOT_MG_YUT_PRIZE_QF = "minigame_yutnori.reward_season";	// the quest's pc.setqf("reward_season")
+
+	struct TPlayerBotMgTop
+	{
+		DWORD season;
+		DWORD nextRead;
+		std::vector<DWORD> pids;	// the top ten, in place order
+	};
+	TPlayerBotMgTop s_aPlayerBotMgTop[PLAYERBOT_MG_GAMES];
+
+	// The season whose top-ten prize can be taken now (the claim's own
+	// conditions), 0 when none.
+	DWORD GetPlayerBotMinigamePrizeSeason(int game)
+	{
+		const long now = (long)time(NULL);
+		switch (game)
+		{
+			case 0:
+			{
+				const DWORD season = mt2009_catchking::Season();
+				return season && !InGameEventIsActive(mt2009_catchking::EVENT_KEY) &&
+						(long)InGameEventRewardEndTime(mt2009_catchking::EVENT_KEY) > now ? season : 0;
+			}
+			case 1:
+			{
+				const DWORD season = mt2009_rumi::SeasonId();
+				return season && mt2009_rumi::EventFlag(mt2009_rumi::S_STATE) == 2 &&
+						mt2009_rumi::RewardEnd() > (DWORD)get_global_time() ? season : 0;
+			}
+			case 2:
+			{
+				const DWORD season = mt2009_yutnori::Season();
+				return season && quest::CQuestManager::instance().GetEventFlag(mt2009_yutnori::FLAG_SEASON_CLOSED) &&
+						quest::CQuestManager::instance().GetEventFlag("mini_game_yutnori_reward") > now ? season : 0;
+			}
+		}
+		return 0;
+	}
+
+	// The top ten the claim reads (the same order), read again every
+	// PLAYERBOT_MG_TOP_READ_MS.
+	const std::vector<DWORD>& GetPlayerBotMinigameTopTen(int game, DWORD season, DWORD dwNow)
+	{
+		TPlayerBotMgTop& top = s_aPlayerBotMgTop[game];
+		if (top.season == season && top.nextRead && (int)(dwNow - top.nextRead) < 0)
+			return top.pids;
+		top.season = season;
+		top.nextRead = dwNow + PLAYERBOT_MG_TOP_READ_MS;
+		top.pids.clear();
+		std::unique_ptr<SQLMsg> msg;
+		if (game == 0)
+			msg = DBManager::instance().DirectQuery(
+					"SELECT pid FROM player.minigame_catchking WHERE season = %u AND games > 0 AND total_score >= %d "
+					"ORDER BY total_score DESC, max_score DESC, pid ASC LIMIT 10", season, (int)mt2009_catchking::REWARD_MIN_SCORE);
+		else if (game == 1)
+			msg = DBManager::instance().DirectQuery(
+					"SELECT s.pid FROM player.mt2009_rumi_score s JOIN player.player p ON p.id = s.pid "
+					"WHERE s.season = %u AND s.total_score > 0 AND p.name NOT LIKE '[%%' ORDER BY s.total_score DESC, s.last_play ASC LIMIT 10",
+					season);
+		else
+			msg = DBManager::instance().DirectQuery(
+					"SELECT y.pid FROM player.minigame_yutnori y JOIN player.player p ON p.id = y.pid "
+					"WHERE y.season = %u AND y.total_score > 0 AND p.name NOT LIKE '[%%' ORDER BY y.total_score DESC, y.last_play ASC LIMIT 10",
+					season);
+		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
+			return top.pids;
+		MYSQL_ROW row;
+		while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+		{
+			DWORD pid = 0;
+			if (row[0])
+				str_to_number(pid, row[0]);
+			top.pids.push_back(pid);
+		}
+		return top.pids;
+	}
+
+	// A bot of a top ten gets its place's prize, as its claim would give it.
+	bool GivePlayerBotMinigamePrizes(LPCHARACTER ch, DWORD dwNow)
+	{
+		bool given = false;
+		const DWORD pid = ch->GetPlayerID();
+		for (int g = 0; g < PLAYERBOT_MG_GAMES; ++g)
+		{
+			const DWORD season = GetPlayerBotMinigamePrizeSeason(g);
+			if (!season)
+				continue;
+			const std::vector<DWORD>& top = GetPlayerBotMinigameTopTen(g, season, dwNow);
+			int rank = -1;
+			for (size_t i = 0; i < top.size() && i < 10; ++i)
+				if (top[i] == pid)
+				{
+					rank = (int)i;
+					break;
+				}
+			if (rank < 0)
+				continue;
+			DWORD vnum = 0;
+			int count = 0;
+			switch (g)
+			{
+				case 0:
+				{
+					if ((DWORD)ch->GetQuestFlag(PLAYERBOT_MG_CK_PRIZE_QF) == season)
+						continue;
+					vnum = mt2009_catchking::VNUM_LOOT[0];
+					count = mt2009_catchking::TOP_PRIZE[rank];
+					if (!ITEM_MANAGER::instance().GetTable(vnum))
+						continue;
+					// The claim's own mark: only one core, once.
+					std::unique_ptr<SQLMsg> upd(DBManager::instance().DirectQuery(
+							"UPDATE player.minigame_catchking SET claimed = 1 WHERE season = %u AND pid = %u AND claimed = 0",
+							season, pid));
+					if (!upd.get() || upd->uiSQLErrno != 0 || !upd->Get())
+						continue;	// no answer: asked again next pass
+					// Taken now, or before (the row says so): asked no more.
+					ch->SetQuestFlag(PLAYERBOT_MG_CK_PRIZE_QF, (int)season);
+					if (upd->Get()->uiAffectedRows != 1)
+						continue;
+					break;
+				}
+				case 1:
+					if ((DWORD)ch->GetQuestFlag(mt2009_rumi::F_CLAIMED) == season)
+						continue;
+					vnum = mt2009_rumi::SeasonNormal() ? mt2009_rumi::REWARD_NORMAL_HIGH : mt2009_rumi::REWARD_XMAS_HIGH;
+					count = mt2009_rumi::RANK_PRIZE[rank];
+					if (!ITEM_MANAGER::instance().GetTable(vnum))
+						continue;
+					ch->SetQuestFlag(mt2009_rumi::F_CLAIMED, (int)season);
+					break;
+				case 2:
+					if ((DWORD)ch->GetQuestFlag(PLAYERBOT_MG_YUT_PRIZE_QF) == season)
+						continue;
+					vnum = mt2009_yutnori::REWARD_HIGH;
+					count = PLAYERBOT_MG_YUT_PRIZE[rank];
+					if (!ITEM_MANAGER::instance().GetTable(vnum))
+						continue;
+					ch->SetQuestFlag(PLAYERBOT_MG_YUT_PRIZE_QF, (int)season);
+					break;
+			}
+			LPITEM item = ch->AutoGiveItem(vnum, (ITEM_COUNT)count, -1, false);
+			++s_adwPlayerBotMgPrizes[g];
+			given = true;
+			sys_log(0, "PLAYERBOT_MINIGAME: prize pid=%u name=%s game=%s season=%u rank=%d vnum=%u count=%d where=%s",
+					pid, ch->GetName(), PLAYERBOT_MINIGAMES[g].name, season, rank + 1, vnum, count,
+					!item ? "none" : (item->GetOwner() == ch ? "bag" : "ground"));
+		}
+		return given;
+	}
+
 	// ------------------------------------------------------------ the game
 
 	// The token to play: an unlocked one (not on a stall, not in a trade).
@@ -507,10 +793,15 @@ namespace
 		next = dwNow + PLAYERBOT_MG_PASS_MS + (pid % 30U) * 1000U;
 		if (IsPlayerBotSidekickPID(pid))
 			return false;
+		// MT2009_PLUS_MINIGAME_BOT_RANKING_V1: a top ten's prize in the reward window.
+		bool acted = GivePlayerBotMinigamePrizes(ch, dwNow);
+		// MT2009_PLUS_BOT_FLOWER_V1: the Dzieci Kwiaty window's exchange.
+		if (ManagePlayerBotFlower(ch))
+			acted = true;
 		for (int g = 0; g < PLAYERBOT_MG_GAMES; ++g)
 			if (IsPlayerBotMinigameEventOn(g) && PlayPlayerBotMinigame(ch, g))
 				return true;
-		return false;
+		return acted;
 	}
 
 	// ------------------------------------------------------------ the buyers
