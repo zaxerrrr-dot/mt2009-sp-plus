@@ -41,7 +41,7 @@ def install(app, ctx):
 
     # The parts, in the order the hub shows them. A part that is missing (an
     # older image) is skipped.
-    for name in ("items", "skills", "drops", "chests", "mobs", "spawns", "regen", "shops", "refine", "attrs", "exptable", "fishing", "config", "clientdata"):
+    for name in ("items", "skills", "drops", "chests", "mobs", "spawns", "regen", "shops", "refine", "attrs", "exptable", "fishing", "dragonsoul", "config", "clientdata"):
         try:
             module = __import__("dbeditor." + name, fromlist=["install"])
         except ImportError:

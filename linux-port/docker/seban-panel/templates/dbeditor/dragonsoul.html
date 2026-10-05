@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_DRAGONSOUL_V1: Alchemia - dragon_soul_table.txt through the spool (dbeditor/dragonsoul.py, bin/m2-dragonsoul). #}
+{% block title %}Alchemia · Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% macro inp(c, width=70) -%}
+  {%- if c -%}<input name="{{ c.id }}" value="{{ c.value }}" title="{{ c.label }}" aria-label="{{ c.label }}" inputmode="decimal" style="width:{{ width }}px">{%- else -%}<span class="muted">—</span>{%- endif -%}
+{%- endmacro %}
+{% block content %}
+{% include 'dbeditor/_tables_head.html' %}
+<p class="eyebrow">EDYTOR BAZY DANYCH · ALCHEMIA</p>
+<h1>🐉 Alchemia (Smocze Kamienie) {% if source == 'custom' %}<small class="muted">· zmienione w panelu</small>{% endif %}</h1>
+<section class="panel dbt-note">
+  <p>Bonus na kamieniu = <b>wartość z tabeli × waga / 100</b> (w górę). Waga zależy od <b>klasy</b> (Zwykły…Mityczny), <b>stopnia</b> (Najniższy…Najwyższy) i <b>siły</b> (+0…+6) – najwyższa teraz to <b>{{ fmt(top) }}%</b>. Bonusy losują się, gdy kamień powstaje lub jest ulepszany – kamienie, które gracze już mają, zostają z dotychczasowymi wartościami aż do następnego ulepszenia.</p>
+  <p class="muted">Plik gry: locale/poland/dragon_soul_table.txt (czytany przy starcie rdzeni). <a href="{{ url_for('dbeditor.dragonsoul_file') }}">⬇ Pobierz obecny plik</a></p>
+</section>
+<section class="panel dbt-note {{ status.kind if status.kind in ('ok', 'error') else 'warn' }}">
+  <p><b>Stan w grze:</b> {{ status.text }}{% if status.time %} <small class="muted">(raport gry: {{ status.time.strftime('%Y-%m-%d %H:%M') }})</small>{% endif %}</p>
+  {% if base_source == 'snapshot' %}<p class="muted">Gra nie udostępniła jeszcze swojego pliku (dragonsoul/dragon_soul_table.base.txt w wolumenie) – pokazuję kopię z panelu.</p>{% endif %}
+</section>
+{% if problems %}<section class="panel dbt-note error">{% for p in problems %}<p>⚠️ {{ p }}</p>{% endfor %}</section>{% endif %}
+
+<section class="panel">
+  <h2>Mnożnik bonusów</h2>
+  <p class="muted">Mnoży <b>wszystkie wartości bonusów</b> kamieni (zaokrąglone, najmniej 1). Np. <b>2</b> albo <b>+100%</b> = dwa razy mocniejsza alchemia, <b>0,5</b> = o połowę słabsza.</p>
+  <form method="post" action="{{ url_for('dbeditor.dragonsoul_save') }}" class="dbt-actions" onsubmit="return confirm('Pomnożyć wartości bonusów?')">
+    <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="sha" value="{{ sha }}">
+    <label>Mnożnik<input name="factor" value="2" style="width:90px"></label>
+    <label>Które<select name="scope"><option value="all">stałe i losowe</option><option value="basic">tylko stałe</option><option value="additional">tylko losowe</option></select></label>
+    <button name="action" value="multiply">✖ Pomnóż bonusy</button>
+  </form>
+  <form method="post" action="{{ url_for('dbeditor.dragonsoul_save') }}" class="dbt-actions" onsubmit="return confirm('Pomnożyć wszystkie wagi?')">
+    <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="sha" value="{{ sha }}">
+    <label>albo mnożnik wag (klasa × stopień × siła)<input name="factor" value="1,5" style="width:90px"></label>
+    <button name="action" value="weights">✖ Pomnóż wagi</button>
+    <small class="muted">waga 0 zostaje 0 (dalsze ulepszanie niemożliwe), najwyżej 1000%</small>
+  </form>
+</section>
+
+<form method="post" action="{{ url_for('dbeditor.dragonsoul_save') }}">
+<input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="sha" value="{{ sha }}">
+<datalist id="dbt-ds-applies">{% for a, label in applies %}<option value="{{ a }}">{{ label }}</option>{% endfor %}</datalist>
+
+<section class="panel">
+  <h2>Bonusy kamieni</h2>
+  <p class="muted">Wartość „przy {{ fmt(top) }}%” = co dostaje kamień Mityczny, Najwyższy, +6. Szansa losowego bonusu to waga względem pozostałych losowych tego kamienia.</p>
+  {% for s in m.stones %}
+  <h3>{{ s.name }}</h3>
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>#</th><th>Bonus</th><th>Rodzaj (nazwa w pliku)</th><th class="num">Wartość</th><th class="num">przy {{ fmt(top) }}%</th><th class="num">Szansa</th></tr></thead>
+    <tbody>
+    {% for b in s.basic %}<tr><td>stały {{ b.n }}</td><td>{{ b.name }}</td><td><input name="{{ b.apply.id }}" value="{{ b.apply.value }}" list="dbt-ds-applies" style="width:220px"></td>
+      <td class="num">{{ inp(b.value) }}</td><td class="num">{{ on_stone(b.value.value, top) if b.value.value.isdigit() else '?' }}</td><td class="num muted">zawsze</td></tr>{% endfor %}
+    {% for b in s.additional %}<tr><td>losowy {{ b.n }}</td><td>{{ b.name }}</td><td><input name="{{ b.apply.id }}" value="{{ b.apply.value }}" list="dbt-ds-applies" style="width:220px"></td>
+      <td class="num">{{ inp(b.value) }}</td><td class="num">{{ on_stone(b.value.value, top) if b.value.value.isdigit() else '?' }}</td><td class="num">{{ inp(b.prob, 60) }}</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  {% endfor %}
+</section>
+
+<section class="panel">
+  <h2>Liczba bonusów wg klasy</h2>
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th></th>{% for g in grades %}<th class="num">{{ g }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for r in m.applynum %}<tr><td>{{ r.name }}</td>{% for c in r.cells %}<td class="num">{{ inp(c, 50) }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+
+<section class="panel">
+  <h2>Wagi (% wartości bonusu) – klasa × stopień × siła</h2>
+  <p class="muted">0 = kamień o tej sile nie istnieje (dalej nie da się ulepszyć).</p>
+  {% for g in m.weights %}
+  <h3>{{ g.name }}</h3>
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>Stopień</th>{% for k in strengths %}<th class="num">+{{ k }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for st in g.steps %}<tr><td>{{ st.name }}</td>{% for c in st.cells %}<td class="num">{{ inp(c, 55) }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table></div>
+  {% endfor %}
+</section>
+
+<section class="panel">
+  <h2>Ulepszanie klasy (szanse w %, koszt w Yang)</h2>
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>Z klasy</th><th class="num">Kamieni</th><th class="num">Koszt</th>{% for g in grades %}<th class="num">→ {{ g }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for r in m.refine_grade %}<tr><td>{{ r.name }}</td><td class="num">{{ inp(r.need, 45) }}</td><td class="num">{{ inp(r.fee, 95) }}</td>{% for c in r.probs %}<td class="num">{{ inp(c, 50) }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table></div>
+  <h2>Ulepszanie stopnia</h2>
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>Ze stopnia</th><th class="num">Kamieni</th><th class="num">Koszt</th>{% for s in steps %}<th class="num">→ {{ s }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for r in m.refine_step %}<tr><td>{{ r.name }}</td><td class="num">{{ inp(r.need, 45) }}</td><td class="num">{{ inp(r.fee, 95) }}</td>{% for c in r.probs %}<td class="num">{{ inp(c, 50) }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table></div>
+  <h2>Ulepszanie siły (szansa powodzenia +N → +N+1)</h2>
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>Materiał</th><th class="num">Koszt</th>{% for k in range(6) %}<th class="num">+{{ k }}→+{{ k + 1 }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for r in m.refine_strength %}<tr><td>{{ r.name }}</td><td class="num">{{ inp(r.fee, 95) }}</td>{% for c in r.probs %}<td class="num">{{ inp(c, 50) }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+
+<section class="panel">
+  <div class="dbt-actions">
+    <label>Notatka (opcjonalnie)<input name="note" maxlength="60" style="width:260px"></label>
+    <button name="action" value="save">💾 Zapisz</button>
+  </div>
+  <p class="muted">Przed zapisem panel sprawdza tabelę tak jak gra; gra sprawdza ją jeszcze raz przy starcie i w razie błędu zostaje przy swojej.</p>
+</section>
+</form>
+
+{% if source == 'custom' %}
+<form method="post" action="{{ url_for('dbeditor.dragonsoul_save') }}" onsubmit="return confirm('Alchemia wróci do tabeli z obrazu gry. Na pewno?')">
+  <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="action" value="reset">
+  <p><button>↺ Przywróć z obrazu gry</button></p>
+</form>
+{% endif %}
+
+{% if backups %}
+<section class="panel">
+  <h2>Kopie zapasowe</h2>
+  <table class="dbt-table">
+    <thead><tr><th>Kiedy</th><th>Co</th><th></th></tr></thead>
+    <tbody>
+    {% for b in backups %}
+      <tr><td>{{ b.time.strftime('%Y-%m-%d %H:%M:%S') }}</td><td>{{ 'stan z obrazu gry (bez zmian z panelu)' if b.empty else 'tabela z panelu (' ~ b.size ~ ' B)' }}</td>
+        <td><form method="post" action="{{ url_for('dbeditor.dragonsoul_save') }}" style="margin:0" onsubmit="return confirm('Przywrócić tę kopię?')">
+          <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="action" value="restore"><input type="hidden" name="name" value="{{ b.name }}">
+          <button class="dbe-small">↶ Przywróć</button></form></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+{% endblock %}
