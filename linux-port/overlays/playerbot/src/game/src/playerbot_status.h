@@ -358,6 +358,10 @@ namespace
 	// dungeon's entrance (playerbot_dungeon_lfg.h, which comes after this file).
 	inline bool BuildPlayerBotDungeonLfgStatus(LPCHARACTER ch, const char* prefix, char* status, size_t statusSize,
 			bool en);
+	// MT2009_PLUS_GUILD_LFG_V1: a bot waiting by a village NPC for a person's
+	// guild invitation (playerbot_guild_lfg.h, which comes after this file).
+	inline bool BuildPlayerBotGuildLfgStatus(LPCHARACTER ch, const char* prefix, char* status, size_t statusSize,
+			bool en);
 	// The person of its guild a bot is fighting for (playerbot_anti_pk.h,
 	// which comes after this file), or NULL.
 	LPCHARACTER FindPlayerBotGuildAidPerson(DWORD defenderPid);
@@ -624,6 +628,10 @@ namespace
 		// MT2009_PLUS_BOT_DUNGEON_LFG_V1: "Czekam na X pod wejsciem", but for a fight.
 		if (state.bCurrentAction != BOT_ACTION_FIGHT &&
 				BuildPlayerBotDungeonLfgStatus(ch, prefix, status, statusSize, en))
+			return;
+		// MT2009_PLUS_GUILD_LFG_V1: "Czekam na zaproszenie do gildii od X".
+		if (state.bCurrentAction != BOT_ACTION_FIGHT &&
+				BuildPlayerBotGuildLfgStatus(ch, prefix, status, statusSize, en))
 			return;
 
 		LPCHARACTER target = state.dwTargetVID != 0
