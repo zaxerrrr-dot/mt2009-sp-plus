@@ -304,5 +304,11 @@
   "marker": "MT2009_PLUS_RARE_ATTR_INDEPENDENT_V1",
   "old": "\tfor (int i = 0; i < MAX_NORM_ATTR_NUM + 1; ++i)\n\t\tif (GetAttributeType(i) == bApply)\n\t\t\treturn true;\n",
   "new": "\t// MT2009_PLUS_RARE_ATTR_INDEPENDENT_V1: only the five normal bonus lines - the\n\t// stock loop ran to MAX_NORM_ATTR_NUM + 1 and so read the first 6/7 bonus line\n\t// too: a critical hit in the 6th bonus made the 1-5 lines refuse it (the owner,\n\t// 5 October: \"bonusy 6/7 powinny byc niezalezne od 1-5\").\n\tfor (int i = 0; i < MAX_NORM_ATTR_NUM; ++i)\n\t\tif (GetAttributeType(i) == bApply)\n\t\t\treturn true;\n"
+ },
+ {
+  "file": "desc.cpp",
+  "marker": "MT2009_PLUS_INPUT_DESYNC_FIX_V1",
+  "old": "\t\t\tTEMP_BUFFER\ttempbuf;\n\t\t\tLPBUFFER lpBufferDecrypt = tempbuf.getptr();\n\t\t\tbuffer_adjust_size(lpBufferDecrypt, iSizeBuffer);\n",
+  "new": "\t\t\t// MT2009_PLUS_INPUT_DESYNC_FIX_V1 (server-patches/enginefixes): the\n\t\t\t// decrypt buffer is made big enough up front. It used to be a default\n\t\t\t// 8 KB TEMP_BUFFER grown by buffer_adjust_size() on a COPY of its\n\t\t\t// pointer: a read over 8 KB (a client's packets piling up while the\n\t\t\t// core was busy) reallocated it, gave the old 8 KB buffer back to the\n\t\t\t// pool, and the TEMP_BUFFER then gave the same buffer back a second\n\t\t\t// time when it went out of scope. The pool held it twice, so two\n\t\t\t// TEMP_BUFFERs later shared one memory: a packet handler's buffer\n\t\t\t// (a chat text) overwrote the decrypted input while it was being read\n\t\t\t// (\"buffer_proceed: length argument bigger than buffer (length: 1,\n\t\t\t// buffer: 0)\", then UNKNOWN HEADER with random or plain-text bytes),\n\t\t\t// on every connection until the core restarted.\n\t\t\tTEMP_BUFFER\ttempbuf(MAX(iSizeBuffer, 8192));\n\t\t\tLPBUFFER lpBufferDecrypt = tempbuf.getptr();\n\t\t\tif (buffer_has_space(lpBufferDecrypt) < iSizeBuffer)\n\t\t\t{\n\t\t\t\tsys_err(\"MT2009_PLUS_INPUT_DESYNC_FIX_V1: decrypt buffer %d < %d (fd %d)\", buffer_has_space(lpBufferDecrypt), iSizeBuffer, m_sock);\n\t\t\t\treturn -1;\n\t\t\t}\n"
  }
 ]
