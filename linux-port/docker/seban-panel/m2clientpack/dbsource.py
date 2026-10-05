@@ -136,4 +136,18 @@ def build_dbdata(query, changes, base=None):
     notes = []
     files, summary = client_files(query, base, items, skills, notes)
     index, data, changed = dbdata.build(base, files)
+    # MT2009_PLUS_DBDATA_STAMP_V1: the stamp of what this pack shows (the
+    # zip's dbdata_stamp.txt, the game cores' copy in the spool)
+    summary['stamp'] = dbdata.stamp(base, dict((n, files[n]) for n in changed))
     return base, index, data, changed, summary
+
+
+def current_stamp(query, changes, base=None):
+    """MT2009_PLUS_DBDATA_STAMP_V1: (base, stamp) of the zip build_dbdata
+    would make now - the same client files, without writing the pack."""
+    from . import dbdata
+    base = base or dbdata.latest_base()
+    items, skills = targets(changes)
+    files, _summary = client_files(query, base, items, skills, [])
+    changed = dbdata.changed_files(base, files)
+    return base, dbdata.stamp(base, dict((n, files[n]) for n in changed))

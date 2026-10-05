@@ -81,6 +81,75 @@ def latest_base(root=BASE_ROOT):
     return Base(os.path.join(root, versions[-1]))
 
 
+# MT2009_PLUS_DBDATA_STAMP_V1: the client root's file that names the dbdata
+# pack the zip carries (client root dbdatastamp.py reads it).
+STAMP_FILE = 'dbdata_stamp.txt'
+
+
+def changed_files(base, files):
+    """The names among `files` ({name: bytes}) whose contents differ from
+    the release's (a name the release has not counts as changed)."""
+    names = set(base.names())
+    return sorted(n for n, data in files.items() if n not in names or base.file(n) != data)
+
+
+def stamp(base, contents):
+    """MT2009_PLUS_DBDATA_STAMP_V1: the short name of what a client shows
+    from its dbdata pack - the release's version alone when nothing differs
+    from the release (an untouched client of that version is right), else
+    "<version>-<12 hex>" from the names and contents of the files that
+    differ ({name: bytes}, only those). The same edits give the same stamp
+    whoever builds it and whenever; the game core hands it to the client at
+    login (playerbot_dbdata_stamp.h), which compares it with its own
+    dbdata_stamp.txt (STAMP_FILE)."""
+    if not contents:
+        return base.version
+    h = hashlib.sha256()
+    for name in sorted(contents):
+        h.update(name.encode('utf-8') + b'\0' + hashlib.sha256(contents[name]).digest())
+    return '%s-%s' % (base.version, h.hexdigest()[:12])
+
+
+def pack_stamp(base, index, data):
+    """stamp() of a built dbdata pack, read back entry by entry."""
+    _ver, entries = eterpack.read_index_bytes(index)
+    names = set(base.names())
+    contents = {}
+    for e in entries:
+        blob = eterpack.read_entry(data, e)
+        if e.name not in names or blob != base.file(e.name):
+            contents[e.name] = blob
+    return stamp(base, contents)
+
+
+def stamp_text(value, index=None, data=None):
+    """The dbdata_stamp.txt of a zip (and the spool's copy for the game
+    cores, without sizes): the stamp, plus the sizes of the pack files it
+    came with - a client update that puts the release's pack back leaves
+    the old dbdata_stamp.txt behind, and the sizes tell the client its pack
+    is no longer the zip's. ASCII, CRLF."""
+    lines = ['# MT2009_PLUS_DBDATA_STAMP_V1: znacznik plikow klienta z edytora bazy danych (panel Seban).',
+             '# Gra porownuje go ze znacznikiem serwera i przypomina o pobraniu nowych plikow. Nie zmieniaj.',
+             'stamp %s' % value]
+    if index is not None and data is not None:
+        lines.append('size pack/%s.index %d' % (PACK, len(index)))
+        lines.append('size pack/%s.data %d' % (PACK, len(data)))
+    return ('\r\n'.join(lines) + '\r\n').encode('ascii')
+
+
+def read_stamp_text(blob):
+    """The stamp of a stamp_text() (None when there is none)."""
+    try:
+        text = blob.decode('ascii', 'replace')
+    except AttributeError:
+        text = blob
+    for line in text.splitlines():
+        parts = line.split()
+        if len(parts) >= 2 and parts[0] == 'stamp':
+            return parts[1]
+    return None
+
+
 def build(base, files):
     """(index bytes, data bytes, changed names) of the dbdata pack: the
     release's files with `files` ({name: bytes}) in their place. With
@@ -124,8 +193,8 @@ ustawiono je w edytorze bazy danych tego serwera (panel Seban).
 Jak zainstalować:
 1. Zamknij grę.
 2. Rozpakuj ten zip do folderu klienta (tam, gdzie jest metin2client.exe).
-   Pliki trafią do pack\\dbdata.index i pack\\dbdata.data - zgódź się na
-   nadpisanie.
+   Pliki trafią do pack\\dbdata.index, pack\\dbdata.data i dbdata_stamp.txt
+   - zgódź się na nadpisanie.
 3. Uruchom grę.
 
 Działa z klientem {version} (i nowszym, dopóki nie zmieni się w nim paczka
@@ -135,24 +204,36 @@ Możesz wysłać ten zip znajomemu, który gra na tym serwerze (COOP). Masz w
 kliencie kilka serwerów? Klient pokazuje dane z ostatnio rozpakowanego zipa -
 grając na innym serwerze rozpakuj jego zip albo "oryginalne pliki".
 
+Znacznik plików (dbdata_stamp.txt): {stamp}
+Gra porównuje go przy wejściu z serwerem: gdy serwer ma inne zmiany niż Twój
+klient (np. po aktualizacji klienta, która przywróciła oryginalne pliki), gra
+przypomni Ci, żeby pobrać nowy zip. Nie usuwaj tego pliku.
+
 Zbudowano: {built}
 """
 
 
-def make_zip(base, index, data, server, changed, original=False):
-    """(file name, zip bytes): pack/dbdata.index, pack/dbdata.data and
-    CZYTAJ_MNIE.txt."""
+def make_zip(base, index, data, server, changed, original=False, stamp_value=None):
+    """(file name, zip bytes): pack/dbdata.index, pack/dbdata.data,
+    CZYTAJ_MNIE.txt and dbdata_stamp.txt (MT2009_PLUS_DBDATA_STAMP_V1: the
+    stamp of these files - stamp_value, the release's version alone for
+    the original files or when nothing is changed)."""
+    if original or not changed:
+        stamp_value = base.version
+    elif not stamp_value:
+        stamp_value = pack_stamp(base, index, data)
     stamp = time.strftime('%Y-%m-%d_%H%M')
     safe = ''.join(ch if ch.isalnum() or ch in '-_.' else '-' for ch in (server or 'serwer'))[:40].strip('-') or 'serwer'
     what = (u'\nTo są ORYGINALNE pliki klienta %s - bez zmian z edytora.\n' % base.version if original else
             (u'\nZmienione pliki: %s.\n' % ', '.join(changed) if changed else
              u'\nTen serwer nie zmienia jeszcze niczego, co widzi klient.\n'))
-    text = README.format(server=server or '?', version=base.version, what=what,
+    text = README.format(server=server or '?', version=base.version, what=what, stamp=stamp_value,
                          built=time.strftime('%d.%m.%Y %H:%M')).replace(u'\n', u'\r\n')
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, 'w', zipfile.ZIP_DEFLATED) as z:
         z.writestr('pack/%s.index' % PACK, index)
         z.writestr('pack/%s.data' % PACK, data)
         z.writestr('CZYTAJ_MNIE.txt', text.encode('utf-8-sig'))
+        z.writestr(STAMP_FILE, stamp_text(stamp_value, index, data))
     label = 'oryginal' if original else safe
     return 'dbdata-%s-klient-%s-%s.zip' % (label, base.version, stamp), buf.getvalue()

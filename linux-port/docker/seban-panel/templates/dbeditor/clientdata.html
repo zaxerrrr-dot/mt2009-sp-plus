@@ -53,6 +53,7 @@
   <h2>Pliki klienta dla graczy</h2>
   <p class="muted">Nazwy, poziomy, bonusy przedmiotów i opisy umiejętności klient gry bierze z własnych plików (paczka <code>pack\dbdata</code>).
     Klient ani patcher niczego nie pobierają same – pobierz zip i rozpakuj go w folderze klienta (zgódź się na nadpisanie) albo wyślij znajomemu, który gra na tym serwerze.</p>
+  {% if new_client %}<div class="dbe-state pending"><p>⚠️ {{ new_client }}</p></div>{% endif %}
   {% if client_version %}
     <p>Pliki dla klienta <b>{{ client_version }}</b> (i nowszego, dopóki nie zmieni się w nim paczka dbdata). Starszego klienta najpierw zaktualizuj.</p>
     <div class="dbe-actions">
@@ -60,6 +61,7 @@
       <a class="button secondary" href="{{ url_for('dbeditor.clientdata_zip', oryginal=1) }}">↩️ Pobierz oryginalne pliki (zip)</a>
     </div>
     <p class="muted">„Aktualne” = oryginalne pliki klienta {{ client_version }} ze wszystkimi zmianami przedmiotów i umiejętności z edytora (także tymi, które czekają jeszcze na restart). „Oryginalne” przywracają klienta sprzed zmian – np. przed grą na innym serwerze.</p>
+    <p class="muted">Zip ma też plik <code>dbdata_stamp.txt</code> (znacznik plików{% if server_stamp %}, teraz <code>{{ server_stamp }}</code>{% endif %}). Gra porównuje go przy wejściu ze znacznikiem serwera i gdy się różnią – np. po aktualizacji klienta, która przywróciła oryginalne pliki – pokazuje graczowi okienko z prośbą o pobranie nowego zipa.</p>
   {% else %}
     <div class="dbe-state error"><p>Panel nie ma plików bazowych klienta (m2clientpack/base) – pobieranie jest niedostępne.</p></div>
   {% endif %}

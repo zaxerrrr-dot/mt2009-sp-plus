@@ -14,6 +14,9 @@ bp = Blueprint("dbeditor", __name__, url_prefix="/db")
 
 # (endpoint, icon, title, description) - filled by the parts' install().
 SECTIONS = []
+# MT2009_PLUS_DBDATA_STAMP_V1: callables giving a notice for the hub's top
+# (or None) - clientdata.py's "a new client came out, download the zip again".
+HUB_NOTICES = []
 
 
 def add_section(endpoint, icon, title, description):
@@ -26,7 +29,15 @@ def install(app, ctx):
     @bp.route("/")
     @login_required
     def index():
-        return render_template("dbeditor/index.html", sections=SECTIONS)
+        notices = []
+        for notice in HUB_NOTICES:
+            try:
+                text = notice()
+            except Exception:  # never break the hub over a notice
+                text = None
+            if text:
+                notices.append(text)
+        return render_template("dbeditor/index.html", sections=SECTIONS, notices=notices)
 
     # The parts, in the order the hub shows them. A part that is missing (an
     # older image) is skipped.

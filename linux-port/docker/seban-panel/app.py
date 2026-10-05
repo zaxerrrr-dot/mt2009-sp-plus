@@ -3529,6 +3529,24 @@ def write_student_chest_disabled(disabled):
     return "done"
 
 
+# MT2009_PLUS_DBDATA_STAMP_V1 (popup): when the panel last restarted the game
+# cores (every restart goes through queue_rate_restart; the world reset too).
+# The database editor's pages then ask to download the client files again
+# (dbeditor/clientdata.py, RESTART_FILE).
+PANEL_RESTART_FILE = RATES_SPOOL / "panel-restart.time"
+
+
+def mark_panel_restart():
+    try:
+        RATES_SPOOL.mkdir(parents=True, exist_ok=True)
+        temporary = PANEL_RESTART_FILE.with_name(PANEL_RESTART_FILE.name + ".new")
+        temporary.write_text("%d\n" % int(time.time()), encoding="ascii")
+        temporary.chmod(0o664)
+        os.replace(temporary, PANEL_RESTART_FILE)
+    except OSError:
+        pass  # only the editor's reminder depends on it
+
+
 def queue_rate_restart(values):
     if ENGINE_MT2009:
         persist_rates_mt2009(values)
@@ -3548,6 +3566,7 @@ def queue_rate_restart(values):
     (RATES_SPOOL / "rates.status").write_text(
         "state=running\ntime=%s\nexp=%s\ndrop=%s\nyang=%s\nmessage=restart requested by Seban Panel\n" %
         (int(time.time()), values["exp"], values["drop"], values["yang"]), encoding="utf-8")
+    mark_panel_restart()
 
 
 def server_settings_status():
@@ -7226,6 +7245,7 @@ def world_reset_start():
         temporary.write_text(f"id={request_id}\nkind={kind}\ntime={int(time.time())}\n", encoding="utf-8")
         temporary.chmod(0o660)
         os.replace(temporary, WORLD_RESET_REQUEST)
+        mark_panel_restart()  # MT2009_PLUS_DBDATA_STAMP_V1 (popup)
     except OSError as exc:
         app.logger.error("world reset %s could not be queued: %s", kind, exc)
         flash("Nie udało się przekazać prośby do serwera (katalog wymiany niedostępny).", "error")

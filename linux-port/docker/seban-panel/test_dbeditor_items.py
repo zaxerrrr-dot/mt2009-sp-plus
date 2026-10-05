@@ -24,7 +24,7 @@ SPOOL = tempfile.mkdtemp(prefix="dbe-spool-")
 os.environ["DBEDITOR_SPOOL_ROOT"] = SPOOL
 
 import app as panel  # noqa: E402
-from dbeditor import common_items, items, skills  # noqa: E402
+from dbeditor import clientdata, common_items, items, skills  # noqa: E402
 from m2clientpack import clientfiles, dbdata, eterpack  # noqa: E402
 
 
@@ -551,7 +551,15 @@ class DbEditorItemsTests(unittest.TestCase):
 
     # ---- "Zastosuj" and the client data (clientdata.py) --------------------
     def test_apply_restarts_marks_and_zips_client_files(self):
+        stamp_path = os.path.join(SPOOL, "dbdata_stamp.txt")
+        if os.path.exists(stamp_path):
+            os.remove(stamp_path)
         self.post("/db/items/149", self.item_form(149, locale_name="Miecz Próby+9"))
+        # MT2009_PLUS_DBDATA_STAMP_V1: the save put the game's stamp in the spool
+        clientdata.wait_stamp()
+        with open(stamp_path, "rb") as f:
+            saved = dbdata.read_stamp_text(f.read())
+        self.assertTrue(saved.startswith(dbdata.latest_base().version + "-"), saved)
         page = self.client.get("/db/apply").get_data(as_text=True)
         self.assertIn("1</b> zmian czeka", page)
         self.assertIn("Miecz Próby+9", page)
@@ -564,20 +572,35 @@ class DbEditorItemsTests(unittest.TestCase):
         self.assertEqual(len(queued), 1)
         self.assertTrue(all(r["applied_at"] for r in self.fake.history))
         self.assertEqual(common_items.pending_count(), 0)
+        # MT2009_PLUS_DBDATA_STAMP_V1 (popup): after the restart every editor page asks for the zip ...
+        clientdata.wait_stamp()
+        page = self.client.get("/db/").get_data(as_text=True)
+        self.assertIn('id="dbe-zip-popup"', page)
+        self.assertIn("UWAGA! Aby zmiany z edytora bazy danych były widoczne w Twoim kliencie gry", page)
+        self.assertIn("Pobierz pliki klienta (zip)", page)
         res = self.client.get("/db/clientdata.zip")
         self.assertEqual(res.status_code, 200)
         self.assertIn("attachment; filename=\"dbdata-MT2009-PLUS-klient-", res.headers["Content-Disposition"])
         with zipfile.ZipFile(io.BytesIO(res.get_data())) as z:
-            self.assertEqual(sorted(z.namelist()), ["CZYTAJ_MNIE.txt", "pack/dbdata.data", "pack/dbdata.index"])
+            self.assertEqual(sorted(z.namelist()), ["CZYTAJ_MNIE.txt", "dbdata_stamp.txt", "pack/dbdata.data",
+                                                    "pack/dbdata.index"])
             index, data = z.read("pack/dbdata.index"), z.read("pack/dbdata.data")
+            self.assertEqual(dbdata.read_stamp_text(z.read("dbdata_stamp.txt")), saved)  # the zip's = the game's
         entry = [e for e in eterpack.read_index_bytes(index)[1] if e.name == "gamedata/item_proto"][0]
         recs = clientfiles.read_item_proto(eterpack.read_entry(data, entry))[2]
         self.assertEqual(clientfiles.get_field(recs[149], "locale_name"), "Miecz Próby+9")
         res = self.client.get("/db/clientdata.zip?oryginal=1")
         with zipfile.ZipFile(io.BytesIO(res.get_data())) as z:
             self.assertEqual((z.read("pack/dbdata.index"), z.read("pack/dbdata.data")), dbdata.latest_base().original())
+            self.assertEqual(dbdata.read_stamp_text(z.read("dbdata_stamp.txt")), dbdata.latest_base().version)
+        with open(stamp_path, "rb") as f:  # the original files leave the game's stamp as it was
+            self.assertEqual(dbdata.read_stamp_text(f.read()), saved)
+        with open(os.path.join(SPOOL, "dbeditor", "clientdata-download.json"), encoding="utf-8") as f:
+            download = json.load(f)
+        self.assertEqual((download["base"], download["stamp"]), (dbdata.latest_base().version, saved))
         page = self.client.get("/db/apply").get_data(as_text=True)
         self.assertIn("Pobierz aktualne pliki klienta (zip)", page)
+        self.assertNotIn('id="dbe-zip-popup"', page)  # ... until the zip is downloaded
         self.assertIn(dbdata.latest_base().version, page)
         with open(os.path.join(SPOOL, "dbeditor", "last-apply.json"), encoding="utf-8") as f:
             self.assertEqual(json.load(f)["changes"], 1)

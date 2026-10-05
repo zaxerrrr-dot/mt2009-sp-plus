@@ -495,6 +495,7 @@ class GameWindow(ui.ScriptWindow):
 		# a second call finds nothing left.
 		__import__("uisidekick").Destroy()
 		__import__("uicollector").Destroy() # MT2009_PLUS_COLLECTOR_STORAGE_V1
+		__import__("dbdatastamp").Destroy() # MT2009_PLUS_DBDATA_STAMP_V1: its popup
 
 		print("---------------------------------------------------------------------------- CLOSE GAME WINDOW")
 
@@ -3227,6 +3228,9 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): "PickupSound <vnum>" after a pick-up (digiqol.py)
 		serverCommandList["PickupSound"] = __import__("digiqol").PLAYER.OnCommand
 		serverCommandList["SEONHAE"] = self.__SeonHae # MT2009_PLUS_SEONHAE_V1
+		# MT2009_PLUS_DBDATA_STAMP_V1: "DbDataStamp <stamp>" at login - the server's item/skill files
+		# (database editor) against this client's dbdata_stamp.txt (dbdatastamp.py).
+		serverCommandList["DbDataStamp"] = __import__("dbdatastamp").NOTICE.OnCommand
 		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["MISJE"] = self.__ClearMissions # MT2009_PLUS_CLEAR_MISSIONS_V1

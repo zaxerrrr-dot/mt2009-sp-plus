@@ -252,6 +252,9 @@ void Mt2009DigiLevelUp(LPCHARACTER ch, int oldLevel)
 
 void Mt2009DigiDailyGift(LPCHARACTER ch)
 {
+	// MT2009_PLUS_DBDATA_STAMP_V1: this login hook also tells a person's client
+	// which client files (database editor) the server has (playerbot_dbdata_stamp.h).
+	Mt2009DbDataStampOnLogin(ch);
 	if (!mt2009_digi_qol::GIFT_ENABLED)
 		return;
 	using namespace mt2009_digi_qol;

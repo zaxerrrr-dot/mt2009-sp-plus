@@ -739,3 +739,14 @@ Best Studio). Znacznik `MT2009_PLUS_MONSTER_CARDS_V1`; serwer: `server-patches/m
   Zoom/UpDown/Reset/Motion` i `app.RENDER_TARGET_INDEX_ILLUSTRATED` (w paczce Digi Rasty: `CModelViewer`
   w jego `Mt2009Window.cpp`); nasze exe ma render target Yut Nori (`PythonYutnoriManager`, rasa 20505) –
   trzeba go uogólnić na dowolną rasę. Bez tego okno pokazuje obrazek karty ×2, przyciski kamery są ukryte.
+
+## Przypomnienie o plikach klienta z edytora bazy danych (`MT2009_PLUS_DBDATA_STAMP_V1`)
+
+Zip z panelu Seban („Pobierz aktualne pliki klienta (zip)”) ma w folderze klienta `dbdata_stamp.txt`: znacznik
+plików (`stamp 2.0.53` bez zmian, `stamp 2.0.53-<12 hex>` ze zmianami) i rozmiary `pack/dbdata.*`, z którymi
+przyszedł. Rdzeń przy każdym wejściu do gry (nie boty) wysyła `DbDataStamp <znacznik>` (`playerbot_dbdata_stamp.h`,
+plik `/opt/m2spool/dbdata_stamp.txt` z panelu). Gdy serwer ma zmiany, a znacznik klienta jest inny (albo nie ma
+pliku, albo aktualizacja klienta podmieniła `pack/dbdata.*`) – okienko i dwie linie na czacie, raz na sesję.
+
+- Nowy wpis paczki `root`: `dbdatastamp.py`.
+- Zastępowany `game.py`: komenda `DbDataStamp`, `dbdatastamp.Destroy()` przy zamknięciu okna gry.

@@ -242,6 +242,21 @@ def read_row(table, key, cols, cur=None):
     return cur.fetchone()
 
 
+# MT2009_PLUS_DBDATA_STAMP_V1: {name: callable} run with the set of tables
+# once a save_rows / write_rows (and so an undo) has committed a change - the
+# client files' stamp (clientdata.py) follows the edits. A part installed
+# again replaces its own; a failing one is passed over.
+CHANGE_LISTENERS = {}
+
+
+def _changed(tables):
+    for listener in list(CHANGE_LISTENERS.values()):
+        try:
+            listener(set(tables))
+        except Exception:
+            pass
+
+
 def save_rows(table, updates, note="", label_of=None, batch=None):
     """Write [(key, {col: value})] to one table in one transaction and record
     every changed field. Values must already be validated. Returns
@@ -284,6 +299,8 @@ def save_rows(table, updates, note="", label_of=None, batch=None):
         raise
     finally:
         con.close()
+    if changed:
+        _changed({table})
     return batch, changed
 
 
@@ -472,6 +489,8 @@ def write_rows(table, inserts=(), deletes=(), note="", label_of=None, batch=None
         raise
     finally:
         con.close()
+    if done:
+        _changed({table})
     return batch, done
 
 
