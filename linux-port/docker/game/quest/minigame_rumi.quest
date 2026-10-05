@@ -106,6 +106,7 @@ quest minigame_rumi begin
                 say_reward("2. miejsce: " .. prize .. " x 5")
                 say_reward("3. miejsce: " .. prize .. " x 3")
                 say_reward("4. - 10. miejsce: " .. prize .. " x 1")
+                say("Do nagrod liczy sie miejsce wsrod graczy (boty pomijane).") -- MT2009_PLUS_MINIGAME_BOT_RANKING_V1
                 say("")
                 return
             end
