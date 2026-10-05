@@ -61,6 +61,17 @@ kv() { # kv FILE KEY
 KIND=""
 REQ_ID=""
 BACKUP_FILE=""
+# MT2009_PLUS_DB_EDITOR_REAPPLY_V1: the Seban panel's database editor across
+# the whole-world reset - "keep" (the default, also for a panel that does not
+# say): its history (player.web_dbeditor_history) survives and the panel's
+# $SPOOL/world-reset.dbeditor.sql (the net effect of that history, plain-ASCII
+# SQL) is run after the migrator, before the cores boot; "clean": the
+# history is kept aside as player.web_dbeditor_history_reset_<date> and the
+# editor starts with an empty one, matching the fresh data. The editor's
+# files in the spool (drops, chests, ...) are not the database's: never touched.
+DBE_MODE="keep"
+DBE_SQL="$SPOOL/world-reset.dbeditor.sql"
+DBE_HISTORY="web_dbeditor_history"
 
 write_status() { # write_status STATE MESSAGE
     local tmp="$STATUS.new.$$"
@@ -118,7 +129,9 @@ cmd_poll() {
         write_status failed "prośba o reset była za stara (serwer był wyłączony) - nic nie zmieniono"
         return 0
     fi
-    { printf 'id=%s\nkind=%s\n' "$id" "$kind"; } > "$WANTED" 2>/dev/null
+    local dbe
+    dbe=$(kv "$REQUEST" dbeditor)
+    { printf 'id=%s\nkind=%s\ndbeditor=%s\n' "$id" "$kind" "${dbe:-keep}"; } > "$WANTED" 2>/dev/null
     note "the panel asked for a reset: $kind (request $id) -- stopping the cores"
     write_status stopping "zatrzymuję serwer"
     return 10
@@ -145,6 +158,16 @@ make_backup() {
              web_seban_shop_snapshot web_seban_map_snapshot web_seban_metric_snapshot web_seban_system_snapshot; do
         ignore="$ignore --ignore-table=player.$t"
     done
+    # MT2009_PLUS_DB_EDITOR_REAPPLY_V1: the panel's utf8mb4 tables (the
+    # editor's history, its settings) dumped as latin1 lose every Polish letter
+    # outside latin1 ("Zwi?kszenie Ataku"): they go into a second part of the
+    # same gzip, dumped as utf8mb4 (zcat reads both parts; the second replaces
+    # nothing of the first, the first leaves those tables out).
+    local utf="" t udb utables
+    utf=$(db -e "SELECT CONCAT(table_schema,'.',table_name) FROM information_schema.tables
+                 WHERE table_schema IN ('account','common','player','itemshop') AND table_type='BASE TABLE'
+                   AND table_collation LIKE 'utf8mb4%' AND table_name NOT LIKE 'web\\_seban\\_%\\_snapshot'" 2>/dev/null)
+    for t in $utf; do ignore="$ignore --ignore-table=$t"; done
     note "backup of$dbs to $file"
     write_status backup "zapisuję kopię bazy"
     # shellcheck disable=SC2086
@@ -154,6 +177,17 @@ make_backup() {
         rm -f "$file"
         return 1
     fi
+    for udb in $(printf '%s\n' $utf | cut -d. -f1 | sort -u); do
+        utables=$(printf '%s\n' $utf | sed -n "s/^$udb\.//p")
+        # shellcheck disable=SC2086
+        if ! { printf 'USE `%s`;\n' "$udb"
+               MYSQL_PWD="$M2_DB_PASSWORD" mariadb-dump --protocol=tcp --host="$M2_DB_HOST" \
+                   --port="$M2_DB_PORT" --user="$M2_DB_USER" --single-transaction --quick \
+                   --default-character-set=utf8mb4 "$udb" $utables 2>>"$LOG"; } | gzip -6 >> "$file"; then
+            rm -f "$file"
+            return 1
+        fi
+    done
     [ -s "$file" ] || { rm -f "$file"; return 1; }
     BACKUP_FILE="$file"
     note "backup written: $(du -h "$file" | cut -f1)"
@@ -312,6 +346,14 @@ reset_all() {
             --port="$M2_DB_PORT" --user="$M2_DB_USER" --default-character-set=utf8mb4 \
             player web_seban_settings > "$keep" 2>>"$LOG" || rm -f "$keep"
     fi
+    # MT2009_PLUS_DB_EDITOR_REAPPLY_V1: the editor's history, the same way.
+    local dbe_keep="$STATE_DIR/dbeditor-history.sql"
+    rm -f "$dbe_keep"
+    if table_exists player "$DBE_HISTORY"; then
+        MYSQL_PWD="$M2_DB_PASSWORD" mariadb-dump --protocol=tcp --host="$M2_DB_HOST" \
+            --port="$M2_DB_PORT" --user="$M2_DB_USER" --default-character-set=utf8mb4 \
+            player "$DBE_HISTORY" > "$dbe_keep" 2>>"$LOG" || { rm -f "$dbe_keep"; note "the editor's history could not be saved"; }
+    fi
     write_status resetting "kasuję bazę i importuję ją od nowa"
     for d in account common player log world itemshop hotbackup; do
         db -e "DROP DATABASE IF EXISTS \`$d\`" 2>>"$LOG" || note "could not drop $d"
@@ -354,6 +396,58 @@ SQL
         rm -f "$keep"
     fi
     RESULT_TEXT="nowa baza jak po instalacji"
+    dbeditor_after_reset "$dbe_keep"
+    return 0
+}
+
+# MT2009_PLUS_DB_EDITOR_REAPPLY_V1: the editor's history back, and either its
+# changes set again (keep) or the history archived (clean). Never fails the
+# reset: what did not work is in the log and the panel's "Przywróć zmiany z
+# historii" (/db/historia/przywroc) can still set the changes again.
+dbeditor_after_reset() {
+    local saved="$1" archive out
+    if [ -s "$saved" ]; then
+        MYSQL_PWD="$M2_DB_PASSWORD" mariadb --protocol=tcp --host="$M2_DB_HOST" --port="$M2_DB_PORT" \
+            --user="$M2_DB_USER" --default-character-set=utf8mb4 player < "$saved" 2>>"$LOG" \
+            || note "the editor's history could not be put back (copy: $saved)"
+    fi
+    if [ "$DBE_MODE" = "clean" ]; then
+        rm -f "$DBE_SQL"
+        if table_exists player "$DBE_HISTORY"; then
+            archive="${DBE_HISTORY}_reset_$(date -u +%Y%m%d_%H%M%S)"
+            db -e "RENAME TABLE player.$DBE_HISTORY TO player.$archive" 2>>"$LOG" \
+                && note "the editor's history archived as player.$archive (clean reset)"
+        fi
+        rm -f "$saved"
+        RESULT_TEXT="$RESULT_TEXT; historia Edytora bazy danych w archiwum"
+        return 0
+    fi
+    rm -f "$saved"
+    if [ ! -s "$DBE_SQL" ]; then
+        table_exists player "$DBE_HISTORY" && RESULT_TEXT="$RESULT_TEXT; historia Edytora zachowana - zmiany przywróć w Edytorze (Historia → Przywróć zmiany z historii)"
+        return 0
+    fi
+    if [ "$(head -1 "$DBE_SQL" | tr -d '\r')" != "-- id=$REQ_ID" ]; then
+        note "$DBE_SQL is not this reset's (request $REQ_ID) -- not run"
+        rm -f "$DBE_SQL"
+        RESULT_TEXT="$RESULT_TEXT; zmiany Edytora przywróć w Edytorze (Historia → Przywróć zmiany z historii)"
+        return 0
+    fi
+    note "setting the database editor's changes again ($(grep -c '^\(UPDATE\|INSERT\|DELETE\)' "$DBE_SQL") statements)"
+    # --force: a table the new world has not (an older part) skips its lines
+    # only - and the client then exits 0, so its errors are looked for.
+    out=$(db --force < "$DBE_SQL" 2>&1)
+    if [ "$?" = "0" ] && ! printf '%s\n' "$out" | grep -q '^ERROR'; then
+        RESULT_TEXT="$RESULT_TEXT; zmiany z Edytora bazy danych zapisane ponownie"
+    else
+        printf '%s\n' "$out" >> "$LOG"
+        note "some of the editor's changes failed -- see $LOG"
+        RESULT_TEXT="$RESULT_TEXT; część zmian Edytora nie weszła (log: $LOG) - sprawdź Historia → Przywróć zmiany z historii"
+    fi
+    # The cores boot right after this: what the history holds is what they load.
+    table_exists player "$DBE_HISTORY" && \
+        db -e "UPDATE player.$DBE_HISTORY SET applied_at=NOW() WHERE applied_at IS NULL" 2>>"$LOG"
+    rm -f "$DBE_SQL"
     return 0
 }
 
@@ -361,6 +455,7 @@ SQL
 cmd_apply() {
     [ -f "$WANTED" ] || return 0
     REQ_ID=$(kv "$WANTED" id); KIND=$(kv "$WANTED" kind)
+    [ "$(kv "$WANTED" dbeditor)" = "clean" ] && DBE_MODE="clean"
     rm -f "$WANTED"
     RESULT_TEXT=""
     note "reset '$KIND' (request $REQ_ID) with the cores down"

@@ -42,6 +42,8 @@ namespace mt2009_dbstamp
 	{
 		bool known = false;
 		time_t mtime = 0;
+		long mtime_ns = 0;
+		ino_t ino = 0;
 		off_t size = -1;
 		std::string stamp;
 	};
@@ -94,10 +96,16 @@ namespace mt2009_dbstamp
 			c.stamp.clear();
 			return c.stamp;
 		}
-		if (c.known && c.mtime == st.st_mtime && c.size == st.st_size)
+		// MT2009_PLUS_DB_EDITOR_REAPPLY_V1: the panel replaces the file
+		// (a new inode) and two stamps have the same length - within one
+		// second mtime and size alone kept the older stamp.
+		if (c.known && c.mtime == st.st_mtime && c.mtime_ns == (long) st.st_mtim.tv_nsec
+			&& c.ino == st.st_ino && c.size == st.st_size)
 			return c.stamp;
 		c.known = true;
 		c.mtime = st.st_mtime;
+		c.mtime_ns = (long) st.st_mtim.tv_nsec;
+		c.ino = st.st_ino;
 		c.size = st.st_size;
 		c.stamp.clear();
 		if (FILE* f = fopen(STAMP_PATH, "r"))

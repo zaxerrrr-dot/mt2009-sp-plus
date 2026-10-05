@@ -31,6 +31,7 @@ through write_rows(): one history row per added/removed row, col ROW_COL
 The undo, pending_changes() and "Zastosuj" treat them like any field.
 """
 import json
+import time
 import uuid
 
 from flask import flash, redirect, render_template, request, session, url_for
@@ -94,8 +95,62 @@ def ctx():
     return _CTX
 
 
+# MT2009_PLUS_DB_EDITOR_REAPPLY_V1: {table: callable(row_key) -> name or None}
+# (dbeditor/reapply.py) - the current name of a history row whose stored label
+# lost its Polish letters ("Zwi?kszenie Ataku": a backup dumped as latin1).
+LABEL_RESOLVERS = {}
+
+
+def label_broken(label):
+    return "?" in (label or "") or "\ufffd" in (label or "")
+
+
+def display_label(row):
+    """The history row's label as the operator should read it: the stored
+    one, or - when it is broken - the current name (else the stored one)."""
+    label = row.get("label") or ""
+    if label and not label_broken(label):
+        return label
+    resolver = LABEL_RESOLVERS.get(row.get("tbl"))
+    if resolver is not None:
+        try:
+            name = resolver(row.get("row_key"))
+        except Exception:  # never break a page over a name
+            name = None
+        if name:
+            return str(name)[:100]
+    return label
+
+
+# MT2009_PLUS_DB_EDITOR_REAPPLY_V1: "Reset całego świata" drops the player
+# database under a running panel, and a flag set once for the panel's life
+# left every save failing with 1146 "Table 'player.web_dbeditor_history'
+# doesn't exist". The table is checked again after this many seconds, and a
+# save that meets 1146 on it makes it and tries once more (_with_history).
+TABLE_RECHECK_SECONDS = 60
+
+
+def history_missing(exc):
+    """True for MariaDB's 1146 (no such table) about the history table."""
+    args = getattr(exc, "args", ()) or ()
+    return bool(args) and args[0] == 1146 and "web_dbeditor_history" in " ".join(str(a) for a in args[1:])
+
+
+def _with_history(function, *args, **kwargs):
+    try:
+        return function(*args, **kwargs)
+    except Exception as exc:
+        if not history_missing(exc):
+            raise
+    _STATE["table_ready"] = False
+    _STATE.pop("checked_at", None)
+    ensure_table()
+    return function(*args, **kwargs)
+
+
 def ensure_table():
-    if _STATE["table_ready"]:
+    # (a flag set from outside - a test's own table - has no time: kept)
+    if _STATE["table_ready"] and time.time() - _STATE.get("checked_at", time.time()) < TABLE_RECHECK_SECONDS:
         return
     _CTX["rows"](f"""CREATE TABLE IF NOT EXISTS {HISTORY_TABLE} (
         id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -116,6 +171,7 @@ def ensure_table():
         KEY idx_applied (applied_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""")
     _STATE["table_ready"] = True
+    _STATE["checked_at"] = time.time()
 
 
 # ---- form helpers -----------------------------------------------------------
@@ -271,6 +327,10 @@ def _changed(tables):
 
 
 def save_rows(table, updates, note="", label_of=None, batch=None):
+    return _with_history(_save_rows, table, updates, note, label_of, batch)
+
+
+def _save_rows(table, updates, note="", label_of=None, batch=None):
     """Write [(key, {col: value})] to one table in one transaction and record
     every changed field. Values must already be validated. Returns
     (batch, [(key, col, old, new)]) - only fields that really changed."""
@@ -348,6 +408,10 @@ def history_batches(limit=100, table=None, key=None):
 
 
 def revert(batch=None, history_id=None, force=False):
+    return _with_history(_revert, batch, history_id, force)
+
+
+def _revert(batch=None, history_id=None, force=False):
     """Undo one save (batch) or one field (history_id). A field that was
     changed again since is a conflict: nothing is written unless force.
     Returns (new_batch or None, message, ok)."""
@@ -389,7 +453,7 @@ def revert(batch=None, history_id=None, force=False):
         if current is None:
             return None, f"{meta['title']} {row['row_key']} już nie istnieje.", False
         if not _same(spec, current[row["col"]], row["new_value"]):
-            conflicts.append(f"{row['label'] or row['row_key']} · {row['col']}: teraz „{text_of(current[row['col']])}”, "
+            conflicts.append(f"{display_label(row) or row['row_key']} · {row['col']}: teraz „{text_of(current[row['col']])}”, "
                              f"a zapis ustawił „{row['new_value']}”")
         old = row["old_value"]
         value = int(old) if spec["kind"] == "int" and old not in (None, "") else (old or "")
@@ -397,8 +461,9 @@ def revert(batch=None, history_id=None, force=False):
         updates.setdefault((row["tbl"], row["row_key"]), {})[row["col"]] = value
     if conflicts and not force:
         return None, ("Pole zmieniono później jeszcze raz, więc cofnięcie nadpisałoby nowszą zmianę: "
-                      + "; ".join(conflicts[:5]) + ". Cofnij najpierw nowszą zmianę albo zaznacz „cofnij mimo to”."), False
-    labels = {(r["tbl"], r["row_key"]): r["label"] for r in targets}
+                      + "; ".join(conflicts[:5]) + ". Cofnij najpierw nowszą zmianę albo zaznacz „cofnij mimo to”. Jeśli bazę zresetowano (np. reset świata), "
+                      "użyj „Przywróć zmiany z historii” na stronie historii."), False
+    labels = {(r["tbl"], r["row_key"]): display_label(r) for r in targets}
     note = f"Cofnięcie zmiany #{targets[0]['batch'][:8]}" if history_id is None else f"Cofnięcie pola (wpis #{history_id})"
     new_batch = uuid.uuid4().hex[:16]
     for table in {t for t, _k in updates}:
@@ -452,6 +517,10 @@ def read_whole_row(table, row_key, cur=None):
 
 
 def write_rows(table, inserts=(), deletes=(), note="", label_of=None, batch=None, force=False):
+    return _with_history(_write_rows, table, inserts, deletes, note, label_of, batch, force)
+
+
+def _write_rows(table, inserts=(), deletes=(), note="", label_of=None, batch=None, force=False):
     """Remove rows (dicts holding at least the key columns) and add rows
     (dicts holding every row column) in one transaction - removals first,
     so a row removed and added again (another count) is one save - and
@@ -558,7 +627,8 @@ def mark_applied():
 
 def template_helpers():
     """What templates/dbeditor/_items_history_list.html needs."""
-    return {"column_label": column_label, "format_value": format_value, "tables": TABLES}
+    return {"column_label": column_label, "format_value": format_value, "tables": TABLES,
+            "display_label": display_label}
 
 
 def pending_context():

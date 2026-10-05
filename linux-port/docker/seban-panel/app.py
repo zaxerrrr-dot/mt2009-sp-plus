@@ -7158,6 +7158,9 @@ def retired_bots_stop():
 # world itself, and nothing but the fixed kind crosses the boundary.
 WORLD_RESET_REQUEST = RATES_SPOOL / "world-reset.request"
 WORLD_RESET_STATUS = RATES_SPOOL / "world-reset.status"
+# MT2009_PLUS_DB_EDITOR_REAPPLY_V1: the database editor's changes, as SQL the
+# whole-world reset runs after the migrator (dbeditor/reapply.py replay_sql).
+WORLD_RESET_DBEDITOR_SQL = RATES_SPOOL / "world-reset.dbeditor.sql"
 WORLD_RESET_KINDS = {
     "bots": "Reset świata botów",
     "all": "Reset całego świata",
@@ -7240,9 +7243,30 @@ def world_reset_start():
         return redirect(url_for("world_reset"))
     request_id = "reset-" + uuid.uuid4().hex
     temporary = RATES_SPOOL / (request_id + ".new")
+    # MT2009_PLUS_DB_EDITOR_REAPPLY_V1: "zachowaj zmiany z Edytora bazy danych"
+    # (the whole world only; the bots' reset never touches world.* or the
+    # history). keep: the history survives and its net changes are set again
+    # before the cores boot; clean: the history is archived with the old world.
+    dbeditor_mode = "keep" if kind != "all" or request.form.get("keep_dbeditor") == "1" else "clean"
+    if kind == "all" and dbeditor_mode == "keep":
+        from dbeditor import reapply as dbeditor_reapply
+        sql_temporary = RATES_SPOOL / (request_id + ".sql.new")
+        try:
+            RATES_SPOOL.mkdir(parents=True, exist_ok=True)
+            sql_temporary.write_text(dbeditor_reapply.replay_sql(request_id), encoding="ascii")
+            sql_temporary.chmod(0o660)
+            os.replace(sql_temporary, WORLD_RESET_DBEDITOR_SQL)
+        except Exception as exc:  # the database or the spool: nothing queued
+            app.logger.error("world reset: the editor's changes could not be prepared: %s", exc)
+            flash("Nie udało się przygotować zmian z Edytora bazy danych do ponownego zapisania po resecie "
+                  f"({exc}). Nic nie zostało zmienione.", "error")
+            return redirect(url_for("world_reset"))
+        finally:
+            sql_temporary.unlink(missing_ok=True)
     try:
         RATES_SPOOL.mkdir(parents=True, exist_ok=True)
-        temporary.write_text(f"id={request_id}\nkind={kind}\ntime={int(time.time())}\n", encoding="utf-8")
+        temporary.write_text(f"id={request_id}\nkind={kind}\ntime={int(time.time())}\n"
+                             f"dbeditor={dbeditor_mode}\n", encoding="utf-8")
         temporary.chmod(0o660)
         os.replace(temporary, WORLD_RESET_REQUEST)
         mark_panel_restart()  # MT2009_PLUS_DBDATA_STAMP_V1 (popup)
