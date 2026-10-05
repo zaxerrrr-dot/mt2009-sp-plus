@@ -671,6 +671,20 @@ namespace
 	// A rod, pickaxe or knife found in the hand outside its own session is
 	// put away at most this often (ManagePlayerBotToolHand).
 	const DWORD PLAYERBOT_TOOL_GUARD_RETRY_MS = 3000;
+	// MT2009_PLUS_BOT_GEAR_UPGRADE_V2 (playerbot_gear_upgrade.h): an armour
+	// of the seven slots at any plus is bought when its equipment score beats
+	// the best piece of its slot the bot owns by the first share, out of the
+	// weapon's shares of the purse once the weapon the bot's look found is
+	// set aside; the look runs on the weapon look's clock.
+	const int PLAYERBOT_ARMOUR_UPGRADE_MIN_GAIN_PERCENT = 10;
+	const int PLAYERBOT_ARMOUR_UPGRADE_BIG_GAIN_PERCENT = 25;
+	const int PLAYERBOT_ARMOUR_UPGRADE_SMALL_BUDGET_PERCENT = 50;
+	const int PLAYERBOT_ARMOUR_UPGRADE_BIG_BUDGET_PERCENT = 80;
+	const long long PLAYERBOT_ARMOUR_UPGRADE_GOLD_FLOOR = 100000;
+	const DWORD PLAYERBOT_ARMOUR_UPGRADE_LOOK_MS = 5 * 60 * 1000;
+	// How many of a map's candidate lines, most score a yang first, are
+	// built into an item and asked the purchase's own tests.
+	const int PLAYERBOT_ARMOUR_UPGRADE_PREVIEW_LINES = 8;
 	// The level-30 weapons (Tieru, 15 September): "taka bron +6/7 z srednimi
 	// 25% jest znacznie lepsza niz krwawy miecz +5/6", the bots should want
 	// them and grind them "nawet do +9", and from 37% average "tylko bodziami
