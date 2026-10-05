@@ -531,6 +531,65 @@ class DbEditorItemsTests(unittest.TestCase):
         self.assertEqual((data["values"][2]["min"], data["values"][2]["max"]), (-700, -600))  # M1, k = 0.5
         self.assertFalse(self.client.post("/db/skills/preview", json={"column": "szCooldownPoly", "formula": "1+"}).get_json()["ok"])
 
+    # MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1 ------------------------------------
+    def test_skill_point_types_list(self):
+        self.assertEqual(len(skills.POINT_ON_TYPES), 40)
+        self.assertEqual(len(set(skills.POINT_ON_TYPES)), 40)
+        for name in skills.POINT_ON_TYPES:
+            self.assertIn(name, skills.POINT_ON_PL, name)
+        # names some other servers have, the game's skill.cpp does not
+        for name in ("PENETRATE", "STEAL_HP", "ATT_BONUS_TO_MONSTER", "BLEEDING_PCT", ""):
+            self.assertNotIn(name, skills.POINT_ON_TYPES)
+        spec = skills.SPECS["szPointOn2"]
+        self.assertEqual(common_items.validate(spec, " att_grade ", "x"), ("ATT_GRADE", None))
+        self.assertIsNotNone(common_items.validate(spec, "PENETRATE", "x")[1])
+        self.assertIsNotNone(common_items.validate(spec, "", "x")[1])
+        self.assertEqual(common_items.validate(skills.SPECS["szPointOn3"], "", "x"), ("NONE", None))
+        self.assertTrue(common_items._same(skills.SPECS["szPointOn3"], "", "NONE"))
+        self.assertFalse(common_items._same(skills.SPECS["szPointOn2"], "NONE", "ATT_GRADE"))
+
+    def test_skill_point_type_save(self):
+        page = self.client.get("/db/skills/3").get_data(as_text=True)
+        self.assertIn('name="szPointOn2"', page)
+        self.assertIn('name="szPointOn3"', page)
+        self.assertIn("wartość ataku (ATT_GRADE)", page)
+        form = {c: self.fake.tables["world.skill_proto"][3][c] for c in skills.SPECS}
+        form.update(szPointOn2="PENETRATE")
+        res = self.post("/db/skills/3", form)
+        self.assertIn("Nic nie zapisano", res.get_data(as_text=True))
+        self.assertEqual(self.fake.tables["world.skill_proto"][3]["szPointOn2"], "NONE")
+        form.update(szPointOn2="att_grade", szPointPoly2="10*k", szDurationPoly2="60")
+        res = self.post("/db/skills/3", form, follow_redirects=True)
+        self.assertIn("Zapisano 3 pól", res.get_data(as_text=True))
+        row = self.fake.tables["world.skill_proto"][3]
+        self.assertEqual((row["szPointOn2"], row["szPointOn3"]), ("ATT_GRADE", ""))   # "" = NONE, untouched
+        self.assertIn(("szPointOn2", "NONE", "ATT_GRADE"),
+                      {(h["col"], h["old_value"], h["new_value"]) for h in self.fake.history})
+        # a type without a duration is saved, with a warning
+        form.update(szPointOn3="CRITICAL", szPointPoly3="5")
+        res = self.post("/db/skills/3", form, follow_redirects=True)
+        text = res.get_data(as_text=True)
+        self.assertIn("Zapisano 2 pól", text)
+        self.assertIn("Brak czasu trwania", text)
+
+    def test_skill_effect_notes(self):
+        notes = skills.effect_notes({"szPointOn": "HP", "szPointPoly": "-k*atk", "szPointOn2": "NONE",
+                                     "szPointPoly2": "40*k", "szDurationPoly2": "10", "szPointOn3": "",
+                                     "szPointPoly3": "", "szDurationPoly3": ""}, {"ATTACK", "ATTACK_FIRE_CONT"})
+        self.assertEqual([lvl for lvl, _t in notes["szPointOn2"]], ["info"])
+        self.assertIn("ATTACK_FIRE_CONT", notes["szPointOn2"][0][1])
+        self.assertEqual(notes["szPointOn"], [])
+        self.assertEqual(notes["szPointOn3"], [])
+        notes = skills.effect_notes({"szPointOn": "ATT_GRADE", "szPointPoly": "10", "szDurationPoly": "60",
+                                     "szPointOn2": "MOV_SPEED", "szPointPoly2": "", "szDurationPoly2": "",
+                                     "szPointOn3": "NONE", "szPointPoly3": "5"}, {"SELFONLY"})
+        self.assertEqual(notes["szPointOn"], [])
+        self.assertEqual(len([1 for lvl, _t in notes["szPointOn2"] if lvl == "warn"]), 2)  # no power, no time
+        self.assertEqual([lvl for lvl, _t in notes["szPointOn3"]], ["warn"])            # formula, no type
+        notes = skills.effect_notes({"szPointOn": "HP", "szPointPoly": "-k", "szPointOn3": "ATT_GRADE_MOB",
+                                     "szPointPoly3": "40*k", "szDurationPoly3": "30"}, {"ATTACK", "THIRD_POINT_SELFONLY"})
+        self.assertIn("tylko rzucający", notes["szPointOn3"][0][1])
+
     # ---- the parser itself ---------------------------------------------------------
     def test_parser_matches_libpoly(self):
         cases = {"-k": -1.25, "2^3": 8, "min(3, -2)": -2, "log(10, 1000)": 3, "7 % 4": 3, "floor(2.7)": 2,

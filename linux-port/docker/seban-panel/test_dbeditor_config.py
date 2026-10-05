@@ -42,7 +42,8 @@ class GameDB(SqliteDB):
                   "refine_set INTEGER DEFAULT 0, refined_vnum INTEGER DEFAULT 0, value0 INTEGER DEFAULT 0)")
         c.execute("CREATE TABLE world.mob_proto (vnum INTEGER PRIMARY KEY, locale_name BLOB, level INTEGER DEFAULT 1, "
                   "max_hp INTEGER DEFAULT 100, exp INTEGER DEFAULT 0, ai_flag TEXT DEFAULT '')")
-        c.execute("CREATE TABLE world.skill_proto (dwVnum INTEGER PRIMARY KEY, szName TEXT, szPointPoly TEXT DEFAULT '')")
+        c.execute("CREATE TABLE world.skill_proto (dwVnum INTEGER PRIMARY KEY, szName TEXT, szPointPoly TEXT DEFAULT '', "
+                  "szPointOn2 TEXT DEFAULT 'NONE')")
         c.execute("CREATE TABLE world.shop (vnum INTEGER PRIMARY KEY, name TEXT, npc_vnum INTEGER)")
         c.execute("CREATE TABLE world.shop_item (shop_vnum INTEGER, item_vnum INTEGER, count INTEGER, "
                   "UNIQUE (shop_vnum, item_vnum, count))")
@@ -70,7 +71,7 @@ def stock(fake):
     c.executemany("INSERT INTO world.mob_proto (vnum, locale_name, level, max_hp, exp, ai_flag) VALUES (?, ?, ?, ?, ?, ?)",
                   [(101, b"Dziki Pies", 1, 100, 10, ""), (103, b"Alfa Wilk", 5, 300, 40, "AGGR"),
                    (8015, b"Metin", 40, 9000, 500, ""), (191, b"Lykos", 25, 5000, 300, "")])
-    c.execute("INSERT INTO world.skill_proto VALUES (1, 'Trzy Ciecia', '-(1.1*atk)')")
+    c.execute("INSERT INTO world.skill_proto VALUES (1, 'Trzy Ciecia', '-(1.1*atk)', 'NONE')")
     c.execute("INSERT INTO world.shop VALUES (9001, 'Bronie', 9001)")
     c.executemany("INSERT INTO world.shop_item VALUES (?, ?, ?)", [(9001, 11, 1), (9001, 19, 1)])
     c.execute("INSERT INTO world.refine_proto (id, vnum0, count0, cost, prob) VALUES (1, 27001, 2, 1000, 90)")
@@ -165,6 +166,8 @@ class Base(unittest.TestCase):
             common_items.revert(batch=batch)                          # undone: not in the export
             common_items.save_rows("world.mob_proto", [(101, {"max_hp": 250, "ai_flag": "AGGR"})])
             common_items.save_rows("world.skill_proto", [(1, {"szPointPoly": "-(1.5*atk)"})])
+            # MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: an effect type travels too
+            common_items.save_rows("world.skill_proto", [(1, {"szPointOn2": "ATT_GRADE"})])
             common_items.write_rows("world.shop_item", inserts=[{"shop_vnum": 9001, "item_vnum": 27001, "count": 5}],
                                     deletes=[{"shop_vnum": 9001, "item_vnum": 11, "count": 1}])
             clone = {c: 0 for c in refine.ROW_COLS}
@@ -246,6 +249,7 @@ class RoundTripTests(Base):
         self.assertIn('101\tai_flag\t"" -> "AGGR"', text)
         self.assertIn('9001:11:1\t*\t{"count":1,"item_vnum":11,"shop_vnum":9001} -> -', text)
         self.assertIn("120\texp\t2500000000 -> 2600000000", text)
+        self.assertIn('1\tszPointOn2\t"NONE" -> "ATT_GRADE"', text)
         for section in ("[items] world.item_proto", "[extra] world.item_extra_apply", "[skills]", "[mobs]",
                         "[shops]", "[refine]", "[attrs]", "[exp]", "[drops]", "[fishing]", "[spawns]", "[regen]"):
             self.assertIn(section, text)
@@ -288,6 +292,7 @@ class RoundTripTests(Base):
                          [(19, 1), (27001, 5)])
         self.assertEqual(self.one(b, "SELECT cost FROM world.refine_proto WHERE id=30000")["cost"], 5000)
         self.assertEqual(self.one(b, "SELECT exp FROM common.exp_table WHERE level=120")["exp"], 2600000000)
+        self.assertEqual(self.one(b, "SELECT szPointOn2 FROM world.skill_proto WHERE dwVnum=1")["szPointOn2"], "ATT_GRADE")
         self.assertEqual(self.one(b, "SELECT apply_value FROM world.item_extra_apply WHERE vnum=19")["apply_value"], 5)
         self.assertEqual(df.custom_path(b_spool, "mob").read_bytes(), df.custom_path(self.a_spool, "mob").read_bytes())
         self.assertEqual(regen.custom_path(b_spool, "metin2_map_a1").read_bytes(),

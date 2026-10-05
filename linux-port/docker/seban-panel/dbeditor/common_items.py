@@ -177,6 +177,15 @@ def validate(spec, raw, label):
         if unknown:
             return None, f"{label}: nieznana flaga {', '.join(unknown)}."
         return ",".join(m for m in spec["members"] if m in parts), None
+    if kind == "choice":
+        # MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1 (skills.py): one name of
+        # the spec's members (skill_proto szPointOn*); "" only as empty_as.
+        text = str(raw if raw is not None else "").strip().upper()
+        if not text and spec.get("empty_as"):
+            text = spec["empty_as"]
+        if text not in spec["members"]:
+            return None, f"{label}: „{text[:40]}” – gra nie zna takiego typu."
+        return text, None
     text = str(raw if raw is not None else "")
     if kind == "cp1250":
         text = text.strip()
@@ -210,6 +219,10 @@ def _same(spec, a, b):
         def members(value):
             return {p.strip().upper() for p in (text_of(value) or "").split(",") if p.strip()}
         return members(a) == members(b)
+    if spec["kind"] == "choice":  # MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: "" = empty_as (szPointOn3)
+        def choice(value):
+            return (text_of(value or "") or "").strip().upper() or spec.get("empty_as", "")
+        return choice(a) == choice(b)
     return text_of(a or "") == text_of(b or "")
 
 

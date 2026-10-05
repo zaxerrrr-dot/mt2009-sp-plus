@@ -16,6 +16,14 @@ What the engine does with the columns (game/src/char_skill.cpp):
   szCooldownPoly     the cooldown in seconds (int);
   k = SKILL_POWER_BY_LEVEL[level] * bMaxLevel / 100, the table being
   common.locale's SKILL_POWER_BY_LEVEL row (read live, default below).
+
+MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: szPointOn / szPointOn2 /
+szPointOn3, the effects' types, are chosen from the game's own list
+(POINT_ON_TYPES). Effects 2 and 3 (szPointPoly2/3, szDurationPoly2/3) work
+on every level: with a duration > 0 an affect (on the buff's target, or on
+every victim of an attack skill; effect 3 on the caster alone with
+THIRD_POINT_SELFONLY), without one a one-time PointChange. effect_notes()
+tells the operator about the combinations that do not work.
 """
 import math
 import os
@@ -53,14 +61,70 @@ SKILL_PATHS = {
 }
 CLASS_TABS = ((1, "Wojownik"), (2, "Ninja"), (3, "Sura"), (4, "Szaman"), (5, "Konne"), (0, "Pozostałe"))
 
+# MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: what an effect of a skill
+# changes (szPointOn / szPointOn2 / szPointOn3). Exactly the names of the
+# game's kPointOnTypes (game/src/skill.cpp, FindPointType, compared without
+# regard to case); a name outside it makes CSkillManager::Initialize drop the
+# whole skill at boot ("cannot find point type"). BLEEDING_PCT is in that
+# table only with ENABLE_WOLFMAN_CHARACTER, which this core is built without.
+# An empty szPointOn3 is read as NONE (the only column where "" is allowed).
+POINT_ON_TYPES = (
+    "NONE", "MAX_HP", "MAX_SP", "HP_REGEN", "SP_REGEN", "BLOCK", "HP", "SP", "ATT_GRADE", "DEF_GRADE",
+    "MAGIC_ATT_GRADE", "MAGIC_DEF_GRADE", "BOW_DISTANCE", "MOV_SPEED", "ATT_SPEED", "POISON_PCT", "RESIST_RANGE",
+    "CASTING_SPEED", "REFLECT_MELEE", "ATT_BONUS", "DEF_BONUS", "RESIST_NORMAL", "DODGE", "KILL_HP_RECOVER",
+    "KILL_SP_RECOVER", "HIT_HP_RECOVER", "HIT_SP_RECOVER", "CRITICAL", "MANASHIELD", "SKILL_DAMAGE_BONUS",
+    "NORMAL_HIT_DAMAGE_BONUS", "TERROR", "ATT_GRADE_MOB", "MAGIC_ATT", "MAGIC_ATT_MOB", "MAGIC_ATT_GRADE_MOB",
+    "RESIST_MOB_1000PCT", "ABSORB_DAMAGE_MOB", "RESIST_PENETRATE", "ATT_SPECIAL",
+)
 POINT_ON_PL = {
-    "HP": "obrażenia (liczba ujemna = obrażenia zadane celowi)", "NONE": "brak",
-    "ATT_SPEED": "szybkość ataku", "MOV_SPEED": "szybkość ruchu", "ATT_GRADE": "wartość ataku",
-    "DEF_GRADE": "obrona", "MAX_HP": "maks. PŻ", "MAX_SP": "maks. PM", "CRITICAL": "szansa na cios krytyczny",
-    "CASTING_SPEED": "szybkość zaklęć", "RESIST_NORMAL": "odporność na zwykłe ataki", "REFLECT_MELEE": "odbicie obrażeń",
-    "TERROR": "strach", "MANASHIELD": "tarcza many", "HIT_HP_RECOVER": "odzysk PŻ przy trafieniu",
-    "MAGIC_ATT_MOB": "magiczny atak na potwory",
+    "NONE": "brak",
+    "HP": "PŻ (ujemne = obrażenia, dodatnie = leczenie)",
+    "SP": "PM (jednorazowo dodaje / zabiera manę)",
+    "MAX_HP": "maks. PŻ", "MAX_SP": "maks. PM",
+    "HP_REGEN": "regeneracja PŻ", "SP_REGEN": "regeneracja PM",
+    "BLOCK": "szansa na blok ciosu (%)", "DODGE": "szansa na unik strzał (%)",
+    "ATT_GRADE": "wartość ataku", "DEF_GRADE": "obrona",
+    "MAGIC_ATT_GRADE": "wartość ataku magicznego", "MAGIC_DEF_GRADE": "obrona przed magią",
+    "BOW_DISTANCE": "zasięg łuku (m)",
+    "MOV_SPEED": "szybkość ruchu", "ATT_SPEED": "szybkość ataku", "CASTING_SPEED": "szybkość zaklęć",
+    "POISON_PCT": "szansa na otrucie (%)", "RESIST_RANGE": "odporność na strzały (%)",
+    "REFLECT_MELEE": "odbicie obrażeń wręcz (%)",
+    "ATT_BONUS": "siła ataku (%)", "DEF_BONUS": "obrona (%)",
+    "RESIST_NORMAL": "odporność na zwykłe ataki (%)",
+    "KILL_HP_RECOVER": "odzysk PŻ po zabiciu (% maks. PŻ)", "KILL_SP_RECOVER": "odzysk PM po zabiciu",
+    "HIT_HP_RECOVER": "kradzież PŻ przy trafieniu (% obrażeń)", "HIT_SP_RECOVER": "kradzież PM przy trafieniu (% obrażeń)",
+    "CRITICAL": "szansa na cios krytyczny (%)",
+    "MANASHIELD": "tarcza many (część obrażeń przechodzi na PM)",
+    "SKILL_DAMAGE_BONUS": "obrażenia umiejętności (%)", "NORMAL_HIT_DAMAGE_BONUS": "obrażenia zwykłych ciosów (%)",
+    "TERROR": "strach (słabsze ciosy potworów, szansa że nie trafią)",
+    "ATT_GRADE_MOB": "wartość ataku przeciw potworom",
+    "MAGIC_ATT": "obrażenia magii (%)", "MAGIC_ATT_MOB": "obrażenia magii przeciw potworom (%)",
+    "MAGIC_ATT_GRADE_MOB": "obrażenia magii przeciw potworom (wartość)",
+    "RESIST_MOB_1000PCT": "odporność na ataki potworów (w promilach, 10 = 1%)",
+    "ABSORB_DAMAGE_MOB": "pochłanianie obrażeń od potworów (tarcza, wartość)",
+    "RESIST_PENETRATE": "odporność na przeszywające ciosy (%)",
+    "ATT_SPECIAL": "obrażenia na metiny / bossy / mini-bossy (%)",
 }
+# (type column, label, its strength formula, its duration formula)
+POINT_TYPE_COLUMNS = (
+    ("szPointOn", "Pierwszy efekt – typ", "szPointPoly", "szDurationPoly"),
+    ("szPointOn2", "Drugi efekt – typ", "szPointPoly2", "szDurationPoly2"),
+    ("szPointOn3", "Trzeci efekt – typ", "szPointPoly3", "szDurationPoly3"),
+)
+POINT_TYPE_INFO = {c[0]: c for c in POINT_TYPE_COLUMNS}
+# Skill flags whose code reads szPointPoly2 / szDurationPoly2 for itself (a
+# chance or a time), whatever szPointOn2 says (char_skill.cpp).
+POLY2_FLAGS = {
+    "PENETRATE": "szansa na przebicie obrony", "IGNORE_TARGET_RATING": "szansa na zignorowanie uniku",
+    "REMOVE_GOOD_AFFECT": "szansa na zdjęcie dobrych efektów", "REMOVE_BAD_AFFECT": "szansa na zdjęcie złych efektów",
+    "ATTACK_SLOW": "szansa i czas spowolnienia", "ATTACK_STUN": "szansa i czas ogłuszenia",
+    "ATTACK_FIRE_CONT": "szansa i czas podpalenia", "ATTACK_POISON": "szansa i czas otrucia",
+    "STUN_MOB_ONLY": "szansa i czas ogłuszenia potworów",
+    "HP_ABSORB": "% obrażeń zamieniany na PŻ", "SP_ABSORB": "% obrażeń zamieniany na PM",
+}
+# One-time PointChange of these is a normal heal / mana gain; of any other
+# point it stays until the character's points are recomputed.
+INSTANT_TYPES = ("NONE", "HP", "SP")
 
 # The formula columns: (column, label, group, which variables the engine sets
 # for it, which levels use it: "low" below G1, "high" from G1, "all").
@@ -73,10 +137,10 @@ FORMULAS = (
     ("szCooldownPoly", "Czas odnowienia – ładowania (sekundy)", "main", ("k",), "all"),
     ("szSPCostPoly", "Koszt PM (poziomy 1 – M10)", "main", ("k", "lv", "maxhp", "v", "maxv"), "low"),
     ("szGrandMasterAddSPCostPoly", "Koszt PM od Arcymistrza (G1 – P)", "main", ("k", "lv", "maxhp", "v", "maxv"), "high"),
-    ("szPointPoly2", "Drugi efekt – siła", "adv", POINT_VARS, "all"),
-    ("szDurationPoly2", "Drugi efekt – czas trwania (s)", "adv", ("k", "iq"), "all"),
-    ("szPointPoly3", "Trzeci efekt – siła", "adv", POINT_VARS, "all"),
-    ("szDurationPoly3", "Trzeci efekt – czas trwania (s)", "adv", ("k", "iq"), "all"),
+    ("szPointPoly2", "Drugi efekt – siła", "effect", POINT_VARS, "all"),
+    ("szDurationPoly2", "Drugi efekt – czas trwania (s)", "effect", ("k", "iq"), "all"),
+    ("szPointPoly3", "Trzeci efekt – siła", "effect", POINT_VARS, "all"),
+    ("szDurationPoly3", "Trzeci efekt – czas trwania (s)", "effect", ("k", "iq"), "all"),
     ("szDurationSPCostPoly", "Koszt PM utrzymania efektu (co pewien czas)", "adv", ("k",), "all"),
     ("szSplashAroundDamageAdjustPoly", "Mnożnik obrażeń obszarowych", "adv", ("k",), "all"),
 )
@@ -455,6 +519,62 @@ def sample_from(source, prefix=""):
 
 SPECS = {column: {"kind": "ascii", "max": 100, "label": label} for column, label, *_rest in FORMULAS}
 SPECS.update({column: {"kind": "int", "min": low, "max": high, "label": label} for column, label, low, high in NUMBERS})
+# MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: the effects' types, a choice of
+# the game's names (common_items.validate kind "choice"); they go through
+# save_rows / the history / undo / the config export like every other field.
+SPECS.update({column: dict({"kind": "choice", "members": POINT_ON_TYPES, "label": label},
+                           **({"empty_as": "NONE"} if column == "szPointOn3" else {}))
+              for column, label, _poly, _dur in POINT_TYPE_COLUMNS})
+
+
+def skill_flags(row):
+    return {f.strip().upper() for f in str(common.text_of(row.get("setFlag")) or "").split(",") if f.strip()}
+
+
+def effect_notes(values, flags):
+    """{type column: [(level "warn"/"info", text)]} - what the game will do
+    with the effect as the form has it (char_skill.cpp ComputeSkill)."""
+    notes = {}
+    attack = bool(flags & {"ATTACK", "USE_MELEE_DAMAGE", "USE_MAGIC_DAMAGE"})
+    for number, (col, _label, poly, dur) in enumerate(POINT_TYPE_COLUMNS, 1):
+        out = notes.setdefault(col, [])
+        kind = (str(values.get(col) or "").strip().upper()) or "NONE"
+        power = str(values.get(poly) or "").strip()
+        if number == 1:
+            power = power or str(values.get("szMasterBonusPoly") or "").strip()
+        duration = str(values.get(dur) or "").strip()
+        if kind not in POINT_ON_TYPES:
+            out.append(("warn", f"„{kind}” – gra nie zna takiego typu i nie wczyta tej umiejętności. Wybierz typ z listy."))
+            continue
+        poly2_uses = sorted(f for f in flags & set(POLY2_FLAGS)) if number == 2 else []
+        if kind == "NONE":
+            if number == 2 and poly2_uses and (power or duration):
+                out.append(("info", "Wzory drugiego efektu są używane przez flagę umiejętności: "
+                            + "; ".join(f"{f} – {POLY2_FLAGS[f]}" for f in poly2_uses) + "."))
+            elif number > 1 and (power or duration):
+                out.append(("warn", "Wzór jest wpisany, ale typ to „brak” – gra go nie używa. Wybierz typ, żeby efekt działał."))
+            continue
+        if not power:
+            out.append(("warn", "Typ jest ustawiony, ale wzór siły jest pusty – efekt da 0."))
+        if kind not in INSTANT_TYPES and not duration:
+            out.append(("warn", "Brak czasu trwania: gra doda tę wartość jednorazowo i bez ikony efektu – zostanie "
+                        "u postaci aż do przeliczenia statystyk (np. relog, zmiana ekwipunku). Wpisz czas trwania "
+                        "(zwykle taki sam jak głównego efektu)."))
+        if kind in ("HP", "SP") and duration and number > 1:
+            out.append(("info", "PŻ/PM z czasem trwania zmieniają się jednorazowo przy nałożeniu efektu."))
+        if number == 1 and attack and kind != "HP":
+            out.append(("warn", "Umiejętność ofensywna: obrażenia liczą się tylko przy typie HP (wzór ujemny). "
+                        "Z innym typem cel dostanie efekt zamiast obrażeń."))
+        if number > 1 and attack and not (number == 3 and "THIRD_POINT_SELFONLY" in flags):
+            out.append(("info", "Umiejętność ofensywna: ten efekt trafia na każdy trafiony cel (osłabienie wroga), "
+                        "nie na rzucającego."))
+        if number == 3 and "THIRD_POINT_SELFONLY" in flags:
+            out.append(("info", "Flaga THIRD_POINT_SELFONLY: trzeci efekt dostaje tylko rzucający."))
+        if poly2_uses:
+            out.append(("warn", "Ten sam wzór drugiego efektu służy też fladze: "
+                        + "; ".join(f"{f} – {POLY2_FLAGS[f]}" for f in poly2_uses)
+                        + ". Zmiana wzoru zmieni oba działania."))
+    return notes
 
 
 def skill_name(row):
@@ -490,8 +610,7 @@ def install(bp, ctx):
         return common.ctx()["rows"](sql, params)
 
     def load(vnum):
-        cols = ["dwVnum", "szName", "bType", "bMaxLevel", "szPointOn", "szPointOn2", "szPointOn3",
-                "setFlag"] + list(SPECS)
+        cols = ["dwVnum", "szName", "bType", "bMaxLevel", "setFlag"] + list(SPECS)
         found = rows(f"SELECT {', '.join('`%s`' % c for c in cols)} FROM {TABLE} WHERE dwVnum=%s", (vnum,))
         if not found:
             return None
@@ -565,6 +684,8 @@ def install(bp, ctx):
                 if error:
                     errors.append(error)
                     continue
+                if spec["kind"] == "choice":
+                    form_values[column] = value or raw
                 if spec["kind"] == "ascii":
                     _rpn, problem, _warn, _rand = check_formula(value, column)
                     if problem:
@@ -576,7 +697,7 @@ def install(bp, ctx):
                     flash(error, "error")
                 flash("Nic nie zapisano – popraw zaznaczone pola.", "error")
             else:
-                changed_fields = {c: v for c, v in new.items() if str(v) != str(skill.get(c, ""))}
+                changed_fields = {c: v for c, v in new.items() if not common._same(SPECS[c], skill.get(c, ""), v)}
                 if not changed_fields:
                     flash("Brak zmian do zapisania.", "success")
                     return redirect(url_for("dbeditor.skill_edit", vnum=vnum))
@@ -588,6 +709,10 @@ def install(bp, ctx):
                     return redirect(url_for("dbeditor.skill_edit", vnum=vnum))
                 flash(f"Zapisano {len(changed)} pól umiejętności {skill['name_pl']}. "
                       "Zmiany czekają na zastosowanie (restart gry).", "success")
+                for col, items in effect_notes({**skill, **new}, skill_flags(skill)).items():
+                    for level, text in items:
+                        if level == "warn":
+                            flash(f"Uwaga (zapisano) – {SPECS[col]['label']}: {text}", "error")
                 return redirect(url_for("dbeditor.skill_edit", vnum=vnum))
         sample = sample_from(request.form, "sample_") if request.method == "POST" else {}
         previews = {c: preview(c, form_values.get(c) or "", skill["bMaxLevel"], sample) for c in FORMULA_INFO}
@@ -598,6 +723,8 @@ def install(bp, ctx):
             history = []
         return render_template("dbeditor/skills_edit.html", skill=skill, values=form_values, formulas=FORMULAS,
                                numbers=NUMBERS, previews=previews, point_on=POINT_ON_PL, sample=SAMPLE,
+                               point_types=POINT_ON_TYPES, type_columns=POINT_TYPE_COLUMNS,
+                               effect_notes=effect_notes(form_values, skill_flags(skill)),
                                sample_editable=SAMPLE_EDITABLE, sample_now={**SAMPLE, **sample}, var_help=VAR_HELP, power=table, power_source=source,
                                icon=skill_icon(vnum), path=skill_path(vnum, skill["bType"]), history=history,
                                dbe_csrf=common.csrf_token(), level_label=level_label, **common.template_helpers(),
@@ -622,4 +749,4 @@ def install(bp, ctx):
 
     import dbeditor
     dbeditor.add_section("dbeditor.skills", "✨", "Umiejętności",
-                     "czas trwania, czas odnowienia, obrażenia i koszt PM umiejętności, z podglądem wartości M1/G1/P")
+                     "czas trwania, czas odnowienia, obrażenia, koszt PM i typy efektów 1–3 umiejętności, z podglądem wartości M1/G1/P")

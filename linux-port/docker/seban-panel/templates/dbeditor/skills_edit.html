@@ -26,6 +26,18 @@
   </div>
 </div>
 {% endmacro %}
+{% macro point_type(col, label) %}
+{# MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: the effect's type, one of the game's names (skill.cpp kPointOnTypes) #}
+{% set cur = (values[col] or 'NONE')|upper %}
+<div class="dbe-formula dbe-point-type" data-dbe-point-type="{{ col }}">
+  <label for="t-{{ col }}"><b>{{ label }}</b> <code>{{ col }}</code></label>
+  <select id="t-{{ col }}" name="{{ col }}" data-original="{{ (skill[col] or 'NONE')|upper }}">
+    {% if cur not in point_types %}<option value="{{ cur }}" selected>{{ cur }} – nieznany grze (wybierz inny)</option>{% endif %}
+    {% for name in point_types %}<option value="{{ name }}"{{ ' selected' if name == cur }}>{{ point_on.get(name, name) }} ({{ name }})</option>{% endfor %}
+  </select>
+  {% for level, text in effect_notes.get(col, []) %}<p class="{{ 'dbe-warn' if level == 'warn' else 'muted' }}">{{ text }}</p>{% endfor %}
+</div>
+{% endmacro %}
 {% block content %}
 <script>document.body.dataset.ajaxForms='1';</script>
 {% set dbe_tab = 'skills' %}{% include 'dbeditor/_items_common.html' %}
@@ -35,7 +47,7 @@
   <div>
     <p class="eyebrow">UMIEJĘTNOŚĆ #{{ skill.dwVnum }} · {{ skill.szName }}</p>
     <h1>{{ skill.name_pl }}</h1>
-    <p class="muted">{{ path or 'Umiejętność bez klasy' }} · działa na: <b>{{ point_on.get(skill.szPointOn, skill.szPointOn) }}</b>{% if skill.szPointOn2 and skill.szPointOn2 != 'NONE' %} oraz {{ point_on.get(skill.szPointOn2, skill.szPointOn2) }}{% endif %}</p>
+    <p class="muted">{{ path or 'Umiejętność bez klasy' }} · działa na: <b>{{ point_on.get(skill.szPointOn, skill.szPointOn) }}</b>{% for c in ["szPointOn2", "szPointOn3"] if skill[c] and skill[c] != "NONE" %} oraz {{ point_on.get(skill[c], skill[c]) }}{% endfor %}</p>
   </div>
 </section>
 
@@ -77,8 +89,36 @@
     {{ formula('szGrandMasterAddSPCostPoly', 'Koszt PM od Arcymistrza (G1 – P)') }}
   </section>
 
+  <section class="panel">
+    <h2>Efekty – co zmienia umiejętność</h2>
+    <details class="dbe-help">
+      <summary><b>Jak gra liczy efekty 1–3?</b></summary>
+      <ul>
+        <li>Umiejętność ma do trzech efektów: <b>typ</b> (co zmienia), <b>siła</b> (wzór) i <b>czas trwania</b> (wzór, sekundy). Typ „brak” wyłącza efekt – jego wzory gra wtedy pomija.</li>
+        <li>Pierwszy efekt bierze siłę ze wzoru „Siła / obrażenia” do M10, a od G1 ze wzoru „od Arcymistrza”. Drugi i trzeci mają jeden wzór na wszystkie poziomy – różnicę między stopniami daje zmienna <code>gr</code> (0 zwykły, 1 M, 2 G, 3 P), np. <code>10*k*min(1, floor(gr/2))</code> działa dopiero od G1.</li>
+        <li>Trzeci efekt działa na <b>każdym</b> poziomie umiejętności, nie tylko od Arcymistrza.</li>
+        <li><b>Czas trwania &gt; 0</b>: efekt z ikoną, znika po czasie. Wszystkie efekty jednej umiejętności to jeden efekt w grze – ponowne użycie odświeża je razem. <b>Pusty czas (0)</b>: jednorazowa zmiana – ma sens tylko dla PŻ i PM (leczenie, mana); inny typ zostałby u postaci do przeliczenia statystyk.</li>
+        <li><b>Wzmocnienia</b> (bez flagi ATTACK): wszystkie efekty dostaje cel wzmocnienia (przy SELFONLY – sam rzucający).</li>
+        <li><b>Umiejętności ofensywne</b>: pierwszy efekt typu HP (wzór ujemny) to obrażenia. Drugi i trzeci efekt dostaje każdy trafiony cel (osłabienie wroga, przy SPLASH – wszyscy w obszarze). Z flagą THIRD_POINT_SELFONLY trzeci efekt dostaje tylko rzucający (tak działają Ognista Strzała i Smoczy Skowyt). Szarża nie nakłada efektów 2–3 na cele.</li>
+        <li>Niektóre flagi same czytają wzory drugiego efektu jako szansę/czas: {% for f in ['PENETRATE', 'ATTACK_FIRE_CONT', 'ATTACK_STUN', 'ATTACK_SLOW', 'ATTACK_POISON', 'REMOVE_BAD_AFFECT', 'HP_ABSORB'] %}<code>{{ f }}</code>{{ ', ' if not loop.last }}{% endfor %} itd. Wtedy drugi efekt zostaw jako „brak”, chyba że ten sam wzór ma też coś dodawać.</li>
+        <li>Od G1 czas drugiego efektu rośnie o 50% tylko we wzmocnieniach, trzeciego – we wzmocnieniach i przy THIRD_POINT_SELFONLY.</li>
+        <li>Flaga wyglądu efektu (setAffectFlag2/3) nie jest potrzebna – nowy efekt działa bez niej.</li>
+        <li>Podpowiedź w kliencie: nowy typ efektu 1–3 trafia do opisu umiejętności (locale/pl/skilldesc.txt) w paczce danych klienta z „Zastosuj” – gracz musi wgrać nowy zip.</li>
+      </ul>
+    </details>
+    {{ point_type('szPointOn', 'Pierwszy efekt – typ') }}
+    <h3>Drugi efekt</h3>
+    {{ point_type('szPointOn2', 'Drugi efekt – typ') }}
+    {{ formula('szPointPoly2', 'Drugi efekt – siła') }}
+    {{ formula('szDurationPoly2', 'Drugi efekt – czas trwania (s)') }}
+    <h3>Trzeci efekt</h3>
+    {{ point_type('szPointOn3', 'Trzeci efekt – typ') }}
+    {{ formula('szPointPoly3', 'Trzeci efekt – siła') }}
+    {{ formula('szDurationPoly3', 'Trzeci efekt – czas trwania (s)') }}
+  </section>
+
   <details class="panel dbe-advanced">
-    <summary><b>Zaawansowane</b> – drugi i trzeci efekt, zasięgi, koszt utrzymania</summary>
+    <summary><b>Zaawansowane</b> – zasięgi, koszt utrzymania, obrażenia obszarowe</summary>
     {% for col, label, group, vars, use in formulas if group == 'adv' %}{{ formula(col, label) }}{% endfor %}
     <div class="dbe-grid dense">
     {% for col, label, low, high in numbers %}

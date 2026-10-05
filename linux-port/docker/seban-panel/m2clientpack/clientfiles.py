@@ -214,6 +214,93 @@ def patch_skilltable(base_blob, skill_rows, notes):
     return nl.join(lines).encode(TEXT_ENCODING, 'replace'), changed
 
 
+# MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: the client never reads the
+# effect types of skilltable.txt (PythonSkill.cpp RegisterSkillTable reads
+# the formulas only); a tooltip's effect lines are locale/pl/skilldesc.txt's
+# affect columns - description (%.0f = the value), min and max formula, three
+# of them from DESC_TOKEN_TYPE_AFFECT_DESCRIPTION_1 (PythonSkill.h). When
+# the editor changed an effect's type, its line there is rewritten.
+SKILLDESC_AFFECT_COLUMN = 17
+SKILLDESC_COLUMNS = 28
+# the variables CPythonSkill::SSkillData::ProcessFormula knows for a tooltip
+# line (VALUE_TYPE_FREE); another one (atk, mwep, maxhp, def...) gives 0
+CLIENT_FORMULA_VARS = frozenset((
+    'k', 'SkillPoint', 'lv', 'iq', 'str', 'dex', 'con', 'ar', 'sl', 'gr', 'pi', 'e',
+    'minwep', 'maxwep', 'minmwep', 'maxmwep', 'isgraden', 'isgradem', 'isgradeg', 'isgradep'))
+FORMULA_FUNCTIONS = frozenset((
+    'rt', 'sqrt', 'cos', 'sin', 'tan', 'cot', 'csc', 'cosec', 'sec', 'ln', 'abs', 'floor', 'sign',
+    'log', 'min', 'max', 'number', 'irandom', 'irand', 'frandom', 'frand', 'mod'))
+# type -> (tooltip text, "%" when the value is a percentage)
+EFFECT_TEXT = {
+    'HP': ('PŻ', ''), 'SP': ('PM', ''), 'MAX_HP': ('Maks. PŻ', ''), 'MAX_SP': ('Maks. PM', ''),
+    'HP_REGEN': ('Regeneracja PŻ', '%'), 'SP_REGEN': ('Regeneracja PM', '%'),
+    'BLOCK': ('Szansa na blok', '%'), 'DODGE': ('Szansa na unik strzał', '%'),
+    'ATT_GRADE': ('Wartość Ataku', ''), 'DEF_GRADE': ('Obrona', ''),
+    'MAGIC_ATT_GRADE': ('Wartość Ataku Magicznego', ''), 'MAGIC_DEF_GRADE': ('Obrona przed Magią', ''),
+    'BOW_DISTANCE': ('Zasięg łuku', ''), 'MOV_SPEED': ('Szybkość Ruchu', '%'),
+    'ATT_SPEED': ('Szybkość Ataku', '%'), 'CASTING_SPEED': ('Szybkość Zaklęć', '%'),
+    'POISON_PCT': ('Szansa na otrucie', '%'), 'RESIST_RANGE': ('Odporność na strzały', '%'),
+    'REFLECT_MELEE': ('Odbicie obrażeń', '%'), 'ATT_BONUS': ('Siła Ataku', '%'), 'DEF_BONUS': ('Obrona', '%'),
+    'RESIST_NORMAL': ('Odporność na Ataki Fizyczne', '%'),
+    'KILL_HP_RECOVER': ('Odzysk PŻ po zabiciu', '%'), 'KILL_SP_RECOVER': ('Odzysk PM po zabiciu', '%'),
+    'HIT_HP_RECOVER': ('Złodziej życia', '%'), 'HIT_SP_RECOVER': ('Złodziej many', '%'),
+    'CRITICAL': ('Szansa na cios krytyczny', '%'), 'MANASHIELD': ('Tarcza many', '%'),
+    'SKILL_DAMAGE_BONUS': ('Obrażenia umiejętności', '%'), 'NORMAL_HIT_DAMAGE_BONUS': ('Obrażenia zwykłych ciosów', '%'),
+    'TERROR': ('Strach', '%'), 'ATT_GRADE_MOB': ('Wartość Ataku przeciw potworom', ''),
+    'MAGIC_ATT': ('Obrażenia magii', '%'), 'MAGIC_ATT_MOB': ('Obrażenia magii przeciw potworom', '%'),
+    'MAGIC_ATT_GRADE_MOB': ('Obrażenia magii przeciw potworom', ''),
+    'RESIST_MOB_1000PCT': ('Odporność na ataki potworów (‰)', ''),
+    'ABSORB_DAMAGE_MOB': ('Pochłanianie obrażeń od potworów', ''),
+    'RESIST_PENETRATE': ('Odporność na przeszywające ciosy', '%'),
+    'ATT_SPECIAL': ('Obr. Metiny/Bossy/MiniBossy', '%'),
+}
+
+
+def formula_names(formula):
+    import re
+    return set(re.findall(r'[A-Za-z]+', formula or '')) - FORMULA_FUNCTIONS
+
+
+def effect_affect(kind, formula):
+    """(description, min formula, max formula) of one tooltip line for an
+    effect of this type and server formula; a type of NONE clears it."""
+    kind = (kind or '').strip().upper() or 'NONE'
+    if kind == 'NONE':
+        return ('', '', '')
+    text, pct = EFFECT_TEXT.get(kind, (kind, ''))
+    formula = _text(formula).strip()
+    if formula and formula_names(formula) <= CLIENT_FORMULA_VARS:
+        sign = '-' if formula.startswith('-') else '+'
+        return ('%s %s%%.0f%s' % (text, sign, '%%' if pct else ''), formula, '')
+    return (text, '', '')
+
+
+def patch_skilldesc_effects(base_blob, updates, notes):
+    """locale/pl/skilldesc.txt with the affect lines of updates ({vnum:
+    {effect number 1-3: (description, min, max)}}). A skill the file does
+    not have is left out (the client shows nothing without its line).
+    Returns (blob, changed vnums)."""
+    lines, _nl = _split_lines(base_blob)
+    known = set()
+    for line in lines:
+        head = line.split('\t', 1)[0].strip()
+        if head.isdigit():
+            known.add(int(head))
+    columns = {}
+    for vnum, effects in sorted(updates.items()):
+        if vnum not in known:
+            notes.append('Umiejętność %d: brak jej w skilldesc.txt - podpowiedź w kliencie bez nowego efektu.' % vnum)
+            continue
+        cols = columns.setdefault(vnum, {})
+        for number, values in effects.items():
+            first = SKILLDESC_AFFECT_COLUMN + 3 * (int(number) - 1)
+            for i, value in enumerate(values):
+                cols[first + i] = value
+    if not columns:
+        return base_blob, []
+    return patch_tab_text(base_blob, columns, SKILLDESC_COLUMNS)
+
+
 def patch_tab_text(base_blob, updates, min_columns):
     """A tab-separated client text keyed by the vnum in column 0: updates =
     {vnum: {column index: text}}; a missing line is added (padded to

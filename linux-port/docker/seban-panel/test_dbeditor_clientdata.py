@@ -246,6 +246,39 @@ class BuildTests(unittest.TestCase):
         self.assertNotIn(b'size ', dbdata.stamp_text(a))  # the spool's copy: no pack beside it
         self.assertIsNone(dbdata.read_stamp_text(b'# nothing\r\n'))
 
+    def test_skill_effect_types_reach_skilldesc(self):
+        # MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: a new effect type shows in
+        # the tooltip through skilldesc.txt's affect line of that effect
+        changes = [change('world.skill_proto', 3, 'szPointOn2', 'MOV_SPEED', 'ATT_GRADE'),
+                   change('world.skill_proto', 3, 'szPointPoly2'),
+                   change('world.skill_proto', 3, 'szPointOn3', '', 'CRITICAL'),
+                   change('world.skill_proto', 4, 'szPointPoly')]
+        self.assertEqual(dbsource.skill_type_targets(changes), {3: {2, 3}})
+        tables = {'world.item_proto': [],
+                  'world.skill_proto': [skill_row(3, szPointOn2='ATT_GRADE', szPointPoly2='10*k+iq/4',
+                                                  szPointOn3='CRITICAL', szPointPoly3='atk*k'),
+                                        skill_row(4)]}
+        base, index, data, changed, summary = self.build(tables, changes)
+        self.assertIn('locale/pl/skilldesc.txt', changed)
+        self.assertEqual(summary['skilldesc'], [3])
+        _ver, entries = eterpack.read_index_bytes(index)
+        desc = eterpack.read_entry(data, [e for e in entries if e.name == 'locale/pl/skilldesc.txt'][0]).decode('cp1250')
+        old = BASE.file('locale/pl/skilldesc.txt').decode('cp1250')
+        line = [l for l in desc.split('\r\n') if l.split('\t')[0] == '3'][0].split('\t')
+        old_line = [l for l in old.split('\r\n') if l.split('\t')[0] == '3'][0].split('\t')
+        self.assertEqual(len(line), len(old_line))
+        self.assertEqual(line[17:20], old_line[17:20])                     # effect 1 untouched
+        self.assertEqual(line[20:23], [u'Wartość Ataku +%.0f', '10*k+iq/4', ''])
+        self.assertEqual(line[23:26], [u'Szansa na cios krytyczny', '', ''])   # atk: no value in a tooltip
+        self.assertEqual([l for l in desc.split('\r\n') if l.split('\t')[0] != '3'],
+                         [l for l in old.split('\r\n') if l.split('\t')[0] != '3'])
+        # back to NONE clears the line; a skill without a line there is a note
+        self.assertEqual(clientfiles.effect_affect('NONE', '5'), ('', '', ''))
+        self.assertEqual(clientfiles.effect_affect('MOV_SPEED', '-20'), (u'Szybkość Ruchu -%.0f%%', '-20', ''))
+        notes = []
+        blob, done = clientfiles.patch_skilldesc_effects(old.encode('cp1250'), {99999: {2: ('a', '1', '')}}, notes)
+        self.assertEqual((done, len(notes)), ([], 1))
+
     def test_targets(self):
         items, skills = dbsource.targets([
             change('world.item_proto', 27001, 'gold'), change('world.item_proto', 27001, 'shop_buy_price'),

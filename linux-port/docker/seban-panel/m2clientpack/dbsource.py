@@ -42,6 +42,24 @@ def targets(changes):
     return items, skills
 
 
+# MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: the effect type columns and the
+# skilldesc.txt affect line (1-3) each one is shown in
+SKILL_TYPE_COLUMNS = {'szPointOn': 1, 'szPointOn2': 2, 'szPointOn3': 3}
+SKILL_TYPE_POLY = {1: 'szPointPoly', 2: 'szPointPoly2', 3: 'szPointPoly3'}
+
+
+def skill_type_targets(changes):
+    """{skill vnum: {effect numbers}} whose type the editor changed."""
+    out = {}
+    for row in changes:
+        if row.get('tbl') in SKILL_TABLES and row.get('col') in SKILL_TYPE_COLUMNS:
+            try:
+                out.setdefault(int(row['row_key']), set()).add(SKILL_TYPE_COLUMNS[row['col']])
+            except (KeyError, TypeError, ValueError):
+                continue
+    return out
+
+
 def _item_rows(query, vnums):
     out = {}
     vnums = sorted(vnums)
@@ -68,7 +86,7 @@ def _skill_rows(query, vnums):
                 query('SELECT * FROM %s WHERE dwVnum IN (%s)' % (SKILL_TABLE, marks), tuple(sorted(vnums))))
 
 
-def client_files(query, base, items, skills, notes=None):
+def client_files(query, base, items, skills, notes=None, skill_types=None):
     """({entry name: bytes}, summary) of the client files the edits change
     (equal ones included; dbdata.build keeps the release's bytes for them)."""
     notes = [] if notes is None else notes
@@ -85,6 +103,22 @@ def client_files(query, base, items, skills, notes=None):
     blob, changed = clientfiles.patch_skilltable(base.file('gamedata/skilltable.txt'), skill_rows, notes)
     files['gamedata/skilltable.txt'] = blob
     summary['skills'] = changed
+
+    # MT2009_PLUS_DB_EDITOR_SKILL_POINT_TYPES_V1: a changed effect type shows
+    # in the tooltip through skilldesc.txt's affect line of that effect
+    summary['skilldesc'] = []
+    desc_updates = {}
+    for vnum, numbers in sorted((skill_types or {}).items()):
+        row = skill_rows.get(vnum)
+        if row is None:
+            continue
+        desc_updates[vnum] = dict((n, clientfiles.effect_affect(row.get('szPointOn' + ('' if n == 1 else str(n))),
+                                                                row.get(SKILL_TYPE_POLY[n])))
+                                  for n in sorted(numbers))
+    if desc_updates:
+        blob, changed = clientfiles.patch_skilldesc_effects(base.file('locale/pl/skilldesc.txt'), desc_updates, notes)
+        files['locale/pl/skilldesc.txt'] = blob
+        summary['skilldesc'] = changed
 
     # itemdesc.txt (vnum, name, description, summary): the name column
     # follows a renamed item that has a line there.
@@ -134,7 +168,7 @@ def build_dbdata(query, changes, base=None):
     base = base or dbdata.latest_base()
     items, skills = targets(changes)
     notes = []
-    files, summary = client_files(query, base, items, skills, notes)
+    files, summary = client_files(query, base, items, skills, notes, skill_type_targets(changes))
     index, data, changed = dbdata.build(base, files)
     # MT2009_PLUS_DBDATA_STAMP_V1: the stamp of what this pack shows (the
     # zip's dbdata_stamp.txt, the game cores' copy in the spool)
@@ -148,6 +182,6 @@ def current_stamp(query, changes, base=None):
     from . import dbdata
     base = base or dbdata.latest_base()
     items, skills = targets(changes)
-    files, _summary = client_files(query, base, items, skills, [])
+    files, _summary = client_files(query, base, items, skills, [], skill_type_targets(changes))
     changed = dbdata.changed_files(base, files)
     return base, dbdata.stamp(base, dict((n, files[n]) for n in changed))
