@@ -35,11 +35,13 @@
 <li>znikają <b>wszystkie konta i postacie graczy</b> ({{ players }}), ich ekwipunek, magazyny, sklepy i Smocze Monety;</li>
 <li>znikają wszystkie boty, gildie, ziemie, sklepy i historia świata; boty są zasiewane od nowa;</li>
 <li>zostają konta testowe (admin / admin) i postacie GM ze świeżej instalacji;</li>
-<li>zostają ustawienia tego panelu i ustawienia serwera z pliku <code>.env</code>.</li>
+<li>zostają ustawienia tego panelu i ustawienia serwera z pliku <code>.env</code>;</li>
+<li>pliki z Edytora bazy danych (drop, szkatułki, smocze kamienie, łowienie, spawny) zostają zawsze.</li>
 </ul>
 <p class="muted">Pierwszy start po resecie trwa dłużej: baza jest importowana od nowa, a boty zasiewane.</p>
 <form method="post" action="{{ url_for('world_reset_start') }}" class="world-reset-form" data-confirm="Na pewno skasować CAŁY świat razem z kontami i postaciami graczy? Tego nie da się cofnąć w grze.">
 <input type="hidden" name="reset_csrf" value="{{ reset_csrf }}"><input type="hidden" name="kind" value="all">
+<label class="world-reset-keep"><input type="checkbox" name="keep_dbeditor" value="1" checked> <span><b>Zachowaj zmiany z Edytora bazy danych</b> – przedmioty, umiejętności, potwory, sklepy, bonusy, przepisy i tabela doświadczenia zostaną po resecie zapisane ponownie (razem z historią zmian). Bez zaznaczenia baza wraca do danych z instalacji, a dotychczasowa historia zmian trafia do archiwum.</span></label>
 <label><span>Hasło do bazy danych</span><input type="password" name="db_password" autocomplete="off" required></label>
 <label><span>Wpisz <b>RESET</b>, aby potwierdzić</span><input type="text" name="confirm" autocomplete="off" pattern="RESET" required></label>
 <button type="submit" class="danger"{% if status.busy %} disabled{% endif %}>Zresetuj cały świat</button>
@@ -47,6 +49,7 @@
 </section>
 </div>
 
+<style>.world-reset-keep{display:flex;gap:8px;align-items:flex-start}.world-reset-keep input{width:auto;margin-top:3px}</style>
 <script>
 document.querySelectorAll('.world-reset-form').forEach(function (form) {
   form.addEventListener('submit', function (event) {

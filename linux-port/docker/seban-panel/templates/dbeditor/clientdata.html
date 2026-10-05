@@ -30,7 +30,7 @@
       <tbody>
       {% for c in items %}
         <tr><td>{{ c.changed_at or '—' }}</td>
-          <td><span class="dbe-kind">{{ table_kind(c.tbl) if table_kind is defined else ('umiejętność' if 'skill' in c.tbl else 'przedmiot') }}</span> {{ c.label or '' }} ({{ c.row_key }})</td>
+          <td><span class="dbe-kind">{{ table_kind(c.tbl) if table_kind is defined else ('umiejętność' if 'skill' in c.tbl else 'przedmiot') }}</span> {{ (display_label(c) if display_label is defined else c.label) or '' }} ({{ c.row_key }})</td>
           <td>{{ column_label(c.tbl, c.col) }}</td>
           <td>{{ format_value(c.tbl, c.col, c.old_value) }} → {{ format_value(c.tbl, c.col, c.new_value) }}</td></tr>
       {% endfor %}

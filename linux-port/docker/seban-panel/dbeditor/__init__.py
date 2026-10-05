@@ -41,7 +41,8 @@ def install(app, ctx):
 
     # The parts, in the order the hub shows them. A part that is missing (an
     # older image) is skipped.
-    for name in ("items", "skills", "drops", "chests", "mobs", "spawns", "regen", "shops", "refine", "attrs", "exptable", "fishing", "dragonsoul", "config", "clientdata"):
+    for name in ("items", "skills", "drops", "chests", "mobs", "spawns", "regen", "shops", "refine", "attrs", "exptable", "fishing", "dragonsoul", "config", "clientdata",
+                 "reapply"):  # MT2009_PLUS_DB_EDITOR_REAPPLY_V1 (no tile: a notice on the hub)
         try:
             module = __import__("dbeditor." + name, fromlist=["install"])
         except ImportError:

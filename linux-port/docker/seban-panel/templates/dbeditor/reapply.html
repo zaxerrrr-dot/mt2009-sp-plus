@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_REAPPLY_V1: the history against the database (dbeditor/reapply.py). #}
+{% block title %}Przywróć zmiany z historii · Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% block content %}
+<style>
+.dbe-list{width:100%;border-collapse:collapse;font-size:14px}
+.dbe-list td,.dbe-list th{padding:6px 8px;border-bottom:1px solid var(--line,#253042);text-align:left;vertical-align:top}
+.dbe-state{border-left:4px solid var(--muted,#8a96a8);padding:10px 14px;margin:10px 0}
+.dbe-state.ok{border-left-color:#39e890}.dbe-state.pending{border-left-color:#f5b83d}.dbe-state.error{border-left-color:#ff5757}
+.dbe-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:12px}
+.dbe-scroll{overflow-x:auto}
+</style>
+<p class="eyebrow">EDYTOR BAZY DANYCH · HISTORIA</p>
+<h1>♻️ Przywróć zmiany z historii</h1>
+<p class="muted"><a href="{{ url_for('dbeditor.index') }}">← Edytor bazy danych</a> · <a href="{{ url_for('dbeditor.proto_history') }}">Historia zmian</a></p>
+<p class="muted">Historia pamięta, co zmieniono w Edytorze bazy danych. Gdy baza wróci do starszego stanu bez panelu (np. „Reset całego świata” albo ręcznie przywrócona kopia), historia pokazuje zmiany, których w bazie już nie ma, a „Cofnij” odmawia. Ta strona porównuje każde zmienione pole z bazą.</p>
+{% if error %}<section class="panel"><p class="dbe-error">Nie udało się porównać historii z bazą: {{ error }}</p></section>{% endif %}
+
+<section class="panel">
+  <h2>Do przywrócenia: {{ found.restore|length }}</h2>
+  {% if found.restore %}
+    <div class="dbe-state pending"><p>W bazie jest wartość sprzed zmiany – dane zresetowano pod historią. „Przywróć” zapisze wartości z historii jako jedną zmianę („{{ note }}”), którą można cofnąć jak każdą inną. Gra wczyta je po „Zastosuj”.</p></div>
+    <div class="dbe-scroll"><table class="dbe-list">
+      <thead><tr><th>Co</th><th>Pole</th><th>W bazie teraz</th><th>Po przywróceniu</th></tr></thead>
+      <tbody>{% for c in found.restore %}
+        <tr><td>{{ c.label or c.row_key }} <small class="muted">#{{ c.row_key }}</small></td><td>{{ column_label(c.tbl, c.col) }}</td>
+          <td>{{ format_value(c.tbl, c.col, c.current) }}</td><td>{{ format_value(c.tbl, c.col, c.new_value) }}</td></tr>
+      {% endfor %}</tbody>
+    </table></div>
+    <form method="post" action="{{ url_for('dbeditor.reapply_post') }}" class="dbe-actions" onsubmit="return confirm('Przywrócić {{ found.restore|length }} zmian z historii?');">
+      <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}">
+      <button>♻️ Przywróć zmiany z historii</button>
+    </form>
+  {% else %}
+    <div class="dbe-state ok"><p>Nic do przywrócenia – {{ found.sync }} zmienionych pól ma w bazie wartość z historii.</p></div>
+  {% endif %}
+</section>
+
+{% if found.conflict %}
+<section class="panel">
+  <h2>Inna wartość w bazie: {{ found.conflict|length }}</h2>
+  <p class="muted">W bazie nie ma ani wartości sprzed zmiany, ani tej z historii (zmieniono ją poza edytorem albo nowa wersja serwera ma inne dane). Te pola zostają bez zmian – popraw je w edytorze, jeśli trzeba.</p>
+  <div class="dbe-scroll"><table class="dbe-list">
+    <thead><tr><th>Co</th><th>Pole</th><th>W bazie teraz</th><th>Przed zmianą</th><th>Według historii</th></tr></thead>
+    <tbody>{% for c in found.conflict %}
+      <tr><td>{{ c.label or c.row_key }} <small class="muted">#{{ c.row_key }}</small></td><td>{{ column_label(c.tbl, c.col) }}</td>
+        <td>{{ format_value(c.tbl, c.col, c.current) if c.current is not none else c.reason }}</td>
+        <td>{{ format_value(c.tbl, c.col, c.old_value) }}</td><td>{{ format_value(c.tbl, c.col, c.new_value) }}</td></tr>
+    {% endfor %}</tbody>
+  </table></div>
+</section>
+{% endif %}
+{% endblock %}

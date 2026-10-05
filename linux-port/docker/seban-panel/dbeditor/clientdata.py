@@ -65,6 +65,8 @@ def _write_json(path, data):
 # MT2009_PLUS_DBDATA_STAMP_V1 (see the docstring)
 SERVER_STAMP = "dbdata_stamp.txt"
 DOWNLOAD_LOG = "clientdata-download.json"
+# MT2009_PLUS_DB_EDITOR_REAPPLY_V1: how often the stamp follows the database
+STAMP_REFRESH_SECONDS = 180
 # the tables whose edits reach the client files (m2clientpack/dbsource.py)
 CLIENT_TABLES = {"world.item_proto", "player.item_proto", "world.skill_proto", "player.skill_proto",
                  "world.item_extra_apply"}
@@ -281,11 +283,24 @@ def install(bp, ctx):
     # The game reads the stamp at a person's login, so it must be in the spool
     # from the panel's start, not from the first visit of the hub: the current
     # one is written in the background, again while the database is not up yet.
+    #
+    # MT2009_PLUS_DB_EDITOR_REAPPLY_V1: and kept following the database after
+    # that. The stamp is made from the history (which items/skills) and the
+    # values in the database - the same two the zip is built from - but the
+    # database can change without the panel (a world reset, a backup put
+    # back, the reset's replay of the editor's changes): the spool's stamp
+    # then named a zip nobody can download any more, and the game asked for
+    # "new client files" whatever zip a player unpacked. Every few minutes
+    # (and at each visit of the hub / "Zastosuj") it is made again; the file
+    # is rewritten only when the stamp changed.
     def startup_stamp():
         for _attempt in range(40):
             if refresh_stamp():
-                return
+                break
             time.sleep(15)
+        while True:
+            time.sleep(STAMP_REFRESH_SECONDS)
+            refresh_stamp()
 
     app = ctx.get("app")
     if ctx.get("queue_restart") is not None and not (app is not None and app.testing):
@@ -322,6 +337,7 @@ def install(bp, ctx):
 
         def hub_notice():
             ensure_stamp()
+            _stamp_soon(refresh_stamp)  # MT2009_PLUS_DB_EDITOR_REAPPLY_V1: the database may have changed under it
             return banner()
 
         HUB_NOTICES.append(hub_notice)
@@ -352,11 +368,13 @@ def install(bp, ctx):
     def apply_page():
         items, files = pending()
         ensure_stamp()
+        _stamp_soon(refresh_stamp)  # MT2009_PLUS_DB_EDITOR_REAPPLY_V1
         return render_template(
             "dbeditor/clientdata.html", items=items, files=files, last=_read_json(last_apply, {}),
             build=_read_json(build_log, {}), csrf=common_items.csrf_token(), client_version=base_version(),
             restart=restart_state(), column_label=common_items.column_label,
             format_value=common_items.format_value, table_kind=table_kind, new_client=banner(),
+            display_label=common_items.display_label,  # MT2009_PLUS_DB_EDITOR_REAPPLY_V1
             server_stamp=read_server_stamp(spool))
 
     @bp.route("/apply", methods=["POST"])
