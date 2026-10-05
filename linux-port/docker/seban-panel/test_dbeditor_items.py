@@ -120,6 +120,8 @@ class FakeDB:
                 skill(3, "BERSERK", 1, "33*k", "63+10*k", "60+90*k"),
                 skill(91, "FLYING_TALISMAN", 4, "-(70 + 4*lv + (20*iq+5*mwep+50)*ar*k)", "7"),
             ]},
+            # MT2009_PLUS_ITEM_EXTRA_APPLY_V1: (vnum, slot) -> row
+            "world.item_extra_apply": {},
         }
         for row in self.tables["world.item_proto"].values():
             row["locale_name"] = row["locale_name"].encode("cp1250")  # stored as the game's bytes
@@ -177,6 +179,17 @@ class FakeDB:
             return [], 1
         if "FROM player.web_dbeditor_history" in sql:
             return self.history_select(sql, params), 0
+        if sql.startswith("INSERT INTO world.item_extra_apply"):
+            cols = [c.strip("` ") for c in re.search(r"\(([^)]+)\) VALUES", sql).group(1).split(",")]
+            row = dict(zip(cols, (int(p) for p in params)))
+            key = (row["vnum"], row["slot"])
+            assert key not in self.tables["world.item_extra_apply"], "duplicate primary key"
+            self.tables["world.item_extra_apply"][key] = row
+            return [], 1
+        if sql.startswith("DELETE FROM world.item_extra_apply"):
+            assert re.match(r"DELETE FROM world\.item_extra_apply WHERE `vnum`=%s AND `slot`=%s LIMIT 1$", sql), sql
+            gone = self.tables["world.item_extra_apply"].pop((int(params[0]), int(params[1])), None)
+            return [], 1 if gone else 0
         if "FROM common.locale" in sql:
             return [{"mValue": " ".join(str(v) for v in skills.DEFAULT_POWER)}], 0
         match = self.SELECT.match(sql)
@@ -226,6 +239,10 @@ class FakeDB:
             part = part.strip().replace("_AND_", "AND")
             if part in ("vnum=%s", "`vnum`=%s"):
                 ok = row["vnum"] == int(params.pop(0))
+            elif part == "`slot`=%s":
+                ok = row["slot"] == int(params.pop(0))
+            elif part == "apply_type <> %s":
+                ok = row["apply_type"] != int(params.pop(0))
             elif part in ("dwVnum=%s", "`dwVnum`=%s"):
                 ok = row["dwVnum"] == int(params.pop(0))
             elif part == "(vnum=%s OR locale_name LIKE %s)":
@@ -254,9 +271,11 @@ class FakeDB:
         rows = self.history
         if "GROUP BY batch" in sql:
             if "tbl=%s" in sql:
-                rows = [r for r in rows if r["tbl"] == params.pop(0)]
+                wanted = params.pop(0)
+                rows = [r for r in rows if r["tbl"] == wanted]
             if "row_key=%s" in sql:
-                rows = [r for r in rows if r["row_key"] == params.pop(0)]
+                wanted = params.pop(0)
+                rows = [r for r in rows if r["row_key"] == wanted]
             batches = {}
             for r in rows:
                 b = batches.setdefault(r["batch"], {"batch": r["batch"], "first_id": r["id"], "changed_at": r["changed_at"],
@@ -571,6 +590,128 @@ class DbEditorItemsTests(unittest.TestCase):
             res = self.post("/db/apply", {"action": "apply", "confirmation": "RESTART"}, follow_redirects=True)
         self.assertIn("Poprzedni restart jeszcze trwa", res.get_data(as_text=True))
         self.assertEqual(common_items.pending_count(), 1)
+
+    # ---- MT2009_PLUS_ITEM_EXTRA_APPLY_V1: "Dodatkowe bonusy (ponad 3)" --------
+    STAT_LINES = [("15", "20"), ("13", "20"), ("14", "20"), ("12", "20")]  # INT, WIT, ZR, SIL
+
+    def extras(self, vnum):
+        lines = [r for (v, _s), r in self.fake.tables["world.item_extra_apply"].items() if v == vnum]
+        return [(r["slot"], r["apply_type"], r["apply_value"]) for r in sorted(lines, key=lambda r: r["slot"])]
+
+    def post_extras(self, vnum, lines, **extra):
+        data = {"extra_type": [t for t, _v in lines], "extra_value": [v for _t, v in lines]}
+        data.update(extra)
+        return self.post(f"/db/items/{vnum}/extra", data, follow_redirects=True)
+
+    def test_extra_section_on_the_edit_page(self):
+        page = self.client.get("/db/items/149").get_data(as_text=True)
+        self.assertIn("Dodatkowe bonusy (ponad 3)", page)
+        self.assertIn("Pierwsze 3 bonusy to własne bonusy przedmiotu", page)
+        self.assertIn("pobraniu plików klienta (zip)", page)
+        self.assertIn("Skopiuj tę listę na wszystkie poziomy +0…+9", page)
+        self.assertIn('name="extra_type"', page)
+        self.assertIn("data-dbe-extra-template", page)
+        self.assertNotIn("nie jest zakładany", page)
+        page = self.client.get("/db/items/27001").get_data(as_text=True)   # a potion
+        self.assertIn("nie jest zakładany", page)
+        self.assertNotIn("Skopiuj tę listę", page)                          # no family
+
+    def test_extra_lines_saved_with_history_and_pending(self):
+        res = self.post_extras(149, self.STAT_LINES)
+        page = res.get_data(as_text=True)
+        self.assertIn("Zapisano dodatkowe bonusy (4 na przedmiot) w 1 przedmiot", page)
+        self.assertEqual(self.extras(149), [(1, 15, 20), (2, 13, 20), (3, 14, 20), (4, 12, 20)])
+        self.assertEqual(self.extras(141), [])                              # family untouched
+        self.assertIn("Inteligencja +20, Witalność +20, Zręczność +20, Siła +20", page)
+        self.assertEqual(self.fake.tables["world.item_proto"][149]["applytype0"], 17)  # the proto's own stay
+        hist = [h for h in self.fake.history if h["tbl"] == "world.item_extra_apply"]
+        self.assertEqual(len(hist), 4)
+        self.assertEqual({h["col"] for h in hist}, {"*"})
+        self.assertEqual({h["row_key"] for h in hist}, {"149:1", "149:2", "149:3", "149:4"})
+        self.assertEqual(len({h["batch"] for h in hist}), 1)
+        self.assertEqual(common_items.pending_count(), 4)
+        page = self.client.get("/db/apply").get_data(as_text=True)
+        self.assertIn("4</b> zmian czeka", page)
+        self.assertIn("dodatkowy bonus", page)
+        self.assertIn("1. Inteligencja +20 [15]", page)
+        page = self.client.get("/db/historia").get_data(as_text=True)
+        self.assertIn('href="/db/items/149"', page)
+        self.assertIn("4. Siła +20 [12]", page)
+        # the item page's own list of these changes
+        self.assertIn("Ostatnie zmiany dodatkowych bonusów", self.client.get("/db/items/149").get_data(as_text=True))
+        # the same list again: nothing to save
+        res = self.post_extras(149, self.STAT_LINES)
+        self.assertIn("Brak zmian", res.get_data(as_text=True))
+        self.assertEqual(len(self.fake.history), 4)
+
+    def test_extra_lines_change_remove_and_undo(self):
+        self.post_extras(149, self.STAT_LINES)
+        first = self.fake.history[0]["batch"]
+        # the second line changed, the last one removed (kind "brak bonusu"), one added
+        self.post_extras(149, [("15", "20"), ("13", "30"), ("14", "20"), ("0", "20"), ("43", "5")])
+        self.assertEqual(self.extras(149), [(1, 15, 20), (2, 13, 30), (3, 14, 20), (4, 43, 5)])
+        second = self.fake.history[-1]["batch"]
+        self.assertNotEqual(first, second)
+        res = self.post("/db/historia/cofnij", {"batch": second}, follow_redirects=True)
+        self.assertIn("Cofnięto", res.get_data(as_text=True))
+        self.assertEqual(self.extras(149), [(1, 15, 20), (2, 13, 20), (3, 14, 20), (4, 12, 20)])
+        self.post("/db/historia/cofnij", {"batch": first})
+        self.assertEqual(self.extras(149), [])
+        self.assertEqual(common_items.pending_changes(), [])
+        # everything removed at once
+        self.post_extras(149, self.STAT_LINES)
+        self.post_extras(149, [])
+        self.assertEqual(self.extras(149), [])
+
+    def test_extra_lines_copied_to_the_family(self):
+        res = self.post_extras(149, self.STAT_LINES, extra_family="1")
+        self.assertIn("w 3 przedmiot", res.get_data(as_text=True))
+        for vnum in (140, 141, 149):
+            self.assertEqual(self.extras(vnum), [(1, 15, 20), (2, 13, 20), (3, 14, 20), (4, 12, 20)], vnum)
+        self.assertEqual(self.extras(11299), [])
+        self.assertEqual(len({h["batch"] for h in self.fake.history}), 1)
+        labels = {h["row_key"]: h["label"] for h in self.fake.history}
+        self.assertEqual(labels["140:1"], "Miecz Bojowy+0")
+        # the family table shows them
+        page = self.client.get("/db/items/140").get_data(as_text=True)
+        self.assertEqual(page.count("Inteligencja +20, Witalność +20, Zręczność +20, Siła +20"), 4)  # header + 3 rows
+        # a shorter list for the family: the fourth line goes everywhere
+        self.post_extras(140, self.STAT_LINES[:3], extra_family="1")
+        for vnum in (140, 141, 149):
+            self.assertEqual(len(self.extras(vnum)), 3, vnum)
+
+    def test_extra_lines_invalid_input_saves_nothing(self):
+        for bad in ([("15", "0")], [("15", "abc")], [("300", "5")], [("15", "9999999999")],
+                    [("15", "1")] * 31):
+            res = self.post_extras(149, bad)
+            self.assertIn("Nic nie zapisano – popraw dodatkowe bonusy", res.get_data(as_text=True), bad[:1])
+        self.assertEqual(self.fake.tables["world.item_extra_apply"], {})
+        self.assertEqual(self.fake.history, [])
+        # the page comes back with what was typed
+        res = self.post_extras(149, [("15", "20"), ("13", "0")])
+        page = res.get_data(as_text=True)
+        self.assertIn("podaj wartość różną od 0", page)
+        self.assertEqual(page.count('name="extra_value"'), 3)  # two typed + the template's
+        res = self.client.post("/db/items/149/extra", data={"extra_type": ["15"], "extra_value": ["5"]},
+                               follow_redirects=True)
+        self.assertIn("Sesja formularza wygasła", res.get_data(as_text=True))
+        self.assertEqual(self.fake.tables["world.item_extra_apply"], {})
+
+    def test_extra_lines_reach_the_client_zip(self):
+        self.post_extras(149, self.STAT_LINES)
+        res = self.client.get("/db/clientdata.zip")
+        self.assertEqual(res.status_code, 200)
+        with zipfile.ZipFile(io.BytesIO(res.get_data())) as z:
+            index, data = z.read("pack/dbdata.index"), z.read("pack/dbdata.data")
+            readme = z.read("CZYTAJ_MNIE.txt").decode("utf-8-sig")
+        entries = {e.name: e for e in eterpack.read_index_bytes(index)[1]}
+        self.assertIn("gamedata/item_extra_apply.txt", entries)
+        text = eterpack.read_entry(data, entries["gamedata/item_extra_apply.txt"]).decode("ascii")
+        body = [l for l in text.split("\r\n") if l and not l.startswith("#")]
+        self.assertEqual(body, ["149\t15\t20", "149\t13\t20", "149\t14\t20", "149\t12\t20"])
+        self.assertIn("gamedata/item_extra_apply.txt", readme)
+        page = self.client.get("/db/apply").get_data(as_text=True)
+        self.assertIn("Dodatkowe bonusy (ponad 3): 4 linii na 1 przedmiotach", page)
 
     def test_item_overwritten_at_start_is_flagged(self):
         self.fake.tables["world.item_proto"][215] = dict(self.fake.tables["world.item_proto"][149], vnum=215)

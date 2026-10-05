@@ -13,7 +13,19 @@ What the values mean (game/src/battle.cpp, char.cpp):
   armour  value1 defence, value5 the refine's defence bonus (counted twice) -
           for body, head, shield and shoes only;
   limittype0/1 + limitvalue0/1: 1 = the level needed to wear it.
+
+MT2009_PLUS_ITEM_EXTRA_APPLY_V1: item_proto has room for three bonuses
+(applytype0..2 - ITEM_APPLY_MAX_NUM of the engine and aApplies[3] of the
+client exe, neither of which can grow). Lines beyond them are rows of
+world.item_extra_apply (vnum, slot, apply_type - the same POINT_* number as
+applytype -, apply_value), the section "Dodatkowe bonusy (ponad 3)" of an
+item's page. The game core wears them like the proto's own after a restart
+(playerbot_item_extra_apply.h, server-patches/enginefixes); the client shows
+them from gamedata/item_extra_apply.txt of the dbdata zip (m2clientpack/
+dbsource.py, uitooltip.py). Saved through common_items.write_rows - one
+history row a line, with undo, listed by "Zastosuj" like any other change.
 """
+import json
 import re
 
 from flask import abort, flash, redirect, render_template, request, url_for
@@ -153,6 +165,110 @@ ADVANCED_ORDER = ["type", "subtype", "limittype0", "limitvalue0", "limittype1", 
 DELTA_COLS = {"limitvalue0", "limitvalue1", "applyvalue0", "applyvalue1", "applyvalue2", "value0", "value1",
               "value2", "value3", "value4", "value5", "gold", "shop_buy_price"}
 FAMILY_SUFFIX = re.compile(r"^(.*?)(\s*\+\d)$")
+
+# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the extra bonus lines (see the docstring).
+EXTRA_TABLE = "world.item_extra_apply"
+EXTRA_ROW_COLS = ("vnum", "slot", "apply_type", "apply_value")
+EXTRA_MAX = 30
+EXTRA_SPECS = {"apply_type": {"kind": "int", "min": 1, "max": 255, "label": "Dodatkowy bonus – rodzaj"},
+               "apply_value": _int(*INT, "Dodatkowy bonus – wartość")}
+EXTRA_CREATE = (f"CREATE TABLE IF NOT EXISTS {EXTRA_TABLE} (vnum INT UNSIGNED NOT NULL, slot TINYINT UNSIGNED NOT NULL, "
+                "apply_type TINYINT UNSIGNED NOT NULL DEFAULT 0, apply_value INT NOT NULL DEFAULT 0, "
+                "PRIMARY KEY (vnum, slot)) ENGINE=InnoDB")
+# Item types the game wears (CItem::ModifyPoints runs for what is equipped):
+# weapon, armour and jewellery, unique (rings of old), costume, ring, belt.
+WORN_TYPES = {1, 2, 16, 28, 33, 34}
+COSTUME_MOUNT = (28, 2)
+_EXTRA_STATE = {"ready": False}
+
+
+def ensure_extra_table(rows):
+    """The table apply.sh creates at every start - made here too, so a panel
+    updated before the server's next start can already save lines."""
+    if _EXTRA_STATE["ready"]:
+        return
+    rows(EXTRA_CREATE)
+    _EXTRA_STATE["ready"] = True
+
+
+def load_extras(rows, vnums):
+    """{vnum: [{"slot", "apply_type", "apply_value"}]} of the given items,
+    each list in slot order."""
+    vnums = sorted({int(v) for v in vnums})
+    out = {v: [] for v in vnums}
+    if not vnums:
+        return out
+    marks = ",".join(["%s"] * len(vnums))
+    for r in rows(f"SELECT vnum, slot, apply_type, apply_value FROM {EXTRA_TABLE} WHERE vnum IN ({marks}) "
+                  "ORDER BY vnum, slot", vnums):
+        out.setdefault(int(r["vnum"]), []).append({"slot": int(r["slot"]), "apply_type": int(r["apply_type"]),
+                                                    "apply_value": int(r["apply_value"])})
+    for lines in out.values():
+        lines.sort(key=lambda line: line["slot"])
+    return out
+
+
+def extra_line_text(point, value):
+    name, unit = POINT_LABELS.get(int(point or 0), (f"#{point}", ""))
+    return f"{name} {int(value):+d}{unit}"
+
+
+def extra_text(lines):
+    return ", ".join(extra_line_text(l["apply_type"], l["apply_value"]) for l in lines if l["apply_type"])
+
+
+def parse_extra_form(form):
+    """(lines [(apply_type, apply_value)] in order, errors, submitted rows)
+    of the "Dodatkowe bonusy" form: rows extra_type / extra_value, a row
+    without a bonus kind is left out (that is how a line is removed)."""
+    types, values = form.getlist("extra_type"), form.getlist("extra_value")
+    lines, errors, raw = [], [], []
+    for i in range(max(len(types), len(values))):
+        type_text = (types[i] if i < len(types) else "").strip()
+        value_text = (values[i] if i < len(values) else "").strip()
+        raw.append({"apply_type": type_text, "apply_value": value_text})
+        if type_text in ("", "0"):
+            continue
+        n = len(lines) + 1
+        point, error = common.validate(EXTRA_SPECS["apply_type"], type_text, f"Dodatkowy bonus {n} – rodzaj")
+        if error:
+            errors.append(error)
+            continue
+        value, error = common.validate(EXTRA_SPECS["apply_value"], value_text or "0", f"Dodatkowy bonus {n} – wartość")
+        if error:
+            errors.append(error)
+            continue
+        if value == 0:
+            errors.append(f"Dodatkowy bonus {n} ({point_label(point)}): podaj wartość różną od 0 "
+                          "albo ustaw „— brak bonusu —”, aby go usunąć.")
+            continue
+        lines.append((point, value))
+    if len(lines) > EXTRA_MAX:
+        errors.append(f"Najwyżej {EXTRA_MAX} dodatkowych bonusów na przedmiot (podano {len(lines)}).")
+    return lines, errors, raw
+
+
+def extra_changes(vnum, current, lines):
+    """(inserts, deletes) for write_rows that turn an item's current lines
+    into `lines` (slot = position, from 1); an unchanged slot is left alone."""
+    want = {i + 1: (int(t), int(v)) for i, (t, v) in enumerate(lines)}
+    have = {l["slot"]: (l["apply_type"], l["apply_value"]) for l in current}
+    inserts, deletes = [], []
+    for slot in sorted(set(want) | set(have)):
+        if want.get(slot) == have.get(slot):
+            continue
+        if slot in have:
+            deletes.append({"vnum": int(vnum), "slot": slot})
+        if slot in want:
+            inserts.append({"vnum": int(vnum), "slot": slot, "apply_type": want[slot][0], "apply_value": want[slot][1]})
+    return inserts, deletes
+
+
+def extra_history_formatter(col, value):
+    if col != common.ROW_COL:
+        return None
+    data = json.loads(value)
+    return f"{data.get('slot', '?')}. {extra_line_text(data.get('apply_type'), data.get('apply_value', 0))} [{data.get('apply_type')}]"
 
 
 def value_fields(item_type, subtype):
@@ -326,6 +442,9 @@ def history_formatter(col, value):
 def install(bp, ctx):
     common.init(ctx)
     common.register_table(TABLE, "vnum", SPECS, "Przedmiot", "dbeditor.item_edit", history_formatter)
+    # MT2009_PLUS_ITEM_EXTRA_APPLY_V1: whole rows (one a line), key vnum:slot
+    common.register_table(EXTRA_TABLE, ("vnum", "slot"), EXTRA_SPECS, "Dodatkowy bonus", "dbeditor.item_edit",
+                          extra_history_formatter, row_cols=EXTRA_ROW_COLS, row_label="dodatkowy bonus (ponad 3)")
     common.install_history(bp, ctx)
     login_required = ctx["login_required"]
 
@@ -439,22 +558,101 @@ def install(bp, ctx):
                 flash(f"Zapisano {len(saved)} zmian w {touched} przedmiot(ach). "
                       "Zmiany czekają na zastosowanie (restart gry).", "success")
                 return redirect(url_for("dbeditor.item_edit", vnum=vnum))
+        return render_edit(item, family, raw)
+
+    def render_edit(item, family, raw=None, extra_raw=None):
+        vnum = int(item["vnum"])
+        raw = raw or {}
         try:
             history = common.history_batches(10, TABLE, vnum)
         except Exception:
             history = []
+        # MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the extra lines of the item and its family
+        extras, extra_error = {}, None
+        try:
+            ensure_extra_table(rows)
+            extras = load_extras(rows, [vnum] + [int(m["vnum"]) for m in family])
+        except Exception as exc:  # no table yet (apply.sh has not run): the page still opens
+            extra_error = str(exc)
+        try:
+            prefix = f"{vnum}:"
+            extra_history = [b for b in common.history_batches(50, EXTRA_TABLE)
+                             if any(str(r["row_key"]).startswith(prefix) for r in b["rows"])][:10]
+        except Exception:
+            extra_history = []
+        own_extras = extras.get(vnum, [])
+        for member in family:
+            member["extra_text"] = extra_text(extras.get(int(member["vnum"]), []))
         regular, technical = point_options()
         boot_rules = protected.rules_for(vnum, item.get("type"))
         slot = level_slot(item)
         friendly = friendly_columns(item)
+        item_type, item_subtype = int(item.get("type") or 0), int(item.get("subtype") or 0)
         return render_template(
             "dbeditor/items_edit.html", item=item, raw=raw, family=family, history=history,
-            value_fields=value_fields(int(item["type"]), int(item["subtype"])), level_slot=slot,
+            value_fields=value_fields(item_type, item_subtype), level_slot=slot,
             advanced=[c for c in ADVANCED_ORDER if c not in friendly], specs=SPECS, limit_types=LIMIT_TYPES,
             point_regular=regular, point_technical=technical, point_labels=POINT_LABELS,
             boot_rules=boot_rules, boot_always=protected.overwritten_cols(vnum, item.get("type")),
             boot_warning=protected.WARNING,
+            extras=own_extras, extra_text=extra_text(own_extras), extra_error=extra_error,
+            # one empty row to start from (more with "Dodaj bonus")
+            extra_raw=(extra_raw if extra_raw is not None else
+                       [{"apply_type": l["apply_type"], "apply_value": l["apply_value"]} for l in own_extras])
+            or [{"apply_type": 0, "apply_value": 0}],
+            extra_history=extra_history, extra_max=EXTRA_MAX,
+            extra_worn=item_type in WORN_TYPES, extra_mount=(item_type, item_subtype) == COSTUME_MOUNT,
             dbe_csrf=common.csrf_token(), **common.template_helpers(), **page_context())
+
+    @bp.route("/items/<int:vnum>/extra", methods=["POST"])
+    @login_required
+    def item_extra_save(vnum):
+        """MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the "Dodatkowe bonusy (ponad 3)"
+        form - the item's whole list of extra lines, optionally copied to
+        the whole +0..+9 family."""
+        item = load(vnum)
+        if not item:
+            abort(404)
+        if not common.check_csrf():
+            return redirect(url_for("dbeditor.item_edit", vnum=vnum))
+        family = family_of(item, rows)
+        lines, errors, extra_raw = parse_extra_form(request.form)
+        if errors:
+            for error in errors[:8]:
+                flash(error, "error")
+            flash("Nic nie zapisano – popraw dodatkowe bonusy.", "error")
+            return render_edit(item, family, extra_raw=extra_raw)
+        with_family = bool(family) and request.form.get("extra_family") == "1"
+        targets = [vnum] + ([int(m["vnum"]) for m in family if int(m["vnum"]) != vnum] if with_family else [])
+        names = {int(m["vnum"]): m["locale_name"] for m in family}
+        names[vnum] = item["locale_name"]
+        try:
+            ensure_extra_table(rows)
+            current = load_extras(rows, targets)
+        except Exception as exc:
+            flash(f"Nie udało się odczytać tabeli {EXTRA_TABLE}: {exc}", "error")
+            return redirect(url_for("dbeditor.item_edit", vnum=vnum))
+        inserts, deletes = [], []
+        for target in targets:
+            ins, dels = extra_changes(target, current.get(target, []), lines)
+            inserts += ins
+            deletes += dels
+        if not inserts and not deletes:
+            flash("Brak zmian do zapisania.", "success")
+            return redirect(url_for("dbeditor.item_edit", vnum=vnum))
+        try:
+            _batch, done = common.write_rows(
+                EXTRA_TABLE, inserts=inserts, deletes=deletes,
+                note="Dodatkowe bonusy" + (" z rodziną +0..+9" if with_family else ""),
+                label_of=lambda key: names.get(int(str(key).split(":")[0]), ""))
+        except Exception as exc:
+            flash(f"Nie udało się zapisać: {exc}", "error")
+            return redirect(url_for("dbeditor.item_edit", vnum=vnum))
+        touched = len({str(key).split(":")[0] for key, _op in done})
+        flash(f"Zapisano dodatkowe bonusy ({len(lines)} na przedmiot) w {touched} przedmiot(ach). "
+              "Gra je założy po restarcie („Zastosuj”); gracze zobaczą je w opisie przedmiotu po pobraniu "
+              "plików klienta (zip) ze strony „Zastosuj”.", "success")
+        return redirect(url_for("dbeditor.item_edit", vnum=vnum))
 
     import dbeditor
     dbeditor.add_section("dbeditor.items", "⚔️", "Przedmioty",

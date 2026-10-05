@@ -177,6 +177,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_movement.h"
 #include "playerbot_combat_value_policy.h"
 #include "playerbot_battle_horse.h"
+#include "playerbot_item_extra_apply.h" // MT2009_PLUS_ITEM_EXTRA_APPLY_V1: bonus lines beyond item_proto's three, counted by the gear scoring
 #include "playerbot_gear.h"
 #include "playerbot_horse30.h" // Digi Rasta's horse to level 30: paid training, the Black Steed trial, the horse bonus (MT2009_PLUS_HORSE30_V1)
 #include "playerbot_shaman_buff_set.h" // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: a Shaman's INT set for its buffs

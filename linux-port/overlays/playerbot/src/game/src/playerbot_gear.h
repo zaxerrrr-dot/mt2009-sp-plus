@@ -592,6 +592,8 @@ namespace
 		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
 			if (item->GetProto()->aApplies[i].bType == applyType)
 				total += item->GetProto()->aApplies[i].lValue;
+		// MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the lines beyond the proto's three
+		total += SumMt2009ItemExtraApply(item->GetVnum(), applyType);
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 			if (item->GetAttributeType(i) == applyType)
 				total += item->GetAttributeValue(i);
@@ -646,6 +648,7 @@ namespace
 		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
 			if (proto->aApplies[i].bType == applyType)
 				total += proto->aApplies[i].lValue;
+		total += SumMt2009ItemExtraApply(proto->dwVnum, applyType); // MT2009_PLUS_ITEM_EXTRA_APPLY_V1
 		if (item)
 			for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 				if (item->GetAttributeType(i) == applyType)
@@ -1176,6 +1179,15 @@ namespace
 				continue;
 			protoLines += ScorePlayerBotApplyTiered(t, item->GetProto()->aApplies[i].lValue, ch);
 		}
+		// MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the item's lines beyond the proto's
+		// three (world.item_extra_apply) are proto lines too.
+		if (const std::vector<TItemApply>* extraApplies = GetMt2009ItemExtraApplies(item->GetVnum()))
+			for (const TItemApply& extra : *extraApplies)
+			{
+				if (bWeaponHitDone && IsPlayerBotHitModelApply(extra.bType, ch))
+					continue;
+				protoLines += ScorePlayerBotApplyTiered(extra.bType, extra.lValue, ch);
+			}
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
 			const BYTE t = item->GetAttributeType(i);
@@ -1229,6 +1241,7 @@ namespace
 					if (item->GetProto()->aApplies[i].bType == wanted)
 						score += (long long)item->GetProto()->aApplies[i].lValue * perPoint;
 				}
+				score += (long long)SumMt2009ItemExtraApply(item->GetVnum(), wanted) * perPoint; // MT2009_PLUS_ITEM_EXTRA_APPLY_V1
 				if (terms)
 					terms->Set(per::TERM_RACE_LINES, score - beforeRace);
 			}
@@ -2254,6 +2267,10 @@ namespace
 		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
 			score += ScorePlayerBotApply(proto->aApplies[i].bType,
 					proto->aApplies[i].lValue, ch);
+		// MT2009_PLUS_ITEM_EXTRA_APPLY_V1: and its lines beyond the three
+		if (const std::vector<TItemApply>* extraApplies = GetMt2009ItemExtraApplies(proto->dwVnum))
+			for (const TItemApply& extra : *extraApplies)
+				score += ScorePlayerBotApply(extra.bType, extra.lValue, ch);
 		return score;
 	}
 

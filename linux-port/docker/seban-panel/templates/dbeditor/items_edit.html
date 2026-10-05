@@ -12,7 +12,7 @@
   <div>
     <p class="eyebrow">PRZEDMIOT · VNUM {{ item.vnum }}</p>
     <h1>{{ item.locale_name }}</h1>
-    <p class="muted">{{ item.type_text }}{% if item.level %} · od poziomu {{ item.level }}{% endif %}{% if item.bonus_text %} · {{ item.bonus_text }}{% endif %}</p>
+    <p class="muted">{{ item.type_text }}{% if item.level %} · od poziomu {{ item.level }}{% endif %}{% if item.bonus_text %} · {{ item.bonus_text }}{% endif %}{% if extra_text %} · <span title="Dodatkowe bonusy (ponad 3)">+ {{ extra_text }}</span>{% endif %}</p>
   </div>
 </section>
 
@@ -91,7 +91,7 @@
       <p class="muted">Zmiana nazwy zachowuje końcówkę „+N” każdego przedmiotu. Przenosi się tylko to, co zmieniłeś w tym formularzu.</p>
     </div>
     <table class="dbe-table compact">
-      <thead><tr><th>Vnum</th><th>Nazwa</th><th>Poziom</th>{% for col, label, help in value_fields %}<th>{{ label }}</th>{% endfor %}<th>Bonusy</th></tr></thead>
+      <thead><tr><th>Vnum</th><th>Nazwa</th><th>Poziom</th>{% for col, label, help in value_fields %}<th>{{ label }}</th>{% endfor %}<th>Bonusy</th><th>Dodatkowe</th></tr></thead>
       <tbody>
       {% for m in family %}
         <tr class="{{ 'is-current' if m.vnum == item.vnum }}">
@@ -99,6 +99,7 @@
           <td>{{ m.locale_name }}</td><td>{{ m.level or '—' }}</td>
           {% for col, label, help in value_fields %}<td>{{ m[col] }}</td>{% endfor %}
           <td class="dbe-bonus">{{ m.bonus_text or '—' }}</td>
+          <td class="dbe-bonus">{{ m.extra_text or '—' }}</td>
         </tr>
       {% endfor %}
       </tbody>
@@ -127,6 +128,72 @@
     <button type="submit">💾 Zapisz zmiany</button>
     <span class="muted">Po zapisaniu zmiana czeka na restart gry („Zastosuj”). Nazwę i bonusy w podpowiedzi przedmiotu klient gracza bierze z własnych plików danych – serwer liczy nowe wartości po restarcie.</span>
   </div>
+</form>
+
+{# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: lines beyond item_proto's three (world.item_extra_apply, items.py). #}
+{% macro extra_select(current) %}
+      <select name="extra_type" data-dbe-extra-type>
+        <option value="0" data-unit="" {{ 'selected' if current == 0 }}>— brak bonusu —</option>
+        {% if current and current not in point_labels %}<option value="{{ current }}" selected>Nieznany bonus #{{ current }}</option>{% endif %}
+        <optgroup label="Bonusy">
+        {% for p, label in point_regular %}<option value="{{ p }}" data-unit="{{ point_labels[p][1] }}" {{ 'selected' if current == p }}>{{ label }}</option>{% endfor %}
+        </optgroup>
+        <optgroup label="Techniczne (rzadko na przedmiotach)">
+        {% for p, label in point_technical %}<option value="{{ p }}" data-unit="{{ point_labels[p][1] }}" {{ 'selected' if current == p }}>{{ label }}</option>{% endfor %}
+        </optgroup>
+      </select>
+{% endmacro %}
+<form method="post" action="{{ url_for('dbeditor.item_extra_save', vnum=item.vnum) }}" class="dbe-form" id="dbe-extra-form">
+  <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}">
+  <section class="panel dbe-extra">
+    <h2>Dodatkowe bonusy (ponad 3)</h2>
+    <p class="muted">Pierwsze 3 bonusy to własne bonusy przedmiotu (sekcja „Bonusy przedmiotu” wyżej – tabela item_proto ma miejsce
+      tylko na trzy). Tu dodajesz <b>kolejne</b>, ile chcesz (do {{ extra_max }}): gra zakłada je razem z przedmiotem i zdejmuje,
+      gdy go zdejmiesz – dokładnie jak trzy pierwsze. Każdy poziom +0…+9 to osobny przedmiot, więc ma własną listę
+      (zaznacz niżej, aby skopiować ją na całą rodzinę).<br>
+      Gracze zobaczą te linie w opisie przedmiotu po pobraniu plików klienta (zip) ze strony
+      <a href="{{ url_for('dbeditor.apply_page') }}">Zastosuj</a> – w kliencie z nowym opisem przedmiotów (od 2.0.53).
+      Serwer liczy je niezależnie od klienta.</p>
+    {% if not extra_worn %}<p class="dbe-warn">⚠️ Ten rodzaj przedmiotu nie jest zakładany – dodatkowe bonusy działają tylko na noszonym przedmiocie (broń, zbroja, biżuteria, kostium, pierścień, pas).</p>{% endif %}
+    {% if extra_mount %}<p class="dbe-warn">⚠️ Pieczęć wierzchowca: jej bonusy idą przez dosiadanie (AFFECT_MOUNT_BONUS) – dodatkowe bonusy nie są na niej zakładane.</p>{% endif %}
+    {% if extra_error %}<p class="dbe-error">Tabela dodatkowych bonusów jest niedostępna: {{ extra_error }}</p>{% endif %}
+    <div data-dbe-extra-rows>
+    {% for line in extra_raw %}
+    {% set current = (line.apply_type|string)|int(0) %}
+    <div class="dbe-bonus-row" data-dbe-extra-row>
+      <span class="dbe-num">{{ loop.index + 3 }}.</span>
+      {{ extra_select(current) }}
+      <input name="extra_value" type="number" value="{{ line.apply_value }}" class="dbe-value">
+      <span class="dbe-unit" data-dbe-extra-unit>{{ point_labels.get(current, ('', ''))[1] }}</span>
+      <button type="button" class="dbe-small quiet-btn" data-dbe-extra-remove title="Usuń ten bonus">✕</button>
+    </div>
+    {% endfor %}
+    </div>
+    <template data-dbe-extra-template>
+    <div class="dbe-bonus-row" data-dbe-extra-row>
+      <span class="dbe-num">+</span>
+      {{ extra_select(0) }}
+      <input name="extra_value" type="number" value="0" class="dbe-value">
+      <span class="dbe-unit" data-dbe-extra-unit></span>
+      <button type="button" class="dbe-small quiet-btn" data-dbe-extra-remove title="Usuń ten bonus">✕</button>
+    </div>
+    </template>
+    <p><button type="button" class="dbe-small" data-dbe-extra-add>➕ Dodaj bonus</button>
+      <span class="muted">Bonus ustawiony na „— brak bonusu —” albo usunięty krzyżykiem znika po zapisaniu.</span></p>
+    {% if family %}
+    <label class="dbe-check big"><input type="checkbox" name="extra_family" value="1"> Skopiuj tę listę na wszystkie poziomy +0…+9 tej rodziny ({{ family|length }} przedmiotów) – każdy dostanie dokładnie te same dodatkowe bonusy</label>
+    {% endif %}
+    <div class="dbe-actions">
+      <button type="submit">💾 Zapisz dodatkowe bonusy</button>
+      <span class="muted">Zapis czeka na restart gry („Zastosuj”), z historią i cofaniem jak inne zmiany.</span>
+    </div>
+    {% if extra_history %}
+    <details>
+      <summary>Ostatnie zmiany dodatkowych bonusów</summary>
+      {% with batches=extra_history %}{% include 'dbeditor/_items_history_list.html' %}{% endwith %}
+    </details>
+    {% endif %}
+  </section>
 </form>
 
 {% if history %}

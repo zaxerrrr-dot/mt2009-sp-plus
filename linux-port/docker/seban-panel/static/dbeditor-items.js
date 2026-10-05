@@ -75,6 +75,30 @@
     if (unit) unit.textContent = option ? (option.dataset.unit || '') : '';
   }
 
+  // MT2009_PLUS_ITEM_EXTRA_APPLY_V1: "Dodatkowe bonusy (ponad 3)" - rows added
+  // from the <template>, removed by their cross; the unit follows the kind.
+  function syncExtraUnit(select) {
+    const unit = select.closest('[data-dbe-extra-row]')?.querySelector('[data-dbe-extra-unit]');
+    const option = select.selectedOptions[0];
+    if (unit) unit.textContent = option ? (option.dataset.unit || '') : '';
+  }
+
+  function addExtraRow() {
+    const box = document.querySelector('[data-dbe-extra-rows]');
+    const tpl = document.querySelector('[data-dbe-extra-template]');
+    if (!box || !tpl) return;
+    const row = tpl.content.firstElementChild.cloneNode(true);
+    box.appendChild(row);
+    renumberExtra();
+    row.querySelector('select')?.focus();
+  }
+
+  function renumberExtra() {
+    document.querySelectorAll('[data-dbe-extra-rows] [data-dbe-extra-row] .dbe-num').forEach((num, i) => {
+      num.textContent = `${i + 4}.`;
+    });
+  }
+
   function syncFamily() {
     const box = document.querySelector('[data-dbe-family]');
     const mode = document.querySelector('[data-dbe-family-mode]');
@@ -84,6 +108,7 @@
   function init() {
     document.querySelectorAll('[data-dbe-mirror]').forEach(mirror);
     document.querySelectorAll('[data-dbe-bonus]').forEach(syncUnit);
+    document.querySelectorAll('[data-dbe-extra-type]').forEach(syncExtraUnit);
     syncFamily();
   }
 
@@ -104,9 +129,20 @@
     document.addEventListener('change', e => {
       if (e.target.matches('[data-dbe-mirror]')) mirror(e.target);
       if (e.target.matches('[data-dbe-bonus]')) syncUnit(e.target);
+      if (e.target.matches('[data-dbe-extra-type]')) syncExtraUnit(e.target);
       if (e.target.matches('[data-dbe-family]')) syncFamily();
     });
     document.addEventListener('click', e => {
+      if (e.target.closest('[data-dbe-extra-add]')) {
+        addExtraRow();
+        return;
+      }
+      const removeExtra = e.target.closest('[data-dbe-extra-remove]');
+      if (removeExtra) {
+        removeExtra.closest('[data-dbe-extra-row]')?.remove();
+        renumberExtra();
+        return;
+      }
       const scale = e.target.closest('[data-dbe-scale]');
       const reset = e.target.closest('[data-dbe-reset]');
       const button = scale || reset;

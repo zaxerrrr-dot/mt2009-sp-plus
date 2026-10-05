@@ -378,6 +378,16 @@ db -e "UPDATE world.item_proto SET locale_name = 'Auto Lowy (8h)', flag = flag |
 # out of every name, on every start; a clean name is not touched.
 db -e "UPDATE world.item_proto SET locale_name = REGEXP_REPLACE(locale_name, '[[:cntrl:]]+', '') WHERE locale_name REGEXP '[[:cntrl:]]';" \
     || echo "[playerbot-migrate] WARNING: could not clean the line breaks out of item names" >&2
+# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: an item's bonus lines beyond the three of
+# item_proto (applytype0..2 - the proto format and the client exe have room for
+# exactly three). One row a line: slot orders them, apply_type is the same
+# POINT_* number as item_proto's applytype, apply_value its value. The Seban
+# panel's database editor fills it ("Dodatkowe bonusy (ponad 3)"); the game core
+# reads it once after its start (playerbot_item_extra_apply.h, the item.cpp hook
+# of server-patches/enginefixes) and wears the lines like the proto's own. Empty
+# until the operator adds a line; never filled or emptied here.
+db -e "CREATE TABLE IF NOT EXISTS world.item_extra_apply (vnum INT UNSIGNED NOT NULL, slot TINYINT UNSIGNED NOT NULL, apply_type TINYINT UNSIGNED NOT NULL DEFAULT 0, apply_value INT NOT NULL DEFAULT 0, PRIMARY KEY (vnum, slot)) ENGINE=InnoDB;" \
+    || echo "[playerbot-migrate] WARNING: could not create world.item_extra_apply (extra item bonuses)" >&2
 # Maska Sabaha left the world with the Hwang curse (playerbotify
 # apply_hwang_curse_removed, the share step of the game Dockerfile): the shop
 # that sold one sells it no more. The db core reads the shops at boot, so this

@@ -25,6 +25,12 @@ import zipfile
 from . import eterpack
 
 PACK = 'dbdata'
+# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: files the pack may carry that an older
+# release's pack does not have yet ({name: compression type}). build() adds
+# one only when the edits produce it (dbsource.py: the extra bonus lines,
+# read by the client's uitooltip.py; a client without that code never opens
+# it). From the next client release on its base has the file itself.
+OPTIONAL_FILES = {'gamedata/item_extra_apply.txt': 2}
 BASE_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'base')
 
 
@@ -81,15 +87,18 @@ def build(base, files):
     nothing changed it is the release's pack, byte for byte."""
     contents = dict((n, base.file(n)) for n in base.names())
     changed = sorted(n for n, data in files.items() if contents.get(n) != data)
-    unknown = [n for n in changed if n not in contents]
+    unknown = [n for n in changed if n not in contents and n not in OPTIONAL_FILES]
     if unknown:
         raise ValueError('not in the dbdata pack of client %s: %s' % (base.version, ', '.join(unknown)))
     if not changed:
         index, data = base.original()
         return index, data, []
+    ctypes = dict((n, base.ctype(n)) for n in base.names())
     for n in changed:
         contents[n] = files[n]
-    index, data = eterpack.write_pack([(n, contents[n], base.ctype(n)) for n in base.names()])
+        ctypes.setdefault(n, OPTIONAL_FILES.get(n, 2))
+    names = sorted(contents)
+    index, data = eterpack.write_pack([(n, contents[n], ctypes[n]) for n in names])
     verify(index, data, contents)
     return index, data, changed
 

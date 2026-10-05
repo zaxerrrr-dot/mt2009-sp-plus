@@ -155,6 +155,50 @@ class BuildTests(unittest.TestCase):
         # the same database builds the same pack
         self.assertEqual(self.build(tables, changes)[1:3], (index, data))
 
+    def test_extra_apply_file(self):
+        """MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the extra bonus lines become
+        gamedata/item_extra_apply.txt, a name the 2.0.52 pack does not have."""
+        extra = [dict(vnum=11299, slot=2, apply_type=13, apply_value=20), dict(vnum=11299, slot=1, apply_type=15, apply_value=20),
+                 dict(vnum=140, slot=1, apply_type=12, apply_value=-5), dict(vnum=141, slot=1, apply_type=0, apply_value=9)]
+
+        def query(sql, params=()):
+            if dbsource.EXTRA_TABLE in sql:
+                return [dict(r) for r in extra]
+            return fake_query({})(sql, params)
+
+        base, index, data, changed, summary = dbsource.build_dbdata(query, [], BASE)
+        self.assertEqual(changed, [dbsource.EXTRA_FILE])
+        self.assertEqual(summary['extra_apply'], {'lines': 3, 'items': 2})
+        _ver, entries = eterpack.read_index_bytes(index)
+        names = sorted(e.name for e in entries)
+        self.assertEqual(names, sorted(BASE.names() + [dbsource.EXTRA_FILE]))
+        dbdata.verify(index, data, dict([(n, BASE.file(n)) for n in BASE.names()] + [(dbsource.EXTRA_FILE, dbsource.extra_apply_file(query, [])[0])]))
+        entry = [e for e in entries if e.name == dbsource.EXTRA_FILE][0]
+        self.assertEqual(entry.ctype, 2)
+        text = eterpack.read_entry(data, entry).decode('ascii')
+        self.assertTrue(text.startswith('# MT2009_PLUS_ITEM_EXTRA_APPLY_V1'))
+        body = [l for l in text.split('\r\n') if l and not l.startswith('#')]
+        self.assertEqual(body, ['140\t12\t-5', '11299\t15\t20', '11299\t13\t20'])
+        for e in entries:  # every release file unchanged
+            if e.name != dbsource.EXTRA_FILE:
+                self.assertEqual(eterpack.read_entry(data, e), BASE.file(e.name))
+
+        # no lines, or no table at all: the release's pack, byte for byte
+        extra[:] = []
+        self.assertEqual(dbsource.build_dbdata(query, [], BASE)[1:3], BASE.original())
+
+        def broken(sql, params=()):
+            if dbsource.EXTRA_TABLE in sql:
+                raise RuntimeError("Table 'world.item_extra_apply' doesn't exist")
+            return fake_query({})(sql, params)
+
+        _b, index2, data2, _c, summary2 = dbsource.build_dbdata(broken, [], BASE)
+        self.assertEqual((index2, data2), BASE.original())
+        self.assertTrue(any('item_extra_apply' in n for n in summary2['notes']))
+        # an unknown name is still refused
+        with self.assertRaises(ValueError):
+            dbdata.build(BASE, {'gamedata/nope.txt': b'x'})
+
     def test_targets(self):
         items, skills = dbsource.targets([
             change('world.item_proto', 27001, 'gold'), change('world.item_proto', 27001, 'shop_buy_price'),
