@@ -119,6 +119,93 @@ items_missing() {
     return 0
 }
 
+# MT2009_PLUS_FRESH_INSTALL_FIX_V1: prune_missing FILE -- in place, the item
+# lines whose item item_proto does not have. One such line stops every core
+# at boot ("ReadMonsterDropItemGroup: (drop) there is no item 30774" ->
+# "cannot load MOBDropItemFile"), and 2.23.0's fresh worlds had four of them:
+# the migrator made the Arezzo chests before the rows they copy. The image's
+# file and the panel's groups both pass through here. Only the lines the core
+# reads are touched - keys 1, 2, 3... up to the first one missing: a pruned
+# line's followers move up a key, so the group stays readable to its end, and
+# a group left with no item at all is cut out whole (an empty kill group
+# would be drawn from). When the database does not answer, the file is used
+# as it is.
+prune_missing() {
+    _pf=$1
+    _pitems=$(awk '
+        { l = $0; sub(/\r$/, "", l); sub(/^[[:blank:]]+/, "", l); n = split(l, f, /[[:blank:]]+/); k = tolower(f[1]) }
+        k == "group" { g = 1; next }
+        f[1] == "}" { g = 0; next }
+        g && n >= 3 && f[1] ~ /^[0-9]+$/ && f[2] ~ /^[0-9]+$/ { print f[2] + 0 }
+    ' "$_pf" | sort -un | tr '\n' ',' | sed 's/,$//')
+    [ -n "$_pitems" ] || return 0
+    _pmissing=$(items_missing "$_pitems"); _prc=$?
+    if [ "$_prc" = "2" ]; then
+        say "could not check the drop file's items against the database -- used as it is"
+        return 0
+    fi
+    _pmissing=$(printf '%s' "$_pmissing" | tr -s ' ' | sed 's/^ //; s/ $//')
+    [ -n "$_pmissing" ] || return 0
+    : > "$WORK/pruned.log"
+    awk -v miss=" $_pmissing " -v plog="$WORK/pruned.log" '
+    function flush(   i, k, K, r, kept, line, pre) {
+        K = 0; while ((K + 1) in has) K++
+        r = 0; kept = 0
+        for (k = 1; k <= K; k++) { if (k in gone) r++; else { nk[k] = k - r; kept++ } }
+        if (K > 0 && kept == 0) {
+            print "group " gname ": all " K " line(s), the group left out" > plog
+        } else {
+            for (i = 1; i <= m; i++) {
+                k = key[i]
+                if (k > 0 && k <= K) {
+                    if (k in gone) { print "group " gname ": item " item[i] > plog; continue }
+                    line = buf[i]; match(line, /^[[:blank:]]*/); pre = substr(line, 1, RLENGTH)
+                    line = substr(line, RLENGTH + 1); sub(/^[0-9]+/, nk[k], line); buf[i] = pre line
+                }
+                print buf[i]
+            }
+        }
+        m = 0; g = 0
+        for (i in has) delete has[i]
+        for (i in gone) delete gone[i]
+        for (i in nk) delete nk[i]
+    }
+    {
+        l = $0; sub(/\r$/, "", l); sub(/^[[:blank:]]+/, "", l); n = split(l, f, /[[:blank:]]+/); k = tolower(f[1])
+    }
+    !g {
+        if (k == "group") { g = 1; m = 0; gname = f[2]; buf[++m] = $0; key[m] = 0; next }
+        print; next
+    }
+    {
+        buf[++m] = $0; key[m] = 0
+        if (f[1] ~ /^[0-9]+$/ && f[1] + 0 >= 1 && n >= 2) {
+            key[m] = f[1] + 0; item[m] = f[2]; has[f[1] + 0] = 1
+            if (f[2] ~ /^[0-9]+$/ && index(miss, " " (f[2] + 0) " ")) gone[f[1] + 0] = 1
+        }
+        if (f[1] == "}") flush()
+    }
+    END { if (g) flush() }
+    ' "$_pf" > "$_pf.pruned" || { rm -f "$_pf.pruned"; say "could not prune the drop file -- used as it is"; return 0; }
+    mv -f "$_pf.pruned" "$_pf"
+    say "WARNING: item_proto has no $_pmissing - their drops were left out so the cores can boot:"
+    sort -u "$WORK/pruned.log" 2>/dev/null | head -40 | while IFS= read -r _pl; do say "  $_pl"; done
+    rm -f "$WORK/pruned.log"
+    say "WARNING: start the stack again (the playerbot-migrate step adds missing items), then restart the game"
+    return 0
+}
+
+# MT2009_PLUS_FRESH_INSTALL_FIX_V1: put_image_live -- the image's file live,
+# without the items the database lacks (prune_missing).
+put_image_live() {
+    if mkdir -p "$WORK" 2>/dev/null && cp "$IMAGE" "$WORK/image.live" 2>/dev/null; then
+        prune_missing "$WORK/image.live"
+        put_live "$WORK/image.live"
+    else
+        put_live "$IMAGE"
+    fi
+}
+
 # apply_table NAME -- common_drop_item or etc_drop_item: the panel's whole
 # file in place of the image's, when it passes the core's checks.
 apply_table() {
@@ -233,7 +320,7 @@ cmd_apply() {
     fi
 
     if [ ! -s "$CUSTOM" ] || ! grep -qi '^[[:blank:]]*Group[[:blank:]]' "$CUSTOM"; then
-        put_live "$IMAGE" || { say "could not write $LIVE"; return 1; }
+        put_image_live || { say "could not write $LIVE"; return 1; }
         write_status base 0 "" "no drop groups changed in the panel -- the image's drops are live"
         return 0
     fi
@@ -309,7 +396,7 @@ cmd_apply() {
     _why=$(sed -n 's/^E //p' "$WORK/custom.check" | head -1)
     if [ -n "$_why" ]; then
         say "the panel's drop file was NOT used: $_why"
-        put_live "$IMAGE"
+        put_image_live
         write_status rejected 0 "$_sha" "$_why"
         rm -f "$WORK/custom.keep"
         return 0
@@ -331,7 +418,7 @@ cmd_apply() {
             if [ -n "$(printf '%s' "$_missing" | tr -d ' ')" ]; then
                 _why="no such item: $_missing"
                 say "the panel's drop file was NOT used: $_why"
-                put_live "$IMAGE"
+                put_image_live
                 write_status rejected 0 "$_sha" "$_why"
                 rm -f "$WORK/custom.keep"
                 return 0
@@ -362,7 +449,7 @@ cmd_apply() {
         ing = 0; blk = ""
     }
     END { if (ing) printf "%s", blk }
-    ' "$IMAGE" > "$WORK/live.new" || { say "could not build the live file"; put_live "$IMAGE"; return 1; }
+    ' "$IMAGE" > "$WORK/live.new" || { say "could not build the live file"; put_image_live; return 1; }
     _cut=$(wc -l < "$WORK/cut.log" 2>/dev/null | tr -d ' '); rm -f "$WORK/cut.log"
     {
         [ -z "$(tail -c 1 "$WORK/live.new")" ] || printf '\r\n'
@@ -370,6 +457,9 @@ cmd_apply() {
         sed 's/$/\r/' "$WORK/custom.keep"
     } >> "$WORK/live.new"
     rm -f "$WORK/custom.keep"
+    # MT2009_PLUS_FRESH_INSTALL_FIX_V1: the panel's items were checked above;
+    # the image's own may still name one the database lacks.
+    prune_missing "$WORK/live.new"
 
     if ! put_live "$WORK/live.new"; then
         say "could not write $LIVE -- drops left as they were"
