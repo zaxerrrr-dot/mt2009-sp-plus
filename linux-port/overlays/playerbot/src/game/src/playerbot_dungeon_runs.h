@@ -97,7 +97,8 @@
 //     status                  one BOT_DGRUN status line per dungeon.
 //
 // The log: BOT_DGRUN lines in syslog (called, answered, gathered, entered,
-// stage, finished, stalled, abandoned, wipe, out, closed, status) and one row
+// stage, finished, stalled, abandoned, wipe, out, closed, status; and from V2
+// break-off, regrouped, fallback, fallback over, cure, leader holds) and one row
 // a run in playerbot_dungeon_runs.tsv: unix time, run, dungeon, instance,
 // kingdom, members, lowest and highest level, result (finished, timeout,
 // abandoned, wipe, left, lost, disbanded, no_stone, aborted), seconds, the
@@ -108,6 +109,40 @@
 // Dried Head and has its own party raids of bots (playerbot_catacomb.h); the
 // Monkey and Spider Dungeons, open maps the bots hunt anyway; a person
 // answering the call (people form their own parties with the dungeon finder).
+//
+// MT2009_PLUS_BOT_DUNGEON_RUNS_V2 - the first night's lesson (4/5 October,
+// the test server: Razador 114 runs and none won, Nemere 78 and one; 24 198
+// deaths, 1.25 a bot a minute). Read from BOT_DGRUN and PLAYERBOT_AI lines:
+//   - a death loop, not a fight: a bot stood up where it fell after ten
+//     seconds, rested to three quarters invisible a thousand units off in a
+//     direction its pid drew - into the next group as often as not - and went
+//     back at the same monsters: the median time between two deaths of one
+//     bot was 29 s, 94% of them came within a minute of the one before;
+//   - the leader pulled the room: every monster of 351/352 sees twenty
+//     metres (aggressive_sight 2000), a room holds 48-60 of them back after a
+//     minute, and the leader went for the nearest wherever the others were - a
+//     Shaman of 68 lost 3 600 of its 9 280 health in two seconds, potions
+//     (1 200 a draught, one a second) and all;
+//   - the break-off at a fifth of health came too late: 58% (Razador) and 53%
+//     (Nemere) of the deaths came with no target, in the second between the
+//     break-off and the invisibility that protects a recovering bot;
+//   - too few and too weak: a third of the parties went in with four, the
+//     bots' gear is twenty levels behind them (75-79: weapons of 48, armour of
+//     44 on average), and the Shaman's Cure waited for 60% health.
+// Hence (the band and the party size are the rules' - RUN_RULES):
+//   - KeepPlayerBotDgRunAlive: drink at 85%, break off at 30% invisible at
+//     once, and a fallen or broken-off bot walks back to its pack invisible
+//     (to the leader, or to the run's camp - the last spot where the pack
+//     stood with no monster within PLAYERBOT_DGRUN_QUIET_RANGE) and fights again
+//     only healed to 85% and there, as the Demon Tower's bots do;
+//   - the leader pulls nothing new while fewer than two of the others stand
+//     by it or its own health is under PLAYERBOT_DGRUN_LEADER_HOLD_HP - it
+//     fights what is already on the party and waits;
+//   - the fallback (wipe protection): fewer than half of those inside fit
+//     to fight, and everybody standing goes back to the camp and fights only
+//     what follows, until three quarters are fit again or
+//     PLAYERBOT_DGRUN_FALLBACK_MAX_MS is up;
+//   - the Shaman's Cure first: the run's most hurt under 75% before anything.
 //
 // An implementation fragment in the sense playerbot_types.h describes:
 // include it once, after playerbot_dungeon_lfg.h (whose places, words and
@@ -223,6 +258,33 @@ namespace
 	const char* const PLAYERBOT_DGRUN_OFF_FILE = "playerbot_dungeon_runs_off";
 	const char* const PLAYERBOT_DGRUN_TEST_FILE = "playerbot_dungeon_runs_test";
 	const char* const PLAYERBOT_DGRUN_RUNS_FILE = "playerbot_dungeon_runs.tsv";
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: staying alive inside (the header).
+	// Drinking: a red at this much health (the tower's), a blue at the second.
+	const int PLAYERBOT_DGRUN_POTION_HP = 85;
+	const int PLAYERBOT_DGRUN_POTION_SP = 50;
+	// The break-off: at this much health a bot leaves the fight invisible.
+	const int PLAYERBOT_DGRUN_BREAK_OFF_HP = 30;
+	// A recovering bot fights again healed to this, with its pack...
+	const int PLAYERBOT_DGRUN_REJOIN_HP = 85;
+	const int PLAYERBOT_DGRUN_REGROUP_RADIUS = 600;
+	// ...or this long after its fall, wherever it got to.
+	const DWORD PLAYERBOT_DGRUN_REGROUP_MAX_MS = 45000;
+	// The leader pulls nothing new under this health, or with fewer than two
+	// of the others (all, when fewer stand) within the second figure of it.
+	const int PLAYERBOT_DGRUN_LEADER_HOLD_HP = 55;
+	const int PLAYERBOT_DGRUN_PACK_NEAR = 1000;
+	// What is on the party within this of the leader is fought while it holds.
+	const int PLAYERBOT_DGRUN_HOLD_THREAT_RANGE = 900;
+	// Fit: standing, not recovering, at least this much health.
+	const int PLAYERBOT_DGRUN_FIT_HP = 50;
+	// The camp: the leader's spot when no monster stood within this of it.
+	const int PLAYERBOT_DGRUN_QUIET_RANGE = 2200;
+	// The fallback: at most this long, and then not again for the second.
+	const DWORD PLAYERBOT_DGRUN_FALLBACK_MAX_MS = 90000;
+	const DWORD PLAYERBOT_DGRUN_FALLBACK_REST_MS = 30000;
+	// The Shaman's Cure (109) for a member under this much health.
+	const DWORD PLAYERBOT_DGRUN_CURE_SKILL = 109;
+	const int PLAYERBOT_DGRUN_CURE_HP = 75;
 
 	// ------------------------------------------------------------ the state
 
@@ -255,8 +317,11 @@ namespace
 		// Where it stood on its last tick inside: a quest's jump to another
 		// room (d.jump_all is a Show) leaves the route of the room before.
 		long lLastX, lLastY;
+		// V2: the leader waiting for its pack since.
+		DWORD dwHoldSince;
 		TPlayerBotDgRunBot() : iRun(0), dwAnswerAt(0), bAnswered(false), dwTravelAt(0), dwNextMove(0), iMoveFails(0),
-				bArrived(false), lSpotX(0), lSpotY(0), lHomeMap(0), lHomeX(0), lHomeY(0), lLastX(0), lLastY(0) {}
+				bArrived(false), lSpotX(0), lSpotY(0), lHomeMap(0), lHomeX(0), lHomeY(0), lLastX(0), lLastY(0),
+				dwHoldSince(0) {}
 	};
 
 	struct TPlayerBotDgRun
@@ -287,11 +352,18 @@ namespace
 		int iPackN;
 		const char* szResult;		// set when the run is being ended
 		bool bPartyMade;
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: the camp (the last quiet spot of
+		// the leader), the fallback to it, and the counts for the log.
+		long lCampX, lCampY;
+		bool bFallback;
+		DWORD dwFallbackSince, dwFallbackRestUntil;
+		int iFit, iFallbacks, iBreakOffs;
 		TPlayerBotDgRun() : iId(0), iDef(0), bEmpire(0), bPhase(DGRUN_PHASE_GATHER), dwLeader(0), dwAnchor(0), iLvMin(0),
 				iLvMax(0), dwCalledAt(0), dwPhaseSince(0), dwEnteredAt(0), dwLastProgress(0), dwFinishedAt(0),
 				dwClosedSeen(0), dwOutSince(0), dwNextStep(0), dwNextPull(0), lInstance(0), iStage(0), dwStageSince(0),
 				llSignature(0), bStallLogged(false), iDeaths(0), iWipes(0), bAllDead(false), llFees(0), iAnswerShouts(0),
-				lPackX(0), lPackY(0), iPackN(0), szResult(NULL), bPartyMade(false) {}
+				lPackX(0), lPackY(0), iPackN(0), szResult(NULL), bPartyMade(false), lCampX(0), lCampY(0), bFallback(false),
+				dwFallbackSince(0), dwFallbackRestUntil(0), iFit(0), iFallbacks(0), iBreakOffs(0) {}
 	};
 
 	std::map<int, TPlayerBotDgRun> s_mapPlayerBotDgRuns;
@@ -760,6 +832,223 @@ namespace
 		return false;
 	}
 
+	// ------------------------------------------------------------ staying alive (V2)
+
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: the header says why.
+	bool IsPlayerBotDgRunRecovering(DWORD pid)
+	{
+		const TPlayerBotAIState* st = GetPlayerBotDgRunState(pid);
+		return st && st->bRecoveringAfterDeath;
+	}
+
+	bool IsPlayerBotDgRunMemberOf(LPCHARACTER v, int runId)
+	{
+		if (!v || !v->IsPC())
+			return false;
+		std::map<DWORD, TPlayerBotDgRunBot>::const_iterator b = s_mapPlayerBotDgRunBots.find(v->GetPlayerID());
+		return b != s_mapPlayerBotDgRunBots.end() && b->second.iRun == runId;
+	}
+
+	// Fit to fight: standing, not recovering, PLAYERBOT_DGRUN_FIT_HP of its health.
+	bool IsPlayerBotDgRunFit(LPCHARACTER c)
+	{
+		return c && !c->IsDead() && c->GetMaxHP() > 0 && !IsPlayerBotDgRunRecovering(c->GetPlayerID()) &&
+				(long long)c->GetHP() * 100 >= (long long)c->GetMaxHP() * PLAYERBOT_DGRUN_FIT_HP;
+	}
+
+	// The others of the run on ch's map: alive (recovering or not), those not
+	// recovering within `radius` of ch, and the nearest of those not recovering.
+	LPCHARACTER CountPlayerBotDgRunPack(const TPlayerBotDgRun& run, LPCHARACTER ch, int radius, int& others, int& nearBy)
+	{
+		others = nearBy = 0;
+		LPCHARACTER nearest = NULL;
+		int dNearest = INT_MAX;
+		for (size_t i = 0; i < run.members.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+			if (!c || c == ch || c->IsDead() || c->GetMapIndex() != ch->GetMapIndex())
+				continue;
+			++others;
+			if (IsPlayerBotDgRunRecovering(run.members[i]))
+				continue;
+			const int d = DISTANCE_APPROX(c->GetX() - ch->GetX(), c->GetY() - ch->GetY());
+			if (d <= radius)
+				++nearBy;
+			if (d < dNearest)
+			{
+				dNearest = d;
+				nearest = c;
+			}
+		}
+		return nearest;
+	}
+
+	void GetPlayerBotDgRunCamp(const TPlayerBotDgRun& run, LPCHARACTER ch, long& x, long& y)
+	{
+		x = run.lCampX;
+		y = run.lCampY;
+		if (x == 0 && y == 0)
+		{
+			x = ch->GetX();
+			y = ch->GetY();
+		}
+	}
+
+	// A fallen bot stood up, or one that broke off: invisible (the recovery
+	// keeps it so), drinking and resting, it walks to the leader - or to the
+	// camp, while the pack falls back or nobody stands - and fights again
+	// healed and there, or PLAYERBOT_DGRUN_REGROUP_MAX_MS after the fall
+	// wherever it got to. The tower's regroup (RegroupPlayerBotTowerAfterDeath)
+	// for a run's instance; the open world's step away from the spot - into
+	// the next group of a dungeon room - never runs for it.
+	bool RegroupPlayerBotDgRun(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, DWORD dwNow)
+	{
+		SetPlayerBotAction(state, BOT_ACTION_RECOVER, dwNow);
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		state.lDeathX = 0;
+		state.lDeathY = 0;
+		UseHealthPotion(ch, state, dwNow, 95);
+		UseManaPotion(ch, state, dwNow, 60);
+		const bool rested = RestHealPlayerBot(ch, state, dwNow);
+		long goalX = 0, goalY = 0;
+		const char* to = "camp";
+		LPCHARACTER anchor = run.dwAnchor ? CHARACTER_MANAGER::instance().FindByPID(run.dwAnchor) : NULL;
+		if (!run.bFallback && anchor && anchor != ch && !anchor->IsDead() && anchor->GetMapIndex() == ch->GetMapIndex() &&
+				!IsPlayerBotDgRunRecovering(run.dwAnchor))
+		{
+			goalX = anchor->GetX();
+			goalY = anchor->GetY();
+			to = "leader";
+		}
+		else
+			GetPlayerBotDgRunCamp(run, ch, goalX, goalY);
+		const int distance = DISTANCE_APPROX(ch->GetX() - goalX, ch->GetY() - goalY);
+		const bool arrived = distance <= PLAYERBOT_DGRUN_REGROUP_RADIUS;
+		const DWORD sinceFall = dwNow - state.dwLastDeathTime;
+		const bool healed = ch->GetMaxHP() > 0 &&
+				((long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_REJOIN_HP ||
+				(rested && sinceFall > PLAYERBOT_DGRUN_REGROUP_MAX_MS / 2));
+		if (healed && (arrived || sinceFall > PLAYERBOT_DGRUN_REGROUP_MAX_MS))
+		{
+			sys_log(0, "BOT_DGRUN: regrouped pid=%u name=%s run=%d to=%s arrived=%d distance=%d hp=%d/%d after_s=%u",
+					ch->GetPlayerID(), ch->GetName(), run.iId, to, arrived ? 1 : 0, distance, ch->GetHP(), ch->GetMaxHP(),
+					sinceFall / 1000U);
+			EndPlayerBotRecovery(ch, state);
+			return false;
+		}
+		KeepPlayerBotRecoveryHidden(ch, state, dwNow);
+		if (arrived)
+		{
+			if (ch->IsStateMove())
+				ch->Stop();
+			return true;
+		}
+		if (dwNow >= state.dwNextTowerMoveTime)
+		{
+			state.dwNextTowerMoveTime = dwNow + 1500;
+			MovePlayerBot(ch, goalX, goalY, dwNow, 8, true, false);
+		}
+		return true;
+	}
+
+	// The potions, the break-off at PLAYERBOT_DGRUN_BREAK_OFF_HP - invisible on
+	// the spot: the recovery that hides a bot came a tick later, and more than
+	// half of the first night's deaths fell in that second - and the regroup.
+	bool KeepPlayerBotDgRunAlive(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, DWORD dwNow)
+	{
+		if (state.bRecoveringAfterDeath)
+			return RegroupPlayerBotDgRun(ch, state, run, dwNow);
+		UseHealthPotion(ch, state, dwNow, PLAYERBOT_DGRUN_POTION_HP);
+		UseManaPotion(ch, state, dwNow, PLAYERBOT_DGRUN_POTION_SP);
+		if (ch->GetMaxHP() <= 0 ||
+				(long long)ch->GetHP() * 100 > (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_BREAK_OFF_HP)
+			return false;
+		state.bRecoveringAfterDeath = true;
+		state.dwLastDeathTime = dwNow;
+		state.lDeathX = 0;
+		state.lDeathY = 0;
+		state.dwNextRecoveryHealTime = dwNow;
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		ClearPlayerBotRoute(state, true);
+		ch->ReviveInvisible(5);
+		state.dwNextRecoveryProtectionTime = dwNow + PLAYERBOT_RECOVERY_PROTECTION_INTERVAL;
+		++run.iBreakOffs;
+		sys_log(0, "BOT_DGRUN: break-off pid=%u name=%s run=%d dungeon=%s stage=%d hp=%d/%d",
+				ch->GetPlayerID(), ch->GetName(), run.iId, PLAYERBOT_DGRUN_DEFS[run.iDef].szKey, run.iStage, ch->GetHP(),
+				ch->GetMaxHP());
+		return true;
+	}
+
+	// A Shaman with Cure: the run's most hurt under PLAYERBOT_DGRUN_CURE_HP
+	// within the skill's reach, itself included, before anything else - the
+	// buff pass casts it too, but after the buffs and only under 60%.
+	bool HealPlayerBotDgRunFellow(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotDgRun& run, DWORD dwNow)
+	{
+		if (ch->GetJob() != JOB_SHAMAN || ch->GetSkillGroup() == 0 || state.bRecoveringAfterDeath ||
+				ch->GetSkillLevel(PLAYERBOT_DGRUN_CURE_SKILL) == 0 ||
+				(ch->IsRiding() && !IsPlayerBotOnStandingMount(ch)) ||
+				!CanPlayerBotAffordSkill(ch, state, PLAYERBOT_DGRUN_CURE_SKILL, dwNow))
+			return false;
+		CSkillProto* proto = CSkillManager::instance().Get(PLAYERBOT_DGRUN_CURE_SKILL);
+		if (!proto)
+			return false;
+		const int reach = proto->dwTargetRange != 0 ? (int)proto->dwTargetRange : 1000;
+		LPCHARACTER best = NULL;
+		long long bestPct = PLAYERBOT_DGRUN_CURE_HP;
+		for (size_t i = 0; i < run.members.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+			if (!c || c->IsDead() || c->GetMapIndex() != ch->GetMapIndex() || c->GetMaxHP() <= 0)
+				continue;
+			if (c != ch && DISTANCE_APPROX(c->GetX() - ch->GetX(), c->GetY() - ch->GetY()) > reach)
+				continue;
+			const long long pct = (long long)c->GetHP() * 100 / c->GetMaxHP();
+			if (pct < bestPct)
+			{
+				bestPct = pct;
+				best = c;
+			}
+		}
+		if (!best || !PlayerBotUseSkill(ch, state, PLAYERBOT_DGRUN_CURE_SKILL, best, dwNow))
+			return false;
+		SendPlayerBotSkillPacket(ch, PLAYERBOT_DGRUN_CURE_SKILL);
+		state.dwLastBotSkillTime = dwNow;
+		state.dwNextAttackTime = dwNow + PLAYERBOT_SKILL_ANIMATION_LOCK;
+		PlayerBotLogThrottled("dgrun_cure", dwNow, "BOT_DGRUN: cure pid=%u name=%s on=%s hp=%d/%d run=%d",
+				ch->GetPlayerID(), ch->GetName(), best->GetName(), best->GetHP(), best->GetMaxHP(), run.iId);
+		return true;
+	}
+
+	// The fallback: to the camp, and there only what follows the pack.
+	bool FallBackPlayerBotDgRun(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, DWORD dwNow)
+	{
+		long x = 0, y = 0;
+		GetPlayerBotDgRunCamp(run, ch, x, y);
+		if (DISTANCE_APPROX(ch->GetX() - x, ch->GetY() - y) > PLAYERBOT_DGRUN_REGROUP_RADIUS)
+		{
+			state.dwTargetVID = 0;
+			ch->SetVictim(NULL);
+			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+			if (dwNow >= state.dwNextTowerMoveTime)
+			{
+				state.dwNextTowerMoveTime = dwNow + 1500;
+				MovePlayerBot(ch, x, y, dwNow, 8, true, false);
+			}
+			return true;
+		}
+		LPCHARACTER threat = FindPlayerBotDgRunThreat(ch, run.iId);
+		if (threat)
+			return FightPlayerBotTowerObjective(ch, state, threat, dwNow);
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		if (ch->IsStateMove())
+			ch->Stop();
+		SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+		return true;
+	}
+
 	// The leader: what attacks the party near it, else the stage's objective,
 	// else the nearest monster of the instance - wherever it stands; the party
 	// follows (FightPlayerBotPartyDungeon round the leader).
@@ -838,6 +1127,57 @@ namespace
 			const bool curGoal = std::find(goals.begin(), goals.end(), cur->GetRaceNum()) != goals.end();
 			if ((foe == threat && cur->GetVictim() == ch) || (foe == goal && curGoal) || (foe == any && !threat && !goal))
 				foe = cur;
+		}
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: nothing new pulled while the leader
+		// is hurt or fewer than two of the others (all, when fewer are up)
+		// stand by it - what is on the party close by is fought, and it waits.
+		{
+			int others = 0, nearBy = 0;
+			LPCHARACTER mate = CountPlayerBotDgRunPack(run, ch, PLAYERBOT_DGRUN_PACK_NEAR, others, nearBy);
+			const bool hurt = ch->GetMaxHP() > 0 &&
+					(long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_LEADER_HOLD_HP;
+			const bool alone = others > 0 && nearBy < std::min(others, 2);
+			if (!alone)
+				rb.dwHoldSince = 0;
+			else if (rb.dwHoldSince == 0)
+				rb.dwHoldSince = dwNow;
+			// A pack that cannot come is not waited for for ever.
+			const bool waited = alone && dwNow - rb.dwHoldSince > PLAYERBOT_DGRUN_REGROUP_MAX_MS;
+			if (hurt || (alone && !waited))
+			{
+				LPCHARACTER keep = NULL;
+				if (cur && (cur->IsStone() || IsPlayerBotDgRunMemberOf(cur->GetVictim(), run.iId)) &&
+						DISTANCE_APPROX(ch->GetX() - cur->GetX(), ch->GetY() - cur->GetY()) <= PLAYERBOT_DGRUN_HOLD_THREAT_RANGE)
+					keep = cur;
+				else if (threat && dThreat <= PLAYERBOT_DGRUN_HOLD_THREAT_RANGE)
+					keep = threat;
+				if (!keep)
+				{
+					state.dwTargetVID = 0;
+					ch->SetVictim(NULL);
+					// Towards the nearest of the others standing, when they
+					// fight apart from it; else where it stands.
+					if (!hurt && mate &&
+							DISTANCE_APPROX(mate->GetX() - ch->GetX(), mate->GetY() - ch->GetY()) > PLAYERBOT_DGRUN_PACK_NEAR / 2)
+					{
+						SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+						if (dwNow >= state.dwNextTowerMoveTime)
+						{
+							state.dwNextTowerMoveTime = dwNow + 1500;
+							MovePlayerBot(ch, mate->GetX(), mate->GetY(), dwNow, 6, true, false);
+						}
+						return true;
+					}
+					if (ch->IsStateMove())
+						ch->Stop();
+					SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+					PlayerBotLogThrottled("dgrun_hold", dwNow,
+							"BOT_DGRUN: leader holds pid=%u name=%s run=%d hurt=%d others=%d near=%d hp=%d/%d", ch->GetPlayerID(),
+							ch->GetName(), run.iId, hurt ? 1 : 0, others, nearBy, ch->GetHP(), ch->GetMaxHP());
+					return true;
+				}
+				foe = keep;
+			}
 		}
 		if (!foe)
 		{
@@ -930,8 +1270,16 @@ namespace
 			if (dg >= 0)
 				return ManagePlayerBotArzDgInside(ch, state, dg, rb.arz, dwNow, run.lPackX, run.lPackY, run.iPackN);
 		}
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: alive first, the Shaman's Cure, and
+		// the fallback to the camp.
+		if (KeepPlayerBotDgRunAlive(ch, state, run, dwNow))
+			return true;
+		if (HealPlayerBotDgRunFellow(ch, state, run, dwNow))
+			return true;
 		if (ManagePlayerBotPdgItems(ch, state, rb.pdg, dwNow))
 			return true;
+		if (run.bFallback)
+			return FallBackPlayerBotDgRun(ch, state, run, dwNow);
 		LPCHARACTER anchor = run.dwAnchor ? CHARACTER_MANAGER::instance().FindByPID(run.dwAnchor) : NULL;
 		if (!anchor || anchor == ch || anchor->GetMapIndex() != ch->GetMapIndex())
 			return DrivePlayerBotDgRunLeader(ch, state, run, rb, d, dwNow);
@@ -1096,10 +1444,10 @@ namespace
 				names += c->GetName();
 			}
 		}
-		sys_log(0, "BOT_DGRUN: closed run=%d dungeon=%s instance=%ld empire=%u result=%s took_s=%u stage=%d stage_s=%s deaths=%d wipes=%d fees=%lld members=%u leader=%s",
+		sys_log(0, "BOT_DGRUN: closed run=%d dungeon=%s instance=%ld empire=%u result=%s took_s=%u stage=%d stage_s=%s deaths=%d wipes=%d fees=%lld members=%u leader=%s break_offs=%d fallbacks=%d",
 				run.iId, def.szKey, run.lInstance, (unsigned int)run.bEmpire, result, took / 1000, run.iStage,
 				run.stageSecs.empty() ? "-" : run.stageSecs.c_str(), run.iDeaths, run.iWipes, run.llFees,
-				(unsigned int)run.members.size(), leader ? leader->GetName() : "-");
+				(unsigned int)run.members.size(), leader ? leader->GetName() : "-", run.iBreakOffs, run.iFallbacks);
 		FILE* fp = fopen(PLAYERBOT_DGRUN_RUNS_FILE, "a");
 		if (fp)
 		{
@@ -1217,6 +1565,9 @@ namespace
 		run.lInstance = d->GetMapIndex();
 		const long x = pMap->m_setting.iBaseX + def.lEntryCellX * 100;
 		const long y = pMap->m_setting.iBaseY + def.lEntryCellY * 100;
+		// V2: the first camp is the way in.
+		run.lCampX = x;
+		run.lCampY = y;
 		std::vector<DWORD> in;
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
@@ -1305,7 +1656,10 @@ namespace
 	bool UpdatePlayerBotDgRunGather(TPlayerBotDgRun& run, DWORD dwNow)
 	{
 		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
+		const playerbot_dgrun::TRunRule& rule = playerbot_dgrun::RuleFor(def.szKey);
 		int answered = 0, pending = 0, arrived = 0;
+		// V2: a Shaman that can heal among those on their way, among those there.
+		bool healerAnswered = false, healerArrived = false, healerPending = false;
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
 		{
@@ -1324,6 +1678,7 @@ namespace
 				if (dwNow < rb.dwAnswerAt)
 				{
 					++pending;
+					healerPending = healerPending || (ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0);
 					continue;
 				}
 				// Looked at again as it answers: whatever claimed it since keeps it.
@@ -1355,8 +1710,13 @@ namespace
 				continue;
 			}
 			++answered;
+			const bool healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
+			healerAnswered = healerAnswered || healer;
 			if (rb.bArrived && ch->GetMapIndex() == run.place.map)
+			{
 				++arrived;
+				healerArrived = healerArrived || healer;
+			}
 		}
 		// The leader gone: whoever came first leads.
 		if (std::find(run.members.begin(), run.members.end(), run.dwLeader) == run.members.end())
@@ -1379,7 +1739,8 @@ namespace
 		const bool late = dwNow - run.dwCalledAt >= PLAYERBOT_DGRUN_GATHER_MS;
 		const bool everyone = pending == 0 && answered > 0 && arrived >= answered;
 		LPCHARACTER leader = run.dwLeader ? CHARACTER_MANAGER::instance().FindByPID(run.dwLeader) : NULL;
-		if (run.bPhase == DGRUN_PHASE_GATHER && leader && arrived >= playerbot_dgrun::START_MIN && (everyone || late))
+		const bool startOk = playerbot_dgrun::CanStart(arrived, healerArrived, rule);
+		if (run.bPhase == DGRUN_PHASE_GATHER && leader && startOk && (everyone || late))
 		{
 			// Whoever is not there is not in it.
 			const std::vector<DWORD> now = run.members;
@@ -1432,16 +1793,17 @@ namespace
 			return true;
 		}
 		// Too few, or nobody to lead: the leader says so, the party goes.
-		if ((late && arrived < playerbot_dgrun::START_MIN) || (pending == 0 && answered < playerbot_dgrun::START_MIN) ||
-				run.members.empty() || !leader)
+		// V2: nor without the dungeon's Shaman once none can come.
+		const bool noHealer = rule.needHealer && !healerAnswered && !healerPending;
+		if ((late && !startOk) || (pending == 0 && answered < rule.startMin) || noHealer || run.members.empty() || !leader)
 		{
 			if (leader && answered > 0)
 			{
 				playerbot_conv::TRng rng = MakePlayerBotDgRunRng();
 				ShoutPlayerBotDgRun(leader, playerbot_dgrun::DisbandLine(rng, MakePlayerBotDgRunLine(leader, run)), "disband");
 			}
-			sys_log(0, "BOT_DGRUN: disbanded run=%d dungeon=%s answered=%d arrived=%d pending=%d after_s=%u", run.iId,
-					def.szKey, answered, arrived, pending, (dwNow - run.dwCalledAt) / 1000);
+			sys_log(0, "BOT_DGRUN: disbanded run=%d dungeon=%s answered=%d arrived=%d pending=%d shaman=%d after_s=%u", run.iId,
+					def.szKey, answered, arrived, pending, healerAnswered ? 1 : 0, (dwNow - run.dwCalledAt) / 1000);
 			ClosePlayerBotDgRun(run, "disbanded", dwNow);
 			return false;
 		}
@@ -1530,12 +1892,20 @@ namespace
 	{
 		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
 		LPDUNGEON d = CDungeonManager::instance().FindByMapIndex(run.lInstance);
-		int inside = 0, alive = 0;
+		int inside = 0, alive = 0, fit = 0;
 		long long sx = 0, sy = 0;
 		run.dwAnchor = 0;
+		// V2: the leader while it is not recovering, else the first of the
+		// others that is not, else whoever stands.
+		DWORD standIn = 0;
 		LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(run.dwLeader);
 		if (leader && leader->GetMapIndex() == run.lInstance && !leader->IsDead())
-			run.dwAnchor = run.dwLeader;
+		{
+			if (!IsPlayerBotDgRunRecovering(run.dwLeader))
+				run.dwAnchor = run.dwLeader;
+			else
+				standIn = run.dwLeader;
+		}
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
 		{
@@ -1565,10 +1935,17 @@ namespace
 			++alive;
 			sx += ch->GetX();
 			sy += ch->GetY();
-			if (run.dwAnchor == 0)
+			if (IsPlayerBotDgRunFit(ch))
+				++fit;
+			if (run.dwAnchor == 0 && !IsPlayerBotDgRunRecovering(members[i]))
 				run.dwAnchor = members[i];
+			if (standIn == 0)
+				standIn = members[i];
 		}
+		if (run.dwAnchor == 0)
+			run.dwAnchor = standIn;
 		run.iPackN = alive;
+		run.iFit = fit;
 		if (alive > 0)
 		{
 			run.lPackX = (long)(sx / alive);
@@ -1595,6 +1972,47 @@ namespace
 					run.iStage, inside, run.iWipes, (dwNow - run.dwEnteredAt) / 1000);
 		}
 		run.bAllDead = alive == 0;
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: the camp - where the leader (or who
+		// stands for it) is while no monster stands within
+		// PLAYERBOT_DGRUN_QUIET_RANGE of it, or wherever the quest jumped it -
+		// and the fallback to it.
+		if (def.bKind != DGRUN_KIND_AREZZO)
+		{
+			LPCHARACTER a = run.dwAnchor ? CHARACTER_MANAGER::instance().FindByPID(run.dwAnchor) : NULL;
+			if (a && !a->IsDead() && a->GetMapIndex() == run.lInstance && !IsPlayerBotDgRunRecovering(run.dwAnchor))
+			{
+				bool quiet = true;
+				const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+				for (size_t i = 0; i < scan.foes.size() && quiet; ++i)
+					quiet = scan.foes[i].dwRace >= 8000 ||
+							DISTANCE_APPROX(scan.foes[i].lX - a->GetX(), scan.foes[i].lY - a->GetY()) > PLAYERBOT_DGRUN_QUIET_RANGE;
+				const bool jumped = run.lCampX != 0 &&
+						DISTANCE_APPROX(run.lCampX - a->GetX(), run.lCampY - a->GetY()) > 3 * PLAYERBOT_DGRUN_QUIET_RANGE + 1600;
+				if (quiet || jumped || run.lCampX == 0)
+				{
+					run.lCampX = a->GetX();
+					run.lCampY = a->GetY();
+				}
+			}
+			if (!run.bFallback)
+			{
+				if (inside >= 3 && alive > 0 && fit * 2 < inside && dwNow >= run.dwFallbackRestUntil && !run.dwFinishedAt)
+				{
+					run.bFallback = true;
+					run.dwFallbackSince = dwNow;
+					++run.iFallbacks;
+					sys_log(0, "BOT_DGRUN: fallback run=%d dungeon=%s stage=%d inside=%d alive=%d fit=%d camp=(%ld,%ld)", run.iId,
+							def.szKey, run.iStage, inside, alive, fit, run.lCampX, run.lCampY);
+				}
+			}
+			else if (alive == 0 || fit * 4 >= inside * 3 || dwNow - run.dwFallbackSince >= PLAYERBOT_DGRUN_FALLBACK_MAX_MS)
+			{
+				run.bFallback = false;
+				run.dwFallbackRestUntil = dwNow + PLAYERBOT_DGRUN_FALLBACK_REST_MS;
+				sys_log(0, "BOT_DGRUN: fallback over run=%d dungeon=%s inside=%d alive=%d fit=%d after_s=%u", run.iId, def.szKey,
+						inside, alive, fit, (dwNow - run.dwFallbackSince) / 1000);
+			}
+		}
 		const int stage = GetPlayerBotDgRunStage(def, d, run.iStage);
 		if (stage != run.iStage)
 		{
@@ -1756,12 +2174,18 @@ namespace
 			const TPlayerBotDgRunSlot& slot, DWORD dwNow, const char* why)
 	{
 		const TPlayerBotDgRunDef& info = PLAYERBOT_DGRUN_DEFS[def];
+		const playerbot_dgrun::TRunRule& rule = playerbot_dgrun::RuleFor(info.szKey);
 		playerbot_conv::TRng rng = MakePlayerBotDgRunRng();
-		const int want = playerbot_dgrun::PartyWant(rng, (int)bucket.size(), slot.partyMin, slot.partyMax);
+		const int want = playerbot_dgrun::PartyWant(rng, (int)bucket.size(), slot.partyMin, slot.partyMax, rule.preferMin);
 		std::vector<playerbot_dgrun::TCand> picked;
 		playerbot_dgrun::PickParty(bucket, (size_t)std::max(0, want), rng, picked);
-		if ((int)picked.size() < playerbot_dgrun::CALL_MIN)
+		if (!playerbot_dgrun::PartyOk(picked, rule))
+		{
+			if (strcmp(why, "clock"))
+				sys_log(0, "BOT_DGRUN: no call (%s) dungeon=%s - the party drawn (%u) falls short of its rule", why, info.szKey,
+						(unsigned int)picked.size());
 			return false;
+		}
 		LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(picked[0].pid);
 		if (!leader)
 			return false;
@@ -1804,7 +2228,7 @@ namespace
 			}
 			PlacePlayerBotDgRunSpot(run, run.members.size(), pid, rb.lSpotX, rb.lSpotY);
 			run.members.push_back(pid);
-			shaman = shaman || picked[i].job == 3;
+			shaman = shaman || picked[i].IsHealer();
 			if (names.size() < 200)
 			{
 				if (!names.empty())
@@ -1853,8 +2277,12 @@ namespace
 			if (def.bKind == DGRUN_KIND_TOWER)
 				continue;
 			TPlayerBotDgRunSlot& slot = slots[i];
-			slot.lvMin = std::max(panel->lvMin, PLAYERBOT_DGRUN_MIN_LEVEL);
+			// V2: the bots' own floor for a dungeon (RUN_RULES) - a player's
+			// entry keeps the panel's level.
+			slot.lvMin = playerbot_dgrun::BandMin(panel->lvMin, PLAYERBOT_DGRUN_MIN_LEVEL, playerbot_dgrun::RuleFor(def.szKey));
 			slot.lvMax = playerbot_dgrun::BandMax(slot.lvMin, mt2009_dpanel::LevelMax(*panel));
+			if (slot.lvMax < slot.lvMin)
+				continue;
 			slot.partyMin = panel->partyMin;
 			slot.partyMax = panel->partyMax;
 			slot.panel = panel;
@@ -1919,7 +2347,8 @@ namespace
 					continue;
 				if (def.iDaily > 0 && GetPlayerBotDgRunRunsToday(ch, def) >= def.iDaily)
 					continue;
-				buckets[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(), weight));
+				buckets[i][empire].push_back(playerbot_dgrun::TCand(pid, level, ch->GetJob(), weight,
+						ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
 			}
 		}
 		// A dungeon and a kingdom, by how many could go.
@@ -1930,7 +2359,8 @@ namespace
 			for (int e = 1; e <= 3; ++e)
 			{
 				const int n = (int)buckets[i][e].size();
-				if (n < playerbot_dgrun::CALL_MIN)
+				// V2: the dungeon's own minimum, and its Shaman when it wants one.
+				if (!playerbot_dgrun::CanCall(buckets[i][e], playerbot_dgrun::RuleFor(PLAYERBOT_DGRUN_DEFS[i].szKey)))
 					continue;
 				if (forced == -1 && s_adwPlayerBotDgRunShoutAt[e] != 0 &&
 						dwNow - s_adwPlayerBotDgRunShoutAt[e] < PLAYERBOT_DGRUN_SHOUT_GAP_MS)
@@ -1942,8 +2372,8 @@ namespace
 		if (options.empty())
 		{
 			if (forced != -1)
-				sys_log(0, "BOT_DGRUN: no call (%s) - no dungeon has %d free bots of its band in one kingdom", why,
-						playerbot_dgrun::CALL_MIN);
+				sys_log(0, "BOT_DGRUN: no call (%s) - no dungeon has the free bots of its band in one kingdom (%d, or its own rule's - Razador and Nemere: 6 and a Shaman)",
+						why, playerbot_dgrun::CALL_MIN);
 			return;
 		}
 		int roll = number(1, std::max(1, total));

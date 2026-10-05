@@ -26,8 +26,20 @@
 //     bots that write them).
 //
 // This file itself stays ASCII.
+//
+// MT2009_PLUS_BOT_DUNGEON_RUNS_V2 - a dungeon's own rules for the bots' runs
+// (TRunRule, RUN_RULES). The test server's first night (4/5 October):
+// Razador 114 runs, none won, 12 768 deaths; Nemere 78 runs, one won, 11 430
+// deaths - the bots of 55-70 and 75-82 against rooms of fifty monsters of
+// 56-64 and 78-88 that see twenty metres, in parties of three or four, often
+// without a Shaman (Nemere: stage 5.1 reached on average with one, 3.4
+// without). The owner, 5 October: "Tak podnies lvl na razadora i nemere" -
+// the bots' band for these two starts at 70 and 85 (the players' entry stays
+// the dungeon's own), a call wants six and goes in with five, and never
+// without a Shaman that can heal.
 
 #include <algorithm>
+#include <cstring>
 #include <vector>
 
 #include "playerbot_dungeon_lfg_rules.h"
@@ -60,10 +72,10 @@ namespace playerbot_dgrun
 
 	// How many a call asks for, from what the band offers and the dungeon's
 	// own party limits.
-	inline int PartyWant(TRng& rng, int available, int partyMin, int partyMax)
+	inline int PartyWant(TRng& rng, int available, int partyMin, int partyMax, int preferMin = PREFER_MIN)
 	{
 		int hi = std::min(PARTY_MAX, partyMax > 0 ? partyMax : PARTY_MAX);
-		int lo = std::max(PREFER_MIN, partyMin);
+		int lo = std::max(preferMin, partyMin);
 		if (hi < lo)
 			hi = lo;
 		int want = lo + (int)rng.Range((u32)(hi - lo + 1));
@@ -79,9 +91,75 @@ namespace playerbot_dgrun
 		int level;
 		int job;	// 0 warrior, 1 ninja, 2 sura, 3 shaman
 		int weight;
-		TCand() : pid(0), level(0), job(0), weight(1) {}
-		TCand(u32 p, int l, int j, int w) : pid(p), level(l), job(j), weight(w) {}
+		bool healer;	// a Shaman: with a skill group (its buffs and Cure)
+		TCand() : pid(0), level(0), job(0), weight(1), healer(true) {}
+		TCand(u32 p, int l, int j, int w, bool h = true) : pid(p), level(l), job(j), weight(w), healer(h) {}
+		bool IsHealer() const { return job == 3 && healer; }
 	};
+
+	inline bool HasHealer(const std::vector<TCand>& v)
+	{
+		for (size_t i = 0; i < v.size(); ++i)
+			if (v[i].IsHealer())
+				return true;
+		return false;
+	}
+
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: what a dungeon asks of a bots' run
+	// beyond the dungeon panel's own levels and party limits - data, one row a
+	// dungeon; a dungeon without a row keeps the figures above.
+	struct TRunRule
+	{
+		const char* key;	// dungeon_info.txt's key; "" for the rest
+		int lvMin;		// the band starts here at the lowest (0: the panel's level)
+		int callMin;		// free bots of the band in one kingdom for a call
+		int preferMin;		// a call asks for at least this many
+		int startMin;		// and goes in with at least this many at the entrance
+		bool needHealer;	// a Shaman with a skill group in it, or no call and no start
+	};
+
+	const TRunRule DEFAULT_RULE = { "", 0, CALL_MIN, PREFER_MIN, START_MIN, false };
+	const TRunRule RUN_RULES[] = {
+		// Razador's rooms (map 351): 6001-6009 of 56-64 (5 500-15 500 HP,
+		// 150-250 a blow, fire), the Ignitor 65, Razador 68.
+		{ "razador", 70, 6, 6, 5, true },
+		// Nemere's (352): 6101-6109 of 78-88 (9 000-26 000 HP, 240-390 a
+		// blow, ice), the four Szels 88, Nemere 95.
+		{ "nemere", 85, 6, 6, 5, true },
+	};
+
+	inline const TRunRule& RuleFor(const char* key)
+	{
+		if (key)
+			for (size_t i = 0; i < sizeof(RUN_RULES) / sizeof(RUN_RULES[0]); ++i)
+				if (!strcmp(RUN_RULES[i].key, key))
+					return RUN_RULES[i];
+		return DEFAULT_RULE;
+	}
+
+	// The band's floor: the panel's level, the bots' lowest, the rule's.
+	inline int BandMin(int panelMin, int floorLevel, const TRunRule& r)
+	{
+		return std::max(std::max(panelMin, floorLevel), r.lvMin);
+	}
+
+	// A dungeon and a kingdom can be called with these candidates.
+	inline bool CanCall(const std::vector<TCand>& bucket, const TRunRule& r)
+	{
+		return (int)bucket.size() >= r.callMin && (!r.needHealer || HasHealer(bucket));
+	}
+
+	// The drawn party is worth the shout.
+	inline bool PartyOk(const std::vector<TCand>& picked, const TRunRule& r)
+	{
+		return (int)picked.size() >= std::max(r.preferMin, CALL_MIN) && (!r.needHealer || HasHealer(picked));
+	}
+
+	// The gathered party goes in.
+	inline bool CanStart(int arrived, bool healerArrived, const TRunRule& r)
+	{
+		return arrived >= r.startMin && (!r.needHealer || healerArrived);
+	}
 
 	inline int MaxPerJob(size_t want)
 	{
@@ -128,14 +206,25 @@ namespace playerbot_dgrun
 			++perJob[pool[chosen].job & 3];
 			pool.erase(pool.begin() + chosen);
 		}
-		if (perJob[3] == 0 && out.size() >= 2)
+		// The Shaman: one that can heal (V2), else any.
+		if (!HasHealer(out) && out.size() >= 2)
 		{
-			for (size_t i = 0; i < pool.size(); ++i)
+			int take = -1;
+			for (size_t i = 0; i < pool.size() && take < 0; ++i)
+				if (pool[i].IsHealer())
+					take = (int)i;
+			for (size_t i = 0; i < pool.size() && take < 0 && perJob[3] == 0; ++i)
 				if (pool[i].job == 3)
-				{
-					out.back() = pool[i];
-					break;
-				}
+					take = (int)i;
+			if (take >= 0)
+			{
+				// The last drawn that is no Shaman gives way (never the leader).
+				size_t give = out.size() - 1;
+				while (give > 1 && out[give].job == 3)
+					--give;
+				if (out[give].job != 3 || !out[give].IsHealer())
+					out[give] = pool[(size_t)take];
+			}
 		}
 	}
 
