@@ -82,6 +82,33 @@ SPECS = {
 for _key, _label in RESISTS:
     SPECS[f"resist_{_key}"] = _int(-100, 100, f"Odporność: {_label} (%)")
 EDIT_COLS = list(SPECS)
+
+# MT2009_PLUS_DB_EDITOR_MOB_MELEE_V1: "Zwykłe potwory: atak z dystansu →
+# wręcz" - the owner's one-click form of
+#   UPDATE world.mob_proto SET battle_type = 0, attack_range = 175
+#   WHERE battle_type IN (1, 2) AND `rank` IN (0, 1, 2, 3) AND `type` = 0;
+# (ordinary archers and casters fight in melee, bosses, kings/Metins and NPCs
+# untouched). Written through common.save_rows() as ONE batch, so every field
+# is in the history, "Zastosuj" lists it and one click undoes the lot. The two
+# columns stay off the monster's own form (EDIT_COLS); they are registered
+# with the history only so it can write and undo them. common/length.h
+# EBattleType: 0 MELEE, 1 RANGE, 2 MAGIC; char_state.cpp keeps a RANGE/MAGIC
+# monster at attack_range*0.8 and shoots - a MELEE one walks up and hits.
+# apply.sh never rewrites battle_type, and attack_range only for 9706 (rank
+# 5, not matched); its mob_proto.mt2009plus.sql and the Ochao / pet clones
+# are INSERT IGNORE (a row that is there is never changed), mod/30_costume_
+# pack.sql (REPLACE) runs once per install and holds only NPCs (type 1).
+BATTLE_TYPES = {0: "wręcz", 1: "dystans (łuk)", 2: "magia (dystans)", 3: "specjalny", 4: "siłacz", 5: "tank",
+                6: "super siłacz", 7: "super tank"}
+MELEE_SPECS = {
+    "battle_type": {"kind": "int", "min": 0, "max": 7, "label": "Sposób walki (battle_type)"},
+    "attack_range": {"kind": "int", "min": 0, "max": 65535, "label": "Zasięg ataku"},
+}
+MELEE_WHERE = "battle_type IN (1, 2) AND `rank` IN (0, 1, 2, 3) AND `type` = 0"
+MELEE_VALUES = {"battle_type": 0, "attack_range": 175}
+MELEE_NOTE = "Zwykłe potwory: atak z dystansu → wręcz"
+# What the history may write for a monster: the form's fields and the two above.
+ALL_SPECS = dict(SPECS, **MELEE_SPECS)
 READ_ONLY = ["type", "battle_type", "st", "dx", "ht", "iq", "dam_multiply", "drop_item", "regen_cycle",
              "regen_percent", "aggressive_hp_pct", "attack_range", "summon", "resurrection_vnum"]
 
@@ -125,7 +152,7 @@ BOOT_RULES = [
     ((9705,), ("rank", "level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max",
                "resist_fire", "resist_poison"), "Loch Pająków (Arezzo)"),
     ((9706,), ("rank", "level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max",
-               "ai_flag", "attack_speed", "move_speed"), "Loch Pająków (Arezzo)"),
+               "ai_flag", "attack_speed", "move_speed", "attack_range"), "Loch Pająków (Arezzo)"),
 ]
 BOOT_WARNING = "Te pola skrypt startowy bazy ustawia na nowo przy KAŻDYM starcie serwera – Twoja zmiana zniknie po restarcie"
 
@@ -193,6 +220,8 @@ def decorate(row):
 def history_formatter(col, value):
     if col == "rank":
         return f"{RANKS.get(int(value), value)} [{value}]"
+    if col == "battle_type":  # MT2009_PLUS_DB_EDITOR_MOB_MELEE_V1
+        return f"{BATTLE_TYPES.get(int(value), value)} [{value}]"
     if col == "ai_flag":
         return ", ".join(sorted(flags_of(value))) or "(brak flag)"
     return None
@@ -290,6 +319,32 @@ def mass_plan(rows, field, op, value):
     return plan
 
 
+# ---- ranged -> melee (MT2009_PLUS_DB_EDITOR_MOB_MELEE_V1) -----------------------
+
+def melee_plan(rows):
+    """[(row, {col: (old, new)}, boot_lost)] for the rows MELEE_WHERE found:
+    the fields that change, and the ones apply.sh would put back at the next
+    start (none today - the warning keeps that visible if it ever changes)."""
+    plan = []
+    for row in rows:
+        changes = {col: (int(row.get(col) or 0), new) for col, new in MELEE_VALUES.items()
+                   if int(row.get(col) or 0) != new}
+        if changes:
+            plan.append((row, changes, sorted(set(changes) & boot_cols(row["vnum"]))))
+    return plan
+
+
+def melee_batches(rows_fn, limit=20):
+    """The editor's earlier "ranged -> melee" saves, newest first, with the
+    state of each (undone / waiting for a restart / in the game)."""
+    common.ensure_table()
+    return rows_fn(f"""SELECT batch, MIN(id) AS first_id, MIN(changed_at) AS changed_at, MIN(who) AS who,
+            COUNT(*) AS fields, COUNT(DISTINCT row_key) AS row_count, SUM(reverted_in IS NULL) AS live,
+            SUM(applied_at IS NULL) AS unapplied
+        FROM {common.HISTORY_TABLE} WHERE tbl=%s AND note=%s GROUP BY batch ORDER BY first_id DESC
+        LIMIT {int(limit)}""", (TABLE, MELEE_NOTE))
+
+
 def mass_description(field, op, value):
     label = MASS_FIELDS[field][0]
     if op == "mul":
@@ -306,7 +361,7 @@ def install(bp, ctx):
     from dbeditor import spawnfiles
 
     common.init(ctx)
-    common.register_table(TABLE, "vnum", SPECS, "Potwór", "dbeditor.mob_edit", history_formatter)
+    common.register_table(TABLE, "vnum", ALL_SPECS, "Potwór", "dbeditor.mob_edit", history_formatter)
     common.install_history(bp, ctx)
     login_required = ctx["login_required"]
 
@@ -423,7 +478,7 @@ def install(bp, ctx):
             history = []
         index = spawn_index()
         spawns = index.spawns_of_mob(vnum) if index else []
-        return render_template("dbeditor/mobs_edit.html", mob=mob, raw=raw, specs=SPECS, ranks=RANKS,
+        return render_template("dbeditor/mobs_edit.html", mob=mob, raw=raw, specs=ALL_SPECS, ranks=RANKS,
                                resists=RESISTS, ai_flags=AI_FLAGS, ai_labels=AI_FLAG_LABELS, history=history,
                                boot_notes=boot_notes(vnum), boot_always=sorted(boot_cols(vnum)),
                                boot_warning=BOOT_WARNING, spawns=spawns[:30], has_index=bool(index),
@@ -480,6 +535,55 @@ def install(bp, ctx):
                                fields=MASS_FIELDS, ops=MASS_OPS, ranks=RANKS, kinds=KINDS, maps=map_choices(index),
                                specs=SPECS, max_rows=MASS_MAX_ROWS, boot_hits=boot_hits,
                                description=mass_description(field, op, value) if value is not None else "",
+                               dbe_csrf=common.csrf_token(), **page_context())
+
+    @bp.route("/mobs/wrecz", methods=["GET", "POST"])
+    @login_required
+    def mobs_melee():
+        """MT2009_PLUS_DB_EDITOR_MOB_MELEE_V1: preview, then one save (one
+        history batch) of every ordinary ranged monster turned melee."""
+        try:
+            found = [decorate(r) for r in rows(select_sql(MELEE_WHERE, order="level, vnum"))]
+            error = None
+        except Exception as exc:  # pymysql errors: show, do not 500
+            found, error = [], str(exc)
+        plan = melee_plan(found)
+        if request.method == "POST":
+            back = url_for("dbeditor.mobs_melee")
+            if not common.check_csrf():
+                return redirect(back)
+            previewed = {int(v) for v in (request.form.get("vnums") or "").split(",") if v.strip().isdigit()}
+            planned = {int(row["vnum"]) for row, _c, _b in plan}
+            if not plan:
+                flash("Nie ma już zwykłych potworów walczących z dystansu – nic do zmiany.", "error")
+                return redirect(back)
+            if previewed != planned:
+                flash("Lista potworów zmieniła się od podglądu – sprawdź podgląd jeszcze raz i zatwierdź ponownie.", "error")
+                return redirect(back)
+            names = {int(row["vnum"]): row["display_name"] for row, _c, _b in plan}
+            updates = [(int(row["vnum"]), {col: new for col, (_old, new) in changes.items()}) for row, changes, _b in plan]
+            try:
+                _batch, saved = common.save_rows(TABLE, updates, note=MELEE_NOTE,
+                                                 label_of=lambda key: names.get(int(key), ""))
+            except Exception as exc:
+                flash(f"Nie udało się zapisać: {exc}", "error")
+                return redirect(back)
+            lost = sorted({int(k) for k, col, *_r in saved if col in boot_cols(k)})
+            if lost:
+                flash(f"{BOOT_WARNING} – dotyczy {len(lost)} potworów (np. {', '.join(str(v) for v in lost[:6])}).",
+                      "warning")
+            flash(f"{len({k for k, *_r in saved})} potworów walczy teraz wręcz (zasięg ataku "
+                  f"{MELEE_VALUES['attack_range']}). Cofniesz to jednym kliknięciem niżej albo w historii. "
+                  "Gra wczyta zmianę dopiero po restarcie – kliknij „Zastosuj”.", "success")
+            return redirect(back)
+        try:
+            done = melee_batches(rows)
+        except Exception:
+            done = []
+        return render_template("dbeditor/mobs_melee.html", plan=plan, error=error, done=done,
+                               plan_vnums=",".join(str(row["vnum"]) for row, _c, _b in plan),
+                               boot_hits=sum(1 for _r, _c, lost in plan if lost), values=MELEE_VALUES,
+                               battle_types=BATTLE_TYPES, where=MELEE_WHERE,
                                dbe_csrf=common.csrf_token(), **page_context())
 
     dbeditor.add_section("dbeditor.mobs", "👹", "Potwory i bossowie",
