@@ -330,6 +330,11 @@ def revert(batch=None, history_id=None, force=False):
         return None, "Ta zmiana została już cofnięta albo nie istnieje.", False
     conflicts, updates = [], {}
     row_ops = {}  # table -> {"inserts": [...], "deletes": [...]} (whole rows, ROW_COL)
+    # MT2009_PLUS_ITEM_EXTRA_APPLY_V1: rows this undo itself removes again - a
+    # save that replaced a row under the same key (removed it and added the
+    # new one, items.py's extra bonus lines) is undone as that swap, not
+    # refused as "added again later".
+    added_here = {(r["tbl"], r["row_key"]) for r in targets if r["col"] == ROW_COL and r["new_value"] is not None}
     for row in targets:
         meta = TABLES.get(row["tbl"])
         if meta and row["col"] == ROW_COL and meta.get("row_cols"):
@@ -342,9 +347,9 @@ def revert(batch=None, history_id=None, force=False):
                 if current is not None:
                     ops["deletes"].append(key_values(row["tbl"], row["row_key"]))
             if row["old_value"] is not None:  # the save removed this row: undo adds it back
-                if current is not None and row["new_value"] is None:
+                if current is not None and row["new_value"] is None and (row["tbl"], row["row_key"]) not in added_here:
                     conflicts.append(f"{row['label'] or row['row_key']}: usunięty wiersz dodano później ponownie")
-                elif current is None or row["new_value"] is not None:
+                elif current is None or row["new_value"] is not None or (row["tbl"], row["row_key"]) in added_here:
                     ops["inserts"].append(json.loads(row["old_value"]))
             continue
         if not meta or row["col"] not in meta["cols"]:

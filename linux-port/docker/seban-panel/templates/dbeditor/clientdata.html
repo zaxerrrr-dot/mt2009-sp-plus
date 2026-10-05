@@ -70,6 +70,7 @@
       <p>Ostatni zip: {{ build.when }} · klient {{ build.client }} · zmienione pliki: {{ (s.changed_files or ['brak'])|join(', ') }}</p>
       {% if s['items'] %}<p>Przedmioty ({{ s['items']|length }}): {{ s['items'][:40]|join(', ') }}{% if s['items']|length > 40 %} …{% endif %}</p>{% endif %}
       {% if s.skills %}<p>Umiejętności: {{ s.skills|join(', ') }}</p>{% endif %}
+      {% if s.extra_apply and s.extra_apply.lines %}<p>Dodatkowe bonusy (ponad 3): {{ s.extra_apply.lines }} linii na {{ s.extra_apply['items'] }} przedmiotach – widać je w opisie przedmiotu w kliencie z nowym opisem przedmiotów (od 2.0.53).</p>{% endif %}
       {% if s.notes %}<ul class="dbe-notes">{% for n in s.notes[:30] %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}
     </div>
     {% endif %}

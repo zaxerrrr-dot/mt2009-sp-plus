@@ -17,7 +17,7 @@
       <tbody>
       {% for r in b.rows %}
         <tr class="{{ 'is-reverted' if r.reverted_in }}">
-          <td>{% set meta = tables.get(r.tbl) if tables is defined else none %}{% if meta and meta.edit_endpoint %}<a href="{{ url_for(meta.edit_endpoint, vnum=r.row_key) }}">{{ r.label or r.row_key }}</a>{% else %}{{ r.label or r.row_key }}{% endif %} <small class="muted">#{{ r.row_key }}</small></td>
+          <td>{% set meta = tables.get(r.tbl) if tables is defined else none %}{% if meta and meta.edit_endpoint %}<a href="{{ url_for(meta.edit_endpoint, vnum=(r.row_key|string).split(':')[0]) }}">{{ r.label or r.row_key }}</a>{% else %}{{ r.label or r.row_key }}{% endif %} <small class="muted">#{{ r.row_key }}</small></td>
           <td>{{ column_label(r.tbl, r.col) }}</td>
           <td class="dbe-old">{{ format_value(r.tbl, r.col, r.old_value) }}</td>
           <td>→</td>

@@ -80,6 +80,57 @@ def RareAttrType(slotIndex, attrType):
 		return getattr(player, name)
 	return attrType
 
+# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: an item's bonus lines beyond the three of
+# item_proto (the exe's item record has room for exactly three), set in the
+# Seban panel's database editor ("Dodatkowe bonusy (ponad 3)", the server's
+# world.item_extra_apply). The panel's client data zip carries them in
+# gamedata/item_extra_apply.txt of the dbdata pack - vnum<TAB>type<TAB>value,
+# the type the same POINT_* number as GetAffect's. Read once, on the first
+# tooltip; without the file (older client data) there are none and nothing
+# else changes. The server applies the lines whether the client shows them or
+# not. item.SelectItem is wrapped to remember the vnum GetAffect reads, as the
+# item module has no getter for it.
+ITEM_EXTRA_APPLY_FILE = "gamedata/item_extra_apply.txt"
+_itemExtraApplies = None
+
+def _LoadItemExtraApplies():
+	table = {}
+	try:
+		data = open(ITEM_EXTRA_APPLY_FILE, "rb").read()
+	except Exception:
+		return table
+	for line in data.replace("\r", "\n").split("\n"):
+		line = line.strip()
+		if not line or line.startswith("#"):
+			continue
+		tokens = line.split("\t")
+		if len(tokens) < 3:
+			continue
+		try:
+			itemVnum, affectType, affectValue = int(tokens[0]), int(tokens[1]), int(tokens[2])
+		except ValueError:
+			continue
+		if affectType > 0:
+			table.setdefault(itemVnum, []).append((affectType, affectValue))
+	return table
+
+def GetItemExtraApplies(itemVnum):
+	global _itemExtraApplies
+	if _itemExtraApplies is None:
+		_itemExtraApplies = _LoadItemExtraApplies()
+	return _itemExtraApplies.get(itemVnum, [])
+
+def GetSelectedItemVnum():
+	return getattr(item, "_mt2009SelectedVnum", 0)
+
+if not hasattr(item, "_mt2009RealSelectItem"):
+	item._mt2009RealSelectItem = item.SelectItem
+	def _Mt2009SelectItem(*args):
+		if args:
+			item._mt2009SelectedVnum = args[0]
+		return item._mt2009RealSelectItem(*args)
+	item.SelectItem = _Mt2009SelectItem
+
 def chop(n):
 	return round(n - 0.5, 1)
 
@@ -1904,6 +1955,8 @@ class ItemToolTip(ToolTip):
 
 	def __AppendAffectInformation(self, attrList=None):
 		affectList = [item.GetAffect(i) for i in xrange(item.ITEM_APPLY_MAX_NUM)]
+		# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the lines beyond the proto's three
+		affectList += GetItemExtraApplies(GetSelectedItemVnum())
 		if attrList is not None and attrList:
 			rareAffectList = [(RareAttrType(i, attrList[i][0]), attrList[i][1]) for i in xrange(player.ATTRIBUTE_SLOT_RARE_START, player.ATTRIBUTE_SLOT_RARE_END)]
 			affectList += rareAffectList

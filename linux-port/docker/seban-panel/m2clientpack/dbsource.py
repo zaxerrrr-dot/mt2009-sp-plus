@@ -11,6 +11,13 @@ query(sql, params) -> list of dict rows is the panel's rows().
 from . import clientfiles
 
 ITEM_TABLE = 'world.item_proto'
+# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the extra bonus lines (beyond item_proto's
+# three) and the client file that carries them - read whole at every build,
+# whatever the history says (the table has nothing the client knows otherwise).
+EXTRA_TABLE = 'world.item_extra_apply'
+EXTRA_FILE = 'gamedata/item_extra_apply.txt'
+EXTRA_HEADER = (b'# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: dodatkowe bonusy przedmiotow (ponad 3 z item_proto),\r\n'
+                b'# z edytora bazy danych panelu Seban. vnum<TAB>typ bonusu (POINT_*, jak applytype)<TAB>wartosc\r\n')
 SKILL_TABLE = 'world.skill_proto'
 # the history's "tbl" for the two tables (common_items keeps the full name)
 ITEM_TABLES = ('world.item_proto', 'player.item_proto')
@@ -92,7 +99,32 @@ def client_files(query, base, items, skills, notes=None):
     blob, changed = clientfiles.patch_tab_text(base_desc, renamed, 3)
     files['locale/pl/itemdesc.txt'] = blob
     summary['itemdesc'] = changed
+
+    # MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the extra bonus lines. A release whose
+    # pack has no such file yet gets it only when there is a line to carry,
+    # so a server without extra bonuses still hands out the release's pack.
+    blob, lines, extra_items = extra_apply_file(query, notes)
+    if lines or EXTRA_FILE in base.names():
+        files[EXTRA_FILE] = blob
+    summary['extra_apply'] = {'lines': lines, 'items': extra_items}
     return files, summary
+
+
+def extra_apply_file(query, notes):
+    """(bytes of gamedata/item_extra_apply.txt, number of lines, number of
+    items). One line a bonus, vnum<TAB>type<TAB>value, in the table's slot
+    order; ASCII, CRLF like the client's other text files. A database
+    without the table (apply.sh has not run yet) gives the header alone."""
+    try:
+        found = query('SELECT vnum, slot, apply_type, apply_value FROM %s WHERE apply_type <> %%s '
+                      'ORDER BY vnum, slot' % EXTRA_TABLE, (0,))
+    except Exception as exc:  # the table missing must not stop the rest of the zip
+        notes.append('Dodatkowe bonusy: nie udało się odczytać %s (%s) - klient bez nich.' % (EXTRA_TABLE, exc))
+        found = []
+    rows = sorted(((int(r['vnum']), int(r['slot']), int(r['apply_type']), int(r['apply_value'])) for r in found
+                   if int(r['apply_type'] or 0) > 0), key=lambda r: (r[0], r[1]))
+    body = b''.join(b'%d\t%d\t%d\r\n' % (vnum, point, value) for vnum, _slot, point, value in rows)
+    return EXTRA_HEADER + body, len(rows), len({r[0] for r in rows})
 
 
 def build_dbdata(query, changes, base=None):

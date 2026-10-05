@@ -274,5 +274,17 @@
   "marker": "MT2009_PLUS_PACKET_TRACE_V1 (input.cpp bytes)",
   "old": "\t\t\tlpDesc->Mt2009DumpSent(\"UNKNOWN HEADER\");\n",
   "new": "\t\t\tlpDesc->Mt2009DumpSent(\"UNKNOWN HEADER\");\n\t\t\t// MT2009_PLUS_PACKET_TRACE_V1 (input.cpp bytes): and the first bytes\n\t\t\t// it sent, so the next time says whether it was a real packet or noise.\n\t\t\t{\n\t\t\t\tchar hex[3 * 48 + 1];\n\t\t\t\tint n = 0;\n\t\t\t\tconst int show = MIN(48, m_iBufferLeft);\n\t\t\t\tfor (int i = 0; i < show; ++i)\n\t\t\t\t\tn += snprintf(hex + n, sizeof(hex) - n, \"%02x \", (unsigned int)(BYTE)c_pData[i]);\n\t\t\t\thex[n] = '\\0';\n\t\t\t\tsys_err(\"PACKET_TRACE:   received %d bytes, first %d: %s\", m_iBufferLeft, show, hex);\n\t\t\t}\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_ITEM_EXTRA_APPLY_V1 (include)",
+  "old": "#include \"belt_inventory_helper.h\"\n",
+  "new": "#include \"belt_inventory_helper.h\"\n// MT2009_PLUS_ITEM_EXTRA_APPLY_V1 (include): the bonus lines beyond item_proto's\n// three (world.item_extra_apply, overlay playerbot_item_extra_apply.h).\n#include \"playerbot_item_extra_apply.h\"\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_ITEM_EXTRA_APPLY_V1 (apply)",
+  "old": "\t\tm_pOwner->PointChange(apply.bType, bAdd ? value : -value);\n\t}\n\n#ifdef ENABLE_ACCE_COSTUME_SYSTEM\n\tif (GetType() == ITEM_COSTUME && GetSubType() == COSTUME_ACCE)\n",
+  "new": "\t\tm_pOwner->PointChange(apply.bType, bAdd ? value : -value);\n\t}\n\n\t// MT2009_PLUS_ITEM_EXTRA_APPLY_V1 (apply): the item's extra bonus lines\n\t// (world.item_extra_apply - more than the three item_proto has room for),\n\t// worn exactly like the proto's own above: the same POINT_* numbers, utility\n\t// points skipped, an ore socket raising them alike; a mount seal's go\n\t// nowhere, as its proto bonuses go through AFFECT_MOUNT_BONUS instead.\n#ifdef ENABLE_MOUNT_COSTUME_SYSTEM\n\tif (!IsNewMountItem())\n#endif\n\tif (const std::vector<TItemApply>* extraApplies = GetMt2009ItemExtraApplies(GetVnum()))\n\t{\n\t\tfor (const TItemApply& apply : *extraApplies)\n\t\t{\n\t\t\tif (apply.bType == POINT_NONE)\n\t\t\t\tcontinue;\n\n\t\t\tif (m_pOwner->IsUtilityPoint(apply.bType))\n\t\t\t\tcontinue;\n\n\t\t\tint value = apply.lValue;\n\t\t\tif (0 != accessoryGrade)\n\t\t\t\tvalue += MAX(accessoryGrade, value * aiAccessorySocketEffectivePct[accessoryGrade] / 100);\n\n\t\t\tm_pOwner->PointChange(apply.bType, bAdd ? value : -value);\n\t\t}\n\t}\n\n#ifdef ENABLE_ACCE_COSTUME_SYSTEM\n\tif (GetType() == ITEM_COSTUME && GetSubType() == COSTUME_ACCE)\n"
  }
 ]
