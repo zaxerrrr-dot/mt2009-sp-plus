@@ -497,6 +497,11 @@ namespace
 		bool bErrandVisit;
 		DWORD dwErrandSince;
 		long long llErrandGold;
+		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: "sprzedaj" - an errand for the
+		// merchant alone - and what the merchant paid on this errand.
+		bool bSellOnly;
+		unsigned int uScrapSold;
+		long long llScrapGold;
 		// What the window last got of its gear.
 		DWORD dwGearSent;
 		// The owner's hand on its gear (the window): item id -> the wear slot
@@ -581,6 +586,7 @@ namespace
 			: dwNextPartyCheck(0), dwNextService(0), dwNextLoot(0), dwNextCatchUp(0), dwLootVID(0),
 			  dwLootSince(0), dwNextProtect(0), bTrading(false), dwLastFoeVID(0), bHold(false), lHoldMap(0),
 			  lHoldX(0), lHoldY(0), bErrand(false), bErrandVisit(false), dwErrandSince(0), llErrandGold(0),
+			  bSellOnly(false), uScrapSold(0), llScrapGold(0),
 			  dwGearSent(0), dwEqGen(0), llEqGoldSent(-1), dwEquipWaitUntil(0), dwOwnerFightSeenAt(0),
 			  dwNextFoeMemory(0), bLureStage(0), dwLureVID(0), iLurePacks(0), iLureMonsters(0), lLureAnchorX(0),
 			  lLureAnchorY(0), dwLureCourseSince(0), dwLureStageSince(0), dwNextLure(0), uLureCourses(0),
@@ -1326,6 +1332,116 @@ namespace
 		if (type == ITEM_FISH || type == ITEM_ROD || type == ITEM_PICK)
 			return GetPlayerBotShopAskingPrice(item) / count <= PLAYERBOT_SIDEKICK_JUNK_MAX_VALUE;
 		return false;
+	}
+
+	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2 ("Towarzysz nie sprzedaje zlomu.
+	// Opcja 'zakupy' ma sprzedawac zlom ... Chcialbym moc dac mu zlom i
+	// wyslac do miasta, aby sprzedal (sam zlom)", the owner, 6 October). The
+	// errand's merchant asked IsPlayerBotJunkItem, and for a companion that
+	// was three gates in a row, each of which kept the scrap: what the owner
+	// handed it over the trade window is its gift (setGifts), which neither
+	// that rule nor IsPlayerBotSidekickSellableJunk ever let go; the rest had
+	// to be junk to an ordinary bot as well - its own-class gear an "upgrade"
+	// or a "backup", its refined pieces waiting six hours for a counter a
+	// companion never stands (IsPlayerBotUnwantedGearWaitingForCounter, a
+	// companion that had a counter as a bot keeping it); and a plain piece of
+	// a high level is priced by the market past the scrap cap. On an order
+	// of its owner the companion's own rule alone decides now.
+	bool IsPlayerBotSidekickSellingScrap(LPCHARACTER ch)
+	{
+		if (!IsPlayerBotSidekickServing(ch) || s_mapPlayerBotSidekickRuntime.empty())
+			return false;
+		std::map<DWORD, TPlayerBotSidekickRuntime>::const_iterator rt =
+				s_mapPlayerBotSidekickRuntime.find(ch->GetPlayerID());
+		return rt != s_mapPlayerBotSidekickRuntime.end() && rt->second.bErrand && !rt->second.bAlone;
+	}
+
+	bool IsPlayerBotSidekickSellOnly(LPCHARACTER ch)
+	{
+		if (!IsPlayerBotSidekickSellingScrap(ch))
+			return false;
+		std::map<DWORD, TPlayerBotSidekickRuntime>::const_iterator rt =
+				s_mapPlayerBotSidekickRuntime.find(ch->GetPlayerID());
+		return rt != s_mapPlayerBotSidekickRuntime.end() && rt->second.bSellOnly;
+	}
+
+	// A rod or a pickaxe is spare when it wears one or the bag has another
+	// at least as good (the vnum is the grade) before it.
+	bool IsPlayerBotSidekickSpareTool(LPCHARACTER ch, LPITEM item)
+	{
+		for (int wear = 0; wear < WEAR_MAX_NUM; ++wear)
+		{
+			LPITEM worn = ch->GetWear(wear);
+			if (worn && worn != item && worn->GetType() == item->GetType())
+				return true;
+		}
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM other = ch->GetInventoryItem(cell);
+			if (!other || other == item || other->GetCell() != cell || other->GetType() != item->GetType())
+				continue;
+			if (other->GetVnum() > item->GetVnum() ||
+					(other->GetVnum() == item->GetVnum() && other->GetCell() < item->GetCell()))
+				return true;
+		}
+		return false;
+	}
+
+	// What its owner's order sells: plain gear - a weapon, armour or a piece
+	// of jewellery with no bonus line, under +4, no soul stone in a socket and
+	// none of the kinds kept whatever their plus - the water's catch, and a
+	// spare tool; whoever put it in the bag, the owner's own hand included.
+	// Never what the owner locked or holds there (IsPlayerBotSidekickLockedItem),
+	// put on it, or the operator keeps; never a soul stone, a material, a
+	// book, a scroll, a chest, a key, a Cor, a quest item, a costume, a potion
+	// or anything else - the switch below names only the scrap.
+	bool IsPlayerBotSidekickOrderedScrap(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !item->GetProto() || item->IsEquipped() || item->isLocked() ||
+				item->GetWindow() != INVENTORY || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL))
+			return false;
+		if (IsPlayerBotSidekickLockedItem(ch, item))
+			return false;
+		{
+			const int pin = GetPlayerBotSidekickPinOf(ch, item);
+			if (pin >= 0 && pin != PLAYERBOT_SIDEKICK_PIN_UNWANTED)
+				return false;
+		}
+		{
+			const BYTE policy = GetPlayerBotItemPolicy(item);
+			if (policy != PLAYERBOT_ITEM_POLICY_NONE && policy != PLAYERBOT_ITEM_POLICY_MERCHANT)
+				return false;
+		}
+		const BYTE type = item->GetType();
+		if (type == ITEM_WEAPON || type == ITEM_ARMOR)
+		{
+			if (type == ITEM_WEAPON && (item->GetSubType() == WEAPON_ARROW || IsPlayerBotQuiver(item)))
+				return false;
+			if (item->GetAttributeCount() > 0 || item->GetRefineLevel() >= PLAYERBOT_PRECIOUS_REFINE ||
+					IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) ||
+					IsPlayerBotAwakeningGoods(item->GetVnum()))
+				return false;
+			for (int i = 0; i < ITEM_SOCKET_MAX_NUM; ++i)
+				if (IsPlayerBotSoulStoneVnum((DWORD)item->GetSocket(i)))
+					return false;
+			return true;
+		}
+		const DWORD count = std::max<DWORD>(1, (DWORD)item->GetCount());
+		if (type == ITEM_FISH)
+			return GetPlayerBotShopAskingPrice(item) / count <= PLAYERBOT_SIDEKICK_JUNK_MAX_VALUE;
+		if (type == ITEM_ROD || type == ITEM_PICK)
+			return GetPlayerBotShopAskingPrice(item) / count <= PLAYERBOT_SIDEKICK_JUNK_MAX_VALUE &&
+					IsPlayerBotSidekickSpareTool(ch, item);
+		return false;
+	}
+
+	void NotePlayerBotSidekickScrapSold(LPCHARACTER ch, size_t count, long long gold)
+	{
+		if (!ch || count == 0 || !IsPlayerBotSidekickSellingScrap(ch))
+			return;
+		TPlayerBotSidekickRuntime& rt = s_mapPlayerBotSidekickRuntime[ch->GetPlayerID()];
+		rt.uScrapSold += (unsigned int)count;
+		rt.llScrapGold += gold;
 	}
 
 	// What the AI of a companion does not spend - a soul stone seated, a Cor
@@ -4347,14 +4463,29 @@ namespace
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(sk, red, blue);
 		const bool visited = rt.bErrandVisit;
+		const bool sellOnly = rt.bSellOnly;	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2
+		const unsigned int scrapSold = rt.uScrapSold;
+		const long long scrapGold = rt.llScrapGold;
 		rt.bErrand = false;
 		rt.bErrandVisit = false;
+		rt.bSellOnly = false;
+		rt.uScrapSold = 0;
+		rt.llScrapGold = 0;
 		state.bVisitingShop = false;
 		state.bTownVisitPhase = BOT_TOWN_PHASE_NONE;
 		state.bMarketTrip = false;
 		state.bFishingSession = false;
 		char text[192];
-		if (!visited)
+		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: what the merchant took and paid -
+		// the answer to its owner's order, so always said (SayPlayerBotSidekick).
+		char sold[128];
+		sold[0] = '\0';
+		if (scrapSold > 0)
+			snprintf(sold, sizeof(sold), "Sprzedalem zlom: %u przedmiotow za %lld yang.", scrapSold, scrapGold);
+		if (sellOnly)
+			snprintf(text, sizeof(text), "%s", scrapSold > 0 ? sold :
+					"Nie mam w plecaku zlomu do sprzedania - wracam.");
+		else if (!visited)
 			snprintf(text, sizeof(text), "Nie mialem nic do zalatwienia w miescie - wracam.");
 		else
 			snprintf(text, sizeof(text), "Wracam z zakupow: wydalem %lld yang, mam %u czerwonych i %u niebieskich mikstur.",
@@ -4362,6 +4493,8 @@ namespace
 		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
 		if (owner)
 		{
+			if (!sellOnly && sold[0])
+				SayPlayerBotSidekick(owner, sold);
 			SayPlayerBotSidekick(owner, text);
 			if (owner->GetSectree() && !sk->IsDead())
 			{
@@ -4369,8 +4502,9 @@ namespace
 				KeepPlayerBotSidekickInParty(sk, owner, dwNow);
 			}
 		}
-		sys_log(0, "PLAYERBOT_SIDEKICK: errand over pid=%u owner=%u why=%s visited=%d spent=%lld red=%u blue=%u",
-				rec.dwSidekickPID, rec.dwOwnerPID, why, visited ? 1 : 0, spent, (unsigned int)red, (unsigned int)blue);
+		sys_log(0, "PLAYERBOT_SIDEKICK: errand over pid=%u owner=%u why=%s visited=%d spent=%lld red=%u blue=%u "
+				"sell_only=%d scrap_sold=%u scrap_gold=%lld", rec.dwSidekickPID, rec.dwOwnerPID, why, visited ? 1 : 0,
+				spent, (unsigned int)red, (unsigned int)blue, sellOnly ? 1 : 0, scrapSold, scrapGold);
 	}
 
 	// "Idz na zakupy": at its owner's side it never goes to town by itself, so
@@ -4379,7 +4513,9 @@ namespace
 	// visit any bot runs - the merchant, the potions, the blacksmith, the
 	// storekeeper, whatever it needs - then brings it back
 	// (ManagePlayerBotSidekickErrand).
-	void SendPlayerBotSidekickShopping(LPCHARACTER owner, TPlayerBotSidekick& rec, DWORD dwNow)
+	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: sellOnly - "sprzedaj": the same trip
+	// for the merchants alone, its scrap sold and nothing bought.
+	void SendPlayerBotSidekickShopping(LPCHARACTER owner, TPlayerBotSidekick& rec, DWORD dwNow, bool sellOnly = false)
 	{
 		TPlayerBotAIState* state = NULL;
 		LPCHARACTER sk = FindPlayerBotSidekickForOrder(owner, rec, &state);
@@ -4421,20 +4557,27 @@ namespace
 		rt.bErrandVisit = false;
 		rt.dwErrandSince = dwNow;
 		rt.llErrandGold = (long long)sk->GetGold();
+		rt.bSellOnly = sellOnly;	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2
+		rt.uScrapSold = 0;
+		rt.llScrapGold = 0;
 		state->bVisitingShop = false;
 		state->dwNextShopCheckTime = 0;
 		StartPlayerBotTownVisit(sk, *state, dwNow);
 		rt.bErrandVisit = state->bVisitingShop;
 		++s_uPlayerBotSidekickErrands;
-		sys_log(0, "PLAYERBOT_SIDEKICK: errand pid=%u owner=%u map=%ld visit=%d gold=%lld", rec.dwSidekickPID,
-				rec.dwOwnerPID, map, rt.bErrandVisit ? 1 : 0, rt.llErrandGold);
+		sys_log(0, "PLAYERBOT_SIDEKICK: errand pid=%u owner=%u map=%ld visit=%d gold=%lld sell_only=%d scrap=%u",
+				rec.dwSidekickPID, rec.dwOwnerPID, map, rt.bErrandVisit ? 1 : 0, rt.llErrandGold, sellOnly ? 1 : 0,
+				(unsigned int)CountPlayerBotJunkItems(sk));
 		if (!rt.bErrandVisit)
 		{
 			EndPlayerBotSidekickErrand(sk, *state, rec, rt, dwNow, "nothing");
 			return;
 		}
 		char text[160];
-		snprintf(text, sizeof(text), "Ide na zakupy %s. Wroce, jak skoncze.", playerbot_conv::GetMapWords(map).to);
+		if (sellOnly)
+			snprintf(text, sizeof(text), "Ide sprzedac zlom %s. Wroce, jak skoncze.", playerbot_conv::GetMapWords(map).to);
+		else
+			snprintf(text, sizeof(text), "Ide na zakupy %s. Wroce, jak skoncze.", playerbot_conv::GetMapWords(map).to);
 		SayPlayerBotSidekick(owner, text);
 	}
 
@@ -6549,7 +6692,11 @@ namespace
 		// (a player's screenshot of 25 September: the companion answered it with
 		// talk, "Zero, EQ pelne"): the errand is where the merchant takes the junk.
 		static const char* const errandWords[] = { "zakupy", "na zakupy", "do miasta", "idz do miasta",
-				"zrob miejsce", "oproznij", "wyczysc eq", "sprzedaj smieci" };
+				"zrob miejsce", "oproznij", "wyczysc eq" };
+		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: the merchant alone. Before the
+		// errand, whose "do miasta" a "sprzedaj zlom w miescie" may carry.
+		static const char* const sellWords[] = { "sprzedaj zlom", "sprzedaj smieci", "sprzedaj graty", "idz sprzedac",
+				"zlom" };
 		for (size_t i = 0; i < sizeof(freeWords) / sizeof(freeWords[0]); ++i)
 			if (PlayerBotSidekickHeard(folded, freeWords[i]))
 			{
@@ -6558,6 +6705,13 @@ namespace
 						"Dobra, ide expic po swojemu. Napisz \"chodz\", kiedy bede potrzebny.");
 				if (rec->bMode != PLAYERBOT_SIDEKICK_FREE)
 					FreePlayerBotSidekick(from, *rec);
+				return true;
+			}
+		for (size_t i = 0; i < sizeof(sellWords) / sizeof(sellWords[0]); ++i)
+			if (PlayerBotSidekickHeard(folded, sellWords[i]))
+			{
+				SendPlayerBotWhisper(bot, from, "Dobra, ide sprzedac zlom.");
+				SendPlayerBotSidekickShopping(from, *rec, get_dword_time(), true);
 				return true;
 			}
 		for (size_t i = 0; i < sizeof(errandWords) / sizeof(errandWords[0]); ++i)
@@ -6589,7 +6743,7 @@ namespace
 		return handled;
 	}
 
-	// /towarzysz stworz <rasa 0-7> <sciezka 1-2> <nick> | przywolaj | wolny | czekaj | zakupy | stan
+	// /towarzysz stworz <rasa 0-7> <sciezka 1-2> <nick> | przywolaj | wolny | czekaj | zakupy | sprzedaj | stan
 	//            | walka <0 atakuj, 1 nie atakuj pierwszy, 2 nie walcz> | zbieraj <0 nic, 1 twoj, 2 wszystko>
 	//            | ochrona <0|1> | buffy <0|1> | okno [1] | odprawa tak
 	//            | eq [1 | ruch <z> <na> | daj <z> <na> | wez <z> <na> | odepnij <pozycja>]
@@ -6674,6 +6828,9 @@ namespace
 			HoldPlayerBotSidekick(ch, rec->second, dwNow);
 		else if (!strcmp(sub, "zakupy"))
 			SendPlayerBotSidekickShopping(ch, rec->second, dwNow);
+		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: the scrap to the merchant, nothing bought.
+		else if (!strcmp(sub, "sprzedaj"))
+			SendPlayerBotSidekickShopping(ch, rec->second, dwNow, true);
 		// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: "kup <towar> <ile> [tak]".
 		else if (!strcmp(sub, "kup"))
 			OrderPlayerBotSidekickShopErrand(ch, rec->second, a1, a2, a3, dwNow);

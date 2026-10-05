@@ -993,6 +993,18 @@ namespace
 				PlayerBotWantsLppRelease(ch, state, dwNow) ||
 				PlayerBotWantsMaterialRelease(ch, state, dwNow) ||
 				PlayerBotSidekickWantsBoxSweep(ch);	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
+		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: a companion sent to sell its scrap
+		// ("sprzedaj") calls on the merchants with scrap of theirs and nobody else.
+		if (IsPlayerBotSidekickSellOnly(ch))
+		{
+			state.bTownNeedTrainer = false;
+			state.bTownNeedSkillReset = false;
+			state.bTownNeedBlacksmith = false;
+			state.bTownNeedSafebox = false;
+			state.bTownNeedMisc = HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC);
+			state.bTownNeedWeaponMerchant = HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON);
+			state.bTownNeedArmorMerchant = HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR);
+		}
 		if (!state.bTownNeedTrainer && !state.bTownNeedSkillReset && !state.bTownNeedMisc &&
 				!state.bTownNeedWeaponMerchant && !state.bTownNeedSafebox &&
 				!state.bTownNeedArmorMerchant && !state.bTownNeedBlacksmith)
@@ -6851,7 +6863,8 @@ namespace
 				ManagePlayerBotArmorMerchant(ch);
 				ManagePlayerBotEquipment(ch, state, dwNow);
 				state.bTownNeedBlacksmith = state.bTownNeedBlacksmith ||
-						HasPlayerBotRefineOpportunity(ch);
+						(HasPlayerBotRefineOpportunity(ch) &&
+						 !IsPlayerBotSidekickSellOnly(ch));	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2
 				state.bTownNeedArmorMerchant = false;
 				state.dwTownWaitUntil = dwNow + number(
 						PLAYERBOT_MERCHANT_WAIT_MIN, PLAYERBOT_MERCHANT_WAIT_MAX);
@@ -7138,10 +7151,15 @@ namespace
 						PLAYERBOT_MERCHANT_WAIT_MIN, PLAYERBOT_MERCHANT_WAIT_MAX);
 				// The look's bonuses (playerbot_bonus.h): a stack of what the
 				// costume needs, then rolls while the bot stands here.
-				BuyPlayerBotCostumeReagent(ch, state);
-				state.dwCostumeBonusVisitEnd = dwNow + PLAYERBOT_COSTUME_BONUS_VISIT_MS;
-				state.dwNextCostumeBonusTime = 0;
-				ManagePlayerBotCostumeBonus(ch, state, dwNow);
+				// Not on the companion's "sprzedaj" errand, which only sells
+				// (MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2).
+				if (!IsPlayerBotSidekickSellOnly(ch))
+				{
+					BuyPlayerBotCostumeReagent(ch, state);
+					state.dwCostumeBonusVisitEnd = dwNow + PLAYERBOT_COSTUME_BONUS_VISIT_MS;
+					state.dwNextCostumeBonusTime = 0;
+					ManagePlayerBotCostumeBonus(ch, state, dwNow);
+				}
 				state.bTownVisitPhase = BOT_TOWN_PHASE_MISC_WAIT;
 				sys_log(0, "PLAYERBOT_TOWN: misc merchant visit pid=%u name=%s wait_ms=%u pos=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), state.dwTownWaitUntil - dwNow,
