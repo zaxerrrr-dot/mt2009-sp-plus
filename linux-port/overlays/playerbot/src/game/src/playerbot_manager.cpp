@@ -2157,6 +2157,11 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item->GetType() != ITEM_METIN)
 				continue;
+			// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion seats only a
+			// stone its owner handed it - never one it holds for the owner or
+			// picked up off the owner's kills.
+			if (IsPlayerBotSidekickKeptForOwner(ch, item))
+				continue;
 
 			const DWORD kdVnum = item->GetVnum();
 			const int kdPlus = GetPlayerBotSoulStoneGrade(kdVnum);

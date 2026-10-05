@@ -600,6 +600,11 @@ namespace
 			LPITEM item = ch->GetInventoryItem((WORD)cell);
 			if (!item || item->GetCell() != cell || !IsPlayerBotCorVnum(item->GetVnum()) || item->isLocked())
 				continue;
+			// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion opens only a
+			// Cor its owner handed it; the ones off the owner's kills are the
+			// owner's.
+			if (IsPlayerBotSidekickKeptForOwner(ch, item))
+				continue;
 			std::vector<LPITEM> stones;
 			CollectPlayerBotDragonSouls(ch, stones);
 			if ((int)stones.size() >= DRAGON_SOUL_INVENTORY_MAX_NUM - 8)
