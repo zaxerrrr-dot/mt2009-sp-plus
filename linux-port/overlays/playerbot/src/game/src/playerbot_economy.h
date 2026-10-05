@@ -4678,6 +4678,11 @@ namespace
 		if (NeedsPlayerBotProgressionEarring(ch))
 			bought = BuyPlayerBotProgressionGear(ch,
 					GetPlayerBotProgressionEarringVnum(ch), "earring") || bought;
+		// MT2009_PLUS_BOT_GEAR_UPGRADE_V2: and the merchants' best piece of
+		// every slot that is empty or a tenth worse - the bracelet, necklace,
+		// earring and boots ladders name tiers no merchant stocks, and a slot
+		// left empty stayed empty (playerbot_gear_upgrade.h).
+		bought = BuyPlayerBotMerchantArmourUpgrades(ch) || bought;
 		return sold || bought;
 	}
 

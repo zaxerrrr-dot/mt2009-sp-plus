@@ -249,6 +249,7 @@ namespace {
     bool FindPlayerBotBookPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotOutdatedGearPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotWeaponUpgradePick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now); // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
+    bool FindPlayerBotArmourUpgradePick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now); // MT2009_PLUS_BOT_GEAR_UPGRADE_V2
     bool FindPlayerBotBuffSetPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
     bool FindPlayerBotSinkGoodsPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
     // MT2009_PLUS_HORSE_ECONOMY_V2: the sink goods' scan of one map's stands.
@@ -377,6 +378,11 @@ namespace {
                     ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (int)ch->GetLevel());
                 return RunPlayerBotOfflinePick(ch, state, now);
             }
+            // MT2009_PLUS_BOT_GEAR_UPGRADE_V2: an armour a tenth better than
+            // the best of its slot, at any plus, on every stand of the map -
+            // after the weapon, whose price its purse leaves alone.
+            if (FindPlayerBotArmourUpgradePick(ch, state, now))
+                return RunPlayerBotOfflinePick(ch, state, now);
             // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: a Shaman looks on every stand
             // of the map for a piece that betters its INT set.
             if (FindPlayerBotBuffSetPick(ch, state, now)) {
@@ -1030,6 +1036,113 @@ namespace {
         return true;
     }
 
+    // MT2009_PLUS_BOT_GEAR_UPGRADE_V2: the armour on a stand of the bot's map
+    // that buys it the most score a yang of those it would buy and could pay
+    // for (IsPlayerBotArmourUpgradeOffer, CanPlayerBotPayForOffer) - asked
+    // only while its look at the first village found one
+    // (LookPlayerBotArmourUpgrade), so a bot with nothing to buy reads no
+    // stand. Every line is rated by a clean copy's score
+    // (GetPlayerBotArmourProtoScore) against the best piece of its slot, the
+    // best PLAYERBOT_ARMOUR_UPGRADE_PREVIEW_LINES of them are built into an
+    // item and asked the purchase's own tests, and the most exact score a
+    // yang is the pick, body armour first on a tie.
+    bool FindPlayerBotArmourUpgradePick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
+        using namespace playerbot_offline;
+        if (!ch || !PlayerBotWantsArmourUpgradeFromMarket(ch)) return false;
+        const long long spare = GetPlayerBotArmourUpgradeSpare(ch);
+        const long long cap = GetPlayerBotArmourUpgradeShare(spare, PLAYERBOT_ARMOUR_UPGRADE_BIG_GAIN_PERCENT);
+        if (cap <= 0) return false;
+        TPlayerBotOwnedArmour owned;
+        ReadPlayerBotBestOwnedArmour(ch, owned);
+        const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
+                ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
+        struct TCandidate { long long value; int slot; long long price; DWORD owner; DWORD item; long x; long y; };
+        std::vector<TCandidate> candidates;
+        std::map<DWORD, long long> scoreByVnum;
+        for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
+            if (!shop || pid == ch->GetPlayerID() || shop->GetDuration() == 0 || shop->IsEditMode()) continue;
+            const auto spawn = shop->GetSpawn();
+            if (spawn.map != ch->GetMapIndex() || (int)spawn.channel != shopChannel) continue;
+            for (const auto& [id, line] : shop->GetItems()) {
+                const TItemTable* table = line ? line->GetTable() : NULL;
+                if (!table || table->bType != ITEM_ARMOR || line->GetInfo().count != 1) continue;
+                const long long price = (long long)line->GetPrice().GetTotalYangAmount();
+                if (price <= 0 || price > cap) continue;
+                long long score = 0;
+                const auto known = scoreByVnum.find(table->dwVnum);
+                if (known != scoreByVnum.end())
+                    score = known->second;
+                else {
+                    if (IsPlayerBotArmourProtoFor(ch, table))
+                        score = GetPlayerBotArmourProtoScore(ch, table);
+                    scoreByVnum[table->dwVnum] = score;
+                }
+                if (score <= 0) continue;
+                const int slot = GetPlayerBotArmourUpgradeSlot(table->bSubType);
+                const long long ownedScore = owned.item[slot] ? owned.score[slot] : 0;
+                if ((owned.item[slot] && score * 100 < ownedScore * (100 + PLAYERBOT_ARMOUR_UPGRADE_MIN_GAIN_PERCENT)) ||
+                        price > GetPlayerBotArmourUpgradeShare(spare, GetPlayerBotArmourGainPercent(score, ownedScore)) ||
+                        IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
+                    continue;
+                candidates.push_back(TCandidate{ GetPlayerBotArmourValuePerYang(score, ownedScore, price), slot, price,
+                    shop->GetOwnerPID(), id, (long)spawn.x, (long)spawn.y });
+            }
+        }
+        if (candidates.empty()) return false;
+        std::sort(candidates.begin(), candidates.end(), [](const TCandidate& a, const TCandidate& b) {
+            return a.value != b.value ? a.value > b.value : a.slot != b.slot ? a.slot < b.slot : a.price < b.price;
+        });
+        CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(ch->GetMapIndex());
+        const bool haveNav = navigation.Init(ch->GetMapIndex());
+        DWORD bestOwner = 0, bestItem = 0, bestVnum = 0;
+        long long bestValue = -1, bestPrice = 0, bestGain = 0, bestScore = 0;
+        int bestSlot = -1, previewed = 0;
+        for (const TCandidate& c : candidates) {
+            if (previewed >= PLAYERBOT_ARMOUR_UPGRADE_PREVIEW_LINES) break;
+            if (haveNav && !navigation.CanReach(ch->GetX(), ch->GetY(), c.x, c.y)) continue;
+            auto shop = ikashop::GetManager().GetShopByOwnerID(c.owner);
+            auto line = shop ? shop->GetItem(c.item) : nullptr;
+            LPITEM preview = line ? BotOfflinePreview(*line) : NULL;
+            if (!preview) continue;
+            ++previewed;
+            long long gain = 0;
+            const bool buyable = IsPlayerBotArmourUpgradeOffer(ch, preview, &gain) &&
+                    WantsPlayerBotStallItem(ch, preview) &&
+                    CanPlayerBotPayForOffer(ch, preview, c.price, c.owner) &&
+                    ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            const long long score = buyable ? GetPlayerBotEquipmentScore(preview, ch) : 0;
+            const DWORD vnum = preview->GetVnum();
+            M2_DELETE(preview);
+            if (!buyable) continue;
+            const long long value = GetPlayerBotArmourValuePerYang(score,
+                    owned.item[c.slot] ? owned.score[c.slot] : 0, c.price);
+            if (value < bestValue || (value == bestValue && (c.slot > bestSlot ||
+                    (c.slot == bestSlot && c.price >= bestPrice)))) continue;
+            bestOwner = c.owner;
+            bestItem = c.item;
+            bestVnum = vnum;
+            bestValue = value;
+            bestPrice = c.price;
+            bestGain = gain;
+            bestScore = score;
+            bestSlot = c.slot;
+        }
+        if (!bestOwner || bestSlot < 0) return false;
+        auto& o = state.offlineShop;
+        o.buyOwner = bestOwner;
+        o.buyItem = bestItem;
+        o.buyUntil = now + PLAYERBOT_MARKET_FAR_PICK_WALK_MS;
+        o.farBuy = false;
+        ClaimPlayerBotLineUntil(bestItem, ch->GetPlayerID(), now, o.buyUntil);
+        ++s_dwPlayerBotArmourUpgradePicks;
+        LPITEM ownedItem = owned.item[bestSlot];
+        sys_log(0, "PLAYERBOT_GEAR_UPGRADE: goes for armour pid=%u name=%s level=%u slot=%s owned=%u score=%lld vnum=%u line=%u owner=%u score=%lld gain=%lld%% price=%lld gold=%lld",
+            ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), PLAYERBOT_ARMOUR_UPGRADE_SLOT_NAMES[bestSlot],
+            ownedItem ? ownedItem->GetVnum() : 0, owned.score[bestSlot], bestVnum, bestItem, bestOwner, bestScore,
+            bestGain, bestPrice, (long long)ch->GetGold());
+        return true;
+    }
+
     // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: the stand line that betters a
     // Shaman's INT set most for its price, on every stand of the bot's map -
     // looked for once in PLAYERBOT_BUFF_SET_MARKET_LOOK_MS a bot, and only a
@@ -1250,6 +1363,7 @@ namespace {
     void AddPlayerBotOfflineLedger(DWORD& stalls, DWORD& lines) {
         s_vecPlayerBotStandingSlips.clear();
         ClearPlayerBotWeaponLinePrices();   // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
+        ClearPlayerBotArmourLinePrices();   // MT2009_PLUS_BOT_GEAR_UPGRADE_V2
         // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: a core that is not the shop channel
         // counts no stand below, and its bots buy on the shop channel's stands
         // (RunPlayerBotOfflinePick asks for the move): their weapons are priced
@@ -1259,10 +1373,15 @@ namespace {
             for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
                 if (!shop || shop->GetDuration() == 0 ||
                         (int)shop->GetSpawn().channel != playerbot_channel_rules::SHOP_CHANNEL) continue;
-                for (const auto& [id, item] : shop->GetItems())
+                for (const auto& [id, item] : shop->GetItems()) {
                     if (item && item->GetTable() && item->GetTable()->bType == ITEM_WEAPON)
                         NotePlayerBotWeaponLinePrice(shop->GetSpawn().map, item->GetTable(), item->GetInfo().count,
                             (long long)item->GetPrice().GetTotalYangAmount());
+                    // MT2009_PLUS_BOT_GEAR_UPGRADE_V2: and the armour.
+                    if (item && item->GetTable() && item->GetTable()->bType == ITEM_ARMOR)
+                        NotePlayerBotArmourLinePrice(shop->GetSpawn().map, item->GetTable(), item->GetInfo().count,
+                            (long long)item->GetPrice().GetTotalYangAmount());
+                }
             }
         for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
             if (!shop || shop->GetDuration() == 0 || shop->GetSpawn().channel != g_bChannel) continue;
@@ -1291,6 +1410,9 @@ namespace {
                     // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: the cheapest line of each
                     // weapon by map, for the bots' look from the frontier.
                     NotePlayerBotWeaponLinePrice(shop->GetSpawn().map, item->GetTable(), item->GetInfo().count,
+                        (long long)item->GetPrice().GetTotalYangAmount());
+                    // MT2009_PLUS_BOT_GEAR_UPGRADE_V2: and of each armour.
+                    NotePlayerBotArmourLinePrice(shop->GetSpawn().map, item->GetTable(), item->GetInfo().count,
                         (long long)item->GetPrice().GetTotalYangAmount());
                 }
                 // MT2009_PLUS_MARKET_V3, point 4: a weapon's average damage, for

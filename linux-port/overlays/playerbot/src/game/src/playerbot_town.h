@@ -965,7 +965,8 @@ namespace
 				PlayerBotWantsMerchantWeaponUpgrade(ch);   // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
 		state.bTownNeedArmorMerchant = HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR) ||
 				NeedsPlayerBotProgressionArmor(ch) || NeedsPlayerBotProgressionShield(ch) ||
-				NeedsPlayerBotProgressionHelmet(ch) || NeedsPlayerBotBackupArmour(ch);
+				NeedsPlayerBotProgressionHelmet(ch) || NeedsPlayerBotBackupArmour(ch) ||
+				PlayerBotWantsMerchantArmourUpgrade(ch);   // MT2009_PLUS_BOT_GEAR_UPGRADE_V2
 		state.bTownNeedBlacksmith = HasPlayerBotRefineOpportunity(ch) ||
 				IsPlayerBotGambling(state, dwNow);
 		// The gambler's first stop is the storekeeper, once a session.

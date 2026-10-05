@@ -150,6 +150,9 @@ namespace {
         // (playerbot_gear_upgrade.h) - the frontier bots meet those stands on
         // a trip or not at all, like the scroll rule's.
         if (PlayerBotWantsWeaponUpgradeFromMarket(ch)) return true;
+        // MT2009_PLUS_BOT_GEAR_UPGRADE_V2: and an armour a tenth better than
+        // the best of its slot.
+        if (PlayerBotWantsArmourUpgradeFromMarket(ch)) return true;
         if (!ch->GetSkillGroup()) return false;
         const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
         const bool studies = PlayerBotStudiesAtTheMarket(ch);
@@ -188,7 +191,8 @@ namespace {
             if (supply && supply->dwSupplyUnits > 0 && GetPlayerBotBiologistPurchaseNeed(ch, vnum) > 0) return true;
         }
         return PlayerBotScrollRuleSupplyExists(ch) || PlayerBotStalkiSupplyExists(ch) ||
-            PlayerBotWantsWeaponUpgradeFromMarket(ch);   // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
+            PlayerBotWantsWeaponUpgradeFromMarket(ch) ||   // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
+            PlayerBotWantsArmourUpgradeFromMarket(ch);     // MT2009_PLUS_BOT_GEAR_UPGRADE_V2
     }
     // Who is out on a trip now, pid -> when it ends. A map rather than a count,
     // so a bot that despawns mid-trip frees its place when the trip would have

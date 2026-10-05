@@ -357,6 +357,12 @@ namespace
 		// at +4 is the anvil's next project and hits harder already.
 		if (offer->GetType() == ITEM_WEAPON && IsPlayerBotWeaponUpgradeOffer(ch, offer, NULL))
 			return true;
+		// MT2009_PLUS_BOT_GEAR_UPGRADE_V2: and an armour of the seven slots at
+		// any plus whose score beats the best piece of its slot the bot owns
+		// by a tenth (IsPlayerBotArmourUpgradeOffer): the stands' armour is
+		// +0 to +5, and the +6 rule below never let a bot have any of it.
+		if (offer->GetType() == ITEM_ARMOR && IsPlayerBotArmourUpgradeOffer(ch, offer, NULL))
+			return true;
 
 		// Gear only when it is genuinely better than what is worn. A bot that
 		// buys sideways upgrades spends its yang on nothing.
@@ -537,6 +543,9 @@ namespace
 		// it would buy now (playerbot_gear_upgrade.h).
 		if (PlayerBotWantsWeaponUpgradeFromMarket(ch))
 			return true;
+		// MT2009_PLUS_BOT_GEAR_UPGRADE_V2: and an armour.
+		if (PlayerBotWantsArmourUpgradeFromMarket(ch))
+			return true;
 		// A weapon the atlas says it has outgrown, when it could pay for the one
 		// it is after (playerbot_weapon_goal.h).
 		{
@@ -629,6 +638,19 @@ namespace
 			if (item->GetType() == ITEM_WEAPON && IsPlayerBotWeaponUpgradeOffer(ch, item, &gain) &&
 					price <= GetPlayerBotWeaponUpgradeBudget(ch, gain))
 				return true;
+			// MT2009_PLUS_BOT_GEAR_UPGRADE_V2: an armour upgrade out of the same
+			// shares, once the weapon the bot's look found is set aside
+			// (GetPlayerBotArmourUpgradeBudget). Over that, only a rule of its
+			// own pays for it (the Stalki project, the piece over outdated
+			// gear) - not the Perfectionist's half below, which knows nothing
+			// of the weapon set aside.
+			if (item->GetType() == ITEM_ARMOR && IsPlayerBotArmourUpgradeOffer(ch, item, &gain))
+			{
+				if (price <= GetPlayerBotArmourUpgradeBudget(ch, gain))
+					return true;
+				if (!IsPlayerBotStalkiProjectOffer(ch, item) && !IsPlayerBotOutdatedGearOffer(ch, item))
+					return false;
+			}
 		}
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		if (price > spare) return false;
@@ -1618,6 +1640,7 @@ namespace
 		LogPlayerBotHerbalistCensus(dwNow);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
 		ReportPlayerBotWeaponGoals(dwNow);
 		ReportPlayerBotWeaponUpgrades(dwNow); // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
+		ReportPlayerBotArmourUpgrades(dwNow); // MT2009_PLUS_BOT_GEAR_UPGRADE_V2
 		ReportPlayerBotLevel30Census();
 		ReportPlayerBotStalkiCensus();
 		ReportPlayerBotTopCopies();
