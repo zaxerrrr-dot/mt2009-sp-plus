@@ -298,5 +298,11 @@
   "marker": "MT2009_PLUS_AREZZO_BALANCE_V1 (sync)",
   "old": "\t\tswitch (victim->GetCharType())\n\t\t{\n\t\t\tcase CHAR_TYPE_NPC:\n\t\t\tcase CHAR_TYPE_WARP:\n\t\t\tcase CHAR_TYPE_GOTO:\n\t\t\t\tcontinue;\n\t\t}\n\n\t\tif (!victim->SetSyncOwner(ch))\n\t\t\tcontinue;\n",
   "new": "\t\tswitch (victim->GetCharType())\n\t\t{\n\t\t\tcase CHAR_TYPE_NPC:\n\t\t\tcase CHAR_TYPE_WARP:\n\t\t\tcase CHAR_TYPE_GOTO:\n\t\t\t\tcontinue;\n\t\t}\n\n\t\t// MT2009_PLUS_AREZZO_BALANCE_V1 (sync) (server-patches/enginefixes): a boss is\n\t\t// not moved by the slide the attacker's client gives it on a hit (a combo's\n\t\t// blow, a rider's charge) - the client reports where its hits pushed a monster\n\t\t// and the core used to take that as the monster's place. The boss stays where\n\t\t// the core has it; the attacker's client puts it back there with the boss's next\n\t\t// attack or step (both carry its position). char_battle.cpp, the same marker:\n\t\t// the skills' push.\n\t\tif (victim->IsMonster() && victim->GetMobRank() >= MOB_RANK_BOSS)\n\t\t\tcontinue;\n\n\t\tif (!victim->SetSyncOwner(ch))\n\t\t\tcontinue;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_RARE_ATTR_INDEPENDENT_V1",
+  "old": "\tfor (int i = 0; i < MAX_NORM_ATTR_NUM + 1; ++i)\n\t\tif (GetAttributeType(i) == bApply)\n\t\t\treturn true;\n",
+  "new": "\t// MT2009_PLUS_RARE_ATTR_INDEPENDENT_V1: only the five normal bonus lines - the\n\t// stock loop ran to MAX_NORM_ATTR_NUM + 1 and so read the first 6/7 bonus line\n\t// too: a critical hit in the 6th bonus made the 1-5 lines refuse it (the owner,\n\t// 5 October: \"bonusy 6/7 powinny byc niezalezne od 1-5\").\n\tfor (int i = 0; i < MAX_NORM_ATTR_NUM; ++i)\n\t\tif (GetAttributeType(i) == bApply)\n\t\t\treturn true;\n"
  }
 ]
