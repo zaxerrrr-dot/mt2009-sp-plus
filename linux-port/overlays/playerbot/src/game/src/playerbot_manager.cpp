@@ -717,12 +717,12 @@ namespace
 					ch->GetPlayerID(), ch->GetName(), (unsigned)ch->GetLevel(),
 					(unsigned)lockLevel, (unsigned)state.bPersonality);
 			if (ringOwner)
-				SayPlayerBotSidekick(ringOwner, "Pierscien Anty-Exp zdjety - znowu zbieram doswiadczenie.");
+				TellPlayerBotSidekick(ringOwner, PLAYERBOT_SIDEKICK_NOTICE_EXP_LOCK, "Pierscien Anty-Exp zdjety - znowu zbieram doswiadczenie.");
 			return;
 		}
 		ch->AddAffect(AFFECT_EXP_BLOCK, POINT_NONE, 0, 0, INFINITE_AFFECT_DURATION, 0, true, true);
 		if (ownerRing)
-			SayPlayerBotSidekick(ringOwner, "Masz Pierscien Anty-Exp, wiec ja tez nie zbieram doswiadczenia.");
+			TellPlayerBotSidekick(ringOwner, PLAYERBOT_SIDEKICK_NOTICE_EXP_LOCK, "Masz Pierscien Anty-Exp, wiec ja tez nie zbieram doswiadczenia.");
 		sys_log(0, "PLAYERBOT_AI: exp locked for a %s pid=%u name=%s level=%u lock=%u personality=%u",
 				ownerRing ? "companion of an Anti-Exp Ring" : sidekick ? "companion playing alone" :
 				(progressHeld && !(lockLevel != 0 && ch->GetLevel() >= lockLevel)) ? "progression gate" :

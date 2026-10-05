@@ -410,6 +410,21 @@ namespace
 	std::set<DWORD> s_setPlayerBotSidekickNoKeep;
 	bool s_bPlayerBotSidekickKeepColumn = false;
 	bool s_bPlayerBotSidekickHeldColumn = false;
+	// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1 ("A czy mozna wylaczyc te prywatne
+	// wiadomosci od towarzysza? Spamuje mi ... co zbitego metina", players,
+	// 5 October): "Szepty" in the window's Options page - which of the
+	// companion's own notices (not its answers to the owner's orders) reach
+	// the owner: 0 none, 1 the important ones only (the default), 2 all. By
+	// owner pid, only the owners off the default; kept in
+	// player.playerbot_sidekick.notify.
+	enum
+	{
+		PLAYERBOT_SIDEKICK_NOTIFY_NONE = 0,
+		PLAYERBOT_SIDEKICK_NOTIFY_IMPORTANT = 1,
+		PLAYERBOT_SIDEKICK_NOTIFY_ALL = 2,
+	};
+	std::map<DWORD, BYTE> s_mapPlayerBotSidekickNotify;
+	bool s_bPlayerBotSidekickNotifyColumn = false;
 
 	// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: "Kup" in the window - the owner's
 	// errand for one kind of goods (playerbot_sidekick_shop.h). Kept in the
@@ -708,6 +723,13 @@ namespace
 		s_bPlayerBotSidekickHeldColumn = held.get() && held->uiSQLErrno == 0;
 		if (!s_bPlayerBotSidekickHeldColumn)
 			sys_err("PLAYERBOT_SIDEKICK: no held column errno=%u", held.get() ? held->uiSQLErrno : 0U);
+		// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1: "Szepty", the important ones by default.
+		std::unique_ptr<SQLMsg> notify(AccountDB::instance().DirectQuery(
+				"ALTER TABLE player.playerbot_sidekick "
+				"ADD COLUMN IF NOT EXISTS notify TINYINT UNSIGNED NOT NULL DEFAULT 1"));
+		s_bPlayerBotSidekickNotifyColumn = notify.get() && notify->uiSQLErrno == 0;
+		if (!s_bPlayerBotSidekickNotifyColumn)
+			sys_err("PLAYERBOT_SIDEKICK: no notify column errno=%u", notify.get() ? notify->uiSQLErrno : 0U);
 		// A companion whose owner's character was deleted would be kept out of
 		// the population for good: its record goes, and the identity plays on
 		// as the bot it was, under the name it was given.
@@ -901,6 +923,29 @@ namespace
 						off.insert(pid);
 				}
 				s_setPlayerBotSidekickNoKeep.swap(off);
+			}
+		}
+		// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1: the owners with "Szepty" off the default.
+		if (s_bPlayerBotSidekickNotifyColumn)
+		{
+			std::unique_ptr<SQLMsg> notes(AccountDB::instance().DirectQuery(
+					"SELECT owner_pid, notify FROM player.playerbot_sidekick WHERE notify<>1"));
+			if (notes.get() && notes->uiSQLErrno == 0 && notes->Get() && notes->Get()->pSQLResult)
+			{
+				std::map<DWORD, BYTE> levels;
+				MYSQL_ROW noteRow;
+				while (NULL != (noteRow = mysql_fetch_row(notes->Get()->pSQLResult)))
+				{
+					DWORD pid = 0;
+					unsigned int level = PLAYERBOT_SIDEKICK_NOTIFY_IMPORTANT;
+					if (noteRow[0])
+						str_to_number(pid, noteRow[0]);
+					if (noteRow[1])
+						str_to_number(level, noteRow[1]);
+					if (pid != 0 && level != PLAYERBOT_SIDEKICK_NOTIFY_IMPORTANT)
+						levels[pid] = (BYTE)std::min<unsigned int>(level, PLAYERBOT_SIDEKICK_NOTIFY_ALL);
+				}
+				s_mapPlayerBotSidekickNotify.swap(levels);
 			}
 		}
 	}
@@ -1217,6 +1262,32 @@ namespace
 
 	std::set<DWORD> s_setPlayerBotSidekickBoxSwept;
 	void SayPlayerBotSidekick(LPCHARACTER owner, const char* text);
+	// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1: the kinds of the companion's own
+	// notices, each with its weight and how often it may be said
+	// (PLAYERBOT_SIDEKICK_NOTICES). SayPlayerBotSidekick stays for its answers
+	// to what the owner did or ordered, which always reach the owner.
+	enum EPlayerBotSidekickNotice
+	{
+		// Important: the owner's things at stake.
+		PLAYERBOT_SIDEKICK_NOTICE_HELD,		// the owner's bag full, a drop held for it
+		PLAYERBOT_SIDEKICK_NOTICE_VALUABLES,	// the owner's valuables in its bag
+		PLAYERBOT_SIDEKICK_NOTICE_BAG_FULL,	// its own bag nearly full
+		PLAYERBOT_SIDEKICK_NOTICE_RELOG,	// it logs out for ten minutes
+		// Routine.
+		PLAYERBOT_SIDEKICK_NOTICE_ARRIVED,
+		PLAYERBOT_SIDEKICK_NOTICE_PARTY,
+		PLAYERBOT_SIDEKICK_NOTICE_KINGDOM,
+		PLAYERBOT_SIDEKICK_NOTICE_ITEMSHOP,
+		PLAYERBOT_SIDEKICK_NOTICE_FISHING,
+		PLAYERBOT_SIDEKICK_NOTICE_SKILLS,	// the Grand Master's training, the books
+		PLAYERBOT_SIDEKICK_NOTICE_TRIP,
+		PLAYERBOT_SIDEKICK_NOTICE_POLYMORPH,
+		PLAYERBOT_SIDEKICK_NOTICE_EXP_LOCK,
+		PLAYERBOT_SIDEKICK_NOTICE_BOX_LEFT,
+		PLAYERBOT_SIDEKICK_NOTICE_METINS,	// the metins it broke, in one line
+		PLAYERBOT_SIDEKICK_NOTICE_MAX
+	};
+	void TellPlayerBotSidekick(LPCHARACTER owner, int kind, const char* text);
 
 	bool IsPlayerBotSidekickServing(LPCHARACTER ch)
 	{
@@ -1339,7 +1410,7 @@ namespace
 		char text[192];
 		snprintf(text, sizeof(text), "W moim magazynie zostalo jeszcze %u rzeczy - wyjme je przy nastepnych zakupach. "
 				"Zabieraj ode mnie, co twoje (okno Towarzysza), zebym mial na nie miejsce.", (unsigned int)left.size());
-		SayPlayerBotSidekick(GetPlayerBotSidekickOwnerChar(ownerPid), text);
+		TellPlayerBotSidekick(GetPlayerBotSidekickOwnerChar(ownerPid), PLAYERBOT_SIDEKICK_NOTICE_BOX_LEFT, text);
 	}
 
 	// A piece its owner put on that waits in the bag - refused for the moment
@@ -1498,6 +1569,116 @@ namespace
 		// that was refused would otherwise leave no trace at all.
 		else if (owner && s_bPlayerBotSidekickSelfTest)
 			sys_log(0, "PLAYERBOT_SIDEKICK: says owner=%u \"%s\"", owner->GetPlayerID(), text);
+	}
+
+	// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1: a notice's weight and the least time
+	// between two of its kind (whatever their words) to the same owner.
+	struct TPlayerBotSidekickNoticeKind
+	{
+		bool bImportant;
+		DWORD dwEveryMs;
+	};
+	const TPlayerBotSidekickNoticeKind PLAYERBOT_SIDEKICK_NOTICES[PLAYERBOT_SIDEKICK_NOTICE_MAX] =
+	{
+		{ true, 5 * 60 * 1000 },	// HELD
+		{ true, 10 * 60 * 1000 },	// VALUABLES
+		{ true, 10 * 60 * 1000 },	// BAG_FULL
+		{ true, 60 * 1000 },		// RELOG
+		{ false, 5 * 60 * 1000 },	// ARRIVED
+		{ false, 5 * 60 * 1000 },	// PARTY
+		{ false, 5 * 60 * 1000 },	// KINGDOM
+		{ false, 5 * 60 * 1000 },	// ITEMSHOP
+		{ false, 5 * 60 * 1000 },	// FISHING
+		{ false, 5 * 60 * 1000 },	// SKILLS
+		{ false, 10 * 60 * 1000 },	// TRIP
+		{ false, 10 * 60 * 1000 },	// POLYMORPH
+		{ false, 5 * 60 * 1000 },	// EXP_LOCK
+		{ false, 10 * 60 * 1000 },	// BOX_LEFT
+		{ false, 10 * 60 * 1000 },	// METINS
+	};
+	void SetPlayerBotSidekickSetting(const TPlayerBotSidekick& rec, const char* column, unsigned int value);
+	const DWORD PLAYERBOT_SIDEKICK_METIN_TELL_MS = 10 * 60 * 1000;
+	std::map<DWORD, std::map<int, DWORD> > s_mapPlayerBotSidekickNoticeAt;	// owner pid -> kind -> when
+	struct TPlayerBotSidekickMetinTally
+	{
+		int iCount;
+		DWORD dwSince;
+		TPlayerBotSidekickMetinTally() : iCount(0), dwSince(0) {}
+	};
+	std::map<DWORD, TPlayerBotSidekickMetinTally> s_mapPlayerBotSidekickMetins;	// owner pid -> tally
+
+	BYTE GetPlayerBotSidekickNotify(DWORD ownerPid)
+	{
+		std::map<DWORD, BYTE>::const_iterator it = s_mapPlayerBotSidekickNotify.find(ownerPid);
+		return it == s_mapPlayerBotSidekickNotify.end() ? (BYTE)PLAYERBOT_SIDEKICK_NOTIFY_IMPORTANT : it->second;
+	}
+
+	void TellPlayerBotSidekick(LPCHARACTER owner, int kind, const char* text)
+	{
+		if (!owner || !text || !*text || kind < 0 || kind >= PLAYERBOT_SIDEKICK_NOTICE_MAX)
+			return;
+		const DWORD ownerPid = owner->GetPlayerID();
+		const BYTE level = GetPlayerBotSidekickNotify(ownerPid);
+		if (level == PLAYERBOT_SIDEKICK_NOTIFY_NONE ||
+				(level == PLAYERBOT_SIDEKICK_NOTIFY_IMPORTANT && !PLAYERBOT_SIDEKICK_NOTICES[kind].bImportant))
+			return;
+		const DWORD dwNow = get_dword_time();
+		std::map<int, DWORD>& at = s_mapPlayerBotSidekickNoticeAt[ownerPid];
+		std::map<int, DWORD>::iterator last = at.find(kind);
+		if (last != at.end() && dwNow - last->second < PLAYERBOT_SIDEKICK_NOTICES[kind].dwEveryMs)
+			return;
+		at[kind] = dwNow;
+		SayPlayerBotSidekick(owner, text);
+	}
+
+	const char* SetPlayerBotSidekickNotify(TPlayerBotSidekick& rec, BYTE level)
+	{
+		level = (BYTE)std::min<int>(level, PLAYERBOT_SIDEKICK_NOTIFY_ALL);
+		if (GetPlayerBotSidekickNotify(rec.dwOwnerPID) != level)
+		{
+			if (level == PLAYERBOT_SIDEKICK_NOTIFY_IMPORTANT)
+				s_mapPlayerBotSidekickNotify.erase(rec.dwOwnerPID);
+			else
+				s_mapPlayerBotSidekickNotify[rec.dwOwnerPID] = level;
+			if (s_bPlayerBotSidekickNotifyColumn)
+				SetPlayerBotSidekickSetting(rec, "notify", level);
+		}
+		s_mapPlayerBotSidekickMetins.erase(rec.dwOwnerPID);
+		if (level == PLAYERBOT_SIDEKICK_NOTIFY_NONE)
+			return "Dobra, nie pisze do ciebie sam z siebie - odpowiadam tylko na twoje polecenia.";
+		if (level == PLAYERBOT_SIDEKICK_NOTIFY_ALL)
+			return "Dobra, pisze o wszystkim (najwyzej raz na kilka minut o tym samym, metiny zbiorczo co 10 minut).";
+		return "Dobra, pisze tylko o waznych rzeczach: pelny ekwipunek, pelny plecak, twoje cenne rzeczy.";
+	}
+
+	// A metin the companion broke: counted, and told as one line at most every
+	// PLAYERBOT_SIDEKICK_METIN_TELL_MS, to an owner who wants all of its notices.
+	void NotePlayerBotSidekickMetinKill(LPCHARACTER ch, LPCHARACTER target)
+	{
+		if (!ch || !target || !target->IsStone())
+			return;
+		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
+		if (!rec || GetPlayerBotSidekickNotify(rec->dwOwnerPID) != PLAYERBOT_SIDEKICK_NOTIFY_ALL)
+			return;
+		const DWORD dwNow = get_dword_time();
+		TPlayerBotSidekickMetinTally& tally = s_mapPlayerBotSidekickMetins[rec->dwOwnerPID];
+		if (tally.iCount == 0)
+			tally.dwSince = dwNow;
+		++tally.iCount;
+		if (dwNow - tally.dwSince < PLAYERBOT_SIDEKICK_METIN_TELL_MS)
+			return;
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID);
+		if (!owner)
+			return;
+		const int n = tally.iCount;
+		const int tens = n % 100;
+		const char* word = n == 1 ? "metina" : (n % 10 >= 2 && n % 10 <= 4 && (tens < 12 || tens > 14)) ? "metiny" :
+				"metinow";
+		char text[128];
+		snprintf(text, sizeof(text), "Zbilem %d %s w ciagu ostatnich %u minut.", n, word,
+				(dwNow - tally.dwSince) / 60000U);
+		tally = TPlayerBotSidekickMetinTally();
+		TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_METINS, text);
 	}
 
 	const char* GetPlayerBotSidekickStanceName(BYTE stance)
@@ -2120,7 +2301,7 @@ namespace
 			own->Join(owner->GetPlayerID());
 			own->Link(owner);
 			// MT2009_PLUS_SIDEKICK_WHISPER_V1: in its whisper, as the rest of its words.
-			SayPlayerBotSidekick(owner, "[Grupa] Zapraszam cie do mojej grupy - jestem jej liderem.");
+			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_PARTY, "[Grupa] Zapraszam cie do mojej grupy - jestem jej liderem.");
 			sys_log(0, "PLAYERBOT_SIDEKICK: leads its owner's party pid=%u name=%s owner=%u leadership=%d",
 					ch->GetPlayerID(), ch->GetName(), owner->GetPlayerID(), ch->GetLeadershipSkillLevel());
 			return;
@@ -2490,7 +2671,7 @@ namespace
 			KeepPlayerBotSidekickInParty(ch, owner, dwNow);
 			char text[128];
 			snprintf(text, sizeof(text), "%s jest przy tobie.", ch->GetName());
-			SayPlayerBotSidekick(owner, text);
+			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_ARRIVED, text);
 		}
 		sys_log(0, "PLAYERBOT_SIDEKICK: entered pid=%u name=%s owner=%u mode=%u level=%d gifts=%u",
 				ch->GetPlayerID(), ch->GetName(), rec->dwOwnerPID, (unsigned int)rec->bMode, ch->GetLevel(),
@@ -3327,7 +3508,7 @@ namespace
 					}
 					sys_log(0, "PLAYERBOT_SIDEKICK: logging out to come back under its name pid=%u name=%s owner=%u",
 							rec.dwSidekickPID, sk ? sk->GetName() : "?", rec.dwOwnerPID);
-					SayPlayerBotSidekick(owner, "Gra pamieta mnie jeszcze pod starym nickiem - wyloguje sie i za okolo "
+					TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_RELOG, "Gra pamieta mnie jeszcze pod starym nickiem - wyloguje sie i za okolo "
 							"dziesiec minut wroce juz pod wlasciwym.");
 					CPlayerBotManager::instance().Despawn(rec.dwSidekickPID, playerbot_session_rules::OUT_SIDEKICK);
 					s_mapPlayerBotSidekickRuntime.erase(rec.dwSidekickPID);
@@ -3346,7 +3527,7 @@ namespace
 						sys_log(0, "PLAYERBOT_SIDEKICK: owner changed kingdom, logging out to follow pid=%u owner=%u empire=%u->%u",
 								rec.dwSidekickPID, rec.dwOwnerPID, (unsigned int)sk->GetEmpire(),
 								(unsigned int)owner->GetEmpire());
-						SayPlayerBotSidekick(owner, "Zmieniles krolestwo - ide za toba, zaraz bede.");
+						TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_KINGDOM, "Zmieniles krolestwo - ide za toba, zaraz bede.");
 						CPlayerBotManager::instance().Despawn(rec.dwSidekickPID, playerbot_session_rules::OUT_SIDEKICK); // MT2009_PLUS_BOT_SESSIONS_V1
 						s_mapPlayerBotSidekickRuntime.erase(rec.dwSidekickPID);
 						rec.dwNextSpawnTry = dwNow + PLAYERBOT_SIDEKICK_SPAWN_RETRY_MS;
@@ -3800,7 +3981,7 @@ namespace
 		char text[200];
 		snprintf(text, sizeof(text), "Wymienilem kupony SM na %lld Smoczych Monet - mam ich teraz %d. "
 				"Kupie za nie, czego potrzebuje.", coins, balance);
-		SayPlayerBotSidekick(GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID), text);
+		TellPlayerBotSidekick(GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID), PLAYERBOT_SIDEKICK_NOTICE_ITEMSHOP, text);
 	}
 
 	void NotePlayerBotSidekickItemShopBuy(LPCHARACTER sk, DWORD vnum, DWORD count, DWORD price, bool marks,
@@ -3814,7 +3995,7 @@ namespace
 		snprintf(text, sizeof(text), "Kupilem w Item Shopie: %s x%u za %u %s, %s (zostalo %d).",
 				proto ? proto->szLocaleName : "przedmiot", (unsigned int)count, (unsigned int)price,
 				marks ? "Smoczych Znakow" : "Smoczych Monet", GetPlayerBotSidekickWishWords(reason), left);
-		SayPlayerBotSidekick(GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID), text);
+		TellPlayerBotSidekick(GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID), PLAYERBOT_SIDEKICK_NOTICE_ITEMSHOP, text);
 		sys_log(0, "PLAYERBOT_SIDEKICK: itemshop bought pid=%u name=%s owner=%u vnum=%u x%u price=%u %s reason=%s left=%d",
 				sk->GetPlayerID(), sk->GetName(), rec->dwOwnerPID, vnum, (unsigned int)count, (unsigned int)price,
 				marks ? "marks" : "coins", reason ? reason : "-", left);
@@ -4111,7 +4292,7 @@ namespace
 		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
 		if (owner)
 		{
-			SayPlayerBotSidekick(owner, "Karta Wedkarska sie skonczyla - wracam do ciebie.");
+			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_FISHING, "Karta Wedkarska sie skonczyla - wracam do ciebie.");
 			SummonPlayerBotSidekick(owner, rec, dwNow);
 			return true;
 		}
@@ -4413,9 +4594,9 @@ namespace
 		// rank title on its name in the window, as the player's own shows his.
 		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" after the
 		// coins' balance, and MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1's "Pelne
-		// EQ" after it.
+		// EQ" after it, and MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1's "Szepty" last.
 		SendPlayerBotSidekickCommand(owner,
-				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d %d %d",
+				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d %d %d %u",
 				PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL,
 				inWorld ? (int)sk->GetRaceNum() : -1, inWorld ? (int)sk->GetSkillGroup() : 0,
 				inWorld ? sk->GetLevel() : 0, expPercent,
@@ -4429,7 +4610,8 @@ namespace
 				inWorld ? sk->GetAlignment() / 10 : 0,
 				IsPlayerBotSidekickCoinsOn(rec.dwSidekickPID) ? 1 : 0, coinBalance,
 				IsPlayerBotSidekickEquipLocked(rec.dwSidekickPID) ? 1 : 0,
-				IsPlayerBotSidekickKeepingLoot(rec.dwSidekickPID) ? 1 : 0);
+				IsPlayerBotSidekickKeepingLoot(rec.dwSidekickPID) ? 1 : 0,
+				(unsigned int)GetPlayerBotSidekickNotify(rec.dwOwnerPID));	// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1
 		char doing[96] = "";
 		char place[64] = "";
 		if (inWorld)
@@ -6574,6 +6756,14 @@ namespace
 				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz przechowuj 1 (zbieram twoj drop, gdy masz pelny ekwipunek) "
 						"albo /towarzysz przechowuj 0");
 		}
+		// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1: "Szepty".
+		else if (!strcmp(sub, "powiadomienia"))
+		{
+			if (!strcmp(a1, "0") || !strcmp(a1, "1") || !strcmp(a1, "2"))
+				SayPlayerBotSidekick(ch, SetPlayerBotSidekickNotify(rec->second, (BYTE)(a1[0] - '0')));
+			else
+				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz powiadomienia 2 (wszystkie), 1 (tylko wazne) albo 0 (zadne)");
+		}
 		else if (!strcmp(sub, "grupa"))
 		{
 			if (!strcmp(a1, "0") || !strcmp(a1, "1"))
@@ -7347,7 +7537,7 @@ namespace
 			char text[192];
 			snprintf(text, sizeof(text), "Masz pelny ekwipunek - %s trzymam dla ciebie w swoim plecaku "
 					"(okno Towarzysza, prawy klik oddaje).", item->GetName());
-			SayPlayerBotSidekick(owner, text);
+			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_HELD, text);
 		}
 		return true;
 	}
@@ -8161,7 +8351,7 @@ namespace
 			told.dwSkill = v.dwSkill;
 			told.dwToldAt = dwNow;
 			const std::string text = DescribePlayerBotSidekickGrandMasterView(v);
-			SayPlayerBotSidekick(owner, text.c_str());
+			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_SKILLS, text.c_str());
 			sys_log(0, "PLAYERBOT_SIDEKICK: grand master waits pid=%u name=%s owner=%u skill=%u level=%d "
 					"status=%u rank=%d need=%d stones=%d ready_in=%d",
 					ch->GetPlayerID(), ch->GetName(), rec->dwOwnerPID, v.dwSkill, v.iLevel,
@@ -8207,7 +8397,7 @@ namespace
 			snprintf(text, sizeof(text), "Kamien Duchowy uzyty: %s - nie udalo sie, zostaje %s (ranga -%d). "
 					"Kamieni zostalo: %d, nastepna proba: %s.", GetPlayerBotSkillName(v.dwSkill),
 					GetPlayerBotSidekickGradeName(levelNow).c_str(), paid, v.iStones - 1, waitWords.c_str());
-		SayPlayerBotSidekick(owner, text);
+		TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_SKILLS, text);
 	}
 
 	// A skill at seventeen that did not turn Master, and the Forgetting Book
@@ -8262,7 +8452,7 @@ namespace
 							skill ? GetPlayerBotSkillName(skill) : "(zadnej)",
 							mine ? "a ta nie stoi na 17" : "ktorej nie mam",
 							mine ? " Zeruj w oknie umiejetnosci ja zuzyje." : "");
-					SayPlayerBotSidekick(owner, text);
+					TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_SKILLS, text);
 				}
 				continue;
 			}
@@ -8297,7 +8487,7 @@ namespace
 				snprintf(text, sizeof(text), "Ksiega Zapomnienia przeczytana: %s znow na %d, bez mistrza. "
 						"Kolejna ksiega to kolejna proba (szansa %d%%).", GetPlayerBotSkillName(skill), rolled,
 						GetPlayerBotSidekickMasterChance(ch));
-			SayPlayerBotSidekick(owner, text);
+			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_SKILLS, text);
 			rt.mapForgetAskedAt[skill] = dwNow;
 			return;
 		}
@@ -8343,7 +8533,7 @@ namespace
 			else
 				snprintf(text, sizeof(text), "Zwoj Powrotu Umiejetnosci uzyty: %s na %d. Mistrz przy 17.",
 						GetPlayerBotSkillName(skill), (int)ch->GetSkillLevel(skill));
-			SayPlayerBotSidekick(owner, text);
+			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_SKILLS, text);
 			rt.mapForgetAskedAt[skill] = dwNow;
 			return;
 		}
@@ -8371,7 +8561,7 @@ namespace
 #endif
 				" - uzyje jej i sprobuje mistrza (szansa %d%%).", names.c_str(),
 				GetPlayerBotSidekickMasterChance(ch));
-		SayPlayerBotSidekick(owner, text);
+		TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_SKILLS, text);
 	}
 
 	// A fight where it stands - at its owner's side, or at the spot it keeps -
@@ -9060,7 +9250,7 @@ namespace
 			else
 				snprintf(text, sizeof(text), "Od %u minut nie moge dojsc %s - na razie odpuszczam i expie tutaj.",
 						waited / 60000U, GetPlayerBotMapDestinationPl(want));
-			SayPlayerBotSidekick(owner, text);
+			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_TRIP, text);
 		}
 	}
 
@@ -9217,7 +9407,7 @@ namespace
 			if (tooHigh && !poly.bToldTooHigh)
 			{
 				poly.bToldTooHigh = true;
-				SayPlayerBotSidekick(owner, "Mam marmur polimorfii, ale w tego potwora nie moge sie jeszcze "
+				TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_POLYMORPH, "Mam marmur polimorfii, ale w tego potwora nie moge sie jeszcze "
 						"zmienic - mam za niski poziom.");
 			}
 			return;
@@ -9331,7 +9521,7 @@ namespace
 		char text[400];
 		snprintf(text, sizeof(text), "Mam w plecaku twoje cenne rzeczy: %s. Nie sprzedam ich ani nie odloze do "
 				"magazynu - wez je ode mnie (okno Towarzysza, prawy klik oddaje).", names.c_str());
-		SayPlayerBotSidekick(owner, text);
+		TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_VALUABLES, text);
 		rt.setValuablesTold.insert(present.begin(), present.end());
 		sys_log(0, "PLAYERBOT_SIDEKICK: valuables told pid=%u owner=%u new=%u all=%u", ch->GetPlayerID(),
 				rec.dwOwnerPID, (unsigned int)fresh.size(), (unsigned int)present.size());
@@ -9526,7 +9716,7 @@ namespace
 		{
 			rt.dwBagFullToldAt = dwNow;
 			// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: only the scrap goes.
-			SayPlayerBotSidekick(owner, "Mam prawie pelny plecak. Stan przy handlarzu albo szepnij \"zakupy\" - "
+			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_BAG_FULL, "Mam prawie pelny plecak. Stan przy handlarzu albo szepnij \"zakupy\" - "
 					"sprzedam tylko zlom, cenne rzeczy trzymam dla ciebie. Wez je z mojego plecaka (okno Towarzysza).");
 			sys_log(0, "PLAYERBOT_SIDEKICK: bag near full, owner told pid=%u name=%s free=%d", ch->GetPlayerID(),
 					ch->GetName(), CountPlayerBotFreeInventoryCells(ch));

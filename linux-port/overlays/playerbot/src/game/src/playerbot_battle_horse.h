@@ -182,6 +182,7 @@ namespace
 	// The Biologist's share of a kill (playerbot_missions.h, later in the
 	// include order).
 	void NotePlayerBotBiologistCarrierKill(LPCHARACTER ch, LPCHARACTER target);
+	void NotePlayerBotSidekickMetinKill(LPCHARACTER ch, LPCHARACTER target);	// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1
 
 	// Called wherever a bot has just swung at something. The engine has no hook
 	// that says "you killed this", so the kill is read off the target the tick
@@ -200,6 +201,9 @@ namespace
 		NotePlayerBotBiologistCarrierKill(ch, target);
 		// And a Dragon Stone Shard for the Alchemist's daily Cors (playerbot_alchemy.h).
 		NotePlayerBotDragonShardKill(ch, target);
+		// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1: a companion's metins, counted for
+		// its owner's one line every ten minutes.
+		NotePlayerBotSidekickMetinKill(ch, target);
 
 		// The military trial is credited from the same place and under the same
 		// VID guard. A second hook of its own would have had to share

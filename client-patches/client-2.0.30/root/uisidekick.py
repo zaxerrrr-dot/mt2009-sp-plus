@@ -81,7 +81,10 @@
 # hand in the bag window still moves anything (order: blokada N). keep_loot
 # (MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1, "Pelne EQ", on by default): 1 with
 # the owner's bag too full for a drop of the owner's, the companion picks it up
-# into its own bag and holds it for the owner (order: przechowuj N). An older
+# into its own bag and holds it for the owner (order: przechowuj N). notify
+# (MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1, "Szepty"): which of the companion's
+# own whispers reach the owner - 0 none, 1 important only, 2 all (order:
+# powiadomienia N); its answers to orders always do. An older
 # server sends no such word, and the window shows no row for it.
 #
 # The status and skill pages read the answer to "/towarzysz umiejetnosci"
@@ -236,14 +239,25 @@ SWITCHES = (
 	# "Skrzynki" (SHARED_ROWS).
 	('keep_loot', 'przechowuj', 1, 'Pe\xb3ne EQ',
 		'Przy twoim pe\xb3nym EQ zbiera tw\xf3j drop i trzyma go dla ciebie.'),
+	# MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1: "Szepty" - which of its own whispers
+	# reach you: 0 none, 1 the important ones (default), 2 all. Shares the row
+	# of "Lurowanie" (SHARED_ROWS); the button steps 2 -> 1 -> 0 -> 2.
+	('notify', 'powiadomienia', 1, 'Szepty',
+		'\xafadne: wy\xb3\xb9cza wiadomo\x9cci od Towarzysza. Wa\xbfne: pe\xb3ne EQ, plecak, cenne rzeczy.'),
 )
 # What a switch's button says where "tak" and "nie" would not do, off and on,
 # and the button it needs for that: "nie wydaje" is wider than a small one.
 SWITCH_STATES = {
 	'coins': ('nie wydaje', 'wydaje'),
+	'notify': ('\xbfadne', 'wa\xbfne', 'wszystkie'),
 }
 SWITCH_BUTTONS = {
 	'coins': 'middle',
+	'notify': 'middle',
+}
+# A switch of more than two states: its button steps through them.
+SWITCH_STEPS = {
+	'notify': (2, 1, 0),
 }
 # The coins' row names what the companion's account holds beside its name.
 TEXT_SWITCH_AMOUNT = '%s: %s'
@@ -267,7 +281,7 @@ SHARED_SWITCHES = 2
 # MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ" shares the row of
 # "Skrzynki" the same way, half of it each, so the page keeps its height:
 # a switch named here goes to the right half of the row of the one it names.
-SHARED_ROWS = {'keep_loot': 'chests'}
+SHARED_ROWS = {'keep_loot': 'chests', 'notify': 'lure'}
 ROW_HEIGHT = 21
 
 TEXT_WAITING = 'Czekam na odpowied\x9f serwera...'
@@ -525,6 +539,9 @@ def ParseInfo(args):
 	# MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: "Pelne EQ" after it.
 	if len(values) >= len(names) + 13:
 		info['keep_loot'] = ParseInt(values[len(names) + 12])
+	# MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1: "Szepty" last (0 none, 1 important, 2 all).
+	if len(values) >= len(names) + 14:
+		info['notify'] = ParseInt(values[len(names) + 13], 1)
 	return info
 
 
@@ -1115,7 +1132,7 @@ class SidekickWindow(ui.ScriptWindow):
 				row[0].SetPosition(x, y)
 				row[0].SetSize(half - (1 if side == 0 else 0), ROW_HEIGHT - 1)
 				row[1].SetPosition(x + LINE_X - SECTION_X + 2, y + 3)
-				row[2].SetPosition(x + half - BUTTON_WIDTHS['small'] - 2, y - 1)
+				row[2].SetPosition(x + half - BUTTON_WIDTHS[SWITCH_BUTTONS.get(key, 'small')] - 2, y - 1)
 			self.switchRows[key] = row
 		# "Lider grupy": the switch and, beside it, the bonus its Leadership
 		# gives the owner.
@@ -1407,7 +1424,10 @@ class SidekickWindow(ui.ScriptWindow):
 					widget.Hide()
 			value = info.get(key, default)
 			states = SWITCH_STATES.get(key)
-			button.SetText(states[1 if value else 0] if states else YesNo(value))
+			if states and len(states) > 2:
+				button.SetText(states[value if 0 <= value < len(states) else default])
+			else:
+				button.SetText(states[1 if value else 0] if states else YesNo(value))
 			# MT2009_PLUS_SIDEKICK_COINS_V1: what its account holds beside the
 			# name, where it fits before the button (the report says it too).
 			if key == 'coins':
@@ -1626,7 +1646,12 @@ class SidekickWindow(ui.ScriptWindow):
 		for name, order, default, text, hint in SWITCHES:
 			if name == key:
 				value = self.info.get(key, default) if self.info else default
-				self.SendCommand('%s %d' % (order, 0 if value else 1))
+				steps = SWITCH_STEPS.get(key)
+				if steps:
+					nextValue = steps[(steps.index(value) + 1) % len(steps)] if value in steps else default
+					self.SendCommand('%s %d' % (order, nextValue))
+				else:
+					self.SendCommand('%s %d' % (order, 0 if value else 1))
 				self.nextPoll = 0.0
 				return
 
