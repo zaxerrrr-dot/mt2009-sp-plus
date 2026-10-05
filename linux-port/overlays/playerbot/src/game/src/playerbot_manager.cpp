@@ -8494,6 +8494,8 @@ void CPlayerBotManager::OnPeerWhisper(const char* szFrom, LPCHARACTER bot, const
 	if (bot && szFrom && *szFrom)
 	{
 		const CCI* peer = P2P_MANAGER::instance().Find(szFrom);
+		if (peer && !IsRegisteredBotPID(peer->dwPID))
+			NotePlayerWhisperedBot(peer->dwPID, bot);	// MT2009_PLUS_BOT_WHISPER_BLOCK_V1
 		if (peer && !IsRegisteredBotPID(peer->dwPID) &&
 				HandlePlayerBotDungeonLfgWhisper(peer->dwPID, peer->szName, bot, szText))
 			return;

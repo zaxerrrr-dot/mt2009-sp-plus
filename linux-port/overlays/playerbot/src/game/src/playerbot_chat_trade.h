@@ -234,12 +234,55 @@ namespace
 	// rather than the person's own: that core hands the packet to its client
 	// (CInputP2P::Relay), as it does a player's whisper to somebody the
 	// sender's core does not hold.
+	// MT2009_PLUS_BOT_WHISPER_BLOCK_V1 (the owner, 5 October: "nie dziala blokada
+	// pw - dalem w ustawieniach zablokuj, a boty dalej do mnie spamuja"): a person
+	// with the game option "block whispers" on gets no whisper from a bot,
+	// unless the person whispered that bot in the last minutes (an answer to
+	// the person's own talk). The engine checks the option only for a player's
+	// whisper (CInputMain::Whisper) and for a relayed one (CInputP2P::Relay);
+	// a bot's whisper to a person of this core went straight to the client.
+	const DWORD PLAYERBOT_WHISPER_ANSWER_WINDOW_MS = 10 * 60 * 1000;
+	std::map<std::pair<DWORD, DWORD>, DWORD> s_mapPlayerBotWhisperedBy;	// (person pid, bot pid) -> when
+
+	void NotePlayerWhisperedBot(DWORD personPID, LPCHARACTER bot)
+	{
+		if (!personPID || !bot)
+			return;
+		const DWORD now = get_dword_time();
+		s_mapPlayerBotWhisperedBy[std::make_pair(personPID, bot->GetPlayerID())] = now;
+		if (s_mapPlayerBotWhisperedBy.size() > 4096)
+			for (std::map<std::pair<DWORD, DWORD>, DWORD>::iterator it = s_mapPlayerBotWhisperedBy.begin();
+					it != s_mapPlayerBotWhisperedBy.end(); )
+			{
+				if (now - it->second > PLAYERBOT_WHISPER_ANSWER_WINDOW_MS)
+					s_mapPlayerBotWhisperedBy.erase(it++);
+				else
+					++it;
+			}
+	}
+
+	bool IsPlayerBotWhisperBlocked(LPCHARACTER bot, LPCHARACTER person)
+	{
+		if (!bot || !person || !person->IsBlockMode(BLOCK_WHISPER))
+			return false;
+		std::map<std::pair<DWORD, DWORD>, DWORD>::const_iterator it =
+				s_mapPlayerBotWhisperedBy.find(std::make_pair(person->GetPlayerID(), bot->GetPlayerID()));
+		return it == s_mapPlayerBotWhisperedBy.end() || get_dword_time() - it->second > PLAYERBOT_WHISPER_ANSWER_WINDOW_MS;
+	}
+
 	void SendPlayerBotWhisperPacket(LPCHARACTER bot, LPDESC desc, const char* relayTo, const char* text)
 	{
 		// MT2009_PLUS_SHOUTERS_V1: a shouter of the first villages whispers to
 		// nobody (playerbot_shouters.h).
 		if (!bot || IsPlayerBotShouterPID(bot->GetPlayerID()))
 			return;
+		// MT2009_PLUS_BOT_WHISPER_BLOCK_V1: a person of this core who blocks whispers.
+		if (!relayTo && desc && IsPlayerBotWhisperBlocked(bot, desc->GetCharacter()))
+		{
+			sys_log(0, "PLAYERBOT_TRADE: whisper blocked pid=%u name=%s to=%s (block_whisper)",
+					bot->GetPlayerID(), bot->GetName(), desc->GetCharacter()->GetName());
+			return;
+		}
 		const size_t len = std::min<size_t>(strlen(text), CHAT_MAX_LEN);
 		TPacketGCWhisper pack;
 		pack.bHeader = HEADER_GC_WHISPER;
@@ -1641,6 +1684,7 @@ namespace
 
 	void HandlePlayerWhisperToBot(LPCHARACTER player, LPCHARACTER bot, const char* text)
 	{
+		NotePlayerWhisperedBot(player ? player->GetPlayerID() : 0, bot);	// MT2009_PLUS_BOT_WHISPER_BLOCK_V1
 		// Before everything else: an invitation is not a trade or a talk, and
 		// a request to join is read before an invitation. A person of this
 		// core only: the guild's own calls need the character here.
