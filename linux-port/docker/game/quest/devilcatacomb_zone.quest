@@ -52,6 +52,16 @@ quest devilcatacomb_zone begin
 		return pc.is_playerbot() and get_global_time() - pc.getf("devilcatacomb_zone", "last_exit_time") < 1800
 	end
 
+	-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: the countdown after Azrael.
+	function end_text(n)
+		if n == 1 then
+			return "Katakumby Diab³a: Wyjdziesz z lochu za 1 sekundê."
+		elseif n >= 2 and n <= 4 then
+			return "Katakumby Diab³a: Wyjdziesz z lochu za "..n.." sekundy."
+		end
+		return "Katakumby Diab³a: Wyjdziesz z lochu za "..n.." sekund."
+	end
+
 	function is_closed()
 		return (game.get_event_flag("dc_closed") > 0)    --close dialog
 	end
@@ -620,9 +630,45 @@ quest devilcatacomb_zone begin
 
 		-- As on floor 6, when Azrael (2598) dies
 		-- floor 7's timer starts.
+		-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: Azrael's fall is the end - a countdown of 10 seconds (a notice at 10 and at
+		-- 5, 4, 3, 2, 1), then everybody out to Hwang Temple (the owner, 5 October: "Po zabiciu bossa
+		-- dunga daj jednak 10 s odliczania i wylogowanie z dunga"). Before, floor 7 waited for every
+		-- monster of it to die (the checks below, every 5 seconds) and then another 60 seconds. The
+		-- checks stay for nothing to start them; Azrael's casket lies on the floor for these 10 seconds.
 		when devilcatacomb_devil_emperor.kill begin
 			d.update_ranking("katakumby") -- MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's results (Azrael)
-			server_timer ("floor7_eli_check_timer_1", 5, d.get_map_index())
+			if d.getf("end_in") == 0 then
+				d.set_warp_location (65, 5914, 992)
+				d.setqf2("devilcatacomb_zone","done", 1)
+				d.clear_regen()
+				clear_server_timer ("devilcatacomb_0m_left_timer", d.get_map_index())
+				clear_server_timer ("devilcatacomb_1m_left_timer", d.get_map_index())
+				clear_server_timer ("devilcatacomb_5m_left_timer", d.get_map_index())
+				clear_server_timer ("devilcatacomb_15m_left_timer", d.get_map_index())
+				clear_server_timer ("devilcatacomb_30m_left_timer", d.get_map_index())
+				clear_server_timer ("devilcatacomb_45m_left_timer", d.get_map_index())
+				say_in_map (d.get_map_index(), gameforge.devilcatacomb_zone._340_say)
+				d.setf("end_in", 10)
+				d.notice(devilcatacomb_zone.end_text(10))
+				server_timer ("devilcatacomb_end_count", 1, d.get_map_index())
+			end
+		end
+
+		when devilcatacomb_end_count.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				local n = d.getf("end_in") - 1
+				if n > 0 then
+					d.setf("end_in", n)
+					if n <= 5 then
+						d.notice(devilcatacomb_zone.end_text(n))
+					end
+				end
+				if n > 1 then
+					server_timer ("devilcatacomb_end_count", 1, get_server_timer_arg())
+				else
+					server_timer ("devilcatacomb_exit_timer", 1, get_server_timer_arg())
+				end
+			end
 		end
 		
 		-- Floor 7's timer is like floor 6's:

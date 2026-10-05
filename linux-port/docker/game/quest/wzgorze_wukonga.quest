@@ -187,12 +187,16 @@ quest wzgorze_wukonga begin
 			return "Za "..n.." sekund zostaniesz teleportowany do Œwi¹tyni Hwang."
 		end
 
-		-- After the last boss: one notice a second, 5 to 0, then everyone out (finish).
+		-- After the last boss: a second at a time, 10 to 0, then everyone out (finish). MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1:
+		-- ten seconds, not five (the owner, 5 October: "Po zabiciu bossa dunga daj jednak 10 s odliczania"),
+		-- told at 10 and at 5, 4, 3, 2, 1; the chests are in the bag already, the boss's drop is on the floor.
 		function end_count(n)
-			d.notice("Wzgórze Wukonga: "..wzgorze_wukonga.end_text(n))
 			if n <= 0 then
 				wzgorze_wukonga.finish()
 				return
+			end
+			if n <= 5 or math.mod(n, 10) == 0 then
+				d.notice("Wzgórze Wukonga: "..wzgorze_wukonga.end_text(n))
 			end
 			d.setf("end_in", n - 1)
 			server_timer("wukong_end", 1, d.get_map_index())
@@ -888,10 +892,10 @@ quest wzgorze_wukonga begin
 				local took = wzgorze_wukonga.reward()
 				d.update_ranking("wukong", took) -- MT2009_PLUS_DUNGEON_PANEL_V1
 				-- MT2009_PLUS_DUNGEON_END_V1: the run is over for everyone in it (no "Wróæ do lochu" any more),
-				-- and five seconds later everyone is out (was a minute).
+				-- and ten seconds later everyone is out (was a minute, then five seconds).
 				wzgorze_wukonga.mark_ended()
 				d.notice(string.format("WuKong pokonany! Czas: %d:%02d. Loch zosta³ ukoñczony.", math.floor(took / 60), math.mod(took, 60)))
-				wzgorze_wukonga.end_count(5)
+				wzgorze_wukonga.end_count(10) -- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1
 				return
 			end
 		end

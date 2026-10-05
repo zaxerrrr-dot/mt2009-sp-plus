@@ -17,6 +17,18 @@ quest deviltower_zone begin
             }
         end
 
+        -- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: after the Reaper (1093) everyone leaves in 10 seconds, not 60 (the owner,
+        -- 5 October: "Po zabiciu bossa dunga daj jednak 10 s odliczania i wylogowanie z dunga"),
+        -- told at 10 and at 5, 4, 3, 2, 1. His drop lies on the floor for these 10 seconds.
+        function end_text(n)
+            if n == 1 then
+                return "Wie¿a Demonów: Wyjdziesz z lochu za 1 sekundê."
+            elseif n >= 2 and n <= 4 then
+                return "Wie¿a Demonów: Wyjdziesz z lochu za "..n.." sekundy."
+            end
+            return "Wie¿a Demonów: Wyjdziesz z lochu za "..n.." sekund."
+        end
+
         function get_level_location(level)
             local data = deviltower_zone.get_data()
             local level_data = data.level_coords[level]
@@ -680,11 +692,25 @@ quest deviltower_zone begin
             d.add_player_stat(PLAYER_STATS_DUNGEON_FLAG)
             notice_multiline(gameforge.deviltower_zone._280_dNotice,d.notice)
             notice_multiline(gameforge.deviltower_zone._290_dNotice,d.notice)
-            server_timer("devil_end_jump", 60, d.get_map_index())
+            -- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: 10 seconds, a notice at 10 and at 5-1 (was 60 seconds in silence).
+            if d.getf("end_in") == 0 then
+                d.setf("end_in", 10)
+                d.notice(deviltower_zone.end_text(10))
+                server_timer("devil_end_jump", 1, d.get_map_index())
+            end
         end
 
         when devil_end_jump.server_timer begin
             if d.select (get_server_timer_arg()) then
+                local n = d.getf("end_in") - 1
+                if n > 0 then
+                    d.setf("end_in", n)
+                    if n <= 5 then
+                        d.notice(deviltower_zone.end_text(n))
+                    end
+                    server_timer("devil_end_jump", 1, get_server_timer_arg())
+                    return
+                end
                 d.clear_regen()
                 d.exit_all()
                 d.mark_destroyed()

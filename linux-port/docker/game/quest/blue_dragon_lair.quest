@@ -60,7 +60,7 @@ quest blue_dragon_lair begin
 				daily = 5,
 				path = "data/dungeon/bluedragon_mt/",
 				stone_back = 0, -- a stone returns this many seconds after the last one fell (0 = never)
-				end_sec = 180,
+				end_sec = 10, -- the countdown after the dragon (MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1; was 180)
 				rewards = {{71123, 1}, {71129, 1}},
 			}
 		end
@@ -190,6 +190,31 @@ quest blue_dragon_lair begin
 			d.setf("mt2009_keep_until", 0)
 			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
 			d.exit_all()
+		end
+
+		-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: after the last boss a countdown, a second at a time, then everyone out
+		-- (finish) - the owner, 5 October: "Po zabiciu bossa dunga daj jednak 10 s odliczania i wylogowanie
+		-- z dunga". Told at 10 and at 5, 4, 3, 2, 1. The chests are given into the bag at the kill (a full
+		-- bag drops them at the player's feet); the boss's own drop lies on the floor for these 10 seconds.
+		function end_text(n)
+			if n == 1 then
+				return "Za 1 sekundê zostaniesz teleportowany do Groty Wygnañców."
+			elseif n >= 2 and n <= 4 then
+				return "Za "..n.." sekundy zostaniesz teleportowany do Groty Wygnañców."
+			end
+			return "Za "..n.." sekund zostaniesz teleportowany do Groty Wygnañców."
+		end
+
+		function end_count(n)
+			if n <= 0 then
+				blue_dragon_lair.finish()
+				return
+			end
+			if n <= 5 or math.mod(n, 10) == 0 then
+				d.notice("Le¿e Smoka: "..blue_dragon_lair.end_text(n))
+			end
+			d.setf("end_in", n - 1)
+			server_timer("blue_dragon_end", 1, d.get_map_index())
 		end
 
 		-- MT2009_PLUS_DUNGEON_ONE_WARP_V1: the instance is set up by the first player to log in
@@ -638,9 +663,13 @@ quest blue_dragon_lair begin
 			end
 		end
 
+		-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: the countdown after the last boss (end_count), a second at a time.
 		when blue_dragon_end.server_timer begin
 			if d.select(get_server_timer_arg()) then
-				blue_dragon_lair.finish()
+				if d.getf("closed") == 1 then
+					return
+				end
+				blue_dragon_lair.end_count(d.getf("end_in"))
 			end
 		end
 
@@ -673,8 +702,8 @@ quest blue_dragon_lair begin
 			d.update_ranking("smok") -- MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's results
 			d.clear_regen()
 			blue_dragon_lair.purge_mobs()
-			d.notice("Beran-Setaou zosta³ pokonany! Za "..math.floor(c.end_sec / 60).." minuty wszyscy wróc¹ do Groty Wygnañców.")
-			server_timer("blue_dragon_end", c.end_sec, d.get_map_index())
+			d.notice("Beran-Setaou zosta³ pokonany!")
+			blue_dragon_lair.end_count(c.end_sec) -- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1 (was 3 minutes)
 		end
 	end
 end

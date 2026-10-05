@@ -262,6 +262,31 @@ quest nemere_dungeon begin
 			d.exit_all()
 		end
 
+		-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: after the last boss a countdown, a second at a time, then everyone out
+		-- (finish) - the owner, 5 October: "Po zabiciu bossa dunga daj jednak 10 s odliczania i wylogowanie
+		-- z dunga". Told at 10 and at 5, 4, 3, 2, 1. The chests are given into the bag at the kill (a full
+		-- bag drops them at the player's feet); the boss's own drop lies on the floor for these 10 seconds.
+		function end_text(n)
+			if n == 1 then
+				return "Za 1 sekundê zostaniesz teleportowany na Górê Sohan."
+			elseif n >= 2 and n <= 4 then
+				return "Za "..n.." sekundy zostaniesz teleportowany na Górê Sohan."
+			end
+			return "Za "..n.." sekund zostaniesz teleportowany na Górê Sohan."
+		end
+
+		function end_count(n)
+			if n <= 0 then
+				nemere_dungeon.finish()
+				return
+			end
+			if n <= 5 or math.mod(n, 10) == 0 then
+				d.notice("Nemere: "..nemere_dungeon.end_text(n))
+			end
+			d.setf("end_in", n - 1)
+			server_timer("nemere_end", 1, d.get_map_index())
+		end
+
 		-- MT2009_PLUS_DUNGEON_ONE_WARP_V1: one loading screen (the owner, 29 September: the guard's
 		-- warp to the lobby and then the lobby's warp into the instance were two). The guard
 		-- (map 61, game1) asks for a new instance of 352 with d.new_jump_pids: game2, which
@@ -739,9 +764,13 @@ quest nemere_dungeon begin
 			end
 		end
 
+		-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: the countdown after the last boss (end_count), a second at a time.
 		when nemere_end.server_timer begin
 			if d.select(get_server_timer_arg()) then
-				nemere_dungeon.finish()
+				if d.getf("closed") == 1 then
+					return
+				end
+				nemere_dungeon.end_count(d.getf("end_in"))
 			end
 		end
 
@@ -831,8 +860,8 @@ quest nemere_dungeon begin
 			d.update_ranking("nemere") -- MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's results
 			d.clear_regen()
 			nemere_dungeon.purge_mobs()
-			d.notice("Nemere zosta³ pokonany! Za 60 sekund wszyscy wróc¹ na Górê Sohan.")
-			server_timer("nemere_end", 60, d.get_map_index())
+			d.notice("Nemere zosta³ pokonany!")
+			nemere_dungeon.end_count(10) -- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1 (was 60 seconds)
 		end
 	end
 end

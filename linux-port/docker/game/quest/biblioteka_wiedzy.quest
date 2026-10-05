@@ -11,7 +11,7 @@
 --   3: pokonaj 3 Królowe Paj¹ków (9705),
 --   4: zniszcz 4 Metiny,
 --   5: Baronówna Paj¹ków (9706); po jej œmierci ka¿dy gracz w lochu dostaje 1-3
---      Skrzynie Biblioteki (30773), a wszyscy wychodz¹ po 5 sekundach (MT2009_PLUS_DUNGEON_END_V1).
+--      Skrzynie Biblioteki (30773), a wszyscy wychodz¹ po 10 sekundach (MT2009_PLUS_DUNGEON_END_V1, MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1).
 -- Limit 30 minut, ponowne wejœcie po 30 minutach od wejœcia. B³êdy questa Arezzo nie s¹
 -- przeniesione (warunki "or"/"and" bez nawiasów, brak return po pc.can_warp, przepustki
 -- zabierane czêœci dru¿yny). Dla panelu lochów (faza 4) ka¿dy gracz ma flagi
@@ -202,12 +202,16 @@ quest biblioteka_wiedzy begin
 			return "Za "..n.." sekund zostaniesz teleportowany do miasta."
 		end
 
-		-- After the last boss: one notice a second, 5 to 0, then everyone out (finish).
+		-- After the last boss: a second at a time, 10 to 0, then everyone out (finish). MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1:
+		-- ten seconds, not five (the owner, 5 October: "Po zabiciu bossa dunga daj jednak 10 s odliczania"),
+		-- told at 10 and at 5, 4, 3, 2, 1; the chests are in the bag already, the boss's drop is on the floor.
 		function end_count(n)
-			d.notice("Biblioteka Wiedzy: "..biblioteka_wiedzy.end_text(n))
 			if n <= 0 then
 				biblioteka_wiedzy.finish()
 				return
+			end
+			if n <= 5 or math.mod(n, 10) == 0 then
+				d.notice("Biblioteka Wiedzy: "..biblioteka_wiedzy.end_text(n))
 			end
 			d.setf("end_in", n - 1)
 			server_timer("biblioteka_end", 1, d.get_map_index())
@@ -876,10 +880,10 @@ quest biblioteka_wiedzy begin
 			local took = biblioteka_wiedzy.reward()
 			d.update_ranking("biblioteka", took) -- MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's results
 			-- MT2009_PLUS_DUNGEON_END_V1: the run is over for everyone in it (no "Wróæ do lochu" any more),
-			-- and five seconds later everyone is out (was a minute).
+			-- and ten seconds later everyone is out (was a minute, then five seconds).
 			biblioteka_wiedzy.mark_ended()
 			d.notice(string.format("Baronówna Paj¹ków pokonana w %d:%02d! Loch zosta³ ukoñczony.", math.floor(took / 60), math.mod(took, 60)))
-			biblioteka_wiedzy.end_count(5)
+			biblioteka_wiedzy.end_count(10) -- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1
 		end
 	end
 end

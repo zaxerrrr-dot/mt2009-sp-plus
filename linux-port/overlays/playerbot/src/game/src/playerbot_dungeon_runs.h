@@ -178,6 +178,9 @@ namespace
 		int iDaily;			// cfg().daily
 		int iLimitMin;			// cfg().limit_min (the tower: the run's own limit)
 		DWORD dwEndWaitMs;		// the quest's countdown after the last boss, and a margin
+						// (MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: every quest's countdown is
+						// 10 s now - Razador's and Nemere's were 60 s, the dragon's 180 s -
+						// so a minute is the fallback pull for all; d.exit_all comes first)
 		int iCap;			// runs of it at once on this core
 	};
 
@@ -190,13 +193,13 @@ namespace
 		{ "wukong", DGRUN_KIND_AREZZO, 364, "wzgorze_wukonga", "wukong_dgrun", NULL, 264, 273,
 			2500000LL, 5, 30, 60000, 2 },
 		{ "razador", DGRUN_KIND_RAZADOR, 351, "razador_dungeon", "razador_dgrun", "razador_dgrun_next", 342, 584,
-			3500000LL, 5, 60, 120000, 2 },
+			3500000LL, 5, 60, 60000, 2 },
 		{ "skorpion", DGRUN_KIND_AREZZO, 365, "ruiny_skorpiona", "skorpion_dgrun", NULL, 268, 228,
 			5000000LL, 5, 45, 60000, 2 },
 		{ "nemere", DGRUN_KIND_NEMERE, 352, "nemere_dungeon", "nemere_dgrun", "nemere_dgrun_next", 171, 270,
-			7500000LL, 5, 60, 120000, 2 },
+			7500000LL, 5, 60, 60000, 2 },
 		{ "smok", DGRUN_KIND_SMOK, 208, "blue_dragon_lair", "blue_dragon_dgrun", NULL, 237, 172,
-			7500000LL, 5, 60, 240000, 1 },
+			7500000LL, 5, 60, 60000, 1 },
 		{ "dzungla", DGRUN_KIND_AREZZO, 366, "starozytna_dzungla", "dzungla_dgrun", NULL, 384, 374,
 			7500000LL, 5, 60, 60000, 2 },
 	};
