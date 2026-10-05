@@ -44,7 +44,9 @@
 //    core can win);
 //  - a bot is never sent a packet; it gathers cards from its kills and
 //    "plays" a deck without a table (MT2009_PLUS_BOT_MINIGAMES_V1,
-//    playerbot_minigames.h);
+//    playerbot_minigames.h); some of those games are ranked like a player's
+//    (MT2009_PLUS_MINIGAME_BOT_RANKING_V1, RegisterScore), but the top-10
+//    prize goes by the place among the players only (CatchKingClaimReward);
 //  - an unasked packet (a card from a kill) goes only to a client that has
 //    sent this game a packet - an exe without the header would stop on it.
 //
@@ -807,9 +809,14 @@ int CatchKingClaimReward(LPCHARACTER ch)
 	const DWORD season = Season();
 	if (!season || (long)InGameEventRewardEndTime(EVENT_KEY) <= (long)time(NULL))
 		return -1;
+	// MT2009_PLUS_MINIGAME_BOT_RANKING_V1: the prize place is the place among
+	// the players - the ranking shows the bots' scores too, but a bot (an
+	// account named playerbot_*) takes no prize place from a player.
 	std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
-			"SELECT pid, claimed FROM player.minigame_catchking WHERE season = %u AND games > 0 AND total_score >= %d "
-			"ORDER BY total_score DESC, max_score DESC, pid ASC LIMIT 10", season, (int)REWARD_MIN_SCORE));
+			"SELECT s.pid, s.claimed FROM player.minigame_catchking s LEFT JOIN player.player p ON p.id = s.pid "
+			"LEFT JOIN account.account a ON a.id = p.account_id "
+			"WHERE s.season = %u AND s.games > 0 AND s.total_score >= %d AND LEFT(IFNULL(a.login, ''), 10) <> 'playerbot_' "
+			"ORDER BY s.total_score DESC, s.max_score DESC, s.pid ASC LIMIT 10", season, (int)REWARD_MIN_SCORE));
 	SQLResult* res = msg.get() ? msg->Get() : NULL;
 	if (!res || !res->pSQLResult)
 		return -1;

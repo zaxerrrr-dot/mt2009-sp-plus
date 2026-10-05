@@ -3,8 +3,7 @@
 
 // MT2009_PLUS_BOT_MINIGAMES_V1 (the owner, 2 October): the bots take part in
 // the three mini game events - Catch the King, Rumi (Okey) and Yut Nori - the
-// simulated way. No bot walks to a table, sends a packet or ranks; it is all
-// in here.
+// simulated way. No bot walks to a table or sends a packet; it is all in here.
 //
 //  - The drop. While an event runs a bot's kill rolls the event's card with
 //    the players' own chance (the kill hooks CatchKingOnKill, RumiOnKill and
@@ -49,6 +48,28 @@
 //    group's expected value at the sheet's prices), out of a twelfth of its
 //    spare yang, PLAYERBOT_MG_BUY_DAY a day. Never a bot that keeps that kind
 //    for its own counter.
+//  - The ranking (MT2009_PLUS_MINIGAME_BOT_RANKING_V1, the owner, 5 October:
+//    "Boty niech wyswietlaja sie w rankingach mini gier eventowych"). A game
+//    a bot plays may also go into the season's ranking table the NPCs read -
+//    the very statement a player's game end runs: Catch the King
+//    mt2009_catchking::RegisterScore (player.minigame_catchking), Rumi
+//    mt2009_rumi::SaveScore (player.mt2009_rumi_score), Yut Nori the INSERT of
+//    mt2009_yutnori::Finish (player.minigame_yutnori). The score fits the chest
+//    the roll gave (the game's own bands: Catch the King 10-399 / 400-549 /
+//    550+, Rumi <300 / 300-399 / 400+, Yut Nori <150 / 150-219 / 220+), a
+//    multiple of ten as every score of the three games is, a gold one leaning
+//    to the band's low end and kept well under each game's best possible one.
+//    Not every bot ranks: PLAYERBOT_MG_RANK_PERCENT of them, drawn by pid
+//    afresh each season and game, and each of those counts at most its own
+//    3-8 games a day (PLAYERBOT_MG_RANK_DAY_MIN/MAX, an active player's day;
+//    further games are played and paid as before, unranked). Only while the
+//    event runs and its season is known and open - the seasons' own reset
+//    (a new season id per event) starts the bots from nothing too.
+//    The top-ten prizes of the three tables (10/5/3/1... gold chests) go by
+//    the place among the PLAYERS only (the claims skip accounts named
+//    playerbot_*): a bot never visits a table to claim, and a bot above a
+//    player in the list takes no prize place from them - the prizes' count
+//    and the economy stay as before the bots ranked.
 //  - Chests are opened, listed and bought any time; cards drop and games are
 //    played only while the event runs.
 //  - "PLAYERBOT_MINIGAME:" lines: every token made, every game, every chest
@@ -117,6 +138,8 @@ namespace
 	{
 		DWORD cards, tokens, games, tier[3], held, opened, bought;
 		long long feesPaid, boughtYang;
+		DWORD ranked;			// MT2009_PLUS_MINIGAME_BOT_RANKING_V1: games put into the ranking
+		long long rankedScore;
 	};
 	TPlayerBotMinigameCensus s_aPlayerBotMgCensus[PLAYERBOT_MG_GAMES];
 	DWORD s_dwPlayerBotMgNextCensus = 0;
@@ -282,10 +305,11 @@ namespace
 			if (!IsPlayerBotMinigameEventOn(g) && !c.cards && !c.games && !c.opened && !c.bought && !c.held)
 				continue;
 			sys_log(0, "PLAYERBOT_MINIGAME: census game=%s event=%d cards=%u tokens=%u games=%u bronze=%u silver=%u gold=%u "
-					"kept_for_counter=%u opened=%u bought=%u fees=%lld bought_yang=%lld bots=%d fit_sellers=%d fit_list_pct=%d",
+					"kept_for_counter=%u opened=%u bought=%u fees=%lld bought_yang=%lld bots=%d fit_sellers=%d fit_list_pct=%d "
+					"ranked=%u ranked_score=%lld",
 					PLAYERBOT_MINIGAMES[g].name, IsPlayerBotMinigameEventOn(g) ? 1 : 0, c.cards, c.tokens, c.games,
 					c.tier[0], c.tier[1], c.tier[2], c.held, c.opened, c.bought, c.feesPaid, c.boughtYang,
-					total, fit, s_iPlayerBotMgFitListPercent);
+					total, fit, s_iPlayerBotMgFitListPercent, c.ranked, c.rankedScore);
 		}
 	}
 
@@ -297,6 +321,104 @@ namespace
 		++s_aPlayerBotMgCensus[game].opened;
 		sys_log(0, "PLAYERBOT_MINIGAME: opened pid=%u name=%s game=%s vnum=%u",
 				ch ? ch->GetPlayerID() : 0, ch ? ch->GetName() : "", PLAYERBOT_MINIGAMES[game].name, dwVnum);
+	}
+
+	// ------------------------------------------------------------ the ranking
+	// MT2009_PLUS_MINIGAME_BOT_RANKING_V1 (see the head of the file).
+
+	enum
+	{
+		PLAYERBOT_MG_RANK_PERCENT = 40,		// bots of a season that rank at all
+		PLAYERBOT_MG_RANK_DAY_MIN = 3,		// ranked games a day, per bot: 3..8
+		PLAYERBOT_MG_RANK_DAY_MAX = 8,
+	};
+
+	// A game's score by the chest's tier (bronze, silver, gold): the game's own
+	// bands, the top ones well below the best a game can make (Catch the King
+	// ~850, Rumi 560, Yut Nori ~300).
+	const int PLAYERBOT_MG_SCORE_LO[PLAYERBOT_MG_GAMES][3] = { { 150, 400, 550 }, { 150, 300, 400 }, { 60, 150, 220 } };
+	const int PLAYERBOT_MG_SCORE_HI[PLAYERBOT_MG_GAMES][3] = { { 390, 540, 680 }, { 290, 390, 490 }, { 140, 210, 270 } };
+
+	// The day's count of ranked games (UTC day, games), per game.
+	const char* const PLAYERBOT_MG_RANK_QF_DAY[PLAYERBOT_MG_GAMES] = {
+		"mt2009_botmg.ck_rank_day", "mt2009_botmg.okey_rank_day", "mt2009_botmg.yut_rank_day" };
+	const char* const PLAYERBOT_MG_RANK_QF_GAMES[PLAYERBOT_MG_GAMES] = {
+		"mt2009_botmg.ck_rank_games", "mt2009_botmg.okey_rank_games", "mt2009_botmg.yut_rank_games" };
+
+	// The season a game's score goes into now, 0 when none takes one: the
+	// conditions under which a player's game counts.
+	DWORD GetPlayerBotMinigameRankSeason(int game)
+	{
+		switch (game)
+		{
+			case 0:
+				return InGameEventIsActive(mt2009_catchking::EVENT_KEY) ? mt2009_catchking::Season() : 0;
+			case 1:
+				return mt2009_rumi::EventOn() && mt2009_rumi::EventFlag(mt2009_rumi::S_STATE) == 1 ? mt2009_rumi::SeasonId() : 0;
+			case 2:
+				if (!InGameEventIsActive(mt2009_yutnori::EVENT_KEY) ||
+						quest::CQuestManager::instance().GetEventFlag(mt2009_yutnori::FLAG_SEASON_CLOSED))
+					return 0;
+				return mt2009_yutnori::Season();
+		}
+		return 0;
+	}
+
+	int RollPlayerBotMinigameScore(int game, int tier)
+	{
+		const int lo = PLAYERBOT_MG_SCORE_LO[game][tier];
+		const int steps = (PLAYERBOT_MG_SCORE_HI[game][tier] - lo) / 10;
+		int step = number(0, steps);
+		if (tier == 2)	// a gold game leans to the band's low end
+			step = std::min(step, number(0, steps));
+		return lo + step * 10;
+	}
+
+	// One played game into the season's ranking, as the game's own end writes
+	// it. Returns the score, 0 when this game is not ranked.
+	int RecordPlayerBotMinigameScore(LPCHARACTER ch, int game, int tier)
+	{
+		if (!ch || game < 0 || game >= PLAYERBOT_MG_GAMES || tier < 0 || tier > 2)
+			return 0;
+		const DWORD season = GetPlayerBotMinigameRankSeason(game);
+		if (!season)
+			return 0;
+		const DWORD pid = ch->GetPlayerID();
+		const DWORD hash = PlayerBotNavHash(pid ^ season ^ (0x524B4D47U + (DWORD)game));
+		if ((int)(hash % 100U) >= PLAYERBOT_MG_RANK_PERCENT)
+			return 0;
+		const int dayCap = PLAYERBOT_MG_RANK_DAY_MIN +
+				(int)((hash / 100U) % (DWORD)(PLAYERBOT_MG_RANK_DAY_MAX - PLAYERBOT_MG_RANK_DAY_MIN + 1));
+		const int day = (int)(time(NULL) / 86400);
+		int games = GetPlayerBotMgFlag(ch, PLAYERBOT_MG_RANK_QF_GAMES[game]);
+		if (GetPlayerBotMgFlag(ch, PLAYERBOT_MG_RANK_QF_DAY[game]) != day)
+		{
+			games = 0;
+			ch->SetQuestFlag(PLAYERBOT_MG_RANK_QF_DAY[game], day);
+		}
+		if (games >= dayCap)
+			return 0;
+		ch->SetQuestFlag(PLAYERBOT_MG_RANK_QF_GAMES[game], games + 1);
+		const int score = RollPlayerBotMinigameScore(game, tier);
+		switch (game)
+		{
+			case 0:
+				mt2009_catchking::RegisterScore(ch, (DWORD)score);
+				break;
+			case 1:
+				mt2009_rumi::SaveScore(pid, (WORD)score);
+				break;
+			case 2:
+				DBManager::instance().Query(
+						"INSERT INTO player.minigame_yutnori (season, pid, best_score, total_score, games, last_play) "
+						"VALUES (%u, %u, %d, %d, 1, NOW()) ON DUPLICATE KEY UPDATE "
+						"total_score = total_score + %d, best_score = GREATEST(best_score, %d), games = games + 1, last_play = NOW()",
+						season, pid, score, score, score, score);
+				break;
+		}
+		++s_aPlayerBotMgCensus[game].ranked;
+		s_aPlayerBotMgCensus[game].rankedScore += score;
+		return score;
 	}
 
 	// ------------------------------------------------------------ the game
@@ -361,10 +483,12 @@ namespace
 			ch->SetQuestFlag(qfAt, (int)time(NULL));
 			++c.held;
 		}
+		// MT2009_PLUS_MINIGAME_BOT_RANKING_V1: the game's score into the season's ranking.
+		const int ranked = RecordPlayerBotMinigameScore(ch, game, tier);
 		static const char* const TIER_NAME[3] = { "bronze", "silver", "gold" };
-		sys_log(0, "PLAYERBOT_MINIGAME: played pid=%u name=%s game=%s token=%u fee=%d tier=%s chest=%u given=%d fate=%s gold=%lld",
+		sys_log(0, "PLAYERBOT_MINIGAME: played pid=%u name=%s game=%s token=%u fee=%d tier=%s chest=%u given=%d fate=%s gold=%lld ranked_score=%d",
 				pid, ch->GetName(), mg.name, mg.token, (int)PLAYERBOT_MG_FEE, TIER_NAME[tier], chest, given ? 1 : 0,
-				!given ? "none" : (list ? "counter" : "open"), (long long)ch->GetGold());
+				!given ? "none" : (list ? "counter" : "open"), (long long)ch->GetGold(), ranked);
 		return true;
 	}
 
