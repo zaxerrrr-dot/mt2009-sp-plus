@@ -33,7 +33,42 @@ seed=/opt/playerbot/playerbots_seed.sql
     exit 1
 }
 
+# MT2009_PLUS_FRESH_INSTALL_FIX_V1: a step that fails is named and remembered.
+# fail_step prints the step's WARNING and adds it to $migrate_failed (a file,
+# so a step inside a subshell counts too); a run with any failed step does not
+# record its fingerprint at the end, so the next start runs everything again
+# instead of skipping it for a day. A run stopped by an error nothing caught
+# (set -e) says so on its way out, with the start of the last statement db()
+# was given - it never reaches the fingerprint either.
+migrate_failed=/tmp/playerbot-migrate.failed
+: > "$migrate_failed"
+migrate_last_sql=""
+result=""
+fail_step() {
+    printf '%s\n' "$*" >> "$migrate_failed"
+    echo "[playerbot-migrate] WARNING: $*" >&2
+}
+migrate_on_exit() {
+    migrate_rc=$?
+    [ -z "$result" ] || rm -f "$result"
+    if [ "$migrate_rc" != 0 ]; then
+        echo "[playerbot-migrate] FATAL: stopped with status $migrate_rc - the run is not recorded; the next start runs it all again" >&2
+        [ -z "$migrate_last_sql" ] || echo "[playerbot-migrate] FATAL: the last statement given to the database: $migrate_last_sql" >&2
+    fi
+}
+trap migrate_on_exit EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
 db() {
+    migrate_last_sql="(a file on stdin)"
+    for migrate_arg in "$@"; do
+        case "$migrate_arg" in
+            -*) ;;
+            *) migrate_last_sql=$(printf '%s' "$migrate_arg" | tr '\n' ' ' | cut -c1-200) ;;
+        esac
+    done
     # mariadb(1) inherits MYSQL_PWD; MARIADB_PWD is not a client variable.
     # Keeping it out of argv avoids exposing the secret in `docker top`/ps.
     MYSQL_PWD="$M2_DB_PASSWORD" mariadb \
@@ -260,7 +295,7 @@ if [ -s /opt/playerbot/item_proto.mt2009plus.sql ]; then
         ip_after=$(db -N -e "SELECT COUNT(*) FROM world.item_proto" 2>/dev/null || echo 0)
         echo "[playerbot-migrate] mod items: $((ip_after - ip_before)) missing item(s) added to world.item_proto ($ip_after in all)"
     else
-        echo "[playerbot-migrate] WARNING: could not add the mod's items to world.item_proto" >&2
+        fail_step "could not add the mod's items to world.item_proto" >&2
     fi
 fi
 
@@ -276,7 +311,7 @@ if [ -s /opt/playerbot/mob_proto.mt2009plus.sql ]; then
         mp_after=$(db -N -e "SELECT COUNT(*) FROM world.mob_proto" 2>/dev/null || echo 0)
         echo "[playerbot-migrate] mod monsters: $((mp_after - mp_before)) missing monster(s) added to world.mob_proto ($mp_after in all)"
     else
-        echo "[playerbot-migrate] WARNING: could not add the mod's monsters to world.mob_proto" >&2
+        fail_step "could not add the mod's monsters to world.mob_proto" >&2
     fi
 fi
 
@@ -317,7 +352,7 @@ db -e "
        AND (antiflag & $trade_mask) <> 0;
     UPDATE world.item_proto SET gold = 5000000 WHERE vnum = 100002 AND gold <> 5000000;
 " && echo "[playerbot-migrate] alchemy: Dragon Stones tradeable, Time Elixir (D) 5 000 000" \
-  || echo "[playerbot-migrate] WARNING: alchemy item_proto changes failed" >&2
+  || fail_step "alchemy item_proto changes failed" >&2
 
 # The Grotto of Exile's warp in Orc Valley's bottom-left corner (10077,
 # commented again since 2.2.21, when Koe-Pung took the way in; kept right for a
@@ -327,14 +362,14 @@ db -e "
 # grotto's Town point (100,46), where the engine also stands up whoever dies
 # in there, 1.3 km from the way out (10078). The db core reads mob_proto at
 # boot (PROTO_FROM_DB); idempotent.
-db -e "UPDATE world.mob_proto SET name = '????1? 100 12078', locale_name = '????1? 100 12078' WHERE vnum = 10077 AND locale_name <> '????1? 100 12078';" || echo "[playerbot-migrate] WARNING: could not point the Grotto of Exile warp at its Town" >&2
+db -e "UPDATE world.mob_proto SET name = '????1? 100 12078', locale_name = '????1? 100 12078' WHERE vnum = 10077 AND locale_name <> '????1? 100 12078';" || fail_step "could not point the Grotto of Exile warp at its Town" >&2
 # Three doors of the Devil's Catacomb's fourth-floor maze (10814, 10817,
 # 10818) carry a locale_name with no space after the dot - ".233 780" - which
 # FuncCheckWarp's ' %s %ld %ld' cannot read, so the engine moved nobody
 # through them; their name column is whole, and its targets stand on the
 # maze's open ground (checked on map 216's server_attr, 26 September). The
 # stake at the end is reachable in every wiring without them. Idempotent.
-db -e "UPDATE world.mob_proto SET locale_name = name WHERE vnum IN (10814, 10817, 10818) AND locale_name <> name;" || echo "[playerbot-migrate] WARNING: could not mend the Catacomb maze doors" >&2
+db -e "UPDATE world.mob_proto SET locale_name = name WHERE vnum IN (10814, 10817, 10818) AND locale_name <> name;" || fail_step "could not mend the Catacomb maze doors" >&2
 # Three ItemShop lines stood behind time auctions the package's server ran
 # in December 2024 - 906 the Metin stone detector, 907 Kamien Duchowy, 908 -
 # and an ended auction is a line nobody sees and BuyItem refuses, a player
@@ -343,24 +378,24 @@ db -e "UPDATE world.mob_proto SET locale_name = name WHERE vnum IN (10814, 10817
 # tables at boot; idempotent. Until 2.2.21 the second DELETE was a
 # multi-table one, which MariaDB refuses with no default database, so the
 # players' buy counts of the three stayed and this warned at every start.
-db -e "DELETE FROM common.itemshop_time_auctions WHERE item_index IN (906, 907, 908) AND end_time < '2025-01-01'; DELETE FROM player.itemshop_time_auction WHERE item_index IN (906, 907, 908) AND item_index NOT IN (SELECT item_index FROM common.itemshop_time_auctions);" || echo "[playerbot-migrate] WARNING: could not end the ItemShop old time auctions" >&2
+db -e "DELETE FROM common.itemshop_time_auctions WHERE item_index IN (906, 907, 908) AND end_time < '2025-01-01'; DELETE FROM player.itemshop_time_auction WHERE item_index IN (906, 907, 908) AND item_index NOT IN (SELECT item_index FROM common.itemshop_time_auctions);" || fail_step "could not end the ItemShop old time auctions" >&2
 # Pirate Tanaka (5001), the Tanaka event's treasure goblin
 # (playerbot_world_events.h): the package gives him 560 yang, which his fall
 # splits into thirty piles of twenty, and a flat thousand at each fifth of his
 # health (playerbotify apply_tanaka_goblin scales that to a fifth of a roll of
 # these). A world whose operator set his yang by hand keeps it: only the
 # stock 560 moves. The db core reads mob_proto at boot; idempotent.
-db -e "UPDATE world.mob_proto SET gold_min = 15000, gold_max = 25000 WHERE vnum = 5001 AND gold_min = 560 AND gold_max = 560;" || echo "[playerbot-migrate] WARNING: could not give Pirate Tanaka his yang" >&2
+db -e "UPDATE world.mob_proto SET gold_min = 15000, gold_max = 25000 WHERE vnum = 5001 AND gold_min = 560 AND gold_max = 560;" || fail_step "could not give Pirate Tanaka his yang" >&2
 # His ear (30202), which Yonah takes for a Purple Ebony Chest
 # (tanaka_ears.quest), stacks to the 200 its row already says: the package
 # left ITEM_FLAG_STACKABLE off, so every ear took a cell. Idempotent.
-db -e "UPDATE world.item_proto SET flag = flag | 4 WHERE vnum = 30202 AND (flag & 4) = 0;" || echo "[playerbot-migrate] WARNING: could not make Tanaka's ear stack" >&2
+db -e "UPDATE world.item_proto SET flag = flag | 4 WHERE vnum = 30202 AND (flag & 4) = 0;" || fail_step "could not make Tanaka's ear stack" >&2
 # The skill books (type 17), the Forgetting Book (22) and Kamien Duchowy
 # (50513) stacked to the package's ten; the operator's two hundred (DUDU,
 # 26 September). PROTO_FROM_DB: the db core reads it at boot, and books of
 # two skills never merge, their socket differs. Never lowered again: the
 # engine would cut every stack above the new ceiling at the next load.
-db -e "UPDATE world.item_proto SET stack = 200 WHERE (type IN (17, 22) OR vnum = 50513) AND stack = 10;" || echo "[playerbot-migrate] WARNING: could not raise the books' stack" >&2
+db -e "UPDATE world.item_proto SET stack = 200 WHERE (type IN (17, 22) OR vnum = 50513) AND stack = 10;" || fail_step "could not raise the books' stack" >&2
 # The ItemShop's Auto Lowy ticket and anti-experience ring (the operator,
 # 27 September): two quest items the package defines and nothing uses -
 # "Opaska Posz. Zlota" (31073) and "Pierscien Levi" (40002) - renamed
@@ -369,7 +404,7 @@ db -e "UPDATE world.item_proto SET stack = 200 WHERE (type IN (17, 22) OR vnum =
 # first page gains them with the Teleport Ring (70058), which is never used
 # up. ASCII names: db() speaks latin1 into the cp1250 columns. A line the
 # operator changed by hand is kept (INSERT IGNORE). Idempotent.
-db -e "UPDATE world.item_proto SET locale_name = 'Auto Lowy (8h)', flag = flag | 4, antiflag = 74112 WHERE vnum = 31073 AND locale_name <> 'Auto Lowy (8h)'; UPDATE world.item_proto SET locale_name = 'Pierscien Anty-Exp', flag = 0, antiflag = 41344 WHERE vnum = 40002 AND locale_name <> 'Pierscien Anty-Exp'; INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" || echo "[playerbot-migrate] WARNING: could not add the ItemShop's Auto Lowy ticket and rings" >&2
+db -e "UPDATE world.item_proto SET locale_name = 'Auto Lowy (8h)', flag = flag | 4, antiflag = 74112 WHERE vnum = 31073 AND locale_name <> 'Auto Lowy (8h)'; UPDATE world.item_proto SET locale_name = 'Pierscien Anty-Exp', flag = 0, antiflag = 41344 WHERE vnum = 40002 AND locale_name <> 'Pierscien Anty-Exp'; INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" || fail_step "could not add the ItemShop's Auto Lowy ticket and rings" >&2
 # Three names in the shipped dumps end in a line break (Magiczny Kamien 25042,
 # Gwiazda Nocy 50731, Sniezny Kwiat 50732: "\r\n" inside the quotes). A name
 # goes into server commands a client splits on whitespace, and the GM panel's
@@ -377,7 +412,7 @@ db -e "UPDATE world.item_proto SET locale_name = 'Auto Lowy (8h)', flag = flag |
 # (3 given)", a player's syserr, 27 September). Control characters are taken
 # out of every name, on every start; a clean name is not touched.
 db -e "UPDATE world.item_proto SET locale_name = REGEXP_REPLACE(locale_name, '[[:cntrl:]]+', '') WHERE locale_name REGEXP '[[:cntrl:]]';" \
-    || echo "[playerbot-migrate] WARNING: could not clean the line breaks out of item names" >&2
+    || fail_step "could not clean the line breaks out of item names" >&2
 # MT2009_PLUS_ITEM_EXTRA_APPLY_V1: an item's bonus lines beyond the three of
 # item_proto (applytype0..2 - the proto format and the client exe have room for
 # exactly three). One row a line: slot orders them, apply_type is the same
@@ -387,7 +422,7 @@ db -e "UPDATE world.item_proto SET locale_name = REGEXP_REPLACE(locale_name, '[[
 # of server-patches/enginefixes) and wears the lines like the proto's own. Empty
 # until the operator adds a line; never filled or emptied here.
 db -e "CREATE TABLE IF NOT EXISTS world.item_extra_apply (vnum INT UNSIGNED NOT NULL, slot TINYINT UNSIGNED NOT NULL, apply_type TINYINT UNSIGNED NOT NULL DEFAULT 0, apply_value INT NOT NULL DEFAULT 0, PRIMARY KEY (vnum, slot)) ENGINE=InnoDB;" \
-    || echo "[playerbot-migrate] WARNING: could not create world.item_extra_apply (extra item bonuses)" >&2
+    || fail_step "could not create world.item_extra_apply (extra item bonuses)" >&2
 # Maska Sabaha left the world with the Hwang curse (playerbotify
 # apply_hwang_curse_removed, the share step of the game Dockerfile): the shop
 # that sold one sells it no more. The db core reads the shops at boot, so this
@@ -400,7 +435,7 @@ db -e "DELETE FROM world.shop_item WHERE item_vnum IN (72731, 72735);"
 masks=$(db -e "DELETE FROM player.item WHERE vnum IN (72731, 72735); SELECT ROW_COUNT();" || echo x)
 masks=$(printf '%s' "$masks" | tr -d '[:space:]')
 if [ "$masks" = "x" ]; then
-    echo "[playerbot-migrate] WARNING: could not remove the Maska Sabaha items" >&2
+    fail_step "could not remove the Maska Sabaha items" >&2
 elif [ -n "$masks" ] && [ "$masks" != "0" ]; then
     echo "[playerbot-migrate] removed $masks Maska Sabaha item(s)"
 fi
@@ -510,7 +545,7 @@ if [ -n "$pitch_near" ]; then
             echo "[playerbot-migrate] $pitch_moved bot offline shop(s) in Yongan, Jayang, Pyongmoo and Bakra carried onto the guard's square"
         fi
     else
-        echo "[playerbot-migrate] WARNING: could not move the bots' offline shops onto the new pitches" >&2
+        fail_step "could not move the bots' offline shops onto the new pitches" >&2
     fi
 fi
 # The package's player dump carries the guild lands and buildings of the
@@ -552,7 +587,7 @@ if [ "$lands_done" = "0" ]; then
         lands_rows=$(printf '%s\n' "$lands_out" | awk 'NR == 2')
         echo "[playerbot-migrate] the package's guild lands cleared: ${lands_rows:-0} land(s), ${lands_objects:-0} building(s)"
     else
-        echo "[playerbot-migrate] WARNING: could not clear the package's guild lands" >&2
+        fail_step "could not clear the package's guild lands" >&2
     fi
 fi
 # 2.2.20 opened the Grotto of Exile (72, 73) and the Devil's Catacomb (216)
@@ -591,14 +626,14 @@ if [ "$rescue_done" = "0" ]; then
         rescue_catacomb=$(printf '%s\n' "$rescue_out" | awk 'NR == 2')
         echo "[playerbot-migrate] characters moved out of maps no old client could load: ${rescue_grotto:-0} from the Grotto of Exile, ${rescue_catacomb:-0} from the Devil's Catacomb"
     else
-        echo "[playerbot-migrate] WARNING: could not move the characters out of the Grotto and the Catacomb" >&2
+        fail_step "could not move the characters out of the Grotto and the Catacomb" >&2
     fi
 fi
 # Smoczy Skowyt (93) cast at a target (server-patches/dragonroartarget) hurts a
 # circle round that target of dwSplashRange: 500, the package's, left half a
 # pack standing ("nie wszystkie trafiaja", the operator, 28 September). 900,
 # only over the package's own 500; skill_proto is read at the cores' start.
-db -e "UPDATE world.skill_proto SET dwSplashRange = 900 WHERE dwVnum = 93 AND dwSplashRange = 500;" || echo "[playerbot-migrate] WARNING: could not widen Smoczy Skowyt's splash" >&2
+db -e "UPDATE world.skill_proto SET dwSplashRange = 900 WHERE dwVnum = 93 AND dwSplashRange = 500;" || fail_step "could not widen Smoczy Skowyt's splash" >&2
 # MT2009_PLUS_FIRE_ARROW_BALANCE_V1: Ognista Strzala (48, Ninja archer) back
 # to the official formula, the one world.skill_proto_copy_przed_zmianami_barabasza
 # still holds. The package's rework (1.5*atk -> 2*atk, + dex*2*k, all *1.35,
@@ -609,12 +644,12 @@ db -e "UPDATE world.skill_proto SET dwSplashRange = 900 WHERE dwVnum = 93 AND dw
 # the bonus against Metins and bosses) and setFlag are left as they are.
 # Each column moves only from the package's exact text, so an operator's own
 # formula stays; skill_proto is read at the cores' start. Idempotent.
-db -e "UPDATE world.skill_proto SET szPointPoly = '-(1.5*atk + (2.8*atk + number(100, 300))*k)' WHERE dwVnum = 48 AND szPointPoly = '-(2*atk + (2.8*atk + number(100, 300))*k + dex*2*k)*1.35'; UPDATE world.skill_proto SET szMasterBonusPoly = '-(1.5*atk + (2.6*atk + number(100, 300))*k)' WHERE dwVnum = 48 AND szMasterBonusPoly = '-(2*atk + (2.8*atk + number(100, 300))*k + dex*2*k)*1.35';" || echo "[playerbot-migrate] WARNING: could not put Ognista Strzala back to its formula" >&2
+db -e "UPDATE world.skill_proto SET szPointPoly = '-(1.5*atk + (2.8*atk + number(100, 300))*k)' WHERE dwVnum = 48 AND szPointPoly = '-(2*atk + (2.8*atk + number(100, 300))*k + dex*2*k)*1.35'; UPDATE world.skill_proto SET szMasterBonusPoly = '-(1.5*atk + (2.6*atk + number(100, 300))*k)' WHERE dwVnum = 48 AND szMasterBonusPoly = '-(2*atk + (2.8*atk + number(100, 300))*k + dex*2*k)*1.35';" || fail_step "could not put Ognista Strzala back to its formula" >&2
 # Broszura Szermierki (70031), Seon-Pyeong's recipe material, stacks to the
 # 200 its row already says: the package left ITEM_FLAG_STACKABLE off, so
 # every brochure took a cell (NerrVoVy, 27 September), as Tanaka's ear did.
 # PROTO_FROM_DB: the db core reads it at boot. Idempotent.
-db -e "UPDATE world.item_proto SET flag = flag | 4 WHERE vnum = 70031 AND (flag & 4) = 0;" || echo "[playerbot-migrate] WARNING: could not make Broszura Szermierki stack" >&2
+db -e "UPDATE world.item_proto SET flag = flag | 4 WHERE vnum = 70031 AND (flag & 4) = 0;" || fail_step "could not make Broszura Szermierki stack" >&2
 # MT2009_PLUS_POGROMCA_V1: Pogromca Nieb. Smoka +0..+9 (3180-3189), the
 # two-handed level-80 weapon, was an empty skeleton in the package (level 0,
 # no attack, no bonus) that nothing gave. Seon-Pyeong now makes it from
@@ -637,7 +672,7 @@ db -e "UPDATE world.item_proto SET
     shop_buy_price = ELT(vnum - 3179, 360000, 395000, 435000, 500000, 600000, 750000, 975000, 1320000, 1845000, 2770000),
     antiflag = antiflag | 256, socket_pct = 3,
     refined_vnum = IF(vnum = 3189, 3190, vnum + 1), refine_set = IF(vnum = 3189, 610, vnum - 3180 + 502)
-WHERE vnum BETWEEN 3180 AND 3189 AND limitvalue0 = 0 AND value3 = 0;" || echo "[playerbot-migrate] WARNING: could not fill Pogromca Nieb. Smoka" >&2
+WHERE vnum BETWEEN 3180 AND 3189 AND limitvalue0 = 0 AND value3 = 0;" || fail_step "could not fill Pogromca Nieb. Smoka" >&2
 # The ItemShop's marriage page (indexes 201-299, which the client's
 # ITEMSHOP_CATEGORY_MARRIAGE lists and client 2.0.47 shows) had no line at
 # all: the engagement ring (the Old Lady's ring quest gives one too), the
@@ -646,7 +681,7 @@ WHERE vnum BETWEEN 3180 AND 3189 AND limitvalue0 = 0 AND value3 = 0;" || echo "[
 # with the six harmony and love jewels that work on love points (xXxDaronxXx,
 # 27 September). From level 25, the wedding's own level. A line the operator
 # changed by hand is kept (INSERT IGNORE). Idempotent.
-db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (201, 70301, 1, 19, 'DRAGON_COIN', 25), (202, 11901, 1, 49, 'DRAGON_COIN', 25), (203, 11903, 1, 49, 'DRAGON_COIN', 25), (204, 50201, 1, 9, 'DRAGON_COIN', 25), (205, 71068, 1, 29, 'DRAGON_COIN', 25), (206, 71069, 1, 39, 'DRAGON_COIN', 25), (207, 71070, 1, 39, 'DRAGON_COIN', 25), (208, 71071, 1, 39, 'DRAGON_COIN', 25), (209, 71072, 1, 39, 'DRAGON_COIN', 25), (210, 71073, 1, 39, 'DRAGON_COIN', 25), (211, 71074, 1, 39, 'DRAGON_COIN', 25);" || echo "[playerbot-migrate] WARNING: could not fill the ItemShop's marriage page" >&2
+db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (201, 70301, 1, 19, 'DRAGON_COIN', 25), (202, 11901, 1, 49, 'DRAGON_COIN', 25), (203, 11903, 1, 49, 'DRAGON_COIN', 25), (204, 50201, 1, 9, 'DRAGON_COIN', 25), (205, 71068, 1, 29, 'DRAGON_COIN', 25), (206, 71069, 1, 39, 'DRAGON_COIN', 25), (207, 71070, 1, 39, 'DRAGON_COIN', 25), (208, 71071, 1, 39, 'DRAGON_COIN', 25), (209, 71072, 1, 39, 'DRAGON_COIN', 25), (210, 71073, 1, 39, 'DRAGON_COIN', 25), (211, 71074, 1, 39, 'DRAGON_COIN', 25);" || fail_step "could not fill the ItemShop's marriage page" >&2
 # fish_log came from r40250's dump and has that engine's eight columns,
 # while this one writes six - so every catch failed with errno 1136 and the
 # table is empty on every 2.x world that ever ran. CREATE IF NOT EXISTS
@@ -667,7 +702,7 @@ if [ -s /opt/playerbot/log_schema.sql ]; then
     if db < /opt/playerbot/log_schema.sql 2>/tmp/logschema.err; then
         echo "[playerbot-migrate] log schema checked"
     else
-        echo "[playerbot-migrate] WARNING: log schema failed:" >&2
+        fail_step "log schema failed:" >&2
         head -3 /tmp/logschema.err >&2
     fi
 fi
@@ -679,8 +714,8 @@ fi
 # while they run, and this is the same purge at every start, for a world that
 # was down a while. A session still open and seen within the eight days
 # stays, however long ago it began. Idempotent.
-db -e "CREATE TABLE IF NOT EXISTS log.playerbot_session (pid int(10) unsigned NOT NULL, login_at datetime NOT NULL, channel tinyint(3) unsigned NOT NULL DEFAULT 0, core varchar(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT '', login_reason tinyint(3) unsigned NOT NULL DEFAULT 0, seen_at datetime DEFAULT NULL, logout_at datetime DEFAULT NULL, logout_reason tinyint(3) unsigned NOT NULL DEFAULT 0, rest_until datetime DEFAULT NULL, PRIMARY KEY (pid, login_at), KEY open_idx (channel, core, logout_at), KEY login_at_idx (login_at)) ENGINE=InnoDB DEFAULT CHARSET=ascii;" || echo "[playerbot-migrate] WARNING: could not create log.playerbot_session" >&2
-db -e "DELETE FROM log.playerbot_session WHERE login_at < NOW() - INTERVAL 8 DAY AND COALESCE(logout_at, seen_at, login_at) < NOW() - INTERVAL 8 DAY;" || echo "[playerbot-migrate] WARNING: could not purge the bots' old sessions" >&2
+db -e "CREATE TABLE IF NOT EXISTS log.playerbot_session (pid int(10) unsigned NOT NULL, login_at datetime NOT NULL, channel tinyint(3) unsigned NOT NULL DEFAULT 0, core varchar(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT '', login_reason tinyint(3) unsigned NOT NULL DEFAULT 0, seen_at datetime DEFAULT NULL, logout_at datetime DEFAULT NULL, logout_reason tinyint(3) unsigned NOT NULL DEFAULT 0, rest_until datetime DEFAULT NULL, PRIMARY KEY (pid, login_at), KEY open_idx (channel, core, logout_at), KEY login_at_idx (login_at)) ENGINE=InnoDB DEFAULT CHARSET=ascii;" || fail_step "could not create log.playerbot_session" >&2
+db -e "DELETE FROM log.playerbot_session WHERE login_at < NOW() - INTERVAL 8 DAY AND COALESCE(logout_at, seen_at, login_at) < NOW() - INTERVAL 8 DAY;" || fail_step "could not purge the bots' old sessions" >&2
 
 itemshop_schema=/opt/playerbot/itemshop_schema.sql
 if [ -s "$itemshop_schema" ]; then
@@ -690,7 +725,7 @@ if [ -s "$itemshop_schema" ]; then
                 < "$itemshop_schema" 2>/tmp/itemshop.err; then
             echo "[playerbot-migrate] itemshop schema applied"
         else
-            echo "[playerbot-migrate] WARNING: itemshop schema failed:" >&2
+            fail_step "itemshop schema failed:" >&2
             head -3 /tmp/itemshop.err >&2
         fi
     else
@@ -842,10 +877,10 @@ YANG_RATE_MAX=1000
 [ "$r_yang" -gt "$YANG_RATE_MAX" ] && r_yang=$YANG_RATE_MAX
 db -e "CREATE TABLE IF NOT EXISTS player.web_admin_rates (
         name VARCHAR(24) PRIMARY KEY, value INT NOT NULL DEFAULT 100);" >/dev/null 2>&1 \
-    || echo "[playerbot-migrate] WARNING: could not make player.web_admin_rates" >&2
+    || fail_step "could not make player.web_admin_rates" >&2
 rates_set=$(db -e "SELECT COUNT(*) FROM player.quest WHERE dwPID = 0 AND szName = 'mob_exp';" 2>/dev/null || echo x)
 if [ "$rates_set" = "x" ]; then
-    echo "[playerbot-migrate] WARNING: could not read the rate flags; leaving them alone" >&2
+    fail_step "could not read the rate flags; leaving them alone" >&2
 elif [ "$rates_set" = "0" ]; then
     if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
             (0, 'mob_exp', '', $r_exp),   (0, 'mob_exp_buyer', '', $r_exp),
@@ -855,7 +890,7 @@ elif [ "$rates_set" = "0" ]; then
             ('exp', $r_exp), ('drop', $r_drop), ('yang', $r_yang);"; then
         echo "[playerbot-migrate] fresh world: experience ${r_exp}%, item drops ${r_drop}%, yang ${r_yang}%"
     else
-        echo "[playerbot-migrate] WARNING: could not write the fresh world's rates" >&2
+        fail_step "could not write the fresh world's rates" >&2
     fi
     # And whether that world's bots wait at the door. The core reads this file
     # on the weights clock and, the first time it is asked, before its own
@@ -867,7 +902,7 @@ elif [ "$rates_set" = "0" ]; then
         if [ "$(printf '%s' "${M2_PLAYERBOT_START_HELD:-0}" | tr -d ' \r')" = "1" ]; then
             printf '1\n' > /opt/m2spool/playerbot_hold 2>/dev/null \
                 && echo "[playerbot-migrate] the bots will wait at the door until you let them in" \
-                || echo "[playerbot-migrate] WARNING: could not hold the bots (/opt/m2spool not writable)" >&2
+                || fail_step "could not hold the bots (/opt/m2spool not writable)" >&2
         else
             printf '0\n' > /opt/m2spool/playerbot_hold 2>/dev/null || true
         fi
@@ -884,7 +919,7 @@ if [ "$yang_over" != "x" ] && [ "$yang_over" != "0" ]; then
         UPDATE player.web_admin_rates SET value = $YANG_RATE_MAX WHERE name = 'yang' AND value > $YANG_RATE_MAX;"; then
         echo "[playerbot-migrate] yang drops: the world's rate was over ${YANG_RATE_MAX}% - it is ${YANG_RATE_MAX}% now"
     else
-        echo "[playerbot-migrate] WARNING: could not bring the yang rate down to ${YANG_RATE_MAX}%" >&2
+        fail_step "could not bring the yang rate down to ${YANG_RATE_MAX}%" >&2
     fi
 fi
 
@@ -937,7 +972,7 @@ elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_difficulty_env', '', $dsig);"; then
     echo "[playerbot-migrate] difficulty: $difficulty (Biologist wait ${bio}s, horse: buy ${hbuy}s upgrade ${hup}s train ${htr}s/${htr2}s, books: players ${book}s bots ${botbook}s)"
 else
-    echo "[playerbot-migrate] WARNING: could not write the difficulty flags; the quests keep the last ones" >&2
+    fail_step "could not write the difficulty flags; the quests keep the last ones" >&2
 fi
 
 # MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances - soul stones to
@@ -961,7 +996,7 @@ if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_exchange_material_chance', '', $xmat);"; then
     echo "[playerbot-migrate] exchange chances for a custom difficulty: dust $xdust%, parchment $xparch%, materials $xmat% (0 = the package's 100/100/55)"
 else
-    echo "[playerbot-migrate] WARNING: could not write the exchange chances; the quests keep the last ones" >&2
+    fail_step "could not write the exchange chances; the quests keep the last ones" >&2
 fi
 
 # The apprentice chest (Skrzynia Ucznia) is the world's choice, one switch
@@ -992,7 +1027,7 @@ if [ "$starter_env" != "$((starter_off + 1))" ]; then
             (0, 'm2_starter_chest_env', '', $((starter_off + 1)));"; then
         echo "[playerbot-migrate] apprentice chest: $([ "$starter_off" = 1 ] && echo off || echo on) (from .env)"
     else
-        echo "[playerbot-migrate] WARNING: could not write the apprentice chest flag; the quest keeps the last one" >&2
+        fail_step "could not write the apprentice chest flag; the quest keeps the last one" >&2
     fi
 fi
 # What the world says now: .env's, or a panel's made since.
@@ -1018,7 +1053,7 @@ if [ "$(db -e "SELECT COUNT(*) FROM information_schema.tables
             ON DUPLICATE KEY UPDATE lValue = GREATEST(lValue, 1);"; then
         echo "[playerbot-migrate] apprentice chest: a bot's is the one the seed gave it"
     else
-        echo "[playerbot-migrate] WARNING: could not mark the bots' apprentice chest as given" >&2
+        fail_step "could not mark the bots' apprentice chest as given" >&2
     fi
     # Off, no bot keeps a chest of the chain: every one in a registered
     # bot's bag goes before the cores start - the chest the seed gave each
@@ -1050,7 +1085,7 @@ if [ "$(db -e "SELECT COUNT(*) FROM information_schema.tables
                 echo "[playerbot-migrate] apprentice chest off: $starter_gone chest(s) taken out of the bots' bags"
             fi
         else
-            echo "[playerbot-migrate] WARNING: could not take the apprentice chests out of the bots' bags; the cores take them out as the bots come in" >&2
+            fail_step "could not take the apprentice chests out of the bots' bags; the cores take them out as the bots come in" >&2
         fi
     fi
 fi
@@ -1081,7 +1116,7 @@ if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_flea_market_off', '', $flea_off);"; then
     echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on), Dom Towarowy: $([ "$flea_off" = 1 ] && echo off || echo on)"
 else
-    echo "[playerbot-migrate] WARNING: could not write the Auto Lowy, companion and Dom Towarowy flags; the cores keep the last ones" >&2
+    fail_step "could not write the Auto Lowy, companion and Dom Towarowy flags; the cores keep the last ones" >&2
 fi
 # Auto Lowy for everybody (0) or only with the ItemShop's ticket (1): .env
 # M2_AUTOHUNT_ITEM, which the launcher's difficulty window writes; the
@@ -1094,7 +1129,7 @@ if [ "$autohunt_item_env" != "$((autohunt_item + 1))" ]; then
     if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_autohunt_item', '', $autohunt_item), (0, 'm2_autohunt_item_env', '', $((autohunt_item + 1)));"; then
         echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_item" = 1 ] && echo 'only with the ItemShop ticket' || echo 'for everybody') (from .env)"
     else
-        echo "[playerbot-migrate] WARNING: could not write the Auto Lowy ticket flag" >&2
+        fail_step "could not write the Auto Lowy ticket flag" >&2
     fi
 fi
 
@@ -1116,7 +1151,7 @@ elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_rare_env', '', $rsig);"; then
     echo "[playerbot-migrate] alchemy: $([ "$alchemy_off" = 1 ] && echo off || echo on), sashes: $([ "$sash_off" = 1 ] && echo off || echo on)"
 else
-    echo "[playerbot-migrate] WARNING: could not write the alchemy and sash switches; they stay as they were" >&2
+    fail_step "could not write the alchemy and sash switches; they stay as they were" >&2
 fi
 
 # The Alchemist's two numbers (dragon_soul.quest, playerbot_alchemy.h; 1 October
@@ -1130,7 +1165,7 @@ if db -e "INSERT IGNORE INTO player.quest (dwPID, szName, szState, lValue) VALUE
     ds_vals=$(db -N -e "SELECT GROUP_CONCAT(CONCAT(szName, '=', lValue) ORDER BY szName SEPARATOR ', ') FROM player.quest WHERE dwPID = 0 AND szState = '' AND szName IN ('ds_drop', 'ds_cor_day');" 2>/dev/null | tr -d '\r')
     echo "[playerbot-migrate] alchemy shards: ${ds_vals:-ds_cor_day=5, ds_drop=10}"
 else
-    echo "[playerbot-migrate] WARNING: could not write the alchemy shard defaults; the quest takes 10% and 5 Cors a day" >&2
+    fail_step "could not write the alchemy shard defaults; the quest takes 10% and 5 Cors a day" >&2
 fi
 
 # MT2009_PLUS_AREZZO_MODULE_V1: the Arezzo module (maps 360-366, their dungeons and entrance guards),
@@ -1148,7 +1183,7 @@ elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_arezzo_env', '', $((arezzo_on + 1)));"; then
     echo "[playerbot-migrate] Arezzo module: $([ "$arezzo_on" = 1 ] && echo on || echo off) (from .env)"
 else
-    echo "[playerbot-migrate] WARNING: could not write the Arezzo module switch; it stays as it was" >&2
+    fail_step "could not write the Arezzo module switch; it stays as it was" >&2
 fi
 
 # MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus (NPC 20095, quest seonhae,
@@ -1166,7 +1201,7 @@ elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_seonhae_env', '', $((seonhae_on + 1)));"; then
     echo "[playerbot-migrate] Seon-Hae 6/7 bonus: $([ "$seonhae_on" = 1 ] && echo on || echo off) (from .env)"
 else
-    echo "[playerbot-migrate] WARNING: could not write the Seon-Hae switch; it stays as it was" >&2
+    fail_step "could not write the Seon-Hae switch; it stays as it was" >&2
 fi
 
 # The world's monster health (the operator, 30 September, for Frelik's
@@ -1195,7 +1230,7 @@ elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_mob_hp_env', '', $mobhp);"; then
     echo "[playerbot-migrate] monster health: ${mobhp}% of max_hp for monsters, bosses and Metin stones (from .env)"
 else
-    echo "[playerbot-migrate] WARNING: could not write the monster health flag; the cores keep the last one" >&2
+    fail_step "could not write the monster health flag; the cores keep the last one" >&2
 fi
 
 # The starter kit (the operator, 30 September, on Iwakura's proposal):
@@ -1223,12 +1258,12 @@ esac
 if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_starter_kit', '', $starter_kit);"; then
     echo "[playerbot-migrate] starter kit: $kit_label, for new characters and the bots made from now on"
 else
-    echo "[playerbot-migrate] WARNING: could not write the starter kit flag; the cores keep the last one" >&2
+    fail_step "could not write the starter kit flag; the cores keep the last one" >&2
 fi
 
 echo "[playerbot-migrate] applying deterministic Playerbot seed (PID $first_pid..$last_pid)"
 result=/tmp/playerbot-seed.out
-trap 'rm -f "$result"' EXIT HUP INT TERM
+# (removed on the way out by migrate_on_exit, MT2009_PLUS_FRESH_INSTALL_FIX_V1)
 # Shinsoo and Jinno are opt-in: M2_PLAYERBOT_KINGDOMS=1 lets the seed create
 # their cohorts, anything else keeps the file to the Chunjo cohort it has
 # always been. The variable goes in ahead of the file, in the same session,
@@ -1310,7 +1345,7 @@ if [ -s "$names" ]; then
         [ ! -s "$names_out" ] || cat "$names_out"
     else
         cat "$names_out" >&2
-        echo "[playerbot-migrate] WARNING: nicknames not applied; bots keep their seed names" >&2
+        fail_step "nicknames not applied; bots keep their seed names" >&2
     fi
     rm -f "$names_out"
 else
@@ -1322,7 +1357,7 @@ if [ -s /opt/playerbot/gm_characters.sql ]; then
     if gm_out=$(db < /opt/playerbot/gm_characters.sql 2>&1); then
         echo "[playerbot-migrate] $gm_out"
     else
-        echo "[playerbot-migrate] WARNING: gm_characters.sql failed:" >&2
+        fail_step "gm_characters.sql failed:" >&2
         echo "$gm_out" | head -3 >&2
     fi
 fi
@@ -1360,7 +1395,7 @@ if [ "$gm_rows" = "0" ]; then
         "; then
             echo "[playerbot-migrate] gmlist was empty: '$gm_name' on the admin account is IMPLEMENTOR now"
         else
-            echo "[playerbot-migrate] WARNING: could not grant GM rights to '$gm_name'" >&2
+            fail_step "could not grant GM rights to '$gm_name'" >&2
         fi
     else
         echo "[playerbot-migrate] gmlist is empty and the admin account has no character yet; the first one it gets becomes GM on the next start"
@@ -1389,7 +1424,7 @@ for mod_sql in /opt/playerbot/mod/*.sql; do
         db -e "INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('$mod_name', NOW());" || true
         echo "[playerbot-migrate] $mod_name applied"
     else
-        echo "[playerbot-migrate] WARNING: $mod_name failed:" >&2
+        fail_step "$mod_name failed:" >&2
         head -3 /tmp/mod.err >&2 || true
     fi
 done
@@ -1399,12 +1434,12 @@ done
 # cleanup had just removed - and the db core then refused to start ("item_index
 # 906 not found in itemshop_time_auction in player database", 26 September,
 # every CH1 OFF on a fresh 2.8.0). Idempotent.
-db -e "DELETE FROM common.itemshop_time_auctions WHERE item_index IN (906, 907, 908) AND end_time < '2025-01-01'; DELETE FROM player.itemshop_time_auction WHERE item_index IN (906, 907, 908) AND item_index NOT IN (SELECT item_index FROM common.itemshop_time_auctions);" || echo "[playerbot-migrate] WARNING: could not end the ItemShop old time auctions" >&2
+db -e "DELETE FROM common.itemshop_time_auctions WHERE item_index IN (906, 907, 908) AND end_time < '2025-01-01'; DELETE FROM player.itemshop_time_auction WHERE item_index IN (906, 907, 908) AND item_index NOT IN (SELECT item_index FROM common.itemshop_time_auctions);" || fail_step "could not end the ItemShop old time auctions" >&2
 # The ItemShop's Auto Lowy ticket and the two rings once more, after the
 # item-shop data: on a new install mod/10_ingame_itemshop.sql runs after the
 # lines further up, empties common.itemshop_items and writes it back without
 # them. INSERT IGNORE: a line the operator changed by hand is kept.
-db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" || echo "[playerbot-migrate] WARNING: could not add the ItemShop's Auto Lowy ticket and rings" >&2
+db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" || fail_step "could not add the ItemShop's Auto Lowy ticket and rings" >&2
 # MT2009 PLUS New Pet System (playerbot_newpet.h, MT2009_PLUS_NEW_PET_V1):
 # the second pet, hatched from an egg and levelled by its owner's kills. Its
 # items (55001-55118, 55401-55411; type ITEM_PET = 37, handled by the game's
@@ -1569,19 +1604,19 @@ INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
 UPDATE world.np_mob SET vnum = 34048, name = 'Pisklę Exedyara (Hero)', locale_name = 'Pisklę Exedyara (Hero)';
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
 INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (40901, 55401, 1, 29, 'DRAGON_COIN', 0), (40902, 55402, 1, 29, 'DRAGON_COIN', 0), (40903, 55403, 1, 29, 'DRAGON_COIN', 0), (40904, 55404, 1, 29, 'DRAGON_COIN', 0), (40905, 55405, 1, 29, 'DRAGON_COIN', 0), (40906, 55406, 1, 29, 'DRAGON_COIN', 0), (40907, 55409, 1, 29, 'DRAGON_COIN', 0), (40908, 55410, 1, 29, 'DRAGON_COIN', 0), (40909, 55411, 1, 29, 'DRAGON_COIN', 0), (40920, 55001, 10, 9, 'DRAGON_COIN', 0), (40924, 55008, 1, 9, 'DRAGON_COIN', 0), (40925, 55033, 1, 9, 'DRAGON_COIN', 0), (40926, 55034, 1, 5, 'DRAGON_COIN', 0), (40927, 55036, 1, 200, 'DRAGON_COIN', 0), (40928, 55002, 1, 19, 'DRAGON_COIN', 0);
-DELETE FROM world.shop_item WHERE item_vnum BETWEEN 55001 AND 55999;" || echo "[playerbot-migrate] WARNING: could not add the New Pet System's items and mobs" >&2
+DELETE FROM world.shop_item WHERE item_vnum BETWEEN 55001 AND 55999;" || fail_step "could not add the New Pet System's items and mobs" >&2
 # MT2009_PLUS_OWNER_PRICES_V2 (ItemShop): the Smakolyk (55032), the Smakolyk+
 # (55035) and the Skrzynia Ksiag Peta (55009) leave the ItemShop - players and
 # bots trade them at 400 000 / 500 000 / 800 000 a piece - and the Klucz
 # Miejsca Umiejetnosci (55036) costs 200 Smocze Monety, was 49 (the owner,
 # 1 October 2026). On every start, so an install that has the old lines
 # loses them. Idempotent.
-db -e "DELETE FROM common.itemshop_items WHERE vnum IN (55009, 55032, 55035); UPDATE common.itemshop_items SET price = 200 WHERE vnum = 55036 AND price = 49;" || echo "[playerbot-migrate] WARNING: could not apply the owner's pet ItemShop changes" >&2
+db -e "DELETE FROM common.itemshop_items WHERE vnum IN (55009, 55032, 55035); UPDATE common.itemshop_items SET price = 200 WHERE vnum = 55036 AND price = 49;" || fail_step "could not apply the owner's pet ItemShop changes" >&2
 # MT2009_PLUS_WHEEL_V1: Bilet Kola Fortuny (80030), the Kolo Fortuny's ticket (playerbot_wheel.h,
 # "/kolo"): quest type, stacks to 200, tradeable, no drop/NPC sale (the SM coupon's antiflags); the
 # ItemShop's first page sells it for 25 Smocze Monety. PROTO_FROM_DB: read at the db core's boot. Idempotent.
-db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES (80030, 'Bilet Kola Fortuny', _cp1250 X'42696C6574204B6FB36120466F7274756E79', 18, 0, 200, 0, 1, 384, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || echo "[playerbot-migrate] WARNING: could not add Bilet Kola Fortuny" >&2
-db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (9, 80030, 1, 25, 'DRAGON_COIN', 0);" || echo "[playerbot-migrate] WARNING: could not add the wheel ticket to the ItemShop" >&2
+db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES (80030, 'Bilet Kola Fortuny', _cp1250 X'42696C6574204B6FB36120466F7274756E79', 18, 0, 200, 0, 1, 384, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || fail_step "could not add Bilet Kola Fortuny" >&2
+db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (9, 80030, 1, 25, 'DRAGON_COIN', 0);" || fail_step "could not add the wheel ticket to the ItemShop" >&2
 # MT2009_PLUS_OCHAO_V1 (db): Swiatynia Ochao (map 209, playerbot_ochao.h,
 # quest/temple_of_the_ochao.quest). The package's monsters on this world's
 # ladder - after the Grotto of Exile (81-97), level 98-105 - cloned from the
@@ -1623,7 +1658,7 @@ UPDATE world.ochao_mob SET vnum = 20415, name = 'Portal', locale_name = 'Portal'
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.ochao_mob;
 UPDATE world.ochao_mob SET vnum = 20426, name = 'Strażnik Świątyni', locale_name = 'Strażnik Świątyni';
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.ochao_mob;
-DROP TEMPORARY TABLE IF EXISTS world.ochao_mob;" || echo "[playerbot-migrate] WARNING: could not add the Temple of Ochao's monsters, NPCs and mob skill" >&2
+DROP TEMPORARY TABLE IF EXISTS world.ochao_mob;" || fail_step "could not add the Temple of Ochao's monsters, NPCs and mob skill" >&2
 # MT2009_PLUS_DUNGEONS_V1: the Razador (Czysciec Ognia, map 351, level 55) and Nemere (Lodowa
 # Kraina, map 352, level 75) dungeons (quest/razador_dungeon.quest, quest/nemere_dungeon.quest,
 # game/dungeons/). Their monsters get Polish names and the stats of their level band - harder
@@ -1692,7 +1727,20 @@ DROP TEMPORARY TABLE world.dg_item;
 CREATE TEMPORARY TABLE world.dg_item AS SELECT * FROM world.item_proto WHERE vnum = 30329 LIMIT 1;
 UPDATE world.dg_item SET vnum = 30762, name = _cp1250 X'4B6C75637A204D726F7A75', locale_name = _cp1250 X'4B6C75637A204D726F7A75', stack = 200, antiflag = 0, flag = 4;
 INSERT IGNORE INTO world.item_proto SELECT * FROM world.dg_item;
-DROP TEMPORARY TABLE world.dg_item;" || echo "[playerbot-migrate] WARNING: could not set up the Razador and Nemere dungeons' monsters and keys" >&2
+DROP TEMPORARY TABLE world.dg_item;" || fail_step "could not set up the Razador and Nemere dungeons' monsters and keys" >&2
+
+# MT2009_PLUS_BOSS_CHESTS_V1: the Razador and Nemere dungeons' boss chests, at the
+# official vnums - Skrzynia Razadora (50270) and Skrzynia Nemere (50271), gift boxes
+# (type 23) that stack, opened by their special_item_group groups
+# (game/special_item_group.dungeons.txt); razador_dungeon.quest and nemere_dungeon.quest
+# hand them out when the boss dies. Idempotent: added once, never changed after.
+# MT2009_PLUS_FRESH_INSTALL_FIX_V1: this block stands ahead of the Arezzo ones because they copy
+# these two rows - the chests 30773-30776 are copies of 50270/50271. It used to come after them:
+# on a fresh world the copies found no source, added nothing, and the game stopped at boot on
+# "ReadMonsterDropItemGroup: (drop) there is no item 30774" (mob_drop_item.arezzo.txt).
+db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(50270, 'Skrzynia Razadora', 'Skrzynia Razadora', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(50271, 'Skrzynia Nemere', 'Skrzynia Nemere', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || fail_step "could not add the Razador and Nemere boss chests" >&2
 
 # MT2009_PLUS_AREZZO_V1: the first three places from the Arezzo files (the owner has the rights to
 # them), players only - bots later: Dolina Cyklopow (map 360, level 45, the Teleporter), Zaczarowany
@@ -1808,7 +1856,7 @@ CREATE TEMPORARY TABLE world.az_item AS SELECT * FROM world.item_proto WHERE vnu
 UPDATE world.az_item SET vnum = 30773;
 INSERT IGNORE INTO world.item_proto SELECT * FROM world.az_item;
 DROP TEMPORARY TABLE world.az_item;
-UPDATE world.item_proto SET name = _cp1250 X'536B727A796E6961204269626C696F74656B69', locale_name = _cp1250 X'536B727A796E6961204269626C696F74656B69', stack = 200, antiflag = 0, flag = 4 WHERE vnum = 30773;" || echo "[playerbot-migrate] WARNING: could not add the Arezzo maps' monsters, NPC and items" >&2
+UPDATE world.item_proto SET name = _cp1250 X'536B727A796E6961204269626C696F74656B69', locale_name = _cp1250 X'536B727A796E6961204269626C696F74656B69', stack = 200, antiflag = 0, flag = 4 WHERE vnum = 30773;" || fail_step "could not add the Arezzo maps' monsters, NPC and items" >&2
 
 # MT2009_PLUS_AREZZO_V1 (phases 5-8): the Arezzo dungeons Wzgorze Wukonga (364, level 45), Ruiny Skorpiona
 # (365, level 65) and Starozytna Dzungla (366, level 95) and the map Pustkowie Faraona (361, level 55), players
@@ -2043,7 +2091,7 @@ CREATE TEMPORARY TABLE world.az_item AS SELECT * FROM world.item_proto WHERE vnu
 UPDATE world.az_item SET vnum = 30776;
 INSERT IGNORE INTO world.item_proto SELECT * FROM world.az_item;
 DROP TEMPORARY TABLE world.az_item;
-UPDATE world.item_proto SET name = _cp1250 X'536B727A796E69612044BF756E676C69', locale_name = _cp1250 X'536B727A796E69612044BF756E676C69', stack = 200, antiflag = 0, flag = 4 WHERE vnum = 30776;" || echo "[playerbot-migrate] WARNING: could not add the Arezzo dungeons' and Pustkowie Faraona's monsters, NPCs and items" >&2
+UPDATE world.item_proto SET name = _cp1250 X'536B727A796E69612044BF756E676C69', locale_name = _cp1250 X'536B727A796E69612044BF756E676C69', stack = 200, antiflag = 0, flag = 4 WHERE vnum = 30776;" || fail_step "could not add the Arezzo dungeons' and Pustkowie Faraona's monsters, NPCs and items" >&2
 
 # MT2009_PLUS_AREZZO_BALANCE_V1 (the owner, 5 October, from the players' reports): the bosses one could
 # not stand against, the knockback and the yang of the ladder (Biblioteka/Wukong < Razador/Skorpion <
@@ -2097,7 +2145,7 @@ UPDATE world.mob_proto SET gold_min = 400000, gold_max = 600000 WHERE vnum = 259
 UPDATE world.mob_proto SET gold_min = 600000, gold_max = 900000 WHERE vnum = 2492;
 UPDATE world.mob_proto SET gold_min = 500000, gold_max = 750000 WHERE vnum = 2495;
 UPDATE world.mob_proto SET gold_min = 150000, gold_max = 220000 WHERE vnum = 3390;
-UPDATE world.mob_proto SET gold_min = 300000, gold_max = 450000 WHERE vnum = 3391;" || echo "[playerbot-migrate] WARNING: could not balance the Arezzo and dungeon bosses (MT2009_PLUS_AREZZO_BALANCE_V1)" >&2
+UPDATE world.mob_proto SET gold_min = 300000, gold_max = 450000 WHERE vnum = 3391;" || fail_step "could not balance the Arezzo and dungeon bosses (MT2009_PLUS_AREZZO_BALANCE_V1)" >&2
 # MT2009_PLUS_AREZZO_BALANCE_V1 (the owner, 5 October: "jesli wejscie jest za 5kk, to
 # drop z glownego bossa niech bedzie polowa tej wartosci"): each dungeon's main boss
 # drops about half its entry fee in yang (0.45-0.55 x the fee; Leze Smoka's
@@ -2107,7 +2155,7 @@ UPDATE world.mob_proto SET gold_min = 1125000, gold_max = 1375000 WHERE vnum = 9
 UPDATE world.mob_proto SET gold_min = 1575000, gold_max = 1925000 WHERE vnum = 6091;
 UPDATE world.mob_proto SET gold_min = 2250000, gold_max = 2750000 WHERE vnum = 9694;
 UPDATE world.mob_proto SET gold_min = 3375000, gold_max = 4125000 WHERE vnum IN (6191, 9714);" \
-  || echo "[playerbot-migrate] WARNING: could not set the dungeon bosses' yang to half the entry fee" >&2
+  || fail_step "could not set the dungeon bosses' yang to half the entry fee" >&2
 
 # MT2009_PLUS_GOBLIN_V1: the Treasure Hunt event (playerbot_goblin.h, the events
 # file's kind "goblin"): the Treasure Ticket (70617, from chests while the
@@ -2128,7 +2176,7 @@ DROP TEMPORARY TABLE world.gob_mob;
 CREATE TEMPORARY TABLE world.gob_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20005 LIMIT 1;
 UPDATE world.gob_mob SET vnum = 20857, name = _cp1250 X'5769656C6B6120536B727A796E696120536B617262F377', locale_name = _cp1250 X'5769656C6B6120536B727A796E696120536B617262F377', rank = 0, type = 1, level = 1, ai_flag = 'NOMOVE', setImmuneFlag = 'STUN,SLOW,TERROR', folder = 'treasure_hunt_box', on_click = 0, exp = 0;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.gob_mob;
-DROP TEMPORARY TABLE world.gob_mob;" || echo "[playerbot-migrate] WARNING: could not add the Treasure Hunt's items and its goblin" >&2
+DROP TEMPORARY TABLE world.gob_mob;" || fail_step "could not add the Treasure Hunt's items and its goblin" >&2
 
 # MT2009_PLUS_COSTUME_BONUS_V1: costume bonuses. The engine rolls a costume's
 # bonuses from item_attr's costume_body / costume_hair / costume_weapon sets
@@ -2142,16 +2190,7 @@ DROP TEMPORARY TABLE world.gob_mob;" || echo "[playerbot-migrate] WARNING: could
 # 70064 Zaczaruj kostium, 70065 Transfer bonusow. Idempotent.
 db -e "SET @m2_costume_sets := (SELECT COALESCE(SUM(costume_body + costume_hair + costume_weapon), 0) FROM world.item_attr);
 UPDATE world.item_attr SET costume_body = body, costume_hair = head, costume_weapon = weapon WHERE @m2_costume_sets = 0;
-INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) VALUES (3, 70065, 1), (3, 70064, 20), (3, 70063, 20);" || echo "[playerbot-migrate] WARNING: could not set up the costume bonus sets and the General Store's costume items" >&2
-
-# MT2009_PLUS_BOSS_CHESTS_V1: the Razador and Nemere dungeons' boss chests, at the
-# official vnums - Skrzynia Razadora (50270) and Skrzynia Nemere (50271), gift boxes
-# (type 23) that stack, opened by their special_item_group groups
-# (game/special_item_group.dungeons.txt); razador_dungeon.quest and nemere_dungeon.quest
-# hand them out when the boss dies. Idempotent: added once, never changed after.
-db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
-(50270, 'Skrzynia Razadora', 'Skrzynia Razadora', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
-(50271, 'Skrzynia Nemere', 'Skrzynia Nemere', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || echo "[playerbot-migrate] WARNING: could not add the Razador and Nemere boss chests" >&2
+INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) VALUES (3, 70065, 1), (3, 70064, 20), (3, 70063, 20);" || fail_step "could not set up the costume bonus sets and the General Store's costume items" >&2
 
 # MT2009_PLUS_BLUE_DRAGON_V1: the Blue Dragon lair (Leze Smoka, map 208, quest/blue_dragon_lair.quest,
 # server-patches/bluedragon) for a party of level 90 - Beran-Setaou (2493) is brought down to the
@@ -2162,7 +2201,7 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 # are the Grotto V2's own and stay as they are. PROTO_FROM_DB: read at the db core's boot.
 # Idempotent: the same values every start.
 db -e "UPDATE world.mob_proto SET level = 93, max_hp = 3000000, def = 250, exp = 2000000, regen_cycle = 30, regen_percent = 1 WHERE vnum = 2493;
-UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (8031, 8032, 8033, 8034);" || echo "[playerbot-migrate] WARNING: could not set up the Blue Dragon lair's dragon and stones" >&2
+UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (8031, 8032, 8033, 8034);" || fail_step "could not set up the Blue Dragon lair's dragon and stones" >&2
 
 # MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus materials (playerbot_seonhae.h) at Owsap's vnums -
 # the Powershards ("Odlamki", materials that stack; no drop, no PK drop, tradeable) by the item's level:
@@ -2188,7 +2227,7 @@ INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, sta
 (72064, 'Mały Suplement', 'Mały Suplement', 5, 0, 200, 0, 1, 90240, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (72065, 'Średni Suplement', 'Średni Suplement', 5, 0, 200, 0, 1, 90240, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (72066, 'Duży Suplement', 'Duży Suplement', 5, 0, 200, 0, 1, 90240, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
-(72067, 'Silny Suplement', 'Silny Suplement', 5, 0, 200, 0, 1, 90240, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || echo "[playerbot-migrate] WARNING: could not add Seon-Hae's shards and additives" >&2
+(72067, 'Silny Suplement', 'Silny Suplement', 5, 0, 200, 0, 1, 90240, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || fail_step "could not add Seon-Hae's shards and additives" >&2
 # MT2009_PLUS_FLOWER_V1: the Flower Event "Dzieci Kwiaty" (playerbot_flower.h, server-patches/flower).
 # The five flowers 25121-25125 (Owsap's vnums; use type 3/8, value0 570 = the flower buff, value1 the
 # point - critical 40, mall attack 114, double exp 83, mall item 117, mall defence 115 - value2 the
@@ -2209,7 +2248,7 @@ INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, sta
 (83024, 'Pudełko z Konwalią', 'Pudełko z Konwalią', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (83025, 'Pudełko z Narcyzem', 'Pudełko z Narcyzem', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (83026, 'Pudełko z Lilią', 'Pudełko z Lilią', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
-(83027, 'Pudełko ze Słonecznikiem', 'Pudełko ze Słonecznikiem', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || echo "[playerbot-migrate] WARNING: could not add the Flower Event's flowers and boxes" >&2
+(83027, 'Pudełko ze Słonecznikiem', 'Pudełko ze Słonecznikiem', 23, 0, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || fail_step "could not add the Flower Event's flowers and boxes" >&2
 # MT2009_PLUS_RUMI_V1: Owsap's Rumi (Okey card game) - playerbot_rumi.h, server-patches/rumi,
 # quest/minigame_rumi.quest. The card (79505, Karta Okey: +1 card towards a set while the event runs)
 # and the card set (79506, Zestaw kart Okey: +1 set), use items the engine's UseItemEx hook takes;
@@ -2233,7 +2272,7 @@ DROP TEMPORARY TABLE IF EXISTS world.rumi_mob;
 CREATE TEMPORARY TABLE world.rumi_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20005 LIMIT 1;
 UPDATE world.rumi_mob SET vnum = 20417, name = _cp1250 X'5374F3B3204F6B6579', locale_name = _cp1250 X'5374F3B3204F6B6579', folder = 'okey_npc', ai_flag = 'NOMOVE', exp = 0, drop_item = 0, resurrection_vnum = 0;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.rumi_mob;
-DROP TEMPORARY TABLE world.rumi_mob;" || echo "[playerbot-migrate] WARNING: could not add Rumi's score table, items and table NPC" >&2
+DROP TEMPORARY TABLE world.rumi_mob;" || fail_step "could not add Rumi's score table, items and table NPC" >&2
 # MT2009_PLUS_CATCH_KING_V1: Catch the King (Zlap Krola, playerbot_catchking.h,
 # server-patches/catchking, quest/minigame_catchking.quest). Owsap's tokens keep
 # their vnums - Karta Krolewska (79603, +1 card when used during the event) and
@@ -2259,7 +2298,7 @@ DROP TEMPORARY TABLE IF EXISTS world.ck_mob;
 CREATE TEMPORARY TABLE world.ck_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20005 LIMIT 1;
 UPDATE world.ck_mob SET vnum = 20506, name = 'Złap Króla', locale_name = 'Złap Króla', folder = 'king_npc';
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.ck_mob;
-DROP TEMPORARY TABLE world.ck_mob;" || echo "[playerbot-migrate] WARNING: could not add Catch the King's items, table NPC and score table" >&2
+DROP TEMPORARY TABLE world.ck_mob;" || fail_step "could not add Catch the King's items, table NPC and score table" >&2
 # MT2009_PLUS_YUTNORI_V1: Yut Nori (Owsap's mini game; the engine half is
 # playerbot_yutnori.h and server-patches/yutnori, the table NPC's menu
 # quest/minigame_yutnori.quest). The scores per event season (the epoch the
@@ -2273,7 +2312,7 @@ DROP TEMPORARY TABLE world.ck_mob;" || echo "[playerbot-migrate] WARNING: could 
 # of an NPC row (20094, a talk NPC). Idempotent: INSERT IGNORE keeps an
 # operator's change.
 db -e "CREATE TABLE IF NOT EXISTS player.minigame_yutnori (season INT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, best_score INT NOT NULL DEFAULT 0, total_score INT NOT NULL DEFAULT 0, games INT UNSIGNED NOT NULL DEFAULT 0, last_play DATETIME NOT NULL, PRIMARY KEY (season, pid), KEY season_total (season, total_score), KEY season_best (season, best_score)) ENGINE=InnoDB;" \
-  || echo "[playerbot-migrate] WARNING: could not create player.minigame_yutnori" >&2
+  || fail_step "could not create player.minigame_yutnori" >&2
 db -e "SET NAMES utf8mb4;
 INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
 (79507, 'Pień Brzozy', 'Pień Brzozy', 3, 10, 200, 0, 1, 204928, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
@@ -2289,7 +2328,7 @@ UPDATE world.yut_mob SET vnum = 20502, name = 'Stół do Yutnori', locale_name =
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.yut_mob;
 UPDATE world.yut_mob SET vnum = 20505, name = 'Pałeczki Yut', locale_name = 'Pałeczki Yut', on_click = 0;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.yut_mob;
-DROP TEMPORARY TABLE world.yut_mob;" || echo "[playerbot-migrate] WARNING: could not add the Yut Nori items and NPCs" >&2
+DROP TEMPORARY TABLE world.yut_mob;" || fail_step "could not add the Yut Nori items and NPCs" >&2
 
 # MT2009_PLUS_RARE_TABLE_V2: the 6th/7th bonus pool (world.item_attr_rare, read by Seon-Hae and
 # the Enchant 71051) as the owner set it on 1 October (Bonusy_6-7.xlsx): graded lv1-lv5 values and
@@ -2338,7 +2377,7 @@ INSERT INTO world.item_attr_rare (apply,prob,lv1,lv2,lv3,lv4,lv5,weapon,body,wri
 INSERT INTO world.mt2009_plus_once (name) VALUES ('rare_6_7_v2');"; then
         echo "[playerbot-migrate] 6th/7th bonus pool: the 1 October table (27 bonuses, POINT_* numbering)"
     else
-        echo "[playerbot-migrate] WARNING: could not write the 6th/7th bonus pool" >&2
+        fail_step "could not write the 6th/7th bonus pool" >&2
     fi
 fi
 
@@ -2440,7 +2479,7 @@ UPDATE world.item_proto SET type = 1, subtype = 5, antiflag = 28, flag = 1, wear
 WHERE vnum BETWEEN 7170 AND 7179;
 UPDATE player.item SET socket0 = 1, socket1 = 1, socket2 = 1 WHERE socket0 = 0 AND socket1 = 0 AND socket2 = 0
   AND (vnum BETWEEN 210 AND 219 OR vnum BETWEEN 220 AND 229 OR vnum BETWEEN 1160 AND 1169 OR vnum BETWEEN 2190 AND 2199
-       OR vnum BETWEEN 3170 AND 3179 OR vnum BETWEEN 5150 AND 5159 OR vnum BETWEEN 7170 AND 7179);" || echo "[playerbot-migrate] WARNING: could not write the Ritual of Awakening's items and recipes" >&2
+       OR vnum BETWEEN 3170 AND 3179 OR vnum BETWEEN 5150 AND 5159 OR vnum BETWEEN 7170 AND 7179);" || fail_step "could not write the Ritual of Awakening's items and recipes" >&2
 # MT2009_PLUS_SOULSTONE9_V1: the soul stones +5..+9 as his 30_kamienie.sql
 # (+0..+4 keep their values): kinds 0..13 (Penetracji .. Przyspieszenia), +5 =
 # 28530+k, +6..+9 = 28g00+k. Each gets the kind's bonus, its wear flag (the
@@ -2480,7 +2519,7 @@ INSERT INTO world.refine_proto (id, vnum0, count0, vnum1, count1, vnum2, count2,
 (7206, 30360, 18, 71056, 2, 0, 0, 0, 0, 0, 0, 20000000, 0, 0, 35),
 (7207, 30360, 25, 71056, 2, 0, 0, 0, 0, 0, 0, 40000000, 0, 0, 30),
 (7208, 30360, 35, 71056, 3, 0, 0, 0, 0, 0, 0, 80000000, 0, 0, 25)
-ON DUPLICATE KEY UPDATE vnum0 = VALUES(vnum0), count0 = VALUES(count0), vnum1 = VALUES(vnum1), count1 = VALUES(count1), cost = VALUES(cost), prob = VALUES(prob);" || echo "[playerbot-migrate] WARNING: could not write the soul stones +5..+9 and Olejek Niebios" >&2
+ON DUPLICATE KEY UPDATE vnum0 = VALUES(vnum0), count0 = VALUES(count0), vnum1 = VALUES(vnum1), count1 = VALUES(count1), cost = VALUES(cost), prob = VALUES(prob);" || fail_step "could not write the soul stones +5..+9 and Olejek Niebios" >&2
 # MT2009_PLUS_DIGI_STACK_V1 (Autor: Digi Rasta, nowy-system v0.23, his
 # 20_stakowanie.sql; server-patches/digirasta-fixes): stacks of 200 - every
 # soul stone (type 10, the cracked piece and Kamien Przebudzenia included),
@@ -2503,14 +2542,14 @@ WHERE (type IN (10, 23) OR vnum IN (30118, 50006, 50007, 50011, 50012, 50013, 50
                30300, 38054, 38056, 38057, 50130, 50132, 50133, 50134, 50135, 50136, 50137))
   AND ((flag & 4) = 0 OR (antiflag & 32768) <> 0 OR stack <> 200);
 UPDATE world.item_proto SET limittype0 = 0, limitvalue0 = 0 WHERE vnum = 30270 AND limittype0 = 7;
-UPDATE player.item SET socket0 = 0 WHERE vnum = 30270 AND socket0 <> 0;" || echo "[playerbot-migrate] WARNING: could not write the stacks of 200 (soul stones, caskets, chests)" >&2
+UPDATE player.item SET socket0 = 0 WHERE vnum = 30270 AND socket0 <> 0;" || fail_step "could not write the stacks of 200 (soul stones, caskets, chests)" >&2
 # MT2009_PLUS_HORSE30_V1: the horse to level 30 (his karta-kon-30-i-juki.md,
 # quest konie and horse_inventory): the level-30 horse is race 20119
 # (server-patches/digirasta, char_horse.cpp) - its name over the summoned horse
 # (the package's "NoNAme"), and, as his 60_konie.sql, the Black Horse's seal
 # (71131-71134) leaves the web ItemShop: the black horse is the reward of the
 # level-30 trial. Every start, after the shop data; idempotent.
-db -e "UPDATE world.mob_proto SET locale_name = 'Czarny Rumak' WHERE vnum = 20119 AND locale_name <> 'Czarny Rumak';" || echo "[playerbot-migrate] WARNING: could not name the Black Steed" >&2
+db -e "UPDATE world.mob_proto SET locale_name = 'Czarny Rumak' WHERE vnum = 20119 AND locale_name <> 'Czarny Rumak';" || fail_step "could not name the Black Steed" >&2
 db -e "DELETE FROM itemshop.ishop_bundle_items WHERE vnum BETWEEN 71131 AND 71134; DELETE FROM itemshop.ishop_items WHERE vnum BETWEEN 71131 AND 71134;" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the Black Horse's seal" >&2
 
 # ---------------------------------------------------------------------------
@@ -2547,7 +2586,7 @@ INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currenc
 UPDATE common.itemshop_items SET minLevel = 35 WHERE vnum = 8010 AND minLevel = 0;
 INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (13, 50050, 1, 100, 'DRAGON_COIN', 0);
 UPDATE common.itemshop_items SET price = 100 WHERE \`index\` = 13 AND vnum = 50050 AND price = 40;
-DELETE FROM common.itemshop_items WHERE (\`index\`, vnum) IN ((11, 50054), (12, 50055), (14, 70043), (15, 70048));" || echo "[playerbot-migrate] WARNING: could not add Kolczan (the ItemShop's quiver)" >&2
+DELETE FROM common.itemshop_items WHERE (\`index\`, vnum) IN ((11, 50054), (12, 50055), (14, 70043), (15, 70048));" || fail_step "could not add Kolczan (the ItemShop's quiver)" >&2
 db -e "INSERT IGNORE INTO itemshop.ishop_category (id, name) VALUES (10, 'Wyposazenie');
 INSERT INTO itemshop.ishop_items (category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon)
 SELECT 10, _utf8mb4 X'4B6FC582637A616E2028313420646E6929', 'Nielimitowane strzaly dla ninja z lukiem: zakladany w miejsce strzal, zadna strzala sie nie zuzywa. Dziala 14 dni.', 100, 'cash', 8010, 1, 0, 0, 0, '08010'
@@ -2599,7 +2638,7 @@ WHERE vnum = 40233;
 INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel)
 SELECT 20212, 41986, 1, 100, 'DRAGON_COIN', 0 FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 41986);
 INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel)
-SELECT 30054, 40233, 1, 100, 'DRAGON_COIN', 0 FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233);" || echo "[playerbot-migrate] WARNING: could not add Zbroja Krola Wojownikow / Swiety Miecz Bogow" >&2
+SELECT 30054, 40233, 1, 100, 'DRAGON_COIN', 0 FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233);" || fail_step "could not add Zbroja Krola Wojownikow / Swiety Miecz Bogow" >&2
 db -e "SET NAMES utf8mb4;
 INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
 SELECT 1041986, 6, 'Zbroja Króla Wojowników+ (męski, 30 dni)', 'Czas: 30 dni.<br />Tylko dla wojownika (postać męska).', 100, 'cash', 41986, 1, 0, 0, 0, '41986', NOW()
@@ -2615,7 +2654,7 @@ FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233) AND N
 # Idempotent; a missing table only leaves the store at 500 entries and its
 # "Rozbuduj" refused.
 db -e "CREATE TABLE IF NOT EXISTS player.collector_storage (account_id INT UNSIGNED NOT NULL PRIMARY KEY, tier TINYINT UNSIGNED NOT NULL DEFAULT 0, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB;" \
-  || echo "[playerbot-migrate] WARNING: could not create player.collector_storage (the collector's storage stays at 500 entries)" >&2
+  || fail_step "could not create player.collector_storage (the collector's storage stays at 500 entries)" >&2
 
 # MT2009_PLUS_KINGDOM_WAR_OFF_V1: the Kingdom War is switched off (game Dockerfile); a war a
 # game master had started before stays off.
@@ -2680,13 +2719,13 @@ INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, sta
 (50284, 'Monster Card (Tradable)', _cp1250 X'4B6172746120506F74776F7261202868616E646C6F77616C6E6129', 3, 10, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (72322, 'New Start Card', _cp1250 X'4B61727461204E6F7765676F20506F637AB9746B75', 5, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (72323, 'New Order Card', _cp1250 X'4B61727461204E6F7765676F20556BB3616475', 5, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" \
-  || echo "[playerbot-migrate] WARNING: could not add the Monster Card tables or items (Karty Potworow)" >&2
+  || fail_step "could not add the Monster Card tables or items (Karty Potworow)" >&2
 # MT2009_PLUS_MONSTER_CARDS_V1 (the owner, 5 October): Karta Nowego Poczatku
 # (72322, a mission reset past the free one) and Karta Nowego Ukladu (72323,
 # new targets) are sold in the ItemShop's "Zwoje i ksiegi" page (indexes
 # 601-699) at 49 SM each. INSERT IGNORE: a price the operator changed stays.
 db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (617, 72322, 1, 49, 'DRAGON_COIN', 0), (618, 72323, 1, 49, 'DRAGON_COIN', 0);" \
-  || echo "[playerbot-migrate] WARNING: could not put the Monster Card scrolls into the ItemShop" >&2
+  || fail_step "could not put the Monster Card scrolls into the ItemShop" >&2
 
 # MT2009_PLUS_DUNGEON_RANKING_FINISH_V1: the dungeon panel credits a run only to
 # those who hurt the final boss (playerbot_dungeon_panel.h, DungeonFinishers);
@@ -2702,8 +2741,51 @@ db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, 
 db -e "DELETE FROM player.quest WHERE dwPID > 0 AND szName = 'dungeon_panel' AND RIGHT(szState, 2) IN ('_f', '_t')
   AND NOT EXISTS (SELECT 1 FROM (SELECT dwPID, szState FROM player.quest WHERE szName = 'dungeon_panel' AND RIGHT(szState, 2) = '_d' AND lValue > 0) d
     WHERE d.dwPID = player.quest.dwPID AND d.szState = CONCAT(LEFT(player.quest.szState, CHAR_LENGTH(player.quest.szState) - 2), '_d'));" \
-  || echo "[playerbot-migrate] WARNING: could not clear the dungeon panel's results of characters who never hurt a boss" >&2
+  || fail_step "could not clear the dungeon panel's results of characters who never hurt a boss" >&2
+
+# MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
+# (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
+# SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
+# says nothing - 2.23.0 copied the chests 30773-30776 from 50270/50271 a few hundred lines before
+# it made those, and every fresh world's cores stopped at boot on mob_drop_item.arezzo.txt. The
+# list is read from this file, so a copy added later is checked too.
+migrate_copies() { # migrate_copies item|mob -- "source:copy" per copy this script makes
+    awk -v t="world.$1_proto" '
+        index($0, "AS SELECT * FROM " t " WHERE vnum = ") {
+            src = $0; sub(/.* WHERE vnum = /, "", src); sub(/[^0-9].*/, "", src); next
+        }
+        src != "" && match($0, /SET vnum = [0-9]+/) { print src ":" substr($0, RSTART + 11, RLENGTH - 11); src = "" }
+    ' "$0" 2>/dev/null
+}
+for migrate_kind in item mob; do
+    migrate_pairs=$(migrate_copies "$migrate_kind")
+    [ -n "$migrate_pairs" ] || continue
+    migrate_list=$(printf '%s\n' "$migrate_pairs" | cut -d: -f2 | sort -un | tr '\n' ',' | sed 's/,$//')
+    if ! migrate_found=$(db -e "SELECT vnum FROM world.${migrate_kind}_proto WHERE vnum IN ($migrate_list);" 2>/dev/null); then
+        fail_step "could not check the copied ${migrate_kind}_proto rows"
+        continue
+    fi
+    migrate_lack=""
+    for migrate_pair in $migrate_pairs; do
+        migrate_copy=${migrate_pair#*:}
+        printf '%s\n' "$migrate_found" | grep -qx "$migrate_copy" && continue
+        case " $migrate_lack " in *" $migrate_copy "*) continue ;; esac
+        migrate_lack="$migrate_lack $migrate_copy"
+        fail_step "world.${migrate_kind}_proto has no $migrate_copy (a copy of ${migrate_pair%%:*}, which did not exist when the copy was made)"
+    done
+done
 
 # MT2009_PLUS_FAST_START_V1: the full run is done - its fingerprint for the next start.
-db -e "REPLACE INTO common.playerbot_migrate_state (id, fingerprint, done_at) VALUES (1, '$migrate_fp', NOW());" >/dev/null 2>&1 \
-    || echo "[playerbot-migrate] WARNING: could not record the run's fingerprint (the next start runs it all again)" >&2
+# MT2009_PLUS_FRESH_INSTALL_FIX_V1: ...only when every step went through. A run with a failed step
+# is not recorded (and a record left by an older run is dropped), so the next start runs it all
+# again instead of skipping it for a day.
+if [ -s "$migrate_failed" ]; then
+    echo "[playerbot-migrate] WARNING: $(wc -l < "$migrate_failed" | tr -d ' ') step(s) failed in this run:" >&2
+    sed 's/^/[playerbot-migrate] WARNING:   - /' "$migrate_failed" >&2
+    echo "[playerbot-migrate] WARNING: the run is not recorded - the next start runs every step again" >&2
+    db -e "DELETE FROM common.playerbot_migrate_state WHERE id = 1;" >/dev/null 2>&1 || true
+else
+    db -e "REPLACE INTO common.playerbot_migrate_state (id, fingerprint, done_at) VALUES (1, '$migrate_fp', NOW());" >/dev/null 2>&1 \
+        || echo "[playerbot-migrate] WARNING: could not record the run's fingerprint (the next start runs it all again)" >&2
+    echo "[playerbot-migrate] all steps done (fingerprint $(printf %s "$migrate_fp" | cut -c1-12) recorded)"
+fi
