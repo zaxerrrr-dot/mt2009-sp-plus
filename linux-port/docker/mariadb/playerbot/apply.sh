@@ -2607,6 +2607,12 @@ INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, sta
 (72322, 'New Start Card', _cp1250 X'4B61727461204E6F7765676F20506F637AB9746B75', 5, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (72323, 'New Order Card', _cp1250 X'4B61727461204E6F7765676F20556BB3616475', 5, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" \
   || echo "[playerbot-migrate] WARNING: could not add the Monster Card tables or items (Karty Potworow)" >&2
+# MT2009_PLUS_MONSTER_CARDS_V1 (the owner, 5 October): Karta Nowego Poczatku
+# (72322, a mission reset past the free one) and Karta Nowego Ukladu (72323,
+# new targets) are sold in the ItemShop's "Zwoje i ksiegi" page (indexes
+# 601-699) at 49 SM each. INSERT IGNORE: a price the operator changed stays.
+db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (617, 72322, 1, 49, 'DRAGON_COIN', 0), (618, 72323, 1, 49, 'DRAGON_COIN', 0);" \
+  || echo "[playerbot-migrate] WARNING: could not put the Monster Card scrolls into the ItemShop" >&2
 
 # MT2009_PLUS_DUNGEON_RANKING_FINISH_V1: the dungeon panel credits a run only to
 # those who hurt the final boss (playerbot_dungeon_panel.h, DungeonFinishers);

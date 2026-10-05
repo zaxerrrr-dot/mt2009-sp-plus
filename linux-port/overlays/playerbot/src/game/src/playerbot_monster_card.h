@@ -948,10 +948,10 @@ namespace mt2009_mcard
 				FnSummon(ch, m, mob);
 				break;
 			case FN_RECRUIT:
-				if (t.size() < 4 || Waiting(ch, m.recruit, WAIT_RECRUIT) || TooFewStars(ch, m, 5))
-					return;
-				FnRecruit(ch, s, m, mob, t[3]);
-				break;
+				// The owner, 5 October: the recruitment is off - here every other
+				// "player" is a bot, and bots are never its target anyway.
+				ch->ChatPacket(CHAT_TYPE_INFO, "Rekrutacja potworow jest wylaczona.");
+				return;
 			case FN_TRADE:
 				FnTrade(ch, m, mob);
 				break;
