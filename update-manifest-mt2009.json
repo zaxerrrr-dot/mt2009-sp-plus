@@ -1,18 +1,18 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-04T21:22:39Z",
- "statusMessage": "MT2009 PLUS 2.22.0: boty w dungeonach, rozmowy z botami, Edytor bazy danych. Klient 2.0.52.",
+ "publishedAt": "2026-10-05T10:47:57Z",
+ "statusMessage": "MT2009 PLUS 2.23.0: Karty Potworow, tansze dungeony z lepszym dropem, boty lepiej ubrane. Klient 2.0.54.",
  "server": {
-  "version": "2.22.0",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.22.0/metin2-server-update-2.22.0.zip",
-  "sha256": "3F2F84721E07B928A1910DE01A159350E77A63C670C6013D48B65D8BBBBF9FD8",
-  "size": 106531229
+  "version": "2.23.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.23.0/metin2-server-update-2.23.0.zip",
+  "sha256": "1EC3F941A0E75A95E97F1250CF7CD1998CF549EEC0607F444A9A79E1A91FD9D0",
+  "size": 107321231
  },
  "client": {
-  "version": "2.0.52",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.52/metin2-client-update-2.0.52.zip",
-  "sha256": "97EF5DE55B8BA9A495E205A3DC9C2E9BE6DF2A166FC27ADD9724396CA1A9852B",
-  "size": 357334948
+  "version": "2.0.54",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.54/metin2-client-update-2.0.54.zip",
+  "sha256": "35E2363A722FC001FD764C0DC53DF59F8CB0F109A43354655ED68C88D5F26BA0",
+  "size": 358430799
  }
 }

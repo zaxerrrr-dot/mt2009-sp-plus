@@ -17,6 +17,63 @@ every version here.
 
 ---
 
+## 2.23.0 — 2026-10-05 — Karty Potworów, tańsze dungeony z lepszym dropem, boty lepiej ubrane
+
+Wymaga klienta **2.0.54** (pobierze go launcher albo patcher).
+
+### 🃏 Karty Potworów (autor systemu: **Digi Rasta**)
+- Nowy system **Karty Potworów** (przycisk w menu Esc): misje kart dla potworów, szansa 5% na kartę, kolekcja wspólna dla całego konta, gwiazdki i zestawy z bonusami.
+- Funkcje gwiazdek: lista dropu, przemiana, teleport do potworów, przywołanie, wymiana 10 kart na nagrodę.
+- **Karta Nowego Początku** i **Karta Układu** w ItemShopie (kategoria Zwoje) po 49 SM. Rekrutacja potworów jest wyłączona.
+- Boty w tym nie uczestniczą. Można wyłączyć całość ustawieniem `M2_MONSTER_CARDS=0`.
+
+### ⚔️ Dungeony – ceny, bossowie i drop
+- **Wejścia o połowę tańsze:** Biblioteka 1kk, Wzgórze Wukonga 2.5kk, Razador 3.5kk, Ruiny Skorpiona 5kk, Nemere / Leże Smoka / Starożytna Dżungla 7.5kk. Teleport z panelu dungeonów kosztuje najwyżej tyle, co wejście.
+- **Płaci tylko ten, kto wchodzi, i tylko za siebie** – boty z grupy (Towarzysz, boty z wyszukiwarki) wchodzą za darmo.
+- **Główni bossowie dropią yang** – mniej więcej połowę ceny wejścia.
+- **Lepszy drop w skrzyniach** – od Biblioteki i Wukonga przez Razadora i Skorpiona po Nemere i Dżunglę: sakiewki yang, ulepszacze swojego poziomu i coś cennego (kamienie dusz do +4, księgi, zwoje). Wukong daje 2–4 skrzynie. Bossowie map i dungeonów Arezzo, Generałowie z Groty, bossy lemurów i Azrael dropią lepiej.
+- **Balans bossów:** Płomienny Feniks da się zrobić w pojedynkę, słabsze ciosy Czerwonego Skorpiona, Króla Skorpionów, Królowej Dżungli, Razadora i Nemere. Generałowie z Groty i Silna Lodowa Wiedźma poprawione.
+- **Żaden boss nie odpycha gracza i nie da się go odepchnąć.**
+- **Wieża Demonów:** gracz na 75 poziomie normalnie dostaje ulepszacze i Pamiątki po Demonie; demony z wyższych pięter (brutalne) mają własny drop.
+- **Katakumby Diabła bez labiryntu teleportów** – Metin Zemsty przenosi grupę od razu na piętro Tartara.
+- **Ranking dungeonów** liczy tylko tych, którzy zadali bossowi obrażenia.
+
+### 🤖 Boty
+- **Boty kupują i ulepszają lepszą broń i zbroję** – również z plusami od graczy i botów, ze straganów i od NPC. Nie zostawiają w ręce wędki ani kilofa.
+- **Wyprawy botów na dungeony** lepiej zorganizowane: Razador od 70 lvl, Nemere od 85 lvl, grupy 5–6 botów z Szamanką, bez pętli umierania.
+- **Boty w rankingach mini gier** (Złap Króla, Rumi, Yut Nori) i dostają nagrody za swoje miejsce jak gracze.
+- **Wszystkie boty grają w Dzieci Kwiaty** – nasiona, pędy, skrzynki, które potem otwierają.
+- **Blokada szeptów działa też na boty** – bot nie napisze do Ciebie, jeśli masz ją włączoną (chyba że sam do niego pisałeś w ostatnich 10 minutach). Powiadomienia Towarzysza działają dalej.
+- **Najwyżej 2 skargi na godzinę o spot** od wszystkich botów razem; boty mają kilka ostrzejszych tekstów.
+
+### 🧑‍🤝‍🧑 Towarzysz
+- **Nie sprzedaje cennych rzeczy** – sprzedaje tylko zwykły złom; kamienie dusz, materiały, księgi, zwoje, skrzynie i klucze zostają. Nic nie odkłada do swojego magazynu (a to, co tam miał, wyjmuje). Pisze Ci, co cennego ma w ekwipunku.
+- Chodzi za Tobą na mapy Arezzo, powiadomienia wysyła szeptem, bije metiny z wierzchowca.
+- Szamanka na koniu zsiada, żeby dać buffy sobie i Tobie, i jedzie dalej.
+
+### 🛠️ Edytor bazy danych (panel Seban)
+- **Eksport / import całej konfiguracji edytora** jako tekst – przeniesiesz swoje zmiany na inny serwer.
+- **Wyłączniki dropu:** Kupony SM, szarfy i Cor Draconis – osobno z bossów i z metinów. Wyłączają tylko drop wbudowany w grę; drop dodany ręcznie w edytorze nadal działa.
+- **Potwory:** jednym kliknięciem zwykłe potwory dystansowe → wręcz.
+- **Przedmioty:** więcej niż 3 bonusy na przedmiocie („Dodatkowe bonusy”).
+- **Przypomnienie o plikach klienta:** po każdym restarcie serwera edytor pokazuje okienko z przyciskiem „Pobierz pliki klienta (zip)”, a po nowej wersji klienta – ostrzeżenie, że stary zip nie zawiera nowych przedmiotów. Gra sama przypomni graczowi przy wejściu, gdy jego pliki klienta nie pasują do zmian z edytora.
+
+> **Po tej aktualizacji klienta:** jeśli korzystasz ze zmian z Edytora bazy danych, pobierz ponownie zip (Edytor bazy danych → Zastosuj → „Pobierz aktualne pliki klienta (zip)”) i rozpakuj go do folderu gry.
+
+### 🏹 Inne
+- **Powtarzalne misje Battle Pass** (autor: **Vekirion**) – w panelu Seban misję można oznaczyć jako „Powtarzalna”: po osiągnięciu ilości daje nagrody i liczy od nowa, ile razy gracz zechce w sezonie; nie blokuje nagrody końcowej, a misje, które jej wymagają, odblokowuje po pierwszym ukończeniu. Boty też z tego korzystają.
+- **Bonusy 6/7 niezależne od 1–5** – np. szansa na cios krytyczny w 6/7 nie blokuje już tego samego bonusu w 1–5.
+
+## Klient 2.0.54 — 2026-10-05 — Karty Potworów, Opcje Gry w zakładkach, więcej bonusów
+
+- Okno **Kart Potworów** i ikony kart.
+- **Opcje Gry** w zakładkach: gra, system, opcje dodatkowe i skróty klawiszowe pod jednym przyciskiem w menu Esc.
+- **Dom Towarowy:** lista bonusów do wyszukiwania przewija się i ma wszystkie bonusy.
+- **Pasek boczny** tak wysoki jak ekwipunek; bez przycisku szybkiego startu Auto Łowów (Shift+K działa dalej).
+- **Okno zwierzaka:** opisy umiejętności po najechaniu.
+- Opisy przedmiotów pokazują dodatkowe bonusy (ponad 3) z Edytora bazy danych.
+- Przypomnienie o pobraniu plików klienta z Edytora bazy danych, gdy nie pasują do serwera.
+
 ## 2.22.0 — 2026-10-04 — Boty w dungeonach, rozmowy z botami, Edytor bazy danych
 
 Wymaga klienta **2.0.52** (pobierze go launcher albo patcher).
