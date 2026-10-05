@@ -54,6 +54,13 @@ namespace
 	// MT2009_PLUS_BOT_CHAT_V2: defined in playerbot_spot_defense.h - a person's
 	// blow at a bot, for the bot's complaint on the whisper.
 	void NotePlayerBotSpotStruck(LPCHARACTER bot, LPCHARACTER person, DWORD dwNow);
+	// MT2009_PLUS_SPOT_THREE_STRIKES_V1: defined in playerbot_spot_defense.h -
+	// a bot beaten three times by a person (or the person's party) is out
+	// against him for a cooldown, and a quarrel whose every bot is out calls
+	// nobody against him.
+	bool NotePlayerBotSpotDefeat(LPCHARACTER ch, TPlayerBotAIState& state, DWORD killerPid, DWORD dwNow);
+	bool IsPlayerBotStruckOut(DWORD botPid, LPCHARACTER foe, DWORD dwNow);
+	bool IsPlayerBotStrikeQuarrelOver(LPCHARACTER foe, DWORD dwNow);
 
 	const char* GetPlayerBotFoeReasonName(BYTE reason)
 	{
@@ -536,8 +543,11 @@ namespace
 		// guild-mate's (free mode lets one strike his own guild, and the guild
 		// does not go to war with itself).
 		CGuild* guild = victim->GetGuild();
+		// MT2009_PLUS_SPOT_THREE_STRIKES_V1: a bot out against the person calls
+		// nobody, and a quarrel that is over calls nobody either.
 		if (guild && attacker->GetDesc() && !attacker->GetDesc()->IsBot() &&
-				attacker->GetGuild() != guild)
+				attacker->GetGuild() != guild && !IsPlayerBotStruckOut(victim->GetPlayerID(), attacker, dwNow) &&
+				!IsPlayerBotStrikeQuarrelOver(attacker, dwNow))
 		{
 			TPlayerBotGuildCall& call = s_mapPlayerBotGuildCall[guild->GetID()];
 			const bool freshCall = call.dwAttackerPID != attacker->GetPlayerID() ||
@@ -642,7 +652,13 @@ namespace
 				if (at == 0 || m_now - at >= PLAYERBOT_ANTIPK_PARTY_MEMORY_MS)
 					return;
 				LPCHARACTER attacker = CHARACTER_MANAGER::instance().Find(vid);
-				if (attacker && attacker->GetPlayerID() == pid && IsPlayerBotFoeFightable(m_ch, attacker))
+				// MT2009_PLUS_SPOT_THREE_STRIKES_V1: a member out against the
+				// attacker calls nobody; this bot, out against him itself or
+				// with the quarrel over, does not come.
+				if (attacker && attacker->GetPlayerID() == pid && IsPlayerBotFoeFightable(m_ch, attacker) &&
+						!IsPlayerBotStruckOut(member->GetPlayerID(), attacker, m_now) &&
+						!IsPlayerBotStruckOut(m_ch->GetPlayerID(), attacker, m_now) &&
+						!IsPlayerBotStrikeQuarrelOver(attacker, m_now))
 					m_found = attacker;
 			}
 		};
@@ -669,6 +685,12 @@ namespace
 		if (!attacker || attacker->GetPlayerID() != call->second.dwAttackerPID ||
 				attacker->GetGuild() == guild ||
 				!IsPlayerBotFoeFightable(ch, attacker, PLAYERBOT_ANTIPK_GUILD_RANGE))
+			return NULL;
+		// MT2009_PLUS_SPOT_THREE_STRIKES_V1: the guild-mate that called out
+		// against the attacker, this bot out against him, or the quarrel over.
+		if (IsPlayerBotStruckOut(call->second.dwVictimPID, attacker, dwNow) ||
+				IsPlayerBotStruckOut(ch->GetPlayerID(), attacker, dwNow) ||
+				IsPlayerBotStrikeQuarrelOver(attacker, dwNow))
 			return NULL;
 		return attacker;
 	}
@@ -1104,6 +1126,13 @@ namespace
 				if (!keep)
 					why = "left_the_stone";
 			}
+			// MT2009_PLUS_SPOT_THREE_STRIKES_V1: beaten three times by this
+			// person, the bot fights him no more.
+			if (keep && IsPlayerBotStruckOut(ch->GetPlayerID(), held, dwNow))
+			{
+				keep = false;
+				why = "three_strikes";
+			}
 			// Fought for the guild's person: while the person is here, standing
 			// and under no truce, and the attacker is still at the person.
 			if (keep && p.bFoeReason == BOT_FOE_GUILD_AID)
@@ -1122,7 +1151,7 @@ namespace
 		{
 			LPCHARACTER attacker = CHARACTER_MANAGER::instance().Find(p.dwStruckByVID);
 			if (attacker && attacker->GetPlayerID() == p.dwStruckByPID &&
-					IsPlayerBotFoeFightable(ch, attacker))
+					IsPlayerBotFoeFightable(ch, attacker) && !IsPlayerBotStruckOut(ch->GetPlayerID(), attacker, dwNow))
 				return BeginPlayerBotFoe(ch, state, attacker, BOT_FOE_STRUCK, dwNow);
 		}
 		if (LPCHARACTER aggressor = FindPlayerBotPartyAggressor(ch, dwNow))
@@ -1153,7 +1182,9 @@ namespace
 			else if (!state.bRecoveringAfterDeath)
 			{
 				LPCHARACTER killer = CHARACTER_MANAGER::instance().FindByPID(grudge->second.dwKillerPID);
-				if (killer && IsPlayerBotFoeFightable(ch, killer))
+				if (killer && IsPlayerBotStruckOut(ch->GetPlayerID(), killer, dwNow))
+					s_mapPlayerBotGrudge.erase(grudge);	// MT2009_PLUS_SPOT_THREE_STRIKES_V1
+				else if (killer && IsPlayerBotFoeFightable(ch, killer))
 					return BeginPlayerBotFoe(ch, state, killer, BOT_FOE_GRUDGE, dwNow);
 			}
 		}
@@ -1169,13 +1200,14 @@ namespace
 						PLAYERBOT_STONE_SUPPORT_RANGE)
 			{
 				LPCHARACTER rival = FindPlayerBotStoneRival(ch, stone);
-				if (rival && IsPlayerBotFoeFightable(ch, rival))
+				if (rival && IsPlayerBotFoeFightable(ch, rival) && !IsPlayerBotStruckOut(ch->GetPlayerID(), rival, dwNow))
 					return BeginPlayerBotFoe(ch, state, rival, BOT_FOE_STONE_RIVAL, dwNow);
 			}
 		}
 		// And last the executioner's own hunt (Iwakura's Patch 3, point 7).
 		if (LPCHARACTER prey = FindPlayerBotExecutorPrey(ch, state, dwNow))
-			return BeginPlayerBotFoe(ch, state, prey, BOT_FOE_EXECUTOR, dwNow);
+			if (!IsPlayerBotStruckOut(ch->GetPlayerID(), prey, dwNow))
+				return BeginPlayerBotFoe(ch, state, prey, BOT_FOE_EXECUTOR, dwNow);
 		return NULL;
 	}
 
@@ -1328,8 +1360,13 @@ namespace
 			return;
 		p.dwFoeVID = 0;
 		p.bFoeReason = BOT_FOE_NONE;
+		// MT2009_PLUS_SPOT_THREE_STRIKES_V1: the third defeat by this person (or
+		// the person's party) and the bot gives up - off the spot, no grudge.
+		const bool struckOut = NotePlayerBotSpotDefeat(ch, state, killerPid, dwNow);
 		if (!playerbot_persona::NotePkDeath(p.pkDeaths, dwNow, ch->GetMapIndex(), ch->GetX(), ch->GetY()))
 		{
+			if (struckOut)
+				return;
 			// An incident: it comes back for the same player.
 			TPlayerBotGrudge& grudge = s_mapPlayerBotGrudge[ch->GetPlayerID()];
 			grudge.dwKillerPID = killerPid;

@@ -286,6 +286,70 @@ namespace playerbot_spot
 		return PickOf(k, roll);
 	}
 
+	// MT2009_PLUS_SPOT_THREE_STRIKES_V1 (the owner, 5 October): "jesli dany bot
+	// zostanie pokonany 3 razy na spocie - odchodzi i nie walczy dalej, do 3
+	// razy sztuka. Na przyklad za pierwszym moze zawolac graczy z pt i
+	// gildii, ale jak wszyscy zgina po 3 razy - to koniec."
+	//
+	// A strike is a bot's death at a person's hands (or at the hands of the
+	// person's party), a blow the Anti-PK protocol held as that person's -
+	// not a duel, not a guild war. One tally per (bot, person); defeats more
+	// than STRIKE_WINDOW_MS apart start it again. The third and the bot is
+	// out: it leaves the spot, and for STRIKE_COOLDOWN_MS neither fights the
+	// person nor whispers at him nor calls anybody for help against him.
+	const int STRIKES_OUT = 3;
+	const u32 STRIKE_WINDOW_MS = 2 * 60 * 60 * 1000;
+	const u32 STRIKE_COOLDOWN_MS = 2 * 60 * 60 * 1000;
+	const u32 STRIKE_LEAVE_SPOT_MS = 60 * 60 * 1000;
+
+	struct TStrikes
+	{
+		u32 firstAt;
+		u32 lastAt;
+		u32 outAt;          // when the third came, 0 while still in it
+		int defeats;
+		TStrikes() : firstAt(0), lastAt(0), outAt(0), defeats(0) {}
+	};
+
+	inline bool IsOut(const TStrikes& s, u32 now)
+	{
+		return s.outAt != 0 && now - s.outAt < STRIKE_COOLDOWN_MS;
+	}
+
+	// Nothing left in it: out and cooled down, or quiet past the window.
+	inline bool StrikesForgotten(const TStrikes& s, u32 now)
+	{
+		if (s.outAt != 0)
+			return now - s.outAt >= STRIKE_COOLDOWN_MS;
+		return s.lastAt == 0 || now - s.lastAt >= STRIKE_WINDOW_MS;
+	}
+
+	// A defeat; true when it is the one that puts the bot out.
+	inline bool NoteDefeat(TStrikes& s, u32 now)
+	{
+		if (StrikesForgotten(s, now))
+			s = TStrikes();
+		if (s.outAt != 0)
+			return false;
+		if (s.firstAt == 0)
+			s.firstAt = now;
+		s.lastAt = now;
+		++s.defeats;
+		if (s.defeats < STRIKES_OUT)
+			return false;
+		s.outAt = now;
+		return true;
+	}
+
+	// The one word a beaten bot says as it goes.
+	inline const char* GiveUpLine(u32 roll)
+	{
+		static const char* const k[] = { "dobra, wygrales, ide gdzie indziej", "ok, starczy, masz ten spot",
+			"3 razy to za duzo, nara", "dobra, nie mam z toba szans, ide stad", "wygrales, ide expic gdzie indziej",
+			"ehh, mam dosc, zostawiam ci to miejsce", "dobra dobra, juz mnie nie ma" };
+		return PickOf(k, roll);
+	}
+
 	// What "czemu?" is answered with after a complaint.
 	inline const char* ReasonFor(bool struck)
 	{
