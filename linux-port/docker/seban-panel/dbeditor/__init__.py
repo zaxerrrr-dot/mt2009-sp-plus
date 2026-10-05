@@ -36,4 +36,5 @@ def install(app, ctx):
         except ImportError:
             continue
         module.install(bp, ctx)
+    __import__("dbeditor.raredrop", fromlist=["install"]).install(bp, ctx)  # MT2009_PLUS_RARE_DROP_SWITCHES_V1 (on the hub after "Drop")
     app.register_blueprint(bp)

@@ -14,3 +14,8 @@ it drops. Everything comes from the running server's own drop tables:
 `apply_dropwiki.py <game/src>` (Linux) and `Apply-DropWikiPatch.ps1 -SourceDir`
 (Windows) apply `edits.json`; each edit has its own marker and is skipped when
 already there.
+
+`MT2009_PLUS_RARE_DROP_SWITCHES_V1` (5 October): the wiki leaves out what the
+database editor's rare drop switches hold back (Kupon SM, sash, Cor Draconis
+from bosses / Metins and the game's own drop table rows of them;
+`server-patches/raremobrules`).

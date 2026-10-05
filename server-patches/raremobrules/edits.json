@@ -40,5 +40,83 @@
   "marker": "MT2009_PLUS_DT_DROPS_V1 (delta)",
   "old": "\tsys_log(3, \"CreateDropItem for level: %d rank: %u pct: %d\", iLevel, bMobRank, iDeltaPercent);\n",
   "new": "\t// MT2009_PLUS_DT_DROPS_V1 (delta): no level fade in the Demon Tower for a player.\n\tif (iDeltaPercent < 100 && Mt2009PlusDemonTowerFullDrop(pkKiller))\n\t\tiDeltaPercent = 100;\n\n\tsys_log(3, \"CreateDropItem for level: %d rank: %u pct: %d\", iLevel, bMobRank, iDeltaPercent);\n"
+ },
+ {
+  "file": "item_manager.h",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (row mark)",
+  "old": "\t\tbool bSpecialGroup;\n\n\t\tSDropItemGroupInfo(DWORD dwVnum, DWORD dwPct, int iCount, bool bSpecialGroup = false)\n\t\t\t: dwVnum(dwVnum), dwPct(dwPct), iCount(iCount), bSpecialGroup(bSpecialGroup)\n\t\t\t{}\n",
+  "new": "\t\tbool bSpecialGroup;\n\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (row mark): the row came with the game (any group but the\n\t\t// Seban panel's MT2009_panel_*), so the database editor's rare drop switches\n\t\t// may hold back its Kupon SM / sash / Cor Draconis (item_manager.cpp).\n\t\tbool bBuiltin;\n\n\t\tSDropItemGroupInfo(DWORD dwVnum, DWORD dwPct, int iCount, bool bSpecialGroup = false, bool bBuiltin = false)\n\t\t\t: dwVnum(dwVnum), dwPct(dwPct), iCount(iCount), bSpecialGroup(bSpecialGroup), bBuiltin(bBuiltin)\n\t\t\t{}\n"
+ },
+ {
+  "file": "item_manager.h",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (row add)",
+  "old": "\tvoid AddItem(DWORD dwItemVnum, DWORD dwPct, int iCount, bool isSpecial=false)\n\t{\n\t\tm_vec_items.emplace_back(SDropItemGroupInfo(dwItemVnum, dwPct, iCount, isSpecial));\n\t}\n",
+  "new": "\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (row add): isBuiltin - see SDropItemGroupInfo::bBuiltin.\n\tvoid AddItem(DWORD dwItemVnum, DWORD dwPct, int iCount, bool isSpecial=false, bool isBuiltin=false)\n\t{\n\t\tm_vec_items.emplace_back(SDropItemGroupInfo(dwItemVnum, dwPct, iCount, isSpecial, isBuiltin));\n\t}\n"
+ },
+ {
+  "file": "item_manager_read_tables.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (built-in rows)",
+  "old": "\t\t\t\t\tpkGroup->AddItem(dwVnum, dwPct, iCount, bSpecial);\n",
+  "new": "\t\t\t\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (built-in rows): a group the Seban panel saved\n\t\t\t\t\t// (MT2009_panel_<mob>_<kind>, m2-drops) is the operator's own; every other\n\t\t\t\t\t// group came with the game and the rare drop switches apply to it.\n\t\t\t\t\tpkGroup->AddItem(dwVnum, dwPct, iCount, bSpecial, stName.compare(0, 13, \"MT2009_panel_\") != 0);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (switches)",
+  "old": "bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item)\n{\n",
+  "new": "// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (switches): the database editor's six switches (Seban panel, \"Drop\n// specjalny\", the owner on 5 October): the Kupon SM, the sash and the Cor Draconis a boss or\n// a Metin stone gives by itself, each off on its own. World event flags (player.quest,\n// dwPID 0), 1 = off, none or 0 = on (the default): m2_sm_boss_off, m2_sm_metin_off,\n// m2_sash_boss_off (also the boss chests' unique sash, char_item.cpp), m2_sash_metin_off,\n// m2_cor_boss_off, m2_cor_metin_off. The db core loads them at its boot (the editor's\n// \"Zastosuj\"); a GM's /e sets one live. Only the built-in sources: the engine's own rolls\n// (CONFIG DRAGON_COIN_*_PERMILLE, the Cor and sash rolls with the per-mob rules above) and\n// the rows of the drop tables that came with the game; a row the operator saved in the\n// panel (Group MT2009_panel_*) drops whatever the switches say. Players and bots alike.\n// A Metin is IsStone(); every other mob is a boss here (the rolls need boss rank anyway).\nenum EMt2009PlusRareDrop\n{\n\tMT2009_PLUS_RARE_DROP_SM,\n\tMT2009_PLUS_RARE_DROP_SASH,\n\tMT2009_PLUS_RARE_DROP_COR,\n\tMT2009_PLUS_RARE_DROP_NONE,\n};\n\nstatic bool Mt2009PlusRareDropOff(int kind, bool stone)\n{\n\tstatic const char* const s_aFlags[MT2009_PLUS_RARE_DROP_NONE][2] =\n\t{\n\t\t{ \"m2_sm_boss_off\", \"m2_sm_metin_off\" },\n\t\t{ \"m2_sash_boss_off\", \"m2_sash_metin_off\" },\n\t\t{ \"m2_cor_boss_off\", \"m2_cor_metin_off\" },\n\t};\n\tif (kind < 0 || kind >= MT2009_PLUS_RARE_DROP_NONE)\n\t\treturn false;\n\treturn quest::CQuestManager::instance().GetEventFlag(s_aFlags[kind][stone ? 1 : 0]) != 0;\n}\n\n// The switch a drop table's item falls under: a Kupon SM (80014-80018), a Cor Draconis\n// (50252, 50255-50260) or a sash (any COSTUME_ACCE).\nstatic int Mt2009PlusRareDropKind(DWORD vnum)\n{\n\tif (vnum >= 80014 && vnum <= 80018)\n\t\treturn MT2009_PLUS_RARE_DROP_SM;\n\tif (vnum == 50252 || (vnum >= 50255 && vnum <= 50260))\n\t\treturn MT2009_PLUS_RARE_DROP_COR;\n\tconst TItemTable* table = ITEM_MANAGER::instance().GetTable(vnum);\n\tif (table && table->bType == ITEM_COSTUME && table->bSubType == COSTUME_ACCE)\n\t\treturn MT2009_PLUS_RARE_DROP_SASH;\n\treturn MT2009_PLUS_RARE_DROP_NONE;\n}\n\n// A built-in drop table row's item of a Metin or a boss whose switch is off (an ordinary\n// monster's rows: never).\nstatic bool Mt2009PlusRareTableRowOff(DWORD vnum, bool stone, bool boss)\n{\n\tif (!stone && !boss)\n\t\treturn false;\n\treturn Mt2009PlusRareDropOff(Mt2009PlusRareDropKind(vnum), stone);\n}\n\nbool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item)\n{\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (table rows)",
+  "old": "\t\t\t\t\t\titemVnum = dropInfo.dwVnum;\n\t\t\t\t\t\titemCount = dropInfo.dwCount;\n\t\t\t\t\t}\n\n\t\t\t\t\tTItemTable* table = GetTable(itemVnum);\n",
+  "new": "\t\t\t\t\t\titemVnum = dropInfo.dwVnum;\n\t\t\t\t\t\titemCount = dropInfo.dwCount;\n\t\t\t\t\t}\n\n\t\t\t\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (table rows): a built-in row's Kupon SM, sash or Cor\n\t\t\t\t\t// Draconis of a boss or a Metin whose switch is off; the operator's rows drop.\n\t\t\t\t\tif (info.bBuiltin && Mt2009PlusRareTableRowOff(itemVnum, pkChr->IsStone(), pkChr->GetMobRank() >= MOB_RANK_BOSS))\n\t\t\t\t\t\tcontinue;\n\n\t\t\t\t\tTItemTable* table = GetTable(itemVnum);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (kupon)",
+  "old": "\t\tif (coinPermille > 0 && number(1, 1000) <= coinPermille)\n\t\t{\n\t\t\titem = CreateItem(80017, 1, 0, true);\n",
+  "new": "\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (kupon): not while the boss's / Metin's switch is off.\n\t\tif (coinPermille > 0 && !Mt2009PlusRareDropOff(MT2009_PLUS_RARE_DROP_SM, pkChr->IsStone()) &&\n\t\t\t\tnumber(1, 1000) <= coinPermille)\n\t\t{\n\t\t\titem = CreateItem(80017, 1, 0, true);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (cor roll)",
+  "old": "\t\tquest::CQuestManager::instance().GetEventFlag(\"m2_alchemy_off\") == 0)\n\t{\n\t\tint corChance = 0;\n",
+  "new": "\t\tquest::CQuestManager::instance().GetEventFlag(\"m2_alchemy_off\") == 0 &&\n\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (cor roll): nor while the boss's / Metin's switch is off.\n\t\t!Mt2009PlusRareDropOff(MT2009_PLUS_RARE_DROP_COR, pkChr->IsStone()))\n\t{\n\t\tint corChance = 0;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (sash roll)",
+  "old": "\t\tquest::CQuestManager::instance().GetEventFlag(\"m2_sash_off\") == 0)\n\t{\n",
+  "new": "\t\tquest::CQuestManager::instance().GetEventFlag(\"m2_sash_off\") == 0 &&\n\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (sash roll): nor while the boss's / Metin's switch is off.\n\t\t!Mt2009PlusRareDropOff(MT2009_PLUS_RARE_DROP_SASH, pkChr->IsStone()))\n\t{\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (autohunt kupon)",
+  "old": "\t\tif (coinPermille > 0)\n\t\t\tout_vnums.insert(80017);\n",
+  "new": "\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (autohunt kupon)\n\t\tif (coinPermille > 0 && !Mt2009PlusRareDropOff(MT2009_PLUS_RARE_DROP_SM, pkChr->IsStone()))\n\t\t\tout_vnums.insert(80017);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (preview rows)",
+  "old": "\t\t\t\tif (reward.bSpecialGroup)\n\t\t\t\t\tAddMobPreviewSpecialGroup(lines, reward.dwVnum, seen, 0);\n\t\t\t\telse\n\t\t\t\t\tAddMobPreviewItem(lines, reward.dwVnum, reward.iCount);\n",
+  "new": "\t\t\t\tif (reward.bSpecialGroup)\n\t\t\t\t\tAddMobPreviewSpecialGroup(lines, reward.dwVnum, seen, 0);\n\t\t\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (preview rows): not a built-in row the switches hold back.\n\t\t\t\telse if (!(reward.bBuiltin && Mt2009PlusRareTableRowOff(reward.dwVnum, mob->IsStone(), mob->GetMobRank() >= MOB_RANK_BOSS)))\n\t\t\t\t\tAddMobPreviewItem(lines, reward.dwVnum, reward.iCount);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (preview kupon)",
+  "old": "\t\t\t\t: (mob->GetMobRank() >= MOB_RANK_BOSS ? g_iDragonCoinBossPermille : 0)) > 0)\n\t\t\tAddMobPreviewItem(lines, 80017, 1);\n",
+  "new": "\t\t\t\t: (mob->GetMobRank() >= MOB_RANK_BOSS ? g_iDragonCoinBossPermille : 0)) > 0 &&\n\t\t\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (preview kupon)\n\t\t\t\t!Mt2009PlusRareDropOff(MT2009_PLUS_RARE_DROP_SM, mob->IsStone()))\n\t\t\tAddMobPreviewItem(lines, 80017, 1);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (preview cor/sash)",
+  "old": "\t\t\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_alchemy_off\") == 0)\n\t\t\t\tAddMobPreviewItem(lines, 50255, 1);\n\t\t\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_sash_off\") == 0)\n\t\t\t{\n",
+  "new": "\t\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (preview cor/sash): not while the switch is off.\n\t\t\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_alchemy_off\") == 0 &&\n\t\t\t\t\t!Mt2009PlusRareDropOff(MT2009_PLUS_RARE_DROP_COR, mob->IsStone()))\n\t\t\t\tAddMobPreviewItem(lines, 50255, 1);\n\t\t\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_sash_off\") == 0 &&\n\t\t\t\t\t!Mt2009PlusRareDropOff(MT2009_PLUS_RARE_DROP_SASH, mob->IsStone()))\n\t\t\t{\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (boss chest)",
+  "old": "\t\t\t\t\t\t\tconst int szarfaChestChance = number(6, 10);\n",
+  "new": "\t\t\t\t\t\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (boss chest): the database editor's \"Szarfy z bossow\"\n\t\t\t\t\t\t\t// switch (event flag m2_sash_boss_off) takes the boss chests' sash too.\n\t\t\t\t\t\t\tconst int szarfaChestChance = quest::CQuestManager::instance().GetEventFlag(\"m2_sash_boss_off\") != 0\n\t\t\t\t\t\t\t\t\t? 0 : number(6, 10);\n"
  }
 ]
