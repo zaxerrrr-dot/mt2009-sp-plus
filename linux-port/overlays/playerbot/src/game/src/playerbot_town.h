@@ -326,6 +326,12 @@ namespace
 
 	bool HasPlayerBotSafeboxDeposit(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
+		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion puts nothing in
+		// its own box - what it carries is its owner's, and the owner never
+		// sees that box. The LPP list put the owner's soul stones +4 there on
+		// a shopping errand ("sprzedal wszystkie KD+4, zostawil KD+1/2/3").
+		if (IsPlayerBotSidekickServing(ch))
+			return false;
 		std::vector<WORD> cells;
 		CollectPlayerBotSafeboxBooks(ch, cells);
 		if (!cells.empty())
@@ -448,7 +454,16 @@ namespace
 
 			bool wanted = false;
 			const char* why = "";
-			if (item->GetType() == ITEM_SKILLBOOK)
+			// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion takes
+			// everything out (PlayerBotSidekickWantsBoxSweep) - what is down
+			// there an older version put there of its owner's - leaving a cell
+			// free for the next drop; the bag window hands it to the owner.
+			if (IsPlayerBotSidekickServing(ch))
+			{
+				wanted = CountPlayerBotFreeInventoryCells(ch) - (int)item->GetSize() >= 1;
+				why = "sidekick_owner";
+			}
+			else if (item->GetType() == ITEM_SKILLBOOK)
 			{
 				// No longer surplus: the skill reached Master and the keep
 				// limit rose with it, or the bot finally has a skill group.
@@ -768,6 +783,9 @@ namespace
 	int DepositPlayerBotSafeboxBooks(LPCHARACTER ch, TPlayerBotAIState& state, CSafebox* box,
 			int* pToppedUp = NULL, std::set<DWORD>* pDeposited = NULL)
 	{
+		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1 (HasPlayerBotSafeboxDeposit).
+		if (IsPlayerBotSidekickServing(ch))
+			return 0;
 		std::vector<WORD> cells;
 		CollectPlayerBotSafeboxBooks(ch, cells);
 		const size_t books = cells.size();
@@ -973,7 +991,8 @@ namespace
 		state.bTownNeedSafebox = HasPlayerBotSafeboxDeposit(ch, state) ||
 				(IsPlayerBotGambling(state, dwNow) && !state.persona.bGambleSafeboxChecked) ||
 				PlayerBotWantsLppRelease(ch, state, dwNow) ||
-				PlayerBotWantsMaterialRelease(ch, state, dwNow);
+				PlayerBotWantsMaterialRelease(ch, state, dwNow) ||
+				PlayerBotSidekickWantsBoxSweep(ch);	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
 		if (!state.bTownNeedTrainer && !state.bTownNeedSkillReset && !state.bTownNeedMisc &&
 				!state.bTownNeedWeaponMerchant && !state.bTownNeedSafebox &&
 				!state.bTownNeedArmorMerchant && !state.bTownNeedBlacksmith)
@@ -6990,6 +7009,9 @@ namespace
 				const int taken = WithdrawPlayerBotSafebox(ch, box, &justDeposited,
 						IsPlayerBotGambling(state, dwNow) ? &state.persona : NULL, &state.persona,
 						&released);
+				// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's sweep done,
+				// or what is left told to its owner.
+				NotePlayerBotSidekickBoxSwept(ch, box);
 #if defined(PLAYERBOT_ENGINE_MT2009)
 				// The box poured together and laid out the way a player's
 				// "Scal i uporzadkuj" does it (ArrangeSafebox, playerbot_arrange.cpp):

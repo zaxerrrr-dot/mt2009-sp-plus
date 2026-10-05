@@ -556,6 +556,12 @@ namespace
 		DWORD dwRebuffNextCast = 0;
 		DWORD dwNextRebuffCheck = 0;
 		std::map<DWORD, DWORD> mapRebuffFailedUntil;
+		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: the owner's valuables in its
+		// bag (WatchPlayerBotSidekickValuables) - its next look, when the owner
+		// last heard of them, and which pieces the owner has heard of.
+		DWORD dwNextValuablesCheck = 0;
+		DWORD dwValuablesToldAt = 0;
+		std::set<DWORD> setValuablesTold;
 		TPlayerBotSidekickRuntime()
 			: dwNextPartyCheck(0), dwNextService(0), dwNextLoot(0), dwNextCatchUp(0), dwLootVID(0),
 			  dwLootSince(0), dwNextProtect(0), bTrading(false), dwLastFoeVID(0), bHold(false), lHoldMap(0),
@@ -1187,6 +1193,153 @@ namespace
 		if (IsPlayerBotSidekickHeld(ch, item))
 			return true;
 		return GetPlayerBotSidekickPinOf(ch, item) == PLAYERBOT_SIDEKICK_PIN_UNWANTED;
+	}
+
+	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1 ("Dropnalem KD+4, polecialo na
+	// towarzysza. Poszedl sprzedac smieci, sprzedal wszystkie KD+4. Zostawil
+	// w eq KD+1/2/3", the owner, 5 October). The owner's kill drops one item
+	// in turn to each party member near it (CParty::GetNextOwnership), so the
+	// companion picks up the owner's drops as its own loot, not only the ones
+	// it holds for a full bag (IsPlayerBotSidekickHeld) - and every rule of a
+	// bot's bag ran on them: the storekeeper's pass of its shopping errand put
+	// the soul stones +4 the LPP list keeps (and the materials, books and keys
+	// of a bag under pressure, a companion having no counter) in its own box,
+	// where the owner never sees them; the Alchemist made dust of its stones
+	// +0..+2. A companion's bag is its owner's now: only plain scrap worth
+	// next to nothing ever leaves it by the AI's hand.
+	const DWORD PLAYERBOT_SIDEKICK_JUNK_MAX_VALUE = 50000;	// yang a piece, the market's price
+	// Plain gear priced as scrap (twice the merchant's pay, GetPlayerBotShopAskingPrice)
+	// is scrap whatever its level; past this many times the merchant's pay the
+	// market prices it for something else.
+	const DWORD PLAYERBOT_SIDEKICK_JUNK_SCRAP_MULT = 3;
+	const DWORD PLAYERBOT_SIDEKICK_VALUABLES_CHECK_MS = 20 * 1000;
+	const DWORD PLAYERBOT_SIDEKICK_VALUABLES_TELL_MS = 3 * 60 * 1000;
+
+	std::set<DWORD> s_setPlayerBotSidekickBoxSwept;
+	void SayPlayerBotSidekick(LPCHARACTER owner, const char* text);
+
+	bool IsPlayerBotSidekickServing(LPCHARACTER ch)
+	{
+		return ch && !s_mapPlayerBotSidekickOwner.empty() &&
+				s_mapPlayerBotSidekickOwner.find(ch->GetPlayerID()) != s_mapPlayerBotSidekickOwner.end();
+	}
+
+	// What a companion may let go of: plain gear (no lines, under +4, no
+	// stone in a socket, none of the kinds kept whatever their plus), the
+	// water's catch and a spare tool - and only at the market's price of
+	// scrap. Never what its owner handed it, holds for it or put on it; never
+	// a soul stone, a material, a book, a scroll, a chest, a key, a Cor, a
+	// quest item, a costume, a potion or anything else.
+	bool IsPlayerBotSidekickSellableJunk(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !item->GetProto() || item->IsEquipped() || item->isLocked())
+			return false;
+		if (IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickHeld(ch, item) ||
+				IsPlayerBotSidekickPinned(ch, item))
+			return false;
+		const BYTE type = item->GetType();
+		const DWORD count = std::max<DWORD>(1, (DWORD)item->GetCount());
+		if (type == ITEM_WEAPON || type == ITEM_ARMOR)
+		{
+			if (item->GetAttributeCount() > 0 || item->GetRefineLevel() >= PLAYERBOT_PRECIOUS_REFINE ||
+					IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) ||
+					IsPlayerBotAwakeningGoods(item->GetVnum()))
+				return false;
+			for (int i = 0; i < ITEM_SOCKET_MAX_NUM; ++i)
+				if (IsPlayerBotSoulStoneVnum((DWORD)item->GetSocket(i)))
+					return false;
+			const DWORD unit = GetPlayerBotShopAskingPrice(item) / count;
+			const DWORD npc = GetPlayerBotNpcSellUnitPrice(item);
+			return unit <= std::max<DWORD>(PLAYERBOT_SIDEKICK_JUNK_MAX_VALUE, npc * PLAYERBOT_SIDEKICK_JUNK_SCRAP_MULT);
+		}
+		if (type == ITEM_FISH || type == ITEM_ROD || type == ITEM_PICK)
+			return GetPlayerBotShopAskingPrice(item) / count <= PLAYERBOT_SIDEKICK_JUNK_MAX_VALUE;
+		return false;
+	}
+
+	// What the AI of a companion does not spend - a soul stone seated, a Cor
+	// opened: what it holds for its owner, what the lock keeps, and whatever
+	// did not come from its owner's hand (the owner's kill drops among it).
+	bool IsPlayerBotSidekickKeptForOwner(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item)
+			return false;
+		if (IsPlayerBotSidekickLockedItem(ch, item))
+			return true;
+		return IsPlayerBotSidekickServing(ch) && !IsPlayerBotSidekickGift(ch, item);
+	}
+
+	// What its owner would want to know it carries: the kinds of value a
+	// player keeps, and gear with lines, a plus from +4 or a stone in it -
+	// not what its owner handed it or put on it, nor what it wears.
+	bool IsPlayerBotSidekickOwnerValuable(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !item->GetProto() || item->IsEquipped() || IsPlayerBotSidekickGift(ch, item) ||
+				IsPlayerBotSidekickPinned(ch, item))
+			return false;
+		if (IsPlayerBotSidekickHeld(ch, item))
+			return true;
+		const DWORD vnum = item->GetVnum();
+		switch (item->GetType())
+		{
+			case ITEM_METIN:
+			case ITEM_MATERIAL:
+			case ITEM_SKILLBOOK:
+			case ITEM_SKILLFORGET:
+			case ITEM_TREASURE_BOX:
+			case ITEM_TREASURE_KEY:
+			case ITEM_GIFTBOX:
+			case ITEM_QUEST:
+			case ITEM_POLYMORPH:
+				return true;
+			case ITEM_WEAPON:
+			case ITEM_ARMOR:
+				if (item->GetSubType() == WEAPON_ARROW && item->GetType() == ITEM_WEAPON)
+					return false;
+				return !IsPlayerBotSidekickSellableJunk(ch, item) &&
+						(item->GetAttributeCount() > 0 || item->GetRefineLevel() >= PLAYERBOT_PRECIOUS_REFINE ||
+						 IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotAwakeningGoods(vnum));
+			case ITEM_COSTUME:
+				return IsPlayerBotSashVnum(vnum);
+			case ITEM_USE:
+				return IsPlayerBotRefineScroll(vnum) || IsPlayerBotGeneralSkillBook(vnum) ||
+						IsPlayerBotExtraSkillBook(vnum) || item->GetSubType() == USE_ADD_ATTRIBUTE ||
+						item->GetSubType() == USE_CHANGE_ATTRIBUTE || item->GetSubType() == USE_ADD_ATTRIBUTE2;
+			default:
+				break;
+		}
+		return IsPlayerBotCorDraconisVnum(vnum) || IsPlayerBotAwakeningGoods(vnum) || item->IsDragonSoul();
+	}
+
+	bool PlayerBotSidekickWantsBoxSweep(LPCHARACTER ch)
+	{
+		return IsPlayerBotSidekickServing(ch) &&
+				s_setPlayerBotSidekickBoxSwept.find(ch->GetPlayerID()) == s_setPlayerBotSidekickBoxSwept.end();
+	}
+
+	// After the withdrawal of its errand's storekeeper visit: an empty box is
+	// not looked into again this start; what the bag had no room for is told
+	// to the owner and waits for the next errand.
+	void NotePlayerBotSidekickBoxSwept(LPCHARACTER ch, CSafebox* box)
+	{
+		if (!IsPlayerBotSidekickServing(ch) || !box)
+			return;
+		std::set<LPITEM> left;
+		for (DWORD pos = 0; pos < SAFEBOX_MAX_NUM; ++pos)
+			if (box->IsValidPosition(pos) && box->Get(pos))
+				left.insert(box->Get(pos));
+		const DWORD ownerPid = s_mapPlayerBotSidekickOwner[ch->GetPlayerID()];
+		sys_log(0, "PLAYERBOT_SIDEKICK: box swept pid=%u owner=%u left=%u free=%d", ch->GetPlayerID(), ownerPid,
+				(unsigned int)left.size(), CountPlayerBotFreeInventoryCells(ch));
+		if (left.empty())
+		{
+			s_setPlayerBotSidekickBoxSwept.insert(ch->GetPlayerID());
+			return;
+		}
+		char text[192];
+		snprintf(text, sizeof(text), "W moim magazynie zostalo jeszcze %u rzeczy - wyjme je przy nastepnych zakupach. "
+				"Zabieraj ode mnie, co twoje (okno Towarzysza), zebym mial na nie miejsce.", (unsigned int)left.size());
+		SayPlayerBotSidekick(GetPlayerBotSidekickOwnerChar(ownerPid), text);
 	}
 
 	// A piece its owner put on that waits in the bag - refused for the moment
@@ -9118,6 +9271,72 @@ namespace
 				ch->GetName(), ch->GetPart(PART_MAIN), ch->GetPart(PART_HAIR));
 	}
 
+	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: the owner hears, in a whisper,
+	// when the bag holds valuables of the owner's it has not heard of yet (at
+	// most every three minutes), so it takes them in the bag window. And a
+	// companion never walks with a rank under zero, the only ranks whose death
+	// drops what it carries (CHARACTER::ItemDropPenalty, aItemDropPenalty_kor).
+	void WatchPlayerBotSidekickValuables(LPCHARACTER ch, const TPlayerBotSidekick& rec, TPlayerBotSidekickRuntime& rt,
+			DWORD dwNow)
+	{
+		if (dwNow < rt.dwNextValuablesCheck || !ch->IsItemLoaded())
+			return;
+		rt.dwNextValuablesCheck = dwNow + PLAYERBOT_SIDEKICK_VALUABLES_CHECK_MS;
+		if (ch->GetRealAlignment() < 0)
+		{
+			sys_log(0, "PLAYERBOT_SIDEKICK: rank raised to zero pid=%u name=%s rank=%d", ch->GetPlayerID(),
+					ch->GetName(), ch->GetRealAlignment());
+			ch->UpdateAlignment(-ch->GetRealAlignment());
+		}
+		std::set<DWORD> present;
+		std::vector<LPITEM> fresh;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || !IsPlayerBotSidekickOwnerValuable(ch, item))
+				continue;
+			present.insert(item->GetID());
+			if (rt.setValuablesTold.find(item->GetID()) == rt.setValuablesTold.end())
+				fresh.push_back(item);
+		}
+		for (std::set<DWORD>::iterator it = rt.setValuablesTold.begin(); it != rt.setValuablesTold.end(); )
+		{
+			if (present.find(*it) == present.end())
+				rt.setValuablesTold.erase(it++);
+			else
+				++it;
+		}
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
+		if (fresh.empty() || !owner || !owner->GetDesc() ||
+				(rt.dwValuablesToldAt != 0 && dwNow - rt.dwValuablesToldAt < PLAYERBOT_SIDEKICK_VALUABLES_TELL_MS))
+			return;
+		rt.dwValuablesToldAt = dwNow;
+		std::string names;
+		for (size_t i = 0; i < fresh.size() && i < 3; ++i)
+		{
+			char one[96];
+			if (fresh[i]->GetCount() > 1)
+				snprintf(one, sizeof(one), "%s%s x%u", i ? ", " : "", fresh[i]->GetName() ? fresh[i]->GetName() : "?",
+						(unsigned int)fresh[i]->GetCount());
+			else
+				snprintf(one, sizeof(one), "%s%s", i ? ", " : "", fresh[i]->GetName() ? fresh[i]->GetName() : "?");
+			names += one;
+		}
+		if (fresh.size() > 3)
+		{
+			char more[48];
+			snprintf(more, sizeof(more), " i %u innych", (unsigned int)(fresh.size() - 3));
+			names += more;
+		}
+		char text[400];
+		snprintf(text, sizeof(text), "Mam w plecaku twoje cenne rzeczy: %s. Nie sprzedam ich ani nie odloze do "
+				"magazynu - wez je ode mnie (okno Towarzysza, prawy klik oddaje).", names.c_str());
+		SayPlayerBotSidekick(owner, text);
+		rt.setValuablesTold.insert(present.begin(), present.end());
+		sys_log(0, "PLAYERBOT_SIDEKICK: valuables told pid=%u owner=%u new=%u all=%u", ch->GetPlayerID(),
+				rec.dwOwnerPID, (unsigned int)fresh.size(), (unsigned int)present.size());
+	}
+
 	bool ManagePlayerBotSidekick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
@@ -9144,6 +9363,7 @@ namespace
 		if (rt.shop.bActive && !rt.bErrand)
 			SettlePlayerBotSidekickShopErrand(ch, state, *rec, rt, dwNow, "called", false);
 		PollPlayerBotSidekickShopPurchase(ch, *rec, rt, dwNow);
+		WatchPlayerBotSidekickValuables(ch, *rec, rt, dwNow);	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
 		if (HandlePlayerBotSidekickTrade(ch, state, *rec, rt, dwNow))
 			return true;
 		if (KeepPlayerBotSidekickFishing(ch, state, *rec, rt, dwNow))
@@ -9305,8 +9525,9 @@ namespace
 				IsPlayerBotBagFull(ch))
 		{
 			rt.dwBagFullToldAt = dwNow;
+			// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: only the scrap goes.
 			SayPlayerBotSidekick(owner, "Mam prawie pelny plecak. Stan przy handlarzu albo szepnij \"zakupy\" - "
-					"sprzedam zlom. Co chcesz zatrzymac, wez z mojego plecaka (okno Towarzysza).");
+					"sprzedam tylko zlom, cenne rzeczy trzymam dla ciebie. Wez je z mojego plecaka (okno Towarzysza).");
 			sys_log(0, "PLAYERBOT_SIDEKICK: bag near full, owner told pid=%u name=%s free=%d", ch->GetPlayerID(),
 					ch->GetName(), CountPlayerBotFreeInventoryCells(ch));
 		}

@@ -2044,6 +2044,14 @@ namespace
 		// it, waiting in the bag for its slot.
 		if (IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item))
 			return false;
+		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's bag is its
+		// owner's - the drops of the owner's own kills land in it too (the
+		// party's turn at a drop, CParty::GetNextOwnership). Only plain scrap
+		// worth next to nothing is ever the merchant's (or the Battle Pass
+		// room's), and then by the rules below as for every bot; the operator's
+		// "merchant" word does not reach past that either.
+		if (IsPlayerBotSidekickServing(ch) && !IsPlayerBotSidekickSellableJunk(ch, item))
+			return false;
 
 		// The operator's word first: merchant is scrap whatever the rules
 		// below would keep it for; keep, stall and drop are never scrap (drop
@@ -2734,6 +2742,10 @@ namespace
 	// so a bot is left with at most one stack over the keep.
 	void DiscardPlayerBotSurplusBoosters(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's boosters are
+		// its owner's drops as likely as its own - none thrown away.
+		if (IsPlayerBotSidekickServing(ch))
+			return;
 		std::map<DWORD, int> kept;
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
@@ -2816,7 +2828,10 @@ namespace
 			// without a sale - the one place a bag is emptied on purpose.
 			if (item && !item->IsEquipped() && !item->isLocked() &&
 					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_DROP &&
-					!IsPlayerBotSidekickLockedItem(ch, item))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
+					!IsPlayerBotSidekickLockedItem(ch, item) &&	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
+					// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: nor a companion's
+					// valuables, which are its owner's.
+					(!IsPlayerBotSidekickServing(ch) || IsPlayerBotSidekickSellableJunk(ch, item)))
 			{
 				sys_log(0, "PLAYERBOT_AI: discarded by policy pid=%u name=%s vnum=%u count=%u",
 						ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (unsigned int)item->GetCount());
@@ -2828,6 +2843,7 @@ namespace
 			// heads are worth no yang the world should mint.
 			if (item && !item->isLocked() && IsPlayerBotUnwantedHair(ch, item) &&
 					!IsPlayerBotSidekickGift(ch, item) && !IsPlayerBotSidekickPinned(ch, item) &&
+					!IsPlayerBotSidekickServing(ch) &&	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
 					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_NONE)
 			{
 				sys_log(0, "PLAYERBOT_ISHOP: hairstyle thrown away pid=%u name=%s vnum=%u",

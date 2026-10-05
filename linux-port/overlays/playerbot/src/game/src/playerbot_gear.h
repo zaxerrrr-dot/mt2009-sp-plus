@@ -4166,6 +4166,10 @@ namespace
 	// keep, stall, merchant or drop is not the Alchemist's.
 	bool IsPlayerBotSoulStoneForDust(LPCHARACTER ch, LPITEM item)
 	{
+		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's stones, of any
+		// grade, are its owner's - never the Alchemist's dust.
+		if (IsPlayerBotSidekickServing(ch))
+			return false;
 		return item && item->GetType() == ITEM_METIN &&
 				GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_NONE &&
 				IsPlayerBotSoulStoneForDustOf(ch, item->GetVnum(), item->GetID(),
@@ -4432,6 +4436,10 @@ namespace
 	bool SellPlayerBotExcessPotions(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded())
+			return false;
+		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion drinks what it
+		// carries - the owner's potions among them - and sells none of it.
+		if (IsPlayerBotSidekickServing(ch))
 			return false;
 		// Sell weaker variants first, while retaining a bounded combat/travel reserve.
 		const DWORD saleOrder[] = {

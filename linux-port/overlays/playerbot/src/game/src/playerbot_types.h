@@ -7155,6 +7155,22 @@ namespace
 	// companion wears or was given while its owner's lock is on: no refine,
 	// stone, crafting, swap, sale or discard by the AI.
 	bool IsPlayerBotSidekickLockedItem(LPCHARACTER ch, LPITEM item);
+	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1 ("Dropnalem KD+4, polecialo na
+	// towarzysza. Poszedl sprzedac smieci, sprzedal wszystkie KD+4", the
+	// owner, 5 October): somebody's companion - in any mode - and what of its
+	// bag it may let go of at all: only plain scrap worth next to nothing
+	// (IsPlayerBotSidekickSellableJunk). Everything else of value is its
+	// owner's: never sold, never put in its own storekeeper's box, never
+	// turned into dust; and what it did not get from its owner's hand is not
+	// spent by the AI either - a soul stone seated, a Cor opened
+	// (IsPlayerBotSidekickKeptForOwner).
+	bool IsPlayerBotSidekickServing(LPCHARACTER ch);
+	bool IsPlayerBotSidekickSellableJunk(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotSidekickKeptForOwner(LPCHARACTER ch, LPITEM item);
+	// Its storekeeper's box emptied back into its bag on a town errand, once a
+	// start (an older version put the owner's stones and materials there).
+	bool PlayerBotSidekickWantsBoxSweep(LPCHARACTER ch);
+	void NotePlayerBotSidekickBoxSwept(LPCHARACTER ch, CSafebox* box);
 	const char* GetPlayerBotSidekickOwnerName(LPCHARACTER ch);
 	// MT2009_PLUS_SIDEKICK_TRIP_V1: a frontier its companion gave up on for a
 	// while (playerbot_sidekick.h); GetPlayerBotFrontierMapForLevel skips it.
