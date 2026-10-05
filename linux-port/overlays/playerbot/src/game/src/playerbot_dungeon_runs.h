@@ -188,7 +188,7 @@ namespace
 		{ "wukong", DGRUN_KIND_AREZZO, 364, "wzgorze_wukonga", "wukong_dgrun", NULL, 264, 273,
 			5000000LL, 5, 30, 60000, 2 },
 		{ "razador", DGRUN_KIND_RAZADOR, 351, "razador_dungeon", "razador_dgrun", "razador_dgrun_next", 342, 584,
-			10000000LL, 5, 60, 120000, 2 },
+			7000000LL, 5, 60, 120000, 2 },
 		{ "skorpion", DGRUN_KIND_AREZZO, 365, "ruiny_skorpiona", "skorpion_dgrun", NULL, 268, 228,
 			10000000LL, 5, 45, 60000, 2 },
 		{ "nemere", DGRUN_KIND_NEMERE, 352, "nemere_dungeon", "nemere_dgrun", "nemere_dgrun_next", 171, 270,
