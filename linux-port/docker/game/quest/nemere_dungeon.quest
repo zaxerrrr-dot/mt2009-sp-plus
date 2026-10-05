@@ -88,6 +88,16 @@ quest nemere_dungeon begin
 			return not pc.is_gm() and pc.get_money() < c.fee
 		end
 
+		-- MT2009_PLUS_DUNGEON_FEE_LEADER_V1: who pays (the owner, 5 October: "Za wejœcie na dungeon z botami
+		-- (równie¿ z towarzyszem) p³aci tylko lider grupy. Jak boty id¹ same - p³ac¹ normalnie"). A person
+		-- pays for himself alone, once, on his first login into the new instance - after the entry worked,
+		-- never at the guard - and the guard checks the fee, the day's runs, the level and the rest of the
+		-- people going in only: a bot of the party (the companion, a finder's bot, any bot the person
+		-- invited) is never asked for the fee nor charged it, whether the person or the bot leads the
+		-- party. A member counts as a person only when the quest's block really switched to him
+		-- (pc.get_player_id() == pid, as devilcatacomb_zone asks): a block that stayed on the one talking
+		-- would put the member on the list with the talker's own figures. Two people with bots: each person
+		-- his own, as before. The bots' own runs (playerbot_dungeon_runs.h) pay in the core, as before.
 		function pay_entry()
 			local c = nemere_dungeon.cfg()
 			if pc.is_gm() or pc.is_playerbot() then
@@ -125,7 +135,7 @@ quest nemere_dungeon begin
 			for i, pid in next, pids, nil do
 				if pid == lp then
 					q.begin_other_pc_block(pid)
-					bot = pc.is_playerbot()
+					bot = pc.get_player_id() == pid and pc.is_playerbot()
 					q.end_other_pc_block()
 				end
 			end
@@ -278,6 +288,7 @@ quest nemere_dungeon begin
 			say_reward("Wymagany poziom: "..c.min_level..". Ponowne wejœcie po 60 minutach.")
 			say_reward("Boty z Twojej dru¿yny wejd¹ do lochu razem z Tob¹.")
 			say_reward("Wejœcie: "..c.fee_text.." Yang. Najwy¿ej "..c.daily.." wypraw dziennie (dziœ: "..nemere_dungeon.runs_today().."/"..c.daily..").") -- MT2009_PLUS_DUNGEON_FEE_V1
+			say_reward("P³acisz tylko za siebie - boty z dru¿yny i towarzysz wchodz¹ bez op³aty.") -- MT2009_PLUS_DUNGEON_FEE_LEADER_V1
 			if select("PrzejdŸ do Lodowej Krainy", "Nie teraz") ~= 1 then
 				return
 			end
@@ -357,7 +368,7 @@ quest nemere_dungeon begin
 					if pid ~= me then
 						q.begin_other_pc_block(pid)
 						local dx, dy = pc.get_x() - lx, pc.get_y() - ly
-						if not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+						if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
 							table.insert(humans, pid)
 							if pc.get_level() < c.min_level then
 								table.insert(low, pc.get_name())
@@ -428,7 +439,7 @@ quest nemere_dungeon begin
 					if pid ~= me then
 						q.begin_other_pc_block(pid)
 						local dx, dy = pc.get_x() - lx, pc.get_y() - ly
-						if not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+						if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
 							pc.warp(x, y)
 						end
 						q.end_other_pc_block()
@@ -491,7 +502,7 @@ quest nemere_dungeon begin
 				local pids = {party.get_member_pids()}
 				for i, pid in next, pids, nil do
 					q.begin_other_pc_block(pid)
-					if not pc.is_playerbot() then
+					if pc.get_player_id() == pid and not pc.is_playerbot() then
 						table.insert(humans, pid)
 						if pc.get_level() < c.min_level then
 							table.insert(low, pc.get_name())
