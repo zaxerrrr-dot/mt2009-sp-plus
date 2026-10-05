@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-tables.css') }}">
 <nav class="dbt-crumbs">
   <a href="{{ url_for('dbeditor.index') }}">🗄️ Edytor bazy danych</a>
-  {% for ep, label in [('dbeditor.attrs', '🎲 Bonusy'), ('dbeditor.exptable', '📈 Tabela doświadczenia'), ('dbeditor.fishing', '🎣 Łowienie ryb'), ('dbeditor.proto_history', '🕘 Historia zmian'), ('dbeditor.apply_page', '✅ Zastosuj')] %}
+  {% for ep, label in [('dbeditor.attrs', '🎲 Bonusy'), ('dbeditor.exptable', '📈 Tabela doświadczenia'), ('dbeditor.fishing', '🎣 Łowienie ryb'), ('dbeditor.proto_history', '🕘 Historia zmian'), ('dbeditor.config_page', '📤 Eksport / import'), ('dbeditor.apply_page', '✅ Zastosuj')] %}
     {% if ep in dbt_endpoints %}<a href="{{ url_for(ep) }}">{{ label }}</a>{% endif %}
   {% endfor %}
 </nav>
