@@ -503,7 +503,8 @@ if ((Test-Path -LiteralPath $metinDropsApply -PathType Leaf) -and
 # Per-mob Cor Draconis / sash rules (server-patches/raremobrules): no Cor and no
 # sash from the Wukong Metins and the Phoenix nor from the library's Metin, WuKong
 # 5 Cor at 15% and a sash at 15%, and the library's Metin's own drop group;
-# after metindrops.
+# the database editor's rare drop switches (MT2009_PLUS_RARE_DROP_SWITCHES_V1,
+# also item_manager.h, item_manager_read_tables.cpp, char_item.cpp); after metindrops.
 $rareMobRulesApply = Join-Path $repo 'server-patches/raremobrules/Apply-RareMobRulesPatch.ps1'
 if ((Test-Path -LiteralPath $rareMobRulesApply -PathType Leaf) -and
     (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_manager.cpp') -PathType Leaf)) {

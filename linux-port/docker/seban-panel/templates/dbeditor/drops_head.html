@@ -7,6 +7,7 @@
   <a href="{{ url_for('dbeditor.drops_index') }}">💀 Drop – przegląd</a>
   <a href="{{ url_for('dbeditor.drops_common') }}">Zwykły drop</a>
   <a href="{{ url_for('dbeditor.drops_etc') }}">Drop specjalny</a>
+  {% if 'dbeditor.raredrop' in dbd_endpoints %}<a href="{{ url_for('dbeditor.raredrop') }}">🔀 Kupony SM, szarfy, Cor</a>{% endif %}
   {% if 'dbeditor.chests_index' in dbd_endpoints %}<a href="{{ url_for('dbeditor.chests_index') }}">🧰 Szkatułki</a>{% endif %}
   <a href="{{ url_for('dbeditor.drops_backups') }}">Kopie zapasowe</a>
 </nav>

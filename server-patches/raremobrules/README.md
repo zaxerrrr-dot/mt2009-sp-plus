@@ -21,5 +21,16 @@ Znacznik: `MT2009_PLUS_RARE_MOB_RULES_V1`. Arkusz dropu od właściciela, 1 paź
   wypadały (1 na ~31 700 zabić). Boty bez zmian (stara kara). Cor/szarfy/księgi bez zmian.
   Dane: `linux-port/docker/game/mob_drop_item.dtdrops.append.txt` (Brutalne demony 1061-1071).
 
+- `MT2009_PLUS_RARE_DROP_SWITCHES_V1` (5 października): sześć wyłączników z edytora bazy danych panelu
+  Seban (strona „Kupony SM, szarfy, Cor”, `dbeditor/raredrop.py`) – flagi świata w `player.quest`
+  (dwPID 0, 1 = wyłączony, brak/0 = włączony): `m2_sm_boss_off`, `m2_sm_metin_off`, `m2_sash_boss_off`,
+  `m2_sash_metin_off`, `m2_cor_boss_off`, `m2_cor_metin_off`. Wyłączają tylko źródła wbudowane:
+  rzut na Kupon SM (80017, CONFIG `DRAGON_COIN_*_PERMILLE`), rzut na szarfę +0 i na Cor Draconis
+  (z regułami tej poprawki), szarfę unikatową ze skrzyni bossa (`char_item.cpp`, przełącznik bossów)
+  i wiersze tabel dropu z gry (`item_manager_read_tables.cpp` oznacza każdy wiersz grupy „drop”, której
+  nazwa nie zaczyna się od `MT2009_panel_`; `item_manager.h`, `SDropItemGroupInfo::bBuiltin`). Grupa zapisana
+  w panelu („Drop z potworów”) dropi dalej. Metin = `IsStone()`, reszta = boss. Gracze i boty tak samo.
+  Podgląd dropu potwora i autopolowanie też; wiki dropu: `server-patches/dropwiki`.
+
 Stosowanie: `Apply-RareMobRulesPatch.ps1 -SourceDir <game/src>` (Windows) albo
 `python3 apply_raremobrules.py <game/src>` (Linux/VPS); zmiany w `edits.json`.
