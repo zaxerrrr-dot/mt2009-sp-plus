@@ -530,6 +530,30 @@ class SidebarWindow(ui.Window):
 		except (ReferenceError, AttributeError):
 			return None
 
+	# MT2009_PLUS_SIDEBAR_FIT_V1 (the owner, 5 October: "panel boczny jest
+	# dluzszy niz EQ, zrob tak aby byl 1:1 jak eq"): the board is exactly as
+	# tall as the inventory window, the buttons spread evenly over it (the
+	# gaps shrink as buttons are added, never below 2 px).
+	def __InventoryHeight(self):
+		try:
+			return self.wndInventory.GetHeight()
+		except (ReferenceError, AttributeError):
+			return 0
+
+	def __FitBoard(self, height):
+		count = len(self.buttons)
+		if not self.board or count == 0 or height <= 0:
+			return
+		free = height - count * self.BUTTON_HEIGHT
+		gap = max(2, free / (count + 1))
+		top = max(2, (height - count * self.BUTTON_HEIGHT - (count - 1) * gap) / 2)
+		y = top
+		for button in self.buttons:
+			button.SetPosition(self.BUTTON_GAP_X, y)
+			y += self.BUTTON_HEIGHT + gap
+		self.board.SetSize(self.BUTTON_GAP_X + self.BUTTON_WIDTH + self.BUTTON_GAP_X,
+				max(height, y - gap + top))
+
 	# The side is chosen by the unfolded width, so folding and unfolding
 	# never move the bar across the inventory.
 	def __IsOnLeft(self, x):
@@ -551,13 +575,14 @@ class SidebarWindow(ui.Window):
 		rect = self.__GetInventoryRect()
 		if rect is None:
 			return None
-		return rect + (self.__IsOnLeft(rect[0]), self.folded)
+		return rect + (self.__IsOnLeft(rect[0]), self.folded, self.__InventoryHeight())
 
 	def AdjustPosition(self):
 		layout = self.__GetLayout()
 		if layout is None or not self.board or not self.tab:
 			return
-		x, y, width, onLeft, folded = layout
+		x, y, width, onLeft, folded, inventoryHeight = layout
+		self.__FitBoard(inventoryHeight)	# MT2009_PLUS_SIDEBAR_FIT_V1
 		boardWidth = self.board.GetWidth()
 
 		if folded:
