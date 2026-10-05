@@ -2098,6 +2098,16 @@ UPDATE world.mob_proto SET gold_min = 600000, gold_max = 900000 WHERE vnum = 249
 UPDATE world.mob_proto SET gold_min = 500000, gold_max = 750000 WHERE vnum = 2495;
 UPDATE world.mob_proto SET gold_min = 150000, gold_max = 220000 WHERE vnum = 3390;
 UPDATE world.mob_proto SET gold_min = 300000, gold_max = 450000 WHERE vnum = 3391;" || echo "[playerbot-migrate] WARNING: could not balance the Arezzo and dungeon bosses (MT2009_PLUS_AREZZO_BALANCE_V1)" >&2
+# MT2009_PLUS_AREZZO_BALANCE_V1 (the owner, 5 October: "jesli wejscie jest za 5kk, to
+# drop z glownego bossa niech bedzie polowa tej wartosci"): each dungeon's main boss
+# drops about half its entry fee in yang (0.45-0.55 x the fee; Leze Smoka's
+# Beran-Setaou already drops far more and stays).
+db -e "UPDATE world.mob_proto SET gold_min = 450000, gold_max = 550000 WHERE vnum = 9706;
+UPDATE world.mob_proto SET gold_min = 1125000, gold_max = 1375000 WHERE vnum = 9682;
+UPDATE world.mob_proto SET gold_min = 1575000, gold_max = 1925000 WHERE vnum = 6091;
+UPDATE world.mob_proto SET gold_min = 2250000, gold_max = 2750000 WHERE vnum = 9694;
+UPDATE world.mob_proto SET gold_min = 3375000, gold_max = 4125000 WHERE vnum IN (6191, 9714);" \
+  || echo "[playerbot-migrate] WARNING: could not set the dungeon bosses' yang to half the entry fee" >&2
 
 # MT2009_PLUS_GOBLIN_V1: the Treasure Hunt event (playerbot_goblin.h, the events
 # file's kind "goblin"): the Treasure Ticket (70617, from chests while the
