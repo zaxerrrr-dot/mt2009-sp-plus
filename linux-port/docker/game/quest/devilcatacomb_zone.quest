@@ -45,6 +45,13 @@
 quest devilcatacomb_zone begin
 	state start begin
 	
+	-- MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1: the thirty minutes after the last exit are the bots' only (the owner,
+	-- 5 October: "teraz czekaj¹ tylko boty"); a person goes down again at once. The bots' own
+	-- raids keep their rest in the core (IsPlayerBotCatacombEligible, playerbot_catacomb.h).
+	function must_rest()
+		return pc.is_playerbot() and get_global_time() - pc.getf("devilcatacomb_zone", "last_exit_time") < 1800
+	end
+
 	function is_closed()
 		return (game.get_event_flag("dc_closed") > 0)    --close dialog
 	end
@@ -236,7 +243,7 @@ quest devilcatacomb_zone begin
 							why = "potrzebny 75. poziom"
 						elseif pc.getf("deviltower_zone", "9_done") == 0 then
 							why = "najpierw 9. pietro Wiezy Demonow"
-						elseif get_global_time() - pc.getf("devilcatacomb_zone", "last_exit_time") < 1800 then
+						elseif devilcatacomb_zone.must_rest() then -- MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1
 							why = "nie minelo 30 minut od ostatniego wyjscia"
 						elseif not pc.can_warp() then
 							why = "odczekaj chwile po handlu, sklepie, magazynie lub ulepszaniu"
@@ -263,7 +270,7 @@ quest devilcatacomb_zone begin
 				say(gameforge.devilcatacomb_zone._110_say)
 			elseif pc.getf("deviltower_zone","9_done") == 0 then
 				say(gameforge.devilcatacomb_zone._120_say)
-			elseif ((get_global_time() - pc.getf("devilcatacomb_zone","last_exit_time")) < 1800) then
+			elseif devilcatacomb_zone.must_rest() then -- MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1
 				say(gameforge.devilcatacomb_zone._130_say)
 			else
 				say(gameforge.devilcatacomb_zone._140_say)
