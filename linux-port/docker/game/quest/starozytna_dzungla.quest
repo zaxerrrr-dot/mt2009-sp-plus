@@ -22,7 +22,7 @@ quest starozytna_dzungla begin
 				limit_min = 60,
 				-- MT2009_PLUS_DUNGEON_FEE_V1: the price of a new expedition (each player, paid on entering it) and
 				-- how many new expeditions a player may start a day (Polish midnight).
-				fee = 15000000, fee_text = "15 000 000",
+				fee = 7500000, fee_text = "7 500 000", -- MT2009_PLUS_AREZZO_BALANCE_V1: half of 15 000 000 (the owner, 5 October)
 				daily = 5,
 				wave_kills = 40,
 				seals = 3,
