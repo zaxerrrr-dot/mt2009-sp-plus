@@ -491,6 +491,8 @@ const long long BONUS_COUNT_GEAR_LOW = 500000;
 const long long BONUS_COUNT_GEAR_HIGH = 1200000;
 const int BONUS_COUNT_MAX_LINES = 5;
 const int BONUS_COUNT_WEAPON_FREE_LINES = 2;
+// MT2009_PLUS_WEAK_BONUS_WEAPON_EAR_V1: weapons and earrings, 35% less.
+const int BONUS_COUNT_WEAPON_EAR_PERCENT = 65;
 const long MOONLIGHT_QUIET_SECONDS = 14L * 24L * 60L * 60L;
 
 // The yang one line adds, on the owner's numbers (before the world's yang

@@ -805,8 +805,13 @@ namespace
 		const int cls = GetPlayerBotBonusCountClass(item);
 		if (cls == playerbot_price_rules::BONUS_COUNT_NONE)
 			return 0;
-		const long long addon = playerbot_price_rules::BonusCountAddon(cls, item->GetLevelLimit(),
+		long long addon = playerbot_price_rules::BonusCountAddon(cls, item->GetLevelLimit(),
 				CountPlayerBotBonusCountLines(item));
+		// MT2009_PLUS_WEAK_BONUS_WEAPON_EAR_V1 (owner, 5 October): weak lines
+		// on a weapon or on earrings are worth 35% less than on the other
+		// pieces - the add-on is 65% of theirs.
+		if (item->GetType() == ITEM_WEAPON || (item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_EAR))
+			addon = addon * playerbot_price_rules::BONUS_COUNT_WEAPON_EAR_PERCENT / 100;
 		if (addon <= 0)
 			return 0;
 		return ScalePlayerBotIwakuraPrice((DWORD)std::min<long long>(addon, 0xFFFFFFFFLL));

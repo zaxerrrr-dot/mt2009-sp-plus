@@ -3025,7 +3025,9 @@ namespace
 	// 1 October (gear tops, materials, scrolls, books, the new goods).
 	// 12: MT2009_PLUS_BOOK_PRICE_LADDER_V1 - the skill books' ladder down to
 	// 100 000 (owner, 4 October).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 12;
+	// 13: MT2009_PLUS_WEAK_BONUS_WEAPON_EAR_V1 - weak bonus lines on weapons
+	// and earrings 35% cheaper (owner, 5 October).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 13;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
