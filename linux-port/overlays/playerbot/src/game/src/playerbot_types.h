@@ -7426,6 +7426,14 @@ namespace
 	// How long such a piece waits in the bag for the anvil before it goes on
 	// the counter at what it is (ScorePlayerBotShopStockRules).
 	const DWORD PLAYERBOT_SPARE_SALE_HOLD_MS = 45 * 60 * 1000;
+	// MT2009_PLUS_BOT_GEAR_JUNK_FIX_V1 (playerbot_economy.h): how long a piece
+	// of gear at +1..+4 the bot has no use for waits in its bag for its
+	// counter before the merchant takes it - two of the offline stand's
+	// markdown steps, some two dozen of the counter's service rounds (ten to
+	// fifteen minutes apart, BotOfflineServiceGap). The first-seen
+	// clock keeps at most this many pieces before it drops the stale ones.
+	const DWORD PLAYERBOT_GEAR_JUNK_STALL_WAIT_MS = 2 * PLAYERBOT_OFFLINE_UNSOLD_STEP_MS;
+	const size_t PLAYERBOT_GEAR_JUNK_SINCE_MAX = 200000;
 	void NotePlayerBotCorBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
 	const DWORD PLAYERBOT_CRAFT_UNSOLD_RECALL_MS_PRE = 12 * 60 * 60 * 1000;
 	bool IsPlayerBotSaddlebagKeeperPID(DWORD pid);
