@@ -2,7 +2,7 @@
 -- plechito_easter2023_dungeon z Arezzo), tylko dla graczy. Wzorzec biblioteka_wiedzy.quest (tools/questgen.py):
 -- Stra¿nik D¿ungli (20425) w Zaczarowanym Lesie. Etapy: 3 fale po 40 stworzeñ (Pieczêæ D¿ungli 30768),
 -- 6 Staro¿ytnych Kamieni, 3 Faethorny, 4 Pradawne Kamienie, Królewska Sowa, Królowa D¿ungli; potem 2-5 Skrzyñ
--- D¿ungli (30776) dla ka¿dego gracza. Limit 60 minut, ponowne wejœcie po 60 minutach.
+-- D¿ungli (30776) do podzia³u miêdzy graczy (MT2009_PLUS_DUNGEON_CHEST_SPLIT_V1). Limit 60 minut, ponowne wejœcie po 60 minutach.
 -- MT2009_PLUS_BOT_DUNGEONS_ALL_V1: mapa lochu jest od teraz na rdzeniu game1, razem z botami
 -- (m2-render-config) - gdzie ni¿ej mowa o game2, chodzi o rdzeñ, który hostuje mapê:
 -- d.new_jump_pids tworzy instancjê na miejscu i przenosi do niej ludzi z dru¿yny, a boty
@@ -300,6 +300,15 @@ quest starozytna_dzungla begin
 			d.exit_all()
 		end
 
+		-- MT2009_PLUS_DUNGEON_CHEST_SPLIT_V1 (the owner, 5 October: "niech drop szkatu³ek bêdzie rozdzielany
+		-- na wszystkich graczy, a nie ¿e ka¿dy dostaje swoje osobno"): the boss's chests (30776) are ONE pool
+		-- per run - what a single player got before (cfg: chests_min..chests_max) - handed out one by one,
+		-- round-robin from a random person, among the people (not bots) of the killer's party inside this
+		-- instance (get_member_pids gives the members on the killer's map index), or the killer alone. A
+		-- person alone with bots takes the whole pool; a bot never takes a chest, so the bots' own runs
+		-- (no person inside) give none, as before. Each person is told what he got; a full bag drops them
+		-- at the player's feet. The boss's ground drop (mob_drop_item, no 30776 in it) is one roll per kill
+		-- owned by the killer and stays as it is.
 		function reward()
 			local c = starozytna_dzungla.cfg()
 			local took = get_global_time() - d.getf("start")
@@ -310,14 +319,34 @@ quest starozytna_dzungla begin
 			if table.getn(pids) == 0 then
 				pids = {pc.get_player_id()}
 			end
+			local people = {}
 			for i, pid in next, pids, nil do
 				q.begin_other_pc_block(pid)
 				if not pc.is_playerbot() then
-					local n = number(c.chests_min, c.chests_max)
-					pc.give_item2(30776, n)
-					syschat("Staro¿ytna D¿ungla: otrzymujesz skrzynie: "..n..".")
+					table.insert(people, pid)
 				end
 				q.end_other_pc_block()
+			end
+			local n = table.getn(people)
+			if n > 0 then
+				local pool = number(c.chests_min, c.chests_max)
+				local got = {}
+				local first = number(1, n)
+				for k = 0, pool - 1 do
+					local who = math.mod(first - 1 + k, n) + 1
+					got[who] = (got[who] or 0) + 1
+				end
+				for who = 1, n do
+					q.begin_other_pc_block(people[who])
+					local g = got[who] or 0
+					if g > 0 then
+						pc.give_item2(30776, g)
+						syschat("Staro¿ytna D¿ungla: Otrzymujesz: Skrzynia D¿ungli x"..g.." (podzia³ ³upu: "..pool.." na "..n..").")
+					else
+						syschat("Staro¿ytna D¿ungla: tym razem bez skrzyni (podzia³ ³upu: "..pool.." na "..n..").")
+					end
+					q.end_other_pc_block()
+				end
 			end
 			return took
 		end
