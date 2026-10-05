@@ -124,6 +124,10 @@ namespace
 			return true;
 		if (GetPlayerBotAffinity(state, personPID) >= PLAYERBOT_SPOT_FOND_AFFINITY)
 			return true;
+		// MT2009_PLUS_SPOT_THREE_STRIKES_V1: beaten three times by the person,
+		// the bot has nothing more to say to him.
+		if (IsPlayerBotStruckOut(bot->GetPlayerID(), person, get_dword_time()))
+			return true;
 		return false;
 	}
 
@@ -226,7 +230,8 @@ namespace
 				q.gaveUp ? 1 : 0, ch->GetMapIndex(), line);
 		if (q.gaveUp)
 			LeavePlayerBotSpot(ch, state, dwNow);
-		if (playerbot_spot::CallsFriends(q, temper, step) && ch->GetSectree())
+		if (playerbot_spot::CallsFriends(q, temper, step) && ch->GetSectree() &&
+				!IsPlayerBotStrikeQuarrelOver(person, dwNow))	// MT2009_PLUS_SPOT_THREE_STRIKES_V1
 		{
 			q.calledFriends = true;
 			FPlayerBotSpotFriend finder(ch);
@@ -252,6 +257,168 @@ namespace
 		entry.dwPersonVID = (DWORD)person->GetVID();
 		entry.personName = person->GetName();
 		return entry;
+	}
+
+	// MT2009_PLUS_SPOT_THREE_STRIKES_V1 - "do 3 razy sztuka" (the owner, 5
+	// October). The tallies (playerbot_spot_rules.h, TStrikes) by (bot pid,
+	// person pid): a bot's deaths at the hands of a person or of the person's
+	// party, counted from the Anti-PK protocol's death (NotePlayerBotAntiPkDeath).
+	// The third and the bot is out against that person - and the person's
+	// party - for STRIKE_COOLDOWN_MS: it leaves the spot, never takes the
+	// person for a foe, never whispers at him, never calls its party or guild
+	// against him (PickPlayerBotPersonaFoe and the finders it asks). The
+	// helpers it called keep their own tallies the same way; when every bot
+	// beaten by the person is out and none still fights him, the quarrel is
+	// over and no bot's party or guild is called against him for the
+	// cooldown. A bot the person strikes afresh still defends itself.
+	typedef std::pair<DWORD, DWORD> TPlayerBotStrikeKey; // (bot pid, person pid)
+	std::map<TPlayerBotStrikeKey, playerbot_spot::TStrikes> s_mapPlayerBotStrikes;
+	std::map<DWORD, DWORD> s_mapPlayerBotStrikeQuarrelOver; // person pid -> when the quarrel ended
+
+	// The person, or one of the person's party.
+	bool IsPlayerBotStrikeSameSide(DWORD personPid, LPCHARACTER c)
+	{
+		if (!c)
+			return false;
+		if (c->GetPlayerID() == personPid)
+			return true;
+		if (!c->GetParty())
+			return false;
+		LPCHARACTER person = CHARACTER_MANAGER::instance().FindByPID(personPid);
+		return person && person->GetParty() == c->GetParty();
+	}
+
+	// Whether this bot has had its three from this person (or the person's party).
+	bool IsPlayerBotStruckOut(DWORD botPid, LPCHARACTER foe, DWORD dwNow)
+	{
+		if (!foe || s_mapPlayerBotStrikes.empty() || !IsPlayerBotPersonCharacter(foe))
+			return false;
+		for (std::map<TPlayerBotStrikeKey, playerbot_spot::TStrikes>::const_iterator it =
+				s_mapPlayerBotStrikes.lower_bound(std::make_pair(botPid, (DWORD)0));
+				it != s_mapPlayerBotStrikes.end() && it->first.first == botPid; ++it)
+			if (playerbot_spot::IsOut(it->second, dwNow) && IsPlayerBotStrikeSameSide(it->first.second, foe))
+				return true;
+		return false;
+	}
+
+	// Whether the whole quarrel with this person is over: no bot is called
+	// against him (or his party) for the cooldown.
+	bool IsPlayerBotStrikeQuarrelOver(LPCHARACTER foe, DWORD dwNow)
+	{
+		if (!foe || s_mapPlayerBotStrikeQuarrelOver.empty() || !IsPlayerBotPersonCharacter(foe))
+			return false;
+		for (std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotStrikeQuarrelOver.begin();
+				it != s_mapPlayerBotStrikeQuarrelOver.end(); ++it)
+			if (dwNow - it->second < playerbot_spot::STRIKE_COOLDOWN_MS && IsPlayerBotStrikeSameSide(it->first, foe))
+				return true;
+		return false;
+	}
+
+	// The quarrel's end, looked at after a bot is out: every bot with a
+	// defeat against the person out, and no bot still holding him (or his
+	// party) as a foe that is not.
+	void CheckPlayerBotStrikeQuarrelOver(DWORD personPid, LPCHARACTER person, DWORD dwNow)
+	{
+		int out = 0;
+		for (std::map<TPlayerBotStrikeKey, playerbot_spot::TStrikes>::const_iterator it = s_mapPlayerBotStrikes.begin();
+				it != s_mapPlayerBotStrikes.end(); ++it)
+		{
+			if (it->first.second != personPid || playerbot_spot::StrikesForgotten(it->second, dwNow))
+				continue;
+			if (!playerbot_spot::IsOut(it->second, dwNow))
+				return;
+			++out;
+		}
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			const DWORD foeVid = it->second.persona.dwFoeVID;
+			if (foeVid == 0)
+				continue;
+			LPCHARACTER foe = CHARACTER_MANAGER::instance().Find(foeVid);
+			if (foe && IsPlayerBotPersonCharacter(foe) && IsPlayerBotStrikeSameSide(personPid, foe) &&
+					!IsPlayerBotStruckOut(it->first, foe, dwNow))
+				return;
+		}
+		s_mapPlayerBotStrikeQuarrelOver[personPid] = dwNow;
+		sys_log(0, "PLAYERBOT_SPOT: three strikes quarrel over person_pid=%u person=%s bots_out=%d minutes=%u",
+				personPid, person ? person->GetName() : "", out,
+				(unsigned int)(playerbot_spot::STRIKE_COOLDOWN_MS / 60000));
+	}
+
+	// A bot's death at a person's hands (NotePlayerBotAntiPkDeath, killerPid
+	// the person whose blow the protocol last held). True when the bot is out
+	// against the person - by this death or before it: no grudge, no revenge.
+	bool NotePlayerBotSpotDefeat(LPCHARACTER ch, TPlayerBotAIState& state, DWORD killerPid, DWORD dwNow)
+	{
+		if (!ch || killerPid == 0 || CPlayerBotManager::instance().IsRegisteredBotPID(killerPid))
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		// A companion and a mercenary fight for whoever they serve.
+		if (IsPlayerBotSidekickPID(pid) || IsPlayerBotOnMercContract(pid))
+			return false;
+		LPCHARACTER killer = CHARACTER_MANAGER::instance().FindByPID(killerPid);
+		if (!killer || !IsPlayerBotPersonCharacter(killer))
+			return false;
+		// The tally this death belongs to: one the bot keeps against the
+		// killer, or against a person of the killer's party.
+		DWORD personPid = killerPid;
+		for (std::map<TPlayerBotStrikeKey, playerbot_spot::TStrikes>::const_iterator it =
+				s_mapPlayerBotStrikes.lower_bound(std::make_pair(pid, (DWORD)0));
+				it != s_mapPlayerBotStrikes.end() && it->first.first == pid; ++it)
+			if (!playerbot_spot::StrikesForgotten(it->second, dwNow) && IsPlayerBotStrikeSameSide(it->first.second, killer))
+			{
+				personPid = it->first.second;
+				break;
+			}
+		playerbot_spot::TStrikes& strikes = s_mapPlayerBotStrikes[std::make_pair(pid, personPid)];
+		if (playerbot_spot::IsOut(strikes, dwNow))
+			return true;
+		const bool out = playerbot_spot::NoteDefeat(strikes, dwNow);
+		sys_log(0, "PLAYERBOT_SPOT: defeat pid=%u name=%s by_pid=%u by=%s person_pid=%u defeats=%d/%d map=%ld",
+				pid, ch->GetName(), killerPid, killer->GetName(), personPid, strikes.defeats,
+				playerbot_spot::STRIKES_OUT, ch->GetMapIndex());
+		if (!out)
+			return false;
+		// Out: no revenge, no foe, off the ground for a good while - another
+		// hub of this map or another map (the hub choice and the targeting
+		// honour the persona's avoided spot).
+		s_mapPlayerBotGrudge.erase(pid);
+		TPlayerBotPersona& p = state.persona;
+		p.dwFoeVID = 0;
+		p.bFoeReason = BOT_FOE_NONE;
+		p.dwStruckByPID = 0;
+		p.dwStruckByVID = 0;
+		p.dwStruckAt = 0;
+		p.lAvoidSpotMap = ch->GetMapIndex();
+		p.lAvoidSpotX = ch->GetX();
+		p.lAvoidSpotY = ch->GetY();
+		p.dwAvoidSpotUntil = dwNow + playerbot_spot::STRIKE_LEAVE_SPOT_MS;
+		p.bDirty = true;
+		state.dwTargetVID = 0;
+		state.dwNextWanderTime = dwNow;
+		state.dwHubChosenTime = 0;
+		ClearPlayerBotRoute(state, true);
+		// The spot quarrel is given up too, for the conversation ("czemu?").
+		TPlayerBotSpotQuarrel& entry = GetPlayerBotSpotEntry(ch, killer);
+		if (entry.q.firstAt == 0)
+			entry.q.firstAt = dwNow;
+		entry.q.lastAt = dwNow;
+		entry.q.gaveUp = true;
+		// One word as it goes, under the same caps as every complaint.
+		std::map<DWORD, DWORD>::const_iterator said = s_mapPlayerBotSpotPersonSaid.find(killerPid);
+		const bool spoke = IsPlayerBotSpotDefenseEnabled() && !IsPlayerBotShouterPID(pid) &&
+				(said == s_mapPlayerBotSpotPersonSaid.end() || dwNow - said->second >= PLAYERBOT_SPOT_PERSON_GAP_MS);
+		if (spoke)
+		{
+			s_mapPlayerBotSpotPersonSaid[killerPid] = dwNow;
+			SayPlayerBotSpotLine(ch, killer, playerbot_spot::GiveUpLine((unsigned int)number(0, 1 << 20)),
+					"Bo juz trzeci raz mnie polozyles, nie ma sensu sie bic.", 2500 + number(0, 3000));
+		}
+		sys_log(0, "PLAYERBOT_SPOT: three strikes pid=%u name=%s gives up on person_pid=%u by=%s spot=(%ld,%ld) map=%ld minutes=%u spoke=%d",
+				pid, ch->GetName(), personPid, killer->GetName(), p.lAvoidSpotX, p.lAvoidSpotY, p.lAvoidSpotMap,
+				(unsigned int)(playerbot_spot::STRIKE_COOLDOWN_MS / 60000), spoke ? 1 : 0);
+		CheckPlayerBotStrikeQuarrelOver(personPid, CHARACTER_MANAGER::instance().FindByPID(personPid), dwNow);
+		return true;
 	}
 
 	// A person's blow at a bot (the Anti-PK protocol's report).
@@ -395,6 +562,23 @@ namespace
 		{
 			if (playerbot_spot::Forgotten(it->second.q, dwNow))
 				s_mapPlayerBotSpotQuarrels.erase(it++);
+			else
+				++it;
+		}
+		// MT2009_PLUS_SPOT_THREE_STRIKES_V1: tallies with nothing left in them.
+		for (std::map<TPlayerBotStrikeKey, playerbot_spot::TStrikes>::iterator it = s_mapPlayerBotStrikes.begin();
+				it != s_mapPlayerBotStrikes.end(); )
+		{
+			if (playerbot_spot::StrikesForgotten(it->second, dwNow))
+				s_mapPlayerBotStrikes.erase(it++);
+			else
+				++it;
+		}
+		for (std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotStrikeQuarrelOver.begin();
+				it != s_mapPlayerBotStrikeQuarrelOver.end(); )
+		{
+			if (dwNow - it->second >= playerbot_spot::STRIKE_COOLDOWN_MS)
+				s_mapPlayerBotStrikeQuarrelOver.erase(it++);
 			else
 				++it;
 		}
