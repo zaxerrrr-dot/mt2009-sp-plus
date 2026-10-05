@@ -48,6 +48,7 @@
   <div class="dbe-chips">
     <a class="dbe-chip" href="{{ url_for('dbeditor.mobs', rodzaj='bossowie') }}">👑 Wszyscy bossowie</a>
     <a class="dbe-chip" href="{{ url_for('dbeditor.mobs', rodzaj='metiny') }}">🗿 Kamienie Metin</a>
+    <a class="dbe-chip" href="{{ url_for('dbeditor.mobs_melee') }}">🗡️ Zwykłe potwory: atak z dystansu → wręcz</a>
     {% for lo, hi in ((1, 20), (21, 40), (41, 60), (61, 80), (81, 99), (100, 255)) %}
     <a class="dbe-chip" href="{{ url_for('dbeditor.mobs', rodzaj='potwory', lvl_od=lo, lvl_do=hi) }}">👹 Potwory {{ lo }}–{{ hi }} poz.</a>
     {% endfor %}

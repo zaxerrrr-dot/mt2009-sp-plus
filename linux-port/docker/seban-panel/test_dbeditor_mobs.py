@@ -348,7 +348,7 @@ class MobTests(Base):
             self.skipTest("no apply.sh")
         text = APPLY_SH.read_text(encoding="utf-8", errors="replace")
         for match in re.finditer(r"UPDATE world\.mob_proto\s+SET\s+(.*?)\s+WHERE\s+(.*?)(;|\")", text, re.S):
-            cols = set(re.findall(r"(?:^|,\s*)`?(\w+)`?\s*=", match.group(1))) & set(mobs.SPECS)
+            cols = set(re.findall(r"(?:^|,\s*)`?(\w+)`?\s*=", match.group(1))) & set(mobs.ALL_SPECS)
             where = match.group(2).strip()
             single = re.fullmatch(r"vnum\s*=\s*(\d+)", where)
             many = re.fullmatch(r"vnum\s+IN\s*\(([\d,\s]+)\)", where)
@@ -357,6 +357,125 @@ class MobTests(Base):
             vnums = [int(single.group(1))] if single else [int(v) for v in many.group(1).split(",")]
             for vnum in vnums:
                 self.assertLessEqual(cols, mobs.boot_cols(vnum), f"apply.sh sets {cols} of {vnum} at every start")
+
+
+class MeleeTests(Base):
+    """MT2009_PLUS_DB_EDITOR_MOB_MELEE_V1: "Zwykłe potwory: atak z dystansu → wręcz"."""
+
+    RANGED = [
+        # (vnum, name, level, rank, type, battle_type, attack_range, matched)
+        (503, "Dziki Lucznik", 35, 1, 0, 1, 850, True),
+        (604, "Ork Czarodziej", 33, 2, 0, 2, 150, True),
+        (301, "Zaprzys Zolnierz", 18, 0, 0, 2, 175, True),        # range already 175: only battle_type changes
+        (533, "Bestialski Lucznik", 40, 3, 0, 1, 850, True),
+        (2493, "Boss Lucznik", 60, 4, 0, 1, 850, False),          # a boss
+        (9706, "Baronowa Pajakow", 35, 5, 0, 1, 250, False),      # a king
+        (8099, "Metin Strzelec", 40, 3, 2, 1, 850, False),        # a Metin stone (type 2)
+        (20099, "Straznik Lucznik", 50, 0, 1, 1, 850, False),     # an NPC (type 1)
+        (777, "Przywolywacz Specjalny", 57, 3, 0, 3, 850, False),  # battle_type 3 (special) is not 1/2
+    ]
+
+    def setUp(self):
+        super().setUp()
+        for vnum, name, level, rank, type_, battle, rng, _m in self.RANGED:
+            row = mob(vnum, name, level, rank=rank, type_=type_)
+            row.update(battle_type=battle, attack_range=rng)
+            self.fake.con.execute(f"INSERT INTO world.mob_proto ({', '.join('`%s`' % c for c in MOB_COLS)}) "
+                                  f"VALUES ({','.join('?' * len(MOB_COLS))})", [row[c] for c in MOB_COLS])
+        self.matched = {v for v, *_r, m in self.RANGED if m}
+
+    def state(self):
+        return {r["vnum"]: (r["battle_type"], r["attack_range"])
+                for r in self.fake.rows("SELECT vnum, battle_type, attack_range FROM world.mob_proto")}
+
+    def test_where_is_the_owners_sql(self):
+        self.assertEqual(mobs.MELEE_WHERE, "battle_type IN (1, 2) AND `rank` IN (0, 1, 2, 3) AND `type` = 0")
+        self.assertEqual(mobs.MELEE_VALUES, {"battle_type": 0, "attack_range": 175})
+        # what the SQL would match on the same rows
+        found = {r["vnum"] for r in self.fake.rows(f"SELECT vnum FROM world.mob_proto WHERE {mobs.MELEE_WHERE}")}
+        self.assertEqual(found, self.matched)
+
+    def test_preview_selects_only_ordinary_ranged(self):
+        page = self.text(self.client.get("/db/mobs/wrecz"))
+        self.assertIn("Podgląd: 4 potworów", page)
+        vnums = re.search(r'name="vnums" value="([\d,]+)"', page).group(1)
+        self.assertEqual({int(v) for v in vnums.split(",")}, self.matched)
+        for name in ("Dziki Lucznik", "Ork Czarodziej", "Zaprzys Zolnierz", "Bestialski Lucznik"):
+            self.assertIn(name, page)
+        for name in ("Boss Lucznik", "Baronowa Pajakow", "Metin Strzelec", "Straznik Lucznik", "Przywolywacz Specjalny",
+                     "Wodz Orkow"):
+            self.assertNotIn(name, page)
+        self.assertIn("dystans (łuk) [1]", page)
+        self.assertIn("magia (dystans) [2]", page)
+        self.assertIn("850</span> → <b>175", page)
+        self.assertIn("(bez zmian)", page)                    # 301: range already 175
+        self.assertIn("po „Zastosuj”", page)
+        self.assertEqual(self.client.get("/db/mobs").status_code, 200)
+        self.assertIn("Dystans → wręcz", self.text(self.client.get("/db/mobs")))
+
+    def test_apply_writes_one_batch_and_undo_restores(self):
+        before = self.state()
+        page = self.text(self.client.get("/db/mobs/wrecz"))
+        vnums = re.search(r'name="vnums" value="([\d,]+)"', page).group(1)
+        page = self.text(self.post("/db/mobs/wrecz", {"vnums": vnums}, follow_redirects=True))
+        self.assertIn("4 potworów walczy teraz wręcz", page)
+        after = self.state()
+        for vnum in self.matched:
+            self.assertEqual(after[vnum], (0, 175))
+        for vnum in set(before) - self.matched:
+            self.assertEqual(after[vnum], before[vnum])      # bosses, Metins, NPCs, the rest untouched
+        batches = common_items.history_batches(10, "world.mob_proto")
+        self.assertEqual(len(batches), 1)
+        self.assertEqual(batches[0]["note"], mobs.MELEE_NOTE)
+        self.assertEqual(batches[0]["row_count"], 4)
+        fields = {(r["row_key"], r["col"]): (r["old_value"], r["new_value"]) for r in batches[0]["rows"]}
+        self.assertEqual(fields, {("503", "battle_type"): ("1", "0"), ("503", "attack_range"): ("850", "175"),
+                                  ("604", "battle_type"): ("2", "0"), ("604", "attack_range"): ("150", "175"),
+                                  ("301", "battle_type"): ("2", "0"),
+                                  ("533", "battle_type"): ("1", "0"), ("533", "attack_range"): ("850", "175")})
+        self.assertEqual(len(common_items.pending_changes()), 7)
+        apply_page = self.text(self.client.get("/db/apply"))
+        self.assertIn("Dziki Lucznik", apply_page)
+        history = self.text(self.client.get("/db/historia?tbl=world.mob_proto"))
+        self.assertIn("Sposób walki (battle_type)", history)
+        self.assertIn("dystans (łuk) [1]", history)
+        # nothing left to change, the save listed with its undo
+        page = self.text(self.client.get("/db/mobs/wrecz"))
+        self.assertIn("nie ma nic do zmiany", page)
+        self.assertIn("czeka na restart", page)
+        self.assertIn("Cofnij tę zmianę", page)
+        page = self.text(self.post("/db/historia/cofnij", {"batch": batches[0]["batch"], "back": "/db/mobs/wrecz"},
+                                   follow_redirects=True))
+        self.assertIn("Cofnięto 7 zmian", page)
+        self.assertEqual(self.state(), before)
+        self.assertEqual(common_items.pending_changes(), [])  # undone before a restart: nothing waits
+        page = self.text(self.client.get("/db/mobs/wrecz"))
+        self.assertIn("cofnięta", page)
+        self.assertIn("Podgląd: 4 potworów", page)
+
+    def test_stale_preview_is_refused(self):
+        page = self.text(self.post("/db/mobs/wrecz", {"vnums": "503,604"}, follow_redirects=True))
+        self.assertIn("zmieniła się od podglądu", page)
+        self.assertEqual(self.state()[503], (1, 850))
+        self.assertEqual(common_items.pending_changes(), [])
+        page = self.text(self.post("/db/mobs/wrecz", {"vnums": "503,604,301,533", "dbe_csrf": "zly"},
+                                   follow_redirects=True))
+        self.assertIn("Sesja formularza wygasła", page)
+        self.assertEqual(self.state()[503], (1, 850))
+
+    def test_start_script_does_not_revert(self):
+        # apply.sh writes attack_range only for 9706 (a king, never matched), never battle_type
+        for vnum in self.matched:
+            self.assertFalse({"battle_type", "attack_range"} & mobs.boot_cols(vnum))
+        self.assertIn("attack_range", mobs.boot_cols(9706))
+        self.assertIn("Zasięg ataku", self.text(self.client.get("/db/mobs/9706")))   # the edit page's start-up warning
+        if APPLY_SH.is_file():
+            text = APPLY_SH.read_text(encoding="utf-8", errors="replace")
+            self.assertNotRegex(text, r"(?i)UPDATE\s+world\.mob_proto\s+SET[^;\"]*\bbattle_type\s*=")
+            for match in re.finditer(r"UPDATE world\.mob_proto\s+SET\s+([^;\"]*?)\s+WHERE\s+([^;\"]*)", text):
+                if re.search(r"\battack_range\s*=", match.group(1)):
+                    self.assertRegex(match.group(2), r"^vnum\s*=\s*9706\b")
+            self.assertNotRegex(text, r"(?i)REPLACE\s+INTO\s+world\.mob_proto")
 
 
 class SpawnTests(Base):

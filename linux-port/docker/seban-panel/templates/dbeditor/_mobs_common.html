@@ -6,6 +6,7 @@
   <a href="{{ url_for('dbeditor.index') }}">← Edytor bazy danych</a>
   <a href="{{ url_for('dbeditor.mobs') }}" class="{{ 'is-active' if dbe_tab == 'mobs' }}">👹 Potwory i bossowie</a>
   <a href="{{ url_for('dbeditor.mobs_mass') }}" class="{{ 'is-active' if dbe_tab == 'mass' }}">✖️ Zmiana masowa</a>
+  <a href="{{ url_for('dbeditor.mobs_melee') }}" class="{{ 'is-active' if dbe_tab == 'melee' }}">🗡️ Dystans → wręcz</a>
   <a href="{{ url_for('dbeditor.spawns') }}" class="{{ 'is-active' if dbe_tab == 'spawns' }}">⏱️ Respawn bossów i metinów</a>
   <a href="{{ url_for('dbeditor.spawn_backups') }}" class="{{ 'is-active' if dbe_tab == 'backups' }}">🗂️ Kopie respawnu</a>
   <a href="{{ url_for('dbeditor.proto_history', tbl='world.mob_proto') }}">🕘 Historia potworów</a>
