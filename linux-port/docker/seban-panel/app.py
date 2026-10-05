@@ -11188,7 +11188,9 @@ dbeditor.install(app, {"app": app, "db": db, "rows": rows, "one": one,
                        "login_required": login_required, "game_text": game_text,
                        "queue_restart": dbeditor_queue_restart, "read_rates": read_rates,
                        "restart_progress": restart_progress, "spool": RATES_SPOOL,
-                       "panel_name": lambda: settings().get("panel_name") or "MT2009 PLUS"})
+                       "panel_name": lambda: settings().get("panel_name") or "MT2009 PLUS",
+                       # MT2009_PLUS_DB_EDITOR_CONFIG_V1: the header of an exported configuration
+                       "server_version": installed_playerbots_version})
 
 
 if __name__ == "__main__":
