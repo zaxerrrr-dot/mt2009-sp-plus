@@ -342,6 +342,10 @@ namespace playerbot_bpbots
 			const Progress& p = cache.missions[m.id];
 			if (p.value + p.delta >= m.count || IsLocked(cache, m))
 				continue;
+			// A repeatable mission is sought out until it is done once; after
+			// that it only counts along the way (MT2009_PLUS_BP_REPEAT_V1).
+			if (m.repeatable && p.completions > 0)
+				continue;
 			out.push_back(&m);
 		}
 	}

@@ -8793,11 +8793,14 @@ def ensure_battlepass_tables():
         ADD COLUMN IF NOT EXISTS reward3_count INT UNSIGNED NOT NULL DEFAULT 0 AFTER reward3_vnum,
         ADD COLUMN IF NOT EXISTS description VARBINARY(255) NOT NULL DEFAULT '' AFTER name,
         ADD COLUMN IF NOT EXISTS target_level INT UNSIGNED NOT NULL DEFAULT 0 AFTER target,
-        ADD COLUMN IF NOT EXISTS requires_id INT UNSIGNED NOT NULL DEFAULT 0 AFTER active""")
+        ADD COLUMN IF NOT EXISTS requires_id INT UNSIGNED NOT NULL DEFAULT 0 AFTER active,
+        ADD COLUMN IF NOT EXISTS repeatable TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER requires_id""")
     rows("""CREATE TABLE IF NOT EXISTS player.battlepass_progress (
         pid INT UNSIGNED NOT NULL, season INT UNSIGNED NOT NULL, mission INT UNSIGNED NOT NULL,
         progress INT UNSIGNED NOT NULL DEFAULT 0, claimed TINYINT UNSIGNED NOT NULL DEFAULT 0,
         PRIMARY KEY (pid, season, mission)) ENGINE=InnoDB""")
+    rows("""ALTER TABLE player.battlepass_progress
+        ADD COLUMN IF NOT EXISTS completions INT UNSIGNED NOT NULL DEFAULT 0 AFTER claimed""")
     rows("""CREATE TABLE IF NOT EXISTS player.battlepass_config (
         id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
         final1_vnum INT UNSIGNED NOT NULL DEFAULT 0, final1_count INT UNSIGNED NOT NULL DEFAULT 0,
@@ -8904,18 +8907,20 @@ def battlepass():
                     name = (request.form.get(key + "name") or "").strip().encode("cp1250", "replace")[:96]
                     desc = (request.form.get(key + "description") or "").strip().encode("cp1250", "replace")[:255]
                     active = 1 if request.form.get(key + "active") else 0
-                    values = (mtype, target, level, count, *rewards, name, desc, active, requires)
+                    repeatable = 1 if request.form.get(key + "repeatable") else 0
+                    values = (mtype, target, level, count, *rewards, name, desc, active, requires, repeatable)
                     if raw_id:
                         rows("""UPDATE player.battlepass_mission SET type=%s, target=%s, target_level=%s, count=%s,
                             reward_vnum=%s, reward_count=%s, reward2_vnum=%s, reward2_count=%s, reward3_vnum=%s,
-                            reward3_count=%s, name=%s, description=%s, active=%s, requires_id=%s WHERE id=%s""",
+                            reward3_count=%s, name=%s, description=%s, active=%s, requires_id=%s, repeatable=%s
+                            WHERE id=%s""",
                              values + (int(raw_id),))
                         saved += 1
                     else:
                         rows("""INSERT INTO player.battlepass_mission (type, target, target_level, count, reward_vnum,
                             reward_count, reward2_vnum, reward2_count, reward3_vnum, reward3_count, name, description,
-                            active, requires_id, id)
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", values + (next_id,))
+                            active, requires_id, repeatable, id)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", values + (next_id,))
                         next_id += 1
                         added += 1
                 rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_BATTLEPASS',%s)",
@@ -8927,7 +8932,8 @@ def battlepass():
         return redirect(url_for("battlepass"))
 
     missions = rows("""SELECT id,type,target,target_level,count,reward_vnum,reward_count,reward2_vnum,reward2_count,
-        reward3_vnum,reward3_count,name,description,active,requires_id FROM player.battlepass_mission ORDER BY id""")
+        reward3_vnum,reward3_count,name,description,active,requires_id,repeatable FROM player.battlepass_mission
+        ORDER BY id""")
     for m in missions:
         m["name"] = game_text(m["name"]) if m["name"] else ""
         m["description"] = game_text(m["description"]) if m["description"] else ""

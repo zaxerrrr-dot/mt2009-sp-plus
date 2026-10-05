@@ -196,6 +196,6 @@ który jest rdzeniem (core) MT2009 PLUS. Wszystkie dodatkowe zmiany dodaje
 
 Szczególne podziękowania dla współautorów wydania mt2009 plus
 - **Digi Rasta** — Rytuał Przebudzenia u Kowala i bronie przebudzone +0…+9, kamienie duchowe do +9 oraz koń do 30 poziomu z płatnym szkoleniem u Stajennego, Próbą Czarnego Rumaka i jukami do 30 poziomu; Karty Potworów (misje kart, kolekcja potworów z gwiazdkami i ich funkcjami, bonusy zestawów – jego port paczki „Official-Monster-Card-System” Best Studio, `server-patches/monstercard`).
-- **Vekirion** — wikipedia dropu, keybindy, ulepszanie alchemii
+- **Vekirion** — wikipedia dropu, keybindy, ulepszanie alchemii, powtarzalne misje Battle Pass
 - **blaki** — autor ulepszonego systemu autołowów
 - **Podstawowy projekt PlayerBots (Licencja MIT) (GitHub):** [TieruYT/metin2-playerbots](https://github.com/TieruYT/metin2-playerbots)
