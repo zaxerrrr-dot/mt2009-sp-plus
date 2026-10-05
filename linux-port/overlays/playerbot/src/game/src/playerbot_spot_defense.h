@@ -46,6 +46,15 @@ namespace
 	const int PLAYERBOT_SPOT_PERSON_RANGE = 2200;     // the person must stand this near
 	const DWORD PLAYERBOT_SPOT_HIT_FRESH_MS = 8000;   // a hit older than this is history
 	const DWORD PLAYERBOT_SPOT_PERSON_GAP_MS = 10000; // one complaint a person this often
+	// MT2009_PLUS_SPOT_WHISPER_CAP_V1 (the owner, 5 October): a person who leaves
+	// Auto Lowy running walks into the bots' spots all day and every bot it
+	// struck whispered - dozens of envelopes. All the bots together send one
+	// person at most this many spot complaints (the friends' lines included)
+	// an hour; the quarrel itself goes on silently (a bot still gives up and
+	// leaves the spot).
+	const unsigned int PLAYERBOT_SPOT_PERSON_HOUR_MAX = 2;
+	const DWORD PLAYERBOT_SPOT_PERSON_HOUR_MS = 60 * 60 * 1000;
+	std::map<DWORD, std::deque<DWORD> > s_mapPlayerBotSpotPersonHour;	// person pid -> when its complaints went
 	const DWORD PLAYERBOT_SPOT_FIGHT_RECENT_MS = 20000;
 	const DWORD PLAYERBOT_SPOT_LEAVE_MS = 10 * 60 * 1000;
 	const int PLAYERBOT_SPOT_FRIEND_RANGE = 3000;
@@ -150,6 +159,16 @@ namespace
 	{
 		if (!bot || !person || !text || !*text)
 			return;
+		// MT2009_PLUS_SPOT_WHISPER_CAP_V1: two complaints a person an hour.
+		{
+			const DWORD now = get_dword_time();
+			std::deque<DWORD>& sent = s_mapPlayerBotSpotPersonHour[person->GetPlayerID()];
+			while (!sent.empty() && now - sent.front() >= PLAYERBOT_SPOT_PERSON_HOUR_MS)
+				sent.pop_front();
+			if (sent.size() >= PLAYERBOT_SPOT_PERSON_HOUR_MAX)
+				return;
+			sent.push_back(now);
+		}
 		playerbot_conv::TBotSnapshot snap;
 		if (!s_PlayerBotConvHost.BuildSnapshot(person->GetPlayerID(), bot->GetPlayerID(), snap))
 			return;
@@ -362,6 +381,15 @@ namespace
 		if (s_dwPlayerBotSpotPruneAt != 0 && dwNow - s_dwPlayerBotSpotPruneAt < PLAYERBOT_SPOT_PRUNE_MS)
 			return;
 		s_dwPlayerBotSpotPruneAt = dwNow;
+		// MT2009_PLUS_SPOT_WHISPER_CAP_V1: a person with no complaint this hour is forgotten.
+		for (std::map<DWORD, std::deque<DWORD> >::iterator h = s_mapPlayerBotSpotPersonHour.begin();
+				h != s_mapPlayerBotSpotPersonHour.end(); )
+		{
+			if (h->second.empty() || dwNow - h->second.back() >= PLAYERBOT_SPOT_PERSON_HOUR_MS)
+				s_mapPlayerBotSpotPersonHour.erase(h++);
+			else
+				++h;
+		}
 		for (std::map<TPlayerBotSpotKey, TPlayerBotSpotQuarrel>::iterator it = s_mapPlayerBotSpotQuarrels.begin();
 				it != s_mapPlayerBotSpotQuarrels.end(); )
 		{
