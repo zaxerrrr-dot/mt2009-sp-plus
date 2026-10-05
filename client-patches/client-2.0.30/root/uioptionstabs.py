@@ -44,7 +44,12 @@ class OptionsTabs(ui.Window):
 
 	def __init__(self, owner):
 		ui.Window.__init__(self)
-		self.owner = proxy(owner)
+		# The Esc menu's handlers run on a weak proxy of SystemDialog already
+		# (SAFE_SetEvent), and a proxy of a proxy is a TypeError.
+		try:
+			self.owner = proxy(owner)
+		except TypeError:
+			self.owner = owner
 		self.tabs = []
 		self.current = -1
 		self.page = None		# the page shown
