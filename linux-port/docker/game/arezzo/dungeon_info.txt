@@ -32,7 +32,7 @@ drop	wieza	5123	1	10
 drop	wieza	5124	1	5
 dungeon	wukong	364	1	xy	65	5537	1450	45	0	1	8	9682	wzgorze_wukonga.entry	1800	0	0	Wzgórze_Wukonga	Œwi¹tynia_Hwang
 cost	wukong	7000000
-drop	wukong	30774	3	100
+drop	wukong	30774	4	100
 dungeon	razador	351	1	xy	62	5979	7060	55	0	1	8	6091	razador_dungeon.entry	3600	0	0	Czyœciec_Ognia_(Razador)	Doyyumhwaji
 cost	razador	10000000
 drop	razador	50270	5	100

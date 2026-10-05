@@ -2045,6 +2045,60 @@ INSERT IGNORE INTO world.item_proto SELECT * FROM world.az_item;
 DROP TEMPORARY TABLE world.az_item;
 UPDATE world.item_proto SET name = _cp1250 X'536B727A796E69612044BF756E676C69', locale_name = _cp1250 X'536B727A796E69612044BF756E676C69', stack = 200, antiflag = 0, flag = 4 WHERE vnum = 30776;" || echo "[playerbot-migrate] WARNING: could not add the Arezzo dungeons' and Pustkowie Faraona's monsters, NPCs and items" >&2
 
+# MT2009_PLUS_AREZZO_BALANCE_V1 (the owner, 5 October, from the players' reports): the bosses one could
+# not stand against, the knockback and the yang of the ladder (Biblioteka/Wukong < Razador/Skorpion <
+# Nemere/Katakumby < Smok/Dzungla). Measured against a player of the dungeon's band (Wukong: 9 000 HP,
+# 280 defence; Skorpion: 12 000 / 400; Razador: 11 000 / 350; Nemere: 14 000 / 480; Dzungla: 20 000 / 600):
+#  * no monster pushes a player any more - the monsters' crush skills (EnemyCrush200/300/400: 256, 258,
+#    260; their users are bosses, the Grotto's commanders and two level-97 mobs, 3551/3552) lose CRUSH.
+#    The push used to throw the player out of a skill's later hits; a skill whose motion lands several hits on one spot now lands
+#    them all, so those bosses' skill level drops to keep the cast's total where it was (power ~ 1/hits):
+#    the desert turtles 2191/2192/8614/8615 (2 hits) 40 -> 26, 3691 (3 hits at two spots) 25 -> 19,
+#    3790/3890 (3 hits) 20 -> 8, 3791/3391 (3 hits) 25 -> 9, Obronca Chmur 9683 (3 hits) 20 -> 10. No boss
+#    is pushed by a player either (server-patches/enginefixes, the same marker).
+#  * Plomienny Feniks (9684): its skill lands ten hits (five beats, both wings counted on one spot) of
+#    2.5 x its attack - 23 800 a cast at level 20, a player of the band had no chance. Level 6: some
+#    2 600 a cast (29% of the band's HP, 6.7%/s with its claws), below WuKong's (10%/s), whom the players
+#    call easy. Its 120 000 HP and claws stay.
+#  * Czerwony Skorpion (9695): two hits on a spot 600 ahead - an archer or a mage took 8 000 (67%) -
+#    20 -> 12 (32%). Krol Skorpionow (9694): 15%/s and 6 600 a cast - dam_multiply 3.15 -> 2.70, skills
+#    20/25 -> 15/20 (10%/s, 38%). Krolowa Dzungli (9714): three hits on one spot, 17 400 a cast (87%) -
+#    skill 20 -> 8, dam_multiply 2.55 -> 2.30 (7.5%/s, 32%).
+#  * Razador (6091): his first skill lands three hits 800 ahead - 15 000 on a ranged player (141%) -
+#    20 -> 8 (43%); the second 25 -> 20. Nemere (6191) hit 2 400 a blow and 8 100 a cast (58%) -
+#    dam_multiply 3.2 -> 2.72, skills 20/25 -> 12/15 (14% a blow, 25% a cast, 8.9%/s). Szel (6151) keeps
+#    the owner's +100% (29 September).
+#  * the bosses' yang (a boss drops it in 10-21 piles to the killer's party, bots too): the Arezzo
+#    bosses, Razador/Nemere (their package 1 792-2 688), Azrael, the Grotto's Generals and the forest's
+#    lemur bosses up the ladder; Beran-Setaou keeps his 23-34 million.
+# Written every start (PROTO_FROM_DB, skill_proto at the cores' start). Idempotent.
+db -e "UPDATE world.skill_proto SET setFlag = 'ATTACK,USE_MELEE_DAMAGE,SPLASH' WHERE dwVnum IN (256, 258, 260) AND setFlag = 'ATTACK,USE_MELEE_DAMAGE,SPLASH,CRUSH';
+UPDATE world.mob_proto SET skill_level0 = 26 WHERE vnum IN (2191, 2192, 8614, 8615) AND skill_vnum0 = 256;
+UPDATE world.mob_proto SET skill_level1 = 19 WHERE vnum = 3691 AND skill_vnum1 = 258;
+UPDATE world.mob_proto SET skill_level0 = 8 WHERE vnum IN (3790, 3890) AND skill_vnum0 = 256;
+UPDATE world.mob_proto SET skill_level1 = 9 WHERE vnum IN (3791, 3391) AND skill_vnum1 = 258;
+UPDATE world.mob_proto SET skill_level0 = 10, gold_min = 25000, gold_max = 35000 WHERE vnum = 9683;
+UPDATE world.mob_proto SET skill_level0 = 6, gold_min = 60000, gold_max = 90000 WHERE vnum = 9684;
+UPDATE world.mob_proto SET gold_min = 150000, gold_max = 220000 WHERE vnum = 9682;
+UPDATE world.mob_proto SET gold_min = 60000, gold_max = 90000 WHERE vnum = 9606;
+UPDATE world.mob_proto SET gold_min = 150000, gold_max = 250000 WHERE vnum = 9607;
+UPDATE world.mob_proto SET gold_min = 90000, gold_max = 135000 WHERE vnum = 9675;
+UPDATE world.mob_proto SET gold_min = 200000, gold_max = 300000 WHERE vnum = 9681;
+UPDATE world.mob_proto SET skill_level0 = 12, gold_min = 100000, gold_max = 150000 WHERE vnum = 9695;
+UPDATE world.mob_proto SET skill_level0 = 15, skill_level1 = 20, dam_multiply = 2.70, gold_min = 300000, gold_max = 450000 WHERE vnum = 9694;
+UPDATE world.mob_proto SET gold_min = 120000, gold_max = 180000 WHERE vnum = 9712;
+UPDATE world.mob_proto SET gold_min = 200000, gold_max = 300000 WHERE vnum = 9713;
+UPDATE world.mob_proto SET skill_level0 = 8, dam_multiply = 2.30, gold_min = 600000, gold_max = 900000 WHERE vnum = 9714;
+UPDATE world.mob_proto SET skill_level0 = 8, skill_level1 = 20, gold_min = 300000, gold_max = 450000 WHERE vnum = 6091;
+UPDATE world.mob_proto SET gold_min = 60000, gold_max = 90000 WHERE vnum = 6051;
+UPDATE world.mob_proto SET skill_level0 = 12, skill_level1 = 15, dam_multiply = 2.72, gold_min = 500000, gold_max = 750000 WHERE vnum = 6191;
+UPDATE world.mob_proto SET gold_min = 100000, gold_max = 150000 WHERE vnum = 6151;
+UPDATE world.mob_proto SET gold_min = 400000, gold_max = 600000 WHERE vnum = 2598;
+UPDATE world.mob_proto SET gold_min = 600000, gold_max = 900000 WHERE vnum = 2492;
+UPDATE world.mob_proto SET gold_min = 500000, gold_max = 750000 WHERE vnum = 2495;
+UPDATE world.mob_proto SET gold_min = 150000, gold_max = 220000 WHERE vnum = 3390;
+UPDATE world.mob_proto SET gold_min = 300000, gold_max = 450000 WHERE vnum = 3391;" || echo "[playerbot-migrate] WARNING: could not balance the Arezzo and dungeon bosses (MT2009_PLUS_AREZZO_BALANCE_V1)" >&2
+
 # MT2009_PLUS_GOBLIN_V1: the Treasure Hunt event (playerbot_goblin.h, the events
 # file's kind "goblin"): the Treasure Ticket (70617, from chests while the
 # event runs - it takes a player of level 70 to Treasure Island), the Goblin

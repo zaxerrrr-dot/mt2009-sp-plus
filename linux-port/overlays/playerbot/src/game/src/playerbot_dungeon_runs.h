@@ -181,22 +181,24 @@ namespace
 		int iCap;			// runs of it at once on this core
 	};
 
+	// MT2009_PLUS_AREZZO_BALANCE_V1: the fees are half of what they were (the owner, 5 October) -
+	// the quests' cfg().fee: 1 / 2.5 / 3.5 / 5 / 7.5 / 7.5 / 7.5 million.
 	const TPlayerBotDgRunDef PLAYERBOT_DGRUN_DEFS[] = {
 		{ "biblioteka", DGRUN_KIND_BIBLIO, 363, "biblioteka_wiedzy", "biblioteka_dgrun", NULL, 271, 252,
-			2000000LL, 5, 30, 60000, 2 },
+			1000000LL, 5, 30, 60000, 2 },
 		{ "wieza", DGRUN_KIND_TOWER, 66, NULL, NULL, NULL, 0, 0, 0LL, 0, 120, 0, 1 },
 		{ "wukong", DGRUN_KIND_AREZZO, 364, "wzgorze_wukonga", "wukong_dgrun", NULL, 264, 273,
-			5000000LL, 5, 30, 60000, 2 },
+			2500000LL, 5, 30, 60000, 2 },
 		{ "razador", DGRUN_KIND_RAZADOR, 351, "razador_dungeon", "razador_dgrun", "razador_dgrun_next", 342, 584,
-			7000000LL, 5, 60, 120000, 2 },
+			3500000LL, 5, 60, 120000, 2 },
 		{ "skorpion", DGRUN_KIND_AREZZO, 365, "ruiny_skorpiona", "skorpion_dgrun", NULL, 268, 228,
-			10000000LL, 5, 45, 60000, 2 },
+			5000000LL, 5, 45, 60000, 2 },
 		{ "nemere", DGRUN_KIND_NEMERE, 352, "nemere_dungeon", "nemere_dgrun", "nemere_dgrun_next", 171, 270,
-			15000000LL, 5, 60, 120000, 2 },
+			7500000LL, 5, 60, 120000, 2 },
 		{ "smok", DGRUN_KIND_SMOK, 208, "blue_dragon_lair", "blue_dragon_dgrun", NULL, 237, 172,
-			15000000LL, 5, 60, 240000, 1 },
+			7500000LL, 5, 60, 240000, 1 },
 		{ "dzungla", DGRUN_KIND_AREZZO, 366, "starozytna_dzungla", "dzungla_dgrun", NULL, 384, 374,
-			15000000LL, 5, 60, 60000, 2 },
+			7500000LL, 5, 60, 60000, 2 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 

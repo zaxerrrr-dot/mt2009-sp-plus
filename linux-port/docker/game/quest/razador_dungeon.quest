@@ -41,7 +41,7 @@ quest razador_dungeon begin
 				limit_min = 60,
 				-- MT2009_PLUS_DUNGEON_FEE_V1: the price of a new expedition (each player, paid on entering it) and
 				-- how many new expeditions a player may start a day (Polish midnight).
-				fee = 7000000, fee_text = "7 000 000", -- MT2009_PLUS_DUNGEON_FEE_LEADER_V1: 7 000 000 (the owner, 5 October: "7kk")
+				fee = 3500000, fee_text = "3 500 000", -- MT2009_PLUS_AREZZO_BALANCE_V1: half of the 7 000 000 of MT2009_PLUS_DUNGEON_FEE_LEADER_V1 (the owner, 5 October: "7kk", then halved)
 				daily = 5,
 				doors = {{320,394},{293,359},{333,321},{378,320},{400,355},{394,401}},
 				doors_dir = {135,90,210,152,90,223},
