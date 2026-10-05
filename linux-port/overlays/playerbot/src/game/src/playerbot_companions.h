@@ -865,6 +865,8 @@ namespace
 
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: defined in playerbot_dungeon_lfg.h, later.
 	bool IsPlayerBotDungeonLfgHeld(DWORD botPID);
+	// MT2009_PLUS_GUILD_LFG_V1: defined in playerbot_guild_lfg.h, later.
+	bool IsPlayerBotGuildLfgHeld(DWORD botPID);
 
 	bool IsPlayerBotHeldForCompany(LPCHARACTER ch)
 	{
@@ -879,6 +881,10 @@ namespace
 		// MT2009_PLUS_BOT_DUNGEON_LFG_V1: waiting for a person at a dungeon's
 		// entrance, for the same reason.
 		if (IsPlayerBotDungeonLfgHeld(pid))
+			return true;
+		// MT2009_PLUS_GUILD_LFG_V1: waiting by the first village's NPC for a
+		// person's guild invitation, for the same reason.
+		if (IsPlayerBotGuildLfgHeld(pid))
 			return true;
 		// MT2009_PLUS_BOT_CHAT_V2 (deals): on its way to, or waiting at, the
 		// blacksmith a deal's window was agreed at (playerbot_chat_deals.h).

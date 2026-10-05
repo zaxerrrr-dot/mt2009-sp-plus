@@ -336,6 +336,11 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_LEGENDS_V1: the System Legend - the tiers' table, the Legends
 // and the Champions, the reputation, the notices and the engine's hooks.
 #include "playerbot_legends.h"
+// MT2009_PLUS_GUILD_LFG_V1 (include): "szukam ludzi do gildii" - a guild's
+// call answered by whisper by guildless bots (or bots of a very weak guild),
+// the yes, the wait by an NPC of the first village and the invitation. After
+// the dungeon finder, whose refusals and words it borrows, and the Legends.
+#include "playerbot_guild_lfg.h"
 
 namespace
 {
@@ -1832,6 +1837,10 @@ namespace
 		// MT2009_PLUS_BOT_DUNGEON_LFG_V1: a bot waiting for a person at a
 		// dungeon's entrance joins that person's party and no camp of bots.
 		if (IsPlayerBotDungeonLfgHeld(ch->GetPlayerID()))
+			return;
+		// MT2009_PLUS_GUILD_LFG_V1: nor one waiting by the village NPC for a
+		// person's guild invitation.
+		if (IsPlayerBotGuildLfgHeld(ch->GetPlayerID()))
 			return;
 
 		state.dwNextPartyCheckTime = dwNow + PLAYERBOT_PARTY_CHECK_INTERVAL + number(0, 3000);
@@ -6179,6 +6188,9 @@ void CPlayerBotManager::Update()
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the dungeon finder's offers due out,
 	// lapsed, and its waits ended (playerbot_dungeon_lfg.h).
 	ManagePlayerBotDungeonLfg(dwNow);
+	// MT2009_PLUS_GUILD_LFG_V1: the guild recruitment's offers, lapses, waits
+	// and invitations (playerbot_guild_lfg.h).
+	ManagePlayerBotGuildLfg(dwNow);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: two or three island droppers a kingdom.
 	ManagePlayerBotL30WeaponDroppers(dwNow);
 
@@ -7013,6 +7025,10 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_BOT_DUNGEON_LFG_V1: a person who said yes to the bot's
 		// dungeon offer - the wait at the entrance (playerbot_dungeon_lfg.h).
 		if (ManagePlayerBotDungeonLfgWait(ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_GUILD_LFG_V1: a person who said yes to the bot's guild
+		// request - the wait by the first village's NPC (playerbot_guild_lfg.h).
+		if (ManagePlayerBotGuildLfgWait(ch, state, dwNow))
 			continue;
 		// The regular levelup.quest opens a selection dialog. A fake descriptor
 		// cannot press its Confirm button, so accept/claim that official mission
@@ -8418,6 +8434,9 @@ void CPlayerBotManager::OnPlayerShout(LPCHARACTER ch, const char* szText)
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: "kto na biblioteke?", "szukam ekipy na
 	// smoka" first - a call for company to a dungeon is never a trade line
 	// nor a question for the channel (playerbot_dungeon_lfg.h).
+	// MT2009_PLUS_GUILD_LFG_V1: "szukam ludzi do gildii" before that.
+	if (HandlePlayerBotGuildLfgCall(ch, szText, "shout"))
+		return;
 	if (HandlePlayerBotDungeonLfgCall(ch, szText, LFG_SOURCE_SHOUT))
 		return;
 	HandlePlayerShoutForTrade(ch, szText);
@@ -8432,6 +8451,9 @@ void CPlayerBotManager::OnPlayerShout(LPCHARACTER ch, const char* szText)
 void CPlayerBotManager::OnPlayerTradeChat(LPCHARACTER ch, const char* szText)
 {
 	if (!ch || !szText || !*szText || (ch->GetDesc() && ch->GetDesc()->IsBot()))
+		return;
+	// MT2009_PLUS_GUILD_LFG_V1: a guild's call for members on '@' too.
+	if (HandlePlayerBotGuildLfgCall(ch, szText, "trade"))
 		return;
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: a dungeon call on '@' too, before the trade.
 	if (HandlePlayerBotDungeonLfgCall(ch, szText, LFG_SOURCE_TRADE))
@@ -8449,7 +8471,12 @@ void CPlayerBotManager::OnPlayerLocalChat(LPCHARACTER ch, const char* szText, BY
 	if (!ch || !szText || !*szText || (ch->GetDesc() && ch->GetDesc()->IsBot()))
 		return;
 	if (bType == CHAT_TYPE_TALKING)
+	{
+		// MT2009_PLUS_GUILD_LFG_V1: "szukam ludzi do gildii" on the normal chat.
+		if (HandlePlayerBotGuildLfgCall(ch, szText, "talk"))
+			return;
 		HandlePlayerBotDungeonLfgCall(ch, szText, LFG_SOURCE_TALK);
+	}
 	else if (bType == CHAT_TYPE_GUILD)
 		HandlePlayerBotDungeonLfgCall(ch, szText, LFG_SOURCE_GUILD);
 }
@@ -8483,6 +8510,15 @@ void CPlayerBotManager::OnPlayerWhisper(LPCHARACTER from, LPCHARACTER bot, const
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the answer to the bot's dungeon offer
 	// goes to the conversation that knows the offer, ahead of the lure order
 	// and the trade whose words a short answer may share.
+	// MT2009_PLUS_GUILD_LFG_V1: the answer to the bot's guild request first,
+	// the person noted as having whispered the bot (the whisper block lets
+	// the bot answer a person who wrote to it).
+	if (from && bot && s_mapPlayerBotGuildLfg.find(bot->GetPlayerID()) != s_mapPlayerBotGuildLfg.end())
+	{
+		NotePlayerWhisperedBot(from->GetPlayerID(), bot);	// MT2009_PLUS_BOT_WHISPER_BLOCK_V1
+		if (HandlePlayerBotGuildLfgWhisper(from->GetPlayerID(), from->GetName(), bot, szText))
+			return;
+	}
 	if (from && HandlePlayerBotDungeonLfgWhisper(from->GetPlayerID(), from->GetName(), bot, szText))
 		return;
 	HandlePlayerWhisperToBot(from, bot, szText);
@@ -8502,6 +8538,10 @@ void CPlayerBotManager::OnPeerWhisper(const char* szFrom, LPCHARACTER bot, const
 		const CCI* peer = P2P_MANAGER::instance().Find(szFrom);
 		if (peer && !IsRegisteredBotPID(peer->dwPID))
 			NotePlayerWhisperedBot(peer->dwPID, bot);	// MT2009_PLUS_BOT_WHISPER_BLOCK_V1
+		// MT2009_PLUS_GUILD_LFG_V1: the yes to a guild request, the same way.
+		if (peer && !IsRegisteredBotPID(peer->dwPID) &&
+				HandlePlayerBotGuildLfgWhisper(peer->dwPID, peer->szName, bot, szText))
+			return;
 		if (peer && !IsRegisteredBotPID(peer->dwPID) &&
 				HandlePlayerBotDungeonLfgWhisper(peer->dwPID, peer->szName, bot, szText))
 			return;
