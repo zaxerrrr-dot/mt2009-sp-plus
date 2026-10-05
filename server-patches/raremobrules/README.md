@@ -14,5 +14,12 @@ Znacznik: `MT2009_PLUS_RARE_MOB_RULES_V1`. Arkusz dropu od właściciela, 1 paź
   i Księgi Zapomnienia. Na mapach świata 8006 bez zmian. Podgląd dropu w grze pokazuje
   dla niego nadal listę światową.
 
+- `MT2009_PLUS_DT_DROPS_V1` (5 października): w Wieży Demonów (mapa 66 i jej instancje 660000-669999)
+  gracz dostaje drop bez kary za różnicę poziomów (`GetDropPct`, `iDeltaPercent` = 100). Wcześniej
+  postać 75 poziomu biła demony 1001-1004 (57-60) i Metiny 8015-8017 na 1% tabel: ulepszacze
+  30015/30087/30016/30086 i Pamiątka po Demonie Biologa (0,315% na zabicie) praktycznie nie
+  wypadały (1 na ~31 700 zabić). Boty bez zmian (stara kara). Cor/szarfy/księgi bez zmian.
+  Dane: `linux-port/docker/game/mob_drop_item.dtdrops.append.txt` (Brutalne demony 1061-1071).
+
 Stosowanie: `Apply-RareMobRulesPatch.ps1 -SourceDir <game/src>` (Windows) albo
 `python3 apply_raremobrules.py <game/src>` (Linux/VPS); zmiany w `edits.json`.

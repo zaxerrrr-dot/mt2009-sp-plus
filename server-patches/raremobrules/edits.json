@@ -28,5 +28,17 @@
   "marker": "MT2009_PLUS_RARE_MOB_RULES_V1 (sash)",
   "old": "\t\tconst int szarfaChance = pkChr->IsStone() ? 15 : 80;\n",
   "new": "\t\tint szarfaChance = pkChr->IsStone() ? 15 : 80;\n\t\t// MT2009_PLUS_RARE_MOB_RULES_V1 (sash): the mob's own sash chance.\n\t\tif (const Mt2009PlusRareMobRule* sashRule = Mt2009PlusRareMobRuleFor(pkChr))\n\t\t\tszarfaChance = sashRule->sashChance;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DT_DROPS_V1 (server-patches/raremobrules)",
+  "old": "bool ITEM_MANAGER::GetDropPct(LPCHARACTER pkChr, LPCHARACTER pkKiller, OUT int& iDeltaPercent, OUT int& iRandRange)\n{\n",
+  "new": "// MT2009_PLUS_DT_DROPS_V1 (server-patches/raremobrules): the Demon Tower (map 66, the ground\n// floor, and its instances 660000-669999) drops for a player at the full rate whatever the\n// level difference (the owner, 5 October: a level 75 got no upgrade items there and never the\n// Biologist's Pamiatka po Demonie). aiPercentByDeltaLev pays 1% from fifteen levels over the\n// monster: the tower's demons 1001-1004 (levels 57-60; the upgrade items 30015, 30087, 30016\n// and 30086 through mob_proto's drop_item) and its stones 8015-8017 (50-60) rolled every\n// table at 1% for a level 75, the Pamiatka (0.315% a kill) at 1 in 31 746 kills. The\n// level-limit groups never faded, and the Cor / sash / book rules (rarelevel) stay as they\n// are. A bot keeps the old fade (its tower raids, playerbot_demon_tower.h, are many and\n// bring their loot to the market).\nstatic bool Mt2009PlusDemonTowerFullDrop(LPCHARACTER pkKiller)\n{\n\tif (!pkKiller || !pkKiller->IsPC() || !pkKiller->GetDesc() || pkKiller->GetDesc()->IsBot())\n\t\treturn false;\n\tconst long mapIndex = pkKiller->GetMapIndex();\n\treturn mapIndex == 66 || (mapIndex >= 660000 && mapIndex < 670000);\n}\n\nbool ITEM_MANAGER::GetDropPct(LPCHARACTER pkChr, LPCHARACTER pkKiller, OUT int& iDeltaPercent, OUT int& iRandRange)\n{\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DT_DROPS_V1 (delta)",
+  "old": "\tsys_log(3, \"CreateDropItem for level: %d rank: %u pct: %d\", iLevel, bMobRank, iDeltaPercent);\n",
+  "new": "\t// MT2009_PLUS_DT_DROPS_V1 (delta): no level fade in the Demon Tower for a player.\n\tif (iDeltaPercent < 100 && Mt2009PlusDemonTowerFullDrop(pkKiller))\n\t\tiDeltaPercent = 100;\n\n\tsys_log(3, \"CreateDropItem for level: %d rank: %u pct: %d\", iLevel, bMobRank, iDeltaPercent);\n"
  }
 ]
