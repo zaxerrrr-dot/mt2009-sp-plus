@@ -7185,6 +7185,18 @@ namespace
 	// (IsPlayerBotSidekickKeptForOwner).
 	bool IsPlayerBotSidekickServing(LPCHARACTER ch);
 	bool IsPlayerBotSidekickSellableJunk(LPCHARACTER ch, LPITEM item);
+	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2 ("Towarzysz nie sprzedaje zlomu",
+	// the owner, 6 October): sent to town by its owner ("zakupy", "sprzedaj"),
+	// a companion sells all of its scrap at the merchant - what its owner just
+	// handed it too, at once (no counter's wait) - and tells the owner what it
+	// got for it. IsPlayerBotSidekickSellingScrap: such an order under way;
+	// IsPlayerBotSidekickOrderedScrap: what that sale takes;
+	// IsPlayerBotSidekickSellOnly: the "sprzedaj" order, which buys nothing;
+	// NotePlayerBotSidekickScrapSold: what the merchant paid, for the summary.
+	bool IsPlayerBotSidekickSellingScrap(LPCHARACTER ch);
+	bool IsPlayerBotSidekickOrderedScrap(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotSidekickSellOnly(LPCHARACTER ch);
+	void NotePlayerBotSidekickScrapSold(LPCHARACTER ch, size_t count, long long gold);
 	bool IsPlayerBotSidekickKeptForOwner(LPCHARACTER ch, LPITEM item);
 	// Its storekeeper's box emptied back into its bag on a town errand, once a
 	// start (an older version put the owner's stones and materials there).

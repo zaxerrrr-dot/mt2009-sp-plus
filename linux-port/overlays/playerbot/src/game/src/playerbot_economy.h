@@ -1957,6 +1957,10 @@ namespace
 	{
 		if (!ch || !item || !PlayerBotHasCounter(ch))
 			return false;
+		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: a companion stands no counter,
+		// whatever it had as a bot - no wait.
+		if (IsPlayerBotSidekickServing(ch))
+			return false;
 		if (!(item->GetRefineLevel() > 0 || IsPlayerBotPrizeItem(item)) || !IsPlayerBotSaleGear(item))
 			return false;
 		{
@@ -2135,6 +2139,11 @@ namespace
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked())
 			return false;
+		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: a companion its owner sent to town
+		// sells its scrap - the owner's own handover included - by its own
+		// rule alone, at once; none of an ordinary bot's keeps below holds it.
+		if (IsPlayerBotSidekickSellingScrap(ch))
+			return IsPlayerBotSidekickOrderedScrap(ch, item);
 		// What a player handed a companion is the player's choice, not the
 		// merchant's (playerbot_sidekick.h), and so is what the player put on
 		// it, waiting in the bag for its slot.
@@ -2981,6 +2990,7 @@ namespace
 			++soldCount;
 		}
 
+		NotePlayerBotSidekickScrapSold(ch, soldCount, totalSoldGold);	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2
 		if (soldCount > 0)
 		{
 			sys_log(0, "PLAYERBOT_AI: sold %u items at %s pid=%u name=%s gold_gained=%lld total_gold=%lld",
@@ -4542,6 +4552,10 @@ namespace
 		if (!ch || !ch->IsItemLoaded())
 			return false;
 
+		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: "sprzedaj" - the scrap, nothing
+		// bought, the potions left alone.
+		if (IsPlayerBotSidekickSellOnly(ch))
+			return SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_MISC, "misc_merchant");
 		CompactPlayerBotPotionStacks(ch);
 		SellPlayerBotExcessPotions(ch);
 
@@ -4679,6 +4693,8 @@ namespace
 			return false;
 		const bool sold = SellPlayerBotJunkAtMerchant(
 				ch, BOT_MERCHANT_WEAPON, "weapon_merchant");
+		if (IsPlayerBotSidekickSellOnly(ch))	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2
+			return sold;
 		bool bought = false;
 		const bool isArcher = ch->GetJob() == JOB_ASSASSIN && ch->GetSkillGroup() == 2;
 		// A missing weapon is essential, so restore the cheap functional weapon
@@ -4748,6 +4764,8 @@ namespace
 			return false;
 		const bool sold = SellPlayerBotJunkAtMerchant(
 				ch, BOT_MERCHANT_ARMOR, "armor_merchant");
+		if (IsPlayerBotSidekickSellOnly(ch))	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2
+			return sold;
 		// The exact ladder tier first; when the merchant does not stock it -
 		// which is every tier below the bot except the three the shop carries,
 		// and every tier above level 26 - the best piece it does stock, so a
