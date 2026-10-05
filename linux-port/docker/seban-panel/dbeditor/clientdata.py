@@ -278,6 +278,19 @@ def install(bp, ctx):
 
     common_items.CHANGE_LISTENERS["clientdata"] = on_change
 
+    # The game reads the stamp at a person's login, so it must be in the spool
+    # from the panel's start, not from the first visit of the hub: the current
+    # one is written in the background, again while the database is not up yet.
+    def startup_stamp():
+        for _attempt in range(40):
+            if refresh_stamp():
+                return
+            time.sleep(15)
+
+    app = ctx.get("app")
+    if ctx.get("queue_restart") is not None and not (app is not None and app.testing):
+        threading.Thread(target=startup_stamp, name="dbdata-stamp-start", daemon=True).start()
+
     def banner():
         return new_client_banner(_read_json(download_log, {}), base_version())
 
