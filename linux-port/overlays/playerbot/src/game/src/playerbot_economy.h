@@ -1863,42 +1863,138 @@ namespace
 	// GetPlayerBotLowGearMinRefine), and the anvil would be paid for a piece the
 	// junk rule then hands the merchant - which never came up while no armour
 	// under thirty went up at +0..+4 at all.
+	//
+	// MT2009_PLUS_BOT_GEAR_JUNK_FIX_V1: no more. The anvil works only what the
+	// bot wears or keeps for itself (IsPlayerBotRefineBagCandidate); a body
+	// armour of a full family is the merchant's (the capped-armour branch of
+	// IsPlayerBotJunkItem) instead of a +5 for a counter.
 	bool PlayerBotRefinesLowArmourForSale(LPCHARACTER ch, LPITEM item)
 	{
-		return ch && IsPlayerBotCappedLowArmour(item) && !IsPlayerBotLowLevelGear(item) && !item->IsEquipped() &&
-				IsPlayerBotLowArmourMarketFull(item->GetVnum()) &&
-				!IsPlayerBotLppKeptItem(ch, item) && !IsPlayerBotKeptBackupArmour(ch, item) &&
-				CanPlayerBotPayRefineStep(ch, item);
+		(void)ch;
+		(void)item;
+		return false;
 	}
 
-	// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: a spare piece in the bag of a bot
-	// with a counter, under PLAYERBOT_SPARE_SALE_PLUS, goes to the plain
-	// anvil for it while the purse (over the reserve) and the bag can pay the
-	// next step - the usual refine pass, last in its order - and is goods
-	// once it is there, or at what it is when the step cannot be paid. Not a
-	// piece the bot wears, means to wear, keeps for the day its own burns,
-	// keeps for the gambler or the operator, nor one another rule refines.
+	// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1 took every spare piece of a bot with a
+	// counter - another class's fans, bells and bows included - to the anvil
+	// for +4 and kept it in the bag for the counter. MT2009_PLUS_BOT_GEAR_JUNK_FIX_V1
+	// ("boty zbieraja wszystkie bronie i ulepszaja je do +4 i trzymaja w eq",
+	// the owner, 5 October, on 2.23.0): on the test world bots of 60 and up
+	// refined 2 020 weapons of other classes to +1..+4 in the five and a half
+	// hours after the release (550 the same hours a day before: the weapons
+	// and armour the upgrades bought keep them at the anvil - refines of their
+	// own gear went from some 1 000 to 18 800 in those hours - and every visit
+	// ground the spares last in its order), and a Sura of 81 with
+	// a Miecz Bojowy+9 in the hand carried daggers, a bow, a two-handed blade,
+	// bells and a fan at +1..+3 and three swords +4 of level 45 to 60
+	// (Banan, test world, 5 October). A spare is never the
+	// anvil's now; what the bot cannot use is the merchant's, after a wait
+	// for the counter when it is refined already (IsPlayerBotUnwantedGear).
 	bool PlayerBotRefinesSpareForSale(LPCHARACTER ch, LPITEM item)
 	{
-		if (!ch || !item || item->IsEquipped() || item->GetWindow() != INVENTORY ||
-				item->GetRefinedVnum() == 0 || item->GetRefineLevel() >= PLAYERBOT_SPARE_SALE_PLUS ||
-				!IsPlayerBotSaleGear(item) || !PlayerBotHasCounter(ch) ||
-				GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE)
+		(void)ch;
+		(void)item;
+		return false;
+	}
+
+	// MT2009_PLUS_BOT_GEAR_JUNK_FIX_V1: a weapon or a piece of the seven armour
+	// slots at +0..+4 (PLAYERBOT_MERCHANT_MAX_REFINE) in the bag that this bot
+	// has no use for: another class's or sex's, past its level, or its own but
+	// neither an upgrade over the worn piece nor a higher tier for the anvil
+	// (IsPlayerBotUpgradeForSelf, IsPlayerBotHigherTierSpare,
+	// IsPlayerBotWearableUpgrade - the equipment pass's own score), nor the
+	// backup kept for the day the worn one burns, the weapon kept for its
+	// lines or an Archer's stone dagger. Not the kinds with rules of their
+	// own: a level-30 weapon, a Stalki, Digi Rasta's awakening goods, the
+	// pickup goods a player crafts further, Iwakura's list (kept or surplus),
+	// a gambler's piece, a sash's grail, nor what an owner gave a companion.
+	bool IsPlayerBotUnwantedGear(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !item->GetProto() || item->IsEquipped() || item->isLocked() ||
+				item->GetWindow() != INVENTORY || item->GetRefineLevel() > PLAYERBOT_MERCHANT_MAX_REFINE)
 			return false;
-		if (IsPlayerBotSidekickPinned(ch, item) || IsPlayerBotLppKeptItem(ch, item) ||
+		if (item->GetType() == ITEM_WEAPON)
+		{
+			if (item->GetSubType() == WEAPON_ARROW || IsPlayerBotQuiver(item))
+				return false;
+		}
+		else if (item->GetType() != ITEM_ARMOR || GetPlayerBotArmourUpgradeSlot(item->GetSubType()) < 0)
+			return false;
+		if (GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE ||
+				IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item) ||
+				IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) ||
+				IsPlayerBotAwakeningGoods(item->GetVnum()) || IsPlayerBotPickupGoods(item) ||
+				IsPlayerBotLppKeptItem(ch, item) || IsPlayerBotLppSurplusGoods(ch, item) ||
 				IsPlayerBotGambleForSale(ch, item) || IsPlayerBotRareGambleHeldBase(ch, item) ||
-				IsPlayerBotSashGrailProject(ch, item) || IsPlayerBotArcherStoneWeapon(ch, item) ||
-				PlayerBotRefinesLowArmourForSale(ch, item))
+				IsPlayerBotSashGrailProject(ch, item))
 			return false;
 		if (IsPlayerBotUpgradeForSelf(ch, item) || IsPlayerBotHigherTierSpare(ch, item) ||
 				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()))
 			return false;
-		if (item->GetType() == ITEM_WEAPON &&
-				(IsPlayerBotKeptBackupWeapon(ch, item) || item == FindPlayerBotLinesProject(ch)))
+		if (item->GetType() == ITEM_WEAPON)
+			return !IsPlayerBotKeptBackupWeapon(ch, item) && item != FindPlayerBotLinesProject(ch) &&
+					!IsPlayerBotArcherStoneWeapon(ch, item);
+		return !IsPlayerBotKeptBackupArmour(ch, item);
+	}
+
+	// When each unwanted refined piece was first seen in its bag, by item id.
+	// Not kept over a restart: the wait starts again then, once.
+	std::map<DWORD, DWORD> s_mapPlayerBotUnwantedGearSince;
+
+	// MT2009_PLUS_BOT_GEAR_JUNK_FIX_V1 (the owner's word on the fix, 5
+	// October: what the bots hoarded and refined goes on their counter first
+	// and to the merchant only when it does not sell): an unwanted piece the
+	// anvil already raised to +1..+4, or a prize piece at +0, of a kind a
+	// counter takes (IsPlayerBotSaleGear - not starter gear, which no counter
+	// takes under +7), waits in the bag of a bot with a counter for
+	// PLAYERBOT_GEAR_JUNK_STALL_WAIT_MS from the first look at it, or until it
+	// came home from PLAYERBOT_SHOP_UNSOLD_SCRAP_STANDS classic stands unsold.
+	// The counter's pass lists it meanwhile (ScorePlayerBotShopStock); what is
+	// still in the bag after that is the merchant's, and so is plain +0 gear
+	// at once. On a counter a line stands as every line does, with its
+	// markdown, until a player or a bot buys it.
+	bool IsPlayerBotUnwantedGearWaitingForCounter(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !PlayerBotHasCounter(ch))
 			return false;
-		if (item->GetType() == ITEM_ARMOR && IsPlayerBotKeptBackupArmour(ch, item))
+		if (!(item->GetRefineLevel() > 0 || IsPlayerBotPrizeItem(item)) || !IsPlayerBotSaleGear(item))
 			return false;
-		return CanPlayerBotPayRefineStep(ch, item);
+		{
+			TPlayerBotAIStateMap::const_iterator st = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+			if (st != s_mapPlayerBotAIStates.end())
+			{
+				std::map<DWORD, BYTE>::const_iterator unsold = st->second.mapStallUnsold.find(item->GetID());
+				if (unsold != st->second.mapStallUnsold.end() &&
+						unsold->second >= PLAYERBOT_SHOP_UNSOLD_SCRAP_STANDS)
+					return false;
+			}
+		}
+		const DWORD now = get_dword_time() != 0 ? get_dword_time() : 1;
+		if (s_mapPlayerBotUnwantedGearSince.size() > PLAYERBOT_GEAR_JUNK_SINCE_MAX)
+		{
+			// Sold, listed or gone long ago: an entry past twice the wait is
+			// nobody's any more.
+			for (std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotUnwantedGearSince.begin();
+					it != s_mapPlayerBotUnwantedGearSince.end(); )
+			{
+				if ((DWORD)(now - it->second) >= 2 * PLAYERBOT_GEAR_JUNK_STALL_WAIT_MS)
+					s_mapPlayerBotUnwantedGearSince.erase(it++);
+				else
+					++it;
+			}
+			if (s_mapPlayerBotUnwantedGearSince.size() > PLAYERBOT_GEAR_JUNK_SINCE_MAX)
+				s_mapPlayerBotUnwantedGearSince.clear();
+		}
+		DWORD& since = s_mapPlayerBotUnwantedGearSince[item->GetID()];
+		if (since == 0)
+			since = now;
+		if ((DWORD)(now - since) < PLAYERBOT_GEAR_JUNK_STALL_WAIT_MS)
+			return true;
+		PlayerBotLogThrottled("gear_junk_waited", now,
+				"PLAYERBOT_GEAR_JUNK: unwanted gear waited for the counter in vain, merchant's now pid=%u name=%s vnum=%u plus=%u waited_min=%u",
+				ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (unsigned int)item->GetRefineLevel(),
+				(unsigned int)((now - since) / 60000));
+		return false;
 	}
 
 	// Iwakura's Patch 4, point 13: the mission books - Latwa, Normalna, Trudna,
@@ -2220,6 +2316,18 @@ namespace
 		// list is thrown away at the merchant (SellPlayerBotJunkAtMerchant).
 		if (IsPlayerBotUnwantedHair(ch, item))
 			return true;
+		// MT2009_PLUS_BOT_GEAR_JUNK_FIX_V1: gear at +0..+4 the bot has no use
+		// for - another class's, past its level, or its own and no better than
+		// what it wears (IsPlayerBotUnwantedGear) - is the merchant's: plain at
+		// once, refined after its wait for the counter
+		// (IsPlayerBotUnwantedGearWaitingForCounter). Asked before the counter
+		// keeps below (the spares of LIST_ALL_GEAR, the low-plus armour, the
+		// +4 "counter's threshold", the scrap keeper's stock), which held such
+		// gear in the bag for as long as no counter cell came free - for good,
+		// with a counter full of it. What a bag already holds is judged the
+		// same way on the next look, so it empties itself.
+		if (IsPlayerBotUnwantedGear(ch, item))
+			return !IsPlayerBotUnwantedGearWaitingForCounter(ch, item);
 		// MT2009_PLUS_BOT_LIST_ALL_GEAR_V1: a spare piece the anvil takes to
 		// +4 for the counter, and the first PLAYERBOT_ALL_GEAR_BAG_KEEP of the
 		// gear this rule lists, wait for the counter while there is one and
