@@ -248,6 +248,7 @@ namespace {
     bool FindPlayerBotStalkiPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotBookPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
     bool FindPlayerBotOutdatedGearPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now);
+    bool FindPlayerBotWeaponUpgradePick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now); // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
     bool FindPlayerBotBuffSetPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
     bool FindPlayerBotSinkGoodsPick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now);
     // MT2009_PLUS_HORSE_ECONOMY_V2: the sink goods' scan of one map's stands.
@@ -365,6 +366,10 @@ namespace {
                     (unsigned int)g_bChannel);
                 return RunPlayerBotOfflinePick(ch, state, now);
             }
+            // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: a weapon that hits a tenth harder
+            // than the best one it owns, at any plus, on every stand of the map.
+            if (FindPlayerBotWeaponUpgradePick(ch, state, now))
+                return RunPlayerBotOfflinePick(ch, state, now);
             // An outdated shield, helmet or body armour from level fifty: the
             // piece that replaces it, on every stand of the map.
             if (FindPlayerBotOutdatedGearPick(ch, state, budget, now)) {
@@ -934,6 +939,97 @@ namespace {
         return true;
     }
 
+    // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: the weapon on a stand of the bot's map
+    // that hits hardest for it of those it would buy and could pay for
+    // (IsPlayerBotWeaponUpgradeOffer, CanPlayerBotPayForOffer) - asked only
+    // while its look at the first village found one (LookPlayerBotWeaponUpgrade),
+    // so a bot with nothing to buy reads no stand. Every line is rated by its
+    // proto's blow at its plus, the best PLAYERBOT_WEAPON_UPGRADE_PREVIEW_LINES
+    // of them are built into an item and asked the purchase's own tests, and
+    // the hardest exact blow is the pick, the cheaper line breaking a tie.
+    bool FindPlayerBotWeaponUpgradePick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
+        using namespace playerbot_offline;
+        if (!ch || !PlayerBotWantsWeaponUpgradeFromMarket(ch)) return false;
+        const long long cap = GetPlayerBotWeaponUpgradeBudget(ch, PLAYERBOT_WEAPON_UPGRADE_BIG_GAIN_PERCENT);
+        if (cap <= 0) return false;
+        const TPlayerBotOwnedWeapon owned = ReadPlayerBotBestOwnedWeapon(ch);
+        const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
+                ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
+        struct TCandidate { long long blow; long long price; DWORD owner; DWORD item; long x; long y; };
+        std::vector<TCandidate> candidates;
+        std::map<DWORD, long long> blowByVnum;
+        for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
+            if (!shop || pid == ch->GetPlayerID() || shop->GetDuration() == 0 || shop->IsEditMode()) continue;
+            const auto spawn = shop->GetSpawn();
+            if (spawn.map != ch->GetMapIndex() || (int)spawn.channel != shopChannel) continue;
+            for (const auto& [id, line] : shop->GetItems()) {
+                const TItemTable* table = line ? line->GetTable() : NULL;
+                if (!table || table->bType != ITEM_WEAPON || line->GetInfo().count != 1) continue;
+                const long long price = (long long)line->GetPrice().GetTotalYangAmount();
+                if (price <= 0 || price > cap) continue;
+                long long blow = 0;
+                const auto known = blowByVnum.find(table->dwVnum);
+                if (known != blowByVnum.end())
+                    blow = known->second;
+                else {
+                    if (IsPlayerBotWeaponProtoFor(ch, table) &&
+                            (owned.subType < 0 || (int)table->bSubType == owned.subType))
+                        blow = GetPlayerBotWeaponHitDamageAt(NULL, table, ch);
+                    blowByVnum[table->dwVnum] = blow;
+                }
+                if (blow <= 0 ||
+                        (owned.item && blow * 100 < owned.blow * (100 + PLAYERBOT_WEAPON_UPGRADE_MIN_GAIN_PERCENT)) ||
+                        price > GetPlayerBotWeaponUpgradeBudget(ch, GetPlayerBotWeaponGainPercent(blow, owned.item ? owned.blow : 0)) ||
+                        IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
+                    continue;
+                candidates.push_back(TCandidate{ blow, price, shop->GetOwnerPID(), id, (long)spawn.x, (long)spawn.y });
+            }
+        }
+        if (candidates.empty()) return false;
+        std::sort(candidates.begin(), candidates.end(), [](const TCandidate& a, const TCandidate& b) {
+            return a.blow != b.blow ? a.blow > b.blow : a.price < b.price;
+        });
+        CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(ch->GetMapIndex());
+        const bool haveNav = navigation.Init(ch->GetMapIndex());
+        DWORD bestOwner = 0, bestItem = 0;
+        long long bestBlow = 0, bestPrice = 0, bestGain = 0;
+        int previewed = 0;
+        for (const TCandidate& c : candidates) {
+            if (previewed >= PLAYERBOT_WEAPON_UPGRADE_PREVIEW_LINES) break;
+            if (haveNav && !navigation.CanReach(ch->GetX(), ch->GetY(), c.x, c.y)) continue;
+            auto shop = ikashop::GetManager().GetShopByOwnerID(c.owner);
+            auto line = shop ? shop->GetItem(c.item) : nullptr;
+            LPITEM preview = line ? BotOfflinePreview(*line) : NULL;
+            if (!preview) continue;
+            ++previewed;
+            long long gain = 0;
+            const bool buyable = IsPlayerBotWeaponUpgradeOffer(ch, preview, &gain) &&
+                    WantsPlayerBotStallItem(ch, preview) &&
+                    CanPlayerBotPayForOffer(ch, preview, c.price, c.owner) &&
+                    ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            const long long blow = buyable ? GetPlayerBotWeaponHitDamage(preview, ch) : 0;
+            M2_DELETE(preview);
+            if (!buyable || blow < bestBlow || (blow == bestBlow && c.price >= bestPrice)) continue;
+            bestOwner = c.owner;
+            bestItem = c.item;
+            bestBlow = blow;
+            bestPrice = c.price;
+            bestGain = gain;
+        }
+        if (!bestOwner) return false;
+        auto& o = state.offlineShop;
+        o.buyOwner = bestOwner;
+        o.buyItem = bestItem;
+        o.buyUntil = now + PLAYERBOT_MARKET_FAR_PICK_WALK_MS;
+        o.farBuy = false;
+        ClaimPlayerBotLineUntil(bestItem, ch->GetPlayerID(), now, o.buyUntil);
+        ++s_dwPlayerBotWeaponUpgradePicks;
+        sys_log(0, "PLAYERBOT_GEAR_UPGRADE: goes for a weapon pid=%u name=%s level=%u owned=%u blow=%lld line=%u owner=%u blow=%lld gain=%lld%% price=%lld gold=%lld",
+            ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), owned.item ? owned.item->GetVnum() : 0,
+            owned.blow, bestItem, bestOwner, bestBlow, bestGain, bestPrice, (long long)ch->GetGold());
+        return true;
+    }
+
     // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: the stand line that betters a
     // Shaman's INT set most for its price, on every stand of the bot's map -
     // looked for once in PLAYERBOT_BUFF_SET_MARKET_LOOK_MS a bot, and only a
@@ -1153,6 +1249,21 @@ namespace {
 
     void AddPlayerBotOfflineLedger(DWORD& stalls, DWORD& lines) {
         s_vecPlayerBotStandingSlips.clear();
+        ClearPlayerBotWeaponLinePrices();   // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
+        // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: a core that is not the shop channel
+        // counts no stand below, and its bots buy on the shop channel's stands
+        // (RunPlayerBotOfflinePick asks for the move): their weapons are priced
+        // from there.
+        if (CPlayerBotManager::instance().IsChannelTableMode() &&
+                (int)g_bChannel != playerbot_channel_rules::SHOP_CHANNEL)
+            for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
+                if (!shop || shop->GetDuration() == 0 ||
+                        (int)shop->GetSpawn().channel != playerbot_channel_rules::SHOP_CHANNEL) continue;
+                for (const auto& [id, item] : shop->GetItems())
+                    if (item && item->GetTable() && item->GetTable()->bType == ITEM_WEAPON)
+                        NotePlayerBotWeaponLinePrice(shop->GetSpawn().map, item->GetTable(), item->GetInfo().count,
+                            (long long)item->GetPrice().GetTotalYangAmount());
+            }
         for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
             if (!shop || shop->GetDuration() == 0 || shop->GetSpawn().channel != g_bChannel) continue;
             ++stalls;
@@ -1175,8 +1286,13 @@ namespace {
                     if (slip)
                         s_vecPlayerBotStandingSlips.push_back(TPlayerBotStandingSlip{ shop->GetOwnerPID(), id });
                 }
-                if (!slip)
+                if (!slip) {
                     AddPlayerBotMarketSupply(item->GetVnum(), item->GetInfo().count, shop->GetSpawn().map);
+                    // MT2009_PLUS_BOT_GEAR_UPGRADE_V1: the cheapest line of each
+                    // weapon by map, for the bots' look from the frontier.
+                    NotePlayerBotWeaponLinePrice(shop->GetSpawn().map, item->GetTable(), item->GetInfo().count,
+                        (long long)item->GetPrice().GetTotalYangAmount());
+                }
                 // MT2009_PLUS_MARKET_V3, point 4: a weapon's average damage, for
                 // the census of the best copies (ReportPlayerBotTopCopies).
                 if (s_bPlayerBotTopCopyCensus && item->GetTable() && item->GetTable()->bType == ITEM_WEAPON &&

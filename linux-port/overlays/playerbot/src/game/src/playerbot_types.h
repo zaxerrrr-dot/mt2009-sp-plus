@@ -647,6 +647,30 @@ namespace
 	// next census carries on from the pid this one stopped at.
 	const int PLAYERBOT_WEAPON_CENSUS_REFRESHES = 400;
 	const DWORD PLAYERBOT_WEAPON_GOAL_FALLBACK_PRICE = 500000;
+	// MT2009_PLUS_BOT_GEAR_UPGRADE_V1 (playerbot_gear_upgrade.h): a counter
+	// weapon at any plus is bought when its blow beats the best weapon the
+	// bot owns by the first share - the market's +6 rule had kept every one
+	// of the 18 000 weapons of level 40 and up on the counters (16 000 of
+	// them at +4) away from the bots of 75 swinging a weapon of 48 (test
+	// world, 5 October). A gain of the second share is paid out of the larger
+	// part of the purse; the floor is what stays in it for potions, fares and
+	// the anvil's first fees. Each bot's look at its first village's counters
+	// is read again this often.
+	const int PLAYERBOT_WEAPON_UPGRADE_MIN_GAIN_PERCENT = 10;
+	const int PLAYERBOT_WEAPON_UPGRADE_BIG_GAIN_PERCENT = 25;
+	const int PLAYERBOT_WEAPON_UPGRADE_SMALL_BUDGET_PERCENT = 50;
+	const int PLAYERBOT_WEAPON_UPGRADE_BIG_BUDGET_PERCENT = 80;
+	const long long PLAYERBOT_WEAPON_UPGRADE_GOLD_FLOOR = 100000;
+	const DWORD PLAYERBOT_WEAPON_UPGRADE_LOOK_MS = 5 * 60 * 1000;
+	// The village merchant's weapons cost 800 to 15 000 yang: one is paid
+	// out of half of what the bot holds over this much.
+	const long long PLAYERBOT_WEAPON_UPGRADE_MERCHANT_FLOOR = 10000;
+	// How many of a map's candidate lines, best blow first, are built into an
+	// item and asked the purchase's own tests.
+	const int PLAYERBOT_WEAPON_UPGRADE_PREVIEW_LINES = 8;
+	// A rod, pickaxe or knife found in the hand outside its own session is
+	// put away at most this often (ManagePlayerBotToolHand).
+	const DWORD PLAYERBOT_TOOL_GUARD_RETRY_MS = 3000;
 	// The level-30 weapons (Tieru, 15 September): "taka bron +6/7 z srednimi
 	// 25% jest znacznie lepsza niz krwawy miecz +5/6", the bots should want
 	// them and grind them "nawet do +9", and from 37% average "tylko bodziami
