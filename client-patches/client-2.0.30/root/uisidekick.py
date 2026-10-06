@@ -351,9 +351,12 @@ TEXT_REPORT = 'Raport'
 ORDER_REPORT = 'stan'
 TEXT_SELL_HINT = (
 	'Sprzedaj z\xb3om',
-	'Towarzysz idzie do miasta i sprzedaje sam z\xb3om',
-	'(zwyk\xb3y sprz\xeat bez bonus\xf3w poni\xbfej +4, ryby,',
-	'zapasowe narz\xeadzia). Niczego nie kupuje.',
+	'Towarzysz idzie do miasta',
+	'i sprzedaje ca\xb3\xb9 bro\xf1 i zbroj\xea',
+	'od +0 do +7 (tak\xbfe z bonusami),',
+	'ryby i zapasowe narz\xeadzia.',
+	'Zostawia +8/+9, rzeczy za\xb3o\xbfone',
+	'i zablokowane. Niczego nie kupuje.',
 )
 TEXT_DISMISS = 'Odpraw'
 # MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: "Kup..." sends the companion for one kind
