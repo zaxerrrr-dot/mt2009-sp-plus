@@ -187,3 +187,10 @@ Dane: `client-patches/client-2.0.30/tools/azcostume` (112 wierszy dla zestawów 
 Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`) dla
 `InstanceBase.cpp`, `PythonApplication.cpp`, `GameLib/ItemManager.cpp` na `exebuild/src` + ten katalog –
 bez błędów. Exe nie był budowany.
+
+## Exe klienta 2.0.57 (6.10.2026)
+
+Zbudowane `build.sh msvc --smoke` (MSVC 14.44) ze źródeł client-build + cały ten katalog (mini gry, menedżer
+eventów, poprawki walki, `ENABLE_RANK_TITLE`, `ENABLE_ITEM_SHINING_TABLE`): `metin2client.exe` 13 669 888 B,
+sha256 `a8a53aae116fa91a05a59f87fa9e9aa83f3a67ea6383066f61ae4c4c7204608f` (kopia:
+`/opt/metin2/cache/exe-releases/metin2client-a8a53aae.exe`); smoke test dochodzi do okna logowania.
