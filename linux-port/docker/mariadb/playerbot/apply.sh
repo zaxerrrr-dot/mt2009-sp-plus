@@ -2712,6 +2712,48 @@ FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233) AND N
 db -e "CREATE TABLE IF NOT EXISTS player.collector_storage (account_id INT UNSIGNED NOT NULL PRIMARY KEY, tier TINYINT UNSIGNED NOT NULL DEFAULT 0, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB;" \
   || fail_step "could not create player.collector_storage (the collector's storage stays at 500 entries)" >&2
 
+# MT2009_PLUS_VOUCHER_CODES_V1: kody promocyjne, "/kod MT2009-PLUS-XXXX" (alias
+# /voucher) in the chat - overlay playerbot_voucher.h. A code is never stored
+# in plain text, here or in the database: a row's code_hash is
+#   SHA2(CONCAT('MT2009PLUS|kody|v1|', <code upper-cased, spaces/dashes/underscores dropped>), 256)
+# (the salt is VOUCHER_SALT of playerbot_voucher_rules.h; the owner keeps the
+# list of codes). One row per item of a code's reward (reward_no 0, 1, ...).
+# This list is the whole active set: a code left out of it stops working at the
+# next start. Each code gives its reward once per ACCOUNT
+# (player.mt2009_voucher_used). linux-port/tools/test_vouchers.py checks the
+# hashes against the owner's list. Idempotent.
+db -e "CREATE TABLE IF NOT EXISTS common.mt2009_voucher (code_hash CHAR(64) CHARACTER SET ascii NOT NULL, reward_no TINYINT UNSIGNED NOT NULL, vnum INT UNSIGNED NOT NULL, count INT UNSIGNED NOT NULL DEFAULT 1, PRIMARY KEY (code_hash, reward_no)) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS player.mt2009_voucher_used (account_id INT UNSIGNED NOT NULL, code_hash CHAR(64) CHARACTER SET ascii NOT NULL, pid INT UNSIGNED NOT NULL DEFAULT 0, used_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (account_id, code_hash), KEY used_at (used_at)) ENGINE=InnoDB;
+REPLACE INTO common.mt2009_voucher (code_hash, reward_no, vnum, count) VALUES
+('21436d6e050f9b920452a263173826bdbdda364dc3584e376feddfc28a296942', 0, 50050, 5),
+('3b970f22073fd0bccf4bf07e95c4b8f7f97e365f08adb2c3074eb303e66f4240', 0, 80016, 1),
+('16c6030f6db56e1d9112fa83361af42daca7c6ca8acbbbafe34e52ab2f508186', 0, 70038, 200),
+('978896452ee7656044283c90c5126ef8df814972ab9b3461f8bc25be11e5396a', 0, 71136, 1),
+('140c4463223fa3cbe9f1ca72e203048770d42d59d3a8d5dec6a563e78119acbf', 0, 71149, 1),
+('131c2b63d1e01723cf8500dd5b1c9b75056016928821d05fbd6d54e2c943489e', 0, 71148, 1),
+('baea08b6cf364431e47636c7eb6f3d4020a90997afc424027f19c0cb674cd26d', 0, 71158, 1),
+('22a29b5245f42963301c0ef168946e05882ab4dbaa2b80f5b54642b3ec70efa4', 0, 71135, 1),
+('8af7a535aed7d90c16ccb123dcc3f79b1af44bfa7528e21251e8fca4d726b4b5', 0, 71143, 1),
+('f142d7791c713b98661b10570a68bbcd3fa6842d27ae3ba3195754db079dc16c', 0, 41491, 1),
+('f142d7791c713b98661b10570a68bbcd3fa6842d27ae3ba3195754db079dc16c', 1, 45185, 1),
+('41543691bc4da27a0abb6abd45fc97f23d24a7457d8ff6dac254d59bcf3fe227', 0, 41859, 1),
+('17960cb7741ab6fa6686289dd2acde0b7b7c664efe506347bf05d6ef13603176', 0, 41029, 1);
+DELETE FROM common.mt2009_voucher WHERE (code_hash, reward_no) NOT IN (
+('21436d6e050f9b920452a263173826bdbdda364dc3584e376feddfc28a296942', 0),
+('3b970f22073fd0bccf4bf07e95c4b8f7f97e365f08adb2c3074eb303e66f4240', 0),
+('16c6030f6db56e1d9112fa83361af42daca7c6ca8acbbbafe34e52ab2f508186', 0),
+('978896452ee7656044283c90c5126ef8df814972ab9b3461f8bc25be11e5396a', 0),
+('140c4463223fa3cbe9f1ca72e203048770d42d59d3a8d5dec6a563e78119acbf', 0),
+('131c2b63d1e01723cf8500dd5b1c9b75056016928821d05fbd6d54e2c943489e', 0),
+('baea08b6cf364431e47636c7eb6f3d4020a90997afc424027f19c0cb674cd26d', 0),
+('22a29b5245f42963301c0ef168946e05882ab4dbaa2b80f5b54642b3ec70efa4', 0),
+('8af7a535aed7d90c16ccb123dcc3f79b1af44bfa7528e21251e8fca4d726b4b5', 0),
+('f142d7791c713b98661b10570a68bbcd3fa6842d27ae3ba3195754db079dc16c', 0),
+('f142d7791c713b98661b10570a68bbcd3fa6842d27ae3ba3195754db079dc16c', 1),
+('41543691bc4da27a0abb6abd45fc97f23d24a7457d8ff6dac254d59bcf3fe227', 0),
+('17960cb7741ab6fa6686289dd2acde0b7b7c664efe506347bf05d6ef13603176', 0));" \
+  || fail_step "could not write the voucher codes (common.mt2009_voucher / player.mt2009_voucher_used)" >&2
+
 # MT2009_PLUS_KINGDOM_WAR_OFF_V1: the Kingdom War is switched off (game Dockerfile); a war a
 # game master had started before stays off.
 db -e "UPDATE player.quest SET lValue = 0 WHERE dwPID = 0 AND szName = 'threeway_war';" >/dev/null 2>&1 || true
