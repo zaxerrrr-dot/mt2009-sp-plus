@@ -105,6 +105,26 @@ bieżąco z każdą zmianą. W skrócie:
   przeglądanie/edycja puli nicków botów);
 - logi panelu (Diagnostyka → Logi panelu) — do załączania przy zgłaszaniu
   błędów.
+- **Ustawienia serwera (.env)** (Ustawienia → Ustawienia serwera, adres
+  `/advanced/server-env`, MT2009_PLUS_ENV_EDITOR_V1) — każdy parametr pliku
+  `linux-port/docker/.env` w jednym miejscu, opisany po polsku, w kartach
+  (Boty, Świat i rates, Moduły gry, Sieć i porty, Panele, Klient, Gra
+  w przeglądarce, Baza danych, Aktualizacje, Zaawansowane), z wyszukiwarką,
+  podświetleniem zmian, przywracaniem domyślnych i paskiem „Zapisz zmiany”,
+  który pokazuje, które usługi zostaną uruchomione ponownie. Opisy i reguły
+  są w `env_schema.py` (test `test_env_schema.py` pilnuje, żeby żadna
+  zmienna z `.env.example` ani `docker-compose.yml` nie została pominięta).
+  Panel **nie zapisuje** `.env` i nie ma dostępu do Dockera: zostawia
+  `env.request` w wolumenie `update-spool`, a zmianę wykonuje aktualizator
+  (`updater`, `linux-port/tools/env_apply.py`) — sprawdza wartości jeszcze
+  raz, robi kopię `.env` (ostatnie 10 w `.env-backups/`), zmienia tylko
+  wskazane linie i odtwarza tylko potrzebne usługi; gdy usługi nie wstaną,
+  przywraca poprzedni plik. Bez uruchomionego aktualizatora strona pokazuje
+  ustawienia tylko do odczytu i instrukcję (`docker compose --profile update
+  up -d updater`; `M2_UPDATE_WATCH_UPDATES=0` = aktualizator tylko dla
+  edytora, bez instalowania aktualizacji). Hasła bazy, nazwa projektu,
+  przedrostek kontenerów i ścieżki hosta są tylko do odczytu (z
+  wyjaśnieniem), wartości tajne nigdy nie są pokazywane.
 
 ## Bezpieczeństwo
 

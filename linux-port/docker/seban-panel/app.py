@@ -462,8 +462,8 @@ ENGINE_MT2009 = PANEL_ENGINE == "mt2009"
 CUSTOM_PATCHES_ENABLED = os.environ.get("M2_PANEL_CUSTOM_PATCHES", "0").strip().lower() in ("1", "true", "yes", "on")
 
 PANEL_FEATURES = {
-    "bot_count": {"title": "Docelowa liczba botów", "icon": "🤖", "scope": "Zarządzanie grą · liczba botów", "requirement": "Hostowy watcher obsługujący botcount.request i odtworzenie kontenera game.", "setup": "Uruchom updater/install-seban-updater.sh dla katalogu stosu. Watcher zapisze PLAYERBOT_AUTOSPAWN_COUNT w .env i odtworzy usługę game."},
-    "spawn_plan": {"title": "Plan wejścia botów", "icon": "🌅", "scope": "Zarządzanie grą · plan wejścia", "requirement": "Hostowy watcher obsługujący spawn-plan.request.", "setup": "Zainstaluj updater/install-seban-updater.sh. Integracja zapisuje okno wejścia w .env i bezpiecznie odtwarza game."},
+    "bot_count": {"title": "Docelowa liczba botów", "icon": "🤖", "scope": "Zarządzanie grą · liczba botów", "requirement": "Hostowy watcher obsługujący botcount.request i odtworzenie kontenera game.", "setup": "Uruchom aktualizator (docker compose --profile update up -d updater) albo updater/install-seban-updater.sh dla katalogu stosu. Zapisze PLAYERBOT_AUTOSPAWN_COUNT w .env i odtworzy usługę game (to samo robi strona Ustawienia serwera (.env))."},
+    "spawn_plan": {"title": "Plan wejścia botów", "icon": "🌅", "scope": "Zarządzanie grą · plan wejścia", "requirement": "Hostowy watcher obsługujący spawn-plan.request.", "setup": "Uruchom aktualizator (docker compose --profile update up -d updater) albo zainstaluj updater/install-seban-updater.sh. Integracja zapisuje okno wejścia w .env i bezpiecznie odtwarza game."},
     "map_respawns": {"title": "Dokładne respawny map", "icon": "⌖", "scope": "Respawny · własny czas mapy", "requirement": "Helper m2-map-regens w obrazie gry oraz wolumen rates-spool.", "setup": "Wdróż integration/m2-map-regens do obrazu game, przebuduj usługę game i pozostaw podłączony wolumen rates-spool."},
     "student_chest": {"title": "Skrzynia startowa na żywo", "icon": "🎒", "scope": "Zarządzanie grą · skrzynia ucznia", "requirement": "Zmodyfikowany starter_chest.quest i tabela common.m2_switches.", "setup": "Zastosuj patch questa skrzyni startowej, skompiluj questy i ustaw M2_PLAYERBOT_DISABLE_STUDENT_CHEST zgodnie z wyborem dla botów."},
     "plus9_announcements": {"title": "Ogłoszenia ulepszeń +9", "icon": "📢", "scope": "Zarządzanie grą · rankingi", "requirement": "Komenda NOTICE w web_admin.quest oraz działający seban-collector.", "setup": "Wdróż do web_admin.quest obsługę NOTICE, skompiluj quest i uruchom usługę seban-collector."},
@@ -11341,6 +11341,13 @@ dbeditor.install(app, {"app": app, "db": db, "rows": rows, "one": one,
                        "panel_name": lambda: settings().get("panel_name") or "MT2009 PLUS",
                        # MT2009_PLUS_DB_EDITOR_CONFIG_V1: the header of an exported configuration
                        "server_version": installed_playerbots_version})
+
+
+# MT2009_PLUS_ENV_EDITOR_V1: "Ustawienia serwera (.env)" - every .env setting,
+# queued through the update spool to the updater (env_editor.py).
+import env_editor
+
+env_editor.install(app, login_required, update_csrf_token, lambda: UPDATE_SPOOL)
 
 
 if __name__ == "__main__":

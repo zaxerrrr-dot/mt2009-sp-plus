@@ -14,10 +14,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # where it exists and missed where it does not - and app.py has always
 # answered "dev" when it cannot read it.
 # event_autogen.py (MT2009_PLUS_EVENTS_AUTOGEN_V1): the events planner's week generator.
+# env_schema.py, env_editor.py (MT2009_PLUS_ENV_EDITOR_V1): "Ustawienia serwera (.env)".
 # special_item_group.snapshot.txt (MT2009_PLUS_CHEST_EDITOR_V1): the chests page's
 # copy of the game's file, shown until the game publishes its own; starred
 # for the same reason as VERSION.
-COPY app.py collector.py item_grants.py decisions.py decision_tables.py event_autogen.py gm_commands.txt CHANGELOG.md VERSION* special_item_group.snapshot*.txt ./
+COPY app.py collector.py item_grants.py decisions.py decision_tables.py event_autogen.py env_schema.py env_editor.py gm_commands.txt CHANGELOG.md VERSION* special_item_group.snapshot*.txt ./
 COPY dbeditor ./dbeditor
 # MT2009_PLUS_DB_EDITOR_V1: the client data builder (pure Python), with the
 # released client's base files in m2clientpack/base/<client version>/.

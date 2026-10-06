@@ -836,21 +836,87 @@ migrate_env() {
     sync_channel_ports
 }
 
+# MT2009_PLUS_ENV_EDITOR_V1: the advanced panel's .env editor. The panel
+# leaves env.request (and the older botcount.request / spawn-plan.request)
+# in the spool; env_apply.py, beside this file, checks it against the schema
+# again, writes .env and recreates exactly the services that read the changed
+# keys. It is read from the disk on every request, so an update that changes
+# it is in force at once; it also publishes env.current (secrets only as
+# set / unset) for the panel to show.
+ENV_APPLY="$HERE/env_apply.py"
+env_apply() {
+    [ -f "$ENV_APPLY" ] && have python3 || return 0
+    M2_UPDATE_STACK_DIR="$ROOT" python3 "$ENV_APPLY" --root "$ROOT" --spool "$SPOOL" "$1" || true
+}
+script_sum() { cksum < "$ROOT/linux-port/tools/update.sh" 2>/dev/null | cut -d ' ' -f 1; }
+
+# A watcher started from an older update.sh keeps running that older script
+# until its container is recreated (UPDATING.md, "Updating the updater"), so a
+# new request type - env.request - would wait for somebody to do that by hand.
+# `env' is run by the old watcher with the NEW update.sh right after an
+# unpack (migrate_env_from_release); when the watcher's script is not this
+# one it is told to restart once the update has finished: its process ends,
+# and the container's restart policy starts this file again. Inside the
+# updater container only, and only from a watcher (M2_UPDATE_WATCHING=1).
+schedule_watcher_restart() {
+    [ "${M2_UPDATE_WATCHING:-0}" = 1 ] && [ -f /.dockerenv ] || return 0
+    _want=$(script_sum)
+    [ -n "$_want" ] || return 0
+    [ "$(kv "$SPOOL/watcher.features" script)" = "$_want" ] && return 0
+    _watcher=$PPID
+    note "   the updater restarts itself with the new update.sh once this update has finished"
+    ( _i=0
+      while [ "$_i" -lt 2160 ]; do
+          sleep 5; _i=$((_i + 1))
+          _st=$(kv "$STATUS" state)
+          [ "$_st" = running ] && continue
+          [ -f "$BUILD_PENDING" ] && [ "$_st" != failed ] && continue
+          break
+      done
+      kill "$_watcher" 2>/dev/null ) </dev/null >/dev/null 2>&1 &
+    return 0
+}
+
 watch() {
     WATCHING=1
     mkdir -p "$SPOOL" 2>/dev/null
     say "watching $SPOOL/request for the panel (server folder $ROOT, $(installed_version))"
-    _done=""
+    # The last request done is kept in the spool, so a restarted watcher does
+    # not run it again; a request already there when a watcher that never kept
+    # one starts (the one before this) is taken as done.
+    _done=$(cat "$SPOOL/last-id" 2>/dev/null | tr -d ' \r\n')
+    if [ -z "$_done" ] && [ -f "$SPOOL/request" ]; then
+        _done=$(kv "$SPOOL/request" id)
+        [ -n "$_done" ] && printf '%s\n' "$_done" > "$SPOOL/last-id"
+    fi
+    # M2_UPDATE_WATCH_UPDATES=0: this watcher answers the .env editor only and
+    # never installs an update (a test server running unreleased files).
+    _updates=${M2_UPDATE_WATCH_UPDATES:-1}
+    ( umask 007; printf 'features=env-editor-v1\nscript=%s\nupdates=%s\nstarted=%s\n' "$(script_sum)" "$_updates" "$(date +%s)" \
+        > "$SPOOL/watcher.features" ) 2>/dev/null
+    env_apply snapshot
+    _tick=0
     while :; do
         touch "$SPOOL/watcher" 2>/dev/null
         if [ -f "$SPOOL/request" ]; then
             _id=$(kv "$SPOOL/request" id)
             if [ -n "$_id" ] && [ "$_id" != "$_done" ]; then
                 _done=$_id
-                note "update requested (the panel was told the published version is $(kv "$SPOOL/request" version))"
-                run_update || true
+                printf '%s\n' "$_id" > "$SPOOL/last-id" 2>/dev/null
+                if [ "$_updates" = 0 ]; then
+                    set_status failed "updates are switched off for this updater (M2_UPDATE_WATCH_UPDATES=0)"
+                else
+                    note "update requested (the panel was told the published version is $(kv "$SPOOL/request" version))"
+                    run_update || true
+                fi
             fi
         fi
+        if [ -f "$SPOOL/env.request" ] || [ -f "$SPOOL/botcount.request" ] || [ -f "$SPOOL/spawn-plan.request" ]; then
+            env_apply poll
+        fi
+        # .env edited by hand shows in the panel within a minute.
+        _tick=$((_tick + 1))
+        if [ "$_tick" -ge 12 ]; then _tick=0; env_apply snapshot >/dev/null 2>&1; fi
         sleep "$POLL"
     done
 }
@@ -867,8 +933,11 @@ case "${1:-run}" in
     # MT2009_PLUS_UPDATE_ENV_NOW_V1: run by an older update.sh right after it
     # unpacked this one (migrate_env_from_release); under the panel its lines
     # go to the spool's log as well.
-    env)   [ "${M2_UPDATE_WATCHING:-0}" = 1 ] && WATCHING=1; check_tree; migrate_env ;;
-    *) printf 'usage: sh %s [run|check|watch|stage|env]\n' "$0"; exit 2 ;;
+    env)   [ "${M2_UPDATE_WATCHING:-0}" = 1 ] && WATCHING=1; check_tree; migrate_env; schedule_watcher_restart ;;
+    # MT2009_PLUS_ENV_EDITOR_V1: the channels' ports alone, after the panel's
+    # .env editor changed the second channel or the channel count.
+    ports) check_tree; sync_channel_ports ;;
+    *) printf 'usage: sh %s [run|check|watch|stage|env|ports]\n' "$0"; exit 2 ;;
 esac
 exit $?
 }

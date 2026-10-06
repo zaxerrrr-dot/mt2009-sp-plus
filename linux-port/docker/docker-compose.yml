@@ -634,6 +634,9 @@ services:
       M2_UPDATE_CACHE_DIR: "${M2_UPDATE_CACHE_DIR:-/var/cache/m2src}"
       M2_UPDATE_REPO_DIR: "${M2_UPDATE_REPO_DIR:-/var/cache/m2src/repo}"
       M2_UPDATE_BRANCH: "${M2_UPDATE_BRANCH:-main}"
+      # 0: answer the advanced panel's .env editor (env.request) only and
+      # never install an update (MT2009_PLUS_ENV_EDITOR_V1).
+      M2_UPDATE_WATCH_UPDATES: "${M2_UPDATE_WATCH_UPDATES:-1}"
       TZ: "${M2_TZ:-UTC}"
 
     volumes:

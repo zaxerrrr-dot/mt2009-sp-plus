@@ -1,0 +1,133 @@
+{% extends 'base.html' %}{% block title %}Ustawienia serwera (.env) · {{ panel_brand }}{% endblock %}{% block content %}
+{#- MT2009_PLUS_ENV_EDITOR_V1: every setting of linux-port/docker/.env (env_schema.py).
+    The page never writes .env: it queues env.request in the update spool and the
+    updater (the only container with the Docker socket) applies it. -#}
+<link rel="stylesheet" href="{{ static_asset_url('server-env.css') }}">
+<p class="eyebrow">ZAAWANSOWANE · KONFIGURACJA SERWERA</p><h1>Ustawienia serwera (.env)</h1>
+<p class="muted">Wszystkie {{ field_count }} parametry pliku <code>linux-port/docker/.env</code> w jednym miejscu: liczba botów, moduły, porty, panele, baza i aktualizacje. Zmiany zapisuje aktualizator serwera – przed zapisem robi kopię <code>.env</code>, zmienia tylko wskazane linie (komentarze zostają), a potem uruchamia ponownie wyłącznie usługi, które czytają zmienione ustawienia.</p>
+
+{% if not state.ready %}
+<section class="panel env-banner env-banner-warn" id="env-not-ready">
+<h2>🔒 Tryb tylko do odczytu</h2>
+{% if state.reason == 'old-watcher' %}
+<p>Aktualizator działa, ale jest w starszej wersji i nie obsługuje jeszcze edytora <code>.env</code>. Uruchom go ponownie, aby wczytał nową wersję skryptu:</p>
+<pre class="env-cmd">cd /ścieżka/do/serwera/linux-port/docker
+docker compose --profile update up -d --force-recreate updater</pre>
+{% else %}
+<p>Zmiany zapisuje usługa <b>updater</b> (aktualizator) – jedyny element serwera z dostępem do Dockera. Panel celowo go nie ma, więc bez aktualizatora może tylko pokazać ustawienia. Na serwerze z Linuksem uruchom go raz:</p>
+<pre class="env-cmd">cd /ścieżka/do/serwera/linux-port/docker
+docker compose --profile update up -d updater</pre>
+<p class="muted small">Jeśli nie chcesz, żeby aktualizator instalował też aktualizacje z panelu, ustaw najpierw w <code>.env</code> <code>M2_UPDATE_WATCH_UPDATES=0</code> – wtedy obsługuje wyłącznie ten edytor. Na Windowsie ustawienia zmienia launcher albo ręcznie plik <code>linux-port\docker\.env</code>.</p>
+{% endif %}
+{% if current.time %}<p class="muted small">Pokazane wartości pochodzą z ostatniego odczytu aktualizatora ({{ snapshot_when }}) i mogą być nieaktualne.</p>{% else %}<p class="muted small">Aktualizator jeszcze nigdy nie odczytał <code>.env</code> – poniżej widać wartości domyślne.</p>{% endif %}
+</section>
+{% endif %}
+{% if current.error %}<section class="panel env-banner env-banner-error"><p>⚠ {{ current.error }}</p></section>{% endif %}
+
+<section class="panel env-status" id="env-status" hidden>
+<div class="env-status-head"><span class="env-state" id="env-state"></span><b id="env-status-title">Zmiana ustawień</b><small class="muted" id="env-status-when"></small></div>
+<p id="env-status-message"></p>
+<ul class="env-status-results" id="env-status-results"></ul>
+<details class="env-status-log" id="env-status-log-wrap" hidden><summary>Dziennik aktualizatora</summary><pre id="env-status-log"></pre></details>
+</section>
+
+<div class="env-toolbar panel">
+<label class="env-search"><span class="sr-only">Szukaj ustawienia</span><input type="search" id="env-search" placeholder="Szukaj: nazwa, opis albo zmienna (np. boty, port, M2_AREZZO)…" autocomplete="off"></label>
+<label class="env-filter"><input type="checkbox" id="env-only-custom"> <span>tylko różne od domyślnych</span></label>
+<div class="env-toolbar-actions"><button type="button" class="env-btn env-btn-ghost" id="env-expand">Rozwiń wszystko</button><button type="button" class="env-btn env-btn-ghost" id="env-collapse">Zwiń wszystko</button></div>
+<p class="env-legend muted small"><span class="env-badge env-badge-danger">ryzykowne</span> wymaga dodatkowego potwierdzenia · <span class="env-badge env-badge-secret">tajne</span> wartość nigdy nie jest pokazywana · <span class="env-badge env-badge-ro">tylko odczyt</span> zmiana z panelu zepsułaby serwer</p>
+</div>
+
+<div id="env-editor" class="env-editor{% if not state.ready %} env-readonly{% endif %}">
+{% for section in sections %}
+<details class="panel env-section" id="env-sec-{{ section.id }}" data-section="{{ section.id }}"{% if loop.first %} open{% endif %}>
+<summary><span class="env-sec-icon">{{ section.icon }}</span><span class="env-sec-text"><h2>{{ section.label }}</h2><small class="muted">{{ section.desc }}</small></span><span class="env-sec-count"><b data-sec-changed hidden></b><small>{{ section.fields|length }} ustawień</small></span></summary>
+<div class="env-fields">
+{% for f in section.fields %}
+{%- set key = f.key -%}
+{%- set has = key in values -%}
+{%- set cur = values.get(key, f.default) -%}
+{%- set editable = state.ready and not f.readonly -%}
+<article class="envf{% if f.readonly %} envf-ro{% endif %}{% if f.featured %} envf-featured{% endif %}" id="env-{{ key }}" data-key="{{ key }}" data-search="{{ (key ~ ' ' ~ f.label ~ ' ' ~ f.desc ~ ' ' ~ section.label)|lower }}">
+<div class="envf-head">
+<h3 class="envf-title"><label for="envi-{{ key }}" title="{{ f.desc }}">{{ f.label }}</label></h3>
+<code class="envf-key">{{ key }}</code>
+{% if f.secret %}<span class="env-badge env-badge-secret">tajne</span>{% endif %}
+{% if f.readonly %}<span class="env-badge env-badge-ro">tylko odczyt</span>{% endif %}
+{% if f.dangerous and not f.readonly %}<span class="env-badge env-badge-danger">ryzykowne</span>{% endif %}
+{% if f.build %}<span class="env-badge">przy przebudowie</span>{% endif %}
+{% if key in overridden %}<span class="env-badge env-badge-warn" title="Ta zmienna jest ustawiona w docker-compose.override.yml – tam ma pierwszeństwo, więc zmiana w .env może nic nie dać.">nadpisane w override</span>{% endif %}
+</div>
+<p class="envf-desc">{{ f.desc }}</p>
+<div class="envf-control">
+{% if f.secret %}
+  <span class="env-secret-state {{ 'is-set' if secrets.get(key) == 'set' else 'is-unset' }}">{{ '● ustawione' if secrets.get(key) == 'set' else ('○ nieustawione' if secrets.get(key) == 'unset' else '? nieznane') }}</span>
+  {% if editable %}
+  <button type="button" class="env-btn env-btn-ghost" data-secret-open>Ustaw nowe…</button>
+  <span class="env-secret-form" hidden>
+    <input type="password" id="envi-{{ key }}" data-secret-a autocomplete="new-password" placeholder="nowa wartość"{% if f.hint %} title="{{ f.hint }}"{% endif %}>
+    <input type="password" data-secret-b autocomplete="new-password" placeholder="powtórz">
+    <button type="button" class="env-btn env-btn-ghost" data-secret-cancel>Anuluj</button>
+  </span>
+  {% endif %}
+{% elif f.type == 'bool' %}
+  <label class="env-toggle"><input type="checkbox" id="envi-{{ key }}" data-env-input{% if cur == '1' %} checked{% endif %}{% if not editable %} disabled{% endif %}><span class="env-toggle-track"><span class="env-toggle-knob"></span></span><span class="env-toggle-text" data-toggle-text>{{ 'włączone' if cur == '1' else 'wyłączone' }}</span></label>
+{% elif f.type == 'enum' %}
+  <select id="envi-{{ key }}" data-env-input{% if not editable %} disabled{% endif %}>
+  {% for opt in f.options %}<option value="{{ opt[0] }}"{% if opt[0] == cur %} selected{% endif %}>{{ opt[1] }}</option>{% endfor %}
+  {% if cur not in f.options|map('first')|list %}<option value="{{ cur }}" selected>{{ cur }} (nieznana wartość)</option>{% endif %}
+  </select>
+{% elif f.type in ('int', 'number', 'port') %}
+  {%- set lo = f.min if f.min is defined else (1 if f.type == 'port' else '') -%}
+  {%- set hi = f.max if f.max is defined else (65535 if f.type == 'port' else '') -%}
+  <span class="env-number">
+  {% if f.type == 'int' and f.min is defined and f.max is defined and (f.max - f.min) <= 10000 %}<input type="range" data-env-range min="{{ lo }}" max="{{ hi }}" step="{{ f.step or 1 }}" value="{{ cur if cur else lo }}"{% if not editable %} disabled{% endif %} aria-label="{{ f.label }}">{% endif %}
+  <input type="number" id="envi-{{ key }}" data-env-input inputmode="decimal" value="{{ cur }}"{% if lo != '' %} min="{{ lo }}"{% endif %}{% if hi != '' %} max="{{ hi }}"{% endif %} step="{{ f.step or 1 }}"{% if f.allow_empty %} placeholder="puste = auto"{% endif %}{% if not editable %} disabled{% endif %}>
+  </span>
+{% else %}
+  <input type="text" id="envi-{{ key }}" data-env-input value="{{ cur }}" spellcheck="false" autocomplete="off"{% if f.suggestions %} list="envl-{{ key }}"{% endif %}{% if f.hint %} placeholder="{{ f.hint }}"{% elif f.allow_empty %} placeholder="puste = domyślnie"{% endif %}{% if not editable %} disabled{% endif %}>
+  {% if f.suggestions %}<datalist id="envl-{{ key }}">{% for s in f.suggestions %}<option value="{{ s }}">{% endfor %}</datalist>{% endif %}
+{% endif %}
+<button type="button" class="env-btn env-btn-ghost env-undo" data-undo hidden title="Cofnij tę zmianę">↶ Cofnij</button>
+{% if editable and not f.secret %}<button type="button" class="env-btn env-btn-ghost env-default" data-default hidden title="Ustaw wartość domyślną">Domyślna</button>{% endif %}
+</div>
+<p class="envf-error" data-error hidden></p>
+<p class="envf-meta muted">
+<span>Domyślnie: <b>{% if f.secret %}—{% elif f.type == 'bool' %}{{ 'włączone' if f.default == '1' else 'wyłączone' }}{% elif f.default == '' %}(puste){% else %}{{ f.default }}{% endif %}</b></span>
+{% if not f.secret %}<span>Teraz w .env: <b>{% if has %}{{ cur if cur != '' else '(puste)' }}{% else %}brak linii – działa domyślna{% endif %}</b></span>{% endif %}
+<span>{% if f.build %}Po zmianie: przy następnej przebudowie obrazu gry{% elif f.services %}Po zmianie restart: {% for s in f.services if s != 'updater' %}{{ service_labels.get(s, s) }}{% if not loop.last %}, {% endif %}{% endfor %}{% if 'updater' in f.services %}{% if f.services|length > 1 %}, {% endif %}aktualizator (przy jego restarcie){% endif %}{% else %}Bez restartu kontenerów{% endif %}</span>
+{% if f.note %}<span class="envf-note">{{ f.note }}</span>{% endif %}
+</p>
+{% if f.readonly and f.readonly_reason %}<p class="envf-ro-reason">🔒 {{ f.readonly_reason }}</p>{% endif %}
+</article>
+{% endfor %}
+</div>
+</details>
+{% endfor %}
+<p class="muted small env-unknown"{% if not current.unknown_keys %} hidden{% endif %}>Inne zmienne w <code>.env</code>, których ten edytor nie zna (zostają bez zmian): {{ (current.unknown_keys or [])|join(', ') }}</p>
+<p class="env-empty panel" id="env-empty" hidden>Nic nie pasuje do wyszukiwania.</p>
+</div>
+
+<div class="env-savebar" id="env-savebar" hidden>
+<div class="env-savebar-text"><b id="env-savebar-count"></b><span id="env-savebar-services" class="muted"></span><span id="env-savebar-warn" class="env-savebar-warn" hidden>⚠ Restart serwera gry – gracze zostaną rozłączeni na 1–3 minuty.</span></div>
+<div class="env-savebar-actions"><button type="button" class="env-btn env-btn-ghost" id="env-discard">Odrzuć zmiany</button><button type="button" class="env-btn env-btn-primary" id="env-save">Zapisz zmiany</button></div>
+</div>
+
+<dialog class="env-dialog" id="env-dialog">
+<form method="dialog" data-ajax-ignore id="env-dialog-form">
+<h2>Zapisać zmiany w .env?</h2>
+<div class="table-wrap"><table class="env-diff"><thead><tr><th>Ustawienie</th><th>Teraz</th><th>Po zmianie</th></tr></thead><tbody id="env-diff-body"></tbody></table></div>
+<p id="env-dialog-services"></p>
+<p class="env-dialog-warn" id="env-dialog-game" hidden>⚠ <b>Serwer gry zostanie uruchomiony ponownie.</b> Wszyscy gracze zostaną rozłączeni, a boty wejdą od nowa (1–3 minuty).</p>
+<p class="env-dialog-warn" id="env-dialog-panel" hidden>ℹ Ten panel też uruchomi się ponownie – strona sama odczeka i pokaże wynik.</p>
+<label class="env-dialog-danger" id="env-dialog-danger" hidden><span>Zmieniasz ustawienia oznaczone jako <b>ryzykowne</b> (porty, adresy, dostęp). Wpisz <b>{{ danger_word }}</b>, aby potwierdzić:</span><input type="text" id="env-confirm-word" autocomplete="off" spellcheck="false"></label>
+<p class="muted small">Przed zapisem aktualizator robi kopię <code>.env</code> (ostatnie 10 w <code>linux-port/docker/.env-backups</code>). Jeśli usługi nie wstaną z nowymi wartościami, poprzedni plik zostanie przywrócony automatycznie.</p>
+<p class="envf-error" id="env-dialog-error" hidden></p>
+<div class="env-dialog-actions"><button type="button" class="env-btn env-btn-ghost" id="env-dialog-cancel">Anuluj</button><button type="button" class="env-btn env-btn-primary" id="env-dialog-ok">Zapisz i zastosuj</button></div>
+</form>
+</dialog>
+
+<script type="application/json" id="env-schema">{{ schema_json|tojson }}</script>
+<script type="application/json" id="env-state">{{ {'ready': state.ready, 'values': values, 'secrets': secrets, 'present': current.get('present', []), 'status': state.status, 'danger_word': danger_word, 'csrf': env_csrf, 'save_url': url_for('server_env_save'), 'status_url': url_for('server_env_status')}|tojson }}</script>
+<script defer src="{{ static_asset_url('server-env.js') }}"></script>
+{% endblock %}

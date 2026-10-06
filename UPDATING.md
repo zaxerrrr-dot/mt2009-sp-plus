@@ -243,6 +243,44 @@ at the top of that release, in full, before anything else.
 
 ---
 
+## Server settings (.env) from the advanced panel
+
+The advanced panel's **Ustawienia → Ustawienia serwera (.env)** page
+(`/advanced/server-env`, MT2009_PLUS_ENV_EDITOR_V1) shows every variable of
+`linux-port/docker/.env` - described in Polish, grouped, searchable - and
+changes them. The panel itself never writes `.env` and has no Docker socket:
+
+1. the page leaves `env.request` (JSON: id + `KEY=value` changes) in the
+   `update-spool` volume, after checking the values against
+   `linux-port/docker/seban-panel/env_schema.py`;
+2. the **updater** service (`update.sh watch`, the only container with the
+   Docker socket) runs `linux-port/tools/env_apply.py`, which checks the
+   request again against the same schema, refuses read-only keys (database
+   passwords and user, the compose project name, the container prefix, host
+   paths), backs `.env` up to `linux-port/docker/.env-backups/` (the last 10),
+   rewrites only the named lines (comments and order stay; a key `.env` lacks
+   is appended) and runs `docker compose up -d --force-recreate` for exactly
+   the services that read the changed keys. If compose fails, the backup is
+   put back and compose runs again;
+3. the result goes to `env.status`, which the page polls; `env.current` is the
+   updater's snapshot of the values (secrets only as set / unset), refreshed
+   at its start, after every change and once a minute.
+
+The older `botcount.request` / `spawn-plan.request` of `/manage` go through
+the same path now. Without a running updater (Windows, or a Linux server
+that never started it) the page is read-only and says how to start it:
+
+```sh
+cd /opt/metin2/stack            # the folder with docker-compose.yml
+docker compose --profile update up -d updater
+```
+
+`M2_UPDATE_WATCH_UPDATES=0` in `.env` (before starting it) keeps the updater
+for the settings page alone: it never installs an update.
+
+When a variable is added to `.env.example` or `docker-compose.yml`, describe
+it in `env_schema.py` - `test_env_schema.py` fails until you do.
+
 ## Updating the updater
 
 One wrinkle worth knowing about. The updater is in a compose profile that is
@@ -250,8 +288,11 @@ not active during the update it is running — which is deliberate, because
 otherwise `docker compose up -d --build` would stop the very container running
 the command, halfway through.
 
-The consequence is that the updater does not update itself. It goes on running
-the image it was started with until you recreate it:
+Since MT2009_PLUS_ENV_EDITOR_V1 the updater restarts itself once an update
+that changed `linux-port/tools/update.sh` has finished (its container's restart
+policy starts the new script), so a new request type such as the settings
+page's reaches it without anybody touching the server. Only the image - the
+tools inside it - stays as it was until you rebuild it:
 
 ```sh
 cd /opt/metin2/stack

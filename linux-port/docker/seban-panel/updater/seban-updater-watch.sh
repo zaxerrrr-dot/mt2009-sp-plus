@@ -31,6 +31,14 @@ set_env() {
     printf '\n%s=%s\n' "$key" "$value" >> "$ENV_FILE"
   fi
 }
+# MT2009_PLUS_ENV_EDITOR_V1: the advanced panel's .env editor (env.request)
+# and its bot count (botcount.request) - the same apply the updater
+# container runs (linux-port/tools/env_apply.py of the installed server).
+env_apply() {
+  command -v python3 >/dev/null 2>&1 || return 0
+  [ -f "$ROOT/linux-port/tools/env_apply.py" ] || return 0
+  M2_UPDATE_STACK_DIR="$ROOT" python3 "$ROOT/linux-port/tools/env_apply.py" --root "$ROOT" --spool "$SPOOL" "$1" || true
+}
 valid_range() {
   value=$1 lower=$2 upper=$3
   case "$value" in ''|*[!0-9]*) return 1;; esac
@@ -42,6 +50,9 @@ late=$(read_env PLAYERBOT_LATE_JOINERS); [ -n "$late" ] || late=0
 hours=$(read_env PLAYERBOT_LATE_JOIN_HOURS); [ -n "$hours" ] || hours=24
 spawn_status ready "$window" "$late" "$hours" 'Plan wejścia jest gotowy.'
 status idle 0 5 'Seban updater is ready.'
+printf 'features=env-editor-v1\nscript=host\nupdates=1\nstarted=%s\n' "$(date +%s)" > "$SPOOL/watcher.features"
+env_apply snapshot
+tick=0
 
 while :; do
   touch "$SPOOL/watcher"
@@ -90,5 +101,10 @@ while :; do
       fi
     fi
   fi
+  if [ -f "$SPOOL/env.request" ] || [ -f "$SPOOL/botcount.request" ]; then
+    env_apply poll
+  fi
+  tick=$((tick + 1))
+  if [ "$tick" -ge 12 ]; then tick=0; env_apply snapshot >/dev/null 2>&1; fi
   sleep 5
 done
