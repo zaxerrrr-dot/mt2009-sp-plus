@@ -2571,6 +2571,22 @@ WHERE (type IN (10, 23) OR vnum IN (30118, 50006, 50007, 50011, 50012, 50013, 50
   AND ((flag & 4) = 0 OR (antiflag & 32768) <> 0 OR stack <> 200);
 UPDATE world.item_proto SET limittype0 = 0, limitvalue0 = 0 WHERE vnum = 30270 AND limittype0 = 7;
 UPDATE player.item SET socket0 = 0 WHERE vnum = 30270 AND socket0 <> 0;" || fail_step "could not write the stacks of 200 (soul stones, caskets, chests)" >&2
+# MT2009_PLUS_STACK_CHESTS_COUPONS_V1 (2.24.0, the owner: "Zelazne i
+# Sprochniale Szkatulki z Groty sie nie stakuja, Kupony SM tez nie - z pelnym
+# plecakiem nie da sie ich podniesc"): the Kupony SM (80014-80018 - 50, 100,
+# 250, 500, 1000) stack to 200 like the chests; and the Grotto's chests -
+# Zelazna Szkatulka, Zelazne Pudelko, Zelazna Skrzynia (50120-50122) and
+# Sprochniala Skrzynia (50124), gift boxes the block above already covers -
+# are named here once more so the two lists cannot drift apart. The package's
+# coupon quest took the whole stack for one coupon (item.remove()); the game
+# image's Dockerfile makes it item.remove(1) (same marker). The client's
+# item_proto carries the same flags (client-patches/client-2.0.30/tools/
+# digirasta/patch_digirasta_stack.py, STACK_VNUMS). Pieces already in bags
+# keep working - each is a stack of one that the next one joins. Every start;
+# idempotent.
+db -e "UPDATE world.item_proto SET flag = flag | 4, antiflag = antiflag & ~32768, stack = 200
+WHERE vnum IN (80014, 80015, 80016, 80017, 80018, 50120, 50121, 50122, 50124)
+  AND ((flag & 4) = 0 OR (antiflag & 32768) <> 0 OR stack <> 200);" || fail_step "could not make the Kupony SM and the Grotto's chests stack" >&2
 # MT2009_PLUS_HORSE30_V1: the horse to level 30 (his karta-kon-30-i-juki.md,
 # quest konie and horse_inventory): the level-30 horse is race 20119
 # (server-patches/digirasta, char_horse.cpp) - its name over the summoned horse
