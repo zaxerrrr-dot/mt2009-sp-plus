@@ -215,7 +215,12 @@ class Apply:
     # ---------------------------------------------------------------- compose
     def compose(self, services, label):
         """docker compose up -d --force-recreate <services>; True when it worked."""
-        command = self.docker + ["compose", "up", "-d", "--force-recreate"] + list(services)
+        # --no-deps: only the named services. Without it compose also
+        # recreates any dependency whose configuration it considers stale -
+        # on the test server a settings change for the panels recreated the
+        # database under a running game (6 October). The named ones still
+        # start in depends_on order (playerbot-migrate before game).
+        command = self.docker + ["compose", "up", "-d", "--no-deps", "--force-recreate"] + list(services)
         self.log("%s: %s" % (label, " ".join(command[len(self.docker):])))
         try:
             process = subprocess.Popen(command, cwd=self.compose_dir, stdout=subprocess.PIPE,

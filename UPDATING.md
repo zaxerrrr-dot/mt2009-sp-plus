@@ -259,7 +259,7 @@ changes them. The panel itself never writes `.env` and has no Docker socket:
    passwords and user, the compose project name, the container prefix, host
    paths), backs `.env` up to `linux-port/docker/.env-backups/` (the last 10),
    rewrites only the named lines (comments and order stay; a key `.env` lacks
-   is appended) and runs `docker compose up -d --force-recreate` for exactly
+   is appended) and runs `docker compose up -d --no-deps --force-recreate` for exactly
    the services that read the changed keys. If compose fails, the backup is
    put back and compose runs again;
 3. the result goes to `env.status`, which the page polls; `env.current` is the

@@ -98,7 +98,7 @@ class EnvApplyTest(unittest.TestCase):
         self.assertTrue(after.rstrip().endswith("M2_SEONHAE=1"))
         self.assertEqual(stat.S_IMODE(os.stat(self.env).st_mode), 0o600)
         self.assertEqual(st["services"], ["game", "playerbot-migrate"])
-        self.assertEqual(self.docker_calls(), ["compose up -d --force-recreate game playerbot-migrate"])
+        self.assertEqual(self.docker_calls(), ["compose up -d --no-deps --force-recreate game playerbot-migrate"])
         backups = os.listdir(os.path.join(os.path.dirname(self.env), ".env-backups"))
         self.assertEqual(len(backups), 1)
         self.assertFalse(os.path.exists(os.path.join(self.spool, "env.request")))
