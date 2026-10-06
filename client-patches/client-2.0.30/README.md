@@ -613,6 +613,38 @@ naszym `root` 2.0.55 – zmienił tylko `uitarget.py` i dodał `mobraceflag.py`)
   w mob_proto trzeba go wygenerować ponownie.** Exe nie zna `POINT_ATTBONUS_INSECT/DESERT` – brane indeksy serwera
   (49/52), tylko gdy `POINT_ATTBONUS_HUMAN` klienta = 43.
 
+## Zmiana bonusów i poprawka mgły (Vekirion)
+
+**Autor: Vekirion** (paczka „VekirionAiO_v3”, 6 października 2026, `root` zbudowany na naszym 2.0.55). Z paczki wzięte
+tylko te dwie rzeczy; pakiet 60+ FPS (`Ustaw_FPS.bat` łatający exe, `updateable.py`, `uisystemoption.py`,
+`ui.py`, `eventmanager.py`, `interfacemodule.py`, `uiautohunt.py`, `uigoblin.py`, `uiminigamerumi.py` i linie
+`FPS_CAP_RAISE_V1` w `game.py`) **pominięty**; bonusy pod nazwą moba są już wyżej (`MT2009_PLUS_TARGET_BONUS_V1`).
+Jego `etc.index/.data` to inna, pełna paczka `etc` (m.in. `environment/*.msenv`) – bazowej paczki `etc` naszego klienta
+nie ma na VPS, więc nie da się jej porównać; kod poprawki mgły jest w całości w `root`, `etc` nie jest przenoszone.
+
+**Zmiana bonusów** – `MT2009_PLUS_BONUS_SWITCH_V1`, część serwerowa: `server-patches/bonusswitch` +
+`playerbot_bonus_switch.h`. Okno z 5 polami (przedmiot na pole przeciągnięciem albo PPM w ekwipunku przy otwartym
+oknie), wybór bonusów, które przedmiot może mieć, i ich minimalnych wartości, „Wszystkie” / „Co najmniej X z”,
+szybkość 1–20 zmian/s, Start/Stop, „Zmień raz”. Zmienia serwer: 1 zmiana = 1 zmianka (najpierw 76014, potem 71084,
+71284, 39028; kostiumy 70063/70064).
+
+- `uibonusswitch.py` (nowy) – okno; komendy `/bonus_switch`, odpowiedzi `BSW ...`.
+- `mt2009_ui/sidebar/bonusswitch_01/02/03.tga` (nowe) – ikona na pasku obok ekwipunku.
+- `uiinventory.py` – przycisk paska, PPM na broni/zbroi przy otwartym oknie wkłada ją do pola zamiast zakładać.
+- `keybind.py` – akcja „Zmiana bonusów” (`bonus_switch`, domyślnie bez klawisza).
+- `game.py` – `serverCommandList["BSW"]`, klawisz, zamknięcie okna przy wyjściu.
+
+**Poprawka mgły** – `MT2009_PLUS_FOG_FIX_V1`. W `introloading.py` ustawienia odległości widzenia
+(`SetViewDistanceSet` 1–3) były zakomentowane, a zawsze wybrany był zestaw 0, który exe co klatkę przelicza z FPS
+(od `app.SetMinFog` do 25600) – przyciski mgły w opcjach prawie nic nie zmieniały, a zasięg rysowania „pływał” przy
+spadkach FPS. Teraz zestawy są ustawione (gęsta 16000, średnia 19200, lekka 25600), przycisk mgły wybiera swój
+zestaw (`constInfo.APPLY_FOG_DISTANCE`), a `game.py` wybiera go ponownie po każdej zmianie środowiska (noc/dzień,
+mapa świąteczna). Domyślna mgła: średnia (było: gęsta).
+
+- `constinfo.py` (nowy w repo, z paczki 2.0.55) – `FOG_DISTANCE_LIST`, `APPLY_FOG_DISTANCE`, domyślnie `FOG_LEVEL1`.
+- `introloading.py` (nowy w repo, z paczki 2.0.55) – `__StartGame`: zestawy odległości i wybór zestawu mgły.
+- `game.py` – `constInfo.APPLY_FOG_DISTANCE()` po `SetEnvironmentData`.
+
 ## Ranking tygodniowy i tytuły – bez zmian exe
 
 Znacznik `MT2009_PLUS_WEEKLY_RANKING_V1`. Na podstawie systemu rankingu tygodniowego z plików Arezzo

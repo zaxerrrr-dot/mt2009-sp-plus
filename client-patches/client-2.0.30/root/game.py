@@ -473,6 +473,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiseonhae").DestroyWindow()
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
 		__import__("uitpbookmarks").DestroyWindow()
+		# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher (uibonusswitch.py).
+		__import__("uibonusswitch").DestroyWindow()
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 		__import__("uiweeklyrank").DestroyWindow()
 		# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window (uiusunmisje.py).
@@ -781,6 +783,8 @@ class GameWindow(ui.ScriptWindow):
 			# The inventory bar's windows that never had a key (none by default).
 			"battle_pass"		: (lambda : Window("uibattlepass"), None),
 			"tp_bookmarks"		: (lambda : Window("uitpbookmarks"), None),
+			# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher (uibonusswitch.py).
+			"bonus_switch"		: (lambda : Window("uibonusswitch"), None),
 			# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 			"weekly_rank"		: (lambda : Window("uiweeklyrank"), None),
 			# MT2009_PLUS_MONSTER_CARDS_V1: the Monster Cards (monstercard.py), no key by default.
@@ -3232,6 +3236,7 @@ class GameWindow(ui.ScriptWindow):
 		# (database editor) against this client's dbdata_stamp.txt (dbdatastamp.py).
 		serverCommandList["DbDataStamp"] = __import__("dbdatastamp").NOTICE.OnCommand
 		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
+		serverCommandList["BSW"] = self.__BonusSwitch # MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion)
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["MISJE"] = self.__ClearMissions # MT2009_PLUS_CLEAR_MISSIONS_V1
 		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
@@ -3689,11 +3694,14 @@ class GameWindow(ui.ScriptWindow):
 		self.__RefreshNightMode()
 
 	def __SetNightMode(self, isNight):
+		# MT2009_PLUS_FOG_FIX_V1 (Autor: Vekirion): constInfo.APPLY_FOG_DISTANCE() after every
+		# environment change here and in the day mode below keeps the fog option's view distance.
 		if self.is_night_environment == isNight:
 			return
 
 		if not isNight:
 			background.SetEnvironmentData(0)
+			constInfo.APPLY_FOG_DISTANCE()
 			self.is_night_environment = False
 			return
 
@@ -3719,12 +3727,14 @@ class GameWindow(ui.ScriptWindow):
 
 		background.RegisterEnvironmentData(1, "d:/ymir work/environment/%s.msenv" % environment_file)
 		background.SetEnvironmentData(1)
+		constInfo.APPLY_FOG_DISTANCE()
 		self.is_night_environment = True
 
 	## DayMode
 	def __PRESERVE_DayMode_Update(self, mode):
 		if "light"==mode:
 			background.SetEnvironmentData(0)
+			constInfo.APPLY_FOG_DISTANCE()
 		elif "dark"==mode:
 
 			if not self.__IsXMasMap():
@@ -3732,6 +3742,7 @@ class GameWindow(ui.ScriptWindow):
 
 			background.RegisterEnvironmentData(1, constInfo.ENVIRONMENT_NIGHT)
 			background.SetEnvironmentData(1)
+			constInfo.APPLY_FOG_DISTANCE()
 
 	def __DayMode_Update(self, mode):
 		if "light"==mode:
@@ -3745,11 +3756,13 @@ class GameWindow(ui.ScriptWindow):
 
 	def __DayMode_OnCompleteChangeToLight(self):
 		background.SetEnvironmentData(0)
+		constInfo.APPLY_FOG_DISTANCE()
 		self.curtain.FadeIn()
 
 	def __DayMode_OnCompleteChangeToDark(self):
 		background.RegisterEnvironmentData(1, constInfo.ENVIRONMENT_NIGHT)
 		background.SetEnvironmentData(1)
+		constInfo.APPLY_FOG_DISTANCE()
 		self.curtain.FadeIn()
 
 	## XMasBoom
@@ -3872,6 +3885,11 @@ class GameWindow(ui.ScriptWindow):
 	def __TpBookmarks(self, *args):
 		import uitpbookmarks
 		uitpbookmarks.OnCommand(*args)
+
+	# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher's lines (uibonusswitch.py).
+	def __BonusSwitch(self, *args):
+		import uibonusswitch
+		uibonusswitch.OnCommand(*args)
 
 	# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking's lines (uiweeklyrank.py); "tail" is
 	# a title holder's title above its nick, in the row the bots' titles use

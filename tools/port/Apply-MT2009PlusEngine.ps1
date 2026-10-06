@@ -57,6 +57,8 @@ param(
 #                      server-patches/digirasta-qol)
 #   quick chest opening char_item.cpp         (MT2009_PLUS_VEKIRION_V1; server-patches/vekirion,
 #                      Autor: Vekirion)
+#   bonus switcher     cmd.cpp, cmd_general.cpp (MT2009_PLUS_BONUS_SWITCH_V1;
+#                      server-patches/bonusswitch, Autor: Vekirion)
 #   guild war entry    guild_war.cpp, cmd.cpp, cmd_general.cpp
 #                      (MT2009_PLUS_GUILD_WAR_JOIN_V1; server-patches/guildwarjoin)
 #   Monster Cards      cmd.cpp, char_battle.cpp, char_item.cpp, input_login.cpp
@@ -801,6 +803,19 @@ if ((Test-Path -LiteralPath $vekirionApply -PathType Leaf) -and
     if ($vekirionResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} quick chest opening edit(s).' -f $vekirionResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The bonus switcher (server-patches/bonusswitch, MT2009_PLUS_BONUS_SWITCH_V1,
+# "Autor: Vekirion"): "/bonus_switch" in cmd.cpp / cmd_general.cpp for the
+# client's "Zmiana bonusow" window; the work is playerbot_bonus_switch.h
+# (overlay). After seonhae and digirasta-qol, whose cmd.cpp lines it sits by.
+$bonusSwitchApply = Join-Path $repo 'server-patches/bonusswitch/Apply-BonusSwitchPatch.ps1'
+if ((Test-Path -LiteralPath $bonusSwitchApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd.cpp') -PathType Leaf)) {
+    $bonusSwitchResult = & $bonusSwitchApply -SourceDir $engineGameSource
+    if ($bonusSwitchResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} bonus switcher edit(s).' -f $bonusSwitchResult.Applied) -ForegroundColor DarkGray
     }
 }
 # The guild war's "Wejdz na wojne" (server-patches/guildwarjoin,

@@ -1,0 +1,20 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_BONUS_SWITCH_V1 (declare)",
+  "old": "// MT2009_PLUS_SEONHAE_V1 (declare)\nACMD(do_seonhae);\n",
+  "new": "// MT2009_PLUS_SEONHAE_V1 (declare)\nACMD(do_seonhae);\n// MT2009_PLUS_BONUS_SWITCH_V1 (declare) (Autor: Vekirion)\nACMD(do_bonus_switch);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_BONUS_SWITCH_V1 (table)",
+  "old": "\t// MT2009_PLUS_SEONHAE_V1 (table)\n\t{ \"seonhae\",\tdo_seonhae,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t// MT2009_PLUS_SEONHAE_V1 (table)\n\t{ \"seonhae\",\tdo_seonhae,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_BONUS_SWITCH_V1 (table) (Autor: Vekirion)\n\t{ \"bonus_switch\",\tdo_bonus_switch,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_BONUS_SWITCH_V1 (command)",
+  "old": "\tvoid SeonHaeCommand(LPCHARACTER ch, const char* argument);\n\tSeonHaeCommand(ch, argument);\n}\n\n",
+  "new": "\tvoid SeonHaeCommand(LPCHARACTER ch, const char* argument);\n\tSeonHaeCommand(ch, argument);\n}\n\n// MT2009_PLUS_BONUS_SWITCH_V1 (command) (Autor: Vekirion): the bonus switcher window's\n// \"/bonus_switch info <cell> | items | start <cell> <speed> <need> <costume bonuses> <apply>:<min> ... | once <cell> | stop [cell]\"\n// (playerbot_bonus_switch.h).\nACMD(do_bonus_switch)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid BonusSwitchCommand(LPCHARACTER ch, const char* argument);\n\tBonusSwitchCommand(ch, argument);\n}\n\n"
+ }
+]
