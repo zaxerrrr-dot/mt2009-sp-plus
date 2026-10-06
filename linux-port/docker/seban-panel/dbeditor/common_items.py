@@ -52,12 +52,32 @@ def init(ctx):
     _CTX.update(ctx)
 
 
-def register_table(name, key, cols, title, edit_endpoint=None, formatter=None, row_cols=None, row_label=None):
+def register_table(name, key, cols, title, edit_endpoint=None, formatter=None, row_cols=None, row_label=None,
+                   row_exprs=None):
     """key: the column (or a tuple of columns) a row is found by. row_cols:
     every column of a whole row, for the tables write_rows() adds rows to /
-    removes rows from (MT2009_PLUS_DB_EDITOR_V1)."""
+    removes rows from (MT2009_PLUS_DB_EDITOR_V1). row_exprs
+    (MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1): {col: (select, insert)} for a row
+    column that is not a plain integer in the table - read as an integer by
+    the SQL expression `select` and written by `insert`, one "%s" for the
+    integer: an ENUM ("`currency`+0", "%s") or a DATETIME
+    ("UNIX_TIMESTAMP(`start_time`)", "FROM_UNIXTIME(%s)"). A field spec may
+    carry "select" the same way (read_row, _select_expr)."""
     TABLES[name] = {"key": key, "cols": cols, "title": title, "edit_endpoint": edit_endpoint, "formatter": formatter,
-                    "row_cols": tuple(row_cols) if row_cols else None, "row_label": row_label}
+                    "row_cols": tuple(row_cols) if row_cols else None, "row_label": row_label,
+                    "row_exprs": dict(row_exprs or {})}
+
+
+def row_select(table, col):
+    """MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: the SELECT expression of a whole-row column."""
+    expr = (TABLES[table].get("row_exprs") or {}).get(col)
+    return f"{expr[0]} AS `{col}`" if expr else f"`{col}`"
+
+
+def row_insert(table, col):
+    """MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: the VALUES placeholder of a whole-row column."""
+    expr = (TABLES[table].get("row_exprs") or {}).get(col)
+    return expr[1] if expr else "%s"
 
 
 # The history's col for a whole row added (old_value NULL) or removed (new_value NULL).
@@ -286,6 +306,8 @@ def _select_expr(col, spec):
     # Names are read as their bytes and decoded as cp1250 - right for the
     # cp1250 column of this world and for a latin1 column holding cp1250 bytes
     # (an older dump) alike.
+    if spec.get("select"):  # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: an ENUM read as its number
+        return f"{spec['select']} AS `{col}`"
     if spec["kind"] == "set":  # MT2009_PLUS_DB_EDITOR_V1 (mobs.py): a SET column as plain text
         return f"CAST(`{col}` AS CHAR) AS `{col}`"
     return f"CAST(`{col}` AS BINARY) AS `{col}`" if spec["kind"] == "cp1250" else f"`{col}`"
@@ -507,7 +529,7 @@ def _where_key(table):
 def read_whole_row(table, row_key, cur=None):
     meta = TABLES[table]
     keys = key_values(table, row_key)
-    sql = (f"SELECT {', '.join('`%s`' % c for c in meta['row_cols'])} FROM {table} WHERE {_where_key(table)}")
+    sql = (f"SELECT {', '.join(row_select(table, c) for c in meta['row_cols'])} FROM {table} WHERE {_where_key(table)}")
     params = [keys[c] for c in key_cols(table)]
     if cur is None:
         found = _CTX["rows"](sql, params)
@@ -562,7 +584,8 @@ def _write_rows(table, inserts=(), deletes=(), note="", label_of=None, batch=Non
                         continue
                     raise LookupError(f"{meta['title']} {key} już istnieje.")
                 cur.execute(f"INSERT INTO {table} ({', '.join('`%s`' % c for c in cols)}) "
-                            f"VALUES ({', '.join(['%s'] * len(cols))})", [int(values.get(c) or 0) for c in cols])
+                            f"VALUES ({', '.join(row_insert(table, c) for c in cols)})",
+                            [int(values.get(c) or 0) for c in cols])
                 record(cur, key, None, row_json(table, values))
                 done.append((key, "insert"))
         con.commit()
@@ -620,6 +643,24 @@ def mark_applied():
     try:
         with con.cursor() as cur:
             cur.execute(f"UPDATE {HISTORY_TABLE} SET applied_at=NOW() WHERE applied_at IS NULL")
+            return cur.rowcount
+    finally:
+        con.close()
+
+
+def mark_applied_tables(tables):
+    """MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: mark only these tables' rows applied -
+    the ItemShop is reloaded live ("/reload i"), the rest still waits for
+    "Zastosuj"."""
+    tables = [t for t in tables if t in TABLES]
+    if not tables:
+        return 0
+    ensure_table()
+    con = _CTX["db"]()
+    try:
+        with con.cursor() as cur:
+            cur.execute(f"UPDATE {HISTORY_TABLE} SET applied_at=NOW() WHERE applied_at IS NULL AND tbl IN "
+                        f"({', '.join(['%s'] * len(tables))})", tables)
             return cur.rowcount
     finally:
         con.close()

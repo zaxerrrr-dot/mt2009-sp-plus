@@ -402,9 +402,10 @@ db -e "UPDATE world.item_proto SET stack = 200 WHERE (type IN (17, 22) OR vnum =
 # and bound (no sale, trade, drop or counter; the ticket stacks), their uses
 # answered by autohunt_time.quest and antiexp_ring.quest; and the shop's
 # first page gains them with the Teleport Ring (70058), which is never used
-# up. ASCII names: db() speaks latin1 into the cp1250 columns. A line the
-# operator changed by hand is kept (INSERT IGNORE). Idempotent.
-db -e "UPDATE world.item_proto SET locale_name = 'Auto Lowy (8h)', flag = flag | 4, antiflag = 74112 WHERE vnum = 31073 AND locale_name <> 'Auto Lowy (8h)'; UPDATE world.item_proto SET locale_name = 'Pierscien Anty-Exp', flag = 0, antiflag = 41344 WHERE vnum = 40002 AND locale_name <> 'Pierscien Anty-Exp'; INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" || fail_step "could not add the ItemShop's Auto Lowy ticket and rings" >&2
+# up. ASCII names: db() speaks latin1 into the cp1250 columns. The shop
+# lines: ishop_once autohunt_rings_6 below, after mod/10_ingame_itemshop.sql
+# (MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1). Idempotent.
+db -e "UPDATE world.item_proto SET locale_name = 'Auto Lowy (8h)', flag = flag | 4, antiflag = 74112 WHERE vnum = 31073 AND locale_name <> 'Auto Lowy (8h)'; UPDATE world.item_proto SET locale_name = 'Pierscien Anty-Exp', flag = 0, antiflag = 41344 WHERE vnum = 40002 AND locale_name <> 'Pierscien Anty-Exp';" || fail_step "could not rename the Auto Lowy ticket and rings" >&2
 # Three names in the shipped dumps end in a line break (Magiczny Kamien 25042,
 # Gwiazda Nocy 50731, Sniezny Kwiat 50732: "\r\n" inside the quotes). A name
 # goes into server commands a client splits on whitespace, and the GM panel's
@@ -459,6 +460,30 @@ fi
 # own shop is left where its owner put it. Before the game container starts,
 # because the db core reads the shops at boot.
 db -e "CREATE TABLE IF NOT EXISTS player.playerbot_migrations (name VARCHAR(64) NOT NULL PRIMARY KEY, done_at DATETIME NOT NULL) ENGINE=InnoDB;"
+# MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: the package's own lines of the in-game
+# ItemShop (common.itemshop_items) go in ONCE per install, like mod/*.sql:
+# ishop_once NAME "SQL" "failure text" runs the SQL and marks "ishop:NAME" in
+# player.playerbot_migrations. They ran at every full run before, so a line
+# the operator removed in the Seban panel's "Edytor bazy danych" -> "ItemShop"
+# came back with the next update (dbeditor/itemshop.py BOOT_ONCE lists these
+# blocks and checks them against this script). Only once mod/10_ingame_itemshop.sql
+# is in (it empties the table on a new install, so a mark set before it would
+# lose the lines); until then - and on an install without that file - the SQL
+# runs at every full run as before, unmarked. A new block takes a new NAME.
+ishop_once() {
+    ishop_seed=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'mod:10_ingame_itemshop.sql';" 2>/dev/null || echo x)
+    if [ "$ishop_seed" != "1" ]; then
+        db -e "$2" || fail_step "$3" >&2
+        return 0
+    fi
+    ishop_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'ishop:$1';" 2>/dev/null || echo x)
+    [ "$ishop_done" = "0" ] || return 0
+    if db -e "$2"; then
+        db -e "INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('ishop:$1', NOW());" || true
+    else
+        fail_step "$3" >&2
+    fi
+}
 # The bot guilds' tiers (playerbot_guild.h): a guild outlives every core
 # restart, so its tier and kingdom live here; the core reads the table once
 # and writes a row when it founds or adopts a guild.
@@ -673,15 +698,6 @@ db -e "UPDATE world.item_proto SET
     antiflag = antiflag | 256, socket_pct = 3,
     refined_vnum = IF(vnum = 3189, 3190, vnum + 1), refine_set = IF(vnum = 3189, 610, vnum - 3180 + 502)
 WHERE vnum BETWEEN 3180 AND 3189 AND limitvalue0 = 0 AND value3 = 0;" || fail_step "could not fill Pogromca Nieb. Smoka" >&2
-# The ItemShop's marriage page (indexes 201-299, which the client's
-# ITEMSHOP_CATEGORY_MARRIAGE lists and client 2.0.47 shows) had no line at
-# all: the engagement ring (the Old Lady's ring quest gives one too), the
-# tuxedo, the wedding dress and the bouquet (the travelling peddler of a
-# second village sells the three for yang too), and the Love Bird's Feather
-# with the six harmony and love jewels that work on love points (xXxDaronxXx,
-# 27 September). From level 25, the wedding's own level. A line the operator
-# changed by hand is kept (INSERT IGNORE). Idempotent.
-db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (201, 70301, 1, 19, 'DRAGON_COIN', 25), (202, 11901, 1, 49, 'DRAGON_COIN', 25), (203, 11903, 1, 49, 'DRAGON_COIN', 25), (204, 50201, 1, 9, 'DRAGON_COIN', 25), (205, 71068, 1, 29, 'DRAGON_COIN', 25), (206, 71069, 1, 39, 'DRAGON_COIN', 25), (207, 71070, 1, 39, 'DRAGON_COIN', 25), (208, 71071, 1, 39, 'DRAGON_COIN', 25), (209, 71072, 1, 39, 'DRAGON_COIN', 25), (210, 71073, 1, 39, 'DRAGON_COIN', 25), (211, 71074, 1, 39, 'DRAGON_COIN', 25);" || fail_step "could not fill the ItemShop's marriage page" >&2
 # fish_log came from r40250's dump and has that engine's eight columns,
 # while this one writes six - so every catch failed with errno 1136 and the
 # table is empty on every 2.x world that ever ran. CREATE IF NOT EXISTS
@@ -1435,11 +1451,22 @@ done
 # 906 not found in itemshop_time_auction in player database", 26 September,
 # every CH1 OFF on a fresh 2.8.0). Idempotent.
 db -e "DELETE FROM common.itemshop_time_auctions WHERE item_index IN (906, 907, 908) AND end_time < '2025-01-01'; DELETE FROM player.itemshop_time_auction WHERE item_index IN (906, 907, 908) AND item_index NOT IN (SELECT item_index FROM common.itemshop_time_auctions);" || fail_step "could not end the ItemShop old time auctions" >&2
+# The ItemShop's marriage page (indexes 201-299, which the client's
+# ITEMSHOP_CATEGORY_MARRIAGE lists and client 2.0.47 shows) had no line at
+# all: the engagement ring (the Old Lady's ring quest gives one too), the
+# tuxedo, the wedding dress and the bouquet (the travelling peddler of a
+# second village sells the three for yang too), and the Love Bird's Feather
+# with the six harmony and love jewels that work on love points (xXxDaronxXx,
+# 27 September). From level 25, the wedding's own level. A line the operator
+# changed by hand is kept (INSERT IGNORE). Once per install (ishop_once), after
+# mod/10_ingame_itemshop.sql.
+ishop_once marriage_201 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (201, 70301, 1, 19, 'DRAGON_COIN', 25), (202, 11901, 1, 49, 'DRAGON_COIN', 25), (203, 11903, 1, 49, 'DRAGON_COIN', 25), (204, 50201, 1, 9, 'DRAGON_COIN', 25), (205, 71068, 1, 29, 'DRAGON_COIN', 25), (206, 71069, 1, 39, 'DRAGON_COIN', 25), (207, 71070, 1, 39, 'DRAGON_COIN', 25), (208, 71071, 1, 39, 'DRAGON_COIN', 25), (209, 71072, 1, 39, 'DRAGON_COIN', 25), (210, 71073, 1, 39, 'DRAGON_COIN', 25), (211, 71074, 1, 39, 'DRAGON_COIN', 25);" "could not fill the ItemShop's marriage page"
 # The ItemShop's Auto Lowy ticket and the two rings once more, after the
 # item-shop data: on a new install mod/10_ingame_itemshop.sql runs after the
 # lines further up, empties common.itemshop_items and writes it back without
-# them. INSERT IGNORE: a line the operator changed by hand is kept.
-db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" || fail_step "could not add the ItemShop's Auto Lowy ticket and rings" >&2
+# them. INSERT IGNORE: a line the operator changed by hand is kept. Once per
+# install (ishop_once, MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
+ishop_once autohunt_rings_6 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (6, 31073, 1, 29, 'DRAGON_COIN', 0), (7, 40002, 1, 99, 'DRAGON_COIN', 0), (8, 70058, 1, 149, 'DRAGON_COIN', 30);" "could not add the ItemShop's Auto Lowy ticket and rings"
 # MT2009 PLUS New Pet System (playerbot_newpet.h, MT2009_PLUS_NEW_PET_V1):
 # the second pet, hatched from an egg and levelled by its owner's kills. Its
 # items (55001-55118, 55401-55411; type ITEM_PET = 37, handled by the game's
@@ -1603,20 +1630,21 @@ UPDATE world.np_mob SET vnum = 34047, name = 'Pisklę Exedyara', locale_name = '
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
 UPDATE world.np_mob SET vnum = 34048, name = 'Pisklę Exedyara (Hero)', locale_name = 'Pisklę Exedyara (Hero)';
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.np_mob;
-INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (40901, 55401, 1, 29, 'DRAGON_COIN', 0), (40902, 55402, 1, 29, 'DRAGON_COIN', 0), (40903, 55403, 1, 29, 'DRAGON_COIN', 0), (40904, 55404, 1, 29, 'DRAGON_COIN', 0), (40905, 55405, 1, 29, 'DRAGON_COIN', 0), (40906, 55406, 1, 29, 'DRAGON_COIN', 0), (40907, 55409, 1, 29, 'DRAGON_COIN', 0), (40908, 55410, 1, 29, 'DRAGON_COIN', 0), (40909, 55411, 1, 29, 'DRAGON_COIN', 0), (40920, 55001, 10, 9, 'DRAGON_COIN', 0), (40924, 55008, 1, 9, 'DRAGON_COIN', 0), (40925, 55033, 1, 9, 'DRAGON_COIN', 0), (40926, 55034, 1, 5, 'DRAGON_COIN', 0), (40927, 55036, 1, 200, 'DRAGON_COIN', 0), (40928, 55002, 1, 19, 'DRAGON_COIN', 0);
 DELETE FROM world.shop_item WHERE item_vnum BETWEEN 55001 AND 55999;" || fail_step "could not add the New Pet System's items and mobs" >&2
+# The ItemShop's pet page lines, once per install (MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
+ishop_once newpet_40901 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (40901, 55401, 1, 29, 'DRAGON_COIN', 0), (40902, 55402, 1, 29, 'DRAGON_COIN', 0), (40903, 55403, 1, 29, 'DRAGON_COIN', 0), (40904, 55404, 1, 29, 'DRAGON_COIN', 0), (40905, 55405, 1, 29, 'DRAGON_COIN', 0), (40906, 55406, 1, 29, 'DRAGON_COIN', 0), (40907, 55409, 1, 29, 'DRAGON_COIN', 0), (40908, 55410, 1, 29, 'DRAGON_COIN', 0), (40909, 55411, 1, 29, 'DRAGON_COIN', 0), (40920, 55001, 10, 9, 'DRAGON_COIN', 0), (40924, 55008, 1, 9, 'DRAGON_COIN', 0), (40925, 55033, 1, 9, 'DRAGON_COIN', 0), (40926, 55034, 1, 5, 'DRAGON_COIN', 0), (40927, 55036, 1, 200, 'DRAGON_COIN', 0), (40928, 55002, 1, 19, 'DRAGON_COIN', 0);" "could not add the New Pet System's ItemShop lines"
 # MT2009_PLUS_OWNER_PRICES_V2 (ItemShop): the Smakolyk (55032), the Smakolyk+
 # (55035) and the Skrzynia Ksiag Peta (55009) leave the ItemShop - players and
 # bots trade them at 400 000 / 500 000 / 800 000 a piece - and the Klucz
 # Miejsca Umiejetnosci (55036) costs 200 Smocze Monety, was 49 (the owner,
-# 1 October 2026). On every start, so an install that has the old lines
-# loses them. Idempotent.
-db -e "DELETE FROM common.itemshop_items WHERE vnum IN (55009, 55032, 55035); UPDATE common.itemshop_items SET price = 200 WHERE vnum = 55036 AND price = 49;" || fail_step "could not apply the owner's pet ItemShop changes" >&2
+# 1 October 2026). Once per install (ishop_once, MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1),
+# so an install that has the old lines loses them and the operator may sell them again.
+ishop_once owner_prices_pets "DELETE FROM common.itemshop_items WHERE vnum IN (55009, 55032, 55035); UPDATE common.itemshop_items SET price = 200 WHERE vnum = 55036 AND price = 49;" "could not apply the owner's pet ItemShop changes"
 # MT2009_PLUS_WHEEL_V1: Bilet Kola Fortuny (80030), the Kolo Fortuny's ticket (playerbot_wheel.h,
 # "/kolo"): quest type, stacks to 200, tradeable, no drop/NPC sale (the SM coupon's antiflags); the
 # ItemShop's first page sells it for 25 Smocze Monety. PROTO_FROM_DB: read at the db core's boot. Idempotent.
 db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES (80030, 'Bilet Kola Fortuny', _cp1250 X'42696C6574204B6FB36120466F7274756E79', 18, 0, 200, 0, 1, 384, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || fail_step "could not add Bilet Kola Fortuny" >&2
-db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (9, 80030, 1, 25, 'DRAGON_COIN', 0);" || fail_step "could not add the wheel ticket to the ItemShop" >&2
+ishop_once wheel_ticket_9 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (9, 80030, 1, 25, 'DRAGON_COIN', 0);" "could not add the wheel ticket to the ItemShop"
 # MT2009_PLUS_OCHAO_V1 (db): Swiatynia Ochao (map 209, playerbot_ochao.h,
 # quest/temple_of_the_ochao.quest). The package's monsters on this world's
 # ladder - after the Grotto of Exile (81-97), level 98-105 - cloned from the
@@ -2581,12 +2609,13 @@ UPDATE world.item_proto SET name = 'Quiver', locale_name = _cp1250 X'4B6FB3637A6
     limittype0 = 7, limitvalue0 = 1209600, limittype1 = 1, limitvalue1 = 35,
     applytype0 = 0, applyvalue0 = 0, applytype1 = 0, applyvalue1 = 0, applytype2 = 0, applyvalue2 = 0,
     value0 = 0, value1 = 0, value2 = 100, value3 = 25, value4 = 1300, value5 = 2250
-WHERE vnum = 8010;
-INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (10, 8010, 1, 100, 'DRAGON_COIN', 35);
+WHERE vnum = 8010;" || fail_step "could not add Kolczan (the quiver item)" >&2
+# Its ItemShop lines, once per install (MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
+ishop_once quiver_10 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (10, 8010, 1, 100, 'DRAGON_COIN', 35);
 UPDATE common.itemshop_items SET minLevel = 35 WHERE vnum = 8010 AND minLevel = 0;
 INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (13, 50050, 1, 100, 'DRAGON_COIN', 0);
 UPDATE common.itemshop_items SET price = 100 WHERE \`index\` = 13 AND vnum = 50050 AND price = 40;
-DELETE FROM common.itemshop_items WHERE (\`index\`, vnum) IN ((11, 50054), (12, 50055), (14, 70043), (15, 70048));" || fail_step "could not add Kolczan (the ItemShop's quiver)" >&2
+DELETE FROM common.itemshop_items WHERE (\`index\`, vnum) IN ((11, 50054), (12, 50055), (14, 70043), (15, 70048));" "could not add Kolczan (the ItemShop's quiver)"
 db -e "INSERT IGNORE INTO itemshop.ishop_category (id, name) VALUES (10, 'Wyposazenie');
 INSERT INTO itemshop.ishop_items (category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon)
 SELECT 10, _utf8mb4 X'4B6FC582637A616E2028313420646E6929', 'Nielimitowane strzaly dla ninja z lukiem: zakladany w miejsce strzal, zadna strzala sie nie zuzywa. Dziala 14 dni.', 100, 'cash', 8010, 1, 0, 0, 0, '08010'
@@ -2634,11 +2663,14 @@ UPDATE world.item_proto SET name = 'Święty Miecz Bogów+', locale_name = 'Świ
     limittype0 = 7, limitvalue0 = 2592000, limittype1 = 0, limitvalue1 = 0,
     applytype0 = 0, applyvalue0 = 0, applytype1 = 0, applyvalue1 = 0, applytype2 = 0, applyvalue2 = 0,
     value0 = 0, value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0
-WHERE vnum = 40233;
-INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel)
+WHERE vnum = 40233;" || fail_step "could not add Zbroja Krola Wojownikow / Swiety Miecz Bogow" >&2
+# Their ItemShop lines, once per install and only once both items exist (MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (41986, 40233);" 2>/dev/null || echo x)" = "2" ]; then
+ishop_once king03_20212 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel)
 SELECT 20212, 41986, 1, 100, 'DRAGON_COIN', 0 FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 41986);
 INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel)
-SELECT 30054, 40233, 1, 100, 'DRAGON_COIN', 0 FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233);" || fail_step "could not add Zbroja Krola Wojownikow / Swiety Miecz Bogow" >&2
+SELECT 30054, 40233, 1, 100, 'DRAGON_COIN', 0 FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233);" "could not add Zbroja Krola Wojownikow / Swiety Miecz Bogow to the ItemShop"
+fi
 db -e "SET NAMES utf8mb4;
 INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
 SELECT 1041986, 6, 'Zbroja Króla Wojowników+ (męski, 30 dni)', 'Czas: 30 dni.<br />Tylko dla wojownika (postać męska).', 100, 'cash', 41986, 1, 0, 0, 0, '41986', NOW()
@@ -2723,9 +2755,10 @@ INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, sta
 # MT2009_PLUS_MONSTER_CARDS_V1 (the owner, 5 October): Karta Nowego Poczatku
 # (72322, a mission reset past the free one) and Karta Nowego Ukladu (72323,
 # new targets) are sold in the ItemShop's "Zwoje i ksiegi" page (indexes
-# 601-699) at 49 SM each. INSERT IGNORE: a price the operator changed stays.
-db -e "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (617, 72322, 1, 49, 'DRAGON_COIN', 0), (618, 72323, 1, 49, 'DRAGON_COIN', 0);" \
-  || fail_step "could not put the Monster Card scrolls into the ItemShop" >&2
+# 601-699) at 49 SM each. INSERT IGNORE: a price the operator changed stays;
+# once per install (ishop_once, MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
+ishop_once monster_cards_617 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (617, 72322, 1, 49, 'DRAGON_COIN', 0), (618, 72323, 1, 49, 'DRAGON_COIN', 0);" \
+  "could not put the Monster Card scrolls into the ItemShop"
 
 # MT2009_PLUS_DUNGEON_RANKING_FINISH_V1: the dungeon panel credits a run only to
 # those who hurt the final boss (playerbot_dungeon_panel.h, DungeonFinishers);

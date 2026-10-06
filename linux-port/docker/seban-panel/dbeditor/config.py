@@ -94,9 +94,15 @@ DB_PARTS = (
     ("attrs", "Bonusy 1–5 (item_attr)", "world.item_attr"),
     ("attrs_rare", "Bonusy 6/7 (item_attr_rare)", "world.item_attr_rare"),
     ("exp", "Tabela doświadczenia", "common.exp_table"),
+    # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1 (dbeditor/itemshop.py)
+    ("ishop", "ItemShop – pozycje", "common.itemshop_items"),
+    ("ishop_promo", "ItemShop – promocje", "common.itemshop_promotions"),
+    ("ishop_auction", "ItemShop – oferty błyskawiczne", "common.itemshop_time_auctions"),
+    ("ishop_counter", "ItemShop – liczniki ofert", "player.itemshop_time_auction"),
 )
 # The order an import writes them: refine clones before the items pointing at them.
-APPLY_ORDER = ("refine", "items", "skills", "mobs", "attrs", "attrs_rare", "exp", "extra", "shops")
+APPLY_ORDER = ("refine", "items", "skills", "mobs", "attrs", "attrs_rare", "exp", "extra", "shops",
+               "ishop", "ishop_promo", "ishop_auction", "ishop_counter")
 FILE_PARTS = (
     ("drops", "Drop potworów, zwykły i specjalny"),
     ("chests", "Szkatułki"),
@@ -948,6 +954,12 @@ def _row_checks(table, key, new, lookup):
     if part == "refine":
         if not 1 <= new["id"] <= 65535:
             errors.append(f"numer przepisu {new['id']} poza 1…65535")
+    if part == "ishop":  # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1
+        from dbeditor import itemshop
+        if not 1 <= new["index"] <= itemshop.INDEX_MAX:
+            errors.append(f"indeks {new['index']} poza 1…{itemshop.INDEX_MAX}")
+    if part in ("ishop_promo", "ishop_auction") and new["end_time"] <= new["start_time"]:
+        errors.append("koniec przed początkiem")
     return errors
 
 
@@ -963,6 +975,8 @@ def _row_warnings(table, new, lookup):
             out.append(f"na tym serwerze nie ma przedmiotu {new['item_vnum']}")
         return out
     if part == "extra" and not lookup("item", [new["vnum"]]):
+        return [f"na tym serwerze nie ma przedmiotu {new['vnum']}"]
+    if part == "ishop" and not lookup("item", [new["vnum"]]):  # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1
         return [f"na tym serwerze nie ma przedmiotu {new['vnum']}"]
     return []
 

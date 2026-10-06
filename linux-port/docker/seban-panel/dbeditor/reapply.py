@@ -140,8 +140,9 @@ def replay_statements(changes=None):
                 if row["new_value"] is not None:
                     values = json.loads(row["new_value"])
                     cols = meta["row_cols"]
+                    # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: an ENUM / DATETIME column by its expression
                     statements.append(f"INSERT INTO {table} ({', '.join('`%s`' % c for c in cols)}) VALUES "
-                                      f"({', '.join(str(int(values.get(c) or 0)) for c in cols)});")
+                                      f"({', '.join(common.row_insert(table, c).replace('%s', str(int(values.get(c) or 0))) for c in cols)});")
                 continue
             spec = meta["cols"].get(col)
             key = meta["key"]

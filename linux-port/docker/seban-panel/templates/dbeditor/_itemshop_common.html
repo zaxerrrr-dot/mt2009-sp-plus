@@ -1,0 +1,46 @@
+{#- MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: the top of the "ItemShop" pages
+    (dbeditor/itemshop.py) - tabs, the "pending" banner and the live reload. -#}
+<link rel="stylesheet" href="{{ static_asset_url('dbeditor-items.css') }}">
+<link rel="stylesheet" href="{{ static_asset_url('dbeditor-shops.css') }}">
+<nav class="dbe-tabs" aria-label="Edytor bazy danych">
+  <a href="{{ url_for('dbeditor.index') }}">← Edytor bazy danych</a>
+  <a href="{{ url_for('dbeditor.itemshop') }}" class="is-active">🪙 ItemShop</a>
+  <a href="{{ url_for('dbeditor.proto_history', tbl='common.itemshop_items') }}">🕘 Historia zmian</a>
+</nav>
+{% if ishop_pending %}
+<section class="panel dbe-pending" role="status">
+  <strong>⏳ Zmiany w ItemShopie czekają na wczytanie przez grę ({{ ishop_pending }}).</strong>
+  <span>Baza jest już zmieniona. Kliknij <b>Odśwież sklep w grze</b> – zadziała od razu, gdy w grze jest postać z rangą
+  IMPLEMENTOR (GM poziomu 5) – albo <b>Zastosuj</b> na stronie <a href="{{ url_for('dbeditor.index') }}">Edytora bazy danych</a> (restart gry).</span>
+  <form method="post" action="{{ url_for('dbeditor.itemshop_reload') }}" style="display:inline">
+    <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}">
+    <input type="hidden" name="tab" value="{{ tab if tab is defined else '' }}">
+    <button>🔄 Odśwież sklep w grze</button>
+  </form>
+</section>
+{% elif pending_total %}
+<section class="panel dbe-pending" role="status">
+  <strong>⏳ Inne zmiany edytora czekają na zastosowanie (restart gry): {{ pending_total }}.</strong>
+  <span><a href="{{ url_for('dbeditor.index') }}">Edytor bazy danych → Zastosuj</a>.</span>
+</section>
+{% endif %}
+<style>
+.dbi-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.dbi-tabs a{padding:6px 10px;border-radius:8px;border:1px solid var(--line,#253042);text-decoration:none;color:inherit;font-size:.92em}
+.dbi-tabs a.is-active{border-color:var(--accent,#d6a74a);background:color-mix(in srgb,var(--accent,#d6a74a) 14%,transparent)}
+.dbi-tabs a small{color:var(--muted,#8a96a8)}
+.dbi-table td{vertical-align:middle}
+.dbi-table input[type=number]{width:6.5em}
+.dbi-table input.dbi-vnum{width:7em}
+.dbi-item{display:flex;align-items:center;gap:8px;min-width:200px}
+.dbi-item img{width:32px;height:32px;image-rendering:pixelated}
+.dbi-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.dbi-tag{font-size:.78em;padding:1px 6px;border-radius:6px;background:var(--panel-2,#131a24);border:1px solid var(--line,#253042)}
+.dbi-tag.promo{border-color:#4cd470}
+.dbi-tag.auction{border-color:#f5b83d}
+.dbi-tag.warn{border-color:#f5b83d;color:#f5b83d}
+.dbi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:end}
+.dbi-grid label{display:flex;flex-direction:column;gap:4px}
+tr.dbs-del{opacity:.5;text-decoration:line-through}
+@media (max-width:700px){.dbi-table{font-size:.9em}.dbi-item{min-width:140px}}
+</style>

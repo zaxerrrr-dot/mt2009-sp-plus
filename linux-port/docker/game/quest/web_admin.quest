@@ -385,6 +385,17 @@ quest web_admin begin
 									else
 										command("reload a")
 									end
+								elseif cmd == "ISHOP_RELOAD" then
+									-- MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: the database editor changed
+									-- common.itemshop_items / _promotions / _time_auctions. "reload i"
+									-- (HEADER_GD_RELOAD_ITEMSHOP) makes the db core read them again and
+									-- send them to every game core, which refreshes every open window.
+									-- IMPLEMENTOR only, like GM_RELOAD. (cmd fits the old VARCHAR(16).)
+									if pc.get_gm_level() < 5 then
+										result = "no_gm"
+									else
+										command("reload i")
+									end
 								else
 									result = "unknown_cmd"
 								end

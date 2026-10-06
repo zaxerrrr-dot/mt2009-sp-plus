@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: one ItemShop line - promotion, flash offer, move to another tab (dbeditor/itemshop.py). #}
+{% block title %}{{ line.item.name }} · ItemShop · {{ panel_brand }}{% endblock %}
+{% block content %}
+<script>document.body.dataset.ajaxForms='1';</script>
+{% include 'dbeditor/_itemshop_common.html' %}
+<p><a href="{{ url_for('dbeditor.itemshop') }}">← ItemShop</a></p>
+
+<section class="panel">
+  <p class="eyebrow">ITEMSHOP · POZYCJA {{ line.index }}</p>
+  <h1><span class="dbi-item">{% set icon = item_icon(line.vnum) %}{% if icon %}<img src="{{ icon }}" alt="">{% endif %}{{ line.item.name }}{% if line.suffix %} {{ line.suffix }}{% endif %}</span></h1>
+  <p>{{ line.count }} szt. za <b>{{ line.price }} {{ currency[line.currency] }}</b>{% if line.minLevel %}, od poziomu {{ line.minLevel }}{% endif %} · przedmiot #{{ line.vnum }}
+    {% if 'dbeditor.item_edit' in url_map_endpoints %} · <a href="{{ url_for('dbeditor.item_edit', vnum=line.vnum) }}">edytuj przedmiot</a>{% endif %}</p>
+  <p class="muted">W kliencie: {% if line.tabs %}{{ line.tabs|join(', ') }}{% else %}<span class="dbe-warn">nigdzie – przenieś do zakładki</span>{% endif %}.
+  Cenę, ilość, walutę i poziom zmienisz w tabeli zakładki.</p>
+  {% if line.suffix %}<p class="dbe-warn">Klient dopisuje na tym indeksie do nazwy „{{ line.suffix }}” – niezależnie od przedmiotu.</p>{% endif %}
+  {% if line.sockets|select|list %}<p class="muted">Sockety w bazie: {{ line.sockets|join(' / ') }} – gra ich nie daje przy zakupie (tylko podgląd).</p>{% endif %}
+  {% if line.boot %}<p class="dbe-warn">apply.sh ({{ line.boot }}) zapisze tę pozycję jeszcze raz przy najbliższym pełnym starcie serwera (raz na instalację, INSERT IGNORE – zmieniona cena zostaje, usunięta pozycja wróci).</p>{% endif %}
+</section>
+
+<section class="panel">
+  <h2>🏷️ Promocja <small class="muted">pokazuje się w „Polecane”, gdy trwa</small></h2>
+  {% if line.promo %}<p>Teraz: <b>{{ line.promo.price }} {{ currency[line.currency] }}</b> — {{ 'trwa' if line.promo_running else 'nie trwa' }}.</p>{% endif %}
+  <form method="post">
+    <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}">
+    <input type="hidden" name="action" value="promo">
+    <div class="dbi-grid">
+      <label>Cena w promocji ({{ currency[line.currency] }})<input type="number" name="promo_price" min="1" value="{{ line.promo.price if line.promo else '' }}" required></label>
+      <label>Początek<input type="datetime-local" name="promo_start" value="{{ times.promo_start }}" required></label>
+      <label>Koniec<input type="datetime-local" name="promo_end" value="{{ times.promo_end }}" required></label>
+    </div>
+    <div class="dbe-actions"><button>💾 Zapisz promocję</button></div>
+  </form>
+  {% if line.promo %}
+  <form method="post"><input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}"><input type="hidden" name="action" value="promo_del">
+    <button class="quiet-btn">Usuń promocję</button></form>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>⚡ Oferta błyskawiczna <small class="muted">„Oferty Błyskawiczne”: ograniczona ilość w danym czasie</small></h2>
+  {% if line.auction %}<p>Teraz: {{ line.auction.max_amount }} szt.{% if line.auction.account_limit %}, najwyżej {{ line.auction.account_limit }} na konto{% endif %}{% if line.auction.sold is not none %}, sprzedano {{ line.auction.sold }}{% endif %}.
+    {% if not line.auction.counter %}<span class="dbe-error">Brak licznika w player.itemshop_time_auction – gra nie wystartuje! Zapisz ofertę ponownie.</span>{% endif %}</p>{% endif %}
+  <form method="post">
+    <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}">
+    <input type="hidden" name="action" value="auction">
+    <div class="dbi-grid">
+      <label>Ilość w ofercie<input type="number" name="max_amount" min="1" value="{{ line.auction.max_amount if line.auction else 10 }}" required></label>
+      <label>Limit na konto <small class="muted">0 = bez limitu</small><input type="number" name="account_limit" min="0" value="{{ line.auction.account_limit if line.auction else 0 }}"></label>
+      <label>Początek<input type="datetime-local" name="auction_start" value="{{ times.auction_start }}" required></label>
+      <label>Koniec<input type="datetime-local" name="auction_end" value="{{ times.auction_end }}" required></label>
+    </div>
+    <div class="dbe-actions"><button>💾 Zapisz ofertę</button></div>
+  </form>
+  {% if line.auction %}
+  <form method="post"><input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}"><input type="hidden" name="action" value="auction_del">
+    <button class="quiet-btn">Usuń ofertę (pozycja zostaje)</button></form>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>↪️ Przenieś do innej zakładki</h2>
+  <form method="post">
+    <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}">
+    <input type="hidden" name="action" value="move">
+    <div class="dbi-grid">
+      <label>Zakładka<select name="move_tab">{% for id, title in new_tabs %}<option value="{{ id }}">{{ title }}</option>{% endfor %}</select></label>
+      <label>Nowy indeks <small class="muted">puste = pierwszy wolny</small><input type="number" name="move_index" min="1"></label>
+    </div>
+    <div class="dbe-actions"><button>↪️ Przenieś</button><span class="muted">Promocja i oferta przechodzą razem z pozycją.</span></div>
+  </form>
+</section>
+
+{% if history %}
+<section class="panel">
+  <h2>Ostatnie zmiany tej pozycji</h2>
+  {% include 'dbeditor/_items_history_list.html' %}
+</section>
+{% endif %}
+{% endblock %}

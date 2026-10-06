@@ -6573,7 +6573,15 @@ def player_action_rename(pid):
 
 
 def queue_gm_reload():
-    """Ask an online IMPLEMENTOR to run /reload a for us, so a GM grant/removal
+    return queue_gm_command("GM_RELOAD")
+
+
+def queue_gm_command(cmd):
+    """MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: queue_gm_reload for any of
+    web_admin.quest's IMPLEMENTOR commands - GM_RELOAD ("reload a"),
+    ISHOP_RELOAD ("reload i", dbeditor/itemshop.py).
+
+    Ask an online IMPLEMENTOR to run /reload a for us, so a GM grant/removal
     takes effect immediately instead of waiting for the character's next
     login. Same trick Tieru's own classic panel (7788) uses: this engine has
     no admin socket, so nothing can push HEADER_GD_RELOAD_ADMIN to the db
@@ -6591,10 +6599,10 @@ def queue_gm_reload():
     if not names:
         return False
     for name in names:
-        rows("INSERT INTO player.web_admin_queue (player_name,cmd,arg1,arg2) VALUES (%s,'GM_RELOAD','','')", (name,))
+        rows("INSERT INTO player.web_admin_queue (player_name,cmd,arg1,arg2) VALUES (%s,%s,'','')", (name, cmd))
     ids = {r["id"]: r["player_name"] for r in rows(
-        "SELECT id, player_name FROM player.web_admin_queue WHERE cmd='GM_RELOAD' AND status='pending'"
-        " AND player_name IN (" + ",".join(["%s"] * len(names)) + ")", names)}
+        "SELECT id, player_name FROM player.web_admin_queue WHERE cmd=%s AND status='pending'"
+        " AND player_name IN (" + ",".join(["%s"] * len(names)) + ")", [cmd] + names)}
     if not ids:
         return False
     done, deadline = False, time.time() + 8.0  # a player timer ticks every 3s
@@ -11237,6 +11245,8 @@ def dbeditor_queue_restart():
 dbeditor.install(app, {"app": app, "db": db, "rows": rows, "one": one,
                        "login_required": login_required, "game_text": game_text,
                        "queue_restart": dbeditor_queue_restart, "read_rates": read_rates,
+                       # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: "Odśwież sklep w grze" (ISHOP_RELOAD)
+                       "queue_gm_command": queue_gm_command,
                        "restart_progress": restart_progress, "spool": RATES_SPOOL,
                        "panel_name": lambda: settings().get("panel_name") or "MT2009 PLUS",
                        # MT2009_PLUS_DB_EDITOR_CONFIG_V1: the header of an exported configuration
