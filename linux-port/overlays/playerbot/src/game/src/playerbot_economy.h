@@ -2211,6 +2211,12 @@ namespace
 		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
 			return false;
 
+		// MT2009_PLUS_SASH_CLOTH_V1: Delikatne Sukno is a keeper's for its sashes
+		// and a counter's otherwise (playerbot_sash.h); the merchant takes it only
+		// from a bag under pressure that has no counter.
+		if (item->GetVnum() == PLAYERBOT_SASH_CLOTH_VNUM)
+			return !IsPlayerBotKeptSashCloth(ch, item) && IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch);
+
 		// MT2009_PLUS_AWAKENING_V1 / MT2009_PLUS_SOULSTONE9_V1 (Digi Rasta's
 		// systems): the Awakening Stone, an awakened weapon and a soul stone
 		// +5..+9 are never the merchant's - a counter's or the bot's own

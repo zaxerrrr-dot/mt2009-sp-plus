@@ -3206,6 +3206,19 @@ namespace
 			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, stone, stone);
 			return stone;
 		}
+		// MT2009_PLUS_SASH_CLOTH_V1: Delikatne Sukno, a piece at a tenth of the
+		// plain sash (playerbot_sash.h, GetPlayerBotSashClothPrice).
+		if (item->GetVnum() == PLAYERBOT_SASH_CLOTH_VNUM)
+		{
+			const DWORD count = std::max<DWORD>(1, (DWORD)item->GetCount());
+			const DWORD unit = GetPlayerBotSashClothPrice();
+			if (unit != 0)
+			{
+				const DWORD cloth = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL, (unsigned long long)unit * count);
+				PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, cloth, unit);
+				return cloth;
+			}
+		}
 		// A sash: what it costs to make + 25% (playerbot_sash.h).
 		if (item->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(item->GetVnum()))
 		{
@@ -4076,6 +4089,11 @@ namespace
 		// A sash a keeper builds its own from (playerbot_sash.h) is not goods.
 		if (ch && IsPlayerBotKeptSash(ch, item))
 			return -1;
+		// MT2009_PLUS_SASH_CLOTH_V1: nor the Delikatne Sukno a keeper still
+		// trades in for sashes; anybody else's is a counter's, where a sash goes.
+		if (item->GetVnum() == PLAYERBOT_SASH_CLOTH_VNUM)
+			return (ch && IsPlayerBotKeptSashCloth(ch, item)) ? -1
+					: PlayerBotGoods(PLAYERBOT_SHOP_RARE_GOODS_SCORE, per::GOODS_RARE_GOODS);
 		// Nor a Cor Draconis an alchemy bot opens itself, nor a Cor line under
 		// PLAYERBOT_COR_LINE_MIN_UNITS (playerbot_alchemy.h).
 		if (ch && (IsPlayerBotKeptCor(ch, item) || IsPlayerBotCorStackShort(ch, item)))

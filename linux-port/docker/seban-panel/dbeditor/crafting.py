@@ -1,6 +1,6 @@
 """MT2009_PLUS_DB_EDITOR_CRAFTING_V1: "Wytwarzanie przedmiotów" - the crafting
 window most NPCs open with their "Wytwarzanie" talk (Kowal, Baek-Go,
-Heuk-Young, Octavio, the arrow sellers, the guild alchemists ...): a list of
+Heuk-Young, Octavio, Uriel, the arrow sellers, the guild alchemists ...): a list of
 things to make, sorted into categories, with a search box, the quantity,
 the chance, the yang price and "Wytwórz". (Only Seon-Pyeong uses the old
 cube window - that one is cube.py.)
@@ -102,6 +102,9 @@ WINDOWS = (
     (108, (20364,), "crafting_manage", "", "default"),
     (109, (20001,), "crafting_manage", "rozmowa o kruszcu", "default"),
     (110, (20041,), "crafting_manage", "", "default"),
+    # MT2009_PLUS_SASH_CLOTH_V1: Uriel - 10 Delikatne Sukno + 80 000 Yang -> Szarfa Władcy +0 (85001);
+    # the window and its list come from game/Dockerfile (crafting_data.lua, CRAFTING_URIEL).
+    (111, (20011,), "acce_costume_uriel", "rozmowa „Wytwarzanie” – szarfa z Delikatnego Sukna", "default"),
 ) + tuple((v, (v,), "guild_building_melt", "alchemik gildii (−5% ceny dla własnej gildii przy 50621–50633)", "default")
           for v in GUILD_ALCHEMISTS)
 WINDOW_BY_VNUM = {w[0]: w for w in WINDOWS}

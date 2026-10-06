@@ -3,7 +3,7 @@ switches of the database editor (the owner, 5 October 2026): what a boss
 and what a Metin stone hands out by itself, each kind on its own.
 
     Kupony SM z bossów / z metinów        m2_sm_boss_off   / m2_sm_metin_off
-    Szarfy z bossów / z metinów           m2_sash_boss_off / m2_sash_metin_off
+    Delikatne Sukno (szarfy) z bossów / z metinów   m2_sash_boss_off / m2_sash_metin_off
     Cor Draconis z bossów / z metinów     m2_cor_boss_off  / m2_cor_metin_off
 
 Where they live: world event flags, rows of player.quest with dwPID 0
@@ -18,8 +18,10 @@ item_manager.cpp / char_item.cpp; the drop wiki in server-patches/dropwiki).
 What a switch holds back - only the game's own (built-in) sources:
   * Kupon SM (50), vnum 80017: the engine's roll per kill, CONFIG
     DRAGON_COIN_BOSS_PERMILLE (50 = 5%) / DRAGON_COIN_STONE_PERMILLE (3 = 0.3%);
-  * sash: the +0 sash roll (85001/85005/85011/85015/85021; boss 80%, Metin 15%,
-    WuKong 15%, the per-mob rules of raremobrules) and, under "z bossów", the
+  * sash: the +0 sash roll (boss 80%, Metin 15%, WuKong 15%, the per-mob rules
+    of raremobrules) - since MT2009_PLUS_SASH_CLOTH_V1 (6 October) it gives
+    Delikatne Sukno (80019, 2 / 5 / 10 by the killer's level 1-49 / 50-74 / 75+;
+    ten make the plain sash at Uriel) instead of the sash - and, under "z bossów", the
     unique +3 sash (85004/85008/85014/85018/85024, 6-10%) of a boss chest
     opened with its key;
   * Cor Draconis (Rough), vnum 50255: the engine's roll (boss 80%, Metin 20%,
@@ -47,8 +49,8 @@ MARKER = "MT2009_PLUS_RARE_DROP_SWITCHES_V1"
 SWITCHES = (
     ("m2_sm_boss_off", "sm", "boss", "Kupony SM z bossów"),
     ("m2_sm_metin_off", "sm", "metin", "Kupony SM z metinów"),
-    ("m2_sash_boss_off", "sash", "boss", "Szarfy z bossów"),
-    ("m2_sash_metin_off", "sash", "metin", "Szarfy z metinów"),
+    ("m2_sash_boss_off", "sash", "boss", "Delikatne Sukno (szarfy) z bossów"),
+    ("m2_sash_metin_off", "sash", "metin", "Delikatne Sukno (szarfy) z metinów"),
     ("m2_cor_boss_off", "cor", "boss", "Cor Draconis z bossów"),
     ("m2_cor_metin_off", "cor", "metin", "Cor Draconis z metinów"),
 )
@@ -57,7 +59,7 @@ LABELS = {s[0]: s[3] for s in SWITCHES}
 
 KINDS = {
     "sm": {"icon": "🎟️", "title": "Kupony SM", "items": "Kupon SM (50), vnum 80017 – wymienia się na Smocze Monety w ItemShopie"},
-    "sash": {"icon": "🧣", "title": "Szarfy", "items": "szarfa +0 (85001, 85005, 85011, 85015, 85021); przy bossach także szarfa unikatowa +3 ze skrzyń bossów"},
+    "sash": {"icon": "🧣", "title": "Delikatne Sukno (szarfy)", "items": "Delikatne Sukno, vnum 80019 (×2 do 49 poz. zabójcy, ×5 od 50, ×10 od 75; 10 sztuk + 80 000 Yang = szarfa u Uriela) zamiast szarfy +0; przy bossach także szarfa unikatowa +3 ze skrzyń bossów"},
     "cor": {"icon": "🐉", "title": "Cor Draconis", "items": "Cor Draconis (surowy), vnum 50255 – kamień do alchemii"},
 }
 
@@ -65,9 +67,9 @@ KINDS = {
 SOURCES = {
     "m2_sm_boss_off": ["każdy boss: 5% na zabicie (ustawienie DRAGON_COIN_BOSS_PERMILLE = 50 ‰ w .env serwera)"],
     "m2_sm_metin_off": ["każdy metin: 0,3% na zabicie (ustawienie DRAGON_COIN_STONE_PERMILLE = 3 ‰ w .env serwera)"],
-    "m2_sash_boss_off": ["każdy boss: szarfa +0 na 80% (WuKong 15%; Płomienny Feniks i Jajo Feniksa – nigdy)",
+    "m2_sash_boss_off": ["każdy boss: Delikatne Sukno na 80% (WuKong 15%; Płomienny Feniks i Jajo Feniksa – nigdy)",
                          "skrzynia bossa otwierana kluczem: szarfa unikatowa +3 na 6–10% (nie Złota/Srebrna Szkatułka)"],
-    "m2_sash_metin_off": ["każdy metin: szarfa +0 na 15% (Kamień Wzgórza i Metin Ciemności w Bibliotece – nigdy)"],
+    "m2_sash_metin_off": ["każdy metin: Delikatne Sukno na 15% (Kamień Wzgórza i Metin Ciemności w Bibliotece – nigdy)"],
     "m2_cor_boss_off": ["każdy boss: 1 Cor na 80% (gdy zabija bot: 5%; WuKong: 5 Corów na 15%)",
                         "tabele dropu z gry: Baronówna Pająków – 3 Cory na 5%, Król Skorpionów – 10 Corów na 5%"],
     "m2_cor_metin_off": ["każdy metin: 1 Cor na 20% (gdy zabija bot: 5%; Metin Ciemności w Bibliotece – nigdy)"],

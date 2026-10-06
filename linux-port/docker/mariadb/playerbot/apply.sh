@@ -2851,6 +2851,26 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 ishop_once collector_item_16 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (16, 70115, 1, 1000, 'DRAGON_COIN', 0);" \
   "could not put the Kolekcjoner item into the ItemShop"
 
+# MT2009_PLUS_SASH_CLOTH_V1 (the owner, 6 October): "Delikatne Sukno" (80019) - what
+# Metins and bosses drop in place of the +0 sash (server-patches/raremobrules: the sash's
+# chance, 2 / 5 / 10 by the killer's level 1-49 / 50-74 / 75+). A material (ITEM_MATERIAL),
+# stackable to 200 (flag 4), tradeable everywhere (antiflag 0); the merchant pays 1000 a
+# piece (the bots ask a tenth of the plain sash on their counters, playerbot_sash.h).
+# The client carries the same row (client-patches/client-2.0.30/tools/sashcloth; the icon
+# icon/item/80019.tga and the itemdesc line are already in the client). INSERT IGNORE: a
+# row the operator changed is kept. Idempotent.
+db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(80019, 'Fine Cloth', 'Delikatne Sukno', 5, 0, 200, 0, 1, 0, 4, 0, '', 5000, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" \
+  || fail_step "could not add the Delikatne Sukno item (80019)" >&2
+# Its recipe at Uriel (NPC 20011, crafting window 111 - acce_costume_uriel.quest, the list
+# in crafting_data.lua from game/Dockerfile): 10 Delikatne Sukno + 80 000 yang -> the
+# plain sash, Szarfa Wladcy +0 (85001), 100%, no level or recipe asked. Recipe number
+# 85001 (the result's vnum, as the guild alchemists' 50621-50633). INSERT IGNORE: the Seban
+# panel's "Wytwarzanie przedmiotow" may change it and the change stays.
+db -e "INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, chance, recipe, req_progress, req_level, recipe_vnum) VALUES
+(85001, 85001, 1, 80000, 100, '80019,10', 0, 0, 0);" \
+  || fail_step "could not add Uriel's sash recipe (crafting_proto 85001)" >&2
+
 # MT2009_PLUS_DUNGEON_RANKING_FINISH_V1: the dungeon panel credits a run only to
 # those who hurt the final boss (playerbot_dungeon_panel.h, DungeonFinishers);
 # before, everyone standing in the instance at the boss's fall was credited -

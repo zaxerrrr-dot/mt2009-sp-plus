@@ -169,7 +169,7 @@ class PageTests(Base):
 
     def test_page_defaults_all_on(self):
         page = self.client.get("/db/rzadki-drop").get_data(as_text=True)
-        for text in ("Kupony SM z bossów", "Kupony SM z metinów", "Szarfy z bossów", "Szarfy z metinów",
+        for text in ("Kupony SM z bossów", "Kupony SM z metinów", "Delikatne Sukno (szarfy) z bossów", "Delikatne Sukno (szarfy) z metinów",
                      "Cor Draconis z bossów", "Cor Draconis z metinów", "Baronówna Pająków", "skrzynia bossa"):
             self.assertIn(text, page)
         self.assertEqual(page.count("checked"), 6)

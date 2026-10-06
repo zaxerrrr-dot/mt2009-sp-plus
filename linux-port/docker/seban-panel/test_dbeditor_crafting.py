@@ -112,6 +112,8 @@ class ModelTests(unittest.TestCase):
         self.assertEqual(lists[104], [100, 101, 102, 103])
         self.assertEqual(lists[106], [8001, 8002, 8003, 8004, 8005])
         self.assertEqual(lists[20060], [50621])
+        self.assertEqual(lists[111], [85001])                          # MT2009_PLUS_SASH_CLOTH_V1: Uriel
+        self.assertEqual(crafting.WINDOW_BY_VNUM[111][1], (20011,))
         self.assertNotIn(20061, lists)
         self.assertEqual(len(lists[102]), 68)
         self.assertFalse(set(range(58, 67)) & set(lists[102]))       # the --[[ ]] PvP dews are not listed

@@ -1141,6 +1141,25 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting.lua 
  && ! LC_ALL=C grep -q 'SKILLBOOK_LEARN_DELAY' "$F" \
  && echo "share: a recipe is read without a wait"
 
+# Uriel's "Wytwarzanie" window (MT2009_PLUS_SASH_CLOTH_V1, the owner, 6 October):
+# Metins and bosses drop Delikatne Sukno (80019) in place of the +0 sash
+# (server-patches/raremobrules) and Uriel (20011) turns ten of them and 80 000
+# yang into the plain sash, 85001 at 100% - crafting window 111 (CRAFTING_URIEL),
+# which quest/acce_costume_uriel.quest opens, listing recipe 85001 of
+# world.crafting_proto (mariadb/playerbot/apply.sh). Inside the crafting_data
+# table, so the Seban panel's crafting editor reads it as the image's list.
+RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting_data.lua \
+ && if ! LC_ALL=C grep -q 'CRAFTING_URIEL' "$F"; then \
+      test "$(tr -d '\r' < "$F" | LC_ALL=C grep -c -E '^CRAFTING_BUM = 110$')" -eq 1 \
+      && test "$(tr -d '\r' < "$F" | LC_ALL=C grep -c -E '^[[:blank:]]*\[CRAFTING_BUM\] = \{ 221 \},$')" -eq 1 \
+      && LC_ALL=C sed -i -E \
+           -e 's/^CRAFTING_BUM = 110(\r?)$/&\nCRAFTING_URIEL = 111\1/' \
+           -e 's/^([[:blank:]]*)\[CRAFTING_BUM\] = \{ 221 \},(\r?)$/&\n\1[CRAFTING_URIEL] = { 85001 },\2/' "$F"; \
+    fi \
+ && test "$(LC_ALL=C grep -c -E '^CRAFTING_URIEL = 111' "$F")" -eq 1 \
+ && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*\[CRAFTING_URIEL\] = \{ 85001 \},' "$F")" -eq 1 \
+ && echo "share: Uriel's crafting window 111 (Delikatne Sukno -> the plain sash)"
+
 # The Spider Baroness (port/shareify.py renders special_spawns.baroness.txt and
 # this step): the level-75 boss who drops the Stalki, stood in the second
 # Spider Dungeon's last room every four to five hours (the operator's decision

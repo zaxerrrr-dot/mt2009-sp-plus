@@ -136,5 +136,35 @@
   "marker": "MT2009_PLUS_DUNGEON_DROPS_NO_FADE_V1 (yang)",
   "old": "\t\tiPercent = ((iGoldPercent * PERCENT_LVDELTA(pkAttacker->GetLevel(), GetLevel())) / 100);\n\n\tif (number(1, 100) > iPercent)\n",
   "new": "\t\tiPercent = ((iGoldPercent * PERCENT_LVDELTA(pkAttacker->GetLevel(), GetLevel())) / 100);\n\n\t// MT2009_PLUS_DUNGEON_DROPS_NO_FADE_V1 (yang): a player's kill in a dungeon drops yang with\n\t// no level fade, as its items (item_manager.cpp, Mt2009PlusDungeonNoFade).\n\t{\n\t\tbool Mt2009PlusDungeonNoFade(LPCHARACTER pkKiller);\n\t\tif (iPercent < iGoldPercent && Mt2009PlusDungeonNoFade(pkAttacker))\n\t\t\tiPercent = iGoldPercent;\n\t}\n\n\tif (number(1, 100) > iPercent)\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_SASH_CLOTH_V1 (server-patches/raremobrules)",
+  "old": "bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item)\n{\n",
+  "new": "// MT2009_PLUS_SASH_CLOTH_V1 (server-patches/raremobrules): \"Delikatne Sukno\" (80019) in place of the\n// +0 sash (the owner, 6 October: \"z metinow i bossow leci Delikatne Sukno\"). The roll is the\n// sash's own - a boss 80%, a Metin 15%, the per-mob rules above (WuKong 15%, none from the\n// mobs listed with 0), the killer at most 15 levels over the mob, m2_sash_off and the\n// database editor's m2_sash_boss_off / m2_sash_metin_off - and players and bots alike; what\n// changes is the item: a stack of cloth by the KILLER's level, 1-49 x2, 50-74 x5, 75 and\n// up x10 (\"x2 do 50 lvl, od 50 do 75 lvl x5, od 75 do 120 x10\"). Ten of them and 80 000\n// yang make the plain sash (85001) at Uriel (crafting window 111, the quest\n// acce_costume_uriel); the bots trade them in without the window (playerbot_sash.h).\n// The boss chests' unique sash (char_item.cpp) stays as it is.\nstatic const DWORD MT2009_PLUS_SASH_CLOTH_VNUM = 80019;\n\nstatic int Mt2009PlusSashClothCount(int killerLevel)\n{\n\tif (killerLevel < 50)\n\t\treturn 2;\n\tif (killerLevel < 75)\n\t\treturn 5;\n\treturn 10;\n}\n\n// The roll at the sash's chance; a bot's cloth goes into its bag (a full bag gets\n// nothing, never the ground - MT2009_PLUS_BOT_RARE_DROP_V3), a player's to the ground.\nstatic void Mt2009PlusSashClothDrop(LPCHARACTER victim, LPCHARACTER killer, int chance, std::vector<LPITEM>& out)\n{\n\tconst int roll = number(1, 100);\n\tconst bool win = roll <= chance;\n\tconst int count = Mt2009PlusSashClothCount(killer->GetLevel());\n\tsys_log(0, \"[SUKNO_DROP] mob_vnum=%u killer=%s killer_pid=%u killer_lv=%d chance=%d roll=%d win=%d count=%d\",\n\t\tvictim->GetRaceNum(), killer->GetName(), killer->GetPlayerID(), killer->GetLevel(), chance, roll, win ? 1 : 0, count);\n\tif (!win)\n\t\treturn;\n\tLPITEM cloth = ITEM_MANAGER::instance().CreateItem(MT2009_PLUS_SASH_CLOTH_VNUM, count);\n\tif (!cloth)\n\t\treturn;\n\tif (killer->GetDesc() && killer->GetDesc()->IsBot())\n\t{\n\t\tif (killer->GetEmptyInventoryEx(cloth) != -1)\n\t\t\tkiller->AutoGiveItem(cloth);\n\t\telse\n\t\t\tM2_DESTROY_ITEM(cloth);\n\t}\n\telse\n\t\tout.push_back(cloth);\n}\n\nbool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item)\n{\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_SASH_CLOTH_V1 (kill)",
+  "old": "\t\tint roll = number(1, 100);\n\t\tbool bWin = roll <= szarfaChance;\n",
+  "new": "\t\t// MT2009_PLUS_SASH_CLOTH_V1 (kill): Delikatne Sukno at the sash's chance instead of the sash.\n\t\tMt2009PlusSashClothDrop(pkChr, pkKiller, szarfaChance, vec_item);\n\t\tconst int roll = 0;\n\t\tconst bool bWin = false;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_SASH_CLOTH_V1 (sash log)",
+  "old": "\t\tsys_log(0, \"[SZARFA_DROP] source=boss_kill mob_vnum=%u killer=%s killer_pid=%u chance=%d roll=%d win=%d vnum=%u\",\n",
+  "new": "\t\t// MT2009_PLUS_SASH_CLOTH_V1 (sash log): no sash rolls here any more ([SUKNO_DROP] above).\n\t\tif (bWin)\n\t\tsys_log(0, \"[SZARFA_DROP] source=boss_kill mob_vnum=%u killer=%s killer_pid=%u chance=%d roll=%d win=%d vnum=%u\",\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_SASH_CLOTH_V1 (preview)",
+  "old": "\t\t\t\tstatic const DWORD s_aPreviewSash[] = { 85001, 85005, 85011, 85015, 85021 };\n\t\t\t\tfor (DWORD sash : s_aPreviewSash)\n\t\t\t\t\tAddMobPreviewItem(lines, sash, 1);\n",
+  "new": "\t\t\t\t// MT2009_PLUS_SASH_CLOTH_V1 (preview): Delikatne Sukno, as many as the viewer's level gets,\n\t\t\t\t// unless the mob's own rule gives none.\n\t\t\t\tconst Mt2009PlusRareMobRule* clothRule = Mt2009PlusRareMobRuleFor(mob);\n\t\t\t\tif (!clothRule || clothRule->sashChance > 0)\n\t\t\t\t\tAddMobPreviewItem(lines, MT2009_PLUS_SASH_CLOTH_VNUM, Mt2009PlusSashClothCount(viewer->GetLevel()));\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_SASH_CLOTH_V1 (switch kind)",
+  "old": "\tif (vnum == 50252 || (vnum >= 50255 && vnum <= 50260))\n\t\treturn MT2009_PLUS_RARE_DROP_COR;\n",
+  "new": "\tif (vnum == 50252 || (vnum >= 50255 && vnum <= 50260))\n\t\treturn MT2009_PLUS_RARE_DROP_COR;\n\t// MT2009_PLUS_SASH_CLOTH_V1 (switch kind): Delikatne Sukno (80019) in a built-in table row is the sash's.\n\tif (vnum == 80019)\n\t\treturn MT2009_PLUS_RARE_DROP_SASH;\n"
  }
 ]

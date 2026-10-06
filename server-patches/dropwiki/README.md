@@ -19,3 +19,7 @@ already there.
 database editor's rare drop switches hold back (Kupon SM, sash, Cor Draconis
 from bosses / Metins and the game's own drop table rows of them;
 `server-patches/raremobrules`).
+
+`MT2009_PLUS_SASH_CLOTH_V1` (6 October): the sash row of a boss / Metin is Delikatne Sukno (80019) now,
+at the sash's chance, as many as a killer at the monster's level gets (2 / 5 / 10 for 1-49 / 50-74 / 75+;
+`server-patches/raremobrules`).

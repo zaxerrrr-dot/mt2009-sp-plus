@@ -70,5 +70,11 @@
   "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (wiki sash)",
   "old": "\t\tif (table.bRank >= MOB_RANK_BOSS && quest::CQuestManager::instance().GetEventFlag(\"m2_sash_off\") == 0)\n",
   "new": "\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (wiki sash)\n\t\tif (table.bRank >= MOB_RANK_BOSS && quest::CQuestManager::instance().GetEventFlag(\"m2_sash_off\") == 0 &&\n\t\t\t\t!Mt2009PlusRareDropOff(MT2009_PLUS_RARE_DROP_SASH, stone))\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_SASH_CLOTH_V1 (wiki)",
+  "old": "\t\t\tstatic const DWORD s_aWikiSash[] = { 85001, 85005, 85011, 85015, 85021 };\n\t\t\tint sashChance = stone ? 15 : 80;\n\t\t\tif (rule)\n\t\t\t\tsashChance = rule->sashChance;\n\t\t\tif (sashChance > 0)\n\t\t\t\tfor (DWORD sash : s_aWikiSash)\n\t\t\t\t\tDropWikiAdd(rows, sash, 1, sashChance / 100.0 / _countof(s_aWikiSash));\n",
+  "new": "\t\t\t// MT2009_PLUS_SASH_CLOTH_V1 (wiki): Delikatne Sukno at the sash's chance, as many as a killer at\n\t\t\t// the monster's level gets (server-patches/raremobrules, Mt2009PlusSashClothCount).\n\t\t\tint sashChance = stone ? 15 : 80;\n\t\t\tif (rule)\n\t\t\t\tsashChance = rule->sashChance;\n\t\t\tif (sashChance > 0)\n\t\t\t\tDropWikiAdd(rows, MT2009_PLUS_SASH_CLOTH_VNUM, Mt2009PlusSashClothCount(level), sashChance / 100.0);\n"
  }
 ]

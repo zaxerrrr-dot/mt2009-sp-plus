@@ -1127,6 +1127,74 @@ namespace
 				(unsigned int)GetPlayerBotSashMarketSupply(), IsPlayerBotSashMarketPlentiful() ? 1 : 0);
 	}
 
+	// MT2009_PLUS_SASH_CLOTH_V1: Delikatne Sukno (80019), what Metins and bosses
+	// drop instead of the +0 sash since 6 October (server-patches/raremobrules:
+	// the sash's chance, 2 / 5 / 10 by the killer's level). A player takes ten
+	// and 80 000 yang to Uriel's "Wytwarzanie" window (crafting window 111) for
+	// the plain sash (85001, 100%); a bot "wymienia automatycznie 10 sukien +
+	// 80k na szarfe" (the owner) - a keeper that still wants sashes does it here,
+	// without the window or the walk, and keeps its cloth for it. Every other bot
+	// (no keeper, a keeper whose sash is done or whose bag holds its
+	// PLAYERBOT_SASH_KEEP) puts its cloth on its counter: a piece at a tenth of
+	// the plain sash ("1 sukno kosztuje 1/10 zwyklej szarfy").
+	unsigned s_uPlayerBotSashClothMade = 0;
+
+	DWORD GetPlayerBotSashClothPrice()
+	{
+		// The plain sash's price, as GetPlayerBotSashPrice works out a grade 1.
+		long long sash = (long long)(GetPlayerBotSashGradeCost(1) * (100 + PLAYERBOT_SASH_PRICE_MARGIN_PERCENT) / 100.0);
+		sash = (long long)ScalePlayerBotIwakuraPrice((DWORD)std::min<long long>(sash, 0xFFFFFFFFLL));
+		sash = std::max<long long>((sash + 500) / 1000 * 1000, 1000);
+		const long long piece = (sash / PLAYERBOT_SASH_CLOTH_PER_SASH + 50) / 100 * 100;
+		return (DWORD)std::max<long long>(piece, 100);
+	}
+
+	// A keeper short of sashes: its sash not done and room in the bag for more.
+	bool PlayerBotWantsSashFromCloth(LPCHARACTER ch)
+	{
+		if (!IsPlayerBotSashKeeper(ch))
+			return false;
+		const TPlayerBotSashTarget t = GetPlayerBotSashTarget(ch);
+		if (t.grade <= 0 || IsPlayerBotSashDone(ch, t))
+			return false;
+		std::vector<LPITEM> bag;
+		CollectPlayerBotBagSashes(ch, bag);
+		return (int)bag.size() < PLAYERBOT_SASH_KEEP;
+	}
+
+	bool IsPlayerBotKeptSashCloth(LPCHARACTER ch, LPITEM item)
+	{
+		return ch && item && item->GetVnum() == PLAYERBOT_SASH_CLOTH_VNUM && PlayerBotWantsSashFromCloth(ch);
+	}
+
+	// Ten pieces and the fee for a plain sash, a few at a look.
+	int ExchangePlayerBotSashCloth(LPCHARACTER ch)
+	{
+		if (!ch || ch->IsDead() || ch->GetExchange() || ch->GetMyShop() || ch->IsAcceOpened())
+			return 0;
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(PLAYERBOT_SASH_CLOTH_SASH_VNUM);
+		if (!proto)
+			return 0;
+		int made = 0;
+		while (made < 3 && PlayerBotWantsSashFromCloth(ch) &&
+				(int)ch->CountSpecifyItem(PLAYERBOT_SASH_CLOTH_VNUM) >= PLAYERBOT_SASH_CLOTH_PER_SASH &&
+				GetPlayerBotSashSpareGold(ch) >= PLAYERBOT_SASH_CLOTH_FEE &&
+				ch->GetEmptyInventory(proto->bSize) >= 0)
+		{
+			ch->RemoveSpecifyItem(PLAYERBOT_SASH_CLOTH_VNUM, PLAYERBOT_SASH_CLOTH_PER_SASH);
+			PlayerBotChangeGold(ch, -PLAYERBOT_SASH_CLOTH_FEE);
+			LPITEM sash = ch->AutoGiveItem(PLAYERBOT_SASH_CLOTH_SASH_VNUM, 1, -1, false);
+			++made;
+			++s_uPlayerBotSashClothMade;
+			sys_log(0, "PLAYERBOT_SASH: cloth exchange pid=%u name=%s lv=%d sash=%u ok=%d cloth_left=%d gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), PLAYERBOT_SASH_CLOTH_SASH_VNUM, sash ? 1 : 0,
+					(int)ch->CountSpecifyItem(PLAYERBOT_SASH_CLOTH_VNUM), (long long)ch->GetGold());
+			if (!sash)
+				break;
+		}
+		return made;
+	}
+
 	// ------------------------------------------------------------ the work
 
 	// A sash to absorb into: empty and at the target - from the bag, or the
@@ -1582,6 +1650,8 @@ namespace
 		if (!state.bVisitingUriel)
 		{
 			state.dwNextSashCheckTime = dwNow + number(PLAYERBOT_SASH_CHECK_MIN_MS, PLAYERBOT_SASH_CHECK_MAX_MS);
+			// MT2009_PLUS_SASH_CLOTH_V1: the cloth into plain sashes first.
+			ExchangePlayerBotSashCloth(ch);
 			WearPlayerBotBestSash(ch, t);
 			NotePlayerBotLoneSashes(ch, t, dwNow);
 			if (!HasPlayerBotSashWork(ch, t))
@@ -1853,12 +1923,13 @@ namespace
 
 	void LogPlayerBotSashCensus()
 	{
-		sys_log(0, "PLAYERBOT_SASH: census combines=%u fails=%u absorbs=%u wears=%u trips=%u bought=%u bought_yang=%llu bought_to_wear=%u supply=%u plentiful=%d",
+		sys_log(0, "PLAYERBOT_SASH: census combines=%u fails=%u absorbs=%u wears=%u trips=%u bought=%u bought_yang=%llu bought_to_wear=%u supply=%u plentiful=%d from_cloth=%u",
 				s_kPlayerBotSashStats.combines, s_kPlayerBotSashStats.combineFails,
 				s_kPlayerBotSashStats.absorbs, s_kPlayerBotSashStats.wears,
 				s_kPlayerBotSashStats.trips, s_kPlayerBotSashStats.bought,
 				s_kPlayerBotSashStats.boughtYang, s_kPlayerBotSashStats.boughtBetter,
-				(unsigned int)GetPlayerBotSashMarketSupply(), IsPlayerBotSashMarketPlentiful() ? 1 : 0);
+				(unsigned int)GetPlayerBotSashMarketSupply(), IsPlayerBotSashMarketPlentiful() ? 1 : 0,
+				s_uPlayerBotSashClothMade);	// MT2009_PLUS_SASH_CLOTH_V1
 	}
 }
 
@@ -1869,6 +1940,8 @@ namespace
 	bool IsPlayerBotKeptSash(LPCHARACTER, LPITEM) { return false; }
 	bool IsPlayerBotSashReleased(DWORD) { return false; }
 	DWORD GetPlayerBotSashPrice(LPITEM) { return 0; }
+	DWORD GetPlayerBotSashClothPrice() { return 0; }	// MT2009_PLUS_SASH_CLOTH_V1
+	bool IsPlayerBotKeptSashCloth(LPCHARACTER, LPITEM) { return false; }
 	bool WantsPlayerBotSashOffer(LPCHARACTER, LPITEM) { return false; }
 	bool CanPlayerBotPayForSashOffer(LPCHARACTER, LPITEM, long long) { return false; }
 	bool PlayerBotWantsSashFromMarket(LPCHARACTER) { return false; }

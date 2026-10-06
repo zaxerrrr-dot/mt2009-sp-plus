@@ -3046,7 +3046,9 @@ namespace
 	// and earrings 35% cheaper (owner, 5 October).
 	// 14: MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1 - Fasolka Zen at a third
 	// of a Kamien Duchowy (owner, 5 October).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 14;
+	// 15: MT2009_PLUS_SASH_CLOTH_V1 - Delikatne Sukno (80019) at a tenth of a
+	// plain sash (owner, 6 October; GetPlayerBotSashClothPrice).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 15;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
@@ -7437,6 +7439,18 @@ namespace
 	bool PlayerBotWantsSashPieceFromMarket(LPCHARACTER ch);
 	// Its price (cost to make + 25%) and whether it is a released lone sash.
 	DWORD GetPlayerBotSashPrice(LPITEM item);
+	// MT2009_PLUS_SASH_CLOTH_V1 (playerbot_sash.h): Delikatne Sukno, what Metins
+	// and bosses drop instead of the +0 sash (server-patches/raremobrules). Ten
+	// and PLAYERBOT_SASH_CLOTH_FEE yang make the plain sash at Uriel (crafting
+	// window 111); a keeper that wants sashes trades its cloth in by itself
+	// (ExchangePlayerBotSashCloth) and keeps it for that, every other bot puts it
+	// on its counter at a tenth of the plain sash (GetPlayerBotSashClothPrice).
+	const DWORD PLAYERBOT_SASH_CLOTH_VNUM = 80019;
+	const DWORD PLAYERBOT_SASH_CLOTH_SASH_VNUM = 85001;
+	const int PLAYERBOT_SASH_CLOTH_PER_SASH = 10;
+	const long long PLAYERBOT_SASH_CLOTH_FEE = 80000LL;
+	DWORD GetPlayerBotSashClothPrice();
+	bool IsPlayerBotKeptSashCloth(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotSashReleased(DWORD itemId);
 	bool PlayerBotWantsSashFromMarket(LPCHARACTER ch);
 	void NotePlayerBotSashBought(LPCHARACTER ch, DWORD vnum, long long price);
