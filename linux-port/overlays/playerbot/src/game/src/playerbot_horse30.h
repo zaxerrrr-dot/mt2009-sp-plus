@@ -61,6 +61,16 @@ namespace
 	const BYTE PLAYERBOT_HORSE_BONUS_POINTS[3] = { POINT_ATTBONUS_MONSTER, POINT_ATTBONUS_BOSS, POINT_ATTBONUS_STONE };
 	const char* PLAYERBOT_HORSE_BONUS_FLAGS[3] = { "konie.nm", "konie.nb", "konie.ns" };
 
+	// MT2009_PLUS_BOT_HORSE_PROGRESS_V2: the share of konie.koszt()'s yang a
+	// bot pays the Stajenny. The medals, the materials and the trials stay
+	// the quest's; the yang did not fit a bot's purse. The supporters' world,
+	// 6 October: 1 088 bots with a horse at 11-19 held 1.9 mln on average
+	// against a training of 2-10 mln (4.6 mln on average), 87 at 21-28 held
+	// 2.5 mln (8.8 mln the richest) against 15-50 mln - not one of them
+	// could ever pay; 20-30 trainings an hour among 1 070 bots and the
+	// average horse stood at 14 for a day. A player's quest is unchanged.
+	const int PLAYERBOT_HORSE_TRAINING_YANG_PERCENT = 25;
+
 	struct TPlayerBotHorseTraining
 	{
 		int medals;
@@ -89,7 +99,7 @@ namespace
 			out.feedVnum = PLAYERBOT_HORSE_FEED_HAY;
 			out.feedCount = 0;	// MT2009_PLUS_HORSE_NO_FEED_V1: no feed since 3 October (the owner)
 			out.materials = 5;
-			out.yang = 100000LL * (level + 1);
+			out.yang = 100000LL * (level + 1) * PLAYERBOT_HORSE_TRAINING_YANG_PERCENT / 100;
 			return true;
 		}
 		if (level >= 11 && level <= 19)
@@ -98,7 +108,7 @@ namespace
 			out.feedVnum = PLAYERBOT_HORSE_FEED_CARROT;
 			out.feedCount = 0;	// MT2009_PLUS_HORSE_NO_FEED_V1: no feed since 3 October (the owner)
 			out.materials = 10;
-			out.yang = 2000000LL + (long long)(level - 11) * 1000000LL;
+			out.yang = (2000000LL + (long long)(level - 11) * 1000000LL) * PLAYERBOT_HORSE_TRAINING_YANG_PERCENT / 100;
 			return true;
 		}
 		if (level >= 21 && level <= 28)
@@ -107,7 +117,7 @@ namespace
 			out.feedVnum = PLAYERBOT_HORSE_FEED_GINSENG;
 			out.feedCount = 0;	// MT2009_PLUS_HORSE_NO_FEED_V1: no feed since 3 October (the owner)
 			out.materials = 20;
-			out.yang = 15000000LL + (long long)(level - 21) * 5000000LL;
+			out.yang = (15000000LL + (long long)(level - 21) * 5000000LL) * PLAYERBOT_HORSE_TRAINING_YANG_PERCENT / 100;
 			return true;
 		}
 		return false;
@@ -398,20 +408,38 @@ namespace
 		return gold;
 	}
 
+	// The medals (over the due saddlebag row's) and the materials of the next
+	// training are in the bag; the yang aside.
+	bool HasPlayerBotHorseTrainingGoods(LPCHARACTER ch, const TPlayerBotHorseTraining& cost)
+	{
+		return ch &&
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >=
+					cost.medals + GetPlayerBotSaddlebagMedalReserve(ch) &&
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_TRAINING_MATERIAL_VNUM) >= cost.materials;
+	}
+
+	// MT2009_PLUS_BOT_HORSE_PROGRESS_V2: the yang the next training is saved
+	// up for - its whole price while the goods for it are in the bag, so no
+	// other spender takes it (GetPlayerBotReservedGold, playerbot_battle_horse.h).
+	long long GetPlayerBotHorseSavingsGold(LPCHARACTER ch)
+	{
+		TPlayerBotHorseTraining cost;
+		if (!ch || !ch->IsItemLoaded() || !GetPlayerBotNextHorseTraining(ch, cost) ||
+				!HasPlayerBotHorseTrainingGoods(ch, cost))
+			return 0;
+		return GetPlayerBotHorseTrainingGold(ch, cost);
+	}
+
 	// Everything the training asks is in the bag and the purse: the medals
 	// over the due saddlebag row's, the materials, the yang over what the bot
-	// holds back (GetPlayerBotReservedGold).
+	// holds back for everything else (GetPlayerBotBaseReservedGold - the
+	// savings are this training's own).
 	bool CanPlayerBotPayHorseTraining(LPCHARACTER ch)
 	{
 		TPlayerBotHorseTraining cost;
-		if (!GetPlayerBotNextHorseTraining(ch, cost))
+		if (!GetPlayerBotNextHorseTraining(ch, cost) || !HasPlayerBotHorseTrainingGoods(ch, cost))
 			return false;
-		if ((int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <
-				cost.medals + GetPlayerBotSaddlebagMedalReserve(ch))
-			return false;
-		if ((int)ch->CountSpecifyItem(PLAYERBOT_HORSE_TRAINING_MATERIAL_VNUM) < cost.materials)
-			return false;
-		return (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch) >=
+		return (long long)ch->GetGold() - (long long)GetPlayerBotBaseReservedGold(ch) >=
 				GetPlayerBotHorseTrainingGold(ch, cost);
 	}
 
