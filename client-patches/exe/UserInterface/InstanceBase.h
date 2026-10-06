@@ -149,6 +149,9 @@ class CInstanceBase
 
 			TITLE_NUM				= 9,
 			TITLE_NONE				= 4,
+#ifdef ENABLE_RANK_TITLE
+			RANK_TITLE_NUM			= 16,	// MT2009_PLUS_RANK_POINTS_V1: tiers 1..15 of Punkty Rangi
+#endif
 		};
 
 		enum
@@ -316,6 +319,12 @@ class CInstanceBase
 		static void RegisterTitleName(int iIndex, const char * c_szTitleName);
 		static bool RegisterNameColor(UINT uIndex, UINT r, UINT g, UINT b);
 		static bool RegisterTitleColor(UINT uIndex, UINT r, UINT g, UINT b);
+#ifdef ENABLE_RANK_TITLE
+		// MT2009_PLUS_RANK_POINTS_V1: a rank's title and colour, shown instead of the alignment title.
+		static bool RegisterRankTitle(UINT uIndex, const char * c_szTitleName, UINT r, UINT g, UINT b);
+		void SetRankTitle(BYTE byTier);
+		BYTE GetRankTitle() const { return m_byRankTitle; }
+#endif
 		static bool ChangeEffectTexture(UINT eEftType, const char* c_szSrcFileName, const char* c_szDstFileName);
 
 		static void SetDustGap(float fDustGap);
@@ -919,6 +928,9 @@ class CInstanceBase
 		DWORD					m_dwRace;
 		DWORD					m_dwVirtualNumber;
 		short					m_sAlignment;
+#ifdef ENABLE_RANK_TITLE
+		BYTE					m_byRankTitle;	// MT2009_PLUS_RANK_POINTS_V1: 0 = the alignment title
+#endif
 		BYTE					m_byPKMode;
 		bool					m_isKiller;
 		bool					m_isPartyMember;

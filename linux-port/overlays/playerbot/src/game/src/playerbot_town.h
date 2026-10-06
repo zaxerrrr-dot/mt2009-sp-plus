@@ -3206,6 +3206,19 @@ namespace
 			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, stone, stone);
 			return stone;
 		}
+		// MT2009_PLUS_RANK_POINTS_V1: a rank fruit, a piece at its tier's price
+		// (playerbot_rank_points.h, GetPlayerBotRankFruitPrice).
+		if (IsPlayerBotRankFruit(item->GetVnum()))
+		{
+			const DWORD count = std::max<DWORD>(1, (DWORD)item->GetCount());
+			const DWORD unit = GetPlayerBotRankFruitPrice(item->GetVnum());
+			if (unit != 0)
+			{
+				const DWORD fruit = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL, (unsigned long long)unit * count);
+				PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, fruit, unit);
+				return fruit;
+			}
+		}
 		// MT2009_PLUS_SASH_CLOTH_V1: Delikatne Sukno, a piece at a tenth of the
 		// plain sash (playerbot_sash.h, GetPlayerBotSashClothPrice).
 		if (item->GetVnum() == PLAYERBOT_SASH_CLOTH_VNUM)
@@ -4089,6 +4102,11 @@ namespace
 		// A sash a keeper builds its own from (playerbot_sash.h) is not goods.
 		if (ch && IsPlayerBotKeptSash(ch, item))
 			return -1;
+		// MT2009_PLUS_RANK_POINTS_V1: nor a rank fruit the bot eats itself; any
+		// other is a counter's.
+		if (IsPlayerBotRankFruit(item->GetVnum()))
+			return (ch && IsPlayerBotKeptRankFruit(ch, item)) ? -1
+					: PlayerBotGoods(PLAYERBOT_SHOP_RARE_GOODS_SCORE, per::GOODS_RARE_GOODS);
 		// MT2009_PLUS_SASH_CLOTH_V1: nor the Delikatne Sukno a keeper still
 		// trades in for sashes; anybody else's is a counter's, where a sash goes.
 		if (item->GetVnum() == PLAYERBOT_SASH_CLOTH_VNUM)

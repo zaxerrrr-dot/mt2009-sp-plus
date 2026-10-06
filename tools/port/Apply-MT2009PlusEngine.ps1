@@ -64,6 +64,9 @@ param(
 #   Monster Cards      cmd.cpp, char_battle.cpp, char_item.cpp, input_login.cpp
 #                      (MT2009_PLUS_MONSTER_CARDS_V1; server-patches/monstercard,
 #                      Autor: Digi Rasta)
+#   Punkty Rangi       cmd.cpp, char_battle.cpp, char_item.cpp, input_login.cpp,
+#                      char.cpp, item_manager.cpp (MT2009_PLUS_RANK_POINTS_V1;
+#                      server-patches/rankpoints)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -893,6 +896,21 @@ if ((Test-Path -LiteralPath $monsterCardApply -PathType Leaf) -and
     if ($monsterCardResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Monster Card edit(s).' -f $monsterCardResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# Punkty Rangi (server-patches/rankpoints, MT2009_PLUS_RANK_POINTS_V1): the rank
+# fruits' use (char_item.cpp), their drop from Metins and bosses (char_battle.cpp),
+# the bonus at login (input_login.cpp), the title for whoever sees a character
+# (char.cpp), "/ranga" (cmd.cpp) and the drop wiki's row (item_manager.cpp); after
+# the Monster Cards and the drop wiki, whose lines it anchors on. The rest is the
+# overlay's playerbot_rank_points.h.
+$rankPointsApply = Join-Path $repo 'server-patches/rankpoints/Apply-RankPointsPatch.ps1'
+if ((Test-Path -LiteralPath $rankPointsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'input_login.cpp') -PathType Leaf)) {
+    $rankPointsResult = & $rankPointsApply -SourceDir $engineGameSource
+    if ($rankPointsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} rank points edit(s).' -f $rankPointsResult.Applied) -ForegroundColor DarkGray
     }
 }
 
