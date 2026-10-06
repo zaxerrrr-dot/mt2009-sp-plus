@@ -69,7 +69,7 @@ namespace
 	// 2.5 mln (8.8 mln the richest) against 15-50 mln - not one of them
 	// could ever pay; 20-30 trainings an hour among 1 070 bots and the
 	// average horse stood at 14 for a day. A player's quest is unchanged.
-	const int PLAYERBOT_HORSE_TRAINING_YANG_PERCENT = 25;
+	const int PLAYERBOT_HORSE_TRAINING_YANG_PERCENT = 50;
 
 	struct TPlayerBotHorseTraining
 	{
