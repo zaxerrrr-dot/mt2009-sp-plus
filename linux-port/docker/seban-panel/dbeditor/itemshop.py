@@ -120,6 +120,11 @@ BOOT_ONCE = {
     "king03_20212": {"adds": (20212, 30054), "note": "Zbroja Króla Wojowników+ i Święty Miecz Bogów+"},
     "monster_cards_617": {"adds": (617, 618), "note": "Karty Potworów (Nowego Początku / Układu)"},
     "collector_item_16": {"adds": (16,), "note": "Kolekcjoner – okno Kolekcjonera z dowolnego miejsca"},
+    # MT2009_PLUS_AREZZO_COSTUME_SETS_V1 (gen_azcostume_server.py): 44 helmets, 44 costumes, 126 weapon
+    # skins and 21 sash skins of the Arezzo sets, 100 SM each.
+    "arezzo_costume_sets": {"adds": tuple(range(10600, 10644)) + tuple(range(20600, 20644)) +
+                            tuple(range(30600, 30726)) + tuple(range(30800, 30821)),
+                            "note": "zestawy kostiumów z Arezzo (fryzury/hełmy, kostiumy, nakładki na broń i szarfę)"},
 }
 
 

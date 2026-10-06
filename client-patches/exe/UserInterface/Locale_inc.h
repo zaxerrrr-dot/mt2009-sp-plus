@@ -171,6 +171,11 @@
 // (crowds of bots; the archer's extra arrows fly with the shot).
 #define ENABLE_RECV_TIME_BUDGET
 
+// MT2009_PLUS_AREZZO_COSTUME_SETS_V1: glow effects of items by vnum (gamedata/shiningtable.txt, CItemManager::LoadShiningTable),
+// attached when a character wears the item - the Arezzo weapon skins' and costumes' glows
+// (CInstanceBase::SetWeapon / SetArmor). No packet, no python; without the file nothing changes.
+#define ENABLE_ITEM_SHINING_TABLE
+
 #define __BL_CLIP_MASK__
 
 #define ENABLE_FIX_MOBS_LAG

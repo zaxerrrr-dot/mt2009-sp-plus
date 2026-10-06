@@ -912,6 +912,20 @@ if ((Test-Path -LiteralPath $questRewardsApply -PathType Leaf) -and
         Write-Host ('Applied {0} quest reward override edit(s).' -f $questRewardsResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The Arezzo costume sets' sash skins (server-patches/azcostume,
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V1): a skin (85200-85299) dragged onto a sash
+# puts its vnum in the sash's socket 2 (char_item.cpp UseItemEx), the sash shows
+# it (item.h GetAcceVnum) and keeps it through Uriel's combination (char.cpp).
+# Its anchors are the engine's own lines.
+$azCostumeApply = Join-Path $repo 'server-patches/azcostume/Apply-AzCostumePatch.ps1'
+if ((Test-Path -LiteralPath $azCostumeApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item.h') -PathType Leaf)) {
+    $azCostumeResult = & $azCostumeApply -SourceDir $engineGameSource
+    if ($azCostumeResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Arezzo sash skin edit(s).' -f $azCostumeResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
