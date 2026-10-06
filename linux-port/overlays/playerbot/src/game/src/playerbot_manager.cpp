@@ -5060,6 +5060,21 @@ LPCHARACTER CPlayerBotManager::GetSidekickKillCredit(LPCHARACTER killer, LPCHARA
 	return owner;
 }
 
+// MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (server-patches/sidekicknoloot): whom a
+// drop's share at (x, y) goes to - CHARACTER::Reward's owner of a drop, and
+// the receiver in the party branch of CHARACTER::PickupItem. A companion whose
+// owner set "Drop: tylko dla mnie" hands its share to that owner when the
+// owner is near (GetPlayerBotSidekickNoShareOwner); anybody else keeps it.
+LPCHARACTER Mt2009PlusSidekickLootReceiver(LPCHARACTER ch, long lMapIndex, long x, long y)
+{
+	LPCHARACTER owner = GetPlayerBotSidekickNoShareOwner(ch, lMapIndex, x, y);
+	if (!owner)
+		return ch;
+	sys_log(1, "PLAYERBOT_SIDEKICK: loot share of pid=%u goes to its owner pid=%u", ch->GetPlayerID(),
+			owner->GetPlayerID());
+	return owner;
+}
+
 bool CPlayerBotManager::IsRestingBot(DWORD dwPlayerID) const
 {
 	return m_mapLifeRestEnd.find(dwPlayerID) != m_mapLifeRestEnd.end();

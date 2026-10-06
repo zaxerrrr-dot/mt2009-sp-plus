@@ -425,6 +425,22 @@ namespace
 	};
 	std::map<DWORD, BYTE> s_mapPlayerBotSidekickNotify;
 	bool s_bPlayerBotSidekickNotifyColumn = false;
+	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1 ("Opcja, zeby towarzysz nie dropil nic,
+	// czesto zdarza sie ze podczas bicia metka / bossa drop jest dzielony na
+	// towarzysza", the owner, 6 October): "Drop: dzielony / tylko dla mnie" in
+	// the window's Orders page. The engine hands a Metin's or a boss's drop out
+	// one item in turn to everyone who did a tenth of the damage, and each
+	// share again in turn round the sharer's party (CHARACTER::Reward,
+	// CParty::GetNextOwnership): every second item lay under the companion's
+	// name, and the owner's pick-up of it put it into the companion's bag (the
+	// party branch of CHARACTER::PickupItem). With the split off, a share that
+	// falls to the companion is its owner's (server-patches/sidekicknoloot,
+	// Mt2009PlusSidekickLootReceiver), and the companion takes nothing for
+	// itself near its owner. The companions whose owner switched the split
+	// off, by pid; kept in player.playerbot_sidekick.share_loot (1, the split,
+	// by default).
+	std::set<DWORD> s_setPlayerBotSidekickNoShare;
+	bool s_bPlayerBotSidekickShareColumn = false;
 
 	// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: "Kup" in the window - the owner's
 	// errand for one kind of goods (playerbot_sidekick_shop.h). Kept in the
@@ -775,6 +791,14 @@ namespace
 		s_bPlayerBotSidekickNotifyColumn = notify.get() && notify->uiSQLErrno == 0;
 		if (!s_bPlayerBotSidekickNotifyColumn)
 			sys_err("PLAYERBOT_SIDEKICK: no notify column errno=%u", notify.get() ? notify->uiSQLErrno : 0U);
+		// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Drop", split by default.
+		std::unique_ptr<SQLMsg> shareLoot(AccountDB::instance().DirectQuery(
+				"ALTER TABLE player.playerbot_sidekick "
+				"ADD COLUMN IF NOT EXISTS share_loot TINYINT UNSIGNED NOT NULL DEFAULT 1"));
+		s_bPlayerBotSidekickShareColumn = shareLoot.get() && shareLoot->uiSQLErrno == 0;
+		if (!s_bPlayerBotSidekickShareColumn)
+			sys_err("PLAYERBOT_SIDEKICK: no share_loot column errno=%u",
+					shareLoot.get() ? shareLoot->uiSQLErrno : 0U);
 		// A companion whose owner's character was deleted would be kept out of
 		// the population for good: its record goes, and the identity plays on
 		// as the bot it was, under the name it was given.
@@ -991,6 +1015,26 @@ namespace
 						levels[pid] = (BYTE)std::min<unsigned int>(level, PLAYERBOT_SIDEKICK_NOTIFY_ALL);
 				}
 				s_mapPlayerBotSidekickNotify.swap(levels);
+			}
+		}
+		// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: the companions with the split off.
+		if (s_bPlayerBotSidekickShareColumn)
+		{
+			std::unique_ptr<SQLMsg> shares(AccountDB::instance().DirectQuery(
+					"SELECT sidekick_pid FROM player.playerbot_sidekick WHERE share_loot=0"));
+			if (shares.get() && shares->uiSQLErrno == 0 && shares->Get() && shares->Get()->pSQLResult)
+			{
+				std::set<DWORD> off;
+				MYSQL_ROW shareRow;
+				while (NULL != (shareRow = mysql_fetch_row(shares->Get()->pSQLResult)))
+				{
+					DWORD pid = 0;
+					if (shareRow[0])
+						str_to_number(pid, shareRow[0]);
+					if (pid != 0)
+						off.insert(pid);
+				}
+				s_setPlayerBotSidekickNoShare.swap(off);
 			}
 		}
 	}
@@ -1240,6 +1284,44 @@ namespace
 	{
 		return s_mapPlayerBotSidekickOwner.find(pid) != s_mapPlayerBotSidekickOwner.end() &&
 				s_setPlayerBotSidekickNoKeep.find(pid) == s_setPlayerBotSidekickNoKeep.end();
+	}
+
+	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Drop: dzielony" (the default) or
+	// "tylko dla mnie".
+	bool IsPlayerBotSidekickSharingLoot(DWORD pid)
+	{
+		return s_setPlayerBotSidekickNoShare.find(pid) == s_setPlayerBotSidekickNoShare.end();
+	}
+
+	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: the owner who takes the companion's
+	// share of a drop at (x, y) on that map - the companion's owner with the
+	// split off, in this core's world, on the same map and within the reach of
+	// the kill's credit (PLAYERBOT_SIDEKICK_KILL_CREDIT_RANGE). NULL for any
+	// other character, and for a companion hunting on its own far from its
+	// owner, whose kills stay its own.
+	LPCHARACTER GetPlayerBotSidekickNoShareOwner(LPCHARACTER ch, long lMapIndex, long x, long y)
+	{
+		if (!ch || s_setPlayerBotSidekickNoShare.empty() || !ch->IsPC() || !ch->GetDesc() || !ch->GetDesc()->IsBot())
+			return NULL;
+		if (s_setPlayerBotSidekickNoShare.find(ch->GetPlayerID()) == s_setPlayerBotSidekickNoShare.end())
+			return NULL;
+		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
+		if (!rec)
+			return NULL;
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID);
+		if (!owner || owner == ch || owner->GetMapIndex() != lMapIndex ||
+				DISTANCE_APPROX(owner->GetX() - x, owner->GetY() - y) > PLAYERBOT_SIDEKICK_KILL_CREDIT_RANGE)
+			return NULL;
+		return owner;
+	}
+
+	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: a companion with the split off, near
+	// its owner, takes nothing that would be its own - neither its own share
+	// left from before nor an ownerless drop (IsOwnership holds for both); its
+	// owner's drops it may still collect for the owner (the party branch).
+	bool IsPlayerBotSidekickOwnLootOff(LPCHARACTER ch)
+	{
+		return ch && GetPlayerBotSidekickNoShareOwner(ch, ch->GetMapIndex(), ch->GetX(), ch->GetY()) != NULL;
 	}
 
 	int GetPlayerBotSidekickPinOf(LPCHARACTER ch, LPITEM item)
@@ -4158,6 +4240,26 @@ namespace
 		return "Dobra, twojego dropu przy pelnym ekwipunku nie podnosze - zostaje na ziemi.";
 	}
 
+	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Drop: dzielony / tylko dla mnie", kept at once.
+	const char* SetPlayerBotSidekickShareLoot(TPlayerBotSidekick& rec, bool share)
+	{
+		if (IsPlayerBotSidekickSharingLoot(rec.dwSidekickPID) != share)
+		{
+			if (share)
+				s_setPlayerBotSidekickNoShare.erase(rec.dwSidekickPID);
+			else
+				s_setPlayerBotSidekickNoShare.insert(rec.dwSidekickPID);
+			if (s_bPlayerBotSidekickShareColumn)
+				SetPlayerBotSidekickSetting(rec, "share_loot", share ? 1U : 0U);
+			sys_log(0, "PLAYERBOT_SIDEKICK: loot share owner=%u pid=%u share=%d", rec.dwOwnerPID, rec.dwSidekickPID,
+					share ? 1 : 0);
+		}
+		if (share)
+			return "Dobra, drop z Metinow i bossow znowu dzielimy jak w grupie - czesc przypada mnie.";
+		return "Dobra, caly drop jest twoj: to, co przypadloby mnie, dostajesz ty, a sam nic dla siebie "
+				"nie podnosze. Twoj drop dalej moge ci zbierac.";
+	}
+
 #if defined(PLAYERBOT_ENGINE_MT2009)
 	// What a wish of the shop pass is for, in the companion's words.
 	const char* GetPlayerBotSidekickWishWords(const char* reason)
@@ -4862,9 +4964,11 @@ namespace
 		// rank title on its name in the window, as the player's own shows his.
 		// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1: "Zablokuj ekwipunek" after the
 		// coins' balance, and MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1's "Pelne
-		// EQ" after it, and MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1's "Szepty" last.
+		// EQ" after it, and MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1's "Szepty" after
+		// that; MT2009_PLUS_SIDEKICK_NO_LOOT_V1's "Drop" (1 split, 0 all the
+		// owner's) last.
 		SendPlayerBotSidekickCommand(owner,
-				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d %d %d %u",
+				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d %d %d %u %d",
 				PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL,
 				inWorld ? (int)sk->GetRaceNum() : -1, inWorld ? (int)sk->GetSkillGroup() : 0,
 				inWorld ? sk->GetLevel() : 0, expPercent,
@@ -4879,7 +4983,8 @@ namespace
 				IsPlayerBotSidekickCoinsOn(rec.dwSidekickPID) ? 1 : 0, coinBalance,
 				IsPlayerBotSidekickEquipLocked(rec.dwSidekickPID) ? 1 : 0,
 				IsPlayerBotSidekickKeepingLoot(rec.dwSidekickPID) ? 1 : 0,
-				(unsigned int)GetPlayerBotSidekickNotify(rec.dwOwnerPID));	// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1
+				(unsigned int)GetPlayerBotSidekickNotify(rec.dwOwnerPID),	// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1
+				IsPlayerBotSidekickSharingLoot(rec.dwSidekickPID) ? 1 : 0);	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1
 		char doing[96] = "";
 		char place[64] = "";
 		if (inWorld)
@@ -6841,6 +6946,28 @@ namespace
 			SendPlayerBotWhisper(bot, from, OrderPlayerBotSidekickBuff(from, *rec, get_dword_time()).c_str());
 			return true;
 		}
+		// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "nie zbieraj dropu" / "zbieraj drop"
+		// - the "Drop" switch by whisper, for a window too old to show it. The
+		// "no" words first: "nie zbieraj drop" holds "zbieraj drop".
+		{
+			static const char* const noShareWords[] = { "nie zbieraj dropu", "nie zbieraj drop", "nie bierz dropu",
+					"nie dziel dropu", "nie dziel sie dropem", "nie podnos dropu", "caly drop dla mnie",
+					"drop tylko dla mnie", "drop dla mnie" };
+			static const char* const shareWords[] = { "zbieraj drop", "zbieraj dropu", "dziel drop", "dziel dropu",
+					"dziel sie dropem", "dzielony drop", "drop dzielony", "bierz drop" };
+			int share = -1;
+			for (size_t i = 0; share < 0 && i < sizeof(noShareWords) / sizeof(noShareWords[0]); ++i)
+				if (PlayerBotSidekickHeard(folded, noShareWords[i]))
+					share = 0;
+			for (size_t i = 0; share < 0 && i < sizeof(shareWords) / sizeof(shareWords[0]); ++i)
+				if (PlayerBotSidekickHeard(folded, shareWords[i]))
+					share = 1;
+			if (share >= 0)
+			{
+				SendPlayerBotWhisper(bot, from, SetPlayerBotSidekickShareLoot(*rec, share == 1));
+				return true;
+			}
+		}
 		for (size_t i = 0; i < sizeof(freeWords) / sizeof(freeWords[0]); ++i)
 			if (PlayerBotSidekickHeard(folded, freeWords[i]))
 			{
@@ -6894,6 +7021,7 @@ namespace
 	//            | umiejetnosci [dodaj <vnum> | reczne <0|1>]
 	//            | statystyki [dodaj <ht|iq|st|dx> [ile] | reczne <0|1> | odnow]
 	//            | luruj <0|1> | kup <towar> <ile> [tak]
+	//            | podzial <1 drop dzielony, 0 caly drop dla wlasciciela>	(MT2009_PLUS_SIDEKICK_NO_LOOT_V1)
 	void HandlePlayerBotSidekickCommand(LPCHARACTER ch, const char* argument)
 	{
 		if (!ch || !ch->GetDesc() || (ch->GetDesc()->IsBot() && !s_bPlayerBotSidekickSelfTest))
@@ -7064,6 +7192,15 @@ namespace
 				SayPlayerBotSidekick(ch, SetPlayerBotSidekickNotify(rec->second, (BYTE)(a1[0] - '0')));
 			else
 				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz powiadomienia 2 (wszystkie), 1 (tylko wazne) albo 0 (zadne)");
+		}
+		// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Drop: dzielony / tylko dla mnie".
+		else if (!strcmp(sub, "podzial"))
+		{
+			if (!strcmp(a1, "0") || !strcmp(a1, "1"))
+				SayPlayerBotSidekick(ch, SetPlayerBotSidekickShareLoot(rec->second, !strcmp(a1, "1")));
+			else
+				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz podzial 1 (drop dzielony jak w grupie) albo "
+						"/towarzysz podzial 0 (caly drop dla ciebie)");
 		}
 		else if (!strcmp(sub, "grupa"))
 		{
@@ -7783,9 +7920,12 @@ namespace
 		FPlayerBotSidekickLoot(LPCHARACTER s, LPCHARACTER o, const TPlayerBotSidekickRuntime& r, DWORD n, BYTE m,
 				long cx, long cy)
 			: self(s), owner(o), rt(r), now(n), mode(m), best(NULL), bestDist(INT_MAX),
-			  keep(s && IsPlayerBotSidekickKeepingLoot(s->GetPlayerID())), bestHeld(false), centreX(cx), centreY(cy)
+			  keep(s && IsPlayerBotSidekickKeepingLoot(s->GetPlayerID())), bestHeld(false), centreX(cx), centreY(cy),
+			  ownOff(IsPlayerBotSidekickOwnLootOff(s))
 		{
 		}
+		// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Drop: tylko dla mnie" - nothing for itself.
+		bool ownOff;
 
 		void operator()(LPENTITY ent)
 		{
@@ -7833,7 +7973,7 @@ namespace
 					return;
 			}
 			// "Tylko moj" in the window: the owner's drops, none of its own.
-			else if (mode != PLAYERBOT_SIDEKICK_LOOT_ALL || !item->IsOwnership(self) ||
+			else if (mode != PLAYERBOT_SIDEKICK_LOOT_ALL || ownOff || !item->IsOwnership(self) ||
 					IsPlayerBotLootBeneathBot(self, item) || !PlayerBotBagTakesDrop(self, item))
 				return;
 			best = item;

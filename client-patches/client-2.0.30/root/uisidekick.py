@@ -84,7 +84,11 @@
 # into its own bag and holds it for the owner (order: przechowuj N). notify
 # (MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1, "Szepty"): which of the companion's
 # own whispers reach the owner - 0 none, 1 important only, 2 all (order:
-# powiadomienia N); its answers to orders always do. An older
+# powiadomienia N); its answers to orders always do. share_loot
+# (MT2009_PLUS_SIDEKICK_NO_LOOT_V1, "Drop: dzielony / tylko dla mnie", on the
+# Orders page's Drop bar): 1 a Metin's or a boss's drop is split with the
+# companion as in any party (the default), 0 its share is the owner's and it
+# takes nothing for itself (order: podzial N). An older
 # server sends no such word, and the window shows no row for it.
 #
 # The status and skill pages read the answer to "/towarzysz umiejetnosci"
@@ -312,6 +316,11 @@ TEXT_SECTION_DOING = 'Co robi'
 TEXT_SECTION_ORDERS = 'Polecenia'
 TEXT_SECTION_COMBAT = 'Walka'
 TEXT_SECTION_LOOT = 'Drop'
+# MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Drop: dzielony / tylko dla mnie" - a button
+# at the right end of the Drop bar (the Options page has no line left), off
+# and on, and its hint on the page's status line.
+TEXT_SHARE_LOOT_STATES = ('Tylko dla mnie', 'Dzielony')
+TEXT_SHARE_LOOT_HINT = 'Tylko dla mnie: ca\xb3y drop jest tw\xf3j.'
 TEXT_SECTION_BEHAVIOUR = 'Zachowanie'
 TEXT_SECTION_POINTS = 'Punkty'
 # MT2009_PLUS_SIDEKICK_PANELS_V1: the panels of its costumes and its Alchemy,
@@ -563,6 +572,9 @@ def ParseInfo(args):
 	# MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1: "Szepty" last (0 none, 1 important, 2 all).
 	if len(values) >= len(names) + 14:
 		info['notify'] = ParseInt(values[len(names) + 13], 1)
+	# MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Drop" last (1 split, 0 all yours).
+	if len(values) >= len(names) + 15:
+		info['share_loot'] = ParseInt(values[len(names) + 14], 1)
 	return info
 
 
@@ -1082,6 +1094,11 @@ class SidekickWindow(ui.ScriptWindow):
 			self.stanceButtons.append(self._Btn(page, 'middle', ORDER_COLUMNS[i], 178, text, self.OnStance, i))
 		self.stanceHint = self._CenteredLabel(page, 202)
 		self._Section(page, 219, TEXT_SECTION_LOOT)
+		# MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Dzielony / Tylko dla mnie" on the bar.
+		self.shareLootButton = self._Btn(page, 'large', SECTION_X + SECTION_WIDTH - BUTTON_WIDTHS['large'] - 2,
+			219 - 3, '', self.OnShareLoot)
+		self._Hover(self.shareLootButton, TEXT_SHARE_LOOT_HINT)
+		self.shareLootButton.Hide()
 		self.lootButtons = []
 		for i, text in enumerate(LOOTS):
 			self.lootButtons.append(self._Btn(page, 'middle', ORDER_COLUMNS[i], 239, text, self.OnLoot, i))
@@ -1431,6 +1448,12 @@ class SidekickWindow(ui.ScriptWindow):
 		self.SetPressed((self.summonButton, self.freeButton, self.holdButton), mode if mode < 3 else -1)
 		self.SetPressed(self.stanceButtons, info['stance'])
 		self.SetPressed(self.lootButtons, info['loot'])
+		# MT2009_PLUS_SIDEKICK_NO_LOOT_V1: shown by a server that sends it.
+		if 'share_loot' in info:
+			self.shareLootButton.SetText(TEXT_SHARE_LOOT_STATES[1 if info['share_loot'] else 0])
+			self.shareLootButton.Show()
+		else:
+			self.shareLootButton.Hide()
 		stance = info['stance'] if 0 <= info['stance'] < len(STANCE_HINTS) else 0
 		self.stanceHint.SetText(STANCE_HINTS[stance])
 		self.ordersStatus.SetIdle(TEXT_MODE % MODES[mode])
@@ -1600,12 +1623,13 @@ class SidekickWindow(ui.ScriptWindow):
 		self.ShowToolTipLines(lines)
 
 	def OnHover(self, text):
-		lines = {PAGE_OPTIONS: self.optionsStatus}.get(self.page)
+		lines = {PAGE_OPTIONS: self.optionsStatus, PAGE_ORDERS: self.ordersStatus}.get(self.page)
 		if lines:
 			lines.Hover(text)
 
 	def OnHoverOut(self):
 		self.optionsStatus.EndHover()
+		self.ordersStatus.EndHover()
 
 	def OnOverInSkill(self, slotNumber):
 		"""The player's own skill tooltip, with the companion's skill and
@@ -1665,6 +1689,11 @@ class SidekickWindow(ui.ScriptWindow):
 
 	def OnLoot(self, loot):
 		self.SendCommand('zbieraj %d' % loot)
+		self.nextPoll = 0.0
+
+	def OnShareLoot(self):
+		share = self.info.get('share_loot', 1) if self.info else 1
+		self.SendCommand('podzial %d' % (0 if share else 1))
 		self.nextPoll = 0.0
 
 	def OnSwitch(self, key):
