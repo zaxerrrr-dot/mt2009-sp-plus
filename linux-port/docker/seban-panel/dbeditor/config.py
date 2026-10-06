@@ -16,7 +16,7 @@ Where the stock value comes from, per part:
     export time, so a field put back by hand, by an undo or by apply.sh at
     a start is not exported. Whole rows (shop goods, refine clones, extra
     bonus lines) are exported the same way as JSON rows ("-" = no row).
-  * spool files (drop groups, common/etc drop, chests, fishing, alchemy (dragon_soul_table), boss and
+  * spool files (drop groups, common/etc drop, chests, fishing, alchemy (dragon_soul_table), crafting (cube.txt), boss and
     metin respawn files, map spawns): the panel's custom file IS the change
     against the image's file (which the game publishes as *.base.* /
     base/... next to it); a custom file is exported whole, as a block, when
@@ -108,6 +108,7 @@ FILE_PARTS = (
     ("chests", "Szkatułki"),
     ("fishing", "Łowienie ryb"),
     ("dragonsoul", "Alchemia (Smocze Kamienie)"),  # MT2009_PLUS_DB_EDITOR_DRAGONSOUL_V1
+    ("cube", "Wytwarzanie (cube)"),  # MT2009_PLUS_DB_EDITOR_CUBE_V1
     ("spawns", "Respawn bossów i metinów"),
     ("regen", "Spawny potworów na mapach"),
 )
@@ -291,7 +292,7 @@ class FilePart:
 
 class DropFiles(FilePart):
     KEYS = {"drops": ("mob", "common", "etc"), "chests": ("chest",), "fishing": ("fishing",),
-            "dragonsoul": ("dragonsoul",)}
+            "dragonsoul": ("dragonsoul",), "cube": ("cube",)}
 
     def available(self):
         if self.part == "fishing":
@@ -304,6 +305,12 @@ class DropFiles(FilePart):
             try:
                 from dbeditor import dragonsoul
                 dragonsoul.register_file()
+            except ImportError:
+                return False
+        if self.part == "cube":  # MT2009_PLUS_DB_EDITOR_CUBE_V1
+            try:
+                from dbeditor import cube
+                cube.register_file()
             except ImportError:
                 return False
         return True
@@ -327,9 +334,16 @@ class DropFiles(FilePart):
         if data is None and key == "dragonsoul":
             from dbeditor import dragonsoul
             data = _read(dragonsoul.SNAPSHOT)
+        if data is None and key == "cube":
+            from dbeditor import cube
+            data = _read(cube.SNAPSHOT)
         return data
 
     def write(self, spool, key, data, reason):
+        if key == "cube":  # MT2009_PLUS_DB_EDITOR_CUBE_V1: the page's history shows the import too
+            from dbeditor import cube
+            cube.save(spool, data, reason or "import konfiguracji")
+            return
         df.write_custom(spool, key, data, reason)
 
     def title(self, key):
@@ -345,6 +359,8 @@ class DropFiles(FilePart):
             return bool(fishing.parse_custom(data.decode("latin-1")))
         if key == "dragonsoul":
             return b"BasicApplys" in data
+        if key == "cube":
+            return re.search(rb"(?m)^section", data) is not None
         return True
 
     def check(self, spool, key, data, lookup):
@@ -386,6 +402,12 @@ class DropFiles(FilePart):
         elif key == "dragonsoul":
             from dbeditor import dragonsoul
             errors += dragonsoul.validate(data, self.base(spool, key))[:10]
+        elif key == "cube":  # MT2009_PLUS_DB_EDITOR_CUBE_V1
+            from dbeditor import cube
+            doc = cube.parse(data)
+            errors += cube.validate(doc)[0][:10]
+            items.update(v for r in doc["recipes"] for v, _c in r["items"] + r["rewards"])
+            mobs.update(v for r in doc["recipes"] for v in r["npcs"])
         unknown_items = sorted(items - lookup("item", sorted(items))) if items else []
         unknown_mobs = sorted(mobs - lookup("mob", sorted(mobs))) if mobs else []
         if unknown_items:
@@ -522,7 +544,7 @@ class RegenFiles(FilePart):
 
 
 FILE_ADAPTERS = {"drops": DropFiles("drops"), "chests": DropFiles("chests"), "fishing": DropFiles("fishing"),
-                 "dragonsoul": DropFiles("dragonsoul"),
+                 "dragonsoul": DropFiles("dragonsoul"), "cube": DropFiles("cube"),
                  "spawns": SpawnFiles("spawns"), "regen": RegenFiles("regen")}
 
 

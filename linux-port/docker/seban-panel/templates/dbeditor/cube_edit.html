@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_CUBE_V1: one crafting recipe - edit, new, copy (dbeditor/cube.py). #}
+{% block title %}{{ 'Przepis' if index is not none else 'Nowy przepis' }} · Wytwarzanie · {{ panel_brand }}{% endblock %}
+{% macro field(name, default) -%}{{ raw[name] if name in raw else default }}{%- endmacro %}
+{% macro mat(prefix_v, prefix_c, v, c, placeholder) %}
+  {% set known = names.get(v|int) if (v|string).isdigit() else none %}
+  <div class="dbr-mat {{ 'is-empty' if not v }}">
+    <span class="dbr-mat-icon">{% if (v|string).isdigit() %}{% set ic = icon(v) %}{% if ic %}<img src="{{ ic }}" alt="">{% endif %}{% endif %}</span>
+    <input class="dbs-item" name="{{ prefix_v }}" value="{{ v }}" list="dbs-items" placeholder="{{ placeholder }}" autocomplete="off">
+    <input type="number" name="{{ prefix_c }}" min="1" max="{{ count_max }}" value="{{ c }}" placeholder="szt." aria-label="Ilość">
+    <span class="dbs-name muted">{% if known %}{{ known.name }}{% elif v and names %}<span class="dbe-error">NIEZNANY PRZEDMIOT</span>{% endif %}</span>
+  </div>
+{% endmacro %}
+{% block content %}
+{% include 'dbeditor/_tables_head.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-shops.css') }}">
+<p><a href="{{ url_for('dbeditor.cube', npc=npc or none) }}">← Wytwarzanie{% if npc_name %}: {{ npc_name }}{% endif %}</a></p>
+<p class="eyebrow">EDYTOR BAZY DANYCH · WYTWARZANIE</p>
+<h1>⚗️ {% if index is not none %}Przepis #{{ index + 1 }}{% elif after is not none %}Kopia przepisu{% else %}Nowy przepis{% endif %}</h1>
+
+<form method="post" action="{{ url_for('dbeditor.cube_save') }}" class="dbs-form" data-api="{{ url_for('dbeditor.api_items') if 'dbeditor.api_items' in dbt_endpoints else '' }}">
+  <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="sha" value="{{ sha }}">
+  <input type="hidden" name="index" value="{{ index if index is not none else '' }}">
+  <input type="hidden" name="after" value="{{ after if after is not none else '' }}">
+  <datalist id="dbs-items"></datalist>
+  <datalist id="dbc-npcs">{% for v, name in cube_npcs %}<option value="{{ v }}">{{ name }}</option>{% endfor %}</datalist>
+  <section class="panel">
+    <div class="dbr-fields">
+      <label>NPC (VNUM)<input name="npc" list="dbc-npcs" value="{{ field('npc', npc or '') }}" required inputmode="numeric" autocomplete="off"></label>
+      <label>Szansa powodzenia %<input type="number" name="percent" min="0" max="100" value="{{ field('percent', values.percent) }}" required></label>
+      <label>Koszt (Yang)<input type="number" name="gold" min="0" max="{{ gold_max }}" value="{{ field('gold', values.gold) }}"></label>
+    </div>
+    <p class="muted">NPC: numer z listy NPC, które już mają przepisy, albo inny (okno otworzy się tylko u NPC, którego quest je otwiera).</p>
+    <h2>Składniki (najwyżej {{ slots }})</h2>
+    <div class="dbr-mats">
+    {% for k in range(slots) %}
+      {% set item = values['items'][k] if values and values['items']|length > k else none %}
+      {{ mat('mv_%d' % k, 'mc_%d' % k, field('mv_%d' % k, item[0] if item else ''), field('mc_%d' % k, item[1] if item else ''), 'składnik: VNUM lub nazwa') }}
+    {% endfor %}
+    </div>
+    <h2>Wynik</h2>
+    {% set reward = values['rewards'][0] if values and values['rewards'] else none %}
+    <div class="dbr-mats">{{ mat('reward_v', 'reward_c', field('reward_v', reward[0] if reward else ''), field('reward_c', reward[1] if reward else 1), 'wynik: VNUM lub nazwa') }}</div>
+    <div class="dbt-actions">
+      <label>Opis w pliku (komentarz, opcjonalnie)<input name="comment" maxlength="60" value="{{ field('comment', comment) }}" style="width:320px"></label>
+      <label>Notatka do historii (opcjonalnie)<input name="note" maxlength="60" style="width:220px"></label>
+    </div>
+    <div class="dbt-actions">
+      <button name="action" value="save">💾 {{ 'Zapisz przepis' if index is not none else 'Dodaj przepis' }}</button>
+      <a href="{{ url_for('dbeditor.cube', npc=npc or none) }}">Anuluj</a>
+    </div>
+    <p class="muted">Ilości 1–{{ count_max }}, szansa 0–100%, koszt 0 lub więcej. Przed zapisem panel sprawdza, czy przedmioty i NPC istnieją; gra sprawdza to jeszcze raz przy starcie i w razie błędu zostaje przy swoich przepisach.</p>
+  </section>
+</form>
+<script src="{{ url_for('static', filename='dbeditor-shops.js') }}" data-page-script></script>
+{% endblock %}

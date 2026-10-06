@@ -224,6 +224,11 @@ boot_cores() {
   if [ "${HAVE_DRAGONSOUL:-0}" = "1" ]; then
     m2-dragonsoul apply || log "the panel's alchemy table could not be applied -- the image's table stays"
   fi
+  # MT2009_PLUS_DB_EDITOR_CUBE_V1: the crafting recipes as the Seban panel
+  # saved them (m2-cube), put into cube.txt the same way.
+  if [ "${HAVE_CUBE:-0}" = "1" ]; then
+    m2-cube apply || log "the panel's crafting recipes could not be applied -- the image's cube.txt stays"
+  fi
   # MT2009_PLUS_DB_EDITOR_V1: the maps' spawns as the Seban panel's database
   # editor saved them (m2-regen), put into map/<map>/regen.txt the same way.
   if [ "${HAVE_REGEN:-0}" = "1" ]; then
@@ -309,6 +314,11 @@ command -v m2-fishing >/dev/null 2>&1 && HAVE_FISHING=1
 # editor's "Alchemia" page (m2-dragonsoul; boot_cores calls it). Absent on older images.
 HAVE_DRAGONSOUL=0
 command -v m2-dragonsoul >/dev/null 2>&1 && HAVE_DRAGONSOUL=1
+
+# MT2009_PLUS_DB_EDITOR_CUBE_V1: the crafting recipes from the database
+# editor's "Wytwarzanie (cube)" page (m2-cube; boot_cores calls it). Absent on older images.
+HAVE_CUBE=0
+command -v m2-cube >/dev/null 2>&1 && HAVE_CUBE=1
 
 # MT2009_PLUS_DB_EDITOR_V1: the respawn files from the Seban panel's "Respawn
 # bossów i metinów" page (m2-spawns; boot_cores calls it). Absent on older images.

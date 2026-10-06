@@ -201,6 +201,10 @@ command -v m2-fishing >/dev/null 2>&1 \
 # (dragon_soul_table.txt) the database editor's "Alchemia" page edits (m2-dragonsoul).
 command -v m2-dragonsoul >/dev/null 2>&1 \
   && { m2-dragonsoul prepare || log "could not prepare the alchemy table (the panel's Alchemia page will say so)"; }
+# MT2009_PLUS_DB_EDITOR_CUBE_V1: the same for the crafting recipes (cube.txt)
+# the database editor's "Wytwarzanie (cube)" page edits (m2-cube).
+command -v m2-cube >/dev/null 2>&1 \
+  && { m2-cube prepare || log "could not prepare the crafting recipes (the panel's Wytwarzanie page will say so)"; }
 # MT2009_PLUS_DB_EDITOR_V1: the same for the maps' spawns (regen.txt) the
 # Seban panel's database editor edits - the image's files kept as
 # regen.image.txt, the live ones writable by the service account (m2-regen).
