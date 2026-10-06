@@ -640,6 +640,21 @@ RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
  && ! find "$O" -path "$O/state" -prune -o -name 'monkey_curse*' -print | grep -q . \
  && echo "share: monkey curse removed ($n handlers)"
 
+# MT2009_PLUS_STACK_CHESTS_COUPONS_V1: the Kupony SM (80014-80018) stack now
+# (apply.sh), and the package's itemshop_manage quest cashed one with
+# item.remove() - which takes the whole stack: a stack of twenty paid one
+# coupon. Its five compiled "use" handlers remove one piece.
+RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object; n=0 \
+ && for v in 80014 80015 80016 80017 80018; do \
+      f="$O/$v/use/itemshop_manage.start"; \
+      test -f "$f"; \
+      grep -q 'item \. remove ( ) then' "$f" && sed -i 's/item \. remove ( ) then/item . remove ( 1 ) then/' "$f"; \
+      grep -q 'item \. remove ( 1 ) then' "$f"; \
+      if grep -q 'item \. remove ( ) then' "$f"; then echo "FATAL: $f" >&2; exit 1; fi; \
+      n=$((n + 1)); \
+    done \
+ && echo "share: Kupon SM use takes one piece of a stack ($n handlers)"
+
 # MT2009_PLUS_KINGDOM_WAR_OFF_V1: the Kingdom War (the package's forked_road, the Battle
 # Executor's "Wojna Krolestw" and its GM start) is switched off - its maps (114,
 # 118-128) are hosted by no core and no client of this world has them, so "Wejdz"

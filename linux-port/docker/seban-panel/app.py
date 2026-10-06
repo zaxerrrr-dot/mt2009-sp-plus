@@ -2824,8 +2824,9 @@ def daily_player_scope_sql(alias="p"):
     ref = alias + "." if alias else ""
     return (f"{ref}name NOT IN ('[SA]Admin','Test','Admin','AdminNinja','AdminSura','AdminSzaman') "
             f"AND NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick ds WHERE ds.sidekick_pid={ref}id) "
-            f"AND NOT EXISTS (SELECT 1 FROM player.player dgp JOIN common.gmlist dgl ON dgl.mName=dgp.name "
-            f"WHERE dgp.account_id={ref}account_id AND dgl.mAuthority<>'PLAYER')")
+            # MT2009_PLUS_RANKING_CURRENT_GM_V1: the character's own current rank only.
+            f"AND NOT EXISTS (SELECT 1 FROM common.gmlist dgl JOIN account.account dga ON dga.login=dgl.mAccount "
+            f"WHERE dgl.mName={ref}name AND dga.id={ref}account_id AND dgl.mAuthority<>'PLAYER')")
 
 
 def daily_max_level(when):
@@ -3911,14 +3912,18 @@ def not_game_master(alias="p"):
     IMPLEMENTOR there, and so does r40250's [SA]Admin; the operator's own
     character on the admin account does not, and is ranked like anybody's."""
     ref = (alias + ".") if alias else ""
-    # MT2009_PLUS_RANKING_NO_GM_ACCOUNT_V1: and every character of an account
-    # that holds a rank - the operator's own on the admin account too (the
-    # owner, 3 October: "wywalic z rankingu postacie admin i wszystkie
-    # postacie z gm").
+    # MT2009_PLUS_RANKING_CURRENT_GM_V1: only a character that is a game master
+    # NOW - its own common.gmlist row with a rank, on its own account (the row
+    # the engine gives the commands by, gm_new_get_level). The account-wide
+    # rule (MT2009_PLUS_RANKING_NO_GM_ACCOUNT_V1) hid every character of an
+    # account any row named - a row left by a deleted or renamed GM character
+    # too, and on the admin account a player's character for good ("postac
+    # zwyklego gracza juz sie nie pojawi ... jesli postac miala kiedykolwiek
+    # range GM", the owner, 2.24.0).
     return ("NOT EXISTS (SELECT 1 FROM common.gmlist rg"
-            " WHERE rg.mName = " + ref + "name AND rg.mAuthority <> 'PLAYER')"
-            " AND NOT EXISTS (SELECT 1 FROM common.gmlist rga JOIN account.account gacc ON gacc.login = rga.mAccount"
-            " WHERE gacc.id = " + ref + "account_id AND rga.mAuthority <> 'PLAYER')")
+            " JOIN account.account gacc ON gacc.login = rg.mAccount"
+            " WHERE rg.mName = " + ref + "name AND gacc.id = " + ref + "account_id"
+            " AND rg.mAuthority <> 'PLAYER')")
 
 
 def ranking_scope_sql(alias="p", people_only=False):

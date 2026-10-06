@@ -553,6 +553,16 @@ namespace mt2009_wrank
 
 	// The top 3 of a category of the season that ends: (pid, bot, level,
 	// empire, value, name).
+	//
+	// MT2009_PLUS_RANKING_CURRENT_GM_V1: out of the tables is a character that
+	// is a game master NOW - its own common.gmlist row, with a rank (not
+	// PLAYER) and its own account, the row the engine gives the commands by
+	// (gm_new_get_level). Until 2.24.0 any row at all hid the name, and any
+	// row naming the account hid every character on it - a row left behind
+	// by a deleted or renamed GM character, or the admin account's four
+	// game masters, kept a player's character out of the ranking for good
+	// ("postac zwyklego gracza juz sie nie pojawi ... jesli postac miala
+	// kiedykolwiek range GM", the owner).
 	void ReadTop(DWORD season, BYTE cat, int limit, std::vector<Row>& out)
 	{
 		out.clear();
@@ -563,7 +573,7 @@ namespace mt2009_wrank
 					"FROM player.player p LEFT JOIN player.player_index pi ON pi.id=p.account_id "
 					"LEFT JOIN account.account a ON a.id=p.account_id "
 					"WHERE p.name NOT LIKE '[%%'"
-					" AND p.name NOT IN (SELECT mName FROM common.gmlist) AND IFNULL(a.login,'') NOT IN (SELECT mAccount FROM common.gmlist) ORDER BY p.level DESC, p.exp DESC, p.id ASC LIMIT %d", limit);
+					" AND NOT EXISTS (SELECT 1 FROM common.gmlist g WHERE g.mName=p.name AND g.mAccount=IFNULL(a.login,'') AND g.mAuthority<>'PLAYER') ORDER BY p.level DESC, p.exp DESC, p.id ASC LIMIT %d", limit);
 		else
 			snprintf(query, sizeof(query),
 					"SELECT s.pid, s.is_bot, p.level, IFNULL(pi.empire,0), s.value, p.name "
@@ -571,7 +581,7 @@ namespace mt2009_wrank
 					"LEFT JOIN player.player_index pi ON pi.id=p.account_id "
 					"LEFT JOIN account.account a ON a.id=p.account_id "
 					"WHERE s.season=%u AND s.cat=%u AND s.value>0 AND p.name NOT LIKE '[%%' "
-					"AND p.name NOT IN (SELECT mName FROM common.gmlist) AND IFNULL(a.login,'') NOT IN (SELECT mAccount FROM common.gmlist) "
+					"AND NOT EXISTS (SELECT 1 FROM common.gmlist g WHERE g.mName=p.name AND g.mAccount=IFNULL(a.login,'') AND g.mAuthority<>'PLAYER') "
 					"ORDER BY s.value DESC, s.pid ASC LIMIT %d", season, (unsigned int)cat, limit);
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
@@ -791,7 +801,7 @@ namespace mt2009_wrank
 			value = (long long)ch->GetExp();
 			snprintf(query, sizeof(query),
 					"SELECT COUNT(*) FROM player.player p LEFT JOIN account.account a ON a.id=p.account_id "
-					"WHERE p.name NOT LIKE '[%%' AND p.id<>%u AND p.name NOT IN (SELECT mName FROM common.gmlist) AND IFNULL(a.login,'') NOT IN (SELECT mAccount FROM common.gmlist) AND "
+					"WHERE p.name NOT LIKE '[%%' AND p.id<>%u AND NOT EXISTS (SELECT 1 FROM common.gmlist g WHERE g.mName=p.name AND g.mAccount=IFNULL(a.login,'') AND g.mAuthority<>'PLAYER') AND "
 					"(level>%d OR (level=%d AND exp>%lld))",
 					ch->GetPlayerID(), ch->GetLevel(), ch->GetLevel(), value);
 		}

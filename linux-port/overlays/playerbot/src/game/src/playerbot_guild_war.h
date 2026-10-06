@@ -2288,6 +2288,7 @@ namespace
 	bool IsPlayerBotWarFoeUp(LPCHARACTER ch, LPCHARACTER other, const TPlayerBotAIState* otherState)
 	{
 		return other && other != ch && other->GetMapIndex() == ch->GetMapIndex() &&
+				!IsPlayerBotPersonUnseen(other) &&	// MT2009_PLUS_BOT_RESPECT_STEALTH_V1
 				IsPlayerBotInWarFight(other, otherState) &&
 				!(otherState && otherState->dwGuildWarCampUntil > get_dword_time());
 	}

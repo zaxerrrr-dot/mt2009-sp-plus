@@ -1090,6 +1090,17 @@ namespace
 		// 27 September: on foot, and the horse sent away rather than left
 		// standing between the two (SendPlayerBotHorseAwayForFight).
 		SendPlayerBotHorseAwayForFight(ch, state, dwNow, "duel");
+		// MT2009_PLUS_BOT_RESPECT_STEALTH_V1: an opponent in stealth is not
+		// seen - not struck, not chased, and no refusal counted towards
+		// giving the duel up; the duel goes on when the stealth breaks.
+		if (IsPlayerBotPersonUnseen(foe))
+		{
+			if (ch->GetVictim() == foe)
+				ch->SetVictim(NULL);
+			if (state.dwTargetVID == (DWORD)foe->GetVID())
+				state.dwTargetVID = 0;
+			return false;
+		}
 		const bool bSafe = IsPlayerBotSafeZone(ch->GetMapIndex(), ch->GetX(), ch->GetY()) ||
 				IsPlayerBotSafeZone(foe->GetMapIndex(), foe->GetX(), foe->GetY());
 		if (bSafe || !CanPlayerBotStrikeCharacter(ch, foe))

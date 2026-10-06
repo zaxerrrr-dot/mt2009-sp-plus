@@ -7211,7 +7211,8 @@ namespace
 	// initiative, and only the one its owner has in hand.
 	bool IsPlayerBotSidekickWarFoe(LPCHARACTER owner, LPCHARACTER target)
 	{
-		if (!owner || !target || !target->IsPC() || !owner->GetGuild() || !target->GetGuild())
+		if (!owner || !target || !target->IsPC() || !owner->GetGuild() || !target->GetGuild() ||
+				IsPlayerBotPersonUnseen(target))	// MT2009_PLUS_BOT_RESPECT_STEALTH_V1
 			return false;
 		return owner->GetGuild() != target->GetGuild() && owner->GetGuild()->UnderWar(target->GetGuild()->GetID());
 	}
@@ -7368,7 +7369,8 @@ namespace
 	bool IsPlayerBotSidekickDefendFoe(LPCHARACTER ch, LPCHARACTER owner, LPCHARACTER foe, long centreX, long centreY)
 	{
 		if (!foe || foe == ch || foe == owner || !foe->IsPC() || foe->IsDead() || foe->IsObserverMode() ||
-				foe->GetMapIndex() != ch->GetMapIndex() || !foe->GetSectree())
+				foe->GetMapIndex() != ch->GetMapIndex() || !foe->GetSectree() ||
+				IsPlayerBotPersonUnseen(foe))	// MT2009_PLUS_BOT_RESPECT_STEALTH_V1
 			return false;
 		// Another kingdom only: the owner's own - the companion's - never.
 		if (foe->GetEmpire() == ch->GetEmpire() || (owner && foe->GetEmpire() == owner->GetEmpire()))

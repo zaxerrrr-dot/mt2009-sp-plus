@@ -1086,6 +1086,9 @@ class Hunter(object):
         self.skillHoldUntil = 0.0
         self.lootSweeping = False
         self.lootSweepIdleSince = 0.0
+        # MT2009_PLUS_AUTOHUNT_FIGHT_FIRST_V1: when the server last said
+        # there is nothing to fight in range (-1: not since the last fight).
+        self.areaClearAt = -1.0
         self.targetMissFrames = 0
         self.targetSetSince = 0.0
         self.lootPickAttempts = {}
@@ -1338,15 +1341,16 @@ class Hunter(object):
         if self.RiderActive():
             self.RiderOnServerTarget(value)
             return
-        if self.lootSweeping:
-            return
+        # MT2009_PLUS_AUTOHUNT_FIGHT_FIRST_V1: the fight before the drops
+        # ("w Grocie najpierw biegnie zbierac smieci", owner, 2.24.0). The
+        # server's "0" is the only word that nothing in range is left to fight
+        # - the drops are swept only after it (AreaClear); a monster named
+        # while the sweep runs ends the sweep and is fought first.
         new_vid = ParseTargetVid(value)
-        if not new_vid:
-            return
-        # The server is told one target to leave out; a second one left is
-        # refused here (the minute's skip while the box's two seconds are
-        # the one sent, and an answer already on its way when either began).
         now = clientclock.Now()
+        if not new_vid:
+            self.areaClearAt = now
+            return
         if self.escapeUntil or now < self.escapeWaitUntil:
             if self.justRevived:
                 return
@@ -1368,12 +1372,26 @@ class Hunter(object):
             self.targetVid = 0
             self.combatRecoveryUntil = 0.0
             self.nextRequest = now + TARGET_REQUEST_INTERVAL
-        if new_vid == self.blockedVid and now < self.blockedUntil:
-            return
+        # The server is told one target to leave out; a second one left is
+        # refused here (the minute's skip while the box's two seconds are
+        # the one sent, and an answer already on its way when either began).
         if new_vid == self.skipVid and now < self.skipUntil:
+            # A corpse's answer already on its way says nothing either way.
             return
-        if self.IsTargetBlocked(new_vid, now):
+        if (new_vid == self.blockedVid and now < self.blockedUntil) or \
+                self.IsTargetBlocked(new_vid, now):
+            # Only the ones it already gave up on are left: nothing to fight.
+            if not self.targetVid:
+                self.areaClearAt = now
             return
+        if self.lootSweeping:
+            if player.GetCharacterDistance(new_vid) < 0 or self.IsKnownDead(new_vid):
+                return
+            self.lootSweeping = False
+            self.lootSweepIdleSince = 0.0
+            self.lootSince = 0.0
+            self.nextMove = 0.0
+        self.areaClearAt = -1.0
 
         # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): "Fokus" keeps a
         # live target whatever the server names; "Najblizszy" takes the new
@@ -2243,6 +2261,10 @@ class Hunter(object):
             self.ResetChaseMovement()
             if self.pathPoints:
                 self.ResetPath()
+            # MT2009_PLUS_AUTOHUNT_FIGHT_FIRST_V1: still asking while the
+            # drops are swept - a monster coming up ends the sweep.
+            if self.config['attack'] and now >= self.nextRequest:
+                self.RequestTarget(now)
             self.HandleLootSweep(now)
             return
         if self.config['attack']:
@@ -2267,9 +2289,10 @@ class Hunter(object):
             self.skillHoldUntil = 0.0
             self.targetMissFrames = 0
             self.targetSetSince = 0.0
-            # The queue: whatever is down is picked up before the next
-            # target is even asked for.
-            self.TryStartLootSweep(now, force=True)
+            # MT2009_PLUS_AUTOHUNT_FIGHT_FIRST_V1: the next target is asked
+            # at once; the drops wait until the server says none is left
+            # (a drop at the feet is still picked up, PickNearLoot).
+            self.areaClearAt = -1.0
             return
         distance = player.GetCharacterDistance(vid) if vid else -1
         if distance < 0:
@@ -2417,6 +2440,10 @@ class Hunter(object):
             return False
         if not self.lootVid:
             return False
+        # MT2009_PLUS_AUTOHUNT_FIGHT_FIRST_V1: no walk to a drop while there
+        # is anything in range to fight.
+        if not self.AreaClear():
+            return False
         if not force and self.LootDistance() > LOOT_FIRST_DISTANCE:
             return False
 
@@ -2430,6 +2457,13 @@ class Hunter(object):
         self.lootBest = 0.0
         self.nextMove = 0.0
         return True
+
+    def AreaClear(self):
+        """MT2009_PLUS_AUTOHUNT_FIGHT_FIRST_V1: True when the server's last
+        answer since the last fight named no monster (or the attack is off)."""
+        if not self.config['attack']:
+            return True
+        return self.areaClearAt >= 0.0 and not self.targetVid
 
     def HandleLootSweep(self, now):
         """The queue stays on loot until AskForLoot's own clock has had a

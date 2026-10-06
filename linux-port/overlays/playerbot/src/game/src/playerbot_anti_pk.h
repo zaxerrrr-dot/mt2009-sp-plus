@@ -1110,7 +1110,17 @@ namespace
 					!IsPlayerBotRareNow(p, playerbot_persona::RARE_EGZEKUTOR, dwNow))
 				keep = false;
 			const char* why = keep ? "" : (!held || held->IsDead() ? "foe_down" :
-					(IsPlayerBotPersonTruced(held, dwNow) ? "truce" : "out_of_reach"));
+					(IsPlayerBotPersonTruced(held, dwNow) ? "truce" :
+						(IsPlayerBotPersonUnseen(held) ? "stealth" : "out_of_reach")));
+			// MT2009_PLUS_BOT_RESPECT_STEALTH_V1: a foe gone into stealth is let
+			// go as a monster lets go - no chase, no swing at the empty air.
+			if (!keep && held && IsPlayerBotPersonUnseen(held))
+			{
+				if (state.dwTargetVID == (DWORD)held->GetVID())
+					state.dwTargetVID = 0;
+				if (ch->GetVictim() == held)
+					ch->SetVictim(NULL);
+			}
 			// A person who fell while bots fought them: the second such death
 			// in the window, and the bots give the person a truce.
 			if (!keep && held && held->IsDead())

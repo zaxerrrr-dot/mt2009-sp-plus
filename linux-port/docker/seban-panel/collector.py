@@ -477,8 +477,8 @@ def collect(con, previous):
         cur.execute("""SELECT COALESCE(MAX(p.level),0) FROM player.player p
           WHERE p.name NOT IN ('[SA]Admin','Test','Admin','AdminNinja','AdminSura','AdminSzaman')
             AND NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick s WHERE s.sidekick_pid=p.id)
-            AND NOT EXISTS (SELECT 1 FROM player.player gp JOIN common.gmlist gl ON gl.mName=gp.name
-                            WHERE gp.account_id=p.account_id AND gl.mAuthority<>'PLAYER')""")
+            AND NOT EXISTS (SELECT 1 FROM common.gmlist gl JOIN account.account ga ON ga.login=gl.mAccount
+                            WHERE gl.mName=p.name AND ga.id=p.account_id AND gl.mAuthority<>'PLAYER')""")
         cur.execute("INSERT IGNORE INTO player.web_seban_metric_snapshot VALUES (%s,'max_level_regular',%s)", (now, cur.fetchone()[0]))
         cur.execute("SELECT COALESCE(SUM(cash),0) FROM account.account")
         cur.execute("INSERT IGNORE INTO player.web_seban_metric_snapshot VALUES (%s,'dragon_coins',%s)", (now, cur.fetchone()[0]))

@@ -817,6 +817,20 @@ namespace
 	// Every fight back of the Anti-PK protocol was the same, and a bot in the
 	// saddle, which casts nothing a transport horse refuses, only followed its
 	// attacker about (Dixdros, "PVP Bots", 21 September).
+	// MT2009_PLUS_BOT_RESPECT_STEALTH_V1 - "Krycie sie" (the Ninja's dagger
+	// skill 34, AFF_EUNHYUNG) and the GM's invisibility: a character under
+	// either is nobody's target, as the monsters' own aggro scan has it
+	// (char_state.cpp skips AFF_SKILL_STEALTH / AFF_INVISIBILITY). The bots
+	// kept picking and striking a stealthed Ninja as if the skill did nothing
+	// (the owner, 2.24.0). Every pick of a person and the strike gate
+	// (CanPlayerBotStrikeCharacter) ask this; a held foe that goes unseen is
+	// let go. The memory of who struck the bot stays, so once the stealth
+	// breaks - the Ninja's own blow ends it - the bot answers as before.
+	bool IsPlayerBotPersonUnseen(LPCHARACTER c)
+	{
+		return c && c->IsPC() && (c->IsAffectFlag(AFF_EUNHYUNG) || c->IsAffectFlag(AFF_INVISIBILITY));
+	}
+
 	bool IsPlayerBotSanctionedFoe(LPCHARACTER ch, LPCHARACTER target, DWORD dwNow)
 	{
 		if (!ch || !target || !target->IsPC())
@@ -849,7 +863,8 @@ namespace
 	// hurt anybody and never ended (djariczek).
 	bool CanPlayerBotStrikeCharacter(LPCHARACTER ch, LPCHARACTER victim)
 	{
-		return ch && victim && victim->IsPC() && battle_is_attackable(ch, victim);
+		return ch && victim && victim->IsPC() && !IsPlayerBotPersonUnseen(victim) &&
+				battle_is_attackable(ch, victim);
 	}
 
 	// A duel ends for both of its sides at once, and the engine's half with it.
