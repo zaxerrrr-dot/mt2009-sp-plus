@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.55",
+  "version": "2.0.56",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -84,8 +84,8 @@
     },
     {
       "path": "pack/gamedata.index",
-      "size": 4076,
-      "sha256": "9950849762B1EB58F7A20E9EA880D656D29D18F737A46A65AE6E11E9C9BECDB7"
+      "size": 4068,
+      "sha256": "ACB830D38E454EEF333D503AA72D9850E0A19A315C759E6E2DD44ADD5E01B114"
     },
     {
       "path": "pack/gf_misc.index",
@@ -154,8 +154,8 @@
     },
     {
       "path": "pack/root.index",
-      "size": 29860,
-      "sha256": "9726F821D00FF07307F4AD0C4597205666B6DCE0D2F88F8A381CB32782A37011"
+      "size": 30044,
+      "sha256": "6D37C56FFDE35CDB29E4771A3C6A89EBAE63C8C3B1567C1E4A0B1F1A237CB1CB"
     }
   ]
 }

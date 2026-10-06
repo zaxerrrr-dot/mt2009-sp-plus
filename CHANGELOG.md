@@ -17,6 +17,60 @@ every version here.
 
 ---
 
+## 2.25.0 — 2026-10-06 — Kody bonusowe, edytor questów i wytwarzania, bonus switcher
+
+Wymaga klienta **2.0.56** (pobierze go launcher albo patcher).
+
+### 🎁 Kody bonusowe
+- Nowe **kody bonusowe** – wpisz kod w ItemShopie w zakładce **„Wykorzystaj voucher”** albo na czacie: `/kod <kod>`. Każdy kod działa **raz na konto**; przedmiot, który nie zmieści się w ekwipunku, trafia do Magazynu ItemShop.
+- 🎉 **Kod na start: `MT2009-PLUS-CJTP`** – co daje, sprawdź sam!
+- 👉 **Obserwuj nasz Discord: https://discord.com/invite/vGE3T9gpm** – takich kodów będzie pojawiało się więcej!
+- Właściciel serwera może wyłączyć kody w panelu Seban (Zarządzanie → Gra i serwer → „Kody bonusowe (vouchery)”).
+
+### 🛠️ Edytor bazy danych (panel Seban)
+- **Questy** – włącznik każdego questa oraz podmiana nagród bez ruszania questa: inny przedmiot i ilość, yang i doświadczenie (mnożnik lub kwota), inny bonus stały, a do tego dodatkowe nagrody. **Biolog** ma osobną stronę z każdą misją (np. Zęby Orka → dowolny bonus + yang + przedmioty).
+- **Wytwarzanie przedmiotów** – przepisy okna „Wytwarzanie” u Kowala, Heuk-Younga, Baek-Go, Stajennego i innych NPC: wynik, składniki, koszt, szansa, wymagany poziom; dodawanie, kopiowanie i przypisywanie przepisów do NPC.
+- **Wytwarzanie (Seon-Pyeong)** – przepisy okna kostki Seon-Pyeonga.
+- **ItemShop** – przedmioty w istniejących zakładkach (dodawanie, usuwanie, ceny, ilości, waluta, promocje, oferty błyskawiczne).
+- **Alchemia**, **rodzaje efektów umiejętności**, zachowanie zmian przy **resecie świata** i strona **„Przywróć zmiany z historii”**.
+
+### ✨ Nowości w grze
+- **Zmiana bonusów (bonus switcher)** (autor: **Vekirion**) – okno do automatycznej zmiany bonusów do 5 przedmiotów naraz, aż trafi wybrane bonusy; każda zmiana zużywa jedno Zaczarowanie.
+- **Bonusy na pasku celu** (autor: **Vekirion**) – pod paskiem HP potwora widać, które Twoje bonusy na niego działają.
+- **Poprawka mgły** (autor: **Vekirion**) – przyciski mgły naprawdę ustawiają zasięg widzenia, bez skracania przy spadkach FPS.
+- **Kolekcjoner w ItemShopie** (1000 SM) – otwiera okno Kolekcjonera z dowolnego miejsca, nie zużywa się.
+- **Kupony SM łączą się w stosy** (do 200).
+
+### ⚔️ Dungeony i drop
+- **Drop w dungeonach bez kary za poziom** – potwory w dungeonach dają przedmioty, mikstury i yang z pełną szansą bez względu na różnicę poziomów.
+- **Masowa sprzedaż przedmiotów 70+** działa (wcześniej blokowała całą sprzedaż).
+
+### 🤖 Boty
+- Boty **rozwijają konia** – płacą Stajennemu 50% opłaty i odkładają na nią yang.
+- **Porządki w plecakach** – boty otwierają pudełka z Dzieci Kwiatów i Szkatułki Blasku, sprzedają śmieci z łowienia, a nadmiar ulepszaczy wystawiają lub przerabiają na materiały rzemieślnicze.
+- **Krycie się** – boty nie widzą i nie atakują schowanego Ninja.
+- **„!SM”** – gdy GM ogłosi `/b !SM`, boty zalewają wołaj „SM” przez 30–40 s; na inne ogłoszenia GM-a czasem odpowiadają.
+
+### 🧑‍🤝‍🧑 Towarzysz
+- **„Sprzedaj złom”** (przycisk, `/towarzysz sprzedaj` albo szept) – sprzedaje całą broń i zbroję od +0 do +7; zostawia +8/+9, rzeczy założone i zablokowane.
+- Zakupy i sprzedaż także z **Groty Wygnańców** i **Lochu Pająków**.
+- **„Nie walcz”** – nie atakuje niczego, nawet gdy jest bity.
+- Widzi **Fasolki Zen** przy treningu Wielkiego Mistrza.
+- Nie bierze udziału w **rankingach tygodniowych**.
+
+### 🏹 Inne
+- **Auto Łowy: najpierw walka, potem zbieranie** dropu.
+- **Rankingi** – pomijane są całe konta, które **teraz** mają postać GM; dawni GM-owie wracają do tabel.
+
+## Klient 2.0.56 — 2026-10-06 — Bonus switcher, kody, Kolekcjoner
+
+- Okno **Zmiany bonusów** i **bonusy na pasku celu** (autor: Vekirion), poprawka mgły.
+- Przycisk **„Sprzedaj złom”** w oknie Towarzysza.
+- **Auto Łowy**: najpierw walka, potem zbieranie.
+- **Masowa sprzedaż** przedmiotów 70+.
+- **Kolekcjoner** (nazwa, ikona, opis) i **Kupony SM w stosach**.
+- Zmieniła się paczka `dbdata` – jeśli korzystasz z Edytora bazy danych, pobierz ponownie pliki klienta z panelu (gra przypomni).
+
 ## 2.24.0 — 2026-10-06 — Rekrutacja do gildii, dungeony bez czekania, ItemShop w edytorze
 
 Działa z klientem **2.0.55** (bez nowego klienta).

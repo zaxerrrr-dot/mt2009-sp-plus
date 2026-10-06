@@ -1,18 +1,18 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-06T06:23:52Z",
- "statusMessage": "MT2009 PLUS 2.24.0: rekrutacja do gildii, dungeony bez czekania, ItemShop w edytorze. Klient 2.0.55.",
+ "publishedAt": "2026-10-06T15:11:13Z",
+ "statusMessage": "MT2009 PLUS 2.25.0: kody bonusowe, edytor questow i wytwarzania, bonus switcher. Klient 2.0.56.",
  "server": {
-  "version": "2.24.0",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.24.0/metin2-server-update-2.24.0.zip",
-  "sha256": "3F3460989EBF34E8DD9F619FA6564BBCC21731020F2C09FDBCD2C78D2017F231",
-  "size": 107478517
+  "version": "2.25.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.25.0/metin2-server-update-2.25.0.zip",
+  "sha256": "07FE0C31E1E6FB5851785FA3779A47DC057CEEEA4BC47E8043A82BC0D421EB62",
+  "size": 108246096
  },
  "client": {
-  "version": "2.0.55",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.55/metin2-client-update-2.0.55.zip",
-  "sha256": "86F33304E0BDF1B388E17B0A2F7D3A5084FD1F63230EAF3377753928DAA1FFD5",
-  "size": 358436211
+  "version": "2.0.56",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.56/metin2-client-update-2.0.56.zip",
+  "sha256": "FE9B1D0F97DC80A5EACBF2F4109894FB76707BF37D014C0F0DC874BF564D0516",
+  "size": 358466187
  }
 }
