@@ -27,15 +27,15 @@ STAMP_FILE = "dbdata_stamp.txt"
 STAMP_MAX = 64
 
 POPUP_LINES = (
-	"Ten serwer ma zmienione przedmioty/umiej\xeatno\x9cci (Edytor bazy danych),",
-	"a Tw\xf3j klient ma inne pliki. Opisy w grze mog\xb9 si\xea nie zgadza\xe6.",
+	"Masz nieaktualne pliki klienta (przedmioty/umiej\xeatno\x9cci).",
+	"Nowe przedmioty mog\xb9 nie dzia\xb3a\xe6, a opisy si\xea nie zgadza\xe6.",
 	"",
 	"Pobierz aktualne pliki klienta w panelu:",
 	"Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip)",
 	"i rozpakuj je do folderu gry (zast\xb9p pliki), potem uruchom gr\xea ponownie.",
 )
 CHAT_LINES = (
-	"[Pliki klienta] Ten serwer ma zmienione przedmioty/umiej\xeatno\x9cci (Edytor bazy danych), a Tw\xf3j klient ma inne pliki. Opisy w grze mog\xb9 si\xea nie zgadza\xe6.",
+	"[Pliki klienta] Masz nieaktualne pliki klienta - nowe przedmioty mog\xb9 nie dzia\xb3a\xe6, a opisy si\xea nie zgadza\xe6.",
 	"[Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.",
 )
 
@@ -83,8 +83,16 @@ def ReadLocalStamp(root=""):
 
 
 def NeedsNotice(serverStamp, localStamp):
-	"""The server has client-visible edits and this client is not on them."""
-	if not _Valid(serverStamp) or "-" not in serverStamp:
+	"""This client's dbdata files are not the server's: the server has
+	client-visible edits this client is not on, or this client still has a
+	zip from the panel made for another client base or for edits the server
+	no longer has (MT2009_PLUS_DBDATA_STAMP_V2: an old zip unpacked over a
+	newer client hid new items like the Kolekcjoner - "czemu kolekcjoner nie
+	dziala", the owner, 6 October). The release's own files (no stamp file)
+	on a server without edits are fine."""
+	if not _Valid(serverStamp):
+		return False
+	if not localStamp and "-" not in serverStamp:
 		return False
 	return serverStamp != localStamp
 
