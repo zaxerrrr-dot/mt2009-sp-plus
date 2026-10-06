@@ -424,6 +424,14 @@ db -e "UPDATE world.item_proto SET locale_name = REGEXP_REPLACE(locale_name, '[[
 # until the operator adds a line; never filled or emptied here.
 db -e "CREATE TABLE IF NOT EXISTS world.item_extra_apply (vnum INT UNSIGNED NOT NULL, slot TINYINT UNSIGNED NOT NULL, apply_type TINYINT UNSIGNED NOT NULL DEFAULT 0, apply_value INT NOT NULL DEFAULT 0, PRIMARY KEY (vnum, slot)) ENGINE=InnoDB;" \
     || fail_step "could not create world.item_extra_apply (extra item bonuses)" >&2
+# MT2009_PLUS_DB_EDITOR_CRAFTING_V1: the Seban panel's changes to which recipes
+# (world.crafting_proto) each NPC's "Wytwarzanie" window lists - only the
+# differences to the quest library's crafting_data.lua (present 1 = added, 0 =
+# taken off). The game's m2-crafting turns them into Lua before the cores boot.
+# Empty until the operator changes a list; never filled or emptied here (here
+# so that the world reset's replay of the editor's history finds the table).
+db -e "CREATE TABLE IF NOT EXISTS world.crafting_window (craft_vnum INT UNSIGNED NOT NULL, recipe_vnum INT UNSIGNED NOT NULL, present TINYINT UNSIGNED NOT NULL DEFAULT 1, PRIMARY KEY (craft_vnum, recipe_vnum)) ENGINE=InnoDB;" \
+    || fail_step "could not create world.crafting_window (crafting window lists)" >&2
 # Maska Sabaha left the world with the Hwang curse (playerbotify
 # apply_hwang_curse_removed, the share step of the game Dockerfile): the shop
 # that sold one sells it no more. The db core reads the shops at boot, so this

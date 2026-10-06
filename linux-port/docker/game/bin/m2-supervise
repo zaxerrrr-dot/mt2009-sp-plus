@@ -234,6 +234,12 @@ boot_cores() {
   if [ "${HAVE_CUBE:-0}" = "1" ]; then
     m2-cube apply || log "the panel's crafting recipes could not be applied -- the image's cube.txt stays"
   fi
+  # MT2009_PLUS_DB_EDITOR_CRAFTING_V1: the "Wytwarzanie" windows' recipe lists as
+  # the Seban panel changed them (world.crafting_window -> m2-crafting), put
+  # into quest/libs/crafting/crafting_data.lua before any core loads a quest.
+  if [ "${HAVE_CRAFTING:-0}" = "1" ]; then
+    m2-crafting apply || log "the panel's crafting window lists could not be applied -- the image's lists stay"
+  fi
   # MT2009_PLUS_DB_EDITOR_V1: the maps' spawns as the Seban panel's database
   # editor saved them (m2-regen), put into map/<map>/regen.txt the same way.
   if [ "${HAVE_REGEN:-0}" = "1" ]; then
@@ -329,6 +335,12 @@ command -v m2-dragonsoul >/dev/null 2>&1 && HAVE_DRAGONSOUL=1
 # editor's "Wytwarzanie (cube)" page (m2-cube; boot_cores calls it). Absent on older images.
 HAVE_CUBE=0
 command -v m2-cube >/dev/null 2>&1 && HAVE_CUBE=1
+
+# MT2009_PLUS_DB_EDITOR_CRAFTING_V1: the "Wytwarzanie" windows' recipe lists from
+# the database editor's "Wytwarzanie przedmiotów" page (m2-crafting; boot_cores
+# calls it). Absent on older images.
+HAVE_CRAFTING=0
+command -v m2-crafting >/dev/null 2>&1 && HAVE_CRAFTING=1
 
 # MT2009_PLUS_DB_EDITOR_V1: the respawn files from the Seban panel's "Respawn
 # bossów i metinów" page (m2-spawns; boot_cores calls it). Absent on older images.

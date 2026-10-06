@@ -210,6 +210,11 @@ command -v m2-dragonsoul >/dev/null 2>&1 \
 # the database editor's "Wytwarzanie (cube)" page edits (m2-cube).
 command -v m2-cube >/dev/null 2>&1 \
   && { m2-cube prepare || log "could not prepare the crafting recipes (the panel's Wytwarzanie page will say so)"; }
+# MT2009_PLUS_DB_EDITOR_CRAFTING_V1: the same for the "Wytwarzanie" windows'
+# recipe lists (quest/libs/crafting/crafting_data.lua) the database editor's
+# "Wytwarzanie przedmiotów" page changes (m2-crafting).
+command -v m2-crafting >/dev/null 2>&1 \
+  && { m2-crafting prepare || log "could not prepare the crafting window lists (the panel's Wytwarzanie przedmiotów page will say so)"; }
 # MT2009_PLUS_DB_EDITOR_V1: the same for the maps' spawns (regen.txt) the
 # Seban panel's database editor edits - the image's files kept as
 # regen.image.txt, the live ones writable by the service account (m2-regen).

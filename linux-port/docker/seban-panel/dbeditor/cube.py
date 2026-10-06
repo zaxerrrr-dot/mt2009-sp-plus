@@ -1,5 +1,9 @@
-"""MT2009_PLUS_DB_EDITOR_CUBE_V1: "Wytwarzanie (cube)" - the crafting
-recipes of the NPCs that open the cube window (Seon-Pyeong and the others).
+"""MT2009_PLUS_DB_EDITOR_CUBE_V1: "Wytwarzanie (Seon-Pyeong)" - the recipes of
+the old cube window. Only Seon-Pyeong (20091) opens it in this game; the
+"Wytwarzanie" window of Kowal, Baek-Go, Heuk-Young and the others is another
+system (world.crafting_proto, dbeditor/crafting.py) - their sections in
+cube.txt are leftovers the game never shows, so the page lists only the NPCs
+whose quest opens the cube window (MT2009_PLUS_DB_EDITOR_CRAFTING_V1).
 
 Where it lives: share/locale/poland/cube.txt in the game image (the package's
 file with Seon-Pyeong's recipes, cube.seon_pyeong.txt, appended by the game
@@ -61,6 +65,9 @@ NPC_RANGE = (1, 65535)      # CUBE_DATA::npc_vnum is a WORD
 VNUM_MAX = 4294967295
 RLIST_WARN = 480            # Cube_request_result_list drops a list longer than CHAT_MAX_LEN (512)
 HISTORY_KEEP = 300
+# The NPCs whose quest opens the cube window (command("cube open")) when the
+# game has not published cube_npcs.txt yet: Seon-Pyeong only (6 Oct 2026).
+DEFAULT_OPENERS = frozenset({20091})
 TOKENS = ("section", "npc", "item", "reward", "percent", "gold", "end")
 _LINE_RE = re.compile(r"[^\n]*\n|[^\n]+$")
 _SPLIT_RE = re.compile(r"[ \t\r\n]+")
@@ -559,14 +566,16 @@ def install(bp, ctx):
         for r in recipes:
             if r["npc"] not in npc_vnums:
                 npc_vnums.append(r["npc"])
+        # Only the NPCs whose quest opens the cube window (m2-cube's
+        # cube_npcs.txt, Seon-Pyeong when the game has not said): the other
+        # crafting NPCs use the "Wytwarzanie przedmiotów" window (crafting.py),
+        # their cube.txt sections are never shown in game.
+        openers = opening_npcs(spool) or set(DEFAULT_OPENERS)
+        hidden = sum(1 for r in recipes if r["npc"] not in openers)
+        npc_vnums = [v for v in npc_vnums if v in openers] + sorted(v for v in openers if v not in npc_vnums)
         mobs, _ok = mob_names(npc_vnums)
-        # The crafting NPCs' own quests (herbalism and the like) open the window
-        # without a plain command("cube open") string in their compiled scripts, so a
-        # text search finds Seon-Pyeong only; every NPC with recipes has the window
-        # in game (owner, 6 October) - no "bez okna" marks.
-        openers = None
         npcs = [{"vnum": v, "name": mobs.get(v) or f"NPC {v}", "count": sum(1 for r in recipes if r["npc"] == v),
-                 "opens": None if openers is None else v in openers} for v in npc_vnums]
+                 "opens": True} for v in npc_vnums]
         try:
             selected = int(request.args.get("npc", ""))
         except ValueError:
@@ -580,13 +589,13 @@ def install(bp, ctx):
                                source=source, base_source=base_source, errors=errors, warnings=warnings,
                                status=state, pending=[1] if state["pending"] else [],
                                backups=df.list_backups(spool, [KEY], 20), history=read_history(spool),
-                               openers=openers, sha=sha(data), csrf=df.csrf_token(), num=tables_common.num_text)
+                               openers=openers, hidden=hidden, sha=sha(data), csrf=df.csrf_token(), num=tables_common.num_text)
 
     def form_page(doc, data, index=None, values=None, comment="", after=None, raw=None):
         names, _ok = item_info([v for v, _c in (values or {}).get("items", []) + (values or {}).get("rewards", [])])
         npc = (values or {}).get("npcs", [0])[0] if values else 0
         mobs, _ok = mob_names([r for r in {npc_of(x) for x in doc["recipes"]}] + [npc])
-        cube_npcs = sorted({npc_of(x) for x in doc["recipes"]})
+        cube_npcs = sorted(opening_npcs(df.spool_dir()) or DEFAULT_OPENERS)
         return render_template("dbeditor/cube_edit.html", index=index, values=values, comment=comment, after=after,
                                raw=raw or {}, names=names, icon=df.icon_url, slots=MAX_MATERIALS,
                                npc=npc, npc_name=mobs.get(npc), cube_npcs=[(v, mobs.get(v) or f"NPC {v}") for v in cube_npcs],
@@ -717,8 +726,8 @@ def install(bp, ctx):
         return Response(data, mimetype="text/plain; charset=euc-kr",
                         headers={"Content-Disposition": "attachment; filename=cube.txt"})
 
-    dbeditor.add_section("dbeditor.cube", "⚗️", "Wytwarzanie (cube)",
-                         "przepisy NPC z oknem wytwarzania (Seon-Pyeong i inni): składniki, wynik, szansa, koszt")
+    dbeditor.add_section("dbeditor.cube", "⚗️", "Wytwarzanie (Seon-Pyeong)",
+                         "okno kostki (cube) u Seon-Pyeong: składniki, wynik, szansa, koszt")
 
 
 def describe(recipe, item_info=None):

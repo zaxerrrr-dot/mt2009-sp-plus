@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_CRAFTING_V1: Wytwarzanie przedmiotów - world.crafting_proto + world.crafting_window (dbeditor/crafting.py, bin/m2-crafting). #}
+{% block title %}Wytwarzanie przedmiotów · Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% macro item_cell(icon, name, vnum, count, bad) -%}
+  <span class="dbt-name">{% if icon %}<img src="{{ icon }}" alt="">{% endif %}<span class="{{ 'dbt-bad' if bad }}" title="VNUM {{ vnum }}">{{ name }}{% if count != 1 %} ×{{ count }}{% endif %}</span></span>
+{%- endmacro %}
+{% macro recipe_row(r, window) %}
+  <tr>
+    <td class="muted">#{{ r.vnum }}</td>
+    <td>{{ item_cell(r.result_icon, r.result_name, r.item_vnum, r.count, r.result_bad) }}</td>
+    <td><div class="dbk-mats">{% for it in r.mats %}{{ item_cell(it.icon, it.name, it.vnum, it.count, it.bad) }}{% else %}<span class="muted">—</span>{% endfor %}</div>
+      {% if r.materials_error %}<small class="dbt-bad">{{ r.materials_error }}</small>{% endif %}</td>
+    <td class="num">{{ r.chance }}%</td>
+    <td class="num">{{ num(r.price) if r.price else '—' }}</td>
+    <td class="num">{{ r.req_level or '—' }}</td>
+    <td class="num">{% if r.req_progress %}{{ r.req_progress }}× <small class="muted">rec. #{{ r.recipe_vnum }}</small>{% else %}—{% endif %}</td>
+    <td>{% if r.windows is defined %}{% for w in r.windows %}{% if w != window %}<a class="dbk-tag" href="{{ url_for('dbeditor.crafting', okno=w) }}">{{ w }}</a> {% endif %}{% endfor %}{% endif %}</td>
+    <td><div class="dbk-actions">
+      <a class="button dbe-small" href="{{ url_for('dbeditor.crafting_recipe', vnum=r.vnum, okno=window or none) }}">✏️ Edytuj</a>
+      <a class="button dbe-small" href="{{ url_for('dbeditor.crafting_new', kopia=r.vnum, okno=window or none) }}" title="Nowy przepis z tymi samymi wartościami">📄 Kopiuj</a>
+      {% if window %}
+      <form method="post" action="{{ url_for('dbeditor.crafting_window') }}" onsubmit="return confirm('Zdjąć ten przepis z listy tego okna? (przepis zostaje w bazie)')">
+        <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}"><input type="hidden" name="okno" value="{{ window }}"><input type="hidden" name="przepis" value="{{ r.vnum }}">
+        <button class="dbe-small" name="action" value="remove">➖ Z okna</button></form>
+      {% endif %}
+      <form method="post" action="{{ url_for('dbeditor.crafting_delete') }}" onsubmit="return confirm('Usunąć przepis #{{ r.vnum }} z bazy (i ze wszystkich okien)?')">
+        <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}"><input type="hidden" name="okno" value="{{ window or '' }}"><input type="hidden" name="vnum" value="{{ r.vnum }}">
+        <button class="dbe-small">🗑 Usuń</button></form>
+    </div></td>
+  </tr>
+{% endmacro %}
+{% block content %}
+{% include 'dbeditor/_tables_head.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-items.css') }}">
+<style>
+.dbk-layout{display:grid;grid-template-columns:minmax(220px,290px) 1fr;gap:14px;align-items:start}
+@media (max-width:860px){.dbk-layout{grid-template-columns:1fr}}
+.dbk-wins{display:grid;gap:4px}
+.dbk-wins a{display:flex;justify-content:space-between;gap:8px;padding:6px 9px;border:1px solid var(--edge);border-radius:8px;text-decoration:none;color:var(--text)}
+.dbk-wins a.is-active{border-color:var(--blue2);background:color-mix(in srgb,var(--blue2) 18%,transparent)}
+.dbk-mats{display:grid;gap:2px}
+.dbk-actions{display:flex;flex-wrap:wrap;gap:4px}
+.dbk-actions form{margin:0}
+.dbk-tag{display:inline-block;padding:0 6px;border:1px solid var(--edge);border-radius:6px;font-size:12px;text-decoration:none}
+.dbk-cat{margin:14px 0 6px}
+</style>
+<p class="eyebrow">EDYTOR BAZY DANYCH · WYTWARZANIE PRZEDMIOTÓW</p>
+<h1>⚒️ Wytwarzanie przedmiotów</h1>
+<section class="panel dbt-note">
+  <p>Okno „Wytwarzanie przedmiotów” otwiera rozmowa „Wytwarzanie” u NPC (Kowal, Baek-Go, Heuk-Young, Octavio, Stajenny, alchemicy gildii…). Gracz wybiera przedmiot, ilość i klika „Wytwórz”: gra pobiera <b>składniki</b> i <b>Yang</b>, a potem z podaną <b>szansą</b> daje wynik (przy porażce składniki i Yang przepadają). Przepis może wymagać <b>poziomu</b> i <b>postępu receptury</b> (ile razy przeczytano księgę receptury – zielarstwo Baek-Go).</p>
+  <p class="muted">Przepisy: tabela world.crafting_proto. Co jest w którym oknie: lista z questa (crafting_data.lua) z poprawkami z panelu (world.crafting_window, wstawiane przez m2-crafting przy starcie). <b>Kategorie</b> w oknie wybiera klient sam – według numeru okna i przedmiotu (zasada przy każdym oknie). Zmiany działają po <b>Zastosuj</b> (restart rdzeni). Nowy przedmiot w wyniku lub składnikach musi być też w danych klienta (paczka klienta z edytora Przedmiotów).</p>
+</section>
+{% if status %}
+<section class="panel dbt-note {{ 'ok' if status.state in ('ok', 'base') else 'warn' }}">
+  <p><b>Stan w grze (listy okien):</b>
+  {% if status.state == 'ok' %}listy zmienione w panelu działają ({{ status.groups }} okien){% if 'left out' in (status.message or '') %} – pominięto przepisy, których nie ma w bazie: {{ status.message.split(':')[-1] }}{% endif %}
+  {% elif status.state == 'base' %}bez zmian z panelu – listy z obrazu gry
+  {% elif status.state == 'unknown' %}przy ostatnim starcie baza nie odpowiedziała – zostały listy z poprzedniego startu
+  {% else %}gra NIE użyła list z panelu: {{ status.message }}{% endif %}
+  {% if status.when %}<small class="muted">(raport gry: {{ status.when }})</small>{% endif %}</p>
+</section>
+{% endif %}
+{% if base_source == 'snapshot' %}<p class="muted">Gra nie udostępniła jeszcze swojego pliku crafting_data.lua (crafting/crafting_data.base.lua w wolumenie) – listy z obrazu biorę z kopii w panelu.</p>{% endif %}
+{% if error %}<section class="panel dbt-note error"><p>⚠️ {{ error }}</p></section>{% endif %}
+
+<div class="dbk-layout">
+<section class="panel">
+  <h2>Okna NPC</h2>
+  <nav class="dbk-wins">
+    <a href="{{ url_for('dbeditor.crafting', okno=0) }}" class="{{ 'is-active' if selected == 0 }}"><span>📋 Wszystkie przepisy</span><b>{{ total }}</b></a>
+  {% for w in windows %}
+    <a href="{{ url_for('dbeditor.crafting', okno=w.vnum) }}" class="{{ 'is-active' if w.vnum == selected }}" title="okno {{ w.vnum }}{% if w.quest %} · quest {{ w.quest }}{% endif %}">
+      <span>{{ w.title }} <small class="muted">#{{ w.vnum }}</small>{% if w.changed %} <small title="lista zmieniona w panelu">✎</small>{% endif %}</span>
+      <b>{{ w.count }}</b></a>
+  {% endfor %}
+  </nav>
+  {% if unlisted %}<p class="muted">{{ unlisted }} przepisów nie ma w żadnym oknie (widać je w „Wszystkie przepisy”).</p>{% endif %}
+  <p><a class="button" href="{{ url_for('dbeditor.crafting_new', okno=selected or none) }}">➕ Nowy przepis</a></p>
+</section>
+
+<section class="panel">
+{% if selected_window %}
+  {% set sw = selected_window %}
+  <h2>{{ sw.title }} <small class="muted">· okno {{ sw.vnum }}</small></h2>
+  <p class="muted">NPC: {% for v, n in sw.npcs %}{{ n }} <small>#{{ v }}</small>{% if not loop.last %}, {% endif %}{% else %}—{% endfor %}{% if sw.quest %} · quest {{ sw.quest }}{% endif %}{% if sw.note %} · {{ sw.note }}{% endif %}</p>
+  <p class="muted">Kategorie w oknie gracza: {{ rule }}</p>
+  {% if missing %}<p class="dbt-note warn">Lista okna wskazuje przepisy, których nie ma w bazie: {{ missing|join(', ') }} – gra je pominie (m2-crafting).</p>{% endif %}
+  {% for g in groups %}
+    <h3 class="dbk-cat">{{ g.name }} <small class="muted">({{ g.recipes|length }})</small></h3>
+    {% if g.recipes %}
+    <div class="dbt-wrap"><table class="dbt-table">
+      <thead><tr><th>Nr</th><th>Wynik</th><th>Składniki</th><th class="num">Szansa</th><th class="num">Yang</th><th class="num">Poziom</th><th class="num">Receptura</th><th>Też w oknach</th><th></th></tr></thead>
+      <tbody>{% for r in g.recipes %}{{ recipe_row(r, sw.vnum) }}{% endfor %}</tbody>
+    </table></div>
+    {% else %}<p class="muted">Pusta kategoria (klient jej nie pokaże z przedmiotami).</p>{% endif %}
+  {% endfor %}
+  <form method="post" action="{{ url_for('dbeditor.crafting_window') }}" class="dbt-actions">
+    <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}"><input type="hidden" name="okno" value="{{ sw.vnum }}">
+    <label>Dodaj istniejący przepis do tego okna
+      <select name="przepis">{% for r in others %}<option value="{{ r.vnum }}">#{{ r.vnum }} – {{ r.result_name }}{% if r.count != 1 %} ×{{ r.count }}{% endif %}</option>{% endfor %}</select></label>
+    <button name="action" value="add">➕ Dodaj do okna</button>
+  </form>
+{% elif selected == 0 %}
+  <h2>Wszystkie przepisy <small class="muted">({{ others|length }})</small></h2>
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>Nr</th><th>Wynik</th><th>Składniki</th><th class="num">Szansa</th><th class="num">Yang</th><th class="num">Poziom</th><th class="num">Receptura</th><th>W oknach</th><th></th></tr></thead>
+    <tbody>{% for r in others %}{{ recipe_row(r, 0) }}{% endfor %}</tbody>
+  </table></div>
+{% endif %}
+</section>
+</div>
+
+<section class="panel">
+  <h2>Historia zmian</h2>
+  {% set batches = history %}{% include 'dbeditor/_items_history_list.html' %}
+  <p class="muted">Cała historia edytora: {% if 'dbeditor.proto_history' in dbt_endpoints %}<a href="{{ url_for('dbeditor.proto_history') }}">Historia zmian</a>{% endif %}. Eksport / import obejmuje przepisy i listy okien.</p>
+</section>
+{% endblock %}

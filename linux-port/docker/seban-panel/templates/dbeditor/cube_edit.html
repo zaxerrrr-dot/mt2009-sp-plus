@@ -30,7 +30,7 @@
       <label>Szansa powodzenia %<input type="number" name="percent" min="0" max="100" value="{{ field('percent', values.percent) }}" required></label>
       <label>Koszt (Yang)<input type="number" name="gold" min="0" max="{{ gold_max }}" value="{{ field('gold', values.gold) }}"></label>
     </div>
-    <p class="muted">NPC: numer z listy NPC, które już mają przepisy, albo inny (okno otworzy się tylko u NPC, którego quest je otwiera).</p>
+    <p class="muted">NPC: okno kostki otwiera tylko NPC z listy (Seon-Pyeong) – przepis innego NPC zostanie w pliku, ale gracze go nie zobaczą.</p>
     <h2>Składniki (najwyżej {{ slots }})</h2>
     <div class="dbr-mats">
     {% for k in range(slots) %}

@@ -99,16 +99,20 @@ DB_PARTS = (
     ("ishop_promo", "ItemShop – promocje", "common.itemshop_promotions"),
     ("ishop_auction", "ItemShop – oferty błyskawiczne", "common.itemshop_time_auctions"),
     ("ishop_counter", "ItemShop – liczniki ofert", "player.itemshop_time_auction"),
+    # MT2009_PLUS_DB_EDITOR_CRAFTING_V1 (dbeditor/crafting.py)
+    ("crafting", "Wytwarzanie przedmiotów – przepisy", "world.crafting_proto"),
+    ("crafting_win", "Wytwarzanie przedmiotów – okna NPC", "world.crafting_window"),
 )
 # The order an import writes them: refine clones before the items pointing at them.
 APPLY_ORDER = ("refine", "items", "skills", "mobs", "attrs", "attrs_rare", "exp", "extra", "shops",
-               "ishop", "ishop_promo", "ishop_auction", "ishop_counter")
+               "ishop", "ishop_promo", "ishop_auction", "ishop_counter",
+               "crafting", "crafting_win")  # MT2009_PLUS_DB_EDITOR_CRAFTING_V1: a recipe before the window listing it
 FILE_PARTS = (
     ("drops", "Drop potworów, zwykły i specjalny"),
     ("chests", "Szkatułki"),
     ("fishing", "Łowienie ryb"),
     ("dragonsoul", "Alchemia (Smocze Kamienie)"),  # MT2009_PLUS_DB_EDITOR_DRAGONSOUL_V1
-    ("cube", "Wytwarzanie (cube)"),  # MT2009_PLUS_DB_EDITOR_CUBE_V1
+    ("cube", "Wytwarzanie (Seon-Pyeong, cube)"),  # MT2009_PLUS_DB_EDITOR_CUBE_V1
     ("spawns", "Respawn bossów i metinów"),
     ("regen", "Spawny potworów na mapach"),
 )
@@ -583,7 +587,7 @@ def whole_row(table, key):
     current = common.read_whole_row(table, key)
     if current is None:
         return None
-    return {c: int(current.get(c) or 0) for c in common.TABLES[table]["row_cols"]}
+    return common.row_values(table, current)
 
 
 def existing(table, keycol, keys):
@@ -956,7 +960,12 @@ def _row_checks(table, key, new, lookup):
     errors = []
     if set(new) != set(meta["row_cols"]):
         return [f"wiersz musi mieć dokładnie kolumny {', '.join(meta['row_cols'])}"]
+    text_cols = meta.get("row_text") or ()
     for col, value in new.items():
+        if col in text_cols:  # MT2009_PLUS_DB_EDITOR_CRAFTING_V1 (crafting_proto.recipe)
+            if not isinstance(value, str):
+                return [f"kolumna {col}: oczekiwano tekstu"]
+            continue
         if not isinstance(value, int) or isinstance(value, bool):
             return [f"kolumna {col}: oczekiwano liczby całkowitej"]
     if common.row_key_of(table, new) != key:
@@ -982,6 +991,9 @@ def _row_checks(table, key, new, lookup):
             errors.append(f"indeks {new['index']} poza 1…{itemshop.INDEX_MAX}")
     if part in ("ishop_promo", "ishop_auction") and new["end_time"] <= new["start_time"]:
         errors.append("koniec przed początkiem")
+    if part in ("crafting", "crafting_win"):  # MT2009_PLUS_DB_EDITOR_CRAFTING_V1
+        from dbeditor import crafting
+        errors += crafting.import_row_errors(part, new)
     return errors
 
 
@@ -1000,6 +1012,11 @@ def _row_warnings(table, new, lookup):
         return [f"na tym serwerze nie ma przedmiotu {new['vnum']}"]
     if part == "ishop" and not lookup("item", [new["vnum"]]):  # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1
         return [f"na tym serwerze nie ma przedmiotu {new['vnum']}"]
+    if part == "crafting":  # MT2009_PLUS_DB_EDITOR_CRAFTING_V1: the result and every material
+        from dbeditor import crafting
+        wanted = [new["item_vnum"]] + [v for v, _c in crafting.parse_materials(new["recipe"])[0]]
+        missing = sorted(set(wanted) - lookup("item", wanted))
+        return [f"na tym serwerze nie ma przedmiotu {v}" for v in missing]
     return []
 
 

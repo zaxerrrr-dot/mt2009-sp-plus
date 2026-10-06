@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_CRAFTING_V1: one recipe of the crafting window - edit, new, copy (dbeditor/crafting.py). #}
+{% block title %}{{ ('Przepis #%d' % vnum) if vnum is not none else 'Nowy przepis' }} · Wytwarzanie przedmiotów · {{ panel_brand }}{% endblock %}
+{% macro mat(prefix_v, prefix_c, v, c, placeholder, required=false) %}
+  {% set known = names.get(v|int) if (v|string).isdigit() else none %}
+  <div class="dbr-mat {{ 'is-empty' if not v }}">
+    <span class="dbr-mat-icon">{% if (v|string).isdigit() and v|int %}{% set ic = icon(v|int) %}{% if ic %}<img src="{{ ic }}" alt="">{% endif %}{% endif %}</span>
+    <input class="dbs-item" name="{{ prefix_v }}" value="{{ v if v else '' }}" list="dbs-items" placeholder="{{ placeholder }}" autocomplete="off" {{ 'required' if required }}>
+    <input type="number" name="{{ prefix_c }}" min="1" value="{{ c }}" placeholder="szt." aria-label="Ilość">
+    <span class="dbs-name muted">{% if known %}{{ known.name }}{% elif v and (v|string).isdigit() and v|int %}<span class="dbe-error">NIEZNANY PRZEDMIOT</span>{% endif %}</span>
+  </div>
+{% endmacro %}
+{% block content %}
+{% include 'dbeditor/_tables_head.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-shops.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-items.css') }}">
+<p><a href="{{ url_for('dbeditor.crafting', okno=back_window or none) }}">← Wytwarzanie przedmiotów</a></p>
+<p class="eyebrow">EDYTOR BAZY DANYCH · WYTWARZANIE PRZEDMIOTÓW</p>
+<h1>⚒️ {% if vnum is not none %}Przepis #{{ vnum }}{% elif copy_of is not none %}Kopia przepisu #{{ copy_of }}{% else %}Nowy przepis{% endif %}</h1>
+{% if errors %}<section class="panel dbt-note error">{% for e in errors %}<p>⚠️ {{ e }}</p>{% endfor %}</section>{% endif %}
+
+<form method="post" action="{{ url_for('dbeditor.crafting_save') }}" class="dbs-form" data-api="{{ url_for('dbeditor.api_items') if 'dbeditor.api_items' in dbt_endpoints else '' }}">
+  <input type="hidden" name="dbe_csrf" value="{{ dbe_csrf }}">
+  <input type="hidden" name="vnum_old" value="{{ vnum if vnum is not none else '' }}">
+  <input type="hidden" name="okno" value="{{ back_window or '' }}">
+  <datalist id="dbs-items"></datalist>
+  <section class="panel">
+    <div class="dbr-fields">
+      <label>Numer przepisu{% if vnum is not none %}<input value="{{ vnum }}" disabled>{% else %}<input type="number" name="vnum" min="1" value="{{ values.vnum }}" required>{% endif %}</label>
+      <label>{{ specs.chance.label }}<input type="number" name="chance" min="0" max="100" value="{{ values.chance }}" required></label>
+      <label>{{ specs.price.label }}<input type="number" name="price" min="0" max="{{ specs.price.max }}" value="{{ values.price }}"></label>
+      <label>{{ specs.req_level.label }}<input type="number" name="req_level" min="0" max="{{ specs.req_level.max }}" value="{{ values.req_level }}"></label>
+      <label>{{ specs.req_progress.label }}<input type="number" name="req_progress" min="0" max="{{ specs.req_progress.max }}" value="{{ values.req_progress }}"></label>
+      <label>{{ specs.recipe_vnum.label }}<input type="number" name="recipe_vnum" min="0" value="{{ values.recipe_vnum }}"></label>
+    </div>
+    <p class="muted">Numer przepisu to też to, co klient pokazuje w kategorii Heuk-Young (100–102 „Zwoje i Marmury”, 104 „Wymiany”); po zapisie numeru nie da się zmienić – zrób kopię. Receptura: gracz musi przeczytać księgę receptury o tym numerze (value0 księgi) co najmniej „wymagany postęp” razy; 0 = bez receptury. Gra może podnieść cenę flagą zdarzenia crafting_price&lt;numer&gt;.</p>
+    <h2>Wynik</h2>
+    <div class="dbr-mats">{{ mat('item_vnum', 'count', values.item_vnum, values.count, 'wynik: VNUM lub nazwa', true) }}</div>
+    <h2>Składniki (najwyżej {{ slots }})</h2>
+    <div class="dbr-mats">
+    {% for k in range(slots) %}
+      {% set m = materials[k] if materials|length > k else none %}
+      {{ mat('mv_%d' % k, 'mc_%d' % k, m[0] if m else '', m[1] if m else '', 'składnik: VNUM lub nazwa') }}
+    {% endfor %}
+    </div>
+    <h2>W których oknach</h2>
+    <div class="dbr-fields">
+    {% for w in windows %}
+      <label class="dbe-check"><input type="checkbox" name="okna" value="{{ w.vnum }}" {{ 'checked' if w.checked }}> {{ w.title }} <small class="muted">#{{ w.vnum }} · kategoria: {{ w.category }}</small></label>
+    {% endfor %}
+    </div>
+    <div class="dbt-actions">
+      <label>Notatka do historii (opcjonalnie)<input name="note" maxlength="60" style="width:260px"></label>
+    </div>
+    <div class="dbt-actions">
+      <button>💾 {{ 'Zapisz przepis' if vnum is not none else 'Dodaj przepis' }}</button>
+      <a href="{{ url_for('dbeditor.crafting', okno=back_window or none) }}">Anuluj</a>
+    </div>
+    <p class="muted">Panel sprawdza, czy przedmioty istnieją w item_proto. Gra wczyta zmianę po „Zastosuj”.</p>
+  </section>
+</form>
+{% if history %}
+<section class="panel"><h2>Historia tego przepisu</h2>{% set batches = history %}{% include 'dbeditor/_items_history_list.html' %}</section>
+{% endif %}
+<script src="{{ url_for('static', filename='dbeditor-shops.js') }}" data-page-script></script>
+{% endblock %}

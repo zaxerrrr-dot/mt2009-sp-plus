@@ -1,0 +1,191 @@
+#!/bin/sh
+# =============================================================================
+#  m2-crafting -- which recipes each NPC's "Wytwarzanie" window lists, as the
+#  Seban panel's "Wytwarzanie przedmiotów" page (database editor,
+#  dbeditor/crafting.py) changed them (MT2009_PLUS_DB_EDITOR_CRAFTING_V1).
+#
+#  The recipes themselves are world.crafting_proto (the db core reads it at
+#  boot); the lists - crafting_data[<window>] = {recipe vnums} - are the quest
+#  library $LOCALE_DIR/quest/libs/crafting/crafting_data.lua, which the cores
+#  load while they boot. The panel keeps only its changes to those lists in
+#  world.crafting_window (craft_vnum, recipe_vnum, present: 1 = added, 0 =
+#  taken off the image's list). Before the cores boot `apply' writes the live
+#  file: the image's file plus, at its end, one call per changed window of a
+#  small Lua function that adds / removes those recipes (the quests, the
+#  client window and its categories stay as they are). No row, no table or a
+#  database that does not answer at all: see below.
+#
+#    * a recipe the panel added that crafting_proto does not have is left out
+#      (the window would show an empty line) and named in the status;
+#    * every number is checked to be digits only before it goes into Lua.
+#
+#  The image's file goes back to the panel as
+#  $SPOOL/crafting/crafting_data.base.lua; how the last apply went:
+#  $SPOOL/crafting/status (state, time, groups, sha, message).
+#
+#  Subcommands
+#      prepare   as root, at container start: keep the image's file, make the
+#                live one writable by the service account, the spool folder
+#      apply     write the live file (run by m2-supervise before a boot)
+# =============================================================================
+set -u
+LC_ALL=C
+export LC_ALL
+
+SHARE_DIR="${M2_SHARE_DIR:-/opt/metin2/share}"
+VAR_DIR="${M2_VAR_DIR:-/opt/metin2/var}"
+LOCALE_DIR="$SHARE_DIR/locale/${M2_LOCALE_NAME:-poland}"
+LIBDIR="$LOCALE_DIR/quest/libs/crafting"
+SPOOL="${M2_RATES_SPOOL:-/opt/m2spool}/crafting"
+
+LIVE="$LIBDIR/crafting_data.lua"
+IMAGE="$LIBDIR/crafting_data.image.lua"
+STATUS="$SPOOL/status"
+WORK="$VAR_DIR/crafting"
+
+say() { printf '%s [crafting] %s\n' "$(date -u '+%Y-%m-%d %H:%M:%SZ')" "$1"; }
+
+write_status() { # write_status STATE ROWS SHA MESSAGE
+    [ -d "$SPOOL" ] || return 0
+    _tmp="$STATUS.new.$$"
+    { printf 'state=%s\n' "$1"
+      printf 'time=%s\n' "$(date +%s 2>/dev/null)"
+      printf 'groups=%s\n' "$2"
+      printf 'sha=%s\n' "$3"
+      printf 'message=%s\n' "$4"
+    } > "$_tmp" 2>/dev/null || { rm -f "$_tmp"; return 1; }
+    chmod 0664 "$_tmp" 2>/dev/null
+    mv -f "$_tmp" "$STATUS" 2>/dev/null || rm -f "$_tmp"
+    return 0
+}
+
+publish() { # publish SOURCE NAME -- a read-only copy of the image's file for the panel
+    [ -d "$SPOOL" ] && [ -f "$1" ] || return 0
+    cmp -s "$1" "$SPOOL/$2" && return 0
+    cp "$1" "$SPOOL/$2.new.$$" 2>/dev/null && chmod 0664 "$SPOOL/$2.new.$$" 2>/dev/null \
+        && mv -f "$SPOOL/$2.new.$$" "$SPOOL/$2" 2>/dev/null || rm -f "$SPOOL/$2.new.$$"
+}
+
+# The live file is rewritten in place: the folder belongs to root, the file
+# itself to the service account (prepare).
+put_live() { # put_live SOURCE
+    cmp -s "$1" "$LIVE" && return 0
+    cat "$1" > "$LIVE"
+}
+
+db_query() { # db_query SQL -- rows on stdout; non-zero when the database did not answer
+    command -v mariadb >/dev/null 2>&1 || return 2
+    MYSQL_PWD="${M2_DB_PASSWORD:-}" mariadb -h "${M2_DB_HOST:-mariadb}" -P "${M2_DB_PORT:-3306}" \
+        -u "${M2_DB_USER:-metin2}" -N -B --connect-timeout=10 -e "$1" 2>/dev/null
+}
+
+cmd_prepare() {
+    [ -f "$LIVE" ] || { say "no $LIVE -- nothing to prepare"; return 0; }
+    # The first start of a container: the file is still the image's.
+    [ -f "$IMAGE" ] || cp -p "$LIVE" "$IMAGE" || return 1
+    chown metin2:metin2 "$LIVE" 2>/dev/null
+    chmod 0644 "$LIVE" 2>/dev/null
+    mkdir -p "$WORK" 2>/dev/null && chown metin2:metin2 "$WORK" 2>/dev/null
+    if mkdir -p "$SPOOL" 2>/dev/null; then
+        chgrp m2spool "$SPOOL" 2>/dev/null && chmod 2770 "$SPOOL" 2>/dev/null
+        chgrp -R m2spool "$SPOOL"/* 2>/dev/null
+        chmod g+rw "$SPOOL"/* 2>/dev/null
+    fi
+    return 0
+}
+
+cmd_apply() {
+    [ -f "$IMAGE" ] || { say "no $IMAGE (m2-crafting prepare did not run) -- the window lists stay as the image has them"; return 0; }
+    mkdir -p "$WORK" 2>/dev/null
+    publish "$IMAGE" crafting_data.base.lua
+
+    if ! _have=$(db_query "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='world' AND table_name='crafting_window'"); then
+        # Without the database the panel's changes are unknown: the file the
+        # last boot wrote stays (the image's on a fresh container).
+        say "the database did not answer -- the window lists stay as the last boot wrote them"
+        write_status unknown 0 "" "the database did not answer at boot - the lists stay as the last boot wrote them"
+        return 0
+    fi
+    _rows=""
+    if [ "${_have:-0}" -gt 0 ] 2>/dev/null; then
+        _rows=$(db_query "SELECT w.craft_vnum, w.recipe_vnum, w.present, IF(p.vnum IS NULL, 0, 1) FROM world.crafting_window w LEFT JOIN world.crafting_proto${M2_TABLE_POSTFIX:-} p ON p.vnum = w.recipe_vnum ORDER BY w.craft_vnum, w.recipe_vnum") \
+            || { say "could not read world.crafting_window -- the window lists stay as the last boot wrote them"
+                 write_status unknown 0 "" "could not read world.crafting_window"; return 0; }
+    fi
+    if [ -z "$_rows" ]; then
+        put_live "$IMAGE" || { say "could not write $LIVE"; return 1; }
+        write_status base 0 "" "no change in the panel - the image's window lists are live"
+        return 0
+    fi
+    printf '%s\n' "$_rows" > "$WORK/rows.tsv"
+    _sha=$(sha256sum "$WORK/rows.tsv" | cut -d' ' -f1)
+
+    # One call per window: crafting_window(<window>, {added}, {removed}).
+    awk -F '\t' '
+    function flush() {
+        if (cur == "") return
+        printf "mt2009_crafting_window(%s, {%s}, {%s})\r\n", cur, add, del
+        windows++
+    }
+    {
+        for (i = 1; i <= 4; i++) if ($i !~ /^[0-9]+$/ || length($i) > 10) { print "E bad row: " $0 > "/dev/stderr"; bad = 1; exit }
+        if ($1 != cur) { flush(); cur = $1; add = ""; del = "" }
+        if ($3 + 0) {
+            if (!($4 + 0)) { skipped = skipped " " $2; next }
+            add = add (add == "" ? "" : ", ") $2
+        } else del = del (del == "" ? "" : ", ") $2
+    }
+    END {
+        if (bad) exit 3
+        flush()
+        printf "-- windows=%d skipped=%s\r\n", windows, skipped
+    }
+    ' "$WORK/rows.tsv" > "$WORK/calls.lua" 2> "$WORK/calls.err" \
+        || { say "the panel's window lists were NOT used: $(head -1 "$WORK/calls.err")"
+             put_live "$IMAGE"
+             write_status rejected 0 "$_sha" "$(head -1 "$WORK/calls.err" | sed 's/^E //')"; return 0; }
+    _windows=$(sed -n 's/^-- windows=\([0-9]*\).*/\1/p' "$WORK/calls.lua" | head -1)
+    _skipped=$(sed -n 's/^-- windows=[0-9]* skipped=//p' "$WORK/calls.lua" | tr -d '\r' | head -1)
+
+    { cat "$IMAGE"
+      printf '\r\n\r\n-- MT2009_PLUS_DB_EDITOR_CRAFTING_V1: the Seban panel'"'"'s changes to the window lists\r\n'
+      printf '%s\r\n' '-- (world.crafting_window, written by m2-crafting before the cores booted)'
+      printf 'local function mt2009_crafting_window(w, add, del)\r\n'
+      printf '    local old = crafting_data[w] or {}\r\n'
+      printf '    local out = {}\r\n'
+      printf '    for i = 1, table.getn(old) do\r\n'
+      printf '        local keep = true\r\n'
+      printf '        for j = 1, table.getn(del) do\r\n'
+      printf '            if old[i] == del[j] then keep = false end\r\n'
+      printf '        end\r\n'
+      printf '        if keep then table.insert(out, old[i]) end\r\n'
+      printf '    end\r\n'
+      printf '    for j = 1, table.getn(add) do\r\n'
+      printf '        local have = false\r\n'
+      printf '        for i = 1, table.getn(out) do\r\n'
+      printf '            if out[i] == add[j] then have = true end\r\n'
+      printf '        end\r\n'
+      printf '        if not have then table.insert(out, add[j]) end\r\n'
+      printf '    end\r\n'
+      printf '    crafting_data[w] = out\r\n'
+      printf 'end\r\n'
+      cat "$WORK/calls.lua"
+    } > "$WORK/live.new" 2>/dev/null || { say "could not build the live file"; return 1; }
+
+    if ! put_live "$WORK/live.new"; then
+        say "could not write $LIVE -- the window lists left as they were"
+        write_status failed 0 "$_sha" "the game container could not write crafting_data.lua"
+        return 1
+    fi
+    _msg="applied: ${_windows:-0} window list(s) changed by the panel"
+    [ -n "$(printf '%s' "$_skipped" | tr -d ' ')" ] && _msg="$_msg; left out (no such recipe in crafting_proto):$_skipped"
+    say "$_msg"
+    write_status ok "${_windows:-0}" "$_sha" "$_msg"
+    return 0
+}
+
+case "${1:-}" in
+    prepare) cmd_prepare ;;
+    apply)   cmd_apply ;;
+    *) echo "usage: m2-crafting prepare|apply"; exit 1 ;;
+esac

@@ -45,7 +45,8 @@ def install(app, ctx):
                  "itemshop",  # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1
                  "quests",  # MT2009_PLUS_DB_EDITOR_QUESTS_V1 (Questy: on/off, rewards)
                  "attrs", "exptable", "fishing", "dragonsoul",
-                 "cube",  # MT2009_PLUS_DB_EDITOR_CUBE_V1
+                 "crafting",  # MT2009_PLUS_DB_EDITOR_CRAFTING_V1 (the "Wytwarzanie" window of most NPCs)
+                 "cube",  # MT2009_PLUS_DB_EDITOR_CUBE_V1 (Seon-Pyeong's cube window)
                  "config", "clientdata",
                  "reapply"):  # MT2009_PLUS_DB_EDITOR_REAPPLY_V1 (no tile: a notice on the hub)
         try:

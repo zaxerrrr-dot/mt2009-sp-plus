@@ -112,6 +112,14 @@ def _literal(spec, value):
     return _hex(value, "cp1250" if kind == "cp1250" else "utf-8")
 
 
+def _row_literal(table, col, value):
+    """One whole-row column for the replay: a number by its expression, or
+    (row_text, MT2009_PLUS_DB_EDITOR_CRAFTING_V1) a hex literal."""
+    if col in (common.TABLES[table].get("row_text") or ()):
+        return _hex(common.row_value(table, col, value), "utf-8")
+    return common.row_insert(table, col).replace('%s', str(int(value or 0)))
+
+
 def _key_literal(row_key):
     text = str(row_key)
     return text if _INT.match(text) else _hex(text, "utf-8")
@@ -142,7 +150,7 @@ def replay_statements(changes=None):
                     cols = meta["row_cols"]
                     # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1: an ENUM / DATETIME column by its expression
                     statements.append(f"INSERT INTO {table} ({', '.join('`%s`' % c for c in cols)}) VALUES "
-                                      f"({', '.join(common.row_insert(table, c).replace('%s', str(int(values.get(c) or 0))) for c in cols)});")
+                                      f"({', '.join(_row_literal(table, c, values.get(c)) for c in cols)});")
                 continue
             spec = meta["cols"].get(col)
             key = meta["key"]

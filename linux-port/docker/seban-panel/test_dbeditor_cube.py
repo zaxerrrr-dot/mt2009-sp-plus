@@ -149,9 +149,12 @@ class PageTests(unittest.TestCase):
 
     def test_pages_edit_add_copy_delete_undo_export(self):
         page = self.client.get(f"/db/wytwarzanie?npc={SEON}").get_data(as_text=True)
-        for text in ("Wytwarzanie (cube)", "NPC 20091", "Kopiuj przepis", "Bez zmian z panelu", "2 000 000",
-                     "Czarna Szata+9"):
+        for text in ("Wytwarzanie (Seon-Pyeong)", "NPC 20091", "Kopiuj przepis", "Bez zmian z panelu", "2 000 000",
+                     "Czarna Szata+9", "106 z nich należy do NPC bez okna kostki"):
             self.assertIn(text, page)
+        # MT2009_PLUS_DB_EDITOR_CRAFTING_V1: only Seon-Pyeong opens the cube window - Baek-Go & co. are not listed
+        self.assertNotIn("npc=20018", page)
+        self.assertNotIn("bez okna</small>", page)
         sha = cube.sha(IMAGE)
         last = len(cube.parse(IMAGE)["recipes"]) - 1
         form = self.client.get(f"/db/wytwarzanie/przepis/{last}").get_data(as_text=True)

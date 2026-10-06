@@ -53,7 +53,7 @@ def init(ctx):
 
 
 def register_table(name, key, cols, title, edit_endpoint=None, formatter=None, row_cols=None, row_label=None,
-                   row_exprs=None):
+                   row_exprs=None, row_text=None):
     """key: the column (or a tuple of columns) a row is found by. row_cols:
     every column of a whole row, for the tables write_rows() adds rows to /
     removes rows from (MT2009_PLUS_DB_EDITOR_V1). row_exprs
@@ -62,10 +62,25 @@ def register_table(name, key, cols, title, edit_endpoint=None, formatter=None, r
     the SQL expression `select` and written by `insert`, one "%s" for the
     integer: an ENUM ("`currency`+0", "%s") or a DATETIME
     ("UNIX_TIMESTAMP(`start_time`)", "FROM_UNIXTIME(%s)"). A field spec may
-    carry "select" the same way (read_row, _select_expr)."""
+    carry "select" the same way (read_row, _select_expr). row_text
+    (MT2009_PLUS_DB_EDITOR_CRAFTING_V1): row columns kept as ASCII text, not
+    integers (world.crafting_proto.recipe "vnum,count,..."); never a key."""
     TABLES[name] = {"key": key, "cols": cols, "title": title, "edit_endpoint": edit_endpoint, "formatter": formatter,
                     "row_cols": tuple(row_cols) if row_cols else None, "row_label": row_label,
-                    "row_exprs": dict(row_exprs or {})}
+                    "row_exprs": dict(row_exprs or {}), "row_text": frozenset(row_text or ())}
+
+
+def row_value(table, col, value):
+    """MT2009_PLUS_DB_EDITOR_CRAFTING_V1: one whole-row column as the history
+    keeps it - an integer, or text for a row_text column."""
+    if col in (TABLES[table].get("row_text") or ()):
+        return text_of(value) if value is not None else ""
+    return int(value or 0)
+
+
+def row_values(table, values):
+    """{col: value} of every row column (row_value)."""
+    return {c: row_value(table, c, values.get(c)) for c in TABLES[table]["row_cols"]}
 
 
 def row_select(table, col):
@@ -518,8 +533,7 @@ def key_values(table, row_key):
 
 
 def row_json(table, values):
-    meta = TABLES[table]
-    return json.dumps({c: int(values.get(c) or 0) for c in meta["row_cols"]}, sort_keys=True)
+    return json.dumps(row_values(table, values), sort_keys=True)
 
 
 def _where_key(table):
@@ -585,7 +599,7 @@ def _write_rows(table, inserts=(), deletes=(), note="", label_of=None, batch=Non
                     raise LookupError(f"{meta['title']} {key} już istnieje.")
                 cur.execute(f"INSERT INTO {table} ({', '.join('`%s`' % c for c in cols)}) "
                             f"VALUES ({', '.join(row_insert(table, c) for c in cols)})",
-                            [int(values.get(c) or 0) for c in cols])
+                            [row_value(table, c, values.get(c)) for c in cols])
                 record(cur, key, None, row_json(table, values))
                 done.append((key, "insert"))
         con.commit()

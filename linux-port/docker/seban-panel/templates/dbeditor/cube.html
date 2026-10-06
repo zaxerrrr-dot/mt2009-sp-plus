@@ -17,9 +17,10 @@
 .dbc-actions form{margin:0}
 </style>
 <p class="eyebrow">EDYTOR BAZY DANYCH · WYTWARZANIE</p>
-<h1>⚗️ Wytwarzanie (cube) {% if source == 'custom' %}<small class="muted">· zmienione w panelu</small>{% endif %}</h1>
+<h1>⚗️ Wytwarzanie (Seon-Pyeong) {% if source == 'custom' %}<small class="muted">· zmienione w panelu</small>{% endif %}</h1>
 <section class="panel dbt-note">
-  <p>Okno wytwarzania otwiera NPC (np. Seon-Pyeong). Gracz wkłada składniki – gra bierze <b>pierwszy</b> przepis tego NPC, na który wystarczą składniki, pobiera składniki i <b>koszt w Yang</b>, a potem z podaną <b>szansą</b> daje wynik (przy porażce składniki i Yang przepadają). Okno pokazuje najwyżej 5 składników na przepis.</p>
+  <p>Okno kostki (cube) otwiera tylko Seon-Pyeong. Okno „Wytwarzanie przedmiotów” u Kowala, Baek-Go, Heuk-Young i innych to inny system – {% if 'dbeditor.crafting' in dbt_endpoints %}<a href="{{ url_for('dbeditor.crafting') }}">⚒️ Wytwarzanie przedmiotów</a>{% else %}Wytwarzanie przedmiotów{% endif %}.</p>
+  <p> Gracz wkłada składniki – gra bierze <b>pierwszy</b> przepis tego NPC, na który wystarczą składniki, pobiera składniki i <b>koszt w Yang</b>, a potem z podaną <b>szansą</b> daje wynik (przy porażce składniki i Yang przepadają). Okno pokazuje najwyżej 5 składników na przepis.</p>
   <p class="muted">Plik gry: locale/poland/cube.txt (czytany przy starcie rdzeni). Zmiany działają po <b>Zastosuj</b> (restart gry) – komenda /reload c przeładowałaby tylko jeden z rdzeni gry, dlatego panel jej nie używa. Gracze dostają nową listę przepisów po ponownym otwarciu okna. <a href="{{ url_for('dbeditor.cube_file') }}">⬇ Pobierz obecny plik</a></p>
 </section>
 <section class="panel dbt-note {{ status.kind if status.kind in ('ok', 'error') else 'warn' }}">
@@ -35,17 +36,15 @@
   <nav class="dbc-npcs">
   {% for n in npcs %}
     <a href="{{ url_for('dbeditor.cube', npc=n.vnum) }}" class="{{ 'is-active' if n.vnum == selected }}">
-      <span>{{ n.name }} <small class="muted">#{{ n.vnum }}</small>{% if n.opens == false %} <small class="dbt-bad" title="Żaden quest tego NPC nie otwiera okna wytwarzania – gracze nie zobaczą tych przepisów.">bez okna</small>{% endif %}</span>
+      <span>{{ n.name }} <small class="muted">#{{ n.vnum }}</small></span>
       <b>{{ n.count }}</b></a>
   {% endfor %}
   </nav>
-  <p class="muted">Razem przepisów: {{ total }}.</p>
-  <p><a class="button" href="{{ url_for('dbeditor.cube_new') }}">➕ Przepis dla innego NPC</a></p>
+  <p class="muted">Razem przepisów w pliku: {{ total }}.{% if hidden %} {{ hidden }} z nich należy do NPC bez okna kostki (zostają w pliku bez zmian, gra ich nie pokazuje).{% endif %}</p>
 </section>
 
 <section class="panel">
   <h2>{{ selected_name }} <small class="muted">#{{ selected }}</small></h2>
-  {% if openers is not none and selected not in openers %}<p class="dbt-note warn">Żaden quest tego NPC nie otwiera okna wytwarzania (command("cube open")) – przepisy są w pliku, ale gracze nie mają jak z nich skorzystać.</p>{% endif %}
   <p><a class="button" href="{{ url_for('dbeditor.cube_new', npc=selected) }}">➕ Nowy przepis u tego NPC</a></p>
   {% if recipes %}
   <div class="dbt-wrap"><table class="dbt-table">
