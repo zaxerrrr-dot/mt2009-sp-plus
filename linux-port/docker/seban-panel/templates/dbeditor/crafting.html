@@ -82,6 +82,7 @@
 {% if selected_window %}
   {% set sw = selected_window %}
   <h2>{{ sw.title }} <small class="muted">· okno {{ sw.vnum }}</small></h2>
+  <p><a class="button" href="{{ url_for('dbeditor.crafting_new', okno=sw.vnum) }}">➕ Nowy przepis w tym oknie</a></p>
   <p class="muted">NPC: {% for v, n in sw.npcs %}{{ n }} <small>#{{ v }}</small>{% if not loop.last %}, {% endif %}{% else %}—{% endfor %}{% if sw.quest %} · quest {{ sw.quest }}{% endif %}{% if sw.note %} · {{ sw.note }}{% endif %}</p>
   <p class="muted">Kategorie w oknie gracza: {{ rule }}</p>
   {% if missing %}<p class="dbt-note warn">Lista okna wskazuje przepisy, których nie ma w bazie: {{ missing|join(', ') }} – gra je pominie (m2-crafting).</p>{% endif %}
@@ -100,8 +101,10 @@
       <select name="przepis">{% for r in others %}<option value="{{ r.vnum }}">#{{ r.vnum }} – {{ r.result_name }}{% if r.count != 1 %} ×{{ r.count }}{% endif %}</option>{% endfor %}</select></label>
     <button name="action" value="add">➕ Dodaj do okna</button>
   </form>
+  <p><a class="button" href="{{ url_for('dbeditor.crafting_new', okno=sw.vnum) }}">➕ Nowy przepis w tym oknie</a></p>
 {% elif selected == 0 %}
   <h2>Wszystkie przepisy <small class="muted">({{ others|length }})</small></h2>
+  <p><a class="button" href="{{ url_for('dbeditor.crafting_new') }}">➕ Nowy przepis</a></p>
   <div class="dbt-wrap"><table class="dbt-table">
     <thead><tr><th>Nr</th><th>Wynik</th><th>Składniki</th><th class="num">Szansa</th><th class="num">Yang</th><th class="num">Poziom</th><th class="num">Receptura</th><th>W oknach</th><th></th></tr></thead>
     <tbody>{% for r in others %}{{ recipe_row(r, 0) }}{% endfor %}</tbody>
