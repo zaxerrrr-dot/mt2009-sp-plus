@@ -560,7 +560,11 @@ def install(bp, ctx):
             if r["npc"] not in npc_vnums:
                 npc_vnums.append(r["npc"])
         mobs, _ok = mob_names(npc_vnums)
-        openers = opening_npcs(spool)
+        # The crafting NPCs' own quests (herbalism and the like) open the window
+        # without a plain command("cube open") string in their compiled scripts, so a
+        # text search finds Seon-Pyeong only; every NPC with recipes has the window
+        # in game (owner, 6 October) - no "bez okna" marks.
+        openers = None
         npcs = [{"vnum": v, "name": mobs.get(v) or f"NPC {v}", "count": sum(1 for r in recipes if r["npc"] == v),
                  "opens": None if openers is None else v in openers} for v in npc_vnums]
         try:
