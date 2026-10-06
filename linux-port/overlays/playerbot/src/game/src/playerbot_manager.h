@@ -59,6 +59,12 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// MT2009_PLUS_BOT_CHAT_V2: a person's '@' trade chat line
 		// (CInputMain::Chat's CHAT_TYPE_TRADE, server-patches/playerqol).
 		void	OnPlayerTradeChat(LPCHARACTER ch, const char* szText);
+		// MT2009_PLUS_GM_SM_EVENT_V1: a GM's notice command on this core
+		// (cmd_gm.cpp) and another core's notice (CInputP2P::Notice), both
+		// from server-patches/playerqol - "!SM" starts the bots' SM race on
+		// the shout (playerbot_gm_notice.h).
+		void	OnGMNotice(LPCHARACTER ch, const char* szText, BYTE bChatType);
+		void	OnPeerNotice(const char* szText, BYTE bChatType);
 		// MT2009_PLUS_BOT_DUNGEON_LFG_V1: a person's normal or guild chat line
 		// (CInputMain::Chat's CHAT_TYPE_TALKING / CHAT_TYPE_GUILD,
 		// server-patches/playerqol), for the bots' dungeon finder.
