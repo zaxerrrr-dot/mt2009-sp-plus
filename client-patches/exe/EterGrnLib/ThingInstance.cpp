@@ -3,6 +3,8 @@
 #include "../eterlib/Camera.h"
 #include "../eterBase/Timer.h"
 #include "ThingInstance.h"
+#include <set>
+#include <cmath>
 #include "Thing.h"
 #include "ModelInstance.h"
 #include "..\GameLib\GameType.h"
@@ -786,15 +788,20 @@ static bool GetAccePlacementMatrix(CGrannyLODController* pkLOD, D3DXMATRIX& rOut
 	CGrannyModelInstance* pInstance = pkLOD ? pkLOD->GetModelInstance() : NULL;
 	CGrannyModel* pModel = pInstance ? pInstance->GetModel() : NULL;
 	granny_model* pgrnModel = pModel ? pModel->GetGrannyModelPointer() : NULL;
-	if (!pgrnModel || !pgrnModel->Skeleton || pgrnModel->Skeleton->BoneCount <= 0)
+	if (!pgrnModel)
 		return false;
-	if (pgrnModel->Skeleton->Bones[0].LocalTransform.Flags != 0)
-		return false;	// the root bone holds the place itself
-	const granny_transform& t = pgrnModel->InitialPlacement;
-	if (t.Flags == 0)
-		return false;
+	// V2: any non-identity InitialPlacement (V1 also wanted an identity root bone - the me_w
+	// models' root bones are not, so nothing changed).
 	GrannyGetModelInitialPlacement4x4(pgrnModel, reinterpret_cast<granny_real32*>(&rOut));
-	return true;
+	D3DXMATRIX matIdentity;
+	D3DXMatrixIdentity(&matIdentity);
+	bool same = true;
+	for (int i = 0; i < 16 && same; ++i)
+		same = fabsf(reinterpret_cast<const float*>(&rOut)[i] - reinterpret_cast<const float*>(&matIdentity)[i]) < 0.001f;
+	static std::set<const void*> s_logged;
+	if (!same && s_logged.insert(pgrnModel).second)
+		TraceError("ACCE_PLACEMENT: %s placement pos(%.2f %.2f %.2f)", pgrnModel->Name ? pgrnModel->Name : "?", rOut._41, rOut._42, rOut._43);
+	return !same;
 }
 
 static const D3DXMATRIX* AcceDeformMatrix(CGrannyLODController* pkLOD, const D3DXMATRIX* pBase, D3DXMATRIX& rTemp)
