@@ -314,6 +314,10 @@ int Storable(LPCHARACTER ch, LPITEM item)
 		return RESULT_REFUSED;
 	if (item->GetVnum() == UNIQUE_ITEM_SAFEBOX_EXPAND || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SAFEBOX))
 		return RESULT_REFUSED;
+	// MT2009_PLUS_COLLECTOR_ITEM_SELF_V1 (the owner, 6 October): the
+	// "Kolekcjoner" item itself never goes in - stored, it could not open the store.
+	if (item->GetVnum() == ITEM_VNUM || item->GetOriginalVnum() == ITEM_VNUM)
+		return RESULT_REFUSED;
 	if (item->isLocked() || item->IsExchanging() || item->IsDragonSoul())
 		return RESULT_REFUSED;
 	if (item->GetType() == ITEM_BELT && CBeltInventoryHelper::IsExistItemInBeltInventory(ch))

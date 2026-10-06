@@ -111,10 +111,11 @@ class CostumeWindow(ui.ScriptWindow):
 
 	@ui.WindowDestroy
 	def Destroy(self):
-		if getattr(self, "hideButton", None):
+		if getattr(self, "hideButtons", None):
 			import uicostumehide
-			uicostumehide.RemoveButton(self.hideButton)
-			self.hideButton = None
+			for button in self.hideButtons:
+				uicostumehide.RemoveButton(button)
+			self.hideButtons = []
 		self.ClearDictionary()
 		self.wndInventory = None
 
@@ -163,26 +164,30 @@ class CostumeWindow(ui.ScriptWindow):
 		self.wndEquip = wndEquip
 		self.__AddHideButton()
 
-	# Ukryj kostiumy (uicostumehide.py): a button under the slots; the window
-	# and its board grow to hold it.
+	# Ukryj kostiumy (uicostumehide.py, MT2009_PLUS_COSTUME_HIDE_V2): three
+	# buttons under the slots - the costume, the hair, the weapon skin, each
+	# hidden on its own; the window and its board grow to hold them.
 	def __AddHideButton(self):
 		try:
 			import uicostumehide
 			board = self.GetChild("board")
 			width = self.GetWidth()
 			height = self.GetHeight()
-			self.SetSize(width, height + 26)
-			board.SetSize(width, height + 26)
-			button = ui.Button()
-			button.SetParent(board)
-			button.SetUpVisual("d:/ymir work/ui/public/large_button_01.sub")
-			button.SetOverVisual("d:/ymir work/ui/public/large_button_02.sub")
-			button.SetDownVisual("d:/ymir work/ui/public/large_button_03.sub")
-			button.SetPosition((width - button.GetWidth()) / 2, height - 4)
-			button.SetEvent(uicostumehide.Toggle)
-			button.Show()
-			uicostumehide.AddButton(button)
-			self.hideButton = button
+			bits = (uicostumehide.BODY, uicostumehide.HAIR, uicostumehide.WEAPON)
+			self.SetSize(width, height + 26 * len(bits))
+			board.SetSize(width, height + 26 * len(bits))
+			self.hideButtons = []
+			for row, bit in enumerate(bits):
+				button = ui.Button()
+				button.SetParent(board)
+				button.SetUpVisual("d:/ymir work/ui/public/large_button_01.sub")
+				button.SetOverVisual("d:/ymir work/ui/public/large_button_02.sub")
+				button.SetDownVisual("d:/ymir work/ui/public/large_button_03.sub")
+				button.SetPosition((width - button.GetWidth()) / 2, height - 4 + 26 * row)
+				button.SetEvent(lambda b = bit: uicostumehide.Toggle(b))
+				button.Show()
+				uicostumehide.AddButton(button, bit)
+				self.hideButtons.append(button)
 		except Exception, e:
 			dbg.TraceError("CostumeWindow.AddHideButton: %s" % str(e))
 

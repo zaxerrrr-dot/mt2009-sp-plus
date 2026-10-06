@@ -102,6 +102,42 @@
   "new": "\t{ \"filtr\",\tdo_pickup_filter_open,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_COSTUME_HIDE_V1 (table)\n\t{ \"kostiumy_ukryj\",\tdo_costume_hide,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
  },
  {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_COSTUME_HIDE_V2 (mask)",
+  "old": "std::map<DWORD, bool> g_mapMt2009PlusCostumeHidden;\n\nbool Mt2009PlusCostumeHidden(LPCHARACTER ch)\n{\n\tif (!ch || !ch->IsPC())\n\t\treturn false;\n\tstd::map<DWORD, bool>::const_iterator it = g_mapMt2009PlusCostumeHidden.find(ch->GetPlayerID());\n\treturn it != g_mapMt2009PlusCostumeHidden.end() && it->second;\n}",
+  "new": "// MT2009_PLUS_COSTUME_HIDE_V2 (mask): each look hidden on its own (the owner,\n// 6 October: \"nakladka na bron wlaczona, a fryzura i kostium wylaczone\") -\n// 1 the costume, 2 the hair, 4 the weapon skin; 0 is everything shown.\nstd::map<DWORD, BYTE> g_mapMt2009PlusCostumeHidden;\n\nBYTE Mt2009PlusCostumeHiddenMask(LPCHARACTER ch)\n{\n\tif (!ch || !ch->IsPC())\n\t\treturn 0;\n\tstd::map<DWORD, BYTE>::const_iterator it = g_mapMt2009PlusCostumeHidden.find(ch->GetPlayerID());\n\treturn it != g_mapMt2009PlusCostumeHidden.end() ? it->second : 0;\n}\n\nbool Mt2009PlusCostumeHidden(LPCHARACTER ch)\n{\n\treturn Mt2009PlusCostumeHiddenMask(ch) != 0;\n}"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_COSTUME_HIDE_V2 (parts)",
+  "old": "\tconst bool hidden = Mt2009PlusCostumeHidden(ch);\n",
+  "new": "\t// MT2009_PLUS_COSTUME_HIDE_V2 (parts): bit by bit, see the mask above.\n\tconst BYTE hiddenMask = Mt2009PlusCostumeHiddenMask(ch);\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "(!(hiddenMask & 1) && costumeBody)",
+  "old": "(!hidden && costumeBody)",
+  "new": "(!(hiddenMask & 1) && costumeBody)"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "(!(hiddenMask & 4) && costumeWeapon)",
+  "old": "(!hidden && costumeWeapon)",
+  "new": "(!(hiddenMask & 4) && costumeWeapon)"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "(hiddenMask & 2) ? 0 : costumeHair",
+  "old": "hidden ? 0 : costumeHair",
+  "new": "(hiddenMask & 2) ? 0 : costumeHair"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_COSTUME_HIDE_V2 (command)",
+  "old": "extern std::map<DWORD, bool> g_mapMt2009PlusCostumeHidden;\nvoid Mt2009PlusApplyCostumeParts(LPCHARACTER ch, LPITEM leaving);\n\nACMD(do_costume_hide)\n{\n\tchar arg1[32];\n\tone_argument(argument, arg1, sizeof(arg1));\n\tint hide = 0;\n\tstr_to_number(hide, arg1);\n\tif (hide)\n\t\tg_mapMt2009PlusCostumeHidden[ch->GetPlayerID()] = true;\n\telse\n\t\tg_mapMt2009PlusCostumeHidden.erase(ch->GetPlayerID());\n\tMt2009PlusApplyCostumeParts(ch, NULL);\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"CostumeHiddenAck %d\", hide ? 1 : 0);\n}",
+  "new": "// MT2009_PLUS_COSTUME_HIDE_V2 (command): \"/kostiumy_ukryj m <0..7>\" hides each\n// look on its own (1 costume, 2 hair, 4 weapon skin), answered with\n// \"CostumeHiddenAck m <mask>\"; the old \"/kostiumy_ukryj <0|1>\" is all or nothing.\nextern std::map<DWORD, BYTE> g_mapMt2009PlusCostumeHidden;\nvoid Mt2009PlusApplyCostumeParts(LPCHARACTER ch, LPITEM leaving);\n\nACMD(do_costume_hide)\n{\n\tchar arg1[32], arg2[32];\n\ttwo_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2));\n\tconst bool byMask = arg1[0] == 'm' && arg1[1] == '\\0';\n\tint value = 0;\n\tstr_to_number(value, byMask ? arg2 : arg1);\n\tconst BYTE mask = byMask ? (BYTE)(value & 7) : (value ? 7 : 0);\n\tif (mask)\n\t\tg_mapMt2009PlusCostumeHidden[ch->GetPlayerID()] = mask;\n\telse\n\t\tg_mapMt2009PlusCostumeHidden.erase(ch->GetPlayerID());\n\tMt2009PlusApplyCostumeParts(ch, NULL);\n\tif (byMask)\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"CostumeHiddenAck m %d\", mask);\n\telse\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"CostumeHiddenAck %d\", mask ? 1 : 0);\n}"
+ },
+ {
   "file": "char_item.cpp",
   "marker": "MT2009_PLUS_MOUNT_ON_EQUIP_V1 (include)",
   "old": "#include \"char.h\"\n#include \"char_manager.h\"\n",
