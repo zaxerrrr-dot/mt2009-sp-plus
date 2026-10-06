@@ -129,10 +129,13 @@ MSG_OPEN = {
 	3: T('Nie mo\xbfesz tego zrobi\xe6 po \x9cmierci.', 'You cannot do that while dead.'),
 	4: T('Nie uda\xb3o si\xea wczyta\xe6 magazynu - spr\xf3buj jeszcze raz.', 'The storage could not be loaded - try again.'),
 	5: T('Jeste\x9c za daleko od magazyniera.', 'You are too far from the storekeeper.'),
+	# MT2009_PLUS_COLLECTOR_ITEM_V1: "/kolekcjoner przedmiot" without the item (70115) in the bag
+	6: T('Nie masz przedmiotu Kolekcjoner.', 'You do not have the Collector item.'),
 }
 # ECloseReason
 MSG_CLOSE = {
-	1: T('Magazyn kolekcjonera zamkni\xeaty - odszed\xb3e\x9c od magazyniera.', "The collector's storage closed - you walked away."),
+	# MT2009_PLUS_COLLECTOR_ITEM_V1: opened with the Kolekcjoner item too, so no storekeeper here
+	1: T('Magazyn kolekcjonera zamkni\xeaty - odszed\xb3e\x9c za daleko.', "The collector's storage closed - you walked away."),
 	2: T('Magazyn kolekcjonera zamkni\xeaty.', "The collector's storage closed."),
 }
 

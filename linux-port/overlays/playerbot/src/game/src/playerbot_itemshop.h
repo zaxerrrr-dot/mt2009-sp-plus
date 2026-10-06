@@ -51,6 +51,7 @@
 #if defined(PLAYERBOT_ENGINE_MT2009)
 #include "itemshop_manager.h"
 #include "log.h"
+#include "playerbot_collector.h"	// MT2009_PLUS_COLLECTOR_ITEM_V1: its item's vnum
 #if defined(__PET_SYSTEM__)
 #include "PetSystem.h"
 #endif
@@ -136,6 +137,11 @@ namespace
 			if (!proto)
 				continue;
 			++entries;
+			// MT2009_PLUS_COLLECTOR_ITEM_V1: "Kolekcjoner" opens the collector's
+			// storage, which a bot never uses (playerbot_collector.h) - its lines
+			// are no bot's goods, whatever a wish may name later.
+			if (item.dwVnum == playerbot_collector::ITEM_VNUM)
+				continue;
 			TPlayerBotItemShopEntry entry;
 			entry.dwIndex = item.dwIndex;
 			entry.dwPrice = shop.GetItemPrice(item);

@@ -6,6 +6,10 @@
 //
 // "/kolekcjoner <word> ..." (cmd.cpp, server-patches/collector):
 //   open                                   the safebox must be open
+//   przedmiot                              MT2009_PLUS_COLLECTOR_ITEM_V1: the
+//                                          "Kolekcjoner" item (ITEM_VNUM) in the
+//                                          bag instead of the open safebox (its
+//                                          use runs this, quest kolekcjoner_item)
 //   close
 //   put <op> <bag cell> <count>            0 = the whole stack
 //   putall <op> <bag cell> [keep=<hex>]    every stack of that kind in the bag
@@ -48,6 +52,7 @@ enum EOpenError {
 	OPEN_DEAD = 3,
 	OPEN_DB = 4,
 	OPEN_TOO_FAR = 5,
+	OPEN_NO_ITEM = 6,	// MT2009_PLUS_COLLECTOR_ITEM_V1: "przedmiot" without the item in the bag
 };
 
 enum ECloseReason {
@@ -72,6 +77,15 @@ const DWORD OWNER_BASE = 2000000000u;
 const DWORD MAX_ENTRY_COUNT = 2000000000u;
 // A move must be within this of where the window was opened.
 const int MAX_DISTANCE = 1500;
+
+// MT2009_PLUS_COLLECTOR_ITEM_V1: "Kolekcjoner" (the ItemShop's, 1000 SM; world.item_proto
+// from linux-port/docker/mariadb/playerbot/apply.sh, the client's from
+// client-patches/client-2.0.30/tools/collectoritem). Not used up: while it is in the bag,
+// using it opens this store wherever the character stands, without the storekeeper and
+// his safebox (game/quest/kolekcjoner_item.quest -> "/kolekcjoner przedmiot"). The bots
+// never buy it (playerbot_itemshop.h leaves its lines out of their catalogue) and never
+// open the store (RealPlayer).
+const DWORD ITEM_VNUM = 70115;
 
 void Command(LPCHARACTER ch, const char* argument);
 

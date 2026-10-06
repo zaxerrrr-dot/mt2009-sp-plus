@@ -2776,6 +2776,25 @@ INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, sta
 ishop_once monster_cards_617 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (617, 72322, 1, 49, 'DRAGON_COIN', 0), (618, 72323, 1, 49, 'DRAGON_COIN', 0);" \
   "could not put the Monster Card scrolls into the ItemShop"
 
+# MT2009_PLUS_COLLECTOR_ITEM_V1 (the owner, 6 October): "Kolekcjoner" (70115) - the
+# collector's storage ("Magazyn kolekcjonera"), which only the storekeeper's safebox
+# window opened, wherever the character stands. ITEM_QUEST like Pierscien Teleportacji
+# (70058), never used up: its use is game/quest/kolekcjoner_item.quest ->
+# "/kolekcjoner przedmiot" (playerbot_collector.cpp - the item in the bag, alive, the
+# store's other rules as at the storekeeper). Bought with SM, so it stays its buyer's:
+# no drop, sale, trade, private/offline shop or stacking (antiflag 106880 =
+# DROP|SELL|GIVE|STACK|MYSHOP); the account's safebox may carry it between its
+# characters. INSERT IGNORE: a row the operator changed is kept; the client carries
+# the same row (client-patches/client-2.0.30/tools/collectoritem). Idempotent.
+db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(70115, 'Collector', 'Kolekcjoner', 18, 0, 1, 0, 1, 106880, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" \
+  || fail_step "could not add the Kolekcjoner item (70115)" >&2
+# Its ItemShop line: the "Wyposazenie" page (indexes 1-99) at 1000 SM, no level floor
+# (the storekeeper asks none). The bots leave it out of their catalogue
+# (playerbot_itemshop.h). Once per install (ishop_once, MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
+ishop_once collector_item_16 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (16, 70115, 1, 1000, 'DRAGON_COIN', 0);" \
+  "could not put the Kolekcjoner item into the ItemShop"
+
 # MT2009_PLUS_DUNGEON_RANKING_FINISH_V1: the dungeon panel credits a run only to
 # those who hurt the final boss (playerbot_dungeon_panel.h, DungeonFinishers);
 # before, everyone standing in the instance at the boss's fall was credited -
