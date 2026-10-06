@@ -390,6 +390,8 @@ class SidebarWindow(ui.Window):
 		("dungeon", "Wyprawy", "OnClickDungeonInfo", "dungeon_info"),
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
 		("teleport", "Zapisane pozycje", "OnClickTpBookmarks", "tp_bookmarks"),
+		# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher (uibonusswitch.py).
+		("bonusswitch", "Zmiana bonus\xf3w", "OnClickBonusSwitch", "bonus_switch"),
 		# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window (uiusunmisje.py).
 		("missions", "Usuñ misje", "OnClickClearMissions", None),
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
@@ -741,6 +743,10 @@ class SidebarWindow(ui.Window):
 	def OnClickTpBookmarks(self):
 		import uitpbookmarks
 		uitpbookmarks.ToggleWindow()
+
+	def OnClickBonusSwitch(self):
+		import uibonusswitch
+		uibonusswitch.ToggleWindow()
 
 	def OnClickWeeklyRank(self):
 		import uiweeklyrank
@@ -3084,6 +3090,13 @@ class InventoryWindow(ui.ScriptWindow):
 			if self.isShowAcceWindow():
 				acce.Add(player.INVENTORY, slotIndex, 255)
 				return
+
+		# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): with the bonus switcher open, a weapon or
+		# an armour goes into its selected tab instead of being put on.
+		if __import__("uibonusswitch").TakeInventoryItem(slotIndex):
+			mouseModule.mouseController.DeattachObject()
+			self.OverOutItem()
+			return
 
 		if self.__OpenAllByCtrl(slotIndex):	# MT2009_PLUS_OPEN_ALL_V1
 			return
