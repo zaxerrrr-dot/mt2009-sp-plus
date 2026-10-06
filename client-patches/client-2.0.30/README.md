@@ -800,3 +800,23 @@ pliku, albo aktualizacja klienta podmieniła `pack/dbdata.*`) – okienko i dwie
 
 - Nowy wpis paczki `root`: `dbdatastamp.py`.
 - Zastępowany `game.py`: komenda `DbDataStamp`, `dbdatastamp.Destroy()` przy zamknięciu okna gry.
+
+## Punkty Rangi – owoce i rangi nad głową (`MT2009_PLUS_RANK_POINTS_V1`)
+
+Część serwerowa: `server-patches/rankpoints` + `playerbot_rank_points.h`. „Dodatkowe rangi” z Arezzo: owoce
+80050–80054 (Jabłko, Gruszka, Winogrono, Arbuz, Ananas – vnumy, typ USE/USE_SPECIAL, nazwy i ikony Arezzo),
+nazwy rang (Waleczny, Mocarny, Potężny, Władca, Arcymistrz, Legenda) i kolory z `colorinfo.py` Arezzo
+(`TITLE_RGB_GOOD_*`).
+
+- `rankpoints.py` (nowy) – komendy `RANGA tail <vid> <ranga>` (ranga od 21 000 punktów w miejscu rangi za
+  punkty nad głową, 0 = zwykła ranga) i `RANGA self <punkty> <ranga>` (własne punkty); z nowym exe
+  `chrmgr.RegisterRankTitle` / `chrmgr.SetRankTitle` (`client-patches/exe`, `ENABLE_RANK_TITLE`), ze starym exe
+  tytuł nakładany co 0,5 s przez `textTail.AttachTitle` (między odświeżeniami exe może mignąć zwykła ranga).
+- `game.py` – komenda `RANGA`, odświeżenie dymka rangi w oknie postaci.
+- `uicharacter.py` (z paczki 2.0.55, nowy w repo) – w dymku rangi (alignment) w oknie postaci: ranga, Punkty
+  Rangi, bonus rangi i owoc na teraz (jak `ALIGN_BONUS` Arezzo).
+- `icon/item/80050.tga` … `80054.tga` (nowe wpisy paczki `root`) – ikony Arezzo `icon/item/fruit_2, _1, _7, _6,
+  _5.tga`, zapisane bez RLE.
+- `tools/rankfruit/patch_rank_fruit_client.py` (obraz `m2pack-lzo`, idempotentne) – `gamedata/item_proto` i
+  `locale/pl/itemdesc.txt` (paczka `dbdata`), `gamedata/item_list.txt` (paczka `gamedata`): 5 rekordów / wierszy
+  jak w `apply.sh`. Po buildzie klienta: nowa baza edytora bazy danych (`m2clientpack.make_base`).

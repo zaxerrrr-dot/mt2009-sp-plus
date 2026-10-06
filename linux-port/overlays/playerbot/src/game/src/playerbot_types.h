@@ -3048,7 +3048,9 @@ namespace
 	// of a Kamien Duchowy (owner, 5 October).
 	// 15: MT2009_PLUS_SASH_CLOTH_V1 - Delikatne Sukno (80019) at a tenth of a
 	// plain sash (owner, 6 October; GetPlayerBotSashClothPrice).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 15;
+	// 16: MT2009_PLUS_RANK_POINTS_V1 - the rank fruits 80050-80054 at
+	// 5 000 / 10 000 / 25 000 / 50 000 / 100 000 (GetPlayerBotRankFruitPrice).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 16;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in

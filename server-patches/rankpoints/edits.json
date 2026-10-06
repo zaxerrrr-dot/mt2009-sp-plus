@@ -1,0 +1,44 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_RANK_POINTS_V1 (declare)",
+  "old": "ACMD(do_cardmonster);\t// MT2009_PLUS_MONSTER_CARDS_V1 (declare): Karty Potworow (Autor: Digi Rasta), playerbot_monster_card.h\n",
+  "new": "ACMD(do_cardmonster);\t// MT2009_PLUS_MONSTER_CARDS_V1 (declare): Karty Potworow (Autor: Digi Rasta), playerbot_monster_card.h\nACMD(do_rank_points);\t// MT2009_PLUS_RANK_POINTS_V1 (declare): Punkty Rangi, \"/ranga\" (playerbot_rank_points.h)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_RANK_POINTS_V1 (table)",
+  "old": "\t{ \"cardmonster\",\tdo_cardmonster,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_MONSTER_CARDS_V1 (table)\n",
+  "new": "\t{ \"cardmonster\",\tdo_cardmonster,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_MONSTER_CARDS_V1 (table)\n\t{ \"ranga\",\tdo_rank_points,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_RANK_POINTS_V1 (table)\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_RANK_POINTS_V1 (kill)",
+  "old": "\t\t{ void MonsterCardOnKill(LPCHARACTER, LPCHARACTER); MonsterCardOnKill(pkQuestKiller, this); }\n",
+  "new": "\t\t{ void MonsterCardOnKill(LPCHARACTER, LPCHARACTER); MonsterCardOnKill(pkQuestKiller, this); }\n\t\t// MT2009_PLUS_RANK_POINTS_V1 (kill): a Metin or a boss drops 1-2 rank fruits of its level band at 30%\n\t\t// (playerbot_rank_points.h).\n\t\t{ void RankPointsOnKill(LPCHARACTER, LPCHARACTER); RankPointsOnKill(pkQuestKiller, this); }\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_RANK_POINTS_V1 (use)",
+  "old": "\t\tconst int iMonsterCardUse = MonsterCardUseItem(this, item);\n\t\tif (iMonsterCardUse >= 0)\n\t\t\treturn iMonsterCardUse != 0;\n\t}\n",
+  "new": "\t\tconst int iMonsterCardUse = MonsterCardUseItem(this, item);\n\t\tif (iMonsterCardUse >= 0)\n\t\t\treturn iMonsterCardUse != 0;\n\t}\n\t// MT2009_PLUS_RANK_POINTS_V1 (use): the rank fruits 80050-80054, Punkty Rangi in their range (playerbot_rank_points.h).\n\t{\n\t\tint RankPointsUseItem(LPCHARACTER ch, LPITEM item);\n\t\tconst int iRankPointsUse = RankPointsUseItem(this, item);\n\t\tif (iRankPointsUse >= 0)\n\t\t\treturn iRankPointsUse != 0;\n\t}\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_RANK_POINTS_V1 (login)",
+  "old": "\t{ void MonsterCardOnLogin(LPCHARACTER); MonsterCardOnLogin(ch); }\n",
+  "new": "\t{ void MonsterCardOnLogin(LPCHARACTER); MonsterCardOnLogin(ch); }\n\t// MT2009_PLUS_RANK_POINTS_V1 (login): the Punkty Rangi read again, the rank's bonus and title (playerbot_rank_points.h).\n\t{ void RankPointsOnLogin(LPCHARACTER); RankPointsOnLogin(ch); }\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_RANK_POINTS_V1 (insert)",
+  "old": "\tif (entity->IsType(ENTITY_CHARACTER))\n\t{\n\t\tsys_log(3, \"EntityInsert",
+  "new": "\t// MT2009_PLUS_RANK_POINTS_V1 (insert): a character with a rank of Punkty Rangi comes into a player's view with\n\t// \"RANGA tail <vid> <tier>\" - the rank's title where the alignment title stands (playerbot_rank_points.h).\n\tif (IsPC() && ch && ch->IsPC() && !d->IsBot())\n\t{\n\t\tvoid RankPointsOnInsert(LPCHARACTER, LPCHARACTER);\n\t\tRankPointsOnInsert(this, ch);\n\t}\n\n\tif (entity->IsType(ENTITY_CHARACTER))\n\t{\n\t\tsys_log(3, \"EntityInsert"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RANK_POINTS_V1 (wiki)",
+  "old": "\t// The world's extras, none of them for the Razador and Nemere dungeons' own monsters.\n",
+  "new": "\t// MT2009_PLUS_RANK_POINTS_V1 (wiki): a Metin's or a boss's rank fruit, 1-2 at 30% (playerbot_rank_points.h).\n\t{\n\t\tDWORD RankPointsWikiFruit(bool metinOrBoss, int level);\n\t\tint RankPointsWikiPercent();\n\t\tconst DWORD fruit = RankPointsWikiFruit(stone || table.bRank >= MOB_RANK_BOSS, level);\n\t\tif (fruit)\n\t\t{\n\t\t\tDropWikiAdd(rows, fruit, 1, RankPointsWikiPercent() / 100.0);\n\t\t\tfor (auto& row : rows)\n\t\t\t\tif (row.dwVnum == fruit)\n\t\t\t\t\trow.iCountMax = MAX(row.iCountMax, 2);\n\t\t}\n\t}\n\n\t// The world's extras, none of them for the Razador and Nemere dungeons' own monsters.\n"
+ }
+]

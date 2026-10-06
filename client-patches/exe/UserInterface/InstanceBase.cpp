@@ -3517,6 +3517,9 @@ void CInstanceBase::__Initialize()
 #endif
 
 	m_sAlignment = 0;
+#ifdef ENABLE_RANK_TITLE
+	m_byRankTitle = 0;	// MT2009_PLUS_RANK_POINTS_V1
+#endif
 	m_byPKMode = 0;
 	m_isKiller = false;
 	m_isPartyMember = false;

@@ -71,6 +71,48 @@ PyObject * chrmgrRegisterTitleColor(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildNone();
 }
 
+#ifdef ENABLE_RANK_TITLE
+// MT2009_PLUS_RANK_POINTS_V1: chrmgr.RegisterRankTitle(tier, name, r, g, b) - a rank of Punkty Rangi
+// (tiers 1..15) and its colour; chrmgr.SetRankTitle(vid, tier) - the character's rank (0: the alignment title).
+PyObject * chrmgrRegisterRankTitle(PyObject* poSelf, PyObject* poArgs)
+{
+	int iIndex;
+	if (!PyTuple_GetInteger(poArgs, 0, &iIndex))
+		return Py_BadArgument();
+	char * szTitleName;
+	if (!PyTuple_GetString(poArgs, 1, &szTitleName))
+		return Py_BadArgument();
+	int ir;
+	if (!PyTuple_GetInteger(poArgs, 2, &ir))
+		return Py_BadArgument();
+	int ig;
+	if (!PyTuple_GetInteger(poArgs, 3, &ig))
+		return Py_BadArgument();
+	int ib;
+	if (!PyTuple_GetInteger(poArgs, 4, &ib))
+		return Py_BadArgument();
+
+	return Py_BuildValue("i", CInstanceBase::RegisterRankTitle(iIndex, szTitleName, ir, ig, ib) ? 1 : 0);
+}
+
+PyObject * chrmgrSetRankTitle(PyObject* poSelf, PyObject* poArgs)
+{
+	int iVID;
+	if (!PyTuple_GetInteger(poArgs, 0, &iVID))
+		return Py_BadArgument();
+	int iTier;
+	if (!PyTuple_GetInteger(poArgs, 1, &iTier))
+		return Py_BadArgument();
+
+	CInstanceBase * pInstance = CPythonCharacterManager::Instance().GetInstancePtr(iVID);
+	if (!pInstance)
+		return Py_BuildValue("i", 0);
+
+	pInstance->SetRankTitle(iTier > 0 && iTier < 256 ? (BYTE) iTier : 0);
+	return Py_BuildValue("i", 1);
+}
+#endif
+
 PyObject * chrmgrGetPickedVID(PyObject* poSelf, PyObject* poArgs)
 {
 	CPythonCharacterManager& rkChrMgr=CPythonCharacterManager::Instance();
@@ -790,6 +832,10 @@ void initchrmgr()
 		{ "SetHorseDustGap",			chrmgrSetHorseDustGap,					METH_VARARGS },
 
 		{ "RegisterTitleName",			chrmgrRegisterTitleName,				METH_VARARGS },
+#ifdef ENABLE_RANK_TITLE
+		{ "RegisterRankTitle",			chrmgrRegisterRankTitle,				METH_VARARGS },	// MT2009_PLUS_RANK_POINTS_V1
+		{ "SetRankTitle",				chrmgrSetRankTitle,					METH_VARARGS },	// MT2009_PLUS_RANK_POINTS_V1
+#endif
 		{ "RegisterNameColor",			chrmgrRegisterNameColor,				METH_VARARGS },
 		{ "RegisterTitleColor",			chrmgrRegisterTitleColor,				METH_VARARGS },
 		{ "HasAffectByVID",				chrmgrHasAffectByVID,					METH_VARARGS },

@@ -2871,6 +2871,26 @@ db -e "INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, c
 (85001, 85001, 1, 80000, 100, '80019,10', 0, 0, 0);" \
   || fail_step "could not add Uriel's sash recipe (crafting_proto 85001)" >&2
 
+# MT2009_PLUS_RANK_POINTS_V1 (the owner, 6 October): the rank fruits of Arezzo's
+# "dodatkowe rangi" - Jablko 80050, Gruszka 80051, Winogrono 80052, Arbuz 80053,
+# Ananas 80054 (Arezzo's vnums; ITEM_USE / USE_SPECIAL as Arezzo's, value0 = the
+# points a piece gives). Metins and bosses drop 1-2 at 30% by their level band;
+# eaten in its range of Punkty Rangi, a fruit raises them (playerbot_rank_points.h,
+# server-patches/rankpoints). Stackable to 200 (flag 4), tradeable everywhere
+# (antiflag 0); the merchant pays 1000 / 2000 / 5000 / 10 000 / 20 000. The client
+# carries the same rows (client-patches/client-2.0.30/tools/rankfruit). INSERT
+# IGNORE: a row the operator changed is kept. Idempotent.
+db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(80050, 'Apple', _cp1250 X'4A6162B36B6F', 3, 10, 200, 0, 1, 0, 4, 0, '', 25000, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(80051, 'Pear', _cp1250 X'477275737A6B61', 3, 10, 200, 0, 1, 0, 4, 0, '', 50000, 2000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(80052, 'Grapes', _cp1250 X'57696E6F67726F6E6F', 3, 10, 200, 0, 1, 0, 4, 0, '', 125000, 5000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(80053, 'Watermelon', _cp1250 X'417262757A', 3, 10, 200, 0, 1, 0, 4, 0, '', 250000, 10000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
+(80054, 'Pineapple', _cp1250 X'416E616E6173', 3, 10, 200, 0, 1, 0, 4, 0, '', 500000, 20000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" \
+  || fail_step "could not add the rank fruits (80050-80054)" >&2
+# Their points, one row a character (the game creates it as well, at its first read).
+db -e "CREATE TABLE IF NOT EXISTS player.mt2009_rank_points (pid INT UNSIGNED NOT NULL PRIMARY KEY, points INT NOT NULL DEFAULT 0, updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB;" \
+  || fail_step "could not create player.mt2009_rank_points" >&2
+
 # MT2009_PLUS_DUNGEON_RANKING_FINISH_V1: the dungeon panel credits a run only to
 # those who hurt the final boss (playerbot_dungeon_panel.h, DungeonFinishers);
 # before, everyone standing in the instance at the boss's fall was credited -

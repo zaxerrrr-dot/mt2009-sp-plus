@@ -171,6 +171,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_dungeon_panel.h" // the dungeon panel, "/lochy", d.update_ranking (MT2009_PLUS_DUNGEON_PANEL_V1)
 #include "playerbot_weekly_rank.h" // the weekly ranking and its titles, "/ranking" (MT2009_PLUS_WEEKLY_RANKING_V1)
 #include "playerbot_monster_card.h" // Digi Rasta's Monster Cards (Karty Potworow), "/cardmonster" (MT2009_PLUS_MONSTER_CARDS_V1)
+#include "playerbot_rank_points.h" // Punkty Rangi from fruits, the rank titles, "/ranga" (MT2009_PLUS_RANK_POINTS_V1)
 // Iwakura's Bot Mood System: the moods and the notes the loot, the chests,
 // the fishing and the blacksmith send it - early, so any of them may.
 #include "playerbot_mood.h"
@@ -7093,6 +7094,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_LEGENDS_V1: its tier's row, HP and achievements, and a
 		// Legend's guild (playerbot_legends.h).
 		ManagePlayerBotLegend(ch, state, dwNow);
+		// MT2009_PLUS_RANK_POINTS_V1: its Punkty Rangi read, the bonus on and the
+		// fruits that fit its range eaten (playerbot_rank_points.h).
+		ManagePlayerBotRankPoints(ch, dwNow);
 		// Answered every tick and not on the party pass's own clock: the engine
 		// gives an invitation ten seconds to live, and the party pass can be
 		// three minutes away.

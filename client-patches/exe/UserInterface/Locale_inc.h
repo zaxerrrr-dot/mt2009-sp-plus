@@ -171,6 +171,11 @@
 // (crowds of bots; the archer's extra arrows fly with the shot).
 #define ENABLE_RECV_TIME_BUDGET
 
+// MT2009_PLUS_RANK_POINTS_V1: the rank of Punkty Rangi (server: playerbot_rank_points.h) in the alignment
+// title's place over a character - chrmgr.RegisterRankTitle(tier, name, r, g, b), chrmgr.SetRankTitle(vid, tier)
+// (root/rankpoints.py); tier 0 is the alignment title as before.
+#define ENABLE_RANK_TITLE
+
 #define __BL_CLIP_MASK__
 
 #define ENABLE_FIX_MOBS_LAG

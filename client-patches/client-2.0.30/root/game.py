@@ -3238,6 +3238,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
 		serverCommandList["BSW"] = self.__BonusSwitch # MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion)
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
+		serverCommandList["RANGA"] = self.__RankPoints # MT2009_PLUS_RANK_POINTS_V1
 		serverCommandList["MISJE"] = self.__ClearMissions # MT2009_PLUS_CLEAR_MISSIONS_V1
 		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
 		# packet) and Owsap's "<flag> <value>" commands (ingameevent.py).
@@ -3892,6 +3893,20 @@ class GameWindow(ui.ScriptWindow):
 		uibonusswitch.OnCommand(*args)
 
 	# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking's lines (uiweeklyrank.py); "tail" is
+	# MT2009_PLUS_RANK_POINTS_V1: "RANGA tail <vid> <tier>" - a rank of Punkty Rangi
+	# where the alignment title stands; "RANGA self <points> <tier>" - the player's
+	# own points for the character window's alignment tooltip (rankpoints.py).
+	def __RankPoints(self, *args):
+		import rankpoints
+		if rankpoints.OnCommand(*args) and not getattr(self, "rankTitleKeeper", None):
+			self.rankTitleKeeper = rankpoints.GetKeeper()
+			self.RegisterUpdatable(self.rankTitleKeeper)
+		if args and args[0] == "self":
+			try:
+				self.interface.RefreshAlignment()
+			except Exception:
+				pass
+
 	# a title holder's title above its nick, in the row the bots' titles use
 	# (playerbot_status_tail.py, kept fresh by the same keeper).
 	def __WeeklyRank(self, *args):
