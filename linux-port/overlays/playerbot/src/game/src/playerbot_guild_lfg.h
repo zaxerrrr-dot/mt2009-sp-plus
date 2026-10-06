@@ -46,6 +46,15 @@
 //     musze juz isc" and back to its life. A no gets a short okay; an offer
 //     not answered lapses in three minutes without another word.
 //
+// MT2009_PLUS_GUILD_LFG_V2 (the owner, 6 October: "nikt im sie nie zglasza
+// ... minimum 1 bot, a jak jest wiecej dostepnych to max 10"): three to ten
+// bots are wanted; when the rules above find fewer, a looser pass adds any of
+// the kingdom from level 10 in a guild below the elite (a person's guild: of
+// level 5 or less with at most ten members), without the offer gap. A
+// person's calls are answered every three minutes, a bot offers every
+// fifteen. With M1 on another core the bot meets the person where the person
+// stands. "Piszcie do mnie na pw" and "wbijajcie do gildii" are calls too.
+//
 // The FILE playerbot_guild_lfg_off in the game core's directory switches it
 // off (checked every 30 s, as the dungeon finder's playerbot_lfg_off).
 //
@@ -114,6 +123,14 @@ namespace playerbot_guild_lfg
 			"przyjmujemy", "przyjmiemy", "zbieram", "zbieramy", "lfm", "dodam", "dodaje", "dodajemy", "szukamy", "wolne",
 			"zaprosze", "zaprosimy" };
 		static const char* const joinStems[] = { "dolacz", "wstap", "wbij" };
+		// MT2009_PLUS_GUILD_LFG_V2: "piszcie do mnie", "zglaszajcie sie do mnie" -
+		// the way to reach the caller, not a person asking to be taken.
+		static const char* const contact[] = { "pisz", "piszcie", "pisac", "napisz", "napiszcie", "zglaszac", "zglaszajcie",
+			"zglos", "zgloscie", "priv", "pw", "msg", "pv" };
+		bool contactWord = false;
+		for (size_t i = 0; i < w.size(); ++i)
+			if (GLFG_IN(w[i], contact))
+				contactWord = true;
 		static const char* const who[] = { "kto", "ktos", "ktokolwiek", "chetny", "chetni", "chetna" };
 		static const char* const want[] = { "chce", "chcialbym", "chcialabym", "chcem", "szukalbym" };
 
@@ -131,7 +148,9 @@ namespace playerbot_guild_lfg
 		for (size_t i = 0; i < w.size(); ++i)
 		{
 			const std::string& x = w[i];
-			if (GLFG_IN(x, trade) || GLFG_IN(x, self) || GLFG_IN(x, war))
+			if (GLFG_IN(x, trade) || GLFG_IN(x, war))
+				return false;
+			if (GLFG_IN(x, self) && !(contactWord && x == "mnie"))
 				return false;
 			if (GLFG_IN(x, people))
 				peopleWord = true;
@@ -159,6 +178,10 @@ namespace playerbot_guild_lfg
 		if (wantWord && (joinWord || doGuild) && !peopleWord && !whoWord)
 			return false;
 		const bool guildSubject = seek && guildAt < seekAt;
+		// "wbijajcie do gildii": the call's plural imperative.
+		for (size_t i = 0; i < w.size(); ++i)
+			if (StartsWith(w[i], "wbijaj") || StartsWith(w[i], "dolaczaj") || StartsWith(w[i], "wstepuj"))
+				joinWord = whoWord = true;
 		return recruitWord || (joinWord && (whoWord || t.question || peopleWord)) ||
 				(seek && (peopleWord || guildSubject || doGuild)) || (whoWord && doGuild);
 	}
@@ -231,11 +254,17 @@ namespace playerbot_guild_lfg
 		int npc;
 		std::string village;   // the first village's name
 		int channel;           // named when the person is on another
-		TPlace() : npc(NPC_SMITH), channel(0) {}
+		bool nearPerson;       // MT2009_PLUS_GUILD_LFG_V2: at the person's side, M1 not on this core
+		TPlace() : npc(NPC_SMITH), channel(0), nearPerson(false) {}
 	};
 
 	inline std::string PlaceWords(TRng& rng, const TPlace& p)
 	{
+		if (p.nearPerson)
+		{
+			static const char* const near[] = { "przy tobie", "obok ciebie", "ko`lo ciebie", "tam gdzie stoisz" };
+			return Any(rng, near);
+		}
 		static const char* const forms[] = { "w M1 przy $NPC", "przy $NPC w M1", "w $VIL przy $NPC", "w M1 ($VIL) przy $NPC",
 			"przy $NPC w $VIL", "w M1 przy $NPC" };
 		std::string out = Any(rng, forms);
@@ -370,8 +399,12 @@ namespace
 	const DWORD PLAYERBOT_GLFG_NEXT_DELAY_MIN_MS = 5000;
 	const DWORD PLAYERBOT_GLFG_NEXT_DELAY_SPREAD_MS = 9000;
 	// A person's calls are answered this often; a bot offers this often.
-	const DWORD PLAYERBOT_GLFG_PERSON_GAP_MS = 10 * 60 * 1000;
-	const DWORD PLAYERBOT_GLFG_BOT_GAP_MS = 30 * 60 * 1000;
+	// MT2009_PLUS_GUILD_LFG_V2 (the owner, 6 October: "nikt im sie nie zglasza
+	// ... zawsze, przy kazdym zgloszeniu napisal do niego minimum 1 bot, a jak
+	// jest wiecej dostepnych to max 10"): shorter gaps, up to ten bots, and a
+	// looser second pass (PLAYERBOT_GLFG_RELAXED) when the strict one finds none.
+	const DWORD PLAYERBOT_GLFG_PERSON_GAP_MS = 3 * 60 * 1000;
+	const DWORD PLAYERBOT_GLFG_BOT_GAP_MS = 15 * 60 * 1000;
 	const DWORD PLAYERBOT_GLFG_OFFER_SLACK_MS = 20 * 1000;
 	const DWORD PLAYERBOT_GLFG_WALK_EXTRA_MS = 90 * 1000;
 	const DWORD PLAYERBOT_GLFG_SWITCH_CHECK_MS = 30 * 1000;
@@ -379,7 +412,8 @@ namespace
 	const DWORD PLAYERBOT_GLFG_NOTE_MS = 60 * 1000;
 	const int PLAYERBOT_GLFG_LEVEL_SPAN = 15;
 	const int PLAYERBOT_GLFG_MIN_LEVEL = 10;
-	const int PLAYERBOT_GLFG_MAX_BOTS = 3;
+	const int PLAYERBOT_GLFG_MIN_BOTS = 3;
+	const int PLAYERBOT_GLFG_MAX_BOTS = 10;
 	const int PLAYERBOT_GLFG_NO_GUILD_PERCENT = 15;
 	const int PLAYERBOT_GLFG_WALK_RANGE = 4000;
 	const int PLAYERBOT_GLFG_SPOT_RADIUS = 180;
@@ -412,6 +446,7 @@ namespace
 		BYTE phase;
 		bool noGuild;      // "przeciez nie masz gildii" and nothing more
 		bool walking;
+		bool relaxed;      // MT2009_PLUS_GUILD_LFG_V2: found by the looser pass
 		DWORD dueAt;
 		DWORD offeredAt;
 		DWORD acceptedAt;
@@ -422,7 +457,7 @@ namespace
 		long spotY;
 		playerbot_guild_lfg::TPlace place;
 		TPlayerBotGuildLfg() : personPID(0), personEmpire(0), guildID(0), phase(GLFG_PHASE_DUE), noGuild(false),
-			walking(false), dueAt(0), offeredAt(0), acceptedAt(0), waitUntil(0), notedAt(0), map(0), spotX(0), spotY(0) {}
+			walking(false), relaxed(false), dueAt(0), offeredAt(0), acceptedAt(0), waitUntil(0), notedAt(0), map(0), spotX(0), spotY(0) {}
 	};
 
 	std::map<DWORD, TPlayerBotGuildLfg> s_mapPlayerBotGuildLfg;     // by bot pid
@@ -472,7 +507,9 @@ namespace
 
 	// 0: the bot stays where it is; 1: it has no guild; 2: its guild is
 	// so weak it leaves it for the person's.
-	int GetPlayerBotGuildLfgFreedom(LPCHARACTER bot, CGuild* theirs)
+	// MT2009_PLUS_GUILD_LFG_V2: `relaxed` - any guild below the elite will do
+	// (the second pass, when no bot of a weak guild or none is free).
+	int GetPlayerBotGuildLfgFreedom(LPCHARACTER bot, CGuild* theirs, bool relaxed = false)
 	{
 		if (!bot)
 			return 0;
@@ -489,9 +526,13 @@ namespace
 		{
 			if (info->bTier == GUILD_TIER_ELITE)
 				return 0;
+			if (relaxed)
+				return 2;
 			return members <= 3 || (level <= 2 && members <= 8) ? 2 : 0;
 		}
 		// A person's guild the bot was invited into: only one that is barely one.
+		if (relaxed)
+			return level <= 5 && members <= 10 ? 2 : 0;
 		return level <= 2 && members <= 3 ? 2 : 0;
 	}
 
@@ -556,6 +597,7 @@ namespace
 	{
 		DWORD pid;
 		int weight;
+		bool relaxed;
 	};
 
 	// A person's line on the normal chat, the shout or the '@' trade chat.
@@ -590,10 +632,9 @@ namespace
 			skip = "guild_full";
 		else if (!guild && number(1, 100) > PLAYERBOT_GLFG_NO_GUILD_PERCENT)
 			skip = "no_guild";
-		const long m1 = playerbot_empire_rules::GetHomeMap(empire, playerbot_empire_rules::MAP_ROLE_M1);
-		playerbot_empire_rules::TTownServices services;
-		if (!skip && guild && (!IsPlayerBotMapHostedHere(m1) || !playerbot_empire_rules::GetTownServices(m1, services)))
-			skip = "m1_not_here";
+		// MT2009_PLUS_GUILD_LFG_V2: M1 on another core is no reason for silence -
+		// the bot then meets the person where the person stands
+		// (PlacePlayerBotGuildLfgSpot).
 		if (skip)
 		{
 			s_mapPlayerBotGuildLfgCalls[personPID] = dwNow;
@@ -602,68 +643,81 @@ namespace
 		}
 
 		std::vector<TPlayerBotGuildLfgCandidate> candidates;
-		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
-		{
-			const DWORD pid = it->first;
-			if (s_mapPlayerBotGuildLfg.find(pid) != s_mapPlayerBotGuildLfg.end() ||
-					s_mapPlayerBotLfg.find(pid) != s_mapPlayerBotLfg.end())
-				continue;
-			std::map<DWORD, DWORD>::const_iterator cool = s_mapPlayerBotGuildLfgBotAt.find(pid);
-			if (cool != s_mapPlayerBotGuildLfgBotAt.end() && dwNow - cool->second < PLAYERBOT_GLFG_BOT_GAP_MS)
-				continue;
-			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(pid);
-			if (!c || c == person || c->GetEmpire() != empire)
-				continue;
-			const TPlayerBotAIState& state = it->second;
-			if (!guild)
-			{
-				// "przeciez nie masz gildii": a bot that heard it, of any level.
-				if (c->GetMapIndex() != person->GetMapIndex() ||
-						DISTANCE_APPROX(c->GetX() - person->GetX(), c->GetY() - person->GetY()) > 5000 ||
-						GetPlayerBotLfgRefusal(c, state, dwNow))
-					continue;
-				TPlayerBotGuildLfgCandidate cand = { pid, 10 };
-				candidates.push_back(cand);
-				continue;
-			}
-			const int level = c->GetLevel();
-			if (level < std::max(PLAYERBOT_GLFG_MIN_LEVEL, personLevel - PLAYERBOT_GLFG_LEVEL_SPAN) ||
-					level > personLevel + PLAYERBOT_GLFG_LEVEL_SPAN)
-				continue;
-			if (IsPlayerBotAwaitingGuildInvite(pid) || IsPlayerBotLegendTier(GetPlayerBotLegendTier(pid)))
-				continue;
-			const int freedom = GetPlayerBotGuildLfgFreedom(c, guild);
-			if (freedom == 0)
-				continue;
-			// The engine's own refusal of a fresh leaver (CGuild::Invite).
-			if (get_global_time() - c->GetQuestFlag("guild_manage.new_withdraw_time") <
-					CGuildManager::instance().GetWithdrawDelay() ||
-					get_global_time() - c->GetQuestFlag("guild_manage.new_disband_time") <
-					CGuildManager::instance().GetDisbandDelay())
-				continue;
-			if (GetPlayerBotLfgRefusal(c, state, dwNow))
-				continue;
-			TPlayerBotGuildLfgCandidate cand;
-			cand.pid = pid;
-			cand.weight = 10;
-			if (freedom == 1)
-				cand.weight += 10;
-			if (c->GetMapIndex() == person->GetMapIndex())
-				cand.weight += 20;
-			if (state.bCurrentAction == BOT_ACTION_IDLE || state.bCurrentAction == BOT_ACTION_TRAVEL ||
-					state.bCurrentAction == BOT_ACTION_TOWN_REST)
-				cand.weight += 6;
-			if (GetPlayerBotAffinity(state, personPID) > 0)
-				cand.weight += 8;
-			candidates.push_back(cand);
-		}
-
+		// MT2009_PLUS_GUILD_LFG_V2: at least one bot whenever one is free, up to ten.
 		int wanted = 1;
 		if (guild)
+			wanted = number(PLAYERBOT_GLFG_MIN_BOTS, PLAYERBOT_GLFG_MAX_BOTS);
+		// The strict pass first; when it finds fewer than wanted, a looser one -
+		// any level from PLAYERBOT_GLFG_MIN_LEVEL, a guild of any tier below the
+		// elite, no 15-minute gap between a bot's offers - adds more.
+		for (int pass = 0; pass < (guild ? 2 : 1) && (int)candidates.size() < wanted; ++pass)
 		{
-			const int roll = number(1, 100);
-			wanted = roll <= 50 ? 1 : roll <= 85 ? 2 : PLAYERBOT_GLFG_MAX_BOTS;
+			const bool relaxed = pass == 1;
+			const size_t strictFound = candidates.size();
+			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+			{
+				const DWORD pid = it->first;
+				bool already = false;
+				for (size_t i = 0; i < strictFound; ++i)
+					if (candidates[i].pid == pid)
+						already = true;
+				if (already)
+					continue;
+				if (s_mapPlayerBotGuildLfg.find(pid) != s_mapPlayerBotGuildLfg.end() ||
+						s_mapPlayerBotLfg.find(pid) != s_mapPlayerBotLfg.end())
+					continue;
+				std::map<DWORD, DWORD>::const_iterator cool = s_mapPlayerBotGuildLfgBotAt.find(pid);
+				if (!relaxed && cool != s_mapPlayerBotGuildLfgBotAt.end() && dwNow - cool->second < PLAYERBOT_GLFG_BOT_GAP_MS)
+					continue;
+				LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(pid);
+				if (!c || c == person || c->GetEmpire() != empire)
+					continue;
+				const TPlayerBotAIState& state = it->second;
+				if (!guild)
+				{
+					// "przeciez nie masz gildii": a bot that heard it, of any level.
+					if (c->GetMapIndex() != person->GetMapIndex() ||
+							DISTANCE_APPROX(c->GetX() - person->GetX(), c->GetY() - person->GetY()) > 5000 ||
+							GetPlayerBotLfgRefusal(c, state, dwNow))
+						continue;
+					TPlayerBotGuildLfgCandidate cand = { pid, 10, false };
+					candidates.push_back(cand);
+					continue;
+				}
+				const int level = c->GetLevel();
+				if (level < (relaxed ? PLAYERBOT_GLFG_MIN_LEVEL : std::max(PLAYERBOT_GLFG_MIN_LEVEL, personLevel - PLAYERBOT_GLFG_LEVEL_SPAN)) ||
+						(!relaxed && level > personLevel + PLAYERBOT_GLFG_LEVEL_SPAN))
+					continue;
+				if (IsPlayerBotAwaitingGuildInvite(pid) || IsPlayerBotLegendTier(GetPlayerBotLegendTier(pid)))
+					continue;
+				const int freedom = GetPlayerBotGuildLfgFreedom(c, guild, relaxed);
+				if (freedom == 0)
+					continue;
+				// The engine's own refusal of a fresh leaver (CGuild::Invite).
+				if (get_global_time() - c->GetQuestFlag("guild_manage.new_withdraw_time") <
+						CGuildManager::instance().GetWithdrawDelay() ||
+						get_global_time() - c->GetQuestFlag("guild_manage.new_disband_time") <
+						CGuildManager::instance().GetDisbandDelay())
+					continue;
+				if (GetPlayerBotLfgRefusal(c, state, dwNow))
+					continue;
+				TPlayerBotGuildLfgCandidate cand;
+				cand.pid = pid;
+				cand.weight = relaxed ? 4 : 10;
+				cand.relaxed = relaxed;
+				if (freedom == 1)
+					cand.weight += 10;
+				if (c->GetMapIndex() == person->GetMapIndex())
+					cand.weight += 20;
+				if (state.bCurrentAction == BOT_ACTION_IDLE || state.bCurrentAction == BOT_ACTION_TRAVEL ||
+						state.bCurrentAction == BOT_ACTION_TOWN_REST)
+					cand.weight += 6;
+				if (GetPlayerBotAffinity(state, personPID) > 0)
+					cand.weight += 8;
+				candidates.push_back(cand);
+			}
 		}
+
 		const size_t found = candidates.size();
 		DWORD due = dwNow + PLAYERBOT_GLFG_FIRST_DELAY_MIN_MS + number(0, (int)PLAYERBOT_GLFG_FIRST_DELAY_SPREAD_MS);
 		int picked = 0;
@@ -685,6 +739,7 @@ namespace
 				}
 			}
 			const DWORD pid = candidates[chosen].pid;
+			const bool relaxedPick = candidates[chosen].relaxed;
 			candidates.erase(candidates.begin() + chosen);
 			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(pid);
 			if (!c)
@@ -696,6 +751,7 @@ namespace
 			e.personEmpire = empire;
 			e.guildID = guild ? guild->GetID() : 0;
 			e.noGuild = guild == NULL;
+			e.relaxed = relaxedPick;
 			e.phase = GLFG_PHASE_DUE;
 			e.dueAt = due;
 			due += PLAYERBOT_GLFG_NEXT_DELAY_MIN_MS + number(0, (int)PLAYERBOT_GLFG_NEXT_DELAY_SPREAD_MS);
@@ -715,12 +771,33 @@ namespace
 	// ---------------------------------------------------------- the answers
 
 	// The meeting's NPC and the bot's own spot beside it.
-	bool PlacePlayerBotGuildLfgSpot(LPCHARACTER bot, TPlayerBotGuildLfg& e)
+	// MT2009_PLUS_GUILD_LFG_V2: with the person's M1 on another core, beside
+	// the person instead ("czekam przy tobie").
+	bool PlacePlayerBotGuildLfgSpot(LPCHARACTER bot, TPlayerBotGuildLfg& e, LPCHARACTER personLocal)
 	{
+		static const int kSide[8][2] = {
+			{ 200, 0 }, { 141, 141 }, { 0, 200 }, { -141, 141 }, { -200, 0 }, { -141, -141 }, { 0, -200 }, { 141, -141 } };
 		const long m1 = playerbot_empire_rules::GetHomeMap(e.personEmpire, playerbot_empire_rules::MAP_ROLE_M1);
 		playerbot_empire_rules::TTownServices services;
 		if (!m1 || !IsPlayerBotMapHostedHere(m1) || !playerbot_empire_rules::GetTownServices(m1, services))
-			return false;
+		{
+			if (!personLocal || personLocal->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ||
+					!IsPlayerBotMapHostedHere(personLocal->GetMapIndex()))
+				return false;
+			const int* side = kSide[bot->GetPlayerID() % 8];
+			e.map = personLocal->GetMapIndex();
+			e.spotX = personLocal->GetX() + side[0] * PLAYERBOT_GLFG_SPOT_RADIUS / 200;
+			e.spotY = personLocal->GetY() + side[1] * PLAYERBOT_GLFG_SPOT_RADIUS / 200;
+			CPlayerBotNavigation& near = CPlayerBotNavigation::instance(e.map);
+			PIXEL_POSITION safe;
+			if (near.Init(e.map) && near.FindNearestWalkableWorld(e.spotX, e.spotY, 12, safe, bot->GetPlayerID()))
+			{
+				e.spotX = safe.x;
+				e.spotY = safe.y;
+			}
+			e.place.nearPerson = true;
+			return true;
+		}
 		const int npc = number(0, playerbot_guild_lfg::NPC_COUNT - 1);
 		playerbot_empire_rules::TPoint p;
 		switch (npc)
@@ -732,8 +809,6 @@ namespace
 			case playerbot_guild_lfg::NPC_WEAPON: p = services.weaponMerchant; break;
 			default: p = services.skillReset; break;
 		}
-		static const int kSide[8][2] = {
-			{ 200, 0 }, { 141, 141 }, { 0, 200 }, { -141, 141 }, { -200, 0 }, { -141, -141 }, { 0, -200 }, { 141, -141 } };
 		const int* side = kSide[bot->GetPlayerID() % 8];
 		e.map = m1;
 		e.spotX = p.x + side[0] * PLAYERBOT_GLFG_SPOT_RADIUS / 200;
@@ -767,10 +842,10 @@ namespace
 		const char* refusal = GetPlayerBotLfgRefusal(bot, state, dwNow);
 		if (!refusal && person.local && (person.local->GetGuild() != theirs || !CanPlayerBotGuildLfgPersonInvite(person.local, theirs)))
 			refusal = "person_left_guild";
-		const int freedom = refusal ? 0 : GetPlayerBotGuildLfgFreedom(bot, theirs);
+		const int freedom = refusal ? 0 : GetPlayerBotGuildLfgFreedom(bot, theirs, e.relaxed);
 		if (!refusal && freedom == 0)
 			refusal = bot->GetGuild() == theirs ? "already_member" : "own_guild";
-		if (!refusal && !PlacePlayerBotGuildLfgSpot(bot, e))
+		if (!refusal && !PlacePlayerBotGuildLfgSpot(bot, e, person.local))
 			refusal = "no_m1";
 		if (refusal)
 		{
@@ -994,7 +1069,7 @@ namespace
 					if (!refusal && !e.noGuild)
 					{
 						CGuild* theirs = CGuildManager::instance().FindGuild(e.guildID);
-						if (!theirs || GetPlayerBotGuildLfgFreedom(bot, theirs) == 0)
+						if (!theirs || GetPlayerBotGuildLfgFreedom(bot, theirs, e.relaxed) == 0)
 							refusal = "guild_changed";
 					}
 					if (refusal)
