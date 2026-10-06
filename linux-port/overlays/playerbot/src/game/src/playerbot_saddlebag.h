@@ -245,52 +245,137 @@ namespace
 		return unsold != st->second.mapStallUnsold.end() && unsold->second >= PLAYERBOT_CRAFT_UNSOLD_STANDS;
 	}
 
+	// MT2009_PLUS_BOT_BAG_CLEANUP_V1: how much of one refine good a bag keeps
+	// for good - its anvil's reserve (GetPlayerBotRefineMaterialReserve: twice
+	// the largest recipe count among the pieces it would raise), and never
+	// under PLAYERBOT_BAG_MATERIAL_KEEP. What is over that is a hoard: it
+	// waits PLAYERBOT_BAG_MATERIAL_HOARD_WAIT_MS for the counter, which lists
+	// it as before (ScorePlayerBotShopStock, at the ledger's price), and what
+	// is still in the bag after that goes to the Dozorca for Materialy
+	// Rzemieslnicze - never to the merchant (the owner, 6 October). The bags
+	// of the test world held 320 000 exchangeable refine goods, 186 000 of
+	// them past ten of a kind in a bag (7 630 bot-kinds over ten, 1 387 over
+	// fifty): a counter cuts a material one or two at a time, and only what
+	// went up and came home unsold ever reached the Dozorca.
+	const int PLAYERBOT_BAG_MATERIAL_KEEP = 10;
+	const DWORD PLAYERBOT_BAG_MATERIAL_HOARD_WAIT_MS = 6 * 60 * 60 * 1000;
+	const size_t PLAYERBOT_BAG_MATERIAL_HOARD_SINCE_MAX = 200000;
+	// When each bot's hoard of each kind was first seen, by (pid, vnum); gone
+	// as soon as the bag is back under its keep. Not kept over a restart: the
+	// wait starts again then, once.
+	std::map<std::pair<DWORD, DWORD>, DWORD> s_mapPlayerBotMaterialHoardSince;
+
+	int GetPlayerBotMaterialHoardKeep(LPCHARACTER ch, DWORD vnum)
+	{
+		return std::max(PLAYERBOT_BAG_MATERIAL_KEEP, GetPlayerBotRefineMaterialReserve(ch, vnum));
+	}
+
+	// Whether this bot's hoard of the kind has waited its time for the counter.
+	bool IsPlayerBotMaterialHoardDue(LPCHARACTER ch, DWORD vnum)
+	{
+		const std::pair<DWORD, DWORD> key(ch->GetPlayerID(), vnum);
+		if ((int)ch->CountSpecifyItem(vnum) <= GetPlayerBotMaterialHoardKeep(ch, vnum))
+		{
+			s_mapPlayerBotMaterialHoardSince.erase(key);
+			return false;
+		}
+		const DWORD now = get_dword_time() != 0 ? get_dword_time() : 1;
+		if (s_mapPlayerBotMaterialHoardSince.size() > PLAYERBOT_BAG_MATERIAL_HOARD_SINCE_MAX)
+		{
+			for (std::map<std::pair<DWORD, DWORD>, DWORD>::iterator it = s_mapPlayerBotMaterialHoardSince.begin();
+					it != s_mapPlayerBotMaterialHoardSince.end(); )
+			{
+				if ((DWORD)(now - it->second) >= 2 * PLAYERBOT_BAG_MATERIAL_HOARD_WAIT_MS)
+					s_mapPlayerBotMaterialHoardSince.erase(it++);
+				else
+					++it;
+			}
+			if (s_mapPlayerBotMaterialHoardSince.size() > PLAYERBOT_BAG_MATERIAL_HOARD_SINCE_MAX)
+				s_mapPlayerBotMaterialHoardSince.clear();
+		}
+		DWORD& since = s_mapPlayerBotMaterialHoardSince[key];
+		if (since == 0)
+			since = now;
+		return (DWORD)(now - since) >= PLAYERBOT_BAG_MATERIAL_HOARD_WAIT_MS;
+	}
+
+	// The units of this stack past the keep, counted in cell order: the first
+	// stacks of a kind hold the keep, the rest of the kind is the hoard.
+	int GetPlayerBotMaterialHoardUnits(LPCHARACTER ch, LPITEM item)
+	{
+		const DWORD vnum = item->GetVnum();
+		int ahead = 0;
+		for (WORD cell = 0; cell < item->GetCell() && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM other = ch->GetInventoryItem(cell);
+			if (other && other != item && other->GetCell() == cell && other->GetVnum() == vnum)
+				ahead += std::max<int>(1, (int)other->GetCount());
+		}
+		const int count = std::max<int>(1, (int)item->GetCount());
+		const int over = ahead + count - GetPlayerBotMaterialHoardKeep(ch, vnum);
+		return std::max(0, std::min(count, over));
+	}
+
 	// Refine goods for the Dozorca: never what the bot's own anvil needs, never
 	// what the operator put a policy on. For every bot: what came home unsold,
 	// and under bag pressure a spare nobody on the market is short of (what
 	// used to go down to the safebox). For a saddlebag bot short of materials:
-	// any spare.
-	bool IsPlayerBotCraftExchangeStock(LPCHARACTER ch, LPITEM item)
+	// any spare. How many units of the stack go: the whole stack, or - for a
+	// hoard that waited its time in vain (MT2009_PLUS_BOT_BAG_CLEANUP_V1) -
+	// only what is over the keep. Zero when the stack is no stock at all.
+	int GetPlayerBotCraftExchangeUnits(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked() || item->IsExchanging() ||
 				item->GetCell() >= PLAYERBOT_BAG_CELLS || !IsPlayerBotCraftExchangeVnum(item->GetVnum()) ||
 				!IsPlayerBotTradeableMaterial(item))
-			return false;
+			return 0;
 		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's materials are
 		// its owner's, not the Dozorca's.
 		if (IsPlayerBotSidekickServing(ch))
-			return false;
+			return 0;
 		if (GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE ||
 				PlayerBotNeedsRefineMaterial(ch, item->GetVnum()))
-			return false;
+			return 0;
+		const int whole = std::max<int>(1, (int)item->GetCount());
 		if (IsPlayerBotCraftUnsold(ch, item))
-			return true;
+			return whole;
 		// A saddlebag bot short of materials takes every one its anvil does not
 		// need - the ones it bought off the counters for this among them.
 		// MT2009_PLUS_HORSE30_V1: and any bot short of its horse training's.
 		if (CountPlayerBotCraftMaterials(ch) < GetPlayerBotCraftMaterialsWanted(ch, false))
-			return true;
-		if (!IsPlayerBotSurplusMaterial(ch, item))
-			return false;
-		return GetPlayerBotLedgerDemand(item->GetVnum()) == 0 && IsPlayerBotBagUnderPressure(ch);
+			return whole;
+		if (IsPlayerBotSurplusMaterial(ch, item) &&
+				GetPlayerBotLedgerDemand(item->GetVnum()) == 0 && IsPlayerBotBagUnderPressure(ch))
+			return whole;
+		// MT2009_PLUS_BOT_BAG_CLEANUP_V1: the hoard past its wait.
+		if (IsPlayerBotMaterialHoardDue(ch, item->GetVnum()))
+			return GetPlayerBotMaterialHoardUnits(ch, item);
+		return 0;
 	}
 
-	int CollectPlayerBotCraftExchangeStock(LPCHARACTER ch, std::vector<LPITEM>* out, long long* fee)
+	bool IsPlayerBotCraftExchangeStock(LPCHARACTER ch, LPITEM item)
+	{
+		return GetPlayerBotCraftExchangeUnits(ch, item) > 0;
+	}
+
+	int CollectPlayerBotCraftExchangeStock(LPCHARACTER ch, std::vector<std::pair<LPITEM, int> >* out, long long* fee)
 	{
 		int units = 0;
 		const long long spendable = (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch);
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (!item || item->GetCell() != cell || !IsPlayerBotCraftExchangeStock(ch, item) ||
+			if (!item || item->GetCell() != cell ||
 					IsPlayerBotSidekickLockedItem(ch, item))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 				continue;
-			const int count = std::max<int>(1, (int)item->GetCount());
+			const int count = GetPlayerBotCraftExchangeUnits(ch, item);
+			if (count <= 0)
+				continue;
 			if ((long long)(units + count) * PLAYERBOT_CRAFT_EXCHANGE_FEE > spendable)
 				continue;
 			units += count;
 			if (out)
-				out->push_back(item);
+				out->push_back(std::make_pair(item, count));
 		}
 		if (fee)
 			*fee = (long long)units * PLAYERBOT_CRAFT_EXCHANGE_FEE;
@@ -537,16 +622,30 @@ namespace
 	// a piece, the materials in.
 	int ExchangePlayerBotCraftGoods(LPCHARACTER ch)
 	{
-		std::vector<LPITEM> goods;
+		std::vector<std::pair<LPITEM, int> > goods;
 		long long fee = 0;
 		const int units = CollectPlayerBotCraftExchangeStock(ch, &goods, &fee);
 		if (units <= 0 || CountPlayerBotFreeInventoryCells(ch) < 2)
 			return 0;
+		int hoardUnits = 0;
 		for (size_t i = 0; i < goods.size(); ++i)
 		{
-			s_setPlayerBotCraftRecalled.erase(goods[i]->GetID());
-			ITEM_MANAGER::instance().RemoveItem(goods[i], "PLAYERBOT_CRAFT_EXCHANGE");
+			LPITEM item = goods[i].first;
+			const int take = goods[i].second;
+			// MT2009_PLUS_BOT_BAG_CLEANUP_V1: a hoard gives only what is over
+			// its keep; the keep stays in the stack.
+			if (take < (int)item->GetCount())
+			{
+				hoardUnits += take;
+				item->SetCount(item->GetCount() - take);
+				continue;
+			}
+			s_setPlayerBotCraftRecalled.erase(item->GetID());
+			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_CRAFT_EXCHANGE");
 		}
+		if (hoardUnits > 0)
+			sys_log(0, "PLAYERBOT_BAG_CLEANUP: hoard to the Dozorca pid=%u name=%s units=%d",
+					ch->GetPlayerID(), ch->GetName(), hoardUnits);
 		PlayerBotChangeGold(ch, -fee);
 		// MT2009_PLUS_EXCHANGE_CHANCE_V1: the players' chance, the world's
 		// difficulty (55 in a hundred on every preset; custom's own).

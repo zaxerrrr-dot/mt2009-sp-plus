@@ -4234,7 +4234,18 @@ namespace
 	// it seldom serves - a medal dropper's is served out of its dungeon only -
 	// does not fill its bag. The only bot that keeps any since 28 September,
 	// and its chests ask what they hold (PLAYERBOT_MOONLIGHT_CHEST_FLOOR_PERCENT).
-	const int PLAYERBOT_CHEST_DROPPER_HOLD = 30;
+	// MT2009_PLUS_BOT_BAG_CLEANUP_V1: two counter lines' worth (it was thirty).
+	// On the test world 279 droppers sat on 30-31 chests each - 8 400 of the
+	// 8 717 unopened chests in the bots' bags - while 33 bots had 277 of them
+	// on their counters ("boty nie otwieraja Szkatulek Blasku Ksiezyca", the
+	// owner, 6 October). What a counter shows comes out of the bag, so two
+	// lines in the bag refill it; everything past them is opened.
+	const int PLAYERBOT_CHEST_DROPPER_HOLD = 2 * PLAYERBOT_CHEST_LINE_UNITS;
+	// MT2009_PLUS_BOT_BAG_CLEANUP_V1: the lowest vnum of a special item
+	// group's line that is an item; below it the line is yang, experience or a
+	// monster (CSpecialItemGroup::EGiveType, 1..7), which take no bag cell
+	// (PlayerBotBagTakesGroup).
+	const DWORD PLAYERBOT_GROUP_FIRST_ITEM_VNUM = 10;
 	// The engine's bag page: INVENTORY_PAGE_COLUMN x INVENTORY_PAGE_ROW on both
 	// lines. A giftbox wants three free cells in one column of one page.
 	const int PLAYERBOT_BAG_PAGE_COLUMNS = 5;
