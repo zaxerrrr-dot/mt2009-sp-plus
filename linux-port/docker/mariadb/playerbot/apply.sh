@@ -529,6 +529,12 @@ CREATE TABLE IF NOT EXISTS player.weekly_rank_score (season INT UNSIGNED NOT NUL
 CREATE TABLE IF NOT EXISTS player.weekly_rank_title (season INT UNSIGNED NOT NULL, cat TINYINT UNSIGNED NOT NULL, place TINYINT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, name VARCHAR(24) NOT NULL DEFAULT '', level SMALLINT UNSIGNED NOT NULL DEFAULT 0, empire TINYINT UNSIGNED NOT NULL DEFAULT 0, value BIGINT UNSIGNED NOT NULL DEFAULT 0, is_bot TINYINT UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY (season, cat, place)) ENGINE=InnoDB;
 INSERT IGNORE INTO player.weekly_rank_state (id) VALUES (1);" \
     || echo "playerbot-migrate: could not create the weekly ranking tables" >&2
+# MT2009_PLUS_RANKING_NO_SIDEKICK_V1: companions (Towarzysze) take no part in the weekly
+# ranking (the owner, 6 October) - the core no longer counts them and no list shows
+# them; the counts and titles they had are dropped here. Idempotent; no sidekick
+# table yet (a fresh world) - nothing to drop.
+db -e "DELETE s FROM player.weekly_rank_score s JOIN player.playerbot_sidekick k ON k.sidekick_pid = s.pid;
+DELETE t FROM player.weekly_rank_title t JOIN player.playerbot_sidekick k ON k.sidekick_pid = t.pid;" >/dev/null 2>&1 || true
 # The second channel's pins (playerbot_channel_rules.h): every bot that has
 # ever kept an offline shop lives on the first channel for good, because the
 # shops are the first channel's. The table only grows - each core adds the

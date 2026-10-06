@@ -970,5 +970,11 @@
   "marker": "MT2009_PLUS_VOUCHER_CODES_V1 (table)",
   "old": "\t{ \"resetdungi\",\tdo_gm_dungeon_reset,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n",
   "new": "\t{ \"resetdungi\",\tdo_gm_dungeon_reset,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n\t// MT2009_PLUS_VOUCHER_CODES_V1 (table): a promo code, once per account\n\t{ \"kod\",\tdo_voucher,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"voucher\",\tdo_voucher,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "itemshop_manager.cpp",
+  "marker": "MT2009_PLUS_VOUCHER_CODES_V1 (itemshop)",
+  "old": "\tchar szCode[CODE_VOUCHER_MAX_LEN * 2 + 1];\n\tDBManager::instance().EscapeString(szCode, sizeof(szCode), code, std::strlen(code));\n",
+  "new": "\t// MT2009_PLUS_VOUCHER_CODES_V1 (itemshop): the \"Wykorzystaj voucher\" tab tries our item\n\t// codes first (playerbot_voucher.h, the same as \"/kod\"); one of them is answered here,\n\t// with the code's hash prefix for the voucher log - any other code goes on to the db\n\t// core's cash vouchers below.\n\t{\n\t\tint VoucherItemShopCode(LPCHARACTER ch, const char* code, std::string& logCode);\n\t\tstd::string logCode;\n\t\tconst int itemResponse = VoucherItemShopCode(ch, code, logCode);\n\t\tif (itemResponse >= 0)\n\t\t{\n\t\t\tRecvUseCodeVoucher(ch, (BYTE) itemResponse, logCode.empty() ? \"kod\" : logCode.c_str());\n\t\t\treturn;\n\t\t}\n\t}\n\n\tchar szCode[CODE_VOUCHER_MAX_LEN * 2 + 1];\n\tDBManager::instance().EscapeString(szCode, sizeof(szCode), code, std::strlen(code));\n"
  }
 ]

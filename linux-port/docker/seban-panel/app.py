@@ -1819,6 +1819,9 @@ def weekly_tidy(row):
     return row
 
 
+WEEKLY_NOT_SIDEKICK = "NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick wsk WHERE wsk.sidekick_pid = {})"
+
+
 def weekly_rank_rows(cat=1):
     """(state, holders, ranking, missing): the state row (defaults while it is
     not there), the current season's title holders by category and the live
@@ -1831,8 +1834,10 @@ def weekly_rank_rows(cat=1):
         if found:
             state.update({key: int(found[key] or 0) for key in state})
         season = state["season"]
-        for row in rows("SELECT cat, place, pid, name, level, empire, value, is_bot FROM player.weekly_rank_title "
-                        "WHERE season = %s ORDER BY cat, place", (season,)):
+        # MT2009_PLUS_RANKING_NO_SIDEKICK_V1: companions (Towarzysze) take no part in
+        # the weekly ranking - not in its lists, not among its title holders.
+        for row in rows("SELECT cat, place, pid, name, level, empire, value, is_bot FROM player.weekly_rank_title t "
+                        "WHERE season = %s AND " + WEEKLY_NOT_SIDEKICK.format("t.pid") + " ORDER BY cat, place", (season,)):
             row = weekly_tidy(row)
             info = WEEKLY_RANK_CAT.get(int(row["cat"]))
             place = int(row["place"] or 0)
@@ -1845,14 +1850,14 @@ def weekly_rank_rows(cat=1):
                            "FROM player.player p "
                            "LEFT JOIN account.account a ON a.id = p.account_id "
                            "LEFT JOIN player.player_index pi ON pi.id = p.account_id "
-                           "WHERE LEFT(p.name, 1) <> '[' "
+                           "WHERE LEFT(p.name, 1) <> '[' AND " + WEEKLY_NOT_SIDEKICK.format("p.id") + " "
                            "ORDER BY p.level DESC, p.exp DESC LIMIT 50")
         else:
             ranking = rows("SELECT s.pid, s.value, s.is_bot, p.name, p.level, pi.empire "
                            "FROM player.weekly_rank_score s "
                            "LEFT JOIN player.player p ON p.id = s.pid "
                            "LEFT JOIN player.player_index pi ON pi.id = p.account_id "
-                           "WHERE s.season = %s AND s.cat = %s "
+                           "WHERE s.season = %s AND s.cat = %s AND " + WEEKLY_NOT_SIDEKICK.format("s.pid") + " "
                            "ORDER BY s.value DESC LIMIT 50", (season, cat))
         ranking = [weekly_tidy(row) for row in ranking]
     except Exception:
@@ -9449,7 +9454,7 @@ def manage():
     bot_channels = sorted(per_channel.items()) if len(per_channel) > 1 else []
     updater = update_status()
     updater["protected"] = current_settings.get("auth_enabled") == "1" and bool(session.get("seban_admin"))
-    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES)
+    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers())
 
 
 @app.post("/manage/difficulty")
@@ -9724,6 +9729,36 @@ def manage_spawn_plan():
     else:
         flash("Plan wejścia zapisany. Kontener gry zostanie odtworzony z nowymi ustawieniami.")
     return redirect(url_for("manage"))
+
+
+def read_vouchers():
+    """MT2009_PLUS_VOUCHER_CODES_V1: {"enabled": bool, "used": int|None} - the
+    promo codes' switch, the event flag m2_vouchers_off (dwPID 0), which the game
+    reads straight from the table at every redemption (playerbot_voucher.h), so it
+    works at once; and how many codes accounts have used."""
+    state = {"enabled": True, "used": None}
+    try:
+        row = one("SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_vouchers_off' AND szState = ''")
+        state["enabled"] = not (row and int(row.get("lValue") or 0) != 0)
+        used = one("SELECT COUNT(*) AS n FROM player.mt2009_voucher_used")
+        state["used"] = int(used.get("n") or 0) if used else 0
+    except Exception:
+        pass
+    return state
+
+
+@app.post("/manage/vouchers")
+@login_required
+def manage_vouchers():
+    enabled = "1" in request.form.getlist("vouchers_enabled")
+    try:
+        rows("REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_vouchers_off', '', %s)",
+             (0 if enabled else 1,))
+    except pymysql.MySQLError:
+        flash("Nie udało się zapisać przełącznika kodów bonusowych.", "error")
+    else:
+        flash("Kody bonusowe " + ("włączone" if enabled else "wyłączone") + " – działa od razu.")
+    return redirect(url_for("manage", _anchor="kody-bonusowe"))
 
 
 @app.post("/manage/student-chest")

@@ -2174,6 +2174,11 @@ def weekly_tidy(r):
     return r
 
 
+# MT2009_PLUS_RANKING_NO_SIDEKICK_V1: companions (Towarzysze) take no part in the
+# weekly ranking - not in its lists, not among its title holders.
+WEEKLY_NOT_SIDEKICK = "NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick wsk WHERE wsk.sidekick_pid = {})"
+
+
 def read_weekly_ranking(cat=1):
     """(state, holders, ranking, missing): the state row (defaults when it is
     not there yet), the title holders of the current season by category, and
@@ -2189,7 +2194,8 @@ def read_weekly_ranking(cat=1):
                 state.update({k: int(row[k] or 0) for k in state})
             season = state["season"]
             cur.execute("SELECT t.cat, t.place, t.pid, t.name, t.level, t.empire, t.value, t.is_bot "
-                        "FROM player.weekly_rank_title t WHERE t.season = %s ORDER BY t.cat, t.place", (season,))
+                        "FROM player.weekly_rank_title t WHERE t.season = %s AND " + WEEKLY_NOT_SIDEKICK.format("t.pid") + " "
+                        "ORDER BY t.cat, t.place", (season,))
             for r in cur.fetchall():
                 r = weekly_tidy(r)
                 r["title"] = weekly_title_text(r["cat"], r["place"])
@@ -2201,14 +2207,14 @@ def read_weekly_ranking(cat=1):
                             "FROM player.player p "
                             "LEFT JOIN account.account a ON a.id = p.account_id "
                             "LEFT JOIN player.player_index pi ON pi.id = p.account_id "
-                            "WHERE LEFT(p.name, 1) <> '[' "
+                            "WHERE LEFT(p.name, 1) <> '[' AND " + WEEKLY_NOT_SIDEKICK.format("p.id") + " "
                             "ORDER BY p.level DESC, p.exp DESC LIMIT 50")
             else:
                 cur.execute("SELECT s.pid, s.value, s.is_bot, p.name, p.level, pi.empire "
                             "FROM player.weekly_rank_score s "
                             "LEFT JOIN player.player p ON p.id = s.pid "
                             "LEFT JOIN player.player_index pi ON pi.id = p.account_id "
-                            "WHERE s.season = %s AND s.cat = %s "
+                            "WHERE s.season = %s AND s.cat = %s AND " + WEEKLY_NOT_SIDEKICK.format("s.pid") + " "
                             "ORDER BY s.value DESC LIMIT 50", (season, cat))
             ranking = [weekly_tidy(r) for r in cur.fetchall()]
     except Exception:

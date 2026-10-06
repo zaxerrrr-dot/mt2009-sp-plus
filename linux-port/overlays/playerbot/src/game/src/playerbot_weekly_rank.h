@@ -182,7 +182,11 @@ namespace mt2009_wrank
 	{
 		// MT2009_PLUS_WEEKLY_RANKING_UX_V1: never a GM's character (the
 		// owner, 3 October: admin and every GM out of the ranking).
-		return ch && ch->IsPC() && ch->GetDesc() && ch->GetGMLevel() <= GM_PLAYER;
+		// MT2009_PLUS_RANKING_NO_SIDEKICK_V1: never a companion (Towarzysz) either
+		// (the owner, 6 October: "Towarzysze postaci niech nie bior\xb9 udzia\xb3u w
+		// rankingach tygodniowych") - it earns no points and is in no list.
+		return ch && ch->IsPC() && ch->GetDesc() && ch->GetGMLevel() <= GM_PLAYER &&
+				!IsPlayerBotSidekickPID(ch->GetPlayerID());
 	}
 
 	// A person who opens the window.
@@ -568,6 +572,11 @@ namespace mt2009_wrank
 	"NOT EXISTS (SELECT 1 FROM common.gmlist g JOIN account.account ga ON ga.login=g.mAccount " \
 	"WHERE ga.id=p.account_id AND g.mAuthority<>'PLAYER' " \
 	"AND EXISTS (SELECT 1 FROM player.player gp WHERE gp.account_id=ga.id AND gp.name=g.mName))"
+	// MT2009_PLUS_RANKING_NO_SIDEKICK_V1: and never a companion (a character of
+	// player.playerbot_sidekick's sidekick_pid, the pool's identities included
+	// once they serve). WRANK_NOT_SIDEKICK(col) takes the ranked pid's column.
+#define WRANK_NOT_SIDEKICK(col) \
+	"NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick sk WHERE sk.sidekick_pid=" col ")"
 	void ReadTop(DWORD season, BYTE cat, int limit, std::vector<Row>& out)
 	{
 		out.clear();
@@ -578,7 +587,7 @@ namespace mt2009_wrank
 					"FROM player.player p LEFT JOIN player.player_index pi ON pi.id=p.account_id "
 					"LEFT JOIN account.account a ON a.id=p.account_id "
 					"WHERE p.name NOT LIKE '[%%'"
-					" AND " WRANK_NOT_GM_ACCOUNT " ORDER BY p.level DESC, p.exp DESC, p.id ASC LIMIT %d", limit);
+					" AND " WRANK_NOT_GM_ACCOUNT " AND " WRANK_NOT_SIDEKICK("p.id") " ORDER BY p.level DESC, p.exp DESC, p.id ASC LIMIT %d", limit);
 		else
 			snprintf(query, sizeof(query),
 					"SELECT s.pid, s.is_bot, p.level, IFNULL(pi.empire,0), s.value, p.name "
@@ -586,7 +595,7 @@ namespace mt2009_wrank
 					"LEFT JOIN player.player_index pi ON pi.id=p.account_id "
 					"LEFT JOIN account.account a ON a.id=p.account_id "
 					"WHERE s.season=%u AND s.cat=%u AND s.value>0 AND p.name NOT LIKE '[%%' "
-					"AND " WRANK_NOT_GM_ACCOUNT " "
+					"AND " WRANK_NOT_GM_ACCOUNT " AND " WRANK_NOT_SIDEKICK("s.pid") " "
 					"ORDER BY s.value DESC, s.pid ASC LIMIT %d", season, (unsigned int)cat, limit);
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
@@ -806,7 +815,7 @@ namespace mt2009_wrank
 			value = (long long)ch->GetExp();
 			snprintf(query, sizeof(query),
 					"SELECT COUNT(*) FROM player.player p LEFT JOIN account.account a ON a.id=p.account_id "
-					"WHERE p.name NOT LIKE '[%%' AND p.id<>%u AND " WRANK_NOT_GM_ACCOUNT " AND "
+					"WHERE p.name NOT LIKE '[%%' AND p.id<>%u AND " WRANK_NOT_GM_ACCOUNT " AND " WRANK_NOT_SIDEKICK("p.id") " AND "
 					"(level>%d OR (level=%d AND exp>%lld))",
 					ch->GetPlayerID(), ch->GetLevel(), ch->GetLevel(), value);
 		}
@@ -828,7 +837,8 @@ namespace mt2009_wrank
 			if (value <= 0)
 				return;
 			snprintf(query, sizeof(query),
-					"SELECT COUNT(*) FROM player.weekly_rank_score WHERE season=%u AND cat=%u AND value>%lld AND pid<>%u",
+					"SELECT COUNT(*) FROM player.weekly_rank_score s WHERE season=%u AND cat=%u AND value>%lld AND pid<>%u "
+					"AND " WRANK_NOT_SIDEKICK("s.pid"),
 					s_state.season, (unsigned int)cat, value, ch->GetPlayerID());
 		}
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
