@@ -752,11 +752,149 @@ namespace
 	const DWORD PLAYERBOT_DS_COMBAT_HOLD_MS = 60000;
 	const DWORD PLAYERBOT_DS_DECK_MIN_TOGGLE_MS = 20000;
 
+	// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1 ("Jesli towarzysz ma dana
+	// alchemie i walczy, to ma miec ja wlaczona - teraz nie wlacza alchemii
+	// ani jej nie przedluza", the owner, 6 October 2026). A companion is no
+	// alchemy user (IsPlayerBotAlchemyUser: it never buys, opens, refines or
+	// swaps a stone), so nothing ever recharged its stones - once a day of
+	// deck was spent they stayed dead and the deck never went on again - and
+	// a stone its owner handed into its Alchemy sat there. The companion's
+	// own small pass, on the bots' local clock: qualified once it has a
+	// stone; an owner's stone from its Alchemy onto a free place of the deck
+	// it uses (never one its owner took off, never by pulling another out);
+	// and a worn stone of that deck under PLAYERBOT_DS_ELIXIR_BELOW_SEC
+	// recharged with a time elixir of its bag (the Alchemist's (D), any
+	// USE_TIME_CHARGE_FIX/PER one) its owner gave it - a gift is given to be
+	// used, the equipment lock or not; the owner's drop it holds for the
+	// owner is never spent. It buys none: the elixir is the Alchemist's, a
+	// counter no companion errand visits.
+
+	// The deck a companion's stones are on: the one with more stones with
+	// time left (withTime) or worn at all; the first on a tie.
+	int GetPlayerBotSidekickDsDeck(LPCHARACTER ch, bool withTime)
+	{
+		int count[DRAGON_SOUL_DECK_MAX_NUM] = {};
+		for (int deck = 0; deck < DRAGON_SOUL_DECK_MAX_NUM; ++deck)
+			for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
+			{
+				LPITEM worn = ch->GetItem(TItemPos(INVENTORY,
+						(WORD)((int)DRAGON_SOUL_EQUIP_SLOT_START + deck * (int)DS_SLOT_MAX + kind)));
+				if (worn && (!withTime || HasPlayerBotDsTime(worn)))
+					++count[deck];
+			}
+		int best = DRAGON_SOUL_DECK_0;
+		for (int deck = 1; deck < DRAGON_SOUL_DECK_MAX_NUM; ++deck)
+			if (count[deck] > count[best])
+				best = deck;
+		return best;
+	}
+
+	bool IsPlayerBotSidekickDsElixir(LPCHARACTER ch, LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_USE ||
+				(item->GetSubType() != USE_TIME_CHARGE_FIX && item->GetSubType() != USE_TIME_CHARGE_PER) ||
+				item->isLocked() || item->IsExchanging() || IsPlayerBotSidekickHeld(ch, item))
+			return false;
+		return IsPlayerBotSidekickGift(ch, item) || !IsPlayerBotSidekickKeptForOwner(ch, item);
+	}
+
+	int FindPlayerBotSidekickDsElixir(LPCHARACTER ch)
+	{
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && IsPlayerBotSidekickDsElixir(ch, item))
+				return cell;
+		}
+		return -1;
+	}
+
+	void ManagePlayerBotSidekickDs(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (dwNow < state.dwNextDsLocalTime || ch->IsDead() || ch->GetExchange() || !ch->IsItemLoaded())
+			return;
+		state.dwNextDsLocalTime = dwNow + PLAYERBOT_ALCHEMY_LOCAL_MS;
+		std::vector<LPITEM> bag;
+		CollectPlayerBotDragonSouls(ch, bag);
+		const int deck = ch->DragonSoul_GetActiveDeck() >= 0 ? ch->DragonSoul_GetActiveDeck()
+				: GetPlayerBotSidekickDsDeck(ch, false);
+		const int base = (int)DRAGON_SOUL_EQUIP_SLOT_START + deck * (int)DS_SLOT_MAX;
+		bool any = !bag.empty();
+		for (int i = 0; i < (int)DS_SLOT_MAX * (int)DRAGON_SOUL_DECK_MAX_NUM && !any; ++i)
+			any = ch->GetItem(TItemPos(INVENTORY, (WORD)((int)DRAGON_SOUL_EQUIP_SLOT_START + i))) != NULL;
+		if (!any)
+			return;
+		EnsurePlayerBotAlchemyQualified(ch);
+		// The owner's stones of its Alchemy onto the deck's free places - the
+		// best of a kind with time left; EquipItem refuses within a second
+		// and a half of a blow, as for the bots' own pass.
+		if (!bag.empty() && ch->GetVictim() == NULL &&
+				dwNow - ch->GetLastAttackTime() > PLAYERBOT_EQUIPMENT_COMBAT_DELAY &&
+				(state.dwLastBotSkillTime == 0 || dwNow - state.dwLastBotSkillTime > PLAYERBOT_EQUIPMENT_COMBAT_DELAY))
+			for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
+			{
+				const int wear = WEAR_MAX_NUM + deck * DS_SLOT_MAX + kind;
+				if (ch->GetItem(TItemPos(INVENTORY, (WORD)(base + kind))))
+					continue;
+				LPITEM best = NULL;
+				for (size_t i = 0; i < bag.size(); ++i)
+				{
+					LPITEM s = bag[i];
+					if (s->GetSubType() != kind || !HasPlayerBotDsTime(s) || !IsPlayerBotSidekickGift(ch, s) ||
+							IsPlayerBotSidekickHeld(ch, s) || IsPlayerBotSidekickUnwanted(ch, s) ||
+							s->FindEquipCell(ch, wear) != wear)
+						continue;
+					if (!best || RankPlayerBotDs(ch, s) > RankPlayerBotDs(ch, best))
+						best = s;
+				}
+				if (best && PlayerBotEquipItem(ch, best, wear) && best->IsEquipped())
+					sys_log(0, "PLAYERBOT_SIDEKICK: ds worn pid=%u name=%s vnum=%u deck=%d kind=%d", ch->GetPlayerID(),
+							ch->GetName(), best->GetVnum(), deck + 1, kind);
+			}
+		// One elixir a pass, on the stone of the deck that runs out first.
+		LPITEM low = NULL;
+		for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
+		{
+			LPITEM stone = ch->GetItem(TItemPos(INVENTORY, (WORD)(base + kind)));
+			if (stone && stone->IsDragonSoul() && stone->GetSocket(ITEM_SOCKET_REMAIN_SEC) < PLAYERBOT_DS_ELIXIR_BELOW_SEC &&
+					!IsPlayerBotSidekickHeld(ch, stone) &&
+					(!low || stone->GetSocket(ITEM_SOCKET_REMAIN_SEC) < low->GetSocket(ITEM_SOCKET_REMAIN_SEC)))
+				low = stone;
+		}
+		if (!low)
+			return;
+		const int cell = FindPlayerBotSidekickDsElixir(ch);
+		if (cell < 0)
+		{
+			PlayerBotLogThrottled("sidekick_ds_no_elixir", dwNow,
+					"PLAYERBOT_SIDEKICK: ds low, no elixir pid=%u name=%s vnum=%u sec=%ld", ch->GetPlayerID(),
+					ch->GetName(), low->GetVnum(), (long)low->GetSocket(ITEM_SOCKET_REMAIN_SEC));
+			return;
+		}
+		const DWORD elixirVnum = ch->GetInventoryItem((WORD)cell)->GetVnum();
+		const long before = (long)low->GetSocket(ITEM_SOCKET_REMAIN_SEC);
+		const bool ok = ch->UseItem(TItemPos(INVENTORY, (WORD)cell), TItemPos(low->GetWindow(), low->GetCell()));
+		const long after = (long)low->GetSocket(ITEM_SOCKET_REMAIN_SEC);
+		// An expired stone of the deck that is on was left off by the deck's
+		// switch: on with its new time.
+		if (ok && after > 0 && ch->DragonSoul_GetActiveDeck() == deck && !DSManager::instance().IsActiveDragonSoul(low))
+			DSManager::instance().ActivateDragonSoul(low);
+		if (ok && after > before)
+			++s_kPlayerBotAlchemyStats.recharged;
+		sys_log(0, "PLAYERBOT_SIDEKICK: ds recharged pid=%u name=%s vnum=%u elixir=%u ok=%d sec=%ld->%ld deck=%d",
+				ch->GetPlayerID(), ch->GetName(), low->GetVnum(), elixirVnum, ok ? 1 : 0, before, after, deck + 1);
+	}
+
 	void ManagePlayerBotDsDeckTick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || dwNow < state.dwNextDsDeckTime)
 			return;
 		state.dwNextDsDeckTime = dwNow + PLAYERBOT_DS_DECK_TICK_MS;
+		// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1: a companion's stones put on
+		// and recharged (above), before the deck asks for its qualification.
+		const bool sidekick = IsPlayerBotSidekickPID(ch->GetPlayerID());
+		if (sidekick && !ArePlayerBotAlchemyOff())
+			ManagePlayerBotSidekickDs(ch, state, dwNow);
 		// The Alchemist's visit switches it off itself (ManagePlayerBotAlchemy).
 		if (ch->IsDead() || state.bVisitingDsAlchemist || !ch->DragonSoul_IsQualified())
 			return;
@@ -768,7 +906,17 @@ namespace
 		if (!active && !IsPlayerBotAlchemyUser(ch) &&
 				!(IsPlayerBotSidekickPID(ch->GetPlayerID()) && !ArePlayerBotAlchemyOff()))
 			return;
-		const DWORD last = state.dwLastCombatActionTime;
+		DWORD last = state.dwLastCombatActionTime;
+		// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1: a companion fights beside its
+		// owner - a Shaman's buffs and heals, a passive stance, the walk to the
+		// foe never stamped the clock above, and its deck stayed off through
+		// most of its owner's hunt. Its fight, or its owner's it saw, counts.
+		if (sidekick)
+		{
+			const DWORD seen = GetPlayerBotSidekickFightSeenAt(ch->GetPlayerID());
+			if (seen != 0 && dwNow >= seen && (last == 0 || seen - last < 0x80000000U))
+				last = seen;
+		}
 		const bool fightingNow = last != 0 && dwNow - last < PLAYERBOT_DS_COMBAT_START_MS;
 		const bool foughtLately = last != 0 && dwNow - last < PLAYERBOT_DS_COMBAT_HOLD_MS;
 		const char* quiet = NULL;
@@ -787,7 +935,7 @@ namespace
 			// its stones on the second deck: the deck with more of them goes on.
 			int deck = DRAGON_SOUL_DECK_0;
 			int live = CountPlayerBotWornDs(ch, true);
-			if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			if (sidekick)
 			{
 				int second = 0;
 				for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
