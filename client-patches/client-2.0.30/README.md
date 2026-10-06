@@ -595,6 +595,24 @@ Pominięte z paczki: Shift + klik w torbie towarzysza (`uisidekickinventory.py`)
 prawy klik (`MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1`); `XMAS_SNOW_SHOW` w
 `game.py` (wyłączał śnieg i świąteczną muzykę z nocnej flagi) – nie był częścią zgłoszenia.
 
+## Bonusy na pasku celu (Vekirion) – bez zmian exe i serwera
+
+Znacznik `MT2009_PLUS_TARGET_BONUS_V1`. **Autor: Vekirion** (paczka `root` z 6 października 2026, zbudowana na
+naszym `root` 2.0.55 – zmienił tylko `uitarget.py` i dodał `mobraceflag.py`). Pod nazwą i paskiem HP potwora/Metina
+(cel wroga albo kamień) wiersz „Silny przeciwko: Zwierzętom 12%, Bossom 5%, Potworom 10%” – bonusy, które serwer
+(`battle.cpp` CalcAttBonus) liczy przeciw temu celowi, z wartością gracza (`player.GetStatus`):
+
+- rasy z flag mob_proto: Zwierzętom, Nieumarłym, Diabłom, Ludziom, Orkom, Mistykom, Insektom, Potworom pustyni
+  (FIRE/ICE/TREE bez bonusu przedmiotu pominięte, żywioły `ATT_*` też – serwer ma je zakomentowane);
+- ranga Boss+: „Metinom” (kamień) albo „Bossom”; „Potworom” dopisane tylko, gdy gracz ma ten bonus;
+- odświeżane co 0,5 s, więc zmiana ekwipunku widać od razu; plansza rośnie do 52 px wysokości.
+
+- `uitarget.py` (wpis paczki `root`, zastępowany) – `GetTargetBonusText`, wiersz `bonusText`, `__RefreshBonusText`.
+- `mobraceflag.py` (nowy) – flagi ras potworów według vnum (exe nie ma `nonplayer.GetMonsterRaceFlag`), wygenerowane
+  z `player.mob_proto` (`(setRaceFlag+0) & 2047`); sprawdzone 6.10: 668 wpisów = baza testowa. **Po zmianie flag ras
+  w mob_proto trzeba go wygenerować ponownie.** Exe nie zna `POINT_ATTBONUS_INSECT/DESERT` – brane indeksy serwera
+  (49/52), tylko gdy `POINT_ATTBONUS_HUMAN` klienta = 43.
+
 ## Ranking tygodniowy i tytuły – bez zmian exe
 
 Znacznik `MT2009_PLUS_WEEKLY_RANKING_V1`. Na podstawie systemu rankingu tygodniowego z plików Arezzo
