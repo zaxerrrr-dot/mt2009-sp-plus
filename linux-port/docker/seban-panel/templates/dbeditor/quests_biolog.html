@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_QUESTS_V1: the Biologist - every mission one reward entry (dbeditor/quests.py, quests_biolog). #}
+{% block title %}Biolog · Questy · Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% macro item_name(vnum) -%}{{ names.get(vnum, {}).get('name') or ('przedmiot ' ~ vnum) }}{%- endmacro %}
+{% macro bonus_select(field, selected, with_none=True) -%}
+  <select name="{{ field }}">{% if with_none %}<option value="0" {{ 'selected' if selected == 0 }}>— brak bonusu —</option>{% endif %}{% for p, label in bonuses %}<option value="{{ p }}" {{ 'selected' if p == selected }}>{{ label }}</option>{% endfor %}</select>
+{%- endmacro %}
+{% block content %}
+{% include 'dbeditor/_quests_head.html' %}
+<p class="eyebrow">EDYTOR BAZY DANYCH · QUESTY · BIOLOG</p>
+<h1>🧪 Biolog (Chaegirab)</h1>
+<section class="panel dbt-note">
+  <p>Każda misja Biologa osobno: <b>bonus stały</b>, który daje (rodzaj i wartość), <b>przedmiot</b> z nagrody, oraz <b>dodatkowy yang, doświadczenie, przedmioty i bonus</b> dawane przy oddaniu misji (w chwili, gdy misja przechodzi w „ukończona”).</p>
+  <p class="muted">{{ retro }}</p>
+</section>
+
+<form method="post" action="{{ url_for('dbeditor.quests_biolog_save') }}" class="dbd-form" data-api="{{ url_for('dbeditor.api_items') if 'dbeditor.api_items' in dbt_endpoints else '' }}">
+<input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="sha" value="{{ sha }}">
+{% for m in missions %}{% set p = m.name ~ '_' %}
+<section class="panel">
+  <h2>{{ m.title }} <small class="muted">· poziom {{ m.level }} · <a href="{{ url_for('dbeditor.quests_edit', name=m.name) if m.known else '#' }}">{{ m.name }}</a>{% if m.off %} · <b>WYŁĄCZONA</b>{% endif %}</small></h2>
+  {% if not m.known %}<p class="muted">Tego questa nie ma w grze.</p>
+  {% elif not m.q %}<p class="muted">Gra nie udostępniła źródła tego questa.</p>
+  {% elif not m.bonuses and not m.reward_items %}<p class="muted">Ta misja w tym świecie nie ma nagrody (pusty quest{% if m.level == 92 %} – Klejnoty 92/94 nie są tu zaimplementowane{% endif %}).</p>
+  {% else %}
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>Nagroda teraz</th><th>Zmiana</th></tr></thead>
+    <tbody class="dbd-rows">
+    {% for g in m.bonuses %}{% set rule = m.rules['bonus'].get((g.point, g.value)) %}
+      <tr><td>💪 <b>{{ point_label(g.point) }} {{ g.value }}</b> <small class="muted">bonus stały</small></td>
+        <td><label>Bonus{{ bonus_select(p ~ g.field ~ '_point', rule[0] if rule else g.point) }}</label>
+          <label>wartość<input name="{{ p }}{{ g.field }}_val" value="{{ rule[1] if rule else g.value }}" style="width:90px" inputmode="numeric"></label>
+          {% if rule %}<small class="dbd-tag">zmieniony</small>{% endif %}</td></tr>
+    {% endfor %}
+    {% for g in m.reward_items %}{% set rule = m.rules['items'].get(g.vnum) %}
+      <tr><td>🎁 <b>{{ item_name(g.vnum) }}</b> <small class="muted">({{ g.vnum }})</small> × {{ g.count or 1 }}</td>
+        <td><label>Daj zamiast<input name="{{ p }}{{ g.field }}_new" class="dbd-item" list="dbd-items" value="{{ rule[0] if rule and rule[0] != g.vnum else '' }}" placeholder="bez zmian" style="width:130px"></label>
+          <span class="dbd-name">{% if rule and rule[0] and rule[0] != g.vnum %}{{ item_name(rule[0]) }}{% endif %}</span>
+          <label>ilość<input name="{{ p }}{{ g.field }}_count" value="{{ rule[1] if rule and rule[1] else '' }}" placeholder="{{ g.count or 1 }}" style="width:70px" inputmode="numeric"></label></td></tr>
+    {% endfor %}
+    {% if m.anchor_ok %}
+      <tr><td>➕ <b>Dodatkowy yang</b></td><td><input name="{{ p }}gold" value="{{ m.extra_gold or '' }}" placeholder="np. 10000000" style="width:150px" inputmode="numeric"> {% if m.extra_gold %}<small class="muted">= {{ fmt_int(m.extra_gold) }} yang</small>{% endif %}</td></tr>
+      <tr><td>➕ <b>Dodatkowe doświadczenie</b></td><td><input name="{{ p }}exp" value="{{ m.extra_exp or '' }}" placeholder="0" style="width:150px" inputmode="numeric"></td></tr>
+      {% for k in range(rows) %}{% set have = m.extra_items[k] if k < m.extra_items|length else none %}
+      <tr><td>➕ <b>Dodatkowy przedmiot {{ k + 1 }}</b></td><td><input name="{{ p }}x{{ k }}_item" class="dbd-item" list="dbd-items" value="{{ have[0] if have else '' }}" placeholder="VNUM lub nazwa" style="width:130px">
+        <span class="dbd-name">{% if have %}{{ item_name(have[0]) }}{% endif %}</span>
+        <label>× <input name="{{ p }}x{{ k }}_count" value="{{ have[1] if have else '' }}" placeholder="1" style="width:70px" inputmode="numeric"></label></td></tr>
+      {% endfor %}
+      {% if m.extra_items|length > rows %}<tr><td colspan="2" class="dbt-warn">Ta misja ma więcej dodatkowych przedmiotów ({{ m.extra_items|length }}) niż wierszy tutaj – zapis zostawi tylko {{ rows }}. Edytuj je na <a href="{{ url_for('dbeditor.quests_edit', name=m.name) }}">stronie questa</a>.</td></tr>{% endif %}
+      {% set xb = m.extra_bonus[0] if m.extra_bonus else none %}
+      <tr><td>➕ <b>Dodatkowy bonus stały</b></td><td><label>{{ bonus_select(p ~ 'xb_point', xb[0] if xb else 0) }}</label> <label>wartość<input name="{{ p }}xb_val" value="{{ xb[1] if xb else '' }}" style="width:90px" inputmode="numeric"></label></td></tr>
+    {% else %}
+      <tr><td colspan="2" class="muted">Dodatkowe nagrody: ta misja nie przechodzi w stan „__complete” – zaczep je na <a href="{{ url_for('dbeditor.quests_edit', name=m.name) }}">stronie questa</a>.</td></tr>
+    {% endif %}
+    </tbody>
+  </table></div>
+  {% endif %}
+</section>
+{% endfor %}
+<section class="panel">
+  <div class="dbt-actions">
+    <label>Notatka (opcjonalnie)<input name="note" style="width:260px"></label>
+    <button>💾 Zapisz nagrody Biologa</button>
+  </div>
+  <p class="muted">Nagrody działają po restarcie rdzeni (Zastosuj). Bonusy Biologa sumują się z innymi bonusami tego samego rodzaju z Biologa.</p>
+</section>
+</form>
+{% endblock %}

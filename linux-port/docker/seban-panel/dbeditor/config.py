@@ -1531,3 +1531,16 @@ def install(bp, ctx):
 
     dbeditor.add_section("dbeditor.config_page", "📤", "Eksport / import konfiguracji",
                          "wszystkie zmiany edytora jako tekst do zapisania albo wklejenia na Discordzie – i z powrotem")
+
+
+# MT2009_PLUS_DB_EDITOR_QUESTS_V1: a file part kept by its own module adds
+# itself here (dbeditor/quests.py: "quests", its adapter a FilePart), after
+# the built-in ones, so this file does not have to list it.
+def register_file_part(part, title, adapter):
+    global FILE_PARTS, ALL_PARTS
+    if part in FILE_ADAPTERS or not re.match(r"^[A-Za-z0-9_]+$", part):
+        return
+    FILE_PARTS = FILE_PARTS + ((part, title),)
+    ALL_PARTS = ALL_PARTS + (part,)
+    PART_TITLES[part] = title
+    FILE_ADAPTERS[part] = adapter

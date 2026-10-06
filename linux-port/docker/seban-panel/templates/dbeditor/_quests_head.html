@@ -1,0 +1,16 @@
+{#- MT2009_PLUS_DB_EDITOR_QUESTS_V1: the common top of the Questy pages (dbeditor/quests.py, bin/m2-quests). -#}
+{% include 'dbeditor/_tables_head.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dbeditor-drops.css') }}">
+<script src="{{ url_for('static', filename='dbeditor-drops.js') }}" defer></script>
+<datalist id="dbd-items"></datalist>
+<nav class="dbt-crumbs">
+  <a href="{{ url_for('dbeditor.quests') }}">📜 Wszystkie questy</a>
+  <a href="{{ url_for('dbeditor.quests_biolog') }}">🧪 Biolog</a>
+  <a href="{{ url_for('dbeditor.quests', tylko='zmienione') }}">✏️ Zmienione</a>
+  <a href="{{ url_for('dbeditor.quests', tylko='wylaczone') }}">⛔ Wyłączone</a>
+  <a href="{{ url_for('dbeditor.quests_file') }}">⬇ Plik ustawień</a>
+</nav>
+<section class="panel dbt-note {{ status.kind if status.kind in ('ok', 'error') else 'warn' }}">
+  <p><b>Stan w grze:</b> {{ status.text }}{% if status.time %} <small class="muted">(raport gry: {{ status.time.strftime('%Y-%m-%d %H:%M') }})</small>{% endif %}</p>
+  {% if source is defined and source == 'snapshot' %}<p class="muted">Gra nie udostępniła jeszcze listy questów (quests/catalog.txt w wolumenie – robi to obraz gry z m2-quests przy starcie) – pokazuję tylko Biologa z kopii panelu.</p>{% endif %}
+</section>
