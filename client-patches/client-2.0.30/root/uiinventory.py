@@ -50,6 +50,19 @@ ITEM_MALL_BUTTON_ENABLE = True
 
 ITEM_FLAG_APPLICABLE = 1 << 14
 
+# MT2009_PLUS_BELT_SLOT_V1: the belt slot of the equipment page (WEAR_BELT =
+# 23, uiscript/inventorywindow.py). The exe has no ENABLE_NEW_EQUIPMENT_SYSTEM,
+# so item.EQUIPMENT_BELT may be missing and item.IsEquipmentVID() is False for
+# a belt (it knows weapons and armour only).
+EQUIPMENT_BELT_SLOT = getattr(item, "EQUIPMENT_BELT", player.EQUIPMENT_SLOT_START + 23)
+
+def IsBeltVID(itemVnum):
+	try:
+		item.SelectItem(itemVnum)
+		return item.GetItemType() == getattr(item, "ITEM_TYPE_BELT", 34)
+	except Exception:
+		return False
+
 def GetLocalSlotAndInventoryPageFromGlobalSlot(globalSlot):
 	if globalSlot >= player.INVENTORY_DEFAULT_MAX_NUM: # horse inventory
 		return (globalSlot, 0)
@@ -2282,6 +2295,8 @@ class InventoryWindow(ui.ScriptWindow):
 
 		if app.ENABLE_NEW_EQUIPMENT_SYSTEM:
 			SetItemSlotVnum(item.EQUIPMENT_BELT)
+		else:
+			SetItemSlotVnum(EQUIPMENT_BELT_SLOT) # MT2009_PLUS_BELT_SLOT_V1
 		if app.ENABLE_PENDANT_SYSTEM:
 			SetItemSlotVnum(item.EQUIPMENT_PENDANT)
 		if app.ENABLE_GLOVE_SYSTEM:
@@ -2577,6 +2592,9 @@ class InventoryWindow(ui.ScriptWindow):
 			if player.IsEquipmentSlot(dstItemSlotPos):
 
 				if item.IsEquipmentVID(srcItemVID):
+					self.__UseItem(srcItemSlotPos)
+				# MT2009_PLUS_BELT_SLOT_V1: a belt dropped on the worn belt swaps it
+				elif dstItemSlotPos == EQUIPMENT_BELT_SLOT and IsBeltVID(srcItemVID):
 					self.__UseItem(srcItemSlotPos)
 
 			else:
