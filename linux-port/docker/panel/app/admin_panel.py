@@ -11600,9 +11600,11 @@ def bot_sql(query):
 # engine reads to hand out the commands, and the one the player page's rank
 # card writes. That is what keeps Admin, AdminNinja, AdminSura and AdminSzaman
 # (gm_characters.sql: level 90, 500 000 000 yang and a full +9 set each) off
-# the first four places of every table. Not the admin account: the operator's
-# own character often lives on it ("tylko moja Tieru"), and it is a player's.
-# Not the names either: the r40250 package calls its GM [SA]Admin, and a rank
+# the first four places of every table. While an account has such a game
+# master, all its characters are out (MT2009_PLUS_RANKING_GM_ACCOUNT_CURRENT_V2,
+# the owner, 6 October: "cale konta GM, ale musza miec aktualnie GM na
+# koncie"); a row of a deleted or renamed GM character hides nobody.
+# Not the names: the r40250 package calls its GM [SA]Admin, and a rank
 # given in the panel goes to whatever character it is given to. A PLAYER row
 # is no rank (gm_rank_of); a GM whose rank is taken away is ranked again.
 #
@@ -11639,18 +11641,22 @@ def rankings_count_people():
 
 def _not_game_master(alias):
     ref = (alias + ".") if alias else ""
-    # MT2009_PLUS_RANKING_CURRENT_GM_V1: only a character that is a game master
-    # NOW - its own common.gmlist row with a rank, on its own account (the row
-    # the engine gives the commands by, gm_new_get_level). The account-wide
-    # rule (MT2009_PLUS_RANKING_NO_GM_ACCOUNT_V1) hid every character of an
-    # account any row named - a row left by a deleted or renamed GM character
-    # too, and on the admin account a player's character for good ("postac
-    # zwyklego gracza juz sie nie pojawi ... jesli postac miala kiedykolwiek
-    # range GM", the owner, 2.24.0).
+    # MT2009_PLUS_RANKING_GM_ACCOUNT_CURRENT_V2: every character of an account
+    # that has a game master NOW - a common.gmlist row with a rank (not PLAYER)
+    # on that account whose name is a character that still exists on it (the
+    # row the engine gives the commands by, gm_new_get_level). The owner,
+    # 6 October: "cale konta GM, ale musza miec aktualnie GM na koncie; jak
+    # mieli w przeszlosci, to nadal moga wyswietlac sie w rankingu". A row left
+    # by a deleted or renamed GM character hides nobody (the 2.24.0 account-wide
+    # rule, MT2009_PLUS_RANKING_NO_GM_ACCOUNT_V1, hid such an account for good;
+    # MT2009_PLUS_RANKING_CURRENT_GM_V1 hid only the GM character itself).
+    # account_id is left unqualified for alias "": neither gmlist nor
+    # account.account has that column, so it is the ranked row's.
     return ("NOT EXISTS (SELECT 1 FROM common.gmlist rg"
             " JOIN account.account gacc ON gacc.login = rg.mAccount"
-            " WHERE rg.mName = " + ref + "name AND gacc.id = " + ref + "account_id"
-            " AND rg.mAuthority <> 'PLAYER')")
+            " WHERE gacc.id = " + ref + "account_id AND rg.mAuthority <> 'PLAYER'"
+            " AND EXISTS (SELECT 1 FROM player.player rgp"
+            " WHERE rgp.account_id = gacc.id AND rgp.name = rg.mName))")
 
 
 def _ranked(alias, pct, people_only):

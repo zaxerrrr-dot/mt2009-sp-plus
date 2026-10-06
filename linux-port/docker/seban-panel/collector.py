@@ -477,8 +477,12 @@ def collect(con, previous):
         cur.execute("""SELECT COALESCE(MAX(p.level),0) FROM player.player p
           WHERE p.name NOT IN ('[SA]Admin','Test','Admin','AdminNinja','AdminSura','AdminSzaman')
             AND NOT EXISTS (SELECT 1 FROM player.playerbot_sidekick s WHERE s.sidekick_pid=p.id)
+            -- MT2009_PLUS_RANKING_GM_ACCOUNT_CURRENT_V2: the whole account while it
+            -- has a current GM character (owner, 6 October).
             AND NOT EXISTS (SELECT 1 FROM common.gmlist gl JOIN account.account ga ON ga.login=gl.mAccount
-                            WHERE gl.mName=p.name AND ga.id=p.account_id AND gl.mAuthority<>'PLAYER')""")
+                            WHERE ga.id=p.account_id AND gl.mAuthority<>'PLAYER'
+                              AND EXISTS (SELECT 1 FROM player.player gp
+                                          WHERE gp.account_id=ga.id AND gp.name=gl.mName))""")
         cur.execute("INSERT IGNORE INTO player.web_seban_metric_snapshot VALUES (%s,'max_level_regular',%s)", (now, cur.fetchone()[0]))
         cur.execute("SELECT COALESCE(SUM(cash),0) FROM account.account")
         cur.execute("INSERT IGNORE INTO player.web_seban_metric_snapshot VALUES (%s,'dragon_coins',%s)", (now, cur.fetchone()[0]))
