@@ -2805,8 +2805,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_01.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_01.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_01.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2814,8 +2817,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_02.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_02.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_02.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2823,8 +2829,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_03.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_03.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_03.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2832,8 +2841,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_04.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_04.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_04.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2841,8 +2853,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_05.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_05.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_05.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2850,8 +2865,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_06.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_06.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_06.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2859,8 +2877,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_07.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_07.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_07.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2868,8 +2889,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_08.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_08.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_08.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2877,8 +2901,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_09.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_09.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_09.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2886,8 +2913,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_10.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_10.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_10.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2895,8 +2925,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_11.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_11.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_11.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2904,8 +2937,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_12.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_12.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_12.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2913,8 +2949,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_13.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_13.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_13.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2922,8 +2961,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_14.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_14.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_14.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2931,8 +2973,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_15.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_15.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_15.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2940,8 +2985,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_16.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_16.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_16.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2949,8 +2997,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_17.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_17.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_17.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2958,8 +3009,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_18.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_18.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_18.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2967,8 +3021,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_19.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_19.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_19.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2976,8 +3033,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_20.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_20.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_20.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2985,8 +3045,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_21.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_21.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_21.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -2994,8 +3057,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_22.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_22.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_22.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3003,8 +3069,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_23.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_23.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_23.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3012,8 +3081,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_24.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_24.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_24.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3021,8 +3093,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_25.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_25.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_25.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3030,8 +3105,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_26.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_26.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_26.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3039,8 +3117,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_27.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_27.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_27.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3048,8 +3129,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_28.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_28.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_28.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3057,8 +3141,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_29.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_29.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_29.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3066,8 +3153,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_30.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_30.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_30.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3075,8 +3165,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_31.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_31.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_31.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -3084,8 +3177,11 @@
    ]
   },
   {
-   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_32.dds",
+   "key": "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_32.dds",
    "ours": false,
+   "pack": "az_cost05",
+   "size": 11064,
+   "src": "ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_32.dds",
    "why": [
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bell_glow.mse",
     "ref d:/ymir work/effect/plechito/weapons/frozen_warrior/bow_glow.mse",
@@ -22719,38 +22815,6 @@
   "d:/ymir work/effect/mehok/eazy_1/tex/sword.dds",
   "d:/ymir work/effect/mehok/eazy_1/tex/twohand.dds",
   "d:/ymir work/effect/plechito/weapons/christmas2023_4/costume_trail.mde",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_01.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_02.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_03.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_04.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_05.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_06.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_07.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_08.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_09.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_10.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_11.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_12.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_13.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_14.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_15.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_16.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_17.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_18.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_19.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_20.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_21.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_22.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_23.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_24.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_25.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_26.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_27.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_28.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_29.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_30.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_31.dds",
-  "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke_1_32.dds",
   "d:/ymir work/effect/plechito/weapons/thunder_spirit/s.bmp",
   "d:/ymir work/pc/plechito/classic_chinese_costume/hair/assassin_face.dds",
   "d:/ymir work/pc/plechito/classic_chinese_costume/hair/assassin_salsa1.dds",
@@ -23091,6 +23155,38 @@
    "d:/ymir work/effect/plechito/weapons/frozen_warrior/fan_glow.mse",
    "d:/ymir work/effect/plechito/weapons/frozen_warrior/fan_light.mde",
    "d:/ymir work/effect/plechito/weapons/frozen_warrior/ice_crystals.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_01.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_02.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_03.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_04.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_05.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_06.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_07.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_08.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_09.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_10.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_11.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_12.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_13.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_14.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_15.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_16.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_17.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_18.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_19.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_20.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_21.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_22.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_23.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_24.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_25.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_26.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_27.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_28.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_29.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_30.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_31.dds",
+   "d:/ymir work/effect/plechito/weapons/frozen_warrior/smoke/smoke_1_32.dds",
    "d:/ymir work/effect/plechito/weapons/frozen_warrior/sword_glow.dds",
    "d:/ymir work/effect/plechito/weapons/frozen_warrior/sword_glow.mde",
    "d:/ymir work/effect/plechito/weapons/frozen_warrior/sword_glow.mse",

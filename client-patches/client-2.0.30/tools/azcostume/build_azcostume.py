@@ -198,8 +198,12 @@ def file_refs(key, path):
             out.append(t)
         elif 'ymir work/' in t:
             out.append('d:/ymir work/' + t.split('ymir work/', 1)[1])
+        elif key.endswith('.gr2'):
+            out.append(d + t.rsplit('/', 1)[-1])   # an artist's own path: the skin sits next to the model
         else:
-            out.append(d + t.rsplit('/', 1)[-1])
+            # MT2009_PLUS_AREZZO_COSTUME_SETS_V3: an effect's relative name keeps its folder
+            # ("smoke\smoke_1_01.dds" next to the .mse is <folder>/smoke/smoke_1_01.dds)
+            out.append(d + t.lstrip('./'))
     return out
 
 
