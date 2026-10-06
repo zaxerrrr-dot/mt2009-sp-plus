@@ -118,5 +118,23 @@
   "marker": "MT2009_PLUS_RARE_DROP_SWITCHES_V1 (boss chest)",
   "old": "\t\t\t\t\t\t\tconst int szarfaChestChance = number(6, 10);\n",
   "new": "\t\t\t\t\t\t\t// MT2009_PLUS_RARE_DROP_SWITCHES_V1 (boss chest): the database editor's \"Szarfy z bossow\"\n\t\t\t\t\t\t\t// switch (event flag m2_sash_boss_off) takes the boss chests' sash too.\n\t\t\t\t\t\t\tconst int szarfaChestChance = quest::CQuestManager::instance().GetEventFlag(\"m2_sash_boss_off\") != 0\n\t\t\t\t\t\t\t\t\t? 0 : number(6, 10);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_DROPS_NO_FADE_V1 (server-patches/raremobrules)",
+  "old": "bool ITEM_MANAGER::GetDropPct(LPCHARACTER pkChr, LPCHARACTER pkKiller, OUT int& iDeltaPercent, OUT int& iRandRange)\n",
+  "new": "// MT2009_PLUS_DUNGEON_DROPS_NO_FADE_V1 (server-patches/raremobrules): no level fade in the\n// dungeons for a player (the owner, 2.24.0: a level 75 got no upgrade item, not even a potion,\n// in a dozen Razador runs while the drop wiki says 1.25%). The wiki shows a kill at the\n// monster's own level; aiPercentByDeltaLev pays 1% from fifteen levels over the monster, and\n// Razador's mobs 6001-6009 are levels 56-64 (a level 75 rolled every table, the common drop's\n// potions too, at 1-30%). In the dungeon panel's maps (dungeon_info.txt) - the Demon Tower 66,\n// the Blue Dragon lair 208, the Catacomb 216, Razador 351, Nemere 352, Biblioteka Wiedzy 363,\n// Wzgorze Wukonga 364, Ruiny Skorpiona 365, Starozytna Dzungla 366 - and their instances\n// (map * 10000 ...), a player's kill rolls the drop (GetDropPct, iDeltaPercent 100) and the\n// yang (CHARACTER::RewardGold) at the full rate. A bot keeps the old fade (as the tower's).\nbool Mt2009PlusDungeonNoFade(LPCHARACTER pkKiller)\n{\n\tif (!pkKiller || !pkKiller->IsPC() || !pkKiller->GetDesc() || pkKiller->GetDesc()->IsBot())\n\t\treturn false;\n\tconst long mapIndex = pkKiller->GetMapIndex();\n\tconst long base = mapIndex >= 10000 ? mapIndex / 10000 : mapIndex;\n\tswitch (base)\n\t{\n\t\tcase 66: case 208: case 216: case 351: case 352:\n\t\tcase 363: case 364: case 365: case 366:\n\t\t\treturn true;\n\t}\n\treturn false;\n}\n\nbool ITEM_MANAGER::GetDropPct(LPCHARACTER pkChr, LPCHARACTER pkKiller, OUT int& iDeltaPercent, OUT int& iRandRange)\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_DROPS_NO_FADE_V1 (delta)",
+  "old": "\tif (iDeltaPercent < 100 && Mt2009PlusDemonTowerFullDrop(pkKiller))\n",
+  "new": "\t// MT2009_PLUS_DUNGEON_DROPS_NO_FADE_V1 (delta): nor in the other dungeons.\n\tif (iDeltaPercent < 100 && (Mt2009PlusDemonTowerFullDrop(pkKiller) || Mt2009PlusDungeonNoFade(pkKiller)))\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_DROPS_NO_FADE_V1 (yang)",
+  "old": "\t\tiPercent = ((iGoldPercent * PERCENT_LVDELTA(pkAttacker->GetLevel(), GetLevel())) / 100);\n\n\tif (number(1, 100) > iPercent)\n",
+  "new": "\t\tiPercent = ((iGoldPercent * PERCENT_LVDELTA(pkAttacker->GetLevel(), GetLevel())) / 100);\n\n\t// MT2009_PLUS_DUNGEON_DROPS_NO_FADE_V1 (yang): a player's kill in a dungeon drops yang with\n\t// no level fade, as its items (item_manager.cpp, Mt2009PlusDungeonNoFade).\n\t{\n\t\tbool Mt2009PlusDungeonNoFade(LPCHARACTER pkKiller);\n\t\tif (iPercent < iGoldPercent && Mt2009PlusDungeonNoFade(pkAttacker))\n\t\t\tiPercent = iGoldPercent;\n\t}\n\n\tif (number(1, 100) > iPercent)\n"
  }
 ]

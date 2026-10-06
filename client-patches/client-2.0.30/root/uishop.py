@@ -558,36 +558,33 @@ class ShopDialog(ui.ScriptWindow):
 		self.UpdateTotalSellPrice()
 		self.massSellData[sourceWindowType].pop(sourceSlotPos)
 
+	# MT2009_PLUS_MASS_SELL_FIX_V1: the mass sale (2.24.0, the owner: "no mass selling of 70+ items,
+	# weapons, armour, steel..."). A weapon or armour of level 30, 70, 75 or over asked with
+	# localeInfo.MASS_SELL_WARNING, a key locale_game.txt never had: the AttributeError ended the
+	# check before anything was sent, so one such item stopped the whole sale. Level is no reason
+	# now; a +7 or higher weapon or armour, one with a bonus and the Diament Mocy (50513) are
+	# listed in one question for the whole sale (not one dialog per item), with texts of their
+	# own when the locale has none.
 	def IsItemValuable(self, window, slot):
 		itemVnum = player.GetItemIndex(window, slot)
-		print "check", itemVnum
 		item.SelectItem(itemVnum)
 
 		if item.GetItemType() in (item.ITEM_TYPE_WEAPON, item.ITEM_TYPE_ARMOR):
 			refineLevel = itemVnum - (itemVnum / 10) * 10
-			print "check refine", refineLevel
 			if refineLevel >= 7:
 				return ("refine_level", item.GetItemName())
 
 			(type, value) = player.GetItemAttribute(window, slot, 0)
 			if type != 0:
 				return ("attribute", item.GetItemName())
-
-			(type, value) = item.GetLimit(0)
-			if type == item.LIMIT_LEVEL and (value in [30, 70, 75] or value > 75):
-				return ("good_item", item.GetItemName())
 		elif itemVnum in (50513,):
 			return ("high_price", item.GetItemName())
-
-		# price = player.GetISellItemPrice(window, slot)
-		# if price >= 100000:
-		# 	return ("high_price", item.GetItemName())
 
 		return ("good_to_go", "")
 
 	def MassSell(self):
 		questionDialog = uiCommon.QuestionDialog()
-		questionDialog.SetText(localeInfo.MASS_SELL_QUESTION)
+		questionDialog.SetText(getattr(localeInfo, "MASS_SELL_QUESTION", "Czy chcesz dokona\xe6 masowej sprzeda\xbfy?"))
 		questionDialog.SetAcceptEvent(self.AcceptMassSell)
 		questionDialog.SetCancelEvent(ui.__mem_func__(self.OnCloseQuestionDialog))
 		questionDialog.Open()
@@ -598,38 +595,50 @@ class ShopDialog(ui.ScriptWindow):
 		self.OnCloseQuestionDialog()
 		self.CheckMassSell()
 
-	def AcceptCheckMassSell(self, *alreadyChecked):
+	def AcceptCheckMassSell(self):
 		self.OnCloseQuestionDialog()
-		self.CheckMassSell(*alreadyChecked)
+		self.OnMassSell()
 
-	def CheckMassSell(self, *alreadyChecked):
-		if len(self.massSellData) > 0:
-			for window in self.massSellData.keys():
-				for slot in self.massSellData[window].keys():
-					if slot in alreadyChecked:
-						continue
+	def CheckMassSell(self):
+		if len(self.massSellData) <= 0:
+			return
 
-					message, itemName = self.IsItemValuable(window, slot)
-					if message != "good_to_go":
-						questionDialog = uiCommon.QuestionDialog2()
-						if message == "good_item":
-							questionDialog.SetText1(localeInfo.MASS_SELL_WARNING)
-						elif message == "refine_level":
-							questionDialog.SetText1(localeInfo.MASS_SELL_WARNING_REFINE_LEVEL)
-						elif message == "attribute":
-							questionDialog.SetText1(localeInfo.MASS_SELL_WARNING_ATTRIBUTE)
-						elif message == "high_price":
-							questionDialog.SetText1(localeInfo.MASS_SELL_WARNING_HIGH_PRICE)
+		kinds = {}
+		names = []
+		for window in self.massSellData.keys():
+			for slot in self.massSellData[window].keys():
+				message, itemName = self.IsItemValuable(window, slot)
+				if message == "good_to_go":
+					continue
+				kinds[message] = kinds.get(message, 0) + 1
+				if itemName and not itemName in names:
+					names.append(itemName)
 
-						questionDialog.SetText2(itemName)
-						questionDialog.SetAcceptEvent(lambda arg1=alreadyChecked: self.AcceptCheckMassSell(slot, *arg1))
-						questionDialog.SetCancelEvent(ui.__mem_func__(self.OnCloseQuestionDialog))
-						questionDialog.Open()
-						self.questionDialog = questionDialog
-						constInfo.SET_ITEM_QUESTION_DIALOG_STATUS(1)
-						return
-
+		if not kinds:
 			self.OnMassSell()
+			return
+
+		if len(kinds) > 1:
+			text1 = "W sprzeda\xbfy s\xb9 cenne przedmioty (%d), kontynuowa\xe6?" % sum(kinds.values())
+		elif "refine_level" in kinds:
+			text1 = getattr(localeInfo, "MASS_SELL_WARNING_REFINE_LEVEL", "Wykryto wysoki poziom ulepszenia, kontynuowa\xe6?")
+		elif "attribute" in kinds:
+			text1 = getattr(localeInfo, "MASS_SELL_WARNING_ATTRIBUTE", "Wykryto przedmiot z bonusem, kontynuowa\xe6?")
+		else:
+			text1 = getattr(localeInfo, "MASS_SELL_WARNING_HIGH_PRICE", "Wykryto potencjalnie warto\x9cciowy przedmiot, kontynuowa\xe6?")
+
+		text2 = ", ".join(names[:3])
+		if len(names) > 3:
+			text2 += " (+%d)" % (len(names) - 3)
+
+		questionDialog = uiCommon.QuestionDialog2()
+		questionDialog.SetText1(text1)
+		questionDialog.SetText2(text2)
+		questionDialog.SetAcceptEvent(ui.__mem_func__(self.AcceptCheckMassSell))
+		questionDialog.SetCancelEvent(ui.__mem_func__(self.OnCloseQuestionDialog))
+		questionDialog.Open()
+		self.questionDialog = questionDialog
+		constInfo.SET_ITEM_QUESTION_DIALOG_STATUS(1)
 
 	def OnMassSell(self):
 		if len(self.massSellData) > 0:

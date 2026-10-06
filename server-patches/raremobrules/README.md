@@ -21,6 +21,15 @@ Znacznik: `MT2009_PLUS_RARE_MOB_RULES_V1`. Arkusz dropu od właściciela, 1 paź
   wypadały (1 na ~31 700 zabić). Boty bez zmian (stara kara). Cor/szarfy/księgi bez zmian.
   Dane: `linux-port/docker/game/mob_drop_item.dtdrops.append.txt` (Brutalne demony 1061-1071).
 
+- `MT2009_PLUS_DUNGEON_DROPS_NO_FADE_V1` (6 października, zgłoszenie do 2.24.0): to samo co w Wieży Demonów we
+  wszystkich lochach panelu (`dungeon_info.txt`): Leże Smoka 208, Katakumby 216, Razador 351, Nemere 352, Biblioteka
+  Wiedzy 363, Wzgórze Wukonga 364, Ruiny Skorpiona 365, Starożytna Dżungla 366 (i Wieża 66) oraz ich instancje
+  (mapa * 10000 ...). Zabicie przez gracza losuje drop (`GetDropPct`, `iDeltaPercent` = 100) i yang
+  (`char_battle.cpp`, `CHARACTER::RewardGold`) bez kary za różnicę poziomów. Wcześniej postać 75 poziomu w Razadorze
+  (potwory 6001-6009 na 56-64 poziomie) losowała wszystkie tabele, także mikstury z dropu ogólnego, na 1-30%,
+  a wiki dropu pokazuje szansę dla gracza na poziomie potwora. Funkcja `Mt2009PlusDungeonNoFade` (item_manager.cpp).
+  Boty bez zmian.
+
 - `MT2009_PLUS_RARE_DROP_SWITCHES_V1` (5 października): sześć wyłączników z edytora bazy danych panelu
   Seban (strona „Kupony SM, szarfy, Cor”, `dbeditor/raredrop.py`) – flagi świata w `player.quest`
   (dwPID 0, 1 = wyłączony, brak/0 = włączony): `m2_sm_boss_off`, `m2_sm_metin_off`, `m2_sash_boss_off`,
