@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_CUBE_V1: Wytwarzanie (cube) - cube.txt through the spool (dbeditor/cube.py, bin/m2-cube). #}
+{% block title %}Wytwarzanie · Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% macro item_cell(it) -%}
+  <span class="dbt-name">{% if it.icon %}<img src="{{ it.icon }}" alt="">{% endif %}<span class="{{ 'dbt-bad' if it.bad }}" title="VNUM {{ it.vnum }}">{{ it.name }}{% if it.count != 1 %} ×{{ it.count }}{% endif %}</span></span>
+{%- endmacro %}
+{% block content %}
+{% include 'dbeditor/_tables_head.html' %}
+<style>
+.dbc-layout{display:grid;grid-template-columns:minmax(200px,260px) 1fr;gap:14px;align-items:start}
+@media (max-width:800px){.dbc-layout{grid-template-columns:1fr}}
+.dbc-npcs{display:grid;gap:4px}
+.dbc-npcs a{display:flex;justify-content:space-between;gap:8px;padding:6px 9px;border:1px solid var(--edge);border-radius:8px;text-decoration:none;color:var(--text)}
+.dbc-npcs a.is-active{border-color:var(--blue2);background:color-mix(in srgb,var(--blue2) 18%,transparent)}
+.dbc-mats{display:grid;gap:2px}
+.dbc-actions{display:flex;flex-wrap:wrap;gap:4px}
+.dbc-actions form{margin:0}
+</style>
+<p class="eyebrow">EDYTOR BAZY DANYCH · WYTWARZANIE</p>
+<h1>⚗️ Wytwarzanie (cube) {% if source == 'custom' %}<small class="muted">· zmienione w panelu</small>{% endif %}</h1>
+<section class="panel dbt-note">
+  <p>Okno wytwarzania otwiera NPC (np. Seon-Pyeong). Gracz wkłada składniki – gra bierze <b>pierwszy</b> przepis tego NPC, na który wystarczą składniki, pobiera składniki i <b>koszt w Yang</b>, a potem z podaną <b>szansą</b> daje wynik (przy porażce składniki i Yang przepadają). Okno pokazuje najwyżej 5 składników na przepis.</p>
+  <p class="muted">Plik gry: locale/poland/cube.txt (czytany przy starcie rdzeni). Zmiany działają po <b>Zastosuj</b> (restart gry) – komenda /reload c przeładowałaby tylko jeden z rdzeni gry, dlatego panel jej nie używa. Gracze dostają nową listę przepisów po ponownym otwarciu okna. <a href="{{ url_for('dbeditor.cube_file') }}">⬇ Pobierz obecny plik</a></p>
+</section>
+<section class="panel dbt-note {{ status.kind if status.kind in ('ok', 'error') else 'warn' }}">
+  <p><b>Stan w grze:</b> {{ status.text }}{% if status.time %} <small class="muted">(raport gry: {{ status.time.strftime('%Y-%m-%d %H:%M') }})</small>{% endif %}</p>
+  {% if base_source == 'snapshot' %}<p class="muted">Gra nie udostępniła jeszcze swojego pliku (cube/cube.base.txt w wolumenie) – pokazuję kopię z panelu.</p>{% endif %}
+</section>
+{% if errors %}<section class="panel dbt-note error">{% for p in errors[:20] %}<p>⚠️ {{ p }}</p>{% endfor %}</section>{% endif %}
+{% if warnings %}<section class="panel dbt-note warn">{% for p in warnings[:20] %}<p>ℹ️ {{ p }}</p>{% endfor %}</section>{% endif %}
+
+<div class="dbc-layout">
+<section class="panel">
+  <h2>NPC ({{ npcs|length }})</h2>
+  <nav class="dbc-npcs">
+  {% for n in npcs %}
+    <a href="{{ url_for('dbeditor.cube', npc=n.vnum) }}" class="{{ 'is-active' if n.vnum == selected }}">
+      <span>{{ n.name }} <small class="muted">#{{ n.vnum }}</small>{% if n.opens == false %} <small class="dbt-bad" title="Żaden quest tego NPC nie otwiera okna wytwarzania – gracze nie zobaczą tych przepisów.">bez okna</small>{% endif %}</span>
+      <b>{{ n.count }}</b></a>
+  {% endfor %}
+  </nav>
+  <p class="muted">Razem przepisów: {{ total }}.</p>
+  <p><a class="button" href="{{ url_for('dbeditor.cube_new') }}">➕ Przepis dla innego NPC</a></p>
+</section>
+
+<section class="panel">
+  <h2>{{ selected_name }} <small class="muted">#{{ selected }}</small></h2>
+  {% if openers is not none and selected not in openers %}<p class="dbt-note warn">Żaden quest tego NPC nie otwiera okna wytwarzania (command("cube open")) – przepisy są w pliku, ale gracze nie mają jak z nich skorzystać.</p>{% endif %}
+  <p><a class="button" href="{{ url_for('dbeditor.cube_new', npc=selected) }}">➕ Nowy przepis u tego NPC</a></p>
+  {% if recipes %}
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>#</th><th>Składniki</th><th>Wynik</th><th class="num">Szansa</th><th class="num">Koszt (Yang)</th><th></th></tr></thead>
+    <tbody>
+    {% for r in recipes %}
+      <tr>
+        <td class="muted">{{ loop.index }}</td>
+        <td><div class="dbc-mats">{% for it in r.mats %}{{ item_cell(it) }}{% endfor %}</div>{% if r.comment %}<small class="muted">{{ r.comment }}</small>{% endif %}</td>
+        <td>{% for it in r.rewards %}{{ item_cell(it) }}{% endfor %}</td>
+        <td class="num">{{ r.percent }}%</td>
+        <td class="num">{{ num(r.gold) if r.gold else '—' }}</td>
+        <td><div class="dbc-actions">
+          <a class="button dbe-small" href="{{ url_for('dbeditor.cube_recipe', index=r.index) }}">✏️ Edytuj</a>
+          <a class="button dbe-small" href="{{ url_for('dbeditor.cube_new', kopia=r.index) }}" title="Nowy przepis z tymi samymi wartościami">📄 Kopiuj przepis</a>
+          <form method="post" action="{{ url_for('dbeditor.cube_save') }}" onsubmit="return confirm('Usunąć ten przepis?')">
+            <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="sha" value="{{ sha }}">
+            <input type="hidden" name="index" value="{{ r.index }}"><button class="dbe-small" name="action" value="delete">🗑 Usuń</button></form>
+        </div></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}
+  <p class="muted">Ten NPC nie ma przepisów.</p>
+  {% endif %}
+</section>
+</div>
+
+<section class="panel">
+  <h2>Historia zmian</h2>
+  <form method="post" action="{{ url_for('dbeditor.cube_save') }}" class="dbt-actions">
+    <input type="hidden" name="dbe_csrf" value="{{ csrf }}">
+    {% if backups %}<button name="action" value="undo" onclick="return confirm('Cofnąć ostatni zapis przepisów?')">↶ Cofnij ostatnią zmianę</button>{% endif %}
+    {% if source == 'custom' %}<button name="action" value="reset" onclick="return confirm('Wszystkie przepisy wrócą do pliku z obrazu gry. Na pewno?')">↺ Przywróć z obrazu gry</button>{% endif %}
+  </form>
+  {% if history %}
+  <table class="dbt-table">
+    <thead><tr><th>Kiedy</th><th>Co</th><th></th></tr></thead>
+    <tbody>
+    {% for h in history %}
+      <tr><td>{{ h.when.strftime('%Y-%m-%d %H:%M:%S') }}</td><td>{{ h.what }}{% if h.note %} <small class="muted">– {{ h.note }}</small>{% endif %}</td>
+        <td>{% if h.backup %}<form method="post" action="{{ url_for('dbeditor.cube_save') }}" style="margin:0" onsubmit="return confirm('Przywrócić przepisy sprzed tej zmiany? (późniejsze zmiany też znikną – zostaną w kopiach)')">
+          <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="action" value="restore"><input type="hidden" name="name" value="{{ h.backup }}">
+          <button class="dbe-small">↶ Stan sprzed tej zmiany</button></form>{% endif %}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p class="muted">Brak zmian z panelu.</p>{% endif %}
+  {% if backups %}
+  <details><summary>Kopie zapasowe pliku ({{ backups|length }})</summary>
+  <table class="dbt-table">
+    <tbody>
+    {% for b in backups %}
+      <tr><td>{{ b.time.strftime('%Y-%m-%d %H:%M:%S') }}</td><td>{{ 'stan z obrazu gry (bez zmian z panelu)' if b.empty else 'przepisy z panelu (' ~ b.size ~ ' B)' }}</td>
+        <td><form method="post" action="{{ url_for('dbeditor.cube_save') }}" style="margin:0" onsubmit="return confirm('Przywrócić tę kopię?')">
+          <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="action" value="restore"><input type="hidden" name="name" value="{{ b.name }}">
+          <button class="dbe-small">↶ Przywróć</button></form></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </details>
+  {% endif %}
+  <p class="muted">Eksport / import wszystkich zmian edytora (razem z przepisami) jest na stronie {% if 'dbeditor.config_page' in dbt_endpoints %}<a href="{{ url_for('dbeditor.config_page') }}">Eksport / import</a>{% else %}Eksport / import{% endif %}.</p>
+</section>
+{% endblock %}
