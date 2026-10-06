@@ -988,6 +988,12 @@ bool LoadLocaleData(const char* localePath)
 	}
 #endif
 
+#ifdef ENABLE_ITEM_SHINING_TABLE
+	// MT2009_PLUS_AREZZO_COSTUME_SETS_V1: optional - an older client data set has no glow table.
+	if (!rkItemMgr.LoadShiningTable("gamedata/shiningtable.txt"))
+		Tracenf("LoadLocaleData: no gamedata/shiningtable.txt (no item glows).");
+#endif
+
 	return true;
 }
 

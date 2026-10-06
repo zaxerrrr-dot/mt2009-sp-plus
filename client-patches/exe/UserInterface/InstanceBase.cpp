@@ -11,6 +11,9 @@
 
 #include "../eterlib/StateManager.h"
 #include "../gamelib/ItemManager.h"
+#ifdef ENABLE_ITEM_SHINING_TABLE
+#include "../EffectLib/EffectManager.h"	// MT2009_PLUS_AREZZO_COSTUME_SETS_V1
+#endif
 #include "../gamelib/GameLibDefines.h"
 #ifdef ENABLE_RACE_HEIGHT
 #include "../gamelib/RaceManager.h"
@@ -2892,12 +2895,18 @@ void CInstanceBase::SetArmor(DWORD dwArmor)
 			float fSpecularPower=pItemData->GetSpecularPowerf();
 			SetShape(dwShape, fSpecularPower);
 			__GetRefinedEffect(pItemData);
+#ifdef ENABLE_ITEM_SHINING_TABLE
+			__AttachShiningEffect(dwArmor, false);	// MT2009_PLUS_AREZZO_COSTUME_SETS_V1
+#endif
 			return;
 		}
 		else
 			__ClearArmorRefineEffect();
 	}
 
+#ifdef ENABLE_ITEM_SHINING_TABLE
+	__ClearShiningEffect(m_vecArmorShiningEffect);	// MT2009_PLUS_AREZZO_COSTUME_SETS_V1
+#endif
 	SetShape(dwArmor);
 }
 
@@ -3180,9 +3189,69 @@ bool CInstanceBase::SetWeapon(DWORD eWeapon)
 		__GetRefinedEffect(pItemData);
 	else
 		__ClearWeaponRefineEffect();
+#ifdef ENABLE_ITEM_SHINING_TABLE
+	__AttachShiningEffect(eWeapon, true);	// MT2009_PLUS_AREZZO_COSTUME_SETS_V1
+#endif
 
 	return true;
 }
+
+#ifdef ENABLE_ITEM_SHINING_TABLE
+// MT2009_PLUS_AREZZO_COSTUME_SETS_V1: the glow effects gamedata/shiningtable.txt gives an item, on the
+// weapon's bone(s) (both hands for daggers) or on the body ("Bip01") - the Arezzo costumes.
+void CInstanceBase::__ClearShiningEffect(std::vector<DWORD>& rvecEffect)
+{
+	for (size_t i = 0; i < rvecEffect.size(); ++i)
+		if (rvecEffect[i])
+			__DetachEffect(rvecEffect[i]);
+	rvecEffect.clear();
+}
+
+void CInstanceBase::__AttachShiningEffect(DWORD dwVnum, bool bWeapon)
+{
+	std::vector<DWORD>& rvecEffect = bWeapon ? m_vecWeaponShiningEffect : m_vecArmorShiningEffect;
+	__ClearShiningEffect(rvecEffect);
+
+	if (!dwVnum || !IsPC() || IsInvisibility())
+		return;
+
+	const std::vector<std::string>* pFiles = CItemManager::Instance().GetShiningFiles(dwVnum);
+	if (!pFiles)
+		return;
+
+	bool bBothHands = false;
+	if (bWeapon)
+	{
+		CItemData* pItemData = NULL;
+		if (CItemManager::Instance().GetItemDataPointer(dwVnum, &pItemData) && pItemData)
+		{
+			if (pItemData->GetType() == ITEM_WEAPON)
+				bBothHands = pItemData->GetSubType() == WEAPON_DAGGER;
+			else if (pItemData->GetType() == ITEM_COSTUME)
+				bBothHands = pItemData->GetValue(3) == WEAPON_DAGGER;
+		}
+	}
+
+	for (size_t i = 0; i < pFiles->size(); ++i)
+	{
+		const char* c_szFile = (*pFiles)[i].c_str();
+		if (!CEffectManager::Instance().RegisterEffect(c_szFile, false, false))
+			continue;
+
+		if (!bWeapon)
+		{
+			rvecEffect.push_back(m_GraphicThingInstance.AttachEffectByName(0, "Bip01", c_szFile));
+			continue;
+		}
+
+		const char* c_szBoneName = NULL;
+		if (m_GraphicThingInstance.GetAttachingBoneName(CRaceData::EQUIP_PART_WEAPON, &c_szBoneName) && c_szBoneName)
+			rvecEffect.push_back(m_GraphicThingInstance.AttachEffectByName(0, c_szBoneName, c_szFile));
+		if (bBothHands && m_GraphicThingInstance.GetAttachingBoneName(CRaceData::EQUIP_PART_WEAPON_LEFT, &c_szBoneName) && c_szBoneName)
+			rvecEffect.push_back(m_GraphicThingInstance.AttachEffectByName(0, c_szBoneName, c_szFile));
+	}
+}
+#endif
 
 void CInstanceBase::ChangeWeapon(DWORD eWeapon)
 {
@@ -3512,6 +3581,10 @@ void CInstanceBase::__Initialize()
 	m_swordRefineEffectRight = 0;
 	m_swordRefineEffectLeft = 0;
 	m_armorRefineEffect = 0;
+#ifdef ENABLE_ITEM_SHINING_TABLE
+	m_vecWeaponShiningEffect.clear();	// MT2009_PLUS_AREZZO_COSTUME_SETS_V1 (the effects go with the actor)
+	m_vecArmorShiningEffect.clear();
+#endif
 #ifdef ENABLE_ACCE_COSTUME_SYSTEM
 	m_dwAcceEffect = 0;
 #endif

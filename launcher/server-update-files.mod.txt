@@ -57,6 +57,8 @@ linux-port/docker/mariadb/playerbot/playerbot_names.sql
 linux-port/docker/mariadb/playerbot/gm_characters.sql
 linux-port/docker/mariadb/playerbot/item_proto.mt2009plus.sql
 linux-port/docker/mariadb/playerbot/mob_proto.mt2009plus.sql
+linux-port/docker/mariadb/playerbot/arezzo_costumes.sql
+linux-port/docker/mariadb/playerbot/arezzo_costumes_webshop.sql
 linux-port/docker/game/Dockerfile
 linux-port/docker/game/.dockerignore
 linux-port/docker/game/build-deps-mt2009.sh
@@ -199,6 +201,7 @@ linux-port/docker/game/src/server/game/src/sectree.cpp
 linux-port/docker/game/src/server/game/src/safebox.cpp
 linux-port/docker/game/src/server/game/src/dungeon.cpp
 linux-port/docker/game/src/server/game/src/item.cpp
+linux-port/docker/game/src/server/game/src/item.h
 linux-port/docker/game/src/server/game/src/item_attribute.cpp
 linux-port/docker/game/src/server/game/src/item_manager.cpp
 linux-port/docker/game/src/server/game/src/item_manager.h

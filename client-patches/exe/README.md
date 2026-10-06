@@ -167,3 +167,23 @@ Exe zostaje ten sam: nowy klucz to tylko nowy napis w tym samym pakiecie.
   `PythonNetworkStream.cpp`, `UserInterface.cpp`, `PythonApplication.cpp` – bez błędów.
 - Rozmiary struktur zgodne z serwerem (5 i 42 bajty, `static_assert` po obu stronach w teście).
 - Pełnego exe jeszcze nie zbudowano (skrypt budowania w `/opt/metin2/cache/exebuild` jest w toku).
+
+## Poświata przedmiotów (zestawy Arezzo) – `MT2009_PLUS_AREZZO_COSTUME_SETS_V1` (`ENABLE_ITEM_SHINING_TABLE`)
+
+Kostiumy i nakładki na broń z Arezzo mają własne efekty (świecenie, iskry, dym). Arezzo trzyma je w
+tabeli „shining” (vnum → plik `.mse`), a nasz exe jej nie miał. Teraz exe czyta opcjonalny plik
+`gamedata/shiningtable.txt` (`vnum<TAB>"efekt.mse"[<TAB>"efekt.mse"...]`, `#` – komentarz; format Arezzo)
+i dokłada efekty, gdy postać nosi przedmiot o tym vnumie: broń / nakładka na broń – na kość broni (sztylety
+na obie ręce), zbroja / kostium – na `Bip01`. Bez pakietów i bez Pythona; bez pliku nic się nie zmienia.
+Dane: `client-patches/client-2.0.30/tools/azcostume` (112 wierszy dla zestawów Arezzo).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_ITEM_SHINING_TABLE` |
+| `GameLib/ItemManager.h/.cpp` | **nowe w tym katalogu** (kopia z `client-build`): `LoadShiningTable`, `GetShiningFiles`, mapa `m_ShiningTable` |
+| `UserInterface/PythonApplication.cpp` | `LoadLocaleData`: po `item_scale.txt` wczytuje `gamedata/shiningtable.txt` (brak pliku = tylko wpis w logu) |
+| `UserInterface/InstanceBase.h/.cpp` | `__AttachShiningEffect` / `__ClearShiningEffect`, wektory efektów; wołane w `SetArmor` i `SetWeapon` (zmiana zbroi/kostiumu/broni odpina stare efekty), zerowane w `__Initialize` |
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`) dla
+`InstanceBase.cpp`, `PythonApplication.cpp`, `GameLib/ItemManager.cpp` na `exebuild/src` + ten katalog –
+bez błędów. Exe nie był budowany.

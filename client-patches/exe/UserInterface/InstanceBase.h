@@ -876,6 +876,13 @@ class CInstanceBase
 		UINT	__GetRefinedEffect(CItemData* pItem);
 		void	__ClearWeaponRefineEffect();
 		void	__ClearArmorRefineEffect();
+#ifdef ENABLE_ITEM_SHINING_TABLE
+		// MT2009_PLUS_AREZZO_COSTUME_SETS_V1: the glows of gamedata/shiningtable.txt on the worn weapon / armour.
+		void	__ClearShiningEffect(std::vector<DWORD>& rvecEffect);
+		void	__AttachShiningEffect(DWORD dwVnum, bool bWeapon);
+		std::vector<DWORD>		m_vecWeaponShiningEffect;
+		std::vector<DWORD>		m_vecArmorShiningEffect;
+#endif
 #ifdef ENABLE_ACCE_COSTUME_SYSTEM
 		void	ClearAcceEffect();
 #endif

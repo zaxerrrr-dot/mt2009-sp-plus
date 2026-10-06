@@ -1338,6 +1338,16 @@ class ItemToolTip(ToolTip):
 				self.AppendTextLine(localeInfo.ACCE_ABSORB_CHANCE % (absChance), self.CONDITION_COLOR)
 				## END ABSORPTION RATE
 
+				## MT2009_PLUS_AREZZO_COSTUME_SETS_V1: the sash skin in socket 2 (server-patches/azcostume)
+				try:
+					skinVnum = int(metinSlot[2]) if metinSlot and len(metinSlot) > 2 else 0
+				except (TypeError, ValueError):
+					skinVnum = 0
+				if 85200 <= skinVnum <= 85299:
+					item.SelectItem(skinVnum)
+					self.AppendTextLine("Nak³adka: %s" % item.GetItemName(), self.CONDITION_COLOR)
+					item.SelectItem(itemVnum)
+
 				itemAbsorbedVnum = int(metinSlot[acce.ABSORBED_SOCKET])
 				if itemAbsorbedVnum:
 					## ATTACK / DEFENSE
