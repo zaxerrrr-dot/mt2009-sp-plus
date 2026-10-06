@@ -221,6 +221,7 @@ linux-port/docker/game/src/server/game/src/p2p.h
 linux-port/docker/game/src/server/game/src/playerbot_*
 linux-port/docker/game/src/server/game/src/pvp.cpp
 linux-port/docker/game/src/server/game/src/questlua_affect.cpp
+linux-port/docker/game/src/server/game/src/questlua_quest.cpp
 linux-port/docker/game/src/server/game/src/questlua_item.cpp
 linux-port/docker/game/src/server/game/src/questmanager.cpp
 linux-port/docker/game/src/server/game/src/questnpc.cpp

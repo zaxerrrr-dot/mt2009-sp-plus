@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_QUESTS_V1: Questy - every quest with its switch and its rewards (dbeditor/quests.py, bin/m2-quests). #}
+{% block title %}Questy · Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% macro reward(g) -%}
+  {%- if g.kind == 'item' -%}🎁 {{ names.get(g.vnum, {}).get('name') or ('przedmiot ' ~ (g.vnum or '?')) }}{% if g.count and g.count > 1 %} ×{{ g.count }}{% endif %}
+  {%- elif g.kind == 'gold' -%}💰 {{ fmt_int(g.amount) ~ ' yang' if g.amount is not none else 'yang (wyliczany)' }}
+  {%- elif g.kind == 'exp' -%}✨ {{ fmt_int(g.amount) ~ ' dośw.' if g.amount is not none else 'doświadczenie (wyliczane)' }}
+  {%- elif g.kind == 'bonus' -%}💪 {{ point_label(g.point) if g.point is not none else 'bonus' }} {{ g.value if g.value is not none else '?' }}
+  {%- elif g.kind == 'table' -%}📋 tabela „{{ g.table_key or '?' }}”
+  {%- else -%}🎲 losowanie z grupy{%- endif -%}
+  {%- if g.conditional %}<small class="muted" title="w warunku (if) – nie zawsze">*</small>{% endif -%}
+{%- endmacro %}
+{% block content %}
+{% include 'dbeditor/_quests_head.html' %}
+<p class="eyebrow">EDYTOR BAZY DANYCH · QUESTY</p>
+<h1>📜 Questy</h1>
+<section class="panel dbt-note">
+  <p>Każdy quest gry z <b>włącznikiem</b> i nagrodami odczytanymi z jego kodu. Kliknij nazwę, żeby zmienić nagrody: inny przedmiot i ilość, yang / doświadczenie × mnożnik albo stała kwota, inny bonus stały, oraz <b>dodatkowe</b> nagrody. <a href="{{ url_for('dbeditor.quests_biolog') }}"><b>Biolog</b></a> ma własną stronę – każda misja osobno.</p>
+  <p class="muted">Nagrody odczytane są z kodu „na ile się da”: <small>*</small> = nagroda w warunku (nie zawsze), wartości wyliczane (np. zależne od poziomu) zmienia się mnożnikiem. Zmiany i wyłączenia działają po restarcie rdzeni (<b>Zastosuj</b>) – tylko dla nagród wydanych po restarcie. Wyłączony quest nie reaguje w grze (NPC, listy, zabicia), a postacie zachowują swój postęp. Questów oznaczonych 🔒 nie da się wyłączyć ({{ protected|join(', ') }}), ⚠️ = krytyczny (system gry / loch) – wyłączenie wymaga potwierdzenia.</p>
+</section>
+
+<section class="panel">
+  <form method="get" class="dbt-actions">
+    <label>Szukaj<input name="q" value="{{ query }}" placeholder="nazwa lub tytuł"></label>
+    <label>Rodzaj<select name="kat"><option value="">wszystkie</option>{% for c, label in categories %}<option value="{{ c }}" {{ 'selected' if c == cat_filter }}>{{ label }}</option>{% endfor %}</select></label>
+    <label>Pokaż<select name="tylko"><option value="">wszystkie</option><option value="zmienione" {{ 'selected' if only == 'zmienione' }}>tylko zmienione / wyłączone</option><option value="wylaczone" {{ 'selected' if only == 'wylaczone' }}>tylko wyłączone</option></select></label>
+    <button>Filtruj</button>
+    <small class="muted">{{ entries|length }} questów</small>
+  </form>
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>Quest</th><th>Rodzaj</th><th>Nagrody (z kodu)</th><th>Zmiany</th><th>Włączony</th></tr></thead>
+    <tbody>
+    {% for e in entries %}
+      <tr class="{{ 'muted' if e.off }}">
+        <td><a href="{{ url_for('dbeditor.quests_edit', name=e.name) }}"><b>{{ e.title or e.name }}</b></a><br><small class="muted">{{ e.name }}{% if e.rel %} · {{ e.rel }}{% endif %}</small></td>
+        <td><small>{{ e.cat_name }}</small>{% if e.crit == 'protected' %} 🔒{% elif e.crit == 'critical' %} ⚠️{% endif %}</td>
+        <td>{% if not e.parsed %}<small class="muted">brak źródła</small>{% endif %}{% for g in e.rewards %}<span class="dbd-chip">{{ reward(g) }}</span> {% endfor %}{% if e.more %}<small class="muted">+{{ e.more }}</small>{% endif %}{% if e.drops %} <small class="muted" title="przedmioty questowe zbierane z potworów">({{ e.drops }} dropów questowych)</small>{% endif %}</td>
+        <td>{% if e.changed %}<span class="dbd-tag">nagrody zmienione</span>{% endif %}{% if e.off != e.game_off %} <span class="dbd-tag" title="zapisane, czeka na Zastosuj">⏳</span>{% endif %}</td>
+        <td>
+          {% if e.crit == 'protected' %}<small class="muted">zawsze</small>{% elif e.crit == 'critical' and not e.off %}<a href="{{ url_for('dbeditor.quests_edit', name=e.name) }}#wlacznik" title="quest krytyczny – wyłączenie na jego stronie, z potwierdzeniem">✅ włączony ⚠️</a>{% else %}
+          <form method="post" action="{{ url_for('dbeditor.quests_toggle') }}" class="dbt-inline" {% if not e.off %}onsubmit="return confirm('Wyłączyć quest {{ e.name }}?')"{% endif %}>
+            <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="sha" value="{{ sha }}">
+            <input type="hidden" name="name" value="{{ e.name }}"><input type="hidden" name="on" value="{{ '1' if e.off else '0' }}">
+            <button title="{{ 'Włącz' if e.off else 'Wyłącz' }}">{{ '⛔ wyłączony – włącz' if e.off else '✅ włączony' }}</button>
+          </form>{% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="muted">Brak questów do pokazania.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+
+<section class="panel">
+  <h2>Historia zmian (kopie)</h2>
+  <form method="post" action="{{ url_for('dbeditor.quests_backup') }}" class="dbt-actions" onsubmit="return confirm('Cofnąć ostatnią zmianę questów?')">
+    <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><button name="action" value="undo">↩ Cofnij ostatnią zmianę</button>
+  </form>
+  {% if backups %}<div class="dbt-wrap"><table class="dbt-table"><thead><tr><th>Stan sprzed zapisu</th><th>Rozmiar</th><th></th></tr></thead><tbody>
+  {% for b in backups %}<tr><td>{{ b.time.strftime('%Y-%m-%d %H:%M:%S') }}</td><td>{{ 'bez zmian (obraz gry)' if b.empty else b.size ~ ' B' }}</td>
+    <td><form method="post" action="{{ url_for('dbeditor.quests_backup') }}" class="dbt-inline" onsubmit="return confirm('Przywrócić ten stan?')"><input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="name" value="{{ b.name }}"><button name="action" value="restore">Przywróć</button></form></td></tr>{% endfor %}
+  </tbody></table></div>{% else %}<p class="muted">Jeszcze nic nie zmieniano.</p>{% endif %}
+</section>
+{% endblock %}

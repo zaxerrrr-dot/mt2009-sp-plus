@@ -43,6 +43,7 @@ def install(app, ctx):
     # older image) is skipped.
     for name in ("items", "skills", "drops", "chests", "mobs", "spawns", "regen", "shops", "refine",
                  "itemshop",  # MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1
+                 "quests",  # MT2009_PLUS_DB_EDITOR_QUESTS_V1 (Questy: on/off, rewards)
                  "attrs", "exptable", "fishing", "dragonsoul",
                  "cube",  # MT2009_PLUS_DB_EDITOR_CUBE_V1
                  "config", "clientdata",

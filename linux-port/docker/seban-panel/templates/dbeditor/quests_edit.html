@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{# MT2009_PLUS_DB_EDITOR_QUESTS_V1: one quest - its switch, the rewards read from its code and the rules for them (dbeditor/quests.py). #}
+{% block title %}{{ name }} · Questy · Edytor bazy danych · {{ panel_brand }}{% endblock %}
+{% macro item_name(vnum) -%}{{ names.get(vnum, {}).get('name') or ('przedmiot ' ~ vnum) }}{%- endmacro %}
+{% macro where(g) -%}
+  <small class="muted">stan {{ g.states|join(', ') }}{% if g.calls|length > 1 %} · {{ g.calls|length }} wywołania{% endif %} · linia {{ g.calls[0].line }}{% if g.conditional %} · w warunku{% endif %}{% if g.random %} · losowe{% endif %}{% if g.drop %} · drop questowy (zabicie potwora){% endif %}{% if g.from_table %} · {{ g.note }}{% endif %}</small>
+{%- endmacro %}
+{% block content %}
+{% include 'dbeditor/_quests_head.html' %}
+<p class="eyebrow">EDYTOR BAZY DANYCH · QUESTY</p>
+<h1>📜 {{ title or name }} <small class="muted">· {{ name }}</small></h1>
+<section class="panel dbt-note">
+  <p>{{ cat_name }}{% if row.rel %} · źródło <code>{{ row.rel }}</code>{% endif %}{% if is_biologist %} · misja Biologa – wygodniej na stronie <a href="{{ url_for('dbeditor.quests_biolog') }}">🧪 Biolog</a>{% endif %}</p>
+  {% if not q %}<p class="dbt-bad">Gra nie udostępniła źródła tego questa – nagród nie da się odczytać (można go tylko wyłączyć).</p>{% endif %}
+  {% if q and q.problems %}<p class="muted">{{ q.problems|join(' · ') }}</p>{% endif %}
+</section>
+
+<section class="panel" id="wlacznik">
+  <h2>Włącznik</h2>
+  {% if crit == 'protected' %}
+    <p>🔒 Tego questa nie można wyłączyć: {{ protected[name] }}.</p>
+  {% else %}
+  <form method="post" action="{{ url_for('dbeditor.quests_toggle') }}" class="dbt-actions">
+    <input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="sha" value="{{ sha }}">
+    <input type="hidden" name="name" value="{{ name }}"><input type="hidden" name="wroc" value="{{ name }}">
+    <input type="hidden" name="on" value="{{ '1' if off else '0' }}">
+    <p>Teraz: <b>{{ 'WYŁĄCZONY' if off else 'włączony' }}</b>{% if row.on == off %} <small class="muted">(w grze jeszcze {{ 'włączony' if row.on else 'wyłączony' }} – czeka na Zastosuj)</small>{% endif %}</p>
+    {% if crit == 'critical' and not off %}<label class="dbe-check"><input type="checkbox" name="potwierdz" value="1"> ⚠️ Rozumiem: to quest krytyczny (system gry / loch) – po wyłączeniu przestaje działać to, co obsługuje.</label>{% endif %}
+    <button>{{ '✅ Włącz quest' if off else '⛔ Wyłącz quest' }}</button>
+    <small class="muted">Wyłączony quest nie reaguje w grze (NPC, listy, zabicia potworów, przedmioty); postacie zachowują postęp i wracają do niego po włączeniu. Wyłączenie misji z łańcucha (np. Biologa) zatrzymuje też następne.</small>
+  </form>
+  {% endif %}
+</section>
+
+{% if q %}
+<form method="post" action="{{ url_for('dbeditor.quests_save', name=name) }}" class="dbd-form" data-api="{{ url_for('dbeditor.api_items') if 'dbeditor.api_items' in dbt_endpoints else '' }}">
+<input type="hidden" name="dbe_csrf" value="{{ csrf }}"><input type="hidden" name="sha" value="{{ sha }}">
+<section class="panel">
+  <h2>Nagrody z kodu questa</h2>
+  {% if not groups %}<p class="muted">W kodzie nie ma żadnego wywołania nagrody (przedmiot, yang, doświadczenie, bonus). Dodatkowe nagrody można zaczepić o stan questa niżej.</p>{% endif %}
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>Nagroda teraz</th><th>Zmiana (puste = bez zmian)</th></tr></thead>
+    <tbody class="dbd-rows">
+    {% for g in groups %}{% set f = g.field %}
+      <tr>
+      {% if g.kind == 'item' %}
+        {% set rule = rules['items'].get(g.vnum) %}
+        <td>🎁 <b>{{ item_name(g.vnum) if g.vnum else g.calls[0].args[0] }}</b>{% if g.vnum %} <small class="muted">({{ g.vnum }})</small>{% endif %} × {{ g.count if g.count is not none else (g.calls[0].args[1] if g.calls[0].args|length > 1 else 1) }}<br>{{ where(g) }}</td>
+        <td>{% if g.editable %}
+          <label>Daj zamiast<input name="{{ f }}_new" class="dbd-item" list="dbd-items" value="{{ rule[0] if rule and rule[0] else '' }}" placeholder="VNUM lub nazwa" style="width:150px"></label>
+          <span class="dbd-name">{% if rule and rule[0] %}{{ item_name(rule[0]) }}{% endif %}</span>
+          <label>ilość<input name="{{ f }}_count" value="{{ rule[1] if rule and rule[1] else '' }}" placeholder="jak w queście" style="width:90px" inputmode="numeric"></label>
+          <label class="dbe-check"><input type="checkbox" name="{{ f }}_none" value="1" {{ 'checked' if rule and not rule[0] }}> nic nie dawaj</label>
+          {% if g.drop %}<br><small class="dbt-warn">To przedmiot zbierany do questa – zamiana zwykle psuje misję.</small>{% endif %}
+        {% else %}<small class="muted">wartość wyliczana w kodzie ({{ g.calls[0].code }}) – zmień ją „dodatkową nagrodą” albo wyłącz quest</small>{% endif %}</td>
+      {% elif g.kind == 'bonus' %}
+        {% set rule = rules['bonus'].get((g.point, g.value if g.value is not none else '*')) %}
+        <td>💪 <b>{{ point_label(g.point) if g.point is not none else g.calls[0].args[0] }}</b> {{ g.value if g.value is not none else '(wyliczana)' }} <small class="muted">bonus stały (affect.add_collect)</small><br>{{ where(g) }}</td>
+        <td>{% if g.editable %}
+          <label>Bonus<select name="{{ f }}_point"><option value="">bez zmian</option>{% for p, label in bonuses %}<option value="{{ p }}" {{ 'selected' if rule and rule[0] == p }}>{{ label }}</option>{% endfor %}</select></label>
+          <label>wartość<input name="{{ f }}_val" value="{{ rule[1] if rule and rule[0] else '' }}" placeholder="{{ g.value if g.value is not none else '' }}" style="width:90px" inputmode="numeric"></label>
+          <label class="dbe-check"><input type="checkbox" name="{{ f }}_none" value="1" {{ 'checked' if rule and not rule[0] }}> bez bonusu</label>
+        {% else %}<small class="muted">nie da się odczytać rodzaju bonusu</small>{% endif %}</td>
+      {% elif g.kind in ('gold', 'exp') %}
+        {% set kind_rules = rules[g.kind] %}{% set rule = kind_rules.get(g.amount) if g.amount is not none else none %}{% set f = g.kind[0] ~ '_' ~ (g.amount if g.amount is not none else 'all') %}
+        <td>{{ '💰' if g.kind == 'gold' else '✨' }} <b>{{ fmt_int(g.amount) if g.amount is not none else 'wartość wyliczana' }}</b> {{ 'yang' if g.kind == 'gold' else 'doświadczenia' }}{% if g.note %} <small class="muted">({{ g.note }})</small>{% endif %}<br>{{ where(g) }}<br><small class="muted">{{ g.calls[0].code }}</small></td>
+        <td>{% if g.amount is not none %}
+          <label><select name="{{ f }}_mode"><option value="">bez zmian</option><option value="mul" {{ 'selected' if rule and rule[0] == 'mul' }}>× mnożnik</option><option value="set" {{ 'selected' if rule and rule[0] == 'set' }}>= stała kwota</option></select></label>
+          <input name="{{ f }}_val" value="{{ (fmt_factor(rule[1]) if rule[0] == 'mul' else rule[1]) if rule else '' }}" style="width:120px">
+        {% else %}<small class="muted">zmień niżej: „wszystkie wypłaty {{ 'yang' if g.kind == 'gold' else 'doświadczenia' }}”</small>{% endif %}</td>
+      {% elif g.kind == 'table' %}
+        {% set t = table.get(g.table_key) %}
+        <td>📋 <b>give_reward(„{{ g.table_key }}”)</b> – tabela world.quest_reward_proto<br>{{ where(g) }}</td>
+        <td>{% if t %}{{ fmt_int(t.exp) }} dośw., {{ fmt_int(t.gold) }} yang{% for v, c, s, col in t['items'] %}, {{ item_name(v) }} × {{ c }}{% if s %} (losowanie){% endif %}{% if col != 'items' %} <small class="muted">{{ col }}</small>{% endif %}{% endfor %}
+          <br><small class="muted">Quest daje je przez te same funkcje – kwoty i przedmioty z tej tabeli zmienisz w wierszach „z tabeli” niżej.</small>{% else %}<small class="muted">brak wiersza w tabeli (albo baza nie odpowiada)</small>{% endif %}</td>
+      {% else %}
+        <td>🎲 {{ g.func }} <br>{{ where(g) }}</td><td><small class="muted">{{ g.note }}</small></td>
+      {% endif %}
+      </tr>
+    {% endfor %}
+    {% for kind in ('gold', 'exp') %}{% set rule = rules[kind].get('*') %}{% set f = kind[0] ~ '_all' %}
+      <tr><td>{{ '💰 Wszystkie wypłaty yang' if kind == 'gold' else '✨ Każde doświadczenie' }} tego questa <small class="muted">(też wyliczane i z tabeli; dokładna kwota wyżej ma pierwszeństwo)</small></td>
+        <td><label><select name="{{ f }}_mode"><option value="">bez zmian</option><option value="mul" {{ 'selected' if rule and rule[0] == 'mul' }}>× mnożnik</option><option value="set" {{ 'selected' if rule and rule[0] == 'set' }}>= stała kwota</option></select></label>
+          <input name="{{ f }}_val" value="{{ (fmt_factor(rule[1]) if rule[0] == 'mul' else rule[1]) if rule else '' }}" style="width:120px"></td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% if say_rewards %}<p class="muted">Tekst nagrody, który quest pokazuje graczowi (nie zmienia się sam – opisz zmianę graczom): {% for s, t in say_rewards %}<i>{{ t }}</i>{{ '; ' if not loop.last }}{% endfor %}</p>{% endif %}
+</section>
+
+<section class="panel">
+  <h2>Dodatkowe nagrody</h2>
+  <p class="muted">Dawane oprócz nagród questa, za każdym razem, gdy w tym queście wydarzy się wybrany moment.{% if not anchors %} Ten quest nie ma żadnego momentu, o który można je zaczepić.{% endif %}</p>
+  {% set existing = rules['extras'] %}
+  <div class="dbt-wrap"><table class="dbt-table">
+    <thead><tr><th>Kiedy</th><th>Co</th><th>Przedmiot</th><th>Ilość / kwota / wartość</th><th>Bonus</th><th></th></tr></thead>
+    <tbody class="dbd-rows">
+    {% for e in existing %}{% set i = loop.index0 %}
+      <tr><td><select name="x{{ i }}_anchor">{% for a, label in anchors %}<option value="{{ a }}" {{ 'selected' if a == e[0] }}>{{ label }}</option>{% endfor %}{% if e[0] not in anchors|map('first')|list %}<option value="{{ e[0] }}" selected>{{ e[0] }} (nie ma go już w kodzie)</option>{% endif %}</select></td>
+        <td><select name="x{{ i }}_kind">{% for k, label in extra_kinds %}<option value="{{ k }}" {{ 'selected' if k == e[1] }}>{{ label }}</option>{% endfor %}</select></td>
+        <td><input name="x{{ i }}_item" class="dbd-item" list="dbd-items" value="{{ e[2] if e[1] == 'item' else '' }}" style="width:110px"> <span class="dbd-name">{% if e[1] == 'item' %}{{ item_name(e[2]) }}{% endif %}</span></td>
+        <td><input name="x{{ i }}_num" value="{{ e[3] if e[1] in ('item', 'bonus') else e[2] }}" style="width:120px"></td>
+        <td><select name="x{{ i }}_point"><option value="">—</option>{% for p, label in bonuses %}<option value="{{ p }}" {{ 'selected' if e[1] == 'bonus' and e[2] == p }}>{{ label }}</option>{% endfor %}</select></td>
+        <td><label class="dbe-check"><input type="checkbox" name="x{{ i }}_del" value="1" class="dbd-delete"> usuń</label></td></tr>
+    {% endfor %}
+    {% if anchors %}{% for k in range(3) %}{% set i = existing|length + k %}
+      <tr><td><select name="x{{ i }}_anchor">{% for a, label in anchors %}<option value="{{ a }}" {{ 'selected' if a == default_anchor }}>{{ label }}</option>{% endfor %}</select></td>
+        <td><select name="x{{ i }}_kind">{% for kk, label in extra_kinds %}<option value="{{ kk }}">{{ label }}</option>{% endfor %}</select></td>
+        <td><input name="x{{ i }}_item" class="dbd-item" list="dbd-items" placeholder="VNUM lub nazwa" style="width:110px"> <span class="dbd-name"></span></td>
+        <td><input name="x{{ i }}_num" placeholder="np. 10 / 10000000" style="width:120px"></td>
+        <td><select name="x{{ i }}_point"><option value="">—</option>{% for p, label in bonuses %}<option value="{{ p }}">{{ label }}</option>{% endfor %}</select></td>
+        <td><small class="muted">nowa</small></td></tr>
+    {% endfor %}{% endif %}
+    </tbody>
+  </table></div>
+  <p class="muted">Przedmiot: VNUM/nazwa i ilość. Yang / Doświadczenie: kwota w kolumnie „Ilość / kwota”. Bonus stały: bonus z listy i wartość (sumuje się z innymi bonusami tego rodzaju z Biologa).</p>
+</section>
+
+<section class="panel">
+  <div class="dbt-actions">
+    <label>Notatka (opcjonalnie)<input name="note" style="width:260px"></label>
+    <button name="action" value="save">💾 Zapisz nagrody</button>
+    <button name="action" value="reset" data-confirm="Usunąć wszystkie zmiany nagród tego questa?">↺ Nagrody jak w queście</button>
+  </div>
+  {% if is_biologist %}<p class="muted">{{ retro }}</p>{% else %}<p class="muted">Zmiany działają dla nagród wydanych po restarcie (Zastosuj); tego, co gracze już dostali, nikt nie przelicza.</p>{% endif %}
+</section>
+</form>
+{% endif %}
+{% endblock %}
