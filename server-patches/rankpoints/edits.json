@@ -40,5 +40,11 @@
   "marker": "MT2009_PLUS_RANK_POINTS_V1 (wiki)",
   "old": "\t// The world's extras, none of them for the Razador and Nemere dungeons' own monsters.\n",
   "new": "\t// MT2009_PLUS_RANK_POINTS_V1 (wiki): a Metin's or a boss's rank fruit, 1-2 at 30% (playerbot_rank_points.h).\n\t{\n\t\tDWORD RankPointsWikiFruit(bool metinOrBoss, int level);\n\t\tint RankPointsWikiPercent();\n\t\tconst DWORD fruit = RankPointsWikiFruit(stone || table.bRank >= MOB_RANK_BOSS, level);\n\t\tif (fruit)\n\t\t{\n\t\t\tDropWikiAdd(rows, fruit, 1, RankPointsWikiPercent() / 100.0);\n\t\t\tfor (auto& row : rows)\n\t\t\t\tif (row.dwVnum == fruit)\n\t\t\t\t\trow.iCountMax = MAX(row.iCountMax, 2);\n\t\t}\n\t}\n\n\t// The world's extras, none of them for the Razador and Nemere dungeons' own monsters.\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_RANK_POINTS_V2 (alignment)",
+  "old": "\tint i = m_iAlignment / 10;\n\n\tm_iRealAlignment = MINMAX(-200000, m_iRealAlignment + iAmount, 200000);\n\n\tif (bShow)\n\t{\n\t\tm_iAlignment = m_iRealAlignment;\n\n\t\tif (i != m_iAlignment / 10)\n\t\t\tUpdatePacket();\n\t}\n}\n",
+  "new": "\tint i = m_iAlignment / 10;\n\n\t// MT2009_PLUS_RANK_POINTS_V2 (alignment): the alignment is the bottom of the one scale of Punkty Rangi -\n\t// its crossing of its cap (20 000 shown) puts the Arezzo points above it on or off (playerbot_rank_points.h).\n\tconst int iRankPointsBefore = m_iRealAlignment;\n\n\tm_iRealAlignment = MINMAX(-200000, m_iRealAlignment + iAmount, 200000);\n\n\tif (bShow)\n\t{\n\t\tm_iAlignment = m_iRealAlignment;\n\n\t\tif (i != m_iAlignment / 10)\n\t\t\tUpdatePacket();\n\t}\n\n\tif (IsPC() && m_iRealAlignment != iRankPointsBefore)\n\t{\n\t\tvoid RankPointsOnAlignment(LPCHARACTER, int);\n\t\tRankPointsOnAlignment(this, iRankPointsBefore);\n\t}\n}\n"
  }
 ]

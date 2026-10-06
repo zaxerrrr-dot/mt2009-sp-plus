@@ -2,13 +2,22 @@
 # fruits (Jablko, Gruszka, Winogrono, Arbuz, Ananas - Arezzo's "dodatkowe rangi"; the
 # server: playerbot_rank_points.h, server-patches/rankpoints).
 #
+# MT2009_PLUS_RANK_POINTS_V2 - ONE scale: the game's own alignment ("Punkty Rangi",
+# up to 20 000) is its bottom, Arezzo's points continue it above 20 000:
+#   total = alignment            while the alignment is under 20 000
+#   total = 20 000 + Arezzo's    once the alignment stands at 20 000
+# Jablko raises the alignment itself (0 - 20 000), the other fruits the points above it.
+# The character window's alignment tooltip shows that ONE total (uicharacter.py,
+# BuildAlignmentToolTip); under 20 000 it is the client's live alignment, above it the
+# server's "RANGA self". A server that never sent "RANGA self": the old tooltip.
+#
 # From 21 000 points a character's rank stands, in the rank's own colour, where its
 # alignment title stood (Arezzo's names and colours, colorinfo.py TITLE_RGB_GOOD_*):
 #
 #   "RANGA tail <vid> <tier>"     a character with a rank came into view (or its rank
 #                                 changed); tier 0 = the alignment title again
-#   "RANGA self <points> <tier>"  the player's own points, for the character window's
-#                                 alignment tooltip (uicharacter.py)
+#   "RANGA self <total> <tier>"   the player's own total (V2; V1: its separate points),
+#                                 for the character window's alignment tooltip
 #
 # An exe with ENABLE_RANK_TITLE (client-patches/exe) keeps the rank on the character
 # (chrmgr.SetRankTitle) and draws it whenever it draws the title; with an older exe the
@@ -18,6 +27,7 @@
 # CP1250 as escapes, like every name the client draws.
 
 POINTS_MAX = 200000
+ALIGN_CAP = 20000	# the alignment's cap as shown; the Arezzo points start here
 
 # tier: (from, Polish name, English name, colour)
 TIERS = {
@@ -51,21 +61,20 @@ BONUS_LABELS = (
 	"Maks. P\xaf +%d",
 )
 
-# (from, to, name, points a piece)
+# (from, to, name, points a piece) - V2: four times V1's 50 / 50 / 100 / 100 / 100
 FRUITS = (
-	(0, 20000, "Jab\xb3ko", 50),
-	(20000, 40000, "Gruszka", 50),
-	(40000, 80000, "Winogrono", 100),
-	(80000, 120000, "Arbuz", 100),
-	(120000, 200000, "Ananas", 100),
+	(0, 20000, "Jab\xb3ko", 200),
+	(20000, 40000, "Gruszka", 200),
+	(40000, 80000, "Winogrono", 400),
+	(80000, 120000, "Arbuz", 400),
+	(120000, 200000, "Ananas", 400),
 )
 
-TEXT_POINTS = "Punkty Rangi: %d / 200 000"
-TEXT_NO_RANK = "Ranga: brak (Waleczny od 21 000)"
-TEXT_RANK = "Ranga: %s"
 TEXT_NEXT = "Nast\xeapna: %s od %d"
 TEXT_FRUIT = "Teraz jedz: %s (+%d)"
 TEXT_MAX = "Najwy\xbfsza ranga"
+TEXT_TOTAL = "Punkty Rangi: %d"
+TEXT_NEGATIVE = "Owoce rangi dzia\xb3aj\xb9 od 0 punkt\xf3w"
 
 REFRESH_SECONDS = 0.5
 
@@ -199,7 +208,7 @@ def OnCommand(*args):
 		return False
 	if args[0] == "self" and len(args) >= 3:
 		points = _ToInt(args[1], 0)
-		selfPoints = max(0, min(points, POINTS_MAX))
+		selfPoints = max(-ALIGN_CAP, min(points, POINTS_MAX))
 		selfTier = _ToInt(args[2], 0)
 		return False
 	if args[0] == "tail" and len(args) >= 3:
@@ -218,29 +227,47 @@ def OnCommand(*args):
 	return False
 
 
-def AppendAlignmentToolTip(toolTip):
-	"""The rank, the points, the rank's bonus and the fruit wanted now, under the
-	alignment in the character window's tooltip (Arezzo's ALIGN_BONUS lines)."""
+def Total(alignment):
+	"""The one total of the scale from the client's live alignment (as shown) and the
+	server's last "RANGA self"; None when the server never sent it."""
 	if selfPoints is None:
-		return
+		return None
+	if alignment < ALIGN_CAP:
+		return alignment
+	return max(ALIGN_CAP, selfPoints)
+
+
+def BuildAlignmentToolTip(toolTip, alignment, gradeTitle, gradeColor, pointsLabel=None):
+	"""The whole alignment tooltip on the one scale: the rank (or the alignment's title
+	under the first rank), ONE "Punkty Rangi: <total>", the rank's bonus, the next rank
+	and the fruit wanted now. False (nothing written) when the server never sent
+	"RANGA self" - the caller writes the old tooltip."""
+	total = Total(alignment)
+	if total is None:
+		return False
 	import ui
-	toolTip.AppendSpace(5)
-	tier = TierOf(selfPoints)
+	tier = TierOf(total)
 	if tier:
 		(r, g, b) = TIERS[tier][3]
-		toolTip.AutoAppendTextLine(TEXT_RANK % TierName(tier), ui.GenerateColor(r, g, b))
+		toolTip.AutoAppendTextLine(TierName(tier), ui.GenerateColor(r, g, b))
 	else:
-		toolTip.AutoAppendTextLine(TEXT_NO_RANK)
-	toolTip.AutoAppendTextLine(TEXT_POINTS % selfPoints)
+		toolTip.AutoAppendTextLine(gradeTitle, gradeColor)
+	if pointsLabel:
+		toolTip.AutoAppendTextLine(pointsLabel + str(total))
+	else:
+		toolTip.AutoAppendTextLine(TEXT_TOTAL % total)
 	if tier:
 		color = getattr(toolTip, "POSITIVE_COLOR", 0xff6cff6c)
 		for i, value in enumerate(BONUS[tier]):
 			if value > 0:
 				toolTip.AutoAppendTextLine(BONUS_LABELS[i] % value, color)
-	fruit = FruitFor(selfPoints)
-	if tier + 1 in TIERS and fruit:
+	fruit = FruitFor(total)
+	if tier + 1 in TIERS and total >= 0:
 		toolTip.AutoAppendTextLine(TEXT_NEXT % (TierName(tier + 1), TIERS[tier + 1][0]))
 	if fruit:
 		toolTip.AutoAppendTextLine(TEXT_FRUIT % (fruit[2], fruit[3]))
+	elif total < 0:
+		toolTip.AutoAppendTextLine(TEXT_NEGATIVE)
 	else:
 		toolTip.AutoAppendTextLine(TEXT_MAX)
+	return True

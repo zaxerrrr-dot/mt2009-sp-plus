@@ -900,7 +900,8 @@ if ((Test-Path -LiteralPath $monsterCardApply -PathType Leaf) -and
 }
 # Punkty Rangi (server-patches/rankpoints, MT2009_PLUS_RANK_POINTS_V1): the rank
 # fruits' use (char_item.cpp), their drop from Metins and bosses (char_battle.cpp),
-# the bonus at login (input_login.cpp), the title for whoever sees a character
+# the bonus at login (input_login.cpp), the alignment's crossing of 20 000 (V2, the
+# one scale: char_battle.cpp UpdateAlignment), the title for whoever sees a character
 # (char.cpp), "/ranga" (cmd.cpp) and the drop wiki's row (item_manager.cpp); after
 # the Monster Cards and the drop wiki, whose lines it anchors on. The rest is the
 # overlay's playerbot_rank_points.h.

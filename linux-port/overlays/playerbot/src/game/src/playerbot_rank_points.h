@@ -1,25 +1,43 @@
 #ifndef __INC_METIN2_PLAYERBOT_RANK_POINTS_H__
 #define __INC_METIN2_PLAYERBOT_RANK_POINTS_H__
 
-// Punkty Rangi - the extra ranks raised by eating fruits (MT2009_PLUS_RANK_POINTS_V1).
+// Punkty Rangi - ONE scale of rank points (MT2009_PLUS_RANK_POINTS_V2; V1 kept
+// a separate counter next to the alignment).
 //
 // Arezzo's "dodatkowe rangi" (its fruits 80050-80054, their icons and names, the
 // rank names and their colours come from the Arezzo client), with the owner's
-// numbers (6 October):
+// numbers (6 October). V2 (the owner, 6 October: "rangi arezzo maja byc
+// kontynuacja punktow rangi zwyklej, ktore sa do 20000, a od 20000 zaczynaja
+// sie punkty arezzo"):
 //
+//   * The scale: the game's own alignment ("Punkty Rangi", shown as
+//     GetRealAlignment() / 10, -20 000 .. +20 000) is the bottom of the scale;
+//     the Arezzo points above it are kept per player (player.mt2009_rank_points,
+//     the "extra", 0 .. 180 000). The total, the only number a player sees:
+//         total = alignment              while alignment < 20 000
+//         total = 20 000 + extra         once alignment stands at its cap (20 000)
+//     When the alignment drops below 20 000 again (a player killed, a skill
+//     bought with rank), the extra stays stored but counts for nothing - the
+//     total is the alignment, the rank's bonus and title are gone - until the
+//     alignment is back at 20 000, when the extra counts again at once.
 //   * Fruits: Metins and bosses drop 1-2 pieces at 30%, the fruit of the KILLED
 //     monster's level band: Jablko 1-53 (to the Orc Valley), Gruszka 54-74,
 //     Winogrono 75-99, Arbuz 100-109, Ananas 110 and up. A player's on the
 //     ground for the killer (two minutes), a bot's into its bag (a full bag
 //     gets nothing). Log [RANGA_DROP].
-//   * A fruit works only in its range of rank points: Jablko 0-20 000 (+50),
-//     Gruszka 20 000-40 000 (+50), Winogrono 40 000-80 000 (+100), Arbuz
-//     80 000-120 000 (+100), Ananas 120 000-200 000 (+100); 200 000 is the cap.
-//     Out of its range it is refused with the fruit wanted now. Log [RANGA_USE].
-//   * The rank's bonus by the points, one tier at a time (not added up), on
+//   * A fruit works only in its range of the total: Jablko 0-20 000 (+200 to the
+//     ALIGNMENT itself - UpdateAlignment(+2000), up to the engine's cap), Gruszka
+//     20 000-40 000 (+200), Winogrono 40 000-80 000 (+400), Arbuz 80 000-120 000
+//     (+400), Ananas 120 000-200 000 (+400) (the owner, 6 October: four times
+//     V1's 50 / 50 / 100 / 100 / 100) - these four to the extra, so only
+//     with the alignment at 20 000; 200 000 is the cap. Out of its range it is
+//     refused with the fruit wanted now; under 0 (a negative alignment) with
+//     "fruits work from 0". Log [RANGA_USE].
+//   * The rank's bonus by the total, one tier at a time (not added up), on
 //     hidden affects of type AFFECT_RANK_POINTS (580; 500-599 survive a death),
-//     put right at login, after every fruit and every few seconds while the
-//     affects are not loaded yet:
+//     put right at login, after every fruit, whenever the alignment crosses its
+//     cap (CHARACTER::UpdateAlignment, RankPointsOnAlignment) and every few
+//     seconds while the affects are not loaded yet:
 //         21 000 Waleczny    +10% monsters, +10% people,                           +1000 HP
 //         31 000 Mocarny     +12% / +12%,                                          +1500 HP
 //         41 000 Potezny     +15% / +15%,                                          +1900 HP
@@ -29,26 +47,38 @@
 //        121 000 Legenda     +18% / +18%, +15% Metins, +15% bosses,                +4000 HP
 //        200 000 Legenda     +20% / +20%, +18% Metins, +18% bosses, +10% average   +5000 HP
 //     (POINT_ATTBONUS_MONSTER, _HUMAN, _STONE, _BOSS, POINT_NORMAL_HIT_DAMAGE_BONUS
-//     - "srednie obrazenia" - and POINT_MAX_HP).
+//     - "srednie obrazenia" - and POINT_MAX_HP). Under 20 000 the total can not
+//     reach a tier, so only the alignment's crossing of its cap changes one.
 //   * The title: from 21 000 the rank's name, in its colour, stands where the
 //     alignment title stood. The client hears "RANGA tail <vid> <tier>" when a
 //     character comes into its view (char.cpp, EncodeInsertPacket) and around
-//     a character whose tier changes; "RANGA self <points> <tier>" tells the
-//     player its own points (the character window's alignment tooltip). Tier 0:
-//     the alignment title as before. Client: root/rankpoints.py; the exe's
-//     chrmgr.SetRankTitle (client-patches/exe, ENABLE_RANK_TITLE), with an
-//     older exe the title is put back over the alignment's every half second.
-//   * Storage: player.mt2009_rank_points (pid, points), read at login (a bot:
-//     at its first look on this core), written after every change.
-//   * /ranga: the player's points, rank, bonus and the fruit wanted now. A GM
-//     (GM_HIGH_WIZARD): /ranga ustaw <nick> <points>.
-//   * Bots: their kills' fruits into the bag; one that fits their range is
+//     a character whose tier changes; "RANGA self <total> <tier>" tells the
+//     player its own total (the character window's alignment tooltip shows ONE
+//     "Punkty Rangi: <total>"; under 20 000 the client takes its live alignment,
+//     so "self" is sent at login, after a fruit or /ranga ustaw and when the
+//     alignment crosses its cap). Tier 0: the alignment title as before.
+//     Client: root/rankpoints.py; the exe's chrmgr.SetRankTitle
+//     (client-patches/exe, ENABLE_RANK_TITLE), with an older exe the title is
+//     put back over the alignment's every half second.
+//   * Storage: player.mt2009_rank_points (pid, points = the extra, scale), read
+//     at login (a bot: at its first look on this core), written after every
+//     change. Migration from V1 (whose points were the whole separate scale,
+//     0..200 000): rows with scale = 1 (the column's default - V1 never wrote
+//     it, so a row an old binary writes later is caught too) become
+//     extra = max(0, points - 20 000), scale = 2; once at the first table use
+//     on a core (EnsureTable) and again on reading such a row (Load).
+//     Idempotent. The alignment itself is the engine's (player.alignment).
+//   * /ranga: the player's total, rank, bonus and the fruit wanted now. A GM
+//     (GM_HIGH_WIZARD): /ranga ustaw <nick> <total> - under 20 000 it sets the
+//     alignment (and the extra to 0), from 20 000 the alignment to its cap and
+//     the extra to total - 20 000.
+//   * Bots: their kills' fruits into the bag; one that fits their total is
 //     eaten at their next look (ManagePlayerBotRankPoints), any other goes on
 //     their counter at the tier's price (GetPlayerBotRankFruitPrice) or to the
 //     merchant from a bot with no counter (playerbot_economy.h / _town.h).
 //   * M2_RANK_POINTS=0 (the game container's environment) switches the system
 //     off: no drops, the fruits do nothing, the bonuses and titles come off at
-//     the next login.
+//     the next login (the alignment works as in the base game).
 //
 // The engine's calls are server-patches/rankpoints (edits.json).
 
@@ -63,7 +93,10 @@
 namespace mt2009_rankp
 {
 	const DWORD AFFECT_RANK_POINTS = 580;
-	const int POINTS_MAX = 200000;
+	const int POINTS_MAX = 200000;		// the total's cap
+	const int ALIGN_CAP = 20000;		// the alignment's cap as shown (the engine's 200 000 / 10)
+	const int ALIGN_UNIT = 10;		// engine alignment units a shown point
+	const int EXTRA_MAX = POINTS_MAX - ALIGN_CAP;
 	const int DROP_PERCENT = 30;
 	const int SYNC_TICK_SEC = 5;
 
@@ -78,11 +111,11 @@ namespace mt2009_rankp
 
 	const SFruit FRUITS[] =
 	{
-		{ 80050, "Jab" "\xb3" "ko",    53,      0,  20000,  50 },
-		{ 80051, "Gruszka",   74,  20000,  40000,  50 },
-		{ 80052, "Winogrono", 99,  40000,  80000, 100 },
-		{ 80053, "Arbuz",    109,  80000, 120000, 100 },
-		{ 80054, "Ananas",  1000, 120000, 200000, 100 },
+		{ 80050, "Jab" "\xb3" "ko",    53,      0,  20000, 200 },	// the alignment itself
+		{ 80051, "Gruszka",   74,  20000,  40000, 200 },	// these four: the extra
+		{ 80052, "Winogrono", 99,  40000,  80000, 400 },
+		{ 80053, "Arbuz",    109,  80000, 120000, 400 },
+		{ 80054, "Ananas",  1000, 120000, 200000, 400 },
 	};
 	const int FRUIT_COUNT = (int)(sizeof(FRUITS) / sizeof(FRUITS[0]));
 
@@ -131,6 +164,9 @@ namespace mt2009_rankp
 	const char* const MSG_SET_USAGE = "U" "\xbf" "ycie: /ranga ustaw <nick> <punkty>";
 	const char* const MSG_SET_NOBODY = "Nie ma takiej postaci na tym rdzeniu.";
 	const char* const MSG_SET_DONE = "%s: Punkty Rangi = %d.";
+	const char* const MSG_NEGATIVE = "Masz %d Punkt" "\xf3" "w Rangi - owoce rangi dzia" "\xb3" "aj" "\xb9" " dopiero od 0. Najpierw podnie" "\x9c" " rang" "\xea" " (np. zabijaj" "\xb9" "c potwory).";
+	const char* const MSG_SCALE = "Do 20 000 to zwyk" "\xb3" "a ranga (podnosi j" "\xb9" " Jab" "\xb3" "ko), od 20 000 dalej licz" "\xb9" " si" "\xea" " punkty Arezzo (Gruszka, Winogrono, Arbuz, Ananas).";
+	const char* const MSG_KEPT = "Zachowane punkty ponad 20 000: %d - licz" "\xb9" " si" "\xea" " znowu, gdy ranga wr" "\xf3" "ci do 20 000.";
 
 	// ---------------------------------------------------------------- the switch
 
@@ -188,16 +224,19 @@ namespace mt2009_rankp
 
 	// ---------------------------------------------------------------- the points
 
+	// A character's stored Arezzo points above 20 000 (the "extra"; the total
+	// adds them only while the alignment stands at its cap - the header).
 	struct SEntry
 	{
-		int points;
+		int extra;
 		const void* who;		// the CHARACTER read for: a bot is read again when it comes back as another
-		SEntry() : points(0), who(NULL) {}
+		SEntry() : extra(0), who(NULL) {}
 	};
 
-	std::map<DWORD, SEntry> s_points;		// pid -> points, characters read on this core
+	std::map<DWORD, SEntry> s_points;		// pid -> extra, characters read on this core
 	std::map<DWORD, int> s_needSync;		// pids whose bonuses wait for their affects -> since when
 	LPEVENT s_pkTick = NULL;
+	bool s_bOwnAlignment = false;			// our own UpdateAlignment: RankPointsOnAlignment leaves it to us
 
 	bool IsBot(LPCHARACTER ch)
 	{
@@ -209,38 +248,72 @@ namespace mt2009_rankp
 		return ch && ch->IsPC() && ch->GetPlayerID() != 0;
 	}
 
+	// The alignment as the game shows it (-20 000 .. 20 000).
+	int AlignmentShown(LPCHARACTER ch)
+	{
+		return ch->GetRealAlignment() / ALIGN_UNIT;
+	}
+
+	int TotalOf(int alignmentShown, int extra)
+	{
+		return alignmentShown < ALIGN_CAP ? alignmentShown : ALIGN_CAP + std::max(0, std::min(extra, EXTRA_MAX));
+	}
+
+	// V1's whole separate scale -> V2's extra above 20 000.
+	int MigrateV1(int points)
+	{
+		return std::max(0, std::min(points, POINTS_MAX) - ALIGN_CAP);
+	}
+
 	void EnsureTable()
 	{
 		static bool s_done = false;
 		if (s_done)
 			return;
 		s_done = true;
-		std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
+		std::unique_ptr<SQLMsg> create(DBManager::instance().DirectQuery(
 				"CREATE TABLE IF NOT EXISTS player.mt2009_rank_points ("
 				"pid INT UNSIGNED NOT NULL PRIMARY KEY, "
 				"points INT NOT NULL DEFAULT 0, "
+				"scale TINYINT NOT NULL DEFAULT 1, "
 				"updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
 				") ENGINE=InnoDB"));
+		// V1's table: no scale column - its rows get 1 (the old scale).
+		std::unique_ptr<SQLMsg> alter(DBManager::instance().DirectQuery(
+				"ALTER TABLE player.mt2009_rank_points ADD COLUMN IF NOT EXISTS scale TINYINT NOT NULL DEFAULT 1 AFTER points"));
+		std::unique_ptr<SQLMsg> migrate(DBManager::instance().DirectQuery(
+				"UPDATE player.mt2009_rank_points SET points = GREATEST(0, LEAST(points, %d) - %d), scale = 2 WHERE scale = 1",
+				POINTS_MAX, ALIGN_CAP));
+		const unsigned long long rows = (migrate.get() && migrate->Get()) ? (unsigned long long)migrate->Get()->uiAffectedRows : 0ULL;
+		sys_log(0, "[RANGA_MIGRATE] V1 rows moved to the V2 scale (extra = points - 20000): %llu", rows);
 	}
 
-	// The character's points from the table (synchronous: at login, or a bot's first look).
+	// The character's extra from the table (synchronous: at login, or a bot's first look).
 	int Load(LPCHARACTER ch)
 	{
 		EnsureTable();
-		int points = 0;
+		int extra = 0;
 		std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
-				"SELECT points FROM player.mt2009_rank_points WHERE pid=%u", ch->GetPlayerID()));
+				"SELECT points, scale FROM player.mt2009_rank_points WHERE pid=%u", ch->GetPlayerID()));
 		if (msg.get() && msg->Get() && msg->Get()->uiNumRows > 0)
 		{
 			MYSQL_ROW row = mysql_fetch_row(msg->Get()->pSQLResult);
 			if (row && row[0])
-				points = atoi(row[0]);
+			{
+				extra = atoi(row[0]);
+				if (!row[1] || atoi(row[1]) < 2)	// written by a V1 binary after the migration
+				{
+					extra = MigrateV1(extra);
+					DBManager::instance().Query("UPDATE player.mt2009_rank_points SET points=%d, scale=2 WHERE pid=%u AND scale<2",
+							extra, ch->GetPlayerID());
+				}
+			}
 		}
-		points = std::max(0, std::min(points, POINTS_MAX));
+		extra = std::max(0, std::min(extra, EXTRA_MAX));
 		SEntry& e = s_points[ch->GetPlayerID()];
-		e.points = points;
+		e.extra = extra;
 		e.who = ch;
-		return points;
+		return extra;
 	}
 
 	bool Known(LPCHARACTER ch)
@@ -249,23 +322,35 @@ namespace mt2009_rankp
 		return it != s_points.end() && it->second.who == ch;
 	}
 
+	int Extra(LPCHARACTER ch)
+	{
+		std::map<DWORD, SEntry>::const_iterator it = s_points.find(ch->GetPlayerID());
+		return (it != s_points.end() && it->second.who == ch) ? it->second.extra : Load(ch);
+	}
+
+	// The extra of a character in view, without asking the table (0 when not read yet).
+	int KnownExtra(LPCHARACTER ch)
+	{
+		std::map<DWORD, SEntry>::const_iterator it = s_points.find(ch->GetPlayerID());
+		return it != s_points.end() ? it->second.extra : 0;
+	}
+
+	// The total (the one number the player sees), the extra read when it is not yet.
 	int Points(LPCHARACTER ch)
 	{
-		std::map<DWORD, SEntry>::const_iterator it = s_points.find(ch->GetPlayerID());
-		return (it != s_points.end() && it->second.who == ch) ? it->second.points : Load(ch);
+		return TotalOf(AlignmentShown(ch), Extra(ch));
 	}
 
-	// The points of a character in view, without asking the table (0 when not read yet).
+	// The total without asking the table.
 	int KnownPoints(LPCHARACTER ch)
 	{
-		std::map<DWORD, SEntry>::const_iterator it = s_points.find(ch->GetPlayerID());
-		return it != s_points.end() ? it->second.points : 0;
+		return TotalOf(AlignmentShown(ch), KnownExtra(ch));
 	}
 
-	void Save(LPCHARACTER ch, int points)
+	void Save(LPCHARACTER ch, int extra)
 	{
-		DBManager::instance().Query("REPLACE INTO player.mt2009_rank_points (pid, points) VALUES (%u, %d)",
-				ch->GetPlayerID(), points);
+		DBManager::instance().Query("REPLACE INTO player.mt2009_rank_points (pid, points, scale) VALUES (%u, %d, 2)",
+				ch->GetPlayerID(), extra);
 	}
 
 	// ---------------------------------------------------------------- the bonus
@@ -301,12 +386,13 @@ namespace mt2009_rankp
 
 	// ---------------------------------------------------------------- to the client
 
+	// "RANGA self <total> <tier>"; switched off: the alignment and no tier.
 	void SendSelf(LPCHARACTER ch)
 	{
 		if (!ch->GetDesc() || IsBot(ch))
 			return;
-		const int points = Enabled() ? KnownPoints(ch) : 0;
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "RANGA self %d %d", points, TierOf(points));
+		const int points = Enabled() ? KnownPoints(ch) : AlignmentShown(ch);
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "RANGA self %d %d", points, Enabled() ? TierOf(points) : 0);
 	}
 
 	// "RANGA tail <vid> <tier>" to everyone who sees ch, ch itself too.
@@ -334,15 +420,11 @@ namespace mt2009_rankp
 
 	// ---------------------------------------------------------------- the points change
 
-	// New points for ch: saved, the bonus and the title put right. Returns the new tier.
-	int SetPoints(LPCHARACTER ch, int points, bool tell)
+	// After the total changed (from tier `before`): the bonus, the player's own
+	// line, the title around when the tier moved. Returns the new tier.
+	int Refresh(LPCHARACTER ch, int before, bool tell)
 	{
-		points = std::max(0, std::min(points, POINTS_MAX));
-		SEntry& e = s_points[ch->GetPlayerID()];
-		const int before = (e.who == ch) ? TierOf(e.points) : TierOf(Points(ch));
-		e.points = points;
-		e.who = ch;
-		Save(ch, points);
+		const int points = KnownPoints(ch);
 		const int tier = TierOf(points);
 		SyncBonuses(ch);
 		SendSelf(ch);
@@ -351,24 +433,72 @@ namespace mt2009_rankp
 			SendTailAround(ch);
 			if (tell && tier > before)
 				ch->ChatPacket(CHAT_TYPE_INFO, MSG_TIER_UP, TIERS[tier].name);
-			sys_log(0, "[RANGA_TIER] pid=%u name=%s points=%d tier=%d->%d bot=%d",
-					ch->GetPlayerID(), ch->GetName(), points, before, tier, IsBot(ch) ? 1 : 0);
+			sys_log(0, "[RANGA_TIER] pid=%u name=%s points=%d alignment=%d extra=%d tier=%d->%d bot=%d",
+					ch->GetPlayerID(), ch->GetName(), points, AlignmentShown(ch), KnownExtra(ch), before, tier,
+					IsBot(ch) ? 1 : 0);
 		}
 		return tier;
 	}
 
-	// One fruit eaten: false when it does not fit the points (nothing changes).
+	// The alignment moved to `shown` (engine units x10) by ourselves.
+	void SetAlignmentShown(LPCHARACTER ch, int shown)
+	{
+		shown = std::max(-ALIGN_CAP, std::min(shown, ALIGN_CAP));
+		int target = shown * ALIGN_UNIT;
+		if (shown >= 0 && shown < ALIGN_CAP && ch->GetRealAlignment() >= 0)
+			target += ch->GetRealAlignment() % ALIGN_UNIT;	// the engine's tenths kept
+		const int delta = target - ch->GetRealAlignment();
+		if (!delta)
+			return;
+		s_bOwnAlignment = true;
+		ch->UpdateAlignment(delta);
+		s_bOwnAlignment = false;
+	}
+
+	// New alignment (shown) and extra for ch: saved, the bonus and the title put
+	// right. Returns the new tier.
+	int SetState(LPCHARACTER ch, int alignmentShown, int extra, bool tell)
+	{
+		extra = std::max(0, std::min(extra, EXTRA_MAX));
+		const int before = TierOf(Points(ch));	// the extra read first when it is not yet
+		SEntry& e = s_points[ch->GetPlayerID()];
+		if (e.extra != extra || e.who != ch)
+		{
+			e.extra = extra;
+			e.who = ch;
+			Save(ch, extra);
+		}
+		SetAlignmentShown(ch, alignmentShown);
+		return Refresh(ch, before, tell);
+	}
+
+	// /ranga ustaw: the total - under 20 000 the alignment (the extra to 0), from
+	// 20 000 the alignment at its cap and the extra the rest.
+	int SetPoints(LPCHARACTER ch, int points, bool tell)
+	{
+		points = std::max(-ALIGN_CAP, std::min(points, POINTS_MAX));
+		if (points < ALIGN_CAP)
+			return SetState(ch, points, 0, tell);
+		return SetState(ch, ALIGN_CAP, points - ALIGN_CAP, tell);
+	}
+
+	// One fruit eaten: false when it does not fit the total (nothing changes).
+	// Jablko (its range under 20 000) raises the alignment itself, the others the extra.
 	bool Eat(LPCHARACTER ch, const SFruit& fruit, bool tell)
 	{
 		const int points = Points(ch);
 		if (points < fruit.from || points >= fruit.to)
 			return false;
-		const int now = std::min(points + fruit.gain, POINTS_MAX);
-		SetPoints(ch, now, tell);
+		if (fruit.to <= ALIGN_CAP)
+			SetState(ch, std::min(AlignmentShown(ch) + fruit.gain, ALIGN_CAP), KnownExtra(ch), tell);
+		else
+			SetState(ch, AlignmentShown(ch), KnownExtra(ch) + fruit.gain, tell);
+		const int now = KnownPoints(ch);
 		if (tell)
 			ch->ChatPacket(CHAT_TYPE_INFO, MSG_GAIN, now - points, now);
-		sys_log(0, "[RANGA_USE] pid=%u name=%s vnum=%u points=%d->%d bot=%d",
-				ch->GetPlayerID(), ch->GetName(), fruit.vnum, points, now, IsBot(ch) ? 1 : 0);
+		sys_log(0, "[RANGA_USE] pid=%u name=%s vnum=%u points=%d->%d alignment=%d extra=%d bot=%d",
+				ch->GetPlayerID(), ch->GetName(), fruit.vnum, points, now, AlignmentShown(ch), KnownExtra(ch),
+				IsBot(ch) ? 1 : 0);
 		return true;
 	}
 
@@ -473,10 +603,16 @@ namespace mt2009_rankp
 		else
 			ch->ChatPacket(CHAT_TYPE_INFO, MSG_INFO_NONE, points);
 		const SFruit* fruit = FruitForPoints(points);
-		if (tier + 1 < TIER_COUNT && fruit)
+		if (points < 0)
+			ch->ChatPacket(CHAT_TYPE_INFO, MSG_NEGATIVE, points);
+		else if (tier + 1 < TIER_COUNT && fruit)
 			ch->ChatPacket(CHAT_TYPE_INFO, MSG_NEXT, TIERS[tier + 1].name, TIERS[tier + 1].from, fruit->name, fruit->gain);
 		else if (!fruit)
 			ch->ChatPacket(CHAT_TYPE_INFO, "%s", MSG_NEXT_MAX);
+		const int extra = KnownExtra(ch);
+		if (points < ALIGN_CAP && extra > 0)
+			ch->ChatPacket(CHAT_TYPE_INFO, MSG_KEPT, extra);
+		ch->ChatPacket(CHAT_TYPE_INFO, "%s", MSG_SCALE);
 		ch->ChatPacket(CHAT_TYPE_INFO, MSG_FRUITS);
 	}
 }
@@ -573,6 +709,11 @@ int RankPointsUseItem(LPCHARACTER ch, LPITEM item)
 	}
 	if (!Eat(ch, *fruit, true))
 	{
+		if (points < 0)
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, MSG_NEGATIVE, points);
+			return 0;
+		}
 		const SFruit* want = FruitForPoints(points);
 		ch->ChatPacket(CHAT_TYPE_INFO, MSG_WRONG, points, want ? want->name : "-", want ? want->from : 0, want ? want->to : 0);
 		return 0;
@@ -603,6 +744,23 @@ void RankPointsOnLogin(LPCHARACTER ch)
 	SendSelf(ch);
 	if (Enabled() && TierOf(KnownPoints(ch)) > 0)
 		SendTailAround(ch);
+}
+
+// char_battle.cpp, CHARACTER::UpdateAlignment (MT2009_PLUS_RANK_POINTS_V2): the
+// alignment moved from `realBefore` (engine units). Under 20 000 the total can
+// not reach a tier, so only its crossing of the cap (either way) changes the
+// rank: then the bonus, the title and the player's own line. Under the cap the
+// client shows its live alignment itself.
+void RankPointsOnAlignment(LPCHARACTER ch, int realBefore)
+{
+	using namespace mt2009_rankp;
+	if (s_bOwnAlignment || !Enabled() || !Counts(ch) || !Known(ch))
+		return;
+	const int shownBefore = realBefore / ALIGN_UNIT;
+	const int shownNow = AlignmentShown(ch);
+	if ((shownBefore >= ALIGN_CAP) == (shownNow >= ALIGN_CAP))
+		return;
+	Refresh(ch, TierOf(TotalOf(shownBefore, KnownExtra(ch))), true);
 }
 
 // char.cpp, EncodeInsertPacket: a character with a rank coming into a player's view.
@@ -658,10 +816,10 @@ ACMD(do_rank_points)
 			ch->ChatPacket(CHAT_TYPE_INFO, "%s", MSG_SET_NOBODY);
 			return;
 		}
-		Points(target);
-		const int points = SetPoints(target, atoi(a3), true);
+		const int tier = SetPoints(target, atoi(a3), true);
 		ch->ChatPacket(CHAT_TYPE_INFO, MSG_SET_DONE, target->GetName(), KnownPoints(target));
-		sys_log(0, "[RANGA_SET] gm=%s target=%s points=%d tier=%d", ch->GetName(), target->GetName(), KnownPoints(target), points);
+		sys_log(0, "[RANGA_SET] gm=%s target=%s points=%d alignment=%d extra=%d tier=%d", ch->GetName(), target->GetName(),
+				KnownPoints(target), AlignmentShown(target), KnownExtra(target), tier);
 		return;
 	}
 	Info(ch);

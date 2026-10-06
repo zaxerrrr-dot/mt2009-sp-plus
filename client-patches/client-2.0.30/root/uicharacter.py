@@ -688,15 +688,21 @@ class CharacterWindow(ui.ScriptWindow):
 		gradeColor = ui.GenerateColor(colorList[0], colorList[1], colorList[2])
 
 		self.toolTipAlignment.ClearToolTip()
-		self.toolTipAlignment.AutoAppendTextLine(localeInfo.TITLE_NAME_LIST[grade], gradeColor)
-		self.toolTipAlignment.AutoAppendTextLine(localeInfo.ALIGNMENT_NAME + str(point))
-		# MT2009_PLUS_RANK_POINTS_V1: the rank of Punkty Rangi, its bonus and the fruit wanted
-		# now, under the alignment (Arezzo's ALIGN_BONUS lines; rankpoints.py).
+		# MT2009_PLUS_RANK_POINTS_V2: ONE scale of Punkty Rangi - the alignment up to 20 000,
+		# Arezzo's points above it: the rank (or the alignment's title), ONE "Punkty Rangi:
+		# <total>", the rank's bonus and the fruit wanted now (rankpoints.py). Before the
+		# server's "RANGA self" (an older server): the alignment as before.
+		built = False
 		try:
 			import rankpoints
-			rankpoints.AppendAlignmentToolTip(self.toolTipAlignment)
+			built = rankpoints.BuildAlignmentToolTip(self.toolTipAlignment, point,
+					localeInfo.TITLE_NAME_LIST[grade], gradeColor, localeInfo.ALIGNMENT_NAME)
 		except Exception:
-			pass
+			self.toolTipAlignment.ClearToolTip()
+			built = False
+		if not built:
+			self.toolTipAlignment.AutoAppendTextLine(localeInfo.TITLE_NAME_LIST[grade], gradeColor)
+			self.toolTipAlignment.AutoAppendTextLine(localeInfo.ALIGNMENT_NAME + str(point))
 		self.toolTipAlignment.AlignHorizonalCenter()
 
 	def RefreshCastingSpeed(self):

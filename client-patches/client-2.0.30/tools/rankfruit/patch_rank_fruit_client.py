@@ -3,17 +3,21 @@
 # items the server's linux-port/docker/mariadb/playerbot/apply.sh adds to world.item_proto -
 # keep them equal.
 #
-#   80050  Jablko     ITEM_USE / USE_SPECIAL, stack 200 (flag 4), antiflag 0, value0 50,  buy 25 000 / sell 1 000
-#   80051  Gruszka    ITEM_USE / USE_SPECIAL, stack 200,                     value0 50,  buy 50 000 / sell 2 000
-#   80052  Winogrono  ITEM_USE / USE_SPECIAL, stack 200,                     value0 100, buy 125 000 / sell 5 000
-#   80053  Arbuz      ITEM_USE / USE_SPECIAL, stack 200,                     value0 100, buy 250 000 / sell 10 000
-#   80054  Ananas     ITEM_USE / USE_SPECIAL, stack 200,                     value0 100, buy 500 000 / sell 20 000
+#   80050  Jablko     ITEM_USE / USE_SPECIAL, stack 200 (flag 4), antiflag 0, value0 200, buy 25 000 / sell 1 000
+#   80051  Gruszka    ITEM_USE / USE_SPECIAL, stack 200,                     value0 200, buy 50 000 / sell 2 000
+#   80052  Winogrono  ITEM_USE / USE_SPECIAL, stack 200,                     value0 400, buy 125 000 / sell 5 000
+#   80053  Arbuz      ITEM_USE / USE_SPECIAL, stack 200,                     value0 400, buy 250 000 / sell 10 000
+#   80054  Ananas     ITEM_USE / USE_SPECIAL, stack 200,                     value0 400, buy 500 000 / sell 20 000
+#
+# MT2009_PLUS_RANK_POINTS_V2 (6 October): the gains four times V1's (50/50/100/100/100) and the
+# descriptions of the one scale (Jablko: the normal rank up to 20 000, the rest above it). Re-run
+# on data that has the V1 rows: every record and line that differs is rewritten.
 #
 # Arezzo's vnums, type and names (Arezzo calls 80052 "Winogron"); the icons are Arezzo's
 # icon/item/fruit_2, _1, _7, _6, _5.tga (RLE in Arezzo's pack, written out uncompressed) as new
 # entries of the root pack: client-patches/client-2.0.30/root/icon/item/80050-80054.tga.
 # Metins and bosses drop them (server-patches/rankpoints, playerbot_rank_points.h); eaten in
-# its range of points a fruit raises the character's Punkty Rangi.
+# its range of points a fruit raises the character's Punkty Rangi (Jablko: the alignment itself).
 #
 # A new item_proto record each (a copy of 30228's with every value cleared, as tools/monstercard),
 # a line in item_list.txt and a line in itemdesc.txt. Idempotent: a second run changes nothing;
@@ -37,16 +41,16 @@ import patch_monstercard_client as base  # noqa: E402  (the record layout, MCOZ 
 
 # (vnum, name, Polish name, points, buy, sell, description) - = apply.sh.
 ITEMS = (
-    (80050, u'Apple', u'Jabłko', 50, 25000, 1000,
-     u'Owoc rangi: +50 Punktów Rangi. Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.'),
-    (80051, u'Pear', u'Gruszka', 50, 50000, 2000,
-     u'Owoc rangi: +50 Punktów Rangi. Działa od 20 000 do 40 000 punktów. Komenda /ranga.'),
-    (80052, u'Grapes', u'Winogrono', 100, 125000, 5000,
-     u'Owoc rangi: +100 Punktów Rangi. Działa od 40 000 do 80 000 punktów. Komenda /ranga.'),
-    (80053, u'Watermelon', u'Arbuz', 100, 250000, 10000,
-     u'Owoc rangi: +100 Punktów Rangi. Działa od 80 000 do 120 000 punktów. Komenda /ranga.'),
-    (80054, u'Pineapple', u'Ananas', 100, 500000, 20000,
-     u'Owoc rangi: +100 Punktów Rangi. Działa od 120 000 do 200 000 punktów (maksimum). Komenda /ranga.'),
+    (80050, u'Apple', u'Jabłko', 200, 25000, 1000,
+     u'Owoc rangi: +200 Punktów Rangi (zwykła ranga). Działa od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.'),
+    (80051, u'Pear', u'Gruszka', 200, 50000, 2000,
+     u'Owoc rangi: +200 Punktów Rangi ponad zwykłą rangę. Działa od 20 000 (pełna zwykła ranga) do 40 000 punktów. Komenda /ranga.'),
+    (80052, u'Grapes', u'Winogrono', 400, 125000, 5000,
+     u'Owoc rangi: +400 Punktów Rangi. Działa od 40 000 do 80 000 punktów. Komenda /ranga.'),
+    (80053, u'Watermelon', u'Arbuz', 400, 250000, 10000,
+     u'Owoc rangi: +400 Punktów Rangi. Działa od 80 000 do 120 000 punktów. Komenda /ranga.'),
+    (80054, u'Pineapple', u'Ananas', 400, 500000, 20000,
+     u'Owoc rangi: +400 Punktów Rangi. Działa od 120 000 do 200 000 punktów (maksimum). Komenda /ranga.'),
 )
 TYPE, SUBTYPE = 3, 10   # ITEM_USE / USE_SPECIAL, as Arezzo's
 

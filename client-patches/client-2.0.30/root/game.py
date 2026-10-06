@@ -3894,8 +3894,9 @@ class GameWindow(ui.ScriptWindow):
 
 	# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking's lines (uiweeklyrank.py); "tail" is
 	# MT2009_PLUS_RANK_POINTS_V1: "RANGA tail <vid> <tier>" - a rank of Punkty Rangi
-	# where the alignment title stands; "RANGA self <points> <tier>" - the player's
-	# own points for the character window's alignment tooltip (rankpoints.py).
+	# where the alignment title stands; "RANGA self <total> <tier>" - the player's
+	# own total (MT2009_PLUS_RANK_POINTS_V2: the one scale, the alignment up to 20 000 and
+	# Arezzo's points above it) for the character window's alignment tooltip (rankpoints.py).
 	def __RankPoints(self, *args):
 		import rankpoints
 		if rankpoints.OnCommand(*args) and not getattr(self, "rankTitleKeeper", None):
