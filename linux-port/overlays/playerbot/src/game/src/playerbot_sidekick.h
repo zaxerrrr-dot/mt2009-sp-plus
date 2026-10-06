@@ -585,6 +585,14 @@ namespace
 		DWORD dwNextValuablesCheck = 0;
 		DWORD dwValuablesToldAt = 0;
 		std::set<DWORD> setValuablesTold;
+		// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: a Shaman's buffs go up at once
+		// until this (0 when not): on its arrival at the owner's side and on
+		// the owner's "buff" (forced: every buff renewed, up or not). Its next
+		// cast, and the casts of this round (vnum * 2, + 1 for its own copy).
+		DWORD dwBuffNowUntil = 0;
+		DWORD dwBuffNowNextCast = 0;
+		bool bBuffNowForced = false;
+		std::set<DWORD> setBuffNowDone;
 		TPlayerBotSidekickRuntime()
 			: dwNextPartyCheck(0), dwNextService(0), dwNextLoot(0), dwNextCatchUp(0), dwLootVID(0),
 			  dwLootSince(0), dwNextProtect(0), bTrading(false), dwLastFoeVID(0), bHold(false), lHoldMap(0),
@@ -601,6 +609,34 @@ namespace
 		}
 	};
 	std::map<DWORD, TPlayerBotSidekickRuntime> s_mapPlayerBotSidekickRuntime;
+
+	// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: how long a round of buffs at once
+	// may take (a walk up to the owner, a climb from the saddle, five casts a
+	// cooldown apart), on arrival and on the owner's order.
+	const DWORD PLAYERBOT_SIDEKICK_BUFF_NOW_MS = 30000;
+
+	// The companion came to its owner's side (PlacePlayerBotSidekick: the
+	// summon, its login beside the owner, the follow after a teleport): its
+	// buffs go up at once, whatever the owner's are - asked of the owner's
+	// own affects (IsPlayerBotBuffDueOn). An order under way is not undone.
+	void StartPlayerBotSidekickBuffNow(DWORD sidekickPid, DWORD dwNow)
+	{
+		TPlayerBotSidekickRuntime& rt = s_mapPlayerBotSidekickRuntime[sidekickPid];
+		const DWORD until = dwNow + PLAYERBOT_SIDEKICK_BUFF_NOW_MS;
+		if (rt.dwBuffNowUntil != 0 && rt.bBuffNowForced)
+		{
+			if ((int)(until - rt.dwBuffNowUntil) > 0)
+				rt.dwBuffNowUntil = until;
+			return;
+		}
+		rt.dwBuffNowUntil = until;
+		rt.dwBuffNowNextCast = 0;
+		rt.bBuffNowForced = false;
+		rt.setBuffNowDone.clear();
+	}
+	// The owner's "buff", below (after the Shaman's rebuff from the saddle).
+	std::string OrderPlayerBotSidekickBuff(LPCHARACTER owner, TPlayerBotSidekick& rec, DWORD dwNow);
+	bool IsPlayerBotSidekickBuffOrder(const char* folded);
 
 	// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: the owner's "Kup" errand, defined in
 	// playerbot_sidekick_shop.h (included right after this file).
@@ -2510,7 +2546,11 @@ namespace
 	{
 		long x = 0, y = 0;
 		GetPlayerBotSidekickSpot(ch, owner, x, y);
-		return PlacePlayerBotSidekickAt(ch, state, owner->GetMapIndex(), x, y, dwNow, reason);
+		const bool placed = PlacePlayerBotSidekickAt(ch, state, owner->GetMapIndex(), x, y, dwNow, reason);
+		// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: at the owner's side, the buffs at once.
+		if (placed)
+			StartPlayerBotSidekickBuffNow(ch->GetPlayerID(), dwNow);
+		return placed;
 	}
 
 	// The same move to a point of this core's maps: beside the owner, or the
@@ -6712,6 +6752,13 @@ namespace
 		// errand, whose "do miasta" a "sprzedaj zlom w miescie" may carry.
 		static const char* const sellWords[] = { "sprzedaj zlom", "sprzedaj smieci", "sprzedaj graty", "idz sprzedac",
 				"zlom" };
+		// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: "buff", "daj buffa" - every buff
+		// renewed now, up or not.
+		if (IsPlayerBotSidekickBuffOrder(folded))
+		{
+			SendPlayerBotWhisper(bot, from, OrderPlayerBotSidekickBuff(from, *rec, get_dword_time()).c_str());
+			return true;
+		}
 		for (size_t i = 0; i < sizeof(freeWords) / sizeof(freeWords[0]); ++i)
 			if (PlayerBotSidekickHeard(folded, freeWords[i]))
 			{
@@ -6760,7 +6807,7 @@ namespace
 
 	// /towarzysz stworz <rasa 0-7> <sciezka 1-2> <nick> | przywolaj | wolny | czekaj | zakupy | sprzedaj | stan
 	//            | walka <0 atakuj, 1 nie atakuj pierwszy, 2 nie walcz> | zbieraj <0 nic, 1 twoj, 2 wszystko>
-	//            | ochrona <0|1> | buffy <0|1> | okno [1] | odprawa tak
+	//            | ochrona <0|1> | buffy <0|1> | buff | okno [1] | odprawa tak
 	//            | eq [1 | ruch <z> <na> | daj <z> <na> | wez <z> <na> | odepnij <pozycja>]
 	//            | umiejetnosci [dodaj <vnum> | reczne <0|1>]
 	//            | statystyki [dodaj <ht|iq|st|dx> [ile] | reczne <0|1> | odnow]
@@ -6944,6 +6991,17 @@ namespace
 				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz grupa 1 (dolaczam do twojej grupy, kto by jej nie prowadzil) "
 						"albo /towarzysz grupa 0");
 		}
+		// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: /towarzysz buff (and a bare
+		// "buffy") - every buff renewed now.
+		else if (!strcmp(sub, "buff") || !strcmp(sub, "buffa") || (!strcmp(sub, "buffy") && !*a1))
+		{
+			const std::string text = OrderPlayerBotSidekickBuff(ch, rec->second, dwNow);
+			LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(rec->second.dwSidekickPID);
+			if (sk && sk->GetDesc())
+				SendPlayerBotWhisper(sk, ch, text.c_str());
+			else
+				SayPlayerBotSidekick(ch, text.c_str());
+		}
 		else if (!strcmp(sub, "zbieraj") || !strcmp(sub, "ochrona") || !strcmp(sub, "buffy"))
 		{
 			int value = -1;
@@ -6971,7 +7029,8 @@ namespace
 				SayPlayerBotSidekick(ch, r.bBuffs ? "Bede cie buffowac (jesli umiem)." : "Nie bede cie buffowac.");
 			}
 			else
-				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz zbieraj 0|1|2, /towarzysz ochrona 0|1, /towarzysz buffy 0|1");
+				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz zbieraj 0|1|2, /towarzysz ochrona 0|1, /towarzysz buffy 0|1, "
+						"/towarzysz buff");
 		}
 		else if (!strcmp(sub, "walka"))
 		{
@@ -8063,7 +8122,9 @@ namespace
 		const CSkillProto* proto = CSkillManager::instance().Get(vnum);
 		if (!proto || (proto->dwFlag & SKILL_FLAG_TOGGLE))
 			return false;
-		const CAffect* affect = target->FindAffect(vnum);
+		// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: the time left on the main affect.
+		const CAffect* affect = IsPlayerBotShamanSupportBuff(vnum) ? FindPlayerBotBuffMainAffect(target, vnum)
+				: target->FindAffect(vnum);
 		return affect && affect->lDuration > 0 && affect->lDuration <= marginSeconds;
 	}
 
@@ -8238,6 +8299,222 @@ namespace
 		}
 		EndPlayerBotSidekickRebuff(ch, state, rt, dwNow, pick.shortOfMana ? "no_mana" : "all_up");
 		return false;
+	}
+
+	// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: a Shaman's round of buffs at once -
+	// on arrival at the owner's side (StartPlayerBotSidekickBuffNow) and on
+	// the owner's "buff" (OrderPlayerBotSidekickBuff). "Jest szansa, aby
+	// Towarzysz dawal buffa od razu po przywolaniu? ... chociaz na priv np.
+	// wysylam 'buff' a on mi go daje, nawet jesli twierdzi, ze go mam" (the
+	// owner, 6 October). On arrival a buff goes on the owner (its "buffy"
+	// on) and on itself when the target's own affect is gone or nearly spent
+	// (IsPlayerBotBuffDueOn); on the order every buff goes on the owner and
+	// on itself again, up or not - the engine takes the old affect off and
+	// puts the fresh one on (ComputeSkill). Its own cooldowns and mana are
+	// waited for within the round; a cast the engine refused is not tried
+	// again in it. In the owner's party one cast is the whole party's
+	// (IsShamanPartyBuff), its own copy included.
+	void EndPlayerBotSidekickBuffNow(LPCHARACTER ch, TPlayerBotSidekickRuntime& rt, const char* why)
+	{
+		if (rt.dwBuffNowUntil == 0)
+			return;
+		sys_log(0, "PLAYERBOT_SIDEKICK: buff now done pid=%u name=%s forced=%d casts=%u why=%s", ch->GetPlayerID(),
+				ch->GetName(), rt.bBuffNowForced ? 1 : 0, (unsigned int)rt.setBuffNowDone.size(), why);
+		rt.dwBuffNowUntil = 0;
+		rt.dwBuffNowNextCast = 0;
+		rt.bBuffNowForced = false;
+		rt.setBuffNowDone.clear();
+	}
+
+	bool ManagePlayerBotSidekickBuffNow(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotSidekick& rec,
+			TPlayerBotSidekickRuntime& rt, LPCHARACTER owner, DWORD dwNow)
+	{
+		if (rt.dwBuffNowUntil == 0)
+			return false;
+		if ((int)(dwNow - rt.dwBuffNowUntil) >= 0)
+		{
+			EndPlayerBotSidekickBuffNow(ch, rt, "time");
+			return false;
+		}
+		if (ch->GetJob() != JOB_SHAMAN || ch->GetSkillGroup() == 0)
+		{
+			EndPlayerBotSidekickBuffNow(ch, rt, "no_buffs");
+			return false;
+		}
+		// Under a marble the engine refuses every buff; a fallen one or an owner
+		// on another map waits within the round.
+		if (ch->IsDead() || IsPlayerBotFightingAsMonster(ch) || dwNow < rt.dwBuffNowNextCast)
+			return false;
+		const bool ownerHere = owner && owner != ch && !owner->IsDead() && owner->GetMapIndex() == ch->GetMapIndex();
+		const bool forOwner = ownerHere && (rt.bBuffNowForced || rec.bBuffs);
+		const bool sameParty = ownerHere && ch->GetParty() && ch->GetParty() == owner->GetParty();
+		const int dist = ownerHere ? DISTANCE_APPROX(ch->GetX() - owner->GetX(), ch->GetY() - owner->GetY()) : 0;
+		bool waiting = !ownerHere && rt.bBuffNowForced;
+		const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
+		for (size_t i = 0; i < sizeof(build.dwBuffSkills) / sizeof(build.dwBuffSkills[0]); ++i)
+		{
+			const DWORD vnum = build.dwBuffSkills[i];
+			if (vnum == 0 || ch->GetSkillLevel(vnum) == 0)
+				continue;
+			CSkillProto* proto = CSkillManager::instance().Get(vnum);
+			// A toggle is never renewed: UseSkill takes an active one off.
+			if (!proto || IS_SET(proto->dwFlag, SKILL_FLAG_TOGGLE))
+				continue;
+			LPCHARACTER targets[2] = { NULL, ch };
+			if (forOwner && !IS_SET(proto->dwFlag, SKILL_FLAG_SELFONLY))
+				targets[0] = owner;
+			for (int t = 0; t < 2; ++t)
+			{
+				LPCHARACTER target = targets[t];
+				if (!target)
+					continue;
+				// Cure is a heal (and the shield): the owner's on the order, its
+				// own when it is hurt (the usual pass).
+				if (vnum == 109 && (target == ch || !rt.bBuffNowForced))
+					continue;
+				const DWORD key = vnum * 2 + (target == ch ? 1 : 0);
+				if (rt.setBuffNowDone.count(key))
+					continue;
+				if (!rt.bBuffNowForced && !IsPlayerBotBuffDueOn(ch, target, vnum))
+					continue;
+				if (!IsPlayerBotSkillReady(state, vnum, dwNow) || ch->GetSP() < GetPlayerBotSkillSPCost(ch, vnum))
+				{
+					waiting = true;
+					continue;
+				}
+				// Out of the skill's reach: up to the owner, unless it keeps a
+				// spot. The owner's party is reached across the map.
+				if (target == owner && !sameParty && proto->dwTargetRange != 0 && dist > (int)proto->dwTargetRange)
+				{
+					if (rt.bHold || !MovePlayerBot(ch, owner->GetX(), owner->GetY(), dwNow, 8, true, false, false, false))
+						continue;
+					rt.dwBuffNowNextCast = dwNow + PLAYERBOT_PARTY_FOLLOW_INTERVAL;
+					SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+					state.dwLastMeaningfulActivityTime = dwNow;
+					return true;
+				}
+				// Nothing of a class is cast from a saddle (a standing mount
+				// casts everything).
+				if (ch->IsRiding() && !IsPlayerBotOnStandingMount(ch))
+				{
+					SetPlayerBotRidingForTravel(ch, state, false, dwNow, "leader_buff");
+					rt.dwBuffNowNextCast = dwNow + PLAYERBOT_BUFF_RECHECK_FAST;
+					return true;
+				}
+				if (ch->IsStateMove())
+					ch->Stop();
+				rt.setBuffNowDone.insert(key);
+				if (!PlayerBotUseSkill(ch, state, vnum, target, dwNow))
+				{
+					sys_log(0, "PLAYERBOT_SIDEKICK: buff now refused pid=%u name=%s vnum=%u on=%s", ch->GetPlayerID(),
+							ch->GetName(), vnum, target->GetName());
+					continue;
+				}
+				// In the owner's party the cast was the whole party's.
+				if (sameParty && IsPlayerBotShamanSupportBuff(vnum))
+				{
+					rt.setBuffNowDone.insert(vnum * 2);
+					rt.setBuffNowDone.insert(vnum * 2 + 1);
+				}
+				SendPlayerBotSkillPacket(ch, vnum);
+				state.dwLastBotSkillTime = dwNow;
+				state.dwNextAttackTime = dwNow + PLAYERBOT_SKILL_ANIMATION_LOCK;
+				state.dwLastMeaningfulActivityTime = dwNow;
+				rt.dwBuffNowNextCast = dwNow + PLAYERBOT_BUFF_RECHECK_FAST;
+				sys_log(0, "PLAYERBOT_SIDEKICK: buff now cast pid=%u name=%s vnum=%u on=%s forced=%d", ch->GetPlayerID(),
+						ch->GetName(), vnum, target->GetName(), rt.bBuffNowForced ? 1 : 0);
+				return true;
+			}
+		}
+		if (!waiting)
+			EndPlayerBotSidekickBuffNow(ch, rt, "all_up");
+		return false;
+	}
+
+	// The owner's "buff" (a whisper, or /towarzysz buff): the reply, and the
+	// round set going (ManagePlayerBotSidekickBuffNow). When every buff is
+	// cooling the owner hears how long; the round waits for it.
+	std::string OrderPlayerBotSidekickBuff(LPCHARACTER owner, TPlayerBotSidekick& rec, DWORD dwNow)
+	{
+		LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(rec.dwSidekickPID);
+		TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(rec.dwSidekickPID);
+		if (!sk || st == s_mapPlayerBotAIStates.end())
+			return "Jeszcze mnie przy tobie nie ma - dam buffa, jak tylko sie pojawie.";
+		if (sk->GetJob() != JOB_SHAMAN)
+			return "Nie mam buffow - buffy daje szaman.";
+		if (sk->GetSkillGroup() == 0)
+			return "Nie wybralem jeszcze sciezki, wiec buffow jeszcze nie mam.";
+		if (sk->IsDead())
+			return "Najpierw musze wstac - potem dam buffa.";
+		const TPlayerBotAIState& state = st->second;
+		const TJobSkillBuild build = GetPlayerBotSkillBuild(sk->GetJob(), sk->GetSkillGroup(), sk->GetPlayerID());
+		int known = 0;
+		bool ready = false;
+		bool paid = false;
+		DWORD wait = 0;
+		for (size_t i = 0; i < sizeof(build.dwBuffSkills) / sizeof(build.dwBuffSkills[0]); ++i)
+		{
+			const DWORD vnum = build.dwBuffSkills[i];
+			const CSkillProto* proto = vnum ? CSkillManager::instance().Get(vnum) : NULL;
+			if (!proto || sk->GetSkillLevel(vnum) == 0 || IS_SET(proto->dwFlag, SKILL_FLAG_TOGGLE))
+				continue;
+			++known;
+			if (IsPlayerBotSkillReady(state, vnum, dwNow))
+			{
+				ready = true;
+				if (sk->GetSP() >= GetPlayerBotSkillSPCost(sk, vnum))
+					paid = true;
+				continue;
+			}
+			std::map<DWORD, DWORD>::const_iterator at = state.mapSkillReadyAt.find(vnum);
+			const DWORD left = at != state.mapSkillReadyAt.end() ? at->second - dwNow : 0;
+			if (wait == 0 || left < wait)
+				wait = left;
+		}
+		if (known == 0)
+			return "Nie znam jeszcze zadnego buffa.";
+		TPlayerBotSidekickRuntime& rt = s_mapPlayerBotSidekickRuntime[rec.dwSidekickPID];
+		rt.bBuffNowForced = true;
+		rt.setBuffNowDone.clear();
+		rt.dwBuffNowNextCast = 0;
+		rt.dwBuffNowUntil = dwNow + PLAYERBOT_SIDEKICK_BUFF_NOW_MS + (ready ? 0 : wait);
+		sys_log(0, "PLAYERBOT_SIDEKICK: buff ordered owner=%u pid=%u ready=%d paid=%d wait_ms=%u",
+				owner ? owner->GetPlayerID() : 0, rec.dwSidekickPID, ready ? 1 : 0, paid ? 1 : 0,
+				(unsigned int)wait);
+		if (rec.bMode != PLAYERBOT_SIDEKICK_FOLLOW || !owner || owner->GetMapIndex() != sk->GetMapIndex())
+			return "Dam buffa, jak tylko bede przy tobie - napisz \"chodz\".";
+		if (rt.bHold && DISTANCE_APPROX(sk->GetX() - owner->GetX(), sk->GetY() - owner->GetY()) > 1000)
+			return "Czekam w miejscu - podejdz do mnie albo napisz \"chodz\", to dam buffa.";
+		if (!ready)
+		{
+			char text[64];
+			snprintf(text, sizeof(text), "Buff za %u s.", (unsigned int)((wait + 999) / 1000));
+			return text;
+		}
+		if (!paid)
+			return "Brakuje mi many - dam buffa, jak tylko sie zregeneruje.";
+		static const char* const kLines[] = { "Juz daje buffa!", "Juz buffuje!", "Sekunde, juz daje buffa!",
+				"Robi sie, juz daje buffa!" };
+		return kLines[number(0, (int)(sizeof(kLines) / sizeof(kLines[0])) - 1)];
+	}
+
+	// Whether a whisper is the owner's "buff": the word on its own or in an
+	// order ("daj buffa", "zbuffuj mnie"), not a question about the buffs
+	// ("co daja twoje buffy?") and not "nie buffuj".
+	bool IsPlayerBotSidekickBuffOrder(const char* folded)
+	{
+		static const char* const kWords[] = { "buff", "buffa", "buffy", "bufa", "buf", "bufy", "buffik", "buffnij",
+				"bufnij", "zbuffuj", "zbufuj", "buffuj", "bufuj", "rebuff", "rebuffa" };
+		bool heard = false;
+		for (size_t i = 0; i < sizeof(kWords) / sizeof(kWords[0]) && !heard; ++i)
+			heard = PlayerBotSidekickHeard(folded, kWords[i]);
+		if (!heard)
+			return false;
+		static const char* const kNot[] = { "nie", "co", "ile", "jakie", "jaki", "czemu", "dlaczego" };
+		for (size_t i = 0; i < sizeof(kNot) / sizeof(kNot[0]); ++i)
+			if (PlayerBotSidekickHeard(folded, kNot[i]))
+				return false;
+		return true;
 	}
 
 	// The path the owner chose, the moment the engine allows one:
@@ -9812,6 +10089,10 @@ namespace
 		// where it should read Towarzysz (Tieru's screenshots of 25 September).
 		ManagePlayerBotPersona(ch, state, dwNow);
 		if (KeepPlayerBotSidekickAlive(ch, state, owner, dwNow))
+			return true;
+		// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: the buffs at once - on arrival and
+		// on the owner's "buff" - before the fight, the loot and the walk.
+		if (ManagePlayerBotSidekickBuffNow(ch, state, *rec, rt, owner, dwNow))
 			return true;
 		// A piece its owner put on waits out the second and a half after a blow
 		// that the engine asks of every equip: the fight holds off that long, and

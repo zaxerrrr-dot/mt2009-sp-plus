@@ -1770,7 +1770,9 @@ namespace
 						(long long)leader->GetHP() * 100 / leader->GetMaxHP() > PLAYERBOT_PARTY_LEADER_CURE_HP_PERCENT)
 					continue;
 			}
-			else if (IsPlayerBotBuffAffectOn(leader, vnum))
+			// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: the person's own affect, and
+			// renewed when little of it is left.
+			else if (!IsPlayerBotBuffDueOn(ch, leader, vnum))
 				continue;
 			CSkillProto* proto = CSkillManager::instance().Get(vnum);
 			if (!proto || IS_SET(proto->dwFlag, SKILL_FLAG_SELFONLY))
