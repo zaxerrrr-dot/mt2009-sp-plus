@@ -2910,11 +2910,11 @@
 72322	Karta Nowego Pocz¹tku	Pozwala zresetowaæ misjê Kart Potworów ponad darmowy reset (raz na 24 godziny).
 72323	Karta Nowego Uk³adu	Pozwala wylosowaæ nowe cele misji Kart Potworów.
 70115	Kolekcjoner	Otwiera okno Kolekcjonera z dowolnego miejsca.
-80050	Jab³ko	Owoc rangi: +50 Punktów Rangi. Dzia³a od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.
-80051	Gruszka	Owoc rangi: +50 Punktów Rangi. Dzia³a od 20 000 do 40 000 punktów. Komenda /ranga.
-80052	Winogrono	Owoc rangi: +100 Punktów Rangi. Dzia³a od 40 000 do 80 000 punktów. Komenda /ranga.
-80053	Arbuz	Owoc rangi: +100 Punktów Rangi. Dzia³a od 80 000 do 120 000 punktów. Komenda /ranga.
-80054	Ananas	Owoc rangi: +100 Punktów Rangi. Dzia³a od 120 000 do 200 000 punktów (maksimum). Komenda /ranga.
+80050	Jab³ko	Owoc rangi: +200 Punktów Rangi (zwyk³a ranga). Dzia³a od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.
+80051	Gruszka	Owoc rangi: +200 Punktów Rangi ponad zwyk³¹ rangê. Dzia³a od 20 000 (pe³na zwyk³a ranga) do 40 000 punktów. Komenda /ranga.
+80052	Winogrono	Owoc rangi: +400 Punktów Rangi. Dzia³a od 40 000 do 80 000 punktów. Komenda /ranga.
+80053	Arbuz	Owoc rangi: +400 Punktów Rangi. Dzia³a od 80 000 do 120 000 punktów. Komenda /ranga.
+80054	Ananas	Owoc rangi: +400 Punktów Rangi. Dzia³a od 120 000 do 200 000 punktów (maksimum). Komenda /ranga.
 42900	Kostium Mroku (m)	Kostium z zestawu Arezzo (Zestaw Mroku). Dzia³a 30 dni od za³o¿enia.
 42901	Kostium Mroku (k)	Kostium z zestawu Arezzo (Zestaw Mroku). Dzia³a 30 dni od za³o¿enia.
 45900	He³m Mroku (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Mroku). Dzia³a 30 dni od za³o¿enia.
@@ -2974,17 +2974,6 @@
 40954	Dzwon MroŸ. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroznego Rycerza): szaman. Dzia³a 30 dni od za³o¿enia.
 40955	Wachlarz MroŸ. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroznego Rycerza): szaman. Dzia³a 30 dni od za³o¿enia.
 85204	Szarfa MroŸ. Rycerza (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Mroznego Rycerza). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
-42930	Kostium Ognist. Rycerza (m)	Kostium z zestawu Arezzo (Zestaw Ognistego Rycerza). Dzia³a 30 dni od za³o¿enia.
-42931	Kostium Ognist. Rycerza (k)	Kostium z zestawu Arezzo (Zestaw Ognistego Rycerza). Dzia³a 30 dni od za³o¿enia.
-45930	He³m Ognist. Rycerza (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Ognistego Rycerza). Dzia³a 30 dni od za³o¿enia.
-45931	He³m Ognist. Rycerza (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Ognistego Rycerza). Dzia³a 30 dni od za³o¿enia.
-40960	Miecz Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
-40961	Sztylet Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): ninja. Dzia³a 30 dni od za³o¿enia.
-40962	£uk Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): ninja. Dzia³a 30 dni od za³o¿enia.
-40963	Ostrze Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): wojownik. Dzia³a 30 dni od za³o¿enia.
-40964	Dzwon Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): szaman. Dzia³a 30 dni od za³o¿enia.
-40965	Wachlarz Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): szaman. Dzia³a 30 dni od za³o¿enia.
-85205	Szarfa Ognist. Rycerza (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Ognistego Rycerza). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
 42932	Kostium Anielski (m)	Kostium z zestawu Arezzo (Zestaw Anielski). Dzia³a 30 dni od za³o¿enia.
 42933	Kostium Anielski (k)	Kostium z zestawu Arezzo (Zestaw Anielski). Dzia³a 30 dni od za³o¿enia.
 45932	He³m Anielski (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Anielski). Dzia³a 30 dni od za³o¿enia.
@@ -3062,17 +3051,6 @@
 40834	Dzwon Króla Lodu	Nak³adka na broñ z zestawu Arezzo (Zestaw Krola Lodu): szaman. Dzia³a 30 dni od za³o¿enia.
 40835	Wachlarz Króla Lodu	Nak³adka na broñ z zestawu Arezzo (Zestaw Krola Lodu): szaman. Dzia³a 30 dni od za³o¿enia.
 85212	Szarfa Króla Lodu (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Krola Lodu). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
-42946	Kostium Krwawej Zemsty (m)	Kostium z zestawu Arezzo (Zestaw Krwawej Zemsty). Dzia³a 30 dni od za³o¿enia.
-42947	Kostium Krwawej Zemsty (k)	Kostium z zestawu Arezzo (Zestaw Krwawej Zemsty). Dzia³a 30 dni od za³o¿enia.
-45946	He³m Krwawej Zemsty (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Krwawej Zemsty). Dzia³a 30 dni od za³o¿enia.
-45947	He³m Krwawej Zemsty (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Krwawej Zemsty). Dzia³a 30 dni od za³o¿enia.
-40840	Miecz Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
-40841	Sztylet Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): ninja. Dzia³a 30 dni od za³o¿enia.
-40842	£uk Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): ninja. Dzia³a 30 dni od za³o¿enia.
-40843	Ostrze Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): wojownik. Dzia³a 30 dni od za³o¿enia.
-40844	Dzwon Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): szaman. Dzia³a 30 dni od za³o¿enia.
-40845	Wachlarz Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): szaman. Dzia³a 30 dni od za³o¿enia.
-85213	Szarfa Krwawej Zemsty (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Krwawej Zemsty). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
 42948	Kostium Letniej Chwa³y (m)	Kostium z zestawu Arezzo (Zestaw Letniej Chwaly). Dzia³a 30 dni od za³o¿enia.
 42949	Kostium Letniej Chwa³y (k)	Kostium z zestawu Arezzo (Zestaw Letniej Chwaly). Dzia³a 30 dni od za³o¿enia.
 45948	He³m Letniej Chwa³y (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Letniej Chwaly). Dzia³a 30 dni od za³o¿enia.
