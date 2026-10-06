@@ -17,6 +17,28 @@ every version here.
 
 ---
 
+## 2.24.0 — 2026-10-06 — Rekrutacja do gildii, dungeony bez czekania, ItemShop w edytorze
+
+Działa z klientem **2.0.55** (bez nowego klienta).
+
+### 🧪 Funkcje eksperymentalne
+- **Rekrutacja botów do gildii** – napisz na czacie np. „szukam ludzi do gildii”; zgłoszą się boty bez gildii albo ze słabą gildią, a po „tak” czekają 5 minut przy NPC w M1 na zaproszenie.
+
+### ✨ Zmiany i poprawki
+- **Dungeony bez czasu oczekiwania dla graczy** (boty dalej odpoczywają między wyprawami); „Nowa wyprawa” dostępna dla każdego.
+- **Do trzech razy sztuka** – bot pokonany 3 razy przez tego samego gracza na spocie odpuszcza i idzie gdzie indziej; pomocnicy tak samo.
+- Dzieci Kwiaty: komunikat o nasionach bez „po aktualizacji klienta”.
+- **Szkatułki z Biblioteki, Wukonga, Skorpiona i Dżungli dzielone między graczy** – jedna pula na wyprawę (tyle, ile wcześniej dostawał jeden gracz), rozdawana po kolei; boty nie biorą; po bossie 10 s odliczania i wyjście z lochu (wszystkie dungeony).
+- **Fasolki Zen** – boty i Towarzysz liczą fasolki do rangi przy nauce z kamieni duchowych (schodzą na chwilę poniżej zera i od razu jedzą fasolki); fasolka w cenniku botów = 1/3 Kamienia Duchowego.
+- **Mapy Arezzo**: bossowie map (Arges, Polifem, Bastet, Anubis) nie dropią już szkatułek dungeonów – szkatułki tylko z dungeonów.
+- **Edytor bazy danych – umiejętności**: rodzaj efektu 1/2/3 (np. wartość ataku) do wyboru z listy, z opisem działania i ostrzeżeniami; opisy w kliencie (skilldesc) zgodne ze zmianą.
+- **Reset świata zachowuje zmiany z Edytora bazy danych** (przełącznik, domyślnie włączony); nowa strona „Przywróć zmiany z historii” po resecie/backupie; panel sam odtwarza brakującą tabelę historii; kopia przed resetem zachowuje polskie znaki.
+- **Towarzysz sprzedaje złom** na zakupach (także przedmioty od właściciela); nowy rozkaz „/towarzysz sprzedaj” / szept „sprzedaj złom” – tylko sprzedaż złomu, z raportem.
+- **Edytor bazy danych – ItemShop**: przedmioty w istniejących zakładkach (dodawanie, usuwanie, cena, ilość, waluta SM/SZ, poziom, promocje, oferty błyskawiczne), przycisk „Odśwież sklep w grze”; pozycje sklepu z aktualizacji dodawane tylko raz, więc usunięte nie wracają.
+- **Towarzysz i alchemia**: włącza alchemię, gdy walczy on albo jego właściciel, sam zakłada podarowane kamienie i przedłuża je eliksirami czasu, które ma (także od właściciela).
+- **Komenda GM /resetdungi <nick> [dungeon|wszystkie]** (/dungeon_reset) – zeruje dzienny limit dungeonów postaci (online, na innym kanale i offline); także karta „Limit dungeonów” na stronie postaci w panelu.
+- **Buffy szamanów**: Towarzysz buffuje od razu po przywołaniu; szept „buff” odświeża wszystkie buffy; boty sprawdzają główny efekt buffa i odnawiają go przed końcem (poprawne przy zmienionych czasach trwania).
+
 ## 2.23.1 — 2026-10-05 — Poprawka świeżej instalacji, wyrzucanie z CH1, boty i alchemia w edytorze
 
 Wymaga klienta **2.0.55** (pobierze go launcher albo patcher).

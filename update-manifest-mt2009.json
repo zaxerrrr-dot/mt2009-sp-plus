@@ -1,13 +1,13 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-05T18:09:21Z",
- "statusMessage": "MT2009 PLUS 2.23.1: poprawka swiezej instalacji, wyrzucanie z CH1, boty, alchemia w edytorze. Klient 2.0.55.",
+ "publishedAt": "2026-10-06T06:23:52Z",
+ "statusMessage": "MT2009 PLUS 2.24.0: rekrutacja do gildii, dungeony bez czekania, ItemShop w edytorze. Klient 2.0.55.",
  "server": {
-  "version": "2.23.1",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.23.1/metin2-server-update-2.23.1.zip",
-  "sha256": "6BF9F0DBCDD20B6E127C7B631BBB3DFD85F911C90B2475167F4F682146F8FD5F",
-  "size": 107356585
+  "version": "2.24.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.24.0/metin2-server-update-2.24.0.zip",
+  "sha256": "3F3460989EBF34E8DD9F619FA6564BBCC21731020F2C09FDBCD2C78D2017F231",
+  "size": 107478517
  },
  "client": {
   "version": "2.0.55",
