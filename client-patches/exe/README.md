@@ -194,3 +194,14 @@ Zbudowane `build.sh msvc --smoke` (MSVC 14.44) ze źródeł client-build + cały
 eventów, poprawki walki, `ENABLE_RANK_TITLE`, `ENABLE_ITEM_SHINING_TABLE`): `metin2client.exe` 13 669 888 B,
 sha256 `a8a53aae116fa91a05a59f87fa9e9aa83f3a67ea6383066f61ae4c4c7204608f` (kopia:
 `/opt/metin2/cache/exe-releases/metin2client-a8a53aae.exe`); smoke test dochodzi do okna logowania.
+
+## Nakładki na szarfy z położeniem w modelu – `MT2009_PLUS_ACCE_INITIAL_PLACEMENT_V1` (`ENABLE_ACCE_INITIAL_PLACEMENT`)
+
+Modele skrzydeł Arezzo z katalogu `me_w` (85213, 85219, 85220, 85221) mają szkielet z kością główną w punkcie 0,
+a miejsce na plecach w `InitialPlacement` modelu – exe go nie czytał, więc stały obrócone. `EterGrnLib/ThingInstance.cpp`
+(nowy w tym katalogu, z client-build): dla części szarfy z kością główną = identyczność i niepustym `InitialPlacement`
+macierz położenia idzie przed macierzą szarfy (`GrannyGetModelInitialPlacement4x4`); inne modele bez zmian.
+Kopiując ten katalog na źródła, kopiuj też `EterGrnLib`.
+
+Exe 2.0.57 (druga budowa, 6.10.2026): sha256 `1ea7ce73e19eef73b96bb8e92d6762815edec946a47a1a58c36e33d28d6c95a1`,
+13 670 400 B (`/opt/metin2/cache/exe-releases/metin2client-1ea7ce73.exe`); smoke test do okna logowania.

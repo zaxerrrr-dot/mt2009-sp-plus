@@ -181,6 +181,10 @@
 // (CInstanceBase::SetWeapon / SetArmor). No packet, no python; without the file nothing changes.
 #define ENABLE_ITEM_SHINING_TABLE
 
+// MT2009_PLUS_ACCE_INITIAL_PLACEMENT_V1: a sash model whose place on the back is its InitialPlacement
+// (root bone = identity; Arezzo's "me_w" wings) is drawn with it (EterGrnLib/ThingInstance.cpp).
+#define ENABLE_ACCE_INITIAL_PLACEMENT
+
 #define __BL_CLIP_MASK__
 
 #define ENABLE_FIX_MOBS_LAG
