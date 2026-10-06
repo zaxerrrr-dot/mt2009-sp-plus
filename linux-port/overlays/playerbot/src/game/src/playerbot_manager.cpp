@@ -2563,19 +2563,29 @@ namespace
 
 	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1 (playerbot_types.h): what of a
 	// bot's beans it may eat, what they give back, and eating them at once.
+	//
+	// MT2009_PLUS_SIDEKICK_FIXES_V3 ("ma 200 fasolek w plecaku, a pisze daj mi
+	// Fasolki Zen", the owner, 2.24.0): a companion's beans never counted when
+	// its owner had handed them over - a gift under the equipment lock and an
+	// item it holds for the owner both read as the owner's, so the lift was
+	// nought - nor while its rank was hidden (the engine eats a bean against
+	// the SHOWN rank, which a hidden one reads as zero, so the lift was
+	// zeroed for it). A bean has one use: every one in the bag counts but one
+	// in a trade window or under the engine's lock, the whole bag is searched
+	// (an owner may drop them on the third page), and a bean the engine
+	// refuses for the shown rank is eaten the engine's way by hand.
 	bool IsPlayerBotZenBeanUsable(LPCHARACTER ch, LPITEM item)
 	{
 		return ch && item && item->GetVnum() == PLAYERBOT_ZEN_BEAN_VNUM && !item->isLocked() &&
-				!item->IsExchanging() && !IsPlayerBotSidekickHeld(ch, item) &&
-				!IsPlayerBotSidekickLockedItem(ch, item);
+				!item->IsExchanging() && item->GetCount() > 0;
 	}
 
 	int GetPlayerBotZenBeanLift(LPCHARACTER ch)
 	{
-		if (!ch || !ch->IsItemLoaded() || ch->GetAlignment() != ch->GetRealAlignment())
+		if (!ch || !ch->IsItemLoaded())
 			return 0;
 		long long lift = 0;
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		for (WORD cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (IsPlayerBotZenBeanUsable(ch, item) && item->GetValue(0) > 0)
@@ -2586,21 +2596,44 @@ namespace
 		return (int)lift;
 	}
 
+	// One bean, eaten: true when the real rank rose.
+	bool EatPlayerBotZenBean(LPCHARACTER ch, WORD cell)
+	{
+		LPITEM item = ch ? ch->GetInventoryItem(cell) : NULL;
+		if (!IsPlayerBotZenBeanUsable(ch, item) || ch->GetRealAlignment() >= 0)
+			return false;
+		const int before = ch->GetRealAlignment();
+		if (ch->GetAlignment() < 0)
+		{
+			ch->UseItem(TItemPos(INVENTORY, cell));
+			if (ch->GetRealAlignment() != before)
+				return true;
+			item = ch->GetInventoryItem(cell);
+			if (!IsPlayerBotZenBeanUsable(ch, item))
+				return false;
+		}
+		// The engine's case 70102, against the real rank.
+		const int delta = MIN(-before, (int)item->GetValue(0));
+		if (delta <= 0)
+			return false;
+		ch->UpdateAlignment(delta);
+		item->SetCount(item->GetCount() - 1);
+		return ch->GetRealAlignment() != before;
+	}
+
 	int UsePlayerBotZenBeansNow(LPCHARACTER ch)
 	{
 		int eaten = 0;
-		while (ch && ch->GetAlignment() < 0 && eaten < 200)
+		while (ch && ch->GetRealAlignment() < 0 && eaten < 200)
 		{
 			bool ate = false;
-			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && !ate; ++cell)
+			for (WORD cell = 0; cell < INVENTORY_MAX_NUM && !ate; ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
 				if (!IsPlayerBotZenBeanUsable(ch, item))
 					continue;
-				const int before = ch->GetRealAlignment();
-				ch->UseItem(TItemPos(INVENTORY, cell));
-				if (ch->GetRealAlignment() == before)
-					return eaten;	// the engine refused it; the interval tries again
+				if (!EatPlayerBotZenBean(ch, cell))
+					return eaten;	// refused; the interval tries again
 				ate = true;
 				++eaten;
 			}
@@ -2735,7 +2768,7 @@ namespace
 		// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: a read the beans paid for
 		// leaves the rank below zero only until they are eaten - now, not on
 		// ManagePlayerBotZenBeans' clock.
-		if (ch->GetAlignment() < 0)
+		if (ch->GetRealAlignment() < 0)
 		{
 			const int below = ch->GetRealAlignment();
 			const int eaten = UsePlayerBotZenBeansNow(ch);
@@ -2756,19 +2789,19 @@ namespace
 	void ManagePlayerBotZenBeans(LPCHARACTER ch, DWORD dwNow)
 	{
 		static std::map<DWORD, DWORD> s_mapPlayerBotZenBeanNext;
-		if (!ch || !ch->IsItemLoaded() || ch->IsDead() || ch->GetAlignment() >= 0)
+		if (!ch || !ch->IsItemLoaded() || ch->IsDead() || ch->GetRealAlignment() >= 0)
 			return;
 		DWORD& next = s_mapPlayerBotZenBeanNext[ch->GetPlayerID()];
 		if (dwNow < next)
 			return;
 		next = dwNow + PLAYERBOT_ZEN_BEAN_CHECK_INTERVAL;
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		for (WORD cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!IsPlayerBotZenBeanUsable(ch, item))
 				continue;
 			const int before = ch->GetRealAlignment();
-			ch->UseItem(TItemPos(INVENTORY, cell));
+			EatPlayerBotZenBean(ch, cell);	// MT2009_PLUS_SIDEKICK_FIXES_V3
 			sys_log(0, "PLAYERBOT_AI: zen bean pid=%u name=%s rank=%d->%d",
 					ch->GetPlayerID(), ch->GetName(), before, ch->GetRealAlignment());
 			return;

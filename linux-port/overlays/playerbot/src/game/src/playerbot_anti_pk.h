@@ -1225,6 +1225,10 @@ namespace
 		// on a tick or two later.
 		if (GetPlayerBotDuelUnreadiness(ch, dwNow) != NULL)
 			return false;
+		// MT2009_PLUS_SIDEKICK_FIXES_V3: a companion told "Nie walcz" strikes
+		// nobody, a person included.
+		if (IsPlayerBotSidekickPassive(ch))
+			return false;
 		LPCHARACTER foe = PickPlayerBotPersonaFoe(ch, state, dwNow);
 		if (!foe)
 			return false;

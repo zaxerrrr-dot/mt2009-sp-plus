@@ -51,8 +51,8 @@ namespace
 		// target once that is a fight already - a monster at one of the owner's
 		// party, a stone somebody has begun, a guild war's foe.
 		PLAYERBOT_SIDEKICK_STANCE_DEFEND = 1,
-		// It hits back at what hits it and at nothing else, and takes no
-		// monster off a losing owner.
+		// It hits nothing - MT2009_PLUS_SIDEKICK_FIXES_V3: not even what hits
+		// it (it hit back until then) - and takes no monster off a losing owner.
 		PLAYERBOT_SIDEKICK_STANCE_PASSIVE = 2,
 	};
 
@@ -1141,6 +1141,20 @@ namespace
 				!IsPlayerBotSidekickOnErrand(ch->GetPlayerID());
 	}
 
+	// MT2009_PLUS_SIDEKICK_FIXES_V3 ("ustawilem nie atakuj, a w Grocie bije
+	// potwory", the owner, 2.24.0): "Nie walcz" still hit back at whatever hit
+	// it - a monster of the Grotto, which goes for everybody near, was a foe
+	// at once (FPlayerBotSidekickFoes' onSelf, the defence's AT_SELF), and a
+	// person's blow started the Anti-PK fight. Now it means no blow at all:
+	// struck, it keeps to its owner's side and the owner's buffs.
+	bool IsPlayerBotSidekickPassive(LPCHARACTER ch)
+	{
+		if (!ch || !IsPlayerBotSidekickLeashed(ch))
+			return false;
+		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
+		return rec && rec->bStance == PLAYERBOT_SIDEKICK_STANCE_PASSIVE;
+	}
+
 	// Whose companion this is, for the line over its head
 	// (BuildPlayerBotStatusText): the owner's name while it is at the owner's
 	// side, nothing otherwise - let off the leash it plays, and says so, like
@@ -1434,11 +1448,46 @@ namespace
 	// put on it, or the operator keeps; never a soul stone, a material, a
 	// book, a scroll, a chest, a key, a Cor, a quest item, a costume, a potion
 	// or anything else - the switch below names only the scrap.
+	//
+	// MT2009_PLUS_SIDEKICK_FIXES_V3 ("sprzedaj zlom" came back with a full bag,
+	// sixty pieces kept as valuable, the owner, 2.24.0): on the "sprzedaj"
+	// order every weapon and every piece of armour - body, helmet, shield,
+	// boots, bracelet, necklace, earrings - under +8 goes, bonus lines, a
+	// stone in a socket, its level, who put it in the bag or what it holds
+	// for its owner notwithstanding: "the player takes responsibility". Kept
+	// still: +8 and over, what it wears, what the owner's equipment lock or
+	// the owner's own hand (the window's pin) keeps, the operator's keep, an
+	// arrow or a quiver, a costume and everything not gear. The "zakupy"
+	// errand keeps the narrow rule below.
+	const int PLAYERBOT_SIDEKICK_SELL_ALL_BELOW_REFINE = 8;
+
+	bool IsPlayerBotSidekickSellAllGear(LPCHARACTER ch, LPITEM item)
+	{
+		const BYTE type = item->GetType();
+		if (type != ITEM_WEAPON && type != ITEM_ARMOR)
+			return false;
+		if (type == ITEM_WEAPON && (item->GetSubType() == WEAPON_ARROW || IsPlayerBotQuiver(item)))
+			return false;
+		if (item->GetRefineLevel() >= PLAYERBOT_SIDEKICK_SELL_ALL_BELOW_REFINE)
+			return false;
+		if (IsPlayerBotSidekickEquipLocked(ch->GetPlayerID()) && IsPlayerBotSidekickGift(ch, item))
+			return false;
+		const int pin = GetPlayerBotSidekickPinOf(ch, item);
+		if (pin >= 0 && pin != PLAYERBOT_SIDEKICK_PIN_UNWANTED)
+			return false;
+		const BYTE policy = GetPlayerBotItemPolicy(item);
+		return policy == PLAYERBOT_ITEM_POLICY_NONE || policy == PLAYERBOT_ITEM_POLICY_MERCHANT;
+	}
+
 	bool IsPlayerBotSidekickOrderedScrap(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || !item->GetProto() || item->IsEquipped() || item->isLocked() ||
 				item->GetWindow() != INVENTORY || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL))
 			return false;
+		// MT2009_PLUS_SIDEKICK_FIXES_V3: the "sprzedaj" order's gear.
+		if (IsPlayerBotSidekickSellOnly(ch) &&
+				(item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR))
+			return IsPlayerBotSidekickSellAllGear(ch, item);
 		if (IsPlayerBotSidekickLockedItem(ch, item))
 			return false;
 		{
@@ -1841,7 +1890,7 @@ namespace
 		switch (stance)
 		{
 			case PLAYERBOT_SIDEKICK_STANCE_DEFEND: return "nie atakuje pierwszy";
-			case PLAYERBOT_SIDEKICK_STANCE_PASSIVE: return "nie walczy, tylko sie broni";
+			case PLAYERBOT_SIDEKICK_STANCE_PASSIVE: return "nie walczy wcale";
 			default: return "atakuje wszystko w poblizu";
 		}
 	}
@@ -3846,7 +3895,7 @@ namespace
 			case PLAYERBOT_SIDEKICK_STANCE_DEFEND:
 				return "Dobra, nie zaczynam walki. Bronie ciebie i siebie, a pomagam, kiedy ty juz walczysz.";
 			case PLAYERBOT_SIDEKICK_STANCE_PASSIVE:
-				return "Dobra, nie walcze. Oddam tylko temu, kto mnie uderzy.";
+				return "Dobra, nie walcze wcale - nawet gdy ktos mnie uderzy, ide tylko za toba.";
 			default:
 				return "Dobra, bije wszystko, co sie do nas zblizy.";
 		}
@@ -4558,6 +4607,39 @@ namespace
 	// (ManagePlayerBotSidekickErrand).
 	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: sellOnly - "sprzedaj": the same trip
 	// for the merchants alone, its scrap sold and nothing bought.
+	// MT2009_PLUS_SIDEKICK_FIXES_V3 ("zakupy" and "sprzedaj" refused in the
+	// Grotto of Exile and Spider Dungeon V2, the owner, 2.24.0): the errand
+	// asked for its own kingdom's first village alone, and in the split world
+	// layout only Chunjo's villages share a core with the frontier
+	// (m2-render-config: MAPS_game1) - a Shinsoo or Jinno companion standing
+	// there answered "Stad nie dojde do swojego miasta". It takes the first
+	// village of this core then: its own kingdom's first and second, then the
+	// other kingdoms'. And it is put there straight (PlacePlayerBotSidekickAt)
+	// rather than by TransitionPlayerBotMap, which turns a way out of the
+	// Spider Dungeons into a walk across the desert - the visit never began
+	// there ("nothing to do") - and refuses a map with no navigation grid.
+	// The way back is the warp beside its owner, which needs no pass.
+	bool GetPlayerBotSidekickErrandTown(LPCHARACTER sk, long& map, long& x, long& y)
+	{
+		const int own = GetPlayerBotRoadsEmpire(sk);
+		const int empires[3] = { own, own == 1 ? 2 : 1, own == 3 ? 2 : 3 };
+		const playerbot_empire_rules::EMapRole roles[2] = { playerbot_empire_rules::MAP_ROLE_M1,
+				playerbot_empire_rules::MAP_ROLE_M2 };
+		for (int e = 0; e < 3; ++e)
+			for (int r = 0; r < 2; ++r)
+			{
+				const long m = playerbot_empire_rules::GetHomeMap(empires[e], roles[r]);
+				playerbot_empire_rules::TPoint pitch;
+				if (m == 0 || !IsPlayerBotMapHostedHere(m) || !playerbot_empire_rules::GetTownPitch(m, pitch))
+					continue;
+				map = m;
+				x = pitch.x;
+				y = pitch.y;
+				return true;
+			}
+		return false;
+	}
+
 	void SendPlayerBotSidekickShopping(LPCHARACTER owner, TPlayerBotSidekick& rec, DWORD dwNow, bool sellOnly = false)
 	{
 		TPlayerBotAIState* state = NULL;
@@ -4576,10 +4658,9 @@ namespace
 			return;
 		}
 		long map = 0, x = 0, y = 0;
-		if (!GetPlayerBotVillageReturn(sk, playerbot_empire_rules::MAP_ROLE_M1, map, x, y) ||
-				!IsPlayerBotMapHostedHere(map))
+		if (!GetPlayerBotSidekickErrandTown(sk, map, x, y))	// MT2009_PLUS_SIDEKICK_FIXES_V3
 		{
-			SayPlayerBotSidekick(owner, "Stad nie dojde do swojego miasta.");
+			SayPlayerBotSidekick(owner, "Stad nie dojde do zadnego miasta.");
 			return;
 		}
 		rt.bHold = false;
@@ -4590,7 +4671,7 @@ namespace
 		rt.dwLureVID = 0;
 		if (sk->GetParty())
 			LeavePlayerBotParty(sk);
-		if (sk->GetMapIndex() != map && !TransitionPlayerBotMap(sk, *state, map, x, y, dwNow, "sidekick_errand"))
+		if (sk->GetMapIndex() != map && !PlacePlayerBotSidekickAt(sk, *state, map, x, y, dwNow, "sidekick_errand"))
 		{
 			KeepPlayerBotSidekickInParty(sk, owner, dwNow);
 			SayPlayerBotSidekick(owner, "Nie udalo mi sie dojsc do miasta.");
@@ -4616,9 +4697,10 @@ namespace
 			EndPlayerBotSidekickErrand(sk, *state, rec, rt, dwNow, "nothing");
 			return;
 		}
-		char text[160];
+		char text[256];
 		if (sellOnly)
-			snprintf(text, sizeof(text), "Ide sprzedac zlom %s. Wroce, jak skoncze.", playerbot_conv::GetMapWords(map).to);
+			snprintf(text, sizeof(text), "Ide sprzedac zlom %s: cala bron i zbroje ponizej +8 z plecaka (nie to, co "
+					"nosze ani co zablokowales). Wroce, jak skoncze.", playerbot_conv::GetMapWords(map).to);
 		else
 			snprintf(text, sizeof(text), "Ide na zakupy %s. Wroce, jak skoncze.", playerbot_conv::GetMapWords(map).to);
 		SayPlayerBotSidekick(owner, text);
@@ -7406,7 +7488,8 @@ namespace
 	LPCHARACTER FindPlayerBotSidekickDefendFoe(LPCHARACTER ch, LPCHARACTER owner, BYTE stance, long centreX,
 			long centreY, int& why)
 	{
-		if (!ch || !ch->GetSectree())
+		// MT2009_PLUS_SIDEKICK_FIXES_V3: "Nie walcz" answers no blow.
+		if (!ch || !ch->GetSectree() || stance == PLAYERBOT_SIDEKICK_STANCE_PASSIVE)
 			return NULL;
 		const DWORD dwNow = get_dword_time();
 		const bool guardOwner = owner && stance != PLAYERBOT_SIDEKICK_STANCE_PASSIVE && !owner->IsDead() &&
@@ -7607,7 +7690,8 @@ namespace
 			why = PLAYERBOT_SIDEKICK_FOE_AT_OWNER;
 			return foes.onOwner;
 		}
-		if (foes.onSelf)
+		// MT2009_PLUS_SIDEKICK_FIXES_V3: "Nie walcz" - not even what hits it.
+		if (foes.onSelf && stance != PLAYERBOT_SIDEKICK_STANCE_PASSIVE)
 		{
 			why = PLAYERBOT_SIDEKICK_FOE_AT_SELF;
 			return foes.onSelf;
@@ -9492,7 +9576,7 @@ namespace
 			foe = foes.onOwner;
 			why = PLAYERBOT_SIDEKICK_FOE_AT_OWNER;
 		}
-		else if (foes.onSelf)
+		else if (foes.onSelf && rec.bStance != PLAYERBOT_SIDEKICK_STANCE_PASSIVE)	// MT2009_PLUS_SIDEKICK_FIXES_V3
 		{
 			foe = foes.onSelf;
 			why = PLAYERBOT_SIDEKICK_FOE_AT_SELF;

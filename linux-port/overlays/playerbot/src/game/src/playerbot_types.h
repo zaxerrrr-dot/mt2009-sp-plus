@@ -392,12 +392,14 @@ namespace
 	// worth L in all bring a rank of R - cost back to zero whenever
 	// R + L >= cost. A Kamien Duchowy is read on that, and the beans are eaten
 	// straight after the read (UsePlayerBotZenBeansNow) until the rank is at
-	// zero or the beans are gone. Not counted: a bean locked, held for a
-	// companion's owner or under its owner's lock, and any bean while the
-	// shown rank is not the real one (the engine checks the shown one).
+	// zero or the beans are gone. Not counted: a bean in a trade window or
+	// under the engine's lock. MT2009_PLUS_SIDEKICK_FIXES_V3: a companion's
+	// beans its owner handed over count, and a hidden rank no longer zeroes
+	// the lift - EatPlayerBotZenBean eats against the real rank.
 	bool IsPlayerBotZenBeanUsable(LPCHARACTER ch, LPITEM item);
 	int GetPlayerBotZenBeanLift(LPCHARACTER ch);
 	int UsePlayerBotZenBeansNow(LPCHARACTER ch);
+	bool EatPlayerBotZenBean(LPCHARACTER ch, WORD cell);	// MT2009_PLUS_SIDEKICK_FIXES_V3
 	// A bot with a negative rank waits inside its village's safe ring
 	// (KeepPlayerBotNegativeRankInTown): the rest mark that keeps the inactivity
 	// watchdog off a bot standing still on purpose is renewed for this long, and
@@ -7175,6 +7177,9 @@ namespace
 	bool IsPlayerBotSidekickFishing(DWORD pid);
 	bool IsPlayerBotSidekickKeepingChests(LPCHARACTER ch);
 	bool IsPlayerBotSidekickLeashed(LPCHARACTER ch);
+	// MT2009_PLUS_SIDEKICK_FIXES_V3: at its owner's side with "Nie walcz" set -
+	// it strikes nothing, not even what strikes it.
+	bool IsPlayerBotSidekickPassive(LPCHARACTER ch);
 	bool IsPlayerBotSidekickHolding(LPCHARACTER ch);
 	bool IsPlayerBotSidekickGift(LPCHARACTER ch, LPITEM item);
 	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1: an owner's drop the companion
