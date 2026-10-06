@@ -1,0 +1,86 @@
+[
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (pc include)",
+  "old": "#include \"special_shop_manager.h\"\n",
+  "new": "#include \"special_shop_manager.h\"\n#include \"playerbot_quest_rewards.h\" // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (pc include): the Seban panel's quest reward rules\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_item)",
+  "old": "\t\tpPC->GiveItem(lua_tostring(L, 1), dwVnum, icount);\n",
+  "new": "\t\t// MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_item): the panel's rule for this reward of this quest\n\t\t// (playerbot_quest_rewards.h): another item, another count, nothing.\n\t\t{\n\t\t\tDWORD dwGivenId = 0;\n\t\t\tif (mt2009_quest_rewards::OnItem(ch, dwVnum, icount, dwGivenId) != mt2009_quest_rewards::ITEM_PROCEED)\n\t\t\t\treturn 0;\n\t\t}\n\t\tpPC->GiveItem(lua_tostring(L, 1), dwVnum, icount);\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_item2)",
+  "old": "\t\tsys_log(0, \"QUEST [REWARD] item %s to %s\", lua_tostring(L, 1), ch->GetName());\n\n\t\tPC* pPC = CQuestManager::instance().GetCurrentPC();\n\n\t\tint iRarePct",
+  "new": "\t\t// MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_item2): the panel's rule for this reward of this quest\n\t\t// (playerbot_quest_rewards.h): another item, another count, nothing - or\n\t\t// more than one stack, given there (the first item's id is returned).\n\t\t{\n\t\t\tDWORD dwGivenId = 0;\n\t\t\tif (mt2009_quest_rewards::OnItem(ch, dwVnum, icount, dwGivenId) != mt2009_quest_rewards::ITEM_PROCEED)\n\t\t\t{\n\t\t\t\tlua_pushnumber(L, dwGivenId);\n\t\t\t\treturn 1;\n\t\t\t}\n\t\t}\n\n\t\tsys_log(0, \"QUEST [REWARD] item %s to %s\", lua_tostring(L, 1), ch->GetName());\n\n\t\tPC* pPC = CQuestManager::instance().GetCurrentPC();\n\n\t\tint iRarePct"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_gold)",
+  "old": "\t\tDBManager::instance().SendMoneyLog(MONEY_LOG_QUEST, ch->GetPlayerID(), iAmount);\n\t\tch->ChangeGold(iAmount);\n",
+  "new": "\t\tif (!mt2009_quest_rewards::OnGold(ch, iAmount)) // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_gold)\n\t\t\treturn 0;\n\t\tDBManager::instance().SendMoneyLog(MONEY_LOG_QUEST, ch->GetPlayerID(), iAmount);\n\t\tch->ChangeGold(iAmount);\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (change_money)",
+  "old": "\t\tif (!pPC || !ch)\n\t\t\treturn 0;\n\n\t\tif (gold + ch->GetGold() < 0)",
+  "new": "\t\tif (!pPC || !ch)\n\t\t\treturn 0;\n\n\t\t// MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (change_money): a payment (gold < 0) is never touched\n\t\tif (gold > 0 && !mt2009_quest_rewards::OnGold(ch, gold))\n\t\t\treturn 0;\n\n\t\tif (gold + ch->GetGold() < 0)"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_exp2)",
+  "old": "\t\tDWORD exp = (DWORD)rint(lua_tonumber(L,1));\n",
+  "new": "\t\tDWORD exp = (DWORD)rint(lua_tonumber(L,1));\n\t\tif (!mt2009_quest_rewards::OnExp(ch, exp)) // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_exp2)\n\t\t\treturn 0;\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_exp)",
+  "old": "\t\tDWORD exp = (DWORD)rint(lua_tonumber(L,2));\n",
+  "new": "\t\tDWORD exp = (DWORD)rint(lua_tonumber(L,2));\n\t\tif (!mt2009_quest_rewards::OnExp(ch, exp)) // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_exp)\n\t\t\treturn 0;\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_exp_perc)",
+  "old": "\t\tDWORD exp = (DWORD)((exp_table[MINMAX(0, lev, PLAYER_MAX_LEVEL_CONST)] * proc) / 100);\n",
+  "new": "\t\tDWORD exp = (DWORD)((exp_table[MINMAX(0, lev, PLAYER_MAX_LEVEL_CONST)] * proc) / 100);\n\t\tif (!mt2009_quest_rewards::OnExp(ch, exp)) // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (give_exp_perc)\n\t\t\treturn 0;\n"
+ },
+ {
+  "file": "questlua_affect.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (affect include)",
+  "old": "#include \"db.h\"\n",
+  "new": "#include \"db.h\"\n#include \"playerbot_quest_rewards.h\" // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (affect include): the Seban panel's quest reward rules\n"
+ },
+ {
+  "file": "questlua_affect.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (add_collect)",
+  "old": "\t\tlong value = (long) lua_tonumber(L, 2);\n\n\t\tCAffect* pkAff = ch->FindAffect(AFFECT_COLLECT, point_type);",
+  "new": "\t\tlong value = (long) lua_tonumber(L, 2);\n\n\t\t// MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (add_collect): the panel's rule for this permanent bonus of this\n\t\t// quest (the Biologist's): another POINT type and value, or none.\n\t\tif (!mt2009_quest_rewards::OnBonus(ch, point_type, value))\n\t\t\treturn 0;\n\n\t\tCAffect* pkAff = ch->FindAffect(AFFECT_COLLECT, point_type);"
+ },
+ {
+  "file": "questlua_quest.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (quest include)",
+  "old": "#include \"char.h\"\n",
+  "new": "#include \"char.h\"\n#include \"playerbot_quest_rewards.h\" // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (quest include): the Seban panel's quest reward rules\n"
+ },
+ {
+  "file": "questlua_quest.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (set_state)",
+  "old": "\t\t\tpPC->SetCurrentQuestStateName(stCurrentState );\n",
+  "new": "\t\t\tpPC->SetCurrentQuestStateName(stCurrentState );\n\t\t\tmt2009_quest_rewards::OnState(ch, pPC->GetCurrentQuestName(), stCurrentState); // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (set_state): extras at a state\n"
+ },
+ {
+  "file": "questlua_global.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (global include)",
+  "old": "#include \"db.h\"\n",
+  "new": "#include \"db.h\"\n#include \"playerbot_quest_rewards.h\" // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (global include): the Seban panel's quest reward rules\n"
+ },
+ {
+  "file": "questlua_global.cpp",
+  "marker": "MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (set_quest_state)",
+  "old": "\t\t\t\tpPC->SetCurrentQuestStateName(lua_tostring(L,-1));\n",
+  "new": "\t\t\t\tpPC->SetCurrentQuestStateName(lua_tostring(L,-1));\n\t\t\t\tmt2009_quest_rewards::OnState(ch, pPC->GetCurrentQuestName(), stStateName); // MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 (set_quest_state): extras at a state\n"
+ }
+]

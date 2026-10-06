@@ -896,6 +896,23 @@ if ((Test-Path -LiteralPath $monsterCardApply -PathType Leaf) -and
     }
 }
 
+# The quest reward overrides (server-patches/questrewards,
+# MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1): the Seban panel's "Questy" rules -
+# another item, count, yang, experience or Biologist bonus, and extra rewards -
+# through one call of playerbot_quest_rewards.h (overlay) in each of the quests'
+# reward functions (questlua_pc.cpp, questlua_affect.cpp) and at set_state
+# (questlua_quest.cpp, questlua_global.cpp). After clearmissions, whose include
+# line in questlua_pc.cpp it sits near.
+$questRewardsApply = Join-Path $repo 'server-patches/questrewards/Apply-QuestRewardsPatch.ps1'
+if ((Test-Path -LiteralPath $questRewardsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'questlua_quest.cpp') -PathType Leaf)) {
+    $questRewardsResult = & $questRewardsApply -SourceDir $engineGameSource
+    if ($questRewardsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} quest reward override edit(s).' -f $questRewardsResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
 # 4 to the chest pool in two compact arrays.  Remove the family from both

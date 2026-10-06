@@ -1,0 +1,257 @@
+#!/bin/sh
+# =============================================================================
+#  m2-quests -- the quests as the Seban panel's "Questy" page (database
+#  editor, dbeditor/quests.py) saved them (MT2009_PLUS_DB_EDITOR_QUESTS_V1):
+#  which quests are switched off, and the rules for the quests' rewards
+#  (MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1, playerbot_quest_rewards.h).
+#
+#  The quests are compiled into the image (quest/object: one state table per
+#  quest in object/state, its event handlers in object/<npc>/<event>/
+#  <quest>.<state>...) and every core reads them while it boots. The panel
+#  writes one plain-text file into the spool volume both containers share:
+#      $SPOOL/quests/quests.custom.txt
+#          off    <quest>
+#          item   <quest> <vnum> <new vnum|0> <count|0>
+#          gold   <quest> <amount|*> mul|set <value>
+#          exp    <quest> <amount|*> mul|set <value>
+#          bonus  <quest> <point> <value|*> <new point|0> <new value>
+#          extra  <quest> <anchor> item|gold|exp|bonus <a> <b>
+#  (tab separated, "#" lines are comments) and before the cores boot
+#  (m2-supervise, boot_cores) `apply':
+#    * switches a quest off the way the Dockerfile switched off the Kingdom
+#      War or the monkey curse: its event handlers leave quest/object (they
+#      go to quest/object.off, inside this container, and come back when the
+#      quest is switched on again or the container is made anew); its state
+#      table stays, so the flags characters carry and set_quest_state() from
+#      another quest keep working. web_admin, gm_profile, usun_misje and cmd
+#      (the panels' and the GM commands' quests) are never switched off;
+#    * writes the reward rules into quest/reward_overrides.txt, which every
+#      core reads at its first reward;
+#    * gives the panel what it shows (quests/catalog.txt: every compiled quest,
+#      on/off and its source; quests/src/<quest>.quest: the source; and
+#      quests/translate.lua: the quest texts), and how it went:
+#      quests/status (state, time, sha, disabled, rules, message).
+#  A file that fails the check is not used at all: every quest on, no rules,
+#  and the status says why.
+#
+#  Subcommands
+#      prepare   as root, at container start: the folders the service account
+#                moves handlers in, the rule file, the spool folder
+#      apply     the above (run by m2-supervise before a boot)
+# =============================================================================
+set -u
+LC_ALL=C
+export LC_ALL
+
+SHARE_DIR="${M2_SHARE_DIR:-/opt/metin2/share}"
+VAR_DIR="${M2_VAR_DIR:-/opt/metin2/var}"
+LOCALE_DIR="$SHARE_DIR/locale/${M2_LOCALE_NAME:-poland}"
+SPOOL="${M2_RATES_SPOOL:-/opt/m2spool}/quests"
+
+Q="$LOCALE_DIR/quest"
+O="$Q/object"
+OFF="$Q/object.off"
+RULES="$Q/reward_overrides.txt"
+CUSTOM="$SPOOL/quests.custom.txt"
+STATUS="$SPOOL/status"
+WORK="$VAR_DIR/quests"
+MAX_BYTES=262144
+PROTECTED=" web_admin gm_profile usun_misje cmd "
+
+say() { printf '%s [quests] %s\n' "$(date -u '+%Y-%m-%d %H:%M:%SZ')" "$1"; }
+
+write_status() { # write_status STATE SHA DISABLED RULES MESSAGE
+    [ -d "$SPOOL" ] || return 0
+    _tmp="$STATUS.new.$$"
+    { printf 'state=%s\n' "$1"
+      printf 'time=%s\n' "$(date +%s 2>/dev/null)"
+      printf 'sha=%s\n' "$2"
+      printf 'disabled=%s\n' "$3"
+      printf 'rules=%s\n' "$4"
+      printf 'message=%s\n' "$5"
+    } > "$_tmp" 2>/dev/null || { rm -f "$_tmp"; return 1; }
+    chmod 0664 "$_tmp" 2>/dev/null
+    mv -f "$_tmp" "$STATUS" 2>/dev/null || rm -f "$_tmp"
+    return 0
+}
+
+publish() { # publish SOURCE NAME -- a read-only copy for the panel
+    [ -d "$SPOOL" ] && [ -f "$1" ] || return 0
+    cmp -s "$1" "$SPOOL/$2" && return 0
+    cp "$1" "$SPOOL/$2.new.$$" 2>/dev/null && chmod 0664 "$SPOOL/$2.new.$$" 2>/dev/null \
+        && mv -f "$SPOOL/$2.new.$$" "$SPOOL/$2" 2>/dev/null || rm -f "$SPOOL/$2.new.$$"
+}
+
+# the quests' sources: "<quest><TAB><path>", ours (quest/*.quest, compiled by
+# the Dockerfile) first, then the package's pre-compiled pre_qc, then quest/quest
+sources() {
+    { find "$Q" -maxdepth 1 -type f -name '*.quest'
+      [ -d "$Q/pre_qc" ] && find "$Q/pre_qc" -type f \( -name '*.quest' -o -name '*.lua' \)
+      [ -d "$Q/quest" ] && find "$Q/quest" -path "$Q/quest/_unused" -prune -o -type f \( -name '*.quest' -o -name '*.lua' \) -print
+    } 2>/dev/null | tr '\n' '\0' | xargs -0 awk '
+        FNR == 1 { got = 0 }
+        !got && /^[ \t]*quest[ \t]+[A-Za-z0-9_]+[ \t]+begin/ {
+            n = $0; sub(/^[ \t]*quest[ \t]+/, "", n); sub(/[ \t].*/, "", n)
+            print n "\t" FILENAME; got = 1 }' 2>/dev/null | awk -F'\t' '!seen[$1]++'
+}
+
+publish_catalog() { # publish_catalog DISABLED_LIST
+    [ -d "$SPOOL" ] && [ -d "$O/state" ] || return 0
+    mkdir -p "$SPOOL/src" 2>/dev/null
+    sources > "$WORK/sources" 2>/dev/null
+    _cat="$SPOOL/catalog.txt.new.$$"
+    : > "$_cat" || return 0
+    for _f in "$O/state"/*; do
+        [ -f "$_f" ] || continue
+        _q=${_f##*/}
+        case "$_q" in *[!A-Za-z0-9_]*|'') continue ;; esac
+        _on=on
+        case " $1 " in *" $_q "*) _on=off ;; esac
+        _src=$(awk -F'\t' -v q="$_q" '$1 == q { print $2; exit }' "$WORK/sources")
+        _rel=-
+        if [ -n "$_src" ]; then
+            _rel=${_src#"$Q"/}
+            publish "$_src" "src/$_q.quest"
+        fi
+        printf '%s\t%s\t%s\n' "$_q" "$_on" "$_rel" >> "$_cat"
+    done
+    for _f in "$SPOOL/src"/*.quest; do
+        [ -f "$_f" ] || continue
+        _q=${_f##*/}; _q=${_q%.quest}
+        [ -f "$O/state/$_q" ] || rm -f "$_f"
+    done
+    chmod 0664 "$_cat" 2>/dev/null
+    mv -f "$_cat" "$SPOOL/catalog.txt" 2>/dev/null || rm -f "$_cat"
+    publish "$LOCALE_DIR/translate.lua" translate.lua
+}
+
+# move_handlers QUEST FROM TO -- every file <QUEST>.* under FROM (but state/)
+# to the same place under TO; prints how many
+move_handlers() {
+    _n=0
+    _list="$WORK/move.$$"
+    find "$2" -path "$2/state" -prune -o -type f -name "$1.*" -print > "$_list" 2>/dev/null
+    while IFS= read -r _f; do
+        _rel=${_f#"$2"/}
+        mkdir -p "$3/${_rel%/*}" 2>/dev/null
+        mv -f "$_f" "$3/$_rel" 2>/dev/null && _n=$((_n + 1))
+    done < "$_list"
+    rm -f "$_list"
+    echo "$_n"
+}
+
+cmd_prepare() {
+    [ -d "$O" ] || { say "no $O -- nothing to prepare"; return 0; }
+    mkdir -p "$OFF" "$WORK" 2>/dev/null
+    # the service account moves handlers in and out: the folders, not the files
+    find "$O" "$OFF" -type d -exec chown metin2:metin2 {} + 2>/dev/null
+    chown metin2:metin2 "$WORK" 2>/dev/null
+    [ -f "$RULES" ] || : > "$RULES"
+    chown metin2:metin2 "$RULES" 2>/dev/null
+    chmod 0644 "$RULES" 2>/dev/null
+    if mkdir -p "$SPOOL" 2>/dev/null; then
+        chgrp m2spool "$SPOOL" 2>/dev/null && chmod 2770 "$SPOOL" 2>/dev/null
+        chgrp -R m2spool "$SPOOL"/* 2>/dev/null
+        chmod -R g+rw "$SPOOL"/* 2>/dev/null
+    fi
+    return 0
+}
+
+# check FILE -- "O <quest>" for an off line, "R <line>" for a rule, "E <why>"
+check() {
+    tr -d '\r' < "$1" | awk -F'\t' '
+    function name(q) { return q ~ /^[A-Za-z0-9_]+$/ && length(q) <= 64 }
+    function whole(v) { return v ~ /^[0-9]+$/ && length(v) <= 10 }
+    function sint(v) { return v ~ /^-?[0-9]+$/ && length(v) <= 11 }
+    /^[ \t]*(#|$)/ { next }
+    !name($2) { print "E line " NR ": bad quest name"; exit }
+    $1 == "off" { print "O " $2; next }
+    $1 == "item" && NF >= 5 && whole($3) && whole($4) && whole($5) { print "R " $0; next }
+    ($1 == "gold" || $1 == "exp") && NF >= 5 && (whole($3) || $3 == "*") && ($4 == "mul" || $4 == "set") \
+        && $5 ~ /^[0-9]+(\.[0-9]+)?$/ && length($5) <= 14 { print "R " $0; next }
+    $1 == "bonus" && NF >= 6 && whole($3) && (sint($4) || $4 == "*") && whole($5) && sint($6) { print "R " $0; next }
+    $1 == "extra" && NF >= 6 && $3 ~ /^(item:[0-9]+|bonus:[0-9]+:-?[0-9]+|gold:\*|exp:\*|state:[A-Za-z0-9_]+)$/ \
+        && ($4 == "item" || $4 == "gold" || $4 == "exp" || $4 == "bonus") && sint($5) && sint($6) { print "R " $0; next }
+    { print "E line " NR ": not understood (" $1 ")"; exit }'
+}
+
+cmd_apply() {
+    [ -d "$O/state" ] || { say "no $O/state -- quests left as the image has them"; return 0; }
+    mkdir -p "$WORK" 2>/dev/null
+    _sha=""
+    _why=""
+    : > "$WORK/check"
+    if [ -s "$CUSTOM" ]; then
+        _sha=$(sha256sum "$CUSTOM" | cut -d' ' -f1)
+        _size=$(wc -c < "$CUSTOM" | tr -d ' ')
+        if [ "$_size" -gt "$MAX_BYTES" ]; then
+            _why="the file is larger than $MAX_BYTES bytes"
+        else
+            check "$CUSTOM" > "$WORK/check"
+            _why=$(sed -n 's/^E //p' "$WORK/check" | head -1)
+        fi
+        [ -n "$_why" ] && : > "$WORK/check"
+    fi
+
+    # the quests to switch off: known, not protected
+    _off=""
+    _skipped=""
+    for _q in $(sed -n 's/^O //p' "$WORK/check" | sort -u); do
+        case "$PROTECTED" in *" $_q "*) _skipped="$_skipped $_q"; continue ;; esac
+        [ -f "$O/state/$_q" ] || { _skipped="$_skipped $_q"; continue; }
+        _off="$_off $_q"
+    done
+
+    # back on: what object.off holds of a quest that is not off any more
+    _back=0
+    if [ -d "$OFF" ]; then
+        for _q in $(find "$OFF" -type f 2>/dev/null | sed 's|.*/||; s|\..*||' | sort -u); do
+            case " $_off " in *" $_q "*) continue ;; esac
+            _m=$(move_handlers "$_q" "$OFF" "$O")
+            _back=$((_back + _m))
+            say "quest $_q switched on again ($_m handlers back)"
+        done
+    fi
+    _moved=0
+    _count=0
+    for _q in $_off; do
+        mkdir -p "$OFF" 2>/dev/null
+        _m=$(move_handlers "$_q" "$O" "$OFF")
+        _moved=$((_moved + _m))
+        _count=$((_count + 1))
+        [ "$_m" -gt 0 ] && say "quest $_q switched off ($_m handlers out)"
+    done
+
+    # the reward rules for the cores
+    _rules=$(grep -c '^R ' "$WORK/check" 2>/dev/null)
+    _rules=${_rules:-0}
+    { printf '# MT2009_PLUS_QUEST_REWARD_OVERRIDES_V1 - written by m2-quests from the Seban panel (quests/quests.custom.txt)\n'
+      sed -n 's/^R //p' "$WORK/check"
+    } > "$WORK/rules.new"
+    if ! cmp -s "$WORK/rules.new" "$RULES" 2>/dev/null; then
+        cat "$WORK/rules.new" > "$RULES" 2>/dev/null || say "could not write $RULES -- the cores keep the last rules"
+    fi
+
+    publish_catalog "$_off"
+
+    if [ -n "$_why" ]; then
+        say "the panel's quest file was NOT used: $_why"
+        write_status rejected "$_sha" 0 0 "$_why"
+        return 0
+    fi
+    if [ -z "$_sha" ]; then
+        write_status base "" 0 0 "no change in the panel -- every quest as the image has it"
+        return 0
+    fi
+    _msg="applied: $_count quest(s) off ($_moved handlers out, $_back back), $_rules reward rule(s)"
+    [ -n "$_skipped" ] && _msg="$_msg; not switched off (protected or unknown):$_skipped"
+    say "$_msg"
+    write_status ok "$_sha" "$_count" "$_rules" "$_msg"
+    return 0
+}
+
+case "${1:-}" in
+    prepare) cmd_prepare ;;
+    apply)   cmd_apply ;;
+    *) echo "usage: m2-quests prepare|apply"; exit 1 ;;
+esac

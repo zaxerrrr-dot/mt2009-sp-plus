@@ -203,6 +203,11 @@ log "boot plan: ${CORE_ORDER[*]}"
 boot_cores() {
   local name rc=0
 
+  # MT2009_PLUS_DB_EDITOR_QUESTS_V1: the quests the Seban panel's "Questy" switched
+  # off and its rules for their rewards (m2-quests), before any core loads a quest.
+  if [ "${HAVE_QUESTS:-0}" = "1" ]; then
+    m2-quests apply || log "the panel's quest settings could not be applied -- the image's quests stay"
+  fi
   # MT2009_PLUS_CHEST_EDITOR_V1: the chests as the Seban panel saved them
   # (m2-chests), put into special_item_group.txt before any core reads it -
   # on the first boot and on every restart the panel asks for.
@@ -286,6 +291,11 @@ command -v m2-gm >/dev/null 2>&1 && HAVE_GM=1
 # only read them while they boot.
 HAVE_LANG=0
 command -v m2-lang >/dev/null 2>&1 && HAVE_LANG=1
+
+# MT2009_PLUS_DB_EDITOR_QUESTS_V1: quests on/off and their rewards, from the
+# database editor's "Questy" page (m2-quests; boot_cores calls it). Absent on older images.
+HAVE_QUESTS=0
+command -v m2-quests >/dev/null 2>&1 && HAVE_QUESTS=1
 
 # MT2009_PLUS_CHEST_EDITOR_V1: what the chests hold, from the Seban panel's
 # "Szkatułki" page (m2-chests; boot_cores calls it). Absent on older images.
