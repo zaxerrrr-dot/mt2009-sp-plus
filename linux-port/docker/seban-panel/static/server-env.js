@@ -279,6 +279,8 @@
         }
         dialog.close();
         showStatus(res.status || {state: 'queued', message: 'Zlecenie zapisane.'});
+        // the status box is at the top of a long page: bring it into view (the owner: "nic się nie dzieje")
+        $('env-status').scrollIntoView({behavior: 'smooth', block: 'start'});
         startPolling();
       })
       .catch(() => {

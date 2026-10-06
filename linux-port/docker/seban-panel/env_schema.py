@@ -52,7 +52,9 @@ SECTIONS = [
      "desc": "Hasła i dostęp do paneli, nazwa serwera, rejestracja, adresy między panelami."},
     {"id": "klient", "label": "Klient gry", "icon": "💾",
      "desc": "Klient do pobrania: nazwa, adres wpisany w klienta, paczka źródłowa."},
-    {"id": "przegladarka", "label": "Gra w przeglądarce", "icon": "🕸",
+    # Hidden from the page (the owner, 6 October: "Całą sekcję gra w przeglądarce usuń"); its keys
+    # stay described for the schema test and are never written from the panel.
+    {"id": "przegladarka", "label": "Gra w przeglądarce", "icon": "🕸", "hidden": True,
      "desc": "Eksperymentalny mostek WebSocket do gry przez przeglądarkę."},
     {"id": "baza", "label": "Baza danych", "icon": "🗄",
      "desc": "Hasła i użytkownik bazy, port dla narzędzi typu HeidiSQL, zabezpieczenia startu."},

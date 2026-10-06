@@ -94,3 +94,6 @@ body.env-bar-open main{padding-bottom:120px}
   .env-savebar{bottom:8px;left:8px;right:8px;padding:10px}.env-savebar-actions{width:100%}.env-savebar-actions .env-btn{flex:1}
   .env-diff thead{display:none}.env-diff tr{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--edge)}.env-diff td{border:0}.env-diff td:first-child{grid-column:1/-1;padding-bottom:0}
 }
+
+/* an element of this page with [hidden] stays hidden whatever its display (the "ryzykowne" box showed on every save) */
+[hidden]{display:none!important}

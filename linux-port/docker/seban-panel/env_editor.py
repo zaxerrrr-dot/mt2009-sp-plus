@@ -23,6 +23,7 @@ WATCHER_MAX_AGE = 90
 QUEUED_STALE_SECONDS = 15 * 60
 RUNNING_STALE_SECONDS = 40 * 60
 DANGER_WORD = "ZMIENIAM"
+HIDDEN_SECTIONS = {section["id"] for section in env_schema.SECTIONS if section.get("hidden")}
 BUSY_STATES = ("queued", "running")
 
 
@@ -102,6 +103,9 @@ def validate_changes(changes, current, confirm_word):
             errors[key] = reason
             continue
         entry = env_schema.BY_KEY[key]
+        if entry["section"] in HIDDEN_SECTIONS:
+            errors[key] = "to ustawienie nie jest zmieniane z panelu"
+            continue
         if not entry.get("secret") and current.get("values", {}).get(key) == value:
             continue
         clean[key] = value
@@ -149,6 +153,8 @@ def install(app, login_required, csrf_token, spool_getter):
         current = state["current"]
         sections = []
         for section in env_schema.SECTIONS:
+            if section.get("hidden"):
+                continue
             fields = [entry for entry in env_schema.SCHEMA if entry["section"] == section["id"]]
             sections.append(dict(section, fields=fields))
         return render_template("server_env.html", state=state, sections=sections, current=current,

@@ -70,8 +70,12 @@ class EnvEditorRoutes(unittest.TestCase):
         self.ready()
         html = self.client.get("/advanced/server-env").get_data(as_text=True)
         import env_schema
+        hidden = {section["id"] for section in env_schema.SECTIONS if section.get("hidden")}
         for entry in env_schema.SCHEMA:
-            self.assertIn('id="env-%s"' % entry["key"], html)
+            if entry["section"] in hidden:
+                self.assertNotIn('id="env-%s"' % entry["key"], html)   # Gra w przeglądarce: off the page
+            else:
+                self.assertIn('id="env-%s"' % entry["key"], html)
         self.assertNotIn("Tryb tylko do odczytu", html)
         self.assertIn("nadpisane w override", html)
         self.assertIn("● ustawione", html)
