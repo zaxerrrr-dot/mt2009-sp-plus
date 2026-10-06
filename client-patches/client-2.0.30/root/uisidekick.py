@@ -332,10 +332,28 @@ ORDERS = (
 	('Czekaj tu', 'czekaj'),
 	('Wolna r\xeaka', 'wolny'),
 	('Na zakupy', 'zakupy'),
+	# MT2009_PLUS_SIDEKICK_SELL_BUTTON_V1: "Sprzedaj z\xb3om" - the town trip of
+	# "Na zakupy" that only sells the scrap (playerbot_sidekick.h, "sprzedaj");
+	# an older server answers an unknown order.
+	('Sprzedaj z\xb3om', 'sprzedaj'),
 	# "Na ryby": with the Fishing Card it carries, at the water until the
 	# card runs out ("Przywolaj" calls it back sooner).
 	('Na ryby', 'ryby'),
-	('Raport', 'stan'),
+)
+# MT2009_PLUS_SIDEKICK_SELL_BUTTON_V1: where the orders stand - the first row
+# three middle buttons, the second the errands with the long "Sprzedaj z\xb3om"
+# on a large one between them, both rows inside the section bar (12..235).
+ORDER_LAYOUT = (
+	('middle', 23, 108), ('middle', 94, 108), ('middle', 165, 108),
+	('middle', 12, 132), ('large', 79, 132), ('middle', 174, 132),
+)
+TEXT_REPORT = 'Raport'
+ORDER_REPORT = 'stan'
+TEXT_SELL_HINT = (
+	'Sprzedaj z\xb3om',
+	'Towarzysz idzie do miasta i sprzedaje sam z\xb3om',
+	'(zwyk\xb3y sprz\xeat bez bonus\xf3w poni\xbfej +4, ryby,',
+	'zapasowe narz\xeadzia). Niczego nie kupuje.',
 )
 TEXT_DISMISS = 'Odpraw'
 # MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: "Kup..." sends the companion for one kind
@@ -1049,11 +1067,12 @@ class SidekickWindow(ui.ScriptWindow):
 		self.goldLine = self._Label(page, LINE_X, 70, '')
 		self._Section(page, 88, TEXT_SECTION_ORDERS)
 		self.orderButtons = []
-		for i, (text, order) in enumerate(ORDERS):
-			x = ORDER_COLUMNS[i % 3]
-			y = 108 + (i // 3) * 24
-			self.orderButtons.append(self._Btn(page, 'middle', x, y, text, self.OnOrder, order))
+		for (text, order), (size, x, y) in zip(ORDERS, ORDER_LAYOUT):
+			self.orderButtons.append(self._Btn(page, size, x, y, text, self.OnOrder, order))
 		(self.summonButton, self.holdButton, self.freeButton) = self.orderButtons[:3]
+		self.sellButton = self.orderButtons[4]
+		self.sellButton.ShowToolTip = _Call(ui.__mem_func__(self.ShowToolTipLines), TEXT_SELL_HINT)
+		self.sellButton.HideToolTip = ui.__mem_func__(self.HideToolTip)
 		self._Section(page, 158, TEXT_SECTION_COMBAT)
 		self.stanceButtons = []
 		for i, text in enumerate(STANCES):
@@ -1063,11 +1082,14 @@ class SidekickWindow(ui.ScriptWindow):
 		self.lootButtons = []
 		for i, text in enumerate(LOOTS):
 			self.lootButtons.append(self._Btn(page, 'middle', ORDER_COLUMNS[i], 239, text, self.OnLoot, i))
-		# Six orders fill both rows: the bag, "Kup..." and "Odpraw" stand under
-		# them (MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1).
-		self.inventoryButton = self._Btn(page, 'middle', ORDER_COLUMNS[0], 266, TEXT_INVENTORY, self.OnInventory)
-		self.shopButton = self._Btn(page, 'middle', ORDER_COLUMNS[1], 266, TEXT_SHOP, self.OnShop)
-		self.dismissButton = self._Btn(page, 'middle', ORDER_COLUMNS[2], 266, TEXT_DISMISS, self.OnDismiss)
+		# Six orders fill both rows: the bag, "Kup...", "Raport" and "Odpraw"
+		# stand under them (MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1; "Raport" moved
+		# here for "Sprzedaj z\xb3om", MT2009_PLUS_SIDEKICK_SELL_BUTTON_V1), the
+		# row as wide as the section bar: 61 + 43 + 43 + 61 and 5 between.
+		self.inventoryButton = self._Btn(page, 'middle', 12, 266, TEXT_INVENTORY, self.OnInventory)
+		self.shopButton = self._Btn(page, 'small', 78, 266, TEXT_SHOP, self.OnShop)
+		self.reportButton = self._Btn(page, 'small', 126, 266, TEXT_REPORT, self.OnOrder, ORDER_REPORT)
+		self.dismissButton = self._Btn(page, 'middle', 174, 266, TEXT_DISMISS, self.OnDismiss)
 		self.inventoryButton.ShowToolTip = ui.__mem_func__(self.OnOverBag)
 		self.inventoryButton.HideToolTip = ui.__mem_func__(self.HideToolTip)
 		self.ordersStatus = StatusLines([self._CenteredLabel(page, 291)], PAGE_WIDTH - 20)
