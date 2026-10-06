@@ -175,7 +175,7 @@ tabeli „shining” (vnum → plik `.mse`), a nasz exe jej nie miał. Teraz exe
 `gamedata/shiningtable.txt` (`vnum<TAB>"efekt.mse"[<TAB>"efekt.mse"...]`, `#` – komentarz; format Arezzo)
 i dokłada efekty, gdy postać nosi przedmiot o tym vnumie: broń / nakładka na broń – na kość broni (sztylety
 na obie ręce), zbroja / kostium – na `Bip01`. Bez pakietów i bez Pythona; bez pliku nic się nie zmienia.
-Dane: `client-patches/client-2.0.30/tools/azcostume` (96 wierszy dla zestawów Arezzo; V2: 20 zestawów).
+Dane: `client-patches/client-2.0.30/tools/azcostume` (112 wierszy dla 22 zestawów Arezzo).
 
 | Plik | Zmiana |
 |---|---|

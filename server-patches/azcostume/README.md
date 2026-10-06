@@ -47,3 +47,17 @@ Wszystko generuje `client-patches/client-2.0.30/tools/azcostume/gen_azcostume_se
   (`playerbot_itemshop.h` – katalog bez nich, przebudowany od razu po przełączeniu), sklep WWW
   (`itemshop/arezzo_costumes.php`: lista, kategoria, szczegóły, zakup). Wiersze `item_proto` zostają – to, co
   gracz już ma, działa dalej.
+
+## V3 (6 października 2026)
+
+* Brak efektów (szare kwadraty) to był błąd narzędzia (`build_azcostume.py`, tekstury efektów nazwane w `.mse`
+  względnie, np. `smoke\smoke_1_01.dds`, traciły podfolder) – poprawione, efekty wszystkich zestawów działają.
+* Dlatego zestawy **Ognistego Rycerza** i **Krwawej Zemsty** wracają (te same vnumy co w V1: 42930/42931,
+  45930/45931, 40960–40965, 85205; 42946/42947, 45946/45947, 40840–40845, 85213) – znowu 22 zestawy, 235 przedmiotów.
+  Czyszczenie z V2 (DELETE przy każdym starcie, `ishop_once arezzo_costume_sets_v2`, jednorazowe `azcostume_removed_v2`)
+  usunięte; świat, który przeszedł V2, dostaje ich linie ItemShopu z powrotem (`ishop_once arezzo_costume_sets_v3`, te
+  same indeksy co w V1), wiersze `item_proto` i oferty WWW wracają same (INSERT IGNORE / NOT EXISTS). Bramka modułu
+  Arezzo z V2 zostaje.
+* Brakuje (także w paczkach Arezzo) `d:/ymir work/effect/plechito/weapons/christmas2023_4/costume_trail.mde`, na który
+  wskazuje poświata kostiumu Ognistego (i Mroźnego) Rycerza – ta jedna smuga się nie pokaże, reszta efektu tak.
+

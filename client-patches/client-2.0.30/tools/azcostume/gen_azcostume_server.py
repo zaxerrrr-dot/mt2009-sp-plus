@@ -12,8 +12,8 @@
 #   client-patches/client-2.0.30/root/costume_sets.py            the tooltip's copy of the sets
 #   linux-port/docker/itemshop/app/itemshop/img/item/<vnum>.png  the web shop's icons (from the
 #                                                                client icons, TGA / PNG -> PNG)
-#   MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the removed sets' clean-up in the apply.sh block (their icons
-#   deleted here) and the gate on the Arezzo module (flag mt2009_arezzo_closed):
+#   MT2009_PLUS_AREZZO_COSTUME_SETS_V2/V3: removed sets' icons deleted here (none since V3 - both sets
+#   are back, V3 gives the ItemShop their lines again) and the gate on the Arezzo module (flag mt2009_arezzo_closed):
 #   linux-port/overlays/playerbot/src/game/src/playerbot_arezzo_costumes.h  the vnums for the engine's
 #                                                                ItemShop and the bots' catalogue
 #   linux-port/docker/itemshop/app/itemshop/arezzo_costumes.php  the same for the web shop
@@ -30,6 +30,7 @@ import azcostume_sets as A  # noqa: E402
 
 MARK = 'MT2009_PLUS_AREZZO_COSTUME_SETS_V1'
 MARK2 = 'MT2009_PLUS_AREZZO_COSTUME_SETS_V2'
+MARK3 = 'MT2009_PLUS_AREZZO_COSTUME_SETS_V3'
 ISHOP_BASE = {'HairData': 10600, 'ShapeData': 20600, 'Weapon': 30600, 'SashSkin': 30800}
 WEB_CATEGORY = {'HairData': 5, 'ShapeData': 6, 'Weapon': 7, 'SashSkin': 7}
 CLASS_WEB = {0: u'Wojownik, Ninja, Sura', 1: u'Ninja', 2: u'Ninja', 3: u'Wojownik', 4: u'Szaman', 5: u'Szaman'}
@@ -156,40 +157,28 @@ def apply_block(items):
             u'if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (%d, %d);" 2>/dev/null || echo x)" = "2" ]; then\n'
             u'ishop_once arezzo_costume_sets "INSERT IGNORE INTO common.itemshop_items (\\`index\\`, vnum, count, price, currency, minLevel) VALUES\n'
             u'%s;" "could not add the Arezzo costume sets to the ItemShop"\n'
+            u'%s'
             u'fi\n'
             u'if [ -s /opt/playerbot/arezzo_costumes_webshop.sql ]; then\n'
             u'    db < /opt/playerbot/arezzo_costumes_webshop.sql 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the Arezzo costume sets" >&2\n'
             u'fi\n'
-            u'%s'
-            u'# <<< %s\n') % (MARK, MARK2, items[0]['vnum'], items[-1]['vnum'], u',\n'.join(rows), removed_block(), MARK)
+            u'# <<< %s\n') % (MARK, MARK2, items[0]['vnum'], items[-1]['vnum'], u',\n'.join(rows), restored_block(items), MARK)
 
 
-def removed_block():
-    """MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the sets taken out again (azcostume_sets.REMOVED_SETS) - gone from
-    every place V1 put them, idempotent: the item rows (every start, cheap), the in-game ItemShop lines
-    (ishop_once), the web shop's offers and, once, what players hold (their items, unopened ItemShop
-    deliveries, and a removed sash skin on a sash - the sash keeps its own look)."""
-    vn = A.removed_vnums()
-    lst = u', '.join(str(v) for v in vn)
-    skins = u', '.join(str(v) for v in vn if 85200 <= v <= 85299)
-    return (u'# %s: the sets Ognisty Rycerz and Krwawa Zemsta are gone again (owner, 6 October: no\n'
-            u'# effects on their costumes, swords and sashes) - %d items, removed everywhere V1 put them.\n'
-            u'db -e "DELETE FROM world.item_proto WHERE vnum IN (%s);" || fail_step "could not remove the dropped Arezzo costume sets\' items" >&2\n'
-            u'ishop_once arezzo_costume_sets_v2 "DELETE FROM common.itemshop_items WHERE vnum IN (%s);" "could not remove the dropped Arezzo costume sets from the ItemShop"\n'
-            u'db -e "DELETE FROM itemshop.ishop_items WHERE vnum IN (%s);" 2>/dev/null || true\n'
-            u'az_rm_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = \'azcostume_removed_v2\';" 2>/dev/null || echo x)\n'
-            u'if [ "$az_rm_done" = "0" ]; then\n'
-            u'    az_rm_items=$(db -e "SELECT COUNT(*) FROM player.item WHERE vnum IN (%s);" 2>/dev/null || echo "?")\n'
-            u'    az_rm_skins=$(db -e "SELECT COUNT(*) FROM player.item i JOIN world.item_proto p ON p.vnum = i.vnum WHERE p.type = 28 AND p.subtype = 3 AND i.socket2 IN (%s);" 2>/dev/null || echo "?")\n'
-            u'    if db -e "DELETE FROM player.item WHERE vnum IN (%s);\n'
-            u'        UPDATE player.item i JOIN world.item_proto p ON p.vnum = i.vnum SET i.socket2 = 0 WHERE p.type = 28 AND p.subtype = 3 AND i.socket2 IN (%s);\n'
-            u'        INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES (\'azcostume_removed_v2\', NOW());"; then\n'
-            u'        db -e "DELETE FROM player.item_award WHERE vnum IN (%s);" 2>/dev/null || true\n'
-            u'        echo "[playerbot-migrate] Arezzo costume sets V2: removed $az_rm_items held item(s) of Ognisty Rycerz / Krwawa Zemsta, $az_rm_skins sash skin(s) taken off sashes"\n'
-            u'    else\n'
-            u'        fail_step "could not remove the players\' items of the dropped Arezzo costume sets" >&2\n'
-            u'    fi\n'
-            u'fi\n') % (MARK2, len(vn), lst, lst, lst, lst, skins, lst, skins, lst)
+def restored_block(items):
+    """MT2009_PLUS_AREZZO_COSTUME_SETS_V3: the sets V2 removed and V3 brought back (azcostume_sets.RESTORED_V3)
+    - their in-game ItemShop lines once more, at their V1 indexes, for a world where V2's ishop_once deleted
+    them (INSERT IGNORE: a world that never ran V2 has them from the block above). Nothing deletes them any
+    more: V2's every-start DELETEs and its one-off clean-up of the players' items are gone."""
+    lines = ishop_lines(items)
+    rows = [r for it, r in zip(items, lines) if it['set'] in A.RESTORED_V3]
+    if not rows:
+        return u''
+    return (u'# %s: Ognisty Rycerz and Krwawa Zemsta are back (their effects work now) - their ItemShop\n'
+            u'# lines once more where V2 removed them.\n'
+            u'ishop_once arezzo_costume_sets_v3 "INSERT IGNORE INTO common.itemshop_items (\\`index\\`, vnum, count, price, currency, minLevel) VALUES\n'
+            u'%s;" "could not give the ItemShop back the Arezzo sets Ognisty Rycerz and Krwawa Zemsta"\n') % (
+        MARK3, u',\n'.join(rows))
 
 
 def put_block(path, block, anchor):

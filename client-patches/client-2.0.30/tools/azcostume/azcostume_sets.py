@@ -65,6 +65,7 @@ SETS = (
     ('zlocisty',  u'Zestaw_Zlocisty',            u'Złocisty',          (41924, 41925), (45924, 45925), u'Hełm', 0, 0),
     ('wiking',    u'Zestaw_Wikinga',             u'Wikinga',           (41926, 41927), (45926, 45927), u'Hełm', 40940, 85503),
     ('mroz',      u'Zestaw_Mroznego_Rycerza',    u'Mroź. Rycerza',     (41928, 41929), (45928, 45929), u'Hełm', 40950, 85504),
+    ('ogien',     u'Zestaw_Ognistego_Rycerza',   u'Ognist. Rycerza',   (41930, 41931), (45930, 45931), u'Hełm', 40960, 85505),
     ('aniol',     u'Zestaw_Anielski',            u'Anielski',          (41932, 41933), (45932, 45933), u'Hełm', 40970, 85506),
     ('cien',      u'Zestaw_Cienia',              u'Cienia',            (41934, 41935), (45934, 45935), u'Hełm', 40980, 85507),
     ('ksiezyc',   u'Zestaw_Ksiezycowy',          u'Księżycowy',        (41936, 41937), (45936, 45937), u'Hełm', 40990, 85508),
@@ -72,6 +73,7 @@ SETS = (
     ('lesny',     u'Zestaw_Lesnego_Ksiecia',     u'Leśnego Księcia',   (41940, 41941), (45940, 45941), u'Hełm', 40810, 85510),
     ('plaga',     u'Zestaw_Plagi',               u'Plagi',             (41942, 41943), (45942, 45943), u'Hełm', 40820, 85511),
     ('krollodu',  u'Zestaw_Krola_Lodu',          u'Króla Lodu',        (41944, 41945), (45944, 45945), u'Hełm', 40830, 85512),
+    ('krwawa',    u'Zestaw_Krwawej_Zemsty',      u'Krwawej Zemsty',    (41946, 41947), (45946, 45947), u'Hełm', 40840, 85513),
     ('lato',      u'Zestaw_Letniej_Chwaly',      u'Letniej Chwały',    (41948, 41949), (45948, 45949), u'Hełm', 40850, 85514),
     ('wiatr',     u'Zestaw_Blekitnego_Wiatru',   u'Błk. Wiatru',       (41950, 41951), (45950, 45951), u'Hełm', 40860, 85515),
     ('arktyka',   u'Zestaw_Arktycznego_Krola',   u'Arkt. Króla',       (41952, 41953), (45952, 45953), u'Hełm', 40870, 85516),
@@ -85,10 +87,14 @@ SETS = (
 # ognistego rycerza" - their costumes, weapons and sashes show no effect): two of the 22 sets of V1 are
 # gone. Every other vnum stays; their rows are what REMOVED_SETS gives (gen_azcostume_server.py writes
 # the clean-up: item_proto, both ItemShops, the players' items, the sash skin on a sash).
-REMOVED_SETS = (
-    ('ogien',     u'Zestaw_Ognistego_Rycerza',   u'Ognist. Rycerza',   (41930, 41931), (45930, 45931), u'Hełm', 40960, 85505),
-    ('krwawa',    u'Zestaw_Krwawej_Zemsty',      u'Krwawej Zemsty',    (41946, 41947), (45946, 45947), u'Hełm', 40840, 85513),
-)
+REMOVED_SETS = ()
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V3 (owner, 6 October 2026: "dodaj również w takim razie te dwa sety
+# kostiumów co usunęliśmy ... a jak teraz będą działać to git"): the effects were missing because of the
+# effect textures' sub-folders (build_azcostume.py file_refs, V3), not because of the sets - both are
+# back in SETS with their V1 vnums and ItemShop indexes. A world that ran V2 got them deleted; the
+# apply.sh block gives the in-game ItemShop their lines back once (ishop_once arezzo_costume_sets_v3),
+# the item rows and web offers come back by themselves (INSERT IGNORE / NOT EXISTS at every start).
+RESTORED_V3 = ('ogien', 'krwawa')
 # The V1 order of the sets: the in-game ItemShop's indexes (10600+ / 20600+ / 30600+ / 30800+) were given
 # in it, and a line keeps its index (a removed set leaves a gap; test_dbeditor_itemshop's BOOT_ONCE).
 SETS_V1_ORDER = ('mrok', 'chwala', 'druid', 'zlocisty', 'wiking', 'mroz', 'ogien', 'aniol', 'cien', 'ksiezyc',
