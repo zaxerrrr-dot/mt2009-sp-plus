@@ -816,6 +816,10 @@ namespace
 			// MT2009_PLUS_HORSE30_V1: to thirty.
 			unsigned stage[8] = { 0 };   // 0, 1-9, 10, 11-19, 20, 21-28, 29, 30
 			unsigned bots = 0, medalHolders = 0, canAdvance = 0, canWithMedal = 0, candidates = 0;
+			// MT2009_PLUS_BOT_HORSE_PROGRESS_V2: what a horse that could train
+			// waits for - the goods, or with the goods in the bag only the yang.
+			unsigned shortGoods = 0, shortYang = 0;
+			unsigned long long savingYang = 0;
 			unsigned long long medals = 0, horseSum = 0;
 			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
 					it != s_mapPlayerBotAIStates.end(); ++it)
@@ -836,13 +840,25 @@ namespace
 					++canAdvance;
 				if (can && CanPlayerBotPayHorseTraining(ch)) // MT2009_PLUS_HORSE30_V1
 					++canWithMedal;
+				else if (can)
+				{
+					const long long saving = GetPlayerBotHorseSavingsGold(ch);
+					if (saving > 0)
+					{
+						++shortYang;
+						savingYang += (unsigned long long)saving;
+					}
+					else
+						++shortGoods;
+				}
 				if (IsPlayerBotBattleHorseCandidate(ch))
 					++candidates;
 			}
-			sys_log(0, "PLAYERBOT_HORSE: census bots_25plus=%u avg_horse=%.1f stages(0/1-9/10/11-19/20/21-28/29/30)=%u/%u/%u/%u/%u/%u/%u/%u medals_in_bags=%llu medal_holders=%u can_advance=%u can_pay_training=%u battle_candidates=%u medals_bought=%u",
+			sys_log(0, "PLAYERBOT_HORSE: census bots_25plus=%u avg_horse=%.1f stages(0/1-9/10/11-19/20/21-28/29/30)=%u/%u/%u/%u/%u/%u/%u/%u medals_in_bags=%llu medal_holders=%u can_advance=%u can_pay_training=%u short_goods=%u short_yang=%u saving_yang=%llu battle_candidates=%u medals_bought=%u",
 					bots, bots ? (double)horseSum / bots : 0.0, stage[0], stage[1], stage[2], stage[3], stage[4], stage[5],
 					stage[6], stage[7],
-					medals, medalHolders, canAdvance, canWithMedal, candidates, s_kPlayerBotSaddlebagStats.medalsBought);
+					medals, medalHolders, canAdvance, canWithMedal, shortGoods, shortYang, savingYang,
+					candidates, s_kPlayerBotSaddlebagStats.medalsBought);
 		}
 		char dist[96] = "";
 		size_t len = 0;

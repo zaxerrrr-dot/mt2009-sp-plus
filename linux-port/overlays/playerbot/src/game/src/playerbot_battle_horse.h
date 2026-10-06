@@ -259,7 +259,13 @@ namespace
 				((int)ch->GetLevel() / 5) * PLAYERBOT_TELEPORTER_FEE_PER_FIVE_LEVELS);
 	}
 
-	int GetPlayerBotReservedGold(LPCHARACTER ch)
+	// MT2009_PLUS_BOT_HORSE_PROGRESS_V2: the yang the horse's next training
+	// is saved up for (playerbot_horse30.h, included after this file).
+	long long GetPlayerBotHorseSavingsGold(LPCHARACTER ch);
+
+	// What is held back for the things already earned - everything but the
+	// horse's savings. The stable pays the training out of what is over this.
+	int GetPlayerBotBaseReservedGold(LPCHARACTER ch)
 	{
 		int reserved = IsPlayerBotBattleHorseEarned(ch) ? (int)PLAYERBOT_BATTLE_HORSE_FEE : 0;
 		// A bot whose hunting ground is a frontier map gets there through the
@@ -273,6 +279,19 @@ namespace
 		if (ch)
 			reserved += (int)std::min<long long>(GetPlayerBotGuildFundReserve(ch->GetPlayerID()), 1000000000LL);
 		return reserved;
+	}
+
+	// MT2009_PLUS_BOT_HORSE_PROGRESS_V2: and the horse's savings on top - a
+	// bot with the medals and the materials of its next training in the bag
+	// keeps that training's yang from every other spender until the stable
+	// takes it. On the supporters' world (6 October) 790 of 1 088 bots with
+	// a horse at 11-19 had both in the bag and lacked only the yang: their
+	// purses (1.9 mln on average) were spent on whatever came first and the
+	// training's millions were never there at once.
+	int GetPlayerBotReservedGold(LPCHARACTER ch)
+	{
+		const long long reserved = (long long)GetPlayerBotBaseReservedGold(ch) + GetPlayerBotHorseSavingsGold(ch);
+		return (int)std::min<long long>(reserved, 2000000000LL);
 	}
 
 	// The stable keeper's side of it. Everything here is what the quest's `buy`
