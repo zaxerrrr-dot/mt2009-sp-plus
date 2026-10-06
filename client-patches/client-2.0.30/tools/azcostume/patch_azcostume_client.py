@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-# MT2009_PLUS_AREZZO_COSTUME_SETS_V1 - the Arezzo costume sets in the client's data: the same 235
-# items linux-port/docker/mariadb/playerbot/arezzo_costumes.sql adds to world.item_proto (both
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V1 - the Arezzo costume sets in the client's data: the same 213
+# items (V2: 20 sets; the rows and msm groups of the two removed ones, azcostume_sets.REMOVED_SETS,
+# are taken out of data a V1 run patched) linux-port/docker/mariadb/playerbot/arezzo_costumes.sql adds to world.item_proto (both
 # made from azcostume_items.json - keep them equal; gen_azcostume_server.py writes the server).
 #
 #   python3 patch_azcostume_client.py <data dir> [<out dir>]
@@ -9,7 +10,7 @@
 #   gamedata/gf_official_costumes.txt   gamedata pack - bodies, hairs, weapon skins (ITEM_COSTUME rows;
 #                                       the client's legacy item_proto has no 4xxxx cosmetics, the exe's
 #                                       CItemManager::LoadItemTable reads this 24-column table)
-#   gamedata/costume_attr_items.txt     gamedata pack - the 21 sash skins (ITEM_USE rows, same layout;
+#   gamedata/costume_attr_items.txt     gamedata pack - the 19 sash skins (ITEM_USE rows, same layout;
 #                                       the applicable flag makes the bag send "use on item")
 #   gamedata/item_list.txt              gamedata pack - icon (ARMOR / ETC), weapon model (WEAPON),
 #                                       the skin's wing / cape model (WING - SetAcce shows it)
@@ -26,9 +27,12 @@
 # Plain Python 3; cp1250 text, each file keeps its own line ends.
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import azcostume_sets as A  # noqa: E402
 RACES = ('warrior_m', 'assassin_m', 'sura_m', 'shaman_m', 'warrior_w', 'assassin_w', 'sura_w', 'shaman_w')
 JOBS = (('JOB_WARRIOR', 'warrior'), ('JOB_ASSASSIN', 'assassin'), ('JOB_SURA', 'sura'), ('JOB_SHAMAN', 'shaman'))
 FLAG_APPLICABLE = 1 << 14
@@ -166,6 +170,79 @@ def msm_groups(b, kind, groups):
     return ''.join(lines).encode('cp1250'), len(add)
 
 
+def drop_rows(b, vnums):
+    """MT2009_PLUS_AREZZO_COSTUME_SETS_V2: every line whose first column is one of vnums goes."""
+    if not b:
+        return b, 0
+    text, nl = text_of(b)
+    lines = text.split(nl)
+    keep = [l for l in lines if not (l.split('\t')[0].strip().isdigit() and int(l.split('\t')[0]) in vnums)]
+    if len(keep) == len(lines):
+        return b, 0
+    return nl.join(keep).encode('cp1250'), len(lines) - len(keep)
+
+
+def msm_drop(b, kind, indexes):
+    """MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the groups of these indexes (and the blank line msm_groups put
+    before each) leave the ShapeData / HairData block; the rest are numbered again from 00 and the
+    count follows (the loader reads <kind>00..count-1). Nothing to drop: unchanged."""
+    text = b.decode('cp1250')
+    lines = text.splitlines(True)
+    start = next(i for i, l in enumerate(lines) if l.strip() == 'Group %s' % kind)
+    depth, end = 0, None
+    for i in range(start + 1, len(lines)):
+        s = lines[i].strip()
+        if s == '{':
+            depth += 1
+        elif s == '}':
+            depth -= 1
+            if depth == 0:
+                end = i
+                break
+    idx_key = 'ShapeIndex' if kind == 'ShapeData' else 'HairIndex'
+    head = re.compile(r'^\s*Group\s+%s\d+\s*$' % kind)
+    drop = set()
+    i = start + 1
+    while i < end:
+        if head.match(lines[i]):
+            j, d = i + 1, 0
+            while j < end:
+                s = lines[j].strip()
+                if s == '{':
+                    d += 1
+                elif s == '}':
+                    d -= 1
+                    if d == 0:
+                        break
+                j += 1
+            body = lines[i:j + 1]
+            idx = [int(x.split()[1]) for x in body if len(x.split()) >= 2 and x.split()[0] == idx_key and x.split()[1].isdigit()]
+            if idx and idx[0] in indexes:
+                drop.update(range(i, j + 1))
+                if i - 1 > start and lines[i - 1].strip() == '':
+                    drop.add(i - 1)
+            i = j + 1
+        else:
+            i += 1
+    if not drop:
+        return b, 0
+    removed = sum(1 for k in drop if head.match(lines[k]))
+    out = [l for k, l in enumerate(lines) if k not in drop]
+    end -= len(drop)
+    n = 0
+    for k in range(start, end):
+        if head.match(out[k]):
+            out[k] = re.sub(r'%s\d+' % kind, '%s%02d' % (kind, n), out[k], count=1)
+            n += 1
+    cnt_key = '%sCount' % kind
+    for k in range(start, end):
+        p = out[k].split()
+        if p and p[0] == cnt_key:
+            out[k] = out[k].replace(p[1], str(n), 1)
+            break
+    return ''.join(out).encode('cp1250'), removed
+
+
 def shining_rows(b, items):
     rows = [u'%d\t%s' % (it['vnum'], u'\t'.join(u'"%s"' % f for f in it['shining'])) for it in items if it['shining']]
     if not b:
@@ -204,10 +281,26 @@ def patch(data_dir, out_dir=None):
             return b, total
         jobs.append(('gamedata/%s.msm' % race, msm_job))
     jobs.append(('gamedata/shiningtable.txt', lambda b: shining_rows(b, items)))
+    gone = set(A.removed_vnums())   # MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the removed sets' rows first
+
+    def drop_first(rel, b):
+        if rel.endswith('.msm'):
+            n = 0
+            for kind in ('ShapeData', 'HairData'):
+                b, k = msm_drop(b, kind, set(v for v in gone if 42900 <= v <= 42999 or 45900 <= v <= 45999))
+                n += k
+            return b, n
+        if rel == 'gamedata/item_scale.txt':
+            return drop_rows(b, set(v for v in gone if 85200 <= v <= 85299))   # the sash skins' rows
+        return drop_rows(b, gone)
+
     for rel, fn in jobs:
         src = os.path.join(data_dir, rel)
-        b = open(src, 'rb').read() if os.path.exists(src) else b''
+        orig = open(src, 'rb').read() if os.path.exists(src) else b''
+        b, dropped = drop_first(rel, orig)
         nb, changed = fn(b)
+        changed += dropped
+        b = orig
         dst = os.path.join(out_dir or data_dir, rel)
         if out_dir or nb != b:
             os.makedirs(os.path.dirname(dst), exist_ok=True)

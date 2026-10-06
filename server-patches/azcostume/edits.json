@@ -16,5 +16,17 @@
   "marker": "MT2009_PLUS_AREZZO_COSTUME_SETS_V1 (combine)",
   "old": "\t\t\tpkItem->SetSocket(ACCE_ABSORPTION_SOCKET, dwAbs);\n\t\t\tpkItem->SetSocket(ACCE_ABSORBED_SOCKET, pkItemMaterial[0]->GetSocket(ACCE_ABSORBED_SOCKET));\n",
   "new": "\t\t\tpkItem->SetSocket(ACCE_ABSORPTION_SOCKET, dwAbs);\n\t\t\tpkItem->SetSocket(ACCE_ABSORBED_SOCKET, pkItemMaterial[0]->GetSocket(ACCE_ABSORBED_SOCKET));\n\t\t\t// MT2009_PLUS_AREZZO_COSTUME_SETS_V1 (combine): the better sash keeps a sash skin -\n\t\t\t// the first sash's, else the second's (server-patches/azcostume).\n\t\t\tif (pkItemMaterial[0]->GetMt2009SashSkin() || pkItemMaterial[1]->GetMt2009SashSkin())\n\t\t\t\tpkItem->SetSocket(CItem::MT2009_SASH_SKIN_SOCKET, pkItemMaterial[0]->GetMt2009SashSkin()\n\t\t\t\t\t? pkItemMaterial[0]->GetMt2009SashSkin() : pkItemMaterial[1]->GetMt2009SashSkin());\n"
+ },
+ {
+  "file": "itemshop_manager.cpp",
+  "marker": "MT2009_PLUS_AREZZO_COSTUME_SETS_V2 (ishop-list",
+  "old": "bool CItemShopManager::CanSendItem(LPCHARACTER buyer, TItemShopItem item)\n{\n\tTItemTable* pkItemTable = ITEM_MANAGER::instance().GetTable(item.dwVnum);\n",
+  "new": "// MT2009_PLUS_AREZZO_COSTUME_SETS_V2 (ishop-list, server-patches/azcostume): the Arezzo costume sets are\n// for sale only while the Arezzo module is on (event flag mt2009_arezzo_closed, 1 = off - the switch the\n// Arezzo maps follow); the item list is generated (overlay playerbot_arezzo_costumes.h, defined there).\nbool Mt2009PlusArezzoCostumeLocked(DWORD vnum);\n\nbool CItemShopManager::CanSendItem(LPCHARACTER buyer, TItemShopItem item)\n{\n\tif (Mt2009PlusArezzoCostumeLocked(item.dwVnum))\t// MT2009_PLUS_AREZZO_COSTUME_SETS_V2: not in the window\n\t\treturn false;\n\tTItemTable* pkItemTable = ITEM_MANAGER::instance().GetTable(item.dwVnum);\n"
+ },
+ {
+  "file": "itemshop_manager.cpp",
+  "marker": "MT2009_PLUS_AREZZO_COSTUME_SETS_V2 (ishop-buy)",
+  "old": "\tTItemShopItem item = GetItem(itemIndex);\n\tif (!IsProperItem(item))\n\t\treturn false;\n\n\tif (ch->GetLevel() < item.bMinLevel)\n",
+  "new": "\tTItemShopItem item = GetItem(itemIndex);\n\tif (!IsProperItem(item))\n\t\treturn false;\n\n\t// MT2009_PLUS_AREZZO_COSTUME_SETS_V2 (ishop-buy): an Arezzo set item while the module is off - a window\n\t// opened before the switch still lists it, the purchase is refused (players and bots alike).\n\tif (Mt2009PlusArezzoCostumeLocked(item.dwVnum))\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.\");\n\t\treturn false;\n\t}\n\n\tif (ch->GetLevel() < item.bMinLevel)\n"
  }
 ]

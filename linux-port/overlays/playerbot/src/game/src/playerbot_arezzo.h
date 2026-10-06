@@ -7,6 +7,9 @@
 //   * the quests: the Teleporter and the Teleportation Ring (360, 361), the Ochao portal's
 //     choice (362) and the four dungeon guards (363-366) - as before;
 //   * the dungeon panel (playerbot_dungeon_panel.h, IsArezzo): no Arezzo line, no warp;
+//   * the Arezzo costume sets (MT2009_PLUS_AREZZO_COSTUME_SETS_V2, playerbot_arezzo_costumes.h): the
+//     engine's ItemShop neither lists nor sells them, the bots leave them out of their catalogue;
+//     the web shop reads the same flag (itemshop/arezzo_costumes.php);
 //   * this file, on every core, every TICK_SECONDS:
 //       - the three entrance guards that stand on the old maps (Straznik Biblioteki in every
 //         empire's M2, Straznik Wzgorza in the Hwang Temple, Straznik Ruin on the Fire Land) are

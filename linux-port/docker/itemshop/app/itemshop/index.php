@@ -7,6 +7,8 @@
 	ob_start();
 	session_start();
 	require("../user/config.php");
+	// MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the Arezzo costume sets only while the Arezzo module is on
+	require_once(__DIR__ . "/arezzo_costumes.php");
 
 	// Podglad katalogu bez logowania (osadzany w iframe na m2singleplayer.pl).
 	// Celowo NIE oparty o sesje/cookie - w iframe z innej domeny przegladarki

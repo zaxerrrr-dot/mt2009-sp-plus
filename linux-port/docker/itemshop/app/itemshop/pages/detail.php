@@ -17,6 +17,10 @@
 		}
 		$get_item = mysqli_query($sqlServ, "SELECT * FROM itemshop.ishop_items where id=" . $id);
 		$item = mysqli_fetch_assoc($get_item);
+		// MT2009_PLUS_AREZZO_COSTUME_SETS_V2: an Arezzo costume set offer only while the Arezzo module is on.
+		if ($item && mt2009_arezzo_costume_locked($sqlServ, $item['vnum'])) {
+			die("Ten przedmiot jest dostepny tylko z wlaczonym modulem Arezzo.");
+		}
 ?>
 <div id="fancybox-content" style="border-width: 0px; width: 540px; height: 500px;">
 	<div style="width:540px;height:500px;overflow: hidden;position:relative;">
@@ -83,7 +87,7 @@
 				<h2>Zobacz takze:</h2>
 				<ol id="suggestions">
 					<?php
-						$get_recomandare = mysqli_query($sqlServ, "SELECT * FROM itemshop.ishop_items ORDER BY rand() LIMIT 7");
+						$get_recomandare = mysqli_query($sqlServ, "SELECT * FROM itemshop.ishop_items WHERE 1=1" . mt2009_arezzo_costume_sql($sqlServ) . " ORDER BY rand() LIMIT 7");
 						while($items = mysqli_fetch_object($get_recomandare)) {
 					?>
 					<li class="thumbnailBgSmall">

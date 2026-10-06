@@ -934,6 +934,8 @@ if ((Test-Path -LiteralPath $questRewardsApply -PathType Leaf) -and
 # MT2009_PLUS_AREZZO_COSTUME_SETS_V1): a skin (85200-85299) dragged onto a sash
 # puts its vnum in the sash's socket 2 (char_item.cpp UseItemEx), the sash shows
 # it (item.h GetAcceVnum) and keeps it through Uriel's combination (char.cpp).
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the ItemShop lists and sells the sets only while the
+# Arezzo module is on (itemshop_manager.cpp; the vnums: overlay playerbot_arezzo_costumes.h).
 # Its anchors are the engine's own lines.
 $azCostumeApply = Join-Path $repo 'server-patches/azcostume/Apply-AzCostumePatch.ps1'
 if ((Test-Path -LiteralPath $azCostumeApply -PathType Leaf) -and

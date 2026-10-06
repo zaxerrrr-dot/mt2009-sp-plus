@@ -2713,6 +2713,8 @@ FROM DUAL WHERE EXISTS (SELECT 1 FROM world.item_proto WHERE vnum = 40233) AND N
 # (INSERT IGNORE - a row the operator changed is kept; arezzo_costumes.sql), the in-game ItemShop
 # lines once per install like our costumes (100 SM; hairs 10600+, costumes 20600+, weapon skins
 # 30600+, sash skins 30800+ in "Nakladki"), and the web shop offers (arezzo_costumes_webshop.sql).
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V2: shown and sold only while the Arezzo module is on (mt2009_arezzo_closed; the engine's
+# ItemShop, the bots and the web shop read it live - playerbot_arezzo_costumes.h, arezzo_costumes.php).
 if [ -s /opt/playerbot/arezzo_costumes.sql ]; then
     db < /opt/playerbot/arezzo_costumes.sql || fail_step "could not add the Arezzo costume sets (arezzo_costumes.sql)" >&2
 fi
@@ -2777,17 +2779,6 @@ ishop_once arezzo_costume_sets "INSERT IGNORE INTO common.itemshop_items (\`inde
 (30628, 40954, 1, 100, 'DRAGON_COIN', 0),
 (30629, 40955, 1, 100, 'DRAGON_COIN', 0),
 (30804, 85204, 1, 100, 'DRAGON_COIN', 0),
-(20612, 42930, 1, 100, 'DRAGON_COIN', 0),
-(20613, 42931, 1, 100, 'DRAGON_COIN', 0),
-(10612, 45930, 1, 100, 'DRAGON_COIN', 0),
-(10613, 45931, 1, 100, 'DRAGON_COIN', 0),
-(30630, 40960, 1, 100, 'DRAGON_COIN', 0),
-(30631, 40961, 1, 100, 'DRAGON_COIN', 0),
-(30632, 40962, 1, 100, 'DRAGON_COIN', 0),
-(30633, 40963, 1, 100, 'DRAGON_COIN', 0),
-(30634, 40964, 1, 100, 'DRAGON_COIN', 0),
-(30635, 40965, 1, 100, 'DRAGON_COIN', 0),
-(30805, 85205, 1, 100, 'DRAGON_COIN', 0),
 (20614, 42932, 1, 100, 'DRAGON_COIN', 0),
 (20615, 42933, 1, 100, 'DRAGON_COIN', 0),
 (10614, 45932, 1, 100, 'DRAGON_COIN', 0),
@@ -2865,17 +2856,6 @@ ishop_once arezzo_costume_sets "INSERT IGNORE INTO common.itemshop_items (\`inde
 (30676, 40834, 1, 100, 'DRAGON_COIN', 0),
 (30677, 40835, 1, 100, 'DRAGON_COIN', 0),
 (30812, 85212, 1, 100, 'DRAGON_COIN', 0),
-(20628, 42946, 1, 100, 'DRAGON_COIN', 0),
-(20629, 42947, 1, 100, 'DRAGON_COIN', 0),
-(10628, 45946, 1, 100, 'DRAGON_COIN', 0),
-(10629, 45947, 1, 100, 'DRAGON_COIN', 0),
-(30678, 40840, 1, 100, 'DRAGON_COIN', 0),
-(30679, 40841, 1, 100, 'DRAGON_COIN', 0),
-(30680, 40842, 1, 100, 'DRAGON_COIN', 0),
-(30681, 40843, 1, 100, 'DRAGON_COIN', 0),
-(30682, 40844, 1, 100, 'DRAGON_COIN', 0),
-(30683, 40845, 1, 100, 'DRAGON_COIN', 0),
-(30813, 85213, 1, 100, 'DRAGON_COIN', 0),
 (20630, 42948, 1, 100, 'DRAGON_COIN', 0),
 (20631, 42949, 1, 100, 'DRAGON_COIN', 0),
 (10630, 45948, 1, 100, 'DRAGON_COIN', 0),
@@ -2956,6 +2936,24 @@ ishop_once arezzo_costume_sets "INSERT IGNORE INTO common.itemshop_items (\`inde
 fi
 if [ -s /opt/playerbot/arezzo_costumes_webshop.sql ]; then
     db < /opt/playerbot/arezzo_costumes_webshop.sql 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the Arezzo costume sets" >&2
+fi
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the sets Ognisty Rycerz and Krwawa Zemsta are gone again (owner, 6 October: no
+# effects on their costumes, swords and sashes) - 22 items, removed everywhere V1 put them.
+db -e "DELETE FROM world.item_proto WHERE vnum IN (40840, 40841, 40842, 40843, 40844, 40845, 40960, 40961, 40962, 40963, 40964, 40965, 42930, 42931, 42946, 42947, 45930, 45931, 45946, 45947, 85205, 85213);" || fail_step "could not remove the dropped Arezzo costume sets' items" >&2
+ishop_once arezzo_costume_sets_v2 "DELETE FROM common.itemshop_items WHERE vnum IN (40840, 40841, 40842, 40843, 40844, 40845, 40960, 40961, 40962, 40963, 40964, 40965, 42930, 42931, 42946, 42947, 45930, 45931, 45946, 45947, 85205, 85213);" "could not remove the dropped Arezzo costume sets from the ItemShop"
+db -e "DELETE FROM itemshop.ishop_items WHERE vnum IN (40840, 40841, 40842, 40843, 40844, 40845, 40960, 40961, 40962, 40963, 40964, 40965, 42930, 42931, 42946, 42947, 45930, 45931, 45946, 45947, 85205, 85213);" 2>/dev/null || true
+az_rm_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'azcostume_removed_v2';" 2>/dev/null || echo x)
+if [ "$az_rm_done" = "0" ]; then
+    az_rm_items=$(db -e "SELECT COUNT(*) FROM player.item WHERE vnum IN (40840, 40841, 40842, 40843, 40844, 40845, 40960, 40961, 40962, 40963, 40964, 40965, 42930, 42931, 42946, 42947, 45930, 45931, 45946, 45947, 85205, 85213);" 2>/dev/null || echo "?")
+    az_rm_skins=$(db -e "SELECT COUNT(*) FROM player.item i JOIN world.item_proto p ON p.vnum = i.vnum WHERE p.type = 28 AND p.subtype = 3 AND i.socket2 IN (85205, 85213);" 2>/dev/null || echo "?")
+    if db -e "DELETE FROM player.item WHERE vnum IN (40840, 40841, 40842, 40843, 40844, 40845, 40960, 40961, 40962, 40963, 40964, 40965, 42930, 42931, 42946, 42947, 45930, 45931, 45946, 45947, 85205, 85213);
+        UPDATE player.item i JOIN world.item_proto p ON p.vnum = i.vnum SET i.socket2 = 0 WHERE p.type = 28 AND p.subtype = 3 AND i.socket2 IN (85205, 85213);
+        INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('azcostume_removed_v2', NOW());"; then
+        db -e "DELETE FROM player.item_award WHERE vnum IN (40840, 40841, 40842, 40843, 40844, 40845, 40960, 40961, 40962, 40963, 40964, 40965, 42930, 42931, 42946, 42947, 45930, 45931, 45946, 45947, 85205, 85213);" 2>/dev/null || true
+        echo "[playerbot-migrate] Arezzo costume sets V2: removed $az_rm_items held item(s) of Ognisty Rycerz / Krwawa Zemsta, $az_rm_skins sash skin(s) taken off sashes"
+    else
+        fail_step "could not remove the players' items of the dropped Arezzo costume sets" >&2
+    fi
 fi
 # <<< MT2009_PLUS_AREZZO_COSTUME_SETS_V1
 # MT2009_PLUS_COLLECTOR_STORAGE_V1: the collector's storage (Magazyn
