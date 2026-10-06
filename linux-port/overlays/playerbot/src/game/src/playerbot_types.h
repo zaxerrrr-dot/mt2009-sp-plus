@@ -7198,6 +7198,12 @@ namespace
 	bool IsPlayerBotSidekickSellOnly(LPCHARACTER ch);
 	void NotePlayerBotSidekickScrapSold(LPCHARACTER ch, size_t count, long long gold);
 	bool IsPlayerBotSidekickKeptForOwner(LPCHARACTER ch, LPITEM item);
+	// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1: when the companion was last in
+	// a fight of its own or beside its owner's (0 none) - the alchemy deck's
+	// fight clock for a companion, whose support work (a Shaman's buffs and
+	// heals, the passive stance, the walk to a foe) never stamps
+	// dwLastCombatActionTime.
+	DWORD GetPlayerBotSidekickFightSeenAt(DWORD pid);
 	// Its storekeeper's box emptied back into its bag on a town errand, once a
 	// start (an older version put the owner's stones and materials there).
 	bool PlayerBotSidekickWantsBoxSweep(LPCHARACTER ch);

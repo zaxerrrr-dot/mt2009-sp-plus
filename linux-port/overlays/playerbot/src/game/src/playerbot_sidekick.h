@@ -518,6 +518,9 @@ namespace
 		DWORD dwEquipWaitUntil;
 		// When it last saw its owner in a fight (IsPlayerBotSidekickOwnerFighting).
 		DWORD dwOwnerFightSeenAt;
+		// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1: when it last went at a foe
+		// of its own (FightPlayerBotSidekickFoe).
+		DWORD dwSelfFightSeenAt;
 		// What fought it lately (monster vid -> when), handed to the owner when
 		// it falls or leaves (HandPlayerBotSidekickFoesToOwner).
 		std::map<DWORD, DWORD> mapFoesOnSelf;
@@ -587,7 +590,7 @@ namespace
 			  dwLootSince(0), dwNextProtect(0), bTrading(false), dwLastFoeVID(0), bHold(false), lHoldMap(0),
 			  lHoldX(0), lHoldY(0), bErrand(false), bErrandVisit(false), dwErrandSince(0), llErrandGold(0),
 			  bSellOnly(false), uScrapSold(0), llScrapGold(0),
-			  dwGearSent(0), dwEqGen(0), llEqGoldSent(-1), dwEquipWaitUntil(0), dwOwnerFightSeenAt(0),
+			  dwGearSent(0), dwEqGen(0), llEqGoldSent(-1), dwEquipWaitUntil(0), dwOwnerFightSeenAt(0), dwSelfFightSeenAt(0),
 			  dwNextFoeMemory(0), bLureStage(0), dwLureVID(0), iLurePacks(0), iLureMonsters(0), lLureAnchorX(0),
 			  lLureAnchorY(0), dwLureCourseSince(0), dwLureStageSince(0), dwNextLure(0), uLureCourses(0),
 			  dwNextForgetCheck(0), dwBagFullToldAt(0), bAlone(false), bFishing(false), dwFishingSince(0),
@@ -5971,7 +5974,13 @@ namespace
 					answer = "Alchemia jest wylaczona na tym serwerze.";
 					return 2;
 				}
-				return EquipPlayerBotSidekickDs(sk, item, to == -1 ? -1 : to - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE, answer);
+				// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1: put on by its owner's
+				// hand again, the owner's "off" mark goes.
+				const DWORD id = item->GetID();
+				const int code = EquipPlayerBotSidekickDs(sk, item, to == -1 ? -1 : to - PLAYERBOT_SIDEKICK_EQ_WEAR_BASE, answer);
+				if (code == 0 && GetPlayerBotSidekickPinOf(sk, item) == PLAYERBOT_SIDEKICK_PIN_UNWANTED)
+					ClearPlayerBotSidekickPin(rt, id);
+				return code;
 			}
 			if (to == PLAYERBOT_SIDEKICK_EQ_DS_AUTO || IsPlayerBotSidekickEqDsCellPos(to))
 			{
@@ -5992,7 +6001,13 @@ namespace
 				return 2;
 			}
 			if (code == 0)
+			{
 				answer = "Zdjety do alchemii towarzysza.";
+				// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1: taken off by its owner,
+				// never put back by the companion (ManagePlayerBotSidekickDs).
+				if (item)
+					SetPlayerBotSidekickPin(sk->GetPlayerID(), rt, item->GetID(), PLAYERBOT_SIDEKICK_PIN_UNWANTED);
+			}
 			return code;
 		}
 		answer = "Zdejmij go najpierw do alchemii towarzysza.";
@@ -7475,6 +7490,21 @@ namespace
 				dwNow - rt.dwOwnerFightSeenAt < PLAYERBOT_BUFF_COMBAT_WINDOW;
 	}
 
+	// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1: the later of its own fight and
+	// its owner's fight it saw (the alchemy deck's clock, playerbot_alchemy.h).
+	DWORD GetPlayerBotSidekickFightSeenAt(DWORD pid)
+	{
+		std::map<DWORD, TPlayerBotSidekickRuntime>::const_iterator it = s_mapPlayerBotSidekickRuntime.find(pid);
+		if (it == s_mapPlayerBotSidekickRuntime.end())
+			return 0;
+		const DWORD a = it->second.dwOwnerFightSeenAt, b = it->second.dwSelfFightSeenAt;
+		if (a == 0)
+			return b;
+		if (b == 0)
+			return a;
+		return (DWORD)(b - a) < 0x80000000U ? b : a;
+	}
+
 	// ownerFighting: the owner's target is a fight under way or a monster is
 	// at the owner - told in every stance, "nie walcz" included, because beside
 	// the owner's fight the owner's buffs come first.
@@ -8747,6 +8777,7 @@ namespace
 			++rt.adwFoes[MINMAX(0, why, 3)];
 		}
 		state.dwLastMeaningfulActivityTime = dwNow;
+		rt.dwSelfFightSeenAt = dwNow;	// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1
 		// MT2009_PLUS_SIDEKICK_LURE_V1: the packs a course brought stand round
 		// it now - the skills on them as soon as one is due, the area ones
 		// taking the whole gathering, rather than on the rotation's clock of
