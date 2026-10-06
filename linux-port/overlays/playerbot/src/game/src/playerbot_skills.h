@@ -403,9 +403,83 @@ namespace
 	// Whether a buff skill's affect is up on a character: the bot itself, or the
 	// player a Shaman keeps buffed (ManagePlayerBotBuffHumanLeader). The bot's
 	// own fallback clock is IsPlayerBotBuffActive's business.
+	// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: a Shaman's support buff is up on a
+	// character when its main affect is - the one ComputeSkill adds with the
+	// skill's vnum as its type and the skill's first point as its apply, with
+	// the time the engine counts down (ProcessAffect). Not any affect of the
+	// skill's type, and not the skill's affect flag: the second and third
+	// points (and Attack Up's fourth, the magic attack) are affects of the
+	// same type with times of their own (szDurationPoly2/3 against
+	// szDurationPoly), so with a duration edited in the DB editor one of them
+	// outlived the buff itself and the buff read as up while it was gone -
+	// "twierdzi, ze mam juz buffa, mimo ze go nie mam" (the owner, 6 October).
+	bool IsPlayerBotShamanSupportBuff(DWORD vnum)
+	{
+		return vnum == 94 || vnum == 95 || vnum == 96 || vnum == 110 || vnum == 111;
+	}
+
+	const CAffect* FindPlayerBotBuffMainAffect(LPCHARACTER ch, DWORD vnum)
+	{
+		const CSkillProto* proto = CSkillManager::instance().Get(vnum);
+		if (!ch || !proto)
+			return NULL;
+		if (proto->bPointOn != POINT_NONE)
+			return ch->FindAffect(vnum, proto->bPointOn);
+		return ch->FindAffect(vnum);
+	}
+
+	// The time a cast of the caster's would put on the buff, as ComputeSkill
+	// works it out from the live skill_proto (CSkillManager, which the DB
+	// editor's reload refreshes): the duration poly at the caster's power,
+	// half as long again from G1 (MT2009_PLUS_SKILL_DURATION_V1), the items'
+	// skill duration and the party buffer bonus. 0 when there is none.
+	long GetPlayerBotBuffFullSeconds(LPCHARACTER caster, DWORD vnum)
+	{
+		CSkillProto* proto = CSkillManager::instance().Get(vnum);
+		if (!caster || !proto)
+			return 0;
+		const float k = 1.0 * caster->GetSkillPower(vnum) * proto->bMaxLevel / 100;
+		proto->kDurationPoly.SetVar("k", k);
+		long seconds = (long)proto->kDurationPoly.Eval();
+		if (seconds <= 0)
+			return 0;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		if (caster->IsPC() && proto->dwType >= 1 && proto->dwType <= 4 &&
+				caster->GetSkillMasterType(vnum) >= SKILL_GRAND_MASTER && !IS_SET(proto->dwFlag, SKILL_FLAG_ATTACK))
+			seconds += seconds / 2;
+		seconds += seconds * caster->GetPoint(POINT_SKILL_DURATION) / 100;
+#endif
+		seconds += caster->GetPoint(POINT_PARTY_BUFFER_BONUS);
+		return seconds;
+	}
+
+	// A buff of the caster's is due on a target: its main affect is gone, or
+	// what is left of it is under PLAYERBOT_BUFF_REBUFF_MIN_SECONDS or under
+	// PLAYERBOT_BUFF_REBUFF_PERCENT of a fresh cast - asked of the target's
+	// own affect every time, never of a clock the bot keeps.
+	const long PLAYERBOT_BUFF_REBUFF_MIN_SECONDS = 30;
+	const long PLAYERBOT_BUFF_REBUFF_PERCENT = 10;
+	bool IsPlayerBotBuffAffectOn(LPCHARACTER ch, DWORD buffVnum);
+	bool IsPlayerBotBuffDueOn(LPCHARACTER caster, LPCHARACTER target, DWORD vnum)
+	{
+		if (!caster || !target)
+			return false;
+		if (!IsPlayerBotShamanSupportBuff(vnum))
+			return !IsPlayerBotBuffAffectOn(target, vnum);
+		const CAffect* affect = FindPlayerBotBuffMainAffect(target, vnum);
+		if (!affect || affect->lDuration <= 0)
+			return true;
+		const long full = GetPlayerBotBuffFullSeconds(caster, vnum);
+		const long margin = std::max(PLAYERBOT_BUFF_REBUFF_MIN_SECONDS, full * PLAYERBOT_BUFF_REBUFF_PERCENT / 100);
+		return affect->lDuration <= margin;
+	}
+
 	bool IsPlayerBotBuffAffectOn(LPCHARACTER ch, DWORD buffVnum)
 	{
 		if (!ch) return true;
+		// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: the support buffs by their main affect.
+		if (IsPlayerBotShamanSupportBuff(buffVnum))
+			return FindPlayerBotBuffMainAffect(ch, buffVnum) != NULL;
 
 		// 1. Affect flags (standard Metin2 toggle and buff flags)
 		switch (buffVnum)

@@ -506,6 +506,15 @@ namespace
 			amount2 = amount2 * 75 / 100;
 			amount3 = amount3 * percent3 / 100;
 		}
+		// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: half as long again from G1, as
+		// ComputeSkill has it (ApplyGrandMasterSkillDuration).
+		if (grand && pk->dwType >= 1 && pk->dwType <= 4 && !IS_SET(pk->dwFlag, SKILL_FLAG_ATTACK))
+		{
+			if (seconds > 0)
+				seconds += seconds / 2;
+			if (seconds3 > 0)
+				seconds3 += seconds3 / 2;
+		}
 		const int durationBonus = bot->GetPoint(POINT_SKILL_DURATION);
 		if (seconds > 0)
 			seconds += seconds * durationBonus / 100;

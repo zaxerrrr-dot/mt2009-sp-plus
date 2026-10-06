@@ -543,7 +543,8 @@ namespace
 								}
 							}
 						}
-						else if (member->FindAffect(m_buffVnum) == NULL)
+						// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: the member's own affect.
+						else if (IsPlayerBotBuffDueOn(m_shaman, member, m_buffVnum))
 						{
 							if (PlayerBotUseSkill(m_shaman, m_state, m_buffVnum, member, m_dwNow))
 							{
@@ -610,7 +611,8 @@ namespace
 							(long long)member->GetHP() * 100 / member->GetMaxHP() > PLAYERBOT_PARTY_LEADER_CURE_HP_PERCENT)
 						continue;
 				}
-				else if (IsPlayerBotBuffAffectOn(member, vnum))
+				// MT2009_PLUS_SIDEKICK_BUFF_NOW_V1: the member's own affect.
+				else if (!IsPlayerBotBuffDueOn(ch, member, vnum))
 					continue;
 				target = member;
 				break;
