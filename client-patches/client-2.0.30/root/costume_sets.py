@@ -61,7 +61,6 @@ SETS = (
 	((42924,42925,), (45924,45925,)),	# Zestaw_Zlocisty
 	((42926,42927,), (45926,45927,)),	# Zestaw_Wikinga
 	((42928,42929,), (45928,45929,)),	# Zestaw_Mroznego_Rycerza
-	((42930,42931,), (45930,45931,)),	# Zestaw_Ognistego_Rycerza
 	((42932,42933,), (45932,45933,)),	# Zestaw_Anielski
 	((42934,42935,), (45934,45935,)),	# Zestaw_Cienia
 	((42936,42937,), (45936,45937,)),	# Zestaw_Ksiezycowy
@@ -69,7 +68,6 @@ SETS = (
 	((42940,42941,), (45940,45941,)),	# Zestaw_Lesnego_Ksiecia
 	((42942,42943,), (45942,45943,)),	# Zestaw_Plagi
 	((42944,42945,), (45944,45945,)),	# Zestaw_Krola_Lodu
-	((42946,42947,), (45946,45947,)),	# Zestaw_Krwawej_Zemsty
 	((42948,42949,), (45948,45949,)),	# Zestaw_Letniej_Chwaly
 	((42950,42951,), (45950,45951,)),	# Zestaw_Blekitnego_Wiatru
 	((42952,42953,), (45952,45953,)),	# Zestaw_Arktycznego_Krola

@@ -78,6 +78,26 @@ def main():
     # 2) Index: the new packs at the end (after the build's own lines)
     ix_path = os.path.join(out, 'Index') if os.path.exists(os.path.join(out, 'Index')) else os.path.join(base, 'Index')
     ix = rd(ix_path)
+    # MT2009_PLUS_AREZZO_COSTUME_SETS_V2: an az_costNN of an earlier (V1) run that this list no longer has
+    # (V1 had 15 packs, V2 14) leaves Index and OUT - its "*" line with it
+    import re
+    lines = ix.replace(b'\r\n', b'\n').split(b'\n')
+    stale = set(l.strip() for l in lines if re.match(rb'^az_cost\d+$', l.strip()) and l.strip().decode() not in d['packs'])
+    if stale:
+        ixl = ix.split(b'\n')
+        keep = []
+        for l in ixl:
+            if l.strip() in stale and keep and keep[-1].strip() == b'*':
+                keep.pop()
+                continue
+            keep.append(l)
+        ix = b'\n'.join(keep)
+        for s in sorted(stale):
+            for ext in ('.index', '.data'):
+                f = os.path.join(out, s.decode() + ext)
+                if os.path.exists(f):
+                    os.remove(f)
+        print('removed stale packs (V1) from Index and OUT: %s' % ', '.join(sorted(x.decode() for x in stale)))
     for pack in sorted(d['packs']):
         if (b'\n' + pack.encode() + b'\n') not in ix + b'\n':
             ix = ix.rstrip(b'\r\n') + b'\n*\n' + pack.encode() + b'\n'

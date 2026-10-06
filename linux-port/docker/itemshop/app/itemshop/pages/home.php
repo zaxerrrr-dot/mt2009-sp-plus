@@ -12,7 +12,7 @@
 		<h1>Lista przedmiotow (najnowsze pierwsze)</h1>
 		<div class="dynContent" style="position:relative">
 			<?php
-			$get_item = mysqli_query($sqlServ, "SELECT * FROM itemshop.ishop_items ORDER BY date_added DESC, vnum");
+			$get_item = mysqli_query($sqlServ, "SELECT * FROM itemshop.ishop_items WHERE 1=1" . mt2009_arezzo_costume_sql($sqlServ) . " ORDER BY date_added DESC, vnum");
 			while($item = mysqli_fetch_object($get_item)) {
 			?>
 			<div class="item">

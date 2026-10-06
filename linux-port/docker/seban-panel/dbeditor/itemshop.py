@@ -108,6 +108,12 @@ CLIENT_NAME_SUFFIX = {1: "(30 godzin)", 5: "(7 dni)", 101: "(1 dzień)", 102: "(
 # install after mod/10_ingame_itemshop.sql, marked "ishop:NAME" in
 # player.playerbot_migrations. adds: indexes it INSERT IGNOREs; removes:
 # what it deletes (vnums / indexes) - checked by test_dbeditor_itemshop.py.
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the two Arezzo sets taken out (client-patches/client-2.0.30/tools/
+# azcostume/azcostume_sets.py REMOVED_SETS) - their V1 indexes and their vnums.
+AREZZO_COSTUME_V2_GAPS = frozenset((10612, 10613, 10628, 10629, 20612, 20613, 20628, 20629) +
+                                   tuple(range(30630, 30636)) + tuple(range(30678, 30684)) + (30805, 30813))
+AREZZO_COSTUME_V2_REMOVED = (40840, 40841, 40842, 40843, 40844, 40845, 40960, 40961, 40962, 40963, 40964, 40965,
+                             42930, 42931, 42946, 42947, 45930, 45931, 45946, 45947, 85205, 85213)
 BOOT_ONCE = {
     "marriage_201": {"adds": tuple(range(201, 212)), "note": "strona Małżeństwo (201–211)"},
     "autohunt_rings_6": {"adds": (6, 7, 8), "note": "bilet Auto Łowy i dwa pierścienie"},
@@ -120,11 +126,17 @@ BOOT_ONCE = {
     "king03_20212": {"adds": (20212, 30054), "note": "Zbroja Króla Wojowników+ i Święty Miecz Bogów+"},
     "monster_cards_617": {"adds": (617, 618), "note": "Karty Potworów (Nowego Początku / Układu)"},
     "collector_item_16": {"adds": (16,), "note": "Kolekcjoner – okno Kolekcjonera z dowolnego miejsca"},
-    # MT2009_PLUS_AREZZO_COSTUME_SETS_V1 (gen_azcostume_server.py): 44 helmets, 44 costumes, 126 weapon
-    # skins and 21 sash skins of the Arezzo sets, 100 SM each.
-    "arezzo_costume_sets": {"adds": tuple(range(10600, 10644)) + tuple(range(20600, 20644)) +
-                            tuple(range(30600, 30726)) + tuple(range(30800, 30821)),
+    # MT2009_PLUS_AREZZO_COSTUME_SETS_V1 (gen_azcostume_server.py): the helmets, costumes, weapon skins
+    # and sash skins of the Arezzo sets, 100 SM each. MT2009_PLUS_AREZZO_COSTUME_SETS_V2: 20 sets - 40
+    # helmets, 40 costumes, 114 weapon skins, 19 sash skins; Ognisty Rycerz and Krwawa Zemsta are gone and
+    # their indexes stay empty (every other line keeps its V1 index). Shown and sold only while the Arezzo
+    # module is on (the engine's ItemShop, playerbot_arezzo_costumes.h).
+    "arezzo_costume_sets": {"adds": tuple(i for i in tuple(range(10600, 10644)) + tuple(range(20600, 20644)) +
+                                          tuple(range(30600, 30726)) + tuple(range(30800, 30821))
+                                          if i not in AREZZO_COSTUME_V2_GAPS),
                             "note": "zestawy kostiumów z Arezzo (fryzury/hełmy, kostiumy, nakładki na broń i szarfę)"},
+    "arezzo_costume_sets_v2": {"adds": (), "remove_vnums": AREZZO_COSTUME_V2_REMOVED,
+                               "note": "zestawy Ognistego Rycerza i Krwawej Zemsty znikają ze sklepu"},
 }
 
 

@@ -63,7 +63,7 @@ def az_index():
 
 def our_names():
     names = set()
-    sys.path.insert(0, '/opt/metin2/cache/c36')
+    sys.path.insert(0, '/opt/metin2/cache/tcm/tz')   # m2pack.py (the old c36 copy is gone)
     try:
         import m2pack  # noqa: F401  (needs python-lzo only for the data; read_index reads the index)
         for f in os.listdir(OURS[0]):

@@ -12,6 +12,11 @@
 #   client-patches/client-2.0.30/root/costume_sets.py            the tooltip's copy of the sets
 #   linux-port/docker/itemshop/app/itemshop/img/item/<vnum>.png  the web shop's icons (from the
 #                                                                client icons, TGA / PNG -> PNG)
+#   MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the removed sets' clean-up in the apply.sh block (their icons
+#   deleted here) and the gate on the Arezzo module (flag mt2009_arezzo_closed):
+#   linux-port/overlays/playerbot/src/game/src/playerbot_arezzo_costumes.h  the vnums for the engine's
+#                                                                ItemShop and the bots' catalogue
+#   linux-port/docker/itemshop/app/itemshop/arezzo_costumes.php  the same for the web shop
 # Idempotent: a second run writes the same files.
 import json
 import os
@@ -24,6 +29,7 @@ sys.path.insert(0, HERE)
 import azcostume_sets as A  # noqa: E402
 
 MARK = 'MT2009_PLUS_AREZZO_COSTUME_SETS_V1'
+MARK2 = 'MT2009_PLUS_AREZZO_COSTUME_SETS_V2'
 ISHOP_BASE = {'HairData': 10600, 'ShapeData': 20600, 'Weapon': 30600, 'SashSkin': 30800}
 WEB_CATEGORY = {'HairData': 5, 'ShapeData': 6, 'Weapon': 7, 'SashSkin': 7}
 CLASS_WEB = {0: u'Wojownik, Ninja, Sura', 1: u'Ninja', 2: u'Ninja', 3: u'Wojownik', 4: u'Szaman', 5: u'Szaman'}
@@ -97,14 +103,42 @@ def sql_web(items):
     return u''.join(out)
 
 
+def set_kind_counts(s):
+    """How many lines of each kind a set of azcostume_sets (the tuple) has."""
+    key, name, word, bodies, hairs, hair_word, first_weapon, back = s
+    return {'ShapeData': len(bodies), 'HairData': len(hairs), 'Weapon': 6 if first_weapon else 0,
+            'SashSkin': 1 if back else 0}
+
+
+def ishop_index_base():
+    """MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the first in-game ItemShop index of each set's kind, counted in
+    the V1 order of all 22 sets - a removed set leaves its indexes empty and every other line keeps the
+    index V1 gave it (the block below ran once on every world that has the sets)."""
+    by_key = dict((s[0], s) for s in A.SETS + A.REMOVED_SETS)
+    n = dict(ISHOP_BASE)
+    first = {}
+    for key in A.SETS_V1_ORDER:
+        counts = set_kind_counts(by_key[key])
+        first[key] = dict(n)
+        for kind, c in counts.items():
+            n[kind] += c
+    return first
+
+
 def ishop_lines(items):
-    n = dict((k, 0) for k in ISHOP_BASE)
+    first = ishop_index_base()
+    n = {}
     rows = []
     for it in items:
-        idx = ISHOP_BASE[it['kind']] + n[it['kind']]
-        n[it['kind']] += 1
+        k = (it['set'], it['kind'])
+        idx = first[it['set']][it['kind']] + n.get(k, 0)
+        n[k] = n.get(k, 0) + 1
         rows.append(u"(%d, %d, 1, 100, 'DRAGON_COIN', 0)" % (idx, it['vnum']))
     return rows
+
+
+def ishop_indexes(items):
+    return [int(r[1:].split(',')[0]) for r in ishop_lines(items)]
 
 
 def apply_block(items):
@@ -114,6 +148,8 @@ def apply_block(items):
             u'# (INSERT IGNORE - a row the operator changed is kept; arezzo_costumes.sql), the in-game ItemShop\n'
             u'# lines once per install like our costumes (100 SM; hairs 10600+, costumes 20600+, weapon skins\n'
             u'# 30600+, sash skins 30800+ in "Nakladki"), and the web shop offers (arezzo_costumes_webshop.sql).\n'
+            u'# %s: shown and sold only while the Arezzo module is on (mt2009_arezzo_closed; the engine\'s\n'
+            u'# ItemShop, the bots and the web shop read it live - playerbot_arezzo_costumes.h, arezzo_costumes.php).\n'
             u'if [ -s /opt/playerbot/arezzo_costumes.sql ]; then\n'
             u'    db < /opt/playerbot/arezzo_costumes.sql || fail_step "could not add the Arezzo costume sets (arezzo_costumes.sql)" >&2\n'
             u'fi\n'
@@ -124,7 +160,36 @@ def apply_block(items):
             u'if [ -s /opt/playerbot/arezzo_costumes_webshop.sql ]; then\n'
             u'    db < /opt/playerbot/arezzo_costumes_webshop.sql 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the Arezzo costume sets" >&2\n'
             u'fi\n'
-            u'# <<< %s\n') % (MARK, items[0]['vnum'], items[-1]['vnum'], u',\n'.join(rows), MARK)
+            u'%s'
+            u'# <<< %s\n') % (MARK, MARK2, items[0]['vnum'], items[-1]['vnum'], u',\n'.join(rows), removed_block(), MARK)
+
+
+def removed_block():
+    """MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the sets taken out again (azcostume_sets.REMOVED_SETS) - gone from
+    every place V1 put them, idempotent: the item rows (every start, cheap), the in-game ItemShop lines
+    (ishop_once), the web shop's offers and, once, what players hold (their items, unopened ItemShop
+    deliveries, and a removed sash skin on a sash - the sash keeps its own look)."""
+    vn = A.removed_vnums()
+    lst = u', '.join(str(v) for v in vn)
+    skins = u', '.join(str(v) for v in vn if 85200 <= v <= 85299)
+    return (u'# %s: the sets Ognisty Rycerz and Krwawa Zemsta are gone again (owner, 6 October: no\n'
+            u'# effects on their costumes, swords and sashes) - %d items, removed everywhere V1 put them.\n'
+            u'db -e "DELETE FROM world.item_proto WHERE vnum IN (%s);" || fail_step "could not remove the dropped Arezzo costume sets\' items" >&2\n'
+            u'ishop_once arezzo_costume_sets_v2 "DELETE FROM common.itemshop_items WHERE vnum IN (%s);" "could not remove the dropped Arezzo costume sets from the ItemShop"\n'
+            u'db -e "DELETE FROM itemshop.ishop_items WHERE vnum IN (%s);" 2>/dev/null || true\n'
+            u'az_rm_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = \'azcostume_removed_v2\';" 2>/dev/null || echo x)\n'
+            u'if [ "$az_rm_done" = "0" ]; then\n'
+            u'    az_rm_items=$(db -e "SELECT COUNT(*) FROM player.item WHERE vnum IN (%s);" 2>/dev/null || echo "?")\n'
+            u'    az_rm_skins=$(db -e "SELECT COUNT(*) FROM player.item i JOIN world.item_proto p ON p.vnum = i.vnum WHERE p.type = 28 AND p.subtype = 3 AND i.socket2 IN (%s);" 2>/dev/null || echo "?")\n'
+            u'    if db -e "DELETE FROM player.item WHERE vnum IN (%s);\n'
+            u'        UPDATE player.item i JOIN world.item_proto p ON p.vnum = i.vnum SET i.socket2 = 0 WHERE p.type = 28 AND p.subtype = 3 AND i.socket2 IN (%s);\n'
+            u'        INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES (\'azcostume_removed_v2\', NOW());"; then\n'
+            u'        db -e "DELETE FROM player.item_award WHERE vnum IN (%s);" 2>/dev/null || true\n'
+            u'        echo "[playerbot-migrate] Arezzo costume sets V2: removed $az_rm_items held item(s) of Ognisty Rycerz / Krwawa Zemsta, $az_rm_skins sash skin(s) taken off sashes"\n'
+            u'    else\n'
+            u'        fail_step "could not remove the players\' items of the dropped Arezzo costume sets" >&2\n'
+            u'    fi\n'
+            u'fi\n') % (MARK2, len(vn), lst, lst, lst, lst, skins, lst, skins, lst)
 
 
 def put_block(path, block, anchor):
@@ -145,7 +210,7 @@ def costume_sets_txt(path, sets):
     raw = open(path, encoding='utf-8', newline='').read()
     nl = '\r\n' if '\r\n' in raw else '\n'
     lines = raw.replace('\r\n', '\n').split('\n')
-    names = set(s['name'] for s in sets)
+    names = set(s['name'] for s in sets) | set(r[1] for r in A.REMOVED_SETS)   # V2: the removed ones go too
     keep = [l for l in lines if l.split('\t')[0] not in names and MARK not in l]
     while keep and keep[-1] == '':
         keep.pop()
@@ -172,6 +237,92 @@ def costume_sets_py(path, txt_lines):
         rows.append('\t((%s,), (%s,)),\t# %s' % (bodies, hairs, name))
     text = text[:a] + 'SETS = (\n' + '\n'.join(rows) + '\n)\n' + text[b:]
     open(path, 'w', encoding='latin-1', newline='').write(text)
+
+
+# --- MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the sets only while the Arezzo module is on ---------------
+# One world switch, the event flag mt2009_arezzo_closed (1 = off; apply.sh from M2_AREZZO, the panel's
+# "Modul Arezzo" live) - the same one the maps, dungeons and guards follow (playerbot_arezzo.h).
+ENGINE_LIST = 'linux-port/overlays/playerbot/src/game/src/playerbot_arezzo_costumes.h'
+
+
+def write_engine_list(path, items):
+    vn = sorted(it['vnum'] for it in items)
+    rows = []
+    for i in range(0, len(vn), 12):
+        rows.append('\t\t' + ', '.join(str(v) for v in vn[i:i + 12]) + ',')
+    text = (u'// %s (generated by client-patches/client-2.0.30/tools/azcostume/gen_azcostume_server.py from\n'
+            u'// azcostume_items.json - do not edit by hand): the Arezzo costume sets\' items (%d) are for sale only\n'
+            u'// while the Arezzo module is on - the event flag mt2009_arezzo_closed (1 = off), the switch\n'
+            u'// playerbot_arezzo.h follows. Read by the engine\'s ItemShop (server-patches/azcostume, (ishop-list) / (ishop-buy)):\n'
+            u'// CItemShopManager::CanSendItem leaves the line out of the window, BuyItem refuses it) and by the\n'
+            u'// bots\' catalogue (playerbot_itemshop.h, which includes this file exactly once). The item rows\n'
+            u'// stay in item_proto: what a player already holds keeps working.\n'
+            u'#ifndef __INC_MT2009_PLUS_AREZZO_COSTUMES_H__\n'
+            u'#define __INC_MT2009_PLUS_AREZZO_COSTUMES_H__\n'
+            u'\n'
+            u'#include <algorithm>\n'
+            u'#include "questmanager.h"\n'
+            u'\n'
+            u'namespace mt2009_arezzo_costumes\n'
+            u'{\n'
+            u'\tconst DWORD VNUMS[] = {\n'
+            u'%s\n'
+            u'\t};\n'
+            u'\n'
+            u'\tinline bool IsItem(DWORD vnum)\n'
+            u'\t{\n'
+            u'\t\treturn std::binary_search(VNUMS, VNUMS + sizeof(VNUMS) / sizeof(VNUMS[0]), vnum);\n'
+            u'\t}\n'
+            u'\n'
+            u'\tinline bool ModuleClosed()\n'
+            u'\t{\n'
+            u'\t\treturn quest::CQuestManager::instance().GetEventFlag("mt2009_arezzo_closed") > 0;\n'
+            u'\t}\n'
+            u'}\n'
+            u'\n'
+            u'// The engine\'s side (itemshop_manager.cpp declares it): an Arezzo set item while the module is off.\n'
+            u'bool Mt2009PlusArezzoCostumeLocked(DWORD vnum)\n'
+            u'{\n'
+            u'\treturn mt2009_arezzo_costumes::IsItem(vnum) && mt2009_arezzo_costumes::ModuleClosed();\n'
+            u'}\n'
+            u'\n'
+            u'#endif\n') % (MARK2, len(vn), '\n'.join(rows))
+    open(path, 'w', encoding='utf-8', newline='\n').write(text)
+
+
+def web_gate_php(items):
+    vn = ','.join(str(v) for v in sorted(it['vnum'] for it in items))
+    return (u'<?php\n'
+            u'// %s (generated by client-patches/client-2.0.30/tools/azcostume/gen_azcostume_server.py - do not\n'
+            u'// edit by hand): the Arezzo costume sets are offered only while the Arezzo module is on - the world\n'
+            u'// flag mt2009_arezzo_closed (player.quest, dwPID 0; 1 = off, written by apply.sh from M2_AREZZO and\n'
+            u'// live by the panel\'s "Modul Arezzo"). No row reads as off, as the panel reads it. index.php\n'
+            u'// loads this; home / category / detail leave the offers out, buy refuses them.\n'
+            u"define('MT2009_AREZZO_COSTUME_VNUMS', '%s');\n"
+            u'\n'
+            u'function mt2009_arezzo_closed($sqlServ) {\n'
+            u'\tstatic $closed = null;\n'
+            u'\tif ($closed === null) {\n'
+            u'\t\t$row = null;\n'
+            u'\t\ttry {   // PHP 8.1+ throws on a failed query; a flag nobody can read keeps the sets hidden\n'
+            u'\t\t\t$r = mysqli_query($sqlServ, "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = \'mt2009_arezzo_closed\' LIMIT 1");\n'
+            u'\t\t\t$row = $r ? mysqli_fetch_row($r) : null;\n'
+            u'\t\t} catch (Throwable $e) {\n'
+            u'\t\t\t$row = null;\n'
+            u'\t\t}\n'
+            u'\t\t$closed = !$row || (int)$row[0] > 0;\n'
+            u'\t}\n'
+            u'\treturn $closed;\n'
+            u'}\n'
+            u'\n'
+            u'// " AND <col> NOT IN (...)" while the module is off, "" while it is on.\n'
+            u"function mt2009_arezzo_costume_sql($sqlServ, $col = 'vnum') {\n"
+            u"\treturn mt2009_arezzo_closed($sqlServ) ? ' AND ' . $col . ' NOT IN (' . MT2009_AREZZO_COSTUME_VNUMS . ')' : '';\n"
+            u'}\n'
+            u'\n'
+            u'function mt2009_arezzo_costume_locked($sqlServ, $vnum) {\n'
+            u"\treturn in_array((string)(int)$vnum, explode(',', MT2009_AREZZO_COSTUME_VNUMS), true) && mt2009_arezzo_closed($sqlServ);\n"
+            u'}\n') % (MARK2, vn)
 
 
 # --- icons for the web shop: TGA (types 2/10, 24/32 bit) or PNG -> PNG --------------------------
@@ -244,8 +395,17 @@ def main():
             if not os.path.exists(dst) or open(dst, 'rb').read() != png:
                 open(dst, 'wb').write(png)
                 made += 1
-    print('items %d, ItemShop lines %d, sets %d, web icons written %d' % (len(items), len(ishop_lines(items)),
-                                                                         len(d['sets']), made))
+    gone = 0
+    for v in A.removed_vnums():   # MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the removed sets' icons
+        dst = os.path.join(img, '%d.png' % v)
+        if os.path.exists(dst):
+            os.remove(dst)
+            gone += 1
+    open(os.path.join(repo, 'linux-port/docker/itemshop/app/itemshop/arezzo_costumes.php'), 'w',
+         encoding='utf-8').write(web_gate_php(items))
+    write_engine_list(os.path.join(repo, ENGINE_LIST), items)
+    print('items %d, ItemShop lines %d, sets %d, web icons written %d, removed %d' % (
+        len(items), len(ishop_lines(items)), len(d['sets']), made, gone))
 
 
 if __name__ == '__main__':

@@ -106,6 +106,27 @@ def main():
         if l and not l.startswith('#') and l.split('\t')[0] not in set(s['name'] for s in d['sets']):
             olds = set(int(x) for x in re.findall(r'\d+', '\t'.join(l.split('\t')[1:])))
             check(not (olds & new), 'old set %s uses a new vnum' % l.split('\t')[0])
+    # MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the removed sets are nowhere, the module gate lists every item
+    sys.path.insert(0, HERE)
+    import azcostume_sets as A
+    gone = set(A.removed_vnums())
+    check(not (gone & new), 'a removed vnum is in azcostume_items.json')
+    check(not (gone & set(srv)), 'a removed vnum has an item_proto row')
+    check(not (gone & ishop), 'a removed vnum has an in-game ItemShop line')
+    check(not any(('SELECT %d, ' % (1000000 + v)) in web for v in gone), 'a removed vnum has a web shop offer')
+    for name, table in (('gf_official_costumes', gf), ('costume_attr_items', attr), ('item_list', il),
+                        ('itemdesc', desc), ('shiningtable', shine), ('item_scale', scale)):
+        check(not (gone & set(table)), 'a removed vnum is in %s' % name)
+    for race, (shapes, hairs) in msm.items():
+        check(not (gone & (shapes | hairs)), 'a removed vnum has a msm group in %s' % race)
+    for r in A.REMOVED_SETS:
+        check(r[1] not in txt and r[1] not in py, 'removed set %s in costume_sets' % r[1])
+    hdr = open(os.path.join(repo, 'linux-port/overlays/playerbot/src/game/src/playerbot_arezzo_costumes.h')).read()
+    hdr_v = set(int(x) for x in re.findall(r'\b(\d{5})\b', hdr.split('VNUMS[] = {', 1)[1].split('};', 1)[0]))
+    check(hdr_v == new, 'playerbot_arezzo_costumes.h lists %d vnums, not the %d items' % (len(hdr_v), len(new)))
+    php = open(os.path.join(repo, 'linux-port/docker/itemshop/app/itemshop/arezzo_costumes.php'), encoding='utf-8').read()
+    php_v = set(int(x) for x in re.search(r"MT2009_AREZZO_COSTUME_VNUMS', '([\d,]+)'", php).group(1).split(','))
+    check(php_v == new, 'arezzo_costumes.php lists %d vnums, not the %d items' % (len(php_v), len(new)))
     print('%d items, %d sets checked; %d error(s)' % (len(items), len(d['sets']), len(errors)))
     for e in errors[:40]:
         print('  ', e)

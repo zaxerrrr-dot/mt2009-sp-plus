@@ -52,6 +52,7 @@
 #include "itemshop_manager.h"
 #include "log.h"
 #include "playerbot_collector.h"	// MT2009_PLUS_COLLECTOR_ITEM_V1: its item's vnum
+#include "playerbot_arezzo_costumes.h"	// MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the Arezzo sets, only with the module on
 #if defined(__PET_SYSTEM__)
 #include "PetSystem.h"
 #endif
@@ -113,6 +114,15 @@ namespace
 
 	void RefreshPlayerBotItemShopCatalogue(DWORD dwNow)
 	{
+		// MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the Arezzo module switched on or off (the panel, live) -
+		// the catalogue again at once, with or without the Arezzo costume sets.
+		static int s_iPlayerBotItemShopArezzoClosed = -1;
+		const int arezzoClosed = mt2009_arezzo_costumes::ModuleClosed() ? 1 : 0;
+		if (arezzoClosed != s_iPlayerBotItemShopArezzoClosed)
+		{
+			s_iPlayerBotItemShopArezzoClosed = arezzoClosed;
+			s_dwNextPlayerBotItemShopScan = 0;
+		}
 		if (s_dwNextPlayerBotItemShopScan != 0 && dwNow < s_dwNextPlayerBotItemShopScan)
 			return;
 		s_dwNextPlayerBotItemShopScan = dwNow + PLAYERBOT_ISHOP_CATALOGUE_INTERVAL;
@@ -141,6 +151,10 @@ namespace
 			// storage, which a bot never uses (playerbot_collector.h) - its lines
 			// are no bot's goods, whatever a wish may name later.
 			if (item.dwVnum == playerbot_collector::ITEM_VNUM)
+				continue;
+			// MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the Arezzo costume sets are no bot's goods while the
+			// Arezzo module is off (the engine's BuyItem refuses them too).
+			if (arezzoClosed && mt2009_arezzo_costumes::IsItem(item.dwVnum))
 				continue;
 			TPlayerBotItemShopEntry entry;
 			entry.dwIndex = item.dwIndex;

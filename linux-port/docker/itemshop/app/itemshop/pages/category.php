@@ -57,6 +57,8 @@
 				}
 				if ($filterInfo !== '')
 					echo '<div class="catFilter" style="clear:both;text-align:center;padding:6px 0;">' . $filterInfo . '</div>';
+				// MT2009_PLUS_AREZZO_COSTUME_SETS_V2: no Arezzo costume set offer while the Arezzo module is off.
+				$filterSql .= mt2009_arezzo_costume_sql($sqlServ);
 				$cnt = mysqli_query($sqlServ, "SELECT COUNT(*) AS n FROM itemshop.ishop_items WHERE category=" . $id . $filterSql);
 				$total = $cnt ? (int)mysqli_fetch_assoc($cnt)['n'] : 0;
 				$pages = max(1, (int)ceil($total / $perPage));
