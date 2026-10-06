@@ -313,6 +313,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // answered, and the advice of where to exp and where the Metins stand. After
 // the Battle Pass bots, whose stone table and chatter it uses.
 #include "playerbot_chat_world.h"
+// MT2009_PLUS_GM_SM_EVENT_V1 (include): a GM's "!SM" notice - the bots' SM race on
+// the shout - and their short lines after any other GM notice. After the chat world.
+#include "playerbot_gm_notice.h"
 // MT2009_PLUS_BOT_DUNGEON_LFG_V1 (include): the bots' dungeon finder - a
 // person's "ktos na biblioteke?" answered by whisper, the yes and the wait at
 // the entrance. After the chat world, the conversation, the companions, the
@@ -6304,6 +6307,8 @@ void CPlayerBotManager::Update()
 	// MT2009_PLUS_BOT_CHAT_V2: the bots' '@' trade lines and the shout
 	// channel's answers (playerbot_chat_world.h).
 	ManagePlayerBotChatWorld(dwNow);
+	// MT2009_PLUS_GM_SM_EVENT_V1: the SM race and the GM notice reactions (playerbot_gm_notice.h).
+	ManagePlayerBotGMNotice(dwNow);
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the dungeon finder's offers due out,
 	// lapsed, and its waits ended (playerbot_dungeon_lfg.h).
 	ManagePlayerBotDungeonLfg(dwNow);
@@ -8550,6 +8555,14 @@ void CPlayerBotManager::OnPlayerShout(LPCHARACTER ch, const char* szText)
 	// MT2009_PLUS_SHOUTERS_V1: a line of the channel for the shouters' count.
 	if (ch && ch->GetEmpire() >= 1 && ch->GetEmpire() <= 3)
 		++s_auPlayerBotShoutsSeen[ch->GetEmpire()];
+	// MT2009_PLUS_GM_SM_EVENT_V1: a GM's own "!SM" on the shout starts the race
+	// on this core too (playerbot_gm_notice.h).
+	if (ch && ch->GetGMLevel() > GM_PLAYER && !(ch->GetDesc() && ch->GetDesc()->IsBot()) &&
+			PlayerBotNoticeCallsSM(szText))
+	{
+		StartPlayerBotSMRace(get_dword_time(), "gm-shout");
+		return;
+	}
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: "kto na biblioteke?", "szukam ekipy na
 	// smoka" first - a call for company to a dungeon is never a trade line
 	// nor a question for the channel (playerbot_dungeon_lfg.h).
@@ -8606,6 +8619,22 @@ void CPlayerBotManager::OnPeerShout(BYTE bEmpire)
 {
 	if (bEmpire >= 1 && bEmpire <= 3)
 		++s_auPlayerBotShoutsSeen[bEmpire];
+}
+
+// MT2009_PLUS_GM_SM_EVENT_V1: a GM's notice command on this core (cmd_gm.cpp,
+// server-patches/playerqol) - "!SM" starts the bots' SM race, anything else a
+// few short lines now and then (playerbot_gm_notice.h).
+void CPlayerBotManager::OnGMNotice(LPCHARACTER ch, const char* szText, BYTE bChatType)
+{
+	if (!ch || ch->GetGMLevel() <= GM_PLAYER)
+		return;
+	ReadPlayerBotGMNotice(szText, true, bChatType);
+}
+
+// MT2009_PLUS_GM_SM_EVENT_V1: another core's notice (CInputP2P::Notice).
+void CPlayerBotManager::OnPeerNotice(const char* szText, BYTE bChatType)
+{
+	ReadPlayerBotGMNotice(szText, false, bChatType);
 }
 
 bool CPlayerBotManager::IsScheduledBot(DWORD dwPlayerID) const

@@ -934,5 +934,29 @@
   "marker": "MT2009_PLUS_GM_DUNGEON_RESET_V1 (command)",
   "old": "ACMD(do_dungeon_panel)\n{\n",
   "new": "// MT2009_PLUS_GM_DUNGEON_RESET_V1 (command): \"/dungeon_reset <name> [dungeon|all]\" (\"/resetdungi\") - a GM zeroes a\n// character's day count of dungeon expeditions, online on any core or offline (playerbot_dungeon_reset.h).\nACMD(do_gm_dungeon_reset)\n{\n\tif (!ch)\n\t\treturn;\n\tvoid GmDungeonResetCommand(LPCHARACTER ch, const char* argument);\n\tGmDungeonResetCommand(ch, argument);\n}\n\nACMD(do_dungeon_panel)\n{\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GM_SM_EVENT_V1 (notice)",
+  "old": "ACMD(do_notice)\n{\n\tBroadcastNotice(argument);\n}\n",
+  "new": "ACMD(do_notice)\n{\n\tBroadcastNotice(argument);\n\t// MT2009_PLUS_GM_SM_EVENT_V1 (notice): the bots read a GM's notice - \"!SM\" starts their SM race\n\t// on the shout (playerbot_gm_notice.h).\n\tCPlayerBotManager::instance().OnGMNotice(ch, argument, CHAT_TYPE_NOTICE);\n}\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GM_SM_EVENT_V1 (gm_notice)",
+  "old": "\tBroadcastNotice(fullMessage.c_str(), CHAT_TYPE_GAMEMASTER_NOTICE);\n}\n",
+  "new": "\tBroadcastNotice(fullMessage.c_str(), CHAT_TYPE_GAMEMASTER_NOTICE);\n\t// MT2009_PLUS_GM_SM_EVENT_V1 (gm_notice): the bots read a GM's notice - \"!SM\" starts their SM race\n\t// on the shout (playerbot_gm_notice.h).\n\tCPlayerBotManager::instance().OnGMNotice(ch, argument, CHAT_TYPE_GAMEMASTER_NOTICE);\n}\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_GM_SM_EVENT_V1 (big_notice)",
+  "old": "ACMD(do_big_notice)\n{\n#ifdef ENABLE_FULL_NOTICE\n\tBroadcastNotice(argument, CHAT_TYPE_BIG_NOTICE);\n#else\n\tch->ChatPacket(CHAT_TYPE_BIG_NOTICE, \"%s\", argument);\n#endif\n}\n",
+  "new": "ACMD(do_big_notice)\n{\n#ifdef ENABLE_FULL_NOTICE\n\tBroadcastNotice(argument, CHAT_TYPE_BIG_NOTICE);\n#else\n\tch->ChatPacket(CHAT_TYPE_BIG_NOTICE, \"%s\", argument);\n#endif\n\t// MT2009_PLUS_GM_SM_EVENT_V1 (big_notice): the bots read a GM's notice - \"!SM\" starts their SM race\n\t// on the shout (playerbot_gm_notice.h).\n\tCPlayerBotManager::instance().OnGMNotice(ch, argument, CHAT_TYPE_BIG_NOTICE);\n}\n"
+ },
+ {
+  "file": "input_p2p.cpp",
+  "marker": "MT2009_PLUS_GM_SM_EVENT_V1 (p2p)",
+  "old": "\tSendNotice(szBuf, p->bChatType);\n#else\n\tSendNotice(szBuf);\n#endif\n\treturn (p->lSize);\n",
+  "new": "\tSendNotice(szBuf, p->bChatType);\n\t// MT2009_PLUS_GM_SM_EVENT_V1 (p2p): another core's notice for this core's bots - a GM's \"!SM\"\n\t// starts their SM race on the shout (playerbot_gm_notice.h).\n\tCPlayerBotManager::instance().OnPeerNotice(szBuf, p->bChatType);\n#else\n\tSendNotice(szBuf);\n#endif\n\treturn (p->lSize);\n"
  }
 ]
