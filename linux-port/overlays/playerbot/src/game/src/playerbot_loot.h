@@ -149,6 +149,7 @@ namespace
 	// MT2009_PLUS_SIDEKICK_LOOT_OFF_V1 (playerbot_sidekick.h): a companion whose
 	// window says "Nic" - it picks nothing up, in any state.
 	bool IsPlayerBotSidekickLootOff(LPCHARACTER ch);
+	bool IsPlayerBotSidekickOwnLootOff(LPCHARACTER ch);	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1
 
 	bool IsPlayerBotPartyLoot(LPCHARACTER owner, LPITEM item)
 	{
@@ -158,8 +159,11 @@ namespace
 		// nothing its owner has filtered out, not even its own drop.
 		if (!PlayerBotRecipientWantsDrop(GetPlayerBotSidekickFilterOwner(owner), item))
 			return false;
+		// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: a companion set to "Drop: tylko dla
+		// mnie" takes nothing for itself at its owner's side - let off the
+		// leash this pass runs for it - only its owner's drops, for the owner.
 		if (item->IsOwnership(owner))
-			return true;
+			return !IsPlayerBotSidekickOwnLootOff(owner);
 		// Never another member's yang: the party branch of PickupItem has no
 		// case for it and puts the pile into the owner's bag as a "Yang" item
 		// worth nothing - 109 of Tanaka's piles in 25 minutes on m2zip, 93 of

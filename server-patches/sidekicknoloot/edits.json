@@ -1,0 +1,32 @@
+[
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (single)",
+  "old": "\t\t\titem = s_vec_item[0];\n\t\t\titem->AddToGround(GetMapIndex(), pos);\n\n#ifdef ENABLE_DICE_SYSTEM\n\t\t\tif (pkAttacker->GetParty())\n\t\t\t{\n\t\t\t\tFPartyDropDiceRoll f(item, pkAttacker);\n\t\t\t\tf.Process(this);\n\t\t\t}\n\t\t\telse\n\t\t\t\titem->SetOwnership(pkAttacker);\n#else\n\t\t\titem->SetOwnership(pkAttacker);\n#endif\n",
+  "new": "\t\t\titem = s_vec_item[0];\n\t\t\titem->AddToGround(GetMapIndex(), pos);\n\n\t\t\t// MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (single): a companion whose owner set\n\t\t\t// \"Drop: tylko dla mnie\" (playerbot_sidekick.h) hands its drop to the\n\t\t\t// owner near it; anybody else's stays its own.\n\t\t\tLPCHARACTER Mt2009PlusSidekickLootReceiver(LPCHARACTER ch, long lMapIndex, long x, long y);\n\t\t\tLPCHARACTER pkDropOwner = Mt2009PlusSidekickLootReceiver(pkAttacker, GetMapIndex(), GetX(), GetY());\n\n#ifdef ENABLE_DICE_SYSTEM\n\t\t\tif (pkDropOwner->GetParty())\n\t\t\t{\n\t\t\t\tFPartyDropDiceRoll f(item, pkDropOwner);\n\t\t\t\tf.Process(this);\n\t\t\t}\n\t\t\telse\n\t\t\t\titem->SetOwnership(pkDropOwner);\n#else\n\t\t\titem->SetOwnership(pkDropOwner);\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (share)",
+  "old": "\t\t\t\t\tif (ch->GetParty())\n\t\t\t\t\t\tch = ch->GetParty()->GetNextOwnership(ch, GetX(), GetY());\n",
+  "new": "\t\t\t\t\tif (ch->GetParty())\n\t\t\t\t\t\tch = ch->GetParty()->GetNextOwnership(ch, GetX(), GetY());\n\n\t\t\t\t\t// MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (share): the party's turn at a share\n\t\t\t\t\t// that falls to a companion whose owner set \"Drop: tylko dla mnie\"\n\t\t\t\t\t// (playerbot_sidekick.h) is the owner's - every second item of a Metin\n\t\t\t\t\t// lay under the companion's name, and the owner's pick-up of it put it\n\t\t\t\t\t// into the companion's bag (PickupItem, the party branch).\n\t\t\t\t\t{\n\t\t\t\t\t\tLPCHARACTER Mt2009PlusSidekickLootReceiver(LPCHARACTER ch, long lMapIndex, long x, long y);\n\t\t\t\t\t\tch = Mt2009PlusSidekickLootReceiver(ch, GetMapIndex(), GetX(), GetY());\n\t\t\t\t\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (pickup)",
+  "old": "\t\tLPCHARACTER owner = funcFindOwnership.owner;\n\t\t// @fixme115\n\t\tif (!owner)\n\t\t\treturn false;\n",
+  "new": "\t\tLPCHARACTER owner = funcFindOwnership.owner;\n\t\t// @fixme115\n\t\tif (!owner)\n\t\t\treturn false;\n\n\t\t// MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (pickup): a drop under the name of a\n\t\t// companion whose owner set \"Drop: tylko dla mnie\" (playerbot_sidekick.h)\n\t\t// - from before the switch, or an ownerless one the party found it for -\n\t\t// goes to that owner when the owner is near, not into the companion's bag.\n\t\t{\n\t\t\tLPCHARACTER Mt2009PlusSidekickLootReceiver(LPCHARACTER ch, long lMapIndex, long x, long y);\n\t\t\towner = Mt2009PlusSidekickLootReceiver(owner, GetMapIndex(), item->GetX(), item->GetY());\n\t\t}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (cloth)",
+  "old": "\tif (killer->GetDesc() && killer->GetDesc()->IsBot())\n\t{\n\t\tif (killer->GetEmptyInventoryEx(cloth) != -1)",
+  "new": "\t// MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (cloth): a companion whose owner set \"Drop:\n\t// tylko dla mnie\" (playerbot_sidekick.h) leaves it on the ground, where\n\t// CHARACTER::Reward makes it the owner's.\n\tLPCHARACTER Mt2009PlusSidekickLootReceiver(LPCHARACTER ch, long lMapIndex, long x, long y);\n\tif (killer->GetDesc() && killer->GetDesc()->IsBot() &&\n\t\tMt2009PlusSidekickLootReceiver(killer, victim->GetMapIndex(), victim->GetX(), victim->GetY()) == killer)\n\t{\n\t\tif (killer->GetEmptyInventoryEx(cloth) != -1)"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (cor)",
+  "old": "\t\t\t\t\tif (pkKiller->GetDesc()->IsBot())\n\t\t\t\t\t{\n\t\t\t\t\t\tif (pkKiller->GetEmptyInventoryEx(cor) != -1)",
+  "new": "\t\t\t\t\t// MT2009_PLUS_SIDEKICK_NO_LOOT_V1 (cor): not a companion's whose owner set\n\t\t\t\t\t// \"Drop: tylko dla mnie\" (playerbot_sidekick.h) - on the ground,\n\t\t\t\t\t// CHARACTER::Reward makes it the owner's.\n\t\t\t\t\tLPCHARACTER Mt2009PlusSidekickLootReceiver(LPCHARACTER ch, long lMapIndex, long x, long y);\n\t\t\t\t\tif (pkKiller->GetDesc()->IsBot() &&\n\t\t\t\t\t\tMt2009PlusSidekickLootReceiver(pkKiller, pkChr->GetMapIndex(), pkChr->GetX(), pkChr->GetY()) == pkKiller)\n\t\t\t\t\t{\n\t\t\t\t\t\tif (pkKiller->GetEmptyInventoryEx(cor) != -1)"
+ }
+]

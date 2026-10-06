@@ -944,6 +944,22 @@ if ((Test-Path -LiteralPath $azCostumeApply -PathType Leaf) -and
         Write-Host ('Applied {0} Arezzo sash skin edit(s).' -f $azCostumeResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The companion's "Drop: tylko dla mnie" (server-patches/sidekicknoloot,
+# MT2009_PLUS_SIDEKICK_NO_LOOT_V1): a drop's share that falls to a companion
+# whose owner switched the split off goes to the owner (char_battle.cpp,
+# CHARACTER::Reward), so do the owner's pick-up of a drop under its name
+# (char_item.cpp, PickupItem's party branch) and its Cor and cloth
+# (item_manager.cpp). After rankpoints and botrareshare, whose lines it sits
+# beside; the rest is the overlay's playerbot_sidekick.h.
+$sidekickNoLootApply = Join-Path $repo 'server-patches/sidekicknoloot/Apply-SidekickNoLootPatch.ps1'
+if ((Test-Path -LiteralPath $sidekickNoLootApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $sidekickNoLootResult = & $sidekickNoLootApply -SourceDir $engineGameSource
+    if ($sidekickNoLootResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} companion loot share edit(s).' -f $sidekickNoLootResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
