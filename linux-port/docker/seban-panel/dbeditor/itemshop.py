@@ -119,6 +119,7 @@ BOOT_ONCE = {
     "quiver_10": {"adds": (10, 13), "remove_indexes": (11, 12, 14, 15), "note": "Kołczan i rękawica"},
     "king03_20212": {"adds": (20212, 30054), "note": "Zbroja Króla Wojowników+ i Święty Miecz Bogów+"},
     "monster_cards_617": {"adds": (617, 618), "note": "Karty Potworów (Nowego Początku / Układu)"},
+    "collector_item_16": {"adds": (16,), "note": "Kolekcjoner – okno Kolekcjonera z dowolnego miejsca"},
 }
 
 

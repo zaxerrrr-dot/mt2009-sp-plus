@@ -34,7 +34,8 @@
 // belt only empty, and hands free (CanHandleItem, no quest running, alive);
 // the store opens only while the classic safebox is open (its password and
 // its storekeeper), and every move is refused once the character is
-// MAX_DISTANCE from where it opened.
+// MAX_DISTANCE from where it opened. MT2009_PLUS_COLLECTOR_ITEM_V1: or, with the
+// "Kolekcjoner" item in the bag, wherever the character stands ("przedmiot").
 #include "stdafx.h"
 #include "playerbot_collector.h"
 
@@ -616,19 +617,30 @@ void LoadItems(DWORD pid, DWORD handle, DWORD nonce, DWORD account)
 	   "FROM player.item WHERE owner_id=%u AND `window`='SAFEBOX' ORDER BY id LIMIT %u", OwnerOf(account), LOAD_LIMIT);
 }
 
-void Open(LPCHARACTER ch)
+// byItem (MT2009_PLUS_COLLECTOR_ITEM_V1): opened with the "Kolekcjoner" item
+// (ITEM_VNUM) in the bag instead of at the storekeeper - every other rule is
+// the storekeeper's: alive, the session is where the character stands and
+// closes MAX_DISTANCE from there, and every move asks hands free.
+void Open(LPCHARACTER ch, bool byItem)
 {
 	if (ch->IsDead()) {
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "COLL err %d", OPEN_DEAD);
 		return;
 	}
-	if (!ch->GetSafebox() || !ch->IsOpenSafebox()) {
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "COLL err %d", OPEN_NO_SAFEBOX);
-		return;
-	}
-	if (ch->GetDistanceFromSafeboxOpen() > 1000) {
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "COLL err %d", OPEN_TOO_FAR);
-		return;
+	if (byItem) {
+		if (ch->CountSpecifyItem(ITEM_VNUM) <= 0) {
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "COLL err %d", OPEN_NO_ITEM);
+			return;
+		}
+	} else {
+		if (!ch->GetSafebox() || !ch->IsOpenSafebox()) {
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "COLL err %d", OPEN_NO_SAFEBOX);
+			return;
+		}
+		if (ch->GetDistanceFromSafeboxOpen() > 1000) {
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "COLL err %d", OPEN_TOO_FAR);
+			return;
+		}
 	}
 	auto old = s_sessions.find(ch->GetPlayerID());
 	if (old != s_sessions.end() && old->second.handle == ch->GetDesc()->GetHandle() && !old->second.loaded) {
@@ -710,7 +722,11 @@ void Command(LPCHARACTER ch, const char* argument)
 	one_argument(rest, a4, sizeof(a4));
 
 	if (!strcmp(word, "open")) {
-		Open(ch);
+		Open(ch, false);
+		return;
+	}
+	if (!strcmp(word, "przedmiot")) {	// MT2009_PLUS_COLLECTOR_ITEM_V1
+		Open(ch, true);
 		return;
 	}
 	if (!strcmp(word, "close")) {

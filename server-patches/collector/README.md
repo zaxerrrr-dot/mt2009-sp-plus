@@ -119,3 +119,25 @@ dostępna>`, `e <wpis> ...`, `end <wpisy>`, `set <wpis>`, `del <id>`,
 pole, lupa, pasek, nagłówek, pole wyszukiwania); każda brakująca grafika ma
 zastępstwo z paczek klienta albo jest pomijana – okno nigdy nie wywraca się
 na braku pliku. Bez zmian w `metin2client.exe`.
+
+## Przedmiot „Kolekcjoner” (MT2009_PLUS_COLLECTOR_ITEM_V1)
+
+- **70115 „Kolekcjoner”** – w ItemShopie (strona „Wyposażenie”, indeks 16,
+  1000 SM, bez progu poziomu; `apply.sh`, `ishop_once collector_item_16`,
+  edytowalny w edytorze bazy danych). `ITEM_QUEST`, **nie zużywa się**,
+  stos 1, antyflagi 106880 (bez wyrzucania, sprzedaży, handlu, sklepu
+  prywatnego/offline, łączenia) – zostaje u kupującego; magazyn konta może
+  go przenieść między postaciami.
+- Użycie (`game/quest/kolekcjoner_item.quest`) wysyła `/kolekcjoner
+  przedmiot`: serwer sprawdza, czy przedmiot jest w ekwipunku i postać żyje,
+  i otwiera magazyn kolekcjonera **tam, gdzie stoi postać** – bez
+  magazyniera i bez otwartego zwykłego magazynu (czyli też bez jego hasła).
+  Reszta zasad jak u magazyniera: ruchy z wolnymi rękami, zamknięcie po
+  odejściu 15 m od miejsca otwarcia. Okno otwiera się samo na pierwszy
+  wiersz `COLL begin` (jak przy przycisku w oknie magazynu).
+- Boty go nie kupują (`playerbot_itemshop.h` pomija jego wiersze w katalogu
+  botów) i nie otwierają magazynu (`RealPlayer`).
+- Klient: rekord `item_proto`, wiersz `item_list.txt` (ikona Biletu Do
+  Magazynu, `icon/item/70010.tga`) i `itemdesc.txt` –
+  `client-patches/client-2.0.30/tools/collectoritem/patch_collector_item_client.py`;
+  w `uicollector.py` komunikat dla braku przedmiotu (`COLL err 6`).
