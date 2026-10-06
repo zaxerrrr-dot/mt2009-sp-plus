@@ -323,6 +323,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // refusals it borrows, and the party dungeon pass and the Arezzo cohort,
 // whose fights and items it uses.
 #include "playerbot_dungeon_runs.h"
+// MT2009_PLUS_GM_DUNGEON_RESET_V1 (include): a GM's "/dungeon_reset <name> [dungeon|all]"
+// ("/resetdungi") - after the bots' dungeon runs, whose rest it clears too.
+#include "playerbot_dungeon_reset.h"
 // MT2009_PLUS_BOT_FRIENDS_V1: a bot answers a person's friend invitation
 // (server-patches/botfriends), after the shouters and the companion it asks.
 #include "playerbot_bot_friends.h"

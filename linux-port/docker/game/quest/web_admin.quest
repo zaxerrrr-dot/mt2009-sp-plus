@@ -396,6 +396,49 @@ quest web_admin begin
 									else
 										command("reload i")
 									end
+								elseif cmd == "DG_RESET" then
+									-- MT2009_PLUS_GM_DUNGEON_RESET_V1: a GM's "/dungeon_reset <name> [dungeon|all]"
+									-- for a character on another core (playerbot_dungeon_reset.h queues it
+									-- here), or the Seban panel's "Limit dungeonow". arg1 = a key of
+									-- dungeon_info.txt, the quest's name or "all". Zeroes <quest>.runs, the
+									-- day's count pay_entry() keeps (read while <quest>.day is today); a
+									-- playerbot also loses the dungeon's cooldown flag (a person's entry flag
+									-- is the rejoin's and stays). The message is CP1250 by escapes: this
+									-- file is UTF-8.
+									local dg_all = {
+										{ "biblioteka", "biblioteka_wiedzy", 1, "entry" },
+										{ "wukong", "wzgorze_wukonga", 1, "entry" },
+										{ "razador", "razador_dungeon", 1, "entry" },
+										{ "skorpion", "ruiny_skorpiona", 1, "entry" },
+										{ "nemere", "nemere_dungeon", 1, "entry" },
+										{ "smok", "blue_dragon_lair", 1, "entry" },
+										{ "dzungla", "starozytna_dzungla", 1, "entry" },
+										{ "katakumby", "devilcatacomb_zone", 0, "last_exit_time" },
+									}
+									local dg_key = arg1
+									if dg_key == nil or dg_key == "" then
+										dg_key = "all"
+									end
+									local dg_bot = pc.is_playerbot()
+									local dg_hit = 0
+									local dgi
+									for dgi = 1, table.getn(dg_all) do
+										local dgd = dg_all[dgi]
+										if dg_key == "all" or dg_key == dgd[1] or dg_key == dgd[2] then
+											dg_hit = dg_hit + 1
+											if dgd[3] == 1 then
+												pc.setf(dgd[2], "runs", 0)
+											end
+											if dg_bot then
+												pc.setf(dgd[2], dgd[4], 0)
+											end
+										end
+									end
+									if dg_hit == 0 then
+										result = "bad_args"
+									else
+										syschat("GM zresetowa\179 Tw\243j limit dziennych dungeon\243w.")
+									end
 								else
 									result = "unknown_cmd"
 								end

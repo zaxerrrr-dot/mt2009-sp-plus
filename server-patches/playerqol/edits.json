@@ -916,5 +916,23 @@
   "marker": "MT2009_PLUS_BOT_CHAT_V2 (exchange gold)",
   "old": "\t\tbool\t\tGetAcceptStatus() { return m_bAccept; }\n",
   "new": "\t\tbool\t\tGetAcceptStatus() { return m_bAccept; }\n\t\t// MT2009_PLUS_BOT_CHAT_V2 (exchange gold): the yang this side put in, for a playerbot that sells\n\t\t// by hand and must see the price before it accepts (playerbot_chat_deals.h).\n\t\tYANG\t\tMt2009PlusGetGold() const { return m_lGold; }\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_GM_DUNGEON_RESET_V1 (declare)",
+  "old": "ACMD(do_dungeon_panel);\n",
+  "new": "ACMD(do_dungeon_panel);\n// MT2009_PLUS_GM_DUNGEON_RESET_V1 (declare)\nACMD(do_gm_dungeon_reset);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_GM_DUNGEON_RESET_V1 (table)",
+  "old": "\t{ \"lochy\",\tdo_dungeon_panel,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"lochy\",\tdo_dungeon_panel,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_GM_DUNGEON_RESET_V1 (table): a character's daily dungeon limit, reset by a GM\n\t{ \"dungeon_reset\",\tdo_gm_dungeon_reset,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n\t{ \"resetdungi\",\tdo_gm_dungeon_reset,\t0,\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_GM_DUNGEON_RESET_V1 (command)",
+  "old": "ACMD(do_dungeon_panel)\n{\n",
+  "new": "// MT2009_PLUS_GM_DUNGEON_RESET_V1 (command): \"/dungeon_reset <name> [dungeon|all]\" (\"/resetdungi\") - a GM zeroes a\n// character's day count of dungeon expeditions, online on any core or offline (playerbot_dungeon_reset.h).\nACMD(do_gm_dungeon_reset)\n{\n\tif (!ch)\n\t\treturn;\n\tvoid GmDungeonResetCommand(LPCHARACTER ch, const char* argument);\n\tGmDungeonResetCommand(ch, argument);\n}\n\nACMD(do_dungeon_panel)\n{\n"
  }
 ]

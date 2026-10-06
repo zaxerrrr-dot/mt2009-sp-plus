@@ -6339,7 +6339,7 @@ def player(pid):
                             dragon_soul_inventory=dragon_soul_inventory, dragon_soul_decks=dragon_soul_decks,
                             gear_history=gear_history, offline_shop=offline_shop, character_stats=character_stats,
                             mission_progress=mission_progress, gm_ranks=GM_RANK_OPTIONS,
-                            admin_warps=PLAYER_ADMIN_WARPS)
+                            admin_warps=PLAYER_ADMIN_WARPS, dungeon_reset_choices=DUNGEON_RESET_CHOICES)
 
 
 @app.get("/api/admin/item-search")
@@ -6411,6 +6411,49 @@ def player_action_game(pid):
             flash(f"Nie udało się wykonać akcji ({status}). Postać musi być online, a web_admin.quest aktywny.", "error")
     except (TypeError, ValueError) as exc:
         flash(str(exc), "error")
+    return redirect(url_for("player", pid=pid))
+
+
+# MT2009_PLUS_GM_DUNGEON_RESET_V1: the same reset as the GM's "/dungeon_reset <nick> [loch|all]"
+# (playerbot_dungeon_reset.h). A character in game anywhere takes the queue row DG_RESET
+# (web_admin.quest zeroes <quest>.runs, a bot's cooldown flag too, and tells the player); nobody
+# taking it within the wait means the character is offline, and then its saved <quest>.runs rows
+# go (a zero flag is no row in player.quest), so the next login starts a fresh day.
+DUNGEON_RESET_CHOICES = [
+    ("all", "Wszystkie lochy", None),
+    ("biblioteka", "Biblioteka Wiedzy", "biblioteka_wiedzy"),
+    ("wukong", "Wzgórze Wukonga", "wzgorze_wukonga"),
+    ("razador", "Razador", "razador_dungeon"),
+    ("skorpion", "Ruiny Skorpiona", "ruiny_skorpiona"),
+    ("nemere", "Nemere", "nemere_dungeon"),
+    ("smok", "Niebieski Smok", "blue_dragon_lair"),
+    ("dzungla", "Starożytna Dżungla", "starozytna_dzungla"),
+]
+
+
+@app.post("/player/<int:pid>/action/dungeon-reset")
+@login_required
+def player_action_dungeon_reset(pid):
+    character = one("SELECT id,name FROM player.player WHERE id=%s", (pid,))
+    if not character:
+        abort(404)
+    key = (request.form.get("dungeon") or "all").strip().lower()
+    choice = next((c for c in DUNGEON_RESET_CHOICES if c[0] == key), None)
+    if not choice:
+        flash("Wybierz loch z listy.", "error")
+        return redirect(url_for("player", pid=pid))
+    status, _queue_id = queue_player_admin_command(character["name"], "DG_RESET", key, "")
+    if status == "done":
+        flash(f"Limit dzienny ({choice[1]}) postaci {character['name']} wyzerowany w grze; gracz dostał wiadomość.", "success")
+    elif status == "timeout":
+        quests = [c[2] for c in DUNGEON_RESET_CHOICES if c[2] and (key == "all" or c[0] == key)]
+        rows("DELETE FROM player.quest WHERE dwPID=%s AND szState='runs' AND szName IN (" +
+             ",".join(["%s"] * len(quests)) + ")", [pid] + quests)
+        flash(f"Limit dzienny ({choice[1]}) postaci {character['name']} wyzerowany w bazie (postać offline). "
+              f"Jeśli jednak jest w grze, a web_admin.quest nie odpowiedział, użyj w grze /dungeon_reset {character['name']}.",
+              "success")
+    else:
+        flash(f"Nie udało się zresetować limitu ({status}).", "error")
     return redirect(url_for("player", pid=pid))
 
 
