@@ -4042,6 +4042,10 @@ namespace
 		// changes for Red Potions (ExchangePlayerBotHay) and buys the rest of.
 		if (item->GetVnum() == PLAYERBOT_HAY_VNUM)
 			return -1;
+		// MT2009_PLUS_BOT_BAG_CLEANUP_V1: nor the fishing table's rings, gloves
+		// and capes - the merchant's (IsPlayerBotFishingJunk), never a counter's.
+		if (IsPlayerBotFishingJunkVnum(item->GetVnum()))
+			return -1;
 		// MT2009_PLUS_BOT_CAPE_V1: nor the capes a cape build holds up to its
 		// PLAYERBOT_CAPE_KEEP - it uses them (HandlePlayerBotValourCape).
 		if (ch && IsPlayerBotValourCapeVnum(item->GetVnum()) && IsPlayerBotCapeBuild(ch) &&

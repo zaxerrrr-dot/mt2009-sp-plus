@@ -1275,6 +1275,43 @@ namespace
 				(vnum >= PLAYERBOT_PEARL_FIRST_VNUM && vnum <= PLAYERBOT_PEARL_LAST_VNUM);
 	}
 
+	// MT2009_PLUS_BOT_BAG_CLEANUP_V1: the fishing table's catches that are not
+	// fish (fishing.txt): Plaszcz Uciekiniera (70048), Pierscien Lucy (70049),
+	// Symb. Krola Przepowiedni (70050), Rekawica Krola Przepowiedni (70051) and
+	// Zloty Pierscien (50002). The 70038-70060 keep of the junk rule held them
+	// for good - 15 283 gloves in 1 630 bags and 3 131 rings in 1 035 on the
+	// test world (6 October), two pages of a bag ("to wszystko niech idzie do
+	// handlarki, taki syf z lowienia", the owner). The merchant's, all of them,
+	// but the one glove a bot wears while its rank is below zero
+	// (PLAYERBOT_RANK_GLOVE_VNUM, playerbot_unique_slots.h): the one worn, or
+	// else the first in the bag, stays.
+	bool IsPlayerBotFishingJunkVnum(DWORD vnum)
+	{
+		return vnum == 70048 || vnum == 70049 || vnum == 70050 || vnum == 70051 || vnum == 50002;
+	}
+
+	bool IsPlayerBotFishingJunk(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !IsPlayerBotFishingJunkVnum(item->GetVnum()))
+			return false;
+		if (item->GetVnum() != PLAYERBOT_RANK_GLOVE_VNUM)
+			return true;
+		for (int wear = WEAR_UNIQUE1; wear <= WEAR_UNIQUE2; ++wear)
+		{
+			LPITEM worn = ch->GetWear(wear);
+			if (worn && worn != item && worn->GetVnum() == PLAYERBOT_RANK_GLOVE_VNUM)
+				return true;
+		}
+		for (WORD cell = 0; cell < item->GetCell() && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM other = ch->GetInventoryItem(cell);
+			if (other && other != item && other->GetCell() == cell &&
+					other->GetVnum() == PLAYERBOT_RANK_GLOVE_VNUM)
+				return true;
+		}
+		return false;
+	}
+
 	// A refine material is whatever a recipe consumes, whatever type the proto
 	// gives it. The first version asked for ITEM_MATERIAL as well, and eight of
 	// the eighty-four are not: the fishbone is ITEM_RESOURCE, the shellfish and
@@ -2244,6 +2281,10 @@ namespace
 		// So are the uniques a bot leaves on the ground (IsPlayerBotLeftOnGroundItem).
 		if (IsPlayerBotLeftOnGroundItem(vnum))
 			return true;
+		// MT2009_PLUS_BOT_BAG_CLEANUP_V1: and the fishing table's rings, gloves
+		// and capes, but the one rank glove (IsPlayerBotFishingJunk).
+		if (IsPlayerBotFishingJunkVnum(vnum))
+			return IsPlayerBotFishingJunk(ch, item);
 		// The Demon Tower's keys are the floor's while the bot is in the tower
 		// and nothing anywhere else (the quest takes a player's on logout).
 		if (IsPlayerBotDemonTowerKey(vnum))

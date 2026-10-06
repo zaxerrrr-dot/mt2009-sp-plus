@@ -4985,6 +4985,16 @@ namespace
 		std::pair<int, int> biggest(0, 0);
 		for (size_t i = 0; i < lines.size(); ++i)
 		{
+			// MT2009_PLUS_BOT_BAG_CLEANUP_V1: a line of yang, experience or a
+			// monster (CSpecialItemGroup::EGiveType, the group file's "gold",
+			// "exp", "mob" ... - vnums 1 to 7) takes no cell. Read as items,
+			// "gold 250000" was 250 000 cells of vnum 1 (Yang, not stackable)
+			// and "exp 300000" as many of vnum 2, so no bag ever took a Flower
+			// Event box (83023-83027, both lines in each): 18 168 boxes made by
+			// the bots on the test world, none opened, 131 000 in their bags
+			// (6 October).
+			if (lines[i].vnum < PLAYERBOT_GROUP_FIRST_ITEM_VNUM)
+				continue;
 			const TItemTable* table = ITEM_MANAGER::instance().GetTable(lines[i].vnum);
 			if (!table)
 				continue;
