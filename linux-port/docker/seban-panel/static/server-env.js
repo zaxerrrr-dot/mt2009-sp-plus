@@ -7,7 +7,7 @@
   const editor = document.getElementById('env-editor');
   if (!editor) return;
   const schema = JSON.parse(document.getElementById('env-schema').textContent);
-  const state = JSON.parse(document.getElementById('env-state').textContent);
+  const state = JSON.parse(document.getElementById('env-data').textContent);
   const fields = {};
   schema.fields.forEach(f => { fields[f.key] = f; });
   const labels = schema.services || {};
@@ -15,6 +15,7 @@
   const invalid = {};        // key -> reason
   let busy = false;          // a change is queued or running
   const $ = id => document.getElementById(id);
+  const bar = $('env-savebar');
   const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ł/g, 'l');
 
   const original = key => {
@@ -188,7 +189,6 @@
     keys.forEach(k => { const f = fields[k]; if (!f || f.build) return; f.services.forEach(s => { if (!out.includes(s)) out.push(s); }); });
     return out;
   }
-  const bar = $('env-savebar');
   function updateBar() {
     const keys = Object.keys(pending);
     editor.querySelectorAll('.env-section').forEach(sec => {
