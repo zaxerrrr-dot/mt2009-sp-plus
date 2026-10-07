@@ -1059,6 +1059,9 @@ namespace
 		if (candidate->IsMonster() && IsPlayerBotL30DropperRace((int)ch->GetEmpire(), candidate->GetRaceNum()) &&
 				ch->GetMapIndex() == PLAYERBOT_MAP_ORC_VALLEY && IsPlayerBotL30DropperAtWork(ch))
 			context.activeEquipmentTarget = true;
+		// MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmer's Sworn camps.
+		if (IsPlayerBotOrnamentFarmerTarget(ch, candidate))
+			context.activeEquipmentTarget = true;
 
 		// The engine's own level table, read with the engine's own argument
 		// order: PERCENT_LVDELTA(me, victim) in constants.h, 1 at fifteen levels
@@ -1339,7 +1342,11 @@ namespace
 				const bool isBestialWeaponTarget = candidate->IsMonster() &&
 						((m_huntM2Bestials &&
 						  (candidate->GetRaceNum() == 533 || candidate->GetRaceNum() == 534)) ||
-						 (m_huntL30Orcs && IsPlayerBotL30DropperRace((int)m_owner->GetEmpire(), candidate->GetRaceNum())));
+						 (m_huntL30Orcs && IsPlayerBotL30DropperRace((int)m_owner->GetEmpire(), candidate->GetRaceNum())) ||
+						 // MT2009_PLUS_ORNAMENT_FARMERS_V1: and every Sworn of the
+						 // ornament farmer's camps (the race asked first: cheap).
+						 (IsPlayerBotOrnamentFarmerPrey(candidate->GetRaceNum()) &&
+						  IsPlayerBotOrnamentFarmerOnGround(m_owner)));
 
 				// Is this monster worth fighting at all?
 				//

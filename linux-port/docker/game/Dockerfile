@@ -491,6 +491,18 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_dro
  && test "$(grep -c -E '^Group[[:blank:]]+MT2009_dtdrop_10(6[1-9]|7[01])([^0-9]|$)' "$F")" = 11 \
  && rm -f "$A" \
  && echo "share: Demon Tower brutal demons - 11 drop groups"
+# MT2009_PLUS_ORNAMENT_DROP_V1: Ornament (30031, the talisman's refine material) from the Sworn
+# Archers 302 / 332 at the start of the second villages, 2% a kill on top of their etc drop (the
+# owner, 7 October) - one drop group each, merged by the engine with the archers' own group.
+COPY mob_drop_item.ornaments.append.txt /tmp/mob_drop_item.ornaments.append.txt
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_drop_item.ornaments.append.txt \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_ornament_' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_ornament_(302|332)([^0-9]|$)' "$F")" = 2 \
+ && rm -f "$A" \
+ && echo "share: Sworn Archers' ornaments - 2 drop groups"
 
 # MT2009_PLUS_FLOWER_V1: the Flower Event's five gift boxes (83023-83027, Pudelko z Chryzantema ..
 # ze Slonecznikiem; playerbot_flower.h gives them for 10 shoots of a flower), opened by their

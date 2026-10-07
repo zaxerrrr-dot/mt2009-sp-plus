@@ -197,6 +197,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_missions.h"
 #include "playerbot_skills.h"
 #include "playerbot_combat.h"
+#include "playerbot_ornament_farmers.h" // MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmers of the second villages' Sworn camps
 #include "playerbot_energy_shards.h" // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: Odlamki Energii from the merchant's scrap at the Alchemist, their counter caps; the fixed shard and talisman prices
 #include "playerbot_economy.h"
 #include "playerbot_progression_needs.h"
@@ -461,6 +462,7 @@ namespace
 				return BOT_AMBITION_TRADE;
 			case BOT_PERSONALITY_WANDERER:
 				return BOT_AMBITION_HORSE;
+			case BOT_PERSONALITY_ORNAMENT_FARMER: // MT2009_PLUS_ORNAMENT_FARMERS_V1
 			case BOT_PERSONALITY_TEAM_COMPANION:
 				return ch->GetJob() == JOB_SHAMAN
 						? BOT_AMBITION_SKILLS : BOT_AMBITION_LEVEL;
@@ -661,6 +663,7 @@ namespace
 			default: return 0;
 		}
 	}
+			case BOT_PERSONALITY_ORNAMENT_FARMER: return PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER; // MT2009_PLUS_ORNAMENT_FARMERS_V1
 
 	// A farmer keeps the level its table pays at. See the constants: every drop
 	// in this engine fades with the level gap, so a dropper that goes on
@@ -716,6 +719,9 @@ namespace
 		else if (persona)
 			lockLevel = GetPlayerBotPersonaLockLevel(ch, state);
 		// MT2009_PLUS_FARMER_LINK_V1: a spot farmer holds at its ground's
+		else if (persona && state.bPersonality == BOT_PERSONALITY_ORNAMENT_FARMER)
+			// MT2009_PLUS_ORNAMENT_FARMERS_V1: its own lock, as without them.
+			lockLevel = PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER;
 		// lock, whatever its persona's tier says (playerbot_farmer_link.h).
 		if (!sidekick && !cohort && !IsPlayerBotDropper(state.bPersonality) &&
 				GetPlayerBotFarmerSpotLock(ch->GetPlayerID()) != 0)
@@ -799,6 +805,8 @@ namespace
 		else if (persona)
 			lockLevel = state.persona.bRestored && !state.persona.bAdvanced ? state.persona.bLockLevel : 0;
 		// MT2009_PLUS_FARMER_LINK_V1: a spot farmer's ground's lock.
+		else if (persona && state.bPersonality == BOT_PERSONALITY_ORNAMENT_FARMER) // MT2009_PLUS_ORNAMENT_FARMERS_V1
+			lockLevel = PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER;
 		if (!sidekick && !cohort && !IsPlayerBotDropper(state.bPersonality) &&
 				GetPlayerBotFarmerSpotLock(ch->GetPlayerID()) != 0)
 			lockLevel = GetPlayerBotFarmerSpotLock(ch->GetPlayerID());
@@ -6351,6 +6359,7 @@ void CPlayerBotManager::Update()
 	// MT2009_PLUS_FARMER_LINK_V1: farmers linked to their mains, the yang sent and taken.
 	ManagePlayerBotFarmerLinks(dwNow);
 
+	ManagePlayerBotOrnamentFarmers(dwNow);	// MT2009_PLUS_ORNAMENT_FARMERS_V1
 	// Once for the whole population: the panel may have moved a weight since
 	// the last tick, and every bot planned below must see the same numbers.
 	RefreshPlayerBotWeights(dwNow);

@@ -1,0 +1,23 @@
+// MT2009_PLUS_ORNAMENT_DROP_V1: Ornament (30031), the talisman's refine material (the Blacksmith:
+// 10x Kwiat Zywiolu + 1 Ornament + Talisman +0 for every step, refine_proto 20001-21200,
+// server-patches/zywioly), from the Sworn Archers (Zaprzys. Lucznik, 302 and its twin 332, level 20)
+// at the start of the second villages (the owner, 7 October: "dropki ornamentow na m2" - the
+// archers, not the whole map). They already drop it at 0.9% (mob_proto drop_item 30031 through
+// etc_drop_item.txt); this adds 2% a kill. Type drop: pct / 4 percent at the server's 100% drop,
+// so 8. The archers have a drop group of their own (Bambusowy Grot, the bows and knives); the
+// engine merges these lines into it. The bots' ornament farmers (playerbot_ornament_farmers.h)
+// clear the Sworn camps there and list what drops on their counters.
+
+Group	MT2009_ornament_302
+{
+	mob	302	-- Zaprzys. Lucznik (lv 20)
+	Type	drop
+	1	30031	1	8	-- Ornament, 2%
+}
+
+Group	MT2009_ornament_332
+{
+	mob	332	-- Zaprzys. Lucznik (lv 20)
+	Type	drop
+	1	30031	1	8	-- Ornament, 2%
+}

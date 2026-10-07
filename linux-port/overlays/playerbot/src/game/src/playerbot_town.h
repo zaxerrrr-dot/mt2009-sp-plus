@@ -2097,6 +2097,12 @@ namespace
 			// the roll carried eighty books and picked up nothing.
 			if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS)
 				return PLAYERBOT_SHOP_REASON_DROPPER_PRESSURE;
+			// MT2009_PLUS_ORNAMENT_FARMERS_V1: an ornament farmer with a few
+			// ornaments keeps its counter whatever the roll: the ornaments are
+			// what it farms for others ("wystawiaja je w sklepach").
+			if (state.bPersonality == BOT_PERSONALITY_ORNAMENT_FARMER && ch->IsItemLoaded() &&
+					(int)ch->CountSpecifyItem(PLAYERBOT_ORNAMENT_VNUM) >= PLAYERBOT_ORNAMENT_FARMER_STALL_UNITS)
+				return PLAYERBOT_SHOP_REASON_DROPPER_ROLL;
 			return PlayerBotWeightedRoll(
 					PlayerBotNavHash(ch->GetPlayerID() ^ 0x44524f50U) % 1000U,
 					PLAYERBOT_DROPPER_SHOP_ROLL, PLAYERBOT_WEIGHT_TRADE)

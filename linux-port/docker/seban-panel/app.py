@@ -384,7 +384,7 @@ except (OSError, ValueError):
 # Ta tabela miala 5 jako wedrowca i konczyla sie na nim, wiec straganiarz
 # czytal sie jako wedrowiec, a piec dopisanych od tamtej pory osobowosci
 # nie czytalo sie wcale.
-BOT_PERSONALITIES = {0: "Wytrwały poszukiwacz", 1: "Pogromca Metinów", 2: "Towarzysz drużyny", 3: "Mistrz ekwipunku", 4: "Rozważny zbieracz", 5: "Handlarz", 6: "Wędrowiec", 7: "Dropek Metinów", 8: "Dropek z M3", 9: "Dropek z M2", 10: "Dropek medali", 11: "Dropek surowców", 12: "Dropek broni 30 lv"}  # 12: MT2009_PLUS_L30_WEAPON_DROPPER_V1
+BOT_PERSONALITIES = {0: "Wytrwały poszukiwacz", 1: "Pogromca Metinów", 2: "Towarzysz drużyny", 3: "Mistrz ekwipunku", 4: "Rozważny zbieracz", 5: "Handlarz", 6: "Wędrowiec", 7: "Dropek Metinów", 8: "Dropek z M3", 9: "Dropek z M2", 10: "Dropek medali", 11: "Dropek surowców", 12: "Dropek broni 30 lv", 13: "Dropek ornamentów"}  # 12: MT2009_PLUS_L30_WEAPON_DROPPER_V1, 13: MT2009_PLUS_ORNAMENT_FARMERS_V1
 # One colour per personality, for /players/personalities -- purely cosmetic,
 # picked for contrast against the dark theme and against each other.
 BOT_PERSONALITY_COLORS = {0: "#69a6ff", 1: "#ff6b6b", 2: "#79e3af", 3: "#f2c34d", 4: "#c084fc",

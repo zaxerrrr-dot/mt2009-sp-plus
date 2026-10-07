@@ -503,6 +503,10 @@ namespace
 
 	bool IsPlayerBotM2LevelingCohort(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmer at work lives in
+		// its second village, whatever the map table and the M1 minority say.
+		if (IsPlayerBotOrnamentFarmerAtWork(ch))
+			return true;
 		// MT2009_PLUS_PROGRESSION_V1: from the "m2" row (20 and 35 by default).
 		const int m2From = playerbot_progression::MapFrom(playerbot_progression::MAP_M2);
 		if (!ch || (int)ch->GetLevel() < m2From ||
@@ -1078,6 +1082,10 @@ namespace
 		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: its island, always.
 		if (personality == BOT_PERSONALITY_L30_WEAPON_DROPPER)
 			return true;
+		// MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmer's ground is its
+		// second village's Sworn camps, never the frontier.
+		if (personality == BOT_PERSONALITY_ORNAMENT_FARMER)
+			return false;
 		// MT2009_PLUS_PROGRESSION_V3: a bot a gate holds for its Metins goes
 		// where the stones of its level are, whatever its appetite: the second
 		// village's reserve is for bots that earn experience there.
@@ -1225,6 +1233,9 @@ namespace
 		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island's dropper farms its own.
 		if (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_L30_WEAPON_DROPPER)
 			return false;
+		// MT2009_PLUS_ORNAMENT_FARMERS_V1: so does the ornament farmer.
+		if (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_ORNAMENT_FARMER)
+			return false;
 		// The M3 dropper is there for the weapons it will sell, so owning one
 		// changes nothing, and it stays as long as the map can still be hunted.
 		if (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_M3_DROPPER)
@@ -1360,6 +1371,9 @@ namespace
 		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: nor the island's dropper - its
 		// time is its island's, as the other droppers' is their ground's.
 		if (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_L30_WEAPON_DROPPER)
+			return false;
+		// MT2009_PLUS_ORNAMENT_FARMERS_V1: nor the ornament farmer at work.
+		if (IsPlayerBotOrnamentFarmerAtWork(ch))
 			return false;
 
 		// There is a dungeon for every level from eighteen up - see

@@ -331,6 +331,8 @@ BOT_PERSONALITY_LABELS = {
         9: "Dropek z M2", 10: "Dropek medali", 11: "Dropek surowców",
         # MT2009_PLUS_L30_WEAPON_DROPPER_V1
         12: "Dropek broni 30 lv",
+        # MT2009_PLUS_ORNAMENT_FARMERS_V1
+        13: "Dropek ornamentów",
     },
     "en": {
         0: "Steady adventurer", 1: "Metin breaker", 2: "Team companion",
@@ -338,6 +340,7 @@ BOT_PERSONALITY_LABELS = {
         6: "Wanderer", 7: "Metin dropper", 8: "M3 weapon dropper",
         9: "M2 Bestial dropper", 10: "Medal dropper",
         11: "Guild materials dropper", 12: "Level-30 weapon dropper",
+        13: "Ornament farmer",
     },
 }
 # The status file's columns before Iwakura's personalities (2.0.85): a core of

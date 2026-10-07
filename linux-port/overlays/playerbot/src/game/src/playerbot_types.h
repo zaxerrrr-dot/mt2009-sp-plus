@@ -5005,6 +5005,10 @@ namespace
 	// hunts the island's ordinary monsters round the spawn. The fight reaches
 	// past the usual fifteen levels to PLAYERBOT_L30_DROPPER_MAX_TARGET_LEVEL.
 	const BYTE PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER = 21;
+	// MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmer of the second
+	// village's Sworn camps (playerbot_ornament_farmers.h) holds at twenty-one:
+	// the archers are twenty, so every drop is whole.
+	const BYTE PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER = 21;
 	const int PLAYERBOT_L30_DROPPER_MAX_TARGET_LEVEL = 40;
 
 	// The Bestial of a kingdom's first island, or 0.
@@ -7105,7 +7109,10 @@ namespace
 		BOT_PERSONALITY_GUILD_DROPPER,
 		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the level-30 weapon dropper of
 		// Orc Valley's first island (playerbot_l30_dropper.h). Appended too.
-		BOT_PERSONALITY_L30_WEAPON_DROPPER
+		BOT_PERSONALITY_L30_WEAPON_DROPPER,
+		// MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmer of the second
+		// village's Sworn camps (playerbot_ornament_farmers.h). Appended too.
+		BOT_PERSONALITY_ORNAMENT_FARMER
 	};
 
 	bool IsPlayerBotDropper(BYTE personality)
@@ -7115,7 +7122,8 @@ namespace
 				personality == BOT_PERSONALITY_M2_DROPPER ||
 				personality == BOT_PERSONALITY_MEDAL_DROPPER ||
 				personality == BOT_PERSONALITY_GUILD_DROPPER ||
-				personality == BOT_PERSONALITY_L30_WEAPON_DROPPER; // MT2009_PLUS_L30_WEAPON_DROPPER_V1
+				personality == BOT_PERSONALITY_L30_WEAPON_DROPPER || // MT2009_PLUS_L30_WEAPON_DROPPER_V1
+				personality == BOT_PERSONALITY_ORNAMENT_FARMER; // MT2009_PLUS_ORNAMENT_FARMERS_V1
 	}
 
 	BYTE GetPlayerBotPersonalityByPID(DWORD dwPID);

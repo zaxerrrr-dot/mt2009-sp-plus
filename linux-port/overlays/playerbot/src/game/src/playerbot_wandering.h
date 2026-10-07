@@ -940,7 +940,30 @@ namespace
 					return;
 				}
 			}
-			if (ShouldPlayerBotHuntM2Bestials(ch) && ground->bestials != NULL)
+			// MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmer goes round
+			// the Sworn camps at the start of its second village
+			// (playerbot_ornament_farmers.h), a camp at a time, staying a few
+			// seconds where it found one to let the targeting take the camp.
+			size_t ornamentSpotCount = 0;
+			const TPlayerBotMapPoint* ornamentSpots = IsPlayerBotOrnamentFarmerOnGround(ch)
+					? GetPlayerBotOrnamentFarmerSpots(ch->GetEmpire(), ornamentSpotCount) : NULL;
+			if (ornamentSpots != NULL && ornamentSpotCount > 0)
+			{
+				SetPlayerBotGoal(ch, state, BOT_GOAL_HUNTING, dwNow);
+				const size_t spotIndex = (pid + state.uMetinHotspotIndex) % ornamentSpotCount;
+				long offsetX = 0, offsetY = 0;
+				GetPlayerBotStableOffset(pid, 0x4f524e53U + (DWORD)spotIndex, 100, 600, offsetX, offsetY);
+				targetX = ornamentSpots[spotIndex].x + offsetX;
+				targetY = ornamentSpots[spotIndex].y + offsetY;
+				if (DISTANCE_APPROX(ch->GetX() - targetX, ch->GetY() - targetY) < 1000)
+				{
+					++state.uMetinHotspotIndex;
+					state.dwNextWanderTime = dwNow + number(4000, 8000);
+					targetX = ch->GetX() + number(-500, 500);
+					targetY = ch->GetY() + number(-500, 500);
+				}
+			}
+			else if (ShouldPlayerBotHuntM2Bestials(ch) && ground->bestials != NULL)
 			{
 				SetPlayerBotGoal(ch, state, BOT_GOAL_GET_EQUIPMENT, dwNow);
 				const size_t bestialIndex = (pid + state.uMetinHotspotIndex) % 2;
