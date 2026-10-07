@@ -7,18 +7,47 @@
 <p class="muted">Wszystkie {{ field_count }} parametry pliku <code>linux-port/docker/.env</code> w jednym miejscu: liczba botów, moduły, porty, panele, baza i aktualizacje. Zmiany zapisuje aktualizator serwera – przed zapisem robi kopię <code>.env</code>, zmienia tylko wskazane linie (komentarze zostają), a potem uruchamia ponownie wyłącznie usługi, które czytają zmienione ustawienia.</p>
 
 {% if not state.ready %}
-<section class="panel env-banner env-banner-warn" id="env-not-ready">
-<h2>🔒 Tryb tylko do odczytu</h2>
+{#- MT2009_PLUS_UPDATER_AUTOSTART_V1: what to do when the updater is not running. -#}
+<section class="panel env-banner env-banner-warn env-updater-guide" id="env-not-ready">
+<h2>⚠ Aktualizator nie działa – ustawienia są tylko do odczytu</h2>
 {% if state.reason == 'old-watcher' %}
-<p>Aktualizator działa, ale jest w starszej wersji i nie obsługuje jeszcze edytora <code>.env</code>. Uruchom go ponownie, aby wczytał nową wersję skryptu:</p>
-<pre class="env-cmd">cd /ścieżka/do/serwera/linux-port/docker
-docker compose --profile update up -d --force-recreate updater</pre>
+<p><b>Aktualizator działa, ale w starszej wersji</b> i nie obsługuje jeszcze tej strony. Uruchom go ponownie (polecenia poniżej – „uruchom ponownie”).</p>
 {% else %}
-<p>Zmiany zapisuje usługa <b>updater</b> (aktualizator) – jedyny element serwera z dostępem do Dockera. Panel celowo go nie ma, więc bez aktualizatora może tylko pokazać ustawienia. Na serwerze z Linuksem uruchom go raz:</p>
-<pre class="env-cmd">cd /ścieżka/do/serwera/linux-port/docker
-docker compose --profile update up -d updater</pre>
-<p class="muted small">Jeśli nie chcesz, żeby aktualizator instalował też aktualizacje z panelu, ustaw najpierw w <code>.env</code> <code>M2_UPDATE_WATCH_UPDATES=0</code> – wtedy obsługuje wyłącznie ten edytor. Na Windowsie ustawienia zmienia launcher albo ręcznie plik <code>linux-port\docker\.env</code>.</p>
+<p>Zmiany na tej stronie zapisuje do pliku <code>.env</code> usługa <b>aktualizator</b> (kontener <code>updater</code>) – jedyny element serwera z dostępem do Dockera. Panel celowo go nie ma, więc bez aktualizatora może tylko pokazać ustawienia.</p>
 {% endif %}
+<p class="env-guide-auto">Od tej wersji aktualizator <b>uruchamia się sam</b>: na VPS po instalacji i po każdej aktualizacji (<code>update.sh</code>), na Windowsie przy każdym kliknięciu <b>GRAJ</b> w launcherze. Domyślnie <b>nie instaluje aktualizacji</b> (tylko zapisuje ustawienia), chyba że włączysz „Instalacja aktualizacji z panelu” (<code>M2_UPDATE_APPLY=1</code>). Jeśli mimo to nie działa – zrób to raz ręcznie:</p>
+<div class="env-guides">
+<details class="env-guide" open>
+<summary>🐧 Serwer na VPS / Linuksie (SSH)</summary>
+<ol>
+<li>Zaloguj się na VPS przez SSH (np. PuTTY albo <code>ssh root@ADRES_VPS</code>).</li>
+<li>Przejdź do folderu serwera (tego z plikiem <code>VERSION</code> i folderem <code>linux-port</code>) i uruchom aktualizator:
+<pre class="env-cmd">cd /ścieżka/do/serwera        # np. cd ~/Serwer albo cd /opt/metin2
+sh linux-port/tools/update.sh updater</pre></li>
+<li>Gdy Twoja wersja nie zna jeszcze polecenia <code>updater</code>, zrób to bezpośrednio przez Dockera:
+<pre class="env-cmd">cd /ścieżka/do/serwera/linux-port/docker
+M2_UPDATE_STACK_DIR="$(cd ../.. &amp;&amp; pwd)" M2_UPDATE_WATCH_UPDATES=0 \
+  docker compose --profile update up -d --build updater</pre></li>
+<li>Uruchom ponownie (np. po aktualizacji albo gdy jest „w starszej wersji”):
+<pre class="env-cmd">cd /ścieżka/do/serwera/linux-port/docker
+docker compose --profile update up -d --force-recreate updater</pre></li>
+<li>Sprawdź: <code>docker ps --filter name=updater</code> – powinien być <i>Up (healthy)</i>. Potem kliknij „Sprawdź ponownie” poniżej.</li>
+</ol>
+</details>
+<details class="env-guide">
+<summary>🪟 Serwer na Windows (localhost, Docker Desktop)</summary>
+<ol>
+<li>Upewnij się, że <b>Docker Desktop</b> jest uruchomiony (ikona wieloryba przy zegarze, status „Engine running”).</li>
+<li>Najprościej: zaktualizuj serwer launcherem (<b>Metin2-Launcher.bat</b> → Aktualizuj) i kliknij <b>GRAJ</b> – launcher sam uruchomi aktualizator po starcie serwera.</li>
+<li>Albo ręcznie: otwórz folder serwera w Eksploratorze, kliknij pasek adresu, wpisz <code>powershell</code> i Enter, a potem:
+<pre class="env-cmd">powershell -ExecutionPolicy Bypass -File .\start-server.ps1 -UpdaterOnly</pre></li>
+<li>W Docker Desktop → <i>Containers</i> powinien pojawić się kontener <code>…-updater</code> ze statusem <i>Running</i>. Kliknij „Sprawdź ponownie” poniżej.</li>
+</ol>
+</details>
+</div>
+<p class="muted small">Nie chcesz aktualizatora? Ustaw w <code>linux-port/docker/.env</code> <code>M2_UPDATE_AUTOSTART=0</code> – wtedy nie startuje sam, a tę stronę można tylko czytać (plik <code>.env</code> zmieniasz ręcznie).</p>
+{% if live.available %}<p class="env-live-note">⚡ <b>Bez aktualizatora działają od razu</b> przełączniki oznaczone <span class="env-badge env-badge-live">działa od razu</span> ({% for k in live['keys'] %}<code>{{ k }}</code>{% if not loop.last %}, {% endif %}{% endfor %}): panel przełącza je w działającej grze tak jak panel klasyczny, a linia w <code>.env</code> zostanie dopisana, gdy aktualizator zacznie działać.{% if live.pending %} Czeka na dopisanie: {% for k, v in live.pending.items() %}<code>{{ k }}={{ v }}</code>{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>{% endif %}
+<p><button type="button" class="env-btn env-btn-primary" id="env-recheck">🔄 Sprawdź ponownie</button> <span class="muted small" id="env-recheck-msg"></span></p>
 {% if current.time %}<p class="muted small">Pokazane wartości pochodzą z ostatniego odczytu aktualizatora ({{ snapshot_when }}) i mogą być nieaktualne.</p>{% else %}<p class="muted small">Aktualizator jeszcze nigdy nie odczytał <code>.env</code> – poniżej widać wartości domyślne.</p>{% endif %}
 </section>
 {% endif %}
@@ -47,8 +76,10 @@ docker compose --profile update up -d updater</pre>
 {%- set key = f.key -%}
 {%- set has = key in values -%}
 {%- set cur = values.get(key, f.default) -%}
-{%- set editable = state.ready and not f.readonly -%}
-<article class="envf{% if f.readonly %} envf-ro{% endif %}{% if f.featured %} envf-featured{% endif %}" id="env-{{ key }}" data-key="{{ key }}" data-search="{{ (key ~ ' ' ~ f.label ~ ' ' ~ f.desc ~ ' ' ~ section.label)|lower }}">
+{%- set is_live = (not state.ready) and live.available and key in live['keys'] -%}
+{%- if is_live and key in live['values'] %}{% set cur = live['values'][key] %}{% endif -%}
+{%- set editable = (state.ready or is_live) and not f.readonly -%}
+<article class="envf{% if is_live %} envf-live{% endif %}{% if f.readonly %} envf-ro{% endif %}{% if f.featured %} envf-featured{% endif %}" id="env-{{ key }}" data-key="{{ key }}" data-search="{{ (key ~ ' ' ~ f.label ~ ' ' ~ f.desc ~ ' ' ~ section.label)|lower }}">
 <div class="envf-head">
 <h3 class="envf-title"><label for="envi-{{ key }}" title="{{ f.desc }}">{{ f.label }}</label></h3>
 <code class="envf-key">{{ key }}</code>
@@ -56,6 +87,7 @@ docker compose --profile update up -d updater</pre>
 {% if f.readonly %}<span class="env-badge env-badge-ro">tylko odczyt</span>{% endif %}
 {% if f.dangerous and not f.readonly %}<span class="env-badge env-badge-danger">ryzykowne</span>{% endif %}
 {% if f.build %}<span class="env-badge">przy przebudowie</span>{% endif %}
+{% if is_live %}<span class="env-badge env-badge-live" title="Przełączane od razu w działającej grze, bez aktualizatora; linia w .env zostanie dopisana, gdy aktualizator zacznie działać.">działa od razu</span>{% endif %}
 {% if key in overridden %}<span class="env-badge env-badge-warn" title="Ta zmienna jest ustawiona w docker-compose.override.yml – tam ma pierwszeństwo, więc zmiana w .env może nic nie dać.">nadpisane w override</span>{% endif %}
 </div>
 <p class="envf-desc">{{ f.desc }}</p>
@@ -128,6 +160,6 @@ docker compose --profile update up -d updater</pre>
 </dialog>
 
 <script type="application/json" id="env-schema">{{ schema_json|tojson }}</script>
-<script type="application/json" id="env-data">{{ {'ready': state.ready, 'values': values, 'secrets': secrets, 'present': current.get('present', []), 'status': state.status, 'danger_word': danger_word, 'csrf': env_csrf, 'save_url': url_for('server_env_save'), 'status_url': url_for('server_env_status')}|tojson }}</script>
+<script type="application/json" id="env-data">{{ {'ready': state.ready, 'values': values, 'secrets': secrets, 'present': current.get('present', []), 'status': state.status, 'danger_word': danger_word, 'csrf': env_csrf, 'live': live, 'save_url': url_for('server_env_save'), 'status_url': url_for('server_env_status')}|tojson }}</script>
 <script defer src="{{ static_asset_url('server-env.js') }}"></script>
 {% endblock %}

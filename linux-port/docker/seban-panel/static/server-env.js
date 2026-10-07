@@ -18,9 +18,15 @@
   const bar = $('env-savebar');
   const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ł/g, 'l');
 
+  // MT2009_PLUS_ENV_LIVE_V1: without the updater, the live switches are
+  // changed in the running game (the panel's /advanced/server-env POST).
+  const live = state.live || {keys: [], values: {}, available: false};
+  const liveMode = !state.ready && live.available;
+  const isLive = key => liveMode && (live.keys || []).includes(key);
   const original = key => {
     const f = fields[key];
     if (f.secret) return null;
+    if (isLive(key) && Object.prototype.hasOwnProperty.call(live.values || {}, key)) return live.values[key];
     return Object.prototype.hasOwnProperty.call(state.values, key) ? state.values[key] : f.default;
   };
   const shown = (f, v) => {
@@ -196,13 +202,14 @@
       const badge = sec.querySelector('[data-sec-changed]');
       badge.hidden = !n; badge.textContent = n ? n + ' zmian' + (n === 1 ? 'a' : (n < 5 ? 'y' : '')) : '';
     });
-    if (!state.ready || !keys.length || busy) { bar.hidden = true; document.body.classList.remove('env-bar-open'); return; }
+    const canSave = state.ready || (liveMode && keys.every(isLive));
+    if (!canSave || !keys.length || busy) { bar.hidden = true; document.body.classList.remove('env-bar-open'); return; }
     bar.hidden = false; document.body.classList.add('env-bar-open');
     const bad = Object.keys(invalid).length;
     $('env-savebar-count').textContent = keys.length + (keys.length === 1 ? ' zmiana' : (keys.length < 5 ? ' zmiany' : ' zmian')) + (bad ? ' · ' + bad + ' do poprawienia' : '');
     const svc = servicesFor(keys).filter(s => s !== 'updater');
-    $('env-savebar-services').textContent = svc.length ? 'Restart: ' + svc.map(s => labels[s] || s).join(', ') : 'Bez restartu usług';
-    $('env-savebar-warn').hidden = !svc.includes('game');
+    $('env-savebar-services').textContent = !state.ready ? 'Od razu w grze, bez restartu (.env – gdy zadziała aktualizator)' : svc.length ? 'Restart: ' + svc.map(s => labels[s] || s).join(', ') : 'Bez restartu usług';
+    $('env-savebar-warn').hidden = !state.ready || !svc.includes('game');
     const save = $('env-save');
     save.textContent = 'Zapisz zmiany (' + keys.length + ')';
     save.disabled = bad > 0;
@@ -240,8 +247,9 @@
       : 'Żadna usługa nie zostanie uruchomiona ponownie.';
     if (svc.includes('updater')) $('env-dialog-services').textContent += ' Aktualizator przyjmie zmianę przy swoim następnym uruchomieniu.';
     if (keys.some(k => fields[k].build)) $('env-dialog-services').textContent += ' Ustawienia budowania zadziałają przy następnej przebudowie obrazu gry.';
-    $('env-dialog-game').hidden = !real.includes('game');
-    $('env-dialog-panel').hidden = !real.includes('seban-panel');
+    $('env-dialog-game').hidden = !state.ready || !real.includes('game');
+    $('env-dialog-panel').hidden = !state.ready || !real.includes('seban-panel');
+    if (!state.ready) $('env-dialog-services').textContent = 'Aktualizator nie działa: te przełączniki zostaną zmienione od razu w działającej grze (jak w panelu klasycznym), bez restartu i bez rozłączania graczy. Linia w .env zostanie dopisana automatycznie, gdy aktualizator zacznie działać.';
     const danger = keys.some(k => fields[k].dangerous);
     $('env-dialog-danger').hidden = !danger;
     $('env-confirm-word').value = '';
@@ -278,6 +286,13 @@
           return;
         }
         dialog.close();
+        if (res.live) {
+          Object.assign(live.values, res.live_values || {});
+          cards.forEach(card => { if (isLive(card.dataset.key)) refresh(card); });
+          showStatus(res.status);
+          $('env-status').scrollIntoView({behavior: 'smooth', block: 'start'});
+          return;
+        }
         showStatus(res.status || {state: 'queued', message: 'Zlecenie zapisane.'});
         // the status box is at the top of a long page: bring it into view (the owner: "nic się nie dzieje")
         $('env-status').scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -352,6 +367,22 @@
     };
     setTimeout(tick, 1500);
   }
+  // MT2009_PLUS_UPDATER_AUTOSTART_V1: "Sprawdź ponownie" on the banner.
+  const recheck = $('env-recheck');
+  if (recheck) recheck.addEventListener('click', () => {
+    recheck.disabled = true;
+    $('env-recheck-msg').textContent = 'Sprawdzam…';
+    fetch(state.status_url, {credentials: 'same-origin', headers: {'Accept': 'application/json'}})
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(data => {
+        if (data.ready) { $('env-recheck-msg').textContent = '✓ Aktualizator działa – odświeżam stronę…'; location.reload(); return; }
+        recheck.disabled = false;
+        $('env-recheck-msg').textContent = data.alive
+          ? '✗ Aktualizator działa, ale w starszej wersji albo jeszcze nie odczytał .env – uruchom go ponownie i poczekaj ok. 30 s.'
+          : '✗ Aktualizator nadal nie działa (' + new Date().toLocaleTimeString('pl-PL') + '). Wykonaj kroki z poradnika powyżej.';
+      })
+      .catch(() => { recheck.disabled = false; $('env-recheck-msg').textContent = '✗ Panel nie odpowiada – spróbuj za chwilę.'; });
+  });
   if (state.status && state.status.state) {
     showStatus(state.status);
     if (state.status.busy) startPolling();

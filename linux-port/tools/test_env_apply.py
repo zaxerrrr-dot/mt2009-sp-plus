@@ -232,3 +232,33 @@ class EnvApplyTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PendingLiveSwitches(EnvApplyTest):
+    """MT2009_PLUS_ENV_LIVE_V1: env.pending (switches the panel turned in the
+    game while no updater ran) reaches .env without restarting anything."""
+
+    def test_pending_written_without_compose_crlf(self):
+        with open(self.env, "w", encoding="utf-8", newline="") as handle:
+            handle.write(self.original.replace("\n", "\r\n"))
+        self.request("env.pending", {"time": 1, "values": {"M2_AREZZO": "1", "M2_SEONHAE": "1", "M2_SASHES": "0"}})
+        self.assertEqual(env_apply.main(["--root", self.root, "--spool", self.spool, "pending"]), 0)
+        env_apply.main(["--root", self.root, "--spool", self.spool, "snapshot"])
+        text = self.read()
+        self.assertIn("M2_AREZZO=1\r\n", text)
+        self.assertIn("M2_SEONHAE=1\r\n", text)
+        self.assertIn("M2_SASHES=0\r\n", text)
+        self.assertNotIn("\n", text.replace("\r\n", ""))
+        self.assertEqual(self.docker_calls(), [])
+        self.assertFalse(os.path.exists(os.path.join(self.spool, "env.pending")))
+        current = json.load(open(os.path.join(self.spool, "env.current"), encoding="utf-8"))
+        self.assertEqual(current["values"]["M2_AREZZO"], "1")
+
+    def test_pending_only_takes_live_keys(self):
+        self.request("env.pending", {"values": {"M2_AREZZO": "1", "PLAYERBOT_AUTOSPAWN_COUNT": "9", "M2_SASHES": "x"}})
+        self.worker().poll()
+        values = self.worker().read_env()
+        self.assertEqual(values["M2_AREZZO"], "1")
+        self.assertNotEqual(values.get("PLAYERBOT_AUTOSPAWN_COUNT"), "9")
+        self.assertNotEqual(values.get("M2_SASHES"), "x")
+        self.assertEqual(self.docker_calls(), [])

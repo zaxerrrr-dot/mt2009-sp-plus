@@ -119,10 +119,16 @@ bieżąco z każdą zmianą. W skrócie:
   (`updater`, `linux-port/tools/env_apply.py`) — sprawdza wartości jeszcze
   raz, robi kopię `.env` (ostatnie 10 w `.env-backups/`), zmienia tylko
   wskazane linie i odtwarza tylko potrzebne usługi; gdy usługi nie wstaną,
-  przywraca poprzedni plik. Bez uruchomionego aktualizatora strona pokazuje
-  ustawienia tylko do odczytu i instrukcję (`docker compose --profile update
-  up -d updater`; `M2_UPDATE_WATCH_UPDATES=0` = aktualizator tylko dla
-  edytora, bez instalowania aktualizacji). Hasła bazy, nazwa projektu,
+  przywraca poprzedni plik. Aktualizator **uruchamia się sam**
+  (MT2009_PLUS_UPDATER_AUTOSTART_V1): na VPS po instalacji i każdej
+  aktualizacji (`sh linux-port/tools/update.sh updater`), na Windowsie przy
+  każdym GRAJ (`start-server.ps1 -UpdaterOnly` ręcznie); domyślnie nie
+  instaluje aktualizacji (`M2_UPDATE_WATCH_UPDATES` = `M2_UPDATE_APPLY`),
+  `M2_UPDATE_AUTOSTART=0` wyłącza autostart. Gdy mimo to nie działa, strona
+  pokazuje duży poradnik (VPS przez SSH i Windows) z przyciskiem „Sprawdź
+  ponownie”, a przełączniki Arezzo, Seon-Hae, alchemii i szarf zmienia od
+  razu w grze jak panel klasyczny (MT2009_PLUS_ENV_LIVE_V1) – linię w `.env`
+  dopisze aktualizator, gdy zacznie działać (bez restartu). Hasła bazy, nazwa projektu,
   przedrostek kontenerów i ścieżki hosta są tylko do odczytu (z
   wyjaśnieniem), wartości tajne nigdy nie są pokazywane.
 

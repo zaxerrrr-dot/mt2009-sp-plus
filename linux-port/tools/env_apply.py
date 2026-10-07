@@ -394,8 +394,52 @@ class Apply:
         self._write(kind + ".last-id", request_id + "\n")
         return False
 
+    def apply_pending(self):
+        """MT2009_PLUS_ENV_LIVE_V1: env.pending - switches the panel already
+        turned in the running game while no updater ran (env_schema.LIVE_KEYS).
+        Their .env lines are written now, with no restart: the game has the
+        values already, and playerbot-migrate keeps a live switch until .env
+        changes, which this change makes agree with it."""
+        path = self._spool("env.pending")
+        if not os.path.isfile(path):
+            return False
+        claimed = path + ".taken"
+        try:
+            os.replace(path, claimed)
+            with open(claimed, encoding="utf-8", errors="replace") as handle:
+                data = json.load(handle)
+        except (OSError, ValueError):
+            data = {}
+        finally:
+            try:
+                os.remove(claimed)
+            except OSError:
+                pass
+        values = data.get("values") if isinstance(data, dict) else None
+        live = getattr(self.schema, "LIVE_KEYS", {})
+        wanted = {}
+        for key, value in (values or {}).items():
+            value = str(value)
+            if key in live and self.schema.validate(key, value) is None:
+                wanted[key] = value
+            else:
+                self.log("env.pending: pominięto %s" % key)
+        if not wanted or not os.path.isfile(self.env_file):
+            return False
+        before = self.read_env()
+        changed = {k: v for k, v in wanted.items() if before.get(k) != v}
+        if not changed:
+            return False
+        self.backup("live")
+        note = "MT2009_PLUS_ENV_LIVE_V1: przełączone w panelu zaawansowanym %s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        self.write_env(changed, note)
+        self.log("zapisano .env z przełączników panelu (bez restartu): %s" % ", ".join("%s=%s" % kv for kv in sorted(changed.items())))
+        return True
+
     def poll(self):
-        handled = False
+        handled = self.apply_pending()
+        if handled:
+            self.snapshot()
         text = self._take("env.request")
         if text is not None:
             handled = True
@@ -451,12 +495,13 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.action == "pending":
         # Cheap check for the watch loop: exit 0 when a request is waiting.
-        return 0 if any(os.path.isfile(os.path.join(args.spool, n)) for n in ("env.request", "botcount.request", "spawn-plan.request")) else 1
+        return 0 if any(os.path.isfile(os.path.join(args.spool, n)) for n in ("env.request", "botcount.request", "spawn-plan.request", "env.pending")) else 1
     os.makedirs(args.spool, exist_ok=True)
     with open(os.path.join(args.spool, "env.lock"), "w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         worker = Apply(args.root, args.spool)
         if args.action == "snapshot":
+            worker.apply_pending()
             worker.snapshot()
         else:
             worker.poll()

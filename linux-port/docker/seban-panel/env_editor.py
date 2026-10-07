@@ -142,15 +142,192 @@ def queue_request(spool, changes):
     return request_id
 
 
-def install(app, login_required, csrf_token, spool_getter):
+# ---------------------------------------------------------------- live switches
+# MT2009_PLUS_ENV_LIVE_V1: env_schema.LIVE_KEYS are switched in the running
+# game the way the classic panel does it (/arezzo, /seonhae, /rare): the event
+# flag in player.quest (what the cores read at a start) and a web_admin_queue
+# row for web_admin.quest, which sets the flag in the running cores. .env is
+# not touched here - the panel has no access to it - the wanted values go to
+# env.pending in the spool and the updater writes them into .env, with no
+# restart, whenever it runs (env_apply.py apply_pending).
+LIVE_WAIT = 6.0
+LIVE_FINAL = ("done", "failed", "bad_args", "cancelled", "player_offline")
+_FLAGS = ("mt2009_arezzo_closed", "m2_seonhae_on", "m2_seonhae_wait_min", "m2_alchemy_off", "m2_sash_off")
+
+
+def _flag_rows(cur):
+    cur.execute("SELECT szName, lValue FROM player.quest WHERE dwPID = 0 AND szName IN (%s)"
+                % ",".join(["%s"] * len(_FLAGS)), _FLAGS)
+    flags = {}
+    for row in cur.fetchall():
+        name, value = (row["szName"], row["lValue"]) if isinstance(row, dict) else (row[0], row[1])
+        try:
+            flags[name] = int(value)
+        except (TypeError, ValueError):
+            pass
+    return flags
+
+
+def live_values_from_flags(flags):
+    out = {}
+    if "mt2009_arezzo_closed" in flags:
+        out["M2_AREZZO"] = "0" if flags["mt2009_arezzo_closed"] == 1 else "1"
+    if "m2_seonhae_on" in flags:
+        out["M2_SEONHAE"] = "1" if flags["m2_seonhae_on"] == 1 else "0"
+    if "m2_alchemy_off" in flags:
+        out["M2_ALCHEMY"] = "0" if flags["m2_alchemy_off"] == 1 else "1"
+    if "m2_sash_off" in flags:
+        out["M2_SASHES"] = "0" if flags["m2_sash_off"] == 1 else "1"
+    return out
+
+
+def read_live(db_connect):
+    """{KEY: '0'/'1'} of the live switches as the world has them now; None without a database."""
+    if db_connect is None:
+        return None
+    try:
+        with db_connect() as con, con.cursor() as cur:
+            return live_values_from_flags(_flag_rows(cur))
+    except Exception:
+        return None
+
+
+def read_pending(spool):
+    data = _read_json(os.path.join(spool, "env.pending"))
+    values = data.get("values")
+    return values if isinstance(values, dict) else {}
+
+
+def write_pending(spool, changes):
+    """Merge the live-applied values into env.pending (the updater writes them into .env)."""
+    values = read_pending(spool)
+    values.update(changes)
+    os.makedirs(spool, exist_ok=True)
+    temporary = os.path.join(spool, "env.pending.panel.new")
+    with open(temporary, "w", encoding="utf-8") as handle:
+        json.dump({"time": int(time.time()), "values": values}, handle, ensure_ascii=False)
+    os.chmod(temporary, 0o660)
+    os.replace(temporary, os.path.join(spool, "env.pending"))
+
+
+def apply_live(db_connect, changes, wait=LIVE_WAIT, sleep=time.sleep):
+    """Write the flags and queue the in-game switch. Returns {command: status}."""
+    with db_connect() as con, con.cursor() as cur:
+        flags = _flag_rows(cur)
+        now = live_values_from_flags(flags)
+        queued = {}
+
+        def flag(name, value):
+            cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, %s, '', %s)", (name, int(value)))
+
+        def queue(cmd, arg1):
+            cur.execute("INSERT INTO player.web_admin_queue (player_name, cmd, arg1, arg2) VALUES ('', %s, %s, '')", (cmd, arg1))
+            queued[cmd] = cur.lastrowid
+
+        if "M2_AREZZO" in changes:
+            on = 1 if changes["M2_AREZZO"] == "1" else 0
+            flag("mt2009_arezzo_closed", 1 - on)
+            queue("AREZZO", str(on))
+        if "M2_SEONHAE" in changes:
+            on = 1 if changes["M2_SEONHAE"] == "1" else 0
+            wait_min = max(0, min(10080, flags.get("m2_seonhae_wait_min", 0)))
+            flag("m2_seonhae_on", on)
+            queue("SEONHAE", "%d,%d" % (on, wait_min))
+        if "M2_ALCHEMY" in changes or "M2_SASHES" in changes:
+            alchemy = 1 if changes.get("M2_ALCHEMY", now.get("M2_ALCHEMY", "1")) == "1" else 0
+            sashes = 1 if changes.get("M2_SASHES", now.get("M2_SASHES", "1")) == "1" else 0
+            flag("m2_alchemy_off", 1 - alchemy)
+            flag("m2_sash_off", 1 - sashes)
+            queue("RARE", "%d,%d" % (alchemy, sashes))
+    result = {cmd: "timeout" for cmd in queued}
+    ids = [qid for qid in queued.values() if qid]
+    deadline = time.time() + wait
+    while ids and time.time() < deadline:
+        sleep(0.6)
+        with db_connect() as con, con.cursor() as cur:
+            cur.execute("SELECT id, status FROM player.web_admin_queue WHERE id IN (%s)" % ",".join(["%s"] * len(ids)), ids)
+            got = {}
+            for row in cur.fetchall():
+                rid, st = (row["id"], row["status"]) if isinstance(row, dict) else (row[0], row[1])
+                got[int(rid)] = st
+        for cmd, qid in queued.items():
+            if got.get(qid) in LIVE_FINAL:
+                result[cmd] = got[qid]
+        if all(v != "timeout" for v in result.values()):
+            break
+    left = [queued[c] for c, v in result.items() if v == "timeout" and queued.get(c)]
+    if left:
+        # Nobody in the game took it (no channel up): the flag is in the
+        # database already and the cores read it at their next start.
+        try:
+            with db_connect() as con, con.cursor() as cur:
+                cur.execute("UPDATE player.web_admin_queue SET status='cancelled' WHERE status='pending' AND id IN (%s)"
+                            % ",".join(["%s"] * len(left)), left)
+        except Exception:
+            pass
+    return result
+
+
+def install(app, login_required, csrf_token, spool_getter, db_connect=None):
     def spool():
         return str(spool_getter())
+
+    def live_state(state):
+        """The live switches the page may change without the updater."""
+        values = read_live(db_connect)
+        return {"keys": sorted(env_schema.LIVE_KEYS), "values": values or {},
+                "available": values is not None, "pending": read_pending(spool())}
+
+    def save_live(state, live, changes, confirm):
+        current = dict(state["current"])
+        merged = dict(current.get("values", {}))
+        merged.update(live["values"])
+        current["values"] = merged
+        clean, errors = validate_changes(changes, current, confirm)
+        if errors:
+            message = errors.pop("_", "") or "Popraw zaznaczone wartości."
+            return jsonify({"ok": False, "message": message, "errors": errors}), 400
+        other = sorted(k for k in clean if k not in env_schema.LIVE_KEYS)
+        if other:
+            return jsonify({"ok": False, "message": "Aktualizator nie działa, więc od razu można zmienić tylko przełączniki oznaczone „działa od razu” "
+                            "(Arezzo, Seon-Hae, alchemia, szarfy). Tych ustawień nie da się teraz zapisać: %s." % ", ".join(other)}), 409
+        try:
+            outcome = apply_live(db_connect, clean)
+        except Exception:
+            app.logger.exception("env editor: live switch failed")
+            return jsonify({"ok": False, "message": "Nie udało się połączyć z bazą danych – nic nie zmieniono."}), 500
+        pending_saved = True
+        try:
+            write_pending(spool(), clean)
+        except OSError:
+            pending_saved = False
+        in_game = all(v == "done" for v in outcome.values())
+        message = ("Przełączono od razu w działającej grze (bez restartu)." if in_game else
+                   "Zapisano w bazie świata. Żaden kanał gry nie potwierdził zmiany w ciągu kilku sekund (serwer gry wyłączony albo dopiero startuje) – zadziała przy jego najbliższym starcie.")
+        message += (" Linia w .env zostanie dopisana automatycznie, gdy aktualizator będzie uruchomiony (bez restartu usług)." if pending_saved else
+                    " Uwaga: nie udało się zapamiętać zmiany dla aktualizatora – ustaw ją też ręcznie w .env.")
+        old = merged
+        status = {"id": "live-" + uuid.uuid4().hex[:12], "state": "ok", "time": int(time.time()), "source": "live",
+                  "message": message, "services": [], "changed": sorted(clean), "live": outcome,
+                  "results": {k: {"ok": True, "message": "", "secret": False, "changed": True, "old": old.get(k), "new": v}
+                              for k, v in clean.items()}}
+        try:
+            temporary = os.path.join(spool(), "env.status.panel.new")
+            with open(temporary, "w", encoding="utf-8") as handle:
+                json.dump(status, handle, ensure_ascii=False)
+            os.replace(temporary, os.path.join(spool(), "env.status"))
+        except OSError:
+            pass
+        app.logger.warning("env editor: live %s (%s)", ", ".join("%s=%s" % kv for kv in sorted(clean.items())), outcome)
+        status["busy"] = False
+        return jsonify({"ok": True, "live": True, "id": status["id"], "status": status, "live_values": read_live(db_connect) or {}})
 
     @app.route("/advanced/server-env")
     @login_required
     def server_env():
         state = editor_state(spool())
         current = state["current"]
+        live = live_state(state) if not state["ready"] else {"keys": sorted(env_schema.LIVE_KEYS), "values": {}, "available": False, "pending": {}}
         sections = []
         for section in env_schema.SECTIONS:
             if section.get("hidden"):
@@ -161,7 +338,7 @@ def install(app, login_required, csrf_token, spool_getter):
                                values=current.get("values", {}), secrets=current.get("secrets", {}),
                                present=set(current.get("present", [])), overridden=set(current.get("overridden", [])),
                                schema_json=env_schema.public_schema(), service_labels=env_schema.SERVICE_LABELS,
-                               env_csrf=csrf_token(), danger_word=DANGER_WORD, field_count=len(env_schema.SCHEMA),
+                               env_csrf=csrf_token(), danger_word=DANGER_WORD, live=live, field_count=len(env_schema.SCHEMA),
                                snapshot_when=time.strftime("%d.%m.%Y %H:%M", time.localtime(int(current.get("time") or 0))))
 
     @app.get("/advanced/server-env/status")
@@ -169,7 +346,7 @@ def install(app, login_required, csrf_token, spool_getter):
     def server_env_status():
         state = editor_state(spool())
         current = state["current"]
-        return jsonify({"ready": state["ready"], "reason": state["reason"], "status": state["status"],
+        return jsonify({"ready": state["ready"], "reason": state["reason"], "alive": state["alive"], "status": state["status"],
                         "values": current.get("values", {}), "secrets": current.get("secrets", {}),
                         "present": current.get("present", []), "overridden": current.get("overridden", []),
                         "snapshot_time": current.get("time")})
@@ -183,6 +360,13 @@ def install(app, login_required, csrf_token, spool_getter):
             abort(403)
         state = editor_state(spool())
         if not state["ready"]:
+            live = live_state(state)
+            if live["available"]:
+                try:
+                    changes = json.loads(request.form.get("changes", "") or "{}")
+                except ValueError:
+                    changes = None
+                return save_live(state, live, changes, request.form.get("confirm", ""))
             return jsonify({"ok": False, "message": "Aktualizator nie jest uruchomiony albo nie obsługuje edytora .env – zmiany nie mogą zostać zapisane."}), 409
         if state["status"].get("busy"):
             return jsonify({"ok": False, "message": "Poprzednia zmiana jeszcze trwa. Poczekaj na jej zakończenie."}), 409

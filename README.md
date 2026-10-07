@@ -151,6 +151,15 @@ plikach.
 **Linux / VPS:** instrukcja w [PACZKA_INFO.txt](PACZKA_INFO.txt); aktualizacja
 z folderu serwera: `sh linux-port/tools/update.sh`.
 
+**Ustawienia serwera (.env) w panelu 7790** zapisuje **aktualizator** (kontener
+`updater`). Od tej wersji uruchamia się sam: na Windowsie przy każdym GRAJ,
+na VPS po instalacji i po każdej aktualizacji. Domyślnie tylko zapisuje
+ustawienia – aktualizacji sam nie instaluje. Gdy nie działa, strona pokazuje
+poradnik krok po kroku; ręcznie: Windows – w folderze serwera
+`powershell -ExecutionPolicy Bypass -File .\start-server.ps1 -UpdaterOnly`,
+VPS – `sh linux-port/tools/update.sh updater`. Wyłączenie autostartu:
+`M2_UPDATE_AUTOSTART=0` w `.env`.
+
 Hasła (baza, panel) są losowane przy pierwszym starcie i zapisywane w
 `linux-port\docker\.env` — tylko na Twoim komputerze. Nie wklejaj ich nigdzie.
 

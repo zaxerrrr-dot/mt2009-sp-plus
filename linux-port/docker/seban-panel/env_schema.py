@@ -410,14 +410,19 @@ SCHEMA = [
        "aktualizacje", "bool", "1", ["panel"]),
     _e("M2_UPDATE_APPLY", "Instalacja aktualizacji z panelu",
        "Czy panel klasyczny może zainstalować aktualizację przyciskiem (tylko Linux, wymaga uruchomionego aktualizatora). Na serwerze dostępnym dla innych zostaw wyłączone.",
-       "aktualizacje", "bool", "0", ["panel"], dangerous=True),
+       "aktualizacje", "bool", "0", ["panel", "updater"], dangerous=True),
     _e("M2_UPDATE_COMMAND", "Polecenie aktualizacji (podpowiedź)", "Polecenie, które panel klasyczny pokazuje jako sposób aktualizacji. Puste = opis ręcznej aktualizacji.",
        "aktualizacje", "string", "", ["panel"], allow_empty=True, pattern=r"[^$`\"\\]{1,200}", hint="tekst do 200 znaków, bez $ ` \" \\"),
     _e("M2_UPDATE_BRANCH", "Gałąź aktualizacji", "Gałąź, z której brać aktualizacje. Zostaw main.",
        "aktualizacje", "string", "main", ["updater"], pattern=r"[A-Za-z0-9._/-]{1,60}", dangerous=True),
     _e("M2_UPDATE_WATCH_UPDATES", "Aktualizator instaluje aktualizacje",
        "Wyłączone: aktualizator służy tylko temu edytorowi (zapis .env i restart usług), a przycisk aktualizacji nic nie robi – np. na serwerze testowym.",
-       "aktualizacje", "bool", "1", ["updater"]),
+       "aktualizacje", "bool", "0", ["updater"], allow_empty=True,
+       note="Puste = jak „Instalacja aktualizacji z panelu”. Aktualizator uruchamiany automatycznie zawsze dostaje tę wartość z M2_UPDATE_APPLY."),
+    _e("M2_UPDATE_AUTOSTART", "Aktualizator startuje sam",
+       "Włączone: aktualizator (potrzebny do zapisu tej strony) uruchamia się sam po instalacji i aktualizacji (VPS) oraz przy starcie serwera z launchera (Windows). "
+       "Domyślnie nie instaluje aktualizacji. Wyłączone: trzeba go uruchamiać ręcznie.",
+       "aktualizacje", "bool", "1", [], note="Czytane przez update.sh i launcher – zmiana nie restartuje kontenerów."),
     _e("M2_UPDATE_STACK_DIR", "Katalog serwera (aktualizator)", "Ścieżka katalogu serwera na hoście, montowana do aktualizatora.",
        "aktualizacje", "path", "/opt/metin2", ["updater"], readonly=True,
        readonly_reason="Ścieżki na hoście zmienia się tylko ręcznie w .env: panel nie może wskazywać aktualizatorowi (który ma dostęp do Dockera) dowolnych katalogów."),
@@ -575,6 +580,20 @@ def services_for(keys):
     return sorted(found, key=lambda s: order.index(s) if s in order else len(order))
 
 
+# MT2009_PLUS_ENV_LIVE_V1: the switches the classic panel already turns LIVE
+# (an event flag in player.quest plus a web_admin_queue row the in-game
+# helper, web_admin.quest, applies within seconds). The .env page switches
+# these itself even without the updater; the updater writes the .env line
+# later (env.pending), without restarting anything.
+LIVE_KEYS = {
+    "M2_AREZZO": "AREZZO",
+    "M2_SEONHAE": "SEONHAE",
+    "M2_ALCHEMY": "RARE",
+    "M2_SASHES": "RARE",
+}
+
+
 def public_schema():
     """What the page needs (descriptions, types, ranges) - no values."""
-    return {"version": SCHEMA_VERSION, "sections": SECTIONS, "services": SERVICE_LABELS, "fields": SCHEMA}
+    return {"version": SCHEMA_VERSION, "sections": SECTIONS, "services": SERVICE_LABELS, "fields": SCHEMA,
+            "live": sorted(LIVE_KEYS)}

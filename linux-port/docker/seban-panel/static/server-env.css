@@ -62,7 +62,7 @@
 .env-badge{display:inline-block;padding:1px 7px;border-radius:9px;font-size:11px;line-height:16px;border:1px solid var(--edge);color:var(--muted)}
 .env-badge-danger{color:#ffb38a;border-color:#8a4a2c}.env-badge-secret{color:#c9b3ff;border-color:#5a4a8a}
 .env-badge-ro{color:#9fb3c8;border-color:#3d5168}.env-badge-warn{color:#ffd77a;border-color:#7a6327}
-.env-readonly .envf-control button[data-undo],.env-readonly .envf-control button[data-default]{display:none}
+.env-readonly .envf:not(.envf-live) .envf-control button[data-undo],.env-readonly .envf:not(.envf-live) .envf-control button[data-default]{display:none}
 .env-status{margin:16px 0;border-left:4px solid var(--blue2)}
 .env-status-ok{border-left-color:#3fb26d}.env-status-failed,.env-status-rejected{border-left-color:#d4485a}
 .env-status-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
@@ -97,3 +97,16 @@ body.env-bar-open main{padding-bottom:120px}
 
 /* an element of this page with [hidden] stays hidden whatever its display (the "ryzykowne" box showed on every save) */
 [hidden]{display:none!important}
+
+/* MT2009_PLUS_UPDATER_AUTOSTART_V1: the updater guide and the live switches */
+.env-updater-guide{border:2px solid #b8862b;border-left-width:6px}
+.env-updater-guide h2{margin-top:0;font-size:20px}
+.env-guide-auto{padding:8px 10px;border-radius:6px;background:color-mix(in srgb,#3fb26d 12%,transparent);border:1px solid #2f7a4c}
+.env-guides{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:12px;margin:12px 0}
+.env-guide{border:1px solid var(--edge);border-radius:8px;padding:8px 12px;background:#0b1625}
+.env-guide>summary{cursor:pointer;font-weight:700;font-size:15px;padding:4px 0}
+.env-guide ol{margin:8px 0 4px;padding-left:20px;display:grid;gap:8px}
+.env-guide pre.env-cmd{white-space:pre-wrap;word-break:break-all;margin:6px 0 0}
+.env-live-note{padding:8px 10px;border-radius:6px;background:color-mix(in srgb,var(--gold) 12%,transparent);border:1px solid color-mix(in srgb,var(--gold) 50%,transparent)}
+.env-badge-live{color:#8fe3a9;border-color:#2f7a4c}
+.envf-live{outline:1px dashed #2f7a4c;outline-offset:-1px}

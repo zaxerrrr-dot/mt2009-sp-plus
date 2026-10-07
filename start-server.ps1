@@ -5,7 +5,9 @@ param(
     [switch]$NoSocketRecovery,
     [switch]$DockerOnly,
     [switch]$IdentityOnly,
-    [switch]$Build
+    [switch]$Build,
+    # MT2009_PLUS_UPDATER_AUTOSTART_V1: only (re)start the updater container.
+    [switch]$UpdaterOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -101,6 +103,90 @@ function Get-DotEnvValue {
     $match = [Regex]::Match($Content, '(?m)^' + [Regex]::Escape($Name) + '=(.*)$')
     if ($match.Success) { return $match.Groups[1].Value.Trim() }
     return ''
+}
+
+# MT2009_PLUS_UPDATER_AUTOSTART_V1: the updater container (compose profile
+# `update') answers the advanced panel's "Ustawienia serwera (.env)" page; it
+# never ran on Windows, so that page was read-only on every player's PC. It is
+# started after every start of the server, settings-only
+# (M2_UPDATE_WATCH_UPDATES=0: on Windows the launcher is the update). Its
+# compose runs inside a Linux container and needs the server folder at a path
+# the Docker Desktop engine understands, the same inside and outside, so the
+# folder is probed under the engine's names for a Windows drive. Never fatal;
+# M2_UPDATE_AUTOSTART=0 in .env turns it off.
+function Get-M2EngineHostPaths([string]$Path) {
+    $full = [IO.Path]::GetFullPath($Path).TrimEnd('\')
+    if ($full -notmatch '^([A-Za-z]):\\?(.*)$') { return @() }
+    $drive = $Matches[1].ToLowerInvariant()
+    $rest = ($Matches[2] -replace '\\', '/').Trim('/')
+    $tail = if ($rest) { '/' + $rest } else { '' }
+    return @("/run/desktop/mnt/host/$drive$tail", "/host_mnt/$drive$tail", "/mnt/host/$drive$tail", "/mnt/$drive$tail")
+}
+
+function Start-M2Updater {
+    param(
+        [Parameter(Mandatory = $true)][string]$ServerRoot,
+        [Parameter(Mandatory = $true)][string]$ComposeDirectory,
+        [switch]$Force
+    )
+    $envPath = Join-Path $ComposeDirectory '.env'
+    $envText = if (Test-Path -LiteralPath $envPath -PathType Leaf) { [IO.File]::ReadAllText($envPath) } else { '' }
+    if ((Get-DotEnvValue -Content $envText -Name 'M2_UPDATE_AUTOSTART') -eq '0' -and -not $Force) {
+        Write-Host 'Aktualizator: M2_UPDATE_AUTOSTART=0 w .env - nie uruchamiam go.' -ForegroundColor DarkGray
+        return $false
+    }
+    $prefix = Get-DotEnvValue -Content $envText -Name 'M2_CONTAINER_PREFIX'
+    if (-not $prefix) { $prefix = 'metin2' }
+    $previousPreference = $ErrorActionPreference
+    $saved = @{}
+    $names = @('M2_UPDATE_STACK_DIR', 'M2_UPDATE_CACHE_DIR', 'M2_UPDATE_REPO_DIR', 'M2_UPDATE_WATCH_UPDATES')
+    try {
+        $ErrorActionPreference = 'Continue'
+        $running = "$(& docker inspect -f '{{.State.Running}}' "$prefix-updater" 2>$null)".Trim()
+        if ($running -eq 'true' -and -not $Force) { return $true }
+        Push-Location $ComposeDirectory
+        try {
+            & docker compose --profile update build updater 2>&1 | ForEach-Object { Write-Verbose "$_" }
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host 'Aktualizator: nie udalo sie zbudowac obrazu (serwer dziala bez niego; strona Ustawienia serwera (.env) bedzie tylko do odczytu).' -ForegroundColor DarkYellow
+                return $false
+            }
+            $stack = $null
+            foreach ($candidate in (Get-M2EngineHostPaths $ServerRoot)) {
+                & docker run --rm --entrypoint sh -v "${candidate}:/probe:ro" metin2/updater:latest -c 'test -f /probe/VERSION && test -f /probe/linux-port/tools/update.sh' 1>$null 2>$null
+                if ($LASTEXITCODE -eq 0) { $stack = $candidate; break }
+            }
+            if (-not $stack) {
+                Write-Host 'Aktualizator: Docker Desktop nie udostepnia folderu serwera kontenerom (Settings > Resources > File sharing) - pomijam.' -ForegroundColor DarkYellow
+                return $false
+            }
+            foreach ($name in $names) { $saved[$name] = [Environment]::GetEnvironmentVariable($name, 'Process') }
+            $env:M2_UPDATE_STACK_DIR = $stack
+            $env:M2_UPDATE_CACHE_DIR = "$stack/.update-cache"
+            $env:M2_UPDATE_REPO_DIR = "$stack/.update-cache/repo"
+            # On Windows the launcher installs updates; the container only saves settings.
+            $env:M2_UPDATE_WATCH_UPDATES = '0'
+            $upArgs = @('compose', '--profile', 'update', 'up', '-d', '--no-deps')
+            if ($Force) { $upArgs += '--force-recreate' }
+            $upArgs += 'updater'
+            & docker @upArgs 2>&1 | ForEach-Object { Write-Verbose "$_" }
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host 'Aktualizator: docker compose nie uruchomil kontenera updater (serwer dziala bez niego).' -ForegroundColor DarkYellow
+                return $false
+            }
+            Write-Host "Aktualizator uruchomiony ($stack) - panel zaawansowany moze zapisywac Ustawienia serwera (.env)." -ForegroundColor Green
+            return $true
+        }
+        finally {
+            Pop-Location
+            foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name, $saved[$name], 'Process') }
+        }
+    }
+    catch {
+        Write-Host ("Aktualizator: {0}" -f $_.Exception.Message) -ForegroundColor DarkYellow
+        return $false
+    }
+    finally { $ErrorActionPreference = $previousPreference }
 }
 
 function Invoke-DockerQuery {
@@ -1097,6 +1183,13 @@ if (-not (Test-Path -LiteralPath $composeFile)) {
     throw "Compose file was not found: $composeFile"
 }
 
+if ($UpdaterOnly) {
+    if (-not (Start-M2Updater -ServerRoot $PSScriptRoot -ComposeDirectory $composeDirectory -Force)) {
+        throw 'Nie udalo sie uruchomic aktualizatora - przyczyna jest wyzej.'
+    }
+    return
+}
+
 # The build context under linux-port/docker/game/src is a staged copy of the
 # overlay sources, and nothing on a player's machine keeps it current:
 # prepare-context.sh needs the pristine engine tree, which the distribution
@@ -1542,3 +1635,5 @@ finally {
 }
 
 Write-Host 'Metin2 server startup completed.' -ForegroundColor Green
+# MT2009_PLUS_UPDATER_AUTOSTART_V1: after the server is up, never fatal.
+Start-M2Updater -ServerRoot $PSScriptRoot -ComposeDirectory $composeDirectory | Out-Null

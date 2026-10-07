@@ -11352,7 +11352,7 @@ dbeditor.install(app, {"app": app, "db": db, "rows": rows, "one": one,
 # queued through the update spool to the updater (env_editor.py).
 import env_editor
 
-env_editor.install(app, login_required, update_csrf_token, lambda: UPDATE_SPOOL)
+env_editor.install(app, login_required, update_csrf_token, lambda: UPDATE_SPOOL, db_connect=lambda: db())
 
 
 if __name__ == "__main__":

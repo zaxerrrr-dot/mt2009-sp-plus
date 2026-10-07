@@ -635,8 +635,11 @@ services:
       M2_UPDATE_REPO_DIR: "${M2_UPDATE_REPO_DIR:-/var/cache/m2src/repo}"
       M2_UPDATE_BRANCH: "${M2_UPDATE_BRANCH:-main}"
       # 0: answer the advanced panel's .env editor (env.request) only and
-      # never install an update (MT2009_PLUS_ENV_EDITOR_V1).
-      M2_UPDATE_WATCH_UPDATES: "${M2_UPDATE_WATCH_UPDATES:-1}"
+      # never install an update (MT2009_PLUS_ENV_EDITOR_V1). Unset, it follows
+      # M2_UPDATE_APPLY - the panel's "update" button - so an updater that
+      # update.sh / the launcher start by themselves (MT2009_PLUS_UPDATER_AUTOSTART_V1)
+      # installs nothing unless the owner switched that button on.
+      M2_UPDATE_WATCH_UPDATES: "${M2_UPDATE_WATCH_UPDATES:-${M2_UPDATE_APPLY:-0}}"
       TZ: "${M2_TZ:-UTC}"
 
     volumes:

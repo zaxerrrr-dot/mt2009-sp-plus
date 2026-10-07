@@ -307,16 +307,54 @@ changes them. The panel itself never writes `.env` and has no Docker socket:
    at its start, after every change and once a minute.
 
 The older `botcount.request` / `spawn-plan.request` of `/manage` go through
-the same path now. Without a running updater (Windows, or a Linux server
-that never started it) the page is read-only and says how to start it:
+the same path now.
+
+### The updater starts by itself (MT2009_PLUS_UPDATER_AUTOSTART_V1)
+
+The page needs the updater, and players' servers never ran it, so it now
+starts without anybody asking:
+
+- **Linux / VPS** - `sh linux-port/tools/update.sh updater` starts it when it
+  is not running. `vps-install.sh install` calls it after the first build,
+  and every `update.sh run` after its build (or when it finds nothing to do).
+  A server updated by an `update.sh` older than this gets it on that same
+  update: the old script runs the new one with `env` right after the unpack,
+  and the new one waits in the background for the build to finish
+  (`.update-build-pending` gone) and starts the updater then (its output goes
+  to `.updater-autostart.log` in the server folder). The real server folder
+  is written into `M2_UPDATE_STACK_DIR` (the example's `/opt/metin2` was wrong
+  for most installs).
+- **Windows** - `start-server.ps1` (every GRAJ) starts it after the server is
+  up; `start-server.ps1 -UpdaterOnly` does only that. The server folder is
+  probed under the Docker Desktop engine's names for a Windows drive
+  (`/run/desktop/mnt/host/c/...`, `/host_mnt/c/...`) and used as
+  `M2_UPDATE_STACK_DIR`, the same path inside and outside, so the compose run
+  inside the container resolves the relative bind mounts; the socket mount
+  `/var/run/docker.sock` works on Docker Desktop's Linux engine. A CRLF `.env`
+  is fine (`env_apply.py` keeps each line's ending).
+
+An updater started this way gets `M2_UPDATE_WATCH_UPDATES` = `M2_UPDATE_APPLY`
+(always 0 on Windows, where the launcher installs updates), so by default it
+answers the settings page and **installs nothing**; an empty
+`M2_UPDATE_WATCH_UPDATES` in compose means the same. An updater that is
+already running is left exactly as it is. `M2_UPDATE_AUTOSTART=0` in `.env`
+turns all of this off. By hand:
 
 ```sh
 cd /opt/metin2/stack            # the folder with docker-compose.yml
-docker compose --profile update up -d updater
+M2_UPDATE_WATCH_UPDATES=0 docker compose --profile update up -d updater
 ```
 
-`M2_UPDATE_WATCH_UPDATES=0` in `.env` (before starting it) keeps the updater
-for the settings page alone: it never installs an update.
+### Live switches without the updater (MT2009_PLUS_ENV_LIVE_V1)
+
+Without a running updater the page is read-only and shows a guide (VPS and
+Windows, with a "Sprawdź ponownie" button) - except for the switches the
+classic panel already turns live (`env_schema.LIVE_KEYS`: `M2_AREZZO`,
+`M2_SEONHAE`, `M2_ALCHEMY`, `M2_SASHES`). Those are switched in the running
+game the classic panel's way (the event flag in `player.quest` and a
+`web_admin_queue` row for `web_admin.quest`), and the wanted values are
+left in `env.pending`; the updater writes them into `.env` whenever it runs
+(`env_apply.py`, at its next snapshot or poll), with no restart.
 
 When a variable is added to `.env.example` or `docker-compose.yml`, describe
 it in `env_schema.py` - `test_env_schema.py` fails until you do.

@@ -737,6 +737,7 @@ run_update() {
             return $?
         fi
         note "   already on $_ver -- nothing to do (FORCE=1 to unpack it again)"
+        [ "$WATCHING" = 1 ] || start_updater
         set_status ok "the server is running version $_ver"
         return 0
     fi
@@ -808,6 +809,7 @@ build_and_start() {
         ( cd "$COMPOSE_DIR" && docker compose up -d --build )
     fi || { fail "the new version was not built or not started -- the log says where it stopped; run this again to retry the build"; return 1; }
     rm -f "$BUILD_PENDING" 2>/dev/null || true
+    [ "$WATCHING" = 1 ] || start_updater
     note "the server is now running version $(installed_version)"
     set_status ok "the server is running version $(installed_version)"
     rm -rf "$WORK"
@@ -815,6 +817,69 @@ build_and_start() {
 }
 
 kv() { sed -n "s/^$2=//p" "$1" 2>/dev/null | head -n 1; }
+
+# MT2009_PLUS_UPDATER_AUTOSTART_V1: the updater container (profile `update')
+# used to run only where the owner started it by hand, and without it the
+# advanced panel's "Ustawienia serwera (.env)" page cannot save anything.
+# An install (vps-install.sh) and every update now start it when it is not
+# running. It installs updates only when M2_UPDATE_APPLY=1 (the owner's
+# switch for the panel's update button) or M2_UPDATE_WATCH_UPDATES=1 was set
+# by hand AND the container was started by hand; started from here it gets
+# M2_UPDATE_WATCH_UPDATES = M2_UPDATE_APPLY, so by default it answers the .env
+# editor alone. M2_UPDATE_AUTOSTART=0 in .env turns this off. An updater that
+# is already running is left exactly as it is. Never from inside a container
+# (the updater itself restarts by its own restart policy).
+start_updater() {
+    [ -f /.dockerenv ] && return 0
+    have docker || return 0
+    _env="$COMPOSE_DIR/.env"
+    if [ "$(kv "$_env" M2_UPDATE_AUTOSTART | tr -d '\r ')" = 0 ]; then
+        say "updater: M2_UPDATE_AUTOSTART=0 in .env - not starting it"
+        return 0
+    fi
+    _prefix=$(kv "$_env" M2_CONTAINER_PREFIX | tr -d '\r ')
+    _name="${_prefix:-metin2}-updater"
+    if [ "$(docker inspect -f '{{.State.Running}}' "$_name" 2>/dev/null)" = true ]; then
+        say "updater: $_name is already running - left as it is"
+        return 0
+    fi
+    # .env written from the example says /opt/metin2 wherever the server is.
+    if [ -f "$_env" ] && [ "$(kv "$_env" M2_UPDATE_STACK_DIR | tr -d '\r')" != "$ROOT" ]; then
+        if grep -q '^M2_UPDATE_STACK_DIR=' "$_env"; then
+            sed -i "s|^M2_UPDATE_STACK_DIR=.*\$|M2_UPDATE_STACK_DIR=$ROOT|" "$_env" 2>/dev/null || true
+        else
+            [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
+            printf 'M2_UPDATE_STACK_DIR=%s\n' "$ROOT" >> "$_env"
+        fi
+    fi
+    _apply=$(kv "$_env" M2_UPDATE_APPLY | tr -d '\r ')
+    [ "$_apply" = 1 ] || _apply=0
+    say "updater: starting it (settings page of the advanced panel; installs updates: $([ "$_apply" = 1 ] && echo yes || echo no))"
+    if ( cd "$COMPOSE_DIR" && M2_UPDATE_STACK_DIR="$ROOT" M2_UPDATE_WATCH_UPDATES="$_apply" \
+            docker compose --profile update up -d --build --no-deps updater ); then
+        say "updater: running"
+    else
+        say "updater: could not be started - the server works without it; by hand: cd $COMPOSE_DIR && docker compose --profile update up -d updater"
+    fi
+    return 0
+}
+
+# Run by `env' (the NEW update.sh, called by the OLD one right after the
+# unpack): the old script builds afterwards and knows nothing about the
+# updater, so this waits in the background for that build to finish
+# (BUILD_PENDING gone) and starts it then. This is how a server updated by
+# an update.sh older than this gets the updater on that very update.
+start_updater_after_build() {
+    [ -f /.dockerenv ] && return 0
+    [ "${M2_UPDATE_WATCHING:-0}" = 1 ] && return 0
+    have docker || return 0
+    ( trap '' HUP
+      _i=0
+      sleep 20
+      while [ -f "$BUILD_PENDING" ] && [ "$_i" -lt 2160 ]; do sleep 5; _i=$((_i + 1)); done
+      [ -f "$BUILD_PENDING" ] || start_updater ) </dev/null >>"$ROOT/.updater-autostart.log" 2>&1 &
+    return 0
+}
 
 # What an update does to .env once the new files are in place, in this order.
 # `sh update.sh env' runs it alone: vps-install.sh does when it installs over
@@ -911,7 +976,7 @@ watch() {
                 fi
             fi
         fi
-        if [ -f "$SPOOL/env.request" ] || [ -f "$SPOOL/botcount.request" ] || [ -f "$SPOOL/spawn-plan.request" ]; then
+        if [ -f "$SPOOL/env.request" ] || [ -f "$SPOOL/botcount.request" ] || [ -f "$SPOOL/spawn-plan.request" ] || [ -f "$SPOOL/env.pending" ]; then
             env_apply poll
         fi
         # .env edited by hand shows in the panel within a minute.
@@ -933,11 +998,15 @@ case "${1:-run}" in
     # MT2009_PLUS_UPDATE_ENV_NOW_V1: run by an older update.sh right after it
     # unpacked this one (migrate_env_from_release); under the panel its lines
     # go to the spool's log as well.
-    env)   [ "${M2_UPDATE_WATCHING:-0}" = 1 ] && WATCHING=1; check_tree; migrate_env; schedule_watcher_restart ;;
+    env)   [ "${M2_UPDATE_WATCHING:-0}" = 1 ] && WATCHING=1; check_tree; migrate_env; schedule_watcher_restart
+           # MT2009_PLUS_UPDATER_AUTOSTART_V1: only right after an unpack (a build is pending).
+           [ -f "$BUILD_PENDING" ] && start_updater_after_build ;;
+    # MT2009_PLUS_UPDATER_AUTOSTART_V1: start the updater container now.
+    updater) check_tree; start_updater ;;
     # MT2009_PLUS_ENV_EDITOR_V1: the channels' ports alone, after the panel's
     # .env editor changed the second channel or the channel count.
     ports) check_tree; sync_channel_ports ;;
-    *) printf 'usage: sh %s [run|check|watch|stage|env|ports]\n' "$0"; exit 2 ;;
+    *) printf 'usage: sh %s [run|check|watch|stage|env|ports|updater]\n' "$0"; exit 2 ;;
 esac
 exit $?
 }

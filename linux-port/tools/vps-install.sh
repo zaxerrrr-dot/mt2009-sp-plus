@@ -584,6 +584,11 @@ run_job() {
                 job_end failed "$_rc" "docker compose up -d --build zakonczyl sie bledem - przyczyna jest wyzej w logu"
                 return "$_rc"
             fi
+            # MT2009_PLUS_UPDATER_AUTOSTART_V1: the updater container, so the
+            # advanced panel's "Ustawienia serwera (.env)" can save. It never
+            # installs an update unless M2_UPDATE_APPLY=1.
+            job_phase updater "aktualizator (zapis ustawien z panelu zaawansowanego)"
+            sh "$ROOT/linux-port/tools/update.sh" updater || true
             ;;
         update)
             job_phase update "aktualizacja z paczki na GitHubie (linux-port/tools/update.sh run)"
