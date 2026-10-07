@@ -343,6 +343,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // Orc Valley's first island are, after the checklist whose eligibility it
 // borrows.
 #include "playerbot_l30_dropper.h"
+// MT2009_PLUS_FARMER_LINK_V1: every farmer ("dropek") linked to a main of its
+// own, the spot farmers' grounds and the yang it sends (playerbot_farmer_link.h),
+// after the droppers and the checklist whose eligibility it borrows.
+#include "playerbot_farmer_link.h"
 // MT2009_PLUS_LEGENDS_V1: the System Legend - the tiers' table, the Legends
 // and the Champions, the reputation, the notices and the engine's hooks.
 #include "playerbot_legends.h"
@@ -711,6 +715,11 @@ namespace
 			lockLevel = PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER;
 		else if (persona)
 			lockLevel = GetPlayerBotPersonaLockLevel(ch, state);
+		// MT2009_PLUS_FARMER_LINK_V1: a spot farmer holds at its ground's
+		// lock, whatever its persona's tier says (playerbot_farmer_link.h).
+		if (!sidekick && !cohort && !IsPlayerBotDropper(state.bPersonality) &&
+				GetPlayerBotFarmerSpotLock(ch->GetPlayerID()) != 0)
+			lockLevel = GetPlayerBotFarmerSpotLock(ch->GetPlayerID());
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		// The owner's Anti-Exp Ring holds its companion too (upstream 2.2.39):
 		// with the ring on, the companion took its share of every kill in the
@@ -789,6 +798,10 @@ namespace
 			lockLevel = PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER;
 		else if (persona)
 			lockLevel = state.persona.bRestored && !state.persona.bAdvanced ? state.persona.bLockLevel : 0;
+		// MT2009_PLUS_FARMER_LINK_V1: a spot farmer's ground's lock.
+		if (!sidekick && !cohort && !IsPlayerBotDropper(state.bPersonality) &&
+				GetPlayerBotFarmerSpotLock(ch->GetPlayerID()) != 0)
+			lockLevel = GetPlayerBotFarmerSpotLock(ch->GetPlayerID());
 		return lockLevel > ch->GetLevel() ? (unsigned int)lockLevel : 0U;
 	}
 
@@ -6335,6 +6348,8 @@ void CPlayerBotManager::Update()
 	ManagePlayerBotGuildLfg(dwNow);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: two or three island droppers a kingdom.
 	ManagePlayerBotL30WeaponDroppers(dwNow);
+	// MT2009_PLUS_FARMER_LINK_V1: farmers linked to their mains, the yang sent and taken.
+	ManagePlayerBotFarmerLinks(dwNow);
 
 	// Once for the whole population: the panel may have moved a weight since
 	// the last tick, and every bot planned below must see the same numbers.

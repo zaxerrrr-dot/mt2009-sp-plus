@@ -542,6 +542,17 @@ DELETE t FROM player.weekly_rank_title t JOIN player.playerbot_sidekick k ON k.s
 # started, so the start that switches the second channel on finds every keeper
 # of the last session already pinned. Written whatever the switch says.
 db -e "CREATE TABLE IF NOT EXISTS player.playerbot_channel_pin (pid INT UNSIGNED NOT NULL PRIMARY KEY, pinned_at DATETIME NOT NULL) ENGINE=InnoDB;"
+# MT2009_PLUS_FARMER_LINK_V1 (the owner, 7 October): every farmer ("dropek")
+# works for a main character of its own - one row a farmer, the main unique -
+# with what it earned, kept, sent and its main took; the transfers for the
+# panel's last-transfers list (30 days); and the panel's switch, the share of
+# bots with a farmer, the farmer's own share and the transfer's limits
+# (playerbot_farmer_link.h, which creates them too when they are missing).
+db -e "CREATE TABLE IF NOT EXISTS player.playerbot_farmer_link (farmer_pid INT UNSIGNED NOT NULL PRIMARY KEY, main_pid INT UNSIGNED NOT NULL, empire TINYINT UNSIGNED NOT NULL DEFAULT 0, kind VARCHAR(16) NOT NULL DEFAULT '', spot VARCHAR(24) NOT NULL DEFAULT '', active TINYINT UNSIGNED NOT NULL DEFAULT 1, keep_pct TINYINT UNSIGNED NOT NULL DEFAULT 30, earned BIGINT UNSIGNED NOT NULL DEFAULT 0, kept BIGINT UNSIGNED NOT NULL DEFAULT 0, owed BIGINT UNSIGNED NOT NULL DEFAULT 0, pending BIGINT UNSIGNED NOT NULL DEFAULT 0, transferred BIGINT UNSIGNED NOT NULL DEFAULT 0, transfers INT UNSIGNED NOT NULL DEFAULT 0, linked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, last_sent DATETIME NULL, last_received DATETIME NULL, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, UNIQUE KEY main_pid (main_pid), KEY active_kind (active, kind)) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS player.playerbot_farmer_transfer (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, farmer_pid INT UNSIGNED NOT NULL, main_pid INT UNSIGNED NOT NULL, amount BIGINT UNSIGNED NOT NULL DEFAULT 0, stage TINYINT UNSIGNED NOT NULL DEFAULT 1, KEY at_idx (at), KEY farmer_idx (farmer_pid), KEY main_idx (main_pid)) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS player.playerbot_farmer_config (id TINYINT UNSIGNED NOT NULL PRIMARY KEY, enabled TINYINT UNSIGNED NOT NULL DEFAULT 1, target_pct TINYINT UNSIGNED NOT NULL DEFAULT 50, keep_pct TINYINT UNSIGNED NOT NULL DEFAULT 30, new_per_hour SMALLINT UNSIGNED NOT NULL DEFAULT 12, min_transfer BIGINT UNSIGNED NOT NULL DEFAULT 500000, reserve BIGINT UNSIGNED NOT NULL DEFAULT 250000, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB;
+INSERT IGNORE INTO player.playerbot_farmer_config (id) VALUES (1);" \
+    || fail_step "could not create the farmer link tables (playerbot_farmer_link)" >&2
 db -e "INSERT IGNORE INTO player.playerbot_channel_pin (pid, pinned_at) SELECT owner, NOW() FROM player.ikashop_offlineshop;" 2>/dev/null \
     || echo "playerbot-migrate: could not pin the shop keepers to the first channel" >&2
 pitch_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'pitch_on_guard_2052';" 2>/dev/null || echo x)

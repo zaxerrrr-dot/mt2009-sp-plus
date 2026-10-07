@@ -4940,6 +4940,162 @@ def bot_personalities():
                            personas=personas, selected_persona=selected_persona)
 
 
+# MT2009_PLUS_FARMER_LINK_V1: "Dropki botów" (the owner, 7 October) -- every
+# farmer ("dropek") works for a main character of its own: of what it earns it
+# keeps a smaller share for its own gear and sends the rest to its main
+# (playerbot_farmer_link.h). The links and the totals are rows of
+# player.playerbot_farmer_link, the transfers of player.playerbot_farmer_transfer,
+# and the switch with its numbers player.playerbot_farmer_config, which every
+# core re-reads once a minute -- no restart. The labels mirror the keys the
+# core stores (PLAYERBOT_FARMER_KIND_KEYS, PLAYERBOT_FARMER_SPOTS); keep the
+# two in step when a ground is added there.
+FARMER_KIND_LABELS = {
+    "medal": "Dropek medali",
+    "m2": "Dropek M2 (Bestie)",
+    "m3": "Dropek M3 (broń 30)",
+    "metin": "Dropek Metinów",
+    "guild": "Dropek surowców",
+    "l30": "Dropek broni 30 lv",
+    "spot": "Dropek na mapie",
+}
+FARMER_SPOT_LABELS = {
+    # The droppers' own grounds.
+    "monkey": "Loch Małp (medale)",
+    "m2_bestials": "Wioska 2 — Bestie",
+    "m3_waryong": "Waryong (M3)",
+    "metins": "Kamienie Metin",
+    "orc_island": "Dolina Orków — wyspa Bestii",
+    "guild_sohan": "Góra Sohan (Pień)",
+    "guild_fire_land": "Doyyumhwaji (Kamień Węgielny)",
+    "guild_hwang": "Świątynia Hwang (Dykta)",
+}
+# The spot farmers' grounds: key, label, chosen from level, held at level.
+FARMER_SPOTS = [
+    ("m1", "Wioska 1 (M1)", 8, 14),
+    ("m2", "Wioska 2 (M2)", 18, 26),
+    ("orc_islands", "Dolina Orków — wyspy", 30, 34),
+    ("desert", "Pustynia Yongbi", 36, 41),
+    ("orc_valley", "Dolina Orków", 40, 46),
+    ("sohan", "Góra Sohan", 48, 54),
+    ("spider1", "Loch Pająków V1", 50, 56),
+    ("hwang", "Świątynia Hwang", 53, 59),
+    ("demon_tower", "Wieża Demonów", 57, 63),
+    ("fire_land", "Doyyumhwaji", 66, 72),
+    ("red_forest", "Czerwony Las", 74, 79),
+]
+for _key, _label, _from, _lock in FARMER_SPOTS:
+    FARMER_SPOT_LABELS[_key] = f"{_label} (lv {_from}–{_lock})"
+FARMER_CONFIG_DEFAULTS = {"enabled": 1, "target_pct": 50, "keep_pct": 30, "new_per_hour": 12,
+                          "min_transfer": 500000, "reserve": 250000}
+FARMER_LINK_SELECT = (
+    "SELECT f.farmer_pid, f.main_pid, f.empire, f.kind, f.spot, f.active, f.keep_pct, f.earned, f.kept, f.owed, "
+    "f.pending, f.transferred, f.transfers, f.linked_at, f.last_sent, f.last_received, "
+    "pf.name AS farmer_name, pf.level AS farmer_level, pf.job AS farmer_job, "
+    "pm.name AS main_name, pm.level AS main_level, pm.job AS main_job "
+    "FROM player.playerbot_farmer_link f "
+    "LEFT JOIN player.player pf ON pf.id=f.farmer_pid "
+    "LEFT JOIN player.player pm ON pm.id=f.main_pid ")
+
+
+def farmer_link_labels(row):
+    row["kind_label"] = FARMER_KIND_LABELS.get(row.get("kind") or "", row.get("kind") or "—")
+    row["spot_label"] = FARMER_SPOT_LABELS.get(row.get("spot") or "", row.get("spot") or "—")
+    for key in ("earned", "kept", "owed", "pending", "transferred"):
+        row[key] = int(row.get(key) or 0)
+    return row
+
+
+def read_farmer_config():
+    config = dict(FARMER_CONFIG_DEFAULTS)
+    try:
+        row = one("SELECT enabled, target_pct, keep_pct, new_per_hour, min_transfer, reserve "
+                  "FROM player.playerbot_farmer_config WHERE id=1")
+    except pymysql.MySQLError:
+        return config, False
+    for key in config:
+        if row and row.get(key) is not None:
+            config[key] = int(row[key])
+    return config, True
+
+
+def farmer_links_for(pid):
+    """The bot's farmer, when it has one, and the main it farms for, when it is
+    one -- for its character card ("Dropek: X" / "Dropek postaci: Y")."""
+    try:
+        found = rows(FARMER_LINK_SELECT + "WHERE (f.farmer_pid=%s OR f.main_pid=%s) AND f.active=1", (pid, pid))
+    except pymysql.MySQLError:
+        return []
+    result = []
+    for row in found:
+        row = farmer_link_labels(dict(row))
+        row["role"] = "farmer" if int(row["farmer_pid"]) == pid else "main"
+        result.append(row)
+    return result
+
+
+@app.route("/players/farmers", methods=["GET", "POST"])
+@login_required
+def bot_farmers():
+    if request.method == "POST":
+        if request.form.get("farmer_csrf", "") != session.get("seban_update_csrf", ""):
+            flash("Sesja formularza wygasła - odśwież stronę i spróbuj jeszcze raz.", "error")
+            return redirect(url_for("bot_farmers"))
+
+        def number(name, low, high):
+            try:
+                return max(low, min(high, int(str(request.form.get(name, "")).replace(" ", ""))))
+            except ValueError:
+                return FARMER_CONFIG_DEFAULTS[name]
+
+        values = (1 if request.form.get("enabled") else 0, number("target_pct", 0, 100), number("keep_pct", 0, 90),
+                  number("new_per_hour", 0, 120), number("min_transfer", 10000, 1000000000),
+                  number("reserve", 0, 1000000000))
+        try:
+            with db() as con, con.cursor() as cur:
+                cur.execute("INSERT INTO player.playerbot_farmer_config (id, enabled, target_pct, keep_pct, new_per_hour, "
+                            "min_transfer, reserve) VALUES (1, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE "
+                            "enabled=VALUES(enabled), target_pct=VALUES(target_pct), keep_pct=VALUES(keep_pct), "
+                            "new_per_hour=VALUES(new_per_hour), min_transfer=VALUES(min_transfer), reserve=VALUES(reserve)",
+                            values)
+            flash("Zapisano. Rdzenie gry odczytają ustawienia dropków w ciągu minuty — restart nie jest potrzebny.", "success")
+        except pymysql.MySQLError:
+            flash("Nie udało się zapisać — tabela dropków jeszcze nie istnieje (pojawi się po starcie migratora albo rdzenia gry).", "error")
+        return redirect(url_for("bot_farmers"))
+
+    query = request.args.get("q", "").strip().lower()
+    selected = request.args.get("kind", "").strip()
+    config, tables = read_farmer_config()
+    links, transfers, counts, spots = [], [], {}, {}
+    totals = {"earned": 0, "kept": 0, "transferred": 0, "pending": 0, "links": 0}
+    if tables:
+        try:
+            links = [farmer_link_labels(dict(row)) for row in
+                     rows(FARMER_LINK_SELECT + "WHERE f.active=1 ORDER BY f.transferred DESC, f.earned DESC")]
+            transfers = rows("SELECT t.at, t.amount, t.farmer_pid, t.main_pid, pf.name AS farmer_name, pm.name AS main_name "
+                             "FROM player.playerbot_farmer_transfer t "
+                             "LEFT JOIN player.player pf ON pf.id=t.farmer_pid LEFT JOIN player.player pm ON pm.id=t.main_pid "
+                             "WHERE t.stage=2 ORDER BY t.id DESC LIMIT 50")
+        except pymysql.MySQLError:
+            links, transfers = [], []
+    for row in links:
+        counts[row["kind"]] = counts.get(row["kind"], 0) + 1
+        spots[row["spot_label"]] = spots.get(row["spot_label"], 0) + 1
+        for key in ("earned", "kept", "transferred", "pending"):
+            totals[key] += row[key]
+        totals["links"] += 1
+    if selected:
+        links = [row for row in links if row["kind"] == selected]
+    if query:
+        links = [row for row in links if query in (row.get("farmer_name") or "").lower()
+                 or query in (row.get("main_name") or "").lower()]
+    shown = len(links)
+    kinds = [{"key": key, "label": label, "count": counts.get(key, 0)} for key, label in FARMER_KIND_LABELS.items()]
+    return render_template("bot_farmers.html", config=config, tables=tables, links=links[:500], shown=shown,
+                           transfers=transfers, kinds=kinds, selected=selected, query=query, totals=totals,
+                           spots=sorted(spots.items(), key=lambda item: -item[1]), spot_table=FARMER_SPOTS,
+                           farmer_csrf=update_csrf_token())
+
+
 # MT2009_PLUS_PROGRESSION_V1: "Progresja botów" -- the map transition levels,
 # the early holds (Grinder tiers, Law of Advancement) and the checklist a bot
 # must meet before it may pass a level. The core re-reads the file within five
@@ -6353,6 +6509,8 @@ def player(pid):
         legend = {}
     character["legend"] = dict(legend_badge(legend["tier"], legend["empire"]), reputation=legend["reputation"],
                                player_kills=legend["player_kills"]) if legend and legend_badge(legend["tier"], legend["empire"]) else None
+    # MT2009_PLUS_FARMER_LINK_V1: "Dropek: X" for a main, "Dropek postaci: Y" for a farmer.
+    character["farmer_links"] = farmer_links_for(pid)
     return render_template("player.html", character=character, equipment=equipment, costumes=costumes, alchemy=alchemy, inventory=inventory, safebox=safebox,
                             takeover_bot=takeover_bot, takeover=takeover_status(pid) if takeover_bot else None,
                             takeover_csrf=update_csrf_token(),

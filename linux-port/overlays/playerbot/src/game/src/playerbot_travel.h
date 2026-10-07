@@ -694,6 +694,9 @@ namespace
 		return PLAYERBOT_MAP_SOHAN;
 	}
 
+	// MT2009_PLUS_FARMER_LINK_V1: a spot farmer's map (playerbot_farmer_link.h).
+	long GetPlayerBotFarmerSpotMap(LPCHARACTER ch);
+
 	long GetPlayerBotFrontierMapForLevelRaw(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -748,6 +751,13 @@ namespace
 						IsPlayerBotMapHostedHere(ground.map))
 					return ground.map;
 			}
+		}
+		// MT2009_PLUS_FARMER_LINK_V1: a spot farmer hunts its ground from the
+		// ground's first level (playerbot_farmer_link.h, included later).
+		{
+			const long farmerMap = GetPlayerBotFarmerSpotMap(ch);
+			if (farmerMap != 0 && IsPlayerBotFrontierMapIndex(farmerMap) && IsPlayerBotMapHostedHere(farmerMap))
+				return farmerMap;
 		}
 		// A guild's errand (playerbot_guild_land.h): where the material its
 		// next building lacks drops, for as long as the errand stands.
