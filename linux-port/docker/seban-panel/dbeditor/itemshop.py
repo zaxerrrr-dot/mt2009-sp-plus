@@ -111,7 +111,11 @@ CLIENT_NAME_SUFFIX = {1: "(30 godzin)", 5: "(7 dni)", 101: "(1 dzień)", 102: "(
 # MT2009_PLUS_AREZZO_COSTUME_SETS_V3: the in-game ItemShop indexes of the two Arezzo sets V2 took out and
 # V3 brought back (Ognisty Rycerz, Krwawa Zemsta) - arezzo_costume_sets_v3 adds them once more.
 AREZZO_COSTUME_V3_RESTORED = ((10612, 10613, 10628, 10629, 20612, 20613, 20628, 20629) +
-                              tuple(range(30630, 30636)) + tuple(range(30678, 30684)) + (30805, 30813))
+                              tuple(range(30630, 30636)) + tuple(range(30678, 30684)) + (30805,))
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V4: the sash skins with Arezzo's "me_w" wings (Krwawa Zemsta, Niebieski /
+# Zloty Smok, Joker) are out - their indexes 30813, 30818-30820 stay empty, arezzo_costume_sets_v4 deletes them.
+AREZZO_COSTUME_V4_REMOVED = (85213, 85219, 85220, 85221)
+AREZZO_COSTUME_V4_GAPS = (30813, 30818, 30819, 30820)
 BOOT_ONCE = {
     "marriage_201": {"adds": tuple(range(201, 212)), "note": "strona Małżeństwo (201–211)"},
     "autohunt_rings_6": {"adds": (6, 7, 8), "note": "bilet Auto Łowy i dwa pierścienie"},
@@ -125,14 +129,17 @@ BOOT_ONCE = {
     "monster_cards_617": {"adds": (617, 618), "note": "Karty Potworów (Nowego Początku / Układu)"},
     "collector_item_16": {"adds": (16,), "note": "Kolekcjoner – okno Kolekcjonera z dowolnego miejsca"},
     # MT2009_PLUS_AREZZO_COSTUME_SETS_V1 (gen_azcostume_server.py): 44 helmets, 44 costumes, 126 weapon
-    # skins and 21 sash skins of the 22 Arezzo sets, 100 SM each; shown and sold only while the Arezzo
-    # module is on (V2, the engine's ItemShop). V2's arezzo_costume_sets_v2 (it deleted Ognisty Rycerz and
+    # skins and 17 sash skins (V4: four of the 21 out) of the 22 Arezzo sets, 100 SM each; shown and
+    # sold only while the Arezzo module is on (V2, the engine's ItemShop). V2's arezzo_costume_sets_v2 (it deleted Ognisty Rycerz and
     # Krwawa Zemsta) is gone; V3 gives a world that ran it their lines back.
     "arezzo_costume_sets": {"adds": tuple(range(10600, 10644)) + tuple(range(20600, 20644)) +
-                            tuple(range(30600, 30726)) + tuple(range(30800, 30821)),
+                            tuple(range(30600, 30726)) +
+                            tuple(i for i in range(30800, 30821) if i not in AREZZO_COSTUME_V4_GAPS),
                             "note": "zestawy kostiumów z Arezzo (fryzury/hełmy, kostiumy, nakładki na broń i szarfę)"},
     "arezzo_costume_sets_v3": {"adds": AREZZO_COSTUME_V3_RESTORED,
                                "note": "zestawy Ognistego Rycerza i Krwawej Zemsty wracają do sklepu"},
+    "arezzo_costume_sets_v4": {"adds": (), "remove_vnums": AREZZO_COSTUME_V4_REMOVED,
+                               "note": "nakładki na szarfę Krwawej Zemsty, Nieb./Złotego Smoka i Jokera znikają ze sklepu"},
 }
 
 

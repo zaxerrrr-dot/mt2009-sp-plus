@@ -309,7 +309,7 @@ def main():
                                  size=size, anti=A.ANTI_WEAPON_BASE | cls, values=[0, 0, 0, i, 0, 0], icon=icon,
                                  model=model, msm={}, kind='Weapon', shining=shining.get(av, [])))
                 srow['weapons'].append(av)
-        if back:
+        if back and back + A.SKIN_SHIFT not in A.REMOVED_ITEMS:   # V4: the me_w wing skins are out
             vnum = back + A.SKIN_SHIFT
             icon, model = il[back][0], il[back][1]
             want(icon, 'icon %d' % vnum)

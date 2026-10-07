@@ -61,3 +61,18 @@ Wszystko generuje `client-patches/client-2.0.30/tools/azcostume/gen_azcostume_se
 * Brakuje (także w paczkach Arezzo) `d:/ymir work/effect/plechito/weapons/christmas2023_4/costume_trail.mde`, na który
   wskazuje poświata kostiumu Ognistego (i Mroźnego) Rycerza – ta jedna smuga się nie pokaże, reszta efektu tak.
 
+## V4 (7 października 2026)
+
+* Usunięte cztery **nakładki na szarfę** ze skrzydłami Arezzo z katalogu `me_w`: **85213** (Szarfa Krwawej Zemsty),
+  **85219** (Nieb. Smoka), **85220** (Złotego Smoka), **85221** (Jokera) – właściciel: nie dało się ich poprawnie
+  ustawić (poprawki obrotu w exe nie pomogły, animacja kanciasta). Reszta tych zestawów (kostiumy, hełmy, nakładki na
+  broń) zostaje; zestawy bez nakładki na szarfę bez zmian. Teraz 22 zestawy, 231 przedmiotów, 17 nakładek na szarfę.
+* `azcostume_sets.REMOVED_ITEMS` (poziom przedmiotu, obok `REMOVED_SETS`): `build_azcostume.py` nie daje tym zestawom
+  nakładki (ich własne modele / tekstury / ikony – 11 plików – wypadają z paczek, wspólne zostają), generator pomija je
+  w SQL, sklepie WWW, ItemShopie w grze, `playerbot_arezzo_costumes.h` i `arezzo_costumes.php`, ikony WWW usunięte.
+  Indeksy ItemShopu 30813, 30818–30820 zostają puste, inne bez zmian.
+* apply.sh: `DELETE` z `world.item_proto` (każdy start), `ishop_once arezzo_costume_sets_v4` (ItemShop w grze, w
+  `BOOT_ONCE` edytora bazy), oferty sklepu WWW (`itemshop.ishop_items`), a raz (`azcostume_removed_v4`): kopie graczy
+  (`player.item`) i nieodebrane `player.item_award` usunięte, szarfa z jedną z tych nakładek dostaje gniazdo 2 = 0
+  (wygląda jak zwykła szarfa) – z liczbami w logu (`Arezzo costume sets V4: removed ...`).
+* Exe: obejście `ENABLE_ACCE_INITIAL_PLACEMENT` niepotrzebne – wyłączone (`client-patches/exe/README.md`).

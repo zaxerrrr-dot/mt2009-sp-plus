@@ -779,6 +779,8 @@ void CGraphicThingInstance::RecalcAccePositionMatrixFromBoneMatrix()
 #endif
 
 #if defined(ENABLE_ACCE_COSTUME_SYSTEM) && defined(ENABLE_ACCE_INITIAL_PLACEMENT)
+// Not built since MT2009_PLUS_AREZZO_COSTUME_SETS_V4 (7.10.2026): ENABLE_ACCE_INITIAL_PLACEMENT is commented out in
+// Locale_inc.h - the "me_w" sash skins it was for are removed from the game (kept here in case another model needs it).
 // MT2009_PLUS_ACCE_INITIAL_PLACEMENT_V3: some sash models (Arezzo's "me_w" wings - 85213, 85219,
 // 85220, 85221) stand turned when drawn at Bip01 Spine2 (RecalcAccePositionMatrixFromBoneMatrix).
 // V1/V2 put the model's InitialPlacement first - wrong (they lay on the ground beside the character).

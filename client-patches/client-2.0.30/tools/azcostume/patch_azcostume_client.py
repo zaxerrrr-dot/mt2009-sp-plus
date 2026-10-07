@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# MT2009_PLUS_AREZZO_COSTUME_SETS_V1 - the Arezzo costume sets in the client's data: the same 235
-# items (V2: 20 sets; the rows and msm groups of the two removed ones, azcostume_sets.REMOVED_SETS,
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V1 - the Arezzo costume sets in the client's data: the same 231
+# items (V4: 4 me_w sash skins out, azcostume_sets.REMOVED_ITEMS, dropped from V3-patched data too; V2: 20 sets; the rows and msm groups of the two removed ones, azcostume_sets.REMOVED_SETS,
 # are taken out of data a V1 run patched) linux-port/docker/mariadb/playerbot/arezzo_costumes.sql adds to world.item_proto (both
 # made from azcostume_items.json - keep them equal; gen_azcostume_server.py writes the server).
 #
@@ -10,7 +10,7 @@
 #   gamedata/gf_official_costumes.txt   gamedata pack - bodies, hairs, weapon skins (ITEM_COSTUME rows;
 #                                       the client's legacy item_proto has no 4xxxx cosmetics, the exe's
 #                                       CItemManager::LoadItemTable reads this 24-column table)
-#   gamedata/costume_attr_items.txt     gamedata pack - the 21 sash skins (ITEM_USE rows, same layout;
+#   gamedata/costume_attr_items.txt     gamedata pack - the 17 sash skins (ITEM_USE rows, same layout;
 #                                       the applicable flag makes the bag send "use on item")
 #   gamedata/item_list.txt              gamedata pack - icon (ARMOR / ETC), weapon model (WEAPON),
 #                                       the skin's wing / cape model (WING - SetAcce shows it)

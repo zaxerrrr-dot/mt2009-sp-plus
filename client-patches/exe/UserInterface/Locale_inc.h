@@ -183,7 +183,10 @@
 
 // MT2009_PLUS_ACCE_INITIAL_PLACEMENT_V1: a sash model whose place on the back is its InitialPlacement
 // (root bone = identity; Arezzo's "me_w" wings) is drawn with it (EterGrnLib/ThingInstance.cpp).
-#define ENABLE_ACCE_INITIAL_PLACEMENT
+// OFF since MT2009_PLUS_AREZZO_COSTUME_SETS_V4 (7.10.2026): the four "me_w" sash skins (85213, 85219, 85220,
+// 85221) are removed from the game - no rotation fix placed them right - so nothing needs the correction;
+// the code stays behind the flag, and without it the exe no longer stats acce_fix.txt every 2 s.
+// #define ENABLE_ACCE_INITIAL_PLACEMENT
 
 // MT2009_PLUS_YANG_LIMITS_V1 (Autor: Digi Rasta, nowy-system 0.26.0, limity Yang): yang in a trade in 64 bits
 // (exchange.GetElkFrom*, net.SendExchangeElkAddPacket - the packet always carried a long long) and

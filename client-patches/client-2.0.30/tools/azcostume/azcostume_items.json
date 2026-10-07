@@ -8702,87 +8702,6 @@
    ]
   },
   {
-   "key": "d:/ymir work/item/wing/me_w/crytsal_blue.dds",
-   "ours": false,
-   "pack": "az_cost10",
-   "size": 349680,
-   "src": "ymir work/item/wing/me_w/crytsal_blue.dds",
-   "why": [
-    "ref d:/ymir work/item/wing/me_w/crytsal_blue.gr2",
-    "ref d:/ymir work/item/wing/me_w/crytsal_gold.gr2"
-   ]
-  },
-  {
-   "key": "d:/ymir work/item/wing/me_w/crytsal_blue.gr2",
-   "ours": false,
-   "pack": "az_cost10",
-   "size": 577816,
-   "src": "ymir work/item/wing/me_w/crytsal_blue.gr2",
-   "why": [
-    "model 85219"
-   ]
-  },
-  {
-   "key": "d:/ymir work/item/wing/me_w/crytsal_gold.dds",
-   "ours": false,
-   "pack": "az_cost10",
-   "size": 349680,
-   "src": "ymir work/item/wing/me_w/crytsal_gold.dds",
-   "why": [
-    "ref d:/ymir work/item/wing/me_w/crytsal_gold.gr2"
-   ]
-  },
-  {
-   "key": "d:/ymir work/item/wing/me_w/crytsal_gold.gr2",
-   "ours": false,
-   "pack": "az_cost10",
-   "size": 577864,
-   "src": "ymir work/item/wing/me_w/crytsal_gold.gr2",
-   "why": [
-    "model 85220"
-   ]
-  },
-  {
-   "key": "d:/ymir work/item/wing/me_w/joker.dds",
-   "ours": false,
-   "pack": "az_cost10",
-   "size": 262272,
-   "src": "ymir work/item/wing/me_w/joker.dds",
-   "why": [
-    "ref d:/ymir work/item/wing/me_w/joker.gr2"
-   ]
-  },
-  {
-   "key": "d:/ymir work/item/wing/me_w/joker.gr2",
-   "ours": false,
-   "pack": "az_cost10",
-   "size": 137276,
-   "src": "ymir work/item/wing/me_w/joker.gr2",
-   "why": [
-    "model 85221"
-   ]
-  },
-  {
-   "key": "d:/ymir work/item/wing/me_w/wing_halloween_2022.dds",
-   "ours": false,
-   "pack": "az_cost10",
-   "size": 65664,
-   "src": "ymir work/item/wing/me_w/wing_halloween_2022.dds",
-   "why": [
-    "ref d:/ymir work/item/wing/me_w/wing_halloween_2022.gr2"
-   ]
-  },
-  {
-   "key": "d:/ymir work/item/wing/me_w/wing_halloween_2022.gr2",
-   "ours": false,
-   "pack": "az_cost10",
-   "size": 59268,
-   "src": "ymir work/item/wing/me_w/wing_halloween_2022.gr2",
-   "why": [
-    "model 85213"
-   ]
-  },
-  {
    "key": "d:/ymir work/item/wing/plechito/andun_glory/andun_glory.gr2",
    "ours": false,
    "pack": "az_cost10",
@@ -9125,7 +9044,7 @@
   {
    "key": "d:/ymir work/item/wing/plechito/viking_sash/plechito_tex.dds",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 1398256,
    "src": "ymir work/item/wing/plechito/viking_sash/plechito_tex.dds",
    "why": [
@@ -9135,7 +9054,7 @@
   {
    "key": "d:/ymir work/item/wing/plechito/viking_sash/viking_sash.gr2",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 56620,
    "src": "ymir work/item/wing/plechito/viking_sash/viking_sash.gr2",
    "why": [
@@ -9145,7 +9064,7 @@
   {
    "key": "d:/ymir work/pc/assassin/assassin_chipao1_l_01.dds",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 172160,
    "src": "ymir work/pc/assassin/assassin_chipao1_l_01.dds",
    "why": [
@@ -9155,7 +9074,7 @@
   {
    "key": "d:/ymir work/pc/assassin/assassin_christmas_2019_1.dds",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 344192,
    "src": "ymir work/pc/assassin/assassin_christmas_2019_1.dds",
    "why": [
@@ -9176,7 +9095,7 @@
   {
    "key": "d:/ymir work/pc/assassin/assassin_ramadan_2020_1.dds",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 349680,
    "src": "ymir work/pc/assassin/assassin_ramadan_2020_1.dds",
    "why": [
@@ -9188,7 +9107,7 @@
   {
    "key": "d:/ymir work/pc/assassin/assassin_salsa1.dds",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 172160,
    "src": "ymir work/pc/assassin/assassin_salsa1.dds",
    "why": [
@@ -9198,7 +9117,7 @@
   {
    "key": "d:/ymir work/pc/assassin/assassin_springwear1.dds",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 172160,
    "src": "ymir work/pc/assassin/assassin_springwear1.dds",
    "why": [
@@ -9226,7 +9145,7 @@
   {
    "key": "d:/ymir work/pc/plechito/andun_glory/assassin_face_m.dds",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 43832,
    "src": "ymir work/pc/plechito/andun_glory/assassin_face_m.dds",
    "why": [
@@ -9238,7 +9157,7 @@
   {
    "key": "d:/ymir work/pc/plechito/andun_glory/assassin_face_w.dds",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 43832,
    "src": "ymir work/pc/plechito/andun_glory/assassin_face_w.dds",
    "why": [
@@ -9250,7 +9169,7 @@
   {
    "key": "d:/ymir work/pc/plechito/andun_glory/assassin_m.gr2",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 142168,
    "src": "ymir work/pc/plechito/andun_glory/assassin_m.gr2",
    "why": [
@@ -9260,7 +9179,7 @@
   {
    "key": "d:/ymir work/pc/plechito/andun_glory/assassin_w.gr2",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 139420,
    "src": "ymir work/pc/plechito/andun_glory/assassin_w.gr2",
    "why": [
@@ -9270,7 +9189,7 @@
   {
    "key": "d:/ymir work/pc/plechito/andun_glory/hair/assassin_m.gr2",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 23996,
    "src": "ymir work/pc/plechito/andun_glory/hair/assassin_m.gr2",
    "why": [
@@ -9280,7 +9199,7 @@
   {
    "key": "d:/ymir work/pc/plechito/andun_glory/hair/assassin_w.gr2",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 29780,
    "src": "ymir work/pc/plechito/andun_glory/hair/assassin_w.gr2",
    "why": [
@@ -9290,7 +9209,7 @@
   {
    "key": "d:/ymir work/pc/plechito/andun_glory/hair/plechito_tex_m.dds",
    "ours": false,
-   "pack": "az_cost11",
+   "pack": "az_cost10",
    "size": 349672,
    "src": "ymir work/pc/plechito/andun_glory/hair/plechito_tex_m.dds",
    "why": [
@@ -10303,7 +10222,7 @@
   {
    "key": "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_m_as.dds",
    "ours": false,
-   "pack": "az_cost12",
+   "pack": "az_cost11",
    "size": 1398256,
    "src": "ymir work/pc/plechito/dark_hwang/plechito_tex_m_as.dds",
    "why": [
@@ -10315,7 +10234,7 @@
   {
    "key": "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_m_sh.dds",
    "ours": false,
-   "pack": "az_cost12",
+   "pack": "az_cost11",
    "size": 1398256,
    "src": "ymir work/pc/plechito/dark_hwang/plechito_tex_m_sh.dds",
    "why": [
@@ -10327,7 +10246,7 @@
   {
    "key": "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_m_su.dds",
    "ours": false,
-   "pack": "az_cost12",
+   "pack": "az_cost11",
    "size": 1398256,
    "src": "ymir work/pc/plechito/dark_hwang/plechito_tex_m_su.dds",
    "why": [
@@ -10985,7 +10904,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/plechito_tex_w_w.dds",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 1398256,
    "src": "ymir work/pc/plechito/easter2023_1/plechito_tex_w_w.dds",
    "why": [
@@ -10997,7 +10916,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/shaman_face_m.dds",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 43832,
    "src": "ymir work/pc/plechito/easter2023_1/shaman_face_m.dds",
    "why": [
@@ -11007,7 +10926,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/shaman_face_w.dds",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 43832,
    "src": "ymir work/pc/plechito/easter2023_1/shaman_face_w.dds",
    "why": [
@@ -11017,7 +10936,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/shaman_m.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 200096,
    "src": "ymir work/pc/plechito/easter2023_1/shaman_m.gr2",
    "why": [
@@ -11027,7 +10946,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/shaman_w.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 199572,
    "src": "ymir work/pc/plechito/easter2023_1/shaman_w.gr2",
    "why": [
@@ -11037,7 +10956,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/sura_face_m.dds",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 43832,
    "src": "ymir work/pc/plechito/easter2023_1/sura_face_m.dds",
    "why": [
@@ -11047,7 +10966,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/sura_face_w.dds",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 43832,
    "src": "ymir work/pc/plechito/easter2023_1/sura_face_w.dds",
    "why": [
@@ -11057,7 +10976,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/sura_m.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 197016,
    "src": "ymir work/pc/plechito/easter2023_1/sura_m.gr2",
    "why": [
@@ -11067,7 +10986,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/sura_w.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 212940,
    "src": "ymir work/pc/plechito/easter2023_1/sura_w.gr2",
    "why": [
@@ -11077,7 +10996,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/warrior_face_m.dds",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 43832,
    "src": "ymir work/pc/plechito/easter2023_1/warrior_face_m.dds",
    "why": [
@@ -11087,7 +11006,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/warrior_face_w.dds",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 43832,
    "src": "ymir work/pc/plechito/easter2023_1/warrior_face_w.dds",
    "why": [
@@ -11097,7 +11016,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/warrior_m.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 186736,
    "src": "ymir work/pc/plechito/easter2023_1/warrior_m.gr2",
    "why": [
@@ -11107,7 +11026,7 @@
   {
    "key": "d:/ymir work/pc/plechito/easter2023_1/warrior_w.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 205192,
    "src": "ymir work/pc/plechito/easter2023_1/warrior_w.gr2",
    "why": [
@@ -11117,7 +11036,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/assassin_face_m.dds",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 43832,
    "src": "ymir work/pc/plechito/fire_warrior/assassin_face_m.dds",
    "why": [
@@ -11127,7 +11046,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/assassin_face_w.dds",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 87536,
    "src": "ymir work/pc/plechito/fire_warrior/assassin_face_w.dds",
    "why": [
@@ -11137,7 +11056,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/assassin_m.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 93244,
    "src": "ymir work/pc/plechito/fire_warrior/assassin_m.gr2",
    "why": [
@@ -11147,7 +11066,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/assassin_w.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 85464,
    "src": "ymir work/pc/plechito/fire_warrior/assassin_w.gr2",
    "why": [
@@ -11157,7 +11076,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/hair/assassin_m.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 20672,
    "src": "ymir work/pc/plechito/fire_warrior/hair/assassin_m.gr2",
    "why": [
@@ -11167,7 +11086,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/hair/assassin_w.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 21556,
    "src": "ymir work/pc/plechito/fire_warrior/hair/assassin_w.gr2",
    "why": [
@@ -11177,7 +11096,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/hair/shaman_m.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 20720,
    "src": "ymir work/pc/plechito/fire_warrior/hair/shaman_m.gr2",
    "why": [
@@ -11187,7 +11106,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/hair/shaman_w.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 21340,
    "src": "ymir work/pc/plechito/fire_warrior/hair/shaman_w.gr2",
    "why": [
@@ -11197,7 +11116,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/hair/sura_m.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 20644,
    "src": "ymir work/pc/plechito/fire_warrior/hair/sura_m.gr2",
    "why": [
@@ -11207,7 +11126,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/hair/sura_w.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 21468,
    "src": "ymir work/pc/plechito/fire_warrior/hair/sura_w.gr2",
    "why": [
@@ -11217,7 +11136,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/hair/warrior_m.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 20740,
    "src": "ymir work/pc/plechito/fire_warrior/hair/warrior_m.gr2",
    "why": [
@@ -11227,7 +11146,7 @@
   {
    "key": "d:/ymir work/pc/plechito/fire_warrior/hair/warrior_w.gr2",
    "ours": false,
-   "pack": "az_cost13",
+   "pack": "az_cost12",
    "size": 21348,
    "src": "ymir work/pc/plechito/fire_warrior/hair/warrior_w.gr2",
    "why": [
@@ -12913,7 +12832,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/hair/assassin_m.gr2",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 30004,
    "src": "ymir work/pc/plechito/necromancer_robe/hair/assassin_m.gr2",
    "why": [
@@ -12923,7 +12842,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/hair/assassin_w.gr2",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 52480,
    "src": "ymir work/pc/plechito/necromancer_robe/hair/assassin_w.gr2",
    "why": [
@@ -12933,7 +12852,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/hair/plechito_tex_w.dds",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 699216,
    "src": "ymir work/pc/plechito/necromancer_robe/hair/plechito_tex_w.dds",
    "why": [
@@ -12945,7 +12864,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/hair/shaman_m.gr2",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 30560,
    "src": "ymir work/pc/plechito/necromancer_robe/hair/shaman_m.gr2",
    "why": [
@@ -12955,7 +12874,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/hair/shaman_w.gr2",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 41328,
    "src": "ymir work/pc/plechito/necromancer_robe/hair/shaman_w.gr2",
    "why": [
@@ -12965,7 +12884,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/hair/sura_m.gr2",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 29592,
    "src": "ymir work/pc/plechito/necromancer_robe/hair/sura_m.gr2",
    "why": [
@@ -12975,7 +12894,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/hair/sura_w.gr2",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 41192,
    "src": "ymir work/pc/plechito/necromancer_robe/hair/sura_w.gr2",
    "why": [
@@ -12985,7 +12904,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/hair/warrior_m.gr2",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 28284,
    "src": "ymir work/pc/plechito/necromancer_robe/hair/warrior_m.gr2",
    "why": [
@@ -12995,7 +12914,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/hair/warrior_w.gr2",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 41152,
    "src": "ymir work/pc/plechito/necromancer_robe/hair/warrior_w.gr2",
    "why": [
@@ -13005,7 +12924,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/plechito_tex_m.dds",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 699216,
    "src": "ymir work/pc/plechito/necromancer_robe/plechito_tex_m.dds",
    "why": [
@@ -13017,7 +12936,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/plechito_tex_w_sh.dds",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 699216,
    "src": "ymir work/pc/plechito/necromancer_robe/plechito_tex_w_sh.dds",
    "why": [
@@ -13028,7 +12947,7 @@
   {
    "key": "d:/ymir work/pc/plechito/necromancer_robe/plechito_tex_w_su.dds",
    "ours": false,
-   "pack": "az_cost14",
+   "pack": "az_cost13",
    "size": 699216,
    "src": "ymir work/pc/plechito/necromancer_robe/plechito_tex_w_su.dds",
    "why": [
@@ -14323,7 +14242,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/assassin_m_skin.dds",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 174904,
    "src": "ymir work/pc/plechito/viking_costume/assassin_m_skin.dds",
    "why": [
@@ -14333,7 +14252,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/assassin_w.gr2",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 165100,
    "src": "ymir work/pc/plechito/viking_costume/assassin_w.gr2",
    "why": [
@@ -14343,7 +14262,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/female_skin.dds",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 174904,
    "src": "ymir work/pc/plechito/viking_costume/female_skin.dds",
    "why": [
@@ -14355,7 +14274,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/hair/assassin_m.gr2",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 27992,
    "src": "ymir work/pc/plechito/viking_costume/hair/assassin_m.gr2",
    "why": [
@@ -14365,7 +14284,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/hair/assassin_w.gr2",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 21444,
    "src": "ymir work/pc/plechito/viking_costume/hair/assassin_w.gr2",
    "why": [
@@ -14375,7 +14294,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/hair/shaman_m.gr2",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 27308,
    "src": "ymir work/pc/plechito/viking_costume/hair/shaman_m.gr2",
    "why": [
@@ -14385,7 +14304,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/hair/shaman_w.gr2",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 21440,
    "src": "ymir work/pc/plechito/viking_costume/hair/shaman_w.gr2",
    "why": [
@@ -14395,7 +14314,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/hair/sura_m.gr2",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 28436,
    "src": "ymir work/pc/plechito/viking_costume/hair/sura_m.gr2",
    "why": [
@@ -14405,7 +14324,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/hair/sura_w.gr2",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 21416,
    "src": "ymir work/pc/plechito/viking_costume/hair/sura_w.gr2",
    "why": [
@@ -14415,7 +14334,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/hair/warrior_m.gr2",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 41972,
    "src": "ymir work/pc/plechito/viking_costume/hair/warrior_m.gr2",
    "why": [
@@ -14425,7 +14344,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/hair/warrior_w.gr2",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 21288,
    "src": "ymir work/pc/plechito/viking_costume/hair/warrior_w.gr2",
    "why": [
@@ -14435,7 +14354,7 @@
   {
    "key": "d:/ymir work/pc/plechito/viking_costume/plechito_tex_m.dds",
    "ours": false,
-   "pack": "az_cost15",
+   "pack": "az_cost14",
    "size": 1398256,
    "src": "ymir work/pc/plechito/viking_costume/plechito_tex_m.dds",
    "why": [
@@ -15157,16 +15076,6 @@
    ]
   },
   {
-   "key": "icon/dan_blood_set/wing.tga",
-   "ours": false,
-   "pack": "az_cost15",
-   "size": 4140,
-   "src": "icon/dan_blood_set/wing.tga",
-   "why": [
-    "icon 85213"
-   ]
-  },
-  {
    "key": "icon/free_is/bell.tga",
    "ours": false,
    "pack": "az_cost15",
@@ -15264,16 +15173,6 @@
    "src": "icon/free_is/w.tga",
    "why": [
     "icon 42963"
-   ]
-  },
-  {
-   "key": "icon/free_is/wing.tga",
-   "ours": false,
-   "pack": "az_cost15",
-   "size": 4140,
-   "src": "icon/free_is/wing.tga",
-   "why": [
-    "icon 85221"
    ]
   },
   {
@@ -17348,17 +17247,6 @@
    "src": "icon/item/vkng_twohand.tga",
    "why": [
     "icon 40943"
-   ]
-  },
-  {
-   "key": "icon/item/wings1.png",
-   "ours": false,
-   "pack": "az_cost15",
-   "size": 5863,
-   "src": "icon/item/wings1.png",
-   "why": [
-    "icon 85219",
-    "icon 85220"
    ]
   }
  ],
@@ -22889,29 +22777,6 @@
    "vnum": 40845
   },
   {
-   "anti": 0,
-   "arezzo": 85513,
-   "icon": "icon/dan_blood_set/wing.tga",
-   "kind": "SashSkin",
-   "model": "d:/ymir work/item/wing/me_w/wing_halloween_2022.gr2",
-   "msm": {},
-   "name": "Szarfa Krwawej Zemsty (nakł.)",
-   "set": "krwawa",
-   "shining": [],
-   "size": 1,
-   "sub": 10,
-   "type": 3,
-   "values": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-   ],
-   "vnum": 85213
-  },
-  {
    "anti": 49281,
    "arezzo": 41948,
    "icon": "icon/item/sum2022_2_m.tga",
@@ -24782,29 +24647,6 @@
    "vnum": 40705
   },
   {
-   "anti": 0,
-   "arezzo": 85519,
-   "icon": "icon/item/wings1.png",
-   "kind": "SashSkin",
-   "model": "d:/ymir work/item/wing/me_w/crytsal_blue.gr2",
-   "msm": {},
-   "name": "Szarfa Nieb. Smoka (nakł.)",
-   "set": "niebsmok",
-   "shining": [],
-   "size": 1,
-   "sub": 10,
-   "type": 3,
-   "values": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-   ],
-   "vnum": 85219
-  },
-  {
    "anti": 49281,
    "arezzo": 41960,
    "icon": "icon/item/crytsal_blue/m.png",
@@ -25151,29 +24993,6 @@
    "vnum": 40715
   },
   {
-   "anti": 0,
-   "arezzo": 85520,
-   "icon": "icon/item/wings1.png",
-   "kind": "SashSkin",
-   "model": "d:/ymir work/item/wing/me_w/crytsal_gold.gr2",
-   "msm": {},
-   "name": "Szarfa Złotego Smoka (nakł.)",
-   "set": "zlsmok",
-   "shining": [],
-   "size": 1,
-   "sub": 10,
-   "type": 3,
-   "values": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-   ],
-   "vnum": 85220
-  },
-  {
    "anti": 49281,
    "arezzo": 41962,
    "icon": "icon/free_is/m.tga",
@@ -25518,29 +25337,6 @@
     0
    ],
    "vnum": 40605
-  },
-  {
-   "anti": 0,
-   "arezzo": 85521,
-   "icon": "icon/free_is/wing.tga",
-   "kind": "SashSkin",
-   "model": "d:/ymir work/item/wing/me_w/joker.gr2",
-   "msm": {},
-   "name": "Szarfa Jokera (nakł.)",
-   "set": "joker",
-   "shining": [],
-   "size": 1,
-   "sub": 10,
-   "type": 3,
-   "values": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-   ],
-   "vnum": 85221
   }
  ],
  "marker": "MT2009_PLUS_AREZZO_COSTUME_SETS_V1",
@@ -26462,14 +26258,6 @@
    "d:/ymir work/item/weapon/plechito/viking_set/vkng_sword.gr2",
    "d:/ymir work/item/weapon/plechito/viking_set/vkng_twohand.dds",
    "d:/ymir work/item/weapon/plechito/viking_set/vkng_twohand.gr2",
-   "d:/ymir work/item/wing/me_w/crytsal_blue.dds",
-   "d:/ymir work/item/wing/me_w/crytsal_blue.gr2",
-   "d:/ymir work/item/wing/me_w/crytsal_gold.dds",
-   "d:/ymir work/item/wing/me_w/crytsal_gold.gr2",
-   "d:/ymir work/item/wing/me_w/joker.dds",
-   "d:/ymir work/item/wing/me_w/joker.gr2",
-   "d:/ymir work/item/wing/me_w/wing_halloween_2022.dds",
-   "d:/ymir work/item/wing/me_w/wing_halloween_2022.gr2",
    "d:/ymir work/item/wing/plechito/andun_glory/andun_glory.gr2",
    "d:/ymir work/item/wing/plechito/andun_glory/plechito_tex.dds",
    "d:/ymir work/item/wing/plechito/christmas2022/plechi_ch2022_2_wing.gr2",
@@ -26503,9 +26291,7 @@
    "d:/ymir work/item/wing/plechito/summer2024_4/plechito_tex.dds",
    "d:/ymir work/item/wing/plechito/summer2024_4/sum24_4_wing.gr2",
    "d:/ymir work/item/wing/plechito/thunder_spirit_wings/plechito_tex.dds",
-   "d:/ymir work/item/wing/plechito/thunder_spirit_wings/thunder_spirit_wings.gr2"
-  ],
-  "az_cost11": [
+   "d:/ymir work/item/wing/plechito/thunder_spirit_wings/thunder_spirit_wings.gr2",
    "d:/ymir work/item/wing/plechito/viking_sash/plechito_tex.dds",
    "d:/ymir work/item/wing/plechito/viking_sash/viking_sash.gr2",
    "d:/ymir work/pc/assassin/assassin_chipao1_l_01.dds",
@@ -26519,7 +26305,9 @@
    "d:/ymir work/pc/plechito/andun_glory/assassin_w.gr2",
    "d:/ymir work/pc/plechito/andun_glory/hair/assassin_m.gr2",
    "d:/ymir work/pc/plechito/andun_glory/hair/assassin_w.gr2",
-   "d:/ymir work/pc/plechito/andun_glory/hair/plechito_tex_m.dds",
+   "d:/ymir work/pc/plechito/andun_glory/hair/plechito_tex_m.dds"
+  ],
+  "az_cost11": [
    "d:/ymir work/pc/plechito/andun_glory/hair/plechito_tex_w.dds",
    "d:/ymir work/pc/plechito/andun_glory/hair/shaman_m.gr2",
    "d:/ymir work/pc/plechito/andun_glory/hair/shaman_w.gr2",
@@ -26613,12 +26401,12 @@
    "d:/ymir work/pc/plechito/dark_hwang/hair/sura_m.gr2",
    "d:/ymir work/pc/plechito/dark_hwang/hair/sura_w.gr2",
    "d:/ymir work/pc/plechito/dark_hwang/hair/warrior_m.gr2",
-   "d:/ymir work/pc/plechito/dark_hwang/hair/warrior_w.gr2"
-  ],
-  "az_cost12": [
+   "d:/ymir work/pc/plechito/dark_hwang/hair/warrior_w.gr2",
    "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_m_as.dds",
    "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_m_sh.dds",
-   "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_m_su.dds",
+   "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_m_su.dds"
+  ],
+  "az_cost12": [
    "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_m_w.dds",
    "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_w_as.dds",
    "d:/ymir work/pc/plechito/dark_hwang/plechito_tex_w_sh.dds",
@@ -26680,9 +26468,7 @@
    "d:/ymir work/pc/plechito/easter2023_1/plechito_tex_m_su.dds",
    "d:/ymir work/pc/plechito/easter2023_1/plechito_tex_m_w.dds",
    "d:/ymir work/pc/plechito/easter2023_1/plechito_tex_w_sh.dds",
-   "d:/ymir work/pc/plechito/easter2023_1/plechito_tex_w_su.dds"
-  ],
-  "az_cost13": [
+   "d:/ymir work/pc/plechito/easter2023_1/plechito_tex_w_su.dds",
    "d:/ymir work/pc/plechito/easter2023_1/plechito_tex_w_w.dds",
    "d:/ymir work/pc/plechito/easter2023_1/shaman_face_m.dds",
    "d:/ymir work/pc/plechito/easter2023_1/shaman_face_w.dds",
@@ -26707,7 +26493,9 @@
    "d:/ymir work/pc/plechito/fire_warrior/hair/sura_m.gr2",
    "d:/ymir work/pc/plechito/fire_warrior/hair/sura_w.gr2",
    "d:/ymir work/pc/plechito/fire_warrior/hair/warrior_m.gr2",
-   "d:/ymir work/pc/plechito/fire_warrior/hair/warrior_w.gr2",
+   "d:/ymir work/pc/plechito/fire_warrior/hair/warrior_w.gr2"
+  ],
+  "az_cost13": [
    "d:/ymir work/pc/plechito/fire_warrior/plechito_tex_m.dds",
    "d:/ymir work/pc/plechito/fire_warrior/plechito_tex_w.dds",
    "d:/ymir work/pc/plechito/fire_warrior/shaman_face_m.dds",
@@ -26848,9 +26636,7 @@
    "d:/ymir work/pc/plechito/halloween2024_6/warrior_m.gr2",
    "d:/ymir work/pc/plechito/halloween2024_6/warrior_w.gr2",
    "d:/ymir work/pc/plechito/necromancer_robe/assassin_m.gr2",
-   "d:/ymir work/pc/plechito/necromancer_robe/assassin_w.gr2"
-  ],
-  "az_cost14": [
+   "d:/ymir work/pc/plechito/necromancer_robe/assassin_w.gr2",
    "d:/ymir work/pc/plechito/necromancer_robe/hair/assassin_m.gr2",
    "d:/ymir work/pc/plechito/necromancer_robe/hair/assassin_w.gr2",
    "d:/ymir work/pc/plechito/necromancer_robe/hair/plechito_tex_w.dds",
@@ -26862,7 +26648,9 @@
    "d:/ymir work/pc/plechito/necromancer_robe/hair/warrior_w.gr2",
    "d:/ymir work/pc/plechito/necromancer_robe/plechito_tex_m.dds",
    "d:/ymir work/pc/plechito/necromancer_robe/plechito_tex_w_sh.dds",
-   "d:/ymir work/pc/plechito/necromancer_robe/plechito_tex_w_su.dds",
+   "d:/ymir work/pc/plechito/necromancer_robe/plechito_tex_w_su.dds"
+  ],
+  "az_cost14": [
    "d:/ymir work/pc/plechito/necromancer_robe/plechito_tex_w_w.dds",
    "d:/ymir work/pc/plechito/necromancer_robe/shaman_m.gr2",
    "d:/ymir work/pc/plechito/necromancer_robe/shaman_w.gr2",
@@ -26985,9 +26773,7 @@
    "d:/ymir work/pc/plechito/thunder_spirit_set/warrior_w.gr2",
    "d:/ymir work/pc/plechito/viking_costume/assassin_face_m.dds",
    "d:/ymir work/pc/plechito/viking_costume/assassin_face_w.dds",
-   "d:/ymir work/pc/plechito/viking_costume/assassin_m.gr2"
-  ],
-  "az_cost15": [
+   "d:/ymir work/pc/plechito/viking_costume/assassin_m.gr2",
    "d:/ymir work/pc/plechito/viking_costume/assassin_m_skin.dds",
    "d:/ymir work/pc/plechito/viking_costume/assassin_w.gr2",
    "d:/ymir work/pc/plechito/viking_costume/female_skin.dds",
@@ -26999,7 +26785,9 @@
    "d:/ymir work/pc/plechito/viking_costume/hair/sura_w.gr2",
    "d:/ymir work/pc/plechito/viking_costume/hair/warrior_m.gr2",
    "d:/ymir work/pc/plechito/viking_costume/hair/warrior_w.gr2",
-   "d:/ymir work/pc/plechito/viking_costume/plechito_tex_m.dds",
+   "d:/ymir work/pc/plechito/viking_costume/plechito_tex_m.dds"
+  ],
+  "az_cost15": [
    "d:/ymir work/pc/plechito/viking_costume/plechito_tex_w.dds",
    "d:/ymir work/pc/plechito/viking_costume/shaman_face.dds",
    "d:/ymir work/pc/plechito/viking_costume/shaman_face_w.dds",
@@ -27059,7 +26847,6 @@
    "icon/dan_blood_set/m.tga",
    "icon/dan_blood_set/sword.tga",
    "icon/dan_blood_set/twohand.tga",
-   "icon/dan_blood_set/wing.tga",
    "icon/free_is/bell.tga",
    "icon/free_is/bow.tga",
    "icon/free_is/dagger.tga",
@@ -27070,7 +26857,6 @@
    "icon/free_is/sword.tga",
    "icon/free_is/twohand.tga",
    "icon/free_is/w.tga",
-   "icon/free_is/wing.tga",
    "icon/item/99108.png",
    "icon/item/99112.png",
    "icon/item/99114.png",
@@ -27277,8 +27063,7 @@
    "icon/item/vkng_fan.tga",
    "icon/item/vkng_sash.tga",
    "icon/item/vkng_sword.tga",
-   "icon/item/vkng_twohand.tga",
-   "icon/item/wings1.png"
+   "icon/item/vkng_twohand.tga"
   ]
  },
  "problems": [],
@@ -27581,7 +27366,7 @@
    ],
    "key": "krwawa",
    "name": "Zestaw_Krwawej_Zemsty",
-   "skin": 85213,
+   "skin": 0,
    "weapons": [
     40840,
     40841,
@@ -27686,7 +27471,7 @@
    ],
    "key": "niebsmok",
    "name": "Zestaw_Niebieskiego_Smoka",
-   "skin": 85219,
+   "skin": 0,
    "weapons": [
     40700,
     40701,
@@ -27707,7 +27492,7 @@
    ],
    "key": "zlsmok",
    "name": "Zestaw_Zlotego_Smoka",
-   "skin": 85220,
+   "skin": 0,
    "weapons": [
     40710,
     40711,
@@ -27728,7 +27513,7 @@
    ],
    "key": "joker",
    "name": "Zestaw_Jokera",
-   "skin": 85221,
+   "skin": 0,
    "weapons": [
     40600,
     40601,

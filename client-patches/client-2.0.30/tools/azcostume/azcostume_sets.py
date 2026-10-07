@@ -102,14 +102,25 @@ SETS_V1_ORDER = ('mrok', 'chwala', 'druid', 'zlocisty', 'wiking', 'mroz', 'ogien
                  'niebsmok', 'zlsmok', 'joker')
 
 
+# MT2009_PLUS_AREZZO_COSTUME_SETS_V4 (owner, 7 October 2026): single items out, their sets stay. The
+# sash skins whose wings are Arezzo's "me_w" models (a root bone at 0 - the exe's rotation fixes did not
+# place them right on any class, the animation looks blocky): Krwawa Zemsta, Niebieski Smok, Zloty Smok,
+# Joker. build_azcostume.py gives their sets no sash skin (their exclusive files leave the packs), and
+# gen_azcostume_server.py writes the clean-up (item_proto every start, ishop_once arezzo_costume_sets_v4,
+# web offers, once azcostume_removed_v4: held copies deleted, the skin taken off a sash - plain sash look).
+# Their in-game ItemShop indexes stay empty (30813, 30818-30820; SETS keeps the back piece for the count).
+REMOVED_ITEMS = (85213, 85219, 85220, 85221)
+
+
 def removed_vnums():
-    """Our vnums of every item of REMOVED_SETS (bodies moved by BODY_SHIFT, sash skins by SKIN_SHIFT)."""
-    out = []
+    """Our vnums of every item of REMOVED_SETS (bodies moved by BODY_SHIFT, sash skins by SKIN_SHIFT)
+    and of REMOVED_ITEMS (V4)."""
+    out = list(REMOVED_ITEMS)
     for key, name, word, bodies, hairs, hair_word, first_weapon, back in REMOVED_SETS:
         out += [v + BODY_SHIFT for v in bodies] + list(hairs)
         out += [first_weapon + i for i in range(6)] if first_weapon else []
         out += [back + SKIN_SHIFT] if back else []
-    return sorted(out)
+    return sorted(set(out))
 
 
 # Arezzo's item_list gives two weapon skins no line and the Blekitny Wiatr fan the bell's files;

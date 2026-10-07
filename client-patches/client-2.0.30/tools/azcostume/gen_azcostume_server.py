@@ -12,8 +12,8 @@
 #   client-patches/client-2.0.30/root/costume_sets.py            the tooltip's copy of the sets
 #   linux-port/docker/itemshop/app/itemshop/img/item/<vnum>.png  the web shop's icons (from the
 #                                                                client icons, TGA / PNG -> PNG)
-#   MT2009_PLUS_AREZZO_COSTUME_SETS_V2/V3: removed sets' icons deleted here (none since V3 - both sets
-#   are back, V3 gives the ItemShop their lines again) and the gate on the Arezzo module (flag mt2009_arezzo_closed):
+#   MT2009_PLUS_AREZZO_COSTUME_SETS_V2/V3/V4: removed items' icons deleted here (V3: both sets back;
+#   V4: the four "me_w" sash skins azcostume_sets.REMOVED_ITEMS, cleaned up by the apply.sh block) and the gate on the Arezzo module (flag mt2009_arezzo_closed):
 #   linux-port/overlays/playerbot/src/game/src/playerbot_arezzo_costumes.h  the vnums for the engine's
 #                                                                ItemShop and the bots' catalogue
 #   linux-port/docker/itemshop/app/itemshop/arezzo_costumes.php  the same for the web shop
@@ -31,6 +31,7 @@ import azcostume_sets as A  # noqa: E402
 MARK = 'MT2009_PLUS_AREZZO_COSTUME_SETS_V1'
 MARK2 = 'MT2009_PLUS_AREZZO_COSTUME_SETS_V2'
 MARK3 = 'MT2009_PLUS_AREZZO_COSTUME_SETS_V3'
+MARK4 = 'MT2009_PLUS_AREZZO_COSTUME_SETS_V4'
 ISHOP_BASE = {'HairData': 10600, 'ShapeData': 20600, 'Weapon': 30600, 'SashSkin': 30800}
 WEB_CATEGORY = {'HairData': 5, 'ShapeData': 6, 'Weapon': 7, 'SashSkin': 7}
 CLASS_WEB = {0: u'Wojownik, Ninja, Sura', 1: u'Ninja', 2: u'Ninja', 3: u'Wojownik', 4: u'Szaman', 5: u'Szaman'}
@@ -162,7 +163,40 @@ def apply_block(items):
             u'if [ -s /opt/playerbot/arezzo_costumes_webshop.sql ]; then\n'
             u'    db < /opt/playerbot/arezzo_costumes_webshop.sql 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the Arezzo costume sets" >&2\n'
             u'fi\n'
-            u'# <<< %s\n') % (MARK, MARK2, items[0]['vnum'], items[-1]['vnum'], u',\n'.join(rows), restored_block(items), MARK)
+            u'%s'
+            u'# <<< %s\n') % (MARK, MARK2, items[0]['vnum'], items[-1]['vnum'], u',\n'.join(rows), restored_block(items),
+                             removed_block(), MARK)
+
+
+def removed_block():
+    """MT2009_PLUS_AREZZO_COSTUME_SETS_V4: single items taken out (azcostume_sets.REMOVED_ITEMS - the sash skins
+    with Arezzo's "me_w" wings) - gone from every place V1 put them, idempotent: the item rows (every start,
+    cheap), the in-game ItemShop lines (ishop_once), the web shop's offers and, once (azcostume_removed_v4),
+    what players hold: their copies (and unopened ItemShop deliveries) are deleted, a sash wearing one of
+    these skins gets socket2 = 0 back (it looks like the plain sash; bonuses / absorption unchanged)."""
+    vn = A.removed_vnums()
+    if not vn:
+        return u''
+    lst = u', '.join(str(v) for v in vn)
+    skins = u', '.join(str(v) for v in vn if 85200 <= v <= 85299) or u'0'
+    return (u'# %s: the sash skins with Arezzo\'s "me_w" wings are out (owner, 7 October: they cannot be\n'
+            u'# placed right, the animation looks blocky) - %d items; the rest of their sets stays.\n'
+            u'db -e "DELETE FROM world.item_proto WHERE vnum IN (%s);" || fail_step "could not remove the dropped Arezzo sash skins\' items" >&2\n'
+            u'ishop_once arezzo_costume_sets_v4 "DELETE FROM common.itemshop_items WHERE vnum IN (%s);" "could not remove the dropped Arezzo sash skins from the ItemShop"\n'
+            u'db -e "DELETE FROM itemshop.ishop_items WHERE vnum IN (%s);" 2>/dev/null || true\n'
+            u'az_rm_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = \'azcostume_removed_v4\';" 2>/dev/null || echo x)\n'
+            u'if [ "$az_rm_done" = "0" ]; then\n'
+            u'    az_rm_items=$(db -e "SELECT COUNT(*) FROM player.item WHERE vnum IN (%s);" 2>/dev/null || echo "?")\n'
+            u'    az_rm_skins=$(db -e "SELECT COUNT(*) FROM player.item i JOIN world.item_proto p ON p.vnum = i.vnum WHERE p.type = 28 AND p.subtype = 3 AND i.socket2 IN (%s);" 2>/dev/null || echo "?")\n'
+            u'    if db -e "DELETE FROM player.item WHERE vnum IN (%s);\n'
+            u'        UPDATE player.item i JOIN world.item_proto p ON p.vnum = i.vnum SET i.socket2 = 0 WHERE p.type = 28 AND p.subtype = 3 AND i.socket2 IN (%s);\n'
+            u'        INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES (\'azcostume_removed_v4\', NOW());"; then\n'
+            u'        db -e "DELETE FROM player.item_award WHERE vnum IN (%s);" 2>/dev/null || true\n'
+            u'        echo "[playerbot-migrate] Arezzo costume sets V4: removed $az_rm_items held sash skin(s) 85213/85219/85220/85221, $az_rm_skins sash skin(s) taken off sashes"\n'
+            u'    else\n'
+            u'        fail_step "could not remove the players\' copies of the dropped Arezzo sash skins" >&2\n'
+            u'    fi\n'
+            u'fi\n') % (MARK4, len(vn), lst, lst, lst, lst, skins, lst, skins, lst)
 
 
 def restored_block(items):

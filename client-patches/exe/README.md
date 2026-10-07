@@ -206,6 +206,12 @@ Kopiując ten katalog na źródła, kopiuj też `EterGrnLib`.
 Exe 2.0.57 (druga budowa, 6.10.2026): sha256 `1ea7ce73e19eef73b96bb8e92d6762815edec946a47a1a58c36e33d28d6c95a1`,
 13 670 400 B (`/opt/metin2/cache/exe-releases/metin2client-1ea7ce73.exe`); smoke test do okna logowania.
 
+**Wyłączone (7.10.2026, `MT2009_PLUS_AREZZO_COSTUME_SETS_V4`):** `#define ENABLE_ACCE_INITIAL_PLACEMENT` w
+`UserInterface/Locale_inc.h` jest zakomentowany. Żadna poprawka obrotu (V1–V3, także `acce_fix.txt` na żywo) nie
+ustawiła skrzydeł `me_w` poprawnie, a animacja wyglądała kanciasto – właściciel usunął te cztery nakładki (85213,
+85219, 85220, 85221) z gry, więc obejście nie jest już potrzebne. Kod w `EterGrnLib/ThingInstance.cpp` zostaje za
+flagą (gałąź `#else` = zwykła macierz szarfy); bez flagi exe nie sprawdza już co 2 s pliku `acce_fix.txt`.
+
 ## Ekwipunek pasa – `MT2009_PLUS_BELTS_V1` (`ENABLE_NEW_EQUIPMENT_SYSTEM`)
 
 System pasów (**Autor: Digi Rasta**, nowy-system v0.27.0; jego exe ma z tej flagi tylko jej włączenie). Kod pasa jest
