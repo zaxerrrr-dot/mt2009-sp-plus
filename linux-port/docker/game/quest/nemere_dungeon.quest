@@ -195,7 +195,9 @@ quest nemere_dungeon begin
 				return
 			end
 			-- MT2009_PLUS_AWAKENING_V1: no Kamien Przebudzenia here (the owner, 3 October).
-			local t = { {27987, 5, 10}, {50513, 1, 5}, {50255, 15, 5}, {25040, 3, 10}, {71084, 2, 10}, {71085, 1, 10}, {72067, 1, 70} }
+			-- MT2009_PLUS_BELT_MATS_V1: Kamien Lodowego Plomienia (30525) x2 at 30% (the owner, 7 October: the
+			-- flame stone has a drop of its own, beside the chests' belt materials, group 951102).
+			local t = { {27987, 5, 10}, {50513, 1, 5}, {50255, 15, 5}, {25040, 3, 10}, {71084, 2, 10}, {71085, 1, 10}, {72067, 1, 70}, {30525, 2, 30} }
 			for i, e in next, t, nil do
 				if number(1, 100) <= e[3] then
 					pc.give_item2(e[1], e[2])

@@ -2410,6 +2410,9 @@ namespace
 		// (playerbot_guild_land.h), through the same curve and inflation.
 		if (IsPlayerBotGuildBuildMaterial(dwVnum))
 			return ScalePlayerBotIwakuraPrice(GetPlayerBotGuildMaterialBasePrice());
+		// MT2009_PLUS_BELT_MATS_V1: a belt by its family and plus (playerbot_types.h).
+		if (IsPlayerBotBeltVnum(dwVnum))
+			return ScalePlayerBotIwakuraPrice(GetPlayerBotBeltBasePrice(dwVnum));
 		DWORD base = 0;
 		for (size_t i = 0; i < sizeof(PLAYERBOT_MATERIAL_PRICES) / sizeof(PLAYERBOT_MATERIAL_PRICES[0]); ++i)
 			if (PLAYERBOT_MATERIAL_PRICES[i].dwVnum == dwVnum)
@@ -4114,6 +4117,10 @@ namespace
 		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
 			return (ch && IsPlayerBotKeptGuildMaterial(ch, item)) ? -1
 					: PlayerBotGoods(PLAYERBOT_SHOP_POLICY_STALL_SCORE - 50, per::GOODS_GUILD_MATERIAL);
+		// MT2009_PLUS_BELT_MATS_V1: the belts and their materials are sheet goods
+		// whatever their type (IsPlayerBotBeltGoodsVnum) - the counter's.
+		if (IsPlayerBotBeltGoodsVnum(item->GetVnum()))
+			return PlayerBotGoods(PLAYERBOT_SHOP_SHEET_GOODS_SCORE, per::GOODS_SHEET_GOODS);
 		// Nor a Rada Pustelnika or an Exorcism Scroll: the book pass reads
 		// with them (the item shop's copies are the ones a counter would take).
 		if (IsPlayerBotBookAffectItem(item))

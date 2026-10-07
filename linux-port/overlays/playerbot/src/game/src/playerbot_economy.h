@@ -765,6 +765,11 @@ namespace
 	// from the two tables: the junk rule runs for every cell of every scan.
 	bool IsPlayerBotSheetGoods(LPITEM item)
 	{
+		// MT2009_PLUS_BELT_MATS_V1: the belts and their materials, whatever their
+		// type - Odlamek Energii is an ITEM_NONE, a belt an ITEM_BELT
+		// (IsPlayerBotBeltGoodsVnum, playerbot_types.h).
+		if (item && IsPlayerBotBeltGoodsVnum(item->GetVnum()))
+			return true;
 		static std::set<DWORD> s_goods;
 		static bool s_loaded = false;
 		if (!s_loaded)
@@ -2210,6 +2215,12 @@ namespace
 		// the counters, never the merchant.
 		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
 			return false;
+
+		// MT2009_PLUS_BELT_MATS_V1: so are the belts and their materials
+		// (IsPlayerBotBeltGoodsVnum): the merchant paid 50 yang for a Zlota
+		// Przedza. Only a bag under pressure with no counter sells them.
+		if (IsPlayerBotBeltGoodsVnum(item->GetVnum()))
+			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch);
 
 		// MT2009_PLUS_RANK_POINTS_V1: a fruit that fits the bot's Punkty Rangi is
 		// eaten (playerbot_rank_points.h); any other goes on its counter, or to

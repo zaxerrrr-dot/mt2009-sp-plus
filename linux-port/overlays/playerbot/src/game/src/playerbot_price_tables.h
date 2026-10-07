@@ -473,6 +473,24 @@ namespace
 		{ 50631,   336091 },	// Krysztal
 		{ 50632,   371469 },	// Ametyst
 		{ 50633,   667229 },	// Niebianskie Lzy
+		// MT2009_PLUS_BELT_MATS_V1 (owner, 7 October): the belts' gems - ten of one for a
+		// top belt (Krysztal Duszy for Pas Dusz), from the chests and bosses of Nemere's
+		// tier up - over the dearest metal; and the belt materials no sheet priced
+		// (IsPlayerBotBeltGoodsVnum, playerbot_types.h): five gold parts and ten flame
+		// stones a top belt, twenty straps for Pas Dusz, 30-100 shards for the lower ones.
+		{ 50634,   700000 },	// Krysztal Duszy
+		{ 50635,   900000 },	// Rubin
+		{ 50636,   900000 },	// Granat
+		{ 50637,   900000 },	// Szmaragd
+		{ 50638,   900000 },	// Szafir
+		{ 30518,   350000 },	// Zlota Przedza
+		{ 30519,   350000 },	// Zloty Hak
+		{ 30522,   350000 },	// Ogniwa Lancucha
+		{ 30523,   350000 },	// Element Ozdoby
+		{ 30524,   600000 },	// Kamien Plomienia
+		{ 30525,   600000 },	// Kamien Lodowego Plomienia
+		{ 30550,   120000 },	// Niebieski Rzemyk
+		{ 51001,    40000 },	// Odlamek Energii
 		{ 50701,     3800 },	// Kwiat Brzoskwini
 		{ 50702,     1710 },	// Pokrzywa
 		{ 50703,     1805 },	// Kwiat Kaki

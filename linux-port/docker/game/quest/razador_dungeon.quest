@@ -194,7 +194,9 @@ quest razador_dungeon begin
 				return
 			end
 			-- MT2009_PLUS_AWAKENING_V1: no Kamien Przebudzenia here (the owner, 3 October).
-			local t = { {27987, 5, 10}, {50513, 1, 5}, {25040, 3, 10}, {71084, 1, 5} }
+			-- MT2009_PLUS_BELT_MATS_V1: Kamien Plomienia (30524) x2 at 30% (the owner, 7 October: the flame stone
+			-- has a drop of its own, beside the chests' belt materials, group 951101).
+			local t = { {27987, 5, 10}, {50513, 1, 5}, {25040, 3, 10}, {71084, 1, 5}, {30524, 2, 30} }
 			for i, e in next, t, nil do
 				if number(1, 100) <= e[3] then
 					pc.give_item2(e[1], e[2])

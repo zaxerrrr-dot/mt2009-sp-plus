@@ -1208,6 +1208,37 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting_data
  && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*\[CRAFTING_URIEL\] = \{ 85001 \},' "$F")" -eq 1 \
  && echo "share: Uriel's crafting window 111 (Delikatne Sukno -> the plain sash)"
 
+# MT2009_PLUS_BELT_MATS_V1 (the owner, 7 October): the belt materials drop. After every other
+# mob_drop_item.txt append (dungeons, Arezzo, the drop edit), so it sees all of their groups:
+#  * mob_drop_item.beltmats.append.txt - Beran-Setaou's gems (special group 951103, a drop group
+#    joining his), limit groups adding the x3 of the gold parts (30518/30519/30522/30523) to the
+#    twenty level 103-107 bosses (3090-3891) and x2 to the four Metins 8051/8052/8055/8056, and
+#    the flame stones (30524 / 30525) from the fire (6005-6009) and ice (6105-6109) monsters. Those
+#    mobs must not have a limit group yet (the reader keeps a mob's first);
+#  * mob_drop_item.beltmats.awk - every kill group with a gold part or Niebieski Rzemyk (30550):
+#    that item x3 at the same rate for the rest (weight x3, kill_drop lowered); and Wladca Ochao's
+#    (6390) limit group gets Zlota Przedza and Zloty Hak at 25%.
+# The gems in the chests: special_item_group.dungeons.txt (951103, Skrzynia Nemere), arezzo2
+# (Skrzynia Dzungli), starter (Skrzynia Mroku 50254); the Razador / Nemere quests drop the
+# flame stones to the killer's party (boss_drop).
+COPY mob_drop_item.beltmats.append.txt mob_drop_item.beltmats.awk /tmp/beltmats/
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/beltmats \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_beltmats_' "$F" \
+ && M=$(sed -n 's/^[[:blank:]]*Mob[[:blank:]]\{1,\}\([0-9]\{1,\}\).*/\1/p' "$A/mob_drop_item.beltmats.append.txt" | grep -v -x 2493 | sort -u | tr '\n' ' ') \
+ && awk -v mobs="$M" 'function chk() { if (t == "limit" && (m in W)) { print "FATAL: mob " m " already has a limit group" > "/dev/stderr"; bad = 1 } } BEGIN{n = split(mobs, a, " "); for (i = 1; i <= n; i++) W[a[i]] = 1} {sub(/\r$/, "")} /^[[:blank:]]*Group/{chk(); t = ""; m = ""} tolower($1)=="mob"{m=$2} tolower($1)=="type"{t=tolower($2)} END{chk(); exit bad}' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A/mob_drop_item.beltmats.append.txt" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.beltmats.append.txt" >> "$F" \
+ && awk -v report="$A/report" -f "$A/mob_drop_item.beltmats.awk" "$F" > "$F.new" \
+ && mv "$F.new" "$F" \
+ && cat "$A/report" \
+ && test "$(sed -n 's/^kill //p' "$A/report")" -ge 40 \
+ && test "$(sed -n 's/^ochao //p' "$A/report")" = 1 \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_beltmats_' "$F")" = 35 \
+ && ! grep -q -E '^[[:blank:]]*kill_drop[[:blank:]]+0([^0-9]|$)' "$F" \
+ && rm -rf "$A" \
+ && echo "share: belt materials - Beran's gems, the gold parts x3, the flame stones (MT2009_PLUS_BELT_MATS_V1)"
+
 # The Spider Baroness (port/shareify.py renders special_spawns.baroness.txt and
 # this step): the level-75 boss who drops the Stalki, stood in the second
 # Spider Dungeon's last room every four to five hours (the operator's decision

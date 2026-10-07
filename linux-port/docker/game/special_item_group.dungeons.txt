@@ -202,6 +202,7 @@ Group	MT2009_chest_50271
 	7	s950288	1	65 -- cenny przedmiot
 	8	s951102	1	60 -- materialy pasow (MT2009_PLUS_BELTS_V1)
 	9	94500	1	25 -- Talizman Lodu+0 (MT2009_PLUS_ELEMENTS_V1, Autor: Digi Rasta)
+	10	s951103	1	80 -- kamienie pasow (MT2009_PLUS_BELT_MATS_V1)
 }
 Group	MT2009_chest_nemere_gear
 {
@@ -261,16 +262,16 @@ Group	MT2009_chest_nemere_misc
 	9	30512	1	25 -- Czerwona Smocza Stal
 	10	30511	1	25 -- Czerwony Material
 	11	30514	1	25 -- Fioletowy Material
-	12	30522	1	25 -- Ogniwa Lancucha
+	12	30522	1	75 -- Ogniwa Lancucha (x3, MT2009_PLUS_BELT_MATS_V1)
 	13	30502	1	25 -- Rubinowa Ozdoba
 	14	30500	1	25 -- Rubinowy Ozdobny Noz
 	15	30506	1	25 -- Szafirowy Ozdobny Noz
 	16	30513	1	25 -- Szlachetny Naramiennik
 	17	30510	1	25 -- Wytworny Naramiennik
-	18	30518	1	25 -- Zlota Przedza
+	18	30518	1	75 -- Zlota Przedza (x3, MT2009_PLUS_BELT_MATS_V1)
 	19	30520	1	25 -- Zlota Spinka
 	20	30517	1	25 -- Zloty Material
-	21	30525	1	25 -- Kamien Lodowe. Plomienia
+	21	30525	1	75 -- Kamien Lodowe. Plomienia (x3, MT2009_PLUS_BELT_MATS_V1)
 	22	50300	1	40 -- Ksiega Umiejetnosci
 	23	70037	1	20 -- Ksiega Zapomnienia
 	24	25040	15	20 -- Zwoj Blogoslawienstwa
@@ -431,4 +432,31 @@ Group	MT2009_belts_nemere
 	1	30525	2	40 -- Kamien Lodowe. Plomienia
 	2	51001	10	50 -- Odlamek Energii
 	3	18000	1	10 -- Pas Lniany+0
+}
+# MT2009_PLUS_BELT_MATS_V1 - the belts' gems (the owner, 7 October: "skrzynie bossow: nowa pozycja w
+# skrzyniach bossow i lochow - od Nemere niech leca"). Kamien Duszy (Pas Dusz) and the four gems of the
+# level-103 belts (Granat - Pas Krola, Rubin - Pas Mroku, Szmaragd - Pas Runiczny, Szafir - Pas
+# Niedzwiedzi) had no source at all. ONE of these by weight, 1-3 of it (about 2 on average; the soul
+# crystal a little more often, 26% against 18.5% for each gem), from the chests and bosses of Nemere's
+# tier up: Skrzynia Nemere (line 10, 80%), Skrzynia Dzungli (30776, always and a second at 40%),
+# Beran-Setaou (2493) and the field bosses of level 95+ (mob_drop_item.beltmats.append.txt). A Nemere
+# run (2-5 chests) gives about 5-6 gems, so ten of one gem is some eight runs.
+Group	MT2009_belts_gems
+{
+	Vnum	951103
+	1	50634	1	10 -- Krysztal Duszy
+	2	50634	2	10 -- Krysztal Duszy
+	3	50634	3	8 -- Krysztal Duszy
+	4	50635	1	7 -- Rubin
+	5	50635	2	7 -- Rubin
+	6	50635	3	6 -- Rubin
+	7	50636	1	7 -- Granat
+	8	50636	2	7 -- Granat
+	9	50636	3	6 -- Granat
+	10	50637	1	7 -- Szmaragd
+	11	50637	2	7 -- Szmaragd
+	12	50637	3	6 -- Szmaragd
+	13	50638	1	7 -- Szafir
+	14	50638	2	7 -- Szafir
+	15	50638	3	6 -- Szafir
 }

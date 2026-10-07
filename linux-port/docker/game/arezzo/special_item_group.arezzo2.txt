@@ -293,6 +293,8 @@ Group	MT2009_chest_30776
 	5	s950765	1	100 -- sakwa Yang (MT2009_PLUS_AREZZO_BALANCE_V1)
 	6	s950766	1	85 -- materialy ulepszen 75-100
 	7	s950767	1	70 -- cenny przedmiot
+	8	s951103	1	100 -- kamienie pasow (MT2009_PLUS_BELT_MATS_V1, special_item_group.dungeons.txt)
+	9	s951103	1	40 -- drugie kamienie pasow
 }
 Group	MT2009_chest_30776_gear
 {
