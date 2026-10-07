@@ -430,6 +430,11 @@ namespace
 	std::map<DWORD, DWORD> s_mapPlayerBotDgRunRest;
 	int s_iPlayerBotDgRunNextId = 1;
 	DWORD s_adwPlayerBotDgRunShoutAt[4] = { 0, 0, 0, 0 };
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the free bots of each dungeon's band in
+	// each kingdom at the last clock pass, and of them with a healing Shaman
+	// (the status line says them - why the Dragon is not called).
+	int s_aiPlayerBotDgRunCand[sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0])][4];
+	int s_aiPlayerBotDgRunHeal[sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0])][4];
 	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a dungeon's last call (get_dword_time), or 0.
 	DWORD s_adwPlayerBotDgRunLastCall[sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0])] = { 0 };
 	// The bot whose refusal is being asked: its own run does not count.
@@ -2722,6 +2727,16 @@ namespace
 						ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
 			}
 		}
+		if (forced == -1)
+			for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
+				for (int e = 1; e <= 3; ++e)
+				{
+					s_aiPlayerBotDgRunCand[i][e] = (int)buckets[i][e].size();
+					int h = 0;
+					for (size_t k = 0; k < buckets[i][e].size(); ++k)
+						h += buckets[i][e][k].IsHealer() ? 1 : 0;
+					s_aiPlayerBotDgRunHeal[i][e] = h;
+				}
 		// A dungeon and a kingdom, by how many could go.
 		std::vector<std::pair<int, int> > options;
 		std::vector<int> weights;
@@ -2781,10 +2796,12 @@ namespace
 		for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT; ++i)
 		{
 			const TPlayerBotDgRunStats& st = s_aPlayerBotDgRunStats[i];
-			sys_log(0, "BOT_DGRUN: status dungeon=%s running=%d called=%u started=%u finished=%u abandoned=%u timeout=%u wipe=%u lost=%u disbanded=%u deaths=%u avg_s=%u",
+			sys_log(0, "BOT_DGRUN: status dungeon=%s running=%d called=%u started=%u finished=%u abandoned=%u timeout=%u wipe=%u lost=%u disbanded=%u deaths=%u avg_s=%u free=%d/%d/%d healers=%d/%d/%d",
 					PLAYERBOT_DGRUN_DEFS[i].szKey, CountPlayerBotDgRuns(i), st.dwCalled, st.dwStarted, st.dwFinished,
 					st.dwAbandoned, st.dwTimeout, st.dwWipe, st.dwLost, st.dwDisbanded, st.dwDeaths,
-					st.dwFinished ? (unsigned int)(st.ullFinishedMs / st.dwFinished / 1000) : 0U);
+					st.dwFinished ? (unsigned int)(st.ullFinishedMs / st.dwFinished / 1000) : 0U,
+					s_aiPlayerBotDgRunCand[i][1], s_aiPlayerBotDgRunCand[i][2], s_aiPlayerBotDgRunCand[i][3],
+					s_aiPlayerBotDgRunHeal[i][1], s_aiPlayerBotDgRunHeal[i][2], s_aiPlayerBotDgRunHeal[i][3]);
 		}
 		sys_log(0, "BOT_DGRUN: status runs=%d cap=%d bots_in_runs=%u resting=%u on=%d", CountPlayerBotDgRuns(-1),
 				GetPlayerBotDgRunCap(), (unsigned int)s_mapPlayerBotDgRunBots.size(),
