@@ -1603,8 +1603,8 @@ namespace
 				if (a == PLAYERBOT_MAP_AREZZO_FOREST && lmin < (int)PLAYERBOT_AREZZO_FOREST_MIN_LEVEL)
 					lmin = PLAYERBOT_AREZZO_FOREST_MIN_LEVEL;
 				std::vector<DWORD> pids = CollectPlayerBotArezzoCandidates(a, lmin, lmax, !strcmp(opt, "any"));
-				int sent = 0, failed = 0, already = 0;
-				for (size_t i = 0; i < pids.size() && sent + already < b; ++i)
+				int sent = 0, failed = 0, already = 0, reserved = 0;
+				for (size_t i = 0; i < pids.size() && sent + already + reserved < b; ++i)
 				{
 					LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pids[i]);
 					TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(pids[i]);
@@ -1630,6 +1630,14 @@ namespace
 						++already;
 						continue;
 					}
+					// MT2009_PLUS_AREZZO_MAPS_FIX_V1: a dungeon cohort bot in a run
+					// is not pulled out of it - it is the order's when the run is
+					// over, and the re-send takes it (ResendPlayerBotArezzo).
+					if (ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN)
+					{
+						++reserved;
+						continue;
+					}
 					// A warp other passes asked for, and a raid, are dropped: the
 					// test's send comes first.
 					st->second.wBossRaidRace = 0;
@@ -1639,8 +1647,8 @@ namespace
 					else
 						++failed;
 				}
-				sys_log(0, "ARZ_BOT: test send map=%ld asked=%ld levels=%d-%d any=%d sent=%d already_there=%d failed=%d candidates=%u forced_total=%u",
-						a, b, lmin, lmax, !strcmp(opt, "any") ? 1 : 0, sent, already, failed, (unsigned int)pids.size(),
+				sys_log(0, "ARZ_BOT: test send map=%ld asked=%ld levels=%d-%d any=%d sent=%d already_there=%d failed=%d reserved_after_run=%d candidates=%u forced_total=%u",
+						a, b, lmin, lmax, !strcmp(opt, "any") ? 1 : 0, sent, already, failed, reserved, (unsigned int)pids.size(),
 						(unsigned int)s_mapPlayerBotArezzoForced.size());
 				SavePlayerBotArezzoOrders();
 			}

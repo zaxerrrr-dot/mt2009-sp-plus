@@ -276,12 +276,14 @@ namespace
 	// and the only such bots of the test server are this cohort's Jungle squad
 	// (night test 6/7 October: "send 362" found 0 candidates twice - the
 	// candidates of a send skip a bot on a closed map other than the target).
-	// The operator's send may now borrow cohort bots that wait in their lobby
-	// (alive, healed, in no run), at most half of a dungeon's cohort, so its
-	// squads still form. A borrowed bot is the Arezzo order's while the order
-	// stands (ManagePlayerBotArezzoDungeon leaves it to the ordinary AI, the
-	// squads skip it); told to leave, it is warped home to its lobby as any
-	// cohort bot found elsewhere. What the cohort does in its dungeon is
+	// The operator's send may now borrow cohort bots, at most half of a
+	// dungeon's cohort, so its squads still form. A squad goes in the moment
+	// its lobby has one (the lobby stood empty on the first try), so a bot in
+	// a run is borrowed too: it finishes the run with its squad, and once back
+	// in the lobby it is the Arezzo order's (ManagePlayerBotArezzoDungeon
+	// leaves it to the ordinary AI, the order's re-send takes it to the Las,
+	// the squads skip it); told to leave, it is warped home to its lobby as
+	// any cohort bot found elsewhere. What the cohort does in its dungeon is
 	// unchanged.
 	bool IsPlayerBotArzDgLent(DWORD pid)
 	{
@@ -290,18 +292,13 @@ namespace
 	}
 
 	// The cohort's dungeon (an index of PLAYERBOT_ARZDG) of a bot a send may
-	// borrow now, or -1.
+	// borrow (online on its dungeon's map: the lobby or a run), or -1.
 	int GetPlayerBotArezzoDungeonCohortLendable(LPCHARACTER ch)
 	{
-		if (!ch || !s_bPlayerBotArzDgHosting || ch->IsDead())
+		if (!ch || !s_bPlayerBotArzDgHosting)
 			return -1;
 		std::map<DWORD, int>::const_iterator it = s_mapPlayerBotArzDgCohort.find(ch->GetPlayerID());
-		if (it == s_mapPlayerBotArzDgCohort.end() || s_mapPlayerBotArzDgBotRun.count(ch->GetPlayerID()) ||
-				ch->GetMapIndex() != PLAYERBOT_ARZDG[it->second].lMap ||
-				(ch->GetMaxHP() > 0 && ch->GetHP() * 100 < ch->GetMaxHP() * 70))
-			return -1;
-		TPlayerBotAIStateMap::const_iterator st = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
-		if (st == s_mapPlayerBotAIStates.end() || st->second.bRecoveringAfterDeath)
+		if (it == s_mapPlayerBotArzDgCohort.end() || GetPlayerBotArzDgIndex(ch->GetMapIndex()) != it->second)
 			return -1;
 		return it->second;
 	}
@@ -829,8 +826,9 @@ namespace
 		if (it == s_mapPlayerBotArzDgCohort.end())
 			return false;
 		const int dg = it->second;
-		// MT2009_PLUS_AREZZO_MAPS_FIX_V1: lent to the Las - the order's.
-		if (IsPlayerBotArzDgLent(ch->GetPlayerID()))
+		// MT2009_PLUS_AREZZO_MAPS_FIX_V1: lent to the Las - the order's, once its
+		// run (if any) is over.
+		if (IsPlayerBotArzDgLent(ch->GetPlayerID()) && s_mapPlayerBotArzDgBotRun.count(ch->GetPlayerID()) == 0)
 			return false;
 		TPlayerBotArzDgBot& bot = s_mapPlayerBotArzDgBots[ch->GetPlayerID()];
 		const long map = ch->GetMapIndex();
