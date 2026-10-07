@@ -84,6 +84,9 @@ namespace
 	bool IsPlayerBotHeldForCompany(LPCHARACTER ch);
 	bool IsPlayerBotOnMercContract(DWORD pid);
 	bool FightPlayerBotTowerObjective(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER foe, DWORD dwNow);
+	// From playerbot_dungeon_lfg.h, which comes later: why a bot may not leave
+	// what it does for a party now (MT2009_PLUS_AREZZO_NATURAL_V1 asks it).
+	const char* GetPlayerBotLfgRefusal(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow);
 	// From playerbot_arezzo_dungeon_bots.h, which comes later: a move of the
 	// Arezzo dungeon test cohort onto its own dungeon's map (the lobby or an
 	// instance of it), on the core that hosts it.
@@ -514,6 +517,13 @@ namespace
 	// leave. The cohort file's bots and the map each is for.
 	std::map<DWORD, long> s_mapPlayerBotArezzoForced;
 	std::set<DWORD> s_setPlayerBotArezzoLeave;
+	// MT2009_PLUS_AREZZO_NATURAL_V1: the orders the world gave on its own
+	// (ManagePlayerBotArezzoNatural) - map, when, for how long - kept apart
+	// from the operator's so they are never saved with them; and the rest a
+	// bot takes after such a visit (get_dword_time).
+	struct TPlayerBotArezzoNatural { long lMap; DWORD dwSentAt; DWORD dwStayMs; };
+	std::map<DWORD, TPlayerBotArezzoNatural> s_mapPlayerBotArezzoNatural;
+	std::map<DWORD, DWORD> s_mapPlayerBotArezzoNaturalRest;
 	std::map<DWORD, long> s_mapPlayerBotArezzoCohort;
 	bool s_bPlayerBotArezzoCohortLoaded = false;
 	// The Teleport Ring's warp under way (TryPlayerBotTeleportRingHome).
@@ -1393,12 +1403,16 @@ namespace
 	// The Las (97-105) against bots of 95-97 took 57 of round 2's 93 deaths:
 	// there, and on the road through the temple, a bot drinks from 85 % (the
 	// Demon Tower's rule) and steps back from 50 %.
+	// MT2009_PLUS_AREZZO_NATURAL_V1: and the two other maps - 7 October, 882
+	// deaths on Pustkowie Faraona and 435 on Dolina Cyklopow, 776 of the
+	// first with a hundred reds or more in the bag (bots of 55 among the
+	// pyramid's 53-58, drinking at 65% and stepping back at 35%).
 	bool IsPlayerBotArezzoHardGround(LPCHARACTER ch)
 	{
 		if (!ch)
 			return false;
 		const long map = ch->GetMapIndex();
-		return map == PLAYERBOT_MAP_AREZZO_FOREST ||
+		return IsPlayerBotArezzoMap(map) ||
 				(map == PLAYERBOT_MAP_OCHAO && s_mapPlayerBotArezzoLas.count(ch->GetPlayerID()) != 0);
 	}
 	int GetPlayerBotArezzoPotionPercent(LPCHARACTER ch)
@@ -1516,7 +1530,8 @@ namespace
 		if (!fp)
 			return;
 		for (std::map<DWORD, long>::const_iterator f = s_mapPlayerBotArezzoForced.begin(); f != s_mapPlayerBotArezzoForced.end(); ++f)
-			fprintf(fp, "%u %ld\n", f->first, f->second);
+			if (s_mapPlayerBotArezzoNatural.count(f->first) == 0)	// MT2009_PLUS_AREZZO_NATURAL_V1
+				fprintf(fp, "%u %ld\n", f->first, f->second);
 		fclose(fp);
 	}
 
@@ -1800,6 +1815,178 @@ namespace
 					ch->GetEmptyInventory(1) >= 0 ? 1 : 0, (long long)ch->GetGold());
 	}
 
+	// ------------------------------------------------------------ the world's own visits
+
+	// MT2009_PLUS_AREZZO_NATURAL_V1 - the bots go to the Arezzo maps by
+	// themselves. The owner, 7 October (the night's request): the bots are to
+	// "korzystac z nowych map arezzo" - over the rule of 30 September (only the
+	// operator's test cohorts there). His rules of 1 October stay: the
+	// kingdoms fight each other on those maps, and the Las is an expedition
+	// (the 600 reds / 400 blues kit, a stay of at least two hours).
+	//
+	// Every PLAYERBOT_AREZZO_NATURAL_TICK_MS, on the core that hosts a map and
+	// with the module open, the map's visitors of the world's own are counted
+	// and, while fewer than its target, at most PLAYERBOT_AREZZO_NATURAL_PER_TICK
+	// more are sent - gently, never a crowd at once. A visitor is a free bot
+	// (the dungeon finder's refusal: no person's company, no cohort, no raid,
+	// no war, no shop...) of the map's band - the levels at which its monsters
+	// are no stronger than the bot (Dolina Cyklopow's 43-49 from 45, the
+	// pyramid's 53-58 from 57, the Las from the temple's level) up to the
+	// map's own upper limit - whose experience is not held, and one of the
+	// share of bots that like new ground (by pid). It goes the way the
+	// operator's send takes it (the order: the routes, the held stay, the belt
+	// kept full, the Las's road and kit), and after its visit
+	// (PLAYERBOT_AREZZO_NATURAL_STAY_*) it is told to leave by the Teleporter
+	// and rests from the maps for PLAYERBOT_AREZZO_NATURAL_REST_MS. A level past
+	// the map's limit, the operator's "leave"/"reset" and a logout end a visit
+	// sooner. The file "playerbot_arezzo_natural_off" in the core's directory
+	// turns it off (no new visits; those under way end as they would).
+	const DWORD PLAYERBOT_AREZZO_NATURAL_TICK_MS = 90000;
+	const int PLAYERBOT_AREZZO_NATURAL_PER_TICK = 2;
+	const DWORD PLAYERBOT_AREZZO_NATURAL_REST_MS = 60 * 60 * 1000;
+	const int PLAYERBOT_AREZZO_NATURAL_SHARE = 45;
+	const char* const PLAYERBOT_AREZZO_NATURAL_OFF_FILE = "playerbot_arezzo_natural_off";
+	struct TPlayerBotArezzoNaturalRule
+	{
+		long lMap;
+		int iTarget;		// the world's own visitors at once
+		int iLevelMin;
+		DWORD dwStayMinMs, dwStaySpreadMs;
+	};
+	const TPlayerBotArezzoNaturalRule PLAYERBOT_AREZZO_NATURAL_RULES[] = {
+		{ 360, 18, 45, 45 * 60 * 1000, 45 * 60 * 1000 },
+		{ 361, 18, 57, 45 * 60 * 1000, 45 * 60 * 1000 },
+		{ 362, 10, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, PLAYERBOT_AREZZO_LAS_STAY_MS, 60 * 60 * 1000 },
+	};
+
+	// The bot's own taste for new ground.
+	bool IsPlayerBotArezzoNaturalGoer(DWORD pid)
+	{
+		return PlayerBotNavHash(pid ^ 0x41525a4eU) % 100U < (DWORD)PLAYERBOT_AREZZO_NATURAL_SHARE;
+	}
+
+	void EndPlayerBotArezzoNatural(DWORD pid, const char* why, DWORD dwNow, bool rest)
+	{
+		std::map<DWORD, TPlayerBotArezzoNatural>::iterator n = s_mapPlayerBotArezzoNatural.find(pid);
+		if (n == s_mapPlayerBotArezzoNatural.end())
+			return;
+		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+		std::map<DWORD, long>::iterator f = s_mapPlayerBotArezzoForced.find(pid);
+		// Only its own order is taken back - the operator may have sent it since.
+		if (f != s_mapPlayerBotArezzoForced.end() && f->second == n->second.lMap)
+		{
+			if (ch && IsPlayerBotArezzoMap(ch->GetMapIndex()))
+				s_setPlayerBotArezzoLeave.insert(pid);
+			s_mapPlayerBotArezzoForced.erase(f);
+			s_mapPlayerBotArezzoLas.erase(pid);
+		}
+		sys_log(0, "ARZ_BOT: natural visit over pid=%u name=%s map=%ld why=%s stay_s=%u here=%ld",
+				pid, ch ? ch->GetName() : "?", n->second.lMap, why, (dwNow - n->second.dwSentAt) / 1000,
+				ch ? ch->GetMapIndex() : 0L);
+		s_mapPlayerBotArezzoNatural.erase(n);
+		if (rest)
+			s_mapPlayerBotArezzoNaturalRest[pid] = dwNow + PLAYERBOT_AREZZO_NATURAL_REST_MS;
+	}
+
+	void ManagePlayerBotArezzoNatural(DWORD dwNow)
+	{
+		static DWORD s_dwNext = 0;
+		if (dwNow < s_dwNext)
+			return;
+		s_dwNext = dwNow + PLAYERBOT_AREZZO_NATURAL_TICK_MS;
+		// The visits under way: over, or gone.
+		int count[3] = { 0, 0, 0 };
+		std::vector<std::pair<DWORD, const char*> > ended;
+		for (std::map<DWORD, TPlayerBotArezzoNatural>::const_iterator n = s_mapPlayerBotArezzoNatural.begin();
+				n != s_mapPlayerBotArezzoNatural.end(); ++n)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(n->first);
+			std::map<DWORD, long>::const_iterator f = s_mapPlayerBotArezzoForced.find(n->first);
+			if (!ch)
+				ended.push_back(std::make_pair(n->first, "offline"));
+			else if (f == s_mapPlayerBotArezzoForced.end() || f->second != n->second.lMap)
+				ended.push_back(std::make_pair(n->first, "order_changed"));
+			else if (ch->GetLevel() > GetPlayerBotArezzoMaxLevel(n->second.lMap))
+				ended.push_back(std::make_pair(n->first, "level"));
+			else if (dwNow - n->second.dwSentAt >= n->second.dwStayMs)
+				ended.push_back(std::make_pair(n->first, "stay_over"));
+			else if (n->second.lMap >= PLAYERBOT_MAP_AREZZO_CYCLOPS && n->second.lMap <= PLAYERBOT_MAP_AREZZO_FOREST)
+				++count[n->second.lMap - PLAYERBOT_MAP_AREZZO_CYCLOPS];
+		}
+		for (size_t i = 0; i < ended.size(); ++i)
+			EndPlayerBotArezzoNatural(ended[i].first, ended[i].second, dwNow, strcmp(ended[i].second, "offline") != 0);
+		struct stat st;
+		if (stat(PLAYERBOT_AREZZO_NATURAL_OFF_FILE, &st) == 0 || !IsPlayerBotArezzoOpen())
+			return;
+		for (size_t r = 0; r < sizeof(PLAYERBOT_AREZZO_NATURAL_RULES) / sizeof(PLAYERBOT_AREZZO_NATURAL_RULES[0]); ++r)
+		{
+			const TPlayerBotArezzoNaturalRule& rule = PLAYERBOT_AREZZO_NATURAL_RULES[r];
+			const TPlayerBotArezzoMap* info = GetPlayerBotArezzoMapInfo(rule.lMap);
+			if (!info || !IsPlayerBotArezzoHosted(rule.lMap) ||
+					(rule.lMap == PLAYERBOT_MAP_AREZZO_FOREST &&
+					 (!IsPlayerBotArezzoHosted(PLAYERBOT_MAP_OCHAO) || !IsPlayerBotArezzoHosted(PLAYERBOT_MAP_ORC_VALLEY))))
+				continue;
+			const int want = std::min(PLAYERBOT_AREZZO_NATURAL_PER_TICK, rule.iTarget - count[rule.lMap - PLAYERBOT_MAP_AREZZO_CYCLOPS]);
+			if (want <= 0)
+				continue;
+			const int levelMax = GetPlayerBotArezzoMaxLevel(rule.lMap);
+			std::vector<DWORD> pool;
+			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+			{
+				const DWORD pid = it->first;
+				if (s_mapPlayerBotArezzoForced.count(pid) || s_mapPlayerBotArezzoNatural.count(pid) ||
+						s_mapPlayerBotArezzoCohort.count(pid) || !IsPlayerBotArezzoNaturalGoer(pid) || IsPlayerBotOnDungeonRun(pid))
+					continue;
+				std::map<DWORD, DWORD>::iterator rest = s_mapPlayerBotArezzoNaturalRest.find(pid);
+				if (rest != s_mapPlayerBotArezzoNaturalRest.end())
+				{
+					if ((int)(rest->second - dwNow) > 0)
+						continue;
+					s_mapPlayerBotArezzoNaturalRest.erase(rest);
+				}
+				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+				if (!ch || (int)ch->GetLevel() < rule.iLevelMin || (int)ch->GetLevel() > levelMax ||
+						IsPlayerBotArezzoExpLocked(ch) || ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
+						GetPlayerBotLfgRefusal(ch, it->second, dwNow) != NULL)
+					continue;
+				pool.push_back(pid);
+			}
+			int sent = 0, failed = 0;
+			for (int k = 0; k < want && !pool.empty(); ++k)
+			{
+				const size_t pick = (size_t)number(0, (int)pool.size() - 1);
+				const DWORD pid = pool[pick];
+				pool[pick] = pool.back();
+				pool.pop_back();
+				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+				TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(pid);
+				if (!ch || st == s_mapPlayerBotAIStates.end())
+					continue;
+				s_mapPlayerBotArezzoForced[pid] = rule.lMap;
+				s_setPlayerBotArezzoLeave.erase(pid);
+				s_setPlayerBotOchaoForced.erase(pid);
+				s_setPlayerBotOchaoLeave.erase(pid);
+				s_mapPlayerBotArezzoTrack[pid].dwSent = dwNow;
+				TPlayerBotArezzoNatural& n = s_mapPlayerBotArezzoNatural[pid];
+				n.lMap = rule.lMap;
+				n.dwSentAt = dwNow;
+				n.dwStayMs = rule.dwStayMinMs + (DWORD)number(0, (int)rule.dwStaySpreadMs);
+				const bool moved = TransitionPlayerBotMap(ch, st->second, rule.lMap, info->lArrivalX, info->lArrivalY, dwNow,
+						"arezzo_natural");
+				if (moved)
+					++sent;
+				else
+					++failed;	// the order stands: the re-send takes it later
+				sys_log(0, "ARZ_BOT: natural visit pid=%u name=%s level=%u empire=%u map=%ld from=%ld stay_min=%u ok=%d",
+						pid, ch->GetName(), (unsigned int)ch->GetLevel(), (unsigned int)ch->GetEmpire(), rule.lMap,
+						ch->GetMapIndex(), n.dwStayMs / 60000, moved ? 1 : 0);
+			}
+			if (sent || failed)
+				sys_log(0, "ARZ_BOT: natural map=%ld visitors=%d target=%d sent=%d failed=%d candidates=%u", rule.lMap,
+						count[rule.lMap - PLAYERBOT_MAP_AREZZO_CYCLOPS], rule.iTarget, sent, failed, (unsigned int)(pool.size() + sent + failed));
+		}
+	}
+
 	void TickPlayerBotArezzo()
 	{
 		const DWORD dwNow = get_dword_time();
@@ -1818,6 +2005,9 @@ namespace
 			s_dwNextFile = dwNow + 5000;
 			RunPlayerBotArezzoTestFile(dwNow);
 		}
+		// MT2009_PLUS_AREZZO_NATURAL_V1: once the population is in.
+		if (dwNow - s_dwStarted >= 5 * 60 * 1000)
+			ManagePlayerBotArezzoNatural(dwNow);
 		const bool writeTrack = dwNow >= s_dwNextTrack;
 		FILE* out = NULL;
 		if (writeTrack)
