@@ -18,6 +18,7 @@ Rules:
        Nemere (352, nemere_dungeon.quest)                         -> ice
        Leze Smoka (208, Blue Dragon, blue_dragon_lair.quest)      -> lightning
        Starozytna Dzungla (366, starozytna_dzungla.quest)         -> wind
+  e. BOSS_OVERRIDES (owner approval 7 Oct 2026): listed bosses with no element from a-c;
   d. nothing else has an element: the SQL clears bits 11-16 on every other mob.
 
 A vnum carries its element everywhere it spawns; the report lists the mapped vnums that also
@@ -68,6 +69,15 @@ DUNGEON_RULES = (
     ('Nemere', 352, ('nemere_mt',), 'nemere_dungeon.quest', None, ICE),
     ('Leze Smoka (Blue Dragon)', 208, ('bluedragon_mt',), 'blue_dragon_lair.quest', 'BlueDragon.lua', ELEC),
     ('Starozytna Dzungla', 366, ('starozytna_dzungla',), 'starozytna_dzungla.quest', None, WIND),
+)
+# e. explicit boss overrides - owner approval 7 Oct 2026: bosses (rank >= 4, monster) with no
+#    element from rules a-c get one here; a vnum already set by a wiki/map/dungeon rule keeps it.
+BOSS_OVERRIDES = (
+    (WIND, (9705, 9706, 2093, 2192, 2094, 2095, 9704, 9682, 9683, 6400)),
+    (ELEC, (9606, 9607, 1306, 1307, 1334)),
+    (EARTH, (691, 692, 693, 5161, 5162, 5163, 3911, 3912, 3913, 3901, 3902, 3903, 3905, 3906, 3790)),
+    (DARK, (791, 792, 793, 794, 795, 993, 1491, 3290, 3291)),
+    (FIRE, (9684, 2291, 2592, 2593, 2594, 9675, 9681, 9694, 9695)),
 )
 SHARE_PARTS = ('locale/poland/map', 'locale/poland/group.txt', 'locale/poland/group_group.txt',
                'locale/poland/special_spawns.txt', 'locale/poland/BlueDragon.lua', 'data/dungeon')
@@ -334,6 +344,18 @@ def main():
                                                                       NAMES[elem], label))
                 result[v], why[v] = elem, 'dungeon ' + label
 
+        # e. the owner's boss overrides (only where rules a-c gave nothing)
+        for elem, vs in BOSS_OVERRIDES:
+            for v in vs:
+                m = mobs.get(v)
+                if not m or m['type'] != MOB_MONSTER or m['rank'] < RANK_BOSS:
+                    rep.append('boss override %d skipped: not a boss monster in mob_proto' % v)
+                elif v in result:
+                    if result[v] != elem:
+                        rep.append('boss override %d %s ignored: keeps %s (%s)' % (v, m['name'], NAMES[result[v]], why[v]))
+                else:
+                    result[v], why[v] = elem, 'boss override'
+
         # where else every vnum spawns (maps of the index, dungeon dirs, special spawns)
         elsewhere = {}
         rule_maps = set(i for _, idxs, _ in MAP_RULES for i in idxs) | set(r[1] for r in DUNGEON_RULES)
@@ -383,7 +405,7 @@ def main():
                '-- ice, wind, earth, dark; in the column\'s SET: SAVAGE, ATT_FIRE, ATT_ICE, ATT_TEMPLE, ATT_EARTH,',
                '-- ATT_DARK). Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0) - by the owner\'s rules of',
                '-- 7 October 2026 (tools/zywioly/gen_zywioly_moby.py: wiki bosses, Grota Wygnancow 1/2, Swiatynia',
-               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla). GENERATED - do not',
+               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, boss overrides). GENERATED - do not',
                '-- edit; rerun the generator. Every start (apply.sh), idempotent: bits 11-16 cleared on every other',
                '-- mob, set on these.']
         for line in out[1:7]:
