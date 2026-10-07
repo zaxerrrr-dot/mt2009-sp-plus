@@ -459,10 +459,10 @@ namespace
 				return BOT_AMBITION_HORSE;
 			case BOT_PERSONALITY_GUILD_DROPPER:
 			case BOT_PERSONALITY_L30_WEAPON_DROPPER: // MT2009_PLUS_L30_WEAPON_DROPPER_V1
+			case BOT_PERSONALITY_ORNAMENT_FARMER: // MT2009_PLUS_ORNAMENT_FARMERS_V1
 				return BOT_AMBITION_TRADE;
 			case BOT_PERSONALITY_WANDERER:
 				return BOT_AMBITION_HORSE;
-			case BOT_PERSONALITY_ORNAMENT_FARMER: // MT2009_PLUS_ORNAMENT_FARMERS_V1
 			case BOT_PERSONALITY_TEAM_COMPANION:
 				return ch->GetJob() == JOB_SHAMAN
 						? BOT_AMBITION_SKILLS : BOT_AMBITION_LEVEL;
@@ -660,10 +660,10 @@ namespace
 			case BOT_PERSONALITY_M2_DROPPER:    return PLAYERBOT_EXP_LOCK_M2_DROPPER;
 			case BOT_PERSONALITY_MEDAL_DROPPER: return PLAYERBOT_EXP_LOCK_MEDAL_DROPPER;
 			case BOT_PERSONALITY_L30_WEAPON_DROPPER: return PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER; // MT2009_PLUS_L30_WEAPON_DROPPER_V1
+			case BOT_PERSONALITY_ORNAMENT_FARMER: return PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER; // MT2009_PLUS_ORNAMENT_FARMERS_V1
 			default: return 0;
 		}
 	}
-			case BOT_PERSONALITY_ORNAMENT_FARMER: return PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER; // MT2009_PLUS_ORNAMENT_FARMERS_V1
 
 	// A farmer keeps the level its table pays at. See the constants: every drop
 	// in this engine fades with the level gap, so a dropper that goes on
@@ -716,12 +716,12 @@ namespace
 		else if (persona && state.bPersonality == BOT_PERSONALITY_L30_WEAPON_DROPPER)
 			// MT2009_PLUS_L30_WEAPON_DROPPER_V1: twenty-one, as without them.
 			lockLevel = PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER;
-		else if (persona)
-			lockLevel = GetPlayerBotPersonaLockLevel(ch, state);
-		// MT2009_PLUS_FARMER_LINK_V1: a spot farmer holds at its ground's
 		else if (persona && state.bPersonality == BOT_PERSONALITY_ORNAMENT_FARMER)
 			// MT2009_PLUS_ORNAMENT_FARMERS_V1: its own lock, as without them.
 			lockLevel = PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER;
+		else if (persona)
+			lockLevel = GetPlayerBotPersonaLockLevel(ch, state);
+		// MT2009_PLUS_FARMER_LINK_V1: a spot farmer holds at its ground's
 		// lock, whatever its persona's tier says (playerbot_farmer_link.h).
 		if (!sidekick && !cohort && !IsPlayerBotDropper(state.bPersonality) &&
 				GetPlayerBotFarmerSpotLock(ch->GetPlayerID()) != 0)
@@ -802,11 +802,11 @@ namespace
 			lockLevel = GetPlayerBotGuildDropperGround(ch->GetPlayerID()).lock;
 		else if (persona && state.bPersonality == BOT_PERSONALITY_L30_WEAPON_DROPPER) // MT2009_PLUS_L30_WEAPON_DROPPER_V1
 			lockLevel = PLAYERBOT_EXP_LOCK_L30_WEAPON_DROPPER;
+		else if (persona && state.bPersonality == BOT_PERSONALITY_ORNAMENT_FARMER) // MT2009_PLUS_ORNAMENT_FARMERS_V1
+			lockLevel = PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER;
 		else if (persona)
 			lockLevel = state.persona.bRestored && !state.persona.bAdvanced ? state.persona.bLockLevel : 0;
 		// MT2009_PLUS_FARMER_LINK_V1: a spot farmer's ground's lock.
-		else if (persona && state.bPersonality == BOT_PERSONALITY_ORNAMENT_FARMER) // MT2009_PLUS_ORNAMENT_FARMERS_V1
-			lockLevel = PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER;
 		if (!sidekick && !cohort && !IsPlayerBotDropper(state.bPersonality) &&
 				GetPlayerBotFarmerSpotLock(ch->GetPlayerID()) != 0)
 			lockLevel = GetPlayerBotFarmerSpotLock(ch->GetPlayerID());
@@ -6356,10 +6356,10 @@ void CPlayerBotManager::Update()
 	ManagePlayerBotGuildLfg(dwNow);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: two or three island droppers a kingdom.
 	ManagePlayerBotL30WeaponDroppers(dwNow);
+	ManagePlayerBotOrnamentFarmers(dwNow);	// MT2009_PLUS_ORNAMENT_FARMERS_V1
 	// MT2009_PLUS_FARMER_LINK_V1: farmers linked to their mains, the yang sent and taken.
 	ManagePlayerBotFarmerLinks(dwNow);
 
-	ManagePlayerBotOrnamentFarmers(dwNow);	// MT2009_PLUS_ORNAMENT_FARMERS_V1
 	// Once for the whole population: the panel may have moved a weight since
 	// the last tick, and every bot planned below must see the same numbers.
 	RefreshPlayerBotWeights(dwNow);
