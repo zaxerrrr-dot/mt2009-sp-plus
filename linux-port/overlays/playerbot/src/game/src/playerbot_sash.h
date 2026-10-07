@@ -1168,6 +1168,27 @@ namespace
 	}
 
 	// Ten pieces and the fee for a plain sash, a few at a look.
+	// MT2009_PLUS_SASH_CLOTH_V2: Uriel's recipe chance, read from world.crafting_proto 85001 once
+	// a minute (the panel may change it); 80 when the row is missing.
+	int GetPlayerBotSashClothChance()
+	{
+		static int s_iChance = 80;
+		static DWORD s_dwReadAt = 0;
+		const DWORD dwNow = get_dword_time();
+		if (s_dwReadAt == 0 || dwNow - s_dwReadAt > 60000)
+		{
+			s_dwReadAt = dwNow ? dwNow : 1;
+			std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery("SELECT chance FROM world.crafting_proto WHERE vnum = 85001 LIMIT 1"));
+			if (msg && msg->Get() && msg->Get()->uiNumRows > 0)
+			{
+				MYSQL_ROW row = mysql_fetch_row(msg->Get()->pSQLResult);
+				if (row && row[0])
+					s_iChance = MINMAX(0, atoi(row[0]), 100);
+			}
+		}
+		return s_iChance;
+	}
+
 	int ExchangePlayerBotSashCloth(LPCHARACTER ch)
 	{
 		if (!ch || ch->IsDead() || ch->GetExchange() || ch->GetMyShop() || ch->IsAcceOpened())
@@ -1183,6 +1204,14 @@ namespace
 		{
 			ch->RemoveSpecifyItem(PLAYERBOT_SASH_CLOTH_VNUM, PLAYERBOT_SASH_CLOTH_PER_SASH);
 			PlayerBotChangeGold(ch, -PLAYERBOT_SASH_CLOTH_FEE);
+			// MT2009_PLUS_SASH_CLOTH_V2: the bot rolls the recipe's chance as a player does
+			// (world.crafting_proto 85001, 80% from 7 October); a failure costs the cloth and the fee.
+			if (number(1, 100) > GetPlayerBotSashClothChance())
+			{
+				++made;
+				sys_log(0, "PLAYERBOT_SASH: cloth exchange failed pid=%u name=%s", ch->GetPlayerID(), ch->GetName());
+				continue;
+			}
 			LPITEM sash = ch->AutoGiveItem(PLAYERBOT_SASH_CLOTH_SASH_VNUM, 1, -1, false);
 			++made;
 			++s_uPlayerBotSashClothMade;

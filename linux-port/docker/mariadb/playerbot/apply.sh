@@ -3179,6 +3179,13 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 db -e "INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, chance, recipe, req_progress, req_level, recipe_vnum) VALUES
 (85001, 85001, 1, 80000, 100, '80019,10', 0, 0, 0);" \
   || fail_step "could not add Uriel's sash recipe (crafting_proto 85001)" >&2
+# MT2009_PLUS_SASH_CLOTH_V2 (the owner, 7 October: "u Uriela na wytworzenie szarfy od teraz 80%
+# szans"): the recipe's chance 100 -> 80, once (marker), so a later change in the panel stays.
+if [ -z "$(db -N -e "SELECT 1 FROM player.quest WHERE dwPID = 0 AND szName = 'm2_sashcloth_chance80' LIMIT 1;" 2>/dev/null)" ]; then
+  db -e "UPDATE world.crafting_proto SET chance = 80 WHERE vnum = 85001 AND chance = 100;
+REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_sashcloth_chance80', '', 1);" \
+    || fail_step "could not set Uriel's sash recipe to 80%" >&2
+fi
 
 # MT2009_PLUS_RANK_POINTS_V1 (the owner, 6 October): the rank fruits of Arezzo's
 # "dodatkowe rangi" - Jablko 80050, Gruszka 80051, Winogrono 80052, Arbuz 80053,
