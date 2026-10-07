@@ -21,7 +21,10 @@
 //     that was one before (its quest flag) first, then one already at its
 //     working level, then the lowest hash of pid, channel and kingdom - the
 //     same bots after every restart; the first ten minutes of a core only
-//     take back the flagged ones;
+//     take back the flagged ones. MT2009_PLUS_ORNAMENT_FARMERS_V2: from level
+//     twelve, the higher first, and with nobody of the band in play the
+//     identities of the band are called from the registry (the test world
+//     played six bots of 15-25 on that core, all of them taken);
 //   - what it is: BOT_PERSONALITY_ORNAMENT_FARMER, a dropper like the others
 //     (IsPlayerBotDropper: a stall keeper's counter, no Metin expedition),
 //     held at PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER (ManagePlayerBotExpLock), no
@@ -63,7 +66,12 @@ namespace
 	const char* const PLAYERBOT_ORNAMENT_FARMER_FLAG = "playerbot.ornament_farmer";
 	const DWORD PLAYERBOT_ORNAMENT_FARMER_SEED = 0x4f524e41U;
 	const int PLAYERBOT_ORNAMENT_FARMERS_PER_KINGDOM = 2;
-	const BYTE PLAYERBOT_ORNAMENT_FARMER_MIN_LEVEL = 17;
+	// MT2009_PLUS_ORNAMENT_FARMERS_V2: twelve, not seventeen - the test world
+	// had six bots of 15-25 in play on the core of the second villages (of
+	// 1244), every one of them already a level-30 weapon dropper, and the
+	// pool stood at nothing for hours. One under the working level levels to
+	// it first, as any bot of its level does.
+	const BYTE PLAYERBOT_ORNAMENT_FARMER_MIN_LEVEL = 12;
 	// The second village's first level (the "m2" row of the operator's map
 	// table): under it the farmer plays and levels as any bot of its level.
 	const BYTE PLAYERBOT_ORNAMENT_FARMER_WORK_LEVEL = 20;
@@ -73,6 +81,24 @@ namespace
 	// The ornaments that open the farmer's counter whatever its roll
 	// (GetPlayerBotShopReason, playerbot_town.h).
 	const int PLAYERBOT_ORNAMENT_FARMER_STALL_UNITS = 3;
+	// MT2009_PLUS_ORNAMENT_FARMERS_V2: with nobody of the band in play, the
+	// pass calls identities of the band from the registry
+	// (CPlayerBotManager::CollectIdleRegisteredBots / ScheduleExtraBots, the
+	// way the Arezzo cohorts come), at most once a kingdom every
+	// PLAYERBOT_ORNAMENT_FARMER_SUMMON_MS; a called bot comes before any other
+	// candidate for PLAYERBOT_ORNAMENT_FARMER_SUMMON_HOLD_MS.
+	const DWORD PLAYERBOT_ORNAMENT_FARMER_SUMMON_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_ORNAMENT_FARMER_SUMMON_HOLD_MS = 20 * 60 * 1000;
+	std::map<DWORD, DWORD> s_mapPlayerBotOrnamentFarmerSummoned;	// pid -> when called
+	DWORD s_adwPlayerBotOrnamentFarmerSummonAt[4] = { 0, 0, 0, 0 };
+	int s_aiPlayerBotOrnamentFarmerSummoned[4] = { 0, 0, 0, 0 };	// since the last census
+
+	bool IsPlayerBotOrnamentFarmerSummoned(DWORD pid, DWORD now)
+	{
+		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotOrnamentFarmerSummoned.find(pid);
+		return it != s_mapPlayerBotOrnamentFarmerSummoned.end() &&
+				now - it->second < PLAYERBOT_ORNAMENT_FARMER_SUMMON_HOLD_MS;
+	}
 
 	// The Sworn of the second villages' first camps: soldier, archer, general,
 	// commander, and their twins 331-334.
@@ -202,8 +228,10 @@ namespace
 		int onGround[4] = { 0, 0, 0, 0 };
 		int ornaments[4] = { 0, 0, 0, 0 };
 		int pool[4] = { 0, 0, 0, 0 };
-		// (flagged 0 / at its working level 1 / under it 2, hash), pid.
+		// (flagged or called 0 / at its working level 1 / under it 2 - and the
+		// higher level first within it, hash), pid.
 		std::vector<std::pair<std::pair<int, DWORD>, DWORD> > candidates[4];
+		int called[4] = { 0, 0, 0, 0 };	// called identities waiting to be candidates
 		for (TPlayerBotAIStateMap::iterator it = s_mapPlayerBotAIStates.begin();
 				it != s_mapPlayerBotAIStates.end(); ++it)
 		{
@@ -232,16 +260,26 @@ namespace
 				}
 				continue;
 			}
+			const bool summoned = IsPlayerBotOrnamentFarmerSummoned(it->first, dwNow);
 			if (empire < 1 || empire > 3 || !hosted[empire] || !IsPlayerBotOrnamentFarmerCandidate(ch, state))
 				continue;
 			++pool[empire];
-			const bool flagged = ch->GetQuestFlag(PLAYERBOT_ORNAMENT_FARMER_FLAG) != 0;
+			const bool flagged = ch->GetQuestFlag(PLAYERBOT_ORNAMENT_FARMER_FLAG) != 0 || summoned;
 			if (!flagged && !settled)
 				continue;
-			candidates[empire].push_back(std::make_pair(std::make_pair(flagged ? 0 :
-					(ch->GetLevel() >= PLAYERBOT_ORNAMENT_FARMER_WORK_LEVEL ? 1 : 2),
+			candidates[empire].push_back(std::make_pair(std::make_pair((flagged ? 0 :
+					(ch->GetLevel() >= PLAYERBOT_ORNAMENT_FARMER_WORK_LEVEL ? 1 : 2)) * 1000 + (255 - (int)ch->GetLevel()),
 					PlayerBotNavHash(it->first ^ PLAYERBOT_ORNAMENT_FARMER_SEED ^ ((DWORD)g_bChannel << 24) ^
 						((DWORD)empire * 0x85ebca6bU))), it->first));
+		}
+		// The identities called and not made farmers yet (on their way into
+		// the world, or their persona not read): no second call for them.
+		for (std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotOrnamentFarmerSummoned.begin();
+				it != s_mapPlayerBotOrnamentFarmerSummoned.end(); ++it)
+		{
+			const BYTE e = CPlayerBotManager::instance().GetRegisteredEmpire(it->first);
+			if (e >= 1 && e <= 3 && dwNow - it->second < PLAYERBOT_ORNAMENT_FARMER_SUMMON_HOLD_MS)
+				++called[e];
 		}
 		for (BYTE empire = 1; empire <= 3; ++empire)
 		{
@@ -254,16 +292,49 @@ namespace
 				if (!ch || st == s_mapPlayerBotAIStates.end())
 					continue;
 				++count[empire];
-				MakePlayerBotOrnamentFarmer(ch, st->second, count[empire], candidates[empire][i].first.first == 0);
+				MakePlayerBotOrnamentFarmer(ch, st->second, count[empire], candidates[empire][i].first.first < 1000);
+				if (s_mapPlayerBotOrnamentFarmerSummoned.erase(pid) && called[empire] > 0)
+					--called[empire];
 			}
+			// MT2009_PLUS_ORNAMENT_FARMERS_V2: still short and nobody of the band
+			// in play - identities of the band from the registry, the highest
+			// first; they become candidates once their persona is read.
+			const int missing = PLAYERBOT_ORNAMENT_FARMERS_PER_KINGDOM - count[empire] - called[empire];
+			if (settled && hosted[empire] && missing > 0 &&
+					(s_adwPlayerBotOrnamentFarmerSummonAt[empire] == 0 ||
+					 dwNow - s_adwPlayerBotOrnamentFarmerSummonAt[empire] >= PLAYERBOT_ORNAMENT_FARMER_SUMMON_MS))
+			{
+				s_adwPlayerBotOrnamentFarmerSummonAt[empire] = dwNow;
+				std::vector<DWORD> pids;
+				CPlayerBotManager::instance().CollectIdleRegisteredBots(empire, PLAYERBOT_ORNAMENT_FARMER_MIN_LEVEL,
+						PLAYERBOT_EXP_LOCK_ORNAMENT_FARMER, pids, (size_t)missing);
+				const size_t scheduled = pids.empty() ? 0 : CPlayerBotManager::instance().ScheduleExtraBots(pids);
+				for (size_t p = 0; p < pids.size(); ++p)
+					s_mapPlayerBotOrnamentFarmerSummoned[pids[p]] = dwNow ? dwNow : 1;
+				s_aiPlayerBotOrnamentFarmerSummoned[empire] += (int)scheduled;
+				sys_log(0, "PLAYERBOT_ORNAMENT: called from the registry channel=%u empire=%u missing=%d found=%u scheduled=%u",
+						(unsigned)g_bChannel, (unsigned)empire, missing, (unsigned)pids.size(), (unsigned)scheduled);
+			}
+		}
+		for (std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotOrnamentFarmerSummoned.begin();
+				it != s_mapPlayerBotOrnamentFarmerSummoned.end(); )
+		{
+			if (dwNow - it->second >= PLAYERBOT_ORNAMENT_FARMER_SUMMON_HOLD_MS)
+				s_mapPlayerBotOrnamentFarmerSummoned.erase(it++);
+			else
+				++it;
 		}
 		if (s_dwPlayerBotOrnamentFarmerNextCensus == 0 || (int)(dwNow - s_dwPlayerBotOrnamentFarmerNextCensus) >= 0)
 		{
 			s_dwPlayerBotOrnamentFarmerNextCensus = dwNow + PLAYERBOT_ORNAMENT_FARMER_CENSUS_MS;
-			sys_log(0, "PLAYERBOT_ORNAMENT: census channel=%u farmers=%d/%d/%d at_work=%d/%d/%d on_ground=%d/%d/%d ornaments_in_bags=%d/%d/%d pool=%d/%d/%d target=%d",
+			sys_log(0, "PLAYERBOT_ORNAMENT: census channel=%u farmers=%d/%d/%d at_work=%d/%d/%d on_ground=%d/%d/%d ornaments_in_bags=%d/%d/%d pool=%d/%d/%d called=%d/%d/%d target=%d",
 					(unsigned)g_bChannel, count[1], count[2], count[3], atWork[1], atWork[2], atWork[3],
 					onGround[1], onGround[2], onGround[3], ornaments[1], ornaments[2], ornaments[3],
-					pool[1], pool[2], pool[3], PLAYERBOT_ORNAMENT_FARMERS_PER_KINGDOM);
+					pool[1], pool[2], pool[3], s_aiPlayerBotOrnamentFarmerSummoned[1],
+					s_aiPlayerBotOrnamentFarmerSummoned[2], s_aiPlayerBotOrnamentFarmerSummoned[3],
+					PLAYERBOT_ORNAMENT_FARMERS_PER_KINGDOM);
+			for (int e = 0; e < 4; ++e)
+				s_aiPlayerBotOrnamentFarmerSummoned[e] = 0;
 		}
 	}
 }

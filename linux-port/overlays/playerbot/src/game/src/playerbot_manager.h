@@ -25,6 +25,11 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): these identities too, on top of
 		// the population; how many were queued now.
 		size_t	ScheduleExtraBots(const std::vector<DWORD>& pids);
+		// MT2009_PLUS_ORNAMENT_FARMERS_V2: this channel's registered identities
+		// of the kingdom saved at bMinLevel..bMaxLevel that are neither in the
+		// world nor asked for, highest level first, at most `max`.
+		size_t	CollectIdleRegisteredBots(BYTE bEmpire, BYTE bMinLevel, BYTE bMaxLevel,
+				std::vector<DWORD>& out, size_t max);
 		BYTE	GetMedalDropperCohortLevel() const;
 		// The kingdom a registered PID belongs to, 0 when it is not registered.
 		BYTE	GetRegisteredEmpire(DWORD dwPlayerID);

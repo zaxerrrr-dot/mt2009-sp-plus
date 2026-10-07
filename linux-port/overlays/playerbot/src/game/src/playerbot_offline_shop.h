@@ -1322,8 +1322,12 @@ namespace {
         // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: a line of Odlamki Energii is a pack
         // of ten, and only while the world's bot counters have room for it -
         // the units, and a counter of their few (playerbot_energy_shards.h).
+        // The bag's stack is asked before it is cut (BotOfflinePrepareVisitLine),
+        // so a stack of ten or more passes and the cut line of ten is asked
+        // again at the add; refusing every stack but one of exactly ten left
+        // the shards in the bags (test world, 7 October: none listed in an hour).
         if (IsPlayerBotEnergyShardVnum(item->GetVnum()))
-            return (int)item->GetCount() != PLAYERBOT_ENERGY_SHARD_LINE_UNITS || !shop ||
+            return (int)item->GetCount() < PLAYERBOT_ENERGY_SHARD_LINE_UNITS || !shop ||
                     GetPlayerBotEnergyShardLineRoom(shop->GetOwnerPID(), get_dword_time()) <= 0;
         // An item's lines by its kind (GetPlayerBotCounterLineCap): eight of a
         // refine material, five of a refine scroll, two of a heap, three of

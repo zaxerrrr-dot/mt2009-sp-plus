@@ -4090,6 +4090,44 @@ size_t CPlayerBotManager::ScheduleExtraBots(const std::vector<DWORD>& pids)
 	return selected;
 }
 
+// MT2009_PLUS_ORNAMENT_FARMERS_V2: the identities that sit out of the world
+// in a level band - the ornament farmers' reserve when no bot of their band
+// plays (playerbot_ornament_farmers.h): on the test world 1244 bots played on
+// the core of the second villages and six of them were of level 15-25, while
+// the registry held 290 such characters offline. Never a shouter, a medal
+// dropper of the cohort, a companion or a recreated character, and never one
+// still on its way from the other channel.
+size_t CPlayerBotManager::CollectIdleRegisteredBots(BYTE bEmpire, BYTE bMinLevel, BYTE bMaxLevel,
+		std::vector<DWORD>& out, size_t max)
+{
+	out.clear();
+	if (max == 0 || bEmpire < 1 || bEmpire > 3 || !LoadRegisteredBots())
+		return 0;
+	const DWORD now = (DWORD)get_global_time();
+	std::vector<std::pair<int, DWORD> > found;	// (-level, pid)
+	for (TRegisteredPlayerBotSet::const_iterator it = m_setRegisteredBots.begin();
+			it != m_setRegisteredBots.end(); ++it)
+	{
+		const DWORD pid = *it;
+		TPlayerBotAccountMap::const_iterator account = m_mapBotAccounts.find(pid);
+		if (account == m_mapBotAccounts.end() || account->second.bEmpire != bEmpire ||
+				account->second.bLevel < bMinLevel || account->second.bLevel > bMaxLevel ||
+				(account->second.dwReadyAt != 0 && account->second.dwReadyAt > now))
+			continue;
+		if (m_setScheduledBots.find(pid) != m_setScheduledBots.end() ||
+				CHARACTER_MANAGER::instance().FindByPID(pid) != NULL)
+			continue;
+		if (IsPlayerBotShouterPID(pid) || IsPlayerBotMedalShouterPID(pid) || IsMedalDropperCohortPID(pid) ||
+				IsPlayerBotSidekickPID(pid) || IsRetiredPlayerBotIdentity(pid))
+			continue;
+		found.push_back(std::make_pair(-(int)account->second.bLevel, pid));
+	}
+	std::sort(found.begin(), found.end());
+	for (size_t i = 0; i < found.size() && out.size() < max; ++i)
+		out.push_back(found[i].second);
+	return out.size();
+}
+
 // MT2009_PLUS_MEDAL_SHOUTERS_V1: Tieru, Tiieru and Tiiieru, the krzykacze
 // that drop medals (playerbot_shouters.h), are the operator's medal droppers
 // too - everything this answers for the cohort holds for them.
