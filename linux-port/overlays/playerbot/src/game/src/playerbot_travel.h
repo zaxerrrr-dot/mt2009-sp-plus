@@ -234,6 +234,91 @@ namespace
 				ch->GetEmptyInventory(3) < 0;
 	}
 
+	// MT2009_PLUS_FRONTIER_BAG_LOOP_V1 (safety net): a bot whose town visit
+	// cannot meet its need - the bag with no free three-cell column and a full
+	// safebox - went 65 -> M1 -> 65 for good: the frontier sent it home for
+	// the column once it had settled in, the first village let it out again
+	// once its visit was done (xBezMajtekx, 68 skill books, 7 October). The
+	// town-service exits (frontier_services_to_m1/m2, m3_services_to_m2) are
+	// counted per bot; past PLAYERBOT_SERVICES_EXIT_MAX of them in
+	// PLAYERBOT_SERVICES_EXIT_WINDOW_MS, no more until the window has let the
+	// oldest go - the bot keeps hunting. What stops the fight (no weapon, no
+	// armour, no potions, no arrows) is never held back by it.
+	const DWORD PLAYERBOT_SERVICES_EXIT_WINDOW_MS = 30 * 60 * 1000;
+	const size_t PLAYERBOT_SERVICES_EXIT_MAX = 3;
+	struct TPlayerBotServicesExits
+	{
+		std::vector<DWORD> at;
+		DWORD suppressedUntil;
+		TPlayerBotServicesExits() : suppressedUntil(0) {}
+	};
+	std::map<DWORD, TPlayerBotServicesExits> s_mapPlayerBotServicesExits;
+
+	bool IsPlayerBotServicesExitReason(const char* reason)
+	{
+		return reason && strstr(reason, "_services_to_m") != NULL;
+	}
+
+	void PrunePlayerBotServicesExits(TPlayerBotServicesExits& exits, DWORD dwNow)
+	{
+		size_t keep = 0;
+		for (size_t i = 0; i < exits.at.size(); ++i)
+			if (dwNow - exits.at[i] < PLAYERBOT_SERVICES_EXIT_WINDOW_MS)
+				exits.at[keep++] = exits.at[i];
+		exits.at.resize(keep);
+	}
+
+	// Counted where the map change happens (TransitionPlayerBotMap), so a walk
+	// to the gate asked for on every tick is one exit, not hundreds.
+	void NotePlayerBotServicesExit(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch)
+			return;
+		TPlayerBotServicesExits& exits = s_mapPlayerBotServicesExits[ch->GetPlayerID()];
+		PrunePlayerBotServicesExits(exits, dwNow);
+		exits.at.push_back(dwNow);
+	}
+
+	// Whether this bot's next town-service exit is held back; one line a
+	// suppression, when it starts.
+	bool IsPlayerBotServicesExitSuppressed(LPCHARACTER ch, DWORD dwNow, const char* reason)
+	{
+		if (!ch)
+			return false;
+		std::map<DWORD, TPlayerBotServicesExits>::iterator it =
+				s_mapPlayerBotServicesExits.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotServicesExits.end())
+			return false;
+		TPlayerBotServicesExits& exits = it->second;
+		if (exits.suppressedUntil != 0)
+		{
+			if ((int)(exits.suppressedUntil - dwNow) > 0)
+				return true;
+			exits.suppressedUntil = 0;
+		}
+		PrunePlayerBotServicesExits(exits, dwNow);
+		if (exits.at.size() < PLAYERBOT_SERVICES_EXIT_MAX)
+		{
+			if (exits.at.empty())
+				s_mapPlayerBotServicesExits.erase(it);
+			return false;
+		}
+		DWORD oldest = exits.at[0];
+		for (size_t i = 1; i < exits.at.size(); ++i)
+			if ((int)(exits.at[i] - oldest) < 0)
+				oldest = exits.at[i];
+		exits.suppressedUntil = oldest + PLAYERBOT_SERVICES_EXIT_WINDOW_MS;
+		if (exits.suppressedUntil == 0)
+			exits.suppressedUntil = 1;
+		sys_log(0, "PLAYERBOT_TRAVEL: services exits suppressed pid=%u name=%s level=%u map=%ld exits=%u window_min=%u for_s=%u reason=%s no_column=%d free_cells=%d",
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), ch->GetMapIndex(),
+				(unsigned int)exits.at.size(), (unsigned int)(PLAYERBOT_SERVICES_EXIT_WINDOW_MS / 60000),
+				(unsigned int)((exits.suppressedUntil - dwNow) / 1000U), reason ? reason : "?",
+				(ch->IsItemLoaded() && ch->GetEmptyInventory(3) < 0) ? 1 : 0,
+				CountPlayerBotFreeInventoryCells(ch));
+		return true;
+	}
+
 	// Which kingdom's roads this bot is travelling on.
 	//
 	// Inside a kingdom it is the map's owner, because the gate in front of the
@@ -1605,6 +1690,9 @@ namespace
 		sys_log(0, "PLAYERBOT_WORLD: transitioned pid=%u name=%s from=%ld to=%ld pos=(%ld,%ld) reason=%s",
 				ch->GetPlayerID(), ch->GetName(), oldMap, targetMap, targetX, targetY,
 				reason ? reason : "?");
+		// MT2009_PLUS_FRONTIER_BAG_LOOP_V1: the town-service exits, counted.
+		if (IsPlayerBotServicesExitReason(reason))
+			NotePlayerBotServicesExit(ch, dwNow);
 		// How long the bot stayed in town after its errand was done. Asked for
 		// by name: "sam spadek liczby atakow nie dowodzi naprawy".
 		if (IsPlayerBotM2Map(oldMap) && state.dwErrandDoneTime != 0 &&
@@ -2833,8 +2921,17 @@ namespace
 			const bool nothingToDrop = ch->GetLevel() > PLAYERBOT_M3_HUNT_MAX_LEVEL ||
 					(!IsPlayerBotM3DropperOnFarm(ch) && !tierGrinder && !weaponFound &&
 					(!CanPlayerBotM3WeaponDropFor(ch) || ch->GetLevel() > PLAYERBOT_LEVEL30_WEAPON_HUNT_MAX_LEVEL));
+			// MT2009_PLUS_FRONTIER_BAG_LOOP_V1: the services trip from here is
+			// held back as the frontier's is, past three in half an hour - never
+			// what stops the fight.
+			bool m3Services = needsCriticalTownServices || needsM1OnlyServices;
+			if (m3Services && !(ch->IsItemLoaded() && (ch->GetWear(WEAR_WEAPON) == NULL ||
+						ch->GetWear(WEAR_BODY) == NULL || NeedsPlayerBotEmergencyPotions(ch) ||
+						NeedsPlayerBotArrows(ch))) &&
+					IsPlayerBotServicesExitSuppressed(ch, dwNow, "m3_services"))
+				m3Services = false;
 			if (!visitExpired && !state.bVisitingShop &&
-					!needsCriticalTownServices && !needsM1OnlyServices &&
+					!m3Services &&
 					!scheduledRemoteRefine && !weaponFound && !nothingToDrop)
 				return false;
 
@@ -2842,7 +2939,7 @@ namespace
 			// line stamped "poziom" on every tick a bot left the frontier for a
 			// non-critical errand, against the planner's "zapasy" five seconds later.
 			const char* reason = "m3_weapon_found";
-			if (needsCriticalTownServices || needsM1OnlyServices)
+			if (m3Services)
 				reason = "m3_services_to_m2";
 			else if (state.bVisitingShop)
 				reason = "m3_shopping_to_m2";
@@ -2935,15 +3032,24 @@ namespace
 			const bool fightStops = ch->IsItemLoaded() &&
 					(ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
 					 NeedsPlayerBotEmergencyPotions(ch) || NeedsPlayerBotArrows(ch));
-			const bool blocked = onBattleTrialHere ? fightStops
+			bool blocked = onBattleTrialHere ? fightStops
 					: (fightStops || (settledIn && BlocksPlayerBotTravel(ch)));
 			// The Biologist hand-in a trial bot carries sent it home for the
 			// hand-in every few minutes: 75 desert stays of 344 s on average in
 			// an hour, 67 under ten minutes, the trial's kills 25 at a time half
 			// an hour apart, and 102 of 120 trial bots at 0/100 in the villages
 			// (m2zip, 17 September). The hand-in waits for the horse.
-			const bool needsTown = blocked ||
+			bool needsTown = blocked ||
 					(settledIn && ((needsM1OnlyServices && !onBattleTrialHere) || needsEssentialWeaponSupply));
+			// MT2009_PLUS_FRONTIER_BAG_LOOP_V1: past three town-service exits in
+			// half an hour the bot stays and hunts (IsPlayerBotServicesExitSuppressed);
+			// what stops the fight still takes it home.
+			if (needsTown && !fightStops && IsPlayerBotServicesExitSuppressed(ch, dwNow,
+						blocked ? "frontier_bag" : "frontier_services"))
+			{
+				blocked = false;
+				needsTown = false;
+			}
 			// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island's dropper goes back
 			// to town for three things and nothing else - the potions run out, a
 			// level-30 weapon has dropped (its counter sells it, the other bots

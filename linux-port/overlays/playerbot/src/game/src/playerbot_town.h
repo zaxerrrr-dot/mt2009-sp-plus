@@ -120,6 +120,18 @@ namespace
 	unsigned int s_uPlayerBotMarketHeldBack = 0;
 	unsigned int s_uPlayerBotMarketFetched = 0;
 
+	// MT2009_PLUS_FRONTIER_BAG_LOOP_V1 (room in town): when the safebox last
+	// turned a deposit away for want of room, by pid (DepositPlayerBotSafeboxBooks);
+	// the room-making itself is defined at the end of this file, the stall's
+	// half in playerbot_offline_shop.h.
+	std::map<DWORD, DWORD> s_mapPlayerBotSafeboxFullAt;
+	bool MakePlayerBotBagColumnRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+	bool HurryPlayerBotStallForBagRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+#else
+	bool HurryPlayerBotStallForBagRoom(LPCHARACTER, TPlayerBotAIState&, DWORD) { return false; }
+#endif
+
 	// The surplus books beyond what the bag keeps as counter goods, oldest
 	// cells first. Empty unless the bag is under pressure: a bag with room is
 	// a counter with stock.
@@ -894,6 +906,7 @@ namespace
 			}
 			if (!placed)
 			{
+				s_mapPlayerBotSafeboxFullAt[ch->GetPlayerID()] = dwNow ? dwNow : 1;	// MT2009_PLUS_FRONTIER_BAG_LOOP_V1
 				sys_log(0, "PLAYERBOT_TOWN: safebox full pid=%u name=%s deposited=%d left=%u",
 						ch->GetPlayerID(), ch->GetName(), deposited, (unsigned int)(cells.size() - i));
 				break;
@@ -1010,6 +1023,7 @@ namespace
 				!state.bTownNeedArmorMerchant && !state.bTownNeedBlacksmith)
 		{
 			state.dwNextShopCheckTime = dwNow + number(60000, 120000);
+			MakePlayerBotBagColumnRoom(ch, state, dwNow);	// MT2009_PLUS_FRONTIER_BAG_LOOP_V1
 			return;
 		}
 
@@ -1722,6 +1736,10 @@ namespace
 		state.dwTownWaitUntil = 0;
 		state.dwNextShopCheckTime = dwNow +
 			(completed ? number(300000, 600000) : number(60000, 120000));
+		// MT2009_PLUS_FRONTIER_BAG_LOOP_V1: a visit that left the bag with no
+		// free three-cell column and the box full makes the column now.
+		if (completed && ch)
+			MakePlayerBotBagColumnRoom(ch, state, dwNow);
 		if (completed)
 		{
 			state.dwErrandDoneTime = dwNow;
@@ -7373,6 +7391,212 @@ namespace
 
 		FinishPlayerBotTownVisit(ch, state, dwNow, false);
 		return true;
+	}
+
+	// MT2009_PLUS_FRONTIER_BAG_LOOP_V1 (room in town). A bag with no free
+	// three-cell column sends a bot home from the frontier (BlocksPlayerBotTravel)
+	// and a full safebox leaves the town visit nothing to put down - so the
+	// column was never made and the bot went 65 -> M1 -> 65 for good
+	// (xBezMajtekx, level 53, 68 skill books, "safebox full ... left=14").
+	// At the end of such a visit the bot makes the column itself: the window
+	// of three cells whose pieces are worth the least is sold at the merchant's
+	// price - plain scrap and cheap pieces first; surplus skill books and what
+	// the counters would pay well for (PLAYERBOT_BAG_ROOM_STALL_VALUE) go to the
+	// bot's own offline stall when it has one with room (its service is called
+	// at once, HurryPlayerBotStallForBagRoom), and to the merchant only when the
+	// stall did not make the room within PLAYERBOT_BAG_ROOM_STALL_WAIT_MS or there
+	// is no stall. Never sold: anything worn, locked, quest or ItemShop
+	// (ANTI_SELL), an operator's policy, a refine material, a potion, a piece
+	// the bot could wear, the books it keeps for its own skills, the Stalki,
+	// the level-30 weapons, the Awakening goods, the Useful Items List, a
+	// gambler's pieces, the guild materials, the stones under their keep, and
+	// nothing worth PLAYERBOT_BAG_ROOM_SELL_VALUE_MAX or more.
+	const DWORD PLAYERBOT_BAG_ROOM_RETRY_MS = 60 * 1000;
+	const DWORD PLAYERBOT_BAG_ROOM_SAFEBOX_FULL_MS = 60 * 60 * 1000;
+	const DWORD PLAYERBOT_BAG_ROOM_STALL_WAIT_MS = 30 * 60 * 1000;
+	const long long PLAYERBOT_BAG_ROOM_STALL_VALUE = 100000LL;
+	const long long PLAYERBOT_BAG_ROOM_SELL_VALUE_MAX = 10000000LL;
+	std::map<DWORD, DWORD> s_mapPlayerBotBagRoomTriedAt;
+	std::map<DWORD, DWORD> s_mapPlayerBotBagRoomStallAt;
+
+	// 0 - never sold for room; 1 - sold first; 2 - stall-worthy, sold only
+	// after the stall had its chance. `value` is what the piece is worth.
+	int GetPlayerBotBagRoomSaleKind(LPCHARACTER ch, LPITEM item, long long& value)
+	{
+		value = 0;
+		if (!ch || !item || item->IsEquipped() || item->isLocked() || item->IsExchanging())
+			return 0;
+		if (IsPlayerBotSidekickLockedItem(ch, item) || IsPlayerBotSidekickGift(ch, item) ||
+				IsPlayerBotSidekickPinned(ch, item))
+			return 0;
+		// The hay goes by count at the General Store, the horse's share kept.
+		if (item->GetVnum() == PLAYERBOT_HAY_VNUM)
+			return 0;
+		// What the next merchant visit sells anyway.
+		if (IsPlayerBotJunkItem(ch, item))
+		{
+			value = GetPlayerBotJunkSalePrice(item);
+			return 1;
+		}
+		if (IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL) ||
+				GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE)
+			return 0;
+		if (IsPlayerBotLppKeptItem(ch, item) || IsPlayerBotGambleForSale(ch, item) ||
+				IsPlayerBotRareGambleHeldBase(ch, item) || IsPlayerBotAwakeningGoods(item->GetVnum()) ||
+				IsPlayerBotGuildBuildMaterial(item->GetVnum()))
+			return 0;
+		bool stallWorthy = false;
+		switch (item->GetType())
+		{
+			case ITEM_SKILLBOOK:
+				if (!IsPlayerBotSurplusSkillBook(ch, item) || IsPlayerBotMissionBook(item->GetVnum()))
+					return 0;
+				stallWorthy = true;
+				break;
+			case ITEM_WEAPON:
+			case ITEM_ARMOR:
+				if (IsPlayerBotEquipmentCandidate(ch, item) || IsPlayerBotStalkiItem(item) ||
+						IsPlayerBotSpecialLevel30Weapon(item) || PlayerBotKeepsLevel30ForAnvil(ch, item))
+					return 0;
+				break;
+			case ITEM_METIN:
+				if ((int)ch->CountSpecifyItem(item->GetVnum()) - (int)item->GetCount() <
+						GetPlayerBotBonusStoneKeep(ch, item))
+					return 0;
+				break;
+			default:
+				return 0;
+		}
+		value = std::max<long long>(GetPlayerBotJunkSalePrice(item), (long long)GetPlayerBotShopAskingPrice(item));
+		if (value >= PLAYERBOT_BAG_ROOM_SELL_VALUE_MAX)
+			return 0;
+		if (value >= PLAYERBOT_BAG_ROOM_STALL_VALUE)
+			stallWorthy = true;
+		return stallWorthy ? 2 : 1;
+	}
+
+	bool MakePlayerBotBagColumnRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded() || ch->GetEmptyInventory(3) >= 0)
+			return false;
+		if (!IsPlayerBotVillageMap(ch->GetMapIndex()) || IsPlayerBotSidekickServing(ch))
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		DWORD& tried = s_mapPlayerBotBagRoomTriedAt[pid];
+		if (tried != 0 && dwNow - tried < PLAYERBOT_BAG_ROOM_RETRY_MS)
+			return false;
+		tried = dwNow ? dwNow : 1;
+		// The box first, while it still takes something - or while the bot
+		// could pay for one.
+		std::map<DWORD, DWORD>::const_iterator full = s_mapPlayerBotSafeboxFullAt.find(pid);
+		const bool boxFull = full != s_mapPlayerBotSafeboxFullAt.end() &&
+				dwNow - full->second < PLAYERBOT_BAG_ROOM_SAFEBOX_FULL_MS;
+		const bool noBox = ch->GetQuestFlag(PLAYERBOT_SAFEBOX_PAID_FLAG) <= 0 &&
+				ch->GetGold() < PLAYERBOT_SAFEBOX_FEE;
+		if (!boxFull && !noBox && HasPlayerBotSafeboxDeposit(ch, state))
+			return false;
+
+		const int page = PLAYERBOT_BAG_PAGE_COLUMNS * PLAYERBOT_BAG_PAGE_ROWS;
+		const int cells = std::min<int>((int)PLAYERBOT_BAG_CELLS, (int)ch->GetInventoryMaxCount());
+		std::vector<LPITEM> owner(cells, (LPITEM)NULL);
+		for (int cell = 0; cell < cells; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell)
+				continue;
+			for (int k = 0; k < std::max(1, (int)item->GetSize()); ++k)
+				if (cell + k * PLAYERBOT_BAG_PAGE_COLUMNS < cells)
+					owner[cell + k * PLAYERBOT_BAG_PAGE_COLUMNS] = item;
+		}
+		std::map<LPITEM, std::pair<int, long long> > kinds;
+		// The cheapest window whose pieces are all of `tier` or under.
+		LPITEM best[3] = { NULL, NULL, NULL };
+		int bestN = -1;
+		int tierUsed = 0;
+		for (int tier = 1; tier <= 2 && bestN < 0; ++tier)
+		{
+			if (tier == 2)
+			{
+				// The stall's chance first, once in PLAYERBOT_BAG_ROOM_STALL_WAIT_MS.
+				DWORD& stallAt = s_mapPlayerBotBagRoomStallAt[pid];
+				if ((stallAt == 0 || dwNow - stallAt >= PLAYERBOT_BAG_ROOM_STALL_WAIT_MS) &&
+						HurryPlayerBotStallForBagRoom(ch, state, dwNow))
+				{
+					stallAt = dwNow ? dwNow : 1;
+					sys_log(0, "PLAYERBOT_BAGROOM: to the stall pid=%u name=%s level=%u books=%d free_cells=%d box_full=%d",
+							pid, ch->GetName(), (unsigned int)ch->GetLevel(), CountPlayerBotSkillBooks(ch),
+							CountPlayerBotFreeInventoryCells(ch), boxFull ? 1 : 0);
+					return false;
+				}
+			}
+			long long bestCost = 0;
+			for (int w = 0; w + 2 * PLAYERBOT_BAG_PAGE_COLUMNS < cells; ++w)
+			{
+				if ((w % page) / PLAYERBOT_BAG_PAGE_COLUMNS + 3 > PLAYERBOT_BAG_PAGE_ROWS)
+					continue;
+				LPITEM picked[3] = { NULL, NULL, NULL };
+				int n = 0;
+				long long cost = 0;
+				bool ok = true;
+				for (int k = 0; k < 3 && ok; ++k)
+				{
+					LPITEM item = owner[w + k * PLAYERBOT_BAG_PAGE_COLUMNS];
+					if (!item || item == picked[0] || item == picked[1])
+						continue;
+					std::map<LPITEM, std::pair<int, long long> >::iterator known = kinds.find(item);
+					if (known == kinds.end())
+					{
+						long long value = 0;
+						const int kind = GetPlayerBotBagRoomSaleKind(ch, item, value);
+						known = kinds.insert(std::make_pair(item, std::make_pair(kind, value))).first;
+					}
+					if (known->second.first == 0 || known->second.first > tier)
+					{
+						ok = false;
+						break;
+					}
+					picked[n++] = item;
+					cost += known->second.second;
+				}
+				if (!ok || n == 0)
+					continue;
+				if (bestN < 0 || cost < bestCost || (cost == bestCost && n < bestN))
+				{
+					bestN = n;
+					bestCost = cost;
+					best[0] = picked[0];
+					best[1] = picked[1];
+					best[2] = picked[2];
+					tierUsed = tier;
+				}
+			}
+		}
+		if (bestN <= 0)
+		{
+			sys_log(0, "PLAYERBOT_BAGROOM: no column to make pid=%u name=%s level=%u books=%d free_cells=%d box_full=%d",
+					pid, ch->GetName(), (unsigned int)ch->GetLevel(), CountPlayerBotSkillBooks(ch),
+					CountPlayerBotFreeInventoryCells(ch), boxFull ? 1 : 0);
+			return false;
+		}
+		long long gold = 0;
+		for (int i = 0; i < bestN; ++i)
+		{
+			LPITEM item = best[i];
+			const long long sale = GetPlayerBotJunkSalePrice(item);
+			sys_log(0, "PLAYERBOT_BAGROOM: sold pid=%u name=%s vnum=%u count=%u value=%lld gold=%lld tier=%d",
+					pid, ch->GetName(), item->GetVnum(), (unsigned int)item->GetCount(),
+					kinds[item].second, sale, tierUsed);
+			state.mapStallUnsold.erase(item->GetID());
+			state.mapStockFirstListed.erase(item->GetID());
+			PlayerBotChangeGold(ch, sale);
+			gold += sale;
+			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_BAG_ROOM_SELL");
+		}
+		const bool made = ch->GetEmptyInventory(3) >= 0;
+		sys_log(0, "PLAYERBOT_BAGROOM: column %s pid=%u name=%s level=%u sold=%d gold=%lld books=%d free_cells=%d box_full=%d map=%ld",
+				made ? "made" : "still missing", pid, ch->GetName(), (unsigned int)ch->GetLevel(), bestN, gold,
+				CountPlayerBotSkillBooks(ch), CountPlayerBotFreeInventoryCells(ch), boxFull ? 1 : 0, ch->GetMapIndex());
+		return made;
 	}
 }
 

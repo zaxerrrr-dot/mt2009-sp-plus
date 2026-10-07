@@ -2663,6 +2663,18 @@ namespace {
             o.chainSteps = 0;
         return false;
     }
+    // MT2009_PLUS_FRONTIER_BAG_LOOP_V1 (room in town): a bag with no free
+    // three-cell column and a full safebox gives its surplus books and its
+    // goods to the stall when the bot has one with room - the service is
+    // called now rather than at its round (MakePlayerBotBagColumnRoom).
+    bool HurryPlayerBotStallForBagRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow) {
+        if (!ch) return false;
+        auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+        if (!shop || BotOfflineFreeCells(shop) < 3) return false;
+        auto& o = state.offlineShop;
+        if (!o.visiting && !playerbot_offline::Due(dwNow, o.nextService)) o.nextService = dwNow;
+        return true;
+    }
 }
 #endif
 #endif
