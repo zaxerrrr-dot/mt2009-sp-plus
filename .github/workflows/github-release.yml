@@ -78,7 +78,13 @@ jobs:
           V: ${{ steps.v.outputs.server }}
         run: |
           tag="v$V"
-          if gh release view "$tag" >/dev/null 2>&1; then echo "$tag already exists"; exit 0; fi
+          # An existing release only gets its notes refreshed from CHANGELOG.md (a corrected
+          # changelog reaches GitHub too); it is not announced again.
+          if gh release view "$tag" >/dev/null 2>&1; then
+            python3 .github/scripts/github_release.py "$V" out
+            gh release edit "$tag" --notes-file out/notes.md --title "$(cat out/title.txt)"
+            echo "$tag already exists - notes refreshed"; exit 0
+          fi
           python3 .github/scripts/github_release.py "$V" out
           zip="metin2-server-update-$V.zip"
           target=$(sh .github/scripts/release_source.sh VERSION "$V" "$zip" zips)
@@ -113,7 +119,11 @@ jobs:
           V: ${{ steps.v.outputs.client }}
         run: |
           tag="klient-v$V"
-          if gh release view "$tag" >/dev/null 2>&1; then echo "$tag already exists"; exit 0; fi
+          if gh release view "$tag" >/dev/null 2>&1; then
+            python3 .github/scripts/github_release.py "$V" out --client
+            gh release edit "$tag" --notes-file out/notes.md --title "$(cat out/title.txt)"
+            echo "$tag already exists - notes refreshed"; exit 0
+          fi
           python3 .github/scripts/github_release.py "$V" out --client
           zip="metin2-client-update-$V.zip"
           target=$(sh .github/scripts/release_source.sh CLIENT_VERSION "$V" "$zip" zips)

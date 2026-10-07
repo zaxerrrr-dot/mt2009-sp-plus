@@ -23,7 +23,6 @@ Wymaga klienta **2.0.57** (pobierze go launcher albo patcher). Zmieniła się pa
 
 ### 🙏 Autorzy dodatkowych systemów
 - **Digi Rasta** (nowy-system v0.26–0.28): **system pasów**, **limity Yang**, **żywioły i talizmany**, **żeńskie tytuły rang**, **model 3D w Kartach Potworów**, pomysł **ukrywania efektów i sklepów** (napisane od nowa).
-- **Tieru** (Metin2 Playerbots): **ikony ksiąg umiejętności** – każda księga pokazuje znak swojej umiejętności.
 - **Pliki serwera Arezzo**: **zestawy kostiumów**, **owoce i rangi Punktów Rangi**, mapy i dungeony Arezzo.
 - **Gameforge**: oryginalne ikony talizmanów, pasów, Delikatnego Sukna i znaków żywiołów.
 
@@ -49,7 +48,7 @@ Wymaga klienta **2.0.57** (pobierze go launcher albo patcher). Zmieniła się pa
 ### 🧥 Ekwipunek i wygląd
 - **Delikatne Sukno** – z metinów i bossów zamiast szarfy +0; u Uriela 10 sukien + 80 000 Yang = szarfa (80%).
 - **Osobne ukrywanie** własnego kostiumu, fryzury i nakładki na broń; **„Ukryj kostiumy innych”** – widzisz prawdziwy ekwipunek innych graczy i botów (tylko u siebie).
-- **Ukrywanie efektów i sklepów** w opcjach, **żeńskie tytuły rang** (Waleczna, Władczyni…), **model 3D** w Kartach Potworów, **ikony ksiąg umiejętności** (Tieru).
+- **Ukrywanie efektów i sklepów** w opcjach, **żeńskie tytuły rang** (Waleczna, Władczyni…), **model 3D** w Kartach Potworów, **ikony ksiąg umiejętności** – każda księga pokazuje znak swojej umiejętności.
 
 ### 🧑‍🤝‍🧑 Towarzysz i boty
 - Towarzysz: **„Drop: tylko dla mnie”** (przycisk albo szept „nie zbieraj dropu”).
@@ -65,7 +64,7 @@ Wymaga klienta **2.0.57** (pobierze go launcher albo patcher). Zmieniła się pa
 ## Klient 2.0.57 — 2026-10-07 — Pasy, talizmany, kostiumy Arezzo
 
 - Nowy **exe**: system pasów, pole talizmanu i znak żywiołu celu, limity Yang w handlu i sklepach, model 3D w Kartach Potworów, ukrywanie efektów i sklepów, żeńskie tytuły i rangi Punktów Rangi nad głową, poświaty kostiumów Arezzo (autorzy: Digi Rasta – pasy, talizmany, limity, model kart, tytuły).
-- **22 zestawy kostiumów Arezzo** (15 nowych paczek), owoce rang, Delikatne Sukno, talizmany, ikony ksiąg umiejętności (Tieru), ikony Gameforge.
+- **22 zestawy kostiumów Arezzo** (15 nowych paczek), owoce rang, Delikatne Sukno, talizmany, ikony ksiąg umiejętności, ikony Gameforge.
 - Nowy **MT2009-Patcher** – sam pobiera dane bazy z Twojego serwera, gdy zmienisz je w Edytorze bazy danych.
 - Zmieniła się paczka `dbdata` – pliki z edytora pobierze patcher albo pobierz zip z panelu (gra przypomni).
 
