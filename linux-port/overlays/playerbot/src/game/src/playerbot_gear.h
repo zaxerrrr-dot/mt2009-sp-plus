@@ -479,7 +479,9 @@ namespace
 		// server-patches/zywioly) - the talisman is armour of its own slot (WEAR_PENDANT) and
 		// a bot wears the best one it owns like any other piece; a point of power is worth a
 		// little (the general +1% of every full 10% and the bonus against the element's
-		// monsters), so a higher talisman wins. The bots never refine one.
+		// monsters), so a higher talisman wins. MT2009_PLUS_BOT_TALISMANS_V1: the equipment
+		// score of a talisman is GetPlayerBotTalismanScore now (by the hunting map), and the
+		// bots refine them (playerbot_talismans.h); this stays for any other scoring.
 		if (bType >= POINT_ENCHANT_ELECT && bType <= POINT_ENCHANT_DARK)
 			return (long long)lValue * 60;
 #endif
@@ -1065,8 +1067,28 @@ namespace
 	// The score, and with `terms` its parts (playerbot_explain.h).
 	long long GetPlayerBotEquipmentScoreTerms(LPITEM item, LPCHARACTER ch, TPlayerBotScoreTerms* terms);
 
+	// MT2009_PLUS_BOT_TALISMANS_V1 / MT2009_PLUS_BOT_BELTS_V1 / MT2009_PLUS_BOT_WORKSHOP_V1:
+	// defined in playerbot_talismans.h, playerbot_belts.h and playerbot_workshop.h, which are
+	// included later - the talisman's score for the bot's hunting map, the belt pouch's
+	// potions, and what the two crafts keep and buy.
+	bool IsPlayerBotTalismanItem(LPITEM item);
+	long long GetPlayerBotTalismanScore(LPCHARACTER ch, LPITEM item);
+	bool UsePlayerBotBeltPotion(LPCHARACTER ch, const DWORD* vnums, size_t count, const char* what);
+	int GetPlayerBotCraftMaterialKeep(LPCHARACTER ch, DWORD vnum);
+	bool IsPlayerBotKeptCraftGoods(LPCHARACTER ch, LPITEM item);
+	bool WantsPlayerBotCraftOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForCraftOffer(LPCHARACTER ch, LPITEM offer, long long price);
+	long long CollectPlayerBotCraftMissing(LPCHARACTER ch, std::map<DWORD, int>& missing, long long budget);
+	bool PlayerBotWantsCraftFromMarket(LPCHARACTER ch);
+	void NotePlayerBotCraftBought(LPCHARACTER ch, DWORD vnum, long long price);
+
 	long long GetPlayerBotEquipmentScore(LPITEM item, LPCHARACTER ch = NULL)
 	{
+		// MT2009_PLUS_BOT_TALISMANS_V1: a talisman scores by its expected damage bonus on the
+		// bot's hunting map (the element's monsters there, the engine's formula), so the
+		// equipment pass puts on the one the map wants (playerbot_talismans.h).
+		if (ch && IsPlayerBotTalismanItem(item))
+			return GetPlayerBotTalismanScore(ch, item);
 		// MT2009_PLUS_LEGENDS_V1 (gear): a Specjalny and up weighs a piece's
 		// plus and bonuses more (playerbot_legend_tier.h).
 		return AdjustPlayerBotLegendGearScore(item, ch, GetPlayerBotEquipmentScoreTerms(item, ch, NULL));
@@ -5262,6 +5284,9 @@ namespace
 				}
 			}
 		}
+		// MT2009_PLUS_BOT_BELTS_V1: the belt's pouch, once the bag has none (playerbot_belts.h).
+		if (UsePlayerBotBeltPotion(ch, redPotionVnums, sizeof(redPotionVnums) / sizeof(redPotionVnums[0]), "health"))
+			return true;
 
 		if (dwNow >= state.dwNextPotionLogTime)
 		{
@@ -5305,6 +5330,9 @@ namespace
 				}
 			}
 		}
+		// MT2009_PLUS_BOT_BELTS_V1: and the pouch's (playerbot_belts.h).
+		if (UsePlayerBotBeltPotion(ch, bluePotionVnums, sizeof(bluePotionVnums) / sizeof(bluePotionVnums[0]), "mana"))
+			return true;
 
 		return false;
 	}

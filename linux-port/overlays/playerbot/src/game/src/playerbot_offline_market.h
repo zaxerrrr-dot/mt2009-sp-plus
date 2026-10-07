@@ -208,6 +208,7 @@ namespace {
         NotePlayerBotSaddlebagBought(ch, boughtVnum, (long long)price, (DWORD)line->GetInfo().count);
         NotePlayerBotCorBought(ch, boughtVnum, (long long)price, (DWORD)line->GetInfo().count); // MT2009_PLUS_MARKET_SINK_V1
         NotePlayerBotGuildMaterialBought(ch, boughtVnum, (long long)price);
+        NotePlayerBotCraftBought(ch, boughtVnum, (long long)price); // MT2009_PLUS_BOT_WORKSHOP_V1
         if (Begin(ch->GetPlayerID(), Buy, o.buyItem, now)) {
             auto& request = requests.at(ch->GetPlayerID());
             request.vnum = line->GetInfo().vnum;
@@ -344,6 +345,18 @@ namespace {
                 CollectPlayerBotScrollRuleMissing(ch, missing);
                 if (!missing.empty() && FindPlayerBotGambleMaterialPick(ch, state, missing, budget, now)) {
                     sys_log(0, "PLAYERBOT_MARKET: scroll-rule piece goes for materials pid=%u name=%s owner=%u item=%u lacking=%u",
+                        ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (unsigned int)missing.size());
+                    return RunPlayerBotOfflinePick(ch, state, now);
+                }
+            }
+            // MT2009_PLUS_BOT_WORKSHOP_V1: a belt maker's materials and a talisman
+            // worker's spare +0 and Ornament, on every stand of the map, the
+            // gambler's way (playerbot_workshop.h).
+            {
+                std::map<DWORD, int> missing;
+                const long long craftCap = CollectPlayerBotCraftMissing(ch, missing, budget);
+                if (!missing.empty() && craftCap > 0 && FindPlayerBotGambleMaterialPick(ch, state, missing, craftCap, now)) {
+                    sys_log(0, "PLAYERBOT_WORKSHOP: goes for craft materials pid=%u name=%s owner=%u item=%u lacking=%u",
                         ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (unsigned int)missing.size());
                     return RunPlayerBotOfflinePick(ch, state, now);
                 }

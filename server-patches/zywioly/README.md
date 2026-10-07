@@ -46,7 +46,12 @@ jako nasz kod, z **zasadami właściciela z 7.10.2026** w miejscu części decyz
      `mobraceflag.py` maskuje 0–10, `uitarget.py` – ikona żywiołu).
    - vnum ma żywioł wszędzie, gdzie się pojawia (raport generatora wypisuje takie miejsca).
 3. PvP bez żywiołów (jak u niego).
-4. Boty: zakładają najlepszy posiadany talizman jak każdą część (`ScorePlayerBotApply`: punkt siły = 60), nie ulepszają go.
+4. Boty (`MT2009_PLUS_BOT_TALISMANS_V1`, `playerbot_talismans.h`, zmiana z 7.10): zakładają talizman, który na mapie,
+   na której polują, daje największy oczekiwany bonus wg wzoru z `ElementsAttackBonus` (bonus ogólny + udział potworów
+   żywiołu na mapie × bonus żywiołu), i ulepszają go u Kowala (część botów od 30 poziomu); na mapie z dominującym
+   żywiołem ulepszają talizman tego żywiołu, aż przegoni noszony. Kwiaty kupują u Mistrza, Ornament i Talizman +0 na
+   rynku (700 000); część botów dostaje talizman +0 i materiały 10 kroków (flaga zdarzenia `m2_bot_craft_seed_off`
+   wyłącza dary, `m2_bot_workshop_off` całe zadanie).
 
 ## Zmiana silnika (`edits.json`)
 
@@ -79,4 +84,4 @@ jako nasz kod, z **zasadami właściciela z 7.10.2026** w miejscu części decyz
 ## Poza zakresem
 
 Odporności w bonusach zwykłego sprzętu (zasada właściciela), Talizmany Woli/Zaświatów, Kamień Żywiołów, Zaczarowanie
-Żywiołu Broni, żywioły w PvP, ikona żywiołu przy postaci, rękawice, ulepszanie talizmanów przez boty.
+Żywiołu Broni, żywioły w PvP, ikona żywiołu przy postaci, rękawice.

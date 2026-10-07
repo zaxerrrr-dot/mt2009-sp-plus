@@ -1106,7 +1106,9 @@ namespace
 				if (recipe->materials[m].vnum == materialVnum)
 					reserve = std::max(reserve, (int)recipe->materials[m].count * 2);
 		}
-		return reserve;
+		// MT2009_PLUS_BOT_WORKSHOP_V1: and what a belt maker or a talisman worker keeps for its
+		// craft (playerbot_workshop.h).
+		return std::max(reserve, GetPlayerBotCraftMaterialKeep(ch, materialVnum));
 	}
 
 	bool PlayerBotNeedsAnyRefineMaterial(LPCHARACTER ch)
@@ -2218,6 +2220,11 @@ namespace
 		// The guild building materials are goods now (playerbot_guild_land.h):
 		// the counters, never the merchant.
 		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
+			return false;
+
+		// MT2009_PLUS_BOT_WORKSHOP_V1: nor what a belt maker or a talisman worker keeps for
+		// its craft - the materials within their keep, the talisman worn best or worked on.
+		if (IsPlayerBotKeptCraftGoods(ch, item))
 			return false;
 
 		// MT2009_PLUS_BELT_MATS_V1: so are the belts and their materials
@@ -4940,6 +4947,11 @@ namespace
 	{
 		if (!ch || !item || item->GetRefinedVnum() == 0 ||
 				item->GetRefineLevel() >= GetPlayerBotRefineTarget(ch, item))
+			return false;
+		// MT2009_PLUS_BOT_WORKSHOP_V1: a belt or a talisman is the workshop errand's to refine
+		// (playerbot_belts.h, playerbot_talismans.h): its aims, its gifts, the talisman's spare
+		// +0 that this pass would have spent on whichever talisman came first.
+		if (item->GetType() == ITEM_BELT || IsPlayerBotTalismanItem(item))
 			return false;
 		// What a companion's owner put on is the owner's to refine: a burn at
 		// the companion's anvil would lose the piece the owner chose.

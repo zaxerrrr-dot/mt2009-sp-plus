@@ -234,6 +234,9 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_minigames.h" // MT2009_PLUS_BOT_MINIGAMES_V1: bots in Catch the King, Rumi and Yut Nori, simulated
 #include "playerbot_guild_land.h"
 #include "playerbot_sash.h"
+#include "playerbot_belts.h" // MT2009_PLUS_BOT_BELTS_V1: belt makers (Mistrz's recipes), the belt at the anvil, the pouch
+#include "playerbot_talismans.h" // MT2009_PLUS_BOT_TALISMANS_V1: the talisman for the hunting map's elements, refined at the anvil
+#include "playerbot_workshop.h" // MT2009_PLUS_BOT_WORKSHOP_V1: the errand to Mistrz and the Blacksmith, the crafts' keep and market
 #include "playerbot_saddlebag.h"
 #include "playerbot_awakening.h" // Digi Rasta's Ritual of Awakening and soul stones +5..+9: engine hooks, boss drop, bot prices and ritual (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1)
 #include "playerbot_explain_late.h"
@@ -7377,6 +7380,14 @@ WritePlayerBotGuildStatus(dwNow);
 		// which would walk the bot out of the village it was brought to.
 		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotSash(ch, state, dwNow))
+			continue;
+
+		// MT2009_PLUS_BOT_WORKSHOP_V1: Mistrz and the Blacksmith beside him
+		// (playerbot_workshop.h) - belts made and raised, talisman steps, the
+		// talisman for the map and the belt's pouch. Beside Uriel and for his
+		// reason.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotWorkshop(ch, state, dwNow))
 			continue;
 
 		// The Dozorca's exchange and the Stajenny's saddlebag rows

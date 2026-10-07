@@ -222,6 +222,11 @@ namespace
 				!PlayerBotNeedsRefineMaterial(ch, offer->GetVnum()))
 			return true;
 
+		// MT2009_PLUS_BOT_WORKSHOP_V1: a belt maker's materials and a talisman worker's spare
+		// +0 and Ornament (playerbot_workshop.h).
+		if (WantsPlayerBotCraftOffer(ch, offer))
+			return true;
+
 		// A sash, for a bot that builds its own (playerbot_sash.h).
 		if (offer->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(offer->GetVnum()))
 			return WantsPlayerBotSashOffer(ch, offer);
@@ -506,6 +511,9 @@ namespace
 		// Sashes for the one it builds, and the piece to fill it (playerbot_sash.h).
 		if (PlayerBotWantsSashFromMarket(ch) || PlayerBotWantsSashPieceFromMarket(ch))
 			return true;
+		// MT2009_PLUS_BOT_WORKSHOP_V1: a belt's materials, a talisman's spare and Ornament.
+		if (PlayerBotWantsCraftFromMarket(ch))
+			return true;
 		// Medals and materials for a saddlebag row (playerbot_saddlebag.h).
 		if (PlayerBotWantsSaddlebagGoods(ch))
 			return true;
@@ -633,6 +641,10 @@ namespace
 		// the reserve below keeps from everything else (playerbot_guild_land.h).
 		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
 			return CanPlayerBotPayForGuildMaterial(ch, item, price);
+		// MT2009_PLUS_BOT_WORKSHOP_V1: a craft's material at the craft's price (the market's
+		// fair price and a share of the purse); refused here, the rules below may still pay.
+		if (WantsPlayerBotCraftOffer(ch, item) && CanPlayerBotPayForCraftOffer(ch, item, price))
+			return true;
 		// MT2009_PLUS_BOT_GEAR_UPGRADE_V1: a weapon upgrade out of its own share
 		// of the purse, over PLAYERBOT_WEAPON_UPGRADE_GOLD_FLOOR - half of it,
 		// four fifths for a gain of a quarter or more. Refused here, it may

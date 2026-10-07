@@ -4123,6 +4123,10 @@ namespace
 			if (policy != PLAYERBOT_ITEM_POLICY_NONE)
 				return -1;
 		}
+		// MT2009_PLUS_BOT_WORKSHOP_V1: nor what a belt maker or a talisman worker keeps for its
+		// craft (playerbot_workshop.h) - the units over the keep are goods as before.
+		if (ch && IsPlayerBotKeptCraftGoods(ch, item))
+			return -1;
 		// MT2009_PLUS_MARKET_V3, point 8: nor Siano, which the General Store
 		// changes for Red Potions (ExchangePlayerBotHay) and buys the rest of.
 		if (item->GetVnum() == PLAYERBOT_HAY_VNUM)

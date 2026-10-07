@@ -35,8 +35,15 @@ w silniku od zawsze; numery pól są takie same w exe (`c_Belt_Inventory_Slot_St
 Zmiana już nałożona (jest jej znacznik) jest pomijana; zmiana, której kodu nie ma dokładnie raz, przerywa
 całość, zanim cokolwiek zostanie zapisane.
 
+## Boty (`MT2009_PLUS_BOT_BELTS_V1`, `playerbot_belts.h`, 7.10)
+
+Połowa botów od 50 poziomu robi pasy u Mistrza (najwyższa receptura dla poziomu, lepsza od posiadanych pasów):
+trzyma materiały, dokupuje brakujące na rynku (Odłamki Energii z `playerbot_energy_shards.h`), receptura jak w
+`cube.pasy.txt` (te same szanse i opłata). Każdy bot z pasem ulepsza noszony pas u Kowala do własnego celu +4..+9,
+wkłada zapasowe stosy czerwonych/niebieskich mikstur do ekwipunku pasa i pije z niego, gdy w plecaku zabraknie.
+Część wytwórców dostaje materiały 2 prób (flaga zdarzenia `m2_bot_craft_seed_off` wyłącza dary).
+
 ## Poza zakresem
 
 Kryształ Energii (51002, exe nie ma `ENABLE_ENERGY_SYSTEM`), kostka Jae-Seon Kima (63 inne receptury), pasy z
-Turmalinu/Tytanowe (nie ma ich w bazie), wytwarzanie pasów przez boty (boty zakładają pasy, które mają – jak każdy
-inny element wyposażenia).
+Turmalinu/Tytanowe (nie ma ich w bazie).
