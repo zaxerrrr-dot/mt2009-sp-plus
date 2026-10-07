@@ -18,10 +18,11 @@ BELT_SLOT_Y = 106
 # MT2009_PLUS_ELEMENTS_V1: the talisman slot (WEAR_PENDANT = 25; Autor: Digi Rasta, Zywioly
 # i talizmany). item.EQUIPMENT_PENDANT comes with an exe built with ENABLE_PENDANT_SYSTEM;
 # without it the slot is the equipment start + 25, as the server's INVENTORY_MAX_NUM +
-# WEAR_PENDANT. Under the necklace, on the free pattern of the right column.
+# WEAR_PENDANT. Bottom of the left column, under the left ring (V2: under the necklace it lay
+# beneath the Dragon Soul button at 114,120 - the owner, 7 October).
 EQUIPMENT_PENDANT_SLOT = getattr(item, "EQUIPMENT_PENDANT", player.EQUIPMENT_SLOT_START + 25)
-PENDANT_SLOT_X = 114
-PENDANT_SLOT_Y = 118
+PENDANT_SLOT_X = 2
+PENDANT_SLOT_Y = 147
 
 window = {
 	"name" : "InventoryWindow",
