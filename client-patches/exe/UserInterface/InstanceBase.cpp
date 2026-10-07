@@ -3220,15 +3220,19 @@ void CInstanceBase::__AttachShiningEffect(DWORD dwVnum, bool bWeapon)
 		return;
 
 	bool bBothHands = false;
+	bool bLeftHand = false;	// a bow is held in the left hand (the owner, 7 October: the glow was in the right one)
 	if (bWeapon)
 	{
 		CItemData* pItemData = NULL;
 		if (CItemManager::Instance().GetItemDataPointer(dwVnum, &pItemData) && pItemData)
 		{
+			int iSub = -1;
 			if (pItemData->GetType() == ITEM_WEAPON)
-				bBothHands = pItemData->GetSubType() == WEAPON_DAGGER;
+				iSub = pItemData->GetSubType();
 			else if (pItemData->GetType() == ITEM_COSTUME)
-				bBothHands = pItemData->GetValue(3) == WEAPON_DAGGER;
+				iSub = pItemData->GetValue(3);
+			bBothHands = iSub == WEAPON_DAGGER;
+			bLeftHand = iSub == WEAPON_BOW;
 		}
 	}
 
@@ -3245,6 +3249,12 @@ void CInstanceBase::__AttachShiningEffect(DWORD dwVnum, bool bWeapon)
 		}
 
 		const char* c_szBoneName = NULL;
+		if (bLeftHand)
+		{
+			if (m_GraphicThingInstance.GetAttachingBoneName(CRaceData::EQUIP_PART_WEAPON_LEFT, &c_szBoneName) && c_szBoneName)
+				rvecEffect.push_back(m_GraphicThingInstance.AttachEffectByName(0, c_szBoneName, c_szFile));
+			continue;
+		}
 		if (m_GraphicThingInstance.GetAttachingBoneName(CRaceData::EQUIP_PART_WEAPON, &c_szBoneName) && c_szBoneName)
 			rvecEffect.push_back(m_GraphicThingInstance.AttachEffectByName(0, c_szBoneName, c_szFile));
 		if (bBothHands && m_GraphicThingInstance.GetAttachingBoneName(CRaceData::EQUIP_PART_WEAPON_LEFT, &c_szBoneName) && c_szBoneName)
