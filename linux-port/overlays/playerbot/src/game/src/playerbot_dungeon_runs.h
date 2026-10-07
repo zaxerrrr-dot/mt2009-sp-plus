@@ -954,6 +954,78 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3 (the boss's ground) - Razador (6091:
+	// 700 000 health, two splashes, every 6 s over 800 and every 8 s over 1 200
+	// units) took the parties of 70-85 apart on 7 October: a bot regrouped
+	// to its leader at full health (10 050) and broke off five seconds later
+	// at 2 062, the camp and the leader both inside his reach, and 12 runs
+	// were wiped there three times over - a recovering bot is hidden, not out
+	// of a splash. While a boss stands by the pack: a bot breaks off at
+	// PLAYERBOT_DGRUN_BOSS_BREAK_HP, heals at least PLAYERBOT_DGRUN_BOSS_SAFE
+	// from him (beyond his widest splash, on walkable ground) and goes back
+	// only at PLAYERBOT_DGRUN_BOSS_REJOIN_HP.
+	const int PLAYERBOT_DGRUN_BOSS_SAFE = 1700;
+	const int PLAYERBOT_DGRUN_BOSS_NEAR = 2500;
+	const int PLAYERBOT_DGRUN_BOSS_BREAK_HP = 50;
+	const int PLAYERBOT_DGRUN_BOSS_REJOIN_HP = 92;
+
+	// The boss (not a stone) standing nearest to (x, y) within `range`, alive.
+	LPCHARACTER FindPlayerBotDgRunBoss(long instance, long x, long y, int range, DWORD dwNow)
+	{
+		const TPlayerBotArzDgScan& sc = ScanPlayerBotArzDg(instance, dwNow);
+		LPCHARACTER best = NULL;
+		int dBest = range + 1;
+		for (size_t i = 0; i < sc.foes.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(sc.foes[i].dwVID);
+			if (!c || c->IsDead() || c->IsStone() || c->GetMobRank() < MOB_RANK_BOSS || sc.foes[i].dwRace >= 20000)
+				continue;
+			const int d = DISTANCE_APPROX(c->GetX() - x, c->GetY() - y);
+			if (d < dBest)
+			{
+				dBest = d;
+				best = c;
+			}
+		}
+		return best;
+	}
+
+	// A walkable point PLAYERBOT_DGRUN_BOSS_SAFE + a margin from the boss, on
+	// the bot's side of him.
+	bool GetPlayerBotDgRunSafeSpot(const TPlayerBotDgRun& run, LPCHARACTER ch, LPCHARACTER boss, long& x, long& y)
+	{
+		long dx = ch->GetX() - boss->GetX(), dy = ch->GetY() - boss->GetY();
+		const int d = DISTANCE_APPROX(dx, dy);
+		if (d < 50)
+		{
+			dx = 100;
+			dy = 0;
+		}
+		const int want = PLAYERBOT_DGRUN_BOSS_SAFE + 300;
+		const int len = std::max(1, DISTANCE_APPROX(dx, dy));
+		x = boss->GetX() + dx * want / len;
+		y = boss->GetY() + dy * want / len;
+		const long base = PLAYERBOT_DGRUN_DEFS[run.iDef].lMap;
+		CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(base);
+		PIXEL_POSITION safe;
+		if (nav.Init(base) && nav.FindNearestWalkableWorld(x, y, 10, safe, ch->GetPlayerID()) &&
+				DISTANCE_APPROX(safe.x - boss->GetX(), safe.y - boss->GetY()) >= PLAYERBOT_DGRUN_BOSS_SAFE)
+		{
+			x = safe.x;
+			y = safe.y;
+			return true;
+		}
+		// The camp, when it is out of his reach.
+		if ((run.lCampX != 0 || run.lCampY != 0) &&
+				DISTANCE_APPROX(run.lCampX - boss->GetX(), run.lCampY - boss->GetY()) >= PLAYERBOT_DGRUN_BOSS_SAFE)
+		{
+			x = run.lCampX;
+			y = run.lCampY;
+			return true;
+		}
+		return false;
+	}
+
 	// A fallen bot stood up, or one that broke off: invisible (the recovery
 	// keeps it so), drinking and resting, it walks to the leader - or to the
 	// camp, while the pack falls back or nobody stands - and fights again
@@ -983,13 +1055,27 @@ namespace
 		}
 		else
 			GetPlayerBotDgRunCamp(run, ch, goalX, goalY);
+		// V3: out of the boss's reach while he stands by the pack.
+		LPCHARACTER boss = FindPlayerBotDgRunBoss(ch->GetMapIndex(), goalX, goalY, PLAYERBOT_DGRUN_BOSS_NEAR, dwNow);
+		if (boss && DISTANCE_APPROX(goalX - boss->GetX(), goalY - boss->GetY()) < PLAYERBOT_DGRUN_BOSS_SAFE)
+		{
+			long sx = 0, sy = 0;
+			if (GetPlayerBotDgRunSafeSpot(run, ch, boss, sx, sy))
+			{
+				goalX = sx;
+				goalY = sy;
+				to = "out_of_reach";
+			}
+		}
 		const int distance = DISTANCE_APPROX(ch->GetX() - goalX, ch->GetY() - goalY);
 		const bool arrived = distance <= PLAYERBOT_DGRUN_REGROUP_RADIUS;
 		const DWORD sinceFall = dwNow - state.dwLastDeathTime;
+		const int rejoinHp = boss ? PLAYERBOT_DGRUN_BOSS_REJOIN_HP : PLAYERBOT_DGRUN_REJOIN_HP;
 		const bool healed = ch->GetMaxHP() > 0 &&
-				((long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_REJOIN_HP ||
-				(rested && sinceFall > PLAYERBOT_DGRUN_REGROUP_MAX_MS / 2));
-		if (healed && (arrived || sinceFall > PLAYERBOT_DGRUN_REGROUP_MAX_MS))
+				((long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * rejoinHp ||
+				(!boss && rested && sinceFall > PLAYERBOT_DGRUN_REGROUP_MAX_MS / 2));
+		if (healed && (arrived || (!boss && sinceFall > PLAYERBOT_DGRUN_REGROUP_MAX_MS) ||
+				sinceFall > PLAYERBOT_DGRUN_REGROUP_MAX_MS * 3))
 		{
 			sys_log(0, "BOT_DGRUN: regrouped pid=%u name=%s run=%d to=%s arrived=%d distance=%d hp=%d/%d after_s=%u",
 					ch->GetPlayerID(), ch->GetName(), run.iId, to, arrived ? 1 : 0, distance, ch->GetHP(), ch->GetMaxHP(),
@@ -1021,8 +1107,10 @@ namespace
 			return RegroupPlayerBotDgRun(ch, state, run, dwNow);
 		UseHealthPotion(ch, state, dwNow, PLAYERBOT_DGRUN_POTION_HP);
 		UseManaPotion(ch, state, dwNow, PLAYERBOT_DGRUN_POTION_SP);
-		if (ch->GetMaxHP() <= 0 ||
-				(long long)ch->GetHP() * 100 > (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_BREAK_OFF_HP)
+		// V3: earlier by a boss (FindPlayerBotDgRunBoss's header).
+		const int breakHp = FindPlayerBotDgRunBoss(ch->GetMapIndex(), ch->GetX(), ch->GetY(), PLAYERBOT_DGRUN_BOSS_SAFE, dwNow)
+				? PLAYERBOT_DGRUN_BOSS_BREAK_HP : PLAYERBOT_DGRUN_BREAK_OFF_HP;
+		if (ch->GetMaxHP() <= 0 || (long long)ch->GetHP() * 100 > (long long)ch->GetMaxHP() * breakHp)
 			return false;
 		state.bRecoveringAfterDeath = true;
 		state.dwLastDeathTime = dwNow;
