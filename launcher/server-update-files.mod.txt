@@ -80,6 +80,8 @@ linux-port/docker/game/special_item_group.flower.txt
 linux-port/docker/game/mob_drop_item.dropedit.append.txt
 linux-port/docker/game/mob_drop_item.metinbeans.append.txt
 linux-port/docker/game/mob_drop_item.dtdrops.append.txt
+linux-port/docker/game/mob_drop_item.beltmats.append.txt
+linux-port/docker/game/mob_drop_item.beltmats.awk
 linux-port/docker/game/cube.seon_pyeong.txt
 linux-port/docker/game/cube.pasy.txt
 linux-port/docker/game/costume_sets.txt
