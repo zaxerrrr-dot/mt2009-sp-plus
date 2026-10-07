@@ -3631,7 +3631,9 @@ class MonsterCardWindow(ui.ScriptWindow):
 		self.illustration_page.cur_data				= data
 		self.illustration_page.cur_model_rotation	= 0.0
 		
-		if ILLUSTRATION_MODEL_RENDER <= cur_class:
+		# MT2009_PLUS_MONSTER_CARD_MODEL_V1: the model of every card, collected or not (the owner,
+		# 7 October - the official window showed it only from card class 1).
+		if mob_vnum:
 			player.IllustrationSelectModel( mob_vnum )
 		else:
 			player.IllustrationSelectModel( 0xFFFFFFFF )
