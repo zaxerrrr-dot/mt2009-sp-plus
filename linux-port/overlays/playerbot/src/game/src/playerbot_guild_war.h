@@ -2541,6 +2541,11 @@ namespace
 				LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(it->first);
 				if (!c || (c->GetParty() && IsPlayerBotHumanLedParty(c->GetParty())))
 					continue;
+				// MT2009_PLUS_AREZZO_MAPS_FIX_V1: nor a bot the Arezzo test holds on its
+				// map (IsPlayerBotArezzoHeld) - the gate refuses its warp to the arena,
+				// and the war pass stood it still for good waiting for that warp.
+				if (IsPlayerBotArezzoHeld(c))
+					continue;
 				for (int s = 0; s < 2; ++s)
 					if (c->GetGuild() == g[s])
 						roster[s].push_back(it->first);
@@ -2574,6 +2579,19 @@ namespace
 		}
 		if (ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty()))
 			return false;
+		// MT2009_PLUS_AREZZO_MAPS_FIX_V1: a bot the Arezzo test holds on its map is
+		// no war's. The arena's warp is refused it (RoutePlayerBotArezzoTransition,
+		// "errand refused ... guild_war"), and this pass answered true all the same
+		// - every tick, ahead of the potions and the recovery - so the bot stood at
+		// 20% HP where it had stood up and died there, eight times, until the visit's
+		// deaths let the warp through: night test 6/7 October, 10 of Dolina
+		// Cyklopow's exits "guild_war via=gave_up" and most of the 19 deaths at its
+		// arrival. Called before this order (the side drawn a while ago), it is let go.
+		if (IsPlayerBotArezzoHeld(ch))
+		{
+			LeavePlayerBotGuildWar(ch, state, dwNow);
+			return false;
+		}
 		if (!IsPlayerBotCalledToWar(ch, mine, enemy, dwNow))
 		{
 			LeavePlayerBotGuildWar(ch, state, dwNow);

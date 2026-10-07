@@ -88,6 +88,14 @@ namespace
 	// Arezzo dungeon test cohort onto its own dungeon's map (the lobby or an
 	// instance of it), on the core that hosts it.
 	bool IsPlayerBotArezzoDungeonCohortMove(LPCHARACTER ch, long targetMap);
+	// MT2009_PLUS_AREZZO_MAPS_FIX_V1: a dungeon cohort bot idle in its lobby
+	// that a send to the Las may borrow (its dungeon, or -1), and how many
+	// more of that dungeon's cohort may be lent.
+	int GetPlayerBotArezzoDungeonCohortLendable(LPCHARACTER ch);
+	int GetPlayerBotArezzoDungeonCohortLendRoom(int dg);
+	// From playerbot_survival.h, which comes later (the arrival's watch).
+	LPCHARACTER FindPlayerBotHoldingMonster(LPCHARACTER ch);
+	void StartPlayerBotTacticalRetreat(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER threat, DWORD dwNow);
 
 	// Why the last map change asked for a bot was refused: a short tag set by
 	// TransitionPlayerBotMap's gates (the routes here and in the temple, the
@@ -459,6 +467,14 @@ namespace
 	// bot goes home.
 	const DWORD PLAYERBOT_AREZZO_DEATH_WINDOW_MS = 240000;
 	const DWORD PLAYERBOT_AREZZO_VISIT_DEATHS_LEAVE = 8;
+	// MT2009_PLUS_AREZZO_MAPS_FIX_V1 (arrival): the arrival is no place to stand
+	// up and stay - night test 6/7 October, 23 deaths at Dolina Cyklopow's
+	// (265050,305150), a bot dying again 25 s after "restarted at the arrival".
+	// A bot put there heals out of sight on its way off the point (the recovery
+	// walks it this far from it), and one a monster holds within this of the
+	// arrival under this much health steps back from it, drinking.
+	const int PLAYERBOT_AREZZO_ARRIVAL_ZONE = 1500;
+	const int PLAYERBOT_AREZZO_ARRIVAL_RETREAT_HP = 50;
 	// The Las is an expedition (the owner, 1.10): a bot packs for it before
 	// the road (this many reds, a caster this many blues, in stacks of 200)
 	// and once in stays - deaths, an empty belt and the errands wait this
@@ -560,15 +576,33 @@ namespace
 		DWORD dwFoeAt;
 		bool bFoePC;
 		DWORD dwNextRestock;
+		// MT2009_PLUS_AREZZO_MAPS_FIX_V1: the counters above run over every visit;
+		// these are their values when this visit began ("left" says the visit's).
+		DWORD dwKillsAtEntry;
+		unsigned long long ullExpAtEntry;
+		DWORD dwDeathsAtEntry;
 		TPlayerBotArezzoTrack() : dwEntered(0), lMap(0), dwSent(0), dwKills(0), dwBossKills(0), ullExp(0),
 				dwDeaths(0), dwLastExp(0), dwLastNext(0), bLastLevel(0), bWasDead(false),
 				lAnchorX(0), lAnchorY(0), dwAnchorSince(0), bStuck(false), dwStuckEpisodes(0), dwStuckMs(0),
-				dwVisitDeaths(0), dwAwaySince(0), dwNextResend(0), dwFoeRace(0), dwFoeAt(0), bFoePC(false), dwNextRestock(0) { adwDeathAt[0] = adwDeathAt[1] = 0; }
+				dwVisitDeaths(0), dwAwaySince(0), dwNextResend(0), dwFoeRace(0), dwFoeAt(0), bFoePC(false), dwNextRestock(0),
+				dwKillsAtEntry(0), ullExpAtEntry(0), dwDeathsAtEntry(0) { adwDeathAt[0] = adwDeathAt[1] = 0; }
 	};
 	std::map<DWORD, TPlayerBotArezzoTrack> s_mapPlayerBotArezzoTrack;
 	unsigned int s_uPlayerBotArezzoWalksPlanned = 0;
 	unsigned int s_uPlayerBotArezzoWalksNavOnly = 0;
 	unsigned int s_uPlayerBotArezzoRefused = 0;
+
+	// MT2009_PLUS_AREZZO_MAPS_FIX_V1: held at its level by the level lock
+	// (AFFECT_EXP_BLOCK): its experience does not move.
+	bool IsPlayerBotArezzoExpLocked(LPCHARACTER ch)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return ch && ch->FindAffect(AFFECT_EXP_BLOCK) != NULL;
+#else
+		(void)ch;
+		return false;
+#endif
+	}
 
 	bool IsPlayerBotArezzoOpen()
 	{
@@ -1036,6 +1070,9 @@ namespace
 				(unsigned int)ch->GetEmpire(), reason ? reason : "?", since ? (dwNow - since) / 1000 : 0);
 		t.dwEntered = dwNow;
 		t.lMap = targetMap;
+		t.dwKillsAtEntry = t.dwKills;
+		t.ullExpAtEntry = t.ullExp;
+		t.dwDeathsAtEntry = t.dwDeaths;
 		t.dwVisitDeaths = 0;
 		t.adwDeathAt[0] = t.adwDeathAt[1] = 0;
 		t.dwAnchorSince = dwNow;
@@ -1122,15 +1159,23 @@ namespace
 				return 1;
 			}
 			std::map<DWORD, TPlayerBotArezzoExit>::iterator e = s_mapPlayerBotArezzoExit.find(pid);
-			sys_log(0, "ARZ_BOT: left pid=%u name=%s map=%ld to=%ld reason=%s via=%s pos=(%ld,%ld) stay_s=%u exit_walk_s=%u kills=%u exp=%llu deaths=%u",
+			// MT2009_PLUS_AREZZO_MAPS_FIX_V1: exp=0 with hundreds of kills was the
+			// level lock (ManagePlayerBotExpLock, AFFECT_EXP_BLOCK): a locked bot
+			// earns nothing, so its count stays 0 - the line says so now. And the
+			// visit's own kills, experience and deaths (kills/exp/deaths ran over
+			// every visit of the night); the totals follow.
+			const bool tracked = t != s_mapPlayerBotArezzoTrack.end();
+			sys_log(0, "ARZ_BOT: left pid=%u name=%s map=%ld to=%ld reason=%s via=%s pos=(%ld,%ld) stay_s=%u exit_walk_s=%u kills=%u exp=%llu deaths=%u level=%u exp_locked=%d total_kills=%u total_exp=%llu total_deaths=%u",
 					pid, ch->GetName(), fromMap, targetMap, reason ? reason : "?",
 					closed ? "closed" : (ring ? "ring" : (atTeleporter ? "teleporter" : "gave_up")),
 					ch->GetX(), ch->GetY(),
 					t != s_mapPlayerBotArezzoTrack.end() && t->second.dwEntered ? (dwNow - t->second.dwEntered) / 1000 : 0,
 					e != s_mapPlayerBotArezzoExit.end() ? (dwNow - e->second.dwStarted) / 1000 : 0,
-					t != s_mapPlayerBotArezzoTrack.end() ? t->second.dwKills : 0,
-					t != s_mapPlayerBotArezzoTrack.end() ? t->second.ullExp : 0ULL,
-					t != s_mapPlayerBotArezzoTrack.end() ? t->second.dwDeaths : 0);
+					tracked ? t->second.dwKills - std::min(t->second.dwKills, t->second.dwKillsAtEntry) : 0,
+					tracked ? t->second.ullExp - std::min(t->second.ullExp, t->second.ullExpAtEntry) : 0ULL,
+					tracked ? t->second.dwDeaths - std::min(t->second.dwDeaths, t->second.dwDeathsAtEntry) : 0,
+					(unsigned int)ch->GetLevel(), IsPlayerBotArezzoExpLocked(ch) ? 1 : 0,
+					tracked ? t->second.dwKills : 0, tracked ? t->second.ullExp : 0ULL, tracked ? t->second.dwDeaths : 0);
 			s_mapPlayerBotArezzoPending.erase(pid);
 			s_mapPlayerBotArezzoExit.erase(pid);
 			s_setPlayerBotArezzoLeave.erase(pid);
@@ -1393,6 +1438,7 @@ namespace
 				!any && c != s_mapPlayerBotArezzoCohort.end() && !cohortOnly; ++c)
 			cohortOnly = c->second == map;
 		std::vector<std::pair<int, DWORD> > ranked;
+		std::map<int, int> lendRoom;	// a dungeon cohort's bots still to lend
 		for (TPlayerBotAIStateMap::iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
@@ -1401,6 +1447,25 @@ namespace
 			const long m = ch->GetMapIndex();
 			if ((int)ch->GetLevel() < levelMin || (int)ch->GetLevel() > levelMax)
 				continue;
+			// MT2009_PLUS_AREZZO_MAPS_FIX_V1: the Las may borrow the dungeon
+			// cohort's bots idle in their lobby (playerbot_arezzo_dungeon_bots.h),
+			// up to half of each dungeon's cohort - the only bots of 95+ on the
+			// test server (night test 6/7 October: "send 362" found none).
+			const int lendDg = map == PLAYERBOT_MAP_AREZZO_FOREST ? GetPlayerBotArezzoDungeonCohortLendable(ch) : -1;
+			if (lendDg >= 0)
+			{
+				std::map<DWORD, long>::const_iterator f = s_mapPlayerBotArezzoForced.find(it->first);
+				if ((f != s_mapPlayerBotArezzoForced.end() && f->second == map) || cohortOnly)
+					continue;
+				std::map<int, int>::iterator room = lendRoom.find(lendDg);
+				if (room == lendRoom.end())
+					room = lendRoom.insert(std::make_pair(lendDg, GetPlayerBotArezzoDungeonCohortLendRoom(lendDg))).first;
+				if (room->second <= 0)
+					continue;
+				--room->second;
+				ranked.push_back(std::make_pair(5, it->first));
+				continue;
+			}
 			if (m >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN || (IsPlayerBotOffLimitsMap(m) && m != map) ||
 					(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) ||
 					IsPlayerBotSidekickPID(it->first) || IsPlayerBotHeldForCompany(ch) ||
@@ -1419,6 +1484,10 @@ namespace
 				continue;	// another map's test character
 			if (cohortOnly && rank != 0)
 				continue;
+			// MT2009_PLUS_AREZZO_MAPS_FIX_V1: a bot the level lock holds earns no
+			// experience there (the night's "exp=0"): after the ones that do.
+			if (rank == 3 && IsPlayerBotArezzoExpLocked(ch))
+				rank = 4;
 			ranked.push_back(std::make_pair(rank, it->first));
 		}
 		std::sort(ranked.begin(), ranked.end());
@@ -1769,6 +1838,9 @@ namespace
 					// gate did not see.
 					t.dwEntered = dwNow;
 					t.lMap = map;
+					t.dwKillsAtEntry = t.dwKills;
+					t.ullExpAtEntry = t.ullExp;
+					t.dwDeathsAtEntry = t.dwDeaths;
 					t.dwAnchorSince = dwNow;
 					t.dwVisitDeaths = 0;
 					t.adwDeathAt[0] = t.adwDeathAt[1] = 0;
@@ -1850,10 +1922,36 @@ namespace
 					{
 						ch->Stop();
 						ch->SendMovePacket(FUNC_MOVE, 0, info->lArrivalX, info->lArrivalY, 0, dwNow);
-						sys_log(0, "ARZ_BOT: restarted at the arrival pid=%u name=%s map=%ld from=(%ld,%ld) visit_deaths=%u",
-								pid, ch->GetName(), map, fromX, fromY, t.dwVisitDeaths);
+						// MT2009_PLUS_AREZZO_MAPS_FIX_V1 (arrival): the recovery's step
+						// away from the spot of a death is a step off the arrival now
+						// (playerbot_survival.h, HandlePostDeathRecovery), out of sight.
+						if (state.bRecoveringAfterDeath)
+						{
+							state.lDeathX = info->lArrivalX;
+							state.lDeathY = info->lArrivalY;
+							ch->ReviveInvisible(5);
+						}
+						sys_log(0, "ARZ_BOT: restarted at the arrival pid=%u name=%s map=%ld from=(%ld,%ld) visit_deaths=%u recovering=%d",
+								pid, ch->GetName(), map, fromX, fromY, t.dwVisitDeaths, state.bRecoveringAfterDeath ? 1 : 0);
 					}
 					t.adwDeathAt[0] = t.adwDeathAt[1] = 0;
+				}
+				// MT2009_PLUS_AREZZO_MAPS_FIX_V1 (arrival): held by a monster at the
+				// arrival and losing - back off from it (the tick drinks on the way).
+				if (!ch->IsDead() && !state.bRecoveringAfterDeath && !state.bTacticalRetreat &&
+						!IsPlayerBotSidekickLeashed(ch) && ch->GetMaxHP() > 0 && ch->GetHP() * 100 < ch->GetMaxHP() * PLAYERBOT_AREZZO_ARRIVAL_RETREAT_HP)
+				{
+					const TPlayerBotArezzoMap* info = GetPlayerBotArezzoMapInfo(map);
+					LPCHARACTER holder = info && DISTANCE_APPROX(ch->GetX() - info->lArrivalX, ch->GetY() - info->lArrivalY) <=
+							PLAYERBOT_AREZZO_ARRIVAL_ZONE ? FindPlayerBotHoldingMonster(ch) : NULL;
+					if (holder)
+					{
+						PlayerBotLogThrottled("arezzo_arrival_retreat", dwNow,
+								"ARZ_BOT: attacked at the arrival pid=%u name=%s map=%ld hp=%d/%d by=%u pos=(%ld,%ld)",
+								pid, ch->GetName(), map, ch->GetHP(), ch->GetMaxHP(), (unsigned int)holder->GetRaceNum(),
+								ch->GetX(), ch->GetY());
+						StartPlayerBotTacticalRetreat(ch, state, holder, dwNow);
+					}
 				}
 				t.bWasDead = ch->IsDead();
 				const bool fighting = ch->GetVictim() != NULL ||

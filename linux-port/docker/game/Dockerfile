@@ -1050,6 +1050,25 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-p58 \
  && test "$(od -An -tx1 -N8 "$L/map/plechito_easter2023_dungeon/server_attr" | tr -d ' ')" = 0c0000000c000000 \
  && rm -rf "$A" \
  && echo "share: Arezzo phases 5-8 - Pustkowie Faraona (361), Wzgorze Wukonga (364), Ruiny Skorpiona (365), Starozytna Dzungla (366)"
+# MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
+# cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
+# SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only
+# effect events (its hit is the client's AttackingData), so every use ended in "UseMobSkill: No
+# skill hit data for mob Arges index 0" (301 lines in one night's test, 6/7 October) and the skill
+# never struck. A fifth event, the hit of the first impact (0.547 s), as Polifem's own
+# special_attack.msa (cyclops_boss2) has it. Server side only; the client keeps its motion.
+RUN set -eu; f=/opt/metin2/share/data/monster/cyclops_boss/special_attack.msa \
+ && if ! grep -q 'MotionEventType      4' "$f"; then \
+      test "$(grep -c 'MotionEventDataCount     4' "$f")" = 1; \
+      sed -i 's/MotionEventDataCount     4/MotionEventDataCount     5/' "$f"; \
+      n=$(grep -n '^}' "$f" | tail -1 | cut -d: -f1); \
+      head -n $((n - 1)) "$f" > "$f.new"; \
+      printf '    Group Event04\r\n    {\r\n        MotionEventType      4\r\n        StartingTime         0.547445\r\n        DuringTime           0.200000\r\n        EnableHitProcess     0\r\n        \r\n        AttackType           0\r\n        HittingType          2\r\n        StiffenTime          0.000000\r\n        InvisibleTime        0.300000\r\n        ExternalForce        0.000000\r\n        HitLimitCount        0\r\n        CollisionType        4\r\n        \r\n        SphereDataCount      1\r\n        Group SphereData00\r\n        {\r\n            Radius           400.000000\r\n            Position         0.000000 0.000000 0.000000\r\n        }\r\n    }\r\n}\r\n' >> "$f.new"; \
+      mv "$f.new" "$f"; \
+    fi \
+ && test "$(grep -c 'MotionEventType      4' "$f")" = 1 \
+ && test "$(grep -c 'MotionEventDataCount     5' "$f")" = 1 \
+ && echo "share: Arges' skill hit (cyclops_boss/special_attack.msa)"
 # (MT2009_PLUS_DUNGEON_DROP_V1: Razador (6091) and Nemere (6191) drop only yang - the owner,
 # 29 September; their loot is the 2-5 chests per player of the quests - so every drop group
 # of theirs is cut whole above but the 0% chest previews; item_manager.cpp drops nothing
