@@ -2170,6 +2170,14 @@ class SlotWindow(Window):
 					item.SelectItem(50297)
 
 		itemIcon = item.GetIconImage()
+		# A skill book shows its own skill's emblem, not its group's
+		# (skillbookicon.py).
+		if socket is not None and ItemIndex == 50300:
+			try:
+				import skillbookicon
+				itemIcon = skillbookicon.IconImage(socket[0]) or itemIcon
+			except Exception:
+				pass
 
 		item.SelectItem(ItemIndex)
 		(width, height) = item.GetItemSize()
