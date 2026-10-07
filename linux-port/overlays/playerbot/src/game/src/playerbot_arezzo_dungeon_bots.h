@@ -272,6 +272,54 @@ namespace
 		return ch && IsPlayerBotArezzoDungeonCohortMove(ch, ch->GetMapIndex());
 	}
 
+	// MT2009_PLUS_AREZZO_MAPS_FIX_V1 (lending to the Las): the Las wants level 95
+	// and the only such bots of the test server are this cohort's Jungle squad
+	// (night test 6/7 October: "send 362" found 0 candidates twice - the
+	// candidates of a send skip a bot on a closed map other than the target).
+	// The operator's send may now borrow cohort bots, at most half of a
+	// dungeon's cohort, so its squads still form. A squad goes in the moment
+	// its lobby has one (the lobby stood empty on the first try), so a bot in
+	// a run is borrowed too: it finishes the run with its squad, and once back
+	// in the lobby it is the Arezzo order's (ManagePlayerBotArezzoDungeon
+	// leaves it to the ordinary AI, the order's re-send takes it to the Las,
+	// the squads skip it); told to leave, it is warped home to its lobby as
+	// any cohort bot found elsewhere. What the cohort does in its dungeon is
+	// unchanged.
+	bool IsPlayerBotArzDgLent(DWORD pid)
+	{
+		std::map<DWORD, long>::const_iterator f = s_mapPlayerBotArezzoForced.find(pid);
+		return f != s_mapPlayerBotArezzoForced.end() && s_setPlayerBotArezzoLeave.count(pid) == 0;
+	}
+
+	// The cohort's dungeon (an index of PLAYERBOT_ARZDG) of a bot a send may
+	// borrow (online on its dungeon's map: the lobby or a run), or -1.
+	int GetPlayerBotArezzoDungeonCohortLendable(LPCHARACTER ch)
+	{
+		if (!ch || !s_bPlayerBotArzDgHosting)
+			return -1;
+		std::map<DWORD, int>::const_iterator it = s_mapPlayerBotArzDgCohort.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotArzDgCohort.end() || GetPlayerBotArzDgIndex(ch->GetMapIndex()) != it->second)
+			return -1;
+		return it->second;
+	}
+
+	// How many more of a dungeon's cohort a send may borrow: half of it, less
+	// those already lent.
+	int GetPlayerBotArezzoDungeonCohortLendRoom(int dg)
+	{
+		int members = 0, lent = 0;
+		for (std::map<DWORD, int>::const_iterator it = s_mapPlayerBotArzDgCohort.begin();
+				it != s_mapPlayerBotArzDgCohort.end(); ++it)
+		{
+			if (it->second != dg)
+				continue;
+			++members;
+			if (IsPlayerBotArzDgLent(it->first))
+				++lent;
+		}
+		return std::max(0, members / 2 - lent);
+	}
+
 	// The lobby's (and the jump's) point in world units, and in cells for a
 	// save point.
 	bool GetPlayerBotArzDgEntry(int dg, long& x, long& y, long* cellX = NULL, long* cellY = NULL)
@@ -778,6 +826,10 @@ namespace
 		if (it == s_mapPlayerBotArzDgCohort.end())
 			return false;
 		const int dg = it->second;
+		// MT2009_PLUS_AREZZO_MAPS_FIX_V1: lent to the Las - the order's, once its
+		// run (if any) is over.
+		if (IsPlayerBotArzDgLent(ch->GetPlayerID()) && s_mapPlayerBotArzDgBotRun.count(ch->GetPlayerID()) == 0)
+			return false;
 		TPlayerBotArzDgBot& bot = s_mapPlayerBotArzDgBots[ch->GetPlayerID()];
 		const long map = ch->GetMapIndex();
 		if (GetPlayerBotArzDgIndex(map) != dg)
@@ -1192,7 +1244,7 @@ namespace
 			for (std::map<DWORD, int>::const_iterator it = s_mapPlayerBotArzDgCohort.begin();
 					it != s_mapPlayerBotArzDgCohort.end(); ++it)
 			{
-				if (it->second != dg || s_mapPlayerBotArzDgBotRun.count(it->first))
+				if (it->second != dg || s_mapPlayerBotArzDgBotRun.count(it->first) || IsPlayerBotArzDgLent(it->first))
 					continue;
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
 				if (!ch || ch->IsDead() || ch->GetMapIndex() != PLAYERBOT_ARZDG[dg].lMap || !ch->GetDesc() ||

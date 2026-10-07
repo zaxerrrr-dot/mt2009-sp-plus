@@ -736,6 +736,9 @@ namespace
 		it->second.dwReserveUntil = 0;
 	}
 
+	// From playerbot_targeting.h, which comes later.
+	bool CanPlayerBotEngageStone(LPCHARACTER ch, LPCHARACTER stone);
+
 	LPCHARACTER FindKnownPlayerBotMetin(LPCHARACTER ch, DWORD dwNow)
 	{
 		if (!ch)
@@ -760,6 +763,17 @@ namespace
 			++it;
 			if (known.lMapIndex != ch->GetMapIndex() ||
 					!IsPlayerBotMetinWorthFighting(ch, stone))
+				continue;
+			// MT2009_PLUS_AREZZO_MAPS_FIX_V1: not a stone the target pass will not
+			// let it fight - an Archer without a usable dagger only joins a stone
+			// others are breaking (CanPlayerBotEngageStone). Its stone expedition
+			// walked it onto such a stone, the target pass refused it, the hub walk
+			// took it 800 away and the expedition back: night test 6/7 October,
+			// Nisseth on Pustkowie Faraona stood on a Metin at (288101,429534) for
+			// ten minutes, nine "walk leg stalled node=25" (the hub walk's leg)
+			// until another bot broke the stone; and the stone stayed reserved for
+			// it, out of the others' choice.
+			if (!CanPlayerBotEngageStone(ch, stone))
 				continue;
 			if (known.dwReserveUntil > dwNow && known.dwReservedByPID != 0 &&
 					known.dwReservedByPID != myReservationPID)
