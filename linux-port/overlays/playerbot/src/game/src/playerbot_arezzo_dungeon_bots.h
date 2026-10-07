@@ -969,18 +969,30 @@ namespace
 	// dungeon runs (MT2009_PLUS_BOT_DUNGEON_RUNS_V1, playerbot_dungeon_runs.h).
 	void HoldPlayerBotArzDgBossRegen(long instance, DWORD dwNow)
 	{
-		static std::map<DWORD, int> s_mapBossLowHP;
+		// MT2009_PLUS_DG_STAGE_WATCH_V1: the lowest health by vid, with the
+		// race and the map it was seen with - a vid comes round again (another
+		// boss, another instance), and a stranger's record must not be applied
+		// to a new boss (nor a health of 0 or less ever forced on one).
+		struct TLow { int hp; DWORD race; long map; };
+		static std::map<DWORD, TLow> s_mapBossLowHP;
 		const TPlayerBotArzDgScan& sc = ScanPlayerBotArzDg(instance, dwNow);
 		for (size_t i = 0; i < sc.foes.size(); ++i)
 		{
 			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(sc.foes[i].dwVID);
-			if (!c || c->IsDead() || c->IsStone() || c->GetMobRank() < MOB_RANK_BOSS)
+			if (!c || c->IsDead() || c->IsStone() || c->GetMobRank() < MOB_RANK_BOSS || c->GetHP() <= 0)
 				continue;
-			std::map<DWORD, int>::iterator low = s_mapBossLowHP.find(sc.foes[i].dwVID);
-			if (low == s_mapBossLowHP.end() || c->GetHP() < low->second)
-				s_mapBossLowHP[sc.foes[i].dwVID] = c->GetHP();
-			else if (c->GetHP() > low->second)
-				c->PointChange(POINT_HP, low->second - c->GetHP());
+			std::map<DWORD, TLow>::iterator low = s_mapBossLowHP.find(sc.foes[i].dwVID);
+			if (low == s_mapBossLowHP.end() || low->second.race != c->GetRaceNum() || low->second.map != c->GetMapIndex() ||
+					c->GetHP() < low->second.hp)
+			{
+				TLow l;
+				l.hp = c->GetHP();
+				l.race = c->GetRaceNum();
+				l.map = c->GetMapIndex();
+				s_mapBossLowHP[sc.foes[i].dwVID] = l;
+			}
+			else if (c->GetHP() > low->second.hp && low->second.hp > 0)
+				c->PointChange(POINT_HP, low->second.hp - c->GetHP());
 		}
 		if (s_mapBossLowHP.size() > 512)
 			s_mapBossLowHP.clear();
