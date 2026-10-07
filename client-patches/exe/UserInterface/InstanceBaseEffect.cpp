@@ -48,6 +48,12 @@ std::map<int, std::string> g_TitleNameMap;
 // MT2009_PLUS_RANK_POINTS_V1: the ranks of Punkty Rangi, tier -> (title, colour) (chrmgr.RegisterRankTitle).
 std::map<UINT, std::pair<std::string, D3DXCOLOR> > g_RankTitleMap;
 #endif
+#ifdef ENABLE_FEMALE_TITLES
+// MT2009_PLUS_FEMALE_TITLES_V1 (Autor: Digi Rasta, Extended-Alignment): grade / tier -> the female form
+// (chrmgr.RegisterTitleNameFemale, chrmgr.RegisterRankTitleFemale); a title without one stays as it is.
+std::map<int, std::string> g_TitleNameFemaleMap;
+std::map<UINT, std::string> g_RankTitleFemaleMap;
+#endif
 std::set<DWORD> g_kSet_dwPVPReadyKey;
 std::set<DWORD> g_kSet_dwPVPKey;
 std::set<DWORD> g_kSet_dwGVGKey;
@@ -767,7 +773,17 @@ void CInstanceBase::RefreshTextTail()
 		std::map<UINT, std::pair<std::string, D3DXCOLOR> >::const_iterator itRank = g_RankTitleMap.find(m_byRankTitle);
 		if (g_RankTitleMap.end() != itRank)
 		{
-			CPythonTextTail::Instance().AttachTitle(GetVirtualID(), itRank->second.first.c_str(), itRank->second.second);
+			const char * c_szRankName = itRank->second.first.c_str();
+#ifdef ENABLE_FEMALE_TITLES
+			// MT2009_PLUS_FEMALE_TITLES_V1: Waleczna, Mocarna, ... over a woman
+			if (IsFemaleForTitle())
+			{
+				std::map<UINT, std::string>::const_iterator itFemale = g_RankTitleFemaleMap.find(m_byRankTitle);
+				if (g_RankTitleFemaleMap.end() != itFemale)
+					c_szRankName = itFemale->second.c_str();
+			}
+#endif
+			CPythonTextTail::Instance().AttachTitle(GetVirtualID(), c_szRankName, itRank->second.second);
 			return;
 		}
 	}
@@ -783,8 +799,17 @@ void CInstanceBase::RefreshTextTail()
 		std::map<int, std::string>::iterator itor = g_TitleNameMap.find(iAlignmentGrade);
 		if (g_TitleNameMap.end() != itor)
 		{
-			const std::string & c_rstrTitleName = itor->second;
-			CPythonTextTail::Instance().AttachTitle(GetVirtualID(), c_rstrTitleName.c_str(), GetTitleColor());
+			const char * c_szTitleName = itor->second.c_str();
+#ifdef ENABLE_FEMALE_TITLES
+			// MT2009_PLUS_FEMALE_TITLES_V1: Rycerska, Szlachetna, ... over a woman
+			if (IsFemaleForTitle())
+			{
+				std::map<int, std::string>::const_iterator itFemale = g_TitleNameFemaleMap.find(iAlignmentGrade);
+				if (g_TitleNameFemaleMap.end() != itFemale)
+					c_szTitleName = itFemale->second.c_str();
+			}
+#endif
+			CPythonTextTail::Instance().AttachTitle(GetVirtualID(), c_szTitleName, GetTitleColor());
 		}
 	}
 }
@@ -1352,6 +1377,34 @@ void CInstanceBase::SetRankTitle(BYTE byTier)
 
 	m_byRankTitle = byTier;
 	RefreshTextTail();
+}
+#endif
+
+#ifdef ENABLE_FEMALE_TITLES
+// MT2009_PLUS_FEMALE_TITLES_V1 (Autor: Digi Rasta, Extended-Alignment)
+void CInstanceBase::RegisterTitleNameFemale(int iIndex, const char * c_szTitleName)
+{
+	if (c_szTitleName && *c_szTitleName)
+		g_TitleNameFemaleMap[iIndex] = c_szTitleName;
+	else
+		g_TitleNameFemaleMap.erase(iIndex);
+}
+
+void CInstanceBase::RegisterRankTitleFemale(UINT uIndex, const char * c_szTitleName)
+{
+	if (c_szTitleName && *c_szTitleName)
+		g_RankTitleFemaleMap[uIndex] = c_szTitleName;
+	else
+		g_RankTitleFemaleMap.erase(uIndex);
+}
+
+// a player character (bots too) of a female race; a polymorph is its monster's race, never a woman
+bool CInstanceBase::IsFemaleForTitle()
+{
+	if (!IsPC())
+		return false;
+	const DWORD dwRace = GetRace();
+	return dwRace < 9 && RaceToSex(dwRace) == 0;
 }
 #endif
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f

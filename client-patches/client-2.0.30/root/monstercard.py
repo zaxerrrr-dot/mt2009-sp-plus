@@ -4,7 +4,8 @@
 # player.GetIllustrationData, net.REQUEST_MISSION and more, which the official exe has in C++;
 # here they are Python, fed by the server's "MONSTERCARDSYSTEM <text>" lines (game.py,
 # /cardmonster in playerbot_monster_card.h). The monster's picture: a 3D model where the exe
-# has a model viewer (player.Mt2009Model*, not in our exe yet), the card picture twice its
+# has a model viewer (player.Mt2009Model*, our exe: MT2009_PLUS_MONSTER_CARD_MODEL_V1,
+# client-patches/exe/UserInterface/Mt2009MonsterModel.cpp), the card picture twice its
 # size otherwise. The window opens from the Esc menu ("Karty Potworow", uisystem.py) or a key
 # bound in the keybind window (keybind.py, "monster_card").
 # Python 2.7; texts as CP1250 escapes.
@@ -119,7 +120,7 @@ def _SendIllustrationMessage(kind):
 
 
 # Podglad potwora w polu "model_view" (240x306 na x 3, y 26 okna "model_view_window"):
-# - nasze exe (player.Mt2009Model*, Mt2009Window.cpp): model 3D w oknie render target, przyciski kamery i "Ruch" dzialaja;
+# - nasze exe (player.Mt2009Model*, Mt2009MonsterModel.cpp): model 3D w oknie render target, przyciski kamery i "Ruch" dzialaja;
 # - exe moda: obrazek karty powiekszony 2x, przyciski kamery ukryte (nic by nie robily).
 # Rasa bez danych modelu w kliencie: takze w naszym exe obrazek karty.
 MODEL_3D = hasattr(player, "Mt2009ModelSelect") and hasattr(wndMgr, "RegisterRenderTarget")

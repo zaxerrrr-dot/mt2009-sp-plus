@@ -113,6 +113,36 @@ PyObject * chrmgrSetRankTitle(PyObject* poSelf, PyObject* poArgs)
 }
 #endif
 
+#ifdef ENABLE_FEMALE_TITLES
+// MT2009_PLUS_FEMALE_TITLES_V1 (Autor: Digi Rasta, Extended-Alignment): chrmgr.RegisterTitleNameFemale(grade, name)
+// and chrmgr.RegisterRankTitleFemale(tier, name) - the female forms over a woman's head ("" removes one).
+PyObject * chrmgrRegisterTitleNameFemale(PyObject* poSelf, PyObject* poArgs)
+{
+	int iIndex;
+	if (!PyTuple_GetInteger(poArgs, 0, &iIndex))
+		return Py_BadArgument();
+	char * szTitleName;
+	if (!PyTuple_GetString(poArgs, 1, &szTitleName))
+		return Py_BadArgument();
+
+	CInstanceBase::RegisterTitleNameFemale(iIndex, szTitleName);
+	return Py_BuildNone();
+}
+
+PyObject * chrmgrRegisterRankTitleFemale(PyObject* poSelf, PyObject* poArgs)
+{
+	int iIndex;
+	if (!PyTuple_GetInteger(poArgs, 0, &iIndex))
+		return Py_BadArgument();
+	char * szTitleName;
+	if (!PyTuple_GetString(poArgs, 1, &szTitleName))
+		return Py_BadArgument();
+
+	CInstanceBase::RegisterRankTitleFemale((UINT) iIndex, szTitleName);
+	return Py_BuildNone();
+}
+#endif
+
 PyObject * chrmgrGetPickedVID(PyObject* poSelf, PyObject* poArgs)
 {
 	CPythonCharacterManager& rkChrMgr=CPythonCharacterManager::Instance();
@@ -835,6 +865,10 @@ void initchrmgr()
 #ifdef ENABLE_RANK_TITLE
 		{ "RegisterRankTitle",			chrmgrRegisterRankTitle,				METH_VARARGS },	// MT2009_PLUS_RANK_POINTS_V1
 		{ "SetRankTitle",				chrmgrSetRankTitle,					METH_VARARGS },	// MT2009_PLUS_RANK_POINTS_V1
+#endif
+#ifdef ENABLE_FEMALE_TITLES
+		{ "RegisterTitleNameFemale",	chrmgrRegisterTitleNameFemale,			METH_VARARGS },	// MT2009_PLUS_FEMALE_TITLES_V1
+		{ "RegisterRankTitleFemale",	chrmgrRegisterRankTitleFemale,			METH_VARARGS },	// MT2009_PLUS_FEMALE_TITLES_V1
 #endif
 		{ "RegisterNameColor",			chrmgrRegisterNameColor,				METH_VARARGS },
 		{ "RegisterTitleColor",			chrmgrRegisterTitleColor,				METH_VARARGS },

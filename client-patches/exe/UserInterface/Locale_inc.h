@@ -201,4 +201,20 @@
 #define ENABLE_FIX_MOBS_LAG
 #define CINEMATIC_CAMERA
 //#define LEV_ANTICHEAT
+
+// ---- Digi Rasta picks, nowy-system 0.28 (the owner, 7 October) --------------------------------------
+// MT2009_PLUS_FEMALE_TITLES_V1 (Autor: Digi Rasta, Extended-Alignment): the female forms of the alignment
+// titles and of the ranks of Punkty Rangi over a woman - chrmgr.RegisterTitleNameFemale(grade, name),
+// chrmgr.RegisterRankTitleFemale(tier, name) (root/rankpoints.py, introloading.py).
+#define ENABLE_FEMALE_TITLES
+// MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): app.SetHideEffects, app.SetChatLog, chrmgr.SetShopsVisible
+// for the "Opcje dodatkowe" tab (UserInterface/Mt2009ClientQol.cpp, EffectLib/EffectInstance.cpp,
+// PythonIkarusShop.cpp, PythonChat.cpp).
+#define ENABLE_DIGI_CLIENT_QOL
+// MT2009_PLUS_MONSTER_CARD_MODEL_V1 (Autor: Digi Rasta): the Monster Cards' 3D preview, player.Mt2009Model*
+// and app.RENDER_TARGET_INDEX_ILLUSTRATED (UserInterface/Mt2009MonsterModel.cpp; needs RENDER_TARGET).
+#if defined(RENDER_TARGET)
+#define ENABLE_MONSTER_CARD_MODEL
+#endif
+// ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

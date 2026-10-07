@@ -39,4 +39,4 @@ przerywa całość, zanim cokolwiek zostanie zapisane.
 
 Okno „Opcje dodatkowe”, porównanie pod ALT, licznik Yang, tani towar w sklepie NPC i odbiór
 `PickupSound`: `client-patches/client-2.0.30/root/` (`digiqol.py`, `uiopcjedodatkowe.py`); funkcje
-exe i opis całości: `client-patches/exe-digi-client-qol/` (`digi-client-qol.patch`, `README.md`).
+exe i opis całości: `client-patches/exe-digi-client-qol/README.md` (exe: `client-patches/exe`, `ENABLE_DIGI_CLIENT_QOL`).

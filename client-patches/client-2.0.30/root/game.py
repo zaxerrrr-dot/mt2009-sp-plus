@@ -3063,6 +3063,7 @@ class GameWindow(ui.ScriptWindow):
 			"GDEnd": self.__GuildDutyEnd,
 			"GDUpdate": self.__GuildDutyUpdate,
 			"CostumeHiddenAck": self.__CostumeHiddenAck,
+			"CostumeOthersAck": self.__CostumeOthersAck, # MT2009_PLUS_COSTUME_VIEW_OTHERS_V1
 			"ConsoleEnable"			: self.__Console_Enable,
 			"GameMaster"			: self.__GameMaster,
 			"DayMode"				: self.__DayMode_Update,
@@ -4072,6 +4073,11 @@ class GameWindow(ui.ScriptWindow):
 	def __CostumeHiddenAck(self, *rest):
 		import uicostumehide
 		uicostumehide.OnAck(*rest)
+
+	# MT2009_PLUS_COSTUME_VIEW_OTHERS_V1: "CostumeOthersAck <0|1>" (uicostumehide.py)
+	def __CostumeOthersAck(self, *rest):
+		import uicostumehide
+		uicostumehide.OnOthersAck(*rest)
 
 	def __TargetHP(self, vid, hp, maxHp):
 		try:

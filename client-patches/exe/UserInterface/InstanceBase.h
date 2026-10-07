@@ -325,6 +325,13 @@ class CInstanceBase
 		void SetRankTitle(BYTE byTier);
 		BYTE GetRankTitle() const { return m_byRankTitle; }
 #endif
+#ifdef ENABLE_FEMALE_TITLES
+		// MT2009_PLUS_FEMALE_TITLES_V1 (Autor: Digi Rasta, Extended-Alignment): the female forms of the
+		// alignment titles and of the ranks, shown over a woman's head (InstanceBaseEffect.cpp).
+		static void RegisterTitleNameFemale(int iIndex, const char * c_szTitleName);
+		static void RegisterRankTitleFemale(UINT uIndex, const char * c_szTitleName);
+		bool IsFemaleForTitle();
+#endif
 		static bool ChangeEffectTexture(UINT eEftType, const char* c_szSrcFileName, const char* c_szDstFileName);
 
 		static void SetDustGap(float fDustGap);

@@ -5,7 +5,7 @@ Pełne kopie zmienionych plików źródła klienta, w układzie katalogów kopii
 exe z tymi zmianami, skopiuj zawartość tego katalogu na drzewo źródeł (nadpisując pliki):
 
 ```
-for d in UserInterface EterLib EterPythonLib GameLib; do
+for d in UserInterface EterLib EterPythonLib GameLib EterGrnLib EffectLib; do
   cp -a "client-patches/exe/$d/." "<Source Client>/$d/"
 done
 ```
@@ -262,3 +262,49 @@ dalej ma 178 pozycji.
 Sprawdzone 7.10.2026: `build.sh msvc --smoke` (client-build + cały ten katalog) bez błędów, smoke test do okna logowania;
 exe testowe 13 679 104 B, sha256 `b43b786b2af48911ac35522b74ffb16d22511792d8a4a6f1d0b40bbac8330bf7`
 (`/opt/metin2/cache/exe-releases/metin2client-zywioly-test.exe`; nie do wydania – exe budować raz na rundę).
+
+## Wybór z nowy-system 0.28 Digi Rasty (7.10.2026)
+
+Trzy rzeczy z exe Digi Rasty (**Autor: Digi Rasta**), napisane po naszemu w tym katalogu; jeden blok definicji na
+końcu `Locale_inc.h` („Digi Rasta picks”).
+
+### Żeńskie tytuły rang – `MT2009_PLUS_FEMALE_TITLES_V1` (`ENABLE_FEMALE_TITLES`)
+
+Jego „Biore (Extended-Alignment): żeńskie formy tytułów rangi nad postaciami”, rozszerzone o nasze rangi Punktów Rangi.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/InstanceBase.h`, `InstanceBaseEffect.cpp` | `g_TitleNameFemaleMap`, `g_RankTitleFemaleMap`; `RefreshTextTail`: nad kobietą (postać gracza/bota o żeńskiej rasie, `RaceToSex` = 0; przemiana – nigdy) żeńska forma rangi Punktów Rangi i tytułu za punkty, gdy zarejestrowana |
+| `UserInterface/PythonCharacterManagerModule.cpp` | `chrmgr.RegisterTitleNameFemale(stopień, nazwa)`, `chrmgr.RegisterRankTitleFemale(ranga, nazwa)` |
+
+Root: `rankpoints.py` (`TIERS_FEMALE`: Waleczna, Mocarna, Potężna, Władczyni, Arcymistrzyni – Legenda bez zmian;
+`ALIGNMENT_FEMALE`: Rycerska … Okrutna; rejestracja przez `hasattr`, po angielsku bez form żeńskich),
+`introloading.py` (`RegisterFemaleTitles`), `uicharacter.py` (tytuł i ranga w oknie postaci kobiety).
+
+### Opcje dodatkowe: ukrywanie efektów i sklepów, zapis czatu – `MT2009_PLUS_DIGI_CLIENT_QOL_V1` (`ENABLE_DIGI_CLIENT_QOL`)
+
+Funkcje exe, na które od 0.19.0 czekało okno „Opcje dodatkowe” (`root/uiopcjedodatkowe.py`, wiersze bez funkcji exe były
+ukryte). Wcześniej tylko łatka `client-patches/exe-digi-client-qol/digi-client-qol.patch`, której nikt nie nakładał –
+teraz w nakładce. Kod własny: jego notatki (`DOKUMENTACJA/biore.md`) mówią, że paczki z tymi pomysłami (Hide-Objects,
+BL_HIDE_EFFECT) są na GPL – z nich wzięte są tylko nazwy plików efektów (dane) i miejsca haczyków.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Mt2009ClientQol.cpp` (**nowy**) | `app.SetHideEffects(wzmocnienia, aury)`, `app.SetChatLog(wł)`, `chrmgr.SetShopsVisible(wł)`; listy efektów (wzmocnienia szamana, aury umiejętności), zapis czatu do `logs/czat_RRRR-MM-DD.txt` bez kodów kolorów |
+| `EffectLib/EffectInstance.cpp` (**nowy katalog**, z client-build) | `CEffectInstance::OnRender` pomija efekt z listy (`Mt2009DigiQol_IsEffectHidden`, bez definicji nigdy nie ukrywa) |
+| `UserInterface/PythonIkarusShop.cpp` (z client-build) | ukryte sklepy offline (encje ikashop) jak „za daleko”: bez modelu, napisu i klikania |
+| `UserInterface/PythonChat.cpp` (z client-build) | `AppendChat` / `AppendWhisper` → zapis czatu |
+| `UserInterface/UserInterface.cpp`, `UserInterface.vcxproj(.filters)` | rejestracja funkcji, nowy plik |
+
+### Model 3D w Kartach Potworów – `MT2009_PLUS_MONSTER_CARD_MODEL_V1` (`ENABLE_MONSTER_CARD_MODEL`)
+
+API jego `Mt2009Window.cpp` (`player.Mt2009Model*`, którego `root/monstercard.py` szuka przez `hasattr`), zrobione na
+naszym render targecie z mini gier (`CRenderTargetManager`, `UI::CRenderTarget`, `CInstanceBase` jak Yut Nori) – bez
+jego render-to-texture i bez jego kodu mini gier.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Mt2009MonsterModel.cpp` (**nowy**) | podgląd: `player.Mt2009ModelSelect(rasa)` (0 – brak danych rasy, okno pokazuje obrazek karty), `Show`, `Rotation`, `Zoom`, `UpDown`, `Reset`, `Motion` (kolejne ruchy rasy raz, potem stanie); kadr raz z wysokości i sfery modelu; tekstura 480×612 rysowana w polu 240×306; model nieprzezroczysty w teksturze (przebieg tylko alfy) |
+| `EterLib/RenderTargetManager.h` | `RENDER_TARGET_INDEX_ILLUSTRATED` (1, po Yut Nori) |
+| `EterLib/Camera.h/.cpp` | własna kamera `DEFAULT_MONSTER_MODEL_CAMERA` |
+| `UserInterface/PythonApplication.cpp`, `PythonApplicationModule.cpp` | update/deform/render obok Yut Nori, zniszczenie; `app.RENDER_TARGET_INDEX_ILLUSTRATED` |
