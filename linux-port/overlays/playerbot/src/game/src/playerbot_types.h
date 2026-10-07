@@ -3050,7 +3050,9 @@ namespace
 	// plain sash (owner, 6 October; GetPlayerBotSashClothPrice).
 	// 16: MT2009_PLUS_RANK_POINTS_V1 - the rank fruits 80050-80054 at
 	// 5 000 / 10 000 / 25 000 / 50 000 / 100 000 (GetPlayerBotRankFruitPrice).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 16;
+	// 17: MT2009_PLUS_BELT_MATS_V1 - the belt materials, the gems 50634-50638
+	// and the belts 18000-18089 priced for the first time (owner, 7 October).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 17;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
@@ -7545,6 +7547,64 @@ namespace
 			case PLAYERBOT_RARE_GOODS_SASH: return PLAYERBOT_SASH_PRICE;
 			default: return 0;
 		}
+	}
+
+	// MT2009_PLUS_BELT_MATS_V1 (the owner, 7 October: "Upewnij sie, ze boty znaja ceny tych
+	// ulepszaczy, a nie sa dla nich bezcenne"): the belts (MT2009_PLUS_BELTS_V1, 18000-18089)
+	// and the belt materials no refine recipe names - Zlota Przedza, Zloty Hak, Ogniwa
+	// Lancucha, Element Ozdoby, Kamien (Lodowego) Plomienia, Niebieski Rzemyk and Odlamek
+	// Energii (an ITEM_NONE). Their merchant price is 50 yang (0 for the shard) and the junk
+	// rule sold them at the merchant; now they are sheet goods (IsPlayerBotSheetGoods): the
+	// counter's, the merchant's only from a bag under pressure with no counter. Their prices
+	// are in PLAYERBOT_EXTRA_MATERIAL_PRICES; a belt's comes from its family and plus
+	// (GetPlayerBotBeltBasePrice). The pearls, the metals 50624-50633 and the gems
+	// 50634-50638 (accessory stones, counted goods) have rules and prices of their own.
+	const DWORD PLAYERBOT_BELT_FIRST_VNUM = 18000;
+	const DWORD PLAYERBOT_BELT_LAST_VNUM = 18089;
+
+	bool IsPlayerBotBeltVnum(DWORD vnum)
+	{
+		return vnum >= PLAYERBOT_BELT_FIRST_VNUM && vnum <= PLAYERBOT_BELT_LAST_VNUM;
+	}
+
+	bool IsPlayerBotBeltGoodsVnum(DWORD vnum)
+	{
+		switch (vnum)
+		{
+			case 30518: case 30519: case 30522: case 30523:	// the bosses' gold parts
+			case 30524: case 30525:	// Kamien Plomienia, Kamien Lodowego Plomienia
+			case 30550:	// Niebieski Rzemyk
+			case 51001:	// Odlamek Energii
+				return true;
+			default:
+				return IsPlayerBotBeltVnum(vnum);
+		}
+	}
+
+	// A belt's asking base at a yang rate of 100%: its family's +0, the plusses above it
+	// geometric up to five times that at +9. Roughly what a +0 costs to make - ten metals
+	// or gems, two pearls, the shards or the gold parts and stones - over its odds (50% for
+	// the linen belt down to 10% for the five top belts).
+	DWORD GetPlayerBotBeltBasePrice(DWORD vnum)
+	{
+		if (!IsPlayerBotBeltVnum(vnum))
+			return 0;
+		static const DWORD s_base[9] = {
+			8000000,	// 18000 Pas Lniany (50)
+			12000000,	// 18010 Pas Skorzany (70)
+			20000000,	// 18020 Pas Przepychu (85)
+			30000000,	// 18030 Pas Madrosci (97)
+			60000000,	// 18040 Pas Krola (103)
+			60000000,	// 18050 Pas Mroku (103)
+			60000000,	// 18060 Pas Runiczny (103)
+			60000000,	// 18070 Pas Niedzwiedzi (103)
+			50000000,	// 18080 Pas Dusz (100)
+		};
+		const DWORD offset = vnum - PLAYERBOT_BELT_FIRST_VNUM;
+		double price = (double)s_base[offset / 10];
+		for (DWORD i = 0; i < offset % 10; ++i)
+			price *= 1.1958;	// 5^(1/9)
+		return (DWORD)(price / 1000.0 + 0.5) * 1000;
 	}
 
 	int GetPlayerBotRareGoodsShopPercent(int kind)

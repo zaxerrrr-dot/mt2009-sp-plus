@@ -1,0 +1,360 @@
+// MT2009_PLUS_BELT_MATS_V1 (the owner, 7 October): the belt materials' drops (Dockerfile step
+// MT2009_PLUS_BELT_MATS_V1, after every other append; cube.pasy.txt has the recipes).
+//  * Beran-Setaou (2493): the belts' gems (special group 951103, special_item_group.dungeons.txt)
+//    always and a second roll at 40% - the Blue Dragon lair has no chest, its boss is the chest.
+//    A drop group joins the one the dragon has.
+//  * The gold parts (Zlota Przedza 30518, Zloty Hak 30519, Ogniwa Lancucha 30522, Element Ozdoby
+//    30523) x3 ("Podnies tez szanse na przedmioty typu zlota przedza, zloty hak, zlote lancuchy"):
+//    the twenty level 103-107 bosses (3090-3891) give each of the four at 10% (40) or 15% (60)
+//    from their drop groups; a limit group of their own adds 20% / 30% (a limit line's chance is
+//    a plain percent, outside the level and rate multipliers). It is its own group so the Seban
+//    panel's saved copies of the bosses' drop groups (m2-drops: a saved group replaces every
+//    image group of its mob and KIND) do not hide it. 3090's four lines are past the gap in its
+//    drop group's numbering (index 39 is missing, the reader stops at 38) and never dropped: 30%.
+//    The four Metins of 95-105 (8051, 8052, 8055, 8056) x2: +25% to their 25%.
+//    Wladca Ochao (6390, 12.5% each) gets +25% in his existing limit group (the Dockerfile).
+//  * The flame stones from the fire and ice monsters too (not only the Razador / Nemere chests
+//    and quest drops): Kamien Plomienia (30524) from 6005-6009, Kamien Lodowego Plomienia (30525)
+//    from 6105-6109 - 0.1% from the golems / trolls, 0.3% from the generals and lords.
+// The kill groups that carry a gold part or Niebieski Rzemyk (30550) are reweighted by the
+// Dockerfile: that item's weight x3 and kill_drop lowered so the others keep their rate.
+
+Group	MT2009_beltmats_2493
+{
+	Type	drop
+	Mob	2493	-- Beran-Setaou
+	1	s951103	1	400	-- kamienie pasow, 100%
+	2	s951103	1	160	-- kamienie pasow, 40%
+}
+
+Group	MT2009_beltmats_3090
+{
+	Type	limit
+	Mob	3090
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3091
+{
+	Type	limit
+	Mob	3091
+	level_limit	1
+	1	30518	1	20	-- Zlota Przedza
+	2	30519	1	20	-- Zloty Hak
+	3	30522	1	20	-- Ogniwa Lancucha
+	4	30523	1	20	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3190
+{
+	Type	limit
+	Mob	3190
+	level_limit	1
+	1	30518	1	20	-- Zlota Przedza
+	2	30519	1	20	-- Zloty Hak
+	3	30522	1	20	-- Ogniwa Lancucha
+	4	30523	1	20	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3191
+{
+	Type	limit
+	Mob	3191
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3290
+{
+	Type	limit
+	Mob	3290
+	level_limit	1
+	1	30518	1	20	-- Zlota Przedza
+	2	30519	1	20	-- Zloty Hak
+	3	30522	1	20	-- Ogniwa Lancucha
+	4	30523	1	20	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3291
+{
+	Type	limit
+	Mob	3291
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3390
+{
+	Type	limit
+	Mob	3390
+	level_limit	1
+	1	30518	1	20	-- Zlota Przedza
+	2	30519	1	20	-- Zloty Hak
+	3	30522	1	20	-- Ogniwa Lancucha
+	4	30523	1	20	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3391
+{
+	Type	limit
+	Mob	3391
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3490
+{
+	Type	limit
+	Mob	3490
+	level_limit	1
+	1	30518	1	20	-- Zlota Przedza
+	2	30519	1	20	-- Zloty Hak
+	3	30522	1	20	-- Ogniwa Lancucha
+	4	30523	1	20	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3491
+{
+	Type	limit
+	Mob	3491
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3590
+{
+	Type	limit
+	Mob	3590
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3591
+{
+	Type	limit
+	Mob	3591
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3595
+{
+	Type	limit
+	Mob	3595
+	level_limit	1
+	1	30518	1	20	-- Zlota Przedza
+	2	30519	1	20	-- Zloty Hak
+	3	30522	1	20	-- Ogniwa Lancucha
+	4	30523	1	20	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3596
+{
+	Type	limit
+	Mob	3596
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3690
+{
+	Type	limit
+	Mob	3690
+	level_limit	1
+	1	30518	1	20	-- Zlota Przedza
+	2	30519	1	20	-- Zloty Hak
+	3	30522	1	20	-- Ogniwa Lancucha
+	4	30523	1	20	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3691
+{
+	Type	limit
+	Mob	3691
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3790
+{
+	Type	limit
+	Mob	3790
+	level_limit	1
+	1	30518	1	20	-- Zlota Przedza
+	2	30519	1	20	-- Zloty Hak
+	3	30522	1	20	-- Ogniwa Lancucha
+	4	30523	1	20	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3791
+{
+	Type	limit
+	Mob	3791
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3890
+{
+	Type	limit
+	Mob	3890
+	level_limit	1
+	1	30518	1	20	-- Zlota Przedza
+	2	30519	1	20	-- Zloty Hak
+	3	30522	1	20	-- Ogniwa Lancucha
+	4	30523	1	20	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_3891
+{
+	Type	limit
+	Mob	3891
+	level_limit	1
+	1	30518	1	30	-- Zlota Przedza
+	2	30519	1	30	-- Zloty Hak
+	3	30522	1	30	-- Ogniwa Lancucha
+	4	30523	1	30	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_8051
+{
+	Type	limit
+	Mob	8051
+	level_limit	1
+	1	30518	1	25	-- Zlota Przedza
+}
+
+Group	MT2009_beltmats_8052
+{
+	Type	limit
+	Mob	8052
+	level_limit	1
+	1	30519	1	25	-- Zloty Hak
+}
+
+Group	MT2009_beltmats_8055
+{
+	Type	limit
+	Mob	8055
+	level_limit	1
+	1	30522	1	25	-- Ogniwa Lancucha
+}
+
+Group	MT2009_beltmats_8056
+{
+	Type	limit
+	Mob	8056
+	level_limit	1
+	1	30523	1	25	-- Element Ozdoby
+}
+
+Group	MT2009_beltmats_6005
+{
+	Type	limit
+	Mob	6005
+	level_limit	1
+	1	30524	1	0.1	-- Kamien Plomienia
+}
+
+Group	MT2009_beltmats_6006
+{
+	Type	limit
+	Mob	6006
+	level_limit	1
+	1	30524	1	0.1	-- Kamien Plomienia
+}
+
+Group	MT2009_beltmats_6007
+{
+	Type	limit
+	Mob	6007
+	level_limit	1
+	1	30524	1	0.1	-- Kamien Plomienia
+}
+
+Group	MT2009_beltmats_6008
+{
+	Type	limit
+	Mob	6008
+	level_limit	1
+	1	30524	1	0.3	-- Kamien Plomienia
+}
+
+Group	MT2009_beltmats_6009
+{
+	Type	limit
+	Mob	6009
+	level_limit	1
+	1	30524	1	0.3	-- Kamien Plomienia
+}
+
+Group	MT2009_beltmats_6105
+{
+	Type	limit
+	Mob	6105
+	level_limit	1
+	1	30525	1	0.1	-- Kamien Lodowego Plomienia
+}
+
+Group	MT2009_beltmats_6106
+{
+	Type	limit
+	Mob	6106
+	level_limit	1
+	1	30525	1	0.1	-- Kamien Lodowego Plomienia
+}
+
+Group	MT2009_beltmats_6107
+{
+	Type	limit
+	Mob	6107
+	level_limit	1
+	1	30525	1	0.1	-- Kamien Lodowego Plomienia
+}
+
+Group	MT2009_beltmats_6108
+{
+	Type	limit
+	Mob	6108
+	level_limit	1
+	1	30525	1	0.3	-- Kamien Lodowego Plomienia
+}
+
+Group	MT2009_beltmats_6109
+{
+	Type	limit
+	Mob	6109
+	level_limit	1
+	1	30525	1	0.3	-- Kamien Lodowego Plomienia
+}
