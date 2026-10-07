@@ -12,6 +12,12 @@ name: Discord - nowa wersja
 # A new version is announced by github-release.yml when its release is
 # created; this workflow is for posting or reposting one by hand.
 on:
+  # A push to main changing .github/discord-repost posts again the version written in it
+  # ("2.26.0" = the server section, "klient 2.0.57" = the client section) - a repost
+  # without the Actions page (e.g. after a corrected changelog).
+  push:
+    branches: [main]
+    paths: [.github/discord-repost]
   workflow_dispatch:
     inputs:
       version:
@@ -45,6 +51,14 @@ jobs:
               echo "server=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
               echo "post_server=1" >> "$GITHUB_OUTPUT"
             fi
+            exit 0
+          fi
+          if [ "${{ github.event_name }}" = "push" ]; then
+            line=$(tr -d '\r' < .github/discord-repost | grep -v '^#' | head -n 1)
+            case "$line" in
+              klient\ *) echo "client=${line#klient }" >> "$GITHUB_OUTPUT"; echo "post_client=1" >> "$GITHUB_OUTPUT" ;;
+              ?*) echo "server=$line" >> "$GITHUB_OUTPUT"; echo "post_server=1" >> "$GITHUB_OUTPUT" ;;
+            esac
             exit 0
           fi
           for f in VERSION CLIENT_VERSION; do
