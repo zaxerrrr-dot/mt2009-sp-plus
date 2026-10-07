@@ -313,7 +313,10 @@ RUN set -eux; \
     # kolekcjoner_item answers the use of the ItemShop's "Kolekcjoner" (70115): the
     # collector's storage anywhere, "/kolekcjoner przedmiot" (MT2009_PLUS_COLLECTOR_ITEM_V1,
     # playerbot_collector.cpp).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item; do \
+    # pasy (Mistrz 20082: the belt recipes' cube window) and energia_alchemik (the Alchemist
+    # dismantles items of level 35+ into Odlamki Energii) are the belt system
+    # (MT2009_PLUS_BELTS_V1, Autor: Digi Rasta; cube.pasy.txt below).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -792,6 +795,30 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-add/cube.se
  && rm -rf /tmp/cube-add \
  && test "$(grep -c -E '^npc[[:blank:]]+20091[[:space:]]*$' "$C")" -eq "$n" \
  && echo "share: Seon-Pyeong's recipes appended to cube.txt ($n)"
+
+# MT2009_PLUS_BELTS_V1 (share): the belt system (Pasy; Autor: Digi Rasta, nowy-system v0.27.0).
+# cube.pasy.txt - the nine belt recipes of the package's cube.txt (at Yu-Hwan and Jae-Seon Kim,
+# whose cube no quest opens) at Mistrz (20082) - appended to cube.txt; Mistrz himself (in
+# mob_proto, the client knows him as "gm", no npc.txt line in the package) beside the
+# Blacksmith in M1 and M3 of every kingdom, on the cells Digi Rasta measured free; the
+# window is quest/pasy.quest. The materials are in special_item_group.dungeons.txt (groups
+# 951101 / 951102, the Razador and Nemere chests) and quest/energia_alchemik.quest.
+COPY cube.pasy.txt /tmp/cube-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/cube-add/cube.pasy.txt \
+ && ! grep -q -E '^npc[[:blank:]]+20082[[:space:]]*$' "$C" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A" >> "$C" \
+ && test "$(grep -c -E '^npc[[:blank:]]+20082[[:space:]]*$' "$C")" -eq 9 \
+ && for p in "metin2_map_a1 675 560 8" "metin2_map_b1 598 695 4" "metin2_map_c1 394 702 5" \
+             "metin2_map_a3 422 613 3" "metin2_map_b3 392 350 2" "metin2_map_c3 487 393 8"; do \
+      set -- $p; F="$L/map/$1/npc.txt"; \
+      [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; \
+      grep -q -E '[[:blank:]]20082[[:space:]]*$' "$F" || printf 'm\t%s\t%s\t0\t0\t0\t%s\t1m\t100\t1\t20082\n' "$2" "$3" "$4" >> "$F"; \
+      test "$(grep -c -E '[[:blank:]]20082[[:space:]]*$' "$F")" -eq 1 || exit 1; \
+    done \
+ && rm -rf /tmp/cube-add \
+ && echo "share: belts - 9 recipes at Mistrz (20082), Mistrz in M1/M3 of the three kingdoms"
 
 # MT2009_PLUS_OCHAO_V1 (share): Swiatynia Ochao, the Temple of Ochao of the
 # "Version 16.2" package - map 209, metin2_map_mt_th_dungeon_01, an open map

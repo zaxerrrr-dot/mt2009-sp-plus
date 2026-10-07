@@ -205,3 +205,24 @@ Kopiując ten katalog na źródła, kopiuj też `EterGrnLib`.
 
 Exe 2.0.57 (druga budowa, 6.10.2026): sha256 `1ea7ce73e19eef73b96bb8e92d6762815edec946a47a1a58c36e33d28d6c95a1`,
 13 670 400 B (`/opt/metin2/cache/exe-releases/metin2client-1ea7ce73.exe`); smoke test do okna logowania.
+
+## Ekwipunek pasa – `MT2009_PLUS_BELTS_V1` (`ENABLE_NEW_EQUIPMENT_SYSTEM`)
+
+System pasów (**Autor: Digi Rasta**, nowy-system v0.27.0; jego exe ma z tej flagi tylko jej włączenie). Kod pasa jest
+w źródle od zawsze, za flagą: `item.EQUIPMENT_BELT`, `item.BELT_INVENTORY_SLOT_START/COUNT/END`,
+`player.IsBeltInventorySlot`, `player.IsEquippingBelt`, `player.IsAvailableBeltInventoryCell` (tabela pól jak
+`belt_inventory_helper.h` serwera), `app.ENABLE_NEW_EQUIPMENT_SYSTEM` = 1 (root: `BeltInventoryWindow` w
+`uiinventory.py`, `uiscript/beltinventorywindow.py`).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_NEW_EQUIPMENT_SYSTEM` |
+
+Układ pól bez zmian w pakietach: `c_Inventory_Count` rośnie o 16 pól pasa za zarezerwowanymi polami smoczych kamieni
+(`c_Belt_Inventory_Slot_Start` = 225 + 32 + 12 + 18 = 287, `BELT_INVENTORY_SLOT_START` serwera – ta sama suma
+z `common/length.h`); pole pasa w wyposażeniu = `c_Equipment_Start + WEAR_BELT` (248), tak jak dotychczasowe
+`EQUIPMENT_SLOT_START + 23` z `MT2009_PLUS_BELT_SLOT_V1`.
+
+Sprawdzone 7.10.2026: `build.sh msvc --smoke` (źródła client-build + cały ten katalog z flagą) bez błędów, smoke test
+dochodzi do okna logowania; exe testowe 13 672 448 B, sha256 `441d16ab104d86372cb9256b5d6db9718298f1c9750eaf932d1eb95989dcd2ed`
+(`/opt/metin2/cache/exe-releases/metin2client-pasy-test.exe`; nie do wydania – exe budować raz na rundę).

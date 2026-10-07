@@ -778,6 +778,20 @@ if ((Test-Path -LiteralPath $digiRastaFixesApply -PathType Leaf) -and
         Write-Host ('Applied {0} Digi Rasta fix and stacking edit(s).' -f $digiRastaFixesResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The belt system (server-patches/pasy, "Autor: Digi Rasta", nowy-system
+# v0.27.0, MT2009_PLUS_BELTS_V1): the belt inventory also takes ITEM_POTION
+# (green / purple potions) and the roasted fish 27863-27883
+# (belt_inventory_helper.h). The recipes, Mistrz, the quests and the chests'
+# materials are share files (linux-port/docker/game/Dockerfile).
+$pasyApply = Join-Path $repo 'server-patches/pasy/Apply-PasyPatch.ps1'
+if ((Test-Path -LiteralPath $pasyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'belt_inventory_helper.h') -PathType Leaf)) {
+    $pasyResult = & $pasyApply -SourceDir $engineGameSource
+    if ($pasyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} belt system edit(s).' -f $pasyResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Digi Rasta's server conveniences (server-patches/digirasta-qol, "Autor:
 # Digi Rasta", MT2009_PLUS_DIGI_SERVER_QOL_V1): the refine failure's reason,
 # the messenger block over trade / party / guild / emotes / duel, the level-up

@@ -315,11 +315,14 @@ class BeltInventoryWindow(ui.ScriptWindow):
 				self.wndBeltInventoryLayer.SetPosition(self.wndBeltInventoryLayer.GetWidth() - 5, 0)
 				self.minBtn.SetPosition(self.minBtn.GetWidth() + 3, 15)
 
+			# MT2009_PLUS_BELTS_V1 (Autor: Digi Rasta, nowy-system v0.27.0): the packs have no
+			# ui/game/quest/slot_button_01.sub - the open slots wear the public cover buttons
+			# (as Digi Rasta's window), a closed one the belt pack's own slot_disabled.tga.
 			for i in xrange(item.BELT_INVENTORY_SLOT_COUNT):
 				slotNumber = item.BELT_INVENTORY_SLOT_START + i
-				wndBeltInventorySlot.SetCoverButton(slotNumber,	"d:/ymir work/ui/game/quest/slot_button_01.sub",\
-												"d:/ymir work/ui/game/quest/slot_button_01.sub",\
-												"d:/ymir work/ui/game/quest/slot_button_01.sub",\
+				wndBeltInventorySlot.SetCoverButton(slotNumber,	"d:/ymir work/ui/public/slot_cover_button_01.sub",\
+												"d:/ymir work/ui/public/slot_cover_button_02.sub",\
+												"d:/ymir work/ui/public/slot_cover_button_03.sub",\
 												"d:/ymir work/ui/game/belt_inventory/slot_disabled.tga", False, False)
 
 		except:

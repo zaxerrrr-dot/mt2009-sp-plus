@@ -1,0 +1,8 @@
+[
+ {
+  "file": "belt_inventory_helper.h",
+  "marker": "MT2009_PLUS_BELTS_V1 (belt potions)",
+  "old": "\t\t\t\tcanMove = true;\n\t\t\t\tbreak;\n\t\t\t}\n\t\t}\n\n\t\treturn canMove;\n",
+  "new": "\t\t\t\tcanMove = true;\n\t\t\t\tbreak;\n\t\t\t}\n\t\t}\n\n\t\t// MT2009_PLUS_BELTS_V1 (belt potions): Autor: Digi Rasta (nowy-system v0.27.0,\n\t\t// SYSTEMY/pasy.md; server-patches/pasy). The belt inventory takes what the wiki says:\n\t\t// potions and roasted fish - also ITEM_POTION (the green and purple potions, half of\n\t\t// the roasted fish) and the roasted fish 27863-27883 whatever their type.\n\t\tif (item->GetType() == ITEM_POTION || (item->GetVnum() >= 27863 && item->GetVnum() <= 27883))\n\t\t\tcanMove = true;\n\n\t\treturn canMove;\n"
+ }
+]

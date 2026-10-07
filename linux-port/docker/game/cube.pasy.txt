@@ -1,0 +1,112 @@
+# MT2009_PLUS_BELTS_V1 - the belt system (Pasy). Autor: Digi Rasta (nowy-system v0.27.0,
+# SYSTEMY/pasy.md), ported into MT2009 PLUS. The nine belt recipes of the package's
+# cube.txt (Yu-Hwan 20017: 18000-18030, Jae-Seon Kim 20383: 18040-18080 - no quest opens
+# either one's cube) moved to Mistrz (20082, beside the Blacksmith in M1 and M3, spawned by
+# the Dockerfile); quest/pasy.quest opens the window. Appended to the share's cube.txt by
+# the Dockerfile, after Seon-Pyeong's recipes. Materials: Odlamek Energii (51001) from the
+# Alchemist (quest/energia_alchemik.quest), Kamien (Lodowego) Plomienia (30524 / 30525) from
+# the Razador and Nemere chests (special_item_group.dungeons.txt, groups 951101 / 951102).
+
+# Pas Lniany+0 (50)
+section
+npc	20082
+item	50624	10
+item	27992	2
+item	51001	30
+reward	18000	1
+gold	10000
+percent	50
+end
+
+# Pas Skorzany+0 (70)
+section
+npc	20082
+item	50625	10
+item	27992	2
+item	51001	50
+reward	18010	1
+gold	10000
+percent	40
+end
+
+# Pas Przepychu+0 (85)
+section
+npc	20082
+item	50626	10
+item	27993	2
+item	51001	70
+reward	18020	1
+gold	30000
+percent	30
+end
+
+# Pas Madrosci+0 (97)
+section
+npc	20082
+item	50630	10
+item	27993	2
+item	51001	100
+reward	18030	1
+gold	30000
+percent	20
+end
+
+# Pas Krola+0 (103)
+section
+npc	20082
+item	50636	10
+item	27994	2
+item	30518	5
+item	30524	10
+reward	18040	1
+gold	50000
+percent	10
+end
+
+# Pas Mroku+0 (103)
+section
+npc	20082
+item	50635	10
+item	27994	2
+item	30519	5
+item	30525	10
+reward	18050	1
+gold	50000
+percent	10
+end
+
+# Pas Runiczny+0 (103)
+section
+npc	20082
+item	50637	10
+item	27994	2
+item	30522	5
+item	30524	10
+reward	18060	1
+gold	50000
+percent	10
+end
+
+# Pas Niedzwiedzi+0 (103)
+section
+npc	20082
+item	50638	10
+item	27994	2
+item	30523	5
+item	30525	10
+reward	18070	1
+gold	50000
+percent	10
+end
+
+# Pas Dusz+0 (100)
+section
+npc	20082
+item	50634	10
+item	27994	2
+item	30550	20
+item	51001	100
+reward	18080	1
+gold	50000
+percent	10
+end

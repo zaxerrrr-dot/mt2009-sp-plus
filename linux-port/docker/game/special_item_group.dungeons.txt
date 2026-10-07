@@ -24,6 +24,7 @@ Group	MT2009_chest_50270
 	5	s950281	1	100 -- sakwa Yang (MT2009_PLUS_AREZZO_BALANCE_V1)
 	6	s950282	1	85 -- materialy ulepszen 55-70
 	7	s950283	1	55 -- cenny przedmiot
+	8	s951101	1	60 -- materialy pasow (MT2009_PLUS_BELTS_V1)
 }
 Group	MT2009_chest_razador_gear
 {
@@ -198,6 +199,7 @@ Group	MT2009_chest_50271
 	5	s950286	1	100 -- sakwa Yang (MT2009_PLUS_AREZZO_BALANCE_V1)
 	6	s950287	1	80 -- materialy ulepszen 70-90
 	7	s950288	1	65 -- cenny przedmiot
+	8	s951102	1	60 -- materialy pasow (MT2009_PLUS_BELTS_V1)
 }
 Group	MT2009_chest_nemere_gear
 {
@@ -408,4 +410,23 @@ Group	MT2009_chest_nemere_val
 	8	25100	1	6 -- Zwoj Kamienia Duszy
 	9	30373	1	4 -- Ksiega Erudyty
 	10	s10993	1	6 -- losowa ksiega (wysoka)
+}
+
+# MT2009_PLUS_BELTS_V1 - the belt system's materials (Autor: Digi Rasta, nowy-system v0.27.0,
+# SYSTEMY/pasy.md): line 8 of the Razador and Nemere chests above (60%) gives ONE of these by
+# weight - the flame stones the four level-103 belts need, Energy Shards (the Alchemist's
+# dismantling gives them too) or, rarely, a Linen Belt+0. The recipes: cube.pasy.txt (Mistrz).
+Group	MT2009_belts_razador
+{
+	Vnum	951101
+	1	30524	2	40 -- Kamien Plomienia
+	2	51001	10	50 -- Odlamek Energii
+	3	18000	1	10 -- Pas Lniany+0
+}
+Group	MT2009_belts_nemere
+{
+	Vnum	951102
+	1	30525	2	40 -- Kamien Lodowe. Plomienia
+	2	51001	10	50 -- Odlamek Energii
+	3	18000	1	10 -- Pas Lniany+0
 }

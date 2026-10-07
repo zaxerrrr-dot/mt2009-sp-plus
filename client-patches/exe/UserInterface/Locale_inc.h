@@ -6,7 +6,7 @@
 #define ENABLE_COSTUME_SYSTEM
 //#define ENABLE_ENERGY_SYSTEM
 #define ENABLE_DRAGON_SOUL_SYSTEM
-//#define ENABLE_NEW_EQUIPMENT_SYSTEM
+#define ENABLE_NEW_EQUIPMENT_SYSTEM // MT2009_PLUS_BELTS_V1: the belt inventory (Autor: Digi Rasta, nowy-system v0.27.0)
 // ### Default Ymir Macros ###
 //////////////////////////////////////////////////////////////////////////
 
