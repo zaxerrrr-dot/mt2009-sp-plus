@@ -21,7 +21,8 @@
 //     creates the tables too (apply.sh); this file creates and repairs them
 //     when they are missing;
 //   - who is a farmer: every dropper (IsPlayerBotDropper - medal, M2, M3,
-//     Metin, the guild materials dropper, the level-30 weapon dropper - and
+//     Metin, the guild materials dropper, the level-30 weapon dropper, the
+//     ornament farmer of the second village's Sworn camps - and
 //     the operator's medal cohort), linked as soon as a main can be found;
 //     and the spot farmers - ordinary bots given a ground of
 //     PLAYERBOT_FARMER_SPOTS for their level, held at its lock (the hook in
@@ -104,11 +105,12 @@ namespace
 		PLAYERBOT_FARMER_KIND_GUILD,
 		PLAYERBOT_FARMER_KIND_L30,
 		PLAYERBOT_FARMER_KIND_SPOT,
+		PLAYERBOT_FARMER_KIND_ORNAMENT, // MT2009_PLUS_ORNAMENT_FARMERS_V1 (appended: the key is stored)
 		PLAYERBOT_FARMER_KIND_COUNT
 	};
 
 	const char* const PLAYERBOT_FARMER_KIND_KEYS[PLAYERBOT_FARMER_KIND_COUNT] = {
-		"", "medal", "m2", "m3", "metin", "guild", "l30", "spot"
+		"", "medal", "m2", "m3", "metin", "guild", "l30", "spot", "ornament"
 	};
 
 	const DWORD PLAYERBOT_FARMER_PASS_MS = 60 * 1000;
@@ -415,6 +417,7 @@ namespace
 			case BOT_PERSONALITY_METIN_DROPPER: return PLAYERBOT_FARMER_KIND_METIN;
 			case BOT_PERSONALITY_GUILD_DROPPER: return PLAYERBOT_FARMER_KIND_GUILD;
 			case BOT_PERSONALITY_L30_WEAPON_DROPPER: return PLAYERBOT_FARMER_KIND_L30;
+			case BOT_PERSONALITY_ORNAMENT_FARMER: return PLAYERBOT_FARMER_KIND_ORNAMENT;
 			default: break;
 		}
 		// The operator's medal cohort farms medals whatever its drawn character.
@@ -433,6 +436,7 @@ namespace
 			case PLAYERBOT_FARMER_KIND_M3: return "m3_waryong";
 			case PLAYERBOT_FARMER_KIND_METIN: return "metins";
 			case PLAYERBOT_FARMER_KIND_L30: return "orc_island";
+			case PLAYERBOT_FARMER_KIND_ORNAMENT: return "m2_sworn";
 			case PLAYERBOT_FARMER_KIND_GUILD:
 			{
 				const long map = GetPlayerBotGuildDropperGround(pid).map;

@@ -4957,6 +4957,7 @@ FARMER_KIND_LABELS = {
     "guild": "Dropek surowców",
     "l30": "Dropek broni 30 lv",
     "spot": "Dropek na mapie",
+    "ornament": "Dropek ornamentów",  # MT2009_PLUS_ORNAMENT_FARMERS_V1
 }
 FARMER_SPOT_LABELS = {
     # The droppers' own grounds.
@@ -4965,6 +4966,7 @@ FARMER_SPOT_LABELS = {
     "m3_waryong": "Waryong (M3)",
     "metins": "Kamienie Metin",
     "orc_island": "Dolina Orków — wyspa Bestii",
+    "m2_sworn": "Wioska 2 — obozy Zaprzysiężonych (Ornamenty)",
     "guild_sohan": "Góra Sohan (Pień)",
     "guild_fire_land": "Doyyumhwaji (Kamień Węgielny)",
     "guild_hwang": "Świątynia Hwang (Dykta)",

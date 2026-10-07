@@ -54,6 +54,10 @@ namespace
 	BYTE GetPlayerBotCharakter(BYTE drawn);
 	bool IsPlayerBotHumanLedParty(LPPARTY party);
 	bool IsPlayerBotMapHostedHere(long mapIndex);
+	// MT2009_PLUS_FARMER_LINK_V1 (playerbot_farmer_link.h, included later): a
+	// spot farmer already has its ground, and a main is somebody's main.
+	bool IsPlayerBotFarmerPID(DWORD pid);
+	bool IsPlayerBotFarmerMainPID(DWORD pid);
 
 	const DWORD PLAYERBOT_ORNAMENT_VNUM = 30031;
 	const char* const PLAYERBOT_ORNAMENT_FARMER_FLAG = "playerbot.ornament_farmer";
@@ -145,6 +149,9 @@ namespace
 		if (state.bPersonality == BOT_PERSONALITY_MERCHANT || state.bBotRole == BOT_ROLE_PARTY_FIGHTER)
 			return false;
 		if (ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty()))
+			return false;
+		// MT2009_PLUS_FARMER_LINK_V1: not a spot farmer, not a farmer's main.
+		if (IsPlayerBotFarmerPID(ch->GetPlayerID()) || IsPlayerBotFarmerMainPID(ch->GetPlayerID()))
 			return false;
 		return IsPlayerBotProgressionEligible(ch, state);
 	}

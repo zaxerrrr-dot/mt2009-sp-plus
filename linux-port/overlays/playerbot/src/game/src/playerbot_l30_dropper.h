@@ -53,6 +53,9 @@ namespace
 {
 	BYTE GetPlayerBotStablePersonality(LPCHARACTER ch, BYTE role);
 	bool IsPlayerBotPastDropperBand(LPCHARACTER ch, BYTE personality);
+	// MT2009_PLUS_FARMER_LINK_V1 (playerbot_farmer_link.h, included later).
+	bool IsPlayerBotFarmerPID(DWORD pid);
+	bool IsPlayerBotFarmerMainPID(DWORD pid);
 
 	const char* const PLAYERBOT_L30_DROPPER_FLAG = "playerbot.l30_dropper";
 	const DWORD PLAYERBOT_L30_DROPPER_SEED = 0x4c333057U;
@@ -113,6 +116,9 @@ namespace
 		if (state.bPersonality == BOT_PERSONALITY_MERCHANT || state.bBotRole == BOT_ROLE_PARTY_FIGHTER)
 			return false;
 		if (ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty()))
+			return false;
+		// MT2009_PLUS_FARMER_LINK_V1: not a spot farmer, not a farmer's main.
+		if (IsPlayerBotFarmerPID(ch->GetPlayerID()) || IsPlayerBotFarmerMainPID(ch->GetPlayerID()))
 			return false;
 		return IsPlayerBotProgressionEligible(ch, state);
 	}
