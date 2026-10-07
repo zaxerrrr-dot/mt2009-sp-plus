@@ -1569,6 +1569,7 @@ namespace
 		{
 			s_mapPlayerBotArzDgScan.erase(run.lInstance);
 			s_mapPlayerBotArzDgFocus.erase(run.lInstance);
+			s_mapPlayerBotArzDgWatch.erase(run.lInstance);
 			LPDUNGEON d = CDungeonManager::instance().FindByMapIndex(run.lInstance);
 			if (d)
 			{
@@ -2246,6 +2247,11 @@ namespace
 			run.bStallLogged = false;
 		}
 		HoldPlayerBotArzDgBossRegen(run.lInstance, dwNow);
+		// MT2009_PLUS_DG_STAGE_WATCH_V1 (playerbot_arezzo_dungeon_bots.h): the
+		// quests with a stage flag - the objectives known for the Arezzo three.
+		if (!run.dwFinishedAt && (def.bKind == DGRUN_KIND_AREZZO || def.bKind == DGRUN_KIND_BIBLIO))
+			WatchPlayerBotArzDgStage(run.lInstance, d, def.bKind == DGRUN_KIND_AREZZO ? GetPlayerBotArzDgIndex(def.lMap) : -1,
+					def.szKey, dwNow);
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the bots' extra time, once init()
 		// has set the quest's minutes (the header's PLAYERBOT_DGRUN_EXTRA_TIME_PCT).
 		if (run.iExtraMin < 0 && d->GetFlag("init") == 1)

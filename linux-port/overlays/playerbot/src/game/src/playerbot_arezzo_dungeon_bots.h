@@ -986,6 +986,97 @@ namespace
 			s_mapBossLowHP.clear();
 	}
 
+	// MT2009_PLUS_DG_STAGE_WATCH_V1 - the stage's watchdog for a bots'
+	// instance of a quest with a stage flag (the three Arezzo dungeons; the
+	// Biblioteka's half). Two ways a run stood for the rest of its time on
+	// 7 October with nothing left to fight:
+	//   - the objective gone without its kill: Wukong's Flaming Phoenix
+	//     (run 16, 3640004) took the party's blows until 19:52:27 and was not
+	//     on the map a second later, no death, no drop, no "Etap zaliczony" -
+	//     stalled at stage 5 with monsters=0; stage 2 runs with one stone
+	//     "left" and no stone standing;
+	//   - between two stages (the flag at 10+N) with the quest's five-second
+	//     "<x>_stage" timer never coming - the core's AddServerTimer refuses a
+	//     name and instance still registered ("already registered server
+	//     timer", the night's syserr, for the _tick and _end timers of
+	//     instances whose index came round again).
+	// So: a stage flag of 10+N for PLAYERBOT_ARZDG_WATCH_BETWEEN_MS asks for
+	// the timer again; a stage of 2..N with none of its objective races on the
+	// map for PLAYERBOT_ARZDG_WATCH_LOST_MS is begun again - the flag set to
+	// 10+N and the timer asked for, which is what the quest's own next_stage()
+	// does (its start_stage() purges, spawns the objectives anew and resets
+	// "left"), PLAYERBOT_ARZDG_WATCH_RESTARTS times a run at most.
+	const DWORD PLAYERBOT_ARZDG_WATCH_BETWEEN_MS = 20000;
+	const DWORD PLAYERBOT_ARZDG_WATCH_LOST_MS = 45000;
+	const int PLAYERBOT_ARZDG_WATCH_RESTARTS = 3;
+
+	struct TPlayerBotArzDgWatch
+	{
+		int iStage;
+		DWORD dwSince;
+		DWORD dwNextCall;
+		int iRestarts;
+		TPlayerBotArzDgWatch() : iStage(-1), dwSince(0), dwNextCall(0), iRestarts(0) {}
+	};
+	std::map<long, TPlayerBotArzDgWatch> s_mapPlayerBotArzDgWatch;
+
+	// dg: an index of PLAYERBOT_ARZDG, or -1 for a quest whose objectives are
+	// not listed here (then only the timer between two stages is watched).
+	void WatchPlayerBotArzDgStage(long instance, LPDUNGEON d, int dg, const char* key, DWORD dwNow)
+	{
+		if (!d || !key || d->GetFlag("init") != 1 || d->GetFlag("closed") == 1 || d->GetFlag("ended") == 1)
+			return;
+		TPlayerBotArzDgWatch& w = s_mapPlayerBotArzDgWatch[instance];
+		const int stage = d->GetFlag("stage");
+		char timer[48];
+		snprintf(timer, sizeof(timer), "%s_stage", key);
+		if (stage >= 10 && stage < 20)
+		{
+			if (w.iStage != stage)
+			{
+				w.iStage = stage;
+				w.dwSince = dwNow;
+				return;
+			}
+			if (dwNow - w.dwSince < PLAYERBOT_ARZDG_WATCH_BETWEEN_MS || dwNow < w.dwNextCall)
+				return;
+			w.dwNextCall = dwNow + 15000;
+			quest::CQuestManager& q = quest::CQuestManager::instance();
+			const unsigned int npc = q.LoadTimerScript(timer);
+			q.AddServerTimer(timer, (DWORD)instance, quest::quest_create_server_timer_event(timer, 1, npc, false, (unsigned int)instance));
+			sys_log(0, "ARZ_DG: stage timer asked again dungeon=%s instance=%ld stage=%d waited_s=%u", key, instance, stage,
+					(dwNow - w.dwSince) / 1000);
+			return;
+		}
+		if (dg < 0 || stage < 2 || stage > PLAYERBOT_ARZDG[dg].iStages)
+		{
+			w.iStage = stage;
+			w.dwSince = dwNow;
+			return;
+		}
+		bool standing = false;
+		const TPlayerBotArzDgScan& sc = ScanPlayerBotArzDg(instance, dwNow);
+		for (size_t i = 0; i < sc.foes.size() && !standing; ++i)
+			standing = IsPlayerBotArzDgTarget(PLAYERBOT_ARZDG[dg], stage, sc.foes[i].dwRace);
+		if (standing || w.iStage != stage)
+		{
+			w.iStage = stage;
+			w.dwSince = dwNow;
+			return;
+		}
+		if (dwNow - w.dwSince < PLAYERBOT_ARZDG_WATCH_LOST_MS || w.iRestarts >= PLAYERBOT_ARZDG_WATCH_RESTARTS)
+			return;
+		++w.iRestarts;
+		w.dwSince = dwNow;
+		const int left = d->GetFlag("left");
+		d->SetFlag("stage", 9 + stage);
+		quest::CQuestManager& q = quest::CQuestManager::instance();
+		const unsigned int npc = q.LoadTimerScript(timer);
+		q.AddServerTimer(timer, (DWORD)instance, quest::quest_create_server_timer_event(timer, 1, npc, false, (unsigned int)instance));
+		sys_log(0, "ARZ_DG: objective lost - stage begun again dungeon=%s instance=%ld stage=%d left=%d restarts=%d",
+				key, instance, stage, left, w.iRestarts);
+	}
+
 	void ClosePlayerBotArzDgRun(TPlayerBotArzDgRun& run, const char* result, DWORD dwNow)
 	{
 		const TPlayerBotArzDg& info = PLAYERBOT_ARZDG[run.iDg];
@@ -1031,6 +1122,7 @@ namespace
 		}
 		s_mapPlayerBotArzDgScan.erase(run.lInstance);
 		s_mapPlayerBotArzDgFocus.erase(run.lInstance);
+		s_mapPlayerBotArzDgWatch.erase(run.lInstance);
 		// The instance goes once it is empty (the quests' own keep-until is
 		// for a player's "Wroc do lochu").
 		LPDUNGEON d = CDungeonManager::instance().FindByMapIndex(run.lInstance);
@@ -1161,6 +1253,9 @@ namespace
 		}
 		// MT2009_PLUS_AREZZO_DG_NO_BOSS_REGEN_V1 (HoldPlayerBotArzDgBossRegen).
 		HoldPlayerBotArzDgBossRegen(run.lInstance, dwNow);
+		// MT2009_PLUS_DG_STAGE_WATCH_V1.
+		if (!run.dwFinishedAt)
+			WatchPlayerBotArzDgStage(run.lInstance, d, run.iDg, info.szKey, dwNow);
 		// MT2009_PLUS_AREZZO_DG_STALL_DETAIL_V1 (boss): the bosses' health once a minute.
 		{
 			static std::map<int, DWORD> s_mapNextBossLog;
