@@ -820,3 +820,17 @@ nazwy rang (Waleczny, Mocarny, Potężny, Władca, Arcymistrz, Legenda) i kolory
 - `tools/rankfruit/patch_rank_fruit_client.py` (obraz `m2pack-lzo`, idempotentne) – `gamedata/item_proto` i
   `locale/pl/itemdesc.txt` (paczka `dbdata`), `gamedata/item_list.txt` (paczka `gamedata`): 5 rekordów / wierszy
   jak w `apply.sh`. Po buildzie klienta: nowa baza edytora bazy danych (`m2clientpack.make_base`).
+
+## Limity Yang – `MT2009_PLUS_YANG_LIMITS_V1` (**Autor: Digi Rasta**, nowy-system v0.26.0)
+
+100 mld przy sobie, 10 mld w handlu, 50 mld cena pozycji sklepu (serwer: `server-patches/yanglimits`, exe:
+`client-patches/exe`, `ENABLE_MT2009_YANG_LIMITS`). Pliki `root`:
+
+- `uiexchange.py` (nowy w repo, baza: paczka `root` 2.0.30/`tcm/c33`) – okno kwoty w handlu przyjmuje tyle cyfr, ile
+  ma `player.EXCHANGE_GOLD_MAX` (11), kwota przycinana do niego; ze starym exe 8 cyfr jak dotąd.
+- `shopautoprice.py` – `ShopPriceMax()` (`player.SHOP_PRICE_MAX`, ze starym exe `GOLD_MAX - 1`) i `ShopPriceDigits()`
+  (10 albo 11 cyfr); automatyczna cena przycinana do niego.
+- `offlineshopbuilder.py`, `offlineshopmanage.py` – pole ceny 11 cyfr, cena przycinana do `ShopPriceMax()`, komunikat
+  o łącznej wartości sklepu z kwotą `player.GOLD_MAX`.
+
+Stary stragan (`uiprivateshopbuilder.py`, `uiCommon.MoneyInputDialog`) zostaje przy 9 cyfrach (serwer przyjąłby 50 mld).

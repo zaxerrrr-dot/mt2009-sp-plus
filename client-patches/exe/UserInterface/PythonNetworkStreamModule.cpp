@@ -909,9 +909,16 @@ PyObject* netSendExchangeStartPacket(PyObject* poSelf, PyObject* poArgs)
 
 PyObject* netSendExchangeElkAddPacket(PyObject* poSelf, PyObject* poArgs)
 {
+#ifdef ENABLE_MT2009_YANG_LIMITS
+	// MT2009_PLUS_YANG_LIMITS_V1: the amount in 64 bits (up to EXCHANGE_GOLD_MAX, 10 bn; the server checks it).
+	long long iElk;
+	if (!PyTuple_GetLongLong(poArgs, 0, &iElk))
+		return Py_BuildException();
+#else
 	int iElk;
 	if (!PyTuple_GetInteger(poArgs, 0, &iElk))
 		return Py_BuildException();
+#endif
 
 	CPythonNetworkStream& rkNetStream=CPythonNetworkStream::Instance();
 	rkNetStream.SendExchangeElkAddPacket(iElk);

@@ -1497,7 +1497,7 @@ namespace {
                     GetPlayerBotRefineInvestment(preview));
             const DWORD vnum = preview->GetVnum();
             M2_DELETE(preview);
-            if (!standing || normal <= 0 || normal >= price || normal >= GOLD_MAX) continue;
+            if (!standing || normal <= 0 || normal >= price || normal >= PLAYERBOT_GOLD_MAX) continue; // MT2009_PLUS_YANG_LIMITS_V1
             if (!BotOfflineBudget(now)) break;
             ikashop::TPriceInfo meant{};
             meant.yang = normal;

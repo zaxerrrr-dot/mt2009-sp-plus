@@ -152,7 +152,7 @@ namespace
 	// Where its purse has room, and where the owner's has, for an amount.
 	bool PlayerBotSidekickGoldFits(LPCHARACTER ch, long long amount)
 	{
-		return ch && (long long)ch->GetGold() + amount <= (long long)GOLD_MAX;
+		return ch && (long long)ch->GetGold() + amount <= (long long)ch->Mt2009PlusGoldMax(); // MT2009_PLUS_YANG_LIMITS_V1
 	}
 
 	// What it spent of the owner's yang so far: what its purse lost since the

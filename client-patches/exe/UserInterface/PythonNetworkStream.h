@@ -183,7 +183,11 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		// Exchange
 		bool SendExchangeStartPacket(DWORD vid);
 		bool SendExchangeItemAddPacket(TItemPos ItemPos, BYTE byDisplayPos);
+#ifdef ENABLE_MT2009_YANG_LIMITS
+		bool SendExchangeElkAddPacket(YANG elk); // MT2009_PLUS_YANG_LIMITS_V1
+#else
 		bool SendExchangeElkAddPacket(DWORD elk);
+#endif
 #ifdef ENABLE_CHEQUE_SYSTEM
 		bool SendExchangeChequeAddPacket(DWORD elk);
 #endif

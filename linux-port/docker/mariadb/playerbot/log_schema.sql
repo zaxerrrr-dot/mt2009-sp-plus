@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `money_log` (
   `time` datetime DEFAULT NULL,
   `type` enum('MONSTER','SHOP','REFINE','QUEST','GUILD','MISC','KILL','DROP') DEFAULT NULL,
   `vnum` int(11) NOT NULL DEFAULT 0,
-  `gold` int(11) NOT NULL DEFAULT 0,
+  `gold` bigint(20) NOT NULL DEFAULT 0,
   KEY `type` (`type`,`vnum`) USING BTREE
 ) ENGINE=InnoDB;
 

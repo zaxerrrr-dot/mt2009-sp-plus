@@ -226,3 +226,18 @@ z `common/length.h`); pole pasa w wyposażeniu = `c_Equipment_Start + WEAR_BELT`
 Sprawdzone 7.10.2026: `build.sh msvc --smoke` (źródła client-build + cały ten katalog z flagą) bez błędów, smoke test
 dochodzi do okna logowania; exe testowe 13 672 448 B, sha256 `441d16ab104d86372cb9256b5d6db9718298f1c9750eaf932d1eb95989dcd2ed`
 (`/opt/metin2/cache/exe-releases/metin2client-pasy-test.exe`; nie do wydania – exe budować raz na rundę).
+
+## Limity Yang – `MT2009_PLUS_YANG_LIMITS_V1` (`ENABLE_MT2009_YANG_LIMITS`)
+
+**Autor: Digi Rasta** (nowy-system v0.26.0, `SYSTEMY/limity.md`; serwer: `server-patches/yanglimits`). 100 mld przy sobie,
+10 mld w jednym handlu, 50 mld cena jednej pozycji sklepu. Pakiety bez zmian (handel, złoto i ceny były już 64-bitowe).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_YANG_LIMITS`, `MT2009_YANG_GOLD_MAX` / `_EXCHANGE_GOLD_MAX` / `_SHOP_PRICE_MAX` (jak `common/length.h` serwera; `Server/common/length.h` exe bez zmian) |
+| `UserInterface/PythonExchange.h/.cpp`, `PythonExchangeModule.cpp` (nowe w tym katalogu, z client-build) | `GetElkFromSelf/Target` zwracają `YANG`, do pythona jako long |
+| `UserInterface/PythonNetworkStream.h`, `PythonNetworkStreamPhaseGame.cpp`, `PythonNetworkStreamModule.cpp` | `SendExchangeElkAddPacket(YANG)`, `net.SendExchangeElkAddPacket` czyta 64 bity |
+| `UserInterface/PythonPlayerModule.cpp` | `player.GOLD_MAX` 100 mld (long), nowe `player.EXCHANGE_GOLD_MAX`, `player.SHOP_PRICE_MAX` |
+
+Root (`client-2.0.30/root`: `uiexchange.py`, `shopautoprice.py`, `offlineshopbuilder.py`, `offlineshopmanage.py`) czyta
+nowe stałe przez `getattr`, więc ze starym exe zostają dawne limity (8 cyfr w handlu, cena < 2 mld).

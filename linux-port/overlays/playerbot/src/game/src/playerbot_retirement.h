@@ -1023,7 +1023,7 @@ EPlayerBotRetireStallResult AdvancePlayerBotRetirementStall(LPCHARACTER ch,
 		if (!BotOfflineValid(ch, item, displayPos))
 			continue;
 		const DWORD price = GetPlayerBotRetirementPrice(item, dwNow);
-		if (price == 0 || price >= GOLD_MAX || total + (long long)price >= (long long)GOLD_MAX - 1)
+		if (price == 0 || price >= PLAYERBOT_GOLD_MAX || total + (long long)price >= (long long)PLAYERBOT_GOLD_MAX - 1) // MT2009_PLUS_YANG_LIMITS_V1
 			continue;
 		total += price;
 		PutPlayerBotShopSlot(grid, slot, height);

@@ -3738,7 +3738,8 @@ namespace
 		unit = LiftPlayerBotGearPrice(item, unit);
 		// MT2009_PLUS_DIGI_STACK_V1: in 64 bits - a stack of 200 soul stones
 		// wrapped a DWORD (200 x +6 asked a twentieth of its worth). Over the
-		// DWORD it stays at the top, which no counter takes (GOLD_MAX).
+		// DWORD it stays at the top, which no bot listing takes (PLAYERBOT_GOLD_MAX, 2 bn:
+		// the engine's counters take up to SHOP_PRICE_MAX since MT2009_PLUS_YANG_LIMITS_V1).
 		const DWORD price = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL,
 				(unsigned long long)unit * (unsigned long long)item->GetCount());
 		if (item->GetCount() > 1)
@@ -3772,7 +3773,7 @@ namespace
 	// yardstick and the anchor the step limiter keeps, and neither a markdown
 	// nor a shortage is what the market believes - it is what this line asks.
 	// A marked-up price is rounded like every asking price; a marked-down one
-	// stays what it always was. A markup that would take a line to GOLD_MAX,
+	// stays what it always was. A markup that would take a line to PLAYERBOT_GOLD_MAX,
 	// which no counter takes (both engines refuse the add), is not asked. The
 	// markup the line got is handed back for the caller's log.
 	// MT2009_PLUS_MARKET_V3: the markdown by the supply of its kind - rare
@@ -3799,7 +3800,7 @@ namespace
 		if (markup > 0)
 		{
 			price = RoundPlayerBotPrice(price);
-			if ((long long)price >= (long long)GOLD_MAX)
+			if ((long long)price >= (long long)PLAYERBOT_GOLD_MAX) // MT2009_PLUS_YANG_LIMITS_V1
 			{
 				markup = 0;
 				price = asking;
@@ -3832,10 +3833,10 @@ namespace
 		}
 		if (markupOut)
 			*markupOut = markup;
-		if ((long long)price < (long long)GOLD_MAX)
+		if ((long long)price < (long long)PLAYERBOT_GOLD_MAX) // MT2009_PLUS_YANG_LIMITS_V1
 		{
 			const DWORD human = HumanizePlayerBotPrice(price, false);
-			if (human != price && (long long)human < (long long)GOLD_MAX)
+			if (human != price && (long long)human < (long long)PLAYERBOT_GOLD_MAX) // MT2009_PLUS_YANG_LIMITS_V1
 			{
 				price = human;
 				if (IsPlayerBotListingTracing())
@@ -3848,7 +3849,7 @@ namespace
 		{
 			const unsigned long long floorPrice = (unsigned long long)GetPlayerBotBookPriceFloor() *
 					(unsigned long long)std::max<DWORD>(1, item->GetCount());
-			if ((unsigned long long)price < floorPrice && floorPrice < (unsigned long long)GOLD_MAX)
+			if ((unsigned long long)price < floorPrice && floorPrice < (unsigned long long)PLAYERBOT_GOLD_MAX) // MT2009_PLUS_YANG_LIMITS_V1
 				price = (DWORD)floorPrice;
 		}
 		return price;

@@ -1,0 +1,98 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (gold max)",
+  "old": "enum LongData : long long {\n\t//LIMIT_GOLD\n\tGOLD_MAX = 2000000000LL,\n};\n",
+  "new": "enum LongData : long long {\n\t//LIMIT_GOLD\n\t// MT2009_PLUS_YANG_LIMITS_V1 (gold max): Autor: Digi Rasta (nowy-system 0.26.0, SYSTEMY/limity.md; server-patches/yanglimits).\n\t// Yang in the pocket up to 100 bn, in one trade up to 10 bn, one line of a player's shop up to 50 bn\n\t// (here, not in EMisc: a value over INT_MAX would change the type of that whole enum). A playerbot's\n\t// purse and prices stay at the old 2 bn (CHARACTER::Mt2009PlusGoldMax): their sums are 32-bit.\n\tGOLD_MAX = 100000000000LL,\n\tEXCHANGE_GOLD_MAX = 10000000000LL,\n\tSHOP_PRICE_MAX = 50000000000LL,\n\tPLAYERBOT_GOLD_MAX = 2000000000LL,\n};\n"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (exchange max moved)",
+  "old": "\t//LIMIT_GOLD\n\tEXCHANGE_GOLD_MAX = 100000000,\n",
+  "new": "\t//LIMIT_GOLD\n\t// EXCHANGE_GOLD_MAX: in LongData (MT2009_PLUS_YANG_LIMITS_V1 (exchange max moved))\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (decl)",
+  "old": "\t\tvoid\t\t\tSetGold(YANG gold)\t{ m_points.gold = gold;\t}\n",
+  "new": "\t\tvoid\t\t\tSetGold(YANG gold)\t{ m_points.gold = gold;\t}\n\t\t// MT2009_PLUS_YANG_LIMITS_V1 (decl): what this purse may hold - GOLD_MAX, PLAYERBOT_GOLD_MAX for a playerbot.\n\t\tYANG\t\t\tMt2009PlusGoldMax() const;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (change gold)",
+  "old": "void CHARACTER::ChangeGold(YANG gold, bool isUpdate)\n{\n",
+  "new": "// MT2009_PLUS_YANG_LIMITS_V1 (change gold): Autor: Digi Rasta (nowy-system 0.26.0, SYSTEMY/limity.md; server-patches/yanglimits).\n// A player's purse holds GOLD_MAX (100 bn). A playerbot's stays at PLAYERBOT_GOLD_MAX (2 bn), the old\n// limit: its wallets, prices and market sums are DWORD / int and would wrap above it.\nYANG CHARACTER::Mt2009PlusGoldMax() const\n{\n\tif (GetPlayerID() != 0 && CPlayerBotManager::instance().IsRegisteredBotPID(GetPlayerID()))\n\t\treturn (YANG) PLAYERBOT_GOLD_MAX;\n\treturn (YANG) GOLD_MAX;\n}\n\nvoid CHARACTER::ChangeGold(YANG gold, bool isUpdate)\n{\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (change gold cap)",
+  "old": "\tif (totalMoney > GOLD_MAX)\n\t\ttotalMoney = GOLD_MAX;\n\n\tSetGold(totalMoney);\n",
+  "new": "\t// MT2009_PLUS_YANG_LIMITS_V1 (change gold cap): a gain stops at this purse's cap (a purse already above\n\t// it - a bot's set by hand - keeps what it has); a payment is never cut.\n\tconst YANG goldCap = Mt2009PlusGoldMax();\n\tif (gold > 0 && totalMoney > goldCap)\n\t\ttotalMoney = std::max<YANG>(goldCap, GetGold());\n\tif (totalMoney > GOLD_MAX)\n\t\ttotalMoney = GOLD_MAX;\n\n\tSetGold(totalMoney);\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (exchange start)",
+  "old": "\t\t\t\t\tif (ch->GetGold() >= GOLD_MAX)\n\t\t\t\t\t{\n\t\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You have more than 2 Billion Yang. You cannot trade.\"));\n",
+  "new": "\t\t\t\t\t// MT2009_PLUS_YANG_LIMITS_V1 (exchange start): blocked only above the purse's limit (Digi Rasta 0.26.1).\n\t\t\t\t\tif (ch->GetGold() > ch->Mt2009PlusGoldMax())\n\t\t\t\t\t{\n\t\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.\");\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (exchange gold)",
+  "old": "\t\t\t\tif (GOLD_MAX <= nTotalGold)\n\t\t\t\t{\n\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"The player has more than 2 Billion Yang. You cannot trade with him.\"));\n",
+  "new": "\t\t\t\t// MT2009_PLUS_YANG_LIMITS_V1 (exchange gold): one trade carries up to EXCHANGE_GOLD_MAX (10 bn), and the\n\t\t\t\t// other side's purse may reach its limit exactly (100 bn, a playerbot's 2 bn).\n\t\t\t\tif (pinfo->arg1 > EXCHANGE_GOLD_MAX)\n\t\t\t\t{\n\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"W jednym handlu mozna dac najwyzej 10 mld Yang.\");\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tif (ch->GetExchange()->GetCompany()->GetOwner()->Mt2009PlusGoldMax() < nTotalGold)\n\t\t\t\t{\n\t\t\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Ten gracz nie zmiesci tylu Yang (limit 100 mld przy sobie).\");\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (my shop)",
+  "old": "\tif (ch->GetGold() >= GOLD_MAX)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You have more than 2 Billion Yang with you. You cannot trade.\"));\n",
+  "new": "\t// MT2009_PLUS_YANG_LIMITS_V1 (my shop): blocked only above the purse's limit.\n\tif (ch->GetGold() > ch->Mt2009PlusGoldMax())\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Masz przy sobie wiecej Yang, niz pozwala limit (100 mld). Nie mozesz handlowac.\");\n"
+ },
+ {
+  "file": "shop_manager.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (npc sell)",
+  "old": "\tif (GOLD_MAX <= nTotalMoney)\n\t{\n",
+  "new": "\t// MT2009_PLUS_YANG_LIMITS_V1 (npc sell): up to the purse's limit, inclusive (100 bn, a playerbot's 2 bn).\n\tif (ch->Mt2009PlusGoldMax() < nTotalMoney)\n\t{\n"
+ },
+ {
+  "file": "shop_manager.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (npc sell text)",
+  "old": "\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot trade because you are carrying more than 2 billion Yang.\"));\n",
+  "new": "\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Nie mozesz sprzedac - przekroczylbys limit 100 mld Yang przy sobie.\"); // MT2009_PLUS_YANG_LIMITS_V1 (npc sell text)\n"
+ },
+ {
+  "file": "char_shop.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (stall total)",
+  "old": "\tif (GOLD_MAX <= nTotalMoney)\n\t{\n",
+  "new": "\t// MT2009_PLUS_YANG_LIMITS_V1 (stall total): the stall's lines and the purse up to the purse's limit, inclusive.\n\tif (Mt2009PlusGoldMax() < nTotalMoney)\n\t{\n"
+ },
+ {
+  "file": "char_shop.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (stall total text)",
+  "old": "\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot trade because you are carrying more than 2 billion Yang.\"));\n",
+  "new": "\t\tChatPacket(CHAT_TYPE_INFO, \"Wartosc sklepu i Twoje Yang przekroczylyby limit 100 mld Yang.\"); // MT2009_PLUS_YANG_LIMITS_V1 (stall total text)\n"
+ },
+ {
+  "file": "char_shop.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (stall price)",
+  "old": "\t\t\tif (shopItem->price < 1 || shopItem->price > GOLD_MAX)\n",
+  "new": "\t\t\tif (shopItem->price < 1 || shopItem->price > SHOP_PRICE_MAX) // MT2009_PLUS_YANG_LIMITS_V1 (stall price): one line up to 50 bn\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (sale price)",
+  "old": "\tif (price.yang >= GOLD_MAX || price.yang < 0)\n",
+  "new": "\tif (price.yang > SHOP_PRICE_MAX || price.yang < 0) // MT2009_PLUS_YANG_LIMITS_V1 (sale price): one line up to 50 bn\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (claim check)",
+  "old": "\t\tif(claimingValute.yang + static_cast<int64_t>(ch->GetGold()) >= GOLD_MAX)\n",
+  "new": "\t\t// MT2009_PLUS_YANG_LIMITS_V1 (claim check): the purse's own limit (a playerbot's 2 bn).\n\t\tif(claimingValute.yang + static_cast<int64_t>(ch->GetGold()) >= ch->Mt2009PlusGoldMax())\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_YANG_LIMITS_V1 (claim room)",
+  "old": "\t\t\tclaimingValute.yang = GOLD_MAX - ch->GetGold() - 1;\n",
+  "new": "\t\t\tclaimingValute.yang = ch->Mt2009PlusGoldMax() - ch->GetGold() - 1; // MT2009_PLUS_YANG_LIMITS_V1 (claim room)\n"
+ }
+]

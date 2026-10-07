@@ -21960,7 +21960,8 @@ def offline_apply(cur, pid, cmd, arg1, arg2, reason="timeout", name=""):
        Only ITEM / GOLD / LEVEL can be done this way. The caller must have claimed the
        queue row first, otherwise the quest could apply the same thing a second time."""
     if cmd == "GOLD":
-        cur.execute("UPDATE player.player SET gold=GREATEST(0,gold+%s) WHERE id=%s", (int(arg1), pid))
+        # MT2009_PLUS_YANG_LIMITS_V1: a purse holds up to 100 bn (length.h GOLD_MAX).
+        cur.execute("UPDATE player.player SET gold=LEAST(100000000000,GREATEST(0,gold+%s)) WHERE id=%s", (int(arg1), pid))
     elif cmd == "LEVEL":
         cur.execute("UPDATE player.player SET level=%s WHERE id=%s", (int(arg1), pid))
     elif cmd == "ITEM":

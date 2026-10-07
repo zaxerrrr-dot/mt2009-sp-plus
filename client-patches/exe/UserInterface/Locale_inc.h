@@ -185,6 +185,14 @@
 // (root bone = identity; Arezzo's "me_w" wings) is drawn with it (EterGrnLib/ThingInstance.cpp).
 #define ENABLE_ACCE_INITIAL_PLACEMENT
 
+// MT2009_PLUS_YANG_LIMITS_V1 (Autor: Digi Rasta, nowy-system 0.26.0, limity Yang): yang in a trade in 64 bits
+// (exchange.GetElkFrom*, net.SendExchangeElkAddPacket - the packet always carried a long long) and
+// player.GOLD_MAX / EXCHANGE_GOLD_MAX / SHOP_PRICE_MAX as the server has them (common/length.h there).
+#define ENABLE_MT2009_YANG_LIMITS
+#define MT2009_YANG_GOLD_MAX 100000000000LL
+#define MT2009_YANG_EXCHANGE_GOLD_MAX 10000000000LL
+#define MT2009_YANG_SHOP_PRICE_MAX 50000000000LL
+
 #define __BL_CLIP_MASK__
 
 #define ENABLE_FIX_MOBS_LAG

@@ -977,6 +977,21 @@ if ((Test-Path -LiteralPath $sidekickNoLootApply -PathType Leaf) -and
         Write-Host ('Applied {0} companion loot share edit(s).' -f $sidekickNoLootResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Yang limits (server-patches/yanglimits, "Autor: Digi Rasta", nowy-system
+# v0.26.0, MT2009_PLUS_YANG_LIMITS_V1): GOLD_MAX 100 bn in the pocket,
+# EXCHANGE_GOLD_MAX 10 bn in one trade, SHOP_PRICE_MAX 50 bn for one line of a
+# player's shop (common/length.h, reached as ../../common/length.h); a
+# playerbot's purse stays at PLAYERBOT_GOLD_MAX 2 bn (char.cpp ChangeGold).
+# input_main.cpp, shop_manager.cpp, char_shop.cpp, ikarus_shop_manager.cpp.
+$yangLimitsApply = Join-Path $repo 'server-patches/yanglimits/Apply-YangLimitsPatch.ps1'
+if ((Test-Path -LiteralPath $yangLimitsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource '../../common/length.h') -PathType Leaf)) {
+    $yangLimitsResult = & $yangLimitsApply -SourceDir $engineGameSource
+    if ($yangLimitsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} yang limit edit(s).' -f $yangLimitsResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade

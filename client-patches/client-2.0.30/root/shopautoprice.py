@@ -44,6 +44,16 @@ AUTO_PRICE_KEY = "auto_price"
 PRICE_WINDOW_FILE = "shop_price_window.cfg"
 PRICE_WINDOW_OPEN_KEY = "prices_window_open"
 
+# MT2009_PLUS_YANG_LIMITS_V1 (Autor: Digi Rasta, nowy-system 0.26.0): the most one line of a shop
+# may ask - player.SHOP_PRICE_MAX (50 bn) from the new exe, under GOLD_MAX (2 bn) on an older one.
+def ShopPriceMax():
+	return getattr(player, "SHOP_PRICE_MAX", player.GOLD_MAX - 1)
+
+
+# The digits a price box takes: ten as before, eleven for 50 bn.
+def ShopPriceDigits():
+	return max(10, len(str(ShopPriceMax())))
+
 AUTO_PRICE_SUGGESTED = "suggested"
 AUTO_PRICE_MINIMUM = "minimum"
 AUTO_PRICE_MAXIMUM = "maximum"
@@ -608,9 +618,9 @@ def _TryApply(requestID):
 	text = dialog.GetText()
 	if text != request["originalText"] and text != request["lastAutoText"]:
 		return
-	# The server sells for less than GOLD_MAX only, and a price window may
-	# take fewer digits than that (fleaPriceMax).
-	limit = getattr(dialog, "fleaPriceMax", player.GOLD_MAX - 1)
+	# The server sells up to SHOP_PRICE_MAX only (MT2009_PLUS_YANG_LIMITS_V1), and a
+	# price window may take fewer digits than that (fleaPriceMax).
+	limit = getattr(dialog, "fleaPriceMax", ShopPriceMax())
 	dialog.SetValue(min(price, limit))
 	request["lastAutoText"] = dialog.GetText()
 

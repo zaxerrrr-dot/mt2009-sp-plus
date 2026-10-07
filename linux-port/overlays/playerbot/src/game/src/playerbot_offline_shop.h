@@ -362,7 +362,7 @@ namespace {
     std::set<DWORD> s_setPlayerBotPriceSlips;
 
     // The price a line of this item goes up at: the one asked, or ten times
-    // it for a slip - within `room`, what the counter's GOLD_MAX leaves.
+    // it for a slip - within `room`, what the counter's PLAYERBOT_GOLD_MAX leaves.
     long long BotOfflineSlipPrice(LPITEM item, long long price, long long room) {
         if (!item || price <= 0 || !IsPlayerBotPriceSlipKind(item) ||
                 !IsPlayerBotPriceSlipDrawn(item->GetID()) ||
@@ -430,7 +430,7 @@ namespace {
     bool BotOfflineFixSlip(LPCHARACTER ch, TPlayerBotAIState& state, DWORD itemid, long long normal,
             int ageMin, DWORD now) {
         using namespace playerbot_offline;
-        if (normal <= 0 || normal >= GOLD_MAX || !Begin(ch->GetPlayerID(), Edit, itemid, now)) return false;
+        if (normal <= 0 || normal >= PLAYERBOT_GOLD_MAX || !Begin(ch->GetPlayerID(), Edit, itemid, now)) return false; // MT2009_PLUS_YANG_LIMITS_V1
         // What the line asked and what it is, for its explanation.
         long long slipped = 0, slipCount = 0;
         DWORD slipVnum = 0;
@@ -503,7 +503,7 @@ namespace {
     bool BotOfflineRaiseToFloor(LPCHARACTER ch, DWORD itemid, long long price, long long was, DWORD vnum,
             DWORD now) {
         using namespace playerbot_offline;
-        if (price <= 0 || price >= GOLD_MAX || !Begin(ch->GetPlayerID(), Edit, itemid, now)) return false;
+        if (price <= 0 || price >= PLAYERBOT_GOLD_MAX || !Begin(ch->GetPlayerID(), Edit, itemid, now)) return false; // MT2009_PLUS_YANG_LIMITS_V1
         ikashop::TPriceInfo info{};
         info.yang = price;
         ikashop::GetManager().RecvShopEditItemClientPacket(ch, itemid, info);
@@ -537,7 +537,7 @@ namespace {
         // A new stand's lines are listings as much as a service visit's add,
         // so the slip (BotOfflineSlipPrice) is drawn for them too. Before the
         // checks below, which have to see the prices the stand will carry, and
-        // within what the owner's gold and the other lines leave of GOLD_MAX -
+        // within what the owner's gold and the other lines leave of PLAYERBOT_GOLD_MAX -
         // the engine's own test of a new shop.
         std::vector<long long> meant(count, 0);
         {
@@ -547,7 +547,7 @@ namespace {
             for (BYTE n = 0; n < count; ++n) {
                 const long long before = (long long)table[n].price;
                 const long long after = BotOfflineSlipPrice(ch->GetItem(table[n].pos), before,
-                        (long long)GOLD_MAX - 1 - (asked - before));
+                        (long long)PLAYERBOT_GOLD_MAX - 1 - (asked - before)); // MT2009_PLUS_YANG_LIMITS_V1
                 if (after == before) continue;
                 meant[n] = before;
                 table[n].price = after;
@@ -567,14 +567,14 @@ namespace {
             int pos = table[n].display_pos;
             if (pos >= PLAYERBOT_OFFLINE_SHOP_PAGE_CELLS ||
                     !BotOfflineValid(ch, item, pos) || !cells.insert(table[n].pos.cell).second ||
-                    table[n].price <= 0 || table[n].price >= GOLD_MAX) return false;
+                    table[n].price <= 0 || table[n].price >= PLAYERBOT_GOLD_MAX) return false; // MT2009_PLUS_YANG_LIMITS_V1
             for (int y = 0; y < item->GetSize(); ++y) {
                 int c = pos + y * SHOP_PLAYER_WIDTH;
                 if (grid[c]) return false;
                 grid[c] = true;
             }
             total += table[n].price;
-            if (total >= GOLD_MAX) return false;
+            if (total >= PLAYERBOT_GOLD_MAX) return false; // MT2009_PLUS_YANG_LIMITS_V1
         }
         constexpr BYTE duration = 1; // constants.cpp: 8 hours, 6000 Yang
         // Not in the first two minutes after this bot spawned. The core loads
@@ -2384,7 +2384,7 @@ namespace {
                 if (pos < 0 || !BotOfflineValid(ch, stone, pos)) continue;
                 ikashop::TPriceInfo price{};
                 price.yang = GetPlayerBotDragonSoulPrice(stone);
-                if (price.yang <= 0 || shop->GetTotalYangValue() >= GOLD_MAX - price.yang) continue;
+                if (price.yang <= 0 || shop->GetTotalYangValue() >= PLAYERBOT_GOLD_MAX - price.yang) continue; // MT2009_PLUS_YANG_LIMITS_V1
                 const DWORD id = stone->GetID();
                 const DWORD vnum = stone->GetVnum();
                 if (Begin(ch->GetPlayerID(), Add, id, now)) {
@@ -2476,12 +2476,12 @@ namespace {
             // (BotOfflineDueSlipLine) - or the hourly reprice finds it first,
             // the way a player finds his own.
             const long long meant = price.yang;
-            if (shop->GetTotalYangValue() < GOLD_MAX)
+            if (shop->GetTotalYangValue() < PLAYERBOT_GOLD_MAX) // MT2009_PLUS_YANG_LIMITS_V1
                 price.yang = BotOfflineSlipPrice(item, price.yang,
-                        (long long)GOLD_MAX - 1 - (long long)shop->GetTotalYangValue());
+                        (long long)PLAYERBOT_GOLD_MAX - 1 - (long long)shop->GetTotalYangValue()); // MT2009_PLUS_YANG_LIMITS_V1
             const bool slipped = price.yang != meant;
-            if (price.yang <= 0 || price.yang >= GOLD_MAX ||
-                    shop->GetTotalYangValue() >= GOLD_MAX - price.yang) { ++addRefused; continue; }
+            if (price.yang <= 0 || price.yang >= PLAYERBOT_GOLD_MAX || // MT2009_PLUS_YANG_LIMITS_V1
+                    shop->GetTotalYangValue() >= PLAYERBOT_GOLD_MAX - price.yang) { ++addRefused; continue; } // MT2009_PLUS_YANG_LIMITS_V1
             if (slipped) {
                 priceTrace.Step(per::STEP_SLIP, price.yang, meant);
                 priceTrace.trace.flags |= per::LFLAG_SLIP;
@@ -2598,7 +2598,7 @@ namespace {
                         const long long moved = price.yang > asked ? price.yang - asked : asked - price.yang;
                         const bool worthEdit = price.yang != asked && (asked < repriceFloor ||
                                 moved * 100 > asked * PLAYERBOT_MARKET_V3_REPRICE_DEADBAND_PERCENT);
-                        if (price.yang > 0 && price.yang < GOLD_MAX && worthEdit) {
+                        if (price.yang > 0 && price.yang < PLAYERBOT_GOLD_MAX && worthEdit) { // MT2009_PLUS_YANG_LIMITS_V1
                             edited = true;
                             if (Begin(ch->GetPlayerID(), Edit, it->first, now)) {
                                 const long long was = asked;

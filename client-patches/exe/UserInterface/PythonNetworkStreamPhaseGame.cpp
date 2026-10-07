@@ -2913,7 +2913,11 @@ bool CPythonNetworkStream::SendExchangeStartPacket(DWORD vid)
 	return SendSequence();
 }
 
+#ifdef ENABLE_MT2009_YANG_LIMITS
+bool CPythonNetworkStream::SendExchangeElkAddPacket(YANG elk) // MT2009_PLUS_YANG_LIMITS_V1
+#else
 bool CPythonNetworkStream::SendExchangeElkAddPacket(DWORD elk)
+#endif
 {
 	if (!__CanActMainInstance())
 		return true;

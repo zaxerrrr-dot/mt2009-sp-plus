@@ -53,7 +53,8 @@ PROTO = "world.item_proto"
 GRID_W, GRID_H = 5, 8                       # common/length.h SHOP_DEFAULT_WIDTH / HEIGHT
 MAX_LINES = GRID_W * GRID_H                 # SHOP_HOST_ITEM_MAX_NUM
 FLAG_COUNT_PER_1GOLD = 1 << 3               # item_length.h ITEM_FLAG_COUNT_PER_1GOLD
-GOLD_MAX = 2000000000                       # what a character may carry
+GOLD_MAX = 2000000000                       # a price: item_proto.gold is int(11)
+POCKET_MAX = 100000000000                   # what a character may carry (MT2009_PLUS_YANG_LIMITS_V1, length.h GOLD_MAX)
 COUNT_MAX = 65535                           # shop_item.count smallint unsigned
 
 # The three merchants the bots shop at (playerbot_gear.h, playerbot_economy.h).
@@ -210,8 +211,8 @@ def price_problems(item, gold, buy, count=1):
         errors.append(f"{name}: kupiony za {gold:,} Yang odsprzedałby się za {sell_back(item, 1, buy):,} Yang – "
                       "darmowy Yang. Obniż cenę odkupu (gracz dostaje 1/5 jej minus podatek) albo podnieś cenę."
                       .replace(",", " "))
-    if gold * count > GOLD_MAX:
-        errors.append(f"{name} ×{count}: {gold * count:,} Yang – więcej, niż postać może mieć (2 mld).".replace(",", " "))
+    if gold * count > POCKET_MAX:
+        errors.append(f"{name} ×{count}: {gold * count:,} Yang – więcej, niż postać może mieć (100 mld).".replace(",", " "))
     return errors
 
 

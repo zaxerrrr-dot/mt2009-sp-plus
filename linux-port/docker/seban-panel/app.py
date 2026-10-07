@@ -6401,8 +6401,9 @@ def player_action_game(pid):
             arg1, arg2, label = vnum, count, f"Przedmiot #{vnum} × {count}"
         elif command == "GOLD":
             amount = int(request.form.get("amount", 0))
-            if not 1 <= amount <= 2_000_000_000:
-                raise ValueError("Yang musi mieścić się w zakresie 1–2 000 000 000.")
+            # MT2009_PLUS_YANG_LIMITS_V1: a purse holds 100 bn (pc.change_money is 64-bit).
+            if not 1 <= amount <= 100_000_000_000:
+                raise ValueError("Yang musi mieścić się w zakresie 1–100 000 000 000.")
             arg1, arg2, label = amount, "", f"{amount:,} Yang".replace(",", " ")
         elif command == "LEVEL":
             level = int(request.form.get("level", 0))

@@ -191,7 +191,7 @@ namespace
 	// Whether a line asking `asked` is to be edited to `price`.
 	bool IsPlayerBotRepriceWorthEdit(long long asked, long long price, long long floor)
 	{
-		if (price <= 0 || price >= GOLD_MAX || price == asked)
+		if (price <= 0 || price >= PLAYERBOT_GOLD_MAX || price == asked) // MT2009_PLUS_YANG_LIMITS_V1
 			return false;
 		if (asked < floor)
 			return true;

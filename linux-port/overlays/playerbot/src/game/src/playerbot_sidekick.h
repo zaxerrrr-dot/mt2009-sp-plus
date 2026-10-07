@@ -6309,7 +6309,9 @@ namespace
 			answer = give ? "Nie masz tyle yang." : "Towarzysz nie ma tyle yang.";
 			return 2;
 		}
-		if ((long long)to->GetGold() + amount > (long long)GOLD_MAX)
+		// MT2009_PLUS_YANG_LIMITS_V1: each purse by its own limit - the owner's 100 bn, the
+		// companion's (a playerbot) 2 bn.
+		if ((long long)to->GetGold() + amount > (long long)to->Mt2009PlusGoldMax())
 		{
 			answer = give ? "Towarzysz nie zmiesci tyle yang." : "Nie zmiescisz tyle yang.";
 			return 2;

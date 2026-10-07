@@ -1060,7 +1060,7 @@ namespace
 		long long price = (long long)(cost * (100 + PLAYERBOT_SASH_PRICE_MARGIN_PERCENT) / 100.0);
 		price = (long long)ScalePlayerBotIwakuraPrice((DWORD)std::min<long long>(price, 0xFFFFFFFFLL));
 		price = (price + 500) / 1000 * 1000;
-		return (DWORD)std::min<long long>(std::max<long long>(price, 1000), GOLD_MAX - 1000);
+		return (DWORD)std::min<long long>(std::max<long long>(price, 1000), PLAYERBOT_GOLD_MAX - 1000); // MT2009_PLUS_YANG_LIMITS_V1
 	}
 
 	// Within a keeper's purse share, and never over a fifth above the price

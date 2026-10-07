@@ -3013,7 +3013,15 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_REFINE",	DS_SUB_HEADER_DO_REFINE);
 	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_CHANGE_ATTR",	DS_SUB_HEADER_DO_CHANGE_ATTR);
 
+#ifdef ENABLE_MT2009_YANG_LIMITS
+	// MT2009_PLUS_YANG_LIMITS_V1: the server's limits (its common/length.h) - 100 bn in the pocket, 10 bn in one trade,
+	// 50 bn for one line of a shop. Python longs: root reads EXCHANGE_GOLD_MAX / SHOP_PRICE_MAX with getattr.
+	PyModule_AddObject(poModule, "GOLD_MAX", PyLong_FromLongLong(MT2009_YANG_GOLD_MAX));
+	PyModule_AddObject(poModule, "EXCHANGE_GOLD_MAX", PyLong_FromLongLong(MT2009_YANG_EXCHANGE_GOLD_MAX));
+	PyModule_AddObject(poModule, "SHOP_PRICE_MAX", PyLong_FromLongLong(MT2009_YANG_SHOP_PRICE_MAX));
+#else
 	PyModule_AddIntConstant(poModule, "GOLD_MAX", GOLD_MAX);
+#endif
 
 	PyModule_AddIntConstant(poModule, "POINT_MAX_HP", POINT_MAX_HP);
 	PyModule_AddIntConstant(poModule, "POINT_MAX_SP", POINT_MAX_SP);

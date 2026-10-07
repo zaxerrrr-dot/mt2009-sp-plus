@@ -414,7 +414,7 @@ class OfflineShopBuilder(ui.ScriptWindow):
 		priceInputBoard.SetTitle(localeInfo.PRIVATE_SHOP_INPUT_PRICE_DIALOG_TITLE)
 		priceInputBoard.SetAcceptEvent(ui.__mem_func__(self.AcceptInputPrice))
 		priceInputBoard.SetCancelEvent(ui.__mem_func__(self.CancelInputPrice))
-		priceInputBoard.SetMaxLength(10)
+		priceInputBoard.SetMaxLength(shopautoprice.ShopPriceDigits()) # MT2009_PLUS_YANG_LIMITS_V1
 		priceInputBoard.Open()
 
 		itemPrice = GetPrivateShopItemPrice(itemVNum, count, sockets)
@@ -473,9 +473,9 @@ class OfflineShopBuilder(ui.ScriptWindow):
 		if inputPrice <= 0:
 			return True	# MT2009_PLUS_VEKIRION_V1: Enter handled, no chat behind the window
 
-		# MT2009_PLUS_UPSTREAM_2_0_76: the server sells for less than GOLD_MAX only.
-		if inputPrice >= player.GOLD_MAX:
-			inputPrice = player.GOLD_MAX - 1
+		# MT2009_PLUS_YANG_LIMITS_V1: the server sells up to SHOP_PRICE_MAX (50 bn) only.
+		if inputPrice > shopautoprice.ShopPriceMax():
+			inputPrice = shopautoprice.ShopPriceMax()
 
 		attachedInvenType = self.priceInputBoard.sourceWindowType
 		sourceSlotPos = self.priceInputBoard.sourceSlotPos

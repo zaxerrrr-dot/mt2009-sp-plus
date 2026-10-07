@@ -736,6 +736,25 @@ if [ -s /opt/playerbot/log_schema.sql ]; then
         head -3 /tmp/logschema.err >&2
     fi
 fi
+# MT2009_PLUS_YANG_LIMITS_V1 (server-patches/yanglimits; Autor: Digi Rasta, nowy-system 0.26.0):
+# a purse holds 100 bn and one line of a player's shop asks up to 50 bn. The private shop's
+# remembered prices (player.myshop_pricelist.price, INT UNSIGNED: 4.29 bn, the database clamps
+# silently in this sql_mode) and the money log (log.money_log.gold, INT) were the last 32-bit
+# yang columns the engine writes; BIGINT once, a no-op after (information_schema decides).
+for yang_col in "player myshop_pricelist price BIGINT UNSIGNED NOT NULL DEFAULT 0" \
+                "log money_log gold BIGINT NOT NULL DEFAULT 0"; do
+    set -- $yang_col
+    yang_schema=$1; yang_table=$2; yang_column=$3; shift 3
+    yang_type=$(db -e "SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='$yang_schema' AND TABLE_NAME='$yang_table' AND COLUMN_NAME='$yang_column';" 2>/dev/null || true)
+    case "$yang_type" in
+        ''|bigint) ;;
+        *)
+            echo "[playerbot-migrate] widening $yang_schema.$yang_table.$yang_column ($yang_type) to $* (yang limits)"
+            db -e "ALTER TABLE $yang_schema.$yang_table MODIFY $yang_column $*;" \
+                || fail_step "could not widen $yang_schema.$yang_table.$yang_column to BIGINT (yang limits)"
+            ;;
+    esac
+done
 # MT2009_PLUS_BOT_SESSIONS_V1: the bots' sessions, one row a session, which
 # the game core writes (playerbot_session.h) and the classic panel's "Sesje
 # gry" card and "Tylko boty" list read. The table is log_schema.sql's too;

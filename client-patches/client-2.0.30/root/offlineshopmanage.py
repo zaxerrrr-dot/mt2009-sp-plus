@@ -594,7 +594,7 @@ class OfflineShopManage(ui.ScriptWindow):
 				dialog.SetTitle(localeInfo.PRIVATE_SHOP_INPUT_EDIT_ALL_PRICE_DIALOG_TITLE)
 			else:
 				dialog.SetTitle(localeInfo.PRIVATE_SHOP_INPUT_EDIT_PRICE_DIALOG_TITLE)
-			dialog.SetMaxLength(10)
+			dialog.SetMaxLength(shopautoprice.ShopPriceDigits()) # MT2009_PLUS_YANG_LIMITS_V1
 			dialog.SetCancelEvent(ui.__mem_func__(self.__CloseAddInput))
 			# MT2009_PLUS_VEKIRION_V1 (Autor: Vekirion): Enter in the price box accepts like OK (and never falls through to the chat)
 			dialog.SetAcceptEvent(lambda arg1=shopSlotIndex, arg2=massEdit: self.AcceptEditItemDialog(arg1, arg2))
@@ -948,15 +948,15 @@ class OfflineShopManage(ui.ScriptWindow):
 			if not current or price <= 0:
 				unavailable += 1
 				continue
-			price = min(price, player.GOLD_MAX - 1)
+			price = min(price, shopautoprice.ShopPriceMax()) # MT2009_PLUS_YANG_LIMITS_V1
 			shopTotal += price - current.get("price", 0)
 			if price != current.get("price", 0):
 				edits.append((current, price))
 
 		if shopTotal >= player.GOLD_MAX:
 			chat.AppendChat(chat.CHAT_TYPE_INFO, playerbot_lang.T(
-				"Ceny nie zostaly zmienione: laczna wartosc sklepu osiagnelaby lub przekroczyla limit 2 miliardow Yang.",
-				"Prices were not changed: the shop total would reach or exceed the 2 billion Yang limit."))
+				"Ceny nie zostaly zmienione: laczna wartosc sklepu osiagnelaby lub przekroczyla limit %s Yang." % localeInfo.NumberToMoneyString(player.GOLD_MAX),
+				"Prices were not changed: the shop total would reach or exceed the %s Yang limit." % localeInfo.NumberToMoneyString(player.GOLD_MAX)))
 			return
 		if edits:
 			shoppricepump.Queue(edits)
@@ -1117,9 +1117,9 @@ class OfflineShopManage(ui.ScriptWindow):
 
 		if price <= 0 or dialog.GetText() != getattr(dialog, "fleaOpenText", None):
 			return
-		# The server sells for less than GOLD_MAX only (IsGoodSalePrice), and
+		# The server sells up to SHOP_PRICE_MAX only (IsGoodSalePrice), and
 		# the range for a big stack can go past it.
-		dialog.SetValue(min(price, player.GOLD_MAX - 1))
+		dialog.SetValue(min(price, shopautoprice.ShopPriceMax())) # MT2009_PLUS_YANG_LIMITS_V1
 		dialog.fleaOpenText = dialog.GetText()
 
 	def ShowAddItemDialog(self, inventorySlotIndex, shopSlotIndex, inventoryWindowType, itemVnum, itemCount):
@@ -1129,7 +1129,7 @@ class OfflineShopManage(ui.ScriptWindow):
 
 			dialog = uiCommon.NewMoneyInputDialog()
 			dialog.SetTitle(localeInfo.PRIVATE_SHOP_INPUT_PRICE_DIALOG_TITLE)
-			dialog.SetMaxLength(10)
+			dialog.SetMaxLength(shopautoprice.ShopPriceDigits()) # MT2009_PLUS_YANG_LIMITS_V1
 			dialog.SetAcceptEvent(lambda arg1=inventorySlotIndex, arg2=shopSlotIndex, arg3=inventoryWindowType: self.AcceptAddItemDialog(arg1, arg2, arg3))
 			# dialog.acceptButton.SAFE_SetEvent(self.AcceptAddItemDialog, inventorySlotIndex, shopSlotIndex, inventoryWindowType)
 			dialog.SetCancelEvent(ui.__mem_func__(self.__CloseAddInput))
@@ -1166,9 +1166,9 @@ class OfflineShopManage(ui.ScriptWindow):
 		if inputPrice <= 0:
 			return True
 
-		# The server sells for less than GOLD_MAX only (IsGoodSalePrice).
-		if inputPrice >= player.GOLD_MAX:
-			inputPrice = player.GOLD_MAX - 1
+		# MT2009_PLUS_YANG_LIMITS_V1: the server sells up to SHOP_PRICE_MAX only (IsGoodSalePrice).
+		if inputPrice > shopautoprice.ShopPriceMax():
+			inputPrice = shopautoprice.ShopPriceMax()
 
 		self.fleaPriceDialog = None
 		self.__CloseFleaPriceWindow()
@@ -1195,9 +1195,9 @@ class OfflineShopManage(ui.ScriptWindow):
 		if inputPrice <= 0:
 			return True
 
-		# The server sells for less than GOLD_MAX only (IsGoodSalePrice).
-		if inputPrice >= player.GOLD_MAX:
-			inputPrice = player.GOLD_MAX - 1
+		# MT2009_PLUS_YANG_LIMITS_V1: the server sells up to SHOP_PRICE_MAX only (IsGoodSalePrice).
+		if inputPrice > shopautoprice.ShopPriceMax():
+			inputPrice = shopautoprice.ShopPriceMax()
 
 		shop_total_value = 0
 		for i,v in constInfo.myshop_data["items"].items():
