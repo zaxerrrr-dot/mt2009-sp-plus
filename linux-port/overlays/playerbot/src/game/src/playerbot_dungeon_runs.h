@@ -144,6 +144,26 @@
 //     PLAYERBOT_DGRUN_FALLBACK_MAX_MS is up;
 //   - the Shaman's Cure first: the run's most hurt under 75% before anything.
 //
+// MT2009_PLUS_BOT_DUNGEON_RUNS_V3 - the test server's 7 October, the owner
+// wanting the bots to go through the dungeons to the end. 360 rows of
+// playerbot_dungeon_runs.tsv: the Biblioteka 47 won of 54, Wukong 93 of 120
+// (17 abandoned at stage 2 with the last Hill Stone standing), Razador 66 of
+// 114 (14 given up at Razador after three wipes), the Ruins 20 of 71 (26 sent
+// out by the quest's time limit, logged as "left"); Nemere, the Dragon and
+// the Jungle not once - the cap of four runs a core was always full.
+//   - the objective before the guards (MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1, the
+//     cohort's fight and DrivePlayerBotDgRunLeader with run.dwFocusVID);
+//   - a starved dungeon (none of it for PLAYERBOT_DGRUN_STARVED_MS) may be
+//     called above the cap and weighs as the biggest bucket;
+//   - the Ruins from 72 in sixes with a Shaman, Nemere called with five;
+//   - the quests' "minutes" get PLAYERBOT_DGRUN_EXTRA_TIME_PCT on top for a
+//     bots' run, and an instance closed by its quest is a "timeout";
+//   - a wipe counts against the run only when nothing moved since the one
+//     before (a boss's health does not come back in a bots' instance), up to
+//     PLAYERBOT_DGRUN_MAX_WIPES_ALL;
+//   - a stall says what stands and what each member does (stall detail),
+//     and a wipe the boss's health.
+//
 // An implementation fragment in the sense playerbot_types.h describes:
 // include it once, after playerbot_dungeon_lfg.h (whose places, words and
 // refusal it borrows), and so after the party dungeon pass, the Arezzo
@@ -241,6 +261,23 @@ namespace
 	const DWORD PLAYERBOT_DGRUN_CLOSED_GRACE_MS = 20000;
 	const DWORD PLAYERBOT_DGRUN_LIMIT_MARGIN_MS = 2 * 60 * 1000;
 	const int PLAYERBOT_DGRUN_MAX_WIPES = 3;
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the wipes count against a run only
+	// while nothing moved between them (PLAYERBOT_DGRUN_MAX_WIPES in a row
+	// with no flag and no boss health gone); this many in all end it anyway.
+	const int PLAYERBOT_DGRUN_MAX_WIPES_ALL = 8;
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a bots' run gets this share (percent)
+	// of its quest's time limit on top - the quests with a "minutes" flag
+	// (the Biblioteka and the three Arezzo dungeons). The Ruins' bots were
+	// sent out by the limit in 26 of 71 runs on 7 October, five of them at
+	// the King; the cohort's runs, which have none, took 33-45 minutes.
+	const int PLAYERBOT_DGRUN_EXTRA_TIME_PCT = 50;
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a dungeon with no run of its own for
+	// this long may be called above the core's cap (by at most
+	// PLAYERBOT_DGRUN_STARVED_OVER_CAP runs) - 7 October: the cap of four was
+	// held all day by the Biblioteka, Wukong, Razador and the Ruins, and
+	// Nemere, the Dragon and the Jungle were never called.
+	const DWORD PLAYERBOT_DGRUN_STARVED_MS = 40 * 60 * 1000;
+	const int PLAYERBOT_DGRUN_STARVED_OVER_CAP = 2;
 	const DWORD PLAYERBOT_DGRUN_PULL_RETRY_MS = 5000;
 	const DWORD PLAYERBOT_DGRUN_OUT_GRACE_MS = 3000;
 	const DWORD PLAYERBOT_DGRUN_TOWER_OUT_GRACE_MS = 20000;
@@ -290,6 +327,11 @@ namespace
 	// The Shaman's Cure (109) for a member under this much health.
 	const DWORD PLAYERBOT_DGRUN_CURE_SKILL = 109;
 	const int PLAYERBOT_DGRUN_CURE_HP = 75;
+	// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1: the leader's objective before what
+	// attacks the party - a stone at once, anything else after this long in
+	// the stage - for a bot with this much of its health.
+	const DWORD PLAYERBOT_DGRUN_FOCUS_MS = 90000;
+	const int PLAYERBOT_DGRUN_FOCUS_HP = 50;
 
 	// ------------------------------------------------------------ the state
 
@@ -363,12 +405,21 @@ namespace
 		bool bFallback;
 		DWORD dwFallbackSince, dwFallbackRestUntil;
 		int iFit, iFallbacks, iBreakOffs;
+		// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1: the objective the leader hits for all (vid), or 0.
+		DWORD dwFocusVID;
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the wipes with nothing moved since
+		// the one before, when the last one came, and the minutes added to
+		// the quest's limit (-1: not yet looked at).
+		int iWipesIdle;
+		DWORD dwLastWipeAt;
+		int iExtraMin;
 		TPlayerBotDgRun() : iId(0), iDef(0), bEmpire(0), bPhase(DGRUN_PHASE_GATHER), dwLeader(0), dwAnchor(0), iLvMin(0),
 				iLvMax(0), dwCalledAt(0), dwPhaseSince(0), dwEnteredAt(0), dwLastProgress(0), dwFinishedAt(0),
 				dwClosedSeen(0), dwOutSince(0), dwNextStep(0), dwNextPull(0), lInstance(0), iStage(0), dwStageSince(0),
 				llSignature(0), bStallLogged(false), iDeaths(0), iWipes(0), bAllDead(false), llFees(0), iAnswerShouts(0),
 				lPackX(0), lPackY(0), iPackN(0), szResult(NULL), bPartyMade(false), lCampX(0), lCampY(0), bFallback(false),
-				dwFallbackSince(0), dwFallbackRestUntil(0), iFit(0), iFallbacks(0), iBreakOffs(0) {}
+				dwFallbackSince(0), dwFallbackRestUntil(0), iFit(0), iFallbacks(0), iBreakOffs(0), dwFocusVID(0), iWipesIdle(0),
+				dwLastWipeAt(0), iExtraMin(-1) {}
 	};
 
 	std::map<int, TPlayerBotDgRun> s_mapPlayerBotDgRuns;
@@ -377,6 +428,8 @@ namespace
 	std::map<DWORD, DWORD> s_mapPlayerBotDgRunRest;
 	int s_iPlayerBotDgRunNextId = 1;
 	DWORD s_adwPlayerBotDgRunShoutAt[4] = { 0, 0, 0, 0 };
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a dungeon's last call (get_dword_time), or 0.
+	DWORD s_adwPlayerBotDgRunLastCall[sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0])] = { 0 };
 	// The bot whose refusal is being asked: its own run does not count.
 	DWORD s_dwPlayerBotDgRunAsking = 0;
 	bool s_bPlayerBotDgRunOffFile = false;
@@ -1133,6 +1186,22 @@ namespace
 			if ((foe == threat && cur->GetVictim() == ch) || (foe == goal && curGoal) || (foe == any && !threat && !goal))
 				foe = cur;
 		}
+		// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1 (playerbot_arezzo_dungeon_bots.h has
+		// the story): the stage's stone - or, once the stage has run
+		// PLAYERBOT_DGRUN_FOCUS_MS, any objective - before what attacks the
+		// party, for a leader that is not hurt; the others hit it with it
+		// (run.dwFocusVID, ManagePlayerBotDgRunInside). The Biblioteka's
+		// Metins (stage 2: 4 of 54 runs abandoned there on 7 October, the
+		// room's guards on the pack all the while) and Razador's Metin.
+		run.dwFocusVID = 0;
+		if (goal && ch->GetMaxHP() > 0 &&
+				(long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_FOCUS_HP &&
+				(goal->IsStone() || dwNow - run.dwStageSince >= PLAYERBOT_DGRUN_FOCUS_MS))
+		{
+			const bool curGoal = cur && std::find(goals.begin(), goals.end(), cur->GetRaceNum()) != goals.end();
+			foe = curGoal ? cur : goal;
+			run.dwFocusVID = (DWORD)foe->GetVID();
+		}
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: nothing new pulled while the leader
 		// is hurt or fewer than two of the others (all, when fewer are up)
 		// stand by it - what is on the party close by is fought, and it waits.
@@ -1288,6 +1357,21 @@ namespace
 		LPCHARACTER anchor = run.dwAnchor ? CHARACTER_MANAGER::instance().FindByPID(run.dwAnchor) : NULL;
 		if (!anchor || anchor == ch || anchor->GetMapIndex() != ch->GetMapIndex())
 			return DrivePlayerBotDgRunLeader(ch, state, run, rb, d, dwNow);
+		// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1: the leader's objective, hit with
+		// it by everybody not hurt (the party dungeon pass puts what attacks
+		// the bot first, and that is what kept the stones standing).
+		if (run.dwFocusVID != 0 && ch->GetMaxHP() > 0 &&
+				(long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_FOCUS_HP)
+		{
+			LPCHARACTER focus = CHARACTER_MANAGER::instance().Find(run.dwFocusVID);
+			if (IsPlayerBotPdgFoe(ch, focus) &&
+					DISTANCE_APPROX(anchor->GetX() - focus->GetX(), anchor->GetY() - focus->GetY()) <= PLAYERBOT_PDG_HUNT_RANGE)
+			{
+				if (BuffPlayerBotTowerFellows(ch, state, dwNow))
+					return true;
+				return FightPlayerBotTowerObjective(ch, state, focus, dwNow);
+			}
+		}
 		return FightPlayerBotPartyDungeon(ch, state, rb.pdg, anchor, dwNow);
 	}
 
@@ -1482,6 +1566,7 @@ namespace
 		if (run.lInstance != 0 && def.bKind != DGRUN_KIND_TOWER)
 		{
 			s_mapPlayerBotArzDgScan.erase(run.lInstance);
+			s_mapPlayerBotArzDgFocus.erase(run.lInstance);
 			LPDUNGEON d = CDungeonManager::instance().FindByMapIndex(run.lInstance);
 			if (d)
 			{
@@ -1962,8 +2047,10 @@ namespace
 				run.dwOutSince = dwNow;
 			if (!d || dwNow - run.dwOutSince >= PLAYERBOT_DGRUN_OUT_GRACE_MS)
 			{
+				// V3: an instance the quest closed (its time limit's finish()
+				// warps everybody out in the same second) is a timeout, not "left".
 				const char* result = run.dwFinishedAt ? "finished" : (run.szResult ? run.szResult
-						: (run.dwClosedSeen ? "timeout" : (d ? "left" : "lost")));
+						: ((run.dwClosedSeen || (d && d->GetFlag("closed") == 1)) ? "timeout" : (d ? "left" : "lost")));
 				ClosePlayerBotDgRun(run, result, dwNow);
 				return false;
 			}
@@ -1973,8 +2060,31 @@ namespace
 		if (alive == 0 && !run.bAllDead)
 		{
 			++run.iWipes;
-			sys_log(0, "BOT_DGRUN: wipe run=%d dungeon=%s stage=%d inside=%d wipes=%d after_s=%u", run.iId, def.szKey,
-					run.iStage, inside, run.iWipes, (dwNow - run.dwEnteredAt) / 1000);
+			// V3: a wipe after progress (a flag, a boss's health - which does
+			// not come back, HoldPlayerBotArzDgBossRegen) starts the count again.
+			run.iWipesIdle = run.dwLastWipeAt != 0 && run.dwLastProgress > run.dwLastWipeAt ? 1 : run.iWipesIdle + 1;
+			run.dwLastWipeAt = dwNow;
+			// The boss that stands (its health, percent; -1: none) - whether
+			// the wipes wear it down.
+			int bossHp = -1;
+			DWORD bossRace = 0;
+			const TPlayerBotArzDgScan& wsc = ScanPlayerBotArzDg(run.lInstance, dwNow);
+			for (size_t i = 0; i < wsc.foes.size(); ++i)
+			{
+				LPCHARACTER c = CHARACTER_MANAGER::instance().Find(wsc.foes[i].dwVID);
+				if (c && !c->IsDead() && !c->IsStone() && c->GetMobRank() >= MOB_RANK_BOSS && c->GetMaxHP() > 0)
+				{
+					const int pct = (int)((long long)c->GetHP() * 100 / c->GetMaxHP());
+					if (bossHp < 0 || pct < bossHp)
+					{
+						bossHp = pct;
+						bossRace = c->GetRaceNum();
+					}
+				}
+			}
+			sys_log(0, "BOT_DGRUN: wipe run=%d dungeon=%s stage=%d inside=%d wipes=%d in_a_row=%d boss=%u boss_hp=%d after_s=%u",
+					run.iId, def.szKey, run.iStage, inside, run.iWipes, run.iWipesIdle, (unsigned int)bossRace, bossHp,
+					(dwNow - run.dwEnteredAt) / 1000);
 		}
 		run.bAllDead = alive == 0;
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V2: the camp - where the leader (or who
@@ -2052,6 +2162,23 @@ namespace
 			run.bStallLogged = false;
 		}
 		HoldPlayerBotArzDgBossRegen(run.lInstance, dwNow);
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the bots' extra time, once init()
+		// has set the quest's minutes (the header's PLAYERBOT_DGRUN_EXTRA_TIME_PCT).
+		if (run.iExtraMin < 0 && d->GetFlag("init") == 1)
+		{
+			run.iExtraMin = 0;
+			const int minutes = d->GetFlag("minutes");
+			if (minutes > 0 && d->GetFlag("closed") == 0)
+			{
+				run.iExtraMin = def.iLimitMin * PLAYERBOT_DGRUN_EXTRA_TIME_PCT / 100;
+				d->SetFlag("minutes", minutes + run.iExtraMin);
+				const int keep = d->GetFlag("mt2009_keep_until");
+				if (keep > 0)
+					d->SetFlag("mt2009_keep_until", keep + run.iExtraMin * 60);
+				sys_log(0, "BOT_DGRUN: extra time run=%d dungeon=%s instance=%ld minutes=%d+%d", run.iId, def.szKey,
+						run.lInstance, minutes, run.iExtraMin);
+			}
+		}
 		if (d->GetFlag("closed") == 1 && run.dwClosedSeen == 0)
 			run.dwClosedSeen = dwNow;
 		// Razador's statue and Nemere's lion, whenever no task runs.
@@ -2085,10 +2212,10 @@ namespace
 		}
 		if (run.dwFinishedAt)
 			return true;
-		if (run.iWipes >= PLAYERBOT_DGRUN_MAX_WIPES)
+		if (run.iWipesIdle >= PLAYERBOT_DGRUN_MAX_WIPES || run.iWipes >= PLAYERBOT_DGRUN_MAX_WIPES_ALL)
 		{
-			sys_log(0, "BOT_DGRUN: given up after %d wipes run=%d dungeon=%s stage=%d", run.iWipes, run.iId, def.szKey,
-					run.iStage);
+			sys_log(0, "BOT_DGRUN: given up after %d wipes (%d in a row) run=%d dungeon=%s stage=%d", run.iWipes,
+					run.iWipesIdle, run.iId, def.szKey, run.iStage);
 			PullPlayerBotDgRun(run, "wipe", dwNow);
 			return true;
 		}
@@ -2098,6 +2225,41 @@ namespace
 			sys_log(0, "BOT_DGRUN: stalled run=%d dungeon=%s stage=%d inside=%d alive=%d monsters=%u for_s=%u", run.iId,
 					def.szKey, run.iStage, inside, alive, (unsigned int)ScanPlayerBotArzDg(run.lInstance, dwNow).foes.size(),
 					(dwNow - run.dwLastProgress) / 1000);
+			// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: what stands and what each member
+			// does (the cohort's ARZ_DG stall detail) - the night of 6/7 October
+			// could not say what Wukong's stalled stage 2 had left.
+			LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(def.lMap);
+			const long baseX = pMap ? pMap->m_setting.iBaseX : 0, baseY = pMap ? pMap->m_setting.iBaseY : 0;
+			char foes[640] = "";
+			size_t off = 0;
+			const TPlayerBotArzDgScan& sc = ScanPlayerBotArzDg(run.lInstance, dwNow);
+			for (size_t i = 0, n = 0; i < sc.foes.size() && n < 14 && off < sizeof(foes) - 48; ++i)
+			{
+				LPCHARACTER c = CHARACTER_MANAGER::instance().Find(sc.foes[i].dwVID);
+				// The objectives and the big ones first: the rest only to fill the line.
+				if (n >= 8 && c && !c->IsStone() && c->GetMobRank() < MOB_RANK_BOSS && sc.foes[i].dwRace < 20000)
+					continue;
+				++n;
+				off += snprintf(foes + off, sizeof(foes) - off, "%s%u@(%ld,%ld)hp%d", off ? "," : "",
+						(unsigned int)sc.foes[i].dwRace, (sc.foes[i].lX - baseX) / 100, (sc.foes[i].lY - baseY) / 100,
+						c && c->GetMaxHP() > 0 ? (int)((long long)c->GetHP() * 100 / c->GetMaxHP()) : -1);
+			}
+			char acts[640] = "";
+			off = 0;
+			for (size_t i = 0; i < run.members.size() && off < sizeof(acts) - 64; ++i)
+			{
+				LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+				if (!c || c->GetMapIndex() != run.lInstance)
+					continue;
+				LPCHARACTER v = c->GetVictim();
+				off += snprintf(acts + off, sizeof(acts) - off, "%s%s:hp%d,vic=%u,rec=%d,move=%d@(%ld,%ld)", off ? " " : "",
+						c->GetName(), c->GetMaxHP() > 0 ? (int)((long long)c->GetHP() * 100 / c->GetMaxHP()) : -1,
+						v ? (unsigned int)v->GetRaceNum() : 0U, IsPlayerBotDgRunRecovering(run.members[i]) ? 1 : 0,
+						c->IsStateMove() ? 1 : 0, (c->GetX() - baseX) / 100, (c->GetY() - baseY) / 100);
+			}
+			sys_log(0, "BOT_DGRUN: stall detail run=%d dungeon=%s flags=step:%d,active:%d,done:%d,left:%d,kills:%d,stones:%d,boss:%d focus=%u foes=%s bots=%s",
+					run.iId, def.szKey, d->GetFlag("step"), d->GetFlag("active"), d->GetFlag("done"), d->GetFlag("left"),
+					d->GetFlag("kills"), d->GetFlag("stones"), d->GetFlag("boss"), (unsigned int)run.dwFocusVID, foes, acts);
 		}
 		if (dwNow - run.dwLastProgress >= PLAYERBOT_DGRUN_STALL_MS)
 		{
@@ -2106,7 +2268,8 @@ namespace
 			PullPlayerBotDgRun(run, "abandoned", dwNow);
 			return true;
 		}
-		if (dwNow - run.dwEnteredAt >= (DWORD)def.iLimitMin * 60000U + PLAYERBOT_DGRUN_LIMIT_MARGIN_MS)
+		if (dwNow - run.dwEnteredAt >= (DWORD)(def.iLimitMin + std::max(0, run.iExtraMin)) * 60000U +
+				PLAYERBOT_DGRUN_LIMIT_MARGIN_MS)
 		{
 			PullPlayerBotDgRun(run, "timeout", dwNow);
 			return true;
@@ -2246,6 +2409,7 @@ namespace
 		line.wantShaman = !shaman;
 		ShoutPlayerBotDgRun(leader, playerbot_dgrun::CallLine(rng, line), "call");
 		s_adwPlayerBotDgRunShoutAt[empire] = dwNow;
+		s_adwPlayerBotDgRunLastCall[def] = dwNow ? dwNow : 1;
 		++s_aPlayerBotDgRunStats[def].dwCalled;
 		sys_log(0, "BOT_DGRUN: called run=%d dungeon=%s empire=%u levels=%d-%d candidates=%u party=%u shaman=%d gather=%ld(%ld,%ld) why=%s names=%s",
 				run.iId, info.szKey, (unsigned int)empire, slot.lvMin, slot.lvMax, (unsigned int)bucket.size(),
@@ -2257,12 +2421,24 @@ namespace
 	// One pass over this core's bots: who may go where, and one call when a
 	// dungeon and a kingdom have enough of them (forced: that dungeon, or any
 	// with -2, off the clock and the kingdom's shout gap).
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: no run of it now, and none called for
+	// PLAYERBOT_DGRUN_STARVED_MS (or never since the core started).
+	bool IsPlayerBotDgRunStarved(int def, DWORD dwNow)
+	{
+		return CountPlayerBotDgRuns(def) == 0 &&
+				(s_adwPlayerBotDgRunLastCall[def] == 0 || dwNow - s_adwPlayerBotDgRunLastCall[def] >= PLAYERBOT_DGRUN_STARVED_MS);
+	}
+
 	void PlanPlayerBotDungeonRun(DWORD dwNow, int forced, const char* why)
 	{
-		if (CountPlayerBotDgRuns(-1) >= GetPlayerBotDgRunCap())
+		// V3: at the cap only a starved dungeon is looked at, up to
+		// PLAYERBOT_DGRUN_STARVED_OVER_CAP runs above it.
+		const int runsNow = CountPlayerBotDgRuns(-1);
+		const bool overCap = runsNow >= GetPlayerBotDgRunCap();
+		if (runsNow >= GetPlayerBotDgRunCap() + PLAYERBOT_DGRUN_STARVED_OVER_CAP)
 		{
 			if (forced != -1)
-				sys_log(0, "BOT_DGRUN: no call (%s) - %d runs already, the cap", why, CountPlayerBotDgRuns(-1));
+				sys_log(0, "BOT_DGRUN: no call (%s) - %d runs already, the cap", why, runsNow);
 			return;
 		}
 		TPlayerBotDgRunSlot slots[sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0])];
@@ -2275,6 +2451,8 @@ namespace
 			const mt2009_dpanel::Def* panel = mt2009_dpanel::FindKey(def.szKey);
 			if (!panel || mt2009_dpanel::Hidden(*panel) || !IsPlayerBotMapHostedHere(def.lMap) ||
 					!SECTREE_MANAGER::instance().GetMap(def.lMap) || CountPlayerBotDgRuns(i) >= def.iCap)
+				continue;
+			if (overCap && !IsPlayerBotDgRunStarved(i, dwNow))
 				continue;
 			// The Demon Tower keeps its own bot raids (playerbot_demon_tower.h;
 			// the owner, 4 October: "wieza demonow tez niech zostanie przy swoich
@@ -2370,9 +2548,12 @@ namespace
 				if (forced == -1 && s_adwPlayerBotDgRunShoutAt[e] != 0 &&
 						dwNow - s_adwPlayerBotDgRunShoutAt[e] < PLAYERBOT_DGRUN_SHOUT_GAP_MS)
 					continue;
+				// V3: a starved dungeon weighs as if it had the most bots - the
+				// high ones have a handful, the Ruins and Razador a hundred.
+				const int w = IsPlayerBotDgRunStarved(i, dwNow) ? 24 : std::min(n, 24);
 				options.push_back(std::make_pair(i, e));
-				weights.push_back(std::min(n, 24));
-				total += std::min(n, 24);
+				weights.push_back(w);
+				total += w;
 			}
 		if (options.empty())
 		{

@@ -125,7 +125,18 @@ namespace playerbot_dgrun
 		{ "razador", 70, 6, 6, 5, true },
 		// Nemere's (352): 6101-6109 of 78-88 (9 000-26 000 HP, 240-390 a
 		// blow, ice), the four Szels 88, Nemere 95.
-		{ "nemere", 85, 6, 6, 5, true },
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a call wants five and goes in with
+		// four - six free bots of 85+ with a Shaman in one kingdom of one core
+		// were never there (7 October: one call all day, Nemere never run).
+		{ "nemere", 85, 5, 5, 4, true },
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the Ruins (365): waves of 9697-9700
+		// and Red Scorpions, the King 9694 - the bots of 65-80 in fours and
+		// fives finished 20 of 71 runs on 7 October (58 deaths a won run, the
+		// quest's time limit ending 26 of the rest); the cohort's of 70 lived.
+		// From 72, six called, five to go in, a Shaman always.
+		{ "skorpion", 72, 6, 6, 5, true },
+		// The Blue Dragon (208) is no run for three: four at the entrance.
+		{ "smok", 0, 4, 5, 4, false },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)

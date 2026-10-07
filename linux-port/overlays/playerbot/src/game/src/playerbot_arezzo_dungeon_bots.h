@@ -502,10 +502,58 @@ namespace
 		return s;
 	}
 
+	// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1 - the objective before what attacks
+	// the bot. The test server, 7 October: 17 of 120 bots' runs of Wzgorze
+	// Wukonga were abandoned at stage 2 with the whole party standing and five
+	// of the six Hill Stones down ("Pozostalo: 1" at 21:41:27, run 19, and the
+	// party still at it at 21:53). The stage's guards (guards.txt: five groups
+	// of three, back every 45 s) put a monster on the pack every few seconds,
+	// what attacks a bot came before the objective, and the last stone - in
+	// the far corner, away from the guards' lines - was never hit again; the
+	// same at the Ruins' Metins and Red Scorpions (stages of 580-730 s against
+	// the cohort's 70-320). A party of players leaves the guards to whom they
+	// hit and breaks the stone. So here: a stone of the stage is the target of
+	// every bot that is not hurt, whatever attacks it, and any other objective
+	// (a Defender, an egg, a boss) becomes it too once the stage's objective
+	// count has not moved for PLAYERBOT_ARZDG_FOCUS_MS - the guards are then
+	// only fought by a bot under PLAYERBOT_ARZDG_FOCUS_HP of its health
+	// (which breaks off at the tower's figures anyway).
+	const DWORD PLAYERBOT_ARZDG_FOCUS_MS = 40000;
+	const int PLAYERBOT_ARZDG_FOCUS_HP = 50;
+
+	struct TPlayerBotArzDgFocus
+	{
+		int iStage;
+		int iLeft;
+		DWORD dwSince;
+		TPlayerBotArzDgFocus() : iStage(-1), iLeft(-1), dwSince(0) {}
+	};
+	std::map<long, TPlayerBotArzDgFocus> s_mapPlayerBotArzDgFocus;
+
+	// The stage's objective count ("left") or stage unchanged this long.
+	bool IsPlayerBotArzDgObjectiveOverdue(long instance, LPDUNGEON d, DWORD dwNow)
+	{
+		if (!d)
+			return false;
+		TPlayerBotArzDgFocus& f = s_mapPlayerBotArzDgFocus[instance];
+		const int stage = d->GetFlag("stage");
+		const int left = d->GetFlag("left");
+		if (f.iStage != stage || f.iLeft != left || f.dwSince == 0)
+		{
+			f.iStage = stage;
+			f.iLeft = left;
+			f.dwSince = dwNow ? dwNow : 1;
+			return false;
+		}
+		return dwNow - f.dwSince >= PLAYERBOT_ARZDG_FOCUS_MS;
+	}
+
 	// What attacks the bot, then the stage's objective, then the nearest
 	// monster; the target in hand is kept while it is the same kind of choice.
+	// The focus (above): the objective first when `overdue` or a stone.
 	LPCHARACTER PickPlayerBotArzDgFoe(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotArzDg& info,
-			int stage, const TPlayerBotArzDgScan& scan, long anchorX, long anchorY, int maxFromAnchor)
+			int stage, const TPlayerBotArzDgScan& scan, long anchorX, long anchorY, int maxFromAnchor,
+			bool overdue = false)
 	{
 		LPCHARACTER threat = NULL, objective = NULL, any = NULL;
 		int dThreat = INT_MAX, dObjective = INT_MAX, dAny = INT_MAX;
@@ -540,6 +588,17 @@ namespace
 		}
 		LPCHARACTER best = threat ? threat : (objective ? objective : any);
 		LPCHARACTER cur = state.dwTargetVID ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
+		// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1: the stone (or the overdue
+		// objective) over the guards, for a bot that is not hurt; the waves
+		// (stage 1) keep the old order - their monsters are the objective.
+		if (objective && stage >= 2 && (objective->IsStone() || overdue) && ch->GetMaxHP() > 0 &&
+				(long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * PLAYERBOT_ARZDG_FOCUS_HP)
+		{
+			if (cur && cur != objective && !cur->IsDead() && cur->GetMapIndex() == ch->GetMapIndex() &&
+					IsPlayerBotArzDgTarget(info, stage, cur->GetRaceNum()))
+				return cur;
+			return objective;
+		}
 		if (cur && !cur->IsDead() && cur->GetMapIndex() == ch->GetMapIndex() && !cur->IsPC() && cur != best && best)
 		{
 			const bool curThreat = cur->GetVictim() == ch &&
@@ -762,10 +821,15 @@ namespace
 			}
 		}
 		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(map, dwNow);
-		LPCHARACTER foe = PickPlayerBotArzDgFoe(ch, state, info, stage, scan, anchorX, anchorY, maxFromAnchor);
+		LPCHARACTER foe = PickPlayerBotArzDgFoe(ch, state, info, stage, scan, anchorX, anchorY, maxFromAnchor,
+				IsPlayerBotArzDgObjectiveOverdue(map, d, dwNow));
 		const int fromPack = DISTANCE_APPROX(ch->GetX() - anchorX, ch->GetY() - anchorY);
+		// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1: the way to the stage's objective is
+		// no straying - the last Hill Stone stood in the far corner, more than
+		// the leash from the pack's middle among the guards.
+		const bool toObjective = foe && stage >= 2 && IsPlayerBotArzDgTarget(info, stage, foe->GetRaceNum());
 		// Strayed from the pack with nothing on it: back to the others first.
-		if (fromPack > PLAYERBOT_ARZDG_PACK_LEASH && (!foe || foe->GetVictim() != ch) &&
+		if (!toObjective && fromPack > PLAYERBOT_ARZDG_PACK_LEASH && (!foe || foe->GetVictim() != ch) &&
 				(!foe || DISTANCE_APPROX(foe->GetX() - anchorX, foe->GetY() - anchorY) > PLAYERBOT_ARZDG_PACK_LEASH))
 		{
 			state.dwTargetVID = 0;
@@ -966,6 +1030,7 @@ namespace
 				++bot.dwFinished;
 		}
 		s_mapPlayerBotArzDgScan.erase(run.lInstance);
+		s_mapPlayerBotArzDgFocus.erase(run.lInstance);
 		// The instance goes once it is empty (the quests' own keep-until is
 		// for a player's "Wroc do lochu").
 		LPDUNGEON d = CDungeonManager::instance().FindByMapIndex(run.lInstance);
