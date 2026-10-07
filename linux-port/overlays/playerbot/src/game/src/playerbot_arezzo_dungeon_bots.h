@@ -559,6 +559,15 @@ namespace
 		return dwNow - f.dwSince >= PLAYERBOT_ARZDG_FOCUS_MS;
 	}
 
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a character of a guild at a field war -
+	// the engine rewards none of its kills, a dungeon quest's kill included
+	// (CHARACTER::Dead skips Reward when the last blow is such a character's).
+	bool IsPlayerBotKillRewardless(LPCHARACTER ch)
+	{
+		CGuild* guild = ch ? ch->GetGuild() : NULL;
+		return guild && guild->UnderAnyWar(GUILD_WAR_TYPE_FIELD);
+	}
+
 	// What attacks the bot, then the stage's objective, then the nearest
 	// monster; the target in hand is kept while it is the same kind of choice.
 	// The focus (above): the objective first when `overdue` or a stone.
@@ -848,6 +857,34 @@ namespace
 			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
 			MovePlayerBot(ch, anchorX, anchorY, dwNow, 4, true, false);
 			return true;
+		}
+		// V3: a bot whose last blow would count for nothing leaves the
+		// stage's objective to the others (a lost stone, a lost boss).
+		if (toObjective && IsPlayerBotKillRewardless(ch))
+		{
+			PlayerBotLogThrottled("arzdg_rewardless", dwNow,
+					"ARZ_DG: leaves the objective to the others pid=%u name=%s (guild at war) map=%ld",
+					ch->GetPlayerID(), ch->GetName(), map);
+			LPCHARACTER v = NULL;
+			const TPlayerBotArzDgScan& sc2 = ScanPlayerBotArzDg(map, dwNow);
+			for (size_t i = 0; i < sc2.foes.size() && !v; ++i)
+			{
+				LPCHARACTER c = CHARACTER_MANAGER::instance().Find(sc2.foes[i].dwVID);
+				if (c && !c->IsDead() && c->GetVictim() == ch && !IsPlayerBotArzDgTarget(info, stage, c->GetRaceNum()))
+					v = c;
+			}
+			foe = v;
+			if (!foe)
+			{
+				state.dwTargetVID = 0;
+				ch->SetVictim(NULL);
+				if (fromPack > 400)
+				{
+					SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+					MovePlayerBot(ch, anchorX, anchorY, dwNow, 4, true, false);
+				}
+				return true;
+			}
 		}
 		if (foe)
 		{

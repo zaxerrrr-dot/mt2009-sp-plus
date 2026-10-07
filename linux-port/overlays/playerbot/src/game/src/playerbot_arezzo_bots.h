@@ -1947,6 +1947,8 @@ namespace
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
 				if (!ch || (int)ch->GetLevel() < rule.iLevelMin || (int)ch->GetLevel() > levelMax ||
 						IsPlayerBotArezzoExpLocked(ch) || ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
+						// A guild at a field war earns nothing from a kill (CHARACTER::Dead skips Reward).
+						(ch->GetGuild() && ch->GetGuild()->UnderAnyWar(GUILD_WAR_TYPE_FIELD)) ||
 						GetPlayerBotLfgRefusal(ch, it->second, dwNow) != NULL)
 					continue;
 				pool.push_back(pid);

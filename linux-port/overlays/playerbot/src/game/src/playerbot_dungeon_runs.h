@@ -540,6 +540,16 @@ namespace
 			return refusal;
 		if (!ch->GetWear(WEAR_WEAPON) || !ch->GetWear(WEAR_BODY))
 			return "gear";
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: no member of a guild at a field war.
+		// The engine gives no reward for a kill by such a character
+		// (CHARACTER::Dead: "UnderAnyWar(GUILD_WAR_TYPE_FIELD)" skips Reward) -
+		// no drop, and no quest kill: Wukong's Flaming Phoenix and Phoenix Eggs,
+		// a last Hill Stone, fell on 7 October with no "Etap zaliczony" and no
+		// drop (run 16: Ins4ne and Raaaambooo of Przelew24, at war that
+		// evening), and the run stood until it was given up.
+		CGuild* guild = ch->GetGuild();
+		if (guild && guild->UnderAnyWar(GUILD_WAR_TYPE_FIELD))
+			return "guild_war";
 		return NULL;
 	}
 
@@ -1450,7 +1460,7 @@ namespace
 		// MT2009_PLUS_DG_OBJECTIVE_FOCUS_V1: the leader's objective, hit with
 		// it by everybody not hurt (the party dungeon pass puts what attacks
 		// the bot first, and that is what kept the stones standing).
-		if (run.dwFocusVID != 0 && ch->GetMaxHP() > 0 &&
+		if (run.dwFocusVID != 0 && ch->GetMaxHP() > 0 && !IsPlayerBotKillRewardless(ch) &&
 				(long long)ch->GetHP() * 100 >= (long long)ch->GetMaxHP() * PLAYERBOT_DGRUN_FOCUS_HP)
 		{
 			LPCHARACTER focus = CHARACTER_MANAGER::instance().Find(run.dwFocusVID);
