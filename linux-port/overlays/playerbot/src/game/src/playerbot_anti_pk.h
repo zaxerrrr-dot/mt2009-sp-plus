@@ -1514,7 +1514,11 @@ namespace
 		if (onStone || dwNow < p.dwNextStoneProbe)
 			return;
 		p.dwNextStoneProbe = dwNow + PLAYERBOT_POGROMCA_PROBE_MS;
-		if (retreat)
+		// MT2009_PLUS_AREZZO_NATURAL_V1: not on the Arezzo maps - their stones
+		// (the pyramid's of 57) stand in packs of 53-58 that see far, and a
+		// stone hunter of 55 there died twenty times in one visit on 7 October
+		// (KOGUT99, "drops everything for a stone", then "turns on the pack").
+		if (retreat || IsPlayerBotArezzoMap(ch->GetMapIndex()))
 			return;
 		LPCHARACTER stone = FindPlayerBotPogromcaStone(ch, state, dwNow);
 		if (!stone || stone == target)

@@ -1854,9 +1854,11 @@ namespace
 		DWORD dwStayMinMs, dwStaySpreadMs;
 	};
 	const TPlayerBotArezzoNaturalRule PLAYERBOT_AREZZO_NATURAL_RULES[] = {
-		{ 360, 18, 45, 45 * 60 * 1000, 45 * 60 * 1000 },
+		{ 360, 18, 44, 45 * 60 * 1000, 45 * 60 * 1000 },
 		{ 361, 18, 57, 45 * 60 * 1000, 45 * 60 * 1000 },
-		{ 362, 10, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, PLAYERBOT_AREZZO_LAS_STAY_MS, 60 * 60 * 1000 },
+		// Five at a core: the 95+ are few (the twenty let go from the Jungle's
+		// cohort, 8 October) and Nemere, the Dragon and the Jungle want them too.
+		{ 362, 5, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, PLAYERBOT_AREZZO_LAS_STAY_MS, 60 * 60 * 1000 },
 	};
 
 	// The bot's own taste for new ground.
@@ -2115,8 +2117,12 @@ namespace
 				// arrival, not in the pack that killed it (not on the way out).
 				// MT2009_PLUS_SIDEKICK_AREZZO_V1: not a player's companion, which
 				// stands up beside its owner.
+				// MT2009_PLUS_AREZZO_NATURAL_V1: on the way out too - the arrival is
+				// beside the Teleporter, and a bot walking out through the pack that
+				// killed it died there again and again (KOGUT99, 7 October, deaths
+				// 8 to 20 of one visit every 25 s at (240976,475893), never revived
+				// at the arrival because it was "leaving").
 				if (t.bWasDead && !ch->IsDead() && t.adwDeathAt[0] != 0 &&
-						!s_mapPlayerBotArezzoExit.count(pid) && !s_mapPlayerBotArezzoPending.count(pid) &&
 						dwNow - t.adwDeathAt[0] <= PLAYERBOT_AREZZO_DEATH_WINDOW_MS && !IsPlayerBotSidekickLeashed(ch))
 				{
 					const TPlayerBotArezzoMap* info = GetPlayerBotArezzoMapInfo(map);
