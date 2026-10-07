@@ -17,6 +17,58 @@ every version here.
 
 ---
 
+## 2.26.0 — 2026-10-07 — Pasy, żywioły i talizmany, kostiumy Arezzo, limity Yang
+
+Wymaga klienta **2.0.57** (pobierze go launcher albo patcher). Zmieniła się paczka danych przedmiotów – jeśli korzystasz z Edytora bazy danych, **patcher pobierze nowe dane sam** (albo pobierz zip z panelu; gra przypomni).
+
+### 🙏 Autorzy dodatkowych systemów
+- **Digi Rasta** (nowy-system v0.26–0.28): **system pasów**, **limity Yang**, **żywioły i talizmany**, **żeńskie tytuły rang**, **model 3D w Kartach Potworów**, pomysł **ukrywania efektów i sklepów** (napisane od nowa).
+- **Tieru** (Metin2 Playerbots): **ikony ksiąg umiejętności** – każda księga pokazuje znak swojej umiejętności.
+- **Pliki serwera Arezzo**: **zestawy kostiumów**, **owoce i rangi Punktów Rangi**, mapy i dungeony Arezzo.
+- **Gameforge**: oryginalne ikony talizmanów, pasów, Delikatnego Sukna i znaków żywiołów.
+
+### 🎽 System pasów (autor: Digi Rasta)
+- **Mistrz** stoi obok Kowala w M1 i M3 każdego królestwa – „Wytwarzanie pasów”: 9 oficjalnych receptur (Lniany, Skórzany, Przepychu, Mądrości, Króla, Mroku, Runiczny, Niedźwiedzi, Dusz).
+- **Odłamki Energii** u Alchemika – przeciągnij na niego broń, zbroję albo biżuterię od 35 poziomu.
+- **Skąd materiały:** kamienie pasów (Kryształ Duszy, Rubin, Granat, Szmaragd, Szafir) w skrzyniach bossów od Nemere wzwyż; Złota Przędza, Złoty Hak, Ogniwa Łańcucha, Element Ozdoby wypadają 3× częściej; Kamienie Płomienia i Lodowego Płomienia z Razadora, Nemere i ich skrzyń.
+- **Miejsce na pas** w ekwipunku, pod zbroją. Boty znają ceny materiałów i pasów.
+
+### 🔥 Żywioły i talizmany (autor: Digi Rasta)
+- **Talizman żywiołu** (+0…+200) w nowym polu ekwipunku: do +80% obrażeń przeciw potworom swojego żywiołu, własne 5 bonusów. Ulepsza Kowal (Kwiaty Żywiołu u Mistrza, Ornament, drugi talizman +0).
+- Żywioł mają **wszyscy bossowie**, potwory **Groty Wygnańców 1–2** (błyskawica), **Świątyni Ochao i Zaczarowanego Lasu** (wiatr) oraz dungeony **Nemere** (lód), **Leże Smoka** (błyskawica) i **Starożytna Dżungla** (wiatr). Znak żywiołu przy zaznaczonym celu.
+- Talizmany +0 wypadają z bossów swojego żywiołu (5%), Ognia ze Skrzyni Razadora, Lodu ze Skrzyni Nemere.
+
+### 💰 Limity Yang (autor: Digi Rasta)
+- Do **100 mld Yang** przy sobie, **10 mld** w jednym handlu, **50 mld** za pozycję na straganie / w sklepie offline. Boty zostają przy 2 mld, stosy przy 200.
+
+### 👗 Arezzo
+- **22 zestawy kostiumów** – kostium, fryzura, 6 nakładek na broń, 17 nakładek na szarfy (przeciągnij na szarfę), poświaty, bonus zestawu (+800 PŻ, +15 ataku). W ItemShopie (100 SM) – **tylko przy włączonym module Arezzo**.
+- **Punkty Rangi** – jedna skala: do 20 000 zwykła ranga, dalej owoce (Jabłko +200 do 20 000; Gruszka, Winogrono, Arbuz, Ananas do 200 000). Nowe rangi w kolorze nad głową (Waleczny … Legenda) ze stałymi bonusami. `/ranga`.
+- Mapy Arezzo: brak zabijania w punkcie przybycia na Dolinie Cyklopów, boty się nie blokują, wchodzą do Zaczarowanego Lasu; Pozwolenie na Zaczarowanie wypada tam 4× rzadziej.
+
+### 🧥 Ekwipunek i wygląd
+- **Delikatne Sukno** – z metinów i bossów zamiast szarfy +0; u Uriela 10 sukien + 80 000 Yang = szarfa (80%).
+- **Osobne ukrywanie** własnego kostiumu, fryzury i nakładki na broń; **„Ukryj kostiumy innych”** – widzisz prawdziwy ekwipunek innych graczy i botów (tylko u siebie).
+- **Ukrywanie efektów i sklepów** w opcjach, **żeńskie tytuły rang** (Waleczna, Władczyni…), **model 3D** w Kartach Potworów, **ikony ksiąg umiejętności** (Tieru).
+
+### 🧑‍🤝‍🧑 Towarzysz i boty
+- Towarzysz: **„Drop: tylko dla mnie”** (przycisk albo szept „nie zbieraj dropu”).
+- **Rekrutacja do gildii** z wołania – zawsze odpisuje od 1 do 10 botów.
+- Boty nie krążą już między mapą a wioską przez pełny plecak (robią miejsce u kupca).
+
+### 🛠️ Panel
+- **Ustawienia serwera (.env)** w panelu zaawansowanym – wszystkie ustawienia w jednym miejscu, opisane, z kopią i automatycznym przywróceniem przy błędzie (na Linuksie wymaga aktualizatora: `docker compose --profile update up -d updater`).
+- **Dane bazy dla klienta przez patcher** – patcher sam pobiera zmienione dane przedmiotów z Twojego serwera; zip w panelu zostaje jako ręczna możliwość.
+- Kolekcjonera nie da się schować do samego Kolekcjonera.
+- Edytor ItemShopu: zapis dużych zakładek (np. Pety – 199 pozycji) nie kończy się już błędem 413.
+
+## Klient 2.0.57 — 2026-10-07 — Pasy, talizmany, kostiumy Arezzo
+
+- Nowy **exe**: system pasów, pole talizmanu i znak żywiołu celu, limity Yang w handlu i sklepach, model 3D w Kartach Potworów, ukrywanie efektów i sklepów, żeńskie tytuły i rangi Punktów Rangi nad głową, poświaty kostiumów Arezzo (autorzy: Digi Rasta – pasy, talizmany, limity, model kart, tytuły).
+- **22 zestawy kostiumów Arezzo** (15 nowych paczek), owoce rang, Delikatne Sukno, talizmany, ikony ksiąg umiejętności (Tieru), ikony Gameforge.
+- Nowy **MT2009-Patcher** – sam pobiera dane bazy z Twojego serwera, gdy zmienisz je w Edytorze bazy danych.
+- Zmieniła się paczka `dbdata` – pliki z edytora pobierze patcher albo pobierz zip z panelu (gra przypomni).
+
 ## 2.25.0 — 2026-10-06 — Kody bonusowe, edytor questów i wytwarzania, bonus switcher
 
 Wymaga klienta **2.0.56** (pobierze go launcher albo patcher).

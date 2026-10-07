@@ -1,18 +1,18 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-06T15:11:13Z",
- "statusMessage": "MT2009 PLUS 2.25.0: kody bonusowe, edytor questow i wytwarzania, bonus switcher. Klient 2.0.56.",
+ "publishedAt": "2026-10-07T15:29:21Z",
+ "statusMessage": "MT2009 PLUS 2.26.0: pasy, zywioly i talizmany, kostiumy Arezzo, limity Yang. Klient 2.0.57.",
  "server": {
-  "version": "2.25.0",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.25.0/metin2-server-update-2.25.0.zip",
-  "sha256": "07FE0C31E1E6FB5851785FA3779A47DC057CEEEA4BC47E8043A82BC0D421EB62",
-  "size": 108246096
+  "version": "2.26.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.26.0/metin2-server-update-2.26.0.zip",
+  "sha256": "97609B0634161413A9D4E49F7834C74B7A4B4F83C04512F2F74CEC9133C43FF3",
+  "size": 110032250
  },
  "client": {
-  "version": "2.0.56",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.56/metin2-client-update-2.0.56.zip",
-  "sha256": "FE9B1D0F97DC80A5EACBF2F4109894FB76707BF37D014C0F0DC874BF564D0516",
-  "size": 358466187
+  "version": "2.0.57",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.57/metin2-client-update-2.0.57.zip",
+  "sha256": "4634B80B8C0D74A102A28E38C5A9B409A9DA9D435CFF2E5BECF9D778B2ADFC20",
+  "size": 538380276
  }
 }

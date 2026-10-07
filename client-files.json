@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.56",
+  "version": "2.0.57",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -14,18 +14,93 @@
     },
     {
       "path": "metin2client.exe",
-      "size": 13667328,
-      "sha256": "A5F3E6A0634C05CF252FD4DDF015B54AF3ED8B92BB31C0247657D6A6057D14CC"
+      "size": 13690880,
+      "sha256": "5551B3F8E7B6C6F62AC917AFCDF3A1D0EA7D3BD7ACB9EF1311DDF04CB67C2581"
     },
     {
       "path": "MT2009-Patcher.exe",
-      "size": 37385728,
-      "sha256": "9445086B4712D0D63C519BCD3D24A9DCA3BA748844B2AAB12523C36ACB0E0E50"
+      "size": 37403136,
+      "sha256": "619B5CB790B1F840AAE78DBD4C12627AB3BE135D88861954307111BC1E9D1543"
     },
     {
       "path": "MT2009-Patcher.exe.config",
-      "size": 1747,
-      "sha256": "C064FAFA45C09B1BB9D2FC75FFE4EFFE8D22D69412882E2B481CB66EF64A89C7"
+      "size": 2150,
+      "sha256": "7D9638D69D7F28FEFEE922A4397724AA38B0E221F8FB1354F51644C81EB9DBD2"
+    },
+    {
+      "path": "pack/az_cost01.index",
+      "size": 1804,
+      "sha256": "C71BEE059723AFB50A0560FC7275C0D3BA85AD3898014EA4B05B1C601D732ED9"
+    },
+    {
+      "path": "pack/az_cost02.index",
+      "size": 1364,
+      "sha256": "9F67C1EA956D71D4E0CE1D1777816C7ED26D8DAAC4C11E012FC36715B3BD71ED"
+    },
+    {
+      "path": "pack/az_cost03.index",
+      "size": 332,
+      "sha256": "0BAA98A319D1F929179D46FDA0B689532DCA9587C224D8705BD68FD79BCB283F"
+    },
+    {
+      "path": "pack/az_cost04.index",
+      "size": 2804,
+      "sha256": "2F6110C726A3365B43C57EE1D9359DF7A379AD0C22DC514C25A5197389E32B10"
+    },
+    {
+      "path": "pack/az_cost05.index",
+      "size": 6092,
+      "sha256": "28B769386EA1EFEE4211A5C3BF43684224EA501B698C34D1AEFD5B1C2C08F439"
+    },
+    {
+      "path": "pack/az_cost06.index",
+      "size": 4156,
+      "sha256": "95632C3A1C1F566968BC9B328E4D5D4EA24A629EDB9741E40AA7809C4A8CF8D2"
+    },
+    {
+      "path": "pack/az_cost07.index",
+      "size": 2644,
+      "sha256": "0B6FDBD284CFF109B0D1B48A549F2B6E0BB4593A464EEF78EB0DFEAFFF90C6E8"
+    },
+    {
+      "path": "pack/az_cost08.index",
+      "size": 2140,
+      "sha256": "E2104AFCDBA18FF4911CBACBBDC6691A95F91A36098D21C41F959AD19E896C5A"
+    },
+    {
+      "path": "pack/az_cost09.index",
+      "size": 5524,
+      "sha256": "209B7FC0BBAB59599C9477AD525FCC02F5B36A41C8BB563525BFDFDC081B95CC"
+    },
+    {
+      "path": "pack/az_cost10.index",
+      "size": 4932,
+      "sha256": "808ECE1B3D7FA570F3F2D989231CAA9F25CA3895DDCC5BC3612C9B74A05DF0A8"
+    },
+    {
+      "path": "pack/az_cost11.index",
+      "size": 3452,
+      "sha256": "DAE7F489DDE1F1567249A9A21F953DAA6343F10837DC3036DAAF021D65105C00"
+    },
+    {
+      "path": "pack/az_cost12.index",
+      "size": 3092,
+      "sha256": "F3D4C08AC4B3EA107A1D823D9DF13CED316EB55EFF986A9C8AB809ABD7904E29"
+    },
+    {
+      "path": "pack/az_cost13.index",
+      "size": 5324,
+      "sha256": "83AC4180DDE2DE0D4CB4F314708FED42CAD944FA269B758DC0554F9E8FD06465"
+    },
+    {
+      "path": "pack/az_cost14.index",
+      "size": 4756,
+      "sha256": "F99E8337E2887A3763CDF21D0BBD92F813DA34381CD294015E6F0565FE073F82"
+    },
+    {
+      "path": "pack/az_cost15.index",
+      "size": 8932,
+      "sha256": "35FC869225945609E327058AA50A93D496455E8C133E88FDBDEEED3FC8844DDA"
     },
     {
       "path": "pack/az_fix1.index",
@@ -84,8 +159,8 @@
     },
     {
       "path": "pack/gamedata.index",
-      "size": 4068,
-      "sha256": "ACB830D38E454EEF333D503AA72D9850E0A19A315C759E6E2DD44ADD5E01B114"
+      "size": 4084,
+      "sha256": "E1F1F984267CD338ABED2486881F187D5D65069CC818C626DCF8A6B6FB568AB9"
     },
     {
       "path": "pack/gf_misc.index",
@@ -115,12 +190,12 @@
     {
       "path": "pack/icon.index",
       "size": 78548,
-      "sha256": "40005C4E5B7CA85C922F5F70F9BF4FD7332F5EB42D5AAEB1576161BDC8E5B185"
+      "sha256": "2D5B64DB0325B098B06937AF45D7CAAE895AC19D65D0C80DA6D46045E873C6F1"
     },
     {
       "path": "pack/Index",
-      "size": 750,
-      "sha256": "6EEC011A9ECE9BEBCBE93359F77EBD700F698FF52C789D551C2063D300B96051"
+      "size": 930,
+      "sha256": "B271673A337B5ED9D3839FFE5A79DAE7B130BDFB09F6A379686D9B573C43C90F"
     },
     {
       "path": "pack/locale.index",
@@ -154,8 +229,8 @@
     },
     {
       "path": "pack/root.index",
-      "size": 30044,
-      "sha256": "6D37C56FFDE35CDB29E4771A3C6A89EBAE63C8C3B1567C1E4A0B1F1A237CB1CB"
+      "size": 32316,
+      "sha256": "E273DA11E476B5D27D1EAD84DDDD2985BA611FA1EA10D49045AA91A3E7281218"
     }
   ]
 }
