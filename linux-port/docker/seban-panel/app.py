@@ -54,6 +54,10 @@ app.config.update(
     # the classic Tieru panel on :7788 from overwriting this panel on :7789.
     SESSION_COOKIE_NAME=os.environ.get("SEBAN_SESSION_COOKIE_NAME", "seban_panel_session"),
     PERMANENT_SESSION_LIFETIME=timedelta(days=30),
+    # The database editor saves whole tables in one form (the ItemShop's Pets tab: 199 rows x 7
+    # fields = ~1400 parts); Werkzeug 3.1's default of 1000 parts / 500 kB answered 413.
+    MAX_FORM_PARTS=50000,
+    MAX_FORM_MEMORY_SIZE=16 * 1024 * 1024,
 )
 
 # Nazwy wiosek pochodzą z questów silnika: new_quest_lv52 czyta pierwsze
