@@ -752,15 +752,30 @@ namespace
 			default:
 				break;
 		}
+		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the steps whose progress is an item
+		// a kill drops by chance (Razador's cog and Maat stones, Nemere's keys
+		// and crystals - 2-4% a kill) move no flag until it drops: there the
+		// monsters' health counts as well, so a party that fights is not
+		// given up as stalled (8 October 00:22, Nemere run 7: step 2, four bots
+		// at the room's 6103s, "stalled" at 240 s).
+		bool itemStep = false;
+		if (def.bKind == DGRUN_KIND_RAZADOR)
+			itemStep = d->GetFlag("active") == 1 && (d->GetFlag("step") == 2 || d->GetFlag("step") == 5);
+		else if (def.bKind == DGRUN_KIND_NEMERE)
+			itemStep = d->GetFlag("ready") == 1 && (d->GetFlag("step") == 2 || d->GetFlag("step") == 5 || d->GetFlag("step") == 8);
 		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(instance, dwNow);
-		long long bossHp = 0;
+		long long bossHp = 0, roomHp = 0;
 		for (size_t i = 0; i < scan.foes.size(); ++i)
 		{
 			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
-			if (c && !c->IsDead() && (c->IsStone() || c->GetMobRank() >= MOB_RANK_BOSS) && c->GetMaxHP() > 0)
+			if (!c || c->IsDead() || c->GetMaxHP() <= 0)
+				continue;
+			if (c->IsStone() || c->GetMobRank() >= MOB_RANK_BOSS)
 				bossHp += (long long)c->GetHP() * 1000 / c->GetMaxHP();
+			else if (itemStep)
+				roomHp += (long long)c->GetHP() * 100 / c->GetMaxHP() + 1;
 		}
-		return sig * 7919LL + bossHp;
+		return sig * 7919LL + bossHp + roomHp * 1000003LL;
 	}
 
 	// The races the leader goes for at this stage (empty: the nearest monster).
