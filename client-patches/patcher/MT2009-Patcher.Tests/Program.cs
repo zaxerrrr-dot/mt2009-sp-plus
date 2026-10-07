@@ -17,6 +17,7 @@ using System.Text;
 //   dotnet run -- patch <server url> <dir>     patch list + download + hash check against the patch server
 //   dotnet run -- news <url>                   news.json parse
 //   dotnet run -- probe                        server status (localhost test stack, closed port, bad host)
+//   dotnet run -- dbdata <manifest url> <dir>  MT2009_PLUS_DBDATA_AUTO_V1 against a real panel (fresh client folder)
 internal static class Program
 {
 	private static int failures;
@@ -41,6 +42,7 @@ internal static class Program
 			case "patch": Patch(args[1], args[2]); break;
 			case "news": News(args[1]); break;
 			case "probe": Probe(); break;
+			case "dbdata": DbDataLive(args[1], args[2]); break;
 			default: Console.WriteLine("?"); return 2;
 		}
 		Console.WriteLine(failures == 0 ? "WYNIK: wszystko OK" : "WYNIK: błędów: " + failures);
@@ -125,6 +127,177 @@ internal static class Program
 		CoopServer.Remove(root, 2);
 		Check(CoopServer.Discover(root).Single().Slot == 0, "po usunięciu: localhost");
 		Directory.Delete(root, true);
+
+		DbDataUnit();
+	}
+
+	// ------------------------------------------------ MT2009_PLUS_DBDATA_AUTO_V1
+
+	private static string Sha(byte[] b) => DbDataSync.Sha256Bytes(b);
+
+	private static string StampText(string stamp, long index, long data) =>
+		"# MT2009_PLUS_DBDATA_STAMP_V1: test\r\nstamp " + stamp + "\r\nsize pack/dbdata.index " + index + "\r\nsize pack/dbdata.data " + data + "\r\n";
+
+	// A panel in memory: {url: body}.
+	private static Dictionary<string, byte[]> FakePanel(string root, string version, string stamp, byte[] index, byte[] data, byte[] baseIndex, byte[] baseData)
+	{
+		string m = JsonConvert.SerializeObject(new
+		{
+			format = "MT2009_PLUS_DBDATA_AUTO_V1", client_version_base = version, stamp = stamp, edited = stamp != version, built = 1,
+			files = new object[] {
+				new { name = "pack/dbdata.index", size = index.Length, sha256 = Sha(index), url = stamp + "/dbdata.index" },
+				new { name = "pack/dbdata.data", size = data.Length, sha256 = Sha(data).ToLowerInvariant(), url = stamp + "/dbdata.data" } },
+			@base = new { index_sha256 = Sha(baseIndex), data_sha256 = Sha(baseData) },
+			stamp_file = StampText(stamp, index.Length, data.Length)
+		});
+		return new Dictionary<string, byte[]> {
+			[root + "klient/dbdata/manifest.json"] = Encoding.UTF8.GetBytes(m),
+			[root + "klient/dbdata/" + stamp + "/dbdata.index"] = index,
+			[root + "klient/dbdata/" + stamp + "/dbdata.data"] = data,
+		};
+	}
+
+	private static DbDataSync.Fetcher Fetch(Dictionary<string, byte[]> panel, List<string> asked = null) => (url, timeout, max) =>
+	{
+		asked?.Add(url);
+		if (!panel.TryGetValue(url, out byte[] body)) throw new WebException("404 " + url);
+		if (body.LongLength > max) throw new InvalidDataException("za duża odpowiedź");
+		return body;
+	};
+
+	private static void DbDataUnit()
+	{
+		Console.WriteLine("DbDataSync (MT2009_PLUS_DBDATA_AUTO_V1)");
+		CoopServer local = CoopServer.Localhost();
+		List<string> urls = DbDataSync.CandidateUrls(local, "");
+		Check(urls.SequenceEqual(new[] { "http://127.0.0.1:7790/klient/dbdata/manifest.json", "http://127.0.0.1:17790/klient/dbdata/manifest.json", "http://127.0.0.1/klient/dbdata/manifest.json" }),
+			"localhost: 7790, logowanie+6790, port 80 (" + string.Join(" ", urls) + ")");
+		CoopServer vps = new CoopServer { Valid = true, Name = "V", Host = "203.0.113.5", Auth = 21000, Channel = 23000, Channels = 2, Slot = 1, Panel = "27795" };
+		urls = DbDataSync.CandidateUrls(vps, null);
+		Check(urls[0] == "http://203.0.113.5:27795/klient/dbdata/manifest.json" && urls[1] == "http://203.0.113.5:7790/klient/dbdata/manifest.json" && urls[2] == "http://203.0.113.5:27790/klient/dbdata/manifest.json", "panel= z coop.cfg najpierw, potem 7790 i blok NAT");
+		vps.Panel = "https://panel.example.com/gra/";
+		Check(DbDataSync.CandidateUrls(vps, "")[0] == "https://panel.example.com/gra/klient/dbdata/manifest.json", "panel= jako adres");
+		Check(DbDataSync.CandidateUrls(vps, "off") == null, "DbDataManifest=off wyłącza");
+		Check(DbDataSync.CandidateUrls(vps, "http://{host}:8080/x/manifest.json;ftp://zle").SequenceEqual(new[] { "http://203.0.113.5:8080/x/manifest.json" }), "DbDataManifest z {host}, tylko http(s)");
+		string coopDir = Path.Combine(Path.GetTempPath(), "mt2009-coop-panel-" + Process.GetCurrentProcess().Id);
+		Directory.CreateDirectory(coopDir);
+		File.WriteAllText(Path.Combine(coopDir, "coop.cfg"), "name=A\r\nhost=1.2.3.4\r\nauth=11000\r\nchannel=13000\r\nchannels=2\r\npanel=17790\r\n");
+		CoopServer withPanel = CoopServer.Read(Path.Combine(coopDir, "coop.cfg"), 1);
+		Check(withPanel.Valid && withPanel.Panel == "17790", "coop.cfg: panel= czytany, plik nadal ważny");
+		Directory.Delete(coopDir, true);
+		Check(DbDataSync.CompareVersions("2.0.57", "2.0.9") > 0 && DbDataSync.CompareVersions("2.0.56", "2.0.57") < 0 && DbDataSync.CompareVersions("2.0", "2.0.0") == 0, "porównanie wersji liczbowe");
+
+		string dir = Path.Combine(Path.GetTempPath(), "mt2009-dbdata-" + Process.GetCurrentProcess().Id);
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
+		Directory.CreateDirectory(Path.Combine(dir, "pack"));
+		string idx = Path.Combine(dir, "pack", "dbdata.index"), dat = Path.Combine(dir, "pack", "dbdata.data"), stampPath = Path.Combine(dir, "dbdata_stamp.txt");
+		Random rnd = new Random(7);
+		byte[] Bytes(int n) { byte[] b = new byte[n]; rnd.NextBytes(b); return b; }
+		byte[] baseIndex = Bytes(292), baseData = Bytes(4096), editIndex = Bytes(300), editData = Bytes(5000);
+		File.WriteAllBytes(idx, baseIndex);
+		File.WriteAllBytes(dat, baseData);
+		File.WriteAllText(Path.Combine(dir, "CLIENT_VERSION"), "2.0.57\n");
+		string srv = "http://127.0.0.1:7790/";
+		List<string> cands = DbDataSync.CandidateUrls(local, "");
+		List<string> statuses = new List<string>();
+
+		// the server untouched by the editor, the client's pack is the release's: nothing downloaded
+		var panel = FakePanel(srv, "2.0.57", "2.0.57", baseIndex, baseData, baseIndex, baseData);
+		List<string> asked = new List<string>();
+		DbDataResult r = DbDataSync.Run(dir, cands, Fetch(panel, asked), statuses.Add, 2000);
+		Check(r.State == DbDataState.UpToDate && !asked.Any(u => u.EndsWith(".data")), "baza = paczka klienta: nic nie pobrano (" + r.State + ")");
+		Check(File.ReadAllText(stampPath) == StampText("2.0.57", 292, 4096), "dbdata_stamp.txt zapisany (" + DbDataSync.StampOfLocal(dir, null) + ")");
+
+		// the editor changed items: both files, verified, swapped with .bak, stamp file
+		panel = FakePanel(srv, "2.0.57", "2.0.57-0123456789ab", editIndex, editData, baseIndex, baseData);
+		statuses.Clear();
+		r = DbDataSync.Run(dir, cands, Fetch(panel), statuses.Add, 2000);
+		Check(r.State == DbDataState.Updated, "zmiany z edytora: pobrano (" + r.State + " " + r.Detail + ")");
+		Check(statuses.Contains("Pobieram dane bazy z serwera…"), "status po polsku: Pobieram dane bazy z serwera…");
+		Check(File.ReadAllBytes(idx).SequenceEqual(editIndex) && File.ReadAllBytes(dat).SequenceEqual(editData), "pack/dbdata.* podmienione");
+		Check(File.ReadAllBytes(idx + ".bak").SequenceEqual(baseIndex) && File.ReadAllBytes(dat + ".bak").SequenceEqual(baseData), "stare pliki w *.bak");
+		Check(DbDataSync.StampOfLocal(dir, null) == "2.0.57-0123456789ab", "znacznik = serwera (gra nie pokaże ostrzeżenia)");
+		Check(!Directory.GetFiles(Path.Combine(dir, "pack"), "*.tmp").Any() && !File.Exists(stampPath + ".tmp"), "bez plików *.tmp");
+		r = DbDataSync.Run(dir, cands, Fetch(panel), null, 2000);
+		Check(r.State == DbDataState.UpToDate, "drugi raz: aktualne");
+
+		// a damaged download never reaches the pack
+		var bad = FakePanel(srv, "2.0.57", "2.0.57-ffffffffffff", baseIndex, baseData, baseIndex, baseData);
+		bad[srv + "klient/dbdata/2.0.57-ffffffffffff/dbdata.data"] = editData;
+		r = DbDataSync.Run(dir, cands, Fetch(bad), null, 2000);
+		Check(r.State == DbDataState.Failed && File.ReadAllBytes(dat).SequenceEqual(editData) && File.ReadAllBytes(idx).SequenceEqual(editIndex), "zła suma SHA-256: Failed, paczka bez zmian");
+
+		// the game running (pack open without sharing): nothing swapped
+		panel = FakePanel(srv, "2.0.57", "2.0.57", baseIndex, baseData, baseIndex, baseData);
+		using (new FileStream(dat, FileMode.Open, FileAccess.Read, FileShare.Read))
+		{
+			r = DbDataSync.Run(dir, cands, Fetch(panel), null, 2000);
+		}
+		Check(r.State == DbDataState.GameRunning && File.ReadAllBytes(dat).SequenceEqual(editData), "gra uruchomiona: GameRunning, paczka bez zmian (" + r.State + ")");
+		r = DbDataSync.Run(dir, cands, Fetch(panel), null, 2000);
+		Check(r.State == DbDataState.Updated && File.ReadAllBytes(dat).SequenceEqual(baseData) && DbDataSync.StampOfLocal(dir, null) == "2.0.57", "serwer wrócił do oryginału: oryginalne pliki");
+
+		// client versions
+		var newer = FakePanel(srv, "2.0.58", "2.0.58-0123456789ab", editIndex, editData, Bytes(10), Bytes(10));
+		r = DbDataSync.Run(dir, cands, Fetch(newer), null, 2000);
+		Check(r.State == DbDataState.ClientOlder && r.Detail.Contains("2.0.58") && File.ReadAllBytes(dat).SequenceEqual(baseData), "klient starszy niż baza serwera: najpierw aktualizacja klienta");
+		File.WriteAllText(Path.Combine(dir, "CLIENT_VERSION"), "2.0.60\r\n");
+		r = DbDataSync.Run(dir, cands, Fetch(panel), null, 2000);
+		Check(r.State == DbDataState.UpToDate, "nowszy klient, ta sama paczka: aktualne");
+		var older = FakePanel(srv, "2.0.57", "2.0.57-0123456789ab", editIndex, editData, baseIndex, baseData);
+		r = DbDataSync.Run(dir, cands, Fetch(older), null, 2000);
+		Check(r.State == DbDataState.Updated, "nowszy klient z paczką bazy serwera: pobrano (" + r.State + ")");
+		File.WriteAllBytes(dat, Bytes(4100));  // the newer client's own, different pack
+		File.Delete(stampPath);
+		r = DbDataSync.Run(dir, cands, Fetch(older), null, 2000);
+		Check(r.State == DbDataState.ServerOlder && File.ReadAllBytes(dat).Length == 4100, "nowszy klient z inną paczką: nie mieszam (ServerOlder)");
+
+		// nothing answers / not a manifest
+		var junk = new Dictionary<string, byte[]> { [srv + "klient/dbdata/manifest.json"] = Encoding.UTF8.GetBytes("<html>login</html>") };
+		r = DbDataSync.Run(dir, cands, Fetch(junk), null, 2000);
+		Check(r.State == DbDataState.Unreachable, "strona logowania zamiast manifestu = niedostępny");
+		Stopwatch sw = Stopwatch.StartNew();
+		r = DbDataSync.Run(dir, cands, (u, t, m) => { System.Threading.Thread.Sleep(10000); return null; }, null, 1000);
+		Check(r.State == DbDataState.Unreachable && sw.ElapsedMilliseconds < 4000, "brak odpowiedzi: po limicie czasu (" + sw.ElapsedMilliseconds + " ms)");
+		r = DbDataSync.Run(dir, null, Fetch(panel), null, 2000);
+		Check(r.State == DbDataState.Disabled, "wyłączone");
+		// manifest checks
+		var m = JObject.Parse(Encoding.UTF8.GetString(panel[srv + "klient/dbdata/manifest.json"]));
+		Check(DbDataSync.ParseManifest(Encoding.UTF8.GetBytes(m.ToString())) != null, "manifest poprawny");
+		foreach (var (key, value, what) in new (string, JToken, string)[] {
+			("format", "X", "zły format"), ("stamp", "2.0.56-abc", "znacznik innej bazy"), ("stamp", "../x", "znacznik ze ścieżką"),
+			("stamp_file", "stamp 2.0.1\r\n", "plik znacznika nie pasuje"), ("client_version_base", "abc", "zła wersja") })
+		{
+			JObject copy = (JObject)m.DeepClone();
+			copy[key] = value;
+			Check(DbDataSync.ParseManifest(Encoding.UTF8.GetBytes(copy.ToString())) == null, "odrzucony: " + what);
+		}
+		JObject renamed = (JObject)m.DeepClone();
+		renamed["files"][1]["name"] = "metin2client.exe";
+		Check(DbDataSync.ParseManifest(Encoding.UTF8.GetBytes(renamed.ToString())) == null, "odrzucony: inna nazwa pliku niż pack/dbdata.*");
+		Directory.Delete(dir, true);
+	}
+
+	// Against a real panel: a client folder with the release's CLIENT_VERSION
+	// and no pack -> downloaded, then up to date.
+	private static void DbDataLive(string manifestUrl, string dir)
+	{
+		dir = Path.GetFullPath(dir);
+		Directory.CreateDirectory(Path.Combine(dir, "pack"));
+		List<string> cands = new List<string> { manifestUrl };
+		byte[] mbytes = DbDataSync.HttpFetch(manifestUrl, 5000, DbDataSync.MaxManifestBytes);
+		DbDataManifest m = DbDataSync.ParseManifest(mbytes);
+		Check(m != null, "manifest z panelu poprawny");
+		if (m == null) return;
+		Console.WriteLine($"  baza {m.ClientVersionBase}, znacznik {m.Stamp}, zmiany: {m.Edited}, {m.Files[1].Size} B");
+		File.WriteAllText(Path.Combine(dir, "CLIENT_VERSION"), m.ClientVersionBase + "\n");
+		DbDataResult r = DbDataSync.Run(dir, cands, DbDataSync.HttpFetch, s => Console.WriteLine("  status: " + s), 5000);
+		Console.WriteLine("  " + r.State + ": " + r.Detail);
+		Check(r.State == DbDataState.Updated || r.State == DbDataState.UpToDate, "pobrano z panelu");
+		Check(DbDataSync.Sha256File(Path.Combine(dir, "pack", "dbdata.data")) == m.Files[1].Sha256, "SHA-256 paczki = manifest");
+		Check(DbDataSync.StampOfLocal(dir, null) == m.Stamp, "dbdata_stamp.txt = znacznik serwera");
+		r = DbDataSync.Run(dir, cands, DbDataSync.HttpFetch, null, 5000);
+		Check(r.State == DbDataState.UpToDate, "drugi raz: aktualne");
 	}
 
 	private static void Coop(string casesPath, string outDir)

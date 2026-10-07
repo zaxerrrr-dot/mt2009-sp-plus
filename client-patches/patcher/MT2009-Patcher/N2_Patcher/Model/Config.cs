@@ -37,6 +37,11 @@ namespace N2_Patcher.Model
 
 		private readonly static string startToken;
 
+		// MT2009_PLUS_DBDATA_AUTO_V1: where to ask for the database editor's
+		// client files (DbDataSync.CandidateUrls): empty = the panel of the
+		// server chosen in the window, "off" = never, else manifest URLs.
+		private readonly static string dbDataManifest;
+
 		// MT2009 PLUS: the values used when MT2009-Patcher.exe.config is missing
 		// or lacks a key, so the exe also works on its own.
 		public const string DefaultServer = "http://141.94.100.53/patcher/";
@@ -58,6 +63,7 @@ namespace N2_Patcher.Model
 			Config.config = Config.Read("Config", "config.exe");
 			Config.start = Config.Read("Start", "metin2client.exe");
 			Config.startToken = Config.Read("StartToken", "false");
+			Config.dbDataManifest = Config.Read("DbDataManifest", "");
 		}
 
 		private static string Read(string key, string fallback)
@@ -118,6 +124,11 @@ namespace N2_Patcher.Model
 		public static string GetSlider()
 		{
 			return Config.Get_clear_key(Config.slider);
+		}
+
+		public static string GetDbDataManifest()
+		{
+			return Config.dbDataManifest;
 		}
 
 		public static string GetStartFile()

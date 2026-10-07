@@ -400,7 +400,7 @@ class StampPanelTests(unittest.TestCase):
             self.assertIn('data-restart="%d"' % restart, page)
             self.assertIn('UWAGA! Aby zmiany z edytora bazy danych były widoczne w Twoim kliencie gry, musisz pobrać '
                           'ten plik ZIP i rozpakować go do folderu z klientem (zastąp pliki). Bez tego w grze zobaczysz '
-                          'stare nazwy, bonusy i opisy.', page)
+                          'stare nazwy, bonusy i opisy. MT2009-Patcher robi to sam', page)
             self.assertIn('href="/db/clientdata.zip"', page)
             self.assertIn('Rozumiem', page)
             # "Rozumiem" (the cookie of that restart): gone until the next restart
@@ -437,6 +437,167 @@ class StampPanelTests(unittest.TestCase):
             common_items.CHANGE_LISTENERS.pop('clientdata', None)
             common_items.ctx().clear()
             common_items.ctx().update(old_ctx)
+
+
+class AutoDbDataTests(unittest.TestCase):
+    """MT2009_PLUS_DBDATA_AUTO_V1: the public manifest and pack files for
+    MT2009-Patcher (dbeditor/autodbdata.py), without the panel login."""
+
+    def setUp(self):
+        import tempfile
+        self.tmp = tempfile.TemporaryDirectory()
+        self.spool = self.tmp.name
+
+    def tearDown(self):
+        self.tmp.cleanup()
+        os.environ.pop('DBDATA_AUTO', None)
+
+    def make_app(self, history, tables):
+        try:
+            from flask import Blueprint, Flask
+            from dbeditor import clientdata, common_items, autodbdata
+            import dbeditor
+        except ImportError as exc:  # pragma: no cover
+            self.skipTest(str(exc))
+        app = Flask('auto')
+        app.secret_key = 't'
+        app.config.update(TESTING=True)
+        bp = Blueprint('dbeditor', 'dbeditor', url_prefix='/db')
+
+        def login_required(view):  # the panel with its login on: every editor page refuses
+            from functools import wraps
+
+            @wraps(view)
+            def wrapped(*a, **k):
+                return ('login', 403)
+            return wrapped
+
+        query = fake_query(tables)
+        ctx = {'app': app, 'db': None, 'rows': query, 'one': None, 'login_required': login_required,
+               'game_text': lambda v: v or '', 'spool': self.spool,
+               'panel_name': lambda: 'Tajny Serwer Testowy'}
+        os.environ.pop('DBEDITOR_SPOOL_ROOT', None)
+        self.old = (dict(common_items.ctx()), common_items.net_changes, list(dbeditor.HUB_NOTICES))
+        common_items.net_changes = lambda include_applied=False: list(history)
+        clientdata.install(bp, ctx)
+        app.register_blueprint(bp)
+        self.builds = []
+        publisher = ctx['dbdata_publisher']
+        real_build = publisher.build
+
+        def counted():
+            self.builds.append(1)
+            return real_build()
+        publisher.build = counted
+        self.addCleanup(self.restore)
+        return app, app.test_client(), query
+
+    def restore(self):
+        from dbeditor import common_items
+        import dbeditor
+        ctx, net, notices = self.old
+        common_items.net_changes = net
+        dbeditor.HUB_NOTICES[:] = notices
+        common_items.CHANGE_LISTENERS.pop('clientdata', None)
+        common_items.ctx().clear()
+        common_items.ctx().update(ctx)
+
+    def check_files(self, client, manifest):
+        import hashlib
+        got = {}
+        for f in manifest['files']:
+            self.assertFalse(f['url'].startswith('/'), 'relative to the manifest (works behind a gate)')
+            res = client.get('/klient/dbdata/' + f['url'])
+            self.assertEqual(res.status_code, 200, f['url'])
+            blob = res.get_data()
+            self.assertEqual(len(blob), f['size'])
+            self.assertEqual(hashlib.sha256(blob).hexdigest().upper(), f['sha256'])
+            got[f['name']] = blob
+        self.assertEqual(sorted(got), ['pack/dbdata.data', 'pack/dbdata.index'])
+        return got['pack/dbdata.index'], got['pack/dbdata.data']
+
+    def test_edited_manifest_and_files(self):
+        from dbeditor import clientdata
+        history = [change('world.skill_proto', 1, 'szCooldownPoly', '1', '2')]
+        tables = {'world.skill_proto': [skill_row(1, szCooldownPoly='77')]}
+        app, client, query = self.make_app(history, tables)
+        # the editor's pages need the login, the patcher's paths do not
+        self.assertEqual(client.get('/db/apply').status_code, 403)
+        self.assertEqual(client.get('/db/clientdata.zip').status_code, 403)
+        res = client.get('/klient/dbdata/manifest.json')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.headers['Cache-Control'], 'no-store')
+        m = res.get_json()
+        _b, expected = dbsource.current_stamp(query, history, BASE)
+        self.assertEqual(m['format'], 'MT2009_PLUS_DBDATA_AUTO_V1')
+        self.assertEqual(m['client_version_base'], BASE.version)
+        self.assertEqual(m['stamp'], expected)
+        self.assertTrue(m['edited'])
+        self.assertEqual(clientdata.read_server_stamp(self.spool), expected)  # what the game sends
+        index, data = self.check_files(client, m)
+        self.assertEqual(dbdata.pack_stamp(BASE, index, data), expected)
+        self.assertEqual(m['base'], {'index_sha256': BASE.meta['pack']['indexSha256'],
+                                     'data_sha256': BASE.meta['pack']['dataSha256']})
+        stamp_file = m['stamp_file'].encode('ascii')
+        self.assertEqual(stamp_file, dbdata.stamp_text(expected, index, data))
+        self.assertIn(b'size pack/dbdata.data %d' % len(data), stamp_file)
+        # nothing of the panel in the answer: no name, no paths, no history
+        text = res.get_data(as_text=True)
+        for secret in ('Tajny', self.spool, 'szCooldownPoly', 'world.', '/opt'):
+            self.assertNotIn(secret, text)
+        self.assertEqual(set(m), {'format', 'client_version_base', 'stamp', 'edited', 'built', 'files', 'base', 'stamp_file'})
+        # built once, then from the cache (both workers share the spool's copy)
+        self.assertEqual(len(self.builds), 1)
+        self.assertEqual(client.get('/klient/dbdata/manifest.json').get_json()['stamp'], expected)
+        self.assertEqual(len(self.builds), 1)
+        self.assertTrue(os.path.isdir(os.path.join(self.spool, 'dbeditor', 'autodbdata', expected)))
+        # only the two pack files of a known stamp; nothing else is a path
+        for bad in ('/klient/dbdata/%s/meta.json' % expected, '/klient/dbdata/%s/..%%2Fmeta.json' % expected,
+                    '/klient/dbdata/2.0.1-aaaaaaaaaaaa/dbdata.data', '/klient/dbdata/../dbdata_stamp.txt',
+                    '/klient/dbdata/%2E%2E/dbdata.index', '/klient/dbdata/x/y/dbdata.index'):
+            self.assertEqual(client.get(bad).status_code, 404, bad)
+        self.assertEqual(client.post('/klient/dbdata/manifest.json').status_code, 405)
+        # an edit: a new stamp, a new pack
+        tables['world.skill_proto'] = [skill_row(1, szCooldownPoly='78')]
+        clientdata.write_server_stamp(self.spool, dbsource.current_stamp(query, history, BASE)[1])
+        m2 = client.get('/klient/dbdata/manifest.json').get_json()
+        self.assertNotEqual(m2['stamp'], expected)
+        self.check_files(client, m2)
+        self.assertEqual(len(self.builds), 2)
+        # a stale spool stamp: the build is the truth and goes to the spool
+        tables['world.skill_proto'] = [skill_row(1, szCooldownPoly='79')]
+        m3 = client.get('/klient/dbdata/manifest.json').get_json()
+        self.assertEqual(m3['stamp'], m2['stamp'])  # still the cached pack of the spool's stamp
+        clientdata.write_server_stamp(self.spool, BASE.version + '-ffffffffffff')  # unknown to the cache
+        m4 = client.get('/klient/dbdata/manifest.json').get_json()
+        self.assertEqual(m4['stamp'], dbsource.current_stamp(query, history, BASE)[1])
+        self.assertEqual(clientdata.read_server_stamp(self.spool), m4['stamp'])
+
+    def test_base_needs_no_build(self):
+        app, client, _q = self.make_app([], {})
+        m = client.get('/klient/dbdata/manifest.json').get_json()
+        self.assertEqual(m['stamp'], BASE.version)
+        self.assertFalse(m['edited'])
+        pack = BASE.meta['pack']
+        self.assertEqual([f['sha256'] for f in m['files']], [pack['indexSha256'], pack['dataSha256']])
+        self.assertEqual(self.check_files(client, m), BASE.original())
+        self.assertEqual(self.builds, [])
+        self.assertIn('stamp %s\r\n' % BASE.version, m['stamp_file'])
+
+    def test_switch_and_rate_limit(self):
+        from dbeditor import autodbdata
+        app, client, _q = self.make_app([], {})
+        os.environ['DBDATA_AUTO'] = '0'
+        self.assertEqual(client.get('/klient/dbdata/manifest.json').status_code, 404)
+        os.environ.pop('DBDATA_AUTO')
+        codes = [client.get('/klient/dbdata/manifest.json').status_code for _ in range(autodbdata.RATE_MANIFEST + 1)]
+        self.assertEqual(codes[:-1], [200] * autodbdata.RATE_MANIFEST)
+        self.assertEqual(codes[-1], 429)
+        limit = autodbdata.RateLimit(2, 10)
+        self.assertTrue(limit.allow('a', 0) and limit.allow('a', 1))
+        self.assertFalse(limit.allow('a', 2))
+        self.assertTrue(limit.allow('b', 2))
+        self.assertTrue(limit.allow('a', 11))
 
 
 if __name__ == '__main__':

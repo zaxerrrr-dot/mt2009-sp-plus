@@ -72,6 +72,20 @@ namespace N2_Patcher
 
 		private DispatcherTimer serverTimer;
 
+		// MT2009_PLUS_DBDATA_AUTO_V1 (DbDataSync): allowed once the patch list is
+		// done; one run at a time; GRAJ during a run starts the game after it.
+		private bool dbdataAllowed;
+
+		private int dbdataGeneration;
+
+		private bool dbdataRunning;
+
+		private bool startAfterDbData;
+
+		private static readonly System.Threading.SemaphoreSlim DbDataGate = new System.Threading.SemaphoreSlim(1, 1);
+
+		private static readonly Brush WarningBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xB0, 0x4D));
+
 		public MainWindow()
 		{
 			Functions.ClearOldVersion();
@@ -169,6 +183,12 @@ namespace N2_Patcher
 				{
 					Program.Patchlist_Thread();
 				}
+				else if (this.dbdataRunning)
+				{
+					// the server's database files are on their way: the game right after them
+					this.startAfterDbData = true;
+					this.dbdataInfo.Text = "Uruchomię grę po pobraniu danych bazy…";
+				}
 				else
 				{
 					Program.Start_EXE();
@@ -202,6 +222,89 @@ namespace N2_Patcher
 		public void ReadyForStart()
 		{
 			MainWindow.WPF.btn_start.IsEnabled = true;
+			// MT2009_PLUS_DBDATA_AUTO_V1: after the patch list, the database files
+			if (!this.dbdataAllowed)
+			{
+				this.dbdataAllowed = true;
+				this.StartDbDataSync();
+			}
+		}
+
+		// ------------------------------------------------ database files (DbDataSync)
+
+		private async void StartDbDataSync()
+		{
+			if (!this.dbdataAllowed || this.servers.Count == 0)
+			{
+				return;
+			}
+			int generation = ++this.dbdataGeneration;
+			CoopServer server = this.servers[this.serverIndex];
+			string root = Functions.GetCurrentFolder();
+			List<string> candidates = DbDataSync.CandidateUrls(server, Config.GetDbDataManifest());
+			if (candidates == null)
+			{
+				this.dbdataInfo.Text = "";
+				return;
+			}
+			this.dbdataRunning = true;
+			this.dbdataInfo.Foreground = MainWindow.CheckingBrush;
+			this.dbdataInfo.Text = "Dane bazy: sprawdzam serwer…";
+			this.dbdataInfo.ToolTip = null;
+			DbDataResult result;
+			await MainWindow.DbDataGate.WaitAsync();
+			try
+			{
+				result = await Task.Run(() => DbDataSync.Run(root, candidates, DbDataSync.HttpFetch, text =>
+					this.Dispatcher.BeginInvoke(new Action(() => {
+						if (generation == this.dbdataGeneration)
+						{
+							this.dbdataInfo.Text = text;
+						}
+					}))));
+			}
+			catch (Exception exc)
+			{
+				result = new DbDataResult { State = DbDataState.Failed, Message = "Dane bazy: błąd.", Detail = exc.Message };
+			}
+			finally
+			{
+				MainWindow.DbDataGate.Release();
+			}
+			MainWindow.WriteDbDataLog(root, server, result);
+			if (generation == this.dbdataGeneration)
+			{
+				this.dbdataRunning = false;
+				this.dbdataInfo.Text = result.Message;
+				this.dbdataInfo.ToolTip = string.IsNullOrEmpty(result.Detail) ? null : result.Detail;
+				this.dbdataInfo.Foreground = result.IsWarning ? MainWindow.WarningBrush
+					: (result.State == DbDataState.Updated || result.State == DbDataState.UpToDate ? MainWindow.OnlineBrush : MainWindow.CheckingBrush);
+				if (result.State == DbDataState.ClientOlder || result.State == DbDataState.ServerOlder)
+				{
+					MessageBox.Show(this, result.Detail, Program.Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
+				if (this.startAfterDbData)
+				{
+					this.startAfterDbData = false;
+					Program.Start_EXE();
+				}
+			}
+		}
+
+		// MT2009-Patcher-dbdata.log next to the game: what the last check did.
+		private static void WriteDbDataLog(string root, CoopServer server, DbDataResult result)
+		{
+			try
+			{
+				List<string> lines = new List<string>();
+				lines.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "  MT2009_PLUS_DBDATA_AUTO_V1  serwer: " + server.DisplayName + " (" + server.Host + ")");
+				lines.AddRange(result.Log);
+				lines.Add(result.Detail);
+				System.IO.File.WriteAllLines(System.IO.Path.Combine(root, "MT2009-Patcher-dbdata.log"), lines, System.Text.Encoding.UTF8);
+			}
+			catch
+			{
+			}
 		}
 
 		public void setNewsLink(string url)
@@ -257,6 +360,8 @@ namespace N2_Patcher
 				server.Channels > 1 ? string.Concat(", CH2 ", (server.Channel + 10).ToString()) : "");
 			this.SetStatus(null);
 			this.ProbeServer();
+			// another server: its database files (once the patch list is done)
+			this.StartDbDataSync();
 		}
 
 		private void SetStatus(ChannelState state)

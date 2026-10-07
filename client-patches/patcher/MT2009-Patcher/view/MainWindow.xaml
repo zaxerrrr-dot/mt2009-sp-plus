@@ -162,6 +162,8 @@
       </DockPanel>
       <TextBlock Name="serverAuth" TextAlignment="Center" Margin="0,3,0,0" TextBlock.FontFamily="{DynamicResource Front_00}" TextBlock.FontSize="13" TextBlock.Foreground="#FFEBC7B5" />
       <TextBlock Name="serverChannels" TextAlignment="Center" Margin="0,2,0,0" TextBlock.FontFamily="{DynamicResource Front_00}" TextBlock.FontSize="13" TextBlock.Foreground="#FFEBC7B5" />
+      <!-- MT2009_PLUS_DBDATA_AUTO_V1: the database editor's client files of this server (DbDataSync). -->
+      <TextBlock Name="dbdataInfo" TextAlignment="Center" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" TextBlock.FontFamily="{DynamicResource Front_00}" TextBlock.FontSize="12" TextBlock.Foreground="#FFB0A090" Text="" />
     </StackPanel>
   </Grid>
-</Window>
+</Window>

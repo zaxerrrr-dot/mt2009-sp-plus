@@ -57,6 +57,7 @@ NEVER = [
     'mt2009-aktualizator.tmp/*', 'mt2009-aktualizator.log',
     '*.bak', '*.tmp', 'thumbs.db', 'desktop.ini',
     'client_version',       # published on its own (see read_client_version)
+    'dbdata_stamp.txt',     # MT2009_PLUS_DBDATA_STAMP_V1: the stamp of the player's pack/dbdata (zip / patcher)
 ]
 CHUNK = 1 << 20
 # MT2009_PLUS_DB_EDITOR_V1: the player's own copy wins ("keep": 1 - the
