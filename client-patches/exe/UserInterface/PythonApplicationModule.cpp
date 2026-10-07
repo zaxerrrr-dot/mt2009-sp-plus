@@ -1675,6 +1675,9 @@ void initapp()
 #ifdef ENABLE_MINI_GAME_YUTNORI
 	PyModule_AddIntConstant(poModule, "RENDER_TARGET_INDEX_YUTNORI", CRenderTargetManager::RENDER_TARGET_INDEX_YUTNORI);
 #endif
+#ifdef ENABLE_MONSTER_CARD_MODEL
+	PyModule_AddIntConstant(poModule, "RENDER_TARGET_INDEX_ILLUSTRATED", CRenderTargetManager::RENDER_TARGET_INDEX_ILLUSTRATED); // MT2009_PLUS_MONSTER_CARD_MODEL_V1
+#endif
 #else
 	PyModule_AddIntConstant(poModule, "RENDER_TARGET", 0);
 #endif

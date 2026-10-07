@@ -244,6 +244,12 @@ class LoadingWindow(ui.ScriptWindow):
 	def __RegisterTitleName(self):
 		for i in xrange(len(localeInfo.TITLE_NAME_LIST)):
 			chrmgr.RegisterTitleName(i, localeInfo.TITLE_NAME_LIST[i])
+		# MT2009_PLUS_FEMALE_TITLES_V1 (Autor: Digi Rasta): the female forms (rankpoints.py)
+		try:
+			import rankpoints
+			rankpoints.RegisterFemaleTitles()
+		except Exception:
+			pass
 
 	def __RegisterColor(self):
 

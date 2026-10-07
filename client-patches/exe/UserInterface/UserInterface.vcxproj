@@ -301,6 +301,8 @@
     <ClCompile Include="PythonAcce.cpp" />
     <ClCompile Include="PythonInGameEventSystemManager.cpp" />
     <ClCompile Include="PythonYutnoriManager.cpp" />
+    <ClCompile Include="Mt2009ClientQol.cpp" />
+    <ClCompile Include="Mt2009MonsterModel.cpp" />
     <ClCompile Include="PythonBackground.cpp" />
     <ClCompile Include="PythonBackgroundModule.cpp" />
     <ClCompile Include="PythonCaptcha.cpp" />

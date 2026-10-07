@@ -177,7 +177,9 @@ class CostumeWindow(ui.ScriptWindow):
 			board = self.GetChild("board")
 			width = self.GetWidth()
 			height = self.GetHeight()
-			bits = (uicostumehide.BODY, uicostumehide.HAIR, uicostumehide.WEAPON)
+			# MT2009_PLUS_COSTUME_VIEW_OTHERS_V1: the fourth, "Ukryj cudze" - the others'
+			# looks hidden for this player only
+			bits = (uicostumehide.BODY, uicostumehide.HAIR, uicostumehide.WEAPON, uicostumehide.OTHERS)
 			self.SetSize(width, height + 26 * len(bits))
 			board.SetSize(width, height + 26 * len(bits))
 			self.hideButtons = []
@@ -189,6 +191,8 @@ class CostumeWindow(ui.ScriptWindow):
 				button.SetDownVisual("d:/ymir work/ui/public/large_button_03.sub")
 				button.SetPosition((width - button.GetWidth()) / 2, height - 4 + 26 * row)
 				button.SetEvent(lambda b = bit: uicostumehide.Toggle(b))
+				if bit == uicostumehide.OTHERS:
+					button.SetToolTipText(uicostumehide.TOOLTIP_OTHERS)
 				button.Show()
 				uicostumehide.AddButton(button, bit)
 				self.hideButtons.append(button)

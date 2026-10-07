@@ -785,10 +785,10 @@ Best Studio). Znacznik `MT2009_PLUS_MONSTER_CARDS_V1`; serwer: `server-patches/m
   (od 2.0.52 w paczce `dbdata`): cztery nowe rekordy jak w `apply.sh`; `gamedata/item_list.txt` – ikony;
   `locale/pl/itemdesc.txt` (paczka `dbdata`) – opisy. Po buildzie klienta: nowa baza edytora bazy danych
   (`python3 -m m2clientpack.make_base <klient>/pack <wersja>` w `linux-port/docker/seban-panel`).
-- Exe (później, na Windows): model 3D potwora w polu podglądu wymaga `player.Mt2009ModelShow/Select/Rotation/
-  Zoom/UpDown/Reset/Motion` i `app.RENDER_TARGET_INDEX_ILLUSTRATED` (w paczce Digi Rasty: `CModelViewer`
-  w jego `Mt2009Window.cpp`); nasze exe ma render target Yut Nori (`PythonYutnoriManager`, rasa 20505) –
-  trzeba go uogólnić na dowolną rasę. Bez tego okno pokazuje obrazek karty ×2, przyciski kamery są ukryte.
+- Exe: model 3D potwora w polu podglądu – `player.Mt2009ModelShow/Select/Rotation/Zoom/UpDown/Reset/Motion`
+  i `app.RENDER_TARGET_INDEX_ILLUSTRATED` (`MT2009_PLUS_MONSTER_CARD_MODEL_V1`, `client-patches/exe/UserInterface/
+  Mt2009MonsterModel.cpp`, na naszym render targecie z mini gier; pomysł i API: Digi Rasta). Exe bez tego:
+  okno pokazuje obrazek karty ×2, przyciski kamery są ukryte.
 
 ## Przypomnienie o plikach klienta z edytora bazy danych (`MT2009_PLUS_DBDATA_STAMP_V1`)
 

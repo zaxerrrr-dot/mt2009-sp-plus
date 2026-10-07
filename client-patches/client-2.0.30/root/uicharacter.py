@@ -696,12 +696,18 @@ class CharacterWindow(ui.ScriptWindow):
 		try:
 			import rankpoints
 			built = rankpoints.BuildAlignmentToolTip(self.toolTipAlignment, point,
-					localeInfo.TITLE_NAME_LIST[grade], gradeColor, localeInfo.ALIGNMENT_NAME)
+					rankpoints.AlignmentTitle(grade), gradeColor, localeInfo.ALIGNMENT_NAME)
 		except Exception:
 			self.toolTipAlignment.ClearToolTip()
 			built = False
 		if not built:
-			self.toolTipAlignment.AutoAppendTextLine(localeInfo.TITLE_NAME_LIST[grade], gradeColor)
+			# MT2009_PLUS_FEMALE_TITLES_V1: a woman's title in the female form (rankpoints.py)
+			try:
+				import rankpoints
+				title = rankpoints.AlignmentTitle(grade)
+			except Exception:
+				title = localeInfo.TITLE_NAME_LIST[grade]
+			self.toolTipAlignment.AutoAppendTextLine(title, gradeColor)
 			self.toolTipAlignment.AutoAppendTextLine(localeInfo.ALIGNMENT_NAME + str(point))
 		self.toolTipAlignment.AlignHorizonalCenter()
 

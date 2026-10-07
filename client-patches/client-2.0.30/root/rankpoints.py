@@ -41,6 +41,20 @@ TIERS = {
 	8: (200000, "Legenda", "Legend", (255, 215, 0)),
 }
 
+# MT2009_PLUS_FEMALE_TITLES_V1 (Autor: Digi Rasta, Extended-Alignment, nowy-system 0.28): the
+# female forms, over a woman's head (an exe with chrmgr.RegisterRankTitleFemale) and in a woman's
+# character window. A tier without one keeps its name (Legenda is both).
+TIERS_FEMALE = {
+	1: "Waleczna",
+	2: "Mocarna",
+	3: "Pot\xea\xbfna",
+	4: "W\xb3adczyni",
+	5: "Arcymistrzyni",
+}
+# The alignment titles (localeInfo.TITLE_NAME_LIST, grades 0-8) in the female form - his list.
+ALIGNMENT_FEMALE = ("Rycerska", "Szlachetna", "Dobra", "Przyjazna", "Neutralna", "Agresywna",
+	"Nieuczciwa", "Z\xb3o\x9cliwa", "Okrutna")
+
 # tier: (monsters %, people %, Metins %, bosses %, average damage %, HP) - = the server's TIERS
 BONUS = {
 	1: (10, 10, 0, 0, 0, 1000),
@@ -86,11 +100,45 @@ except Exception:
 	pass
 
 
-def TierName(tier):
+def TierName(tier, female=False):
 	t = TIERS.get(tier)
 	if not t:
 		return ""
-	return t[2] if _english else t[1]
+	if _english:
+		return t[2]
+	if female and tier in TIERS_FEMALE:
+		return TIERS_FEMALE[tier]
+	return t[1]
+
+
+def IsPlayerFemale():
+	"""The player's own character is a woman (chr.RaceToSex: 0)."""
+	try:
+		import chr
+		import player
+		return chr.RaceToSex(player.GetRace()) == 0
+	except Exception:
+		return False
+
+
+def AlignmentTitle(grade, female=None):
+	"""The alignment title of a grade, in the female form for a woman (Polish only)."""
+	import localeInfo
+	if female is None:
+		female = IsPlayerFemale()
+	if female and not _english and 0 <= grade < len(ALIGNMENT_FEMALE):
+		return ALIGNMENT_FEMALE[grade]
+	return localeInfo.TITLE_NAME_LIST[grade]
+
+
+def RegisterFemaleTitles():
+	"""The female alignment titles for the exe (introloading.py, next to RegisterTitleName);
+	nothing in English or with an exe without chrmgr.RegisterTitleNameFemale."""
+	import chrmgr
+	if _english or not hasattr(chrmgr, "RegisterTitleNameFemale"):
+		return
+	for grade, name in enumerate(ALIGNMENT_FEMALE):
+		chrmgr.RegisterTitleNameFemale(grade, name)
 
 
 def TierOf(points):
@@ -122,6 +170,10 @@ def _Register():
 	for tier, row in TIERS.items():
 		(r, g, b) = row[3]
 		chrmgr.RegisterRankTitle(tier, TierName(tier), r, g, b)
+	# MT2009_PLUS_FEMALE_TITLES_V1: the ranks' female forms over a woman's head
+	if not _english and hasattr(chrmgr, "RegisterRankTitleFemale"):
+		for tier in TIERS_FEMALE:
+			chrmgr.RegisterRankTitleFemale(tier, TierName(tier, True))
 
 
 def HasNativeTitle():
@@ -247,9 +299,10 @@ def BuildAlignmentToolTip(toolTip, alignment, gradeTitle, gradeColor, pointsLabe
 		return False
 	import ui
 	tier = TierOf(total)
+	female = IsPlayerFemale()
 	if tier:
 		(r, g, b) = TIERS[tier][3]
-		toolTip.AutoAppendTextLine(TierName(tier), ui.GenerateColor(r, g, b))
+		toolTip.AutoAppendTextLine(TierName(tier, female), ui.GenerateColor(r, g, b))
 	else:
 		toolTip.AutoAppendTextLine(gradeTitle, gradeColor)
 	if pointsLabel:
@@ -263,7 +316,7 @@ def BuildAlignmentToolTip(toolTip, alignment, gradeTitle, gradeColor, pointsLabe
 				toolTip.AutoAppendTextLine(BONUS_LABELS[i] % value, color)
 	fruit = FruitFor(total)
 	if tier + 1 in TIERS and total >= 0:
-		toolTip.AutoAppendTextLine(TEXT_NEXT % (TierName(tier + 1), TIERS[tier + 1][0]))
+		toolTip.AutoAppendTextLine(TEXT_NEXT % (TierName(tier + 1, female), TIERS[tier + 1][0]))
 	if fruit:
 		toolTip.AutoAppendTextLine(TEXT_FRUIT % (fruit[2], fruit[3]))
 	elif total < 0:

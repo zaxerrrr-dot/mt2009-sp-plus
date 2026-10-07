@@ -25,19 +25,12 @@ Nowe pliki `root`: `digiqol.py`, `uiopcjedodatkowe.py`; zmienione: `game.py`, `u
 `uitooltip.py`, oraz (do tej pory nie w repozytorium, wzięte z paczki `root` 2.0.43) `uishop.py`,
 `uisystem.py`, `uiscript/systemdialog.py`.
 
-## Exe – `digi-client-qol.patch`
+## Exe
 
-Łatka w układzie `/opt/metin2/cache/exebuild/patches` (`a/SourceClient/...`, `patch -p1`), względem
-źródła wydanego exe (`/opt/metin2/cache/exe-port/Source` = `client-build` + `client-patches/exe`).
-`build.sh` przekazuje ją do `tools/sync_src.py` jako kolejne `--patch` (po `clang-cl-compat.patch`).
-
-| Plik | Zmiana |
-|---|---|
-| `UserInterface/Locale_inc.h` | `#define ENABLE_DIGI_CLIENT_QOL` |
-| `UserInterface/PythonChat.cpp` | kod całości na końcu pliku: `app.SetHideEffects(buff, skill)`, `app.SetChatLog(on)`, `chrmgr.SetShopsVisible(on)` (dopisane do istniejących modułów, `PyImport_AddModule`); `AppendChat` / `AppendWhisper` dopisują linię do `logs/czat_RRRR-MM-DD.txt` (bez kodów koloru `|c…|r`, `|H…|h`; komendy serwera pomijane) |
-| `EffectLib/EffectInstance.cpp` | `CEffectInstance::OnRender` pomija efekt z listy (wzmocnienia: `3hosin_loop`, `boho_loop`, `6gicheon_hand`, `jeungryeok_hand`; aury: `10kwaesok_loop`, `gwigeom_loop`, `fear_loop`, `jumagap_loop`, `muyeong_loop`, `heuksin_loop`, `gyeokgongjang_loop`, `geom_sword_loop`, `gyeonggong_loop`) – listy z paczki; funkcja istnieje zawsze, bez definicji nic nie ukrywa |
-| `UserInterface/PythonIkarusShop.cpp` | `RenderEntities`: ukryte sklepy (encje ikashop – takie mają boty i gracze) są traktowane jak „za daleko”: bez modelu, napisu, tablicy ogłoszeń i bez klikania |
-| `UserInterface/UserInterface.cpp` | rejestracja funkcji po `initInGameEventSystem()` |
+Od 7.10.2026 w nakładce exe (`client-patches/exe`, `ENABLE_DIGI_CLIENT_QOL`, `UserInterface/Mt2009ClientQol.cpp`,
+`EffectLib/EffectInstance.cpp`, `PythonIkarusShop.cpp`, `PythonChat.cpp`, `UserInterface.cpp`) – opis w
+`client-patches/exe/README.md`, „Wybór z nowy-system 0.28”. Dawna łatka `digi-client-qol.patch` (nigdy nie nakładana
+przez `build.sh`) usunięta.
 
 Paczka ukrywała tylko postacie-sklepy (`IsShop()`); u nas sklepy to encje ikashop, więc
 `SetShopsVisible` robi oba.
