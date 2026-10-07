@@ -136,6 +136,18 @@ Po starcie działają dwa panele w przeglądarce:
 - `http://127.0.0.1:7788` — panel administracyjny i mapa botów,
 - `http://127.0.0.1:7790` — Metin2 Singleplayer Panel (seban latino): mapa na żywo, profile, rankingi, gospodarka.
 
+**Pliki klienta z edytora bazy danych** (nazwy, bonusy, opisy przedmiotów i
+umiejętności zmienione w panelu 7790 → Edytor bazy danych): **MT2009-Patcher
+pobiera je sam**. Przy każdym uruchomieniu pyta panel serwera wybranego nad
+przyciskiem GRAJ (`/klient/dbdata/manifest.json`, bez logowania), porównuje
+sumy SHA-256 paczki `pack\dbdata` i – gdy się różnią – pobiera tylko ją (kilkaset
+KB – kilka MB), sprawdza i podmienia przed startem gry (stara zostaje jako
+`*.bak`). Gra uruchomiona? Patcher poprosi o jej zamknięcie. Serwer ma pliki
+dla nowszego klienta? Patcher poprosi najpierw o aktualizację klienta. Bez
+patchera działa jak dotąd: zip „Pobierz aktualne pliki klienta” w panelu
+(Edytor bazy danych → Zastosuj), a gra po wejściu przypomina o nieaktualnych
+plikach.
+
 **Linux / VPS:** instrukcja w [PACZKA_INFO.txt](PACZKA_INFO.txt); aktualizacja
 z folderu serwera: `sh linux-port/tools/update.sh`.
 

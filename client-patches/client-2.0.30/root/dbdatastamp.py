@@ -1,4 +1,5 @@
 # MT2009_PLUS_DBDATA_STAMP_V1 - "your item/skill files are not this server's".
+# MT2009_PLUS_DBDATA_AUTO_V1: MT2009-Patcher fetches the pack itself (the popup says so).
 #
 # The Seban panel's database editor changes items and skills on the server;
 # the client shows their names, bonuses and descriptions from its own
@@ -33,10 +34,12 @@ POPUP_LINES = (
 	"Pobierz aktualne pliki klienta w panelu:",
 	"Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip)",
 	"i rozpakuj je do folderu gry (zast\xb9p pliki), potem uruchom gr\xea ponownie.",
+	"Albo uruchom gr\xea przez MT2009-Patcher.exe - pobierze je sam.",
 )
 CHAT_LINES = (
 	"[Pliki klienta] Masz nieaktualne pliki klienta - nowe przedmioty mog\xb9 nie dzia\xb3a\xe6, a opisy si\xea nie zgadza\xe6.",
 	"[Pliki klienta] Pobierz aktualne pliki klienta w panelu: Edytor bazy danych -> Zastosuj -> Pobierz aktualne pliki klienta (zip) i rozpakuj je do folderu gry.",
+	"[Pliki klienta] Albo uruchom gr\xea przez MT2009-Patcher.exe - pobierze je sam z panelu serwera.",
 )
 
 

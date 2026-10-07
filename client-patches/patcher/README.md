@@ -178,6 +178,7 @@ graczy przez stary serwer - stary musi działać, aż wszyscy się zaktualizują
 | `Start` | `metin2client.exe` | gra (katalog roboczy = folder klienta) |
 | `StartToken` | `false` | `true` = argument-token oryginału (MD5 klucza i godziny); klient MT2009 go nie używa |
 | `Config` | `config.exe` | program zębatki; brak pliku = zębatka ukryta |
+| `DbDataManifest` | puste | dane bazy z panelu serwera (niżej): puste = adresy z serwera wybranego nad GRAJ, `off` = wyłączone, albo adresy manifestu oddzielone `;` (`{host}` = adres serwera) |
 | `Slider`, `Stats`, `Update` | puste | oryginał czytał je, ale okno ich nie używało (`Stats` = JSON `ServerState`, zastąpiony sprawdzaniem portów; `Update` = zewnętrzny updater, zastąpiony samodzielnym restartem) |
 
 ## Budowanie
@@ -257,3 +258,34 @@ serwera - więc patcher nie może jej „naprawiać”:
   listą, `--patcher`).
 - `client-files.json` (`launcher-klienta/dodaj-do-paczki.py`) też pomija
   `pack/dbdata.*`, więc klient z rozpakowanym zipem nadal jest „aktualny”.
+
+### Automatycznie z panelu serwera (MT2009_PLUS_DBDATA_AUTO_V1)
+
+Po zwykłej aktualizacji (i po każdej zmianie serwera strzałkami ‹ › albo w
+oknie VPS) patcher pyta panel serwera wybranego nad GRAJ o
+`/klient/dbdata/manifest.json` (`N2_Patcher/Core/DbDataSync.cs`, panel:
+`linux-port/docker/seban-panel/dbeditor/autodbdata.py`):
+
+1. Adresy (wszystkie naraz, wygrywa pierwszy w tej kolejności, który odpowie
+   prawdziwym manifestem, limit 4 s): `DbDataManifest` z `.exe.config` albo
+   `panel=` z `coop.cfg`/`coop2.cfg` (port lub adres), potem
+   `http://<host>:7790`, `http://<host>:<port logowania + 6790>`,
+   `http://<host>` (bramka na porcie 80). Bez coop*.cfg: 127.0.0.1.
+2. Wersja: serwer ma pliki dla nowszego klienta niż `CLIENT_VERSION` →
+   komunikat „najpierw zaktualizuj klienta”, nic nie jest pobierane. Klient
+   nowszy niż baza serwera → pobiera tylko, gdy obecna paczka to oryginał tej
+   bazy (lub z niej powstała, `dbdata_stamp.txt`), inaczej komunikat, że
+   serwer jest starszy.
+3. SHA-256 `pack\dbdata.index` / `.data` równe manifestowi → „Dane bazy:
+   aktualne” (dopisuje tylko `dbdata_stamp.txt`, gdy go brak).
+4. Inaczej „Pobieram dane bazy z serwera…”: pobiera tylko różniące się pliki do
+   `*.tmp`, sprawdza rozmiar i SHA-256, sprawdza, czy gra nie trzyma paczki
+   (wtedy „zamknij grę”), podmienia (`File.Replace`, stara jako `*.bak`; gdy
+   druga podmiana się nie uda, pierwsza wraca z `.bak`) i zapisuje
+   `dbdata_stamp.txt` – gra nie pokaże wtedy ostrzeżenia o starych plikach.
+
+Błąd nigdy nie blokuje gry: GRAJ wciśnięte w trakcie uruchamia grę zaraz po
+sprawdzeniu, każdy błąd to tylko napis pod stanem serwera (pełny opis w
+podpowiedzi i w `MT2009-Patcher-dbdata.log` obok gry). Testy: `dotnet run --
+unit` (sekcja DbDataSync) i `dotnet run -- dbdata
+http://127.0.0.1:17790/klient/dbdata/manifest.json /tmp/k` (prawdziwy panel).

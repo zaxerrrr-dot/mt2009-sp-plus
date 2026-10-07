@@ -243,6 +243,46 @@ at the top of that release, in full, before anything else.
 
 ---
 
+## Pliki klienta z edytora bazy danych – automatycznie przez patcher
+
+(MT2009_PLUS_DBDATA_AUTO_V1) Po aktualizacji serwera, która zmienia przedmioty
+w kliencie, albo po zmianach w edytorze bazy danych nie trzeba już rozsyłać
+zipa z plikami klienta. Panel 7790 publikuje bez logowania tylko to, co i tak
+jest w zipie:
+
+- `GET /klient/dbdata/manifest.json` – wersja bazy klienta, znacznik
+  (ten sam, który gra wysyła jako „DbDataStamp”), rozmiary i SHA-256
+  `pack/dbdata.index` i `pack/dbdata.data`, treść `dbdata_stamp.txt`;
+- `GET /klient/dbdata/<znacznik>/dbdata.index|dbdata.data` – sama paczka.
+
+MT2009-Patcher sprawdza manifest serwera wybranego nad GRAJ po swojej zwykłej
+aktualizacji i pobiera paczkę tylko wtedy, gdy różni się od tej w kliencie.
+Gdzie szuka panelu: linia `panel=` w `coop.cfg`/`coop2.cfg` (port albo adres),
+potem port 7790 tego serwera, port logowania + 6790 (bloki portów jak na
+serwerach testowych) i port 80 (bramka, niżej). Na stałe można to ustawić w
+`MT2009-Patcher.exe.config`: `DbDataManifest` (adresy oddzielone `;`, `{host}`
+= adres serwera; `off` wyłącza).
+
+Panel na 127.0.0.1 (domyślnie w launcherze Windows): patcher na tym samym
+komputerze go widzi, znajomi z COOP – nie (dla nich zip jak dotąd albo bramka).
+Serwer z zaporą, który wpuszcza graczy tylko na `/register` (serwer
+wspierających): dodaj w bramce (nginx) przed panelem tylko tę ścieżkę, np.
+
+```nginx
+location ^~ /klient/dbdata/ {
+    limit_except GET { deny all; }
+    proxy_pass http://127.0.0.1:7790;   # panel 7790 (seban-panel:7789 w sieci dockera)
+    proxy_set_header X-Real-IP $remote_addr;
+}
+```
+
+na porcie 80 (patcher sprawdza go sam) albo na porcie bramki `/register` i
+wpisz graczom `panel=<port bramki>` w `coop.cfg`. Reszta panelu zostaje
+zamknięta. Wyłączenie publicznych ścieżek: `DBDATA_AUTO=0` w środowisku
+kontenera seban-panel.
+
+---
+
 ## Server settings (.env) from the advanced panel
 
 The advanced panel's **Ustawienia → Ustawienia serwera (.env)** page

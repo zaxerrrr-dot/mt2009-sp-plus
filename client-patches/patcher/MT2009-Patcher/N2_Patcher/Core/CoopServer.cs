@@ -37,6 +37,11 @@ namespace N2_Patcher.Core
 		public string Text = "";
 		// 1 = coop.cfg, 2 = coop2.cfg, 0 = the built-in localhost server.
 		public int Slot;
+		// MT2009_PLUS_DBDATA_AUTO_V1: optional "panel=" line - the port of the
+		// server's Seban panel, or its address (http://host:port/ or the whole
+		// manifest URL), where the patcher asks for the database editor's
+		// client files (DbDataSync). The client ignores the key.
+		public string Panel = "";
 
 		public static CoopServer Localhost()
 		{
@@ -310,6 +315,10 @@ namespace N2_Patcher.Core
 				if (count < 1 || count > 2 || channelPort + (count - 1) * 10 > 65535)
 				{
 					return result;
+				}
+				if (settings.ContainsKey("panel"))
+				{
+					result.Panel = settings["panel"];
 				}
 				result.Valid = true;
 			}

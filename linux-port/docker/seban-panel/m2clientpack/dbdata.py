@@ -7,9 +7,11 @@ names, so the exe finds them only here.
 
 The panel builds a whole new dbdata pack from the release's files (base/
 <client version>/) patched with the edits, and hands it out as a zip the
-player unpacks into his client folder himself. Nothing downloads anything
-automatically: a client with several servers (localhost, COOP 1, COOP 2)
-carries the data of the server whose zip was unpacked last.
+player unpacks into his client folder himself - or MT2009-Patcher fetches
+it from the panel at every start (MT2009_PLUS_DBDATA_AUTO_V1,
+dbeditor/autodbdata.py) for the server chosen in the patcher. A client with
+several servers (localhost, COOP 1, COOP 2) carries the data of the server
+whose pack came last.
 
 base/<version>/: base.json (client version, per file its size, hash and
 compression type), dbdata.index + dbdata.data (the release's own pack, the
@@ -128,12 +130,20 @@ def stamp_text(value, index=None, data=None):
     came with - a client update that puts the release's pack back leaves
     the old dbdata_stamp.txt behind, and the sizes tell the client its pack
     is no longer the zip's. ASCII, CRLF."""
+    if index is not None and data is not None:
+        return stamp_text_sizes(value, len(index), len(data))
+    return stamp_text_sizes(value, None, None)
+
+
+def stamp_text_sizes(value, index_size, data_size):
+    """stamp_text() from the sizes of the pack files (MT2009_PLUS_DBDATA_AUTO_V1:
+    the manifest's "stamp_file", which the patcher writes next to the game)."""
     lines = ['# MT2009_PLUS_DBDATA_STAMP_V1: znacznik plikow klienta z edytora bazy danych (panel Seban).',
              '# Gra porownuje go ze znacznikiem serwera i przypomina o pobraniu nowych plikow. Nie zmieniaj.',
              'stamp %s' % value]
-    if index is not None and data is not None:
-        lines.append('size pack/%s.index %d' % (PACK, len(index)))
-        lines.append('size pack/%s.data %d' % (PACK, len(data)))
+    if index_size is not None and data_size is not None:
+        lines.append('size pack/%s.index %d' % (PACK, index_size))
+        lines.append('size pack/%s.data %d' % (PACK, data_size))
     return ('\r\n'.join(lines) + '\r\n').encode('ascii')
 
 

@@ -14,9 +14,10 @@ Pending changes come from the editor's parts themselves:
   * monsters (mobs.py): the same history as items/skills (tbl world.mob_proto);
   * respawn files (spawns.py): spawnfiles.pending_changes(<spool>).
 
-Client files (m2clientpack.dbdata): nothing is downloaded automatically - a
-player's client may list several servers (localhost, COOP 1, COOP 2). The
-operator clicks "Pobierz aktualne pliki klienta" and gets a zip with
+Client files (m2clientpack.dbdata): MT2009-Patcher fetches them by itself
+(MT2009_PLUS_DBDATA_AUTO_V1, dbeditor/autodbdata.py: the public
+/klient/dbdata/manifest.json of the current pack, for the server chosen in
+the patcher). Without the patcher (and as the manual way) the operator clicks "Pobierz aktualne pliki klienta" and gets a zip with
 pack/dbdata.index + pack/dbdata.data (the release's dbdata pack with every
 item/skill field the editor ever changed, common_items.net_changes(
 include_applied=True)) and CZYTAJ_MNIE.txt; he unpacks it into his client or
@@ -117,7 +118,8 @@ RESTART_FILE = "panel-restart.time"
 POPUP_COOKIE = "dbe_zip_seen"
 POPUP_TEXT = ("UWAGA! Aby zmiany z edytora bazy danych były widoczne w Twoim kliencie gry, musisz pobrać ten plik "
               "ZIP i rozpakować go do folderu z klientem (zastąp pliki). Bez tego w grze zobaczysz stare nazwy, "
-              "bonusy i opisy.")
+              "bonusy i opisy. MT2009-Patcher robi to sam: uruchom grę przez patcher (z tym serwerem wybranym "
+              "nad przyciskiem GRAJ), a pobierze nowe pliki automatycznie.")
 
 
 def last_restart(spool, last_apply=None):
@@ -305,6 +307,21 @@ def install(bp, ctx):
     app = ctx.get("app")
     if ctx.get("queue_restart") is not None and not (app is not None and app.testing):
         threading.Thread(target=startup_stamp, name="dbdata-stamp-start", daemon=True).start()
+
+    # MT2009_PLUS_DBDATA_AUTO_V1: the same pack, public, for MT2009-Patcher
+    # (dbeditor/autodbdata.py: /klient/dbdata/manifest.json + the pack files).
+    if app is not None:
+        from dbeditor import autodbdata
+        publisher = autodbdata.Publisher(
+            spool / "dbeditor" / autodbdata.CACHE_DIR,
+            current_stamp=lambda: read_server_stamp(spool),
+            refresh=refresh_stamp,
+            build=lambda: dbsource.build_dbdata(query, common_items.net_changes(include_applied=True)),
+            save_stamp=save_stamp,
+            latest_base=dbdata.latest_base)
+        ctx["dbdata_publisher"] = publisher
+        autodbdata.install(app, publisher, lambda value, index_size, data_size: dbdata.stamp_text_sizes(
+            value, index_size, data_size).decode("ascii"))
 
     def banner():
         return new_client_banner(_read_json(download_log, {}), base_version())

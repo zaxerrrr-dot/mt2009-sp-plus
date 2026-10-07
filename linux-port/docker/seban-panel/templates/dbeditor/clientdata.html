@@ -52,7 +52,8 @@
 <section class="panel">
   <h2>Pliki klienta dla graczy</h2>
   <p class="muted">Nazwy, poziomy, bonusy przedmiotów i opisy umiejętności klient gry bierze z własnych plików (paczka <code>pack\dbdata</code>).
-    Klient ani patcher niczego nie pobierają same – pobierz zip i rozpakuj go w folderze klienta (zgódź się na nadpisanie) albo wyślij znajomemu, który gra na tym serwerze.</p>
+    <b>MT2009-Patcher pobiera je sam</b>: przy każdym uruchomieniu pyta panel serwera wybranego nad przyciskiem GRAJ o aktualne pliki (<code>/klient/dbdata/manifest.json</code> na porcie tego panelu – bez logowania, tylko paczka <code>dbdata</code> i jej suma), sprawdza sumy SHA-256 i podmienia paczkę <code>pack\dbdata</code> przed startem gry – gracz nie musi niczego rozpakowywać.
+    Zip niżej zostaje dla graczy bez patchera (albo gdy patcher nie dosięga panelu): pobierz go i rozpakuj w folderze klienta (zgódź się na nadpisanie) albo wyślij znajomemu, który gra na tym serwerze.</p>
   {% if new_client %}<div class="dbe-state pending"><p>⚠️ {{ new_client }}</p></div>{% endif %}
   {% if client_version %}
     <p>Pliki dla klienta <b>{{ client_version }}</b> (i nowszego, dopóki nie zmieni się w nim paczka dbdata). Starszego klienta najpierw zaktualizuj.</p>
