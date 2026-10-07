@@ -248,10 +248,21 @@ namespace
 		return s_mapPlayerBotArzDgCohort.find(pid) != s_mapPlayerBotArzDgCohort.end();
 	}
 
+	// MT2009_PLUS_AREZZO_COHORT_FREE_V1: a line "free <pid>" of the cohort file
+	// - a character of the cohort given back to the world. The cohort's bots
+	// are registry identities past the population's part, so without the
+	// file they would never log in again; these are logged in on top of the
+	// population as the cohort's are, but nothing here claims them: they live
+	// as every bot (the stranded recovery takes one standing on its old lobby
+	// to its kingdom's town). The night of 7/8 October the owner wanted
+	// Nemere, the Dragon and the Jungle run by the bots, and the only bots of
+	// 95+ were the Jungle cohort's 39 of 100: half of them are let go.
+	std::set<DWORD> s_setPlayerBotArzDgFree;
+
 	// A cohort pid on a core that does not host its dungeon: never logged in here.
 	bool IsPlayerBotArezzoDungeonReservedPID(DWORD pid)
 	{
-		return !s_bPlayerBotArzDgHosting && IsPlayerBotArezzoDungeonCohortPID(pid);
+		return !s_bPlayerBotArzDgHosting && (IsPlayerBotArezzoDungeonCohortPID(pid) || s_setPlayerBotArzDgFree.count(pid) != 0);
 	}
 
 	// A cohort bot on the core that hosts it, onto its own dungeon's map (the
@@ -1468,6 +1479,7 @@ namespace
 		}
 		std::map<DWORD, int> cohort;
 		std::vector<DWORD> pids;
+		std::set<DWORD> freed;
 		int per[PLAYERBOT_ARZDG_COUNT] = { 0, 0, 0 };
 		char line[128];
 		while (fgets(line, sizeof(line), fp))
@@ -1476,6 +1488,13 @@ namespace
 			unsigned int pid = 0;
 			if (line[0] == '#' || sscanf(line, "%31s %u", key, &pid) != 2 || pid == 0)
 				continue;
+			// MT2009_PLUS_AREZZO_COHORT_FREE_V1: logged in, but the world's.
+			if (!strcmp(key, "free"))
+			{
+				freed.insert(pid);
+				pids.push_back(pid);
+				continue;
+			}
 			for (int i = 0; i < PLAYERBOT_ARZDG_COUNT; ++i)
 				if (!strcmp(key, PLAYERBOT_ARZDG[i].szKey))
 				{
@@ -1486,11 +1505,13 @@ namespace
 		}
 		fclose(fp);
 		s_mapPlayerBotArzDgCohort.swap(cohort);
+		s_setPlayerBotArzDgFree.swap(freed);
 		size_t scheduled = 0;
 		if (schedule && s_bPlayerBotArzDgHosting)
 			scheduled = CPlayerBotManager::instance().ScheduleExtraBots(pids);
-		sys_log(0, "ARZ_DG: cohort file pids=%u wukong=%d skorpion=%d dzungla=%d hosting=%d scheduled_now=%u",
-				(unsigned int)pids.size(), per[0], per[1], per[2], s_bPlayerBotArzDgHosting ? 1 : 0, (unsigned int)scheduled);
+		sys_log(0, "ARZ_DG: cohort file pids=%u wukong=%d skorpion=%d dzungla=%d free=%u hosting=%d scheduled_now=%u",
+				(unsigned int)pids.size(), per[0], per[1], per[2], (unsigned int)s_setPlayerBotArzDgFree.size(),
+				s_bPlayerBotArzDgHosting ? 1 : 0, (unsigned int)scheduled);
 	}
 
 	int ParsePlayerBotArzDgKey(const char* key)

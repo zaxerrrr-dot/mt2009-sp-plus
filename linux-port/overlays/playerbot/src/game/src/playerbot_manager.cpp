@@ -5173,6 +5173,10 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 		// play for as long as the test runs.
 		if (IsPlayerBotArezzoCohortPID(pid) || IsPlayerBotArezzoDungeonCohortPID(pid)) // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1
 			continue;
+		// MT2009_PLUS_AREZZO_COHORT_FREE_V1: nor one let go from it (an identity
+		// past the population's part: sent to rest, nothing would wake it).
+		if (s_setPlayerBotArzDgFree.count(pid) != 0)
+			continue;
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: nor is a bot of a dungeon run sent
 		// to rest in the middle of it; its rest waits for the way out.
 		if (IsPlayerBotOnDungeonRun(pid))
