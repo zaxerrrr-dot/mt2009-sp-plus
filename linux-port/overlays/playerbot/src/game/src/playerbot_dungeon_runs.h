@@ -415,13 +415,18 @@ namespace
 		int iExtraMin;
 		// V3: the members called in for those who dropped out.
 		int iReplacements;
+		// V3: a single objective missing (FixPlayerBotDgRunObjective).
+		int iObjKey;
+		DWORD dwObjMissingSince;
+		int iObjRespawns;
 		TPlayerBotDgRun() : iId(0), iDef(0), bEmpire(0), bPhase(DGRUN_PHASE_GATHER), dwLeader(0), dwAnchor(0), iLvMin(0),
 				iLvMax(0), dwCalledAt(0), dwPhaseSince(0), dwEnteredAt(0), dwLastProgress(0), dwFinishedAt(0),
 				dwClosedSeen(0), dwOutSince(0), dwNextStep(0), dwNextPull(0), lInstance(0), iStage(0), dwStageSince(0),
 				llSignature(0), bStallLogged(false), iDeaths(0), iWipes(0), bAllDead(false), llFees(0), iAnswerShouts(0),
 				lPackX(0), lPackY(0), iPackN(0), szResult(NULL), bPartyMade(false), lCampX(0), lCampY(0), bFallback(false),
 				dwFallbackSince(0), dwFallbackRestUntil(0), iFit(0), iFallbacks(0), iBreakOffs(0), dwFocusVID(0), iWipesIdle(0),
-				dwLastWipeAt(0), iExtraMin(-1), iReplacements(0) {}
+				dwLastWipeAt(0), iExtraMin(-1), iReplacements(0),
+				iObjKey(0), dwObjMissingSince(0), iObjRespawns(0) {}
 	};
 
 	std::map<int, TPlayerBotDgRun> s_mapPlayerBotDgRuns;
@@ -698,6 +703,66 @@ namespace
 			default:
 				return previous;
 		}
+	}
+
+	// MT2009_PLUS_DG_STAGE_WATCH_V1 for Razador and Nemere: a step whose one
+	// objective is gone without its kill. 8 October 01:20, Razador run 7: step
+	// 6 ("Zniszcz Metin Czysca"), the party standing idle at the Metin's own
+	// spot (511,480) with no 8057 on the map - fallen, no doubt, to a member's
+	// blow that counted for nothing (a guild at war, CHARACTER::Dead) - and the
+	// run given up 8 minutes later. Missing PLAYERBOT_ARZDG_WATCH_LOST_MS, the
+	// objective is spawned again where the quest spawns it (its cfg()), three
+	// times a run at most.
+	struct TPlayerBotDgRunObjective { BYTE bKind; const char* flag; int value; DWORD race; int cellX, cellY; };
+	const TPlayerBotDgRunObjective PLAYERBOT_DGRUN_SINGLE_OBJECTIVES[] = {
+		{ DGRUN_KIND_RAZADOR, "step", 4, 6051, 470, 175 },	// the Ignitor
+		{ DGRUN_KIND_RAZADOR, "step", 6, 8057, 511, 480 },	// the Metin of Purgatory
+		{ DGRUN_KIND_RAZADOR, "boss", 1, 6091, 686, 637 },	// Razador
+		{ DGRUN_KIND_NEMERE, "step", 6, 8058, 747, 494 },	// the Metin of Frost
+		{ DGRUN_KIND_NEMERE, "step", 9, 20399, 849, 660 },	// the Ice Pillar
+		{ DGRUN_KIND_NEMERE, "step", 10, 6191, 927, 333 },	// Nemere
+	};
+
+	void FixPlayerBotDgRunObjective(TPlayerBotDgRun& run, const TPlayerBotDgRunDef& def, LPDUNGEON d, DWORD dwNow)
+	{
+		if (!d || d->GetFlag("closed") == 1)
+			return;
+		const TPlayerBotDgRunObjective* obj = NULL;
+		int key = 0;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_DGRUN_SINGLE_OBJECTIVES) / sizeof(PLAYERBOT_DGRUN_SINGLE_OBJECTIVES[0]) && !obj; ++i)
+		{
+			const TPlayerBotDgRunObjective& o = PLAYERBOT_DGRUN_SINGLE_OBJECTIVES[i];
+			if (o.bKind != def.bKind || d->GetFlag(o.flag) != o.value)
+				continue;
+			if (def.bKind == DGRUN_KIND_RAZADOR && !strcmp(o.flag, "step") && (d->GetFlag("active") != 1 || d->GetFlag("boss") != 0))
+				continue;
+			if (def.bKind == DGRUN_KIND_NEMERE && d->GetFlag("ready") != 1)
+				continue;
+			obj = &o;
+			key = (int)i + 1;
+		}
+		if (!obj)
+		{
+			run.iObjKey = 0;
+			return;
+		}
+		bool standing = false;
+		const TPlayerBotArzDgScan& sc = ScanPlayerBotArzDg(run.lInstance, dwNow);
+		for (size_t i = 0; i < sc.foes.size() && !standing; ++i)
+			standing = sc.foes[i].dwRace == obj->race;
+		if (standing || run.iObjKey != key)
+		{
+			run.iObjKey = key;
+			run.dwObjMissingSince = dwNow;
+			return;
+		}
+		if (dwNow - run.dwObjMissingSince < PLAYERBOT_ARZDG_WATCH_LOST_MS || run.iObjRespawns >= 3)
+			return;
+		run.dwObjMissingSince = dwNow;
+		++run.iObjRespawns;
+		LPCHARACTER c = d->SpawnMob(obj->race, obj->cellX, obj->cellY);
+		sys_log(0, "BOT_DGRUN: objective lost - spawned again run=%d dungeon=%s %s=%d race=%u ok=%d respawns=%d",
+				run.iId, def.szKey, obj->flag, obj->value, (unsigned int)obj->race, c ? 1 : 0, run.iObjRespawns);
 	}
 
 	// The last boss down.
@@ -2370,6 +2435,8 @@ namespace
 		if (!run.dwFinishedAt && (def.bKind == DGRUN_KIND_AREZZO || def.bKind == DGRUN_KIND_BIBLIO))
 			WatchPlayerBotArzDgStage(run.lInstance, d, def.bKind == DGRUN_KIND_AREZZO ? GetPlayerBotArzDgIndex(def.lMap) : -1,
 					def.szKey, dwNow);
+		if (!run.dwFinishedAt && (def.bKind == DGRUN_KIND_RAZADOR || def.bKind == DGRUN_KIND_NEMERE))
+			FixPlayerBotDgRunObjective(run, def, d, dwNow);
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the bots' extra time, once init()
 		// has set the quest's minutes (the header's PLAYERBOT_DGRUN_EXTRA_TIME_PCT).
 		if (run.iExtraMin < 0 && d->GetFlag("init") == 1)
