@@ -1386,6 +1386,10 @@ namespace
 		if (!item)
 			return true;
 		const int count = (int)item->GetCount();
+		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: Odlamki Energii go up in packs of
+		// ten and no other size (playerbot_energy_shards.h).
+		if (IsPlayerBotEnergyShardVnum(item->GetVnum()))
+			return count == PLAYERBOT_ENERGY_SHARD_LINE_UNITS;
 		if (IsPlayerBotBulkGoods(item))
 			return playerbot_stall_rules::IsHeapLine(count);
 		if (IsPlayerBotSafeRefineScroll(item->GetVnum()) || IsPlayerBotTradeableMaterial(item))
@@ -3002,6 +3006,7 @@ namespace
 
 		size_t soldCount = 0;
 		long long totalSoldGold = 0;
+		int heldForAlchemist = 0;	// MT2009_PLUS_BOT_ENERGY_SHARDS_V1
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
@@ -3035,6 +3040,15 @@ namespace
 			if (!item || !IsPlayerBotJunkItem(ch, item) ||
 					GetPlayerBotJunkMerchant(item) != category)
 				continue;
+			// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: scrap of level 35 or more the
+			// Alchemist of this village dismantles into Odlamki Energii stays in
+			// the bag for him (playerbot_energy_shards.h) - only what this sale
+			// was about to sell, and never from a bag under pressure.
+			if (ShouldPlayerBotKeepScrapForAlchemist(ch, item, get_dword_time()))
+			{
+				++heldForAlchemist;
+				continue;
+			}
 			// MT2009_PLUS_BOT_HORSE_HAY_V1: hay by count, the horse's share kept.
 			if (item->GetVnum() == PLAYERBOT_HAY_VNUM)
 			{
@@ -3055,6 +3069,11 @@ namespace
 		}
 
 		NotePlayerBotSidekickScrapSold(ch, soldCount, totalSoldGold);	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2
+		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the Alchemist's errand goes for what
+		// was held (the weapon and the armour merchants' rounds; the general
+		// store's goods are never his).
+		if (category != BOT_MERCHANT_MISC)
+			NotePlayerBotEnergyScrapHeld(ch, heldForAlchemist, get_dword_time());
 		if (soldCount > 0)
 		{
 			sys_log(0, "PLAYERBOT_AI: sold %u items at %s pid=%u name=%s gold_gained=%lld total_gold=%lld",

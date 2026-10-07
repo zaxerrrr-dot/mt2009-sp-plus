@@ -197,6 +197,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_missions.h"
 #include "playerbot_skills.h"
 #include "playerbot_combat.h"
+#include "playerbot_energy_shards.h" // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: Odlamki Energii from the merchant's scrap at the Alchemist, their counter caps; the fixed shard and talisman prices
 #include "playerbot_economy.h"
 #include "playerbot_progression_needs.h"
 #include "playerbot_bonus.h"

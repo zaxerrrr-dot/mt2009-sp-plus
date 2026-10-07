@@ -1602,7 +1602,10 @@ namespace
 			state.bVisitingAlchemist = false;
 			return false;
 		}
-		if (!state.bVisitingAlchemist && dwNow < state.dwNextAlchemistCheckTime)
+		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the scrap the merchant's round has
+		// just held for him calls the bot over at once, whatever the clock.
+		const bool energyScrap = !state.bVisitingAlchemist && WantsPlayerBotEnergyScrapVisit(ch, dwNow);
+		if (!state.bVisitingAlchemist && dwNow < state.dwNextAlchemistCheckTime && !energyScrap)
 			return false;
 
 		playerbot_empire_rules::TPoint alchemistPos;
@@ -1620,8 +1623,8 @@ namespace
 		if (!state.bVisitingAlchemist)
 		{
 			const int stones = CollectPlayerBotDustStones(ch, NULL, &dust, &fee);
-			if (stones < PLAYERBOT_ALCHEMIST_MIN_STONES ||
-					CountPlayerBotFreeInventoryCells(ch) < (dust + 199) / 200 + 1)
+			if ((stones < PLAYERBOT_ALCHEMIST_MIN_STONES ||
+					CountPlayerBotFreeInventoryCells(ch) < (dust + 199) / 200 + 1) && !energyScrap)
 			{
 				state.dwNextAlchemistCheckTime = dwNow + number(
 						PLAYERBOT_ALCHEMIST_CHECK_MIN_MS, PLAYERBOT_ALCHEMIST_CHECK_MAX_MS);
@@ -1633,8 +1636,9 @@ namespace
 			ch->SetVictim(NULL);
 			ch->Stop();
 			ClearPlayerBotRoute(state, true);
-			sys_log(0, "PLAYERBOT_ALCHEMIST: going to the Alchemist pid=%u name=%s stones=%d dust=%d fee=%lld",
-					ch->GetPlayerID(), ch->GetName(), stones, dust, fee);
+			sys_log(0, "PLAYERBOT_ALCHEMIST: going to the Alchemist pid=%u name=%s stones=%d dust=%d fee=%lld energy_scrap=%d",
+					ch->GetPlayerID(), ch->GetName(), stones, dust, fee,
+					energyScrap ? CollectPlayerBotEnergyScrap(ch, NULL) : 0);
 		}
 
 		SetPlayerBotAction(state, BOT_ACTION_SHOP, dwNow);
@@ -1655,6 +1659,7 @@ namespace
 				ClearPlayerBotRoute(state, true);
 				sys_err("PLAYERBOT_ALCHEMIST: route failed pid=%u name=%s from=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), ch->GetX(), ch->GetY());
+				GiveUpPlayerBotEnergyScrap(ch, dwNow);	// MT2009_PLUS_BOT_ENERGY_SHARDS_V1
 				return false;
 			}
 			return true;
@@ -1697,13 +1702,18 @@ namespace
 			sys_log(0, "PLAYERBOT_ALCHEMIST: exchanged pid=%u name=%s stones=%d dust=%d/%d chance=%d fee=%lld gold=%lld",
 					ch->GetPlayerID(), ch->GetName(), count, made, dust, chance, fee, (long long)ch->GetGold());
 		}
+		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: and the held scrap, into Odlamki
+		// Energii the quest's way (playerbot_energy_shards.h).
+		const int energyPieces = CollectPlayerBotEnergyScrap(ch, NULL);
+		if (energyPieces > 0)
+			DismantlePlayerBotEnergyScrap(ch);
 
 		state.bVisitingAlchemist = false;
 		state.dwNextAlchemistActionTime = 0;
 		state.dwNextAlchemistCheckTime = dwNow + number(
 				PLAYERBOT_ALCHEMIST_CHECK_MIN_MS, PLAYERBOT_ALCHEMIST_CHECK_MAX_MS);
 		ClearPlayerBotRoute(state, true);
-		return count > 0;
+		return count > 0 || energyPieces > 0;
 	}
 #else
 	// r40250 has no crafting board and no Baek-Go to walk to, and no
@@ -3060,6 +3070,10 @@ namespace
 	// written the way a person writes it, up.
 	DWORD GetPlayerBotListingFloor(LPITEM item)
 	{
+		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: nothing under or over the owner's
+		// fixed price - a talisman +150 asks 700 000 whatever its anvil cost.
+		if (IsPlayerBotOwnerFixedPriceItem(item))
+			return 0;
 		const DWORD floor = std::max(std::max(GetPlayerBotRefineInvestment(item), GetPlayerBotBonusGoodsFloor(item)),
 				GetPlayerBotMarketFloor(item));
 		return floor == 0 ? 0 : HumanizePlayerBotPrice(floor, true);
@@ -3213,6 +3227,15 @@ namespace
 			const DWORD cor = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL, (unsigned long long)unit * count);
 			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, cor, unit);
 			return cor;
+		}
+		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the owner's two fixed prices of
+		// 7 October - Odlamek Energii 30 000 a piece, any talisman 700 000 -
+		// as written (playerbot_energy_shards.h).
+		if (IsPlayerBotOwnerFixedPriceItem(item))
+		{
+			const DWORD fixed = GetPlayerBotOwnerFixedPrice(item);
+			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, fixed, GetPlayerBotOwnerFixedUnitPrice(item->GetVnum()));
+			return fixed;
 		}
 		// The pet in its transporter, by its level.
 		if (item->GetVnum() == PLAYERBOT_PET_CARRIER_VNUM)
@@ -3787,6 +3810,14 @@ namespace
 	DWORD GetPlayerBotListingPrice(LPITEM item, DWORD asking, int markdownPercent,
 			int* markupOut = NULL)
 	{
+		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the owner's fixed prices (a shard, a
+		// talisman) are the line's price: no markdown, no markup, no rounding.
+		if (IsPlayerBotOwnerFixedPriceItem(item))
+		{
+			if (markupOut)
+				*markupOut = 0;
+			return asking;
+		}
 		int markup = markdownPercent > 0 || !item ? 0
 				: GetPlayerBotShortageMarkupPercent(item->GetVnum());
 		if (markdownPercent > 0 && item)
@@ -4117,6 +4148,12 @@ namespace
 		if (IsPlayerBotGuildBuildMaterial(item->GetVnum()))
 			return (ch && IsPlayerBotKeptGuildMaterial(ch, item)) ? -1
 					: PlayerBotGoods(PLAYERBOT_SHOP_POLICY_STALL_SCORE - 50, per::GOODS_GUILD_MATERIAL);
+		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: Odlamki Energii only in packs of ten
+		// over the bot's keep, and only while the world's counters have room
+		// for one more (playerbot_energy_shards.h); the rest waits in the bag.
+		if (IsPlayerBotEnergyShardVnum(item->GetVnum()))
+			return (ch && GetPlayerBotEnergyShardLinesForSale(ch) > 0)
+					? PlayerBotGoods(PLAYERBOT_SHOP_SHEET_GOODS_SCORE, per::GOODS_SHEET_GOODS) : -1;
 		// MT2009_PLUS_BELT_MATS_V1: the belts and their materials are sheet goods
 		// whatever their type (IsPlayerBotBeltGoodsVnum) - the counter's.
 		if (IsPlayerBotBeltGoodsVnum(item->GetVnum()))
@@ -5317,6 +5354,10 @@ namespace
 			const int units = item ? GetPlayerBotStallLineUnits(item) : 0;
 			if (units <= 0 || item->isLocked())
 				continue;
+			// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: shards are cut by the offline
+			// stand's add alone, ten at a time.
+			if (IsPlayerBotEnergyShardVnum(item->GetVnum()))
+				continue;
 			if (IsPlayerBotSafeRefineScroll(item->GetVnum()) || IsPlayerBotBulkGoods(item) ||
 					IsPlayerBotTradeableMaterial(item))
 			{
@@ -5899,7 +5940,12 @@ namespace
 			std::vector<std::pair<int, WORD> > cut;
 			cut.reserve(scored.size());
 			for (size_t i = 0; i < scored.size(); ++i)
-				if (IsPlayerBotNaturalLine(ch->GetInventoryItem(scored[i].second)))
+				if (IsPlayerBotNaturalLine(ch->GetInventoryItem(scored[i].second)) &&
+						// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: a stand opens with no
+						// shards; its service visits add them under the world's
+						// caps (BotOfflinePrepareLine).
+						!(ch->GetInventoryItem(scored[i].second) &&
+						  IsPlayerBotEnergyShardVnum(ch->GetInventoryItem(scored[i].second)->GetVnum())))
 					cut.push_back(scored[i]);
 			scored.swap(cut);
 		}

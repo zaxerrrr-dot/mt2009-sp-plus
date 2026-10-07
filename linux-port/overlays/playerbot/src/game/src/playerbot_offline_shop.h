@@ -782,6 +782,19 @@ namespace {
             if (!line) continue;
             LPITEM preview = BotOfflinePreview(*line);
             if (!preview) continue;
+            // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: a shard line that is no pack of
+            // ten (the whole stacks of before), or one over the world's caps,
+            // comes home (IsPlayerBotEnergyShardLineUnwanted); "stall" keeps it.
+            {
+                const char* shardWhy = "";
+                if (IsPlayerBotEnergyShardVnum(preview->GetVnum()) &&
+                        GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL &&
+                        IsPlayerBotEnergyShardLineUnwanted(owner, (int)preview->GetCount(), get_dword_time(), &shardWhy)) {
+                    if (!unwanted) { unwanted = id; reason = shardWhy; }
+                    M2_DELETE(preview);
+                    continue;
+                }
+            }
 			if (IsPlayerBotPersonalBuffPotion(preview->GetVnum())) {
 				if (!unwanted) { unwanted = id; reason = "buff_potion"; }
 				M2_DELETE(preview);
@@ -1093,6 +1106,9 @@ namespace {
         if (!EndCall(ch->GetPlayerID())) return false;
         RemovePlayerBotMarketSupply(lineVnum, lineCount, lineMap);
         NotePlayerBotMissionBooksOnCounter(lineMap, lineVnum, -(int)lineCount);
+        // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: off the shards' count at once too.
+        if (IsPlayerBotEnergyShardVnum(lineVnum))
+            NotePlayerBotEnergyShardLine(ch->GetPlayerID(), -(int)lineCount, now);
         // Off the world's count at once, so the next keeper's visit this
         // minute does not take a second one home for the same surplus.
         if (why && strcmp(why, "junk_weapon") == 0 && s_iPlayerBotJunkWeaponsOnCounters > 0)
@@ -1303,6 +1319,12 @@ namespace {
     // or a line cut for the add would stand in the bag unadded.
     bool BotOfflineCounterRefuses(NativeShop shop, LPITEM item) {
         if (!item) return true;
+        // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: a line of Odlamki Energii is a pack
+        // of ten, and only while the world's bot counters have room for it -
+        // the units, and a counter of their few (playerbot_energy_shards.h).
+        if (IsPlayerBotEnergyShardVnum(item->GetVnum()))
+            return (int)item->GetCount() != PLAYERBOT_ENERGY_SHARD_LINE_UNITS || !shop ||
+                    GetPlayerBotEnergyShardLineRoom(shop->GetOwnerPID(), get_dword_time()) <= 0;
         // An item's lines by its kind (GetPlayerBotCounterLineCap): eight of a
         // refine material, five of a refine scroll, two of a heap, three of
         // most things.
@@ -1466,6 +1488,23 @@ namespace {
             TPlayerBotLineCut* out; TPlayerBotLineCut* note;
             ~TCutOut() { if (out) *out = *note; }
         } cutGuard = { cutOut, &cutNote };
+        // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: Odlamki Energii go up ten at a time,
+        // out of the spare over the bot's keep (a belt of its own), while the
+        // world's caps leave room (GetPlayerBotEnergyShardLinesForSale).
+        if (IsPlayerBotEnergyShardVnum(item->GetVnum())) {
+            const int take = PLAYERBOT_ENERGY_SHARD_LINE_UNITS;
+            cutNote.shape = per::SHAPE_NATURAL_LINE;
+            cutNote.keep = GetPlayerBotEnergyShardKeep(ch);
+            if (GetPlayerBotEnergyShardLinesForSale(ch) <= 0 || (int)item->GetCount() < take) return -1;
+            if (take == (int)item->GetCount()) { cutNote.from = 0; return cell; }
+            if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
+            const int to = ch->GetEmptyInventory(item->GetSize());
+            if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
+                return -1;
+            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u energy_shards=1",
+                ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
+            return to;
+        }
         // MT2009_PLUS_SADDLEBAG_MARKET_V1: Materialy Rzemieslnicze go up
         // PLAYERBOT_CRAFT_MATERIAL_LINE_UNITS at most a line, never the
         // saddlebag rows' own (IsPlayerBotKeptCraftMaterial: the pieces the
@@ -1833,6 +1872,7 @@ namespace {
         // Materialy Rzemieslnicze, Cor Draconis, the Dragon Stones and
         // the sashes keep the operator's prices: no markdown, no markup.
         const bool operatorPriced = preview->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
+                IsPlayerBotOwnerFixedPriceItem(preview) ||   // MT2009_PLUS_BOT_ENERGY_SHARDS_V1
                 IsPlayerBotCorVnum(preview->GetVnum()) || preview->IsDragonSoul() ||
                 (preview->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(preview->GetVnum()));
         if (operatorPriced)
@@ -2536,6 +2576,8 @@ namespace {
                     if (!slipped)
                         AddPlayerBotMarketSupply(addVnum, addCount, shop->GetSpawn().map);
                     NotePlayerBotCappedLineOnCounter(addVnum, (int)addCount);
+                    if (IsPlayerBotEnergyShardVnum(addVnum))   // MT2009_PLUS_BOT_ENERGY_SHARDS_V1
+                        NotePlayerBotEnergyShardLine(ch->GetPlayerID(), (int)addCount, now);
                     if (firstRareLine) NotePlayerBotShopWithRareGoods(rareKind);
                     NotePlayerBotMissionBooksOnCounter(shop->GetSpawn().map, addVnum, (int)addCount);
                     if (slipped) {

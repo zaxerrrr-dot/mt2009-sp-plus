@@ -490,7 +490,7 @@ namespace
 		{ 30524,   600000 },	// Kamien Plomienia
 		{ 30525,   600000 },	// Kamien Lodowego Plomienia
 		{ 30550,   120000 },	// Niebieski Rzemyk
-		{ 51001,    40000 },	// Odlamek Energii
+		{ 51001,    30000 },	// Odlamek Energii (MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the owner's 30 000, fixed - GetPlayerBotOwnerFixedUnitPrice)
 		{ 50701,     3800 },	// Kwiat Brzoskwini
 		{ 50702,     1710 },	// Pokrzywa
 		{ 50703,     1805 },	// Kwiat Kaki
