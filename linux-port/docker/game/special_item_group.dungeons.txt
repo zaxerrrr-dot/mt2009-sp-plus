@@ -25,6 +25,7 @@ Group	MT2009_chest_50270
 	6	s950282	1	85 -- materialy ulepszen 55-70
 	7	s950283	1	55 -- cenny przedmiot
 	8	s951101	1	60 -- materialy pasow (MT2009_PLUS_BELTS_V1)
+	9	94000	1	25 -- Talizman Ognia+0 (MT2009_PLUS_ELEMENTS_V1, Autor: Digi Rasta)
 }
 Group	MT2009_chest_razador_gear
 {
@@ -200,6 +201,7 @@ Group	MT2009_chest_50271
 	6	s950287	1	80 -- materialy ulepszen 70-90
 	7	s950288	1	65 -- cenny przedmiot
 	8	s951102	1	60 -- materialy pasow (MT2009_PLUS_BELTS_V1)
+	9	94500	1	25 -- Talizman Lodu+0 (MT2009_PLUS_ELEMENTS_V1, Autor: Digi Rasta)
 }
 Group	MT2009_chest_nemere_gear
 {

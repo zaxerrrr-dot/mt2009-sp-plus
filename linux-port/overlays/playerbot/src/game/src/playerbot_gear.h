@@ -474,6 +474,15 @@ namespace
 
 	long long ScorePlayerBotApply(BYTE bType, long lValue, LPCHARACTER ch = NULL)
 	{
+#ifdef MT2009_PLUS_ELEMENTS_V1
+		// MT2009_PLUS_ELEMENTS_V1 (bots): a talisman's element power (Autor: Digi Rasta,
+		// server-patches/zywioly) - the talisman is armour of its own slot (WEAR_PENDANT) and
+		// a bot wears the best one it owns like any other piece; a point of power is worth a
+		// little (the general +1% of every full 10% and the bonus against the element's
+		// monsters), so a higher talisman wins. The bots never refine one.
+		if (bType >= POINT_ENCHANT_ELECT && bType <= POINT_ENCHANT_DARK)
+			return (long long)lValue * 60;
+#endif
 		switch (bType)
 		{
 			case APPLY_NONE:

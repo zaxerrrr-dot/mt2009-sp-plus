@@ -886,7 +886,8 @@ if ((Test-Path -LiteralPath $weeklyRankApply -PathType Leaf) -and
         $syncedFiles++
         Write-Host ('Applied {0} weekly ranking edit(s).' -f $weeklyRankResult.Applied) -ForegroundColor DarkGray
     }
-}# The drop wiki (server-patches/dropwiki, MT2009_PLUS_DROP_WIKI_V1): /drop_wiki
+}
+# The drop wiki (server-patches/dropwiki, MT2009_PLUS_DROP_WIKI_V1): /drop_wiki
 # for the client's window uidropwiki.py and ITEM_MANAGER::GetDropWikiRows.
 $dropWikiApply = Join-Path $repo 'server-patches/dropwiki/Apply-DropWikiPatch.ps1'
 if ((Test-Path -LiteralPath $dropWikiApply -PathType Leaf) -and
@@ -990,6 +991,21 @@ if ((Test-Path -LiteralPath $yangLimitsApply -PathType Leaf) -and
     if ($yangLimitsResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} yang limit edit(s).' -f $yangLimitsResult.Applied) -ForegroundColor DarkGray
+# Elements and talismans (server-patches/zywioly, "Autor: Digi Rasta", nowy-system
+# 0.28.0, MT2009_PLUS_ELEMENTS_V1): the six element powers as server-only points
+# 178-183 (common/length.h, packet.h, char.cpp), the damage hook in CalcAttBonus
+# (battle.cpp), /state (cmd_gm.cpp), the talisman drop of the element bosses
+# (char_battle.cpp, beside digirasta's awakening drop) and the refine material of
+# the item's own vnum (char_item.cpp, after playerqol's goblin and digirasta-fixes'
+# stack lines in DoRefine). Last, so every edit it sits beside is there; the work
+# is the overlay's playerbot_elements.cpp.
+$zywiolyApply = Join-Path $repo 'server-patches/zywioly/Apply-ZywiolyPatch.ps1'
+if ((Test-Path -LiteralPath $zywiolyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'battle.cpp') -PathType Leaf)) {
+    $zywiolyResult = & $zywiolyApply -SourceDir $engineGameSource
+    if ($zywiolyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} elements and talismans edit(s).' -f $zywiolyResult.Applied) -ForegroundColor DarkGray
     }
 }
 

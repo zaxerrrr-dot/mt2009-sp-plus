@@ -1,0 +1,80 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (points)",
+  "old": "\tPOINT_ACCEDRAIN_RATE,\n#endif\n\n\tPOINT_MAX_NUM,\n};\n",
+  "new": "\tPOINT_ACCEDRAIN_RATE,\n#endif\n\n\t// MT2009_PLUS_ELEMENTS_V1 (points): Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0;\n\t// server-patches/zywioly). The six element powers of the talismans exist on the server only:\n\t// the points packet and the point change send 0..POINT_PACKET_NUM-1 (the client exe's 178).\n#define MT2009_PLUS_ELEMENTS_V1\n\tPOINT_PACKET_NUM,\n\tPOINT_ENCHANT_ELECT = POINT_PACKET_NUM,\n\tPOINT_ENCHANT_FIRE,\n\tPOINT_ENCHANT_ICE,\n\tPOINT_ENCHANT_WIND,\n\tPOINT_ENCHANT_EARTH,\n\tPOINT_ENCHANT_DARK,\n\n\tPOINT_MAX_NUM,\n};\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (points packet)",
+  "old": "\tINT\t\tpoints[POINT_MAX_NUM];\n} TPacketGCPoints;\n",
+  "new": "\tINT\t\tpoints[POINT_PACKET_NUM]; // MT2009_PLUS_ELEMENTS_V1 (points packet): the element powers stay on the server\n} TPacketGCPoints;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (points packet loop)",
+  "old": "\tfor (int i = POINT_ST; i < POINT_MAX_NUM; ++i)\n\t\tpack.points[i] = GetPoint(i);\n",
+  "new": "\tfor (int i = POINT_ST; i < POINT_PACKET_NUM; ++i) // MT2009_PLUS_ELEMENTS_V1 (points packet loop): the element powers stay on the server\n\t\tpack.points[i] = GetPoint(i);\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (point change)",
+  "old": "\t\tcase POINT_RESIST_HUMAN:\n\t\t\tSetPoint(type, GetPoint(type) + amount);\n",
+  "new": "\t\tcase POINT_ENCHANT_ELECT: // MT2009_PLUS_ELEMENTS_V1 (point change): a talisman's element power\n\t\tcase POINT_ENCHANT_FIRE:\n\t\tcase POINT_ENCHANT_ICE:\n\t\tcase POINT_ENCHANT_WIND:\n\t\tcase POINT_ENCHANT_EARTH:\n\t\tcase POINT_ENCHANT_DARK:\n\t\tcase POINT_RESIST_HUMAN:\n\t\t\tSetPoint(type, GetPoint(type) + amount);\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (no point packet)",
+  "old": "\tif (GetDesc())\n\t{\n\t\tstruct packet_point_change pack;\n",
+  "new": "\tif (GetDesc() && type < POINT_PACKET_NUM) // MT2009_PLUS_ELEMENTS_V1 (no point packet): the element powers stay on the server\n\t{\n\t\tstruct packet_point_change pack;\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (damage)",
+  "old": "\t//\t\tiAtk += (iAtk * 30 * pkAttacker->GetPoint(POINT_ENCHANT_DARK))\t/ 10000;\n\t//}\n\n\treturn iAtk;\n}\n",
+  "new": "\t//\t\tiAtk += (iAtk * 30 * pkAttacker->GetPoint(POINT_ENCHANT_DARK))\t/ 10000;\n\t//}\n\n\t// MT2009_PLUS_ELEMENTS_V1 (damage): Autor: Digi Rasta - the element power against a monster of the\n\t// element and the general bonus of every full 10%, the element resistance against such a monster's\n\t// blows (playerbot_elements.cpp).\n\t{\n\t\tint ElementsAttackBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iAtk);\n\t\tiAtk = ElementsAttackBonus(pkAttacker, pkVictim, iAtk);\n\t}\n\n\treturn iAtk;\n}\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (state)",
+  "old": "\t//ch->ChatPacket(CHAT_TYPE_INFO, \"ENCHANT:\");\n\t//ch->ChatPacket(CHAT_TYPE_INFO, \"   ELEC:%3d%% FIRE:%3d%% ICE:%3d%% WIND:%3d%% EARTH:%3d%% DARK:%3d%%\",\n\t//\t\ttch->GetPoint(POINT_ENCHANT_ELECT),\n\t//\t\ttch->GetPoint(POINT_ENCHANT_FIRE),\n\t//\t\ttch->GetPoint(POINT_ENCHANT_ICE),\n\t//\t\ttch->GetPoint(POINT_ENCHANT_WIND),\n\t//\t\ttch->GetPoint(POINT_ENCHANT_EARTH),\n\t//\t\ttch->GetPoint(POINT_ENCHANT_DARK));\n",
+  "new": "\tch->ChatPacket(CHAT_TYPE_INFO, \"ENCHANT:\"); // MT2009_PLUS_ELEMENTS_V1 (state): the talismans' element powers\n\tch->ChatPacket(CHAT_TYPE_INFO, \"   ELEC:%3d%% FIRE:%3d%% ICE:%3d%% WIND:%3d%% EARTH:%3d%% DARK:%3d%%\",\n\t\t\ttch->GetPoint(POINT_ENCHANT_ELECT),\n\t\t\ttch->GetPoint(POINT_ENCHANT_FIRE),\n\t\t\ttch->GetPoint(POINT_ENCHANT_ICE),\n\t\t\ttch->GetPoint(POINT_ENCHANT_WIND),\n\t\t\ttch->GetPoint(POINT_ENCHANT_EARTH),\n\t\t\ttch->GetPoint(POINT_ENCHANT_DARK));\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (talisman drop)",
+  "old": "\tconst bool bAwakeningDrop = AwakeningCreateBossDrop(this, pkAttacker, s_vec_item);\n\tif (ITEM_MANAGER::instance().CreateDropItem(this, pkAttacker, s_vec_item) || bAwakeningDrop)\n",
+  "new": "\tconst bool bAwakeningDrop = AwakeningCreateBossDrop(this, pkAttacker, s_vec_item);\n\t// MT2009_PLUS_ELEMENTS_V1 (talisman drop): Autor: Digi Rasta - a Talisman +0 from a boss of its\n\t// element (playerbot_elements.cpp).\n\tbool ElementsTalismanDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& vec_item);\n\tconst bool bTalismanDrop = ElementsTalismanDrop(this, pkAttacker, s_vec_item);\n\tif (ITEM_MANAGER::instance().CreateDropItem(this, pkAttacker, s_vec_item) || bAwakeningDrop || bTalismanDrop)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (refine declare)",
+  "old": "bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly, BYTE refineType)\n{\n",
+  "new": "// MT2009_PLUS_ELEMENTS_V1 (refine declare): a refine material of the refined item's own vnum (a Talisman +0\n// refining a Talisman +0) is counted and taken past the item itself (playerbot_elements.cpp).\nITEM_COUNT ElementsRefineMaterialCount(LPCHARACTER ch, LPITEM refined, DWORD vnum);\nvoid ElementsRefineMaterialRemove(LPCHARACTER ch, LPITEM refined, DWORD vnum, ITEM_COUNT count);\n\nbool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly, BYTE refineType)\n{\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (refine count scroll)",
+  "old": "\t\t// check refine items\n\t\tfor (int i = 0; i < prt->material_count; ++i)\n\t\t{\n\t\t\tif (CountSpecifyItem(prt->materials[i].vnum) < prt->materials[i].count)\n",
+  "new": "\t\t// check refine items\n\t\tfor (int i = 0; i < prt->material_count; ++i)\n\t\t{\n\t\t\tif (ElementsRefineMaterialCount(this, item, prt->materials[i].vnum) < prt->materials[i].count) // MT2009_PLUS_ELEMENTS_V1 (refine count scroll)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (refine remove scroll)",
+  "old": "\t\t// remove refine items\n\t\tfor (int i = 0; i < prt->material_count; ++i)\n\t\t\tRemoveSpecifyItem(prt->materials[i].vnum, prt->materials[i].count);\n",
+  "new": "\t\t// remove refine items\n\t\tfor (int i = 0; i < prt->material_count; ++i)\n\t\t\tElementsRefineMaterialRemove(this, item, prt->materials[i].vnum, prt->materials[i].count); // MT2009_PLUS_ELEMENTS_V1 (refine remove scroll)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (refine count)",
+  "old": "\t\t\tif (CountSpecifyItem(prt->materials[i].vnum) < prt->materials[i].count)\n",
+  "new": "\t\t\tif (ElementsRefineMaterialCount(this, item, prt->materials[i].vnum) < prt->materials[i].count) // MT2009_PLUS_ELEMENTS_V1 (refine count)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ELEMENTS_V1 (refine remove)",
+  "old": "\t\t\tRemoveSpecifyItem(prt->materials[i].vnum, prt->materials[i].count);\n",
+  "new": "\t\t\tElementsRefineMaterialRemove(this, item, prt->materials[i].vnum, prt->materials[i].count); // MT2009_PLUS_ELEMENTS_V1 (refine remove)\n"
+ }
+]

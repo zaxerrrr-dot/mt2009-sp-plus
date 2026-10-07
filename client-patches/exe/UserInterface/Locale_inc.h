@@ -28,12 +28,12 @@
 #define ENABLE_LOCALE_EX
 #define ENABLE_NO_DSS_QUALIFICATION
 //#define ENABLE_NO_SELL_PRICE_DIVIDED_BY_5
-//#define ENABLE_PENDANT_SYSTEM
+#define ENABLE_PENDANT_SYSTEM // MT2009_PLUS_ELEMENTS_V1: the talisman slot (Autor: Digi Rasta, Zywioly i talizmany, nowy-system 0.28.0)
 //#define ENABLE_GLOVE_SYSTEM
 #define ENABLE_MOVE_CHANNEL
 //#define ENABLE_QUIVER_SYSTEM
 #define ENABLE_RACE_HEIGHT
-//#define ENABLE_ELEMENTAL_TARGET
+#define ENABLE_ELEMENTAL_TARGET // MT2009_PLUS_ELEMENTS_V1: the target's element icon (root/uitarget.py)
 #define ENABLE_INGAME_CONSOLE
 #define ENABLE_4TH_AFF_SKILL_DESC
 #define ENABLE_LOCALE_COMMON
