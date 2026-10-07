@@ -101,7 +101,7 @@ namespace
 		return vnum == PLAYERBOT_ENERGY_SHARD_VNUM;
 	}
 
-	bool IsPlayerBotTalismanVnum(DWORD vnum)
+	bool IsPlayerBotFixedPriceTalismanVnum(DWORD vnum)
 	{
 		return vnum >= PLAYERBOT_TALISMAN_FIRST_VNUM && vnum <= PLAYERBOT_TALISMAN_LAST_VNUM &&
 				(vnum - PLAYERBOT_TALISMAN_FIRST_VNUM) % 250 <= 200;
@@ -112,7 +112,7 @@ namespace
 	{
 		if (IsPlayerBotEnergyShardVnum(vnum))
 			return PLAYERBOT_ENERGY_SHARD_UNIT_PRICE;
-		if (IsPlayerBotTalismanVnum(vnum))
+		if (IsPlayerBotFixedPriceTalismanVnum(vnum))
 			return PLAYERBOT_TALISMAN_PRICE;
 		return 0;
 	}
@@ -329,7 +329,7 @@ namespace
 	// talisman: 700 000 yang is more than fifteen shards.
 	bool IsPlayerBotEnergyScrapPiece(LPITEM item)
 	{
-		if (!item || IsPlayerBotTalismanVnum(item->GetVnum()))
+		if (!item || IsPlayerBotFixedPriceTalismanVnum(item->GetVnum()))
 			return false;
 		if (item->GetType() == ITEM_WEAPON)
 		{
