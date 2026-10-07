@@ -633,7 +633,9 @@ namespace
 	// fifth - item_proto, apply.sh).
 	DWORD GetPlayerBotRankFruitPrice(DWORD vnum)
 	{
-		static const DWORD prices[] = { 5000, 10000, 25000, 50000, 100000 };
+		// MT2009_PLUS_RANK_FRUIT_PRICE_V2 (the owner, 7 October): Jablko 250 000, each next fruit
+		// of the table 50% dearer (Gruszka 375 000, Winogrono 562 500, Arbuz 843 800, Ananas 1 265 600).
+		static const DWORD prices[] = { 250000, 375000, 562500, 843800, 1265600 };
 		for (int i = 0; i < mt2009_rankp::FRUIT_COUNT; ++i)
 			if (mt2009_rankp::FRUITS[i].vnum == vnum)
 				return std::max<DWORD>(100, ScalePlayerBotIwakuraPrice(prices[i]) / 100 * 100);
