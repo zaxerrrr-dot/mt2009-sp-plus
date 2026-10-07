@@ -4,6 +4,8 @@
 #include "../eterBase/Timer.h"
 #include "ThingInstance.h"
 #include <set>
+#include <vector>
+#include <string>
 #include <cmath>
 #include "Thing.h"
 #include "ModelInstance.h"
@@ -777,39 +779,97 @@ void CGraphicThingInstance::RecalcAccePositionMatrixFromBoneMatrix()
 #endif
 
 #if defined(ENABLE_ACCE_COSTUME_SYSTEM) && defined(ENABLE_ACCE_INITIAL_PLACEMENT)
-// MT2009_PLUS_ACCE_INITIAL_PLACEMENT_V1: some sash models (Arezzo's "me_w" wings - 85213, 85219,
-// 85220, 85221) keep their place on the back in the model's InitialPlacement, with a skeleton whose
-// root bone is the identity; every other sash has that place in its root bone. The sash is drawn at
-// Bip01 Spine2 (RecalcAccePositionMatrixFromBoneMatrix), so such a model stood turned on its side.
-// Its InitialPlacement now goes first; a model with a placed root bone or an identity placement
-// is drawn as before.
-static bool GetAccePlacementMatrix(CGrannyLODController* pkLOD, D3DXMATRIX& rOut)
+// MT2009_PLUS_ACCE_INITIAL_PLACEMENT_V3: some sash models (Arezzo's "me_w" wings - 85213, 85219,
+// 85220, 85221) stand turned when drawn at Bip01 Spine2 (RecalcAccePositionMatrixFromBoneMatrix).
+// V1/V2 put the model's InitialPlacement first - wrong (they lay on the ground beside the character).
+// V3 makes the correction data, read live from "acce_fix.txt" next to the exe (re-read when the file
+// changes, checked every 2 s), so the right turn is found in game without another exe build:
+//   <part of the granny model name>  <placement: 0 none, 1 placement, -1 inverse>  <rx ry rz degrees>  <tx ty tz>
+// e.g. "crytsal 0 0 0 -90 0 0 0". The first matching line wins; no file / no line = drawn as before.
+// Every sash model's name is written once to syserr.txt as ACCE_MODEL (with its placement).
+#include <sys/stat.h>
+struct SAcceFix { std::string name; int placement; float r[3]; float t[3]; };
+static std::vector<SAcceFix> s_vecAcceFix;
+static time_t s_tAcceFixMTime = 0;
+static DWORD s_dwAcceFixCheck = 0;
+
+static void ReloadAcceFix()
+{
+	const DWORD now = GetTickCount();
+	if (s_dwAcceFixCheck && now - s_dwAcceFixCheck < 2000)
+		return;
+	s_dwAcceFixCheck = now ? now : 1;
+	struct _stat st;
+	if (_stat("acce_fix.txt", &st) != 0)
+	{
+		if (s_tAcceFixMTime) { s_vecAcceFix.clear(); s_tAcceFixMTime = 0; }
+		return;
+	}
+	if (st.st_mtime == s_tAcceFixMTime)
+		return;
+	s_tAcceFixMTime = st.st_mtime;
+	s_vecAcceFix.clear();
+	FILE* fp = fopen("acce_fix.txt", "r");
+	if (!fp)
+		return;
+	char line[512];
+	while (fgets(line, sizeof(line), fp))
+	{
+		if (line[0] == '#' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		char name[128] = {};
+		SAcceFix f = {};
+		if (sscanf(line, "%127s %d %f %f %f %f %f %f", name, &f.placement, &f.r[0], &f.r[1], &f.r[2], &f.t[0], &f.t[1], &f.t[2]) < 2)
+			continue;
+		f.name = name;
+		for (size_t i = 0; i < f.name.size(); ++i) f.name[i] = (char)tolower((unsigned char)f.name[i]);
+		s_vecAcceFix.push_back(f);
+	}
+	fclose(fp);
+	TraceError("ACCE_FIX: acce_fix.txt read, %u line(s)", (unsigned)s_vecAcceFix.size());
+}
+
+static bool GetAcceFixMatrix(CGrannyLODController* pkLOD, D3DXMATRIX& rOut)
 {
 	CGrannyModelInstance* pInstance = pkLOD ? pkLOD->GetModelInstance() : NULL;
 	CGrannyModel* pModel = pInstance ? pInstance->GetModel() : NULL;
 	granny_model* pgrnModel = pModel ? pModel->GetGrannyModelPointer() : NULL;
 	if (!pgrnModel)
 		return false;
-	// V2: any non-identity InitialPlacement (V1 also wanted an identity root bone - the me_w
-	// models' root bones are not, so nothing changed).
-	GrannyGetModelInitialPlacement4x4(pgrnModel, reinterpret_cast<granny_real32*>(&rOut));
-	D3DXMATRIX matIdentity;
-	D3DXMatrixIdentity(&matIdentity);
-	bool same = true;
-	for (int i = 0; i < 16 && same; ++i)
-		same = fabsf(reinterpret_cast<const float*>(&rOut)[i] - reinterpret_cast<const float*>(&matIdentity)[i]) < 0.001f;
+	D3DXMATRIX matPlacement;
+	GrannyGetModelInitialPlacement4x4(pgrnModel, reinterpret_cast<granny_real32*>(&matPlacement));
+	std::string name = pgrnModel->Name ? pgrnModel->Name : "";
+	for (size_t i = 0; i < name.size(); ++i) name[i] = (char)tolower((unsigned char)name[i]);
 	static std::set<const void*> s_logged;
-	if (!same && s_logged.insert(pgrnModel).second)
-		TraceError("ACCE_PLACEMENT: %s placement pos(%.2f %.2f %.2f)", pgrnModel->Name ? pgrnModel->Name : "?", rOut._41, rOut._42, rOut._43);
-	return !same;
+	if (s_logged.insert(pgrnModel).second)
+		TraceError("ACCE_MODEL: %s placement pos(%.2f %.2f %.2f) row0(%.2f %.2f %.2f)", name.c_str(),
+				matPlacement._41, matPlacement._42, matPlacement._43, matPlacement._11, matPlacement._12, matPlacement._13);
+	ReloadAcceFix();
+	for (size_t i = 0; i < s_vecAcceFix.size(); ++i)
+	{
+		const SAcceFix& f = s_vecAcceFix[i];
+		if (f.name != "*" && name.find(f.name) == std::string::npos)
+			continue;
+		D3DXMATRIX matRot, matMove, matPlace;
+		D3DXMatrixRotationYawPitchRoll(&matRot, D3DXToRadian(f.r[1]), D3DXToRadian(f.r[0]), D3DXToRadian(f.r[2]));
+		D3DXMatrixTranslation(&matMove, f.t[0], f.t[1], f.t[2]);
+		D3DXMatrixIdentity(&matPlace);
+		if (f.placement > 0)
+			matPlace = matPlacement;
+		else if (f.placement < 0)
+			D3DXMatrixInverse(&matPlace, NULL, &matPlacement);
+		rOut = matRot * matMove * matPlace;
+		return true;
+	}
+	return false;
 }
 
 static const D3DXMATRIX* AcceDeformMatrix(CGrannyLODController* pkLOD, const D3DXMATRIX* pBase, D3DXMATRIX& rTemp)
 {
-	D3DXMATRIX matPlacement;
-	if (!GetAccePlacementMatrix(pkLOD, matPlacement))
+	D3DXMATRIX matFix;
+	if (!GetAcceFixMatrix(pkLOD, matFix))
 		return pBase;
-	D3DXMatrixMultiply(&rTemp, &matPlacement, pBase);
+	D3DXMatrixMultiply(&rTemp, &matFix, pBase);
 	return &rTemp;
 }
 #define MT2009_ACCE_MATRIX(lod) AcceDeformMatrix((lod), &m_matAbsoluteTrans, matAcceTemp)
