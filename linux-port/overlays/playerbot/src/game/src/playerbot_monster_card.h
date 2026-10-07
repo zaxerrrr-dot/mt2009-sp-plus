@@ -539,6 +539,15 @@ namespace mt2009_mcard
 
 	void SendState(LPCHARACTER ch, SAccount& s)
 	{
+		// A deck kept at level 0 (a level out of range read from the base) left
+		// the window at stage 0 - blank, every button "no active mission".
+		if (s.level == 0 && !DeckEmpty(s))
+		{
+			if (HasTargets(s))
+				s.level = 1;
+			else
+				memset(s.deck, 0, sizeof(s.deck));
+		}
 		if (s.level != 0)
 			ch->ChatPacket(CHAT_TYPE_COMMAND, "MONSTERCARDSYSTEM ADD_DATA/Level/%d", s.level);
 		if (DeckEmpty(s) && !HasTargets(s))
