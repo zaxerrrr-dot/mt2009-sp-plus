@@ -2386,6 +2386,8 @@ namespace UI
 #if defined(RENDER_TARGET)
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// MT2009_PLUS_MINIGAMES_V1: CRenderTarget (Owsap v6.2.6)
+	CRenderTarget::TRenderHook CRenderTarget::ms_pfnRenderHook = NULL;
+
 	CRenderTarget::CRenderTarget(PyObject * ppyObject) : CWindow(ppyObject), m_iIndex(-1)
 	{
 	}
@@ -2416,6 +2418,9 @@ namespace UI
 	void CRenderTarget::OnRender()
 	{
 		if (!IsShow())
+			return;
+
+		if (ms_pfnRenderHook && ms_pfnRenderHook(m_iIndex, m_rect, m_bEnableMask ? &m_rMaskRect : NULL))
 			return;
 
 		CGraphicRenderTargetTexture* pTexture = CRenderTargetManager::Instance().GetRenderTargetTexture(m_iIndex);

@@ -1,8 +1,11 @@
 /**
 * MT2009_PLUS_MONSTER_CARD_MODEL_V1 - the Monster Cards' 3D preview (Autor: Digi Rasta: the idea and the python
 * API player.Mt2009Model* of his nowy-system 0.28 exe, Mt2009Window.cpp; root/monstercard.py calls it).
-* Our own code on our render target infrastructure (the Owsap/Yut Nori port: CRenderTargetManager,
-* UI::CRenderTarget, CInstanceBase as in PythonYutnoriManager.cpp) - none of his render-to-texture code.
+* The model is a CInstanceBase (race scale, body colour); its texture is CRenderTargetManager's (device reset
+* safe). Drawn as Digi Rasta's view drew it: in the render target window's own render (UI::CRenderTarget's
+* render hook), the target, viewport, camera matrices, light and states set here and put back, then the
+* texture drawn into the window. (The first port drew it in RenderGame through the camera manager, as the
+* Yut Nori model - the window stayed empty in game, 2026-10-07.)
 *
 *   player.Mt2009ModelSelect(race)   the model of a race (1) or nothing (0: no race data -> the card picture)
 *   player.Mt2009ModelShow(on)       drawn or not
@@ -18,8 +21,10 @@
 
 #if defined(ENABLE_MONSTER_CARD_MODEL) && defined(RENDER_TARGET)
 #include "../EterLib/Camera.h"
+#include "../EterLib/GrpBase.h"
 #include "../EterLib/RenderTargetManager.h"
 #include "../EterLib/StateManager.h"
+#include "../EterPythonLib/PythonWindow.h"
 #include "../GameLib/RaceData.h"
 #include "../GameLib/RaceManager.h"
 #include "../GameLib/RaceMotionData.h"
@@ -38,12 +43,32 @@ namespace
 	const float VIEW_PITCH = 10.0f;			// the camera a little above the model
 	const DWORD MODEL_VID = 0xFFFFFF01;		// its own text tail key, apart from the Yut Nori model (VID 0)
 	const int TARGET_INDEX = CRenderTargetManager::RENDER_TARGET_INDEX_ILLUSTRATED;
+	const int DIAG_SELECT_LOGS = 8;			// syserr diagnostics: the first selects, then failures only
+
+	struct CDeviceAccess : public CGraphicBase
+	{
+		static LPDIRECT3DDEVICE9 Device()	{ return ms_lpd3dDevice; }
+		static D3DXMATRIX& View()			{ return ms_matView; }
+		static D3DXMATRIX& Proj()			{ return ms_matProj; }
+		static D3DXMATRIX& InverseView()	{ return ms_matInverseView; }
+	};
+
+	// render states set for the model and put back after it (Get/Set: the actor itself uses the
+	// one-level Save/Restore of some of them)
+	struct SStateValue
+	{
+		D3DRENDERSTATETYPE eType;
+		DWORD dwValue;
+		DWORD dwOld;
+	};
 
 	class CMonsterModelView
 	{
 		public:
 			CMonsterModelView() : m_pModel(NULL), m_dwRace(0), m_bShow(false), m_bFramed(false), m_fHeight(0.0f),
-				m_fRadius(0.0f), m_fZoom(1.0f), m_fLift(0.0f), m_fRotation(0.0f), m_iMotion(-1), m_bOnceMotion(false)
+				m_fRadius(0.0f), m_fZoom(1.0f), m_fLift(0.0f), m_fRotation(0.0f), m_iMotion(-1), m_bOnceMotion(false),
+				m_iSelectLogs(0), m_bRenderLogged(false), m_bFailLogged(false), m_bWatchdogLogged(false),
+				m_dwShowTime(0), m_dwLastDraw(0)
 			{
 			}
 
@@ -66,16 +91,27 @@ namespace
 				}
 				Destroy();
 				if (dwRace == 0xFFFFFFFF)
+				{
+					// the window's own call: closing, or a card below class 1 (no preview by design)
+					if (m_iSelectLogs < DIAG_SELECT_LOGS)
+					{
+						++m_iSelectLogs;
+						TraceError("Mt2009MonsterModel: select none (0xFFFFFFFF: window closed or card class 0)");
+					}
 					return false;
+				}
 
 				CRaceData* pRaceData;
 				if (!CRaceManager::Instance().GetRaceDataPointer(dwRace, &pRaceData))
+				{
+					TraceError("Mt2009MonsterModel: race %u has no race data (npclist / msm) - the card picture", dwRace);
 					return false;	// no model in the client: the card picture
+				}
 
 				CRenderTargetManager& rkRTMgr = CRenderTargetManager::Instance();
 				if (!rkRTMgr.GetRenderTargetTexture(TARGET_INDEX) && !rkRTMgr.CreateA8R8G8B8Texture(TEXTURE_WIDTH, TEXTURE_HEIGHT, TARGET_INDEX))
 				{
-					TraceError("Mt2009MonsterModel: cannot create the render target %ux%u", TEXTURE_WIDTH, TEXTURE_HEIGHT);
+					TraceError("Mt2009MonsterModel: cannot create the render target %ux%u (index %d)", TEXTURE_WIDTH, TEXTURE_HEIGHT, TARGET_INDEX);
 					return false;
 				}
 
@@ -89,6 +125,7 @@ namespace
 				CInstanceBase* pModel = new CInstanceBase();
 				if (!pModel->Create(kCreateData))
 				{
+					TraceError("Mt2009MonsterModel: race %u - CInstanceBase::Create failed", dwRace);
 					delete pModel;
 					return false;
 				}
@@ -100,15 +137,32 @@ namespace
 
 				m_pModel = pModel;
 				m_dwRace = dwRace;
+				m_bRenderLogged = false;
+				m_bFailLogged = false;
 				Reset();
+
+				if (m_iSelectLogs < DIAG_SELECT_LOGS)
+				{
+					++m_iSelectLogs;
+					m_pModel->Transform();
+					CActorInstance* pActor = m_pModel->GetGraphicThingInstancePtr();
+					D3DXVECTOR3 v3Center(0.0f, 0.0f, 0.0f);
+					float fRadius = 0.0f;
+					const bool bSphere = pActor->GetBoundingSphere(v3Center, fRadius);
+					TraceError("Mt2009MonsterModel: select race %u ok - sphere %d center %.1f %.1f %.1f radius %.1f height %.1f, target index %d",
+						dwRace, bSphere ? 1 : 0, v3Center.x, v3Center.y, v3Center.z, fRadius, pActor->GetHeight(), TARGET_INDEX);
+				}
 				return true;
 			}
 
 			void Show(bool bShow)
 			{
+				if (bShow && !m_bShow)
+				{
+					m_dwShowTime = ELTimer_GetMSec();
+					m_bWatchdogLogged = false;
+				}
 				m_bShow = bShow;
-				if (!bShow)
-					Clear();
 			}
 
 			void Reset()
@@ -138,7 +192,7 @@ namespace
 				m_fLift = m_fLift < -0.6f ? -0.6f : (m_fLift > 0.6f ? 0.6f : m_fLift);
 			}
 
-			// the next motion the race has, played once; then the idle (Update)
+			// the next motion the race has, played once; then the idle (Animate)
 			void NextMotion()
 			{
 				if (!m_pModel)
@@ -167,10 +221,118 @@ namespace
 				}
 			}
 
-			void Update()
+			// the game loop: only a diagnostic - shown, yet no render target window drew it
+			void Watchdog()
+			{
+				if (!m_bShow || !m_pModel || m_bWatchdogLogged)
+					return;
+				const DWORD dwNow = ELTimer_GetMSec();
+				if (dwNow - m_dwShowTime < 3000 || (m_dwLastDraw && dwNow - m_dwLastDraw < 3000))
+					return;
+				m_bWatchdogLogged = true;
+				TraceError("Mt2009MonsterModel: race %u shown for 3 s but no render target window with index %d drew it (wndMgr.SetRenderTarget index? window hidden?)",
+					m_dwRace, TARGET_INDEX);
+			}
+
+			// the render target window's render (UI pass): the model into the texture, the texture into the window
+			void Draw(const RECT& rcWindow, const RECT* pClipRect)
 			{
 				if (!m_bShow || !m_pModel)
 					return;
+				m_dwLastDraw = ELTimer_GetMSec();
+
+				const long lWidth = rcWindow.right - rcWindow.left;
+				const long lHeight = rcWindow.bottom - rcWindow.top;
+				if (lWidth < 8 || lHeight < 8)
+				{
+					FailOnce("the window is %ldx%ld", lWidth, lHeight);
+					return;
+				}
+
+				LPDIRECT3DDEVICE9 pDevice = CDeviceAccess::Device();
+				if (!pDevice || pDevice->TestCooperativeLevel() != D3D_OK)
+					return;
+
+				CRenderTargetManager& rkRTMgr = CRenderTargetManager::Instance();
+				CGraphicRenderTargetTexture* pTexture = rkRTMgr.GetRenderTargetTexture(TARGET_INDEX);
+				if (!pTexture || !pTexture->GetRenderTargetTexture())
+				{
+					FailOnce("no render target texture (index %ld)", TARGET_INDEX);
+					return;
+				}
+
+				Animate();
+				CActorInstance* pActor = m_pModel->GetGraphicThingInstancePtr();
+				pActor->INSTANCEBASE_Deform();
+
+				const float fAspect = float(lWidth) / float(lHeight);
+				float fDistance, fTargetZ;
+				Frame(fAspect, fDistance, fTargetZ);
+
+				D3DVIEWPORT9 kOldViewport;
+				pDevice->GetViewport(&kOldViewport);
+				if (!rkRTMgr.ChangeRenderTarget(TARGET_INDEX))
+				{
+					FailOnce("ChangeRenderTarget(%ld) failed", TARGET_INDEX);
+					return;
+				}
+				D3DVIEWPORT9 kViewport = { 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0.0f, 1.0f };
+				pDevice->SetViewport(&kViewport);
+				pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
+
+				RenderModel(pDevice, fAspect, fDistance, fTargetZ);
+				MarkModelOpaque();
+
+				rkRTMgr.ResetRenderTarget();
+				pDevice->SetViewport(&kOldViewport);
+
+				if (!m_bRenderLogged)
+				{
+					m_bRenderLogged = true;
+					TraceError("Mt2009MonsterModel: first draw race %u - window %ld,%ld %ldx%ld, clip %d, distance %.1f target z %.1f radius %.1f height %.1f framed %d, actor shown %d alpha %.2f",
+						m_dwRace, rcWindow.left, rcWindow.top, lWidth, lHeight, pClipRect ? 1 : 0, fDistance, fTargetZ, m_fRadius, m_fHeight,
+						m_bFramed ? 1 : 0, pActor->isShow() ? 1 : 0, pActor->GetAlphaValue());
+				}
+
+				// the texture into the window, as the UI draws
+				CPythonGraphic::Instance().SetInterfaceRenderState();
+				RECT rcDraw = rcWindow;
+				pTexture->SetRenderingRect(&rcDraw);
+				STATEMANAGER.SaveTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+				STATEMANAGER.SaveTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+				STATEMANAGER.SaveTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+				STATEMANAGER.SaveTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+				STATEMANAGER.SaveTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+				STATEMANAGER.SaveTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+				STATEMANAGER.SaveSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+				STATEMANAGER.SaveSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+				pTexture->Render(const_cast<RECT*>(pClipRect));
+				STATEMANAGER.RestoreSamplerState(0, D3DSAMP_MAGFILTER);
+				STATEMANAGER.RestoreSamplerState(0, D3DSAMP_MINFILTER);
+				STATEMANAGER.RestoreTextureStageState(1, D3DTSS_ALPHAOP);
+				STATEMANAGER.RestoreTextureStageState(1, D3DTSS_COLOROP);
+				STATEMANAGER.RestoreTextureStageState(0, D3DTSS_ALPHAOP);
+				STATEMANAGER.RestoreTextureStageState(0, D3DTSS_ALPHAARG1);
+				STATEMANAGER.RestoreTextureStageState(0, D3DTSS_COLOROP);
+				STATEMANAGER.RestoreTextureStageState(0, D3DTSS_COLORARG1);
+				STATEMANAGER.SetTexture(0, NULL);
+			}
+
+		private:
+			void FailOnce(const char* c_szFormat, long a = 0, long b = 0)
+			{
+				if (m_bFailLogged)
+					return;
+				m_bFailLogged = true;
+				char szBuf[256];
+				_snprintf(szBuf, sizeof(szBuf), c_szFormat, a, b);
+				szBuf[sizeof(szBuf) - 1] = '\0';
+				TraceError("Mt2009MonsterModel: race %u not drawn - %s", m_dwRace, szBuf);
+			}
+
+			// its motion, once a frame it is drawn
+			void Animate()
+			{
 				m_pModel->Transform();
 				m_pModel->GetGraphicThingInstancePtr()->RotationProcess();
 				if (m_bOnceMotion && m_pModel->GetGraphicThingInstancePtr()->IsMotionDone())
@@ -180,31 +342,13 @@ namespace
 				}
 			}
 
-			void Deform()
+			// framed once, from the idle pose: its motions do not shake the camera; the height fills about
+			// 70% of the view, a wide model (its sphere) the width
+			void Frame(float fAspect, float& fDistance, float& fTargetZ)
 			{
-				if (m_bShow && m_pModel)
-					m_pModel->Deform();
-			}
-
-			void Render()
-			{
-				if (!m_bShow || !m_pModel)
-					return;
-
-				CRenderTargetManager& rkRTMgr = CRenderTargetManager::Instance();
-				RECT rcView;
-				if (!rkRTMgr.GetRenderTargetRect(TARGET_INDEX, &rcView))
-					return;
-				const long lWidth = rcView.right - rcView.left;
-				const long lHeight = rcView.bottom - rcView.top;
-				if (lWidth <= 0 || lHeight <= 0)
-					return;
-				const float fAspect = float(lWidth) / float(lHeight);
-
 				CActorInstance* pActor = m_pModel->GetGraphicThingInstancePtr();
 				if (!m_bFramed)
 				{
-					// framed once, from the idle pose: its motions do not shake the camera
 					D3DXVECTOR3 v3Center(0.0f, 0.0f, 0.0f);
 					float fRadius = 0.0f;
 					const bool bSphere = pActor->GetBoundingSphere(v3Center, fRadius) && fRadius >= 1.0f;
@@ -217,52 +361,108 @@ namespace
 					m_fHeight = fHeight;
 					m_bFramed = bSphere;
 				}
-
-				// the height fills about 70% of the view, a wide model (its sphere) the width
 				const float fTanHalf = std::tan(D3DXToRadian(VIEW_FOV) / 2.0f);
-				float fDistance = m_fHeight * 0.72f / fTanHalf;
+				fDistance = m_fHeight * 0.72f / fTanHalf;
 				const float fWide = m_fRadius * 0.55f / (fTanHalf * fAspect);
 				if (fWide > fDistance)
 					fDistance = fWide;
 				fDistance *= m_fZoom;
-				const float fTargetZ = m_fHeight * (0.45f + m_fLift);
-
-				if (!rkRTMgr.ChangeRenderTarget(TARGET_INDEX))
-					return;
-				rkRTMgr.ClearRenderTarget(0x00000000);
-
-				CPythonGraphic& rkGraphic = CPythonGraphic::Instance();
-				rkGraphic.ClearDepthBuffer();
-				const float fOldFov = rkGraphic.GetFOV();
-				const float fOldAspect = rkGraphic.GetAspect();
-				const float fOldNear = rkGraphic.GetNearY();
-				const float fOldFar = rkGraphic.GetFarY();
-				const DWORD dwFog = STATEMANAGER.GetRenderState(D3DRS_FOGENABLE);
-				STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, FALSE);
-
-				CCameraManager::Instance().SetCurrentCamera(CCameraManager::DEFAULT_MONSTER_MODEL_CAMERA);
-				rkGraphic.PushState();
-				rkGraphic.SetPositionCamera(0.0f, 0.0f, fTargetZ, fDistance, VIEW_PITCH, 0.0f);
-				rkGraphic.SetPerspective(VIEW_FOV, fAspect, 10.0f, fDistance * 4.0f + 2000.0f);
-
-				m_pModel->Render();
-				MarkModelOpaque();
-
-				CCameraManager::Instance().ResetToPreviousCamera();
-				rkGraphic.PopState();
-				rkGraphic.SetPerspective(fOldFov, fOldAspect, fOldNear, fOldFar);
-				rkRTMgr.ResetRenderTarget();
-				STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, dwFog);
+				fTargetZ = m_fHeight * (0.45f + m_fLift);
 			}
 
-		private:
-			void Clear()
+			// own view/projection (right-handed, as the game camera), light and states; all put back
+			void RenderModel(LPDIRECT3DDEVICE9 pDevice, float fAspect, float fDistance, float fTargetZ)
 			{
-				CRenderTargetManager& rkRTMgr = CRenderTargetManager::Instance();
-				if (!rkRTMgr.ChangeRenderTarget(TARGET_INDEX))
-					return;
-				rkRTMgr.ClearRenderTarget(0x00000000);
-				rkRTMgr.ResetRenderTarget();
+				const float fPitch = D3DXToRadian(VIEW_PITCH);
+				const D3DXVECTOR3 v3Target(0.0f, 0.0f, fTargetZ);
+				const D3DXVECTOR3 v3Eye(0.0f, -fDistance * std::cos(fPitch), fTargetZ + fDistance * std::sin(fPitch));
+				const D3DXVECTOR3 v3Up(0.0f, 0.0f, 1.0f);
+				D3DXMATRIX matView, matProj;
+				D3DXMatrixLookAtRH(&matView, &v3Eye, &v3Target, &v3Up);
+				D3DXMatrixPerspectiveFovRH(&matProj, D3DXToRadian(VIEW_FOV), fAspect, 10.0f, fDistance * 4.0f + 2000.0f);
+
+				const D3DXMATRIX matOldView = CDeviceAccess::View();
+				const D3DXMATRIX matOldProj = CDeviceAccess::Proj();
+				const D3DXMATRIX matOldInverseView = CDeviceAccess::InverseView();
+				D3DXMATRIX matOldViewT, matOldProjT, matOldWorldT;
+				STATEMANAGER.GetTransform(D3DTS_VIEW, &matOldViewT);
+				STATEMANAGER.GetTransform(D3DTS_PROJECTION, &matOldProjT);
+				STATEMANAGER.GetTransform(D3DTS_WORLD, &matOldWorldT);
+
+				CDeviceAccess::View() = matView;
+				CDeviceAccess::Proj() = matProj;
+				D3DXMatrixInverse(&CDeviceAccess::InverseView(), NULL, &matView);
+				STATEMANAGER.SetTransform(D3DTS_VIEW, &matView);
+				STATEMANAGER.SetTransform(D3DTS_PROJECTION, &matProj);
+
+				// a light from the camera, as Digi Rasta's view
+				D3DLIGHT9 kOldLight;
+				STATEMANAGER.GetLight(0, &kOldLight);
+				BOOL bOldLight = FALSE;
+				pDevice->GetLightEnable(0, &bOldLight);
+				D3DLIGHT9 kLight;
+				ZeroMemory(&kLight, sizeof(kLight));
+				kLight.Type = D3DLIGHT_DIRECTIONAL;
+				kLight.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				kLight.Ambient = D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.0f);
+				const D3DXVECTOR3 v3Sight = v3Target - v3Eye;
+				D3DXVec3Normalize((D3DXVECTOR3*)&kLight.Direction, &v3Sight);
+				STATEMANAGER.SetLight(0, &kLight);
+				pDevice->LightEnable(0, TRUE);
+
+				D3DMATERIAL9 kOldMaterial;
+				STATEMANAGER.GetMaterial(&kOldMaterial);
+				D3DMATERIAL9 kMaterial;
+				ZeroMemory(&kMaterial, sizeof(kMaterial));
+				kMaterial.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				kMaterial.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				STATEMANAGER.SetMaterial(&kMaterial);
+
+				SStateValue akStates[] =
+				{
+					{ D3DRS_LIGHTING, TRUE, 0 },
+					{ D3DRS_ZENABLE, TRUE, 0 },
+					{ D3DRS_ZWRITEENABLE, TRUE, 0 },
+					{ D3DRS_ZFUNC, D3DCMP_LESSEQUAL, 0 },
+					{ D3DRS_ALPHABLENDENABLE, FALSE, 0 },
+					{ D3DRS_ALPHATESTENABLE, FALSE, 0 },
+					{ D3DRS_FOGENABLE, FALSE, 0 },
+					{ D3DRS_STENCILENABLE, FALSE, 0 },
+					{ D3DRS_AMBIENT, 0xff999999, 0 },
+					{ D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA, 0 },
+				};
+				const int iStates = int(_countof(akStates));
+				for (int i = 0; i < iStates; ++i)
+				{
+					STATEMANAGER.GetRenderState(akStates[i].eType, &akStates[i].dwOld);
+					STATEMANAGER.SetRenderState(akStates[i].eType, akStates[i].dwValue);
+				}
+				DWORD dwOldMin, dwOldMag, dwOldMip;
+				STATEMANAGER.GetSamplerState(0, D3DSAMP_MINFILTER, &dwOldMin);
+				STATEMANAGER.GetSamplerState(0, D3DSAMP_MAGFILTER, &dwOldMag);
+				STATEMANAGER.GetSamplerState(0, D3DSAMP_MIPFILTER, &dwOldMip);
+				STATEMANAGER.SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+				STATEMANAGER.SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+				STATEMANAGER.SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+				STATEMANAGER.SetTexture(1, NULL);
+
+				m_pModel->Render();
+
+				STATEMANAGER.SetSamplerState(0, D3DSAMP_MIPFILTER, dwOldMip);
+				STATEMANAGER.SetSamplerState(0, D3DSAMP_MAGFILTER, dwOldMag);
+				STATEMANAGER.SetSamplerState(0, D3DSAMP_MINFILTER, dwOldMin);
+				for (int i = iStates - 1; i >= 0; --i)
+					STATEMANAGER.SetRenderState(akStates[i].eType, akStates[i].dwOld);
+				STATEMANAGER.SetMaterial(&kOldMaterial);
+				STATEMANAGER.SetLight(0, &kOldLight);
+				pDevice->LightEnable(0, bOldLight);
+
+				STATEMANAGER.SetTransform(D3DTS_WORLD, &matOldWorldT);
+				STATEMANAGER.SetTransform(D3DTS_PROJECTION, &matOldProjT);
+				STATEMANAGER.SetTransform(D3DTS_VIEW, &matOldViewT);
+				CDeviceAccess::View() = matOldView;
+				CDeviceAccess::Proj() = matOldProj;
+				CDeviceAccess::InverseView() = matOldInverseView;
 			}
 
 			// The model's alpha is its textures' (cut-out masks, not how solid it is): the texture shown in the
@@ -283,8 +483,11 @@ namespace
 				STATEMANAGER.SaveRenderState(D3DRS_ZFUNC, D3DCMP_GREATER);
 				STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 				STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+				STATEMANAGER.SaveRenderState(D3DRS_FOGENABLE, FALSE);
 				STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 				STATEMANAGER.SaveRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA);
+				STATEMANAGER.SetTexture(0, NULL);
+				STATEMANAGER.SetTexture(1, NULL);
 				STATEMANAGER.SaveTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
 				STATEMANAGER.SaveTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
 				STATEMANAGER.SaveTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
@@ -303,6 +506,7 @@ namespace
 				STATEMANAGER.RestoreTextureStageState(0, D3DTSS_COLOROP);
 				STATEMANAGER.RestoreRenderState(D3DRS_COLORWRITEENABLE);
 				STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE);
+				STATEMANAGER.RestoreRenderState(D3DRS_FOGENABLE);
 				STATEMANAGER.RestoreRenderState(D3DRS_ALPHATESTENABLE);
 				STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE);
 				STATEMANAGER.RestoreRenderState(D3DRS_ZFUNC);
@@ -325,9 +529,24 @@ namespace
 			float m_fRotation;
 			int m_iMotion;
 			bool m_bOnceMotion;
+			int m_iSelectLogs;
+			bool m_bRenderLogged;
+			bool m_bFailLogged;
+			bool m_bWatchdogLogged;
+			DWORD m_dwShowTime;
+			DWORD m_dwLastDraw;
 	};
 
 	CMonsterModelView s_kView;
+
+	// UI::CRenderTarget's render hook: the Monster Cards' index is drawn here (nothing while hidden)
+	bool RenderTargetHook(int iIndex, const RECT& rcWindow, const RECT* pClipRect)
+	{
+		if (iIndex != TARGET_INDEX)
+			return false;
+		s_kView.Draw(rcWindow, pClipRect);
+		return true;
+	}
 
 	PyObject* playerMt2009ModelShow(PyObject* poSelf, PyObject* poArgs)
 	{
@@ -386,10 +605,8 @@ namespace
 	}
 }
 
-// PythonApplication.cpp: the game loop (next to the Yut Nori model) and the end.
-void Mt2009MonsterModel_Update()	{ s_kView.Update(); }
-void Mt2009MonsterModel_Deform()	{ s_kView.Deform(); }
-void Mt2009MonsterModel_Render()	{ s_kView.Render(); }
+// PythonApplication.cpp: the game loop (a diagnostic only; the model is drawn by its window) and the end.
+void Mt2009MonsterModel_Update()	{ s_kView.Watchdog(); }
 void Mt2009MonsterModel_Destroy()	{ s_kView.Destroy(); }
 
 // UserInterface.cpp (RunMainScript's module init).
@@ -406,6 +623,8 @@ void Mt2009MonsterModel_RegisterPython()
 		{ "Mt2009ModelMotion",		playerMt2009ModelMotion,	METH_VARARGS, NULL },
 		{ NULL, NULL, 0, NULL },
 	};
+	UI::CRenderTarget::SetRenderHook(&RenderTargetHook);
+
 	PyObject* poModule = PyImport_AddModule("player");	// borrowed; initPlayer adds to the same module
 	if (!poModule)
 		return;

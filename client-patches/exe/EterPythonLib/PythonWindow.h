@@ -607,12 +607,18 @@ namespace UI
 
 			void SetRenderTarget(int index);
 
+			// MT2009_PLUS_MONSTER_CARD_MODEL_V1: a hook drawing an index itself, in the window's own render
+			// (render-to-texture during the UI pass, as Digi Rasta's view did); true = drawn, skip the default
+			typedef bool (*TRenderHook)(int iIndex, const RECT& rcWindow, const RECT* pClipRect);
+			static void SetRenderHook(TRenderHook pfnHook) { ms_pfnRenderHook = pfnHook; }
+
 		protected:
 			void OnUpdate();
 			void OnRender();
 
 		private:
 			int m_iIndex;
+			static TRenderHook ms_pfnRenderHook;
 	};
 #endif
 

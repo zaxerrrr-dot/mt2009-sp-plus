@@ -179,9 +179,6 @@ void CPythonApplication::RenderGame()
 #ifdef ENABLE_MINI_GAME_YUTNORI
 		CPythonYutnoriManager::Instance().DeformModel(); // MT2009_PLUS_MINIGAMES_V1
 #endif
-#ifdef ENABLE_MONSTER_CARD_MODEL
-		{ void Mt2009MonsterModel_Deform(); Mt2009MonsterModel_Deform(); } // MT2009_PLUS_MONSTER_CARD_MODEL_V1
-#endif
 
 		m_pyBackground.RenderCharacterShadowToTexture();
 
@@ -206,9 +203,6 @@ void CPythonApplication::RenderGame()
 		m_pyBackground.SetCharacterDirLight();
 #ifdef ENABLE_MINI_GAME_YUTNORI
 		CPythonYutnoriManager::Instance().RenderModel(); // MT2009_PLUS_MINIGAMES_V1
-#endif
-#ifdef ENABLE_MONSTER_CARD_MODEL
-		{ void Mt2009MonsterModel_Render(); Mt2009MonsterModel_Render(); } // MT2009_PLUS_MONSTER_CARD_MODEL_V1
 #endif
 		m_kChrMgr.Render();
 
