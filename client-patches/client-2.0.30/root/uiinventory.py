@@ -55,6 +55,10 @@ ITEM_FLAG_APPLICABLE = 1 << 14
 # so item.EQUIPMENT_BELT may be missing and item.IsEquipmentVID() is False for
 # a belt (it knows weapons and armour only).
 EQUIPMENT_BELT_SLOT = getattr(item, "EQUIPMENT_BELT", player.EQUIPMENT_SLOT_START + 23)
+# MT2009_PLUS_ELEMENTS_V1: the talisman slot (WEAR_PENDANT = 25, uiscript/inventorywindow.py;
+# Autor: Digi Rasta, Zywioly i talizmany) - item.EQUIPMENT_PENDANT needs an exe with
+# ENABLE_PENDANT_SYSTEM.
+EQUIPMENT_PENDANT_SLOT = getattr(item, "EQUIPMENT_PENDANT", player.EQUIPMENT_SLOT_START + 25)
 
 def IsBeltVID(itemVnum):
 	try:
@@ -2307,6 +2311,8 @@ class InventoryWindow(ui.ScriptWindow):
 			SetItemSlotVnum(EQUIPMENT_BELT_SLOT) # MT2009_PLUS_BELT_SLOT_V1
 		if app.ENABLE_PENDANT_SYSTEM:
 			SetItemSlotVnum(item.EQUIPMENT_PENDANT)
+		else:
+			SetItemSlotVnum(EQUIPMENT_PENDANT_SLOT) # MT2009_PLUS_ELEMENTS_V1
 		if app.ENABLE_GLOVE_SYSTEM:
 			SetItemSlotVnum(item.EQUIPMENT_GLOVE)
 

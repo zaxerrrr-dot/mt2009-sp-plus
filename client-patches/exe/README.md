@@ -226,3 +226,19 @@ z `common/length.h`); pole pasa w wyposażeniu = `c_Equipment_Start + WEAR_BELT`
 Sprawdzone 7.10.2026: `build.sh msvc --smoke` (źródła client-build + cały ten katalog z flagą) bez błędów, smoke test
 dochodzi do okna logowania; exe testowe 13 672 448 B, sha256 `441d16ab104d86372cb9256b5d6db9718298f1c9750eaf932d1eb95989dcd2ed`
 (`/opt/metin2/cache/exe-releases/metin2client-pasy-test.exe`; nie do wydania – exe budować raz na rundę).
+
+## Talizmany i znak żywiołu celu – `MT2009_PLUS_ELEMENTS_V1` (`ENABLE_PENDANT_SYSTEM`, `ENABLE_ELEMENTAL_TARGET`)
+
+Żywioły i talizmany (**Autor: Digi Rasta**, nowy-system 0.28.0; jego exe: te dwie flagi i dwie poprawki niżej). Serwer:
+`server-patches/zywioly`. Pakiety bez zmian – siła żywiołów (punkty 178–183) jest tylko na serwerze, pakiet punktów
+dalej ma 178 pozycji.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_PENDANT_SYSTEM` (`item.EQUIPMENT_PENDANT` = `c_Equipment_Start + WEAR_PENDANT` 25, `item.WEARABLE_PENDANT`, `item.ARMOR_PENDANT`, `app.ENABLE_PENDANT_SYSTEM`), `#define ENABLE_ELEMENTAL_TARGET` (`nonplayer.GetMonsterRaceFlag`, `nonplayer.RACE_FLAG_ATT_*`, `app.ENABLE_ELEMENTAL_TARGET` – ikona żywiołu w `root/uitarget.py`) |
+| `UserInterface/PythonNonPlayer.h` (nowy w tym katalogu, z client-build) | `EAIFlags` / `EImmuneFlags` + `ERaceFlags` także pod `ENABLE_ELEMENTAL_TARGET` (moduł ich używa) |
+| `UserInterface/PythonNonPlayerModule.cpp` (nowy w tym katalogu, z client-build) | `GetMonsterRaceFlag` zwraca 0 dla vnumu bez rekordu (był dereferencją NULL) |
+
+Sprawdzone 7.10.2026: `build.sh msvc --smoke` (client-build + cały ten katalog) bez błędów, smoke test do okna logowania;
+exe testowe 13 679 104 B, sha256 `b43b786b2af48911ac35522b74ffb16d22511792d8a4a6f1d0b40bbac8330bf7`
+(`/opt/metin2/cache/exe-releases/metin2client-zywioly-test.exe`; nie do wydania – exe budować raz na rundę).

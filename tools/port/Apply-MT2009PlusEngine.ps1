@@ -977,6 +977,23 @@ if ((Test-Path -LiteralPath $sidekickNoLootApply -PathType Leaf) -and
         Write-Host ('Applied {0} companion loot share edit(s).' -f $sidekickNoLootResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Elements and talismans (server-patches/zywioly, "Autor: Digi Rasta", nowy-system
+# 0.28.0, MT2009_PLUS_ELEMENTS_V1): the six element powers as server-only points
+# 178-183 (common/length.h, packet.h, char.cpp), the damage hook in CalcAttBonus
+# (battle.cpp), /state (cmd_gm.cpp), the talisman drop of the element bosses
+# (char_battle.cpp, beside digirasta's awakening drop) and the refine material of
+# the item's own vnum (char_item.cpp, after playerqol's goblin and digirasta-fixes'
+# stack lines in DoRefine). Last, so every edit it sits beside is there; the work
+# is the overlay's playerbot_elements.cpp.
+$zywiolyApply = Join-Path $repo 'server-patches/zywioly/Apply-ZywiolyPatch.ps1'
+if ((Test-Path -LiteralPath $zywiolyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'battle.cpp') -PathType Leaf)) {
+    $zywiolyResult = & $zywiolyApply -SourceDir $engineGameSource
+    if ($zywiolyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} elements and talismans edit(s).' -f $zywiolyResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade

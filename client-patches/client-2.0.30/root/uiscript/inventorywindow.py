@@ -15,6 +15,14 @@ EQUIPMENT_BELT_SLOT = getattr(item, "EQUIPMENT_BELT", player.EQUIPMENT_SLOT_STAR
 BELT_SLOT_X = 39
 BELT_SLOT_Y = 106
 
+# MT2009_PLUS_ELEMENTS_V1: the talisman slot (WEAR_PENDANT = 25; Autor: Digi Rasta, Zywioly
+# i talizmany). item.EQUIPMENT_PENDANT comes with an exe built with ENABLE_PENDANT_SYSTEM;
+# without it the slot is the equipment start + 25, as the server's INVENTORY_MAX_NUM +
+# WEAR_PENDANT. Under the necklace, on the free pattern of the right column.
+EQUIPMENT_PENDANT_SLOT = getattr(item, "EQUIPMENT_PENDANT", player.EQUIPMENT_SLOT_START + 25)
+PENDANT_SLOT_X = 114
+PENDANT_SLOT_Y = 118
+
 window = {
 	"name" : "InventoryWindow",
 
@@ -98,6 +106,17 @@ window = {
 							"image" : "d:/ymir work/ui/public/slot_base.sub",
 						},
 
+						## MT2009_PLUS_ELEMENTS_V1: the empty talisman slot's frame
+						{
+							"name" : "PendantSlotBase",
+							"type" : "image",
+
+							"x" : 3 + PENDANT_SLOT_X,
+							"y" : 3 + PENDANT_SLOT_Y,
+
+							"image" : "d:/ymir work/ui/public/slot_base.sub",
+						},
+
 						{
 							"name" : "EquipmentSlot",
 							"type" : "slot",
@@ -122,6 +141,8 @@ window = {
 										{"index":item.EQUIPMENT_SHIELD, "x":75, "y":35, "width":32, "height":32},
 										## MT2009_PLUS_BELT_SLOT_V1
 										{"index":EQUIPMENT_BELT_SLOT, "x":BELT_SLOT_X, "y":BELT_SLOT_Y, "width":32, "height":32},
+										## MT2009_PLUS_ELEMENTS_V1
+										{"index":EQUIPMENT_PENDANT_SLOT, "x":PENDANT_SLOT_X, "y":PENDANT_SLOT_Y, "width":32, "height":32},
 									),
 						},
 

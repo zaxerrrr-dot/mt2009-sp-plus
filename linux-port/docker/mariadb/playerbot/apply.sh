@@ -3194,6 +3194,26 @@ db -e "DELETE FROM player.quest WHERE dwPID > 0 AND szName = 'dungeon_panel' AND
     WHERE d.dwPID = player.quest.dwPID AND d.szState = CONCAT(LEFT(player.quest.szState, CHAR_LENGTH(player.quest.szState) - 2), '_d'));" \
   || fail_step "could not clear the dungeon panel's results of characters who never hurt a boss" >&2
 
+# MT2009_PLUS_ELEMENTS_V1: Elements and talismans (Autor: Digi Rasta, "Zywioly i talizmany",
+# nowy-system 0.28.0; server-patches/zywioly/README.md). Both files are generated
+# (tools/zywioly/) and idempotent, and run last, after every step above that writes
+# world.mob_proto / item_proto / item_attr:
+#   zywioly_talizmany.sql - the talismans +0..+200 of the six elements (94000-95450) and
+#     Kwiat Zywiolu (95500), their Blacksmith recipes (refine_proto 20001-21200), the
+#     talisman's own bonus set (item_attr.pendant only - no other item's pool changes) and
+#     Mistrz's shop 9550;
+#   zywioly_moby.sql - the monsters' elements (setRaceFlag bits 11-16) by the owner's rules
+#     of 7 October 2026 (wiki bosses, Grota Wygnancow, Ochao, Zaczarowany Las, Nemere, Leze
+#     Smoka, Starozytna Dzungla); the bits are cleared on every other mob.
+for zyw_sql in zywioly_talizmany.sql zywioly_moby.sql; do
+    [ -s "/opt/playerbot/$zyw_sql" ] || continue
+    if db < "/opt/playerbot/$zyw_sql"; then
+        echo "[playerbot-migrate] elements: $zyw_sql applied"
+    else
+        fail_step "elements: $zyw_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

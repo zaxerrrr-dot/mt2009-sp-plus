@@ -58,6 +58,8 @@ linux-port/docker/mariadb/playerbot/gm_characters.sql
 linux-port/docker/mariadb/playerbot/item_proto.mt2009plus.sql
 linux-port/docker/mariadb/playerbot/mob_proto.mt2009plus.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes.sql
+linux-port/docker/mariadb/playerbot/zywioly_talizmany.sql
+linux-port/docker/mariadb/playerbot/zywioly_moby.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes_webshop.sql
 linux-port/docker/game/Dockerfile
 linux-port/docker/game/.dockerignore

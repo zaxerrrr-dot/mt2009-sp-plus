@@ -1,0 +1,20 @@
+-- MT2009_PLUS_ELEMENTS_V1: the monsters' elements (setRaceFlag bits 11-16 = lightning, fire,
+-- ice, wind, earth, dark; in the column's SET: SAVAGE, ATT_FIRE, ATT_ICE, ATT_TEMPLE, ATT_EARTH,
+-- ATT_DARK). Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0) - by the owner's rules of
+-- 7 October 2026 (tools/zywioly/gen_zywioly_moby.py: wiki bosses, Grota Wygnancow 1/2, Swiatynia
+-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla). GENERATED - do not
+-- edit; rerun the generator. Every start (apply.sh), idempotent: bits 11-16 cleared on every other
+-- mob, set on these.
+-- Blyskawica   23  (wiki bosses 6)
+-- Ogien         4  (wiki bosses 4)
+-- Lod          19  (wiki bosses 9)
+-- Wiatr        28  (wiki bosses 6)
+-- Ziemia       10  (wiki bosses 10)
+-- Mrok         10  (wiki bosses 10)
+UPDATE world.mob_proto SET setRaceFlag = (setRaceFlag + 0) & ~129024 WHERE (setRaceFlag + 0) & 129024 <> 0 AND vnum NOT IN (591,796,1091,1092,1093,1094,1095,1131,1132,1133,1134,1135,1136,1137,1191,1192,1304,1901,1902,1903,2091,2092,2191,2206,2207,2306,2307,2401,2402,2403,2404,2411,2412,2413,2414,2491,2492,2493,2495,2591,2595,2596,2597,2598,3090,3091,3190,3191,3304,3305,3390,3391,3490,3491,3590,3591,3595,3596,3690,3691,3791,3890,3891,3910,5002,6091,6101,6102,6103,6104,6105,6106,6107,6108,6151,6191,6301,6302,6303,6304,6305,6311,6390,9611,9612,9613,9614,9615,9707,9708,9709,9712,9713,9714);
+UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~129024) | 2048 WHERE vnum IN (1131,1132,1133,1134,1135,1136,1137,2401,2402,2403,2404,2411,2412,2413,2414,2491,2492,2493,2495,3190,3191,3595,3596);
+UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~129024) | 4096 WHERE vnum IN (2206,2207,5002,6091);
+UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~129024) | 8192 WHERE vnum IN (1191,1192,1901,1902,1903,3490,3491,3690,3691,6101,6102,6103,6104,6105,6106,6107,6108,6151,6191);
+UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~129024) | 16384 WHERE vnum IN (591,796,1304,2091,2092,2191,3304,3305,3390,3391,6301,6302,6303,6304,6305,6311,6390,9611,9612,9613,9614,9615,9707,9708,9709,9712,9713,9714);
+UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~129024) | 32768 WHERE vnum IN (2306,2307,3090,3091,3590,3591,3791,3890,3891,3910);
+UPDATE world.mob_proto SET setRaceFlag = ((setRaceFlag + 0) & ~129024) | 65536 WHERE vnum IN (1091,1092,1093,1094,1095,2591,2595,2596,2597,2598);

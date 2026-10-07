@@ -560,6 +560,10 @@ class ItemToolTip(ToolTip):
 		localeInfo.TOOLTIP_SHIELD,
 		localeInfo.TOOLTIP_ARROW,
 	)
+	# MT2009_PLUS_ELEMENTS_V1 (Autor: Digi Rasta): with ENABLE_PENDANT_SYSTEM the wear flag list
+	# has the talisman after the arrow - its name, so a talisman says where it is worn.
+	if app.ENABLE_PENDANT_SYSTEM:
+		WEAR_NAMES += ("Talizman",)
 	WEAR_COUNT = len(WEAR_NAMES)
 
 	ATTRIBUTE_NEED_WIDTH = {
