@@ -887,7 +887,14 @@ namespace playerbot_bpbots
 			"Mam %s, ile to warte?", "Ulepszac %s dalej czy nie ryzykowac?", "Ktos da cos za %s?",
 			"%s, kowal znowu mnie oskubal", "%s, pchac dalej czy stop?", "wbilem %s, nastepny + czy odpuscic?",
 		};
-		snprintf(out, size, PickLine(pool), weapon->GetProto()->szLocaleName);
+		// MT2009_PLUS_BOT_CHAT_MAXREFINE_V1: a weapon that cannot go higher (+9, no next
+		// grade) never asks whether to push on (the owner, 7 October).
+		static const char* const poolMax[] = {
+			"Mam %s, ile to warte?", "Ktos da cos za %s?", "%s, wreszcie koniec ulepszania",
+			"wbilem %s, wiecej sie nie da", "%s, kowal tym razem laskawy",
+		};
+		const bool maxed = weapon->GetRefineLevel() >= 9 || weapon->GetRefinedVnum() == 0;
+		snprintf(out, size, maxed ? PickLine(poolMax) : PickLine(pool), weapon->GetProto()->szLocaleName);
 		return true;
 	}
 
