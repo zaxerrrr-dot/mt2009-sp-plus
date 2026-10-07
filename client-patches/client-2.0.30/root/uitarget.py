@@ -465,6 +465,17 @@ class TargetBoard(ui.ThinBoard):
 	def SetTargetVID(self, vid):
 		self.vid = vid
 
+	# MT2009_PLUS_ELEMENTS_V1: the element mark left of the board, centred on the board's
+	# height, which changes with the HP bar and the bonus line (the owner, 7 October).
+	def SetSize(self, width, height):
+		ui.ThinBoard.SetSize(self, width, height)
+		if app.ENABLE_ELEMENTAL_TARGET and getattr(self, "elementImage", None):
+			self.__CenterElementImage()
+
+	def __CenterElementImage(self):
+		image = self.elementImage
+		image.SetPosition(-image.GetWidth(), max(0, (self.GetHeight() - image.GetHeight()) / 2))
+
 	if app.ENABLE_ELEMENTAL_TARGET:
 		def SetRaceElement(self, vid):
 			mobVnum = nonplayer.GetVnumByVID(vid)
@@ -475,7 +486,7 @@ class TargetBoard(ui.ThinBoard):
 			if imagePath:
 				try:
 					self.elementImage.LoadImage(imagePath)
-					self.elementImage.SetPosition(-self.elementImage.GetWidth(), 0)
+					self.__CenterElementImage()
 					self.elementImage.Show()
 				except Exception:
 					self.elementImage.Hide()
