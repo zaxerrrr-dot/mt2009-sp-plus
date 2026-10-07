@@ -17,6 +17,12 @@ every version here.
 
 ---
 
+## 2.26.1 — 2026-10-07 — Poprawka aktualizacji 2.26.0
+
+Działa z klientem **2.0.57** (bez nowego klienta).
+
+- **Naprawiona aktualizacja do 2.26.0** – w paczce serwera brakowało dwóch plików z dropem materiałów do pasów, przez co budowanie gry kończyło się błędem `COPY … not found`. Jeśli aktualizacja do 2.26.0 się nie udała, po prostu zaktualizuj do 2.26.1.
+
 ## 2.26.0 — 2026-10-07 — Pasy, żywioły i talizmany, kostiumy Arezzo, limity Yang
 
 Wymaga klienta **2.0.57** (pobierze go launcher albo patcher). Zmieniła się paczka danych przedmiotów – jeśli korzystasz z Edytora bazy danych, **patcher pobierze nowe dane sam** (albo pobierz zip z panelu; gra przypomni).

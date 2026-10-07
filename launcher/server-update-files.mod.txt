@@ -257,3 +257,4 @@ launcher/Metin2Launcher.Vps.psm1
 linux-port/tools/vps-install.sh
 linux-port/docker/game/src/server/game/src/guild_war.cpp
 linux-port/docker/game/src/server/game/src/guild_manager.cpp
+linux-port/docker/panel/app/register_assets/*

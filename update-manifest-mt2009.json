@@ -1,13 +1,13 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-07T15:29:21Z",
- "statusMessage": "MT2009 PLUS 2.26.0: pasy, zywioly i talizmany, kostiumy Arezzo, limity Yang. Klient 2.0.57.",
+ "publishedAt": "2026-10-07T15:48:54Z",
+ "statusMessage": "MT2009 PLUS 2.26.1: poprawka aktualizacji 2.26.0 (brakujace pliki). Klient 2.0.57.",
  "server": {
-  "version": "2.26.0",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.26.0/metin2-server-update-2.26.0.zip",
-  "sha256": "97609B0634161413A9D4E49F7834C74B7A4B4F83C04512F2F74CEC9133C43FF3",
-  "size": 110032250
+  "version": "2.26.1",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.26.1/metin2-server-update-2.26.1.zip",
+  "sha256": "01653F093EAEF50E627A2C474115D2553AA423A495708AF341FAC1A598E2690B",
+  "size": 110511355
  },
  "client": {
   "version": "2.0.57",
