@@ -1285,8 +1285,16 @@ namespace
 		// labyrinth's corners, and choosing again every tick turned it round.
 		if (!portal)
 			las.dwPortalVID = 0;
+		// MT2009_PLUS_AREZZO_LAS_PORTAL_NEAR_V1: or while it stands right by
+		// the bot. 7 October 20:52: En-Tai fell, his Portal opened at
+		// (888870,1459701) and the two bots standing on that very spot logged
+		// "las waits in the temple" until it closed - the walk's estimate goes
+		// by the labyrinth's spots, and there the bot's nearest spot and the
+		// Portal's were two different branches (over 12 000 apart). Three of
+		// the day's four kills of the Guardian took nobody into the Las.
 		else if (las.dwPortalVID != (DWORD)portal->GetVID() &&
-				GetPlayerBotOchaoWalk(ch, portal->GetX(), portal->GetY()) <= PLAYERBOT_AREZZO_LAS_PORTAL_WALK_MAX)
+				(DISTANCE_APPROX(ch->GetX() - portal->GetX(), ch->GetY() - portal->GetY()) <= PLAYERBOT_AREZZO_LAS_PORTAL_NEAR ||
+				GetPlayerBotOchaoWalk(ch, portal->GetX(), portal->GetY()) <= PLAYERBOT_AREZZO_LAS_PORTAL_WALK_MAX))
 		{
 			las.dwPortalVID = (DWORD)portal->GetVID();
 			sys_log(0, "ARZ_BOT: las takes the portal pid=%u name=%s pos=(%ld,%ld) portal=(%ld,%ld) distance=%d after_s=%u",

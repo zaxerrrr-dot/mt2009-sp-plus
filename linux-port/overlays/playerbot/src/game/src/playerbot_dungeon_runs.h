@@ -413,13 +413,15 @@ namespace
 		int iWipesIdle;
 		DWORD dwLastWipeAt;
 		int iExtraMin;
+		// V3: the members called in for those who dropped out.
+		int iReplacements;
 		TPlayerBotDgRun() : iId(0), iDef(0), bEmpire(0), bPhase(DGRUN_PHASE_GATHER), dwLeader(0), dwAnchor(0), iLvMin(0),
 				iLvMax(0), dwCalledAt(0), dwPhaseSince(0), dwEnteredAt(0), dwLastProgress(0), dwFinishedAt(0),
 				dwClosedSeen(0), dwOutSince(0), dwNextStep(0), dwNextPull(0), lInstance(0), iStage(0), dwStageSince(0),
 				llSignature(0), bStallLogged(false), iDeaths(0), iWipes(0), bAllDead(false), llFees(0), iAnswerShouts(0),
 				lPackX(0), lPackY(0), iPackN(0), szResult(NULL), bPartyMade(false), lCampX(0), lCampY(0), bFallback(false),
 				dwFallbackSince(0), dwFallbackRestUntil(0), iFit(0), iFallbacks(0), iBreakOffs(0), dwFocusVID(0), iWipesIdle(0),
-				dwLastWipeAt(0), iExtraMin(-1) {}
+				dwLastWipeAt(0), iExtraMin(-1), iReplacements(0) {}
 	};
 
 	std::map<int, TPlayerBotDgRun> s_mapPlayerBotDgRuns;
@@ -1741,6 +1743,72 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a replacement for whoever dropped out of
+	// a gathering. 7 October: 27 of Razador's 114 calls were disbanded at the
+	// gathering - the Shaman, or the fifth, claimed by something else between
+	// the call and its answer (a guild war, a boss raid, a person's party), and
+	// the rule's Shaman or five never came. Another free bot of the kingdom and
+	// the band - a Shaman with a skill group when the run wants one and has
+	// none - is called into the party in its place, as a party of players
+	// shouts again for the one that left; at most
+	// PLAYERBOT_DGRUN_MAX_REPLACEMENTS a run, never after the gathering's time.
+	const int PLAYERBOT_DGRUN_MAX_REPLACEMENTS = 4;
+
+	bool RecruitPlayerBotDgRunMember(TPlayerBotDgRun& run, bool healerOnly, DWORD dwNow)
+	{
+		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
+		if (run.iReplacements >= PLAYERBOT_DGRUN_MAX_REPLACEMENTS || (int)run.members.size() >= playerbot_dgrun::PARTY_MAX)
+			return false;
+		const mt2009_dpanel::Def* panel = mt2009_dpanel::FindKey(def.szKey);
+		DWORD best = 0;
+		int bestScore = -1;
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			const DWORD pid = it->first;
+			if (s_mapPlayerBotDgRunBots.count(pid))
+				continue;
+			std::map<DWORD, DWORD>::const_iterator rest = s_mapPlayerBotDgRunRest.find(pid);
+			if (rest != s_mapPlayerBotDgRunRest.end() && (int)(rest->second - dwNow) > 0)
+				continue;
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+			if (!ch || ch->GetEmpire() != run.bEmpire || !playerbot_dgrun::InBand(ch->GetLevel(), run.iLvMin, run.iLvMax))
+				continue;
+			const bool healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
+			if (healerOnly && !healer)
+				continue;
+			const TPlayerBotAIState& state = it->second;
+			if (!playerbot_dgrun::IsDungeonGoer(pid, GetPlayerBotDgRunShare(state)) || GetPlayerBotDgRunRefusal(ch, state, dwNow))
+				continue;
+			if (panel && mt2009_dpanel::CooldownLeft(ch, *panel) > 0)
+				continue;
+			if (def.iDaily > 0 && GetPlayerBotDgRunRunsToday(ch, def) >= def.iDaily)
+				continue;
+			// The nearest to the gathering first (on its map), a healer first.
+			int score = 1000 + (healer ? 2000 : 0);
+			if (ch->GetMapIndex() == run.place.map)
+				score += 1000 - std::min(1000, DISTANCE_APPROX(ch->GetX() - run.place.x, ch->GetY() - run.place.y) / 100);
+			if (score > bestScore)
+			{
+				bestScore = score;
+				best = pid;
+			}
+		}
+		if (!best)
+			return false;
+		LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(best);
+		TPlayerBotDgRunBot& rb = s_mapPlayerBotDgRunBots[best];
+		rb = TPlayerBotDgRunBot();
+		rb.iRun = run.iId;
+		rb.dwAnswerAt = dwNow + PLAYERBOT_DGRUN_ANSWER_MIN_MS / 2 + (DWORD)number(0, 4000);
+		PlacePlayerBotDgRunSpot(run, run.members.size(), best, rb.lSpotX, rb.lSpotY);
+		run.members.push_back(best);
+		++run.iReplacements;
+		sys_log(0, "BOT_DGRUN: replacement run=%d dungeon=%s pid=%u name=%s level=%u job=%u healer_wanted=%d replacements=%d",
+				run.iId, def.szKey, best, c ? c->GetName() : "?", c ? (unsigned int)c->GetLevel() : 0U,
+				c ? (unsigned int)c->GetJob() : 0U, healerOnly ? 1 : 0, run.iReplacements);
+		return true;
+	}
+
 	// The call answered, the party on its way and gathering: false when the
 	// run is over (closed here) and can be forgotten.
 	bool UpdatePlayerBotDgRunGather(TPlayerBotDgRun& run, DWORD dwNow)
@@ -1881,6 +1949,22 @@ namespace
 					run.iId, def.szKey, run.lInstance, (unsigned int)run.bEmpire, (unsigned int)run.members.size(),
 					run.llFees, names.c_str());
 			return true;
+		}
+		// V3: a replacement for the Shaman, or for those short of the start,
+		// while the gathering has time (RecruitPlayerBotDgRunMember).
+		if (run.bPhase == DGRUN_PHASE_GATHER && !late && leader &&
+				dwNow - run.dwCalledAt + PLAYERBOT_DGRUN_ANSWER_MIN_MS * 4 < PLAYERBOT_DGRUN_GATHER_MS)
+		{
+			bool recruited = false;
+			if (rule.needHealer && !healerAnswered && !healerPending)
+				recruited = RecruitPlayerBotDgRunMember(run, true, dwNow);
+			for (int k = answered + pending + (recruited ? 1 : 0); k < rule.startMin; ++k)
+				if (RecruitPlayerBotDgRunMember(run, false, dwNow))
+					recruited = true;
+				else
+					break;
+			if (recruited)
+				return true;
 		}
 		// Too few, or nobody to lead: the leader says so, the party goes.
 		// V2: nor without the dungeon's Shaman once none can come.
