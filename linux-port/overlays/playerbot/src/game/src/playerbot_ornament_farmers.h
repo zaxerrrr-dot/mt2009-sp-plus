@@ -216,6 +216,14 @@ namespace
 		if (s_dwPlayerBotOrnamentFarmerFirstPass == 0)
 			s_dwPlayerBotOrnamentFarmerFirstPass = dwNow;
 		const bool settled = dwNow - s_dwPlayerBotOrnamentFarmerFirstPass >= PLAYERBOT_ORNAMENT_FARMER_SETTLE_MS;
+		// MT2009_PLUS_ORNAMENT_FARMERS_V3: farmers are made on the shop channel
+		// only. A farmer is a counter keeper, and every counter stands on the
+		// first channel (playerbot_channel_rules.h): the six identities the
+		// second channel called on the test world (8 October) went to the
+		// first to open their stands, or were taken back by the level-30
+		// dropper pass, and the second channel was left short and calling
+		// again. Two a kingdom for the world, then.
+		const bool shopChannel = (int)g_bChannel == playerbot_channel_rules::SHOP_CHANNEL;
 
 		// A kingdom whose second village is on this core, or nobody of it is
 		// one here.
@@ -261,7 +269,8 @@ namespace
 				continue;
 			}
 			const bool summoned = IsPlayerBotOrnamentFarmerSummoned(it->first, dwNow);
-			if (empire < 1 || empire > 3 || !hosted[empire] || !IsPlayerBotOrnamentFarmerCandidate(ch, state))
+			if (!shopChannel || empire < 1 || empire > 3 || !hosted[empire] ||
+					!IsPlayerBotOrnamentFarmerCandidate(ch, state))
 				continue;
 			++pool[empire];
 			const bool flagged = ch->GetQuestFlag(PLAYERBOT_ORNAMENT_FARMER_FLAG) != 0 || summoned;
@@ -300,7 +309,7 @@ namespace
 			// in play - identities of the band from the registry, the highest
 			// first; they become candidates once their persona is read.
 			const int missing = PLAYERBOT_ORNAMENT_FARMERS_PER_KINGDOM - count[empire] - called[empire];
-			if (settled && hosted[empire] && missing > 0 &&
+			if (shopChannel && settled && hosted[empire] && missing > 0 &&
 					(s_adwPlayerBotOrnamentFarmerSummonAt[empire] == 0 ||
 					 dwNow - s_adwPlayerBotOrnamentFarmerSummonAt[empire] >= PLAYERBOT_ORNAMENT_FARMER_SUMMON_MS))
 			{

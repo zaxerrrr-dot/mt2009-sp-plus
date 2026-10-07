@@ -6400,8 +6400,11 @@ void CPlayerBotManager::Update()
 	// and invitations (playerbot_guild_lfg.h).
 	ManagePlayerBotGuildLfg(dwNow);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: two or three island droppers a kingdom.
+	// MT2009_PLUS_ORNAMENT_FARMERS_V1 / _V3: before the level-30 droppers, so
+	// an identity the ornament pass called from the registry is its own and
+	// not taken back by the other pass's flag (the bands overlap).
+	ManagePlayerBotOrnamentFarmers(dwNow);
 	ManagePlayerBotL30WeaponDroppers(dwNow);
-	ManagePlayerBotOrnamentFarmers(dwNow);	// MT2009_PLUS_ORNAMENT_FARMERS_V1
 	// MT2009_PLUS_FARMER_LINK_V1: farmers linked to their mains, the yang sent and taken.
 	ManagePlayerBotFarmerLinks(dwNow);
 
