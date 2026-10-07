@@ -1,13 +1,13 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-07T15:48:54Z",
- "statusMessage": "MT2009 PLUS 2.26.1: poprawka aktualizacji 2.26.0 (brakujace pliki). Klient 2.0.57.",
+ "publishedAt": "2026-10-07T17:52:28Z",
+ "statusMessage": "MT2009 PLUS 2.26.2: ustawienia serwera (.env) dzialaja same. Klient 2.0.57.",
  "server": {
-  "version": "2.26.1",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.26.1/metin2-server-update-2.26.1.zip",
-  "sha256": "01653F093EAEF50E627A2C474115D2553AA423A495708AF341FAC1A598E2690B",
-  "size": 110511355
+  "version": "2.26.2",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.26.2/metin2-server-update-2.26.2.zip",
+  "sha256": "002650AEE1C9734BA2979BACCDE44BA37634D1A6A776D4EF2712F03A18F2752F",
+  "size": 110521903
  },
  "client": {
   "version": "2.0.57",

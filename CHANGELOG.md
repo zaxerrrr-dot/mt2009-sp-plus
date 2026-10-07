@@ -17,6 +17,14 @@ every version here.
 
 ---
 
+## 2.26.2 — 2026-10-07 — Ustawienia serwera (.env) działają same
+
+Działa z klientem **2.0.57** (bez nowego klienta).
+
+- **Aktualizator uruchamia się sam** – strona **Ustawienia serwera (.env)** w panelu zaawansowanym (`:7790/advanced/server-env`) działa bez ręcznej konfiguracji: na VPS-ie aktualizator włącza się po aktualizacji i instalacji, na Windowsie przy GRAJ w launcherze. Sam nie instaluje aktualizacji – tylko zapisuje ustawienia (wyłączenie: `M2_UPDATE_AUTOSTART=0`).
+- **Moduły od razu** – Moduł Arezzo, Seon-Hae, alchemia i szarfy przełączają się na żywo, także bez aktualizatora (jak w panelu podstawowym).
+- Gdy aktualizator nie działa, strona pokazuje **instrukcję krok po kroku** dla VPS i dla Windowsa.
+
 ## 2.26.1 — 2026-10-07 — Poprawka aktualizacji 2.26.0
 
 Działa z klientem **2.0.57** (bez nowego klienta).
