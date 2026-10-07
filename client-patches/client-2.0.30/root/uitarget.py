@@ -469,10 +469,16 @@ class TargetBoard(ui.ThinBoard):
 		def SetRaceElement(self, vid):
 			mobVnum = nonplayer.GetVnumByVID(vid)
 			imagePath = GetElementalFilename(mobVnum)
+			# MT2009_PLUS_ELEMENTS_V1: a missing image must never break the target board
+			# (the name and the bar were lost when LoadImage raised).
+			self.elementImage.Hide()
 			if imagePath:
-				self.elementImage.LoadImage(imagePath)
-				self.elementImage.SetPosition(-self.elementImage.GetWidth(), 0)
-				self.elementImage.Show()
+				try:
+					self.elementImage.LoadImage(imagePath)
+					self.elementImage.SetPosition(-self.elementImage.GetWidth(), 0)
+					self.elementImage.Show()
+				except Exception:
+					self.elementImage.Hide()
 
 	def SetEnemyVID(self, vid):
 		self.SetTargetVID(vid)
