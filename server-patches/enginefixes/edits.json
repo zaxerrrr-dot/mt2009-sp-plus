@@ -316,5 +316,11 @@
   "marker": "MT2009_PLUS_AREZZO_STONE_GROUPS_V1",
   "old": "\tDWORD dwVnum = number(MIN(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed ), MAX(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed));\n",
   "new": "\tDWORD dwVnum = number(MIN(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed ), MAX(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed));\n\t// MT2009_PLUS_AREZZO_STONE_GROUPS_V1 (server-patches/enginefixes): Dolina Cyklopow (map 360)\n\t// has the Metin of Shadow (8009), whose groups (attack/moving speed 1301-1310) are the\n\t// desert's - Pustynny Zawadiaka (2108) and the snake archers came out of every stone on\n\t// the cyclopes' map and killed its level-45 hunters (night test 6/7 October). There the\n\t// stone calls the map's own cyclops groups (group.arezzo.txt 36001-36003); 8009 keeps its\n\t// desert groups everywhere else.\n\tif (GetMapIndex() == 360 && dwVnum >= 1301 && dwVnum <= 1310)\n\t\tdwVnum = 36001 + number(0, 2);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_AREZZO_ENCHANT_PERMIT_V1",
+  "old": "\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n\n\tfor (itertype(vec_item) it = vec_item.begin(); it != vec_item.end(); ++it)\n",
+  "new": "\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n\n\t// MT2009_PLUS_AREZZO_ENCHANT_PERMIT_V1 (the owner, 7 October: \"na nowych mapach Arezzo pozwolenie na\n\t// zaczarowanie przedmiotow leci za czesto, ustaw 1/4\"): on Dolina Cyklopow (360), Pustkowie Faraona (361)\n\t// and Zaczarowany Las (362) a Pozwolenie na Zaczar. Przedmiotu (30370) - Metin Cienia's - stays at 1 in 4;\n\t// the same stones elsewhere drop as before.\n\t{\n\t\tconst long lMapIndex = pkChr->GetMapIndex();\n\t\tif (lMapIndex == 360 || lMapIndex == 361 || lMapIndex == 362)\n\t\t{\n\t\t\tfor (std::vector<LPITEM>::iterator it = vec_item.begin(); it != vec_item.end(); )\n\t\t\t{\n\t\t\t\tif (*it && (*it)->GetVnum() == 30370 && number(1, 4) != 1)\n\t\t\t\t{\n\t\t\t\t\tM2_DESTROY_ITEM(*it);\n\t\t\t\t\tit = vec_item.erase(it);\n\t\t\t\t}\n\t\t\t\telse\n\t\t\t\t\t++it;\n\t\t\t}\n\t\t}\n\t}\n\n\tfor (itertype(vec_item) it = vec_item.begin(); it != vec_item.end(); ++it)\n"
  }
 ]
