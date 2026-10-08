@@ -1006,6 +1006,8 @@ if ((Test-Path -LiteralPath $yangLimitsApply -PathType Leaf) -and
     if ($yangLimitsResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} yang limit edit(s).' -f $yangLimitsResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Elements and talismans (server-patches/zywioly, "Autor: Digi Rasta", nowy-system
 # 0.28.0, MT2009_PLUS_ELEMENTS_V1): the six element powers as server-only points
 # 178-183 (common/length.h, packet.h, char.cpp), the damage hook in CalcAttBonus
