@@ -3745,7 +3745,20 @@ bool CPlayerBotManager::LoadRegisteredBots()
 	{
 		// A channel the partition gives nobody is not a broken registry.
 		if (!m_setAllRegisteredBots.empty())
+		{
 			sys_log(0, "PLAYERBOT_CHANNEL: channel %u carries no bots", (unsigned int)g_bChannel);
+			// MT2009_PLUS_CH34_V1: with the assignment table the registry is
+			// whole on every core (every identity's record is kept), and a
+			// channel that starts with nobody - CH3/CH4 just switched on - gets
+			// its bots by moves. It answered "no registry" for good, so every
+			// arrival was refused as unregistered with empire 0 (test server,
+			// 8 October: 657 arrivals on CH3, none spawned).
+			if (m_bChannelTable)
+			{
+				m_bRegistryAvailable = true;
+				return true;
+			}
+		}
 		else
 			sys_err("PLAYERBOT_AUTH: registry has no valid seeded identities; refusing every bot spawn");
 		return false;
@@ -5753,6 +5766,16 @@ namespace
 				std::to_string(PLAYERBOT_CHANNEL_SEEN_SECONDS) + " SECOND)";
 	}
 
+	// MT2009_PLUS_CH34_V1: an off-shop channel's load for where moves go - the
+	// bots that play there and those moved there in the last five minutes,
+	// which it has not spawned and reported yet. Counting only the seen ones
+	// sent every gate's bots to the same channel: an empty CH3 and CH4 tie at
+	// 0, the lower wins, and CH3's arrivals do not show for a while.
+	std::string PlayerBotChannelLoad()
+	{
+		return "(" + PlayerBotChannelSeen() + " OR moved_at>DATE_SUB(NOW(),INTERVAL 300 SECOND))";
+	}
+
 	// A request that counts: it has stood long enough, the bot is still asking
 	// (every ask refreshes updated_at), and the bot is still playing - a bot
 	// that has logged out since (the life schedule's rest) is not moved in.
@@ -6183,9 +6206,9 @@ void CPlayerBotManager::CoordinateChannelSwaps(DWORD dwNow)
 			"COALESCE(SUM(channel=" + shop + " AND " + PlayerBotChannelSeen() + "),0),"
 			"COALESCE(SUM(channel<>" + shop + " AND channel<=" + last + " AND requested_channel=" + shop +
 			" AND " + PlayerBotChannelRequestReady() + "),0),"
-			"COALESCE(SUM(channel=2 AND " + PlayerBotChannelSeen() + "),0),"
-			"COALESCE(SUM(channel=3 AND " + PlayerBotChannelSeen() + "),0),"
-			"COALESCE(SUM(channel=4 AND " + PlayerBotChannelSeen() + "),0) "
+			"COALESCE(SUM(channel=2 AND " + PlayerBotChannelLoad() + "),0),"
+			"COALESCE(SUM(channel=3 AND " + PlayerBotChannelLoad() + "),0),"
+			"COALESCE(SUM(channel=4 AND " + PlayerBotChannelLoad() + "),0) "
 			"FROM common.playerbot_channel_assignment");
 }
 
