@@ -2677,8 +2677,19 @@ class GameWindow(ui.ScriptWindow):
 			wndDSRefine = getattr(self.interface, "wndDragonSoulRefine", None) if self.interface else None
 			if wndDSRefine and not self.interface.IsOpenChat() and wndDSRefine.PressDoRefineByEnter():
 				return True
+			# MT2009_PLUS_REFINE_ENTER_V1 (Autor: Vekirion): the same for the blacksmith / scroll
+			# refine window (and its warning) and the stone-attach window.
+			if self.interface and not self.interface.IsOpenChat() and self.__PressUpgradeByEnter():
+				return True
 			self.interface.ToggleChat()
 		return True
+
+	def __PressUpgradeByEnter(self):
+		wndInventory = getattr(self.interface, "wndInventory", None)
+		for wnd in (getattr(self.interface, "dlgRefineNew", None), getattr(wndInventory, "attachMetinDialog", None)):
+			if wnd and hasattr(wnd, "PressByEnter") and wnd.PressByEnter():
+				return True
+		return False
 
 	def OnPressExitKey(self):
 		self.interface.ToggleSystemDialog()
