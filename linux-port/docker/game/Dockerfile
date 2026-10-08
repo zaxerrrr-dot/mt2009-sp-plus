@@ -1280,6 +1280,23 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting_data
  && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*\[CRAFTING_URIEL\] = \{ 85001 \},' "$F")" -eq 1 \
  && echo "share: Uriel's crafting window 111 (Delikatne Sukno -> the plain sash)"
 
+# MT2009_PLUS_JEWELS75_V1 (the owner, 8 October: "dodaj kamienie z rud, tak samo jak dzialaja inne
+# przetopy"): Rubin (50635), Granat (50636), Szmaragd (50637) and Szafir (50638) - the gems the
+# Rubin/Granat/Szmaragd/Szafir jewellery's sockets take - are smelted as every przetop is, in a guild
+# alchemist's crafting window (guild_building_melt.quest opens crafting.open(<the alchemist's
+# race>)). The image has no alchemist of their own (Gameforge's 33010-33013 have no building here),
+# so each of the twelve alchemists 20060-20072 lists the four after its own przetop, and they count
+# as guild crafting (the 5% discount in the guild's own furnace) like 50621-50633. The recipes are
+# world.crafting_proto 50635-50638 (mariadb/playerbot/apply.sh): 100 ore, 3 Magiczny Pyl, 60 000
+# yang, 60%.
+RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting_data.lua \
+ && LC_ALL=C sed -i -E \
+      -e 's/^([[:blank:]]*\[20(06[0-9]|07[0-2])\] = \{)(50(62[1-9]|63[0-3]))\},(\r?)$/\1\3, 50635, 50636, 50637, 50638},\5/' \
+      -e 's/vnum >= 50621 and vnum <= 50633 -- przetopy/vnum >= 50621 and vnum <= 50638 -- przetopy/' "$F" \
+ && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*\[20(06[0-9]|07[0-2])\] = \{50(62[1-9]|63[0-3]), 50635, 50636, 50637, 50638\},' "$F")" -eq 12 \
+ && test "$(LC_ALL=C grep -c 'vnum >= 50621 and vnum <= 50638 -- przetopy' "$F")" -eq 1 \
+ && echo "share: the guild alchemists smelt Rubin / Granat / Szmaragd / Szafir too (MT2009_PLUS_JEWELS75_V1)"
+
 # MT2009_PLUS_BELT_MATS_V1 (the owner, 7 October): the belt materials drop. After every other
 # mob_drop_item.txt append (dungeons, Arezzo, the drop edit), so it sees all of their groups:
 #  * mob_drop_item.beltmats.append.txt - Beran-Setaou's gems (special group 951103, a drop group

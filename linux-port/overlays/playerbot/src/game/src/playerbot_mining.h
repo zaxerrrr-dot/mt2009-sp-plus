@@ -24,7 +24,8 @@
 //     world itself uses and are walkable by construction; a refusal is logged
 //     and the site is simply left empty rather than guessed at.
 //
-// Placement is deliberately on the three frontier maps and nowhere else. The
+// Placement is deliberately on the three frontier maps (and, for Rubin, Granat,
+// Szmaragd and Szafir, the Red Forest and the Grotto of Exile) and nowhere else. The
 // pickaxe carries LIMIT_LEVEL 30 (world.item_proto 29101), so no bot that could
 // hold one is still in a village, and putting ore where the bots already are
 // means a miner walks to a vein instead of across a kingdom to one.
@@ -36,8 +37,9 @@
 
 namespace
 {
-	// The engine's own table (mining.cpp info[]), restricted to the thirteen
-	// veins that carry a raw ore and a smelted form in this world's item_proto.
+	// The engine's own table (mining.cpp info[]), restricted to the veins that
+	// carry a raw ore and a smelted form in this world's item_proto (the thirteen
+	// first ones, and Rubin / Granat / Szmaragd / Szafir since MT2009_PLUS_JEWELS75_V1).
 	// Kept here rather than reached through mining::GetRawOreFromLoad because
 	// the AI needs the whole row - what to spawn, what drops, what it becomes -
 	// and the engine exposes only one direction of it.
@@ -61,7 +63,14 @@ namespace
 		{ 20056, 50610, 50630 },   // Biale Zloto
 		{ 20057, 50611, 50631 },   // Krysztal
 		{ 20058, 50612, 50632 },   // Ametyst
-		{ 20059, 50613, 50633 }    // Niebianskie Lzy
+		{ 20059, 50613, 50633 },   // Niebianskie Lzy
+		// MT2009_PLUS_JEWELS75_V1 (the owner, 8 October): the gems of the level-75
+		// jewellery's sockets, mined and smelted like the rest (mining.cpp carries the
+		// three veins; the players' smelt is the guild alchemists' window).
+		{ 30302, 50615, 50635 },   // Zyla Rubinu       -> Rubin
+		{ 30303, 50616, 50636 },   // Zyla Granatu      -> Granat
+		{ 30304, 50617, 50637 },   // Zyla Szmaragdu    -> Szmaragd
+		{ 30305, 50618, 50638 }    // Zyla Szafiru      -> Szafir
 	};
 	const size_t PLAYERBOT_ORE_ROW_COUNT =
 			sizeof(PLAYERBOT_ORE_ROWS) / sizeof(PLAYERBOT_ORE_ROWS[0]);
@@ -130,7 +139,21 @@ namespace
 		{ PLAYERBOT_MAP_SOHAN, 470400, 291200, 20058 },
 		{ PLAYERBOT_MAP_SOHAN, 438400, 272000, 20059 },
 		{ PLAYERBOT_MAP_SOHAN, 412800, 278400, 20052 },
-		{ PLAYERBOT_MAP_SOHAN, 483200, 208000, 20056 }
+		{ PLAYERBOT_MAP_SOHAN, 483200, 208000, 20056 },
+		// MT2009_PLUS_JEWELS75_V1: Rubin, Szmaragd and Szafir where the level-75
+		// jewellery is worn - the Red Forest (68, monsters 74-82) and the Grotto of
+		// Exile V1 (72, 78-86), one of each per map, on hunting hubs of
+		// playerbot_wandering.h (redForestHubs, grottoV1Hubs).
+		{ PLAYERBOT_MAP_RED_FOREST, 1070400, 67400, 30302 },   // rubin
+		{ PLAYERBOT_MAP_RED_FOREST, 1078200, 40800, 30304 },   // szmaragd
+		{ PLAYERBOT_MAP_RED_FOREST, 1092600, 15100, 30305 },   // szafir
+		{ PLAYERBOT_MAP_GROTTO_V1, 22600, 1238000, 30302 },    // rubin
+		{ PLAYERBOT_MAP_GROTTO_V1, 87600, 1258100, 30304 },    // szmaragd
+		{ PLAYERBOT_MAP_GROTTO_V1, 125600, 1295100, 30305 },   // szafir
+		// Granat, whose jewellery stays at Gameforge's level 90 (the owner, 8 October):
+		// the Grotto's 84-86 ground, V1 and V2.
+		{ PLAYERBOT_MAP_GROTTO_V1, 103800, 1276400, 30303 },   // granat
+		{ PLAYERBOT_MAP_GROTTO_V2, 233200, 1283400, 30303 }    // granat
 	};
 	const size_t PLAYERBOT_VEIN_SITE_COUNT =
 			sizeof(PLAYERBOT_VEIN_SITES) / sizeof(PLAYERBOT_VEIN_SITES[0]);

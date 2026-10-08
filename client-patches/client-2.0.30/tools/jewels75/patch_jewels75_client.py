@@ -4,18 +4,19 @@
 # Rubinowa, Szmaragdowa i Szafirowa ... normalnie sa na 85, ale ja chce zeby byly na 75").
 #
 # The client already had the records (item_proto 14500/14540/14560 bracelets, 16500/16540/16560
-# necklaces, 17500/17540/17560 earrings, +0..+9) and the icons (icon pack: icon/item/<+0>.tga),
-# but item_list.txt had no line for them, so a dropped piece showed no icon. This script:
+# necklaces, 17500/17540/17560 earrings, +0..+9) and the icons (icon pack: icon/item/<+0>.tga; with
+# no item_list.txt line the exe falls back to icon/item/<vnum>.tga, then <vnum - vnum % 10>.tga -
+# GameLib/ItemManager.cpp - so they showed already). This script:
 #   item_proto    the nine families: level limit 75 (Gameforge: Rubin 85, Szmaragd 95, Szafir
 #                 100), the earrings' regeneration as Gameforge's today (Szmaragdowe: SP
 #                 regeneration, Szafirowe: HP regeneration, 4/5/6/8/10/12/15/18/22/28 % - the
 #                 old record had 1..15), the refine chain on their own Blacksmith recipes
-#                 7320-7328 - all as linux-port/docker/mariadb/playerbot/apply.sh
+#                 7320-7328 (the Granat family 14520/16520/17520 too, at Gameforge's level
+#                 90) - all as linux-port/docker/mariadb/playerbot/apply.sh
 #                 (MT2009_PLUS_JEWELS75_V1) writes world.item_proto;
 #   item_list.txt one line per piece (ARMOR, icon/item/<+0 vnum>.tga, as Gameforge's
 #                 item_list) for the nine families and for the Granat family (14520/16520/
-#                 17520, level 90, unchanged - it drops from Skrzynia Mroku as well and had
-#                 no line either).
+#                 17520) - explicit rather than the exe's fallback.
 # Every other field (names, bonuses, prices) stays. Idempotent: a second run changes nothing.
 #
 # From client 2.0.52 item_proto lives in the "dbdata" pack (gamedata/item_proto), item_list.txt
@@ -43,7 +44,7 @@ FAMILIES = (
     16500, 16540, 16560,     # Rubinowy / Szmaragdowy / Szafirowy Naszyjnik
     17500, 17540, 17560,     # Rubinowe / Szmaragdowe / Szafirowe Kolczyki
 )
-GRANAT = (14520, 16520, 17520)   # item_list lines only
+GRANAT = (14520, 16520, 17520)   # Gameforge's level 90 kept; the refine chain and item_list lines
 REGEN = (4, 5, 6, 8, 10, 12, 15, 18, 22, 28)
 # The earrings' second bonus (apply slot 1): the type it must already be, the new values.
 EARRING_REGEN = {
@@ -58,7 +59,7 @@ def item_proto(b):
     ver, stride, cnt, size = struct.unpack_from('<IIII', b, 4)
     assert stride == base.RECORD, stride
     raw = bytearray(m2pack.mcoz_decode(b[20:], base.ITEM_KEY))
-    want = dict((first + n, (first, n)) for first in FAMILIES for n in range(10))
+    want = dict((first + n, (first, n)) for first in FAMILIES + GRANAT for n in range(10))
     changed = seen = 0
     for i in range(cnt):
         off = i * base.RECORD
@@ -71,7 +72,8 @@ def item_proto(b):
         before = bytes(r)
         if r[74] != 2 or r[75] not in (3, 5, 6):
             raise SystemExit('item_proto: %d is not a bracelet, necklace or earring (%d/%d)' % (vnum, r[74], r[75]))
-        struct.pack_into('<Bi', r, 114, LIMIT_LEVEL, LEVEL)                       # limit 0
+        if first not in GRANAT:
+            struct.pack_into('<Bi', r, 114, LIMIT_LEVEL, LEVEL)                   # limit 0
         if first in EARRING_REGEN:
             kind, values = EARRING_REGEN[first]
             if r[129] != kind:

@@ -3367,15 +3367,25 @@ db -e "DELETE FROM player.quest WHERE dwPID > 0 AND szName = 'dungeon_panel' AND
 # in world.item_proto already at Gameforge's 85 / 95 / 100 with its bonuses. They go to 75 (a level
 # the operator set to anything else stays); the Szmaragdowe and Szafirowe earrings' regeneration
 # (SP / HP) to Gameforge's today, 4/5/6/8/10/12/15/18/22/28 % (the old record had 1..15; only the
-# old values change); their refine chain to recipes of their own, 7320-7328 (+n -> +n+1): the yang
-# and chance of the jewellery of Krysztal Duszy (316-324, which they shared), and from +6 one pearl
-# a step as Gameforge's - Biala (27992), Niebieska (27993), Krwawa Perla (27994). Gameforge's other
-# materials (Nieznane Lekarstwo+, Pamiatka Po Demonie, Klejnot Demona, Futro Yeti+, Plonaca Grzywa)
-# drop almost nowhere in this world and are left out. INSERT IGNORE: a recipe changed in the panel
-# stays. Granat (14520..., level 90) is untouched. Drops: Skrzynia Mroku (special_item_group.starter
-# .txt, as Gameforge's) and the Grotto of Exile's Commanders and Generals (special group 951110,
-# mob_drop_item.dropedit.append.txt). The client carries the same rows (client-patches/client-2.0.30/
-# tools/jewels75). Idempotent.
+# old values change); their refine chain to recipes of their own, 7320-7328 (+n -> +n+1, they shared
+# Krysztal Duszy's 316-324): Gameforge's yang (1 200 ... 150 000) and materials - +4 -> +5 2 Nieznane
+# Lekarstwo+ (30083), +5 2 Pamiatka Po Demonie (30015), +6 2 Klejnot Demona (30016) and a Biala Perla
+# (27992), +7 2 Futro Yeti+ (30089) and a Niebieska (27993), +8 2 Plonaca Grzywa (30019) and a Krwawa
+# Perla (27994) - at the chances of 316-324 (100 ... 40). Every one of them drops from the Razador and
+# Nemere chests (special_item_group.dungeons.txt, materials group). INSERT IGNORE: a recipe changed in
+# the panel stays. The Granat jewellery (14520 / 16520 / 17520, the owner: "zgodnie z tym co ma
+# gameforge") keeps Gameforge's level 90 and bonuses (the record matches pl-wiki) and takes the same
+# recipes. Drops of all four: Skrzynia Mroku (special_item_group.starter.txt, as Gameforge's) and the
+# Grotto of Exile's Commanders and Generals (special group 951110, mob_drop_item.dropedit.append.txt).
+# The client carries the same rows (client-patches/client-2.0.30/tools/jewels75).
+# The gems the jewellery's sockets take (Diament opens one, the gem fills it - item.cpp CanPutInto):
+# Rubin (50635), Granat (50636), Szmaragd (50637), Szafir (50638) are smelted like every other
+# przetop - the guild alchemists' crafting window (guild_building_melt.quest -> crafting_data.lua,
+# which game/Dockerfile gives all four to every alchemist 20060-20072): 100 of the ore (Ruda Rubinu
+# 50615, Granatu 50616, Szmaragdu 50617, Szafiru 50618), 3 Magiczny Pyl (30360) and 60 000 yang at
+# 60%, as Niebianskie Lzy (50633). The ore is mined from the veins 30302-30305 (mining.cpp has them)
+# that the bots' vein keeper stands in the Red Forest and the Grotto of Exile (playerbot_mining.h).
+# Idempotent.
 db -e "UPDATE world.item_proto SET limitvalue0 = 75
 WHERE limittype0 = 1 AND limitvalue0 IN (85, 95, 100)
   AND (vnum BETWEEN 14500 AND 14509 OR vnum BETWEEN 14540 AND 14549 OR vnum BETWEEN 14560 AND 14569
@@ -3385,20 +3395,28 @@ UPDATE world.item_proto SET applyvalue1 = ELT(vnum % 10 + 1, 4, 5, 6, 8, 10, 12,
 WHERE ((vnum BETWEEN 17540 AND 17549 AND applytype1 = 33) OR (vnum BETWEEN 17560 AND 17569 AND applytype1 = 32))
   AND applyvalue1 = ELT(vnum % 10 + 1, 1, 1, 2, 3, 4, 6, 8, 10, 12, 15);
 INSERT IGNORE INTO world.refine_proto (id, vnum0, count0, vnum1, count1, vnum2, count2, vnum3, count3, vnum4, count4, cost, src_vnum, result_vnum, prob) VALUES
-(7320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2400, 0, 0, 100),
-(7321, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5000, 0, 0, 100),
-(7322, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10000, 0, 0, 100),
-(7323, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20000, 0, 0, 90),
-(7324, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40000, 0, 0, 80),
-(7325, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60000, 0, 0, 70),
-(7326, 27992, 1, 0, 0, 0, 0, 0, 0, 0, 0, 90000, 0, 0, 60),
-(7327, 27993, 1, 0, 0, 0, 0, 0, 0, 0, 0, 180000, 0, 0, 50),
-(7328, 27994, 1, 0, 0, 0, 0, 0, 0, 0, 0, 300000, 0, 0, 40);
+(7320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1200, 0, 0, 100),
+(7321, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2500, 0, 0, 100),
+(7322, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5000, 0, 0, 100),
+(7323, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10000, 0, 0, 90),
+(7324, 30083, 2, 0, 0, 0, 0, 0, 0, 0, 0, 20000, 0, 0, 80),
+(7325, 30015, 2, 0, 0, 0, 0, 0, 0, 0, 0, 30000, 0, 0, 70),
+(7326, 30016, 2, 27992, 1, 0, 0, 0, 0, 0, 0, 45000, 0, 0, 60),
+(7327, 30089, 2, 27993, 1, 0, 0, 0, 0, 0, 0, 90000, 0, 0, 50),
+(7328, 30019, 2, 27994, 1, 0, 0, 0, 0, 0, 0, 150000, 0, 0, 40);
+INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, chance, recipe, req_progress, req_level, recipe_vnum) VALUES
+(50635, 50635, 1, 60000, 60, '50615,100,30360,3', 0, 0, 0),
+(50636, 50636, 1, 60000, 60, '50616,100,30360,3', 0, 0, 0),
+(50637, 50637, 1, 60000, 60, '50617,100,30360,3', 0, 0, 0),
+(50638, 50638, 1, 60000, 60, '50618,100,30360,3', 0, 0, 0);
 UPDATE world.item_proto SET refine_set = 7320 + vnum % 10
 WHERE vnum % 10 < 9 AND refine_set = 316 + vnum % 10
-  AND (vnum BETWEEN 14500 AND 14509 OR vnum BETWEEN 14540 AND 14549 OR vnum BETWEEN 14560 AND 14569
+  AND (vnum BETWEEN 14500 AND 14569 OR vnum BETWEEN 16500 AND 16569 OR vnum BETWEEN 17500 AND 17569)
+  AND (vnum BETWEEN 14500 AND 14509 OR vnum BETWEEN 14520 AND 14529 OR vnum BETWEEN 14540 AND 14549 OR vnum BETWEEN 14560 AND 14569
+    OR vnum BETWEEN 16520 AND 16529 OR vnum BETWEEN 17520 AND 17529
     OR vnum BETWEEN 16500 AND 16509 OR vnum BETWEEN 16540 AND 16549 OR vnum BETWEEN 16560 AND 16569
-    OR vnum BETWEEN 17500 AND 17509 OR vnum BETWEEN 17540 AND 17549 OR vnum BETWEEN 17560 AND 17569);"   || fail_step "could not move the Rubin / Szmaragd / Szafir jewellery to level 75 (MT2009_PLUS_JEWELS75_V1)" >&2
+    OR vnum BETWEEN 17500 AND 17509 OR vnum BETWEEN 17540 AND 17549 OR vnum BETWEEN 17560 AND 17569);" \
+  || fail_step "could not move the Rubin / Szmaragd / Szafir jewellery to level 75 or add the jewellery recipes and gems (MT2009_PLUS_JEWELS75_V1)" >&2
 
 # MT2009_PLUS_ELEMENTS_V1: Elements and talismans (Autor: Digi Rasta, "Zywioly i talizmany",
 # nowy-system 0.28.0; server-patches/zywioly/README.md). Both files are generated

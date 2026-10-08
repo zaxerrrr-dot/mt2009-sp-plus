@@ -189,7 +189,7 @@ Group	MT2009_azbal_2598
 }
 
 // MT2009_PLUS_JEWELS75_V1 (the owner, 8 October): the Gameforge jewellery of Rubin, Szmaragd and
-// Szafir moved to level 75 (apply.sh) - one +0 piece of the nine (special group 951110,
+// Szafir moved to level 75 and of Granat at Gameforge's 90 (apply.sh) - one +0 piece of the twelve (special group 951110,
 // special_item_group.dungeons.txt) from the Grotto of Exile's Commanders at 2% and its Generals at
 // 10%, the band the level-75 player hunts in. These groups join the mobs' own.
 
@@ -197,26 +197,26 @@ Group	MT2009_jewels75_2491
 {
 	mob	2491	-- Dowodca Yonghan
 	Type	drop
-	1	s951110	1	8	-- Rubin/Szmaragd/Szafir +0, 2% (MT2009_PLUS_JEWELS75_V1)
+	1	s951110	1	8	-- Rubin/Granat/Szmaragd/Szafir +0, 2% (MT2009_PLUS_JEWELS75_V1)
 }
 
 Group	MT2009_jewels75_2494
 {
 	mob	2494	-- Dowodca Huashin
 	Type	drop
-	1	s951110	1	8	-- Rubin/Szmaragd/Szafir +0, 2% (MT2009_PLUS_JEWELS75_V1)
+	1	s951110	1	8	-- Rubin/Granat/Szmaragd/Szafir +0, 2% (MT2009_PLUS_JEWELS75_V1)
 }
 
 Group	MT2009_jewels75_2492
 {
 	mob	2492	-- General Yonghan
 	Type	drop
-	1	s951110	1	40	-- Rubin/Szmaragd/Szafir +0, 10% (MT2009_PLUS_JEWELS75_V1)
+	1	s951110	1	40	-- Rubin/Granat/Szmaragd/Szafir +0, 10% (MT2009_PLUS_JEWELS75_V1)
 }
 
 Group	MT2009_jewels75_2495
 {
 	mob	2495	-- General Huashin
 	Type	drop
-	1	s951110	1	40	-- Rubin/Szmaragd/Szafir +0, 10% (MT2009_PLUS_JEWELS75_V1)
+	1	s951110	1	40	-- Rubin/Granat/Szmaragd/Szafir +0, 10% (MT2009_PLUS_JEWELS75_V1)
 }
