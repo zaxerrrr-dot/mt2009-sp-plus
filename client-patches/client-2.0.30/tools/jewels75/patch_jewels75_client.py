@@ -17,6 +17,8 @@
 #   item_list.txt one line per piece (ARMOR, icon/item/<+0 vnum>.tga, as Gameforge's
 #                 item_list) for the nine families and for the Granat family (14520/16520/
 #                 17520) - explicit rather than the exe's fallback.
+#   and the gems Rubin/Granat/Szmaragd/Szafir (50635-50638) stackable (flag 4) as the other
+#   przetopy and as world.item_proto.
 # Every other field (names, bonuses, prices) stays. Idempotent: a second run changes nothing.
 #
 # From client 2.0.52 item_proto lives in the "dbdata" pack (gamedata/item_proto), item_list.txt
@@ -46,6 +48,8 @@ FAMILIES = (
 )
 GRANAT = (14520, 16520, 17520)   # Gameforge's level 90 kept; the refine chain and item_list lines
 REGEN = (4, 5, 6, 8, 10, 12, 15, 18, 22, 28)
+GEMS = (50635, 50636, 50637, 50638)   # Rubin, Granat, Szmaragd, Szafir: stackable like the przetopy
+ITEM_FLAG_STACKABLE = 4
 # The earrings' second bonus (apply slot 1): the type it must already be, the new values.
 EARRING_REGEN = {
     17540: (33, REGEN),      # Szmaragdowe Kolczyki: SP regeneration
@@ -85,6 +89,18 @@ def item_proto(b):
             changed += 1
     if seen != len(want):
         raise SystemExit('item_proto: %d of the %d jewellery records found' % (seen, len(want)))
+    gems = 0
+    for i in range(cnt):
+        off = i * base.RECORD
+        vnum = struct.unpack_from('<I', raw, off)[0]
+        if vnum in GEMS:
+            gems += 1
+            flags = struct.unpack_from('<I', raw, off + 86)[0]
+            if not flags & ITEM_FLAG_STACKABLE:
+                struct.pack_into('<I', raw, off + 86, flags | ITEM_FLAG_STACKABLE)
+                changed += 1
+    if gems != len(GEMS):
+        raise SystemExit('item_proto: %d of the %d gem records found' % (gems, len(GEMS)))
     if not changed:
         return b, 0
     blob = m2pack.mcoz_encode(bytes(raw), base.ITEM_KEY)

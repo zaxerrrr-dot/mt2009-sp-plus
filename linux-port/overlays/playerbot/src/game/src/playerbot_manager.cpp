@@ -7575,6 +7575,14 @@ WritePlayerBotGuildStatus(dwNow);
 				ManagePlayerBotMining(ch, state, dwNow))
 			continue;
 
+		// MT2009_PLUS_JEWELS75_V1: a gem (Rubin, Granat, Szmaragd, Szafir, the older
+		// przetopy) or a Diament in the bag goes into the bot's own worn jewellery
+		// whoever it is - looted, bought or smelted - not only on a miner's session.
+		// Out of a fight only (the piece comes off for the one use); one use per
+		// call on the function's own five-second clock, and it never owns the tick.
+		if (!bServingPerson && !state.bMultiPullActive && !curTarget && !ch->GetVictim())
+			ManagePlayerBotAccessorySockets(ch, dwNow);
+
 		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: and the herbalists by trade pick the
 		// herb bushes with the Herbalist's Knife, the vein's shape: the knife
 		// sits in the weapon hand, so the session owns the tick while it picks.

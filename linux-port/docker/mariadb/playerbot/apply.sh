@@ -3383,7 +3383,13 @@ db -e "DELETE FROM player.quest WHERE dwPID > 0 AND szName = 'dungeon_panel' AND
 # przetop - the guild alchemists' crafting window (guild_building_melt.quest -> crafting_data.lua,
 # which game/Dockerfile gives all four to every alchemist 20060-20072): 100 of the ore (Ruda Rubinu
 # 50615, Granatu 50616, Szmaragdu 50617, Szafiru 50618), 3 Magiczny Pyl (30360) and 60 000 yang at
-# 60%, as Niebianskie Lzy (50633). The ore is mined from the veins 30302-30305 (mining.cpp has them)
+# 60%, as Niebianskie Lzy (50633); they stack (flag 4) like the other przetopy - the record had no
+# STACKABLE, so every gem took a bag cell. Put into the jewellery the engine's way, Gameforge's own:
+# a Diament (50621) opens a socket (up to 3), the gem fills it at 90/80/70%, each filled socket
+# raises the piece's three bonuses by 10/20/40% (at least +1/+2/+3) and lasts 24/12/6 h worn - exactly
+# pl-wiki's "Rubin" and its jewellery's tables (item.cpp CanPutInto / ModifyPoints, constants.cpp
+# aiAccessorySocket*, the client's constinfo.JewelAccessoryInfos and uitooltip). The ore is mined
+# from the veins 30302-30305 (mining.cpp has them)
 # that the bots' vein keeper stands in the Red Forest and the Grotto of Exile (playerbot_mining.h).
 # Idempotent.
 db -e "UPDATE world.item_proto SET limitvalue0 = 75
@@ -3409,6 +3415,7 @@ INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, chance, 
 (50636, 50636, 1, 60000, 60, '50616,100,30360,3', 0, 0, 0),
 (50637, 50637, 1, 60000, 60, '50617,100,30360,3', 0, 0, 0),
 (50638, 50638, 1, 60000, 60, '50618,100,30360,3', 0, 0, 0);
+UPDATE world.item_proto SET flag = flag | 4 WHERE vnum BETWEEN 50635 AND 50638;
 UPDATE world.item_proto SET refine_set = 7320 + vnum % 10
 WHERE vnum % 10 < 9 AND refine_set = 316 + vnum % 10
   AND (vnum BETWEEN 14500 AND 14569 OR vnum BETWEEN 16500 AND 16569 OR vnum BETWEEN 17500 AND 17569)
