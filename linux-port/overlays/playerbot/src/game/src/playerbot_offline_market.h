@@ -138,6 +138,39 @@ namespace {
     // the pick is spent - asked for, or lost and said why. The browse below
     // and a gambler's walk along the counters (ManagePlayerBotGambleMarket)
     // both hand it their line.
+    // MT2009_PLUS_PLAIN_GEAR_WINDOW_V1 (the owner, 8 October, the supporters'
+    // market: "dlaczego wystawione sa tylko tarcze z bonusami?"). The bots do
+    // list their plain gear - Czarna Okragla Tarcza+2 at 205 000-290 000 there -
+    // but another bot bought each plain line as its armour upgrade within five
+    // to twenty-five minutes of the add (listed_s 326-1458 in its syslog), and
+    // the bonused copies at 1.3-5.5 million stood: a person searching the
+    // market saw none without bonuses (0 plain lines of 13042, 89 bonused).
+    // A plain weapon or armour piece of level PLAYERBOT_PLAIN_GEAR_WINDOW_MIN_LEVEL
+    // and up a bot stand put up is for people for its first
+    // PLAYERBOT_PLAIN_GEAR_WINDOW_MS: no bot buys it before. Known by the
+    // keeper's own clock of its lines (offlineShop.listed), so only on the core
+    // that added it; a line of unknown age is anybody's.
+    const DWORD PLAYERBOT_PLAIN_GEAR_WINDOW_MS = 30 * 60 * 1000;
+    const int PLAYERBOT_PLAIN_GEAR_WINDOW_MIN_LEVEL = 30;
+
+    bool IsPlayerBotPlainGearLineForPeople(DWORD owner, DWORD itemId, const TItemTable* table,
+            const TPlayerItemAttribute* attrs, DWORD now) {
+        if (!table || !attrs || (table->bType != ITEM_WEAPON && table->bType != ITEM_ARMOR) ||
+                (table->bType == ITEM_WEAPON && table->bSubType == WEAPON_ARROW) ||
+                GetPlayerBotProtoLevelLimit(table) < PLAYERBOT_PLAIN_GEAR_WINDOW_MIN_LEVEL)
+            return false;
+        for (int a = 0; a < ITEM_ATTRIBUTE_MAX_NUM; ++a)
+            if (attrs[a].bType != 0)
+                return false;
+        TPlayerBotAIStateMap::const_iterator keeper = s_mapPlayerBotAIStates.find(owner);
+        if (keeper == s_mapPlayerBotAIStates.end())
+            return false;
+        const auto listed = keeper->second.offlineShop.listed.find(itemId);
+        if (listed == keeper->second.offlineShop.listed.end() || listed->second.when == 0)
+            return false;
+        return now - listed->second.when < PLAYERBOT_PLAIN_GEAR_WINDOW_MS;
+    }
+
     bool RunPlayerBotOfflinePick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD now) {
         using namespace playerbot_offline;
         auto& o = state.offlineShop;
@@ -168,6 +201,11 @@ namespace {
         }
         auto line = shop->GetItem(o.buyItem);
         if (!line) { DropPlayerBotOfflinePick(ch, state, "sold"); return false; }
+        // MT2009_PLUS_PLAIN_GEAR_WINDOW_V1: a fresh plain piece is the people's.
+        if (IsPlayerBotPlainGearLineForPeople(o.buyOwner, o.buyItem, line->GetTable(), line->GetInfo().aAttr, now)) {
+            DropPlayerBotOfflinePick(ch, state, "plain_gear_for_people");
+            return false;
+        }
         SetPlayerBotAction(state, BOT_ACTION_TRAVEL, now);
         if (!MovePlayerBotTownLeg(ch, state, now, shop->GetSpawn().x, shop->GetSpawn().y, 600)) return true;
         // The keeper is serving its stand, which is a few seconds of edit
@@ -933,7 +971,8 @@ namespace {
             for (const auto& [id, line] : shop->GetItems()) {
                 const TItemTable* table = line ? line->GetTable() : NULL;
                 if (!table || table->bType != ITEM_ARMOR || line->GetInfo().count != 1 ||
-                        IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
+                        IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now) ||
+                        IsPlayerBotPlainGearLineForPeople(pid, id, table, line->GetInfo().aAttr, now))   // MT2009_PLUS_PLAIN_GEAR_WINDOW_V1
                     continue;
                 const int slot = table->bSubType == ARMOR_BODY ? 0 : table->bSubType == ARMOR_HEAD ? 1 :
                         table->bSubType == ARMOR_SHIELD ? 2 : -1;
@@ -995,7 +1034,8 @@ namespace {
             if (spawn.map != ch->GetMapIndex() || (int)spawn.channel != shopChannel) continue;
             for (const auto& [id, line] : shop->GetItems()) {
                 const TItemTable* table = line ? line->GetTable() : NULL;
-                if (!table || table->bType != ITEM_WEAPON || line->GetInfo().count != 1) continue;
+                if (!table || table->bType != ITEM_WEAPON || line->GetInfo().count != 1 ||
+                        IsPlayerBotPlainGearLineForPeople(pid, id, table, line->GetInfo().aAttr, now)) continue;   // MT2009_PLUS_PLAIN_GEAR_WINDOW_V1
                 const long long price = (long long)line->GetPrice().GetTotalYangAmount();
                 if (price <= 0 || price > cap) continue;
                 long long blow = 0;
@@ -1090,7 +1130,8 @@ namespace {
             if (spawn.map != ch->GetMapIndex() || (int)spawn.channel != shopChannel) continue;
             for (const auto& [id, line] : shop->GetItems()) {
                 const TItemTable* table = line ? line->GetTable() : NULL;
-                if (!table || table->bType != ITEM_ARMOR || line->GetInfo().count != 1) continue;
+                if (!table || table->bType != ITEM_ARMOR || line->GetInfo().count != 1 ||
+                        IsPlayerBotPlainGearLineForPeople(pid, id, table, line->GetInfo().aAttr, now)) continue;   // MT2009_PLUS_PLAIN_GEAR_WINDOW_V1
                 const long long price = (long long)line->GetPrice().GetTotalYangAmount();
                 if (price <= 0 || price > cap) continue;
                 long long score = 0;
