@@ -4,7 +4,7 @@
 # the chest stands on its own whatever another dungeon's file holds): gear always (the level-70 weapons and the
 # Titans' Shield +0..+4, as Nemere's), a filler always and a second at 45%, a pet item at 50%, a purse always,
 # upgrade materials of 70-90 at 75%, the sea's pearls and clams at 60%, a valuable at 60%. The owner, 8 October:
-# plus a Kamien Duszy +5 (5%), Kamien Duchowy x5, Zaczarowanie x10 and Wzmocnienie x4 - the tradeable 71284/71285
+# plus a piece of the new jewellery +0 (951110, 5%; the Kamien Duszy +5 moved to Beran-Setaou), Kamien Duchowy x5, Zaczarowanie x10 and Wzmocnienie x4 - the tradeable 71284/71285
 # (8% each), a Talisman +0 of a random element (4%); Tarcza Tytanow down to 37 of the gear group's 737 (5% a chest).
 Group	MT2009_chest_30921
 {
@@ -18,7 +18,7 @@ Group	MT2009_chest_30921
 	6	s950925	1	75 -- materialy ulepszen 70-90
 	7	s950926	1	60 -- perly i malze glebin
 	8	s950927	1	60 -- cenny przedmiot
-	9	s950928	1	5 -- Kamien Duszy +5 (losowy; wlasciciel 8.10)
+	9	s951110	1	5 -- nowa bizuteria 75/90 (Rubin, Szmaragd, Szafir, Granat +0; wlasciciel 8.10, zamiast Kamienia Duszy +5)
 	10	50513	5	8 -- Kamien Duchowy x5
 	11	71284	10	8 -- Zaczarowanie Przedmiotu x10 (handlowe)
 	12	71285	4	8 -- Wzmocnienie Przedmiotu x4 (handlowe)

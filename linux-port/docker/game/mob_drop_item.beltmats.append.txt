@@ -25,6 +25,7 @@ Group	MT2009_beltmats_2493
 	Mob	2493	-- Beran-Setaou
 	1	s951103	1	400	-- kamienie pasow, 100%
 	2	s951103	1	160	-- kamienie pasow, 40%
+	3	s950928	1	20	-- Kamien Duszy +5 (losowy, grupa ze special_item_group.atlantyda.txt), 5% - wlasciciel 8.10
 }
 
 Group	MT2009_beltmats_3090
