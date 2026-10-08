@@ -189,7 +189,7 @@ Group	MT2009_azbal_2598
 }
 
 // MT2009_PLUS_JEWELS75_V1 (the owner, 8 October): the Gameforge jewellery of Rubin, Szmaragd and
-// Szafir moved to level 75 and of Granat at Gameforge's 90 (apply.sh) - one +0 piece of the twelve (special group 951110,
+// Szafir and Granat, all at level 80 (apply.sh, MT2009_PLUS_JEWELS75_V2) - one +0 piece of the twelve (special group 951110,
 // special_item_group.dungeons.txt) from the Grotto of Exile's Commanders at 2% and its Generals at
 // 10%, the band the level-75 player hunts in. These groups join the mobs' own.
 

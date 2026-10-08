@@ -7,12 +7,11 @@
 # necklaces, 17500/17540/17560 earrings, +0..+9) and the icons (icon pack: icon/item/<+0>.tga; with
 # no item_list.txt line the exe falls back to icon/item/<vnum>.tga, then <vnum - vnum % 10>.tga -
 # GameLib/ItemManager.cpp - so they showed already). This script:
-#   item_proto    the nine families: level limit 75 (Gameforge: Rubin 85, Szmaragd 95, Szafir
-#                 100), the earrings' regeneration as Gameforge's today (Szmaragdowe: SP
+#   item_proto    the nine families and Granat: level limit 80 (MT2009_PLUS_JEWELS75_V2; Gameforge:
+#                 Rubin 85, Granat 90, Szmaragd 95, Szafir 100), the earrings' regeneration as Gameforge's today (Szmaragdowe: SP
 #                 regeneration, Szafirowe: HP regeneration, 4/5/6/8/10/12/15/18/22/28 % - the
 #                 old record had 1..15), the refine chain on their own Blacksmith recipes
-#                 7320-7328 (the Granat family 14520/16520/17520 too, at Gameforge's level
-#                 90) - all as linux-port/docker/mariadb/playerbot/apply.sh
+#                 7320-7328 (the Granat family 14520/16520/17520 too) - all as linux-port/docker/mariadb/playerbot/apply.sh
 #                 (MT2009_PLUS_JEWELS75_V1) writes world.item_proto;
 #   item_list.txt one line per piece (ARMOR, icon/item/<+0 vnum>.tga, as Gameforge's
 #                 item_list) for the nine families and for the Granat family (14520/16520/
@@ -37,7 +36,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 sys.path.insert(0, '/opt/metin2/cache/cli')
 import patch_monstercard_client as base  # noqa: E402  (the record layout and MCOZ keys)
 
-LEVEL = 75
+LEVEL = 80                   # MT2009_PLUS_JEWELS75_V2: all four at 80 (V1: 75, Granat 90)
 LIMIT_LEVEL = 1
 REFINE_FIRST = 7320          # refine_proto 7320 + n: the step +n -> +n+1 (apply.sh)
 # The +0 vnums of the nine families that move to level 75.
@@ -46,7 +45,7 @@ FAMILIES = (
     16500, 16540, 16560,     # Rubinowy / Szmaragdowy / Szafirowy Naszyjnik
     17500, 17540, 17560,     # Rubinowe / Szmaragdowe / Szafirowe Kolczyki
 )
-GRANAT = (14520, 16520, 17520)   # Gameforge's level 90 kept; the refine chain and item_list lines
+GRANAT = (14520, 16520, 17520)   # Granat: level 80 too since V2, the refine chain, item_list lines
 REGEN = (4, 5, 6, 8, 10, 12, 15, 18, 22, 28)
 GEMS = (50635, 50636, 50637, 50638)   # Rubin, Granat, Szmaragd, Szafir: stackable like the przetopy
 ITEM_FLAG_STACKABLE = 4
@@ -76,8 +75,7 @@ def item_proto(b):
         before = bytes(r)
         if r[74] != 2 or r[75] not in (3, 5, 6):
             raise SystemExit('item_proto: %d is not a bracelet, necklace or earring (%d/%d)' % (vnum, r[74], r[75]))
-        if first not in GRANAT:
-            struct.pack_into('<Bi', r, 114, LIMIT_LEVEL, LEVEL)                   # limit 0
+        struct.pack_into('<Bi', r, 114, LIMIT_LEVEL, LEVEL)                       # limit 0
         if first in EARRING_REGEN:
             kind, values = EARRING_REGEN[first]
             if r[129] != kind:

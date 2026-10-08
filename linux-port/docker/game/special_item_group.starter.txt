@@ -266,7 +266,7 @@ Group	box_50254
 	83	16540	1	3	-- Szmaragdowy Naszyjnik+0
 	84	16560	1	3	-- Szafirowy Naszyjnik+0
 	85	17500	1	3	-- Rubinowe Kolczyki+0
-	86	17520	1	3	-- Granatowe Kolczyki+0
+	86	17520	1	1	-- Granatowe Kolczyki+0 (the dearest piece: the lowest weight, MT2009_PLUS_JEWELS75_V2)
 	87	17540	1	3	-- Szmaragdowe Kolczyki+0
 	88	17560	1	3	-- Szafirowe Kolczyki+0
 	89	exp	50000	70	-- exp

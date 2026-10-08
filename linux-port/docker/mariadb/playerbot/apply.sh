@@ -3410,12 +3410,13 @@ db -e "DELETE FROM player.quest WHERE dwPID > 0 AND szName = 'dungeon_panel' AND
 # aiAccessorySocket*, the client's constinfo.JewelAccessoryInfos and uitooltip). The ore is mined
 # from the veins 30302-30305 (mining.cpp has them)
 # that the bots' vein keeper stands in the Red Forest and the Grotto of Exile (playerbot_mining.h).
+# MT2009_PLUS_JEWELS75_V2 (the owner, 8 October, later): all four - Rubin, Granat, Szmaragd, Szafir -
+# at level 80 (V1 had 75, and Granat Gameforge's 90; a level the operator set to anything else stays).
 # Idempotent.
-db -e "UPDATE world.item_proto SET limitvalue0 = 75
-WHERE limittype0 = 1 AND limitvalue0 IN (85, 95, 100)
-  AND (vnum BETWEEN 14500 AND 14509 OR vnum BETWEEN 14540 AND 14549 OR vnum BETWEEN 14560 AND 14569
-    OR vnum BETWEEN 16500 AND 16509 OR vnum BETWEEN 16540 AND 16549 OR vnum BETWEEN 16560 AND 16569
-    OR vnum BETWEEN 17500 AND 17509 OR vnum BETWEEN 17540 AND 17549 OR vnum BETWEEN 17560 AND 17569);
+db -e "UPDATE world.item_proto SET limitvalue0 = 80
+WHERE limittype0 = 1 AND limitvalue0 IN (75, 85, 90, 95, 100)
+  AND (vnum BETWEEN 14500 AND 14569 OR vnum BETWEEN 16500 AND 16569 OR vnum BETWEEN 17500 AND 17569)
+  AND vnum % 20 < 10 AND (vnum % 100) DIV 20 BETWEEN 0 AND 3;
 UPDATE world.item_proto SET applyvalue1 = ELT(vnum % 10 + 1, 4, 5, 6, 8, 10, 12, 15, 18, 22, 28)
 WHERE ((vnum BETWEEN 17540 AND 17549 AND applytype1 = 33) OR (vnum BETWEEN 17560 AND 17569 AND applytype1 = 32))
   AND applyvalue1 = ELT(vnum % 10 + 1, 1, 1, 2, 3, 4, 6, 8, 10, 12, 15);

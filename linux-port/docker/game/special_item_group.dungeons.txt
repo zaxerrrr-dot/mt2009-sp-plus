@@ -466,7 +466,8 @@ Group	MT2009_belts_gems
 	15	50638	3	6 -- Szafir
 }
 # MT2009_PLUS_JEWELS75_V1 - the Gameforge jewellery of Rubin, Szmaragd and Szafir at level 75 (the owner,
-# 8 October; apply.sh), and of Granat at Gameforge's 90. ONE +0 piece of the twelve, equal weights, for the Grotto of Exile's Commanders
+# 8 October; apply.sh; all four at level 80 since V2). ONE +0 piece of the twelve - equal weights, Granatowe Kolczyki
+# (17520, the dearest) half of the others' - for the Grotto of Exile's Commanders
 # (2491, 2494: 2%) and Generals (2492, 2495: 10%) - mob_drop_item.dropedit.append.txt. Skrzynia Mroku
 # (50254, special_item_group.starter.txt) keeps its own lines, as Gameforge's Skrzynia Mroku.
 Group	MT2009_jewels75
@@ -481,7 +482,7 @@ Group	MT2009_jewels75
 	7	14560	1	10 -- Szafirowa Bransoleta+0
 	8	16560	1	10 -- Szafirowy Naszyjnik+0
 	9	17560	1	10 -- Szafirowe Kolczyki+0
-	10	14520	1	10 -- Granatowa Bransoleta+0 (Gameforge's level 90)
-	11	16520	1	10 -- Granatowy Naszyjnik+0 (Gameforge's level 90)
-	12	17520	1	10 -- Granatowe Kolczyki+0 (Gameforge's level 90)
+	10	14520	1	10 -- Granatowa Bransoleta+0
+	11	16520	1	10 -- Granatowy Naszyjnik+0
+	12	17520	1	5 -- Granatowe Kolczyki+0 (the dearest piece: half the weight, MT2009_PLUS_JEWELS75_V2)
 }
