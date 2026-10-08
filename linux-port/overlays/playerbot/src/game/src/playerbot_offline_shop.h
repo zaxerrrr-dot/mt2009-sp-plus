@@ -782,6 +782,14 @@ namespace {
             if (!line) continue;
             LPITEM preview = BotOfflinePreview(*line);
             if (!preview) continue;
+            // MT2009_PLUS_LOW_GEAR_GLUT_V1: plain low gear of a vnum past its
+            // world cap comes home, a line a visit; the junk rule sells it.
+            if (IsPlayerBotLowGearGlutPiece(preview) && IsPlayerBotLowGearGlutFull(preview->GetVnum(), true) &&
+                    GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
+                if (!unwanted) { unwanted = id; reason = "low_gear_glut"; }
+                M2_DELETE(preview);
+                continue;
+            }
             // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: a shard line that is no pack of
             // ten (the whole stacks of before), or one over the world's caps,
             // comes home (IsPlayerBotEnergyShardLineUnwanted); "stall" keeps it.
@@ -1319,6 +1327,10 @@ namespace {
     // or a line cut for the add would stand in the bag unadded.
     bool BotOfflineCounterRefuses(NativeShop shop, LPITEM item) {
         if (!item) return true;
+        // MT2009_PLUS_LOW_GEAR_GLUT_V1: no more plain gear under level thirty
+        // of a vnum the world's counters hold their cap of.
+        if (IsPlayerBotLowGearGlutPiece(item) && IsPlayerBotLowGearGlutFull(item->GetVnum()))
+            return true;
         // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: a line of Odlamki Energii is a pack
         // of ten, and only while the world's bot counters have room for it -
         // the units, and a counter of their few (playerbot_energy_shards.h).

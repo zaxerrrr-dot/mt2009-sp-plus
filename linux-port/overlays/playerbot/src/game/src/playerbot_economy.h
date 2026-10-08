@@ -435,6 +435,42 @@ namespace
 		return item->GetSubType() == ARMOR_BODY || IsPlayerBotJewelSubType(item->GetSubType());
 	}
 
+	// MT2009_PLUS_LOW_GEAR_GLUT_V1 (the owner, 8 October, the supporters'
+	// market: "Bojowa Tarcza+6 ... 94 strony, nikt tego nie kupuje"). A bot
+	// takes the shield it wears to +6 and, the day a better one replaces it,
+	// the old one is counter goods (+6 is the low gear's counter threshold,
+	// GetPlayerBotLowGearMinRefine) - the bots do not refine spares for sale
+	// (PlayerBotRefinesSpareForSale is off). There 1 295 bots wore
+	// Bojowa Tarcza+6 (13006), 470 plain copies stood on 399 counters at
+	// 497 000 and up, and two sold in an hour. Plain gear under level thirty
+	// (no bonus line, no prize) now stands on the bots' counters only up to
+	// PLAYERBOT_LOW_GEAR_VNUM_MARKET_CAP pieces of one vnum in the world (the
+	// market ledger, every stand): past it a counter refuses another, a line
+	// over it comes home a line a visit, and the junk rule sends the piece
+	// to the merchant.
+	const int PLAYERBOT_LOW_GEAR_VNUM_MARKET_CAP = 20;
+
+	bool IsPlayerBotLowGearGlutPiece(LPITEM item)
+	{
+		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR) ||
+				(item->GetType() == ITEM_WEAPON && item->GetSubType() == WEAPON_ARROW) ||
+				(int)item->GetLevelLimit() >= PLAYERBOT_SHOP_MIN_GEAR_LEVEL || IsPlayerBotPrizeItem(item))
+			return false;
+		for (int a = 0; a < ITEM_ATTRIBUTE_MAX_NUM; ++a)
+			if (item->GetAttributeType(a) != 0)
+				return false;
+		return true;
+	}
+
+	// The units of this vnum on the counters (the ledger), and whether they
+	// fill the cap (`over`: past it).
+	bool IsPlayerBotLowGearGlutFull(DWORD vnum, bool over = false)
+	{
+		const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(vnum);
+		const int units = entry ? (int)entry->dwSupplyUnits : 0;
+		return over ? units > PLAYERBOT_LOW_GEAR_VNUM_MARKET_CAP : units >= PLAYERBOT_LOW_GEAR_VNUM_MARKET_CAP;
+	}
+
 	// Those pieces in the bag's cells before this one: the bag keeps the first
 	// PLAYERBOT_LOW_PLUS_BAG_KEEP for its counter (IsPlayerBotJunkItem).
 	int CountPlayerBotLowPlusGearAhead(LPCHARACTER ch, LPITEM item)
@@ -2353,6 +2389,15 @@ namespace
 				!IsPlayerBotUpgradeForSelf(ch, item) && !IsPlayerBotHigherTierSpare(ch, item) &&
 				!PlayerBotRefinesLowArmourForSale(ch, item) && !IsPlayerBotLppKeptItem(ch, item) &&
 				!IsPlayerBotKeptBackupArmour(ch, item))
+			return true;
+		// MT2009_PLUS_LOW_GEAR_GLUT_V1: and plain gear under level thirty whose
+		// vnum fills its world cap on the counters - unless the bot wears it
+		// soon, keeps it for the anvil or as the backup of what it wears.
+		if (IsPlayerBotLowGearGlutPiece(item) && IsPlayerBotLowGearGlutFull(item->GetVnum()) &&
+				!IsPlayerBotUpgradeForSelf(ch, item) && !IsPlayerBotHigherTierSpare(ch, item) &&
+				!IsPlayerBotWearableUpgrade(ch, item, item->GetCell()) && !IsPlayerBotLppKeptItem(ch, item) &&
+				!(item->GetType() == ITEM_ARMOR ? IsPlayerBotKeptBackupArmour(ch, item)
+					: IsPlayerBotKeptBackupWeapon(ch, item)))
 			return true;
 		// A mission book whose village is full of them is the merchant's for
 		// half the kinds and the storekeeper's for the other half
