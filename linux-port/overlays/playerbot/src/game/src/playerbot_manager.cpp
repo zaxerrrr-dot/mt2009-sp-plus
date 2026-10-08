@@ -4956,11 +4956,61 @@ bool CPlayerBotManager::Despawn(DWORD dwPlayerID, BYTE bSessionOut, DWORD dwRest
 // load: its account record (read here when this core never kept one), this
 // channel, no wait. Spawn refuses a companion to anybody else, and the
 // population's queues step over it.
+bool CPlayerBotManager::RegisterSidekickIdentity(DWORD dwPlayerID)
+{
+	if (dwPlayerID == 0)
+		return false;
+	LoadRegisteredBots();
+	if (m_setAllRegisteredBots.find(dwPlayerID) != m_setAllRegisteredBots.end())
+		return true;
+	// The registry's query (LoadRegisteredBots), every guard of it, for one pid.
+	char query[1024];
+	snprintf(query, sizeof(query),
+			"SELECT l.pid, a.id, a.login, pi.empire, p.level "
+			"FROM common.playerbot_seed_state AS l "
+			"JOIN player.player AS p ON p.id=l.pid "
+			"JOIN account.account AS a ON a.id=p.account_id "
+			"JOIN player.player_index AS pi ON pi.id=a.id "
+			"WHERE l.pid=%u AND l.seed_version=1 AND l.state IN ('complete','adopted') "
+			"AND BINARY a.login=BINARY CONCAT('playerbot_',LPAD(l.pid-3,GREATEST(3,LENGTH(l.pid-3)),'0')) "
+			"AND BINARY a.social_id=BINARY CONCAT('9',LPAD(l.pid-3,12,'0')) "
+			"AND pi.pid1=l.pid AND pi.pid2=0 AND pi.pid3=0 AND pi.pid4=0 AND pi.empire IN (1,2,3)",
+			dwPlayerID);
+	std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+	MYSQL_ROW row = NULL;
+	if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult ||
+			!(row = mysql_fetch_row(msg->Get()->pSQLResult)))
+		return false;
+	TPlayerBotAccount account;
+	account.dwID = 0;
+	unsigned int empire = 0, level = 0;
+	if (row[1])
+		str_to_number(account.dwID, row[1]);
+	if (row[2])
+		account.strLogin = row[2];
+	if (row[3])
+		str_to_number(empire, row[3]);
+	if (row[4])
+		str_to_number(level, row[4]);
+	account.bEmpire = (BYTE)empire;
+	account.bLevel = (BYTE)std::min<unsigned int>(level, 255);
+	account.bChannel = g_bChannel;
+	account.dwReadyAt = 0;
+	m_setAllRegisteredBots.insert(dwPlayerID);
+	m_mapBotAccounts[dwPlayerID] = account;
+	sys_log(0, "PLAYERBOT_SIDEKICK: identity taken into the registry pid=%u account=%u login=%s empire=%u level=%u",
+			dwPlayerID, account.dwID, account.strLogin.c_str(), empire, level);
+	return true;
+}
+
 bool CPlayerBotManager::SpawnSidekick(DWORD dwPlayerID)
 {
 	if (dwPlayerID == 0)
 		return false;
 	LoadRegisteredBots();
+	// MT2009_PLUS_SIDEKICK_NEW_IDENTITY_V1: made after this core read the registry.
+	if (m_setAllRegisteredBots.find(dwPlayerID) == m_setAllRegisteredBots.end())
+		RegisterSidekickIdentity(dwPlayerID);
 	if (m_setAllRegisteredBots.find(dwPlayerID) == m_setAllRegisteredBots.end())
 	{
 		sys_err("PLAYERBOT_SIDEKICK: pid=%u is not a registered identity", dwPlayerID);

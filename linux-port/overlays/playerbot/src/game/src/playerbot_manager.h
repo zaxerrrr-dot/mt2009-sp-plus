@@ -165,6 +165,12 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// /towarzysz command the Towarzysz quest sends (cmd_general.cpp, mt2009
 		// via playerbotify.py).
 		bool	SpawnSidekick(DWORD dwPlayerID);
+		// MT2009_PLUS_SIDEKICK_NEW_IDENTITY_V1: an identity made after this
+		// core read the registry (a companion's new level-1 character,
+		// playerbot_sidekick.h) is taken into it by the registry's own guards,
+		// one pid - as every channel's identity, never this channel's
+		// population (m_setRegisteredBots stays as it was).
+		bool	RegisterSidekickIdentity(DWORD dwPlayerID);
 		void	OnSidekickCommand(LPCHARACTER ch, const char* szArgument);
 		// The event calendar's schedule (client uieventcalendar.py, F11):
 		// the timed events the panels wrote, as this core read them

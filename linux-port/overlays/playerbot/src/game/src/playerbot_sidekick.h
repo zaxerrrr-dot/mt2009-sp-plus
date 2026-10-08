@@ -2340,6 +2340,9 @@ namespace
 				// new player meets the letter: the column defaults to the moment
 				// the seed wrote the row.
 				"AND (p.playtime = 0 OR p.last_play < NOW() - INTERVAL %d MINUTE) "
+				// MT2009_PLUS_SIDEKICK_NEW_IDENTITY_V1: a played identity only at
+				// or under the owner's level - over it a new one is made.
+				"AND (p.playtime = 0 OR p.level <= %d) "
 				"AND l.pid NOT IN (SELECT sidekick_pid FROM player.playerbot_sidekick) "
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 				"AND l.pid NOT IN (SELECT owner FROM player.ikashop_offlineshop) "
@@ -2348,7 +2351,7 @@ namespace
 				// population's bots, taken out with everything it earned.
 				"ORDER BY (p.playtime > 0), (p.level > %d), ABS(CAST(p.level AS SIGNED) - %d), l.pid DESC LIMIT 120",
 				(unsigned int)empire, (unsigned int)race, PLAYERBOT_SIDEKICK_IDENTITY_IDLE_MINUTES,
-				ownerLevel, ownerLevel);
+				ownerLevel, ownerLevel, ownerLevel);
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 		{
@@ -2541,6 +2544,183 @@ namespace
 				done ? 1 : 0);
 	}
 
+	// MT2009_PLUS_SIDEKICK_NEW_IDENTITY_V1 ("A co jesli na serwerze nie ma
+	// puli botow z niskim lvl? W takim wypadku powinien sie stworzyc nowy bot
+	// z lvl 1", the owner, 8 October 2026, after "Buff" came in at 27). With
+	// no unplayed identity of the race in the pool and none in the owner's
+	// kingdom - and no played one at or under the owner's level - the
+	// companion is a new level-1 character, made the way the seed makes a bot
+	// (playerbots_seed.sql): the ledger row (common.playerbot_seed_state,
+	// version 1, pending until the rest is written, then complete), a
+	// non-login account (playerbot_NNN, password '!', status BLOCK, social id
+	// '9' + the number), the character from the engine's own new-character
+	// table (NewPlayerTable2: level 1, the class's stats, the kingdom's start)
+	// and its player_index row with the kingdom. Its pid is taken from the top
+	// of the gap between the seed and the people (PLAYERBOT_SIDEKICK_NEW_PID_TOP
+	// down to _FLOOR), well away from the seed's own numbers, which a larger
+	// seed grows upwards from 4; only when the people's ids start above that
+	// gap. The new identity is then taken into this core's registry by the
+	// registry's own guards (RegisterSidekickIdentity) - every other core takes
+	// it in the same way when it first loads the companion (SpawnSidekick) -
+	// and becomes the companion as any identity does. A played identity over
+	// the owner's level is never the companion's any more; the level-down at
+	// setup (LowerPlayerBotSidekickLevel) stays as the last net.
+	const DWORD PLAYERBOT_SIDEKICK_NEW_PID_TOP = 8999;
+	const DWORD PLAYERBOT_SIDEKICK_NEW_PID_FLOOR = 8000;
+
+	bool PlayerBotSidekickMakeQuery(const char* query)
+	{
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+		if (!msg.get() || msg->uiSQLErrno != 0)
+		{
+			sys_err("PLAYERBOT_SIDEKICK: new identity SQL failed errno=%u: %s", msg.get() ? msg->uiSQLErrno : 0U, query);
+			return false;
+		}
+		return true;
+	}
+
+	// One number of a single-row, single-column answer, or `fallback`.
+	long long PlayerBotSidekickMakeNumber(const char* query, long long fallback)
+	{
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+		MYSQL_ROW row = NULL;
+		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult ||
+				!(row = mysql_fetch_row(msg->Get()->pSQLResult)) || !row[0])
+			return fallback;
+		long long value = fallback;
+		str_to_number(value, row[0]);
+		return value;
+	}
+
+	DWORD MakePlayerBotSidekickIdentity(BYTE empire, BYTE race)
+	{
+		if (empire < 1 || empire > 3 || race > 7)
+			return 0;
+		char query[1024];
+		// The people's characters must start over the gap, or a number here
+		// could be a person's tomorrow.
+		const long long nextPerson = PlayerBotSidekickMakeNumber(
+				"SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA='player' AND TABLE_NAME='player'", 0);
+		const long long firstPerson = PlayerBotSidekickMakeNumber(
+				"SELECT MIN(p.id) FROM player.player AS p LEFT JOIN common.playerbot_seed_state AS l ON l.pid=p.id "
+				"WHERE l.pid IS NULL", 0);
+		if (nextPerson <= (long long)PLAYERBOT_SIDEKICK_NEW_PID_TOP ||
+				(firstPerson != 0 && firstPerson <= (long long)PLAYERBOT_SIDEKICK_NEW_PID_TOP))
+		{
+			sys_err("PLAYERBOT_SIDEKICK: no room for a new identity: people's ids from %lld (next %lld), gap %u-%u",
+					firstPerson, nextPerson, PLAYERBOT_SIDEKICK_NEW_PID_FLOOR, PLAYERBOT_SIDEKICK_NEW_PID_TOP);
+			return 0;
+		}
+		snprintf(query, sizeof(query),
+				"SELECT MIN(pid) FROM common.playerbot_seed_state WHERE pid BETWEEN %u AND %u",
+				PLAYERBOT_SIDEKICK_NEW_PID_FLOOR, PLAYERBOT_SIDEKICK_NEW_PID_TOP);
+		const long long lowest = PlayerBotSidekickMakeNumber(query, 0);
+		DWORD pid = lowest > 0 ? (DWORD)(lowest - 1) : PLAYERBOT_SIDEKICK_NEW_PID_TOP;
+		// Down to the first number nothing holds - no character, ledger row,
+		// account, index or name of it.
+		for (; pid >= PLAYERBOT_SIDEKICK_NEW_PID_FLOOR; --pid)
+		{
+			char login[32], social[16];
+			snprintf(login, sizeof(login), "playerbot_%03u", pid - 3);
+			snprintf(social, sizeof(social), "9%012u", pid - 3);
+			snprintf(query, sizeof(query),
+					"SELECT (SELECT COUNT(*) FROM player.player WHERE id=%u) + "
+					"(SELECT COUNT(*) FROM common.playerbot_seed_state WHERE pid=%u) + "
+					"(SELECT COUNT(*) FROM account.account WHERE login='%s' OR social_id='%s') + "
+					"(SELECT COUNT(*) FROM player.player_index WHERE pid1=%u) + "
+					"(SELECT COUNT(*) FROM player.player WHERE name='Tw%u')",
+					pid, pid, login, social, pid, pid);
+			if (PlayerBotSidekickMakeNumber(query, 1) == 0)
+				break;
+		}
+		if (pid < PLAYERBOT_SIDEKICK_NEW_PID_FLOOR)
+		{
+			sys_err("PLAYERBOT_SIDEKICK: no free number for a new identity in %u-%u", PLAYERBOT_SIDEKICK_NEW_PID_FLOOR,
+					PLAYERBOT_SIDEKICK_NEW_PID_TOP);
+			return 0;
+		}
+		char name[CHARACTER_NAME_MAX_LEN + 1];
+		snprintf(name, sizeof(name), "Tw%u", pid);
+		TPlayerTable fresh;
+		if (!NewPlayerTable2(&fresh, name, race, 0, empire))
+		{
+			sys_err("PLAYERBOT_SIDEKICK: NewPlayerTable2 refused a new identity race=%u empire=%u", (unsigned int)race,
+					(unsigned int)empire);
+			return 0;
+		}
+		char login[32], social[16];
+		snprintf(login, sizeof(login), "playerbot_%03u", pid - 3);
+		snprintf(social, sizeof(social), "9%012u", pid - 3);
+		// The ledger first, as the seed does: a pending row is never registered
+		// (the registry asks complete or adopted), so nothing half made plays.
+		snprintf(query, sizeof(query),
+				"INSERT INTO common.playerbot_seed_state (pid, seed_version, state) VALUES (%u, 1, 'pending')", pid);
+		if (!PlayerBotSidekickMakeQuery(query))
+			return 0;
+		snprintf(query, sizeof(query),
+				"INSERT INTO account.account (login, password, social_id, email, create_time, status, availDt, last_play) "
+				"VALUES ('%s', '!', '%s', '', UTC_TIMESTAMP(), 'BLOCK', UTC_TIMESTAMP(), UTC_TIMESTAMP())", login, social);
+		bool ok = PlayerBotSidekickMakeQuery(query);
+		DWORD accountId = 0;
+		if (ok)
+		{
+			snprintf(query, sizeof(query), "SELECT id FROM account.account WHERE login='%s'", login);
+			accountId = (DWORD)PlayerBotSidekickMakeNumber(query, 0);
+			ok = accountId != 0;
+		}
+		if (ok)
+		{
+			// The engine's own new character, as a retired bot's comes back
+			// (ResetRetiredPlayerBotRow): everything else is the column's default.
+			snprintf(query, sizeof(query),
+					"INSERT INTO player.player "
+					"(id,account_id,name,level,st,ht,dx,iq,job,voice,dir,x,y,z,hp,mp,stamina,"
+					"part_base,part_main,part_hair,part_acce,gold,playtime,exp,stat_point,last_play) VALUES "
+					"(%u,%u,'%s',1,%u,%u,%u,%u,%u,%u,%u,%d,%d,%d,%d,%d,%d,%u,%u,0,0,0,0,0,0,NOW())",
+					pid, accountId, name,
+					(unsigned)fresh.st, (unsigned)fresh.ht, (unsigned)fresh.dx, (unsigned)fresh.iq,
+					(unsigned)fresh.job, (unsigned)fresh.voice, (unsigned)fresh.dir,
+					(int)fresh.x, (int)fresh.y, (int)fresh.z, (int)fresh.hp, (int)fresh.sp, (int)fresh.stamina,
+					(unsigned)fresh.part_base, (unsigned)fresh.part_base);
+			ok = PlayerBotSidekickMakeQuery(query);
+		}
+		if (ok)
+		{
+			snprintf(query, sizeof(query),
+					"INSERT INTO player.player_index (id, pid1, pid2, pid3, pid4, empire) VALUES (%u, %u, 0, 0, 0, %u)",
+					accountId, pid, (unsigned int)empire);
+			ok = PlayerBotSidekickMakeQuery(query);
+		}
+		if (ok)
+		{
+			snprintf(query, sizeof(query),
+					"UPDATE common.playerbot_seed_state SET state='complete' WHERE pid=%u AND state='pending'", pid);
+			ok = PlayerBotSidekickMakeQuery(query);
+		}
+		if (!ok)
+		{
+			// Nothing half made stays: the rows of this number only.
+			snprintf(query, sizeof(query), "DELETE FROM player.player_index WHERE pid1=%u", pid);
+			PlayerBotSidekickMakeQuery(query);
+			snprintf(query, sizeof(query), "DELETE FROM player.player WHERE id=%u", pid);
+			PlayerBotSidekickMakeQuery(query);
+			snprintf(query, sizeof(query), "DELETE FROM account.account WHERE login='%s' AND status='BLOCK' AND password='!'",
+					login);
+			PlayerBotSidekickMakeQuery(query);
+			snprintf(query, sizeof(query), "DELETE FROM common.playerbot_seed_state WHERE pid=%u", pid);
+			PlayerBotSidekickMakeQuery(query);
+			return 0;
+		}
+		if (!CPlayerBotManager::instance().RegisterSidekickIdentity(pid))
+		{
+			sys_err("PLAYERBOT_SIDEKICK: new identity pid=%u made but refused by the registry's guards", pid);
+			return 0;
+		}
+		sys_log(0, "PLAYERBOT_SIDEKICK: new level-1 identity made pid=%u account=%u login=%s race=%u empire=%u",
+				pid, accountId, login, (unsigned int)race, (unsigned int)empire);
+		return pid;
+	}
+
 	bool IsPlayerBotSidekickNameAllowed(const char* name)
 	{
 		const size_t length = name ? strlen(name) : 0;
@@ -2607,10 +2787,14 @@ namespace
 		const bool fromPool = pid != 0;
 		if (pid == 0)
 			pid = PickPlayerBotSidekickIdentity(owner->GetEmpire(), (BYTE)race, owner->GetLevel());
+		// MT2009_PLUS_SIDEKICK_NEW_IDENTITY_V1: none unplayed, none at or under
+		// the owner's level - a new level-1 character.
+		if (pid == 0)
+			pid = MakePlayerBotSidekickIdentity(owner->GetEmpire(), (BYTE)race);
 		if (pid == 0)
 		{
-			SayPlayerBotSidekick(owner, "Nie ma teraz wolnej postaci tej klasy w twoim krolestwie - wybierz inna albo sprobuj pozniej.");
-			sys_log(0, "PLAYERBOT_SIDEKICK: no identity for owner=%u race=%d empire=%u (pool empty)",
+			SayPlayerBotSidekick(owner, "Twoj towarzysz jest jeszcze przygotowywany - sprobuj ponownie za chwile.");
+			sys_log(0, "PLAYERBOT_SIDEKICK: no identity for owner=%u race=%d empire=%u (pool empty, none made)",
 					ownerPid, race, (unsigned int)owner->GetEmpire());
 			s_dwPlayerBotSidekickNextPoolFill = 0;
 			return false;
