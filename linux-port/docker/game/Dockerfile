@@ -1047,7 +1047,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-add \
 #  * Pustkowie Faraona - metin2_map_pustynia, 361, 4x4 at 230400 384000, level 55, game1, by the Teleporter.
 # The dungeons' public copies are the fallback lobbies (their guard only); their rooms are
 # data/dungeon/<quest>. The Plechito monsters' motions (share/data/monster/<folder>, the .msa/.msm/motlist
-# of the Arezzo share) - the server times attacks and moves by them. The desert's bosses' drops
+# of the Arezzo share) - the server times attacks and moves by them. Every run.msa must carry its
+# Accumulation (the run.gr2 track group's LoopTranslation, read with granny 2.11.8): without it the
+# server's move speed is 0, a move's duration 0, and the mob arrives at once while the client still
+# runs it there (the Arezzo share shipped the pyramid mobs' and bosses' without it; 8 Oct 2026). The desert's bosses' drops
 # (mob_drop_item.arezzo2.txt), the three chests (special_item_group.arezzo2.txt), the Teleporter's names and
 # /goto pustkowie for game masters. The groups are in group.arezzo.txt (the step above).
 COPY arezzo/ /tmp/arezzo-p58/
@@ -1063,6 +1066,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-p58 \
  && for m in "$A"/data/monster/*; do rm -rf "/opt/metin2/share/data/monster/$(basename "$m")"; cp -a "$m" /opt/metin2/share/data/monster/; done \
  && test -s /opt/metin2/share/data/monster/plechi_wukong_mainboss/motlist.txt \
  && test -s /opt/metin2/share/data/monster/plechi_easter2023_bossmain/motlist.txt \
+ && test -z "$(for m in "$A"/data/monster/*/run.msa; do grep -q -E '^Accumulation[[:blank:]]+[-0-9.]+[[:blank:]]+-[0-9]' "$m" || echo "$m"; done)" \
  && ! grep -q -E '^Group[[:blank:]]+MT2009_arezzo_(9675|9681)' "$L/mob_drop_item.txt" \
  && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
  && cat "$A/mob_drop_item.arezzo2.txt" >> "$L/mob_drop_item.txt" \
