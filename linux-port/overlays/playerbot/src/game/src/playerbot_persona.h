@@ -687,6 +687,13 @@ namespace
 	{
 		if (!ch || !IsPlayerBotPersonaEnabled() || !state.persona.bRestored)
 			return false;
+		// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion on its plan does not stand
+		// about for its mood ("bez powodu siedzi w lesie", the owner, 8 October).
+		if (IsPlayerBotSidekickOnPlan(ch))
+		{
+			state.persona.dwAfkUntil = 0;
+			return false;
+		}
 		TPlayerBotPersona& p = state.persona;
 		const BYTE mood = GetPlayerBotPlayMood(ch, state, dwNow);
 		if (p.dwAfkUntil != 0)

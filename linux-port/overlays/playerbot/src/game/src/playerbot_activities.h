@@ -368,6 +368,12 @@ namespace
 		// village, away from the one thing it farms.
 		if (IsPlayerBotDropper(state.bPersonality) || !CanPlayerBotUseFishingRod(ch))
 			return false;
+		// MT2009_PLUS_SIDEKICK_PLAN_V1: nor a companion on its plan - "lowi
+		// ryby 3 minuty, za chwile jest w grocie" (the owner, 8 October). Sent
+		// fishing by its owner it has no plan, and ManagePlayerBotFishing asks
+		// IsPlayerBotSidekickFishing for it.
+		if (IsPlayerBotSidekickOnPlan(ch))
+			return false;
 		// A bot on a horse trial has one errand with one end, and a session is
 		// up to an hour on a bank in the first village: only the desert's own
 		// branch of the travel stood back for the trial, so a trial bot in town

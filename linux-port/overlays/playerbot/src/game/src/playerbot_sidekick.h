@@ -1172,6 +1172,94 @@ namespace
 		return rt && rt->bHold;
 	}
 
+	// MT2009_PLUS_SIDEKICK_PLAN_V1 ("Towarzyszka na wyzszym poziomie nie wie
+	// co ma robic ... jak jest Wolna reka lub Gra beze mnie, to sie kreci jak
+	// zagubiona: lowi ryby 3 minuty, za chwile jest w grocie 5 minut, potem
+	// bez powodu siedzi w lesie, nagle z lasu idzie na pustynie i tak w
+	// kolko. Nie ma okreslonego zadania", the owner, 8 October 2026, of a
+	// companion of eighty watched for two days). Let off the leash it played
+	// as any bot of the population, and every one of the population's side
+	// passes pulled at it in turn, each on its own clock: the Rybak's roll
+	// (IsPlayerBotRybakNow, a new draw every window, a "good mood" episode of
+	// a few minutes at the bank of the first village); the frontier draw, which
+	// a Biologist row's monster, a horse trial, a Battle Pass errand or a rare
+	// state moves to another map, and any change of it is "frontier_level_
+	// graduated" at once (outOfBand) - the forest, then the desert of the
+	// battle horse's archers; the frontier visit clock (forty minutes, then
+	// home to the second village and out again to whatever the draw says by
+	// then); the town errands after two minutes on the ground; the medal and
+	// M3 trips; the mood's stop from the keyboard (two to five minutes
+	// standing for no reason) and the rest in town. None of them is wrong for
+	// a bot of the crowd, which nobody follows for two days; together they
+	// are no plan for one character the owner watches.
+	//
+	// So a companion off the leash has one plan: a hunting ground picked for
+	// its level and its gear (PickPlayerBotSidekickPlanMap - the highest row of
+	// the frontier table, the bots' own map rows and the owner's ceilings,
+	// that its level opens; one row lower when its weapon is far under its
+	// level; never the ground it fell on three times this plan or could not
+	// reach), kept for PLAYERBOT_SIDEKICK_PLAN_MIN_MS to _MAX_MS and then
+	// looked at again - the same ground goes on, a better one is taken. It
+	// changes before that only for a real reason: the level band outgrown (a
+	// higher row opens), the ground lost (three deaths, the trip given up, no
+	// longer hosted here). Town is for what the town is for: what stops the
+	// fight (no potions, no weapon) at once, a full bag and the other needs
+	// once it has hunted PLAYERBOT_SIDEKICK_PLAN_SETTLE_MS there, and back to
+	// the same ground after. The owner is told the ground and the time. A
+	// companion its owner sent fishing ("Na ryby") or that is back at the
+	// owner's side has no plan; the next one off the leash makes a new one.
+	// Ordinary bots ask the hooks and get "no".
+	const DWORD PLAYERBOT_SIDEKICK_PLAN_MIN_MS = 45 * 60 * 1000;
+	const DWORD PLAYERBOT_SIDEKICK_PLAN_MAX_MS = 90 * 60 * 1000;
+	const DWORD PLAYERBOT_SIDEKICK_PLAN_CHECK_MS = 10 * 1000;
+	const DWORD PLAYERBOT_SIDEKICK_PLAN_SETTLE_MS = 15 * 60 * 1000;
+	const int PLAYERBOT_SIDEKICK_PLAN_DEATHS = 3;
+	const DWORD PLAYERBOT_SIDEKICK_PLAN_AVOID_MS = 2 * 60 * 60 * 1000;
+	// A weapon whose level limit is this far under the companion's level is
+	// gear for the row below.
+	const int PLAYERBOT_SIDEKICK_PLAN_WEAK_WEAPON_LEVELS = 25;
+
+	struct TPlayerBotSidekickPlan
+	{
+		bool bActive = false;
+		long lMap = 0;
+		DWORD dwSince = 0;
+		DWORD dwUntil = 0;
+		DWORD dwNextCheck = 0;
+		BYTE bLevel = 0;
+		int iDeaths = 0;
+		std::map<long, DWORD> mapAvoidUntil;	// a ground fallen on: not picked again for a while
+	};
+	// By pid, outside the runtime a relog drops: a warp behind its owner is
+	// no new plan.
+	std::map<DWORD, TPlayerBotSidekickPlan> s_mapPlayerBotSidekickPlans;
+
+	bool IsPlayerBotSidekickOnPlan(LPCHARACTER ch)
+	{
+		if (!ch || s_mapPlayerBotSidekickPlans.empty())
+			return false;
+		std::map<DWORD, TPlayerBotSidekickPlan>::const_iterator it = s_mapPlayerBotSidekickPlans.find(ch->GetPlayerID());
+		return it != s_mapPlayerBotSidekickPlans.end() && it->second.bActive &&
+				s_mapPlayerBotSidekickOwner.find(ch->GetPlayerID()) != s_mapPlayerBotSidekickOwner.end();
+	}
+
+	bool GetPlayerBotSidekickPlanMap(LPCHARACTER ch, long& mapIndex)
+	{
+		if (!ch || s_mapPlayerBotSidekickPlans.empty())
+			return false;
+		std::map<DWORD, TPlayerBotSidekickPlan>::const_iterator it = s_mapPlayerBotSidekickPlans.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotSidekickPlans.end() || !it->second.bActive ||
+				s_mapPlayerBotSidekickOwner.find(ch->GetPlayerID()) == s_mapPlayerBotSidekickOwner.end())
+			return false;
+		mapIndex = it->second.lMap;
+		return true;
+	}
+
+	DWORD GetPlayerBotSidekickPlanSettleMs(LPCHARACTER ch)
+	{
+		return IsPlayerBotSidekickOnPlan(ch) ? PLAYERBOT_SIDEKICK_PLAN_SETTLE_MS : 0;
+	}
+
 	// A companion at its owner's side: in follow mode, the owner in this core's
 	// world. Everything that asks "is this bot somebody's" asks this too
 	// (IsPlayerBotHeldForCompany), so none of the errands take it away - but
@@ -1449,6 +1537,23 @@ namespace
 		if (IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickHeld(ch, item) ||
 				IsPlayerBotSidekickPinned(ch, item))
 			return false;
+		// MT2009_PLUS_SIDEKICK_FISHING_JUNK_V1 ("towarzysz nadal traktuje
+		// itemy typu Rekawica Krola Przepowiedni, Symbol Krola Przepowiedni,
+		// Pierscien Lucy jako wartosciowe i robi z nich ogromne stosy w
+		// ekwipunku zamiast je sprzedawac", the owner, 8 October 2026). The
+		// fishing table's rings, gloves and capes (IsPlayerBotFishingJunkVnum:
+		// 70048-70051 and the Golden Ring 50002) are ITEM_QUEST and ITEM_USE,
+		// so the switch below - gear, fish and tools only - never let one go,
+		// the "valuables" watch counted every one of them as the owner's
+		// (ITEM_QUEST), and the 50 000 yang the merchant pays a piece put them
+		// past nothing. The bots' bag cleanup (MT2009_PLUS_BOT_BAG_CLEANUP_V1)
+		// sold them for a week while a companion's only rule kept them. They are
+		// the merchant's now for a companion as well - a companion has no
+		// counter (PlayerBotHasCounter) for the price table's 65 000 - but the
+		// one Prophecy King's Glove it wears or keeps for a rank below zero
+		// (IsPlayerBotFishingJunk), and never one its owner handed it.
+		if (IsPlayerBotFishingJunkVnum(item->GetVnum()))
+			return IsPlayerBotFishingJunk(ch, item);
 		const BYTE type = item->GetType();
 		const DWORD count = std::max<DWORD>(1, (DWORD)item->GetCount());
 		if (type == ITEM_WEAPON || type == ITEM_ARMOR)
@@ -1582,6 +1687,10 @@ namespace
 			if (policy != PLAYERBOT_ITEM_POLICY_NONE && policy != PLAYERBOT_ITEM_POLICY_MERCHANT)
 				return false;
 		}
+		// MT2009_PLUS_SIDEKICK_FISHING_JUNK_V1: the fishing table's rings,
+		// gloves and capes go with the scrap on its owner's order too.
+		if (IsPlayerBotFishingJunkVnum(item->GetVnum()))
+			return IsPlayerBotFishingJunk(ch, item);
 		const BYTE type = item->GetType();
 		if (type == ITEM_WEAPON || type == ITEM_ARMOR)
 		{
@@ -1637,6 +1746,10 @@ namespace
 		if (IsPlayerBotSidekickHeld(ch, item))
 			return true;
 		const DWORD vnum = item->GetVnum();
+		// MT2009_PLUS_SIDEKICK_FISHING_JUNK_V1: the fishing table's rings,
+		// gloves and capes are the merchant's, not a valuable to whisper about.
+		if (IsPlayerBotFishingJunkVnum(vnum) || IsPlayerBotLeftOnGroundItem(vnum) || IsPlayerBotRetiredItem(vnum))
+			return false;
 		switch (item->GetType())
 		{
 			case ITEM_METIN:
@@ -2087,6 +2200,14 @@ namespace
 	{
 		if (!ch || s_mapPlayerBotSidekickOwner.empty())
 			return;
+		// MT2009_PLUS_SIDEKICK_PLAN_V1: a fall on its plan's ground counts
+		// against the ground (ManagePlayerBotSidekickPlan).
+		{
+			std::map<DWORD, TPlayerBotSidekickPlan>::iterator plan = s_mapPlayerBotSidekickPlans.find(ch->GetPlayerID());
+			if (plan != s_mapPlayerBotSidekickPlans.end() && plan->second.bActive && plan->second.lMap != 0 &&
+					ch->GetMapIndex() == plan->second.lMap)
+				++plan->second.iDeaths;
+		}
 		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
 		if (!rec || rec->bMode != PLAYERBOT_SIDEKICK_FOLLOW)
 			return;
@@ -4084,6 +4205,7 @@ namespace
 		s_mapPlayerBotSidekicks.erase(rec.dwOwnerPID);
 		s_mapPlayerBotSidekickOwner.erase(rec.dwSidekickPID);
 		s_mapPlayerBotSidekickRuntime.erase(rec.dwSidekickPID);
+		s_mapPlayerBotSidekickPlans.erase(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_PLAN_V1
 		s_setPlayerBotSidekickEquipLock.erase(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 		s_setPlayerBotSidekickNoKeep.erase(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
 		SetPlayerBotSidekickFlag(rec.dwOwnerPID, "towarzysz.created", 0);
@@ -9962,6 +10084,172 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_SIDEKICK_PLAN_V1: the ground for the plan - the highest row
+	// of the frontier its level opens (the panel's map rows and the owner's
+	// ceilings, as the bots' draw has them), hosted on this core, not a ground
+	// the trip gave up on or it fell on three times; one row lower with a
+	// weapon far under its level. Below the first frontier its own villages
+	// (0), as for every bot. The Desert and the Demon Tower are no plan: the
+	// Orc Valley and Sohan carry the same levels, and the Tower is a dungeon.
+	struct TPlayerBotSidekickPlanRow
+	{
+		long map;
+		int row;
+	};
+	const TPlayerBotSidekickPlanRow PLAYERBOT_SIDEKICK_PLAN_ROWS[] = {
+		{ PLAYERBOT_MAP_GROTTO_V2, playerbot_progression::MAP_GROTTO2 },
+		{ PLAYERBOT_MAP_GROTTO_V1, playerbot_progression::MAP_GROTTO1 },
+		{ PLAYERBOT_MAP_RED_FOREST, playerbot_progression::MAP_RED_FOREST },
+		{ PLAYERBOT_MAP_FOREST, playerbot_progression::MAP_FOREST },
+		{ PLAYERBOT_MAP_SPIDER_V2, playerbot_progression::MAP_SPIDER2 },
+		{ PLAYERBOT_MAP_HWANG, playerbot_progression::MAP_HWANG },
+		{ PLAYERBOT_MAP_SOHAN, playerbot_progression::MAP_SOHAN },
+		{ PLAYERBOT_MAP_ORC_VALLEY, playerbot_progression::MAP_ISLANDS },
+	};
+	const int PLAYERBOT_SIDEKICK_PLAN_ROW_COUNT = (int)(sizeof(PLAYERBOT_SIDEKICK_PLAN_ROWS) / sizeof(PLAYERBOT_SIDEKICK_PLAN_ROWS[0]));
+
+	// The row of a ground in the table above (0 the highest), or the count
+	// for its villages and anything else.
+	int GetPlayerBotSidekickPlanRank(long map)
+	{
+		for (int i = 0; i < PLAYERBOT_SIDEKICK_PLAN_ROW_COUNT; ++i)
+			if (PLAYERBOT_SIDEKICK_PLAN_ROWS[i].map == map)
+				return i;
+		return PLAYERBOT_SIDEKICK_PLAN_ROW_COUNT;
+	}
+
+	bool IsPlayerBotSidekickPlanWeakWeapon(LPCHARACTER ch)
+	{
+		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
+		if (!weapon)
+			return true;
+		return (int)GetPlayerBotPersonaLevelLimit(weapon) + weapon->GetRefineLevel() + PLAYERBOT_SIDEKICK_PLAN_WEAK_WEAPON_LEVELS <
+				(int)ch->GetLevel();
+	}
+
+	long PickPlayerBotSidekickPlanMap(LPCHARACTER ch, const TPlayerBotSidekickPlan& plan, DWORD dwNow, bool& weak)
+	{
+		using namespace playerbot_progression;
+		const int level = (int)ch->GetLevel();
+		weak = IsPlayerBotSidekickPlanWeakWeapon(ch);
+		bool skipped = false;
+		for (int i = 0; i < PLAYERBOT_SIDEKICK_PLAN_ROW_COUNT; ++i)
+		{
+			const TPlayerBotSidekickPlanRow& r = PLAYERBOT_SIDEKICK_PLAN_ROWS[i];
+			if (level < (int)MapFrom(r.row) || IsPlayerBotMapOverCeiling(r.map, level) ||
+					(r.map == PLAYERBOT_MAP_ORC_VALLEY && level > (int)MapTo(MAP_ORC_VALLEY)) ||
+					!IsPlayerBotMapHostedHere(r.map) || IsPlayerBotSidekickTripBlocked(ch, r.map))
+				continue;
+			std::map<long, DWORD>::const_iterator avoid = plan.mapAvoidUntil.find(r.map);
+			if (avoid != plan.mapAvoidUntil.end() && (int)(avoid->second - dwNow) > 0)
+				continue;
+			// The first ground the level opens, with a weak weapon, is the one
+			// over its gear: the next down, when there is one.
+			if (weak && !skipped)
+			{
+				skipped = true;
+				bool lower = false;
+				for (int j = i + 1; j < PLAYERBOT_SIDEKICK_PLAN_ROW_COUNT && !lower; ++j)
+					lower = level >= (int)MapFrom(PLAYERBOT_SIDEKICK_PLAN_ROWS[j].row) &&
+							IsPlayerBotMapHostedHere(PLAYERBOT_SIDEKICK_PLAN_ROWS[j].map);
+				if (lower)
+					continue;
+			}
+			return r.map;
+		}
+		return 0;
+	}
+
+	void EndPlayerBotSidekickPlan(LPCHARACTER ch, const char* why)
+	{
+		if (!ch || s_mapPlayerBotSidekickPlans.empty())
+			return;
+		std::map<DWORD, TPlayerBotSidekickPlan>::iterator it = s_mapPlayerBotSidekickPlans.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotSidekickPlans.end() || !it->second.bActive)
+			return;
+		it->second.bActive = false;
+		sys_log(0, "PLAYERBOT_SIDEKICK: plan over pid=%u name=%s map=%ld why=%s kept_min=%u deaths=%d", ch->GetPlayerID(),
+				ch->GetName(), it->second.lMap, why, (get_dword_time() - it->second.dwSince) / 60000U, it->second.iDeaths);
+	}
+
+	// Off the leash, every tick: the plan made, kept, and looked at again on
+	// its clock or for a real reason (above).
+	void ManagePlayerBotSidekickPlan(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotSidekick& rec,
+			DWORD dwNow)
+	{
+		if (!ch || ch->IsDead() || !ch->IsItemLoaded())
+			return;
+		TPlayerBotSidekickPlan& plan = s_mapPlayerBotSidekickPlans[ch->GetPlayerID()];
+		if (plan.bActive && plan.dwNextCheck != 0 && (int)(plan.dwNextCheck - dwNow) > 0)
+			return;
+		plan.dwNextCheck = dwNow + PLAYERBOT_SIDEKICK_PLAN_CHECK_MS;
+		for (std::map<long, DWORD>::iterator a = plan.mapAvoidUntil.begin(); a != plan.mapAvoidUntil.end(); )
+		{
+			if ((int)(a->second - dwNow) <= 0)
+				plan.mapAvoidUntil.erase(a++);
+			else
+				++a;
+		}
+		const char* why = NULL;
+		if (!plan.bActive)
+			why = "start";
+		else if (plan.iDeaths >= PLAYERBOT_SIDEKICK_PLAN_DEATHS)
+		{
+			why = "deaths";
+			plan.mapAvoidUntil[plan.lMap] = dwNow + PLAYERBOT_SIDEKICK_PLAN_AVOID_MS;
+		}
+		else if (plan.lMap != 0 && (IsPlayerBotSidekickTripBlocked(ch, plan.lMap) || !IsPlayerBotMapHostedHere(plan.lMap) ||
+				IsPlayerBotMapOverCeiling(plan.lMap, (int)ch->GetLevel())))
+			why = "ground_lost";
+		else if ((int)(dwNow - plan.dwUntil) >= 0)
+			why = "time";
+		bool weak = false;
+		const long want = PickPlayerBotSidekickPlanMap(ch, plan, dwNow, weak);
+		// The level band outgrown: a higher ground opened since the plan began.
+		if (!why && ch->GetLevel() != plan.bLevel && GetPlayerBotSidekickPlanRank(want) < GetPlayerBotSidekickPlanRank(plan.lMap))
+			why = "level";
+		if (!why)
+			return;
+		const bool same = plan.bActive && want == plan.lMap;
+		if (!same)
+		{
+			plan.lMap = want;
+			plan.dwSince = dwNow;
+			plan.iDeaths = 0;
+		}
+		plan.bActive = true;
+		plan.bLevel = (BYTE)MINMAX(1, ch->GetLevel(), 255);
+		plan.dwUntil = dwNow + (DWORD)number(PLAYERBOT_SIDEKICK_PLAN_MIN_MS, PLAYERBOT_SIDEKICK_PLAN_MAX_MS);
+		if (!same)
+		{
+			// A session at the bank begun before the plan ends with it; its own
+			// trip home and out is the travel pass's (the ground is the plan's).
+			if (state.bFishingSession)
+				EndPlayerBotFishingSession(ch, state, dwNow, "sidekick_plan");
+			state.persona.dwRybakTripUntil = 0;
+			state.dwTownLingerUntil = 0;
+			state.dwFrontierEnteredTime = 0;
+			state.dwNextWorldTravelTime = dwNow;
+		}
+		const unsigned int minutes = (plan.dwUntil - dwNow) / 60000U;
+		sys_log(0, "PLAYERBOT_SIDEKICK: plan %s pid=%u name=%s level=%d map=%ld here=%ld why=%s weak_weapon=%d minutes=%u "
+				"alone=%d", same ? "kept" : "set", ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), plan.lMap,
+				ch->GetMapIndex(), why, weak ? 1 : 0, minutes, IsPlayerBotSidekickPlayingAlone(rec, dwNow) ? 1 : 0);
+		if (same)
+			return;
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
+		if (!owner)
+			return;
+		char text[220];
+		const char* where = plan.lMap != 0 ? GetPlayerBotMapDestinationPl(plan.lMap) : "";
+		if (where[0])
+			snprintf(text, sizeof(text), "Plan: ide expic %s na okolo %u minut. Do miasta tylko po mikstury albo z pelnym "
+					"plecakiem - i wracam tam.", where, minutes);
+		else
+			snprintf(text, sizeof(text), "Plan: expie w okolicy naszych wiosek przez okolo %u minut.", minutes);
+		TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_TRIP, text);
+	}
+
 	// ------------------------------------------- the owner's transformation
 	//
 	// MT2009_PLUS_SIDEKICK_POLYMORPH_V1: "towarzysz razem z nami uzywa marmura
@@ -10268,6 +10556,12 @@ namespace
 			return true;
 		if (rec->bMode != PLAYERBOT_SIDEKICK_FOLLOW)
 		{
+			// MT2009_PLUS_SIDEKICK_PLAN_V1: off the leash, one plan; sent
+			// fishing ("Na ryby"), the water is the plan and the plan stands back.
+			if (rt.bFishing)
+				EndPlayerBotSidekickPlan(ch, "fishing");
+			else
+				ManagePlayerBotSidekickPlan(ch, state, *rec, dwNow);
 			WatchPlayerBotSidekickTrip(ch, state, *rec, dwNow);	// MT2009_PLUS_SIDEKICK_TRIP_V1
 			return false;
 		}
@@ -10275,9 +10569,12 @@ namespace
 		{
 			if (!rt.bAlone)
 				StartPlayerBotSidekickAlone(ch, *rec, rt);
+			ManagePlayerBotSidekickPlan(ch, state, *rec, dwNow);	// MT2009_PLUS_SIDEKICK_PLAN_V1
 			WatchPlayerBotSidekickTrip(ch, state, *rec, dwNow);	// MT2009_PLUS_SIDEKICK_TRIP_V1
 			return false;
 		}
+		// MT2009_PLUS_SIDEKICK_PLAN_V1: at its owner's side, no plan.
+		EndPlayerBotSidekickPlan(ch, "follow");
 		// MT2009_PLUS_SIDEKICK_TRIP_V1: at its owner's side no trip is under
 		// way; the next one let off the leash starts its clocks afresh.
 		{

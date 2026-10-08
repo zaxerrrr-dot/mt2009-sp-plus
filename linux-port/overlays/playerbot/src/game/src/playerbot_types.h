@@ -7244,6 +7244,18 @@ namespace
 	// MT2009_PLUS_SIDEKICK_TRIP_V1: a frontier its companion gave up on for a
 	// while (playerbot_sidekick.h); GetPlayerBotFrontierMapForLevel skips it.
 	bool IsPlayerBotSidekickTripBlocked(LPCHARACTER ch, long mapIndex);
+	// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion let off the leash ("Wolna
+	// reka", "Gra beze mnie") keeps one plan - a hunting ground for its level
+	// and gear, for 45-90 minutes (playerbot_sidekick.h). While it holds:
+	// GetPlayerBotFrontierMapForLevel answers its ground (GetPlayerBotSidekickPlanMap),
+	// and the side trips that walked it off the ground - the angler's roll, the
+	// horse medals, the M3 weapon, the frontier visit clock, the mood's stop
+	// from the keyboard, the rest in town - stand back (IsPlayerBotSidekickOnPlan).
+	// What stops the fight still takes it to town at once; the bag and the
+	// other town needs wait GetPlayerBotSidekickPlanSettleMs on the ground.
+	bool IsPlayerBotSidekickOnPlan(LPCHARACTER ch);
+	bool GetPlayerBotSidekickPlanMap(LPCHARACTER ch, long& mapIndex);
+	DWORD GetPlayerBotSidekickPlanSettleMs(LPCHARACTER ch);
 	// What its owner did in the companion's bag window: a piece put on
 	// (pinned - kept on, never refined, its lines never changed), a piece
 	// taken off (never put back on by the AI), a pinned piece waiting in the

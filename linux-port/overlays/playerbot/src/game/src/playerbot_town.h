@@ -4752,6 +4752,14 @@ namespace
 	{
 		if (!ch || state.dwTownLingerUntil == 0)
 			return false;
+		// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion on its plan goes back to its
+		// ground once the errand is done.
+		if (IsPlayerBotSidekickOnPlan(ch))
+		{
+			state.dwTownLingerUntil = 0;
+			state.dwTownBrowseUntil = 0;
+			return false;
+		}
 		// Over for good: the clock ran out, the bot left Joan or may no longer
 		// rest there (the REST key moved to zero, the last counter packed up),
 		// it opened a stall of its own, or it is busy staying alive.

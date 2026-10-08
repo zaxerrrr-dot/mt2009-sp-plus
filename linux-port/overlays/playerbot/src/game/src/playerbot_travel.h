@@ -972,6 +972,15 @@ namespace
 		// goes there before any errand's map.
 		if (IsPlayerBotOchaoForced(ch) && WantsPlayerBotOchao(ch, 0, false))
 			return PLAYERBOT_MAP_OCHAO;
+		// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion off the leash hunts the
+		// ground of its plan (playerbot_sidekick.h) and nothing else moves it -
+		// not a Biologist row, a horse trial, a Battle Pass errand or a draw.
+		{
+			long planMap = 0;
+			if (GetPlayerBotSidekickPlanMap(ch, planMap) &&
+					(planMap == 0 || !IsPlayerBotSidekickTripBlocked(ch, planMap)))
+				return planMap;
+		}
 		// MT2009_PLUS_BP_BOTS_V1: a Battle Pass errand's stones name the map
 		// for its while - a shared one, or 0 for the bot's own villages
 		// (playerbot_bpbots.h).
@@ -1068,6 +1077,9 @@ namespace
 			return false;
 		// MT2009_PLUS_AREZZO_BOTS_V1 (test): the operator's send is no roll.
 		if (GetPlayerBotArezzoFrontier(ch) != 0)
+			return true;
+		// MT2009_PLUS_SIDEKICK_PLAN_V1: nor a companion's plan.
+		if (IsPlayerBotSidekickOnPlan(ch))
 			return true;
 		TPlayerBotAIStateMap::const_iterator it =
 				s_mapPlayerBotAIStates.find(ch->GetPlayerID());
@@ -1224,6 +1236,9 @@ namespace
 	{
 		if (!ch || ch->GetLevel() > PLAYERBOT_M3_HUNT_MAX_LEVEL)
 			return false;
+		// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion keeps the ground of its plan.
+		if (IsPlayerBotSidekickOnPlan(ch))
+			return false;
 		const bool tierGrinder = IsPlayerBotM3TierGrinder(ch);
 		if (!tierGrinder && !HasPlayerBotM3ReadyEquipment(ch))
 			return false;
@@ -1314,6 +1329,9 @@ namespace
 	bool ShouldPlayerBotPursueHorseExpedition(LPCHARACTER ch, DWORD dwNow)
 	{
 		if (!ch)
+			return false;
+		// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion keeps the ground of its plan.
+		if (IsPlayerBotSidekickOnPlan(ch))
 			return false;
 		// Nobody past PLAYERBOT_MONKEY_MEDAL_MAX_LEVEL farms medals, the dropper
 		// included: the rolls there are worth a few percent of a medal, and such
@@ -3016,7 +3034,9 @@ namespace
 			// a map with stones - the stones are its work, the town its needs.
 			const bool heldStoneWork = PlayerBotMapHasMetinStones(mapIndex) &&
 					GetPlayerBotProgressionFarmGoal(ch, dwNow) == PLAYERBOT_PROGRESS_FARM_METINS;
-			const bool visitExpired = (!onBattleTrialHere && !heldStoneWork && stayed >=
+			// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion's plan has a clock of
+			// its own (playerbot_sidekick.h); the visit clock is not it.
+			const bool visitExpired = (!onBattleTrialHere && !heldStoneWork && !IsPlayerBotSidekickOnPlan(ch) && stayed >=
 					GetPlayerBotFrontierVisitTime(state.bPersonality)) ||
 					(mapIndex == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaveOrdered(ch)) || // MT2009_PLUS_OCHAO_BOTS_V1 (test)
 					(IsPlayerBotArezzoMap(mapIndex) && IsPlayerBotArezzoLeaveOrdered(ch)); // MT2009_PLUS_AREZZO_BOTS_V1 (test)
@@ -3025,7 +3045,11 @@ namespace
 			// MT2009_PLUS_OCHAO_BOTS_V1 (stay): the temple is a long way in and out,
 			// so only what stops the fight takes a bot out of it sooner.
 			// MT2009_PLUS_AREZZO_BOTS_V1 (stay): and the Las, reached the same way.
-			const bool settledIn = stayed >= (mapIndex == PLAYERBOT_MAP_OCHAO
+			// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion on its plan's ground
+			// hunts PLAYERBOT_SIDEKICK_PLAN_SETTLE_MS before a need that does not
+			// stop the fight takes it to town.
+			const bool settledIn = stayed >= std::max<DWORD>(GetPlayerBotSidekickPlanSettleMs(ch),
+					mapIndex == PLAYERBOT_MAP_OCHAO
 					? PLAYERBOT_OCHAO_MIN_VISIT_TIME : (mapIndex == PLAYERBOT_MAP_AREZZO_FOREST
 						? PLAYERBOT_AREZZO_FOREST_MIN_VISIT_TIME : PLAYERBOT_FRONTIER_MIN_VISIT_TIME));
 			// Outgrowing the map matters as much as running out of potions: neither
