@@ -136,6 +136,7 @@ tools/New-M2UpdatePackage.ps1
 linux-port/tools/update.sh
 linux-port/tools/env_apply.py
 linux-port/tools/test_env_apply.py
+linux-port/tools/test_update_autostart.py
 linux-port/tools/support-bundle.sh
 
 # ---- engine files the port changed or added (measured against the package) --

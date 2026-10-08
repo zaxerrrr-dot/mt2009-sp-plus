@@ -17,6 +17,69 @@ every version here.
 
 ---
 
+## 2.27.0 — 2026-10-08 — Boty przechodzą dungeony, dropki dla postaci, pasy i talizmany u botów
+
+Wymaga klienta **2.0.58** (pobierze go launcher albo patcher).
+
+### 🏰 Boty przechodzą dungeony do końca
+- **Najpierw cel etapu** – kamień, metin albo boss etapu przed strażnikami (w Wukongu boty potrafiły 12 minut bić strażników przy ostatnim Kamieniu Wzgórza).
+- **Zastępstwa na zbiórce** – gdy szaman albo członek drużyny odpadnie przed wejściem, dochodzi inny bot z tego samego królestwa i poziomu.
+- **Nemere, Smok i Dżungla** – boty wchodzą tam same (Nemere w piątkę, Smok w czwórkę, Ruiny Skorpiona od 72 poz. w szóstkę z szamanem); dungeon, w którym od 40 minut nikogo nie było, dostaje pierwszeństwo.
+- **Leczenie z dala od bossa** – przy Razadorze, Wukongu, Królu Skorpionów i bossie Dżungli bot odchodzi przy 50% PŻ, leczy się poza zasięgiem obszarówki i wraca przy 92%.
+- **Etap nie stoi w miejscu** – cel etapu, który zniknął bez zabicia (Feniks, metin, filar, boss), pojawia się ponownie po 45 s (najwyżej 3 razy); zgubiony licznik etapu jest wywoływany jeszcze raz.
+- **Więcej czasu** – boty mają o 50% więcej czasu w dungeonach z limitem (Biblioteka, dungeony Arezzo).
+- **Bez pętli śmierci** – przejście kończy się po 110 śmierciach; wipe liczy się do poddania tylko wtedy, gdy od poprzedniego nic nie ruszyło.
+- **Gildie na wojnie** – bot z gildii na wojnie nie bierze celów etapu (silnik nie liczy jego zabójstw) i nie jest wołany do dungeonów ani na mapy Arezzo.
+- Pierwsza noc na serwerze testowym: boty wygrały **129 ze 140** wejść (wcześniej m.in. Razador 58%, Ruiny Skorpiona 28%; Nemere, Smoka i Dżungli nie robiły wcale).
+
+### 🗺️ Boty na mapach Arezzo
+- Boty same chodzą na **Dolinę Cyklopów** (44–50 poz.), **Pustkowie Faraona** (57–65) i do **Zaczarowanego Lasu** (95+, przez Świątynię Ochao i Portal En-Tai) – po kilka naraz, z limitem osób na mapie.
+- Las to wyprawa: zapas 600 czerwonych mikstur (czarujący 400 niebieskich), pobyt 2–3 godziny. PvP między królestwami zostaje.
+- Na mapach Arezzo boty piją przy 85% PŻ i wycofują się przy 50%, nie szarżują na metiny ponad swój poziom, a bot, który ginie raz za razem, wstaje przy Teleporterze.
+
+### 🌾 Dropki połączone z postaciami głównymi
+- Każdy dropek pracuje dla innej postaci-bota ze swojego królestwa: dropki medali, materiałów, broni 30 poz., ornamentów i nowe dropki na mapach od M1 przez orki, pustynię, Sohan i Hwang po Wieżę Demonów i Czerwony Las.
+- Część zarobku (domyślnie 30%) dropek wydaje na siebie, resztę co kilkanaście minut przekazuje swojej postaci. Każdy przelew jest zapisany.
+- Docelowo dropka ma do 50% botów; nowe przybywają stopniowo, a kolejne mapy dopisuje się do tabeli.
+- **Panel zaawansowany → Gracze i boty → „Dropki botów”**: lista powiązań (np. DROPEKMEDALI → FUBU) z zarobkiem i przelewami, ustawienia (włącznik, cel %, część dla dropka, tempo, minimalny przelew) i ostatnie przelewy. Na karcie postaci: „🌾 Dropek: …” albo „🌾 Dropek postaci: …”.
+
+### ⚡ Odłamki Energii od botów
+- Boty przerabiają u Alchemika na Odłamki Energii wyłącznie złom, który inaczej sprzedałyby handlarce (przedmioty od 35 poz.; nigdy talizmanów ani rzeczy, które noszą albo wystawiają).
+- Wystawiają je w paczkach po 10 sztuk, po **30 000** za sztukę – na cały serwer naraz najwyżej **1000 odłamków**.
+- Kupują je boty, które wytwarzają pasy (Odłamki Energii są w każdej recepturze).
+
+### 💎 Ornamenty i talizmany
+- **Zaprzysiężony Łucznik** na początku M2 ma dodatkowe 2% na **Ornament**.
+- **Dropki ornamentów** (2 na królestwo, ok. 20 poz.) czyszczą obozy Zaprzysiężonych na początku M2 i wystawiają ornamenty w sklepach.
+- **Ceny talizmanów u botów**: Talizman +0 – **700 000**, każdy kolejny plus o **650 000** więcej (+1 – 1 350 000, +10 – 7 200 000), niezależnie od żywiołu.
+- **Boty ulepszają talizmany** u Kowala i noszą ten, który na danej mapie daje najwięcej obrażeń (wg wzoru Siły Żywiołu), a jednocześnie rozwijają talizman żywiołu przeważającego na mapie, aż ten zacznie dawać więcej.
+
+### 🎽 Pasy u botów
+- Boty od 50 poz. zbierają materiały, wytwarzają pasy u Mistrza (oficjalne receptury i szanse), ulepszają je u Kowala, trzymają mikstury w pasie i z niego piją.
+
+### 🍎 Owoce rang u botów
+- Trzy boty na cztery jedzą owoc pasujący do swojej rangi i **kupują go ze sklepów** (do 10 na zapas); co czwarty handluje i wystawia wszystkie owoce.
+- Owoce spoza swojego zakresu każdy bot wystawia – bot z pełną rangą 20 000 wystawia Jabłka i skupuje Gruszki.
+- Ceny: Jabłko 250 000, każdy kolejny owoc o 50% droższy (Gruszka 375 000, Winogrono 562 500, Arbuz 843 800, Ananas 1 265 600).
+
+### 🧝 Towarzysz
+- **Jeden plan na wolnej ręce** – w „Wolnej ręce” i „Grze beze mnie” towarzysz wybiera łowisko na swój poziom i ekwipunek i zostaje tam **45–90 minut** (wcześniej skakał co kilka minut między łowieniem, grotą, lasem i pustynią). Do miasta tylko po mikstury, broń lub zbroję, z pełną torbą po 15 minutach; plan pisze ci szeptem.
+- **Eliksiry czasu alchemii** – przedłuża każdy kończący się smoczy kamień aktywnej talii, a nie tylko jeden; używa też eliksirów, które sam znalazł.
+- **Pierścień Lucy, Symbol i Rękawica Króla Przepowiedni, Płaszcz Uciekiniera** – sprzedaje u kupca zamiast zbierać w ekwipunku.
+
+### Inne
+- **Auto Łowy na desce, chmurze i drakkarze** – postać łowi jak pieszo: rzuca umiejętności z wierzchowca zamiast w kółko zsiadać i wsiadać (kręcenie się, blokowanie w ścianie). Bojowiec działa tylko na koniu. Wymaga nowego klienta.
+- **Żywioły 48 kolejnych bossów** (m.in. pająki, WuKong, Wodzowie Orków, Arges, Polifem, Płomienny Feniks, Czerwony Smok, Król Skorpionów, Bastet, Anubis) – każdy może upuścić Talizman +0 swojego żywiołu (5%). Znak żywiołu przy celu – z nowym klientem.
+- **Karty Potworów** – naprawione puste okno misji („Brak aktywnej misji albo limit został przekroczony”), gdy w zapisie postaci został etap 0.
+- Boty nie pytają już „pchać dalej?” o broń +9.
+
+## Klient 2.0.58 — 2026-10-08 — Żywioły bossów, poświata łuku, Auto Łowy
+
+- Nowy **exe**: poświata nakładek na łuk jest na ręce z łukiem (była na drugiej).
+- Znak żywiołu 48 kolejnych bossów przy celu (paczka `gamedata`).
+- Auto Łowy na desce, chmurze i drakkarze (paczka `root`).
+- Paczka `dbdata` bez zmian – nie trzeba pobierać ponownie zipa z edytora.
+
 ## 2.26.2 — 2026-10-07 — Ustawienia serwera (.env) działają same
 
 Działa z klientem **2.0.57** (bez nowego klienta).
