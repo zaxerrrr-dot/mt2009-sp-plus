@@ -2510,6 +2510,85 @@ namespace
 	// MT2009_PLUS_MARKET_V3: the same sheet at any plus of the piece's family -
 	// the price of the plus its lines or its average damage make it
 	// (GetPlayerBotPricedPlus, LiftPlayerBotGearPrice), with its stones.
+	// MT2009_PLUS_UNPRICED_GEAR_V1 (8 October: Tarcza Tytanow+0, level 81, sold
+	// for 622 yang on the supporters' world - no row, so its merchant's 1 600
+	// and a markdown). A weapon or a piece of armour of level
+	// PLAYERBOT_UNPRICED_GEAR_MIN_LEVEL and up with no row of its own is priced
+	// by the sheet's rows of its type and subtype (a helmet by the shields'; not
+	// the awakened weapons, which cost hundreds of millions): read straight
+	// through between the levels round it, the one beyond the last outside
+	// them, and never under a piece of the kind of a lower level. Said once a
+	// family in the syslog (PLAYERBOT_PRICE: unpriced), so a missing row is
+	// noticed and written.
+	const int PLAYERBOT_UNPRICED_GEAR_MIN_LEVEL = 30;
+	const DWORD PLAYERBOT_UNPRICED_GEAR_REF_MAX = 50000000;
+
+	DWORD EstimatePlayerBotUnpricedGear(const TItemTable* proto, DWORD baseVnum, int plus)
+	{
+		static std::map<DWORD, std::vector<DWORD> > s_cache;
+		if (!proto || plus < 0 || plus > 9)
+			return 0;
+		std::map<DWORD, std::vector<DWORD> >::iterator cached = s_cache.find(baseVnum);
+		if (cached == s_cache.end())
+		{
+			std::vector<DWORD> prices(10, 0);
+			const int level = GetPlayerBotProtoLevelLimit(proto);
+			const BYTE type = proto->bType;
+			BYTE sub = proto->bSubType;
+			if (type == ITEM_ARMOR && sub == ARMOR_HEAD)
+				sub = ARMOR_SHIELD;
+			const bool wearable = (type == ITEM_WEAPON && proto->bSubType != WEAPON_ARROW) ||
+					(type == ITEM_ARMOR && sub <= ARMOR_EAR);
+			int refs = 0;
+			for (int p = 0; wearable && level >= PLAYERBOT_UNPRICED_GEAR_MIN_LEVEL && p < 10; ++p)
+			{
+				int loLevel = -1, hiLevel = -1;
+				DWORD loPrice = 0, hiPrice = 0, floorPrice = 0;
+				for (size_t i = 0; i < sizeof(PLAYERBOT_GEAR_PRICES) / sizeof(PLAYERBOT_GEAR_PRICES[0]); ++i)
+				{
+					const TPlayerBotGearPrice& row = PLAYERBOT_GEAR_PRICES[i];
+					if (row.adwPrice[p] == 0 || row.adwPrice[0] > PLAYERBOT_UNPRICED_GEAR_REF_MAX)
+						continue;
+					const TItemTable* rp = ITEM_MANAGER::instance().GetTable(row.dwBaseVnum);
+					if (!rp || rp->bType != type || rp->bSubType != sub)
+						continue;
+					const int rl = GetPlayerBotProtoLevelLimit(rp);
+					if (p == 0)
+						++refs;
+					if (rl <= level)
+					{
+						floorPrice = std::max(floorPrice, row.adwPrice[p]);
+						if (rl > loLevel || (rl == loLevel && row.adwPrice[p] > loPrice))
+						{
+							loLevel = rl;
+							loPrice = row.adwPrice[p];
+						}
+					}
+					if (rl >= level && (hiLevel < 0 || rl < hiLevel))
+					{
+						hiLevel = rl;
+						hiPrice = row.adwPrice[p];
+					}
+				}
+				double v = 0;
+				if (loLevel >= 0 && hiLevel >= 0)
+					v = hiLevel == loLevel ? loPrice :
+							loPrice + ((double)hiPrice - loPrice) * (level - loLevel) / (hiLevel - loLevel);
+				else if (loLevel >= 0)
+					v = (double)loPrice * level / std::max(1, loLevel);
+				else if (hiLevel >= 0)
+					v = (double)hiPrice * level / std::max(1, hiLevel);
+				v = std::max(v, (double)floorPrice);
+				prices[p] = (DWORD)std::min(v, 4000000000.0) / 100 * 100;
+			}
+			cached = s_cache.insert(std::make_pair(baseVnum, prices)).first;
+			if (prices[0] != 0 || prices[9] != 0)
+				sys_log(0, "PLAYERBOT_PRICE: unpriced vnum=%u level=%d type=%u sub=%u refs=%d estimated +0=%u +9=%u",
+						baseVnum, level, (unsigned)type, (unsigned)proto->bSubType, refs, prices[0], prices[9]);
+		}
+		return cached->second[plus];
+	}
+
 	DWORD GetPlayerBotGearSheetPriceAt(LPITEM item, int plus)
 	{
 		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR))
@@ -2528,6 +2607,18 @@ namespace
 						(DWORD)((unsigned long long)price *
 							(unsigned long long)GetPlayerBotSocketStonePercent(item) / 100ULL));
 			}
+		// MT2009_PLUS_UNPRICED_GEAR_V1: no row - the estimate by level and kind,
+		// never the merchant's price. A talisman has its own (the raw price).
+		if (!IsPlayerBotFixedPriceTalismanVnum(item->GetVnum()))
+		{
+			const TItemTable* baseProto = ITEM_MANAGER::instance().GetTable(baseVnum);
+			const DWORD estimate = EstimatePlayerBotUnpricedGear(baseProto ? baseProto : item->GetProto(),
+					baseProto ? baseVnum : item->GetVnum(), plus);
+			if (estimate != 0)
+				return ScalePlayerBotIwakuraPrice(
+						(DWORD)((unsigned long long)estimate *
+							(unsigned long long)GetPlayerBotSocketStonePercent(item) / 100ULL));
+		}
 		return 0;
 	}
 

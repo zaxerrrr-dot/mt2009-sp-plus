@@ -3087,7 +3087,9 @@ namespace
 	// owner's +0 (earrings 4 000 000, Granatowe Kolczyki 9 000 000, the rest 2 000 000; 8 October).
 	// 24: MT2009_PLUS_JEWELS75_V4 - their ladders flattened: +9 70 000 000 (Granatowe Kolczyki),
 	// 20 000 000 (the other earrings), 12 000 000 (bracelets, necklaces), geometric between (owner).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 24;
+	// 25: MT2009_PLUS_UNPRICED_GEAR_V1 - 37 wearable families of level 50+ (drops and chests)
+	// priced by level and kind, and the estimate for any other unpriced piece of 30+.
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 25;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
