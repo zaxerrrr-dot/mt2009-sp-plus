@@ -39,10 +39,10 @@
 // The counters: "paczki po 10 odlamkow, 30 000 yang za sztuke" - a line is ten
 // shards at 300 000, never another size, at the owner's price with no markdown
 // and no markup. Against spam the bots' counters of the whole world carry at
-// most PLAYERBOT_ENERGY_SHARD_MARKET_UNITS shards between them, on at most
-// PLAYERBOT_ENERGY_SHARD_MARKET_SHOPS counters at a time (a counter that already
-// shows shards may add more while the units allow). What does not fit waits in
-// the bag. Lines go up through the offline stand's own add, one a service visit
+// most PLAYERBOT_ENERGY_SHARD_MARKET_UNITS shards between them, on any number of
+// counters (the owner, 8 October: "3 rynki = rynki trzech krolestw. Odlamki moga
+// stac w dowolnej liczbie sklepow, a limit dotyczy tylko sztuk na caly serwer").
+// What does not fit waits in the bag. Lines go up through the offline stand's own add, one a service visit
 // (BotOfflinePrepareLine / BotOfflineCounterRefuses, playerbot_offline_shop.h);
 // the classic stall that opens a stand takes none, so every line is counted at
 // the one place that knows the counters. A line of any other size - the whole
@@ -83,7 +83,6 @@ namespace
 	// many counters at once.
 	// 1000 since 8 October (the owner: "Odblokuj również limit odłamków energii do 1000 na sklepach").
 	const int PLAYERBOT_ENERGY_SHARD_MARKET_UNITS = 1000;
-	const int PLAYERBOT_ENERGY_SHARD_MARKET_SHOPS = 3;
 	// How long a piece held for the Alchemist may wait for the walk.
 	const DWORD PLAYERBOT_ENERGY_SCRAP_HOLD_MS = 45 * 60 * 1000;
 	// The counters are counted afresh at most this often; a line added in
@@ -262,8 +261,6 @@ namespace
 		int units = 0;
 		std::set<DWORD> shops;
 		GetPlayerBotEnergyShardMarket(now, units, shops);
-		if (shops.find(pid) == shops.end() && (int)shops.size() >= PLAYERBOT_ENERGY_SHARD_MARKET_SHOPS)
-			return 0;
 		return std::max(0, PLAYERBOT_ENERGY_SHARD_MARKET_UNITS - units) / PLAYERBOT_ENERGY_SHARD_LINE_UNITS;
 	}
 
@@ -281,9 +278,7 @@ namespace
 
 	// Whether a shard line of `count` units standing on this owner's counter
 	// comes home: a line of any other size than a pack, or the world's counters
-	// past a cap - over the units, any counter with shards gives one back; over
-	// the counters, all but the PLAYERBOT_ENERGY_SHARD_MARKET_SHOPS lowest owner
-	// pids (a fixed order, so the same ones stay).
+	// past the units' cap - any counter with shards gives one back.
 	bool IsPlayerBotEnergyShardLineUnwanted(DWORD pid, int count, DWORD now, const char** why)
 	{
 		if (count != PLAYERBOT_ENERGY_SHARD_LINE_UNITS)
@@ -298,17 +293,6 @@ namespace
 		{
 			if (why) *why = "energy_shard_units";
 			return true;
-		}
-		if ((int)shops.size() > PLAYERBOT_ENERGY_SHARD_MARKET_SHOPS)
-		{
-			int rank = 0;
-			for (std::set<DWORD>::const_iterator it = shops.begin(); it != shops.end() && *it != pid; ++it)
-				++rank;
-			if (rank >= PLAYERBOT_ENERGY_SHARD_MARKET_SHOPS)
-			{
-				if (why) *why = "energy_shard_shops";
-				return true;
-			}
 		}
 		return false;
 	}
