@@ -709,6 +709,30 @@ namespace
 					state.dwNextWanderTime = dwNow + 1000;
 					return;
 				}
+				// MT2009_PLUS_PARTY_FOLLOW_STAND_V1 ("dwa boty z napisem Towarzysz
+				// kreca sie w kolko po M1 na koniach i nic nie bija", the owner's
+				// report from the supporters' server, 8 October 2026: NinjaMT2 and
+				// MegaDzikDuch22, two of the population in a person's party - the
+				// title over a bot in any party is the persona "Towarzysz" - with the
+				// person standing in Joan). At its place beside a person who leads
+				// its party, a bot with nothing to fight fell through to its own
+				// wander below: the village's hunting sectors and Metin hotspots,
+				// mounted for the long leg, a hub away - and past five hundred units
+				// the line above walked it back to its place, and the wander out
+				// again: round and round the person for as long as the person stood
+				// there. Beside its person it stands now, at its place in the
+				// formation, until the person moves or something comes to fight; the
+				// person leads the hunt (IsPlayerBotTargetOffHumanLeader), not the
+				// bot's own wander.
+				if (IsPlayerBotHumanLedParty(ch->GetParty()))
+				{
+					if (ch->IsStateMove())
+						ch->Stop();
+					ClearPlayerBotRoute(state, true);
+					SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+					state.dwNextWanderTime = dwNow + 1000;
+					return;
+				}
 			}
 		}
 
