@@ -882,6 +882,71 @@ def IsMounted():
         return False
 
 
+# MT2009_PLUS_AUTOHUNT_STANDING_MOUNT_V1 (the owner, 8 October: a hunter
+# levelling on the surfboard or a drakkar "goes dumb - spins in circles,
+# gets on and off, sticks in a wall"). A standing mount - the surfboard, the
+# Wukong clouds, the drakkars, races 40003-40007 - is no saddle: its rider
+# keeps the ground's fighting and casts every class skill from it (the
+# exe's IsMountingStandingMount, the server's bStandingMount in
+# CHARACTER::UseSkill), and the bots never leave one to fight
+# (IsPlayerBotOnStandingMount). player.IsMountingHorse says yes on it all
+# the same, so the hunt took it for a horse: it skipped every class skill
+# on it, climbed down with "/ride" for each one that came due, cast on
+# foot, walked after the target and climbed back on - over and over, the
+# walk to the target cut by every climb. On a standing mount the hunt is
+# now the hunt on foot; only the walk's measures (WatchMountStuck, the way
+# back's trail) still count it mounted. The seal in the costume slot tells
+# which mount it is (its value 1 is the mount's race, as on the server); the
+# seals are named too, for a client whose item_proto has no values.
+STANDING_MOUNT_RACES = (40003, 40007)
+STANDING_MOUNT_SEALS = (52202, 52204, 52205, 52206, 52207)
+standingMountSealCache = {}
+
+
+def IsStandingMountSeal(vnum):
+    if not vnum:
+        return False
+    known = standingMountSealCache.get(vnum)
+    if known is not None:
+        return known
+    standing = vnum in STANDING_MOUNT_SEALS
+    if not standing:
+        try:
+            item.SelectItem(vnum)
+            race = item.GetValue(1)
+            standing = STANDING_MOUNT_RACES[0] <= race <= STANDING_MOUNT_RACES[1]
+        except Exception:
+            standing = False
+    standingMountSealCache[vnum] = standing
+    return standing
+
+
+def OnStandingMount():
+    """Riding a standing mount (STANDING_MOUNT_RACES); an exe that can say
+    it is asked, otherwise the seal in the costume slot."""
+    if not IsMounted():
+        return False
+    ask = getattr(player, 'IsMountingStandingMount', None)
+    if ask is not None:
+        try:
+            return bool(ask())
+        except Exception:
+            pass
+    slot = getattr(item, 'COSTUME_SLOT_MOUNT', None)
+    if slot is None:
+        return False
+    try:
+        return IsStandingMountSeal(player.GetItemIndex(slot))
+    except Exception:
+        return False
+
+
+def IsSaddled():
+    """In a saddle that lets no class skill be cast: mounted, and not on a
+    standing mount."""
+    return IsMounted() and not OnStandingMount()
+
+
 def IsToggle(skillIndex):
     try:
         return bool(skill.IsToggleSkill(skillIndex))
@@ -2493,8 +2558,12 @@ class Hunter(object):
 
     def CastSkills(self, now, buffsOnly=False):
         for index, slot, skillIndex in self.SkillCandidates(now, buffsOnly):
-            
-            if IsMounted() and skillIndex not in HORSE_SKILLS:
+            # MT2009_PLUS_AUTOHUNT_STANDING_MOUNT_V1: a standing mount
+            # casts the class's skills and never the horse's.
+            if IsSaddled():
+                if skillIndex not in HORSE_SKILLS:
+                    continue
+            elif skillIndex in HORSE_SKILLS and IsMounted():
                 continue
             player.ClickSkillSlot(slot)
             self.skillNext[index] = now + max(SKILL_MIN_INTERVAL, float(self.config['skill%d_interval' % index]))
@@ -2751,7 +2820,7 @@ class Hunter(object):
             return False
         if self.riderPhase != RIDE:
             return True
-        return bool(self.config.get('rider', 0)) and IsMounted() and HorseLevel() >= RIDER_HORSE_LEVEL
+        return bool(self.config.get('rider', 0)) and IsSaddled() and HorseLevel() >= RIDER_HORSE_LEVEL
 
     def RiderFrame(self, now):
         """The rider's part of the frame; False leaves it to the hunt on foot.
@@ -2801,6 +2870,9 @@ class Hunter(object):
         if HorseLevel() < RIDER_HORSE_LEVEL:
             chat.AppendChat(chat.CHAT_TYPE_INFO, T('Auto \xa3owy: bojowiec potrzebuje konia od %d poziomu - na razie \xb3owy pieszo.',
                 'Auto Hunt: the battle horse mode needs a horse of level %d or more - hunting on foot for now.') % RIDER_HORSE_LEVEL)
+        elif OnStandingMount():
+            chat.AppendChat(chat.CHAT_TYPE_INFO, T('Auto \xa3owy: bojowiec nie dzia\xb3a na desce, chmurze ani drakkarze - \xb3owy jak pieszo.',
+                'Auto Hunt: the battle horse mode does not work on a board, a cloud or a drakkar - hunting as on foot.'))
         elif IsMounted():
             chat.AppendChat(chat.CHAT_TYPE_INFO, T('Auto \xa3owy: bojowiec - walka w miejscu z siod\xb3a.',
                 'Auto Hunt: battle horse mode - fighting in place from the saddle.'))
@@ -2809,6 +2881,20 @@ class Hunter(object):
                 'Auto Hunt: battle horse mode - getting on the horse.'))
 
     def RiderUpdate(self, now):
+        # MT2009_PLUS_AUTOHUNT_STANDING_MOUNT_V1: on a standing mount the
+        # hunt on foot has the frame - no climb-down, no "/ride", and no
+        # way back on to wait for when the player gets off it.
+        if OnStandingMount():
+            if self.riderPhase != RIDE or self.mountedSkillCycle:
+                self.ReleaseAttack()
+            self.riderPhase = RIDE
+            self.mountedSkillCycle = False
+            self.riderAttackPending = None
+            self.riderWasMounted = False
+            self.riderSaddle = False
+            self.riderFootSince = 0.0
+            self.riderMountTries = 0
+            return False
         rider = bool(self.config.get('rider', 0))
         if not rider and self.riderPhase == RIDE:
             self.riderWasMounted = False
