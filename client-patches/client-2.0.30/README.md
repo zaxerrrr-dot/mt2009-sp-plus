@@ -877,6 +877,11 @@ dla serwera i klienta: `tools/atlantis/atlantis.json` (nazwy, rasy, statystyki, 
   obrażeniami, prędkościami (u kamieni: grupy 6408–6412) i zasięgiem z `atlantis.json`; item_proto 30919/30920
   z 30767, 30921 z 30775.
 
+- **Teren niewidoczny (`MT2009_PLUS_ATLANTYDA_TERRAIN_V1`).** Teren mapy leży płasko na wysokości podłogi komnaty
+  (height.raw 32767 = 16383,5, DungeonBlock `room.gr2` na tej samej wysokości) z jedną czarną teksturą `dark.dds`, więc
+  rysowany zakrywał podłogę (klient testowy 2.0.59: „atlantyda nie ma tekstur” – ciemnoniebieska równina). `setting.txt`
+  w paczce `maps` dostaje `TerrainVisible 0`, jak Wzgórze Wukonga i Ruiny Skorpiona; woda zostaje.
+
 ## Czego brakuje
 
 - 7 tekstur, które modele `underwater_dungeon/clam*`, `sponge*` wymieniają, a ich siatki nie używają (resztki sceny

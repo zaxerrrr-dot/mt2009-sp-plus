@@ -41,7 +41,7 @@ if not os.path.exists(gfres.GR2DEC):
     gfres.GR2DEC = os.path.join('/opt/metin2/cache/atlantis-work', 'gr2dec')
 
 PKG = sys.argv[1] if len(sys.argv) > 1 else \
-    '/tmp/claude-0/-root/9f475014-d1bc-4cf4-a3e1-da3c380fc52c/scratchpad/atlantis/Ruins of Atlantis [With quest]/Client'
+    '/opt/metin2/cache/atlantis-package/Ruins of Atlantis [With quest]/Client'
 STAGING = sys.argv[2] if len(sys.argv) > 2 else '/opt/metin2/cache/atlantis-staging'
 OURS_LST = '/opt/metin2/cache/atlantis-work/c58.lst'      # "<pack> <name>" of client 2.0.58 (dump: README)
 PRE_LST = '/opt/metin2/cache/tcm/gf28/ourpacks_pre.txt'
@@ -195,6 +195,13 @@ for k, src in files.items():
     pack = 'maps' if k.startswith('maps/') else 'property' if k.startswith('property/') else 'at_maps'
     add[pack][k] = src
 add['maps']['maps/%s/%s' % (MAP, env)] = RES['d:/ymir work/environment/' + env]
+# MT2009_PLUS_ATLANTYDA_TERRAIN_V1: the terrain lies flat at the height of the room's floor (height.raw 32767,
+# the room DungeonBlock at z 16383.5) with one black texture (dark.dds): drawn, it covers the floor - the test
+# client 2.0.59 showed a dark blue plain with no ground ("atlantyda nie ma tekstur"). The Plechito dungeons'
+# own way, as Wukong's and the Scorpion's setting.txt: TerrainVisible 0 (MapOutdoorLoad.cpp reads it).
+if not re.search(r'(?im)^\s*TerrainVisible', st):
+    stv = st.rstrip('\r\n') + '\r\nTerrainVisible\t0\r\n'
+    add['maps']['maps/%s/setting.txt' % MAP] = gen('maps/%s/setting.txt' % MAP, stv.encode('latin1'))
 
 # the races: npclist alias plechito_summer2022/<dir>; the msm is <base>/plechito_summer2022/<dir>/<race>.msm
 RACEDIR = {'plechi_summ2022_stone1a': 'plechi_summ2022_stone1', 'plechi_summ2022_stone1b': 'plechi_summ2022_stone1'}
