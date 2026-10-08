@@ -3445,6 +3445,22 @@ WHERE vnum % 10 < 9 AND refine_set = 316 + vnum % 10
     OR vnum BETWEEN 17500 AND 17509 OR vnum BETWEEN 17540 AND 17549 OR vnum BETWEEN 17560 AND 17569);" \
   || fail_step "could not move the Rubin / Szmaragd / Szafir jewellery to level 75 or add the jewellery recipes and gems (MT2009_PLUS_JEWELS75_V1)" >&2
 
+# MT2009_PLUS_ZODIAC_V1: Swiatynia Zodiaku (Autor: Digi Rasta, nowy-system 0.35.0;
+# server-patches/zodiak/README.md). zodiak.sql is idempotent (INSERT IGNORE, ADD COLUMN IF
+# NOT EXISTS): player.player.bead (Kule Animy) and player_deleted.bead, the merchant's
+# purchase tables player.zodiac_npc / zodiac_npc_sold, 166 items (weapons and armours
+# +0..+9, insignia 33001-33024, prisms, chests, 72327-72329), 201 monsters and NPCs
+# (2600-2937, 20438-20464), the recipes refine_proto 22401-22418, the bosses' skills
+# 270-271 and the Zodiac Merchant's shop 41 (NPC 20451). Before the elements' files: their
+# owner's rules (zywioly_moby.sql) then hold for the temple's monsters too.
+if [ -s /opt/playerbot/zodiak.sql ]; then
+    if db < /opt/playerbot/zodiak.sql; then
+        echo "[playerbot-migrate] zodiac: zodiak.sql applied"
+    else
+        fail_step "zodiac: zodiak.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_ELEMENTS_V1: Elements and talismans (Autor: Digi Rasta, "Zywioly i talizmany",
 # nowy-system 0.28.0; server-patches/zywioly/README.md). Both files are generated
 # (tools/zywioly/) and idempotent, and run last, after every step above that writes

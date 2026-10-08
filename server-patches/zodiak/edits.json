@@ -1,0 +1,386 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (1)",
+  "old": "\tCHAT_TYPE_MAX_NUM,",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (1): length.h: tryby czatu misji Zodiaku\n\tCHAT_TYPE_MISSION,\n\tCHAT_TYPE_SUB_MISSION,\n\tCHAT_TYPE_CLEAR_MISSION,\n#endif\n\tCHAT_TYPE_MAX_NUM,"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (2)",
+  "old": "\tSE_EFFECT_ACCE_EQUIP,\n#endif",
+  "new": "\tSE_EFFECT_ACCE_EQUIP,\n#endif\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (2): length.h: efekty Zodiaku\n\tSE_SKILL_DAMAGE_ZONE,\n\tSE_SKILL_SAFE_ZONE,\n\n\tSE_METEOR,\n\tSE_BEAD_RAIN,\n\tSE_FALL_ROCK,\n\tSE_ARROW_RAIN,\n\tSE_HORSE_DROP,\n\tSE_EGG_DROP,\n\tSE_DEAPO_BOOM,\n\n\tSE_SKILL_DAMAGE_ZONE_BIG,\n\tSE_SKILL_DAMAGE_ZONE_MIDDLE,\n\tSE_SKILL_DAMAGE_ZONE_SMALL,\n\n\tSE_SKILL_SAFE_ZONE_BIG,\n\tSE_SKILL_SAFE_ZONE_MIDDLE,\n\tSE_SKILL_SAFE_ZONE_SMALL,\n#endif"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (3)",
+  "old": "\tAFFECT_QUEST_START_IDX = 1000",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (3): length.h: AFFECT_CZ_UNLIMIT_ENTER\n\tAFFECT_CZ_UNLIMIT_ENTER = 600,\n#endif\n\tAFFECT_QUEST_START_IDX = 1000"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (4)",
+  "old": "\tAFF_BITS_MAX\n};",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (4): length.h: AFF_CZ_UNLIMIT_ENTER\n\tAFF_CZ_UNLIMIT_ENTER,\t//44\n#endif\n\tAFF_BITS_MAX\n};"
+ },
+ {
+  "file": "typedef.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (5)",
+  "old": "typedef struct pixel_position_s",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (5): typedef.h: LPZODIAC\nclass CZodiac;\n#ifdef USE_DEBUG_PTR\ntypedef DebugPtr<CZodiac> LPZODIAC;\n#else\ntypedef CZodiac* LPZODIAC;\n#endif\n#endif\ntypedef struct pixel_position_s"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (6)",
+  "old": "\tHEADER_GG_LOGIN\t\t\t\t= 1,",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (6): packet.h: naglowek efektu Zodiaku\n\tHEADER_GC_SEPCIAL_ZODIAC_EFFECT\t\t\t= 220, //WARNING: Check the numbering. If you already have this number, then change it to another number you do not have.\n#endif\n\tHEADER_GG_LOGIN\t\t\t\t= 1,"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (7)",
+  "old": "} TPacketGCSpecialEffect;",
+  "new": "} TPacketGCSpecialEffect;\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (7): packet.h: pakiet efektu Zodiaku\ntypedef struct SPacketGCSpecialZodiacEffect\n{\n\tBYTE header;\n\tBYTE type;\n\tBYTE type2;\n\tDWORD vid;\n\tlong x;\n\tlong y;\n} TPacketGCSpecialZodiacEffect;\n#endif"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (8)",
+  "old": "\t\tvoid\t\t\tSetLastAttacked(DWORD time);",
+  "new": "\t\tvoid\t\t\tSetLastAttacked(DWORD time);\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (8): char.h: Zodiak - skladowe 1\n\t\tvoid\t\t\tSetLastZodiacCzLastTime(int time) { m_dwZodiacCzLastTime = time; }\n\t\tint\t\t\t\tGetLastZodiacCzLastTime() const\t{ return m_dwZodiacCzLastTime; }\n#endif"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (9)",
+  "old": "\t\tbool\t\t\tm_bStaminaConsume;",
+  "new": "\t\tbool\t\t\tm_bStaminaConsume;\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (9): char.h: Zodiak - skladowe 2\n\t\tint\t\t\t\tm_dwZodiacCzLastTime = 0;\n#endif"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (10)",
+  "old": "\t\t// Guild",
+  "new": "\t\t////////////////////////////////////////////////////////////////////////////////////////\n\t\t// Zodiac\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (10): char.h: Zodiak - skladowe 3\n\tpublic:\n\t\tvoid\t\t\tSetZodiac(LPZODIAC pkZodiac);\n\t\tLPZODIAC\t\tGetZodiac() const\t{ return m_pkZodiac; }\n\t\tLPZODIAC\t\tGetZodiacForce() const;\n\n\tprotected:\n\t\tLPZODIAC\tm_pkZodiac = NULL;\n#endif\n\t\t// Guild"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (11)",
+  "old": "};\nESex GET_SEX(LPCHARACTER ch);",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (11): char.h: Zodiak - skladowe 4\n\tpublic:\n\t\tvoid BeadTime();\n\t\tvoid MarkTime();\n\n\t\tvoid SetAnimaSphere(int amount);\n\t\tint GetAnimaSphere();\n\n\t\tvoid IsZodiacEffectMob();\n\t\tvoid IsZodiacEffectPC(DWORD Monster);\n\n\t\tvoid ZodiacFloorMessage(BYTE Floor);\n\n\t\tvoid SetLastZodiacAttackTime(DWORD time) { m_dwLastZodiacAttackTime = time; }\n\t\tDWORD GetLastZodiacAttackTime() const\t{ return m_dwLastZodiacAttackTime; }\n\n\t\tvoid IncDeadCount() { m_dwDeadCount++; }\n\t\tvoid SetDeadCount(DWORD dead) { m_dwDeadCount = dead; }\n\t\tDWORD GetDeadCount() const\t{ return m_dwDeadCount; }\n\n\t\tvoid EffectZodiacPacket(long X, long Y, int enumEffectType, int enumEffectType2 = 0);\n\n\t\tbool IsZodiacBoss();\n\t\tbool IsZodiacOfficer();\n\t\tbool IsZodiacStatue();\n\t\tWORD GetStatueVnum() const;\n\n\t\tLPEVENT m_pkZodiacSkill1 = NULL;\n\t\tLPEVENT m_pkZodiacSkill2 = NULL;\n\t\tLPEVENT m_pkZodiacSkill3 = NULL;\n\t\tLPEVENT m_pkZodiacSkill4 = NULL;\n\t\tLPEVENT m_pkZodiacSkill5 = NULL;\n\t\tLPEVENT m_pkZodiacSkill6 = NULL;\n\t\tLPEVENT m_pkZodiacSkill7 = NULL;\n\t\tLPEVENT m_pkZodiacSkill8 = NULL;\n\t\tLPEVENT m_pkZodiacSkill9 = NULL;\n\t\tLPEVENT m_pkZodiacSkill10 = NULL;\n\t\tLPEVENT m_pkZodiacSkill11 = NULL;\n\n\t\tvoid ZodiacDamage(BYTE Type, LPCHARACTER Victim = NULL);\n\n\t\tint ZodiacSkillAttack(LPCHARACTER Victim, DWORD dwVnum, BYTE bSkillLevel);\n\n\t\tDWORD CountZodiacItems(DWORD Vnum);\n\t\tvoid SetZodiacItems(DWORD Vnum, int Count);\n\n\t\tDWORD PurchaseCountZodiacItems(DWORD Vnum);\n\t\tvoid SetPurchaseZodiacItems(DWORD Vnum, int Count);\n\n\t\tvoid CanonDamage();\n\n\t\tvoid SpawnZodiacGroup(LPZODIAC pZodiac);\n\t\tvoid SpawnZodiacStone(LPZODIAC pZodiac);\n\n\t\tvoid\tZTT_CHECK_BOX(int color, int index);\n\t\tvoid\tZTT_LOAD_INFO();\n\t\tint\t\tZTT_CHECK_ITEM_ROW(int color, int index);\n\t\tint\t\tZTT_CHECK_ITEM_COLUMN(int color, int index);\n\t\tvoid\tZTT_CHECK_REWARD();\n\t\tvoid\tZTT_REWARD(int type);\n\n\tprivate:\n\t\tDWORD\tm_dwLastZodiacAttackTime = 0;\n\t\tDWORD\tm_dwDeadCount = 0;\n#endif\n};\nESex GET_SEX(LPCHARACTER ch);"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (12)",
+  "old": "#include \"../../common/PulseManager.h\"",
+  "new": "#include \"../../common/PulseManager.h\"\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (12): char.cpp: include zodiac_temple.h\n#\tinclude \"playerbot_zodiac_temple.h\"\n#endif"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (13)",
+  "old": "\tif (m_pkRegen)\n\t{\n\t\tif (m_pkDungeon) {",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (13): char.cpp: Zodiak - regen przy Destroy\n\tif (m_pkRegen && m_pkZodiac)\n\t{\n\t\tif (m_pkZodiac->IsValidRegen(m_pkRegen, regen_id_))\n\t\t\t--m_pkRegen->count;\n\t\tm_pkRegen = NULL;\n\t}\n#endif\n\tif (m_pkRegen)\n\t{\n\t\tif (m_pkDungeon) {"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (14)",
+  "old": "\tif (m_pkDungeon)\n\t{\n\t\tSetDungeon(NULL);\n\t}",
+  "new": "\tif (m_pkDungeon)\n\t{\n\t\tSetDungeon(NULL);\n\t}\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (14): char.cpp: Zodiak - Destroy\n\tif (m_pkZodiac)\n\t{\n\t\tSetZodiac(NULL);\n\t}\n#endif"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (15)",
+  "old": "\tif (t->lMapIndex >= 10000)\n\t{\n\t\tm_posWarp.x = t->lExitX;\n\t\tm_posWarp.y = t->lExitY;\n\t\tm_lWarpMapIndex = t->lExitMapIndex;\n\t}",
+  "new": "\tif (t->lMapIndex >= 10000)\n\t{\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (15): char.cpp: Zodiak - pozycja wyjscia\n\t\tbool isZodiacDungeon = (t->lMapIndex >= 3580000 && t->lMapIndex < 3590000) ? false : true;\n\t\tif (isZodiacDungeon)\n\t\t{\n\t\t\tm_posWarp.x = t->lExitX;\n\t\t\tm_posWarp.y = t->lExitY;\n\t\t\tm_lWarpMapIndex = t->lExitMapIndex;\n\t\t}\n#else\n\t\tm_posWarp.x = t->lExitX;\n\t\tm_posWarp.y = t->lExitY;\n\t\tm_lWarpMapIndex = t->lExitMapIndex;\n#endif\n\t}"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (16)",
+  "old": "\tm_pkParty = pkParty;",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (16): char.cpp: Zodiak - SetParty\n\tif (m_pkZodiac && IsPC() && !pkParty)\n\t\tSetZodiac(NULL);\n#endif\n\tm_pkParty = pkParty;"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (17)",
+  "old": "\tsys_log(0, \"OnClick %s[vnum %d ServerUniqueID %d, pid %d] by %s\", GetName(), GetRaceNum(), vid, GetPlayerID(), pkChrCauser->GetName());",
+  "new": "\tsys_log(0, \"OnClick %s[vnum %d ServerUniqueID %d, pid %d] by %s\", GetName(), GetRaceNum(), vid, GetPlayerID(), pkChrCauser->GetName());\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (17): char.cpp: Zodiak - OnClick\n\tif (pkChrCauser != this && IsPC() && pkChrCauser->IsPC() && IsPolymorphed() && (GetMapIndex() >= 3580000 && GetMapIndex() < 3590000) && (pkChrCauser->GetMapIndex() >= 3580000 && pkChrCauser->GetMapIndex() < 3590000))\n\t{\n\t\tif (GetPolymorphVnum() >= 20452 && GetPolymorphVnum() <= 20463)\n\t\t{\n\t\t\tSetPolymorph(0);\n\t\t\treturn;\n\t\t}\n\t}\n#endif"
+ },
+ {
+  "file": "dungeon.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (18)",
+  "old": "\tvoid\tJoinParty(LPPARTY pParty);",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (18): dungeon.h: Zodiak - metody\n\tvoid\tZodiacMessage(const char* msg);\n\tvoid\tZodiacMessageClear();\n\n\tvoid\tZodiacTime(BYTE currentfloor, BYTE nextfloor, int time);\n\tvoid\tZodiacTimeClear();\n\n\tvoid\tSetZodiacCountMonster(int count) { m_iZodiacMonsterCount = count; }\n\tvoid\tZodiacIncMonster() { m_iZodiacMonsterCount++; }\n\tvoid\tZodiacDecMonster() { m_iZodiacMonsterCount--; }\n\tint\t\tZodiacCountMonster() { return m_iZodiacMonsterCount; }\n#endif\n\tvoid\tJoinParty(LPPARTY pParty);"
+ },
+ {
+  "file": "dungeon.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (19)",
+  "old": "\tint\t\tm_iMonsterCount;",
+  "new": "\tint\t\tm_iMonsterCount;\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (19): dungeon.h: Zodiak - skladowa\n\tint\t\tm_iZodiacMonsterCount = 0;\n#endif"
+ },
+ {
+  "file": "party.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (20)",
+  "old": "class CDungeon;",
+  "new": "class CDungeon;\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (20): party.h: class CZodiac\nclass CZodiac;\n#endif"
+ },
+ {
+  "file": "party.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (21)",
+  "old": "\t\tLPDUNGEON\tGetDungeon();",
+  "new": "\t\tLPDUNGEON\tGetDungeon();\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (21): party.h: Zodiak - Get/SetZodiac\n\t\tvoid\t\tSetZodiac(LPZODIAC pZodiac);\n\t\tLPZODIAC\tGetZodiac();\n#endif"
+ },
+ {
+  "file": "party.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (22)",
+  "old": "\t\tLPDUNGEON\tm_pkDungeon_for_Only_party;",
+  "new": "\t\tLPDUNGEON\tm_pkDungeon_for_Only_party;\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (22): party.h: Zodiak - skladowe\n\t\tLPZODIAC\tm_pkZodiac = NULL;\n\t\tLPZODIAC\tm_pkZodiac_for_Only_party = NULL;\n#endif"
+ },
+ {
+  "file": "party.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (23)",
+  "old": "\t\tLPDUNGEON GetDungeon_for_Only_party();",
+  "new": "\t\tLPDUNGEON GetDungeon_for_Only_party();\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (23): party.h: Zodiak - for_Only_party\n\t\tvoid SetZodiac_for_Only_party(LPZODIAC pZodiac);\n\t\tLPZODIAC GetZodiac_for_Only_party();\n#endif"
+ },
+ {
+  "file": "party.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (24)",
+  "old": "#include \"log.h\"",
+  "new": "#include \"log.h\"\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (24): party.cpp: include zodiac_temple.h\n#\tinclude \"playerbot_zodiac_temple.h\"\n#endif"
+ },
+ {
+  "file": "party.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (25)",
+  "old": "\tif (m_pkDungeon_for_Only_party != NULL)\n\t{\n\t\tm_pkDungeon_for_Only_party->SetPartyNull();",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (25): party.cpp: Zodiak - SetPartyNull\n\tif (m_pkZodiac_for_Only_party != NULL)\n\t{\n\t\tm_pkZodiac_for_Only_party->SetPartyNull();\n\t\tm_pkZodiac_for_Only_party = NULL;\n\t}\n#endif\n\tif (m_pkDungeon_for_Only_party != NULL)\n\t{\n\t\tm_pkDungeon_for_Only_party->SetPartyNull();"
+ },
+ {
+  "file": "party.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (26)",
+  "old": "\tif (m_pkDungeon)\n\t{\n\t\tm_pkDungeon->QuitParty(this);\n\t}",
+  "new": "\tif (m_pkDungeon)\n\t{\n\t\tm_pkDungeon->QuitParty(this);\n\t}\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (26): party.cpp: Zodiak - QuitParty\n\tif (m_pkZodiac)\n\t{\n\t\tm_pkZodiac->QuitParty(this);\n\t}\n#endif"
+ },
+ {
+  "file": "party.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (27)",
+  "old": "\t\tRequestSetMemberLevel(pkChr->GetPlayerID(), pkChr->GetLevel());",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (27): party.cpp: Zodiak - dolaczenie\n\t\tif (GetZodiac() && GetZodiac()->GetMapIndex() == pkChr->GetMapIndex())\n\t\t{\n\t\t\tpkChr->SetZodiac(GetZodiac());\n\t\t}\n#endif\n\t\tRequestSetMemberLevel(pkChr->GetPlayerID(), pkChr->GetLevel());"
+ },
+ {
+  "file": "party.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (28)",
+  "old": "\t\t\tif (it->second.pCharacter->GetDungeon())",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (28): party.cpp: Zodiak - blisko lidera 1\n\t\t\tif (it->second.pCharacter->GetDungeon() || it->second.pCharacter->GetZodiac())\n#else\n\t\t\tif (it->second.pCharacter->GetDungeon())\n#endif"
+ },
+ {
+  "file": "party.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (29)",
+  "old": "\t\t\tit->second.bNear = l->GetDungeon() == ch->GetDungeon();",
+  "new": "\t\t\tit->second.bNear = l->GetDungeon() == ch->GetDungeon();\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (29): party.cpp: Zodiak - blisko lidera 2\n\t\telse if (l->GetZodiac())\n\t\t\tit->second.bNear = l->GetZodiac() == ch->GetZodiac();\n#endif"
+ },
+ {
+  "file": "party.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (30)",
+  "old": "\tif (iNearMember <= 1 && !l->GetDungeon())",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (30): party.cpp: Zodiak - blisko lidera 3\n\tif (iNearMember <= 1 && !l->GetDungeon() && !l->GetZodiac())\n#else\n\tif (iNearMember <= 1 && !l->GetDungeon())\n#endif"
+ },
+ {
+  "file": "questmanager.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (31)",
+  "old": "\t\t\tvoid\t\tSelectDungeon(LPDUNGEON pDungeon);",
+  "new": "\t\t\tvoid\t\tSelectDungeon(LPDUNGEON pDungeon);\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (31): questmanager.h: Zodiak - metody\n\t\t\tLPZODIAC\tGetCurrentZodiac();\n\t\t\tvoid\t\tSelectZodiac(LPZODIAC pZodiac);\n#endif"
+ },
+ {
+  "file": "questmanager.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (32)",
+  "old": "\t\t\tLPDUNGEON\t\t\tm_pSelectedDungeon;",
+  "new": "\t\t\tLPDUNGEON\t\t\tm_pSelectedDungeon;\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (32): questmanager.h: Zodiak - skladowa\n\t\t\tLPZODIAC\t\tm_pSelectedZodiac = NULL;\n#endif"
+ },
+ {
+  "file": "regen.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (33)",
+  "old": "\tsize_t id; // to help dungeon regen identification",
+  "new": "\tsize_t id; // to help dungeon regen identification\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (33): regen.h: Zodiak - level\n\tBYTE level = 0;\n#endif"
+ },
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (34)",
+  "old": "\tMODE_VNUM\n};",
+  "new": "\tMODE_VNUM\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (34): regen.cpp: Zodiak - MODE_LEVEL\n\t, MODE_LEVEL\n#endif\n};"
+ },
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (35)",
+  "old": "bool regen_load_in_file(const char* filename, long lMapIndex, int base_x, int base_y)",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (35): regen.cpp: Zodiak - regen_zodiac\n#\tinclude \"playerbot_zodiac_regen.inc\"\n#endif\nbool regen_load_in_file(const char* filename, long lMapIndex, int base_x, int base_y)"
+ },
+ {
+  "file": "char_manager.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (36)",
+  "old": "\t\tLPCHARACTER\t\tSpawnMobRange(DWORD dwVnum, long lMapIndex, int sx, int sy, int ex, int ey, bool bIsException=false, bool bSpawnMotion = false , bool bAggressive = false);",
+  "new": "\t\tLPCHARACTER\t\tSpawnMobRange(DWORD dwVnum, long lMapIndex, int sx, int sy, int ex, int ey, bool bIsException=false, bool bSpawnMotion = false , bool bAggressive = false);\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (36): char_manager.h: Zodiak - spawn\n\t\tLPCHARACTER\t\tSpawnMobRange(DWORD dwVnum, long lMapIndex, int sx, int sy, int ex, int ey, bool bIsException, bool bSpawnMotion, bool bAggressive, BYTE bLevel);\n\t\tLPCHARACTER\t\tSpawnGroupZodiac(DWORD dwVnum, long lMapIndex, int sx, int sy, int ex, int ey, LPREGEN pkRegen = NULL, bool bAggressive_ = false, LPZODIAC pZodiac = NULL, BYTE bLevel = 0);\n\t\tbool\t\t\tSpawnGroupGroupZodiac(DWORD dwVnum, long lMapIndex, int sx, int sy, int ex, int ey, LPREGEN pkRegen = NULL, bool bAggressive_ = false, LPZODIAC pZodiac = NULL, BYTE bLevel = 0);\n#endif"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (37)",
+  "old": "\t\tpkVictim->ChatPacket(CHAT_TYPE_TALKING, \"%s\", szMeleeAttack);\n\t}\n\n\treturn CalcBattleDamage(iDam, pkAttacker->GetLevel(), pkVictim->GetLevel());",
+  "new": "\t\tpkVictim->ChatPacket(CHAT_TYPE_TALKING, \"%s\", szMeleeAttack);\n\t}\n\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (37): battle.cpp: Zodiak - obrazenia potworow\n\tif (pkAttacker->IsMonster() && (pkAttacker->GetMapIndex() >= 3580000 && pkAttacker->GetMapIndex() < 3590000))\n\t{\n\t\tif (pkAttacker->GetLevel() > 85)\n\t\t\tiDam += pkAttacker->GetLevel()*8;\n\t\telse\n\t\t\tiDam += pkAttacker->GetLevel()*5;\n\t}\n#endif\n\treturn CalcBattleDamage(iDam, pkAttacker->GetLevel(), pkVictim->GetLevel());"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (38)",
+  "old": "bool battle_is_attackable(LPCHARACTER ch, LPCHARACTER victim)\n{\n\tif (victim->IsDead())\n\t\treturn false;",
+  "new": "bool battle_is_attackable(LPCHARACTER ch, LPCHARACTER victim)\n{\n\tif (victim->IsDead())\n\t\treturn false;\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (38): battle.cpp: Zodiak - bez PvP\n\tif (ch->GetMapIndex() == 358)\n\t{\n\t\tif (victim->IsPC() && ch->IsPC())\n\t\t\treturn false;\n\t}\n#endif"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (39)",
+  "old": "#include \"playerbot_manager.h\"",
+  "new": "#include \"playerbot_manager.h\"\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (39): char_battle.cpp: include zodiac_temple.h\n#\tinclude \"playerbot_zodiac_temple.h\"\n#endif"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (40)",
+  "old": "\t\tisAgreedPVP = CPVPManager::instance().Dead(this, pkKiller->GetPlayerID());",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (40): char_battle.cpp: Zodiak - smierc potwora\n\t\tif ((IsMonster() || IsStone()) && pkKiller->IsPC() && (pkKiller->GetMapIndex() >= 3580000 && pkKiller->GetMapIndex() < 3590000))\n\t\t{\n\t\t\tCZodiacManager::instance().DeadMob(this, pkKiller->GetMapIndex());\n\t\t}\n#endif\n\t\tisAgreedPVP = CPVPManager::instance().Dead(this, pkKiller->GetPlayerID());"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (41)",
+  "old": "\t\t\t\tLogManager::instance().CharLog(this, pkKiller->GetRaceNum(), \"DEAD_BY_NPC\", pkKiller->GetName());\n\t\t\t}",
+  "new": "\t\t\t\tLogManager::instance().CharLog(this, pkKiller->GetRaceNum(), \"DEAD_BY_NPC\", pkKiller->GetName());\n\t\t\t}\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (41): char_battle.cpp: Zodiak - smierc gracza\n\t\t\tif (IsPC() && pkKiller->IsMonster() && (GetMapIndex() >= 3580000 && GetMapIndex() < 3590000))\n\t\t\t{\n\t\t\t\tIncDeadCount();\n\t\t\t\tthis->SetQuestFlag(\"12zi_temple.IsDead\", 1);\n\t\t\t\tthis->SetQuestFlag(\"12zi_temple.PrismNeed\", this->GetDeadCount());\n\t\t\t\tCZodiacManager::instance().DeadPC(this->GetMapIndex());\n\t\t\t}\n#endif"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (42)",
+  "old": "\t\t\t\t\t\tchResurrect->SetDungeon(GetDungeon());\n\t\t\t\t\t}",
+  "new": "\t\t\t\t\t\tchResurrect->SetDungeon(GetDungeon());\n\t\t\t\t\t}\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (42): char_battle.cpp: Zodiak - wskrzeszony potwor\n\t\t\t\t\tif (GetZodiac() && chResurrect)\n\t\t\t\t\t{\n\t\t\t\t\t\tchResurrect->SetZodiac(GetZodiac());\n\t\t\t\t\t}\n#endif"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (43)",
+  "old": "\t\t\tsys_err(\"DragonLair: Dragon killed by nobody\");\n\t}",
+  "new": "\t\t\tsys_err(\"DragonLair: Dragon killed by nobody\");\n\t}\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (43): char_battle.cpp: Zodiak - koniec Dead\n\tif (IsStone())\n\t{\n\t\tif (GetSectree())\n\t\t{\n\t\t\tGetSectree()->RemoveEntity(this);\n\t\t\tViewCleanup();\n\t\t}\n\t}\n\n\tif (IsZodiacBoss())\n\t{\n\t\tif (m_pkZodiacSkill1)\n\t\t\tevent_cancel(&m_pkZodiacSkill1);\n\n\t\tif (m_pkZodiacSkill2)\n\t\t\tevent_cancel(&m_pkZodiacSkill2);\n\n\t\tif (m_pkZodiacSkill3)\n\t\t\tevent_cancel(&m_pkZodiacSkill3);\n\n\t\tif (m_pkZodiacSkill4)\n\t\t\tevent_cancel(&m_pkZodiacSkill4);\n\n\t\tif (m_pkZodiacSkill5)\n\t\t\tevent_cancel(&m_pkZodiacSkill5);\n\n\t\tif (m_pkZodiacSkill6)\n\t\t\tevent_cancel(&m_pkZodiacSkill6);\n\n\t\tif (m_pkZodiacSkill7)\n\t\t\tevent_cancel(&m_pkZodiacSkill7);\n\n\t\tif (m_pkZodiacSkill8)\n\t\t\tevent_cancel(&m_pkZodiacSkill8);\n\n\t\tif (m_pkZodiacSkill9)\n\t\t\tevent_cancel(&m_pkZodiacSkill9);\n\n\t\tif (m_pkZodiacSkill10)\n\t\t\tevent_cancel(&m_pkZodiacSkill10);\n\n\t\tif (m_pkZodiacSkill11)\n\t\t\tevent_cancel(&m_pkZodiacSkill11);\n\t}\n#endif"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (44)",
+  "old": "\t\tdam = tempDam * damMul + 0.5f;",
+  "new": "\t\tdam = tempDam * damMul + 0.5f;\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (44): char_battle.cpp: Zodiak - Damage 1\n\t\tif ((IsMonster() || IsStone()) && (pAttacker && pAttacker->IsPC()))\n\t\t{\n\t\t\tif (IsZodiacStatue())\n\t\t\t{\n\t\t\t\tdam = 1;\n\n\t\t\t\tif (number(1, 30) == 15)\n\t\t\t\t{\n\t\t\t\t\tLPZODIAC pZodiac = CZodiacManager::instance().FindByMapIndex(pAttacker->GetMapIndex());\n\t\t\t\t\tif (pZodiac)\n\t\t\t\t\t{\n\t\t\t\t\t\tSpawnZodiacStone(pZodiac);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\telse if (GetRaceNum() == 20464)\n\t\t\t{\n\t\t\t\tdam = 1;\n\t\t\t\tCanonDamage();\n\t\t\t}\n\t\t\telse if (GetRaceNum() >= 2900 && GetRaceNum() <= 2908)\n\t\t\t{\n\t\t\t\tif (number(0, 160) <= 7)\n\t\t\t\t{\n\t\t\t\t\tLPZODIAC pZodiac = CZodiacManager::instance().FindByMapIndex(pAttacker->GetMapIndex());\n\t\t\t\t\tif (pZodiac)\n\t\t\t\t\t{\n\t\t\t\t\t\tSpawnZodiacGroup(pZodiac);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n#endif"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (45)",
+  "old": "\t\tStun();\n\n\t\tif (pAttacker && !pAttacker->IsNPC())\n\t\t\tm_dwKillerPID = pAttacker->GetPlayerID();\n\t\telse\n\t\t\tm_dwKillerPID = 0;\n\t}",
+  "new": "\t\tStun();\n\n\t\tif (pAttacker && !pAttacker->IsNPC())\n\t\t\tm_dwKillerPID = pAttacker->GetPlayerID();\n\t\telse\n\t\t\tm_dwKillerPID = 0;\n\t}\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (45): char_battle.cpp: Zodiak - Damage 2\n\tif (pAttacker && pAttacker->GetRaceNum() == 20464) //Canon\n\t{\n\t\tEffectPacket(SE_DEAPO_BOOM);\n\t\tpAttacker->Dead();\n\t}\n#endif"
+ },
+ {
+  "file": "char_state.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (46)",
+  "old": "#include \"../../common/VnumHelper.h\"",
+  "new": "#include \"../../common/VnumHelper.h\"\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (46): char_state.cpp: include zodiac_temple.h\n#\tinclude \"playerbot_zodiac_temple.h\"\n#endif"
+ },
+ {
+  "file": "char_state.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (47)",
+  "old": "\tif (!Attack(victim))",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (47): char_state.cpp: Zodiak - boss\n\tif (IsZodiacBoss())\n\t{\n\t\tif (GetLastZodiacAttackTime() + number(5, 15) < (DWORD)get_global_time())\n\t\t{\n\t\t\tSetLastZodiacAttackTime(get_global_time());\n\n\t\t\tm_dwLastAttackTime = dwCurTime + (dwDuration-1);\n\n\t\t\tBYTE type = number(0, 2);\n\t\t\tZodiacDamage(type, victim);\n\t\t\treturn;\n\t\t}\n\t}\n\n//FALTA\n\tif (GetRaceNum() == 20464 && victim->IsPC())\n\t\treturn;\n//FALTA\n#endif\n\tif (!Attack(victim))"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (48)",
+  "old": "\t\t\t\t\t\t\tcase 71013:",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (48): char_item.cpp: Zodiak - przedmioty 72327-72329\n\t\t\t\t\t\t\tcase 72327:\n\t\t\t\t\t\t\tcase 72329:\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\tif (GetExchange() || IsOpenSafebox() || GetShopOwner() || IsCubeOpen()\n\t\t\t\t\t\t\t\t\t\t#ifdef ENABLE_COSTUME_ATTR_TRANSFER\n\t\t\t\t\t\t\t\t\t\t|| IsAttrTransferOpen()\n\t\t\t\t\t\t\t\t\t\t#endif\n\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You can not use this while you have an open window.\"));\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\t\tSetAnimaSphere(30);\n\t\t\t\t\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 72328:\n\t\t\t\t\t\t\t\tif (FindAffect(AFFECT_CZ_UNLIMIT_ENTER))\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"The effect is already active.\"));\n\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tAddAffect(AFFECT_CZ_UNLIMIT_ENTER, 0, 0, AFF_CZ_UNLIMIT_ENTER, 10800, 0, false);\n\t\t\t\t\t\t\t\tSetQuestFlag(\"12zi_temple.MarkTime\", get_global_time()+10800);\n\t\t\t\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n\t\t\t\t\t\t\t\tbreak;\n#endif\n\t\t\t\t\t\t\tcase 71013:"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (49)",
+  "old": "#define IS_NO_CLEAR_ON_DEATH_AFFECT_POTION(type, point) ((type) >= AFFECT_POTION_START && (type) <= AFFECT_POTION_END && point != POINT_MOV_SPEED && point != POINT_ATT_SPEED)",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (49): char_affect.cpp: Zodiak - makro\n#define ZODIAK_NO_CLEAR_ON_DEATH(type) ((type) == AFFECT_CZ_UNLIMIT_ENTER)\n#else\n#define ZODIAK_NO_CLEAR_ON_DEATH(type) (false)\n#endif\n#define IS_NO_CLEAR_ON_DEATH_AFFECT_POTION(type, point) ((type) >= AFFECT_POTION_START && (type) <= AFFECT_POTION_END && point != POINT_MOV_SPEED && point != POINT_ATT_SPEED)"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (50)",
+  "old": "struct command_info cmd_info[] =",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (50): cmd.cpp: Zodiak - deklaracje\nACMD(do_cz_check_box);\nACMD(do_cz_reward);\nACMD(do_revivedialog);\nACMD(do_revive);\nACMD(do_jump_floor);\nACMD(do_next_floor);\nACMD(do_cz_complete_reward);\n#endif\nstruct command_info cmd_info[] ="
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (51)",
+  "old": "\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (51): cmd.cpp: Zodiak - polecenia\n\t{ \"cz_check_box\",\t\t\tdo_cz_check_box,\t\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"cz_reward\",\t\t\t\tdo_cz_reward,\t\t\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"revive\",\t\t\t\t\tdo_revive,\t\t\t\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"revivedialog\",\t\t\tdo_revivedialog,\t\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"jumpfloor\",\t\t\t\tdo_jump_floor,\t\t\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"nextfloor\",\t\t\t\tdo_next_floor,\t\t\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"cz_complete_reward\",\t\tdo_cz_complete_reward,\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t},\n#endif\n\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (52)",
+  "old": "#include \"../../common/PulseManager.h\"",
+  "new": "#include \"../../common/PulseManager.h\"\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (52): cmd_general.cpp: include zodiac_temple.h\n#\tinclude \"playerbot_zodiac_temple.h\"\n#endif"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (53)",
+  "old": "\t//END_PREVENT_HACK",
+  "new": "\t//END_PREVENT_HACK\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (53): cmd_general.cpp: Zodiak - restart\n\tif (subcmd == SCMD_RESTART_HERE)\n\t{\n\t\tif (ch->GetMapIndex() >= 3580000 && ch->GetMapIndex() < 3590000)\n\t\t{\n\t\t\tsys_log(0, \"do_restart: restart here zodiac\");\n\n\t\t\tBYTE bNeedPrism;\n\t\t\tif (ch->GetQuestFlag(\"12zi_temple.IsDead\") == 1 || ch->GetQuestFlag(\"12zi_temple.PrismNeed\") > 0)\n\t\t\t{\n\t\t\t\tif (ch->GetQuestFlag(\"12zi_temple.PrismNeed\") == 1)\n\t\t\t\t\tbNeedPrism = 1;\n\t\t\t\telse if (ch->GetQuestFlag(\"12zi_temple.PrismNeed\") == 2)\n\t\t\t\t\tbNeedPrism = 2;\n\t\t\t\telse if (ch->GetQuestFlag(\"12zi_temple.PrismNeed\") == 3)\n\t\t\t\t\tbNeedPrism = 4;\n\t\t\t\telse if (ch->GetQuestFlag(\"12zi_temple.PrismNeed\") == 4)\n\t\t\t\t\tbNeedPrism = 8;\n\t\t\t\telse if (ch->GetQuestFlag(\"12zi_temple.PrismNeed\") >= 5)\n\t\t\t\t\tbNeedPrism = 10;\n\t\t\t\telse\n\t\t\t\t\tbNeedPrism = ch->GetQuestFlag(\"12zi_temple.PrismNeed\");\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tif (ch->GetDeadCount() == 3)\n\t\t\t\t\tbNeedPrism = 4;\n\t\t\t\telse if (ch->GetDeadCount() == 4)\n\t\t\t\t\tbNeedPrism = 8;\n\t\t\t\telse if (ch->GetDeadCount() >= 5)\n\t\t\t\t\tbNeedPrism = 10;\n\t\t\t\telse\n\t\t\t\t\tbNeedPrism = ch->GetDeadCount();\n\t\t\t}\n\n\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"OpenReviveDialog %u %u\", (DWORD)ch->GetVID(), bNeedPrism);\n\t\t\treturn;\n\t\t}\n\t}\n#endif"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (54)",
+  "old": "#include \"dungeon.h\"",
+  "new": "#include \"dungeon.h\"\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (54): input_login.cpp: include zodiac_temple.h\n#\tinclude \"playerbot_zodiac_temple.h\"\n#endif"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (55)",
+  "old": "\t\t\tch->SetWeddingMap(marriage::WeddingManager::instance().Find(ch->GetMapIndex()));",
+  "new": "\t\t\tch->SetWeddingMap(marriage::WeddingManager::instance().Find(ch->GetMapIndex()));\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (55): input_login.cpp: Zodiak - SetZodiac\n\t\telse if (ch->GetMapIndex() >= 3580000 && ch->GetMapIndex() < 3590000)\n\t\t\tch->SetZodiac(CZodiacManager::instance().FindByMapIndex(ch->GetMapIndex()));\n#endif"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (56)",
+  "old": "\tif (g_noticeBattleZone)\n\t{",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (56): input_login.cpp: Zodiak - logowanie\n\tch->BeadTime();\n\tch->MarkTime();\n\n\tif (ch && ch->GetMapIndex() == 358)\n\t{\n\t\tif (DISTANCE_APPROX(ch->GetX() - 333300, ch->GetY() - 1434400) > 7000)\n\t\t\tch->WarpSet(333200, 1431000, 358);\n\t}\n\n\tif (ch->GetMapIndex() >= 3580000 && ch->GetMapIndex() < 3590000)\n\t{\n\t\tif (ch->GetQuestFlag(\"12zi_temple.IsDead\") == 1)\n\t\t\tch->Dead();\n\n\t\tLPZODIAC pZodiac = CZodiacManager::instance().FindByMapIndex(ch->GetMapIndex());\n\t\tif (pZodiac)\n\t\t{\n\t\t\tBYTE Floor = pZodiac->GetFloor();\n\t\t\tif (Floor != 0)\n\t\t\t{\n\t\t\t\tDWORD time = 0;\n\n\t\t\t\tif (Floor == 0)\n\t\t\t\t{\n\t\t\t\t\tch->SetQuestFlag(\"12zi_temple.PrismNeed\", 0);\n\t\t\t\t\tch->SetQuestFlag(\"12zi_temple.IsDead\", 0);\n\t\t\t\t}\n\n\n\t\t\t\tif (Floor == 7 || Floor == 14 || Floor == 21 || Floor == 28 || Floor == 35 || Floor == 36 || Floor == 37 || Floor == 38 || Floor == 39 || Floor == 40) //Bonus floor\n\t\t\t\t\ttime = 5*60;\n\t\t\t\telse //Normal floor\n\t\t\t\t\ttime = 10*60;\n\n\t\t\t\tch->ZodiacFloorMessage(Floor);\n\n\t\t\t\tDWORD Time_1 = (get_global_time()+1) - pZodiac->GetTime();\n\n\t\t\t\tif (Floor == 40)\n\t\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"ZodiacTime %d %d %d %d\", Floor, 0, time, Time_1);\n\t\t\t\telse\n\t\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"ZodiacTime %d %d %d %d\", Floor, 1, time, Time_1);\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"ZodiacTime %d %d %d %d\", 0, 1, 10, 0);\n\t\t\t}\n\t\t}\n\t\telse\n\t\t{\n\t\t\tch->WarpSet(333200, 1431000, 358);\n\t\t}\n\t}\n#endif\n\tif (g_noticeBattleZone)\n\t{"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (57)",
+  "old": "#include \"dungeon.h\"",
+  "new": "#include \"dungeon.h\"\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (57): main.cpp: include zodiac_temple.h\n#\tinclude \"playerbot_zodiac_temple.h\"\n#endif"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (58)",
+  "old": "\tCDungeonManager\tdungeon_manager;",
+  "new": "\tCDungeonManager\tdungeon_manager;\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (58): main.cpp: Zodiak - menedzer\n\tCZodiacManager\tzodiac_manager;\n#endif"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (59)",
+  "old": "\tCube_init();",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (59): main.cpp: Zodiak - Initialize\n#ifdef ENABLE_SERVERTIME_PORTAL_SPAWN\n\tzodiac_manager.Initialize();\n#endif\n#endif\n\tCube_init();"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (60)",
+  "old": "\t\tRegisterDragonSoulFunctionTable();",
+  "new": "\t\tRegisterDragonSoulFunctionTable();\n#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (60): questlua.cpp: Zodiak - rejestracja\n\t\t{ void RegisterZodiacTempleFunctionTable(); RegisterZodiacTempleFunctionTable(); }\n#endif"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (61)",
+  "old": "\tLPITEM item;\n\n\tif (m_pkPC)\n\t\titem = r_item.pkItem;",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (61): shop.cpp: Zodiak - limit zakupu\n\tif (ch->GetMapIndex() >= 3580000 && ch->GetMapIndex() < 3590000)\n\t{\n\t\tif (ch->CountZodiacItems(r_item.vnum) < (DWORD)r_item.count)\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Osiagnieto limit zakupu tego przedmiotu.\"));\n\t\t\treturn SHOP_SUBHEADER_GC_SOLD_OUT;\n\t\t}\n\t}\n#endif\n\tLPITEM item;\n\n\tif (m_pkPC)\n\t\titem = r_item.pkItem;"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (62)",
+  "old": "\tch->ChangeGold(-dwPrice);\n#ifdef ENABLE_SHOP_USE_CHEQUE",
+  "new": "#ifdef ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (62): shop.cpp: Zodiak - licznik zakupu\n\tif (ch->GetMapIndex() >= 3580000 && ch->GetMapIndex() < 3590000)\n\t{\n\t\tch->SetZodiacItems(r_item.vnum, 0);\n\t\tch->SetPurchaseZodiacItems(r_item.vnum, r_item.count);\n\t}\n#endif\n\tch->ChangeGold(-dwPrice);\n#ifdef ENABLE_SHOP_USE_CHEQUE"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (63)",
+  "old": "\t\t\tif (IS_NO_CLEAR_ON_DEATH_AFFECT(dwType) ||\n\t\t\t\tIS_NO_SAVE_AFFECT(dwType) ||",
+  "new": "\t// MT2009_PLUS_ZODIAC_V1 (63): char_affect.cpp: Zodiak - uzycie makra\n\t\t\tif (IS_NO_CLEAR_ON_DEATH_AFFECT(dwType) || ZODIAK_NO_CLEAR_ON_DEATH(dwType) ||\n\t\t\t\tIS_NO_SAVE_AFFECT(dwType) ||"
+ },
+ {
+  "file": "../../common/CommonDefines.h",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (64)",
+  "old": "#define ENABLE_FULL_NOTICE",
+  "new": "#define ENABLE_FULL_NOTICE\n#define ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (64): CommonDefines.h: ENABLE_12ZI\n#ifdef ENABLE_12ZI\n#\tdefine ENABLE_SERVERTIME_PORTAL_SPAWN\n#endif"
+ }
+]

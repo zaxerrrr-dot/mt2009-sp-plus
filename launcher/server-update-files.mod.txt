@@ -60,6 +60,7 @@ linux-port/docker/mariadb/playerbot/mob_proto.mt2009plus.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes.sql
 linux-port/docker/mariadb/playerbot/zywioly_talizmany.sql
 linux-port/docker/mariadb/playerbot/zywioly_moby.sql
+linux-port/docker/mariadb/playerbot/zodiak.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes_webshop.sql
 linux-port/docker/game/Dockerfile
 linux-port/docker/game/.dockerignore
@@ -119,6 +120,56 @@ linux-port/docker/game/treasure_hunt/*
 linux-port/docker/game/treasure_hunt/map/metin2_map_treasure_hunt/*
 linux-port/docker/game/treasure_hunt/monster/treasure_hunt_box/*
 linux-port/docker/game/treasure_hunt/monster/treasure_hunt_goblin/*
+# MT2009_PLUS_ZODIAC_V1: Swiatynia Zodiaku's share files (Dockerfile step "share: Swiatynia Zodiaku").
+linux-port/docker/game/zodiak/*
+linux-port/docker/game/zodiak/data/dungeon/zodiac/*
+linux-port/docker/game/zodiak/data/dungeon/zodiac/days/*
+linux-port/docker/game/zodiak/data/monster/12zi_chicken_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_cow_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_dog_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_dragon_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_horse_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_monkey_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_mouse_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_pig_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_rabbit_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_sheep_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_snake_boss/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_chicken_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_cow_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_dog_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_dragon_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_horse_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_monkey_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_mouse_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_pig_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_rabbit_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_sheep_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_snake_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_statue_tiger_npc/*
+linux-port/docker/game/zodiak/data/monster/12zi_target_daepo/*
+linux-port/docker/game/zodiak/data/monster/12zi_tiger_boss/*
+linux-port/docker/game/zodiak/data/monster/cz_12_a/*
+linux-port/docker/game/zodiak/data/monster/cz_12_b/*
+linux-port/docker/game/zodiak/data/monster/cz_12_c/*
+linux-port/docker/game/zodiak/data/monster/cz_condor/*
+linux-port/docker/game/zodiak/data/monster/cz_demon/*
+linux-port/docker/game/zodiak/data/monster/cz_dragonman/*
+linux-port/docker/game/zodiak/data/monster/cz_elephant/*
+linux-port/docker/game/zodiak/data/monster/cz_ironman_a/*
+linux-port/docker/game/zodiak/data/monster/cz_ironman_b/*
+linux-port/docker/game/zodiak/data/monster/cz_ironman_c/*
+linux-port/docker/game/zodiak/data/monster/cz_kentauros/*
+linux-port/docker/game/zodiak/data/monster/cz_orc_a/*
+linux-port/docker/game/zodiak/data/monster/cz_orc_b/*
+linux-port/docker/game/zodiak/data/monster/cz_orc_c/*
+linux-port/docker/game/zodiak/data/monster/cz_twoheadedtiger/*
+linux-port/docker/game/zodiak/data/monster/cz_typhoon_a/*
+linux-port/docker/game/zodiak/data/monster/cz_typhoon_b/*
+linux-port/docker/game/zodiak/data/monster/cz_typhoon_c/*
+linux-port/docker/game/zodiak/data/monster/cz_wolf/*
+linux-port/docker/game/zodiak/data/monster/cz_zephyr/*
+linux-port/docker/game/zodiak/map/metin2_12zi_stage/*
 
 # ---- the launcher and the package's own bookkeeping --------------------------
 # The line's own version and package note, published under the root names.
@@ -273,4 +324,12 @@ launcher/Metin2Launcher.Vps.psm1
 linux-port/tools/vps-install.sh
 linux-port/docker/game/src/server/game/src/guild_war.cpp
 linux-port/docker/game/src/server/game/src/guild_manager.cpp
+# MT2009_PLUS_ZODIAC_V1 (server-patches/zodiak): engine files only the Zodiac Temple's hooks change.
+linux-port/docker/game/src/server/game/src/char_manager.h
+linux-port/docker/game/src/server/game/src/dungeon.h
+linux-port/docker/game/src/server/game/src/party.cpp
+linux-port/docker/game/src/server/game/src/party.h
+linux-port/docker/game/src/server/game/src/questmanager.h
+linux-port/docker/game/src/server/game/src/regen.h
+linux-port/docker/game/src/server/game/src/typedef.h
 linux-port/docker/panel/app/register_assets/*
