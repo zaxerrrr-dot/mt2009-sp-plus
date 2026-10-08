@@ -3065,6 +3065,19 @@ namespace
 		if (!ch || !ch->IsItemLoaded())
 			return false;
 		DiscardPlayerBotSurplusBoosters(ch);
+		// MT2009_PLUS_BOT_CAPE_V2: the bound capes (76007) past
+		// PLAYERBOT_CAPE_BOUND_HOARD are thrown away here - neither the merchant
+		// nor a counter takes one, and the Flower Event's boxes filled bags
+		// with up to 200 (the supporters' world, 8 October).
+		{
+			const int bound = (int)ch->CountSpecifyItem(PLAYERBOT_CAPE_BOUND_VNUM);
+			if (bound > PLAYERBOT_CAPE_BOUND_HOARD && !IsPlayerBotSidekickServing(ch))
+			{
+				ch->RemoveSpecifyItem(PLAYERBOT_CAPE_BOUND_VNUM, bound - PLAYERBOT_CAPE_BOUND_HOARD);
+				sys_log(0, "PLAYERBOT_CAPE: bound surplus thrown away pid=%u name=%s capes=%d kept=%d",
+						ch->GetPlayerID(), ch->GetName(), bound - PLAYERBOT_CAPE_BOUND_HOARD, PLAYERBOT_CAPE_BOUND_HOARD);
+			}
+		}
 		// Sold rather than thrown away under Iwakura's system (the Rybak's way).
 		DiscardPlayerBotFishedDyes(ch, IsPlayerBotPersonaEnabled());
 

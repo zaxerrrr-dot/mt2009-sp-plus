@@ -2852,7 +2852,7 @@ namespace
 		if (!weapon || weapon->GetType() != ITEM_WEAPON || weapon->GetSubType() == WEAPON_BOW || !armor || !helmet ||
 				(PlayerBotWantsShield(ch) && !ch->GetWear(WEAR_SHIELD)))
 			return false;
-		const int plus = IsPlayerBotCapeTank(ch) ? 5 : 7;
+		const int plus = IsPlayerBotCapeTank(ch) ? PLAYERBOT_CAPE_TANK_PLUS : PLAYERBOT_CAPE_OTHER_PLUS;	// MT2009_PLUS_BOT_CAPE_V2
 		return (int)weapon->GetRefineLevel() >= plus && (int)armor->GetRefineLevel() >= plus;
 	}
 
@@ -2990,16 +2990,24 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_CAPE_V2: the bound cape (76007) first - it can be
+	// neither sold nor traded - then the market's.
 	int FindPlayerBotValourCapeCell(LPCHARACTER ch)
 	{
+		int other = -1;
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (item && item->GetCell() == cell && IsPlayerBotValourCapeVnum(item->GetVnum()) &&
 					!item->isLocked() && !item->IsExchanging())
-				return cell;
+			{
+				if (item->GetVnum() == PLAYERBOT_CAPE_BOUND_VNUM)
+					return cell;
+				if (other < 0)
+					other = cell;
+			}
 		}
-		return -1;
+		return other;
 	}
 
 	// The tick's word: true when the cape was used this tick.
@@ -3036,7 +3044,8 @@ namespace
 				!IsPlayerBotGrindAllowedHere(ch))
 			return false;
 		if (state.bBotRole != BOT_ROLE_MOB_GRINDER ||
-				(state.bLongTermGoal != BOT_GOAL_LEVEL_UP && state.bLongTermGoal != BOT_GOAL_HUNTING) ||
+				(state.bLongTermGoal != BOT_GOAL_LEVEL_UP && state.bLongTermGoal != BOT_GOAL_HUNTING &&
+				 state.bLongTermGoal != BOT_GOAL_GET_EQUIPMENT) ||	// MT2009_PLUS_BOT_CAPE_V2
 				state.bMultiPullActive || state.bVisitingShop || state.bRecoveringAfterDeath || state.bTacticalRetreat ||
 				state.bFishingSession ||
 				(state.dwLastDeathTime != 0 && dwNow - state.dwLastDeathTime < PLAYERBOT_CAPE_DEATH_HOLD_MS))
@@ -3061,7 +3070,8 @@ namespace
 		if (crowd.m_bPerson || crowd.m_iOnMe > 0 || crowd.m_iFree < PLAYERBOT_CAPE_MIN_CROWD)
 			return false;
 		const int average = crowd.m_iLevelSum / std::max(1, crowd.m_iFree);
-		if (crowd.m_iLevelMax > (int)ch->GetLevel() || average > (int)ch->GetLevel() - PLAYERBOT_CAPE_LEVEL_MARGIN)
+		if (crowd.m_iLevelMax > (int)ch->GetLevel() + PLAYERBOT_CAPE_MAX_OVER_LEVELS ||
+				average > (int)ch->GetLevel() - PLAYERBOT_CAPE_LEVEL_MARGIN)
 			return false;
 		const int capacity = GetPlayerBotCapeCapacity(ch, average);
 		if (crowd.m_iFree > capacity)

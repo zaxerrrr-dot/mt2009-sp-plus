@@ -2676,29 +2676,49 @@ namespace
 	// none already fighting), so a strong bot uses one only on a spot whose
 	// crowd it can take, one a spot, and the next only after the crowd is
 	// beaten. The capes it uses are bought off the other sellers' counters.
-	const DWORD PLAYERBOT_CAPE_VNUMS[] = { 70038, 70138, 70057, 76007 };
+	//
+	// MT2009_PLUS_BOT_CAPE_V2 (the owner, 8 October: "skad boty maja tyle
+	// peleryn i czemu ich nie uzywaja?"). On the supporters' world 194 233
+	// bound capes (76007, the Flower Event's boxes and the level-50 starter
+	// chest's 20) stood in 1 988 stacks, up to 200 a bot, and 36 were used in
+	// two hours: the rules wanted a bot of 35 with +7 gear (+5 a tank), a crowd
+	// whose every monster was under the bot's level and whose average was five
+	// under it - on the ground a bot hunts, the monsters of its own level - and
+	// no more of them than 16 (+10 a tank, +6 a +7 armour) in a reach of 8500.
+	// Now a tool of the ordinary grind: from 30, +6 gear (+4 a tank), a crowd
+	// of 6 and more averaging three under the bot with none over two above it,
+	// 22 at once to start with, 90% health, 30 red potions, a spot rested three
+	// minutes; the bound cape first (FindPlayerBotValourCapeCell), and past
+	// PLAYERBOT_CAPE_BOUND_HOARD of them the rest goes at the merchant's
+	// (SellPlayerBotJunkAtMerchant) - they can be neither sold nor traded.
+	const DWORD PLAYERBOT_CAPE_VNUMS[] = { 76007, 70038, 70138, 70057 };
 	const DWORD PLAYERBOT_CAPE_MARKET_VNUM = 70038;
-	const int PLAYERBOT_CAPE_MIN_LEVEL = 35;
+	const DWORD PLAYERBOT_CAPE_BOUND_VNUM = 76007;
+	const int PLAYERBOT_CAPE_BOUND_HOARD = 200;
+	const int PLAYERBOT_CAPE_MIN_LEVEL = 30;
+	const int PLAYERBOT_CAPE_TANK_PLUS = 4;
+	const int PLAYERBOT_CAPE_OTHER_PLUS = 6;
 	const int PLAYERBOT_CAPE_PULL_RANGE = 8500;
 	const int PLAYERBOT_CAPE_PULL_MAX = 80;
 	// Fewer free monsters than this in view: the cape is not worth a use.
-	const int PLAYERBOT_CAPE_MIN_CROWD = 10;
+	const int PLAYERBOT_CAPE_MIN_CROWD = 6;
 	// How many it takes at once: the base, a tank's extra, a +7 body armour's,
 	// and every PLAYERBOT_CAPE_EASY_LEVELS the crowd averages under the margin.
-	const int PLAYERBOT_CAPE_BASE_CAPACITY = 16;
+	const int PLAYERBOT_CAPE_BASE_CAPACITY = 22;
 	const int PLAYERBOT_CAPE_TANK_CAPACITY = 10;
 	const int PLAYERBOT_CAPE_ARMOUR_CAPACITY = 6;
 	const int PLAYERBOT_CAPE_EASY_LEVELS = 5;
 	const int PLAYERBOT_CAPE_EASY_CAPACITY = 6;
 	// The crowd's average level at least this far under the bot's, and no
-	// monster in it over the bot's level.
-	const int PLAYERBOT_CAPE_LEVEL_MARGIN = 5;
-	const int PLAYERBOT_CAPE_START_HP_PERCENT = 95;
-	const int PLAYERBOT_CAPE_MIN_RED_POTIONS = 40;
+	// monster in it more than PLAYERBOT_CAPE_MAX_OVER_LEVELS over the bot's.
+	const int PLAYERBOT_CAPE_LEVEL_MARGIN = 3;
+	const int PLAYERBOT_CAPE_MAX_OVER_LEVELS = 2;
+	const int PLAYERBOT_CAPE_START_HP_PERCENT = 90;
+	const int PLAYERBOT_CAPE_MIN_RED_POTIONS = 30;
 	// One cape a spot: none within this of a cape any bot used in the last
 	// PLAYERBOT_CAPE_SPOT_REST_MS (the spot respawns meanwhile).
 	const int PLAYERBOT_CAPE_SPOT_RADIUS = 3000;
-	const DWORD PLAYERBOT_CAPE_SPOT_REST_MS = 300000;
+	const DWORD PLAYERBOT_CAPE_SPOT_REST_MS = 180000;
 	// The crowd counts as beaten once nothing in the cape's range fights the
 	// bot, and not before this after the use (the pulled walk in from 8500).
 	const DWORD PLAYERBOT_CAPE_CROWD_SETTLE_MS = 15000;
