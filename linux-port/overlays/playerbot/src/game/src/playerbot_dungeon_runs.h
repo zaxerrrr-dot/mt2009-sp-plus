@@ -2767,9 +2767,12 @@ namespace
 	{
 		// V3: at the cap only a starved dungeon is looked at, up to
 		// PLAYERBOT_DGRUN_STARVED_OVER_CAP runs above it.
+		// MT2009_PLUS_ATLANTYDA_TEST_V1: an operator's call of one dungeon ("now <key>") is not held by the
+		// core's cap - only by the dungeon's own (8 October: the Atlantyda test calls refused for twenty
+		// minutes while the clock's runs of the others held the cap).
 		const int runsNow = CountPlayerBotDgRuns(-1);
-		const bool overCap = runsNow >= GetPlayerBotDgRunCap();
-		if (runsNow >= GetPlayerBotDgRunCap() + PLAYERBOT_DGRUN_STARVED_OVER_CAP)
+		const bool overCap = forced < 0 && runsNow >= GetPlayerBotDgRunCap();
+		if (forced < 0 && runsNow >= GetPlayerBotDgRunCap() + PLAYERBOT_DGRUN_STARVED_OVER_CAP)
 		{
 			if (forced != -1)
 				sys_log(0, "BOT_DGRUN: no call (%s) - %d runs already, the cap", why, runsNow);
