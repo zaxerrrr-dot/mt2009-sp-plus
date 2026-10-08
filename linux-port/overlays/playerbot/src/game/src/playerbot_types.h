@@ -3056,7 +3056,10 @@ namespace
 	// talisman 94000-95450 at 700 000, fixed (owner, 7 October).
 	// 19: MT2009_PLUS_TRADEABLE_BONUS_V1 - the tradeable change 71284 at 1 380 000
 	// and add 71285 at 5 000 000, fixed (owner, 8 October).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 19;
+	// 20: MT2009_PLUS_NEWPET_BOTS_V1 - every New Pet System egg (55401-55411) at
+	// 2 000 000, fixed (owner, 8 October: "obniz cene jajka peta domowego do
+	// 2kk"), and the pet goods on the bots' counters for the first time.
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 20;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in

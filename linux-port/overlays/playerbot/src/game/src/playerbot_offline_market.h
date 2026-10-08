@@ -411,6 +411,19 @@ namespace {
                     return RunPlayerBotOfflinePick(ch, state, now);
                 }
             }
+            // MT2009_PLUS_NEWPET_BOTS_V1: a keeper's egg, its pet's food, elixirs,
+            // books and evolution materials, on every stand of the map
+            // (playerbot_newpet_bots.h).
+            {
+                std::map<DWORD, int> missing;
+                const long long petCap = CollectPlayerBotNewPetMissing(ch, missing);
+                if (!missing.empty() && petCap > 0 && FindPlayerBotGambleMaterialPick(ch, state, missing, petCap, now)) {
+                    sys_log(0, "PLAYERBOT_NEWPET: goes for pet goods pid=%u name=%s owner=%u item=%u lacking=%u first=%u gold=%lld",
+                        ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (unsigned int)missing.size(),
+                        missing.begin()->first, (long long)ch->GetGold());
+                    return RunPlayerBotOfflinePick(ch, state, now);
+                }
+            }
             // And one of Community Patch 5's four gamblers buying its bases
             // looks on every stand of the map for one of its category.
             if (FindPlayerBotRareGamblerBasePick(ch, state, budget, now)) {

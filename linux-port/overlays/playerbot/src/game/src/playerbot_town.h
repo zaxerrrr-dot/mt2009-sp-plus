@@ -4180,6 +4180,13 @@ namespace
 		if (IsPlayerBotRankFruit(item->GetVnum()))
 			return (ch && IsPlayerBotKeptRankFruit(ch, item)) ? -1
 					: PlayerBotGoods(PLAYERBOT_SHOP_RARE_GOODS_SCORE, per::GOODS_RARE_GOODS);
+		// MT2009_PLUS_NEWPET_BOTS_V1: nor the New Pet System goods a keeper's own
+		// pet still takes (GetPlayerBotNewPetKeep); the rest - every one of a bot
+		// without a pet - is a counter's (until now ITEM_PET kept them all, below:
+		// some 24 000 eggs from the Flower Event's boxes in the bots' bags).
+		if (IsPlayerBotNewPetGoodsVnum(item->GetVnum()))
+			return (ch && GetPlayerBotNewPetGoodsForSale(ch, item) <= 0) ? -1
+					: PlayerBotGoods(PLAYERBOT_SHOP_SHEET_GOODS_SCORE, per::GOODS_SHEET_GOODS);
 		// MT2009_PLUS_SASH_CLOTH_V1: nor the Delikatne Sukno a keeper still
 		// trades in for sashes; anybody else's is a counter's, where a sash goes.
 		if (item->GetVnum() == PLAYERBOT_SASH_CLOTH_VNUM)

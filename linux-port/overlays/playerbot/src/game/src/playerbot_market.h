@@ -255,6 +255,14 @@ namespace
 		if (IsPlayerBotRankFruit(offer->GetVnum()))
 			return WantsPlayerBotRankFruitOffer(ch, offer);
 
+		// MT2009_PLUS_NEWPET_BOTS_V1: an egg, food, an elixir or a book for a
+		// keeper's own pet, and its next evolution's materials
+		// (playerbot_newpet_bots.h); nobody else buys a pet good.
+		if (IsPlayerBotNewPetGoodsVnum(offer->GetVnum()))
+			return WantsPlayerBotNewPetOffer(ch, offer);
+		if (WantsPlayerBotNewPetOffer(ch, offer))
+			return true;
+
 		// The bean for a bot standing out a negative rank in town: the one thing
 		// that lifts it there (KeepPlayerBotNegativeRankInTown), one at a time.
 		// MT2009_PLUS_BOT_RANK_GLOVE_V1: not while it hunts the rank back
@@ -492,6 +500,10 @@ namespace
 		// counter holds one (the ledger).
 		if (PlayerBotWantsRankFruitFromMarket(ch))
 			return true;
+		// MT2009_PLUS_NEWPET_BOTS_V1: what a keeper's pet lacks, while a counter
+		// holds it (the ledger).
+		if (PlayerBotWantsNewPetFromMarket(ch))
+			return true;
 		// A bean for a negative rank (WantsPlayerBotStallItem).
 		if (ch->GetRealAlignment() < 0 && ch->CountSpecifyItem(PLAYERBOT_ZEN_BEAN_VNUM) == 0 &&
 				!IsPlayerBotRankHunting(ch, get_dword_time())) // MT2009_PLUS_BOT_RANK_GLOVE_V1
@@ -688,6 +700,13 @@ namespace
 		// out of the fruit's share of the purse.
 		if (IsPlayerBotRankFruit(item->GetVnum()))
 			return CanPlayerBotPayForRankFruit(ch, item, price);
+		// MT2009_PLUS_NEWPET_BOTS_V1: an egg at no more than 2 000 000, the
+		// pet's other goods near the price list; an evolution's material only
+		// while the step's yang stays (refused here, a rule below may pay).
+		if (IsPlayerBotNewPetGoodsVnum(item->GetVnum()))
+			return CanPlayerBotPayForNewPetOffer(ch, item, price);
+		if (CanPlayerBotPayForNewPetOffer(ch, item, price))
+			return true;
 		// MT2009_PLUS_BOT_MINIGAMES_V1: no dearer than what it holds (a gambler
 		// a little over), out of a share of the purse.
 		if (IsPlayerBotMinigameChestVnum(item->GetVnum()))

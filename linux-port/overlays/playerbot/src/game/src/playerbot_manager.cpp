@@ -198,6 +198,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_skills.h"
 #include "playerbot_combat.h"
 #include "playerbot_ornament_farmers.h" // MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmers of the second villages' Sworn camps
+#include "playerbot_newpet_bots.h" // MT2009_PLUS_NEWPET_BOTS_V1: the bots hatch, feed, raise and evolve New Pet System pets; the pet goods on their counters
 #include "playerbot_energy_shards.h" // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: Odlamki Energii from the merchant's scrap at the Alchemist, their counter caps; the fixed shard and talisman prices
 #include "playerbot_economy.h"
 #include "playerbot_progression_needs.h"
@@ -7236,6 +7237,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_RANK_POINTS_V1: its Punkty Rangi read, the bonus on and the
 		// fruits that fit its range eaten (playerbot_rank_points.h).
 		ManagePlayerBotRankPoints(ch, dwNow);
+		// MT2009_PLUS_NEWPET_BOTS_V1: a keeper's New Pet System pet hatched,
+		// fed, raised and summoned (playerbot_newpet_bots.h).
+		ManagePlayerBotNewPet(ch, dwNow);
 		// Answered every tick and not on the party pass's own clock: the engine
 		// gives an invitation ten seconds to live, and the party pass can be
 		// three minutes away.

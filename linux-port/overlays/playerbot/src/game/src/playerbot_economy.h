@@ -862,6 +862,10 @@ namespace
 			return PLAYERBOT_SHOP_HORSE_MEDAL_LINE_UNITS;
 		if (item->GetType() == ITEM_SKILLBOOK || item->GetVnum() == PLAYERBOT_GRAND_MASTER_STONE_VNUM)
 			return 1;
+		// MT2009_PLUS_NEWPET_BOTS_V1: the New Pet System's goods one at a time
+		// (an egg is 2 000 000, a book up to 800 000).
+		if (IsPlayerBotNewPetGoodsVnum(item->GetVnum()))
+			return 1;
 		// A Cor Draconis goes up five and more a line (operator, 26 September
 		// 2026); a sash one at a time.
 		if (IsPlayerBotCorVnum(item->GetVnum()))
@@ -1471,6 +1475,9 @@ namespace
 			return PLAYERBOT_TREASURE_KEY_KEEP;
 		if (IsPlayerBotBonusStoneItem(item))
 			return GetPlayerBotBonusStoneKeep(ch, item);
+		// MT2009_PLUS_NEWPET_BOTS_V1: what a keeper's own pet still takes.
+		if (IsPlayerBotNewPetGoodsVnum(item->GetVnum()))
+			return GetPlayerBotNewPetKeep(ch, item->GetVnum());
 		// The medal dropper is the medal shop and keeps one back; everybody else
 		// keeps the ladder's two (PLAYERBOT_HORSE_MEDAL_KEEP) and lists the rest.
 		// MT2009_PLUS_HORSE30_V1: the next trainings' medals (GetPlayerBotHorseMedalKeep).

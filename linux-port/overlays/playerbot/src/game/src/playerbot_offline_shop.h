@@ -1676,7 +1676,10 @@ namespace {
         }
         // MT2009_PLUS_DIGI_STACK_V1: a soul stone (a stack of up to 200 now)
         // goes up a stone at a time, as a key does.
-        const bool cut = (units == 1 && (item->GetType() == ITEM_TREASURE_KEY || item->GetType() == ITEM_METIN)) ||
+        // MT2009_PLUS_NEWPET_BOTS_V1: and a New Pet System good, one a line over
+        // its keeper's keep (GetPlayerBotNewPetKeep).
+        const bool cut = (units == 1 && (item->GetType() == ITEM_TREASURE_KEY || item->GetType() == ITEM_METIN ||
+                IsPlayerBotNewPetGoodsVnum(item->GetVnum()))) ||
             item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM;
         if (!cut || (int)item->GetCount() <= units) { cutNote.from = 0; return cell; }
         cutNote.shape = item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM ? per::SHAPE_CHEST_PACK : per::SHAPE_KEY_SINGLE;

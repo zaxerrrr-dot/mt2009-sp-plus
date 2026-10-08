@@ -44,9 +44,21 @@
 // leaves the core; the client asks "/newpet sync" after every loading screen
 // and the pet comes back where the owner is.
 //
-// Bots never take part. The engine calls in through server-patches/playerqol
-// (MT2009_PLUS_NEW_PET_V1): the item use, the kill experience, ComputePoints
-// and the /newpet command (declared in cmd.cpp, defined at the end here).
+// The engine calls in through server-patches/playerqol (MT2009_PLUS_NEW_PET_V1):
+// the item use, the kill experience, ComputePoints and the /newpet command
+// (declared in cmd.cpp, defined at the end here). The item use and the command
+// stay a person's (Eligible).
+//
+// MT2009_PLUS_NEWPET_BOTS_V1 (the owner, 8 October: "zacznij uczyc boty, zeby
+// ich uzywaly: rozwijaly, expily, ewoluowaly itd."): the bots take part through
+// playerbot_newpet_bots.h, which calls the same functions the window's commands
+// do (Hatch, UseProtein, UseTreat, UseDew, UseBook, Evolve, Summon) for the
+// bot's own rows - a bot never has a client, so nothing here is said or sent to
+// one (IsBotOwner), its experience is written every BOT_FLUSH_MS instead of at
+// every level, and its pet follows it half as often. A bot is an Owner only
+// once that file made it one (GetOwner), so the kill experience below reaches
+// a bot's pet and nobody else's; every bot rolls the pet items' drops as a
+// person does.
 namespace mt2009_newpet
 {
 	enum
@@ -79,6 +91,10 @@ namespace mt2009_newpet
 	// Pet Open Slot (55036): a heroic pet of this level.
 	const int SLOT_UNLOCK_LEVEL = 100;
 	const DWORD FLUSH_MS = 30 * 1000;
+	// MT2009_PLUS_NEWPET_BOTS_V1: a bot's experience goes to the row this often
+	// (two queries and a level's each time), never at the level's threshold -
+	// hundreds of bots kill all day, and DirectQuery waits for the database.
+	const DWORD BOT_FLUSH_MS = 5 * 60 * 1000;
 
 	const DWORD ITEM_PROTEIN = 55001;
 	const DWORD ITEM_RENAME = 55008;
@@ -268,13 +284,26 @@ namespace mt2009_newpet
 		// the bag moved meanwhile (FindHatchEgg).
 		DWORD hatchEggId;
 		DWORD hatchEggVnum;
+		// MT2009_PLUS_NEWPET_BOTS_V1: a bot's (playerbot_newpet_bots.h).
+		bool bot;
 		Owner() : pid(0), petVid(0), lastMap(0), expDelta(0), nextFlush(0), lastCommand(0), lastRefresh(0), lastInfo(0), side(1),
-				hatchEggId(0), hatchEggVnum(0) {}
+				hatchEggId(0), hatchEggVnum(0), bot(false) {}
 	};
 
 	std::map<DWORD, Owner> s_owners;
 	LPEVENT s_pkTick = NULL;
 	bool s_bTables = false;
+	// MT2009_PLUS_NEWPET_BOTS_V1: the bots' pets' level ups since the last
+	// census (playerbot_newpet_bots.h reads and clears them).
+	DWORD s_dwBotLevelUps = 0;
+	DWORD s_dwBotLevelUpFlushes = 0;
+
+	// MT2009_PLUS_NEWPET_BOTS_V1: a character the bots' machinery plays - no
+	// client to talk to.
+	bool IsBotOwner(LPCHARACTER ch)
+	{
+		return ch && ch->GetDesc() && ch->GetDesc()->IsBot();
+	}
 
 	bool Eligible(LPCHARACTER ch)
 	{
@@ -283,6 +312,8 @@ namespace mt2009_newpet
 
 	void Say(LPCHARACTER ch, const char* fmt, ...)
 	{
+		if (IsBotOwner(ch))	// MT2009_PLUS_NEWPET_BOTS_V1
+			return;
 		char text[400];
 		va_list args;
 		va_start(args, fmt);
@@ -510,6 +541,7 @@ namespace mt2009_newpet
 			return it->second;
 		Owner& owner = s_owners[pid];
 		owner.pid = pid;
+		owner.bot = IsBotOwner(ch);	// MT2009_PLUS_NEWPET_BOTS_V1
 		Reload(owner);
 		EnsureTick();
 		return owner;
@@ -603,6 +635,8 @@ namespace mt2009_newpet
 
 	void SendData(LPCHARACTER ch, Owner& owner, bool open)
 	{
+		if (owner.bot || IsBotOwner(ch))	// MT2009_PLUS_NEWPET_BOTS_V1
+			return;
 		const DWORD now = (DWORD)time(NULL);
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "NewPet Begin %u %d %d", (unsigned int)owner.pets.size(), open ? 1 : 0, (int)MAX_PETS);
 		for (size_t i = 0; i < owner.pets.size(); ++i)
@@ -626,6 +660,8 @@ namespace mt2009_newpet
 
 	void SendEvolutionCosts(LPCHARACTER ch)
 	{
+		if (IsBotOwner(ch))	// MT2009_PLUS_NEWPET_BOTS_V1
+			return;
 		for (int e = 0; e < EVOLUTION_MAX; ++e)
 		{
 			const EvolutionCost& c = EVOLUTION_COSTS[e];
@@ -648,7 +684,7 @@ namespace mt2009_newpet
 	// now, a level is never taken twice nor a count written over.
 	void Flush(LPCHARACTER ch, Owner& owner, bool announce)
 	{
-		owner.nextFlush = get_dword_time() + FLUSH_MS;
+		owner.nextFlush = get_dword_time() + (owner.bot ? BOT_FLUSH_MS : FLUSH_MS);
 		Pet* pet = ActivePet(owner);
 		if (!pet)
 		{
@@ -694,6 +730,15 @@ namespace mt2009_newpet
 		}
 		if (pet->level != oldLevel)
 		{
+			// MT2009_PLUS_NEWPET_BOTS_V1: a bot's pet's level ups, one line a flush.
+			if (owner.bot)
+			{
+				s_dwBotLevelUps += (DWORD)std::max(0, pet->level - oldLevel);
+				++s_dwBotLevelUpFlushes;
+				sys_log(0, "PLAYERBOT_NEWPET: levelup pid=%u name=%s pet=%u egg=%u level=%d->%d evolution=%d cap=%d",
+						owner.pid, ch ? ch->GetName() : "-", pet->id, pet->egg, oldLevel, pet->level, pet->evolution,
+						Cap(pet->evolution));
+			}
 			Reload(owner);
 			pet = ActivePet(owner);
 			if (!pet)
@@ -722,7 +767,8 @@ namespace mt2009_newpet
 		if (pet->level >= Cap(pet->evolution) && pet->exp + owner.expDelta >= Need(pet->level))
 			return;
 		owner.expDelta += amount;
-		if (pet->exp + owner.expDelta >= Need(pet->level) || get_dword_time() >= owner.nextFlush)
+		// MT2009_PLUS_NEWPET_BOTS_V1: a bot's on its clock alone (BOT_FLUSH_MS).
+		if ((!owner.bot && pet->exp + owner.expDelta >= Need(pet->level)) || get_dword_time() >= owner.nextFlush)
 			Flush(ch, owner, true);
 	}
 
@@ -815,6 +861,10 @@ namespace mt2009_newpet
 	{
 		const DWORD now = get_dword_time();
 		const DWORD unixNow = (DWORD)time(NULL);
+		// MT2009_PLUS_NEWPET_BOTS_V1: a bot's pet walks after it on every
+		// second pass (twice a second), a person's on every pass.
+		static DWORD s_dwPass = 0;
+		++s_dwPass;
 		for (std::map<DWORD, Owner>::iterator it = s_owners.begin(); it != s_owners.end(); )
 		{
 			Owner& owner = it->second;
@@ -846,7 +896,7 @@ namespace mt2009_newpet
 					if (!ch->IsObserverMode() && !ch->IsDead())
 						Summon(ch, owner, true);
 				}
-				else if (!ch->IsDead())
+				else if (!ch->IsDead() && (!owner.bot || ((s_dwPass + owner.pid) & 1) == 0))
 					Follow(ch, owner, mob);
 			}
 			else if (mob)
@@ -1760,7 +1810,10 @@ bool NewPetUseItem(LPCHARACTER ch, LPITEM item)
 void NewPetOnExp(LPCHARACTER victim, LPCHARACTER to, int exp)
 {
 	using namespace mt2009_newpet;
-	if (!to || !Eligible(to))
+	// MT2009_PLUS_NEWPET_BOTS_V1: a bot rolls the drops as a person does, and
+	// its pet takes the experience once playerbot_newpet_bots.h made the bot an
+	// Owner (FindOwner below) - never anybody else's pet.
+	if (!to || !to->IsPC() || !to->GetDesc())
 		return;
 	RollDrops(victim, to);
 	if (exp <= 0)

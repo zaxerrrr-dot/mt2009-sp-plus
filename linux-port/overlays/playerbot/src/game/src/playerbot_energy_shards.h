@@ -149,6 +149,10 @@ namespace
 			return PLAYERBOT_TRADEABLE_CHANGE_PRICE;
 		if (IsPlayerBotFixedPriceTalismanVnum(vnum))
 			return GetPlayerBotTalismanPrice(vnum);
+		// MT2009_PLUS_NEWPET_BOTS_V1: every New Pet System egg at the owner's
+		// 2 000 000 (8 October: "obniz cene jajka peta domowego do 2kk").
+		if (IsPlayerBotNewPetEggVnum(vnum))
+			return PLAYERBOT_NEWPET_EGG_PRICE;
 		return 0;
 	}
 
