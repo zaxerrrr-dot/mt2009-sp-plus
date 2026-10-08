@@ -4125,3 +4125,234 @@
 30919	Bilet do Atlantydy	Chroni przed wod¹, ciœnieniem i ciemnoœci¹ g³êbin. Wpuszcza jedn¹ osobê do Ruin Atlantydy (poziom 75+). Do kupienia u Maga Atlantydy w Dolinie Orków, czasem wypada dowódcom i genera³om Groty Wygnañców.
 30920	Klucz Atlantydy	Wypada z G³êbinowej Muszli w Ruinach Atlantydy. Oddaj go w³aœciwej Kolumnie z Muszli.
 30921	Skrzynia Atlantydy	£up z Ruin Atlantydy. Otwórz, aby zobaczyæ, co skrywa³y g³êbiny.
+42900	Kostium Mroku (m)	Kostium z zestawu Arezzo (Zestaw Mroku). Dzia³a 30 dni od za³o¿enia.
+42901	Kostium Mroku (k)	Kostium z zestawu Arezzo (Zestaw Mroku). Dzia³a 30 dni od za³o¿enia.
+45900	He³m Mroku (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Mroku). Dzia³a 30 dni od za³o¿enia.
+45901	He³m Mroku (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Mroku). Dzia³a 30 dni od za³o¿enia.
+40900	Miecz Mroku	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroku): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40901	Sztylet Mroku	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroku): ninja. Dzia³a 30 dni od za³o¿enia.
+40902	£uk Mroku	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroku): ninja. Dzia³a 30 dni od za³o¿enia.
+40903	Ostrze Mroku	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroku): wojownik. Dzia³a 30 dni od za³o¿enia.
+40904	Dzwon Mroku	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroku): szaman. Dzia³a 30 dni od za³o¿enia.
+40905	Wachlarz Mroku	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroku): szaman. Dzia³a 30 dni od za³o¿enia.
+85200	Szarfa Mroku (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Mroku). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42904	Kostium Chwa³y (m)	Kostium z zestawu Arezzo (Zestaw Chwaly). Dzia³a 30 dni od za³o¿enia.
+42905	Kostium Chwa³y (k)	Kostium z zestawu Arezzo (Zestaw Chwaly). Dzia³a 30 dni od za³o¿enia.
+45904	He³m Chwa³y (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Chwaly). Dzia³a 30 dni od za³o¿enia.
+45905	He³m Chwa³y (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Chwaly). Dzia³a 30 dni od za³o¿enia.
+40910	Miecz Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Chwaly): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40911	Sztylet Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Chwaly): ninja. Dzia³a 30 dni od za³o¿enia.
+40912	£uk Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Chwaly): ninja. Dzia³a 30 dni od za³o¿enia.
+40913	Ostrze Chwa³e	Nak³adka na broñ z zestawu Arezzo (Zestaw Chwaly): wojownik. Dzia³a 30 dni od za³o¿enia.
+40914	Dzwon Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Chwaly): szaman. Dzia³a 30 dni od za³o¿enia.
+40915	Wachlarz Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Chwaly): szaman. Dzia³a 30 dni od za³o¿enia.
+85201	Szarfa Chwa³a (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Chwaly). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42908	Kostium Druida (m)	Kostium z zestawu Arezzo (Zestaw Druida). Dzia³a 30 dni od za³o¿enia.
+42909	Kostium Druida (k)	Kostium z zestawu Arezzo (Zestaw Druida). Dzia³a 30 dni od za³o¿enia.
+45908	He³m Druida (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Druida). Dzia³a 30 dni od za³o¿enia.
+45909	He³m Druida (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Druida). Dzia³a 30 dni od za³o¿enia.
+40920	Miecz Druida	Nak³adka na broñ z zestawu Arezzo (Zestaw Druida): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40921	Sztylet Druida	Nak³adka na broñ z zestawu Arezzo (Zestaw Druida): ninja. Dzia³a 30 dni od za³o¿enia.
+40922	£uk Druida	Nak³adka na broñ z zestawu Arezzo (Zestaw Druida): ninja. Dzia³a 30 dni od za³o¿enia.
+40923	Ostrze Druida	Nak³adka na broñ z zestawu Arezzo (Zestaw Druida): wojownik. Dzia³a 30 dni od za³o¿enia.
+40924	Dzwon Druida	Nak³adka na broñ z zestawu Arezzo (Zestaw Druida): szaman. Dzia³a 30 dni od za³o¿enia.
+40925	Wachlarz Druida	Nak³adka na broñ z zestawu Arezzo (Zestaw Druida): szaman. Dzia³a 30 dni od za³o¿enia.
+85202	Szarfa Druida (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Druida). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42924	Kostium Z³ocisty (m)	Kostium z zestawu Arezzo (Zestaw Zlocisty). Dzia³a 30 dni od za³o¿enia.
+42925	Kostium Z³ocisty (k)	Kostium z zestawu Arezzo (Zestaw Zlocisty). Dzia³a 30 dni od za³o¿enia.
+45924	He³m Z³ocisty (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Zlocisty). Dzia³a 30 dni od za³o¿enia.
+45925	He³m Z³ocisty (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Zlocisty). Dzia³a 30 dni od za³o¿enia.
+42926	Kostium Wikinga (m)	Kostium z zestawu Arezzo (Zestaw Wikinga). Dzia³a 30 dni od za³o¿enia.
+42927	Kostium Wikinga (k)	Kostium z zestawu Arezzo (Zestaw Wikinga). Dzia³a 30 dni od za³o¿enia.
+45926	He³m Wikinga (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Wikinga). Dzia³a 30 dni od za³o¿enia.
+45927	He³m Wikinga (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Wikinga). Dzia³a 30 dni od za³o¿enia.
+40940	Miecz Wikinga	Nak³adka na broñ z zestawu Arezzo (Zestaw Wikinga): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40941	Sztylet Wikinga	Nak³adka na broñ z zestawu Arezzo (Zestaw Wikinga): ninja. Dzia³a 30 dni od za³o¿enia.
+40942	£uk Wikinga	Nak³adka na broñ z zestawu Arezzo (Zestaw Wikinga): ninja. Dzia³a 30 dni od za³o¿enia.
+40943	Ostrze Wikinga	Nak³adka na broñ z zestawu Arezzo (Zestaw Wikinga): wojownik. Dzia³a 30 dni od za³o¿enia.
+40944	Dzwon Wikinga	Nak³adka na broñ z zestawu Arezzo (Zestaw Wikinga): szaman. Dzia³a 30 dni od za³o¿enia.
+40945	Wachlarz Wikinga	Nak³adka na broñ z zestawu Arezzo (Zestaw Wikinga): szaman. Dzia³a 30 dni od za³o¿enia.
+85203	Szarfa Wikinga (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Wikinga). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42928	Kostium MroŸ. Rycerza (m)	Kostium z zestawu Arezzo (Zestaw Mroznego Rycerza). Dzia³a 30 dni od za³o¿enia.
+42929	Kostium MroŸ. Rycerza (k)	Kostium z zestawu Arezzo (Zestaw Mroznego Rycerza). Dzia³a 30 dni od za³o¿enia.
+45928	He³m MroŸ. Rycerza (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Mroznego Rycerza). Dzia³a 30 dni od za³o¿enia.
+45929	He³m MroŸ. Rycerza (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Mroznego Rycerza). Dzia³a 30 dni od za³o¿enia.
+40950	Miecz MroŸ. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroznego Rycerza): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40951	Sztylet MroŸ. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroznego Rycerza): ninja. Dzia³a 30 dni od za³o¿enia.
+40952	£uk MroŸ. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroznego Rycerza): ninja. Dzia³a 30 dni od za³o¿enia.
+40953	Ostrze MroŸ. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroznego Rycerza): wojownik. Dzia³a 30 dni od za³o¿enia.
+40954	Dzwon MroŸ. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroznego Rycerza): szaman. Dzia³a 30 dni od za³o¿enia.
+40955	Wachlarz MroŸ. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Mroznego Rycerza): szaman. Dzia³a 30 dni od za³o¿enia.
+85204	Szarfa MroŸ. Rycerza (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Mroznego Rycerza). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42930	Kostium Ognist. Rycerza (m)	Kostium z zestawu Arezzo (Zestaw Ognistego Rycerza). Dzia³a 30 dni od za³o¿enia.
+42931	Kostium Ognist. Rycerza (k)	Kostium z zestawu Arezzo (Zestaw Ognistego Rycerza). Dzia³a 30 dni od za³o¿enia.
+45930	He³m Ognist. Rycerza (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Ognistego Rycerza). Dzia³a 30 dni od za³o¿enia.
+45931	He³m Ognist. Rycerza (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Ognistego Rycerza). Dzia³a 30 dni od za³o¿enia.
+40960	Miecz Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40961	Sztylet Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): ninja. Dzia³a 30 dni od za³o¿enia.
+40962	£uk Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): ninja. Dzia³a 30 dni od za³o¿enia.
+40963	Ostrze Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): wojownik. Dzia³a 30 dni od za³o¿enia.
+40964	Dzwon Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): szaman. Dzia³a 30 dni od za³o¿enia.
+40965	Wachlarz Ognist. Rycerza	Nak³adka na broñ z zestawu Arezzo (Zestaw Ognistego Rycerza): szaman. Dzia³a 30 dni od za³o¿enia.
+85205	Szarfa Ognist. Rycerza (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Ognistego Rycerza). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42932	Kostium Anielski (m)	Kostium z zestawu Arezzo (Zestaw Anielski). Dzia³a 30 dni od za³o¿enia.
+42933	Kostium Anielski (k)	Kostium z zestawu Arezzo (Zestaw Anielski). Dzia³a 30 dni od za³o¿enia.
+45932	He³m Anielski (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Anielski). Dzia³a 30 dni od za³o¿enia.
+45933	He³m Anielski (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Anielski). Dzia³a 30 dni od za³o¿enia.
+40970	Miecz Anielski	Nak³adka na broñ z zestawu Arezzo (Zestaw Anielski): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40971	Sztylet Anielski	Nak³adka na broñ z zestawu Arezzo (Zestaw Anielski): ninja. Dzia³a 30 dni od za³o¿enia.
+40972	£uk Anielski	Nak³adka na broñ z zestawu Arezzo (Zestaw Anielski): ninja. Dzia³a 30 dni od za³o¿enia.
+40973	Ostrze Anielskie	Nak³adka na broñ z zestawu Arezzo (Zestaw Anielski): wojownik. Dzia³a 30 dni od za³o¿enia.
+40974	Dzwon Anielski	Nak³adka na broñ z zestawu Arezzo (Zestaw Anielski): szaman. Dzia³a 30 dni od za³o¿enia.
+40975	Wachlarz Anielski	Nak³adka na broñ z zestawu Arezzo (Zestaw Anielski): szaman. Dzia³a 30 dni od za³o¿enia.
+85206	Szarfa Anielska (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Anielski). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42934	Kostium Cienia (m)	Kostium z zestawu Arezzo (Zestaw Cienia). Dzia³a 30 dni od za³o¿enia.
+42935	Kostium Cienia (k)	Kostium z zestawu Arezzo (Zestaw Cienia). Dzia³a 30 dni od za³o¿enia.
+45934	He³m Cienia (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Cienia). Dzia³a 30 dni od za³o¿enia.
+45935	He³m Cienia (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Cienia). Dzia³a 30 dni od za³o¿enia.
+40980	Miecz Cienia	Nak³adka na broñ z zestawu Arezzo (Zestaw Cienia): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40981	Sztylet Cienia	Nak³adka na broñ z zestawu Arezzo (Zestaw Cienia): ninja. Dzia³a 30 dni od za³o¿enia.
+40982	£uk Cienia	Nak³adka na broñ z zestawu Arezzo (Zestaw Cienia): ninja. Dzia³a 30 dni od za³o¿enia.
+40983	Ostrze Cienia	Nak³adka na broñ z zestawu Arezzo (Zestaw Cienia): wojownik. Dzia³a 30 dni od za³o¿enia.
+40984	Dzwon Cienia	Nak³adka na broñ z zestawu Arezzo (Zestaw Cienia): szaman. Dzia³a 30 dni od za³o¿enia.
+40985	Wachlarz Cienia	Nak³adka na broñ z zestawu Arezzo (Zestaw Cienia): szaman. Dzia³a 30 dni od za³o¿enia.
+85207	Szarfa Cienia (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Cienia). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42936	Kostium Ksiê¿ycowy (m)	Kostium z zestawu Arezzo (Zestaw Ksiezycowy). Dzia³a 30 dni od za³o¿enia.
+42937	Kostium Ksiê¿ycowy (k)	Kostium z zestawu Arezzo (Zestaw Ksiezycowy). Dzia³a 30 dni od za³o¿enia.
+45936	He³m Ksiê¿ycowy (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Ksiezycowy). Dzia³a 30 dni od za³o¿enia.
+45937	He³m Ksiê¿ycowy (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Ksiezycowy). Dzia³a 30 dni od za³o¿enia.
+40990	Miecz Ksiê¿ycowy	Nak³adka na broñ z zestawu Arezzo (Zestaw Ksiezycowy): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40991	Sztylet Ksiê¿ycowy	Nak³adka na broñ z zestawu Arezzo (Zestaw Ksiezycowy): ninja. Dzia³a 30 dni od za³o¿enia.
+40992	£uk Ksiê¿ycowy	Nak³adka na broñ z zestawu Arezzo (Zestaw Ksiezycowy): ninja. Dzia³a 30 dni od za³o¿enia.
+40993	Ostrze Ksiê¿ycowe	Nak³adka na broñ z zestawu Arezzo (Zestaw Ksiezycowy): wojownik. Dzia³a 30 dni od za³o¿enia.
+40994	Dzwon Ksiê¿ycowy	Nak³adka na broñ z zestawu Arezzo (Zestaw Ksiezycowy): szaman. Dzia³a 30 dni od za³o¿enia.
+40995	Wachlarz Ksiê¿ycowy	Nak³adka na broñ z zestawu Arezzo (Zestaw Ksiezycowy): szaman. Dzia³a 30 dni od za³o¿enia.
+85208	Szarfa Ksiê¿ycowa (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Ksiezycowy). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42938	Kostium Szmaragd. W³adcy (m)	Kostium z zestawu Arezzo (Zestaw Szmaragdowego Wladcy). Dzia³a 30 dni od za³o¿enia.
+42939	Kostium Szmaragd. W³adcy (k)	Kostium z zestawu Arezzo (Zestaw Szmaragdowego Wladcy). Dzia³a 30 dni od za³o¿enia.
+45938	He³m Szmaragd. W³adcy (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Szmaragdowego Wladcy). Dzia³a 30 dni od za³o¿enia.
+45939	He³m Szmaragd. W³adcy (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Szmaragdowego Wladcy). Dzia³a 30 dni od za³o¿enia.
+40800	Miecz Szmaragd. W³adcy	Nak³adka na broñ z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40801	Sztylet Szmaragd. W³adcy	Nak³adka na broñ z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): ninja. Dzia³a 30 dni od za³o¿enia.
+40802	£uk Szmaragd. W³adcy	Nak³adka na broñ z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): ninja. Dzia³a 30 dni od za³o¿enia.
+40803	Ostrze Szmaragd. W³adcy	Nak³adka na broñ z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): wojownik. Dzia³a 30 dni od za³o¿enia.
+40804	Dzwon Szmaragd. W³adcy	Nak³adka na broñ z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): szaman. Dzia³a 30 dni od za³o¿enia.
+40805	Wachlarz Szmaragd. W³adcy	Nak³adka na broñ z zestawu Arezzo (Zestaw Szmaragdowego Wladcy): szaman. Dzia³a 30 dni od za³o¿enia.
+85209	Szarfa Szmaragd. W³adcy (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Szmaragdowego Wladcy). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42940	Kostium Leœnego Ksiêcia (m)	Kostium z zestawu Arezzo (Zestaw Lesnego Ksiecia). Dzia³a 30 dni od za³o¿enia.
+42941	Kostium Leœnego Ksiêcia (k)	Kostium z zestawu Arezzo (Zestaw Lesnego Ksiecia). Dzia³a 30 dni od za³o¿enia.
+45940	He³m Leœnego Ksiêcia (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Lesnego Ksiecia). Dzia³a 30 dni od za³o¿enia.
+45941	He³m Leœnego Ksiêcia (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Lesnego Ksiecia). Dzia³a 30 dni od za³o¿enia.
+40810	Miecz Leœnego Ksiêcia	Nak³adka na broñ z zestawu Arezzo (Zestaw Lesnego Ksiecia): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40811	Sztylet Leœnego Ksiêcia	Nak³adka na broñ z zestawu Arezzo (Zestaw Lesnego Ksiecia): ninja. Dzia³a 30 dni od za³o¿enia.
+40812	£uk Leœnego Ksiêcia	Nak³adka na broñ z zestawu Arezzo (Zestaw Lesnego Ksiecia): ninja. Dzia³a 30 dni od za³o¿enia.
+40813	Ostrze Leœnego Ksiêcia	Nak³adka na broñ z zestawu Arezzo (Zestaw Lesnego Ksiecia): wojownik. Dzia³a 30 dni od za³o¿enia.
+40814	Dzwon Leœnego Ksiêcia	Nak³adka na broñ z zestawu Arezzo (Zestaw Lesnego Ksiecia): szaman. Dzia³a 30 dni od za³o¿enia.
+40815	Wachlarz Leœnego Ksiêcia	Nak³adka na broñ z zestawu Arezzo (Zestaw Lesnego Ksiecia): szaman. Dzia³a 30 dni od za³o¿enia.
+85210	Szarfa Leœnego Ksiêcia (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Lesnego Ksiecia). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42942	Kostium Plagi (m)	Kostium z zestawu Arezzo (Zestaw Plagi). Dzia³a 30 dni od za³o¿enia.
+42943	Kostium Plagi (k)	Kostium z zestawu Arezzo (Zestaw Plagi). Dzia³a 30 dni od za³o¿enia.
+45942	He³m Plagi (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Plagi). Dzia³a 30 dni od za³o¿enia.
+45943	He³m Plagi (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Plagi). Dzia³a 30 dni od za³o¿enia.
+40820	Miecz Plagi	Nak³adka na broñ z zestawu Arezzo (Zestaw Plagi): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40821	Sztylet Plagi	Nak³adka na broñ z zestawu Arezzo (Zestaw Plagi): ninja. Dzia³a 30 dni od za³o¿enia.
+40822	£uk Plagi	Nak³adka na broñ z zestawu Arezzo (Zestaw Plagi): ninja. Dzia³a 30 dni od za³o¿enia.
+40823	Ostrze Plagie	Nak³adka na broñ z zestawu Arezzo (Zestaw Plagi): wojownik. Dzia³a 30 dni od za³o¿enia.
+40824	Dzwon Plagi	Nak³adka na broñ z zestawu Arezzo (Zestaw Plagi): szaman. Dzia³a 30 dni od za³o¿enia.
+40825	Wachlarz Plagi	Nak³adka na broñ z zestawu Arezzo (Zestaw Plagi): szaman. Dzia³a 30 dni od za³o¿enia.
+85211	Szarfa Plaga (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Plagi). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42944	Kostium Króla Lodu (m)	Kostium z zestawu Arezzo (Zestaw Krola Lodu). Dzia³a 30 dni od za³o¿enia.
+42945	Kostium Króla Lodu (k)	Kostium z zestawu Arezzo (Zestaw Krola Lodu). Dzia³a 30 dni od za³o¿enia.
+45944	He³m Króla Lodu (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Krola Lodu). Dzia³a 30 dni od za³o¿enia.
+45945	He³m Króla Lodu (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Krola Lodu). Dzia³a 30 dni od za³o¿enia.
+40830	Miecz Króla Lodu	Nak³adka na broñ z zestawu Arezzo (Zestaw Krola Lodu): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40831	Sztylet Króla Lodu	Nak³adka na broñ z zestawu Arezzo (Zestaw Krola Lodu): ninja. Dzia³a 30 dni od za³o¿enia.
+40832	£uk Króla Lodu	Nak³adka na broñ z zestawu Arezzo (Zestaw Krola Lodu): ninja. Dzia³a 30 dni od za³o¿enia.
+40833	Ostrze Króla Lodu	Nak³adka na broñ z zestawu Arezzo (Zestaw Krola Lodu): wojownik. Dzia³a 30 dni od za³o¿enia.
+40834	Dzwon Króla Lodu	Nak³adka na broñ z zestawu Arezzo (Zestaw Krola Lodu): szaman. Dzia³a 30 dni od za³o¿enia.
+40835	Wachlarz Króla Lodu	Nak³adka na broñ z zestawu Arezzo (Zestaw Krola Lodu): szaman. Dzia³a 30 dni od za³o¿enia.
+85212	Szarfa Króla Lodu (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Krola Lodu). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42946	Kostium Krwawej Zemsty (m)	Kostium z zestawu Arezzo (Zestaw Krwawej Zemsty). Dzia³a 30 dni od za³o¿enia.
+42947	Kostium Krwawej Zemsty (k)	Kostium z zestawu Arezzo (Zestaw Krwawej Zemsty). Dzia³a 30 dni od za³o¿enia.
+45946	He³m Krwawej Zemsty (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Krwawej Zemsty). Dzia³a 30 dni od za³o¿enia.
+45947	He³m Krwawej Zemsty (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Krwawej Zemsty). Dzia³a 30 dni od za³o¿enia.
+40840	Miecz Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40841	Sztylet Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): ninja. Dzia³a 30 dni od za³o¿enia.
+40842	£uk Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): ninja. Dzia³a 30 dni od za³o¿enia.
+40843	Ostrze Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): wojownik. Dzia³a 30 dni od za³o¿enia.
+40844	Dzwon Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): szaman. Dzia³a 30 dni od za³o¿enia.
+40845	Wachlarz Krwawej Zemsty	Nak³adka na broñ z zestawu Arezzo (Zestaw Krwawej Zemsty): szaman. Dzia³a 30 dni od za³o¿enia.
+42948	Kostium Letniej Chwa³y (m)	Kostium z zestawu Arezzo (Zestaw Letniej Chwaly). Dzia³a 30 dni od za³o¿enia.
+42949	Kostium Letniej Chwa³y (k)	Kostium z zestawu Arezzo (Zestaw Letniej Chwaly). Dzia³a 30 dni od za³o¿enia.
+45948	He³m Letniej Chwa³y (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Letniej Chwaly). Dzia³a 30 dni od za³o¿enia.
+45949	He³m Letniej Chwa³y (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Letniej Chwaly). Dzia³a 30 dni od za³o¿enia.
+40850	Miecz Letniej Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Letniej Chwaly): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40851	Sztylet Letniej Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Letniej Chwaly): ninja. Dzia³a 30 dni od za³o¿enia.
+40852	£uk Letniej Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Letniej Chwaly): ninja. Dzia³a 30 dni od za³o¿enia.
+40853	Ostrze Letniej Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Letniej Chwaly): wojownik. Dzia³a 30 dni od za³o¿enia.
+40854	Dzwon Letniej Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Letniej Chwaly): szaman. Dzia³a 30 dni od za³o¿enia.
+40855	Wachlarz Letniej Chwa³y	Nak³adka na broñ z zestawu Arezzo (Zestaw Letniej Chwaly): szaman. Dzia³a 30 dni od za³o¿enia.
+85214	Szarfa Letniej Chwa³y (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Letniej Chwaly). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42950	Kostium B³k. Wiatru (m)	Kostium z zestawu Arezzo (Zestaw Blekitnego Wiatru). Dzia³a 30 dni od za³o¿enia.
+42951	Kostium B³k. Wiatru (k)	Kostium z zestawu Arezzo (Zestaw Blekitnego Wiatru). Dzia³a 30 dni od za³o¿enia.
+45950	He³m B³k. Wiatru (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Blekitnego Wiatru). Dzia³a 30 dni od za³o¿enia.
+45951	He³m B³k. Wiatru (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Blekitnego Wiatru). Dzia³a 30 dni od za³o¿enia.
+40860	Miecz B³k. Wiatru	Nak³adka na broñ z zestawu Arezzo (Zestaw Blekitnego Wiatru): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40861	Sztylet B³k. Wiatru	Nak³adka na broñ z zestawu Arezzo (Zestaw Blekitnego Wiatru): ninja. Dzia³a 30 dni od za³o¿enia.
+40862	£uk B³k. Wiatru	Nak³adka na broñ z zestawu Arezzo (Zestaw Blekitnego Wiatru): ninja. Dzia³a 30 dni od za³o¿enia.
+40863	Ostrze B³k. Wiatru	Nak³adka na broñ z zestawu Arezzo (Zestaw Blekitnego Wiatru): wojownik. Dzia³a 30 dni od za³o¿enia.
+40864	Dzwon B³k. Wiatru	Nak³adka na broñ z zestawu Arezzo (Zestaw Blekitnego Wiatru): szaman. Dzia³a 30 dni od za³o¿enia.
+40865	Wachlarz B³k. Wiatru	Nak³adka na broñ z zestawu Arezzo (Zestaw Blekitnego Wiatru): szaman. Dzia³a 30 dni od za³o¿enia.
+85215	Szarfa B³k. Wiatru (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Blekitnego Wiatru). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42952	Kostium Arkt. Króla (m)	Kostium z zestawu Arezzo (Zestaw Arktycznego Krola). Dzia³a 30 dni od za³o¿enia.
+42953	Kostium Arkt. Króla (k)	Kostium z zestawu Arezzo (Zestaw Arktycznego Krola). Dzia³a 30 dni od za³o¿enia.
+45952	He³m Arkt. Króla (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Arktycznego Krola). Dzia³a 30 dni od za³o¿enia.
+45953	He³m Arkt. Króla (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Arktycznego Krola). Dzia³a 30 dni od za³o¿enia.
+40870	Miecz Arkt. Króla	Nak³adka na broñ z zestawu Arezzo (Zestaw Arktycznego Krola): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40871	Sztylet Arkt. Króla	Nak³adka na broñ z zestawu Arezzo (Zestaw Arktycznego Krola): ninja. Dzia³a 30 dni od za³o¿enia.
+40872	£uk Arkt. Króla	Nak³adka na broñ z zestawu Arezzo (Zestaw Arktycznego Krola): ninja. Dzia³a 30 dni od za³o¿enia.
+40873	Ostrze Arkt. Króla	Nak³adka na broñ z zestawu Arezzo (Zestaw Arktycznego Krola): wojownik. Dzia³a 30 dni od za³o¿enia.
+40874	Dzwon Arkt. Króla	Nak³adka na broñ z zestawu Arezzo (Zestaw Arktycznego Krola): szaman. Dzia³a 30 dni od za³o¿enia.
+40875	Wachlarz Arkt. Króla	Nak³adka na broñ z zestawu Arezzo (Zestaw Arktycznego Krola): szaman. Dzia³a 30 dni od za³o¿enia.
+85216	Szarfa Arkt. Króla (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Arktycznego Krola). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42954	Kostium Upiornej Nocy (m)	Kostium z zestawu Arezzo (Zestaw Upiornej Nocy). Dzia³a 30 dni od za³o¿enia.
+42955	Kostium Upiornej Nocy (k)	Kostium z zestawu Arezzo (Zestaw Upiornej Nocy). Dzia³a 30 dni od za³o¿enia.
+45954	He³m Upiornej Nocy (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Upiornej Nocy). Dzia³a 30 dni od za³o¿enia.
+45955	He³m Upiornej Nocy (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Upiornej Nocy). Dzia³a 30 dni od za³o¿enia.
+40880	Miecz Upiornej Nocy	Nak³adka na broñ z zestawu Arezzo (Zestaw Upiornej Nocy): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40881	Sztylet Upiornej Nocy	Nak³adka na broñ z zestawu Arezzo (Zestaw Upiornej Nocy): ninja. Dzia³a 30 dni od za³o¿enia.
+40882	£uk Upiornej Nocy	Nak³adka na broñ z zestawu Arezzo (Zestaw Upiornej Nocy): ninja. Dzia³a 30 dni od za³o¿enia.
+40883	Ostrze Upiornej Nocy	Nak³adka na broñ z zestawu Arezzo (Zestaw Upiornej Nocy): wojownik. Dzia³a 30 dni od za³o¿enia.
+40884	Dzwon Upiornej Nocy	Nak³adka na broñ z zestawu Arezzo (Zestaw Upiornej Nocy): szaman. Dzia³a 30 dni od za³o¿enia.
+40885	Wachlarz Upiornej Nocy	Nak³adka na broñ z zestawu Arezzo (Zestaw Upiornej Nocy): szaman. Dzia³a 30 dni od za³o¿enia.
+85217	Szarfa Upiornej Nocy (nak³.)	Nak³adka na szarfê z zestawu Arezzo (Zestaw Upiornej Nocy). Przeci¹gnij j¹ na szarfê w ekwipunku: szarfa wygl¹da jak ta nak³adka, jej stopieñ, poch³anianie i bonusy zostaj¹. Poprzednia nak³adka wraca do ekwipunku.
+42958	Kostium Nieb. Smoka (m)	Kostium z zestawu Arezzo (Zestaw Niebieskiego Smoka). Dzia³a 30 dni od za³o¿enia.
+42959	Kostium Nieb. Smoka (k)	Kostium z zestawu Arezzo (Zestaw Niebieskiego Smoka). Dzia³a 30 dni od za³o¿enia.
+45958	He³m Nieb. Smoka (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Niebieskiego Smoka). Dzia³a 30 dni od za³o¿enia.
+45959	He³m Nieb. Smoka (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Niebieskiego Smoka). Dzia³a 30 dni od za³o¿enia.
+40700	Miecz Nieb. Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Niebieskiego Smoka): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40701	Sztylet Nieb. Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Niebieskiego Smoka): ninja. Dzia³a 30 dni od za³o¿enia.
+40702	£uk Nieb. Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Niebieskiego Smoka): ninja. Dzia³a 30 dni od za³o¿enia.
+40703	Ostrze Nieb. Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Niebieskiego Smoka): wojownik. Dzia³a 30 dni od za³o¿enia.
+40704	Dzwon Nieb. Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Niebieskiego Smoka): szaman. Dzia³a 30 dni od za³o¿enia.
+40705	Wachlarz Nieb. Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Niebieskiego Smoka): szaman. Dzia³a 30 dni od za³o¿enia.
+42960	Kostium Z³otego Smoka (m)	Kostium z zestawu Arezzo (Zestaw Zlotego Smoka). Dzia³a 30 dni od za³o¿enia.
+42961	Kostium Z³otego Smoka (k)	Kostium z zestawu Arezzo (Zestaw Zlotego Smoka). Dzia³a 30 dni od za³o¿enia.
+45960	He³m Z³otego Smoka (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Zlotego Smoka). Dzia³a 30 dni od za³o¿enia.
+45961	He³m Z³otego Smoka (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Zlotego Smoka). Dzia³a 30 dni od za³o¿enia.
+40710	Miecz Z³otego Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Zlotego Smoka): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40711	Sztylet Z³otego Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Zlotego Smoka): ninja. Dzia³a 30 dni od za³o¿enia.
+40712	£uk Z³otego Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Zlotego Smoka): ninja. Dzia³a 30 dni od za³o¿enia.
+40713	Ostrze Z³otego Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Zlotego Smoka): wojownik. Dzia³a 30 dni od za³o¿enia.
+40714	Dzwon Z³otego Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Zlotego Smoka): szaman. Dzia³a 30 dni od za³o¿enia.
+40715	Wachlarz Z³otego Smoka	Nak³adka na broñ z zestawu Arezzo (Zestaw Zlotego Smoka): szaman. Dzia³a 30 dni od za³o¿enia.
+42962	Kostium Jokera (m)	Kostium z zestawu Arezzo (Zestaw Jokera). Dzia³a 30 dni od za³o¿enia.
+42963	Kostium Jokera (k)	Kostium z zestawu Arezzo (Zestaw Jokera). Dzia³a 30 dni od za³o¿enia.
+45962	Czapka Jokera (m)	Nakrycie g³owy z zestawu Arezzo (Zestaw Jokera). Dzia³a 30 dni od za³o¿enia.
+45963	Czapka Jokera (k)	Nakrycie g³owy z zestawu Arezzo (Zestaw Jokera). Dzia³a 30 dni od za³o¿enia.
+40600	Miecz Jokera	Nak³adka na broñ z zestawu Arezzo (Zestaw Jokera): wojownik, ninja, sura. Dzia³a 30 dni od za³o¿enia.
+40601	Sztylet Jokera	Nak³adka na broñ z zestawu Arezzo (Zestaw Jokera): ninja. Dzia³a 30 dni od za³o¿enia.
+40602	£uk Jokera	Nak³adka na broñ z zestawu Arezzo (Zestaw Jokera): ninja. Dzia³a 30 dni od za³o¿enia.
+40603	Ostrze Jokera	Nak³adka na broñ z zestawu Arezzo (Zestaw Jokera): wojownik. Dzia³a 30 dni od za³o¿enia.
+40604	Dzwon Jokera	Nak³adka na broñ z zestawu Arezzo (Zestaw Jokera): szaman. Dzia³a 30 dni od za³o¿enia.
+40605	Wachlarz Jokera	Nak³adka na broñ z zestawu Arezzo (Zestaw Jokera): szaman. Dzia³a 30 dni od za³o¿enia.
