@@ -90,6 +90,10 @@
 # companion as in any party (the default), 0 its share is the owner's and it
 # takes nothing for itself (order: podzial N). An older
 # server sends no such word, and the window shows no row for it.
+# emotions (MT2009_PLUS_SIDEKICK_EMOTIONS_V1, "Emocje: tak / nie" on the Orders
+# page's Walka bar): 1 the companion consents to its owner's emotions for two
+# and sometimes answers them (the default), 0 it is asked like anybody (order:
+# emocje N). An older server sends no such word, and the button stays hidden.
 #
 # The status and skill pages read the answer to "/towarzysz umiejetnosci"
 # (SidekickSkillBegin with the stats, the skills, SidekickSkillEnd), which the
@@ -321,6 +325,11 @@ TEXT_SECTION_LOOT = 'Drop'
 # and on, and its hint on the page's status line.
 TEXT_SHARE_LOOT_STATES = ('Tylko dla mnie', 'Dzielony')
 TEXT_SHARE_LOOT_HINT = 'Tylko dla mnie: ca\xb3y drop jest tw\xf3j.'
+# MT2009_PLUS_SIDEKICK_EMOTIONS_V1: "Emocje" - a button at the right end of the
+# Walka bar, off and on: on, the companion consents to its owner's emotions for
+# two (a kiss, a slap) without being asked, and sometimes answers them.
+TEXT_EMOTIONS_STATES = ('Emocje: nie', 'Emocje: tak')
+TEXT_EMOTIONS_HINT = 'Emocje we dwoje (poca\xb3unek, klepni\xeacie) bez pytania o zgod\xea.'
 TEXT_SECTION_BEHAVIOUR = 'Zachowanie'
 TEXT_SECTION_POINTS = 'Punkty'
 # MT2009_PLUS_SIDEKICK_PANELS_V1: the panels of its costumes and its Alchemy,
@@ -575,6 +584,9 @@ def ParseInfo(args):
 	# MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Drop" last (1 split, 0 all yours).
 	if len(values) >= len(names) + 15:
 		info['share_loot'] = ParseInt(values[len(names) + 14], 1)
+	# MT2009_PLUS_SIDEKICK_EMOTIONS_V1: "Emocje" last (1 on, the default).
+	if len(values) >= len(names) + 16:
+		info['emotions'] = ParseInt(values[len(names) + 15], 1)
 	return info
 
 
@@ -1089,6 +1101,11 @@ class SidekickWindow(ui.ScriptWindow):
 		self.sellButton.ShowToolTip = _Call(ui.__mem_func__(self.ShowToolTipLines), TEXT_SELL_HINT)
 		self.sellButton.HideToolTip = ui.__mem_func__(self.HideToolTip)
 		self._Section(page, 158, TEXT_SECTION_COMBAT)
+		# MT2009_PLUS_SIDEKICK_EMOTIONS_V1: "Emocje: tak / nie" on the bar.
+		self.emotionsButton = self._Btn(page, 'large', SECTION_X + SECTION_WIDTH - BUTTON_WIDTHS['large'] - 2,
+			158 - 3, '', self.OnEmotions)
+		self._Hover(self.emotionsButton, TEXT_EMOTIONS_HINT)
+		self.emotionsButton.Hide()
 		self.stanceButtons = []
 		for i, text in enumerate(STANCES):
 			self.stanceButtons.append(self._Btn(page, 'middle', ORDER_COLUMNS[i], 178, text, self.OnStance, i))
@@ -1454,6 +1471,12 @@ class SidekickWindow(ui.ScriptWindow):
 			self.shareLootButton.Show()
 		else:
 			self.shareLootButton.Hide()
+		# MT2009_PLUS_SIDEKICK_EMOTIONS_V1: shown by a server that sends it.
+		if 'emotions' in info:
+			self.emotionsButton.SetText(TEXT_EMOTIONS_STATES[1 if info['emotions'] else 0])
+			self.emotionsButton.Show()
+		else:
+			self.emotionsButton.Hide()
 		stance = info['stance'] if 0 <= info['stance'] < len(STANCE_HINTS) else 0
 		self.stanceHint.SetText(STANCE_HINTS[stance])
 		self.ordersStatus.SetIdle(TEXT_MODE % MODES[mode])
@@ -1689,6 +1712,11 @@ class SidekickWindow(ui.ScriptWindow):
 
 	def OnLoot(self, loot):
 		self.SendCommand('zbieraj %d' % loot)
+		self.nextPoll = 0.0
+
+	def OnEmotions(self):
+		on = self.info.get('emotions', 1) if self.info else 1
+		self.SendCommand('emocje %d' % (0 if on else 1))
 		self.nextPoll = 0.0
 
 	def OnShareLoot(self):

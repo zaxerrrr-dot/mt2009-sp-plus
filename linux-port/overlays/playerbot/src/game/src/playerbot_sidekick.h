@@ -31,6 +31,11 @@
 // it exactly once, after playerbot_demon_tower.h (the fight is that file's)
 // and before playerbot_companions.h, whose IsPlayerBotHeldForCompany asks it.
 
+// MT2009_PLUS_SIDEKICK_EMOTIONS_V1: the engine's consents to an emotion for two
+// (cmd_emotion.cpp: a pair (who allowed, whom) put there by "/emotion_allow
+// <vid>", the target window's "Zezwol na emocje" button).
+extern std::set<std::pair<DWORD, DWORD> > s_emotion_set;
+
 namespace
 {
 	enum EPlayerBotSidekickMode
@@ -442,6 +447,58 @@ namespace
 	std::set<DWORD> s_setPlayerBotSidekickNoShare;
 	bool s_bPlayerBotSidekickShareColumn = false;
 
+	// MT2009_PLUS_SIDEKICK_EMOTIONS_V1 ("Dodaj mozliwosc emocji z
+	// towarzyszem, domyslnie wlaczone", the owner, 8 October 2026). An emotion
+	// for two - a kiss, a French kiss, a slap - wants the other side's
+	// consent: the engine (do_emotion, NEED_PC) lets it through when the
+	// target has pressed "Zezwol na emocje" on the asker's target window
+	// ("/emotion_allow <vid>", a pair in s_emotion_set), or when the two are
+	// married. A bot never presses it. With "Emocje" on (the default) the
+	// companion's consent to its owner is always there - the pair (its vid,
+	// the owner's) put into the engine's set while the two are on one map, and
+	// taken out when the switch goes off - so the owner's kiss or slap on it
+	// plays at once for both, as between two players who agreed. The engine's
+	// own rules stay: the kisses between the sexes only, 10 to 500 units
+	// apart, nobody on a horse, the emotion mask or the premium. And it
+	// answers now and then (the hook in do_emotion,
+	// server-patches/sidekickemotion, PlayerBotSidekickOnEmotion): a shy or
+	// glad look for a kiss, an angry or sad one for a slap, the same dance or
+	// a cheer when its owner dances or cheers beside it - a second or two
+	// later, at most once in PLAYERBOT_SIDEKICK_EMOTE_REACT_MS - and a short
+	// line in a whisper at most once in PLAYERBOT_SIDEKICK_EMOTE_SAY_MS.
+	// Kept in player.playerbot_sidekick.emotions (1 on, by default); the
+	// companions with it off, by pid.
+	std::set<DWORD> s_setPlayerBotSidekickNoEmotion;
+	bool s_bPlayerBotSidekickEmotionColumn = false;
+	const DWORD PLAYERBOT_SIDEKICK_EMOTE_REACT_MS = 20 * 1000;
+	const DWORD PLAYERBOT_SIDEKICK_EMOTE_SAY_MS = 90 * 1000;
+	const int PLAYERBOT_SIDEKICK_EMOTE_REACT_PERCENT = 60;	// to a solo emotion of its owner's beside it
+	const int PLAYERBOT_SIDEKICK_EMOTE_SAY_PERCENT = 50;
+	struct TPlayerBotSidekickEmotion
+	{
+		DWORD dwConsentVid = 0;		// the companion's vid of the pair it put into s_emotion_set
+		DWORD dwConsentOwnerVid = 0;
+		DWORD dwReactAt = 0;		// a reaction waiting for its moment
+		std::string strReact;
+		std::string strSay;
+		DWORD dwLastReact = 0;
+		DWORD dwLastSay = 0;
+	};
+	std::map<DWORD, TPlayerBotSidekickEmotion> s_mapPlayerBotSidekickEmotions;
+
+	// MT2009_PLUS_SIDEKICK_EMOTIONS_V1: the consent taken back from the engine.
+	void DropPlayerBotSidekickEmotionConsent(DWORD sidekickPid)
+	{
+		std::map<DWORD, TPlayerBotSidekickEmotion>::iterator e = s_mapPlayerBotSidekickEmotions.find(sidekickPid);
+		if (e == s_mapPlayerBotSidekickEmotions.end())
+			return;
+		if (e->second.dwConsentVid != 0)
+			s_emotion_set.erase(std::make_pair(e->second.dwConsentVid, e->second.dwConsentOwnerVid));
+		e->second.dwConsentVid = 0;
+		e->second.dwConsentOwnerVid = 0;
+		e->second.dwReactAt = 0;
+	}
+
 	// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: "Kup" in the window - the owner's
 	// errand for one kind of goods (playerbot_sidekick_shop.h). Kept in the
 	// runtime: an errand cut off by a logout leaves what it bought held in the
@@ -799,6 +856,13 @@ namespace
 		if (!s_bPlayerBotSidekickShareColumn)
 			sys_err("PLAYERBOT_SIDEKICK: no share_loot column errno=%u",
 					shareLoot.get() ? shareLoot->uiSQLErrno : 0U);
+		// MT2009_PLUS_SIDEKICK_EMOTIONS_V1: "Emocje", on by default.
+		std::unique_ptr<SQLMsg> emotions(AccountDB::instance().DirectQuery(
+				"ALTER TABLE player.playerbot_sidekick "
+				"ADD COLUMN IF NOT EXISTS emotions TINYINT UNSIGNED NOT NULL DEFAULT 1"));
+		s_bPlayerBotSidekickEmotionColumn = emotions.get() && emotions->uiSQLErrno == 0;
+		if (!s_bPlayerBotSidekickEmotionColumn)
+			sys_err("PLAYERBOT_SIDEKICK: no emotions column errno=%u", emotions.get() ? emotions->uiSQLErrno : 0U);
 		// A companion whose owner's character was deleted would be kept out of
 		// the population for good: its record goes, and the identity plays on
 		// as the bot it was, under the name it was given.
@@ -1035,6 +1099,26 @@ namespace
 						off.insert(pid);
 				}
 				s_setPlayerBotSidekickNoShare.swap(off);
+			}
+		}
+		// MT2009_PLUS_SIDEKICK_EMOTIONS_V1: the companions with "Emocje" off.
+		if (s_bPlayerBotSidekickEmotionColumn)
+		{
+			std::unique_ptr<SQLMsg> emotions(AccountDB::instance().DirectQuery(
+					"SELECT sidekick_pid FROM player.playerbot_sidekick WHERE emotions=0"));
+			if (emotions.get() && emotions->uiSQLErrno == 0 && emotions->Get() && emotions->Get()->pSQLResult)
+			{
+				std::set<DWORD> off;
+				MYSQL_ROW emotionRow;
+				while (NULL != (emotionRow = mysql_fetch_row(emotions->Get()->pSQLResult)))
+				{
+					DWORD pid = 0;
+					if (emotionRow[0])
+						str_to_number(pid, emotionRow[0]);
+					if (pid != 0)
+						off.insert(pid);
+				}
+				s_setPlayerBotSidekickNoEmotion.swap(off);
 			}
 		}
 	}
@@ -1376,6 +1460,12 @@ namespace
 
 	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "Drop: dzielony" (the default) or
 	// "tylko dla mnie".
+	// MT2009_PLUS_SIDEKICK_EMOTIONS_V1: "Emocje", on unless its owner switched it off.
+	bool IsPlayerBotSidekickEmotionsOn(DWORD pid)
+	{
+		return s_setPlayerBotSidekickNoEmotion.find(pid) == s_setPlayerBotSidekickNoEmotion.end();
+	}
+
 	bool IsPlayerBotSidekickSharingLoot(DWORD pid)
 	{
 		return s_setPlayerBotSidekickNoShare.find(pid) == s_setPlayerBotSidekickNoShare.end();
@@ -4452,6 +4542,9 @@ namespace
 		s_mapPlayerBotSidekickOwner.erase(rec.dwSidekickPID);
 		s_mapPlayerBotSidekickRuntime.erase(rec.dwSidekickPID);
 		s_mapPlayerBotSidekickPlans.erase(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_PLAN_V1
+		DropPlayerBotSidekickEmotionConsent(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_EMOTIONS_V1
+		s_mapPlayerBotSidekickEmotions.erase(rec.dwSidekickPID);
+		s_setPlayerBotSidekickNoEmotion.erase(rec.dwSidekickPID);
 		s_setPlayerBotSidekickEquipLock.erase(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 		s_setPlayerBotSidekickNoKeep.erase(rec.dwSidekickPID);	// MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1
 		SetPlayerBotSidekickFlag(rec.dwOwnerPID, "towarzysz.created", 0);
@@ -4626,6 +4719,28 @@ namespace
 			return "Dobra, drop z Metinow i bossow znowu dzielimy jak w grupie - czesc przypada mnie.";
 		return "Dobra, caly drop jest twoj: to, co przypadloby mnie, dostajesz ty, a sam nic dla siebie "
 				"nie podnosze. Twoj drop dalej moge ci zbierac.";
+	}
+
+	// MT2009_PLUS_SIDEKICK_EMOTIONS_V1: "Emocje", kept at once.
+	const char* SetPlayerBotSidekickEmotions(TPlayerBotSidekick& rec, bool on)
+	{
+		if (IsPlayerBotSidekickEmotionsOn(rec.dwSidekickPID) != on)
+		{
+			if (on)
+				s_setPlayerBotSidekickNoEmotion.erase(rec.dwSidekickPID);
+			else
+			{
+				s_setPlayerBotSidekickNoEmotion.insert(rec.dwSidekickPID);
+				DropPlayerBotSidekickEmotionConsent(rec.dwSidekickPID);
+			}
+			if (s_bPlayerBotSidekickEmotionColumn)
+				SetPlayerBotSidekickSetting(rec, "emotions", on ? 1U : 0U);
+			sys_log(0, "PLAYERBOT_SIDEKICK: emotions owner=%u pid=%u on=%d", rec.dwOwnerPID, rec.dwSidekickPID, on ? 1 : 0);
+		}
+		if (on)
+			return "Dobra, emocje wlaczone: pocalunek czy klepniecie ode mnie nie wymaga zgody - zaznacz mnie i wybierz "
+					"emocje (okno postaci, Emocje). Czasem tez odpowiem.";
+		return "Dobra, emocje wylaczone: na emocje we dwoje musisz mnie poprosic jak kazdego.";
 	}
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
@@ -5334,9 +5449,10 @@ namespace
 		// coins' balance, and MT2009_PLUS_SIDEKICK_QUICK_TRANSFER_V1's "Pelne
 		// EQ" after it, and MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1's "Szepty" after
 		// that; MT2009_PLUS_SIDEKICK_NO_LOOT_V1's "Drop" (1 split, 0 all the
-		// owner's) last.
+		// owner's) after it, and MT2009_PLUS_SIDEKICK_EMOTIONS_V1's "Emocje"
+		// (1 on) last.
 		SendPlayerBotSidekickCommand(owner,
-				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d %d %d %u %d",
+				"SidekickInfo %d 1 %d %d %d %d %d %d %d %d %d %ld %d %u %u %d %d %lld %u %u %d %d %d %d %d %d %u %d %d %d %d %d %d %d %u %d %d",
 				PLAYERBOT_SIDEKICK_WINDOW_PROTOCOL,
 				inWorld ? (int)sk->GetRaceNum() : -1, inWorld ? (int)sk->GetSkillGroup() : 0,
 				inWorld ? sk->GetLevel() : 0, expPercent,
@@ -5352,7 +5468,8 @@ namespace
 				IsPlayerBotSidekickEquipLocked(rec.dwSidekickPID) ? 1 : 0,
 				IsPlayerBotSidekickKeepingLoot(rec.dwSidekickPID) ? 1 : 0,
 				(unsigned int)GetPlayerBotSidekickNotify(rec.dwOwnerPID),	// MT2009_PLUS_SIDEKICK_NOTIFY_MUTE_V1
-				IsPlayerBotSidekickSharingLoot(rec.dwSidekickPID) ? 1 : 0);	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1
+				IsPlayerBotSidekickSharingLoot(rec.dwSidekickPID) ? 1 : 0,	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1
+				IsPlayerBotSidekickEmotionsOn(rec.dwSidekickPID) ? 1 : 0);	// MT2009_PLUS_SIDEKICK_EMOTIONS_V1
 		char doing[96] = "";
 		char place[64] = "";
 		if (inWorld)
@@ -7316,6 +7433,27 @@ namespace
 			SendPlayerBotWhisper(bot, from, OrderPlayerBotSidekickBuff(from, *rec, get_dword_time()).c_str());
 			return true;
 		}
+		// MT2009_PLUS_SIDEKICK_EMOTIONS_V1: "emocje on/off" - the "Emocje"
+		// switch by whisper, for a window too old to show it. The "off" words
+		// first: "wylacz emocje" holds "emocje".
+		{
+			static const char* const offWords[] = { "emocje off", "emocje wylacz", "wylacz emocje", "bez emocji",
+					"emocje nie", "nie chce emocji", "emotki off" };
+			static const char* const onWords[] = { "emocje on", "emocje wlacz", "wlacz emocje", "emocje tak",
+					"chce emocji", "emotki on" };
+			int on = -1;
+			for (size_t i = 0; on < 0 && i < sizeof(offWords) / sizeof(offWords[0]); ++i)
+				if (PlayerBotSidekickHeard(folded, offWords[i]))
+					on = 0;
+			for (size_t i = 0; on < 0 && i < sizeof(onWords) / sizeof(onWords[0]); ++i)
+				if (PlayerBotSidekickHeard(folded, onWords[i]))
+					on = 1;
+			if (on >= 0)
+			{
+				SendPlayerBotWhisper(bot, from, SetPlayerBotSidekickEmotions(*rec, on == 1));
+				return true;
+			}
+		}
 		// MT2009_PLUS_SIDEKICK_NO_LOOT_V1: "nie zbieraj dropu" / "zbieraj drop"
 		// - the "Drop" switch by whisper, for a window too old to show it. The
 		// "no" words first: "nie zbieraj drop" holds "zbieraj drop".
@@ -7392,6 +7530,7 @@ namespace
 	//            | statystyki [dodaj <ht|iq|st|dx> [ile] | reczne <0|1> | odnow]
 	//            | luruj <0|1> | kup <towar> <ile> [tak]
 	//            | podzial <1 drop dzielony, 0 caly drop dla wlasciciela>	(MT2009_PLUS_SIDEKICK_NO_LOOT_V1)
+	//            | emocje <1 zgoda na emocje we dwoje, 0 bez>	(MT2009_PLUS_SIDEKICK_EMOTIONS_V1)
 	void HandlePlayerBotSidekickCommand(LPCHARACTER ch, const char* argument)
 	{
 		if (!ch || !ch->GetDesc() || (ch->GetDesc()->IsBot() && !s_bPlayerBotSidekickSelfTest))
@@ -7571,6 +7710,15 @@ namespace
 			else
 				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz podzial 1 (drop dzielony jak w grupie) albo "
 						"/towarzysz podzial 0 (caly drop dla ciebie)");
+		}
+		// MT2009_PLUS_SIDEKICK_EMOTIONS_V1: "Emocje".
+		else if (!strcmp(sub, "emocje"))
+		{
+			if (!strcmp(a1, "0") || !strcmp(a1, "1"))
+				SayPlayerBotSidekick(ch, SetPlayerBotSidekickEmotions(rec->second, !strcmp(a1, "1")));
+			else
+				SayPlayerBotSidekick(ch, "Uzyj: /towarzysz emocje 1 (emocje we dwoje bez pytania o zgode) albo "
+						"/towarzysz emocje 0");
 		}
 		else if (!strcmp(sub, "grupa"))
 		{
@@ -10769,6 +10917,130 @@ namespace
 				rec.dwOwnerPID, (unsigned int)fresh.size(), (unsigned int)present.size());
 	}
 
+	// MT2009_PLUS_SIDEKICK_EMOTIONS_V1: the consent kept in the engine while
+	// the switch is on and the two share a map, and a reaction played when its
+	// moment comes.
+	void ManagePlayerBotSidekickEmotions(LPCHARACTER ch, const TPlayerBotSidekick& rec, DWORD dwNow)
+	{
+		const DWORD pid = ch->GetPlayerID();
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
+		if (!IsPlayerBotSidekickEmotionsOn(pid) || !owner || owner->GetMapIndex() != ch->GetMapIndex())
+		{
+			DropPlayerBotSidekickEmotionConsent(pid);
+			return;
+		}
+		TPlayerBotSidekickEmotion& e = s_mapPlayerBotSidekickEmotions[pid];
+		const DWORD vid = (DWORD)ch->GetVID();
+		const DWORD ownerVid = (DWORD)owner->GetVID();
+		if (e.dwConsentVid != 0 && (e.dwConsentVid != vid || e.dwConsentOwnerVid != ownerVid))
+			s_emotion_set.erase(std::make_pair(e.dwConsentVid, e.dwConsentOwnerVid));
+		// Asked again each tick: a set's insert of what is there is nothing.
+		s_emotion_set.insert(std::make_pair(vid, ownerVid));
+		e.dwConsentVid = vid;
+		e.dwConsentOwnerVid = ownerVid;
+		if (e.dwReactAt == 0 || (int)(dwNow - e.dwReactAt) < 0)
+			return;
+		e.dwReactAt = 0;
+		const int dist = DISTANCE_APPROX(ch->GetX() - owner->GetX(), ch->GetY() - owner->GetY());
+		// The engine refuses an emotion from the saddle; a fight or a fall is no
+		// moment for one either.
+		if (!e.strReact.empty() && !ch->IsDead() && !ch->IsRiding() && ch->GetVictim() == NULL && dist <= 2000)
+		{
+			interpret_command(ch, e.strReact.c_str(), e.strReact.size());
+			sys_log(0, "PLAYERBOT_SIDEKICK: emotion answer pid=%u name=%s emotion=%s", pid, ch->GetName(),
+					e.strReact.c_str());
+		}
+		if (!e.strSay.empty() && !ch->IsDead())
+			SendPlayerBotWhisper(ch, owner, e.strSay.c_str());
+		e.strReact.clear();
+		e.strSay.clear();
+	}
+
+	// The owner's emotion (the hook in do_emotion): at its companion, or a
+	// solo one beside it. What it answers, if anything, waits for its moment
+	// (ManagePlayerBotSidekickEmotions).
+	void OnPlayerBotSidekickEmotion(LPCHARACTER ch, LPCHARACTER victim, const char* emotion)
+	{
+		if (!ch || !emotion || s_mapPlayerBotSidekicks.empty() || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot())
+			return;
+		TPlayerBotSidekickMap::const_iterator rec = s_mapPlayerBotSidekicks.find(ch->GetPlayerID());
+		if (rec == s_mapPlayerBotSidekicks.end() || !IsPlayerBotSidekickEmotionsOn(rec->second.dwSidekickPID))
+			return;
+		LPCHARACTER sk = CHARACTER_MANAGER::instance().FindByPID(rec->second.dwSidekickPID);
+		if (!sk || sk->IsDead() || sk->GetMapIndex() != ch->GetMapIndex())
+			return;
+		if (victim && victim != sk)
+			return;
+		if (!victim && DISTANCE_APPROX(sk->GetX() - ch->GetX(), sk->GetY() - ch->GetY()) > 1500)
+			return;
+		const DWORD dwNow = get_dword_time();
+		TPlayerBotSidekickEmotion& e = s_mapPlayerBotSidekickEmotions[sk->GetPlayerID()];
+		if (e.dwReactAt != 0 || (e.dwLastReact != 0 && dwNow - e.dwLastReact < PLAYERBOT_SIDEKICK_EMOTE_REACT_MS))
+			return;
+		static const char* const kissReact[] = { "shy", "joy", "attractive" };
+		static const char* const kissSay[] = { "Och... <3", "Hehe, dziekuje!", "Tez cie lubie :)", "Rumienie sie..." };
+		static const char* const slapReact[] = { "angry", "sad" };
+		static const char* const slapSay[] = { "Ej! Za co?!", "Au! Zasluzylem?", "Hmpf. Zapamietam to.", "No wiesz co..." };
+		static const char* const cheerReact[] = { "clap", "cheer1", "cheer2", "joy" };
+		static const char* const cheerSay[] = { "Brawo!", "Tak jest!", "Jestesmy najlepsi!" };
+		const std::string what = emotion;
+		const char* react = NULL;
+		const char* say = NULL;
+		bool always = false;
+		if (what == "kiss" || what == "french_kiss")
+		{
+			react = kissReact[number(0, 2)];
+			say = kissSay[number(0, 3)];
+			always = true;
+		}
+		else if (what == "slap")
+		{
+			react = slapReact[number(0, 1)];
+			say = slapSay[number(0, 3)];
+			always = true;
+		}
+		else if (what.compare(0, 5, "dance") == 0)
+		{
+			react = emotion;	// the same dance
+			say = "Tanczymy!";
+		}
+		else if (what == "clap" || what == "cheer1" || what == "cheer2" || what == "congratulation" ||
+				what == "joy" || what == "cheerup")
+		{
+			react = cheerReact[number(0, 3)];
+			say = cheerSay[number(0, 2)];
+		}
+		else if (what == "sad")
+		{
+			react = "cheerup";
+			say = "Glowa do gory, damy rade!";
+		}
+		else if (what == "angry")
+		{
+			react = "forgive";
+			say = "Spokojnie, juz dobrze...";
+		}
+		else if (what == "forgive")
+			react = "joy";
+		else if (what == "attractive" || what == "shy")
+			react = "shy";
+		else if (what == "banter")
+			react = "banter";
+		if (!react || (!always && number(1, 100) > PLAYERBOT_SIDEKICK_EMOTE_REACT_PERCENT))
+			return;
+		e.strReact = react;
+		e.strSay.clear();
+		if (say && (e.dwLastSay == 0 || dwNow - e.dwLastSay >= PLAYERBOT_SIDEKICK_EMOTE_SAY_MS) &&
+				number(1, 100) <= PLAYERBOT_SIDEKICK_EMOTE_SAY_PERCENT)
+		{
+			e.strSay = say;
+			e.dwLastSay = dwNow;
+		}
+		// After the owner's own motion: a kiss or a slap plays a few seconds for both.
+		e.dwReactAt = dwNow + (victim ? (DWORD)number(3500, 4500) : (DWORD)number(1200, 2500));
+		e.dwLastReact = dwNow;
+	}
+
 	bool ManagePlayerBotSidekick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
@@ -10788,6 +11060,7 @@ namespace
 		ResendPlayerBotSidekickView(ch, rt, dwNow);	// MT2009_PLUS_SIDEKICK_REDRESS_V1
 		FollowPlayerBotSidekickOwnerPolymorph(ch, state, *rec, rt, dwNow);	// MT2009_PLUS_SIDEKICK_POLYMORPH_V1
 		ReadPlayerBotSidekickForgetBook(ch, *rec, rt, dwNow);
+		ManagePlayerBotSidekickEmotions(ch, *rec, dwNow);	// MT2009_PLUS_SIDEKICK_EMOTIONS_V1
 		// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: a "Kup" errand the call, the leash
 		// or the owner's logout ended (they clear bErrand) is settled here - the
 		// goods handed over, the rest of the owner's yang given back - and a
@@ -10996,4 +11269,12 @@ namespace
 		SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
 		return true;
 	}
+}
+
+// MT2009_PLUS_SIDEKICK_EMOTIONS_V1 (hook): do_emotion's call after an emotion
+// went out (cmd_emotion.cpp, server-patches/sidekickemotion) - the owner's
+// emotion at its companion or beside it, which the companion may answer.
+void PlayerBotSidekickOnEmotion(LPCHARACTER ch, LPCHARACTER victim, const char* emotion)
+{
+	OnPlayerBotSidekickEmotion(ch, victim, emotion);
 }

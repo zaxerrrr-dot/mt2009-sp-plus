@@ -1,0 +1,8 @@
+[
+ {
+  "file": "cmd_emotion.cpp",
+  "marker": "MT2009_PLUS_SIDEKICK_EMOTIONS_V1 (hook)",
+  "old": "\tch->PacketAround(buf.read_peek(), buf.size());\n\n\tif (victim)\n\t\tsys_log(1, \"ACTION: %s TO %s\", emotion_types[i].command, victim->GetName());\n",
+  "new": "\tch->PacketAround(buf.read_peek(), buf.size());\n\t// MT2009_PLUS_SIDEKICK_EMOTIONS_V1 (hook): the owner's emotion at its companion or beside it, which the\n\t// companion may answer (playerbot_sidekick.h, server-patches/sidekickemotion).\n\t{ void PlayerBotSidekickOnEmotion(LPCHARACTER, LPCHARACTER, const char*); PlayerBotSidekickOnEmotion(ch, victim, emotion_types[i].command_to_client); }\n\n\tif (victim)\n\t\tsys_log(1, \"ACTION: %s TO %s\", emotion_types[i].command, victim->GetName());\n"
+ }
+]

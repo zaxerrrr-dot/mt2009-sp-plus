@@ -808,6 +808,21 @@ if ((Test-Path -LiteralPath $digiQolApply -PathType Leaf) -and
         Write-Host ('Applied {0} Digi Rasta convenience edit(s).' -f $digiQolResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The companion's emotions (server-patches/sidekickemotion,
+# MT2009_PLUS_SIDEKICK_EMOTIONS_V1): one call in do_emotion (cmd_emotion.cpp)
+# after an emotion goes out, so the player's companion may answer its owner's
+# kiss, slap, dance or cheer (playerbot_sidekick.h). The consent for an
+# emotion for two needs no engine change. After digirasta-qol, which edits the
+# same function.
+$sidekickEmotionApply = Join-Path $repo 'server-patches/sidekickemotion/Apply-SidekickEmotionPatch.ps1'
+if ((Test-Path -LiteralPath $sidekickEmotionApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_emotion.cpp') -PathType Leaf)) {
+    $sidekickEmotionResult = & $sidekickEmotionApply -SourceDir $engineGameSource
+    if ($sidekickEmotionResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} companion emotion edit(s).' -f $sidekickEmotionResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Quick chest opening (server-patches/vekirion, MT2009_PLUS_VEKIRION_V1,
 # "Autor: Vekirion"): a box opened by a plain use (ITEM_GIFTBOX) has its own
 # limit of 60 in 500 ms for the client's Ctrl + right click on a stack, every
