@@ -123,53 +123,40 @@ namespace
 	// add (Wzmocnienie Przedmiotu, 71285) - unlike 71084/71085 they carry no
 	// ANTI_MYSHOP. The add at his 5 000 000; the change at what 69 SM (its
 	// price in the ItemShop) is worth by the Kupon SM (50) (80017) the bots'
-	// price sheet puts at 1 000 000: 69 / 50 x 1 000 000 = 1 380 000. Both as
-	// written, like the shards and the talismans. The bots never spend them
-	// (ReadPlayerBotBonusBag) and never buy them: they are counter goods.
+	// price sheet puts at 1 000 000: 69 / 50 x 1 000 000 = 1 380 000. V3 (the
+	// owner, 8 October: "ceny maja podlegac inflacji i wszystkim zaleznosciom
+	// jak kazda cena w grze"): both are the price sheet's bases now
+	// (playerbot_price_tables.h), through the yang-rate curve, the inflation,
+	// the markdown and the sale memory like any sheet price - no longer the
+	// owner's fixed prices below. V2 (the owner, 8 October:
+	// "niech boty tez ich uzywaja, kiedy potrzebuja"): a bot of
+	// PLAYERBOT_TRADEABLE_BONUS_MIN_LEVEL and up spends them on its own gear
+	// like 71084/71085 - those first (ReadPlayerBotBonusBag) - keeps
+	// PLAYERBOT_TRADEABLE_BONUS_KEEP of a kind for that and lists the rest, and
+	// buys one off a counter at the fixed price at most when it holds none of
+	// the kind (playerbot_market.h). Under that level every one is goods.
 	const DWORD PLAYERBOT_TRADEABLE_CHANGE_VNUM = 71284;
 	const DWORD PLAYERBOT_TRADEABLE_ADD_VNUM = 71285;
 	const DWORD PLAYERBOT_TRADEABLE_ADD_PRICE = 5000000;
 	const DWORD PLAYERBOT_SM_COUPON_50_PRICE = 1000000;	// playerbot_price_tables.h, 80017
 	const DWORD PLAYERBOT_TRADEABLE_CHANGE_SM = 69;
 	const DWORD PLAYERBOT_TRADEABLE_CHANGE_PRICE = PLAYERBOT_SM_COUPON_50_PRICE / 50 * PLAYERBOT_TRADEABLE_CHANGE_SM;
+	const int PLAYERBOT_TRADEABLE_BONUS_MIN_LEVEL = 40;
+	const int PLAYERBOT_TRADEABLE_BONUS_KEEP = 3;
+	const int PLAYERBOT_TRADEABLE_BONUS_BUY_PURSE_PERCENT = 20;
 
 	bool IsPlayerBotTradeableBonusVnum(DWORD vnum)
 	{
 		return vnum == PLAYERBOT_TRADEABLE_CHANGE_VNUM || vnum == PLAYERBOT_TRADEABLE_ADD_VNUM;
 	}
 
-	// The owner's fixed price of one unit, or 0 for anything else.
-	DWORD GetPlayerBotOwnerFixedUnitPrice(DWORD vnum)
-	{
-		if (IsPlayerBotEnergyShardVnum(vnum))
-			return PLAYERBOT_ENERGY_SHARD_UNIT_PRICE;
-		if (vnum == PLAYERBOT_TRADEABLE_ADD_VNUM)
-			return PLAYERBOT_TRADEABLE_ADD_PRICE;
-		if (vnum == PLAYERBOT_TRADEABLE_CHANGE_VNUM)
-			return PLAYERBOT_TRADEABLE_CHANGE_PRICE;
-		if (IsPlayerBotFixedPriceTalismanVnum(vnum))
-			return GetPlayerBotTalismanPrice(vnum);
-		// MT2009_PLUS_NEWPET_BOTS_V1: every New Pet System egg at the owner's
-		// 2 000 000 (8 October: "obniz cene jajka peta domowego do 2kk").
-		if (IsPlayerBotNewPetEggVnum(vnum))
-			return PLAYERBOT_NEWPET_EGG_PRICE;
-		return 0;
-	}
-
-	bool IsPlayerBotOwnerFixedPriceItem(LPITEM item)
-	{
-		return item && GetPlayerBotOwnerFixedUnitPrice(item->GetVnum()) != 0;
-	}
-
-	// The whole line at the owner's price.
-	DWORD GetPlayerBotOwnerFixedPrice(LPITEM item)
-	{
-		if (!item)
-			return 0;
-		const unsigned long long unit = GetPlayerBotOwnerFixedUnitPrice(item->GetVnum());
-		const unsigned long long total = unit * (unsigned long long)std::max<DWORD>(1, (DWORD)item->GetCount());
-		return (DWORD)std::min<unsigned long long>(total, 0xFFFFFFFFULL);
-	}
+	// MT2009_PLUS_SHEET_PRICES_ONLY_V1 (the owner, 8 October: "na rynku nie ma
+	// stalych cen"): the owner's fixed prices are gone. The shard (30 000), the
+	// eggs (2 000 000), the tradeable change and add (1 380 000 / 5 000 000)
+	// are the price sheet's bases (playerbot_price_tables.h) and the talisman's
+	// grade price above is the base of its asking price
+	// (GetPlayerBotShopAskingPriceRaw) - all through the yang-rate curve, the
+	// inflation, the markdown, the markup and the sale memory.
 
 	// ------------------------------------------------------------ the belts' keep
 

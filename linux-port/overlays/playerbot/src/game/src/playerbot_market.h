@@ -188,10 +188,23 @@ namespace
 	{
 		if (!ch || !offer)
 			return false;
-		// MT2009_PLUS_TRADEABLE_BONUS_V1: a bot never spends the tradeable
-		// change or add (71284/71285), so it never buys one either.
+		// MT2009_PLUS_TRADEABLE_BONUS_V2: the tradeable change or add
+		// (71284/71285) only for a bot that would spend it on its own gear and
+		// holds none of the kind, plain (71084/71085) or tradeable - never to
+		// sell again.
 		if (IsPlayerBotTradeableBonusVnum(offer->GetVnum()))
-			return false;
+		{
+			if (!PlayerBotCanSpendBonusStoneKind(ch, offer) || offer->GetCount() > 1)
+				return false;
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM held = ch->GetInventoryItem(cell);
+				if (held && held->GetType() == ITEM_USE && held->GetSubType() == offer->GetSubType() &&
+						!IsPlayerBotGreenBonusStone(held->GetVnum()))
+					return false;
+			}
+			return true;
+		}
 
 		// MT2009_PLUS_DROPPER_INVEST_V1: a dropper buys no medal off another
 		// dropper's counter, and in its shopping window wants the materials
@@ -696,6 +709,12 @@ namespace
 		}
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		if (price > spare) return false;
+		// MT2009_PLUS_TRADEABLE_BONUS_V2: the tradeable change or add at its
+		// fair price at most (the sheet's, scaled), out of a fifth of what the
+		// bot can spare.
+		if (IsPlayerBotTradeableBonusVnum(item->GetVnum()))
+			return price <= (long long)GetPlayerBotShopAskingPrice(item) &&
+					price <= spare * PLAYERBOT_TRADEABLE_BONUS_BUY_PURSE_PERCENT / 100;
 		// MT2009_PLUS_RANK_FRUIT_MARKET_V1: a rank fruit near the price table,
 		// out of the fruit's share of the purse.
 		if (IsPlayerBotRankFruit(item->GetVnum()))

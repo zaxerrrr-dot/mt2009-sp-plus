@@ -508,7 +508,7 @@ namespace
 		{ 30524,   600000 },	// Kamien Plomienia
 		{ 30525,   600000 },	// Kamien Lodowego Plomienia
 		{ 30550,   120000 },	// Niebieski Rzemyk
-		{ 51001,    30000 },	// Odlamek Energii (MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the owner's 30 000, fixed - GetPlayerBotOwnerFixedUnitPrice)
+		{ 51001,    30000 },	// Odlamek Energii (MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the owner's 30 000; scaled like the sheet since MT2009_PLUS_SHEET_PRICES_ONLY_V1)
 		{ 50701,     3800 },	// Kwiat Brzoskwini
 		{ 50702,     1710 },	// Pokrzywa
 		{ 50703,     1805 },	// Kwiat Kaki
@@ -604,8 +604,8 @@ namespace
 		{ 71089,   120000 },	// Ksiega Misji (Normalna)
 		{ 71090,   250000 },	// Ksiega Misji (Trudna)
 		{ 71092,    75000 },	// Ksiega Polimorfii
-		{ 71284,  1380000 },	// Zaczarowanie Przedmiotu (MT2009_PLUS_TRADEABLE_BONUS_V1: 69 SM by the 50 SM coupon, fixed - GetPlayerBotOwnerFixedUnitPrice)
-		{ 71285,  5000000 },	// Wzmocnienie Przedmiotu (MT2009_PLUS_TRADEABLE_BONUS_V1: the owner's 5 000 000, fixed)
+		{ 71284,  1380000 },	// Zaczarowanie Przedmiotu (MT2009_PLUS_TRADEABLE_BONUS_V3: 69 SM by the 50 SM coupon; scaled like the sheet)
+		{ 71285,  5000000 },	// Wzmocnienie Przedmiotu (MT2009_PLUS_TRADEABLE_BONUS_V3: the owner's 5 000 000; scaled like the sheet)
 		{ 72001,   500000 },	// Pierscien Doswiadczenia
 		{ 72002,   500000 },	// Pierscien Doswiadczenia
 		{ 72003,   500000 },	// Pierscien Doswiadczenia
@@ -786,15 +786,15 @@ namespace
 		{ 55116,   250000 },	// Eliksir Mocy (M) (suggested x5)
 		{ 55117,   600000 },	// Eliksir Mocy (L) (suggested x5)
 		{ 55118,  2000000 },	// Eliksir Mocy (XL) (suggested x5)
-		{ 55401,  2000000 },	// Jajo Malpki (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1, fixed)
-		{ 55402,  2000000 },	// Jajo Pajaczka (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1, fixed)
-		{ 55403,  2000000 },	// Jajo Mini Razadora (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1, fixed)
-		{ 55404,  2000000 },	// Jajo Mini Nemere (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1, fixed)
-		{ 55405,  2000000 },	// Jajo Smoczka (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1, fixed)
-		{ 55406,  2000000 },	// Jajo Czerwonego Smoczka (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1, fixed)
-		{ 55409,  2000000 },	// Jajo Baashido (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1, fixed)
-		{ 55410,  2000000 },	// Jajo Nessie (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1, fixed)
-		{ 55411,  2000000 },	// Jajo Exedyara (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1, fixed)
+		{ 55401,  2000000 },	// Jajo Malpki (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1; scaled like the sheet)
+		{ 55402,  2000000 },	// Jajo Pajaczka (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1; scaled like the sheet)
+		{ 55403,  2000000 },	// Jajo Mini Razadora (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1; scaled like the sheet)
+		{ 55404,  2000000 },	// Jajo Mini Nemere (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1; scaled like the sheet)
+		{ 55405,  2000000 },	// Jajo Smoczka (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1; scaled like the sheet)
+		{ 55406,  2000000 },	// Jajo Czerwonego Smoczka (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1; scaled like the sheet)
+		{ 55409,  2000000 },	// Jajo Baashido (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1; scaled like the sheet)
+		{ 55410,  2000000 },	// Jajo Nessie (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1; scaled like the sheet)
+		{ 55411,  2000000 },	// Jajo Exedyara (owner, 8 October: 2kk - MT2009_PLUS_NEWPET_BOTS_V1; scaled like the sheet)
 		{ 70617,   500000 },	// Bilet Skarbow (suggested)
 		{ 70618,   250000 },	// Klucz Goblina (suggested)
 		{ 70619,  1800000 },	// Szkatulka z Kluczami Goblina (suggested)

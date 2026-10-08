@@ -93,9 +93,17 @@ namespace
 
 	const int PLAYERBOT_NEWPET_SHARE_PERCENT = 50;
 	const int PLAYERBOT_NEWPET_MIN_LEVEL = 30;
-	// The owner, 8 October: "obniz cene jajka peta domowego do 2kk" - as
-	// written, every species (GetPlayerBotOwnerFixedUnitPrice).
+	// The owner, 8 October: "obniz cene jajka peta domowego do 2kk" - every
+	// species; since MT2009_PLUS_SHEET_PRICES_ONLY_V1 ("na rynku nie ma stalych
+	// cen") the price sheet's base (playerbot_price_tables.h), through the
+	// yang-rate curve and the inflation like every sheet price: a buyer's cap
+	// is the scaled one (GetPlayerBotNewPetEggPrice).
 	const DWORD PLAYERBOT_NEWPET_EGG_PRICE = 2000000;
+	DWORD ScalePlayerBotIwakuraPrice(DWORD base);
+	DWORD GetPlayerBotNewPetEggPrice()
+	{
+		return ScalePlayerBotIwakuraPrice(PLAYERBOT_NEWPET_EGG_PRICE);
+	}
 	const DWORD PLAYERBOT_NEWPET_LOOK_MIN_MS = 90 * 1000;
 	const DWORD PLAYERBOT_NEWPET_LOOK_MAX_MS = 180 * 1000;
 	const DWORD PLAYERBOT_NEWPET_CENSUS_MS = 10 * 60 * 1000;
@@ -363,7 +371,7 @@ namespace
 	// A good egg could be had: some counter holds one and the purse pays it.
 	bool CanPlayerBotGetGoodNewPetEgg(LPCHARACTER ch)
 	{
-		return GetPlayerBotNewPetSpare(ch) * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100 >= (long long)PLAYERBOT_NEWPET_EGG_PRICE &&
+		return GetPlayerBotNewPetSpare(ch) * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100 >= (long long)GetPlayerBotNewPetEggPrice() &&
 				CountPlayerBotNewPetGoodEggSupply() > 0;
 	}
 
@@ -499,7 +507,7 @@ namespace
 		const long long count = std::max<long long>(1, (long long)item->GetCount());
 		const long long spare = GetPlayerBotNewPetSpare(ch);
 		if (IsPlayerBotNewPetEggVnum(item->GetVnum()))
-			return price / count <= (long long)PLAYERBOT_NEWPET_EGG_PRICE &&
+			return price / count <= (long long)GetPlayerBotNewPetEggPrice() &&
 					price <= spare * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100;
 		const long long fair = (long long)GetPlayerBotShopAskingPrice(item);
 		if (fair <= 0 || price * 100 > fair * PLAYERBOT_NEWPET_FAIR_PERCENT)
@@ -530,7 +538,7 @@ namespace
 				if (IsPlayerBotNewPetGoodEgg(SPECIES[i].egg))
 					missing[SPECIES[i].egg] = 1;
 			if (!v->hasPet)
-				return std::min<long long>(spare * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100, (long long)PLAYERBOT_NEWPET_EGG_PRICE);
+				return std::min<long long>(spare * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100, (long long)GetPlayerBotNewPetEggPrice());
 		}
 		if (!v->hasPet)
 			return 0;
@@ -544,7 +552,7 @@ namespace
 		long long cap = spare * PLAYERBOT_NEWPET_GOODS_PURSE_PERCENT / 100;
 		if (!missing.empty())	// a better egg than its weak pet
 			cap = std::max(cap, std::min<long long>(spare * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100,
-					(long long)PLAYERBOT_NEWPET_EGG_PRICE));
+					(long long)GetPlayerBotNewPetEggPrice()));
 		if (const EvolutionCost* cost = GetPlayerBotNewPetEvolution(*v))
 		{
 			for (int i = 0; i < EVOLUTION_ITEMS; ++i)

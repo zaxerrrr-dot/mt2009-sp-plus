@@ -3076,9 +3076,10 @@ namespace
 	// written the way a person writes it, up.
 	DWORD GetPlayerBotListingFloor(LPITEM item)
 	{
-		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: nothing under or over the owner's
-		// fixed price - a talisman +150 asks 700 000 whatever its anvil cost.
-		if (IsPlayerBotOwnerFixedPriceItem(item))
+		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1 / MT2009_PLUS_SHEET_PRICES_ONLY_V1: a
+		// talisman asks its grade's price, not what its anvil cost (some two
+		// billion to +200, GetPlayerBotRefineInvestment): no floor under it.
+		if (item && IsPlayerBotFixedPriceTalismanVnum(item->GetVnum()))
 			return 0;
 		const DWORD floor = std::max(std::max(GetPlayerBotRefineInvestment(item), GetPlayerBotBonusGoodsFloor(item)),
 				GetPlayerBotMarketFloor(item));
@@ -3234,14 +3235,21 @@ namespace
 			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, cor, unit);
 			return cor;
 		}
-		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the owner's two fixed prices of
-		// 7 October - Odlamek Energii 30 000 a piece, any talisman 700 000 -
-		// as written (playerbot_energy_shards.h).
-		if (IsPlayerBotOwnerFixedPriceItem(item))
+		// MT2009_PLUS_SHEET_PRICES_ONLY_V1 (the owner, 8 October: "wszystkie
+		// ceny maja zalezec od tych ustawien - na rynku nie ma stalych cen"):
+		// no owner's fixed price any more. Odlamek Energii, the eggs and the
+		// tradeable change/add are sheet rows (playerbot_price_tables.h) and go
+		// the sheet's way below; a talisman's base is its grade's
+		// (GetPlayerBotTalismanPrice: 700 000 at +0, 650 000 more a grade),
+		// through the yang-rate curve and the inflation like every sheet price,
+		// and the listing's markdown and markup after it.
+		if (IsPlayerBotFixedPriceTalismanVnum(item->GetVnum()))
 		{
-			const DWORD fixed = GetPlayerBotOwnerFixedPrice(item);
-			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, fixed, GetPlayerBotOwnerFixedUnitPrice(item->GetVnum()));
-			return fixed;
+			const DWORD unit = ScalePlayerBotIwakuraPrice(GetPlayerBotTalismanPrice(item->GetVnum()));
+			const DWORD talisman = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL,
+					(unsigned long long)unit * std::max<DWORD>(1, (DWORD)item->GetCount()));
+			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, talisman, unit);
+			return talisman;
 		}
 		// The pet in its transporter, by its level.
 		if (item->GetVnum() == PLAYERBOT_PET_CARRIER_VNUM)
@@ -3816,14 +3824,6 @@ namespace
 	DWORD GetPlayerBotListingPrice(LPITEM item, DWORD asking, int markdownPercent,
 			int* markupOut = NULL)
 	{
-		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the owner's fixed prices (a shard, a
-		// talisman) are the line's price: no markdown, no markup, no rounding.
-		if (IsPlayerBotOwnerFixedPriceItem(item))
-		{
-			if (markupOut)
-				*markupOut = 0;
-			return asking;
-		}
 		int markup = markdownPercent > 0 || !item ? 0
 				: GetPlayerBotShortageMarkupPercent(item->GetVnum());
 		if (markdownPercent > 0 && item)
@@ -4270,10 +4270,13 @@ namespace
 		// The rule is written by subtype rather than by vnum so a stone without
 		// the flag - a green 71151/71152, or any of them if an operator ever
 		// clears it in item_proto - is goods the day it appears.
-		// MT2009_PLUS_TRADEABLE_BONUS_V1: the tradeable change and add
-		// (71284/71285) are the owner's counter goods, every one of them.
+		// MT2009_PLUS_TRADEABLE_BONUS_V2: the tradeable change and add
+		// (71284/71285) over what the bot keeps to spend itself
+		// (GetPlayerBotBonusStoneKeep) are the owner's counter goods.
 		if (IsPlayerBotTradeableBonusVnum(item->GetVnum()))
-			return PlayerBotGoods(PLAYERBOT_SHOP_RARE_GOODS_SCORE, per::GOODS_RARE_GOODS);
+			return playerbot_stall_rules::HoldsSpare(CountPlayerBotVnumUnitsAhead(ch, item),
+					(int)item->GetCount(), GetPlayerBotCountedGoodsKeep(ch, item))
+					? PlayerBotGoods(PLAYERBOT_SHOP_RARE_GOODS_SCORE, per::GOODS_RARE_GOODS) : -1;
 		if (IsPlayerBotBonusStoneItem(item))
 			return playerbot_stall_rules::HoldsSpare(CountPlayerBotVnumUnitsAhead(ch, item),
 					(int)item->GetCount(), GetPlayerBotCountedGoodsKeep(ch, item))

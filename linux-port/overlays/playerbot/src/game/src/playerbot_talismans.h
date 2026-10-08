@@ -493,7 +493,10 @@ namespace
 		const long long spare = GetPlayerBotTalismanSpare(ch);
 		const long long count = std::max<long long>(1, (long long)offer->GetCount());
 		if (IsPlayerBotTalismanVnum(offer->GetVnum()))
-			return price / count <= (long long)GetPlayerBotTalismanPrice(offer->GetVnum()) * PLAYERBOT_TALISMAN_BUY_OVER_PERCENT / 100 &&
+			// MT2009_PLUS_SHEET_PRICES_ONLY_V1: the grade's price scaled as the
+			// counters ask it (ScalePlayerBotIwakuraPrice), not as written.
+			return price / count <= (long long)ScalePlayerBotIwakuraPrice(GetPlayerBotTalismanPrice(offer->GetVnum())) *
+					PLAYERBOT_TALISMAN_BUY_OVER_PERCENT / 100 &&
 					price <= spare * 40 / 100;
 		const long long fair = (long long)GetPlayerBotShopAskingPrice(offer);
 		const long long cap = std::max<long long>(fair * 2, 150000LL * count);

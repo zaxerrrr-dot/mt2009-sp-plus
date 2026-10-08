@@ -1161,9 +1161,12 @@ namespace
 			LPITEM stone = ch->GetInventoryItem(cell);
 			if (!stone || stone->GetType() != ITEM_USE || stone->GetCount() == 0 || stone->isLocked())
 				continue;
-			// MT2009_PLUS_TRADEABLE_BONUS_V1: the tradeable change and add
-			// (71284/71285) are worth millions on a counter, never spent here.
-			if (IsPlayerBotTradeableBonusVnum(stone->GetVnum()))
+			// MT2009_PLUS_TRADEABLE_BONUS_V2: the tradeable change and add
+			// (71284/71285, millions on a counter) only from
+			// PLAYERBOT_TRADEABLE_BONUS_MIN_LEVEL, and after 71084/71085: a
+			// plain stone of the kind further on in the bag takes the slot.
+			const bool tradeable = IsPlayerBotTradeableBonusVnum(stone->GetVnum());
+			if (tradeable && (int)ch->GetLevel() < PLAYERBOT_TRADEABLE_BONUS_MIN_LEVEL)
 				continue;
 			const bool green = IsPlayerBotGreenBonusStone(stone->GetVnum());
 			int* first = NULL;
@@ -1181,7 +1184,8 @@ namespace
 				default:
 					break;
 			}
-			if (first && *first < 0)
+			if (first && (*first < 0 || (!tradeable && ch->GetInventoryItem((WORD)*first) &&
+					IsPlayerBotTradeableBonusVnum(ch->GetInventoryItem((WORD)*first)->GetVnum()))))
 				*first = (int)cell;
 		}
 	}
@@ -2321,8 +2325,9 @@ namespace
 	{
 		if (!ch || !stone || stone->GetType() != ITEM_USE)
 			return false;
-		// MT2009_PLUS_TRADEABLE_BONUS_V1: never spent (ReadPlayerBotBonusBag).
-		if (IsPlayerBotTradeableBonusVnum(stone->GetVnum()))
+		// MT2009_PLUS_TRADEABLE_BONUS_V2: only from its level (ReadPlayerBotBonusBag).
+		if (IsPlayerBotTradeableBonusVnum(stone->GetVnum()) &&
+				(int)ch->GetLevel() < PLAYERBOT_TRADEABLE_BONUS_MIN_LEVEL)
 			return false;
 		playerbot_bonus_rules::TBag kind = { false, false, false, false, false };
 		const bool green = IsPlayerBotGreenBonusStone(stone->GetVnum());
@@ -2370,6 +2375,10 @@ namespace
 	// (playerbot_moonlight_rules::BonusGoodsKeep).
 	int GetPlayerBotBonusStoneKeep(LPCHARACTER ch, LPITEM item)
 	{
+		// MT2009_PLUS_TRADEABLE_BONUS_V2: a few of a kind the bot would spend,
+		// none of one it would not - the rest are the counter's.
+		if (item && IsPlayerBotTradeableBonusVnum(item->GetVnum()))
+			return PlayerBotCanSpendBonusStoneKind(ch, item) ? PLAYERBOT_TRADEABLE_BONUS_KEEP : 0;
 		const bool greenPastBand = item && IsPlayerBotGreenBonusStone(item->GetVnum()) &&
 				!PlayerBotKeepsGreenBonusStones(ch);
 		return playerbot_moonlight_rules::BonusGoodsKeep(PlayerBotCanSpendBonusStoneKind(ch, item),

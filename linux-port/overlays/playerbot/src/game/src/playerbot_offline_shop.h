@@ -1891,7 +1891,6 @@ namespace {
         // Materialy Rzemieslnicze, Cor Draconis, the Dragon Stones and
         // the sashes keep the operator's prices: no markdown, no markup.
         const bool operatorPriced = preview->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
-                IsPlayerBotOwnerFixedPriceItem(preview) ||   // MT2009_PLUS_BOT_ENERGY_SHARDS_V1
                 IsPlayerBotCorVnum(preview->GetVnum()) || preview->IsDragonSoul() ||
                 (preview->GetType() == ITEM_COSTUME && IsPlayerBotSashVnum(preview->GetVnum()));
         if (operatorPriced)
