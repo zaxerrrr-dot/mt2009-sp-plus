@@ -72,6 +72,8 @@ namespace
 	const DWORD ZRUN_HOME_MS = 4000;
 	const DWORD ZRUN_STATUS_MS = 120000;
 	const DWORD ZRUN_PRISM = 33025;
+	// MT2009_PLUS_ZODIAC_RUNS_V2: this many deaths a bot on one floor and the run is pulled ("wipe").
+	const int ZRUN_WIPE_DEATHS_PER_BOT = 4;
 	const int ZRUN_RED_POTION = 27003;
 	const int ZRUN_BLUE_POTION = 27006;
 	const char* const ZRUN_SIGN[13] = { "", "zi", "chou", "yin", "mao", "chen", "si", "wu", "wei", "shen", "yu", "xu", "hai" };
@@ -104,7 +106,12 @@ namespace
 		std::string floors;
 		int iDeaths, iPrismRevives, iFreeRevives, iMinLevel, iMaxLevel, iTargetFloor;
 		const char* szResult;
-		TZrun() : iId(0), bSign(0), bPhase(ZRUN_PHASE_GATHER), bEmpire(0), dwLeader(0), lInstance(0), dwCalledAt(0),
+		// MT2009_PLUS_ZODIAC_RUNS_V2: where the floor began (the leader on the floor's first second), the
+		// deaths on this floor, the next heartbeat.
+		long lFloorX, lFloorY;
+		int iFloorDeaths;
+		DWORD dwNextBeat;
+		TZrun() : lFloorX(0), lFloorY(0), iFloorDeaths(0), dwNextBeat(0), iId(0), bSign(0), bPhase(ZRUN_PHASE_GATHER), bEmpire(0), dwLeader(0), lInstance(0), dwCalledAt(0),
 				dwPhaseAt(0), dwEnteredAt(0), dwFloorAt(0), dwLastProgress(0), dwEmptySince(0), dwNextJump(0), bFloor(0),
 				bMaxFloor(0), iDeaths(0), iPrismRevives(0), iFreeRevives(0), iMinLevel(0), iMaxLevel(0), iTargetFloor(40),
 				szResult(NULL) {}
@@ -166,10 +173,39 @@ namespace
 		if (!run)
 			return;
 		++run->iDeaths;
+		++run->iFloorDeaths;
 		if (prisms)
 			++run->iPrismRevives;
 		else
 			++run->iFreeRevives;
+		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+		if (!ch)
+			return;
+		// V2: who stood round it (the first night's run 1 died 108 times on what the log never said).
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(ch->GetMapIndex(), get_dword_time());
+		std::string near;
+		int shown = 0;
+		for (size_t i = 0; i < scan.foes.size() && shown < 4; ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+			if (!c || DISTANCE_APPROX(c->GetX() - ch->GetX(), c->GetY() - ch->GetY()) > 1500)
+				continue;
+			char part[64];
+			snprintf(part, sizeof(part), "%s%u/lv%u/%d%%%s", near.empty() ? "" : ",", (unsigned int)c->GetRaceNum(),
+					(unsigned int)c->GetLevel(), c->GetMaxHP() > 0 ? (int)((long long)c->GetHP() * 100 / c->GetMaxHP()) : 0,
+					c->GetVictim() == ch ? "*" : "");
+			near += part;
+			++shown;
+		}
+		sys_log(0, "ZODIAC_RUN: death run=%d pid=%u name=%s floor=%u floor_deaths=%d deaths=%d maxhp=%d def=%d prisms=%d near=%s",
+				run->iId, pid, ch->GetName(), (unsigned int)run->bFloor, run->iFloorDeaths, run->iDeaths, ch->GetMaxHP(),
+				ch->GetPoint(POINT_DEF_GRADE), prisms ? 1 : 0, near.empty() ? "-" : near.c_str());
+		// Up again where the floor began, not in the pack that felled it.
+		if (run->lFloorX && run->lFloorY && ch->GetMapIndex() == run->lInstance)
+		{
+			ch->Show(run->lInstance, run->lFloorX, run->lFloorY, 0);
+			ch->Stop();
+		}
 	}
 
 	// ------------------------------------------------------------ the call
@@ -486,6 +522,24 @@ namespace
 			}
 			return true;
 		}
+		// V2: the break-off under 30% - invisible, healing (HandlePostDeathRecovery) - as the bots' dungeon runs do.
+		if (!state.bRecoveringAfterDeath && ch->GetMaxHP() > 0 && (long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * 30)
+		{
+			UseHealthPotion(ch, state, dwNow);
+			state.bRecoveringAfterDeath = true;
+			state.dwLastDeathTime = dwNow;
+			state.lDeathX = ch->GetX();
+			state.lDeathY = ch->GetY();
+			state.dwNextRecoveryHealTime = dwNow;
+			state.dwTargetVID = 0;
+			ch->SetVictim(NULL);
+			ClearPlayerBotRoute(state, true);
+			ch->ReviveInvisible(5);
+			state.dwNextRecoveryProtectionTime = dwNow + PLAYERBOT_RECOVERY_PROTECTION_INTERVAL;
+			sys_log(0, "ZODIAC_RUN: break-off run=%d pid=%u name=%s floor=%u hp=%d/%d", run->iId, ch->GetPlayerID(),
+					ch->GetName(), (unsigned int)run->bFloor, ch->GetHP(), ch->GetMaxHP());
+			return true;
+		}
 		if (ch->GetPlayerID() == run->dwLeader)
 			return FightZrunLeader(ch, state, *run, dwNow);
 		LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(run->dwLeader);
@@ -555,6 +609,8 @@ namespace
 		run.bMaxFloor = std::max(run.bMaxFloor, floor);
 		run.dwFloorAt = dwNow;
 		run.dwLastProgress = dwNow;
+		run.iFloorDeaths = 0;
+		run.lFloorX = run.lFloorY = 0;	// taken from the leader a moment later (the floor's jump)
 	}
 
 	// Everybody of the run out of the temple (the temple's own exit, or this).
@@ -716,6 +772,57 @@ namespace
 			}
 			if (dwNow - run.dwLastProgress > ZRUN_STALL_MS && !run.szResult)
 				PullZrun(run, "stalled");
+			// V2: the floor's first point (where the temple jumped everybody), once the jump is over.
+			if (!run.lFloorX && run.bFloor && leader && leader->GetMapIndex() == run.lInstance && !leader->IsDead() &&
+					dwNow - run.dwFloorAt > 2000)
+			{
+				run.lFloorX = leader->GetX();
+				run.lFloorY = leader->GetY();
+			}
+			// V2: a floor that kills the party over and over is over; so is a temple whose first floor never came.
+			if (!run.szResult && run.iFloorDeaths >= ZRUN_WIPE_DEATHS_PER_BOT * (int)run.members.size())
+				PullZrun(run, "wipe");
+			if (!run.szResult && run.bFloor == 0 && dwNow - run.dwEnteredAt > 120000)
+				PullZrun(run, "no_floor");
+			if ((int)(dwNow - run.dwNextBeat) >= 0)
+			{
+				run.dwNextBeat = dwNow + 20000;
+				const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+				int mobs = 0, metins = 0, statues = 0, bosses = 0, alive = 0;
+				for (size_t i = 0; i < scan.foes.size(); ++i)
+				{
+					const DWORD race = scan.foes[i].dwRace;
+					if (race >= 20452 && race <= 20464)
+						++statues;
+					else if (race >= 2900 && race <= 2937)
+						++metins;
+					else if (race >= 2750 && race <= 2862)
+						++bosses;
+					else
+						++mobs;
+				}
+				for (size_t i = 0; i < run.members.size(); ++i)
+				{
+					LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+					if (ch && ch->GetMapIndex() == run.lInstance && !ch->IsDead())
+						++alive;
+				}
+				LPCHARACTER tgt = NULL;
+				if (leader)
+				{
+					TPlayerBotAIStateMap::const_iterator ls = s_mapPlayerBotAIStates.find(leader->GetPlayerID());
+					if (ls != s_mapPlayerBotAIStates.end() && ls->second.dwTargetVID)
+						tgt = CHARACTER_MANAGER::instance().Find(ls->second.dwTargetVID);
+				}
+				sys_log(0, "ZODIAC_RUN: tick run=%d sign=%s floor=%u next=%d/%u mobs=%d metins=%d statues=%d bosses=%d alive=%d/%u inside=%d deaths=%d floor_deaths=%d leader_hp=%d target=%u dist=%d pos=(%ld,%ld)",
+						run.iId, ZRUN_SIGN[run.bSign], (unsigned int)z->GetFloor(), z->IsNextFloor() ? 1 : 0,
+						(unsigned int)z->GetNextFloor(), mobs, metins, statues, bosses, alive, (unsigned int)run.members.size(),
+						inside, run.iDeaths, run.iFloorDeaths,
+						leader && leader->GetMaxHP() > 0 ? (int)((long long)leader->GetHP() * 100 / leader->GetMaxHP()) : -1,
+						tgt ? (unsigned int)tgt->GetRaceNum() : 0U,
+						tgt && leader ? DISTANCE_APPROX(tgt->GetX() - leader->GetX(), tgt->GetY() - leader->GetY()) : -1,
+						leader ? leader->GetX() : 0L, leader ? leader->GetY() : 0L);
+			}
 		}
 		if (!z || inside == 0)
 		{
