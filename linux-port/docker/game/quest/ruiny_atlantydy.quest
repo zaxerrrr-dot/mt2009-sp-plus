@@ -234,9 +234,18 @@ quest ruiny_atlantydy begin
 			d.set_unique("morkhot"..d.getf("boss_try"), d.spawn_mob(4559, 543, 534))
 			-- The bots' own runs (no person inside: mt2009_dgrun / mt2009_dgbot) fight him without the clock -
 			-- a party of bots that cannot beat it would only go round the Ancient Heart until the time limit.
+			-- MT2009_PLUS_ATLANTYDA_TEST_V1, the test server's switch (event flag atlantyda_bot_clock, set by the core's
+			-- test hook, playerbot_dungeon_runs.h "flag atlantyda_bot_clock N"): the bots' runs get the clock as well -
+			-- 1: the players' times, N > 1: N seconds (the bots kill him in about a minute; a short clock makes him
+			-- hide, so the Ancient Heart and the recall are tried).
+			local test = game.get_event_flag("atlantyda_bot_clock")
 			if d.getf("mt2009_dgrun") == 1 or d.getf("mt2009_dgbot") == 1 then
-				d.notice("Ruiny Atlantydy: Pokonajcie Morkhota!")
-				return
+				if test <= 0 then
+					d.notice("Ruiny Atlantydy: Pokonajcie Morkhota!")
+					return
+				elseif test > 1 then
+					t = test
+				end
 			end
 			d.notice(string.format("Ruiny Atlantydy: Macie %d s, by pokonaæ Morkhota (punkty karne: %d).", t, d.getf("negative")))
 			server_timer("atlantyda_boss", t, d.get_map_index())

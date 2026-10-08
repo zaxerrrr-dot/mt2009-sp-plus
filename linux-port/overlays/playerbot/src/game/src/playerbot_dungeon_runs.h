@@ -94,7 +94,10 @@
 //     now <key|any>           a call now (biblioteka, wieza, wukong, razador,
 //                             skorpion, nemere, smok, dzungla, atlantyda), off the clock;
 //     abort <key|all>         those runs out now;
-//     status                  one BOT_DGRUN status line per dungeon.
+//     status                  one BOT_DGRUN status line per dungeon;
+//     flag <name> <value>     a game event flag set (the test server's switches,
+//                             e.g. atlantyda_bot_clock 1: Morkhot's clock for the
+//                             bots' runs as well - MT2009_PLUS_ATLANTYDA_TEST_V1).
 //
 // The log: BOT_DGRUN lines in syslog (called, answered, gathered, entered,
 // stage, finished, stalled, abandoned, wipe, out, closed, status; and from V2
@@ -2962,11 +2965,18 @@ namespace
 		for (size_t l = 0; l < lines.size(); ++l)
 		{
 			char cmd[32] = "", arg[32] = "";
-			const int got = sscanf(lines[l].c_str(), "%31s %31s", cmd, arg);
+			int value = 0;
+			const int got = sscanf(lines[l].c_str(), "%31s %31s %d", cmd, arg, &value);
 			if (got < 1 || cmd[0] == '#')
 				continue;
 			if (!strcmp(cmd, "status"))
 				LogPlayerBotDgRunStatus();
+			else if (!strcmp(cmd, "flag") && got >= 3)
+			{
+				// MT2009_PLUS_ATLANTYDA_TEST_V1: an operator's event flag (the db core passes it to every core).
+				quest::CQuestManager::instance().RequestSetEventFlag(arg, value);
+				sys_log(0, "BOT_DGRUN: test flag %s=%d", arg, value);
+			}
 			else if (!strcmp(cmd, "now"))
 			{
 				const int def = got >= 2 && strcmp(arg, "any") ? ParsePlayerBotDgRunKey(arg) : -2;
