@@ -8,7 +8,12 @@ exe z tymi zmianami, skopiuj zawartość tego katalogu na drzewo źródeł (nadp
 for d in UserInterface EterLib EterPythonLib GameLib EterGrnLib EffectLib; do
   cp -a "client-patches/exe/$d/." "<Source Client>/$d/"
 done
+cp -a client-patches/exe/Server/. "<Source>/Server/"   # od Zodiaku: Server/common/length.h klienta
 ```
+
+Katalog `Server/` **nie** idzie do `Source Client/` (pętla po `*/` musi go pominąć), tylko do `<Source>/Server/`
+(obok `Source Client`). Bez tego kroku kompilacja zatrzyma się na `CHAT_TYPE_MISSION`/`SE_SKILL_DAMAGE_ZONE`
+(`static_assert` w `Mt2009Zodiak.cpp`).
 
 Każda zmiana ma znacznik w komentarzu i jest za `#ifdef` z `Locale_inc.h`, więc wyłączenie
 definicji przywraca stary exe.
@@ -308,3 +313,28 @@ jego render-to-texture i bez jego kodu mini gier.
 | `EterLib/RenderTargetManager.h` | `RENDER_TARGET_INDEX_ILLUSTRATED` (1, po Yut Nori) |
 | `EterLib/Camera.h/.cpp` | własna kamera `DEFAULT_MONSTER_MODEL_CAMERA` |
 | `UserInterface/PythonApplication.cpp`, `PythonApplicationModule.cpp` | update/deform/render obok Yut Nori, zniszczenie; `app.RENDER_TARGET_INDEX_ILLUSTRATED` |
+
+## Świątynia Zodiaku – `MT2009_PLUS_ZODIAC_V1` (`ENABLE_12ZI`)
+
+**Autor: Digi Rasta** (nowy-system 0.35.0, system po paczce WLsj24 „ZodiacTemple”). Zmiany exe z paczki
+(`klient-zrodlo/zodiak-klient-exe.diff`) wpięte w nasze źródło; serwer: `server-patches/zodiak`.
+
+| Plik | Zmiana |
+|---|---|
+| `Server/common/length.h` (**nowy w nakładce**, z client-build; kopiowany do `<Source>/Server/common/`) | `CHAT_TYPE_MISSION/SUB_MISSION/CLEAR_MISSION` = 13…15 przed `CHAT_TYPE_MAX_NUM`; 15 `SE_*` Zodiaku po `SE_EFFECT_ACCE_EQUIP` (pierwszy = 39) – jak w `common/length.h` serwera; **bez** `#ifdef` (wszystkie pliki muszą widzieć te same enumy) |
+| `UserInterface/Locale_inc.h` | `ENABLE_12ZI` |
+| `UserInterface/Mt2009Zodiak.cpp/.h` (**nowe**) | odbiór GC 220 (`RecvSpecialZodiacEffect`, efekt w punkcie x/y), `CInstanceBase::AttachSpecialZodiacEffect`, `Mt2009Zodiak_EffectFromSE`; `chrmgr.IsDead(vid)`, `chrmgr.IsPC(vid)`; stałe `app.ENABLE_12ZI`, `chat.CHAT_TYPE_*MISSION`, `chr.NEW_AFFECT_CZ_UNLIMIT_ENTER` (600), `chrmgr.EFFECT_*`; `static_assert`: numery czatu/efektów jak na serwerze, GC 220 = 15 B |
+| `UserInterface/Packet.h` | `HEADER_GC_SEPCIAL_ZODIAC_EFFECT = 220`, `TPacketGCSpecialZodiacEffect` (header, type, type2, vid, x, y) |
+| `UserInterface/PythonNetworkStream.cpp/.h`, `PythonNetworkStreamPhaseGame.cpp` | rejestracja i obsługa GC 220; czat `MISSION`/`SUB_MISSION`/`CLEAR_MISSION` → `game.py` `BINARY_SetMissionMessage` / `BINARY_SetSubMissionMessage` / `BINARY_CleanMissionMessage` (tablica misji, nie czat) |
+| `UserInterface/PythonNetworkStreamPhaseGameItem.cpp` (z client-build) | `SE_*` Zodiaku w pakiecie efektu specjalnego (114) → efekty Zodiaku |
+| `UserInterface/InstanceBase.h` | 15 `EFFECT_*` Zodiaku (po `EFFECT_FLOWER_EVENT`, w kolejności `SE_*`), `AttachSpecialZodiacEffect` |
+| `UserInterface/PythonPlayerSettingsModule.cpp` (z client-build) | pliki efektów: `d:/ymir work/effect/monster2/12_shelter_in_01…08`, `12_*_drop`, `daepo_na_02_boom.mse` (paczka `nowy_system_zodiak`) |
+| `UserInterface/PythonChat.cpp` | kolory trzech typów czatu misji |
+| `GameLib/ActorInstanceBattle.cpp` (z client-build) | `IS_HUGE_RACE`: bossowie Zodiaku 2750–2862 nie są odpychani |
+| `UserInterface/UserInterface.cpp`, `UserInterface.vcxproj(.filters)` | `Mt2009Zodiak_RegisterPython`, nowy plik |
+
+Pominięte względem paczki: wycinek „zegarowy” obrazka (`RenderCoolTime`, `CImageBox::SetCoolTime/SetCoolTimeStart`,
+`wndMgr.SetCoolTimeImageBox` / `SetStartCoolTimeImageBox`) – mamy go już z mini gier (`MT2009_PLUS_MINIGAMES_V1`,
+`ENABLE_OWSAP_WNDMGR_EX`), te same nazwy w Pythonie, więc `GrpImageInstance.*`, `GrpExpandedImageInstance.*` i
+`PythonWindow.*` bez zmian. Polecenia serwera Zodiaku (`ZodiacTime`, `Bead_*`, `OpenReviveDialog`…) obsługuje `game.py`.
+

@@ -211,6 +211,9 @@ class CMainPacketHeaderMap : public CNetworkPacketHeaderMap
 			Set(HEADER_GC_HYBRIDCRYPT_SDB,	CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCHybridSDB), DYNAMIC_SIZE_PACKET));
 			Set(HEADER_GC_SPECIFIC_EFFECT,	CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCSpecificEffect), STATIC_SIZE_PACKET));
 			Set(HEADER_GC_DRAGON_SOUL_REFINE,		CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCDragonSoulRefine), STATIC_SIZE_PACKET));
+#ifdef ENABLE_12ZI
+			Set(HEADER_GC_SEPCIAL_ZODIAC_EFFECT,	CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCSpecialZodiacEffect), STATIC_SIZE_PACKET)); // MT2009_PLUS_ZODIAC_V1
+#endif
 			Set(HEADER_GC_CAPTCHA,		CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCCaptcha), LARGE_DYNAMIC_SIZE_PACKET));
 			Set(HEADER_GC_GAMEMASTER_TARGET,		CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCGamemasterTarget), STATIC_SIZE_PACKET));
 

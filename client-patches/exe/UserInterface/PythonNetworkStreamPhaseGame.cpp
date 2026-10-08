@@ -1267,6 +1267,12 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvSpecificEffect();
 				break;
 
+#ifdef ENABLE_12ZI
+			case HEADER_GC_SEPCIAL_ZODIAC_EFFECT: // MT2009_PLUS_ZODIAC_V1
+				ret = RecvSpecialZodiacEffect();
+				break;
+#endif
+
 			case HEADER_GC_DRAGON_SOUL_REFINE:
 				ret = RecvDragonSoulRefine();
 				break;
@@ -2140,6 +2146,24 @@ bool CPythonNetworkStream::RecvChatPacket()
 		{
 			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_SetBigMessage", Py_BuildValue("(s)", buf));
 		}
+#ifdef ENABLE_12ZI
+		// MT2009_PLUS_ZODIAC_V1: the Zodiac mission board (game.py)
+		else if (CHAT_TYPE_MISSION == kChat.type)
+		{
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_SetMissionMessage", Py_BuildValue("(s)", buf));
+			return true;
+		}
+		else if (CHAT_TYPE_SUB_MISSION == kChat.type)
+		{
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_SetSubMissionMessage", Py_BuildValue("(s)", buf));
+			return true;
+		}
+		else if (CHAT_TYPE_CLEAR_MISSION == kChat.type)
+		{
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_CleanMissionMessage", Py_BuildValue("()"));
+			return true;
+		}
+#endif
 		else if (CHAT_TYPE_SHOUT == kChat.type || CHAT_TYPE_TRADE == kChat.type)
 		{
 			char * p = strchr(buf, ':');

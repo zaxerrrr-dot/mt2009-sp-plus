@@ -301,6 +301,24 @@ class CInstanceBase
 #ifdef ENABLE_FLOWER_EVENT
 			EFFECT_FLOWER_EVENT, // MT2009_PLUS_MINIGAMES_V1 (chrmgr.EFFECT_FLOWER_EVENT, Owsap playersettingmodule)
 #endif
+#ifdef ENABLE_12ZI
+			// MT2009_PLUS_ZODIAC_V1: the Zodiac effects, in the order of the server's SE_SKILL_DAMAGE_ZONE..SE_SKILL_SAFE_ZONE_SMALL
+			EFFECT_SKILL_DAMAGE_ZONE,
+			EFFECT_SKILL_SAFE_ZONE,
+			EFFECT_METEOR,
+			EFFECT_BEAD_RAIN,
+			EFFECT_FALL_ROCK,
+			EFFECT_ARROW_RAIN,
+			EFFECT_HORSE_DROP,
+			EFFECT_EGG_DROP,
+			EFFECT_DEAPO_BOOM,
+			EFFECT_SKILL_DAMAGE_ZONE_BIG,
+			EFFECT_SKILL_DAMAGE_ZONE_MIDDLE,
+			EFFECT_SKILL_DAMAGE_ZONE_SMALL,
+			EFFECT_SKILL_SAFE_ZONE_BIG,
+			EFFECT_SKILL_SAFE_ZONE_MIDDLE,
+			EFFECT_SKILL_SAFE_ZONE_SMALL,
+#endif
 
 			EFFECT_NUM,
 		};
@@ -362,6 +380,9 @@ class CInstanceBase
 	public:
 		void CreateSpecialEffect(DWORD iEffectIndex);
 		void AttachSpecialEffect(DWORD effect);
+#ifdef ENABLE_12ZI
+		void AttachSpecialZodiacEffect(DWORD eEftType, long lX, long lY); // MT2009_PLUS_ZODIAC_V1 (Mt2009Zodiak.cpp)
+#endif
 
 	protected:
 		static std::string ms_astAffectEffectAttachBone[EFFECT_NUM];

@@ -363,6 +363,9 @@ enum
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_GC_MINI_GAME_CATCH_KING				= 238,
 #endif
+#ifdef ENABLE_12ZI
+	HEADER_GC_SEPCIAL_ZODIAC_EFFECT				= 220, // MT2009_PLUS_ZODIAC_V1: the Zodiac bosses' effects (server packet.h)
+#endif
 
 	HEADER_GC_KEY_AGREEMENT_COMPLETED			= 0xfa, // _IMPROVED_PACKET_ENCRYPTION_
 	HEADER_GC_KEY_AGREEMENT						= 0xfb, // _IMPROVED_PACKET_ENCRYPTION_
@@ -2352,6 +2355,19 @@ typedef struct SPacketGCSpecialEffect
     BYTE type;
     DWORD vid;
 } TPacketGCSpecialEffect;
+
+#ifdef ENABLE_12ZI
+// MT2009_PLUS_ZODIAC_V1: 1+1+1+4+4+4 = 15 B, as the server sends it
+typedef struct SPacketGCSpecialZodiacEffect
+{
+	BYTE header;
+	BYTE type;
+	BYTE type2;
+	DWORD vid;
+	long x;
+	long y;
+} TPacketGCSpecialZodiacEffect;
+#endif
 
 typedef struct SPacketGCNPCPosition
 {
