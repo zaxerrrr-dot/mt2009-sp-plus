@@ -1524,6 +1524,17 @@ namespace
 		// The drops, as on any hunt - while nothing is after the bot or the party.
 		if (!state.bRecoveringAfterDeath && !FindPlayerBotDgRunThreat(ch, run.iId) && HandleLoot(ch, state, dwNow))
 			return true;
+		// V3: by the Arezzo dungeons' bosses too, the boss's ground (the break-off
+		// at 50% and the heal out of his reach, KeepPlayerBotDgRunAlive) - the
+		// night of 7/8 October, the Ruins' bots' runs: 817 of 1 116 deaths at
+		// the Scorpion King (stage 5), the bots healing beside him.
+		if (def.bKind == DGRUN_KIND_AREZZO &&
+				(state.bRecoveringAfterDeath ||
+				 FindPlayerBotDgRunBoss(run.lInstance, ch->GetX(), ch->GetY(), PLAYERBOT_DGRUN_BOSS_NEAR, dwNow)) &&
+				FindPlayerBotDgRunBoss(run.lInstance, run.lPackX ? run.lPackX : ch->GetX(), run.lPackY ? run.lPackY : ch->GetY(),
+						PLAYERBOT_DGRUN_BOSS_NEAR, dwNow) &&
+				KeepPlayerBotDgRunAlive(ch, state, run, dwNow))
+			return true;
 		if (def.bKind == DGRUN_KIND_AREZZO)
 		{
 			const int dg = GetPlayerBotArzDgIndex(run.lInstance);
