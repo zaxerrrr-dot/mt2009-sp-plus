@@ -1,0 +1,11 @@
+ScriptType	MapSetting
+
+CellScale	200
+HeightScale	0.500000
+
+ViewRadius	128
+
+MapSize	3	3
+BasePosition	3814400	2252800
+TextureSet	textureset\plechito_summer2022_dungeon.txt
+Environment	plechito_summer2022_dungeon.msenv

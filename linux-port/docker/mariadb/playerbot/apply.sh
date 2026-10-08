@@ -2275,6 +2275,119 @@ INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) VALUES (3, 7006
 db -e "UPDATE world.mob_proto SET level = 93, max_hp = 3000000, def = 250, exp = 2000000, regen_cycle = 30, regen_percent = 1 WHERE vnum = 2493;
 UPDATE world.mob_proto SET level = 90, max_hp = 300000, def = 90 WHERE vnum IN (8031, 8032, 8033, 8034);" || fail_step "could not set up the Blue Dragon lair's dragon and stones" >&2
 
+# MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy (map 158, quest/ruiny_atlantydy.quest, game/atlantyda/), the Plechito
+# summer 2022 dungeon "Ruins of Atlantis" at the band of the Grotto of Exile: entry 75, one player of 75-80 with
+# decent gear can finish it (the owner, 8 October: solo allowed). The package's level 99-104 numbers are not
+# taken: the monsters are copies of the Grotto's 2401 (2494/2495 for the bosses, no resurrection, no summon)
+# at 78-86 with the Grotto V1's health and damage scaled to the level (5 200-11 000 HP, 105-175 a blow,
+# 4 200-9 500 exp), the bosses Straznik Atlantydy 82 (35 000 HP, fought four times), Elita Atlantydy 85
+# (90 000, one real of three), Morkhot 88 (300 000, near the Grotto V1 boss 1192's 176 205 and below General
+# Yonghan's 450 000), the stones copies of Metin Pung-Ma (8024) calling one-monster groups 6408-6412
+# (group.atlantyda.txt), the NPCs copies of the Fire Land's guard. Items: Bilet do Atlantydy (30919, bound -
+# Mag Atlantydy sells it, the Grotto's commanders and generals drop it, mob_drop_item.atlantyda.txt), Klucz
+# Atlantydy (30920) as the seals (30767), Skrzynia Atlantydy (30921, special_item_group.atlantyda.txt) as the
+# Ruins' chest. No SPAWN_ANIMATION flag (the package's engine flag; Morkhot appears without his rise) and no
+# fish (20813-20819: 64-bit models the client cannot read). Rows added once, values written every start
+# (PROTO_FROM_DB); names UTF-8 here, SET NAMES converts them to the tables' CP1250. Idempotent.
+db -e "SET NAMES utf8mb4;
+DROP TEMPORARY TABLE IF EXISTS world.at_mob;
+DROP TEMPORARY TABLE IF EXISTS world.at_item;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2401 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4550;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Głębinowy Skorupiak', locale_name = 'Głębinowy Skorupiak', folder = 'plechi_sum2022_monster5', type = 0, rank = 0, battle_type = 0, level = 78, st = 80, dx = 50, ht = 65, iq = 20, damage_min = 105, damage_max = 135, max_hp = 5200, def = 72, exp = 4200, gold_min = 600, gold_max = 900, attack_speed = 110, move_speed = 100, attack_range = 150, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR', setRaceFlag = 'UNDEAD', setImmuneFlag = 'SLOW,CURSE,TERROR', regen_cycle = 5, regen_percent = 7, dam_multiply = 1.6, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 3, enchant_penetrate = 3, enchant_fire = 0, enchant_root = 0, resist_sword = 0, resist_twohand = 0, resist_dagger = 0, resist_bell = 0, resist_fan = 0, resist_bow = 0, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 0, skill_vnum0 = 0, skill_level1 = 0, skill_vnum1 = 0, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 0, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4550;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2401 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4551;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Strażnik Trytonów', locale_name = 'Strażnik Trytonów', folder = 'plechi_sum2022_monster1', type = 0, rank = 1, battle_type = 0, level = 79, st = 85, dx = 55, ht = 65, iq = 20, damage_min = 110, damage_max = 140, max_hp = 6000, def = 74, exp = 4800, gold_min = 650, gold_max = 950, attack_speed = 110, move_speed = 110, attack_range = 150, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR', setRaceFlag = 'UNDEAD', setImmuneFlag = 'SLOW,CURSE,TERROR', regen_cycle = 5, regen_percent = 7, dam_multiply = 1.7, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 3, enchant_penetrate = 3, enchant_fire = 0, enchant_root = 0, resist_sword = 0, resist_twohand = 0, resist_dagger = 0, resist_bell = 0, resist_fan = 0, resist_bow = 0, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 0, skill_vnum0 = 0, skill_level1 = 0, skill_vnum1 = 0, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 0, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4551;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2401 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4552;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Wojownik Trytonów', locale_name = 'Wojownik Trytonów', folder = 'plechi_sum2022_monster2', type = 0, rank = 1, battle_type = 0, level = 80, st = 90, dx = 55, ht = 68, iq = 21, damage_min = 115, damage_max = 148, max_hp = 6600, def = 76, exp = 5300, gold_min = 700, gold_max = 1000, attack_speed = 110, move_speed = 110, attack_range = 150, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR', setRaceFlag = 'UNDEAD', setImmuneFlag = 'SLOW,CURSE,TERROR', regen_cycle = 5, regen_percent = 7, dam_multiply = 1.8, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 3, enchant_penetrate = 3, enchant_fire = 0, enchant_root = 0, resist_sword = 0, resist_twohand = 0, resist_dagger = 0, resist_bell = 0, resist_fan = 0, resist_bow = 0, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 0, skill_vnum0 = 0, skill_level1 = 0, skill_vnum1 = 0, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 0, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4552;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2401 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4553;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Rybi Potwór Atlantydy', locale_name = 'Rybi Potwór Atlantydy', folder = 'plechi_sum2022_monster4', type = 0, rank = 1, battle_type = 0, level = 82, st = 92, dx = 58, ht = 70, iq = 22, damage_min = 120, damage_max = 155, max_hp = 7200, def = 78, exp = 5900, gold_min = 750, gold_max = 1100, attack_speed = 110, move_speed = 110, attack_range = 150, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR', setRaceFlag = 'UNDEAD', setImmuneFlag = 'SLOW,CURSE,TERROR', regen_cycle = 5, regen_percent = 7, dam_multiply = 1.8, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 3, enchant_penetrate = 3, enchant_fire = 0, enchant_root = 0, resist_sword = 0, resist_twohand = 0, resist_dagger = 0, resist_bell = 0, resist_fan = 0, resist_bow = 0, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 0, skill_vnum0 = 0, skill_level1 = 0, skill_vnum1 = 0, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 0, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4553;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2401 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4554;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Stwór z Głębin', locale_name = 'Stwór z Głębin', folder = 'plechi_sum2022_monster7', type = 0, rank = 2, battle_type = 0, level = 83, st = 95, dx = 60, ht = 72, iq = 22, damage_min = 125, damage_max = 160, max_hp = 8000, def = 80, exp = 6500, gold_min = 800, gold_max = 1200, attack_speed = 110, move_speed = 110, attack_range = 150, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR', setRaceFlag = 'UNDEAD', setImmuneFlag = 'SLOW,CURSE,TERROR', regen_cycle = 5, regen_percent = 7, dam_multiply = 1.9, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 3, enchant_penetrate = 3, enchant_fire = 0, enchant_root = 0, resist_sword = 0, resist_twohand = 0, resist_dagger = 0, resist_bell = 0, resist_fan = 0, resist_bow = 0, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 0, skill_vnum0 = 0, skill_level1 = 0, skill_vnum1 = 0, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 0, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4554;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2401 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4555;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Nieumarły Rybi Wojownik', locale_name = 'Nieumarły Rybi Wojownik', folder = 'plechi_sum2022_monster6', type = 0, rank = 2, battle_type = 0, level = 84, st = 98, dx = 62, ht = 74, iq = 23, damage_min = 128, damage_max = 165, max_hp = 8600, def = 82, exp = 7000, gold_min = 850, gold_max = 1250, attack_speed = 110, move_speed = 110, attack_range = 150, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR', setRaceFlag = 'UNDEAD', setImmuneFlag = 'SLOW,CURSE,TERROR', regen_cycle = 5, regen_percent = 7, dam_multiply = 2.0, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 3, enchant_penetrate = 3, enchant_fire = 0, enchant_root = 0, resist_sword = 0, resist_twohand = 0, resist_dagger = 0, resist_bell = 0, resist_fan = 0, resist_bow = 0, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 0, skill_vnum0 = 0, skill_level1 = 0, skill_vnum1 = 0, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 0, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4555;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2401 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4556;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Krwiożerczy Rekin', locale_name = 'Krwiożerczy Rekin', folder = 'plechi_sum2022_monster3', type = 0, rank = 3, battle_type = 0, level = 86, st = 105, dx = 65, ht = 78, iq = 24, damage_min = 135, damage_max = 175, max_hp = 11000, def = 85, exp = 9500, gold_min = 1000, gold_max = 1500, attack_speed = 115, move_speed = 120, attack_range = 150, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR', setRaceFlag = 'UNDEAD', setImmuneFlag = 'SLOW,CURSE,TERROR', regen_cycle = 5, regen_percent = 10, dam_multiply = 2.2, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 3, enchant_penetrate = 3, enchant_fire = 0, enchant_root = 0, resist_sword = 0, resist_twohand = 0, resist_dagger = 0, resist_bell = 0, resist_fan = 0, resist_bow = 0, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 0, skill_vnum0 = 0, skill_level1 = 0, skill_vnum1 = 0, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 0, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4556;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2494 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4557;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Strażnik Atlantydy', locale_name = 'Strażnik Atlantydy', folder = 'plechi_sum2022_boss1', type = 0, rank = 4, battle_type = 0, level = 82, st = 100, dx = 60, ht = 80, iq = 25, damage_min = 120, damage_max = 170, max_hp = 35000, def = 82, exp = 25000, gold_min = 20000, gold_max = 30000, attack_speed = 110, move_speed = 110, attack_range = 200, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR,BERSERK', setRaceFlag = 'UNDEAD', setImmuneFlag = 'STUN,SLOW,CURSE,TERROR', regen_cycle = 15, regen_percent = 5, dam_multiply = 2.2, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 5, enchant_penetrate = 5, enchant_fire = 0, enchant_root = 0, resist_sword = 10, resist_twohand = 10, resist_dagger = 10, resist_bell = 10, resist_fan = 10, resist_bow = 10, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 8, skill_vnum0 = 258, skill_level1 = 0, skill_vnum1 = 0, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 15, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4557;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2494 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4558;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Elita Atlantydy', locale_name = 'Elita Atlantydy', folder = 'plechi_sum2022_boss2', type = 0, rank = 4, battle_type = 0, level = 85, st = 105, dx = 65, ht = 85, iq = 26, damage_min = 125, damage_max = 180, max_hp = 90000, def = 86, exp = 50000, gold_min = 40000, gold_max = 60000, attack_speed = 110, move_speed = 110, attack_range = 200, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR,BERSERK', setRaceFlag = 'UNDEAD', setImmuneFlag = 'STUN,SLOW,CURSE,TERROR', regen_cycle = 15, regen_percent = 5, dam_multiply = 2.4, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 5, enchant_penetrate = 5, enchant_fire = 0, enchant_root = 0, resist_sword = 10, resist_twohand = 10, resist_dagger = 10, resist_bell = 10, resist_fan = 10, resist_bow = 10, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 10, skill_vnum0 = 258, skill_level1 = 0, skill_vnum1 = 0, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 15, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4558;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 2495 LIMIT 1;
+UPDATE world.at_mob SET vnum = 4559;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Morkhot', locale_name = 'Morkhot', folder = 'plechi_sum2022_boss3', type = 0, rank = 5, battle_type = 0, level = 88, st = 115, dx = 70, ht = 95, iq = 28, damage_min = 135, damage_max = 195, max_hp = 300000, def = 90, exp = 250000, gold_min = 2700000, gold_max = 3300000, attack_speed = 110, move_speed = 110, attack_range = 250, aggressive_hp_pct = 100, aggressive_sight = 2000, ai_flag = 'AGGR,BERSERK', setRaceFlag = 'UNDEAD', setImmuneFlag = 'STUN,SLOW,CURSE,TERROR', regen_cycle = 20, regen_percent = 2, dam_multiply = 2.6, enchant_curse = 0, enchant_slow = 0, enchant_poison = 0, enchant_stun = 0, enchant_critical = 5, enchant_penetrate = 5, enchant_fire = 0, enchant_root = 0, resist_sword = 10, resist_twohand = 10, resist_dagger = 10, resist_bell = 10, resist_fan = 10, resist_bow = 10, resist_fire = 0, resist_elect = 0, resist_magic = 0, resist_wind = 0, resist_poison = 0, summon = 0, drain_sp = 0, mob_color = 0, polymorph_item = 0, drop_item = 0, resurrection_vnum = 0, empire = 0, on_click = 0, skill_level0 = 10, skill_vnum0 = 258, skill_level1 = 5, skill_vnum1 = 258, skill_level2 = 0, skill_vnum2 = 0, skill_level3 = 0, skill_vnum3 = 0, skill_level4 = 0, skill_vnum4 = 0, sp_berserk = 15, sp_stoneskin = 0, sp_godspeed = 0, sp_deathblow = 0, sp_revive = 0 WHERE vnum = 4559;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 8024 LIMIT 1;
+UPDATE world.at_mob SET vnum = 8729;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Głębinowa Muszla', locale_name = 'Głębinowa Muszla', folder = '', level = 78, max_hp = 30000, def = 60, exp = 40, gold_min = 0, gold_max = 0, attack_speed = 6408, move_speed = 6409, mob_color = 0, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 8729;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 8024 LIMIT 1;
+UPDATE world.at_mob SET vnum = 8730;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Serce Atlantydy', locale_name = 'Serce Atlantydy', folder = '', level = 82, max_hp = 50000, def = 70, exp = 45, gold_min = 0, gold_max = 0, attack_speed = 6410, move_speed = 6411, mob_color = 0, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 8730;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 8024 LIMIT 1;
+UPDATE world.at_mob SET vnum = 8731;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Pradawne Serce Atlantydy', locale_name = 'Pradawne Serce Atlantydy', folder = '', level = 85, max_hp = 80000, def = 75, exp = 50, gold_min = 0, gold_max = 0, attack_speed = 6412, move_speed = 6412, mob_color = 0, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 8731;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20394 LIMIT 1;
+UPDATE world.at_mob SET vnum = 9460;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Mag Atlantydy', locale_name = 'Mag Atlantydy', on_click = 2, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 9460;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20394 LIMIT 1;
+UPDATE world.at_mob SET vnum = 9461;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Kolumna z Muszli', locale_name = 'Kolumna z Muszli', on_click = 0, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 9461;
+CREATE TEMPORARY TABLE world.at_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20394 LIMIT 1;
+UPDATE world.at_mob SET vnum = 9462;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.at_mob;
+DROP TEMPORARY TABLE world.at_mob;
+UPDATE world.mob_proto SET name = 'Skarb Atlantydy', locale_name = 'Skarb Atlantydy', on_click = 0, drop_item = 0, resurrection_vnum = 0 WHERE vnum = 9462;
+CREATE TEMPORARY TABLE world.at_item AS SELECT * FROM world.item_proto WHERE vnum = 30767 LIMIT 1;
+UPDATE world.at_item SET vnum = 30919;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.at_item;
+DROP TEMPORARY TABLE world.at_item;
+UPDATE world.item_proto SET name = 'Bilet do Atlantydy', locale_name = 'Bilet do Atlantydy', stack = 200, antiflag = 90496, flag = 4, gold = 0, shop_buy_price = 0 WHERE vnum = 30919;
+CREATE TEMPORARY TABLE world.at_item AS SELECT * FROM world.item_proto WHERE vnum = 30767 LIMIT 1;
+UPDATE world.at_item SET vnum = 30920;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.at_item;
+DROP TEMPORARY TABLE world.at_item;
+UPDATE world.item_proto SET name = 'Klucz Atlantydy', locale_name = 'Klucz Atlantydy', stack = 200, antiflag = 0, flag = 4, gold = 0, shop_buy_price = 0 WHERE vnum = 30920;
+CREATE TEMPORARY TABLE world.at_item AS SELECT * FROM world.item_proto WHERE vnum = 30775 LIMIT 1;
+UPDATE world.at_item SET vnum = 30921;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.at_item;
+DROP TEMPORARY TABLE world.at_item;
+UPDATE world.item_proto SET name = 'Skrzynia Atlantydy', locale_name = 'Skrzynia Atlantydy', stack = 200, antiflag = 0, flag = 4, gold = 0, shop_buy_price = 0 WHERE vnum = 30921;" || fail_step "could not add the Ruiny Atlantydy monsters, NPCs and items (MT2009_PLUS_ATLANTYDA_V1)" >&2
+
 # MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus materials (playerbot_seonhae.h) at Owsap's vnums -
 # the Powershards ("Odlamki", materials that stack; no drop, no PK drop, tradeable) by the item's level:
 # 39070 0-29, 39071 30-39, 39072 40-49, 39073 50-59, 39074 60-74, 39075 75-89, 39076 90-104,

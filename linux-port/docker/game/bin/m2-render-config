@@ -171,6 +171,10 @@ MAPS_game1="$MAPS_game1 360 362 363"
 # MT2009_PLUS_BOT_DUNGEONS_ALL_V1: 364-366 on game1 with 363 since (the Arezzo dungeon test
 # cohort, playerbot_arezzo_dungeon_bots.h, runs on whichever core hosts them).
 MAPS_game1="$MAPS_game1 361 364 365 366"
+# MT2009_PLUS_ATLANTYDA_V1 (maps): Ruiny Atlantydy (158, plechito_summer2022_dungeon) on game1 under either
+# layout, beside Orc Valley where its entrance stands - a person's party bots follow into the instance and the
+# bots' own runs go there (a bot cannot cross cores). game1 of the unified layout: 44 maps of MAP_ALLOW_LIMIT 48.
+MAPS_game1="$MAPS_game1 158"
 # MT2009_PLUS_GUILD_WAR_ARENA_V1: the battle arena 110 (metin2_map_t3) on game1 under
 # either layout - the bots' guild wars are fought in private copies of it
 # (playerbot_guild_war.h), and a bot cannot cross cores. 111 (the flags) stays on

@@ -1,0 +1,166 @@
+# MT2009_PLUS_ATLANTYDA_V1: Skrzynia Atlantydy (30921), the Ruiny Atlantydy chest (quest/ruiny_atlantydy.quest gives
+# a pool of 2-4 a run, split among the people inside). A level-75 dungeon between the Ruins of the Scorpion (30775)
+# and Nemere (50271): a Pct group opening its own nested groups 950921-950927 (copies of those chests' lists, so
+# the chest stands on its own whatever another dungeon's file holds): gear always (the level-70 weapons and the
+# Titans' Shield +0..+4, as Nemere's), a filler always and a second at 45%, a pet item at 50%, a purse always,
+# upgrade materials of 70-90 at 75%, the sea's pearls and clams at 60%, a valuable at 60%.
+Group	MT2009_chest_30921
+{
+	Vnum	30921 -- Skrzynia Atlantydy
+	Type	Pct
+	1	s950921	1	100 -- bron 70 / Tarcza Tytanow (+0..+4)
+	2	s950922	1	100 -- zapychacz
+	3	s950922	1	45 -- drugi zapychacz
+	4	s950923	1	50 -- przedmiot do peta
+	5	s950924	1	100 -- sakwa Yang
+	6	s950925	1	75 -- materialy ulepszen 70-90
+	7	s950926	1	60 -- perly i malze glebin
+	8	s950927	1	60 -- cenny przedmiot
+}
+Group	MT2009_chest_30921_gear
+{
+	Vnum	950921
+	1	170	1	30 -- Miecz Zadlo+0
+	2	171	1	25 -- Miecz Zadlo+1
+	3	172	1	20 -- Miecz Zadlo+2
+	4	173	1	15 -- Miecz Zadlo+3
+	5	174	1	10 -- Miecz Zadlo+4
+	6	250	1	30 -- Demoniczne Ostrze+0
+	7	251	1	25 -- Demoniczne Ostrze+1
+	8	252	1	20 -- Demoniczne Ostrze+2
+	9	253	1	15 -- Demoniczne Ostrze+3
+	10	254	1	10 -- Demoniczne Ostrze+4
+	11	1120	1	30 -- Noz Siamese+0
+	12	1121	1	25 -- Noz Siamese+1
+	13	1122	1	20 -- Noz Siamese+2
+	14	1123	1	15 -- Noz Siamese+3
+	15	1124	1	10 -- Noz Siamese+4
+	16	2180	1	30 -- Luk Niebieskiego Smoka+0
+	17	2181	1	25 -- Luk Niebieskiego Smoka+1
+	18	2182	1	20 -- Luk Niebieskiego Smoka+2
+	19	2183	1	15 -- Luk Niebieskiego Smoka+3
+	20	2184	1	10 -- Luk Niebieskiego Smoka+4
+	21	3150	1	30 -- Zlodziej Dusz+0
+	22	3151	1	25 -- Zlodziej Dusz+1
+	23	3152	1	20 -- Zlodziej Dusz+2
+	24	3153	1	15 -- Zlodziej Dusz+3
+	25	3154	1	10 -- Zlodziej Dusz+4
+	26	5130	1	30 -- Dzwon Smierci+0
+	27	5131	1	25 -- Dzwon Smierci+1
+	28	5132	1	20 -- Dzwon Smierci+2
+	29	5133	1	15 -- Dzwon Smierci+3
+	30	5134	1	10 -- Dzwon Smierci+4
+	31	7150	1	30 -- Ekstazyjny Wachlarz+0
+	32	7151	1	25 -- Ekstazyjny Wachlarz+1
+	33	7152	1	20 -- Ekstazyjny Wachlarz+2
+	34	7153	1	15 -- Ekstazyjny Wachlarz+3
+	35	7154	1	10 -- Ekstazyjny Wachlarz+4
+	36	13140	1	90 -- Tarcza Tytanow+0
+	37	13141	1	70 -- Tarcza Tytanow+1
+	38	13142	1	50 -- Tarcza Tytanow+2
+	39	13143	1	25 -- Tarcza Tytanow+3
+	40	13144	1	15 -- Tarcza Tytanow+4
+}
+Group	MT2009_chest_30921_misc
+{
+	Vnum	950922
+	1	27003	100	50 -- Czerwona Mikstura(D)
+	2	27006	100	50 -- Niebieska Mikstura(D)
+	3	50300	1	40 -- Ksiega Umiejetnosci
+	4	70037	1	15 -- Ksiega Zapomnienia
+	5	25040	5	12 -- Zwoj Blogoslawienstwa
+	6	70014	1	10 -- Pigulka Krwi
+	7	39002	1	10 -- Pierscien Doswiadczenia
+	8	70058	1	15 -- Pierscien Teleportacji
+	9	71130	1	20 -- Przepustka
+	10	14180	1	8 -- Ametystowa Bransoleta+0
+	11	16180	1	8 -- Ametystowy Naszyjnik+0
+	12	13140	1	6 -- Tarcza Tytanow+0
+	13	exp	600000	25 -- EXP 600 000
+	14	gold	1500000	25 -- Yang 1 500 000 (MT2009_PLUS_AREZZO_BALANCE_V1: 800 000 before)
+}
+Group	MT2009_chest_30921_pet
+{
+	Vnum	950923
+	1	55010	1	10 -- ksiega peta
+	2	55011	1	10 -- ksiega peta
+	3	55012	1	10 -- ksiega peta
+	4	55013	1	10 -- ksiega peta
+	5	55014	1	10 -- ksiega peta
+	6	55015	1	10 -- ksiega peta
+	7	55016	1	10 -- ksiega peta
+	8	55017	1	10 -- ksiega peta
+	9	55018	1	10 -- ksiega peta
+	10	55019	1	10 -- ksiega peta
+	11	55020	1	10 -- ksiega peta
+	12	55021	1	10 -- ksiega peta
+	13	55022	1	10 -- ksiega peta
+	14	55023	1	10 -- ksiega peta
+	15	55024	1	10 -- ksiega peta
+	16	55025	1	10 -- ksiega peta
+	17	55026	1	10 -- ksiega peta
+	18	55027	1	10 -- ksiega peta
+	19	55028	1	10 -- ksiega peta
+	20	55029	1	10 -- ksiega peta
+	21	55030	1	10 -- ksiega peta
+	22	55031	1	10 -- ksiega peta
+	23	55009	1	30 -- Skrzynia Ksiag Peta
+	24	55101	3	60 -- Eliksir
+	25	55108	3	60 -- Eliksir
+	26	55115	3	60 -- Eliksir
+	27	55102	1	30 -- Eliksir
+	28	55109	1	30 -- Eliksir
+	29	55116	1	30 -- Eliksir
+	30	55103	1	15 -- Eliksir
+	31	55110	1	15 -- Eliksir
+	32	55117	1	15 -- Eliksir
+	33	55001	5	216 -- Proteinowa Przekaska
+	34	55032	1	150 -- Smakolyk
+	35	55035	1	50 -- Smakolyk+
+}
+Group	MT2009_chest_30921_sakwa
+{
+	Vnum	950924
+	1	gold	1000000	50 -- Yang 1 000 000
+	2	gold	1800000	30 -- Yang 1 800 000
+	3	gold	3000000	15 -- Yang 3 000 000
+	4	gold	5500000	5 -- Yang 5 500 000
+}
+Group	MT2009_chest_30921_mat
+{
+	Vnum	950925
+	1	30089	3	8 -- Futro Yeti+
+	2	30091	3	8 -- Symbol Wojownika
+	3	30087	3	8 -- Klejnot Demona+
+	4	30086	3	8 -- Pamiatka Po Demonie+
+	5	30354	3	8 -- Czerwone Nasiono
+	6	30088	3	6 -- Kawalek Lodu+
+	7	30090	3	6 -- Matowy Lod+
+	8	30016	3	6 -- Klejnot Demona
+	9	27992	2	10 -- Biala Perla
+	10	27993	1	8 -- Niebieska Perla
+	11	27994	1	4 -- Krwawa Perla
+	12	27987	5	6 -- Malz
+}
+Group	MT2009_chest_30921_morze
+{
+	Vnum	950926
+	1	27992	2	30 -- Biala Perla
+	2	27993	1	20 -- Niebieska Perla
+	3	27994	1	8 -- Krwawa Perla
+	4	27987	5	30 -- Malz
+	5	27987	10	12 -- Malz
+}
+Group	MT2009_chest_30921_val
+{
+	Vnum	950927
+	1	50300	3	20 -- Ksiega Umiejetnosci x3
+	2	25040	5	16 -- Zwoj Blogoslawienstwa x5
+	3	s10987	1	14 -- Kamien Duszy +0..+3
+	4	s10988	1	9 -- Kamien Duszy +2..+4
+	5	50513	1	16 -- Kamien Duchowy
+	6	71084	2	10 -- Zaczarowanie Przedmiotu x2
+	7	71085	2	8 -- Wzmocnienie Przedmiotu x2
+	8	25100	1	5 -- Zwoj Kamienia Duszy
+	9	s10993	1	6 -- losowa ksiega (wysoka)
+}

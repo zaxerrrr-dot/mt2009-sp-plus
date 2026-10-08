@@ -101,6 +101,20 @@ linux-port/docker/game/dungeons/map/metin2_map_n_flame_dungeon_01/*
 linux-port/docker/game/dungeons/map/metin2_map_skipia_dungeon_boss/*
 # MT2009_PLUS_AREZZO_V1: the Arezzo places' share files (Dockerfile step "share: Arezzo places").
 linux-port/docker/game/arezzo/*
+# MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy's share files (Dockerfile step "share: Ruiny Atlantydy").
+linux-port/docker/game/atlantyda/*
+linux-port/docker/game/atlantyda/data/dungeon/ruiny_atlantydy/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_boss1/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_boss2/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_boss3/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_monster1/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_monster2/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_monster3/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_monster4/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_monster5/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_monster6/*
+linux-port/docker/game/atlantyda/data/monster/plechi_sum2022_monster7/*
+linux-port/docker/game/atlantyda/map/plechito_summer2022_dungeon/*
 linux-port/docker/game/treasure_hunt/*
 linux-port/docker/game/treasure_hunt/map/metin2_map_treasure_hunt/*
 linux-port/docker/game/treasure_hunt/monster/treasure_hunt_box/*

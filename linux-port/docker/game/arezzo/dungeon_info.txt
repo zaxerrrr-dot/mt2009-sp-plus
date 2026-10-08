@@ -60,6 +60,11 @@ drop	katakumby	5124	1	10
 dungeon	nemere	352	1	xy	61	4322	1655	75	0	1	8	6191	nemere_dungeon.entry	3600	0	0	Lodowa_Kraina_(Nemere)	Góra_Sohan
 cost	nemere	7500000
 drop	nemere	50271	5	100
+# MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy (158), entered at Mag Atlantydy beside the Grotto of Exile in Orc Valley
+# with a Bilet do Atlantydy (30919) a person - the ticket is the fee (6 000 000 at the magician).
+dungeon	atlantyda	158	1	xy	64	2848	8096	75	0	1	8	4559	ruiny_atlantydy.entry	3600	30919	1	Ruiny_Atlantydy	Dolina_Orków
+cost	atlantyda	6000000
+drop	atlantyda	30921	4	100
 dungeon	smok	208	1	xy	64	2850	8103	90	0	1	8	2493	blue_dragon_lair.entry	3600	0	0	Le¿e_Smoka	Dolina_Orków
 cost	smok	7500000
 drop	smok	71123	1	100

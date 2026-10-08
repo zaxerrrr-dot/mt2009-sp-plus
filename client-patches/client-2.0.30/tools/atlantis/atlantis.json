@@ -1,0 +1,37 @@
+{
+  "_comment": "MT2009_PLUS_ATLANTYDA_V1 - Ruiny Atlantydy (the Plechito summer 2022 dungeon 'Ruins of Atlantis'), one source for the server rows (linux-port/docker/mariadb/playerbot/apply.sh, written by hand from it) and the client rows (patch_atlantis_client.py). Names UTF-8 here, CP1250 in the files. type: 0 monster, 1 NPC, 2 stone; rank: 0 pawn .. 5 king.",
+  "map": {
+    "index": 158,
+    "folder": "plechito_summer2022_dungeon",
+    "name": "Ruiny Atlantydy",
+    "base": [3814400, 2252800],
+    "size": [3, 3]
+  },
+  "mobs": [
+    {"vnum": 4550, "name": "Głębinowy Skorupiak", "en": "Underwater crustacean", "race": "plechi_sum2022_monster5", "type": 0, "rank": 0, "level": 78, "hp": 5200, "dmin": 105, "dmax": 135, "def": 72, "exp": 4200, "gold": [600, 900], "st": 80, "dx": 50, "ht": 65, "iq": 20, "attack_speed": 110, "move_speed": 100, "range": 150, "ai": "AGGR", "dam_multiply": 1.6, "regen": [5, 7]},
+    {"vnum": 4551, "name": "Strażnik Trytonów", "en": "Mermen guard", "race": "plechi_sum2022_monster1", "type": 0, "rank": 1, "level": 79, "hp": 6000, "dmin": 110, "dmax": 140, "def": 74, "exp": 4800, "gold": [650, 950], "st": 85, "dx": 55, "ht": 65, "iq": 20, "attack_speed": 110, "move_speed": 110, "range": 150, "ai": "AGGR", "dam_multiply": 1.7, "regen": [5, 7]},
+    {"vnum": 4552, "name": "Wojownik Trytonów", "en": "Mermen warrior", "race": "plechi_sum2022_monster2", "type": 0, "rank": 1, "level": 80, "hp": 6600, "dmin": 115, "dmax": 148, "def": 76, "exp": 5300, "gold": [700, 1000], "st": 90, "dx": 55, "ht": 68, "iq": 21, "attack_speed": 110, "move_speed": 110, "range": 150, "ai": "AGGR", "dam_multiply": 1.8, "regen": [5, 7]},
+    {"vnum": 4553, "name": "Rybi Potwór Atlantydy", "en": "Atlantis fish monster", "race": "plechi_sum2022_monster4", "type": 0, "rank": 1, "level": 82, "hp": 7200, "dmin": 120, "dmax": 155, "def": 78, "exp": 5900, "gold": [750, 1100], "st": 92, "dx": 58, "ht": 70, "iq": 22, "attack_speed": 110, "move_speed": 110, "range": 150, "ai": "AGGR", "dam_multiply": 1.8, "regen": [5, 7]},
+    {"vnum": 4554, "name": "Stwór z Głębin", "en": "Creature of a deep", "race": "plechi_sum2022_monster7", "type": 0, "rank": 2, "level": 83, "hp": 8000, "dmin": 125, "dmax": 160, "def": 80, "exp": 6500, "gold": [800, 1200], "st": 95, "dx": 60, "ht": 72, "iq": 22, "attack_speed": 110, "move_speed": 110, "range": 150, "ai": "AGGR", "dam_multiply": 1.9, "regen": [5, 7]},
+    {"vnum": 4555, "name": "Nieumarły Rybi Wojownik", "en": "Undead fish warrior", "race": "plechi_sum2022_monster6", "type": 0, "rank": 2, "level": 84, "hp": 8600, "dmin": 128, "dmax": 165, "def": 82, "exp": 7000, "gold": [850, 1250], "st": 98, "dx": 62, "ht": 74, "iq": 23, "attack_speed": 110, "move_speed": 110, "range": 150, "ai": "AGGR", "dam_multiply": 2.0, "regen": [5, 7]},
+    {"vnum": 4556, "name": "Krwiożerczy Rekin", "en": "Bloodthirsty shark", "race": "plechi_sum2022_monster3", "type": 0, "rank": 3, "level": 86, "hp": 11000, "dmin": 135, "dmax": 175, "def": 85, "exp": 9500, "gold": [1000, 1500], "st": 105, "dx": 65, "ht": 78, "iq": 24, "attack_speed": 115, "move_speed": 120, "range": 150, "ai": "AGGR", "dam_multiply": 2.2, "regen": [5, 10]},
+    {"vnum": 4557, "name": "Strażnik Atlantydy", "en": "Atlantis guard", "race": "plechi_sum2022_boss1", "type": 0, "rank": 4, "level": 82, "hp": 35000, "dmin": 120, "dmax": 170, "def": 82, "exp": 25000, "gold": [20000, 30000], "st": 100, "dx": 60, "ht": 80, "iq": 25, "attack_speed": 110, "move_speed": 110, "range": 200, "ai": "AGGR,BERSERK", "dam_multiply": 2.2, "regen": [15, 5], "skills": [[8, 258]]},
+    {"vnum": 4558, "name": "Elita Atlantydy", "en": "Atlantis elite", "race": "plechi_sum2022_boss2", "type": 0, "rank": 4, "level": 85, "hp": 90000, "dmin": 125, "dmax": 180, "def": 86, "exp": 50000, "gold": [40000, 60000], "st": 105, "dx": 65, "ht": 85, "iq": 26, "attack_speed": 110, "move_speed": 110, "range": 200, "ai": "AGGR,BERSERK", "dam_multiply": 2.4, "regen": [15, 5], "skills": [[10, 258]]},
+    {"vnum": 4559, "name": "Morkhot", "en": "Morkhot", "race": "plechi_sum2022_boss3", "type": 0, "rank": 5, "level": 88, "hp": 300000, "dmin": 135, "dmax": 195, "def": 90, "exp": 250000, "gold": [2700000, 3300000], "st": 115, "dx": 70, "ht": 95, "iq": 28, "attack_speed": 110, "move_speed": 110, "range": 250, "ai": "AGGR,BERSERK", "dam_multiply": 2.6, "regen": [20, 2], "skills": [[10, 258], [5, 258]]},
+    {"vnum": 8729, "name": "Głębinowa Muszla", "en": "Deepsea shell", "race": "plechi_summ2022_stone2", "type": 2, "rank": 5, "level": 78, "hp": 30000, "def": 60, "exp": 40, "gold": [0, 0], "groups": [6408, 6409]},
+    {"vnum": 8730, "name": "Serce Atlantydy", "en": "Heart of Atlantis", "race": "plechi_summ2022_stone1a", "type": 2, "rank": 5, "level": 82, "hp": 50000, "def": 70, "exp": 45, "gold": [0, 0], "groups": [6410, 6411]},
+    {"vnum": 8731, "name": "Pradawne Serce Atlantydy", "en": "Ancient Heart of Atlantis", "race": "plechi_summ2022_stone1b", "type": 2, "rank": 5, "level": 85, "hp": 80000, "def": 75, "exp": 50, "gold": [0, 0], "groups": [6412, 6412]},
+    {"vnum": 9460, "name": "Mag Atlantydy", "en": "Atlantis magician", "race": "plechi_sum2022_npc3", "type": 1},
+    {"vnum": 9461, "name": "Kolumna z Muszli", "en": "Shell pillar", "race": "plechi_sum2022_npc2", "type": 1},
+    {"vnum": 9462, "name": "Skarb Atlantydy", "en": "Atlantis treasure", "race": "plechi_sum2022_npc1", "type": 1}
+  ],
+  "dropped": {
+    "9463": "the package's 'Atlantis Chest' - no quest uses it and the client's npclist has no line for it",
+    "20813-20819": "the fish (BUILDING, regen_fishes.txt): every fish model (npc/plechito_animals/fish00*) is a 64-bit GR2 the exe cannot read - no fish, and so no text-tail hide either"
+  },
+  "items": [
+    {"vnum": 30919, "name": "Bilet do Atlantydy", "en": "Atlantis ticket", "icon": "icon/item/sum2022_ticket.tga", "desc": "Chroni przed wodą, ciśnieniem i ciemnością głębin. Wpuszcza jedną osobę do Ruin Atlantydy (poziom 75+). Do kupienia u Maga Atlantydy w Dolinie Orków, czasem wypada dowódcom i generałom Groty Wygnańców."},
+    {"vnum": 30920, "name": "Klucz Atlantydy", "en": "Atlantis key", "icon": "icon/item/sum2022_item1.tga", "desc": "Wypada z Głębinowej Muszli w Ruinach Atlantydy. Oddaj go właściwej Kolumnie z Muszli."},
+    {"vnum": 30921, "name": "Skrzynia Atlantydy", "en": "Atlantis chest", "icon": "icon/item/sum2022_reward.tga", "desc": "Łup z Ruin Atlantydy. Otwórz, aby zobaczyć, co skrywały głębiny."}
+  ]
+}

@@ -1,0 +1,35 @@
+// MT2009_PLUS_ATLANTYDA_V1: the groups the Ruiny Atlantydy stones call as they lose health (mob_proto
+// attack_speed/move_speed of 8729/8730/8731 = a group vnum range, CHARACTER::__StateIdle_Stone: 22 groups
+// from 99% to 10%). The package's 6408-6412 (free in this world), one monster a group instead of seven to
+// fifteen: a stone calls 22 monsters, which one player of 75-80 can take - the Shell is broken four to
+// eight times a run.
+
+Group	MT2009_atlantyda_muszla_1
+{
+	Vnum	6408
+	Leader	"Glebinowy Skorupiak"	4550
+}
+
+Group	MT2009_atlantyda_muszla_2
+{
+	Vnum	6409
+	Leader	"Straznik Trytonow"	4551
+}
+
+Group	MT2009_atlantyda_serce_1
+{
+	Vnum	6410
+	Leader	"Rybi Potwor Atlantydy"	4553
+}
+
+Group	MT2009_atlantyda_serce_2
+{
+	Vnum	6411
+	Leader	"Stwor z Glebin"	4554
+}
+
+Group	MT2009_atlantyda_serce_pradawne
+{
+	Vnum	6412
+	Leader	"Nieumarly Rybi Wojownik"	4555
+}

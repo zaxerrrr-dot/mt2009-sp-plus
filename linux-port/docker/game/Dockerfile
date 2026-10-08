@@ -284,6 +284,8 @@ RUN set -eux; \
     # (MT2009_PLUS_AREZZO_V1, phases 5-7).
     # blue_dragon_lair is the Blue Dragon lair (map 208) entered at the Sura's Ghost in the Grotto of
     # Exile V2 (MT2009_PLUS_BLUE_DRAGON_V1).
+    # ruiny_atlantydy is Ruiny Atlantydy (map 158), entered at Mag Atlantydy in Orc Valley beside the
+    # Grotto of Exile with a Bilet do Atlantydy (MT2009_PLUS_ATLANTYDA_V1).
     # seonhae opens Seon-Hae's 6th/7th bonus window at 20095 while m2_seonhae_on is set
     # (MT2009_PLUS_SEONHAE_V1, playerbot_seonhae.h).
     # minigame_rumi is the Okey table (20417) of Owsap's Rumi: rankings, the top ten's prize, the
@@ -318,7 +320,7 @@ RUN set -eux; \
     # (MT2009_PLUS_BELTS_V1, Autor: Digi Rasta; cube.pasy.txt below).
     # zywioly (Mistrz 20082: the Kwiat Zywiolu shop and the elements' explanation) is the
     # elements and talismans (MT2009_PLUS_ELEMENTS_V1, Autor: Digi Rasta).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1091,6 +1093,60 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-p58 \
  && test "$(od -An -tx1 -N8 "$L/map/plechito_easter2023_dungeon/server_attr" | tr -d ' ')" = 0c0000000c000000 \
  && rm -rf "$A" \
  && echo "share: Arezzo phases 5-8 - Pustkowie Faraona (361), Wzgorze Wukonga (364), Ruiny Skorpiona (365), Starozytna Dzungla (366)"
+
+# MT2009_PLUS_ATLANTYDA_V1 (share): Ruiny Atlantydy - plechito_summer2022_dungeon, 158, 3x3 at 3814400 2252800,
+# the Plechito summer 2022 dungeon "Ruins of Atlantis" at the Grotto of Exile's band (entry 75, solo or a party;
+# quest/ruiny_atlantydy.quest; apply.sh has the rows). Its entrance, Mag Atlantydy (9460), stands in Orc Valley
+# beside the Grotto's entrance (286,1434; the Grotto's 20091 is at 295,1442, the Temple guard 20426 at 289,1448,
+# all on one open ground measured on server_attr). The public copy of 158 is the fallback lobby (its npc.txt:
+# the magician at the entry); the instance's two floors are data/dungeon/ruiny_atlantydy (wave1, wave2, hearts).
+# The Plechito monsters' motions (share/data/monster/plechi_sum2022_*: the server times attacks by them), the
+# stones' one-monster call groups 6408-6412 (group.atlantyda.txt), the ticket's drops from the Grotto's
+# commanders and generals (mob_drop_item.atlantyda.txt), Skrzynia Atlantydy (special_item_group.atlantyda.txt),
+# the Teleporter's name and /goto atlantyda for game masters.
+COPY atlantyda/ /tmp/atlantyda-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/atlantyda-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && rm -rf "$L/map/plechito_summer2022_dungeon" && cp -a "$A/map/plechito_summer2022_dungeon" "$L/map/" \
+ && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+ && sed -i -E '/^158[[:blank:]]/d' "$L/map/index" \
+ && printf '158 plechito_summer2022_dungeon\n' >> "$L/map/index" \
+ && test "$(grep -c -E '^158[[:blank:]]+plechito_summer2022_dungeon[[:space:]]*$' "$L/map/index")" = 1 \
+ && mkdir -p /opt/metin2/share/data/dungeon /opt/metin2/share/data/monster \
+ && rm -rf /opt/metin2/share/data/dungeon/ruiny_atlantydy && cp -a "$A/data/dungeon/ruiny_atlantydy" /opt/metin2/share/data/dungeon/ \
+ && for m in "$A"/data/monster/*; do rm -rf "/opt/metin2/share/data/monster/$(basename "$m")"; cp -a "$m" /opt/metin2/share/data/monster/; done \
+ && test -s /opt/metin2/share/data/monster/plechi_sum2022_boss3/motlist.txt \
+ && test -s /opt/metin2/share/data/dungeon/ruiny_atlantydy/hearts.txt \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_atlantyda_' "$L/group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+641[0-2]([^0-9]|$)|^[[:blank:]]*Vnum[[:blank:]]+640[89]([^0-9]|$)' "$L/group.txt" \
+ && { [ -z "$(tail -c 1 "$L/group.txt")" ] || printf '\n' >> "$L/group.txt"; } \
+ && sed 's/\r$//' "$A/group.atlantyda.txt" >> "$L/group.txt" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_atlantyda_' "$L/group.txt")" = 5 \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_atlantyda_' "$L/mob_drop_item.txt" \
+ && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
+ && cat "$A/mob_drop_item.atlantyda.txt" >> "$L/mob_drop_item.txt" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_atlantyda_' "$L/mob_drop_item.txt")" = 5 \
+ && f="$L/special_item_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(30921|95092[1-7])([^0-9]|$)' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/special_item_group.atlantyda.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(30921|95092[1-7])([^0-9]|$)' "$f")" = 8 \
+ && F="$L/map/map_n_threeway/npc.txt" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; } \
+ && { grep -q -E '[[:blank:]]9460[[:space:]]*$' "$F" || printf 'm\t286\t1434\t0\t0\t0\t5\t1m\t100\t1\t9460\n' >> "$F"; } \
+ && test "$(grep -c -E '[[:blank:]]9460[[:space:]]*$' "$F")" = 1 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[158\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_ATLANTYDA_V1\r\ntranslate.general.map_names[158] = "Ruiny Atlantydy"\r\n' >> "$f"; \
+    done \
+ && LC_ALL=C grep -a -q 'map_names\[158\]' "$L/quest/libs/translate/translate.lua" \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("atlantyda"' "$S" || printf 'add_goto_info("atlantyda", 0, 158, 38343, 22769)\r\n' >> "$S"; } \
+ && test "$(od -An -tx1 -N8 "$L/map/plechito_summer2022_dungeon/server_attr" | tr -d ' ')" = 0c0000000c000000 \
+ && rm -rf "$A" \
+ && echo "share: Ruiny Atlantydy (158), Mag Atlantydy in Orc Valley"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only

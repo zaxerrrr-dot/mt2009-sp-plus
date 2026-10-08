@@ -1,0 +1,39 @@
+// MT2009_PLUS_ATLANTYDA_V1: Bilet do Atlantydy (30919) - the Ruiny Atlantydy ticket, sold by Mag Atlantydy (9460)
+// in Orc Valley beside the Grotto of Exile's entrance - also drops from the Grotto's commanders and generals and
+// the Strong Ice Witch (the Grotto V1 boss): the Grotto's hunters earn their entries. A 'drop' group adds to the
+// monster's other drop groups (ReadMonsterDropItemGroup); 400 is 100% as the other drop files write it.
+
+Group	MT2009_atlantyda_bilet_2494
+{
+	mob	2494
+	Type	drop
+	1	30919	1	40	-- Bilet do Atlantydy, 10% (Dowodca Huashin)
+}
+
+Group	MT2009_atlantyda_bilet_2491
+{
+	mob	2491
+	Type	drop
+	1	30919	1	40	-- Bilet do Atlantydy, 10% (Dowodca Yonghan)
+}
+
+Group	MT2009_atlantyda_bilet_2495
+{
+	mob	2495
+	Type	drop
+	1	30919	1	100	-- Bilet do Atlantydy, 25% (General Huashin)
+}
+
+Group	MT2009_atlantyda_bilet_2492
+{
+	mob	2492
+	Type	drop
+	1	30919	1	100	-- Bilet do Atlantydy, 25% (General Yonghan)
+}
+
+Group	MT2009_atlantyda_bilet_1192
+{
+	mob	1192
+	Type	drop
+	1	30919	1	60	-- Bilet do Atlantydy, 15% (Silna Lodowa Wiedzma)
+}
