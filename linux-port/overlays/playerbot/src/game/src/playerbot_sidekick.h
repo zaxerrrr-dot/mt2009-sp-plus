@@ -2269,6 +2269,52 @@ namespace
 		ch->SkillLevelPacket();
 	}
 
+	// MT2009_PLUS_SIDEKICK_LEVEL_SYNC_V1 ("zrobilem nowa postac ... companion
+	// ma 27 lvl ... bot podniosl mi do 6 a towarzysza do 27, nie wiem jak", the
+	// owner on the supporters' server, 8 October 2026: xszuBartovx at level 2
+	// made a Shaman companion "Buff", pid 4426). The companion did not earn
+	// those levels: it came in at 27. Its identity was taken from the
+	// companions' pool (ClaimPlayerBotSidekickPoolIdentity), which reserves
+	// only never-played identities (playtime 0, level 1) but never looked again
+	// at the claim - and 4426, reserved before, had been played by the
+	// population meanwhile (player row: level 27, exp 476 586, playtime 3,
+	// last_play 6 October 00:25, map 64), and the setup only ever raised a
+	// companion to its owner's level (RaisePlayerBotSidekickLevel returns at
+	// once when the level is over the target). The fallback pick
+	// (PickPlayerBotSidekickIdentity) takes a played identity over the
+	// owner's level too, when the kingdom has no other of the race. Now the
+	// claim asks the pool's identity to be still unplayed (a played one leaves
+	// the pool), and the setup brings an identity over its owner's level down
+	// to it - the level, its experience, the stats and skills of the levels it
+	// gives back, the path taken again at five - the way a stat reset and
+	// pc.set_level make a level, so a companion starts at its owner's level
+	// whatever it was before.
+	void LowerPlayerBotSidekickLevel(LPCHARACTER ch, int target)
+	{
+		target = MINMAX(1, target, gPlayerMaxLevel);
+		const int oldLevel = ch->GetLevel();
+		if (target >= oldLevel)
+			return;
+		ch->SetExp(0);
+		ch->ResetPoint(target);
+		ch->ClearSkill();
+		ch->ClearSubSkill();
+		// Under five there is no path, and ClearSkill's 4 + (level - 5) is no
+		// count of points (KeepPlayerBotSidekickPath takes the path at five).
+		if (target < 5)
+		{
+			ch->PointChange(POINT_SKILL, -ch->GetPoint(POINT_SKILL));
+			ch->SetSkillGroup(0);
+		}
+		ch->ComputePoints();
+		ch->PointChange(POINT_HP, ch->GetMaxHP() - ch->GetHP());
+		ch->PointChange(POINT_SP, ch->GetMaxSP() - ch->GetSP());
+		ch->PointsPacket();
+		ch->SkillLevelPacket();
+		sys_log(0, "PLAYERBOT_SIDEKICK: brought down to its owner's level pid=%u name=%s level=%d->%d",
+				ch->GetPlayerID(), ch->GetName(), oldLevel, ch->GetLevel());
+	}
+
 	// A free identity of the race asked for in the owner's kingdom: every
 	// guard of the registry (LoadRegisteredBots), nobody's companion yet, out
 	// of every world and out of the db core's cache, not one of the operator's
@@ -2431,7 +2477,8 @@ namespace
 			return 0;
 		char query[192];
 		snprintf(query, sizeof(query),
-				"SELECT pid FROM player.playerbot_sidekick_pool WHERE race=%u ORDER BY reserved_at, pid LIMIT 8",
+				"SELECT q.pid, p.playtime FROM player.playerbot_sidekick_pool AS q "
+				"LEFT JOIN player.player AS p ON p.id=q.pid WHERE q.race=%u ORDER BY q.reserved_at, q.pid LIMIT 8",
 				(unsigned int)race);
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
@@ -2448,6 +2495,20 @@ namespace
 				str_to_number(pid, row[0]);
 			if (pid == 0 || CHARACTER_MANAGER::instance().FindByPID(pid) || P2P_MANAGER::instance().FindByPID(pid))
 				continue;
+			// MT2009_PLUS_SIDEKICK_LEVEL_SYNC_V1: played since it was reserved
+			// (or gone): out of the pool, never a companion from it.
+			unsigned int playtime = 1;
+			if (row[1])
+				str_to_number(playtime, row[1]);
+			if (!row[1] || playtime != 0)
+			{
+				snprintf(query, sizeof(query), "DELETE FROM player.playerbot_sidekick_pool WHERE pid=%u", pid);
+				std::unique_ptr<SQLMsg> drop(AccountDB::instance().DirectQuery(query));
+				s_setPlayerBotSidekickPool.erase(pid);
+				sys_log(0, "PLAYERBOT_SIDEKICK: companion pool identity played since its reservation, dropped pid=%u "
+						"playtime=%u owner=%u", pid, playtime, ownerPid);
+				continue;
+			}
 			snprintf(query, sizeof(query), "DELETE FROM player.playerbot_sidekick_pool WHERE pid=%u", pid);
 			std::unique_ptr<SQLMsg> take(AccountDB::instance().DirectQuery(query));
 			if (!take.get() || take->uiSQLErrno != 0 || !take->Get() || take->Get()->uiAffectedRows == 0)
@@ -3042,6 +3103,7 @@ namespace
 			// "belongings cleared items=0", then its seed chest opened). Both
 			// steps are safe to repeat until the setup is written down.
 			RaisePlayerBotSidekickLevel(ch, rec->bLevel);
+			LowerPlayerBotSidekickLevel(ch, rec->bLevel);	// MT2009_PLUS_SIDEKICK_LEVEL_SYNC_V1
 			if (rec->bGroup != 0 && ch->GetLevel() >= 5 && ch->GetSkillGroup() != rec->bGroup)
 			{
 				ch->ClearSkill();
