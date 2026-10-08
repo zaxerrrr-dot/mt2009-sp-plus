@@ -834,3 +834,84 @@ nazwy rang (Waleczny, Mocarny, Potężny, Władca, Arcymistrz, Legenda) i kolory
   o łącznej wartości sklepu z kwotą `player.GOLD_MAX`.
 
 Stary stragan (`uiprivateshopbuilder.py`, `uiCommon.MoneyInputDialog`) zostaje przy 9 cyfrach (serwer przyjąłby 50 mld).
+
+# Ruiny Atlantydy (mapa 158, `MT2009_PLUS_ATLANTYDA_V1`)
+
+Loch Plechito „Ruins of Atlantis” (lato 2022) przeniesiony jako Ruiny Atlantydy, poziom 75. Folder mapy
+`plechito_summer2022_dungeon`, BasePosition 3814400 2252800, 3×3 (z paczki, wolne u nas). Jedno źródło danych
+dla serwera i klienta: `tools/atlantis/atlantis.json` (nazwy, rasy, statystyki, przedmioty, ikony, opisy).
+
+## Paczki (budowane w następnym kliencie, nie zbudowane)
+
+- `at_maps` (nowa) – 97 plików, 16,0 MB surowo, 13,2 MB w paczce: obiekty mapy `zone/plechi_dungeon/summer2022`
+  i `underwater_dungeon`, efekty mapy, textureset `plechito_summer2022_dungeon.txt`, `terrainmaps/plechi_env_map/dark.dds`,
+  msenv `plechito_summer2022_dungeon.msenv` (ma NearDistance/FarDistance, bez foglevel), `.mdatr`, duża mapa
+  (`d:/ymir work/ui/plechito_summer2022_dungeon_atlas.dds` 256×256 DXT1 z minimap 3×3 + `ui/atlas/.../atlas.sub`)
+  i trzy ikony `icon/item/sum2022_ticket.tga`, `sum2022_item1.tga`, `sum2022_reward.tga`.
+- `at_mobs` (nowa) – 276 plików, 17,5 MB surowo, 11,4 MB w paczce: rasy 4550–4559 (`monster2/plechito_summer2022/*`),
+  kamienie 8729–8731 (`monster/plechito_summer2022/plechi_summ2022_stone1|2`), NPC 9460–9462
+  (`npc/plechito_summer2022/plechi_sum2022_npc1-3`) z efektami `effect/plechito/...`.
+- `maps` +93 (9 sektorów, `setting.txt`, `mapproperty.txt`, kopia msenv; bez `server_attr`), `property` +25 (obiekty
+  mapy; kolizji CRC z naszą paczką brak).
+- `gamedata`: `npclist.txt` (+16 aliasów `0 <rasa> plechito_summer2022/<katalog>` przed pierwszym wierszem vnum, +16
+  wierszy vnum), `atlasinfo.txt` (+1), `item_list.txt` (+3, skrzynia z modelem `boss_box.gr2`), `mob_proto` (+16).
+  `dbdata`: `gamedata/item_proto` (+3; bilet z antiflag 90496 jak na serwerze), `locale/pl/itemdesc.txt` (+3).
+  `root`: `localeinfo.py` – nazwa mapy w `MINIMAP_ZONE_NAME_DICT` (w repozytorium, build bierze cały `root/`).
+- Exe bez zmian.
+
+## Decyzje
+
+- **Ryby pominięte.** Wszystkie modele `npc/plechito_animals/fish00*` (20813–20819) to GR2 64-bit (`e59b495e`),
+  których exe nie czyta; ryby wypadają z lochu (serwer ich nie stawia), więc i ukrywanie ich podpisów w exe jest
+  niepotrzebne. 9463 („Atlantis Chest”) też pominięty – nic go nie używa.
+- **Usunięte obiekty mapy (22 z 263).** `zone/plechi_dungeon/water_dungeon/*` (ściana małży, małże, skorupiaki – 5
+  CRC, 18 obiektów) to GR2 64-bit bez 32-bitowej kopii (Arezzo ma te same 64-bit, GF ich nie ma); CRC 1023488681
+  (4 obiekty) nie ma property nigdzie (paczka, nasza paczka `property`, Arezzo, GF). Wygenerowane `areadata.txt`
+  sektorów bez nich (obiekty numerowane od 000), jak przy Zaczarowanym Lesie.
+- Pominięte z paczki: `locale/en/ui/loading/loading0.*` (podmieniłby ogólny ekran ładowania), `ui/game/questboard/*`
+  (nasz quest nie pokazuje obrazków), `root/npclist.txt` i `locale/en/*` (wiersze robi `patch_atlantis_client.py`).
+- Plik, który jest już w naszym kliencie (lista 2.0.58 + lista bazy), zostaje nasz; plik, który jest w GF 26.1.11,
+  brany z GF (reguła az58).
+- Rekordy klienta: mob_proto z rekordu potwora tego samego rodzaju (9697 potwór, 9695 boss, 9694 król, 9696
+  kamień, 20424 NPC) z vnum, nazwą, typem, rangą, poziomem, PŻ, obroną, exp, yang, flagami AI, statystykami,
+  obrażeniami, prędkościami (u kamieni: grupy 6408–6412) i zasięgiem z `atlantis.json`; item_proto 30919/30920
+  z 30767, 30921 z 30775.
+
+## Czego brakuje
+
+- 7 tekstur, które modele `underwater_dungeon/clam*`, `sponge*` wymieniają, a ich siatki nie używają (resztki sceny
+  3ds Max, jak w Bibliotece; Arezzo też ich nie ma): `p_cq_coral_altar_01_ds.dds`, `underwater_grass.dds`,
+  `underwater_plants01.dds`, `water_plant02.dds`, `water_plants01b.dds`, `water_tree00.dds`, `water_tree01.dds`.
+- `.mdatr` trzech DungeonBlocków (`flower00a`, `room_statue2`, `stone00a`) – brak w paczce i u Arezzo (ozdoby bez
+  kolizji w kliencie; chodzenie wyznacza serwerowy `server_attr`).
+- Plechito nie daje dźwięków ras.
+
+## Narzędzia (`tools/atlantis`)
+
+`dump_base.py` (lista wpisów bazy + pliki paczki `property` → `/opt/metin2/cache/atlantis-work`), `stage_atlantis.py`
+(paczka → `/opt/metin2/cache/atlantis-staging/add/<paczka>/...`, `atlantis_manifest.json`), `patch_atlantis_client.py`
+(wiersze protos i plików tekstowych, jak `zywioly/patch_zywioly_client.py`, plus `--npclist`/`--atlasinfo`),
+`build_atlantis_packs.py` (jak `azcostume/build_azcostume_packs.py`; `--check` tylko mierzy). Wynik `--check` na
+`/opt/metin2/cache/c58/pack`: at_maps 13,21 MB, at_mobs 11,42 MB (obie pod limitem 29 MB), maps +93, property +25,
+gamedata 4 pliki, dbdata 2 pliki. Źródło paczki: rozpakowany „Ruins of Atlantis [With quest]/Client” (domyślnie
+w scratchpadzie sesji – przy przebudowie podać ścieżkę jako pierwszy argument `stage_atlantis.py`).
+
+## Kroki do dopisania w potoku klienta (styl `client58.sh`)
+
+```sh
+T=/opt/metin2/git/mt2009-sp-plus/client-patches/client-2.0.30/tools
+# raz, przed danymi (na bazie, na której budujemy, np. c55/pack):
+docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/atlantis/dump_base.py /opt/metin2/cache/c55/pack
+python3 $T/atlantis/stage_atlantis.py "<rozpakowany pakiet>/Client"
+# w kroku danych (ten sam sh -c co sashcloth/rankfruit/pasy/zywioly, w $C/data):
+#   && python3 $T/atlantis/patch_atlantis_client.py item_proto item_list.txt itemdesc.txt mob_proto
+# po build_azcostume_packs.py, na tym samym OUT:
+docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/atlantis/build_atlantis_packs.py /opt/metin2/cache/c55/pack $C/out/pack /opt/metin2/cache/atlantis-staging --data $C/data > $C/at.json
+# (potem jak dotąd: mkdir pack && cp -a c55/pack/. pack/ && cp -a out/pack/. pack/)
+# test: druga przebiegówka na pełnym zestawie ma dać same "in base"/"unchanged"
+docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/atlantis/build_atlantis_packs.py $C/pack - /opt/metin2/cache/atlantis-staging --check
+grep -c -x -E 'at_maps|at_mobs' $C/pack/Index   # 2
+```
+
+Klient zmienia dane przedmiotów (dbdata): w wydaniu ostrzeżenie o nieaktualnych plikach i nowa baza panelu
+(`python3 -m m2clientpack.make_base <klient>/pack <wersja>`), jak przy innych zmianach item_proto.

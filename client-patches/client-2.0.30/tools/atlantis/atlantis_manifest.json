@@ -1,0 +1,3078 @@
+{
+ "packs": {
+  "at_maps": [
+   {
+    "name": "d:/ymir work/environment/plechito_summer2022_dungeon.msenv",
+    "sha1": "52aa9180058038b5274138a0f5617fedefe16c5c",
+    "size": 2453,
+    "source": "ymir work/environment/plechito_summer2022_dungeon.msenv"
+   },
+   {
+    "name": "d:/ymir work/ui/atlas/plechito_summer2022_dungeon/atlas.sub",
+    "sha1": "8d0816640485bcead23ff7e40cef072c1c434558",
+    "size": 114,
+    "source": "/opt/metin2/cache/atlantis-staging/gen/d_/ymir work/ui/atlas/plechito_summer2022_dungeon/atlas.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/plechito_summer2022_dungeon_atlas.dds",
+    "sha1": "b7dacd6044cc79f8263fa70bb3b8883048258a26",
+    "size": 32896,
+    "source": "/opt/metin2/cache/atlantis-staging/gen/d_/ymir work/ui/plechito_summer2022_dungeon_atlas.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/pyramide_dungeon/effects/shine00.mde",
+    "sha1": "3f7d543650ea31a9bb58d0acf45b8bbb2af0446f",
+    "size": 16099,
+    "source": "ymir work/zone/plechi_dungeon/pyramide_dungeon/effects/shine00.mde"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/bottom_walls.dds",
+    "sha1": "dd37156128770ab2978fc2309b6327d29ea78ffe",
+    "size": 174920,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/bottom_walls.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/center_floor.dds",
+    "sha1": "926ec989660c2ed3ca280896d59225510af18c40",
+    "size": 699192,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/center_floor.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/corner_ruins.dds",
+    "sha1": "910a5e41d955462f019a97aca287e5195a3d7965",
+    "size": 21992,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/corner_ruins.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/door_pillar.dds",
+    "sha1": "a31022e30233eb07bed1787d7c756f7b1f7cf20d",
+    "size": 699192,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/door_pillar.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/door_roof.dds",
+    "sha1": "20e90bc321fcce62f5e65a60f000ac6f95b55ead",
+    "size": 699192,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/door_roof.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/door_roof2.dds",
+    "sha1": "103c6a87ff00c5fb03725a3e53fcf01a96d61438",
+    "size": 174904,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/door_roof2.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/door_stairs.dds",
+    "sha1": "07e35df15be693e4b9669dbd56627817ffd7e505",
+    "size": 87528,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/door_stairs.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/bubble.dds",
+    "sha1": "3e56f2bab2bfed109a878ea1d75ec49b926990e2",
+    "size": 87536,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/bubble.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/bubble_00.mse",
+    "sha1": "00f6c2569408a665928df4a401790a1ff6f3e099",
+    "size": 3072,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/bubble_00.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/bubble_01.mse",
+    "sha1": "2d107d2a65be82fe7e11662d38c2490f54b5d2f0",
+    "size": 3068,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/bubble_01.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/bubble_02.mse",
+    "sha1": "8d4217c139d3cbefd3bc4ac1f6b7738e9c758a0f",
+    "size": 3068,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/bubble_02.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/bubble_03.mse",
+    "sha1": "5676eb1e37304c878d3457b6a40dde1664b054ac",
+    "size": 3068,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/bubble_03.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/flower00a.mde",
+    "sha1": "65301c12f1e85161d152b6c8842ff1202af1698b",
+    "size": 32375,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/flower00a.mde"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/flower00a.mse",
+    "sha1": "6163f133b894533908c42d14cfb22bddbce01253",
+    "size": 961,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/flower00a.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/flower00b.mse",
+    "sha1": "03f00e66aee9e06a2bbfa7e0f02d7b50947432eb",
+    "size": 961,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/flower00b.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/particle_center.mse",
+    "sha1": "464b03ebc3b6fde714b11ae59bc806c26e002c72",
+    "size": 6257,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/particle_center.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/plant01.mse",
+    "sha1": "81d997e5b19b3f2fcf35841ba2f53846ea9c9989",
+    "size": 1057,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/plant01.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/shine.mse",
+    "sha1": "5d5aa666c0360a5786e5c7f6d8d29eedbe601ba4",
+    "size": 1050,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/shine.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/floor_tex.dds",
+    "sha1": "3f5eee9a3bf928a30e77797992e07a0c2430f62c",
+    "size": 174904,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/floor_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/front_walls.dds",
+    "sha1": "1b042356fc6765790ba1c290af6dc71dc57d6351",
+    "size": 174920,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/front_walls.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/gate.dds",
+    "sha1": "494a94342d34f331c658196d1e4f7f54bd44d843",
+    "size": 2796344,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/gate.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/mountain_sand.dds",
+    "sha1": "922b12eee1b3fd72dc4c11c1e436a3e7a5289905",
+    "size": 174904,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/mountain_sand.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/mountain_tex.dds",
+    "sha1": "91d372f2e25cef043a87fa684777ad74b70f3b8a",
+    "size": 174904,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/mountain_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower00a.gr2",
+    "sha1": "1023c39d209c995dcf123f132406a902da88cdc4",
+    "size": 29156,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower00a.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower00alightingmap.dds",
+    "sha1": "16e3dd83723f0661ab0c15f7f857d4dab725cd0c",
+    "size": 11064,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower00alightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower01a.gr2",
+    "sha1": "cb375dc89ed8ff7f2cd4e17ee5246413071ab8dc",
+    "size": 45896,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower01a.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower01a.mdatr",
+    "sha1": "a67fe624e00efe74a992e7a129b2a511b64db738",
+    "size": 94,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower01a.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower01b.gr2",
+    "sha1": "5cd32aa77e62af150fe7b25fd31c1f44eaaed76f",
+    "size": 26732,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower01b.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower01b.mdatr",
+    "sha1": "a67fe624e00efe74a992e7a129b2a511b64db738",
+    "size": 94,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower01b.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower01c.gr2",
+    "sha1": "53d04bd8fa4d7566bc6b407c71a2e052d12af516",
+    "size": 24836,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower01c.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower01c.mdatr",
+    "sha1": "a67fe624e00efe74a992e7a129b2a511b64db738",
+    "size": 94,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower01c.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower01d.gr2",
+    "sha1": "feae341b0ec948678c85446b92b2848f96b7471f",
+    "size": 31020,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower01d.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower01d.mdatr",
+    "sha1": "a67fe624e00efe74a992e7a129b2a511b64db738",
+    "size": 94,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower01d.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower_tex1.dds",
+    "sha1": "e69dd522676a1767c0d0351821f73a57ef46c24f",
+    "size": 699192,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower_tex1.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/flower_tex2.dds",
+    "sha1": "cbe29eac3f5f72d185d72b486d9f01f2ae9fcc9a",
+    "size": 699192,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/flower_tex2.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/room_statue2.dds",
+    "sha1": "195c165320e0a3f20f215f37f93f2dd1dcb4a1cd",
+    "size": 174904,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/room_statue2.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/room_statue2.gr2",
+    "sha1": "08540a98d8712ab05a35181b61baa157b7eac91f",
+    "size": 447688,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/room_statue2.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/room_statue2lightingmap.dds",
+    "sha1": "9acc3b0cad8c2347d2670f7bffd23ad2ecc53417",
+    "size": 174904,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/room_statue2lightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/statue1.dds",
+    "sha1": "4d111ed1b481de7fa0687224ed5d584257e3c382",
+    "size": 699192,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/statue1.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/statue1.gr2",
+    "sha1": "d62668cbf7127c5956a22e9babf58d62420a7f41",
+    "size": 124228,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/statue1.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/statue1.mdatr",
+    "sha1": "a67fe624e00efe74a992e7a129b2a511b64db738",
+    "size": 94,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/statue1.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/stone00.dds",
+    "sha1": "ea4f0d999e613aeb9157b252fcc2c26f0477d431",
+    "size": 699192,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/stone00.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/stone00a.gr2",
+    "sha1": "820c1bbaa513b1c9e499f766fa3c970541b30227",
+    "size": 65804,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/stone00a.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/obj/stone00alightingmap.dds",
+    "sha1": "cea69345892a9864732e8f5a6ee90a0d3a91c106",
+    "size": 11064,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/obj/stone00alightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/pillar_walls.dds",
+    "sha1": "3b3ce272385ee439ccf612a47d60a55e783bf39c",
+    "size": 349672,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/pillar_walls.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/revenge_logo_roomlightingmap.dds",
+    "sha1": "3227db0d6ff0967de269335c22ca85563eb54f92",
+    "size": 11064,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/revenge_logo_roomlightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/revenge_logo_tex.dds",
+    "sha1": "da5fbf73c9d48544bff0a5656f78cfd2305745b2",
+    "size": 172608,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/revenge_logo_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room.gr2",
+    "sha1": "3d49c4d1fb0d1fb915f1f31b739a5e5b3e7646ee",
+    "size": 1371876,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room.mdatr",
+    "sha1": "70b82ca1e1370f7a9c093b4845570ef990094851",
+    "size": 707458,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_bottom_wallslightingmap.dds",
+    "sha1": "5ac9b55c4947887c5c1b33c116026a58c2bb04b7",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_bottom_wallslightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_center_floorlightingmap.dds",
+    "sha1": "82e43203f7d3f7c2faab72f514f8f1c38248dc30",
+    "size": 11064,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_center_floorlightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_corner_ruinslightingmap.dds",
+    "sha1": "f79ceb88275b783498118d5b58ccc676c3f3bb57",
+    "size": 11064,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_corner_ruinslightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_door_pillarlightingmap.dds",
+    "sha1": "a5813c6c84e9d7d5e2e876d2886c9e097a0294a3",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_door_pillarlightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_door_roof2lightingmap.dds",
+    "sha1": "a539683f22a405318550827576c56bd9b1651690",
+    "size": 11064,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_door_roof2lightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_door_rooflightingmap.dds",
+    "sha1": "9e2d54024745b8c1b09aab40f1a6857996bd8c5e",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_door_rooflightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_door_stairlightingmap.dds",
+    "sha1": "eeb77d80e8fc7e20b59d00593b5db7c6cb5c8363",
+    "size": 11064,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_door_stairlightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_doorlightingmap.dds",
+    "sha1": "2c3fa9a88b258e614da5f10bb697ac4f2ec97626",
+    "size": 11064,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_doorlightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_floorlightingmap.dds",
+    "sha1": "26734495f0cef6aa8abbd744845ce419e8a86057",
+    "size": 11064,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_floorlightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_front_wallslightingmap.dds",
+    "sha1": "92e49caa66a643c3f36b9566764ae7548e2bb237",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_front_wallslightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_gatelightingmap.dds",
+    "sha1": "62214684e84c1a2865770fd05ef7de9fc0786fba",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_gatelightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_mountain_brokenlightingmap.dds",
+    "sha1": "bcb6cb8d9b2728774b47ce1dc35056a519db1971",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_mountain_brokenlightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_mountainlightingmap.dds",
+    "sha1": "91f61a8ddc0f4b7cbc645a12b0e6d7e8c1884d19",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_mountainlightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_pillar_wallslightingmap.dds",
+    "sha1": "0fb1a5139b4137f07b1b94bbdb4c2de27abf0418",
+    "size": 393368,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_pillar_wallslightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_ruinslightingmap.dds",
+    "sha1": "521fa76b429c24ce0381e19b345f6fe6e2a620c9",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_ruinslightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_statue.dds",
+    "sha1": "aec2df24a8a73d348c77322aaef98ae490113c3b",
+    "size": 699192,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_statue.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_statuelightingmap.dds",
+    "sha1": "d2c70526a58263dca2dfe8d486395decf5670215",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_statuelightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_stone_ruinslightingmap.dds",
+    "sha1": "63a517ceaacb69f24350c3da4d11ac639e4dfffc",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_stone_ruinslightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/room_top_walllightingmap.dds",
+    "sha1": "f22a17c97fb1a05f0d5bf1359384cbb7379d44e6",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/room_top_walllightingmap.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/stone_ruins.dds",
+    "sha1": "5b68c6432cfec5db53e2ceae1d52f8a86b990757",
+    "size": 43832,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/stone_ruins.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/top_walls.dds",
+    "sha1": "7547193b95ba492544e56d184ab06d3f5785cd2a",
+    "size": 87528,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/top_walls.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam00.dds",
+    "sha1": "47ed1ea8c50a2421f57013ccaeb5b01cf8a83332",
+    "size": 699192,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam00.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam00b.gr2",
+    "sha1": "0ef0347975c7b42e130c0732cca39e380a60c675",
+    "size": 25716,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam00b.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam00b.mdatr",
+    "sha1": "6384933eb343e30aad837d9d5492efe4f064a6de",
+    "size": 238,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam00b.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam00c.gr2",
+    "sha1": "2f1142ac982f3c35a6a436c05d891362b66ba51f",
+    "size": 25712,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam00c.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam00c.mdatr",
+    "sha1": "53d99b4079c7d26f1767962d0cda8b59f60f56df",
+    "size": 238,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam00c.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam00d.gr2",
+    "sha1": "88a56be0ceac18b02649d054333ba8131dab3fbe",
+    "size": 25608,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam00d.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam00d.mdatr",
+    "sha1": "b3d345280954264c0debda904d45860ca859ee48",
+    "size": 310,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam00d.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam00e.gr2",
+    "sha1": "10ed7dfd1a2a8bf1ac4bbba0fabe18f81581f4d8",
+    "size": 24656,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam00e.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam00e.mdatr",
+    "sha1": "06d61291a56b63d1e29d172c929c3d68cfa1f7fa",
+    "size": 382,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam00e.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam01.dds",
+    "sha1": "eabce5acb461d83bdbad5567ab60b351eb2615fd",
+    "size": 174904,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam01.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam01a.gr2",
+    "sha1": "d6f2a7e308b978e38916e73d141ced77d4d63dea",
+    "size": 11084,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam01a.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/clam01a.mdatr",
+    "sha1": "9967f7c9b252428a322525b6b6706c4400ea88e5",
+    "size": 94,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam01a.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/plants/underwater_plant08b.mde",
+    "sha1": "9273b67818bb8a11f97dee86b766601c699b1a03",
+    "size": 23027,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/plants/underwater_plant08b.mde"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00a.dds",
+    "sha1": "c034d87ff4a35a8abb43126ad6c24c8311af673a",
+    "size": 174904,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00a.dds"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00a.gr2",
+    "sha1": "6ac68ff27cc7259a3c3ff5df5d8c90f32bf79af7",
+    "size": 11504,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00a.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00a.mdatr",
+    "sha1": "422e68415545fae3e8901dbf4e00c570dd239233",
+    "size": 238,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00a.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00b.gr2",
+    "sha1": "e214f859c20121ebf9c95f5a8e35feff68f9bd22",
+    "size": 19912,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00b.gr2"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00b.mdatr",
+    "sha1": "422e68415545fae3e8901dbf4e00c570dd239233",
+    "size": 238,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/sponge00b.mdatr"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/water_plant03.dds",
+    "sha1": "f6ce21a1b9dd1089b7cf447f1feccb10e4ad5482",
+    "size": 174904,
+    "source": "/opt/metin2/cache/arezzo/cpack/files/ymir work/zone/plechi_dungeon/underwater_dungeon/water_plant03.dds"
+   },
+   {
+    "name": "icon/item/sum2022_item1.tga",
+    "sha1": "fad2559ad19a71412bee7ba48e9ef6bef4e93af9",
+    "size": 4169,
+    "source": "icon/item/sum2022_item1.tga"
+   },
+   {
+    "name": "icon/item/sum2022_reward.tga",
+    "sha1": "733c7afc4b27ac9245e2003ab3e28c2e83d957b3",
+    "size": 4206,
+    "source": "icon/item/sum2022_reward.tga"
+   },
+   {
+    "name": "icon/item/sum2022_ticket.tga",
+    "sha1": "a04d9fcf910b1dca27f50690507d7746ef098bc6",
+    "size": 3956,
+    "source": "icon/item/sum2022_ticket.tga"
+   },
+   {
+    "name": "textureset/plechito_summer2022_dungeon.txt",
+    "sha1": "7b04299de02ab320de51cca5599e830a631b3b0f",
+    "size": 199,
+    "source": "textureset/plechito_summer2022_dungeon.txt"
+   }
+  ],
+  "at_mobs": [
+   {
+    "name": "d:/ymir work/effect/monster2/12_b.dds",
+    "sha1": "4694b77600b6fab2cbc2dc7747797f88c9e070fb",
+    "size": 22000,
+    "source": "/opt/metin2/cache/gf/Gameforge_26.1.11/_client/d_/ymir work/effect/monster2/12_b.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/fire_light01_16.dds",
+    "sha1": "1d0fe840da5ff312ee2dc91e7fc996ff4aadeb85",
+    "size": 22000,
+    "source": "/opt/metin2/cache/gf/Gameforge_26.1.11/_client/d_/ymir work/effect/monster2/fire_light01_16.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/line_ring_copy.dds",
+    "sha1": "6c723e2d8d0ab480f71be361c6d1afa626b3cb66",
+    "size": 2872,
+    "source": "ymir work/effect/monster2/line_ring_copy.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/redd_shelter_01.dds",
+    "sha1": "0142da3aabec48429a411ac2c9f9776dcc7cd27e",
+    "size": 87536,
+    "source": "/opt/metin2/cache/gf/Gameforge_26.1.11/_client/d_/ymir work/effect/monster2/redd_shelter_01.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/andun_chapter/impact00.dds",
+    "sha1": "8cca8eff86a30fbff1359606fa8daff7f91b9aef",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/andun_chapter/impact00.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/andun_chapter/impact01.dds",
+    "sha1": "6d73d8fc8b98925460d9a79217fdf57ff4e1de9d",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/andun_chapter/impact01.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/andun_chapter/point02.dds",
+    "sha1": "4eee2137724472cd6c66c438e097140a13aad5a3",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/andun_chapter/point02.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/andun_chapter/smoke02.dds",
+    "sha1": "692e314ec84b367a01175374dc1f7ea5bddb4a22",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/andun_chapter/smoke02.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/bubble_underwater.dds",
+    "sha1": "3e56f2bab2bfed109a878ea1d75ec49b926990e2",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/bubble_underwater.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/christmas2021/smoke01.dds",
+    "sha1": "f3805e0ece93242b551e7e2ae462bf604ce66a56",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/christmas2021/smoke01.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/easter2022/crack00.dds",
+    "sha1": "89e5eb9ad566f25c7d5283652969ef5456a6726f",
+    "size": 349680,
+    "source": "ymir work/effect/plechito/monster/easter2022/crack00.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/halloween2021/spawn_smoke.dds",
+    "sha1": "10cde52e57e20387e63cf33804dee29e62d912b5",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/halloween2021/spawn_smoke.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/shadow/smoke03.dds",
+    "sha1": "ab8ca3f6a38d54d6dc33bd405a8634710ad71d14",
+    "size": 22000,
+    "source": "ymir work/effect/plechito/monster/shadow/smoke03.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/smoke04.dds",
+    "sha1": "c4f70de139c8693fd2d902a2e71fea6c975a6b42",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/smoke04.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss1_attack.mde",
+    "sha1": "6ba7e3fe211fcc7be794f9ca8944e54d4ecdcad5",
+    "size": 65267,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss1_attack.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss1_attack.mse",
+    "sha1": "18a765063f2794bea80a0f1a82b3540c113a344f",
+    "size": 4054,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss1_attack.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss1_skill_boom.mse",
+    "sha1": "6f269a06248c1da7253f0e0a9029d74cb1d2e1f0",
+    "size": 25688,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss1_skill_boom.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss1_skill_making.mse",
+    "sha1": "9620b1de8b48b2e09a0ace628dd24988d462ebf3",
+    "size": 7498,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss1_skill_making.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss1_water_tornado.mde",
+    "sha1": "713fa4e648265f11bd5ec93cbe51660d799647e9",
+    "size": 313819,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss1_water_tornado.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss1_water_tornado2.mde",
+    "sha1": "b6fc3f5514df5fcafe4c59c4ec2a28bd6c2c38ca",
+    "size": 370811,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss1_water_tornado2.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss2_attack.mse",
+    "sha1": "482e7f24f4dbff40434e35ffefafd140dffaec57",
+    "size": 10051,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss2_attack.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss2_skill_boom.mse",
+    "sha1": "c2ff294121879ec859cb4f298e3469af88435f4f",
+    "size": 24132,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss2_skill_boom.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss2_skill_impact.mde",
+    "sha1": "e34f98a839c48f17c18c45143fcce707b438986a",
+    "size": 167839,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss2_skill_impact.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss2_skill_making.mse",
+    "sha1": "2c3d5b5c025d3946eee89bedf71ed67d69a030fa",
+    "size": 16280,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss2_skill_making.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss2_skill_making2.mse",
+    "sha1": "62d06b680ae246eaacfbe3fb2cf3395f96a647b0",
+    "size": 1530,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss2_skill_making2.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_attack.mde",
+    "sha1": "9574085a4d204401b57b424d412efd53e2172c74",
+    "size": 168459,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_attack.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_attack.mse",
+    "sha1": "ecbc06600abb00e853925192c2fe9efc23526110",
+    "size": 4056,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_attack.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_body_eff.mde",
+    "sha1": "95bf2c09278668af46391a42d3c68a429a0494b8",
+    "size": 456299,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_body_eff.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_body_eff.mse",
+    "sha1": "7f2b241eca4e301cdccc5e9eb1b30be31e709d6f",
+    "size": 20907,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_body_eff.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill00_boom.mse",
+    "sha1": "d300148b384f7976b996c22a6de891e78f92d286",
+    "size": 27355,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill00_boom.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill00_making.mde",
+    "sha1": "ed877e79388681aebfc9b4d21f349e4b726a8d82",
+    "size": 1291795,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill00_making.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill00_making.mse",
+    "sha1": "0aec65489f63f6763c264e89d782e2cf608a6918",
+    "size": 30688,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill00_making.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill00_making_hand.mse",
+    "sha1": "bf54081591539126608051cbcce22cfe94860487",
+    "size": 13066,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill00_making_hand.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill01_boom.mde",
+    "sha1": "01f41fc465c978766bd9ea24a61fa58706e9798c",
+    "size": 1449923,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill01_boom.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill01_boom.mse",
+    "sha1": "f8fa7ec20c8f3680e8c713cf5ab52fd7d5530687",
+    "size": 25591,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill01_boom.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill01_boom_drop.mse",
+    "sha1": "6ac4b00f538bdc9bcf0b3b2f4354d0a1b544f3f1",
+    "size": 22359,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill01_boom_drop.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill01_making.mse",
+    "sha1": "eb80e46efbb876d000a22b83959c2e560b2e2622",
+    "size": 10629,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill01_making.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill01_making_circle.mse",
+    "sha1": "9967c84dd6e4a4b78e608312f9ef201c22f3406d",
+    "size": 20133,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill01_making_circle.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill01_spawn.mse",
+    "sha1": "e9ba550e55ec66c7816885a1e2c6d16945d1b570",
+    "size": 19760,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill01_spawn.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/boss3_skill01_spawn2.mse",
+    "sha1": "8fc0e999e50135c7d3d7286530a36d654c2cd0eb",
+    "size": 18415,
+    "source": "ymir work/effect/plechito/monster/summer2022/boss3_skill01_spawn2.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/impact00.dds",
+    "sha1": "6d73d8fc8b98925460d9a79217fdf57ff4e1de9d",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/summer2022/impact00.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/impact01.dds",
+    "sha1": "8cca8eff86a30fbff1359606fa8daff7f91b9aef",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/summer2022/impact01.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/impact02.dds",
+    "sha1": "1927e16e1e4361ee7915e5a788e0f50f8435c1d5",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/summer2022/impact02.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/impact03.dds",
+    "sha1": "f7562de7b4a9eb4c1d00c07ce363bb388b108415",
+    "size": 87536,
+    "source": "ymir work/effect/plechito/monster/summer2022/impact03.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/monster1_attack.mde",
+    "sha1": "01ca960325c3f17c445674d9ace74a495ad0f253",
+    "size": 45983,
+    "source": "ymir work/effect/plechito/monster/summer2022/monster1_attack.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/monster1_attack.mse",
+    "sha1": "435f066abdacf0eff236c70d8026fc99183836a0",
+    "size": 4055,
+    "source": "ymir work/effect/plechito/monster/summer2022/monster1_attack.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/monster2_attack.mde",
+    "sha1": "6fd5416a9b27a9162d6b29d5a68c57723da2bd70",
+    "size": 45983,
+    "source": "ymir work/effect/plechito/monster/summer2022/monster2_attack.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/monster2_attack.mse",
+    "sha1": "2953c6435913aa28e7c35777d15b9d7584039c70",
+    "size": 6991,
+    "source": "ymir work/effect/plechito/monster/summer2022/monster2_attack.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/monster4_attack.mse",
+    "sha1": "d5d9ed920edb766e7373a913becb053e05097bab",
+    "size": 8955,
+    "source": "ymir work/effect/plechito/monster/summer2022/monster4_attack.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/monster6_attack.mde",
+    "sha1": "e8e39396376efecb0ba16979f80c22f0ec955517",
+    "size": 45983,
+    "source": "ymir work/effect/plechito/monster/summer2022/monster6_attack.mde"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/monster6_attack.mse",
+    "sha1": "fbd08369f0290a94c35457d3043484a1c42d93a6",
+    "size": 4056,
+    "source": "ymir work/effect/plechito/monster/summer2022/monster6_attack.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/monster7_attack.mse",
+    "sha1": "749e7a5ccd47009b74ce2cec47fedcac38e46751",
+    "size": 9441,
+    "source": "ymir work/effect/plechito/monster/summer2022/monster7_attack.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/smoke00.dds",
+    "sha1": "ea8756b1c66adf5bfa40d8615a075f2b9a5389cc",
+    "size": 22000,
+    "source": "ymir work/effect/plechito/monster/summer2022/smoke00.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/stone1_attack.mse",
+    "sha1": "d36240878ce88130fa7997980eae39d7e322b2ae",
+    "size": 10141,
+    "source": "ymir work/effect/plechito/monster/summer2022/stone1_attack.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/stone1_destroy.mse",
+    "sha1": "1f91b5e6fecfb512ba61afc69f25a2e980c4b5be",
+    "size": 16786,
+    "source": "ymir work/effect/plechito/monster/summer2022/stone1_destroy.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/stone1_loop.mse",
+    "sha1": "0f1941c0fc9fc1f8d170afb98eba88776dfe2c64",
+    "size": 13327,
+    "source": "ymir work/effect/plechito/monster/summer2022/stone1_loop.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/stone1_loop2.mse",
+    "sha1": "58f12a48037f8c5145ccec334f58ed6a65e7ffc6",
+    "size": 13327,
+    "source": "ymir work/effect/plechito/monster/summer2022/stone1_loop2.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/stone2_loop.mse",
+    "sha1": "67d46a2c3372536d3a0eb0d47c01f2cbba987af4",
+    "size": 46538,
+    "source": "ymir work/effect/plechito/monster/summer2022/stone2_loop.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/underwater_shark_impact.dds",
+    "sha1": "afa4f6f00ecd62389e44c87a04518dc79bd39478",
+    "size": 22000,
+    "source": "ymir work/effect/plechito/monster/underwater_shark_impact.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/vlna1.dds",
+    "sha1": "bcc12c3f7a157b7fb6f4d6e8054ad9bdf5085c91",
+    "size": 11064,
+    "source": "ymir work/effect/plechito/monster/vlna1.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/npc/line1.dds",
+    "sha1": "faac6548f11ef09d3a2bacde21db04701d3d6f4c",
+    "size": 29888,
+    "source": "ymir work/effect/plechito/npc/line1.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/npc/summer2022/npc2_destroy.mse",
+    "sha1": "68e41ba9f166467674ffbcefea44aabdace3a8ac",
+    "size": 16389,
+    "source": "ymir work/effect/plechito/npc/summer2022/npc2_destroy.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/npc/summer2022/npc2_eff.mse",
+    "sha1": "43fc9a5e6ccdea189bf398a1d06be52e3ed1f8c7",
+    "size": 18581,
+    "source": "ymir work/effect/plechito/npc/summer2022/npc2_eff.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/npc/summer2022/npc3_eff.mse",
+    "sha1": "52e6ac6c38bd03792a209c4f3b32a25024b130fb",
+    "size": 6490,
+    "source": "ymir work/effect/plechito/npc/summer2022/npc3_eff.mse"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/attack.msa",
+    "sha1": "eb34df164eb8cc41439f197c6fa45fc7859c719b",
+    "size": 691,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/attack.msa"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/destroy.gr2",
+    "sha1": "b13c5451a5ccd0ae419da7800e59784a1c66ac7f",
+    "size": 250556,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/destroy.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/destroy.msa",
+    "sha1": "6902994f306c0651aac0cd93bfc7fc7eec126e4f",
+    "size": 1303,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/destroy.msa"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/motlist.txt",
+    "sha1": "0c674e350cd24f9fda2bc20eb0511d99a0b204dd",
+    "size": 424,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1a.gr2",
+    "sha1": "c9970d374028546df2e2a80ff9885e98218b08c6",
+    "size": 473088,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1a.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1a.msm",
+    "sha1": "0c078843b9feaca61be7504b35d3f81f6ab82190",
+    "size": 1604,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1a.msm"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1b.gr2",
+    "sha1": "8bcb94647df8de4cbd8162761be3801ade09c8eb",
+    "size": 473096,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1b.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1b.msm",
+    "sha1": "b1987cbbddbd27b4a7fbbd2b096d081bada7ba9c",
+    "size": 1605,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1b.msm"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechito_tex.dds",
+    "sha1": "38f0aaa4655136ed8a2a18e287c894b5676351d9",
+    "size": 174904,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechito_tex2.dds",
+    "sha1": "0ad7c76f033444d662ac50577020ca312182b83d",
+    "size": 174904,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechito_tex2.dds"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/stay00.gr2",
+    "sha1": "4f6e5709acc9437916c642e7936a0a941bd47a35",
+    "size": 28968,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/stay00.msa",
+    "sha1": "5205d527c268c7f8b6d3da7486ce1051b2e6b874",
+    "size": 220,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/attack.msa",
+    "sha1": "1ef713bc935119276a51dca1b4cacc5cf234b60e",
+    "size": 691,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/attack.msa"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/destroy.gr2",
+    "sha1": "a9bed577d341c3e26bb97c2903bd0612569305f0",
+    "size": 90644,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/destroy.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/destroy.msa",
+    "sha1": "120459fcdd2fe7a909c7c1461a3ceae583cb2810",
+    "size": 1303,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/destroy.msa"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/motlist.txt",
+    "sha1": "82dc641ce0cbfae8b0c457e0d9c481e309eee210",
+    "size": 423,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/plechi_summ2022_stone2.gr2",
+    "sha1": "3908ef1178c70ed965c7829520a0b1e0dac7f172",
+    "size": 292476,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/plechi_summ2022_stone2.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/plechi_summ2022_stone2.msm",
+    "sha1": "845ffc48404714814febbd09b4ff5b4d7ca0be9f",
+    "size": 1605,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/plechi_summ2022_stone2.msm"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/plechito_tex.dds",
+    "sha1": "fac03158b2f4ef0d9ba3461cb2713cc861111790",
+    "size": 174904,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/spawn.gr2",
+    "sha1": "19910a2cf31881ad4fb0e05b891a625298fc88ec",
+    "size": 13032,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/spawn.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/spawn.msa",
+    "sha1": "17f0cfba3e1f91a0141c652aa13aa2d25f585460",
+    "size": 1301,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/spawn.msa"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/stay00.gr2",
+    "sha1": "6d1e7c2c9b43abe63ed2c439a55050711cbcb0b7",
+    "size": 12404,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/stay00.msa",
+    "sha1": "dac4eb54e98bac44bdfd9d46e29e578108f44748",
+    "size": 220,
+    "source": "ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/attack00.gr2",
+    "sha1": "fe6d0985e1f9c04c94477d8e17bb881cdfc63b5d",
+    "size": 31888,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/attack00.msa",
+    "sha1": "c285092bacfa1798f43057b1aac00980c9c4fcd1",
+    "size": 1308,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/damage.gr2",
+    "sha1": "296c27b3cee4a956fb674fc310cb94b51e600de4",
+    "size": 30008,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/damage.msa",
+    "sha1": "10ad028fb2dd0f3e730e738586cc8921b91369b4",
+    "size": 219,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/dead.gr2",
+    "sha1": "05197b2fbf4b905eff7a4c74da72bf61c31a7937",
+    "size": 51752,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/dead.msa",
+    "sha1": "46bdcb14612909d511af55eed1a62903c9a54313",
+    "size": 217,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/motlist.txt",
+    "sha1": "e540efdf429ffd941f58f7f3d4394e0c9e676cb8",
+    "size": 289,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/plechi_sum2022_boss1.gr2",
+    "sha1": "7e97eca5504bfc39e8ebf99bd1445e5346e0a075",
+    "size": 299840,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/plechi_sum2022_boss1.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/plechi_sum2022_boss1.msm",
+    "sha1": "9616c58c157e3ba9e9759bb667dd69665153dbe5",
+    "size": 2427,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/plechi_sum2022_boss1.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/plechito_tex.dds",
+    "sha1": "1fd58b479195d5c79b99e0319c0d33cd6fa04420",
+    "size": 1398256,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/run.gr2",
+    "sha1": "9092a4e742e3f2a18487c794b54396a8c999748d",
+    "size": 24316,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/run.msa",
+    "sha1": "3dd722e5f2880123cd399165cbd8c62c4f22dd7e",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/skill00.gr2",
+    "sha1": "893af1aa42ff756faff4c91e7499cdfdb77ac35a",
+    "size": 34300,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/skill00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/skill00.msa",
+    "sha1": "74020add4f7ea29158e062aba4fff325ac87dd0d",
+    "size": 1933,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/skill00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/stay00.gr2",
+    "sha1": "38340f6c0edcedf2c741aaf3cfbf8c51a913abbc",
+    "size": 24092,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/stay00.msa",
+    "sha1": "d3c964491ad87673784213696be5167a212afd76",
+    "size": 219,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/attack00.gr2",
+    "sha1": "9f4ccdfe7bccd4bf14db06dd4f8b8715d040b19b",
+    "size": 36640,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/attack00.msa",
+    "sha1": "77dc753ece88f178cd37106a8ca08728f5462551",
+    "size": 1311,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/damage.gr2",
+    "sha1": "d1917a6cf3fc3527c61dfe1c11fbd0e34b55d674",
+    "size": 23728,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/damage.msa",
+    "sha1": "e36058e736327877c316219fecc7f314b2f9485d",
+    "size": 219,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/dead.gr2",
+    "sha1": "0588f5f2090dc200efc36061d26045482a6e60e1",
+    "size": 33524,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/dead.msa",
+    "sha1": "df9fad94a9768c31f52f65d81fafc87f8ff347f7",
+    "size": 217,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/motlist.txt",
+    "sha1": "e540efdf429ffd941f58f7f3d4394e0c9e676cb8",
+    "size": 289,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/plechi_sum2022_boss2.gr2",
+    "sha1": "5e3c65168d76c4913ab77faef03eb7b5cc61c7ba",
+    "size": 199792,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/plechi_sum2022_boss2.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/plechi_sum2022_boss2.msm",
+    "sha1": "40023e4954f1c1a74193a6267e48ebc9e6ce933f",
+    "size": 2012,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/plechi_sum2022_boss2.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/plechito_tex.dds",
+    "sha1": "7f3145c519cedb1d52d9d8e6c04221db007af31d",
+    "size": 699192,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/run.gr2",
+    "sha1": "4f6ca10a7d09f6d438beea3b5eeddfd252fff5ae",
+    "size": 17884,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/run.msa",
+    "sha1": "8095e8467760643db4e3733d51ad827b8b89e4a6",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/skill00.gr2",
+    "sha1": "077ee57dad0adcf2dac79598a76edce30e6a214a",
+    "size": 33232,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/skill00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/skill00.msa",
+    "sha1": "83e5c26e06b1eec0aaab2f92efb6a077557905e9",
+    "size": 2359,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/skill00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/skill01.gr2",
+    "sha1": "64d2c18140128fc0fc5a44778cffc1bea637767f",
+    "size": 55912,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/skill01.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/skill01.msa",
+    "sha1": "f549c1a7f845ebe311e1ee4dcdd8a47afb4e35e8",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/skill01.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/stay00.gr2",
+    "sha1": "d2a01eaf152ee07e8ccf835751dbb3e58c5aad7b",
+    "size": 17416,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/stay00.msa",
+    "sha1": "4ae08cddb620d464237687be0223d2a866013368",
+    "size": 219,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/attack00.gr2",
+    "sha1": "fa9d2786cb2ef1571886c6795e576e3542c5b5d3",
+    "size": 39800,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/attack00.msa",
+    "sha1": "9cb7b85ff443f11d5360fa582c9607b6463e7a58",
+    "size": 1309,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/damage.gr2",
+    "sha1": "451bdaa418023443f011b6280ca96def6a6d67f9",
+    "size": 36860,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/damage.msa",
+    "sha1": "0a828b528be086c673227ad52b6cecc0ecc3e71e",
+    "size": 219,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/dead.gr2",
+    "sha1": "7bffb7811730efb27ece0855b9c81bf95a7e4e8f",
+    "size": 51140,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/dead.msa",
+    "sha1": "a521b4a199dbfddd6c516974c8a6f1bbecd2d109",
+    "size": 217,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/motlist.txt",
+    "sha1": "ff4d509b30de3299c60eb903b8630b37b5f8526b",
+    "size": 380,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/plechi_sum2022_boss3.gr2",
+    "sha1": "34b7cb206c31a51252fe9819a4200d0a04d5ed1b",
+    "size": 250664,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/plechi_sum2022_boss3.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/plechi_sum2022_boss3.msm",
+    "sha1": "0dd3673286f902a78529d7fdb33ad1df94b859c2",
+    "size": 2433,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/plechi_sum2022_boss3.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/plechito_tex.dds",
+    "sha1": "4dca57672f6f8c075a9dcbd12a1d5333c75dffc1",
+    "size": 699192,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/run.gr2",
+    "sha1": "925beb8d464d84d41da06875058f0b1b544b4b2e",
+    "size": 27156,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/run.msa",
+    "sha1": "80c4443bf64d85d1315e19ac8dd1ea5aee1f7361",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/skill00.gr2",
+    "sha1": "6862dfd2421eadb93d32a09903f3d22a9fbd5b50",
+    "size": 52232,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/skill00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/skill00.msa",
+    "sha1": "98227c904bff4a367caac1ce22147dde6ff06813",
+    "size": 2368,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/skill00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/skill01.gr2",
+    "sha1": "060c835d9206a68c2224a995759a2cb867146f27",
+    "size": 65016,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/skill01.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/skill01.msa",
+    "sha1": "bf87092b70a7bd3c0a65b736669ba94c94740493",
+    "size": 5728,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/skill01.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/spawn.gr2",
+    "sha1": "b580c5c674628aff9034692bd4aebebb592fb728",
+    "size": 50472,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/spawn.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/spawn.msa",
+    "sha1": "9c78ceb19816cae6defb71a3e426b7fe05fb061f",
+    "size": 1098,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/spawn.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/stay00.gr2",
+    "sha1": "9d58772ddf339dd616ad6b5ff46d51c2db174df2",
+    "size": 27656,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/stay00.msa",
+    "sha1": "1e42dc9d0a1279110a0ac0e04645de345adb8107",
+    "size": 219,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/stay01.gr2",
+    "sha1": "df0f036ef2b2bde08d02af5729d68d5f9c9035d5",
+    "size": 46228,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/stay01.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/stay01.msa",
+    "sha1": "451acfbdcf9df3f89cdf8685cb2542a598fb1721",
+    "size": 219,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/stay01.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/attack00.gr2",
+    "sha1": "a808aba203832a6e025b486a7103d351ed58eb70",
+    "size": 14908,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/attack00.msa",
+    "sha1": "ec8c145de25c6d1590f302b1323f5b919d202e25",
+    "size": 1311,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/damage.gr2",
+    "sha1": "dc5d8053fb1397638e4b9f10a9dafe1c7896896c",
+    "size": 13668,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/damage.msa",
+    "sha1": "1e903ce3cb36e7a5a2068443c14ce50e9f6976fa",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/dead.gr2",
+    "sha1": "52344a768e4738a53719c6508a7710aae28d86ae",
+    "size": 16284,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/dead.msa",
+    "sha1": "f369f0c197d440ffb187bc9f41ff05d1929eff72",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/knock_down.gr2",
+    "sha1": "a1089ab31a11c9740546bce5162b6b57f7573234",
+    "size": 12664,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/knock_down.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/knock_down.msa",
+    "sha1": "20d6759c0d715844a27cc7c09f27494a50373c6d",
+    "size": 226,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/knock_down.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/motlist.txt",
+    "sha1": "e7a4c31fce9bf1b18ba46ec90938143fd33a11ba",
+    "size": 422,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/plechi_sum2022_monster1.gr2",
+    "sha1": "d61dcbeb61fd24a1a0f56392026f96e8ba2f3279",
+    "size": 39056,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/plechi_sum2022_monster1.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/plechi_sum2022_monster1.msm",
+    "sha1": "c8fba5ecf74dae149f90ecb5d733bc75e65c8237",
+    "size": 1134,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/plechi_sum2022_monster1.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/plechito_tex.dds",
+    "sha1": "a495b9a6800741ade77bbd369d1f768e24f17a49",
+    "size": 174904,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/run.gr2",
+    "sha1": "07d23e46c566241eb856949142dfbb07db86c49b",
+    "size": 14756,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/run.msa",
+    "sha1": "2d2d31b2887c8ec0559a4d6a49526ed873d90b7c",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/stand_up.gr2",
+    "sha1": "f2d8d16b13ef4464635f1e7fa5000c4fd4b2ec26",
+    "size": 13564,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/stand_up.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/stand_up.msa",
+    "sha1": "49dc0fd0907bff9d86e17d9d2052726659164531",
+    "size": 224,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/stand_up.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/stay00.gr2",
+    "sha1": "3a6c845cec610327ce64ed7614b5d2868d854b46",
+    "size": 12540,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/stay00.msa",
+    "sha1": "2ff4895f178b0e06200d120ba7e397a805b14b47",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/attack00.gr2",
+    "sha1": "f7ea702857a7672baa7674ce485162dc8513049c",
+    "size": 22244,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/attack00.msa",
+    "sha1": "6559e6eab508ce3de1a2862fdbb3d680d2dd25a9",
+    "size": 1311,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/damage.gr2",
+    "sha1": "76322e9f7d5345f872bb310ff73d99cf5b18acb8",
+    "size": 16588,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/damage.msa",
+    "sha1": "040a1ead607d1e4582bcd03aabafbc4eb238d686",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/dead.gr2",
+    "sha1": "7eaf93ae22e2bce42b63fae6d2af77192e1ecfcc",
+    "size": 21420,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/dead.msa",
+    "sha1": "6a248893dff0b3f5a5439dbee4e40878e3280e60",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/knock_down.gr2",
+    "sha1": "64c9362d2d799e5c8f933878b975bea3122cc28e",
+    "size": 15024,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/knock_down.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/knock_down.msa",
+    "sha1": "f471ddf89f99b8ac32020c35c51e66f452b0c999",
+    "size": 226,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/knock_down.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/motlist.txt",
+    "sha1": "e7a4c31fce9bf1b18ba46ec90938143fd33a11ba",
+    "size": 422,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/plechi_sum2022_monster2.gr2",
+    "sha1": "add46e2afe5de3ea05c23de7eb8aedca36d66a4d",
+    "size": 34824,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/plechi_sum2022_monster2.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/plechi_sum2022_monster2.msm",
+    "sha1": "8d3d4fc6659853af4f4f495a8978c2bb5e8ecb8e",
+    "size": 1134,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/plechi_sum2022_monster2.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/plechito_tex.dds",
+    "sha1": "6878e42cf56e85794848c6ef1ddaff0f00d76dbb",
+    "size": 174904,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/run.gr2",
+    "sha1": "04f915ac60be19c115d620cc90764816b851529d",
+    "size": 15376,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/run.msa",
+    "sha1": "1b3ea5e15bf989e7be7fea8a86aefa113c223fb9",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/stand_up.gr2",
+    "sha1": "09fb84b817510db592bdbf9edef2d3d154d15e08",
+    "size": 16552,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/stand_up.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/stand_up.msa",
+    "sha1": "9844270e894fb6e3d933ef8884f20c35d131f29e",
+    "size": 224,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/stand_up.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/stay00.gr2",
+    "sha1": "5744ed0968f42d06e456ade0988d6660a8b3a371",
+    "size": 12356,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/stay00.msa",
+    "sha1": "1448837bff65c115f06c16776af75c492cfd1974",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/attack00.gr2",
+    "sha1": "d9aad705b3238dd2302f5f107cd548fbc0d696da",
+    "size": 9784,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/attack00.msa",
+    "sha1": "99f6067cd93563346df9ad6c06da7f4ac2f9cb0e",
+    "size": 908,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/damage.gr2",
+    "sha1": "38b4a03caec8010ef0540f14851446a9fbf9a8cd",
+    "size": 9404,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/damage.msa",
+    "sha1": "3675305acb78bc779964c2c5674458bb4d8ba81d",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/dead.gr2",
+    "sha1": "95960a6a4d64bb610841c437646356fff14a657c",
+    "size": 9548,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/dead.msa",
+    "sha1": "f649ddb00487391b7026cde642432d0804bf33b7",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/knock_down.gr2",
+    "sha1": "cbacfad0fdc7d2552f509586f23b353fe4c254eb",
+    "size": 9220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/knock_down.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/knock_down.msa",
+    "sha1": "2087cb90815738d0d34cfb1544ae2f049cf622a9",
+    "size": 226,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/knock_down.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/motlist.txt",
+    "sha1": "e7a4c31fce9bf1b18ba46ec90938143fd33a11ba",
+    "size": 422,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/plechi_sum2022_monster3.gr2",
+    "sha1": "99d4839953fafef92f80f9d5ce62a5cebd91c376",
+    "size": 38008,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/plechi_sum2022_monster3.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/plechi_sum2022_monster3.msm",
+    "sha1": "4510eeb8080f034b854697a389debbd6cc22aa9f",
+    "size": 1986,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/plechi_sum2022_monster3.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/plechito_tex.dds",
+    "sha1": "ea1141b67525a03ba6525711e7ff89c3cbeb4f76",
+    "size": 174904,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/run.gr2",
+    "sha1": "1907cd25dc874c9d104ffa0806a7076c7b602a3d",
+    "size": 8064,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/run.msa",
+    "sha1": "50e961842e513f9a5685ee952dca7a625dcf92c6",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/stand_up.gr2",
+    "sha1": "d71632e46866b8c1c1088db0bca8dbdfbed754b2",
+    "size": 10116,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/stand_up.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/stand_up.msa",
+    "sha1": "f53a03fbf87ef0952809ac73a718de9ce082b1c1",
+    "size": 224,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/stand_up.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/stay00.gr2",
+    "sha1": "34ed0ab9573fad23eb44c998248b6cd41c33a1ae",
+    "size": 8204,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/stay00.msa",
+    "sha1": "0e801717786791c7b27293cf08b9706f824e36c9",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/attack00.gr2",
+    "sha1": "aa0114b1b8eb83f8b92e9a0669196c670b42df0a",
+    "size": 29228,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/attack00.msa",
+    "sha1": "97651d1744232b1e4f0a3b59a296670f99b7c328",
+    "size": 1317,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/damage.gr2",
+    "sha1": "6bb4fa32b3b50465d81187f6ce54a51fe4795d83",
+    "size": 30140,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/damage.msa",
+    "sha1": "0dbc0649e5a2a508748e5611205480124f40f8ed",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/dead.gr2",
+    "sha1": "944827eaf5671c502720173b990c4aaf8464f8af",
+    "size": 46496,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/dead.msa",
+    "sha1": "aafd9b6c180c6c390a82b6e0528f6ca66b42cfa0",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/motlist.txt",
+    "sha1": "9b6798e88c115b3b39edcd125b3411138ebb8ce3",
+    "size": 256,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/plechi_sum2022_monster4.gr2",
+    "sha1": "bfb1cc549b1abf0c511e4c8d2fa2daee8a818c0c",
+    "size": 74524,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/plechi_sum2022_monster4.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/plechi_sum2022_monster4.msm",
+    "sha1": "4358b49bc67340d66d3f7f1a17fdd10cba1be6e7",
+    "size": 1134,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/plechi_sum2022_monster4.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/plechito_tex.dds",
+    "sha1": "e17e37d4503c670ed8cd297e508392990dffccf8",
+    "size": 174904,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/run.gr2",
+    "sha1": "251179bda9fccd132500059903c8b8855a8e24f3",
+    "size": 28404,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/run.msa",
+    "sha1": "c6023fce54ff5becd90ca3e576d8471686defd9c",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/stay00.gr2",
+    "sha1": "395599ebab17e323d5a4c5a1be72dd024d9286fc",
+    "size": 21788,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/stay00.msa",
+    "sha1": "54f1d2c8889c9486f835b5e1178c5c4cce4c13e9",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/attack00.gr2",
+    "sha1": "75678e05cf2eebe98fe340586020211bdb331bde",
+    "size": 31924,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/attack00.msa",
+    "sha1": "447a4c240d09a5d64c947e39d7227636d0d8ac43",
+    "size": 1316,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/damage.gr2",
+    "sha1": "865e28f1b2f559074b9ff712883da8c5904a16c1",
+    "size": 23504,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/damage.msa",
+    "sha1": "ce4e192b2ea96d860099ca9f625c3c2592613327",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/dead.gr2",
+    "sha1": "1ce0fbee05ea4ea530b434ce42ed4f32c4047cc8",
+    "size": 34252,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/dead.msa",
+    "sha1": "7c2d558ac6ca27ccd9ec5b06360612cdab77baac",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/motlist.txt",
+    "sha1": "9b6798e88c115b3b39edcd125b3411138ebb8ce3",
+    "size": 256,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/plechi_sum2022_monster5.gr2",
+    "sha1": "ad84d39300a2bf35ce21b18221ab5dfbfccaeeda",
+    "size": 81096,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/plechi_sum2022_monster5.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/plechi_sum2022_monster5.msm",
+    "sha1": "15c8fada28b37d1e5885d64b1c04bfb0a1b74fe6",
+    "size": 1136,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/plechi_sum2022_monster5.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/plechito_tex.dds",
+    "sha1": "0c5ce965d9f5f6fbf106a0b61e0126c1cea61dcd",
+    "size": 174904,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/run.gr2",
+    "sha1": "6c1d7f6be3025977f88e3bae80eb21674c0a636a",
+    "size": 21828,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/run.msa",
+    "sha1": "8067cc66fce44420f15d577b915505b18b90cae9",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/stay00.gr2",
+    "sha1": "ba75bf435e5ebfe677f0c71bb8adc2e23fbef95e",
+    "size": 22164,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/stay00.msa",
+    "sha1": "964594c9e6f11350824081628e265e3d19872073",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/attack00.gr2",
+    "sha1": "ee5e27949fa2579fb694e78693242a805fa51dc0",
+    "size": 28968,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/attack00.msa",
+    "sha1": "3dc450723ea25204286e97e4510987e0cb90a39c",
+    "size": 1312,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/damage.gr2",
+    "sha1": "8fd2187f21bd7f2166b16f163fdbccb69fb9c01f",
+    "size": 22260,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/damage.msa",
+    "sha1": "4981b9baa1ad938c59c8d55437bbc3014da8ecd0",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/dead.gr2",
+    "sha1": "ae4ddb937af5cf207b826a4cc6f8274617006d0c",
+    "size": 29084,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/dead.msa",
+    "sha1": "8ffe92eade0049a3161ad1831c12af4d7fafc2d7",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/motlist.txt",
+    "sha1": "b8bde04559cfc89bbcf34bd63a2c1a28809144f9",
+    "size": 284,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/plechi_sum2022_monster6.gr2",
+    "sha1": "aeb30d8983260e3d976c55797bd5da0e24602483",
+    "size": 75840,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/plechi_sum2022_monster6.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/plechi_sum2022_monster6.msm",
+    "sha1": "9b68d01c4937631f7c004a99f77f276ff425a25a",
+    "size": 1136,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/plechi_sum2022_monster6.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/plechito_tex.dds",
+    "sha1": "e62d755b15110aaad1dcd10fe9090d8a3679e72d",
+    "size": 349680,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/run.gr2",
+    "sha1": "57b7f7503e62d1ad081810d44b29ca97806fc9c8",
+    "size": 20840,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/run.msa",
+    "sha1": "6d595dc6ff28e4554fc4ac81493d682231a54aa3",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/stay00.gr2",
+    "sha1": "b47d7ed4f1178e4949b6a741b320ddfe29094725",
+    "size": 17140,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/stay00.msa",
+    "sha1": "13ddc162b08ac99cc6e59bcac63e5e2533d29a14",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/stay01.gr2",
+    "sha1": "cb7ec55137a516bbae636730e42a6c12d0642586",
+    "size": 42496,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/stay01.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/stay01.msa",
+    "sha1": "a5668b4f4c066f0f02859c8931def9d1d77f6ca5",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/stay01.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/attack00.gr2",
+    "sha1": "15b530c4d98af0fcf0885e3b2213201ba6491375",
+    "size": 38548,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/attack00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/attack00.msa",
+    "sha1": "04ec79cf1c2b2566232965da81fc6237955a08bb",
+    "size": 1316,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/attack00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/damage.gr2",
+    "sha1": "4faeaea04b5a513a530f7e2d03ccd23125b78f1d",
+    "size": 29032,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/damage.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/damage.msa",
+    "sha1": "d7d5e814b96a4863998fe4a354d5a9baad39eec4",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/damage.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/dead.gr2",
+    "sha1": "16ce24a9cb31f82d871f1aca4fbbd2947abf4bef",
+    "size": 36060,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/dead.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/dead.msa",
+    "sha1": "747a153551d33b630e3844ee9946c0cf8dd0b530",
+    "size": 220,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/dead.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/motlist.txt",
+    "sha1": "b8bde04559cfc89bbcf34bd63a2c1a28809144f9",
+    "size": 284,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/plechi_sum2022_monster7.gr2",
+    "sha1": "c26c9905a6d862a24208ffe8def32233a8e86708",
+    "size": 74320,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/plechi_sum2022_monster7.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/plechi_sum2022_monster7.msm",
+    "sha1": "ccd2fbb79bb69cfb67c3974b8a68f2b565620422",
+    "size": 1134,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/plechi_sum2022_monster7.msm"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/plechito_tex.dds",
+    "sha1": "1626e8cc3c24c1e96b66e6acc21de39d43bf67c1",
+    "size": 174904,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/run.gr2",
+    "sha1": "132e74f488a289e57dcbce3574054f03f0036d92",
+    "size": 21588,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/run.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/run.msa",
+    "sha1": "5e0e652316ae303f96a8cf60e97f9d4500f58dff",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/run.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/stay00.gr2",
+    "sha1": "eeff83a7fe9f67918e27a92cbe7cbd788a5bc535",
+    "size": 24164,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/stay00.msa",
+    "sha1": "d2f4078e28f3337d0d293675fa386b3ba25a9dc5",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/stay01.gr2",
+    "sha1": "f021eba048d2d9c1bced31dbbaf859d1dd1834f7",
+    "size": 36836,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/stay01.gr2"
+   },
+   {
+    "name": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/stay01.msa",
+    "sha1": "f8d701a1e4dda7cb10f445b8e12a84348fe1dc8d",
+    "size": 222,
+    "source": "ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/stay01.msa"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc1/plechi_sum2022_npc1.gr2",
+    "sha1": "36a1b49028b6f5a37812477c3f2bc3e839a7d396",
+    "size": 35200,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc1/plechi_sum2022_npc1.gr2"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc1/plechi_sum2022_npc1.msm",
+    "sha1": "139078975110b74507d23b5131267a1661795c16",
+    "size": 1151,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc1/plechi_sum2022_npc1.msm"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc1/plechito_tex.dds",
+    "sha1": "dd02b257b4519267edc945e63f9429c0f76c13f0",
+    "size": 174904,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc1/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/destroy.gr2",
+    "sha1": "94357aaab89dd9f7bfb9c8e2337eb50725c2a8c8",
+    "size": 75516,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/destroy.gr2"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/destroy.msa",
+    "sha1": "2206819ecd1cb385f0a6b660c39c33d971a7710b",
+    "size": 898,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/destroy.msa"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/motlist.txt",
+    "sha1": "5d579451777fd8c59027ebadc7da902bcc3cecea",
+    "size": 57,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/plechi_sum2022_npc2.gr2",
+    "sha1": "a23ffda2c07003a92fbf29af86015907f0a312b7",
+    "size": 256228,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/plechi_sum2022_npc2.gr2"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/plechi_sum2022_npc2.msm",
+    "sha1": "c7e54e6021ac654a438fee99d35a1623046f567e",
+    "size": 2013,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/plechi_sum2022_npc2.msm"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/plechito_tex.dds",
+    "sha1": "6a9c133242f3b0bc888e18e98ee088d7657d6fcf",
+    "size": 699192,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/stay00.gr2",
+    "sha1": "2d99744f8866aa86f3e70b1b838c86e2f65ad480",
+    "size": 13928,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/stay00.msa",
+    "sha1": "59d51fb031e848b58e310bb4332c161db36a2a19",
+    "size": 213,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/motlist.txt",
+    "sha1": "007b037dc16e0b28601a442fda70d702cec16bb6",
+    "size": 55,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/motlist.txt"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/plechi_sum2022_npc3.gr2",
+    "sha1": "20f8387ac182906d219e79b711a21ed9c4c08819",
+    "size": 120336,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/plechi_sum2022_npc3.gr2"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/plechi_sum2022_npc3.msm",
+    "sha1": "49e7764ea8db6d4e0ffb2ce6c74b0a769ac136ac",
+    "size": 1523,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/plechi_sum2022_npc3.msm"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/plechito_tex.dds",
+    "sha1": "9bbbf13742a45214f60be609cca1b64c461ba6e0",
+    "size": 174904,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/plechito_tex.dds"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/stay00.gr2",
+    "sha1": "8c70519ca6e5552f092b66f08b7ecfd9e9dad37f",
+    "size": 24652,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/stay00.gr2"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/stay00.msa",
+    "sha1": "6bedb227547dfa1b873343dad9c71895d8b91e5a",
+    "size": 213,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/stay00.msa"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/stay01.gr2",
+    "sha1": "9324f7b1610b0c6ef2720a6f3bad18f7fff9954b",
+    "size": 50932,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/stay01.gr2"
+   },
+   {
+    "name": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/stay01.msa",
+    "sha1": "2b8a1612ed70372a25a207d9cbc1e04ee4ac7f23",
+    "size": 213,
+    "source": "ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/stay01.msa"
+   }
+  ],
+  "maps": [
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "plechito_summer2022_dungeon/000000/areaambiencedata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/areadata.txt",
+    "sha1": "e0bd30a2be84259463b8adb8c926e5d5879c52b4",
+    "size": 12466,
+    "source": "/opt/metin2/cache/atlantis-staging/gen/maps/plechito_summer2022_dungeon/000000/areadata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "plechito_summer2022_dungeon/000000/areaproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/attr.atr",
+    "sha1": "15fa1f31a7639ae39c340e5a9f759ebc295ca315",
+    "size": 65542,
+    "source": "plechito_summer2022_dungeon/000000/attr.atr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/height.raw",
+    "sha1": "1c693972dd8555088cb3a18b13d01d0c733d2035",
+    "size": 34322,
+    "source": "plechito_summer2022_dungeon/000000/height.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/minimap.dds",
+    "sha1": "03863eaea44500d91bf947a1b50c739197f571e6",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/000000/minimap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/shadowmap.dds",
+    "sha1": "b98c6fc99140ed63e515e560746afbd786519306",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/000000/shadowmap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "plechito_summer2022_dungeon/000000/shadowmap.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "plechito_summer2022_dungeon/000000/tile.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "plechito_summer2022_dungeon/000000/water.wtr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "plechito_summer2022_dungeon/000001/areaambiencedata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "plechito_summer2022_dungeon/000001/areadata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "plechito_summer2022_dungeon/000001/areaproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/attr.atr",
+    "sha1": "57db48a940bf91b2142545085c95b259c347014c",
+    "size": 65542,
+    "source": "plechito_summer2022_dungeon/000001/attr.atr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "plechito_summer2022_dungeon/000001/height.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/minimap.dds",
+    "sha1": "0af1e360357f27ab425f73197db1ada40f1a3867",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/000001/minimap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/shadowmap.dds",
+    "sha1": "b98c6fc99140ed63e515e560746afbd786519306",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/000001/shadowmap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "plechito_summer2022_dungeon/000001/shadowmap.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "plechito_summer2022_dungeon/000001/tile.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "plechito_summer2022_dungeon/000001/water.wtr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "plechito_summer2022_dungeon/000002/areaambiencedata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "plechito_summer2022_dungeon/000002/areadata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "plechito_summer2022_dungeon/000002/areaproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/attr.atr",
+    "sha1": "42b63105cf2c354d9ca93573bbe42ac909908276",
+    "size": 65542,
+    "source": "plechito_summer2022_dungeon/000002/attr.atr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "plechito_summer2022_dungeon/000002/height.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/minimap.dds",
+    "sha1": "22dbf53409b8fa7daafa572d07ed690f66a0b9cc",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/000002/minimap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/shadowmap.dds",
+    "sha1": "b98c6fc99140ed63e515e560746afbd786519306",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/000002/shadowmap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "plechito_summer2022_dungeon/000002/shadowmap.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "plechito_summer2022_dungeon/000002/tile.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/000002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "plechito_summer2022_dungeon/000002/water.wtr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "plechito_summer2022_dungeon/001000/areaambiencedata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/areadata.txt",
+    "sha1": "164973ac80a28335886801bca25fbc2f05ce4ca8",
+    "size": 2680,
+    "source": "plechito_summer2022_dungeon/001000/areadata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "plechito_summer2022_dungeon/001000/areaproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/attr.atr",
+    "sha1": "65178cf8afc500f797405fa7fb55b1c69ad814e5",
+    "size": 65542,
+    "source": "plechito_summer2022_dungeon/001000/attr.atr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "plechito_summer2022_dungeon/001000/height.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/minimap.dds",
+    "sha1": "973dc985627f2355bff1ca8ecfa0ca8782b6b7c4",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/001000/minimap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/shadowmap.dds",
+    "sha1": "b98c6fc99140ed63e515e560746afbd786519306",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/001000/shadowmap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "plechito_summer2022_dungeon/001000/shadowmap.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "plechito_summer2022_dungeon/001000/tile.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "plechito_summer2022_dungeon/001000/water.wtr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "plechito_summer2022_dungeon/001001/areaambiencedata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/areadata.txt",
+    "sha1": "f8f386d89e82fb669890366e84cbc2bf8722f0db",
+    "size": 2513,
+    "source": "/opt/metin2/cache/atlantis-staging/gen/maps/plechito_summer2022_dungeon/001001/areadata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "plechito_summer2022_dungeon/001001/areaproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/attr.atr",
+    "sha1": "5a3563ddf20b80cad3ec605c1449566d029fa1a9",
+    "size": 65542,
+    "source": "plechito_summer2022_dungeon/001001/attr.atr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "plechito_summer2022_dungeon/001001/height.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/minimap.dds",
+    "sha1": "ce6b7bea2a98a7f2713bdea456025af83bedbcbd",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/001001/minimap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/shadowmap.dds",
+    "sha1": "25b6207a3c6fe49cffaee4c17be5172c53a5ebf0",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/001001/shadowmap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/shadowmap.raw",
+    "sha1": "c56108f8437a32d0c804640feb0c2f4e5721f93d",
+    "size": 131072,
+    "source": "plechito_summer2022_dungeon/001001/shadowmap.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "plechito_summer2022_dungeon/001001/tile.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "plechito_summer2022_dungeon/001001/water.wtr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "plechito_summer2022_dungeon/001002/areaambiencedata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/areadata.txt",
+    "sha1": "7f74906a2073cada7e2fa08ddc3888a4174707d1",
+    "size": 5160,
+    "source": "/opt/metin2/cache/atlantis-staging/gen/maps/plechito_summer2022_dungeon/001002/areadata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "plechito_summer2022_dungeon/001002/areaproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/attr.atr",
+    "sha1": "e51aff01f2f48c67cd7e708b6d6cfd29f539350b",
+    "size": 65542,
+    "source": "plechito_summer2022_dungeon/001002/attr.atr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "plechito_summer2022_dungeon/001002/height.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/minimap.dds",
+    "sha1": "b86962137a4ad70a75b6fe74beb4848643de8c17",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/001002/minimap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/shadowmap.dds",
+    "sha1": "96ccd945cd819312cf5dbffde0b8358ec5889068",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/001002/shadowmap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/shadowmap.raw",
+    "sha1": "ffc098afa2fa98e3a1ea06ece6ea5b73d6192aa6",
+    "size": 131072,
+    "source": "plechito_summer2022_dungeon/001002/shadowmap.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "plechito_summer2022_dungeon/001002/tile.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/001002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "plechito_summer2022_dungeon/001002/water.wtr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "plechito_summer2022_dungeon/002000/areaambiencedata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "plechito_summer2022_dungeon/002000/areadata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "plechito_summer2022_dungeon/002000/areaproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/attr.atr",
+    "sha1": "42b63105cf2c354d9ca93573bbe42ac909908276",
+    "size": 65542,
+    "source": "plechito_summer2022_dungeon/002000/attr.atr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "plechito_summer2022_dungeon/002000/height.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/minimap.dds",
+    "sha1": "22dbf53409b8fa7daafa572d07ed690f66a0b9cc",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/002000/minimap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/shadowmap.dds",
+    "sha1": "b98c6fc99140ed63e515e560746afbd786519306",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/002000/shadowmap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "plechito_summer2022_dungeon/002000/shadowmap.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "plechito_summer2022_dungeon/002000/tile.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "plechito_summer2022_dungeon/002000/water.wtr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "plechito_summer2022_dungeon/002001/areaambiencedata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/areadata.txt",
+    "sha1": "ee49056f68bbfaddbb92f3af19ffd40cee8a04d7",
+    "size": 3756,
+    "source": "/opt/metin2/cache/atlantis-staging/gen/maps/plechito_summer2022_dungeon/002001/areadata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "plechito_summer2022_dungeon/002001/areaproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/attr.atr",
+    "sha1": "4c157075da6393d075faf30a1b436fc53f921107",
+    "size": 65542,
+    "source": "plechito_summer2022_dungeon/002001/attr.atr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/height.raw",
+    "sha1": "9a0ae62a3f8dc86216fb551c79e032451be36cdc",
+    "size": 34322,
+    "source": "plechito_summer2022_dungeon/002001/height.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/minimap.dds",
+    "sha1": "a217719f1d5b97487d68e91e1ef71e5c35ec0978",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/002001/minimap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/shadowmap.dds",
+    "sha1": "95c4b7bcc5650afccc56fa7d303a8507e994cb4a",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/002001/shadowmap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/shadowmap.raw",
+    "sha1": "813a81937963d004fad5f9cef6029b944b6f86c9",
+    "size": 131072,
+    "source": "plechito_summer2022_dungeon/002001/shadowmap.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "plechito_summer2022_dungeon/002001/tile.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "plechito_summer2022_dungeon/002001/water.wtr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "plechito_summer2022_dungeon/002002/areaambiencedata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/areadata.txt",
+    "sha1": "3408baa66ca9f496d8e9ef1029b1c04eb60e16ed",
+    "size": 6942,
+    "source": "/opt/metin2/cache/atlantis-staging/gen/maps/plechito_summer2022_dungeon/002002/areadata.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "plechito_summer2022_dungeon/002002/areaproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/attr.atr",
+    "sha1": "9485c0e9050464daa129c86889de370dd987365e",
+    "size": 65542,
+    "source": "plechito_summer2022_dungeon/002002/attr.atr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/height.raw",
+    "sha1": "18a8cfed397987ccb7cc777bfbd8c84075ae2765",
+    "size": 34322,
+    "source": "plechito_summer2022_dungeon/002002/height.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/minimap.dds",
+    "sha1": "e9a7e4a626e9404cf39afddc8a205acde5886ce4",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/002002/minimap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/shadowmap.dds",
+    "sha1": "157366b8b88369980c42fc07de6884be5b7a71be",
+    "size": 32896,
+    "source": "plechito_summer2022_dungeon/002002/shadowmap.dds"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/shadowmap.raw",
+    "sha1": "c139740d52f7826f763511d396e9f7cb1bea381e",
+    "size": 131072,
+    "source": "plechito_summer2022_dungeon/002002/shadowmap.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "plechito_summer2022_dungeon/002002/tile.raw"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/002002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "plechito_summer2022_dungeon/002002/water.wtr"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/mapproperty.txt",
+    "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+    "size": 47,
+    "source": "plechito_summer2022_dungeon/mapproperty.txt"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/plechito_summer2022_dungeon.msenv",
+    "sha1": "52aa9180058038b5274138a0f5617fedefe16c5c",
+    "size": 2453,
+    "source": "ymir work/environment/plechito_summer2022_dungeon.msenv"
+   },
+   {
+    "name": "maps/plechito_summer2022_dungeon/setting.txt",
+    "sha1": "75f901581eda4619539a1f7780c53bb4b8697ef3",
+    "size": 229,
+    "source": "plechito_summer2022_dungeon/setting.txt"
+   }
+  ],
+  "property": [
+   {
+    "name": "property/plechi_dungeon/summer2022/effect/bubble_00.pre",
+    "sha1": "ecf0dc619f56f192cfefdc371391b6d4a41e7b47",
+    "size": 149,
+    "source": "property/plechi_dungeon/summer2022/effect/bubble_00.pre"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/effect/bubble_01.pre",
+    "sha1": "b4e2eef0624f18fb44e3828939ffd92b8e5dd59a",
+    "size": 149,
+    "source": "property/plechi_dungeon/summer2022/effect/bubble_01.pre"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/effect/bubble_02.pre",
+    "sha1": "d66229f91736a136e4731c0be3db896e1fe87330",
+    "size": 149,
+    "source": "property/plechi_dungeon/summer2022/effect/bubble_02.pre"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/effect/bubble_03.pre",
+    "sha1": "1f62c6cf2c8a010895b7894867837f95272ca3e8",
+    "size": 149,
+    "source": "property/plechi_dungeon/summer2022/effect/bubble_03.pre"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/effect/flower00a.pre",
+    "sha1": "b1a31549f7f9994527e55dc61e92eaf3a94a1da6",
+    "size": 149,
+    "source": "property/plechi_dungeon/summer2022/effect/flower00a.pre"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/effect/flower00b.pre",
+    "sha1": "356cd08799e9506a40972ec6542f9a033b6c2729",
+    "size": 149,
+    "source": "property/plechi_dungeon/summer2022/effect/flower00b.pre"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/effect/particle_center.pre",
+    "sha1": "130c6fd7cbcc2b2fb8c856529ac249a2a9a886ae",
+    "size": 161,
+    "source": "property/plechi_dungeon/summer2022/effect/particle_center.pre"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/effect/plant01.pre",
+    "sha1": "3ae0dc4c846713362038828213c58ebd0e514526",
+    "size": 145,
+    "source": "property/plechi_dungeon/summer2022/effect/plant01.pre"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/obj/flower00a.prd",
+    "sha1": "1f08f3205cc7bd6bd276c27b0d5aac51b1988fb5",
+    "size": 158,
+    "source": "property/plechi_dungeon/summer2022/obj/flower00a.prd"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/obj/flower01a.prb",
+    "sha1": "1d3faf4135b46c8c9d116383fee1dc3140ae6714",
+    "size": 167,
+    "source": "property/plechi_dungeon/summer2022/obj/flower01a.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/obj/flower01b.prb",
+    "sha1": "9ea0ff2df85f3f79aeb4d5231bca7190bf6e0ded",
+    "size": 167,
+    "source": "property/plechi_dungeon/summer2022/obj/flower01b.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/obj/flower01c.prb",
+    "sha1": "f724a66c735f4d867474057007c76dea64659b9c",
+    "size": 167,
+    "source": "property/plechi_dungeon/summer2022/obj/flower01c.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/obj/flower01d.prb",
+    "sha1": "7212adf4fa5fdbe6ba74f2ff776c53100b222d69",
+    "size": 166,
+    "source": "property/plechi_dungeon/summer2022/obj/flower01d.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/obj/room_statue2.prd",
+    "sha1": "3238f71e1874768f0f880243de5bbff783b805dd",
+    "size": 164,
+    "source": "property/plechi_dungeon/summer2022/obj/room_statue2.prd"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/obj/statue1.prb",
+    "sha1": "1f20d75d2f05646dacd3aba7bbeb2fc8b192f088",
+    "size": 163,
+    "source": "property/plechi_dungeon/summer2022/obj/statue1.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/obj/stone00a.prd",
+    "sha1": "ff239b3f3e91899efb3a25031ca85d185f1fcea7",
+    "size": 156,
+    "source": "property/plechi_dungeon/summer2022/obj/stone00a.prd"
+   },
+   {
+    "name": "property/plechi_dungeon/summer2022/room.prd",
+    "sha1": "4f25be1f53f5040f1622d574dae29b94746c9c11",
+    "size": 144,
+    "source": "property/plechi_dungeon/summer2022/room.prd"
+   },
+   {
+    "name": "property/plechi_dungeon/underwater_dungeon/clam00b.prb",
+    "sha1": "50c7a39cdf689d8e6960da002b79a5eb27f8b888",
+    "size": 167,
+    "source": "property/plechi_dungeon/underwater_dungeon/clam00b.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/underwater_dungeon/clam00c.prb",
+    "sha1": "caae0911a5513900f29aa8a843f574ac983a5c95",
+    "size": 166,
+    "source": "property/plechi_dungeon/underwater_dungeon/clam00c.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/underwater_dungeon/clam00d.prb",
+    "sha1": "9f6dab1f215936272554a707cd38bfcaede4abe4",
+    "size": 167,
+    "source": "property/plechi_dungeon/underwater_dungeon/clam00d.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/underwater_dungeon/clam00e.prb",
+    "sha1": "7703f64d459834043dfdda17d2cc11b4c67d6e8f",
+    "size": 167,
+    "source": "property/plechi_dungeon/underwater_dungeon/clam00e.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/underwater_dungeon/clam01a.prb",
+    "sha1": "c6aef08d0b4b339a410f26a622b8bd63b6d85810",
+    "size": 167,
+    "source": "property/plechi_dungeon/underwater_dungeon/clam01a.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/underwater_dungeon/effect/shine.pre",
+    "sha1": "da38cf302b4fe06390d73a7b20f856563b4bed84",
+    "size": 141,
+    "source": "property/plechi_dungeon/underwater_dungeon/effect/shine.pre"
+   },
+   {
+    "name": "property/plechi_dungeon/underwater_dungeon/sponge00a.prb",
+    "sha1": "b10f325cff10282c39e98653e2de68943591bad8",
+    "size": 171,
+    "source": "property/plechi_dungeon/underwater_dungeon/sponge00a.prb"
+   },
+   {
+    "name": "property/plechi_dungeon/underwater_dungeon/sponge00b.prb",
+    "sha1": "5f70fd5c959e341607cdb766bd52c26f73fafdc2",
+    "size": 171,
+    "source": "property/plechi_dungeon/underwater_dungeon/sponge00b.prb"
+   }
+  ]
+ },
+ "races": {
+  "4550": {
+   "alias": "plechito_summer2022/plechi_sum2022_monster5",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster5/plechi_sum2022_monster5.msm",
+   "race": "plechi_sum2022_monster5"
+  },
+  "4551": {
+   "alias": "plechito_summer2022/plechi_sum2022_monster1",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster1/plechi_sum2022_monster1.msm",
+   "race": "plechi_sum2022_monster1"
+  },
+  "4552": {
+   "alias": "plechito_summer2022/plechi_sum2022_monster2",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster2/plechi_sum2022_monster2.msm",
+   "race": "plechi_sum2022_monster2"
+  },
+  "4553": {
+   "alias": "plechito_summer2022/plechi_sum2022_monster4",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster4/plechi_sum2022_monster4.msm",
+   "race": "plechi_sum2022_monster4"
+  },
+  "4554": {
+   "alias": "plechito_summer2022/plechi_sum2022_monster7",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster7/plechi_sum2022_monster7.msm",
+   "race": "plechi_sum2022_monster7"
+  },
+  "4555": {
+   "alias": "plechito_summer2022/plechi_sum2022_monster6",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster6/plechi_sum2022_monster6.msm",
+   "race": "plechi_sum2022_monster6"
+  },
+  "4556": {
+   "alias": "plechito_summer2022/plechi_sum2022_monster3",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_monster3/plechi_sum2022_monster3.msm",
+   "race": "plechi_sum2022_monster3"
+  },
+  "4557": {
+   "alias": "plechito_summer2022/plechi_sum2022_boss1",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss1/plechi_sum2022_boss1.msm",
+   "race": "plechi_sum2022_boss1"
+  },
+  "4558": {
+   "alias": "plechito_summer2022/plechi_sum2022_boss2",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss2/plechi_sum2022_boss2.msm",
+   "race": "plechi_sum2022_boss2"
+  },
+  "4559": {
+   "alias": "plechito_summer2022/plechi_sum2022_boss3",
+   "msm": "d:/ymir work/monster2/plechito_summer2022/plechi_sum2022_boss3/plechi_sum2022_boss3.msm",
+   "race": "plechi_sum2022_boss3"
+  },
+  "8729": {
+   "alias": "plechito_summer2022/plechi_summ2022_stone2",
+   "msm": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone2/plechi_summ2022_stone2.msm",
+   "race": "plechi_summ2022_stone2"
+  },
+  "8730": {
+   "alias": "plechito_summer2022/plechi_summ2022_stone1",
+   "msm": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1a.msm",
+   "race": "plechi_summ2022_stone1a"
+  },
+  "8731": {
+   "alias": "plechito_summer2022/plechi_summ2022_stone1",
+   "msm": "d:/ymir work/monster/plechito_summer2022/plechi_summ2022_stone1/plechi_summ2022_stone1b.msm",
+   "race": "plechi_summ2022_stone1b"
+  },
+  "9460": {
+   "alias": "plechito_summer2022/plechi_sum2022_npc3",
+   "msm": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc3/plechi_sum2022_npc3.msm",
+   "race": "plechi_sum2022_npc3"
+  },
+  "9461": {
+   "alias": "plechito_summer2022/plechi_sum2022_npc2",
+   "msm": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc2/plechi_sum2022_npc2.msm",
+   "race": "plechi_sum2022_npc2"
+  },
+  "9462": {
+   "alias": "plechito_summer2022/plechi_sum2022_npc1",
+   "msm": "d:/ymir work/npc/plechito_summer2022/plechi_sum2022_npc1/plechi_sum2022_npc1.msm",
+   "race": "plechi_sum2022_npc1"
+  }
+ },
+ "removed_objects": {
+  "1023488681": {
+   "objects": 4,
+   "why": "no property (package, our property pack, Arezzo, GF)"
+  },
+  "1372596512": {
+   "objects": 1,
+   "why": "64-bit GR2 d:/ymir work/zone/plechi_dungeon/water_dungeon/water_dungeon_crustacean02.gr2 (no 32-bit copy in Arezzo or GF)"
+  },
+  "1742570903": {
+   "objects": 1,
+   "why": "64-bit GR2 d:/ymir work/zone/plechi_dungeon/water_dungeon/water_dungeon_crustacean00.gr2 (no 32-bit copy in Arezzo or GF)"
+  },
+  "3000979001": {
+   "objects": 1,
+   "why": "64-bit GR2 d:/ymir work/zone/plechi_dungeon/water_dungeon/water_dungeon_clam01.gr2 (no 32-bit copy in Arezzo or GF)"
+  },
+  "3054147356": {
+   "objects": 1,
+   "why": "64-bit GR2 d:/ymir work/zone/plechi_dungeon/water_dungeon/water_dungeon_clam01b.gr2 (no 32-bit copy in Arezzo or GF)"
+  },
+  "3637883037": {
+   "objects": 14,
+   "why": "64-bit GR2 d:/ymir work/zone/plechi_dungeon/water_dungeon/water_dungeon_wallcalm00a.gr2 (no 32-bit copy in Arezzo or GF)"
+  }
+ },
+ "unresolved": {
+  "map": [
+   "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/p_cq_coral_altar_01_ds.dds",
+   "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/underwater_grass.dds",
+   "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/underwater_plants01.dds",
+   "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/water_plant02.dds",
+   "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/water_plants01b.dds",
+   "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/water_tree00.dds",
+   "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/water_tree01.dds"
+  ],
+  "races": {}
+ }
+}
