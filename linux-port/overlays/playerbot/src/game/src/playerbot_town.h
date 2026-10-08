@@ -4263,6 +4263,10 @@ namespace
 		// The rule is written by subtype rather than by vnum so a stone without
 		// the flag - a green 71151/71152, or any of them if an operator ever
 		// clears it in item_proto - is goods the day it appears.
+		// MT2009_PLUS_TRADEABLE_BONUS_V1: the tradeable change and add
+		// (71284/71285) are the owner's counter goods, every one of them.
+		if (IsPlayerBotTradeableBonusVnum(item->GetVnum()))
+			return PlayerBotGoods(PLAYERBOT_SHOP_RARE_GOODS_SCORE, per::GOODS_RARE_GOODS);
 		if (IsPlayerBotBonusStoneItem(item))
 			return playerbot_stall_rules::HoldsSpare(CountPlayerBotVnumUnitsAhead(ch, item),
 					(int)item->GetCount(), GetPlayerBotCountedGoodsKeep(ch, item))

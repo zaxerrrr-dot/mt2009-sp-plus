@@ -3054,7 +3054,9 @@ namespace
 	// and the belts 18000-18089 priced for the first time (owner, 7 October).
 	// 18: MT2009_PLUS_BOT_ENERGY_SHARDS_V1 - Odlamek Energii at 30 000 and every
 	// talisman 94000-95450 at 700 000, fixed (owner, 7 October).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 18;
+	// 19: MT2009_PLUS_TRADEABLE_BONUS_V1 - the tradeable change 71284 at 1 380 000
+	// and add 71285 at 5 000 000, fixed (owner, 8 October).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 19;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in

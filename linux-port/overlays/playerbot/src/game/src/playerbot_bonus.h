@@ -1161,6 +1161,10 @@ namespace
 			LPITEM stone = ch->GetInventoryItem(cell);
 			if (!stone || stone->GetType() != ITEM_USE || stone->GetCount() == 0 || stone->isLocked())
 				continue;
+			// MT2009_PLUS_TRADEABLE_BONUS_V1: the tradeable change and add
+			// (71284/71285) are worth millions on a counter, never spent here.
+			if (IsPlayerBotTradeableBonusVnum(stone->GetVnum()))
+				continue;
 			const bool green = IsPlayerBotGreenBonusStone(stone->GetVnum());
 			int* first = NULL;
 			switch (stone->GetSubType())
@@ -2316,6 +2320,9 @@ namespace
 	bool PlayerBotCanSpendBonusStoneKind(LPCHARACTER ch, LPITEM stone)
 	{
 		if (!ch || !stone || stone->GetType() != ITEM_USE)
+			return false;
+		// MT2009_PLUS_TRADEABLE_BONUS_V1: never spent (ReadPlayerBotBonusBag).
+		if (IsPlayerBotTradeableBonusVnum(stone->GetVnum()))
 			return false;
 		playerbot_bonus_rules::TBag kind = { false, false, false, false, false };
 		const bool green = IsPlayerBotGreenBonusStone(stone->GetVnum());

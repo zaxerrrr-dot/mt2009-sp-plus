@@ -117,11 +117,36 @@ namespace
 		return PLAYERBOT_TALISMAN_PRICE + PLAYERBOT_TALISMAN_PRICE_PER_GRADE * ((vnum - PLAYERBOT_TALISMAN_FIRST_VNUM) % 250);
 	}
 
+	// MT2009_PLUS_TRADEABLE_BONUS_V1 (the owner, 8 October: "71284 i 71285 to
+	// bardzo wartosciowe przedmioty ... zaczarowanie i wzmocnienie, ale
+	// handlowalne"): the tradeable change (Zaczarowanie Przedmiotu, 71284) and
+	// add (Wzmocnienie Przedmiotu, 71285) - unlike 71084/71085 they carry no
+	// ANTI_MYSHOP. The add at his 5 000 000; the change at what 69 SM (its
+	// price in the ItemShop) is worth by the Kupon SM (50) (80017) the bots'
+	// price sheet puts at 1 000 000: 69 / 50 x 1 000 000 = 1 380 000. Both as
+	// written, like the shards and the talismans. The bots never spend them
+	// (ReadPlayerBotBonusBag) and never buy them: they are counter goods.
+	const DWORD PLAYERBOT_TRADEABLE_CHANGE_VNUM = 71284;
+	const DWORD PLAYERBOT_TRADEABLE_ADD_VNUM = 71285;
+	const DWORD PLAYERBOT_TRADEABLE_ADD_PRICE = 5000000;
+	const DWORD PLAYERBOT_SM_COUPON_50_PRICE = 1000000;	// playerbot_price_tables.h, 80017
+	const DWORD PLAYERBOT_TRADEABLE_CHANGE_SM = 69;
+	const DWORD PLAYERBOT_TRADEABLE_CHANGE_PRICE = PLAYERBOT_SM_COUPON_50_PRICE / 50 * PLAYERBOT_TRADEABLE_CHANGE_SM;
+
+	bool IsPlayerBotTradeableBonusVnum(DWORD vnum)
+	{
+		return vnum == PLAYERBOT_TRADEABLE_CHANGE_VNUM || vnum == PLAYERBOT_TRADEABLE_ADD_VNUM;
+	}
+
 	// The owner's fixed price of one unit, or 0 for anything else.
 	DWORD GetPlayerBotOwnerFixedUnitPrice(DWORD vnum)
 	{
 		if (IsPlayerBotEnergyShardVnum(vnum))
 			return PLAYERBOT_ENERGY_SHARD_UNIT_PRICE;
+		if (vnum == PLAYERBOT_TRADEABLE_ADD_VNUM)
+			return PLAYERBOT_TRADEABLE_ADD_PRICE;
+		if (vnum == PLAYERBOT_TRADEABLE_CHANGE_VNUM)
+			return PLAYERBOT_TRADEABLE_CHANGE_PRICE;
 		if (IsPlayerBotFixedPriceTalismanVnum(vnum))
 			return GetPlayerBotTalismanPrice(vnum);
 		return 0;

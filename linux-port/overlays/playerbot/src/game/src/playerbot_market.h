@@ -188,6 +188,10 @@ namespace
 	{
 		if (!ch || !offer)
 			return false;
+		// MT2009_PLUS_TRADEABLE_BONUS_V1: a bot never spends the tradeable
+		// change or add (71284/71285), so it never buys one either.
+		if (IsPlayerBotTradeableBonusVnum(offer->GetVnum()))
+			return false;
 
 		// MT2009_PLUS_DROPPER_INVEST_V1: a dropper buys no medal off another
 		// dropper's counter, and in its shopping window wants the materials

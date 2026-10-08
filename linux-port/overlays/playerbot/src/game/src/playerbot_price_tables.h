@@ -586,8 +586,8 @@ namespace
 		{ 71089,   120000 },	// Ksiega Misji (Normalna)
 		{ 71090,   250000 },	// Ksiega Misji (Trudna)
 		{ 71092,    75000 },	// Ksiega Polimorfii
-		{ 71284,  2000000 },	// Zaczarowanie Przedmiotu
-		{ 71285,  1900000 },	// Wzmocnienie Przedmiotu
+		{ 71284,  1380000 },	// Zaczarowanie Przedmiotu (MT2009_PLUS_TRADEABLE_BONUS_V1: 69 SM by the 50 SM coupon, fixed - GetPlayerBotOwnerFixedUnitPrice)
+		{ 71285,  5000000 },	// Wzmocnienie Przedmiotu (MT2009_PLUS_TRADEABLE_BONUS_V1: the owner's 5 000 000, fixed)
 		{ 72001,   500000 },	// Pierscien Doswiadczenia
 		{ 72002,   500000 },	// Pierscien Doswiadczenia
 		{ 72003,   500000 },	// Pierscien Doswiadczenia
