@@ -124,6 +124,7 @@ namespace
 		{ 365, 62, 5989, 7058 },		// ruiny_skorpiona
 		{ 366, 362, 3783, 3954 },		// starozytna_dzungla (the Las)
 		{ 158, 64, 2848, 8096 },		// ruiny_atlantydy (MT2009_PLUS_ATLANTYDA_V1: Orc Valley, Mag Atlantydy)
+		{ 358, 358, 3332, 14310 },		// zodiac_temples (MT2009_PLUS_ZODIAC_BOTS_V1: the temple's courtyard, its own way out)
 	};
 
 	struct TPlayerBotPdgBot
@@ -281,7 +282,9 @@ namespace
 		if (dwNow < b.dwNextFollow || person->IsWarping() || person->IsDead())
 			return false;
 		const long target = person->GetMapIndex();
-		if (!IsPlayerBotMapHostedHere(target) || !CDungeonManager::instance().FindByMapIndex(target))
+		// MT2009_PLUS_ZODIAC_BOTS_V1: a temple floor is a CZodiac's, not a CDungeon's.
+		if (!IsPlayerBotMapHostedHere(target) || (!CDungeonManager::instance().FindByMapIndex(target) &&
+				!IsPlayerBotZodiacLive(target)))
 			return false;
 		b.dwNextFollow = dwNow + PLAYERBOT_PDG_FOLLOW_RETRY_MS;
 		const long from = ch->GetMapIndex();
@@ -576,6 +579,9 @@ namespace
 			if (!IsPlayerBotPdgFoe(ch, c))
 				continue;
 			if (dragonShielded && c->GetRaceNum() == PLAYERBOT_PDG_BLUE_DRAGON)
+				continue;
+			// MT2009_PLUS_ZODIAC_BOTS_V1: the temple's statues and cannon are the person's.
+			if (IsPlayerBotZodiacLeftToPerson(c->GetRaceNum()))
 				continue;
 			const int dBot = DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY());
 			const int dPerson = DISTANCE_APPROX(person->GetX() - c->GetX(), person->GetY() - c->GetY());

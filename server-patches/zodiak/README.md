@@ -94,7 +94,7 @@ Numery wspólne z exe (muszą być takie same po obu stronach): pakiet **GC 220*
 
 ## Kolizje sprawdzone 8.10.2026 (świat 2.28.0)
 
-Wolne: mapa 358 (`map/index`, katalog mapy), nagłówek 220 (serwer i nasze exe), przedmioty 300–309, 1180–1189,
+Wolne: mapa 358 (`map/index`, katalog mapy), nagłówek 220 (serwer i nasze exe), przedmioty 300–309, 310–319 (Miecz Zodiaku – paczka go nie wymienia w rezerwacjach), 1180–1189,
 2200–2209, 3220–3229, 5160–5169, 6120–6129, 7300–7309, 19290–19299, 19490–19499, 19690–19699, 19890–19899,
 21200–21209, 33001–33033, 72327–72329; potwory 2600–2692, 2700–2735, 2750–2862, 2900–2937, NPC 20438–20464;
 sklep 41 i NPC 20451; `skill_proto` 270–271; `refine_proto` 22401–22418; grupy (51, vnumy 2608–2937, nazwy
@@ -107,6 +107,27 @@ Mapa 358 na game1: 46 map z `MAP_ALLOW_LIMIT` 48.
 - haki silnika jako `edits.json` (nasz mechanizm łatek) zamiast `zodiak_haki.py`; Dockerfile i `m2-render-config` edytowane w repo;
 - `zodiak.sql` bez kasowania dawnych rodzin Zodiaku z `95_wiki_nowe.sql` paczki (u nas ich nie było);
 - `apply.sh`: Zodiak przed żywiołami, więc zasady właściciela z 7.10 (żywioły potworów) obowiązują też w świątyni.
+
+## Boty (`MT2009_PLUS_ZODIAC_BOTS_V1`, `playerbot_zodiac_bots.h`)
+
+Boty z drużyny osoby idą z nią do świątyni (jak do innych lochów drużynowych, `playerbot_party_dungeon.h`):
+
+- 358 jest jedną z map `IsPlayerBotPartyDungeonMap`; bot wchodzi za osobą na jej piętro (`FollowPlayerBotPersonIntoDungeon`
+  przyjmuje piętro świątyni – to `CZodiac`, nie `CDungeon`), walczy obok niej i wychodzi z nią (wyjście awaryjne: dziedziniec 358);
+- `CPlayerBotManager::WarpBot` po każdej zmianie mapy robi bota członkiem świątyni piętra, na którym stoi (`SetZodiac`;
+  osoba dostaje to przy logowaniu z haka `input_login.cpp`), a poza świątynią czyści jej flagi śmierci;
+- posągi (20452–20463) i działo (20464) zostawia osobie (bije je tylko, gdy osoba je bije);
+- śmierć na piętrze: `restart_here` otworzyłby tylko okno wskrzeszenia, na które bot nie odpowie – bot wstaje za swoje
+  Pryzmaty (33025/33032, cena osoby 1/2/4/8/10), a bez nich wstaje sam (log `PLAYERBOT_ZODIAC: stood up`);
+- wejście płaci osoba: quest `zodiac_temples` nie liczy Animosfer bota z drużyny (`pc.is_playerbot()`).
+
+Własne przejścia botów (bez osoby) – **jeszcze nie ma**. Potrzebne w `playerbot_dungeon_runs.h` / `_rules.h`:
+klucz `zodiak` w `RUN_RULES` (pasmo poziomów, 4–8 botów), zbiórka przy portalu dnia na 358 (`data/dungeon/zodiac/days`,
+portal 20439–20450 wg dnia tygodnia), wejście jak w questcie (`CZodiacManager::StartTemple` dla lidera z drużyną, Animosfery
+botów: 12 z `bead` albo Znak Strażnika 72328), plan piętra wg misji (`ZodiacFloorMessage`: wszystkie potwory / Metiny /
+boss bez śmierci / kupiec – bonusowe piętro do pominięcia), przycisk następnego piętra (`/nextfloor` lidera), Pryzmaty
+botów z nagród albo z rynku, koniec po wybranym piętrze (`/jumpfloor`?), tsv z wynikami jak `playerbot_dungeon_runs.tsv`.
+Bez testu na serwerze to zbyt dużo zgadywania – do zrobienia po pierwszym teście świątyni z osobą.
 
 ## Do sprawdzenia / znane braki
 

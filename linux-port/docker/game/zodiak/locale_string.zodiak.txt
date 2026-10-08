@@ -120,3 +120,9 @@
 
 "[224]Mission complete. As soon as the group leader hits the button, you will be teleported directly to level %u.";
 "Misja zakoñczona. Po naciœniêciu przez lidera grupy przycisku, zostaniecie bezpoœrednio teleportowani do poziomu %d.";
+
+"You can not use this while you have an open window.";
+"Nie mo¿esz tego u¿yæ, gdy masz otwarte okno.";
+
+"Eliminados! Vuestro tiempo en la mazmorra concluye si nadie revive en el plazo de un minuto.";
+"Wszyscy polegli! Wasz czas w Œwi¹tyni skoñczy siê, jeœli nikt nie zostanie wskrzeszony w ci¹gu minuty.";

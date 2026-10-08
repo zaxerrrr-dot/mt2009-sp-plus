@@ -349,7 +349,10 @@ namespace
 		if (dwNow >= state.dwNextReviveAttemptTime)
 		{
 			state.dwNextReviveAttemptTime = dwNow + 2000;
-			interpret_command(ch, "restart_here", strlen("restart_here"));
+			// MT2009_PLUS_ZODIAC_BOTS_V1: on a temple floor restart_here only opens the
+			// temple's revive window - the bot's prisms, or its own stand-up.
+			if (!RevivePlayerBotInZodiac(ch))
+				interpret_command(ch, "restart_here", strlen("restart_here"));
 
 			if (!ch->IsDead())
 			{

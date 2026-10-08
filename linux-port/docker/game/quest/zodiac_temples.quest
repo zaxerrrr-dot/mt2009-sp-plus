@@ -1,6 +1,6 @@
 --[[
 	Entrance to Portals
-	Dev: WLsj24
+	Dev: WLsj24; Swiatynia Zodiaku w MT2009 PLUS - Autor: Digi Rasta (MT2009_PLUS_ZODIAC_V1)
 --]]
 quest zodiac_temples begin
 	state start begin
@@ -11,7 +11,8 @@ quest zodiac_temples begin
 
 			for i = 1, table.getn(pids), 1 do
 				q.begin_other_pc_block(pids[i])
-				if pc.get_animasphere() < 12 and not pc.is_flag_cz_ulimit_enter() then
+				-- MT2009_PLUS_ZODIAC_BOTS_V1: a bot of the party goes in on the person's Animosfery
+				if not pc.is_playerbot() and pc.get_animasphere() < 12 and not pc.is_flag_cz_ulimit_enter() then
 					table.insert(notAnimaSphere, table.getn(notAnimaSphere) +1, pc.get_name())
 				end
 
@@ -36,7 +37,7 @@ quest zodiac_temples begin
 
 			for i = 1, table.getn(pids), 1 do
 				q.begin_other_pc_block(pids[i])
-				if pc.get_animasphere() >= 12 and not pc.is_flag_cz_ulimit_enter() then
+				if not pc.is_playerbot() and pc.get_animasphere() >= 12 and not pc.is_flag_cz_ulimit_enter() then
 					pc.delete_animasphere()
 				end
 

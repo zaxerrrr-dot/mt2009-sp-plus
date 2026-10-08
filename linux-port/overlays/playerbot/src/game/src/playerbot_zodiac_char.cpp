@@ -80,7 +80,7 @@ void CHARACTER::ZTT_REWARD(int type)
 	iEmptyPos = item->IsDragonSoul() ? GetEmptyDragonSoulInventory(item) : GetEmptyInventory(item->GetSize());
 	if (iEmptyPos < 0)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지품에 빈 공간이 없습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Unfortunately you don't have enough space in your inventory."));
 		return;
 	}
 

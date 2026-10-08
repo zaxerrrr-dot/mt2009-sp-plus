@@ -249,6 +249,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_haggle.h" // MT2009_PLUS_BOT_HAGGLE_V1: a bot haggles over a person's shop line by whisper
 #include "playerbot_loot.h"
 #include "playerbot_gift_trade.h"
+// MT2009_PLUS_ZODIAC_BOTS_V1 (include): a person's party bots in the Swiatynia Zodiaku - the temple's
+// membership after a warp (WarpBot), the revive on a temple floor (survival.h). Before survival.h.
+#include "playerbot_zodiac_bots.h"
 #include "playerbot_survival.h"
 #include "playerbot_wandering.h"
 #include "playerbot_status.h"
@@ -8654,6 +8657,9 @@ bool CPlayerBotManager::WarpBot(LPCHARACTER bot, long x, long y, long lPrivateMa
 		if (after)
 			bot->SetDungeon(after);
 	}
+	// MT2009_PLUS_ZODIAC_BOTS_V1: the temple of the floor it stands on now
+	// (playerbot_zodiac_bots.h) - a person gets it at login.
+	SyncPlayerBotZodiac(bot, lMapIndex);
 	return true;
 }
 
