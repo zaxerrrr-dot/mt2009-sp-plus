@@ -169,6 +169,9 @@ for s in sectors:
         out.append(body)
     if len(out) != len(objs):
         txt = head + ''.join('Start Object%03d\n%sEnd Object\n' % (i, b) for i, b in enumerate(out))
+        # MT2009_PLUS_ATLANTYDA_TERRAIN_V1: the closing 'ObjectCount N' (CArea::__Load_LoadObject: without it
+        # 'File Format ... ERROR 2' and no object of the sector loads - test client 2.0.59, sectors 000000/001001).
+        txt += '\nObjectCount %d\n' % len(out)
         add['maps'][s] = gen(s, txt.replace('\n', '\r\n').encode('latin1'))
 
 # ---------------------------------------------------------------- the closure
