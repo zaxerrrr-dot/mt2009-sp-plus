@@ -1,18 +1,18 @@
 {
- "schema": 1,
- "channel": "stable",
- "publishedAt": "2026-10-07T17:52:28Z",
- "statusMessage": "MT2009 PLUS 2.26.2: ustawienia serwera (.env) dzialaja same. Klient 2.0.57.",
- "server": {
-  "version": "2.26.2",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.26.2/metin2-server-update-2.26.2.zip",
-  "sha256": "002650AEE1C9734BA2979BACCDE44BA37634D1A6A776D4EF2712F03A18F2752F",
-  "size": 110521903
- },
- "client": {
-  "version": "2.0.57",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.57/metin2-client-update-2.0.57.zip",
-  "sha256": "4634B80B8C0D74A102A28E38C5A9B409A9DA9D435CFF2E5BECF9D778B2ADFC20",
-  "size": 538380276
- }
+  "schema": 1,
+  "channel": "stable",
+  "publishedAt": "2026-10-08T07:10:10Z",
+  "statusMessage": "MT2009 PLUS 2.27.0: boty przechodza dungeony, dropki dla postaci, pasy i talizmany u botow. Klient 2.0.58.",
+  "server": {
+    "version": "2.27.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.27.0/metin2-server-update-2.27.0.zip",
+    "sha256": "F4CAF8B37666F9A9642E1B6313700CEB52FF02550ACB31000F64B527764498C9",
+    "size": 110679321
+  },
+  "client": {
+    "version": "2.0.58",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.58/metin2-client-update-2.0.58.zip",
+    "sha256": "F041E9DB8080CDFF11E82A23197C5720C4D344FAE9274DBEC1A0BAD424957F14",
+    "size": 538491330
+  }
 }
