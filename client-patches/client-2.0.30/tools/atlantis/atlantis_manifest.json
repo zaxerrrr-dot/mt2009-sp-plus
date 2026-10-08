@@ -20,6 +20,12 @@
     "source": "/opt/metin2/cache/atlantis-staging/gen/d_/ymir work/ui/plechito_summer2022_dungeon_atlas.dds"
    },
    {
+    "name": "d:/ymir work/zone/plechi_dungeon/pyramide_dungeon/effects/shine.dds",
+    "sha1": "df7c8b44fe7509bed474b48f9fb910e908845835",
+    "size": 22912,
+    "source": "ymir work/zone/plechi_dungeon/pyramide_dungeon/effects/shine.dds"
+   },
+   {
     "name": "d:/ymir work/zone/plechi_dungeon/pyramide_dungeon/effects/shine00.mde",
     "sha1": "3f7d543650ea31a9bb58d0acf45b8bbb2af0446f",
     "size": 16099,
@@ -96,6 +102,12 @@
     "sha1": "5676eb1e37304c878d3457b6a40dde1664b054ac",
     "size": 3068,
     "source": "ymir work/zone/plechi_dungeon/summer2022/effect/bubble_03.mse"
+   },
+   {
+    "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/flower00.dds",
+    "sha1": "40c6ce16a62a4264c7ca52c428e0c634feedbacf",
+    "size": 87536,
+    "source": "ymir work/zone/plechi_dungeon/summer2022/effect/flower00.dds"
    },
    {
     "name": "d:/ymir work/zone/plechi_dungeon/summer2022/effect/flower00a.mde",
@@ -518,6 +530,12 @@
     "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/clam01a.mdatr"
    },
    {
+    "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/plants/underwater_plant08.dds",
+    "sha1": "9d494ef6c526b7250e65dd99b5a921cf44b523f3",
+    "size": 1398256,
+    "source": "ymir work/zone/plechi_dungeon/underwater_dungeon/plants/underwater_plant08.dds"
+   },
+   {
     "name": "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/plants/underwater_plant08b.mde",
     "sha1": "9273b67818bb8a11f97dee86b766601c699b1a03",
     "size": 23027,
@@ -850,6 +868,18 @@
     "source": "ymir work/effect/plechito/monster/summer2022/impact03.dds"
    },
    {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/impact04.dds",
+    "sha1": "84d6015dd5a0594bd0abee861029da2b1dd6011a",
+    "size": 22000,
+    "source": "ymir work/effect/plechito/monster/summer2022/impact04.dds"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/impact05.dds",
+    "sha1": "d0d361e7df626030290f329121d329530debb19b",
+    "size": 43856,
+    "source": "ymir work/effect/plechito/monster/summer2022/impact05.dds"
+   },
+   {
     "name": "d:/ymir work/effect/plechito/monster/summer2022/monster1_attack.mde",
     "sha1": "01ca960325c3f17c445674d9ace74a495ad0f253",
     "size": 45983,
@@ -932,6 +962,12 @@
     "sha1": "67d46a2c3372536d3a0eb0d47c01f2cbba987af4",
     "size": 46538,
     "source": "ymir work/effect/plechito/monster/summer2022/stone2_loop.mse"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/summer2022/water_tornado1.dds",
+    "sha1": "0c71f3de4993f67379ab70f03790c0badfe3f8c6",
+    "size": 22000,
+    "source": "ymir work/effect/plechito/monster/summer2022/water_tornado1.dds"
    },
    {
     "name": "d:/ymir work/effect/plechito/monster/underwater_shark_impact.dds",
@@ -3064,6 +3100,7 @@
   }
  },
  "unresolved": {
+  "effects": [],
   "map": [
    "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/p_cq_coral_altar_01_ds.dds",
    "d:/ymir work/zone/plechi_dungeon/underwater_dungeon/underwater_grass.dds",

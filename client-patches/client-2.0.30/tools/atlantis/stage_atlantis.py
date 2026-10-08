@@ -245,6 +245,27 @@ k2 = 'd:/ymir work/ui/atlas/%s/atlas.sub' % MAP
 add['at_maps'][k2] = gen(k2, ('title subImage\r\nversion 1.0\r\nimage "%s_atlas.dds"\r\nleft 0\r\ntop 0\r\nright %d\r\nbottom %d\r\n'
                              % (MAP, side, side)).encode())
 
+# MT2009_PLUS_ATLANTYDA_TERRAIN_V1: the textures an effect mesh (.mde, binary) or an effect script (.mse) names
+# with a full "D:\\ymir work\\..." path - the closure above does not read them, so shine00.mde (the light shafts of
+# floor 2, shine.mse) came without shine.dds and drew as flat blue planes (test client 2.0.59), and the bosses'
+# water tornadoes, flower00a.mde and underwater_plant08b.mde lacked theirs too. Staged in the pack of the file
+# that names them; what neither our client nor the package has is reported.
+mde_missing = set()
+for _ in range(2):
+    for p in list(add):
+        for k, src in list(add[p].items()):
+            if not k.endswith(('.mde', '.mse')):
+                continue
+            for m in re.findall(rb'[A-Za-z]:[\\/][^\x00"\r\n]+?\.(?:dds|tga|png|jpg|mde)', open(src, 'rb').read(), re.I):
+                t = m.decode('latin1').replace('\\', '/').lower()
+                t = 'd:' + t[2:]
+                if t in OURS or any(t in add[q] for q in add):
+                    continue
+                if t in PK:
+                    add[p][t] = PK[t]
+                else:
+                    mde_missing.add(t)
+
 # ---------------------------------------------------------------- checks and the staging
 bad64 = sorted(k for p in add for k, s in add[p].items() if k.endswith('.gr2') and open(s, 'rb').read(4) == GR2_64)
 if bad64:
@@ -270,6 +291,7 @@ for crc, n in sorted(removed.items()):
 ignore = ('.msenv',)
 manifest['unresolved']['map'] = sorted(u for u in unres_map if not u.endswith(ignore))
 manifest['unresolved']['races'] = unres_races
+manifest['unresolved']['effects'] = sorted(mde_missing)
 json.dump(manifest, open(os.path.join(HERE, 'atlantis_manifest.json'), 'w', encoding='utf-8'), indent=1, sort_keys=True,
           ensure_ascii=False)
 for p in sorted(add):
