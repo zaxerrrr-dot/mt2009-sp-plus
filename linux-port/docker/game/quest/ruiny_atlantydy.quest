@@ -296,11 +296,13 @@ quest ruiny_atlantydy begin
 			elseif stage == 5 then
 				d.setf("left", c.hearts)
 				d.regen_file(c.path.."hearts.txt")
-			elseif stage == 6 then
+			end
+			d.notice("Ruiny Atlantydy ("..stage.."/6): "..ruiny_atlantydy.stage_text(stage))
+			-- Morkhot after the stage's notice, so his clock's notice ("Macie N s") comes second (test of 8 October).
+			if stage == 6 then
 				d.setf("boss_try", 0)
 				ruiny_atlantydy.spawn_morkhot()
 			end
-			d.notice("Ruiny Atlantydy ("..stage.."/6): "..ruiny_atlantydy.stage_text(stage))
 		end
 
 		function next_stage()
