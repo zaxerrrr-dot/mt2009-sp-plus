@@ -16,5 +16,11 @@
   "marker": "MT2009_PLUS_QUIVER_V1 (use)",
   "old": "void CHARACTER::UseArrow(LPITEM pkArrow, DWORD dwArrowCount)\n{\n",
   "new": "void CHARACTER::UseArrow(LPITEM pkArrow, DWORD dwArrowCount)\n{\n\t// MT2009_PLUS_QUIVER_V1 (use): a quiver's arrows are never spent - its\n\t// count stays 1 and it never leaves the slot by running out.\n\tif (Mt2009PlusIsQuiver(pkArrow))\n\t\treturn;\n\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_QUIVER_V1 (sockets)",
+  "old": "\t\t\t\tif ((dwVnum = GetSocket(i)) <= 2)\n\t\t\t\t\tcontinue;\n",
+  "new": "\t\t\t\tif ((dwVnum = GetSocket(i)) <= 2)\n\t\t\t\t\tcontinue;\n\t\t\t\t// MT2009_PLUS_QUIVER_V1 (sockets): socket 0 of a time-limited weapon or armour (the Kolczan 8010)\n\t\t\t\t// is its end time, not a stone's vnum (\"cannot find table by vnum 1792...\" on every ComputePoints).\n\t\t\t\tif (i == 0 && (m_pProto->aLimits[0].bType == LIMIT_REAL_TIME || m_pProto->aLimits[1].bType == LIMIT_REAL_TIME ||\n\t\t\t\t\t\tm_pProto->aLimits[0].bType == LIMIT_REAL_TIME_START_FIRST_USE || m_pProto->aLimits[1].bType == LIMIT_REAL_TIME_START_FIRST_USE))\n\t\t\t\t\tcontinue;\n"
  }
 ]

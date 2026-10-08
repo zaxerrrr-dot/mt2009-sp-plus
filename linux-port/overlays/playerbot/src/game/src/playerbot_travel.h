@@ -1619,7 +1619,8 @@ namespace
 					PLAYERBOT_DESERT_FROM_V1_X, PLAYERBOT_DESERT_FROM_V1_Y, dwNow, "desert_crossing_from_v1");
 		}
 		CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(targetMap);
-		if (!navigation.Init(targetMap))
+		// MT2009_PLUS_ZODIAC_NAV_V1: an open arena map has no grid and needs none.
+		if (!IsPlayerBotOpenArenaMap(targetMap) && !navigation.Init(targetMap))
 		{
 			// Tagged by the reason, so a reason nobody has seen before still
 			// speaks up inside the minute instead of hiding behind an old one.

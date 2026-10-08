@@ -3926,6 +3926,15 @@ namespace
 	// and comes out with it (playerbot_party_dungeon.h). The Demon Tower (66)
 	// and the Catacomb (216) jump the whole party themselves
 	// (CDungeon::JumpParty through CPlayerBotManager::WarpBot).
+	// MT2009_PLUS_ZODIAC_NAV_V1: the Swiatynia Zodiaku (358) is 6x6 - a 3072x3072 grid of 50-unit cells is
+	// some 200 MB, which the 32-bit core could not give (std::bad_alloc in CPlayerBotNavigation::Init, the
+	// test server's game1 twice on 8/9 October). Its floors are open arenas: no grid, a straight walk
+	// (MovePlayerBot) and a map change without one (TransitionPlayerBotMap).
+	bool IsPlayerBotOpenArenaMap(long mapIndex)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		return base == 358;
+	}
 	bool IsPlayerBotPartyDungeonMap(long mapIndex)
 	{
 		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;

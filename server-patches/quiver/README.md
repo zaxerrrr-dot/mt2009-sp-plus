@@ -16,6 +16,7 @@ o innej długości to tylko nowy wiersz `item_proto`.
 | `MT2009_PLUS_QUIVER_V1 (helper)` | `char_battle.cpp` | `Mt2009PlusIsQuiver(item)` – strzała z limitem `LIMIT_REAL_TIME` |
 | `MT2009_PLUS_QUIVER_V1 (count)` | `char_battle.cpp` | `GetArrowAndBow`: kołczan daje tyle strzał, ile prosi strzał (nie `MIN` z ilością 1); po upływie czasu (`socket0`) – 0, zanim zdarzenie wygaśnięcia go zabierze |
 | `MT2009_PLUS_QUIVER_V1 (use)` | `char_battle.cpp` | `UseArrow`: kołczan nie traci strzał – ilość zostaje 1, nie schodzi ze slotu |
+| `MT2009_PLUS_QUIVER_V1 (sockets)` | `item.cpp` | `CItem::ModifyPoints`: `socket0` broni/zbroi z limitem czasu rzeczywistego (kołczan) to czas końca, nie kamień – bez `cannot find table by vnum 1792…` w syserr przy każdym przeliczeniu punktów |
 
 Każde zużycie strzały (zwykły strzał, umiejętności, strzały dodatkowe `MT2009_PLUS_ARCHER_MULTISHOT`)
 idzie przez `UseArrow`, a każde sprawdzenie „czy ma strzały” przez `GetArrowAndBow`.
