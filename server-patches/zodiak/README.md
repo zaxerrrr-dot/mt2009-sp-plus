@@ -121,13 +121,25 @@ Boty z drużyny osoby idą z nią do świątyni (jak do innych lochów drużynow
   Pryzmaty (33025/33032, cena osoby 1/2/4/8/10), a bez nich wstaje sam (log `PLAYERBOT_ZODIAC: stood up`);
 - wejście płaci osoba: quest `zodiac_temples` nie liczy Animosfer bota z drużyny (`pc.is_playerbot()`).
 
-Własne przejścia botów (bez osoby) – **jeszcze nie ma**. Potrzebne w `playerbot_dungeon_runs.h` / `_rules.h`:
-klucz `zodiak` w `RUN_RULES` (pasmo poziomów, 4–8 botów), zbiórka przy portalu dnia na 358 (`data/dungeon/zodiac/days`,
-portal 20439–20450 wg dnia tygodnia), wejście jak w questcie (`CZodiacManager::StartTemple` dla lidera z drużyną, Animosfery
-botów: 12 z `bead` albo Znak Strażnika 72328), plan piętra wg misji (`ZodiacFloorMessage`: wszystkie potwory / Metiny /
-boss bez śmierci / kupiec – bonusowe piętro do pominięcia), przycisk następnego piętra (`/nextfloor` lidera), Pryzmaty
-botów z nagród albo z rynku, koniec po wybranym piętrze (`/jumpfloor`?), tsv z wynikami jak `playerbot_dungeon_runs.tsv`.
-Bez testu na serwerze to zbyt dużo zgadywania – do zrobienia po pierwszym teście świątyni z osobą.
+Własne przejścia botów – `MT2009_PLUS_ZODIAC_RUNS_V1` (`playerbot_zodiac_runs.h`), na razie na polecenie operatora
+(plik `playerbot_zodiac_test` w katalogu rdzenia game1 kanału, czytany co 5 s, potem `.done`):
+
+```
+now <znak 1-12|zi..hai|any> [ile]   przejście teraz          loop on|off       znak po znaku, bez końca
+size <n>  level <n>  floor <n>      drużyna, min. poziom, piętro końcowe (domyślnie 5, 75, 40)
+boost <pct>  prisms <n>  gap <s>    „dobry sprzęt testowy” (afekty 597-599: HP %, silny p. potworom %, obrona), Pryzmaty, przerwa (30, 30, 60)
+allportals 1|0                      wszystkie portale codziennie (flaga zodiac_all_portals)
+abort | status
+```
+
+Drużyna z jednego królestwa (najwyższy poziom liderem, Szaman z grupą umiejętności, jeśli wolny) staje przy portalu znaku na 358,
+lider zakłada drużynę, wszyscy dostają mikstury, Pryzmaty i afekty testu, `StartTemple` wpuszcza drużynę. W środku lider bije Metiny,
+potem potwory i bossów, na końcu posągi (nigdy działa), reszta walczy przy liderze; piętro zaliczone → `/jumpfloor`. Wyjście: koniec
+świątyni, piętro końcowe albo 15 min bez nowego piętra; potem boty wracają na swoje miejsca, afekty i nadmiar Pryzmatów znikają.
+Log: `ZODIAC_RUN:` w syslogu (called, gathered, entered, floor, next, pulled, out, closed, status), wiersz na przejście
+w `playerbot_zodiac_runs.tsv` (czas, nr, znak, instancja, królestwo, ilu, poziomy, wynik, najwyższe piętro, sekundy,
+„piętro:sekundy,…”, śmierci, wskrzeszenia Pryzmatem / bez, lider, nazwy). Samodzielne wyjścia botów „z zegara” (z płaceniem
+Animosferami i Pryzmatami) – po teście.
 
 ## Do sprawdzenia / znane braki
 
