@@ -2444,6 +2444,11 @@ namespace
 		// never the merchant's: he paid 194 yang for one.
 		if (vnum == PLAYERBOT_GRAND_MASTER_STONE_VNUM)
 			return false;
+		// MT2009_PLUS_NEWPET_EGG_RANK_V1: a Malpka or Pajaczek egg the bot does
+		// not keep is the merchant's (the owner, 8 October: "te sprzedaja u
+		// handlarza") - never a counter's (playerbot_newpet_bots.h).
+		if (IsPlayerBotNewPetJunkEgg(ch, item))
+			return true;
 		// A pet seal from the ItemShop (MT2009 Plus, playerbot_itemshop.h) is the
 		// bot's own pet, summoned from the bag: never the merchant's.
 		if (item->GetType() == ITEM_PET)

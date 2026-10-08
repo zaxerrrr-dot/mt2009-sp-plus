@@ -49,6 +49,23 @@
 // line (GetPlayerBotNewPetKeep, the economy's line rules). Nobody packs a pet:
 // a transporter with a pet (55007) is a person's trade.
 //
+// MT2009_PLUS_NEWPET_EGG_RANK_V1 (the owner, 8 October: "Malpki i Pajaczki
+// to najslabsze pety - jesli boty maja wybor, biora innego peta, a te
+// sprzedaja u handlarza"): the species are ranked (PLAYERBOT_NEWPET_EGG_RANK).
+// Every species gives the same bonuses here (the pet's bonuses and skills are
+// its own, not its species'), so the order is the owner's word and rarity: the
+// minis of the great bosses first - Piskle Exedyara, Mini Razador, Mini
+// Nemere - then Czerwony Smoczek, Maly Baashido, Nessie, Smoczek, and last the
+// two the owner named, Pajaczek and Malpka (the weak eggs). A keeper hatches
+// its best egg; a weak one only when no other is in its bag and none can be
+// had (no counter holds one, or its purse would not pay 2 000 000) or it has
+// waited PLAYERBOT_NEWPET_WEAK_WAIT_MS for one. A keeper whose pet is a weak
+// species hatches a better egg as its next pet (MAX_PETS allowing) and makes it
+// the active one (Select). A weak egg is never a counter's and never bought:
+// what nobody keeps goes to the merchant (IsPlayerBotNewPetJunkEgg). The other
+// eggs stand at the fixed 2 000 000, three lines a counter, and no bot puts up
+// one more while the world's counters hold PLAYERBOT_NEWPET_EGG_WORLD_LINES.
+//
 // The companion: it hatches an egg its player handed it, feeds, raises and
 // evolves its pet from its own bag and purse and summons it at its player's
 // side, but it buys nothing for it and lists nothing of it - its bag is its
@@ -99,11 +116,36 @@ namespace
 	// Acts a look: a few, so one look never runs a burst of queries.
 	const int PLAYERBOT_NEWPET_ACTS_PER_LOOK = 6;
 
+	// MT2009_PLUS_NEWPET_EGG_RANK_V1: the species, best first; the weak two last.
+	const DWORD PLAYERBOT_NEWPET_EGG_RANK[] = { 55411, 55403, 55404, 55406, 55409, 55410, 55405, 55402, 55401 };
+	const DWORD PLAYERBOT_NEWPET_WEAK_WAIT_MS = 2 * 60 * 60 * 1000;
+	const DWORD PLAYERBOT_NEWPET_EGG_WORLD_LINES = 100;
+
 	const DWORD PLAYERBOT_NEWPET_BOOK_LAST = mt2009_newpet::ITEM_BOOK_FIRST + mt2009_newpet::SKILL_COUNT - 1;
 
 	bool IsPlayerBotNewPetEggVnum(DWORD vnum)
 	{
 		return mt2009_newpet::FindSpecies(vnum) != NULL;
+	}
+
+	// 0 the best species, 98 an egg out of the table, 99 not an egg.
+	int GetPlayerBotNewPetEggRank(DWORD vnum)
+	{
+		for (size_t i = 0; i < sizeof(PLAYERBOT_NEWPET_EGG_RANK) / sizeof(PLAYERBOT_NEWPET_EGG_RANK[0]); ++i)
+			if (PLAYERBOT_NEWPET_EGG_RANK[i] == vnum)
+				return (int)i;
+		return IsPlayerBotNewPetEggVnum(vnum) ? 98 : 99;
+	}
+
+	// Malpka (55401) and Pajaczek (55402): the owner's weakest.
+	bool IsPlayerBotNewPetWeakEgg(DWORD vnum)
+	{
+		return vnum == 55401 || vnum == 55402;
+	}
+
+	bool IsPlayerBotNewPetGoodEgg(DWORD vnum)
+	{
+		return IsPlayerBotNewPetEggVnum(vnum) && !IsPlayerBotNewPetWeakEgg(vnum);
 	}
 
 	bool IsPlayerBotNewPetBookVnum(DWORD vnum)
@@ -178,7 +220,9 @@ namespace
 		BYTE skillLevel[mt2009_newpet::SKILL_SLOTS];
 		DWORD lastSeen;
 		bool out;
-		TPlayerBotNewPetView() : nextLook(0), known(false), pets(0), hasPet(false), petId(0), egg(0), level(0), evolution(0),
+		bool weakPet;		// the active pet is a weak species
+		DWORD weakWaitSince;	// since when it holds only a weak egg and no pet
+		TPlayerBotNewPetView() : weakPet(false), weakWaitSince(0), nextLook(0), known(false), pets(0), hasPet(false), petId(0), egg(0), level(0), evolution(0),
 				atCap(false), lifeUntil(0), lastSeen(0), out(false)
 		{
 			for (int i = 0; i < mt2009_newpet::BONUS_COUNT; ++i)
@@ -223,6 +267,7 @@ namespace
 		if (!pet)
 		{
 			v.petId = v.egg = 0;
+			v.weakPet = false;
 			v.level = v.evolution = 0;
 			v.atCap = false;
 			v.lifeUntil = 0;
@@ -230,6 +275,7 @@ namespace
 		}
 		v.petId = pet->id;
 		v.egg = pet->egg;
+		v.weakPet = IsPlayerBotNewPetWeakEgg(pet->egg);
 		v.level = pet->level;
 		v.evolution = pet->evolution;
 		v.atCap = pet->level >= Cap(pet->evolution);
@@ -286,12 +332,45 @@ namespace
 		return n;
 	}
 
-	int CountPlayerBotNewPetEggs(LPCHARACTER ch)
+	// The eggs in the bag of the good species (not Malpka, not Pajaczek).
+	int CountPlayerBotNewPetGoodEggs(LPCHARACTER ch)
 	{
 		int n = 0;
 		for (size_t i = 0; i < mt2009_newpet::SPECIES_COUNT; ++i)
-			n += (int)ch->CountSpecifyItem(mt2009_newpet::SPECIES[i].egg);
+			if (IsPlayerBotNewPetGoodEgg(mt2009_newpet::SPECIES[i].egg))
+				n += (int)ch->CountSpecifyItem(mt2009_newpet::SPECIES[i].egg);
 		return n;
+	}
+
+	int CountPlayerBotNewPetWeakEggs(LPCHARACTER ch)
+	{
+		return (int)ch->CountSpecifyItem(55401) + (int)ch->CountSpecifyItem(55402);
+	}
+
+	// The good eggs' units on the world's counters (the ledger; one a line).
+	DWORD CountPlayerBotNewPetGoodEggSupply()
+	{
+		DWORD units = 0;
+		for (size_t i = 0; i < mt2009_newpet::SPECIES_COUNT; ++i)
+			if (IsPlayerBotNewPetGoodEgg(mt2009_newpet::SPECIES[i].egg))
+				if (const TPlayerBotMarketLedgerEntry* e = GetPlayerBotMarketLedgerEntry(mt2009_newpet::SPECIES[i].egg))
+					units += e->dwSupplyUnits;
+		return units;
+	}
+
+	long long GetPlayerBotNewPetSpare(LPCHARACTER ch);
+
+	// A good egg could be had: some counter holds one and the purse pays it.
+	bool CanPlayerBotGetGoodNewPetEgg(LPCHARACTER ch)
+	{
+		return GetPlayerBotNewPetSpare(ch) * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100 >= (long long)PLAYERBOT_NEWPET_EGG_PRICE &&
+				CountPlayerBotNewPetGoodEggSupply() > 0;
+	}
+
+	// The bot looks for a good egg: no pet, or a weak one with room for another.
+	bool PlayerBotSeeksGoodNewPetEgg(const TPlayerBotNewPetView& v)
+	{
+		return (!v.hasPet && v.pets == 0) || (v.hasPet && v.weakPet && v.pets < (int)mt2009_newpet::MAX_PETS);
 	}
 
 	// The materials of the pet's next evolution, with the Kamien Duchowy the
@@ -348,8 +427,10 @@ namespace
 		const TPlayerBotNewPetView* v = GetPlayerBotNewPetView(ch);
 		if (!v)
 			return 0;
+		// MT2009_PLUS_NEWPET_EGG_RANK_V1: never a weak egg; a good one while it
+		// has no pet, or a weak pet and room for a better one.
 		if (IsPlayerBotNewPetEggVnum(vnum))
-			return !v->hasPet && v->pets == 0 && CountPlayerBotNewPetEggs(ch) == 0 ? 1 : 0;
+			return IsPlayerBotNewPetGoodEgg(vnum) && PlayerBotSeeksGoodNewPetEgg(*v) && CountPlayerBotNewPetGoodEggs(ch) == 0 ? 1 : 0;
 		if (!v->hasPet)
 			return 0;
 		const DWORD unixNow = (DWORD)time(NULL);
@@ -443,14 +524,16 @@ namespace
 		if (spare <= 0)
 			return 0;
 		const TPlayerBotNewPetView* v = GetPlayerBotNewPetView(ch);
-		if (!v->hasPet)
+		if (GetPlayerBotNewPetWant(ch, PLAYERBOT_NEWPET_EGG_RANK[0]) > 0)
 		{
-			if (GetPlayerBotNewPetWant(ch, SPECIES[0].egg) > 0)
-				for (size_t i = 0; i < SPECIES_COUNT; ++i)
+			for (size_t i = 0; i < SPECIES_COUNT; ++i)
+				if (IsPlayerBotNewPetGoodEgg(SPECIES[i].egg))
 					missing[SPECIES[i].egg] = 1;
-			return missing.empty() ? 0 : std::min<long long>(spare * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100,
-					(long long)PLAYERBOT_NEWPET_EGG_PRICE);
+			if (!v->hasPet)
+				return std::min<long long>(spare * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100, (long long)PLAYERBOT_NEWPET_EGG_PRICE);
 		}
+		if (!v->hasPet)
+			return 0;
 		std::vector<DWORD> candidates;
 		candidates.push_back(ITEM_PROTEIN);
 		for (int b = 0; b < BONUS_COUNT; ++b)
@@ -459,6 +542,9 @@ namespace
 		for (DWORD book = ITEM_BOOK_FIRST; book <= PLAYERBOT_NEWPET_BOOK_LAST; ++book)
 			candidates.push_back(book);
 		long long cap = spare * PLAYERBOT_NEWPET_GOODS_PURSE_PERCENT / 100;
+		if (!missing.empty())	// a better egg than its weak pet
+			cap = std::max(cap, std::min<long long>(spare * PLAYERBOT_NEWPET_EGG_PURSE_PERCENT / 100,
+					(long long)PLAYERBOT_NEWPET_EGG_PRICE));
 		if (const EvolutionCost* cost = GetPlayerBotNewPetEvolution(*v))
 		{
 			for (int i = 0; i < EVOLUTION_ITEMS; ++i)
@@ -512,8 +598,12 @@ namespace
 		const TPlayerBotNewPetView* v = GetPlayerBotNewPetView(ch);
 		if (!v)
 			return 1000000;
+		// MT2009_PLUS_NEWPET_EGG_RANK_V1: one good egg while it seeks one; a weak
+		// egg only with no pet and no good egg in the bag (it may hatch it).
+		if (IsPlayerBotNewPetWeakEgg(vnum))
+			return !v->hasPet && v->pets == 0 && CountPlayerBotNewPetGoodEggs(ch) == 0 ? 1 : 0;
 		if (IsPlayerBotNewPetEggVnum(vnum))
-			return !v->hasPet && v->pets == 0 ? 1 : 0;
+			return PlayerBotSeeksGoodNewPetEgg(*v) ? 1 : 0;
 		if (!v->hasPet)
 			return 0;
 		if (vnum == ITEM_PROTEIN)
@@ -548,7 +638,25 @@ namespace
 	{
 		if (!ch || !item || !IsPlayerBotNewPetGoodsVnum(item->GetVnum()))
 			return 0;
+		// MT2009_PLUS_NEWPET_EGG_RANK_V1: a weak egg is never a counter's (the
+		// merchant's, IsPlayerBotNewPetJunkEgg), and no more good eggs go up
+		// while the world's counters hold PLAYERBOT_NEWPET_EGG_WORLD_LINES.
+		if (IsPlayerBotNewPetWeakEgg(item->GetVnum()))
+			return 0;
+		if (IsPlayerBotNewPetEggVnum(item->GetVnum()) && CountPlayerBotNewPetGoodEggSupply() >= PLAYERBOT_NEWPET_EGG_WORLD_LINES)
+			return 0;
 		return (int)ch->CountSpecifyItem(item->GetVnum()) - GetPlayerBotNewPetKeep(ch, item->GetVnum());
+	}
+
+	// MT2009_PLUS_NEWPET_EGG_RANK_V1: a weak egg's stack the bot does not keep
+	// goes to the merchant (IsPlayerBotJunkItem) - a companion's never.
+	bool IsPlayerBotNewPetJunkEgg(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !IsPlayerBotNewPetWeakEgg(item->GetVnum()) || !IsPlayerBotNewPetBot(ch) ||
+				IsPlayerBotNewPetCompanion(ch))
+			return false;
+		const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - GetPlayerBotNewPetKeep(ch, item->GetVnum());
+		return spare >= (int)item->GetCount();
 	}
 
 	// ---- the look -------------------------------------------------------
@@ -600,21 +708,24 @@ namespace
 		return name;
 	}
 
-	bool HatchPlayerBotPet(LPCHARACTER ch, mt2009_newpet::Owner& owner)
+	// The best egg of the bag (PLAYERBOT_NEWPET_EGG_RANK) hatched; with
+	// goodOnly, a weak one never. The new pet's id, or 0.
+	DWORD HatchPlayerBotPet(LPCHARACTER ch, mt2009_newpet::Owner& owner, bool goodOnly)
 	{
 		using namespace mt2009_newpet;
 		if (owner.pets.size() >= (size_t)MAX_PETS || (long long)ch->GetGold() < HATCH_PRICE + (long long)PLAYERBOT_SHOPPING_GOLD_FLOOR)
-			return false;
+			return 0;
 		LPITEM egg = NULL;
 		const int cells = std::min<int>(ch->GetInventoryMaxCount(), INVENTORY_MAX_NUM);
-		for (int i = 0; i < cells && !egg; ++i)
+		for (int i = 0; i < cells; ++i)
 		{
 			LPITEM item = ch->GetInventoryItem((WORD)i);
-			if (IsHatchableEgg(item))
+			if (IsHatchableEgg(item) && (!goodOnly || IsPlayerBotNewPetGoodEgg(item->GetVnum())) &&
+					(!egg || GetPlayerBotNewPetEggRank(item->GetVnum()) < GetPlayerBotNewPetEggRank(egg->GetVnum())))
 				egg = item;
 		}
 		if (!egg)
-			return false;
+			return 0;
 		const DWORD vnum = egg->GetVnum();
 		std::string name;
 		for (int attempt = 0; attempt < 3; ++attempt)
@@ -625,13 +736,16 @@ namespace
 			name.clear();
 		}
 		if (name.empty())
-			return false;
+			return 0;
 		// The window's way: the egg's id and vnum remembered, its cell sent.
 		owner.hatchEggId = egg->GetID();
 		owner.hatchEggVnum = vnum;
 		char cell[16];
 		snprintf(cell, sizeof(cell), "%d", (int)egg->GetCell());
 		const size_t before = owner.pets.size();
+		std::set<DWORD> known;
+		for (size_t i = 0; i < owner.pets.size(); ++i)
+			known.insert(owner.pets[i].id);
 		const long long gold = (long long)ch->GetGold();
 		Hatch(ch, cell, name.c_str());
 		owner.hatchEggId = owner.hatchEggVnum = 0;
@@ -639,13 +753,62 @@ namespace
 		{
 			++s_kPlayerBotNewPetStats.hatchFails;
 			sys_log(0, "PLAYERBOT_NEWPET: hatch failed pid=%u name=%s egg=%u pet_name=%s", ch->GetPlayerID(), ch->GetName(), vnum, name.c_str());
-			return false;
+			return 0;
 		}
+		DWORD fresh = 0;
+		for (size_t i = 0; i < owner.pets.size() && !fresh; ++i)
+			if (known.find(owner.pets[i].id) == known.end())
+				fresh = owner.pets[i].id;
 		++s_kPlayerBotNewPetStats.hatched;
 		sys_log(0, "PLAYERBOT_NEWPET: hatched pid=%u name=%s lv=%d egg=%u species=%s pet_name=%s paid=%lld gold=%lld companion=%d",
 				ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), vnum, SpeciesName(vnum), name.c_str(),
 				gold - (long long)ch->GetGold(), (long long)ch->GetGold(), IsPlayerBotNewPetCompanion(ch) ? 1 : 0);
-		return true;
+		return fresh;
+	}
+
+	// MT2009_PLUS_NEWPET_EGG_RANK_V1: no pet - the best egg, a weak one only
+	// when no good egg can be had or it has waited PLAYERBOT_NEWPET_WEAK_WAIT_MS;
+	// a weak pet - a good egg hatched as the next pet and made the active one.
+	void ChoosePlayerBotNewPet(LPCHARACTER ch, mt2009_newpet::Owner& owner, TPlayerBotNewPetView& view, DWORD dwNow)
+	{
+		using namespace mt2009_newpet;
+		Pet* pet = ActivePet(owner);
+		if (!pet)
+		{
+			if (CountPlayerBotNewPetGoodEggs(ch) > 0)
+			{
+				view.weakWaitSince = 0;
+				HatchPlayerBotPet(ch, owner, true);
+				return;
+			}
+			if (CountPlayerBotNewPetWeakEggs(ch) == 0)
+				return;
+			const bool companion = IsPlayerBotNewPetCompanion(ch);
+			if (!companion && CanPlayerBotGetGoodNewPetEgg(ch))
+			{
+				if (view.weakWaitSince == 0)
+					view.weakWaitSince = dwNow;
+				if ((DWORD)(dwNow - view.weakWaitSince) < PLAYERBOT_NEWPET_WEAK_WAIT_MS)
+					return;	// a good egg from a counter first
+			}
+			view.weakWaitSince = 0;
+			HatchPlayerBotPet(ch, owner, false);
+			return;
+		}
+		if (!IsPlayerBotNewPetWeakEgg(pet->egg) || owner.pets.size() >= (size_t)MAX_PETS ||
+				CountPlayerBotNewPetGoodEggs(ch) == 0)
+			return;
+		const DWORD weak = pet->id;
+		const DWORD fresh = HatchPlayerBotPet(ch, owner, true);
+		if (!fresh)
+			return;
+		char id[16];
+		snprintf(id, sizeof(id), "%u", fresh);
+		Select(ch, id);
+		const Pet* now = ActivePet(owner);
+		sys_log(0, "PLAYERBOT_NEWPET: upgraded pid=%u name=%s from_pet=%u to_pet=%u active=%u egg=%u pets=%u",
+				ch->GetPlayerID(), ch->GetName(), weak, fresh, now ? now->id : 0, now ? now->egg : 0,
+				(unsigned int)owner.pets.size());
 	}
 
 	// One act on the pet, or false: feed, treat, elixir, book, chest, evolve.
@@ -885,8 +1048,7 @@ namespace
 			return;
 		Owner& owner = GetOwner(ch);
 		owner.bot = true;
-		if (!ActivePet(owner))
-			HatchPlayerBotPet(ch, owner);
+		ChoosePlayerBotNewPet(ch, owner, view, dwNow);	// MT2009_PLUS_NEWPET_EGG_RANK_V1
 		for (int acts = 0; acts < PLAYERBOT_NEWPET_ACTS_PER_LOOK && ActivePet(owner); ++acts)
 			if (!ActPlayerBotNewPet(ch, owner))
 				break;
