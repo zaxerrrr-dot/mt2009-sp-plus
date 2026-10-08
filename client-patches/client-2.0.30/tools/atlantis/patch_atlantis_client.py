@@ -36,6 +36,8 @@ ITEM_KEY = (173217, 72619434, 408587239, 27973291)
 ITEM_RECORD = 184
 MOB_KEY = (4813894, 18955, 552631, 6822045)
 MOB_RECORD = 256
+ELEMENT_OFF, ELEMENT_MASK = 83, 0x1F800
+ELEMENTS = json.load(open(os.path.join(HERE, '..', '..', '..', '..', 'tools', 'zywioly', 'zywioly_moby.json')))
 ITEM_TEMPLATE = {30919: 30767, 30920: 30767, 30921: 30775}
 # stack, antiflag, flag (= the server's rows in apply.sh): the ticket is bound (DROP|SELL|GIVE|PKDROP|MYSHOP)
 ITEM_FLAGS = {30919: (200, 90496, 4), 30920: (200, 0, 4), 30921: (200, 0, 4)}
@@ -93,6 +95,11 @@ def mob_record(tmpl, m):
     for k, v in vals.items():
         o, f = MOB_OFF[k]
         struct.pack_into('<' + f, r, o, int(v))
+    # MT2009_PLUS_ATLANTYDA_V1 (8 October): the element bits (race flag offset 83, bits 11-16) as the server's
+    # zywioly_moby.sql - tools/zywioly/zywioly_moby.json, whole dungeon lightning, stones too; set here, since
+    # the zywioly client patch may run before these rows exist.
+    rf = struct.unpack_from('<I', r, ELEMENT_OFF)[0] & ~ELEMENT_MASK
+    struct.pack_into('<I', r, ELEMENT_OFF, rf | ELEMENTS.get(str(m['vnum']), 0))
     return bytes(r)
 
 

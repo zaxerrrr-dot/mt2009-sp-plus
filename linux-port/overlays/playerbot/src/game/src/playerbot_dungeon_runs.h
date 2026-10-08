@@ -224,9 +224,9 @@ namespace
 		{ "dzungla", DGRUN_KIND_AREZZO, 366, "starozytna_dzungla", "dzungla_dgrun", NULL, 384, 374,
 			7500000LL, 5, 60, 60000, 2 },
 		// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy (158) - the quest's ticket (6 000 000 at Mag Atlantydy) is
-		// what a bot's run pays in yang here; 40 minutes, 5 a day.
+		// what a bot's run pays in yang here; 45 minutes (40 before the owner's 8 October tuning), 5 a day.
 		{ "atlantyda", DGRUN_KIND_ATLANTYDA, 158, "ruiny_atlantydy", "atlantyda_dgrun", NULL, 199, 241,
-			6000000LL, 5, 40, 60000, 2 },
+			6000000LL, 5, 45, 60000, 2 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy's second floor, where d.jump_all puts the party (cells).

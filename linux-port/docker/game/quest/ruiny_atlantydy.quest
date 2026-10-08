@@ -4,14 +4,15 @@
 -- w Yang. Wejœæ mo¿na samemu albo z dru¿yn¹; boty z dru¿yny gracza wchodz¹ za nim (playerbot_party_dungeon.h),
 -- a boty chodz¹ te¿ same (playerbot_dungeon_runs.h, klucz "atlantyda"). Wzorzec ruiny_skorpiona.quest.
 -- Etapy (flaga lochu "stage": 1..6 w trakcie, 10+N miêdzy etapami, 7 na koñcu):
---   piêtro 1: 1) fala 30 potworów; 2) Kolumny z Muszli: G³êbinowa Muszla (8729) daje Klucz Atlantydy (30920),
+--   piêtro 1: 1) fala 45 potworów; 2) Kolumny z Muszli: G³êbinowa Muszla (8729) daje Klucz Atlantydy (30920),
 --      klucz oddany w³aœciwej z czterech kolumn (9461, kolejnoœæ losowa) przywo³uje Stra¿nika Atlantydy (4557),
 --      z³a kolumna - nowa muszla; cztery kolumny i cztery stra¿e;
 --   piêtro 2 (d.jump_all): 3) trzy Elity Atlantydy (4558), jedna prawdziwa - zabicie z³udzenia to punkt karny;
---      4) fala 30 potworów; 5) 4 Serca Atlantydy (8730); 6) Morkhot (4559) - 300/240/180 s na zabicie
+--      4) fala 45 potworów; 5) 4 Serca Atlantydy (8730); 6) Morkhot (4559) - 300/240/180 s na zabicie
 --      (0/1/2+ punktów karnych), potem chowa siê, a Pradawne Serce Atlantydy (8731) przywo³uje go znowu.
--- Potem 2-4 Skrzynie Atlantydy (30921) do podzia³u miêdzy ludzi (MT2009_PLUS_DUNGEON_CHEST_SPLIT_V1) i 10 s
--- do wyjœcia (MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1). Limit 40 minut, 5 wypraw dziennie.
+-- Potem 2-4 Skrzynie Atlantydy (30921) do podzia³u miêdzy ludzi (MT2009_PLUS_DUNGEON_CHEST_SPLIT_V1) i 20 s
+-- do wyjœcia (w³aœciciel, 8 paŸdziernika; inne lochy 10 s). Limit 45 minut, 5 wypraw dziennie. Ca³y loch:
+-- ¿ywio³ B³yskawicy (tools/zywioly).
 quest ruiny_atlantydy begin
 	state start begin
 		-- MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1: only the bots rest between expeditions.
@@ -32,7 +33,7 @@ quest ruiny_atlantydy begin
 				min_level = 75,
 				near = 30,
 				cooldown = 60 * 60,
-				limit_min = 40,
+				limit_min = 45, -- 40 until the owner's 8 October tuning (denser waves)
 				-- The ticket is the entry: one Bilet do Atlantydy (30919) a person, taken on the first login
 				-- into a new instance; Mag Atlantydy sells it for ticket_price (the bots' own runs pay the same
 				-- in yang in the core, playerbot_dungeon_runs.h). No yang fee besides.
@@ -41,7 +42,7 @@ quest ruiny_atlantydy begin
 				key = 30920,
 				chest = 30921,
 				daily = 5,
-				wave_kills = 30,
+				wave_kills = 45, -- 30 before 8 October; the waves keep 24 alive (were 15/14)
 				pillars = 4,
 				hearts = 4,
 				chests_min = 2, chests_max = 4,
@@ -965,7 +966,8 @@ quest ruiny_atlantydy begin
 			d.update_ranking("atlantyda", took) -- MT2009_PLUS_DUNGEON_PANEL_V1
 			ruiny_atlantydy.mark_ended()
 			d.notice(string.format("Morkhot pokonany! Czas: %d:%02d. Ruiny Atlantydy zosta³y ukoñczone.", math.floor(took / 60), math.mod(took, 60)))
-			ruiny_atlantydy.end_count(10)
+			-- The owner, 8 October: twenty seconds here (the other dungeons keep ten).
+			ruiny_atlantydy.end_count(20)
 		end
 	end
 end

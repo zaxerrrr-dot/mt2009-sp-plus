@@ -19,6 +19,9 @@ Rules:
        Leze Smoka (208, Blue Dragon, blue_dragon_lair.quest)      -> lightning
        Starozytna Dzungla (366, starozytna_dzungla.quest)         -> wind
   e. BOSS_OVERRIDES (owner approval 7 Oct 2026): listed bosses with no element from a-c;
+  f. WHOLE_DUNGEONS (the owner, 8 October 2026): every monster, boss AND stone of a dungeon by its data
+     file, winning over everything above - Ruiny Atlantydy (158) -> lightning (the vnums of
+     client-patches/client-2.0.30/tools/atlantis/atlantis.json of type 0 and 2; MT2009_PLUS_ATLANTYDA_V1);
   d. nothing else has an element: the SQL clears bits 11-16 on every other mob.
 
 A vnum carries its element everywhere it spawns; the report lists the mapped vnums that also
@@ -57,6 +60,7 @@ ELEC, FIRE, ICE, WIND, EARTH, DARK = (1 << 11), (1 << 12), (1 << 13), (1 << 14),
 MASK = ELEC | FIRE | ICE | WIND | EARTH | DARK
 NAMES = {ELEC: 'Blyskawica', FIRE: 'Ogien', ICE: 'Lod', WIND: 'Wiatr', EARTH: 'Ziemia', DARK: 'Mrok'}
 MOB_MONSTER, MOB_STONE = 0, 2
+ATLANTIS = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'tools', 'atlantis', 'atlantis.json')
 RANK_BOSS = 4
 
 # (label, map indexes, element)
@@ -356,6 +360,14 @@ def main():
                 else:
                     result[v], why[v] = elem, 'boss override'
 
+        # f. whole dungeons, stones included (MT2009_PLUS_ATLANTYDA_V1)
+        for m in json.load(open(ATLANTIS, encoding='utf-8'))['mobs']:
+            if m['type'] in (MOB_MONSTER, MOB_STONE):
+                v = m['vnum']
+                if v not in mobs:
+                    mobs[v] = dict(rank=m.get('rank', 0), type=m['type'], summon=0, flag=0, name=m['name'])
+                result[v], why[v] = ELEC, 'dungeon Ruiny Atlantydy (all)'
+
         # where else every vnum spawns (maps of the index, dungeon dirs, special spawns)
         elsewhere = {}
         rule_maps = set(i for _, idxs, _ in MAP_RULES for i in idxs) | set(r[1] for r in DUNGEON_RULES)
@@ -405,7 +417,7 @@ def main():
                '-- ice, wind, earth, dark; in the column\'s SET: SAVAGE, ATT_FIRE, ATT_ICE, ATT_TEMPLE, ATT_EARTH,',
                '-- ATT_DARK). Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0) - by the owner\'s rules of',
                '-- 7 October 2026 (tools/zywioly/gen_zywioly_moby.py: wiki bosses, Grota Wygnancow 1/2, Swiatynia',
-               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, boss overrides). GENERATED - do not',
+               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides). GENERATED - do not',
                '-- edit; rerun the generator. Every start (apply.sh), idempotent: bits 11-16 cleared on every other',
                '-- mob, set on these.']
         for line in out[1:7]:

@@ -3,7 +3,9 @@
 # and Nemere (50271): a Pct group opening its own nested groups 950921-950927 (copies of those chests' lists, so
 # the chest stands on its own whatever another dungeon's file holds): gear always (the level-70 weapons and the
 # Titans' Shield +0..+4, as Nemere's), a filler always and a second at 45%, a pet item at 50%, a purse always,
-# upgrade materials of 70-90 at 75%, the sea's pearls and clams at 60%, a valuable at 60%.
+# upgrade materials of 70-90 at 75%, the sea's pearls and clams at 60%, a valuable at 60%. The owner, 8 October:
+# plus a Kamien Duszy +5 (5%), Kamien Duchowy x5, Zaczarowanie x10 and Wzmocnienie x4 - the tradeable 71284/71285
+# (8% each), a Talisman +0 of a random element (4%); Tarcza Tytanow down to 37 of the gear group's 737 (5% a chest).
 Group	MT2009_chest_30921
 {
 	Vnum	30921 -- Skrzynia Atlantydy
@@ -16,6 +18,11 @@ Group	MT2009_chest_30921
 	6	s950925	1	75 -- materialy ulepszen 70-90
 	7	s950926	1	60 -- perly i malze glebin
 	8	s950927	1	60 -- cenny przedmiot
+	9	s950928	1	5 -- Kamien Duszy +5 (losowy; wlasciciel 8.10)
+	10	50513	5	8 -- Kamien Duchowy x5
+	11	71284	10	8 -- Zaczarowanie Przedmiotu x10 (handlowe)
+	12	71285	4	8 -- Wzmocnienie Przedmiotu x4 (handlowe)
+	13	s950929	1	4 -- Talizman +0 (losowy zywiol)
 }
 Group	MT2009_chest_30921_gear
 {
@@ -55,11 +62,11 @@ Group	MT2009_chest_30921_gear
 	33	7152	1	20 -- Ekstazyjny Wachlarz+2
 	34	7153	1	15 -- Ekstazyjny Wachlarz+3
 	35	7154	1	10 -- Ekstazyjny Wachlarz+4
-	36	13140	1	90 -- Tarcza Tytanow+0
-	37	13141	1	70 -- Tarcza Tytanow+1
-	38	13142	1	50 -- Tarcza Tytanow+2
-	39	13143	1	25 -- Tarcza Tytanow+3
-	40	13144	1	15 -- Tarcza Tytanow+4
+	36	13140	1	15 -- Tarcza Tytanow+0
+	37	13141	1	10 -- Tarcza Tytanow+1
+	38	13142	1	7 -- Tarcza Tytanow+2
+	39	13143	1	3 -- Tarcza Tytanow+3
+	40	13144	1	2 -- Tarcza Tytanow+4
 }
 Group	MT2009_chest_30921_misc
 {
@@ -75,7 +82,7 @@ Group	MT2009_chest_30921_misc
 	9	71130	1	20 -- Przepustka
 	10	14180	1	8 -- Ametystowa Bransoleta+0
 	11	16180	1	8 -- Ametystowy Naszyjnik+0
-	12	13140	1	6 -- Tarcza Tytanow+0
+	12	13140	1	1 -- Tarcza Tytanow+0
 	13	exp	600000	25 -- EXP 600 000
 	14	gold	1500000	25 -- Yang 1 500 000 (MT2009_PLUS_AREZZO_BALANCE_V1: 800 000 before)
 }
@@ -163,4 +170,36 @@ Group	MT2009_chest_30921_val
 	7	71085	2	8 -- Wzmocnienie Przedmiotu x2
 	8	25100	1	5 -- Zwoj Kamienia Duszy
 	9	s10993	1	6 -- losowa ksiega (wysoka)
+}
+Group	MT2009_chest_30921_dusza5
+{
+	Vnum	950928
+	1	28500	1	10 -- Kamien Duszy Masakry+5
+	2	28504	1	10 -- Kamien Duszy Paranoi+5
+	3	28508	1	10 -- Kamien Duszy Traumy+5
+	4	28512	1	10 -- Kamien Duszy Glupoty+5
+	5	28530	1	10 -- Kamien Duszy Penetr.+5
+	6	28531	1	10 -- Kamien Duszy Smierci+5
+	7	28532	1	10 -- Kamien Duszy Powtorki+5
+	8	28533	1	10 -- Kamien Duszy Wojownika+5
+	9	28534	1	10 -- Kamien Duszy Ninja+5
+	10	28535	1	10 -- Kamien Duszy Sury+5
+	11	28536	1	10 -- Kamien Duszy Szamana+5
+	12	28537	1	10 -- Kamien Duszy Potwora+5
+	13	28538	1	10 -- Kamien Duszy Uchylenia+5
+	14	28539	1	10 -- Kamien Duszy Uniku+5
+	15	28540	1	10 -- Kamien Duszy Magii+5
+	16	28541	1	10 -- Kamien Duszy Witalnosci+5
+	17	28542	1	10 -- Kamien Duszy Obrony+5
+	18	28543	1	10 -- Kamien Duszy Przysp.+5
+}
+Group	MT2009_chest_30921_talizman
+{
+	Vnum	950929
+	1	94000	1	10 -- Talizman Ognia+0
+	2	94250	1	10 -- Talizman Blyskawicy+0
+	3	94500	1	10 -- Talizman Lodu+0
+	4	94750	1	10 -- Talizman Wiatru+0
+	5	95000	1	10 -- Talizman Ziemi+0
+	6	95250	1	10 -- Talizman Mroku+0
 }

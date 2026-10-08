@@ -1131,10 +1131,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/atlantyda-add \
  && cat "$A/mob_drop_item.atlantyda.txt" >> "$L/mob_drop_item.txt" \
  && test "$(grep -c -E '^Group[[:blank:]]+MT2009_atlantyda_' "$L/mob_drop_item.txt")" = 5 \
  && f="$L/special_item_group.txt" \
- && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(30921|95092[1-7])([^0-9]|$)' "$f" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(30921|95092[1-9])([^0-9]|$)' "$f" \
  && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
  && cat "$A/special_item_group.atlantyda.txt" >> "$f" \
- && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(30921|95092[1-7])([^0-9]|$)' "$f")" = 8 \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(30921|95092[1-9])([^0-9]|$)' "$f")" = 10 \
  && F="$L/map/map_n_threeway/npc.txt" \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; } \
  && { grep -q -E '[[:blank:]]9460[[:space:]]*$' "$F" || printf 'm\t286\t1434\t0\t0\t0\t5\t1m\t100\t1\t9460\n' >> "$F"; } \

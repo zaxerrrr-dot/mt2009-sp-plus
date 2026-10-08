@@ -140,9 +140,10 @@ namespace playerbot_dgrun
 		// The Blue Dragon (208) is no run for three: four at the entrance.
 		{ "smok", 0, 4, 5, 4, false },
 		// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy (158) - a dungeon one player of 75-80 finishes
-		// alone, the bots' gear twenty levels behind theirs (V2): from 78, four called and four at the
-		// entrance, a Shaman when one is free.
-		{ "atlantyda", 78, 4, 4, 4, false },
+		// alone, the bots' gear twenty levels behind theirs (V2). The owner's 8 October tuning (Morkhot
+		// +150% damage, the Guardian and the Elite +70% HP and damage, denser waves): from 80, five
+		// called and five at the entrance, never without a Shaman that can heal.
+		{ "atlantyda", 80, 5, 5, 5, true },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)
