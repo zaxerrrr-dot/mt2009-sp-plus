@@ -1238,7 +1238,10 @@ function Set-KingdomCounts {
 function Get-SecondChannelFromEnv {
     $share = 40
     [int]::TryParse((Get-DotEnvValue -Key 'PLAYERBOT_CH2_SHARE' -Default '40'), [ref]$share) | Out-Null
-    return @{ Enabled = (Get-DotEnvValue -Key 'M2_PLAYERBOT_CH2' -Default '0') -eq '1'; Share = $share }
+    # MT2009_PLUS_CH34_V1: the third and fourth channel ride along (in a row after CH2).
+    return @{ Enabled = (Get-DotEnvValue -Key 'M2_PLAYERBOT_CH2' -Default '0') -eq '1'; Share = $share
+        Ch3 = (Get-DotEnvValue -Key 'M2_PLAYERBOT_CH3' -Default '0') -eq '1'
+        Ch4 = (Get-DotEnvValue -Key 'M2_PLAYERBOT_CH4' -Default '0') -eq '1' }
 }
 
 function Set-SecondChannel {
@@ -1252,7 +1255,11 @@ function Set-SecondChannel {
     # the published ports keeps them. SetAt is when the choice was made: the
     # game container compares it with the web panel's wish, and the newer of
     # the two wins.
-    param([bool]$Enabled, [int]$Share = 40, [long]$SetAt = 0)
+    # MT2009_PLUS_CH34_V1: Ch3/Ch4 1 = on, 0 = off, -1 = as .env has it; CH3
+    # counts only with CH2 on and CH4 only with CH3 (the entrypoint's rule),
+    # and each one on widens the ranges by ten ports (CH3 base+20..22, CH4
+    # base+30..32).
+    param([bool]$Enabled, [int]$Share = 40, [long]$SetAt = 0, [int]$Ch3 = -1, [int]$Ch4 = -1)
     if ($Share -lt 10) { $Share = 10 }
     if ($Share -gt 90) { $Share = 90 }
     if ($SetAt -le 0) { $SetAt = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() }
@@ -1268,13 +1275,21 @@ function Set-SecondChannel {
     $channels = 1
     if ((Get-DotEnvValue -Key 'M2_CHANNELS' -Default '1') -match '^\s*([1-4])\s*$') { $channels = [int]$Matches[1] }
     if ($Enabled -and $channels -lt 2) { $channels = 2 }
+    $on3 = $(if ($Ch3 -ge 0) { $Ch3 -eq 1 } else { (Get-DotEnvValue -Key 'M2_PLAYERBOT_CH3' -Default '0') -eq '1' })
+    $on4 = $(if ($Ch4 -ge 0) { $Ch4 -eq 1 } else { (Get-DotEnvValue -Key 'M2_PLAYERBOT_CH4' -Default '0') -eq '1' })
+    $on3 = $Enabled -and $on3
+    $on4 = $on3 -and $on4
+    if ($on3 -and $channels -lt 3) { $channels = 3 }
+    if ($on4 -and $channels -lt 4) { $channels = 4 }
     $span = 10 * ($channels - 1) + 2
+    if ($Ch3 -ge 0) { Set-DotEnvValue -Key 'M2_PLAYERBOT_CH3' -Value $(if ($Ch3 -eq 1) { '1' } else { '0' }) }
+    if ($Ch4 -ge 0) { Set-DotEnvValue -Key 'M2_PLAYERBOT_CH4' -Value $(if ($Ch4 -eq 1) { '1' } else { '0' }) }
     Set-DotEnvValue -Key 'M2_PLAYERBOT_CH2' -Value $(if ($Enabled) { '1' } else { '0' })
     Set-DotEnvValue -Key 'PLAYERBOT_CH2_SHARE' -Value "$Share"
     Set-DotEnvValue -Key 'M2_PLAYERBOT_CH2_SET_AT' -Value "$SetAt"
     Set-DotEnvValue -Key 'M2_GAME_PORT_RANGE' -Value ('{0}-{1}' -f $hostFirst, ($hostFirst + $span))
     Set-DotEnvValue -Key 'M2_GAME_CONTAINER_PORT_RANGE' -Value ('{0}-{1}' -f $base, ($base + $span))
-    return @{ Enabled = $Enabled; Share = $Share }
+    return @{ Enabled = $Enabled; Share = $Share; Ch3 = $on3; Ch4 = $on4; Channels = $channels }
 }
 
 function Sync-ChannelWishFromPanel {
@@ -1306,9 +1321,18 @@ function Sync-ChannelWishFromPanel {
     [long]::TryParse((Get-DotEnvValue -Key 'M2_PLAYERBOT_CH2_SET_AT' -Default '0'), [ref]$envAt) | Out-Null
     if ($wish['SET_AT'] -le $envAt) { return }
     $share = if ($wish.ContainsKey('SHARE')) { [int]$wish['SHARE'] } else { 40 }
-    $applied = Set-SecondChannel -Enabled ($wish['CH2'] -eq 1) -Share $share -SetAt $wish['SET_AT']
-    $what = if ($applied.Enabled) { "wlaczony, $($applied.Share)% botow na CH2" } else { 'wylaczony' }
+    # MT2009_PLUS_CH34_V1: CH3/CH4 from the wish too; a wish from a panel
+    # that knew only CH2 leaves them as .env has them.
+    $w3 = if ($wish.ContainsKey('CH3')) { [int]$wish['CH3'] } else { -1 }
+    $w4 = if ($wish.ContainsKey('CH4')) { [int]$wish['CH4'] } else { -1 }
+    $applied = Set-SecondChannel -Enabled ($wish['CH2'] -eq 1) -Share $share -SetAt $wish['SET_AT'] -Ch3 $w3 -Ch4 $w4
+    $what = if ($applied.Enabled) { "wlaczony, $($applied.Share)% botow poza CH1" } else { 'wylaczony' }
+    if ($applied.Enabled) { $what += $(if ($applied.Ch4) { ', CH3 i CH4 wlaczone' } elseif ($applied.Ch3) { ', CH3 wlaczony' } else { '' }) }
     Write-Host "Drugi kanal ustawiony w panelu WWW: $what." -ForegroundColor Green
+    if ($applied.Channels -ge 3) {
+        $memory = Get-M2ChannelMemoryWarning -Channels $applied.Channels
+        if ($memory) { Write-Host $memory -ForegroundColor Yellow }
+    }
 }
 
 function Set-BotCountAction {

@@ -112,7 +112,12 @@ function Get-M2CoopGamePorts {
     $channels = 1
     $channelsText = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_CHANNELS' -Default '1'
     if ($channelsText -match '^\s*([1-4])\s*$') { $channels = [int]$Matches[1] }
-    if ((Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_PLAYERBOT_CH2' -Default '0') -eq '1' -and $channels -lt 2) { $channels = 2 }
+    $ch2On = (Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_PLAYERBOT_CH2' -Default '0') -eq '1'
+    if ($ch2On -and $channels -lt 2) { $channels = 2 }
+    # MT2009_PLUS_CH34_V1: CH3 (with CH2) and CH4 (with CH3) on the same rule.
+    $ch3On = $ch2On -and (Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_PLAYERBOT_CH3' -Default '0') -eq '1'
+    if ($ch3On -and $channels -lt 3) { $channels = 3 }
+    if ($ch3On -and (Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_PLAYERBOT_CH4' -Default '0') -eq '1' -and $channels -lt 4) { $channels = 4 }
     for ($ch = 0; $ch -lt $channels; $ch++) {
         foreach ($offset in 0..2) {
             $p = $first + 10 * $ch + $offset

@@ -139,9 +139,21 @@ SCHEMA = [
        "Sklepy stoją tylko na CH1.",
        "boty", "bool", "0", ["game", "panel"],
        note="Przy zapisie aktualizator sam dopasuje M2_CHANNELS i zakresy portów gry oraz zapisze moment zmiany."),
-    _e("PLAYERBOT_CH2_SHARE", "Odsetek botów na CH2 (%)",
-       "Jaki procent botów gra na drugim kanale (10–90). Boty ze straganami i tak zostają na CH1.",
+    _e("PLAYERBOT_CH2_SHARE", "Odsetek botów poza CH1 (%)",
+       "Jaki procent botów gra poza CH1 (10–90): na CH2, a z włączonym CH3/CH4 – po równo na CH2–CH4. Boty ze straganami i tak zostają na CH1.",
        "boty", "int", "40", ["game"], min=10, max=90, step=5),
+    # MT2009_PLUS_CH34_V1: the third and fourth channel, same principle as CH2.
+    _e("M2_PLAYERBOT_CH3", "Trzeci kanał (CH3)",
+       "Włączone: serwer uruchamia trzeci kanał – trzy kolejne rdzenie gry na własnych procesach (ok. 2,5–3 GB RAM więcej i od pół do jednego rdzenia CPU pod obciążeniem), "
+       "część botów gra na CH3, a porty 13020–13022 są otwierane automatycznie. Sklepy i stragany stoją tylko na CH1 – boty, które mają coś do "
+       "zrobienia przy straganach, przelogowują się na CH1. Działa tylko z włączonym CH2. Domyślnie wyłączone.",
+       "boty", "bool", "0", ["game", "panel"],
+       note="Uwaga: każdy kanał to osobne rdzenie (RAM/CPU). Przy zapisie aktualizator sam dopasuje M2_CHANNELS i zakresy portów gry."),
+    _e("M2_PLAYERBOT_CH4", "Czwarty kanał (CH4)",
+       "Włączone: serwer uruchamia czwarty kanał – kolejne trzy rdzenie gry (ok. 2,5–3 GB RAM więcej i od pół do jednego rdzenia CPU pod obciążeniem), "
+       "porty 13030–13032. Zasady jak na CH2/CH3: sklepy tylko na CH1. Działa tylko z włączonymi CH2 i CH3. Domyślnie wyłączone.",
+       "boty", "bool", "0", ["game", "panel"],
+       note="Uwaga: każdy kanał to osobne rdzenie (RAM/CPU). CH1–CH4 razem to ok. 11 GB RAM na same rdzenie gry."),
     _e("M2_PLAYERBOT_HUMAN_NAMES", "Ludzkie nicki botów",
        "Włączone: boty dostają nicki przypominające graczy zamiast technicznych nazw.",
        "boty", "bool", "1", GAME),
@@ -255,11 +267,11 @@ SCHEMA = [
     _e("M2_AUTH_PORT", "Port logowania", "Port serwera logowania. Zmień tylko, gdy 11000 jest zajęty – gracze muszą wtedy dostać nowy port.",
        "siec", "port", "11000", ["game", "panel"], dangerous=True),
     _e("M2_CHANNELS", "Liczba kanałów",
-       "Ile kanałów gry uruchomić (każdy ~1 GB RAM). Boty grają tylko na CH1 i CH2. Aktualizator sam poszerzy zakresy portów.",
+       "Ile kanałów gry uruchomić (każdy ok. 2,5–3 GB RAM). Boty grają na CH2–CH4 tylko z przełącznikami „Drugi/Trzeci/Czwarty kanał”, które same podnoszą tę liczbę. Aktualizator sam poszerzy zakresy portów.",
        "siec", "int", "1", ["game"], min=1, max=4, dangerous=True,
        note="Przy zapisie aktualizator dopasuje zakresy portów gry."),
     _e("M2_GAME_PORT_RANGE", "Zakres portów gry (host)",
-       "Porty kanałów otwierane na tym komputerze. 13000-13002 = jeden kanał, 13000-13012 = dwa. Zwykle ustawiane automatycznie.",
+       "Porty kanałów otwierane na tym komputerze. 13000-13002 = jeden kanał, 13000-13012 = dwa, 13000-13022 = trzy, 13000-13032 = cztery. Zwykle ustawiane automatycznie.",
        "siec", "portrange", "13000-13002", ["game", "panel"], dangerous=True),
     _e("M2_GAME_CONTAINER_PORT_RANGE", "Zakres portów gry (kontener)",
        "To samo po stronie kontenera – musi mieć tę samą długość co zakres hosta. Zwykle ustawiane automatycznie.",
@@ -471,8 +483,8 @@ SCHEMA = [
        "zaawansowane", "int", "60", ["game"], min=1, max=10080),
     _e("PLAYERBOT_RETIRE_BATCH_ID", "Emerytury z .env: numer partii", "Numer partii emerytur – nadaje go system.", "zaawansowane", "int", "0", ["game"],
        readonly=True, readonly_reason="Numer partii jest techniczny – zmienia go system emerytur."),
-    _e("M2_PLAYERBOT_CH2_SET_AT", "Znacznik zmiany kanału CH2", "Moment ostatniej zmiany drugiego kanału (porównywany z ustawieniem z panelu).",
-       "zaawansowane", "int", "0", ["game"], readonly=True, readonly_reason="Ustawiany automatycznie przy zmianie „Drugi kanał (CH2)”."),
+    _e("M2_PLAYERBOT_CH2_SET_AT", "Znacznik zmiany kanałów CH2–CH4", "Moment ostatniej zmiany kanałów CH2/CH3/CH4 (porównywany z ustawieniem z panelu).",
+       "zaawansowane", "int", "0", ["game"], readonly=True, readonly_reason="Ustawiany automatycznie przy zmianie kanałów CH2/CH3/CH4."),
     _e("M2_PLAYERBOT_KINGDOMS_DEFAULTED", "Znacznik: królestwa przestawione", "Znacznik jednorazowej migracji – nie ruszaj.",
        "zaawansowane", "string", "1", [], readonly=True, readonly_reason="Znacznik techniczny jednorazowej migracji aktualizacji."),
     _e("M2_PLAYERBOT_WORLD_LAYOUT_DEFAULTED", "Znacznik: układ świata przestawiony", "Znacznik jednorazowej migracji – nie ruszaj.",
@@ -489,7 +501,7 @@ BY_KEY = {entry["key"]: entry for entry in SCHEMA}
 
 # Keys whose change makes the updater adjust M2_CHANNELS / the port ranges
 # (update.sh's sync_channel_ports) right after writing .env.
-CHANNEL_KEYS = ("M2_PLAYERBOT_CH2", "M2_CHANNELS", "M2_GAME_PORT_BASE")
+CHANNEL_KEYS = ("M2_PLAYERBOT_CH2", "M2_PLAYERBOT_CH3", "M2_PLAYERBOT_CH4", "M2_CHANNELS", "M2_GAME_PORT_BASE")
 
 _FORBIDDEN = re.compile(r"[\x00-\x1f\x7f$`\"'\\]")
 

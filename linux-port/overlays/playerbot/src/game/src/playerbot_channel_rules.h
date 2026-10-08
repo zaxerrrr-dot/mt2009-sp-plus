@@ -25,7 +25,9 @@
 // the second channel can open a shop, so no second-channel bot can become
 // pinned while the other channel's cores are running.
 //
-// Only the first two channels carry bots. A third or fourth is players'.
+// Only the channels the container switches on for bots carry them
+// (M2_PLAYERBOT_CHANNELS, 1..4, MT2009_PLUS_CH34_V1 below); a channel started
+// past those (M2_CHANNELS by hand) is players'.
 namespace playerbot_channel_rules
 {
 	// The share of the population on the second channel, clamped: the first
@@ -239,6 +241,160 @@ namespace playerbot_channel_rules
 			first = left1;
 			second = second + shortfall < left2 ? second + shortfall : left2;
 		}
+	}
+
+	// ------------------------------------------------------------------
+	// MT2009_PLUS_CH34_V1: up to four channels with bots (the owner, 8
+	// October: "CH3 i CH4 na tej samej zasadzie co CH2 - jak boty chca cos
+	// robic na straganach, musza sie przelogowac na CH1"). The first channel
+	// stays the only shop channel; the slider's share is now the share of the
+	// bots OFF the shop channel, split evenly between channels 2..N - so with
+	// two channels every function below gives exactly what the two-channel
+	// ones above give, and the shop channel's cap and target (above) keep
+	// their meaning. `channels` is how many channels carry bots (1..4); the
+	// container switches them on in a row (CH3 needs CH2, CH4 needs CH3).
+	// ------------------------------------------------------------------
+	const int MAX_BOT_CHANNELS = 4;
+
+	inline int ClampBotChannels(int channels)
+	{
+		if (channels < 1)
+			return 1;
+		if (channels > MAX_BOT_CHANNELS)
+			return MAX_BOT_CHANNELS;
+		return channels;
+	}
+
+	// The channel a registered bot lives on with `channels` bot channels:
+	// the same spread as ChannelOf, its off-shop part cut into channels-1
+	// even slices. ChannelOfN(pid, 2, s, p) == ChannelOf(pid, true, s, p).
+	inline int ChannelOfN(unsigned int pid, int channels, int sharePercent, bool pinned)
+	{
+		channels = ClampBotChannels(channels);
+		if (channels < 2 || pinned)
+			return 1;
+		const unsigned int share = (unsigned int)ClampShare(sharePercent);
+		const unsigned int spread = SpreadPercent(pid);
+		if (spread >= share)
+			return 1;
+		return 2 + (int)(spread * (unsigned int)(channels - 1) / share);
+	}
+
+	// `amount` poured over channels 2..channels, evenly, each never past its
+	// room (left[c] - out[c]); what nobody has room for is returned.
+	inline int FillOtherChannels(int amount, int channels, const int* left, int* out)
+	{
+		while (amount > 0)
+		{
+			int open = 0;
+			for (int c = 2; c <= channels; ++c)
+				if (out[c] < left[c])
+					++open;
+			if (open == 0)
+				break;
+			const int each = amount / open;
+			int extra = amount % open;
+			for (int c = 2; c <= channels && amount > 0; ++c)
+			{
+				if (out[c] >= left[c])
+					continue;
+				int give = each;
+				if (extra > 0)
+				{
+					++give;
+					--extra;
+				}
+				if (give > left[c] - out[c])
+					give = left[c] - out[c];
+				out[c] += give;
+				amount -= give;
+			}
+		}
+		return amount;
+	}
+
+	// One kingdom's part of the number over `channels` channels, from what
+	// each has left to start (left[1..channels], left[1] already less the
+	// medal droppers): the off-shop channels take the share between them as
+	// far as their identities go - one short, the others take its part - and
+	// the first the rest; what the first cannot start, the others take.
+	// out[0..MAX_BOT_CHANNELS] is filled; with two channels out[1], out[2]
+	// are SplitKingdomBetweenChannels' first and second.
+	inline void SplitKingdomAcrossChannels(int total, int sharePercent, int channels,
+			const int* left, int* out)
+	{
+		for (int c = 0; c <= MAX_BOT_CHANNELS; ++c)
+			out[c] = 0;
+		if (total <= 0)
+			return;
+		channels = ClampBotChannels(channels);
+		if (channels < 2)
+		{
+			out[1] = total;
+			return;
+		}
+		int room[MAX_BOT_CHANNELS + 1] = { 0, 0, 0, 0, 0 };
+		for (int c = 1; c <= channels; ++c)
+			room[c] = left[c] > 0 ? left[c] : 0;
+		const int off = total * ClampShare(sharePercent) / 100;
+		const int placed = off - FillOtherChannels(off, channels, room, out);
+		out[1] = total - placed;
+		if (out[1] > room[1])
+		{
+			const int shortfall = out[1] - room[1];
+			out[1] = room[1];
+			FillOtherChannels(shortfall, channels, room, out);
+		}
+	}
+
+	// The off-shop channel a bot sent away from the shop channel goes to: the
+	// one with the fewest bots playing (seen[c]), the lowest on a tie.
+	inline int LeastLoadedOtherChannel(const unsigned int* seen, int channels)
+	{
+		channels = ClampBotChannels(channels);
+		int best = 2;
+		for (int c = 3; c <= channels; ++c)
+			if (seen[c] < seen[best])
+				best = c;
+		return best;
+	}
+
+	// The off-shop channels kept even: a channel switched on later starts
+	// with nobody's row (the moves leave every row where they put it), so
+	// the coordinator moves bots from the fullest off-shop channel to the
+	// emptiest - at most a swap batch a gate, and only while they differ by
+	// more than 2% of the bots that play (at least 3). Returns how many;
+	// from/to are the channels.
+	inline unsigned int PlanOtherChannelBalance(const unsigned int* seen, int channels,
+			unsigned int total, int& from, int& to)
+	{
+		from = 0;
+		to = 0;
+		channels = ClampBotChannels(channels);
+		if (channels < 3 || total == 0)
+			return 0;
+		int most = 2, least = 2;
+		for (int c = 3; c <= channels; ++c)
+		{
+			if (seen[c] > seen[most])
+				most = c;
+			if (seen[c] < seen[least])
+				least = c;
+		}
+		if (most == least)
+			return 0;
+		const unsigned int gap = seen[most] - seen[least];
+		unsigned int threshold = total * 2U / 100U;
+		if (threshold < 3)
+			threshold = 3;
+		if (gap <= threshold)
+			return 0;
+		unsigned int batch = (total * MOVE_BATCH_PERCENT + 99U) / 100U;
+		if (batch < 1)
+			batch = 1;
+		from = most;
+		to = least;
+		return gap / 2 < batch ? gap / 2 : batch;
 	}
 }
 

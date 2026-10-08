@@ -915,3 +915,18 @@ grep -c -x -E 'at_maps|at_mobs' $C/pack/Index   # 2
 
 Klient zmienia dane przedmiotów (dbdata): w wydaniu ostrzeżenie o nieaktualnych plikach i nowa baza panelu
 (`python3 -m m2clientpack.make_base <klient>/pack <wersja>`), jak przy innych zmianach item_proto.
+
+## CH3 i CH4 (`MT2009_PLUS_CH34_V1`, 8 października)
+
+Serwer może uruchomić trzeci i czwarty kanał (przełączniki w panelach, domyślnie wyłączone). Zmiany w `root`
+(paczka `root`, bez zmian w exe i danych przedmiotów):
+
+- `root/serverinfo.py` (nowy w tym katalogu – kopia `client-2.0.23/root/serverinfo.py`, ta sama co w paczce 2.0.30):
+  lokalny serwer pokazuje CH1–CH4 (`channel_count` 4; kanał, którego serwer nie uruchomił, jest „offline”, jak
+  dotąd CH2), a `coop.cfg`/`coop2.cfg` przyjmują `channels=` od 1 do 4 (dotąd plik z `channels>2` był pomijany
+  w całości).
+- `root/keybind.py`, `root/game.py` – Alt+3 / Alt+4: szybka zmiana na CH3 / CH4 (jak Alt+1 / Alt+2).
+
+Launcher, aktualizator i patcher dalej zapisują w `coop.cfg` `channels=2` (stary klient odrzuca większą liczbę) –
+po wydaniu tego klienta można podnieść do 4 `$script:CoopClientChannels` (launcher/Metin2Launcher.Coop.psm1 – z niego
+pisze też serwer VPS), aktualizator (`MT2009-Aktualizator.ps1`) i patcher (`CoopServer.cs`).

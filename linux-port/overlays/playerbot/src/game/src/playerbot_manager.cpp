@@ -3549,7 +3549,7 @@ bool CPlayerBotManager::LoadRegisteredBots()
 	// a GM's spawn - can start another channel's bot here.
 	m_bSecondChannel = false;
 	m_iSecondChannelShare = playerbot_channel_rules::CH2_SHARE_DEFAULT;
-	for (int c = 0; c < 3; ++c)
+	for (int c = 0; c <= playerbot_channel_rules::MAX_BOT_CHANNELS; ++c)
 		for (int e = 0; e < 4; ++e)
 		{
 			m_aChannelIdentities[c][e] = 0;
@@ -3561,6 +3561,16 @@ bool CPlayerBotManager::LoadRegisteredBots()
 	const char* secondShare = std::getenv("PLAYERBOT_CH2_SHARE");
 	if (secondShare && *secondShare)
 		m_iSecondChannelShare = playerbot_channel_rules::ClampShare(std::atoi(secondShare));
+	// MT2009_PLUS_CH34_V1: how many channels carry bots. The entrypoint
+	// decides it once for every core (M2_PLAYERBOT_CHANNELS: 2 with CH2 on,
+	// 3 with CH3 too, 4 with CH4 too) and never above the channels it starts;
+	// the share above is then the share off the shop channel, split evenly
+	// between them. Without the variable (an older entrypoint) it is two with
+	// the second channel on, as before.
+	m_iBotChannels = m_bSecondChannel ? 2 : 1;
+	const char* botChannels = std::getenv("M2_PLAYERBOT_CHANNELS");
+	if (m_bSecondChannel && botChannels && *botChannels)
+		m_iBotChannels = std::max(2, playerbot_channel_rules::ClampBotChannels(std::atoi(botChannels)));
 	// With the second channel on and offline shops in the world, the channels
 	// come from the assignment table (the two channels with moves, mt2009):
 	// the pins stood every bot that ever kept a shop on the first channel for
@@ -3679,11 +3689,15 @@ bool CPlayerBotManager::LoadRegisteredBots()
 					str_to_number(rowChannel, row[5]);
 				if (row[6])
 					str_to_number(readyIn, row[6]);
-				channel = (rowChannel == 1 || rowChannel == 2) ? (int)rowChannel
-						: playerbot_channel_rules::ChannelOf(pid, true, m_iSecondChannelShare, false);
+				// MT2009_PLUS_CH34_V1: a row of a channel that no longer
+				// carries bots (CH3/CH4 switched off since) takes the spread
+				// like a pid with no row - the same on every core - and the
+				// coordinator writes that down (SeedChannelAssignments).
+				channel = (rowChannel >= 1 && rowChannel <= (unsigned int)m_iBotChannels) ? (int)rowChannel
+						: playerbot_channel_rules::ChannelOfN(pid, m_iBotChannels, m_iSecondChannelShare, false);
 			}
 			else
-				channel = playerbot_channel_rules::ChannelOf(pid, m_bSecondChannel,
+				channel = playerbot_channel_rules::ChannelOfN(pid, m_iBotChannels,
 						m_iSecondChannelShare, pins.find(pid) != pins.end());
 			++m_aChannelIdentities[channel][empire];
 			const bool here = channel == (int)g_bChannel && (m_bChannelTable || pinsKnown || g_bChannel == 1);
@@ -3715,13 +3729,15 @@ bool CPlayerBotManager::LoadRegisteredBots()
 	}
 
 	if (m_bSecondChannel || g_bChannel != 1)
-		sys_log(0, "PLAYERBOT_CHANNEL: channel=%u second=%d table=%d share=%d here=%u elsewhere=%u "
-				"ch1=%d/%d/%d ch2=%d/%d/%d pinned=%u pins_read=%d",
-				(unsigned int)g_bChannel, m_bSecondChannel ? 1 : 0, m_bChannelTable ? 1 : 0,
+		sys_log(0, "PLAYERBOT_CHANNEL: channel=%u second=%d bot_channels=%d table=%d share=%d here=%u elsewhere=%u "
+				"ch1=%d/%d/%d ch2=%d/%d/%d ch3=%d/%d/%d ch4=%d/%d/%d pinned=%u pins_read=%d",
+				(unsigned int)g_bChannel, m_bSecondChannel ? 1 : 0, m_iBotChannels, m_bChannelTable ? 1 : 0,
 				m_iSecondChannelShare,
 				(unsigned int)m_setRegisteredBots.size(), otherChannel,
 				m_aChannelIdentities[1][1], m_aChannelIdentities[1][2], m_aChannelIdentities[1][3],
 				m_aChannelIdentities[2][1], m_aChannelIdentities[2][2], m_aChannelIdentities[2][3],
+				m_aChannelIdentities[3][1], m_aChannelIdentities[3][2], m_aChannelIdentities[3][3],
+				m_aChannelIdentities[4][1], m_aChannelIdentities[4][2], m_aChannelIdentities[4][3],
 				(unsigned int)pins.size(), pinsKnown ? 1 : 0);
 
 	m_bRegistryAvailable = !m_setRegisteredBots.empty();
@@ -3882,7 +3898,8 @@ void CPlayerBotManager::SplitForThisChannel(int total, const int* registeredHere
 	int worldWant[playerbot_empire_rules::EMPIRE_COUNT];
 	for (int e = playerbot_empire_rules::EMPIRE_SHINSOO; e <= playerbot_empire_rules::EMPIRE_JINNO; ++e)
 		if (!chunjoOnly || e == playerbot_empire_rules::EMPIRE_CHUNJO)
-			world[e] = m_aChannelIdentities[1][e] + m_aChannelIdentities[2][e];
+			for (int c = 1; c <= m_iBotChannels; ++c) // MT2009_PLUS_CH34_V1: every bot channel's
+				world[e] += m_aChannelIdentities[c][e];
 	playerbot_empire_rules::SplitPopulation(total, world, worldWant);
 	for (int e = 0; e < playerbot_empire_rules::EMPIRE_COUNT; ++e)
 		want[e] = 0;
@@ -3893,24 +3910,32 @@ void CPlayerBotManager::SplitForThisChannel(int total, const int* registeredHere
 	// (playerbot_channel_rules::SplitKingdomBetweenChannels): the moves leave
 	// most identities of a world that has played on the second channel, and
 	// the first used to start all it had while the second kept to its share.
+	// MT2009_PLUS_CH34_V1: over every bot channel (SplitKingdomAcrossChannels),
+	// the off-shop share evenly between channels 2..N.
 	const int droppers = GetPlayerBotMedalDroppersAsked();
-	int first[playerbot_empire_rules::EMPIRE_COUNT] = { 0, 0, 0, 0 };
-	int second[playerbot_empire_rules::EMPIRE_COUNT] = { 0, 0, 0, 0 };
+	int split[playerbot_channel_rules::MAX_BOT_CHANNELS + 1][playerbot_empire_rules::EMPIRE_COUNT] = {};
 	for (int e = playerbot_empire_rules::EMPIRE_SHINSOO; e <= playerbot_empire_rules::EMPIRE_JINNO; ++e)
 	{
 		const int reserve = std::min(m_aChannelIdentities[1][e], droppers);
-		playerbot_channel_rules::SplitKingdomBetweenChannels(worldWant[e], m_iSecondChannelShare,
-				m_aChannelIdentities[1][e] - reserve - m_aChannelPlanned[1][e],
-				m_aChannelIdentities[2][e] - m_aChannelPlanned[2][e], first[e], second[e]);
-		m_aChannelPlanned[1][e] += first[e];
-		m_aChannelPlanned[2][e] += second[e];
-		const int here = g_bChannel == 1 ? first[e] : (g_bChannel == 2 ? second[e] : 0);
+		int left[playerbot_channel_rules::MAX_BOT_CHANNELS + 1] = { 0, 0, 0, 0, 0 };
+		int out[playerbot_channel_rules::MAX_BOT_CHANNELS + 1] = { 0, 0, 0, 0, 0 };
+		for (int c = 1; c <= m_iBotChannels; ++c)
+			left[c] = m_aChannelIdentities[c][e] - m_aChannelPlanned[c][e] - (c == 1 ? reserve : 0);
+		playerbot_channel_rules::SplitKingdomAcrossChannels(worldWant[e], m_iSecondChannelShare,
+				m_iBotChannels, left, out);
+		for (int c = 1; c <= m_iBotChannels; ++c)
+		{
+			m_aChannelPlanned[c][e] += out[c];
+			split[c][e] = out[c];
+		}
+		const int here = (g_bChannel >= 1 && (int)g_bChannel <= m_iBotChannels) ? out[g_bChannel] : 0;
 		want[e] = std::min(here, std::max(0, registeredHere[e]));
 	}
-	sys_log(0, "PLAYERBOT: autospawn world=%d, channel %u starts %d/%d/%d (world split %d/%d/%d, ch1 %d/%d/%d, ch2 %d/%d/%d)",
+	sys_log(0, "PLAYERBOT: autospawn world=%d, channel %u starts %d/%d/%d (world split %d/%d/%d, ch1 %d/%d/%d, ch2 %d/%d/%d, ch3 %d/%d/%d, ch4 %d/%d/%d)",
 			total, (unsigned int)g_bChannel, want[1], want[2], want[3],
 			worldWant[1], worldWant[2], worldWant[3],
-			first[1], first[2], first[3], second[1], second[2], second[3]);
+			split[1][1], split[1][2], split[1][3], split[2][1], split[2][2], split[2][3],
+			split[3][1], split[3][2], split[3][3], split[4][1], split[4][2], split[4][3]);
 }
 
 int CPlayerBotManager::ScaleToThisChannel(int total, BYTE bEmpire)
@@ -3922,25 +3947,38 @@ int CPlayerBotManager::ScaleToThisChannel(int total, BYTE bEmpire)
 	// One kingdom, the operator's own number for it: split as the cohort is
 	// (SplitForThisChannel), and this is the plan for that kingdom now - it
 	// replaces the share of the one number the bootstrap asked for first.
+	// MT2009_PLUS_CH34_V1: over every bot channel, as the cohort is.
+	const bool botChannelHere = g_bChannel >= 1 && (int)g_bChannel <= m_iBotChannels;
 	if (m_bSecondChannel && bEmpire >= 1 && bEmpire <= 3)
 	{
 		const int reserve = std::min(m_aChannelIdentities[1][bEmpire], GetPlayerBotMedalDroppersAsked());
-		int first = 0, second = 0;
-		playerbot_channel_rules::SplitKingdomBetweenChannels(total, m_iSecondChannelShare,
-				m_aChannelIdentities[1][bEmpire] - reserve, m_aChannelIdentities[2][bEmpire],
-				first, second);
-		m_aChannelPlanned[1][bEmpire] = first;
-		m_aChannelPlanned[2][bEmpire] = second;
-		return g_bChannel == 1 ? first : (g_bChannel == 2 ? second : 0);
+		int left[playerbot_channel_rules::MAX_BOT_CHANNELS + 1] = { 0, 0, 0, 0, 0 };
+		int out[playerbot_channel_rules::MAX_BOT_CHANNELS + 1] = { 0, 0, 0, 0, 0 };
+		for (int c = 1; c <= m_iBotChannels; ++c)
+			left[c] = m_aChannelIdentities[c][bEmpire] - (c == 1 ? reserve : 0);
+		playerbot_channel_rules::SplitKingdomAcrossChannels(total, m_iSecondChannelShare,
+				m_iBotChannels, left, out);
+		for (int c = 1; c <= m_iBotChannels; ++c)
+			m_aChannelPlanned[c][bEmpire] = out[c];
+		return botChannelHere ? out[g_bChannel] : 0;
 	}
-	int second = 0;
-	if (bEmpire >= 1 && bEmpire <= 3)
-		second = m_aChannelIdentities[2][bEmpire];
-	else
-		for (int e = 1; e <= 3; ++e)
-			second += m_aChannelIdentities[2][e];
-	return playerbot_channel_rules::ShareOfTotal(total, m_bSecondChannel,
-			m_iSecondChannelShare, (int)g_bChannel, second);
+	if (!m_bSecondChannel)
+		return (g_bChannel == 1 && total > 0) ? total : 0;
+	// The world's number, the shop channel uncapped (ShareOfTotal): the
+	// others take their share as far as their identities go.
+	int left[playerbot_channel_rules::MAX_BOT_CHANNELS + 1] = { 0, std::max(0, total), 0, 0, 0 };
+	int out[playerbot_channel_rules::MAX_BOT_CHANNELS + 1] = { 0, 0, 0, 0, 0 };
+	for (int c = 2; c <= m_iBotChannels; ++c)
+	{
+		if (bEmpire >= 1 && bEmpire <= 3)
+			left[c] = m_aChannelIdentities[c][bEmpire];
+		else
+			for (int e = 1; e <= 3; ++e)
+				left[c] += m_aChannelIdentities[c][e];
+	}
+	playerbot_channel_rules::SplitKingdomAcrossChannels(total, m_iSecondChannelShare,
+			m_iBotChannels, left, out);
+	return botChannelHere ? out[g_bChannel] : 0;
 }
 
 // Queues the first `count` registered identities and sends the first batch.
@@ -5687,8 +5725,19 @@ namespace
 		PB_CHSQL_SWAP_IN,			// ...and the waiting bots take their places
 		PB_CHSQL_DRAIN,				// nobody waiting: the shop channel eases back
 		PB_CHSQL_ROAM_IN,			// nobody waiting, the split as wanted: bots of the
-		PB_CHSQL_ROAM_OUT			// second channel and of the shop channel trade places
+		PB_CHSQL_ROAM_OUT,			// second channel and of the shop channel trade places
+		PB_CHSQL_BALANCE			// MT2009_PLUS_CH34_V1: fullest off-shop channel to the emptiest
 	};
+
+	// MT2009_PLUS_CH34_V1: where a bot sent off the shop channel goes - the
+	// off-shop channel with the fewest bots playing at the last census (2
+	// with only the second channel on).
+	int s_iPlayerBotChannelOutTarget = 2;
+	// The off-shop channels evened out at the end of this gate (the census
+	// sets it, the first step that ends the gate spends it).
+	unsigned int s_uPlayerBotChannelBalanceWant = 0;
+	int s_iPlayerBotChannelBalanceFrom = 0;
+	int s_iPlayerBotChannelBalanceTo = 0;
 
 	struct TPlayerBotChannelSql
 	{
@@ -5725,7 +5774,7 @@ namespace
 	std::string PlayerBotChannelSwapOutQuery(unsigned int want, int maxCost)
 	{
 		const std::string shop = std::to_string(playerbot_channel_rules::SHOP_CHANNEL);
-		const std::string other = std::to_string(3 - playerbot_channel_rules::SHOP_CHANNEL);
+		const std::string other = std::to_string(s_iPlayerBotChannelOutTarget); // MT2009_PLUS_CH34_V1
 		return "UPDATE common.playerbot_channel_assignment SET channel=" + other +
 				",requested_channel=0,request_reason='',request_at=NULL,"
 				"ready_at=DATE_ADD(NOW(),INTERVAL " + std::to_string(PLAYERBOT_CHANNEL_READY_OUT_SECONDS) +
@@ -5782,7 +5831,7 @@ namespace
 	std::string PlayerBotChannelRoamOutQuery(unsigned int want)
 	{
 		const std::string shop = std::to_string(playerbot_channel_rules::SHOP_CHANNEL);
-		const std::string other = std::to_string(3 - playerbot_channel_rules::SHOP_CHANNEL);
+		const std::string other = std::to_string(s_iPlayerBotChannelOutTarget); // MT2009_PLUS_CH34_V1
 		return "UPDATE common.playerbot_channel_assignment SET channel=" + other +
 				",requested_channel=0,request_reason='',request_at=NULL,"
 				"ready_at=DATE_ADD(NOW(),INTERVAL " + std::to_string(PLAYERBOT_CHANNEL_READY_OUT_SECONDS) +
@@ -5790,6 +5839,23 @@ namespace
 				"WHERE channel=" + shop + " AND shop_busy<" +
 				std::to_string(playerbot_channel_rules::MOVE_COST_PINNED) + " AND requested_channel=0 AND " +
 				PlayerBotChannelSeen() + " AND " + PlayerBotChannelStayedLongEnough() + " "
+				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
+	}
+
+	// MT2009_PLUS_CH34_V1: bots of the fullest off-shop channel onto the
+	// emptiest (PlanOtherChannelBalance) - free ones, past the cooldown, the
+	// cheapest first; a channel switched on later fills this way.
+	std::string PlayerBotChannelBalanceQuery(unsigned int want, int from, int to)
+	{
+		return "UPDATE common.playerbot_channel_assignment SET channel=" + std::to_string(to) +
+				",requested_channel=0,request_reason='',request_at=NULL,"
+				"ready_at=DATE_ADD(NOW(),INTERVAL " + std::to_string(PLAYERBOT_CHANNEL_READY_OUT_SECONDS) +
+				" SECOND),moved_at=NOW(),updated_at=NOW() "
+				"WHERE channel=" + std::to_string(from) + " AND shop_busy<" +
+				std::to_string(playerbot_channel_rules::MOVE_COST_PINNED) + " AND requested_channel=0 AND " +
+				PlayerBotChannelSeen() +
+				" AND (moved_at IS NULL OR moved_at<DATE_SUB(NOW(),INTERVAL " +
+				std::to_string(PLAYERBOT_CHANNEL_MOVE_COOLDOWN_SECONDS) + " SECOND)) "
 				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
 	}
 
@@ -5885,6 +5951,7 @@ void CPlayerBotManager::ProcessChannelSql()
 			case PB_CHSQL_DRAIN:
 			case PB_CHSQL_ROAM_IN:
 			case PB_CHSQL_ROAM_OUT:
+			case PB_CHSQL_BALANCE:
 				OnChannelSwapStep(pMsg);
 				break;
 			default:
@@ -5914,13 +5981,18 @@ void CPlayerBotManager::SeedChannelAssignments()
 	for (size_t off = 0; off < rows.size(); off += PLAYERBOT_CHANNEL_CHUNK)
 	{
 		const size_t end = std::min(rows.size(), off + PLAYERBOT_CHANNEL_CHUNK);
-		std::string q = "INSERT IGNORE INTO common.playerbot_channel_assignment (pid,channel,active) VALUES ";
+		std::string q = "INSERT INTO common.playerbot_channel_assignment (pid,channel,active) VALUES ";
 		for (size_t i = off; i < end; ++i)
 		{
 			if (i > off)
 				q += ",";
 			q += "(" + std::to_string(rows[i].first) + "," + std::to_string((unsigned int)rows[i].second) + ",1)";
 		}
+		// MT2009_PLUS_CH34_V1: a row a move has changed stays as it is - but a
+		// row of a channel that carries no bots any more (CH3/CH4 switched off
+		// since) takes the channel every core gave it at load (the spread).
+		q += " ON DUPLICATE KEY UPDATE channel=IF(channel BETWEEN 1 AND " + std::to_string(m_iBotChannels) +
+				",channel,VALUES(channel))";
 		m_pChannelSql->AsyncQuery(q.c_str());
 	}
 	// A request is a bot's business in the world that is running, and a bot
@@ -6099,15 +6171,21 @@ void CPlayerBotManager::CoordinateChannelSwaps(DWORD dwNow)
 	m_dwNextChannelCoordinatorTime = dwNow + PLAYERBOT_CHANNEL_COORDINATOR_INTERVAL;
 	m_bChannelCoordInFlight = true;
 	const std::string shop = std::to_string(playerbot_channel_rules::SHOP_CHANNEL);
-	// The bots that play are the first two channels' (channel IN (1,2)): a
-	// row of any other channel must never count towards the shop channel's cap.
+	// The bots that play are the bot channels' (channel 1..N, MT2009_PLUS_CH34_V1):
+	// a row of any other channel must never count towards the shop channel's
+	// cap. Then each off-shop channel's own, for where a bot sent away goes
+	// and for evening them out.
+	const std::string last = std::to_string(m_iBotChannels);
 	SendChannelSql(PB_CHSQL_CENSUS, 0, 0, 0, 0,
 			"SELECT COALESCE((SELECT TIMESTAMPDIFF(SECOND,last_batch,NOW()) "
 			"FROM common.playerbot_channel_control WHERE id=1),999999),"
-			"COALESCE(SUM(channel IN (1,2) AND " + PlayerBotChannelSeen() + "),0),"
+			"COALESCE(SUM(channel BETWEEN 1 AND " + last + " AND " + PlayerBotChannelSeen() + "),0),"
 			"COALESCE(SUM(channel=" + shop + " AND " + PlayerBotChannelSeen() + "),0),"
-			"COALESCE(SUM(channel<>" + shop + " AND requested_channel=" + shop +
-			" AND " + PlayerBotChannelRequestReady() + "),0) "
+			"COALESCE(SUM(channel<>" + shop + " AND channel<=" + last + " AND requested_channel=" + shop +
+			" AND " + PlayerBotChannelRequestReady() + "),0),"
+			"COALESCE(SUM(channel=2 AND " + PlayerBotChannelSeen() + "),0),"
+			"COALESCE(SUM(channel=3 AND " + PlayerBotChannelSeen() + "),0),"
+			"COALESCE(SUM(channel=4 AND " + PlayerBotChannelSeen() + "),0) "
 			"FROM common.playerbot_channel_assignment");
 }
 
@@ -6118,13 +6196,22 @@ void CPlayerBotManager::OnChannelCensus(void* pvMsg)
 	if (pMsg->uiSQLErrno == 0 && pMsg->Get() && pMsg->Get()->pSQLResult)
 		r = mysql_fetch_row(pMsg->Get()->pSQLResult);
 	unsigned int gateAge = 0, total = 0, onShopChannel = 0, waiting = 0;
+	unsigned int seen[playerbot_channel_rules::MAX_BOT_CHANNELS + 1] = { 0, 0, 0, 0, 0 };
 	if (r)
 	{
 		if (r[0]) str_to_number(gateAge, r[0]);
 		if (r[1]) str_to_number(total, r[1]);
 		if (r[2]) str_to_number(onShopChannel, r[2]);
 		if (r[3]) str_to_number(waiting, r[3]);
+		for (int c = 2; c <= playerbot_channel_rules::MAX_BOT_CHANNELS; ++c)
+			if (r[c + 2]) str_to_number(seen[c], r[c + 2]);
 	}
+	// MT2009_PLUS_CH34_V1: where bots sent off the shop channel go this gate,
+	// and how many the off-shop channels trade to even out.
+	seen[1] = onShopChannel;
+	s_iPlayerBotChannelOutTarget = playerbot_channel_rules::LeastLoadedOtherChannel(seen, m_iBotChannels);
+	s_uPlayerBotChannelBalanceWant = playerbot_channel_rules::PlanOtherChannelBalance(seen, m_iBotChannels,
+			total, s_iPlayerBotChannelBalanceFrom, s_iPlayerBotChannelBalanceTo);
 	if (!r || total == 0 || gateAge < PLAYERBOT_CHANNEL_BATCH_GATE_SECONDS)
 	{
 		m_bChannelCoordInFlight = false;
@@ -6167,6 +6254,15 @@ void CPlayerBotManager::OnChannelCensus(void* pvMsg)
 			return;
 		default:
 		{
+			// MT2009_PLUS_CH34_V1: the off-shop channels evened out first.
+			if (s_uPlayerBotChannelBalanceWant > 0)
+			{
+				const unsigned int balance = s_uPlayerBotChannelBalanceWant;
+				s_uPlayerBotChannelBalanceWant = 0;
+				SendChannelSql(PB_CHSQL_BALANCE, 0, balance, 0, 0, PlayerBotChannelBalanceQuery(balance,
+						s_iPlayerBotChannelBalanceFrom, s_iPlayerBotChannelBalanceTo));
+				return;
+			}
 			// Nothing asked of this gate but the roam. The second channel's
 			// bots go first, so the shop channel is never the one left short
 			// when either side has too few who may go.
@@ -6195,6 +6291,15 @@ void CPlayerBotManager::OnChannelSwapStep(void* pvMsg)
 	{
 		if (stamp)
 			m_pChannelSql->AsyncQuery(PLAYERBOT_CHANNEL_GATE_STAMP);
+		// MT2009_PLUS_CH34_V1: the off-shop channels evened out first, once.
+		const unsigned int balance = s_uPlayerBotChannelBalanceWant;
+		s_uPlayerBotChannelBalanceWant = 0;
+		if (balance > 0)
+		{
+			SendChannelSql(PB_CHSQL_BALANCE, 0, balance, 0, 0, PlayerBotChannelBalanceQuery(balance,
+					s_iPlayerBotChannelBalanceFrom, s_iPlayerBotChannelBalanceTo));
+			return;
+		}
 		const unsigned int roam = s_uPlayerBotChannelRoamWant;
 		s_uPlayerBotChannelRoamWant = 0;
 		if (roam > 0)
@@ -6204,6 +6309,15 @@ void CPlayerBotManager::OnChannelSwapStep(void* pvMsg)
 		}
 		m_bChannelCoordInFlight = false;
 	};
+
+	if (pCtx->iKind == PB_CHSQL_BALANCE)
+	{
+		if (moved > 0)
+			sys_log(0, "PLAYERBOT_CHANNEL: %u bots moved from channel %d to channel %d to even the channels out",
+					moved, s_iPlayerBotChannelBalanceFrom, s_iPlayerBotChannelBalanceTo);
+		endGate(moved > 0);
+		return;
+	}
 
 	if (pCtx->iKind == PB_CHSQL_ROAM_IN)
 	{
@@ -6305,7 +6419,9 @@ void CPlayerBotManager::OnChannelAssignments(void* pvMsg)
 		if (r[0]) str_to_number(pid, r[0]);
 		if (r[1]) str_to_number(channel, r[1]);
 		if (r[2]) str_to_number(readyIn, r[2]);
-		if (channel != 1 && channel != 2)
+		// MT2009_PLUS_CH34_V1: a row of a channel that carries no bots keeps
+		// the channel the load gave the bot until the coordinator rewrites it.
+		if (channel < 1 || channel > (unsigned int)m_iBotChannels)
 			continue;
 		TPlayerBotAccountMap::iterator x = m_mapBotAccounts.find(pid);
 		if (x == m_mapBotAccounts.end())

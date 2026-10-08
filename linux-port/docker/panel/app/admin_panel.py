@@ -312,6 +312,14 @@ PLAYERBOT_STATUS_PATHS = (
     "/opt/metin2/var/channel2/first/playerbot_status.tsv",
     "/opt/metin2/var/channel2/game1/playerbot_status.tsv",
     "/opt/metin2/var/channel2/game2/playerbot_status.tsv",
+    # MT2009_PLUS_CH34_V1: the third and fourth channel's, when switched on
+    # (the entrypoint clears a switched-off channel's files at start).
+    "/opt/metin2/var/channel3/first/playerbot_status.tsv",
+    "/opt/metin2/var/channel3/game1/playerbot_status.tsv",
+    "/opt/metin2/var/channel3/game2/playerbot_status.tsv",
+    "/opt/metin2/var/channel4/first/playerbot_status.tsv",
+    "/opt/metin2/var/channel4/game1/playerbot_status.tsv",
+    "/opt/metin2/var/channel4/game2/playerbot_status.tsv",
 )
 _PLAYERBOT_STATUS_LOCK = threading.Lock()
 _PLAYERBOT_STATUS_CACHE_KEY = None
@@ -3995,7 +4003,7 @@ T = {
  "ch2_help":    {"pl":"Drugi kanał gry. Część botów gra na CH2, więc serwer rozkłada je na dwa rdzenie procesora i udźwignie więcej botów naraz. Wszystkie sklepy (botów i graczy) stoją tylko na CH1: bot z CH2, który chce otworzyć albo obsłużyć swój sklep albo coś kupić, przechodzi na CH1, a wolny bot z CH1 przechodzi na jego miejsce na CH2. Ustawiony udział to najmniej tyle botów na CH2; gdy nikt nie czeka na przejście, CH2 może przejąć do 10 punktów więcej. Domyślnie wyłączony.",
                  "en":"A second game channel. Some of the bots play on CH2, so the server spreads them over two CPU cores and carries more bots at once. Every shop, bots' and players', stands on CH1: a bot on CH2 that wants to open or serve its shop or to buy something moves to CH1, and a free bot of CH1 moves to CH2 in its place. The share set here is the least CH2 carries; with nobody waiting to move, CH2 may take up to ten points more. Off by default."},
  "ch2_enable":  {"pl":"Włącz drugi kanał (CH2)", "en":"Switch the second channel on (CH2)"},
- "ch2_share":   {"pl":"Botów na CH2", "en":"Bots on CH2"},
+ "ch2_share":   {"pl":"Botów poza CH1 (na CH2, a z CH3/CH4 po równo)", "en":"Bots off CH1 (on CH2, evenly over CH2-CH4 with CH3/CH4)"},
  "ch2_save":    {"pl":"Zapisz (zadziała po restarcie serwera)", "en":"Save (applies after a server restart)"},
  "ch2_now_off": {"pl":"Teraz: CH2 wyłączony - wszystkie boty grają na CH1.", "en":"Now: CH2 is off - every bot plays on CH1."},
  "ch2_now_on":  {"pl":"Teraz: CH2 włączony, na CH2 gra {share}% botów.", "en":"Now: CH2 is on, {share}% of the bots play on it."},
@@ -4008,6 +4016,19 @@ T = {
                  "en":"✅ Saved. The channel change applies after a server restart (GRAJ in the launcher or a restart of the game container)."},
  "ch2_bad":     {"pl":"Udział botów na CH2 musi być liczbą od 10 do 90. Nic nie zmieniono.", "en":"The share of bots on CH2 has to be between 10 and 90. Nothing was changed."},
  "ch2_failed":  {"pl":"Nie udało się zapisać ustawienia kanałów w katalogu wymiany z serwerem.", "en":"Could not write the channel setting into the spool shared with the server."},
+ # MT2009_PLUS_CH34_V1: the third and fourth channel.
+ "ch34_title":  {"pl":"Trzeci i czwarty kanał (CH3, CH4)", "en":"Third and fourth channel (CH3, CH4)"},
+ "ch34_help":   {"pl":"Na tej samej zasadzie co CH2: boty i gracze grają też na CH3/CH4, ale sklepy i stragany stoją tylko na CH1 - bot, który ma coś do zrobienia przy straganach, przelogowuje się na CH1. CH3 działa tylko z włączonym CH2, CH4 tylko z CH3. Ustawiony wyżej udział botów to wtedy udział poza CH1, dzielony po równo między CH2-CH4. Domyślnie wyłączone.",
+                 "en":"On the same principle as CH2: bots and players play on CH3/CH4 too, but every shop and stall stands on CH1 only - a bot with business at the stalls relogs to CH1. CH3 works only with CH2 on, CH4 only with CH3. The bot share above then is the share off CH1, split evenly between CH2-CH4. Off by default."},
+ "ch34_warn":   {"pl":"⚠️ Każdy kanał to trzy osobne rdzenie gry: ok. 2,5-3 GB RAM więcej i od pół do jednego rdzenia CPU pod obciążeniem (CH1-CH4 razem ok. 11 GB RAM na same rdzenie gry). Porty: CH3 {p3}, CH4 {p4}.",
+                 "en":"⚠️ Every channel is three game cores of its own: about 2.5-3 GB of RAM more and half to one CPU core under load (CH1-CH4 together ~11 GB of RAM for the game cores alone). Ports: CH3 {p3}, CH4 {p4}."},
+ "ch3_enable":  {"pl":"Włącz trzeci kanał (CH3)", "en":"Switch the third channel on (CH3)"},
+ "ch4_enable":  {"pl":"Włącz czwarty kanał (CH4)", "en":"Switch the fourth channel on (CH4)"},
+ "ch34_now":    {"pl":"Teraz: CH3 {ch3}, CH4 {ch4}.", "en":"Now: CH3 {ch3}, CH4 {ch4}."},
+ "ch34_on":     {"pl":"włączony", "en":"on"},
+ "ch34_off":    {"pl":"wyłączony", "en":"off"},
+ "ch34_ports":  {"pl":"Gracze wejdą na CH{n} po najbliższym uruchomieniu serwera z launchera (GRAJ) albo aktualizacji na VPS - otworzą się wtedy porty {ports}.",
+                 "en":"Players reach CH{n} after the next start from the launcher (GRAJ) or an update on a VPS, which opens ports {ports}."},
  "rates_yang_range": {"pl":"Yang może być najwyżej 1000%. Nic nie zmieniono. 🙂","en":"Yang can be at most 1000%. Nothing was changed. 🙂",
                   "de":"Yang darf höchstens 1000% sein. Es wurde nichts geändert. 🙂",
                   "tr":"Yang en fazla %1000 olabilir. Hiçbir şey değiştirilmedi. 🙂"},
@@ -7628,6 +7649,14 @@ regenLabel("regen_boss");regenLabel("regen_mob");
 {% if channels.on and not channels.ports_open %}<p class="muted">⚠️ {{t('ch2_ports').replace('{ports}', channels.ch2_ports)}}</p>{% endif %}
 {% if channels.pending %}<p class="muted">🕓 {{ t('ch2_pending').replace('{what}', channels.pending) }}</p>{% endif %}
 <label><input type="checkbox" name="ch2" value="1"{% if channels.want_on %} checked{% endif %}> {{t('ch2_enable')}}</label>
+<h3 style="margin-top:12px">🔀 {{t('ch34_title')}}</h3>
+<p class="muted">{{t('ch34_help')}}</p>
+<p class="muted">{{ t('ch34_warn').replace('{p3}', channels.ch3_ports).replace('{p4}', channels.ch4_ports) }}</p>
+<p>{{ t('ch34_now').replace('{ch3}', t('ch34_on') if channels.ch3 else t('ch34_off')).replace('{ch4}', t('ch34_on') if channels.ch4 else t('ch34_off')) }}</p>
+{% if channels.ch3 and not channels.ch3_ports_open %}<p class="muted">⚠️ {{t('ch34_ports').replace('{n}', '3').replace('{ports}', channels.ch3_ports)}}</p>{% endif %}
+{% if channels.ch4 and not channels.ch4_ports_open %}<p class="muted">⚠️ {{t('ch34_ports').replace('{n}', '4').replace('{ports}', channels.ch4_ports)}}</p>{% endif %}
+<label><input type="checkbox" name="ch3" value="1"{% if channels.want_ch3 %} checked{% endif %}> {{t('ch3_enable')}}</label><br>
+<label><input type="checkbox" name="ch4" value="1"{% if channels.want_ch4 %} checked{% endif %}> {{t('ch4_enable')}}</label>
 <h3 style="margin-top:12px">{{t('ch2_share')}}</h3>
 <select name="share">
 {% for p in channels.choices %}<option value="{{p}}"{% if channels.want_share == p %} selected{% endif %}>{{p}}%</option>{% endfor %}
@@ -13690,6 +13719,13 @@ def api_bot_logs(bot_name):
             "/opt/metin2/var/channel2/game1/syslog",
             "/opt/metin2/var/channel2/first/syslog",
             "/opt/metin2/var/channel2/game2/syslog",
+            # MT2009_PLUS_CH34_V1
+            "/opt/metin2/var/channel3/game1/syslog",
+            "/opt/metin2/var/channel3/first/syslog",
+            "/opt/metin2/var/channel3/game2/syslog",
+            "/opt/metin2/var/channel4/game1/syslog",
+            "/opt/metin2/var/channel4/first/syslog",
+            "/opt/metin2/var/channel4/game2/syslog",
         ]
         matched_lines = []
         # The whole name and not a prefix of one: "botgrom" used to match
@@ -19495,8 +19531,18 @@ def read_channels_state():
     ports = eff.get("PORTS", "%d-%d" % (base, base + 2))
     last = re.search(r"(\d+)\s*$", ports)
     ports_open = bool(last) and int(last.group(1)) >= base + 12
+    # MT2009_PLUS_CH34_V1: CH3 (BASE+20..22) and CH4 (BASE+30..32), in a row
+    # after CH2; a server from before them writes no CH3/CH4 lines (off).
+    ch3 = on and eff.get("CH3") == "1"
+    ch4 = ch3 and eff.get("CH4") == "1"
     state = {"on": on, "share": share, "ports_open": ports_open,
              "ch2_ports": "%d-%d" % (base + 10, base + 12),
+             "ch3": ch3, "ch4": ch4,
+             "ch3_ports": "%d-%d" % (base + 20, base + 22),
+             "ch4_ports": "%d-%d" % (base + 30, base + 32),
+             "ch3_ports_open": bool(last) and int(last.group(1)) >= base + 22,
+             "ch4_ports_open": bool(last) and int(last.group(1)) >= base + 32,
+             "want_ch3": ch3, "want_ch4": ch4,
              "want_on": on, "want_share": share, "pending": "", "choices": CH2_SHARE_CHOICES}
     # The wish, unless the server already runs a later choice (the launcher's,
     # written into .env after the panel's): the entrypoint notes the moment of
@@ -19506,11 +19552,19 @@ def read_channels_state():
     if wish.get("CH2") in ("0", "1") and not overtaken:
         w_on = wish.get("CH2") == "1"
         w_share = int(wish.get("SHARE", "40")) if wish.get("SHARE", "").isdigit() else 40
+        # A wish from before CH3/CH4 leaves them as the server runs them.
+        w_ch3 = w_on and (wish.get("CH3") == "1" if wish.get("CH3") in ("0", "1") else ch3)
+        w_ch4 = w_ch3 and (wish.get("CH4") == "1" if wish.get("CH4") in ("0", "1") else ch4)
         state["want_on"], state["want_share"] = w_on, w_share
+        state["want_ch3"], state["want_ch4"] = w_ch3, w_ch4
         # A wish the running server does not match yet.
-        if w_on != on or (w_on and w_share != share):
-            state["pending"] = (t("ch2_on_word").replace("{share}", str(w_share)) if w_on
-                                else t("ch2_off_word"))
+        if w_on != on or (w_on and w_share != share) or w_ch3 != ch3 or w_ch4 != ch4:
+            what = (t("ch2_on_word").replace("{share}", str(w_share)) if w_on
+                    else t("ch2_off_word"))
+            if w_on:
+                what += ", CH3 %s, CH4 %s" % (t("ch34_on") if w_ch3 else t("ch34_off"),
+                                              t("ch34_on") if w_ch4 else t("ch34_off"))
+            state["pending"] = what
     if state["want_share"] not in CH2_SHARE_CHOICES:
         state["want_share"] = 40
     return state
@@ -19527,7 +19581,11 @@ def rates_channels():
     if not raw.isdigit() or int(raw) not in CH2_SHARE_CHOICES:
         flash(t("ch2_bad"), "error")
         return redirect(url_for("rates"))
-    body = "CH2=%d\nSHARE=%d\nSET_AT=%d\n" % (1 if on else 0, int(raw), int(time.time()))
+    # MT2009_PLUS_CH34_V1: CH3 only with CH2, CH4 only with CH3.
+    ch3 = on and request.form.get("ch3", "") == "1"
+    ch4 = ch3 and request.form.get("ch4", "") == "1"
+    body = "CH2=%d\nSHARE=%d\nCH3=%d\nCH4=%d\nSET_AT=%d\n" % (
+        1 if on else 0, int(raw), 1 if ch3 else 0, 1 if ch4 else 0, int(time.time()))
     tmp = CHANNELS_WISH + ".tmp"
     try:
         with open(tmp, "w", encoding="ascii") as fh:
@@ -19536,7 +19594,8 @@ def rates_channels():
     except OSError:
         flash(t("ch2_failed"), "error")
         return redirect(url_for("rates"))
-    app.logger.info("channels: CH2=%s share=%s written for the next start", int(on), raw)
+    app.logger.info("channels: CH2=%s CH3=%s CH4=%s share=%s written for the next start",
+                    int(on), int(ch3), int(ch4), raw)
     flash(t("ch2_saved"))
     return redirect(url_for("rates"))
 

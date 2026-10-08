@@ -295,7 +295,8 @@ class Apply:
                 result["new"] = changes[key]
         if not changed:
             return self._finish(status, "ok", "Wszystkie wartości były już takie same – nic nie zmieniono.")
-        if "M2_PLAYERBOT_CH2" in changed:
+        # MT2009_PLUS_CH34_V1: one moment for the whole channel choice (CH2..CH4).
+        if any(k in changed for k in ("M2_PLAYERBOT_CH2", "M2_PLAYERBOT_CH3", "M2_PLAYERBOT_CH4")):
             changed["M2_PLAYERBOT_CH2_SET_AT"] = str(int(time.time()))
         backup = self.backup(request_id)
         status["backup"] = os.path.basename(backup)

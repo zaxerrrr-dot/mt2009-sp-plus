@@ -812,6 +812,9 @@ class GameWindow(ui.ScriptWindow):
 			# Alt+1 / Alt+2: straight to channel 1 or 2 (the operator, 28 September).
 			"channel_1"			: (lambda : Channel(1), None),
 			"channel_2"			: (lambda : Channel(2), None),
+			# MT2009_PLUS_CH34_V1: Alt+3 / Alt+4.
+			"channel_3"			: (lambda : Channel(3), None),
+			"channel_4"			: (lambda : Channel(4), None),
 
 			"cam_rot_left"		: (lambda : app.RotateCamera(app.CAMERA_TO_NEGATIVE), lambda : app.RotateCamera(app.CAMERA_STOP)),
 			"cam_rot_right"		: (lambda : app.RotateCamera(app.CAMERA_TO_POSITIVE), lambda : app.RotateCamera(app.CAMERA_STOP)),
@@ -879,7 +882,7 @@ class GameWindow(ui.ScriptWindow):
 
 		# Alt+1 / Alt+2: straight to channel 1 or 2, without the channel
 		# window (the operator, 28 September). The window's own command.
-		if (app.IsPressed(app.DIK_LALT) or app.IsPressed(app.DIK_RALT)) and num in (1, 2):
+		if (app.IsPressed(app.DIK_LALT) or app.IsPressed(app.DIK_RALT)) and num in (1, 2, 3, 4):  # MT2009_PLUS_CH34_V1
 			self.__QuickChangeChannel(num)
 			return
 

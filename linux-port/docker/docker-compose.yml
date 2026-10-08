@@ -238,6 +238,12 @@ services:
       M2_PLAYERBOT_CH2: "${M2_PLAYERBOT_CH2:-0}"
       PLAYERBOT_CH2_SHARE: "${PLAYERBOT_CH2_SHARE:-40}"
       M2_PLAYERBOT_CH2_SET_AT: "${M2_PLAYERBOT_CH2_SET_AT:-0}"
+      # MT2009_PLUS_CH34_V1: the third and fourth channel on the same principle
+      # (bots relog to CH1 for the stalls), off by default; CH3 only with CH2,
+      # CH4 only with CH3. Each is three more cores (~2.5-3 GB RAM). The range
+      # above/below has to reach base+22 (CH3) or base+32 (CH4).
+      M2_PLAYERBOT_CH3: "${M2_PLAYERBOT_CH3:-0}"
+      M2_PLAYERBOT_CH4: "${M2_PLAYERBOT_CH4:-0}"
       M2_GAME_CONTAINER_PORT_RANGE: "${M2_GAME_CONTAINER_PORT_RANGE:-13000-13002}"
       # The channels' first port inside the container (m2-render-config); the
       # range above has to start there. 13000 unless a second stack on the same
@@ -269,6 +275,7 @@ services:
       - "${M2_HOST_BIND_ADDRESS:-0.0.0.0}:${M2_AUTH_PORT:-11000}:11000/tcp"
       # The container side is a variable too: the launcher widens both to
       # 13000-13012 when it switches the second channel on (M2_PLAYERBOT_CH2),
+      # 13000-13022 with CH3 and 13000-13032 with CH4 (MT2009_PLUS_CH34_V1),
       # and a world without it publishes the first channel's three as before.
       - "${M2_HOST_BIND_ADDRESS:-0.0.0.0}:${M2_GAME_PORT_RANGE:-13000-13002}:${M2_GAME_CONTAINER_PORT_RANGE:-13000-13002}/tcp"
       # never published: 12000, 14000-14002 (p2p), 15000 (the db core).

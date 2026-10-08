@@ -98,6 +98,14 @@ esac
 # -----------------------------------------------------------------------------
 M2_PLAYERBOT_CH2="${M2_PLAYERBOT_CH2:-0}"
 PLAYERBOT_CH2_SHARE="${PLAYERBOT_CH2_SHARE:-40}"
+# MT2009_PLUS_CH34_V1: the third and fourth channel, on the same principle as
+# the second (bots play there and relog to CH1 for anything at the stalls),
+# off by default. Each is three more cores (first/game1/game2, ~2.5-3 GB RAM,
+# nearly all of it game1's map data).
+# They go on in a row: CH3 only with CH2, CH4 only with CH3 - the cores are
+# channels 1..M2_CHANNELS and the client lists CH1..CHn.
+M2_PLAYERBOT_CH3="${M2_PLAYERBOT_CH3:-0}"
+M2_PLAYERBOT_CH4="${M2_PLAYERBOT_CH4:-0}"
 ch2_env_at="${M2_PLAYERBOT_CH2_SET_AT:-0}"
 case "$ch2_env_at" in ''|*[!0-9]*) ch2_env_at=0 ;; esac
 ch2_source=env
@@ -110,18 +118,41 @@ if [ -f "$ch2_wish" ]; then
   if [ -n "$wish_on" ] && [ -n "$wish_at" ] && [ "$wish_at" -gt "$ch2_env_at" ]; then
     M2_PLAYERBOT_CH2="$wish_on"
     [ -n "$wish_share" ] && PLAYERBOT_CH2_SHARE="$wish_share"
+    # A wish from a panel that knew only CH2 leaves CH3/CH4 as .env has them.
+    wish_ch3=$(sed -n 's/^CH3=\([01]\)\r\{0,1\}$/\1/p' "$ch2_wish" | head -n 1)
+    wish_ch4=$(sed -n 's/^CH4=\([01]\)\r\{0,1\}$/\1/p' "$ch2_wish" | head -n 1)
+    [ -n "$wish_ch3" ] && M2_PLAYERBOT_CH3="$wish_ch3"
+    [ -n "$wish_ch4" ] && M2_PLAYERBOT_CH4="$wish_ch4"
     ch2_source=panel
     ch2_at="$wish_at"
   fi
 fi
 case "$M2_PLAYERBOT_CH2" in 1) : ;; *) M2_PLAYERBOT_CH2=0 ;; esac
+case "$M2_PLAYERBOT_CH3" in 1) : ;; *) M2_PLAYERBOT_CH3=0 ;; esac
+case "$M2_PLAYERBOT_CH4" in 1) : ;; *) M2_PLAYERBOT_CH4=0 ;; esac
 case "$PLAYERBOT_CH2_SHARE" in ''|*[!0-9]*) PLAYERBOT_CH2_SHARE=40 ;; esac
-if [ "$M2_PLAYERBOT_CH2" = 1 ] && [ "$M2_CHANNELS" -lt 2 ]; then
-  M2_CHANNELS=2
+# MT2009_PLUS_CH34_V1: in a row - a channel whose predecessor is off stays off
+# (and starts no cores).
+if [ "$M2_PLAYERBOT_CH3" = 1 ] && [ "$M2_PLAYERBOT_CH2" != 1 ]; then
+  log "CH3 asked for without CH2 - left off (switch CH2 on first)"
+  M2_PLAYERBOT_CH3=0
+fi
+if [ "$M2_PLAYERBOT_CH4" = 1 ] && [ "$M2_PLAYERBOT_CH3" != 1 ]; then
+  log "CH4 asked for without CH3 - left off (switch CH2 and CH3 on first)"
+  M2_PLAYERBOT_CH4=0
+fi
+# How many channels carry bots: every core reads it (playerbot_channel_rules.h),
+# so it is decided here, once.
+M2_PLAYERBOT_CHANNELS=1
+[ "$M2_PLAYERBOT_CH2" = 1 ] && M2_PLAYERBOT_CHANNELS=2
+[ "$M2_PLAYERBOT_CH3" = 1 ] && M2_PLAYERBOT_CHANNELS=3
+[ "$M2_PLAYERBOT_CH4" = 1 ] && M2_PLAYERBOT_CHANNELS=4
+if [ "$M2_CHANNELS" -lt "$M2_PLAYERBOT_CHANNELS" ]; then
+  M2_CHANNELS=$M2_PLAYERBOT_CHANNELS
 fi
 [ "$M2_PLAYERBOT_CH2" = 1 ] \
-  && log "second channel ON (from $ch2_source): ${PLAYERBOT_CH2_SHARE}% of the bots on CH2, shops on CH1 only"
-export M2_PLAYERBOT_CH2 PLAYERBOT_CH2_SHARE M2_CHANNELS
+  && log "extra channels ON (from $ch2_source): CH2..CH${M2_PLAYERBOT_CHANNELS} carry ${PLAYERBOT_CH2_SHARE}% of the bots between them, shops on CH1 only"
+export M2_PLAYERBOT_CH2 M2_PLAYERBOT_CH3 M2_PLAYERBOT_CH4 M2_PLAYERBOT_CHANNELS PLAYERBOT_CH2_SHARE M2_CHANNELS
 # What the server runs with, for the panel (it reads this volume, not .env).
 # The published range says whether players can reach CH2: the launcher opens
 # BASE..BASE+12 (13000-13012 by default) when it switches the channel on; a wish from the panel alone
@@ -134,9 +165,12 @@ mkdir -p "$VAR_DIR"
 # range that does not reach BASE+12 means CH2 is not published yet.
 ch_port_base="${M2_GAME_PORT_BASE:-13000}"
 case "$ch_port_base" in ''|*[!0-9]*) ch_port_base=13000 ;; esac
-printf 'CH2=%s\nSHARE=%s\nCHANNELS=%s\nSOURCE=%s\nPORTS=%s\nSET_AT=%s\nBASE=%s\n' \
+# CH3/CH4 and BOT_CHANNELS (MT2009_PLUS_CH34_V1): channel N is published when
+# the range reaches BASE+10*(N-1)+2.
+printf 'CH2=%s\nSHARE=%s\nCHANNELS=%s\nSOURCE=%s\nPORTS=%s\nSET_AT=%s\nBASE=%s\nCH3=%s\nCH4=%s\nBOT_CHANNELS=%s\n' \
   "$M2_PLAYERBOT_CH2" "$PLAYERBOT_CH2_SHARE" "$M2_CHANNELS" "$ch2_source" \
   "${M2_GAME_CONTAINER_PORT_RANGE:-$ch_port_base-$((ch_port_base + 2))}" "$ch2_at" "$ch_port_base" \
+  "$M2_PLAYERBOT_CH3" "$M2_PLAYERBOT_CH4" "$M2_PLAYERBOT_CHANNELS" \
   > "$VAR_DIR/channels.effective" 2>/dev/null || true
 
 if [ -z "$M2_PUBLIC_ADDRESS" ]; then

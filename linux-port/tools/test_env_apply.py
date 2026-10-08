@@ -223,6 +223,30 @@ class EnvApplyTest(unittest.TestCase):
         self.assertIn("M2_GAME_PORT_RANGE", st["changed"])
         self.assertEqual(st["services"], ["game", "panel"])
 
+    def test_third_and_fourth_channel_widen_the_ports(self):
+        # MT2009_PLUS_CH34_V1: CH3 and CH4 in a row after CH2, ten ports each.
+        tools = os.path.join(self.root, "linux-port", "tools")
+        shutil.copy(os.path.join(HERE, "update.sh"), tools)
+        open(os.path.join(self.root, "VERSION"), "w").write("9.9.9\n")
+        docker = os.path.dirname(self.env)
+        open(os.path.join(docker, "ENGINE"), "w").write("mt2009\n")
+        open(os.path.join(docker, "docker-compose.yml"), "w").write("services: {}\n")
+        self.request("env.request", {"id": "env-ch34", "changes": {
+            "M2_PLAYERBOT_CH2": "1", "M2_PLAYERBOT_CH3": "1", "M2_PLAYERBOT_CH4": "1"}})
+        self.worker().poll()
+        st = self.status()
+        self.assertEqual(st["state"], "ok", st)
+        text = self.read()
+        self.assertIn("M2_PLAYERBOT_CH4=1\n", text)
+        self.assertIn("M2_GAME_PORT_RANGE=13000-13032\n", text)
+        self.assertIn("M2_GAME_CONTAINER_PORT_RANGE=13000-13032\n", text)
+        self.assertNotIn("M2_PLAYERBOT_CH2_SET_AT=0\n", text)
+        # CH4 off again: back to CH1..CH3's ports.
+        self.request("env.request", {"id": "env-ch4-off", "changes": {"M2_PLAYERBOT_CH4": "0"}})
+        self.worker().poll()
+        self.assertEqual(self.status()["state"], "ok")
+        self.assertIn("M2_GAME_PORT_RANGE=13000-13022\n", self.read())
+
     def test_overridden_keys_are_reported(self):
         with open(os.path.join(os.path.dirname(self.env), "docker-compose.override.yml"), "w") as handle:
             handle.write("services:\n  game:\n    environment:\n      PLAYERBOT_AUTOSPAWN_COUNT: \"2000\"\n")

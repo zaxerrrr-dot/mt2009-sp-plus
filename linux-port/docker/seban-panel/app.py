@@ -3256,9 +3256,18 @@ def read_channel_settings():
         share = 50
     if share not in CH2_SHARE_CHOICES:
         share = 50
+    # MT2009_PLUS_CH34_V1: CH3 and CH4, in a row after CH2 (the entrypoint
+    # starts CH3 only with CH2 and CH4 only with CH3).
+    source = wish if wish.get("CH2") in ("0", "1") else effective
+    ch2 = source.get("CH2", "0") == "1"
+    ch3 = ch2 and source.get("CH3", effective.get("CH3", "0")) == "1"
+    ch4 = ch3 and source.get("CH4", effective.get("CH4", "0")) == "1"
     return {"ch2": wish.get("CH2", effective.get("CH2", "0")) == "1",
+            "ch3": ch3, "ch4": ch4,
             "share": share,
-            "effective_ch2": effective.get("CH2", "0") == "1"}
+            "effective_ch2": effective.get("CH2", "0") == "1",
+            "effective_ch3": effective.get("CH3", "0") == "1",
+            "effective_ch4": effective.get("CH4", "0") == "1"}
 
 
 def read_ai_item_policy():
@@ -9671,8 +9680,12 @@ def manage_channels():
         if share not in CH2_SHARE_CHOICES:
             raise ValueError
         RATES_SPOOL.mkdir(parents=True, exist_ok=True)
+        # MT2009_PLUS_CH34_V1: CH3 only with CH2, CH4 only with CH3.
+        ch2 = 1 if '1' in request.form.getlist('ch2') else 0
+        ch3 = 1 if ch2 and '1' in request.form.getlist('ch3') else 0
+        ch4 = 1 if ch3 and '1' in request.form.getlist('ch4') else 0
         CHANNELS_WISH_FILE.write_text(
-            f"CH2={1 if '1' in request.form.getlist('ch2') else 0}\nSHARE={share}\n"
+            f"CH2={ch2}\nSHARE={share}\nCH3={ch3}\nCH4={ch4}\n"
             f"SET_AT={int(time.time())}\n", encoding="utf-8")
         flash("Ustawienia kanałów zapisane. Zostaną zastosowane przy następnym restarcie serwera.", "success")
     except (ValueError, OSError):

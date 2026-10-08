@@ -322,11 +322,15 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// share, and the identities each channel (1, 2) holds per kingdom.
 		bool			m_bSecondChannel = false;
 		int			m_iSecondChannelShare = 40;
-		int			m_aChannelIdentities[3][4] = {};
+		// MT2009_PLUS_CH34_V1: how many channels carry bots (1..4,
+		// M2_PLAYERBOT_CHANNELS; 2 with only the second channel on), and the
+		// identities of each (index 1..4) per kingdom.
+		int			m_iBotChannels = 1;
+		int			m_aChannelIdentities[5][4] = {};
 		// What this start has given each channel of each kingdom so far - the
 		// cohort, then the late joiners (SplitForThisChannel). Every core
 		// computes the same plan from the same identities.
-		int			m_aChannelPlanned[3][4] = {};
+		int			m_aChannelPlanned[5][4] = {};
 		// Whether this core's autospawn bootstrap has run (TakeAutospawnBootstrap).
 		bool			m_bAutospawnBootstrapTaken = false;
 		// Whether the channels come from the assignment table (mt2009 with the

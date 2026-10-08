@@ -169,6 +169,9 @@ CATEGORIES = (
 	('Kana\xb3', (
 		('channel_1', 'Zmie\xf1 na CH1', ((ALT, 'DIK_1'),), False),
 		('channel_2', 'Zmie\xf1 na CH2', ((ALT, 'DIK_2'),), False),
+		# MT2009_PLUS_CH34_V1: CH3 and CH4 when the server runs them.
+		('channel_3', 'Zmie\xf1 na CH3', ((ALT, 'DIK_3'),), False),
+		('channel_4', 'Zmie\xf1 na CH4', ((ALT, 'DIK_4'),), False),
 	)),
 	('Kamera', (
 		('cam_rot_left', 'Obr\xf3t w lewo', ((0, 'DIK_Q'),), True),

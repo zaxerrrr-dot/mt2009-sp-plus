@@ -495,6 +495,9 @@ sync_channel_ports() {
     _env="$COMPOSE_DIR/.env"
     [ -f "$_env" ] || return 0
     _ch2=$(kv "$_env" M2_PLAYERBOT_CH2 | tr -d ' \r')
+    # MT2009_PLUS_CH34_V1: the third and fourth channel, in a row after CH2.
+    _ch3=$(kv "$_env" M2_PLAYERBOT_CH3 | tr -d ' \r')
+    _ch4=$(kv "$_env" M2_PLAYERBOT_CH4 | tr -d ' \r')
     _channels=$(kv "$_env" M2_CHANNELS | tr -d ' \r')
     _env_at=$(kv "$_env" M2_PLAYERBOT_CH2_SET_AT | tr -d ' \r')
     case "$_env_at" in
@@ -506,6 +509,8 @@ sync_channel_ports() {
     _wishes=$( (cd "$COMPOSE_DIR" && docker compose exec -T game cat /opt/m2spool/channels.wanted) 2>/dev/null |
         tr -d ' \r')
     _wish=$(printf '%s\n' "$_wishes" | sed -n 's/^CH2=//p' | head -n 1)
+    _wish3=$(printf '%s\n' "$_wishes" | sed -n 's/^CH3=//p' | head -n 1)
+    _wish4=$(printf '%s\n' "$_wishes" | sed -n 's/^CH4=//p' | head -n 1)
     _wish_at=$(printf '%s\n' "$_wishes" | sed -n 's/^SET_AT=//p' | head -n 1)
     case "$_wish_at" in
         ''|*[!0-9]*) _wish_at=0 ;;
@@ -514,9 +519,13 @@ sync_channel_ports() {
         0|1)
             if [ "$_wish_at" -gt "$_env_at" ]; then
                 _ch2="$_wish"
+                case "$_wish3" in 0|1) _ch3="$_wish3" ;; esac
+                case "$_wish4" in 0|1) _ch4="$_wish4" ;; esac
             fi
             ;;
     esac
+    [ "$_ch2" = 1 ] || _ch3=0
+    [ "$_ch3" = 1 ] || _ch4=0
     # Every channel the world runs keeps its ports: M2_CHANNELS (1-4), and
     # at least two while the second channel is on.
     _need=1
@@ -525,6 +534,12 @@ sync_channel_ports() {
     esac
     if [ "$_ch2" = 1 ] && [ "$_need" -lt 2 ]; then
         _need=2
+    fi
+    if [ "$_ch3" = 1 ] && [ "$_need" -lt 3 ]; then
+        _need=3
+    fi
+    if [ "$_ch4" = 1 ] && [ "$_need" -lt 4 ]; then
+        _need=4
     fi
     # The channels' first port inside the container: M2_GAME_PORT_BASE, which
     # the cores listen on (13000 when .env does not say). It used to be
@@ -579,7 +594,7 @@ sync_channel_ports() {
 # the keys named below, whose example value is the compose default (an
 # absent key already meant that), never a password, a port or an address;
 # a key already there, empty included, is the operator's and is left alone.
-ENV_KEYS_FROM_EXAMPLE="M2_DIFFICULTY M2_BIOLOGIST_WAIT_HOURS M2_HORSE_WAIT_HOURS M2_BOOK_WAIT_HOURS M2_BOT_BOOK_WAIT_HOURS M2_EXCHANGE_DUST_CHANCE M2_EXCHANGE_PARCHMENT_CHANCE M2_EXCHANGE_MATERIAL_CHANCE PLAYERBOT_SPAWN_WINDOW_MINUTES PLAYERBOT_LATE_JOINERS PLAYERBOT_LATE_JOIN_HOURS PLAYERBOT_MEDAL_DROPPERS PLAYERBOT_MEDAL_DROPPER_LEVEL M2_MOONLIGHT_CHEST_PERMILLE M2_MOONLIGHT_CHEST_STONE_PERMILLE M2_BLESSING_SCROLL_STONE_PERMILLE M2_PLAYERBOT_WORLD_LAYOUT PLAYERBOT_AUTOSPAWN_PER_KINGDOM PLAYERBOT_AUTOSPAWN_SHINSOO PLAYERBOT_AUTOSPAWN_CHUNJO PLAYERBOT_AUTOSPAWN_JINNO M2_PLAYERBOT_CH2 PLAYERBOT_CH2_SHARE M2_PLAYERBOT_CH2_SET_AT M2_RATE_EXP M2_RATE_DROP M2_RATE_YANG M2_PLAYERBOT_START_HELD M2_STARTER_CHEST M2_AUTOHUNT M2_SIDEKICK M2_ALCHEMY M2_SASHES M2_AUTOHUNT_ITEM M2_FLEA_MARKET M2_AREZZO M2_SEONHAE M2_MONSTER_HP M2_STARTER_KIT"
+ENV_KEYS_FROM_EXAMPLE="M2_DIFFICULTY M2_BIOLOGIST_WAIT_HOURS M2_HORSE_WAIT_HOURS M2_BOOK_WAIT_HOURS M2_BOT_BOOK_WAIT_HOURS M2_EXCHANGE_DUST_CHANCE M2_EXCHANGE_PARCHMENT_CHANCE M2_EXCHANGE_MATERIAL_CHANCE PLAYERBOT_SPAWN_WINDOW_MINUTES PLAYERBOT_LATE_JOINERS PLAYERBOT_LATE_JOIN_HOURS PLAYERBOT_MEDAL_DROPPERS PLAYERBOT_MEDAL_DROPPER_LEVEL M2_MOONLIGHT_CHEST_PERMILLE M2_MOONLIGHT_CHEST_STONE_PERMILLE M2_BLESSING_SCROLL_STONE_PERMILLE M2_PLAYERBOT_WORLD_LAYOUT PLAYERBOT_AUTOSPAWN_PER_KINGDOM PLAYERBOT_AUTOSPAWN_SHINSOO PLAYERBOT_AUTOSPAWN_CHUNJO PLAYERBOT_AUTOSPAWN_JINNO M2_PLAYERBOT_CH2 PLAYERBOT_CH2_SHARE M2_PLAYERBOT_CH2_SET_AT M2_PLAYERBOT_CH3 M2_PLAYERBOT_CH4 M2_RATE_EXP M2_RATE_DROP M2_RATE_YANG M2_PLAYERBOT_START_HELD M2_STARTER_CHEST M2_AUTOHUNT M2_SIDEKICK M2_ALCHEMY M2_SASHES M2_AUTOHUNT_ITEM M2_FLEA_MARKET M2_AREZZO M2_SEONHAE M2_MONSTER_HP M2_STARTER_KIT"
 add_missing_env_keys() {
     _env="$COMPOSE_DIR/.env"
     _ex="$COMPOSE_DIR/.env.example"
