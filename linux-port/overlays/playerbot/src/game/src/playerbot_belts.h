@@ -30,7 +30,7 @@
 //   * Gifts (the owner: "mozesz dac niektorym botom przedmioty, zeby ulatwic robienie/ulepszanie
 //     pasow ... zeby szybciej to uruchomic"): PLAYERBOT_BELT_SEED_PERCENT of the makers are owed
 //     the materials of PLAYERBOT_BELT_SEED_ATTEMPTS attempts at their target, handed over at
-//     Mistrz when the bag lacks them (a quest flag counts them). m2_bot_craft_seed_off stops it.
+//     Mistrz when the bag lacks them (a quest flag counts them). gifts only with the event flag m2_bot_craft_seed_on.
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
 
@@ -93,10 +93,13 @@ namespace
 	};
 	TPlayerBotBeltStats s_kPlayerBotBeltStats = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	// The owner's switch for the gifts of both crafts (this one and playerbot_talismans.h).
+	// The owner's switch for the gifts of both crafts (this one and playerbot_talismans.h). Off unless
+	// the event flag m2_bot_craft_seed_on is set: the gifts were for teaching the bots on the test
+	// server, the players' servers do not hand them out (the owner, 8 October).
 	bool ArePlayerBotCraftSeedsOff()
 	{
-		return quest::CQuestManager::instance().GetEventFlag("m2_bot_craft_seed_off") != 0;
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_craft_seed_on") == 0 ||
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_craft_seed_off") != 0;
 	}
 
 	bool IsPlayerBotBeltItem(LPITEM item)

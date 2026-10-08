@@ -81,7 +81,8 @@ namespace
 	const int PLAYERBOT_ENERGY_SHARD_LINE_UNITS = 10;
 	// The whole world's bot counters: at most this many shards, on at most this
 	// many counters at once.
-	const int PLAYERBOT_ENERGY_SHARD_MARKET_UNITS = 100;
+	// 1000 since 8 October (the owner: "Odblokuj również limit odłamków energii do 1000 na sklepach").
+	const int PLAYERBOT_ENERGY_SHARD_MARKET_UNITS = 1000;
 	const int PLAYERBOT_ENERGY_SHARD_MARKET_SHOPS = 3;
 	// How long a piece held for the Alchemist may wait for the walk.
 	const DWORD PLAYERBOT_ENERGY_SCRAP_HOLD_MS = 45 * 60 * 1000;
@@ -94,7 +95,10 @@ namespace
 	// +0..+200 each; Kwiat Zywiolu (95500) is not one.
 	const DWORD PLAYERBOT_TALISMAN_FIRST_VNUM = 94000;
 	const DWORD PLAYERBOT_TALISMAN_LAST_VNUM = 95450;
+	// A Talisman +0 is 700 000 and every next grade 650 000 more (the owner, 8 October: "Talizman
+	// +0 kosztuje 700k, kazdy kolejny kosztuje 650k wiecej"): +1 1 350 000, +200 130 700 000.
 	const DWORD PLAYERBOT_TALISMAN_PRICE = 700000;
+	const DWORD PLAYERBOT_TALISMAN_PRICE_PER_GRADE = 650000;
 
 	bool IsPlayerBotEnergyShardVnum(DWORD vnum)
 	{
@@ -107,13 +111,20 @@ namespace
 				(vnum - PLAYERBOT_TALISMAN_FIRST_VNUM) % 250 <= 200;
 	}
 
+	DWORD GetPlayerBotTalismanPrice(DWORD vnum)
+	{
+		if (!IsPlayerBotFixedPriceTalismanVnum(vnum))
+			return 0;
+		return PLAYERBOT_TALISMAN_PRICE + PLAYERBOT_TALISMAN_PRICE_PER_GRADE * ((vnum - PLAYERBOT_TALISMAN_FIRST_VNUM) % 250);
+	}
+
 	// The owner's fixed price of one unit, or 0 for anything else.
 	DWORD GetPlayerBotOwnerFixedUnitPrice(DWORD vnum)
 	{
 		if (IsPlayerBotEnergyShardVnum(vnum))
 			return PLAYERBOT_ENERGY_SHARD_UNIT_PRICE;
 		if (IsPlayerBotFixedPriceTalismanVnum(vnum))
-			return PLAYERBOT_TALISMAN_PRICE;
+			return GetPlayerBotTalismanPrice(vnum);
 		return 0;
 	}
 

@@ -32,7 +32,7 @@
 // Who refines: PLAYERBOT_TALISMAN_WORKER_PERCENT of the bots from PLAYERBOT_TALISMAN_MIN_LEVEL
 // (by player id). The rest wear what they have. Materials: the Ornament and the spare +0 come
 // off the counters (playerbot_market.h, playerbot_offline_market.h - the talisman at the owner's
-// price, 700 000, PLAYERBOT_TALISMAN_PRICE), the flowers from Mistrz. The owner, 7 October:
+// price, 700 000 at +0 and 650 000 more a grade, GetPlayerBotTalismanPrice), the flowers from Mistrz. The owner, 7 October:
 // "mozesz dac niektorym botom przedmioty, zeby ulatwic robienie/ulepszanie ... zeby szybciej
 // to uruchomic" - a share of the
 // workers (PLAYERBOT_TALISMAN_SEED_PERCENT) is given a Talisman +0 to wear and the materials of
@@ -493,7 +493,7 @@ namespace
 		const long long spare = GetPlayerBotTalismanSpare(ch);
 		const long long count = std::max<long long>(1, (long long)offer->GetCount());
 		if (IsPlayerBotTalismanVnum(offer->GetVnum()))
-			return price / count <= (long long)PLAYERBOT_TALISMAN_PRICE * PLAYERBOT_TALISMAN_BUY_OVER_PERCENT / 100 &&
+			return price / count <= (long long)GetPlayerBotTalismanPrice(offer->GetVnum()) * PLAYERBOT_TALISMAN_BUY_OVER_PERCENT / 100 &&
 					price <= spare * 40 / 100;
 		const long long fair = (long long)GetPlayerBotShopAskingPrice(offer);
 		const long long cap = std::max<long long>(fair * 2, 150000LL * count);
