@@ -152,7 +152,8 @@ def queue_request(spool, changes):
 # restart, whenever it runs (env_apply.py apply_pending).
 LIVE_WAIT = 6.0
 LIVE_FINAL = ("done", "failed", "bad_args", "cancelled", "player_offline")
-_FLAGS = ("mt2009_arezzo_closed", "m2_seonhae_on", "m2_seonhae_wait_min", "m2_alchemy_off", "m2_sash_off")
+_FLAGS = ("mt2009_arezzo_closed", "m2_seonhae_on", "m2_seonhae_wait_min", "m2_alchemy_off", "m2_sash_off",
+          "m2_teleport_map_on")
 
 
 def _flag_rows(cur):
@@ -178,6 +179,8 @@ def live_values_from_flags(flags):
         out["M2_ALCHEMY"] = "0" if flags["m2_alchemy_off"] == 1 else "1"
     if "m2_sash_off" in flags:
         out["M2_SASHES"] = "0" if flags["m2_sash_off"] == 1 else "1"
+    # MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): no row = off.
+    out["M2_TELEPORT_MAP"] = "1" if flags.get("m2_teleport_map_on") == 1 else "0"
     return out
 
 
@@ -233,6 +236,10 @@ def apply_live(db_connect, changes, wait=LIVE_WAIT, sleep=time.sleep):
             wait_min = max(0, min(10080, flags.get("m2_seonhae_wait_min", 0)))
             flag("m2_seonhae_on", on)
             queue("SEONHAE", "%d,%d" % (on, wait_min))
+        if "M2_TELEPORT_MAP" in changes:
+            on = 1 if changes["M2_TELEPORT_MAP"] == "1" else 0
+            flag("m2_teleport_map_on", on)
+            queue("TPMAP", str(on))
         if "M2_ALCHEMY" in changes or "M2_SASHES" in changes:
             alchemy = 1 if changes.get("M2_ALCHEMY", now.get("M2_ALCHEMY", "1")) == "1" else 0
             sashes = 1 if changes.get("M2_SASHES", now.get("M2_SASHES", "1")) == "1" else 0

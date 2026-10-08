@@ -228,6 +228,10 @@ SCHEMA = [
        "moduly", "bool", "0", GAME),
     _e("M2_SEONHAE", "Seon-Hae (6/7 bonus)", "NPC Seon-Hae w pierwszych wioskach dodaje 6. i 7. bonus. Panel klasyczny przełącza go od razu i ustawia czas oczekiwania.",
        "moduly", "bool", "0", GAME),
+    _e("M2_TELEPORT_MAP", "Mapa teleportacji (TAB) – autor: Mur4s",
+       "TAB otwiera mapę świata z 18 punktami, kliknięcie teleportuje za darmo (bez pierścienia). Wymaga klienta z mapą (uiteleportmap.py). "
+       "Wyłączone: TAB działa jak dawniej (Slot 6), a serwer ignoruje mapę. Przełącza się od razu, bez restartu.",
+       "moduly", "bool", "0", GAME),
     _e("M2_ALCHEMY", "Alchemia (Cor Draconis)",
        "Wyłączone: nie powstają nowe Cor Draconis (Metiny, bossowie, odłamki i wymiana u Alchemika). To, co gracze mają, zostaje. "
        "Panel przełącza to od razu; ta wartość działa przy starcie, gdy się zmieniła.",
@@ -600,6 +604,7 @@ def services_for(keys):
 LIVE_KEYS = {
     "M2_AREZZO": "AREZZO",
     "M2_SEONHAE": "SEONHAE",
+    "M2_TELEPORT_MAP": "TPMAP",
     "M2_ALCHEMY": "RARE",
     "M2_SASHES": "RARE",
 }

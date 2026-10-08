@@ -224,6 +224,13 @@ class LiveSwitches(EnvEditorRoutes):
         self.assertEqual(self.save({"M2_SEONHAE": "1"}).status_code, 200)
         self.assertEqual([q["arg1"] for q in self.world.queue.values()], ["1,30"])
 
+    def test_teleport_map_switch(self):
+        # MT2009_PLUS_TELEPORT_MAP_V1: no row reads as off; on writes the flag and a TPMAP row.
+        self.assertEqual(panel.env_editor.live_values_from_flags({})["M2_TELEPORT_MAP"], "0")
+        self.assertEqual(self.save({"M2_TELEPORT_MAP": "1"}).status_code, 200)
+        self.assertEqual(self.world.flags["m2_teleport_map_on"], 1)
+        self.assertEqual([(q["cmd"], q["arg1"]) for q in self.world.queue.values()], [("TPMAP", "1")])
+
     def test_game_down_is_said_and_row_cancelled(self):
         self.world.answer = None
         with patch("env_editor.LIVE_WAIT", 0.0):

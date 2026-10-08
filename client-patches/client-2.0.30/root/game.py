@@ -473,6 +473,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiseonhae").DestroyWindow()
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
 		__import__("uitpbookmarks").DestroyWindow()
+		# MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): the teleport map under TAB (uiteleportmap.py).
+		__import__("uiteleportmap").DestroyWindow()
 		# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher (uibonusswitch.py).
 		__import__("uibonusswitch").DestroyWindow()
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
@@ -2101,6 +2103,16 @@ class GameWindow(ui.ScriptWindow):
 		# A Shift press starts a tap (the sprint); any other key ends it.
 		keybind.NoteKeyDown(key)
 
+		# MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): TAB without Ctrl opens the
+		# teleport map (uiteleportmap.py) - only while the server has it on
+		# ("MAPA_TAB 1", quest mapa_tab). Off, TAB goes on to its binding
+		# below as before (Slot 6); Ctrl+TAB always hides the interface.
+		if key == app.DIK_TAB and not app.IsPressed(app.DIK_LCONTROL) and not app.IsPressed(app.DIK_RCONTROL):
+			import uiteleportmap
+			if uiteleportmap.IsEnabled():
+				uiteleportmap.ToggleWindow()
+				return True
+
 		# The modifiers' own doings while held; never a binding of their own
 		# when pressed (a tap of Shift runs on its release, OnKeyUp).
 		if key == app.DIK_LALT:
@@ -3251,6 +3263,7 @@ class GameWindow(ui.ScriptWindow):
 		# (database editor) against this client's dbdata_stamp.txt (dbdatastamp.py).
 		serverCommandList["DbDataStamp"] = __import__("dbdatastamp").NOTICE.OnCommand
 		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
+		serverCommandList["MAPA_TAB"] = self.__TeleportMap # MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s)
 		serverCommandList["BSW"] = self.__BonusSwitch # MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion)
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["RANGA"] = self.__RankPoints # MT2009_PLUS_RANK_POINTS_V1
@@ -3901,6 +3914,11 @@ class GameWindow(ui.ScriptWindow):
 	def __TpBookmarks(self, *args):
 		import uitpbookmarks
 		uitpbookmarks.OnCommand(*args)
+
+	# MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): "MAPA_TAB 1|0" - whether TAB opens the teleport map.
+	def __TeleportMap(self, *args):
+		import uiteleportmap
+		uiteleportmap.OnCommand(*args)
 
 	# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher's lines (uibonusswitch.py).
 	def __BonusSwitch(self, *args):

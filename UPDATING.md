@@ -350,7 +350,7 @@ M2_UPDATE_WATCH_UPDATES=0 docker compose --profile update up -d updater
 Without a running updater the page is read-only and shows a guide (VPS and
 Windows, with a "Sprawdź ponownie" button) - except for the switches the
 classic panel already turns live (`env_schema.LIVE_KEYS`: `M2_AREZZO`,
-`M2_SEONHAE`, `M2_ALCHEMY`, `M2_SASHES`). Those are switched in the running
+`M2_SEONHAE`, `M2_ALCHEMY`, `M2_SASHES`, `M2_TELEPORT_MAP`). Those are switched in the running
 game the classic panel's way (the event flag in `player.quest` and a
 `web_admin_queue` row for `web_admin.quest`), and the wanted values are
 left in `env.pending`; the updater writes them into `.env` whenever it runs

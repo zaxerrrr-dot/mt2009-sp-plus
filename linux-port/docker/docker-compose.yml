@@ -133,6 +133,9 @@ services:
       # Seon-Hae's 6th/7th bonus at NPC 20095: 1 on, 0 off (apply.sh writes
       # m2_seonhae_on when .env changed; the panel switches it live).
       M2_SEONHAE: "${M2_SEONHAE:-0}"
+      # The teleport map under TAB (MT2009_PLUS_TELEPORT_MAP_V1, Autor: Mur4s): 1 on,
+      # 0 off (apply.sh writes m2_teleport_map_on when .env changed; the panels switch it live).
+      M2_TELEPORT_MAP: "${M2_TELEPORT_MAP:-0}"
       # Karty Potworow, the Monster Card System (MT2009_PLUS_MONSTER_CARDS_V1,
       # Autor: Digi Rasta): 1 on, 0 off. The game core reads it at start
       # (playerbot_monster_card.h) - off, the cards do nothing and the set

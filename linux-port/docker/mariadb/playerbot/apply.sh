@@ -1264,6 +1264,23 @@ else
     fail_step "could not write the Seon-Hae switch; it stays as it was" >&2
 fi
 
+# MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): the teleport map under TAB (quest
+# mapa_tab, client root uiteleportmap.py), off unless M2_TELEPORT_MAP=1. One
+# world flag, m2_teleport_map_on (1 = on); both panels switch it live
+# (web_admin.quest TPMAP), so .env is applied only when it changed since the
+# last start (m2_teleport_map_env = what it said + 1).
+case "$(printf '%s' "${M2_TELEPORT_MAP:-0}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in 1|on|yes|true) tpmap_on=1 ;; *) tpmap_on=0 ;; esac
+tpmap_env=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_teleport_map_env' LIMIT 1;" 2>/dev/null | tr -d ' \r')
+if [ -n "$tpmap_env" ] && [ "$tpmap_env" = "$((tpmap_on + 1))" ]; then
+    echo "[playerbot-migrate] Teleport map (TAB): .env unchanged since the last start - the switch stays as the panel or the last start left it"
+elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_teleport_map_on', '', $tpmap_on),
+        (0, 'm2_teleport_map_env', '', $((tpmap_on + 1)));"; then
+    echo "[playerbot-migrate] Teleport map (TAB): $([ "$tpmap_on" = 1 ] && echo on || echo off) (from .env)"
+else
+    fail_step "could not write the teleport map switch; it stays as it was" >&2
+fi
+
 # The world's monster health (the operator, 30 September, for Frelik's
 # proposal): a percent of the max_hp of every monster, boss and Metin
 # stone, which the cores apply at a spawn and to every one standing when

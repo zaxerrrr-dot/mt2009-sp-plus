@@ -127,6 +127,7 @@ OWN_TITLES = {
     "minigame_catchking": "Złap Króla", "minigame_yutnori": "Yut Nori", "tp_bookmarks": "Zapisane teleporty",
     "ksiegi_seonhae": "Księgi Seon-Hae", "usun_misje": "/usunmisje", "guild_building": "Ziemia gildii",
     "kolekcjoner_item": "Kolekcjoner (przedmiot)", "cmd": "Komendy czatu",
+    "mapa_tab": "Mapa teleportacji (TAB) – autor: Mur4s",
 }
 # The Biologist (Chaegirab, 20084; the reward at 20018): its missions in order.
 BIOLOGIST = (

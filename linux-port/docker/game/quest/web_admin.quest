@@ -909,6 +909,36 @@ quest web_admin begin
 				end
 			end
 
+			-- MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): the teleport map under TAB,
+			-- same shape as AREZZO. arg1 = "1" on, "0" off; written as
+			-- m2_teleport_map_on, which quest mapa_tab reads ("/tabteleport", and
+			-- "MAPA_TAB 1|0" to every player's client within seconds). arg2 unused.
+			local trows = wa_query("SELECT id, arg1 FROM player.web_admin_queue WHERE status='pending' AND cmd='TPMAP' ORDER BY id ASC LIMIT 3")
+			if type(trows) == "table" then
+				local ti
+				for ti = 1, table.getn(trows) do
+					local tr = trows[ti]
+					if type(tr) == "table" then
+						local tqid = tonumber(tr.id)
+						local ton = nil
+						if type(tr.arg1) == "string" then
+							ton = tonumber(tr.arg1)
+						end
+						if tqid ~= nil then
+							local tres = "done"
+							if ton == nil or ton < 0 or ton > 1 then
+								tres = "bad_args"
+							elseif game.set_event_flag == nil then
+								tres = "failed"
+							else
+								game.set_event_flag("m2_teleport_map_on", ton)
+							end
+							wa_query("UPDATE player.web_admin_queue SET status='" .. tres .. "' WHERE id=" .. tqid .. " AND status='pending' LIMIT 1")
+						end
+					end
+				end
+			end
+
 			-- The health of monsters, bosses and Metin stones, the same way (the
 			-- operator, 30 September, for Frelik's proposal): m2_mob_hp is a
 			-- percent of the max_hp each is born with, and every core rescales

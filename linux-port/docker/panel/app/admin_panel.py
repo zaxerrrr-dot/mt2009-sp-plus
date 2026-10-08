@@ -3859,6 +3859,13 @@ T = {
  "seon_open":    {"pl":"💎 Otwórz Seon-Hae","en":"💎 Open Seon-Hae"},
  "tip_seon":     {"pl":"Włącz albo wyłącz dodawanie 6. i 7. bonusu u Seon-Hae i ustaw czas, przez jaki trzyma przedmiot. Działa od razu, bez restartu serwera.","en":"Switch Seon-Hae's 6th and 7th bonus on or off and set how long he keeps an item. Takes effect immediately, no server restart."},
  "seon_dash_hint":{"pl":"Czy Seon-Hae (NPC 20095) dodaje graczom 6. i 7. bonus (system dobrowolny).","en":"Whether Seon-Hae (NPC 20095) adds the 6th and 7th bonus for players (an optional system)."},
+ "tpm_nav":      {"pl":"🧭 Mapa teleportacji (TAB) – autor: Mur4s","en":"🧭 Teleport map (TAB) – author: Mur4s"},
+ "tpm_open":     {"pl":"🧭 Otwórz mapę teleportacji","en":"🧭 Open the teleport map"},
+ "tip_tpm":      {"pl":"Włącz albo wyłącz mapę teleportacji pod klawiszem TAB. Działa od razu, bez restartu serwera.","en":"Switch the teleport map under the TAB key on or off. Takes effect immediately, no restart."},
+ "tpm_dash_hint":{"pl":"Czy TAB otwiera graczom mapę świata z 18 punktami i darmowym teleportem (moduł dobrowolny).","en":"Whether TAB opens the world map with 18 points and a free teleport for players (an optional module)."},
+ "tpm_intro":    {"pl":"Moduł dobrowolny (autor: Mur4s): klawisz TAB otwiera mapę świata z 18 punktami (miasta królestw, Dolina, Pustynia, Góra Sohan, Świątynia, Wieża Demonów, Las Duchów, Czerwony Las, Kraina Gigantów, Piekło, Loch Pająków V1, Dolina Cyklopów i Pustkowie Faraona przy włączonym Arezzo). Kliknięcie teleportuje za darmo, bez pierścienia. Wymaga klienta z mapą. Zapis działa od razu, bez restartu. Ustawienie z panelu zostaje po restarcie, dopóki ktoś nie zmieni M2_TELEPORT_MAP w .env.","en":"An optional module (author: Mur4s): the TAB key opens a world map with 18 points (the kingdoms' towns, Orc Valley, Desert, Mount Sohan, Temple, Demon Tower, Ghost Forest, Red Forest, Land of Giants, Hell, Spider Dungeon V1, and the Cyclops Valley and Pharaoh's Wasteland with Arezzo on). A click teleports for free, no ring. Needs the client with the map. Saving takes effect immediately, no restart. The panel's setting survives restarts until M2_TELEPORT_MAP in .env is changed."},
+ "tpm_enable":   {"pl":"Mapa teleportacji (TAB) włączona","en":"Teleport map (TAB) on"},
+ "tpm_help":     {"pl":"Włączona: TAB (bez Ctrl) otwiera mapę, Ctrl+TAB dalej ukrywa interfejs; nie działa w trakcie handlu, pojedynku, na arenie wojny gildii, OX i mapach wojny. Wyłączona: TAB działa jak dawniej (Slot 6 paska), a serwer ignoruje teleporty z mapy. Gracze w grze dostają zmianę w ciągu kilku sekund.","en":"On: TAB (without Ctrl) opens the map, Ctrl+TAB still hides the interface; not during a trade or a duel, nor from the guild war arena, OX or the war maps. Off: TAB works as before (quick slot 6) and the server ignores the map's teleports. Players in game get the change within seconds."},
  "seon_intro":   {"pl":"System dobrowolny (z Owsapa): gracz oddaje Seon-Hae (NPC 20095 w pierwszych wioskach) broń albo zbroję/biżuterię z pięcioma bonusami, Odłamki poziomu przedmiotu (39070–39077, 39081; 2% szansy za każdy, do 10) i Suplementy (72064–72067; do 5, do +50%). Seon-Hae trzyma przedmiot przez ustawiony czas i oddaje go z nowym bonusem albo bez. Wymaga klienta z oknem Seon-Hae. Zapis działa od razu, bez restartu. Włączenie z panelu zostaje po restarcie, dopóki ktoś nie zmieni M2_SEONHAE w .env.","en":"An optional system (from Owsap): a player hands Seon-Hae (NPC 20095 in the first villages) a weapon or an armour/jewel with five bonuses, Powershards of the item's level (39070-39077, 39081; 2% chance each, up to 10) and Additives (72064-72067; up to 5, up to +50%). Seon-Hae keeps the item for the set time and gives it back with a new bonus or without. Needs the client with the Seon-Hae window. Saving takes effect immediately, no restart. Switching on here survives restarts until M2_SEONHAE in .env is changed."},
  "seon_enable":  {"pl":"Seon-Hae przyjmuje przedmioty","en":"Seon-Hae takes items"},
  "seon_help":    {"pl":"Wyłączenie zatrzymuje tylko nowe zlecenia — przedmiot, który Seon-Hae już trzyma, zawsze można odebrać. Suplementy wypadają z Metinów i bossów, a Odłamki ze zwykłych potworów w Grocie Wygnańców, Świątyni Ochao i Zaczarowanym Lesie (reguły niżej).","en":"Switching off stops new hand-ins only - an item Seon-Hae already keeps can always be collected. The Additives drop from Metins and bosses, the Powershards from ordinary monsters, in the Grotto of Exile, the Temple of Ochao and the Enchanted Forest (the rules below)."},
@@ -5849,6 +5856,24 @@ def persist_arezzo(cur, on):
     cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
                 "VALUES (0, 'mt2009_arezzo_closed', '', %s)", (0 if on else 1,))
 
+# MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): the teleport map under TAB, the
+# event flag m2_teleport_map_on (1 = on; no row = off, apply.sh writes it from
+# M2_TELEPORT_MAP, default 0). Quest mapa_tab reads it.
+def read_teleport_map():
+    with db() as c, c.cursor() as cur:
+        cur.execute("SELECT lValue FROM player.quest WHERE dwPID = 0 "
+                    "AND szName = 'm2_teleport_map_on' LIMIT 1")
+        row = cur.fetchone()
+    try:
+        return {"on": 1 if (row is not None and int(row["lValue"]) == 1) else 0}
+    except (TypeError, ValueError, KeyError):
+        return {"on": 0}
+
+def persist_teleport_map(cur, on):
+    """The event-flag row the db core reads at its next start."""
+    cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                "VALUES (0, 'm2_teleport_map_on', '', %s)", (1 if on else 0,))
+
 # MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus (playerbot_seonhae.h), the
 # event flags m2_seonhae_on (1 = on; no row = off, apply.sh writes it from
 # M2_SEONHAE, default 0) and m2_seonhae_wait_min (0 or no row = 24 h).
@@ -7182,6 +7207,11 @@ TPL_DASH = BASE.replace("__BODY__", """
 <a class="btn" href="{{url_for('seonhae')}}" title="{{t('tip_seon')}}">{{t('seon_open')}}</a>
 </div>
 <div class="card">
+<h3 class="help" title="{{t('tip_tpm')}}">{{t('tpm_nav')}}</h3>
+<p class="muted">{{t('tpm_dash_hint')}}</p>
+<a class="btn" href="{{url_for('teleport_map')}}" title="{{t('tip_tpm')}}">{{t('tpm_open')}}</a>
+</div>
+<div class="card">
 <h3 class="help" title="{{t('tip_fl')}}">{{t('fl_nav')}}</h3>
 <p class="muted">{{t('fl_dash_hint')}}</p>
 <a class="btn" href="{{url_for('flower_event')}}" title="{{t('tip_fl')}}">{{t('fl_open')}}</a>
@@ -7735,6 +7765,23 @@ TPL_AREZZO = BASE.replace("__BODY__", """
 <input type="hidden" name="_csrf" value="{{csrf_token}}">
 <p class="muted">{{t('az_help')}}</p>
 <label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('az_enable')}}</label>
+<button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
+</form></div>""")
+
+# MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): the teleport map's page, the Arezzo page's shape.
+TPL_TELEPORT_MAP = BASE.replace("__BODY__", """
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a></p>
+<div class="card">
+<h3>{{t('tpm_nav')}}</h3>
+<p class="muted">{{t('tpm_intro')}}</p>
+<p><span class="badge">🧭 {{t('tpm_nav')}}: {{t('easter_on') if cur['on'] else t('easter_off')}}</span></p>
+</div>
+
+<div class="card">
+<form method="post">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<p class="muted">{{t('tpm_help')}}</p>
+<label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('tpm_enable')}}</label>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
 
@@ -19100,6 +19147,45 @@ def seonhae():
     except Exception:
         flash(t("db_down"), "error")
     return render_template_string(TPL_SEONHAE, cur=cur_se, drops=read_seonhae_drops())
+
+# MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): the teleport map under TAB on or off. Live immediately, no restart.
+@app.route("/teleport-map", methods=["GET", "POST"])
+@login_required
+def teleport_map():
+    if not ENGINE_MT2009:
+        flash(t("rates_no_script"), "error")
+        return redirect(url_for("dash"))
+    if request.method == "POST":
+        on = 1 if request.form.get("on") else 0
+        try:
+            with db() as c, c.cursor() as cur:
+                persist_teleport_map(cur, on)
+        except Exception:
+            flash(t("db_down"), "error")
+            return redirect(url_for("teleport_map"))
+        try:
+            status, qid = queue_and_wait("", "TPMAP", str(on), "", wait=RARE_LIVE_WAIT)
+        except Exception:
+            status, qid = "failed", 0
+        if status == "done":
+            flash(t("az_saved_live"))
+        else:
+            if status == "timeout":
+                try:
+                    with db() as c, c.cursor() as cur:
+                        cur.execute("UPDATE player.web_admin_queue SET status='cancelled' "
+                                    "WHERE id=%s AND status='pending'", (qid,))
+                except Exception:
+                    pass
+            flash(t("easter_saved_persisted"))
+        return redirect(url_for("teleport_map"))
+
+    cur_tp = {"on": 0}
+    try:
+        cur_tp = read_teleport_map()
+    except Exception:
+        flash(t("db_down"), "error")
+    return render_template_string(TPL_TELEPORT_MAP, cur=cur_tp)
 
 @app.route("/rates", methods=["GET", "POST"])
 @login_required
