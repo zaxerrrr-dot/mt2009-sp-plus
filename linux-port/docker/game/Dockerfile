@@ -821,6 +821,29 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-add/cube.se
  && test "$(grep -c -E '^npc[[:blank:]]+20091[[:space:]]*$' "$C")" -eq "$n" \
  && echo "share: Seon-Pyeong's recipes appended to cube.txt ($n)"
 
+# MT2009_PLUS_NS_WIKI_ITEMS_V1 (share): the official PL wiki's item families and materials the world
+# did not have (Autor: Digi Rasta, nowy-system 0.33.0; the items are mariadb/playerbot/wiki_nowe.sql):
+#  * cube.wiki_nowe.txt - 18 recipes at Seon-Pyeong (20091), after his own above: the six Cyjanitowe
+#    weapons from the level-87 +9 one, the Turmalin bracelet and necklace, Ogniste Buty / Buty Oceanu
+#    from Buty Zimorodka / Euforii +5..+9;
+#  * special_item_group.wiki_nowe.txt - groups 951201 / 951202, the materials the Razador and Nemere
+#    chests give at 70% (their "s951201" / "s951202" lines are in special_item_group.dungeons.txt).
+COPY cube.wiki_nowe.txt special_item_group.wiki_nowe.txt /tmp/wikinowe-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; G=$L/special_item_group.txt; A=/tmp/wikinowe-add \
+ && for f in "$A"/*.txt; do sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$f"; done \
+ && ! grep -q 'MT2009_PLUS_NS_WIKI_ITEMS_V1' "$C" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+95120[12]([^0-9]|$)' "$G" \
+ && n=$(grep -c -E '^section' "$A/cube.wiki_nowe.txt") && b=$(grep -c -E '^section' "$C") \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A/cube.wiki_nowe.txt" >> "$C" \
+ && test "$n" -eq 18 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.wiki_nowe.txt" >> "$G" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+95120[12]([^0-9]|$)' "$G")" -eq 2 \
+ && test "$(grep -c -E '^[[:blank:]]*[0-9]+[[:blank:]]+s95120[12][[:blank:]]' "$G")" -eq 2 \
+ && rm -rf "$A" \
+ && echo "share: wiki items - $n recipes at Seon-Pyeong, chest groups 951201 / 951202 (MT2009_PLUS_NS_WIKI_ITEMS_V1)"
+
 # MT2009_PLUS_BELTS_V1 (share): the belt system (Pasy; Autor: Digi Rasta, nowy-system v0.27.0).
 # cube.pasy.txt - the nine belt recipes of the package's cube.txt (at Yu-Hwan and Jae-Seon Kim,
 # whose cube no quest opens) at Mistrz (20082) - appended to cube.txt; Mistrz himself (in

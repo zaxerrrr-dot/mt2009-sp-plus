@@ -1,0 +1,219 @@
+# MT2009_PLUS_NS_WIKI_ITEMS_V1 (Autor: Digi Rasta, nowy-system 0.33.0): the recipes of the official PL wiki
+# for the new families (wiki_nowe.sql), all at Seon-Pyeong (20091): the Cyjanitowe weapons from the level-87
+# +9 weapon, the Turmalin bracelet and necklace, Ogniste Buty / Buty Oceanu from Buty Zimorodka / Euforii +5..+9.
+# 100% (the wiki gives no chance for the jewellery and the boots). Appended to cube.txt by the Dockerfile.
+
+# Cyjanitowe Ostrze+0 <- Ostrze Slonca+9, 3x Ksiega Prawdy, 2x Zwoj Blogoslawienstwa, 2x Dusza Prawdy
+section
+npc	20091
+item	3199	1
+item	30623	3
+item	25040	2
+item	30624	2
+reward	3500	1
+gold	2000000
+percent	100
+end
+
+# Cyjanitowy Dzwon+0 <- Dzwon Smoczego Ducha+9, 3x Ksiega Prawdy, 2x Zwoj Blogoslawienstwa, 2x Dusza Prawdy
+section
+npc	20091
+item	5349	1
+item	30623	3
+item	25040	2
+item	30624	2
+reward	5500	1
+gold	2000000
+percent	100
+end
+
+# Cyjanitowy Miecz+0 <- Klinga Smoczego Kla+9, 3x Ksiega Prawdy, 2x Zwoj Blogoslawienstwa, 2x Dusza Prawdy
+section
+npc	20091
+item	479	1
+item	30623	3
+item	25040	2
+item	30624	2
+reward	500	1
+gold	2000000
+percent	100
+end
+
+# Cyjanitowy Sztylet+0 <- Kolec Pieciu Elementow+9, 3x Ksiega Prawdy, 2x Zwoj Blogoslawienstwa, 2x Dusza Prawdy
+section
+npc	20091
+item	1349	1
+item	30623	3
+item	25040	2
+item	30624	2
+reward	1500	1
+gold	2000000
+percent	100
+end
+
+# Cyjanitowy Wachlarz+0 <- Wachlarz Lezac. Smoka+9, 3x Ksiega Prawdy, 2x Zwoj Blogoslawienstwa, 2x Dusza Prawdy
+section
+npc	20091
+item	7379	1
+item	30623	3
+item	25040	2
+item	30624	2
+reward	7500	1
+gold	2000000
+percent	100
+end
+
+# Cyjanitowy Luk+0 <- Luk Feniksa+9, 3x Ksiega Prawdy, 2x Zwoj Blogoslawienstwa, 2x Dusza Prawdy
+section
+npc	20091
+item	2379	1
+item	30623	3
+item	25040	2
+item	30624	2
+reward	2500	1
+gold	2000000
+percent	100
+end
+
+# Bransoleta z Turmalinu+0 <- 3x Turmalin, 10x Ogniwa Lancucha, 10x Zloty Hak
+section
+npc	20091
+item	50639	3
+item	30522	10
+item	30519	10
+reward	14570	1
+gold	100000
+percent	100
+end
+
+# Naszyjnik z Turmalinu+0 <- 3x Turmalin, 10x Ogniwa Lancucha, 10x Zloty Hak
+section
+npc	20091
+item	50639	3
+item	30522	10
+item	30519	10
+reward	16570	1
+gold	100000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+5, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15435	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+6, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15436	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+7, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15437	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+8, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15438	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+9, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15439	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+5, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15375	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+6, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15376	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+7, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15377	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+8, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15378	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+9, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15379	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end
+
