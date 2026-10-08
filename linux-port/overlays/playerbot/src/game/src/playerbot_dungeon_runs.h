@@ -265,6 +265,7 @@ namespace
 	// while nothing moved between them (PLAYERBOT_DGRUN_MAX_WIPES in a row
 	// with no flag and no boss health gone); this many in all end it anyway.
 	const int PLAYERBOT_DGRUN_MAX_WIPES_ALL = 8;
+	const int PLAYERBOT_DGRUN_MAX_DEATHS = 110;
 	// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a bots' run gets this share (percent)
 	// of its quest's time limit on top - the quests with a "minutes" flag
 	// (the Biblioteka and the three Arezzo dungeons). The Ruins' bots were
@@ -2487,7 +2488,12 @@ namespace
 		}
 		if (run.dwFinishedAt)
 			return true;
-		if (run.iWipesIdle >= PLAYERBOT_DGRUN_MAX_WIPES || run.iWipes >= PLAYERBOT_DGRUN_MAX_WIPES_ALL)
+		// V3: and a run that has become a death loop - 8 October 02:00-02:32,
+		// Nemere run 7 (channel 2): four bots against the four Szels, 116
+		// deaths and six wipes, each wipe "progress" because another Szel's
+		// health moved. A won run of the night took 81 at the most.
+		if (run.iWipesIdle >= PLAYERBOT_DGRUN_MAX_WIPES || run.iWipes >= PLAYERBOT_DGRUN_MAX_WIPES_ALL ||
+				run.iDeaths >= PLAYERBOT_DGRUN_MAX_DEATHS)
 		{
 			sys_log(0, "BOT_DGRUN: given up after %d wipes (%d in a row) run=%d dungeon=%s stage=%d", run.iWipes,
 					run.iWipesIdle, run.iId, def.szKey, run.iStage);

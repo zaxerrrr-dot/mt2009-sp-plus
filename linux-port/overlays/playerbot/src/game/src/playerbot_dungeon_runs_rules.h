@@ -128,7 +128,9 @@ namespace playerbot_dgrun
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a call wants five and goes in with
 		// four - six free bots of 85+ with a Shaman in one kingdom of one core
 		// were never there (7 October: one call all day, Nemere never run).
-		{ "nemere", 85, 5, 5, 4, true },
+		// 8 October: four that went in against the four Szels died 116 times -
+		// five at the entrance.
+		{ "nemere", 85, 5, 5, 5, true },
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the Ruins (365): waves of 9697-9700
 		// and Red Scorpions, the King 9694 - the bots of 65-80 in fours and
 		// fives finished 20 of 71 runs on 7 October (58 deaths a won run, the
