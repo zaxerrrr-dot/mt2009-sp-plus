@@ -3085,7 +3085,9 @@ namespace
 	// the eggs and 71284/71285 through the curve, inflation, markdown and markup (owner, 8 October).
 	// 23: MT2009_PLUS_JEWELS75_V3 - the Rubin/Granat/Szmaragd/Szafir jewellery (14500-17560) at the
 	// owner's +0 (earrings 4 000 000, Granatowe Kolczyki 9 000 000, the rest 2 000 000; 8 October).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 23;
+	// 24: MT2009_PLUS_JEWELS75_V4 - their ladders flattened: +9 70 000 000 (Granatowe Kolczyki),
+	// 20 000 000 (the other earrings), 12 000 000 (bracelets, necklaces), geometric between (owner).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 24;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
