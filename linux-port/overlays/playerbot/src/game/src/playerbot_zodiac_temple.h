@@ -83,6 +83,8 @@ class CZodiac
 		BYTE	GetFloor() { return m_bFloor; }
 		BYTE	GetNextFloor() { return m_bNextFloor; }
 		bool	IsNextFloor() { return m_bNextFloorControl; }
+		// MT2009_PLUS_ZODIAC_RUNS_V3: the temple's own way out (time up, an expulsion) under way.
+		bool	IsExiting() const { return zodiac_exit_temple_event_data != NULL; }
 		DWORD	GetTime() { return m_dwGetGlobalTime; }
 
 		void	ControlMob();

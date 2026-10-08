@@ -74,6 +74,12 @@ namespace
 	const DWORD ZRUN_PRISM = 33025;
 	// MT2009_PLUS_ZODIAC_RUNS_V2: this many deaths a bot on one floor and the run is pulled ("wipe").
 	const int ZRUN_WIPE_DEATHS_PER_BOT = 4;
+	// MT2009_PLUS_ZODIAC_RUNS_V3: the floors where one death sends the whole party out
+	// (CZodiacManager::DeadPC: 6, 12, 19, 24 - run 3 of 9 October ended so on floor 12, seconds in).
+	bool IsZrunNoDeathFloor(int floor)
+	{
+		return floor == 6 || floor == 12 || floor == 19 || floor == 24;
+	}
 	const int ZRUN_RED_POTION = 27003;
 	const int ZRUN_BLUE_POTION = 27006;
 	const char* const ZRUN_SIGN[13] = { "", "zi", "chou", "yin", "mao", "chen", "si", "wu", "wei", "shen", "yu", "xu", "hai" };
@@ -522,8 +528,13 @@ namespace
 			}
 			return true;
 		}
-		// V2: the break-off under 30% - invisible, healing (HandlePostDeathRecovery) - as the bots' dungeon runs do.
-		if (!state.bRecoveringAfterDeath && ch->GetMaxHP() > 0 && (long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * 30)
+		// V2: the break-off - invisible, healing (HandlePostDeathRecovery) - as the bots' dungeon runs do;
+		// V3: under 40%, and under 65% (drinking from 90%) on a floor where a death ends the run.
+		const bool noDeath = IsZrunNoDeathFloor(run->bFloor);
+		if (noDeath && ch->GetMaxHP() > 0 && (long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * 90)
+			UseHealthPotion(ch, state, dwNow, 90);
+		if (!state.bRecoveringAfterDeath && ch->GetMaxHP() > 0 &&
+				(long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * (noDeath ? 65 : 40))
 		{
 			UseHealthPotion(ch, state, dwNow);
 			state.bRecoveringAfterDeath = true;
@@ -765,13 +776,28 @@ namespace
 				}
 				else
 				{
-					sys_log(0, "ZODIAC_RUN: next run=%d sign=%s floor=%u to=%u", run.iId, ZRUN_SIGN[run.bSign],
-							(unsigned int)run.bFloor, (unsigned int)z->GetNextFloor());
-					interpret_command(leader, "jumpfloor", strlen("jumpfloor"));
+					// V3: a jump onto a floor where one death ends the run is left for the step up,
+					// when the step up is not such a floor itself.
+					const bool step = IsZrunNoDeathFloor(z->GetNextFloor()) && !IsZrunNoDeathFloor(run.bFloor + 1) &&
+							z->GetNextFloor() != run.bFloor + 1;
+					sys_log(0, "ZODIAC_RUN: next run=%d sign=%s floor=%u to=%u how=%s", run.iId, ZRUN_SIGN[run.bSign],
+							(unsigned int)run.bFloor, step ? (unsigned int)(run.bFloor + 1) : (unsigned int)z->GetNextFloor(),
+							step ? "step" : "jump");
+					if (step)
+						interpret_command(leader, "nextfloor", strlen("nextfloor"));
+					else
+						interpret_command(leader, "jumpfloor", strlen("jumpfloor"));
 				}
 			}
 			if (dwNow - run.dwLastProgress > ZRUN_STALL_MS && !run.szResult)
 				PullZrun(run, "stalled");
+			// V3: the temple's own way out under way - why, for the row.
+			if (z->IsExiting() && !run.szResult)
+			{
+				run.szResult = IsZrunNoDeathFloor(run.bFloor) ? "expelled" : "time_up";
+				sys_log(0, "ZODIAC_RUN: temple exit run=%d sign=%s floor=%u result=%s", run.iId, ZRUN_SIGN[run.bSign],
+						(unsigned int)run.bFloor, run.szResult);
+			}
 			// V2: the floor's first point (where the temple jumped everybody), once the jump is over.
 			if (!run.lFloorX && run.bFloor && leader && leader->GetMapIndex() == run.lInstance && !leader->IsDead() &&
 					dwNow - run.dwFloorAt > 2000)
