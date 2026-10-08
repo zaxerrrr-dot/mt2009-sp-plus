@@ -3361,6 +3361,45 @@ db -e "DELETE FROM player.quest WHERE dwPID > 0 AND szName = 'dungeon_panel' AND
     WHERE d.dwPID = player.quest.dwPID AND d.szState = CONCAT(LEFT(player.quest.szState, CHAR_LENGTH(player.quest.szState) - 2), '_d'));" \
   || fail_step "could not clear the dungeon panel's results of characters who never hurt a boss" >&2
 
+# MT2009_PLUS_JEWELS75_V1 (the owner, 8 October): the Gameforge jewellery of Rubin, Szmaragd and
+# Szafir at level 75 ("normalnie sa na 85, ale ja chce zeby byly na 75") - the bracelets 14500 /
+# 14540 / 14560, necklaces 16500 / 16540 / 16560 and earrings 17500 / 17540 / 17560, +0..+9, were
+# in world.item_proto already at Gameforge's 85 / 95 / 100 with its bonuses. They go to 75 (a level
+# the operator set to anything else stays); the Szmaragdowe and Szafirowe earrings' regeneration
+# (SP / HP) to Gameforge's today, 4/5/6/8/10/12/15/18/22/28 % (the old record had 1..15; only the
+# old values change); their refine chain to recipes of their own, 7320-7328 (+n -> +n+1): the yang
+# and chance of the jewellery of Krysztal Duszy (316-324, which they shared), and from +6 one pearl
+# a step as Gameforge's - Biala (27992), Niebieska (27993), Krwawa Perla (27994). Gameforge's other
+# materials (Nieznane Lekarstwo+, Pamiatka Po Demonie, Klejnot Demona, Futro Yeti+, Plonaca Grzywa)
+# drop almost nowhere in this world and are left out. INSERT IGNORE: a recipe changed in the panel
+# stays. Granat (14520..., level 90) is untouched. Drops: Skrzynia Mroku (special_item_group.starter
+# .txt, as Gameforge's) and the Grotto of Exile's Commanders and Generals (special group 951110,
+# mob_drop_item.dropedit.append.txt). The client carries the same rows (client-patches/client-2.0.30/
+# tools/jewels75). Idempotent.
+db -e "UPDATE world.item_proto SET limitvalue0 = 75
+WHERE limittype0 = 1 AND limitvalue0 IN (85, 95, 100)
+  AND (vnum BETWEEN 14500 AND 14509 OR vnum BETWEEN 14540 AND 14549 OR vnum BETWEEN 14560 AND 14569
+    OR vnum BETWEEN 16500 AND 16509 OR vnum BETWEEN 16540 AND 16549 OR vnum BETWEEN 16560 AND 16569
+    OR vnum BETWEEN 17500 AND 17509 OR vnum BETWEEN 17540 AND 17549 OR vnum BETWEEN 17560 AND 17569);
+UPDATE world.item_proto SET applyvalue1 = ELT(vnum % 10 + 1, 4, 5, 6, 8, 10, 12, 15, 18, 22, 28)
+WHERE ((vnum BETWEEN 17540 AND 17549 AND applytype1 = 33) OR (vnum BETWEEN 17560 AND 17569 AND applytype1 = 32))
+  AND applyvalue1 = ELT(vnum % 10 + 1, 1, 1, 2, 3, 4, 6, 8, 10, 12, 15);
+INSERT IGNORE INTO world.refine_proto (id, vnum0, count0, vnum1, count1, vnum2, count2, vnum3, count3, vnum4, count4, cost, src_vnum, result_vnum, prob) VALUES
+(7320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2400, 0, 0, 100),
+(7321, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5000, 0, 0, 100),
+(7322, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10000, 0, 0, 100),
+(7323, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20000, 0, 0, 90),
+(7324, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40000, 0, 0, 80),
+(7325, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60000, 0, 0, 70),
+(7326, 27992, 1, 0, 0, 0, 0, 0, 0, 0, 0, 90000, 0, 0, 60),
+(7327, 27993, 1, 0, 0, 0, 0, 0, 0, 0, 0, 180000, 0, 0, 50),
+(7328, 27994, 1, 0, 0, 0, 0, 0, 0, 0, 0, 300000, 0, 0, 40);
+UPDATE world.item_proto SET refine_set = 7320 + vnum % 10
+WHERE vnum % 10 < 9 AND refine_set = 316 + vnum % 10
+  AND (vnum BETWEEN 14500 AND 14509 OR vnum BETWEEN 14540 AND 14549 OR vnum BETWEEN 14560 AND 14569
+    OR vnum BETWEEN 16500 AND 16509 OR vnum BETWEEN 16540 AND 16549 OR vnum BETWEEN 16560 AND 16569
+    OR vnum BETWEEN 17500 AND 17509 OR vnum BETWEEN 17540 AND 17549 OR vnum BETWEEN 17560 AND 17569);"   || fail_step "could not move the Rubin / Szmaragd / Szafir jewellery to level 75 (MT2009_PLUS_JEWELS75_V1)" >&2
+
 # MT2009_PLUS_ELEMENTS_V1: Elements and talismans (Autor: Digi Rasta, "Zywioly i talizmany",
 # nowy-system 0.28.0; server-patches/zywioly/README.md). Both files are generated
 # (tools/zywioly/) and idempotent, and run last, after every step above that writes
