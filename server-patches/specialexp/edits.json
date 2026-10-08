@@ -1,0 +1,8 @@
+[
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_NS_SPECIAL_EXP_V1",
+  "old": "\t\tcase POINT_RAMADAN_CANDY_BONUS_EXP:\n\t\t\tSetPoint(type, amount);\n",
+  "new": "\t\tcase POINT_RAMADAN_CANDY_BONUS_EXP:\n\t\t\t// MT2009_PLUS_NS_SPECIAL_EXP_V1 (Autor: Digi Rasta, nowy-system 0.28.1): the ItemShop rings, the\n\t\t\t// lollipop, the medal and the amulet give their fixed +30% / +50% experience through this point\n\t\t\t// (special_item_group.unique_attr.txt), so it adds up and comes off with the item - SetPoint(type,\n\t\t\t// amount) left -N% behind when one was taken off and kept only the last of two.\n\t\t\tSetPoint(type, GetPoint(type) + amount);\n"
+ }
+]

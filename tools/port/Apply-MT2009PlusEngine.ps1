@@ -1008,6 +1008,8 @@ if ((Test-Path -LiteralPath $yangLimitsApply -PathType Leaf) -and
     if ($yangLimitsResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} yang limit edit(s).' -f $yangLimitsResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # Elements and talismans (server-patches/zywioly, "Autor: Digi Rasta", nowy-system
 # 0.28.0, MT2009_PLUS_ELEMENTS_V1): the six element powers as server-only points
 # 178-183 (common/length.h, packet.h, char.cpp), the damage hook in CalcAttBonus
@@ -1023,6 +1025,20 @@ if ((Test-Path -LiteralPath $zywiolyApply -PathType Leaf) -and
     if ($zywiolyResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} elements and talismans edit(s).' -f $zywiolyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The special items' experience (server-patches/specialexp, "Autor: Digi Rasta",
+# nowy-system 0.28.1, MT2009_PLUS_NS_SPECIAL_EXP_V1): POINT_RAMADAN_CANDY_BONUS_EXP
+# adds up in CHARACTER::PointChange (char.cpp) instead of being set, so the rings',
+# the lollipop's, the medal's and the amulet's fixed +30% / +50% experience
+# (special_item_group.unique_attr.txt, point 127) comes off with the item.
+$specialExpApply = Join-Path $repo 'server-patches/specialexp/Apply-SpecialExpPatch.ps1'
+if ((Test-Path -LiteralPath $specialExpApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char.cpp') -PathType Leaf)) {
+    $specialExpResult = & $specialExpApply -SourceDir $engineGameSource
+    if ($specialExpResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} special item experience edit(s).' -f $specialExpResult.Applied) -ForegroundColor DarkGray
     }
 }
 
