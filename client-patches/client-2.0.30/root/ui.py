@@ -1267,6 +1267,13 @@ class ImageBox(Window):
 	def RegisterWindow(self, layer):
 		self.hWnd = wndMgr.RegisterImageBox(self, layer)
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): ImageBox.SetCoolTime
+	if getattr(app, "ENABLE_12ZI", 0):
+		def SetCoolTime(self, time):
+			wndMgr.SetCoolTimeImageBox(self.hWnd, time)
+
+		def SetStartCoolTime(self, time):
+			wndMgr.SetStartCoolTimeImageBox(self.hWnd, time)
 	def LoadImage(self, imageName):
 		self.name=imageName
 		wndMgr.LoadImage(self.hWnd, imageName)
@@ -5708,6 +5715,12 @@ class PythonScriptLoader(object):
 				parent.Children[Index] = ListBoxEx()
 				parent.Children[Index].SetParent(parent)
 				self.LoadElementListBoxEx(parent.Children[Index], ElementValue, parent)
+			# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): element numberline
+			elif Type == "numberline":
+				if getattr(app, "ENABLE_12ZI", 0):
+					parent.Children[Index] = NumberLine()
+					parent.Children[Index].SetParent(parent)
+					self.LoadElementNumberLine(parent.Children[Index], ElementValue, parent)
 
 			elif Type == "editline_centered":
 				parent.Children[Index] = EditLineCentered()
@@ -6336,6 +6349,11 @@ class PythonScriptLoader(object):
 
 		return True
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): LoadElementNumberLine
+	if getattr(app, "ENABLE_12ZI", 0):
+		def LoadElementNumberLine(self, window, value, parentWindow):
+			self.LoadDefaultData(window, value, parentWindow)
+			return True
 	def LoadElementComboBox(self, window, value, parentWindow):
 		if False == self.CheckKeyList(value["name"], value, self.COMBO_BOX_KEY_LIST):
 			return False

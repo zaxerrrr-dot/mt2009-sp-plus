@@ -254,7 +254,11 @@ class GameWindow(ui.ScriptWindow):
 
 		app.SetCamera(cameraDistance, cameraPitch, cameraRotation, cameraHeight)
 
-		constInfo.SET_DEFAULT_CAMERA_MAX_DISTANCE()
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): kamera na mapie 358
+		if str(background.GetCurrentMapName()) == "metin2_12zi_stage" and getattr(app, "ENABLE_12ZI", 0):
+			constInfo.SET_CAMERA_MAX_DISTANCE_12ZI()
+		else:
+			constInfo.SET_DEFAULT_CAMERA_MAX_DISTANCE()
 		constInfo.SET_DEFAULT_CHRNAME_COLOR()
 		constInfo.SET_DEFAULT_FOG_LEVEL()
 		constInfo.SET_DEFAULT_CONVERT_EMPIRE_LANGUAGE_ENABLE()
@@ -1619,6 +1623,43 @@ class GameWindow(ui.ScriptWindow):
 	def OpenRestartDialog(self):
 		self.interface.OpenRestartDialog()
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): metody interfejsu
+	if getattr(app, "ENABLE_12ZI", 0):
+		def OpenUI12zi(self, yellowmark, greenmark, yellowreward, greenreward, goldreward):
+			self.interface.OpenUI12zi(int(yellowmark,16), int(greenmark,16), int(yellowreward), int(greenreward), int(goldreward))
+
+		def Refresh12ziTimer(self, currentFloor, jumpCount, limitTime, elapseTime):
+			self.interface.Refresh12ziTimer(currentFloor, jumpCount, limitTime, elapseTime)
+
+		def Show12ziJumpButton(self):
+			self.interface.Show12ziJumpButton()
+
+		def Hide12ziTimer(self):
+			self.interface.Hide12ziTimer()
+
+		def OpenReviveDialog(self, vid, itemcount):
+			self.targetBoard.OpenReviveDialog(vid, itemcount);
+
+		def RefreshShopItemToolTip(self):
+			self.interface.RefreshShopItemToolTip()
+
+		def NotEnoughPrism(self, itemcount):
+			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.NOT_ENOUGH_PRISM % (itemcount))
+
+		def ZodiacTimeCommand(self, currentFloor, jumpCount, limitTime, elapseTime = 0):
+			self.Refresh12ziTimer(int(currentFloor), int(jumpCount), int(limitTime), int(elapseTime))
+
+		def BeadCountCommand(self, count):
+			self.SetBeadCount(int(count))
+
+		def BeadTimeCommand(self, remain):
+			self.NextBeadUpdateTime(int(remain))
+
+		def OpenReviveDialogCommand(self, vid, itemcount):
+			self.OpenReviveDialog(int(vid), int(itemcount))
+
+		def NotEnoughPrismCommand(self, itemcount):
+			self.NotEnoughPrism(int(itemcount))
 	def ChangeCurrentSkill(self, skillSlotNumber):
 		self.interface.OnChangeCurrentSkill(skillSlotNumber)
 
@@ -1766,6 +1807,13 @@ class GameWindow(ui.ScriptWindow):
 		def OnPickCheque(self, cheque):
 			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.GAME_PICK_CHEQUE % (cheque))
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): kule Animy
+	if getattr(app, "ENABLE_12ZI", 0):
+		def SetBeadCount(self, value):
+			self.interface.SetBeadCount(value)
+
+		def NextBeadUpdateTime(self, value):
+			self.interface.NextBeadUpdateTime(value)
 	def OnShopError(self, type):
 		try:
 			self.PopupMessage(localeInfo.SHOP_ERROR_DICT[type])
@@ -2920,6 +2968,19 @@ class GameWindow(ui.ScriptWindow):
 		is_gm = type == chat.CHAT_TYPE_GAMEMASTER_NOTICE
 		self.interface.fancyBoard.SetTip(message, is_gm)
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): komunikaty misji
+	if getattr(app, "ENABLE_12ZI", 0):
+		def BINARY_SetMissionMessage(self, message):
+			if getattr(app, "ENABLE_CHAT_MISSION_ALTERNATIVE", 0):
+				self.interface.missionBoard.SetMission(message.replace("_", " "))
+			else:
+				self.interface.missionBoard.SetMission(message)
+
+		def BINARY_SetSubMissionMessage(self, message):
+			self.interface.missionBoard.SetSubMission(message)
+
+		def BINARY_CleanMissionMessage(self):
+			self.interface.missionBoard.CleanMission()
 	def BINARY_AppendNotifyMessage(self, type):
 		if not type in localeInfo.NOTIFY_MESSAGE:
 			return
@@ -3281,6 +3342,16 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["MiniGameRumiOpen"] = self.__MiniGameRumiOpen
 		serverCommandList["YutnoriOpen"] = self.__YutnoriOpen # MT2009_PLUS_YUTNORI_V1 (the table NPC)
 
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): polecenia serwera
+		if getattr(app, "ENABLE_12ZI", 0):
+			serverCommandList["NextFloorButton"]			= self.Show12ziJumpButton
+			serverCommandList["OpenUI12zi"]					= self.OpenUI12zi
+			serverCommandList["ZodiacTime"]					= self.ZodiacTimeCommand
+			serverCommandList["ZodiacTimeClear"]			= self.Hide12ziTimer
+			serverCommandList["Bead_count"]					= self.BeadCountCommand
+			serverCommandList["Bead_time"]					= self.BeadTimeCommand
+			serverCommandList["OpenReviveDialog"]			= self.OpenReviveDialogCommand
+			serverCommandList["NotEnoughPrism"]				= self.NotEnoughPrismCommand
 		self.serverCommander=stringCommander.Analyzer()
 		serverCommandList["DropWiki"] = self.__DropWiki # MT2009_PLUS_DROP_WIKI_V1
 		serverCommandList["BossMark"] = self.__BossMark # MT2009_PLUS_BOSS_SKULL_V1

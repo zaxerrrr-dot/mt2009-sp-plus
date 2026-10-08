@@ -422,3 +422,120 @@ class FancyBoard(ui.Bar):
 				self.dstPos = -self.STEP_HEIGHT
 
 				self.__CleanOldTip()
+# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): MissionBoard
+if getattr(app, "ENABLE_12ZI", 0):
+	class MissionBoard(ui.Bar):
+		FONT_HEIGHT	= 15
+		LINE_HEIGHT	= FONT_HEIGHT + 5
+		STEP_HEIGHT	= LINE_HEIGHT + 5
+		LONG_TEXT_START_X	= 300
+		SCREEN_WIDTH	= wndMgr.GetScreenWidth()
+
+		def __init__(self):
+			ui.Bar.__init__(self)
+
+			self.AddFlag("not_pick")
+			self.missionText = None
+			self.missionFullText = None
+			self.curPos = 0
+			self.dstPos = -5
+			self.nextScrollTime = 0
+			self.flowMode = False
+			self.ScrollStartTime = 0.0
+			self.textWidth = 0
+
+			self.SetPosition(0, 100)
+			self.SetSize(self.SCREEN_WIDTH, 35)
+			self.SetColor(grp.GenerateColor(0.0, 0.0, 0.0, 0.5))
+			self.SetWindowHorizontalAlignCenter()
+
+			self.__CreateTextBar()
+
+		def __del__(self):
+			ui.Bar.__del__(self)
+
+		def __CreateTextBar(self):
+			x, y = self.GetGlobalPosition()
+
+			self.textBar = BigTextBar(self.SCREEN_WIDTH*2, 300, self.FONT_HEIGHT)
+			self.textBar.SetParent(self)
+			self.textBar.SetPosition(6, 8)
+			self.textBar.SetTextColor(242, 231, 193)
+			self.textBar.SetClipRect(0, y, self.SCREEN_WIDTH, y+8+self.STEP_HEIGHT)
+			self.textBar.Show()
+
+		def CleanMission(self):
+			self.missionText = None
+			self.missionFullText = None
+			self.textBar.ClearBar()
+			self.Hide()
+
+		def __RefreshBoard(self):
+			self.textBar.ClearBar()
+
+			if self.missionFullText:
+				(text_width, text_height) = self.textBar.GetTextExtent(self.missionFullText)
+				self.textWidth = text_width
+
+				if text_width>self.SCREEN_WIDTH:
+					self.textBar.TextOut(0, (self.STEP_HEIGHT-8-text_height)/2, self.missionFullText)
+					self.flowMode = True
+				else:
+					self.textBar.TextOut((wndMgr.GetScreenWidth()-text_width)/2, (self.STEP_HEIGHT-8-text_height)/2, self.missionFullText)
+					self.flowMode = False
+
+		def SetMission(self, text):
+			self.__AppendText(text)
+			self.__RefreshBoard()
+
+			if self.flowMode:
+				self.dstPos = -self.textWidth
+				self.curPos = self.LONG_TEXT_START_X
+				self.textBar.SetPosition(3 + self.curPos, 8)
+			else:
+				self.dstPos = 0
+				self.curPos = self.STEP_HEIGHT
+				self.textBar.SetPosition(3, 8 + self.curPos)
+
+			if not self.IsShow():
+				self.Show()
+
+		def SetSubMission(self, text):
+			self.missionFullText = self.missionText + text
+
+			preflowMode = self.flowMode
+
+			self.__RefreshBoard()
+
+			if preflowMode != self.flowMode:
+				if self.flowMode:
+					self.dstPos = -self.textWidth
+					self.curPos = self.LONG_TEXT_START_X
+					self.textBar.SetPosition(3 + self.curPos, 8)
+				else:
+					self.dstPos = 0
+					self.curPos = self.STEP_HEIGHT
+					self.textBar.SetPosition(3, 8 + self.curPos)
+
+		def __AppendText(self, text):
+			if text == "":
+				self.CleanMission()
+				return
+
+			self.missionText = text
+			self.missionFullText = text
+
+		def OnUpdate(self):
+			if self.missionFullText == None:
+				self.Hide()
+				return
+
+			if self.dstPos < self.curPos:
+				self.curPos -= 1
+				if self.flowMode:
+					self.textBar.SetPosition(3 + self.curPos, 8)
+				else:
+					self.textBar.SetPosition(3, 8 + self.curPos)
+			else:
+				if self.flowMode:
+					self.curPos = self.SCREEN_WIDTH

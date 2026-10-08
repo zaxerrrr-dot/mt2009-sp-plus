@@ -3180,10 +3180,32 @@ class InventoryWindow(ui.ScriptWindow):
 
 			constInfo.SET_ITEM_QUESTION_DIALOG_STATUS(1)
 
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): pytanie przy uzyciu 72327-72329
+		elif getattr(app, "ENABLE_12ZI", 0) and ItemVNum in (72327, 72329, 72328):
+			self.questionDialog = uiCommon.QuestionDialog()
+			self.questionDialog.SetText(self.GetConfirmQuestion(ItemVNum))
+			(width, height) = self.questionDialog.GetTextSize()
+			self.questionDialog.SetWidth(width+16)
+			self.questionDialog.SetAcceptEvent(ui.__mem_func__(self.__UseItemQuestionDialog_OnAccept))
+			self.questionDialog.SetCancelEvent(ui.__mem_func__(self.__UseItemQuestionDialog_OnCancel))
+			self.questionDialog.Open()
+			self.questionDialog.slotIndex = slotIndex
+
+			constInfo.SET_ITEM_QUESTION_DIALOG_STATUS(1)
 		else:
 			self.__SendUseItemPacket(slotIndex)
 			#net.SendItemUsePacket(slotIndex)
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): tresc pytania
+	if getattr(app, "ENABLE_12ZI", 0):
+		def GetConfirmQuestion(self, vnum):
+			item.SelectItem(vnum)
+			if vnum == 72327 or vnum == 72329:
+				return localeInfo.CHARGE_BEAD_QUESTION % (item.GetValue(0))
+			elif vnum == 72328:
+				return localeInfo.UNLIMIT_ENTER_CZ_QUESTION % (item.GetValue(0))
+			else:
+				return localeInfo.INVENTORY_REALLY_USE_ITEM2
 	def __UseItemQuestionDialog_OnCancel(self):
 		self.OnCloseQuestionDialog()
 
