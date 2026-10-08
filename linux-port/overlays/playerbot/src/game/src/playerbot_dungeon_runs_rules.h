@@ -139,6 +139,10 @@ namespace playerbot_dgrun
 		{ "skorpion", 72, 6, 6, 5, true },
 		// The Blue Dragon (208) is no run for three: four at the entrance.
 		{ "smok", 0, 4, 5, 4, false },
+		// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy (158) - a dungeon one player of 75-80 finishes
+		// alone, the bots' gear twenty levels behind theirs (V2): from 78, four called and four at the
+		// entrance, a Shaman when one is free.
+		{ "atlantyda", 78, 4, 4, 4, false },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)

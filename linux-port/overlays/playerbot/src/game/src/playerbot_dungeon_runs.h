@@ -92,7 +92,7 @@
 // The operator's hook: a file "playerbot_dungeon_runs_test" in the core's
 // directory, read every few seconds and renamed to .done:
 //     now <key|any>           a call now (biblioteka, wieza, wukong, razador,
-//                             skorpion, nemere, smok, dzungla), off the clock;
+//                             skorpion, nemere, smok, dzungla, atlantyda), off the clock;
 //     abort <key|all>         those runs out now;
 //     status                  one BOT_DGRUN status line per dungeon.
 //
@@ -182,7 +182,8 @@ namespace
 		DGRUN_KIND_RAZADOR,	// the statue's six tasks in their order, then Razador
 		DGRUN_KIND_NEMERE,	// ten rooms, then Nemere
 		DGRUN_KIND_SMOK,	// four stones, then the Blue Dragon
-		DGRUN_KIND_TOWER	// the Demon Tower: the stone, then the tower's floors
+		DGRUN_KIND_TOWER,	// the Demon Tower: the stone, then the tower's floors
+		DGRUN_KIND_ATLANTYDA	// MT2009_PLUS_ATLANTYDA_V1: stage flag; two floors (d.jump_all), the key to the pillars
 	};
 
 	struct TPlayerBotDgRunDef
@@ -205,7 +206,7 @@ namespace
 	};
 
 	// MT2009_PLUS_AREZZO_BALANCE_V1: the fees are half of what they were (the owner, 5 October) -
-	// the quests' cfg().fee: 1 / 2.5 / 3.5 / 5 / 7.5 / 7.5 / 7.5 million.
+	// the quests' cfg().fee: 1 / 2.5 / 3.5 / 5 / 7.5 / 7.5 / 7.5 million (Atlantyda: its ticket, 6 million).
 	const TPlayerBotDgRunDef PLAYERBOT_DGRUN_DEFS[] = {
 		{ "biblioteka", DGRUN_KIND_BIBLIO, 363, "biblioteka_wiedzy", "biblioteka_dgrun", NULL, 271, 252,
 			1000000LL, 5, 30, 60000, 2 },
@@ -222,8 +223,15 @@ namespace
 			7500000LL, 5, 60, 60000, 1 },
 		{ "dzungla", DGRUN_KIND_AREZZO, 366, "starozytna_dzungla", "dzungla_dgrun", NULL, 384, 374,
 			7500000LL, 5, 60, 60000, 2 },
+		// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy (158) - the quest's ticket (6 000 000 at Mag Atlantydy) is
+		// what a bot's run pays in yang here; 40 minutes, 5 a day.
+		{ "atlantyda", DGRUN_KIND_ATLANTYDA, 158, "ruiny_atlantydy", "atlantyda_dgrun", NULL, 199, 241,
+			6000000LL, 5, 40, 60000, 2 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
+	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy's second floor, where d.jump_all puts the party (cells).
+	const long PLAYERBOT_DGRUN_ATLANTYDA_FLOOR2_X = 544;
+	const long PLAYERBOT_DGRUN_ATLANTYDA_FLOOR2_Y = 475;
 
 	// ------------------------------------------------------------ the numbers
 
@@ -684,6 +692,7 @@ namespace
 		{
 			case DGRUN_KIND_BIBLIO:
 			case DGRUN_KIND_AREZZO:
+			case DGRUN_KIND_ATLANTYDA:
 			{
 				// 1..N while a stage runs, 10+N between stages, N+1 at the end.
 				const int s = d->GetFlag("stage");
@@ -785,6 +794,8 @@ namespace
 				return d->GetFlag("boss") >= 2;
 			case DGRUN_KIND_NEMERE:
 				return d->GetFlag("step") >= 11;
+			case DGRUN_KIND_ATLANTYDA:
+				return d->GetFlag("stage") == 7;
 			default:
 				return false;
 		}
@@ -814,6 +825,13 @@ namespace
 				break;
 			case DGRUN_KIND_SMOK:
 				sig = (long long)d->GetFlag("stones") * 1009LL + d->GetFlag("boss");
+				break;
+			case DGRUN_KIND_ATLANTYDA:
+				// The pillars opened (left, next), the key out, the Guardians and Morkhot up, the penalty points.
+				sig = (long long)d->GetFlag("kills") * 1000003LL + (long long)d->GetFlag("left") * 1009LL +
+						(long long)d->GetFlag("next") * 101LL + (long long)d->GetFlag("key_out") * 31LL +
+						(long long)d->GetFlag("boss_up") * 7LL + (long long)d->GetFlag("negative") * 3LL +
+						(long long)d->GetFlag("boss_try") * 211LL + d->GetFlag("stage");
 				break;
 			default:
 				break;
@@ -883,6 +901,20 @@ namespace
 					case 7: out.push_back(6151); break;
 					case 9: out.push_back(20399); break;
 					case 10: out.push_back(6191); break;
+					default: break;
+				}
+				break;
+			// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy's stages (ruiny_atlantydy.quest).
+			case DGRUN_KIND_ATLANTYDA:
+				switch (d->GetFlag("stage"))
+				{
+					case 1: out.push_back(4550); out.push_back(4551); out.push_back(4552); break;
+					// the Shell (its key goes to a pillar, PLAYERBOT_PDG_GIVE_ITEMS), or the Guardian it opened
+					case 2: out.push_back(d->GetFlag("boss_up") == 1 ? 4557 : 8729); break;
+					case 3: out.push_back(4558); break;
+					case 4: out.push_back(4553); out.push_back(4554); out.push_back(4555); out.push_back(4556); break;
+					case 5: out.push_back(8730); break;
+					case 6: out.push_back(4559); out.push_back(8731); break;
 					default: break;
 				}
 				break;
@@ -1450,8 +1482,15 @@ namespace
 			LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(def.lMap);
 			if (pMap && def.bKind != DGRUN_KIND_RAZADOR && def.bKind != DGRUN_KIND_NEMERE)
 			{
-				const long x = pMap->m_setting.iBaseX + def.lEntryCellX * 100;
-				const long y = pMap->m_setting.iBaseY + def.lEntryCellY * 100;
+				long x = pMap->m_setting.iBaseX + def.lEntryCellX * 100;
+				long y = pMap->m_setting.iBaseY + def.lEntryCellY * 100;
+				// MT2009_PLUS_ATLANTYDA_V1: the second floor has a way in of its own (the quest's cfg().floor2) -
+				// the first floor's is out of reach from it.
+				if (def.bKind == DGRUN_KIND_ATLANTYDA && d && d->GetFlag("floor") == 2)
+				{
+					x = pMap->m_setting.iBaseX + PLAYERBOT_DGRUN_ATLANTYDA_FLOOR2_X * 100;
+					y = pMap->m_setting.iBaseY + PLAYERBOT_DGRUN_ATLANTYDA_FLOOR2_Y * 100;
+				}
 				if (DISTANCE_APPROX(ch->GetX() - x, ch->GetY() - y) > 600)
 				{
 					SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
@@ -2444,7 +2483,7 @@ namespace
 		HoldPlayerBotArzDgBossRegen(run.lInstance, dwNow);
 		// MT2009_PLUS_DG_STAGE_WATCH_V1 (playerbot_arezzo_dungeon_bots.h): the
 		// quests with a stage flag - the objectives known for the Arezzo three.
-		if (!run.dwFinishedAt && (def.bKind == DGRUN_KIND_AREZZO || def.bKind == DGRUN_KIND_BIBLIO))
+		if (!run.dwFinishedAt && (def.bKind == DGRUN_KIND_AREZZO || def.bKind == DGRUN_KIND_BIBLIO || def.bKind == DGRUN_KIND_ATLANTYDA))
 			WatchPlayerBotArzDgStage(run.lInstance, d, def.bKind == DGRUN_KIND_AREZZO ? GetPlayerBotArzDgIndex(def.lMap) : -1,
 					def.szKey, dwNow);
 		if (!run.dwFinishedAt && (def.bKind == DGRUN_KIND_RAZADOR || def.bKind == DGRUN_KIND_NEMERE))

@@ -46,6 +46,7 @@ namespace mt2009_dgreset
 		{ "nemere", "nemere_dungeon", true, "entry", "Nemere" },
 		{ "smok", "blue_dragon_lair", true, "entry", "Niebieski Smok" },
 		{ "dzungla", "starozytna_dzungla", true, "entry", "Staro\xbfytna D\xbfungla" },
+		{ "atlantyda", "ruiny_atlantydy", true, "entry", "Ruiny Atlantydy" },	// MT2009_PLUS_ATLANTYDA_V1
 		{ "katakumby", "devilcatacomb_zone", false, "last_exit_time", "Katakumby Diab\xb3" "a" },
 	};
 	const size_t DEF_COUNT = sizeof(DEFS) / sizeof(DEFS[0]);
@@ -142,13 +143,13 @@ void GmDungeonResetCommand(LPCHARACTER ch, const char* argument)
 	if (!*name)
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, "/dungeon_reset <nick> [loch|all] (/resetdungi) - zeruje dzisiejszy limit wypraw postaci.");
-		ch->ChatPacket(CHAT_TYPE_INFO, "Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.");
+		ch->ChatPacket(CHAT_TYPE_INFO, "Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby (tylko odpoczynek bota); bez lochu albo all - wszystkie.");
 		return;
 	}
 	const int pick = Pick(which);
 	if (pick < 0)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, "Nieznany loch \"%s\". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, katakumby albo all.", which);
+		ch->ChatPacket(CHAT_TYPE_INFO, "Nieznany loch \"%s\". Lochy: biblioteka, wukong, razador, skorpion, nemere, smok, dzungla, atlantyda, katakumby albo all.", which);
 		return;
 	}
 	const char* scope = pick == (int)DEF_COUNT ? "wszystkich loch\xf3w" : DEFS[pick].name;

@@ -99,7 +99,9 @@ namespace
 		DWORD dwVnum;
 		DWORD dwNpc;
 	};
-	const TPlayerBotPdgGive PLAYERBOT_PDG_GIVE_ITEMS[] = { { 30329, 20386 }, { 30330, 20386 }, { 30761, 20398 } };
+	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy's key (30920) to a Shell Pillar (9461) - the quest takes a
+	// bot's key at any pillar still shut (a bot cannot read the riddle).
+	const TPlayerBotPdgGive PLAYERBOT_PDG_GIVE_ITEMS[] = { { 30329, 20386 }, { 30330, 20386 }, { 30761, 20398 }, { 30920, 9461 } };
 	// The Blue Dragon takes no damage while one of his four stones stands
 	// (server-patches/bluedragon): the stones first.
 	const DWORD PLAYERBOT_PDG_BLUE_DRAGON = 2493;
@@ -121,6 +123,7 @@ namespace
 		{ 364, 65, 5537, 1450 },		// wzgorze_wukonga
 		{ 365, 62, 5989, 7058 },		// ruiny_skorpiona
 		{ 366, 362, 3783, 3954 },		// starozytna_dzungla (the Las)
+		{ 158, 64, 2848, 8096 },		// ruiny_atlantydy (MT2009_PLUS_ATLANTYDA_V1: Orc Valley, Mag Atlantydy)
 	};
 
 	struct TPlayerBotPdgBot
