@@ -764,10 +764,11 @@ namespace
 	// it uses (never one its owner took off, never by pulling another out);
 	// and a worn stone of that deck under PLAYERBOT_DS_ELIXIR_BELOW_SEC
 	// recharged with a time elixir of its bag (the Alchemist's (D), any
-	// USE_TIME_CHARGE_FIX/PER one) its owner gave it - a gift is given to be
-	// used, the equipment lock or not; the owner's drop it holds for the
-	// owner is never spent. It buys none: the elixir is the Alchemist's, a
-	// counter no companion errand visits.
+	// USE_TIME_CHARGE_FIX/PER one) - since MT2009_PLUS_SIDEKICK_DS_ELIXIRS_V2
+	// any of its bag, not only the ones its owner gave it, the equipment lock
+	// or not; the owner's drop it holds for the owner is never spent. It buys
+	// none: the elixir is the Alchemist's, a counter no companion errand
+	// visits.
 
 	// The deck a companion's stones are on: the one with more stones with
 	// time left (withTime) or worn at all; the first on a tie.
@@ -789,21 +790,42 @@ namespace
 		return best;
 	}
 
+	// MT2009_PLUS_SIDEKICK_DS_ELIXIRS_V2 ("Towarzyszka nie chce uzywac
+	// eliksirow co przedluzaja alchemie. Ma kilka w ekwipunku ... uzyla tylko
+	// jednego, a ma caly krag alchemii", the owner, 8 October 2026). Two
+	// gates held the rest of the bag back. Only an elixir its owner handed
+	// over the trade window or the bag window was ever spent: everything else
+	// counted as kept for its owner (IsPlayerBotSidekickKeptForOwner) - the
+	// elixirs it looted on its own while let off the leash, the ones its box
+	// sweep brought back from its storekeeper, any that came another way -
+	// and they lay there for good. And the pass took one stone at a time and
+	// stuck to the first elixir of the bag: one the engine refused (a Dragon
+	// Heart with nothing in it, a stone already full) was tried again on
+	// every pass and the next one in the bag never came up. Now every time
+	// elixir of its bag is the deck's - only the owner's drop it holds for the
+	// owner (IsPlayerBotSidekickHeld), a locked one and one in a trade stay -
+	// and one pass recharges every worn stone of the deck in use that is
+	// under PLAYERBOT_DS_ELIXIR_BELOW_SEC or out of time, the emptiest first,
+	// with an elixir each (another while one still leaves it under the mark),
+	// past any elixir the engine turned down.
+	const int PLAYERBOT_SIDEKICK_DS_ELIXIRS_PER_PASS = 4;	// the engine's 5 uses in 500 ms, one for a potion
+
 	bool IsPlayerBotSidekickDsElixir(LPCHARACTER ch, LPITEM item)
 	{
-		if (!item || item->GetType() != ITEM_USE ||
-				(item->GetSubType() != USE_TIME_CHARGE_FIX && item->GetSubType() != USE_TIME_CHARGE_PER) ||
-				item->isLocked() || item->IsExchanging() || IsPlayerBotSidekickHeld(ch, item))
-			return false;
-		return IsPlayerBotSidekickGift(ch, item) || !IsPlayerBotSidekickKeptForOwner(ch, item);
+		return item && item->GetType() == ITEM_USE &&
+				(item->GetSubType() == USE_TIME_CHARGE_FIX || item->GetSubType() == USE_TIME_CHARGE_PER) &&
+				!item->isLocked() && !item->IsExchanging() && !IsPlayerBotSidekickHeld(ch, item);
 	}
 
-	int FindPlayerBotSidekickDsElixir(LPCHARACTER ch)
+	// The first time elixir of its bag that this pass has not seen the engine
+	// refuse.
+	int FindPlayerBotSidekickDsElixir(LPCHARACTER ch, const std::set<DWORD>& refused)
 	{
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && item->GetCell() == cell && IsPlayerBotSidekickDsElixir(ch, item))
+			if (item && item->GetCell() == cell && IsPlayerBotSidekickDsElixir(ch, item) &&
+					refused.find(item->GetID()) == refused.end())
 				return cell;
 		}
 		return -1;
@@ -851,38 +873,68 @@ namespace
 					sys_log(0, "PLAYERBOT_SIDEKICK: ds worn pid=%u name=%s vnum=%u deck=%d kind=%d", ch->GetPlayerID(),
 							ch->GetName(), best->GetVnum(), deck + 1, kind);
 			}
-		// One elixir a pass, on the stone of the deck that runs out first.
-		LPITEM low = NULL;
+		// MT2009_PLUS_SIDEKICK_DS_ELIXIRS_V2: every stone of the deck in use
+		// that runs low or is out, the emptiest first.
+		std::vector<LPITEM> low;
 		for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
 		{
 			LPITEM stone = ch->GetItem(TItemPos(INVENTORY, (WORD)(base + kind)));
 			if (stone && stone->IsDragonSoul() && stone->GetSocket(ITEM_SOCKET_REMAIN_SEC) < PLAYERBOT_DS_ELIXIR_BELOW_SEC &&
-					!IsPlayerBotSidekickHeld(ch, stone) &&
-					(!low || stone->GetSocket(ITEM_SOCKET_REMAIN_SEC) < low->GetSocket(ITEM_SOCKET_REMAIN_SEC)))
-				low = stone;
+					!IsPlayerBotSidekickHeld(ch, stone))
+				low.push_back(stone);
 		}
-		if (!low)
+		if (low.empty())
 			return;
-		const int cell = FindPlayerBotSidekickDsElixir(ch);
-		if (cell < 0)
+		for (size_t i = 1; i < low.size(); ++i)
+			for (size_t j = i; j > 0 && low[j]->GetSocket(ITEM_SOCKET_REMAIN_SEC) < low[j - 1]->GetSocket(ITEM_SOCKET_REMAIN_SEC); --j)
+				std::swap(low[j], low[j - 1]);
+		std::set<DWORD> refused;
+		int uses = 0;
+		size_t done = 0;
+		for (size_t i = 0; i < low.size() && uses < PLAYERBOT_SIDEKICK_DS_ELIXIRS_PER_PASS; )
 		{
-			PlayerBotLogThrottled("sidekick_ds_no_elixir", dwNow,
-					"PLAYERBOT_SIDEKICK: ds low, no elixir pid=%u name=%s vnum=%u sec=%ld", ch->GetPlayerID(),
-					ch->GetName(), low->GetVnum(), (long)low->GetSocket(ITEM_SOCKET_REMAIN_SEC));
-			return;
+			LPITEM stone = low[i];
+			const int cell = FindPlayerBotSidekickDsElixir(ch, refused);
+			if (cell < 0)
+			{
+				PlayerBotLogThrottled("sidekick_ds_no_elixir", dwNow,
+						"PLAYERBOT_SIDEKICK: ds low, no elixir pid=%u name=%s vnum=%u sec=%ld low=%u done=%u",
+						ch->GetPlayerID(), ch->GetName(), stone->GetVnum(), (long)stone->GetSocket(ITEM_SOCKET_REMAIN_SEC),
+						(unsigned int)low.size(), (unsigned int)done);
+				return;
+			}
+			LPITEM elixir = ch->GetInventoryItem((WORD)cell);
+			const DWORD elixirId = elixir->GetID();
+			const DWORD elixirVnum = elixir->GetVnum();
+			const long before = (long)stone->GetSocket(ITEM_SOCKET_REMAIN_SEC);
+			const bool ok = ch->UseItem(TItemPos(INVENTORY, (WORD)cell), TItemPos(stone->GetWindow(), stone->GetCell()));
+			const long after = (long)stone->GetSocket(ITEM_SOCKET_REMAIN_SEC);
+			++uses;
+			// An expired stone of the deck that is on was left off by the deck's
+			// switch: on with its new time.
+			if (ok && after > 0 && ch->DragonSoul_GetActiveDeck() == deck && !DSManager::instance().IsActiveDragonSoul(stone))
+				DSManager::instance().ActivateDragonSoul(stone);
+			if (ok && after > before)
+				++s_kPlayerBotAlchemyStats.recharged;
+			sys_log(0, "PLAYERBOT_SIDEKICK: ds recharged pid=%u name=%s vnum=%u elixir=%u ok=%d sec=%ld->%ld deck=%d "
+					"stone=%u/%u", ch->GetPlayerID(), ch->GetName(), stone->GetVnum(), elixirVnum, ok ? 1 : 0, before, after,
+					deck + 1, (unsigned int)(i + 1), (unsigned int)low.size());
+			if (!ok || after <= before)
+			{
+				// Refused: the next elixir of the bag for the same stone - unless
+				// the stone itself is full (the engine refuses every elixir then).
+				refused.insert(elixirId);
+				if (after >= (long)DSManager::instance().GetDuration(stone))
+					++i;
+				continue;
+			}
+			// Still under the mark (a small (M) on an empty stone): another.
+			if (after >= PLAYERBOT_DS_ELIXIR_BELOW_SEC)
+			{
+				++done;
+				++i;
+			}
 		}
-		const DWORD elixirVnum = ch->GetInventoryItem((WORD)cell)->GetVnum();
-		const long before = (long)low->GetSocket(ITEM_SOCKET_REMAIN_SEC);
-		const bool ok = ch->UseItem(TItemPos(INVENTORY, (WORD)cell), TItemPos(low->GetWindow(), low->GetCell()));
-		const long after = (long)low->GetSocket(ITEM_SOCKET_REMAIN_SEC);
-		// An expired stone of the deck that is on was left off by the deck's
-		// switch: on with its new time.
-		if (ok && after > 0 && ch->DragonSoul_GetActiveDeck() == deck && !DSManager::instance().IsActiveDragonSoul(low))
-			DSManager::instance().ActivateDragonSoul(low);
-		if (ok && after > before)
-			++s_kPlayerBotAlchemyStats.recharged;
-		sys_log(0, "PLAYERBOT_SIDEKICK: ds recharged pid=%u name=%s vnum=%u elixir=%u ok=%d sec=%ld->%ld deck=%d",
-				ch->GetPlayerID(), ch->GetName(), low->GetVnum(), elixirVnum, ok ? 1 : 0, before, after, deck + 1);
 	}
 
 	void ManagePlayerBotDsDeckTick(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
