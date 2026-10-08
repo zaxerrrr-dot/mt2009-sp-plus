@@ -339,6 +339,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // refusals it borrows, and the party dungeon pass and the Arezzo cohort,
 // whose fights and items it uses.
 #include "playerbot_dungeon_runs.h"
+// MT2009_PLUS_ZODIAC_RUNS_V1 (include): the bots' own runs of the Swiatynia Zodiaku (the operator's
+// playerbot_zodiac_test). After the dungeon runs and the party dungeon pass, whose fight it borrows.
+#include "playerbot_zodiac_runs.h"
 // MT2009_PLUS_GM_DUNGEON_RESET_V1 (include): a GM's "/dungeon_reset <name> [dungeon|all]"
 // ("/resetdungi") - after the bots' dungeon runs, whose rest it clears too.
 #include "playerbot_dungeon_reset.h"
@@ -6671,6 +6674,7 @@ void CPlayerBotManager::Update()
 	// next call when its time has come, the gatherings, the runs under way
 	// and their ends (playerbot_dungeon_runs.h).
 	ManagePlayerBotDungeonRuns(dwNow);
+	ManagePlayerBotZodiacRuns(dwNow);	// MT2009_PLUS_ZODIAC_RUNS_V1
 	// MT2009_PLUS_BOT_REPRICE_NOW_V1 (pass): every keeper's counter repriced
 	// at once, a few keepers a second (playerbot_reprice_now.h).
 	ManagePlayerBotRepriceNow(dwNow);
@@ -6903,6 +6907,11 @@ WritePlayerBotGuildStatus(dwNow);
 		// which would walk a bot with no person out of the instance
 		// (playerbot_dungeon_runs.h).
 		if (ManagePlayerBotDungeonRun(ch, state, dwNow))
+			continue;
+
+		// MT2009_PLUS_ZODIAC_RUNS_V1 (tick): a bot of a Zodiac Temple run - at the portal or
+		// inside - does nothing else (playerbot_zodiac_runs.h).
+		if (ManagePlayerBotZodiacRun(ch, state, dwNow))
 			continue;
 
 		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1 (tick): a bot whose person (its party's

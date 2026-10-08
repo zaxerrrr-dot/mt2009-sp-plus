@@ -4915,7 +4915,14 @@ bool CZodiacManager::Spawn()
 			return false;
 		}
 
-		if (GetCurrentDay() == ZC_MONDAY) //(Zi - Chou)
+		// MT2009_PLUS_ZODIAC_RUNS_V1: the operator's switch (event flag zodiac_all_portals, the test's
+		// "allportals 1" in playerbot_zodiac_test): every portal every day, as on a Sunday.
+		if (quest::CQuestManager::instance().GetEventFlag("zodiac_all_portals") != 0)
+		{
+			CZodiac::SpawnRegenZodiac("data/dungeon/zodiac/days/7-sunday.txt");
+			sys_log(0, "[ZODIAC] ALL PORTALS (zodiac_all_portals) spawned: 20439 - 20450");
+		}
+		else if (GetCurrentDay() == ZC_MONDAY) //(Zi - Chou)
 		{
 			CZodiac::SpawnRegenZodiac("data/dungeon/zodiac/days/1-monday.txt");
 			sys_log(0, "[ZODIAC] MONDAY spawned: 20439, 20440");

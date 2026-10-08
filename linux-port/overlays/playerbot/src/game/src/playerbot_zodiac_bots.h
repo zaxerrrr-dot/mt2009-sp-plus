@@ -44,6 +44,8 @@ namespace
 	const DWORD PLAYERBOT_ZODIAC_PRISM = 33025;
 	const DWORD PLAYERBOT_ZODIAC_PRISM_AWAKENING = 33032;
 	unsigned int s_uPlayerBotZodiacFreeRevives = 0;
+	// MT2009_PLUS_ZODIAC_RUNS_V1: the bots' own runs count their deaths (playerbot_zodiac_runs.h, later).
+	void NotePlayerBotZodiacRunRevive(DWORD pid, bool prisms);
 	unsigned int s_uPlayerBotZodiacPrismRevives = 0;
 
 	bool IsPlayerBotZodiacInstance(long mapIndex)
@@ -135,6 +137,7 @@ namespace
 			interpret_command(ch, cmd, strlen(cmd));
 			if (!ch->IsDead())
 			{
+				NotePlayerBotZodiacRunRevive(ch->GetPlayerID(), true);
 				++s_uPlayerBotZodiacPrismRevives;
 				sys_log(0, "PLAYERBOT_ZODIAC: revived pid=%u name=%s map=%ld prisms=%d left=%d deaths=%u total=%u",
 						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), need, have - need,
@@ -152,6 +155,7 @@ namespace
 		ch->ReviveInvisible(5);
 		ch->SetQuestFlag("12zi_temple.IsDead", 0);
 		++s_uPlayerBotZodiacFreeRevives;
+		NotePlayerBotZodiacRunRevive(ch->GetPlayerID(), false);
 		sys_log(0, "PLAYERBOT_ZODIAC: stood up pid=%u name=%s map=%ld prisms_needed=%d had=%d deaths=%u total=%u",
 				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), need, have, (unsigned int)ch->GetDeadCount(),
 				s_uPlayerBotZodiacFreeRevives);
