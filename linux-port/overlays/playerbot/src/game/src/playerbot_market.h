@@ -246,6 +246,11 @@ namespace
 		if (GetPlayerBotBiologistPurchaseNeed(ch, offer->GetVnum()) > 0)
 			return IsPlayerBotProgressionOffer(ch, offer);
 
+		// MT2009_PLUS_RANK_FRUIT_MARKET_V1: the rank fruit of the bot's total,
+		// for an eater (playerbot_rank_fruit_market.h); nobody else buys one.
+		if (IsPlayerBotRankFruit(offer->GetVnum()))
+			return WantsPlayerBotRankFruitOffer(ch, offer);
+
 		// The bean for a bot standing out a negative rank in town: the one thing
 		// that lifts it there (KeepPlayerBotNegativeRankInTown), one at a time.
 		// MT2009_PLUS_BOT_RANK_GLOVE_V1: not while it hunts the rank back
@@ -479,6 +484,10 @@ namespace
 		if (PlayerBotWantsKeyFromMarket(ch))
 			return true;
 		if (PlayerBotNeedsProgressionShopping(ch)) return true;
+		// MT2009_PLUS_RANK_FRUIT_MARKET_V1: the rank fruit it eats, while a
+		// counter holds one (the ledger).
+		if (PlayerBotWantsRankFruitFromMarket(ch))
+			return true;
 		// A bean for a negative rank (WantsPlayerBotStallItem).
 		if (ch->GetRealAlignment() < 0 && ch->CountSpecifyItem(PLAYERBOT_ZEN_BEAN_VNUM) == 0 &&
 				!IsPlayerBotRankHunting(ch, get_dword_time())) // MT2009_PLUS_BOT_RANK_GLOVE_V1
@@ -671,6 +680,10 @@ namespace
 		}
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		if (price > spare) return false;
+		// MT2009_PLUS_RANK_FRUIT_MARKET_V1: a rank fruit near the price table,
+		// out of the fruit's share of the purse.
+		if (IsPlayerBotRankFruit(item->GetVnum()))
+			return CanPlayerBotPayForRankFruit(ch, item, price);
 		// MT2009_PLUS_BOT_MINIGAMES_V1: no dearer than what it holds (a gambler
 		// a little over), out of a share of the purse.
 		if (IsPlayerBotMinigameChestVnum(item->GetVnum()))

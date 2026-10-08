@@ -361,6 +361,18 @@ namespace {
                     return RunPlayerBotOfflinePick(ch, state, now);
                 }
             }
+            // MT2009_PLUS_RANK_FRUIT_MARKET_V1: an eater's rank fruit, on every
+            // stand of the map (playerbot_rank_fruit_market.h).
+            {
+                std::map<DWORD, int> missing;
+                const long long fruitCap = std::min<long long>(budget, CollectPlayerBotRankFruitMissing(ch, missing));
+                if (!missing.empty() && fruitCap > 0 && FindPlayerBotGambleMaterialPick(ch, state, missing, fruitCap, now)) {
+                    sys_log(0, "PLAYERBOT_RANK: goes for rank fruit pid=%u name=%s owner=%u item=%u vnum=%u want=%d points=%d",
+                        ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, missing.begin()->first,
+                        missing.begin()->second, mt2009_rankp::KnownPoints(ch));
+                    return RunPlayerBotOfflinePick(ch, state, now);
+                }
+            }
             // And one of Community Patch 5's four gamblers buying its bases
             // looks on every stand of the map for one of its category.
             if (FindPlayerBotRareGamblerBasePick(ch, state, budget, now)) {

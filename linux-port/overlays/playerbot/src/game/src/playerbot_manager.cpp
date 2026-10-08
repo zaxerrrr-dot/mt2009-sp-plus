@@ -218,6 +218,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_shop_name_rules.h"
 #include "playerbot_town.h"
 #include "playerbot_alchemy.h"
+#include "playerbot_rank_fruit_market.h" // MT2009_PLUS_RANK_FRUIT_MARKET_V1: the eaters buy the rank fruit of their total off the counters
 // Iwakura's gambler: the session a town visit turns into at its end.
 #include "playerbot_gambler.h"
 // Iwakura's Useful Items List: what a bot keeps at the storekeeper rather than

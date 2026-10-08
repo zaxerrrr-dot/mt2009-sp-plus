@@ -642,11 +642,29 @@ namespace
 		return 0;
 	}
 
-	// The fruit that fits the bot's points now: its own, eaten at its next look.
+	// MT2009_PLUS_RANK_FRUIT_MARKET_V1 (the owner, 8 October: "niech boty wiedza,
+	// ze ranga daje bonusy i chetnie to wykorzystuja: czesc wbija, czesc
+	// wystawia"): PLAYERBOT_RANK_FRUIT_EATER_PERCENT of the bots (by player id,
+	// never a trader) eat the fruit that fits their total and buy more of it off
+	// the counters (playerbot_rank_fruit_market.h); the rest put every fruit on
+	// their counter, the fitting one too. A fruit out of a bot's range is goods
+	// for every bot, as before.
+	const int PLAYERBOT_RANK_FRUIT_EATER_PERCENT = 75;
+
+	bool IsPlayerBotRankFruitEater(LPCHARACTER ch)
+	{
+		if (!ch || GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_MERCHANT)
+			return false;
+		return (int)(((ch->GetPlayerID() ^ 0x52414e4bU) * 2654435761U >> 16) % 100U) <
+				PLAYERBOT_RANK_FRUIT_EATER_PERCENT;
+	}
+
+	// The fruit that fits the bot's points now: its own, eaten at its next look
+	// - an eater's (IsPlayerBotRankFruitEater); a trader lists it.
 	bool IsPlayerBotKeptRankFruit(LPCHARACTER ch, LPITEM item)
 	{
 		using namespace mt2009_rankp;
-		if (!ch || !item || !Enabled())
+		if (!ch || !item || !Enabled() || !IsPlayerBotRankFruitEater(ch))
 			return false;
 		const SFruit* fruit = FruitByVnum(item->GetVnum());
 		if (!fruit)
@@ -675,7 +693,7 @@ namespace
 			if (TierOf(KnownPoints(ch)) > 0)
 				SendTailAround(ch);
 		}
-		if (ch->GetExchange() || ch->GetMyShop())
+		if (ch->GetExchange() || ch->GetMyShop() || !IsPlayerBotRankFruitEater(ch))	// MT2009_PLUS_RANK_FRUIT_MARKET_V1
 			return;
 		for (int eaten = 0; eaten < 40; ++eaten)
 		{
