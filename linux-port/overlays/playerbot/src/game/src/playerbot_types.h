@@ -6137,7 +6137,10 @@ namespace
 	// the live population, which is what 2.0.60 was missing - so this is 70-80
 	// bots in the first villages at a time on a world of eleven hundred, not
 	// the 580 that filled them then.
-	const int PLAYERBOT_BIOLOGIST_HERB_TRIP_PER_MILLE = 70;
+	// MT2009_PLUS_BOT_BIOLOGIST_EAGER_V1 (the owner, 9 October: "boty duzo
+	// chetniej robia Biologa"): 120 per mille, and 180 for the collect rows
+	// below, with half the cooldown between two trips.
+	const int PLAYERBOT_BIOLOGIST_HERB_TRIP_PER_MILLE = 120;
 	const DWORD PLAYERBOT_BIOLOGIST_HERB_ERRAND_MAX_MS = 2 * 60 * 60 * 1000;
 	// A trip that has already collected something finishes: the hour used to
 	// run out with specimens in the bag and the place went back before the
@@ -6162,8 +6165,8 @@ namespace
 	// keyed by pid with no waiting list, so without this the same bots reclaim
 	// a place the moment the sweep frees one and everyone else starves
 	// ("Ryzyko glodzenia pozostalych", audit of 17 September, A.4/A.6).
-	const DWORD PLAYERBOT_BIOLOGIST_ERRAND_COOLDOWN_MS = 30 * 60 * 1000;
-	const int PLAYERBOT_BIOLOGIST_COLLECT_TRIP_PER_MILLE = 100;
+	const DWORD PLAYERBOT_BIOLOGIST_ERRAND_COOLDOWN_MS = 15 * 60 * 1000;	// MT2009_PLUS_BOT_BIOLOGIST_EAGER_V1: was 30 min
+	const int PLAYERBOT_BIOLOGIST_COLLECT_TRIP_PER_MILLE = 180;	// MT2009_PLUS_BOT_BIOLOGIST_EAGER_V1: was 100
 	const DWORD PLAYERBOT_BIOLOGIST_COLLECT_ERRAND_MAX_MS = 2 * 60 * 60 * 1000;
 	// From this row up a specimen is a refine material too - the Orc Tooth,
 	// the Curse Book, the Demon Souvenir - and a bot of any level may carry
