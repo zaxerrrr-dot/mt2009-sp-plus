@@ -4006,6 +4006,22 @@ T = {
                    "en":"✅ Saved! The new monster health is live in game."},
  "mh_saved_restart": {"pl":"Zapisano. Gra nie odpowiedziała (serwer jest wyłączony albo dopiero startuje) — zmiana zadziała przy następnym starcie serwera.",
                       "en":"Saved. The game did not answer (the server is down or still starting) - the change applies at the next server start."},
+ "dbonus_title": {"pl": "Szansa na bonus w wydropionym przedmiocie",
+                  "en": "Chance of bonuses on dropped items"},
+ "dbonus_help": {"pl": "Jak często broń i zbroja (także biżuteria, buty, hełmy i tarcze) wypadające z potworów mają bonusy i ile: procent szansy z gry, 100% = jak w grze. Zmienia szansę na pierwszy bonus oraz na drugi i trzeci — najwyżej trzy, jak w grze, a ich wartości zostają takie same. W grze broń ze zwykłych potworów nie ma bonusów (tylko z Metinów, bossów i wodzów); powyżej 100% dostaje je z szansą z tabeli przedmiotu razy nadwyżka (przy 200% tyle, ile ma w tabeli). Tylko drop z potworów — sklepy, nagrody z questów, skrzynie i ItemShop bez zmian. Dotyczy też dropu botów. Zmiana działa od następnego dropu, bez restartu, i zostaje po restarcie.",
+                 "en": "How often weapons and armour (jewellery, boots, helmets and shields too) dropped by monsters come with bonuses, and how many: a percent of the game's own chance, 100% = as in the game. It changes the chance of the first bonus and of the second and third - three at most, as in the game, and their values stay the same. In the game weapons from ordinary monsters have no bonuses (only from Metin stones, bosses and chiefs); above 100% they get them at the item's own chance times the excess (at 200% what its table says). Monster drops only - shops, quest rewards, chests and the ItemShop stay as they are. The bots' drops too. A change applies from the next drop, without a restart, and stays across a restart."},
+ "dbonus_label": {"pl": "Procent szansy z gry (10–1000):",
+                  "en": "Percent of the game's chance (10–1000):"},
+ "dbonus_examples": {"pl": "Przykład — broń z Metina: 100% → 30% ma bonus, 7% dwa lub trzy; 200% → 60%, 28% dwa lub trzy; 500% → zawsze, i zawsze dwa lub trzy. Broń 25–65 poziomu ze zwykłego potwora: 100% → nigdy, 200% → 20%, 500% → 80%. Zbroja ze zwykłego dropu: 3%, 6%, 15%.",
+                     "en": "For example - a weapon from a Metin stone: 100% → 30% have a bonus, 7% two or three; 200% → 60%, 28% two or three; 500% → always, and always two or three. A level 25-65 weapon from an ordinary monster: 100% → never, 200% → 20%, 500% → 80%. Armour from an ordinary drop: 3%, 6%, 15%."},
+ "dbonus_save": {"pl": "Zapisz szansę na bonus",
+                 "en": "Save the bonus chance"},
+ "dbonus_range": {"pl": "Wybierz procent od 10 do 1000. Nic nie zmieniono.",
+                  "en": "Pick a percent from 10 to 1000. Nothing was changed."},
+ "dbonus_saved_live": {"pl": "✅ Zapisano! Nowa szansa na bonus działa już w grze, od następnego dropu.",
+                       "en": "✅ Saved! The new bonus chance is live in game, from the next drop."},
+ "dbonus_saved_restart": {"pl": "Zapisano. Gra nie odpowiedziała (serwer jest wyłączony albo dopiero startuje) — zmiana zadziała przy następnym starcie serwera.",
+                          "en": "Saved. The game did not answer (the server is down or still starting) - the change applies at the next server start."},
  "ai_books_moved": {"pl":"Na tym serwerze ustawia to poziom trudności (Mnożniki serwera → Poziom trudności): osobno czas dla graczy, osobno dla botów; 0 = od razu.",
                     "en":"On this server the difficulty sets it (Server rates → Difficulty): one wait for the players, one for the bots; 0 = at once."},
  "ch2_title":   {"pl":"Drugi kanał (CH2)", "en":"Second channel (CH2)"},
@@ -5720,6 +5736,23 @@ def read_starter_chest_mt2009():
 MT2009_MOB_HP_FLAG = "m2_mob_hp"
 MOB_HP_CHOICES = (100, 80)
 MOB_HP_MIN_PERCENT, MOB_HP_MAX_PERCENT = 10, 300
+
+# MT2009_PLUS_DROP_BONUS_PCT_V1 (server-patches/dropbonus): the chance of bonus
+# lines on a dropped weapon or piece of armour - the event flag
+# m2_drop_bonus_pct, a percent of the game's own chance that every core reads
+# at its next drop (item_manager.cpp SetDropRarePct; 100, 0 or no row is the
+# game as it was made, 10..1000). The row is what a restart keeps (event flags
+# load from player.quest); web_admin.quest's DROP_BONUS makes it live.
+MT2009_DROP_BONUS_FLAG = "m2_drop_bonus_pct"
+DROP_BONUS_MIN_PERCENT, DROP_BONUS_MAX_PERCENT = 10, 1000
+
+def read_drop_bonus_mt2009():
+    """The percent as the card shows it, read as the cores read the flag."""
+    with db() as c, c.cursor() as cur:
+        cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (MT2009_DROP_BONUS_FLAG,))
+        row = cur.fetchone()
+    value = int((row["lValue"] if isinstance(row, dict) else row[0]) or 0) if row else 0
+    return 100 if value <= 0 else max(DROP_BONUS_MIN_PERCENT, min(DROP_BONUS_MAX_PERCENT, value))
 
 def read_mob_hp_mt2009():
     """The percent as the card shows it and the choices it offers: 100 and 80,
@@ -7684,6 +7717,17 @@ regenLabel("regen_metin");regenLabel("regen_boss");regenLabel("regen_mob");
 <p><label><input type="radio" name="pct" value="{{p}}"{% if mob_hp.pct == p %} checked{% endif %}> {{ t('mh_100') if p == 100 else (t('mh_80') if p == 80 else t('mh_custom').replace('{n}', p|string)) }}</label></p>
 {% endfor %}
 <button class="big" style="margin-top:12px">{{t('mh_save')}}</button>
+</form></div>
+{% endif %}
+{% if drop_bonus %}
+<div class="card">
+<form method="post" action="{{url_for('rates_drop_bonus')}}">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<h3>🎲 {{t('dbonus_title')}}</h3>
+<p class="muted">{{t('dbonus_help')}}</p>
+<p><label>{{t('dbonus_label')}} <input type="number" name="pct" min="{{drop_bonus_min}}" max="{{drop_bonus_max}}" step="1" value="{{drop_bonus}}" style="width:90px"> %</label></p>
+<p class="muted">{{t('dbonus_examples')}}</p>
+<button class="big" style="margin-top:12px">{{t('dbonus_save')}}</button>
 </form></div>
 {% endif %}
 {% if channels %}
@@ -19298,6 +19342,7 @@ def rates():
     autohunt = None
     starter_chest = None
     mob_hp = None
+    drop_bonus = None
     if ENGINE_MT2009:
         try:
             regen = read_regen_mt2009()
@@ -19323,6 +19368,10 @@ def rates():
             mob_hp = read_mob_hp_mt2009()
         except Exception:
             mob_hp = None
+        try:
+            drop_bonus = read_drop_bonus_mt2009()
+        except Exception:
+            drop_bonus = None
     channels = None
     if ENGINE_MT2009:
         try:
@@ -19334,6 +19383,8 @@ def rates():
                                   difficulty=difficulty, difficulty_levels=DIFFICULTY_LEVELS,
                                   difficulty_max=DIFFICULTY_MAX_HOURS, autohunt=autohunt,
                                   starter_chest=starter_chest, mob_hp=mob_hp, channels=channels,
+                                  drop_bonus=drop_bonus, drop_bonus_min=DROP_BONUS_MIN_PERCENT,
+                                  drop_bonus_max=DROP_BONUS_MAX_PERCENT,
                                   intro_key="rates_intro_mt2009" if ENGINE_MT2009 else "rates_intro",
                                   state_msg=t("rates_st_" + st) if st in RATE_STATES else "")
 
@@ -19593,6 +19644,45 @@ def rates_mob_hp():
             except Exception:
                 pass
         flash(t("mh_saved_restart"))
+    return redirect(url_for("rates"))
+
+
+@app.post("/rates/drop_bonus")
+@login_required
+def rates_drop_bonus():
+    """MT2009_PLUS_DROP_BONUS_PCT_V1: the chance of bonus lines on a dropped
+    weapon or piece of armour. mt2009 only: every core reads the event flag at
+    its next drop. The row is what a restart keeps; web_admin.quest's
+    DROP_BONUS makes it live."""
+    if not ENGINE_MT2009:
+        return redirect(url_for("rates"))
+    raw = (request.form.get("pct", "") or "").strip()
+    if not raw.isdigit() or not DROP_BONUS_MIN_PERCENT <= int(raw) <= DROP_BONUS_MAX_PERCENT:
+        flash(t("dbonus_range"), "error")
+        return redirect(url_for("rates"))
+    value = int(raw)
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                        "VALUES (0, %s, '', %s)", (MT2009_DROP_BONUS_FLAG, value))
+    except Exception:
+        flash(t("db_down"), "error")
+        return redirect(url_for("rates"))
+    try:
+        status, qid = queue_and_wait("", "DROP_BONUS", str(value), "", wait=RATES_LIVE_WAIT)
+    except Exception:
+        status, qid = "failed", 0
+    if status == "done":
+        flash(t("dbonus_saved_live"))
+    else:
+        if status == "timeout":
+            try:
+                with db() as c, c.cursor() as cur:
+                    cur.execute("UPDATE player.web_admin_queue SET status='cancelled' "
+                                "WHERE id=%s AND status='pending'", (qid,))
+            except Exception:
+                pass
+        flash(t("dbonus_saved_restart"))
     return redirect(url_for("rates"))
 
 
