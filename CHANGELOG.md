@@ -19,6 +19,19 @@ every version here.
 
 ## 2.29.0 — 2026-10-10 — Świątynia Zodiaku
 
+> ⚠️ **Ważne, jeśli edytujesz pliki bazy danych** (Edytor bazy danych w panelu zaawansowanym – własne nazwy, bonusy, opisy przedmiotów albo umiejętności): ta aktualizacja zmienia dane przedmiotów w kliencie. Po aktualizacji serwera i klienta do 2.0.60 **musisz pobrać nową paczkę ZIP z panelu i rozpakować ją do klienta**, inaczej nowe przedmioty (np. bronie i zbroje Zodiaku) mogą nie działać, a opisy nie będą się zgadzać.
+>
+> **Jak to zrobić:**
+> 1. Najpierw zaktualizuj serwer do 2.29.0 i klienta do 2.0.60.
+> 2. Zamknij grę (klient nie może być uruchomiony).
+> 3. Otwórz panel zaawansowany i wejdź w **Edytor bazy danych → Zastosuj**.
+> 4. Kliknij **„Pobierz aktualne pliki klienta (zip)”** i zapisz plik na dysku.
+> 5. Otwórz pobrany ZIP – w środku jest folder `pack` z plikami `dbdata`.
+> 6. Wypakuj całą zawartość ZIP-a do **głównego folderu gry** (tam, gdzie jest `metin2client.exe`) i zgódź się na **zastąpienie plików**. Pliki muszą trafić do folderu `pack` gry – nie twórz nowego podfolderu.
+> 7. Uruchom grę ponownie. Jeśli pliki są nadal nieaktualne, gra pokaże o tym komunikat po zalogowaniu.
+>
+> Jeśli uruchamiasz grę przez **MT2009-Patcher.exe**, nie musisz nic robić ręcznie – patcher sam pobierze aktualne pliki z panelu serwera przed startem gry.
+
 **Świątynia Zodiaku** (Autor: Digi Rasta) – nowy dungeon drużynowy na poziom 105+.
 
 - **Wejście:** Teleporter → „Świątynia Zodiaku”. Na mapie jest 12 portali znaków. Każdego dnia otwarte są dwa: pon. Szczur + Bawół, wt. Tygrys + Królik, śr. Smok + Wąż, czw. Koń + Koza, pt. Małpa + Kogut, sob. Pies + Świnia, a w niedzielę wszystkie.
