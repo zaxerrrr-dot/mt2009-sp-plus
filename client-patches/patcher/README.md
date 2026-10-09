@@ -55,6 +55,20 @@ kanałów serwera z `coop.cfg` / `coop2.cfg` (gdy są oba - strzałki ‹ › pr
 a bez nich z localhost (127.0.0.1: 11000, 13000, 13010). Odświeżanie co 20 s i
 po zamknięciu okna serwera VPS.
 
+### Kanały CH3/CH4 same (MT2009_PLUS_CH34_AUTO_V1)
+
+Przy starcie, po aktualizacji, po zmianie w oknie VPS patcher pyta panel
+każdego serwera z `coop.cfg` / `coop2.cfg` o
+`/klient/dbdata/channels.json` (bez logowania; te same adresy co manifest
+`dbdata` niżej, więc i ta sama bramka) - `{"channels": 1..4, ...}` z
+`channels.effective` serwera - i ustawia w pliku tylko linię `channels=`:
+klient od 2.0.59 (`CLIENT_VERSION`) dostaje liczbę z serwera, starszy (jego
+`serverinfo.py` pomija cały plik przy `channels` > 2) albo każdy błąd - 2.
+Gry to nigdy nie blokuje; wynik w `MT2009-Patcher-kanaly.log` obok gry, a stan
+serwera pokazuje wtedy też CH3/CH4 (`N2_Patcher/Core/ChannelSync.cs`). To samo
+robią MT2009-Aktualizator (przy GRAJ) i launcher serwera (zapis `coop.cfg` z
+kodu zaproszenia / VPS).
+
 ## Wydanie nowej wersji klienta na serwer patchera
 
 Po zbudowaniu nowego klienta (paczki + `metin2client.exe`), na vps1:

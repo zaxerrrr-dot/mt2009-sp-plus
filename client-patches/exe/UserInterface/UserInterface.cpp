@@ -794,6 +794,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 #endif
 #ifdef ENABLE_MONSTER_CARD_MODEL
 	{ void Mt2009MonsterModel_RegisterPython(); Mt2009MonsterModel_RegisterPython(); } // MT2009_PLUS_MONSTER_CARD_MODEL_V1 (Autor: Digi Rasta)
+#ifdef ENABLE_12ZI
+	{ void Mt2009Zodiak_RegisterPython(); Mt2009Zodiak_RegisterPython(); } // MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta)
+#endif
 #endif
 	initsafebox();
 	initguild();

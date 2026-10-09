@@ -1,0 +1,28 @@
+# MT2009_PLUS_NS_WIKI_ITEMS_V1 (Autor: Digi Rasta, nowy-system 0.33.0): the upgrade materials of the new
+# families (wiki_nowe.sql) in the Razador (50270) and Nemere (50271) chests - lines "s951201" / "s951202" at 70%
+# in special_item_group.dungeons.txt; each group gives one thing by weight, 1-3 pieces. Without the Zodiac's
+# Czerwone Pudlo (33029) and his group 951203 of Zodiac weapons: those are the Zodiac Temple's (zodiak.sql).
+# MT2009_PLUS_NS_WIKI_RECIPES_OFF (the owner, 9 October): with the wiki recipes off, only the Zodiac's refine
+# materials stay here - Mithril, the dyes, Ksiega/Dusza Prawdy, Eliksir Bogow, Wzor Kroju, Turmalin, Cyjanit and
+# Owoc Bogow come back with the recipes.
+# Appended to special_item_group.txt by the Dockerfile.
+
+Group	MT2009_wikinowe_razador
+{
+	Vnum	951201
+	1	30616	1	5	-- Dwutlenek Tytanu
+	2	30617	1	4	-- Agat
+	3	30618	1	4	-- Kamien Ksiezycowy
+	4	95601	2	10	-- Stabilne Sznury
+	5	95603	2	6	-- Ciezkie Pasy
+}
+
+Group	MT2009_wikinowe_nemere
+{
+	Vnum	951202
+	1	30616	1	10	-- Dwutlenek Tytanu
+	2	30617	1	5	-- Agat
+	3	30618	1	5	-- Kamien Ksiezycowy
+	4	95601	2	6	-- Stabilne Sznury
+	5	95603	2	6	-- Ciezkie Pasy
+}

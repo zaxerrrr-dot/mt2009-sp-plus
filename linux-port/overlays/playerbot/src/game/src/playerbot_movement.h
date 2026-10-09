@@ -1500,6 +1500,27 @@ namespace
 				return false;
 			}
 		}
+		// MT2009_PLUS_ZODIAC_NAV_V1: an open arena (the Zodiac Temple's floors) is walked straight.
+		if (IsPlayerBotOpenArenaMap(mapIndex))
+		{
+			ClearPlayerBotRoute(state, false);
+			const int snap = std::max(1, targetSnapRadius) * 50;
+			if (DISTANCE_APPROX(ch->GetX() - destX, ch->GetY() - destY) <= snap)
+			{
+				state.bLastNavOutcome = PLAYERBOT_NAV_OUT_ARRIVED;
+				return true;
+			}
+			static std::map<DWORD, std::pair<long, long> > s_mapArenaGoto;
+			std::pair<long, long>& last = s_mapArenaGoto[ch->GetPlayerID()];
+			if (!ch->IsStateMove() || last.first != destX || last.second != destY)
+			{
+				last = std::make_pair(destX, destY);
+				ch->Goto(destX, destY);
+				ch->SendMovePacket(FUNC_MOVE, 0, destX, destY, ch->GetCurrentMoveDuration(), dwNow);
+			}
+			state.bLastNavOutcome = PLAYERBOT_NAV_OUT_MOVED;
+			return true;
+		}
 		CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(mapIndex);
 		if (!navigation.Init(mapIndex))
 			return false;

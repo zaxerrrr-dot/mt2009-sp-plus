@@ -6,6 +6,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -85,6 +86,9 @@ namespace N2_Patcher
 		private static readonly System.Threading.SemaphoreSlim DbDataGate = new System.Threading.SemaphoreSlim(1, 1);
 
 		private static readonly Brush WarningBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xB0, 0x4D));
+
+		// MT2009_PLUS_CH34_AUTO_V1 (ChannelSync): coop*.cfg "channels=" from the server.
+		private int channelGeneration;
 
 		public MainWindow()
 		{
@@ -222,6 +226,8 @@ namespace N2_Patcher
 		public void ReadyForStart()
 		{
 			MainWindow.WPF.btn_start.IsEnabled = true;
+			// the patch list may have brought a new CLIENT_VERSION (2.0.59: CH3/CH4)
+			this.StartChannelSync();
 			// MT2009_PLUS_DBDATA_AUTO_V1: after the patch list, the database files
 			if (!this.dbdataAllowed)
 			{
@@ -291,6 +297,54 @@ namespace N2_Patcher
 			}
 		}
 
+		// ------------------------------------------------ channels (ChannelSync)
+
+		// Every coop file of the list at once; a file that changed reloads the
+		// list (the status shows CH3/CH4). Never blocks GRAJ.
+		private async void StartChannelSync()
+		{
+			int generation = ++this.channelGeneration;
+			string root = Functions.GetCurrentFolder();
+			string setting = Config.GetDbDataManifest();
+			List<CoopServer> coop = this.servers.Where(s => s.Slot > 0).ToList();
+			if (coop.Count == 0)
+			{
+				return;
+			}
+			ChannelSyncResult[] results;
+			try
+			{
+				results = await Task.WhenAll(coop.Select(server => Task.Run(() => ChannelSync.Run(root, server, setting, DbDataSync.HttpFetch))));
+			}
+			catch
+			{
+				return;
+			}
+			MainWindow.WriteChannelLog(root, results);
+			if (generation == this.channelGeneration && results.Any(r => r.Changed))
+			{
+				this.ReloadServers(0, false);
+			}
+		}
+
+		// MT2009-Patcher-kanaly.log next to the game: what the last check did.
+		private static void WriteChannelLog(string root, ChannelSyncResult[] results)
+		{
+			try
+			{
+				List<string> lines = new List<string>();
+				lines.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "  MT2009_PLUS_CH34_AUTO_V1");
+				foreach (ChannelSyncResult result in results)
+				{
+					lines.AddRange(result.Log);
+				}
+				System.IO.File.WriteAllLines(System.IO.Path.Combine(root, "MT2009-Patcher-kanaly.log"), lines, System.Text.Encoding.UTF8);
+			}
+			catch
+			{
+			}
+		}
+
 		// MT2009-Patcher-dbdata.log next to the game: what the last check did.
 		private static void WriteDbDataLog(string root, CoopServer server, DbDataResult result)
 		{
@@ -333,7 +387,8 @@ namespace N2_Patcher
 		}
 
 		// preferSlot: 1/2 = show that coop file's server if valid, 0 = keep.
-		private void ReloadServers(int preferSlot)
+		// syncChannels: false after ChannelSync itself rewrote a file.
+		private void ReloadServers(int preferSlot, bool syncChannels = true)
 		{
 			int keepSlot = this.servers.Count > 0 ? this.servers[this.serverIndex].Slot : -1;
 			this.servers = CoopServer.Discover(Functions.GetCurrentFolder());
@@ -350,14 +405,19 @@ namespace N2_Patcher
 			this.serverPrev.Visibility = arrows;
 			this.serverNext.Visibility = arrows;
 			this.ShowServer();
+			if (syncChannels)
+			{
+				this.StartChannelSync();
+			}
 		}
 
 		private void ShowServer()
 		{
 			CoopServer server = this.servers[this.serverIndex];
 			this.serverName.Text = server.DisplayName;
-			this.serverName.ToolTip = string.Format("{0}  (logowanie {1}, CH1 {2}{3})", server.Host, server.Auth, server.Channel,
-				server.Channels > 1 ? string.Concat(", CH2 ", (server.Channel + 10).ToString()) : "");
+			int[] ports = server.ChannelPorts;
+			this.serverName.ToolTip = string.Format("{0}  (logowanie {1}, {2})", server.Host, server.Auth,
+				string.Join(", ", ports.Select((port, i) => string.Concat("CH", (i + 1).ToString(), " ", port.ToString()))));
 			this.SetStatus(null);
 			this.ProbeServer();
 			// another server: its database files (once the patch list is done)
@@ -377,6 +437,18 @@ namespace N2_Patcher
 			{
 				this.serverChannels.Inlines.Add(new Run("     CH2: "));
 				this.serverChannels.Inlines.Add(MainWindow.StateRun(state == null ? (bool?)null : state.channel_2));
+			}
+			// MT2009_PLUS_CH34_AUTO_V1: CH3/CH4 on a line of their own (the panel is 250 px wide)
+			if (server.Channels > 2)
+			{
+				this.serverChannels.Inlines.Add(new LineBreak());
+				this.serverChannels.Inlines.Add(new Run("CH3: "));
+				this.serverChannels.Inlines.Add(MainWindow.StateRun(state == null ? (bool?)null : state.channel_3));
+			}
+			if (server.Channels > 3)
+			{
+				this.serverChannels.Inlines.Add(new Run("     CH4: "));
+				this.serverChannels.Inlines.Add(MainWindow.StateRun(state == null ? (bool?)null : state.channel_4));
 			}
 		}
 

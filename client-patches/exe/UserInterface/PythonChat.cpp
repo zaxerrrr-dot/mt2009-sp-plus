@@ -664,6 +664,10 @@ void CPythonChat::__Initialize()
 	m_akD3DXClrChat[CHAT_TYPE_FANCY_NOTICE] = D3DXCOLOR(1.0f, 0.902f, 0.730f, 1.0f);
 	m_akD3DXClrChat[CHAT_TYPE_TRADE] = D3DXCOLOR(1.0f, 0.773f, 0.631f, 1.0f);
 	m_akD3DXClrChat[CHAT_TYPE_GAMEMASTER_NOTICE] = D3DXCOLOR(1.0f, 0.6f, 0.0f, 1.0f);
+	// MT2009_PLUS_ZODIAC_V1: the mission lines go to the mission board (RecvChatPacket); colours for completeness
+	m_akD3DXClrChat[CHAT_TYPE_MISSION] = D3DXCOLOR(1.0f, 0.785f, 0.785f, 1.0f);
+	m_akD3DXClrChat[CHAT_TYPE_SUB_MISSION] = D3DXCOLOR(1.0f, 0.785f, 0.785f, 1.0f);
+	m_akD3DXClrChat[CHAT_TYPE_CLEAR_MISSION] = D3DXCOLOR(1.0f, 0.785f, 0.785f, 1.0f);
 #ifdef ENABLE_DICE_SYSTEM
 	m_akD3DXClrChat[CHAT_TYPE_DICE_INFO]	= D3DXCOLOR(0xFFcc00cc);
 #endif

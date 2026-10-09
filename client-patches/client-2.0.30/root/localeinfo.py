@@ -431,6 +431,23 @@ def ConvertTimeStamp(unix_timestamp):
 	formatted_time = time.strftime('%H:%M %d/%m/%Y', time_tuple)
 	return formatted_time
 
+# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): def GetAlignmentTitleName(alignment):
+if getattr(app, "ENABLE_12ZI", 0):
+	def SecondToColonTypeHMS(time):
+		if time < 60:
+			return "00:00:%02d" % (time)
+
+		second = int(time % 60)
+		minute = int((time / 60) % 60)
+		hour = int((time / 60) / 60)
+
+		return "%02d:%02d:%02d" % (hour, minute, second)
+
+	def SecondToColonTypeMS(time):
+		second = int(time % 60)
+		minute = int((time / 60) % 60)
+
+		return "%02d:%02d" % (minute, second)
 def GetAlignmentTitleName(alignment):
 	if alignment >= 12000:
 		return TITLE_NAME_LIST[0]

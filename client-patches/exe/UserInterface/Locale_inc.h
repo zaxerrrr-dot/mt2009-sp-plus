@@ -216,5 +216,9 @@
 #if defined(RENDER_TARGET)
 #define ENABLE_MONSTER_CARD_MODEL
 #endif
+// MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, Swiatynia Zodiaku, nowy-system 0.35.0): GC 220 (boss effects),
+// the 15 Zodiac SE_*/EFFECT_* effects, the mission chat types 13..15, chrmgr.IsDead/IsPC and the scripts'
+// constants (UserInterface/Mt2009Zodiak.cpp). The image cooltime is MT2009_PLUS_MINIGAMES_V1's.
+#define ENABLE_12ZI
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

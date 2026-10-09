@@ -896,6 +896,31 @@ class TargetBoard(ui.ThinBoard):
 		self.SetSize(self.__GetBoardWidth(), 65)
 		self.UpdatePosition()
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): okno wskrzeszenia
+	if getattr(app, "ENABLE_12ZI", 0):
+		def OpenReviveDialog(self, vid, itemcount):
+			import uiCommon
+			self.questionDialog = uiCommon.QuestionDialog2()
+			if player.IsMainCharacterIndex(vid):
+				self.questionDialog.SetText1(localeInfo.REVIVE_SELF_QUESTION1)
+				self.questionDialog.SetText2(localeInfo.REVIVE_SELF_QUESTION2 % (itemcount))
+			else:
+				self.questionDialog.SetText1(localeInfo.REVIVE_QUESTION1 % chr.GetNameByVID(vid))
+				self.questionDialog.SetText2(localeInfo.REVIVE_QUESTION2 % itemcount)
+
+			self.questionDialog.SetAcceptEvent(lambda arg=vid: self.OnRivive(arg))
+			self.questionDialog.SetCancelEvent(ui.__mem_func__(self.OnQuestionDialogClose))
+			self.questionDialog.Open()
+
+		def OnRivive(self, virId):
+			net.SendChatPacket("/revive %d" % (virId))
+			self.OnQuestionDialogClose()
+
+		def OnQuestionDialogClose(self):
+			if getattr(self, "questionDialog", None):
+				self.questionDialog.Close()
+				self.questionDialog = None
+			return True
 	def OnUpdate(self):
 		# MT2009_PLUS_TARGET_BONUS_V1 (Autor: Vekirion): refreshed every 0.5 s.
 		if self.bonusText and self.bonusText.IsShow() and app.GetTime() >= self.bonusRefreshTime:

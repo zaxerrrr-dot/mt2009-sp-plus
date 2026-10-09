@@ -1127,3 +1127,9 @@ class AffectShower(ui.Window):
 		sizeX = (imageSize+2) * (MAX_ROW_SIZE if idx > MAX_ROW_SIZE else idx)
 		sizeY = (imageSize + 2) * columnCount + (STEP_BETWEEN_CATEGORIES if windowHeight > 0 else 0)
 		return (sizeX, sizeY)
+# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): afekt Znak Straznika
+if getattr(app, "ENABLE_12ZI", 0) and hasattr(chr, "NEW_AFFECT_CZ_UNLIMIT_ENTER"):
+	AFFECT_SHOW_DATA[chr.NEW_AFFECT_CZ_UNLIMIT_ENTER] = {
+		"description" : localeInfo.TOOLTIP_AFFECT_CZ_UNLIMIT_ENTER,
+		"icon" : "d:/ymir work/ui/skill/common/affect/cz_unlimit_enter.sub",
+	}

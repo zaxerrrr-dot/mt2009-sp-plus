@@ -1163,7 +1163,9 @@ function Write-M2VpsClientEntry {
         name = [string]$State.worldName; host = (Get-M2VpsWorldAddress -State $State -Status $Status); auth = [int]$ports[0]
         channel = [int]$game[0]; channels = [Math]::Max(1, [int][Math]::Ceiling($game.Count / 3.0))
     }
-    $path = Write-M2CoopClientConfig -ClientFolder $ClientFolder -Invite $entry
+    # MT2009_PLUS_CH34_AUTO_V1: "channels=" from the VPS's panel (its port too)
+    $panel = $(if ($Status.PSObject.Properties.Name -contains 'SebanPanelPort' -and [int]$Status.SebanPanelPort -gt 0) { [string][int]$Status.SebanPanelPort } else { '' })
+    $path = Write-M2CoopClientConfig -ClientFolder $ClientFolder -Invite $entry -Panel $panel
     return [pscustomobject]@{ Path = $path; Name = $entry.name; Host = $entry.host; Replaced = $(if ($previous -and $previous -ne $entry.name) { $previous } else { '' }) }
 }
 

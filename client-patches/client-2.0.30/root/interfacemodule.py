@@ -53,6 +53,9 @@ import uiReport
 
 import event
 import localeInfo
+# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): import ui12zi z paczki
+if getattr(app, "ENABLE_12ZI", 0):
+	import ui12zi
 import background
 import captcha
 
@@ -4267,6 +4270,9 @@ class Interface(object):
 		self.inputDialog = None
 		self.tipBoard = None
 		self.bigBoard = None
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): self.bigBoard = None
+		if getattr(app, "ENABLE_12ZI", 0):
+			self.missionBoard = None
 		self.fancyBoard = None
 
 		# ITEM_MALL
@@ -4307,6 +4313,11 @@ class Interface(object):
 			self.wndMoveChannel = None
 		if app.ENABLE_WON_EXCHANGE_WINDOW:
 			self.wndWonExchange = None
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): event.SetInterfaceWindow(self)
+		if getattr(app, "ENABLE_12ZI", 0):
+			self.wndBead = None
+			self.wnd12ziTimer = None
+			self.wnd12ziReward = None
 		event.SetInterfaceWindow(self)
 
 		self.interfaceWindowList = {}
@@ -4617,6 +4628,10 @@ class Interface(object):
 
 		self.bigBoard = uiTip.BigBoard()
 		self.bigBoard.Hide()
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): self.bigBoard.Hide()
+		if getattr(app, "ENABLE_12ZI", 0):
+			self.missionBoard = uiTip.MissionBoard()
+			self.missionBoard.Hide()
 
 		self.fancyBoard = uiTip.FancyBoard()
 		self.fancyBoard.Hide()
@@ -4721,6 +4736,9 @@ class Interface(object):
 			self.wndGarbageBin.OnResultMany(req, status, done)
 
 	def MakeInterface(self):
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): def MakeInterface(self):
+		if getattr(app, "ENABLE_12ZI", 0):
+			self.__MakeTipBoard()
 		self.__MakeMessengerWindow()
 		self.__MakeGuildWindow()
 		self.__MakeChatWindow()
@@ -4732,7 +4750,9 @@ class Interface(object):
 		self.__MakeTaskBar()
 		self.__MakeGameButtonWindow()
 		self.__MakeHelpWindow()
-		self.__MakeTipBoard()
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): self.__MakeTipBoard()
+		if not getattr(app, "ENABLE_12ZI", 0):
+			self.__MakeTipBoard()
 		self.__MakeWebWindow()
 		self.__MakeCubeWindow()
 		self.__MakeCubeResultWindow()
@@ -4741,6 +4761,11 @@ class Interface(object):
 
 		# ACCESSORY_REFINE_ADD_METIN_STONE
 		self.__MakeItemSelectWindow()
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): self.__MakeItemSelectWindow()
+		if getattr(app, "ENABLE_12ZI", 0):
+			self.__Make12ziTimerWindow()
+			self.__MakeBeadWindow()
+			self.__Make12ziRewardWindow()
 		# END_OF_ACCESSORY_REFINE_ADD_METIN_STONE
 
 		self.__MakePlayerbotAdminWindow()
@@ -4820,6 +4845,20 @@ class Interface(object):
 				empire = int(data[1])
 				self.OpenWhisperDialog(name, empire)
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): ## Make Windows & Dialogs
+	if getattr(app, "ENABLE_12ZI", 0):
+		def __MakeBeadWindow(self):
+			self.wndBead = ui12zi.BeadWindow()
+			self.wndBead.Hide()
+
+		def __Make12ziRewardWindow(self):
+			self.wnd12ziReward = ui12zi.Reward12ziWindow()
+			self.wnd12ziReward.SetItemToolTip(self.tooltipItem)
+			self.wnd12ziReward.Hide()
+
+		def __Make12ziTimerWindow(self):
+			self.wnd12ziTimer = ui12zi.FloorLimitTimeWindow()
+			self.wnd12ziTimer.Hide()
 	## Make Windows & Dialogs
 	################################
 
@@ -5039,6 +5078,22 @@ class Interface(object):
 			self.wndItemSelect.Destroy()
 		# END_OF_ACCESSORY_REFINE_ADD_METIN_STONE
 
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): self.wndChatLog.Destroy()
+		if getattr(app, "ENABLE_12ZI", 0):
+			if self.wndBead:
+				self.wndBead.Hide()
+				self.wndBead.Destroy()
+				del self.wndBead
+
+			if self.wnd12ziTimer:
+				self.wnd12ziTimer.Hide()
+				self.wnd12ziTimer.Destroy()
+				del self.wnd12ziTimer
+
+			if self.wnd12ziReward:
+				self.wnd12ziReward.Hide()
+				self.wnd12ziReward.Destroy()
+				del self.wnd12ziReward
 		self.wndChatLog.Destroy()
 		for btn in self.questButtonList:
 			btn.SetEvent(0)
@@ -5107,6 +5162,9 @@ class Interface(object):
 		del self.bigBoard
 		del self.fancyBoard
 		del self.wndItemSelect
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): del self.wndItemSelect
+		if getattr(app, "ENABLE_12ZI", 0):
+			del self.missionBoard
 		del self.fishingGameDialog
 		del self.potionRechargeDialog
 		del self.busyActionDialog
@@ -5467,6 +5525,10 @@ class Interface(object):
 		self.wndTaskBar.Show()
 		self.wndMiniMap.Show()
 		self.wndMiniMap.ShowMiniMap()
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): ShowDefaultWindows
+		if getattr(app, "ENABLE_12ZI", 0):
+			if self.wndBead:
+				self.wndBead.Show()
 		if self.wndEnergyBar:
 			self.wndEnergyBar.Show()
 
@@ -5479,6 +5541,14 @@ class Interface(object):
 			self.wndDragonSoulRefine.Show()
 		self.wndChat.Show()
 		self.wndMiniMap.Show()
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): ShowAllWindows
+		if getattr(app, "ENABLE_12ZI", 0):
+			if self.wndBead:
+				self.wndBead.Show()
+			if self.wnd12ziTimer:
+				self.wnd12ziTimer.Show()
+			if self.wnd12ziReward:
+				self.wnd12ziReward.Show()
 		if self.wndEnergyBar:
 			self.wndEnergyBar.Show()
 		if self.wndExpandedTaskBar:
@@ -5494,6 +5564,14 @@ class Interface(object):
 
 		if self.wndEnergyBar:
 			self.wndEnergyBar.Hide()
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): HideAllWindows
+		if getattr(app, "ENABLE_12ZI", 0):
+			if self.wndBead:
+				self.wndBead.Hide()
+			if self.wnd12ziTimer:
+				self.wnd12ziTimer.Hide()
+			if self.wnd12ziReward:
+				self.wnd12ziReward.Hide()
 
 		if self.wndCharacter:
 			self.wndCharacter.Hide()
@@ -5520,6 +5598,14 @@ class Interface(object):
 			self.wndDragonSoul.Hide()
 			self.wndDragonSoulRefine.Hide()
 
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): if self.wndChat:
+		if getattr(app, "ENABLE_12ZI", 0):
+			if self.wndBead:
+				self.wndBead.Hide()
+			if self.wnd12ziTimer:
+				self.wnd12ziTimer.Hide()
+			if self.wnd12ziReward:
+				self.wnd12ziReward.Hide()
 		if self.wndChat:
 			self.wndChat.Hide()
 
@@ -5975,6 +6061,36 @@ class Interface(object):
 				board.Refresh(iAct)
 			self.wndInventory.RefreshBagSlotWindow()
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): def __HideWindows(self):
+	if getattr(app, "ENABLE_12ZI", 0):
+		def OpenUI12zi(self, yellowmark, greenmark, yellowreward, greenreward, goldreward):
+			if self.wnd12ziReward == None:
+				self.wnd12ziReward = ui12zi.Reward12ziWindow()
+			self.wnd12ziReward.Open(yellowmark, greenmark, yellowreward, greenreward, goldreward)
+
+		def Refresh12ziTimer(self, currentFloor, jumpCount, limitTime, elapseTime):
+			if self.wndMiniMap:
+				self.wndMiniMap.Hide()
+
+			if self.wnd12ziTimer == None:
+				self.wnd12ziTimer = ui12zi.FloorLimitTimeWindow()
+
+			self.wnd12ziTimer.Refresh12ziTimer(currentFloor, jumpCount, limitTime, elapseTime)
+			self.wnd12ziTimer.Open()
+
+		def Show12ziJumpButton(self):
+			if self.wnd12ziTimer:
+				self.wnd12ziTimer.Show12ziJumpButton()
+
+		def Hide12ziTimer(self):
+			if self.wnd12ziTimer:
+				self.wnd12ziTimer.Hide()
+			if self.wndMiniMap:
+				self.wndMiniMap.Show()
+
+		def RefreshShopItemToolTip(self):
+			if self.tooltipItem:
+				self.tooltipItem.RefreshShopToolTip()
 	def __HideWindows(self):
 		if self.wndGarbageBin:
 			self.wndGarbageBin.Close()
@@ -5994,6 +6110,14 @@ class Interface(object):
 
 		if self.wndExpandedTaskBar:
 			hideWindows += self.wndExpandedTaskBar,
+		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): __HideWindows
+		if getattr(app, "ENABLE_12ZI", 0):
+			if self.wndBead:
+				hideWindows += self.wndBead,
+			if self.wnd12ziTimer:
+				hideWindows += self.wnd12ziTimer,
+			if self.wnd12ziReward:
+				hideWindows += self.wnd12ziReward,
 
 		if app.ENABLE_DRAGON_SOUL_SYSTEM:
 			hideWindows += self.wndDragonSoul,\
@@ -6623,6 +6747,15 @@ class Interface(object):
 
 	#####################################################################################
 
+	# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): kule Animy (metody)
+	if getattr(app, "ENABLE_12ZI", 0):
+		def SetBeadCount(self, value):
+			if self.wndBead:
+				self.wndBead.SetBeadCount(value)
+
+		def NextBeadUpdateTime(self, value):
+			if self.wndBead:
+				self.wndBead.NextBeadUpdateTime(value)
 	def IsEditLineFocus(self):
 		if self.ChatWindow.chatLine.IsFocus():
 			return 1

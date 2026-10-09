@@ -935,3 +935,89 @@ Serwer może uruchomić trzeci i czwarty kanał (przełączniki w panelach, domy
 Launcher, aktualizator i patcher dalej zapisują w `coop.cfg` `channels=2` (stary klient odrzuca większą liczbę) –
 po wydaniu tego klienta można podnieść do 4 `$script:CoopClientChannels` (launcher/Metin2Launcher.Coop.psm1 – z niego
 pisze też serwer VPS), aktualizator (`MT2009-Aktualizator.ps1`) i patcher (`CoopServer.cs`).
+
+# Świątynia Zodiaku (mapa 358, `MT2009_PLUS_ZODIAC_V1`)
+
+**Autor: Digi Rasta** (paczka „nowy-system” v0.35.0, karta `SYSTEMY/zodiak.md`; kod i dane: WLsj24 „ZodiacTemple
+v2.1–3.0”, dane oficjalne 2019). Folder mapy `metin2_12zi_stage`, BasePosition 307200 1408000, 6×6. Jedno źródło
+danych klienta: `tools/zodiak/zodiak_client.json` (część kliencka `dane/zodiak.json` z paczki – te same rekordy co
+serwerowy `96_zodiak.sql`). Nic nie jest zbudowane ani wydane – kroki niżej są dla następnego klienta.
+
+## Root (w repozytorium, build bierze cały `root/`)
+
+34 haki paczki (`dodatki/ZODIAK-HAKI-KLIENTA-SKRYPTY.md`) w 10 plikach, każdy z komentarzem
+`MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0)` i całość za `getattr(app, "ENABLE_12ZI", 0)` – na exe
+bez Zodiaku nic się nie zmienia (żadna nowa funkcja `wndMgr`/`chrmgr` nie jest wołana):
+`constinfo.py` (kamera 5000 na mapie 358), `game.py` (komendy serwera `ZodiacTime`, `ZodiacTimeClear`, `Bead_count`,
+`Bead_time`, `OpenReviveDialog`, `NotEnoughPrism`, `NextFloorButton`, `OpenUI12zi`; komunikaty misji
+`BINARY_Set/SubMission/CleanMissionMessage`), `interfacemodule.py` (okna Kul Animy, minutnika pięter, tablicy nagród,
+tablica misji), `ui.py` (`ImageBox.SetCoolTime`, element `numberline`), `uitarget.py` (okno wskrzeszenia Pryzmatem →
+`/revive`), `uitip.py` (`MissionBoard`), `uiaffectbar.py` (afekt Znak Strażnika 600), `uiinventory.py` (pytanie przy
+72327–72329), `localeinfo.py` (`SecondToColonTypeHMS/MS`), `uiminimap.py` (**nowy w tym katalogu** – kopia z paczki root
+2.0.59 + mapa 358 w `CANNOT_SEE_INFO_MAP_DICT`).
+Nowe pliki (u Digi Rasty w paczce `nowy_system_zodiak` przez `constInfo.NowySystemImport` – u nas zwykły root):
+`ui12zi.py`, `uiscript/bead.py`, `uiscript/12floorinfo.py`, `uiscript/12zirewardwindow.py` (ścieżki `uiscript/...`).
+Poprawki względem paczki: `import ui12zi` zamiast `NowySystemImport`, `wnd12ziTimer`/`wnd12ziReward` = None w
+`__init__`, `Show12ziJumpButton`/`Hide12ziTimer` bez okna nie wywracają klienta, `Hide12ziTimer` przywraca minimapę
+(chowa ją `Refresh12ziTimer`), usunięte koreańskie komentarze (krzaki w cp1250).
+
+## Dane (`tools/zodiak/patch_zodiak_client.py`, tylko dopisywanie)
+
+- `dbdata`: `gamedata/item_proto` +166 (300–319, 1180–1189, 2200–2209, 3220–3229, 5160–5169, 6120–6129, 7300–7309,
+  19290…, 19490…, 19690…, 19890…, 21200–21209, 33001–33033, 72327–72329; Korony 45314–45317 już są),
+  `locale/pl/itemdesc.txt` +166.
+- `gamedata`: `item_list.txt` +105 (300–309, 1180–1189, 3220–3229 mają już nasze wiersze – ten sam model, ikona
+  `icon/item/0xxxx.tga` z naszej paczki icon – zostają; 31 wierszy 33001–33031, których paczka nie miała, z item_list GF;
+  33023/33024 bez ikony w GF – ikony 33012/33022), `mob_proto` +201 (2600–2937, NPC 20438–20464; bity żywiołów 11–16
+  jak `tools/zywioly/zywioly_moby.json`, czyli zdjęte – serwerowy `zywioly_moby.sql` zdejmuje je każdemu mobowi spoza
+  listy), `atlasinfo.txt` +1, `npclist.txt` +0 (wszystkie 237 wierszy Zodiaku już są).
+- `locale`: `locale/pl/locale_game.txt` +38, `locale/pl/locale_interface.txt` +1 (`CZ_REWARD_WINDOW_TITLE`).
+- Klucz, który już jest z inną treścią = kolizja: skrypt kończy się bez zapisu. Sprawdzone na danych 2.0.59
+  (`c59`): żadnej kolizji vnumów (item_proto, mob_proto, itemdesc, npclist, atlasinfo, napisy).
+
+## Paczki (`tools/zodiak/stage_zodiak.py` → `build_zodiak_packs.py`)
+
+Paczka Digi Rasty `nowy_system_zodiak` (1780 plików) zakładała pliki, które miał JEGO klient – u nas ich nie było:
+modele broni Zodiaku (`d:/ymir work/item/weapon/0xxxx.gr2`), zbroje kształtu 25 (`pc|pc2/<klasa>/<klasa>_6_1*`, obie
+płcie) i 18 ikon – są brane z GF 26.1.11 z tym, co nazywają. Właściwości obiektów: 124 CRC na mapie, 13 brakujących w
+paczce i u nas wzięte z `property/` GF (dawnmistwood_dungeon, flame_dungeon, snakevalley), 0 brakujących; z 107 plików
+property paczki tylko te, których mapa używa (37 z `property/12temple` wskazuje modele, których nie ma nigdzie).
+Plik, który już mamy (lista paczek c59 + lista bazy + stara paczka `etc` ze `smoke`), zostaje nasz.
+
+- `zodiak_maps` (nowa) – 441 plików, 32,0 MB surowo, 21,9 MB w paczce: obiekty świątyni, efekty, środowiska,
+  tekstury terenu, textureset, grafiki UI (`ui/game/12zi/*`), ikony, atlas (`d:/ymir work/ui/metin2_12zi_stage_atlas.dds`
+  352×352 z GF + `ui/atlas/metin2_12zi_stage/atlas.sub`).
+- `zodiak_mobs` (nowa) – 271 plików, 15,4 MB w paczce: 4 rasy (`12zi_chicken_boss`…`12zi_dragon_boss`), modele broni, zbroje 6_1,
+  wspólne dźwięki; `zodiak_mobs2` (nowa) – 874 pliki, 19,3 MB: pozostałe 33 rasy (`12zi_horse_boss`…`naga_mage`; podział po rasie, model+ruchy+dźwięki
+  razem; jedna paczka miała 34,6 MB, ponad limit 29 MB).
+- `maps` +371 (36 sektorów, `setting.txt`, `mapproperty.txt`, kopie 9 plików msenv), `property` +81.
+- `Index`: `*`/`zodiak_maps`, `*`/`zodiak_mobs`, `*`/`zodiak_mobs2` na końcu.
+- Braki (paczka też ich nie ma): tekstury `12_tex_crack_01..03/_g.dds`, `polsy copy.dds`, `pc/assassin/effect/bottom.dds`,
+  `12zi_rabbit_boss/2zi_rabbit_boss1_weapon.dds` (literówka w modelu), `zone/12temple/5st_obj_001.dds` i model
+  `2st_treestatue_01.gr2` (2 obiekty na mapie bez modelu). Lista: `zodiak_manifest.json` (`unresolved`).
+- Sprawdzone 8.10 na `c59/pack`: budowa do `/opt/metin2/cache/zodiak-client/out/pack` (109 MB: 3 nowe paczki +
+  maps, property, gamedata, dbdata, locale, Index), każdy wpis odczytany z powrotem; druga przebiegówka `--check` na
+  pełnym zestawie: same „in base”/„unchanged”.
+
+## Kroki do dopisania w potoku klienta (styl `client59.sh`)
+
+```sh
+T=/opt/metin2/git/mt2009-sp-plus/client-patches/client-2.0.30/tools
+# raz, przed danymi (na bazie, na której budujemy, np. c59/pack); etc.lst z jedynej starej paczki etc na vps1:
+docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/atlantis/dump_base.py /opt/metin2/cache/c59/pack /opt/metin2/cache/zodiak-work
+docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 -c "import sys; sys.path.insert(0,'/opt/metin2/cache/tcm/tz'); import m2pack; open('/opt/metin2/cache/zodiak-work/etc.lst','w').write(''.join('etc %s\n' % e['name'] for e in m2pack.read_index('/opt/metin2/cache/exebuild/smoke/client/pack/etc.index')[2]))"
+python3 $T/zodiak/stage_zodiak.py      # paczka: /opt/metin2/cache/zodiak/gra/Serwer/nowy-system/klient_zodiak -> /opt/metin2/cache/zodiak-staging
+# w kroku danych (ten sam sh -c co sashcloth/rankfruit/pasy/zywioly/atlantis, w $C/data):
+#   && python3 $T/zodiak/patch_zodiak_client.py item_proto item_list.txt itemdesc.txt mob_proto
+# po build_atlantis_packs.py, na tym samym OUT (robi też npclist, atlasinfo i napisy w paczce locale):
+docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/zodiak/build_zodiak_packs.py $C/azbase $C/out/pack /opt/metin2/cache/zodiak-staging --data $C/data > $C/zd.json
+# (potem jak dotąd: mkdir pack && cp -a <baza>/pack/. pack/ && cp -a out/pack/. pack/)
+# test: druga przebiegówka na pełnym zestawie ma dać same "in base"/"unchanged"
+docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/zodiak/build_zodiak_packs.py $C/pack - /opt/metin2/cache/zodiak-staging --check
+grep -c -x -E 'zodiak_maps|zodiak_mobs|zodiak_mobs2' $C/pack/Index   # 3
+```
+
+Exe: osobny build z `client-patches/exe` (pakiet GC 220, efekty, czat misji, wycinek zegarowy – `app.ENABLE_12ZI`);
+bez nowego exe root i paczki niczego nie psują, Zodiaku w kliencie po prostu nie ma. Klient zmienia dane przedmiotów
+(dbdata): w wydaniu ostrzeżenie o nieaktualnych plikach i nowa baza panelu (`python3 -m m2clientpack.make_base
+<klient>/pack <wersja>`).

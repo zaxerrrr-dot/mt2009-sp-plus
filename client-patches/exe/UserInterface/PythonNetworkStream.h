@@ -674,6 +674,9 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 
 		// Use Potion
 		bool RecvSpecialEffect();
+#ifdef ENABLE_12ZI
+		bool RecvSpecialZodiacEffect(); // MT2009_PLUS_ZODIAC_V1 (Mt2009Zodiak.cpp)
+#endif
 
 		bool RecvSpecificEffect();
 

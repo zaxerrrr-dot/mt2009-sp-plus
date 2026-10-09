@@ -3089,7 +3089,9 @@ namespace
 	// 20 000 000 (the other earrings), 12 000 000 (bracelets, necklaces), geometric between (owner).
 	// 25: MT2009_PLUS_UNPRICED_GEAR_V1 - 37 wearable families of level 50+ (drops and chests)
 	// priced by level and kind, and the estimate for any other unpriced piece of 30+.
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 25;
+	// 26: MT2009_PLUS_NS_WIKI_ITEMS_V1 - the wiki families (Cyjanitowe weapons, Turmalin jewellery,
+	// Ogniste Buty, Buty Oceanu) and their 16 materials (wiki_nowe.sql; Autor: Digi Rasta).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 26;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
@@ -3924,11 +3926,21 @@ namespace
 	// and comes out with it (playerbot_party_dungeon.h). The Demon Tower (66)
 	// and the Catacomb (216) jump the whole party themselves
 	// (CDungeon::JumpParty through CPlayerBotManager::WarpBot).
+	// MT2009_PLUS_ZODIAC_NAV_V1: the Swiatynia Zodiaku (358) is 6x6 - a 3072x3072 grid of 50-unit cells is
+	// some 200 MB, which the 32-bit core could not give (std::bad_alloc in CPlayerBotNavigation::Init, the
+	// test server's game1 twice on 8/9 October). Its floors are open arenas: no grid, a straight walk
+	// (MovePlayerBot) and a map change without one (TransitionPlayerBotMap).
+	bool IsPlayerBotOpenArenaMap(long mapIndex)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		return base == 358;
+	}
 	bool IsPlayerBotPartyDungeonMap(long mapIndex)
 	{
 		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
 		return base == 208 || base == 351 || base == 352 || (base >= 363 && base <= 366) ||
-				base == 158;	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy
+				base == 158 ||	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy
+				base == 358;	// MT2009_PLUS_ZODIAC_BOTS_V1: Swiatynia Zodiaku (its floors, playerbot_zodiac_bots.h)
 	}
 	// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: both defined in playerbot_party_dungeon.h.
 	// A person (not a bot) of the bot's party online on this core - standing on

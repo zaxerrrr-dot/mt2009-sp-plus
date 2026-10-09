@@ -129,6 +129,7 @@ internal static class Program
 		Directory.Delete(root, true);
 
 		DbDataUnit();
+		ChannelSyncUnit();
 	}
 
 	// ------------------------------------------------ MT2009_PLUS_DBDATA_AUTO_V1
@@ -164,6 +165,47 @@ internal static class Program
 		if (body.LongLength > max) throw new InvalidDataException("za duża odpowiedź");
 		return body;
 	};
+
+	private static void ChannelSyncUnit()
+	{
+		Console.WriteLine("ChannelSync (MT2009_PLUS_CH34_AUTO_V1)");
+		CoopServer vps = new CoopServer { Valid = true, Name = "V", Host = "203.0.113.5", Auth = 21000, Channel = 23000, Channels = 2, Slot = 1, Panel = "27795" };
+		List<string> urls = ChannelSync.CandidateUrls(vps, "");
+		Check(urls.SequenceEqual(new[] { "http://203.0.113.5:27795/klient/dbdata/channels.json", "http://203.0.113.5:7790/klient/dbdata/channels.json", "http://203.0.113.5:27790/klient/dbdata/channels.json", "http://203.0.113.5/klient/dbdata/channels.json" }),
+			"adresy obok manifestu (" + string.Join(" ", urls) + ")");
+		Check(ChannelSync.CandidateUrls(vps, "off").Count == 4, "DbDataManifest=off nie wyłącza kanałów");
+		Check(ChannelSync.ParseChannels(Encoding.UTF8.GetBytes("{\"format\": \"MT2009_PLUS_CH34_AUTO_V1\", \"channels\": 4, \"ports\": [13000, 13010, 13020, 13030]}")) == 4, "odpowiedź: 4");
+		Check(ChannelSync.ParseChannels(Encoding.UTF8.GetBytes("{\"format\": \"MT2009_PLUS_CH34_AUTO_V1\", \"channels\": 5}")) == null, "5 kanałów odrzucone");
+		Check(ChannelSync.ParseChannels(Encoding.UTF8.GetBytes("{\"channels\": 3}")) == null, "bez format odrzucone");
+		Check(ChannelSync.ParseChannels(Encoding.UTF8.GetBytes("<html>")) == null, "nie-JSON odrzucony");
+		Check(ChannelSync.Wanted("2.0.59", 4) == 4 && ChannelSync.Wanted("2.0.60", 3) == 3 && ChannelSync.Wanted("2.0.59", 1) == 1, "klient 2.0.59+: liczba z serwera");
+		Check(ChannelSync.Wanted("2.0.58", 4) == 2 && ChannelSync.Wanted(null, 4) == 2 && ChannelSync.Wanted("2.0.59", null) == 2, "starszy klient / brak wersji / brak serwera: 2");
+		Check(ChannelSync.Fit(new CoopServer { Auth = 13020, Channel = 13000 }, 4) == 2, "port logowania = CH3: 2 kanały");
+		Check(ChannelSync.Fit(new CoopServer { Auth = 11000, Channel = 65510 }, 4) == 3, "CH4 > 65535: 3 kanały");
+		Check(ChannelSync.WithChannels("# x\r\nname=A\r\nchannels=2\r\npanel=17790\r\n", 4) == "# x\r\nname=A\r\nchannels=4\r\npanel=17790\r\n", "tylko linia channels=");
+
+		string dir = Path.Combine(Path.GetTempPath(), "mt2009-channels-" + Process.GetCurrentProcess().Id);
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
+		Directory.CreateDirectory(dir);
+		string cfg = CoopServer.PathFor(dir, 1);
+		File.WriteAllText(cfg, "# MT2009 PLUS - serwer VPS\r\nname=A\r\nhost=127.0.0.1\r\nauth=11000\r\nchannel=13000\r\nchannels=2\r\n", Encoding.ASCII);
+		File.WriteAllText(Path.Combine(dir, "CLIENT_VERSION"), "2.0.59\n");
+		var panel = new Dictionary<string, byte[]> { ["http://127.0.0.1:7790/klient/dbdata/channels.json"] = Encoding.UTF8.GetBytes("{\"format\":\"MT2009_PLUS_CH34_AUTO_V1\",\"channels\":4,\"ports\":[13000,13010,13020,13030]}") };
+		ChannelSyncResult r = ChannelSync.Run(dir, CoopServer.Read(cfg, 1), "", Fetch(panel), 2000);
+		CoopServer after = CoopServer.Read(cfg, 1);
+		Check(r.Changed && after.Valid && after.Channels == 4 && after.ChannelPorts.SequenceEqual(new[] { 13000, 13010, 13020, 13030 }), "2.0.59 + serwer 4: channels=4, plik ważny");
+		Check(File.ReadAllText(cfg).StartsWith("# MT2009 PLUS - serwer VPS\r\n"), "komentarz zostaje");
+		r = ChannelSync.Run(dir, CoopServer.Read(cfg, 1), "", Fetch(panel), 2000);
+		Check(!r.Changed, "drugi raz: bez zapisu");
+		File.WriteAllText(Path.Combine(dir, "CLIENT_VERSION"), "2.0.58\n");
+		r = ChannelSync.Run(dir, CoopServer.Read(cfg, 1), "", Fetch(panel), 2000);
+		Check(r.Changed && CoopServer.Read(cfg, 1).Channels == 2, "klient 2.0.58: z powrotem 2");
+		File.WriteAllText(Path.Combine(dir, "CLIENT_VERSION"), "2.0.59\n");
+		r = ChannelSync.Run(dir, CoopServer.Read(cfg, 1), "", Fetch(new Dictionary<string, byte[]>()), 500);
+		Check(!r.Changed && r.Channels == 2 && CoopServer.Read(cfg, 1).Channels == 2, "panel niedostępny: 2");
+		Check(!ChannelSync.Run(dir, CoopServer.Localhost(), "", Fetch(panel), 500).Changed, "localhost: nic do zapisania");
+		Directory.Delete(dir, true);
+	}
 
 	private static void DbDataUnit()
 	{

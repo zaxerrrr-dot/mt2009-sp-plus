@@ -9693,6 +9693,48 @@ def manage_channels():
     return redirect(url_for("manage"))
 
 
+def public_channels(effective):
+    """MT2009_PLUS_CH34_AUTO_V1: the channels players can reach now, from
+    channels.effective (the entrypoint writes it at every start): CH1 always,
+    CH2..CH4 in a row while each is on and the published range reaches its
+    last port (BASE+10*(N-1)+2). A server from before CH3/CH4 writes no
+    CH3/CH4 lines (off)."""
+    base = effective.get("BASE", "")
+    if not base.isdigit():
+        match = re.match(r"\s*(\d+)", effective.get("PORTS", ""))
+        base = match.group(1) if match else "13000"
+    base = int(base)
+    last = re.search(r"(\d+)\s*$", effective.get("PORTS", ""))
+    top = int(last.group(1)) if last else base + 2
+    count = 1
+    for number in (2, 3, 4):
+        if effective.get(f"CH{number}") != "1" or top < base + 10 * (number - 1) + 2:
+            break
+        count = number
+    return {"format": "MT2009_PLUS_CH34_AUTO_V1", "channels": count,
+            "ports": [base + 10 * index for index in range(count)]}
+
+
+def public_channels_view():
+    """GET /klient/channels.json (and /klient/dbdata/channels.json, so a gate
+    that forwards only /klient/dbdata/ passes it too), no login. What the
+    game's channel list already shows to everybody: how many channels run
+    and their first ports inside the container (a NAT block publishes them
+    under other numbers - the patcher takes only "channels"). No file yet
+    (the game never started): 503, and the patcher keeps its two channels."""
+    effective = read_key_value_file(CHANNELS_EFFECTIVE_FILE)
+    if not effective:
+        return app.response_class('{"error": "unavailable"}\n', status=503, mimetype="application/json",
+                                  headers={"Cache-Control": "no-store", "Retry-After": "60"})
+    response = jsonify(public_channels(effective))
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+app.add_url_rule("/klient/channels.json", "public_channels_json", public_channels_view, methods=["GET"])
+app.add_url_rule("/klient/dbdata/channels.json", "public_channels_json_dbdata", public_channels_view, methods=["GET"])
+
+
 @app.route("/manage/panel")
 @login_required
 def manage_panel():

@@ -83,6 +83,9 @@ BOSS_OVERRIDES = (
     (DARK, (791, 792, 793, 794, 795, 993, 1491, 3290, 3291)),
     (FIRE, (9684, 2291, 2592, 2593, 2594, 9675, 9681, 9694, 9695)),
 )
+# g. the Zodiac signs' elements (1 Zi .. 12 Hai)
+ZODIAC_SIGN_ELEMENT = {1: DARK, 2: EARTH, 3: FIRE, 4: WIND, 5: ELEC, 6: ICE, 7: ICE, 8: ELEC, 9: EARTH, 10: WIND,
+                       11: DARK, 12: FIRE}
 SHARE_PARTS = ('locale/poland/map', 'locale/poland/group.txt', 'locale/poland/group_group.txt',
                'locale/poland/special_spawns.txt', 'locale/poland/BlueDragon.lua', 'data/dungeon')
 SKIP_MAP_FILES = ('setting.txt', 'town.txt', 'mapproperty.txt')
@@ -368,6 +371,13 @@ def main():
                     mobs[v] = dict(rank=m.get('rank', 0), type=m['type'], summon=0, flag=0, name=m['name'])
                 result[v], why[v] = ELEC, 'dungeon Ruiny Atlantydy (all)'
 
+        # g. the Swiatynia Zodiaku's bosses (MT2009_PLUS_ZODIAC_ELEMENTS_V1, the owner 9 Oct 2026, as the PL
+        #    wiki): 2750-2862, ten vnums a sign, the sign's element. The temple's monsters and Metins are
+        #    shared between the signs - their element is the floor's, at run time (playerbot_elements.cpp).
+        for v, m in sorted(mobs.items()):
+            if 2750 <= v <= 2862 and m['type'] == MOB_MONSTER:
+                result[v], why[v] = ZODIAC_SIGN_ELEMENT[(v - 2750) // 10 + 1], 'Swiatynia Zodiaku boss'
+
         # where else every vnum spawns (maps of the index, dungeon dirs, special spawns)
         elsewhere = {}
         rule_maps = set(i for _, idxs, _ in MAP_RULES for i in idxs) | set(r[1] for r in DUNGEON_RULES)
@@ -417,7 +427,7 @@ def main():
                '-- ice, wind, earth, dark; in the column\'s SET: SAVAGE, ATT_FIRE, ATT_ICE, ATT_TEMPLE, ATT_EARTH,',
                '-- ATT_DARK). Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0) - by the owner\'s rules of',
                '-- 7 October 2026 (tools/zywioly/gen_zywioly_moby.py: wiki bosses, Grota Wygnancow 1/2, Swiatynia',
-               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides). GENERATED - do not',
+               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses). GENERATED - do not',
                '-- edit; rerun the generator. Every start (apply.sh), idempotent: bits 11-16 cleared on every other',
                '-- mob, set on these.']
         for line in out[1:7]:

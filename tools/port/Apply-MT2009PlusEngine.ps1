@@ -67,6 +67,8 @@ param(
 #   Punkty Rangi       cmd.cpp, char_battle.cpp, char_item.cpp, input_login.cpp,
 #                      char.cpp, item_manager.cpp (MT2009_PLUS_RANK_POINTS_V1;
 #                      server-patches/rankpoints)
+#   Swiatynia Zodiaku  24 engine files, ENABLE_12ZI (MT2009_PLUS_ZODIAC_V1;
+#                      server-patches/zodiak, Autor: Digi Rasta)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1023,6 +1025,36 @@ if ((Test-Path -LiteralPath $zywiolyApply -PathType Leaf) -and
     if ($zywiolyResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} elements and talismans edit(s).' -f $zywiolyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The special items' experience (server-patches/specialexp, "Autor: Digi Rasta",
+# nowy-system 0.28.1, MT2009_PLUS_NS_SPECIAL_EXP_V1): POINT_RAMADAN_CANDY_BONUS_EXP
+# adds up in CHARACTER::PointChange (char.cpp) instead of being set, so the rings',
+# the lollipop's, the medal's and the amulet's fixed +30% / +50% experience
+# (special_item_group.unique_attr.txt, point 127) comes off with the item.
+$specialExpApply = Join-Path $repo 'server-patches/specialexp/Apply-SpecialExpPatch.ps1'
+if ((Test-Path -LiteralPath $specialExpApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char.cpp') -PathType Leaf)) {
+    $specialExpResult = & $specialExpApply -SourceDir $engineGameSource
+    if ($specialExpResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} special item experience edit(s).' -f $specialExpResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Swiatynia Zodiaku (server-patches/zodiak, "Autor: Digi Rasta", nowy-system 0.35.0,
+# MT2009_PLUS_ZODIAC_V1): 65 short hooks in 24 engine files (char, party, dungeon,
+# regen, battle, quest, commands, login, shop; packet GC 220, chat types 13-15,
+# AFFECT_CZ_UNLIMIT_ENTER 600) and ENABLE_12ZI last in CommonDefines.h. The work is
+# the overlay's playerbot_zodiac_*. After every other patch: its anchors are lines
+# the others leave or add.
+$zodiakApply = Join-Path $repo 'server-patches/zodiak/Apply-ZodiakPatch.ps1'
+if ((Test-Path -LiteralPath $zodiakApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'regen.cpp') -PathType Leaf)) {
+    $zodiakResult = & $zodiakApply -SourceDir $engineGameSource
+    if ($zodiakResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Zodiac Temple edit(s).' -f $zodiakResult.Applied) -ForegroundColor DarkGray
     }
 }
 

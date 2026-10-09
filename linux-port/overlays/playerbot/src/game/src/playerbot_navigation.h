@@ -303,6 +303,9 @@ namespace
 			{
 				if (mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN)
 					mapIndex /= 10000;
+				// MT2009_PLUS_ZODIAC_NAV_V1: no grid for an open arena map (playerbot_types.h).
+				if (IsPlayerBotOpenArenaMap(mapIndex))
+					return false;
 				// Every kingdom's own four maps, not only Chunjo's: a Shinsoo bot
 				// standing on map 1 with no grid here cannot plan a step, and the
 				// whole of its local life is on 1, 3, 4 and 5. IsKingdomMap covers
