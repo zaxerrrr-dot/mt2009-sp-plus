@@ -377,6 +377,14 @@ namespace
 	// Defined beside the lock itself, further down.
 	BYTE GetPlayerBotExpLockLevel(BYTE personality);
 
+	// MT2009_PLUS_BOT_EXP_UNLOCK_V1: the operator's override of every exp lock
+	// (the advanced panel's "Odblokuj exp"; web_admin.quest EXPUNLOCK/EXPLOCK
+	// write the bot's quest flag playerbot.exp_unlocked, read here).
+	bool IsPlayerBotExpUnlockedByOperator(LPCHARACTER ch)
+	{
+		return ch && ch->GetQuestFlag("playerbot.exp_unlocked") > 0;
+	}
+
 	// A dropper farms one band for good (PLAYERBOT_EXP_LOCK_*), and the lock
 	// stops experience without giving any back: a bot drawn a dropper once it
 	// had already passed that band farmed a table the engine fades to nothing
@@ -689,6 +697,21 @@ namespace
 	{
 		if (!ch)
 			return;
+		// MT2009_PLUS_BOT_EXP_UNLOCK_V1: the operator let this bot go on
+		// ("Odblokuj exp" on its page in the advanced panel): no lock holds it,
+		// whatever its personality, ground, cohort, gate or role would say.
+		if (IsPlayerBotExpUnlockedByOperator(ch))
+		{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+			if (ch->FindAffect(AFFECT_EXP_BLOCK) != NULL)
+			{
+				ch->RemoveAffect(AFFECT_EXP_BLOCK);
+				sys_log(0, "PLAYERBOT_AI: exp lock lifted by the operator pid=%u name=%s level=%u",
+						ch->GetPlayerID(), ch->GetName(), (unsigned)ch->GetLevel());
+			}
+#endif
+			return;
+		}
 		// MT2009_PLUS_SHOUTERS_V1: a shouter stops at its level and nowhere else.
 		if (IsPlayerBotShouterPID(ch->GetPlayerID()))
 		{
@@ -792,6 +815,8 @@ namespace
 	unsigned int GetPlayerBotShownExpLock(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		if (!ch)
+			return 0;
+		if (IsPlayerBotExpUnlockedByOperator(ch)) // MT2009_PLUS_BOT_EXP_UNLOCK_V1
 			return 0;
 		if (ch->FindAffect(AFFECT_EXP_BLOCK) != NULL)
 			return (unsigned int)ch->GetLevel();
@@ -8316,9 +8341,10 @@ WritePlayerBotGuildStatus(dwNow);
 		{
 			// The panels read this file by its header since Iwakura's
 			// personalities added four columns (persona, mood, mood_lock,
-			// lock_level - 255 while the PERSONA switch is off); the status text
+			// lock_level - 255 while the PERSONA switch is off; exp_unlock, the
+			// operator's override, MT2009_PLUS_BOT_EXP_UNLOCK_V1); the status text
 			// stays the last column, because it is the one that may hold spaces.
-			fprintf(snapshot, "pid\tpersonality\tambition\trole\tin_party\tgoal\taction\tupdated_ms\tmap\tx\ty\thp\tmax_hp\tpersona\tmood\tmood_lock\tlock_level\tstatus\n");
+			fprintf(snapshot, "pid\tpersonality\tambition\trole\tin_party\tgoal\taction\tupdated_ms\tmap\tx\ty\thp\tmax_hp\tpersona\tmood\tmood_lock\tlock_level\texp_unlock\tstatus\n");
 			for (TPlayerBotMap::const_iterator statusIt = m_mapBots.begin();
 					statusIt != m_mapBots.end(); ++statusIt)
 			{
@@ -8351,7 +8377,7 @@ WritePlayerBotGuildStatus(dwNow);
 
 				const bool personaShown = IsPlayerBotPersonaEnabled() && statusState.persona.bRestored;
 				const TPlayerBotPersona& shownPersona = statusState.persona;
-				fprintf(snapshot, "%u\t%u\t%u\t%u\t%u\t%u\t%u\t%u\t%ld\t%ld\t%ld\t%d\t%d\t%u\t%u\t%u\t%u\t%s\n",
+				fprintf(snapshot, "%u\t%u\t%u\t%u\t%u\t%u\t%u\t%u\t%ld\t%ld\t%ld\t%d\t%d\t%u\t%u\t%u\t%u\t%u\t%s\n",
 						statusCh->GetPlayerID(), (unsigned int)statusState.bPersonality,
 						(unsigned int)statusState.bAmbition, (unsigned int)statusState.bBotRole,
 						statusCh->GetParty() ? 1U : 0U,
@@ -8364,6 +8390,7 @@ WritePlayerBotGuildStatus(dwNow);
 						personaShown && playerbot_persona::IsMoodLocked(shownPersona.mood)
 							? (unsigned int)shownPersona.mood.lockKind : 0U,
 						GetPlayerBotShownExpLock(statusCh, statusState),
+						IsPlayerBotExpUnlockedByOperator(statusCh) ? 1U : 0U, // MT2009_PLUS_BOT_EXP_UNLOCK_V1
 						statusText);
 			}
 			fflush(snapshot);
