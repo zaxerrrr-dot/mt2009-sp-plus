@@ -385,6 +385,17 @@ namespace
 		return ch && ch->GetQuestFlag("playerbot.exp_unlocked") > 0;
 	}
 
+	// The lock in force now (the panel's "Exp zablokowany"); r40250 has none.
+	bool IsPlayerBotExpBlockedNow(LPCHARACTER ch)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return ch && ch->FindAffect(AFFECT_EXP_BLOCK) != NULL;
+#else
+		(void)ch;
+		return false;
+#endif
+	}
+
 	// A dropper farms one band for good (PLAYERBOT_EXP_LOCK_*), and the lock
 	// stops experience without giving any back: a bot drawn a dropper once it
 	// had already passed that band farmed a table the engine fades to nothing
@@ -8341,10 +8352,11 @@ WritePlayerBotGuildStatus(dwNow);
 		{
 			// The panels read this file by its header since Iwakura's
 			// personalities added four columns (persona, mood, mood_lock,
-			// lock_level - 255 while the PERSONA switch is off; exp_unlock, the
-			// operator's override, MT2009_PLUS_BOT_EXP_UNLOCK_V1); the status text
+			// lock_level - 255 while the PERSONA switch is off; exp_block, the lock
+			// in force, and exp_unlock, the operator's override,
+			// MT2009_PLUS_BOT_EXP_UNLOCK_V1); the status text
 			// stays the last column, because it is the one that may hold spaces.
-			fprintf(snapshot, "pid\tpersonality\tambition\trole\tin_party\tgoal\taction\tupdated_ms\tmap\tx\ty\thp\tmax_hp\tpersona\tmood\tmood_lock\tlock_level\texp_unlock\tstatus\n");
+			fprintf(snapshot, "pid\tpersonality\tambition\trole\tin_party\tgoal\taction\tupdated_ms\tmap\tx\ty\thp\tmax_hp\tpersona\tmood\tmood_lock\tlock_level\texp_block\texp_unlock\tstatus\n");
 			for (TPlayerBotMap::const_iterator statusIt = m_mapBots.begin();
 					statusIt != m_mapBots.end(); ++statusIt)
 			{
@@ -8377,7 +8389,7 @@ WritePlayerBotGuildStatus(dwNow);
 
 				const bool personaShown = IsPlayerBotPersonaEnabled() && statusState.persona.bRestored;
 				const TPlayerBotPersona& shownPersona = statusState.persona;
-				fprintf(snapshot, "%u\t%u\t%u\t%u\t%u\t%u\t%u\t%u\t%ld\t%ld\t%ld\t%d\t%d\t%u\t%u\t%u\t%u\t%u\t%s\n",
+				fprintf(snapshot, "%u\t%u\t%u\t%u\t%u\t%u\t%u\t%u\t%ld\t%ld\t%ld\t%d\t%d\t%u\t%u\t%u\t%u\t%u\t%u\t%s\n",
 						statusCh->GetPlayerID(), (unsigned int)statusState.bPersonality,
 						(unsigned int)statusState.bAmbition, (unsigned int)statusState.bBotRole,
 						statusCh->GetParty() ? 1U : 0U,
@@ -8390,7 +8402,8 @@ WritePlayerBotGuildStatus(dwNow);
 						personaShown && playerbot_persona::IsMoodLocked(shownPersona.mood)
 							? (unsigned int)shownPersona.mood.lockKind : 0U,
 						GetPlayerBotShownExpLock(statusCh, statusState),
-						IsPlayerBotExpUnlockedByOperator(statusCh) ? 1U : 0U, // MT2009_PLUS_BOT_EXP_UNLOCK_V1
+						IsPlayerBotExpBlockedNow(statusCh) ? 1U : 0U, // MT2009_PLUS_BOT_EXP_UNLOCK_V1
+						IsPlayerBotExpUnlockedByOperator(statusCh) ? 1U : 0U,
 						statusText);
 			}
 			fflush(snapshot);

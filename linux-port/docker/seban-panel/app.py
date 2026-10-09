@@ -1579,7 +1579,8 @@ def news_feed_history(before=None, limit=40, days=14):
 PLAYERBOT_STATUS_LEGACY_COLUMNS = ("pid", "personality", "ambition", "role", "in_party", "goal",
                                     "action", "updated_ms", "map_index", "x", "y", "hp", "max_hp", "status")
 _LIVE_STATUS_INT_FIELDS = ("personality", "ambition", "role", "goal", "action", "updated_ms",
-                            "map_index", "x", "y", "hp", "max_hp", "persona", "mood", "mood_lock", "lock_level")
+                            "map_index", "x", "y", "hp", "max_hp", "persona", "mood", "mood_lock", "lock_level",
+                            "exp_block", "exp_unlock")
 
 
 def live_statuses():
@@ -6481,7 +6482,12 @@ def player(pid):
         character["persona"] = BOT_PERSONAS.get(live.get("persona")) if live.get("persona") is not None else None
         character["mood"] = BOT_MOODS.get(live.get("mood")) if live.get("mood") is not None else None
         character["mood_lock"] = BOT_MOOD_LOCKS.get(live.get("mood_lock") or 0)
-        character["hold"] = f"blokada expa na {live['lock_level']} lvl" if live.get("persona") is not None and live.get("lock_level") else ""
+        if live.get("exp_unlock"):
+            # MT2009_PLUS_BOT_EXP_UNLOCK_V1: the operator's override is over
+            # whatever level the bot would be held at.
+            character["hold"] = "exp odblokowany przez operatora"
+        else:
+            character["hold"] = f"blokada expa na {live['lock_level']} lvl" if live.get("persona") is not None and live.get("lock_level") else ""
     else:
         character.update({"personality": "Bot offline", "ambition": "—", "goal": "—", "action": "—"})
         character["channel_live"] = False
@@ -6559,7 +6565,8 @@ def player(pid):
                             dragon_soul_inventory=dragon_soul_inventory, dragon_soul_decks=dragon_soul_decks,
                             gear_history=gear_history, offline_shop=offline_shop, character_stats=character_stats,
                             mission_progress=mission_progress, gm_ranks=GM_RANK_OPTIONS,
-                            admin_warps=PLAYER_ADMIN_WARPS, dungeon_reset_choices=DUNGEON_RESET_CHOICES)
+                            admin_warps=PLAYER_ADMIN_WARPS, dungeon_reset_choices=DUNGEON_RESET_CHOICES,
+                            exp_lock=bot_exp_lock_view(character, live))
 
 
 @app.get("/api/admin/item-search")
@@ -6587,6 +6594,96 @@ def api_admin_item_search():
                  " ORDER BY vnum LIMIT 80", params)
     return jsonify({"items": [{"vnum": int(item["vnum"]), "name": game_text(item.get("locale_name")) or f"VNUM {item['vnum']}"}
                               for item in found]})
+
+
+# MT2009_PLUS_BOT_EXP_UNLOCK_V1: a bot's EXP lock and the operator's override
+# of it ("Odblokuj exp" on the bot's page). The lock is the engine's
+# AFFECT_EXP_BLOCK (310), which the bots' cores put on a dropper in its band, a
+# Grinder at its tier's level, a farmer on its ground, a bot at a progression
+# gate, a shouter, a test squad and so on (ManagePlayerBotExpLock). The
+# override is the bot's quest flag playerbot.exp_unlocked, which the lock pass
+# honours over all of them. A bot in the game takes EXPUNLOCK/EXPLOCK through
+# web_admin.quest (its own player timer); for a bot out of the game the panel
+# writes the flag and drops the saved lock itself - the core reads both when
+# the bot loads.
+AFFECT_EXP_BLOCK_MT2009 = 310
+EXP_OVERRIDE_COMMANDS = {"unlock": "EXPUNLOCK", "restore": "EXPLOCK"}
+
+
+def bot_exp_lock_view(character, live):
+    """The EXP card of /player: whether the lock holds now (the live status
+    file for a bot in the game, its saved affect otherwise), the level it is
+    held at, and the operator's override. None for any character but a bot."""
+    if not ENGINE_MT2009 or not character:
+        return None
+    pid = int(character["id"])
+    try:
+        if not one("SELECT " + BOT_IS + " AS bot FROM player.player p WHERE p.id=%s", (pid,)).get("bot"):
+            return None
+        saved_blocked = bool(one("SELECT 1 AS n FROM player.affect WHERE dwPID=%s AND bType=%s LIMIT 1",
+                                 (pid, AFFECT_EXP_BLOCK_MT2009)))
+        saved_unlocked = bool(one("SELECT 1 AS n FROM player.quest WHERE dwPID=%s AND szName='playerbot' "
+                                  "AND szState='exp_unlocked' AND lValue>0 LIMIT 1", (pid,)))
+    except pymysql.MySQLError:
+        return None
+    view = {"online": live is not None}
+    if live is not None:
+        # A core from before the two columns says nothing of either.
+        view["unlocked"] = bool(live["exp_unlock"]) if "exp_unlock" in live else saved_unlocked
+        view["blocked"] = bool(live["exp_block"]) if "exp_block" in live else saved_blocked
+        view["lock_level"] = int(live.get("lock_level") or 0) or None
+    else:
+        view.update(blocked=saved_blocked and not saved_unlocked, unlocked=saved_unlocked, lock_level=None)
+    return view
+
+
+def write_bot_exp_override_offline(pid, unlocked):
+    """For a bot out of the game: the quest flag the core reads at its load,
+    and, when unlocking, its saved lock gone (the core would lift it anyway on
+    its first pass)."""
+    with db() as con, con.cursor() as cur:
+        cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (%s, 'playerbot', 'exp_unlocked', %s)",
+                    (pid, 1 if unlocked else 0))
+        if unlocked:
+            cur.execute("DELETE FROM player.affect WHERE dwPID=%s AND bType=%s", (pid, AFFECT_EXP_BLOCK_MT2009))
+
+
+@app.post("/player/<int:pid>/action/exp-lock")
+@login_required
+def player_action_exp_lock(pid):
+    """MT2009_PLUS_BOT_EXP_UNLOCK_V1: the "Odblokuj exp" / "Przywróć blokadę"
+    button of a bot's page (bot_exp_lock_view)."""
+    character = one("SELECT id,name,level FROM player.player WHERE id=%s", (pid,))
+    if not character:
+        abort(404)
+    command = EXP_OVERRIDE_COMMANDS.get(request.form.get("mode", ""))
+    if not command:
+        flash("Nieobsługiwana akcja.", "error")
+        return redirect(url_for("player", pid=pid))
+    live = live_statuses().get(pid)
+    if bot_exp_lock_view(character, live) is None:
+        flash("Blokadę exp zmienia się tylko botom.", "error")
+        return redirect(url_for("player", pid=pid))
+    name, unlock = character["name"], command == "EXPUNLOCK"
+    status = "player_offline"
+    if live is not None:
+        status, _queue_id = queue_player_admin_command(name, command)
+    if status == "done":
+        flash(f"{name}: exp odblokowany, bot zdobywa doświadczenie." if unlock else
+              f"{name}: blokada przywrócona, o blokadzie znów decydują zasady bota.", "success")
+    elif status == "not_allowed":
+        flash("Blokadę exp zmienia się tylko botom.", "error")
+    elif live is None:
+        try:
+            write_bot_exp_override_offline(pid, unlock)
+        except pymysql.MySQLError:
+            flash("Nie udało się zapisać zmiany (baza danych).", "error")
+        else:
+            flash(f"{name} nie jest teraz w grze — zmiana zapisana, bot dostanie ją przy wejściu do gry.", "success")
+    else:
+        flash(f"Nie udało się zmienić blokady exp ({status}). Bot jest w grze, ale nie odpowiedział — spróbuj za chwilę.",
+              "error")
+    return redirect(url_for("player", pid=pid))
 
 
 @app.post("/player/<int:pid>/action/game")
