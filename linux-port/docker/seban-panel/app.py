@@ -200,12 +200,20 @@ GAME_HOST = os.environ.get("PLAYERBOTS_GAME_HOST", "metin2-game")
 GAME_LOGIN_PORT = int(os.environ.get("PLAYERBOTS_LOGIN_PORT", "11000"))
 GAME_WORLD_PORT = int(os.environ.get("PLAYERBOTS_WORLD_PORT", "13000"))
 RATE_NAMES = ("exp", "drop", "yang")
-REGEN_DELAY_FLAGS = {"boss": "fastBossSpawn", "mob": "fastMobSpawn"}
-REGEN_COUNT_FLAGS = {"boss": "m2_boss_count", "mob": "m2_mob_count"}
+# MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metin stones
+# apart from bosses - the core reads fastMetinSpawn/m2_metin_count for a line
+# that puts down a Metin stone and fastBossSpawn/m2_boss_count for a boss. The
+# migration (apply.sh) copies the old "Metiny i bossy" rows into the Metin rows
+# once; a world without the Metin row yet shows the bosses' value for them.
+REGEN_DELAY_FLAGS = {"metin": "fastMetinSpawn", "boss": "fastBossSpawn", "mob": "fastMobSpawn"}
+REGEN_COUNT_FLAGS = {"metin": "m2_metin_count", "boss": "m2_boss_count", "mob": "m2_mob_count"}
+REGEN_METIN_FALLBACK = {"fastMetinSpawn": "fastBossSpawn", "m2_metin_count": "m2_boss_count"}
 REGEN_DELAY_MIN = 10
 REGEN_COUNT_CHOICES = (100, 150, 200, 250, 300, 400)
 QUEUE_FINAL_STATUSES = frozenset((
     "done", "bad_args", "failed", "unknown_cmd", "cancelled", "no_gm",
+    # MT2009_PLUS_BOT_EXP_UNLOCK_V1: EXPUNLOCK/EXPLOCK for a character that is no bot.
+    "not_allowed",
 ))
 AI_WEIGHTS_FILE = RATES_SPOOL / "playerbot_weights.tsv"
 CHEST_SWITCH_FILE = RATES_SPOOL / "playerbot_chest_switch.tsv"
@@ -632,14 +640,22 @@ def read_regen_settings():
               "count": {kind: 100 for kind in REGEN_COUNT_FLAGS}}
     try:
         with db() as con, con.cursor() as cur:
-            for kind, flag in REGEN_DELAY_FLAGS.items():
+            def flag_row(flag):
                 cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (flag,))
                 row = cur.fetchone()
+                if row is None and flag in REGEN_METIN_FALLBACK:
+                    # MT2009_PLUS_REGEN_METIN_SPLIT_V1: not split yet - the Metins
+                    # respawn as the bosses do.
+                    cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1",
+                                (REGEN_METIN_FALLBACK[flag],))
+                    row = cur.fetchone()
+                return row
+            for kind, flag in REGEN_DELAY_FLAGS.items():
+                row = flag_row(flag)
                 if row and REGEN_DELAY_MIN <= int(row["lValue"]) < 100:
                     result["delay"][kind] = int(row["lValue"])
             for kind, flag in REGEN_COUNT_FLAGS.items():
-                cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (flag,))
-                row = cur.fetchone()
+                row = flag_row(flag)
                 if row and 100 < int(row["lValue"]) <= max(REGEN_COUNT_CHOICES):
                     result["count"][kind] = int(row["lValue"])
     except (KeyError, TypeError, ValueError, pymysql.MySQLError):
@@ -8976,7 +8992,8 @@ def respawns_delay():
         if any(not REGEN_DELAY_MIN <= value <= 100 for value in values.values()):
             raise ValueError(f"Szybkość odrodzenia musi mieścić się w zakresie {REGEN_DELAY_MIN}–100%.")
         persist_regen_settings("delay", values)
-        status, queue_id = queue_game_admin_command("REGEN", f"{0 if values['boss'] == 100 else values['boss']},{0 if values['mob'] == 100 else values['mob']}")
+        status, queue_id = queue_game_admin_command(
+            "REGEN", ",".join(str(0 if values[k] == 100 else values[k]) for k in ("metin", "boss", "mob")))
         if status != "done":
             if status == "timeout": cancel_pending_admin_command(queue_id)
             raise RuntimeError("Ustawienie zapisano na następny start, ale rdzeń nie potwierdził zmiany na żywo.")
@@ -8997,7 +9014,8 @@ def respawns_count():
         if any(value not in REGEN_COUNT_CHOICES for value in values.values()):
             raise ValueError("Wybierz jeden z dostępnych mnożników liczby potworów.")
         persist_regen_settings("count", values)
-        status, queue_id = queue_game_admin_command("REGEN_COUNT", f"{values['boss']},{values['mob']}")
+        status, queue_id = queue_game_admin_command(
+            "REGEN_COUNT", ",".join(str(values[k]) for k in ("metin", "boss", "mob")))
         if status != "done":
             if status == "timeout": cancel_pending_admin_command(queue_id)
             raise RuntimeError("Ustawienie zapisano na następny start, ale rdzeń nie potwierdził zmiany na żywo.")

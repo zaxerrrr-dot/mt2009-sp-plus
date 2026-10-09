@@ -74,8 +74,9 @@ def install(bp, ctx):
     def settings_summary():
         f = flags()
         boss, _s = sf.delay_percent(f, True, 0)
+        metin, _s = sf.delay_percent(f, True, 0, stone=True)
         mob, _s = sf.delay_percent(f, False, 0)
-        per_map = sorted({int(m.group(2)) for k in f for m in [re.fullmatch(r"fast(Boss|Mob)Spawn(\d+)", k)]
+        per_map = sorted({int(m.group(2)) for k in f for m in [re.fullmatch(r"fast(Boss|Mob|Metin)Spawn(\d+)", k)]
                           if m and 0 < int(f[k] or 0) < 100})
         status = {}
         function = sf.dropfiles.panel_function("read_map_regen_status")
@@ -84,8 +85,9 @@ def install(bp, ctx):
                 status = function() or {}
             except Exception:
                 status = {}
-        return {"boss": boss, "mob": mob,
+        return {"boss": boss, "mob": mob, "metin": metin,
                 "boss_count": sf.count_percent(f, True, 0, True), "mob_count": sf.count_percent(f, False, 0, True),
+                "metin_count": sf.count_percent(f, True, 0, True, stone=True),
                 "per_map": per_map, "map_regens": bool(status.get("values") or status.get("stones")),
                 "map_regen_status": status}
 
@@ -122,8 +124,9 @@ def install(bp, ctx):
         else:
             icon = "👹"
         level = max((table[m]["level"] for m in known), default=0)
-        percent, source = sf.delay_percent(flags(), boss_or_stone, map_index)
-        count_pct = sf.count_percent(flags(), boss_or_stone, map_index, all_fighters)
+        stone = any(table.get(m, {}).get("type") == 2 for m in known)  # MT2009_PLUS_REGEN_METIN_SPLIT_V1
+        percent, source = sf.delay_percent(flags(), boss_or_stone, map_index, stone=stone)
+        count_pct = sf.count_percent(flags(), boss_or_stone, map_index, all_fighters, stone=stone)
         return {"name": name, "icon": icon, "level": level, "boss_or_stone": boss_or_stone,
                 "low": row["low"], "high": row["high"], "once": row["low"] == 0,
                 "eff_low": sf.effective_seconds(row["low"], percent), "eff_high": sf.effective_seconds(row["high"], percent),
