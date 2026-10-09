@@ -378,6 +378,12 @@
   "new": "\t// MT2009_PLUS_ZODIAC_V1 (63): char_affect.cpp: Zodiak - uzycie makra\n\t\t\tif (IS_NO_CLEAR_ON_DEATH_AFFECT(dwType) || ZODIAK_NO_CLEAR_ON_DEATH(dwType) ||\n\t\t\t\tIS_NO_SAVE_AFFECT(dwType) ||"
  },
  {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (65)",
+  "old": "\t\tif (pkAttacker->GetLevel() > 85)\n\t\t\tiDam += pkAttacker->GetLevel()*8;\n\t\telse\n\t\t\tiDam += pkAttacker->GetLevel()*5;\n",
+  "new": "\t\t// MT2009_PLUS_ZODIAC_V1 (65): the owner, 9 October - the temple's flat bonus halved\n\t\t// (\"oslabic o polowe na tym dungeonie\"): level x4 above 85, level x2.5 below.\n\t\tif (pkAttacker->GetLevel() > 85)\n\t\t\tiDam += pkAttacker->GetLevel()*4;\n\t\telse\n\t\t\tiDam += pkAttacker->GetLevel()*5/2;\n"
+ },
+ {
   "file": "../../common/CommonDefines.h",
   "marker": "MT2009_PLUS_ZODIAC_V1 (64)",
   "old": "#define ENABLE_FULL_NOTICE",

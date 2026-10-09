@@ -1043,7 +1043,7 @@ if ((Test-Path -LiteralPath $specialExpApply -PathType Leaf) -and
 }
 
 # Swiatynia Zodiaku (server-patches/zodiak, "Autor: Digi Rasta", nowy-system 0.35.0,
-# MT2009_PLUS_ZODIAC_V1): 64 short hooks in 24 engine files (char, party, dungeon,
+# MT2009_PLUS_ZODIAC_V1): 65 short hooks in 24 engine files (char, party, dungeon,
 # regen, battle, quest, commands, login, shop; packet GC 220, chat types 13-15,
 # AFFECT_CZ_UNLIMIT_ENTER 600) and ENABLE_12ZI last in CommonDefines.h. The work is
 # the overlay's playerbot_zodiac_*. After every other patch: its anchors are lines

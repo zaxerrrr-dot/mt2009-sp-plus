@@ -9,8 +9,8 @@
 | Część | Miejsce |
 |---|---|
 | Logika (nowe pliki, wszystko w `#ifdef ENABLE_12ZI`) | `linux-port/overlays/playerbot/src/game/src/playerbot_zodiac_*`: `temple.h/.cpp` (klasy `CZodiac`, `CZodiacManager`, wersja 3.0), `ext.cpp` (definicje, które paczka wstawiała do plików silnika), `battle.cpp` (umiejętności bossów), `char.cpp` (tablica nagród), `questlua.cpp` (funkcje Lua), `regen.inc` (regeny mapy, dołączany do `regen.cpp`) |
-| Haki w plikach silnika | `edits.json` (64 zmiany w 24 plikach, każda ze znacznikiem `MT2009_PLUS_ZODIAC_V1 (<n>)`); `apply_zodiak.py <game/src>` (Linux/VPS) i `Apply-ZodiakPatch.ps1` (Windows, ostatni krok `tools/port/Apply-MT2009PlusEngine.ps1`) czytają ten sam plik |
-| Generator haków | `tools/zodiak/gen_zodiak_edits.py <zodiak_haki.py z paczki> <połatany game/src> <edits.json>` – kotwice paczki rozwiązane na naszym silniku po wszystkich innych łatkach |
+| Haki w plikach silnika | `edits.json` (65 zmian w 24 plikach, każda ze znacznikiem `MT2009_PLUS_ZODIAC_V1 (<n>)`); `apply_zodiak.py <game/src>` (Linux/VPS) i `Apply-ZodiakPatch.ps1` (Windows, ostatni krok `tools/port/Apply-MT2009PlusEngine.ps1`) czytają ten sam plik |
+| Generator haków | (zmiana `(65)` dopisana ręcznie – generator jej nie zna) `tools/zodiak/gen_zodiak_edits.py <zodiak_haki.py z paczki> <połatany game/src> <edits.json>` – kotwice paczki rozwiązane na naszym silniku po wszystkich innych łatkach |
 | Baza | `linux-port/docker/mariadb/playerbot/zodiak.sql` (z `96_zodiak.sql` paczki; `apply.sh`, przed żywiołami) |
 | Dane serwera | `linux-port/docker/game/zodiak/` (mapa, `data/dungeon/zodiac`, ruchy 45 potworów, `group.zodiak.txt`, `locale_string.zodiak.txt`) – krok `share: Swiatynia Zodiaku` w `Dockerfile` (+ `map_names[358]`, `/goto zodiac`) |
 | Questy | `linux-port/docker/game/quest/zodiac_{temples,milbon,prism_mission,emergency_mission}.quest` (lista i funkcje `qc` w `Dockerfile`) |
@@ -86,6 +86,7 @@ skrypt nie zapisuje niczego, jeśli choć jednej kotwicy nie ma dokładnie raz �
 | `(61)` | `shop.cpp` | Zodiak - limit zakupu |
 | `(62)` | `shop.cpp` | Zodiak - licznik zakupu |
 | `(63)` | `char_affect.cpp` | Zodiak - uzycie makra |
+| `(65)` | `battle.cpp` | premia do obrażeń potworów w świątyni o połowę (decyzja właściciela 9.10): poziom ×4 powyżej 85, ×2,5 niżej (paczka: ×8 / ×5); osobna zmiana po `(37)`, więc przerabia też drzewo z dawnym hakiem |
 | `(64)` | `common/CommonDefines.h` | ENABLE_12ZI |
 
 Numery wspólne z exe (muszą być takie same po obu stronach): pakiet **GC 220** `HEADER_GC_SEPCIAL_ZODIAC_EFFECT`
