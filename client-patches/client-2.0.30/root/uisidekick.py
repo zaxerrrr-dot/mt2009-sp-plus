@@ -94,6 +94,11 @@
 # page's Walka bar): 1 the companion consents to its owner's emotions for two
 # and sometimes answers them (the default), 0 it is asked like anybody (order:
 # emocje N). An older server sends no such word, and the button stays hidden.
+# ranged (MT2009_PLUS_SIDEKICK_RANGED_FIRST_V1, "Dystans: tak / nie" on the
+# Orders page's Walka bar, "Najpierw dystans"): 1 the archers and casters
+# hitting the owner, the companion or the party go before the owner's target
+# (the stone they came out of) and every other monster (the default), 0 the
+# old order (order: dystans N). An older server sends no such word.
 #
 # The status and skill pages read the answer to "/towarzysz umiejetnosci"
 # (SidekickSkillBegin with the stats, the skills, SidekickSkillEnd), which the
@@ -330,6 +335,10 @@ TEXT_SHARE_LOOT_HINT = 'Tylko dla mnie: ca\xb3y drop jest tw\xf3j.'
 # two (a kiss, a slap) without being asked, and sometimes answers them.
 TEXT_EMOTIONS_STATES = ('Emocje: nie', 'Emocje: tak')
 TEXT_EMOTIONS_HINT = 'Emocje we dwoje (poca\xb3unek, klepni\xeacie) bez pytania o zgod\xea.'
+# MT2009_PLUS_SIDEKICK_RANGED_FIRST_V1: "Najpierw dystans" - a button on the
+# Walka bar, left of "Emocje" (the Options page has no line left), off and on.
+TEXT_RANGED_STATES = ('Dystans: nie', 'Dystans: tak')
+TEXT_RANGED_HINT = 'Najpierw dystans: \xb3ucznicy i magowie, kt\xf3rzy bij\xb9 ciebie, jego lub grup\xea.'
 TEXT_SECTION_BEHAVIOUR = 'Zachowanie'
 TEXT_SECTION_POINTS = 'Punkty'
 # MT2009_PLUS_SIDEKICK_PANELS_V1: the panels of its costumes and its Alchemy,
@@ -587,6 +596,9 @@ def ParseInfo(args):
 	# MT2009_PLUS_SIDEKICK_EMOTIONS_V1: "Emocje" last (1 on, the default).
 	if len(values) >= len(names) + 16:
 		info['emotions'] = ParseInt(values[len(names) + 15], 1)
+	# MT2009_PLUS_SIDEKICK_RANGED_FIRST_V1: "Najpierw dystans" last (1 on, the default).
+	if len(values) >= len(names) + 17:
+		info['ranged'] = ParseInt(values[len(names) + 16], 1)
 	return info
 
 
@@ -1106,6 +1118,11 @@ class SidekickWindow(ui.ScriptWindow):
 			158 - 3, '', self.OnEmotions)
 		self._Hover(self.emotionsButton, TEXT_EMOTIONS_HINT)
 		self.emotionsButton.Hide()
+		# MT2009_PLUS_SIDEKICK_RANGED_FIRST_V1: "Dystans: tak / nie" beside it.
+		self.rangedButton = self._Btn(page, 'large', SECTION_X + SECTION_WIDTH - 2 * BUTTON_WIDTHS['large'] - 4,
+			158 - 3, '', self.OnRanged)
+		self._Hover(self.rangedButton, TEXT_RANGED_HINT)
+		self.rangedButton.Hide()
 		self.stanceButtons = []
 		for i, text in enumerate(STANCES):
 			self.stanceButtons.append(self._Btn(page, 'middle', ORDER_COLUMNS[i], 178, text, self.OnStance, i))
@@ -1477,6 +1494,12 @@ class SidekickWindow(ui.ScriptWindow):
 			self.emotionsButton.Show()
 		else:
 			self.emotionsButton.Hide()
+		# MT2009_PLUS_SIDEKICK_RANGED_FIRST_V1: shown by a server that sends it.
+		if 'ranged' in info:
+			self.rangedButton.SetText(TEXT_RANGED_STATES[1 if info['ranged'] else 0])
+			self.rangedButton.Show()
+		else:
+			self.rangedButton.Hide()
 		stance = info['stance'] if 0 <= info['stance'] < len(STANCE_HINTS) else 0
 		self.stanceHint.SetText(STANCE_HINTS[stance])
 		self.ordersStatus.SetIdle(TEXT_MODE % MODES[mode])
@@ -1717,6 +1740,12 @@ class SidekickWindow(ui.ScriptWindow):
 	def OnEmotions(self):
 		on = self.info.get('emotions', 1) if self.info else 1
 		self.SendCommand('emocje %d' % (0 if on else 1))
+		self.nextPoll = 0.0
+
+	# MT2009_PLUS_SIDEKICK_RANGED_FIRST_V1
+	def OnRanged(self):
+		on = self.info.get('ranged', 1) if self.info else 1
+		self.SendCommand('dystans %d' % (0 if on else 1))
 		self.nextPoll = 0.0
 
 	def OnShareLoot(self):
