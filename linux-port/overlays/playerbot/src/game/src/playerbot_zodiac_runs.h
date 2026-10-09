@@ -157,6 +157,10 @@ namespace
 	int ZrunTargetFloor() { return std::max(1, std::min(40, GetZrunSetting("zrun_floor", 40))); }
 	int ZrunBoost() { const int v = GetZrunSetting("zrun_boost", 30); return v < 0 ? 0 : v; }	// -1: none
 	int ZrunPrisms() { const int v = GetZrunSetting("zrun_prisms", 30); return v < 0 ? 0 : v; }
+	// V6: deaths a bot on one floor before the run is pulled ("wipe"; the test's "wipe <n>").
+	int ZrunWipe() { return std::max(1, GetZrunSetting("zrun_wipe", ZRUN_WIPE_DEATHS_PER_BOT)); }
+	// V6: the test's "mixed 1": a party of the three kingdoms (more bots of the band; a test only).
+	bool ZrunMixed() { return quest::CQuestManager::instance().GetEventFlag("zrun_mixed") > 0; }
 	int ZrunGapSeconds() { return std::max(10, GetZrunSetting("zrun_gap", 60)); }
 	bool ZrunLoop() { return quest::CQuestManager::instance().GetEventFlag("zrun_loop") != 0; }
 
@@ -262,6 +266,12 @@ namespace
 			byEmpire[ch->GetEmpire()].push_back(TZrunCand(it->first, ch->GetLevel(),
 					ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0));
 		}
+		if (ZrunMixed())
+			for (int e = 2; e <= 3; ++e)
+			{
+				byEmpire[1].insert(byEmpire[1].end(), byEmpire[e].begin(), byEmpire[e].end());
+				byEmpire[e].clear();
+			}
 		int empire = 0;
 		for (int e = 1; e <= 3; ++e)
 			if (!byEmpire[e].empty() && (empire == 0 || byEmpire[e].size() > byEmpire[empire].size()))
@@ -414,7 +424,7 @@ namespace
 			if (run.members[i] == run.dwLeader)
 				continue;
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
-			if (!ch || ch->GetParty() == party || ch->GetEmpire() != leader->GetEmpire())
+			if (!ch || ch->GetParty() == party || (ch->GetEmpire() != leader->GetEmpire() && !ZrunMixed()))
 				continue;
 			if (ch->GetParty())
 				LeavePlayerBotParty(ch);
@@ -885,7 +895,7 @@ namespace
 				run.lFloorY = leader->GetY();
 			}
 			// V2: a floor that kills the party over and over is over; so is a temple whose first floor never came.
-			if (!run.szResult && run.iFloorDeaths >= ZRUN_WIPE_DEATHS_PER_BOT * (int)run.members.size())
+			if (!run.szResult && run.iFloorDeaths >= ZrunWipe() * (int)run.members.size())
 				PullZrun(run, "wipe");
 			if (!run.szResult && run.bFloor == 0 && dwNow - run.dwEnteredAt > 120000)
 				PullZrun(run, "no_floor");
@@ -1018,7 +1028,7 @@ namespace
 			else if (!strcmp(cmd, "loop") && got >= 2)
 				SetZrunSetting("zrun_loop", !strcmp(arg, "on") || !strcmp(arg, "1") ? 1 : 0);
 			else if ((!strcmp(cmd, "size") || !strcmp(cmd, "level") || !strcmp(cmd, "floor") || !strcmp(cmd, "boost") ||
-					!strcmp(cmd, "prisms") || !strcmp(cmd, "gap")) && got >= 2)
+					!strcmp(cmd, "prisms") || !strcmp(cmd, "gap") || !strcmp(cmd, "wipe") || !strcmp(cmd, "mixed")) && got >= 2)
 			{
 				char flag[48];
 				snprintf(flag, sizeof(flag), "zrun_%s", cmd);
