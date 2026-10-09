@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.59",
+  "version": "2.0.60",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -14,13 +14,13 @@
     },
     {
       "path": "metin2client.exe",
-      "size": 13690880,
-      "sha256": "2432B614A1CA40737A74F4BAB7F087B072108E03319273F66FD13F6D8E5C1A29"
+      "size": 13697024,
+      "sha256": "D3CCF8DF45981379C28E6F533DF0CFB5C109E87B007B727F40720646C1C6ACE8"
     },
     {
       "path": "MT2009-Patcher.exe",
-      "size": 37403136,
-      "sha256": "619B5CB790B1F840AAE78DBD4C12627AB3BE135D88861954307111BC1E9D1543"
+      "size": 37409280,
+      "sha256": "0983D8E60F302F08C0A8271684BE70F85B5EDE61A5C15A10A0CD9ABA4C8E2FE8"
     },
     {
       "path": "MT2009-Patcher.exe.config",
@@ -170,7 +170,7 @@
     {
       "path": "pack/gamedata.index",
       "size": 4092,
-      "sha256": "54B474F86D7C8887C4C14ECA50DFB98D0238263DE827C74E8C604F2C8BCB7C32"
+      "sha256": "5D435110CB195542FE526EF83BEB73DED02EEF7709813E41C1146C81B26BD6F1"
     },
     {
       "path": "pack/gf_misc.index",
@@ -209,18 +209,18 @@
     },
     {
       "path": "pack/Index",
-      "size": 959,
-      "sha256": "40D0EF635B1C3872F62C2BEB33CD3671079768B8E28DA1819FA12009128EFDAE"
+      "size": 1014,
+      "sha256": "84A0F82F48B8064F9680FA2CC8C1054BD7D3CF570E43B16A995630ED56FF4321"
     },
     {
       "path": "pack/locale.index",
-      "size": 23508,
-      "sha256": "1B4956BFF3952199B398D117842A4C3B997A1E7D1489135C34D39B526B1CFD63"
+      "size": 23500,
+      "sha256": "DAA01D77CCCA6F4D30BC11261581491359D8B855249FD9A168F7D9774B04BF05"
     },
     {
       "path": "pack/maps.index",
-      "size": 79748,
-      "sha256": "7CEAF8F7CBAA3578181D652991B5EFE6F07FB16492888A1C0D95AA78ACA67F4C"
+      "size": 90452,
+      "sha256": "5EA3E272D302863399DD666CBFC4F6CCC1548EAD73DAEBE27099EE252DF49B30"
     },
     {
       "path": "pack/minigames.index",
@@ -239,13 +239,33 @@
     },
     {
       "path": "pack/property.index",
-      "size": 53756,
-      "sha256": "486E8F93E5EF03256DD52F71F19551F14386AEC82598F2E8EF5E9279F1DA48DA"
+      "size": 56252,
+      "sha256": "64FB923FEB9A72CB1379FF932770A0A6BE6C018A381945239B4BF90F492B2326"
     },
     {
       "path": "pack/root.index",
-      "size": 32412,
-      "sha256": "D65E8F31B5B66D724AB343C522F8D78FFE1184EA647E18D2209EBFCC3419670B"
+      "size": 32588,
+      "sha256": "8321ACCEC12BBF7D0366C81AC05CCF759251926D8853F761D2B5EAD7A6EDC083"
+    },
+    {
+      "path": "pack/wiki_nowe.index",
+      "size": 1140,
+      "sha256": "E85D9513B81A65816E2CB611B47B0C70510397112E58CC0DFAC6ACDCFC593F32"
+    },
+    {
+      "path": "pack/zodiak_maps.index",
+      "size": 16964,
+      "sha256": "A5955CFEC62DAFAC05AFB9FD85328FB87356411AE0212E74D715E1159E10F8CF"
+    },
+    {
+      "path": "pack/zodiak_mobs.index",
+      "size": 9780,
+      "sha256": "848D0FE006581A89490723C1BE4FC06E0263634D82C2B0945E2946A506F21806"
+    },
+    {
+      "path": "pack/zodiak_mobs2.index",
+      "size": 27860,
+      "sha256": "18573A388EDAFEF1205FF1A58EDF6DFCB9A3FFCDBB2D6CF6BFBB2A8763576590"
     }
   ]
 }

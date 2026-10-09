@@ -17,6 +17,44 @@ every version here.
 
 ---
 
+## 2.29.0 — 2026-10-10 — Świątynia Zodiaku
+
+**Świątynia Zodiaku** (Autor: Digi Rasta) – nowy dungeon drużynowy na poziom 105+, z oficjalnego Metin2.
+
+- **Wejście:** Teleporter → „Świątynia Zodiaku”. Na mapie jest 12 portali znaków. Każdego dnia otwarte są dwa: pon. Szczur + Bawół, wt. Tygrys + Królik, śr. Smok + Wąż, czw. Koń + Koza, pt. Małpa + Kogut, sob. Pies + Świnia, a w niedzielę wszystkie.
+- **Kule Animy:** wejście kosztuje 12 kul. Na start każdy ma 36, potem odnawia się 1 na godzinę (najwyżej 36). Pergamin Sfer i Znak Strażnika jak na oficjalnym serwerze.
+- **Piętra:** każde ma swoją misję i limit czasu (minutnik i tablica misji na ekranie). Czasem można przeskoczyć kilka pięter naraz.
+- **Śmierć:** wskrzeszenie Pryzmatami Ożywienia (1, 2, 4, 8, potem po 10). Na piętrach 6, 12, 19 i 24 jedna śmierć wyrzuca całą drużynę po 10 sekundach.
+- **Trudność:** premia do obrażeń potworów w świątyni jest o połowę mniejsza niż w oryginalnej paczce.
+- **Żywioły znaków** (wg oficjalnej wiki): Szczur i Pies – Mrok, Bawół i Małpa – Ziemia, Tygrys i Świnia – Ogień, Królik i Kogut – Wiatr, Smok i Koza – Błyskawica, Wąż i Koń – Lód. Talizman danego żywiołu zwiększa obrażenia. Bossowie dają Talizman +0 swojego żywiołu (5%), Metiny świątyni 2%.
+- **Złota Skrzynia Zodiaku:** daje ją Generał, ostatni boss 34. piętra, każdemu na piętrze (botom też). W środku: broń Zodiaku ok. 6%, zbroja Zodiaku ok. 8%, szarfa ok. 10%, reszta to mikstury, Wino i Cor.
+- **Mnich Milbon:** przeciągnij na niego 10 Insygniów jednego rodzaju i wybierz Czerwone Pudło, Niebieskie Pudło (za Insygnia Zodiaku) albo Kwiat Żywiołu. Jest też Kupiec Zodiaku.
+- **Broń Zodiaku** (Ostrze, Miecz, Sztylet, Łuk, Glewia, Dzwon, Wachlarz, 105 poz.): losowe średnie obrażenia i obrażenia umiejętności, jak inne bronie, oraz szybkość ataku.
+- **Zbroje Zodiaku:** odporność na obrażenia (średnie), odporność na magię i Max PŻ, jak na wiki.
+- **Ulepszanie u Kowala** (wg wiki): broń za Czerwone Pudła, zbroje za Niebieskie (1, 2, 4, 8 … 200 pudeł). Do tego na +1…+5 Stabilne Sznury (broń) albo Ciężkie Pasy (zbroje), na +6 Dwutlenek Tytanu, na +7 Agat, na +8 i +9 Kamień Księżycowy.
+- **Skąd materiały:**
+  - Stabilne Sznury i Ciężkie Pasy: zwykłe potwory Świątyni Ochao i Zaczarowanego Lasu (0,5%; Mag Ochao 1% Sznury) oraz skrzynie Razadora i Nemere.
+  - Dwutlenek Tytanu i Agat: bossowie 103–107 poz. (3% / 2%) i Skrzynia Dżungli.
+  - Kamień Księżycowy: Beran-Setaou (5%) i Skrzynia Mroku (ok. 5%).
+- **Boty:** boty z twojej drużyny wchodzą z tobą, walczą i wskrzeszają się Pryzmatami. Nie ruszają posągów ani armaty.
+- Wymaga nowego klienta 2.0.60.
+
+**Stały bonus PD przedmiotów specjalnych** (Autor: Digi Rasta) – Pierścień Siły Woli, Amulet Wiecznej Miłości i Pierścień Śmiercionośnej Mocy dają stałe +30% PD, a Medal Bohatera, Pierścień Półksiężyca, Lizak Potęgi i Pierścień Radości stałe +50% (wcześniej była to tylko szansa). Dwa założone naraz się sumują, a po zdjęciu bonus znika.
+
+**Opisy umiejętności** (Autor: Digi Rasta) – pod opisem każdej umiejętności klasy jest linia „Wzmacnia: …”, która mówi, od których statystyk zależy umiejętność. Wymaga nowego klienta.
+
+**Kanały CH3/CH4 ustawiają się same** – MT2009-Patcher pyta serwer, ile kanałów jest włączonych, i sam wpisuje to do `coop.cfg`. Nie trzeba już niczego zmieniać ręcznie. Działa też w launcherze serwera i przy zaproszeniu COOP.
+
+**Poprawki:**
+- Zakładanie i zdejmowanie kołczanu nie zapisuje już błędów w logach serwera.
+
+## Klient 2.0.60 — 2026-10-10 — Świątynia Zodiaku
+
+- **Świątynia Zodiaku:** mapa, potwory i bossowie znaków z efektami umiejętności, broń i zbroje Zodiaku, minutnik, tablica misji, licznik Kul Animy, okno nagród i wskrzeszania (nowy exe, paczki `zodiak_maps`, `zodiak_mobs`, `zodiak_mobs2`).
+- Linia „Wzmacnia: …” w opisach umiejętności.
+- **Nowy MT2009-Patcher** – sam ustawia liczbę kanałów (CH3/CH4) w `coop.cfg`.
+- Zmieniła się paczka `dbdata`. Pliki z edytora pobierze patcher, albo pobierz zip z panelu (gra o tym przypomni).
+
 ## 2.28.0 — 2026-10-09 — Ruiny Atlantydy, nowa biżuteria i klejnoty, pety u botów, CH3/CH4, mapa teleportacji
 
 Wymaga klienta **2.0.59** (pobierze go launcher albo patcher). Zmieniła się paczka danych przedmiotów – jeśli korzystasz z Edytora bazy danych, **patcher pobierze nowe dane sam** (albo pobierz zip z panelu; gra przypomni).
