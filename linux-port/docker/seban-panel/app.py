@@ -11725,5 +11725,16 @@ import env_editor
 env_editor.install(app, login_required, update_csrf_token, lambda: UPDATE_SPOOL, db_connect=lambda: db())
 
 
+# MT2009_PLUS_MARKET_PREVIEW_V1: "Podgląd rynku" (wersja eksperymentalna) - every
+# offline shop offer of all kingdoms, filters, bargains, teleport to a stall
+# through /api/admin/teleport-me (market_preview/__init__.py).
+import market_preview
+
+market_preview.install(app, {"db": db, "login_required": login_required, "item_icon_url": item_icon_url,
+                             "apply_labels": APPLY_LABELS, "point_to_apply": POINT_TO_APPLY,
+                             "engine_mt2009": ENGINE_MT2009, "read_rates": read_rates, "spool": RATES_SPOOL,
+                             "item_name": resolve_item_display_name})
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=7789)
