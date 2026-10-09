@@ -3910,25 +3910,27 @@ T = {
  "fl_flower_5":  {"pl":"Słonecznik","en":"Sunflower"},
  "regen_title": {"pl":"Czas odradzania Metinów, bossów i potworów",
                  "en":"Respawn time of Metin stones, bosses and monsters"},
- "regen_help":  {"pl":"Procent zwykłego czasu odradzania: 100 = jak w grze, 50 = dwa razy szybciej, 10 = dziesięć razy szybciej. Działa od razu (przez pomocnika w grze), a po restarcie zostaje. Osobno dla Metinów i bossów, osobno dla zwykłych potworów.",
-                 "en":"Percent of the normal respawn time: 100 = as in the game, 50 = twice as fast, 10 = ten times as fast. Live at once (through the in-game helper) and kept across a restart. Stones and bosses apart from ordinary monsters."},
- "regen_boss":  {"pl":"Metiny i bossowie (% czasu)", "en":"Metin stones and bosses (% of time)"},
+ "regen_help":  {"pl":"Procent zwykłego czasu odradzania: 100 = jak w grze, 50 = dwa razy szybciej, 10 = dziesięć razy szybciej. Działa od razu (przez pomocnika w grze), a po restarcie zostaje. Osobno dla Metinów, osobno dla bossów i osobno dla zwykłych potworów.",
+                 "en":"Percent of the normal respawn time: 100 = as in the game, 50 = twice as fast, 10 = ten times as fast. Live at once (through the in-game helper) and kept across a restart. Metin stones, bosses and ordinary monsters each have their own."},
+ "regen_metin": {"pl":"Metiny (% czasu)", "en":"Metin stones (% of time)"},
+ "regen_boss":  {"pl":"Bossowie (% czasu)", "en":"Bosses (% of time)"},
  "regen_mob":   {"pl":"Zwykłe potwory (% czasu)", "en":"Ordinary monsters (% of time)"},
  "regen_faster": {"pl":"Szybciej:", "en":"Faster:"},
  "regen_mult":  {"pl":"≈ ×{n} szybciej niż w grze", "en":"≈ ×{n} faster than the game"},
  "regen_save":  {"pl":"Zapisz czasy odradzania", "en":"Save the respawn times"},
- "regen_range": {"pl":"Obie wartości muszą być liczbą całkowitą od 10 do 100. Nic nie zmieniono.",
-                 "en":"Both have to be whole numbers between 10 and 100. Nothing was changed."},
+ "regen_range": {"pl":"Wszystkie trzy wartości muszą być liczbą całkowitą od 10 do 100. Nic nie zmieniono.",
+                 "en":"All three have to be whole numbers between 10 and 100. Nothing was changed."},
  "regen_saved_live": {"pl":"✅ Zapisano! Nowe czasy odradzania działają już w grze, bez restartu.",
                       "en":"✅ Saved! The new respawn times are live in game, no restart needed."},
  "regen_saved_restart": {"pl":"Zapisano. Nikt nie jest zalogowany, więc pomocnik w grze nie odpowiedział — nowe czasy zadziałają po restarcie serwera (albo zapisz jeszcze raz, gdy ktoś będzie w grze).",
                          "en":"Saved. Nobody is logged in, so the in-game helper did not answer — the new times apply after a server restart (or save again while somebody is in game)."},
  "count_title": {"pl":"Liczba potworów w respie", "en":"Monsters per respawn"},
- "count_help":  {"pl":"Ile potworów stoi w każdym miejscu respu: ×1 = jak w grze, ×2 = dwa razy więcej, aż do ×4. Nie trzeba restartu, a po restarcie ustawienie zostaje; dodatkowe potwory dochodzą przy najbliższym respie danego miejsca (Metiny i bossowie po swoim czasie odradzania, zwykle 15–25 minut). Osobno dla Metinów i bossów, osobno dla zwykłych potworów. Postacie niezależne (także żyły rud i krzaki ziół), portale, lochy i jednorazowe respy z misji zostają bez zmian.",
-                 "en":"How many monsters stand at each spawn point: ×1 = as in the game, ×2 = twice as many, up to ×4. No restart needed and kept across one; the extra monsters come at each spot's next respawn (stones and bosses after their own respawn time, usually 15-25 minutes). Stones and bosses apart from ordinary monsters. NPCs (ore veins and herb bushes too), portals, dungeons and a quest's one-off spawns are left alone."},
+ "count_help":  {"pl":"Ile potworów stoi w każdym miejscu respu: ×1 = jak w grze, ×2 = dwa razy więcej, aż do ×4. Nie trzeba restartu, a po restarcie ustawienie zostaje; dodatkowe potwory dochodzą przy najbliższym respie danego miejsca (Metiny i bossowie po swoim czasie odradzania, zwykle 15–25 minut). Osobno dla Metinów, bossów i zwykłych potworów. Postacie niezależne (także żyły rud i krzaki ziół), portale, lochy i jednorazowe respy z misji zostają bez zmian.",
+                 "en":"How many monsters stand at each spawn point: ×1 = as in the game, ×2 = twice as many, up to ×4. No restart needed and kept across one; the extra monsters come at each spot's next respawn (stones and bosses after their own respawn time, usually 15-25 minutes). Metin stones, bosses and ordinary monsters each have their own. NPCs (ore veins and herb bushes too), portals, dungeons and a quest's one-off spawns are left alone."},
  "count_warn":  {"pl":"Uwaga: ×2 to dwa razy więcej potworów na każdej mapie — serwer i boty mają przez to więcej pracy. Po zmniejszeniu mnożnika nadmiarowe potwory znikają dopiero, gdy ktoś je zabije.",
                  "en":"Mind: ×2 is twice as many monsters on every map, and the server and the bots work that much harder. After lowering it, the extra monsters go only as they are killed."},
- "count_boss":  {"pl":"Metiny i bossowie", "en":"Metin stones and bosses"},
+ "count_metin": {"pl":"Metiny", "en":"Metin stones"},
+ "count_boss":  {"pl":"Bossowie", "en":"Bosses"},
  "count_mob":   {"pl":"Zwykłe potwory", "en":"Ordinary monsters"},
  "count_save":  {"pl":"Zapisz liczbę potworów", "en":"Save the monster counts"},
  "count_range": {"pl":"Wybierz mnożnik od ×1 do ×4. Nic nie zmieniono.",
@@ -5581,14 +5583,21 @@ MT2009_RATE_BASE_FLAGS = {
 # regen_event scales the next spawn by the event flags fastBossSpawn and
 # fastMobSpawn (0 = untouched, 1..100 = that share of the delay; playerbotify
 # adds the map-less names as the fallback to Seban's per-map ones). The page
-# shows 100 for "normal", the flag carries 0 for it.
-MT2009_REGEN_FLAGS = {"regen_boss": "fastBossSpawn", "regen_mob": "fastMobSpawn"}
+# shows 100 for "normal", the flag carries 0 for it. Metins apart from bosses
+# (MT2009_PLUS_REGEN_METIN_SPLIT_V1, server-patches/regenmetin): fastMetinSpawn
+# for the lines that put down a Metin stone, fastBossSpawn for the bosses; the
+# migration copied the old "Metiny i bossowie" value into the Metins' row once
+# (apply.sh), and a world without the row yet reads the bosses'.
+MT2009_REGEN_FLAGS = {"regen_metin": "fastMetinSpawn", "regen_boss": "fastBossSpawn", "regen_mob": "fastMobSpawn"}
+# The Metins' rows and the bosses' they were copied from.
+MT2009_REGEN_METIN_FALLBACK = {"fastMetinSpawn": "fastBossSpawn", "m2_metin_count": "m2_boss_count"}
 REGEN_MIN_PERCENT = 10
 # How many a respawn line keeps standing: regen_spawn tops each line up to
 # its own count times m2_boss_count / m2_mob_count percent (playerbotify's
 # regen_target_count; 100 = as written, 400 at most). Kiciamol, 18 September:
 # his own edit of regen.cpp was undone by every update.
-MT2009_REGEN_COUNT_FLAGS = {"count_boss": "m2_boss_count", "count_mob": "m2_mob_count"}
+MT2009_REGEN_COUNT_FLAGS = {"count_metin": "m2_metin_count", "count_boss": "m2_boss_count",
+                            "count_mob": "m2_mob_count"}
 REGEN_COUNT_CHOICES = (100, 150, 200, 250, 300, 400)
 # The world's difficulty: a level and seven waits in seconds, the flags the
 # migrator writes from .env at a start (apply.sh) - the Biologist's, the stable
@@ -5723,12 +5732,16 @@ def read_mob_hp_mt2009():
     return {"pct": value, "choices": sorted(set(MOB_HP_CHOICES) | {value}, reverse=True)}
 
 def read_regen_mt2009():
-    """The two flags as the page shows them (100 = normal), from player.quest."""
+    """The three flags as the page shows them (100 = normal), from player.quest."""
     out = {name: 100 for name in MT2009_REGEN_FLAGS}
     with db() as c, c.cursor() as cur:
         for name, flag in MT2009_REGEN_FLAGS.items():
             cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (flag,))
             row = cur.fetchone()
+            if not row and flag in MT2009_REGEN_METIN_FALLBACK:
+                cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1",
+                            (MT2009_REGEN_METIN_FALLBACK[flag],))
+                row = cur.fetchone()
             if row:
                 value = int(row["lValue"] if isinstance(row, dict) else row[0])
                 if REGEN_MIN_PERCENT <= value < 100:
@@ -5736,12 +5749,16 @@ def read_regen_mt2009():
     return out
 
 def read_regen_count_mt2009():
-    """The two multipliers as percents (100 = as the game has it), from player.quest."""
+    """The three multipliers as percents (100 = as the game has it), from player.quest."""
     out = {name: 100 for name in MT2009_REGEN_COUNT_FLAGS}
     with db() as c, c.cursor() as cur:
         for name, flag in MT2009_REGEN_COUNT_FLAGS.items():
             cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (flag,))
             row = cur.fetchone()
+            if not row and flag in MT2009_REGEN_METIN_FALLBACK:
+                cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1",
+                            (MT2009_REGEN_METIN_FALLBACK[flag],))
+                row = cur.fetchone()
             if row:
                 value = int(row["lValue"] if isinstance(row, dict) else row[0])
                 if 100 < value <= max(REGEN_COUNT_CHOICES):
@@ -7578,7 +7595,7 @@ function m2rates(e,d,y){
 <input type="hidden" name="_csrf" value="{{csrf_token}}">
 <h3>⏱️ {{t('regen_title')}}</h3>
 <p class="muted">{{t('regen_help')}}</p>
-{% for key, icon in (("regen_boss", "🪨"), ("regen_mob", "👾")) %}
+{% for key, icon in (("regen_metin", "🪨"), ("regen_boss", "👹"), ("regen_mob", "👾")) %}
 <h3 style="margin-top:{{ 12 if loop.first else 18 }}px">{{icon}} {{t(key)}}</h3>
 <input id="{{key}}" name="{{key}}" type="number" min="10" max="100" step="1" value="{{regen[key]}}" required oninput="regenLabel('{{key}}')">
 <div class="muted" style="margin-top:6px">{{t('regen_faster')}}
@@ -7590,7 +7607,7 @@ function regenLabel(k){var v=parseInt(document.getElementById(k).value||"100",10
   var m=Math.round(100/v*10)/10;var s=(m%1===0)?String(m):m.toFixed(1);
   document.getElementById(k+"_mult").textContent={{ t('regen_mult') | tojson }}.replace("{n}", s);}
 function regenSet(k,v){document.getElementById(k).value=v;regenLabel(k);}
-regenLabel("regen_boss");regenLabel("regen_mob");
+regenLabel("regen_metin");regenLabel("regen_boss");regenLabel("regen_mob");
 </script>
 <button class="big" style="margin-top:18px">{{t('regen_save')}}</button>
 </form></div>
@@ -7602,7 +7619,7 @@ regenLabel("regen_boss");regenLabel("regen_mob");
 <h3>👥 {{t('count_title')}}</h3>
 <p class="muted">{{t('count_help')}}</p>
 <p class="muted">⚠️ {{t('count_warn')}}</p>
-{% for key, icon in (("count_boss", "🪨"), ("count_mob", "👾")) %}
+{% for key, icon in (("count_metin", "🪨"), ("count_boss", "👹"), ("count_mob", "👾")) %}
 <h3 style="margin-top:{{ 12 if loop.first else 18 }}px">{{icon}} {{t(key)}}</h3>
 <select id="{{key}}" name="{{key}}">
 {% for p in count_choices %}<option value="{{p}}"{% if regen_count[key] == p %} selected{% endif %}>×{{ (p / 100) | round(1) | replace(".0", "") | replace(".", ",") }}</option>{% endfor %}
@@ -19341,7 +19358,7 @@ def rates_bot_reprice_now():
 @app.post("/rates/regen")
 @login_required
 def rates_regen():
-    """Stones and bosses, and ordinary monsters, respawning in a share of their
+    """Metin stones, bosses and ordinary monsters, respawning in a share of their
     normal time. mt2009 only: the engine's regen_event reads the flags."""
     if not ENGINE_MT2009:
         return redirect(url_for("rates"))
@@ -19359,8 +19376,9 @@ def rates_regen():
         flash(t("db_down"), "error")
         return redirect(url_for("rates"))
     try:
-        status, qid = queue_and_wait("", "REGEN", "%d,%d" % (0 if vals["regen_boss"] >= 100 else vals["regen_boss"],
-                                                            0 if vals["regen_mob"] >= 100 else vals["regen_mob"]), "",
+        # "metin,boss,mob" (web_admin.quest's REGEN, MT2009_PLUS_REGEN_METIN_SPLIT_V1).
+        status, qid = queue_and_wait("", "REGEN", ",".join("%d" % (0 if vals[k] >= 100 else vals[k])
+                                                           for k in ("regen_metin", "regen_boss", "regen_mob")), "",
                                      wait=RATES_LIVE_WAIT)
     except Exception:
         status, qid = "failed", 0
@@ -19382,8 +19400,8 @@ def rates_regen():
 @app.post("/rates/regen_count")
 @login_required
 def rates_regen_count():
-    """How many monsters each respawn line keeps standing, stones and bosses
-    apart from the rest. mt2009 only: the engine's regen_spawn reads the flags."""
+    """How many monsters each respawn line keeps standing, Metin stones, bosses
+    and the rest each apart. mt2009 only: the engine's regen_spawn reads the flags."""
     if not ENGINE_MT2009:
         return redirect(url_for("rates"))
     vals = {}
@@ -19400,7 +19418,8 @@ def rates_regen_count():
         flash(t("db_down"), "error")
         return redirect(url_for("rates"))
     try:
-        status, qid = queue_and_wait("", "REGEN_COUNT", "%d,%d" % (vals["count_boss"], vals["count_mob"]), "",
+        status, qid = queue_and_wait("", "REGEN_COUNT", "%d,%d,%d" % (vals["count_metin"], vals["count_boss"],
+                                                                     vals["count_mob"]), "",
                                      wait=RATES_LIVE_WAIT)
     except Exception:
         status, qid = "failed", 0
