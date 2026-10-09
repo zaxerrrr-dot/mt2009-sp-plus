@@ -327,6 +327,7 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // the Battle Pass bots, whose stone table and chatter it uses.
 #include "playerbot_chat_world.h"
 #include "playerbot_meetups.h" // MT2009_PLUS_BOT_MEETUPS_V1: two bots arrange a trade on the chat, meet by the smith and trade in the window
+#include "playerbot_priorities.h" // MT2009_PLUS_BOT_PRIORITIES_V1: survival, a raid, a meeting, a full bag - before the rest
 // MT2009_PLUS_GM_SM_EVENT_V1 (include): a GM's "!SM" notice - the bots' SM race on
 // the shout - and their short lines after any other GM notice. After the chat world.
 #include "playerbot_gm_notice.h"
@@ -7460,6 +7461,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// Except for the town visit in a village the person stands in: there
 		// it runs (IsPlayerBotBesidePersonInVillage).
 		const bool bTownVisitAllowed = !bServingPerson || IsPlayerBotBesidePersonInVillage(ch);
+		// MT2009_PLUS_BOT_PRIORITIES_V1: a full bag goes before the leisure
+		// errands below (the horse, the rod, the pickaxe, the herbs, Uriel,
+		// Mistrz, the stay in town, Baek-Go) - the town visit and the way to
+		// town have the bot. Survival, a raid and a meeting stand above it in
+		// the tick already (playerbot_priorities.h).
+		const bool bBagFirst = !bServingPerson && IsPlayerBotBagFirst(ch, state);
 		// The player's own companion (playerbot_sidekick.h): at its owner's side
 		// it owns the tick from here - the trade, the party, the fight for the
 		// owner, the owner's drops and the owner's blacksmith. Below the upkeep,
@@ -7620,21 +7627,22 @@ WritePlayerBotGuildStatus(dwNow);
 			continue;
 
 		// Horse medals are equally real resources: a bot leaves combat, walks to
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotHorse(ch, state, dwNow))
 			continue;
 
 		// A handful of M1 bots fish the riverbank instead of grinding. This owns
 		// the whole tick: the rod sits in the weapon slot, so combat and the gear
 		// pass below must not run while a session is live.
-		if (!state.bMultiPullActive && !bFightingMetin &&
+		// A session under way ends by its own rules (its junk, its bag).
+		if ((!bBagFirst || state.bFishingSession) && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotFishing(ch, state, dwNow))
 			continue;
 
 		// And a smaller handful digs at the ore veins on the three frontier
 		// maps. Owns the tick for the same reason fishing does: the pickaxe
 		// sits in the weapon slot, so no combat or gear pass may run under it.
-		if (!state.bMultiPullActive && !bFightingMetin &&
+		if ((!bBagFirst || IsPlayerBotMiningNow(ch->GetPlayerID(), dwNow)) && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotMining(ch, state, dwNow))
 			continue;
 
@@ -7649,7 +7657,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: and the herbalists by trade pick the
 		// herb bushes with the Herbalist's Knife, the vein's shape: the knife
 		// sits in the weapon hand, so the session owns the tick while it picks.
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if ((!bBagFirst || IsPlayerBotHerbPickingNow(ch, dwNow)) && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotHerbGathering(ch, state, dwNow))
 			continue;
 
@@ -7665,7 +7673,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// Uriel (playerbot_sash.h): a keeper's sashes combined, filled and
 		// worn. Beside the Alchemist and for his reason: above the travel pass,
 		// which would walk the bot out of the village it was brought to.
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotSash(ch, state, dwNow))
 			continue;
 
@@ -7673,7 +7681,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// (playerbot_workshop.h) - belts made and raised, talisman steps, the
 		// talisman for the map and the belt's pouch. Beside Uriel and for his
 		// reason.
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotWorkshop(ch, state, dwNow))
 			continue;
 
@@ -7706,7 +7714,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// tick its session ended: the rest never got a turn. It claims the tick
 		// like fishing does, for a bounded few minutes, and ends the moment
 		// anything real wants the bot.
-		if (ManagePlayerBotTownLinger(ch, state, dwNow))
+		if (!bBagFirst && ManagePlayerBotTownLinger(ch, state, dwNow))
 			continue;
 
 		// Move between the real Chunjo portals in controlled, staggered waves.
@@ -7725,7 +7733,7 @@ WritePlayerBotGuildStatus(dwNow);
 
 		// Baek-Go stands in the same three villages, so his board is the same
 		// kind of local errand as the hand-in above and is gated the same way.
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotHerbalist(ch, state, dwNow))
 			continue;
 

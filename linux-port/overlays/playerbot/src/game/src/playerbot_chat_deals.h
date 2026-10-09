@@ -52,6 +52,10 @@
 
 namespace
 {
+	// MT2009_PLUS_BOT_PRIORITIES_V1 (playerbot_priorities.h, included later):
+	// hurt or attacked, the bot fights and drinks before it walks to a deal.
+	bool IsPlayerBotSurvivalFirst(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow);
+
 	const DWORD PLAYERBOT_DEAL_TTL_MS = 15 * 60 * 1000;
 	const int PLAYERBOT_DEAL_NEAR = 800;
 	const DWORD PLAYERBOT_DEAL_OPEN_RETRY_MS = 15000;
@@ -817,6 +821,17 @@ namespace
 		TPlayerBotDeal& d = it->second;
 		const char* village = VillageTag(d.meetMap);
 		char line[CHAT_MAX_LEN + 1];
+
+		// MT2009_PLUS_BOT_PRIORITIES_V1: a raid with its party comes before a
+		// meeting - said, and the deal is off; staying alive comes before both.
+		if (IsPlayerBotInDungeonBusiness(ch, state))
+		{
+			SayPlayerBotDealLineTo(ch, personPID, "Sorki, ekipa wola mnie na rajd. Odezwe sie jak wroce, to sie umowimy.");
+			EndPlayerBotDeal(ch, personPID, DEAL_FAILED, "raid_first");
+			return false;
+		}
+		if (IsPlayerBotSurvivalFirst(ch, state, dwNow))
+			return false;
 
 		// Over to the person's map, then their summon.
 		if (d.crossToPerson)

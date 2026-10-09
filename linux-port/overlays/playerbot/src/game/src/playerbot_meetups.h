@@ -38,6 +38,10 @@
 
 namespace
 {
+	// MT2009_PLUS_BOT_PRIORITIES_V1 (playerbot_priorities.h, included later).
+	bool IsPlayerBotSurvivalFirst(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow);
+	bool IsPlayerBotBagFirst(LPCHARACTER ch, const TPlayerBotAIState& state);
+
 	const DWORD PLAYERBOT_MEETUP_FIRST_DELAY_MS = 3 * 60 * 1000;
 	const DWORD PLAYERBOT_MEETUP_GAP_MIN_MS = 4 * 60 * 1000;
 	const DWORD PLAYERBOT_MEETUP_GAP_MAX_MS = 9 * 60 * 1000;
@@ -128,11 +132,15 @@ namespace
 			return false;
 		if (ch->GetMyShop() || ch->GetExchange() || IsPlayerBotInDungeonBusiness(ch, state) ||
 				(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) || IsPlayerBotHeldForCompany(ch) ||
-				IsPlayerBotArezzoHeldHere(ch) || state.dwGuildWarEnemyGID != 0 || state.bWorldEventKind != 0 ||
+				IsPlayerBotArezzoHeld(ch) || IsPlayerBotOchaoForced(ch) || state.dwGuildWarEnemyGID != 0 || state.bWorldEventKind != 0 ||
 				state.bVisitingShop || state.bFishingSession || state.bRecoveringAfterDeath || state.bTacticalRetreat ||
 				state.bMultiPullActive)
 			return false;
 		if (ch->GetMaxHP() <= 0 || ch->GetHP() * 100 < ch->GetMaxHP() * PLAYERBOT_MEETUP_MIN_HP_PERCENT)
+			return false;
+		// A full bag goes to town before it is told of a meeting
+		// (MT2009_PLUS_BOT_PRIORITIES_V1) - and has no room for the pieces.
+		if (IsPlayerBotBagFirst(ch, state) || ch->GetEmptyInventory(2) < 0)
 			return false;
 		const long map = ch->GetMapIndex();
 		return map < PLAYERBOT_INSTANCE_MAP_INDEX_MIN && (IsPlayerBotVillageMap(map) || IsPlayerBotFrontierMapIndex(map));
@@ -567,9 +575,7 @@ namespace
 			return true;
 		}
 		// Staying alive first: hurt, or something on it - it fights and drinks.
-		if (ch->GetMaxHP() > 0 && ch->GetHP() * 100 < ch->GetMaxHP() * 40)
-			return false;
-		if (!ch->GetExchange() && FindPlayerBotEngagedTarget(ch, &state, dwNow))
+		if (IsPlayerBotSurvivalFirst(ch, state, dwNow))
 			return false;
 		const DWORD firstArrived = m.sellerArrived && m.buyerArrived ? std::min(m.sellerArrived, m.buyerArrived)
 				: (m.sellerArrived ? m.sellerArrived : m.buyerArrived);
