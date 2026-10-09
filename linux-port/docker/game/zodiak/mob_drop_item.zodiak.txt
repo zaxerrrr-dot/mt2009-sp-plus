@@ -1,0 +1,12 @@
+// MT2009_PLUS_ZODIAC_ITEMS_V1: the Zodiac refine ladder's materials from the monsters of ours that the PL wiki
+// names as their sources (9 October). Type drop: pct / 4 percent at the server's 100% drop.
+// Stabilne Sznury (95601, the weapons' +1..+5): Mag Ochao (6303, Swiatynia Ochao, lv 100) - 1%.
+// The other sources on the wiki are monsters, Metins and chests our world does not have (server-patches/zodiak/README.md);
+// Razador's and Nemere's chests give all five materials already (special_item_group.wiki_nowe.txt, 951201/951202).
+
+Group	MT2009_zodiak_mat_6303
+{
+	mob	6303	-- Mag Ochao (lv 100)
+	Type	drop
+	1	95601	1	4	-- Stabilne Sznury, 1%
+}

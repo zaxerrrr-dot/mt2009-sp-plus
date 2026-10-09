@@ -442,6 +442,10 @@ namespace
 		{ 95601,   250000 },	// Stabilne Sznury (suggested)
 		{ 95602,  1000000 },	// Wzor Kroju (suggested)
 		{ 95603,   400000 },	// Ciezkie Pasy (suggested)
+		// MT2009_PLUS_ZODIAC_ITEMS_V1: the Zodiac weapons' / armours' boxes (1, 2, 4 .. 200 a step, refine_proto
+		// 22401-22418; 10 Insygnia at Mnich Milbon each) - suggested.
+		{ 33029,   200000 },	// Czerwone Pudlo Zodiaku (suggested)
+		{ 33030,   200000 },	// Niebieskie Pudlo Zodiaku (suggested)
 	};
 	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: a Fasolka Zen is a third of a
 	// Kamien Duchowy (owner, 5 October), so the two rows move together.

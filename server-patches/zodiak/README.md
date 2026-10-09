@@ -152,8 +152,18 @@ Potwory i Metiny świątyni to te same vnumy w kilku znakach (`group.zodiak.txt`
 (`tools/zywioly` reguła g → `zywioly_moby.json` / `zywioly_moby.sql`), więc klient pokazuje go przy celu; zwykłe potwory
 i Metiny świątyni – bez znaku żywiołu w kliencie (ten sam vnum w różnych znakach).
 
+## Ulepszanie broni i zbroi Zodiaku (`MT2009_PLUS_ZODIAC_ITEMS_V1`, wiki PL 9.10)
+
+`refine_proto` 22401–22409 (zbroje: Niebieskie Pudło 1/2/4/…/200) i 22410–22418 (bronie: Czerwone Pudło), koszt 10 tys. … 2,56 mln
+Yang jak na wiki; drugi materiał +1…+5: **Ciężkie Pasy (95603)** dla zbroi, **Stabilne Sznury (95601)** dla broni (paczka miała 30611/30612,
+których u nas nie ma), +6/+7/+8: Dwutlenek Tytanu 30616, Agat 30617, Kamień Księżycowy 30618 (przedmioty z wiki 0.33.0).
+Źródła z wiki, które mamy: Skrzynia Razadora / Nemere (już w grupach 951201/951202), Mag Ochao 6303 – Stabilne Sznury 1%
+(`zodiak/mob_drop_item.zodiak.txt`). **Brak u nas (do decyzji właściciela):** Metin Drzewnych Stworzeń, Metin Chłodu, Metin
+Purgatorium, Jotun Thrym, Książę Ochao, Goryl Ochao, Niszczyciel/Uzdrowiciel/Wojownik En-Tai, Skażony Mnich/Wódz (mrok), Kappa Łowca,
+Ognisty Książę Żaru, Mroźny Książę, Bagjanamu, Wódz Wojenny Schronienia, potwory Inwazji Sung Ma, skrzynie Jotuna/Bagjanamu,
+nagrody Dongan/Yilad/Zaklętego Lasu/Strażnicy Nemere/Twierdzy, Smocze Skrzynie, Złoty Łup Królewski, Skrzynia Kamienia
+Księżycowego, Skrzynka Tajemnic, Złota Skrzynia Proroka i inne skrzynie eventowe.
+
 ## Do sprawdzenia / znane braki
 
-- receptury ulepszania broni i zbroi Zodiaku (22401–22418) wymagają materiałów 30611, 30612 (nie ma ich u nas ani w paczce)
-  oraz 30616–30618 (przychodzą z „nowe rodziny z wiki” 0.33.0) – do decyzji właściciela;
 - paczka nie sprawdziła w grze: efektów bossów (pakiet 220), pięter od 2F, Kupca, Pryzmatów, nagród, skoku piętra.
