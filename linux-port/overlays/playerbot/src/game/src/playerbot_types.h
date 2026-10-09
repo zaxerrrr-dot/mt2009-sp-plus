@@ -3288,25 +3288,74 @@ namespace
 	// at +7, shields from level 21 at +7 (and body armour and helmets with them,
 	// the operator's choice of 25 September), bracelets, necklaces and boots
 	// from +4, earrings from +7.
+	// MT2009_PLUS_BOT_SMITHY_V1, point 11 ("Bonowanie rusza od +6"): every
+	// piece that waited for +7 takes its stones from +6 now - the weapon from
+	// forty-five, the level-30 family, the armour, the helmet, the shield and
+	// the earrings. The bracelet, the necklace and the boots keep their +4.
 	const int PLAYERBOT_BONUS_WEAPON_MIN_LEVEL = 45;
-	const int PLAYERBOT_BONUS_WEAPON_MIN_PLUS = 7;
+	const int PLAYERBOT_BONUS_WEAPON_MIN_PLUS = 6;
 	// MT2009_PLUS_BOT_L30_AVG_MIX_V1: the level-30 weapons from +7, like every
 	// other weapon ("boty mieszaja zmiankami srednie na broni z poziomu 30 od
 	// +7, az do 30%", sosen): a +4 to +6 one is a step on the way to the
 	// blacksmith's +7 and took the stones its +7 then lacked.
-	const int PLAYERBOT_BONUS_L30_MIX_MIN_PLUS = 7;
+	const int PLAYERBOT_BONUS_L30_MIX_MIN_PLUS = 6;
 	const int PLAYERBOT_BONUS_ARMOUR_MIN_LEVEL = 21;
-	const int PLAYERBOT_BONUS_ARMOUR_MIN_PLUS = 7;
+	const int PLAYERBOT_BONUS_ARMOUR_MIN_PLUS = 6;
 	// Body armour from the level-18 plates up, at +7 (Iwakura, 26 September:
 	// a +7 armour is "odpowiednio wysoki stopien ulepszenia"). A bot of 25 to
 	// 34 wears the level-18 plate, and at 21 its +7 and +9 were refused, so
 	// the stones of 264 bots on m2zip had nowhere to go but the jewellery.
 	const int PLAYERBOT_BONUS_BODY_MIN_LEVEL = 18;
 	const int PLAYERBOT_BONUS_JEWEL_MIN_PLUS = 4;
-	const int PLAYERBOT_BONUS_EAR_MIN_PLUS = 7;
+	const int PLAYERBOT_BONUS_EAR_MIN_PLUS = 6;
 	// Point 6, "obowiazek natychmiastowego bonowania": a pass that spent stones
 	// comes back this soon, in town or out of it, while a piece is being worked.
 	const DWORD PLAYERBOT_BONUS_WORKING_INTERVAL = 30000;
+	// MT2009_PLUS_BOT_SMITHY_V1 (the owner's list for the update after 2.29.0):
+	//
+	// Point 11: the bonus maker ("Bonowacz") - this many bots in a hundred, by
+	// pid, put their stones on the gear they keep for sale as well, from +6
+	// (PLAYERBOT_BONUS_GOODS_MIN_PLUS), at most PLAYERBOT_BONUS_GOODS_PIECES
+	// pieces a pass. Point 10: only from PLAYERBOT_BONUS_GOODS_MIN_LEVEL, and
+	// only from the surplus - a kind of ordinary stone goes on goods only while
+	// the bag holds more than PLAYERBOT_BONUS_GOODS_STONE_RESERVE of it and no
+	// piece the bot wears or is about to wear can take one now. The level-30
+	// weapons kept in the bag for sale are goods by the same rule: the stones
+	// go on the worn gear first.
+	const int PLAYERBOT_BONUS_GOODS_SELLER_PERCENT = 20;
+	const int PLAYERBOT_BONUS_GOODS_MIN_LEVEL = 30;
+	const int PLAYERBOT_BONUS_GOODS_MIN_PLUS = 6;
+	const int PLAYERBOT_BONUS_GOODS_PIECES = 2;
+	const int PLAYERBOT_BONUS_GOODS_STONE_RESERVE = 10;
+	// Point 10: a line worth keeping for itself is never mixed off by an
+	// ordinary change stone (the level-30 weapons' average mix and the young
+	// bot's jewellery excepted): a top roll (IsPlayerBotTopBonusLine), or a
+	// line of the PvP tier PLAYERBOT_BONUS_PROTECT_PVP_TIER or better rolled
+	// at least PLAYERBOT_BONUS_PROTECT_ROLL_PERCENT of its top.
+	const int PLAYERBOT_BONUS_PROTECT_PVP_TIER = 6;
+	const int PLAYERBOT_BONUS_PROTECT_ROLL_PERCENT = 70;
+	// Points 6-8: the plain anvil burns what it fails, so a worn piece goes to
+	// it only with a spare for its slot in the bag; without one its step
+	// waits for a scroll. A young bot (under PLAYERBOT_SAFE_ANVIL_YOUNG_LEVEL)
+	// and gear no scroll goes on still take the plain steps to
+	// PLAYERBOT_SAFE_ANVIL_YOUNG_MAX_PLUS. A piece of
+	// PLAYERBOT_SAFE_ANVIL_LINES bonus lines or more never goes to the plain
+	// anvil, worn or not (point 7) - the Demon Tower's smith included.
+	const int PLAYERBOT_SAFE_ANVIL_YOUNG_LEVEL = 30;
+	const int PLAYERBOT_SAFE_ANVIL_YOUNG_MAX_PLUS = 4;
+	const int PLAYERBOT_SAFE_ANVIL_LINES = 4;
+	// Point 2: from this level a helmet or a shield under the level of the
+	// best one the village merchants sell the bot gives way to one that is
+	// not (IsPlayerBotOutdatedGear), and the bag keeps
+	// PLAYERBOT_HELM_SHIELD_FAMILY_KEEP pieces of one helmet or shield family
+	// - the rest is the merchant's (helmets) or the counter's first (shields).
+	const int PLAYERBOT_HELM_SHIELD_LADDER_MIN_LEVEL = 21;
+	const int PLAYERBOT_HELM_SHIELD_FAMILY_KEEP = 2;
+	// Point 1: the Ebonitowe Kolczyki are the first choice of the Warriors and
+	// the Ninjas that go by the jewel list: this much more on top of the
+	// list's own preference.
+	const DWORD PLAYERBOT_EBONY_EARRINGS_VNUM = 17100;
+	const long long PLAYERBOT_EBONY_EARRINGS_FIRST_PERCENT = 60;
 	// Point 11: a hundred of the Alchemist's dust make a Marmur Blogoslawienstwa.
 	const int PLAYERBOT_DUST_PER_MARBLE = 100;
 	const DWORD PLAYERBOT_BLESSING_MARBLE_VNUM = 70024;

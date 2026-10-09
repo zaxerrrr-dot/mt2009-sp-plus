@@ -4316,6 +4316,10 @@ namespace
 		// (playerbot_lpp.h): only its copies past the keep are for sale.
 		if (ch && IsPlayerBotLppKeptItem(ch, item))
 			return -1;
+		// MT2009_PLUS_BOT_SMITHY_V1, point 9: nor what the bot brings to the
+		// Demon Tower's smiths (playerbot_demon_tower.h).
+		if (ch && IsPlayerBotTowerSmithReserve(ch, item))
+			return -1;
 		// A Kamien Duchowy is every bot's own to train with, up to its keep
 		// (GetPlayerBotCountedGoodsKeep); a stack holding a stone over the keep
 		// is goods, and the cut takes only what is over it (BotOfflinePrepareLine,

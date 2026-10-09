@@ -367,11 +367,49 @@ namespace
 		return subType == ARMOR_BODY || subType == ARMOR_HEAD || subType == ARMOR_SHIELD;
 	}
 
+	// Defined below with the merchants' ladder.
+	DWORD FindPlayerBotBestMerchantSlotVnum(LPCHARACTER ch, int wearCell);
+	int GetPlayerBotProtoLevelLimit(const TItemTable* proto);
+
+	// MT2009_PLUS_BOT_SMITHY_V1, point 2 (the owner's list after 2.29.0:
+	// "Tarcze i helmy dobierane do poziomu bota"): the level of the best
+	// helmet or shield the village merchants sell this bot - 0, 21 or 41 on
+	// these files - by class, sex and level, kept: the shops do not change
+	// while the world runs, and the equipment pass asks it of every piece.
+	int GetPlayerBotMerchantLadderLevel(LPCHARACTER ch, int wearCell)
+	{
+		if (!ch)
+			return 0;
+		static std::map<DWORD, int> s_cache;
+		const DWORD key = (DWORD)ch->GetJob() | ((DWORD)GET_SEX(ch) << 3) | ((DWORD)wearCell << 4) |
+				((DWORD)ch->GetLevel() << 12);
+		std::map<DWORD, int>::const_iterator it = s_cache.find(key);
+		if (it != s_cache.end())
+			return it->second;
+		const DWORD vnum = FindPlayerBotBestMerchantSlotVnum(ch, wearCell);
+		const TItemTable* proto = vnum ? ITEM_MANAGER::instance().GetTable(vnum) : NULL;
+		const int level = proto ? GetPlayerBotProtoLevelLimit(proto) : 0;
+		s_cache[key] = level;
+		return level;
+	}
+
 	bool IsPlayerBotOutdatedGear(LPCHARACTER ch, LPITEM item)
 	{
-		return ch && item && item->GetType() == ITEM_ARMOR && IsPlayerBotOutdatedGearSubType(item->GetSubType()) &&
-				(int)ch->GetLevel() >= PLAYERBOT_OUTDATED_GEAR_MIN_LEVEL &&
-				(int)item->GetLevelLimit() + PLAYERBOT_OUTDATED_GEAR_LEVELS <= (int)ch->GetLevel();
+		if (!ch || !item || item->GetType() != ITEM_ARMOR || !IsPlayerBotOutdatedGearSubType(item->GetSubType()))
+			return false;
+		if ((int)ch->GetLevel() >= PLAYERBOT_OUTDATED_GEAR_MIN_LEVEL &&
+				(int)item->GetLevelLimit() + PLAYERBOT_OUTDATED_GEAR_LEVELS <= (int)ch->GetLevel())
+			return true;
+		// MT2009_PLUS_BOT_SMITHY_V1, point 2: a helmet or a shield under the
+		// merchants' best for the bot is outdated from level twenty-one - the
+		// Bojowa Tarcza +6 a bot of forty kept because its numbers beat a
+		// Czarna Okragla Tarcza +0 gives way to it, and the anvil raises the
+		// new one from there.
+		if (item->GetSubType() == ARMOR_BODY || (int)ch->GetLevel() < PLAYERBOT_HELM_SHIELD_LADDER_MIN_LEVEL)
+			return false;
+		const int ladder = GetPlayerBotMerchantLadderLevel(ch,
+				item->GetSubType() == ARMOR_HEAD ? WEAR_HEAD : WEAR_SHIELD);
+		return ladder > 0 && (int)item->GetLevelLimit() < ladder;
 	}
 
 	// Whether `worn` gives way to `item` by that rule.
@@ -386,8 +424,12 @@ namespace
 	// with none such in its bag already.
 	bool IsPlayerBotOutdatedGearOffer(LPCHARACTER ch, LPITEM offer)
 	{
+		// MT2009_PLUS_BOT_SMITHY_V1, point 2: a helmet or a shield from the
+		// ladder's own level.
+		const int minLevel = offer && offer->GetType() == ITEM_ARMOR && offer->GetSubType() != ARMOR_BODY
+				? PLAYERBOT_HELM_SHIELD_LADDER_MIN_LEVEL : PLAYERBOT_OUTDATED_GEAR_MIN_LEVEL;
 		if (!ch || !offer || offer->GetType() != ITEM_ARMOR || !IsPlayerBotOutdatedGearSubType(offer->GetSubType()) ||
-				(int)ch->GetLevel() < PLAYERBOT_OUTDATED_GEAR_MIN_LEVEL || !IsPlayerBotEquipmentCandidate(ch, offer))
+				(int)ch->GetLevel() < minLevel || !IsPlayerBotEquipmentCandidate(ch, offer))
 			return false;
 		const int wearCell = offer->FindEquipCell(ch);
 		LPITEM worn = wearCell >= 0 && wearCell < WEAR_MAX_NUM ? ch->GetWear((BYTE)wearCell) : NULL;
@@ -980,6 +1022,8 @@ namespace
 		{ 17200, JOB_SURA },      // Kolczyki Z Niebian.Lez
 		// Ninja
 		{ 17080, JOB_ASSASSIN },  // Jadeitowe Kolczyki
+		// MT2009_PLUS_BOT_SMITHY_V1, point 1: the Ninja's first choice too.
+		{ 17100, JOB_ASSASSIN },  // Ebonitowe Kolczyki
 		{ 16160, JOB_ASSASSIN },  // Krysztalowy Naszyjnik
 		{ 17160, JOB_ASSASSIN },  // Krysztalowe Kolczyki
 		// Szaman
@@ -1007,6 +1051,23 @@ namespace
 	{
 		return ch && PlayerBotNavHash(ch->GetPlayerID() ^ 0x4a45574cU) % 100U <
 				PLAYERBOT_JEWEL_LIST_FOLLOWER_PERCENT;
+	}
+
+	// MT2009_PLUS_BOT_SMITHY_V1, point 1 (the owner's list after 2.29.0): the
+	// Ebonitowe Kolczyki are the first choice of the bots that go by the list
+	// (IsPlayerBotJewelListFollower), and only of a Warrior or a Ninja - the
+	// rest choose by the score as ever, and a Sura keeps its own earrings
+	// (the list's Zlote, Bialego Zlota and Niebianskich Lez). The list's own
+	// preference makes every listed piece better; this makes the Ebony pair
+	// better than the other listed earrings as well.
+	bool IsPlayerBotFirstChoiceEarrings(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetType() != ITEM_ARMOR || item->GetSubType() != ARMOR_EAR ||
+				(ch->GetJob() != JOB_WARRIOR && ch->GetJob() != JOB_ASSASSIN))
+			return false;
+		const BYTE refine = item->GetRefineLevel();
+		return refine <= 9 && item->GetVnum() >= refine &&
+				item->GetVnum() - refine == PLAYERBOT_EBONY_EARRINGS_VNUM;
 	}
 
 	bool IsPlayerBotListedJewel(LPCHARACTER ch, LPITEM item)
@@ -1298,9 +1359,12 @@ namespace
 		// it (IsPlayerBotJewelListFollower; Patch 4, point 1).
 		if (ch && IsPlayerBotListedJewel(ch, item) && IsPlayerBotJewelListFollower(ch))
 		{
-			score = score * (100 + PLAYERBOT_JEWEL_LIST_PREFERENCE_PERCENT) / 100;
+			// MT2009_PLUS_BOT_SMITHY_V1, point 1: the Ebony pair first.
+			const long long pct = PLAYERBOT_JEWEL_LIST_PREFERENCE_PERCENT +
+					(IsPlayerBotFirstChoiceEarrings(ch, item) ? PLAYERBOT_EBONY_EARRINGS_FIRST_PERCENT : 0);
+			score = score * (100 + pct) / 100;
 			if (terms)
-				terms->Set(per::TERM_LISTED_JEWEL_PCT, PLAYERBOT_JEWEL_LIST_PREFERENCE_PERCENT);
+				terms->Set(per::TERM_LISTED_JEWEL_PCT, pct);
 		}
 		if (terms)
 			terms->Set(per::TERM_TOTAL, score);
@@ -2679,10 +2743,21 @@ namespace
 	// dagger, the bell or the fan, whichever its build wields - is every bot's
 	// from level thirty, whatever its level now: a bot of forty-two on an old
 	// world without one is sent for it as surely as a bot of thirty.
+	// MT2009_PLUS_BOT_SMITHY_V1, point 5 (Piciu713): a Ninja on the dagger
+	// line buys the Kozik Czarnego Liscia for its level thirty, not the Miecz
+	// Pelni Ksiezyca - the sword it may hold is not the weapon its skills are
+	// for. The class's level-30 weapon of such a Ninja is the dagger alone.
+	bool IsPlayerBotLevel30KindFor(LPCHARACTER ch, BYTE subType)
+	{
+		if (ch && ch->GetJob() == JOB_ASSASSIN && ch->GetSkillGroup() == 1)
+			return subType == WEAPON_DAGGER;
+		return true;
+	}
+
 	bool IsPlayerBotClassLevel30Weapon(LPCHARACTER ch, LPITEM item)
 	{
 		return ch && item && IsPlayerBotSpecialLevel30Weapon(item) && IsPlayerBotWeapon(ch, item) &&
-				item->CanUsedBy(ch);
+				item->CanUsedBy(ch) && IsPlayerBotLevel30KindFor(ch, item->GetSubType());
 	}
 
 	// Defined below, beside the scroll count it asks.
@@ -2957,7 +3032,9 @@ namespace
 					!IsPlayerBotWeapon(ch, item) || item->GetLevelLimit() > ch->GetLevel() ||
 					IsPlayerBotBannedLowWeapon(ch, item))
 				continue;
-			if (!IsPlayerBotSpecialLevel30Weapon(item))
+			// MT2009_PLUS_BOT_SMITHY_V1, point 5: another kind than the bot's
+			// own (the dagger Ninja's sword) is a weapon to beat, no project.
+			if (!IsPlayerBotSpecialLevel30Weapon(item) || !IsPlayerBotLevel30KindFor(ch, item->GetSubType()))
 			{
 				view.toBeat = std::max(view.toBeat, GetPlayerBotWeaponHitDamage(item, ch));
 				continue;
@@ -3050,7 +3127,7 @@ namespace
 	bool IsPlayerBotBetterLevel30Offer(LPCHARACTER ch, LPITEM offer)
 	{
 		if (!ch || !IsPlayerBotSpecialLevel30Weapon(offer) || !IsPlayerBotWeapon(ch, offer) ||
-				offer->GetLevelLimit() > ch->GetLevel())
+				offer->GetLevelLimit() > ch->GetLevel() || !IsPlayerBotLevel30KindFor(ch, offer->GetSubType()))
 			return false;
 		TPlayerBotLevel30View view;
 		ReadPlayerBotLevel30View(ch, view);
@@ -3086,10 +3163,14 @@ namespace
 		if (!worn)
 			return true;
 		static const DWORD families[] = { 290, 1170, 2150, 3210, 5110, 7160 };
+		// MT2009_PLUS_BOT_SMITHY_V1, point 5: a dagger Ninja holding a sword
+		// looks for the dagger.
+		const BYTE wantedSubType = IsPlayerBotLevel30KindFor(ch, worn->GetSubType())
+				? worn->GetSubType() : (BYTE)WEAPON_DAGGER;
 		for (size_t i = 0; i < sizeof(families) / sizeof(families[0]); ++i)
 		{
 			const TItemTable* proto = ITEM_MANAGER::instance().GetTable(families[i] + PLAYERBOT_LEVEL30_PROJECT_PLUS);
-			if (!proto || proto->bType != ITEM_WEAPON || proto->bSubType != worn->GetSubType())
+			if (!proto || proto->bType != ITEM_WEAPON || proto->bSubType != wantedSubType)
 				continue;
 			return GetPlayerBotWeaponHitDamageAt(NULL, proto, ch, PLAYERBOT_LEVEL30_HOPED_AVERAGE) * 100 >
 					view.toBeat * (100 + PLAYERBOT_LEVEL30_PROJECT_MARGIN_PERCENT);
@@ -3513,8 +3594,11 @@ namespace
 		// The helmet worn from level fifty goes to +6 at least, past the
 		// persona's cap on the small pieces: it was the outdated gear's slot
 		// that never climbed (PLAYERBOT_OUTDATED_HELMET_PLUS).
+		// MT2009_PLUS_BOT_SMITHY_V1, point 2: from level thirty, the level the
+		// helmet ladder answers for (IsPlayerBotOutdatedGear) - the anvil
+		// raises the helmet the bot now wears for its level.
 		if (ch && item && item->IsEquipped() && item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_HEAD &&
-				(int)ch->GetLevel() >= PLAYERBOT_OUTDATED_GEAR_MIN_LEVEL && target < PLAYERBOT_OUTDATED_HELMET_PLUS)
+				(int)ch->GetLevel() >= PLAYERBOT_SAFE_ANVIL_YOUNG_LEVEL && target < PLAYERBOT_OUTDATED_HELMET_PLUS)
 			target = PLAYERBOT_OUTDATED_HELMET_PLUS;
 		return IsPlayerBotScrollRulePiece(ch, item)
 				? (BYTE)playerbot_refine_rules::ScrollRuleTarget((int)target) : target;
@@ -3774,7 +3858,8 @@ namespace
 		{
 			const TItemTable* proto = ITEM_MANAGER::instance().GetTable(families[i]);
 			if (!proto || proto->bType != ITEM_WEAPON || !IsPlayerBotWeaponSubTypeFor(ch, proto->bSubType) ||
-					!IsPlayerBotProtoForCharacter(ch, proto))
+					!IsPlayerBotProtoForCharacter(ch, proto) ||
+					!IsPlayerBotLevel30KindFor(ch, proto->bSubType))	// MT2009_PLUS_BOT_SMITHY_V1, point 5
 				continue;
 			for (DWORD plus = 0; plus < 10; ++plus)
 			{
