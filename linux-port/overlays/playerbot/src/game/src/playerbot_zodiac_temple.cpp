@@ -5107,10 +5107,10 @@ void CZodiacManager::DeadMob(LPCHARACTER Mob, DWORD mapIndex)
 		return;
 	}
 
-	// MT2009_PLUS_ZODIAC_ITEMS_V1: Zlota Skrzynia Zodiaku from every Zodiac boss, for everybody on the floor (bots
-	// too) - the owner, 9 October, as the PL wiki; the package had GiveGiftBox and never called it. The chest's
-	// group: special_item_group.zodiak.txt.
-	if (Mob->IsZodiacBoss())
+	// MT2009_PLUS_ZODIAC_ITEMS_V1: Zlota Skrzynia Zodiaku from the temple's main boss - its sign's General (27x2,
+	// BossFuckVnum flag 2: the last boss, floor 34) - for everybody on the floor, bots too (the owner, 9 October;
+	// the package had GiveGiftBox and never called it). The chest's group: special_item_group.zodiak.txt.
+	if (Mob->IsZodiacBoss() && Mob->GetRaceNum() == BossFuckVnum(2, pZodiac->GetPortal()))
 	{
 		pZodiac->GiveGiftBox();
 		sys_log(0, "[ZODIAC] boss %u killed map=%ld portal=%u: Zlota Skrzynia given", Mob->GetRaceNum(), (long)mapIndex,
