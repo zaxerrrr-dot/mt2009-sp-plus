@@ -142,6 +142,16 @@ w `playerbot_zodiac_runs.tsv` (czas, nr, znak, instancja, królestwo, ilu, pozio
 „piętro:sekundy,…”, śmierci, wskrzeszenia Pryzmatem / bez, lider, nazwy). Samodzielne wyjścia botów „z zegara” (z płaceniem
 Animosferami i Pryzmatami) – po teście.
 
+## Żywioły (`MT2009_PLUS_ZODIAC_ELEMENTS_V1`, decyzja właściciela 9.10, jak wiki PL)
+
+Każdy potwór, Metin i boss na piętrze świątyni ma żywioł swojego znaku: Zi – Mrok, Chou – Ziemia, Yin – Ogień, Mao – Wiatr,
+Chen – Błyskawica, Si – Lód, Wu – Lód, Wei – Błyskawica, Shen – Ziemia, Yu – Wiatr, Xu – Mrok, Hai – Ogień.
+Potwory i Metiny świątyni to te same vnumy w kilku znakach (`group.zodiak.txt`, `SpawnStone`), więc żywioł jest piętra:
+`playerbot_elements.cpp` (`ElementsHasFlag`) czyta znak z `CZodiac` mapy potwora – obrażenia, odporność i drop Talizmanu +0
+(boss 5%, Metin 2%) liczą się wg niego. Bossowie (2750–2862, po trzy na znak) mają żywioł także w `mob_proto`
+(`tools/zywioly` reguła g → `zywioly_moby.json` / `zywioly_moby.sql`), więc klient pokazuje go przy celu; zwykłe potwory
+i Metiny świątyni – bez znaku żywiołu w kliencie (ten sam vnum w różnych znakach).
+
 ## Do sprawdzenia / znane braki
 
 - receptury ulepszania broni i zbroi Zodiaku (22401–22418) wymagają materiałów 30611, 30612 (nie ma ich u nas ani w paczce)
