@@ -6931,7 +6931,7 @@ namespace
 		// Eight profession trainers stand south of Joan.  Their npc.txt cells are
 		// 623/627 (Warrior), 631/635 (Ninja), 645/649 (Sura), 653/657
 		// (Shaman); the second coordinate includes map 21's 102400 Y base.
-		const BYTE wantedGroup = (ch->GetPlayerID() % 2 == 0) ? 1 : 2;
+		const BYTE wantedGroup = GetPlayerBotPlannedSkillGroup(ch); // MT2009_PLUS_BOT_DOCTRINE_ANY_SEX_V1
 		const BYTE trainerJob = std::min<BYTE>(ch->GetJob(), JOB_SHAMAN);
 		playerbot_empire_rules::TPoint trainerNpc;
 		const bool haveTrainer = playerbot_empire_rules::GetSkillTrainer(

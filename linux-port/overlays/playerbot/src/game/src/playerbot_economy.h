@@ -2790,7 +2790,7 @@ namespace
 				return false;
 			const bool isOrWillBeArcher = ch->GetJob() == JOB_ASSASSIN &&
 					(ch->GetSkillGroup() == 2 ||
-					 (ch->GetSkillGroup() == 0 && (ch->GetPlayerID() % 2) != 0));
+					 (ch->GetSkillGroup() == 0 && GetPlayerBotPlannedSkillGroup(ch) == 2)); // MT2009_PLUS_BOT_DOCTRINE_ANY_SEX_V1
 			const int grade = GetPlayerBotArrowGrade(item);
 			if (!isOrWillBeArcher || grade < 0)
 				return true;
