@@ -5811,28 +5811,10 @@
   ],
   "zodiak_mobs": [
    {
-    "name": "d:/ymir work/item/weapon/00300.gr2",
-    "sha1": "e9c41064c93224343140f7cd879c79d7e163b0c7",
-    "size": 21160,
-    "source": "GF:d_/ymir work/item/weapon/00300.gr2"
-   },
-   {
-    "name": "d:/ymir work/item/weapon/01180.gr2",
-    "sha1": "89fc4de47895107e55bd71e1dce7e2ecb8b9c941",
-    "size": 31592,
-    "source": "GF:d_/ymir work/item/weapon/01180.gr2"
-   },
-   {
     "name": "d:/ymir work/item/weapon/02200.gr2",
     "sha1": "6203c0a586df433f4e71265db07b750fd775c153",
     "size": 31852,
     "source": "GF:d_/ymir work/item/weapon/02200.gr2"
-   },
-   {
-    "name": "d:/ymir work/item/weapon/03220.gr2",
-    "sha1": "db0cddbd24c9c034ed58cb6856445e865a0ef915",
-    "size": 26864,
-    "source": "GF:d_/ymir work/item/weapon/03220.gr2"
    },
    {
     "name": "d:/ymir work/item/weapon/05160.gr2",
@@ -5857,6 +5839,24 @@
     "sha1": "4bd661975227654fd602cb07a02f217ebd9bd3b2",
     "size": 349680,
     "source": "GF:d_/ymir work/item/weapon/weapon_12zi_6th_01.dds"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/zodiak_00300.gr2",
+    "sha1": "e9c41064c93224343140f7cd879c79d7e163b0c7",
+    "size": 21160,
+    "source": "GF:d_/ymir work/item/weapon/00300.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/zodiak_01180.gr2",
+    "sha1": "89fc4de47895107e55bd71e1dce7e2ecb8b9c941",
+    "size": 31592,
+    "source": "GF:d_/ymir work/item/weapon/01180.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/zodiak_03220.gr2",
+    "sha1": "db0cddbd24c9c034ed58cb6856445e865a0ef915",
+    "size": 26864,
+    "source": "GF:d_/ymir work/item/weapon/03220.gr2"
    },
    {
     "name": "d:/ymir work/monster2/12zi_chicken_boss/12zi_chicken_boss.gr2",

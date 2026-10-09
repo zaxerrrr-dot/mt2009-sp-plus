@@ -242,6 +242,18 @@ for env in ENVS:
     add['maps']['maps/%s/%s' % (MAP, env)] = RES['d:/ymir work/environment/' + env]
 manifest_unres_skip = set('maps/%s/%s' % (MAP, env) for env in ENVS)
 
+# MT2009_PLUS_ZODIAC_WEAPON_MODELS_V1: the Zodiac blade/sword (00300), dagger (01180) and glaive (03220) models
+# under new names - the players' old item pack has weapon/00300.gr2, 01180.gr2, 03220.gr2 of the dead old items
+# 300/1180/3220 and shadows GF's (patch_zodiak_client.py MODEL_RENAME points item_list at these names).
+for _old, _new in (('00300', 'zodiak_00300'), ('01180', 'zodiak_01180'), ('03220', 'zodiak_03220')):
+    _src = GF['d:/ymir work/item/weapon/%s.gr2' % _old]
+    assert open(_src, 'rb').read(4) != GR2_64, _src
+    add['zodiak_mobs']['d:/ymir work/item/weapon/%s.gr2' % _new] = _src
+    add['zodiak_mobs'].pop('d:/ymir work/item/weapon/%s.gr2' % _old, None)
+for _t in ('d:/ymir work/item/weapon/weapon_12zi_6th_01.dds',):
+    if not any(_t in add[_p] for _p in add) and _t not in OURS:
+        add['zodiak_mobs'][_t] = RES[_t]
+
 # the atlas: GF's 352x352 picture under our names (d:/ymir work/ui/<map>_atlas.dds + ui/atlas/<map>/atlas.sub)
 ga = GF.get('d:/ymir work/ui/atlas_resize/%s_atlas.dds' % MAP)
 if ga and 'd:/ymir work/ui/%s_atlas.dds' % MAP not in OURS:

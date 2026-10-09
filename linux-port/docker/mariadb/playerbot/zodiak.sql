@@ -458,3 +458,13 @@ INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) VALUES
 (41,33022,50),
 (41,33032,200),
 (41,72329,1);
+
+-- MT2009_PLUS_ZODIAC_WEAPON_BONUS_V1 (the owner, 9 October: "wszystkie bronie zodiaku maja jakies dziwne bonusy,
+-- powinny miec srednie i umiejetnosci, tak samo jak bronie na 30 lvl i 75 lvl"): the 80 Zodiac weapons get the
+-- random average/skill damage of our weapons (addon_type 1 = ATTR_DAMAGE_ADDON; GF's -1 is skipped by our
+-- CItemAddonManager) and, as the level 30/75 weapons, Silny przeciwko ludziom (apply 17) instead of the attack
+-- speed (apply 7) of the package - the same values. Idempotent.
+UPDATE world.item_proto SET addon_type = 1, applytype0 = IF(applytype0 = 7, 17, applytype0)
+ WHERE type = 1 AND (vnum BETWEEN 300 AND 319 OR vnum BETWEEN 1180 AND 1189 OR vnum BETWEEN 2200 AND 2209
+   OR vnum BETWEEN 3220 AND 3229 OR vnum BETWEEN 5160 AND 5169 OR vnum BETWEEN 7300 AND 7309)
+   AND (addon_type <> 1 OR applytype0 = 7);

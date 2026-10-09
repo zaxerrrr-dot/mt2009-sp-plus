@@ -62,6 +62,11 @@ def fixed(text, size):
     return b + b'\0' * (size - len(b))
 
 
+def is_zodiac_weapon(v):
+    return any(a <= v <= b for a, b in ((300, 319), (1180, 1189), (2200, 2209), (3220, 3229), (5160, 5169),
+                                        (7300, 7309)))
+
+
 def item_record(w, tmpl):
     r = bytearray(tmpl)
     struct.pack_into('<II', r, 0, w['vnum'], 0)
@@ -71,6 +76,10 @@ def item_record(w, tmpl):
     struct.pack_into('<IIII', r, 78, w['stack'], w['antiflag'], w['flag'], w['wearflag'])
     struct.pack_into('<qq', r, 98, w['gold'], w['shop_buy_price'])
     struct.pack_into('<BiBi', r, 114, w['limittype0'], w['limitvalue0'], w['limittype1'], w['limitvalue1'])
+    # MT2009_PLUS_ZODIAC_WEAPON_BONUS_V1: Silny przeciwko ludziom (17) for the Zodiac weapons' attack speed (7), as
+    # zodiak.sql gives the server (which adds the average/skill damage - addon_type, not in the client's record)
+    if w['type'] == 1 and w['applytype0'] == 7 and is_zodiac_weapon(w['vnum']):
+        w = dict(w, applytype0=17)
     struct.pack_into('<BiBiBi', r, 124, w['applytype0'], w['applyvalue0'], w['applytype1'], w['applyvalue1'],
                      w['applytype2'], w['applyvalue2'])
     struct.pack_into('<6i', r, 139, *(w['value%d' % j] for j in range(6)))
@@ -203,9 +212,31 @@ def _list_same(a, b):
     return pa[1:2] == pb[1:2] and (pa + [''] * 4)[3] == (pb + [''] * 4)[3]
 
 
+# MT2009_PLUS_ZODIAC_WEAPON_MODELS_V1 (the owner, 9 October: wrong icons and models of Ostrze, Glewia, Sztylet and
+# Miecz Zodiaku): the old client's own files of these names are other weapons, so the rows of these vnums point at
+# GF's icons (icon/item/300.tga, 1180.tga, 3220.tga) and at the models staged under new names (stage_zodiak.py);
+# our old rows of 300-309, 1180-1189, 3220-3229 are replaced.
+MODEL_RENAME = {'d:/ymir work/item/weapon/00300.gr2': 'd:/ymir work/item/weapon/zodiak_00300.gr2',
+                'd:/ymir work/item/weapon/01180.gr2': 'd:/ymir work/item/weapon/zodiak_01180.gr2',
+                'd:/ymir work/item/weapon/03220.gr2': 'd:/ymir work/item/weapon/zodiak_03220.gr2'}
+
+
+def _renamed(row):
+    p = row.split('\t')
+    if len(p) > 3 and p[3].strip().lower() in MODEL_RENAME:
+        p[3] = MODEL_RENAME[p[3].strip().lower()]
+        return '\t'.join(p)
+    return None
+
+
 def item_list(b):
-    return add_rows(b, [DATA['item_list'][str(v)] for v in sorted(NEW_ITEM_VNUMS) if str(v) in DATA['item_list']],
-                    'item_list.txt', same=_list_same)
+    rows = [DATA['item_list'][str(v)] for v in sorted(NEW_ITEM_VNUMS) if str(v) in DATA['item_list']]
+    fixed = dict((_key(r), _renamed(r)) for r in rows if _renamed(r))
+    lines, nl, tail = _split(b)
+    lines = [fixed.pop(_key(l)) if _key(l) in fixed else l for l in lines]
+    b2 = _join(lines, nl, tail)
+    rows = [_renamed(r) or r for r in rows]
+    return add_rows(b2, rows, 'item_list.txt', same=_list_same)
 
 
 def itemdesc(b):
