@@ -2769,6 +2769,23 @@ namespace
 	// The market: it buys while it holds fewer than PLAYERBOT_CAPE_WANT, keeps
 	// PLAYERBOT_CAPE_KEEP off its own counter, pays near the market's price
 	// and out of a share of its spare gold, from PLAYERBOT_CAPE_MIN_SPARE_GOLD.
+	// MT2009_PLUS_BOT_CAPE_V3 (the owner, 9 October: "boty uzywaja ich takze
+	// solo na wybranych mapach, przy odpowiednim sprzecie, z ostroznym
+	// limitem sciagnietych potworow, ktory rosnie z doswiadczeniem"). A bot
+	// alone uses a cape only on these grinding grounds; in a party of bots
+	// (no person in it) the leader uses one on any hunting map, its members
+	// near it. The crowd it takes is the capacity above under a limit of its
+	// own: PLAYERBOT_CAPE_START_LIMIT for a first cape, PLAYERBOT_CAPE_XP_STEP
+	// more for every crowd beaten without dying, and a death under a cape's
+	// crowd halves the experience. A party adds PLAYERBOT_CAPE_PARTY_MEMBER
+	// a member near. The experience is a quest flag, so it lasts.
+	const long PLAYERBOT_CAPE_SOLO_MAPS[] = { 64, 63, 61, 104, 71, 67, 68, 62, 72, 73 };
+	const int PLAYERBOT_CAPE_START_LIMIT = 8;
+	const int PLAYERBOT_CAPE_XP_STEP = 2;
+	const int PLAYERBOT_CAPE_XP_MAX = 40;
+	const int PLAYERBOT_CAPE_PARTY_MEMBER = 5;
+	const int PLAYERBOT_CAPE_PARTY_RANGE = 2000;
+	const char* const PLAYERBOT_CAPE_XP_FLAG = "playerbot_cape.xp";
 	const int PLAYERBOT_CAPE_WANT = 5;
 	const int PLAYERBOT_CAPE_KEEP = 10;
 	const int PLAYERBOT_CAPE_FAIR_PERCENT = 150;
@@ -3849,6 +3866,26 @@ namespace
 	// the Infected.
 	const BYTE PLAYERBOT_SOHAN_ICE_MIN_LEVEL = 58;
 	const BYTE PLAYERBOT_SPIDER_MIN_LEVEL = 48;
+	// MT2009_PLUS_BOT_SPIDER_GROUND_V1 (the owner, 9 October: "boty 48-75 lvl
+	// realnie tam expia - losuja mape przy kazdym wejsciu do gry i powrocie z
+	// miasta, ida tylko z odpowiednim sprzetem, a w V2 chetniej lacza sie w
+	// druzyny"). The share of the session draws that takes a Spider Dungeon,
+	// the top of the band, and the gear each dungeon asks for: weapon and
+	// body armour at these grades, a helmet on, a weapon of its level and a
+	// stock of red potions.
+	const int PLAYERBOT_SPIDER_SESSION_PERCENT = 35;
+	const int PLAYERBOT_SPIDER_SESSION_MAX_LEVEL = 75;
+	const int PLAYERBOT_SPIDER_V1_WEAPON_PLUS = 4;
+	const int PLAYERBOT_SPIDER_V1_ARMOUR_PLUS = 4;
+	const int PLAYERBOT_SPIDER_V2_WEAPON_PLUS = 6;
+	const int PLAYERBOT_SPIDER_V2_ARMOUR_PLUS = 5;
+	const int PLAYERBOT_SPIDER_MIN_RED_POTIONS = 40;
+	// In V2 a bot is seldom alone: the solo stretch is this rare there, the
+	// party cohort twice the frontier's, and a partner up to this many levels
+	// apart and this far off.
+	const int PLAYERBOT_PARTY_SOLO_PERCENT_SPIDER_V2 = 3;
+	const int PLAYERBOT_SPIDER_V2_PARTY_LEVEL_DELTA = 5;
+	const int PLAYERBOT_SPIDER_V2_PARTY_FIND_RANGE = 3000;
 	// The arrival is the temple's own Town.txt cell (161,938); the exit is five
 	// hundred units south of it. Both were checked against milgyo's server_attr
 	// and stand on open ground - eighty-one of eighty-one free cells within two
@@ -6227,7 +6264,10 @@ namespace
 	// the live population, which is what 2.0.60 was missing - so this is 70-80
 	// bots in the first villages at a time on a world of eleven hundred, not
 	// the 580 that filled them then.
-	const int PLAYERBOT_BIOLOGIST_HERB_TRIP_PER_MILLE = 70;
+	// MT2009_PLUS_BOT_BIOLOGIST_EAGER_V1 (the owner, 9 October: "boty duzo
+	// chetniej robia Biologa"): 120 per mille, and 180 for the collect rows
+	// below, with half the cooldown between two trips.
+	const int PLAYERBOT_BIOLOGIST_HERB_TRIP_PER_MILLE = 120;
 	const DWORD PLAYERBOT_BIOLOGIST_HERB_ERRAND_MAX_MS = 2 * 60 * 60 * 1000;
 	// A trip that has already collected something finishes: the hour used to
 	// run out with specimens in the bag and the place went back before the
@@ -6252,8 +6292,8 @@ namespace
 	// keyed by pid with no waiting list, so without this the same bots reclaim
 	// a place the moment the sweep frees one and everyone else starves
 	// ("Ryzyko glodzenia pozostalych", audit of 17 September, A.4/A.6).
-	const DWORD PLAYERBOT_BIOLOGIST_ERRAND_COOLDOWN_MS = 30 * 60 * 1000;
-	const int PLAYERBOT_BIOLOGIST_COLLECT_TRIP_PER_MILLE = 100;
+	const DWORD PLAYERBOT_BIOLOGIST_ERRAND_COOLDOWN_MS = 15 * 60 * 1000;	// MT2009_PLUS_BOT_BIOLOGIST_EAGER_V1: was 30 min
+	const int PLAYERBOT_BIOLOGIST_COLLECT_TRIP_PER_MILLE = 180;	// MT2009_PLUS_BOT_BIOLOGIST_EAGER_V1: was 100
 	const DWORD PLAYERBOT_BIOLOGIST_COLLECT_ERRAND_MAX_MS = 2 * 60 * 60 * 1000;
 	// From this row up a specimen is a refine material too - the Orc Tooth,
 	// the Curse Book, the Demon Souvenir - and a bot of any level may carry
@@ -8975,6 +9015,13 @@ namespace
 		// MT2009_PLUS_BOT_CAPE_V1: when the cape is next asked about
 		// (HandlePlayerBotValourCape).
 		DWORD dwNextCapeCheck = 0;
+		// MT2009_PLUS_BOT_SPIDER_GROUND_V1: the Spider Dungeons' draw of this
+		// session - 0 until it is drawn, drawn again at every login (a fresh
+		// state) and at the end of every town visit (playerbot_travel.h,
+		// GetPlayerBotSpiderSessionMap).
+		DWORD dwSpiderSessionRoll = 0;
+		// MT2009_PLUS_BOT_DAY_GOAL_V1: the Cel Dnia the status line last carried.
+		DWORD dwLastStatusDayGoalKey = 0;
 		BYTE bMultiPullGroups;
 		BYTE bMultiPullDesiredGroups;
 		bool bLootThreatNearby;

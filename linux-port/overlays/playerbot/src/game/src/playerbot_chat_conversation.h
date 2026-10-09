@@ -1447,7 +1447,9 @@ namespace
 				const long mapIndex = bot->GetMapIndex();
 				const long baseMap = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
 				s.mapIndex = baseMap;
-				s.inDungeon = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN;
+				// MT2009_PLUS_BOT_PRIORITIES_V1: a raid with its party too - the
+				// tower, a boss, the Catacomb, a dungeon run, from the call on.
+				s.inDungeon = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN || IsPlayerBotInDungeonBusiness(bot, state);
 				s.inTown = IsPlayerBotVillageMap(baseMap);
 				s.safeZone = IsPlayerBotSafeZone(mapIndex, bot->GetX(), bot->GetY());
 				s.action = MapPlayerBotConvAction(state.bCurrentAction);

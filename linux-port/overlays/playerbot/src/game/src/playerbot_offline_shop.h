@@ -743,6 +743,23 @@ namespace {
         // before 2.0.53 comes home to be opened - a resource trader's too since
         // blipu's report of 28 September, when the trader stopped selling them.
         const DWORD owner = shop->GetOwnerPID();
+        // MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: a line promised by hand to a
+        // person (playerbot_chat_deals.h) comes off before anything else.
+        {
+            TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(owner);
+            if (st != s_mapPlayerBotAIStates.end() && st->second.offlineShop.dealPullVnum != 0) {
+                playerbot_offline::State& o = st->second.offlineShop;
+                if ((int)(get_dword_time() - o.dealPullUntil) >= 0)
+                    o.dealPullVnum = o.dealPullSkill = o.dealPullUntil = 0;
+                else
+                    for (const auto& [lid, l] : shop->GetItems()) {
+                        if (!l || l->GetInfo().vnum != o.dealPullVnum) continue;
+                        if (o.dealPullSkill && (DWORD)l->GetInfo().alSockets[0] != o.dealPullSkill) continue;
+                        if (why) *why = "deal";
+                        return lid;
+                    }
+            }
+        }
         const bool sellsChests = IsPlayerBotMoonlightChestSeller(owner);
         // The mission books past the thirty its village's counters hold
         // (Iwakura's Patch 4, point 13) come home a line a visit; the ledger is
@@ -1112,6 +1129,9 @@ namespace {
         if (!Begin(ch->GetPlayerID(), Remove, itemid, now)) return false;
         ikashop::GetManager().RecvShopRemoveItemClientPacket(ch, itemid);
         if (!EndCall(ch->GetPlayerID())) return false;
+        // MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: the promised line is off.
+        if (why && strcmp(why, "deal") == 0)
+            state.offlineShop.dealPulled = true;
         RemovePlayerBotMarketSupply(lineVnum, lineCount, lineMap);
         NotePlayerBotMissionBooksOnCounter(lineMap, lineVnum, -(int)lineCount);
         // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: off the shards' count at once too.
@@ -1974,6 +1994,17 @@ namespace {
         if (!ch) return false;
         BotOfflineDrainSales(ch, state, now);
         auto& o = state.offlineShop;
+        // MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: the promised piece is off the
+        // counter and in the bag for a person - no visit puts it back up
+        // before the deal is over (EndPlayerBotDeal clears it) or lapses.
+        if (o.dealPulled) {
+            if (o.dealPullUntil && (int)(now - o.dealPullUntil) < 0) {
+                if (o.visiting) BotOfflineFinishVisit(ch, state, now);
+                return false;
+            }
+            o.dealPulled = false;
+            o.dealPullVnum = o.dealPullSkill = o.dealPullUntil = 0;
+        }
         auto& manager = ikashop::GetManager();
         auto shop = manager.GetShopByOwnerID(ch->GetPlayerID());
         ch->SetIkarusShop(shop); // boot/relog: native PID map is authoritative

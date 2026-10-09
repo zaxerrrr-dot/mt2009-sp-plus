@@ -256,6 +256,7 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_survival.h"
 #include "playerbot_wandering.h"
 #include "playerbot_status.h"
+#include "playerbot_day_goal.h" // MT2009_PLUS_BOT_DAY_GOAL_V1: Cel Dnia, a goal for the session in blue over the head
 #include "playerbot_chat_conversation.h"
 // MT2009_PLUS_BOT_CHAT_V2 (deals): a trade talked over on the whisper, done in
 // the exchange window. After the conversation, which talks it over, and the
@@ -326,6 +327,8 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // answered, and the advice of where to exp and where the Metins stand. After
 // the Battle Pass bots, whose stone table and chatter it uses.
 #include "playerbot_chat_world.h"
+#include "playerbot_meetups.h" // MT2009_PLUS_BOT_MEETUPS_V1: two bots arrange a trade on the chat, meet by the smith and trade in the window
+#include "playerbot_priorities.h" // MT2009_PLUS_BOT_PRIORITIES_V1: survival, a raid, a meeting, a full bag - before the rest
 // MT2009_PLUS_GM_SM_EVENT_V1 (include): a GM's "!SM" notice - the bots' SM race on
 // the shout - and their short lines after any other GM notice. After the chat world.
 #include "playerbot_gm_notice.h"
@@ -536,6 +539,15 @@ namespace
 	// turns up - and every frontier map, not the valley alone: a map change
 	// dissolves a party, so one made in the valley never reached V1 or
 	// Sohan, and the Spider Queen and Nine Tails had nobody to fight them.
+	// MT2009_PLUS_BOT_SPIDER_GROUND_V1: in the second Spider Dungeon twice
+	// the frontier's party share ("w V2 chetniej lacza sie w druzyny").
+	int GetPlayerBotSpiderV2PartyPerMille(LPCHARACTER ch, int perMille)
+	{
+		if (ch && ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2)
+			return std::min(1000, perMille * 2);
+		return perMille;
+	}
+
 	bool IsPlayerBotPartyEligible(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		if (!ch)
@@ -575,10 +587,10 @@ namespace
 					GetPlayerBotRareNow(p, get_dword_time()) != 0)
 				return false;
 			return playerbot_persona::IsCompanionDraw(p.wCompanionDraw,
-					GetPlayerBotPartyCohortPerMille(bFrontier));
+					GetPlayerBotSpiderV2PartyPerMille(ch, GetPlayerBotPartyCohortPerMille(bFrontier)));
 		}
 		return GetPlayerBotPartyDraw(ch->GetPlayerID(), state) <
-				GetPlayerBotPartyCohortPerMille(bFrontier);
+				GetPlayerBotSpiderV2PartyPerMille(ch, GetPlayerBotPartyCohortPerMille(bFrontier));
 	}
 
 	int GetPlayerBotPartyDesiredMax(LPCHARACTER ch)
@@ -2061,7 +2073,9 @@ namespace
 		// A stretch of hunting alone, less often where a party is the point.
 		// Iwakura's companion is a phase with its own stretches alone, drawn
 		// above, and does not also roll this one.
-		const int soloPercent = IsPlayerBotFrontierMapIndex(ch->GetMapIndex())
+		const int soloPercent = ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2	// MT2009_PLUS_BOT_SPIDER_GROUND_V1
+				? PLAYERBOT_PARTY_SOLO_PERCENT_SPIDER_V2
+				: IsPlayerBotFrontierMapIndex(ch->GetMapIndex())
 				? PLAYERBOT_PARTY_SOLO_PERCENT_FRONTIER : PLAYERBOT_PARTY_SOLO_PERCENT;
 		if (!bPersona && number(1, 100) <= soloPercent)
 		{
@@ -2114,11 +2128,15 @@ namespace
 							(candidate->GetParty() && PlayerBotPartyHasLegendRival(m_me, candidate->GetParty())))
 						return true;
 
-					if (abs((int)candidate->GetLevel() - (int)m_me->GetLevel()) > 3)
+					// MT2009_PLUS_BOT_SPIDER_GROUND_V1: in V2 a partner a little
+					// further apart in level and on the map.
+					const bool bSpiderV2 = m_me->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2;
+					if (abs((int)candidate->GetLevel() - (int)m_me->GetLevel()) >
+							(bSpiderV2 ? PLAYERBOT_SPIDER_V2_PARTY_LEVEL_DELTA : 3))
 						return true;
 
 					const int d = DISTANCE_APPROX(m_me->GetX() - candidate->GetX(), m_me->GetY() - candidate->GetY());
-					if (d > 1800)
+					if (d > (bSpiderV2 ? PLAYERBOT_SPIDER_V2_PARTY_FIND_RANGE : 1800))
 						return true;
 
 					if (!IsPlayerBotPathClear(m_me->GetMapIndex(), m_me->GetX(), m_me->GetY(), candidate->GetX(), candidate->GetY()))
@@ -2132,7 +2150,7 @@ namespace
 								leader->GetEmpire() == m_me->GetEmpire())
 						{
 							int ld = DISTANCE_APPROX(m_me->GetX() - leader->GetX(), m_me->GetY() - leader->GetY());
-							if (ld <= 1800 &&
+							if (ld <= (bSpiderV2 ? PLAYERBOT_SPIDER_V2_PARTY_FIND_RANGE : 1800) &&
 									IsPlayerBotPartyCohesive(candidate, 2,
 										PLAYERBOT_PARTY_COHESION_RADIUS) &&
 									IsPlayerBotPathClear(m_me->GetMapIndex(), m_me->GetX(), m_me->GetY(), leader->GetX(), leader->GetY()))
@@ -6625,6 +6643,9 @@ void CPlayerBotManager::Update()
 	// MT2009_PLUS_BOT_CHAT_V2: the bots' '@' trade lines and the shout
 	// channel's answers (playerbot_chat_world.h).
 	ManagePlayerBotChatWorld(dwNow);
+	// MT2009_PLUS_BOT_MEETUPS_V1: the bots' own trades - the plan, the talk on
+	// the trade chat and the ends of time (playerbot_meetups.h).
+	ManagePlayerBotMeetups(dwNow);
 	// MT2009_PLUS_GM_SM_EVENT_V1: the SM race and the GM notice reactions (playerbot_gm_notice.h).
 	ManagePlayerBotGMNotice(dwNow);
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the dungeon finder's offers due out,
@@ -6992,6 +7013,8 @@ WritePlayerBotGuildStatus(dwNow);
 		// The mood's clocks (playerbot_mood.h): its quest flags read once they
 		// have arrived, the rotation, the drought, the end of a lock.
 		AdvancePlayerBotMood(ch, state, dwNow);
+		// MT2009_PLUS_BOT_DAY_GOAL_V1: its Cel Dnia drawn, counted and ended.
+		ManagePlayerBotDayGoal(ch, state, dwNow);
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		// A bot that asked to be moved to the shop channel for a stand waits in
@@ -7044,6 +7067,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// bot opens the window by the person and checks it, pays or sells
 		// (playerbot_chat_deals.h). Ahead of the gift trade, which takes any
 		// other window.
+		// MT2009_PLUS_BOT_MEETUPS_V1: a meeting two bots arranged on the chat -
+		// the way to the smith, the wait and the window (playerbot_meetups.h).
+		// Ahead of the deals and the gift trade, which close a window between
+		// two bots; staying alive and a raid come before it, inside.
+		if (HandlePlayerBotMeetup(ch, state, dwNow))
+			continue;
 		if (HandlePlayerBotDealTrade(ch, state, dwNow))
 			continue;
 		if (HandlePlayerBotGiftTrade(ch, state, dwNow))
@@ -7469,6 +7498,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// Except for the town visit in a village the person stands in: there
 		// it runs (IsPlayerBotBesidePersonInVillage).
 		const bool bTownVisitAllowed = !bServingPerson || IsPlayerBotBesidePersonInVillage(ch);
+		// MT2009_PLUS_BOT_PRIORITIES_V1: a full bag goes before the leisure
+		// errands below (the horse, the rod, the pickaxe, the herbs, Uriel,
+		// Mistrz, the stay in town, Baek-Go) - the town visit and the way to
+		// town have the bot. Survival, a raid and a meeting stand above it in
+		// the tick already (playerbot_priorities.h).
+		const bool bBagFirst = !bServingPerson && IsPlayerBotBagFirst(ch, state);
 		// The player's own companion (playerbot_sidekick.h): at its owner's side
 		// it owns the tick from here - the trade, the party, the fight for the
 		// owner, the owner's drops and the owner's blacksmith. Below the upkeep,
@@ -7629,21 +7664,22 @@ WritePlayerBotGuildStatus(dwNow);
 			continue;
 
 		// Horse medals are equally real resources: a bot leaves combat, walks to
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotHorse(ch, state, dwNow))
 			continue;
 
 		// A handful of M1 bots fish the riverbank instead of grinding. This owns
 		// the whole tick: the rod sits in the weapon slot, so combat and the gear
 		// pass below must not run while a session is live.
-		if (!state.bMultiPullActive && !bFightingMetin &&
+		// A session under way ends by its own rules (its junk, its bag).
+		if ((!bBagFirst || state.bFishingSession) && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotFishing(ch, state, dwNow))
 			continue;
 
 		// And a smaller handful digs at the ore veins on the three frontier
 		// maps. Owns the tick for the same reason fishing does: the pickaxe
 		// sits in the weapon slot, so no combat or gear pass may run under it.
-		if (!state.bMultiPullActive && !bFightingMetin &&
+		if ((!bBagFirst || IsPlayerBotMiningNow(ch->GetPlayerID(), dwNow)) && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotMining(ch, state, dwNow))
 			continue;
 
@@ -7658,7 +7694,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: and the herbalists by trade pick the
 		// herb bushes with the Herbalist's Knife, the vein's shape: the knife
 		// sits in the weapon hand, so the session owns the tick while it picks.
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if ((!bBagFirst || IsPlayerBotHerbPickingNow(ch, dwNow)) && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotHerbGathering(ch, state, dwNow))
 			continue;
 
@@ -7674,7 +7710,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// Uriel (playerbot_sash.h): a keeper's sashes combined, filled and
 		// worn. Beside the Alchemist and for his reason: above the travel pass,
 		// which would walk the bot out of the village it was brought to.
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotSash(ch, state, dwNow))
 			continue;
 
@@ -7682,7 +7718,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// (playerbot_workshop.h) - belts made and raised, talisman steps, the
 		// talisman for the map and the belt's pouch. Beside Uriel and for his
 		// reason.
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotWorkshop(ch, state, dwNow))
 			continue;
 
@@ -7715,7 +7751,7 @@ WritePlayerBotGuildStatus(dwNow);
 		// tick its session ended: the rest never got a turn. It claims the tick
 		// like fishing does, for a bounded few minutes, and ends the moment
 		// anything real wants the bot.
-		if (ManagePlayerBotTownLinger(ch, state, dwNow))
+		if (!bBagFirst && ManagePlayerBotTownLinger(ch, state, dwNow))
 			continue;
 
 		// Move between the real Chunjo portals in controlled, staggered waves.
@@ -7734,7 +7770,7 @@ WritePlayerBotGuildStatus(dwNow);
 
 		// Baek-Go stands in the same three villages, so his board is the same
 		// kind of local errand as the hand-in above and is gated the same way.
-		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotHerbalist(ch, state, dwNow))
 			continue;
 

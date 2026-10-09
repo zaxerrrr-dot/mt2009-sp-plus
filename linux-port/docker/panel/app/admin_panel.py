@@ -8890,10 +8890,12 @@ def map_i18n(language=None):
     return MAP_I18N.get(language, MAP_I18N["en"])
 
 JOB_NAMES_MAP = {
- "pl": {0:"Wojownik (M)",4:"Wojowniczka (K)",1:"Ninja (M)",5:"Ninja (K)",
-        2:"Sura (M)",6:"Sura (K)",3:"Szaman (M)",7:"Szamanka (K)"},
- "en": {0:"Warrior (M)",4:"Warrior (F)",1:"Ninja (M)",5:"Ninja (F)",
-        2:"Sura (M)",6:"Sura (F)",3:"Shaman (M)",7:"Shaman (F)"},
+# Race numbers as the engine has them: 1 is the female Ninja, 5 the male one,
+# 3 the female Shaman, 7 the male one (Warrior and Sura: 0-3 male, 4-7 female).
+ "pl": {0:"Wojownik (M)",4:"Wojowniczka (K)",5:"Ninja (M)",1:"Ninja (K)",
+        2:"Sura (M)",6:"Sura (K)",7:"Szaman (M)",3:"Szamanka (K)"},
+ "en": {0:"Warrior (M)",4:"Warrior (F)",5:"Ninja (M)",1:"Ninja (F)",
+        2:"Sura (M)",6:"Sura (F)",7:"Shaman (M)",3:"Shaman (F)"},
 }
 BIOLOGIST_NAMES_EN = {
  "make_herb_lv4":"Peach Blossom","make_herb_lv7":"Bellflower",
