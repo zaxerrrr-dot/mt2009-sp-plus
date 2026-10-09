@@ -80,6 +80,16 @@ namespace
 	{
 		return floor == 6 || floor == 12 || floor == 19 || floor == 24;
 	}
+	// MT2009_PLUS_ZODIAC_RUNS_V4: the floors whose mission is the Metins (ZodiacFloorMessage: 7, 8, 13, 14,
+	// 18, 21, 27-30, 35-39). Every bot of the party breaks the leader's Metin, the monsters round it only
+	// when they hold it - 9 October: on floor 8 the others fought the 80-90 monsters (39 000 HP each,
+	// level 50-58, a flat +level x5 a blow in the temple) while the leader broke the stones alone, and
+	// every sign's run died there (20-21 deaths, "wipe").
+	bool IsZrunMetinFloor(int floor)
+	{
+		return floor == 7 || floor == 8 || floor == 13 || floor == 14 || floor == 18 || floor == 21 ||
+				(floor >= 27 && floor <= 30) || (floor >= 35 && floor <= 39);
+	}
 	const int ZRUN_RED_POTION = 27003;
 	const int ZRUN_BLUE_POTION = 27006;
 	const char* const ZRUN_SIGN[13] = { "", "zi", "chou", "yin", "mao", "chen", "si", "wu", "wei", "shen", "yu", "xu", "hai" };
@@ -117,6 +127,7 @@ namespace
 		long lFloorX, lFloorY;
 		int iFloorDeaths;
 		DWORD dwNextBeat;
+		std::set<DWORD> dead;	// V4: the members lying dead now (a death counted when it is seen)
 		TZrun() : lFloorX(0), lFloorY(0), iFloorDeaths(0), dwNextBeat(0), iId(0), bSign(0), bPhase(ZRUN_PHASE_GATHER), bEmpire(0), dwLeader(0), lInstance(0), dwCalledAt(0),
 				dwPhaseAt(0), dwEnteredAt(0), dwFloorAt(0), dwLastProgress(0), dwEmptySince(0), dwNextJump(0), bFloor(0),
 				bMaxFloor(0), iDeaths(0), iPrismRevives(0), iFreeRevives(0), iMinLevel(0), iMaxLevel(0), iTargetFloor(40),
@@ -178,8 +189,11 @@ namespace
 		TZrun* run = FindZrunOf(pid);
 		if (!run)
 			return;
-		++run->iDeaths;
-		++run->iFloorDeaths;
+		if (run->dead.insert(pid).second)	// a death the monitor had not seen yet
+		{
+			++run->iDeaths;
+			++run->iFloorDeaths;
+		}
 		if (prisms)
 			++run->iPrismRevives;
 		else
@@ -563,6 +577,28 @@ namespace
 			b.dwEnteredAt = dwNow;
 			b.dwKills = 0;
 		}
+		// V4: on a Metin floor the leader's Metin (or the nearest one), whatever else attacks.
+		if (IsZrunMetinFloor(run->bFloor) && !state.bRecoveringAfterDeath)
+		{
+			if (KeepPlayerBotTowerAlive(ch, state, dwNow, 75, 40))
+				return true;
+			LPCHARACTER metin = NULL;
+			TPlayerBotAIStateMap::const_iterator ls = s_mapPlayerBotAIStates.find(leader->GetPlayerID());
+			if (ls != s_mapPlayerBotAIStates.end() && ls->second.dwTargetVID)
+			{
+				LPCHARACTER t = CHARACTER_MANAGER::instance().Find(ls->second.dwTargetVID);
+				if (IsPlayerBotPdgFoe(ch, t) && t->IsStone() && !IsPlayerBotZodiacLeftToPerson(t->GetRaceNum()))
+					metin = t;
+			}
+			if (!metin)
+			{
+				LPCHARACTER o = PickZrunObjective(ch, dwNow);
+				if (o && o->IsStone() && !IsPlayerBotZodiacLeftToPerson(o->GetRaceNum()))
+					metin = o;
+			}
+			if (metin)
+				return FightPlayerBotTowerObjective(ch, state, metin, dwNow);
+		}
 		return FightPlayerBotPartyDungeon(ch, state, b, leader, dwNow);
 	}
 
@@ -761,6 +797,19 @@ namespace
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
 			if (ch && ch->GetMapIndex() == run.lInstance)
 				++inside;
+		}
+		// V4: the deaths, counted as they are seen - also one the temple's exit warps out before its revive.
+		for (size_t i = 0; i < run.members.size(); ++i)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+			const bool isDead = ch && ch->IsDead() && IsPlayerBotZodiacInstance(ch->GetMapIndex());
+			if (isDead && run.dead.insert(run.members[i]).second)
+			{
+				++run.iDeaths;
+				++run.iFloorDeaths;
+			}
+			else if (!isDead)
+				run.dead.erase(run.members[i]);
 		}
 		if (z)
 		{
