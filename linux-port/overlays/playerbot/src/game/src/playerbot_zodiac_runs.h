@@ -365,7 +365,10 @@ namespace
 			ch->RemoveAffect(ZRUN_AFFECT_HP);
 			ch->RemoveAffect(ZRUN_AFFECT_ATT);
 			ch->RemoveAffect(ZRUN_AFFECT_DEF);
-			ch->AddAffect(ZRUN_AFFECT_HP, POINT_MAX_HP_PCT, boost, 0, seconds, 0, true);
+			// V5: flat max HP - POINT_MAX_HP_PCT is capped at +3500 HP by CHARACTER::ComputePoints, so the
+			// night's boost 40/60/150 all gave the same 27 000 HP.
+			const long extraHp = (long)ch->GetMaxHP() * boost / 100;
+			ch->AddAffect(ZRUN_AFFECT_HP, POINT_MAX_HP, extraHp, 0, seconds, 0, true);
 			ch->AddAffect(ZRUN_AFFECT_ATT, POINT_ATTBONUS_MONSTER, boost, 0, seconds, 0, true);
 			ch->AddAffect(ZRUN_AFFECT_DEF, POINT_DEF_GRADE_BONUS, (long)ch->GetLevel() * boost / 10, 0, seconds, 0, true);
 			ch->PointChange(POINT_HP, ch->GetMaxHP() - ch->GetHP());
@@ -424,12 +427,22 @@ namespace
 
 	// The floor's objective for the leader: a Metin, else the nearest monster
 	// or boss, else a statue; never the cannon.
+	// V5: the floor's mission (ZodiacFloorMessage): a boss floor (6, 11, 17, 22) is the bosses, a Metin
+	// floor the Metins, any other the monsters - a Metin hit there only calls more monsters (7 in 160 a
+	// blow), and on floors 11 and 17 the night's runs broke Metins while the bosses' guards killed them.
+	bool IsZrunBossFloor(int floor)
+	{
+		return floor == 6 || floor == 11 || floor == 17 || floor == 22;
+	}
+
 	LPCHARACTER PickZrunObjective(LPCHARACTER ch, DWORD dwNow)
 	{
 		const long map = ch->GetMapIndex();
 		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(map, dwNow);
-		LPCHARACTER metin = NULL, mob = NULL, statue = NULL;
-		int dMetin = INT_MAX, dMob = INT_MAX, dStatue = INT_MAX;
+		const TZrun* run = FindZrunOf(ch->GetPlayerID());
+		const int floor = run ? run->bFloor : 0;
+		LPCHARACTER metin = NULL, mob = NULL, statue = NULL, boss = NULL;
+		int dMetin = INT_MAX, dMob = INT_MAX, dStatue = INT_MAX, dBoss = INT_MAX;
 		for (size_t i = 0; i < scan.foes.size(); ++i)
 		{
 			const DWORD race = scan.foes[i].dwRace;
@@ -455,12 +468,29 @@ namespace
 					dMetin = d;
 				}
 			}
-			else if (d < dMob)
+			else
 			{
-				mob = c;
-				dMob = d;
+				if (race >= 2750 && race <= 2862 && d < dBoss)
+				{
+					boss = c;
+					dBoss = d;
+				}
+				if (d < dMob)
+				{
+					mob = c;
+					dMob = d;
+				}
 			}
 		}
+		if (IsZrunBossFloor(floor))
+		{
+			// The boss; its guards only when they stand between (nearer than a third of the way).
+			if (boss)
+				return (mob && mob != boss && dMob * 3 < dBoss) ? mob : boss;
+			return mob ? mob : metin;
+		}
+		if (!IsZrunMetinFloor(floor) && floor != 0)
+			return mob ? mob : (metin ? metin : statue);
 		if (metin)
 			return metin;
 		// The target in hand kept while it lives (no flipping between two).
