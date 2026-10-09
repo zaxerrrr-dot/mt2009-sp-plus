@@ -3462,12 +3462,30 @@ namespace
 		if (IsPlayerBotFourLinePiece(item))
 			return true;
 		const int slot = GetPlayerBotFightingSlotOf(ch, item);
-		if (slot < 0)
-			return false;
 		if ((int)item->GetRefineLevel() < PLAYERBOT_SAFE_ANVIL_YOUNG_MAX_PLUS &&
 				((int)ch->GetLevel() < PLAYERBOT_SAFE_ANVIL_YOUNG_LEVEL || IsPlayerBotScrollFreeGear(item)))
 			return false;
-		return !PlayerBotHasSpareForSlot(ch, slot, item);
+		if (slot >= 0)
+			return !PlayerBotHasSpareForSlot(ch, slot, item);
+		// MT2009_PLUS_BOT_SMITHY_V2 (night test, 9 October: a bot burned the
+		// bracelet it wore - the second one in the bag was its spare - and then
+		// burned that spare too, left with none): the only spare of a slot the
+		// bot fights in is kept whole as well - it goes up under a scroll, not
+		// on the plain anvil, as long as no other piece could replace it.
+		const int cell = item->FindEquipCell(ch);
+		if (cell < 0 || cell >= WEAR_MAX_NUM || !ch->GetWear((WORD)cell) || !IsPlayerBotEquipmentCandidate(ch, item))
+			return false;
+		if (cell == WEAR_WEAPON)
+			return GetPlayerBotBackupWeaponID(ch, false) == item->GetID();
+		LPITEM worn = ch->GetWear((WORD)cell);
+		for (WORD bag = 0; bag < PLAYERBOT_BAG_CELLS; ++bag)
+		{
+			LPITEM other = ch->GetInventoryItem(bag);
+			if (other && other != item && other != worn && other->GetCell() == bag &&
+					IsPlayerBotEquipmentCandidate(ch, other) && other->FindEquipCell(ch) == cell)
+				return false;
+		}
+		return true;
 	}
 
 	// Iwakura's "tylko w 50% uzywaja bodzi" (24 September): this share of the
