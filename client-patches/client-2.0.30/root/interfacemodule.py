@@ -4450,17 +4450,32 @@ class Interface(object):
 		# sie nie da - napisz do syserr.txt i graj dalej bez niego. Kazdy
 		# wolajacy nizej traktuje wndGMPanel jako mogace nie istniec.
 		self.wndGMPanel = None
+		# MT2009_PLUS_GM_PANEL_V2: the new panel (uigmpanel.py); the class
+		# above stays for the GM_PANEL_* tables it reads and as the fallback
+		# when the new one cannot be built.
 		try:
-			wndGMPanel = GMPanelWindow()
+			import uigmpanel
+			wndGMPanel = uigmpanel.GMPanelWindow()
+			wndGMPanel.SetEquipEvent(ui.__mem_func__(self.OpenGMEquipFor))
 			wndGMPanel.Hide()
 			self.wndGMPanel = wndGMPanel
 		except:
-			# The reason, not just the fact: a fail-safe that hides why it fired
-			# turns every player report into one nobody can act on.
 			import dbg, traceback
-			dbg.TraceError("GM panel (F9) could not be built - the game loads without it")
+			dbg.TraceError("GM panel (F9, uigmpanel) could not be built - the old panel is used")
 			for line in traceback.format_exc().splitlines():
 				dbg.TraceError("    " + line)
+		if not self.wndGMPanel:
+			try:
+				wndGMPanel = GMPanelWindow()
+				wndGMPanel.Hide()
+				self.wndGMPanel = wndGMPanel
+			except:
+				# The reason, not just the fact: a fail-safe that hides why it fired
+				# turns every player report into one nobody can act on.
+				import dbg, traceback
+				dbg.TraceError("GM panel (F9) could not be built - the game loads without it")
+				for line in traceback.format_exc().splitlines():
+					dbg.TraceError("    " + line)
 
 		# To samo dla plakietki Top1: jej rejestracja w game.py siedzi juz w
 		# try/except, ale samo okno powstawalo tutaj bez oslony, a pliku
@@ -4996,6 +5011,14 @@ class Interface(object):
 
 		if self.wndPlayerbotAdmin:
 			self.wndPlayerbotAdmin.Destroy()
+
+		# MT2009_PLUS_GM_PANEL_V2: the new panel lets go of its callbacks.
+		if self.wndGMPanel and hasattr(self.wndGMPanel, "Destroy"):
+			try:
+				self.wndGMPanel.Destroy()
+			except:
+				pass
+		self.wndGMPanel = None
 
 		if self.wndMessenger:
 			self.wndMessenger.Destroy()
@@ -5758,6 +5781,10 @@ class Interface(object):
 			import chat
 			chat.AppendChat(chat.CHAT_TYPE_INFO, "Panel GM nie zaladowal sie w tym kliencie - szczegoly w syserr.txt")
 			return
+		# MT2009_PLUS_GM_PANEL_V2: the new panel opens and closes itself.
+		if hasattr(self.wndGMPanel, "Toggle"):
+			self.wndGMPanel.Toggle()
+			return
 		if False == self.wndGMPanel.IsShow():
 			self.wndGMPanel.Show()
 			self.wndGMPanel.SetTop()
@@ -5775,6 +5802,10 @@ class Interface(object):
 	# z tym celem juz wpisanym.
 	def OpenGMLookupFor(self, name):
 		if not self.wndGMPanel:
+			return
+		# MT2009_PLUS_GM_PANEL_V2: the new panel opens itself on its player page.
+		if hasattr(self.wndGMPanel, "Toggle"):
+			self.wndGMPanel.OpenLookupFor(name)
 			return
 		self.wndGMPanel.Show()
 		self.wndGMPanel.SetTop()
