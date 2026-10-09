@@ -105,11 +105,14 @@ namespace
 		DWORD nextTryAt;
 		int tries;
 		bool travelled;     // it went somewhere for this meeting (said on arrival)
+		// MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: the pieces come off its offline
+		// counter first (the service visit), and the meeting is at the counter.
+		bool pullFromStall;
 		TPlayerBotDeal() : side(0), vnum(0), skill(0), count(0), unit(0), at(0), nextOpenAt(0), windowSince(0), decideAt(0),
 			paid(false), paidPieces(0), offered(false), warnedAt(0), lastPieces(0), shortSince(0),
 			meet(playerbot_conv::DEAL_MEET_FAILED), meetMap(0), spot(playerbot_conv::DEAL_SPOT_NONE), spotX(0), spotY(0),
 			otherChannel(false), crossToPerson(false), leaveAt(0), walkSince(0), arrivedAt(0), nextTryAt(0), tries(0),
-			travelled(false) {}
+			travelled(false), pullFromStall(false) {}
 	};
 	typedef std::pair<DWORD, DWORD> TPlayerBotDealKey; // (bot pid, person pid)
 	std::map<TPlayerBotDealKey, TPlayerBotDeal> s_mapPlayerBotDeals;
@@ -275,6 +278,8 @@ namespace
 		return out;
 	}
 
+	bool IsPlayerBotDealVillage(long mapIndex);
+
 	bool QuotePlayerBotDealItem(LPCHARACTER bot, const std::string& query, DWORD vnumHint, DWORD skillHint,
 			playerbot_conv::TDealQuote& out)
 	{
@@ -413,11 +418,20 @@ namespace
 			{
 				if (stall.lines[i].vnum != vnum || (skill && (stall.lines[i].skill != skill || stall.lines[i].forget)))
 					continue;
-				out.onStall = true;
-				out.stallUnit = stall.lines[i].price / (stall.lines[i].count ? stall.lines[i].count : 1);
-				out.stallWhere = GetPlayerBotTownName(stall.mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN
-						? stall.mapIndex / 10000 : stall.mapIndex);
-				break;
+				if (!out.onStall)
+				{
+					out.onStall = true;
+					out.stallUnit = stall.lines[i].price / (stall.lines[i].count ? stall.lines[i].count : 1);
+					out.stallWhere = GetPlayerBotTownName(stall.mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN
+							? stall.mapIndex / 10000 : stall.mapIndex);
+				}
+				// MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: an offline counter of this
+				// channel, on a map of this core: its pieces may come off for a
+				// sale by hand (RegisterPlayerBotDeal).
+				if (stall.offline && (stall.channel == 0 || stall.channel == (int)g_bChannel) &&
+						stall.mapIndex > 0 && stall.mapIndex < PLAYERBOT_INSTANCE_MAP_INDEX_MIN && map_allow_find(stall.mapIndex) &&
+						IsPlayerBotDealVillage(stall.mapIndex))
+					out.stallHas += (int)stall.lines[i].count;
 			}
 		}
 		return true;
@@ -484,6 +498,20 @@ namespace
 				!person->IsWarping() && person->GetSectree();
 	}
 
+	// MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: the deal's pieces in the bag, as
+	// the window would take them (OfferPlayerBotDealPieces).
+	int CountPlayerBotDealBagPieces(LPCHARACTER ch, DWORD vnum, DWORD skill)
+	{
+		int pieces = 0;
+		for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && IsPlayerBotDealPiece(item, vnum, skill) && IsPlayerBotDealSellable(item))
+				pieces += (int)item->GetCount();
+		}
+		return pieces;
+	}
+
 	void FillPlayerBotDealMeetPlace(const TPlayerBotDeal& d, LPCHARACTER bot, playerbot_conv::TDealMeetPlace& out)
 	{
 		out = playerbot_conv::TDealMeetPlace();
@@ -524,6 +552,37 @@ namespace
 		const long personMap = person ? person->GetMapIndex() : peer ? peer->lMapIndex : 0;
 		d.otherChannel = personChannel > 0 && personChannel != (int)g_bChannel;
 
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		// MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: pieces it has only on its offline
+		// counter come off at the next service visit, and the meeting is at
+		// the counter - the bot is there for the take-off anyway.
+		if (side == DEAL_BOT_SELLS && CountPlayerBotDealBagPieces(bot, vnum, skill) < count)
+		{
+			TPlayerBotStall stall;
+			if (!GetPlayerBotStall(bot->GetPlayerID(), bot, stall) || !stall.offline ||
+					(stall.channel != 0 && stall.channel != (int)g_bChannel) || !IsPlayerBotDealVillage(stall.mapIndex))
+			{
+				s_mapPlayerBotDeals.erase(std::make_pair(bot->GetPlayerID(), personPID));
+				return DEAL_MEET_FAILED;
+			}
+			d.pullFromStall = true;
+			d.meet = DEAL_MEET_AT_SPOT;
+			d.meetMap = stall.mapIndex;
+			d.spot = DEAL_SPOT_STALL;
+			d.spotX = stall.x + 200;
+			d.spotY = stall.y;
+			d.leaveAt = now + number(PLAYERBOT_DEAL_MEET_LEAVE_MIN_MS, PLAYERBOT_DEAL_MEET_LEAVE_MAX_MS);
+			playerbot_offline::State& o = st->second.offlineShop;
+			o.dealPullVnum = vnum;
+			o.dealPullSkill = skill;
+			o.dealPullUntil = now + PLAYERBOT_DEAL_TTL_MS;
+			o.nextService = now;
+			FillPlayerBotDealMeetPlace(d, bot, place);
+			sys_log(0, "PLAYERBOT_DEAL: agreed from the counter pid=%u name=%s person_pid=%u vnum=%u skill=%u count=%d unit=%lld map=%ld",
+					bot->GetPlayerID(), bot->GetName(), personPID, vnum, skill, count, unit, d.meetMap);
+			return d.meet;
+		}
+#endif
 		// Near, or on the same map: the window now, or the summon's walk over.
 		if (person && person->GetMapIndex() == bot->GetMapIndex())
 		{
@@ -609,9 +668,17 @@ namespace
 		std::map<TPlayerBotDealKey, TPlayerBotDeal>::const_iterator it =
 				s_mapPlayerBotDeals.lower_bound(std::make_pair(botPID, (DWORD)0));
 		for (; it != s_mapPlayerBotDeals.end() && it->first.first == botPID; ++it)
+		{
 			if ((it->second.meet == playerbot_conv::DEAL_MEET_AT_SPOT && it->second.spot == playerbot_conv::DEAL_SPOT_SMITH) ||
 					it->second.crossToPerson)
 				return true;
+			// MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: held once the pieces are off
+			// the counter; before that the service visit has to run.
+			if (it->second.pullFromStall &&
+					CountPlayerBotDealBagPieces(CHARACTER_MANAGER::instance().FindByPID(botPID), it->second.vnum, it->second.skill) >=
+						it->second.count)
+				return true;
+		}
 		return false;
 	}
 
@@ -626,6 +693,19 @@ namespace
 					it->second.unit);
 			if (state == playerbot_conv::DEAL_DONE)
 				ClosePlayerBotPublicPost(bot->GetPlayerID(), it->second.vnum, it->second.skill);
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+			// MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: the counter is its own again.
+			if (it->second.pullFromStall)
+			{
+				TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(bot->GetPlayerID());
+				if (st != s_mapPlayerBotAIStates.end())
+				{
+					playerbot_offline::State& o = st->second.offlineShop;
+					o.dealPullVnum = o.dealPullSkill = o.dealPullUntil = 0;
+					o.dealPulled = false;
+				}
+			}
+#endif
 			s_mapPlayerBotDeals.erase(it);
 		}
 		if (playerbot_conv::TConvPair* pair = s_PlayerBotConvEngine.FindPair(personPID, bot->GetPlayerID()))
@@ -777,17 +857,28 @@ namespace
 					person->GetName(), person->GetMapIndex(), code);
 			return true;
 		}
-		if (d.meet != DEAL_MEET_AT_SPOT || d.spot != DEAL_SPOT_SMITH)
+		if (d.meet != DEAL_MEET_AT_SPOT || (d.spot != DEAL_SPOT_SMITH && !d.pullFromStall))
 			return false;
+		// MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: the pieces still on the counter -
+		// the service visit takes them off (and walks the bot there), so the
+		// tick is not claimed meanwhile.
+		if (d.pullFromStall && CountPlayerBotDealBagPieces(ch, d.vnum, d.skill) < d.count)
+			return false;
+		const bool atStall = d.spot == DEAL_SPOT_STALL;
 
 		// The wait is over.
 		if (d.arrivedAt != 0 && dwNow - d.arrivedAt > PLAYERBOT_DEAL_MEET_WAIT_MS)
 		{
 			static const char* const kGone[] = {
 				"Nie doczekalem sie, wracam do swoich spraw. Jak bedziesz chcial handlowac, napisz.",
-				"Stalem przy kowalu %d minut i nic. Ide dalej, napisz jak bedziesz mial czas.",
+				"Stalem %s %d minut i nic. Ide dalej, napisz jak bedziesz mial czas.",
 				"Dluzej nie czekam, sorki. Odezwij sie jak bedziesz gotowy." };
-			snprintf(line, sizeof(line), kGone[number(0, 2)], (int)(PLAYERBOT_DEAL_MEET_WAIT_MS / 60000));
+			const int pick = number(0, 2);
+			if (pick == 1)
+				snprintf(line, sizeof(line), kGone[1], atStall ? "przy straganie" : "przy kowalu",
+						(int)(PLAYERBOT_DEAL_MEET_WAIT_MS / 60000));
+			else
+				snprintf(line, sizeof(line), "%s", kGone[pick]);
 			SayPlayerBotDealLineTo(ch, personPID, line);
 			EndPlayerBotDeal(ch, personPID, DEAL_FAILED, "meet_timeout");
 			return false;
@@ -861,17 +952,18 @@ namespace
 					ch->GetName(), d.meetMap, distance, (dwNow - d.walkSince) / 1000);
 			if (d.travelled)
 			{
+				const char* spotWord = atStall ? "przy moim straganie" : "przy kowalu";
 				if (d.otherChannel)
 				{
-					static const char* const kThere[] = { "Jestem juz przy kowalu w %s na CH%d, czekam.",
-						"Stoje przy kowalu w %s (CH%d). Czekam na ciebie." };
-					snprintf(line, sizeof(line), kThere[number(0, 1)], village, (int)g_bChannel);
+					static const char* const kThere[] = { "Jestem juz %s w %s na CH%d, czekam.",
+						"Stoje %s w %s (CH%d). Czekam na ciebie." };
+					snprintf(line, sizeof(line), kThere[number(0, 1)], spotWord, village, (int)g_bChannel);
 				}
 				else
 				{
-					static const char* const kThere[] = { "Jestem juz przy kowalu w %s, czekam.", "Stoje przy kowalu w %s, czekam na ciebie.",
-						"Doszedlem, jestem przy kowalu w %s." };
-					snprintf(line, sizeof(line), kThere[number(0, 2)], village);
+					static const char* const kThere[] = { "Jestem juz %s w %s, czekam.", "Stoje %s w %s, czekam na ciebie.",
+						"Doszedlem, jestem %s w %s." };
+					snprintf(line, sizeof(line), kThere[number(0, 2)], spotWord, village);
 				}
 				SayPlayerBotDealLineTo(ch, personPID, line);
 			}
@@ -919,7 +1011,8 @@ namespace
 					EndPlayerBotDeal(ch, personPID, DEAL_FAILED, "expired");
 					return false;
 				}
-				if (meetingWith == 0 && ((d.meet == DEAL_MEET_AT_SPOT && d.spot == DEAL_SPOT_SMITH) || d.crossToPerson))
+				if (meetingWith == 0 && ((d.meet == DEAL_MEET_AT_SPOT && (d.spot == DEAL_SPOT_SMITH || d.pullFromStall)) ||
+						d.crossToPerson))
 					meetingWith = personPID;
 				LPCHARACTER person = CHARACTER_MANAGER::instance().FindByPID(personPID);
 				if (person && person->GetDesc() && person->GetMapIndex() == ch->GetMapIndex() && !person->GetExchange() &&
