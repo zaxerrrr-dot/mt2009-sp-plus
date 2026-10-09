@@ -3759,6 +3759,26 @@ namespace
 	// the Infected.
 	const BYTE PLAYERBOT_SOHAN_ICE_MIN_LEVEL = 58;
 	const BYTE PLAYERBOT_SPIDER_MIN_LEVEL = 48;
+	// MT2009_PLUS_BOT_SPIDER_GROUND_V1 (the owner, 9 October: "boty 48-75 lvl
+	// realnie tam expia - losuja mape przy kazdym wejsciu do gry i powrocie z
+	// miasta, ida tylko z odpowiednim sprzetem, a w V2 chetniej lacza sie w
+	// druzyny"). The share of the session draws that takes a Spider Dungeon,
+	// the top of the band, and the gear each dungeon asks for: weapon and
+	// body armour at these grades, a helmet on, a weapon of its level and a
+	// stock of red potions.
+	const int PLAYERBOT_SPIDER_SESSION_PERCENT = 35;
+	const int PLAYERBOT_SPIDER_SESSION_MAX_LEVEL = 75;
+	const int PLAYERBOT_SPIDER_V1_WEAPON_PLUS = 4;
+	const int PLAYERBOT_SPIDER_V1_ARMOUR_PLUS = 4;
+	const int PLAYERBOT_SPIDER_V2_WEAPON_PLUS = 6;
+	const int PLAYERBOT_SPIDER_V2_ARMOUR_PLUS = 5;
+	const int PLAYERBOT_SPIDER_MIN_RED_POTIONS = 40;
+	// In V2 a bot is seldom alone: the solo stretch is this rare there, the
+	// party cohort twice the frontier's, and a partner up to this many levels
+	// apart and this far off.
+	const int PLAYERBOT_PARTY_SOLO_PERCENT_SPIDER_V2 = 3;
+	const int PLAYERBOT_SPIDER_V2_PARTY_LEVEL_DELTA = 5;
+	const int PLAYERBOT_SPIDER_V2_PARTY_FIND_RANGE = 3000;
 	// The arrival is the temple's own Town.txt cell (161,938); the exit is five
 	// hundred units south of it. Both were checked against milgyo's server_attr
 	// and stand on open ground - eighty-one of eighty-one free cells within two
@@ -8888,6 +8908,11 @@ namespace
 		// MT2009_PLUS_BOT_CAPE_V1: when the cape is next asked about
 		// (HandlePlayerBotValourCape).
 		DWORD dwNextCapeCheck = 0;
+		// MT2009_PLUS_BOT_SPIDER_GROUND_V1: the Spider Dungeons' draw of this
+		// session - 0 until it is drawn, drawn again at every login (a fresh
+		// state) and at the end of every town visit (playerbot_travel.h,
+		// GetPlayerBotSpiderSessionMap).
+		DWORD dwSpiderSessionRoll = 0;
 		BYTE bMultiPullGroups;
 		BYTE bMultiPullDesiredGroups;
 		bool bLootThreatNearby;

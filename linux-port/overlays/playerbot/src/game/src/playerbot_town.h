@@ -1752,6 +1752,8 @@ namespace
 			MakePlayerBotBagColumnRoom(ch, state, dwNow);
 		if (completed)
 		{
+			// MT2009_PLUS_BOT_SPIDER_GROUND_V1: back from town, a new draw.
+			RedrawPlayerBotSpiderSession(state);
 			state.dwErrandDoneTime = dwNow;
 			// The errand is done, so the recovery that was carrying it is over
 			// and the departure the audit asked to keep alive can go ahead.

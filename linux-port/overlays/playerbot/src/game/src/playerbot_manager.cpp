@@ -516,6 +516,15 @@ namespace
 	// turns up - and every frontier map, not the valley alone: a map change
 	// dissolves a party, so one made in the valley never reached V1 or
 	// Sohan, and the Spider Queen and Nine Tails had nobody to fight them.
+	// MT2009_PLUS_BOT_SPIDER_GROUND_V1: in the second Spider Dungeon twice
+	// the frontier's party share ("w V2 chetniej lacza sie w druzyny").
+	int GetPlayerBotSpiderV2PartyPerMille(LPCHARACTER ch, int perMille)
+	{
+		if (ch && ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2)
+			return std::min(1000, perMille * 2);
+		return perMille;
+	}
+
 	bool IsPlayerBotPartyEligible(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		if (!ch)
@@ -555,10 +564,10 @@ namespace
 					GetPlayerBotRareNow(p, get_dword_time()) != 0)
 				return false;
 			return playerbot_persona::IsCompanionDraw(p.wCompanionDraw,
-					GetPlayerBotPartyCohortPerMille(bFrontier));
+					GetPlayerBotSpiderV2PartyPerMille(ch, GetPlayerBotPartyCohortPerMille(bFrontier)));
 		}
 		return GetPlayerBotPartyDraw(ch->GetPlayerID(), state) <
-				GetPlayerBotPartyCohortPerMille(bFrontier);
+				GetPlayerBotSpiderV2PartyPerMille(ch, GetPlayerBotPartyCohortPerMille(bFrontier));
 	}
 
 	int GetPlayerBotPartyDesiredMax(LPCHARACTER ch)
@@ -2024,7 +2033,9 @@ namespace
 		// A stretch of hunting alone, less often where a party is the point.
 		// Iwakura's companion is a phase with its own stretches alone, drawn
 		// above, and does not also roll this one.
-		const int soloPercent = IsPlayerBotFrontierMapIndex(ch->GetMapIndex())
+		const int soloPercent = ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2	// MT2009_PLUS_BOT_SPIDER_GROUND_V1
+				? PLAYERBOT_PARTY_SOLO_PERCENT_SPIDER_V2
+				: IsPlayerBotFrontierMapIndex(ch->GetMapIndex())
 				? PLAYERBOT_PARTY_SOLO_PERCENT_FRONTIER : PLAYERBOT_PARTY_SOLO_PERCENT;
 		if (!bPersona && number(1, 100) <= soloPercent)
 		{
@@ -2077,11 +2088,15 @@ namespace
 							(candidate->GetParty() && PlayerBotPartyHasLegendRival(m_me, candidate->GetParty())))
 						return true;
 
-					if (abs((int)candidate->GetLevel() - (int)m_me->GetLevel()) > 3)
+					// MT2009_PLUS_BOT_SPIDER_GROUND_V1: in V2 a partner a little
+					// further apart in level and on the map.
+					const bool bSpiderV2 = m_me->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2;
+					if (abs((int)candidate->GetLevel() - (int)m_me->GetLevel()) >
+							(bSpiderV2 ? PLAYERBOT_SPIDER_V2_PARTY_LEVEL_DELTA : 3))
 						return true;
 
 					const int d = DISTANCE_APPROX(m_me->GetX() - candidate->GetX(), m_me->GetY() - candidate->GetY());
-					if (d > 1800)
+					if (d > (bSpiderV2 ? PLAYERBOT_SPIDER_V2_PARTY_FIND_RANGE : 1800))
 						return true;
 
 					if (!IsPlayerBotPathClear(m_me->GetMapIndex(), m_me->GetX(), m_me->GetY(), candidate->GetX(), candidate->GetY()))
@@ -2095,7 +2110,7 @@ namespace
 								leader->GetEmpire() == m_me->GetEmpire())
 						{
 							int ld = DISTANCE_APPROX(m_me->GetX() - leader->GetX(), m_me->GetY() - leader->GetY());
-							if (ld <= 1800 &&
+							if (ld <= (bSpiderV2 ? PLAYERBOT_SPIDER_V2_PARTY_FIND_RANGE : 1800) &&
 									IsPlayerBotPartyCohesive(candidate, 2,
 										PLAYERBOT_PARTY_COHESION_RADIUS) &&
 									IsPlayerBotPathClear(m_me->GetMapIndex(), m_me->GetX(), m_me->GetY(), leader->GetX(), leader->GetY()))
