@@ -2576,9 +2576,21 @@ namespace
 	// blacksmith pass, the scroll pass in the field, the planner, the refine
 	// target and the scroll purchase all ask it, through
 	// FindPlayerBotRefineScrollCellFor where they look for the scroll itself.
+	// MT2009_PLUS_MARKET_LIFE_V1, point 2 (the owner's list, 9 October): "tylko
+	// w kilku oplacalnych przypadkach" - the step where the sheet's next plus
+	// is worth the scroll and a half over the present one, from
+	// PLAYERBOT_LOW_GEAR_SCROLL_MIN_PLUS (playerbot_market_life.h).
+	// Point 1: and no Blessing Scroll on a piece worth less than the scroll
+	// itself, at any level (IsPlayerBotCheaperThanBlessingScroll).
+	bool IsPlayerBotLowGearScrollWorthIt(LPITEM item);
+	bool IsPlayerBotCheaperThanBlessingScroll(LPITEM item);
 	bool IsPlayerBotScrollFreeGear(LPITEM item)
 	{
-		return item && item->GetLevelLimit() <= PLAYERBOT_SCROLL_FREE_GEAR_MAX_LEVEL;
+		if (!item)
+			return false;
+		if (item->GetLevelLimit() <= PLAYERBOT_SCROLL_FREE_GEAR_MAX_LEVEL && !IsPlayerBotLowGearScrollWorthIt(item))
+			return true;
+		return IsPlayerBotCheaperThanBlessingScroll(item);
 	}
 
 	// The weapons the operator's anvil table reaches: the level-30 family and
