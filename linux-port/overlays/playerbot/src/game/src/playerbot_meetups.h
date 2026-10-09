@@ -43,10 +43,10 @@ namespace
 	bool IsPlayerBotBagFirst(LPCHARACTER ch, const TPlayerBotAIState& state);
 
 	const DWORD PLAYERBOT_MEETUP_FIRST_DELAY_MS = 3 * 60 * 1000;
-	const DWORD PLAYERBOT_MEETUP_GAP_MIN_MS = 4 * 60 * 1000;
-	const DWORD PLAYERBOT_MEETUP_GAP_MAX_MS = 9 * 60 * 1000;
-	const size_t PLAYERBOT_MEETUP_MAX_ACTIVE = 2;
-	const int PLAYERBOT_MEETUP_BUYER_TRIES = 6;
+	const DWORD PLAYERBOT_MEETUP_GAP_MIN_MS = 2 * 60 * 1000;	// night test 9 Oct: 2 meetings in 2 h - more often
+	const DWORD PLAYERBOT_MEETUP_GAP_MAX_MS = 5 * 60 * 1000;
+	const size_t PLAYERBOT_MEETUP_MAX_ACTIVE = 3;
+	const int PLAYERBOT_MEETUP_BUYER_TRIES = 24;	// was 6: most draws found no bot short of anything
 	const int PLAYERBOT_MEETUP_MIN_LEVEL = 20;
 	const int PLAYERBOT_MEETUP_MIN_HP_PERCENT = 60;
 	// The talk: the seller answers, then the buyer, a few seconds apart.
@@ -322,6 +322,7 @@ namespace
 				}
 			}
 		}
+		sys_log(0, "PLAYERBOT_MEETUP: no pair buyers=%u", (unsigned int)buyers.size());
 		return false;
 	}
 
