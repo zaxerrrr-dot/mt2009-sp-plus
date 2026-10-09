@@ -62,9 +62,7 @@ def fixed(text, size):
     return b + b'\0' * (size - len(b))
 
 
-def is_zodiac_weapon(v):
-    return any(a <= v <= b for a, b in ((300, 319), (1180, 1189), (2200, 2209), (3220, 3229), (5160, 5169),
-                                        (7300, 7309)))
+STD_APPLY = {7: 17, 1: 6, 37: 77, 74: 124}
 
 
 def item_record(w, tmpl):
@@ -76,10 +74,12 @@ def item_record(w, tmpl):
     struct.pack_into('<IIII', r, 78, w['stack'], w['antiflag'], w['flag'], w['wearflag'])
     struct.pack_into('<qq', r, 98, w['gold'], w['shop_buy_price'])
     struct.pack_into('<BiBi', r, 114, w['limittype0'], w['limitvalue0'], w['limittype1'], w['limitvalue1'])
-    # MT2009_PLUS_ZODIAC_WEAPON_BONUS_V1: Silny przeciwko ludziom (17) for the Zodiac weapons' attack speed (7), as
-    # zodiak.sql gives the server (which adds the average/skill damage - addon_type, not in the client's record)
-    if w['type'] == 1 and w['applytype0'] == 7 and is_zodiac_weapon(w['vnum']):
-        w = dict(w, applytype0=17)
+    # MT2009_PLUS_ZODIAC_WEAPON_BONUS_V1: the package's standard APPLY numbers -> our POINT numbers, as zodiak.sql
+    # gives the server (7 attack speed -> 17, 1 max HP -> 6, 37 magic resistance -> 77, 74 average damage
+    # resistance -> 124); the weapons' average/skill damage is addon_type, not in the client's record
+    if w['type'] in (1, 2) and (w['applytype0'], w['applytype1'], w['applytype2']) in ((7, 0, 0), (74, 37, 1)):
+        w = dict(w, **dict(('applytype%d' % j, STD_APPLY.get(w['applytype%d' % j], w['applytype%d' % j]))
+                           for j in range(3)))
     struct.pack_into('<BiBiBi', r, 124, w['applytype0'], w['applyvalue0'], w['applytype1'], w['applyvalue1'],
                      w['applytype2'], w['applyvalue2'])
     struct.pack_into('<6i', r, 139, *(w['value%d' % j] for j in range(6)))

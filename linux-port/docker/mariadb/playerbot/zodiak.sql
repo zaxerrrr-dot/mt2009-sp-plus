@@ -460,11 +460,14 @@ INSERT IGNORE INTO world.shop_item (shop_vnum, item_vnum, count) VALUES
 (41,72329,1);
 
 -- MT2009_PLUS_ZODIAC_WEAPON_BONUS_V1 (the owner, 9 October: "wszystkie bronie zodiaku maja jakies dziwne bonusy,
--- powinny miec srednie i umiejetnosci, tak samo jak bronie na 30 lvl i 75 lvl"): the 80 Zodiac weapons get the
--- random average/skill damage of our weapons (addon_type 1 = ATTR_DAMAGE_ADDON; GF's -1 is skipped by our
--- CItemAddonManager) and, as the level 30/75 weapons, Silny przeciwko ludziom (apply 17) instead of the attack
--- speed (apply 7) of the package - the same values. Idempotent.
+-- powinny miec srednie i umiejetnosci, tak samo jak bronie na 30 lvl i 75 lvl"): the package's bonuses are in the
+-- standard APPLY numbering, ours are the POINT numbers (playerbot_engine_compat.h): 7 ATT_SPEED -> 17,
+-- 1 MAX_HP -> 6 (1 is POINT_LEVEL here), 37 RESIST_MAGIC -> 77, 74 NORMAL_HIT_DEFEND_BONUS -> 124. The 80 weapons
+-- also get the random average/skill damage of our weapons (addon_type 1 = ATTR_DAMAGE_ADDON; GF's -1 is skipped
+-- by our CItemAddonManager). Idempotent.
 UPDATE world.item_proto SET addon_type = 1, applytype0 = IF(applytype0 = 7, 17, applytype0)
  WHERE type = 1 AND (vnum BETWEEN 300 AND 319 OR vnum BETWEEN 1180 AND 1189 OR vnum BETWEEN 2200 AND 2209
    OR vnum BETWEEN 3220 AND 3229 OR vnum BETWEEN 5160 AND 5169 OR vnum BETWEEN 7300 AND 7309)
    AND (addon_type <> 1 OR applytype0 = 7);
+UPDATE world.item_proto SET applytype0 = 124, applytype1 = 77, applytype2 = 6
+ WHERE type = 2 AND applytype0 = 74 AND applytype1 = 37 AND applytype2 = 1 AND locale_name LIKE '%Zodiaku%';
