@@ -326,6 +326,7 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // answered, and the advice of where to exp and where the Metins stand. After
 // the Battle Pass bots, whose stone table and chatter it uses.
 #include "playerbot_chat_world.h"
+#include "playerbot_meetups.h" // MT2009_PLUS_BOT_MEETUPS_V1: two bots arrange a trade on the chat, meet by the smith and trade in the window
 // MT2009_PLUS_GM_SM_EVENT_V1 (include): a GM's "!SM" notice - the bots' SM race on
 // the shout - and their short lines after any other GM notice. After the chat world.
 #include "playerbot_gm_notice.h"
@@ -6604,6 +6605,9 @@ void CPlayerBotManager::Update()
 	// MT2009_PLUS_BOT_CHAT_V2: the bots' '@' trade lines and the shout
 	// channel's answers (playerbot_chat_world.h).
 	ManagePlayerBotChatWorld(dwNow);
+	// MT2009_PLUS_BOT_MEETUPS_V1: the bots' own trades - the plan, the talk on
+	// the trade chat and the ends of time (playerbot_meetups.h).
+	ManagePlayerBotMeetups(dwNow);
 	// MT2009_PLUS_GM_SM_EVENT_V1: the SM race and the GM notice reactions (playerbot_gm_notice.h).
 	ManagePlayerBotGMNotice(dwNow);
 	// MT2009_PLUS_BOT_DUNGEON_LFG_V1: the dungeon finder's offers due out,
@@ -7025,6 +7029,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// bot opens the window by the person and checks it, pays or sells
 		// (playerbot_chat_deals.h). Ahead of the gift trade, which takes any
 		// other window.
+		// MT2009_PLUS_BOT_MEETUPS_V1: a meeting two bots arranged on the chat -
+		// the way to the smith, the wait and the window (playerbot_meetups.h).
+		// Ahead of the deals and the gift trade, which close a window between
+		// two bots; staying alive and a raid come before it, inside.
+		if (HandlePlayerBotMeetup(ch, state, dwNow))
+			continue;
 		if (HandlePlayerBotDealTrade(ch, state, dwNow))
 			continue;
 		if (HandlePlayerBotGiftTrade(ch, state, dwNow))
