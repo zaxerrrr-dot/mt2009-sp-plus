@@ -19,19 +19,19 @@ every version here.
 
 ## 2.29.0 — 2026-10-10 — Świątynia Zodiaku
 
-**Świątynia Zodiaku** (Autor: Digi Rasta) – nowy dungeon drużynowy na poziom 105+, z oficjalnego Metin2.
+**Świątynia Zodiaku** (Autor: Digi Rasta) – nowy dungeon drużynowy na poziom 105+.
 
 - **Wejście:** Teleporter → „Świątynia Zodiaku”. Na mapie jest 12 portali znaków. Każdego dnia otwarte są dwa: pon. Szczur + Bawół, wt. Tygrys + Królik, śr. Smok + Wąż, czw. Koń + Koza, pt. Małpa + Kogut, sob. Pies + Świnia, a w niedzielę wszystkie.
-- **Kule Animy:** wejście kosztuje 12 kul. Na start każdy ma 36, potem odnawia się 1 na godzinę (najwyżej 36). Pergamin Sfer i Znak Strażnika jak na oficjalnym serwerze.
+- **Kule Animy:** wejście kosztuje 12 kul. Na start każdy ma 36, potem odnawia się 1 na godzinę (najwyżej 36). Działają też Pergamin Sfer i Znak Strażnika.
 - **Piętra:** każde ma swoją misję i limit czasu (minutnik i tablica misji na ekranie). Czasem można przeskoczyć kilka pięter naraz.
 - **Śmierć:** wskrzeszenie Pryzmatami Ożywienia (1, 2, 4, 8, potem po 10). Na piętrach 6, 12, 19 i 24 jedna śmierć wyrzuca całą drużynę po 10 sekundach.
 - **Trudność:** premia do obrażeń potworów w świątyni jest o połowę mniejsza niż w oryginalnej paczce.
-- **Żywioły znaków** (wg oficjalnej wiki): Szczur i Pies – Mrok, Bawół i Małpa – Ziemia, Tygrys i Świnia – Ogień, Królik i Kogut – Wiatr, Smok i Koza – Błyskawica, Wąż i Koń – Lód. Talizman danego żywiołu zwiększa obrażenia. Bossowie dają Talizman +0 swojego żywiołu (5%), Metiny świątyni 2%.
+- **Żywioły znaków:** Szczur i Pies – Mrok, Bawół i Małpa – Ziemia, Tygrys i Świnia – Ogień, Królik i Kogut – Wiatr, Smok i Koza – Błyskawica, Wąż i Koń – Lód. Talizman danego żywiołu zwiększa obrażenia. Bossowie dają Talizman +0 swojego żywiołu (5%), Metiny świątyni 2%.
 - **Złota Skrzynia Zodiaku:** daje ją Generał, ostatni boss 34. piętra, każdemu na piętrze (botom też). W środku: broń Zodiaku ok. 6%, zbroja Zodiaku ok. 8%, szarfa ok. 10%, reszta to mikstury, Wino i Cor.
 - **Mnich Milbon:** przeciągnij na niego 10 Insygniów jednego rodzaju i wybierz Czerwone Pudło, Niebieskie Pudło (za Insygnia Zodiaku) albo Kwiat Żywiołu. Jest też Kupiec Zodiaku.
 - **Broń Zodiaku** (Ostrze, Miecz, Sztylet, Łuk, Glewia, Dzwon, Wachlarz, 105 poz.): losowe średnie obrażenia i obrażenia umiejętności, jak inne bronie, oraz szybkość ataku.
-- **Zbroje Zodiaku:** odporność na obrażenia (średnie), odporność na magię i Max PŻ, jak na wiki.
-- **Ulepszanie u Kowala** (wg wiki): broń za Czerwone Pudła, zbroje za Niebieskie (1, 2, 4, 8 … 200 pudeł). Do tego na +1…+5 Stabilne Sznury (broń) albo Ciężkie Pasy (zbroje), na +6 Dwutlenek Tytanu, na +7 Agat, na +8 i +9 Kamień Księżycowy.
+- **Zbroje Zodiaku:** odporność na obrażenia (średnie), odporność na magię i Max PŻ.
+- **Ulepszanie u Kowala:** broń za Czerwone Pudła, zbroje za Niebieskie (1, 2, 4, 8 … 200 pudeł). Do tego na +1…+5 Stabilne Sznury (broń) albo Ciężkie Pasy (zbroje), na +6 Dwutlenek Tytanu, na +7 Agat, na +8 i +9 Kamień Księżycowy.
 - **Skąd materiały:**
   - Stabilne Sznury i Ciężkie Pasy: zwykłe potwory Świątyni Ochao i Zaczarowanego Lasu (0,5%; Mag Ochao 1% Sznury) oraz skrzynie Razadora i Nemere.
   - Dwutlenek Tytanu i Agat: bossowie 103–107 poz. (3% / 2%) i Skrzynia Dżungli.
