@@ -51,7 +51,9 @@ namespace N2_Patcher.Core
 			{
 				auth = open[0],
 				channel_1 = open.Length > 1 && open[1],
-				channel_2 = open.Length > 2 && open[2]
+				channel_2 = open.Length > 2 && open[2],
+				channel_3 = open.Length > 3 && open[3],
+				channel_4 = open.Length > 4 && open[4]
 			};
 		}
 	}

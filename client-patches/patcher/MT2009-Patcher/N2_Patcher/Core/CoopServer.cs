@@ -21,11 +21,15 @@ namespace N2_Patcher.Core
 	//   name=Serwer Artura / host=203.0.113.10 / auth=11000 / channel=13000 / channels=2
 	// CH2 = channel + 10. The rules below are the ones of MT2009-Aktualizator.ps1
 	// (New-AktCoopConfig, Read-AktCoopConfig), which follow the client.
+	// MT2009_PLUS_CH34_AUTO_V1: the client takes channels=1..4 from 2.0.59 on
+	// (CH3 = channel + 20, CH4 = channel + 30); ChannelSync sets the count from
+	// the server, the VPS window still writes 1 or 2.
 	public class CoopServer
 	{
 		public const int DefaultAuth = 11000;
 		public const int DefaultChannel = 13000;
 		public const int DefaultChannels = 2;
+		public const int MaxChannels = 4;
 		public const string LocalhostName = "mt2009 localhost";
 
 		public bool Valid;
@@ -58,7 +62,7 @@ namespace N2_Patcher.Core
 		{
 			get
 			{
-				int[] ports = new int[Math.Max(1, Math.Min(2, this.Channels))];
+				int[] ports = new int[Math.Max(1, Math.Min(MaxChannels, this.Channels))];
 				for (int i = 0; i < ports.Length; i++)
 				{
 					ports[i] = this.Channel + 10 * i;
@@ -312,7 +316,7 @@ namespace N2_Patcher.Core
 				{
 					return result;
 				}
-				if (count < 1 || count > 2 || channelPort + (count - 1) * 10 > 65535)
+				if (count < 1 || count > MaxChannels || channelPort + (count - 1) * 10 > 65535)
 				{
 					return result;
 				}

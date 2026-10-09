@@ -1048,15 +1048,125 @@ function Get-M2CoopOldClientNote {
 # made, and coop.cfg kept it - a friend invited before the host switched the
 # second channel on never saw it. The client lists a channel past the first
 # as offline while the world does not answer for it, so the maximum is right
-# for a one-channel world too. Two is the most our client accepts: its
-# serverinfo.py drops the whole coop.cfg for channels > 2.
+# for a one-channel world too. Two is the most a client before 2.0.59 accepts:
+# its serverinfo.py drops the whole coop.cfg for channels > 2.
+# MT2009_PLUS_CH34_AUTO_V1: a client from 2.0.59 on lists up to four (CH3 =
+# channel + 20, CH4 = channel + 30), and gets the count the world's panel
+# publishes (/klient/dbdata/channels.json, no login); two on any failure.
 $script:CoopClientChannels = 2
+$script:CoopClientChannelsMax = 4
+$script:CoopChannelsMinClient = [version]'2.0.59'
+$script:CoopChannelsFormat = 'MT2009_PLUS_CH34_AUTO_V1'
+
+function Get-M2CoopClientVersion {
+    # The client's CLIENT_VERSION (the release zips and the patchers write
+    # it) as a [version], or $null.
+    param([AllowEmptyString()][string]$ClientFolder = '')
+    if (-not $ClientFolder) { return $null }
+    try {
+        $path = Join-Path $ClientFolder 'CLIENT_VERSION'
+        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { return $null }
+        $first = @(([IO.File]::ReadAllText($path, [Text.Encoding]::ASCII).Trim() -split '\s+'))[0].TrimStart('v', 'V')
+        if ($first -notmatch '^[0-9]+(\.[0-9]+){1,3}$') { return $null }
+        return [version]$first
+    } catch { return $null }
+}
+
+function Get-M2CoopChannelUrls {
+    # Pure: where the world's panel may answer - the addresses MT2009-Patcher
+    # asks for the dbdata manifest (DbDataSync.CandidateUrls): Panel (a port
+    # or an address), 7790, the login port + 6790 (a NAT block), port 80 (a
+    # gate that forwards /klient/dbdata/).
+    param([Parameter(Mandatory = $true)][string]$HostName, [int]$AuthPort = 11000, [AllowEmptyString()][string]$Panel = '')
+    $tail = 'klient/dbdata/channels.json'
+    $urls = New-Object System.Collections.Generic.List[string]
+    $add = { param($u) if ($u -and -not $urls.Contains($u)) { $urls.Add($u) } }
+    $hostPart = $(if ($HostName -match ':') { "[$HostName]" } else { $HostName })
+    $Panel = ([string]$Panel).Trim()
+    if ($Panel -match '^\d{1,5}$' -and [int]$Panel -ge 1 -and [int]$Panel -le 65535) { & $add ("http://{0}:{1}/{2}" -f $hostPart, [int]$Panel, $tail) }
+    elseif ($Panel -match '^https?://') { & $add (($Panel.TrimEnd('/') -replace '/klient/dbdata/[^/]*$', '') + '/' + $tail) }
+    & $add ("http://{0}:7790/{1}" -f $hostPart, $tail)
+    $block = $AuthPort + 6790
+    if ($block -ge 1 -and $block -le 65535) { & $add ("http://{0}:{1}/{2}" -f $hostPart, $block, $tail) }
+    & $add ("http://{0}/{1}" -f $hostPart, $tail)
+    return $urls.ToArray()
+}
+
+function ConvertFrom-M2CoopChannelsJson {
+    # Pure: 1..4 from the panel's answer, or $null when it is not one.
+    param([AllowEmptyString()][string]$Text = '')
+    try {
+        $o = $Text | ConvertFrom-Json
+        if ([string]$o.format -ne $script:CoopChannelsFormat) { return $null }
+        $value = $o.channels
+        if ($null -eq $value -or -not ($value -is [int] -or $value -is [long])) { return $null }
+        if ($value -lt 1 -or $value -gt $script:CoopClientChannelsMax) { return $null }
+        return [int]$value
+    } catch { return $null }
+}
+
+function Get-M2CoopServerChannels {
+    # The world's channel count from its panel (every address at once, the
+    # first in order that answers wins), or $null. Never throws.
+    param([Parameter(Mandatory = $true)][string]$HostName, [int]$AuthPort = 11000, [AllowEmptyString()][string]$Panel = '', [int]$TimeoutMs = 3000)
+    $urls = @(Get-M2CoopChannelUrls -HostName $HostName -AuthPort $AuthPort -Panel $Panel)
+    $requests = @(); $tasks = @()
+    foreach ($url in $urls) {
+        try {
+            $request = [Net.HttpWebRequest]::Create($url)
+            $request.Proxy = $null
+            $request.AllowAutoRedirect = $false
+            $request.Timeout = $TimeoutMs
+            $request.UserAgent = 'MT2009-Launcher (' + $script:CoopChannelsFormat + ')'
+            $tasks += $request.GetResponseAsync()
+            $requests += $request
+        } catch { }
+    }
+    if ($tasks.Count -eq 0) { return $null }
+    try { [void][Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]$tasks, $TimeoutMs) } catch { }
+    $found = $null
+    for ($i = 0; $i -lt $tasks.Count; $i++) {
+        if ($tasks[$i].Status -ne [Threading.Tasks.TaskStatus]::RanToCompletion) {
+            try { $requests[$i].Abort() } catch { }
+            continue
+        }
+        $response = $tasks[$i].Result
+        try {
+            if ($null -eq $found -and [int]$response.StatusCode -eq 200) {
+                $reader = New-Object IO.StreamReader($response.GetResponseStream(), [Text.Encoding]::UTF8)
+                $buffer = New-Object char[] 4096
+                $read = $reader.ReadBlock($buffer, 0, $buffer.Length)
+                $found = ConvertFrom-M2CoopChannelsJson -Text (New-Object string($buffer, 0, $read))
+            }
+        } catch { } finally { try { $response.Close() } catch { } }
+    }
+    return $found
+}
+
+function Select-M2CoopClientChannels {
+    # Pure: what coop.cfg's "channels=" says - the world's count for a client
+    # of 2.0.59 or newer, otherwise 2; never past port 65535 or onto the
+    # login port.
+    param($ClientVersion = $null, $ServerChannels = $null, [int]$Auth = 11000, [int]$Channel = 13000)
+    $count = $script:CoopClientChannels
+    if ($null -ne $ServerChannels -and $null -ne $ClientVersion -and ([version]$ClientVersion) -ge $script:CoopChannelsMinClient) {
+        $count = [Math]::Max(1, [Math]::Min($script:CoopClientChannelsMax, [int]$ServerChannels))
+    }
+    while ($count -gt 1) {
+        $ok = ($Channel + ($count - 1) * 10) -le 65535
+        for ($i = 1; $ok -and $i -lt $count; $i++) { if (($Channel + 10 * $i) -eq $Auth) { $ok = $false } }
+        if ($ok) { break }
+        $count--
+    }
+    return $count
+}
 
 function Write-M2CoopClientConfig {
     # HostAddress is where the client goes when it is not the invite's own
-    # address: the host's home one (Select-M2CoopJoinHost).
+    # address: the host's home one (Select-M2CoopJoinHost). Panel: the world
+    # panel's port or address, when the caller knows it (the VPS's).
     param([Parameter(Mandatory = $true)][string]$ClientFolder, [Parameter(Mandatory = $true)]$Invite,
-        [AllowEmptyString()][string]$HostAddress = '')
+        [AllowEmptyString()][string]$HostAddress = '', [AllowEmptyString()][string]$Panel = '')
     # The client reads coop.cfg as ASCII; a Polish letter becomes its plain
     # one rather than vanishing ("Swiat", not "wiat").
     $plain = [string]$Invite.name
@@ -1067,13 +1177,20 @@ function Write-M2CoopClientConfig {
     $name = ($plain -replace '[^\x20-\x7e]', '')
     if (-not $name) { $name = [string]$Invite.host }
     $target = $(if ($HostAddress) { $HostAddress } else { [string]$Invite.host })
+    # MT2009_PLUS_CH34_AUTO_V1: the world's count for a client that lists it
+    $version = Get-M2CoopClientVersion -ClientFolder $ClientFolder
+    $serverChannels = $null
+    if ($null -ne $version -and $version -ge $script:CoopChannelsMinClient) {
+        $serverChannels = Get-M2CoopServerChannels -HostName $target -AuthPort ([int]$Invite.auth) -Panel $Panel
+    }
+    $channels = Select-M2CoopClientChannels -ClientVersion $version -ServerChannels $serverChannels -Auth ([int]$Invite.auth) -Channel ([int]$Invite.channel)
     $lines = @(
         '# Metin2 SinglePlayer - swiat znajomego (zapisal launcher, kod zaproszenia)',
         ('name=' + $name),
         ('host=' + $target),
         ('auth=' + [int]$Invite.auth),
         ('channel=' + [int]$Invite.channel),
-        ('channels=' + $script:CoopClientChannels)
+        ('channels=' + $channels)
     )
     $path = Join-Path $ClientFolder 'coop.cfg'
     [IO.File]::WriteAllText($path, (($lines -join "`r`n") + "`r`n"), [Text.Encoding]::ASCII)
@@ -1093,4 +1210,5 @@ Export-ModuleMember -Function Get-M2CoopStatePath, Read-M2CoopState, Save-M2Coop
     Get-M2CoopUpnpRefusal, Resolve-M2CoopRouterFallback, Resolve-M2CoopAdvertisedAddress, Get-M2CoopRouterHelp,
     Test-M2CoopLanInviteAddress, Test-M2CoopSameNetwork, Select-M2CoopJoinHost, Get-M2CoopLocalAddresses,
     Resolve-M2CoopJoinHost, Get-M2CoopJoinNotes, Test-M2CoopClientExeOld, Get-M2CoopOldClientNote,
-    Get-M2CoopFirewallManualCommand
+    Get-M2CoopFirewallManualCommand, Get-M2CoopClientVersion, Get-M2CoopChannelUrls, ConvertFrom-M2CoopChannelsJson,
+    Get-M2CoopServerChannels, Select-M2CoopClientChannels

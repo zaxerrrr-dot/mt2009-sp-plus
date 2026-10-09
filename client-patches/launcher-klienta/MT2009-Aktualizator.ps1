@@ -1028,7 +1028,7 @@ function Read-AktCoopConfig {
     # the client would ignore it. The same rules as serverinfo.py.
     param([Parameter(Mandatory = $true)][string]$Path)
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $null }
-    $result = [pscustomobject]@{ Valid = $false; Name = ''; Host = ''; Auth = 11000; Channel = 13000; Channels = 2 }
+    $result = [pscustomobject]@{ Valid = $false; Name = ''; Host = ''; Auth = 11000; Channel = 13000; Channels = 2; Panel = '' }
     try {
         $bytes = [IO.File]::ReadAllBytes($Path)
         if ($bytes.Length -gt 8192) { return $result }
@@ -1054,7 +1054,10 @@ function Read-AktCoopConfig {
         $result.Auth = $auth; $result.Channel = $channel; $result.Channels = $channels
         if (-not (Test-AktCoopHost $settings['host'])) { return $result }
         if ($auth -lt 1 -or $auth -gt 65535 -or $channel -lt 1 -or $channel -gt 65535) { return $result }
-        if ($channels -lt 1 -or $channels -gt 2 -or $channel + ($channels - 1) * 10 -gt 65535) { return $result }
+        # MT2009_PLUS_CH34_AUTO_V1: the client takes up to 4 from 2.0.59 on
+        # (Sync-AktCoopChannels keeps an older one at 2).
+        if ($channels -lt 1 -or $channels -gt $script:CoopChannelsMax -or $channel + ($channels - 1) * 10 -gt 65535) { return $result }
+        if ($settings.ContainsKey('panel')) { $result.Panel = $settings['panel'] }
         $result.Valid = $true
     }
     catch { }
@@ -1079,6 +1082,143 @@ function Remove-AktCoopConfig {
         Remove-Item -LiteralPath $path -Force
         Write-AktLog $Root ("Usunięto " + [IO.Path]::GetFileName($path))
     }
+}
+
+# MT2009_PLUS_CH34_AUTO_V1: "channels=" of coop.cfg / coop2.cfg from the
+# server itself, so CH3/CH4 appear in the game's list by themselves. The
+# server's Seban panel publishes, without a login, next to the dbdata manifest
+# MT2009-Patcher reads (so the same addresses and the same gate work):
+#   GET <panel>/klient/dbdata/channels.json  {"format": "MT2009_PLUS_CH34_AUTO_V1", "channels": 1..4, "ports": [...]}
+# A client from 2.0.59 on (CLIENT_VERSION) gets that count; an older one
+# drops the whole coop.cfg for channels > 2, so it gets 2 - as does any
+# failure. Only the "channels=" line changes. Never stops the game.
+$script:CoopChannelsMax = 4
+$script:CoopChannelsSafe = 2
+$script:CoopChannelsMinClient = '2.0.59'
+$script:CoopChannelsFormat = 'MT2009_PLUS_CH34_AUTO_V1'
+
+function Get-AktCoopChannelUrls {
+    # Pure: panel= of the file (a port or an address), 7790, the login port +
+    # 6790 (a NAT block), port 80 (a gate) - MT2009-Patcher's order.
+    param([Parameter(Mandatory = $true)][string]$HostName, [int]$Auth = 11000, [AllowEmptyString()][string]$Panel = '')
+    $tail = 'klient/dbdata/channels.json'
+    $urls = New-Object System.Collections.Generic.List[string]
+    $Panel = ([string]$Panel).Trim()
+    $candidates = @()
+    if ($Panel -match '^\d{1,5}$' -and [int]$Panel -ge 1 -and [int]$Panel -le 65535) { $candidates += ("http://{0}:{1}/{2}" -f $HostName, [int]$Panel, $tail) }
+    elseif ($Panel -match '^https?://') { $candidates += (($Panel.TrimEnd('/') -replace '/klient/dbdata/[^/]*$', '') + '/' + $tail) }
+    $candidates += ("http://{0}:7790/{1}" -f $HostName, $tail)
+    if ($Auth + 6790 -le 65535) { $candidates += ("http://{0}:{1}/{2}" -f $HostName, ($Auth + 6790), $tail) }
+    $candidates += ("http://{0}/{1}" -f $HostName, $tail)
+    foreach ($url in $candidates) { if (-not $urls.Contains($url)) { $urls.Add($url) } }
+    return $urls.ToArray()
+}
+
+function ConvertFrom-AktChannelsJson {
+    # Pure: 1..4 from the panel's answer, or $null when it is not one.
+    param([AllowEmptyString()][string]$Text = '')
+    try {
+        $o = $Text | ConvertFrom-Json
+        if ([string]$o.format -ne $script:CoopChannelsFormat) { return $null }
+        $value = $o.channels
+        if ($null -eq $value -or -not ($value -is [int] -or $value -is [long])) { return $null }
+        if ($value -lt 1 -or $value -gt $script:CoopChannelsMax) { return $null }
+        return [int]$value
+    }
+    catch { return $null }
+}
+
+function Get-AktServerChannels {
+    # The server's count (every address at once, the first in order that
+    # answers wins), or $null. Never throws.
+    param([Parameter(Mandatory = $true)][string]$HostName, [int]$Auth = 11000, [AllowEmptyString()][string]$Panel = '', [int]$TimeoutMs = 3000)
+    $urls = @(Get-AktCoopChannelUrls -HostName $HostName -Auth $Auth -Panel $Panel)
+    $requests = @(); $tasks = @()
+    foreach ($url in $urls) {
+        try {
+            $request = [Net.HttpWebRequest]::Create($url)
+            $request.Proxy = $null
+            $request.AllowAutoRedirect = $false
+            $request.Timeout = $TimeoutMs
+            $request.UserAgent = 'MT2009-Aktualizator (' + $script:CoopChannelsFormat + ')'
+            $tasks += $request.GetResponseAsync()
+            $requests += $request
+        }
+        catch { }
+    }
+    if ($tasks.Count -eq 0) { return $null }
+    try { [void][Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]$tasks, $TimeoutMs) } catch { }
+    $found = $null
+    for ($i = 0; $i -lt $tasks.Count; $i++) {
+        if ($tasks[$i].Status -ne [Threading.Tasks.TaskStatus]::RanToCompletion) {
+            try { $requests[$i].Abort() } catch { }
+            continue
+        }
+        $response = $tasks[$i].Result
+        try {
+            if ($null -eq $found -and [int]$response.StatusCode -eq 200) {
+                $reader = New-Object IO.StreamReader($response.GetResponseStream(), [Text.Encoding]::UTF8)
+                $buffer = New-Object char[] 4096
+                $read = $reader.ReadBlock($buffer, 0, $buffer.Length)
+                $found = ConvertFrom-AktChannelsJson -Text (New-Object string($buffer, 0, $read))
+            }
+        }
+        catch { }
+        finally { try { $response.Close() } catch { } }
+    }
+    return $found
+}
+
+function Select-AktCoopChannels {
+    # Pure: the server's count for a client of 2.0.59 or newer, otherwise 2;
+    # never past port 65535 or onto the login port.
+    param([AllowEmptyString()][string]$ClientVersion = '', $ServerChannels = $null, [int]$Auth = 11000, [int]$Channel = 13000)
+    $count = $script:CoopChannelsSafe
+    if ($null -ne $ServerChannels -and $ClientVersion -match '^[0-9]+(\.[0-9]+){1,3}$' -and
+        (Compare-AktVersion $ClientVersion $script:CoopChannelsMinClient) -ge 0) {
+        $count = [Math]::Max(1, [Math]::Min($script:CoopChannelsMax, [int]$ServerChannels))
+    }
+    while ($count -gt 1) {
+        $ok = ($Channel + ($count - 1) * 10) -le 65535
+        for ($i = 1; $ok -and $i -lt $count; $i++) { if (($Channel + 10 * $i) -eq $Auth) { $ok = $false } }
+        if ($ok) { break }
+        $count--
+    }
+    return $count
+}
+
+function Sync-AktCoopChannels {
+    # Both slots; returns how many files changed. Never throws.
+    param([Parameter(Mandatory = $true)][string]$Root, [int]$TimeoutMs = 3000)
+    $changed = 0
+    $version = Get-AktInstalledVersion -Root $Root
+    foreach ($slot in 1, 2) {
+        try {
+            $path = Get-AktCoopPath -Root $Root -Slot $slot
+            $config = Read-AktCoopConfig -Path $path
+            if ($null -eq $config -or -not $config.Valid) { continue }
+            $server = $null
+            if ($version -match '^[0-9]+(\.[0-9]+){1,3}$' -and (Compare-AktVersion $version $script:CoopChannelsMinClient) -ge 0) {
+                $server = Get-AktServerChannels -HostName $config.Host -Auth $config.Auth -Panel $config.Panel -TimeoutMs $TimeoutMs
+            }
+            $count = Select-AktCoopChannels -ClientVersion $version -ServerChannels $server -Auth $config.Auth -Channel $config.Channel
+            if ($count -eq $config.Channels) { continue }
+            $latin = [Text.Encoding]::GetEncoding(28591)
+            $text = $latin.GetString([IO.File]::ReadAllBytes($path))
+            $line = New-Object Text.RegularExpressions.Regex('^([ \t]*channels[ \t]*=)[^\r\n]*', ([Text.RegularExpressions.RegexOptions]::Multiline -bor [Text.RegularExpressions.RegexOptions]::IgnoreCase))
+            if (-not $line.IsMatch($text)) { continue }
+            $text = $line.Replace($text, ('${1}' + $count), 1)
+            try { (Get-Item -LiteralPath $path -Force).Attributes = [IO.FileAttributes]::Normal } catch { }
+            [IO.File]::WriteAllBytes($path, $latin.GetBytes($text))
+            $changed++
+            Write-AktLog $Root ("{0}: channels={1} (było {2}; klient {3}, serwer {4})" -f [IO.Path]::GetFileName($path), $count, $config.Channels,
+                $(if ($version) { $version } else { 'bez CLIENT_VERSION' }), $(if ($null -ne $server) { $server } else { 'brak odpowiedzi' }))
+        }
+        catch {
+            try { Write-AktLog $Root ("Kanały coop*.cfg: " + $_.Exception.Message) } catch { }
+        }
+    }
+    return $changed
 }
 
 if ($TylkoFunkcje) { return }
@@ -1465,6 +1605,10 @@ function Start-AktGame {
         [void](Show-AktMessage 'Brak pliku metin2client.exe w folderze klienta (mógł go usunąć antywirus). Kliknij Aktualizuj, aby go przywrócić, i dodaj folder klienta do wyjątków antywirusa.' 'Warning')
         return
     }
+    # MT2009_PLUS_CH34_AUTO_V1: coop*.cfg "channels=" from the servers (CH3/CH4)
+    $lblStatus.Text = 'Sprawdzam kanały serwerów...'
+    [Windows.Forms.Application]::DoEvents()
+    try { [void](Sync-AktCoopChannels -Root $script:Root -TimeoutMs 2000) } catch { }
     Write-AktLog $script:Root 'Uruchamiam grę.'
     # The client reads coop.cfg and its packs relative to the working folder.
     Start-Process -FilePath $exe -WorkingDirectory $script:Root
