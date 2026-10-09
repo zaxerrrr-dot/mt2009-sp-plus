@@ -255,6 +255,7 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_survival.h"
 #include "playerbot_wandering.h"
 #include "playerbot_status.h"
+#include "playerbot_day_goal.h" // MT2009_PLUS_BOT_DAY_GOAL_V1: Cel Dnia, a goal for the session in blue over the head
 #include "playerbot_chat_conversation.h"
 // MT2009_PLUS_BOT_CHAT_V2 (deals): a trade talked over on the whisper, done in
 // the exchange window. After the conversation, which talks it over, and the
@@ -6970,6 +6971,8 @@ WritePlayerBotGuildStatus(dwNow);
 		// The mood's clocks (playerbot_mood.h): its quest flags read once they
 		// have arrived, the rotation, the drought, the end of a lock.
 		AdvancePlayerBotMood(ch, state, dwNow);
+		// MT2009_PLUS_BOT_DAY_GOAL_V1: its Cel Dnia drawn, counted and ended.
+		ManagePlayerBotDayGoal(ch, state, dwNow);
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		// A bot that asked to be moved to the shop channel for a stand waits in

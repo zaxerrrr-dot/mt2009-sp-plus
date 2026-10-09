@@ -2728,6 +2728,23 @@ namespace
 	// The market: it buys while it holds fewer than PLAYERBOT_CAPE_WANT, keeps
 	// PLAYERBOT_CAPE_KEEP off its own counter, pays near the market's price
 	// and out of a share of its spare gold, from PLAYERBOT_CAPE_MIN_SPARE_GOLD.
+	// MT2009_PLUS_BOT_CAPE_V3 (the owner, 9 October: "boty uzywaja ich takze
+	// solo na wybranych mapach, przy odpowiednim sprzecie, z ostroznym
+	// limitem sciagnietych potworow, ktory rosnie z doswiadczeniem"). A bot
+	// alone uses a cape only on these grinding grounds; in a party of bots
+	// (no person in it) the leader uses one on any hunting map, its members
+	// near it. The crowd it takes is the capacity above under a limit of its
+	// own: PLAYERBOT_CAPE_START_LIMIT for a first cape, PLAYERBOT_CAPE_XP_STEP
+	// more for every crowd beaten without dying, and a death under a cape's
+	// crowd halves the experience. A party adds PLAYERBOT_CAPE_PARTY_MEMBER
+	// a member near. The experience is a quest flag, so it lasts.
+	const long PLAYERBOT_CAPE_SOLO_MAPS[] = { 64, 63, 61, 104, 71, 67, 68, 62, 72, 73 };
+	const int PLAYERBOT_CAPE_START_LIMIT = 8;
+	const int PLAYERBOT_CAPE_XP_STEP = 2;
+	const int PLAYERBOT_CAPE_XP_MAX = 40;
+	const int PLAYERBOT_CAPE_PARTY_MEMBER = 5;
+	const int PLAYERBOT_CAPE_PARTY_RANGE = 2000;
+	const char* const PLAYERBOT_CAPE_XP_FLAG = "playerbot_cape.xp";
 	const int PLAYERBOT_CAPE_WANT = 5;
 	const int PLAYERBOT_CAPE_KEEP = 10;
 	const int PLAYERBOT_CAPE_FAIR_PERCENT = 150;
@@ -8913,6 +8930,8 @@ namespace
 		// state) and at the end of every town visit (playerbot_travel.h,
 		// GetPlayerBotSpiderSessionMap).
 		DWORD dwSpiderSessionRoll = 0;
+		// MT2009_PLUS_BOT_DAY_GOAL_V1: the Cel Dnia the status line last carried.
+		DWORD dwLastStatusDayGoalKey = 0;
 		BYTE bMultiPullGroups;
 		BYTE bMultiPullDesiredGroups;
 		bool bLootThreatNearby;
