@@ -73,13 +73,13 @@ def index_tree(root):
 PK = dict((k, v) for k, v in index_tree(PKG).items() if not k.startswith(SKIP))
 OURS = set(gfres.load_ours(PRE_LST))
 # c58.lst (dump_base.py) and any other "<pack> <name>" listing in WORK - etc.lst: the old pack "etc" of the
-# client (only the exebuild smoke client on vps1 has it; the 75 UI/effect files of the package it already holds
-# stay ours). The other old packs (item, monster*, npc*, sound_*, zone_*, season1, terrain ...) have no listing
+# client (only the exebuild smoke client on vps1 has it - the players' clients do not, so the package's own
+# files listed there, the 74 ui/game/12zi, ui/skill/common/affect ... files, are staged anyway). The other old packs (item, monster*, npc*, sound_*, zone_*, season1, terrain ...) have no listing
 # on vps1: a name staged here that one of them also has is shadowed by it or shadows it with the same file.
 for lst in [OURS_LST] + sorted(os.path.join(WORK, f) for f in os.listdir(WORK) if f.endswith('.lst') and f != 'c58.lst'):
     for l in open(lst, encoding='utf-8', errors='replace'):
         t = l.rstrip('\n').split(' ', 1)
-        if len(t) == 2:
+        if len(t) == 2 and (lst == OURS_LST or norm(t[1]) not in PK):
             OURS.add(norm(t[1]))
 GF = dict(gfres.GF)
 RES = dict((k, p) for k, p in GF.items() if not k.startswith(('maps/', 'property/')))

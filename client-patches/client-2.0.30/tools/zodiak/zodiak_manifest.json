@@ -3865,10 +3865,454 @@
     "source": "GEN:d_/ymir work/ui/atlas/metin2_12zi_stage/atlas.sub"
    },
    {
+    "name": "d:/ymir work/ui/equipment_bg_without_ring.tga",
+    "sha1": "94ef1f4c89416dbe19c779166c4db09dac623766",
+    "size": 86999,
+    "source": "PKG:ymir work/ui/equipment_bg_without_ring.tga"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/bead/bead_default.sub",
+    "sha1": "5ca53b9727f307b694527a71d157d74613f32c7d",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/bead/bead_default.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/bead/bead_down.sub",
+    "sha1": "5e6b8484bbdd9c5dc83d111477537a93584ee8e2",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/bead/bead_down.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/bead/bead_over.sub",
+    "sha1": "e71d7b707315f23d75a807d7806779200da35c3d",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/bead/bead_over.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_12zi_reward.sub",
+    "sha1": "4c823006adae82a0cc8238e541a7f75907992836",
+    "size": 84,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_12zi_reward.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan.sub",
+    "sha1": "018d7780cbcc2d2279c2a2e91f114704a2b2d8a0",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_1.sub",
+    "sha1": "1daed2e9985609b628ba63b1323d375373ba285f",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_1.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_10.sub",
+    "sha1": "63c94dc8d9b2081bac042f2d8a8b15f748013eaf",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_10.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_2.sub",
+    "sha1": "60ca9fad160e5ddfab4074b9915978942f6ab12e",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_2.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_3.sub",
+    "sha1": "dd4a8772ca5090b8c869d96bf1b7b236d18a0479",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_3.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_4.sub",
+    "sha1": "e058db30f1fc688e88b354c50ab9921dd9dbaace",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_4.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_5.sub",
+    "sha1": "cbcaa7c0bf420b0c286cf501f4a1ec26069b04dc",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_5.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_6.sub",
+    "sha1": "b9fe4d6cd8165236428610400a03b5dab41ddfb3",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_6.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_7.sub",
+    "sha1": "9751de012a16284bec4a00c7082b8f16781cdb44",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_7.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_8.sub",
+    "sha1": "8fb80b7c454a20ca0cb310cb83a38eb200b4d110",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_8.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_10gan_9.sub",
+    "sha1": "ff0bb3610710dc35527ebd39f618ba9f37f359ee",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_10gan_9.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi.sub",
+    "sha1": "378cf0a186991e35aae315bdaa996e0b352d2d1e",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_1.sub",
+    "sha1": "a41e31481940ec55f9035123b97441af80d9aca6",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_1.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_10.sub",
+    "sha1": "239b91e1f94886e3cf83bd665151b0ae28566aa5",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_10.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_11.sub",
+    "sha1": "e10b570987a9375888d882548be4a919774c3a21",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_11.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_12.sub",
+    "sha1": "33002207aa8f2e9b712cd5a847ce95195f783201",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_12.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_2.sub",
+    "sha1": "c37e08b3d97b9fe99e7b7884589b80452d6e4296",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_2.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_3.sub",
+    "sha1": "07850db7af6a8d5a811ef815bf227170553948d2",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_3.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_4.sub",
+    "sha1": "6647e1c5aa1d889c1a2d08cd720974ed176f43e6",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_4.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_5.sub",
+    "sha1": "3c70e769ec32c9e84bd7f94d38cf5bd9274411fc",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_5.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_6.sub",
+    "sha1": "25af983dd6e1140a79e702435086cc22c5fd531c",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_6.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_7.sub",
+    "sha1": "7b8768e47e313b8429744fc968061808bc932928",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_7.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_8.sub",
+    "sha1": "b82b1c0bddef00ee75164812ac635908b7325890",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_8.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_charm_12zi_9.sub",
+    "sha1": "21d160e7fb4ef9ebef4be59fa5e5499f502bc20a",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_charm_12zi_9.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_check.sub",
+    "sha1": "5ae12e115013f8e14eb8c700dd9b90e8bc40e59a",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_check.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_count_slot_column.sub",
+    "sha1": "e0b1cca34c5e1299ef24a96fa8df419a9630c9b7",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_count_slot_column.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_count_slot_row.sub",
+    "sha1": "aae5b3d05d672294e811e92c470fb4748f106441",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_count_slot_row.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_need_count_slot_column.sub",
+    "sha1": "d94a7533d834851a1d81d74518f083f9c9dc0ba4",
+    "size": 88,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_need_count_slot_column.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_need_count_slot_row.sub",
+    "sha1": "00745f86c932325333cc430264ef5261e8c8129c",
+    "size": 88,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_need_count_slot_row.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_column.sub",
+    "sha1": "78cfb5c684a78e6bea20145c2a559974f1c11053",
+    "size": 85,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_column.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_column_1.sub",
+    "sha1": "6acc41cf15f48f9adcf405ecc8effe4338309d08",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_column_1.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_column_2.sub",
+    "sha1": "db5813761b55a9a0bee3377479f8f2843ceac249",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_column_2.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_column_3.sub",
+    "sha1": "e9cee4faa635d3d4f6a6e4300308b36500fdeb90",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_column_3.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_column_4.sub",
+    "sha1": "f7f971e1fe7f4f9b265ad34a4296b7d009300ebc",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_column_4.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_column_5.sub",
+    "sha1": "a02ea6d8a98ac40d5d86c3f67cf07f6d789157a5",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_column_5.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_column_6.sub",
+    "sha1": "6c6977a797a2dcada9e12846c5cd68238648d491",
+    "size": 87,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_column_6.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_row.sub",
+    "sha1": "ede2612a3e7737caccb2cc8378337ae6b6d0011c",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_row.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_row_1.sub",
+    "sha1": "352dbbbb569d7a7770fb5dd4a2b31ecf1cc1041b",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_row_1.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_row_2.sub",
+    "sha1": "cba8ec140c0590056ff83ea7732ed44d8bfd4280",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_row_2.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_row_3.sub",
+    "sha1": "6cde83c654282e220f89398cc0d13eaa2ef6adf1",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_row_3.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_row_4.sub",
+    "sha1": "1372c9a37646335f6a6a143cb73198cf4f2cc240",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_row_4.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_row_5.sub",
+    "sha1": "348941eef83d3bc55058da1383eea18595d2e18c",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_row_5.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/bg_weekly_row_6.sub",
+    "sha1": "90eb71ecb0ad4d2dc4cd844fdb5cae6f3007e842",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/bg_weekly_row_6.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_gold_default.sub",
+    "sha1": "ae5113be976fc44768ff1a73a11c693e84fe633a",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_gold_default.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_gold_down.sub",
+    "sha1": "26c06def44151a0965cbd58edbdf7d2a4eed1d90",
+    "size": 88,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_gold_down.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_gold_over.sub",
+    "sha1": "39dc1e78af27a5736ecbb153c6a84027d64a5830",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_gold_over.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_green_default.sub",
+    "sha1": "2adda7b145823f9c585d8ac01a4ced9551416e99",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_green_default.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_green_down.sub",
+    "sha1": "bc6c170c4e01a4757b4aa5382c9281698231bd2e",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_green_down.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_green_inactive.sub",
+    "sha1": "d4e4f7c49994886175110bab99f953fc6d85fe1c",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_green_inactive.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_green_over.sub",
+    "sha1": "28f6f33bb13057acc3ed30084e50651d85810d23",
+    "size": 86,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_green_over.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_yellow_default.sub",
+    "sha1": "5b7cba183d4936b91739597acab43556ecb2c44d",
+    "size": 88,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_yellow_default.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_yellow_down.sub",
+    "sha1": "ee4d5fe6a445ee6f512a3fd37594ba41e6c60472",
+    "size": 88,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_yellow_down.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_yellow_inactive.sub",
+    "sha1": "53d0eec1d6ccf2d61da198baa94c9e39f0ef0400",
+    "size": 88,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_yellow_inactive.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/btn_yellow_over.sub",
+    "sha1": "7f387d8303196fe4399e8260c50356d6128b27c8",
+    "size": 88,
+    "source": "PKG:ymir work/ui/game/12zi/reward/btn_yellow_over.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/check_green.sub",
+    "sha1": "c193b6abfc841e03d03a1c7de794b13e743b89cb",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/reward/check_green.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/check_yellow.sub",
+    "sha1": "3ffe2ebfcbff670e8252af5ab3c2b132837fd7fc",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/reward/check_yellow.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/clear_green.sub",
+    "sha1": "fb736e33542af071a0c049fc43fa06f1ceb2278a",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/reward/clear_green.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/reward/clear_yellow.sub",
+    "sha1": "a15d427bfa11f8ce2add5d68e39a0788455ac767",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/reward/clear_yellow.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/timer/bg_12zi_timer.sub",
+    "sha1": "69f23316c1270193bb95de0e9e1994512c760671",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/timer/bg_12zi_timer.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/timer/btn_jump_default.sub",
+    "sha1": "3af31bc027a055df5d5624e7af963b13beaf20cf",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/timer/btn_jump_default.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/timer/btn_jump_down.sub",
+    "sha1": "5e2cb6f48aa612e49989f04e8f41eef4e46e7f42",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/timer/btn_jump_down.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/timer/btn_jump_over.sub",
+    "sha1": "daf6bf2757da9ddb2010fb5c5fcd677f246e9963",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/timer/btn_jump_over.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/game/12zi/timer/gauge_timer.sub",
+    "sha1": "513ce275e04288b027d1bdb0b420ffed3a24a759",
+    "size": 89,
+    "source": "PKG:ymir work/ui/game/12zi/timer/gauge_timer.sub"
+   },
+   {
     "name": "d:/ymir work/ui/metin2_12zi_stage_atlas.dds",
     "sha1": "e3b4fda6ccd75e4f9c4ea3791fed7bef39ee15c2",
     "size": 125056,
     "source": "GF:d_/ymir work/ui/atlas_resize/metin2_12zi_stage_atlas.dds"
+   },
+   {
+    "name": "d:/ymir work/ui/newskillcommon.dds",
+    "sha1": "046218ff404d71e6b70065ac90d49065305cffa1",
+    "size": 120416,
+    "source": "PKG:ymir work/ui/newskillcommon.dds"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/common/affect/att_grade_down.sub",
+    "sha1": "d33c07a538f83339e93996de4335a88c3491bcd1",
+    "size": 99,
+    "source": "PKG:ymir work/ui/skill/common/affect/att_grade_down.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/common/affect/confusion.sub",
+    "sha1": "2b830fe9733f5838e63b713c7e500b7fd883c403",
+    "size": 97,
+    "source": "PKG:ymir work/ui/skill/common/affect/confusion.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/common/affect/critical_pct_down.sub",
+    "sha1": "92d36c8776c250ffa1444138314ee56e370ff6e6",
+    "size": 94,
+    "source": "PKG:ymir work/ui/skill/common/affect/critical_pct_down.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/common/affect/cz_unlimit_enter.sub",
+    "sha1": "bce3c07caa6665c1d6a2a8c878a394292dee424b",
+    "size": 98,
+    "source": "PKG:ymir work/ui/skill/common/affect/cz_unlimit_enter.sub"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/common/affect/def_grade_down.sub",
+    "sha1": "66301fe8095acde1c915df2402d71ca9582e2960",
+    "size": 96,
+    "source": "PKG:ymir work/ui/skill/common/affect/def_grade_down.sub"
    },
    {
     "name": "d:/ymir work/zone/b/building/b1-033-guesthouse-01.dds",
