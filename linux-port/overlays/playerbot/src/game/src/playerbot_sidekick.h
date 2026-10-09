@@ -11222,6 +11222,10 @@ namespace
 			state.dwTargetVID = 0;
 			ch->SetVictim(NULL);
 		}
+		// MT2009_PLUS_BOT_SMITHY_V1, point 9: its turn at the Demon Tower's
+		// smith (playerbot_demon_tower.h).
+		if (ManagePlayerBotSidekickTowerSmith(ch, state, dwNow))
+			return true;
 		// Beside a fight it is not to take part in, the owner's buffs are all it
 		// does there, and they come before the loot and the walk after the owner.
 		if (IsPlayerBotSidekickOwnerFighting(rt, dwNow) &&
