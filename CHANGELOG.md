@@ -17,6 +17,71 @@ every version here.
 
 ---
 
+## 2.28.0 — 2026-10-09 — Ruiny Atlantydy, nowa biżuteria i klejnoty, pety u botów, CH3/CH4, mapa teleportacji
+
+Wymaga klienta **2.0.59** (pobierze go launcher albo patcher). Zmieniła się paczka danych przedmiotów – jeśli korzystasz z Edytora bazy danych, **patcher pobierze nowe dane sam** (albo pobierz zip z panelu; gra przypomni).
+
+### 🌊 Nowy dungeon: Ruiny Atlantydy (od 75 poz.)
+- Wejście u **Maga Atlantydy** w Dolinie Orków, obok wejścia do Groty Wygnańców – **solo albo z drużyną**.
+- **Bilet do Atlantydy**: u Maga za 6 000 000 Yang albo z Generałów (25%) i Dowódców (10%) w Grocie Wygnańców i od Silnej Lodowej Wiedźmy (15%). 5 wejść dziennie, 45 minut na przejście.
+- **Piętro 1:** fala potworów, potem Głębinowa Muszla daje Klucz Atlantydy – trzeba go oddać właściwej z 4 Kolumn z Muszli (za właściwą pojawia się Strażnik Atlantydy, za złą nowa Muszla).
+- **Piętro 2:** trzy Elity Atlantydy (tylko jedna prawdziwa – zabicie iluzji daje punkt karny), fala potworów, 4 Serca Atlantydy i **Morkhot** – 300 s na pokonanie (mniej przy punktach karnych); gdy czas minie, Morkhot się chowa i trzeba zniszczyć Pradawne Serce Atlantydy.
+- Na koniec 2–4 **Skrzynie Atlantydy** dzielone między graczy, potem 20 s do wyjścia.
+- Cały dungeon ma żywioł **Błyskawica** – bossowie i kamienie dają Talizman Błyskawicy +0.
+- **Skrzynia Atlantydy:** broń 70 poz., materiały do ulepszeń 70–90, perły, przedmioty do peta, sakwa Yang, a także **nowa biżuteria +0 (5%)**, 5× Kamień Duchowy (8%), 10× Zaczarowanie Przedmiotu i 4× Wzmocnienie Przedmiotu – handlowe (po 8%), losowy Talizman +0 (4%); Tarcza Tytanów rzadko (ok. 5% skrzyń).
+- Boty chodzą tam same od 80 poz. (w piątkę, z szamanem), a boty z drużyny wchodzą razem z graczem.
+
+### 💍 Nowa biżuteria, rudy i klejnoty
+- **Rubinowa, Szmaragdowa, Szafirowa i Granatowa** (bransoleta, naszyjnik, kolczyki) – wszystkie od **80 poz.**, bonusy jak w Gameforge (kolczyki Szmaragdowe i Szafirowe: regeneracja PE/PŻ 4–28%). Ikony wszystkich kompletów wyświetlają się poprawnie.
+- Ulepszanie u Kowala: od +4 materiały jak w GF (Nieznane Lekarstwo+, Pamiątka po Demonie, Klejnot Demona, Futro Yeti+, Płonąca Grzywa, od +7 perły).
+- Skąd: Skrzynia Mroku, Generałowie (10%) i Dowódcy (2%) w Grocie Wygnańców, Skrzynia Atlantydy (5%). **Granatowe Kolczyki** – najrzadsze. Materiały do ulepszeń wypadają m.in. ze Skrzyni Razadora i Skrzyni Nemere.
+- **Rudy Rubinu, Szmaragdu, Szafiru i Granatu** – złoża w Czerwonym Lesie i Grocie Wygnańców; przetapianie u alchemików budynków gildii (100 rudy + 3 Magiczne Pyły + 60 000 Yang, 60%).
+- **Klejnoty w biżuterii:** Diament otwiera gniazdo (do 3), klejnot wchodzi z szansą 90/80/70% i wzmacnia bonusy biżuterii o 10/20/40% na 24/12/6 h noszenia. Klejnoty się stackują.
+- Boty kopią, przetapiają, wkładają klejnoty i noszą lepszą biżuterię.
+
+### 🐣 Pety domowe u botów
+- Połowa botów od 30 poz. wykluwa peta z imieniem, przywołuje go na expienie, karmi Przekąskami, daje Smakołyki i eliksiry, uczy umiejętności z ksiąg i ewoluuje.
+- **Małpka i Pajączek** to najsłabsze pety – boty wybierają inne, a ich jajka sprzedają u kupca. Inne jajka, księgi i eliksiry wystawiają na sklepach (z limitem ofert).
+- Towarzysz wykluje i rozwija peta z jajka, które mu dasz.
+
+### 🧝 Towarzysz
+- **Emocje z Towarzyszem** (domyślnie włączone): pocałunek i policzek bez proszenia o zgodę; Towarzysz odpowiada emocją, czasem szeptem, dołącza do tańca i oklasków. Wyłączanie: szept „emocje off/on” albo przycisk w oknie.
+- Nowy Towarzysz zawsze zaczyna z **poziomem właściciela**; gdy nie ma wolnego bota z niskim poziomem, gra tworzy nowego od 1 poz.
+
+### 🔀 Kanały CH3 i CH4
+- Działają jak CH2: każdy na własnych rdzeniach, boty przelogowują się na CH1, gdy chcą coś załatwić na straganach.
+- Domyślnie **wyłączone** – włączasz w panelu (Zarządzanie albo Ustawienia serwera (.env)); CH3 tylko razem z CH2, CH4 tylko razem z CH3.
+- Każdy dodatkowy kanał to ok. **2,5–3 GB RAM** – CH1–CH4 potrzebują ok. 16 GB lub więcej. Z nowym klientem kanały są na liście logowania i pod Alt+3 / Alt+4.
+
+### 🗺️ Mapa teleportacji (Autor: Mur4s)
+- Klawisz **TAB** otwiera mapę świata z 18 punktami (miasta, Dolina Orków, Pustynia, Sohan, Świątynia, Wieża Demonów, Las Duchów, Czerwony Las, Kraina Gigantów, Piekło, Loch Pająków, Dolina Cyklopów, Pustkowie Faraona) – teleport za darmo.
+- Nie działa przy otwartym handlu/sklepie/magazynie, w pojedynku, na arenie wojen gildii i mapach specjalnych.
+- Domyślnie **wyłączona** – włącznik w panelu (działa od razu); wyłączona – TAB działa jak dotąd.
+
+### ⚒️ Kowal pod Enterem (Autor: Vekirion)
+- Enter zatwierdza okno ulepszania u Kowala / zwojem (i ostrzeżenie po nim) oraz okno wkładania kamienia; przytrzymany Enter liczy się raz.
+
+### 🛒 Rynek i boty
+- **Nie ma już stałych cen na rynku** – Odłamki Energii, talizmany (+0 i kolejne plusy), jajka petów, Zaczarowanie i Wzmocnienie do handlu mają tylko cenę bazową i podlegają inflacji i kursowi Yang jak wszystko inne.
+- **Zaczarowanie (71284) i Wzmocnienie (71285) do handlu:** boty używają ich na swój ekwipunek (od 40 poz., po zwykłych 71084/71085), a nadmiar wystawiają.
+- **Ceny brakujących przedmiotów:** Tarcza Tytanów i 36 innych rodzin przedmiotów od 50 poz. dostały ceny – nie zdarzy się już Tarcza Tytanów za 622 Yang.
+- **Broń i zbroja bez bonusów od 30 poz.** przez pierwsze 30 minut na straganie są tylko dla graczy (boty wykupywały je w kilka minut).
+- **Tani ekwipunek bez bonusów poniżej 30 poz.:** najwyżej 20 sztuk jednego przedmiotu na wszystkich straganach (koniec ze stronami Bojowych Tarcz +6).
+- **Owoce rang:** trzy boty na cztery jedzą owoc pasujący do swojej rangi i kupują go ze sklepów; resztę wystawiają (bot z pełną rangą 20 000 wystawia Jabłka i skupuje Gruszki).
+- **Peleryny Męstwa:** boty używają ich normalnie przy expieniu (najpierw przypisanych do postaci), nadmiar ponad 200 wyrzucają.
+- Boty w drużynie z graczem, który stoi AFK, stoją obok niego zamiast chodzić w kółko.
+
+### Poprawki
+- **Pustkowie Faraona:** potwory (także Bastet i Anubis) nie biją już „z daleka”, zanim dobiegną na ekranie.
+- **Leże Smoka:** Beran-Setaou daje Kamień Duszy +5 (5%) i Błogosławieństwo Przedmiotu – zmianę bonusów 6/7 (2%).
+
+## Klient 2.0.59 — 2026-10-09 — Atlantyda, biżuteria, mapa teleportacji
+
+- **Ruiny Atlantydy:** mapa, potwory, efekty i przedmioty (nowe paczki `at_maps`, `at_mobs`).
+- **Biżuteria i klejnoty:** ikony i dane, modele złóż rud (paczka `gf_ore`).
+- **Mapa teleportacji** pod TAB, **Kowal pod Enterem**, przycisk „Emocje” w oknie Towarzysza, kanały CH3/CH4 na liście logowania i Alt+3 / Alt+4.
+- Zmieniła się paczka `dbdata` – pliki z edytora pobierze patcher albo pobierz zip z panelu (gra przypomni).
+
 ## 2.27.0 — 2026-10-08 — Boty przechodzą dungeony, dropki dla postaci, pasy i talizmany u botów
 
 Wymaga klienta **2.0.58** (pobierze go launcher albo patcher).
