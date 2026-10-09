@@ -1057,6 +1057,33 @@ if ((Test-Path -LiteralPath $zodiakApply -PathType Leaf) -and
         Write-Host ('Applied {0} Zodiac Temple edit(s).' -f $zodiakResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Metins apart from bosses in the respawn settings (server-patches/regenmetin,
+# MT2009_PLUS_REGEN_METIN_SPLIT_V1): a regen line with a Metin stone reads
+# fastMetinSpawn(<map>) and m2_metin_count, a boss's line fastBossSpawn and
+# m2_boss_count (regen.h, regen.cpp; the Easter metins' cap too). After the
+# playerqol and Zodiac edits it sits beside.
+$regenMetinApply = Join-Path $repo 'server-patches/regenmetin/Apply-RegenMetinPatch.ps1'
+if ((Test-Path -LiteralPath $regenMetinApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'regen.cpp') -PathType Leaf)) {
+    $regenMetinResult = & $regenMetinApply -SourceDir $engineGameSource
+    if ($regenMetinResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Metin respawn edit(s).' -f $regenMetinResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The chance of bonuses on dropped weapons and armour (server-patches/dropbonus,
+# MT2009_PLUS_DROP_BONUS_PCT_V1): the event flag m2_drop_bonus_pct, a percent of
+# the game's own chance, for monster drops only (item_manager.cpp CreateItem and
+# SetDropRarePct, item.cpp AlterToMagicItem).
+$dropBonusApply = Join-Path $repo 'server-patches/dropbonus/Apply-DropBonusPatch.ps1'
+if ((Test-Path -LiteralPath $dropBonusApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_manager.cpp') -PathType Leaf)) {
+    $dropBonusResult = & $dropBonusApply -SourceDir $engineGameSource
+    if ($dropBonusResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} drop bonus chance edit(s).' -f $dropBonusResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade

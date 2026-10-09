@@ -3498,6 +3498,27 @@ for zyw_sql in zywioly_talizmany.sql zywioly_moby.sql; do
     fi
 done
 
+# MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
+# respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
+# fastBossSpawn<map>) and count (m2_boss_count) are the bosses' alone now; the Metin stones read
+# fastMetinSpawn(<map>) and m2_metin_count. Once, every boss row is copied into its Metin row -
+# a row already written is kept (INSERT IGNORE) - so the world respawns as it did until the
+# operator moves one of them; m2_regen_metin_split says it is done.
+regen_split=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_regen_metin_split' LIMIT 1;" 2>/dev/null | tr -d ' \r')
+if [ "$regen_split" != "1" ]; then
+    if db -e "INSERT IGNORE INTO player.quest (dwPID, szName, szState, lValue)
+                SELECT 0, CONCAT('fastMetinSpawn', SUBSTRING(szName, 14)), szState, lValue FROM player.quest
+                 WHERE dwPID = 0 AND szName LIKE 'fastBossSpawn%';
+            INSERT IGNORE INTO player.quest (dwPID, szName, szState, lValue)
+                SELECT 0, 'm2_metin_count', szState, lValue FROM player.quest
+                 WHERE dwPID = 0 AND szName = 'm2_boss_count';
+            REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_regen_metin_split', '', 1);"; then
+        echo "[playerbot-migrate] Metins and bosses: the respawn time and count of 'Metiny i bossowie' copied to the Metins' own rows"
+    else
+        fail_step "could not copy the respawn settings to the Metins' rows" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
