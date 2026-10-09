@@ -1234,6 +1234,8 @@ def read_ai_weights():
     # too dear to buy at once (playerbot_haggle.h, MT2009_PLUS_BOT_HAGGLE_V1).
     # On; off is the market as it was.
     vals["HAGGLE"] = 1
+    # MT2009_PLUS_MARKET_LIFE_V1: the material market's test option; off.
+    vals["MATERIAL_MARKET"] = 0
     vals["SCRAP"] = 0
     # MT2009_PLUS_SALE_TAX_V1: the percent of a sale between players and bots
     # that leaves the game (playerbot_sale_tax.h, server-patches/saletax);
@@ -1330,6 +1332,9 @@ def read_ai_weights():
                     continue
                 if name == "HAGGLE":
                     vals["HAGGLE"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
+                    continue
+                if name == "MATERIAL_MARKET":
+                    vals["MATERIAL_MARKET"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
                     continue
                 if name == "SCRAP":
                     try:
@@ -1480,6 +1485,8 @@ def write_ai_weights(vals):
     # Not a weight: whether a bot haggles with a person over a line too dear
     # to buy at once.
     body.append("HAGGLE\t%d" % (1 if vals.get("HAGGLE", 1) else 0))
+    # MT2009_PLUS_MARKET_LIFE_V1: the material market's test option.
+    body.append("MATERIAL_MARKET\t%d" % (1 if vals.get("MATERIAL_MARKET", 0) else 0))
     # Percent of stall keepers that sell scrap gear; 0 is off.
     body.append("SCRAP\t%d" % max(0, min(100, int(vals.get("SCRAP", 0)))))
     # MT2009_PLUS_SALE_TAX_V1: percent of a sale between players and bots that
@@ -4531,6 +4538,11 @@ T.update({
                   "de":"Ein Bot, der ein fertiges Ausrüstungsteil (ab +6) im Offline-Laden eines Spielers will, es aber teurer findet, als er zahlen würde (mit der Obergrenze der Bots für den Preis eines Spielers: höchstens das 1,5- bis 2-Fache des Marktpreises), flüstert dem Besitzer - einmal, mit verlinktem Gegenstand - sein Angebot und geht bis zu seinem letzten Preis, dem Höchsten, das er zahlt, wenn der Besitzer mehr will. Der Besitzer antwortet \"ok\", \"no\" oder mit einem eigenen Preis (\"5kk\") oder senkt einfach den Preis im Laden; sobald der Gegenstand den vereinbarten Preis (oder weniger) kostet, kommt der Bot und kauft ihn, innerhalb von zehn Minuten. Gefragt wird nur ein Besitzer, der auf dem Kern des Bots online ist; höchstens ein Feilschen gleichzeitig mit einer Person, drei Angebote pro Stunde an eine Person, ein Angebot zum selben Gegenstand in drei Stunden (zwölf nach einem Nein), drei gleichzeitig auf einem Kern. Was ein Bot sofort kauft, bleibt unverändert. Aus: kein Bot flüstert ein Angebot, und alle Abmachungen werden vergessen.",
                   "tr":"Bir oyuncunun çevrimdışı dükkânında bitmiş bir ekipman (+6 ve üstü) isteyen ama onu ödeyeceğinden pahalı bulan bot (botların oyuncu fiyatı sınırı dahil: eşyanın piyasa fiyatının en fazla 1,5-2 katı), sahibine bir kez, eşyanın bağlantısıyla teklifini fısıldar ve sahip daha fazlasını isterse son fiyatına, ödeyeceği en yüksek fiyata çıkar. Sahip \"ok\", \"no\" ya da kendi fiyatıyla (\"5kk\") cevap verir veya dükkândaki fiyatı düşürür; eşya anlaşılan fiyata (ya da daha azına) indiğinde bot gelip on dakika içinde satın alır. Yalnızca botun çekirdeğinde çevrimiçi olan sahibe sorulur; bir kişiyle aynı anda en fazla bir pazarlık, bir kişiye saatte üç teklif, aynı eşya için üç saatte bir teklif (bir hayırdan sonra on iki), bir çekirdekte aynı anda üç pazarlık. Botun hemen satın aldığı şeyler değişmez. Kapalı: hiçbir bot teklif fısıldamaz ve tüm anlaşmalar unutulur."},
  "ai_haggle_on": {"en":"Enabled","pl":"Włączone","de":"Eingeschaltet","tr":"Açık"},
+ "ai_material_market": {"en":"Material market (test)","pl":"Rynek materiałów (test)","de":"Materialmarkt (Test)","tr":"Malzeme pazarı (deneme)"},
+ "ai_material_market_help": {"en":"A test option, off by default. When the world lacks a refine material (under 80% of its usual supply on the shops), the bots take it out of their storage and list it more often. When a bot wants to list something and its offline shop is full, it takes off its cheapest stack of materials or skill books (never goods the world lacks, a mispriced line or an item the item policy rules on) and sells a quarter of it to the general merchant at its next visit, so the cheapest goods nobody buys slowly leave the market. At most one cut a bot every ten minutes. The event flag bot_material_market (/eventflag bot_material_market 1) switches it on as well.",
+                   "pl":"Opcja testowa, domyślnie wyłączona. Gdy światu brakuje jakiegoś ulepszacza (mniej niż 80% zwykłej podaży na sklepach), boty częściej wyjmują go z magazynu i wystawiają. Gdy bot chce coś wystawić, a jego sklep offline jest pełny, zdejmuje najtańszy stos materiałów lub ksiąg (nigdy towaru, którego brakuje, ceny z pomyłką ani przedmiotu objętego polityką przedmiotów) i jedną czwartą sprzedaje u Handlarki przy najbliższej wizycie - zalegające najtańsze materiały powoli schodzą z rynku. Najwyżej jedno cięcie na bota co dziesięć minut. To samo włącza flaga bot_material_market (/eventflag bot_material_market 1).",
+                   "de":"Testoption, standardmäßig aus. Fehlt der Welt ein Verbesserungsmaterial (unter 80% des üblichen Angebots), holen die Bots es öfter aus dem Lager und stellen es ein. Ist der Offline-Laden eines Bots voll, nimmt er seinen billigsten Stapel Materialien oder Bücher herunter und verkauft ein Viertel beim nächsten Besuch an die Krämerin. Höchstens ein Schnitt pro Bot alle zehn Minuten. Die Event-Flag bot_material_market schaltet es ebenfalls ein.",
+                   "tr":"Deneme seçeneği, varsayılan olarak kapalı. Dünyada bir geliştirme malzemesi eksikse (olağan arzın %80'inin altı) botlar onu depodan daha sık çıkarıp satışa koyar. Bir botun çevrimdışı dükkânı doluysa en ucuz malzeme ya da kitap yığınını indirir ve dörtte birini bir sonraki ziyarette tüccara satar. Bot başına en fazla on dakikada bir kesim. bot_material_market olay bayrağı da açar."},
  "ai_shop_m2":   {"en":"Bots open their offline shops in the second villages (M2) too","pl":"Boty wystawiają sklepy offline również w M2","de":"Bots stellen ihre Offline-Läden auch in den zweiten Dörfern (M2) auf","tr":"Botlar çevrimdışı tezgahlarını ikinci köylerde (M2) de açar"},
  "ai_shop_m2_help": {"en":"Only about where the bots' offline shops (stands) stand - not buying from NPC merchants. Off (the default): a bot opens its stand only in the first villages, where the players shop; an expired stand that stood in a second village is renewed on the first village's market ring at its owner's next service visit. On: the stands stand in both villages, as before.",
                   "pl":"Dotyczy tylko miejsca, w którym boty wystawiają swoje sklepy offline (stragany) - nie zakupów u sprzedawców NPC. Wyłączone (domyślnie): bot otwiera sklep tylko w pierwszych wioskach, tam gdzie kupują gracze; sklep, który stał w drugiej wiosce, po wygaśnięciu zostaje odnowiony na rynku pierwszej wioski przy najbliższej wizycie właściciela. Włączone: sklepy stoją w obu wioskach, jak wcześniej.",
@@ -8196,6 +8208,11 @@ TPL_AI = BASE.replace("__BODY__", """
   <h3 style="margin:0 0 2px">🤝 {{t('ai_haggle')}}</h3>
   <p class="muted" style="margin:0 0 6px">{{t('ai_haggle_help')}}</p>
   <label><input type="checkbox" name="HAGGLE" value="1" {% if cur.get('HAGGLE', 1) %}checked{% endif %}> {{t('ai_haggle_on')}}</label>
+</div>
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">🧱 {{t('ai_material_market')}}</h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_material_market_help')}}</p>
+  <label><input type="checkbox" name="MATERIAL_MARKET" value="1" {% if cur.get('MATERIAL_MARKET', 0) %}checked{% endif %}> {{t('ai_haggle_on')}}</label>
 </div>
 {# Not a slider: 0 is off and 1-30 the days the core keeps its explanations;
    an absent key is the core's own seven, and saving the page untouched keeps
@@ -20365,11 +20382,13 @@ def ai_weights():
             vals["CATACOMB"] = 1 if request.form.get("CATACOMB") else 0
             vals["ISHOP"] = 1 if request.form.get("ISHOP") else 0
             vals["HAGGLE"] = 1 if request.form.get("HAGGLE") else 0
+            vals["MATERIAL_MARKET"] = 1 if request.form.get("MATERIAL_MARKET") else 0
         else:
             vals["TOWER"] = old.get("TOWER", 1)
             vals["CATACOMB"] = old.get("CATACOMB", 1)
             vals["ISHOP"] = old.get("ISHOP", 1)
             vals["HAGGLE"] = old.get("HAGGLE", 1)
+            vals["MATERIAL_MARKET"] = old.get("MATERIAL_MARKET", 0)
         vals["SHOP_M2"] = 1 if request.form.get("SHOP_M2") else 0
         vals["PERSONA"] = 1 if request.form.get("PERSONA") else 0
         vals["SHOUTERS"] = 1 if request.form.get("SHOUTERS") else 0
