@@ -142,7 +142,11 @@ namespace
 		// (MT2009_PLUS_BOT_PRIORITIES_V1) - and has no room for the pieces.
 		if (IsPlayerBotBagFirst(ch, state) || ch->GetEmptyInventory(2) < 0)
 			return false;
+		// Not down a Spider Dungeon, nor on the desert crossing to or from one:
+		// the way out is a walk across the desert the meeting would hold up.
 		const long map = ch->GetMapIndex();
+		if (IsPlayerBotSpiderMap(map) || state.lDesertCrossingTo != 0)
+			return false;
 		return map < PLAYERBOT_INSTANCE_MAP_INDEX_MIN && (IsPlayerBotVillageMap(map) || IsPlayerBotFrontierMapIndex(map));
 	}
 
@@ -418,7 +422,7 @@ namespace
 		state.dwTargetVID = 0;
 		if (ch->GetMapIndex() != m.map)
 		{
-			if (arrived != 0 || walkSince != 0)
+			if (arrived != 0)
 			{
 				EndPlayerBotMeetup(m, false, "moved_away", ch, "Sorki, musialem odejsc. Innym razem.");
 				return false;
