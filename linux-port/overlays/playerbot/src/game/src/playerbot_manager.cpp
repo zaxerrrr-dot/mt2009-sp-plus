@@ -242,6 +242,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_saddlebag.h"
 #include "playerbot_awakening.h" // Digi Rasta's Ritual of Awakening and soul stones +5..+9: engine hooks, boss drop, bot prices and ritual (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1)
 #include "playerbot_explain_late.h"
+#include "playerbot_market_life.h" // MT2009_PLUS_MARKET_LIFE_V1: the owner's market list of 9 October - scroll worth, rare goods, whims, barter, the material market's test option
 // Forward declaration: the trade layer falls through to the deterministic
 // conversation layer for ordinary whispers.
 namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* playerName, LPCHARACTER bot, const char* text); }

@@ -160,6 +160,14 @@ namespace
 	bool IsPlayerBotGambleForSale(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotRareGambleHeldBase(LPCHARACTER ch, LPITEM item);
 
+	// MT2009_PLUS_MARKET_LIFE_V1 (playerbot_market_life.h, later): the horse
+	// feed a counter takes, a kingdom's counters' units of a kind, the share
+	// of a stack owed to the merchant, and a curious bot's one piece.
+	bool IsPlayerBotHorseFeedForCounter(LPCHARACTER ch, LPITEM item);
+	DWORD GetPlayerBotKingdomMarketUnits(BYTE empire, DWORD vnum);
+	long long SellPlayerBotShopRoomOwed(LPCHARACTER ch);
+	bool IsPlayerBotCuriosityRefinePiece(LPCHARACTER ch, LPITEM item);
+
 	// A weapon with a line a player stops rerolling at: average damage from
 	// PLAYERBOT_BONUS_KEEP_AVERAGE, or skill damage from
 	// PLAYERBOT_WEAPON_PRIZE_SKILL_PERCENT. In this engine every failed
@@ -2463,8 +2471,13 @@ namespace
 		// training's feed of 11-19 and 21-28 (playerbot_horse30.h): the five
 		// the next training eats stay, the rest is the merchant's (the
 		// stable sells what the bag lacks at the training itself).
+		// MT2009_PLUS_MARKET_LIFE_V1, point 4: the counter's first while the
+		// kingdom's counters hold fewer than PLAYERBOT_HORSE_FEED_KINGDOM_CAP
+		// (IsPlayerBotHorseFeedForCounter); past it the General Store changes
+		// them for Red Potions before it buys the rest (ExchangePlayerBotHorseFeed).
 		if (vnum == PLAYERBOT_HORSE_FEED_CARROT || vnum == PLAYERBOT_HORSE_FEED_GINSENG)
-			return (int)ch->CountSpecifyItem(vnum) > GetPlayerBotHorseFeedKeep(ch, vnum);
+			return (int)ch->CountSpecifyItem(vnum) > GetPlayerBotHorseFeedKeep(ch, vnum) &&
+					!IsPlayerBotHorseFeedForCounter(ch, item);
 		// The goods a player crafts further (IsPlayerBotPickupGoods) wait for a
 		// counter, and reach the merchant only from a bag under pressure that
 		// has no counter to sell from - the rule a polymorph marble keeps. Gear
@@ -3194,6 +3207,17 @@ namespace
 			++soldCount;
 		}
 
+		// MT2009_PLUS_MARKET_LIFE_V1, point 7: the share of a stack a full counter
+		// took home for the merchant (playerbot_market_life.h, test option).
+		if (category == BOT_MERCHANT_MISC)
+		{
+			const long long owed = SellPlayerBotShopRoomOwed(ch);
+			if (owed > 0)
+			{
+				totalSoldGold += owed;
+				++soldCount;
+			}
+		}
 		NotePlayerBotSidekickScrapSold(ch, soldCount, totalSoldGold);	// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2
 		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: the Alchemist's errand goes for what
 		// was held (the weapon and the armour merchants' rounds; the general
@@ -3608,6 +3632,10 @@ namespace
 		// The bow or fan a keeper builds for its sash (playerbot_sash.h).
 		if (IsPlayerBotSashGrailProject(ch, item))
 			return item->GetRefineLevel() < GetPlayerBotRefineTarget(ch, item);
+		// MT2009_PLUS_MARKET_LIFE_V1, point 9: the one piece a curious bot
+		// takes a step or two up to see what comes of it (playerbot_market_life.h).
+		if (IsPlayerBotCuriosityRefinePiece(ch, item))
+			return true;
 		// The piece a blacksmith session took off is still the worn one (B12):
 		// the junk rule and the spare rules are not asked of it, as they are not
 		// of a piece on the bot. With a higher-tier spare beside it in the bag it
@@ -4854,6 +4882,47 @@ namespace
 		return (DWORD)(bundles * PLAYERBOT_HAY_POTIONS);
 	}
 
+	// MT2009_PLUS_MARKET_LIFE_V1, point 4 (the owner's list, 9 October):
+	// "Marchewka i Czerwony Zen-szen wymieniane na Czerwone Mikstury, z limitem
+	// 300 sztuk na rynku krolestwa". The feed over the horse's keep the
+	// kingdom's counters have no room for - PLAYERBOT_HORSE_FEED_KINGDOM_CAP of
+	// the kind stand there already, or the bot has no counter - is given at
+	// the General Store for Red Potions (PLAYERBOT_HAY_POTION_VNUM), as the hay
+	// is, a few dozen pieces a visit and only into room for the potions; what
+	// is left the store buys (IsPlayerBotJunkItem). The potions given.
+	DWORD ExchangePlayerBotHorseFeed(LPCHARACTER ch)
+	{
+		if (!ch || IsPlayerBotSidekickServing(ch))
+			return 0;
+		DWORD given = 0;
+		const DWORD feeds[] = { PLAYERBOT_HORSE_FEED_CARROT, PLAYERBOT_HORSE_FEED_GINSENG };
+		for (size_t i = 0; i < sizeof(feeds) / sizeof(feeds[0]); ++i)
+		{
+			const DWORD vnum = feeds[i];
+			const int surplus = (int)ch->CountSpecifyItem(vnum) - GetPlayerBotHorseFeedKeep(ch, vnum);
+			if (surplus <= 0)
+				continue;
+			if (PlayerBotHasCounter(ch) &&
+					GetPlayerBotKingdomMarketUnits(ch->GetEmpire(), vnum) < PLAYERBOT_HORSE_FEED_KINGDOM_CAP)
+				continue;
+			const int each = vnum == PLAYERBOT_HORSE_FEED_CARROT ? PLAYERBOT_HORSE_FEED_CARROT_POTIONS
+					: PLAYERBOT_HORSE_FEED_GINSENG_POTIONS;
+			const int freeCells = ch->GetEmptyInventory(1) < 0 ? 0 : CountPlayerBotFreeInventoryCells(ch);
+			const int held = (int)ch->CountSpecifyItem(PLAYERBOT_HAY_POTION_VNUM);
+			const int room = freeCells * 200 + (200 - held % 200) % 200;
+			const int pieces = std::min(std::min(surplus, PLAYERBOT_HORSE_FEED_EXCHANGE_MAX), room / each);
+			if (pieces <= 0)
+				continue;
+			ch->RemoveSpecifyItem(vnum, pieces);
+			ch->AutoGiveItem(PLAYERBOT_HAY_POTION_VNUM, pieces * each);
+			given += (DWORD)(pieces * each);
+			sys_log(0, "PLAYERBOT_MARKET: horse feed exchanged pid=%u name=%s vnum=%u pieces=%d potions=%d kingdom_units=%u left=%d",
+					ch->GetPlayerID(), ch->GetName(), vnum, pieces, pieces * each,
+					GetPlayerBotKingdomMarketUnits(ch->GetEmpire(), vnum), surplus - pieces);
+		}
+		return given;
+	}
+
 	bool ManagePlayerBotMiscMerchant(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded())
@@ -4884,6 +4953,9 @@ namespace
 
 		// The hay first, for potions; the rest of it is junk below.
 		redCount += ExchangePlayerBotHay(ch, redCount);
+		// MT2009_PLUS_MARKET_LIFE_V1, point 4: and the horse feed the kingdom's
+		// counters have no room for.
+		redCount += ExchangePlayerBotHorseFeed(ch);
 
 		// Miscellaneous loot belongs to Handlarka. Weapons and wearable equipment
 		// are deliberately left for their own specialist merchants.

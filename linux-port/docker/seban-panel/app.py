@@ -272,7 +272,7 @@ AI_LIVE_DEFAULTS = {"CHAT": 1, "BOOKS": 1, "NIGHT": 1, "LIFE": 0,
                      # MT2009_PLUS_LEGENDS_V1: the bots' legends (playerbot_legends.h).
                      "LEGENDS": 1,
                      # MT2009_PLUS_BOT_HAGGLE_V1: bots haggle at people's shops.
-                     "HAGGLE": 1, "SCRAP": 0, "REST": 100, "KINGDOMPVP": 0, "SCROLL_FROM": 1,
+                     "HAGGLE": 1, "MATERIAL_MARKET": 0, "SCRAP": 0, "REST": 100, "KINGDOMPVP": 0, "SCROLL_FROM": 1,
                      # The three wills (playerbot_config.h): percent of what the
                      # build does, 100 = as before, 0 = none of it.
                      "BATTLEPASS": 100, "SASH": 100, "ALCHEMY": 100,
@@ -3109,7 +3109,7 @@ def read_ai_weights():
             if len(fields) >= 2 and fields[0].upper() in values:
                 try:
                     key, raw_value = fields[0].upper(), fields[1]
-                    if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "DUNGEONS", "ISHOP", "SHOP_M2", "PERSONA", "SHOUTERS", "HAGGLE", "LEGENDS"):
+                    if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "DUNGEONS", "ISHOP", "SHOP_M2", "PERSONA", "SHOUTERS", "HAGGLE", "LEGENDS", "MATERIAL_MARKET"):
                         values[key] = 0 if raw_value.lower() in ("0", "off", "no") else 1
                     elif key in ("SCRAP", "REST", "KINGDOMPVP"):
                         values[key] = max(0, min(100, int(raw_value)))
@@ -3185,6 +3185,8 @@ def write_ai_weights(values):
     # MT2009_PLUS_LEGENDS_V1: the bots' legends, 1 = on.
     content.append(f"LEGENDS\t{1 if values.get('LEGENDS', 1) else 0}")
     content.append(f"HAGGLE\t{1 if values.get('HAGGLE', 1) else 0}")
+    # MT2009_PLUS_MARKET_LIFE_V1: the material market's test option, 0 = off.
+    content.append(f"MATERIAL_MARKET\t{1 if values.get('MATERIAL_MARKET', 0) else 0}")
     content.append(f"SCRAP\t{max(0, min(100, int(values.get('SCRAP', 0))))}")
     content.append(f"REST\t{max(0, min(100, int(values.get('REST', 100))))}")
     content.append(f"KINGDOMPVP\t{max(0, min(100, int(values.get('KINGDOMPVP', 0))))}")
@@ -10291,7 +10293,7 @@ def manage_behavior():
     values["CHAT"] = 1 if "1" in request.form.getlist("CHAT") else 0
     values["BOOKS"] = values.get("BOOKS", 1) if "BOOKS" not in request.form else (1 if "1" in request.form.getlist("BOOKS") else 0)
     for key, default in (("NIGHT", 1), ("LIFE", 0), ("WARS", 1), ("TOWER", 1), ("ISHOP", 1), ("SHOP_M2", 0), ("PERSONA", 1),
-                         ("SHOUTERS", 1), ("HAGGLE", 1), ("LEGENDS", 1)):
+                         ("SHOUTERS", 1), ("HAGGLE", 1), ("LEGENDS", 1), ("MATERIAL_MARKET", 0)):
         values[key] = values.get(key, default) if key not in request.form else (1 if "1" in request.form.getlist(key) else 0)
     # MT2009_PLUS_BOTLIFE_V1: the hours of play a day under LIFE.
     try:

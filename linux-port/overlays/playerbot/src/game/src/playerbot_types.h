@@ -1575,6 +1575,47 @@ namespace
 	// MT2009_PLUS_HORSE30_V1: five is exactly one paid training of levels 1-9
 	// (konie.quest, playerbot_horse30.h); what the bag lacks the stable sells.
 	const int PLAYERBOT_HAY_KEEP = 5;
+
+	// ---- MT2009_PLUS_MARKET_LIFE_V1: the owner's market list of 9 October ----
+	// Point 2: no scroll on a piece of PLAYERBOT_SCROLL_FREE_GEAR_MAX_LEVEL or
+	// under, but for the few steps that pay: from this plus, where the sheet's
+	// price of the next plus is over the present one by this share of the
+	// scroll's price or more (IsPlayerBotLowGearScrollWorthIt).
+	const int PLAYERBOT_LOW_GEAR_SCROLL_MIN_PLUS = 4;
+	const int PLAYERBOT_LOW_GEAR_SCROLL_GAIN_PERCENT = 150;
+	// Point 3: the level-30 weapons at +0..+3 (GetPlayerBotLevel30LowPlusPercent):
+	// from the world yang at which prices are the sheet's (PLAYERBOT_WORLD_YANG_ZERO)
+	// to this, the age takes them down to AGE_MIN percent; from NORMAL units of
+	// them on all the counters to FLOOD, the supply to SUPPLY_MIN; never under FLOOR.
+	const long long PLAYERBOT_L30_LOW_AGE_FULL_YANG = 60000000000LL;
+	const int PLAYERBOT_L30_LOW_AGE_MIN_PERCENT = 55;
+	const long long PLAYERBOT_L30_LOW_SUPPLY_NORMAL = 12;
+	const long long PLAYERBOT_L30_LOW_SUPPLY_FLOOD = 60;
+	const int PLAYERBOT_L30_LOW_SUPPLY_MIN_PERCENT = 60;
+	const int PLAYERBOT_L30_LOW_FLOOR_PERCENT = 35;
+	const int PLAYERBOT_L30_LOW_MAX_PLUS = 3;
+	// Point 4: Marchewka and Czerwony Zen-szen stand on a kingdom's counters
+	// up to this many units of a kind; past it the bots give them at the
+	// General Store for Red Potions (PLAYERBOT_HAY_POTION_VNUM), this many a
+	// piece, at most PLAYERBOT_HORSE_FEED_EXCHANGE_MAX pieces a visit.
+	const DWORD PLAYERBOT_HORSE_FEED_KINGDOM_CAP = 300;
+	const int PLAYERBOT_HORSE_FEED_CARROT_POTIONS = 10;
+	const int PLAYERBOT_HORSE_FEED_GINSENG_POTIONS = 15;
+	const int PLAYERBOT_HORSE_FEED_EXCHANGE_MAX = 40;
+	// Point 5: rare goods - fewer than this many units of the kind on all the
+	// counters besides the line (the market preview's "Rzadkie"); listed at
+	// PREMIUM percent over the asking price, the line's markdown taken at
+	// 1/SLOW_DIVISOR of its pace, and bought up to BUY percent of the usual cap.
+	const DWORD PLAYERBOT_RARE_MARKET_UNITS = 10;
+	const int PLAYERBOT_RARE_MARKET_PREMIUM = 40;
+	const int PLAYERBOT_RARE_MARKET_SLOW_DIVISOR = 2;
+	const int PLAYERBOT_RARE_MARKET_BUY_PERCENT = 140;
+	// Point 7 (the test option MATERIAL_MARKET): a refine material counts as
+	// missing from the world under this share of its usual supply (50 without it).
+	const int PLAYERBOT_MATERIAL_MARKET_MISSING_PERCENT = 80;
+	// Point 8: a material's keeper spread drifts from one draw to the next
+	// over this window (GetPlayerBotListingSpreadPercent).
+	const long PLAYERBOT_MATERIAL_SPREAD_WINDOW_SECONDS = 6L * 3600L;
 	// And an offline counter carries at most this share of its cells in lines
 	// of refine materials together - three fifths: 48 lines of the eighty cells
 	// a counter had, 96 of a bot's two pages since 28 September
