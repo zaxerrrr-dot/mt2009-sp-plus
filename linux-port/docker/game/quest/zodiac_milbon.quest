@@ -1,6 +1,6 @@
 --[[
 	Chats Of Monk Milbon
-	Dev: WLsj24
+	Dev: WLsj24; MT2009 PLUS - Autor: Digi Rasta (MT2009_PLUS_ZODIAC_V1)
 --]]
 quest zodiac_milbon begin
 	state start begin
@@ -50,7 +50,7 @@ quest zodiac_milbon begin
 			say_title(mob_name(20438))
 			say("Ka¿dego dnia otwieraj¹ siê zawsze dwie ró¿ne[ENTER]œwi¹tynie.") --754
 			say("W niedziele otwarte s¹ wszystkie œwi¹tynie.") --755
-			say("Wymieñ insygnia na skarby Aureolin, Aventurin[ENTER]oraz Gwiezdny Skarb pod 'Zrealizuj szkatu³kê'.[ENTER]Przeci¹gnij insygnia bezpoœrednio na mnie, to[ENTER]wymieniê insygnia stra¿nika na czerwone pud³o[ENTER]Zodiaku lub kwiat ¿ywio³u, a insygnia Zodiaku na[ENTER]niebieskie pud³o Zodiaku lub kwiat ¿ywio³u. Za[ENTER]pomoc¹ kwiatów ¿ywio³u mo¿esz ulepszaæ talizmany[ENTER]¿ywio³owe! Za 10 insygniów dam ci jeden kwiat.") --756
+			say("Wymieñ insygnia na skarby Aureolin, Aventurin[ENTER]oraz Gwiezdny Skarb pod 'Zrealizuj szkatu³kê'.[ENTER]Przeci¹gnij insygnia bezpoœrednio na mnie, to[ENTER]wymieniê ka¿de 10 insygniów jednego rodzaju na[ENTER]czerwone pud³o Zodiaku lub kwiat ¿ywio³u (insygnia[ENTER]Zodiaku tak¿e na niebieskie pud³o Zodiaku). Za[ENTER]pomoc¹ kwiatów ¿ywio³u mo¿esz ulepszaæ talizmany[ENTER]¿ywio³owe! Za 10 insygniów dam ci jeden kwiat.") --756
 		end
 
 		when 20438.chat."Zrealizuj szkatu³kê " begin --750
@@ -66,57 +66,44 @@ quest zodiac_milbon begin
 			warp_to_village()
 		end
 
-		when 20438.take begin
+		-- MT2009_PLUS_ZODIAC_ITEMS_V1 (the owner, 8/9 October): 10 Insygnia of one kind (33001-33024) dragged onto
+		-- Mnich Milbon - every ten for a Czerwone Pudlo Zodiaku (33029) or a Kwiat Zywiolu (our 95500, the
+		-- talismans' flower; the package's own 33031 is not used). The Zodiac Insignia (33013-33022) can still
+		-- be a Niebieskie Pudlo Zodiaku (33030) too - the armours' refine material has no other source.
+		when 20438.take with item.get_vnum() >= 33001 and item.get_vnum() <= 33024 begin
 			local vnum = item.get_vnum()
 			if pc.count_item(vnum) < 10 then
 				say("Masz za ma³o insygniów.") --773
 				return
 			end
 			local total = math.floor(pc.count_item(vnum)/10)
-			local ITEM_COUNT_LIMIT = 200 --Change 200 by the ITEM_COUNT_LIMIT number your server uses
-			if total > ITEM_COUNT_LIMIT then --Fix
+			local ITEM_COUNT_LIMIT = 200
+			if total > ITEM_COUNT_LIMIT then
 				total = ITEM_COUNT_LIMIT
 			end
-			if vnum >= 33001 and vnum <= 33012 then
-				local menu_red = select("Czerwone Pud³o Zodiaku", "Kwiat ¯ywio³u", "Close") --774, 775, 789
-				if menu_red == 3 then return end
-				if menu_red == 1 then
-					if pc.count_item(vnum) < total*10 then
-						say("Masz za ma³o insygniów.") --773
-						return
-					end
-					pc.remove_item(vnum, total*10)
-					pc.give_item2(33029, total)
-					syschat(string.format("Otrzymujesz czerwone pud³a Zodiaku: %d", total)) --777
-				elseif menu_red == 2 then
-					if pc.count_item(vnum) < total*10 then
-						say("Masz za ma³o insygniów.") --773
-						return
-					end
-					syschat(string.format("Otrzymujesz kwiaty ¿ywio³u: %d", total)) --778
-					pc.remove_item(vnum, total*10)
-					pc.give_item2(95500, total)
-				end
-			elseif vnum >= 33013 and vnum <= 33022 then
-				local menu_blue = select("Niebieskie Pud³o Zodiaku", "Kwiat ¯ywio³u", "Close") --779, 775, 789
-				if menu_blue == 3 then return end
-				if menu_blue == 1 then
-					if pc.count_item(vnum) < total*10 then
-						say("Masz za ma³o insygniów.") --773
-						return
-					end
-					pc.remove_item(vnum, total*10)
-					pc.give_item2(33030, total)
-					syschat(string.format("Otrzymujesz niebieskie pud³a Zodiaku: %d", total)) --780
-				elseif menu_blue == 2 then
-					if pc.count_item(vnum) < total*10 then
-						say("Masz za ma³o insygniów.") --773
-						return
-					end
-					syschat(string.format("Otrzymujesz kwiaty ¿ywio³u: %d", total)) --778
-					pc.remove_item(vnum, total*10)
-					pc.give_item2(95500, total)
-				end
+			local blue = vnum >= 33013 and vnum <= 33022
+			local menu
+			if blue then
+				menu = select("Czerwone Pud³o Zodiaku", "Kwiat ¯ywio³u", "Niebieskie Pud³o Zodiaku", "Zamknij")
+				if menu == 4 then return end
+			else
+				menu = select("Czerwone Pud³o Zodiaku", "Kwiat ¯ywio³u", "Zamknij")
+				if menu == 3 then return end
+			end
+			if pc.count_item(vnum) < total*10 then
+				say("Masz za ma³o insygniów.") --773
+				return
+			end
+			pc.remove_item(vnum, total*10)
+			if menu == 1 then
+				pc.give_item2(33029, total)
+				syschat(string.format("Otrzymujesz czerwone pud³a Zodiaku: %d", total)) --777
+			elseif menu == 2 then
+				pc.give_item2(95500, total)
+				syschat(string.format("Otrzymujesz kwiaty ¿ywio³u: %d", total)) --778
+			else
+				pc.give_item2(33030, total)
+				syschat(string.format("Otrzymujesz niebieskie pud³a Zodiaku: %d", total)) --780
 			end
 		end
 

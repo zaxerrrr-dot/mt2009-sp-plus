@@ -1189,7 +1189,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/atlantyda-add \
 # copies 3580000-3589999 are the temple's floors), hosted by game1 (bin/m2-render-config). The temple's data
 # (data/dungeon/zodiac: the portals of each weekday, the merchant), the monsters' motions (data/monster/12zi_*,
 # cz_*: the server times attacks by them), 51 groups (vnums 2608-2937, none of ours), 41 server texts in Polish
-# (locale_string.zodiak.txt), the map's name for the quests and /goto zodiac for game masters.
+# (locale_string.zodiak.txt), the map's name for the quests, /goto zodiac for game masters and Zlota Skrzynia
+# Zodiaku's groups (special_item_group.zodiak.txt, MT2009_PLUS_ZODIAC_ITEMS_V1).
 COPY zodiak/ /tmp/zodiak-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -1217,6 +1218,11 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
       { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
       printf '\r\n-- MT2009_PLUS_ZODIAC_V1\r\ntranslate.general.map_names[358] = "\214wi\271tynia Zodiaku"\r\n' >> "$f"; \
     done \
+ && f="$L/special_item_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(33033)([^0-9]|$)' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/special_item_group.zodiak.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(33033)([^0-9]|$)' "$f")" = 1 \
  && S="$L/settings.lua" \
  && { LC_ALL=C grep -a -q 'add_goto_info("zodiac"' "$S" || printf 'add_goto_info("zodiac", 0, 358, 3332, 14325)\r\n' >> "$S"; } \
  && rm -rf "$A" \
