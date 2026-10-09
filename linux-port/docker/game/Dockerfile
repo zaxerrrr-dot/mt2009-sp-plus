@@ -1219,15 +1219,15 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
       printf '\r\n-- MT2009_PLUS_ZODIAC_V1\r\ntranslate.general.map_names[358] = "\214wi\271tynia Zodiaku"\r\n' >> "$f"; \
     done \
  && f="$L/special_item_group.txt" \
- && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(33033)([^0-9]|$)' "$f" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(33033|951311)([^0-9]|$)' "$f" \
  && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
  && cat "$A/special_item_group.zodiak.txt" >> "$f" \
- && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(33033)([^0-9]|$)' "$f")" = 1 \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(33033|951311)([^0-9]|$)' "$f")" = 2 \
  && F="$L/mob_drop_item.txt" \
- && ! grep -q -E '^Group[[:blank:]]+MT2009_zodiak_mat_' "$F" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_zodiak_mat' "$F" \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
  && cat "$A/mob_drop_item.zodiak.txt" >> "$F" \
- && test "$(grep -c -E '^Group[[:blank:]]+MT2009_zodiak_mat_' "$F")" = 1 \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_zodiak_mat' "$F")" = 11 \
  && S="$L/settings.lua" \
  && { LC_ALL=C grep -a -q 'add_goto_info("zodiac"' "$S" || printf 'add_goto_info("zodiac", 0, 358, 3332, 14325)\r\n' >> "$S"; } \
  && rm -rf "$A" \

@@ -37,3 +37,9 @@ Group	MT2009_zodiac_chest_33033
 	25	19290	1	20 -- Zbroja Zodiaku+0
 	26	19690	1	20 -- Zbroja Plytowa Zodiaku+0
 }
+Group	MT2009_zodiac_mats_jungle
+{
+	Vnum	951311 -- Skrzynia Dzungli (30776, line 10 at 20%): Dwutlenek Tytanu or Agat (owner, 9 October)
+	1	30616	1	50 -- Dwutlenek Tytanu
+	2	30617	1	50 -- Agat
+}
