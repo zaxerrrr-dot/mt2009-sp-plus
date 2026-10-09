@@ -124,5 +124,11 @@
   "marker": "MT2009_PLUS_SHOP_PART_STACK_V1 (send)",
   "old": "\t\tSendShopLockBuyItemDBPacket(ch, ownerid, pitem, seenprice);\n\t\treturn true;\n",
   "new": "\t\tSendShopLockBuyItemDBPacket(ch, ownerid, pitem, seenprice, mt2009PartQuantity); // MT2009_PLUS_SHOP_PART_STACK_V1 (send)\n\t\treturn true;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_SEARCH_CATS_V1",
+  "old": "\t\t\t\t\t\t\tif (groupType == ITEM_WEAPON || groupType == ITEM_ARMOR\n\t\t\t\t\t\t\t\t\t|| groupType == ITEM_SKILLBOOK || groupType == ITEM_SKILLFORGET || groupType == ITEM_METIN\n\t\t\t\t\t\t\t\t\t|| groupType == ITEM_RESOURCE || groupType == ITEM_POTION\n\t\t\t\t\t\t\t\t\t|| groupType == ITEM_USE || groupType == ITEM_MATERIAL)\n\t\t\t\t\t\t\t\tcontinue;\n",
+  "new": "\t\t\t\t\t\t\t// MT2009_PLUS_SHOP_SEARCH_CATS_V1, server-patches/shopsearch2: the window's\n\t\t\t\t\t\t\t// Smocza Alchemia (dragon stones) and Polimorfia tabs.\n\t\t\t\t\t\t\tif (groupType == ITEM_WEAPON || groupType == ITEM_ARMOR\n\t\t\t\t\t\t\t\t\t|| groupType == ITEM_SKILLBOOK || groupType == ITEM_SKILLFORGET || groupType == ITEM_METIN\n\t\t\t\t\t\t\t\t\t|| groupType == ITEM_RESOURCE || groupType == ITEM_POTION\n\t\t\t\t\t\t\t\t\t|| groupType == ITEM_USE || groupType == ITEM_MATERIAL\n\t\t\t\t\t\t\t\t\t|| groupType == ITEM_DS || groupType == ITEM_SPECIAL_DS || groupType == ITEM_POLYMORPH)\n\t\t\t\t\t\t\t\tcontinue;\n"
  }
 ]

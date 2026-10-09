@@ -21,6 +21,7 @@ dostepne”). Zmiany są w `edits.json`, każda z własnym znacznikiem:
 | `… (charge)`, `(pay)` | `ikarus_shop_manager.cpp` | kupujący płaci cenę części, którą policzył rdzeń bazy |
 | `… (send lock)`, `(lock quantity)` | `ikarus_shop_manager.cpp` | ilość w pakiecie blokady |
 | `… (recv buy)` | `ikarus_shop_manager.cpp` | kupujący dostaje część jako nowy przedmiot – do ekwipunku, a gdy ten zapełnił się w trakcie zakupu, pod nogi (własność 5 min); linia na każdym rdzeniu ma resztę stosu i ceny, goście sklepu i właściciel dostają odświeżony widok, okno Domu Towarowego – `FleaMarketStackUpdate` |
+| `MT2009_PLUS_SHOP_SEARCH_CATS_V1` | `ikarus_shop_manager.cpp` | zakładka „Inne” Domu Towarowego nie ciągnie już kamieni Smoczej Alchemii (`ITEM_DS`, `ITEM_SPECIAL_DS`) ani Marmurów Polimorfii (`ITEM_POLYMORPH`) – mają w oknie własne kategorie |
 
 Zasady:
 
