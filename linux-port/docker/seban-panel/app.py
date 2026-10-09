@@ -3247,6 +3247,20 @@ def read_difficulty():
             "book_bot": values["m2_bot_book_wait"] / 3600}
 
 
+# MT2009_PLUS_DROP_BONUS_PCT_V1 (server-patches/dropbonus): the chance of bonus
+# lines on dropped weapons and armour, a percent of the game's own chance in the
+# event flag m2_drop_bonus_pct (100, 0 or no row = as the game has it). The row
+# is what a restart keeps; web_admin.quest's DROP_BONUS makes it live.
+DROP_BONUS_FLAG = "m2_drop_bonus_pct"
+DROP_BONUS_MIN, DROP_BONUS_MAX = 10, 1000
+
+
+def read_drop_bonus():
+    value = read_global_quest_flags((DROP_BONUS_FLAG,)).get(DROP_BONUS_FLAG, 0)
+    pct = 100 if value <= 0 else max(DROP_BONUS_MIN, min(DROP_BONUS_MAX, value))
+    return {"pct": pct, "min": DROP_BONUS_MIN, "max": DROP_BONUS_MAX}
+
+
 def read_autohunt():
     values = read_global_quest_flags(("m2_autohunt_item", "m2_autohunt_off"))
     return {"item": 1 if values["m2_autohunt_item"] else 0, "off": bool(values["m2_autohunt_off"])}
@@ -9646,7 +9660,7 @@ def manage():
     bot_channels = sorted(per_channel.items()) if len(per_channel) > 1 else []
     updater = update_status()
     updater["protected"] = current_settings.get("auth_enabled") == "1" and bool(session.get("seban_admin"))
-    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers())
+    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), drop_bonus=read_drop_bonus(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers())
 
 
 @app.post("/manage/difficulty")
@@ -9676,6 +9690,32 @@ def manage_difficulty():
     except (TypeError, ValueError, pymysql.MySQLError):
         flash("Wpisz poprawne liczby godzin (0–720).", "error")
     return redirect(url_for("manage"))
+
+
+@app.post("/manage/drop-bonus")
+@login_required
+def manage_drop_bonus():
+    """MT2009_PLUS_DROP_BONUS_PCT_V1: the difficulty's chance of bonuses on
+    dropped weapons and armour, live through web_admin.quest's DROP_BONUS."""
+    try:
+        pct = int(request.form.get("pct", ""))
+        if not DROP_BONUS_MIN <= pct <= DROP_BONUS_MAX:
+            raise ValueError
+    except (TypeError, ValueError):
+        flash(f"Wpisz procent od {DROP_BONUS_MIN} do {DROP_BONUS_MAX}. Nic nie zmieniono.", "error")
+        return redirect(url_for("manage") + "#trudnosc")
+    try:
+        rows("REPLACE INTO player.quest (dwPID,szName,szState,lValue) VALUES (0,%s,'',%s)", (DROP_BONUS_FLAG, pct))
+        status, queue_id = queue_game_admin_command("DROP_BONUS", pct)
+        if status == "timeout":
+            cancel_pending_admin_command(queue_id)
+    except pymysql.MySQLError:
+        flash("Nie udało się zapisać ustawienia (baza danych).", "error")
+        return redirect(url_for("manage") + "#trudnosc")
+    flash(f"Szansa na bonusy w dropie: {pct}% — działa już w grze, od następnego dropu." if status == "done" else
+          f"Szansa na bonusy w dropie: {pct}% zapisana. Gra nie odpowiedziała — zadziała przy następnym starcie serwera.",
+          "success")
+    return redirect(url_for("manage") + "#trudnosc")
 
 
 @app.post("/manage/autohunt")
