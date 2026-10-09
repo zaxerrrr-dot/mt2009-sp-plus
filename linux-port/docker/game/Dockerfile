@@ -828,15 +828,15 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-add/cube.se
 #    from Buty Zimorodka / Euforii +5..+9;
 #  * special_item_group.wiki_nowe.txt - groups 951201 / 951202, the materials the Razador and Nemere
 #    chests give at 70% (their "s951201" / "s951202" lines are in special_item_group.dungeons.txt).
+# MT2009_PLUS_NS_WIKI_RECIPES_OFF (the owner, 9 October): the 18 recipes are NOT appended for now - the items
+# stay in the world (wiki_nowe.sql) and the client, crafting them comes in a later update; cube.wiki_nowe.txt
+# is kept as it is (to switch it on: the four cube.txt lines before this change back in place of "n=0").
 COPY cube.wiki_nowe.txt special_item_group.wiki_nowe.txt /tmp/wikinowe-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; G=$L/special_item_group.txt; A=/tmp/wikinowe-add \
  && for f in "$A"/*.txt; do sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$f"; done \
  && ! grep -q 'MT2009_PLUS_NS_WIKI_ITEMS_V1' "$C" \
  && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+95120[12]([^0-9]|$)' "$G" \
- && n=$(grep -c -E '^section' "$A/cube.wiki_nowe.txt") && b=$(grep -c -E '^section' "$C") \
- && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
- && cat "$A/cube.wiki_nowe.txt" >> "$C" \
- && test "$n" -eq 18 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && n=0 \
  && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
  && cat "$A/special_item_group.wiki_nowe.txt" >> "$G" \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+95120[12]([^0-9]|$)' "$G")" -eq 2 \
