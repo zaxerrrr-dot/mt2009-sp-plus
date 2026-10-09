@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-08T07:10:10Z",
-  "statusMessage": "MT2009 PLUS 2.27.0: boty przechodza dungeony, dropki dla postaci, pasy i talizmany u botow. Klient 2.0.58.",
+  "publishedAt": "2026-10-09T04:12:39Z",
+  "statusMessage": "MT2009 PLUS 2.28.0: Ruiny Atlantydy, nowa bizuteria i klejnoty, pety u botow, CH3/CH4, mapa teleportacji. Klient 2.0.59.",
   "server": {
-    "version": "2.27.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.27.0/metin2-server-update-2.27.0.zip",
-    "sha256": "F4CAF8B37666F9A9642E1B6313700CEB52FF02550ACB31000F64B527764498C9",
-    "size": 110679321
+    "version": "2.28.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.28.0/metin2-server-update-2.28.0.zip",
+    "sha256": "86336A11202829B79AF03C93F907FF0FAD05C21559F1051AE17ACE5C2B542AD0",
+    "size": 111522127
   },
   "client": {
-    "version": "2.0.58",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.58/metin2-client-update-2.0.58.zip",
-    "sha256": "F041E9DB8080CDFF11E82A23197C5720C4D344FAE9274DBEC1A0BAD424957F14",
-    "size": 538491330
+    "version": "2.0.59",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.59/metin2-client-update-2.0.59.zip",
+    "sha256": "EFD65720A3297EF5E9EC98A5B07CFFB75E6955177C412A22983923A177664FE2",
+    "size": 563878101
   }
 }

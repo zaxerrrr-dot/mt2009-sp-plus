@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.58",
+  "version": "2.0.59",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -26,6 +26,16 @@
       "path": "MT2009-Patcher.exe.config",
       "size": 2150,
       "sha256": "7D9638D69D7F28FEFEE922A4397724AA38B0E221F8FB1354F51644C81EB9DBD2"
+    },
+    {
+      "path": "pack/at_maps.index",
+      "size": 3756,
+      "sha256": "66EA17A62E5E085EAC7B092D483339394B8906402EF286060A0A9DEFFD5775B6"
+    },
+    {
+      "path": "pack/at_mobs.index",
+      "size": 9484,
+      "sha256": "9BFD7D714F207B4C64FBD01D1CCBD6C31BC5E40912BC6811836F106C5C29A8FE"
     },
     {
       "path": "pack/az_cost01.index",
@@ -159,8 +169,8 @@
     },
     {
       "path": "pack/gamedata.index",
-      "size": 4084,
-      "sha256": "0F5052CE6C7FB5751CF98F4674A5152A577D35C4320F3B6411CFC350DE938387"
+      "size": 4092,
+      "sha256": "54B474F86D7C8887C4C14ECA50DFB98D0238263DE827C74E8C604F2C8BCB7C32"
     },
     {
       "path": "pack/gf_misc.index",
@@ -176,6 +186,11 @@
       "path": "pack/gf_nemere.index",
       "size": 19876,
       "sha256": "4074BFC37D08C2FCEDA98C0C8B715937CB796FE00F3E26AE4CFFC30804E7AFFD"
+    },
+    {
+      "path": "pack/gf_ore.index",
+      "size": 564,
+      "sha256": "B785A870895FB1CED2A7B8AD6D3E705A40B8FE513295B95BB8FF86AAC2902501"
     },
     {
       "path": "pack/gf_razador.index",
@@ -194,8 +209,8 @@
     },
     {
       "path": "pack/Index",
-      "size": 930,
-      "sha256": "B271673A337B5ED9D3839FFE5A79DAE7B130BDFB09F6A379686D9B573C43C90F"
+      "size": 959,
+      "sha256": "40D0EF635B1C3872F62C2BEB33CD3671079768B8E28DA1819FA12009128EFDAE"
     },
     {
       "path": "pack/locale.index",
@@ -204,8 +219,8 @@
     },
     {
       "path": "pack/maps.index",
-      "size": 77252,
-      "sha256": "954E5D404F1AC95483497ACFDA2347CF269CB1242DE56D7A0D4B83B08FD9C483"
+      "size": 79748,
+      "sha256": "7CEAF8F7CBAA3578181D652991B5EFE6F07FB16492888A1C0D95AA78ACA67F4C"
     },
     {
       "path": "pack/minigames.index",
@@ -224,13 +239,13 @@
     },
     {
       "path": "pack/property.index",
-      "size": 52948,
-      "sha256": "0793927A06865AFEBF2E9B1436BA27A5F96C5F6CD8428BD0C3811A17DC8E7B19"
+      "size": 53756,
+      "sha256": "486E8F93E5EF03256DD52F71F19551F14386AEC82598F2E8EF5E9279F1DA48DA"
     },
     {
       "path": "pack/root.index",
-      "size": 32396,
-      "sha256": "68C550EB19F02E7EC96C0EFBEFF46996ADD0968CEB8A7CBD2156EBC228F94D3D"
+      "size": 32412,
+      "sha256": "D65E8F31B5B66D724AB343C522F8D78FFE1184EA647E18D2209EBFCC3419670B"
     }
   ]
 }
