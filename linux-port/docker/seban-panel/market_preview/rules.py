@@ -645,8 +645,10 @@ HISTORY_BAND_LOW = 0.25
 HISTORY_BAND_HIGH = 4.0
 
 # Where an offer's reference came from (`rsrc`): nothing, the bots' price list
-# (x the bonus multipliers), the week's median (x the bonus multipliers).
-REF_NONE, REF_SHEET, REF_WEEK = 0, 1, 3
+# (x the bonus multipliers), the week's median (x the bonus multipliers), the
+# bots' own price of the line as the game worked it out
+# (MT2009_PLUS_MARKET_FAIR_EXPORT_V1, snapshot.read_fair_prices).
+REF_NONE, REF_SHEET, REF_WEEK, REF_BOTS = 0, 1, 3, 4
 
 
 def history_base(values, sheet_day):

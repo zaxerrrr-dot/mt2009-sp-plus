@@ -243,6 +243,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_awakening.h" // Digi Rasta's Ritual of Awakening and soul stones +5..+9: engine hooks, boss drop, bot prices and ritual (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1)
 #include "playerbot_explain_late.h"
 #include "playerbot_market_life.h" // MT2009_PLUS_MARKET_LIFE_V1: the owner's market list of 9 October - scroll worth, rare goods, whims, barter, the material market's test option
+#include "playerbot_market_fair_export.h" // MT2009_PLUS_MARKET_FAIR_EXPORT_V1: the bots' usual price of every market line, for the panel's market preview
 // Forward declaration: the trade layer falls through to the deterministic
 // conversation layer for ordinary whispers.
 namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* playerName, LPCHARACTER bot, const char* text); }
@@ -6824,6 +6825,7 @@ WritePlayerBotGuildStatus(dwNow);
 	if (s_bPlayerBotM2CensusPass)
 		s_dwPlayerBotM2CensusTime = dwNow;
 	RefreshPlayerBotMarketLedger(dwNow);
+	ExportPlayerBotMarketFairPrices(dwNow); // MT2009_PLUS_MARKET_FAIR_EXPORT_V1
 
 	// The per-map census the raid cap reads (GetPlayerBotsOnMap), one pass
 	// over the descriptors before the tick proper; nothing else counts them.

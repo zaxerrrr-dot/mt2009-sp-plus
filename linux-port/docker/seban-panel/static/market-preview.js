@@ -304,7 +304,7 @@ function tipHtml(o){
 var pop = $('mk-pop'), popFor = null, popPinned = false;
 function yangOf(o, value){ return o.cnt > 1 ? fmt('per_unit', {p: num(value)}) : num(value) + ' ' + T.yang; }
 function dealHtml(o){
-  var how = o.rsrc === 3 ? T.deal_how_week : T.deal_how_sheet;
+  var how = o.rsrc === 4 ? T.deal_how_bots : o.rsrc === 3 ? T.deal_how_week : T.deal_how_sheet;
   var h = '<div><b>' + esc(fmt('deal_box_offer', {p: yangOf(o, o.cnt > 1 ? o.unit : o.price)})) + '</b></div>';
   h += '<div>' + esc(fmt('deal_box_usual', {p: yangOf(o, o.ref)})) + '</div><div class="mk-muted">' + esc(how) + '</div>';
   h += '<div class="rule">' + esc(fmt('deal_box_rule', {n: D.deal_badge})) + '</div>';

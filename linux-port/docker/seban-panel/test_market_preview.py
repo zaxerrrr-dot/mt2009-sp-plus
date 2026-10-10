@@ -112,6 +112,26 @@ class Snapshot(unittest.TestCase):
             self.assertEqual(len(history.compute_samples(now=1000000)[(10, 0, 0)]), 6)
             self.assertEqual(len(history.chart(10, 0, 0, now=1000000)), 1)
 
+    def test_bots_fair_prices(self):
+        # MT2009_PLUS_MARKET_FAIR_EXPORT_V1: the bots' own price of a line wins.
+        with tempfile.TemporaryDirectory() as tmp:
+            path = snapshot.default_fair_path(tmp)
+            with open(path, "w") as fh:
+                fh.write("# header\n2\t40000\n4\t50000\n999\t7\nbad line\n")
+            fair = snapshot.read_fair_prices(path, {1, 2, 3, 4, 5, 6})
+            self.assertEqual(fair, {2: 40000, 4: 50000})
+            self.assertEqual(snapshot.read_fair_prices(path, {2}, now=os.path.getmtime(path) + 3600), {})
+            self.assertEqual(snapshot.read_fair_prices(os.path.join(tmp, "none"), {2}), {})
+        names = {(19, 0): "Miecz+9", (10, 0): "Miecz+0", (50300, 2): "Wir", (27799, 0): "Ość"}
+        snap = snapshot.build_snapshot(items(), protos(), SHOPS, OWNERS, {44: 20}, names, {}, 100, fair)
+        rows = {r[0]: r for r in snap.execute("SELECT id, ref, bkey, rsrc FROM offers")}
+        self.assertEqual(rows[2][1], 40000)
+        self.assertEqual(rows[2][2], 50)                 # 20 000 against 40 000
+        self.assertEqual(rows[2][3], rules.REF_BOTS)
+        self.assertEqual(rows[4][3], rules.REF_BOTS)     # 100 000 a piece against 50 000: dearer
+        self.assertEqual(rows[4][2], -100)
+        self.assertNotEqual(rows[3][3], rules.REF_BOTS)
+
 
 if __name__ == "__main__":
     unittest.main()

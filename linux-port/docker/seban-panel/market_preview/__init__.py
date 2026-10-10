@@ -60,8 +60,10 @@ TEXTS = {
     "deal_help": "Skąd ta okazja?",
     "deal_box_offer": "Cena tej oferty: {p}",
     "deal_box_usual": "Zwykła cena: {p}",
+    "deal_how_bots": "Cena, którą boty uznają za zwykłą dla tego przedmiotu – z jego ulepszeniem, bonusami "
+                     "i kamieniami, z tej samej wyceny, której używają przy własnych sklepach i zakupach.",
     "deal_how_sheet": "Liczona z cennika botów × bonusy przedmiotu × przelicznik yang z rat serwera "
-                      "(za mało ofert tego przedmiotu z ostatnich 7 dni).",
+                      "(gra nie podała jeszcze wyceny botów dla tej oferty, a ofert z ostatnich 7 dni jest za mało).",
     "deal_how_week": "Mediana ofert tego przedmiotu z ostatnich 7 dni × bonusy przedmiotu.",
     "deal_box_rule": "Okazja = oferta tańsza o co najmniej {n}% od zwykłej ceny.",
     "dearer": "{n}% drożej niż zwykle",
@@ -334,7 +336,8 @@ def install(app, helpers):
 
     _state["store"] = snapshot.Store(snapshot.DbSource(helpers["db"], yang_rate),
                                      snapshot.default_history_path(helpers["spool"]), names=names,
-                                     logger=app.logger)
+                                     logger=app.logger,
+                                     fair_path=snapshot.default_fair_path(helpers["spool"]))
     login_required = helpers["login_required"]
     app.add_url_rule("/economy/market", "market_preview", login_required(_page), methods=["GET"])
     app.add_url_rule("/economy/market/api/offers", "market_api_offers", login_required(_api_offers),

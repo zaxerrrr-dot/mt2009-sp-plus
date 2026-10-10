@@ -15,6 +15,16 @@
 #  (market_history.sqlite) with its unit price over its own bonus multiplier -
 #  two pieces of one vnum with different bonuses are one thing to the median -
 #  and an hour's median of each kind for the chart.
+#
+#  MT2009_PLUS_MARKET_FAIR_EXPORT_V1: an offer's usual price is the bots' own
+#  where the game has written it - one core prices every line of every shop
+#  the way a bot judges it (GetPlayerBotShopAskingPrice: the sheet, the yang
+#  curve and the world's inflation, the Cor Draconis by its stones, a level-30
+#  weapon by its average, the rare goods, the sale memory...) into
+#  playerbot_market_fair.tsv in the spool, by item id, every two minutes. The
+#  week's median and the panel's copy of the sheet are only for a line that
+#  file does not have (a line newer than the last pass, a world whose cores
+#  do not write it).
 # =============================================================================
 
 import os
@@ -39,6 +49,10 @@ FIRST_BUILD_DELAY = 0
 PROTO_SECONDS = 3600
 HISTORY_KEEP_DAYS = 8
 COUNT_CACHE_KEYS = 64
+# The bots' prices of the market's lines (playerbot_market_fair_export.h), and
+# how old the file may be to be read: a stopped core's last pass is no price.
+FAIR_FILE = "playerbot_market_fair.tsv"
+FAIR_MAX_AGE_SECONDS = 15 * 60
 # The snapshot thread stops after this long without a viewer; the next visit
 # starts it again (the history then has a gap, which the chart shows).
 STOP_AFTER_IDLE_SECONDS = 6 * 3600
@@ -152,7 +166,30 @@ class Snapshot(object):
         return [dict(zip(OFFER_COLUMNS, r)) for r in rows], total, counts, page, pages
 
 
-def build_snapshot(items, protos, shops, owners, tops, names, samples, yang_pct=100):
+def read_fair_prices(path, item_ids, now=None, max_age=FAIR_MAX_AGE_SECONDS):
+    """{item id: unit price} the bots' file holds for `item_ids`; {} when the
+    file is missing, unreadable or older than `max_age` seconds."""
+    out = {}
+    try:
+        if (now or time.time()) - os.path.getmtime(path) > max_age:
+            return out
+        with open(path, "r", encoding="ascii", errors="replace") as fh:
+            for line in fh:
+                if not line or line[0] == "#":
+                    continue
+                item_id, _, unit = line.partition("\t")
+                try:
+                    item_id, unit = int(item_id), int(unit)
+                except ValueError:
+                    continue
+                if unit > 0 and item_id in item_ids:
+                    out[item_id] = unit
+    except OSError:
+        return {}
+    return out
+
+
+def build_snapshot(items, protos, shops, owners, tops, names, samples, yang_pct=100, fair=None):
     """A Snapshot of offer lines.
 
     items: iterable of (id, owner, vnum, count, s0, s1, s2, (type0, value0, ... type6, value6), price)
@@ -163,6 +200,7 @@ def build_snapshot(items, protos, shops, owners, tops, names, samples, yang_pct=
     names: {(vnum, var): display name}
     samples: {(vnum, plus, var): (base, ...)} the week's bases (History.samples)
     yang_pct: the bots' price multiplier at the world's yang rate, percent
+    fair: {item id: unit price} the bots' own (read_fair_prices)
     """
     started = time.time()
     snap = Snapshot()
@@ -232,7 +270,10 @@ def build_snapshot(items, protos, shops, owners, tops, names, samples, yang_pct=
         else:
             # Once a kind: a busy kind has thousands of listings in the week.
             base = bases[week_key] = rules.history_base(samples.get(week_key) if samples else None, sheet_day)
-        if base:
+        bots = fair.get(item_id) if fair else None
+        if bots:
+            ref, rsrc = float(bots), rules.REF_BOTS
+        elif base:
             ref, rsrc = base * mult, rules.REF_WEEK
         else:
             ref, rsrc = sheet_day * mult, rules.REF_SHEET
@@ -502,8 +543,9 @@ class DbSource(object):
 class Store(object):
     """The current snapshot, the thread that renews it and the history."""
 
-    def __init__(self, source, history_path, names=None, logger=None):
+    def __init__(self, source, history_path, names=None, logger=None, fair_path=None):
         self.source = source
+        self.fair_path = fair_path
         self.names = names              # function(proto, vnum, socket0) -> display name
         self.logger = logger
         self.history = History(history_path)
@@ -600,7 +642,9 @@ class Store(object):
             key = (item[2], variant_of(proto, item[4]))
             if key not in names:
                 names[key] = self.names(proto, item[2], item[4]) if self.names else (proto.name if proto else "")
-        snap = build_snapshot(items, protos, shops, owners, tops, names, self.history.samples, yang_pct)
+        fair = read_fair_prices(self.fair_path, {i[0] for i in items}) if self.fair_path else {}
+        snap = build_snapshot(items, protos, shops, owners, tops, names, self.history.samples, yang_pct, fair)
+        snap.fair_lines = len(fair)
         snap.yang_pct = yang_pct
         self._record_history(snap, protos)
         return snap
@@ -634,3 +678,7 @@ class Store(object):
 
 def default_history_path(spool_dir):
     return os.path.join(str(spool_dir), "market_history.sqlite")
+
+
+def default_fair_path(spool_dir):
+    return os.path.join(str(spool_dir), FAIR_FILE)
