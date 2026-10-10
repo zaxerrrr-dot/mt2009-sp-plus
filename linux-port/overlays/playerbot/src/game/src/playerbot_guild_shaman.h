@@ -234,6 +234,11 @@ namespace
 		s_mapPlayerBotShamanEscortPending[ch->GetPlayerID()] = std::make_pair(targetMap, dwNow ? dwNow : 1);
 	}
 
+	bool IsPlayerBotDuoShaman(DWORD pid)
+	{
+		return s_mapPlayerBotShamanDuoOf.count(pid) != 0;
+	}
+
 	bool IsPlayerBotShamanDuoMember(DWORD pid)
 	{
 		return s_mapPlayerBotShamanDuos.count(pid) != 0 || s_mapPlayerBotShamanDuoOf.count(pid) != 0;

@@ -1657,12 +1657,35 @@ namespace
 	// arrival for the guild's free Shaman to be brought along
 	// (playerbot_guild_shaman.h, which comes later).
 	void NotePlayerBotExpTrip(LPCHARACTER ch, long targetMap, const char* reason, DWORD dwNow);
+	bool IsPlayerBotDuoShaman(DWORD pid);
+	// MT2009_PLUS_BOT_GUILD_SHAMAN_V1 (night test 10 October: a brought Shaman
+	// left the leader's map seconds later - "frontier_level_graduated",
+	// "m1_direct_to_*" - and the duo ended "maps_apart"): a Shaman in a duo
+	// takes none of its own map choices; a way to the services (town, shop,
+	// alchemist) ends the duo as before.
+	bool IsPlayerBotOwnMapChoiceReason(const char* reason)
+	{
+		if (!reason)
+			return false;
+		static const char* prefixes[] = { "frontier_level_graduated", "frontier_visit_complete", "m1_direct_to_",
+				"level_to_", "desert_gate_to_v", "desert_crossing_to_v", "horse_to_m", "monkey_horse" };
+		for (size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); ++i)
+			if (strncmp(reason, prefixes[i], strlen(prefixes[i])) == 0)
+				return true;
+		return false;
+	}
 
 	bool TransitionPlayerBotMap(LPCHARACTER ch, TPlayerBotAIState& state,
 			long targetMap, long targetX, long targetY, DWORD dwNow, const char* reason)
 	{
 		if (!ch)
 			return false;
+		if (IsPlayerBotOwnMapChoiceReason(reason) && IsPlayerBotDuoShaman(ch->GetPlayerID()))
+		{
+			if (!s_szPlayerBotTransitionRefusal)
+				s_szPlayerBotTransitionRefusal = "shaman_duo";
+			return false;
+		}
 		// MT2009_PLUS_OCHAO_BOTS_V1 (route): the Temple of Ochao is entered from
 		// level 95 through Straznik Swiatyni in Orc Valley, and every way out is
 		// written down (playerbot_ochao_bots.h).
