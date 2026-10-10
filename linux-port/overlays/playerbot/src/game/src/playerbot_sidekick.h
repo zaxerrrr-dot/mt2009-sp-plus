@@ -2310,6 +2310,115 @@ namespace
 		HandPlayerBotSidekickFoesToOwner(ch, GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID), rt->second, dwNow, "down");
 	}
 
+	// MT2009_PLUS_SIDEKICK_ZODIAC_V1: the companion fallen on a floor of the
+	// Swiatynia Zodiaku while its owner stands on the same floor keeps the
+	// temple's rule, as a person does: it stands up with Prisms of Revival
+	// (33025, 33032) - its own (RevivePlayerBotInZodiac spends them: the
+	// owner hands them over in the companion's window, which takes them from
+	// a companion lying too) or the owner's, by the temple's revive window
+	// ("/revive <vid>", do_revive in playerbot_zodiac_ext.cpp). The client
+	// opens that window only on the server's word (OpenReviveDialog), and
+	// nothing ever said it for somebody else's character - so a companion
+	// with no Prisms just lay there with no word ("jak zginie, to juz nie
+	// wstanie nigdy", a player on the Discord, 10 October). Now it says what
+	// it needs and the owner gets the window once a death (again on the
+	// whisper "wstan"). An owner gone from the floor leaves the rule behind:
+	// HandleDeath stands the companion up (RevivePlayerBotInZodiac) and it
+	// goes after the owner. The engine's own three minutes (dead_event) end
+	// the wait as for anybody lying that long.
+	struct TPlayerBotSidekickZodiacDown
+	{
+		DWORD dwDeaths;	// the temple's death count it spoke for
+		int iHave;		// and the Prisms it had then
+		TPlayerBotSidekickZodiacDown() : dwDeaths(0), iHave(-1) {}
+	};
+	std::map<DWORD, TPlayerBotSidekickZodiacDown> s_mapPlayerBotSidekickZodiacDown;
+	unsigned int s_uPlayerBotSidekickZodiacHolds = 0;
+
+	int CountPlayerBotSidekickZodiacPrisms(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		return (int)(ch->CountSpecifyItem(PLAYERBOT_ZODIAC_PRISM) + ch->CountSpecifyItem(PLAYERBOT_ZODIAC_PRISM_AWAKENING));
+	}
+
+	// What the companion lying on the floor says, and the owner's revive
+	// window when the owner has the Prisms and stands.
+	void TellPlayerBotSidekickZodiacDown(LPCHARACTER ch, LPCHARACTER owner, int need, int have, bool offerWindow)
+	{
+		const int ownerHas = CountPlayerBotSidekickZodiacPrisms(owner);
+		char text[384];
+		snprintf(text, sizeof(text), "Leze w Swiatyni Zodiaku. Potrzebuje %d Pryzmat%s Ozywienia, zeby wstac (mam %d). %s "
+				"Kiedy wyjdziesz ze Swiatyni, wstane sam i pojde za toba.",
+				need, need == 1 ? "u" : "ow", have,
+				ownerHas >= need ? "Wskrzes mnie swoimi (okno wskrzeszenia, albo szepnij mi \"wstan\") albo daj mi je w oknie Towarzysza."
+						: "Daj mi je w oknie Towarzysza - sam masz ich za malo, zeby mnie wskrzesic.");
+		SayPlayerBotSidekick(owner, text);
+		if (offerWindow && ownerHas >= need && !owner->IsDead() && owner->GetDesc() && !owner->GetDesc()->IsBot())
+			owner->ChatPacket(CHAT_TYPE_COMMAND, "OpenReviveDialog %u %u", (unsigned int)ch->GetVID(), (unsigned int)need);
+	}
+
+	// HandleDeath (playerbot_survival.h), on every revive attempt: true while
+	// the companion lies waiting for Prisms.
+	bool HoldPlayerBotSidekickInZodiac(LPCHARACTER ch, DWORD dwNow)
+	{
+		(void)dwNow;
+		if (!ch || !ch->IsDead() || !IsPlayerBotZodiacInstance(ch->GetMapIndex()) || s_mapPlayerBotSidekickOwner.empty())
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(pid);
+		if (!rec)
+			return false;
+		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID);
+		const int need = GetPlayerBotZodiacPrismNeed(ch);
+		const int have = CountPlayerBotSidekickZodiacPrisms(ch);
+		if (rec->bMode != PLAYERBOT_SIDEKICK_FOLLOW || !owner || owner->GetMapIndex() != ch->GetMapIndex() || have >= need)
+		{
+			std::map<DWORD, TPlayerBotSidekickZodiacDown>::iterator it = s_mapPlayerBotSidekickZodiacDown.find(pid);
+			if (it != s_mapPlayerBotSidekickZodiacDown.end())
+			{
+				sys_log(0, "PLAYERBOT_SIDEKICK: zodiac wait over pid=%u name=%s map=%ld need=%d have=%d owner_here=%d",
+						pid, ch->GetName(), ch->GetMapIndex(), need, have,
+						owner && owner->GetMapIndex() == ch->GetMapIndex() ? 1 : 0);
+				s_mapPlayerBotSidekickZodiacDown.erase(it);
+			}
+			return false;
+		}
+		TPlayerBotSidekickZodiacDown& down = s_mapPlayerBotSidekickZodiacDown[pid];
+		const DWORD deaths = ch->GetDeadCount();
+		if (down.dwDeaths != deaths || down.iHave != have)
+		{
+			const bool newDeath = down.dwDeaths != deaths;
+			down.dwDeaths = deaths;
+			down.iHave = have;
+			++s_uPlayerBotSidekickZodiacHolds;
+			TellPlayerBotSidekickZodiacDown(ch, owner, need, have, newDeath);
+			sys_log(0, "PLAYERBOT_SIDEKICK: zodiac lies for prisms pid=%u name=%s map=%ld need=%d have=%d owner_has=%d deaths=%u total=%u",
+					pid, ch->GetName(), ch->GetMapIndex(), need, have, CountPlayerBotSidekickZodiacPrisms(owner),
+					(unsigned int)deaths, s_uPlayerBotSidekickZodiacHolds);
+		}
+		return true;
+	}
+
+	// The owner's whisper "wstan" to a companion lying on its floor: what it
+	// needs again, and the revive window.
+	bool AnswerPlayerBotSidekickZodiacWhisper(LPCHARACTER owner, LPCHARACTER ch, const char* folded)
+	{
+		if (!owner || !ch || !ch->IsDead() || !IsPlayerBotZodiacInstance(ch->GetMapIndex()))
+			return false;
+		static const char* const words[] = { "wstan", "wstawaj", "wskrzes", "ozyw", "pryzmat", "pryzmaty", "revive" };
+		bool heard = false;
+		for (size_t i = 0; !heard && i < sizeof(words) / sizeof(words[0]); ++i)
+			heard = strstr(folded, words[i]) != NULL;
+		if (!heard)
+			return false;
+		if (owner->GetMapIndex() != ch->GetMapIndex())
+			return false;
+		const int need = GetPlayerBotZodiacPrismNeed(ch);
+		TellPlayerBotSidekickZodiacDown(ch, owner, need, CountPlayerBotSidekickZodiacPrisms(ch), true);
+		return true;
+	}
+
 	// Before an order takes the companion out of the owner's fight.
 	void HandPlayerBotSidekickFoesBeforeLeaving(DWORD sidekickPid, LPCHARACTER owner, const char* why)
 	{
@@ -3201,6 +3310,14 @@ namespace
 				ch->SetDungeon(after);
 		}
 		CPlayerBotNavigation::instance(targetMap).Init(targetMap);
+		// MT2009_PLUS_SIDEKICK_ZODIAC_V1: the temple of the floor it stands on
+		// now, as WarpBot gives it (playerbot_zodiac_bots.h). Placed after its
+		// owner it was never a member of the temple it went into - nor did it
+		// leave the one it came out of: its death flags went along to the next
+		// map, and a temple it still counted in outlived the party and was
+		// closed under a member that had walked away.
+		if (oldMap != targetMap)
+			SyncPlayerBotZodiac(ch, targetMap);
 		state.lLastX = x;
 		state.lLastY = y;
 		state.dwLastMeaningfulActivityTime = dwNow;
@@ -5335,7 +5452,13 @@ namespace
 	{
 		if (sk->IsDead())
 		{
-			snprintf(out, size, "lezy - zaraz wstanie");
+			// MT2009_PLUS_SIDEKICK_ZODIAC_V1: on a temple floor, waiting for Prisms.
+			if (IsPlayerBotZodiacInstance(sk->GetMapIndex()) &&
+					s_mapPlayerBotSidekickZodiacDown.find(sk->GetPlayerID()) != s_mapPlayerBotSidekickZodiacDown.end())
+				snprintf(out, size, "lezy - potrzebuje %d Pryzmat%s Ozywienia", GetPlayerBotZodiacPrismNeed(sk),
+						GetPlayerBotZodiacPrismNeed(sk) == 1 ? "u" : "ow");
+			else
+				snprintf(out, size, "lezy - zaraz wstanie");
 			return;
 		}
 		// MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: what it was sent for, and how many so far.
@@ -7395,6 +7518,10 @@ namespace
 			return false;
 		char folded[160];
 		FoldPlayerBotChatText(text, folded, sizeof(folded));
+		// MT2009_PLUS_SIDEKICK_ZODIAC_V1: "wstan" to a companion lying on a
+		// temple floor - the Prisms it needs, and the revive window.
+		if (AnswerPlayerBotSidekickZodiacWhisper(from, bot, folded))
+			return true;
 		bool handled = false;
 		const int stance = GetPlayerBotSidekickStanceHeard(folded);
 		if (stance >= 0)
@@ -8752,16 +8879,53 @@ namespace
 	// (HandlePostDeathRecovery walks away from lDeathX/lDeathY). No breaking
 	// off at a fifth of its health either: the owner is the one who retreats,
 	// and the companion goes with the owner.
+	// MT2009_PLUS_SIDEKICK_ZODIAC_V1: when the companion's rest after a death
+	// began (KeepPlayerBotSidekickAlive), and the longest it may last.
+	std::map<DWORD, DWORD> s_mapPlayerBotSidekickRestSince;
+	const DWORD PLAYERBOT_SIDEKICK_REST_MAX_MS = 90 * 1000;
+
 	bool KeepPlayerBotSidekickAlive(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER owner, DWORD dwNow)
 	{
 		UseHealthPotion(ch, state, dwNow);
 		UseManaPotion(ch, state, dwNow);
 		state.bTacticalRetreat = false;
 		if (!state.bRecoveringAfterDeath)
+		{
+			s_mapPlayerBotSidekickRestSince.erase(ch->GetPlayerID());
 			return false;
+		}
 		state.lDeathX = 0;
 		state.lDeathY = 0;
+		// MT2009_PLUS_SIDEKICK_ZODIAC_V1: the rest heals a twentieth of the
+		// health a second (RestHealPlayerBot) and is over in a quarter of a
+		// minute; one still going after a minute and a half is one the heal
+		// cannot end, and the companion stood "wracajac do sil" by itself for
+		// good ("stoi w miejscu i pisze odpoczywa, od 20 minut", 10 October).
+		// It ends there, on whatever health it has.
+		{
+			std::map<DWORD, DWORD>::iterator since = s_mapPlayerBotSidekickRestSince.find(ch->GetPlayerID());
+			if (since == s_mapPlayerBotSidekickRestSince.end())
+				s_mapPlayerBotSidekickRestSince[ch->GetPlayerID()] = dwNow;
+			else if (dwNow - since->second >= PLAYERBOT_SIDEKICK_REST_MAX_MS)
+			{
+				sys_log(0, "PLAYERBOT_SIDEKICK: rest ended by time pid=%u name=%s hp=%d/%d map=%ld stun=%d",
+						ch->GetPlayerID(), ch->GetName(), ch->GetHP(), ch->GetMaxHP(), ch->GetMapIndex(),
+						ch->IsStun() ? 1 : 0);
+				s_mapPlayerBotSidekickRestSince.erase(since);
+				s_setPlayerBotEmergencyRest.erase(ch->GetPlayerID());
+				EndPlayerBotRecovery(ch, state);
+				return false;
+			}
+		}
 		if (!HandlePostDeathRecovery(ch, state, dwNow))
+		{
+			s_mapPlayerBotSidekickRestSince.erase(ch->GetPlayerID());
+			return false;
+		}
+		// MT2009_PLUS_SIDEKICK_ZODIAC_V1: an owner on another map is followed
+		// at once and the rest goes on beside the owner - it waited out the
+		// rest where it had stood up, out of the temple the owner had left.
+		if (owner && owner->GetMapIndex() != ch->GetMapIndex() && !IsPlayerBotSidekickHolding(ch))
 			return false;
 		// One told to wait heals where it fell and walks back to its spot after.
 		if (!owner || IsPlayerBotSidekickHolding(ch))
@@ -11055,6 +11219,9 @@ namespace
 			FinishPlayerBotSidekickSetup(ch, *rec);
 		}
 		KeepPlayerBotSidekickPath(ch, *rec);
+		// MT2009_PLUS_SIDEKICK_ZODIAC_V1: standing, so no longer waiting for Prisms.
+		if (!s_mapPlayerBotSidekickZodiacDown.empty())
+			s_mapPlayerBotSidekickZodiacDown.erase(ch->GetPlayerID());
 		TopUpPlayerBotSidekickSkillPoints(ch);
 		TPlayerBotSidekickRuntime& rt = s_mapPlayerBotSidekickRuntime[ch->GetPlayerID()];
 		ResendPlayerBotSidekickView(ch, rt, dwNow);	// MT2009_PLUS_SIDEKICK_REDRESS_V1

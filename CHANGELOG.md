@@ -17,6 +17,17 @@ every version here.
 
 ---
 
+## 2.29.1 — 2026-10-10 — Poprawka Towarzysza w Świątyni Zodiaku
+
+Tylko aktualizacja serwera – klient zostaje 2.0.60.
+
+- **Towarzysz w Świątyni Zodiaku:**
+  - Gdy padnie na piętrze, na którym jesteś, wstaje na swoich Pryzmatach Ożywienia – możesz mu je dać w oknie Towarzysza, także gdy leży.
+  - Gdy ma ich za mało, pisze do ciebie, ilu potrzebuje, i otwiera ci okno wskrzeszenia (jeśli masz Pryzmaty). Szept „wstań” przypomina o tym ponownie.
+  - Gdy wyjdziesz ze świątyni, Towarzysz od razu wstaje i idzie za tobą – nie stoi już w miejscu z napisem „odpoczywa”.
+  - Po wyjściu ze świątyni Towarzysz i boty z drużyny nie zabierają ze sobą stanu ze świątyni (flagi śmierci), a zamknięcie piętra nie wyrzuca już Towarzysza z gry. Poprawiony też możliwy błąd serwera po zamknięciu świątyni.
+- Bot, który po śmierci nie mógł wstać, wstaje sam po 30 sekundach, a odpoczynek Towarzysza po śmierci trwa najwyżej półtorej minuty.
+
 ## 2.29.0 — 2026-10-10 — Świątynia Zodiaku
 
 > ⚠️ **Ważne, jeśli edytujesz pliki bazy danych** (Edytor bazy danych w panelu zaawansowanym – własne nazwy, bonusy, opisy przedmiotów albo umiejętności): ta aktualizacja zmienia dane przedmiotów w kliencie. Po aktualizacji serwera i klienta do 2.0.60 **musisz pobrać nową paczkę ZIP z panelu i rozpakować ją do klienta**, inaczej nowe przedmioty (np. bronie i zbroje Zodiaku) mogą nie działać, a opisy nie będą się zgadzać.

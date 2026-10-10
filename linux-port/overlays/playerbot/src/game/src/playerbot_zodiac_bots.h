@@ -25,7 +25,11 @@
 //     deaths); a bot without enough of them stands up for free - restart_here
 //     would only send it the temple's revive window, which a bot never answers,
 //     and leave it lying for good. The temple's death flags are cleared once
-//     the bot is out.
+//     the bot is out. MT2009_PLUS_SIDEKICK_ZODIAC_V1: except a person's own
+//     Towarzysz while the person stands on its floor - it keeps the temple's
+//     rule and waits for Prisms (HoldPlayerBotSidekickInZodiac,
+//     playerbot_sidekick.h); every map change of a bot (TransitionPlayerBotMap,
+//     PlacePlayerBotSidekickAt) syncs its temple now, not WarpBot's alone.
 //   - the person's Anima Spheres pay the entry: the quest zodiac_temples does
 //     not count a bot of the party (pc.is_playerbot()).
 //
@@ -99,6 +103,29 @@ namespace
 #else
 		(void)bot;
 		(void)mapIndex;
+#endif
+	}
+
+	// MT2009_PLUS_SIDEKICK_ZODIAC_V1: the temple's death count and flags of a
+	// bot that stands outside every temple floor - one taken off a floor some
+	// other way than a warp of this core's (the floor closed under it and the
+	// bot loaded anew on 358, an old one from before this was kept) still had
+	// "12zi_temple.IsDead" and "PrismNeed", and on its next floor the temple
+	// asked it for the Prisms of the deaths before. Membership is not touched
+	// here: SyncPlayerBotZodiac is the only one that sets it.
+	void ClearPlayerBotZodiacFlagsOutside(LPCHARACTER bot)
+	{
+#ifdef ENABLE_12ZI
+		if (!bot || IsPlayerBotZodiacInstance(bot->GetMapIndex()))
+			return;
+		if (bot->GetDeadCount() != 0)
+			bot->SetDeadCount(0);
+		if (bot->GetQuestFlag("12zi_temple.IsDead") != 0)
+			bot->SetQuestFlag("12zi_temple.IsDead", 0);
+		if (bot->GetQuestFlag("12zi_temple.PrismNeed") != 0)
+			bot->SetQuestFlag("12zi_temple.PrismNeed", 0);
+#else
+		(void)bot;
 #endif
 	}
 
