@@ -185,6 +185,14 @@ SKILL_MIN_INTERVAL = 1.5
 # hunter takes no step - to a drop, to its target, back to its start - for
 # this long; a drop at its feet is still picked up, which moves nothing.
 SKILL_MOTION_HOLD = 1.3
+# MT2009_PLUS_AUTOHUNT_COOLDOWN_SETTLE_V1: a skill cast the very moment the
+# client's cooldown ended sometimes did not go in - the server's copy of the
+# clock had not ended yet and refused it, while the client had already started
+# a new cooldown, so a buff (Czarowana Zbroja) stayed off for a whole cycle.
+# A slot is cast only this long after its cooldown ended (SkillReady); a buff
+# waits a little longer, since a refused buff costs its whole duration.
+SKILL_COOLDOWN_SETTLE = 0.4
+BUFF_COOLDOWN_SETTLE = 1.0
 ITEM_MIN_INTERVAL = 1
 STATUS_INTERVAL = 0.3
 MELEE_REACH = 200
@@ -1022,14 +1030,37 @@ def BuffSeconds(slot, skillIndex):
     return seconds if seconds > 0 else RIDER_FALLBACK_BUFF_SECONDS
 
 
-def CanCastNow(slot, skillIndex):
-    """What the client asks before it sends a cast (__CheckSkillUsable): off
-    its cooldown, learned, and the mana - or for a skill paid in health, the
-    health - for it."""
+def SkillReady(slot, skillIndex):
+    """Off the client's cooldown, and off it long enough that the server's
+    copy of the clock has ended too (SKILL_COOLDOWN_SETTLE). The client says
+    how long ago the slot was cast (player.GetSkillCoolTime: the cooldown and
+    the time since the cast); a client that cannot say is taken at its
+    IsSkillCoolTime alone, as before."""
     try:
         if player.IsSkillCoolTime(slot):
             return False
     except Exception:
+        return False
+    ask = getattr(player, 'GetSkillCoolTime', None)
+    if ask is None:
+        return True
+    try:
+        coolTime, elapsed = ask(slot)
+        coolTime = float(coolTime)
+        elapsed = float(elapsed)
+    except Exception:
+        return True
+    if coolTime <= 0.0:
+        return True
+    settle = BUFF_COOLDOWN_SETTLE if skillIndex in BUFF_SKILLS else SKILL_COOLDOWN_SETTLE
+    return elapsed - coolTime >= settle
+
+
+def CanCastNow(slot, skillIndex):
+    """What the client asks before it sends a cast (__CheckSkillUsable): off
+    its cooldown (and the server's: SkillReady), learned, and the mana - or
+    for a skill paid in health, the health - for it."""
+    if not SkillReady(slot, skillIndex):
         return False
     if SkillLevelOf(slot) <= 0:
         return False
@@ -2581,7 +2612,7 @@ class Hunter(object):
             if not slot or now < self.skillNext[index]:
                 continue
             skillIndex = player.GetSkillIndex(slot)
-            if not skillIndex or player.IsSkillCoolTime(slot):
+            if not skillIndex or not SkillReady(slot, skillIndex):  # MT2009_PLUS_AUTOHUNT_COOLDOWN_SETTLE_V1
                 continue
             if skill.IsToggleSkill(skillIndex) and player.IsSkillActive(slot):
                 continue
@@ -3103,7 +3134,7 @@ class Hunter(object):
             if not slot or now < self.skillNext[index]:
                 continue
             skillIndex = player.GetSkillIndex(slot)
-            if skillIndex not in HORSE_SKILLS or player.IsSkillCoolTime(slot):
+            if skillIndex not in HORSE_SKILLS or not SkillReady(slot, skillIndex):  # MT2009_PLUS_AUTOHUNT_COOLDOWN_SETTLE_V1
                 continue
             if SkillLevelOf(slot) <= 0:
                 continue
