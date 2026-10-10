@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-10T07:45:29Z",
-  "statusMessage": "MT2009 PLUS 2.29.0: Swiatynia Zodiaku, staly bonus PD, opisy umiejetnosci, kanaly CH3/CH4 ustawiane przez patcher. Klient 2.0.60.",
+  "publishedAt": "2026-10-10T12:53:59Z",
+  "statusMessage": "MT2009 PLUS 2.29.1: poprawka Towarzysza w Swiatyni Zodiaku. Klient 2.0.60 bez zmian.",
   "server": {
-    "version": "2.29.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.29.0/metin2-server-update-2.29.0.zip",
-    "sha256": "4A3DFFB7625B0BCB7CCDA8C18F73A232DD6E7D687132CAA5750E851603014BA1",
-    "size": 112688738
+    "version": "2.29.1",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.29.1/metin2-server-update-2.29.1.zip",
+    "sha256": "710D60DE51D688CEC920C1DC68A9384CEB7B3BAB7C94EC45BD8B0BFDE0AB56BE",
+    "size": 112597426
   },
   "client": {
     "version": "2.0.60",
