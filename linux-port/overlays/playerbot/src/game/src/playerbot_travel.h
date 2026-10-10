@@ -1676,6 +1676,9 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_SIDEKICK_ZODIAC_V1: playerbot_zodiac_bots.h, later.
+	void SyncPlayerBotZodiac(LPCHARACTER bot, long mapIndex);
+
 	bool TransitionPlayerBotMap(LPCHARACTER ch, TPlayerBotAIState& state,
 			long targetMap, long targetX, long targetY, DWORD dwNow, const char* reason)
 	{
@@ -1828,6 +1831,12 @@ namespace
 		}
 		ch->Stop();
 		ch->SendMovePacket(FUNC_MOVE, 0, targetX, targetY, 0, dwNow);
+		// MT2009_PLUS_SIDEKICK_ZODIAC_V1: the temple of the floor it stands on
+		// now (playerbot_zodiac_bots.h) - a party bot walked out of a temple
+		// floor after its person ("party_dungeon_out") kept its membership and
+		// its death flags; WarpBot was the only map change that set them.
+		if (oldMap != targetMap)
+			SyncPlayerBotZodiac(ch, targetMap);
 		if (wasRiding && ch->GetHorseHealth() > 0 && ch->GetHorseStamina() > 0)
 			ch->StartRiding();
 		ch->Save();

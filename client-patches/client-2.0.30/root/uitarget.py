@@ -161,6 +161,12 @@ def IsDropPreviewTarget(vid):
 		return False
 	return chr.GetInstanceType(vid) in (chr.INSTANCE_TYPE_ENEMY, getattr(chr, "INSTANCE_TYPE_STONE", 2))
 
+# MT2009_PLUS_SIDEKICK_ZODIAC_V1: "Wskrzeszenie" on a character's target board
+# in the Swiatynia Zodiaku - the temple's revive window for somebody else (a
+# fallen Towarzysz, a party member): "/revivedialog <vid>", and the window's
+# "Tak" spends the Prisms of Revival ("/revive <vid>").
+TARGET_BUTTON_REVIVE = getattr(localeInfo, "TARGET_BUTTON_REVIVE", "Wskrzeszenie")
+
 class TargetBoard(ui.ThinBoard):
 
 	BUTTON_NAME_LIST = (
@@ -184,6 +190,7 @@ class TargetBoard(ui.ThinBoard):
 		localeInfo.TARGET_BUTTON_REPORT,
 		"Sprawdz",
 		"EQ",
+		TARGET_BUTTON_REVIVE,
 	)
 
 	GRADE_NAME =	{
@@ -317,6 +324,7 @@ class TargetBoard(ui.ThinBoard):
 		# (/gmpanel_view_equip) - oba tylko gdy constInfo.IsGM (RefreshButton).
 		self.buttonDict["Sprawdz"].SAFE_SetEvent(self.__OnGMCheck)
 		self.buttonDict["EQ"].SAFE_SetEvent(self.__OnEQClick)
+		self.buttonDict[TARGET_BUTTON_REVIVE].SAFE_SetEvent(self.__OnZodiacRevive)
 
 		self.affectDict = {}
 
@@ -858,6 +866,18 @@ class TargetBoard(ui.ThinBoard):
 	def __OnEmotionAllow(self):
 		net.SendChatPacket("/emotion_allow %d" % (self.vid))
 
+	def __OnZodiacRevive(self):
+		net.SendChatPacket("/revivedialog %d" % (self.vid))
+
+	def __IsInZodiacTemple(self):
+		if not getattr(app, "ENABLE_12ZI", 0):
+			return False
+		try:
+			import background
+			return str(background.GetCurrentMapName()) == "metin2_12zi_stage"
+		except Exception:
+			return False
+
 	def __OnVoteBlockChat(self):
 		cmd = "/vote_block_chat %s" % (self.nameString)
 		net.SendChatPacket(cmd)
@@ -945,6 +965,11 @@ class TargetBoard(ui.ThinBoard):
 		if constInfo.IsGM:
 			self.__ShowButton("Sprawdz")
 			self.__ShowButton("EQ")
+
+		# MT2009_PLUS_SIDEKICK_ZODIAC_V1: the temple's revive window for this
+		# character (the server answers only for one lying on a temple floor).
+		if self.__IsInZodiacTemple():
+			self.__ShowButton(TARGET_BUTTON_REVIVE)
 
 		self.__ArrangeButtonPosition()
 
