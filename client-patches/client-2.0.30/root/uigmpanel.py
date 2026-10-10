@@ -78,6 +78,9 @@ GMP_TEXTS = {
 	'GMP_NICK': 'Nick:',
 	'GMP_SEARCH': 'Szukaj',
 	'GMP_SEARCH_LABEL': 'Szukaj:',
+	'GMP_SEARCH_BONUS': 'Szukaj bonusu:',
+	'GMP_SEARCH_STONE': 'Szukaj kamienia:',
+	'GMP_BACK': 'Wroc',
 	'GMP_MY_TARGET': 'Moj cel',
 	'GMP_SEARCHING': 'Szukam...',
 	'GMP_FOUND': 'Znaleziono: %s',
@@ -421,22 +424,26 @@ SPAWN_TIERS = [
 ]
 
 
-
+# MT2009_PLUS_GM_PANEL_TP_MAPS_V1: only places this client can draw (Kiciamol,
+# 9 October). The three guild villages, Cape Dragon Fire, Dawnmist Wood, Bay
+# Black Sand, Mount Thunder and the ice dungeon have no map in our packs (the
+# base packs, maps, gf_*, az_*, at_maps, zodiak_maps...): a warp there crashed
+# the client or left the character stuck. Beran-Setaou's lair (maps), the
+# Devil's Catacomb (catacomb_map) and Razador's (gf_razador) are in our packs
+# and stay; the Catacomb's warp is its first floor's entry (the quest's base
+# 3072 12032 + floor1_entry 73 63), not the map's corner (20, 20). Their names
+# stay for the lookup's map names.
 TELEPORT_GROUPS = [
 	("GMP_TP_CITIES", [
 		("GMP_TP_SHINSOO_1", 4743, 9548), ("GMP_TP_SHINSOO_2", 3584, 8704),
 		("GMP_TP_CHUNJO_1", 659, 1556), ("GMP_TP_CHUNJO_2", 1455, 2400),
 		("GMP_TP_JINNO_1", 9635, 2797), ("GMP_TP_JINNO_2", 8704, 2560),
-		("GMP_TP_GVILLAGE_1", 2306, 2319), ("GMP_TP_GVILLAGE_2", 6402, 4111),
-		("GMP_TP_GVILLAGE_3", 2818, 8463),
 	]),
 	("GMP_TP_MAPS", [
 		("GMP_TP_SEUNGRYONG", 2704, 7399), ("GMP_TP_YONGBI", 2219, 5027),
 		("GMP_TP_SOHAN", 3752, 1749), ("GMP_TP_FIRELAND", 5978, 6222),
 		("GMP_TP_GHOSTWOOD", 2901, 57), ("GMP_TP_REDWOOD", 11196, 700),
 		("GMP_TP_GIANTS", 8277, 7634), ("GMP_TP_WLPASS", 6201, 11875),
-		("GMP_TP_CAPE", 11048, 17888), ("GMP_TP_DAWNMIST", 12257, 16820),
-		("GMP_TP_BLACKSAND", 10879, 16498), ("GMP_TP_THUNDER", 11341, 16554),
 	]),
 	("GMP_TP_DUNGEONS", [
 		("GMP_TP_HWANG", 5537, 1450), ("GMP_TP_DEVILTOWER", 1393, 8547),
@@ -444,8 +451,8 @@ TELEPORT_GROUPS = [
 		("GMP_TP_MONKEY_E", 7752, 4477), ("GMP_TP_MONKEY_N", 1352, 6525),
 		("GMP_TP_MONKEY_H", 1352, 7293), ("GMP_TP_EXILE1", 100, 12078),
 		("GMP_TP_EXILE2", 2413, 12754), ("GMP_TP_BERAN", 8453, 10742),
-		("GMP_TP_CATACOMB", 3092, 12052), ("GMP_TP_RAZADOR", 7808, 6528),
-		("GMP_TP_ICE", 6304, 10882), ("GMP_TP_LABYRINTH", 6156, 12810),
+		("GMP_TP_CATACOMB", 3145, 12095), ("GMP_TP_RAZADOR", 7808, 6528),
+		("GMP_TP_LABYRINTH", 6156, 12810),
 	]),
 	("GMP_TP_SPECIAL", [
 		("GMP_TP_OX", 8965, 246), ("GMP_TP_WEDDING", 8223, 220),
@@ -1048,6 +1055,12 @@ class GMPanelWindow(ui.BoardWithTitleBar):
 		self.itemLabel = ""
 		self.bonusTypes = ["0"] * 7
 		self.stones = ["0"] * 3
+		# MT2009_PLUS_GM_PANEL_ITEMS_SEARCH_V1: the search's text of each mode,
+		# and where the item list stood when a bonus or a stone was picked:
+		# "Back" returns to both (Kiciamol).
+		self.itemsSearchSaved = {}
+		self.itemsReturnScroll = 0
+		self.itemsReturnCategory = None
 		self.itemPlace = "inv"
 		self.itemsFilter = ""
 
@@ -2031,10 +2044,15 @@ class GMPanelWindow(ui.BoardWithTitleBar):
 		m = self.__Mem
 		rows = []
 		search = self.__Field("item_search", 24)
+		# The search has a text of its own for an item, a bonus and a stone,
+		# and while a bonus or a stone is picked its button is "Back": the word
+		# typed for an item no longer filters the bonuses (Kiciamol, 9 October).
+		self.itemsSearchLabel = Label(T("GMP_SEARCH_LABEL"))
+		self.itemsClearButton = self.__Button(T("GMP_CLEAR"), m(self.__OnItemsClearSearch))
 		rows.append(FormRow(self, p, [
-			("label", Label(T("GMP_SEARCH_LABEL"))),
+			("label", self.itemsSearchLabel),
 			("edit", search, 80, 1),
-			("button", self.__Button(T("GMP_CLEAR"), m(self.__OnItemsClearSearch)), 60),
+			("button", self.itemsClearButton, 70),
 		]))
 		categories = list(interfacemodule.GM_PANEL_CATEGORY_LIST) + [("stone", T("GMP_CAT_STONES"))]
 		self.itemCategoryRow = GridRow(self, p, 6, [(label, m(self.__OnItemCategory), (code,)) for (code, label) in categories])
@@ -2093,23 +2111,45 @@ class GMPanelWindow(ui.BoardWithTitleBar):
 		self.__RefreshItemsList()
 
 	def __OnItemsClearSearch(self):
+		if self.itemsMode != "item":
+			self.__SetItemsMode("item")
+			return
 		self.fields["item_search"].SetText("")
 		self.itemsFilter = ""
 		self.__RefreshItemsList()
 
 	def __SetItemsMode(self, mode, index=0):
+		oldMode = self.itemsMode
+		if "item_search" in self.fields:
+			self.itemsSearchSaved[oldMode] = self.fields["item_search"].GetText()
+			text = self.itemsSearchSaved.get(mode, "") if mode == "item" else ""
+			self.fields["item_search"].SetText(text)
+			self.itemsFilter = text
+		if oldMode == "item" and mode != "item":
+			self.itemsReturnScroll = self.scroll.get("items", 0)
+			self.itemsReturnCategory = self.itemsCategory
 		self.itemsMode = mode
 		self.itemsModeIndex = index
 		if mode == "item":
 			self.itemsHeader.SetText(T("GMP_PICK_ITEM"))
+			self.itemsSearchLabel.SetText(T("GMP_SEARCH_LABEL"))
+			self.itemsClearButton.SetText(T("GMP_CLEAR"))
 		elif mode == "bonus":
 			self.itemsHeader.SetText(TF("GMP_PICK_BONUS", index + 1))
+			self.itemsSearchLabel.SetText(T("GMP_SEARCH_BONUS"))
+			self.itemsClearButton.SetText(T("GMP_BACK"))
 		elif mode == "stone":
 			self.itemsHeader.SetText(TF("GMP_PICK_STONE", index + 1))
+			self.itemsSearchLabel.SetText(T("GMP_SEARCH_STONE"))
+			self.itemsClearButton.SetText(T("GMP_BACK"))
 		self.__MarkCategory()
 		self.__RefreshItemsList()
 		if self.section == "items":
-			self.scroll["items"] = 0
+			# Back to the item list: where it stood, if its category is the same.
+			if mode == "item" and oldMode != "item" and self.itemsCategory == self.itemsReturnCategory:
+				self.scroll["items"] = self.itemsReturnScroll
+			else:
+				self.scroll["items"] = 0
 			self.__Relayout()
 
 	def __ApplyLabel(self, suffix):
@@ -2483,6 +2523,9 @@ class GMPanelWindow(ui.BoardWithTitleBar):
 		else:
 			return
 		self.SetStatus(TF("GMP_PICKED", label))
+		# MT2009_PLUS_GM_PANEL_SPAWN_PICK_V1: a pick closes the list, as Close
+		# list would (Kiciamol, 9 October).
+		self.__SetSpawnMode(None)
 
 	def __OnBotSpawn(self, action):
 		pid = SafeToken(self.fields["bot_pid"].GetText())
