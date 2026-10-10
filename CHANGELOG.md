@@ -32,7 +32,7 @@ every version here.
 >
 > Jeśli uruchamiasz grę przez **MT2009-Patcher.exe**, nie musisz nic robić ręcznie – patcher sam pobierze aktualne pliki z panelu serwera przed startem gry.
 
-**Świątynia Zodiaku** (Autor: Digi Rasta) – nowy dungeon drużynowy na poziom 105+.
+**Świątynia Zodiaku** (Autor: Digi Rasta) – nowy dungeon drużynowy.
 
 - **Wejście:** Teleporter → „Świątynia Zodiaku”. Na mapie jest 12 portali znaków. Każdego dnia otwarte są dwa: pon. Szczur + Bawół, wt. Tygrys + Królik, śr. Smok + Wąż, czw. Koń + Koza, pt. Małpa + Kogut, sob. Pies + Świnia, a w niedzielę wszystkie.
 - **Kule Animy:** wejście kosztuje 12 kul. Na start każdy ma 36, potem odnawia się 1 na godzinę (najwyżej 36). Działają też Pergamin Sfer i Znak Strażnika.
