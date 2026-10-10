@@ -101,6 +101,39 @@ if app.ENABLE_ELEMENTAL_TARGET:
 	def HAS_FLAG(value, flag):
 		return (value & flag) == flag
 
+# MT2009_PLUS_TARGET_POISON_GAUGE_V1: whether a character in view is poisoned,
+# for its gauge (Kiciamol, 9 October). chrmgr.HasAffectByVID and chr.AFF_POISON
+# are in our exe (PythonCharacterManagerModule.cpp, PythonCharacterModule.cpp);
+# the target's affect list (chr.AFFECT_POISON) is the fallback. Any error is
+# "not poisoned": the gauge stays red.
+def IsPoisonedTarget(vid, affects):
+	if not vid:
+		return False
+	try:
+		import chrmgr
+		if chrmgr.HasAffectByVID(vid, chr.AFF_POISON):
+			return True
+	except Exception:
+		pass
+	try:
+		return chr.AFFECT_POISON in affects
+	except Exception:
+		return False
+
+# The green picture comes with the client's root pack
+# (client-patches/client-2.0.30/atlas/d_/ymir work/ui/pattern/gauge_green.tga);
+# a client without it keeps the red gauge instead of an empty one.
+POISON_GAUGE_IMAGE = "d:/ymir work/ui/pattern/gauge_green.tga"
+_poisonGaugeImage = {}
+
+def HasPoisonGaugeImage():
+	if "exists" not in _poisonGaugeImage:
+		try:
+			_poisonGaugeImage["exists"] = bool(app.IsExistFile(POISON_GAUGE_IMAGE))
+		except Exception:
+			_poisonGaugeImage["exists"] = False
+	return _poisonGaugeImage["exists"]
+
 class CompactDropButton(ui.Button):
 	def __init__(self):
 		ui.Button.__init__(self)
@@ -289,6 +322,9 @@ class TargetBoard(ui.ThinBoard):
 
 		self.name = name
 		self.hpGauge = hpGauge
+		self.hpGaugeColor = "red" # MT2009_PLUS_TARGET_POISON_GAUGE_V1
+		self.hpGaugeValue = (0, 100)
+		self.poisonCheckTime = 0.0
 		self.hpText = hpText
 		self.bonusText = bonusText # MT2009_PLUS_TARGET_BONUS_V1
 		self.closeButton = closeButton
@@ -451,6 +487,8 @@ class TargetBoard(ui.ThinBoard):
 		self.name.SetHorizontalAlignCenter()
 		self.name.SetWindowHorizontalAlignCenter()
 		self.hpGauge.Hide()
+		self.__SetHPGaugeColor("red") # MT2009_PLUS_TARGET_POISON_GAUGE_V1
+		self.poisonCheckTime = 0.0
 		if self.mobDropButton:
 			self.mobDropButton.Hide()
 			self.closeButton.Show()
@@ -607,7 +645,7 @@ class TargetBoard(ui.ThinBoard):
 		self.__ShowHPBoard()
 		self.hpText.SetText("...")
 
-		self.hpGauge.SetPercentage(hpPercentage, 100)
+		self.__SetHPGauge(hpPercentage, 100)
 		# HP_REAL_VALUES: tekst na pasku nie jest juz liczony z procentu -
 		# ustawia go SetRealHP() po otrzymaniu prawdziwych liczb z serwera
 		# (komenda "TargetHP" - patrz game.py).
@@ -625,8 +663,37 @@ class TargetBoard(ui.ThinBoard):
 		self.__ShowHPBoard()
 
 		if maxHp > 0:
-			self.hpGauge.SetPercentage(hp, maxHp)
+			self.__SetHPGauge(hp, maxHp)
 		self.hpText.SetText("%d/%d" % (hp, maxHp))
+
+	# MT2009_PLUS_TARGET_POISON_GAUGE_V1: the gauge green while the target is
+	# poisoned (Kiciamol, 9 October). The value is kept, because a new picture
+	# draws the gauge full.
+	def __SetHPGauge(self, curValue, maxValue):
+		self.hpGaugeValue = (curValue, maxValue)
+		self.hpGauge.SetPercentage(curValue, maxValue)
+
+	def __SetHPGaugeColor(self, color):
+		if not self.hpGauge or color == self.hpGaugeColor:
+			return
+		if color != "red" and not HasPoisonGaugeImage():
+			return
+		self.hpGaugeColor = color
+		try:
+			self.hpGauge.imgGauge.LoadImage("d:/ymir work/ui/pattern/gauge_%s.tga" % color)
+		except Exception:
+			return
+		(curValue, maxValue) = self.hpGaugeValue
+		self.hpGauge.SetPercentage(curValue, maxValue)
+
+	def __RefreshPoisonGauge(self):
+		import clientclock
+		now = clientclock.Now()
+		if now < self.poisonCheckTime:
+			return
+		self.poisonCheckTime = now + 0.2
+		poisoned = IsPoisonedTarget(self.vid, self.affectDict or {})
+		self.__SetHPGaugeColor("green" if poisoned else "red")
 
 	def StartTargetAffect(self):
 		self.refreshTargetAffectList = []
@@ -925,6 +992,10 @@ class TargetBoard(ui.ThinBoard):
 		# MT2009_PLUS_TARGET_BONUS_V1 (Autor: Vekirion): refreshed every 0.5 s.
 		if self.bonusText and self.bonusText.IsShow() and app.GetTime() >= self.bonusRefreshTime:
 			self.__RefreshBonusText()
+
+		# MT2009_PLUS_TARGET_POISON_GAUGE_V1: five times a second.
+		if self.hpGauge and self.hpGauge.IsShow():
+			self.__RefreshPoisonGauge()
 
 		if self.isShowButton:
 
