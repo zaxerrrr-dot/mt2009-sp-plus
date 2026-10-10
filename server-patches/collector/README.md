@@ -43,6 +43,11 @@ dokładnie raz, przerywa całość, zanim cokolwiek zostanie zapisane.
   zablokowany przedmiot, rozszerzenie magazynu, pas z rzeczami w swoich
   polach, pola konia bez konia, kamienie smoka; ręce wolne (bez handlu,
   sklepu, questa), postać żywa.
+- Wyjątek (`MT2009_PLUS_COLLECTOR_ZODIAC_V1`): **Insygnia Zodiaku 33001–33024**
+  wchodzą mimo `ANTI_SAFEBOX` (zwykły magazyn nadal ich nie przyjmuje).
+  Insygnia Strażnika/Zodiaku (33023/33024), Pryzmat Ożywienia 33025 i Pudła
+  Zodiaku 33029/33030 nie mają tej flagi i wchodziły już wcześniej; Pryzmat
+  Ożywienia (Q) 33032 zostaje poza magazynem (związana kopia 33025).
 - Nagród za kolekcję upstream nie miał – nie ma ich też tu.
 
 ## Dlaczego upstream się „zacinał”
