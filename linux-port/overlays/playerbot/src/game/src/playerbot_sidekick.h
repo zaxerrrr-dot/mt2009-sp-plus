@@ -8167,13 +8167,26 @@ namespace
 	// kingdom.
 	void NotePlayerBotSidekickDefendBlow(LPCHARACTER victim, LPCHARACTER attacker, DWORD dwNow)
 	{
+		// MT2009_PLUS_SIDEKICK_DEFEND_V2 (the owner, 10 October: "gdy inne boty
+		// atakuja nas podczas expa, albo my zaatakujemy inne boty, na przyklad z
+		// innego krolestwa: towarzysz sie dolacza i rowniez z nimi walczy;
+		// wyjatek: pojedynek"): a blow from any kingdom, and the owner's own
+		// blow at a character too - kept under the owner, its foe to fight.
+		// A duel or a guild war never gets here (IsPlayerBotBlowConsensual).
 		if (!victim || !attacker || victim == attacker || s_mapPlayerBotSidekicks.empty() || !attacker->IsPC() ||
-				attacker->GetEmpire() == victim->GetEmpire())
+				!victim->IsPC())
 			return;
-		const DWORD pid = victim->GetPlayerID();
+		DWORD pid = victim->GetPlayerID();
+		LPCHARACTER foe = attacker;
 		if (s_mapPlayerBotSidekicks.find(pid) == s_mapPlayerBotSidekicks.end() &&
 				s_mapPlayerBotSidekickOwner.find(pid) == s_mapPlayerBotSidekickOwner.end())
-			return;
+		{
+			if (s_mapPlayerBotSidekicks.find(attacker->GetPlayerID()) == s_mapPlayerBotSidekicks.end() ||
+					s_mapPlayerBotSidekickOwner.find(pid) != s_mapPlayerBotSidekickOwner.end())
+				return;
+			pid = attacker->GetPlayerID();	// the owner struck: the struck is its foe
+			foe = victim;
+		}
 		if (s_mapPlayerBotSidekickDefendBlows.size() >= 256)
 			for (std::map<DWORD, std::map<DWORD, TPlayerBotSidekickDefendBlow> >::iterator it =
 					s_mapPlayerBotSidekickDefendBlows.begin(); it != s_mapPlayerBotSidekickDefendBlows.end();)
@@ -8186,10 +8199,10 @@ namespace
 			}
 		std::map<DWORD, TPlayerBotSidekickDefendBlow>& blows = s_mapPlayerBotSidekickDefendBlows[pid];
 		PrunePlayerBotSidekickDefendBlows(blows, dwNow);
-		if (blows.size() >= PLAYERBOT_SIDEKICK_DEFEND_MAX && blows.find(attacker->GetPlayerID()) == blows.end())
+		if (blows.size() >= PLAYERBOT_SIDEKICK_DEFEND_MAX && blows.find(foe->GetPlayerID()) == blows.end())
 			return;
-		TPlayerBotSidekickDefendBlow& blow = blows[attacker->GetPlayerID()];
-		blow.dwVID = (DWORD)attacker->GetVID();
+		TPlayerBotSidekickDefendBlow& blow = blows[foe->GetPlayerID()];
+		blow.dwVID = (DWORD)foe->GetVID();
 		blow.dwAt = dwNow;
 	}
 
@@ -8235,9 +8248,8 @@ namespace
 					onOwner.size() + onSelf.size() >= PLAYERBOT_SIDEKICK_DEFEND_MAX * 2)
 				return;
 			LPCHARACTER c = (LPCHARACTER)ent;
-			if (c == self || c == owner || !c->IsPC() || c->IsDead() || !c->GetDesc() || !c->GetDesc()->IsBot() ||
-					c->GetEmpire() == self->GetEmpire())
-				return;
+			if (c == self || c == owner || !c->IsPC() || c->IsDead() || !c->GetDesc() || !c->GetDesc()->IsBot())
+				return;	// MT2009_PLUS_SIDEKICK_DEFEND_V2: any kingdom
 			TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.find(c->GetPlayerID());
 			if (it == s_mapPlayerBotAIStates.end())
 				return;
@@ -8260,9 +8272,8 @@ namespace
 				foe->GetMapIndex() != ch->GetMapIndex() || !foe->GetSectree() ||
 				IsPlayerBotPersonUnseen(foe))	// MT2009_PLUS_BOT_RESPECT_STEALTH_V1
 			return false;
-		// Another kingdom only: the owner's own - the companion's - never.
-		if (foe->GetEmpire() == ch->GetEmpire() || (owner && foe->GetEmpire() == owner->GetEmpire()))
-			return false;
+		// MT2009_PLUS_SIDEKICK_DEFEND_V2: any kingdom (the V1 answered another
+		// kingdom's only) - whether the blow may land is the engine's word below.
 		if (owner)
 		{
 			if ((owner->GetParty() && foe->GetParty() == owner->GetParty()) ||
