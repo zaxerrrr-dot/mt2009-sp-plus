@@ -77,6 +77,8 @@ namespace
 	const int PLAYERBOT_SHAMAN_WANT_PEERS = 5;
 	const DWORD PLAYERBOT_SHAMAN_ESCORT_RETRY_MS = 10 * 60 * 1000;
 
+	// How long a brought Shaman may be on another map (its warp and loading).
+	const DWORD PLAYERBOT_SHAMAN_DUO_ARRIVE_MS = 3 * 60 * 1000;
 	struct TPlayerBotShamanDuo
 	{
 		DWORD leader;
@@ -270,8 +272,15 @@ namespace
 			why = "gone";
 		else if (dwNow >= duo.until)
 			why = "time";
+		// MT2009_PLUS_BOT_GUILD_SHAMAN_V1 (night test 10 October: 30 of 32 duos
+		// ended 2-13 s after forming, "maps_apart" - the brought Shaman was still
+		// on its way): the first minutes of a duo give the Shaman's warp its time.
 		else if (leader->GetMapIndex() != shaman->GetMapIndex())
+		{
+			if (dwNow - duo.since < PLAYERBOT_SHAMAN_DUO_ARRIVE_MS)
+				return true;	// still on its way - no party check either
 			why = "maps_apart";
+		}
 		else if (!leader->GetParty() || leader->GetParty() != shaman->GetParty())
 			why = "party_broken";
 		else if (IsPlayerBotHumanLedParty(leader->GetParty()) || IsPlayerBotPartyWithHuman(leader->GetParty()))
