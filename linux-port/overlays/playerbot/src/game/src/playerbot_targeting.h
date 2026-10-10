@@ -3010,6 +3010,70 @@ namespace
 		return other;
 	}
 
+	// MT2009_PLUS_BOT_CAPE_V3: the grounds a bot alone uses a cape on.
+	bool IsPlayerBotCapeSoloMap(long mapIndex)
+	{
+		for (size_t i = 0; i < sizeof(PLAYERBOT_CAPE_SOLO_MAPS) / sizeof(PLAYERBOT_CAPE_SOLO_MAPS[0]); ++i)
+			if (PLAYERBOT_CAPE_SOLO_MAPS[i] == mapIndex)
+				return true;
+		return false;
+	}
+
+	// The cape's experience: crowds beaten without dying (a quest flag).
+	int GetPlayerBotCapeXp(LPCHARACTER ch)
+	{
+		return ch ? std::max(0, std::min(PLAYERBOT_CAPE_XP_MAX, ch->GetQuestFlag(PLAYERBOT_CAPE_XP_FLAG))) : 0;
+	}
+
+	void NotePlayerBotCapeOutcome(LPCHARACTER ch, bool survived)
+	{
+		if (!ch)
+			return;
+		const int before = GetPlayerBotCapeXp(ch);
+		const int after = survived ? std::min(PLAYERBOT_CAPE_XP_MAX, before + 1) : before / 2;
+		if (after != before)
+			ch->SetQuestFlag(PLAYERBOT_CAPE_XP_FLAG, after);
+	}
+
+	// How many monsters this bot dares to pull now: its experience's limit.
+	int GetPlayerBotCapeLimit(LPCHARACTER ch)
+	{
+		return PLAYERBOT_CAPE_START_LIMIT + GetPlayerBotCapeXp(ch) * PLAYERBOT_CAPE_XP_STEP;
+	}
+
+	// A party of bots, and how many of its members stand near the bot - 0 for
+	// no party, -1 for a party with a person in it (theirs to decide: the
+	// party stands while its person is away, and pulls nothing for it).
+	int CountPlayerBotCapePartyNear(LPCHARACTER ch)
+	{
+		LPPARTY party = ch ? ch->GetParty() : NULL;
+		if (!party)
+			return 0;
+		struct FMembers
+		{
+			LPCHARACTER m_ch;
+			int m_iNear;
+			bool m_bPerson;
+			explicit FMembers(LPCHARACTER ch) : m_ch(ch), m_iNear(0), m_bPerson(false) {}
+			void operator()(LPCHARACTER member)
+			{
+				if (!member || member == m_ch)
+					return;
+				if (!member->GetDesc() || !member->GetDesc()->IsBot())
+				{
+					m_bPerson = true;
+					return;
+				}
+				if (!member->IsDead() && member->GetMapIndex() == m_ch->GetMapIndex() &&
+						DISTANCE_APPROX(m_ch->GetX() - member->GetX(), m_ch->GetY() - member->GetY()) <= PLAYERBOT_CAPE_PARTY_RANGE)
+					++m_iNear;
+			}
+		};
+		FMembers f(ch);
+		party->ForEachOnlineMember(f);
+		return f.m_bPerson ? -1 : f.m_iNear;
+	}
+
 	// The tick's word: true when the cape was used this tick.
 	bool HandlePlayerBotValourCape(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
@@ -3028,24 +3092,37 @@ namespace
 			if (crowd.m_iOnMe > 0 && !timedOut && last->second.lMapIndex == ch->GetMapIndex())
 				return false;
 			last->second.bOpen = false;
-			sys_log(0, "PLAYERBOT_CAPE: crowd beaten pid=%u name=%s pulled=%d secs=%u hp=%d/%d%s",
+			// MT2009_PLUS_BOT_CAPE_V3: the experience - a crowd beaten alive
+			// raises the limit, a death under it halves what was learnt.
+			const bool died = state.dwLastDeathTime != 0 && (int)(state.dwLastDeathTime - last->second.dwAt) >= 0;
+			NotePlayerBotCapeOutcome(ch, !died && !timedOut);
+			sys_log(0, "PLAYERBOT_CAPE: crowd beaten pid=%u name=%s pulled=%d secs=%u hp=%d/%d%s%s xp=%d limit=%d",
 					pid, ch->GetName(), last->second.iPulled, (unsigned int)((dwNow - last->second.dwAt) / 1000),
-					ch->GetHP(), ch->GetMaxHP(), timedOut ? " timeout" : "");
+					ch->GetHP(), ch->GetMaxHP(), timedOut ? " timeout" : "", died ? " died" : "",
+					GetPlayerBotCapeXp(ch), GetPlayerBotCapeLimit(ch));
 			return false;
 		}
 		// Cheap questions before the world is looked at.
 		if (state.dwNextCapeCheck > dwNow)
 			return false;
 		state.dwNextCapeCheck = dwNow + 3000 + PlayerBotNavHash(pid ^ (dwNow / 1000U)) % 2000U;
-		if (!IsPlayerBotCapeBuild(ch) || ch->GetParty() || ch->GetMyShop() || ch->GetExchange() ||
+		// MT2009_PLUS_BOT_CAPE_V3: alone on the chosen grounds; in a party of
+		// bots its leader, anywhere it hunts, never in a person's party.
+		const int partyNear = CountPlayerBotCapePartyNear(ch);
+		if (partyNear < 0 || (ch->GetParty() && ch->GetParty()->GetLeaderPID() != pid) ||
+				(!ch->GetParty() && !IsPlayerBotCapeSoloMap(ch->GetMapIndex())))
+			return false;
+		if (!IsPlayerBotCapeBuild(ch) || ch->GetMyShop() || ch->GetExchange() ||
 				(ch->IsRiding() && !CanPlayerBotEverFightOnHorse(ch)) ||
 				ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ||
 				IsPlayerBotSafeZone(ch->GetMapIndex(), ch->GetX(), ch->GetY()) ||
 				!IsPlayerBotGrindAllowedHere(ch))
 			return false;
-		if (state.bBotRole != BOT_ROLE_MOB_GRINDER ||
+		const bool capeParty = ch->GetParty() != NULL;	// MT2009_PLUS_BOT_CAPE_V3: a party's own role and goal
+		if ((state.bBotRole != BOT_ROLE_MOB_GRINDER && !(capeParty && state.bBotRole == BOT_ROLE_PARTY_FIGHTER)) ||
 				(state.bLongTermGoal != BOT_GOAL_LEVEL_UP && state.bLongTermGoal != BOT_GOAL_HUNTING &&
-				 state.bLongTermGoal != BOT_GOAL_GET_EQUIPMENT) ||	// MT2009_PLUS_BOT_CAPE_V2
+				 state.bLongTermGoal != BOT_GOAL_GET_EQUIPMENT &&
+				 !(capeParty && state.bLongTermGoal == BOT_GOAL_PARTY_CHALLENGE)) ||	// MT2009_PLUS_BOT_CAPE_V2
 				state.bMultiPullActive || state.bVisitingShop || state.bRecoveringAfterDeath || state.bTacticalRetreat ||
 				state.bFishingSession ||
 				(state.dwLastDeathTime != 0 && dwNow - state.dwLastDeathTime < PLAYERBOT_CAPE_DEATH_HOLD_MS))
@@ -3073,8 +3150,11 @@ namespace
 		if (crowd.m_iLevelMax > (int)ch->GetLevel() + PLAYERBOT_CAPE_MAX_OVER_LEVELS ||
 				average > (int)ch->GetLevel() - PLAYERBOT_CAPE_LEVEL_MARGIN)
 			return false;
-		const int capacity = GetPlayerBotCapeCapacity(ch, average);
-		if (crowd.m_iFree > capacity)
+		// MT2009_PLUS_BOT_CAPE_V3: under the experience's limit, which a party
+		// near the leader raises.
+		const int capacity = std::min(GetPlayerBotCapeCapacity(ch, average) + partyNear * PLAYERBOT_CAPE_PARTY_MEMBER,
+				GetPlayerBotCapeLimit(ch) + partyNear * PLAYERBOT_CAPE_PARTY_MEMBER);
+		if (crowd.m_iFree > std::min(capacity, PLAYERBOT_CAPE_PULL_MAX))
 			return false;
 
 		const DWORD capeVnum = ch->GetInventoryItem(cell)->GetVnum();
@@ -3093,9 +3173,10 @@ namespace
 		ClearPlayerBotRoute(state, true);
 		if (ch->IsStateMove())
 			ch->Stop();
-		sys_log(0, "PLAYERBOT_CAPE: used pid=%u name=%s lv=%d vnum=%u map=%ld pos=(%ld,%ld) crowd=%d avg_lv=%d max_lv=%d capacity=%d capes_left=%d",
+		sys_log(0, "PLAYERBOT_CAPE: used pid=%u name=%s lv=%d vnum=%u map=%ld pos=(%ld,%ld) crowd=%d avg_lv=%d max_lv=%d capacity=%d capes_left=%d xp=%d party_near=%d",
 				pid, ch->GetName(), ch->GetLevel(), capeVnum, ch->GetMapIndex(), ch->GetX(), ch->GetY(),
-				crowd.m_iFree, average, crowd.m_iLevelMax, capacity, CountPlayerBotValourCapes(ch));
+				crowd.m_iFree, average, crowd.m_iLevelMax, capacity, CountPlayerBotValourCapes(ch),
+				GetPlayerBotCapeXp(ch), partyNear);
 		return true;
 	}
 }

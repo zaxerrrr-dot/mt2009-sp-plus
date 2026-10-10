@@ -200,12 +200,20 @@ GAME_HOST = os.environ.get("PLAYERBOTS_GAME_HOST", "metin2-game")
 GAME_LOGIN_PORT = int(os.environ.get("PLAYERBOTS_LOGIN_PORT", "11000"))
 GAME_WORLD_PORT = int(os.environ.get("PLAYERBOTS_WORLD_PORT", "13000"))
 RATE_NAMES = ("exp", "drop", "yang")
-REGEN_DELAY_FLAGS = {"boss": "fastBossSpawn", "mob": "fastMobSpawn"}
-REGEN_COUNT_FLAGS = {"boss": "m2_boss_count", "mob": "m2_mob_count"}
+# MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metin stones
+# apart from bosses - the core reads fastMetinSpawn/m2_metin_count for a line
+# that puts down a Metin stone and fastBossSpawn/m2_boss_count for a boss. The
+# migration (apply.sh) copies the old "Metiny i bossy" rows into the Metin rows
+# once; a world without the Metin row yet shows the bosses' value for them.
+REGEN_DELAY_FLAGS = {"metin": "fastMetinSpawn", "boss": "fastBossSpawn", "mob": "fastMobSpawn"}
+REGEN_COUNT_FLAGS = {"metin": "m2_metin_count", "boss": "m2_boss_count", "mob": "m2_mob_count"}
+REGEN_METIN_FALLBACK = {"fastMetinSpawn": "fastBossSpawn", "m2_metin_count": "m2_boss_count"}
 REGEN_DELAY_MIN = 10
 REGEN_COUNT_CHOICES = (100, 150, 200, 250, 300, 400)
 QUEUE_FINAL_STATUSES = frozenset((
     "done", "bad_args", "failed", "unknown_cmd", "cancelled", "no_gm",
+    # MT2009_PLUS_BOT_EXP_UNLOCK_V1: EXPUNLOCK/EXPLOCK for a character that is no bot.
+    "not_allowed",
 ))
 AI_WEIGHTS_FILE = RATES_SPOOL / "playerbot_weights.tsv"
 CHEST_SWITCH_FILE = RATES_SPOOL / "playerbot_chest_switch.tsv"
@@ -264,7 +272,7 @@ AI_LIVE_DEFAULTS = {"CHAT": 1, "BOOKS": 1, "NIGHT": 1, "LIFE": 0,
                      # MT2009_PLUS_LEGENDS_V1: the bots' legends (playerbot_legends.h).
                      "LEGENDS": 1,
                      # MT2009_PLUS_BOT_HAGGLE_V1: bots haggle at people's shops.
-                     "HAGGLE": 1, "SCRAP": 0, "REST": 100, "KINGDOMPVP": 0, "SCROLL_FROM": 1,
+                     "HAGGLE": 1, "MATERIAL_MARKET": 0, "SCRAP": 0, "REST": 100, "KINGDOMPVP": 0, "SCROLL_FROM": 1,
                      # The three wills (playerbot_config.h): percent of what the
                      # build does, 100 = as before, 0 = none of it.
                      "BATTLEPASS": 100, "SASH": 100, "ALCHEMY": 100,
@@ -632,14 +640,22 @@ def read_regen_settings():
               "count": {kind: 100 for kind in REGEN_COUNT_FLAGS}}
     try:
         with db() as con, con.cursor() as cur:
-            for kind, flag in REGEN_DELAY_FLAGS.items():
+            def flag_row(flag):
                 cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (flag,))
                 row = cur.fetchone()
+                if row is None and flag in REGEN_METIN_FALLBACK:
+                    # MT2009_PLUS_REGEN_METIN_SPLIT_V1: not split yet - the Metins
+                    # respawn as the bosses do.
+                    cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1",
+                                (REGEN_METIN_FALLBACK[flag],))
+                    row = cur.fetchone()
+                return row
+            for kind, flag in REGEN_DELAY_FLAGS.items():
+                row = flag_row(flag)
                 if row and REGEN_DELAY_MIN <= int(row["lValue"]) < 100:
                     result["delay"][kind] = int(row["lValue"])
             for kind, flag in REGEN_COUNT_FLAGS.items():
-                cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (flag,))
-                row = cur.fetchone()
+                row = flag_row(flag)
                 if row and 100 < int(row["lValue"]) <= max(REGEN_COUNT_CHOICES):
                     result["count"][kind] = int(row["lValue"])
     except (KeyError, TypeError, ValueError, pymysql.MySQLError):
@@ -1563,7 +1579,8 @@ def news_feed_history(before=None, limit=40, days=14):
 PLAYERBOT_STATUS_LEGACY_COLUMNS = ("pid", "personality", "ambition", "role", "in_party", "goal",
                                     "action", "updated_ms", "map_index", "x", "y", "hp", "max_hp", "status")
 _LIVE_STATUS_INT_FIELDS = ("personality", "ambition", "role", "goal", "action", "updated_ms",
-                            "map_index", "x", "y", "hp", "max_hp", "persona", "mood", "mood_lock", "lock_level")
+                            "map_index", "x", "y", "hp", "max_hp", "persona", "mood", "mood_lock", "lock_level",
+                            "exp_block", "exp_unlock")
 
 
 def live_statuses():
@@ -3092,7 +3109,7 @@ def read_ai_weights():
             if len(fields) >= 2 and fields[0].upper() in values:
                 try:
                     key, raw_value = fields[0].upper(), fields[1]
-                    if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "DUNGEONS", "ISHOP", "SHOP_M2", "PERSONA", "SHOUTERS", "HAGGLE", "LEGENDS"):
+                    if key in ("CHAT", "BOOKS", "NIGHT", "LIFE", "WARS", "TOWER", "CATACOMB", "DUNGEONS", "ISHOP", "SHOP_M2", "PERSONA", "SHOUTERS", "HAGGLE", "LEGENDS", "MATERIAL_MARKET"):
                         values[key] = 0 if raw_value.lower() in ("0", "off", "no") else 1
                     elif key in ("SCRAP", "REST", "KINGDOMPVP"):
                         values[key] = max(0, min(100, int(raw_value)))
@@ -3168,6 +3185,8 @@ def write_ai_weights(values):
     # MT2009_PLUS_LEGENDS_V1: the bots' legends, 1 = on.
     content.append(f"LEGENDS\t{1 if values.get('LEGENDS', 1) else 0}")
     content.append(f"HAGGLE\t{1 if values.get('HAGGLE', 1) else 0}")
+    # MT2009_PLUS_MARKET_LIFE_V1: the material market's test option, 0 = off.
+    content.append(f"MATERIAL_MARKET\t{1 if values.get('MATERIAL_MARKET', 0) else 0}")
     content.append(f"SCRAP\t{max(0, min(100, int(values.get('SCRAP', 0))))}")
     content.append(f"REST\t{max(0, min(100, int(values.get('REST', 100))))}")
     content.append(f"KINGDOMPVP\t{max(0, min(100, int(values.get('KINGDOMPVP', 0))))}")
@@ -3229,6 +3248,20 @@ def read_difficulty():
     return {"level": DIFFICULTY_LEVELS[level_index], "biologist": values["m2_biologist_wait"] / 3600,
             "horse": values["m2_horse_buy_wait"] / 3600, "book_player": values["m2_book_wait"] / 3600,
             "book_bot": values["m2_bot_book_wait"] / 3600}
+
+
+# MT2009_PLUS_DROP_BONUS_PCT_V1 (server-patches/dropbonus): the chance of bonus
+# lines on dropped weapons and armour, a percent of the game's own chance in the
+# event flag m2_drop_bonus_pct (100, 0 or no row = as the game has it). The row
+# is what a restart keeps; web_admin.quest's DROP_BONUS makes it live.
+DROP_BONUS_FLAG = "m2_drop_bonus_pct"
+DROP_BONUS_MIN, DROP_BONUS_MAX = 10, 1000
+
+
+def read_drop_bonus():
+    value = read_global_quest_flags((DROP_BONUS_FLAG,)).get(DROP_BONUS_FLAG, 0)
+    pct = 100 if value <= 0 else max(DROP_BONUS_MIN, min(DROP_BONUS_MAX, value))
+    return {"pct": pct, "min": DROP_BONUS_MIN, "max": DROP_BONUS_MAX}
 
 
 def read_autohunt():
@@ -6451,7 +6484,12 @@ def player(pid):
         character["persona"] = BOT_PERSONAS.get(live.get("persona")) if live.get("persona") is not None else None
         character["mood"] = BOT_MOODS.get(live.get("mood")) if live.get("mood") is not None else None
         character["mood_lock"] = BOT_MOOD_LOCKS.get(live.get("mood_lock") or 0)
-        character["hold"] = f"blokada expa na {live['lock_level']} lvl" if live.get("persona") is not None and live.get("lock_level") else ""
+        if live.get("exp_unlock"):
+            # MT2009_PLUS_BOT_EXP_UNLOCK_V1: the operator's override is over
+            # whatever level the bot would be held at.
+            character["hold"] = "exp odblokowany przez operatora"
+        else:
+            character["hold"] = f"blokada expa na {live['lock_level']} lvl" if live.get("persona") is not None and live.get("lock_level") else ""
     else:
         character.update({"personality": "Bot offline", "ambition": "—", "goal": "—", "action": "—"})
         character["channel_live"] = False
@@ -6529,7 +6567,8 @@ def player(pid):
                             dragon_soul_inventory=dragon_soul_inventory, dragon_soul_decks=dragon_soul_decks,
                             gear_history=gear_history, offline_shop=offline_shop, character_stats=character_stats,
                             mission_progress=mission_progress, gm_ranks=GM_RANK_OPTIONS,
-                            admin_warps=PLAYER_ADMIN_WARPS, dungeon_reset_choices=DUNGEON_RESET_CHOICES)
+                            admin_warps=PLAYER_ADMIN_WARPS, dungeon_reset_choices=DUNGEON_RESET_CHOICES,
+                            exp_lock=bot_exp_lock_view(character, live))
 
 
 @app.get("/api/admin/item-search")
@@ -6557,6 +6596,96 @@ def api_admin_item_search():
                  " ORDER BY vnum LIMIT 80", params)
     return jsonify({"items": [{"vnum": int(item["vnum"]), "name": game_text(item.get("locale_name")) or f"VNUM {item['vnum']}"}
                               for item in found]})
+
+
+# MT2009_PLUS_BOT_EXP_UNLOCK_V1: a bot's EXP lock and the operator's override
+# of it ("Odblokuj exp" on the bot's page). The lock is the engine's
+# AFFECT_EXP_BLOCK (310), which the bots' cores put on a dropper in its band, a
+# Grinder at its tier's level, a farmer on its ground, a bot at a progression
+# gate, a shouter, a test squad and so on (ManagePlayerBotExpLock). The
+# override is the bot's quest flag playerbot.exp_unlocked, which the lock pass
+# honours over all of them. A bot in the game takes EXPUNLOCK/EXPLOCK through
+# web_admin.quest (its own player timer); for a bot out of the game the panel
+# writes the flag and drops the saved lock itself - the core reads both when
+# the bot loads.
+AFFECT_EXP_BLOCK_MT2009 = 310
+EXP_OVERRIDE_COMMANDS = {"unlock": "EXPUNLOCK", "restore": "EXPLOCK"}
+
+
+def bot_exp_lock_view(character, live):
+    """The EXP card of /player: whether the lock holds now (the live status
+    file for a bot in the game, its saved affect otherwise), the level it is
+    held at, and the operator's override. None for any character but a bot."""
+    if not ENGINE_MT2009 or not character:
+        return None
+    pid = int(character["id"])
+    try:
+        if not one("SELECT " + BOT_IS + " AS bot FROM player.player p WHERE p.id=%s", (pid,)).get("bot"):
+            return None
+        saved_blocked = bool(one("SELECT 1 AS n FROM player.affect WHERE dwPID=%s AND bType=%s LIMIT 1",
+                                 (pid, AFFECT_EXP_BLOCK_MT2009)))
+        saved_unlocked = bool(one("SELECT 1 AS n FROM player.quest WHERE dwPID=%s AND szName='playerbot' "
+                                  "AND szState='exp_unlocked' AND lValue>0 LIMIT 1", (pid,)))
+    except pymysql.MySQLError:
+        return None
+    view = {"online": live is not None}
+    if live is not None:
+        # A core from before the two columns says nothing of either.
+        view["unlocked"] = bool(live["exp_unlock"]) if "exp_unlock" in live else saved_unlocked
+        view["blocked"] = bool(live["exp_block"]) if "exp_block" in live else saved_blocked
+        view["lock_level"] = int(live.get("lock_level") or 0) or None
+    else:
+        view.update(blocked=saved_blocked and not saved_unlocked, unlocked=saved_unlocked, lock_level=None)
+    return view
+
+
+def write_bot_exp_override_offline(pid, unlocked):
+    """For a bot out of the game: the quest flag the core reads at its load,
+    and, when unlocking, its saved lock gone (the core would lift it anyway on
+    its first pass)."""
+    with db() as con, con.cursor() as cur:
+        cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (%s, 'playerbot', 'exp_unlocked', %s)",
+                    (pid, 1 if unlocked else 0))
+        if unlocked:
+            cur.execute("DELETE FROM player.affect WHERE dwPID=%s AND bType=%s", (pid, AFFECT_EXP_BLOCK_MT2009))
+
+
+@app.post("/player/<int:pid>/action/exp-lock")
+@login_required
+def player_action_exp_lock(pid):
+    """MT2009_PLUS_BOT_EXP_UNLOCK_V1: the "Odblokuj exp" / "Przywróć blokadę"
+    button of a bot's page (bot_exp_lock_view)."""
+    character = one("SELECT id,name,level FROM player.player WHERE id=%s", (pid,))
+    if not character:
+        abort(404)
+    command = EXP_OVERRIDE_COMMANDS.get(request.form.get("mode", ""))
+    if not command:
+        flash("Nieobsługiwana akcja.", "error")
+        return redirect(url_for("player", pid=pid))
+    live = live_statuses().get(pid)
+    if bot_exp_lock_view(character, live) is None:
+        flash("Blokadę exp zmienia się tylko botom.", "error")
+        return redirect(url_for("player", pid=pid))
+    name, unlock = character["name"], command == "EXPUNLOCK"
+    status = "player_offline"
+    if live is not None:
+        status, _queue_id = queue_player_admin_command(name, command)
+    if status == "done":
+        flash(f"{name}: exp odblokowany, bot zdobywa doświadczenie." if unlock else
+              f"{name}: blokada przywrócona, o blokadzie znów decydują zasady bota.", "success")
+    elif status == "not_allowed":
+        flash("Blokadę exp zmienia się tylko botom.", "error")
+    elif live is None:
+        try:
+            write_bot_exp_override_offline(pid, unlock)
+        except pymysql.MySQLError:
+            flash("Nie udało się zapisać zmiany (baza danych).", "error")
+        else:
+            flash(f"{name} nie jest teraz w grze — zmiana zapisana, bot dostanie ją przy wejściu do gry.", "success")
+    else:
+        flash(f"Nie udało się zmienić blokady exp ({status}). Bot jest w grze, ale nie odpowiedział — spróbuj za chwilę.",
+              "error")
+    return redirect(url_for("player", pid=pid))
 
 
 @app.post("/player/<int:pid>/action/game")
@@ -8976,7 +9105,8 @@ def respawns_delay():
         if any(not REGEN_DELAY_MIN <= value <= 100 for value in values.values()):
             raise ValueError(f"Szybkość odrodzenia musi mieścić się w zakresie {REGEN_DELAY_MIN}–100%.")
         persist_regen_settings("delay", values)
-        status, queue_id = queue_game_admin_command("REGEN", f"{0 if values['boss'] == 100 else values['boss']},{0 if values['mob'] == 100 else values['mob']}")
+        status, queue_id = queue_game_admin_command(
+            "REGEN", ",".join(str(0 if values[k] == 100 else values[k]) for k in ("metin", "boss", "mob")))
         if status != "done":
             if status == "timeout": cancel_pending_admin_command(queue_id)
             raise RuntimeError("Ustawienie zapisano na następny start, ale rdzeń nie potwierdził zmiany na żywo.")
@@ -8997,7 +9127,8 @@ def respawns_count():
         if any(value not in REGEN_COUNT_CHOICES for value in values.values()):
             raise ValueError("Wybierz jeden z dostępnych mnożników liczby potworów.")
         persist_regen_settings("count", values)
-        status, queue_id = queue_game_admin_command("REGEN_COUNT", f"{values['boss']},{values['mob']}")
+        status, queue_id = queue_game_admin_command(
+            "REGEN_COUNT", ",".join(str(values[k]) for k in ("metin", "boss", "mob")))
         if status != "done":
             if status == "timeout": cancel_pending_admin_command(queue_id)
             raise RuntimeError("Ustawienie zapisano na następny start, ale rdzeń nie potwierdził zmiany na żywo.")
@@ -9628,7 +9759,7 @@ def manage():
     bot_channels = sorted(per_channel.items()) if len(per_channel) > 1 else []
     updater = update_status()
     updater["protected"] = current_settings.get("auth_enabled") == "1" and bool(session.get("seban_admin"))
-    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers())
+    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), drop_bonus=read_drop_bonus(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers())
 
 
 @app.post("/manage/difficulty")
@@ -9658,6 +9789,32 @@ def manage_difficulty():
     except (TypeError, ValueError, pymysql.MySQLError):
         flash("Wpisz poprawne liczby godzin (0–720).", "error")
     return redirect(url_for("manage"))
+
+
+@app.post("/manage/drop-bonus")
+@login_required
+def manage_drop_bonus():
+    """MT2009_PLUS_DROP_BONUS_PCT_V1: the difficulty's chance of bonuses on
+    dropped weapons and armour, live through web_admin.quest's DROP_BONUS."""
+    try:
+        pct = int(request.form.get("pct", ""))
+        if not DROP_BONUS_MIN <= pct <= DROP_BONUS_MAX:
+            raise ValueError
+    except (TypeError, ValueError):
+        flash(f"Wpisz procent od {DROP_BONUS_MIN} do {DROP_BONUS_MAX}. Nic nie zmieniono.", "error")
+        return redirect(url_for("manage") + "#trudnosc")
+    try:
+        rows("REPLACE INTO player.quest (dwPID,szName,szState,lValue) VALUES (0,%s,'',%s)", (DROP_BONUS_FLAG, pct))
+        status, queue_id = queue_game_admin_command("DROP_BONUS", pct)
+        if status == "timeout":
+            cancel_pending_admin_command(queue_id)
+    except pymysql.MySQLError:
+        flash("Nie udało się zapisać ustawienia (baza danych).", "error")
+        return redirect(url_for("manage") + "#trudnosc")
+    flash(f"Szansa na bonusy w dropie: {pct}% — działa już w grze, od następnego dropu." if status == "done" else
+          f"Szansa na bonusy w dropie: {pct}% zapisana. Gra nie odpowiedziała — zadziała przy następnym starcie serwera.",
+          "success")
+    return redirect(url_for("manage") + "#trudnosc")
 
 
 @app.post("/manage/autohunt")
@@ -10136,7 +10293,7 @@ def manage_behavior():
     values["CHAT"] = 1 if "1" in request.form.getlist("CHAT") else 0
     values["BOOKS"] = values.get("BOOKS", 1) if "BOOKS" not in request.form else (1 if "1" in request.form.getlist("BOOKS") else 0)
     for key, default in (("NIGHT", 1), ("LIFE", 0), ("WARS", 1), ("TOWER", 1), ("ISHOP", 1), ("SHOP_M2", 0), ("PERSONA", 1),
-                         ("SHOUTERS", 1), ("HAGGLE", 1), ("LEGENDS", 1)):
+                         ("SHOUTERS", 1), ("HAGGLE", 1), ("LEGENDS", 1), ("MATERIAL_MARKET", 0)):
         values[key] = values.get(key, default) if key not in request.form else (1 if "1" in request.form.getlist(key) else 0)
     # MT2009_PLUS_BOTLIFE_V1: the hours of play a day under LIFE.
     try:
@@ -11568,6 +11725,17 @@ dbeditor.install(app, {"app": app, "db": db, "rows": rows, "one": one,
 import env_editor
 
 env_editor.install(app, login_required, update_csrf_token, lambda: UPDATE_SPOOL, db_connect=lambda: db())
+
+
+# MT2009_PLUS_MARKET_PREVIEW_V1: "Podgląd rynku" (wersja eksperymentalna) - every
+# offline shop offer of all kingdoms, filters, bargains, teleport to a stall
+# through /api/admin/teleport-me (market_preview/__init__.py).
+import market_preview
+
+market_preview.install(app, {"db": db, "login_required": login_required, "item_icon_url": item_icon_url,
+                             "apply_labels": APPLY_LABELS, "point_to_apply": POINT_TO_APPLY,
+                             "engine_mt2009": ENGINE_MT2009, "read_rates": read_rates, "spool": RATES_SPOOL,
+                             "item_name": resolve_item_display_name})
 
 
 if __name__ == "__main__":

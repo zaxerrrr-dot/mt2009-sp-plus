@@ -1,0 +1,32 @@
+[
+ {
+  "file": "regen.h",
+  "marker": "MT2009_PLUS_REGEN_METIN_SPLIT_V1 (member)",
+  "old": "\tbool\tis_boss_or_stone;\n",
+  "new": "\tbool\tis_boss_or_stone;\n\t// MT2009_PLUS_REGEN_METIN_SPLIT_V1 (member) (server-patches/regenmetin): the line puts down a\n\t// Metin stone (CHAR_TYPE_STONE) - its respawn reads fastMetinSpawn and\n\t// m2_metin_count, a boss's line fastBossSpawn and m2_boss_count.\n\tbool\tis_stone = false;\n"
+ },
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_REGEN_METIN_SPLIT_V1 (read)",
+  "old": "\t\t\t\t\tconst CMob* pkMob = CMobManager::instance().Get(mobVnum);\n\t\t\t\t\tif (pkMob && (pkMob->m_table.bRank >= MOB_RANK_BOSS || IsMiniBoss(mobVnum)))\n\t\t\t\t\t{\n\t\t\t\t\t\tregen->is_boss_or_stone = true;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n",
+  "new": "\t\t\t\t\tconst CMob* pkMob = CMobManager::instance().Get(mobVnum);\n\t\t\t\t\t// MT2009_PLUS_REGEN_METIN_SPLIT_V1 (read): a line with a Metin stone is the\n\t\t\t\t\t// Metins' (the panels' own respawn time and count), not the bosses'.\n\t\t\t\t\tif (pkMob && pkMob->m_table.bType == CHAR_TYPE_STONE)\n\t\t\t\t\t\tregen->is_stone = true;\n\t\t\t\t\tif (pkMob && (pkMob->m_table.bRank >= MOB_RANK_BOSS || IsMiniBoss(mobVnum)))\n\t\t\t\t\t{\n\t\t\t\t\t\tregen->is_boss_or_stone = true;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n"
+ },
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_REGEN_METIN_SPLIT_V1 (count)",
+  "old": "\tconst int percent = quest::CQuestManager::instance().GetEventFlag(regen->is_boss_or_stone ? \"m2_boss_count\" : \"m2_mob_count\");\n",
+  "new": "\t// MT2009_PLUS_REGEN_METIN_SPLIT_V1 (count): the Metin stones' own multiplier.\n\tconst int percent = quest::CQuestManager::instance().GetEventFlag(regen->is_stone ? \"m2_metin_count\" :\n\t\t\tregen->is_boss_or_stone ? \"m2_boss_count\" : \"m2_mob_count\");\n"
+ },
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_REGEN_METIN_SPLIT_V1 (easter)",
+  "old": "\tconst int count = MINMAX(100, q.GetEventFlag(\"m2_boss_count\"), 400);\n\tint delay = MINMAX(0, q.GetEventFlag((\"fastBossSpawn\" + std::to_string(lMapIndex)).c_str()), 100);\n\tif (delay == 0)\n\t\tdelay = MINMAX(0, q.GetEventFlag(\"fastBossSpawn\"), 100);\n",
+  "new": "\t// MT2009_PLUS_REGEN_METIN_SPLIT_V1 (easter): the Easter metins are Metin stones.\n\tconst int count = MINMAX(100, q.GetEventFlag(\"m2_metin_count\"), 400);\n\tint delay = MINMAX(0, q.GetEventFlag((\"fastMetinSpawn\" + std::to_string(lMapIndex)).c_str()), 100);\n\tif (delay == 0)\n\t\tdelay = MINMAX(0, q.GetEventFlag(\"fastMetinSpawn\"), 100);\n"
+ },
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_REGEN_METIN_SPLIT_V1 (delay)",
+  "old": "\tstd::string flagName = \"fastMobSpawn\";\n\tif (regen->is_boss_or_stone)\n\t{\n\t\tflagName = \"fastBossSpawn\";\n\t}\n\tflagName += std::to_string(info->regen->lMapIndex);\n\n\tint flagValue = MINMAX(0, quest::CQuestManager::instance().GetEventFlag(flagName.c_str()), 100);\n\t// playerbot: the map-less flag is the world-wide fallback (the classic\n\t// panel's /rates page); a per-map flag, when set, still wins.\n\tif (flagValue == 0)\n\t\tflagValue = MINMAX(0, quest::CQuestManager::instance().GetEventFlag(regen->is_boss_or_stone ? \"fastBossSpawn\" : \"fastMobSpawn\"), 100);\n",
+  "new": "\t// MT2009_PLUS_REGEN_METIN_SPLIT_V1 (delay): a Metin stone's line reads fastMetinSpawn<map> /\n\t// fastMetinSpawn, a boss's fastBossSpawn<map> / fastBossSpawn (the\n\t// migration copied the old \"Metiny i bossowie\" rows to the Metins' once).\n\tconst char* flagBase = regen->is_stone ? \"fastMetinSpawn\" : regen->is_boss_or_stone ? \"fastBossSpawn\" : \"fastMobSpawn\";\n\tstd::string flagName = flagBase;\n\tflagName += std::to_string(info->regen->lMapIndex);\n\n\tint flagValue = MINMAX(0, quest::CQuestManager::instance().GetEventFlag(flagName.c_str()), 100);\n\t// playerbot: the map-less flag is the world-wide fallback (the classic\n\t// panel's /rates page); a per-map flag, when set, still wins.\n\tif (flagValue == 0)\n\t\tflagValue = MINMAX(0, quest::CQuestManager::instance().GetEventFlag(flagBase), 100);\n"
+ }
+]

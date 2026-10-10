@@ -1,0 +1,32 @@
+[
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_DROP_BONUS_PCT_V1 (scale)",
+  "old": "void CItem::AlterToMagicItem()\n{\n",
+  "new": "// MT2009_PLUS_DROP_BONUS_PCT_V1 (scale) (server-patches/dropbonus): the panels' chance of bonuses\n// on dropped weapons and armour (event flag m2_drop_bonus_pct, a percent of\n// the game's own chance, 100 = as the game has it). ITEM_MANAGER::CreateItem\n// sets it here for the one AlterToMagicItem of a monster's drop, so the\n// second and third bonus follow it too; 0 everywhere else.\nint g_iMt2009PlusDropBonusPct = 0;\n\nvoid CItem::AlterToMagicItem()\n{\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_DROP_BONUS_PCT_V1 (more)",
+  "old": "\tPutAttribute(aiItemMagicAttributePercentHigh);\n\n\tif (number(1, 100) <= iSecondPct)\n",
+  "new": "\t// MT2009_PLUS_DROP_BONUS_PCT_V1 (more): a drop's second and third bonus at the panels' percent.\n\tif (g_iMt2009PlusDropBonusPct > 0 && g_iMt2009PlusDropBonusPct != 100)\n\t{\n\t\tiSecondPct = MIN(100, iSecondPct * g_iMt2009PlusDropBonusPct / 100);\n\t\tiThirdPct = MIN(100, iThirdPct * g_iMt2009PlusDropBonusPct / 100);\n\t}\n\n\tPutAttribute(aiItemMagicAttributePercentHigh);\n\n\tif (number(1, 100) <= iSecondPct)\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP_BONUS_PCT_V1 (pending)",
+  "old": "LPITEM ITEM_MANAGER::CreateItem(DWORD vnum, ITEM_COUNT count, DWORD id, bool bTryMagic, int iRarePct, bool bSkipSave, int addRarePct)\n{\n",
+  "new": "// MT2009_PLUS_DROP_BONUS_PCT_V1 (pending) (server-patches/dropbonus): SetDropRarePct, which every\n// monster drop asks just before its CreateItem, leaves the panels' percent of\n// the bonus chance here (m2_drop_bonus_pct; 0 = the game's own chance) and\n// the next CreateItem takes it - so shops, quests, chests and the ItemShop,\n// which never ask SetDropRarePct, keep the game's chance.\nstatic int s_iMt2009PlusDropBonusPending = 0;\nextern int g_iMt2009PlusDropBonusPct;\n\nLPITEM ITEM_MANAGER::CreateItem(DWORD vnum, ITEM_COUNT count, DWORD id, bool bTryMagic, int iRarePct, bool bSkipSave, int addRarePct)\n{\n\tconst int dropBonusPct = s_iMt2009PlusDropBonusPending; // MT2009_PLUS_DROP_BONUS_PCT_V1 (take)\n\ts_iMt2009PlusDropBonusPending = 0;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP_BONUS_PCT_V1 (chance)",
+  "old": "\t\t\tint real_chance = iRarePct > 0 ? (iRarePct + addRarePct) : 0;\n\n\t\t\tif (number(1, 100) <= real_chance)\n\t\t\t\titem->AlterToMagicItem();\n",
+  "new": "\t\t\tint real_chance = iRarePct > 0 ? (iRarePct + addRarePct) : 0;\n\n\t\t\t// MT2009_PLUS_DROP_BONUS_PCT_V1 (chance): a monster's drop at the panels' percent of\n\t\t\t// the game's chance. An ordinary monster's weapon or armour, which\n\t\t\t// the game never gives a bonus, gets the item's own chance times the\n\t\t\t// excess above 100% (200% = what its table says).\n\t\t\tif (dropBonusPct > 0)\n\t\t\t{\n\t\t\t\tif (real_chance > 0)\n\t\t\t\t\treal_chance = real_chance * dropBonusPct / 100;\n\t\t\t\telse if (dropBonusPct > 100 && base_rare_pct > 0)\n\t\t\t\t\treal_chance = base_rare_pct * (dropBonusPct - 100) / 100 + addRarePct;\n\t\t\t}\n\n\t\t\tif (number(1, 100) <= real_chance)\n\t\t\t{\n\t\t\t\tg_iMt2009PlusDropBonusPct = dropBonusPct;\n\t\t\t\titem->AlterToMagicItem();\n\t\t\t\tg_iMt2009PlusDropBonusPct = 0;\n\t\t\t}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP_BONUS_PCT_V1 (flag)",
+  "old": "void SetDropRarePct(LPCHARACTER pkMob, int& rarePct, TItemTable * itemTable)\n{\n",
+  "new": "void SetDropRarePct(LPCHARACTER pkMob, int& rarePct, TItemTable * itemTable)\n{\n\t// MT2009_PLUS_DROP_BONUS_PCT_V1 (flag): the panels' percent for the CreateItem that follows\n\t// (10..1000; 0, 100 or no flag = the game's own chance).\n\ts_iMt2009PlusDropBonusPending = 0;\n\tif (pkMob && itemTable)\n\t{\n\t\tconst int pct = quest::CQuestManager::instance().GetEventFlag(\"m2_drop_bonus_pct\");\n\t\tif (pct > 0 && pct != 100)\n\t\t\ts_iMt2009PlusDropBonusPending = MINMAX(10, pct, 1000);\n\t}\n"
+ }
+]

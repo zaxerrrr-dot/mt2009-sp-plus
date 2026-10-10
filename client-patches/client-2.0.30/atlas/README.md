@@ -27,3 +27,15 @@ Katalog celowo nie leży w `root/`, bo build roota bierze ścieżki z `root/` do
 | root | `d:/ymir work/ui/atlas/metin2_map_spiderdungeon_02/atlas.tga` | nowy | 98923 | 512×512 |
 
 Obrazy: TGA 32 bit z RLE (typ 10), w pełni nieprzezroczyste. `.sub` mają CRLF.
+
+## Inne obrazy `d:/` paczki `root`
+
+Ten katalog (`atlas/d_/`) budowa paczki `root` przechodzi w całości, więc trafiają tu też inne nowe
+obrazy z `d:/`, nie tylko atlasy.
+
+| Paczka | Wpis | Status | Rozmiar | Obraz | Po co |
+|---|---|---|---|---|---|
+| root | `d:/ymir work/ui/pattern/gauge_green.tga` | nowy | 556 | 16×8 | zielony pasek życia otrutego celu (`uitarget.py`, MT2009_PLUS_TARGET_POISON_GAUGE_V1) |
+
+`gauge_green.tga` (pomysł: Kiciamol) ma ten sam format co `gauge_red.tga` z paczki bazowej (TGA 32 bit bez RLE,
+typ 2). Klient bez tego pliku zostawia czerwony pasek (`app.IsExistFile`).

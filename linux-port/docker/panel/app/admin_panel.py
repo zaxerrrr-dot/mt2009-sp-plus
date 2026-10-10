@@ -1234,6 +1234,8 @@ def read_ai_weights():
     # too dear to buy at once (playerbot_haggle.h, MT2009_PLUS_BOT_HAGGLE_V1).
     # On; off is the market as it was.
     vals["HAGGLE"] = 1
+    # MT2009_PLUS_MARKET_LIFE_V1: the material market's test option; off.
+    vals["MATERIAL_MARKET"] = 0
     vals["SCRAP"] = 0
     # MT2009_PLUS_SALE_TAX_V1: the percent of a sale between players and bots
     # that leaves the game (playerbot_sale_tax.h, server-patches/saletax);
@@ -1330,6 +1332,9 @@ def read_ai_weights():
                     continue
                 if name == "HAGGLE":
                     vals["HAGGLE"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
+                    continue
+                if name == "MATERIAL_MARKET":
+                    vals["MATERIAL_MARKET"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
                     continue
                 if name == "SCRAP":
                     try:
@@ -1480,6 +1485,8 @@ def write_ai_weights(vals):
     # Not a weight: whether a bot haggles with a person over a line too dear
     # to buy at once.
     body.append("HAGGLE\t%d" % (1 if vals.get("HAGGLE", 1) else 0))
+    # MT2009_PLUS_MARKET_LIFE_V1: the material market's test option.
+    body.append("MATERIAL_MARKET\t%d" % (1 if vals.get("MATERIAL_MARKET", 0) else 0))
     # Percent of stall keepers that sell scrap gear; 0 is off.
     body.append("SCRAP\t%d" % max(0, min(100, int(vals.get("SCRAP", 0)))))
     # MT2009_PLUS_SALE_TAX_V1: percent of a sale between players and bots that
@@ -3910,25 +3917,27 @@ T = {
  "fl_flower_5":  {"pl":"Słonecznik","en":"Sunflower"},
  "regen_title": {"pl":"Czas odradzania Metinów, bossów i potworów",
                  "en":"Respawn time of Metin stones, bosses and monsters"},
- "regen_help":  {"pl":"Procent zwykłego czasu odradzania: 100 = jak w grze, 50 = dwa razy szybciej, 10 = dziesięć razy szybciej. Działa od razu (przez pomocnika w grze), a po restarcie zostaje. Osobno dla Metinów i bossów, osobno dla zwykłych potworów.",
-                 "en":"Percent of the normal respawn time: 100 = as in the game, 50 = twice as fast, 10 = ten times as fast. Live at once (through the in-game helper) and kept across a restart. Stones and bosses apart from ordinary monsters."},
- "regen_boss":  {"pl":"Metiny i bossowie (% czasu)", "en":"Metin stones and bosses (% of time)"},
+ "regen_help":  {"pl":"Procent zwykłego czasu odradzania: 100 = jak w grze, 50 = dwa razy szybciej, 10 = dziesięć razy szybciej. Działa od razu (przez pomocnika w grze), a po restarcie zostaje. Osobno dla Metinów, osobno dla bossów i osobno dla zwykłych potworów.",
+                 "en":"Percent of the normal respawn time: 100 = as in the game, 50 = twice as fast, 10 = ten times as fast. Live at once (through the in-game helper) and kept across a restart. Metin stones, bosses and ordinary monsters each have their own."},
+ "regen_metin": {"pl":"Metiny (% czasu)", "en":"Metin stones (% of time)"},
+ "regen_boss":  {"pl":"Bossowie (% czasu)", "en":"Bosses (% of time)"},
  "regen_mob":   {"pl":"Zwykłe potwory (% czasu)", "en":"Ordinary monsters (% of time)"},
  "regen_faster": {"pl":"Szybciej:", "en":"Faster:"},
  "regen_mult":  {"pl":"≈ ×{n} szybciej niż w grze", "en":"≈ ×{n} faster than the game"},
  "regen_save":  {"pl":"Zapisz czasy odradzania", "en":"Save the respawn times"},
- "regen_range": {"pl":"Obie wartości muszą być liczbą całkowitą od 10 do 100. Nic nie zmieniono.",
-                 "en":"Both have to be whole numbers between 10 and 100. Nothing was changed."},
+ "regen_range": {"pl":"Wszystkie trzy wartości muszą być liczbą całkowitą od 10 do 100. Nic nie zmieniono.",
+                 "en":"All three have to be whole numbers between 10 and 100. Nothing was changed."},
  "regen_saved_live": {"pl":"✅ Zapisano! Nowe czasy odradzania działają już w grze, bez restartu.",
                       "en":"✅ Saved! The new respawn times are live in game, no restart needed."},
  "regen_saved_restart": {"pl":"Zapisano. Nikt nie jest zalogowany, więc pomocnik w grze nie odpowiedział — nowe czasy zadziałają po restarcie serwera (albo zapisz jeszcze raz, gdy ktoś będzie w grze).",
                          "en":"Saved. Nobody is logged in, so the in-game helper did not answer — the new times apply after a server restart (or save again while somebody is in game)."},
  "count_title": {"pl":"Liczba potworów w respie", "en":"Monsters per respawn"},
- "count_help":  {"pl":"Ile potworów stoi w każdym miejscu respu: ×1 = jak w grze, ×2 = dwa razy więcej, aż do ×4. Nie trzeba restartu, a po restarcie ustawienie zostaje; dodatkowe potwory dochodzą przy najbliższym respie danego miejsca (Metiny i bossowie po swoim czasie odradzania, zwykle 15–25 minut). Osobno dla Metinów i bossów, osobno dla zwykłych potworów. Postacie niezależne (także żyły rud i krzaki ziół), portale, lochy i jednorazowe respy z misji zostają bez zmian.",
-                 "en":"How many monsters stand at each spawn point: ×1 = as in the game, ×2 = twice as many, up to ×4. No restart needed and kept across one; the extra monsters come at each spot's next respawn (stones and bosses after their own respawn time, usually 15-25 minutes). Stones and bosses apart from ordinary monsters. NPCs (ore veins and herb bushes too), portals, dungeons and a quest's one-off spawns are left alone."},
+ "count_help":  {"pl":"Ile potworów stoi w każdym miejscu respu: ×1 = jak w grze, ×2 = dwa razy więcej, aż do ×4. Nie trzeba restartu, a po restarcie ustawienie zostaje; dodatkowe potwory dochodzą przy najbliższym respie danego miejsca (Metiny i bossowie po swoim czasie odradzania, zwykle 15–25 minut). Osobno dla Metinów, bossów i zwykłych potworów. Postacie niezależne (także żyły rud i krzaki ziół), portale, lochy i jednorazowe respy z misji zostają bez zmian.",
+                 "en":"How many monsters stand at each spawn point: ×1 = as in the game, ×2 = twice as many, up to ×4. No restart needed and kept across one; the extra monsters come at each spot's next respawn (stones and bosses after their own respawn time, usually 15-25 minutes). Metin stones, bosses and ordinary monsters each have their own. NPCs (ore veins and herb bushes too), portals, dungeons and a quest's one-off spawns are left alone."},
  "count_warn":  {"pl":"Uwaga: ×2 to dwa razy więcej potworów na każdej mapie — serwer i boty mają przez to więcej pracy. Po zmniejszeniu mnożnika nadmiarowe potwory znikają dopiero, gdy ktoś je zabije.",
                  "en":"Mind: ×2 is twice as many monsters on every map, and the server and the bots work that much harder. After lowering it, the extra monsters go only as they are killed."},
- "count_boss":  {"pl":"Metiny i bossowie", "en":"Metin stones and bosses"},
+ "count_metin": {"pl":"Metiny", "en":"Metin stones"},
+ "count_boss":  {"pl":"Bossowie", "en":"Bosses"},
  "count_mob":   {"pl":"Zwykłe potwory", "en":"Ordinary monsters"},
  "count_save":  {"pl":"Zapisz liczbę potworów", "en":"Save the monster counts"},
  "count_range": {"pl":"Wybierz mnożnik od ×1 do ×4. Nic nie zmieniono.",
@@ -4004,6 +4013,22 @@ T = {
                    "en":"✅ Saved! The new monster health is live in game."},
  "mh_saved_restart": {"pl":"Zapisano. Gra nie odpowiedziała (serwer jest wyłączony albo dopiero startuje) — zmiana zadziała przy następnym starcie serwera.",
                       "en":"Saved. The game did not answer (the server is down or still starting) - the change applies at the next server start."},
+ "dbonus_title": {"pl": "Szansa na bonus w wydropionym przedmiocie",
+                  "en": "Chance of bonuses on dropped items"},
+ "dbonus_help": {"pl": "Jak często broń i zbroja (także biżuteria, buty, hełmy i tarcze) wypadające z potworów mają bonusy i ile: procent szansy z gry, 100% = jak w grze. Zmienia szansę na pierwszy bonus oraz na drugi i trzeci — najwyżej trzy, jak w grze, a ich wartości zostają takie same. W grze broń ze zwykłych potworów nie ma bonusów (tylko z Metinów, bossów i wodzów); powyżej 100% dostaje je z szansą z tabeli przedmiotu razy nadwyżka (przy 200% tyle, ile ma w tabeli). Tylko drop z potworów — sklepy, nagrody z questów, skrzynie i ItemShop bez zmian. Dotyczy też dropu botów. Zmiana działa od następnego dropu, bez restartu, i zostaje po restarcie.",
+                 "en": "How often weapons and armour (jewellery, boots, helmets and shields too) dropped by monsters come with bonuses, and how many: a percent of the game's own chance, 100% = as in the game. It changes the chance of the first bonus and of the second and third - three at most, as in the game, and their values stay the same. In the game weapons from ordinary monsters have no bonuses (only from Metin stones, bosses and chiefs); above 100% they get them at the item's own chance times the excess (at 200% what its table says). Monster drops only - shops, quest rewards, chests and the ItemShop stay as they are. The bots' drops too. A change applies from the next drop, without a restart, and stays across a restart."},
+ "dbonus_label": {"pl": "Procent szansy z gry (10–1000):",
+                  "en": "Percent of the game's chance (10–1000):"},
+ "dbonus_examples": {"pl": "Przykład — broń z Metina: 100% → 30% ma bonus, 7% dwa lub trzy; 200% → 60%, 28% dwa lub trzy; 500% → zawsze, i zawsze dwa lub trzy. Broń 25–65 poziomu ze zwykłego potwora: 100% → nigdy, 200% → 20%, 500% → 80%. Zbroja ze zwykłego dropu: 3%, 6%, 15%.",
+                     "en": "For example - a weapon from a Metin stone: 100% → 30% have a bonus, 7% two or three; 200% → 60%, 28% two or three; 500% → always, and always two or three. A level 25-65 weapon from an ordinary monster: 100% → never, 200% → 20%, 500% → 80%. Armour from an ordinary drop: 3%, 6%, 15%."},
+ "dbonus_save": {"pl": "Zapisz szansę na bonus",
+                 "en": "Save the bonus chance"},
+ "dbonus_range": {"pl": "Wybierz procent od 10 do 1000. Nic nie zmieniono.",
+                  "en": "Pick a percent from 10 to 1000. Nothing was changed."},
+ "dbonus_saved_live": {"pl": "✅ Zapisano! Nowa szansa na bonus działa już w grze, od następnego dropu.",
+                       "en": "✅ Saved! The new bonus chance is live in game, from the next drop."},
+ "dbonus_saved_restart": {"pl": "Zapisano. Gra nie odpowiedziała (serwer jest wyłączony albo dopiero startuje) — zmiana zadziała przy następnym starcie serwera.",
+                          "en": "Saved. The game did not answer (the server is down or still starting) - the change applies at the next server start."},
  "ai_books_moved": {"pl":"Na tym serwerze ustawia to poziom trudności (Mnożniki serwera → Poziom trudności): osobno czas dla graczy, osobno dla botów; 0 = od razu.",
                     "en":"On this server the difficulty sets it (Server rates → Difficulty): one wait for the players, one for the bots; 0 = at once."},
  "ch2_title":   {"pl":"Drugi kanał (CH2)", "en":"Second channel (CH2)"},
@@ -4531,6 +4556,11 @@ T.update({
                   "de":"Ein Bot, der ein fertiges Ausrüstungsteil (ab +6) im Offline-Laden eines Spielers will, es aber teurer findet, als er zahlen würde (mit der Obergrenze der Bots für den Preis eines Spielers: höchstens das 1,5- bis 2-Fache des Marktpreises), flüstert dem Besitzer - einmal, mit verlinktem Gegenstand - sein Angebot und geht bis zu seinem letzten Preis, dem Höchsten, das er zahlt, wenn der Besitzer mehr will. Der Besitzer antwortet \"ok\", \"no\" oder mit einem eigenen Preis (\"5kk\") oder senkt einfach den Preis im Laden; sobald der Gegenstand den vereinbarten Preis (oder weniger) kostet, kommt der Bot und kauft ihn, innerhalb von zehn Minuten. Gefragt wird nur ein Besitzer, der auf dem Kern des Bots online ist; höchstens ein Feilschen gleichzeitig mit einer Person, drei Angebote pro Stunde an eine Person, ein Angebot zum selben Gegenstand in drei Stunden (zwölf nach einem Nein), drei gleichzeitig auf einem Kern. Was ein Bot sofort kauft, bleibt unverändert. Aus: kein Bot flüstert ein Angebot, und alle Abmachungen werden vergessen.",
                   "tr":"Bir oyuncunun çevrimdışı dükkânında bitmiş bir ekipman (+6 ve üstü) isteyen ama onu ödeyeceğinden pahalı bulan bot (botların oyuncu fiyatı sınırı dahil: eşyanın piyasa fiyatının en fazla 1,5-2 katı), sahibine bir kez, eşyanın bağlantısıyla teklifini fısıldar ve sahip daha fazlasını isterse son fiyatına, ödeyeceği en yüksek fiyata çıkar. Sahip \"ok\", \"no\" ya da kendi fiyatıyla (\"5kk\") cevap verir veya dükkândaki fiyatı düşürür; eşya anlaşılan fiyata (ya da daha azına) indiğinde bot gelip on dakika içinde satın alır. Yalnızca botun çekirdeğinde çevrimiçi olan sahibe sorulur; bir kişiyle aynı anda en fazla bir pazarlık, bir kişiye saatte üç teklif, aynı eşya için üç saatte bir teklif (bir hayırdan sonra on iki), bir çekirdekte aynı anda üç pazarlık. Botun hemen satın aldığı şeyler değişmez. Kapalı: hiçbir bot teklif fısıldamaz ve tüm anlaşmalar unutulur."},
  "ai_haggle_on": {"en":"Enabled","pl":"Włączone","de":"Eingeschaltet","tr":"Açık"},
+ "ai_material_market": {"en":"Material market (test)","pl":"Rynek materiałów (test)","de":"Materialmarkt (Test)","tr":"Malzeme pazarı (deneme)"},
+ "ai_material_market_help": {"en":"A test option, off by default. When the world lacks a refine material (under 80% of its usual supply on the shops), the bots take it out of their storage and list it more often. When a bot wants to list something and its offline shop is full, it takes off its cheapest stack of materials or skill books (never goods the world lacks, a mispriced line or an item the item policy rules on) and sells a quarter of it to the general merchant at its next visit, so the cheapest goods nobody buys slowly leave the market. At most one cut a bot every ten minutes. The event flag bot_material_market (/eventflag bot_material_market 1) switches it on as well.",
+                   "pl":"Opcja testowa, domyślnie wyłączona. Gdy światu brakuje jakiegoś ulepszacza (mniej niż 80% zwykłej podaży na sklepach), boty częściej wyjmują go z magazynu i wystawiają. Gdy bot chce coś wystawić, a jego sklep offline jest pełny, zdejmuje najtańszy stos materiałów lub ksiąg (nigdy towaru, którego brakuje, ceny z pomyłką ani przedmiotu objętego polityką przedmiotów) i jedną czwartą sprzedaje u Handlarki przy najbliższej wizycie - zalegające najtańsze materiały powoli schodzą z rynku. Najwyżej jedno cięcie na bota co dziesięć minut. To samo włącza flaga bot_material_market (/eventflag bot_material_market 1).",
+                   "de":"Testoption, standardmäßig aus. Fehlt der Welt ein Verbesserungsmaterial (unter 80% des üblichen Angebots), holen die Bots es öfter aus dem Lager und stellen es ein. Ist der Offline-Laden eines Bots voll, nimmt er seinen billigsten Stapel Materialien oder Bücher herunter und verkauft ein Viertel beim nächsten Besuch an die Krämerin. Höchstens ein Schnitt pro Bot alle zehn Minuten. Die Event-Flag bot_material_market schaltet es ebenfalls ein.",
+                   "tr":"Deneme seçeneği, varsayılan olarak kapalı. Dünyada bir geliştirme malzemesi eksikse (olağan arzın %80'inin altı) botlar onu depodan daha sık çıkarıp satışa koyar. Bir botun çevrimdışı dükkânı doluysa en ucuz malzeme ya da kitap yığınını indirir ve dörtte birini bir sonraki ziyarette tüccara satar. Bot başına en fazla on dakikada bir kesim. bot_material_market olay bayrağı da açar."},
  "ai_shop_m2":   {"en":"Bots open their offline shops in the second villages (M2) too","pl":"Boty wystawiają sklepy offline również w M2","de":"Bots stellen ihre Offline-Läden auch in den zweiten Dörfern (M2) auf","tr":"Botlar çevrimdışı tezgahlarını ikinci köylerde (M2) de açar"},
  "ai_shop_m2_help": {"en":"Only about where the bots' offline shops (stands) stand - not buying from NPC merchants. Off (the default): a bot opens its stand only in the first villages, where the players shop; an expired stand that stood in a second village is renewed on the first village's market ring at its owner's next service visit. On: the stands stand in both villages, as before.",
                   "pl":"Dotyczy tylko miejsca, w którym boty wystawiają swoje sklepy offline (stragany) - nie zakupów u sprzedawców NPC. Wyłączone (domyślnie): bot otwiera sklep tylko w pierwszych wioskach, tam gdzie kupują gracze; sklep, który stał w drugiej wiosce, po wygaśnięciu zostaje odnowiony na rynku pierwszej wioski przy najbliższej wizycie właściciela. Włączone: sklepy stoją w obu wioskach, jak wcześniej.",
@@ -5581,14 +5611,21 @@ MT2009_RATE_BASE_FLAGS = {
 # regen_event scales the next spawn by the event flags fastBossSpawn and
 # fastMobSpawn (0 = untouched, 1..100 = that share of the delay; playerbotify
 # adds the map-less names as the fallback to Seban's per-map ones). The page
-# shows 100 for "normal", the flag carries 0 for it.
-MT2009_REGEN_FLAGS = {"regen_boss": "fastBossSpawn", "regen_mob": "fastMobSpawn"}
+# shows 100 for "normal", the flag carries 0 for it. Metins apart from bosses
+# (MT2009_PLUS_REGEN_METIN_SPLIT_V1, server-patches/regenmetin): fastMetinSpawn
+# for the lines that put down a Metin stone, fastBossSpawn for the bosses; the
+# migration copied the old "Metiny i bossowie" value into the Metins' row once
+# (apply.sh), and a world without the row yet reads the bosses'.
+MT2009_REGEN_FLAGS = {"regen_metin": "fastMetinSpawn", "regen_boss": "fastBossSpawn", "regen_mob": "fastMobSpawn"}
+# The Metins' rows and the bosses' they were copied from.
+MT2009_REGEN_METIN_FALLBACK = {"fastMetinSpawn": "fastBossSpawn", "m2_metin_count": "m2_boss_count"}
 REGEN_MIN_PERCENT = 10
 # How many a respawn line keeps standing: regen_spawn tops each line up to
 # its own count times m2_boss_count / m2_mob_count percent (playerbotify's
 # regen_target_count; 100 = as written, 400 at most). Kiciamol, 18 September:
 # his own edit of regen.cpp was undone by every update.
-MT2009_REGEN_COUNT_FLAGS = {"count_boss": "m2_boss_count", "count_mob": "m2_mob_count"}
+MT2009_REGEN_COUNT_FLAGS = {"count_metin": "m2_metin_count", "count_boss": "m2_boss_count",
+                            "count_mob": "m2_mob_count"}
 REGEN_COUNT_CHOICES = (100, 150, 200, 250, 300, 400)
 # The world's difficulty: a level and seven waits in seconds, the flags the
 # migrator writes from .env at a start (apply.sh) - the Biologist's, the stable
@@ -5712,6 +5749,23 @@ MT2009_MOB_HP_FLAG = "m2_mob_hp"
 MOB_HP_CHOICES = (100, 80)
 MOB_HP_MIN_PERCENT, MOB_HP_MAX_PERCENT = 10, 300
 
+# MT2009_PLUS_DROP_BONUS_PCT_V1 (server-patches/dropbonus): the chance of bonus
+# lines on a dropped weapon or piece of armour - the event flag
+# m2_drop_bonus_pct, a percent of the game's own chance that every core reads
+# at its next drop (item_manager.cpp SetDropRarePct; 100, 0 or no row is the
+# game as it was made, 10..1000). The row is what a restart keeps (event flags
+# load from player.quest); web_admin.quest's DROP_BONUS makes it live.
+MT2009_DROP_BONUS_FLAG = "m2_drop_bonus_pct"
+DROP_BONUS_MIN_PERCENT, DROP_BONUS_MAX_PERCENT = 10, 1000
+
+def read_drop_bonus_mt2009():
+    """The percent as the card shows it, read as the cores read the flag."""
+    with db() as c, c.cursor() as cur:
+        cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (MT2009_DROP_BONUS_FLAG,))
+        row = cur.fetchone()
+    value = int((row["lValue"] if isinstance(row, dict) else row[0]) or 0) if row else 0
+    return 100 if value <= 0 else max(DROP_BONUS_MIN_PERCENT, min(DROP_BONUS_MAX_PERCENT, value))
+
 def read_mob_hp_mt2009():
     """The percent as the card shows it and the choices it offers: 100 and 80,
     and a percent of the operator's own from .env beside them."""
@@ -5723,12 +5777,16 @@ def read_mob_hp_mt2009():
     return {"pct": value, "choices": sorted(set(MOB_HP_CHOICES) | {value}, reverse=True)}
 
 def read_regen_mt2009():
-    """The two flags as the page shows them (100 = normal), from player.quest."""
+    """The three flags as the page shows them (100 = normal), from player.quest."""
     out = {name: 100 for name in MT2009_REGEN_FLAGS}
     with db() as c, c.cursor() as cur:
         for name, flag in MT2009_REGEN_FLAGS.items():
             cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (flag,))
             row = cur.fetchone()
+            if not row and flag in MT2009_REGEN_METIN_FALLBACK:
+                cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1",
+                            (MT2009_REGEN_METIN_FALLBACK[flag],))
+                row = cur.fetchone()
             if row:
                 value = int(row["lValue"] if isinstance(row, dict) else row[0])
                 if REGEN_MIN_PERCENT <= value < 100:
@@ -5736,12 +5794,16 @@ def read_regen_mt2009():
     return out
 
 def read_regen_count_mt2009():
-    """The two multipliers as percents (100 = as the game has it), from player.quest."""
+    """The three multipliers as percents (100 = as the game has it), from player.quest."""
     out = {name: 100 for name in MT2009_REGEN_COUNT_FLAGS}
     with db() as c, c.cursor() as cur:
         for name, flag in MT2009_REGEN_COUNT_FLAGS.items():
             cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1", (flag,))
             row = cur.fetchone()
+            if not row and flag in MT2009_REGEN_METIN_FALLBACK:
+                cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szName=%s LIMIT 1",
+                            (MT2009_REGEN_METIN_FALLBACK[flag],))
+                row = cur.fetchone()
             if row:
                 value = int(row["lValue"] if isinstance(row, dict) else row[0])
                 if 100 < value <= max(REGEN_COUNT_CHOICES):
@@ -7578,7 +7640,7 @@ function m2rates(e,d,y){
 <input type="hidden" name="_csrf" value="{{csrf_token}}">
 <h3>⏱️ {{t('regen_title')}}</h3>
 <p class="muted">{{t('regen_help')}}</p>
-{% for key, icon in (("regen_boss", "🪨"), ("regen_mob", "👾")) %}
+{% for key, icon in (("regen_metin", "🪨"), ("regen_boss", "👹"), ("regen_mob", "👾")) %}
 <h3 style="margin-top:{{ 12 if loop.first else 18 }}px">{{icon}} {{t(key)}}</h3>
 <input id="{{key}}" name="{{key}}" type="number" min="10" max="100" step="1" value="{{regen[key]}}" required oninput="regenLabel('{{key}}')">
 <div class="muted" style="margin-top:6px">{{t('regen_faster')}}
@@ -7590,7 +7652,7 @@ function regenLabel(k){var v=parseInt(document.getElementById(k).value||"100",10
   var m=Math.round(100/v*10)/10;var s=(m%1===0)?String(m):m.toFixed(1);
   document.getElementById(k+"_mult").textContent={{ t('regen_mult') | tojson }}.replace("{n}", s);}
 function regenSet(k,v){document.getElementById(k).value=v;regenLabel(k);}
-regenLabel("regen_boss");regenLabel("regen_mob");
+regenLabel("regen_metin");regenLabel("regen_boss");regenLabel("regen_mob");
 </script>
 <button class="big" style="margin-top:18px">{{t('regen_save')}}</button>
 </form></div>
@@ -7602,7 +7664,7 @@ regenLabel("regen_boss");regenLabel("regen_mob");
 <h3>👥 {{t('count_title')}}</h3>
 <p class="muted">{{t('count_help')}}</p>
 <p class="muted">⚠️ {{t('count_warn')}}</p>
-{% for key, icon in (("count_boss", "🪨"), ("count_mob", "👾")) %}
+{% for key, icon in (("count_metin", "🪨"), ("count_boss", "👹"), ("count_mob", "👾")) %}
 <h3 style="margin-top:{{ 12 if loop.first else 18 }}px">{{icon}} {{t(key)}}</h3>
 <select id="{{key}}" name="{{key}}">
 {% for p in count_choices %}<option value="{{p}}"{% if regen_count[key] == p %} selected{% endif %}>×{{ (p / 100) | round(1) | replace(".0", "") | replace(".", ",") }}</option>{% endfor %}
@@ -7667,6 +7729,17 @@ regenLabel("regen_boss");regenLabel("regen_mob");
 <p><label><input type="radio" name="pct" value="{{p}}"{% if mob_hp.pct == p %} checked{% endif %}> {{ t('mh_100') if p == 100 else (t('mh_80') if p == 80 else t('mh_custom').replace('{n}', p|string)) }}</label></p>
 {% endfor %}
 <button class="big" style="margin-top:12px">{{t('mh_save')}}</button>
+</form></div>
+{% endif %}
+{% if drop_bonus %}
+<div class="card">
+<form method="post" action="{{url_for('rates_drop_bonus')}}">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<h3>🎲 {{t('dbonus_title')}}</h3>
+<p class="muted">{{t('dbonus_help')}}</p>
+<p><label>{{t('dbonus_label')}} <input type="number" name="pct" min="{{drop_bonus_min}}" max="{{drop_bonus_max}}" step="1" value="{{drop_bonus}}" style="width:90px"> %</label></p>
+<p class="muted">{{t('dbonus_examples')}}</p>
+<button class="big" style="margin-top:12px">{{t('dbonus_save')}}</button>
 </form></div>
 {% endif %}
 {% if channels %}
@@ -8196,6 +8269,11 @@ TPL_AI = BASE.replace("__BODY__", """
   <h3 style="margin:0 0 2px">🤝 {{t('ai_haggle')}}</h3>
   <p class="muted" style="margin:0 0 6px">{{t('ai_haggle_help')}}</p>
   <label><input type="checkbox" name="HAGGLE" value="1" {% if cur.get('HAGGLE', 1) %}checked{% endif %}> {{t('ai_haggle_on')}}</label>
+</div>
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">🧱 {{t('ai_material_market')}}</h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_material_market_help')}}</p>
+  <label><input type="checkbox" name="MATERIAL_MARKET" value="1" {% if cur.get('MATERIAL_MARKET', 0) %}checked{% endif %}> {{t('ai_haggle_on')}}</label>
 </div>
 {# Not a slider: 0 is off and 1-30 the days the core keeps its explanations;
    an absent key is the core's own seven, and saving the page untouched keeps
@@ -8812,10 +8890,12 @@ def map_i18n(language=None):
     return MAP_I18N.get(language, MAP_I18N["en"])
 
 JOB_NAMES_MAP = {
- "pl": {0:"Wojownik (M)",4:"Wojowniczka (K)",1:"Ninja (M)",5:"Ninja (K)",
-        2:"Sura (M)",6:"Sura (K)",3:"Szaman (M)",7:"Szamanka (K)"},
- "en": {0:"Warrior (M)",4:"Warrior (F)",1:"Ninja (M)",5:"Ninja (F)",
-        2:"Sura (M)",6:"Sura (F)",3:"Shaman (M)",7:"Shaman (F)"},
+# Race numbers as the engine has them: 1 is the female Ninja, 5 the male one,
+# 3 the female Shaman, 7 the male one (Warrior and Sura: 0-3 male, 4-7 female).
+ "pl": {0:"Wojownik (M)",4:"Wojowniczka (K)",5:"Ninja (M)",1:"Ninja (K)",
+        2:"Sura (M)",6:"Sura (K)",7:"Szaman (M)",3:"Szamanka (K)"},
+ "en": {0:"Warrior (M)",4:"Warrior (F)",5:"Ninja (M)",1:"Ninja (F)",
+        2:"Sura (M)",6:"Sura (F)",7:"Shaman (M)",3:"Shaman (F)"},
 }
 BIOLOGIST_NAMES_EN = {
  "make_herb_lv4":"Peach Blossom","make_herb_lv7":"Bellflower",
@@ -19281,6 +19361,7 @@ def rates():
     autohunt = None
     starter_chest = None
     mob_hp = None
+    drop_bonus = None
     if ENGINE_MT2009:
         try:
             regen = read_regen_mt2009()
@@ -19306,6 +19387,10 @@ def rates():
             mob_hp = read_mob_hp_mt2009()
         except Exception:
             mob_hp = None
+        try:
+            drop_bonus = read_drop_bonus_mt2009()
+        except Exception:
+            drop_bonus = None
     channels = None
     if ENGINE_MT2009:
         try:
@@ -19317,6 +19402,8 @@ def rates():
                                   difficulty=difficulty, difficulty_levels=DIFFICULTY_LEVELS,
                                   difficulty_max=DIFFICULTY_MAX_HOURS, autohunt=autohunt,
                                   starter_chest=starter_chest, mob_hp=mob_hp, channels=channels,
+                                  drop_bonus=drop_bonus, drop_bonus_min=DROP_BONUS_MIN_PERCENT,
+                                  drop_bonus_max=DROP_BONUS_MAX_PERCENT,
                                   intro_key="rates_intro_mt2009" if ENGINE_MT2009 else "rates_intro",
                                   state_msg=t("rates_st_" + st) if st in RATE_STATES else "")
 
@@ -19341,7 +19428,7 @@ def rates_bot_reprice_now():
 @app.post("/rates/regen")
 @login_required
 def rates_regen():
-    """Stones and bosses, and ordinary monsters, respawning in a share of their
+    """Metin stones, bosses and ordinary monsters, respawning in a share of their
     normal time. mt2009 only: the engine's regen_event reads the flags."""
     if not ENGINE_MT2009:
         return redirect(url_for("rates"))
@@ -19359,8 +19446,9 @@ def rates_regen():
         flash(t("db_down"), "error")
         return redirect(url_for("rates"))
     try:
-        status, qid = queue_and_wait("", "REGEN", "%d,%d" % (0 if vals["regen_boss"] >= 100 else vals["regen_boss"],
-                                                            0 if vals["regen_mob"] >= 100 else vals["regen_mob"]), "",
+        # "metin,boss,mob" (web_admin.quest's REGEN, MT2009_PLUS_REGEN_METIN_SPLIT_V1).
+        status, qid = queue_and_wait("", "REGEN", ",".join("%d" % (0 if vals[k] >= 100 else vals[k])
+                                                           for k in ("regen_metin", "regen_boss", "regen_mob")), "",
                                      wait=RATES_LIVE_WAIT)
     except Exception:
         status, qid = "failed", 0
@@ -19382,8 +19470,8 @@ def rates_regen():
 @app.post("/rates/regen_count")
 @login_required
 def rates_regen_count():
-    """How many monsters each respawn line keeps standing, stones and bosses
-    apart from the rest. mt2009 only: the engine's regen_spawn reads the flags."""
+    """How many monsters each respawn line keeps standing, Metin stones, bosses
+    and the rest each apart. mt2009 only: the engine's regen_spawn reads the flags."""
     if not ENGINE_MT2009:
         return redirect(url_for("rates"))
     vals = {}
@@ -19400,7 +19488,8 @@ def rates_regen_count():
         flash(t("db_down"), "error")
         return redirect(url_for("rates"))
     try:
-        status, qid = queue_and_wait("", "REGEN_COUNT", "%d,%d" % (vals["count_boss"], vals["count_mob"]), "",
+        status, qid = queue_and_wait("", "REGEN_COUNT", "%d,%d,%d" % (vals["count_metin"], vals["count_boss"],
+                                                                     vals["count_mob"]), "",
                                      wait=RATES_LIVE_WAIT)
     except Exception:
         status, qid = "failed", 0
@@ -19574,6 +19663,45 @@ def rates_mob_hp():
             except Exception:
                 pass
         flash(t("mh_saved_restart"))
+    return redirect(url_for("rates"))
+
+
+@app.post("/rates/drop_bonus")
+@login_required
+def rates_drop_bonus():
+    """MT2009_PLUS_DROP_BONUS_PCT_V1: the chance of bonus lines on a dropped
+    weapon or piece of armour. mt2009 only: every core reads the event flag at
+    its next drop. The row is what a restart keeps; web_admin.quest's
+    DROP_BONUS makes it live."""
+    if not ENGINE_MT2009:
+        return redirect(url_for("rates"))
+    raw = (request.form.get("pct", "") or "").strip()
+    if not raw.isdigit() or not DROP_BONUS_MIN_PERCENT <= int(raw) <= DROP_BONUS_MAX_PERCENT:
+        flash(t("dbonus_range"), "error")
+        return redirect(url_for("rates"))
+    value = int(raw)
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                        "VALUES (0, %s, '', %s)", (MT2009_DROP_BONUS_FLAG, value))
+    except Exception:
+        flash(t("db_down"), "error")
+        return redirect(url_for("rates"))
+    try:
+        status, qid = queue_and_wait("", "DROP_BONUS", str(value), "", wait=RATES_LIVE_WAIT)
+    except Exception:
+        status, qid = "failed", 0
+    if status == "done":
+        flash(t("dbonus_saved_live"))
+    else:
+        if status == "timeout":
+            try:
+                with db() as c, c.cursor() as cur:
+                    cur.execute("UPDATE player.web_admin_queue SET status='cancelled' "
+                                "WHERE id=%s AND status='pending'", (qid,))
+            except Exception:
+                pass
+        flash(t("dbonus_saved_restart"))
     return redirect(url_for("rates"))
 
 
@@ -20365,11 +20493,13 @@ def ai_weights():
             vals["CATACOMB"] = 1 if request.form.get("CATACOMB") else 0
             vals["ISHOP"] = 1 if request.form.get("ISHOP") else 0
             vals["HAGGLE"] = 1 if request.form.get("HAGGLE") else 0
+            vals["MATERIAL_MARKET"] = 1 if request.form.get("MATERIAL_MARKET") else 0
         else:
             vals["TOWER"] = old.get("TOWER", 1)
             vals["CATACOMB"] = old.get("CATACOMB", 1)
             vals["ISHOP"] = old.get("ISHOP", 1)
             vals["HAGGLE"] = old.get("HAGGLE", 1)
+            vals["MATERIAL_MARKET"] = old.get("MATERIAL_MARKET", 0)
         vals["SHOP_M2"] = 1 if request.form.get("SHOP_M2") else 0
         vals["PERSONA"] = 1 if request.form.get("PERSONA") else 0
         vals["SHOUTERS"] = 1 if request.form.get("SHOUTERS") else 0

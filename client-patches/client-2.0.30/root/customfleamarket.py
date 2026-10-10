@@ -14,6 +14,7 @@ import localeInfo
 import uiCommon
 import player
 import chat
+import nonplayer
 from _weakref import proxy
 
 YANG_PER_CHEQUE = 100000000
@@ -57,7 +58,10 @@ WINDOW_HEIGHT = 592
 SIDEBAR_X = 12
 SIDEBAR_WIDTH = 176
 SIDEBAR_Y = 38
-CATEGORY_HEIGHT = 23
+# MT2009_PLUS_FLEA_CATEGORIES_V2: two more top-level categories (Smocza
+# Alchemia, Polimorfia) - the rows are 2 px lower so the sidebar still ends
+# above the footer.
+CATEGORY_HEIGHT = 21
 MAIN_X = 200
 MAIN_RIGHT = WINDOW_WIDTH - 12
 ROW_HEIGHT = 54
@@ -69,6 +73,16 @@ MAX_LISTINGS = 6000
 # forgetting book (70037) searched by its skill like the skill book.
 SEARCH_DELAY = 0.35
 BOOK_VNUMS = (50300, 70037)
+# MT2009_PLUS_FLEA_CATEGORIES_V2: polymorph marbles carry the monster's vnum
+# in socket 0 - the offer is named "<marble> - <monster>".
+POLYMORPH_VNUMS = (70104, 70105, 70106, 70107, 71093)
+MARBLE_VNUM = 70104
+# Cor Draconis from the roughest to the legendary one - the suggestions'
+# order when the query is "cor..." (alphabetically they came mixed).
+COR_DRACONIS_ORDER = (50255, 50256, 50257, 50258, 50259)
+# Next query of a split category (Smocza Alchemia, a refine range...) after
+# the previous one's last batch.
+CATEGORY_REQUEST_GAP = 0.35
 # Umiejetnosci, dla ktorych istnieja ksiegi (klient zna ich nazwy). skill.GetSkillName dla nieznanego numeru
 # zapisuje blad w interpreterze i wywala pozniejszy, niezwiazany kod - wolno pytac tylko o te numery.
 SKILL_IDS = tuple(range(1, 6) + range(16, 21) + range(31, 36) + range(46, 51) + range(61, 67) + range(76, 82) + range(91, 97) + range(106, 112))
@@ -136,11 +150,15 @@ CATEGORY_DEFS = (
     ("Kolczyki", 0, "ITEM_TYPE_ARMOR", "ARMOR_EAR", None),
     ("Ksiegi", 0, "ITEM_TYPE_SKILLBOOK", None, None),
     ("Ksiegi zapomnienia", 0, "ITEM_TYPE_SKILLFORGET", None, None),
+    # MT2009_PLUS_FLEA_CATEGORIES_V2: the dragon stones and the Cor Draconis
+    # (COR_DRACONIS_VNUMS below, an override).
+    ("Smocza Alchemia", 0, ("ITEM_TYPE_DS", "ITEM_TYPE_SPECIAL_DS"), None, None),
     ("Kamienie duszy", 0, "ITEM_TYPE_METIN", None, None),
     ("Rudy i przetopy", 0, "ITEM_TYPE_RESOURCE", None, None),
     ("Dopalacze", 0, "ITEM_TYPE_POTION", None, None),
     ("Uzywalne", 0, "ITEM_TYPE_USE", None, None),
     ("Ulepszacze", 0, "ITEM_TYPE_MATERIAL", None, None),
+    ("Polimorfia", 0, "ITEM_TYPE_POLYMORPH", None, None),  # MT2009_PLUS_FLEA_CATEGORIES_V2
     ("Inne", 0, "OTHER", None, None),
 )
 
@@ -158,6 +176,11 @@ CATEGORY_VNUM_OVERRIDES = {
     71026: "Ulepszacze",           # MT2009_PLUS_UPSTREAM_2_0_76: an upgrade item, as upstream files it
     72308: "Rudy i przetopy",      # Magiczna Ruda Miedzi (wariant questowy)
 }
+# MT2009_PLUS_FLEA_CATEGORIES_V2: Cor Draconis (every grade and kind) are
+# ordinary items in the engine - filed under "Smocza Alchemia".
+COR_DRACONIS_VNUMS = (50252, 50255, 50256, 50257, 50258, 50259, 50260, 51501, 51502, 51503, 51504, 51505, 51506, 51507,
+    51508, 51509, 51510, 51541, 51548, 51549, 51562, 51569, 51576, 51583, 51590, 51597, 51604, 51611, 51618, 51625, 51632)
+CATEGORY_VNUM_OVERRIDES.update(dict((vnum, "Smocza Alchemia") for vnum in COR_DRACONIS_VNUMS))
 # (od, do wlacznie, kategoria) - prawdziwe rudy/kamienie siedza pod ITEM_TYPE_SPECIAL, ktory
 # jest ogolnym koszem (jedzenie dla konia, bilety, obraczki...), wiec tylko ten ciagly zakres
 # vnumow trafia do "Rudy i przetopy".
@@ -407,6 +430,20 @@ def BuildBonusFilterOptions():
     return options
 
 
+class _RestrictionToggleHandler:
+    # MT2009_PLUS_FLEA_CATEGORIES_V2: a class / gender box of the filter window.
+    def __init__(self, dialog, group, flag):
+        self.dialog = proxy(dialog)
+        self.group = group
+        self.flag = flag
+
+    def OnClick(self):
+        try:
+            self.dialog.ToggleRestriction(self.group, self.flag)
+        except ReferenceError:
+            pass
+
+
 class _BonusFilterRowHandler:
     # ui.__mem_func__ (used by SAFE_SetEvent-style wrappers) needs a real
     # bound method (it reads im_func/im_class/im_self) - a lambda doesn't
@@ -520,8 +557,20 @@ class FleaMarketBonusFilterDialog(ui.BoardWithTitleBar):
         self.countEdit.Show()
         y += self.ROW_HEIGHT
 
+        # MT2009_PLUS_FLEA_CATEGORIES_V2: ranges (level, count, refine) and
+        # who can wear it (class, gender) - a second card in the same style.
+        y = self.__BuildAdvanced(y + 8)
+        self.validationLabel = ui.TextLine()
+        self.validationLabel.SetParent(self)
+        self.validationLabel.SetPosition(self.LEFT, y + 2)
+        self.validationLabel.SetPackedFontColor(0xFFFF8888)
+        self.validationLabel.Show()
+        self.__keepers.append(self.validationLabel)
+        y += 14
+
         self.applyButton = self.__MakeButton(self.WIDTH / 2 - 110, y + 14, "Zastosuj", self.Apply)
         self.clearButton = self.__MakeButton(self.WIDTH / 2 + 10, y + 14, "Wyczysc", self.ClearAll)
+        self.SetSize(self.WIDTH, max(self.GetHeight(), y + 14 + 25 + 14))
 
         # lista wyboru bonusu - jedna wspolna dla wszystkich wierszy
         # MT2009_PLUS_FLEA_BONUS_SCROLL_V1: PICKER_ROWS widocznych pozycji
@@ -562,6 +611,111 @@ class FleaMarketBonusFilterDialog(ui.BoardWithTitleBar):
             self.pickerList.InsertItem(optionIndex, label)
 
         self.Hide()
+
+    # MT2009_PLUS_FLEA_CATEGORIES_V2
+    RANGE_ROWS = (("level", "Poziom"), ("count", "Liczba sztuk"), ("refine", "Ulepszenie (+0..+9)"))
+    CLASS_ROWS = (
+        ("classes", "Klasa:", (("ANTIFLAG_WARRIOR", "Wojownik"), ("ANTIFLAG_ASSASSIN", "Ninja"),
+            ("ANTIFLAG_SURA", "Sura"), ("ANTIFLAG_SHAMAN", "Szaman"))),
+        ("genders", "Plec:", (("ANTIFLAG_FEMALE", "Kobieta"), ("ANTIFLAG_MALE", "Mezczyzna"))),
+    )
+
+    def __BuildAdvanced(self, top):
+        self.rangeEdits = {}
+        self.selectedClasses = set()
+        self.selectedGenders = set()
+        self.toggleBoxes = {}
+        rowPitch = 28
+        cardHeight = 26 + len(self.RANGE_ROWS) * rowPitch + len(self.CLASS_ROWS) * 26 + 6
+        self.__MakeCard(self.LEFT - 4, top, self.WIDTH - (self.LEFT - 4) * 2, cardHeight)
+        minX = self.LEFT + 4 + 16 + self.PICK_WIDTH + 30 - 110
+        maxX = self.LEFT + 4 + 16 + self.PICK_WIDTH + 30
+        for x, text in ((self.LEFT + 4, "Zakresy (puste = bez limitu)"), (minX, "Od"), (maxX, "Do")):
+            self.__MakeLabel(x, top + 7, text, COLOR_HEAD)
+        y = top + 26
+        for key, text in self.RANGE_ROWS:
+            self.__MakeLabel(self.LEFT + 4, y + 5, text, COLOR_DIM)
+            for suffix, x in (("Min", minX), ("Max", maxX)):
+                bar = ui.SlotBar()
+                bar.SetParent(self)
+                bar.SetPosition(x, y)
+                bar.SetSize(self.EDIT_WIDTH, self.PICK_HEIGHT)
+                bar.AddFlag("not_pick")
+                bar.Show()
+                self.__keepers.append(bar)
+                edit = ui.EditLine()
+                edit.SetParent(bar)
+                edit.SetPosition(4, 3)
+                edit.SetSize(self.EDIT_WIDTH - 8, 17)
+                edit.SetMax(6)
+                edit.SetNumberMode()
+                edit.SAFE_SetReturnEvent(self.Apply)
+                edit.Show()
+                self.rangeEdits[key + suffix] = edit
+            y += rowPitch
+        for group, caption, entries in self.CLASS_ROWS:
+            self.__MakeLabel(self.LEFT + 4, y + 3, caption, COLOR_DIM)
+            x = self.LEFT + 54
+            for flag, text in entries:
+                handler = _RestrictionToggleHandler(self, group, flag)
+                self.__keepers.append(handler)
+                box = FleaCheckBox(handler.OnClick)
+                box.SetParent(self)
+                box.SetPosition(x, y + 2)
+                box.Show()
+                self.__keepers.append(box)
+                label = self.__MakeLabel(x + CHECK_SIZE + 5, y + 3, text, COLOR_TEXT)
+                hit = ui.Button()
+                hit.SetParent(self)
+                hit.SetPosition(x + CHECK_SIZE + 2, y)
+                hit.SetSize(label.GetTextSize()[0] + 6, 20)
+                hit.SetEvent(handler.OnClick)
+                hit.Show()
+                self.__keepers.append(hit)
+                self.toggleBoxes[flag] = box
+                x += 96 if group == "classes" else 110
+            y += 26
+        return top + cardHeight + 6
+
+    def __MakeLabel(self, x, y, text, color):
+        label = ui.TextLine()
+        label.SetParent(self)
+        label.SetPosition(x, y)
+        label.SetText(text)
+        label.SetPackedFontColor(color)
+        label.AddFlag("not_pick")
+        label.Show()
+        self.__keepers.append(label)
+        return label
+
+    def ToggleRestriction(self, group, flag):
+        selected = self.selectedClasses if group == "classes" else self.selectedGenders
+        if flag in selected:
+            selected.remove(flag)
+        else:
+            selected.add(flag)
+        self.toggleBoxes[flag].SetChecked(flag in selected)
+
+    def __ReadAdvanced(self):
+        advanced = {}
+        for key, edit in self.rangeEdits.items():
+            text = edit.GetText().strip()
+            if text and not text.isdigit():
+                self.validationLabel.SetText("Wpisz liczbe albo zostaw puste pole.")
+                return None
+            advanced[key] = int(text) if text else None
+        for key, _ in self.RANGE_ROWS:
+            lower, upper = advanced[key + "Min"], advanced[key + "Max"]
+            if lower is not None and upper is not None and lower > upper:
+                self.validationLabel.SetText("Niepoprawny zakres: \"od\" wieksze niz \"do\".")
+                return None
+            if key == "refine" and ((lower is not None and lower > 9) or (upper is not None and upper > 9)):
+                self.validationLabel.SetText("Ulepszenie: od 0 do 9.")
+                return None
+        advanced["classes"] = tuple(self.selectedClasses)
+        advanced["genders"] = tuple(self.selectedGenders)
+        self.validationLabel.SetText("")
+        return advanced
 
     # CUSTOM_ENTER_CONFIRM_V1
     def OnPressReturnKey(self):
@@ -750,6 +904,12 @@ class FleaMarketBonusFilterDialog(ui.BoardWithTitleBar):
         self.HidePicker()
 
     def Apply(self):
+        # MT2009_PLUS_FLEA_CATEGORIES_V2: a wrong range keeps the window open.
+        advanced = self.__ReadAdvanced()
+        if advanced is None:
+            return
+        previous = self.market.advancedFilters
+        self.market.advancedFilters = advanced
         filters = []
         for row in self.rows:
             if row["optionIndex"] <= 0:
@@ -776,15 +936,30 @@ class FleaMarketBonusFilterDialog(ui.BoardWithTitleBar):
             minCount = 0
         self.market.SetBonusFilters(filters, minCount)
         self.Close()
+        # the refine / level / class filters change what the server is asked for
+        if NeedsAdvancedRequest(previous) or NeedsAdvancedRequest(advanced):
+            self.market.Search()
 
-    def ClearAll(self):
+    def ClearAll(self, search=True):
         for row in self.rows:
             row["optionIndex"] = 0
             row["button"].SetText(self.NONE_LABEL)
             row["edit"].SetText("")
         self.countEdit.SetText("")
         self.HidePicker()
+        # MT2009_PLUS_FLEA_CATEGORIES_V2
+        for edit in self.rangeEdits.values():
+            edit.SetText("")
+        self.selectedClasses.clear()
+        self.selectedGenders.clear()
+        for box in self.toggleBoxes.values():
+            box.SetChecked(False)
+        self.validationLabel.SetText("")
+        previous = self.market.advancedFilters
+        self.market.advancedFilters = {}
         self.market.SetBonusFilters([])
+        if search and NeedsAdvancedRequest(previous):
+            self.market.Search()
 
     def Open(self):
         self.Show()
@@ -803,6 +978,119 @@ class FleaMarketBonusFilterDialog(ui.BoardWithTitleBar):
 _OVERRIDE_TARGET_LABELS = frozenset(
     list(CATEGORY_VNUM_OVERRIDES.values()) + [label for _, _, label in CATEGORY_VNUM_RANGE_OVERRIDES]
 )
+
+
+# MT2009_PLUS_FLEA_CATEGORIES_V2: the "Filtry" window's ranges (level, count,
+# refine +0..+9; None - no limit) and the classes / gender the item has to be
+# wearable by (any of the ticked ones). All matched here, on the offers the
+# server sent; the refine and level/class searches ask the server for the
+# right offers first (BuildFilteredCategoryRequests).
+ADVANCED_CLASS_FLAGS = ("ANTIFLAG_WARRIOR", "ANTIFLAG_ASSASSIN", "ANTIFLAG_SURA", "ANTIFLAG_SHAMAN")
+ADVANCED_GENDER_FLAGS = ("ANTIFLAG_FEMALE", "ANTIFLAG_MALE")
+_REFINE_RE = re.compile(r"\+(\d+)$")
+
+
+def NeedsAdvancedRequest(options):
+    # the filters that change the queries (BuildFilteredCategoryRequests)
+    if not options:
+        return False
+    for key in ("refineMin", "refineMax", "levelMin", "levelMax"):
+        if options.get(key) is not None:
+            return True
+    return bool(options.get("classes") or options.get("genders"))
+
+
+def CountAdvancedFilters(options):
+    if not options:
+        return 0
+    count = 0
+    for key in ("level", "count", "refine"):
+        if options.get(key + "Min") is not None or options.get(key + "Max") is not None:
+            count += 1
+    if options.get("classes"):
+        count += 1
+    if options.get("genders"):
+        count += 1
+    return count
+
+
+def MatchesAdvancedMarketFilters(data, options):
+    if not options:
+        return True
+    count = data["count"]
+    if options.get("countMin") is not None and count < options["countMin"]:
+        return False
+    if options.get("countMax") is not None and count > options["countMax"]:
+        return False
+    restricted = options.get("classes") or options.get("genders")
+    ranged = False
+    for key in ("levelMin", "levelMax", "refineMin", "refineMax"):
+        if options.get(key) is not None:
+            ranged = True
+    if not (ranged or restricted):
+        return True
+    cached = data.get("_flea_advanced")
+    if cached is None:
+        item.SelectItem(data["vnum"])
+        itemType = item.GetItemType()
+        level = 0
+        for index in range(2):
+            try:
+                kind, value = item.GetLimit(index)
+            except:
+                continue
+            if kind == item.LIMIT_LEVEL:
+                level = max(level, value)
+        match = _REFINE_RE.search(item.GetItemName().strip())
+        refine = int(match.group(1)) if match else None
+        flags = {}
+        for name in ADVANCED_CLASS_FLAGS + ADVANCED_GENDER_FLAGS:
+            flag = getattr(item, name, None)
+            flags[name] = bool(flag is not None and item.IsAntiFlag(flag))
+        wearable = itemType in (item.ITEM_TYPE_WEAPON, item.ITEM_TYPE_ARMOR)
+        cached = (level, refine, flags, wearable)
+        data["_flea_advanced"] = cached
+    level, refine, flags, wearable = cached
+    # a class or gender only says something about what can be worn
+    if restricted and not wearable:
+        return False
+    for key, value in (("level", level), ("refine", refine)):
+        lower, upper = options.get(key + "Min"), options.get(key + "Max")
+        if lower is not None or upper is not None:
+            if value is None or (lower is not None and value < lower) or (upper is not None and value > upper):
+                return False
+    for key in ("classes", "genders"):
+        selected = options.get(key, ())
+        if selected and all(flags.get(name) for name in selected):
+            return False
+    return True
+
+
+def BuildCategoryRequests(category, request):
+    # Smocza Alchemia is two engine types plus the Cor Draconis (an item of
+    # another type, found by its name): three queries.
+    if category["label"] != "Smocza Alchemia":
+        return [request]
+    batches = [(kind, -1) + request[2:] for kind in category["types"] if kind >= 0]
+    batches.insert(0, (-1, -1) + request[2:5] + (request[5] or "cor draconis",))
+    return batches
+
+
+def BuildFilteredCategoryRequests(category, request, options):
+    options = options or {}
+    lower, upper = options.get("refineMin"), options.get("refineMax")
+    if (lower is not None or upper is not None) and not request[5]:
+        # no name typed: the offers "+N" of the category, one query per step
+        # (the server matches the name), instead of the whole market
+        lower = 0 if lower is None else lower
+        upper = 9 if upper is None else upper
+        return [request[:5] + ("+%d" % level,) for level in range(lower, upper + 1)]
+    restricted = options.get("classes") or options.get("genders") or \
+        options.get("levelMin") is not None or options.get("levelMax") is not None
+    if category["types"] == (-1,) and restricted:
+        # "Wszystko" with a level/class/gender filter: weapons and armour only
+        return [(kind, -1) + request[2:] for kind in (item.ITEM_TYPE_WEAPON, item.ITEM_TYPE_ARMOR)]
+    return BuildCategoryRequests(category, request)
 
 
 def BuildCategories():
@@ -1281,6 +1569,14 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
         self.multiBuy = None
         self.popupDialog = None
         self.bonusFilters = []  # CUSTOM_FLEA_BONUS_FILTER_V1: [(attrType, minValue), ...]
+        # MT2009_PLUS_FLEA_CATEGORIES_V2: level/count/refine ranges, classes,
+        # gender (FleaMarketBonusFilterDialog.Apply), the split search.
+        self.advancedFilters = {}
+        self.categoryRequests = []
+        self.nextCategoryRequestAt = None
+        self.fixedNames = None
+        self.marbleBaseName = ""
+        self.corPriority = {}
         # MT2009_PLUS_UPSTREAM_2_0_76: the bonus filter's minimum number of
         # bonuses, the page kept while offers stream in, the tooltip's price
         # sample, Tab through the suggestions, Enter after a purchase.
@@ -1651,6 +1947,15 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
                         name = "%s - %s" % (skillName, name)
                 except:
                     pass
+            # MT2009_PLUS_FLEA_CATEGORIES_V2: a polymorph marble shows its monster.
+            if data["vnum"] in POLYMORPH_VNUMS:
+                try:
+                    mobVnum = int(data.get("sockets", [0])[0])
+                    mobName = nonplayer.GetMonsterName(mobVnum) if mobVnum else ""
+                    if mobName:
+                        name = "%s - %s" % (name, mobName)
+                except:
+                    pass
             data["_flea_name"] = name
         return name
 
@@ -1755,7 +2060,51 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
                 if key not in seen:
                     seen.add(key)
                     names.append(name)
+        # MT2009_PLUS_FLEA_CATEGORIES_V2: "<marble> - <monster>" for every
+        # monster of the catalogue (dt_mob_catalog.py; the server is asked for
+        # the marble, the monster is matched here - __GetServerQuery) and the
+        # Cor Draconis by grade. Built once - the offers do not change them.
+        for name in self.__GetFixedNames():
+            key = PolishLower(name)
+            if key not in seen:
+                seen.add(key)
+                names.append(name)
         self.itemNames = names
+        return names
+
+    def __GetFixedNames(self):
+        if self.fixedNames is not None:
+            return self.fixedNames
+        names = []
+        self.corPriority = {}
+        try:
+            item.SelectItem(MARBLE_VNUM)
+            self.marbleBaseName = item.GetItemName()
+        except:
+            self.marbleBaseName = ""
+        if self.marbleBaseName:
+            try:
+                from dt_mob_catalog import MOB_VNUMS
+            except ImportError:
+                MOB_VNUMS = ()
+            for mobVnum in MOB_VNUMS:
+                try:
+                    mobName = nonplayer.GetMonsterName(mobVnum)
+                except:
+                    continue
+                if not mobName:
+                    continue
+                name = "%s - %s" % (self.marbleBaseName, mobName)
+                names.append(name)
+        for priority, vnum in enumerate(COR_DRACONIS_ORDER):
+            try:
+                item.SelectItem(vnum)
+                name = item.GetItemName()
+            except:
+                continue
+            self.corPriority[PolishLower(name)] = priority
+            names.append(name)
+        self.fixedNames = names
         return names
 
     def __HideSuggestions(self):
@@ -1779,8 +2128,10 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
                 startsWith.append(name)
             elif query in lowerName:
                 contains.append(name)
-        startsWith.sort(key=lambda name: PolishLower(name))
-        contains.sort(key=lambda name: PolishLower(name))
+        # MT2009_PLUS_FLEA_CATEGORIES_V2: Cor Draconis by grade first.
+        corPriority = getattr(self, "corPriority", {})
+        startsWith.sort(key=lambda name: (corPriority.get(PolishLower(name), 100), PolishLower(name)))
+        contains.sort(key=lambda name: (corPriority.get(PolishLower(name), 100), PolishLower(name)))
         self.suggestionNames = (startsWith + contains)[:self.SUGGESTION_LIMIT]
         if not self.suggestionNames:
             self.__HideSuggestions()
@@ -1841,6 +2192,11 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
 
     def __GetServerQuery(self):
         query = self.searchEdit.GetText().strip()
+        # MT2009_PLUS_FLEA_CATEGORIES_V2: "<marble> - <monster>" - the server
+        # knows only the marble's name; the monster is matched locally.
+        self.__GetFixedNames()
+        if self.marbleBaseName and PolishLower(query).startswith(PolishLower(self.marbleBaseName) + " -"):
+            query = self.marbleBaseName
         return query.replace('"', "").replace("'", "")[:60]
 
     def __FindSkillIds(self, query):
@@ -1902,6 +2258,15 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
         self.seenIds = set()
         self.isLoading = True
         self.dirty = False
+        # MT2009_PLUS_FLEA_CATEGORIES_V2: a category of several engine types
+        # (Smocza Alchemia) or a refine/level/class filter is asked for in a
+        # few queries, one after the other (SetSearchResultItems).
+        self.nextCategoryRequestAt = None
+        self.categoryRequests = BuildFilteredCategoryRequests(self.categories[self.category], request, self.advancedFilters)
+        self.__SendCategoryRequest()
+
+    def __SendCategoryRequest(self):
+        request = self.categoryRequests.pop(0)
         net.SendChatPacket("/flea_filter %d %d %d %d %d" % request[:5])
         net.SendChatPacket("/flea_query %s" % self.__BuildQueryText(request[5]))
         ikashop.SendRandomSearchFillRequest()
@@ -1939,6 +2304,10 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
         if not warpsafe.InGame():
             return
         now = app.GetTime()
+        if self.nextCategoryRequestAt is not None and now >= self.nextCategoryRequestAt:
+            self.nextCategoryRequestAt = None
+            if self.isLoading and self.categoryRequests:
+                self.__SendCategoryRequest()
         if self.searchAt is not None and now >= self.searchAt:
             self.searchAt = None
             if self.IsShow() and self.__BuildRequest() != self.lastRequest:
@@ -2050,7 +2419,7 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
         self.primarySortColumn = "price"
         self.__UpdateSortHeaders()
         self.__HideSuggestions()
-        self.bonusFilterDialog.ClearAll()
+        self.bonusFilterDialog.ClearAll(False)
         self.ApplyFilters()
         self.__Request()
 
@@ -2061,7 +2430,7 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
     def SetBonusFilters(self, filters, minCount=0):
         self.bonusFilters = filters
         self.minBonusCount = minCount
-        count = len(filters) + (1 if minCount else 0)
+        count = len(filters) + (1 if minCount else 0) + CountAdvancedFilters(self.advancedFilters)
         self.bonusFilterButton.SetText("Filtry (%d)" % count if count else "Filtry")
         self.ApplyFilters()
 
@@ -2151,6 +2520,8 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
                     if itemType == getattr(item, "ITEM_TYPE_MATERIAL", None):
                         continue
             if not self.__MatchesCategory(data):
+                continue
+            if not MatchesAdvancedMarketFilters(data, self.advancedFilters):
                 continue
             if not self.__MatchesBonusFilters(data):
                 continue
@@ -2605,6 +2976,10 @@ class FleaMarketWindow(ui.BoardWithTitleBar):
                 else:
                     self.dirty = True
                     self.__UpdateStatus()
+                return
+            # MT2009_PLUS_FLEA_CATEGORIES_V2: the next query of a split search.
+            if self.categoryRequests:
+                self.nextCategoryRequestAt = app.GetTime() + CATEGORY_REQUEST_GAP
                 return
             self.isLoading = False
             self.allItems = self.pendingItems
