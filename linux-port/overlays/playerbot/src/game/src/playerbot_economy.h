@@ -3472,11 +3472,15 @@ namespace
 		// burned that spare too, left with none): the only spare of a slot the
 		// bot fights in is kept whole as well - it goes up under a scroll, not
 		// on the plain anvil, as long as no other piece could replace it.
+		// MT2009_PLUS_BOT_SMITHY_V3 (night test, 10 October 05:30: the worn
+		// piece burned first, its slot was left empty and the spare - now the
+		// only piece for it - went on the plain anvil and burned too): the last
+		// piece for a slot is kept whole whether or not the slot is filled.
 		const int cell = item->FindEquipCell(ch);
-		if (cell < 0 || cell >= WEAR_MAX_NUM || !ch->GetWear((WORD)cell) || !IsPlayerBotEquipmentCandidate(ch, item))
+		if (cell < 0 || cell >= WEAR_MAX_NUM || !IsPlayerBotEquipmentCandidate(ch, item))
 			return false;
 		if (cell == WEAR_WEAPON)
-			return GetPlayerBotBackupWeaponID(ch, false) == item->GetID();
+			return ch->GetWear(WEAR_WEAPON) ? GetPlayerBotBackupWeaponID(ch, false) == item->GetID() : true;
 		LPITEM worn = ch->GetWear((WORD)cell);
 		for (WORD bag = 0; bag < PLAYERBOT_BAG_CELLS; ++bag)
 		{
