@@ -371,6 +371,11 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // the yes, the wait by an NPC of the first village and the invitation. After
 // the dungeon finder, whose refusals and words it borrows, and the Legends.
 #include "playerbot_guild_lfg.h"
+// MT2009_PLUS_BOT_GUILD_SHAMAN_V1 (include): a bot that does not manage on a
+// strong map alone takes a free Shaman of its guild along, and the two hunt
+// as a party. After the guild finder and the dungeon finder, whose refusal
+// it borrows.
+#include "playerbot_guild_shaman.h"
 
 namespace
 {
@@ -1974,6 +1979,10 @@ namespace
 			return;
 		// And so does the Catacomb's raid: its party is what the key takes in.
 		if (IsPlayerBotCatacombRaider(ch->GetPlayerID()))
+			return;
+		// MT2009_PLUS_BOT_GUILD_SHAMAN_V1: and a guild's Shaman taken along, for
+		// as long as the pair stands (playerbot_guild_shaman.h).
+		if (KeepPlayerBotShamanDuo(ch, dwNow))
 			return;
 		// Iwakura's companion leaves at eighty percent of its bag and goes to
 		// empty it ("opuszcza grupe i naturalnie przechodzi w osobowosc
@@ -7469,6 +7478,9 @@ WritePlayerBotGuildStatus(dwNow);
 		AcceptPlayerBotPvpChallenge(ch, state, dwNow);
 		ManagePlayerBotPvpChallenge(ch, state, dwNow);
 		ManagePlayerBotKingdomHostility(ch, state, dwNow);
+		// MT2009_PLUS_BOT_GUILD_SHAMAN_V1: a strong map's trip takes its Shaman
+		// along before the party pass looks for a party.
+		ManagePlayerBotShamanEscort(ch, state, dwNow);
 		ManagePlayerBotParty(ch, state, dwNow);
 		// Iwakura's mercenary (playerbot_companions.h): a contract's upkeep for
 		// either side, the way back to a client after a pause, the client

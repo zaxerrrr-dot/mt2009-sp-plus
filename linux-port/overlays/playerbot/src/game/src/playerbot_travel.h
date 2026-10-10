@@ -1653,6 +1653,11 @@ namespace
 		return reason && strncmp(reason, "boss_raid", 9) == 0;
 	}
 
+	// MT2009_PLUS_BOT_GUILD_SHAMAN_V1: an exp trip onto a strong map, noted on
+	// arrival for the guild's free Shaman to be brought along
+	// (playerbot_guild_shaman.h, which comes later).
+	void NotePlayerBotExpTrip(LPCHARACTER ch, long targetMap, const char* reason, DWORD dwNow);
+
 	bool TransitionPlayerBotMap(LPCHARACTER ch, TPlayerBotAIState& state,
 			long targetMap, long targetX, long targetY, DWORD dwNow, const char* reason)
 	{
@@ -1836,6 +1841,8 @@ namespace
 		// MT2009_PLUS_FRONTIER_BAG_LOOP_V1: the town-service exits, counted.
 		if (IsPlayerBotServicesExitReason(reason))
 			NotePlayerBotServicesExit(ch, dwNow);
+		// MT2009_PLUS_BOT_GUILD_SHAMAN_V1.
+		NotePlayerBotExpTrip(ch, targetMap, reason, dwNow);
 		// How long the bot stayed in town after its errand was done. Asked for
 		// by name: "sam spadek liczby atakow nie dowodzi naprawy".
 		if (IsPlayerBotM2Map(oldMap) && state.dwErrandDoneTime != 0 &&
