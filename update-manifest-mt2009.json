@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-10T12:53:59Z",
-  "statusMessage": "MT2009 PLUS 2.29.1: poprawka Towarzysza w Swiatyni Zodiaku. Klient 2.0.60 bez zmian.",
+  "publishedAt": "2026-10-11T07:58:51Z",
+  "statusMessage": "MT2009 PLUS 2.30.0: zywszy swiat botow, nowy Dom Towarowy, rozbudowana Wiki dropu. Klient 2.0.61.",
   "server": {
-    "version": "2.29.1",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.29.1/metin2-server-update-2.29.1.zip",
-    "sha256": "710D60DE51D688CEC920C1DC68A9384CEB7B3BAB7C94EC45BD8B0BFDE0AB56BE",
-    "size": 112597426
+    "version": "2.30.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.30.0/metin2-server-update-2.30.0.zip",
+    "sha256": "47E97B40C449EEBC25C38B45E19C32AC7F2527E85A9DA6F638AB76F2146369B6",
+    "size": 113528147
   },
   "client": {
-    "version": "2.0.60",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.60/metin2-client-update-2.0.60.zip",
-    "sha256": "97E76C575B0B03BED40A53C78C24CA3EEE2FFFBAF98EA1A0E28DF7B2A31A563E",
-    "size": 617246853
+    "version": "2.0.61",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.61/metin2-client-update-2.0.61.zip",
+    "sha256": "1E46E80095131A1057825B614D5AD0AF9E4C8552586AD444527AAD8B426820E4",
+    "size": 617311060
   }
 }
