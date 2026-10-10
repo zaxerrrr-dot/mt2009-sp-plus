@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-09T04:12:39Z",
-  "statusMessage": "MT2009 PLUS 2.28.0: Ruiny Atlantydy, nowa bizuteria i klejnoty, pety u botow, CH3/CH4, mapa teleportacji. Klient 2.0.59.",
+  "publishedAt": "2026-10-10T07:45:29Z",
+  "statusMessage": "MT2009 PLUS 2.29.0: Swiatynia Zodiaku, staly bonus PD, opisy umiejetnosci, kanaly CH3/CH4 ustawiane przez patcher. Klient 2.0.60.",
   "server": {
-    "version": "2.28.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.28.0/metin2-server-update-2.28.0.zip",
-    "sha256": "86336A11202829B79AF03C93F907FF0FAD05C21559F1051AE17ACE5C2B542AD0",
-    "size": 111522127
+    "version": "2.29.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.29.0/metin2-server-update-2.29.0.zip",
+    "sha256": "4A3DFFB7625B0BCB7CCDA8C18F73A232DD6E7D687132CAA5750E851603014BA1",
+    "size": 112688738
   },
   "client": {
-    "version": "2.0.59",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.59/metin2-client-update-2.0.59.zip",
-    "sha256": "EFD65720A3297EF5E9EC98A5B07CFFB75E6955177C412A22983923A177664FE2",
-    "size": 563878101
+    "version": "2.0.60",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.60/metin2-client-update-2.0.60.zip",
+    "sha256": "97E76C575B0B03BED40A53C78C24CA3EEE2FFFBAF98EA1A0E28DF7B2A31A563E",
+    "size": 617246853
   }
 }
