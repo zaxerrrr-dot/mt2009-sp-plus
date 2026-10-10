@@ -17,6 +17,86 @@ every version here.
 
 ---
 
+## 2.30.0 — 2026-10-11 — Żywszy świat botów, nowy Dom Towarowy, rozbudowana Wiki dropu
+
+### Czym zajmują się boty
+- **Plan dnia bota.** Boty mają ustaloną hierarchię spraw. Najpierw dbają o życie, potem o drużynę na rajdzie, potem o umówione spotkania i o miejsce w plecaku. Dopiero wtedy idą łowić, kopać, zbierać zioła czy siedzieć w mieście.
+- **Pajęcze lochy żyją.** Postacie od 48 do 75 poziomu po zalogowaniu i po każdej wizycie w mieście wybierają na nowo, gdzie polować, a mniej więcej co trzecie losowanie wskazuje któryś z Lochów Pająków. Wchodzą tam tylko z odpowiednio ulepszoną bronią i zbroją oraz z zapasem mikstur. W głębszym lochu chętniej szukają towarzyszy do drużyny.
+- **Peleryny w samotnym expie.** Na kilku mapach boty zbierają większe grupy potworów Peleryną Męstwa także wtedy, gdy grają same. Zaczynają ostrożnie, od małych grup. Każda wygrana walka pozwala im ściągnąć więcej, a śmierć cofa je do mniejszych.
+- **Szaman na trudny teren.** Bot, któremu na wymagającej mapie idzie źle (ginie, ucieka, wypija za dużo mikstur albo ma wyraźnie słabszy sprzęt od rówieśników), dobiera sobie do pary szamana z gildii, który akurat nie ma zajęcia, i dalej polują we dwójkę. Mocne boty dalej grają same.
+- **Biolog częściej.** Boty dużo chętniej podejmują się zadań Biologa i brakujące okazy kupują na straganach, zamiast tylko czekać na drop.
+- **Cel na dziś.** Część botów po wejściu do gry wyznacza sobie cel na tę sesję: Metiny, poziom, yang, bossa, ulepszenie albo liczbę potworów, w trzech stopniach trudności. Cel widać nad głową bota na niebiesko, a jego wynik poprawia albo psuje botowi humor. Postęp zapamiętuje się – po wyjściu z gry czy przejściu na inny kanał bot wraca do tego samego zadania.
+- **Specjalizacja niezależna od płci.** Ninja i szamani dobierają ścieżkę umiejętności losowo, a nie według płci postaci. W panelu klasycznym płeć tych klas wyświetla się poprawnie.
+
+### Bossowie i wspólne polowania
+- Nowe cele zbiórek botów: **Olbrzymi Duch Drzewa** w Czerwonym Lesie oraz małpy z lochów – **Lord Małp**, **Chodząca Małpa** i **Skalista Małpa**.
+- Na **Królową Pająków** schodzą także boty, które w tej chwili nie przebywają w lochu.
+- Bot, który pierwszy natknie się na bossa, **ogłasza to całemu królestwu**, a jego rodacy w pobliżu przychodzą pomóc.
+
+### Handel między botami i z graczami
+- **Umawianie się na wymianę.** Na czacie handlowym boty dogadują się między sobą: jeden szuka materiału, drugi ma nadwyżkę. Ustalają cenę, kanał i miejsce (przy kowalu), spotykają się i przekazują towar w oknie handlu.
+- **Kupno od bota przez czat.** Gdy napiszesz do bota, że chcesz coś z jego ogłoszenia, poda cenę i miejsce, przyjdzie i sprzeda ci przedmiot w oknie handlu, także zdjęty z jego sklepu.
+- **Wymiana towar za towar.** Boty wymieniają się zbędnym ekwipunkiem, wyceniając obie strony tak samo. Różnicę wyrównują yangami, ale z umiarem. Przedmiotów z dobrymi bonusami w takie wymiany nie oddają.
+- **Nowe typy kupców:** boty polujące na wyjątkowo tanie oferty, które potem odsprzedają po normalnej cenie, drobne zakupy pod wpływem chwili, okazjonalne ulepszanie tanich przedmiotów „na próbę” oraz ogłoszenia skupu pisane potocznym językiem.
+
+### Ceny na rynku
+- **Cor Draconis** wyceniany według wartości smoczych kamieni, które z niego wypadają. Drogocenny, mityczny czy legendarny kosztuje teraz odpowiednio więcej niż zwyczajny.
+- **Towary, których prawie nie ma** (mniej niż 10 sztuk na wszystkich straganach), boty sprzedają i kupują drożej, a ich cena spada wolniej.
+- **Ulepszacze** kosztują tyle, na ile pozwala ich ilość na rynku, a ceny zmieniają się łagodnie. Każdy sprzedawca ma lekko inną cenę, więc nie stoją wszyscy na jednej kwocie.
+- **Słabe bronie na 30 poziom (+0…+3)** tanieją, gdy świat się starzeje i gdy na straganach jest ich za dużo. Nie dotyczy to egzemplarzy z wysokimi średnimi obrażeniami (powyżej 40%), które zawsze trzymają cenę.
+- **Marchewki i Czerwony Żeń-szeń:** gdy w królestwie leży ich na straganach już 300 sztuk, boty zamieniają nadwyżkę u Handlarki na Czerwone Mikstury.
+- **Kupony SM:** boty, którym nie są potrzebne w ItemShopie, wystawiają je na sprzedaż.
+- **Rynek materiałów (opcja testowa, domyślnie wyłączona):** gdy czegoś brakuje, boty chętniej wyciągają to z magazynu, a najtańsze, długo niesprzedane surowce stopniowo wycofują z handlu.
+
+### Kowal i ekwipunek botów
+- **Bez palenia noszonego sprzętu.** Bot ryzykuje ulepszenie założonego ekwipunku tylko wtedy, gdy ma w plecaku zapasową sztukę albo Zwój Błogosławieństwa. Ostatnią sztukę na dane miejsce zawsze ulepsza wyłącznie ze zwojem. Młode boty bez zapasu ulepszają najwyżej do +4.
+- **Cztery bonusy pod ochroną.** Przedmioty z czterema bonusami idą do kowala tylko ze zwojem.
+- **Zwój z rozsądkiem.** Boty nie zużywają Zwoju Błogosławieństwa na przedmiot tańszy od samego zwoju, a na sprzęcie do 18 poziomu tylko wtedy, gdy ulepszenie wyraźnie się opłaca.
+- **Tarcze i hełmy na miarę poziomu.** Boty zmieniają przestarzałe tarcze i hełmy na odpowiednie dla swojego poziomu, ulepszają je i pozbywają się nadmiaru. Tarcze bonują pod odporność na omdlenie i pod rasę potworów z mapy, na której polują.
+- **Mądrzejsze bonowanie.** Kamienie dodania i zmiany trafiają najpierw na noszony ekwipunek, a na przedmioty do sprzedaży idzie tylko nadwyżka. Dobre bonusy, w tym przydatne w PvP, nie są przelosowywane. Bronie na 30 poziom mają losowane średnie obrażenia aż do uzyskania przyzwoitej wartości – także te ulepszone na +7, +8 czy +9 – a bonusowanie zaczyna się od +6. Część botów przygotowuje też zbonowane przedmioty na sprzedaż.
+- **Wybór broni i biżuterii.** Ninja walczący sztyletami na 30 poziomie celuje w Kozik. Ebonitowe Kolczyki są priorytetem tylko dla części wojowników i ninja, a sury wybierają swoje kolczyki.
+- **Łucznik przy Metinie** nie żongluje już łukiem i sztyletem – sięga po sztylet raz na kamień i trzyma go do końca walki.
+- **Kowale w Wieży Demonów.** Uczestnicy rajdu mają przy sobie coś do ulepszenia u każdego z kowali w Wieży; swoją kolejkę ma tam też Towarzysz. Tamtejszym kowalom oddawane są wyłącznie przedmioty od +4 wzwyż.
+
+### Towarzysz
+- **Ochrona przed innymi postaciami.** Gdy ktokolwiek zaatakuje ciebie albo Towarzysza, bez względu na królestwo, Towarzysz staje do walki. Gdy sam zaatakujesz inną postać, dołącza do ciebie. W pojedynek i wojnę gildii się nie wtrąca.
+- **Najpierw strzelcy.** Nowa opcja w oknie Towarzysza: w pierwszej kolejności rozprawia się z łucznikami i magami, którzy strzelają lub rzucają czary w ciebie, w Towarzysza albo w kogoś z twojej drużyny. Można ją wyłączyć przyciskiem „Dystans”.
+- **Zakupy na zlecenie.** Towarzysz posłany po mikstury dochodzi do sprzedawcy i kupuje, zamiast wracać z niczym, gdy droga przy ladzie się zatnie.
+- **Świątynia Zodiaku:** na pasku celu jest przycisk „Wskrzeszenie”, którym przywrócisz leżącego Towarzysza lub członka drużyny za Pryzmaty (część serwerowa weszła już w 2.29.1).
+
+### Klient
+- **Dom Towarowy po liftingu**, w dotychczasowym wyglądzie okna:
+  - nowe zakładki: Polimorfia oraz Smocza Alchemia;
+  - podpowiedzi Corów ułożone od najsłabszych do najlepszych;
+  - Marmury Polimorfii z nazwą potwora;
+  - druga karta filtrów: poziom, liczba sztuk, poziom ulepszenia, klasa i płeć.
+- **Wiki dropu (klawisz „/”) z dużo większą ilością informacji:**
+  - przy przedmiocie widać, kto go wyrzuca, z jakiej receptury lub skrzyni pochodzi, u kogo go kupisz, do czego służy jako składnik albo ulepszacz, a przy skrzyniach również ich zawartość;
+  - przy potworze widać jego żywioł i mapy, na których występuje;
+  - wszystko liczy się samo z danych serwera.
+- **Zatruty przeciwnik** ma zielony pasek życia.
+- **Auto Łowy** pilnują, by buff (np. Czarowana Zbroja) ruszył dopiero wtedy, gdy umiejętność naprawdę jest gotowa – wcześniej bywało, że czar odpalony w ostatniej chwili odnowienia przepadał.
+
+### Panele
+- **Przegląd rynku (wersja testowa)** w panelu zaawansowanym, w zakładce Gospodarka:
+  - wszystkie stragany ze wszystkich królestw w jednym miejscu, z kategoriami i filtrami;
+  - wyróżnione okazje cenowe i historia ceny z ostatnich 7 dni;
+  - szybki teleport do wybranego straganu;
+  - „zwykłą” cenę, z którą porównywane są oferty, wylicza sam serwer gry – tak samo, jak robią to boty – więc okazje są rzeczywiste.
+- **Respawn rozdzielony na Metiny, bossów i zwykłe potwory** – każda grupa ma własny czas i liczbę, w obu panelach. Dotychczasowe ustawienia przeniosą się same.
+- **Ręczne zdjęcie blokady doświadczenia** z bota na jego karcie w panelu zaawansowanym (i przywrócenie jej).
+- **Nowe ustawienie trudności:** jak często broń i zbroja wypadające z potworów mają bonusy (od 10% do 1000% zwykłej szansy). Działa w obu panelach od razu.
+
+### Poprawki
+- Szukanie w Domu Towarowym samymi filtrami mogło wyłączyć rdzeń gry. Wyniki są teraz ograniczane już w trakcie przeszukiwania.
+
+## Klient 2.0.61 — 2026-10-11 — Dom Towarowy, Wiki dropu, Towarzysz
+
+- Nowe funkcje Domu Towarowego i rozbudowana Wiki dropu.
+- Przycisk „Dystans” w oknie Towarzysza i przycisk „Wskrzeszenie” na pasku celu w Świątyni Zodiaku.
+- Zielony pasek życia zatrutego przeciwnika.
+- Auto Łowy: buffy nie przepadają przy rzucaniu ich tuż po odnowieniu.
+
 ## 2.29.1 — 2026-10-10 — Poprawka Towarzysza w Świątyni Zodiaku
 
 Tylko aktualizacja serwera – klient zostaje 2.0.60.
