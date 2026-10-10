@@ -3457,7 +3457,7 @@ namespace
 		if (IsPlayerBotCorVnum(item->GetVnum()))
 		{
 			const DWORD count = std::max<DWORD>(1, (DWORD)item->GetCount());
-			const DWORD unit = GetPlayerBotOperatorCurveUnit(item->GetVnum(), PLAYERBOT_COR_DRACONIS_PRICE, count);
+			const DWORD unit = GetPlayerBotOperatorCurveUnit(item->GetVnum(), GetPlayerBotCorDraconisPrice(item->GetVnum()), count);	// MT2009_PLUS_COR_GRADE_PRICE_V1
 			const DWORD cor = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL, (unsigned long long)unit * count);
 			PlayerBotPriceStep(per::STEP_OPERATOR_PRICE, cor, unit);
 			return cor;

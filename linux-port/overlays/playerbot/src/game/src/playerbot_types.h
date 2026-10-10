@@ -7623,6 +7623,38 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_COR_GRADE_PRICE_V1 (the owner, 10 October: "boty nie rozrozniaja
+	// cor draconis i nawet drogocenne wystawiaja za taka sama cene jak
+	// zwyczajne"): a Cor is worth the Dragon Stones it opens into - each grade
+	// of stone twice the one below (rough 1, cut 2, rare 4, antique 8,
+	// legendary 16), averaged over its group's weights in special_item_group.
+	// Percent of PLAYERBOT_COR_DRACONIS_PRICE (a rough Cor's price).
+	int GetPlayerBotCorDraconisGradePercent(DWORD vnum)
+	{
+		switch (vnum)
+		{
+			case 50256: case 51507: return 200;		// szlifowane
+			case 50257: case 51508: return 400;		// rzadkie
+			case 50258: case 51509: return 800;		// antyczne
+			case 50259: case 51510: return 1600;	// legendarne
+			case 51503: case 51576: return 130;		// zwyczajne
+			case 51504: case 51583: return 160;		// szlachetne
+			case 51505: case 51590: return 210;		// drogocenne
+			case 51506: case 51618: return 420;		// mityczne
+			case 51541: case 51604: return 260;		// rozzarzone
+			case 51548: case 51597: return 270;		// nieskazitelne
+			case 51549: case 51611: return 320;		// wieczne
+			case 51562: case 51625: return 520;		// epickie
+			case 51569: case 51632: return 640;		// boskie
+			default: return 100;					// surowe / Rough / plain
+		}
+	}
+
+	DWORD GetPlayerBotCorDraconisPrice(DWORD vnum)
+	{
+		return (DWORD)((unsigned long long)PLAYERBOT_COR_DRACONIS_PRICE * GetPlayerBotCorDraconisGradePercent(vnum) / 100ULL);
+	}
+
 	// The sashes of the item table: four grades each of five classic kinds
 	// (85001..85024 less the unused 85009, 85010, 85019, 85020), Death Ruler
 	// (85101..85104) and the Herzband (86061..86064).  Death Ruler no longer
@@ -7755,7 +7787,7 @@ namespace
 	{
 		switch (GetPlayerBotRareGoodsKind(vnum))
 		{
-			case PLAYERBOT_RARE_GOODS_COR: return PLAYERBOT_COR_DRACONIS_PRICE;
+			case PLAYERBOT_RARE_GOODS_COR: return GetPlayerBotCorDraconisPrice(vnum);	// MT2009_PLUS_COR_GRADE_PRICE_V1
 			case PLAYERBOT_RARE_GOODS_SASH: return PLAYERBOT_SASH_PRICE;
 			default: return 0;
 		}
