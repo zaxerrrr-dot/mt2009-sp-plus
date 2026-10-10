@@ -11431,9 +11431,22 @@ namespace
 			// MT2009_PLUS_SIDEKICK_PLAN_V1: off the leash, one plan; sent
 			// fishing ("Na ryby"), the water is the plan and the plan stands back.
 			if (rt.bFishing)
+			{
 				EndPlayerBotSidekickPlan(ch, "fishing");
-			else
-				ManagePlayerBotSidekickPlan(ch, state, *rec, dwNow);
+				// MT2009_PLUS_SIDEKICK_FISHING_STAY_V1 (the owner, 10 October: sent
+				// "Na ryby" with a card, it left the bank after 3-5 minutes for the
+				// exp map of its level): no trip is watched while it fishes - the
+				// trip watch planned the frontier map and the travel took it there
+				// - and a trip already set is dropped. The card running out ends
+				// the fishing (KeepPlayerBotSidekickFishing) and the trips with it.
+				std::map<DWORD, TPlayerBotSidekickTrip>::iterator trip = s_mapPlayerBotSidekickTrips.find(ch->GetPlayerID());
+				if (trip != s_mapPlayerBotSidekickTrips.end())
+					trip->second.lMap = 0;
+				if (!state.bFishingSession)
+					state.dwNextFishingCheckTime = 0;
+				return false;
+			}
+			ManagePlayerBotSidekickPlan(ch, state, *rec, dwNow);
 			WatchPlayerBotSidekickTrip(ch, state, *rec, dwNow);	// MT2009_PLUS_SIDEKICK_TRIP_V1
 			return false;
 		}

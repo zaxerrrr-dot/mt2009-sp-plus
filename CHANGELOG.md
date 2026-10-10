@@ -61,6 +61,7 @@ every version here.
 ### Towarzysz
 - **Ochrona przed innymi postaciami.** Gdy ktokolwiek zaatakuje ciebie albo Towarzysza, bez względu na królestwo, Towarzysz staje do walki. Gdy sam zaatakujesz inną postać, dołącza do ciebie. W pojedynek i wojnę gildii się nie wtrąca.
 - **Najpierw strzelcy.** Nowa opcja w oknie Towarzysza: w pierwszej kolejności rozprawia się z łucznikami i magami, którzy strzelają lub rzucają czary w ciebie, w Towarzysza albo w kogoś z twojej drużyny. Można ją wyłączyć przyciskiem „Dystans”.
+- **Wędkowanie do skutku.** Towarzysz wysłany „Na ryby” z Kartą Wędkarską zostaje nad wodą, dopóki karta działa – nie porzuca już łowienia po kilku minutach na rzecz expienia na innej mapie.
 - **Zakupy na zlecenie.** Towarzysz posłany po mikstury dochodzi do sprzedawcy i kupuje, zamiast wracać z niczym, gdy droga przy ladzie się zatnie.
 - **Świątynia Zodiaku:** na pasku celu jest przycisk „Wskrzeszenie”, którym przywrócisz leżącego Towarzysza lub członka drużyny za Pryzmaty (część serwerowa weszła już w 2.29.1).
 

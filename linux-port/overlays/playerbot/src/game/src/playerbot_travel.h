@@ -1170,6 +1170,9 @@ namespace
 
 	bool ShouldPlayerBotLeaveForFrontier(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_SIDEKICK_FISHING_STAY_V1: a companion sent fishing stays on its bank.
+		if (ch && IsPlayerBotSidekickFishing(ch->GetPlayerID()))
+			return false;
 		if (!ch || GetPlayerBotFrontierMapForLevel(ch) == 0)
 			return false;
 		// MT2009_PLUS_AREZZO_BOTS_V1 (test): the operator's send is no roll.
