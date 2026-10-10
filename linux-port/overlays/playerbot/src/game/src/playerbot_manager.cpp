@@ -2188,7 +2188,7 @@ namespace
 							}
 						}
 					}
-					else if (!cp)
+					else if (!cp && !IsPlayerBotShamanDuoMember(candidate->GetPlayerID()))	// MT2009_PLUS_BOT_GUILD_SHAMAN_V2
 					{
 						// Whoever it has got on with best, rather than whoever the
 						// sector happened to hand over first. A bot that has hunted

@@ -315,7 +315,34 @@ namespace
 			why = "maps_apart";
 		}
 		else if (!leader->GetParty() || leader->GetParty() != shaman->GetParty())
-			why = "party_broken";
+		{
+			// MT2009_PLUS_BOT_GUILD_SHAMAN_V2 (10 October: 38 of 50 duos ended
+			// "party_broken" - the party was made while the Shaman was still on
+			// its warp, and the warp left it out): on one map, with neither of
+			// them in somebody else's party, the pair's party is made again.
+			LPPARTY lp = leader->GetParty();
+			LPPARTY sp = shaman->GetParty();
+			if ((sp && sp != lp) || (lp && lp->GetLeaderPID() != leader->GetPlayerID() && !sp))
+				why = "party_broken";
+			else
+			{
+				if (!lp)
+				{
+					lp = CPartyManager::instance().CreateParty(leader);
+					if (lp)
+						lp->Link(leader);
+				}
+				if (lp && !sp && lp->GetMemberCount() < PARTY_MAX_MEMBER)
+				{
+					lp->Join(shaman->GetPlayerID());
+					lp->Link(shaman);
+				}
+				if (!lp || shaman->GetParty() != lp)
+					why = "party_broken";
+				else
+					sys_log(0, "PLAYERBOT_GUILD_SHAMAN: duo party mended leader=%u shaman=%u", duo.leader, duo.shaman);
+			}
+		}
 		else if (IsPlayerBotHumanLedParty(leader->GetParty()) || IsPlayerBotPartyWithHuman(leader->GetParty()))
 			why = "person";
 		if (why)
