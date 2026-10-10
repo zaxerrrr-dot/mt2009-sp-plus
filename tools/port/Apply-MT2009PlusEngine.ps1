@@ -1084,6 +1084,18 @@ if ((Test-Path -LiteralPath $dropBonusApply -PathType Leaf) -and
         Write-Host ('Applied {0} drop bonus chance edit(s).' -f $dropBonusResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The shop search's bounded result list (server-patches/flealimit,
+# MT2009_PLUS_FLEA_MARKET_BOUND_V1): a search by filters alone no longer takes
+# every listing of the world into memory (ikarus_shop_manager.cpp).
+$fleaLimitApply = Join-Path $repo 'server-patches/flealimit/Apply-FleaLimitPatch.ps1'
+if ((Test-Path -LiteralPath $fleaLimitApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'ikarus_shop_manager.cpp') -PathType Leaf)) {
+    $fleaLimitResult = & $fleaLimitApply -SourceDir $engineGameSource
+    if ($fleaLimitResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} shop search bound edit(s).' -f $fleaLimitResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
