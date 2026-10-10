@@ -1640,9 +1640,34 @@ namespace
 	// the dagger is refined at the blacksmith towards this first.
 	bool HasPlayerBotUsableStoneDagger(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_ARCHER_STONE_SWAP_V1: the blade in the hand counts
+		// first. FindPlayerBotStoneWeapon looks at the hand only when the bag
+		// holds no blade, so a +4 dagger drawn for a stone with a +0 sword left
+		// in the bag read as "no usable dagger": the bow went back, the dagger
+		// came out of the hand into the bag, read as usable again - and the
+		// Archer swapped bow and dagger at the Metin round and round.
+		LPITEM worn = ch ? ch->GetWear(WEAR_WEAPON) : NULL;
+		if (worn && IsPlayerBotStoneMeleeWeapon(ch, worn) && worn->GetRefineLevel() >= PLAYERBOT_ARCHER_STONE_MIN_REFINE)
+			return true;
 		LPITEM w = FindPlayerBotStoneWeapon(ch, true);
 		return w && w->GetRefineLevel() >= PLAYERBOT_ARCHER_STONE_MIN_REFINE;
 	}
+
+	// MT2009_PLUS_BOT_ARCHER_STONE_SWAP_V1: the stone an Archer drew its blade
+	// for, and when its stone mode last flipped. The mode stays on while that
+	// stone stands within PLAYERBOT_ARCHER_STONE_KEEP_DISTANCE, whatever the
+	// target is now - the stone's own waves and a monster hitting the bot used
+	// to take the target off the stone for a moment, and every such moment was
+	// a swap to the bow and back - and no flip follows another sooner than
+	// PLAYERBOT_ARCHER_STONE_FLIP_MS, but for the stone gone or the bot dead.
+	struct TPlayerBotArcherStone
+	{
+		DWORD stoneVID;
+		DWORD flippedAt;
+	};
+	std::map<DWORD, TPlayerBotArcherStone> s_mapPlayerBotArcherStone;
+	const int PLAYERBOT_ARCHER_STONE_KEEP_DISTANCE = 1500;
+	const DWORD PLAYERBOT_ARCHER_STONE_FLIP_MS = 4000;
 
 	// What the hand should hold right now: the job's weapon, or the stone
 	// weapon while an Archer is on a stone.
@@ -1778,11 +1803,37 @@ namespace
 			// decides them.
 			const bool inTower = ch->GetMapIndex() == PLAYERBOT_MAP_DEMON_TOWER ||
 					IsPlayerBotDemonTowerInstance(ch->GetMapIndex());
-			const bool wantMelee = target && !target->IsDead() &&
-					state.dwLurePlayerPID == 0 && HasPlayerBotUsableStoneDagger(ch) &&
+			const bool usable = state.dwLurePlayerPID == 0 && HasPlayerBotUsableStoneDagger(ch);
+			bool wantMelee = target && !target->IsDead() && usable &&
 					(inTower ? CountPlayerBotArrows(ch) == 0 : target->IsStone());
-			if (wantMelee != state.bMeleeForStone)
+			// MT2009_PLUS_BOT_ARCHER_STONE_SWAP_V1: the stone remembered, and the
+			// mode kept while it stands near.
+			TPlayerBotArcherStone& memo = s_mapPlayerBotArcherStone[ch->GetPlayerID()];
+			if (wantMelee && !inTower && target)
+				memo.stoneVID = target->GetVID();
+			bool stoneGone = true;
+			if (!wantMelee && state.bMeleeForStone && usable && !inTower && memo.stoneVID != 0)
 			{
+				LPCHARACTER stone = CHARACTER_MANAGER::instance().Find(memo.stoneVID);
+				if (stone && !stone->IsDead() && stone->IsStone() && stone->GetMapIndex() == ch->GetMapIndex() &&
+						DISTANCE_APPROX(stone->GetX() - ch->GetX(), stone->GetY() - ch->GetY()) <=
+							PLAYERBOT_ARCHER_STONE_KEEP_DISTANCE)
+				{
+					wantMelee = true;
+					stoneGone = false;
+				}
+			}
+			else if (!wantMelee && target && !target->IsDead())
+				stoneGone = false;
+			if (!wantMelee && stoneGone)
+				memo.stoneVID = 0;
+			// No flip sooner than the last one's hold, but for a stone gone
+			// (or no blade left), which ends the mode at once.
+			const bool hold = memo.flippedAt != 0 && dwNow - memo.flippedAt < PLAYERBOT_ARCHER_STONE_FLIP_MS &&
+					!(state.bMeleeForStone && (stoneGone || !usable)) && !ch->IsDead();
+			if (wantMelee != state.bMeleeForStone && !hold)
+			{
+				memo.flippedAt = dwNow ? dwNow : 1;
 				state.bMeleeForStone = wantMelee;
 				state.dwNextEquipmentCheckTime = dwNow;
 				sys_log(0, "PLAYERBOT_GEAR: archer %s pid=%u name=%s target_vid=%u",
