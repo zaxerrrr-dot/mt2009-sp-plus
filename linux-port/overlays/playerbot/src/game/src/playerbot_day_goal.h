@@ -18,7 +18,19 @@
 // client draws in any text tail, so no new client is needed), and its end
 // moves the mood of Iwakura's system (playerbot_mood.h): a goal met lifts
 // it a level, a goal missed lowers it one - not under a lock, as every other
-// news. Kept for the session only: a login is a new session.
+// news.
+//
+// MT2009_PLUS_BOT_DAY_GOAL_SAVE_V1 - the owner, 10 October: "cel bota nie
+// przepada przy wylogowaniu ani zmianie kanalu". The goal lives in the bot's
+// quest flags (PLAYERBOT_DAY_GOAL_FLAG_*), written whenever it is drawn, moves
+// or ends, and read back once the flags have arrived from the db core
+// (quest::PC::IsLoaded, as the mood's). Its start and deadline are kept as
+// world time (get_global_time): the clock runs on while the bot is away, so a
+// goal whose hour ran out offline ends missed on the next login, and one
+// still running goes on with the time it has left. The yang goal keeps its
+// progress rather than the purse it started from - the purse after a login
+// minus what was earned so far is the same baseline. The next draw after an
+// end is kept as world time too, so a channel change does not draw anew.
 //
 // The counters come from the engine's kill note (BattlePassOnKill and its
 // shared half, playerbot_battlepass.h), the refine note (NotePlayerBotMoodRefine)
@@ -52,6 +64,15 @@ namespace
 	const DWORD PLAYERBOT_DAY_GOAL_SHOW_END_MS = 3 * 60 * 1000;
 	// The client's colour tag: a light blue that reads on the dark sky.
 	const char* const PLAYERBOT_DAY_GOAL_COLOUR = "|cFF4D9BFF";
+	// MT2009_PLUS_BOT_DAY_GOAL_SAVE_V1: the goal between sessions. Each value
+	// is kept plus one, so a flag never written (0) reads as "none".
+	const char* const PLAYERBOT_DAY_GOAL_FLAG_KIND = "playerbot.day_goal_kind";        // kind + 16 * difficulty
+	const char* const PLAYERBOT_DAY_GOAL_FLAG_TARGET = "playerbot.day_goal_target";
+	const char* const PLAYERBOT_DAY_GOAL_FLAG_PROGRESS = "playerbot.day_goal_progress";
+	const char* const PLAYERBOT_DAY_GOAL_FLAG_LEVEL = "playerbot.day_goal_level";      // the level it started at
+	const char* const PLAYERBOT_DAY_GOAL_FLAG_START = "playerbot.day_goal_start";      // world time
+	const char* const PLAYERBOT_DAY_GOAL_FLAG_DEADLINE = "playerbot.day_goal_deadline"; // world time
+	const char* const PLAYERBOT_DAY_GOAL_FLAG_NEXT_DRAW = "playerbot.day_goal_next";   // world time
 
 	struct TPlayerBotDayGoal
 	{
@@ -68,8 +89,14 @@ namespace
 		DWORD nextCheckAt;
 		DWORD endedAt;
 		bool success;
+		// MT2009_PLUS_BOT_DAY_GOAL_SAVE_V1
+		bool restored;       // the flags have been read this session
+		int savedProgress;   // what the flags hold, so they are written on a change only
+		int startWorld;      // world time of the start and the deadline
+		int deadlineWorld;
 		TPlayerBotDayGoal() : kind(DAY_GOAL_NONE), difficulty(0), target(0), progress(0), startGold(0), startLevel(0),
-			startAt(0), deadline(0), sessionSpawn(0), nextDrawAt(0), nextCheckAt(0), endedAt(0), success(false) {}
+			startAt(0), deadline(0), sessionSpawn(0), nextDrawAt(0), nextCheckAt(0), endedAt(0), success(false),
+			restored(false), savedProgress(-1), startWorld(0), deadlineWorld(0) {}
 	};
 
 	std::map<DWORD, TPlayerBotDayGoal> s_mapPlayerBotDayGoals;
@@ -152,6 +179,78 @@ namespace
 		return kinds[number(0, n - 1)];
 	}
 
+	// MT2009_PLUS_BOT_DAY_GOAL_SAVE_V1: the running goal into the flags, or
+	// none and when the next one may be drawn.
+	void SavePlayerBotDayGoal(LPCHARACTER ch, TPlayerBotDayGoal& g)
+	{
+		if (!ch || !g.restored)
+			return;
+		if (g.kind == DAY_GOAL_NONE || g.endedAt != 0)
+		{
+			ch->SetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_KIND, 0);
+			const DWORD dwNow = get_dword_time();
+			const int left = g.nextDrawAt != 0 && (int)(g.nextDrawAt - dwNow) > 0 ? (int)((g.nextDrawAt - dwNow) / 1000) : 0;
+			ch->SetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_NEXT_DRAW, left > 0 ? get_global_time() + left + 1 : 0);
+			g.savedProgress = -1;
+			return;
+		}
+		ch->SetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_KIND, (int)g.kind + 16 * (int)g.difficulty + 1);
+		ch->SetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_TARGET, g.target + 1);
+		ch->SetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_PROGRESS, std::max(0, g.progress) + 1);
+		ch->SetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_LEVEL, g.startLevel + 1);
+		ch->SetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_START, g.startWorld + 1);
+		ch->SetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_DEADLINE, g.deadlineWorld + 1);
+		g.savedProgress = g.progress;
+	}
+
+	// Once a session, as soon as the flags have arrived: false until then.
+	// A goal whose deadline passed while the bot was away is handed back
+	// running at its deadline, and the caller's pass ends it missed.
+	bool RestorePlayerBotDayGoal(LPCHARACTER ch, TPlayerBotDayGoal& g, DWORD dwNow)
+	{
+		if (g.restored)
+			return true;
+		quest::PC* pc = quest::CQuestManager::instance().GetPC(ch->GetPlayerID());
+		if (!pc || !pc->IsLoaded())
+			return false;
+		g.restored = true;
+		const int now = get_global_time();
+		const int packed = ch->GetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_KIND) - 1;
+		const int kind = packed >= 0 ? packed % 16 : 0;
+		const int difficulty = packed >= 0 ? packed / 16 : 0;
+		const int target = ch->GetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_TARGET) - 1;
+		const int deadlineWorld = ch->GetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_DEADLINE) - 1;
+		if (kind > DAY_GOAL_NONE && kind < DAY_GOAL_KIND_COUNT && difficulty <= 2 && target > 0 && deadlineWorld > 0)
+		{
+			g.kind = (BYTE)kind;
+			g.difficulty = (BYTE)difficulty;
+			g.target = target;
+			g.progress = std::max(0, ch->GetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_PROGRESS) - 1);
+			g.savedProgress = g.progress;
+			g.startLevel = std::max(1, ch->GetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_LEVEL) - 1);
+			g.startGold = (long long)ch->GetGold() - (g.kind == DAY_GOAL_YANG ? (long long)g.progress : 0);
+			g.startWorld = ch->GetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_START) - 1;
+			if (g.startWorld <= 0 || g.startWorld > now)
+				g.startWorld = now;
+			g.deadlineWorld = deadlineWorld;
+			// The bot's own clock, from what is left of the world's.
+			g.startAt = dwNow - (DWORD)std::min(now - g.startWorld, 7 * 24 * 3600) * 1000;
+			g.deadline = dwNow + (DWORD)std::max(0, deadlineWorld - now) * 1000;
+			sys_log(0, "PLAYERBOT_DAY_GOAL: restored pid=%u name=%s kind=%u difficulty=%u progress=%d/%d minutes_left=%d",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)g.kind, (unsigned int)g.difficulty, g.progress,
+					g.target, std::max(0, deadlineWorld - now) / 60);
+			return true;
+		}
+		// None running: the first draw a few minutes into the session, or
+		// later if the last goal ended a short while ago.
+		const int nextDrawWorld = ch->GetQuestFlag(PLAYERBOT_DAY_GOAL_FLAG_NEXT_DRAW) - 1;
+		DWORD wait = (DWORD)number((int)PLAYERBOT_DAY_GOAL_FIRST_MIN_MS, (int)PLAYERBOT_DAY_GOAL_FIRST_MAX_MS);
+		if (nextDrawWorld > now)
+			wait = std::max<DWORD>(wait, (DWORD)std::min(nextDrawWorld - now, 4 * 3600) * 1000);
+		g.nextDrawAt = dwNow + wait;
+		return true;
+	}
+
 	void StartPlayerBotDayGoal(LPCHARACTER ch, TPlayerBotDayGoal& g, DWORD dwNow)
 	{
 		const DWORD sessionSpawn = g.sessionSpawn;
@@ -165,6 +264,10 @@ namespace
 		g.startLevel = (int)ch->GetLevel();
 		g.startAt = dwNow;
 		g.deadline = dwNow + GetPlayerBotDayGoalMinutes(g.difficulty) * 60 * 1000;
+		g.restored = true;
+		g.startWorld = get_global_time();
+		g.deadlineWorld = g.startWorld + (int)GetPlayerBotDayGoalMinutes(g.difficulty) * 60;
+		SavePlayerBotDayGoal(ch, g);
 		sys_log(0, "PLAYERBOT_DAY_GOAL: drawn pid=%u name=%s level=%d kind=%u difficulty=%u target=%d minutes=%u",
 				ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), (unsigned int)g.kind,
 				(unsigned int)g.difficulty, g.target, GetPlayerBotDayGoalMinutes(g.difficulty));
@@ -203,8 +306,10 @@ namespace
 				success ? "met" : "missed", ch->GetPlayerID(), ch->GetName(), (unsigned int)g.kind,
 				(unsigned int)g.difficulty, g.progress, g.target, (dwNow - g.startAt) / 60000,
 				GetPlayerBotMoodName(before), GetPlayerBotMoodName(state.persona.mood.mood));
-		// A word to whoever stands round, now and then - as a person says it.
-		if (number(1, 100) <= 60)
+		// A word to whoever stands round, now and then - as a person says it;
+		// not for a goal whose time ran out while the bot was away.
+		const bool endedAway = !success && g.deadlineWorld > 0 && get_global_time() - g.deadlineWorld > 60;
+		if (!endedAway && number(1, 100) <= 60)
 		{
 			static const char* const kMet[] = { "Jest! Cel na dzis zrobiony :)", "Udalo sie, plan na dzis wykonany!",
 				"No i zrobione, co sobie zaplanowalem.", "Cel dnia zaliczony, mozna odpoczac :D" };
@@ -213,6 +318,7 @@ namespace
 			SendPlayerBotLocalChat(ch, success ? kMet[number(0, 3)] : kMissed[number(0, 3)]);
 		}
 		g.nextDrawAt = dwNow + (DWORD)number((int)PLAYERBOT_DAY_GOAL_REDRAW_MIN_MS, (int)PLAYERBOT_DAY_GOAL_REDRAW_MAX_MS);
+		SavePlayerBotDayGoal(ch, g);
 	}
 
 	void ManagePlayerBotDayGoal(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
@@ -223,14 +329,21 @@ namespace
 		if (dwNow < g.nextCheckAt && g.sessionSpawn == state.dwSpawnTime)
 			return;
 		g.nextCheckAt = dwNow + PLAYERBOT_DAY_GOAL_CHECK_MS;
-		// A new session: what the last one set itself is gone with it.
+		// A new session: the goal comes back from the bot's flags
+		// (MT2009_PLUS_BOT_DAY_GOAL_SAVE_V1) once they have arrived.
 		if (g.sessionSpawn != state.dwSpawnTime)
 		{
 			g = TPlayerBotDayGoal();
 			g.sessionSpawn = state.dwSpawnTime;
+		}
+		if (!g.restored)
+		{
+			if (!RestorePlayerBotDayGoal(ch, g, dwNow))
+			{
+				g.nextCheckAt = dwNow + 1000;
+				return;
+			}
 			g.nextCheckAt = dwNow + PLAYERBOT_DAY_GOAL_CHECK_MS;
-			g.nextDrawAt = dwNow + (DWORD)number((int)PLAYERBOT_DAY_GOAL_FIRST_MIN_MS, (int)PLAYERBOT_DAY_GOAL_FIRST_MAX_MS);
-			return;
 		}
 		if (g.kind == DAY_GOAL_NONE || g.endedAt != 0)
 		{
@@ -251,6 +364,8 @@ namespace
 			EndPlayerBotDayGoal(ch, state, g, true, dwNow);
 		else if ((int)(dwNow - g.deadline) >= 0)
 			EndPlayerBotDayGoal(ch, state, g, false, dwNow);
+		else if (g.progress != g.savedProgress)
+			SavePlayerBotDayGoal(ch, g);
 	}
 
 	TPlayerBotDayGoal* FindPlayerBotDayGoal(LPCHARACTER ch)
