@@ -326,6 +326,14 @@ GMP_TEXTS = {
 	'GMP_TP_BERAN': 'Leze Beran-Setaou',
 	'GMP_TP_CATACOMB': 'Katakumby Diabla',
 	'GMP_TP_RAZADOR': 'Twierdza Razadora',
+	'GMP_TP_PLUS': 'Nasze mapy',
+	'GMP_TP_OCHAO': 'Swiatynia Ochao',
+	'GMP_TP_ENCHANTED': 'Zaczarowany Las',
+	'GMP_TP_CYCLOPS': 'Dolina Cyklopow',
+	'GMP_TP_PHARAOH': 'Pustkowie Faraona',
+	'GMP_TP_ATLANTIS': 'Ruiny Atlantydy',
+	'GMP_TP_NEMERE': 'Leze Nemere',
+	'GMP_TP_ZODIAC': 'Swiatynia Zodiaku',
 	'GMP_TP_ICE': 'Lodowy loch',
 	'GMP_TP_LABYRINTH': 'Labirynt',
 	'GMP_TP_OX': 'Arena OX',
@@ -453,6 +461,15 @@ TELEPORT_GROUPS = [
 		("GMP_TP_EXILE2", 2413, 12754), ("GMP_TP_BERAN", 8453, 10742),
 		("GMP_TP_CATACOMB", 3145, 12095), ("GMP_TP_RAZADOR", 7808, 6528),
 		("GMP_TP_LABYRINTH", 6156, 12810),
+	]),
+	# MT2009_PLUS_GM_PANEL_TP_PLUS_V1 (the owner, 10 October): our own maps - the
+	# server's /goto places (ochao, las, cyklopy, pustkowie, atlantyda, zodiac)
+	# and Nemere's lair (map 352: its base 5120 1536 + Town.txt 171 270).
+	("GMP_TP_PLUS", [
+		("GMP_TP_OCHAO", 8537, 14164), ("GMP_TP_ENCHANTED", 3787, 3946),
+		("GMP_TP_CYCLOPS", 2650, 3051), ("GMP_TP_PHARAOH", 2409, 3940),
+		("GMP_TP_ATLANTIS", 38343, 22769), ("GMP_TP_NEMERE", 5291, 1806),
+		("GMP_TP_ZODIAC", 3332, 14325),
 	]),
 	("GMP_TP_SPECIAL", [
 		("GMP_TP_OX", 8965, 246), ("GMP_TP_WEDDING", 8223, 220),
