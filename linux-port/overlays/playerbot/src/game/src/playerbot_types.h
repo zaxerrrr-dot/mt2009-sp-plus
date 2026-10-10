@@ -1594,6 +1594,11 @@ namespace
 	const int PLAYERBOT_L30_LOW_SUPPLY_MIN_PERCENT = 60;
 	const int PLAYERBOT_L30_LOW_FLOOR_PERCENT = 35;
 	const int PLAYERBOT_L30_LOW_MAX_PLUS = 3;
+	// MT2009_PLUS_BOT_BOSS_CALL_V1, point 1 (the owner, 10 October): a level-30
+	// weapon whose average damage is over this many percent "zawsze ma duza
+	// wartosc" - never under the +0..+3 markdown above, on any path its price
+	// is read by (IsPlayerBotHighAverageLevel30Weapon).
+	const long PLAYERBOT_L30_LOW_KEEP_AVERAGE = 40;
 	// Point 4: Marchewka and Czerwony Zen-szen stand on a kingdom's counters
 	// up to this many units of a kind; past it the bots give them at the
 	// General Store for Red Potions (PLAYERBOT_HAY_POTION_VNUM), this many a

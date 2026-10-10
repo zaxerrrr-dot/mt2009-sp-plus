@@ -2652,6 +2652,17 @@ namespace
 		return s_iPlayerBotL30LowPercent;
 	}
 
+	// MT2009_PLUS_BOT_BOSS_CALL_V1, point 1: a level-30 weapon of an average
+	// over PLAYERBOT_L30_LOW_KEEP_AVERAGE - the markdown of the +0..+3 is not
+	// for it, whatever its plus (the sheet's price here, the floor, the
+	// barter's worth and the buyers' fair price all read this sheet).
+	bool IsPlayerBotHighAverageLevel30Weapon(LPITEM item)
+	{
+		return item && item->GetType() == ITEM_WEAPON &&
+				IsPlayerBotSpecialLevel30WeaponVnum(item->GetVnum()) &&
+				SumPlayerBotItemLines(item, APPLY_NORMAL_HIT_DAMAGE_BONUS) > PLAYERBOT_L30_LOW_KEEP_AVERAGE;
+	}
+
 	DWORD GetPlayerBotGearSheetPriceAt(LPITEM item, int plus)
 	{
 		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR))
@@ -2667,8 +2678,10 @@ namespace
 				if (price == 0)
 					return 0;
 				// MT2009_PLUS_MARKET_LIFE_V1, point 3.
+				// MT2009_PLUS_BOT_BOSS_CALL_V1, point 1: never a copy of an average over 40%.
 				const unsigned long long l30 = plus <= PLAYERBOT_L30_LOW_MAX_PLUS &&
-						IsPlayerBotSpecialLevel30WeaponVnum(baseVnum) ? (unsigned long long)GetPlayerBotLevel30LowPlusPercent() : 100ULL;
+						IsPlayerBotSpecialLevel30WeaponVnum(baseVnum) && !IsPlayerBotHighAverageLevel30Weapon(item)
+						? (unsigned long long)GetPlayerBotLevel30LowPlusPercent() : 100ULL;
 				return ScalePlayerBotIwakuraPrice(
 						(DWORD)((unsigned long long)price *
 							(unsigned long long)GetPlayerBotSocketStonePercent(item) / 100ULL * l30 / 100ULL));
@@ -3248,7 +3261,15 @@ namespace
 		else if (item->GetType() == ITEM_METIN)
 			sheet = GetPlayerBotSoulStoneAskingBase(vnum);
 		else if (item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR)
+		{
 			sheet = GetPlayerBotGearAskingBase(item);
+			// MT2009_PLUS_BOT_BOSS_CALL_V1, point 1: a level-30 weapon of a high
+			// average is floored by the plus its average prices it as (+7), so
+			// no counter markdown takes it back to a plain +0's price.
+			if (IsPlayerBotHighAverageLevel30Weapon(item))
+				sheet = std::max(sheet, GetPlayerBotGearSheetPriceAt(item,
+						std::max((int)item->GetRefineLevel(), std::min(9, GetPlayerBotPricedPlus(item)))));
+		}
 		else
 			sheet = GetPlayerBotMaterialAskingBase(vnum);
 		const unsigned long long count = std::max<DWORD>(1, item->GetCount());
