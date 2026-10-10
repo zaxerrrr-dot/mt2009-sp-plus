@@ -1658,6 +1658,7 @@ namespace
 	// (playerbot_guild_shaman.h, which comes later).
 	void NotePlayerBotExpTrip(LPCHARACTER ch, long targetMap, const char* reason, DWORD dwNow);
 	bool IsPlayerBotDuoShaman(DWORD pid);
+	bool GetPlayerBotDuoShamanLeaderSpot(DWORD shamanPid, long& map, long& x, long& y);
 	// MT2009_PLUS_BOT_GUILD_SHAMAN_V1 (night test 10 October: a brought Shaman
 	// left the leader's map seconds later - "frontier_level_graduated",
 	// "m1_direct_to_*" - and the duo ended "maps_apart"): a Shaman in a duo
@@ -1668,7 +1669,7 @@ namespace
 		if (!reason)
 			return false;
 		static const char* prefixes[] = { "frontier_level_graduated", "frontier_visit_complete", "m1_direct_to_",
-				"level_to_", "desert_gate_to_v", "desert_crossing_to_v", "horse_to_m", "monkey_horse" };
+				"level_to_", "horse_to_m", "monkey_horse" };	// not desert_* - the V1 crossing re-enters here with them
 		for (size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); ++i)
 			if (strncmp(reason, prefixes[i], strlen(prefixes[i])) == 0)
 				return true;
@@ -1682,6 +1683,12 @@ namespace
 			return false;
 		if (IsPlayerBotOwnMapChoiceReason(reason) && IsPlayerBotDuoShaman(ch->GetPlayerID()))
 		{
+			// MT2009_PLUS_BOT_GUILD_SHAMAN_V2 (10 October: a Shaman back from the
+			// town's services picked its own map and the duo ended): its own
+			// map choice becomes the way back to its leader.
+			long lm = 0, lx = 0, ly = 0;
+			if (GetPlayerBotDuoShamanLeaderSpot(ch->GetPlayerID(), lm, lx, ly) && lm != ch->GetMapIndex())
+				return TransitionPlayerBotMap(ch, state, lm, lx, ly, dwNow, "guild_shaman_return");
 			if (!s_szPlayerBotTransitionRefusal)
 				s_szPlayerBotTransitionRefusal = "shaman_duo";
 			return false;

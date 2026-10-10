@@ -79,6 +79,8 @@ namespace
 
 	// How long a brought Shaman may be on another map (its warp and loading).
 	const DWORD PLAYERBOT_SHAMAN_DUO_ARRIVE_MS = 3 * 60 * 1000;
+	// How long a duo stays while one of them is in town for its services.
+	const DWORD PLAYERBOT_SHAMAN_DUO_SERVICES_MS = 12 * 60 * 1000;
 	struct TPlayerBotShamanDuo
 	{
 		DWORD leader;
@@ -86,6 +88,7 @@ namespace
 		long map;
 		DWORD since;
 		DWORD until;
+		DWORD lastTogether;	// the last check that found them on one map
 	};
 	// By the leader's pid; the Shaman's pid leads to its leader.
 	std::map<DWORD, TPlayerBotShamanDuo> s_mapPlayerBotShamanDuos;
@@ -239,6 +242,25 @@ namespace
 		return s_mapPlayerBotShamanDuoOf.count(pid) != 0;
 	}
 
+	// Where a duo's Shaman goes back to: its leader, standing on the duo's
+	// map (a leader away in town gives no spot - the Shaman waits).
+	bool GetPlayerBotDuoShamanLeaderSpot(DWORD shamanPid, long& map, long& x, long& y)
+	{
+		std::map<DWORD, DWORD>::const_iterator of = s_mapPlayerBotShamanDuoOf.find(shamanPid);
+		if (of == s_mapPlayerBotShamanDuoOf.end())
+			return false;
+		std::map<DWORD, TPlayerBotShamanDuo>::const_iterator it = s_mapPlayerBotShamanDuos.find(of->second);
+		if (it == s_mapPlayerBotShamanDuos.end())
+			return false;
+		LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(it->second.leader);
+		if (!leader || leader->GetMapIndex() != it->second.map || IsPlayerBotShamanSameMapOnly(it->second.map))
+			return false;
+		map = leader->GetMapIndex();
+		x = leader->GetX();
+		y = leader->GetY();
+		return true;
+	}
+
 	bool IsPlayerBotShamanDuoMember(DWORD pid)
 	{
 		return s_mapPlayerBotShamanDuos.count(pid) != 0 || s_mapPlayerBotShamanDuoOf.count(pid) != 0;
@@ -284,6 +306,12 @@ namespace
 		{
 			if (dwNow - duo.since < PLAYERBOT_SHAMAN_DUO_ARRIVE_MS)
 				return true;	// still on its way - no party check either
+			// MT2009_PLUS_BOT_GUILD_SHAMAN_V2: either of them in a village (the
+			// town's services) keeps the duo for a while - the Shaman comes back
+			// (TransitionPlayerBotMap's "guild_shaman_return").
+			if ((IsPlayerBotVillageMap(shaman->GetMapIndex()) || IsPlayerBotVillageMap(leader->GetMapIndex())) &&
+					dwNow - duo.lastTogether < PLAYERBOT_SHAMAN_DUO_SERVICES_MS)
+				return true;
 			why = "maps_apart";
 		}
 		else if (!leader->GetParty() || leader->GetParty() != shaman->GetParty())
@@ -295,6 +323,7 @@ namespace
 			EndPlayerBotShamanDuo(duo.leader, why);
 			return false;
 		}
+		s_mapPlayerBotShamanDuos[duo.leader].lastTogether = dwNow;	// MT2009_PLUS_BOT_GUILD_SHAMAN_V2
 		if (leader->GetParty()->GetExpDistributionMode() != PARTY_EXP_DISTRIBUTION_PARITY)
 			leader->GetParty()->SetParameter(PARTY_EXP_DISTRIBUTION_PARITY);
 		return true;
@@ -479,6 +508,7 @@ namespace
 		duo.shaman = best->GetPlayerID();
 		duo.map = map;
 		duo.since = dwNow;
+		duo.lastTogether = dwNow;
 		duo.until = dwNow + PLAYERBOT_SHAMAN_ESCORT_MIN_MS +
 				PlayerBotNavHash(pid ^ best->GetPlayerID() ^ 0x44554f53U) %
 				(PLAYERBOT_SHAMAN_ESCORT_MAX_MS - PLAYERBOT_SHAMAN_ESCORT_MIN_MS);
