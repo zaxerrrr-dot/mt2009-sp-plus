@@ -5331,6 +5331,10 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_GUILD_SHAMAN_V1: a red potion drunk on a strong map, for
+	// who needs a Shaman there (playerbot_guild_shaman.h, which comes later).
+	void NotePlayerBotStrongMapHardship(LPCHARACTER ch, int kind);
+
 	// The threshold is the caller's (a war drinks sooner), and the healing a
 	// potion already under way will bring counts: the engine refuses a use
 	// that it would carry past the top anyway.
@@ -5377,13 +5381,17 @@ namespace
 				{
 					sys_log(0, "PLAYERBOT_AI: used health potion pid=%u name=%s vnum=%u hp=%d/%d",
 							ch->GetPlayerID(), ch->GetName(), potionVnum, ch->GetHP(), ch->GetMaxHP());
+					NotePlayerBotStrongMapHardship(ch, 2); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
 					return true;
 				}
 			}
 		}
 		// MT2009_PLUS_BOT_BELTS_V1: the belt's pouch, once the bag has none (playerbot_belts.h).
 		if (UsePlayerBotBeltPotion(ch, redPotionVnums, sizeof(redPotionVnums) / sizeof(redPotionVnums[0]), "health"))
+		{
+			NotePlayerBotStrongMapHardship(ch, 2); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
 			return true;
+		}
 
 		if (dwNow >= state.dwNextPotionLogTime)
 		{

@@ -1653,6 +1653,11 @@ namespace
 		return reason && strncmp(reason, "boss_raid", 9) == 0;
 	}
 
+	// MT2009_PLUS_BOT_GUILD_SHAMAN_V1: an exp trip onto a strong map, noted on
+	// arrival for the guild's free Shaman to be brought along
+	// (playerbot_guild_shaman.h, which comes later).
+	void NotePlayerBotExpTrip(LPCHARACTER ch, long targetMap, const char* reason, DWORD dwNow);
+
 	bool TransitionPlayerBotMap(LPCHARACTER ch, TPlayerBotAIState& state,
 			long targetMap, long targetX, long targetY, DWORD dwNow, const char* reason)
 	{
@@ -1692,7 +1697,10 @@ namespace
 		// their spots as it does on every other boss's map. The way out is the
 		// crossing as ever. V1's queen is the bots' already down there (the
 		// recruit's "far"), so her map keeps its crossing both ways.
-		const bool raidIntoV2 = targetMap == PLAYERBOT_MAP_SPIDER_V2 && IsPlayerBotBossRaidMove(reason);
+		// MT2009_PLUS_BOT_BOSS_CALL_V1, point 3: and V1's queen as well - the
+		// bots of her window from outside the Spider Dungeon come to her too.
+		const bool raidIntoV2 = (targetMap == PLAYERBOT_MAP_SPIDER_V2 || targetMap == PLAYERBOT_MAP_SPIDER_V1) &&
+				IsPlayerBotBossRaidMove(reason);
 		if (IsPlayerBotSpiderMap(targetMap) && ch->GetMapIndex() != PLAYERBOT_MAP_DESERT &&
 				!IsPlayerBotSpiderMap(ch->GetMapIndex()) && !raidIntoV2)
 		{
@@ -1833,6 +1841,8 @@ namespace
 		// MT2009_PLUS_FRONTIER_BAG_LOOP_V1: the town-service exits, counted.
 		if (IsPlayerBotServicesExitReason(reason))
 			NotePlayerBotServicesExit(ch, dwNow);
+		// MT2009_PLUS_BOT_GUILD_SHAMAN_V1.
+		NotePlayerBotExpTrip(ch, targetMap, reason, dwNow);
 		// How long the bot stayed in town after its errand was done. Asked for
 		// by name: "sam spadek liczby atakow nie dowodzi naprawy".
 		if (IsPlayerBotM2Map(oldMap) && state.dwErrandDoneTime != 0 &&

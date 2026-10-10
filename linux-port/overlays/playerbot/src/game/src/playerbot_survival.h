@@ -89,11 +89,16 @@ namespace
 				playerID, ch->GetName(), level, ch->GetExp(), (long long)ch->GetGold());
 	}
 
+	// MT2009_PLUS_BOT_GUILD_SHAMAN_V1: a death or a retreat on a strong map
+	// (playerbot_guild_shaman.h, which comes later).
+	void NotePlayerBotStrongMapHardship(LPCHARACTER ch, int kind);
+
 	void StartPlayerBotTacticalRetreat(LPCHARACTER ch, TPlayerBotAIState& state,
 			LPCHARACTER threat, DWORD dwNow)
 	{
 		if (!ch || state.bRecoveringAfterDeath || state.bTacticalRetreat)
 			return;
+		NotePlayerBotStrongMapHardship(ch, 1); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
 		// MT2009_PLUS_BOT_LOOT_PACE_V1: its drops here, to come back for.
 		NotePlayerBotLootLeftBehind(ch, state, dwNow);
 		state.bTacticalRetreat = true;
@@ -323,6 +328,7 @@ namespace
 			state.lDeathX = ch->GetX();
 			state.lDeathY = ch->GetY();
 			++state.bDeathCount;
+			NotePlayerBotStrongMapHardship(ch, 0); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
 			// A companion's fight goes on with its owner (playerbot_sidekick.h).
 			NotePlayerBotSidekickDown(ch, dwNow);
 			// A Conqueror dying to monsters too often has outgrown its gear
