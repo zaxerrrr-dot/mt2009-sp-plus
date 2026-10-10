@@ -1692,7 +1692,10 @@ namespace
 		// their spots as it does on every other boss's map. The way out is the
 		// crossing as ever. V1's queen is the bots' already down there (the
 		// recruit's "far"), so her map keeps its crossing both ways.
-		const bool raidIntoV2 = targetMap == PLAYERBOT_MAP_SPIDER_V2 && IsPlayerBotBossRaidMove(reason);
+		// MT2009_PLUS_BOT_BOSS_CALL_V1, point 3: and V1's queen as well - the
+		// bots of her window from outside the Spider Dungeon come to her too.
+		const bool raidIntoV2 = (targetMap == PLAYERBOT_MAP_SPIDER_V2 || targetMap == PLAYERBOT_MAP_SPIDER_V1) &&
+				IsPlayerBotBossRaidMove(reason);
 		if (IsPlayerBotSpiderMap(targetMap) && ch->GetMapIndex() != PLAYERBOT_MAP_DESERT &&
 				!IsPlayerBotSpiderMap(ch->GetMapIndex()) && !raidIntoV2)
 		{

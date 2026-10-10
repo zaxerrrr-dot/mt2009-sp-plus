@@ -1983,6 +1983,13 @@ namespace
 	const int PLAYERBOT_BOSS_RAID_REINFORCEMENTS = 4;
 	const int PLAYERBOT_BOSS_RAID_REINFORCE_ROUNDS = 3;
 	const int PLAYERBOT_BOSS_RAID_FINISH_PERCENT = 30;
+	// MT2009_PLUS_BOT_BOSS_CALL_V1, point 4: a bot within this of a world boss,
+	// on his ground, has seen him and calls its kingdom (FindPlayerBotBossSpotter);
+	// a boss nobody has seen for UNSEEN_MS is called to as before; one call on
+	// the shout per boss and map in SHOUT_GAP_MS.
+	const int PLAYERBOT_BOSS_CALL_SIGHT = 4000;
+	const DWORD PLAYERBOT_BOSS_CALL_UNSEEN_MS = 3 * 60 * 1000;
+	const DWORD PLAYERBOT_BOSS_CALL_SHOUT_GAP_MS = 10 * 60 * 1000;
 	const int PLAYERBOT_BOSS_MAX_ATTACKERS = 8;
 	// The Demon Tower raid (playerbot_demon_tower.h): one bot guild at a
 	// time on this core, the first a few minutes after a start and the next

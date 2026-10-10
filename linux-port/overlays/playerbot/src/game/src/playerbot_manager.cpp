@@ -1343,7 +1343,9 @@ namespace
 			return false;
 		const DWORD pid = ch->GetPlayerID();
 		const long mapIndex = ch->GetMapIndex();
-		if (!IsPlayerBotMonkeyMap(mapIndex) || ch->IsDead())
+		// MT2009_PLUS_BOT_BOSS_CALL_V1, point 2: nor a member of a boss raid,
+		// whose way is to the boss's chamber (playerbot_boss_raid.h).
+		if (!IsPlayerBotMonkeyMap(mapIndex) || ch->IsDead() || state.wBossRaidRace != 0)
 		{
 			s_mapSpread.erase(pid);
 			return false;
