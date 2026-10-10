@@ -382,6 +382,16 @@ namespace
 				// is mixed on to thirty (the target below), not stopped at the
 				// lock's twenty-five; its skill line keeps the lock.
 				const int lvl = item->GetLevelLimit();
+				// MT2009_PLUS_BOT_L30_AVG_MIX_V2 (the owner, 10 October: the
+				// level-30 weapons are mixed for their average at +7 to +9 too;
+				// a weak average is never "protected"): the family is finished
+				// by its average alone - thirty - and for a caster's bell or fan
+				// by a skill line over the lock as well. A skill line over the
+				// PvP mark no longer keeps a sword of a weak average as it is.
+				if (IsPlayerBotSpecialLevel30Weapon(item))
+					return average >= PLAYERBOT_BONUS_WEAPON_TARGET_AVERAGE ||
+							((item->GetSubType() == WEAPON_BELL || item->GetSubType() == WEAPON_FAN) &&
+								skill >= PLAYERBOT_BONUS_WEAPON_LOCK_PCT);
 				if ((lvl == 30 || lvl == 75) &&
 						((lvl == 75 && average >= PLAYERBOT_BONUS_WEAPON_LOCK_PCT) ||
 						 skill >= PLAYERBOT_BONUS_WEAPON_LOCK_PCT))
@@ -1442,6 +1452,10 @@ namespace
 		// piece the swap rule holds for the slot.
 		piece.greenRank = piece.goods ? -1
 				: (target.wearCell == WEAR_BODY ? 0 : (target.wearCell == WEAR_WEAPON ? 1 : -1));
+		// MT2009_PLUS_BOT_L30_AVG_MIX_V2: a level-30 weapon short of its average.
+		piece.mixAverage = item && IsPlayerBotSpecialLevel30Weapon(item) &&
+				(int)item->GetRefineLevel() >= PLAYERBOT_BONUS_L30_MIX_MIN_PLUS &&
+				!HasPlayerBotFinishedBonus(ch, item, WEAR_WEAPON);
 		return piece;
 	}
 

@@ -108,6 +108,12 @@ struct TPiece
 	bool goods;
 	// Its place in the green round: 0 the armour, 1 the weapon, -1 none.
 	int greenRank;
+	// MT2009_PLUS_BOT_L30_AVG_MIX_V2: a level-30 weapon from +6 whose average
+	// is short of the target - worn, or in the bag for sale. Its change stones
+	// are not the goods' surplus, and a change goes on it before its lines are
+	// full: the change rolls the average again whatever the count
+	// (CItem::ChangeAttribute re-applies the damage addon).
+	bool mixAverage;
 };
 
 // What one stone would do to a piece now, and which stone.
@@ -128,7 +134,7 @@ inline TStepChoice StepFor(const TPiece& p, const TBag& bag, const TLimits& limi
 			(p.goods ? (bag.plainAddSurplus && (restOpen & REST_ADD) != 0)
 				: (p.plain == PLAIN_CATEGORY || (restOpen & REST_ADD) != 0));
 	const bool plainChange = !greenStonesOnly && p.plain != PLAIN_NONE && bag.plainChange &&
-			(p.goods ? (bag.plainChangeSurplus && (restOpen & REST_CHANGE) != 0)
+			((p.goods && !p.mixAverage) ? (bag.plainChangeSurplus && (restOpen & REST_CHANGE) != 0)
 				: (p.plain == PLAIN_CATEGORY || (restOpen & REST_CHANGE) != 0));
 
 	// An empty line is free power: add before anything else, a green stone
@@ -156,7 +162,7 @@ inline TStepChoice StepFor(const TPiece& p, const TBag& bag, const TLimits& limi
 	// the full piece.
 	if (p.greenFits && bag.greenChange && p.wantsGreenChange)
 		return TStepChoice{ STEP_CHANGE, STONE_GREEN };
-	if (plainChange && p.wantsPlainChange && p.lines >= limits.plainChangeMinLines)
+	if (plainChange && p.wantsPlainChange && (p.lines >= limits.plainChangeMinLines || p.mixAverage))
 		return TStepChoice{ STEP_CHANGE, STONE_PLAIN };
 	return none;
 }
