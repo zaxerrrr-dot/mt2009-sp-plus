@@ -4453,12 +4453,20 @@ class Interface(object):
 		# MT2009_PLUS_GM_PANEL_V2: the new panel (uigmpanel.py); the class
 		# above stays for the GM_PANEL_* tables it reads and as the fallback
 		# when the new one cannot be built.
+		# MT2009_PLUS_GM_PANEL_V2_OFF (the owner, 10 October): the new panel's look
+		# is not ready - the old one is used again; uigmpanel.py stays in root for
+		# a later update (set NEW_GM_PANEL = True to bring it back).
+		NEW_GM_PANEL = False
 		try:
+			if not NEW_GM_PANEL:
+				raise StopIteration
 			import uigmpanel
 			wndGMPanel = uigmpanel.GMPanelWindow()
 			wndGMPanel.SetEquipEvent(ui.__mem_func__(self.OpenGMEquipFor))
 			wndGMPanel.Hide()
 			self.wndGMPanel = wndGMPanel
+		except StopIteration:
+			pass
 		except:
 			import dbg, traceback
 			dbg.TraceError("GM panel (F9, uigmpanel) could not be built - the old panel is used")
