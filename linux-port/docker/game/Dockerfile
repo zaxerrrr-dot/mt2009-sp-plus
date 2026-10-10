@@ -806,6 +806,12 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
 # same lists in costume_sets.py.
 COPY costume_sets.txt /opt/metin2/share/locale/poland/costume_sets.txt
 
+# The drop wiki's extras (server-patches/dropwiki, MT2009_PLUS_DROP_WIKI_V2): the drops only quests or the
+# engine give (dungeon bosses' chests, the Zodiac General's Zlota Skrzynia), Mnich Milbon's exchanges and the
+# dungeons' regen files. The game reads it from its locale at the first wiki question; the rest the wiki
+# reads from the tables themselves.
+COPY drop_wiki.txt /opt/metin2/share/locale/poland/drop_wiki.txt
+
 # Seon-Pyeong's recipes (port/shareify.py renders cube.seon_pyeong.txt and this
 # step; the quest that opens his window is quest/seon_pyeong.quest above): a +9
 # piece of level 65-66 into its level-80 successor. The package's cube.txt has
