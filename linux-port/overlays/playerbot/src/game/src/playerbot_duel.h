@@ -3,11 +3,62 @@
 // Implementation fragment included inside the manager's anonymous namespace,
 // after the existing combat, inventory, alchemy and chat helpers.
 bool ManagePlayerBotDuelCombat(LPCHARACTER, TPlayerBotAIState&, DWORD);
+bool HandlePlayerBotDuelReady(LPCHARACTER from,const char* text);
+CPVP* PlayerBotDuelPair(DWORD a,DWORD b);
 
 void LogPlayerBotDuel(LPCHARACTER ch, const char* event) {
     if (playerbot_duel::debug) sys_log(0,"PLAYERBOT_DUEL: pid=%u %s",ch->GetPlayerID(),event);
 }
 void CleanupPlayerBotDuelOnLeave(LPCHARACTER ch,TPlayerBotAIState& state);
+
+// MT2009_PLUS_BOT_DUEL_AI_V1: bot-v-bot duels through the prepared path.
+// On unless a GM sets "/eventflag bot_duel_ai_off 1" (an unset event flag reads
+// 0, so the switch is the "off" one); then bot challenges use the old instant
+// agreement again. Duels already being prepared or fought finish as they are.
+const int PLAYERBOT_DUEL_AI_MAX_BOT_PAIRS = 6;     // per core, prepared + fighting
+const DWORD PLAYERBOT_DUEL_AI_CENSUS_MS = 10 * 60 * 1000;
+const DWORD PLAYERBOT_DUEL_AI_SIDE_TIMEOUT = playerbot_duel::prepareTimeout + playerbot_duel::readyTimeout + 5000;
+struct TPlayerBotDuelAiCensus {
+    unsigned started=0, ready=0, aborted=0, capped=0, ended=0, ko=0, timeout=0, distance=0, safeZone=0, despawn=0, other=0;
+};
+TPlayerBotDuelAiCensus s_playerBotDuelAiCensus;
+DWORD s_dwPlayerBotDuelAiCensusAt=0;
+bool IsPlayerBotDuelAiOn() {
+    return quest::CQuestManager::instance().GetEventFlag("bot_duel_ai_off")==0;
+}
+// Prepared or fighting bot-v-bot pairs on this core, each counted once.
+int CountPlayerBotDuelAiPairs() {
+    int n=0;
+    for(const auto& c:playerbot_pvp::challenges) if(c.second.botChallenger) ++n;
+    for(const auto& d:playerbot_pvp::duels) if(d.second.botOwner) ++n;
+    return n;
+}
+// A bot already being prepared for a duel, on either side, takes no new one.
+bool IsPlayerBotDuelAiBusy(DWORD pid) {
+    return playerbot_pvp::challenges.count(pid) || playerbot_pvp::botSides.count(pid);
+}
+void ManagePlayerBotDuelAiCensus(DWORD now) {
+    if(s_dwPlayerBotDuelAiCensusAt==0) {s_dwPlayerBotDuelAiCensusAt=now;return;}
+    if(now-s_dwPlayerBotDuelAiCensusAt<PLAYERBOT_DUEL_AI_CENSUS_MS) return;
+    s_dwPlayerBotDuelAiCensusAt=now;
+    const auto& c=s_playerBotDuelAiCensus;
+    sys_log(0,"PLAYERBOT_DUEL_BB: census on=%d active=%d cap=%d started=%u ready=%u aborted_prep=%u capped=%u ended=%u ko=%u timeout=%u distance=%u safe_zone=%u despawn=%u other=%u",
+        IsPlayerBotDuelAiOn()?1:0,CountPlayerBotDuelAiPairs(),PLAYERBOT_DUEL_AI_MAX_BOT_PAIRS,
+        c.started,c.ready,c.aborted,c.capped,c.ended,c.ko,c.timeout,c.distance,c.safeZone,c.despawn,c.other);
+    s_playerBotDuelAiCensus=TPlayerBotDuelAiCensus();
+}
+// The challenger's side ends: its preparation forgotten, a pending pair removed.
+void DropPlayerBotDuelAiSide(LPCHARACTER ch,const char* why) {
+    auto side=playerbot_pvp::botSides.find(ch->GetPlayerID());
+    if(side==playerbot_pvp::botSides.end()) return;
+    const DWORD foePid=side->second.challengerPid;
+    if(side->second.alchemyStarted && !playerbot_pvp::duels.count(ch->GetPlayerID())) ch->DragonSoul_DeactivateAll();
+    playerbot_pvp::botSides.erase(side);
+    if(CPVP* pair=PlayerBotDuelPair(ch->GetPlayerID(),foePid)) {
+        if(!pair->IsFight()) {pair->Packet(true);CPVPManager::instance().Delete(pair);}
+    }
+    sys_log(0,"PLAYERBOT_DUEL_BB: challenger stop pid=%u foe=%u reason=%s",ch->GetPlayerID(),foePid,why);
+}
 bool PlayerBotDuelWar(LPCHARACTER ch,const TPlayerBotAIState& state) {
     return ch->GetWarMap()!=NULL || state.dwGuildWarEnemyGID!=0 || (ch->GetGuild() && GetPlayerBotWarEnemy(ch->GetGuild()));
 }
@@ -18,6 +69,14 @@ void CancelPlayerBotPreparation(LPCHARACTER ch,TPlayerBotAIState& state,const ch
     auto it=playerbot_pvp::challenges.find(ch->GetPlayerID());
     if(it==playerbot_pvp::challenges.end()) return;
     if(it->second.alchemyStarted) ch->DragonSoul_DeactivateAll();
+    // MT2009_PLUS_BOT_DUEL_AI_V1: a bot-v-bot preparation counted once, here.
+    if(it->second.botChallenger) {
+        ++s_playerBotDuelAiCensus.aborted;
+        sys_log(0,"PLAYERBOT_DUEL_BB: prep aborted pid=%u challenger=%u reason=%s",ch->GetPlayerID(),it->second.challengerPid,why);
+        if(LPCHARACTER challenger=CHARACTER_MANAGER::instance().FindByPID(it->second.challengerPid))
+            DropPlayerBotDuelAiSide(challenger,"challenged side gave up");
+        else playerbot_pvp::botSides.erase(it->second.challengerPid);
+    }
     if(CPVP* pair=PlayerBotDuelPair(ch->GetPlayerID(),it->second.challengerPid)) {
         if(!pair->IsFight()) {pair->Packet(true);CPVPManager::instance().Delete(pair);}
     }
@@ -39,6 +98,18 @@ void FinishPlayerBotPreparedDuel(LPCHARACTER ch,TPlayerBotAIState& state,DWORD n
         LPCHARACTER foe=CHARACTER_MANAGER::instance().FindByPID(duel.opponentPid);
         if(foe && foe->GetDesc() && !foe->GetDesc()->IsBot()) foe->SetSyncOwner(NULL);
         playerbot_pvp::RecordResult(ch->GetPlayerID(),duel.opponentPid,result);
+        // MT2009_PLUS_BOT_DUEL_AI_V1: each side logs its own result; the
+        // challenged side alone feeds the census, so a duel counts once.
+        if(duel.botPair) {
+            sys_log(0,"PLAYERBOT_DUEL_BB: end pid=%u foe=%u side=%s reason=%s result=%s",ch->GetPlayerID(),duel.opponentPid,
+                duel.botOwner?"challenged":"challenger",why,result>0?"win":result<0?"loss":"draw");
+            if(duel.botOwner) {
+                auto& c=s_playerBotDuelAiCensus;++c.ended;
+                if(!strcmp(why,"end ko")) ++c.ko; else if(!strcmp(why,"end timeout")) ++c.timeout;
+                else if(!strcmp(why,"end distance")) ++c.distance; else if(!strcmp(why,"safe zone")) ++c.safeZone;
+                else if(!strcmp(why,"despawn duel")) ++c.despawn; else ++c.other;
+            }
+        }
         if(duel.alchemyStarted) {ch->DragonSoul_DeactivateAll();state.dwLastCombatActionTime=0;}
     }
     // EndPlayerBotDuel needs the opponent even when the deadline just expired.
@@ -58,6 +129,7 @@ void FinishPlayerBotPreparedDuel(LPCHARACTER ch,TPlayerBotAIState& state,DWORD n
 void CleanupPlayerBotDuelOnLeave(LPCHARACTER ch,TPlayerBotAIState& state) {
     if(!ch) return;
     CancelPlayerBotPreparation(ch,state,"despawn preparation");
+    DropPlayerBotDuelAiSide(ch,"despawn"); // MT2009_PLUS_BOT_DUEL_AI_V1
     if(playerbot_pvp::duels.count(ch->GetPlayerID()))
         FinishPlayerBotPreparedDuel(ch,state,get_dword_time(),"despawn duel");
 }
@@ -460,6 +532,105 @@ bool ManagePlayerBotPreparedCombat(LPCHARACTER ch,LPCHARACTER foe,TPlayerBotAISt
     return true;
 }
 
+// MT2009_PLUS_BOT_DUEL_AI_V1: the challenging bot's preparation. It drops PvE,
+// sends its horse away, recovers, buffs, wakes its alchemy and spends within
+// the same budget as the challenged bot, stands at its class distance and,
+// once the other bot has asked "r?", answers "g"/"go" on the local chat after
+// a human pause - through HandlePlayerBotDuelReady, as a player's line would.
+bool ManagePlayerBotDuelAiChallenger(LPCHARACTER ch,TPlayerBotAIState& state,DWORD now) {
+    const DWORD pid=ch->GetPlayerID();
+    auto& side=playerbot_pvp::botSides[pid];
+    LPCHARACTER foe=CHARACTER_MANAGER::instance().FindByPID(side.challengerPid);
+    auto theirs=playerbot_pvp::challenges.find(side.challengerPid);
+    if(ch->IsDead() || ch->GetHP()<=0 || !foe || foe->GetMapIndex()!=ch->GetMapIndex() ||
+        theirs==playerbot_pvp::challenges.end() || theirs->second.challengerPid!=pid || !theirs->second.botChallenger ||
+        PlayerBotDuelWar(ch,state) || ch->GetExchange() || ch->GetMyShop() || ch->IsPolymorphed()) {
+        DropPlayerBotDuelAiSide(ch,"invalid");return false;
+    }
+    auto& their=theirs->second;
+    if(!side.seenAt) {
+        side.seenAt=now;side.reactAt=now+number(playerbot_duel::reactionMin,playerbot_duel::reactionMax);
+        side.desiredRange=playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup()).startRange+number(-40,40);
+        auto result=playerbot_pvp::history.find(std::make_pair(pid,side.challengerPid));
+        side.threat=playerbot_duel::Threat(ch->GetLevel(),foe->GetLevel(),result==playerbot_pvp::history.end()?0:result->second.streak);
+        side.budget=playerbot_duel::Budget(side.threat);
+        state.dwTargetVID=0;ch->SetVictim(NULL);ch->SetTarget(NULL);ch->Stop();ClearPlayerBotRoute(state,true);
+        state.bVisitingShop=false;state.bTacticalRetreat=false;state.bMultiPullActive=false;
+        sys_log(0,"PLAYERBOT_DUEL_BB: challenger prep pid=%u foe=%u threat=%d profile=%s",pid,side.challengerPid,side.threat,
+            playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup()).name);
+    }
+    if(now-side.seenAt>PLAYERBOT_DUEL_AI_SIDE_TIMEOUT) {DropPlayerBotDuelAiSide(ch,"timeout");return false;}
+    state.dwTargetVID=0;ch->SetVictim(NULL);state.dwLastMeaningfulActivityTime=now;state.dwLastCombatActionTime=now;
+    if(ch->IsAffectFlag(AFF_MUYEONG)) ch->StopMuyeongEvent();
+    if((int32_t)(now-side.reactAt)<0 || ch->IsStun()) return true;
+    SendPlayerBotHorseAwayForFight(ch,state,now,"duel_prepare");
+    if(side.playerReady) return true; // Answered; the challenged bot accepts.
+    const int distance=DISTANCE_APPROX(ch->GetX()-foe->GetX(),ch->GetY()-foe->GetY());
+    if(ch->GetHP()<ch->GetMaxHP()) UseHealthPotion(ch,state,now,100);
+    if(ch->GetSP()<ch->GetMaxSP()) UseManaPotion(ch,state,now,100);
+    const bool recovered=ch->GetMaxHP()>0 && ch->GetMaxSP()>0 && ch->GetHP()*100/ch->GetMaxHP()>=playerbot_duel::readyHP &&
+        ch->GetSP()*100/ch->GetMaxSP()>=playerbot_duel::readySP;
+    if(recovered && state.bRecoveringAfterDeath) EndPlayerBotRecovery(ch,state);
+    const bool botSafe=IsPlayerBotSafeZone(ch->GetMapIndex(),ch->GetX(),ch->GetY());
+    if(botSafe || playerbot_duel::NeedsPreparationApproach(distance)) {
+        if(!side.nextMove || (int32_t)(now-side.nextMove)>=0) {side.nextMove=now+playerbot_duel::moveRetry;MovePlayerBotDuelRange(ch,foe,now,botSafe?0:side.desiredRange);}
+        return true;
+    }
+    if((int32_t)(now-state.dwNextAttackTime)<0) return true;
+    ch->Stop();ClearPlayerBotRoute(state,true);ch->SetRotationToXY(foe->GetX(),foe->GetY());
+    if(!recovered) return true;
+    if(side.phase!=playerbot_duel::Phase::WaitReady) {
+        side.phase=playerbot_duel::Phase::Prepare;
+        if(CastPlayerBotDuelSelfBuff(ch,state,now)) return true;
+        if(!side.alchemyStarted && ch->DragonSoul_GetActiveDeck()<0 && IsPlayerBotAlchemyUser(ch) && ch->DragonSoul_IsQualified() && CountPlayerBotWornDs(ch,true)>0)
+            side.alchemyStarted=ch->DragonSoul_ActivateDeck(DRAGON_SOUL_DECK_0);
+        if(PreparePlayerBotDuelItem(ch,side,now)) return true;
+        side.phase=playerbot_duel::Phase::WaitReady;
+    }
+    SwitchOffPlayerBotAutoPotionsForDuel(ch,now);
+    // The other bot has not asked yet, or a queued red potion is still running.
+    if(!their.readyAt || ch->FindAffect(AFFECT_AUTO_HP_RECOVERY) ||
+        (ch->GetPoint(POINT_HP_RECOVERY)>0 && ch->GetHP()<ch->GetMaxHP())) return true;
+    if(!side.answerAt) side.answerAt=std::max(now,their.readyAt+number(1000,4000));
+    if((int32_t)(now-side.answerAt)<0) return true;
+    if(ch->GetPoint(POINT_HP_RECOVERY)>0) ch->PointChange(POINT_HP_RECOVERY,-ch->GetPoint(POINT_HP_RECOVERY));
+    const char* line=number(0,1)?"g":"go";
+    SendPlayerBotLocalChat(ch,line);
+    const bool heard=HandlePlayerBotDuelReady(ch,line);
+    side.playerReady=true;
+    if(heard) ++s_playerBotDuelAiCensus.ready;
+    sys_log(0,"PLAYERBOT_DUEL_BB: ready answered pid=%u foe=%u line=%s heard=%d after_ms=%u",pid,side.challengerPid,line,heard?1:0,now-their.readyAt);
+    return true;
+}
+// The challenged bot has just accepted: the challenger fights the same
+// prepared duel from its own side, with its own profile.
+void StartPlayerBotDuelAiChallengerFight(LPCHARACTER ch,LPCHARACTER foe,DWORD now,playerbot_pvp::Duel& mine) {
+    const DWORD foePid=foe->GetPlayerID();
+    auto side=playerbot_pvp::botSides.find(foePid);
+    const bool alchemy=side!=playerbot_pvp::botSides.end() && side->second.alchemyStarted;
+    if(side!=playerbot_pvp::botSides.end()) playerbot_pvp::botSides.erase(side);
+    mine.botPair=true;mine.botOwner=true;
+    ++s_playerBotDuelAiCensus.started;
+    TPlayerBotAIStateMap::iterator fs=s_mapPlayerBotAIStates.find(foePid);
+    if(fs==s_mapPlayerBotAIStates.end()) {
+        sys_log(0,"PLAYERBOT_DUEL_BB: start pid=%u foe=%u challenger_state=missing",ch->GetPlayerID(),foePid);return;
+    }
+    TPlayerBotAIState& fstate=fs->second;
+    playerbot_pvp::NoteDuelStarted(foePid,ch->GetPlayerID(),now+PLAYERBOT_PVP_DUEL_ASSUMED);
+    auto& theirs=playerbot_pvp::duels[foePid];
+    theirs.prepared=true;theirs.botPair=true;theirs.alchemyStarted=alchemy;
+    theirs.openingSkill=SelectPlayerBotDuelSkill(foe,ch,fstate,now,true);
+    theirs.opponentBuff=PlayerBotDuelValuableBuff(ch);theirs.dispelAt=now;
+    theirs.observedHP=foe->GetHP();theirs.nextOpponentCheck=now+playerbot_duel::opponentObservation;
+    theirs.nextDecision=now+number(playerbot_duel::openingReactionMin,playerbot_duel::openingReactionMax);
+    theirs.nextMove=now+1500;fstate.dwNextSkillCastTime=now;
+    fstate.dwTargetVID=ch->GetVID();foe->SetVictim(ch);foe->SetTarget(ch);
+    fstate.bComboMotion=MOTION_COMBO_ATTACK_1;
+    sys_log(0,"PLAYERBOT_DUEL_BB: start pid=%u foe=%u profile=%s foe_profile=%s level=%u foe_level=%u map=%ld",
+        ch->GetPlayerID(),foePid,playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup()).name,
+        playerbot_duel::GetProfile(foe->GetJob(),foe->GetSkillGroup()).name,(unsigned)ch->GetLevel(),(unsigned)foe->GetLevel(),ch->GetMapIndex());
+}
+
 // Called from both scheduled and light ticks. Inactive bots pay only map lookups.
 bool ManagePlayerBotDuelFlow(LPCHARACTER ch,TPlayerBotAIState& state,DWORD now) {
     if(!ch) return false;
@@ -471,7 +642,14 @@ bool ManagePlayerBotDuelFlow(LPCHARACTER ch,TPlayerBotAIState& state,DWORD now) 
         const bool ended=ch->IsDead() || ch->GetHP()<=0 || ch->IsPolymorphed() || !foe || foe->IsDead() || foe->GetHP()<=0 || !foe->GetDesc() || foe->GetMapIndex()!=ch->GetMapIndex() ||
             !pair || !pair->IsFight() || !playerbot_pvp::DuelStands(duel->second.until,now) || PlayerBotDuelWar(ch,state) ||
             ch->GetExchange() || ch->GetMyShop() || ch->GetShop() || foe->GetExchange() || foe->GetMyShop() || DISTANCE_APPROX(ch->GetX()-foe->GetX(),ch->GetY()-foe->GetY())>playerbot_duel::maxDistance;
-        if(ended) {FinishPlayerBotPreparedDuel(ch,state,now,"end",ch->IsDead() || ch->GetHP()<=0?-1:foe && (foe->IsDead() || foe->GetHP()<=0)?1:0);return false;}
+        if(ended) {
+            const int result=ch->IsDead() || ch->GetHP()<=0?-1:foe && (foe->IsDead() || foe->GetHP()<=0)?1:0;
+            // MT2009_PLUS_BOT_DUEL_AI_V1: the reason, for the logs and the census.
+            const char* why=result?"end ko":!playerbot_pvp::DuelStands(duel->second.until,now)?"end timeout":
+                foe && foe->GetMapIndex()==ch->GetMapIndex() && DISTANCE_APPROX(ch->GetX()-foe->GetX(),ch->GetY()-foe->GetY())>playerbot_duel::maxDistance?"end distance":
+                PlayerBotDuelWar(ch,state)?"end war":!foe?"end foe gone":"end";
+            FinishPlayerBotPreparedDuel(ch,state,now,why,result);return false;
+        }
         if(IsPlayerBotSafeZone(ch->GetMapIndex(),ch->GetX(),ch->GetY()) || IsPlayerBotSafeZone(foe->GetMapIndex(),foe->GetX(),foe->GetY())) {
             FinishPlayerBotPreparedDuel(ch,state,now,"safe zone");return false;
         }
@@ -483,12 +661,15 @@ bool ManagePlayerBotDuelFlow(LPCHARACTER ch,TPlayerBotAIState& state,DWORD now) 
         if(foe->IsAffectFlag(AFF_SKILL_STEALTH) || foe->IsAffectFlag(AFF_INVISIBILITY)) {duel->second.skillHits={};ch->Stop();return true;}
         return ManagePlayerBotPreparedCombat(ch,foe,state,now);
     }
+    // MT2009_PLUS_BOT_DUEL_AI_V1: the challenging bot gets ready as well.
+    if(playerbot_pvp::botSides.count(pid)) return ManagePlayerBotDuelAiChallenger(ch,state,now);
     auto it=playerbot_pvp::challenges.find(pid);
     if(it==playerbot_pvp::challenges.end()) return false;
     auto& prep=it->second;
     LPCHARACTER foe=CHARACTER_MANAGER::instance().FindByPID(prep.challengerPid);
-    // Keep the established autonomous bot-v-bot flow; it has no human ready chat.
-    if(foe && foe->GetDesc() && foe->GetDesc()->IsBot()) return false;
+    // An unmarked bot challenge (the switch off, a kingdom quarrel) keeps the
+    // established autonomous bot-v-bot flow; it has no ready chat.
+    if(!prep.botChallenger && foe && foe->GetDesc() && foe->GetDesc()->IsBot()) return false;
     const int distance=foe?DISTANCE_APPROX(ch->GetX()-foe->GetX(),ch->GetY()-foe->GetY()):0;
     CPVP* pair=PlayerBotDuelPair(pid,prep.challengerPid);
     const char* refusal=GetPlayerBotDuelRefusal(ch,now);
@@ -595,6 +776,8 @@ bool ManagePlayerBotDuelFlow(LPCHARACTER ch,TPlayerBotAIState& state,DWORD now) 
         prep.phase=playerbot_duel::Phase::WaitReady;
         if(!prep.readyAt) {prep.readyAt=now;SendPlayerBotLocalChat(ch,playerbot_duel::ReadyPrompt(number(0,99)));LogPlayerBotDuel(ch,"ready message");}
     }
+    if(prep.botChallenger && !prep.reminded && prep.readyAt==now)
+        sys_log(0,"PLAYERBOT_DUEL_BB: ready asked pid=%u challenger=%u",pid,prep.challengerPid);
     if(!prep.playerReady) {
         if(now-prep.readyAt>playerbot_duel::readyTimeout) {SendPlayerBotLocalChat(ch,"nvm");CancelPlayerBotPreparation(ch,state,"ready timeout");return false;}
         if(!prep.reminded && now-prep.readyAt>playerbot_duel::readyReminder) {prep.reminded=true;SendPlayerBotLocalChat(ch,"?");}
@@ -621,6 +804,7 @@ bool ManagePlayerBotDuelFlow(LPCHARACTER ch,TPlayerBotAIState& state,DWORD now) 
     active.observedHP=ch->GetHP();active.nextOpponentCheck=now+playerbot_duel::opponentObservation;
     if(ch->IsAffectFlag(AFF_MUYEONG)) ch->StartMuyeongEvent();
     state.bComboMotion=MOTION_COMBO_ATTACK_1;
+    if(saved.botChallenger) StartPlayerBotDuelAiChallengerFight(ch,foe,now,active);
     // Accept promptly, but give the first combat action a human reaction delay.
     active.nextDecision=now+number(playerbot_duel::openingReactionMin,playerbot_duel::openingReactionMax);
     active.nextMove=now+1500;state.dwNextSkillCastTime=now;

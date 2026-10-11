@@ -939,7 +939,11 @@ namespace
 				ch->SetVictim(NULL);
 			if (state.dwTargetVID == (DWORD)foe->GetVID())
 				state.dwTargetVID = 0;
-			if ((DWORD)playerbot_pvp::GetDuelOpponent(foePid, dwNow) == pid)
+			// MT2009_PLUS_BOT_DUEL_AI_V1: a prepared bot-v-bot opponent ends its
+			// own side on its next tick (result, alchemy, state), once.
+			auto foeDuel = playerbot_pvp::duels.find(foePid);
+			const bool foePrepared = foeDuel != playerbot_pvp::duels.end() && foeDuel->second.prepared;
+			if (!foePrepared && (DWORD)playerbot_pvp::GetDuelOpponent(foePid, dwNow) == pid)
 			{
 				playerbot_pvp::EndDuel(foePid);
 				if (foe->GetVictim() == ch && playerbot_duel::CanClearEngineVictim(foe->IsDead(),foe->GetHP()))

@@ -1065,6 +1065,12 @@ namespace
 		LPCHARACTER person = CHARACTER_MANAGER::instance().FindByPID(challengerPid);
 		if (person && person->GetDesc() && !person->GetDesc()->IsBot())
 			return; // Human challenges belong to the preparation flow above.
+		// MT2009_PLUS_BOT_DUEL_AI_V1: so do bot challenges marked for it.
+		{
+			auto pending = playerbot_pvp::challenges.find(ch->GetPlayerID());
+			if (pending != playerbot_pvp::challenges.end() && pending->second.botChallenger)
+				return;
+		}
 		if (ch->IsDead())
 		{
 			playerbot_pvp::Forget(ch->GetPlayerID());
@@ -1479,11 +1485,12 @@ namespace
 	void ManagePlayerBotPvpChallenge(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		static std::map<DWORD, DWORD> s_mapPlayerBotPvpRollNext;
+		ManagePlayerBotDuelAiCensus(dwNow); // MT2009_PLUS_BOT_DUEL_AI_V1
 		if (!ch || ch->IsDead() || ch->GetSectree() == NULL)
 			return;
 		if (IsPlayerBotSafeZone(ch->GetMapIndex(), ch->GetX(), ch->GetY()))
 			return;
-		if (playerbot_pvp::IsInDuel(ch->GetPlayerID(), dwNow))
+		if (playerbot_pvp::IsInDuel(ch->GetPlayerID(), dwNow) || IsPlayerBotDuelAiBusy(ch->GetPlayerID()))
 			return;
 		// Under PK_PROTECT_LEVEL the engine refuses every blow on the kingdom's own
 		// maps: a challenge from there is a duel nobody can fight or end.
@@ -1525,7 +1532,8 @@ namespace
 					return false;
 				if (candidate->GetParty() && candidate->GetParty() == m_me->GetParty())
 					return false;
-				if (playerbot_pvp::IsInDuel(candidate->GetPlayerID(), m_now))
+				if (playerbot_pvp::IsInDuel(candidate->GetPlayerID(), m_now) ||
+						IsPlayerBotDuelAiBusy(candidate->GetPlayerID()))
 					return false;
 				// Not a bot on the bank with its rod out, nor one at a vein.
 				if (GetPlayerBotDuelRefusal(candidate, m_now) != NULL)
@@ -1555,6 +1563,40 @@ namespace
 		ch->GetSectree()->ForEachAround(finder);
 		if (!finder.m_pFound)
 			return;
+		// MT2009_PLUS_BOT_DUEL_AI_V1: by default both bots get ready first - the
+		// challenged one asks "r?", this one answers - and fight the prepared
+		// duel. The event flag bot_duel_ai_off, or a full core, keeps the old
+		// instant agreement below.
+		if (IsPlayerBotDuelAiOn())
+		{
+			if (CountPlayerBotDuelAiPairs() < PLAYERBOT_DUEL_AI_MAX_BOT_PAIRS)
+			{
+				const DWORD targetPid = finder.m_pFound->GetPlayerID();
+				CPVPManager::instance().Insert(ch, finder.m_pFound);
+				auto pending = playerbot_pvp::challenges.find(targetPid);
+				if (pending != playerbot_pvp::challenges.end() &&
+						pending->second.challengerPid == ch->GetPlayerID())
+				{
+					pending->second.botChallenger = true;
+					playerbot_pvp::Challenge& side = playerbot_pvp::botSides[ch->GetPlayerID()];
+					side = playerbot_pvp::Challenge{};
+					side.challengerPid = targetPid;
+					side.seenAt = 0;
+					sys_log(0, "PLAYERBOT_DUEL_BB: challenge pid=%u name=%s target_pid=%u target=%s level=%u target_level=%u active=%d",
+							ch->GetPlayerID(), ch->GetName(), targetPid, finder.m_pFound->GetName(),
+							(unsigned int)ch->GetLevel(), (unsigned int)finder.m_pFound->GetLevel(),
+							CountPlayerBotDuelAiPairs());
+					return;
+				}
+				// The engine kept no pending challenge: fall back to the old agreement
+				// on the pair Insert has just made.
+				playerbot_pvp::NoteDuelStarted(ch->GetPlayerID(), targetPid, dwNow + PLAYERBOT_PVP_DUEL_ASSUMED);
+				sys_log(0, "PLAYERBOT_PVP: challenged another bot pid=%u name=%s target_pid=%u target=%s (no pending entry)",
+						ch->GetPlayerID(), ch->GetName(), targetPid, finder.m_pFound->GetName());
+				return;
+			}
+			++s_playerBotDuelAiCensus.capped;
+		}
 		// The challenge itself. The other bot's tick agrees three seconds later
 		// through the same journal a player's challenge goes through.
 		CPVPManager::instance().Insert(ch, finder.m_pFound);
@@ -1645,7 +1687,8 @@ namespace
 					return false;
 				if (candidate->GetParty() && candidate->GetParty() == m_me->GetParty())
 					return false;
-				if (playerbot_pvp::IsInDuel(candidate->GetPlayerID(), m_now))
+				if (playerbot_pvp::IsInDuel(candidate->GetPlayerID(), m_now) ||
+						IsPlayerBotDuelAiBusy(candidate->GetPlayerID()))   // MT2009_PLUS_BOT_DUEL_AI_V1
 					return false;
 				// The same for a quarrel: nobody is set upon with a rod in hand.
 				if (GetPlayerBotDuelRefusal(candidate, m_now) != NULL)

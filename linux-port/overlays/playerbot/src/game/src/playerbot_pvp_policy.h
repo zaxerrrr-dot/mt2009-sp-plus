@@ -41,9 +41,16 @@ struct Challenge
 	playerbot_duel::StealthPlan stealthPlan = playerbot_duel::StealthPlan::None;
 	bool setupMoveDone = false;
 	uint32_t setupMoveUntil = 0;
+	// MT2009_PLUS_BOT_DUEL_AI_V1: a bot challenged by another bot through the
+	// prepared path; the challenger answers the ready chat itself (answerAt).
+	bool botChallenger = false;
+	uint32_t answerAt = 0;
 };
 
 inline std::map<uint32_t, Challenge> challenges;
+// MT2009_PLUS_BOT_DUEL_AI_V1: the challenging bot's own preparation, keyed by
+// the challenger; challengerPid holds the bot it challenged.
+inline std::map<uint32_t, Challenge> botSides;
 
 // Called from the engine for a bot that was just challenged. Keep one pending
 // preparation per bot: another person must not steal its ready handshake.
@@ -110,6 +117,9 @@ struct Duel
 	uint32_t lastDamagedAt = 0;
 	bool stealthOpening = false;
 	playerbot_duel::SkillHitSequence skillHits;
+	// MT2009_PLUS_BOT_DUEL_AI_V1: a prepared bot-v-bot duel; the challenged
+	// side (botOwner) is the one counted in the census.
+	bool botPair = false, botOwner = false;
 };
 
 inline std::map<uint32_t, Duel> duels;
