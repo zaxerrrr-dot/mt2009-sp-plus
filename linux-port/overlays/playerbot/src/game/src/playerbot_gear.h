@@ -5406,7 +5406,8 @@ namespace
 		// full bags of red potions do not have a fight, they have an endurance
 		// test. Asked before the clock below, so a duel does not spend the
 		// bot's next potion attempt either.
-		if (playerbot_pvp::IsInDuel(ch->GetPlayerID(), dwNow))
+		if (playerbot_duel::BlockHP(playerbot_pvp::IsInDuel(ch->GetPlayerID(), dwNow),
+				state.dwGuildWarEnemyGID != 0 || ch->GetWarMap() != NULL))
 			return false;
 
 		if (dwNow < state.dwNextPotionTime)
@@ -5471,6 +5472,10 @@ namespace
 		const DWORD bluePotionVnums[] = { 27052, 27004, 27005, 27006, 71020, 27864, 27876 };
 		for (size_t potionIndex = 0; potionIndex < sizeof(bluePotionVnums) / sizeof(bluePotionVnums[0]); ++potionIndex)
 		{
+			// Blessing of the Dragon restores HP as well as SP; never bypass the duel's HP rule.
+			if (bluePotionVnums[potionIndex] == 71020 &&
+					playerbot_duel::BlockHP(playerbot_pvp::IsInDuel(ch->GetPlayerID(), dwNow),
+					state.dwGuildWarEnemyGID != 0 || ch->GetWarMap() != NULL)) continue;
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
@@ -5487,7 +5492,16 @@ namespace
 			}
 		}
 		// MT2009_PLUS_BOT_BELTS_V1: and the pouch's (playerbot_belts.h).
-		if (UsePlayerBotBeltPotion(ch, bluePotionVnums, sizeof(bluePotionVnums) / sizeof(bluePotionVnums[0]), "mana"))
+		// Apply the same duel policy to the new belt pouch fallback: 71020
+		// restores HP too, even when selected as a mana potion.
+		const bool blockHP = playerbot_duel::BlockHP(playerbot_pvp::IsInDuel(ch->GetPlayerID(), dwNow),
+				state.dwGuildWarEnemyGID != 0 || ch->GetWarMap() != NULL);
+		DWORD beltManaVnums[sizeof(bluePotionVnums) / sizeof(bluePotionVnums[0])];
+		size_t beltManaCount = 0;
+		for (size_t i = 0; i < sizeof(bluePotionVnums) / sizeof(bluePotionVnums[0]); ++i)
+			if (!blockHP || bluePotionVnums[i] != 71020)
+				beltManaVnums[beltManaCount++] = bluePotionVnums[i];
+		if (UsePlayerBotBeltPotion(ch, beltManaVnums, beltManaCount, "mana"))
 			return true;
 
 		return false;

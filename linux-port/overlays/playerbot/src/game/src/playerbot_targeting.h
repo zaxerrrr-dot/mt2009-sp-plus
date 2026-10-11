@@ -2205,7 +2205,13 @@ namespace
 		// No UseArrow: a bot's quiver never empties (Tieru, 24 September), so an
 		// Archer does not walk to town for arrows every half hour. The skill
 		// path in playerbot_combat.h does the same.
-		primary->SetSyncOwner(ch);
+		// Human duel melee ownership was sent before the combo, together with
+		// movement credit for the victim's own landing report. Do not send a
+		// second ownership packet after the impact; bow hits need no slide.
+		const auto duelContext = playerbot_pvp::duels.find(ch->GetPlayerID());
+		const bool preparedDuel = duelContext != playerbot_pvp::duels.end() && duelContext->second.prepared;
+		const bool humanVictim = primary->IsPC() && primary->GetDesc() && !primary->GetDesc()->IsBot();
+		if (playerbot_duel::AssignClientSyncOwner(preparedDuel, humanVictim)) primary->SetSyncOwner(ch);
 		if (!primary->IsDead() && primary->CanBeginFight())
 			primary->BeginFight(ch);
 
@@ -2341,6 +2347,13 @@ namespace
 		return scaled < 200U ? 200U : scaled;
 	}
 
+	int GetPlayerBotBasicAttackRange(LPCHARACTER ch)
+	{
+		LPITEM weapon = ch ? ch->GetWear(WEAR_WEAPON) : NULL;
+		const bool isBow = weapon && weapon->GetSubType() == WEAPON_BOW && !IsPlayerBotFightingAsMonster(ch);
+		return isBow ? GetPlayerBotBowRange(ch->GetMapIndex()) : 280;
+	}
+
 	bool ExecutePlayerBotBasicAttack(LPCHARACTER ch, LPCHARACTER target,
 			TPlayerBotAIState& state, DWORD dwNow)
 	{
@@ -2393,7 +2406,7 @@ namespace
 			if (!EnsurePlayerBotArrowsEquipped(ch) || ch->GetArrowAndBow(&bow, &arrow, 1) != 1)
 				return false;
 		}
-		const int combatRange = isBow ? GetPlayerBotBowRange(ch->GetMapIndex()) : 280;
+		const int combatRange = GetPlayerBotBasicAttackRange(ch);
 		if (DISTANCE_APPROX(ch->GetX() - target->GetX(), ch->GetY() - target->GetY()) > combatRange)
 			return false;
 
@@ -2421,6 +2434,38 @@ namespace
 		std::vector<DWORD> extraArrows;
 		if (isBow)
 			CollectPlayerBotExtraArrows(ch, target, extraArrows);
+		// Ownership must arrive BEFORE the combo packet: the human client's
+		// hit event supplies both the slide and the ordinary fall animation.
+		// Its own next Move reports the resulting position. A bot cannot send
+		// CG_SYNC_POSITION, and stale move-check coordinates must not undo it.
+		auto duelHit = playerbot_pvp::duels.find(ch->GetPlayerID());
+		const bool preparedHit = duelHit != playerbot_pvp::duels.end() &&
+			duelHit->second.prepared && duelHit->second.opponentPid == target->GetPlayerID() &&
+			state.dwGuildWarEnemyGID == 0;
+		const bool humanHit = target->IsPC() && target->GetDesc() && !target->GetDesc()->IsBot();
+		if (playerbot_duel::NeedsHitSlideAllowance(preparedHit,humanHit,!isBow))
+		{
+			// The client needs a visual owner for external-force hit physics.
+			// Do NOT assign engine sync ownership to a bot with no sync client:
+			// the victim's own Move reports its landing, with the credit below.
+			TPacketGCOwnership visualOwner = {};
+			visualOwner.bHeader = HEADER_GC_OWNERSHIP;
+			visualOwner.dwOwnerVID = ch->GetVID();
+			visualOwner.dwVictimVID = target->GetVID();
+			target->PacketAround(visualOwner);
+#ifdef PLAYERBOT_ENGINE_MT2009
+			// FUNC_WAIT's short-distance guard otherwise puts a knocked-back
+			// standing player back at the pre-hit position. This one transition
+			// was caused by a validated melee impact, not a voluntary walk.
+			target->SetLastMoveFunc(FUNC_COMBO);
+			if (target->HasPlayerData())
+				target->playerData->m_iMoveBonusPointNextRound = playerbot_duel::HitSlideMovementBonus(
+					target->playerData->m_iMoveBonusPointNextRound);
+#endif
+			if (playerbot_duel::debug && state.bComboMotion == MOTION_COMBO_ATTACK_4)
+				sys_log(0,"PLAYERBOT_DUEL: combo finish pid=%u foe=%u landing_credit=%d resist_fall=%d",
+					ch->GetPlayerID(),target->GetPlayerID(),playerbot_duel::hitSlideAllowance,target->IsResistFall());
+		}
 		SendPlayerBotAttackPacket(ch, target, state.bComboMotion, &extraArrows);
 		AttackPlayerBotMeleeGroup(ch, target, &extraArrows);
 		// MT2009_PLUS_GUILD_WAR_ARENA_V1: every blow of a bot at war, for the

@@ -327,6 +327,16 @@ namespace
 	{
 		if (!ch->IsDead())
 		{
+			// Lethal damage first enters Stun, then Dead after three seconds.
+			// Do not drink, select targets or move while waiting for StunEvent.
+			// Repair an orphaned zero-HP state left by an earlier battle_end.
+			if (ch->GetHP() <= 0)
+			{
+				if (!ch->IsStun()) ch->Stun();
+				ch->Stop();
+				ClearPlayerBotRoute(state, true);
+				return true;
+			}
 			state.dwDeathDetectedTime = 0;
 			state.dwNextReviveAttemptTime = 0;
 			return false;
