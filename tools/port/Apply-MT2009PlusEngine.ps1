@@ -1118,6 +1118,19 @@ if ((Test-Path -LiteralPath $comboSaveApply -PathType Leaf) -and
         Write-Host ('Applied {0} combo save edit(s).' -f $comboSaveResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The Auction House (Dom Aukcyjny, AH_V1) and the mini games' "Liczba gier" row
+# (MT2009_PLUS_PLAY_COUNT_V1), Autor: Vekirion (server-patches/auctionhouse): the /ah_* and
+# /minigame_count commands in cmd.cpp, the buy hooks in ikarus_shop_manager.cpp. The rest is the
+# overlay's auction_house.cpp and playerbot_{rumi,yutnori,catchking,wheel}.h.
+$auctionHouseApply = Join-Path $repo 'server-patches/auctionhouse/Apply-AuctionHousePatch.ps1'
+if ((Test-Path -LiteralPath $auctionHouseApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'ikarus_shop_manager.cpp') -PathType Leaf)) {
+    $auctionHouseResult = & $auctionHouseApply -SourceDir $engineGameSource
+    if ($auctionHouseResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} auction house edit(s).' -f $auctionHouseResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade

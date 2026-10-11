@@ -1,0 +1,62 @@
+[
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "AH_V1 [Autor: Vekirion] (decl)",
+  "old": "#include \"shop.h\"\n",
+  "new": "#include \"shop.h\"\n\n// AH_V1 [Autor: Vekirion] (decl) (server-patches/auctionhouse, Dom Aukcyjny, auction_house.cpp): zlecenie zakupu czeka na wynik kupna.\nvoid AuctionHouse_OnBuyLockSent(DWORD buyerid, DWORD itemid);\nvoid AuctionHouse_OnBuyResult(DWORD buyerid, DWORD itemid, bool success);\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "AH_V1 [Autor: Vekirion] (part sold)",
+  "old": "\t\t\tplayerbot_offline::Complete(buyerid, playerbot_offline::Buy, itemid);\n\t\t\treturn true;\n",
+  "new": "\t\t\tplayerbot_offline::Complete(buyerid, playerbot_offline::Buy, itemid);\n\t\t\tAuctionHouse_OnBuyResult(buyerid, itemid, true); // AH_V1 [Autor: Vekirion] (part sold)\n\t\t\treturn true;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "AH_V1 [Autor: Vekirion] (sold)",
+  "old": "\t\tplayerbot_offline::Complete(buyerid, playerbot_offline::Buy, itemid);\n\t\treturn true;\n\t}\n",
+  "new": "\t\tplayerbot_offline::Complete(buyerid, playerbot_offline::Buy, itemid);\n\t\tAuctionHouse_OnBuyResult(buyerid, itemid, true); // AH_V1 [Autor: Vekirion] (sold)\n\t\treturn true;\n\t}\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "AH_V1 [Autor: Vekirion] (lock sent)",
+  "old": "\t\tplayerbot_offline::Sent(buyer->GetPlayerID(), playerbot_offline::Buy, item->GetID());\n",
+  "new": "\t\tplayerbot_offline::Sent(buyer->GetPlayerID(), playerbot_offline::Buy, item->GetID());\n\t\tAuctionHouse_OnBuyLockSent(buyer->GetPlayerID(), item->GetID()); // AH_V1 [Autor: Vekirion] (lock sent)\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "AH_V1 [Autor: Vekirion] (refused)",
+  "old": "\t\tif (ownerid == 0) { playerbot_offline::Complete(buyerid, playerbot_offline::Buy, itemid, false); return false; }\n",
+  "new": "\t\tif (ownerid == 0) { playerbot_offline::Complete(buyerid, playerbot_offline::Buy, itemid, false); AuctionHouse_OnBuyResult(buyerid, itemid, false); /* AH_V1 [Autor: Vekirion] (refused) */ return false; }\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "AH_V1 [Autor: Vekirion] (failed)",
+  "old": "\t\t\tif (!success) playerbot_offline::Complete(buyerid, playerbot_offline::Buy, itemid, false);\n\t\t\treturn success;\n",
+  "new": "\t\t\tif (!success) playerbot_offline::Complete(buyerid, playerbot_offline::Buy, itemid, false);\n\t\t\tif (!success) AuctionHouse_OnBuyResult(buyerid, itemid, false); // AH_V1 [Autor: Vekirion] (failed)\n\t\t\treturn success;\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "AH_V1 [Autor: Vekirion] (declare)",
+  "old": "ACMD(do_flea_filter);\n#endif\n",
+  "new": "ACMD(do_flea_filter);\n// Dom Aukcyjny (AH_V1 [Autor: Vekirion] (declare), server-patches/auctionhouse, auction_house.cpp).\nACMD(do_ah_search);\nACMD(do_ah_names);\nACMD(do_ah_bonus);\nACMD(do_ah_buy);\nACMD(do_ah_cart_add);\nACMD(do_ah_cart_buy);\nACMD(do_ah_bulk_quote);\nACMD(do_ah_bulk_buy);\nACMD(do_ah_cancel);\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "AH_V1 [Autor: Vekirion] (table)",
+  "old": "\t{ \"flea_filter\",\tdo_flea_filter,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n#endif\n",
+  "new": "\t{ \"flea_filter\",\tdo_flea_filter,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// AH_V1 [Autor: Vekirion] (table)\n\t{ \"ah_search\",\tdo_ah_search,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_names\",\tdo_ah_names,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_bonus\",\tdo_ah_bonus,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_buy\",\tdo_ah_buy,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_cart_add\",\tdo_ah_cart_add,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_cart_buy\",\tdo_ah_cart_buy,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_bulk_quote\",\tdo_ah_bulk_quote,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_bulk_buy\",\tdo_ah_bulk_buy,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_cancel\",\tdo_ah_cancel,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_PLAY_COUNT_V1 [Autor: Vekirion] (declare)",
+  "old": "ACMD(do_wheel);\n",
+  "new": "ACMD(do_wheel);\n// MT2009_PLUS_PLAY_COUNT_V1 [Autor: Vekirion] (declare): \"/minigame_count <rumi|yutnori> <n>\", the mini game\n// windows' \"Liczba gier\" row (playerbot_yutnori.h, MinigameCountCommand)\nvoid MinigameCountCommand(LPCHARACTER ch, const char* argument);\nACMD(do_minigame_count)\n{\n\tif (ch)\n\t\tMinigameCountCommand(ch, argument);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_PLAY_COUNT_V1 [Autor: Vekirion] (table)",
+  "old": "\t{ \"kolo\",\tdo_wheel,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"kolo\",\tdo_wheel,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t// MT2009_PLUS_PLAY_COUNT_V1 [Autor: Vekirion] (table)\n\t{ \"minigame_count\",\tdo_minigame_count,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ }
+]
