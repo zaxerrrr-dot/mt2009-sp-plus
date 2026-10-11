@@ -1096,6 +1096,17 @@ if ((Test-Path -LiteralPath $fleaLimitApply -PathType Leaf) -and
         Write-Host ('Applied {0} shop search bound edit(s).' -f $fleaLimitResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The way out of a guild war arena (server-patches/guildwarexit, MT2009_PLUS_GUILD_WAR_EXIT_V1,
+# Autor: Krystian): char.cpp ExitToSavedLocation / leave_guild_war_event, war_map.cpp.
+$guildWarExitApply = Join-Path $repo 'server-patches/guildwarexit/Apply-GuildWarExitPatch.ps1'
+if ((Test-Path -LiteralPath $guildWarExitApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'war_map.cpp') -PathType Leaf)) {
+    $guildWarExitResult = & $guildWarExitApply -SourceDir $engineGameSource
+    if ($guildWarExitResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} guild war exit edit(s).' -f $guildWarExitResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade

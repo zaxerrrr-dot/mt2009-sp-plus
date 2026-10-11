@@ -1,0 +1,20 @@
+[
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_EXIT_V1 (exit)",
+  "old": "void CHARACTER::ExitToSavedLocation()\n{\n\tsys_log (0, \"ExitToSavedLocation\");\n\tWarpSet(m_posWarp.x, m_posWarp.y, m_lWarpMapIndex);\n\n\tm_posExit.x = m_posExit.y = m_posExit.z = 0;\n\tm_lExitMapIndex = 0;\n}",
+  "new": "// MT2009_PLUS_GUILD_WAR_EXIT_V1 (exit) (server-patches/guildwarexit, Autor: Krystian): the end of a guild war\n// sends everybody on the arena back where they came from - the exit position, else the position the war's\n// quest saved (guild_war_join.last_x/y), else home - instead of the warp position, which left them on the arena.\nvoid CHARACTER::ExitToSavedLocation()\n{\n\tsys_log(0, \"ExitToSavedLocation %s pos=(%ld, %ld) map=%ld\", GetName(), m_posExit.x, m_posExit.y, m_lExitMapIndex);\n\tbool bWarped = false;\n\tif (m_posExit.x != 0 && m_posExit.y != 0)\n\t\tbWarped = WarpSet(m_posExit.x, m_posExit.y, m_lExitMapIndex);\n\n\tif (!bWarped)\n\t{\n\t\tconst int saved_x = GetQuestFlag(\"guild_war_join.last_x\");\n\t\tconst int saved_y = GetQuestFlag(\"guild_war_join.last_y\");\n\t\tif (saved_x != 0 && saved_y != 0)\n\t\t\tbWarped = WarpSet(saved_x * 100, saved_y * 100);\n\t}\n\n\tif (!bWarped)\n\t\tGoHome();\n\n\tm_posExit.x = m_posExit.y = m_posExit.z = 0;\n\tm_lExitMapIndex = 0;\n}"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_EXIT_V1 (leave)",
+  "old": "\t\t\tif (saved_x == 0 and saved_y == 0)\n\t\t\t{\n\t\t\t\tBYTE bEmpire = ch->GetEmpire();\n\t\t\t\tch->WarpSet(g_start_position[bEmpire][0], g_start_position[bEmpire][1]);\n\t\t\t}",
+  "new": "\t\t\tif (saved_x == 0 and saved_y == 0)\n\t\t\t{\n\t\t\t\t// MT2009_PLUS_GUILD_WAR_EXIT_V1 (leave): no saved spot - the exit position or home.\n\t\t\t\tch->ExitToSavedLocation();\n\t\t\t}"
+ },
+ {
+  "file": "war_map.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_EXIT_V1 (close)",
+  "old": "\t\tpMap->ExitAll();\n\t\treturn PASSES_PER_SEC(5);",
+  "new": "\t\tpMap->ExitAll();\n\t\treturn PASSES_PER_SEC(10);\t// MT2009_PLUS_GUILD_WAR_EXIT_V1 (close): the warps out get their time before the arena closes"
+ }
+]
