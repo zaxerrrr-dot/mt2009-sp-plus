@@ -1,0 +1,32 @@
+[
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_COMBO_SAVE_V1 (decl)",
+  "old": "\t\tBYTE GetComboIndex() const;\n",
+  "new": "\t\tBYTE GetComboIndex() const;\n\t\t// MT2009_PLUS_COMBO_SAVE_V1 (decl) (server-patches/combosave, Autor: Mur4s): Kombinacja przezywa teleport/zmiane CH - stan w special flagu \"combo.on\".\n\t\tvoid RestoreComboFromFlag(bool bEnterGame = false);\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_COMBO_SAVE_V1 (restore)",
+  "old": "void CHARACTER::IncreaseComboHackCount(int k)\n",
+  "new": "// MT2009_PLUS_COMBO_SAVE_V1 (restore) (server-patches/combosave, Autor: Mur4s): wolane z OnSetSpecialFlag (flagi z DB) i z\n// Entergame - flagi moga przyjsc przed albo po wejsciu do gry, wiec \"combo\" wysylamy tylko w PHASE_GAME.\nvoid CHARACTER::RestoreComboFromFlag(bool bEnterGame)\n{\n\tif (!IsPC())\n\t\treturn;\n\n\tBYTE idx = GetSpecialFlag(\"combo.on\") > 0 ? (BYTE)GetSkillLevel(SKILL_COMBO) : 0;\n\t// Bez powtorki przy zwyklym przelaczeniu (UseSkill sam wysyla \"combo\");\n\t// w Entergame wysylamy zawsze, bo klient po teleporcie ma combo wylaczone.\n\tif (idx == 0 || (idx == m_bComboIndex && !bEnterGame))\n\t\treturn;\n\n\tm_bComboIndex = idx;\n\n\tif (GetDesc() && GetDesc()->IsPhase(PHASE_GAME))\n\t{\n\t\tChatPacket(CHAT_TYPE_COMMAND, \"combo %d\", m_bComboIndex);\n\t\tsys_log(0, \"COMBO_RESTORE: %s idx %d\", GetName(), m_bComboIndex);\n\t}\n}\n\nvoid CHARACTER::IncreaseComboHackCount(int k)\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_COMBO_SAVE_V1 (flag)",
+  "old": "\t\tSetHorseInventory(value);\n\t}\n}\n",
+  "new": "\t\tSetHorseInventory(value);\n\t}\n\telse if (flag == \"combo.on\")\t// MT2009_PLUS_COMBO_SAVE_V1 (flag)\n\t{\n\t\tRestoreComboFromFlag();\n\t}\n}\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_COMBO_SAVE_V1 (save)",
+  "old": "\t\tChatPacket(CHAT_TYPE_COMMAND, \"combo %d\", m_bComboIndex);\n\t\treturn true;\n",
+  "new": "\t\tChatPacket(CHAT_TYPE_COMMAND, \"combo %d\", m_bComboIndex);\n\t\t// MT2009_PLUS_COMBO_SAVE_V1 (save): zapis do DB, zeby Kombinacja nie gasla po teleporcie/zmianie CH.\n\t\tSetSpecialFlag(\"combo.on\", m_bComboIndex ? 1 : 0, false);\n\t\treturn true;\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_COMBO_SAVE_V1 (enter)",
+  "old": "\t\tch->playerData->SendSpecialFlagsToClient(ch);\n",
+  "new": "\t\tch->playerData->SendSpecialFlagsToClient(ch);\n\n\t// MT2009_PLUS_COMBO_SAVE_V1 (enter): Kombinacja wlaczona przed teleportem/zmiana CH (flagi zaladowane przed Entergame).\n\tch->RestoreComboFromFlag(true);\n"
+ }
+]

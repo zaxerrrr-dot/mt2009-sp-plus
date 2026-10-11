@@ -1107,6 +1107,17 @@ if ((Test-Path -LiteralPath $guildWarExitApply -PathType Leaf) -and
         Write-Host ('Applied {0} guild war exit edit(s).' -f $guildWarExitResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The Combo skill remembered over a relog, a teleport and a channel change
+# (server-patches/combosave, MT2009_PLUS_COMBO_SAVE_V1, Autor: Mur4s).
+$comboSaveApply = Join-Path $repo 'server-patches/combosave/Apply-ComboSavePatch.ps1'
+if ((Test-Path -LiteralPath $comboSaveApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'input_login.cpp') -PathType Leaf)) {
+    $comboSaveResult = & $comboSaveApply -SourceDir $engineGameSource
+    if ($comboSaveResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} combo save edit(s).' -f $comboSaveResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
