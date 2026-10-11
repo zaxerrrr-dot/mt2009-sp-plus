@@ -29,6 +29,11 @@
 #    are locale/pl/yutnori_event_desc.txt.
 #  - the hub (uiingameevent.py) opens it: Register() from game.py.
 #
+#  - MT2009_PLUS_PLAY_COUNT_V1 [Autor: Vekirion]: the waiting page's "Liczba gier" row (1, 2, 5,
+#    10, 25, 50; uiminigameutil.PlayCountDock). One game is played; before the
+#    start packet the server is told "/minigame_count yutnori <n>" and takes n
+#    boards and n x the Yang, and gives the reward of n games.
+#
 # Python 2.7. CP1250 escapes for the Polish letters.
 
 import ui
@@ -84,7 +89,7 @@ class L:
 	COM_WIN = 'Czasami si\xea przegrywa, a czasami wygrywaj\xb9 inni.'
 	PC_WIN = 'I am the czempion! Punktacja: %d'
 	RETHROW_POPUP = 'Ale fart! Mo\xbfesz rzuci\xe6 jeszcze raz.'
-	START_QUESTION = 'Aby zagra\xe6 w Yutnori, potrzebujesz %d Yang i %d plansz\xea do Yutnori. Chcesz zagra\xe6 teraz?'
+	START_QUESTION = 'Aby zagra\xe6 w Yutnori, potrzebujesz %d Yang oraz plansz do Yutnori: %d. Chcesz zagra\xe6 teraz?'
 	NOT_ENOUGH = 'Masz za ma\xb3o przedmiot\xf3w lub pieni\xeadzy, aby gra\xe6.'
 	NO_MORE_GAIN = 'Masz ju\xbf maksymaln\xb9 liczb\xea plansz do Yutnori.'
 	NEEDS_CLIENT = 'Yutnori: ta gra wymaga nowego klienta (aktualizacja exe).'
@@ -429,6 +434,11 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 		self.yut_board_text = None
 		self.tooltip_item = None
 
+		# play N times: the count chosen, and the count of the game being started
+		self.play_count = 1
+		self.started_count = 1
+		self.play_dock = None
+
 		self.__LoadWindow()
 
 	def __del__(self):
@@ -474,6 +484,8 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 			self.yut_board_slot.SetOverOutItemEvent(ui.__mem_func__(self.__SlotOverOutItem))
 			self.yut_board_text = self.GetChild("yut_board_count_text")
 			self.yut_board_text.SetText("%d/%d" % (0, YUT_BOARD_COUNT_MAX))
+
+			self.play_dock = uiminigameutil.PlayCountDock(self, ui.__mem_func__(self.__OnPlayCount))
 		except:
 			uiminigameutil.LoadError("MiniGameYutnoriWaitingPage.LoadWindow.BindObject")
 
@@ -483,11 +495,17 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 		self.Hide()
 		self.CloseStartDlg()
 
+		if self.play_dock:
+			self.play_dock.Close()
+
 		if self.descriptionBox:
 			self.descriptionBox.Hide()
 
 	def Destroy(self):
 		self.CloseStartDlg()
+		if self.play_dock:
+			self.play_dock.Destroy()
+		self.play_dock = None
 		if self.descriptionBox:
 			self.descriptionBox.Destroy()
 		self.ClearDictionary()
@@ -512,14 +530,31 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 		self.Close()
 		return True
 
+	def __OnPlayCount(self, count):
+		self.play_count = count
+		self.CloseStartDlg()
+
+	def GetPlayCount(self):
+		return self.play_count
+
+	def TakeStartedCount(self):
+		"""The count of the game the server has just started (1 when the start
+		did not come from this page's Start)."""
+		count = self.started_count
+		self.started_count = 1
+		return count
+
 	def __ClickStartButton(self):
-		if self.yut_board_count == 0 or player.GetElk() < YUTNORI_START_GOLD:
+		# The server checks it all again; this only saves a useless packet.
+		count = self.play_count
+		gold = YUTNORI_START_GOLD * count
+		if self.yut_board_count < count or player.GetElk() < gold:
 			chat.AppendChat(chat.CHAT_TYPE_INFO, L.NOT_ENOUGH)
 			return
 
 		self.CloseStartDlg()
 		self.start_question_dialog = uiCommon.QuestionDialog()
-		self.start_question_dialog.SetText(L.START_QUESTION % (YUTNORI_START_GOLD, 1))
+		self.start_question_dialog.SetText(L.START_QUESTION % (gold, count))
 		self.start_question_dialog.SetAcceptEvent(ui.__mem_func__(self.__StartAccept))
 		self.start_question_dialog.SetCancelEvent(ui.__mem_func__(self.__StartCancel))
 		self.start_question_dialog.Open()
@@ -530,6 +565,8 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 			self.start_question_dialog = None
 
 	def __StartAccept(self):
+		self.started_count = self.play_count
+		uiminigameutil.SendPlayCount('yutnori', self.started_count)
 		net.SendMiniGameYutnoriStart()
 		self.CloseStartDlg()
 
@@ -543,6 +580,9 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 		self.is_data_requested = True
 
 		ui.ScriptWindow.Show(self)
+
+		if self.play_dock:
+			self.play_dock.Open(self.play_count)
 
 		if self.descriptionBox:
 			self.descriptionBox.LoadLocaleFile(DESC_FILE)
@@ -585,8 +625,8 @@ class YutnoriWaitingPage(ui.ScriptWindow):
 	def SetItemToolTip(self, tooltip):
 		self.tooltip_item = tooltip
 
-	def DecreaseMiniGameYutBoardCount(self):
-		self.yut_board_count = max(0, self.yut_board_count - 1)
+	def DecreaseMiniGameYutBoardCount(self, count = 1):
+		self.yut_board_count = max(0, self.yut_board_count - count)
 		self.yut_board_text.SetText("%d/%d" % (self.yut_board_count, YUT_BOARD_COUNT_MAX))
 
 	def YutnoriFlagProcess(self, process_type, data):
@@ -2234,7 +2274,9 @@ class MiniGameYutnori(ui.Window):
 			self.state = STATE_PLAY
 
 			if self.waiting_page:
-				self.waiting_page.DecreaseMiniGameYutBoardCount()
+				count = self.waiting_page.TakeStartedCount()
+				self.waiting_page.DecreaseMiniGameYutBoardCount(count)
+				uiminigameutil.NoticePlayCount(count)
 				self.waiting_page.Close()
 
 			if self.game_page:

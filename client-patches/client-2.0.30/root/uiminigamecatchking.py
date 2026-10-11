@@ -22,6 +22,11 @@
 #  - the counts are asked for whenever the window opens (cards from kills
 #    keep coming while it is shut), and once at login so the server knows
 #    this exe can take the game's packets.
+#  - MT2009_PLUS_PLAY_COUNT_V1 [Autor: Vekirion]: the stake ("Stawka") is the number of games:
+#    the waiting page's "Liczba gier" row (1, 2, 5, 10, 25, 50;
+#    uiminigameutil.PlayCountDock) sets it, the arrows still move it by one,
+#    up to CATCHKING_CHALLENGE_MAX = 50 (the server's limit must be the same).
+#    It goes in the start packet as before: n decks, n x the Yang, n Loots.
 # Python 2.7, CP1250 escapes for the Polish letters.
 
 import app
@@ -85,7 +90,7 @@ LOW_TOTAL_SCORE = 400
 MID_TOTAL_SCORE = 550
 
 CATCHKING_START_YANG = 30000
-CATCHKING_CHALLENGE_MAX = 5
+CATCHKING_CHALLENGE_MAX = 50	# was 5; playerbot_catchking.h must allow as many
 CATCHKING_CARD_PIECE_COUNT_MAX = 25
 CATCHKING_CARD_COUNT_MAX = 999
 
@@ -304,6 +309,8 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 
 		self.tooltip_item = None
 
+		self.play_dock = None
+
 		self.__LoadWindow()
 
 	def __del__(self):
@@ -370,6 +377,8 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 			self.card_pack_slot.SetOverOutItemEvent(ui.__mem_func__(self.__SlotOverOutItem))
 			self.card_pack_text = self.GetChild("challenge_pack_item_count_text")
 			self.card_pack_text.SetText("%d/%d" % (0, CATCHKING_CARD_COUNT_MAX))
+
+			self.play_dock = uiminigameutil.PlayCountDock(self, ui.__mem_func__(self.__OnPlayCount))
 		except:
 			uiminigameutil.LoadError("CatchKingWaitingPage.LoadWindow.BindObject")
 
@@ -383,6 +392,9 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 		RequestQuestFlag()
 
 		ui.ScriptWindow.Show(self)
+
+		if self.play_dock:
+			self.play_dock.Open(self.cur_challenge_count)
 
 		if self.description_box:
 			self.description_box.LoadFile(DescFile())
@@ -406,6 +418,9 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 
 		self.CloseStartDlg()
 
+		if self.play_dock:
+			self.play_dock.Close()
+
 		if self.description_box:
 			self.description_box.Hide()
 
@@ -416,6 +431,9 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 
 	def Destroy(self):
 		self.CloseStartDlg()
+		if self.play_dock:
+			self.play_dock.Destroy()
+		self.play_dock = None
 		if self.description_box:
 			self.description_box.Destroy()
 		self.ClearDictionary()
@@ -467,14 +485,25 @@ class CatchKingWaitingPage(ui.ScriptWindow):
 			return
 
 		self.cur_challenge_count += 1
-		self.challenge_item_count_text.SetText(str(self.cur_challenge_count))
+		self.__RefreshChallenge()
 
 	def __ClickDownArrowButton(self):
 		if self.cur_challenge_count <= 1:
 			return
 
 		self.cur_challenge_count -= 1
+		self.__RefreshChallenge()
+
+	def __RefreshChallenge(self):
 		self.challenge_item_count_text.SetText(str(self.cur_challenge_count))
+		if self.play_dock:
+			self.play_dock.SetCount(self.cur_challenge_count)
+		self.CloseStartDlg()
+
+	def __OnPlayCount(self, count):
+		# the "Liczba gier" row: the stake at once
+		self.cur_challenge_count = max(1, min(CATCHKING_CHALLENGE_MAX, count))
+		self.__RefreshChallenge()
 
 	def __ClickStartButton(self):
 		# The server checks it all again; this only saves a useless packet.

@@ -21,6 +21,11 @@
 # box of its own. The texts are Polish (CP1250 escapes), a localeInfo key of
 # Owsap's name wins when the locale has it.
 #
+# MT2009_PLUS_PLAY_COUNT_V1 [Autor: Vekirion]: the waiting page's "Liczba gier" row (1, 2, 5, 10,
+# 25, 50; uiminigameutil.PlayCountDock). One game is played; before the start
+# packet the server is told "/minigame_count rumi <n>" and takes n card sets
+# and n x the Yang, and gives the reward of n games.
+#
 # Python 2.7 as the client has it.
 
 import app
@@ -134,7 +139,7 @@ TEXT_RBUTTON = _T('MINI_GAME_RUMI_RBUTTON_DESC', 'Usu\xf1 kart\xea klikni\xeacie
 QUESTION_DISCARD = _T('MINI_GAME_RUMI_DISCARD_QUESTION', 'Na pewno chcesz wyrzuci\xe6 t\xea kart\xea?')
 QUESTION_EXIT_1 = 'Chcesz zako\xf1czy\xe6 gr\xea i otrzyma\xe6 wygran\xb9?'
 QUESTION_EXIT_2 = 'Twoje punkty i pozosta\xb3e karty zostan\xb9 zresetowane.'
-QUESTION_START_1 = 'Gra kosztuje %s Yang i %d zestaw kart.'
+QUESTION_START_1 = 'Gra kosztuje %s Yang oraz zestawy kart: %d.'
 QUESTION_START_2 = 'Chcesz zacz\xb9\xe6 gr\xea?'
 MSG_NOT_ENOUGH = _T('OKEY_EVENT_MESSAGE_NOT_ENOUGHT_ITEM', 'Masz za ma\xb3o przedmiot\xf3w lub pieni\xeadzy, aby gra\xe6.')
 MSG_PIECE_GAIN = _T('OKEY_EVENT_MESSAGE_CARD_PEICE_GAIN', 'Otrzymujesz karty Okey.')
@@ -394,6 +399,11 @@ class RumiWaitingPage(ui.ScriptWindow):
 
 		self.is_data_requested = False
 
+		# play N times: the count chosen, and the count of the game being started
+		self.play_count = 1
+		self.started_count = 1
+		self.play_dock = None
+
 		self.rumi_card_piece_count = 0
 		self.rumi_card_piece_slot = None
 		self.rumi_card_piece_count_text = None
@@ -453,6 +463,8 @@ class RumiWaitingPage(ui.ScriptWindow):
 			self.rumi_card_slot.SetOverOutItemEvent(ui.__mem_func__(self.__SlotOverOutItem))
 			self.rumi_card_count_text = self.GetChild("rumi_card_count_text")
 			self.__RefreshCounters()
+
+			self.play_dock = uiminigameutil.PlayCountDock(self, ui.__mem_func__(self.__OnPlayCount))
 		except:
 			uiminigameutil.LoadError("MiniGameRumiWaitingPage.LoadWindow.BindObject")
 
@@ -463,6 +475,9 @@ class RumiWaitingPage(ui.ScriptWindow):
 
 		self.CloseStartDlg()
 
+		if self.play_dock:
+			self.play_dock.Close()
+
 		if self.description_box:
 			self.description_box.Hide()
 		_HideToolTip()
@@ -472,6 +487,10 @@ class RumiWaitingPage(ui.ScriptWindow):
 		if self.description_box:
 			self.description_box.Destroy()
 		self.isLoaded = 0
+
+		if self.play_dock:
+			self.play_dock.Destroy()
+		self.play_dock = None
 
 		self.startButton = None
 		self.desc_board = None
@@ -507,20 +526,37 @@ class RumiWaitingPage(ui.ScriptWindow):
 			else:
 				self.check_image.Show()
 
+	def __OnPlayCount(self, count):
+		self.play_count = count
+		self.CloseStartDlg()
+
+	def GetPlayCount(self):
+		return self.play_count
+
+	def TakeStartedCount(self):
+		"""The count of the game the server has just started (1 when the start
+		did not come from this page's Start)."""
+		count = self.started_count
+		self.started_count = 1
+		return count
+
 	def __ClickStartButton(self):
-		if self.rumi_card_count == 0 or player.GetElk() < RUMI_START_GOLD:
+		# The server checks it all again; this only saves a useless packet.
+		count = self.play_count
+		gold = RUMI_START_GOLD * count
+		if self.rumi_card_count < count or player.GetElk() < gold:
 			chat.AppendChat(chat.CHAT_TYPE_INFO, MSG_NOT_ENOUGH)
 			return
 
-		if None == self.start_question_dialog:
-			dialog = uiCommon.QuestionDialog2()
-			dialog.SetText1(QUESTION_START_1 % (localeInfo.NumberToString(RUMI_START_GOLD) if hasattr(localeInfo, 'NumberToString') else str(RUMI_START_GOLD), 1))
-			dialog.SetText2(QUESTION_START_2)
-			dialog.SetAcceptEvent(ui.__mem_func__(self.__StartAccept))
-			dialog.SetCancelEvent(ui.__mem_func__(self.__StartCancel))
-			self.start_question_dialog = dialog
-
-		self.start_question_dialog.Open()
+		# a new dialog every time: its text goes with the number of games
+		self.CloseStartDlg()
+		dialog = uiCommon.QuestionDialog2()
+		dialog.SetText1(QUESTION_START_1 % (localeInfo.NumberToString(gold) if hasattr(localeInfo, 'NumberToString') else str(gold), count))
+		dialog.SetText2(QUESTION_START_2)
+		dialog.SetAcceptEvent(ui.__mem_func__(self.__StartAccept))
+		dialog.SetCancelEvent(ui.__mem_func__(self.__StartCancel))
+		dialog.Open()
+		self.start_question_dialog = dialog
 
 	def CloseStartDlg(self):
 		if self.start_question_dialog:
@@ -530,6 +566,8 @@ class RumiWaitingPage(ui.ScriptWindow):
 	def __StartAccept(self):
 		if self.start_question_dialog:
 			self.start_question_dialog.Close()
+		self.started_count = self.play_count
+		uiminigameutil.SendPlayCount('rumi', self.started_count)
 		net.SendMiniGameRumiStart()
 
 	def __StartCancel(self):
@@ -542,6 +580,9 @@ class RumiWaitingPage(ui.ScriptWindow):
 			self.is_data_requested = True
 
 		ui.ScriptWindow.Show(self)
+
+		if self.play_dock:
+			self.play_dock.Open(self.play_count)
 
 		if self.description_box:
 			self.description_box.LoadFile(DescFile())
@@ -578,8 +619,8 @@ class RumiWaitingPage(ui.ScriptWindow):
 		if self.rumi_card_count_text:
 			self.rumi_card_count_text.SetText("%d/%d" % (self.rumi_card_count, RUMI_CARD_COUNT_MAX))
 
-	def DecreaseMiniGameRumiCardCount(self):
-		self.rumi_card_count = max(0, self.rumi_card_count - 1)
+	def DecreaseMiniGameRumiCardCount(self, count = 1):
+		self.rumi_card_count = max(0, self.rumi_card_count - count)
 		self.__RefreshCounters()
 
 	def MiniGameRumiFlagProcess(self, process_type, data):
@@ -617,6 +658,12 @@ class RumiGamePage(ui.ScriptWindow):
 		self.deck_flush_effect = None
 		self.lock = False
 		self.clear_field_after_moves = False
+		# MT2009_PLUS_RUMI_LOCK_FIX_V1 [Autor: Vekirion]: the cards are locked for a score only until
+		# its text effect ends (score_lock); the side effects play on for about
+		# a second more and no longer hold the lock. A click made while the
+		# cards are locked is kept (the last one) and done when they are free.
+		self.score_lock = False
+		self.pending_click = None
 
 		self.move_img = None
 		self.deck_cur_index = DECK_CARD_INDEX_MAX - 1
@@ -787,6 +834,26 @@ class RumiGamePage(ui.ScriptWindow):
 			self.CardMoveStartEvent()
 
 		self.__LockFallback()
+		self.__RunPendingClick()
+
+	# MT2009_PLUS_RUMI_LOCK_FIX_V1 [Autor: Vekirion]
+	PENDING_CLICK_TIME = 1.5
+
+	def __KeepClick(self, pos, index, left):
+		self.pending_click = (pos, index, left, app.GetTime())
+
+	def __RunPendingClick(self):
+		if self.lock or not self.pending_click:
+			return
+		(pos, index, left, since) = self.pending_click
+		self.pending_click = None
+		if app.GetTime() - since > self.PENDING_CLICK_TIME:
+			return
+		if pos == DECK_CARD:
+			self.LButtonClickDeck()
+		elif pos in (HAND_CARD, FIELD_CARD):
+			if 0 <= index < len(self.cards[pos]) and self.cards[pos][index].HasCard():
+				self.OnCardClick(pos, index, left)
 
 	def __LockFallback(self):
 		# MT2009: never leave the cards locked. The moves and the score
@@ -808,11 +875,12 @@ class RumiGamePage(ui.ScriptWindow):
 			self.move_img.moving = False
 		while len(self.card_move_queue) > 0:
 			self.CardMoveEndEvnet()
-		if self.__EffectShown():
+		if self.score_lock or self.__EffectShown():
 			self.__ClearScoreCompletionEffect()
 			self.__SetScore(0)
 			self.__ClearFieldCardSlot()
 		self.clear_field_after_moves = False
+		self.score_lock = False
 		self.lock = False
 
 	def CardMoveStartEvent(self):
@@ -851,7 +919,9 @@ class RumiGamePage(ui.ScriptWindow):
 			if self.clear_field_after_moves:
 				self.clear_field_after_moves = False
 				self.__ClearFieldCardSlot()
-			if not self.__EffectShown():
+			# MT2009_PLUS_RUMI_LOCK_FIX_V1 [Autor: Vekirion]: was "not self.__EffectShown()" - a
+			# draw right after a score left the cards locked until LOCK_TIMEOUT
+			if not self.score_lock:
 				self.lock = False
 
 	def __EffectShown(self):
@@ -872,6 +942,8 @@ class RumiGamePage(ui.ScriptWindow):
 		self.__SetTotalScore(0)
 
 		self.lock = False
+		self.score_lock = False
+		self.pending_click = None
 		self.clear_field_after_moves = False
 
 		self.confirm_window_on = True
@@ -932,6 +1004,7 @@ class RumiGamePage(ui.ScriptWindow):
 
 	def RumiIncreaseScore(self, score, total_score):
 		self.lock = True
+		self.score_lock = True
 
 		self.__SetScore(score)
 		self.__SetTotalScore(total_score)
@@ -969,10 +1042,10 @@ class RumiGamePage(ui.ScriptWindow):
 		elif HAND_CARD == src_pos and NONE_POS == dst_pos:
 			self.hand_card_cnt -= 1
 			self.cards[src_pos][src_index].Clear()
-			if len(self.card_move_queue) == 0 and not self.__EffectShown():
+			if len(self.card_move_queue) == 0 and not self.score_lock:	# MT2009_PLUS_RUMI_LOCK_FIX_V1 [Autor: Vekirion]
 				self.lock = False
 
-		elif len(self.card_move_queue) == 0:
+		elif len(self.card_move_queue) == 0 and not self.score_lock:
 			self.lock = False
 
 	def __IsExistSlotIndex(self, card_pos, slot_index, color, number):
@@ -1109,6 +1182,7 @@ class RumiGamePage(ui.ScriptWindow):
 
 	def LButtonClickDeck(self):
 		if self.lock:
+			self.__KeepClick(DECK_CARD, 0, True)
 			return
 		if self.__CloseDiscardConfirmDialog():
 			return
@@ -1116,6 +1190,7 @@ class RumiGamePage(ui.ScriptWindow):
 
 	def LButtonClickHand(self, index):
 		if self.lock:
+			self.__KeepClick(HAND_CARD, index, True)
 			return
 		if self.__CloseDiscardConfirmDialog():
 			return
@@ -1123,6 +1198,7 @@ class RumiGamePage(ui.ScriptWindow):
 
 	def RButtonClickHand(self, index):
 		if self.lock:
+			self.__KeepClick(HAND_CARD, index, False)
 			return
 		if self.confirm_window_on:
 			self.__DiscardConfirmDialog(index)
@@ -1131,6 +1207,7 @@ class RumiGamePage(ui.ScriptWindow):
 
 	def LButtonClickField(self, index):
 		if self.lock:
+			self.__KeepClick(FIELD_CARD, index, True)
 			return
 		if self.__CloseDiscardConfirmDialog():
 			return
@@ -1141,6 +1218,7 @@ class RumiGamePage(ui.ScriptWindow):
 			self.score_text_effect.Hide()
 
 		self.__SetScore(0)
+		self.score_lock = False
 		# The third card may still be on its way to the field: clear it there.
 		if len(self.card_move_queue) > 0:
 			self.clear_field_after_moves = True
@@ -1246,7 +1324,9 @@ class MiniGameRumi(ui.Window):
 
 	def GameStart(self):
 		if self.waiting_page:
-			self.waiting_page.DecreaseMiniGameRumiCardCount()
+			count = self.waiting_page.TakeStartedCount()
+			self.waiting_page.DecreaseMiniGameRumiCardCount(count)
+			uiminigameutil.NoticePlayCount(count)
 		if self.cur_page:
 			self.cur_page.Close()
 

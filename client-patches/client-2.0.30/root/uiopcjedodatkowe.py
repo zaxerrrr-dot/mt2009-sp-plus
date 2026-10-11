@@ -57,7 +57,21 @@ OPTIONS = (
 	("killsound", "D\x9fwi\xeaki zab\xf3jstw (boss, metin, gracz)", lambda: True),
 	# MT2009_PLUS_SHOP_CHEAP_MARK_V1: the cheap offers' mark in the offline shops (offlineshopguest.py).
 	("shopcheap_off", "Nie pod\x9cwietlaj tanich ofert w sklepikach", lambda: True),
+	# AH_V1 [Autor: Vekirion]: Dom Aukcyjny (uiauctionhouse.py) - podpowiedzi nazw: wylaczone = tylko przedmioty
+	# aktualnie wystawione (serwer, z filtrami), wlaczone = wszystkie nazwy z klienta.
+	("ah_allnames", "Podpowiadaj wszystkie nazwy przedmiot\xf3w", lambda: True),
+	# bialy zamiast kremowego koloru napisow (dawny przycisk "Aa" w oknie)
+	("ah_white", "Bia\xb3e napisy", lambda: True),
+	# wylaczone = od najnizszej ceny za sztuke, wlaczone = od najnizszej ceny calej oferty
+	("ah_sorttotal", "Sortuj po cenie ca\xb3ej oferty", lambda: True),
 )
+# AH_V1 [Autor: Vekirion]: opcje zebrane pod rozwijanym naglowkiem (nazwa, klucze opcji). Zwiniete,
+# dopoki gracz nie kliknie naglowka; stan trzyma sie do zamkniecia klienta.
+GROUPS = (
+	("Dom Aukcyjny", ("ah_allnames", "ah_white", "ah_sorttotal")),
+)
+_groupOpen = {}
+
 PARTS = (
 	("trees", "PART_TREE"),
 	("objects", "PART_OBJECT"),
@@ -216,6 +230,33 @@ class OptionRow(ui.Window):
 		return True
 
 
+class GroupRow(ui.Window):
+	# AH_V1 [Autor: Vekirion]: naglowek rozwijanej grupy opcji; klik zwija i rozwija
+	def __init__(self, owner, name):
+		ui.Window.__init__(self)
+		self.owner = proxy(owner)
+		self.name = name
+		label = ui.TextLine()
+		label.SetParent(self)
+		label.AddFlag("not_pick")
+		label.SetPosition(0, 1)
+		label.SetPackedFontColor(0xFFFFD56A)
+		label.SetOutline()
+		label.Show()
+		self.label = label
+		self.SetSize(260, 18)
+
+	def __del__(self):
+		ui.Window.__del__(self)
+
+	def SetOpen(self, opened):
+		self.label.SetText("%s %s" % ("[-]" if opened else "[+]", self.name))
+
+	def OnMouseLeftButtonUp(self):
+		self.owner.ToggleGroup(self.name)
+		return True
+
+
 class ExtraOptionsWindow(ui.BoardWithTitleBar):
 	WIDTH = 305  # MT2009_PLUS_OPTIONS_TABS_V1: was 270; as wide as Opcje Systemowe, under the tab row
 	TOP = 36
@@ -228,17 +269,20 @@ class ExtraOptionsWindow(ui.BoardWithTitleBar):
 		self.AddFlag("float")
 		self.SetTitleName("Opcje dodatkowe")
 		self.SetCloseEvent(ui.__mem_func__(self.Close))
-		y = self.TOP
 		for key, text, available in OPTIONS:
 			if not available():
 				continue
 			row = OptionRow(self, key, text)
 			row.SetParent(self)
-			row.SetPosition(18, y)
-			row.Show()
 			self.rows[key] = row
-			y += self.ROW
-		self.SetSize(self.WIDTH, y + 14)
+		# AH_V1 [Autor: Vekirion]: naglowki grup, w ktorych jest choc jedna dostepna opcja
+		self.groupRows = {}
+		for name, keys in GROUPS:
+			if [key for key in keys if key in self.rows]:
+				row = GroupRow(self, name)
+				row.SetParent(self)
+				self.groupRows[name] = row
+		self.Layout()
 		self.Refresh()
 
 	def __del__(self):
@@ -246,7 +290,48 @@ class ExtraOptionsWindow(ui.BoardWithTitleBar):
 
 	def Destroy(self):
 		self.rows = {}
+		self.groupRows = {}
 		self.Hide()
+
+	# AH_V1 [Autor: Vekirion]: zwykle opcje po kolei, pod nimi grupy: naglowek, a pod rozwinietym
+	# jego opcje z wcieciem. Okno ma wysokosc tego, co widac.
+	def Layout(self):
+		grouped = {}
+		for name, keys in GROUPS:
+			for key in keys:
+				grouped[key] = name
+		y = self.TOP
+		for key, text, available in OPTIONS:
+			row = self.rows.get(key)
+			if row is None or key in grouped:
+				continue
+			row.SetPosition(18, y)
+			row.Show()
+			y += self.ROW
+		for name, keys in GROUPS:
+			header = self.groupRows.get(name)
+			if header is None:
+				continue
+			opened = bool(_groupOpen.get(name))
+			header.SetPosition(18, y)
+			header.SetOpen(opened)
+			header.Show()
+			y += self.ROW
+			for key in keys:
+				row = self.rows.get(key)
+				if row is None:
+					continue
+				if opened:
+					row.SetPosition(32, y)
+					row.Show()
+					y += self.ROW
+				else:
+					row.Hide()
+		self.SetSize(self.WIDTH, y + 14)
+
+	def ToggleGroup(self, name):
+		_groupOpen[name] = not _groupOpen.get(name)
+		self.Layout()
 
 	def Refresh(self):
 		s = Settings()

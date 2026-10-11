@@ -234,7 +234,7 @@ def FormatPriceLines(quote, priceRange, sales):
 
 def NoAnswerLines():
 	return (T("Serwer nie podal cen tego przedmiotu.", "The server sent no prices for this item."),
-		T("Dom Towarowy moze byc wylaczony.", "The Dom Towarowy may be switched off."), "", "")
+		T("Dom Aukcyjny moze byc wylaczony.", "The Auction House may be switched off."), "", "")
 
 
 # ---- the Ceny window's place and whether it opens by itself ----

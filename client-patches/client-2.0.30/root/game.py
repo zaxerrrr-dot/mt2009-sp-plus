@@ -3178,6 +3178,17 @@ class GameWindow(ui.ScriptWindow):
 			"FleaMarketStackUpdate"	: self.FleaMarketStackUpdate,
 			"FleaPriceRange"		: self.FleaPriceRange,
 			"FleaPriceSales"		: self.FleaPriceSales,
+			# AH_V1 [Autor: Vekirion]: Dom Aukcyjny (uiauctionhouse.py)
+			"AHSearch"				: self.AHSearch,
+			"AHBusy"				: self.AHBusy,
+			"AHNames"				: self.AHNames,
+			"AHBonusBegin"			: self.AHBonusBegin,
+			"AHBonus"				: self.AHBonus,
+			"AHBonusEnd"			: self.AHBonusEnd,
+			"AHBuyResult"			: self.AHBuyResult,
+			"AHJobDone"				: self.AHJobDone,
+			"AHJobRefused"			: self.AHJobRefused,
+			"AHBulkQuote"			: self.AHBulkQuote,
 			"ShowMeMallPassword"	: self.AskMallPassword,
 			"item_mall"				: self.__ItemMall_Open,
 			# END_OF_ITEM_MALL
@@ -4215,6 +4226,45 @@ class GameWindow(ui.ScriptWindow):
 		if self.interface:
 			self.interface.fleaMarket.UpdateStackOffer(
 				int(ownerID), int(itemID), int(remainingCount), int(remainingYang), int(remainingCheque))
+			# AH_V1 [Autor: Vekirion]: to samo dla Domu Aukcyjnego
+			self.interface.auctionHouse.UpdateStackOffer(
+				int(ownerID), int(itemID), int(remainingCount), int(remainingYang), int(remainingCheque))
+
+	# AH_V1 [Autor: Vekirion]: komendy serwera dla Domu Aukcyjnego (auction_house.cpp -> uiauctionhouse.py).
+	# Kazda ma jawna liczbe argumentow, bo tyle ich przepuszcza stringCommander.
+	def __AHCommand(self, name, *args):
+		if self.interface and self.interface.auctionHouse:
+			self.interface.auctionHouse.OnServerCommand(name, args)
+
+	def AHSearch(self, request, page, pageCount, total, vnum, socket0):
+		self.__AHCommand("AHSearch", request, page, pageCount, total, vnum, socket0)
+
+	def AHBusy(self, request):
+		self.__AHCommand("AHBusy", request)
+
+	def AHNames(self, request, vnums):
+		self.__AHCommand("AHNames", request, vnums)
+
+	def AHBonusBegin(self):
+		self.__AHCommand("AHBonusBegin")
+
+	def AHBonus(self, rare, applyType, lv1, lv2, lv3, lv4, lv5, s0, s1, s2, s3, s4, s5, s6, s7):
+		self.__AHCommand("AHBonus", rare, applyType, lv1, lv2, lv3, lv4, lv5, s0, s1, s2, s3, s4, s5, s6, s7)
+
+	def AHBonusEnd(self):
+		self.__AHCommand("AHBonusEnd")
+
+	def AHBuyResult(self, owner, itemID, ok, reason, pieces, paid):
+		self.__AHCommand("AHBuyResult", owner, itemID, ok, reason, pieces, paid)
+
+	def AHJobDone(self, kind, okCount, total, pieces, spent, reason):
+		self.__AHCommand("AHJobDone", kind, okCount, total, pieces, spent, reason)
+
+	def AHJobRefused(self, kind, reason):
+		self.__AHCommand("AHJobRefused", kind, reason)
+
+	def AHBulkQuote(self, request, token, pieces, offers, cost, available):
+		self.__AHCommand("AHBulkQuote", request, token, pieces, offers, cost, available)
 
 	def FleaPriceRange(self, requestID, minPrice, maxPrice, *rest):
 		shopautoprice.SetRange(int(requestID), int(minPrice), int(maxPrice))

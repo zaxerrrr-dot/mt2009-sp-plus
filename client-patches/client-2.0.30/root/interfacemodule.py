@@ -74,6 +74,7 @@ import offlineShopManage
 import offlineShopGuest
 import offlineShopHistory
 import offlineShopSearch
+import uiauctionhouse # AH_V1 [Autor: Vekirion] (Dom Aukcyjny)
 import uiItemShop
 
 import uiItemExchange
@@ -4612,6 +4613,11 @@ class Interface(object):
 		self.fleaMarket.SetToolTip(self.tooltipItem)
 		self.fleaMarket.SetGuestBoard(self.offlineShopGuest)
 
+		# AH_V1 [Autor: Vekirion]: Dom Aukcyjny (uiauctionhouse.py) - otwiera sie zamiast Domu Towarowego
+		self.auctionHouse = uiauctionhouse.AuctionHouseWindow()
+		self.auctionHouse.SetToolTip(self.tooltipItem)
+		self.auctionHouse.SetGuestBoard(self.offlineShopGuest)
+
 		self.hyperlinkItemTooltip = uiToolTip.HyperlinkItemToolTip()
 		self.hyperlinkItemTooltip.Hide()
 
@@ -5052,6 +5058,9 @@ class Interface(object):
 		if self.fleaMarket:
 			self.fleaMarket.Destroy()
 
+		if self.auctionHouse: # AH_V1 [Autor: Vekirion]
+			self.auctionHouse.Destroy()
+
 		if self.dlgRefineNew:
 			self.dlgRefineNew.Destroy()
 
@@ -5184,6 +5193,7 @@ class Interface(object):
 		del self.offlineShopHistory
 		del self.offlineShopSearch
 		del self.fleaMarket
+		del self.auctionHouse # AH_V1 [Autor: Vekirion]
 		del self.inputDialog
 		del self.wndChatLog
 		del self.dlgRefineNew
@@ -6249,7 +6259,7 @@ class Interface(object):
 		return True
 
 	def OpenFleaMarket(self):
-		self.fleaMarket.Open()
+		self.auctionHouse.Open() # AH_V1 [Autor: Vekirion]: bylo self.fleaMarket.Open()
 		return True
 
 	def ClickPrivateShop(self, vid, is_offline):
