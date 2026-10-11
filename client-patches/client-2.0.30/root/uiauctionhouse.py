@@ -27,6 +27,7 @@ import localeinfo_point
 import uiCommon
 import wndMgr
 import gamefont
+import nonplayer		# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: potwor marmuru polimorfii
 from _weakref import proxy
 
 # ---- uklad okna (do dopasowania) ---------------------------------------------
@@ -231,14 +232,25 @@ CATEGORY_DEFS = (
 	("U\xbfywalne", -1, None),
 	("Ulepszacze", -1, None),
 	("Inne", -1, None),
+	# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: kategorie z Domu Towarowego - na koncu, bo indeksy
+	# sa wspolne z serwerem (stary klient dalej trafia w swoje kategorie)
+	("Smocza Alchemia", -1, None),		# 31: kamienie smoka i Cory Draconis
+	("Polimorfia", -1, None),			# 32: marmury polimorfii
 )
 
 # Kategorie pokazywane w panelu, w tej kolejnosci (indeksy z CATEGORY_DEFS).
 # Rodzaje broni stoja wprost zamiast "Bro\xf1", a Zbroje i Helmy nie maja juz
 # podzialu na klasy - od tego jest przycisk "Klasa".
-CATEGORY_VISIBLE = (0, 2, 3, 4, 5, 6, 7, 8, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: Smocza Alchemia i Polimorfia stoja tam, gdzie w Domu Towarowym.
+CATEGORY_VISIBLE = (0, 2, 3, 4, 5, 6, 7, 8, 13, 18, 19, 20, 21, 22, 23, 24, 31, 25, 26, 27, 28, 29, 32, 30)
 
 BOOK_VNUMS = (50300, 70037, 70055)
+# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: marmury polimorfii nosza vnum potwora w gniezdzie 0 -
+# oferta nazywa sie "<marmur> - <potwor>"
+POLYMORPH_VNUMS = (70104, 70105, 70106, 70107, 71093)
+MARBLE_VNUM = 70104
+# plec w filtrze: (napis, numer dla serwera)
+SEX_DEFS = (("Dowolna", 0), ("Kobieta", 1), ("M\xea\xbfczyzna", 2))
 # Umiejetnosci, ktore maja ksiegi. skill.GetSkillName dla nieznanego numeru psuje
 # interpreter, wiec pytamy tylko o te.
 SKILL_IDS = tuple(range(1, 6) + range(16, 21) + range(31, 36) + range(46, 51) + range(61, 67) + range(76, 82) + range(91, 97) + range(106, 112))
@@ -1931,6 +1943,126 @@ class QuantityDialog(ui.BoardWithTitleBar):
 		return True
 
 
+# ---- okno filtrow (MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1) ---------------------
+# Cena, poziom postaci, liczba sztuk (od / do) i plec - jak "Filtry" Domu Towarowego.
+class FilterDialog(ui.BoardWithTitleBar):
+	WIDTH = 360
+	LABEL_X = 18
+	MIN_X = 150
+	MAX_X = 250
+	EDIT_WIDTH = 80
+	TOP = 58
+	LINE = 28
+	SELECT = 18
+
+	# (klucz, podpis, najwiecej cyfr)
+	RANGES = (
+		("price", "Cena (Yang):", 12),
+		("level", "Poziom postaci:", 3),
+		("count", "Liczba sztuk:", 6),
+	)
+
+	def __init__(self, market):
+		ui.BoardWithTitleBar.__init__(self)
+		self.market = proxy(market)
+		self.sex = 0
+		self.edits = {}
+		self.keepers = []
+		self.AddFlag("movable")
+		self.AddFlag("float")
+		self.SetTitleName("Filtry")
+		self.SetCloseEvent(ui.__mem_func__(self.Close))
+
+		y = self.TOP
+		for key, label, digits in self.RANGES:
+			self.keepers.append(MakeText(self, self.LABEL_X, y + 2, label))
+			pair = []
+			for x in (self.MIN_X, self.MAX_X):
+				slot, edit = MakeEdit(self, x, y, self.EDIT_WIDTH, digits, True)
+				edit.SetReturnEvent(ui.__mem_func__(self.Accept))
+				edit.SetEscapeEvent(ui.__mem_func__(self.Close))
+				self.keepers.append(slot)
+				pair.append(edit)
+			self.keepers.append(MakeText(self, self.MAX_X - 8, y + 2, "-", COLOR_DIM))
+			self.edits[key] = pair
+			y += self.LINE
+		self.keepers.append(MakeText(self, self.MIN_X, self.TOP - 18, "od", COLOR_DIM))
+		self.keepers.append(MakeText(self, self.MAX_X, self.TOP - 18, "do", COLOR_DIM))
+
+		self.keepers.append(MakeText(self, self.LABEL_X, y + 1, "P\xb3e\xe6:"))
+		self.sexSelects = []
+		x = 72
+		for name, value in SEX_DEFS:
+			select = LabeledSelect(name, self.SELECT, ui.__mem_func__(self.SetSex), value)
+			select.SetParent(self)
+			select.SetPosition(x, y)
+			select.Show()
+			self.sexSelects.append((value, select))
+			x += select.GetWidth() + 8
+		SetHint(self.sexSelects[1][1], "Tylko bro\xf1, zbroje i kostiumy dla tej p\xb3ci")
+		SetHint(self.sexSelects[2][1], "Tylko bro\xf1, zbroje i kostiumy dla tej p\xb3ci")
+		y += self.LINE + 8
+
+		self.applyButton = MakeButton(self, self.WIDTH // 2 - 92, y, 88, "Zastosuj", ui.__mem_func__(self.Accept))
+		self.clearButton = MakeButton(self, self.WIDTH // 2 + 4, y, 88, "Wyczy\x9c\xe6", ui.__mem_func__(self.Clear))
+		self.SetSize(self.WIDTH, y + 34)
+		self.Hide()
+
+	def __del__(self):
+		ui.BoardWithTitleBar.__del__(self)
+
+	def SetSex(self, value):
+		self.sex = value
+		for selectValue, select in self.sexSelects:
+			select.SetChecked(selectValue == value)
+
+	def Open(self, values):
+		# values: slownik jak AuctionHouseWindow.extraFilter
+		for key, label, digits in self.RANGES:
+			for index, edit in enumerate(self.edits[key]):
+				value = values[key][index]
+				edit.SetText(str(value) if value >= 0 and not (key == "price" and value == 0) else "")
+		self.SetSex(values["sex"])
+		self.SetCenterPosition()
+		self.SetTop()
+		self.Show()
+		self.edits["price"][0].SetFocus()
+
+	def __Read(self, edit, empty):
+		text = edit.GetText().strip()
+		if not text:
+			return empty
+		return max(0, ToInt(text, empty))
+
+	def Accept(self):
+		values = {"sex": self.sex}
+		for key, label, digits in self.RANGES:
+			empty = 0 if key == "price" else -1
+			low = self.__Read(self.edits[key][0], empty)
+			high = self.__Read(self.edits[key][1], empty)
+			if high != empty and low != empty and high < low:
+				low, high = high, low		# odwrocony zakres
+			values[key] = (low, high)
+		self.Close()
+		self.market.SetExtraFilter(values)
+
+	def Clear(self):
+		for key, label, digits in self.RANGES:
+			for edit in self.edits[key]:
+				edit.SetText("")
+		self.SetSex(0)
+
+	def Close(self):
+		for key, label, digits in self.RANGES:
+			for edit in self.edits[key]:
+				edit.KillFocus()
+		self.Hide()
+
+	def OnPressEscapeKey(self):
+		self.Close()
+		return True
+
+
 # ---- okno bonusow ------------------------------------------------------------
 def SampleValues(values, limit):
 	# najwyzej limit wartosci, rowno rozlozonych, zawsze z najnizsza i najwyzsza
@@ -2308,6 +2440,11 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		self.refineMin = -1				# poziom ulepszenia od / do; -1: bez granicy
 		self.refineMax = -1
 		self.classFilter = 0			# klasa postaci z CLASS_DEFS; 0: dowolna
+		# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: cena (0 = bez granicy), poziom postaci i sztuki
+		# (-1 = bez granicy) od / do, plec z SEX_DEFS
+		self.extraFilter = self.__EmptyExtraFilter()
+		self.mobNames = None			# "<marmur> - <potwor>" z dt_mob_catalog.py
+		self.marbleBaseName = ""
 		self.sidebarHeight = SIDEBAR_HEIGHT
 		self.baseHeight = WINDOW_HEIGHT
 
@@ -2361,6 +2498,7 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		self.quantityDialog = QuantityDialog(self)
 		self.bonusDialog = BonusDialog(self)
 		self.refinePopup = RefinePopup(self)
+		self.filterDialog = FilterDialog(self)		# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1
 		self.classPopup = None			# powstaje w __Build, gdy znana jest szerokosc przycisku
 		self.__Build()
 		self.Hide()
@@ -2425,9 +2563,12 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		# Przyciski zajmuja cala szerokosc listy ofert z rownymi odstepami; trzy
 		# pierwsze dziela miejsce, ktore zostaje po przyciskach zakupu, a reszta z
 		# dzielenia idzie w szerokosc ostatniego.
-		wide = max(60, (ROW_WIDTH - 4 * gap - BUY_BULK_WIDTH - BUY_SELECTED_WIDTH) // 3)
-		widths = [wide, wide, wide, BUY_BULK_WIDTH, BUY_SELECTED_WIDTH]
-		widths[-1] = max(widths[-1], ROW_WIDTH - sum(widths[:-1]) - 4 * gap)
+		# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: czwarty przycisk "Filtry"
+		wide = max(60, (ROW_WIDTH - 5 * gap - BUY_BULK_WIDTH - BUY_SELECTED_WIDTH) // 4)
+		widths = [wide, wide, wide, wide, BUY_BULK_WIDTH, BUY_SELECTED_WIDTH]
+		# na waskim ekranie "Kup wybrane" oddaje reszte szerokosci, zeby pasek nie
+		# wyszedl poza liste ofert
+		widths[-1] = max(100, ROW_WIDTH - sum(widths[:-1]) - 5 * gap)
 		xs = []
 		x = MAIN_X
 		for width in widths:
@@ -2452,15 +2593,17 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		self.searchButton = ScaledButton(widths[0], TOOLBAR_HEIGHT, "Szukaj", ui.__mem_func__(self.Search), None, TOOLBAR_FONT_EXTRA)
 		self.refineButton = ScaledButton(widths[1], TOOLBAR_HEIGHT, "Poziom", ui.__mem_func__(self.ToggleRefinePopup), ui.__mem_func__(self.ClearRefineRange), TOOLBAR_FONT_EXTRA)
 		self.bonusButton = ScaledButton(widths[2], TOOLBAR_HEIGHT, "Bonus", ui.__mem_func__(self.OpenBonusDialog), ui.__mem_func__(self.ClearBonusFilters), TOOLBAR_FONT_EXTRA)
+		self.filterButton = ScaledButton(widths[3], TOOLBAR_HEIGHT, "Filtry", ui.__mem_func__(self.OpenFilterDialog), ui.__mem_func__(self.ClearExtraFilter), TOOLBAR_FONT_EXTRA)
 		# przyciski zakupu: ramka jak oferta, w zlocie
-		self.bulkButton = BigFrameButton(widths[3], TOOLBAR_HEIGHT, "Kup wiele", ui.__mem_func__(self.AskBuyBulk), COLOR_BUY_BORDER, COLOR_BUY_TEXT)
-		self.buySelectedButton = BigFrameButton(widths[4], TOOLBAR_HEIGHT, "", ui.__mem_func__(self.AskBuySelected), COLOR_BUY_BORDER, COLOR_BUY_TEXT)
+		self.bulkButton = BigFrameButton(widths[4], TOOLBAR_HEIGHT, "Kup wiele", ui.__mem_func__(self.AskBuyBulk), COLOR_BUY_BORDER, COLOR_BUY_TEXT)
+		self.buySelectedButton = BigFrameButton(widths[5], TOOLBAR_HEIGHT, "", ui.__mem_func__(self.AskBuySelected), COLOR_BUY_BORDER, COLOR_BUY_TEXT)
 		SetHint(self.searchButton, "Szukaj ofert (Enter)")
 		SetHint(self.refineButton, "Poziom ulepszenia od / do (prawy klik czy\x9cci)")
 		SetHint(self.bonusButton, "Filtr bonus\xf3w (prawy klik czy\x9cci)")
+		SetHint(self.filterButton, "Cena, poziom postaci, liczba sztuk, p\xb3e\xe6 (prawy klik czy\x9cci)")
 		SetHint(self.bulkButton, "Kup podan\xb9 liczb\xea sztuk jednego przedmiotu, od najta\xf1szej")
 		SetHint(self.buySelectedButton, "Kup wszystkie zaznaczone oferty")
-		for position, button in enumerate((self.searchButton, self.refineButton, self.bonusButton, self.bulkButton, self.buySelectedButton)):
+		for position, button in enumerate((self.searchButton, self.refineButton, self.bonusButton, self.filterButton, self.bulkButton, self.buySelectedButton)):
 			button.SetParent(self)
 			button.SetPosition(xs[position], y)
 			button.Show()
@@ -2575,6 +2718,9 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		if self.refinePopup:
 			self.refinePopup.Destroy()
 			self.refinePopup = None
+		if self.filterDialog:
+			self.filterDialog.Hide()
+			self.filterDialog = None
 		if self.classPopup:
 			self.classPopup.Destroy()
 			self.classPopup = None
@@ -2645,6 +2791,8 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 			self.quantityDialog.Close()
 		if self.bonusDialog:
 			self.bonusDialog.Close()
+		if self.filterDialog:
+			self.filterDialog.Close()
 		self.__HideSuggestions()
 		self.HideItemToolTip()
 		HideHint()
@@ -2729,6 +2877,15 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 						name = "%s - %s" % (skillName, name)
 				except:
 					pass
+			# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: marmur pokazuje swojego potwora
+			if data["vnum"] in POLYMORPH_VNUMS:
+				try:
+					mobVnum = int(data.get("sockets", [0])[0])
+					mobName = nonplayer.GetMonsterName(mobVnum) if mobVnum else ""
+					if mobName:
+						name = "%s - %s" % (name, mobName)
+				except:
+					pass
 			data["_ah_name"] = name
 		return name
 
@@ -2788,6 +2945,11 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 						names.append((key, name))
 			except:
 				pass
+			for name in self.__GetMarbleNames():		# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1
+				key = PolishLower(name)
+				if key not in seen:
+					seen.add(key)
+					names.append((key, name))
 			names.sort()
 			self.itemNames = names
 		key = PolishLower(query)
@@ -2831,7 +2993,41 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 					continue
 				seen.add(key)
 				names.append(name)
+				# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: wystawiony marmur - podpowiedzi
+				# "<marmur> - <potwor>" pasujace do tekstu (serwer szuka tez po potworze)
+				if vnum in POLYMORPH_VNUMS:
+					for marbleName in self.__GetMarbleNames():
+						marbleKey = PolishLower(marbleName)
+						if query in marbleKey and marbleKey != query and marbleKey not in seen:
+							seen.add(marbleKey)
+							names.append(marbleName)
 		self.__ShowSuggestions(names[:self.SUGGESTION_LIMIT])
+
+	# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: "<marmur> - <potwor>" dla kazdego potwora
+	# z dt_mob_catalog.py (jak w Domu Towarowym); liczone raz.
+	def __GetMarbleNames(self):
+		if self.mobNames is not None:
+			return self.mobNames
+		names = []
+		try:
+			item.SelectItem(MARBLE_VNUM)
+			self.marbleBaseName = item.GetItemName()
+		except:
+			self.marbleBaseName = ""
+		if self.marbleBaseName:
+			try:
+				from dt_mob_catalog import MOB_VNUMS
+			except ImportError:
+				MOB_VNUMS = ()
+			for mobVnum in MOB_VNUMS:
+				try:
+					mobName = nonplayer.GetMonsterName(mobVnum)
+				except:
+					continue
+				if mobName:
+					names.append("%s - %s" % (self.marbleBaseName, mobName))
+		self.mobNames = names
+		return names
 
 	def __ShowSuggestions(self, names):
 		if not names:
@@ -2908,10 +3104,16 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		if not vnum and self.lockedItem:
 			vnum, socket0 = self.lockedItem[0], self.lockedItem[1]
 		bonuses = ",".join(["%d:%d" % (applyType, value) for applyType, value in self.bonusFilters]) or "-"
-		text = "%d %d %d %d %d 0 0 %d %d %d %d %d %s" % (
+		# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: cena od / do oraz dalsze filtry w polu klasy
+		# ("klasa:poziomOd:poziomDo:sztukiOd:sztukiDo:plec"); bez nich - sama klasa
+		extra = self.extraFilter
+		classText = "%d" % self.classFilter
+		if self.__HasExtraRanges():
+			classText += ":%d:%d:%d:%d:%d" % (extra["level"][0], extra["level"][1], extra["count"][0], extra["count"][1], extra["sex"])
+		text = "%d %d %d %d %d %d %d %d %d %d %d %s %s" % (
 			self.category, self.priceSort if self.sortColumn == SORT_PRICE else self.sortColumn, 1 if self.sortDescending else 0,
-			self.refineMin, self.refineMax,
-			vnum, socket0, self.bonusMode, self.bonusCount, self.classFilter, bonuses)
+			self.refineMin, self.refineMax, extra["price"][0], extra["price"][1],
+			vnum, socket0, self.bonusMode, self.bonusCount, classText, bonuses)
 		if vnum:
 			return text			# konkretny przedmiot: nazwa juz nic nie zmienia
 		query = self.searchEdit.GetText().strip()
@@ -2944,6 +3146,7 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 	def __SelectionKey(self):
 		# wszystko, co decyduje o tym, JAKIE oferty widac (bez sortowania i strony)
 		return (self.category, self.classFilter, self.refineMin, self.refineMax,
+			tuple(sorted(self.extraFilter.items())),
 			tuple(self.bonusFilters), self.bonusMode, self.bonusCount,
 			self.lockedItem and (self.lockedItem[0], self.lockedItem[1]),
 			PolishLower(self.searchEdit.GetText().strip()))
@@ -2970,6 +3173,10 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		self.refineMin = -1
 		self.refineMax = -1
 		self.classFilter = 0
+		self.extraFilter = self.__EmptyExtraFilter()		# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1
+		if self.filterDialog:
+			self.filterDialog.Close()
+		self.__RefreshFilterButton()
 		self.__RefreshClassButton()
 		self.__RefreshRefineButton()
 		self.bonusFilters = []
@@ -3147,6 +3354,39 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		else:
 			label = "+%d do +%d" % (self.refineMin, self.refineMax)
 		self.refineButton.SetText(label)
+
+	# ---- filtry: cena, poziom postaci, sztuki, plec (MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1)
+	def __EmptyExtraFilter(self):
+		return {"price": (0, 0), "level": (-1, -1), "count": (-1, -1), "sex": 0}
+
+	def __HasExtraRanges(self):
+		extra = self.extraFilter
+		return extra["level"] != (-1, -1) or extra["count"] != (-1, -1) or extra["sex"] != 0
+
+	def OpenFilterDialog(self):
+		if self.filterDialog.IsShow():
+			self.filterDialog.Close()
+			return
+		self.filterDialog.Open(self.extraFilter)
+
+	def ClearExtraFilter(self):
+		self.filterDialog.Close()
+		if self.extraFilter != self.__EmptyExtraFilter():
+			self.SetExtraFilter(self.__EmptyExtraFilter())
+
+	def SetExtraFilter(self, values):
+		self.extraFilter = values
+		self.__RefreshFilterButton()
+		self.Search()
+
+	def __RefreshFilterButton(self):
+		extra = self.extraFilter
+		active = (1 if extra["price"] != (0, 0) else 0) + (1 if extra["level"] != (-1, -1) else 0)
+		active += (1 if extra["count"] != (-1, -1) else 0) + (1 if extra["sex"] else 0)
+		if active:
+			self.filterButton.SetText("Filtry (%d)" % active)
+		else:
+			self.filterButton.SetText("Filtry")
 
 	# ---- bonusy --------------------------------------------------------------
 	def __GetBonusContext(self):

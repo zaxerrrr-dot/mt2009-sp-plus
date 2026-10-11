@@ -29,6 +29,11 @@
 //           <klasa> <bonusy|-> [nazwa[|skill,skill,...]]
 //     klasa       : 0 dowolna, 1 wojownik, 2 ninja, 3 sura, 4 szaman - tylko
 //                   przedmioty, ktore ta klasa moze zalozyc
+//                   MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: albo
+//                   klasa:poziomOd:poziomDo:sztukiOd:sztukiDo:plec - poziom postaci
+//                   (LIMIT_LEVEL), liczba sztuk w ofercie (-1 = bez granicy), plec
+//                   0 dowolna, 1 kobieta, 2 mezczyzna (tylko bron, zbroje, kostiumy)
+//     cenaOd/Do   : cena calej oferty w Yang; 0 = bez granicy
 //     plusOd/Do   : poziom ulepszenia z nazwy przedmiotu ("+7"); -1 = bez granicy
 //     kolumnaSort : 0 cena oferty, 1 cena za sztuke, 2 ilosc
 //     trybBonusow : 0 rowno, 1 przynajmniej, 2 maksymalnie
@@ -73,6 +78,7 @@
 #include "questmanager.h"
 #include "utils.h"
 #include "cmd.h"
+#include "mob_manager.h"	// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1 (nazwy potworow marmurow)
 
 #include <algorithm>
 #include <map>
@@ -202,12 +208,18 @@ namespace
 		/* 28 Uzywalne            */ { -1, ITEM_USE, -1, 0 },
 		/* 29 Ulepszacze          */ { -1, ITEM_MATERIAL, -1, 0 },
 		/* 30 Inne                */ { -1, AH_TYPE_OTHER, -1, 0 },
+		// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: kategorie z Domu Towarowego, dopisane
+		// na koncu, zeby indeksy starszych kategorii (i starego klienta) sie nie zmienily.
+		// Klient pokazuje je w panelu tam, gdzie staly w Domu Towarowym (CATEGORY_VISIBLE).
+		/* 31 Smocza Alchemia     */ { -1, ITEM_DS, -1, 0 },		// + ITEM_SPECIAL_DS i Cory Draconis (GetCategoryOverride)
+		/* 32 Polimorfia          */ { -1, ITEM_POLYMORPH, -1, 0 },
 	};
 	constexpr int AH_CATEGORY_COUNT = sizeof(s_categories) / sizeof(s_categories[0]);
 	constexpr int AH_CAT_ALL = 0;
 	constexpr int AH_CAT_ORES = 26;
 	constexpr int AH_CAT_UPGRADES = 29;
 	constexpr int AH_CAT_OTHER = 30;
+	constexpr int AH_CAT_DRAGON_ALCHEMY = 31;	// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1
 
 	// Przedmioty, ktorych typ w item_proto jest wspolny z mnostwem niezwiazanych
 	// rzeczy: tu wpis wygrywa z dopasowaniem typu (jak w Domu Towarowym).
@@ -231,6 +243,18 @@ namespace
 		if (vnum >= 50601 && vnum <= 50638)		// rudy i przetopy pod ITEM_SPECIAL
 			return AH_CAT_ORES;
 
+		// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: Cory Draconis (kazdy stopien i rodzaj) to
+		// w silniku zwykle przedmioty - ida do "Smocza Alchemia" jak w Domu Towarowym.
+		switch (vnum)
+		{
+			case 50252: case 50255: case 50256: case 50257: case 50258: case 50259: case 50260:
+			case 51501: case 51502: case 51503: case 51504: case 51505: case 51506: case 51507:
+			case 51508: case 51509: case 51510: case 51541: case 51548: case 51549: case 51562:
+			case 51569: case 51576: case 51583: case 51590: case 51597: case 51604: case 51611:
+			case 51618: case 51625: case 51632:
+				return AH_CAT_DRAGON_ALCHEMY;
+		}
+
 		return -1;
 	}
 
@@ -243,11 +267,13 @@ namespace
 		DWORD antiFlags = 0;
 		int refine = -1;		// poziom ulepszenia z konca nazwy ("Miecz+7" -> 7); -1: brak
 		int baseCategory = AH_CAT_OTHER;
+		int level = 0;			// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: LIMIT_LEVEL, 0 bez wymagania
 		std::string lowerName;
 	};
 
 	std::unordered_map<DWORD, TAhVnumInfo> s_vnumInfo;
 	DWORD s_vnumInfoTime = 0;
+	std::unordered_map<DWORD, std::string> s_mobLowerNames;	// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1
 
 	const TAhVnumInfo& GetVnumInfo(DWORD vnum)
 	{
@@ -256,6 +282,7 @@ namespace
 		if (now - s_vnumInfoTime > AH_VNUM_CACHE_TTL_MS)
 		{
 			s_vnumInfo.clear();
+			s_mobLowerNames.clear();	// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1
 			s_vnumInfoTime = now;
 		}
 
@@ -272,6 +299,9 @@ namespace
 		info.type = table->bType;
 		info.sub = table->bSubType;
 		info.antiFlags = table->dwAntiFlags;
+		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)	// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1
+			if (table->aLimits[i].bType == LIMIT_LEVEL)
+				info.level = std::max<int>(info.level, static_cast<int>(table->aLimits[i].lValue));
 		info.lowerName = StringToLower(table->szLocaleName, strnlen(table->szLocaleName, ITEM_NAME_MAX_LEN));
 
 		// poziom ulepszenia: cyfry po ostatnim plusie, do konca nazwy
@@ -290,6 +320,10 @@ namespace
 		{
 			info.baseCategory = overrideCategory;
 		}
+		else if (info.type == ITEM_SPECIAL_DS)		// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1
+		{
+			info.baseCategory = AH_CAT_DRAGON_ALCHEMY;
+		}
 		else
 		{
 			for (int i = 1; i < AH_CATEGORY_COUNT; ++i)
@@ -307,6 +341,23 @@ namespace
 		}
 
 		return info;
+	}
+
+	// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: marmur polimorfii nosi potwora w sockecie 0 -
+	// "<marmur> - <potwor>" (jak w oknie i podpowiedziach) pasuje do wpisanej nazwy.
+	// Cache zyje tyle co cache przedmiotow (s_mobLowerNames czysci GetVnumInfo).
+	const std::string& GetMobLowerName(DWORD mobVnum)
+	{
+		auto it = s_mobLowerNames.find(mobVnum);
+		if (it != s_mobLowerNames.end())
+			return it->second;
+		std::string& name = s_mobLowerNames[mobVnum];
+		if (const CMob* mob = CMobManager::instance().Get(mobVnum))
+		{
+			const char* localeName = mob->m_table.szLocaleName;
+			name = StringToLower(localeName, strnlen(localeName, CHARACTER_NAME_MAX_LEN));
+		}
+		return name;
 	}
 
 	bool MatchCategory(int categoryIndex, const TAhVnumInfo& info)
@@ -353,6 +404,13 @@ namespace
 		int bonusMode = AH_BONUS_AT_LEAST;
 		int minBonusCount = 0;
 		DWORD classAntiFlag = 0;		// przedmiot nie moze miec tej antyflagi (0: dowolna klasa)
+		// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: poziom postaci (LIMIT_LEVEL), sztuki, plec;
+		// -1 / 0: bez granicy
+		int levelMin = -1;
+		int levelMax = -1;
+		int countMin = -1;
+		int countMax = -1;
+		DWORD sexAntiFlag = 0;
 		std::vector<TAhBonus> bonuses;
 		std::string query;				// male litery
 		std::vector<long> skills;		// ksiegi: umiejetnosci pasujace do nazwy (zna je tylko klient)
@@ -399,6 +457,29 @@ namespace
 			case 3: filter.classAntiFlag = ITEM_ANTIFLAG_SURA; break;
 			case 4: filter.classAntiFlag = ITEM_ANTIFLAG_SHAMAN; break;
 			default: filter.classAntiFlag = 0; break;
+		}
+
+		// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: pole klasy moze niesc dalsze filtry
+		// "klasa:poziomOd:poziomDo:sztukiOd:sztukiDo:plec" (-1: bez granicy, plec 1 kobieta,
+		// 2 mezczyzna). Stary klient wysyla sama klase - atoi wyzej czyta ja tak samo.
+		{
+			long extra[5] = { -1, -1, -1, -1, 0 };
+			const char* cursor = strchr(fields[11], ':');
+			for (int i = 0; i < 5 && cursor; ++i)
+			{
+				extra[i] = strtol(cursor + 1, nullptr, 10);
+				cursor = strchr(cursor + 1, ':');
+			}
+			filter.levelMin = static_cast<int>(std::clamp<long>(extra[0], -1, 999));
+			filter.levelMax = static_cast<int>(std::clamp<long>(extra[1], -1, 999));
+			filter.countMin = static_cast<int>(std::clamp<long>(extra[2], -1, 1000000));
+			filter.countMax = static_cast<int>(std::clamp<long>(extra[3], -1, 1000000));
+			switch (extra[4])
+			{
+				case 1: filter.sexAntiFlag = ITEM_ANTIFLAG_FEMALE; break;
+				case 2: filter.sexAntiFlag = ITEM_ANTIFLAG_MALE; break;
+				default: filter.sexAntiFlag = 0; break;
+			}
 		}
 
 		// bonusy: typ:wartosc,typ:wartosc
@@ -507,6 +588,23 @@ namespace
 		if (filter.classAntiFlag != 0 && (info.antiFlags & filter.classAntiFlag) != 0)
 			return false;
 
+		// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: plec mowi cos tylko o tym, co sie zaklada
+		if (filter.sexAntiFlag != 0)
+		{
+			if (info.type != ITEM_WEAPON && info.type != ITEM_ARMOR && info.type != ITEM_COSTUME)
+				return false;
+			if ((info.antiFlags & filter.sexAntiFlag) != 0)
+				return false;
+		}
+		if (filter.levelMin >= 0 && info.level < filter.levelMin)
+			return false;
+		if (filter.levelMax >= 0 && info.level > filter.levelMax)
+			return false;
+		if (filter.countMin >= 0 && static_cast<long long>(item.count) < filter.countMin)
+			return false;
+		if (filter.countMax >= 0 && static_cast<long long>(item.count) > filter.countMax)
+			return false;
+
 		if (filter.refineMin >= 0 || filter.refineMax >= 0)
 		{
 			// filtr ulepszenia pokazuje tylko przedmioty, ktore maja "+N" w nazwie
@@ -529,10 +627,17 @@ namespace
 
 		if (!filter.query.empty() && info.lowerName.find(filter.query) == std::string::npos)
 		{
+			// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: marmur polimorfii po nazwie potwora
+			if (info.type == ITEM_POLYMORPH && item.alSockets[0] > 0)
+			{
+				const std::string& mobName = GetMobLowerName(static_cast<DWORD>(item.alSockets[0]));
+				if (mobName.empty() || (info.lowerName + " - " + mobName).find(filter.query) == std::string::npos)
+					return false;
+			}
 			// ksiega umiejetnosci: po umiejetnosci z socketu 0
-			if (!IsSkillBook(item.vnum))
+			else if (!IsSkillBook(item.vnum))
 				return false;
-			if (std::find(filter.skills.begin(), filter.skills.end(), static_cast<long>(item.alSockets[0])) == filter.skills.end())
+			else if (std::find(filter.skills.begin(), filter.skills.end(), static_cast<long>(item.alSockets[0])) == filter.skills.end())
 				return false;
 		}
 
