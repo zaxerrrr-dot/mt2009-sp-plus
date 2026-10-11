@@ -834,6 +834,14 @@ class SearchEditLine(ui.EditLine):
 		self.AdjustView()
 
 	def AdjustView(self):
+		# MT2009_PLUS_AUCTION_HOUSE_PLACEHOLDER_V1: napis "Nazwa przedmiotu" tylko
+		# przy pustym polu (nazwa wpisana z podpowiedzi albo z oferty go nie ukrywala)
+		placeholder = getattr(self, "placeholderTextLine", None)
+		if placeholder:
+			if self.GetText() or self.IsFocus():
+				placeholder.Hide()
+			else:
+				placeholder.Show()
 		if not self.basePos:
 			return
 		try:
@@ -2485,6 +2493,7 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		self.bonusRequestAt = -100.0
 		self.optionsAt = 0.0
 		self.priceSort = PriceSortColumn()
+		self.priceSortOption = self.priceSort
 
 		self.namesAt = None
 		self.namesRequestId = 0
@@ -2654,7 +2663,7 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 			self.sortLabels[column] = label
 			sortButton = self.__Keep(MakeTextButton(self, MAIN_RIGHT - right - width, headerY, width, HEADER_HEIGHT, "", ui.__mem_func__(self.SetSort), column))
 			try:
-				sortButton.SetToolTipText("Sortuj po ilo\x9cci" if column == SORT_COUNT else "Sortuj po cenie", 0, -19)
+				sortButton.SetToolTipText("Sortuj po ilo\x9cci" if column == SORT_COUNT else "Sortuj po cenie oferty albo za sztuk\xea", 0, -19)
 			except:
 				pass
 		self.__UpdateSortHeaders()
@@ -2778,8 +2787,10 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		if SyncTextStyle():
 			RecolorMain()
 		priceSort = PriceSortColumn()
-		if priceSort != self.priceSort:
+		if priceSort != self.priceSortOption:
+			self.priceSortOption = priceSort
 			self.priceSort = priceSort
+			self.__UpdateSortHeaders()
 			if search and self.sortColumn == SORT_PRICE:
 				self.Search()
 
@@ -3243,7 +3254,15 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		return (x + SIDEBAR_X <= mouseX < x + SIDEBAR_X + SIDEBAR_WIDTH) and (y + SIDEBAR_Y <= mouseY < y + SIDEBAR_Y + self.sidebarHeight)
 
 	def SetSort(self, column):
-		if self.sortColumn == column:
+		# MT2009_PLUS_AUCTION_HOUSE_UNIT_SORT_V1: "Cena" przechodzi kolejno przez
+		# cene oferty rosnaco/malejaco i cene za sztuke rosnaco/malejaco
+		if self.sortColumn == column and column == SORT_PRICE:
+			if not self.sortDescending:
+				self.sortDescending = True
+			else:
+				self.sortDescending = False
+				self.priceSort = SORT_PRICE if self.priceSort == SORT_UNIT_PRICE else SORT_UNIT_PRICE
+		elif self.sortColumn == column:
 			self.sortDescending = not self.sortDescending
 		else:
 			self.sortColumn = column
@@ -3252,7 +3271,8 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		self.Search()
 
 	def __UpdateSortHeaders(self):
-		for column, label in ((SORT_COUNT, "Ilo\x9c\xe6"), (SORT_PRICE, "Cena")):
+		priceLabel = "Cena/szt." if self.priceSort == SORT_UNIT_PRICE else "Cena"
+		for column, label in ((SORT_COUNT, "Ilo\x9c\xe6"), (SORT_PRICE, priceLabel)):
 			if column == self.sortColumn:
 				label += " v" if self.sortDescending else " ^"
 			self.sortLabels[column].SetText(label)
