@@ -227,6 +227,7 @@ linux-port/docker/game/src/server/game/src/BlueDragon.h
 linux-port/docker/game/src/server/game/src/Makefile
 linux-port/docker/game/src/server/game/src/battle.cpp
 linux-port/docker/game/src/server/game/src/char.cpp
+linux-port/docker/game/src/server/game/src/war_map.cpp
 linux-port/docker/game/src/server/game/src/char_affect.cpp
 linux-port/docker/game/src/server/game/src/char.h
 linux-port/docker/game/src/server/game/src/char_battle.cpp
