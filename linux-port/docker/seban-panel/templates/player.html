@@ -107,6 +107,21 @@
   </aside>
 </section>
 <script>
+// A tooltip that would be cut over the top of its panel (a long item's name) flips under the item.
+document.addEventListener('mouseover', function (ev) {
+  var slot = ev.target.closest && ev.target.closest('.equip-slot,.inv-slot,.safebox-slot,.shop-slot,.skill-slot');
+  if (!slot || slot.dataset.tipChecked === '1') return;
+  var tip = slot.querySelector('.item-tip'); if (!tip) return;
+  slot.classList.remove('tip-below');
+  var top = tip.getBoundingClientRect().top, limit = 0, p = slot.parentElement;
+  while (p && p !== document.body) {
+    var o = getComputedStyle(p); if (o.overflow !== 'visible' || o.overflowY !== 'visible') { limit = Math.max(limit, p.getBoundingClientRect().top); break; }
+    p = p.parentElement;
+  }
+  if (top < limit + 2) slot.classList.add('tip-below');
+});
+</script>
+<script>
 document.body.dataset.ajaxForms='1';
 // IIFE + explicitly clearing both polling intervals before re-creating them:
 // an AJAX form submit re-executes this whole block (runScripts() in
