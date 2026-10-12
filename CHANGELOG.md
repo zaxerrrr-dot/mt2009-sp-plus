@@ -17,6 +17,46 @@ every version here.
 
 ---
 
+## 2.32.0 — 2026-10-13 — Porządki w plecakach botów, wojna gildii na wszystkich kanałach, handel Smoczą Alchemią
+
+### Poprawki
+- **Wzgórze Wukonga nie zawiesza się na ostatnim kamieniu.** Gdy na etapie Kamieni Wzgórza lub Jaj Feniksa przez 4 minuty nie padnie żaden cel (bo któryś się nie pojawił albo stoi poza zasięgiem), etap zamyka się sam i loch idzie dalej.
+- **Wyjście z lochów znowu pod strażnika.** Od 2.31.0 po wyjściu z lochu (np. Biblioteki) postać trafiała do miasta. Teraz wraca tam, skąd weszła, a nowy sposób powrotu działa tylko na arenie wojny gildii.
+
+### Wojna gildii
+- **Boty z innych kanałów stają do walki.** Gdy gildia ma wojnę, jej członkowie przebywający na CH2–CH4 przechodzą na CH1 i dołączają do składu (do 20 na stronę). Nie dotyczy botów w lochach, w drużynie gracza ani Towarzysza.
+- **Widz na arenie nie walczy.** Kto ogląda wojnę, nie może zadawać obrażeń jej uczestnikom ani ich otrzymywać – także umiejętnościami obszarowymi. Na arenie biją się wyłącznie dwie walczące gildie.
+
+### Gildia i drużyna (Autor: Krystian)
+- Bot wezwany rozkazem **„Expimy razem”** wchodzi do twojej drużyny, więc doświadczenie dzieli się jak w zwykłej grupie; po zakończeniu wezwania wychodzi.
+- Wezwani pomocnicy i towarzysze polowania atakują przeciwników już w pobliżu ciebie, a jeśli ich klasa to umie – także z konia.
+- Bot przyjmujący twoje zaproszenie najpierw opuszcza drużynę złożoną z samych botów.
+
+### Exp w drużynie z botami
+- **Każdy bot bije swojego potwora.** Na zwykłym expowisku boty z twojej drużyny nie rzucają się już wszystkie na potwora, którego atakujesz – każdy bierze własny cel w pobliżu ciebie, najchętniej taki, którego nikt z drużyny jeszcze nie bije, i nie oddala się od ciebie. Przy Metinach i bossach dalej walczą razem na twój cel, a gdy masz mniej niż 40% życia, zajmują się potworami, które cię atakują. Tak samo zachowują się boty wezwane rozkazem „Expimy razem”.
+
+### Boty i rynek
+- **Nie drożej niż w sklepie NPC.** Przedmioty, które da się kupić u NPC, boty wyceniają, kupują i ogłaszają zawsze taniej niż sklep. Przykład: Kwiat Żywiołu boty biorą od Mistrza za 100 000, a z rynku tylko wtedy, gdy ktoś sprzedaje go taniej.
+- **Lżejsze plecaki botów.** Zbędny sprzęt +0…+4 nie czeka już godzinami na miejsce w sklepie – nadmiar trafia do kupca przy najbliższej wizycie w mieście. Zapas na rzemiosło liczy się na całą rodzinę przedmiotu (od +0 do +4), a przy pełnym plecaku bot nie bierze się za ulepszanie „na próbę”.
+- **Boty podnoszą swój łup w lochach.** Bot w lochu z graczem zbiera teraz przedmioty, które przypadły jemu (wcześniej zostawały na ziemi). Broń i zbroja z bonusami nigdy nie są dla bota „za tanie”, a gdy plecak jest naprawdę pełny, bot niszczy najtańszą zbędną rzecz, żeby zabrać wartościowy przedmiot.
+- **Więcej sprzętu +5…+9 na straganach.** Niepotrzebne botowi rzeczy z wyższym ulepszeniem wypierają ze sklepu najtańsze, długo niesprzedane oferty.
+
+### Lochy
+- **Wzgórze Wukonga trudniejsze:** WuKong, Obrońca Chmur, Płomienny Feniks i półboss Czarodziej Stylu Małp zadają o 50% większe obrażenia.
+
+### Smocza Alchemia
+- Kamieniami smoka klasy **Antyczny, Legendarny i Mityczny** można handlować z innymi graczami, wystawiać je w sklepie offline i w Domu Aukcyjnym. Niższe klasy – bez zmian. Wymaga nowego klienta.
+
+### Auto Łowy
+- Podczas Auto Łowów twoja postać **przechodzi przez innych graczy i boty**, więc nie zatrzymuje się w tłumie przy Metinach. Potwory, NPC i bramy nadal blokują drogę, a zwykłe chodzenie działa jak dotąd. Wymaga nowego klienta.
+
+### Edytor bazy danych
+- Nowe wiersze w „Respawn bossów i metinów” mają domyślnie obszar 10/10. Wiersz z obszarem 0/0 to jeden punkt na mapie – jeśli wypada na przeszkodzie, potwór się tam nie pojawi, więc panel teraz ostrzega, a grupy z takim obszarem nie zapisze.
+
+## Klient 2.0.63 — 2026-10-13 — Smocza Alchemia w handlu, Auto Łowy w tłumie
+- Handel kamieniami smoka od klasy Antyczny (okno handlu, sklep offline, Dom Aukcyjny).
+- Auto Łowy: przechodzenie przez innych graczy i boty.
+
 ## 2.31.0 — 2026-10-12 — Dom Aukcyjny, pojedynki botów na nowo, wyjście z wojny gildii
 
 ### Dom Aukcyjny (Autor: Vekirion)
