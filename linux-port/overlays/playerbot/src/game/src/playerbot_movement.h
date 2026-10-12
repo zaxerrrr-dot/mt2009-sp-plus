@@ -1180,6 +1180,25 @@ namespace
 		return false;
 	}
 
+	// Whether ch can attack target. Unlike battle_is_attackable, this does not
+	// disqualify targets solely because ch is temporarily riding a horse (e.g. while
+	// travelling to assist or hunt). The combat pass will dismount if needed before striking.
+	bool IsPlayerBotAttackableTarget(LPCHARACTER ch, LPCHARACTER target)
+	{
+		if (!ch || !target || target->IsDead())
+			return false;
+		if (battle_is_attackable(ch, target))
+			return true;
+		if (ch->IsRiding())
+		{
+			// If target is monster or stone, check if target could attack ch or if
+			// ch could attack on foot (safely passing the riding check).
+			if (target->IsMonster() || target->IsStone())
+				return battle_is_attackable(target, ch);
+		}
+		return false;
+	}
+
 	// Whether a rider keeps the saddle for the fight in hand: the foe it holds
 	// decides, and with none the bot's own build does. The passes that climb
 	// down "for a fight" ask this and not CanPlayerBotEverFightOnHorse, or a

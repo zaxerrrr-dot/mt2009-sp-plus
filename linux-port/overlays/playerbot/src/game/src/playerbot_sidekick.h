@@ -8125,7 +8125,7 @@ namespace
 			const int fromSelf = DISTANCE_APPROX(c->GetX() - self->GetX(), c->GetY() - self->GetY());
 			if (owner && c->GetVictim() == owner)
 			{
-				if (fromOwner < onOwnerDist && battle_is_attackable(self, c))
+				if (fromOwner < onOwnerDist && IsPlayerBotAttackableTarget(self, c))
 				{
 					onOwner = c;
 					onOwnerDist = fromOwner;
@@ -8134,7 +8134,7 @@ namespace
 			}
 			if (c->GetVictim() == self)
 			{
-				if (fromSelf < onSelfDist && battle_is_attackable(self, c))
+				if (fromSelf < onSelfDist && IsPlayerBotAttackableTarget(self, c))
 				{
 					onSelf = c;
 					onSelfDist = fromSelf;
@@ -8143,7 +8143,7 @@ namespace
 			}
 			if (fromOwner > PLAYERBOT_SIDEKICK_HUNT_RANGE || c->GetMobRank() >= MOB_RANK_BOSS)
 				return;
-			if (fromSelf < idleDist && battle_is_attackable(self, c))
+			if (fromSelf < idleDist && IsPlayerBotAttackableTarget(self, c))
 			{
 				idle = c;
 				idleDist = fromSelf;
@@ -8193,7 +8193,7 @@ namespace
 			if (DISTANCE_APPROX(c->GetX() - centreX, c->GetY() - centreY) > PLAYERBOT_SIDEKICK_GUARD_RANGE)
 				return;
 			const int fromSelf = DISTANCE_APPROX(c->GetX() - self->GetX(), c->GetY() - self->GetY());
-			if (fromSelf >= bestDist || !battle_is_attackable(self, c))
+			if (fromSelf >= bestDist || !IsPlayerBotAttackableTarget(self, c))
 				return;
 			best = c;
 			bestDist = fromSelf;
@@ -8630,7 +8630,7 @@ namespace
 				DISTANCE_APPROX(target->GetX() - owner->GetX(), target->GetY() - owner->GetY()) <=
 						PLAYERBOT_SIDEKICK_ASSIST_RANGE &&
 				(stance == PLAYERBOT_SIDEKICK_STANCE_ATTACK || IsPlayerBotSidekickFightUnderWay(ch, owner, target)) &&
-				battle_is_attackable(ch, target))
+				IsPlayerBotAttackableTarget(ch, target))
 		{
 			why = PLAYERBOT_SIDEKICK_FOE_OWNER_TARGET;
 			return target;

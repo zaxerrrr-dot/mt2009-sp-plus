@@ -694,6 +694,8 @@ namespace
 		// keeps its own state, but the party check must not run in the same
 		// second and weigh a party the bot has not joined yet.
 		state.dwNextPartyCheckTime = dwNow + 5000;
+		if (ch->GetParty() && !IsPlayerBotHumanLedParty(ch->GetParty()))
+			LeavePlayerBotParty(ch);
 		leader->PartyInviteAccept(ch);
 		sys_log(0, "PLAYERBOT_PARTY: accepted an invitation pid=%u name=%s leader_pid=%u leader=%s",
 				ch->GetPlayerID(), ch->GetName(), leaderPid, leader->GetName());

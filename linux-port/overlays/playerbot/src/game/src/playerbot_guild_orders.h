@@ -190,7 +190,7 @@ namespace
 			{
 				if (c->GetHP() < c->GetMaxHP() && fromPerson < stoneDist &&
 						!IsPlayerBotEventStone(c->GetRaceNum()) && PersonBeganStone(person, c) &&
-						battle_is_attackable(self, c))
+						IsPlayerBotAttackableTarget(self, c))
 				{
 					stone = c;
 					stoneDist = fromPerson;
@@ -204,7 +204,7 @@ namespace
 				return;
 			if (victim == person)
 			{
-				if (fromPerson < onPersonDist && battle_is_attackable(self, c))
+				if (fromPerson < onPersonDist && IsPlayerBotAttackableTarget(self, c))
 				{
 					onPerson = c;
 					onPersonDist = fromPerson;
@@ -214,7 +214,7 @@ namespace
 			if (victim == self)
 			{
 				const int fromSelf = DISTANCE_APPROX(c->GetX() - self->GetX(), c->GetY() - self->GetY());
-				if (fromSelf < onSelfDist && battle_is_attackable(self, c))
+				if (fromSelf < onSelfDist && IsPlayerBotAttackableTarget(self, c))
 				{
 					onSelf = c;
 					onSelfDist = fromSelf;
@@ -222,7 +222,7 @@ namespace
 				return;
 			}
 			if (person->GetParty() && victim->GetParty() == person->GetParty() && !victim->IsDead() &&
-					fromPerson < onPartyDist && battle_is_attackable(self, c))
+					fromPerson < onPartyDist && IsPlayerBotAttackableTarget(self, c))
 			{
 				onParty = c;
 				onPartyDist = fromPerson;
@@ -238,7 +238,7 @@ namespace
 						IsPlayerBotSidekickWarFoe(person, target)) &&
 				DISTANCE_APPROX(target->GetX() - person->GetX(), target->GetY() - person->GetY()) <=
 						PLAYERBOT_SIDEKICK_ASSIST_RANGE &&
-				battle_is_attackable(ch, target))
+				IsPlayerBotAttackableTarget(ch, target))
 			return target;
 		if (!person->GetSectree())
 			return NULL;
