@@ -496,6 +496,12 @@ bool CItemManager::LoadItemTable(const char* c_szFileName)
 				table.bSize = 1;
 				table.dwAntiFlags = ITEM_ANTIFLAG_DROP | ITEM_ANTIFLAG_SELL | ITEM_ANTIFLAG_GIVE |
 					ITEM_ANTIFLAG_PKDROP | ITEM_ANTIFLAG_STACK | ITEM_ANTIFLAG_MYSHOP | ITEM_ANTIFLAG_SAFEBOX;
+				// MT2009_PLUS_DS_TRADE_HIGH_GRADES_V1 (the owner, 12 October): an Ancient,
+				// Legendary or Myth stone goes into a trade, an offline shop and the auction
+				// house (no GIVE / MYSHOP, as world.item_proto has them - apply.sh); it still
+				// cannot be dropped, like the lower grades. The lower grades stay as they were.
+				if (grade >= DRAGON_SOUL_GRADE_ANCIENT)
+					table.dwAntiFlags &= ~(ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP);
 				table.aLimits[0].bType = LIMIT_TIMER_BASED_ON_WEAR;
 				table.aLimits[0].lValue = 86400;
 

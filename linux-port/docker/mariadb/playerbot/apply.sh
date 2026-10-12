@@ -350,6 +350,15 @@ db -e "
        SET antiflag = antiflag & ~$trade_mask
      WHERE vnum BETWEEN 110000 AND 175499
        AND (antiflag & $trade_mask) <> 0;
+    -- MT2009_PLUS_DS_TRADE_HIGH_GRADES_V1 (the owner, 12 October): an Ancient, Legendary or
+    -- Myth stone (grade 3-5) is dropped by the same rule as the lower grades - not at all
+    -- (DROP|PKDROP, 128 + 16384), while it trades and goes on a shop like them (the client's
+    -- exe lifts GIVE|MYSHOP for these grades: client-patches/exe/GameLib/ItemManager.cpp).
+    UPDATE world.item_proto
+       SET antiflag = antiflag | 16512
+     WHERE vnum BETWEEN 110000 AND 175499 AND type = 29
+       AND (vnum DIV 1000) % 10 BETWEEN 3 AND 5
+       AND (antiflag & 16512) <> 16512;
     UPDATE world.item_proto SET gold = 5000000 WHERE vnum = 100002 AND gold <> 5000000;
 " && echo "[playerbot-migrate] alchemy: Dragon Stones tradeable, Time Elixir (D) 5 000 000" \
   || fail_step "alchemy item_proto changes failed" >&2
