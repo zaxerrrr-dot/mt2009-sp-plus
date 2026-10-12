@@ -2458,6 +2458,13 @@ namespace
 	// PLAYERBOT_SEARCH_RANGE from the bot itself, and a bot that always had its
 	// next monster in reach never stood idle long enough to be walked back.
 	const int PLAYERBOT_PARTY_HUMAN_HUNT_RANGE = 2500;
+	// MT2009_PLUS_PARTY_SPREAD_V1 (FindPlayerBotPartySpreadFoe): how far from
+	// the person a bot beside it picks a monster of its own - the follow
+	// distance, so the pick never sets the follow pass walking it back - and
+	// the person's HP under which what hits the person comes first, the
+	// person's own target included.
+	const int PLAYERBOT_PARTY_SPREAD_RANGE = PLAYERBOT_PARTY_FOLLOW_DISTANCE;
+	const int PLAYERBOT_PARTY_SPREAD_DANGER_HP_PERCENT = 40;
 	const DWORD PLAYERBOT_PARTY_FOLLOW_INTERVAL = 2000;
 	// A bot that could not follow its player onto another map tries again this
 	// much later; TransitionPlayerBotMap already says why, once a minute.

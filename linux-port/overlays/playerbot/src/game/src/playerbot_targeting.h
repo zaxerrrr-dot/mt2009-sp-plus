@@ -801,6 +801,219 @@ namespace
 		return false;
 	}
 
+	// ----------------------------------------------- MT2009_PLUS_PARTY_SPREAD_V1
+	//
+	// "Teraz wszystkie boty z PT rzucaja sie od razu na potwora, ktorego ja
+	// atakuje. A przy zwyklym expie (nie boss, nie metin) niech bedzie tak, ze
+	// boty z PT zabijaja sobie swoje potwory w obrebie mojej postaci" (the
+	// owner, 12 October). A bot hunting beside a person - in the person's
+	// party, or called by "Expimy razem" - takes the person's own target as
+	// before only when it is a boss or a Metin stone
+	// (IsPlayerBotPartyHeavyTarget). An ordinary monster it leaves to the
+	// person and picks one of its own within PLAYERBOT_PARTY_SPREAD_RANGE of
+	// the person, one no other member is on (FindPlayerBotPartySpreadFoe).
+	// What hits the bot is answered first; what hits a person under
+	// PLAYERBOT_PARTY_SPREAD_DANGER_HP_PERCENT next, the person's own target
+	// included; and with nothing else in reach the callers fall back to the
+	// old choice, so the bot finishes the person's monster after all.
+	bool IsPlayerBotPartyHeavyTarget(LPCHARACTER target)
+	{
+		return target && ((target->IsStone() && !IsPlayerBotEventStone(target->GetRaceNum())) ||
+				(target->IsMonster() && target->GetMobRank() >= MOB_RANK_BOSS));
+	}
+
+	bool IsPlayerBotPartySpreadPersonInDanger(LPCHARACTER person)
+	{
+		return person && !person->IsDead() && person->GetMaxHP() > 0 &&
+				(long long)person->GetHP() * 100 <
+						(long long)person->GetMaxHP() * PLAYERBOT_PARTY_SPREAD_DANGER_HP_PERCENT;
+	}
+
+	// The person a bot in a person's party hunts round - the leader - or NULL
+	// where the rule does not reach: no person's party, a companion (its own
+	// pass, playerbot_sidekick.h), the person on another map, a dungeon
+	// instance (the party dungeon's own pass).
+	LPCHARACTER GetPlayerBotPartySpreadPerson(LPCHARACTER ch)
+	{
+		if (!ch || !ch->GetParty() || !IsPlayerBotHumanLedParty(ch->GetParty()) ||
+				IsPlayerBotSidekickPID(ch->GetPlayerID()) ||
+				ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN)
+			return NULL;
+		LPCHARACTER person = ch->GetParty()->GetLeaderCharacter();
+		if (!person || person == ch || person->IsDead() || person->GetMapIndex() != ch->GetMapIndex())
+			return NULL;
+		return person;
+	}
+
+	// The person's own target when it is a boss or a stone this bot may take:
+	// that one the whole party beats, as before. The party focus's own bars
+	// (FFindPlayerBotPartyFocus), so the target pass does not drop it again.
+	LPCHARACTER GetPlayerBotPartySpreadHeavyFocus(LPCHARACTER ch, LPCHARACTER person, DWORD dwNow)
+	{
+		LPCHARACTER target = person ? person->GetTarget() : NULL;
+		if (!ch || !target || target == ch || target->IsDead() || !IsPlayerBotPartyHeavyTarget(target) ||
+				target->GetMapIndex() != ch->GetMapIndex() ||
+				DISTANCE_APPROX(target->GetX() - person->GetX(), target->GetY() - person->GetY()) >
+						PLAYERBOT_PARTY_SPREAD_RANGE ||
+				IsPlayerBotSafeZone(target->GetMapIndex(), target->GetX(), target->GetY()) ||
+				!IsPlayerBotAttackableTarget(ch, target))
+			return NULL;
+		if (target->IsStone())
+			return IsPlayerBotMetinWorthFighting(ch, target) ? target : NULL;
+		if ((int)target->GetLevel() > (int)ch->GetLevel() + PLAYERBOT_MAX_TARGET_LEVEL_DELTA &&
+				target->GetVictim() != ch && !CanPlayerBotPartyChallenge(ch, target, dwNow, NULL))
+			return NULL;
+		return target;
+	}
+
+	// What the other bots of the party are on: their aim and their victims.
+	struct FPlayerBotPartySpreadClaims
+	{
+		LPCHARACTER self;
+		std::set<DWORD> vids;
+		explicit FPlayerBotPartySpreadClaims(LPCHARACTER s) : self(s) {}
+		void operator()(LPCHARACTER member)
+		{
+			if (!member || member == self || member->IsDead() || !member->GetDesc() || !member->GetDesc()->IsBot())
+				return;
+			TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.find(member->GetPlayerID());
+			if (it != s_mapPlayerBotAIStates.end() && it->second.dwTargetVID != 0)
+				vids.insert(it->second.dwTargetVID);
+			if (member->GetVictim())
+				vids.insert((DWORD)member->GetVictim()->GetVID());
+		}
+	};
+
+	struct FPlayerBotPartySpreadFoes
+	{
+		LPCHARACTER self;
+		LPCHARACTER person;
+		LPCHARACTER personTarget;
+		const std::set<DWORD>& claimed;
+		const std::map<DWORD, DWORD>& failed;
+		DWORD heldVID;
+		DWORD dwNow;
+		bool danger;
+		LPCHARACTER onSelf;
+		int onSelfDist;
+		LPCHARACTER onPersonDanger;
+		int onPersonDangerDist;
+		LPCHARACTER held;
+		LPCHARACTER onPerson;
+		int onPersonDist;
+		LPCHARACTER freeFoe;
+		int freeDist;
+
+		FPlayerBotPartySpreadFoes(LPCHARACTER s, LPCHARACTER p, const std::set<DWORD>& c,
+				const std::map<DWORD, DWORD>& f, DWORD held_, DWORD now)
+			: self(s), person(p), personTarget(p->GetTarget()), claimed(c), failed(f), heldVID(held_), dwNow(now),
+			  danger(IsPlayerBotPartySpreadPersonInDanger(p)), onSelf(NULL), onSelfDist(INT_MAX),
+			  onPersonDanger(NULL), onPersonDangerDist(INT_MAX), held(NULL), onPerson(NULL), onPersonDist(INT_MAX),
+			  freeFoe(NULL), freeDist(INT_MAX)
+		{
+		}
+
+		void operator()(LPENTITY ent)
+		{
+			if (!ent || !ent->IsType(ENTITY_CHARACTER))
+				return;
+			LPCHARACTER c = (LPCHARACTER)ent;
+			if (c == self || c == person || !c->IsMonster() || c->IsDead() ||
+					c->GetMapIndex() != self->GetMapIndex() || c->GetMobRank() >= MOB_RANK_BOSS)
+				return;
+			const int fromPerson = DISTANCE_APPROX(c->GetX() - person->GetX(), c->GetY() - person->GetY());
+			if (fromPerson > PLAYERBOT_PARTY_SPREAD_RANGE ||
+					IsPlayerBotSafeZone(c->GetMapIndex(), c->GetX(), c->GetY()))
+				return;
+			std::map<DWORD, DWORD>::const_iterator f = failed.find((DWORD)c->GetVID());
+			if (f != failed.end() && dwNow < f->second)
+				return;
+			if (!IsPlayerBotAttackableTarget(self, c) || IsPlayerBotMonsterOutOfWalk(self, c))
+				return;
+			LPCHARACTER victim = c->GetVictim();
+			const int fromSelf = DISTANCE_APPROX(c->GetX() - self->GetX(), c->GetY() - self->GetY());
+			// Defence is never refused, whatever its level.
+			if (victim == self)
+			{
+				if (fromSelf < onSelfDist)
+				{
+					onSelf = c;
+					onSelfDist = fromSelf;
+				}
+				return;
+			}
+			if ((int)c->GetLevel() > (int)self->GetLevel() + PLAYERBOT_MAX_TARGET_LEVEL_DELTA &&
+					!CanPlayerBotPartyChallenge(self, c, dwNow, NULL))
+				return;
+			if (danger && victim == person)
+			{
+				if (fromPerson < onPersonDangerDist)
+				{
+					onPersonDanger = c;
+					onPersonDangerDist = fromPerson;
+				}
+				return;
+			}
+			// The person's own monster is the person's.
+			if (c == personTarget)
+				return;
+			// The one it is already on stays its own: no turning between two.
+			if ((DWORD)c->GetVID() == heldVID)
+			{
+				held = c;
+				return;
+			}
+			if (claimed.find((DWORD)c->GetVID()) != claimed.end() ||
+					(victim && victim != person && self->GetParty() && victim->GetParty() == self->GetParty()) ||
+					IsTargetClaimedByAnotherBot(self, (DWORD)c->GetVID()))
+				return;
+			if (victim == person)
+			{
+				if (fromPerson < onPersonDist)
+				{
+					onPerson = c;
+					onPersonDist = fromPerson;
+				}
+				return;
+			}
+			if (fromSelf < freeDist)
+			{
+				freeFoe = c;
+				freeDist = fromSelf;
+			}
+		}
+	};
+
+	// The bot's own monster beside the person (see above), or NULL: nothing
+	// but the person's own and the other members' in reach. why: "self",
+	// "person_danger", "held", "at_person" or "own".
+	LPCHARACTER FindPlayerBotPartySpreadFoe(LPCHARACTER ch, LPCHARACTER person, const TPlayerBotAIState& state,
+			DWORD dwNow, const char** why = NULL)
+	{
+		if (!ch || !person || person->GetMapIndex() != ch->GetMapIndex() || !person->GetSectree())
+			return NULL;
+		FPlayerBotPartySpreadClaims claims(ch);
+		if (ch->GetParty())
+			ch->GetParty()->ForEachOnMapMember(claims, ch->GetMapIndex());
+		FPlayerBotPartySpreadFoes foes(ch, person, claims.vids, state.mapFailedTargets, state.dwTargetVID, dwNow);
+		person->GetSectree()->ForEachAround(foes);
+		const char* reason = NULL;
+		LPCHARACTER foe = NULL;
+		if (foes.onSelf)
+			foe = foes.onSelf, reason = "self";
+		else if (foes.onPersonDanger)
+			foe = foes.onPersonDanger, reason = "person_danger";
+		else if (foes.held)
+			foe = foes.held, reason = "held";
+		else if (foes.onPerson)
+			foe = foes.onPerson, reason = "at_person";
+		else if (foes.freeFoe)
+			foe = foes.freeFoe, reason = "own";
+		if (why)
+			*why = reason;
+		return foe;
+	}
+
 	struct TTargetCandidate
 	{
 		DWORD dwVID;

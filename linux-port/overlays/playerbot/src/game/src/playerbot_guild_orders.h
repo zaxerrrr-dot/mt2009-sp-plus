@@ -273,6 +273,25 @@ namespace
 		LPCHARACTER foe = order == playerbot_guild_order_rules::ORDER_HELP
 				? FindPlayerBotGuildHelpFoe(ch, person)
 				: FindPlayerBotSidekickFoe(ch, person, stance, why, personFighting);
+		// MT2009_PLUS_PARTY_SPREAD_V1: "Expimy razem" is a hunt beside the
+		// person, by the party's rule (playerbot_targeting.h): the person's boss
+		// or stone, another kingdom's attacker and what hits the bot stay the
+		// companion's choice; an ordinary monster is a monster of its own round
+		// the person, and the person's one only with none other in reach.
+		if (order == playerbot_guild_order_rules::ORDER_HUNT && ch->GetMapIndex() < PLAYERBOT_INSTANCE_MAP_INDEX_MIN &&
+				!(foe && (!foe->IsMonster() || foe->GetVictim() == ch || IsPlayerBotPartyHeavyTarget(foe))))
+		{
+			const char* spreadWhy = NULL;
+			LPCHARACTER own = FindPlayerBotPartySpreadFoe(ch, person, state, dwNow, &spreadWhy);
+			if (own && own != foe)
+			{
+				if (state.dwTargetVID != (DWORD)own->GetVID())
+					sys_log(0, "PLAYERBOT_GUILD_ORDER: hunt spread pid=%u name=%s person=%s target_vid=%u target=%s why=%s instead_of=%s",
+							ch->GetPlayerID(), ch->GetName(), person->GetName(), (DWORD)own->GetVID(), own->GetName(),
+							spreadWhy ? spreadWhy : "-", foe ? foe->GetName() : "-");
+				foe = own;
+			}
+		}
 		if (!foe)
 		{
 			if (state.dwTargetVID != 0)

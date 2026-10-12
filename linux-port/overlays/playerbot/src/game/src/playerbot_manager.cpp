@@ -8236,6 +8236,20 @@ WritePlayerBotGuildStatus(dwNow);
 
 		const bool bRecentDeath = (state.dwLastDeathTime != 0 && (dwNow - state.dwLastDeathTime < 60000));
 		LPCHARACTER partyFocus = FindPlayerBotPartyFocusTarget(ch, state, dwNow);
+		// MT2009_PLUS_PARTY_SPREAD_V1: beside a person the party's focus is a
+		// boss or a stone only - the person's own first - and an ordinary
+		// monster is every bot's own (FindPlayerBotPartySpreadFoe, below).
+		LPCHARACTER spreadPerson = GetPlayerBotPartySpreadPerson(ch);
+		if (spreadPerson)
+		{
+			LPCHARACTER heavyFocus = (state.bVisitingShop || state.bRecoveringAfterDeath ||
+					state.bServicePending || bRecentDeath)
+					? NULL : GetPlayerBotPartySpreadHeavyFocus(ch, spreadPerson, dwNow);
+			if (heavyFocus)
+				partyFocus = heavyFocus;
+			else if (partyFocus && !IsPlayerBotPartyHeavyTarget(partyFocus))
+				partyFocus = NULL;
+		}
 		if (partyFocus && partyFocus != target)
 		{
 			TPlayerBotPartyStrength partyStrength;
@@ -8317,6 +8331,23 @@ WritePlayerBotGuildStatus(dwNow);
 				// rather than round it.
 				if (target && !IsPlayerBotTargetWorthNow(ch, target, state, dwNow))
 					target = NULL;
+				// MT2009_PLUS_PARTY_SPREAD_V1: beside a person, a monster of its
+				// own round the person before the one the person (or another
+				// member) is fighting; what hits the bot and a boss stay as they
+				// were. With none, the engaged and the distributed choice below
+				// finish the person's monster after all.
+				if (spreadPerson && !(target && (target->GetVictim() == ch || IsPlayerBotPartyHeavyTarget(target))))
+				{
+					const char* spreadWhy = NULL;
+					LPCHARACTER own = FindPlayerBotPartySpreadFoe(ch, spreadPerson, state, dwNow, &spreadWhy);
+					if (own && own != target && (own->GetVictim() == ch || IsPlayerBotTargetWorthNow(ch, own, state, dwNow)))
+					{
+						sys_log(0, "PLAYERBOT_PARTY: spread pid=%u name=%s person=%s target_vid=%u target=%s why=%s instead_of=%s",
+								ch->GetPlayerID(), ch->GetName(), spreadPerson->GetName(), (DWORD)own->GetVID(),
+								own->GetName(), spreadWhy ? spreadWhy : "-", target ? target->GetName() : "-");
+						target = own;
+					}
+				}
 				if (!target)
 					target = FindDistributedTarget(ch, state, dwNow);
 				// Found round the bot; kept only if it is round the person too.
