@@ -1,0 +1,8 @@
+[
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_GUILD_WAR_WATCH_V1",
+  "old": "\t\tif (g1 && g2)\n\t\t{\n\t\t\tif (g1->UnderWar(g2->GetID()))\n\t\t\t\treturn true;\n\t\t}\n\t}\n\n\tif (IS_CASTLE_MAP(ch->GetMapIndex()) && false==castle_can_attack(ch, victim))",
+  "new": "\t\tif (g1 && g2)\n\t\t{\n\t\t\tif (g1->UnderWar(g2->GetID()))\n\t\t\t\treturn true;\n\t\t}\n\n\t\t// MT2009_PLUS_GUILD_WAR_WATCH_V1 (server-patches/guildwarwatch): on a copy of a guild war arena\n\t\t// (110, 111 - the bots' arena wars and the engine's war maps) only the two guilds at war fight each\n\t\t// other. An onlooker the Battle Executor sent to watch the bots' arena war (\"watch\", a field war\n\t\t// with no observer mode) of another kingdom than a guild at war struck its fighters by the kingdoms'\n\t\t// PvP, and they him (the owner, 12 October). Nobody else strikes anybody there, nor is struck - the\n\t\t// skills' splash asks here too.\n\t\tconst long lWatchMap = ch->GetMapIndex();\n\t\tif (lWatchMap >= 10000 && (lWatchMap / 10000 == 110 || lWatchMap / 10000 == 111))\n\t\t\treturn false;\n\t}\n\n\tif (IS_CASTLE_MAP(ch->GetMapIndex()) && false==castle_can_attack(ch, victim))"
+ }
+]

@@ -1107,6 +1107,17 @@ if ((Test-Path -LiteralPath $guildWarExitApply -PathType Leaf) -and
         Write-Host ('Applied {0} guild war exit edit(s).' -f $guildWarExitResult.Applied) -ForegroundColor DarkGray
     }
 }
+# No fight of an onlooker on a guild war arena (server-patches/guildwarwatch,
+# MT2009_PLUS_GUILD_WAR_WATCH_V1): battle.cpp battle_is_attackable.
+$guildWarWatchApply = Join-Path $repo 'server-patches/guildwarwatch/Apply-GuildWarWatchPatch.ps1'
+if ((Test-Path -LiteralPath $guildWarWatchApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'battle.cpp') -PathType Leaf)) {
+    $guildWarWatchResult = & $guildWarWatchApply -SourceDir $engineGameSource
+    if ($guildWarWatchResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} guild war watch edit(s).' -f $guildWarWatchResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # The Combo skill remembered over a relog, a teleport and a channel change
 # (server-patches/combosave, MT2009_PLUS_COMBO_SAVE_V1, Autor: Mur4s).
 $comboSaveApply = Join-Path $repo 'server-patches/combosave/Apply-ComboSavePatch.ps1'
