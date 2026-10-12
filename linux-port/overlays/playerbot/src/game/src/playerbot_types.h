@@ -7749,6 +7749,25 @@ namespace
 	// clock keeps at most this many pieces before it drops the stale ones.
 	const DWORD PLAYERBOT_GEAR_JUNK_STALL_WAIT_MS = 2 * PLAYERBOT_OFFLINE_UNSOLD_STEP_MS;
 	const size_t PLAYERBOT_GEAR_JUNK_SINCE_MAX = 200000;
+	// MT2009_PLUS_BOT_BAG_HOARD_FIX_V1 (zgloszenie 4af9ac48, 2.30.0, 11 October:
+	// "boty zbierajac eq wszystko ulepszaja do +4 i zostawiaja sobie w eq"): of
+	// that gear only this many pieces of a sale kind (GetPlayerBotSaleGearKind)
+	// wait in the bag for the counter - the first in its cells; the rest are
+	// the merchant's at once, and so is every one of them while the bag is
+	// full. The six-hour clock is not kept over a restart and a full counter
+	// took none, so 933 bots of the test world carried 21 pieces and more.
+	const int PLAYERBOT_GEAR_JUNK_WAIT_PER_KIND = 1;
+	// MT2009_PLUS_BOT_BAG_HOARD_FIX_V2 (the owner, 12 October: "To moze niech
+	// chetniej je wystawiaja na sprzedaz?" - 19 000 pieces at +5..+9 in the
+	// test world's bags, 16 454 of them with 1 409 bots whose counters had no
+	// free cell). A full counter takes such a spare in place of its cheapest
+	// line (BotOfflineSpareGearSwap, playerbot_offline_shop.h): a line asking
+	// at most 1/PLAYERBOT_SPARE_SWAP_PRICE_RATIO of the spare's price, standing
+	// PLAYERBOT_SPARE_SWAP_MIN_STAND_MS at least, while the counter shows
+	// fewer than PLAYERBOT_SPARE_SWAP_COUNTER_LINES lines of such spares.
+	const int PLAYERBOT_SPARE_SWAP_PRICE_RATIO = 4;
+	const DWORD PLAYERBOT_SPARE_SWAP_MIN_STAND_MS = 30 * 60 * 1000;
+	const int PLAYERBOT_SPARE_SWAP_COUNTER_LINES = 24;
 	void NotePlayerBotCorBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
 	const DWORD PLAYERBOT_CRAFT_UNSOLD_RECALL_MS_PRE = 12 * 60 * 60 * 1000;
 	bool IsPlayerBotSaddlebagKeeperPID(DWORD pid);

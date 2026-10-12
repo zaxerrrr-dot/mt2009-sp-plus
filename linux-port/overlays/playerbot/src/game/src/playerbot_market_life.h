@@ -406,6 +406,10 @@ namespace
 				IsPlayerBotPrizeItem(item) || GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE ||
 				IsPlayerBotSidekickPinned(ch, item) || IsPlayerBotSpecialLevel30Weapon(item))
 			return false;
+		// MT2009_PLUS_BOT_BAG_HOARD_FIX_V1: no new piece "to see" from a full
+		// bag - it makes room first.
+		if (IsPlayerBotBagFull(ch) || IsPlayerBotBagUnderPressure(ch))
+			return false;
 		// The junk rule asks a good deal of the bag's other rules; a question
 		// of this one inside it is no pick.
 		static bool s_bAsking = false;

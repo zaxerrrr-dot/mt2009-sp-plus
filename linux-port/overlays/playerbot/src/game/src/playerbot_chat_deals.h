@@ -401,6 +401,18 @@ namespace
 				out.maxBuyUnit = out.fair * 70 / 100;
 			}
 		}
+		// MT2009_PLUS_NPC_PRICE_CAP_V1: what an NPC sells (GetPlayerBotNpcShopUnitPrice) is
+		// bought from a person only under the NPC's price, and its fair price is no more than it
+		// (the owner, 12 October: Kwiat Zywiolu at Mistrz for 100 000). Not a weapon or an
+		// armour: a person's piece may carry bonus lines the merchant's has not.
+		const long long npcUnit = skill || proto->bType == ITEM_WEAPON || proto->bType == ITEM_ARMOR
+				? 0 : GetPlayerBotNpcShopUnitPrice(vnum);
+		if (npcUnit > 0)
+		{
+			out.fair = std::min(out.fair, npcUnit);
+			if (out.maxBuyUnit >= npcUnit)
+				out.maxBuyUnit = npcUnit - 1;
+		}
 
 		// Would it sell it, and at what least: its bag, never what it wears,
 		// what it is short of, or what its counter holds.
@@ -414,6 +426,8 @@ namespace
 			}
 			out.minSellUnit = out.fair * 85 / 100;
 			out.sellUnit = out.fair * 110 / 100;
+			if (npcUnit > 0)	// MT2009_PLUS_NPC_PRICE_CAP_V1
+				out.sellUnit = std::min(out.sellUnit, npcUnit);
 		}
 		TPlayerBotStall stall;
 		if (GetPlayerBotStall(bot->GetPlayerID(), bot, stall))

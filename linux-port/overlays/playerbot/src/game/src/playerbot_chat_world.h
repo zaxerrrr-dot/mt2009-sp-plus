@@ -258,7 +258,18 @@ namespace
 		if (unit == 0)
 			return 0;
 		unit = (DWORD)((unsigned long long)unit * (85 + number(0, 10)) / 100);
-		return HumanizePlayerBotPrice(unit, false);
+		unit = HumanizePlayerBotPrice(unit, false);
+		// MT2009_PLUS_NPC_PRICE_CAP_V1: a thing an NPC sells is wanted only under the NPC's
+		// price (GetPlayerBotNpcShopUnitPrice) - "K> Kwiat Zywiolu, place 169k" while Mistrz
+		// sells it for 100 000 (the owner, 12 October). A tenth under it, as people write it.
+		const long long npc = GetPlayerBotNpcShopUnitPrice(vnum);
+		if (npc > 0 && (long long)unit >= npc)
+		{
+			unit = HumanizePlayerBotPrice((DWORD)std::min<long long>(0xFFFFFFFFLL, npc * 90 / 100), false);
+			if ((long long)unit >= npc)
+				unit = (DWORD)std::max<long long>(1, npc - 1);
+		}
+		return unit;
 	}
 
 	// "S> ..." from the bot's own counter: one or two of its lines, the

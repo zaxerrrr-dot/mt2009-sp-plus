@@ -4026,9 +4026,16 @@ namespace
 		if (IsPlayerBotPriceTracing())
 			s_pPlayerBotPriceTrace->npcUnit = GetPlayerBotNpcSellUnitPrice(item);
 		const DWORD raw = GetPlayerBotShopAskingPriceRaw(item);
-		const DWORD rounded = RoundPlayerBotPrice(raw);
+		DWORD rounded = RoundPlayerBotPrice(raw);
 		if (rounded != raw)
 			PlayerBotPriceStep(per::STEP_ROUND, rounded);
+		// MT2009_PLUS_NPC_PRICE_CAP_V1: never over what an NPC sells the piece for
+		// (GetPlayerBotNpcShopCapUnit, playerbot_economy.h) - the fair price of every
+		// buyer, counter and chat line.
+		const long long npcCap = item ? GetPlayerBotNpcShopCapUnit(item) *
+				(long long)std::max<int>(1, (int)item->GetCount()) : 0;
+		if (npcCap > 0 && npcCap < 0xFFFFFFFFLL && (long long)rounded > npcCap)
+			rounded = (DWORD)npcCap;
 		return rounded;
 	}
 
@@ -4134,6 +4141,14 @@ namespace
 			if ((unsigned long long)price < floorPrice && floorPrice < (unsigned long long)PLAYERBOT_GOLD_MAX) // MT2009_PLUS_YANG_LIMITS_V1
 				price = (DWORD)floorPrice;
 		}
+		// MT2009_PLUS_NPC_PRICE_CAP_V1: nor a shortage's markup or a rare kind's premium over
+		// what an NPC sells the piece for (GetPlayerBotNpcShopCapUnit).
+		if (item)
+		{
+			const long long npcCap = GetPlayerBotNpcShopCapUnit(item) * (long long)std::max<int>(1, (int)item->GetCount());
+			if (npcCap > 0 && npcCap < 0xFFFFFFFFLL && (long long)price > npcCap)
+				price = (DWORD)npcCap;
+		}
 		return price;
 	}
 
@@ -4164,8 +4179,13 @@ namespace
 	// to slip that still asks twice the buyer's own price for the thing, and
 	// any such line at five times. CanPlayerBotPayForOffer asks it, and every
 	// purchase asks that right before it buys, on both roads to a counter.
+	// MT2009_PLUS_NPC_PRICE_CAP_V1: and, by the same door, any line at or over what an
+	// NPC sells the piece for (IsPlayerBotOverNpcShopPrice) - the owner, 12 October:
+	// Kwiat Zywiolu off a counter or a person only under Mistrz's 100 000.
 	bool IsPlayerBotPriceSlipOffer(LPITEM item, long long price)
 	{
+		if (item && IsPlayerBotOverNpcShopPrice(item, price))
+			return true;
 		if (!IsPlayerBotPriceSlipKind(item) || price <= 0)
 			return false;
 		return playerbot_stall_rules::BuyerRefusesSlip(IsPlayerBotPriceSlipDrawn(item->GetID()),

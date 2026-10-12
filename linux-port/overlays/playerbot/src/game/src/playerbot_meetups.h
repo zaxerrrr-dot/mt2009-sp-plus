@@ -287,7 +287,13 @@ namespace
 					const long long fair = GetPlayerBotDealFairPrice(w->first);
 					if (fair <= 0)
 						continue;
-					const long long unit = HumanizePlayerBotPrice((DWORD)std::min<long long>(fair, 2000000000LL), false);
+					long long unit = HumanizePlayerBotPrice((DWORD)std::min<long long>(fair, 2000000000LL), false);
+					// MT2009_PLUS_NPC_PRICE_CAP_V1: under what an NPC sells it for, or the buyer goes
+					// to the NPC (GetPlayerBotNpcShopUnitPrice; not equipment, whose bonuses differ).
+					const long long npcUnit = proto->bType == ITEM_WEAPON || proto->bType == ITEM_ARMOR
+							? 0 : GetPlayerBotNpcShopUnitPrice(w->first);
+					if (npcUnit > 0 && unit >= npcUnit)
+						unit = HumanizePlayerBotPrice((DWORD)std::min<long long>(npcUnit * 90 / 100, 2000000000LL), false);
 					int count = std::min(spare, w->second);
 					const long long purse = (long long)buyer->GetGold() * 60 / 100;
 					if (unit > 0 && (long long)count * unit > purse)

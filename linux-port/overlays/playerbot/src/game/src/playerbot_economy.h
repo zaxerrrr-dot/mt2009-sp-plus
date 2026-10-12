@@ -2072,6 +2072,28 @@ namespace
 					return false;
 			}
 		}
+		// MT2009_PLUS_BOT_BAG_HOARD_FIX_V1: a full bag waits for nothing, and
+		// only the first PLAYERBOT_GEAR_JUNK_WAIT_PER_KIND refined pieces of a
+		// kind in the bag's cells wait at all - one spare of a kind for the
+		// counter, the rest the merchant's on the next visit.
+		if (IsPlayerBotBagFull(ch) || IsPlayerBotBagUnderPressure(ch))
+			return false;
+		if (item->GetWindow() == INVENTORY)
+		{
+			const int kind = GetPlayerBotSaleGearKind(item);
+			int ahead = 0;
+			for (WORD cell = 0; cell < item->GetCell() && cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM held = ch->GetInventoryItem(cell);
+				if (!held || held == item || held->GetCell() != cell || held->IsEquipped() ||
+						held->GetRefineLevel() > PLAYERBOT_MERCHANT_MAX_REFINE ||
+						!(held->GetRefineLevel() > 0 || IsPlayerBotPrizeItem(held)) ||
+						GetPlayerBotSaleGearKind(held) != kind)
+					continue;
+				if (++ahead >= PLAYERBOT_GEAR_JUNK_WAIT_PER_KIND)
+					return false;
+			}
+		}
 		const DWORD now = get_dword_time() != 0 ? get_dword_time() : 1;
 		if (s_mapPlayerBotUnwantedGearSince.size() > PLAYERBOT_GEAR_JUNK_SINCE_MAX)
 		{
@@ -2272,6 +2294,28 @@ namespace
 
 	// MT2009_PLUS_BOT_SMITHY_V1, point 9 (playerbot_demon_tower.h).
 	bool IsPlayerBotTowerSmithReserve(LPCHARACTER ch, LPITEM item);
+
+	// MT2009_PLUS_BOT_BAG_HOARD_FIX_V1: the pickup gear at +0..+4 of this
+	// piece's family (the vnum less its plus) in the bag's cells before it.
+	// Counted by vnum, the keep held three of every plus - Krysztalowe
+	// Kolczyki +0, +1 .. +4 three each, and the six level-65 weapons the same
+	// (2 800 such earrings in the test world's bags, 12 October).
+	int CountPlayerBotPickupGearFamilyAhead(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetWindow() != INVENTORY)
+			return 0;
+		const DWORD family = item->GetVnum() - (DWORD)std::max(0, (int)item->GetRefineLevel());
+		int ahead = 0;
+		for (WORD cell = 0; cell < item->GetCell() && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM held = ch->GetInventoryItem(cell);
+			if (held && held != item && held->GetCell() == cell && !held->IsEquipped() &&
+					held->GetRefineLevel() <= PLAYERBOT_MERCHANT_MAX_REFINE && IsPlayerBotPickupGear(held) &&
+					held->GetVnum() - (DWORD)std::max(0, (int)held->GetRefineLevel()) == family)
+				++ahead;
+		}
+		return ahead;
+	}
 
 	bool IsPlayerBotJunkItem(LPCHARACTER ch, LPITEM item)
 	{
@@ -2489,6 +2533,14 @@ namespace
 			if (IsPlayerBotPickupGear(item) && !IsPlayerBotLppKeptItem(ch, item) &&
 					!IsPlayerBotUpgradeForSelf(ch, item) &&
 					CountPlayerBotVnumUnitsAhead(ch, item) >= PLAYERBOT_PICKUP_GEAR_BAG_KEEP)
+				return true;
+			// MT2009_PLUS_BOT_BAG_HOARD_FIX_V1: and up to that many of a family
+			// at +0..+4 (CountPlayerBotPickupGearFamilyAhead), the piece the bot
+			// raises for its own slot kept; past that the merchant's.
+			if (IsPlayerBotPickupGear(item) && item->GetRefineLevel() <= PLAYERBOT_MERCHANT_MAX_REFINE &&
+					!IsPlayerBotLppKeptItem(ch, item) && !IsPlayerBotUpgradeForSelf(ch, item) &&
+					CountPlayerBotPickupGearFamilyAhead(ch, item) >= PLAYERBOT_PICKUP_GEAR_BAG_KEEP &&
+					!IsPlayerBotHigherTierSpare(ch, item))
 				return true;
 			return IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch);
 		}
@@ -3100,6 +3152,86 @@ namespace
 				ch->GetPlayerID(), ch->GetName(), surplus, price,
 				(int)ch->CountSpecifyItem(PLAYERBOT_HAY_VNUM));
 		return price;
+	}
+
+	// MT2009_PLUS_NPC_PRICE_CAP_V1 (the owner, 12 October: Kwiat Zywiolu costs 100 000 at Mistrz,
+	// and the bots shouted "K> Kwiat Zywiolu, place 169k" and priced it over that): what one piece
+	// of a vnum costs at an NPC shop - the cheapest yang line of a shop that stands at an NPC
+	// (shop.npc_vnum != 0: the GM and quest-only tables are nobody's shop), 0 when no NPC sells
+	// it. A line priced in won as well, a zero price (the Alchemist's, the costume shop's) and
+	// the Zodiac Merchant (a per-player purchase limit, not a shop to stock up at) do not count;
+	// shop_table_ex's tabs are not in GetItemVector. Rebuilt every ten minutes.
+	const DWORD PLAYERBOT_NPC_PRICE_CAP_REBUILD_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_NPC_PRICE_CAP_SKIP_NPC = 20451;	// Zodiac Merchant (MT2009_PLUS_ZODIAC_V1)
+
+	long long GetPlayerBotNpcShopUnitPrice(DWORD vnum)
+	{
+		static std::map<DWORD, long long> s_mapUnit;
+		static DWORD s_dwBuiltAt = 0;
+		static bool s_bBuilt = false;
+		const DWORD dwNow = get_dword_time();
+		if (!s_bBuilt || dwNow - s_dwBuiltAt >= PLAYERBOT_NPC_PRICE_CAP_REBUILD_MS)
+		{
+			s_bBuilt = true;
+			s_dwBuiltAt = dwNow;
+			s_mapUnit.clear();
+			const CShopManager::TShopMap& shops = CShopManager::instance().GetShopMapForWiki();
+			for (CShopManager::TShopMap::const_iterator it = shops.begin(); it != shops.end(); ++it)
+			{
+				LPSHOP shop = it->second;
+				if (!shop || shop->IsPCShop() || shop->GetNPCVnum() == 0 ||
+						shop->GetNPCVnum() == PLAYERBOT_NPC_PRICE_CAP_SKIP_NPC)
+					continue;
+				const std::vector<CShop::SHOP_ITEM>& offers = shop->GetItemVector();
+				for (size_t i = 0; i < offers.size(); ++i)
+				{
+					const CShop::SHOP_ITEM& offer = offers[i];
+					if (offer.vnum == 0 || offer.price <= 0 || offer.count == 0 || offer.pkItem)
+						continue;
+#ifdef ENABLE_CHEQUE_SYSTEM
+					if (offer.cheque > 0)
+						continue;
+#endif
+					const long long unit = (long long)offer.price / (long long)offer.count;
+					if (unit <= 0)
+						continue;
+					std::map<DWORD, long long>::iterator known = s_mapUnit.find(offer.vnum);
+					if (known == s_mapUnit.end() || unit < known->second)
+						s_mapUnit[offer.vnum] = unit;
+				}
+			}
+		}
+		std::map<DWORD, long long>::const_iterator found = s_mapUnit.find(vnum);
+		return found == s_mapUnit.end() ? 0 : found->second;
+	}
+
+	// The NPC price as this piece's ceiling: anything but equipment, and a weapon or an armour
+	// only as the shop sells it - no bonus line and no stone in a socket (a rolled +0 is worth
+	// more than the merchant's blank one). 0: no ceiling.
+	long long GetPlayerBotNpcShopCapUnit(LPITEM item)
+	{
+		if (!item)
+			return 0;
+		const long long npc = GetPlayerBotNpcShopUnitPrice(item->GetVnum());
+		if (npc <= 0)
+			return 0;
+		if (item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR)
+		{
+			if (item->GetAttributeCount() > 0)
+				return 0;
+			for (int i = 0; i < ITEM_SOCKET_MAX_NUM; ++i)
+				if (item->GetSocket(i) > 1)
+					return 0;
+		}
+		return npc;
+	}
+
+	// A line a bot buys off a counter, a stand or a person: never at or over what an NPC asks
+	// for the piece - at that price the bot goes to the NPC.
+	bool IsPlayerBotOverNpcShopPrice(LPITEM item, long long price)
+	{
+		const long long npc = GetPlayerBotNpcShopCapUnit(item);
+		return npc > 0 && price > 0 && price >= npc * (long long)std::max<int>(1, (int)item->GetCount());
 	}
 
 	// What the merchant pays for a piece of junk (the whole line). Also what a
