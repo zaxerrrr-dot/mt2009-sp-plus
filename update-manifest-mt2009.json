@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-11T07:58:51Z",
-  "statusMessage": "MT2009 PLUS 2.30.0: zywszy swiat botow, nowy Dom Towarowy, rozbudowana Wiki dropu. Klient 2.0.61.",
+  "publishedAt": "2026-10-12T07:30:00Z",
+  "statusMessage": "MT2009 PLUS 2.31.0: nowy Dom Aukcyjny, nowa SI pojedynkow, wyjscie z wojny gildii. Klient 2.0.62.",
   "server": {
-    "version": "2.30.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.30.0/metin2-server-update-2.30.0.zip",
-    "sha256": "47E97B40C449EEBC25C38B45E19C32AC7F2527E85A9DA6F638AB76F2146369B6",
-    "size": 113528147
+    "version": "2.31.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.31.0/metin2-server-update-2.31.0.zip",
+    "sha256": "A5C79179AA3CF34CD65C2F85296D472F94FB723B286757BCF23FDA9A56EA9E1D",
+    "size": 113625142
   },
   "client": {
-    "version": "2.0.61",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.61/metin2-client-update-2.0.61.zip",
-    "sha256": "1E46E80095131A1057825B614D5AD0AF9E4C8552586AD444527AAD8B426820E4",
-    "size": 617311060
+    "version": "2.0.62",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.62/metin2-client-update-2.0.62.zip",
+    "sha256": "B53D8784132B64ACFB338A221798601B02F0C4BCF049C167C3A21F6B3BD69CD0",
+    "size": 617387716
   }
 }
