@@ -239,6 +239,12 @@ def install(bp, ctx):
             y = sf.parse_int(form.get(prefix + "y"), f"wiersz {number}: Y", 0, height)
             rx = sf.parse_int(form.get(prefix + "rx") or "0", f"wiersz {number}: obszar X", 0, 2000)
             ry = sf.parse_int(form.get(prefix + "ry") or "0", f"wiersz {number}: obszar Y", 0, 2000)
+            # MT2009_PLUS_SPAWN_AREA_V1: a line with a 0 / 0 area is one exact
+            # point (regen.cpp regen_spawn) and the game then puts down the
+            # MONSTER of that number, even for a group - a group never shows.
+            if typ in ("g", "r") and rx == 0 and ry == 0:
+                raise ValueError(f"wiersz {number}: grupa potrzebuje obszaru ±X / ±Y większego niż 0 "
+                                 "(przy 0 / 0 gra wstawia potwora o numerze grupy, a nie grupę).")
             low = sf.parse_minutes(form.get(prefix + "od"), f"wiersz {number}: co ile – od")
             high_raw = (form.get(prefix + "do") or "").strip()
             high = sf.parse_minutes(high_raw, f"wiersz {number}: co ile – do") if high_raw else low
@@ -329,6 +335,19 @@ def install(bp, ctx):
                 return redirect(back)
             flash(f"Zapisano: {sf.MAP_FILES[kind]} – {index.map_title(map_index)}. Zmiana czeka na zastosowanie "
                   "(restart gry – „Zastosuj”).", "success")
+            # MT2009_PLUS_SPAWN_AREA_V1: a monster at one exact point (area 0 / 0)
+            # is put down only when that very spot is free (SpawnMob: no
+            # obstacle, no safe zone) - on a tree, a wall or in a town it never
+            # shows, with no error. A changed or new line like that is worth a word.
+            old_raw = {ln["raw"] for ln in lines}
+            exact = [ln["row"] for ln in new_lines if ln["raw"] not in old_raw and ln["row"]
+                     and not ln["row"].get("bad") and ln["row"]["type"] == "m"
+                     and ln["row"]["rx"] == 0 and ln["row"]["ry"] == 0]
+            if exact:
+                flash("Uwaga: " + ", ".join(f"({r['x']}, {r['y']})" for r in exact[:5]) +
+                      " – obszar 0 / 0 to jeden dokładny punkt. Jeśli wypada na przeszkodzie (drzewo, skała, "
+                      "budynek) albo w strefie bez walki, potwór nigdy się nie pojawi. Bezpieczniej wpisać obszar "
+                      "np. 10 / 10.", "warning")
             return redirect(back)
         files = []
         for kind, title in sf.MAP_FILES.items():
