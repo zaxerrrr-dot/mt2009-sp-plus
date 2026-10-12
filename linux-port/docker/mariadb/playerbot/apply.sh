@@ -2226,6 +2226,13 @@ UPDATE world.mob_proto SET skill_level1 = 9 WHERE vnum IN (3791, 3391) AND skill
 UPDATE world.mob_proto SET skill_level0 = 10, gold_min = 25000, gold_max = 35000 WHERE vnum = 9683;
 UPDATE world.mob_proto SET skill_level0 = 6, gold_min = 60000, gold_max = 90000 WHERE vnum = 9684;
 UPDATE world.mob_proto SET gold_min = 150000, gold_max = 220000 WHERE vnum = 9682;
+-- MT2009_PLUS_WUKONG_HARDER_V1 (owner, 12 October): the Wzgorze Wukonga bosses and its half-boss hit 50%
+-- harder - dam_multiply x1.5 over the values above (WuKong 2.4, Obronca Chmur 2.0, Plomienny Feniks 2.2,
+-- Czarodziej Stylu Malp 1.8); set absolutely, so every start gives the same.
+UPDATE world.mob_proto SET dam_multiply = 3.6 WHERE vnum = 9682;
+UPDATE world.mob_proto SET dam_multiply = 3.0 WHERE vnum = 9683;
+UPDATE world.mob_proto SET dam_multiply = 3.3 WHERE vnum = 9684;
+UPDATE world.mob_proto SET dam_multiply = 2.7 WHERE vnum = 9693;
 UPDATE world.mob_proto SET gold_min = 60000, gold_max = 90000 WHERE vnum = 9606;
 UPDATE world.mob_proto SET gold_min = 150000, gold_max = 250000 WHERE vnum = 9607;
 UPDATE world.mob_proto SET gold_min = 90000, gold_max = 135000 WHERE vnum = 9675;
