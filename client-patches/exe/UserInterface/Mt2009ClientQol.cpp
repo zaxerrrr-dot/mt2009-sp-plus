@@ -200,6 +200,25 @@ static PyObject* qolChrmgrSetShopsVisible(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildNone();
 }
 
+// MT2009_PLUS_AUTOHUNT_PASS_V1: while Auto Lowy run (root/uiautohunt.py turns it on at the start
+// and off at the stop) the main character walks through other players and bots - CInstanceBase::
+// CheckAdvancing skips them. Monsters, doors and NPCs still block; the server never checked this.
+static bool s_bPassThroughPlayers = false;
+
+bool Mt2009Qol_IsPassThroughPlayers()
+{
+	return s_bPassThroughPlayers;
+}
+
+static PyObject* qolChrmgrSetPassThroughPlayers(PyObject* poSelf, PyObject* poArgs)
+{
+	int iOn;
+	if (!PyTuple_GetInteger(poArgs, 0, &iOn))
+		return Py_BuildException();
+	s_bPassThroughPlayers = iOn != 0;
+	return Py_BuildNone();
+}
+
 static void Mt2009DigiQol_AddFunctions(const char* c_szModule, PyMethodDef* pMethods)
 {
 	PyObject* poModule = PyImport_AddModule(c_szModule);	// borrowed; the module's own init adds to it later
@@ -221,6 +240,7 @@ void Mt2009DigiQol_RegisterPython()
 	static PyMethodDef s_chrmgrMethods[] =
 	{
 		{ "SetShopsVisible",	qolChrmgrSetShopsVisible,	METH_VARARGS, NULL },
+		{ "SetPassThroughPlayers",	qolChrmgrSetPassThroughPlayers,	METH_VARARGS, NULL },	// MT2009_PLUS_AUTOHUNT_PASS_V1
 		{ NULL, NULL, 0, NULL },
 	};
 	Mt2009DigiQol_AddFunctions("app", s_appMethods);
