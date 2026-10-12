@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-12T07:30:00Z",
-  "statusMessage": "MT2009 PLUS 2.31.0: nowy Dom Aukcyjny, nowa SI pojedynkow, wyjscie z wojny gildii. Klient 2.0.62.",
+  "publishedAt": "2026-10-13T07:00:00Z",
+  "statusMessage": "MT2009 PLUS 2.32.0: porzadki w plecakach botow, wojna gildii na wszystkich kanalach, handel Smocza Alchemia. Klient 2.0.63.",
   "server": {
-    "version": "2.31.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.31.0/metin2-server-update-2.31.0.zip",
-    "sha256": "A5C79179AA3CF34CD65C2F85296D472F94FB723B286757BCF23FDA9A56EA9E1D",
-    "size": 113625142
+    "version": "2.32.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.32.0/metin2-server-update-2.32.0.zip",
+    "sha256": "B84263C0E59275F3AF8B3CB54D62ABA2C18926A226525D5E4B2040968A555197",
+    "size": 113653227
   },
   "client": {
-    "version": "2.0.62",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.62/metin2-client-update-2.0.62.zip",
-    "sha256": "B53D8784132B64ACFB338A221798601B02F0C4BCF049C167C3A21F6B3BD69CD0",
-    "size": 617387716
+    "version": "2.0.63",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.63/metin2-client-update-2.0.63.zip",
+    "sha256": "FCA119B5121E8365AA0897972D458B9740CB488E4998A1C7E2822F83109D9201",
+    "size": 617387541
   }
 }
