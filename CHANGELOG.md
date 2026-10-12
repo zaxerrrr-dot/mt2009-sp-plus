@@ -17,6 +17,40 @@ every version here.
 
 ---
 
+## 2.31.0 — 2026-10-12 — Dom Aukcyjny, pojedynki botów na nowo, wyjście z wojny gildii
+
+### Dom Aukcyjny (Autor: Vekirion)
+- **Nowy Dom Aukcyjny zastępuje Dom Towarowy.** U tego samego NPC (opcja „Dom Aukcyjny”) otwiera się nowe okno z przeglądem ofert wszystkich sklepów offline, kategoriami, stronami, zakupem kilku ofert naraz i blokadą na jeden wybrany przedmiot.
+- Kategorie **Smocza Alchemia** i **Polimorfia**; Marmury Polimorfii pokazują nazwę potwora.
+- Filtry: cena od–do, poziom postaci, liczba sztuk, poziom ulepszenia, klasa i płeć.
+- Nagłówek „Cena” sortuje kolejno: po cenie oferty rosnąco i malejąco, a potem **po cenie za sztukę** – wygodne przy ulepszaczach i innych rzeczach sprzedawanych w stosach.
+- **Minigry „zagraj kilka razy”:** Okey, Yut Nori, Złap Króla i Koło Fortuny można rozegrać od 1 do 50 razy pod rząd (wiersz „Liczba gier”).
+- W Okey karty nie zostają już zablokowane po zdobyciu punktów.
+
+### Pojedynki
+- **Nowa SI pojedynków (Autor: P48).** Bot przed walką szykuje się: przestaje polować, odsyła konia, regeneruje się, nakłada buffy i alchemię, a dopiero potem potwierdza gotowość. W walce gra taktyką swojej specjalizacji, trzyma właściwy dystans, lepiej goni i obsługuje odrzut. W zwykłym pojedynku nie pije czerwonych mikstur, a przegrana kończy się śmiercią postaci.
+- Poprawki umiejętności w pojedynku: Szarża, umiejętności kontaktowe, Wycie; Trzystronne Cięcie i Wirujący Sztylet trafiają cel maksymalnie 3 razy.
+- **Boty pojedynkują się między sobą tą samą SI** – obie strony przygotowują się i walczą swoimi profilami, a każda zapisuje swój wynik.
+
+### Wojna gildii (Autor: Krystian)
+- Po rozstrzygnięciu wojny wszyscy wracają tam, skąd weszli na arenę (albo do miasta), a arena zamyka się 10 s po wyjściu zamiast 5.
+- Przycisk „Wyjdź z wojny” działa także po zakończonej walce.
+- Teleport pod TAB i zakładki teleportu są zablokowane na arenach tylko w trakcie trwającej wojny.
+
+### Postać
+- **Kombinacja zostaje włączona (Autor: Mur4s)** po ponownym zalogowaniu, teleporcie i zmianie kanału.
+- Ikonki Talizmanu Ziemi i Talizmanu Błyskawicy były zamienione – teraz każdy ma swoją.
+
+### Panele i serwer
+- Panel Seban: dymek przedmiotu, który ucinał się u góry panelu, wyświetla się pod przedmiotem.
+- Logi serwera są przechowywane maksymalnie 48 godzin – starsze usuwają się same co godzinę (`M2_LOG_KEEP_HOURS` w .env).
+- Rdzeń gry nie wyłącza się już, gdy przy przejściu bota na mapę zabraknie pamięci na jego mapę drogową – bot po prostu tam nie idzie.
+
+## Klient 2.0.62 — 2026-10-12 — Dom Aukcyjny
+- Okno Domu Aukcyjnego z nowymi kategoriami, filtrami i sortowaniem po cenie za sztukę.
+- „Liczba gier” w minigrach i poprawka blokady kart w Okey.
+- Poprawione ikonki Talizmanu Ziemi i Błyskawicy.
+
 ## 2.30.0 — 2026-10-11 — Żywszy świat botów, nowy Dom Towarowy, rozbudowana Wiki dropu
 
 ### Czym zajmują się boty
