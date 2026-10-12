@@ -470,6 +470,96 @@ namespace
 		}
 	};
 
+	// MT2009_PLUS_BOT_LOOT_ROOM_V1 (the owner, 12 October, Nisseth2 in Wzgorze
+	// Wukonga with him: the party's loot share put a Czarna Okragla Tarcza and
+	// a breastplate with lines under the bot's name, and it walked past them -
+	// "no loot pass runs inside" left every drop of the bot's own on the
+	// floor, and the person picking one up only put it in the bot's bag).
+	// The drops the engine gave this bot itself - its name on them, not the
+	// person's, never an ownerless one, which is anybody's - that are worth
+	// carrying: gear (a weapon, an armour piece, a jewel), a skill book, the
+	// goods a player crafts further, or anything the bots price at
+	// PLAYERBOT_LOOT_ROOM_MIN_VALUE (GetPlayerBotLootRoomValue). Not a Cor
+	// Draconis (the engine's own), nor what no bot carries.
+	const int PLAYERBOT_PDG_OWN_LOOT_RANGE = 1500;
+
+	struct FPlayerBotPdgOwnLoot
+	{
+		LPCHARACTER m_me;
+		LPCHARACTER m_person;
+		const std::map<DWORD, DWORD>& m_failed;
+		DWORD m_dwNow;
+		LPITEM m_found;
+		int m_iBest;
+		FPlayerBotPdgOwnLoot(LPCHARACTER me, LPCHARACTER person, const std::map<DWORD, DWORD>& failed, DWORD dwNow) :
+				m_me(me), m_person(person), m_failed(failed), m_dwNow(dwNow), m_found(NULL),
+				m_iBest(PLAYERBOT_PDG_OWN_LOOT_RANGE + 1) {}
+		void operator()(LPENTITY ent)
+		{
+			if (!ent || !ent->IsType(ENTITY_ITEM))
+				return;
+			LPITEM item = (LPITEM)ent;
+			if (!item->GetSectree() || !item->GetProto() || !item->IsOwnership(m_me) ||
+					(m_person && item->IsOwnership(m_person)) || item->GetVnum() == 50255 ||
+					IsPlayerBotMoneyDrop(item) || IsPlayerBotLeftOnGroundItem(item->GetVnum()))
+				return;
+			std::map<DWORD, DWORD>::const_iterator failed = m_failed.find(item->GetVID());
+			if (failed != m_failed.end() && (int)(m_dwNow - failed->second) < 0)
+				return;
+			const BYTE type = item->GetType();
+			const bool worth = (type == ITEM_WEAPON && item->GetSubType() != WEAPON_ARROW) || type == ITEM_ARMOR ||
+					type == ITEM_SKILLBOOK || IsPlayerBotPickupGoods(item) || GetPlayerBotLootRoomValue(item) > 0;
+			if (!worth)
+				return;
+			const int d = DISTANCE_APPROX(item->GetX() - m_me->GetX(), item->GetY() - m_me->GetY());
+			if (d < m_iBest)
+			{
+				m_iBest = d;
+				m_found = item;
+			}
+		}
+	};
+
+	bool TakePlayerBotPdgOwnLoot(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotPdgBot& b, DWORD dwNow)
+	{
+		if (!ch || IsPlayerBotSidekickPID(ch->GetPlayerID()) || !ch->GetParty())
+			return false;
+		FPlayerBotPdgOwnLoot own(ch, FindPlayerBotPartyPerson(ch, ch->GetMapIndex()), state.mapFailedLootVIDs, dwNow);
+		ch->GetSectree()->ForEachAround(own);
+		if (!own.m_found)
+			return false;
+		LPITEM item = own.m_found;
+		if (!PlayerBotBagTakesDrop(ch, item))
+		{
+			// A full bag makes way for a drop worth it (MakePlayerBotLootRoom),
+			// and the step after takes it.
+			const long long value = GetPlayerBotLootRoomValue(item);
+			if (value <= 0 || !MakePlayerBotLootRoom(ch, item, value, dwNow) || !PlayerBotBagTakesDrop(ch, item))
+				return false;
+		}
+		// Not away from what attacks it.
+		if (ch->GetVictim() && !ch->GetVictim()->IsDead() && ch->GetVictim()->GetVictim() == ch)
+			return false;
+		if (own.m_iBest > PLAYERBOT_PDG_PICKUP_DISTANCE)
+		{
+			b.dwNextItemScan = dwNow + 400;
+			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+			MovePlayerBot(ch, item->GetX(), item->GetY(), dwNow, 2, true, false);
+			return true;
+		}
+		const DWORD vnum = item->GetVnum();
+		const int attrs = (int)item->GetAttributeCount();
+		if (ch->IsStateMove())
+			ch->Stop();
+		const DWORD vid = item->GetVID();
+		const bool ok = ch->PickupItem(vid);
+		if (!ok)
+			state.mapFailedLootVIDs[vid] = dwNow + 30000;
+		sys_log(0, "PLAYERBOT_LOOT: party dungeon own drop pid=%u name=%s vnum=%u attrs=%d instance=%ld ok=%d",
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)vnum, attrs, ch->GetMapIndex(), ok ? 1 : 0);
+		return ok;
+	}
+
 	// Used, handed in or picked up: true when it took the tick.
 	bool ManagePlayerBotPdgItems(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotPdgBot& b, DWORD dwNow)
 	{
@@ -531,7 +621,7 @@ namespace
 		FPlayerBotPdgGroundItem ground(ch);
 		ch->GetSectree()->ForEachAround(ground);
 		if (!ground.m_found || ch->GetEmptyInventory(1) < 0)
-			return false;
+			return TakePlayerBotPdgOwnLoot(ch, state, b, dwNow);	// MT2009_PLUS_BOT_LOOT_ROOM_V1
 		LPITEM item = ground.m_found;
 		if (ground.m_iBest > PLAYERBOT_PDG_PICKUP_DISTANCE)
 		{
