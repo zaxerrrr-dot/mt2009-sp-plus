@@ -391,6 +391,20 @@ namespace
 		return vnum == 50300 || vnum == 70037 || vnum == 70055;
 	}
 
+	// antyflaga klasy, ktora uczy sie tej umiejetnosci (0: wspolna albo nieznana)
+	DWORD SkillClassAntiFlag(long skillVnum)
+	{
+		if ((skillVnum >= 1 && skillVnum <= 5) || (skillVnum >= 16 && skillVnum <= 20))
+			return ITEM_ANTIFLAG_WARRIOR;
+		if ((skillVnum >= 31 && skillVnum <= 35) || (skillVnum >= 46 && skillVnum <= 50))
+			return ITEM_ANTIFLAG_ASSASSIN;
+		if ((skillVnum >= 61 && skillVnum <= 66) || (skillVnum >= 76 && skillVnum <= 81))
+			return ITEM_ANTIFLAG_SURA;
+		if ((skillVnum >= 91 && skillVnum <= 96) || (skillVnum >= 106 && skillVnum <= 111))
+			return ITEM_ANTIFLAG_SHAMAN;
+		return 0;
+	}
+
 	// ----------------------------------------------------------------- filtr
 	struct TAhBonus
 	{
@@ -595,6 +609,15 @@ namespace
 
 		if (filter.classAntiFlag != 0 && (info.antiFlags & filter.classAntiFlag) != 0)
 			return false;
+
+		// MT2009_PLUS_AUCTION_HOUSE_CLASS_BOOKS_V1: ksiegi nie maja antyflag klasy -
+		// klase mowi umiejetnosc z socketu 0 (wspolne umiejetnosci zostaja dla wszystkich)
+		if (filter.classAntiFlag != 0 && IsSkillBook(item.vnum))
+		{
+			const DWORD bookFlag = SkillClassAntiFlag(item.alSockets[0]);
+			if (bookFlag != 0 && bookFlag != filter.classAntiFlag)
+				return false;
+		}
 
 		// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: plec mowi cos tylko o tym, co sie zaklada
 		if (filter.sexAntiFlag != 0)

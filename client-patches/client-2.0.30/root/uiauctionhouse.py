@@ -2047,6 +2047,7 @@ class FilterDialog(ui.BoardWithTitleBar):
 		ui.BoardWithTitleBar.__init__(self)
 		self.market = proxy(market)
 		self.sex = 0
+		self.jobClass = 0		# MT2009_PLUS_AUCTION_HOUSE_CLASS_FILTER_V1: to samo co przycisk "Klasa"
 		self.edits = {}
 		self.keepers = []
 		self.AddFlag("movable")
@@ -2082,6 +2083,24 @@ class FilterDialog(ui.BoardWithTitleBar):
 			x += select.GetWidth() + 8
 		SetHint(self.sexSelects[1][1], "Tylko bro\xf1, zbroje i kostiumy dla tej p\xb3ci")
 		SetHint(self.sexSelects[2][1], "Tylko bro\xf1, zbroje i kostiumy dla tej p\xb3ci")
+		y += self.LINE
+
+		# MT2009_PLUS_AUCTION_HOUSE_CLASS_FILTER_V1: klasa postaci (ten sam filtr co przycisk "Klasa")
+		self.keepers.append(MakeText(self, self.LABEL_X, y + 1, "Klasa:"))
+		self.classSelects = []
+		x = 72
+		for name, value in CLASS_DEFS:
+			select = LabeledSelect(name, self.SELECT, ui.__mem_func__(self.SetJobClass), value)
+			select.SetParent(self)
+			if x + select.GetWidth() > self.WIDTH - 12:
+				x = 72
+				y += self.LINE - 6
+			select.SetPosition(x, y)
+			select.Show()
+			if value:
+				SetHint(select, "Przedmioty i ksi\xeagi, kt\xf3rych mo\xbfe u\xbfy\xe6 ta klasa")
+			self.classSelects.append((value, select))
+			x += select.GetWidth() + 8
 		y += self.LINE + 8
 
 		self.applyButton = MakeButton(self, self.WIDTH // 2 - 92, y, 88, "Zastosuj", ui.__mem_func__(self.Accept))
@@ -2097,13 +2116,19 @@ class FilterDialog(ui.BoardWithTitleBar):
 		for selectValue, select in self.sexSelects:
 			select.SetChecked(selectValue == value)
 
-	def Open(self, values):
+	def SetJobClass(self, value):
+		self.jobClass = value
+		for selectValue, select in self.classSelects:
+			select.SetChecked(selectValue == value)
+
+	def Open(self, values, jobClass=0):
 		# values: slownik jak AuctionHouseWindow.extraFilter
 		for key, label, digits in self.RANGES:
 			for index, edit in enumerate(self.edits[key]):
 				value = values[key][index]
 				edit.SetText(str(value) if value >= 0 and not (key == "price" and value == 0) else "")
 		self.SetSex(values["sex"])
+		self.SetJobClass(jobClass)
 		self.SetCenterPosition()
 		self.SetTop()
 		self.Show()
@@ -2125,13 +2150,14 @@ class FilterDialog(ui.BoardWithTitleBar):
 				low, high = high, low		# odwrocony zakres
 			values[key] = (low, high)
 		self.Close()
-		self.market.SetExtraFilter(values)
+		self.market.SetExtraFilter(values, self.jobClass)
 
 	def Clear(self):
 		for key, label, digits in self.RANGES:
 			for edit in self.edits[key]:
 				edit.SetText("")
 		self.SetSex(0)
+		self.SetJobClass(0)
 
 	def Close(self):
 		for key, label, digits in self.RANGES:
@@ -3434,6 +3460,7 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 			return
 		self.classFilter = value
 		self.__RefreshClassButton()
+		self.__RefreshFilterButton()
 		self.Search()
 
 	def ClearClassFilter(self):
@@ -3496,15 +3523,18 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		if self.filterDialog.IsShow():
 			self.filterDialog.Close()
 			return
-		self.filterDialog.Open(self.extraFilter)
+		self.filterDialog.Open(self.extraFilter, self.classFilter)
 
 	def ClearExtraFilter(self):
 		self.filterDialog.Close()
-		if self.extraFilter != self.__EmptyExtraFilter():
-			self.SetExtraFilter(self.__EmptyExtraFilter())
+		if self.extraFilter != self.__EmptyExtraFilter() or self.classFilter:
+			self.SetExtraFilter(self.__EmptyExtraFilter(), 0)
 
-	def SetExtraFilter(self, values):
+	def SetExtraFilter(self, values, jobClass=None):
 		self.extraFilter = values
+		if jobClass is not None:
+			self.classFilter = jobClass
+			self.__RefreshClassButton()
 		self.__RefreshFilterButton()
 		self.Search()
 
@@ -3512,6 +3542,7 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		extra = self.extraFilter
 		active = (1 if extra["price"] != (0, 0) else 0) + (1 if extra["level"] != (-1, -1) else 0)
 		active += (1 if extra["count"] != (-1, -1) else 0) + (1 if extra["sex"] else 0)
+		active += 1 if self.classFilter else 0
 		if active:
 			self.filterButton.SetText("Filtry (%d)" % active)
 		else:
