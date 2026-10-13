@@ -1,6 +1,7 @@
 ScriptType            RaceDataScript
 
 BaseModelFileName     "D:\ymir work\npc2\flame_door_npc\flame_door_npc.GR2"
+AttributeFileName     "D:\ymir work\npc2\flame_door_npc\flame_door_npc.mdatr"
 
 Group ShapeData
 {
