@@ -63,6 +63,7 @@ linux-port/docker/mariadb/playerbot/arezzo_costumes.sql
 linux-port/docker/mariadb/playerbot/zywioly_talizmany.sql
 linux-port/docker/mariadb/playerbot/zywioly_moby.sql
 linux-port/docker/mariadb/playerbot/zodiak.sql
+linux-port/docker/mariadb/playerbot/shipdefense.sql
 linux-port/docker/mariadb/playerbot/wiki_nowe.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes_webshop.sql
 linux-port/docker/game/Dockerfile

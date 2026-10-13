@@ -3477,6 +3477,18 @@ if [ -s /opt/playerbot/zodiak.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku (Hydra; server-patches/shipdefense/README.md). shipdefense.sql is
+# idempotent (INSERT IGNORE): the ship's 24 monsters and NPCs (3949-3965, 3970, 20432-20437; Owsap's numbers in
+# our columns, levels into 90-110) and two items (31107 Deska Naprawcza, 54705 Skrzynia Hydry). Before the
+# elements' files, as the Zodiac: their owner's rules then hold for the ship's monsters too.
+if [ -s /opt/playerbot/shipdefense.sql ]; then
+    if db < /opt/playerbot/shipdefense.sql; then
+        echo "[playerbot-migrate] ship defense: shipdefense.sql applied"
+    else
+        fail_step "ship defense: shipdefense.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_PLAY_COUNT_V1 (Autor: Vekirion): the Wheel of Fortune's "spin N times" keeps all n
 # rewards of one spin in player.wheel_spin.rewards ("vnum|count|rare#...") and n in spins
 # (playerbot_wheel.h). The core adds them itself on its first wheel start, but only if its
