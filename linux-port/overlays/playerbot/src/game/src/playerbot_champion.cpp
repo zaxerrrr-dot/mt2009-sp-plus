@@ -775,3 +775,13 @@ void RegisterChampionFunctions()
 }
 
 #endif // ENABLE_CONQUEROR_LEVEL
+
+// questlua.cpp declares and calls it inside namespace quest (a block-scope declaration there names
+// quest::RegisterChampionFunctions), so that is the name the linker looks for.
+namespace quest
+{
+	void RegisterChampionFunctions()
+	{
+		::RegisterChampionFunctions();
+	}
+}

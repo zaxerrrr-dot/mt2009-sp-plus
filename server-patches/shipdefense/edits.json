@@ -7,15 +7,21 @@
  },
  {
   "file": "dungeon.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (protected decl)",
+  "old": "namespace\n{\n\t// DUNGEON_KILL_ALL_BUG_FIX\n",
+  "new": "// MT2009_PLUS_SHIP_DEFENSE_V1 (protected decl): at file scope - a declaration inside the anonymous namespace\n// below would name a function of this file only (playerbot_ship_defense.cpp defines it).\nbool ShipDefense_Protected(LPCHARACTER ch);\n\nnamespace\n{\n\t// DUNGEON_KILL_ALL_BUG_FIX\n"
+ },
+ {
+  "file": "dungeon.cpp",
   "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (kill all)",
   "old": "\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse())\n\t\t\t\t\tch->DeadNoReward(); // @fixme188 from Dead()",
-  "new": "\t\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (kill all): d.kill_all leaves the ship's mast, wheel, walls,\n\t\t\t\t// heads and portal standing (playerbot_ship_defense.cpp).\n\t\t\t\t{ bool ShipDefense_Protected(LPCHARACTER); if (ShipDefense_Protected(ch)) return; }\n\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse())\n\t\t\t\t\tch->DeadNoReward(); // @fixme188 from Dead()"
+  "new": "\t\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (kill all): d.kill_all leaves the ship's mast, wheel, walls,\n\t\t\t\t// heads and portal standing (playerbot_ship_defense.cpp).\n\t\t\t\tif (::ShipDefense_Protected(ch)) return;\n\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse())\n\t\t\t\t\tch->DeadNoReward(); // @fixme188 from Dead()"
  },
  {
   "file": "dungeon.cpp",
   "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (purge)",
   "old": "\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse()) {\n\t\t\t\t\tM2_DESTROY_CHARACTER(ch);",
-  "new": "\t\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (purge): d.purge too, while the ship runs.\n\t\t\t\t{ bool ShipDefense_Protected(LPCHARACTER); if (ShipDefense_Protected(ch)) return; }\n\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse()) {\n\t\t\t\t\tM2_DESTROY_CHARACTER(ch);"
+  "new": "\t\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (purge): d.purge too, while the ship runs.\n\t\t\t\tif (::ShipDefense_Protected(ch)) return;\n\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse()) {\n\t\t\t\t\tM2_DESTROY_CHARACTER(ch);"
  },
  {
   "file": "char_battle.cpp",
