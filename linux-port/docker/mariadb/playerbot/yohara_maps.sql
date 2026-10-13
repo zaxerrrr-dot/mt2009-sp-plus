@@ -7,8 +7,8 @@
 --    outpost's OUTPOST dropped - the Troll Outpost 8625 is a plain Metin here);
 --  * ScalePct, SungMa*, SungMaExp (sungma_mob_exp.txt has it), Resist{Fist,Claw,Bleeding,Dark,Ice,Earth}, Att*,
 --    HitRange dropped; drop_item 0 (the drops: mob_drop_item.yohara_maps.txt).
---  * the element (wiki "(mrok)/(lod)/(ogien)") is NOT set: zywioly_moby.sql (MT2009_PLUS_ELEMENTS_V1, the owner's
---    rules) clears bits 11-16 on every mob it does not list - adding these is the owner's call (gen_zywioly_moby.py).
+--  * the element (wiki "(mrok)/(lod)/(ogien)") is not set here: zywioly_moby.sql (MT2009_PLUS_ELEMENTS_V1, run
+--    after this file) gives it - rule h of gen_zywioly_moby.py (the owner, 13 October: as in the official game).
 -- Balance (GUESS, to test): Owsap's levels 119-125, HP, damage (x4.0) and defence as they are; exp 0 as official -
 -- experience only as champion experience on a Sung Ma map (sungma_mob_exp.txt). Our 301-304 bosses and Metins
 -- carry half of Owsap's HP - halve max_hp here too if Yohara proves too slow.
