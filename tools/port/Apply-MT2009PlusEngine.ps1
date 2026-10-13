@@ -78,6 +78,7 @@ param(
 #                      (MT2009_PLUS_CHAMPION_V1, MT2009_PLUS_SUNGMA_V1; server-patches/czempion)
 #   Talizmany Woli     item_attribute.cpp, item_manager.cpp (MT2009_PLUS_WILL_TALISMAN_V1;
 #                      server-patches/talizmanwoli)
+#   Zyly Jadeitu       mining.cpp (MT2009_PLUS_JADE_VEINS_V1; server-patches/jadeit)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1248,6 +1249,18 @@ if ((Test-Path -LiteralPath $talizmanWoliApply -PathType Leaf) -and
     if ($talizmanWoliResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Will talisman edit(s).' -f $talizmanWoliResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Zyly Jadeitu (server-patches/jadeit, MT2009_PLUS_JADE_VEINS_V1): the four jade veins of Yohara (30310-30313 ->
+# Ruda Jadeitu 50641-50644 -> 50661-50664) in mining.cpp's ore table, so a pickaxe mines them (quest yohara_mapy2).
+$jadeitApply = Join-Path $repo 'server-patches/jadeit/Apply-JadeitPatch.ps1'
+if ((Test-Path -LiteralPath $jadeitApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'mining.cpp') -PathType Leaf)) {
+    $jadeitResult = & $jadeitApply -SourceDir $engineGameSource
+    if ($jadeitResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} jade vein edit(s).' -f $jadeitResult.Applied) -ForegroundColor DarkGray
     }
 }
 
