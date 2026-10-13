@@ -34,7 +34,14 @@ MAPS = [(302, 'metin2_map_dawnmistwood', (7, 4), (1177600, 1664000)),
         (304, 'metin2_map_mt_thunder', (4, 6), (1126400, 1510400))]
 RACE_DIRS = ('guild', 'npc', 'npc2', 'npc_pet', 'npc_mount', 'monster', 'monster2')
 # GF's own broken references (the official client has the same): reported, not failed
-KNOWN = {'d:/ymir work/zone/b/obj/512.jpg', 'd:/ymir work/zone/\xb0\xf8\xbf\xeb/hay_01.gr2'}
+KNOWN = {'d:/ymir work/zone/b/obj/512.jpg', 'd:/ymir work/zone/\xb0\xf8\xbf\xeb/hay_01.gr2',
+         # the Red Chief bosses' (3591, 3596) attack motions name the other folder's or misspelt files, and
+         # ray_blue1.mse (Triton boss 3491) a mesh in no client: those motions/that effect do not play, as in GF's
+         'd:/ymir work/monster2/redthief2_boss2/special_attack.gr2',
+         'd:/ymir work/monster2/redthief2_boss2/special_attack1.gr2',
+         'd:/ymir work/monster2/redthief2_boss2/specil_attack.gr2',
+         'd:/ymir work/monster2/redthief2_boss2/specil_attack1.gr2',
+         'd:/ymir work/effect/monster2/mash_ray1.mde'}
 
 
 def norm(p):
