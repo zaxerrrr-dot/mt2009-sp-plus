@@ -13,7 +13,8 @@
 #                           tools/yohara_maps3/gen_yitems3.py): a full record each over a template (Talizman Ognia+0
 #                           94000 for an armour, Zelazna Szkatulka 50120 for the rest - ../yohara/patch_yohara_client.py
 #                           yitem_record), its item_list line (the GF icons: client-2.0.30/root/icon/item) and its
-#                           itemdesc line; Tajemniczy Bilet's (70408) description says what it opens now.
+#                           itemdesc line; Tajemniczy Bilet's (70408) description says what it opens now, Pyl Wezowy
+#                           (70428, the second batch's) becomes a quest-use item with its text ('retype').
 # APPEND ONLY for mob_proto/atlasinfo/npclist: a vnum/map already there with other content (the element bits aside) is
 # a collision and stops the run. Idempotent: a second run changes nothing.
 # item_proto lives in "dbdata" (gamedata/item_proto) with itemdesc (locale/pl/itemdesc.txt); item_list.txt and the
@@ -162,6 +163,18 @@ def item_proto(b):
         r = py.yitem_record(recs[py.YITEM_TEMPLATE.get(w['type'], py.TEMPLATE)], w)
         if recs.get(w['vnum']) != r:
             recs[w['vnum']] = r
+            changed += 1
+    # a second-batch item this batch gives its use (Pyl Wezowy 70428: a quest use, as the server's UPDATE)
+    for k, t in sorted(items_json().get('retype', {}).items()):
+        v = int(k)
+        if v not in recs:
+            continue
+        r = bytearray(recs[v])
+        struct.pack_into('<BB', r, 74, t['type'], t['subtype'])
+        flag = struct.unpack_from('<I', r, 86)[0] | t['flag_or']
+        struct.pack_into('<I', r, 86, flag)
+        if recs[v] != bytes(r):
+            recs[v] = bytes(r)
             changed += 1
     if not changed:
         return b, 0

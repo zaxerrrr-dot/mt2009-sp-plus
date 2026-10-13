@@ -2628,6 +2628,14 @@
 "39116": "39116\tPierścień Siły Natury (100%)\tUżyj pierścienia w Królestwie Żywiołów, by zagwarantować sobie teleportowanie na Płaskowyż Siły Natury."
 },
 "itemdesc_replace": {
-"70408": "70408\tTajemniczy Bilet\tPokaż go Tajemniczemu Ołtarzowi w Namgan, aby wejść do Tajemniczej Instancji."
+"70408": "70408\tTajemniczy Bilet\tPokaż go Tajemniczemu Ołtarzowi w Namgan, aby wejść do Tajemniczej Instancji.",
+"70428": "70428\tPył Wężowy\tUżyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę (najwyżej do 60 minut)."
+},
+"retype": {
+"70428": {
+"type": 18,
+"subtype": 0,
+"flag_or": 1024
+}
 }
 }

@@ -165,6 +165,12 @@ EXISTING = {
     27987: 'Malz', 'gold': 'Yang',
 }
 EXISTING.update(MAPS2_ITEMS)
+# items of the second batch this one gives their use: Pyl Wezowy (70428) adds a minute in Swiatynia Wezy (quest
+# swiatynia_wezy) - the second batch made it an inert material (it had no temple); a quest-use item here (Owsap:
+# USE_SPECIAL, a quest use). The server: an idempotent UPDATE; the client: patch_ymaps3_client.item_proto ('retype').
+RETYPE = {70428: dict(type=18, subtype=0, flag_or=1024,
+                      desc='70428\tPył Wężowy\tUżyj go w Świątyni Węży, aby przedłużyć czas wyprawy o minutę '
+                           '(najwyżej do 60 minut).')}
 
 
 def main():
@@ -263,6 +269,9 @@ def write_sql(items):
     L.append('SET NAMES utf8mb4;')
     L.append('INSERT IGNORE INTO world.item_proto (%s) VALUES' % ','.join('`%s`' % c for c in Y.COLS))
     L.append(',\n'.join(Y.sqlrow(i) for i in items) + ';')
+    for v, r in sorted(RETYPE.items()):
+        L.append('UPDATE world.item_proto SET type=%d, subtype=%d, flag=flag|%d WHERE vnum=%d AND (type<>%d OR '
+                 'flag&%d=0);' % (r['type'], r['subtype'], r['flag_or'], v, r['type'], r['flag_or']))
     with open(SQL_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L) + '\n')
 
@@ -277,8 +286,11 @@ def write_json(items):
            'itemdesc': dict((str(i['vnum']), '%d\t%s\t%s' % (i['vnum'], i['locale_name'], Y.client_desc(i)))
                             for i in items),
            # Tajemniczy Bilet (70408, MT2009_PLUS_YOHARA_ITEMS1_V1) works now: Tajemniczy Oltarz on Namgan
-           'itemdesc_replace': {'70408': '70408\tTajemniczy Bilet\tPokaż go Tajemniczemu Ołtarzowi w Namgan, aby '
-                                         'wejść do Tajemniczej Instancji.'}}
+           'itemdesc_replace': dict([('70408', '70408\tTajemniczy Bilet\tPokaż go Tajemniczemu Ołtarzowi w Namgan, '
+                                                  'aby wejść do Tajemniczej Instancji.')] +
+                                    [(str(v), r['desc']) for v, r in RETYPE.items()]),
+           'retype': dict((str(v), dict(type=r['type'], subtype=r['subtype'], flag_or=r['flag_or']))
+                          for v, r in RETYPE.items())}
     with open(JSON_OUT, 'w', encoding='utf-8', newline='\n') as f:
         json.dump(out, f, ensure_ascii=False, indent=0)
         f.write('\n')
