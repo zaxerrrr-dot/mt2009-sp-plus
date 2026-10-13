@@ -176,6 +176,22 @@ linux-port/docker/game/zodiak/data/monster/cz_typhoon_c/*
 linux-port/docker/game/zodiak/data/monster/cz_wolf/*
 linux-port/docker/game/zodiak/data/monster/cz_zephyr/*
 linux-port/docker/game/zodiak/map/metin2_12zi_stage/*
+# MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku's share files (Dockerfile step "share: Obrona Statku"). Its engine
+# sources are playerbot_ship_defense*.{h,cpp} - the overlay's and the build context's playerbot_* lines carry them.
+linux-port/docker/game/shipdefense/*
+linux-port/docker/game/shipdefense/data/dungeon/defense_wave/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_hydra_boss/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_hydra_boss_left/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_hydra_boss_right/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_medusa/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_minihydra/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_naga/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_pawn/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_sail/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_wall/*
+linux-port/docker/game/shipdefense/data/monster/defensewave_watersoul/*
+linux-port/docker/game/shipdefense/data/monster/metinstone_defensewave/*
+linux-port/docker/game/shipdefense/map/metin2_map_defensewave/*
 
 # ---- the launcher and the package's own bookkeeping --------------------------
 # The line's own version and package note, published under the root names.

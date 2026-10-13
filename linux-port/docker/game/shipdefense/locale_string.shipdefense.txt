@@ -1,0 +1,53 @@
+"Ship defense: sea monsters attack us! Get ready to fight!";
+"Atakuj¹ nas morskie potwory! Do broni!";
+
+"Ship defense: wave %d - protect the mast for %d sec.";
+"Fala %d: broñcie masztu przez %d sek.";
+
+"Ship defense: the sea battle starts in %d sec.";
+"Bitwa morska zacznie siê za %d sek.";
+
+"Ship defense: the next wave begins in %d sec.";
+"Nastêpna fala za %d sek.";
+
+"Ship defense: they attack again! Ready your weapons!";
+"Znowu atakuj¹! Do broni!";
+
+"Ship defense: wave %d - protect the mast and defeat the Hydra.";
+"Fala %d: broñcie masztu i pokonajcie Hydrê.";
+
+"Ship defense: the mast has %d%% HP left!";
+"Maszt: zosta³o %d%% P¯!";
+
+"Ship defense: the mast was repaired - %d%% HP.";
+"Maszt naprawiony: %d%% P¯.";
+
+"Ship defense: a Hydra Egg appeared! Destroy it to sink the monsters.";
+"Pojawi³o siê Jajo Hydry! Rozbij je, a potwory pójd¹ na dno.";
+
+"Ship defense: the Hydra Egg burst - the monsters sink!";
+"Jajo Hydry pêk³o - potwory id¹ na dno!";
+
+"Ship defense: the Hydra's spawn struck the mast with a laser!";
+"Potomstwo Hydry trafi³o maszt laserem!";
+
+"Ship defense: you caught the laser of the Hydra's spawn.";
+"Przechwyci³eœ laser Potomstwa Hydry.";
+
+"Ship defense: you protected the mast. Get ready for the next wave!";
+"Maszt ocala³. Przygotujcie siê na nastêpn¹ falê!";
+
+"Ship defense: land sighted! You protected the ship - go through the portal.";
+"Ziemia na horyzoncie! Statek ocala³ - przejdŸcie przez portal.";
+
+"Ship defense: hurry, you have %d min. to go through the portal.";
+"Pospieszcie siê, macie %d min., by przejœæ przez portal.";
+
+"Ship defense: SOS! The mast is smashed and the ship is sinking. You will be taken back to land.";
+"SOS! Maszt strzaskany, statek tonie. Za chwilê wrócicie na l¹d.";
+
+"Ship defense: the voyage took too long - the ship turns back.";
+"Rejs trwa³ za d³ugo - statek zawraca.";
+
+"Ship defense: nobody set sail - the ship stays in port.";
+"Nikt nie wyp³yn¹³ - statek zostaje w porcie.";

@@ -1243,6 +1243,44 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
  && { LC_ALL=C grep -a -q 'add_goto_info("zodiac"' "$S" || printf 'add_goto_info("zodiac", 0, 358, 3332, 14325)\r\n' >> "$S"; } \
  && rm -rf "$A" \
  && echo "share: Swiatynia Zodiaku (358, 51 groups, temple data, motions, texts, /goto zodiac)"
+# MT2009_PLUS_SHIP_DEFENSE_V1 (share): Obrona Statku (Hydra; server-patches/shipdefense/README.md, Owsap's
+# "defense wave") - metin2_map_defensewave, 367 (Owsap's 358 is our Zodiac temple), 3x3 at 128000 486400, its
+# private copies 3670000-3679999 hosted by game1 (bin/m2-render-config). Owsap's server_attr (56 of 2.36 million
+# cells differ from the GF client's attr.atr, checked with tools/gf28/srvattr.py), Setting.txt and Town.txt;
+# the waves' respawn lines data/dungeon/defense_wave (wave1-4, boss; the one line on a blocked cell, 378,430,
+# moved to 379,430), the monsters' motions (data/monster/defensewave_*, metinstone_defensewave: the server
+# times attacks and moves by them, every run.msa carries its Accumulation), 18 texts in Polish
+# (locale_string.shipdefense.txt), the map's name for the quests and /goto statek for game masters.
+# The port (Owsap's 359, here 368) comes with Yohara.
+COPY shipdefense/ /tmp/shipdefense-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && rm -rf "$L/map/metin2_map_defensewave" && cp -a "$A/map/metin2_map_defensewave" "$L/map/" \
+ && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+ && sed -i -E '/^367[[:blank:]]/d' "$L/map/index" \
+ && printf '367 metin2_map_defensewave\n' >> "$L/map/index" \
+ && test "$(grep -c -E '^367[[:blank:]]+metin2_map_defensewave[[:space:]]*$' "$L/map/index")" = 1 \
+ && test "$(od -An -tx1 -N8 "$L/map/metin2_map_defensewave/server_attr" | tr -d ' ')" = 0c0000000c000000 \
+ && mkdir -p /opt/metin2/share/data/dungeon /opt/metin2/share/data/monster \
+ && rm -rf /opt/metin2/share/data/dungeon/defense_wave && cp -a "$A/data/dungeon/defense_wave" /opt/metin2/share/data/dungeon/ \
+ && test -s /opt/metin2/share/data/dungeon/defense_wave/wave4.txt \
+ && for m in "$A"/data/monster/*; do rm -rf "/opt/metin2/share/data/monster/$(basename "$m")"; cp -a "$m" /opt/metin2/share/data/monster/; done \
+ && test -s /opt/metin2/share/data/monster/defensewave_hydra_boss/motlist.txt \
+ && test -z "$(for m in "$A"/data/monster/*/run.msa; do grep -q -E '^Accumulation[[:blank:]]+[-0-9.]+[[:blank:]]+-[0-9]' "$m" || echo "$m"; done)" \
+ && ! grep -q -F '"Ship defense: the mast has %d%% HP left!";' "$L/locale_string.txt" \
+ && { [ -z "$(tail -c 1 "$L/locale_string.txt")" ] || printf '\n' >> "$L/locale_string.txt"; } \
+ && printf '\n' >> "$L/locale_string.txt" && sed 's/\r$//' "$A/locale_string.shipdefense.txt" >> "$L/locale_string.txt" \
+ && grep -q -F '"Ship defense: the mast has %d%% HP left!";' "$L/locale_string.txt" \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[367\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_SHIP_DEFENSE_V1\r\ntranslate.general.map_names[367] = "Obrona Statku"\r\n' >> "$f"; \
+    done \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("statek"' "$S" || printf 'add_goto_info("statek", 0, 367, 1667, 5223)\r\n' >> "$S"; } \
+ && rm -rf "$A" \
+ && echo "share: Obrona Statku (367, waves, motions, texts, /goto statek)"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only

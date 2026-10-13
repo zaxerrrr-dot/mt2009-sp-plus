@@ -184,6 +184,11 @@ MAPS_game1="$MAPS_game1 110"
 # floors are private copies (3580000+) made on the core of the map, a person's party bots follow into them and the
 # bots' own temple runs go there (a bot cannot cross cores).
 MAPS_game1="$MAPS_game1 358"
+# MT2009_PLUS_SHIP_DEFENSE_V1 (maps): Obrona Statku (367, metin2_map_defensewave) on game1 under either layout -
+# the ship is a private copy (3670000+) made on the core of the map, the quest's d.new_jump_pids finds it there
+# and a person's party bots follow (a bot cannot cross cores). game1: 38 maps in the split layout, 46 of
+# MAP_ALLOW_LIMIT 48 in the unified one - the port (368, with Yohara) would make 47.
+MAPS_game1="$MAPS_game1 367"
 # The difficulty is acted on by the migrate service (event flags the quests
 # read); said here so a support bundle carries it next to the layout.
 log "difficulty: ${M2_DIFFICULTY:-easy} (Biologist and stable keeper waits; apply.sh writes the flags)"
