@@ -343,6 +343,17 @@ MOUNT_RECOVERY_RETRY = 1.5
 MOUNT_RECOVERY_DISMOUNT_TIMEOUT = 8.0
 MOUNT_RECOVERY_REMOUNT_TIMEOUT = 15.0
 MOUNT_RECOVERY_COOLDOWN = 12.0
+# MT2009_PLUS_AUTOHUNT_STUCK_FIX_V1: the getting off and on again came on the
+# first stop and left the target and the straight line to it as they were -
+# the horse ran into the same wall again, every MOUNT_RECOVERY_COOLDOWN. Now
+# a stop first asks /autohunt_path for the way round the target, the next one
+# (within MOUNT_STUCK_REPEAT_SECONDS, near the same place) leaves the target
+# for TARGET_BLOCK_DURATION, and only the MOUNT_STUCK_REMOUNT_AFTER-th gets off
+# and on. Never while a way (WalkPath) or a step off a wall (EscapeFrame) is
+# walked: they have their own measures.
+MOUNT_STUCK_REPEAT_SECONDS = 20.0
+MOUNT_STUCK_REPEAT_DISTANCE = 300.0
+MOUNT_STUCK_REMOUNT_AFTER = 3
 
 # A skill cast at an enemy goes only at the monster the hunter is fighting:
 # alive, in the client's own hand (player.GetTargetVID) and within reach.
@@ -1156,6 +1167,10 @@ class Hunter(object):
             self.mountRecoveryOnConfirmed = False
         self.mountRecoveryCooldownUntil = getattr(self, 'mountRecoveryCooldownUntil', 0.0)
         self.ResetMountWatch()
+        # MT2009_PLUS_AUTOHUNT_STUCK_FIX_V1
+        self.mountStuckCount = 0
+        self.mountStuckAt = 0.0
+        self.mountStuckPosition = None
         self.skipVid = 0
         self.skipUntil = 0.0
         # The target that boxed the hunter in, on a slot of its own so the
@@ -1334,9 +1349,11 @@ class Hunter(object):
         
         if not self.RiderFrame(now):
             self.CheckPathPending(now)
-            if self.WatchMountStuck(now):
-                return
+            # MT2009_PLUS_AUTOHUNT_STUCK_FIX_V1: the mount's measure after the
+            # step off a wall, never in its middle.
             if not self.EscapeFrame(now):
+                if self.WatchMountStuck(now):
+                    return
                 self.RememberWalkPosition()
                 self.CastSkills(now)
                 self.AskForLoot(now)
@@ -1601,8 +1618,12 @@ class Hunter(object):
     def WatchMountStuck(self, now):
         """A mounted walk that gains nothing for MOUNT_STUCK_SECONDS starts
         the remount; True when it did (the frame is taken)."""
+        # MT2009_PLUS_AUTOHUNT_STUCK_FIX_V1: not while a way round is asked
+        # or walked, nor during a step off a wall.
         if (not IsMounted() or self.riderPhase != RIDE or
-                now - self.walkIntentAt > MOUNT_WALK_INTENT_SECONDS):
+                now - self.walkIntentAt > MOUNT_WALK_INTENT_SECONDS or
+                self.pathPoints or self.pathPending or
+                self.escapeUntil or now < self.escapeWaitUntil):
             self.mountWatchPosition = None
             return False
         (px, py, pz) = player.GetMainCharacterPosition()
@@ -1614,7 +1635,52 @@ class Hunter(object):
             return False
         if now - self.mountWatchSince < MOUNT_STUCK_SECONDS:
             return False
-        return self.TryMountRecovery(now)
+        return self.MountStuck(now, px, py)
+
+    def MountStuck(self, now, px, py):
+        """MT2009_PLUS_AUTOHUNT_STUCK_FIX_V1: the mounted walk stopped -
+        first the way round the target, then another target, the getting
+        off and on last (MOUNT_STUCK_REMOUNT_AFTER). True: the frame is taken."""
+        if self.mountRecoveryPhase:
+            return False
+        last = self.mountStuckPosition
+        repeated = (last is not None and now - self.mountStuckAt <= MOUNT_STUCK_REPEAT_SECONDS and
+            (px - last[0]) ** 2 + (py - last[1]) ** 2 <= MOUNT_STUCK_REPEAT_DISTANCE ** 2)
+        self.mountStuckCount = self.mountStuckCount + 1 if repeated else 1
+        self.mountStuckAt = now
+        self.mountStuckPosition = (px, py)
+        if self.mountStuckCount >= MOUNT_STUCK_REMOUNT_AFTER and self.TryMountRecovery(now):
+            self.mountStuckCount = 0
+            self.mountStuckPosition = None
+            return True
+        # A stop where it stands: the straight walk would go on into the wall.
+        self.ReleaseAttack()
+        self.WalkTo(px, py)
+        self.ResetChaseMovement()
+        self.ResetMountWatch()
+        self.nextMove = 0.0
+        vid = self.targetVid
+        if not vid or self.lootSweeping or self.returning:
+            # A walk to a drop or back to the start: the next question decides.
+            self.nextRequest = 0.0
+            return True
+        if self.mountStuckCount == 1 and self.PathAskable(vid, now):
+            (tx, ty, tz) = chr.GetPixelPosition(vid)
+            if self.AskPath(now, 'target', vid, tx, ty):
+                return True
+        # No way round known (or it led here again): another target.
+        self.BlockTarget(vid, now)
+        if player.GetTargetVID() != 0:
+            player.ClearTarget()
+        self.skipVid = vid
+        self.skipUntil = now + STUCK_SKIP_SECONDS
+        self.targetVid = 0
+        self.targetLastHP = None
+        self.approachSince = 0.0
+        self.targetSetSince = 0.0
+        self.targetMissFrames = 0
+        self.nextRequest = 0.0
+        return True
 
     def TryMountRecovery(self, now):
         if (self.mountRecoveryPhase or now < self.mountRecoveryCooldownUntil or
@@ -3202,7 +3268,12 @@ class Hunter(object):
         if not self.config['use_skills'] or now < self.riderNextBuffCheck or now < self.riderNextCycle:
             return False
         self.riderNextBuffCheck = now + RIDER_BUFF_CHECK
-        due = self.MountedFootSkills(now, RIDER_RENEW_BEFORE) if ordinary else self.RiderBuffs(now, RIDER_RENEW_BEFORE)
+        # MT2009_PLUS_AUTOHUNT_RIDER_FIX_V1: off the horse for a buff only,
+        # with the battle horse mode or without it. Without it every ready
+        # attack skill (MountedFootSkills) took the hunter down, and the
+        # climb-down and the way back on, every RIDER_CYCLE_GAP, broke each
+        # walk to the target ("buguje sie na wierzchowcach").
+        due = self.RiderBuffs(now, RIDER_RENEW_BEFORE)
         if not due:
             return False
         if self.RiderHealthShare() < RIDER_SAFE_HP and not self.RiderQuiet(now):
@@ -3220,7 +3291,9 @@ class Hunter(object):
         return True
 
     def MountedFootSkills(self, now, margin):
-        """Normal hunting skills, with the rider's buff renewal safeguards."""
+        """Normal hunting skills, with the rider's buff renewal safeguards.
+        MT2009_PLUS_AUTOHUNT_RIDER_FIX_V1: no longer a reason to get off the
+        horse (RiderMaybeClimbDown, RiderStep take RiderBuffs)."""
         buffs = dict((index, (index, slot, skillIndex)) for index, slot, skillIndex in self.RiderBuffs(now, margin))
         found = []
         for index, slot, skillIndex in self.SkillCandidates(now):
@@ -3391,6 +3464,9 @@ class Hunter(object):
         return False
 
     def RiderRestoreSkillTarget(self, now):
+        # MT2009_PLUS_AUTOHUNT_RIDER_FIX_V1: a climb-down casts buffs only
+        # and needs no target marked.
+        return
         if not self.mountedSkillCycle or not self.config['attack']:
             return
         if not self.RiderNeedsSkillTarget(now):
@@ -3486,10 +3562,10 @@ class Hunter(object):
             if now < self.riderPhaseUntil or self.RiderSkillBusy(now):
                 return
             self.RiderRestoreSkillTarget(now)
-            due = self.MountedFootSkills(now, RIDER_RENEW_ON_FOOT) if self.mountedSkillCycle else self.RiderBuffs(now, RIDER_RENEW_ON_FOOT)
+            # MT2009_PLUS_AUTOHUNT_RIDER_FIX_V1: on foot the buffs alone,
+            # then straight back on - no attack skills cast while down.
+            due = self.RiderBuffs(now, RIDER_RENEW_ON_FOOT)
             if not due:
-                if self.mountedSkillCycle and now < self.riderTargetGraceUntil:
-                    return
                 self.RiderBeginMount(now)
                 return
             (index, slot, skillIndex) = due[0]
@@ -4276,10 +4352,10 @@ class AutoHuntWindow(ui.BoardWithTitleBar):
             return
         phase = hunter.riderPhase
         if phase in (DISMOUNT, TO_FOOT):
-            self.statusText.SetText(T('Zsiadam po skille', 'Dismounting for skills') if hunter.mountedSkillCycle else T('Bojowiec: zsiadam po buffy', 'Rider: getting off for buffs'))
+            self.statusText.SetText(T('Zsiadam po buffy', 'Dismounting for buffs') if hunter.mountedSkillCycle else T('Bojowiec: zsiadam po buffy', 'Rider: getting off for buffs'))
             return
         if phase == CAST:
-            self.statusText.SetText(T('Rzucam skille', 'Casting skills') if hunter.mountedSkillCycle else T('Bojowiec: rzucam buffy', 'Rider: casting buffs'))
+            self.statusText.SetText(T('Rzucam buffy', 'Casting buffs') if hunter.mountedSkillCycle else T('Bojowiec: rzucam buffy', 'Rider: casting buffs'))
             return
         if phase in (MOUNT, TO_SADDLE):
             self.statusText.SetText(T('Wsiadam na konia', 'Mounting the horse') if hunter.mountedSkillCycle else T('Bojowiec: wsiadam na konia', 'Rider: getting on the horse'))

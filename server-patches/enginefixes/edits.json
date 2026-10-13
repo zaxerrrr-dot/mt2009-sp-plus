@@ -322,5 +322,47 @@
   "marker": "MT2009_PLUS_AREZZO_ENCHANT_PERMIT_V1",
   "old": "\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n\n\tfor (itertype(vec_item) it = vec_item.begin(); it != vec_item.end(); ++it)\n",
   "new": "\tCreateQuestDropItem(pkChr, pkKiller, vec_item, iDeltaPercent, iRandRange);\n\n\t// MT2009_PLUS_AREZZO_ENCHANT_PERMIT_V1 (the owner, 7 October: \"na nowych mapach Arezzo pozwolenie na\n\t// zaczarowanie przedmiotow leci za czesto, ustaw 1/4\"): on Dolina Cyklopow (360), Pustkowie Faraona (361)\n\t// and Zaczarowany Las (362) a Pozwolenie na Zaczar. Przedmiotu (30370) - Metin Cienia's - stays at 1 in 4;\n\t// the same stones elsewhere drop as before.\n\t{\n\t\tconst long lMapIndex = pkChr->GetMapIndex();\n\t\tif (lMapIndex == 360 || lMapIndex == 361 || lMapIndex == 362)\n\t\t{\n\t\t\tfor (std::vector<LPITEM>::iterator it = vec_item.begin(); it != vec_item.end(); )\n\t\t\t{\n\t\t\t\tif (*it && (*it)->GetVnum() == 30370 && number(1, 4) != 1)\n\t\t\t\t{\n\t\t\t\t\tM2_DESTROY_ITEM(*it);\n\t\t\t\t\tit = vec_item.erase(it);\n\t\t\t\t}\n\t\t\t\telse\n\t\t\t\t\t++it;\n\t\t\t}\n\t\t}\n\t}\n\n\tfor (itertype(vec_item) it = vec_item.begin(); it != vec_item.end(); ++it)\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (struct)",
+  "old": "\tint\t\tm_iPriorityOrder = 0;\n",
+  "new": "\tint\t\tm_iPriorityOrder = 0;\n\t// MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (struct) (server-patches/enginefixes): a target behind a wall, a rock or a\n\t// building (AutoHuntSegmentBlocked from the hunter) is ranked after every target of\n\t// its own kind with a clear line - the mounted hunter ran into the wall at the\n\t// nearest one while another stood in the open. Taken only when nothing of its kind\n\t// is in the open; the client then asks /autohunt_path for the way round. The\n\t// penalty is less than the steps between the kinds (500000 and more), so the\n\t// window's order (stone, boss, priority) stays as it was. Tested only for one that\n\t// would win without it - a few cells of the map's grid each.\n\tbool\t\tm_bBestBlocked = false;\n\tvoid Mt2009PlusOffer(LPCHARACTER victim, int score)\n\t{\n\t\tif (score >= m_iBestScore)\n\t\t\treturn;\n\t\tconst bool blocked = Mt2009PlusAutoHuntBlocked(m_ch, victim);\n\t\tif (blocked)\n\t\t{\n\t\t\tscore += 250000;\n\t\t\tif (score >= m_iBestScore)\n\t\t\t\treturn;\n\t\t}\n\t\tm_iBestScore = score;\n\t\tm_pkBest = victim;\n\t\tm_bBestBlocked = blocked;\n\t}\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (declare)",
+  "old": "// The answer is \"AutoHuntTarget <vid>\", zero for nothing.\nstruct FAutoHuntTarget\n{\n",
+  "new": "// The answer is \"AutoHuntTarget <vid>\", zero for nothing.\n// MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (declare): the straight line from the hunter to a monster crosses a wall\n// (AutoHuntSegmentBlocked, below).\nstatic bool Mt2009PlusAutoHuntBlocked(LPCHARACTER ch, LPCHARACTER victim);\nstruct FAutoHuntTarget\n{\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (priority)",
+  "old": "\t\t\t\t\tscore += rank * 1000000;\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\tif (score < m_iBestScore)\n\t\t\t{\n\t\t\t\tm_iBestScore = score;\n\t\t\t\tm_pkBest = victim;\n\t\t\t}\n\t\t\treturn;\n",
+  "new": "\t\t\t\t\tscore += rank * 1000000;\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\tMt2009PlusOffer(victim, score); // MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (priority)\n\t\t\treturn;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (nearest)",
+  "old": "\t\tif (m_bNearest)\n\t\t{\n\t\t\tif (score < m_iBestScore)\n\t\t\t{\n\t\t\t\tm_iBestScore = score;\n\t\t\t\tm_pkBest = victim;\n\t\t\t}\n\t\t\treturn;\n",
+  "new": "\t\tif (m_bNearest)\n\t\t{\n\t\t\tMt2009PlusOffer(victim, score); // MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (nearest)\n\t\t\treturn;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (score)",
+  "old": "\t\t\tscore -= 1500000;\n\t\tif (score < m_iBestScore)\n\t\t{\n\t\t\tm_iBestScore = score;\n\t\t\tm_pkBest = victim;\n\t\t}\n",
+  "new": "\t\t\tscore -= 1500000;\n\t\tMt2009PlusOffer(victim, score); // MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (score)\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (blocked)",
+  "old": "\t\tif (!SECTREE_MANAGER::instance().IsMovablePosition(lMapIndex, x, y))\n\t\t\treturn true;\n\t}\n\treturn false;\n}\n",
+  "new": "\t\tif (!SECTREE_MANAGER::instance().IsMovablePosition(lMapIndex, x, y))\n\t\t\treturn true;\n\t}\n\treturn false;\n}\n\n// MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (blocked)\nstatic bool Mt2009PlusAutoHuntBlocked(LPCHARACTER ch, LPCHARACTER victim)\n{\n\treturn AutoHuntSegmentBlocked(ch->GetMapIndex(), ch->GetX(), ch->GetY(), victim->GetX(), victim->GetY());\n}\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (reply)",
+  "old": "\t\t\t(f.m_pkBest && AutoHuntSegmentBlocked(ch->GetMapIndex(), ch->GetX(), ch->GetY(),\n\t\t\t\t\tf.m_pkBest->GetX(), f.m_pkBest->GetY())) ? 1 : 0);\n",
+  "new": "\t\t\t(f.m_pkBest && f.m_bBestBlocked) ? 1 : 0); // MT2009_PLUS_AUTOHUNT_CLEAR_LINE_V1 (reply): tested once, while ranking\n"
  }
 ]
