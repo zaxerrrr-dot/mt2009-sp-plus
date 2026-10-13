@@ -148,6 +148,8 @@ CATEGORIES = (
 		('bonus_switch', 'Zmiana bonus\xf3w', (), False),
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py), no key by default.
 		('weekly_rank', 'Ranking tygodniowy', (), False),
+		# MT2009_PLUS_CHAMPION_V1: Poziom Czempiona (uichampion.py), no key by default.
+		('champion', 'Czempion', (), False),
 		# MT2009_PLUS_MONSTER_CARDS_V1: Karty Potworow (monstercard.py) - J, the package's key, is
 		# the Kosz here, so none by default (the Esc menu's button opens it too).
 		('monster_card', 'Karty Potwor\xf3w', (), False),
