@@ -11,7 +11,6 @@
 #include "char_manager.h"
 #include "desc.h"
 #include "party.h"
-#include "sectree_manager.h"
 #include "questmanager.h"
 #include "questlua.h"
 #include "locale_service.h"
@@ -67,7 +66,7 @@ namespace champion
 	{
 		bool loaded = false;
 		std::map<std::string, SungmaRequirement> byName;	// lower-case map name -> requirement
-		std::map<long, const SungmaRequirement*> byIndex;	// base map index -> requirement (or NULL)
+		std::map<long, const SungmaRequirement*> byIndex;	// map index (map/index) -> requirement
 		std::map<unsigned int, unsigned int> mobExp;
 	};
 
@@ -134,8 +133,24 @@ namespace champion
 					st.mobExp[vnum] = exp;
 			}
 		}
-		sys_log(0, "CHAMPION: %u Sung Ma map(s) named, %u monster(s) with champion experience",
-				(unsigned)st.byName.size(), (unsigned)st.mobExp.size());
+		{
+			// map/index: <index> <map name> - every map of the world, whichever core hosts it (the bots' map
+			// filter asks about maps of other cores too).
+			std::ifstream in((LocaleService_GetMapPath() + "/index").c_str());
+			std::istringstream line;
+			while (in && !st.byName.empty() && NextDataLine(in, line))
+			{
+				long lIndex = 0;
+				std::string name;
+				if (!(line >> lIndex >> name) || lIndex <= 0)
+					continue;
+				std::map<std::string, SungmaRequirement>::const_iterator n = st.byName.find(Lower(name));
+				if (n != st.byName.end())
+					st.byIndex[lIndex] = &n->second;
+			}
+		}
+		sys_log(0, "CHAMPION: %u Sung Ma map(s) named, %u of them in map/index, %u monster(s) with champion experience",
+				(unsigned)st.byName.size(), (unsigned)st.byIndex.size(), (unsigned)st.mobExp.size());
 	}
 
 	void Reload()
@@ -148,23 +163,11 @@ namespace champion
 		TState& st = State();
 		if (!st.loaded)
 			Load();
-		if (st.byName.empty() || lMapIndex <= 0)
+		if (st.byIndex.empty() || lMapIndex <= 0)
 			return NULL;
 		const long lBase = lMapIndex >= 10000 ? lMapIndex / 10000 : lMapIndex;
 		std::map<long, const SungmaRequirement*>::const_iterator it = st.byIndex.find(lBase);
-		if (it != st.byIndex.end())
-			return it->second;
-		const SungmaRequirement* pReq = NULL;
-		const TMapRegion* pRegion = SECTREE_MANAGER::instance().GetMapRegion(lBase);
-		if (pRegion)
-		{
-			std::map<std::string, SungmaRequirement>::const_iterator n = st.byName.find(Lower(pRegion->strMapName));
-			if (n != st.byName.end())
-				pReq = &n->second;
-			// The cache only remembers maps this core hosts: another core's map is asked again.
-			st.byIndex[lBase] = pReq;
-		}
-		return pReq;
+		return it == st.byIndex.end() ? NULL : it->second;
 	}
 
 	bool IsSungmaMap(long lMapIndex)

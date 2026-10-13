@@ -40,8 +40,8 @@ namespace champion
 	};
 
 	// A map's requirement (lMapIndex may be a private instance, base*10000+n), NULL off a Sung Ma map.
-	// The table (share/locale/<locale>/sungma_table.txt) names maps; a name this core does not host never
-	// matches - the system stays dormant on every map we do not have.
+	// The table (share/locale/<locale>/sungma_table.txt) names maps, map/index gives their numbers (any core's);
+	// a name our world does not have never matches - the system stays dormant until a Yohara map comes.
 	const SungmaRequirement* MapRequirement(long lMapIndex);
 	bool IsSungmaMap(long lMapIndex);
 	// Champion experience of a monster (sungma_mob_exp.txt, from Owsap's mob_proto SungMaExp); 0 if none.
