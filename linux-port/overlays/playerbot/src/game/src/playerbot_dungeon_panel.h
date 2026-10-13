@@ -573,6 +573,30 @@ void DungeonPanelUpdateRanking(LPCHARACTER pc, LPCHARACTER npc, const char* key,
 	using namespace mt2009_dpanel;
 	if (!pc || !key || !*key)
 		return;
+	// MT2009_PLUS_DUNGEON_RANKING_QUEST_STATE_V1: Get/SetQuestFlag on another member go through
+	// CQuestManager::GetPC, which makes that member the script's current PC and character and drops
+	// the selected dungeon. The boss's kill handler ran on after d.update_ranking as the party's last
+	// member (11.10: the map purge took the boss itself; 12.10: dragon_soul asked a mob that was gone
+	// and CH1 fell). The quest state is put back on the way out.
+	struct SQuestStateGuard
+	{
+		LPCHARACTER ch;
+		LPDUNGEON dungeon;
+		SQuestStateGuard()
+		{
+			quest::CQuestManager& q = quest::CQuestManager::instance();
+			ch = q.GetCurrentCharacterPtr();
+			dungeon = q.GetCurrentDungeon();
+		}
+		~SQuestStateGuard()
+		{
+			quest::CQuestManager& q = quest::CQuestManager::instance();
+			if (ch && ch->IsPC())
+				q.GetPC(ch->GetPlayerID());
+			if (dungeon)
+				q.SelectDungeon(dungeon);
+		}
+	} questStateGuard;
 	WeeklyRankOnDungeon(pc, npc);
 	const Def* d = FindKey(key);
 	if (!d)
