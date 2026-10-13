@@ -608,7 +608,7 @@ ACMD(do_conqueror_stat)
 	champion::SpendPoint(ch, idx);
 }
 
-// GM: "/champion" (state), "/champion level|exp|points <n>", "/champion stat <0-3> <n>", "/champion unlock"
+// GM: "/champion" (state), "/champion level <n>" (with the points earned up to it), "/champion exp|points <n>", "/champion stat <0-3> <n>", "/champion unlock"
 // (no conditions), "/champion reset", "/champion give <exp>", "/champion reload" (the two data files).
 ACMD(do_champion)
 {
@@ -636,9 +636,15 @@ ACMD(do_champion)
 	}
 	else if (!strcmp(arg1, "level"))
 	{
-		ch->SetConquerorLevel((BYTE)MINMAX(0, n, (int)champion::MAX_LEVEL));
+		// The points a character would have earned on its way to this level (3 per level, level 1 starts
+		// with none), less what it has already spent - "/champion level 30" gives 87 to spend.
+		const int iLevel = MINMAX(0, n, (int)champion::MAX_LEVEL);
+		const int iSpent = ch->GetRealPoint(POINT_SUNGMA_STR) + ch->GetRealPoint(POINT_SUNGMA_HP) +
+			ch->GetRealPoint(POINT_SUNGMA_MOVE) + ch->GetRealPoint(POINT_SUNGMA_IMMUNE);
+		ch->SetConquerorLevel((BYTE)iLevel);
 		ch->SetConquerorLevelStep(0);
 		ch->SetConquerorExp(0);
+		ch->SetConquerorPoint(MAX(0, MAX(0, iLevel - 1) * champion::POINTS_PER_LEVEL - iSpent));
 	}
 	else if (!strcmp(arg1, "exp") && n >= 0)
 		ch->SetConquerorExp((DWORD)n);
