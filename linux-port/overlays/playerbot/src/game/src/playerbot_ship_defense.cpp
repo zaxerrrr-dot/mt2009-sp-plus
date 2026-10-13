@@ -25,6 +25,7 @@
 #include "desc.h"
 #include "affect.h"
 #include "cmd.h"
+#include "item.h"
 #include "playerbot_ship_defense.h"
 
 #include <algorithm>
@@ -73,6 +74,7 @@ namespace
 		{ "repair_stun",	5 },	// ogluszenie naprawiajacego, s
 		{ "debuff_hp_pct",	50 },	// fala 4: od tylu % PZ Hydry potwory traca wzmocnienia
 		{ "debuff_interval",	10 },	// co, s
+		{ "chest_uses",		3 },	// MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest): Skrzynia Hydry (54705) otwiera sie tyle razy
 	};
 
 	struct FCollectChars
@@ -1274,4 +1276,21 @@ ACMD(do_ship_defense)
 		pShip->Close(true);
 	else
 		ch->ChatPacket(CHAT_TYPE_INFO, "/dw create | start | info | wave <1-4> | end");
+}
+
+// MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest): Skrzynia Hydry (54705) gives one item of its group
+// (special_item_group.shipdefense.txt) an opening, chest_uses times (3, the owner's decision of
+// 13 October 2026). Called by the giftbox's use after a successful opening (char_item.cpp, edits.json):
+// true keeps the chest with one more opening counted in socket 0 (the client's tooltip shows the
+// rest), false lets the engine take it (the last opening, or any other box).
+bool ShipDefense_ChestKeep(LPITEM item)
+{
+	if (!item || item->GetVnum() != VNUM_HYDRA_CHEST)
+		return false;
+	const int iUses = MAX(1, Cfg("chest_uses"));
+	const long lUsed = MAX(0L, item->GetSocket(0)) + 1;
+	if (lUsed >= iUses)
+		return false;
+	item->SetSocket(0, lUsed);
+	return true;
 }

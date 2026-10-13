@@ -37,6 +37,7 @@ namespace ship_defense
 	const DWORD VNUM_MAST = 20434;
 	const DWORD VNUM_WHEEL = 20436;
 	const DWORD VNUM_WOOD = 20437;	// Deska (each hit takes 1 HP - Owsap's COUNT flag, which our mob_proto has not)
+	const DWORD VNUM_HYDRA_CHEST = 54705;	// Skrzynia Hydry: chest_uses openings (ShipDefense_ChestKeep)
 
 	enum EWave { WAVE0, WAVE1, WAVE2, WAVE3, WAVE4 };
 	enum EState
@@ -164,5 +165,6 @@ bool ShipDefense_KeepAI(LPCHARACTER ch);
 bool ShipDefense_Protected(LPCHARACTER ch);
 int ShipDefense_AttackRangeBonus(const CHARACTER* ch);
 LPCHARACTER ShipDefense_FallbackVictim(LPCHARACTER ch);
+bool ShipDefense_ChestKeep(LPITEM item);		// MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest)
 
 #endif

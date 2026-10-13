@@ -1712,6 +1712,12 @@ class ItemToolTip(ToolTip):
 		else:
 			self.__AppendLimitInformation()
 
+		# MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest): Skrzynia Hydry opens three times - the server counts the
+		# openings in socket 0 (playerbot_ship_defense.cpp ShipDefense_ChestKeep), the tooltip shows the rest.
+		if 54705 == itemVnum and metinSlot:
+			self.AppendSpace(5)
+			self.AppendTextLine(localeInfo.TOOLTIP_REST_USABLE_COUNT % max(1, 3 - max(0, int(metinSlot[0]))), self.NORMAL_COLOR)
+
 		for i in xrange(item.LIMIT_MAX_NUM):
 			(limitType, limitValue) = item.GetLimit(i)
 			#dbg.TraceError("LimitType : %d, limitValue : %d" % (limitType, limitValue))

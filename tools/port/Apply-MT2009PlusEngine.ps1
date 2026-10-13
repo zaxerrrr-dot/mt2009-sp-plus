@@ -1196,11 +1196,12 @@ foreach ($dropSourceName in @('item_manager.cpp', 'char_item.cpp')) {
     }
 }
 
-# Obrona Statku / Hydra (server-patches/shipdefense, MT2009_PLUS_SHIP_DEFENSE_V1): 17 short hooks
-# in 10 engine files - the dungeon's destroy, d.kill_all and d.purge, the attack, damage, death and
+# Obrona Statku / Hydra (server-patches/shipdefense, MT2009_PLUS_SHIP_DEFENSE_V1): 18 short hooks
+# in 11 engine files - the dungeon's destroy, d.kill_all and d.purge, the attack, damage, death and
 # aggro of the ship's monsters, the mast as a target (pvp.cpp), the attack ranges and the lasers'
 # fields (char.cpp), the entry (input_login.cpp), the waves' respawn (regen.cpp), the AI with nobody
-# near (sectree.cpp, char_state.cpp), the quests' "dw" module and the GM command /dw. The work is
+# near (sectree.cpp, char_state.cpp), the quests' "dw" module and the GM command /dw; in char_item.cpp
+# Skrzynia Hydry's three openings. The work is
 # the overlay's playerbot_ship_defense*. Last: its anchors are lines the Blue Dragon, Goblin and
 # Zodiac edits leave or add.
 $shipDefenseApply = Join-Path $repo 'server-patches/shipdefense/Apply-ShipDefensePatch.ps1'

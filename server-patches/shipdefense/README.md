@@ -73,6 +73,7 @@ solo, 5 000 000 Yang, bez przerwy, 10 wejść dziennie. Wszystko da się zmieni�
 | `laser_interval` / `laser_mast_pct` | 15 / 0 | laser |
 | `repair_pct` / `repair_stun` | 1 / 5 | deska na maszt: % HP / ogłuszenie, s |
 | `debuff_hp_pct` / `debuff_interval` | 50 / 10 | fala 4 |
+| `chest_uses` | 3 | ile razy otwiera się Skrzynia Hydry (54705) |
 
 ## Zmiany w plikach silnika (`edits.json`)
 
@@ -93,6 +94,7 @@ solo, 5 000 000 Yang, bez przerwy, 10 wejść dziennie. Wszystko da się zmieni�
 | `(idle)` | `char_state.cpp` | Potwór bez celu wraca do masztu (pomysł Amerii `FindVictimHydra`). |
 | `(lua)` | `questlua.cpp` | Rejestracja modułu `dw`. |
 | `(declare)`, `(table)` | `cmd.cpp` | Polecenie GM `/dw` (create, start, info, wave 1-4, end). |
+| `(hydra chest)` | `char_item.cpp` | Skrzynia Hydry (54705) po udanym otwarciu zostaje, dopóki nie otwarto jej `chest_uses` razy (gniazdo 0 liczy otwarcia; `ShipDefense_ChestKeep`). |
 
 ## Moduł `dw` (dla questa, krok 5)
 
@@ -121,6 +123,18 @@ przy pierwszym wejściu do nowej instancji (GM i boty za darmo); „Wróć do lo
 
 Pułapki kompilatora `qc` (sprawdzone): napis kończący się polską literą (`"…obronę"`) wywala `qc` bez
 komunikatu, a `dw.state()` jest błędem składni (`state` to słowo kluczowe `qc`) – w queście `dw["state"]()`.
+
+## Nagrody (krok 6)
+
+Decyzja właściciela z 13.10.2026. Pliki w `linux-port/docker/game/shipdefense/`, dopisywane przez Dockerfile
+(krok „share: Obrona Statku”, który przerywa budowę, gdy 3965 albo 54705 ma już grupę):
+- `mob_drop_item.shipdefense.txt` – Skarb Hydry (3965), jedna grupa `limit` (zwykły procent na zabicie, bez
+  mnożników poziomu i dropu): Skrzynia Hydry 3 × 100% + 3 × 50% (zawsze 3–6, średnio 4,5) i reszta listy wiki
+  z naszymi procentami (średnio ok. 3,5 przedmiotu więcej);
+- `special_item_group.shipdefense.txt` – Skrzynia Hydry (54705): jeden przedmiot na otwarcie, wagi na 1000,
+  Magiczny Kamień 40 (dokładnie 4%). Skrzynia otwiera się 3 razy (`chest_uses`), podpowiedź klienta
+  (`client-patches/client-2.0.30/root/uitooltip.py`) pokazuje pozostałe otwarcia.
+Brakujące u nas przedmioty i zamienniki są wypisane w nagłówkach obu plików.
 
 ## Test GM (bez questa)
 
