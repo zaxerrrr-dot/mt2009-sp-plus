@@ -236,15 +236,21 @@ CATEGORY_DEFS = (
 	# sa wspolne z serwerem (stary klient dalej trafia w swoje kategorie)
 	("Smocza Alchemia", -1, None),		# 31: kamienie smoka i Cory Draconis
 	("Polimorfia", -1, None),			# 32: marmury polimorfii
+	# AH_V1 [Autor: Vekirion]: ziola do mikstur - w item_proto maja typ ulepszaczy
+	("Zio\xb3a", -1, None),				# 33: Pokrzywa, Kwiat Kaki, Grzyb Tue...
 )
 
 # Kategorie pokazywane w panelu, w tej kolejnosci (indeksy z CATEGORY_DEFS).
 # Rodzaje broni stoja wprost zamiast "Bro\xf1", a Zbroje i Helmy nie maja juz
 # podzialu na klasy - od tego jest przycisk "Klasa".
 # MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: Smocza Alchemia i Polimorfia stoja tam, gdzie w Domu Towarowym.
-CATEGORY_VISIBLE = (0, 2, 3, 4, 5, 6, 7, 8, 13, 18, 19, 20, 21, 22, 23, 24, 31, 25, 26, 27, 28, 29, 32, 30)
+# AH_V1 [Autor: Vekirion]: Ziola zaraz za Dopalaczami.
+CATEGORY_VISIBLE = (0, 2, 3, 4, 5, 6, 7, 8, 13, 18, 19, 20, 21, 22, 23, 24, 31, 25, 26, 27, 33, 28, 29, 32, 30)
 
 BOOK_VNUMS = (50300, 70037, 70055)
+# AH_V1 [Autor: Vekirion]: ksiegi, z ktorych skladane sa podpowiedzi "<umiejetnosc> - <ksiega>".
+# 70055 nie ma w item_proto tej gry - klient podstawial za nia "Zolc" (vnum 60001).
+BOOK_NAME_VNUMS = (50300, 70037)
 # MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: marmury polimorfii nosza vnum potwora w gniezdzie 0 -
 # oferta nazywa sie "<marmur> - <potwor>"
 POLYMORPH_VNUMS = (70104, 70105, 70106, 70107, 71093)
@@ -340,6 +346,38 @@ def Option(key):
 		return bool(uiopcjedodatkowe.Settings().get(key, False))
 	except:
 		return False
+
+# AH_V1 [Autor: Vekirion]: item.SelectItem z vnumem, ktorego klient nie zna, nie
+# zglasza bledu, tylko wybiera przedmiot 60001 ("Zolc"). Nazwa przedmiotu spoza
+# item_proto klienta (np. ksiegi 70055) wychodzila wiec jako "Zolc".
+# Co dokladnie wybiera klient, sprawdzamy raz: wybor vnumu, ktorego na pewno nie ma.
+# Gdy nazwa szukanego przedmiotu jest taka sama, klient go nie zna. Wynik jest
+# zapamietany dla kazdego vnumu (kazda proba nieznanego vnumu to wpis w syserr).
+FALLBACK_ITEM_VNUM = 60001
+MISSING_ITEM_VNUM = 2147483000
+SENTINEL_ITEM_VNUM = 1		# Yang - jest w kazdym kliencie
+_fallbackItemName = []
+_itemNameCache = {}
+
+def _SelectedName(vnum):
+	item.SelectItem(SENTINEL_ITEM_VNUM)		# gdyby klient przy bledzie zostawial poprzedni wybor
+	item.SelectItem(vnum)
+	return item.GetItemName() or ""
+
+def ItemNameOf(vnum):
+	# nazwa przedmiotu albo "", gdy klient go nie zna
+	if vnum in _itemNameCache:
+		return _itemNameCache[vnum]
+	try:
+		if not _fallbackItemName:
+			_fallbackItemName.append(_SelectedName(MISSING_ITEM_VNUM))
+		name = _SelectedName(vnum)
+	except:
+		return ""
+	if vnum not in (FALLBACK_ITEM_VNUM, SENTINEL_ITEM_VNUM) and name == _fallbackItemName[0]:
+		name = ""
+	_itemNameCache[vnum] = name
+	return name
 
 def AllNamesMode():
 	# podpowiadaj wszystkie nazwy przedmiotow
@@ -713,11 +751,17 @@ class SuggestionBox(ui.Window):
 	ROWS = 8
 	LINE = 20
 	SCROLL_WIDTH = 17
+	# AH_V1 [Autor: Vekirion]: szerokosc dopasowana do najdluzszej nazwy, od szerokosci
+	# pola nazwy do MAX_WIDTH; jeszcze dluzsze nazwy sa skracane wielokropkiem
+	MAX_WIDTH = 460
+	TEXT_X = 10
 
 	def __init__(self, width, event):
 		ui.Window.__init__(self)
 		self.event = event
+		self.minWidth = width
 		self.width = width
+		self.textWidth = width
 		self.names = []
 		self.offset = 0
 		self.scrolling = False
@@ -735,15 +779,38 @@ class SuggestionBox(ui.Window):
 		self.scrollBar.SetPosition(width - self.SCROLL_WIDTH - 2, 2)
 		self.scrollBar.SetScrollEvent(ui.__mem_func__(self.__OnScroll))
 		self.scrollBar.Hide()
+		# niewidoczny napis ta sama czcionka co wiersze: mierzy dlugosc nazw
+		self.measure = MakeText(self, 0, 0, "")
+		self.measure.Hide()
 		self.AddFlag("float")
 		self.Hide()
 
 	def __del__(self):
 		ui.Window.__del__(self)
 
+	def __Fit(self):
+		scroll = len(self.names) > self.ROWS
+		longest = 0
+		for name in self.names:
+			try:
+				self.measure.SetText(name)
+				longest = max(longest, self.measure.GetTextSize()[0])
+			except:
+				pass
+		extra = 2 + self.TEXT_X + 10 + 2
+		if scroll:
+			extra += self.SCROLL_WIDTH + 2
+		self.width = max(self.minWidth, min(self.MAX_WIDTH, longest + extra))
+		rowWidth = self.width - 4 - (self.SCROLL_WIDTH + 2 if scroll else 0)
+		self.textWidth = rowWidth - self.TEXT_X - 6
+		for row in self.rows:
+			row.SetWidth(rowWidth)
+		self.scrollBar.SetPosition(self.width - self.SCROLL_WIDTH - 2, 2)
+
 	def SetNames(self, names):
 		self.names = list(names)
 		self.offset = 0
+		self.__Fit()
 		shown = min(len(self.names), self.ROWS)
 		height = shown * self.LINE + 3
 		self.SetSize(self.width, height)
@@ -767,6 +834,7 @@ class SuggestionBox(ui.Window):
 			nameIndex = self.offset + index
 			if nameIndex < len(self.names):
 				row.SetLabel(self.names[nameIndex])
+				FitText(row.text, self.names[nameIndex], self.textWidth)
 				row.Show()
 			else:
 				row.Hide()
@@ -1482,6 +1550,11 @@ class ListButton(ui.Window):
 
 	def SetArgs(self, *args):
 		self.args = args
+
+	def SetWidth(self, width):
+		# AH_V1 [Autor: Vekirion]: lista podpowiedzi zmienia szerokosc pod najdluzsza nazwe
+		self.SetSize(width, self.GetHeight())
+		self.bg.SetSize(width, self.GetHeight())
 
 	def SetSelected(self, selected):
 		self.selected = bool(selected)
@@ -2452,6 +2525,7 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		# (-1 = bez granicy) od / do, plec z SEX_DEFS
 		self.extraFilter = self.__EmptyExtraFilter()
 		self.mobNames = None			# "<marmur> - <potwor>" z dt_mob_catalog.py
+		self.bookNames = None			# AH_V1 [Autor: Vekirion]: "<umiejetnosc> - <ksiega>"
 		self.marbleBaseName = ""
 		self.sidebarHeight = SIDEBAR_HEIGHT
 		self.baseHeight = WINDOW_HEIGHT
@@ -2877,8 +2951,8 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 	def GetItemName(self, data):
 		name = data.get("_ah_name")
 		if name is None:
-			item.SelectItem(data["vnum"])
-			name = item.GetItemName()
+			# AH_V1 [Autor: Vekirion]: przedmiot nieznany klientowi - numer zamiast "Zolc"
+			name = ItemNameOf(data["vnum"]) or ("#%d" % data["vnum"])
 			# ksiega to jeden vnum, a umiejetnosc siedzi w gniezdzie 0
 			if data["vnum"] in BOOK_VNUMS:
 				try:
@@ -2961,6 +3035,11 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 				if key not in seen:
 					seen.add(key)
 					names.append((key, name))
+			for name in self.__GetBookNames():			# AH_V1 [Autor: Vekirion]
+				key = PolishLower(name)
+				if key not in seen:
+					seen.add(key)
+					names.append((key, name))
 			names.sort()
 			self.itemNames = names
 		key = PolishLower(query)
@@ -2991,13 +3070,20 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		seen = set()
 		if args[1] != "-":
 			for token in args[1].split(","):
+				# AH_V1 [Autor: Vekirion]: "vnum:umiejetnosc" - ksiega znaleziona po umiejetnosci
+				if ":" in token:
+					vnumText, skillText = token.split(":", 1)
+					name = self.__BookName(ToInt(vnumText), ToInt(skillText))
+					key = PolishLower(name)
+					if name and key != query and key not in seen:
+						seen.add(key)
+						names.append(name)
+					continue
 				vnum = ToInt(token)
 				if vnum <= 0:
 					continue
-				try:
-					item.SelectItem(vnum)
-					name = item.GetItemName()
-				except:
+				name = ItemNameOf(vnum)		# AH_V1: przedmiotu nieznanego klientowi nie podpowiadamy
+				if not name:
 					continue
 				key = PolishLower(name)
 				if not name or key == query or key in seen:
@@ -3013,6 +3099,31 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 							seen.add(marbleKey)
 							names.append(marbleName)
 		self.__ShowSuggestions(names[:self.SUGGESTION_LIMIT])
+
+	# AH_V1 [Autor: Vekirion]: nazwa ksiegi tak, jak w ofercie: "<umiejetnosc> - <ksiega>"
+	def __BookName(self, vnum, skillVnum):
+		if vnum not in BOOK_NAME_VNUMS or skillVnum not in SKILL_IDS:
+			return ""
+		bookName = ItemNameOf(vnum)
+		try:
+			skillName = skill.GetSkillName(skillVnum)
+		except:
+			return ""
+		if not bookName or not skillName:
+			return ""
+		return "%s - %s" % (skillName, bookName)
+
+	# wszystkie ksiegi z umiejetnosciami (tryb "wszystkie nazwy"); liczone raz
+	def __GetBookNames(self):
+		if self.bookNames is None:
+			names = []
+			for vnum in BOOK_NAME_VNUMS:
+				for skillVnum in SKILL_IDS:
+					name = self.__BookName(vnum, skillVnum)
+					if name:
+						names.append(name)
+			self.bookNames = names
+		return self.bookNames
 
 	# MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: "<marmur> - <potwor>" dla kazdego potwora
 	# z dt_mob_catalog.py (jak w Domu Towarowym); liczone raz.
@@ -3090,12 +3201,10 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		if len(key) < 2:
 			return []
 		bookNames = []
-		for vnum in BOOK_VNUMS:
-			try:
-				item.SelectItem(vnum)
-				bookNames.append(item.GetItemName())
-			except:
-				pass
+		for vnum in BOOK_NAME_VNUMS:
+			bookName = ItemNameOf(vnum)		# AH_V1: ksiegi, ktorej klient nie zna, nie ma
+			if bookName:
+				bookNames.append(bookName)
 		ids = []
 		for skillVnum in SKILL_IDS:
 			try:
