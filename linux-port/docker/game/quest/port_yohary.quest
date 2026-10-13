@@ -3,8 +3,8 @@
 --   * port od poziomu 90 - po wygranej Obronie Statku (portal 3949 na statku albo Rybak 9009 na Przyl¹dku,
 --     quest obrona_statku) albo Pierœcieniem Hydry;
 --   * na porcie stoi Pos¹g Wojownika (20433, 241 574): awans na Czempiona (quest czempion), ranking lochów
---     (panel „Wyprawy”, cmdchat DungeonInfo show) i rejs z powrotem do Rybaka - dalsze mapy Yohary przyjd¹
---     póŸniej, tak samo kowale zestawów, sklep i reszta funkcji pos¹gu.
+--     (panel „Wyprawy”, cmdchat DungeonInfo show) i rejs z powrotem do Rybaka; kowale zestawów, sklep i reszta
+--     funkcji pos¹gu - póŸniej. Opuszczona Twierdza (374) od poziomu 120: quest yohara_mapy.
 -- Pierœcieñ Hydry jak w grze (wiki): 3 teleporty do portu, potem znika; nie do handlu, sprzeda¿y ani
 -- magazynu (antiflag w item_proto). Wzór: Owsap quest/source/item/hydran_ring.quest - value0 = liczba u¿yæ,
 -- value1 = przerwa w sekundach (u nas 0), gniazdo 0 liczy u¿ycia, gniazdo 1 = czas nastêpnego u¿ycia.
@@ -55,9 +55,8 @@ quest port_yohary begin
 
 		when 20433.chat."Wróæ na Przyl¹dek Smoczego Ognia" with pc.get_map_index() == 368 begin
 			say_title(mob_name(20433)..":")
-			say("Dalsze ziemie nowego kontynentu s¹ jeszcze")
-			say("zamkniête. £ódŸ zabierze ciê z powrotem do")
-			say("Rybaka na Przyl¹dku Smoczego Ognia.")
+			say("£ódŸ zabierze ciê z powrotem do Rybaka")
+			say("na Przyl¹dku Smoczego Ognia.")
 			if select("P³yñ na Przyl¹dek", "Zostañ w porcie") ~= 1 then
 				return
 			end

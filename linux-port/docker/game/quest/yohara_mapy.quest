@@ -1,0 +1,89 @@
+-- MT2009_PLUS_YOHARA_MAPS1_V1: pierwsze mapy Yohary (cache/yohara/plan-mapy-yohary.md, wiki: "Opuszczona Twierdza",
+-- "Dongan", "Conquerors of Yohara"):
+--   * Opuszczona Twierdza (374, metin2_map_empirecastle) i Dongan (373, metin2_map_eastplain_01), rdzeñ game2;
+--   * wejœcie od poziomu 120 (wiki) - Statua Wojownika (20433) w Porcie Nowego Kontynentu (368) zabiera do Twierdzy;
+--     doœwiadczenie daje tam tylko Poziom Czempiona (potwory maj¹ exp 0, exp czempiona z sungma_mob_exp.txt);
+--   * Twierdza: portal przy bramie (10144) prowadzi do Dongan, Wartownik i Stra¿nik z Yohara (20802/20803) - powrót
+--     do portu; Dongan: Teleporter (9012) - do Twierdzy (wiki) i do portu;
+--   * kto nie ma poziomu 120 (np. przeniesiony przez GM-a), wraca do portu.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest yohara_mapy begin
+	state start begin
+		function cfg()
+			return {
+				min_level = 120,
+				port_x = 1280 + 405, port_y = 5632 + 480,        -- Town.txt portu (368)
+				twierdza_x = 5120 + 256, twierdza_y = 4864 + 85,  -- Town.txt Twierdzy (374)
+				dongan_x = 10496 + 528, dongan_y = 4352 + 716,    -- Town.txt Dongan (373)
+			}
+		end
+
+		function go(x, y)
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return false
+			end
+			return pc.warp(x * 100, y * 100)
+		end
+
+		when login with pc.get_map_index() == 373 or pc.get_map_index() == 374 begin
+			local c = yohara_mapy.cfg()
+			if pc.is_gm() or pc.is_playerbot() then
+				return
+			end
+			if pc.get_level() < c.min_level then
+				syschat("Ziemie Yohary s¹ dostêpne od poziomu "..c.min_level..". Wracasz do Portu Nowego Kontynentu.")
+				pc.warp(c.port_x * 100, c.port_y * 100)
+			end
+		end
+
+		when 20433.chat."Opuszczona Twierdza" with pc.get_map_index() == 368 begin
+			local c = yohara_mapy.cfg()
+			say_title(mob_name(20433)..":")
+			say("Za portem le¿y Opuszczona Twierdza - brama")
+			say("do ziem Yohary, gdzie rz¹dzi wola Sung Mahi.")
+			say("")
+			say("Wejœcie od poziomu "..c.min_level..". Doœwiadczenie z tamtych")
+			say("potworów zdobêdzie tylko Czempion.")
+			if pc.get_level() < c.min_level then
+				say_reward("Wróæ, gdy osi¹gniesz poziom "..c.min_level..".")
+				return
+			end
+			if select("IdŸ do Opuszczonej Twierdzy", "Zostañ w porcie") ~= 1 then
+				return
+			end
+			yohara_mapy.go(c.twierdza_x, c.twierdza_y)
+		end
+
+		function to_port_dialog()
+			local c = yohara_mapy.cfg()
+			say_title(mob_name(npc.get_race())..":")
+			say("£ódŸ do Portu Nowego Kontynentu czeka")
+			say("przy brzegu przez ca³y dzieñ.")
+			if select("P³yñ do portu", "Zostañ tutaj") ~= 1 then
+				return
+			end
+			yohara_mapy.go(c.port_x, c.port_y)
+		end
+
+		when 20802.chat."Port Nowego Kontynentu" with pc.get_map_index() == 374 begin
+			yohara_mapy.to_port_dialog()
+		end
+
+		when 20803.chat."Port Nowego Kontynentu" with pc.get_map_index() == 374 begin
+			yohara_mapy.to_port_dialog()
+		end
+
+		when 9012.chat."Podró¿e po Yoharze" with pc.get_map_index() == 373 begin
+			local c = yohara_mapy.cfg()
+			say_title(mob_name(9012)..":")
+			say("Dok¹d chcesz siê udaæ?")
+			local s = select("Opuszczona Twierdza", "Port Nowego Kontynentu", "Zostañ tutaj")
+			if s == 1 then
+				yohara_mapy.go(c.twierdza_x, c.twierdza_y)
+			elseif s == 2 then
+				yohara_mapy.go(c.port_x, c.port_y)
+			end
+		end
+	end
+end
