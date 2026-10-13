@@ -3592,6 +3592,23 @@ for zyw_sql in zywioly_talizmany.sql zywioly_moby.sql; do
     fi
 done
 
+# MT2009_PLUS_YOHARA_MAPS3_V1: the third batch of Yohara places (the owner, 14 October 2026) - Zejscie (394) and
+# Glebie (395) Polnocnego Wiatru, 1. poziom Swiatyni Wezy (390), Swiatynia Wezy (391), Tajemnicza Instancja (396),
+# Krolestwo Zywiolow (378-381). After every step above (the second batch's items included - yohara_items3.sql gives
+# its Pyl Wezowy a quest use) and after the elements' files, which clear the element bits of every mob they do not
+# list: yohara_maps3.sql (tools/yohara_maps3/gen_ymaps3_sql.py) - their monsters, bosses, Metins, NPCs and portals;
+# yohara_items3.sql (tools/yohara_maps3/gen_yitems3.py) - the items they drop and their dungeons use;
+# yohara_maps3_zywioly.sql - their elements (the pl-wiki's). All idempotent (INSERT IGNORE / UPDATE). The maps' drop
+# file and chests (game/yohara_maps3) name these vnums: a world without them stops the cores at boot.
+for ym3_sql in yohara_maps3.sql yohara_items3.sql yohara_maps3_zywioly.sql; do
+    [ -s "/opt/playerbot/$ym3_sql" ] || continue
+    if db < "/opt/playerbot/$ym3_sql"; then
+        echo "[playerbot-migrate] yohara maps 3: $ym3_sql applied"
+    else
+        fail_step "yohara maps 3: $ym3_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
 # fastBossSpawn<map>) and count (m2_boss_count) are the bosses' alone now; the Metin stones read
