@@ -1981,6 +1981,12 @@ class ItemToolTip(ToolTip):
 
 	def __AppendAffectInformation(self, attrList=None):
 		affectList = [item.GetAffect(i) for i in xrange(item.ITEM_APPLY_MAX_NUM)]
+		# MT2009_PLUS_WILL_TALISMAN_V1: a Talizman Woli (81000-81009 SILA, 81250 ODP, 81300 WIT, 81550 INT) has no
+		# fixed line - its two standard lines (Sung Ma Will, an element's power) are its 6th/7th bonuses, drawn by
+		# __AppendAttributeInformation. A client with the older item_proto (applytype0 = the Will) showed the Will
+		# twice ("Sila Sung Ma +1" over "Sila Sung Ma +1"), so a proto line is never drawn for them.
+		if (GetSelectedItemVnum() - GetSelectedItemVnum() % 10) in (81000, 81250, 81300, 81550):
+			affectList = []
 		# MT2009_PLUS_ITEM_EXTRA_APPLY_V1: the lines beyond the proto's three
 		affectList += GetItemExtraApplies(GetSelectedItemVnum())
 		if attrList is not None and attrList:

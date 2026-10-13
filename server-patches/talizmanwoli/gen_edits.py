@@ -12,7 +12,7 @@ FUNCS = r'''// MT2009_PLUS_WILL_TALISMAN_V1 (server-patches/talizmanwoli): Taliz
 // a random element (common 1% / rare 2% at +0). They are the 6th/7th bonus slots (ITEM_ATTRIBUTE_RARE_START): a new
 // talisman gets each line or not ("z podstawowym bonusem lub bez niego"), a refine carries them at the new level's
 // value of the same row and adds a missing one ("receives the missing bonuses on refine"). No 6/7 changer touches them.
-static const short s_aiWillTalismanWill[2][10] = { { 1, 1, 3, 5, 7, 9, 11, 14, 17, 21 }, { 2, 3, 4, 6, 8, 10, 13, 16, 19, 24 } };
+static const short s_aiWillTalismanWill[2][10] = { { 1, 1, 3, 5, 7, 9, 11, 14, 17, 21 }, { 2, 3, 4, 6, 8, 10, 12, 16, 19, 24 } };
 static const short s_aiWillTalismanElement[2][10] = { { 1, 2, 3, 4, 5, 6, 7, 8, 9, 15 }, { 2, 3, 4, 5, 6, 7, 8, 9, 10, 17 } };
 
 bool Mt2009WillTalismanType(DWORD dwVnum, BYTE& bWillType)

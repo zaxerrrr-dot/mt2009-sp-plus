@@ -8,7 +8,7 @@ Talizmany Woli (81000–81009 SIŁA, 81250–81259 ODP, 81300–81309 WIT, 81550
 | linia | bonus | +0 | +1 | +2 | +3 | +4 | +5 | +6 | +7 | +8 | +9 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | Wola Sung Ma talizmanu (zwykła) | 1 | 1 | 3 | 5 | 7 | 9 | 11 | 14 | 17 | 21 |
-| 1 | Wola Sung Ma (rzadka) | 2 | 3 | 4 | 6 | 8 | 10 | 13 | 16 | 19 | 24 |
+| 1 | Wola Sung Ma (rzadka) | 2 | 3 | 4 | 6 | 8 | 10 | 12 | 16 | 19 | 24 |
 | 2 | Moc losowego żywiołu (zwykła) % | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 15 |
 | 2 | Moc losowego żywiołu (rzadka) % | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 17 |
 

@@ -125,7 +125,7 @@ TALISMANS = ((81000, 'SIŁA', APPLY_SUNGMA_STR), (81250, 'ODP', APPLY_SUNGMA_MOV
              (81550, 'INT', APPLY_SUNGMA_IMMUNE))
 # No item_proto apply (MT2009_PLUS_WILL_TALISMAN_V1, server-patches/talizmanwoli): Owsap's APPLY_RANDOM 10..13 / 14 -
 # the Sung Ma Will of the talisman's stat and an element's power, each a common or a rare row of apply_random_table
-# (Will 1,1,3,5,7,9,11,14,17,21 / 2,3,4,6,8,10,13,16,19,24; element 1..9,15 / 2..10,17 %) - are the item's own 6th/7th
+# (Will 1,1,3,5,7,9,11,14,17,21 / 2,3,4,6,8,10,12,16,19,24; element 1..9,15 / 2..10,17 %) - are the item's own 6th/7th
 # bonus slots, rolled by the engine when a talisman is made and carried by a refine.
 REFINE_ID0 = 22501      # our refine_proto ids (Owsap's 680-715 are taken here)
 for base, stat, apply in TALISMANS:
