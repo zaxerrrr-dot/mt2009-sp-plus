@@ -275,11 +275,11 @@ SCHEMA = [
        "siec", "int", "1", ["game"], min=1, max=4, dangerous=True,
        note="Przy zapisie aktualizator dopasuje zakresy portów gry."),
     _e("M2_GAME_PORT_RANGE", "Zakres portów gry (host)",
-       "Porty kanałów otwierane na tym komputerze. 13000-13002 = jeden kanał, 13000-13012 = dwa, 13000-13022 = trzy, 13000-13032 = cztery. Zwykle ustawiane automatycznie.",
-       "siec", "portrange", "13000-13002", ["game", "panel"], dangerous=True),
+       "Porty kanałów otwierane na tym komputerze. 13000-13003 = jeden kanał (13003 - Yohara), 13000-13012 = dwa, 13000-13022 = trzy, 13000-13032 = cztery. Zwykle ustawiane automatycznie.",
+       "siec", "portrange", "13000-13003", ["game", "panel"], dangerous=True),
     _e("M2_GAME_CONTAINER_PORT_RANGE", "Zakres portów gry (kontener)",
        "To samo po stronie kontenera – musi mieć tę samą długość co zakres hosta. Zwykle ustawiane automatycznie.",
-       "siec", "portrange", "13000-13002", ["game"], dangerous=True),
+       "siec", "portrange", "13000-13003", ["game"], dangerous=True),
     _e("M2_GAME_PORT_BASE", "Pierwszy port kanałów w kontenerze",
        "Port, od którego rdzenie gry liczą porty kanałów wewnątrz kontenera. 13000, chyba że na tym samym komputerze stoi drugi serwer.",
        "siec", "port", "13000", ["game"], dangerous=True),
@@ -564,7 +564,7 @@ def validate(key, value):
     if kind == "portrange":
         match = re.fullmatch(r"(\d{1,5})-(\d{1,5})", value)
         if not match or not 1 <= int(match.group(1)) <= int(match.group(2)) <= 65535:
-            return "zakres portów, np. 13000-13002"
+            return "zakres portów, np. 13000-13003"
         return None
     if kind == "address":
         return None if re.fullmatch(_IPV4, value) else "adres IPv4, np. 0.0.0.0 albo 127.0.0.1"

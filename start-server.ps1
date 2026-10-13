@@ -1526,7 +1526,7 @@ try {
         if ($raw -match '^\d+$') { $wantedPorts += [int]$raw } else { $wantedPorts += [int]$pair[1] }
     }
     $rangeFirst = 13000
-    $rangeLast = 13002
+    $rangeLast = 13003
     $gameRange = [string]$portValues['M2_GAME_PORT_RANGE']
     if ($gameRange -match '^(\d+)\s*-\s*(\d+)$') { $rangeFirst = [int]$Matches[1]; $rangeLast = [int]$Matches[2] }
     elseif ($gameRange -match '^(\d+)$') { $rangeFirst = [int]$Matches[1]; $rangeLast = $rangeFirst }

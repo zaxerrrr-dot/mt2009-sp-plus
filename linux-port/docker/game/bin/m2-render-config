@@ -184,22 +184,34 @@ MAPS_game1="$MAPS_game1 110"
 # floors are private copies (3580000+) made on the core of the map, a person's party bots follow into them and the
 # bots' own temple runs go there (a bot cannot cross cores).
 MAPS_game1="$MAPS_game1 358"
-# MT2009_PLUS_SHIP_DEFENSE_V1 (maps): Obrona Statku (367, metin2_map_defensewave) on game1 under either layout -
-# the ship is a private copy (3670000+) made on the core of the map, the quest's d.new_jump_pids finds it there
-# and a person's party bots follow (a bot cannot cross cores). game1: 38 maps in the split layout, 46 of
-# MAP_ALLOW_LIMIT 48 in the unified one - the port (368, with Yohara) would make 47.
-MAPS_game1="$MAPS_game1 367"
-# MT2009_PLUS_YOHARA_PORT_V1 (maps): Port Nowego Kontynentu (368, metin2_map_defensewave_port) on game2 under either
-# layout, beside Przyladek Smoczego Ognia (301) - game1 is at 46 of MAP_ALLOW_LIMIT 48 in the unified layout. No
-# monster lives there and no bot goes there; people cross cores by warp (the Hydra's portal, Pierscien Hydry, the
-# Fisherman). game2: 10 maps in the split layout, 6 in the unified one.
-MAPS_game2="$MAPS_game2 368"
-# MT2009_PLUS_YOHARA_MAPS1_V1 (maps): Dongan (373, metin2_map_eastplain_01, 4x5) and Opuszczona Twierdza (374,
-# metin2_map_empirecastle, 2x2), the first Yohara maps, on game2 under either layout beside the port they are reached
-# from (pc.warp within one core). Sung Ma maps (sungma_table.txt): no bot may enter, so they need not sit with the
-# bots on game1 - which is at 46 of MAP_ALLOW_LIMIT 48 in the unified layout and ~3.8 GB of a 32-bit core's 4 GB
-# (13 October 2026, the test server; game2 ~0.26 GB). game2: 12 maps in the split layout, 8 in the unified one.
-MAPS_game2="$MAPS_game2 373 374"
+# MT2009_PLUS_YOHARA_CORE_V1 (maps): the whole of Yohara on a core of its own in every channel (the owner,
+# 14 October 2026) - game3, "Yohara": Obrona Statku (367, the ship's private copies 3670000+ are made here), Port
+# Nowego Kontynentu (368), Dongan (373), Opuszczona Twierdza (374), Seoganland (376), Namgan (377), Przelecz Yilad
+# (385), Wawoz Polnocnego Wiatru (388), Schronienie Polnocnego Wiatru (393) and, reserved for the next batch, the
+# Krolestwo Zywiolow's fourth land (381), the Swiatynia Wezy (390/391), Zejscie / Glebie Polnocnego Wiatru
+# (394/395) and the Tajemnicza Instancja (396). An index is announced only once share/locale/poland/map/index names
+# it (yohara_maps_present below), so a reserved map no image carries yet is never offered to the db core. Before:
+# 367 on game1 (a person's party bots followed onto the ship - they cannot now: a bot cannot cross cores, and the
+# owner moved the ship with the rest of Yohara), 368/373/374 on game2. 301-304 are not Yohara and stay. People
+# cross to and from Yohara by warp (the Fisherman 9009 on 301 -> 367, the Hydra's portal / Pierscien Hydry -> 368,
+# the guards' d.new_jump_pids over P2P as before). Sung Ma maps: no bot may enter one (sungma_table.txt), so the
+# core carries no bots. Its port sits in the gap of the first channel's ten - BASE+3 for CH1, BASE+4 for CH2,
+# BASE+5 / BASE+6 for CH3 / CH4 - so a world with a second channel publishes it already (BASE..BASE+12) and a
+# one-channel world publishes BASE..BASE+3 (update.sh, the launcher, the installers widen the range); its P2P
+# port is 14003+ the same way. Memory: game2 hosted 301/303/368/373/374 in ~0.27 GB (13 October, the test
+# server); this core's maps are ~170 sectors of terrain in all - well under 1 GB of the 32-bit core's 4 GB.
+MAPS_game3_all="367 368 373 374 376 377 385 388 393 381 390 391 394 395 396"
+yohara_maps_present() {
+  local idx="$SHARE_DIR/locale/poland/map/index" m out=""
+  for m in $MAPS_game3_all; do
+    if [ ! -r "$idx" ] || grep -q -E "^${m}[[:blank:]]" "$idx"; then
+      out="$out $m"
+    fi
+  done
+  printf '%s' "${out# }"
+}
+MAPS_game3="$(yohara_maps_present)"
+log "Yohara core (game3): ${MAPS_game3:-<no map>}"
 # The difficulty is acted on by the migrate service (event flags the quests
 # read); said here so a support bundle carries it next to the layout.
 log "difficulty: ${M2_DIFFICULTY:-easy} (Biologist and stable keeper waits; apply.sh writes the flags)"
@@ -319,7 +331,7 @@ EOF
 
 # -----------------------------------------------------------------------------
 # a channel game core
-#   render_game <channel> <role: first|game1|game2>
+#   render_game <channel> <role: first|game1|game2|game3 (Yohara)>
 # -----------------------------------------------------------------------------
 # The channels' first port, 13000 unless M2_GAME_PORT_BASE says otherwise: a
 # second stack on the same host (the test server beside a public one) takes
@@ -339,6 +351,8 @@ render_game() {
     first) offset=0; hostname="first"; maps="$MAPS_first" ;;
     game1) offset=1; hostname="Game1"; maps="$MAPS_game1" ;;
     game2) offset=2; hostname="Game2"; maps="$MAPS_game2" ;;
+    # MT2009_PLUS_YOHARA_CORE_V1: Yohara - BASE+3 for CH1 .. BASE+6 for CH4, in the gap of the first ten
+    game3) offset=$(( 3 + (ch - 1) - (ch - 1) * 10 )); hostname="Yohara"; maps="$MAPS_game3" ;;
     *) echo "unknown role $role" >&2; return 1 ;;
   esac
 
@@ -420,9 +434,9 @@ render_auth
 printf 'auth|%s/auth|auth|%s|auth\n' "$VAR_DIR" "$M2_AUTH_PORT" >> "$PLAN"
 
 for ch in $(seq 1 "${M2_CHANNELS}"); do
-  for role in first game1 game2; do
+  for role in first game1 game2 game3; do
     render_game "$ch" "$role"
-    case "$role" in first) off=0 ;; game1) off=1 ;; game2) off=2 ;; esac
+    case "$role" in first) off=0 ;; game1) off=1 ;; game2) off=2 ;; game3) off=$(( 3 + (ch - 1) - (ch - 1) * 10 )) ;; esac
     printf 'ch%s-%s|%s/channel%s/%s|game|%s|game\n' \
       "$ch" "$role" "$VAR_DIR" "$ch" "$role" "$(( M2_GAME_PORT_BASE + (ch - 1) * 10 + off ))" >> "$PLAN"
   done

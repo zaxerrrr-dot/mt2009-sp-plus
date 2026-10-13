@@ -84,7 +84,7 @@ esac
 
 case "$M2_CHANNELS" in
   1|2|3|4) : ;;
-  *) die "M2_CHANNELS must be 1..4 (got '$M2_CHANNELS'). Channel N uses ports 13000+10*(N-1) .. +2." ;;
+  *) die "M2_CHANNELS must be 1..4 (got '$M2_CHANNELS'). Channel N uses ports 13000+10*(N-1) .. +2, and its Yohara core 13003+(N-1)." ;;
 esac
 
 # -----------------------------------------------------------------------------
@@ -166,10 +166,11 @@ mkdir -p "$VAR_DIR"
 ch_port_base="${M2_GAME_PORT_BASE:-13000}"
 case "$ch_port_base" in ''|*[!0-9]*) ch_port_base=13000 ;; esac
 # CH3/CH4 and BOT_CHANNELS (MT2009_PLUS_CH34_V1): channel N is published when
-# the range reaches BASE+10*(N-1)+2.
+# the range reaches BASE+10*(N-1)+2. MT2009_PLUS_YOHARA_CORE_V1: CH1's Yohara core
+# listens on BASE+3 (CH2..CH4: BASE+4..BASE+6), so one channel publishes BASE..BASE+3.
 printf 'CH2=%s\nSHARE=%s\nCHANNELS=%s\nSOURCE=%s\nPORTS=%s\nSET_AT=%s\nBASE=%s\nCH3=%s\nCH4=%s\nBOT_CHANNELS=%s\n' \
   "$M2_PLAYERBOT_CH2" "$PLAYERBOT_CH2_SHARE" "$M2_CHANNELS" "$ch2_source" \
-  "${M2_GAME_CONTAINER_PORT_RANGE:-$ch_port_base-$((ch_port_base + 2))}" "$ch2_at" "$ch_port_base" \
+  "${M2_GAME_CONTAINER_PORT_RANGE:-$ch_port_base-$((ch_port_base + 3))}" "$ch2_at" "$ch_port_base" \
   "$M2_PLAYERBOT_CH3" "$M2_PLAYERBOT_CH4" "$M2_PLAYERBOT_CHANNELS" \
   > "$VAR_DIR/channels.effective" 2>/dev/null || true
 

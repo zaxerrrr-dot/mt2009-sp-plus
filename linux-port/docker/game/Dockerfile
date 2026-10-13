@@ -1679,7 +1679,7 @@ ENV M2_SHARE_DIR=/opt/metin2/share \
     M2_VAR_DIR=/opt/metin2/var \
     TZ=UTC
 
-EXPOSE 11000/tcp 13000/tcp 13001/tcp 13002/tcp
+EXPOSE 11000/tcp 13000/tcp 13001/tcp 13002/tcp 13003/tcp
 
 HEALTHCHECK --interval=15s --timeout=5s --start-period=180s --retries=4 \
     CMD ["/usr/local/bin/m2-healthcheck"]
