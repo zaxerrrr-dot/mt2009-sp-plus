@@ -50,17 +50,18 @@ zamiast 3963”, ale głowa 3963 ma tylko ruch „wait”, więc nie zagra intra
 
 ## Ustawienia (flagi zdarzeń `shipdef_<nazwa>`, 0 = domyślne, wartość ujemna = 0)
 
-Decyzje właściciela jeszcze nie zapadły – wszystko da się zmienić flagą bez kompilacji; quest czyta
-je przez `dw.cfg("<nazwa>")`.
+Domyślne wejścia to decyzje właściciela z 13.10.2026 (`cache/yohara/decyzje.md`): poziom 90, drużyna albo
+solo, 5 000 000 Yang, bez przerwy, 10 wejść dziennie. Wszystko da się zmienić flagą bez kompilacji
+(wartość ujemna = 0, np. `shipdef_fee -1` = za darmo); quest czyta je przez `dw.cfg("<nazwa>")`.
 
 | Nazwa | Domyślnie | Co |
 |---|---|---|
 | `min_level` | 90 | poziom wejścia (quest) |
 | `party_only` | 0 | 0: drużyna albo solo, 1: tylko drużyna (quest) |
-| `fee` | 0 | opłata w yangach (quest) |
-| `cooldown` | 1800 | odnowienie po starcie, s (quest) |
-| `daily_limit` | 0 | wejść dziennie, 0 = bez limitu (quest) |
-| `max_instances` | 8 | statków naraz na rdzeń (quest: `dw.count()`) |
+| `fee` | 5000000 | opłata w yangach (quest) |
+| `cooldown` | 0 | odpoczynek po wejściu, s – tylko boty (quest; ludzie nigdy nie czekają) |
+| `daily_limit` | 10 | wejść dziennie na postać (quest) |
+| `max_instances` | 8 | statków naraz na rdzeń – nieużywane: Rybak stoi na game2, statek na game1, `dw.count()` liczy tylko swój rdzeń |
 | `idle_destroy` | 600 | nieuruszony statek zamyka się po, s |
 | `time_limit` | 1800 | limit po starcie, s |
 | `wave1_countdown` / `wave1_time` | 60 / 120 | odliczanie i czas fali 1, s |
@@ -100,8 +101,26 @@ je przez `dw.cfg("<nazwa>")`.
 `dw.mast_hp_pct()`, `dw.set_alliance_hp_pct(n)` (deska: +n% HP masztu, 0 = `repair_pct`), `dw.close()`.
 Wygrana ustawia flagę lochu `shipdef_won` = 1. Nazwy są dopisane do `quest_functions` w Dockerfile.
 
-Questa jeszcze nie ma (krok 5): rybak/wejście, ster („Rozpocznij obronę”), deska z Potomstwa
-(`when 3957/3958/3959.kill` → `20437`), drop deski 31107, `20434.take`, portal 3949, nagrody.
+Quest: `linux-port/docker/game/quest/obrona_statku.quest` (krok 5, poniżej).
+
+## Quest `obrona_statku` (krok 5)
+
+Wzorzec Leża Smoka (`blue_dragon_lair.quest`): Rybak 9009 na Przylądku Smoczej Głowy (301, rdzeń game2,
+838,1187) → „Obrona Statku (Hydra)” → `d.new_jump_pids(367, …)` dla gracza albo przywódcy z ludźmi drużyny
+stojącymi obok (30 pól); boty drużyny dołączają same (`playerbot_party_dungeon.h`: 367 jest mapą lochu
+drużyny, wyjście do Rybaka). Sprawdza poziom, limit dzienny, Yang i wierzchowca każdego człowieka; płaci się
+przy pierwszym wejściu do nowej instancji (GM i boty za darmo); „Wróć do lochu” po rozłączeniu
+(`mt2009_keep_until` = `idle_destroy` + `time_limit` + 120 s). Ster 20436: „Rozpocznij obronę masztu”
+(`dw.start()`, tylko przywódca lub solo), „Zejdź ze statku”. Potomstwo Hydry (3957-3959) zostawia deskę
+20437 w miejscu śmierci, zbita deska daje Deskę Naprawczą 31107, przeciągnięta na maszt 20434 –
+`dw.set_alliance_hp_pct(0)`. Hydra 3962: panel lochów (`d.update_ranking("hydra", czas od startu)`, wpis
+`hydra` w `arezzo/dungeon_info.txt`) i trwała flaga przejścia ludzi drużyny na statku:
+`obrona_statku.completed` (liczba), `completed_at` (czas), `completed_at_120` = 1 przy poziomie 120+
+(pod przyszły poziom Mistrza); kto nie był w drużynie zabójcy, dostaje ją przy portalu 3949 (klik → ląd,
+301; port 368 z Yoharą). Boty flagi nie dostają (decyzja: na razie nie).
+
+Pułapki kompilatora `qc` (sprawdzone): napis kończący się polską literą (`"…obronę"`) wywala `qc` bez
+komunikatu, a `dw.state()` jest błędem składni (`state` to słowo kluczowe `qc`) – w queście `dw["state"]()`.
 
 ## Test GM (bez questa)
 

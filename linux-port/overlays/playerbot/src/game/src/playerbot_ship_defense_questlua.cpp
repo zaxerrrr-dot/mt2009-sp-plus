@@ -4,7 +4,7 @@
 // binds to it when the first person comes aboard. Registered from questlua.cpp (edits.json).
 //
 //   dw.cfg(name)              a setting: event flag "shipdef_<name>" or its default (min_level 90,
-//                             party_only 0, fee 0, cooldown 1800, daily_limit 0, max_instances 8 ...)
+//                             party_only 0, fee 5000000, cooldown 0, daily_limit 10 ...)
 //   dw.map_index()            367
 //   dw.count()                ships on this core
 //   dw.find(map_index)        true when that instance has a ship

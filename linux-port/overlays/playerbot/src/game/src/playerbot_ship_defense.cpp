@@ -42,15 +42,16 @@ namespace
 		int value;
 	};
 
-	// The defaults. The quest (step 5) reads min_level, party_only, fee, cooldown, daily_limit,
-	// max_instances with dw.cfg(); the rest is the C++ side's timing.
+	// The defaults. The quest (obrona_statku.quest) reads min_level, party_only, fee, cooldown, daily_limit
+	// with dw.cfg(); the rest is the C++ side's timing. The owner's decisions of 13 October 2026
+	// (cache/yohara/decyzje.md): level 90, party or alone, 5 000 000 Yang, no rest, 10 entries a day.
 	const SCfgDefault s_aCfg[] =
 	{
 		{ "min_level",		90 },	// wejscie od poziomu (GF: 90)
 		{ "party_only",		0 },	// 0: druzyna albo solo, 1: tylko druzyna (Owsap/GF)
-		{ "fee",		0 },	// oplata w yangach (0: bez oplaty)
-		{ "cooldown",		1800 },	// odnowienie po starcie, s (GF: 30 min)
-		{ "daily_limit",	0 },	// wejsc dziennie (0: bez limitu)
+		{ "fee",		5000000 },	// oplata w yangach (wlasciciel: 5kk; bez oplaty: flaga -1)
+		{ "cooldown",		0 },	// odpoczynek botow po wejsciu, s (wlasciciel: bez przerwy; GF: 30 min)
+		{ "daily_limit",	10 },	// wejsc dziennie (wlasciciel: 10; bez limitu: flaga -1)
 		{ "max_instances",	8 },	// statkow naraz na rdzen
 		{ "idle_destroy",	600 },	// nieuruszony statek znika po, s (Owsap: 10 min)
 		{ "time_limit",		1800 },	// limit po starcie, s (Owsap: brak)
