@@ -338,3 +338,37 @@ Pominięte względem paczki: wycinek „zegarowy” obrazka (`RenderCoolTime`, `
 `ENABLE_OWSAP_WNDMGR_EX`), te same nazwy w Pythonie, więc `GrpImageInstance.*`, `GrpExpandedImageInstance.*` i
 `PythonWindow.*` bez zmian. Polecenia serwera Zodiaku (`ZodiacTime`, `Bead_*`, `OpenReviveDialog`…) obsługuje `game.py`.
 
+
+## Exe 3.0 „Yohara” – Poziom Czempiona, Sung Ma, Hydra (`MT2009_PLUS_CHAMPION_V2`, `MT2009_PLUS_SHIP_DEFENSE_V2`)
+
+Etap B Czempiona (`server-patches/czempion/README.md`, „Etap B”). **Zmienia protokół** (pakiet punktów, pakiety postaci) –
+klient 3.0 jest wymuszony: root `constinfo.py` mówi 1.3.0 tylko z tym exe, auth odrzuca starsze („UPDATE”).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_CONQUEROR_LEVEL`, `ENABLE_CONQUEROR_UI` (`app.*` = 1), `ENABLE_MT2009_SHIP_DEFENSE_CLIENT` |
+| `Server/common/length.h` | punkty serwera za szarfą (bez `#ifdef`): `POINT_ENCHANT_*` 178–183, `POINT_SUNGMA_*` 184–187, `POINT_CONQUEROR_*` 188–192; `POINT_MAX_NUM` 178 → **193** (= `POINT_PACKET_NUM` serwera) |
+| `Server/common/item_length.h` (**nowy w nakładce**, z client-build) | `LIMIT_CONQUEROR_LEVEL` = 10 |
+| `UserInterface/Packet.h` | `dwConquerorLevel` na końcu `TPacketGCCharacterAdditionalInfo` (70 B) i `TPacketGCCharacterUpdate` (52 B) |
+| `UserInterface/NetworkActorManager.h/.cpp`, `PythonNetworkStreamPhaseGameActor.cpp` (**nowe w nakładce**) | poziom Czempiona z pakietów do `SNetworkActorData`/`SNetworkUpdateActorData` → `CInstanceBase::SetConquerorLevel` |
+| `UserInterface/InstanceBase.h/.cpp`, `InstanceBaseEffect.cpp` | `m_dwConquerorLevel`, `Get/SetConquerorLevel`; `UpdateTextTailLevel`: gracz z Poziomem Czempiona ma nad głową „Lv N” Czempiona na niebiesko (85,185,255) |
+| `UserInterface/PythonPlayer.cpp` | `SetStatus(POINT_CONQUEROR_LEVEL)` – własny niebieski poziom |
+| `UserInterface/Mt2009Champion.cpp` (**nowy**) | `player.CONQUEROR_LEVEL/_LEVEL_STEP/_EXP/_NEXT_EXP/_POINT/_LEVEL_MAX`, `player.SUNGMA_STR/HP/MOVE/IMMUNE` (+ `SUNGMA_INMUNE` GF), `player.POINT_*` (15), `player.GetConquerorEXP/GetConquerorNextEXP/GetConquerorLevel`, `item.APPLY_SUNGMA_*`, `item.APPLY_ENCHANT_*`, `item.LIMIT_CONQUEROR_LEVEL`, `app.MT2009_CHAMPION_EXE`; `static_assert` numerów i rozmiarów (jak serwer) |
+| `UserInterface/UserInterface.cpp`, `UserInterface.vcxproj(.filters)` | rejestracja, nowy plik |
+| `GameLib/ActorInstanceBattle.cpp` | `IS_HUGE_RACE`: Hydra 3960–3962 (nie jest odpychana, efekt trafienia w miejscu ciosu, zasięg umiejętności −200) |
+| `UserInterface/PythonPlayerSkill.cpp` (**nowy w nakładce**) | na `metin2_defensewave` umiejętność w olbrzymią rasę (Hydra) albo z `IGNORE_BLOCK` (`IsIgnoreTarget`) nie sprawdza „cel stoi na blokadzie” – Hydra stoi w morzu (Owsap `IsIgnoreBlock`) |
+
+Root (klient 2.0.30 → 3.0): strona **Sung Ma** zakładki statusu w `uicharacter.py` + `uiscript/characterwindow.py`
+(okno o 24 px wyższe, dwa przyciski GF `old_level_btn`/`new_level_btn` pod wierszem poziomu, ikony `char_info_sungma_*`
+w miejscu STR/DEX/VIT/INT, wolne punkty i „+” → `/conqueror_stat smh_*`, wiersz poziomu pokazuje Poziom Czempiona i
+jego exp na niebiesko, wartość poniżej wymagań mapy na czerwono). Klawisz „Czempion” (`keybind.py`) otwiera tę stronę;
+`uichampion.py` (Etap A) usunięty; `uicharacternew.py` GF nie jest używany (brak w nim naszych części okna).
+Grafiki są już w kliencie bazowym: `d:/ymir work/ui/game/windows/char_info_sungma_*.sub`, `old/new_level_btn_0*.sub`
+(paczka `etc`) wskazują na `d:/ymir work/ui/windows.dds` (512×940, wersja GF – sprawdzone 13.10.2026 wycinkiem).
+
+Zbudowane 13.10.2026 (`build.sh msvc --smoke`, MSVC 14.44; źródła: kopia client-build + cały ten katalog, jak exe 2.0.63 –
+`/opt/metin2/cache/exe-yohara/Source`): `metin2client.exe` 13 700 096 B, sha256
+`75d7825064b7cb42cd6e42f6117ca04300c49d88dae9acef3d5242a33ab8403a` (`/opt/metin2/cache/exe-releases/metin2client-75d78250.exe`,
+`/opt/metin2/cache/yohara/exe-out/`); smoke test dochodzi do okna logowania. Drugi smoke z root 3.0 (tylko do testu: hak w
+`intrologin.py` otwiera dwa okna postaci przy logowaniu) – strona zwykła i Sung Ma rysują się bez błędów
+(`exe-out/smoke-character-window.png`; liczby to śmieci, bo nie ma postaci).

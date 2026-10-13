@@ -494,6 +494,12 @@ class CInstanceBase
 #ifdef ENABLE_TEXT_LEVEL_REFRESH
 		void					SetLevel(DWORD dwLevel);
 #endif
+#ifdef ENABLE_CONQUEROR_LEVEL
+		// MT2009_PLUS_CHAMPION_V2: Poziom Czempiona (add/update packets, the own one from the points); above 0 the
+		// level over the head is the champion level, in blue.
+		DWORD					GetConquerorLevel() const { return m_dwConquerorLevel; }
+		void					SetConquerorLevel(DWORD dwLevel);
+#endif
 		int						GetInstanceType();
 		DWORD					GetPart(CRaceData::EEquipParts part);
 		DWORD					GetShape();
@@ -891,6 +897,9 @@ class CInstanceBase
 
 		bool					m_bIsHideLevel;
 		DWORD					m_dwLevel;
+#ifdef ENABLE_CONQUEROR_LEVEL
+		DWORD					m_dwConquerorLevel;	// MT2009_PLUS_CHAMPION_V2
+#endif
 		DWORD					m_dwEmpireID;
 		DWORD					m_dwGuildID;
 #ifdef ENABLE_GUILD_TOKEN_AUTH

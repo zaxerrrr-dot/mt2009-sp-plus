@@ -430,6 +430,16 @@ void CPythonPlayer::SetStatus(DWORD dwType, long lValue)
 		return;
 	}
 
+#ifdef ENABLE_CONQUEROR_LEVEL
+	// MT2009_PLUS_CHAMPION_V2: the own Poziom Czempiona over the own head (others get it in the update packet).
+	if (dwType == POINT_CONQUEROR_LEVEL)
+	{
+		CInstanceBase* pkPlayer = NEW_GetMainActorPtr();
+		if (pkPlayer)
+			pkPlayer->SetConquerorLevel(lValue > 0 ? (DWORD)lValue : 0);
+	}
+#endif
+
 	if (dwType == POINT_LEVEL)
 	{
 		CInstanceBase* pkPlayer = NEW_GetMainActorPtr();

@@ -178,3 +178,10 @@ Wejście od poziomu 90: portal 3949 po wygranej, Rybak 9009 („Port Nowego Kont
 (`cmdchat DungeonInfo show` – otwiera panel wypraw, `client-patches/client-2.0.30/root/dungeoninfo.py`) i „Wróć na
 Przylądek Smoczego Ognia” (do Rybaka) – quest `port_yohary`, który pilnuje też poziomu 90 przy wejściu na mapę.
 Klient: paczki mapy `client-patches/client-2.0.30/tools/port368/`.
+
+## Exe 3.0 (`MT2009_PLUS_SHIP_DEFENSE_V2`, 13.10.2026)
+
+Opcjonalne poprawki exe z planu weszły do exe Yohary (`client-patches/exe/README.md`): `IS_HUGE_RACE` dla Hydry 3960–3962
+(nie jest odpychana, efekt trafienia w miejscu ciosu, zasięg umiejętności −200) i – na `metin2_defensewave` – umiejętność
+w olbrzymią rasę (albo z `IGNORE_BLOCK`) nie sprawdza, czy cel stoi na blokadzie (Hydra stoi w morzu; Owsap `IsIgnoreBlock`).
+Serwer bez zmian.

@@ -562,6 +562,10 @@ bool IS_HUGE_RACE(unsigned int vnum)
 	}
 	if (vnum >= 2750 && vnum <= 2862)	// MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta): the Zodiac bosses are not pushed
 		return true;
+#ifdef ENABLE_MT2009_SHIP_DEFENSE_CLIENT
+	if (vnum >= 3960 && vnum <= 3962)	// MT2009_PLUS_SHIP_DEFENSE_V2: the Hydra (body, heads) as in Owsap
+		return true;
+#endif
 	return false;
 }
 

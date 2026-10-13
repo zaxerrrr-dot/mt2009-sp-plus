@@ -1377,6 +1377,9 @@ typedef struct packet_char_additional_info
 #ifdef ENABLE_QUIVER_SYSTEM
 	DWORD	dwArrow;
 #endif
+#ifdef ENABLE_CONQUEROR_LEVEL
+	DWORD	dwConquerorLevel;	// MT2009_PLUS_CHAMPION_V2: Poziom Czempiona (0 = none), the blue level over the head
+#endif
 } TPacketGCCharacterAdditionalInfo;
 
 typedef struct packet_add_char
@@ -1450,6 +1453,9 @@ typedef struct packet_update_char
 	DWORD		dwMountVnum;
 #ifdef ENABLE_QUIVER_SYSTEM
 	DWORD		dwArrow;
+#endif
+#ifdef ENABLE_CONQUEROR_LEVEL
+	DWORD		dwConquerorLevel;	// MT2009_PLUS_CHAMPION_V2: Poziom Czempiona (0 = none)
 #endif
 } TPacketGCCharacterUpdate;
 

@@ -798,6 +798,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 	{ void Mt2009Zodiak_RegisterPython(); Mt2009Zodiak_RegisterPython(); } // MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta)
 #endif
 #endif
+#ifdef ENABLE_CONQUEROR_LEVEL
+	{ void Mt2009Champion_RegisterPython(); Mt2009Champion_RegisterPython(); } // MT2009_PLUS_CHAMPION_V2
+#endif
 	initsafebox();
 	initguild();
 	initServerStateChecker();

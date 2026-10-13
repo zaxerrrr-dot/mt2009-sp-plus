@@ -1906,6 +1906,10 @@ class ItemToolTip(ToolTip):
 			if item.LIMIT_LEVEL == limitType:
 				color = self.GetLimitTextLineColor(player.GetStatus(player.LEVEL), limitValue)
 				self.AppendTextLine(localeInfo.TOOLTIP_ITEM_LIMIT_LEVEL % (limitValue), color)
+			# MT2009_PLUS_CHAMPION_V2: Yohara's gear asks for Poziom Czempiona (exe 3.0: item.LIMIT_CONQUEROR_LEVEL)
+			elif getattr(item, "LIMIT_CONQUEROR_LEVEL", -1) == limitType:
+				color = self.GetLimitTextLineColor(player.GetStatus(player.CONQUEROR_LEVEL), limitValue)
+				self.AppendTextLine("Wymagany Poziom Czempiona: %d" % (limitValue), color)
 			"""
 			elif item.LIMIT_STR == limitType:
 				color = self.GetLimitTextLineColor(player.GetStatus(player.ST), limitValue)

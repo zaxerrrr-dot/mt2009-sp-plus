@@ -11,10 +11,9 @@ import uiTaskBar
 import ikashop
 import net
 import chr
-if app.ENABLE_CONQUEROR_UI:
-	import uicharacternew as uiCharacter
-else:
-	import uiCharacter
+# MT2009_PLUS_CHAMPION_V2: our uicharacter.py has the Sung Ma page itself (GF's uicharacternew.py lacks this
+# client's own parts of the window), so it stays with app.ENABLE_CONQUEROR_UI = 1 too.
+import uiCharacter
 import uiInventory
 import uiDragonSoul
 import uiChat
@@ -5785,6 +5784,22 @@ class Interface(object):
 
 	def ToggleCharacterWindowStatusPage(self):
 		self.ToggleCharacterWindow("STATUS")
+
+	# MT2009_PLUS_CHAMPION_V2: the key "Czempion" - the status tab's Sung Ma page (uicharacter.py)
+	def ToggleChampionPage(self):
+		if player.IsObserverMode() or not self.wndCharacter:
+			return
+		if self.wndCharacter.IsShow() and "STATUS" == self.wndCharacter.GetState() and "SUNGMA" == self.wndCharacter.GetSubState():
+			self.wndCharacter.OverOutItem()
+			self.wndCharacter.Hide()
+			return
+		self.wndCharacter.OpenChampionPage()
+		self.wndCharacter.Show()
+		self.wndCharacter.SetTop()
+
+	def RefreshChampionPage(self):
+		if self.wndCharacter:
+			self.wndCharacter.RefreshStatus()
 
 	def ToggleInventoryWindow(self):
 		if False == player.IsObserverMode():

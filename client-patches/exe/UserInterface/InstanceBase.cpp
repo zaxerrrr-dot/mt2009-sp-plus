@@ -2236,6 +2236,18 @@ void CInstanceBase::SetLevel(DWORD dwLevel)
 }
 #endif
 
+#ifdef ENABLE_CONQUEROR_LEVEL
+// MT2009_PLUS_CHAMPION_V2: a new champion level redraws the level over the head (UpdateTextTailLevel).
+void CInstanceBase::SetConquerorLevel(DWORD dwLevel)
+{
+	if (m_dwConquerorLevel == dwLevel)
+		return;
+	m_dwConquerorLevel = dwLevel;
+	if (m_isTextTail && m_dwLevel)
+		UpdateTextTailLevel(m_dwLevel);
+}
+#endif
+
 #if defined(WJ_SHOW_MOB_INFO) && defined(ENABLE_SHOW_MOBAIFLAG)
 void CInstanceBase::MobInfoAiFlagRefresh()
 {
@@ -3551,6 +3563,9 @@ void CInstanceBase::__Initialize()
 	m_kAffectFlagContainer.Clear();
 
 	m_dwLevel = 0;
+#ifdef ENABLE_CONQUEROR_LEVEL
+	m_dwConquerorLevel = 0;	// MT2009_PLUS_CHAMPION_V2
+#endif
 	m_bIsHideLevel = false;
 	m_dwGuildID = 0;
 	m_dwEmpireID = 0;

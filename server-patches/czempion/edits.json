@@ -154,5 +154,71 @@
   "marker": "MT2009_PLUS_CHAMPION_HPSP_V1",
   "old": "\t\tiMaxSP = JobInitialPoints[GetJob()].max_sp + m_points.iRandomSP + GetPoint(POINT_IQ) * JobInitialPoints[GetJob()].sp_per_iq;\n",
   "new": "\t\tiMaxSP = JobInitialPoints[GetJob()].max_sp + m_points.iRandomSP + GetPoint(POINT_IQ) * JobInitialPoints[GetJob()].sp_per_iq;\n\t\t// MT2009_PLUS_CHAMPION_HPSP_V1 (the owner, 13 October): each Champion level adds what a normal level-up\n\t\t// gives (the job's hp/sp per level - 40 HP and 20 SP for every class), up to +1200 HP / +600 SP at level 30.\n\t\tif (GetConquerorLevel() > 0)\n\t\t{\n\t\t\tconst TJobInitialPoints& jp = JobInitialPoints[GetJob()];\n\t\t\tiMaxHP += GetConquerorLevel() * (jp.hp_per_lv_begin + jp.hp_per_lv_end) / 2;\n\t\t\tiMaxSP += GetConquerorLevel() * (jp.sp_per_lv_begin + jp.sp_per_lv_end) / 2;\n\t\t}\n"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (packet points)",
+  "old": "\tPOINT_PACKET_NUM,\n\tPOINT_ENCHANT_ELECT = POINT_PACKET_NUM,",
+  "new": "\t// MT2009_PLUS_CHAMPION_V2 (packet points): from the Yohara 3.0 exe on the points packet and the point change carry\n\t// every point (POINT_PACKET_NUM moved to the end, = POINT_MAX_NUM = 193, the exe's POINT_MAX_NUM); the element\n\t// powers keep 178-183 (the talismans' item_proto applytypes), the Sung Ma stats 184-187 (APPLY_SUNGMA_*).\n\tPOINT_ENCHANT_ELECT,"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (champion points)",
+  "old": "\tPOINT_SUNGMA_IMMUNE,\n\n\tPOINT_MAX_NUM,",
+  "new": "\tPOINT_SUNGMA_IMMUNE,\n\t// MT2009_PLUS_CHAMPION_V2 (champion points): Poziom Czempiona for the client (188-192, the exe's order,\n\t// client-patches/exe/Server/common/length.h); the values are filled by PointsPacket and champion::SendInfo.\n\tPOINT_CONQUEROR_LEVEL,\n\tPOINT_CONQUEROR_LEVEL_STEP,\n\tPOINT_CONQUEROR_EXP,\n\tPOINT_CONQUEROR_NEXT_EXP,\n\tPOINT_CONQUEROR_POINT,\n\n\tPOINT_PACKET_NUM,\n\tPOINT_MAX_NUM = POINT_PACKET_NUM,"
+ },
+ {
+  "file": "../../common/item_length.h",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (limit)",
+  "old": "\tLIMIT_TIMER_BASED_ON_WEAR,\n\tLIMIT_MAX_NUM,",
+  "new": "\tLIMIT_TIMER_BASED_ON_WEAR,\n\t// MT2009_PLUS_CHAMPION_V2 (limit): an item asking for Poziom Czempiona (Yohara's gear); 10 here and in the exe.\n\tLIMIT_CONQUEROR_LEVEL,\n\tLIMIT_MAX_NUM,"
+ },
+ {
+  "file": "../../db/src/ProtoReader.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (limit name)",
+  "old": "string arLimitType[] = {\"LIMIT_NONE\", \"LEVEL\", \"STR\", \"DEX\", \"INT\", \"CON\", \"PC_BANG\", \"REAL_TIME\", \"REAL_TIME_FIRST_USE\", \"TIMER_BASED_ON_WEAR\"};",
+  "new": "string arLimitType[] = {\"LIMIT_NONE\", \"LEVEL\", \"STR\", \"DEX\", \"INT\", \"CON\", \"PC_BANG\", \"REAL_TIME\", \"REAL_TIME_FIRST_USE\", \"TIMER_BASED_ON_WEAR\",\n\t\t\"CONQUEROR_LEVEL\"};\t// MT2009_PLUS_CHAMPION_V2 (limit name): LIMIT_CONQUEROR_LEVEL (10)"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (add packet)",
+  "old": "\tDWORD\tdwMountVnum;\n#ifdef ENABLE_QUIVER_SYSTEM\n\tDWORD\tdwArrow;\n#endif\n} TPacketGCCharacterAdditionalInfo;",
+  "new": "\tDWORD\tdwMountVnum;\n#ifdef ENABLE_QUIVER_SYSTEM\n\tDWORD\tdwArrow;\n#endif\n#ifdef ENABLE_CONQUEROR_LEVEL\n\tDWORD\tdwConquerorLevel;\t// MT2009_PLUS_CHAMPION_V2 (add packet): Poziom Czempiona, the blue level over the head (exe 3.0)\n#endif\n} TPacketGCCharacterAdditionalInfo;"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (update packet)",
+  "old": "\tDWORD\tdwMountVnum;\n#ifdef ENABLE_QUIVER_SYSTEM\n\tDWORD\tdwArrow;\n#endif\n} TPacketGCCharacterUpdate;",
+  "new": "\tDWORD\tdwMountVnum;\n#ifdef ENABLE_QUIVER_SYSTEM\n\tDWORD\tdwArrow;\n#endif\n#ifdef ENABLE_CONQUEROR_LEVEL\n\tDWORD\tdwConquerorLevel;\t// MT2009_PLUS_CHAMPION_V2 (update packet): Poziom Czempiona (exe 3.0)\n#endif\n} TPacketGCCharacterUpdate;"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (insert)",
+  "old": "\t\taddPacket.bEmpire = m_bEmpire;\n",
+  "new": "\t\taddPacket.bEmpire = m_bEmpire;\n#ifdef ENABLE_CONQUEROR_LEVEL\n\t\taddPacket.dwConquerorLevel = IsPC() ? GetConquerorLevel() : 0; // MT2009_PLUS_CHAMPION_V2 (insert)\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (update)",
+  "old": "\tpack.bPKMode\t= m_bPKMode;\n",
+  "new": "\tpack.bPKMode\t= m_bPKMode;\n#ifdef ENABLE_CONQUEROR_LEVEL\n\tpack.dwConquerorLevel = IsPC() ? GetConquerorLevel() : 0; // MT2009_PLUS_CHAMPION_V2 (update)\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (points packet)",
+  "old": "\tfor (int i = POINT_ST; i < POINT_PACKET_NUM; ++i) // MT2009_PLUS_ELEMENTS_V1 (points packet loop): the element powers stay on the server\n\t\tpack.points[i] = GetPoint(i);\n",
+  "new": "\tfor (int i = POINT_ST; i < POINT_PACKET_NUM; ++i) // MT2009_PLUS_ELEMENTS_V1 (points packet loop): the element powers stay on the server\n\t\tpack.points[i] = GetPoint(i);\n#ifdef ENABLE_CONQUEROR_LEVEL\n\t// MT2009_PLUS_CHAMPION_V2 (points packet): Poziom Czempiona is not a point of m_points; the Sung Ma stats are (loop).\n\t{ void ChampionFillPoints(LPCHARACTER, INT*); ChampionFillPoints(this, pack.points); }\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (use limit)",
+  "old": "\t\t\tcase LIMIT_REAL_TIME_START_FIRST_USE:\n\t\t\t\tiLimitRealtimeStartFirstUseFlagIndex = i;\n\t\t\t\tbreak;\n",
+  "new": "#ifdef ENABLE_CONQUEROR_LEVEL\n\t\t\tcase LIMIT_CONQUEROR_LEVEL: // MT2009_PLUS_CHAMPION_V2 (use limit)\n\t\t\t\tif (GetConquerorLevel() < limitValue)\n\t\t\t\t{\n\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, \"Tw\\xf3j Poziom Czempiona jest za niski, aby u\\xbfy\\xe6 tego przedmiotu (wymagany: %ld).\", limitValue);\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\tbreak;\n#endif\n\n\t\t\tcase LIMIT_REAL_TIME_START_FIRST_USE:\n\t\t\t\tiLimitRealtimeStartFirstUseFlagIndex = i;\n\t\t\t\tbreak;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V2 (equip limit)",
+  "old": "\t\t\tcase LIMIT_STR:\n\t\t\t\tif (GetPoint(POINT_ST) < limit)\n",
+  "new": "#ifdef ENABLE_CONQUEROR_LEVEL\n\t\t\tcase LIMIT_CONQUEROR_LEVEL: // MT2009_PLUS_CHAMPION_V2 (equip limit)\n\t\t\t\tif (GetConquerorLevel() < limit)\n\t\t\t\t{\n\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, \"Tw\\xf3j Poziom Czempiona jest za niski, aby za\\xb3o\\xbfy\\xe6 ten przedmiot (wymagany: %ld).\", limit);\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\tbreak;\n#endif\n\n\t\t\tcase LIMIT_STR:\n\t\t\t\tif (GetPoint(POINT_ST) < limit)\n"
  }
 ]

@@ -17,7 +17,7 @@ Logika według Amerii (`ENABLE_YOHARA_SYSTEM` – jedyna pełna publiczna implem
 | Baza | `linux-port/docker/mariadb/playerbot/czempion.sql` (`apply.sh`): 8 kolumn w `player.player` i `player_deleted` (ta sama kolejność – usunięta postać jest kopiowana `SELECT *`), przedmioty 72068–72071 |
 | Dane serwera | `linux-port/docker/game/champion/` → `share/locale/poland/` (krok Dockerfile „share: Poziom Czempiona”): `sungma_table.txt`, `sungma_mob_exp.txt`; generator `tools/champion/gen_sungma_data.py` |
 | Questy | `linux-port/docker/game/quest/czempion.quest` (posąg 20433), `czempion_nowa_wola.quest` (72068–72071) |
-| Klient (Etap A) | `client-patches/client-2.0.30/root/uichampion.py` (+ `game.py`, `interfacemodule.py`, `keybind.py`) |
+| Klient (Etap B, exe 3.0) | exe: `client-patches/exe` (`MT2009_PLUS_CHAMPION_V2`, `UserInterface/Mt2009Champion.cpp`); root: `uicharacter.py` + `uiscript/characterwindow.py` (strona Sung Ma okna postaci), `game.py`, `interfacemodule.py`, `keybind.py`, `constinfo.py`, `uitooltip.py`, `localeinfo_point.py` |
 
 Zmiana zachowana, gdy jest już jej znacznik; zmiana, której kodu nie ma dokładnie raz, przerywa całość, zanim
 cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
@@ -55,8 +55,9 @@ cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
 - **Boty**: bez Poziomu Czempiona (decyzja właściciela: na razie nie – `pc.set_conqueror` odmawia botowi) i bez
   wejścia na mapy Sung Ma: `TransitionPlayerBotMap` (`playerbot_travel.h`) odmawia (`sungma_map`) – przez nią idą
   łowiska i wyjazdy, podążanie Towarzysza i drużyny, LFG lochów/gildii i `WarpBot` (warp z questa/GM).
-- **Etap A klienta**: komendy czatu `champion_info <lv> <exp> <next> <pkt> <str> <hp> <move> <imm> <krok>` i
-  `sungma_map <str> <hp> <move> <imm>` (przy wejściu na mapę i po każdej zmianie) – okno `uichampion.py`.
+- **Klient (Etap B)**: liczby to punkty pakietu punktów (`POINT_CONQUEROR_*`, `POINT_SUNGMA_*`), wymagania mapy –
+  komenda czatu `sungma_map <str> <hp> <move> <imm>` (przy wejściu na mapę i po zmianie). Etap A (`champion_info`,
+  `uichampion.py`) usunięty.
 
 ## Komendy
 
@@ -71,20 +72,25 @@ cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
 `pc.set_conqueror`, `pc.give_conqueror_exp(2)`, `pc.get_sungma_str/vit/res/int`, `pc.reset_sungma_status(idx)`,
 `npc.get_sungma_exp` – dopisywane do istniejących tabel `pc`/`npc` (`questlua.cpp`, po Obronie Statku).
 
-## Etap B (nowy exe – nie teraz, w jednej budowie klienta po zgodzie właściciela)
+## Etap B – exe 3.0 „Yohara” (`MT2009_PLUS_CHAMPION_V2`, 13.10.2026)
 
-- `Locale_inc.h`: `ENABLE_CONQUEROR_LEVEL`, `ENABLE_CONQUEROR_UI` (dziś `app.*` = 0, `uicharacternew.py` śpi).
-- `length.h` (wspólny z exe): `POINT_CONQUEROR_LEVEL/_LEVEL_STEP/_EXP/_NEXT_EXP/_POINT`, `POINT_SUNGMA_*` **przed**
-  `POINT_PACKET_NUM` w kolejności exe (178 → 187) – serwer przesuwa wtedy `POINT_SUNGMA_*` sprzed elementów i wypełnia
-  `points[POINT_CONQUEROR_*]` w `PointsPacket` (wzór Ameria `char.cpp:2350`). Zmiana rozmiaru pakietu punktów =
-  wymuszona aktualizacja klienta.
-- `PythonPlayerModule.cpp`: stałe `CONQUEROR_*`, `SUNGMA_*`, `GetConquerorEXP()`; `Packet.h`/`PythonNetworkStreamPhaseGame.cpp`:
-  `dwConquerorLevel` w CharacterAdd/Update (niebieski poziom nad głową; serwer: `char.cpp` Add/UpdatePacket);
-  opcjonalnie `HEADER_GC_SUNGMA_ATTR_UPDATE` zamiast komendy `sungma_map`, `FLY_CONQUEROR_EXP`.
-- Python: `uicharacternew.py` + `uiscript/characterwindow.py` GF (strona Sung Ma, grafiki `char_info_sungma_*`),
-  pasek exp Czempiona w `uitaskbar.py`; `uichampion.py` (Etap A) można wtedy usunąć.
-- Klient (dane, przy najbliższej paczce): `item_list.txt`/`item_proto`/`itemdesc.txt` dla 72068–72071 i ikony
-  `icon/item/72068-72071.tga` z GF.
+Wymusza aktualizację klienta przy 3.0 (zgoda właściciela). Zmiany serwera: 11 edycji `MT2009_PLUS_CHAMPION_V2 (…)`
+na końcu `edits.json` (po edycjach V1, ta sama kolejność na świeżym drzewie i na już załatanym) + `playerbot_champion.cpp`.
+
+| Co | Gdzie | Szczegóły |
+|---|---|---|
+| Numeracja punktów | `common/length.h` (`(packet points)`, `(champion points)`) | żywioły **178–183 bez zmian** (applytype 1206 talizmanów w `item_proto`), `POINT_SUNGMA_STR/HP/MOVE/IMMUNE` **184–187** (jak w Etapie A, = `APPLY_SUNGMA_*` – w tym silniku apply to punkt), `POINT_CONQUEROR_LEVEL/_LEVEL_STEP/_EXP/_NEXT_EXP/_POINT` **188–192**, `POINT_PACKET_NUM` = `POINT_MAX_NUM` = **193** (exe: `POINT_MAX_NUM` 193). Kolejność „sungma przed conqueror” zamiast GF – żeby nie przenumerować żywiołów ani sungmy. |
+| Pakiet punktów | `packet.h` (bez zmian w tekście) | `INT points[POINT_PACKET_NUM]`: 1 + 4·178 = 713 B → **773 B**; zmiana punktu (`PointChange`) wysyła teraz też żywioły i sungmę |
+| Wypełnienie | `char.cpp` `(points packet)` → `ChampionFillPoints` | poziom, krok, exp, exp do następnego, wolne punkty Czempiona |
+| Niebieski poziom nad głową | `packet.h` `(add packet)`, `(update packet)`; `char.cpp` `(insert)`, `(update)` | `DWORD dwConquerorLevel` na końcu `TPacketGCCharacterAdditionalInfo` (66 → **70 B**) i `TPacketGCCharacterUpdate` (48 → **52 B**); `champion::Unlock`/awans wysyłają `UpdatePacket()` |
+| Odświeżanie | `playerbot_champion.cpp` `SendInfo` | 5 punktów Czempiona + 4 sungmy jako `HEADER_GC_CHARACTER_POINT_CHANGE` (było: `champion_info` na czacie) |
+| Limit przedmiotu | `common/item_length.h` `(limit)`, `char_item.cpp` `(use limit)`, `(equip limit)`, `db/src/ProtoReader.cpp` `(limit name)` | `LIMIT_CONQUEROR_LEVEL` = **10** (u nas nie ma `LIMIT_PITTY_REFINE`, który w Amerii daje 11); użycie/założenie przy za niskim Poziomie Czempiona – komunikat po polsku |
+| Bramka wersji | `linux-port/docker/game/bin/m2-render-config` | auth `server_version: ${M2_CLIENT_MIN_VERSION:-1010300}`; root `constinfo.py` mówi 1.3.0 (1010300) tylko z exe Yohary – starszy klient dostaje „UPDATE” = „Wymagana aktualizacja klienta gry przez Patcher.” |
+| Asercje | `playerbot_champion.cpp` (serwer), `Mt2009Champion.cpp` (exe) | numery 178/184/188/193, `LIMIT_CONQUEROR_LEVEL` 10, rozmiary 773/70/52 B – rozjazd nie skompiluje się po żadnej stronie |
+
+Bez zmian: `APPLY_SUNGMA_PER_*` / `HIT_BUFF_SUNGMA_*` (Owsap/GF; nie mamy jeszcze przedmiotów z nimi), nowy pakiet
+`HEADER_GC_SUNGMA_ATTR_UPDATE` (Ameria) – wymagania mapy zostają komendą czatu `sungma_map`, bo okno postaci tylko je
+wyświetla (wartość na czerwono + dymek), a komenda nie wymaga zmiany protokołu.
 
 ## PŻ i PE za poziomy Czempiona (`MT2009_PLUS_CHAMPION_HPSP_V1`)
 

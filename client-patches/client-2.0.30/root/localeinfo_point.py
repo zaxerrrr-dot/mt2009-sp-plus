@@ -220,6 +220,11 @@ for _zywPoint, _zywName in (
 		(181, "Si\xb3a Wiatru +%d%%"),
 		(182, "Si\xb3a Ziemi +%d%%"),
 		(183, "Si\xb3a Mroku +%d%%"),
+		# MT2009_PLUS_CHAMPION_V2: the Sung Ma stats of Yohara's items (APPLY_SUNGMA_* = points 184-187)
+		(getattr(player, "POINT_SUNGMA_STR", 184), "Si\xb3a Sung Ma +%d"),
+		(getattr(player, "POINT_SUNGMA_HP", 185), "Witalno\x9c\xe6 Sung Ma +%d"),
+		(getattr(player, "POINT_SUNGMA_MOVE", 186), "Odporno\x9c\xe6 Sung Ma +%d"),
+		(getattr(player, "POINT_SUNGMA_IMMUNE", 187), "Inteligencja Sung Ma +%d"),
 	):
 	AFFECT_DICT.setdefault(_zywPoint, _zywName)
 
