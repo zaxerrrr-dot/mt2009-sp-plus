@@ -72,3 +72,10 @@ drop	smok	71129	1	100
 dungeon	dzungla	366	1	town	209	0	0	95	0	1	8	9714	starozytna_dzungla.entry	3600	0	0	Staro¿ytna_D¿ungla	Œwi¹tynia_Ochao
 cost	dzungla	7500000
 drop	dzungla	30776	5	100
+# MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku (Hydra, 367), entered at the Fisherman (9009) on Przyl¹dek Smoczego Ognia
+# (301) - quest/obrona_statku.quest; no rest between runs (cooldown 0), 10 a day, 5 000 000 Yang.
+dungeon	hydra	367	1	xy	301	11080	17830	90	0	1	8	3962	obrona_statku.entry	0	0	0	Obrona_Statku	Przyl¹dek_Smoczego_Ognia
+cost	hydra	5000000
+drop	hydra	54705	3	100
+drop	hydra	25042	1	4
+drop	hydra	55410	1	1

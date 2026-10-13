@@ -125,6 +125,7 @@ namespace
 		{ 366, 362, 3783, 3954 },		// starozytna_dzungla (the Las)
 		{ 158, 64, 2848, 8096 },		// ruiny_atlantydy (MT2009_PLUS_ATLANTYDA_V1: Orc Valley, Mag Atlantydy)
 		{ 358, 358, 3332, 14310 },		// zodiac_temples (MT2009_PLUS_ZODIAC_BOTS_V1: the temple's courtyard, its own way out)
+		{ 367, 301, 10240 + 840, 16640 + 1190 },	// obrona_statku (MT2009_PLUS_SHIP_DEFENSE_V1: the Fisherman on Przyladek Smoczego Ognia)
 	};
 
 	struct TPlayerBotPdgBot

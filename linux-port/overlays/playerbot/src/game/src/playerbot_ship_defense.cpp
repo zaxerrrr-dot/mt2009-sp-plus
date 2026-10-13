@@ -25,6 +25,7 @@
 #include "desc.h"
 #include "affect.h"
 #include "cmd.h"
+#include "item.h"
 #include "playerbot_ship_defense.h"
 
 #include <algorithm>
@@ -42,15 +43,16 @@ namespace
 		int value;
 	};
 
-	// The defaults. The quest (step 5) reads min_level, party_only, fee, cooldown, daily_limit,
-	// max_instances with dw.cfg(); the rest is the C++ side's timing.
+	// The defaults. The quest (obrona_statku.quest) reads min_level, party_only, fee, cooldown, daily_limit
+	// with dw.cfg(); the rest is the C++ side's timing. The owner's decisions of 13 October 2026
+	// (cache/yohara/decyzje.md): level 90, party or alone, 5 000 000 Yang, no rest, 10 entries a day.
 	const SCfgDefault s_aCfg[] =
 	{
 		{ "min_level",		90 },	// wejscie od poziomu (GF: 90)
 		{ "party_only",		0 },	// 0: druzyna albo solo, 1: tylko druzyna (Owsap/GF)
-		{ "fee",		0 },	// oplata w yangach (0: bez oplaty)
-		{ "cooldown",		1800 },	// odnowienie po starcie, s (GF: 30 min)
-		{ "daily_limit",	0 },	// wejsc dziennie (0: bez limitu)
+		{ "fee",		5000000 },	// oplata w yangach (wlasciciel: 5kk; bez oplaty: flaga -1)
+		{ "cooldown",		0 },	// odpoczynek botow po wejsciu, s (wlasciciel: bez przerwy; GF: 30 min)
+		{ "daily_limit",	10 },	// wejsc dziennie (wlasciciel: 10; bez limitu: flaga -1)
 		{ "max_instances",	8 },	// statkow naraz na rdzen
 		{ "idle_destroy",	600 },	// nieuruszony statek znika po, s (Owsap: 10 min)
 		{ "time_limit",		1800 },	// limit po starcie, s (Owsap: brak)
@@ -72,6 +74,7 @@ namespace
 		{ "repair_stun",	5 },	// ogluszenie naprawiajacego, s
 		{ "debuff_hp_pct",	50 },	// fala 4: od tylu % PZ Hydry potwory traca wzmocnienia
 		{ "debuff_interval",	10 },	// co, s
+		{ "chest_uses",		3 },	// MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest): Skrzynia Hydry (54705) otwiera sie tyle razy
 	};
 
 	struct FCollectChars
@@ -1273,4 +1276,33 @@ ACMD(do_ship_defense)
 		pShip->Close(true);
 	else
 		ch->ChatPacket(CHAT_TYPE_INFO, "/dw create | start | info | wave <1-4> | end");
+}
+
+// MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest): Skrzynia Hydry (54705) gives one item of its group
+// (special_item_group.shipdefense.txt) an opening, chest_uses times (3, the owner's decision of
+// 13 October 2026). Called by the giftbox's use after a successful opening (char_item.cpp, edits.json):
+// true keeps the chest with one more opening counted in socket 0 (the client's tooltip shows the
+// rest), false lets the engine take it (the last opening, or any other box).
+bool ShipDefense_ChestKeep(LPITEM item)
+{
+	if (!item || item->GetVnum() != VNUM_HYDRA_CHEST)
+		return false;
+	const int iUses = MAX(1, Cfg("chest_uses"));
+	const long lUsed = MAX(0L, item->GetSocket(0)) + 1;
+	if (lUsed >= iUses)
+		return false;
+	item->SetSocket(0, lUsed);
+	return true;
+}
+
+// MT2009_PLUS_MAGIC_STONE_REFINE_V1: the Magic Stone (Magiczny Kamien - 25042 in our world.item_proto,
+// the official 25041 is a second Blessing Scroll here; USE_TUNING, value0 NO_REDUCTION_WHEN_FAIL_SCROLL).
+// The owner's decision of 13 October 2026: dragged onto an item it tries the next level at the
+// blacksmith's chance for that item (its refine_set's prob), with no materials and no Yang; a failure
+// neither destroys the item nor takes its level; the stone goes on every try. RefineInformation and
+// DoRefineWithScroll (char_item.cpp, edits.json) ask this for the scroll of the refine.
+bool MagicStoneRefineFree(LPITEM scroll)
+{
+	return scroll && scroll->GetVnum() == ship_defense::VNUM_MAGIC_STONE &&
+		scroll->GetType() == ITEM_USE && scroll->GetSubType() == USE_TUNING;
 }

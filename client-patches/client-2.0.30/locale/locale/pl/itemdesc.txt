@@ -140,7 +140,7 @@
 22011	Zwój Powrotu	Zwój pozwala zapisaæ obecn¹ pozycjê, aby potem powróciæ do obecnej lokalizacji. Mo¿na u¿yæ co 15 minut.
 25040	Zwój B³ogos³awieñstwa	Usuwa ryzyko zniszczenia przedmiotu podczas jego ulepszania. Je¿eli ulepszanie siê nie powiedzie, to jakoœæ przedmiotu jest redukowana o 1 poziom.
 25041	Zwój B³ogos³awieñstwa	Usuwa ryzyko zniszczenia przedmiotu podczas jego ulepszania. Je¿eli ulepszanie siê nie powiedzie, to jakoœæ przedmiotu jest redukowana o 1 poziom.
-25042	Magiczny Kamieñ	Bry³a legendarnego metalu zapewniaj¹cego najlepsze wyniki podczas ulepszania przedmiotów. W ten sposób ulepszony przedmiot nie mo¿e ulec ani zniszczeniu ani pogorszeniu.
+25042	Magiczny Kamieñ	Przeci¹gnij na przedmiot, aby spróbowaæ ulepszyæ go o jeden poziom z tak¹ szans¹ jak u kowala, bez materia³ów i Yang. Przy pora¿ce przedmiot nie znika i nie traci poziomu. Kamieñ zu¿ywa siê przy ka¿dej próbie.
 25043	Podrêcznik Kowala	Ksiêga zawiera duszê starego kowala. Jeœli jej u¿yjesz, zwiêkszy to szansê na pomyœlne ulepszenie przedmiotu o 15%. Przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakoœæ przedmiotu jest redukowana o 1 poziom.	
 25044	Zwój Wojny	Zwój do ulepszeñ pob³ogos³awiony przez Boga Wojny. Gwarantuje pomyœlne ulepszenie przedmiotu (od +0 do +3).	
 25045	Zwój Boga Smoków	Zwiêksza szansê na ulepszenie przedmiotu o 10% i przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakoœæ przedmiotu jest redukowana o 1 poziom.	

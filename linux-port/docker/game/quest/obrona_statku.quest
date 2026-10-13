@@ -1,0 +1,470 @@
+-- MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku (Hydra; server-patches/shipdefense/README.md, plan
+-- cache/yohara/plan-hydra.md krok 5). Napisany na wzorcu Le¿a Smoka (blue_dragon_lair.quest), na module
+-- "dw" silnika (playerbot_ship_defense_questlua.cpp); quest defense_wave.quest Owsapa tylko jako wzór
+-- przebiegu (jego c_locale, dw.enter/dw.exit, bilety i ranking nie istniej¹ u nas).
+-- Decyzje w³aœciciela (cache/yohara/decyzje.md, 13 paŸdziernika 2026):
+--   * wejœcie u Rybaka (9009) na Przyl¹dku Smoczego Ognia (301), od poziomu 90;
+--   * dru¿yna albo solo, boty z dru¿yny wchodz¹ za cz³owiekiem (playerbot_party_dungeon.h);
+--   * 5 000 000 Yang za wejœcie, BEZ czekania miêdzy wyprawami, najwy¿ej 10 wejœæ dziennie.
+-- Wszystkie liczby s¹ flagami zdarzeñ shipdef_<nazwa> czytanymi przez dw.cfg() (domyœlne w C++:
+-- min_level 90, party_only 0, fee 5000000, cooldown 0, daily_limit 10) - zmiana bez kompilacji.
+-- Rybak (rdzeñ game2) tworzy instancjê mapy 367 (rdzeñ game1) przez d.new_jump_pids i od razu
+-- przenosi gracza albo przywódcê z ludŸmi jego dru¿yny stoj¹cymi obok; statek przypina siê do
+-- instancji przy pierwszym wejœciu (C++), tam te¿ s¹ fale, limit czasu (time_limit), zamkniêcie
+-- nieruszonego statku (idle_destroy), Skarb Hydry, portal i wyjœcie po pora¿ce.
+-- Tu: wejœcie i op³ata, ster (start / zejœcie ze statku), deski z Potomstwa Hydry, naprawa masztu,
+-- portal, panel lochów (klucz "hydra") i trwa³a flaga przejœcia dla przysz³ego poziomu Mistrza:
+-- obrona_statku.completed (liczba przejœæ) i obrona_statku.completed_at_120 (przejœcie na poziomie
+-- 120+), tylko dla ludzi (boty: decyzja w³aœciciela - na razie nie).
+quest obrona_statku begin
+	state start begin
+		function cfg()
+			return {
+				map = 367,
+				base_x = 1280, base_y = 4864,
+				start = {387, 359}, -- Town.txt statku (CShipDefense START_X/START_Y)
+				entry_map = 301, -- Przyl¹dek Smoczego Ognia (rdzeñ game2), Rybak 9009 na 838,1187
+				exit_map = 301, exit_x = 10240 + 840, exit_y = 16640 + 1190,
+				near = 30, -- MT2009_PLUS_DUNGEON_ONE_WARP_V1: ludzie dru¿yny w promieniu 30 pól od przywódcy
+				min_level = dw.cfg("min_level"),
+				party_only = dw.cfg("party_only"),
+				fee = dw.cfg("fee"),
+				cooldown = dw.cfg("cooldown"),
+				daily = dw.cfg("daily_limit"),
+				-- jak d³ugo trzymaæ instancjê po wyjœciu ostatniej osoby ("Wróæ do lochu"): czas czekania
+				-- na start + limit po starcie + zapas
+				keep = dw.cfg("idle_destroy") + dw.cfg("time_limit") + 120,
+				wood_item = 31107,
+				champion_level = 120,
+			}
+		end
+
+		function fee_text(n)
+			local s = tostring(n)
+			local out = ""
+			while string.len(s) > 3 do
+				out = " "..string.sub(s, -3)..out
+				s = string.sub(s, 1, -4)
+			end
+			return s..out
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 367 * 10000 and idx < 368 * 10000 and pc.in_dungeon()
+		end
+
+		function start_xy()
+			local c = obrona_statku.cfg()
+			return (c.base_x + c.start[1]) * 100, (c.base_y + c.start[2]) * 100
+		end
+
+		-- MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1: czekanie tylko dla botów (cooldown 0 = nikt nie czeka).
+		function must_rest(now)
+			local c = obrona_statku.cfg()
+			if c.cooldown <= 0 or not pc.is_playerbot() then
+				return false
+			end
+			return now - pc.getf("obrona_statku", "entry") < c.cooldown
+		end
+
+		-- MT2009_PLUS_DUNGEON_FEE_V1: op³ata i limit dzienny (polska pó³noc), jak w innych lochach.
+		function today()
+			return math.floor((get_global_time() + 7200) / 86400)
+		end
+
+		function runs_today()
+			if pc.getf("obrona_statku", "day") ~= obrona_statku.today() then
+				return 0
+			end
+			return pc.getf("obrona_statku", "runs")
+		end
+
+		function over_limit()
+			local c = obrona_statku.cfg()
+			return not pc.is_gm() and c.daily > 0 and obrona_statku.runs_today() >= c.daily
+		end
+
+		function too_poor()
+			local c = obrona_statku.cfg()
+			return not pc.is_gm() and pc.get_money() < c.fee
+		end
+
+		-- MT2009_PLUS_DUNGEON_FEE_LEADER_V1: ka¿dy cz³owiek p³aci za siebie, raz, przy pierwszym wejœciu
+		-- do nowej instancji; boty dru¿yny i towarzysz nic. "Wróæ do lochu" do tej samej - za darmo.
+		function pay_entry()
+			local c = obrona_statku.cfg()
+			if pc.is_gm() or pc.is_playerbot() then
+				return true
+			end
+			if obrona_statku.over_limit() then
+				syschat("Wykorzysta³eœ ju¿ dzisiejsze wyprawy na statek ("..c.daily.."). Wróæ jutro.")
+				return false
+			end
+			if pc.get_money() < c.fee then
+				syschat("Wejœcie kosztuje "..obrona_statku.fee_text(c.fee).." Yang - nie masz tyle przy sobie.")
+				return false
+			end
+			if c.fee > 0 then
+				pc.change_money(-c.fee)
+			end
+			local day = obrona_statku.today()
+			if pc.getf("obrona_statku", "day") ~= day then
+				pc.setf("obrona_statku", "day", day)
+				pc.setf("obrona_statku", "runs", 0)
+			end
+			pc.setf("obrona_statku", "runs", pc.getf("obrona_statku", "runs") + 1)
+			if c.daily > 0 then
+				syschat("Op³ata za wejœcie: "..obrona_statku.fee_text(c.fee).." Yang. Dzisiejsza wyprawa "..pc.getf("obrona_statku", "runs").."/"..c.daily..".")
+			else
+				syschat("Op³ata za wejœcie: "..obrona_statku.fee_text(c.fee).." Yang.")
+			end
+			return true
+		end
+
+		-- MT2009_PLUS_BOT_DUNGEONS_ALL_V1: dru¿ynê prowadzon¹ przez bota (towarzysz bierze cz³owieka do swojej)
+		-- otwiera cz³owiek.
+		function bot_leads()
+			local lp = party.get_leader_pid()
+			if lp == nil or lp == 0 or lp == pc.get_player_id() then
+				return false
+			end
+			local bot = false
+			local pids = {party.get_member_pids()}
+			for i, pid in next, pids, nil do
+				if pid == lp then
+					q.begin_other_pc_block(pid)
+					bot = pc.get_player_id() == pid and pc.is_playerbot()
+					q.end_other_pc_block()
+				end
+			end
+			return bot
+		end
+
+		-- Trwa³a flaga przejœcia (przysz³y poziom Mistrza, etap Yohary): raz na instancjê i postaæ.
+		function mark_done()
+			local c = obrona_statku.cfg()
+			if pc.is_playerbot() then
+				return
+			end
+			local idx = pc.get_map_index()
+			if pc.getf("obrona_statku", "done_idx") == idx then
+				return
+			end
+			pc.setf("obrona_statku", "done_idx", idx)
+			pc.setf("obrona_statku", "completed", pc.getf("obrona_statku", "completed") + 1)
+			pc.setf("obrona_statku", "completed_at", get_global_time())
+			if pc.get_level() >= c.champion_level then
+				pc.setf("obrona_statku", "completed_at_120", 1)
+			end
+		end
+
+		function leave()
+			local c = obrona_statku.cfg()
+			pc.warp(c.exit_x * 100, c.exit_y * 100)
+		end
+
+		when 9009.chat."Obrona Statku (Hydra)" with pc.get_map_index() == 301 begin
+			local c = obrona_statku.cfg()
+			say_title(mob_name(9009))
+			if pc.is_playerbot() then
+				return
+			end
+			say("Na morzu za przyl¹dkiem grasuje Hydra. Ka¿dy")
+			say("statek, który wyp³ywa, musi broniæ masztu przed")
+			say("jej potomstwem, najadami i sam¹ besti¹. Wytrzymaj")
+			say("cztery fale, a skarb Hydry bêdzie twój.")
+			say("")
+			say_reward("Wymagany poziom: "..c.min_level..". Bez czekania miêdzy wyprawami.")
+			if c.party_only == 1 then
+				say_reward("Tylko z dru¿yn¹. Boty z dru¿yny wchodz¹ razem z Tob¹.")
+			else
+				say_reward("Sam albo z dru¿yn¹. Boty z dru¿yny wchodz¹ razem z Tob¹.")
+			end
+			if c.daily > 0 then
+				say_reward("Wejœcie: "..obrona_statku.fee_text(c.fee).." Yang. Najwy¿ej "..c.daily.." wypraw dziennie (dziœ: "..obrona_statku.runs_today().."/"..c.daily..").")
+			else
+				say_reward("Wejœcie: "..obrona_statku.fee_text(c.fee).." Yang.")
+			end
+			say_reward("P³acisz tylko za siebie - boty z dru¿yny i towarzysz wchodz¹ bez op³aty.")
+			if select("Na pok³ad!", "Nie teraz") ~= 1 then
+				return
+			end
+			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons_closed") > 0 then
+				say_title(mob_name(9009))
+				say("Statek stoi dziœ w porcie. Wróæ póŸniej.")
+				return
+			end
+			local now = get_global_time()
+			local x, y = obrona_statku.start_xy()
+			-- MT2009_PLUS_DUNGEON_RETURN_V1: wyprawa, która wci¹¿ trwa (roz³¹czenie) - powrót do niej.
+			local idx = pc.getf("obrona_statku", "idx")
+			if idx > 0 and now - pc.getf("obrona_statku", "entry") < c.keep then
+				say_title(mob_name(9009))
+				say("Twój statek mo¿e jeszcze p³yn¹æ. Czy chcesz na")
+				say("niego wróciæ?")
+				local s = select("Wróæ do lochu", "Nowa wyprawa", "Nie teraz")
+				if s == 3 then
+					return
+				elseif s == 1 then
+					if d.find(idx, x, y, pc.get_player_id()) then
+						pc.warp(x, y, idx)
+					else
+						say_title(mob_name(9009))
+						say("Jeœli statek wci¹¿ p³ynie, ³ódŸ zaraz ciê do")
+						say("niego zabierze.")
+					end
+					return
+				end
+			end
+			if c.party_only == 1 and not party.is_party() then
+				say_title(mob_name(9009))
+				say("Na statek wpuszczam tylko dru¿yny.")
+				return
+			end
+			if party.is_party() and not party.is_leader() and not obrona_statku.bot_leads() then
+				say_title(mob_name(9009))
+				say("Tylko przywódca dru¿yny mo¿e wynaj¹æ statek.")
+				say("Stañ przy mnie - przywódca zabierze")
+				say("ca³¹ dru¿ynê stoj¹c¹ obok.")
+				return
+			end
+			if pc.get_level() < c.min_level then
+				say_title(mob_name(9009))
+				say("Jesteœ za s³aby. Wróæ, gdy osi¹gniesz poziom "..c.min_level..".")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say_title(mob_name(9009))
+				say("Poczekaj chwilê po handlu lub rozmowie i spróbuj ponownie.")
+				return
+			end
+			if now - pc.getf("obrona_statku", "pending") < 10 then
+				say_title(mob_name(9009))
+				say("£ódŸ ju¿ odp³ywa. Poczekaj chwilê.")
+				return
+			end
+			-- Kto p³ynie: gracz albo przywódca i ludzie jego dru¿yny stoj¹cy obok (c.near pól); boty dru¿yny
+			-- do³¹czaj¹ potem same (playerbot_party_dungeon.h) i nic nie p³ac¹.
+			local me = pc.get_player_id()
+			local humans = {me}
+			local low = {}
+			local wait = {}
+			local full = {}
+			local poor = {}
+			local mounted = {}
+			if obrona_statku.must_rest(now) then table.insert(wait, pc.get_name()) end
+			if obrona_statku.over_limit() then table.insert(full, pc.get_name()) end
+			if obrona_statku.too_poor() then table.insert(poor, pc.get_name()) end
+			if pc.is_mount() then table.insert(mounted, pc.get_name()) end
+			if party.is_party() then
+				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						local dx, dy = pc.get_x() - lx, pc.get_y() - ly
+						if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+							table.insert(humans, pid)
+							if pc.get_level() < c.min_level then table.insert(low, pc.get_name()) end
+							if obrona_statku.must_rest(now) then table.insert(wait, pc.get_name()) end
+							if obrona_statku.over_limit() then table.insert(full, pc.get_name()) end
+							if obrona_statku.too_poor() then table.insert(poor, pc.get_name()) end
+							if pc.is_mount() then table.insert(mounted, pc.get_name()) end
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			if table.getn(low) > 0 then
+				say_title(mob_name(9009))
+				say("Za s³abi, by wejœæ na pok³ad (poziom "..c.min_level.."+):")
+				for i, n in next, low, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(full) > 0 then
+				say_title(mob_name(9009))
+				say("Dzisiejsze wyprawy na statek ju¿ wykorzystane ("..c.daily.." dziennie):")
+				for i, n in next, full, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(poor) > 0 then
+				say_title(mob_name(9009))
+				say("Wejœcie kosztuje "..obrona_statku.fee_text(c.fee).." Yang - za ma³o przy sobie:")
+				for i, n in next, poor, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(mounted) > 0 then
+				say_title(mob_name(9009))
+				say("Wierzchowce zostaj¹ na l¹dzie. Niech zsi¹d¹:")
+				for i, n in next, mounted, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(wait) > 0 then
+				say_title(mob_name(9009))
+				say("Jeszcze nie odpoczêli po poprzedniej wyprawie:")
+				for i, n in next, wait, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			local r = d.new_jump_pids(c.map, x, y, humans)
+			if r < 0 then
+				say_title(mob_name(9009))
+				say("Statek nie mo¿e dziœ wyp³yn¹æ. Spróbuj ponownie")
+				say("za chwilê.")
+				return
+			end
+			pc.setf("obrona_statku", "pending", now)
+			if r == 0 then
+				-- Rdzeñ statku (game1) tworzy instancjê; brak przeniesienia po 5 s = proœba zginê³a.
+				timer("obrona_statku_lost", 5)
+			end
+		end
+
+		when obrona_statku_lost.timer begin
+			if pc.get_map_index() ~= 301 or pc.getf("obrona_statku", "pending") == 0 then
+				return
+			end
+			pc.setf("obrona_statku", "pending", 0)
+			syschat("Obrona Statku: ³ódŸ nie dop³ynê³a do statku - porozmawiaj z Rybakiem ponownie.")
+		end
+
+		when login begin
+			local c = obrona_statku.cfg()
+			if not obrona_statku.inside() then
+				return
+			end
+			local idx = pc.get_map_index()
+			if pc.is_playerbot() then
+				-- boty dru¿yny wchodz¹ przez playerbot_party_dungeon.h, nie przez logowanie
+				return
+			end
+			pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			pc.setf("obrona_statku", "pending", 0)
+			-- Statek zamkniêty (koniec, pora¿ka): na l¹d.
+			-- dw["state"]: "state" to s³owo kluczowe qc
+			if dw["state"]() == 6 then
+				if pc.getf("obrona_statku", "idx") == idx then
+					pc.setf("obrona_statku", "idx", 0)
+				end
+				syschat("Obrona Statku: ten statek ju¿ zawin¹³ do portu.")
+				obrona_statku.leave()
+				return
+			end
+			if pc.getf("obrona_statku", "idx") ~= idx then
+				if not obrona_statku.pay_entry() then
+					obrona_statku.leave()
+					return
+				end
+				pc.setf("obrona_statku", "idx", idx)
+				pc.setf("obrona_statku", "entry", get_global_time())
+			end
+			if d.getf("init") == 0 then
+				d.setf("init", 1)
+				-- MT2009_PLUS_DUNGEON_RETURN_V1: instancja prze¿ywa swoich ludzi (dungeon.cpp) - "Wróæ do lochu"
+				d.setf("mt2009_keep_until", get_global_time() + c.keep)
+			end
+			if not dw.is_started() then
+				syschat("Obrona Statku: porozmawiaj ze Sterem, aby rozpocz¹æ obronê masztu.")
+			end
+		end
+
+		-- Ster: start obrony i zejœcie ze statku.
+		when 20436.chat."Rozpocznij obronê masztu" with obrona_statku.inside() and not dw.is_started() begin
+			say_title(mob_name(20436))
+			if party.is_party() and not party.is_leader() and not obrona_statku.bot_leads() then
+				say("Tylko przywódca dru¿yny mo¿e daæ sygna³ do")
+				say("wyp³yniêcia.")
+				return
+			end
+			say("Czy chcesz podnieœæ kotwicê i ruszyæ w drogê?")
+			say("Gdy statek wyp³ynie, nie bêdzie odwrotu - Hydra")
+			say("nadci¹gnie w czterech falach. Broñcie masztu!")
+			if select("Wyp³ywamy!", "Jeszcze nie") ~= 1 then
+				return
+			end
+			if dw.start() then
+				d.setf("started_at", get_global_time())
+				say_title(mob_name(20436))
+				say("Co siê dzieje?! Morze siê wzburzy³o... Czy¿by")
+				say("nadci¹ga³ sztorm?")
+			else
+				say_title(mob_name(20436))
+				say("Obrona ju¿ siê rozpoczê³a.")
+			end
+		end
+
+		when 20436.chat."ZejdŸ ze statku" with obrona_statku.inside() begin
+			say_title(mob_name(20436))
+			if dw.is_started() then
+				say("Czy chcesz teraz zejœæ ze statku? Wejœcie")
+				say("przepadnie.")
+			else
+				say("Czy chcesz zejœæ na l¹d?")
+			end
+			if select("Tak", "Nie") ~= 1 then
+				return
+			end
+			obrona_statku.leave()
+		end
+
+		-- Potomstwo Hydry zostawia deskê; zbita deska daje Deskê Naprawcz¹ (31107, wa¿na 5 min);
+		-- przeci¹gniêta na maszt naprawia go o repair_pct % (C++: dw.set_alliance_hp_pct, og³usza naprawiaj¹cego).
+		when 3957.kill or 3958.kill or 3959.kill with obrona_statku.inside() begin
+			local c = obrona_statku.cfg()
+			local x, y = npc.get_x(), npc.get_y()
+			if x and x > 0 then
+				x, y = x - c.base_x, y - c.base_y
+			else
+				x, y = pc.get_local_x(), pc.get_local_y()
+			end
+			d.spawn_mob(20437, x, y)
+		end
+
+		when 20437.kill with obrona_statku.inside() begin
+			local c = obrona_statku.cfg()
+			game.drop_item(c.wood_item, 1)
+		end
+
+		when 20434.take with obrona_statku.inside() and item.get_vnum() == 31107 begin
+			if dw.set_alliance_hp_pct(0) then
+				pc.remove_item(31107, 1)
+				syschat("Obrona Statku: naprawiasz maszt.")
+			end
+		end
+
+		-- Ostatnia Hydra: panel lochów i flaga przejœcia dla ludzi dru¿yny na statku (zabójca mo¿e byæ
+		-- botem - wtedy jego dru¿yna). Œciany, Skarb Hydry i portal stawia C++ (CShipDefense::Win).
+		when 3962.kill with obrona_statku.inside() begin
+			local started = d.getf("started_at")
+			if started > 0 then
+				d.update_ranking("hydra", get_global_time() - started) -- MT2009_PLUS_DUNGEON_PANEL_V1
+			else
+				d.update_ranking("hydra")
+			end
+			local pids = {}
+			if party.is_party() then
+				pids = {party.get_member_pids()}
+			end
+			if table.getn(pids) == 0 then
+				pids = {pc.get_player_id()}
+			end
+			for i, pid in next, pids, nil do
+				q.begin_other_pc_block(pid)
+				if pc.get_player_id() == pid and obrona_statku.inside() then
+					obrona_statku.mark_done()
+				end
+				q.end_other_pc_block()
+			end
+		end
+
+		-- Portal po zwyciêstwie: na l¹d (port 368 przyjdzie z Yohar¹). Kto by³ na statku przy zwyciêstwie,
+		-- a nie by³ w dru¿ynie zabójcy, dostaje flagê przejœcia tutaj.
+		when 3949.click with obrona_statku.inside() begin
+			if d.getf("shipdef_won") == 1 then
+				obrona_statku.mark_done()
+			end
+			obrona_statku.leave()
+		end
+	end
+end

@@ -333,7 +333,9 @@ RUN set -eux; \
     # zodiac_temples (the twelve portals of the day on 358 and the Teleporter's entry),
     # zodiac_milbon (Mnich Milbon's insignia exchange), zodiac_prism_mission and
     # zodiac_emergency_mission are the Zodiac Temple (MT2009_PLUS_ZODIAC_V1, Autor: Digi Rasta).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join; do \
+    # obrona_statku is Obrona Statku (Hydra, map 367): the Fisherman's (9009) entry on 301, the wheel,
+    # the repair planks, the portal and the completion flags (MT2009_PLUS_SHIP_DEFENSE_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1251,7 +1253,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
 # the waves' respawn lines data/dungeon/defense_wave (wave1-4, boss; the one line on a blocked cell, 378,430,
 # moved to 379,430), the monsters' motions (data/monster/defensewave_*, metinstone_defensewave: the server
 # times attacks and moves by them, every run.msa carries its Accumulation), 18 texts in Polish
-# (locale_string.shipdefense.txt), the map's name for the quests and /goto statek for game masters.
+# (locale_string.shipdefense.txt), the map's name for the quests and /goto statek for game masters, and the
+# rewards (the owner, 13 October 2026): Skarb Hydry's (3965) limit group - 3-6 Skrzynia Hydry and the wiki's
+# list (mob_drop_item.shipdefense.txt) - and Skrzynia Hydry's (54705) group, one item an opening
+# (special_item_group.shipdefense.txt). Neither may exist before (a mob's first limit group wins).
 # The port (Owsap's 359, here 368) comes with Yohara.
 COPY shipdefense/ /tmp/shipdefense-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
@@ -1272,6 +1277,16 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
  && { [ -z "$(tail -c 1 "$L/locale_string.txt")" ] || printf '\n' >> "$L/locale_string.txt"; } \
  && printf '\n' >> "$L/locale_string.txt" && sed 's/\r$//' "$A/locale_string.shipdefense.txt" >> "$L/locale_string.txt" \
  && grep -q -F '"Ship defense: the mast has %d%% HP left!";' "$L/locale_string.txt" \
+ && f="$L/special_item_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+54705([^0-9]|$)' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/special_item_group.shipdefense.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+54705([^0-9]|$)' "$f")" = 1 \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -i -E '^[[:blank:]]*mob[[:blank:]]+3965([^0-9]|$)' "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.shipdefense.txt" >> "$F" \
+ && test "$(grep -c -i -E '^[[:blank:]]*mob[[:blank:]]+3965([^0-9]|$)' "$F")" = 1 \
  && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
       [ -f "$f" ] || continue; \
       LC_ALL=C grep -a -q 'map_names\[367\]' "$f" && continue; \
@@ -1281,7 +1296,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
  && S="$L/settings.lua" \
  && { LC_ALL=C grep -a -q 'add_goto_info("statek"' "$S" || printf 'add_goto_info("statek", 0, 367, 1667, 5223)\r\n' >> "$S"; } \
  && rm -rf "$A" \
- && echo "share: Obrona Statku (367, waves, motions, texts, /goto statek)"
+ && echo "share: Obrona Statku (367, waves, motions, texts, /goto statek, Skarb Hydry and Skrzynia Hydry)"
 # MT2009_PLUS_CAPE301_V1 (share): Przyladek Smoczego Ognia (301, Metin2_map_CapeDragonHead, game2) - the client gets
 # the map from the GF 26.1.11 client (client-patches/client-2.0.30/tools/cape301), so the server's server_attr
 # becomes the one that matches that terrain: Owsap's (100% of the block/water/safe-zone cells equal GF's attr.atr,
