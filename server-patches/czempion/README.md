@@ -3,7 +3,7 @@
 Poziom Czempiona (w kodzie GF/Owsap „conqueror level”) i cztery statystyki Sung Ma dla MT2009 PLUS 3.x „Yohara”.
 Plan: `cache/yohara/plan-champion-sungma.md` (kroki 1–8). Znaczniki: `MT2009_PLUS_CHAMPION_V1 (…)` (poziom, exp,
 zapis) i `MT2009_PLUS_SUNGMA_V1 (…)` (punkty i kary na mapach). Makro silnika: `ENABLE_CONQUEROR_LEVEL`
-(ostatnia zmiana `edits.json`, w `common/CommonDefines.h`).
+(`common/CommonDefines.h`; skrypt zapisuje wszystkie zmiany albo żadnej, więc makro nigdy nie przyjdzie bez haków).
 
 Logika według Amerii (`ENABLE_YOHARA_SYSTEM` – jedyna pełna publiczna implementacja), liczby z klienta GF 26.1.11
 (`<mapa>/sungma_attr.txt`) i z Owsapa v6.2.6 (`mob_proto.txt`, kolumna `SungMaExp`; nazwy funkcji questów).
@@ -13,7 +13,7 @@ Logika według Amerii (`ENABLE_YOHARA_SYSTEM` – jedyna pełna publiczna implem
 | Część | Miejsce |
 |---|---|
 | Logika | `linux-port/overlays/playerbot/src/game/src/playerbot_champion.h/.cpp` (nazwa `playerbot_*`, żeby nakładka i lista plików aktualizacji niosły je same) |
-| Haki silnika | `edits.json` (24 zmiany w 12 plikach: common, db, game); `apply_czempion.py <game/src>` (Linux) i `Apply-CzempionPatch.ps1` (Windows, krok `tools/port/Apply-MT2009PlusEngine.ps1` po Obronie Statku) czytają ten sam plik |
+| Haki silnika | `edits.json` (25 zmian w 12 plikach: common, db, game); `apply_czempion.py <game/src>` (Linux) i `Apply-CzempionPatch.ps1` (Windows, krok `tools/port/Apply-MT2009PlusEngine.ps1` po Obronie Statku) czytają ten sam plik |
 | Baza | `linux-port/docker/mariadb/playerbot/czempion.sql` (`apply.sh`): 8 kolumn w `player.player` i `player_deleted` (ta sama kolejność – usunięta postać jest kopiowana `SELECT *`), przedmioty 72068–72071 |
 | Dane serwera | `linux-port/docker/game/champion/` → `share/locale/poland/` (krok Dockerfile „share: Poziom Czempiona”): `sungma_table.txt`, `sungma_mob_exp.txt`; generator `tools/champion/gen_sungma_data.py` |
 | Questy | `linux-port/docker/game/quest/czempion.quest` (posąg 20433), `czempion_nowa_wola.quest` (72068–72071) |

@@ -84,6 +84,12 @@
   "new": "\t\t\t\t// MT2009_PLUS_SUNGMA_V1 (move speed): half on a Sung Ma map while Sung Ma movement is short.\n\t\t\t\t{ int ChampionMoveSpeed(const CHARACTER*, int); val = ChampionMoveSpeed(this, val); }\n\t\t\t\tif (FindAffect(AFFECT_WAR_FLAG))\n\t\t\t\t\tlimit = 50;\n"
  },
  {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (max level exp)",
+  "old": "\t\t\t\t\tif (gPlayerMaxLevel <= GetLevel())\n\t\t\t\t\t\treturn;\n\n\t\t\t\t\tif (FindAffect(AFFECT_EXP_BLOCK))\n\t\t\t\t\t\treturn;\n",
+  "new": "\t\t\t\t\tif (FindAffect(AFFECT_EXP_BLOCK))\n\t\t\t\t\t\treturn;\n\n\t\t\t\t\t// MT2009_PLUS_CHAMPION_V1 (max level exp): at the server's top level the bar fills up to one point\n\t\t\t\t\t// short of full and stops there, with no level - the Champion's \"one full bubble\" (a quarter of\n\t\t\t\t\t// the bar, 625 000 000 at 120) needs it (it used to stop at 0).\n\t\t\t\t\tif (gPlayerMaxLevel <= GetLevel())\n\t\t\t\t\t{\n\t\t\t\t\t\tif (GetLevel() != gPlayerMaxLevel || next_exp <= 1 || exp >= next_exp - 1)\n\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\tconst DWORD dwCapped = (DWORD)MIN((unsigned long long)exp + (unsigned long long)amount, (unsigned long long)(next_exp - 1));\n\t\t\t\t\t\tamount = (int)(dwCapped - exp);\n\t\t\t\t\t\tSetExp(dwCapped);\n\t\t\t\t\t\tval = GetExp();\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n"
+ },
+ {
   "file": "char_battle.cpp",
   "marker": "MT2009_PLUS_CHAMPION_V1 (distribute)",
   "old": "\tint iExpToDistribute = GetExp();\n",
