@@ -543,6 +543,9 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_defensewave" : "Obrona Statku",
 	# MT2009_PLUS_YOHARA_PORT_V1 (client): Port Nowego Kontynentu (map 368) on the minimap
 	"metin2_map_defensewave_port" : "Port Nowego Kontynentu",
+	# MT2009_PLUS_YOHARA_MAPS1_V1 (client): the first maps of Yohara (373, 374) on the minimap
+	"metin2_map_eastplain_01" : "Dongan",
+	"metin2_map_empirecastle" : "Opuszczona Twierdza",
 }
 
 
