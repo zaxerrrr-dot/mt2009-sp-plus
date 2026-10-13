@@ -123,13 +123,14 @@ add(70434, status=need('the secret dungeons of the treasure scrolls - none here 
 # Talizmany Woli +0..+9 - the talisman slot (MT2009_PLUS_ELEMENTS_V1), refined with Topaz Woli
 TALISMANS = ((81000, 'SIŁA', APPLY_SUNGMA_STR), (81250, 'ODP', APPLY_SUNGMA_MOVE), (81300, 'WIT', APPLY_SUNGMA_HP),
              (81550, 'INT', APPLY_SUNGMA_IMMUNE))
-# Owsap's apply_random_table.txt ApplyRandomValue10, row 1 (the common one; row 2 is the rare "+2 at +0") by level
-TALISMAN_WILL = (1, 1, 3, 5, 7, 9, 11, 14, 17, 21)
+# No item_proto apply (MT2009_PLUS_WILL_TALISMAN_V1, server-patches/talizmanwoli): Owsap's APPLY_RANDOM 10..13 / 14 -
+# the Sung Ma Will of the talisman's stat and an element's power, each a common or a rare row of apply_random_table
+# (Will 1,1,3,5,7,9,11,14,17,21 / 2,3,4,6,8,10,13,16,19,24; element 1..9,15 / 2..10,17 %) - are the item's own 6th/7th
+# bonus slots, rolled by the engine when a talisman is made and carried by a refine.
 REFINE_ID0 = 22501      # our refine_proto ids (Owsap's 680-715 are taken here)
 for base, stat, apply in TALISMANS:
     for lv in range(10):
-        add(base + lv, src=81000 + lv if base == 81000 else base + lv, name='Talizman Woli %s+%d' % (stat, lv),
-            apply=((apply, TALISMAN_WILL[lv]),))
+        add(base + lv, src=81000 + lv if base == 81000 else base + lv, name='Talizman Woli %s+%d' % (stat, lv))
 
 # items we have whose name the official one replaces (MT2009_PLUS_YOHARA_ITEMS1_V1 rename; the client's records:
 # client-patches/client-2.0.30/tools/yohara/patch_yohara_client.py reads 'renamed' of yohara_items.json)
@@ -295,9 +296,9 @@ def write_sql(items, refines):
         if i['status'] != ST:
             L.append('--   %d %s - %s' % (i['vnum'], i['name'], i['status'][len('needs: '):]))
     L.append('-- Talizmany Woli (81000-81009 SILA, 81250-81259 ODP, 81300-81309 WIT, 81550-81559 INT): the talisman slot of')
-    L.append('-- MT2009_PLUS_ELEMENTS_V1, level 105, APPLY_SUNGMA_STR/MOVE/HP/IMMUNE = 184/186/185/187 (the exe branch')
-    L.append('-- claude/yohara-exe; apply = point here) with Owsap\'s common value of the level (1,1,3,5,7,9,11,14,17,21; its')
-    L.append('-- random second line - a rare +1 or an element 1-2% - is not ours), refined at the Blacksmith with Topaz')
+    L.append('-- MT2009_PLUS_ELEMENTS_V1, level 105, no item_proto apply: their two standard lines - Sung Ma Will of the stat')
+    L.append('-- (APPLY_SUNGMA_STR/MOVE/HP/IMMUNE = 184/186/185/187) and an element\'s power (178-183), each common or rare -')
+    L.append('-- are the item\'s 6th/7th bonus slots (MT2009_PLUS_WILL_TALISMAN_V1, server-patches/talizmanwoli), refined with Topaz')
     L.append('-- Woli (6..54, 1-5 mln Yang, 70-20%%) - refine_proto %d-%d (Owsap\'s 680-715 are other rows here).'
              % (refines[0]['id'], refines[-1]['id']))
     L.append('SET NAMES utf8mb4;')
@@ -309,6 +310,9 @@ def write_sql(items, refines):
                                                                      r['prob']) for r in refines) + ';')
     # the owner (13 October): 27007/27008 under their official names - the "(XXL)" the wiki and the Yohara chests
     # use (item_proto.mt2009plus.sql had "(XL)"; its INSERT IGNORE never renames a row that is there)
+    # MT2009_PLUS_WILL_TALISMAN_V1: the first rows had the common Will as their apply 0 - gone (the lines are the item's)
+    L.append('UPDATE world.item_proto SET applytype0=0, applyvalue0=0 WHERE vnum IN (%s) AND applytype0<>0;'
+             % ','.join(str(b + lv) for b, _s, _a in TALISMANS for lv in range(10)))
     for vnum, pl in RENAMED:
         L.append("UPDATE world.item_proto SET locale_name='%s' WHERE vnum=%d AND locale_name<>'%s';" % (pl, vnum, pl))
     with open(SQL_OUT, 'w', encoding='utf-8', newline='\n') as f:

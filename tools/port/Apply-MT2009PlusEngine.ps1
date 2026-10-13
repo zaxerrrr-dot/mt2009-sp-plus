@@ -76,6 +76,8 @@ param(
 #                      char.h, char.cpp, char_battle.cpp, battle.cpp, char_resist.cpp,
 #                      input_login.cpp, cmd.cpp, questlua.cpp, ENABLE_CONQUEROR_LEVEL
 #                      (MT2009_PLUS_CHAMPION_V1, MT2009_PLUS_SUNGMA_V1; server-patches/czempion)
+#   Talizmany Woli     item_attribute.cpp, item_manager.cpp (MT2009_PLUS_WILL_TALISMAN_V1;
+#                      server-patches/talizmanwoli)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1232,6 +1234,20 @@ if ((Test-Path -LiteralPath $czempionApply -PathType Leaf) -and
     if ($czempionResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Champion level (Sung Ma) edit(s).' -f $czempionResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Talizmany Woli (server-patches/talizmanwoli, MT2009_PLUS_WILL_TALISMAN_V1): the two standard bonus lines of the
+# Will talismans 81000-81559 (Sung Ma Will, an element's power) in the 6th/7th bonus slots - rolled when one is made
+# (item_manager.cpp CreateItem), carried at the new level and completed by a refine (item_attribute.cpp
+# CopyAttributeTo), never touched by a 6/7 changer. After Poziom Czempiona: POINT_SUNGMA_* are its.
+$talizmanWoliApply = Join-Path $repo 'server-patches/talizmanwoli/Apply-TalizmanWoliPatch.ps1'
+if ((Test-Path -LiteralPath $talizmanWoliApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_attribute.cpp') -PathType Leaf)) {
+    $talizmanWoliResult = & $talizmanWoliApply -SourceDir $engineGameSource
+    if ($talizmanWoliResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Will talisman edit(s).' -f $talizmanWoliResult.Applied) -ForegroundColor DarkGray
     }
 }
 
