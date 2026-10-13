@@ -987,14 +987,15 @@ namespace
 		const long current = aff ? aff->lApplyValue : 0;
 		const int permille = PLAYERBOT_LEGEND_HP_PERMILLE[ClampPlayerBotLegendTier(tier)];
 		const long base = (long)ch->GetMaxHP() - current;
-		const long want = permille > 0 && base > 0 ? base * permille / 1000 : 0;
-		if (want <= 0)
+		// MT2009_PLUS_LEGEND_HP_HALF_V1: the permille may be negative (a cut), so only zero means none
+		const long want = permille != 0 && base > 0 ? base * permille / 1000 : 0;
+		if (want == 0)
 		{
 			if (aff)
 				ch->RemoveAffect(PLAYERBOT_LEGEND_HP_AFFECT);
 			return;
 		}
-		if (aff && labs(want - current) <= std::max(20L, want / 50))
+		if (aff && labs(want - current) <= std::max(20L, labs(want) / 50))
 			return;
 		ch->AddAffect(PLAYERBOT_LEGEND_HP_AFFECT, POINT_MAX_HP, want, 0, INFINITE_AFFECT_DURATION, 0, true);
 	}
