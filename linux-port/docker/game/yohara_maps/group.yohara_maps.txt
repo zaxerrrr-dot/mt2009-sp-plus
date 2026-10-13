@@ -1,0 +1,163 @@
+// MT2009_PLUS_YOHARA_MAPS1_V1: Opuszczona Twierdza (374) and Dongan (373) - Owsap v6.2.6 group.txt
+// (tools/yohara_maps/gen_ymaps_groups.py; GENERATED)
+Group	MT2009_ymaps_EastPlane_01_01
+{
+	Vnum	6145
+	Leader	"Troll Zolnierz (mrok)"	6701
+	1	"Troll Zolnierz (mrok)"	6701
+	2	"Troll Zolnierz (ogien)"	6712
+	3	"Troll Zolnierz (ogien)"	6712
+	4	"Troll Wojownik (ogien)"	6713
+}
+
+Group	MT2009_ymaps_EastPlane_01_02
+{
+	Vnum	6146
+	Leader	"Piekielny Pies (mrok)"	6700
+	1	"Piekielny Pies (mrok)"	6700
+	2	"Troll Wojownik (ogien)"	6713
+	3	"Troll Wojownik (ogien)"	6713
+	4	"Troll Zolnierz (ogien)"	6712
+}
+
+Group	MT2009_ymaps_EastPlane_01_03
+{
+	Vnum	6147
+	Leader	"Piekielny Pies (mrok)"	6700
+	1	"Piekielny Pies (mrok)"	6700
+	2	"Piekielny Pies (ogien)"	6711
+	3	"Troll Wojownik (ogien)"	6713
+	4	"Troll Zolnierz (ogien)"	6712
+}
+
+Group	MT2009_ymaps_EastPlane_01_04
+{
+	Vnum	6148
+	Leader	"Piekielny Pies (ogien)"	6711
+	1	"Piekielny Pies (ogien)"	6711
+	2	"Troll Zolnierz (ogien)"	6712
+	3	"Troll Zolnierz (ogien)"	6712
+	4	"Troll Wojownik (ogien)"	6713
+}
+
+Group	MT2009_ymaps_EastPlane_01_05
+{
+	Vnum	6149
+	Leader	"Troll Wojownik (mrok)"	6702
+	1	"Troll Wojownik (mrok)"	6702
+	2	"Dreczony Duch"	6710
+	3	"Troll Strzelec (mrok)"	6703
+	4	"Troll Szamanka (mrok)"	6704
+}
+
+Group	MT2009_ymaps_EastPlane_01_06
+{
+	Vnum	6150
+	Leader	"Piekielny Pies (ogien)"	6711
+	1	"Piekielny Pies (ogien)"	6711
+	2	"Dreczony Duch"	6710
+	3	"Troll Wojownik (ogien)"	6713
+	4	"Troll Szamanka (mrok)"	6704
+}
+
+Group	MT2009_ymaps_EastPlane_01_07
+{
+	Vnum	6151
+	Leader	"Troll Wojownik (mrok)"	6702
+	1	"Troll Strzelec (mrok)"	6703
+	2	"Troll Zolnierz (ogien)"	6712
+	3	"Troll Strzelec (mrok)"	6703
+	4	"Troll Szamanka (mrok)"	6704
+}
+
+Group	MT2009_ymaps_EastPlane_01_08
+{
+	Vnum	6152
+	Leader	"Dreczony Duch"	6710
+	1	"Dreczony Duch"	6710
+	2	"Dreczony Duch"	6710
+	3	"Dreczony Duch"	6710
+	4	"Dreczony Duch"	6710
+}
+
+Group	MT2009_ymaps_EmpireCastle_01
+{
+	Vnum	6194
+	Leader	"Jin Bing (lod)"	6693
+	1	"Jin Bing (lod)"	6693
+	2	"Jin Bing (lod)"	6693
+	3	"Piekielny Pies (mrok)"	6700
+	4	"Piekielny Pies (mrok)"	6700
+}
+
+Group	MT2009_ymaps_EmpireCastle_02
+{
+	Vnum	6195
+	Leader	"Piekielny Pies (mrok)"	6700
+	1	"Piekielny Pies (mrok)"	6700
+	2	"Piekielny Pies (mrok)"	6700
+	3	"Zolnierz Ki (lod)"	6694
+	4	"Zolnierz Ki (lod)"	6694
+}
+
+Group	MT2009_ymaps_EmpireCastle_03
+{
+	Vnum	6196
+	Leader	"Jin Bing (lod)"	6693
+	1	"Jin Bing (lod)"	6693
+	2	"Zolnierz Ki (lod)"	6694
+	3	"Mag Frontowy (lod)"	6697
+	4	"Piekielny Pies (mrok)"	6700
+	5	"Piekielny Pies (mrok)"	6700
+}
+
+Group	MT2009_ymaps_EmpireCastle_04
+{
+	Vnum	6197
+	Leader	"Jin Bing (mrok)"	6686
+	1	"Jin Bing (mrok)"	6686
+	2	"Jin Bing (mrok)"	6686
+	3	"Piekielny Pies (mrok)"	6700
+	4	"Piekielny Pies (mrok)"	6700
+}
+
+Group	MT2009_ymaps_EmpireCastle_05
+{
+	Vnum	6198
+	Leader	"Zolnierz Ki (mrok)"	6687
+	1	"Zolnierz Ki (mrok)"	6687
+	2	"Zolnierz Mao (mrok)"	6688
+	3	"Piekielny Pies (mrok)"	6700
+	4	"Piekielny Pies (mrok)"	6700
+}
+
+Group	MT2009_ymaps_EmpireCastle_06
+{
+	Vnum	6199
+	Leader	"Mag Frontowy (mrok)"	6690
+	1	"Zolnierz Ki (mrok)"	6687
+	2	"Zolnierz Ki (mrok)"	6687
+	3	"Piekielny Pies (mrok)"	6700
+	4	"Zolnierz Mao (mrok)"	6688
+}
+
+Group	MT2009_ymaps_EmpireCastle_07
+{
+	Vnum	6200
+	Leader	"Kao (mrok)"	6691
+	1	"Zolnierz Gong (mrok)"	6689
+	2	"Zolnierz Gong (mrok)"	6689
+	3	"Piekielny Pies (mrok)"	6700
+	4	"Zolnierz Mao (mrok)"	6688
+}
+
+Group	MT2009_ymaps_EmpireCastle_08
+{
+	Vnum	6201
+	Leader	"Kao (lod)"	6698
+	1	"Jin Bing (lod)"	6693
+	2	"Jin Bing (lod)"	6693
+	3	"Zolnierz Ki (lod)"	6694
+	4	"Piekielny Pies (mrok)"	6700
+	5	"Piekielny Pies (mrok)"	6700
+}

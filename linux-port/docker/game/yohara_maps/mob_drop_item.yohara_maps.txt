@@ -1,0 +1,435 @@
+// MT2009_PLUS_YOHARA_MAPS1_V1: drops of Opuszczona Twierdza (374) and Dongan (373) - the pl-wiki lists of each
+// monster and Metin (cache/yohara/wiki/*.raw), only what our world.item_proto has; Owsap gives these monsters no
+// drop at all. The percents are ours (the wiki gives none): a boss's as Czerwony Wodz's (3591, MT2009_panel_3591_drop),
+// a monster's potions 10 (x10). The Dockerfile step "Yohara: Opuszczona Twierdza, Dongan" stops the build if any of
+// these monsters has a group already. Stand-ins: Mikstura (XXL) -> (XL) 27007/27008; Pierscien Doswiadczenia (1 h)
+// -> 72003 (2 h, our nearest); Rekawica Zlodzieja (2-3 h) -> 72005 (1 h).
+// Left out - not in our world.item_proto (cache/yohara/plan-mapy-yohary.md): Topaz Woli, Runy SungMa, Talizmany Woli,
+// Przenosna Zyla Jadeitu, Mroczny Ciern, Szkatulka Yohara, Plyty, Rog Trolla, Kiel Argosa, Twarda Skora, Wzor
+// Rekawicy, Utwardzacz Skory(+), Skazony Rdzen, Charyzma/Inspiracja, Skrzynie Ksiag i ksiegi 9. umiejetnosci,
+// Kamien Duchowy+, Kamien Demonow, Ksiega Precyzji, Peleryna Maskujaca, Kamyki, Zwoj Skarbu (A), Tajemniczy Bilet,
+// Jadeity, Mrozny Korzonek, Ognisty Lisc, Klucz Nimfy Wodnej, bron Likana (Szpon Gryfa/Skarabeusza).
+// Odlamki 39070-39077 (wiki: every monster) stay with the Seon-Hae event, which drops them by level.
+
+Group	MT2009_ymaps_6686
+{
+	Mob	6686	-- Jin Bing (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6687
+{
+	Mob	6687	-- Zolnierz Ki (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6688
+{
+	Mob	6688	-- Zolnierz Mao (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6689
+{
+	Mob	6689	-- Zolnierz Gong (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6690
+{
+	Mob	6690	-- Mag Frontowy (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6693
+{
+	Mob	6693	-- Jin Bing (lod)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6694
+{
+	Mob	6694	-- Zolnierz Ki (lod)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6695
+{
+	Mob	6695	-- Zolnierz Mao (lod)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6696
+{
+	Mob	6696	-- Zolnierz Gong (lod)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6697
+{
+	Mob	6697	-- Mag Frontowy (lod)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6700
+{
+	Mob	6700	-- Piekielny Pies (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6701
+{
+	Mob	6701	-- Troll Zolnierz (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6702
+{
+	Mob	6702	-- Troll Wojownik (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6703
+{
+	Mob	6703	-- Troll Strzelec (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6704
+{
+	Mob	6704	-- Troll Szamanka (mrok)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6710
+{
+	Mob	6710	-- Dreczony Duch
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+	3	95601	1	5	-- Stabilne Sznury
+}
+
+Group	MT2009_ymaps_6711
+{
+	Mob	6711	-- Piekielny Pies (ogien)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6712
+{
+	Mob	6712	-- Troll Zolnierz (ogien)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6713
+{
+	Mob	6713	-- Troll Wojownik (ogien)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6714
+{
+	Mob	6714	-- Troll Strzelec (ogien)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6715
+{
+	Mob	6715	-- Troll Szamanka (ogien)
+	Type	drop
+	1	27007	10	10	-- Czerwona Mikstura(XL) x10 - zamiast (XXL)
+	2	27008	10	10	-- Niebieska Mikstura(XL) x10 - zamiast (XXL)
+}
+
+Group	MT2009_ymaps_6691
+{
+	Mob	6691	-- Kao (mrok)
+	Type	drop
+	1	145	1	30	-- Miecz Bojowy+5
+	2	146	1	20	-- Miecz Bojowy+6
+	3	155	1	30	-- Miecz Szponu Ducha+5
+	4	156	1	20	-- Miecz Szponu Ducha+6
+	5	1105	1	30	-- Smoczy Noz+5
+	6	1106	1	20	-- Smoczy Noz+6
+	7	2145	1	30	-- Olbrz. Luk Zolt. Smoka+5
+	8	2146	1	20	-- Olbrz. Luk Zolt. Smoka+6
+	9	3145	1	30	-- Magnetyczne Ostrze+5
+	10	3146	1	20	-- Magnetyczne Ostrze+6
+	11	5105	1	30	-- Dzwon Nieba I Ziemi+5
+	12	5106	1	20	-- Dzwon Nieba I Ziemi+6
+	13	7145	1	30	-- Wachlarz Zbawienia+5
+	14	7146	1	20	-- Wachlarz Zbawienia+6
+	15	95601	1	20	-- Stabilne Sznury
+	16	50513	1	15	-- Kamien Duchowy
+	17	70038	20	15	-- Peleryna Mestwa x20
+	18	72003	1	20	-- Pierscien Doswiadczenia (2 h - zamiast 1 h)
+	19	70014	1	25	-- Pigulka Krwi
+}
+
+Group	MT2009_ymaps_6692
+{
+	Mob	6692	-- Krol Bao (misja)
+	Type	drop
+	1	145	1	30	-- Miecz Bojowy+5
+	2	146	1	20	-- Miecz Bojowy+6
+	3	155	1	30	-- Miecz Szponu Ducha+5
+	4	156	1	20	-- Miecz Szponu Ducha+6
+	5	1105	1	30	-- Smoczy Noz+5
+	6	1106	1	20	-- Smoczy Noz+6
+	7	2145	1	30	-- Olbrz. Luk Zolt. Smoka+5
+	8	2146	1	20	-- Olbrz. Luk Zolt. Smoka+6
+	9	3145	1	30	-- Magnetyczne Ostrze+5
+	10	3146	1	20	-- Magnetyczne Ostrze+6
+	11	5105	1	30	-- Dzwon Nieba I Ziemi+5
+	12	5106	1	20	-- Dzwon Nieba I Ziemi+6
+	13	7145	1	30	-- Wachlarz Zbawienia+5
+	14	7146	1	20	-- Wachlarz Zbawienia+6
+	15	27003	10	200	-- Czerwona Mikstura(D) x10
+	16	27002	50	100	-- Czerwona Mikstura(S) x50
+	17	27007	50	100	-- Czerwona Mikstura(XL) - zamiast (XXL) x50
+	18	27006	20	150	-- Niebieska Mikstura(D) x20
+	19	27005	30	100	-- Niebieska Mikstura(S) x30
+	20	27008	30	100	-- Niebieska Mikstura(XL) - zamiast (XXL) x30
+	21	95601	1	20	-- Stabilne Sznury
+	22	50513	1	15	-- Kamien Duchowy
+	23	50300	1	25	-- Ksiega Umiejetnosci
+	24	70038	20	15	-- Peleryna Mestwa x20
+	25	72003	1	20	-- Pierscien Doswiadczenia (2 h - zamiast 1 h)
+	26	70014	1	25	-- Pigulka Krwi
+	27	72005	1	20	-- Rekawica Zlodzieja (1 h)
+}
+
+Group	MT2009_ymaps_6698
+{
+	Mob	6698	-- Kao (lod)
+	Type	drop
+	1	145	1	30	-- Miecz Bojowy+5
+	2	146	1	20	-- Miecz Bojowy+6
+	3	155	1	30	-- Miecz Szponu Ducha+5
+	4	156	1	20	-- Miecz Szponu Ducha+6
+	5	1105	1	30	-- Smoczy Noz+5
+	6	1106	1	20	-- Smoczy Noz+6
+	7	2145	1	30	-- Olbrz. Luk Zolt. Smoka+5
+	8	2146	1	20	-- Olbrz. Luk Zolt. Smoka+6
+	9	3145	1	30	-- Magnetyczne Ostrze+5
+	10	3146	1	20	-- Magnetyczne Ostrze+6
+	11	5105	1	30	-- Dzwon Nieba I Ziemi+5
+	12	5106	1	20	-- Dzwon Nieba I Ziemi+6
+	13	7145	1	30	-- Wachlarz Zbawienia+5
+	14	7146	1	20	-- Wachlarz Zbawienia+6
+	15	95601	1	20	-- Stabilne Sznury
+	16	50513	1	15	-- Kamien Duchowy
+	17	70038	20	15	-- Peleryna Mestwa x20
+	18	72003	1	20	-- Pierscien Doswiadczenia (2 h - zamiast 1 h)
+	19	70014	1	25	-- Pigulka Krwi
+}
+
+Group	MT2009_ymaps_6699
+{
+	Mob	6699	-- Krol Bao
+	Type	drop
+	1	145	1	30	-- Miecz Bojowy+5
+	2	146	1	20	-- Miecz Bojowy+6
+	3	155	1	30	-- Miecz Szponu Ducha+5
+	4	156	1	20	-- Miecz Szponu Ducha+6
+	5	1105	1	30	-- Smoczy Noz+5
+	6	1106	1	20	-- Smoczy Noz+6
+	7	2145	1	30	-- Olbrz. Luk Zolt. Smoka+5
+	8	2146	1	20	-- Olbrz. Luk Zolt. Smoka+6
+	9	3145	1	30	-- Magnetyczne Ostrze+5
+	10	3146	1	20	-- Magnetyczne Ostrze+6
+	11	5105	1	30	-- Dzwon Nieba I Ziemi+5
+	12	5106	1	20	-- Dzwon Nieba I Ziemi+6
+	13	7145	1	30	-- Wachlarz Zbawienia+5
+	14	7146	1	20	-- Wachlarz Zbawienia+6
+	15	27003	10	200	-- Czerwona Mikstura(D) x10
+	16	27002	50	100	-- Czerwona Mikstura(S) x50
+	17	27007	50	100	-- Czerwona Mikstura(XL) - zamiast (XXL) x50
+	18	27006	20	150	-- Niebieska Mikstura(D) x20
+	19	27005	30	100	-- Niebieska Mikstura(S) x30
+	20	27008	30	100	-- Niebieska Mikstura(XL) - zamiast (XXL) x30
+	21	95601	1	20	-- Stabilne Sznury
+	22	50513	1	15	-- Kamien Duchowy
+	23	50300	1	25	-- Ksiega Umiejetnosci
+	24	70038	20	15	-- Peleryna Mestwa x20
+	25	72003	1	20	-- Pierscien Doswiadczenia (2 h - zamiast 1 h)
+	26	70014	1	25	-- Pigulka Krwi
+	27	72005	1	20	-- Rekawica Zlodzieja (1 h)
+}
+
+Group	MT2009_ymaps_6705
+{
+	Mob	6705	-- Natanan (mrok)
+	Type	drop
+	1	145	1	30	-- Miecz Bojowy+5
+	2	146	1	20	-- Miecz Bojowy+6
+	3	155	1	30	-- Miecz Szponu Ducha+5
+	4	156	1	20	-- Miecz Szponu Ducha+6
+	5	1105	1	30	-- Smoczy Noz+5
+	6	1106	1	20	-- Smoczy Noz+6
+	7	2145	1	30	-- Olbrz. Luk Zolt. Smoka+5
+	8	2146	1	20	-- Olbrz. Luk Zolt. Smoka+6
+	9	3145	1	30	-- Magnetyczne Ostrze+5
+	10	3146	1	20	-- Magnetyczne Ostrze+6
+	11	5105	1	30	-- Dzwon Nieba I Ziemi+5
+	12	5106	1	20	-- Dzwon Nieba I Ziemi+6
+	13	7145	1	30	-- Wachlarz Zbawienia+5
+	14	7146	1	20	-- Wachlarz Zbawienia+6
+	15	27003	10	200	-- Czerwona Mikstura(D) x10
+	16	27002	50	100	-- Czerwona Mikstura(S) x50
+	17	27007	50	100	-- Czerwona Mikstura(XL) - zamiast (XXL) x50
+	18	27006	20	150	-- Niebieska Mikstura(D) x20
+	19	27005	30	100	-- Niebieska Mikstura(S) x30
+	20	27008	30	100	-- Niebieska Mikstura(XL) - zamiast (XXL) x30
+	21	50513	1	15	-- Kamien Duchowy
+	22	72003	1	20	-- Pierscien Doswiadczenia (2 h - zamiast 1 h)
+	23	72005	1	20	-- Rekawica Zlodzieja (1 h)
+}
+
+Group	MT2009_ymaps_6706
+{
+	Mob	6706	-- Argos (mrok)
+	Type	drop
+	1	145	1	30	-- Miecz Bojowy+5
+	2	146	1	20	-- Miecz Bojowy+6
+	3	155	1	30	-- Miecz Szponu Ducha+5
+	4	156	1	20	-- Miecz Szponu Ducha+6
+	5	1105	1	30	-- Smoczy Noz+5
+	6	1106	1	20	-- Smoczy Noz+6
+	7	2145	1	30	-- Olbrz. Luk Zolt. Smoka+5
+	8	2146	1	20	-- Olbrz. Luk Zolt. Smoka+6
+	9	3145	1	30	-- Magnetyczne Ostrze+5
+	10	3146	1	20	-- Magnetyczne Ostrze+6
+	11	5105	1	30	-- Dzwon Nieba I Ziemi+5
+	12	5106	1	20	-- Dzwon Nieba I Ziemi+6
+	13	7145	1	30	-- Wachlarz Zbawienia+5
+	14	7146	1	20	-- Wachlarz Zbawienia+6
+	15	27003	10	200	-- Czerwona Mikstura(D) x10
+	16	27002	50	100	-- Czerwona Mikstura(S) x50
+	17	27007	50	100	-- Czerwona Mikstura(XL) - zamiast (XXL) x50
+	18	27006	20	150	-- Niebieska Mikstura(D) x20
+	19	27005	30	100	-- Niebieska Mikstura(S) x30
+	20	27008	30	100	-- Niebieska Mikstura(XL) - zamiast (XXL) x30
+	21	50513	1	15	-- Kamien Duchowy
+	22	50300	1	25	-- Ksiega Umiejetnosci
+	23	70038	20	15	-- Peleryna Mestwa x20
+	24	72003	1	20	-- Pierscien Doswiadczenia (2 h - zamiast 1 h)
+	25	70014	1	25	-- Pigulka Krwi
+	26	72005	1	20	-- Rekawica Zlodzieja (1 h)
+}
+
+Group	MT2009_ymaps_6716
+{
+	Mob	6716	-- Natanan (ogien)
+	Type	drop
+	1	145	1	30	-- Miecz Bojowy+5
+	2	146	1	20	-- Miecz Bojowy+6
+	3	155	1	30	-- Miecz Szponu Ducha+5
+	4	156	1	20	-- Miecz Szponu Ducha+6
+	5	1105	1	30	-- Smoczy Noz+5
+	6	1106	1	20	-- Smoczy Noz+6
+	7	2145	1	30	-- Olbrz. Luk Zolt. Smoka+5
+	8	2146	1	20	-- Olbrz. Luk Zolt. Smoka+6
+	9	3145	1	30	-- Magnetyczne Ostrze+5
+	10	3146	1	20	-- Magnetyczne Ostrze+6
+	11	5105	1	30	-- Dzwon Nieba I Ziemi+5
+	12	5106	1	20	-- Dzwon Nieba I Ziemi+6
+	13	7145	1	30	-- Wachlarz Zbawienia+5
+	14	7146	1	20	-- Wachlarz Zbawienia+6
+	15	27003	10	200	-- Czerwona Mikstura(D) x10
+	16	27002	50	100	-- Czerwona Mikstura(S) x50
+	17	27007	50	100	-- Czerwona Mikstura(XL) - zamiast (XXL) x50
+	18	27006	20	150	-- Niebieska Mikstura(D) x20
+	19	27005	30	100	-- Niebieska Mikstura(S) x30
+	20	27008	30	100	-- Niebieska Mikstura(XL) - zamiast (XXL) x30
+	21	50513	1	15	-- Kamien Duchowy
+	22	72003	1	20	-- Pierscien Doswiadczenia (2 h - zamiast 1 h)
+	23	72005	1	20	-- Rekawica Zlodzieja (1 h)
+}
+
+Group	MT2009_ymaps_6717
+{
+	Mob	6717	-- Argos (ogien)
+	Type	drop
+	1	145	1	30	-- Miecz Bojowy+5
+	2	146	1	20	-- Miecz Bojowy+6
+	3	155	1	30	-- Miecz Szponu Ducha+5
+	4	156	1	20	-- Miecz Szponu Ducha+6
+	5	1105	1	30	-- Smoczy Noz+5
+	6	1106	1	20	-- Smoczy Noz+6
+	7	2145	1	30	-- Olbrz. Luk Zolt. Smoka+5
+	8	2146	1	20	-- Olbrz. Luk Zolt. Smoka+6
+	9	3145	1	30	-- Magnetyczne Ostrze+5
+	10	3146	1	20	-- Magnetyczne Ostrze+6
+	11	5105	1	30	-- Dzwon Nieba I Ziemi+5
+	12	5106	1	20	-- Dzwon Nieba I Ziemi+6
+	13	7145	1	30	-- Wachlarz Zbawienia+5
+	14	7146	1	20	-- Wachlarz Zbawienia+6
+	15	27007	50	100	-- Czerwona Mikstura(XL) - zamiast (XXL) x50
+	16	27008	30	100	-- Niebieska Mikstura(XL) - zamiast (XXL) x30
+	17	50513	1	15	-- Kamien Duchowy
+	18	50300	1	25	-- Ksiega Umiejetnosci
+	19	70038	20	15	-- Peleryna Mestwa x20
+	20	72003	1	20	-- Pierscien Doswiadczenia (2 h - zamiast 1 h)
+	21	70014	1	25	-- Pigulka Krwi
+	22	72005	1	20	-- Rekawica Zlodzieja (1 h)
+}
+
+Group	MT2009_ymaps_8067
+{
+	Mob	8067	-- Metin Swiadomosc
+	Type	drop
+	1	27007	5	200	-- Czerwona Mikstura(XL) x5 - zamiast (XXL)
+	2	27008	5	200	-- Niebieska Mikstura(XL) x5 - zamiast (XXL)
+	3	50513	1	50	-- Kamien Duchowy
+	4	50300	1	50	-- Ksiega Umiejetnosci
+	5	70014	1	50	-- Pigulka Krwi
+}
+
+Group	MT2009_ymaps_8625
+{
+	Mob	8625	-- Posterunek Trolli
+	Type	drop
+	1	27007	5	200	-- Czerwona Mikstura(XL) x5 - zamiast (XXL)
+	2	27008	5	200	-- Niebieska Mikstura(XL) x5 - zamiast (XXL)
+	3	50513	1	50	-- Kamien Duchowy
+}

@@ -341,7 +341,9 @@ RUN set -eux; \
     # are Poziom Czempiona (MT2009_PLUS_CHAMPION_V1, server-patches/czempion).
     # port_yohary is Port Nowego Kontynentu (368): the statue's dungeon ranking and the way back to the Fisherman,
     # Pierscien Hydry (70303, three teleports to the port) and the level-90 guard (MT2009_PLUS_YOHARA_PORT_V1).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary; do \
+    # yohara_mapy is the first maps of Yohara - Opuszczona Twierdza (374) and Dongan (373): the statue's way there
+    # from level 120, the way back to the port, the Teleporter of Dongan, the level-120 guard (MT2009_PLUS_YOHARA_MAPS1_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1376,6 +1378,61 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-port-add; M=metin2
  && { LC_ALL=C grep -a -q 'add_goto_info("port"' "$S" || printf 'add_goto_info("port", 0, 368, 1685, 6112)\r\n' >> "$S"; } \
  && rm -rf "$A" \
  && echo "share: Port Nowego Kontynentu (368: GF terrain's server_attr, the statue, /goto port)"
+# MT2009_PLUS_YOHARA_MAPS1_V1 (share): the first maps of Yohara (cache/yohara/plan-mapy-yohary.md, pl-wiki "Opuszczona
+# Twierdza", "Dongan") - Dongan (373, metin2_map_eastplain_01, 4x5 at 1049600 435200) and Opuszczona Twierdza (374,
+# metin2_map_empirecastle, 2x2 at 512000 486400), Owsap's indexes, hosted by game2 beside the port (bin/m2-render-config).
+# The client gets both maps from the GF 26.1.11 client (client-patches/client-2.0.30/tools/ymaps), so server_attr is
+# made from GF's attr.atr (tools/gf28/srvattr.py, 100% of the cells; Owsap's blocks 612 / 56 more cells). Setting,
+# Town, regen, boss, stone and npc are Owsap's: Twierdza's gate portal is 10144 here (Owsap's 10107 is our Lodowa
+# Grota), Dongan's mailbox (30308, no mail here) and portal to Seoganland (10128, not here yet) are left out. Their
+# spawn groups (group.yohara_maps.txt 6145-6152, 6194-6201; group_group.yohara_maps.txt 6700-6705, 6711-6714) and
+# drops (mob_drop_item.yohara_maps.txt - the wiki's lists, what our items have) are appended; none may exist before.
+# The monsters' rows: mariadb/playerbot/yohara_maps.sql. Both names are in sungma_table.txt, so both maps become Sung
+# Ma maps by their map/index lines (no bot may enter one). The maps' names for the quests, /goto twierdza, /goto dongan.
+COPY yohara_maps/ /tmp/yohara-maps-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for p in "373 metin2_map_eastplain_01 1000000014000000 1049600 435200" "374 metin2_map_empirecastle 0800000008000000 512000 486400"; do \
+      set -- $p; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" && test -s "$L/map/$2/npc.txt" && test -s "$L/map/$2/regen.txt" \
+        && test -s "$L/map/$2/boss.txt" && test -s "$L/map/$2/stone.txt" \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: Yohara map $1 $2"; exit 1; }; \
+    done \
+ && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]10144[[:space:]]*$' "$L/map/metin2_map_empirecastle/npc.txt")" = 1 \
+ && ! grep -q -E '[[:blank:]](10107|10128|30308)[[:space:]]*$' "$L/map/metin2_map_empirecastle/npc.txt" "$L/map/metin2_map_eastplain_01/npc.txt" \
+ && f="$L/group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(614[5-9]|615[0-2]|619[4-9]|620[01])[[:space:]]*$' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\n' >> "$f"; } \
+ && cat "$A/group.yohara_maps.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(614[5-9]|615[0-2]|619[4-9]|620[01])[[:space:]]*$' "$f")" = 16 \
+ && f="$L/group_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(670[0-5]|671[1-4])[[:space:]]*$' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group_group.yohara_maps.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(670[0-5]|671[1-4])[[:space:]]*$' "$f")" = 10 \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -i -E '^[[:blank:]]*mob[[:blank:]]+(66(8[6-9]|9[0-9])|67(0[0-6]|1[0-7])|8067|8625)([^0-9]|$)' "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.yohara_maps.txt" >> "$F" \
+ && test "$(grep -c -i -E '^[[:blank:]]*mob[[:blank:]]+(66(8[6-9]|9[0-9])|67(0[0-6]|1[0-7])|8067|8625)([^0-9]|$)' "$F")" = 31 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[374\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_MAPS1_V1\r\ntranslate.general.map_names[373] = "Dongan"\r\ntranslate.general.map_names[374] = "Opuszczona Twierdza"\r\n' >> "$f"; \
+    done \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("twierdza"' "$S" || printf 'add_goto_info("twierdza", 0, 374, 5376, 4949)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("dongan"' "$S" || printf 'add_goto_info("dongan", 0, 373, 11024, 5068)\r\n' >> "$S"; } \
+ && rm -rf "$A" \
+ && echo "share: Yohara - Opuszczona Twierdza (374), Dongan (373): GF terrain's server_attr, Owsap's spawns, groups, drops"
 # MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1 (share): Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
 # README.md). sungma_table.txt - the Sung Ma requirements of the GF 26.1.11 client's 19 Yohara maps by name (the engine
 # matches the names against map/index, so none of our maps is touched until a Yohara map comes); sungma_mob_exp.txt -

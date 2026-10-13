@@ -194,6 +194,12 @@ MAPS_game1="$MAPS_game1 367"
 # monster lives there and no bot goes there; people cross cores by warp (the Hydra's portal, Pierscien Hydry, the
 # Fisherman). game2: 10 maps in the split layout, 6 in the unified one.
 MAPS_game2="$MAPS_game2 368"
+# MT2009_PLUS_YOHARA_MAPS1_V1 (maps): Dongan (373, metin2_map_eastplain_01, 4x5) and Opuszczona Twierdza (374,
+# metin2_map_empirecastle, 2x2), the first Yohara maps, on game2 under either layout beside the port they are reached
+# from (pc.warp within one core). Sung Ma maps (sungma_table.txt): no bot may enter, so they need not sit with the
+# bots on game1 - which is at 46 of MAP_ALLOW_LIMIT 48 in the unified layout and ~3.8 GB of a 32-bit core's 4 GB
+# (13 October 2026, the test server; game2 ~0.26 GB). game2: 12 maps in the split layout, 8 in the unified one.
+MAPS_game2="$MAPS_game2 373 374"
 # The difficulty is acted on by the migrate service (event flags the quests
 # read); said here so a support bundle carries it next to the layout.
 log "difficulty: ${M2_DIFFICULTY:-easy} (Biologist and stable keeper waits; apply.sh writes the flags)"
