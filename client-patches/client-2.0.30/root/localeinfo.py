@@ -496,6 +496,16 @@ GUILDWAR_WARP_DESCLIST = [GUILD_WAR_USE_BATTLE_MAP, GUILD_WAR_WIN_WIPE_OUT_GUILD
 GUILDWAR_CTF_DESCLIST = [GUILD_WAR_USE_BATTLE_MAP, GUILD_WAR_WIN_TAKE_AWAY_FLAG1, GUILD_WAR_WIN_TAKE_AWAY_FLAG2]
 
 MINIMAP_ZONE_NAME_DICT = {
+	# MT2009_PLUS_YOHARA_MAPS3_V1 (client): the third batch of Yohara (378-381, 390, 391, 394-396) on the minimap
+	"metin2_map_whitedragoncave_02" : "Zejœcie Pó³nocnego Wiatru",
+	"metin2_map_whitedragoncave_boss" : "G³êbie Pó³nocnego Wiatru",
+	"metin2_map_snake_temple_01" : "1. poziom Œwi¹tyni Wê¿y",
+	"metin2_map_snake_temple_02" : "Œwi¹tynia Wê¿y",
+	"metin2_map_anglar_dungeon_01" : "Tajemnicza Instancja",
+	"metin2_map_elemental_01" : "Królestwo ¯ywio³ów",
+	"metin2_map_elemental_02" : "Królestwo ¯ywio³ów",
+	"metin2_map_elemental_03" : "Królestwo ¯ywio³ów",
+	"metin2_map_elemental_04" : "P³askowy¿ Si³ Natury",
 	"metin2_map_a1"  : MAP_A1,
 	"map_a2"         : MAP_A2,
 	"metin2_map_a3"  : MAP_A3,
