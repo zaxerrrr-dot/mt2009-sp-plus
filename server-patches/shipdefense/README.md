@@ -30,7 +30,9 @@ nakładka, kopia budowania i lista plików aktualizacji (`playerbot_*`) niosły 
   Hydry, lasery, przywołania kapp, osłabienie w fali 4, limit czasu, pasek HP masztu.
 - **Pasek HP masztu** bez nowego pakietu i bez zmiany exe: komenda czatu
   `ShipMastHP <hp> <max>` do osób na statku (najwyżej raz na sekundę, tylko przy zmianie),
-  `ShipMastHP 0 0` = ukryj. Obsługa w pythonie klienta – krok 8.
+  `ShipMastHP 0 0` = ukryj. Klient: `client-patches/client-2.0.30/root/uishipdefense.py` (pasek „Maszt statku”
+  u góry ekranu, pod oknem celu), wpis w `game.py`; okno śmierci na statku ma tylko „Odrodź się tutaj”
+  (`uirestart.py`). Paczki mapy i modeli: `client-patches/client-2.0.30/tools/shipdefense/`.
 - **Laser**: istniejący pakiet efektu (`defense_mini_laser.mse`) zamiast nowego `SE_*`; bez nowego afektu.
 
 ## Poprawione błędy Owsapa

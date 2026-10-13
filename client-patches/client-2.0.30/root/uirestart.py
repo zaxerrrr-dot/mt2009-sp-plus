@@ -61,6 +61,26 @@ class RestartDialog(ui.ScriptWindow):
 		self.ClearDictionary()
 
 	def OpenDialog(self):
+		# MT2009_PLUS_SHIP_DEFENSE_V1: on Obrona Statku's ship (map 367) only "restart here" -
+		# the town of a ship instance is the empty public ship; the way off is the wheel
+		# ("Zejdz ze statku") or the lost/won ship's own exit.
+		onShip = 0
+		try:
+			import background
+			onShip = str(background.GetCurrentMapName()) == "metin2_map_defensewave"
+		except Exception:
+			pass
+		height = onShip and 58 or 88
+		if self.restartTownButton:
+			if onShip:
+				self.restartTownButton.Hide()
+			else:
+				self.restartTownButton.Show()
+		try:
+			self.GetChild("board").SetSize(200, height)
+			self.SetSize(200, height)
+		except Exception:
+			pass
 		self.Show()
 
 	def OnUpdate(self):
