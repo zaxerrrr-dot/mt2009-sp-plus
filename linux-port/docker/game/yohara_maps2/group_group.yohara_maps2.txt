@@ -1,0 +1,122 @@
+// MT2009_PLUS_YOHARA_MAPS2_V1: Owsap v6.2.6 group_group.txt (6706-6710 Seoganland, 6715-6719 Namgan, 4030-4033
+// Schronienie) and ours (4040/4041 Wawoz) - the "r" lines of regen.txt (tools/yohara_maps/gen_ymaps2.py)
+Group	MT2009_ymaps2_east_plane_02_01
+{
+	Vnum	6706
+	1	6185	1
+	2	6186	1
+}
+
+Group	MT2009_ymaps2_east_plane_02_02
+{
+	Vnum	6707
+	1	6185	1
+	2	6186	1
+	3	6187	1
+}
+
+Group	MT2009_ymaps2_east_plane_02_03
+{
+	Vnum	6708
+	1	6189	1
+	2	6190	1
+	3	6191	1
+}
+
+Group	MT2009_ymaps2_east_plane_02_04
+{
+	Vnum	6709
+	1	6192	1
+	2	6188	1
+}
+
+Group	MT2009_ymaps2_east_plane_02_05
+{
+	Vnum	6710
+	1	6192	1
+	2	6187	1
+	3	6186	1
+}
+
+Group	MT2009_ymaps2_east_plane_03_01
+{
+	Vnum	6715
+	1	6711	1
+	2	6712	1
+}
+
+Group	MT2009_ymaps2_east_plane_03_02
+{
+	Vnum	6716
+	1	6711	1
+	2	6712	1
+	3	6713	1
+}
+
+Group	MT2009_ymaps2_east_plane_03_03
+{
+	Vnum	6717
+	1	6712	1
+	2	6713	1
+}
+
+Group	MT2009_ymaps2_east_plane_03_04
+{
+	Vnum	6718
+	1	6713	1
+	2	6714	1
+}
+
+Group	MT2009_ymaps2_east_plane_03_05
+{
+	Vnum	6719
+	1	6714	1
+	2	6715	1
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_01
+{
+	Vnum	4030
+	1	9150	1
+	2	9151	1
+	2	9152	1
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_02
+{
+	Vnum	4031
+	1	9152	1
+	2	9153	1
+	3	9154	1
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_03
+{
+	Vnum	4032
+	1	9154	1
+	2	9155	1
+	2	9156	1
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_04
+{
+	Vnum	4033
+	1	9156	1
+	2	9157	1
+}
+
+Group	MT2009_ymaps2_wawoz_lod
+{
+	Vnum	4040
+	1	9170	1
+	2	9171	1
+	3	9172	1
+}
+
+Group	MT2009_ymaps2_wawoz_blysk
+{
+	Vnum	4041
+	1	9173	1
+	2	9174	1
+	3	9175	1
+}
