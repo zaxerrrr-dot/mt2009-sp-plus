@@ -148,5 +148,11 @@
   "marker": "MT2009_PLUS_CHAMPION_V1 (lua)",
   "old": "\t\tRegisterCommandFunctionTable();\n",
   "new": "\t\t// MT2009_PLUS_CHAMPION_V1 (lua): pc.*conqueror*, pc.*sungma*, npc.get_sungma_exp (playerbot_champion.cpp).\n\t\t{ void RegisterChampionFunctions(); RegisterChampionFunctions(); }\n\t\tRegisterCommandFunctionTable();\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_HPSP_V1",
+  "old": "\t\tiMaxSP = JobInitialPoints[GetJob()].max_sp + m_points.iRandomSP + GetPoint(POINT_IQ) * JobInitialPoints[GetJob()].sp_per_iq;\n",
+  "new": "\t\tiMaxSP = JobInitialPoints[GetJob()].max_sp + m_points.iRandomSP + GetPoint(POINT_IQ) * JobInitialPoints[GetJob()].sp_per_iq;\n\t\t// MT2009_PLUS_CHAMPION_HPSP_V1 (the owner, 13 October): each Champion level adds what a normal level-up\n\t\t// gives (the job's hp/sp per level - 40 HP and 20 SP for every class), up to +1200 HP / +600 SP at level 30.\n\t\tif (GetConquerorLevel() > 0)\n\t\t{\n\t\t\tconst TJobInitialPoints& jp = JobInitialPoints[GetJob()];\n\t\t\tiMaxHP += GetConquerorLevel() * (jp.hp_per_lv_begin + jp.hp_per_lv_end) / 2;\n\t\t\tiMaxSP += GetConquerorLevel() * (jp.sp_per_lv_begin + jp.sp_per_lv_end) / 2;\n\t\t}\n"
  }
 ]

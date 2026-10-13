@@ -85,3 +85,9 @@ cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
   pasek exp Czempiona w `uitaskbar.py`; `uichampion.py` (Etap A) można wtedy usunąć.
 - Klient (dane, przy najbliższej paczce): `item_list.txt`/`item_proto`/`itemdesc.txt` dla 72068–72071 i ikony
   `icon/item/72068-72071.tga` z GF.
+
+## PŻ i PE za poziomy Czempiona (`MT2009_PLUS_CHAMPION_HPSP_V1`)
+
+Decyzja właściciela z 13.10.2026: każdy poziom Czempiona dodaje tyle, co zwykły awans – PŻ i PE klasy na
+poziom (`JobInitialPoints`: 40 PŻ i 20 PE dla każdej klasy), czyli do +1200 PŻ i +600 PE na 30 poziomie.
+Liczone w `ComputePoints` (`char.cpp`), więc działa od razu po awansie i po zalogowaniu.
