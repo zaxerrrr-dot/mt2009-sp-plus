@@ -4630,6 +4630,7 @@
 72048	ETC	icon/item/71044.tga
 72049	ETC	icon/item/72049.tga
 72050	ETC	icon/item/72049.tga
+72058	ETC	icon/item/27999.tga
 72701	ETC	icon/item/72701.tga
 72702	ETC	icon/item/72701.tga
 72703	ETC	icon/item/72703.tga	
