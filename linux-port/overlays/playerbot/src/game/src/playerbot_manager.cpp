@@ -5,6 +5,7 @@
 #include "playerbot_channel_rules.h"
 #include "playerbot_world_rules.h"
 #include "playerbot_event_rules.h"
+#include "playerbot_champion.h" // MT2009_PLUS_SUNGMA_V1 (bots): champion::IsSungmaMap in TransitionPlayerBotMap
 #include "playerbot_stall_rules.h"
 #include "playerbot_persona_rules.h"
 #include "playerbot_progression_rules.h" // MT2009_PLUS_PROGRESSION_V1: the operator's map levels, early holds and checklist

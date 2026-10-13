@@ -1689,6 +1689,16 @@ namespace
 	{
 		if (!ch)
 			return false;
+		// MT2009_PLUS_SUNGMA_V1 (bots): no bot onto a Sung Ma map (server-patches/czempion) - without a Champion
+		// level nobody hurts a monster there, and bots get no Champion level for now (the owner, 13 October).
+		// Every way in passes here: hunting and its trips, the sidekick's follow, a party's follow and jump,
+		// the dungeon and guild LFG, a GM's or a quest's warp (CPlayerBotManager::WarpBot).
+		if (champion::IsSungmaMap(targetMap))
+		{
+			if (!s_szPlayerBotTransitionRefusal)
+				s_szPlayerBotTransitionRefusal = "sungma_map";
+			return false;
+		}
 		if (IsPlayerBotOwnMapChoiceReason(reason) && IsPlayerBotDuoShaman(ch->GetPlayerID()))
 		{
 			// MT2009_PLUS_BOT_GUILD_SHAMAN_V2 (10 October: a Shaman back from the

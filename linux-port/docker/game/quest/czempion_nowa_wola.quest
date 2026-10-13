@@ -1,0 +1,34 @@
+-- MT2009_PLUS_SUNGMA_V1: Nowa Wola 72068-72071 - zwraca punkty jednej statystyki Sung Ma Czempiona
+-- (72068 Si³a, 72069 Witalnoœæ, 72070 Odpornoœæ, 72071 Inteligencja; server-patches/czempion/README.md).
+-- Wzór: Owsap quest/source/item/reset_status.quest (72068-72071), pc.reset_sungma_status(idx) z
+-- playerbot_champion.cpp. cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest czempion_nowa_wola begin
+	state start begin
+		when 72068.use or 72069.use or 72070.use or 72071.use begin
+			local names = { "Si³a Sung Ma", "Witalnoœæ Sung Ma", "Odpornoœæ Sung Ma", "Inteligencja Sung Ma" }
+			local values = { pc.get_sungma_str(), pc.get_sungma_vit(), pc.get_sungma_res(), pc.get_sungma_int() }
+			local vnum = item.get_vnum()
+			local idx = vnum - 72068
+			say_title(item_name(vnum)..":")
+			if pc.get_conqueror_level() == 0 then
+				say("Tego przedmiotu mo¿e u¿yæ tylko Czempion.")
+				return
+			end
+			if values[idx + 1] == 0 then
+				say(string.format("%s: nie rozdano tu jeszcze punktów.", names[idx + 1]))
+				return
+			end
+			say(string.format("%s: %d. Wszystkie te punkty", names[idx + 1], values[idx + 1]))
+			say("wróc¹ do puli i rozdasz je od nowa.")
+			if select("U¿yj", "Anuluj") == 1 then
+				if pc.reset_sungma_status(idx) then
+					pc.remove_item(vnum, 1)
+					say_title(item_name(vnum)..":")
+					say("Punkty wróci³y do puli.")
+				else
+					say("Nie uda³o siê - spróbuj ponownie.")
+				end
+			end
+		end
+	end
+end

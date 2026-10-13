@@ -3490,6 +3490,18 @@ if [ -s /opt/playerbot/shipdefense.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1: Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
+# README.md). czempion.sql is idempotent (ADD COLUMN IF NOT EXISTS, INSERT IGNORE): eight columns of player.player and
+# player_deleted (the same order - a deleted character is copied with SELECT *) that the db core of the patch reads and
+# writes, and the items 72068-72071 (Nowa Wola). Must run before a db core with the patch starts.
+if [ -s /opt/playerbot/czempion.sql ]; then
+    if db < /opt/playerbot/czempion.sql; then
+        echo "[playerbot-migrate] champion: czempion.sql applied"
+    else
+        fail_step "champion: czempion.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_PLAY_COUNT_V1 (Autor: Vekirion): the Wheel of Fortune's "spin N times" keeps all n
 # rewards of one spin in player.wheel_spin.rewards ("vnum|count|rare#...") and n in spins
 # (playerbot_wheel.h). The core adds them itself on its first wheel start, but only if its

@@ -238,7 +238,9 @@ RUN set -eux; \
     # game.zodiac_temple_table for the Zodiac Temple's quests (MT2009_PLUS_ZODIAC_V1,
     # playerbot_zodiac_questlua.cpp; Autor: Digi Rasta).
     # dw.* for Obrona Statku's quest (MT2009_PLUS_SHIP_DEFENSE_V1, playerbot_ship_defense_questlua.cpp).
-    for fn in mes.get_message pc.get_special_flag pc.set_special_flag mysql_direct_query pc.equip_slot pc.unequip_slot item.set_attr item.get_max_stack item.use pc.open_special_shop affect.add_new affect.remove_new pc.is_playerbot affect.get_duration pc.has_affect pc.warp_channel game.get_catchking_score game.get_catchking_myscore game.catchking_claim_reward game.catchking_use_item game.catchking_deliver pc.clear_quest_letter guild.treasury_available guild.treasury_spend zodiac_temple.starttemple zodiac_temple.startlogin zodiac_temple.new_floor zodiac_temple.setflag zodiac_temple.getflag pc.set_animasphere pc.get_animasphere pc.delete_animasphere pc.is_flag_cz_ulimit_enter pc.set_flag_cz_ulimit_enter d.zodiac_notice d.zodiac_notice_clear d.zodiac_time d.zodiac_time_clear game.zodiac_temple_table guild.leave_war is_on_war_map dw.cfg dw.map_index dw.count dw.find dw.start dw.is_started dw.wave dw.state dw.mast_hp_pct dw.set_alliance_hp_pct dw.close; do \
+    # pc.*conqueror*, pc.*sungma* and npc.get_sungma_exp for Poziom Czempiona (MT2009_PLUS_CHAMPION_V1,
+    # playerbot_champion.cpp; czempion, czempion_nowa_wola).
+    for fn in mes.get_message pc.get_special_flag pc.set_special_flag mysql_direct_query pc.equip_slot pc.unequip_slot item.set_attr item.get_max_stack item.use pc.open_special_shop affect.add_new affect.remove_new pc.is_playerbot affect.get_duration pc.has_affect pc.warp_channel game.get_catchking_score game.get_catchking_myscore game.catchking_claim_reward game.catchking_use_item game.catchking_deliver pc.clear_quest_letter guild.treasury_available guild.treasury_spend zodiac_temple.starttemple zodiac_temple.startlogin zodiac_temple.new_floor zodiac_temple.setflag zodiac_temple.getflag pc.set_animasphere pc.get_animasphere pc.delete_animasphere pc.is_flag_cz_ulimit_enter pc.set_flag_cz_ulimit_enter d.zodiac_notice d.zodiac_notice_clear d.zodiac_time d.zodiac_time_clear game.zodiac_temple_table guild.leave_war is_on_war_map dw.cfg dw.map_index dw.count dw.find dw.start dw.is_started dw.wave dw.state dw.mast_hp_pct dw.set_alliance_hp_pct dw.close pc.get_conqueror_level pc.get_conqueror_exp pc.get_conqueror_next_exp pc.get_conqueror_point pc.get_conqueror_unlock_state pc.set_conqueror pc.give_conqueror_exp pc.give_conqueror_exp2 pc.get_sungma_str pc.get_sungma_vit pc.get_sungma_res pc.get_sungma_int pc.reset_sungma_status npc.get_sungma_exp; do \
       grep -qx "$fn" /tmp/qc-work/quest_functions || echo "$fn" >> /tmp/qc-work/quest_functions; \
     done; \
     # MT2009_PLUS_HORSE30_V1 (Digi Rasta's horse to level 30): konie is the
@@ -335,7 +337,9 @@ RUN set -eux; \
     # zodiac_emergency_mission are the Zodiac Temple (MT2009_PLUS_ZODIAC_V1, Autor: Digi Rasta).
     # obrona_statku is Obrona Statku (Hydra, map 367): the Fisherman's (9009) entry on 301, the wheel,
     # the repair planks, the portal and the completion flags (MT2009_PLUS_SHIP_DEFENSE_V1).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku; do \
+    # czempion (the Posag Wojownika 20433: becoming a Champion) and czempion_nowa_wola (Nowa Wola 72068-72071)
+    # are Poziom Czempiona (MT2009_PLUS_CHAMPION_V1, server-patches/czempion).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1338,6 +1342,18 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/map; A=/tmp/maps302-add/map \
     done \
  && rm -rf /tmp/maps302-add \
  && echo "share: Zbocze Gautama / Nefrytowa Zatoka / Gromiste Gory (302-304: server_attr of the GF terrain)"
+# MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1 (share): Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
+# README.md). sungma_table.txt - the Sung Ma requirements of the GF 26.1.11 client's 19 Yohara maps by name (the engine
+# matches the names against map/index, so none of our maps is touched until a Yohara map comes); sungma_mob_exp.txt -
+# the champion experience of 356 monsters (Owsap's SungMaExp), given only on a Sung Ma map. Both made by
+# tools/champion/gen_sungma_data.py; "/champion reload" reads them again.
+COPY champion/ /tmp/champion-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/champion-add \
+ && for f in sungma_table.txt sungma_mob_exp.txt; do sed 's/\r$//' "$A/$f" > "$L/$f"; done \
+ && test "$(grep -c -E '^metin2_map_[a-z0-9_]+[[:blank:]]+[0-9]+[[:blank:]]+[0-9]+[[:blank:]]+[0-9]+[[:blank:]]+[0-9]+$' "$L/sungma_table.txt")" = 19 \
+ && test "$(grep -c -E '^[0-9]+[[:blank:]]+[0-9]+$' "$L/sungma_mob_exp.txt")" -gt 300 \
+ && rm -rf "$A" \
+ && echo "share: Poziom Czempiona (sungma_table.txt, sungma_mob_exp.txt)"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only
