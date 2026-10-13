@@ -40,7 +40,11 @@ namespace
 	const int PLAYERBOT_SASH_KEEPER_PERCENT = 80;
 	// Unworn sashes a keeper holds for the combining; past this many the worst
 	// are goods again.
-	const int PLAYERBOT_SASH_KEEP = 10;
+	// MT2009_PLUS_BOT_SASH_CLEAR_V1 (the owner, 13 October: "niech je lacza albo
+	// sprzedaja na ladzie ... niech nie trzymaja ich w EQ"): three - the pair
+	// of the lowest grade its purse combines and one of the grade it makes -
+	// where ten let a keeper sit on five pairs between two Uriel visits.
+	const int PLAYERBOT_SASH_KEEP = 3;
 	const DWORD PLAYERBOT_SASH_CHECK_MIN_MS = 3 * 60 * 1000;
 	const DWORD PLAYERBOT_SASH_CHECK_MAX_MS = 6 * 60 * 1000;
 	// A visit's work: combines and one absorption, a few seconds apart.

@@ -186,7 +186,7 @@ namespace
 				ch->GetWear(WEAR_HEAD) == NULL ||
 				ch->GetWear(WEAR_FOOTS) == NULL || NeedsPlayerBotEmergencyPotions(ch) ||
 				NeedsPlayerBotArrows(ch) ||
-				ch->GetEmptyInventory(3) < 0)
+				(ch->GetEmptyInventory(3) < 0 && !IsPlayerBotSidekickBagExcused(ch)))	// MT2009_PLUS_SIDEKICK_BAG_LOOP_V1
 			return true;
 		// One of Community Patch 5's four gamblers is a rare state of three
 		// hours at most, and all of it is a town's: the counters for its bases
@@ -231,7 +231,9 @@ namespace
 			return false;
 		return ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
 				NeedsPlayerBotEmergencyPotions(ch) || NeedsPlayerBotArrows(ch) ||
-				ch->GetEmptyInventory(3) < 0;
+				// MT2009_PLUS_SIDEKICK_BAG_LOOP_V1: not the bag of a companion
+				// whose last town visit could not clear it (playerbot_sidekick.h).
+				(ch->GetEmptyInventory(3) < 0 && !IsPlayerBotSidekickBagExcused(ch));
 	}
 
 	// MT2009_PLUS_FRONTIER_BAG_LOOP_V1 (safety net): a bot whose town visit

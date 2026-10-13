@@ -1403,10 +1403,19 @@ namespace {
         // A book past its skill's three lines is still taken while the stand
         // has more than PLAYERBOT_SHOP_BOOK_FREE_CELLS free cells: the books
         // of other classes stood in the bags behind the cap.
-        if (IsPlayerBotCountedSingleGoods(item) &&
-                BotOfflineKindLinesOf(shop, item) >= PLAYERBOT_SHOP_COUNTED_SINGLE_LINES &&
-                !(item->GetType() == ITEM_SKILLBOOK && BotOfflineFreeCells(shop) > PLAYERBOT_SHOP_BOOK_FREE_CELLS))
-            return true;
+        // MT2009_PLUS_BOT_BOOKS_TO_STALL_V1: and another build's book - kept
+        // by its skill, never by the 50300 every book shares - up to
+        // PLAYERBOT_OTHER_CLASS_BOOK_SKILL_LINES lines of its skill on any
+        // counter with a cell for it.
+        if (IsPlayerBotCountedSingleGoods(item)) {
+            const int kindLines = BotOfflineKindLinesOf(shop, item);
+            const bool otherBuildBook = item->GetType() == ITEM_SKILLBOOK && item->GetOwner() &&
+                    !IsPlayerBotOwnSkill(item->GetOwner(), GetPlayerBotSkillBookSkillVnum(item));
+            if (kindLines >= PLAYERBOT_SHOP_COUNTED_SINGLE_LINES &&
+                    !(item->GetType() == ITEM_SKILLBOOK && BotOfflineFreeCells(shop) > PLAYERBOT_SHOP_BOOK_FREE_CELLS) &&
+                    !(otherBuildBook && kindLines < PLAYERBOT_OTHER_CLASS_BOOK_SKILL_LINES))
+                return true;
+        }
         if (item->GetType() == ITEM_POLYMORPH) {
             bool sameMob = false;
             if (BotOfflineMarbleLines(shop, item->GetSocket(0), sameMob) >= PLAYERBOT_SHOP_MARBLE_LINES || sameMob)
@@ -1426,9 +1435,11 @@ namespace {
                 // it does not combine puts them up - more lines, and the
                 // counters' share not asked ("zawsze gdy bot ma dwie lub wiecej
                 // szarf, powinien albo je wystawic na sprzedaz albo ulepszac").
+                // MT2009_PLUS_BOT_SASH_CLEAR_V1: one such sash is enough, and
+                // the counter takes PLAYERBOT_SASH_CLEAR_COUNTER_LINES of them.
                 const bool sashFlow = rareKind == PLAYERBOT_RARE_GOODS_SASH &&
-                        GetPlayerBotSashGoodsInBag(item->GetOwner()) >= 2;
-                const int cap = sashFlow ? PLAYERBOT_SASH_FLOW_COUNTER_LINES : PLAYERBOT_RARE_GOODS_LINES_PER_SHOP;
+                        GetPlayerBotSashGoodsInBag(item->GetOwner()) >= 1;
+                const int cap = sashFlow ? PLAYERBOT_SASH_CLEAR_COUNTER_LINES : PLAYERBOT_RARE_GOODS_LINES_PER_SHOP;
                 if (rareLines >= cap ||
                         (rareLines == 0 && !sashFlow && IsPlayerBotRareGoodsShopQuotaFull(rareKind)))
                     return true;
@@ -2012,16 +2023,36 @@ namespace {
                 !(item->GetType() == ITEM_WEAPON ? IsPlayerBotKeptBackupWeapon(ch, item)
                     : IsPlayerBotKeptBackupArmour(ch, item));
     }
+    // MT2009_PLUS_BOT_BOOKS_TO_STALL_V1 / MT2009_PLUS_BOT_SASH_CLEAR_V1: and
+    // the same room for another build's skill book and for a sash the bot
+    // neither wears nor combines (a counter candidate already, so goods): a
+    // full counter kept them in the bag for good. They take the place of a
+    // line that is neither a book, a sash nor a medal.
+    bool IsPlayerBotSwapClearGoods(LPCHARACTER ch, LPITEM item) {
+        if (!ch || !item || item->IsEquipped() || item->isLocked() || item->GetWindow() != INVENTORY ||
+                GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE)
+            return false;
+        if (item->GetType() == ITEM_SKILLBOOK)
+            return !IsPlayerBotMissionBook(item->GetVnum()) &&
+                    !IsPlayerBotOwnSkill(ch, GetPlayerBotSkillBookSkillVnum(item));
+        return GetPlayerBotRareGoodsKind(item->GetVnum()) == PLAYERBOT_RARE_GOODS_SASH &&
+                !IsPlayerBotKeptSash(ch, item) && !IsPlayerBotSidekickGift(ch, item) &&
+                !IsPlayerBotSidekickPinned(ch, item);
+    }
     bool BotOfflineSpareGearSwap(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop,
             const std::vector<std::pair<int, WORD> >& scored, DWORD now) {
         if (!ch || !shop) return false;
         LPITEM spare = NULL;
+        bool clearGoods = false;   // MT2009_PLUS_BOT_BOOKS_TO_STALL_V1 / MT2009_PLUS_BOT_SASH_CLEAR_V1
         for (const auto& [score, cell] : scored) {
             LPITEM item = ch->GetInventoryItem(cell);
-            if (score <= 0 || !item || item->GetCell() != cell || !IsPlayerBotSwapSpareGear(ch, item)) continue;
+            if (score <= 0 || !item || item->GetCell() != cell) continue;
+            const bool gear = IsPlayerBotSwapSpareGear(ch, item);
+            if (!gear && !IsPlayerBotSwapClearGoods(ch, item)) continue;
             if (BotOfflineCounterRefuses(shop, item)) continue;
             if (BotOfflineSlot(ch, shop, item) >= 0) return false;   // it has a cell: the add takes it
             spare = item;
+            clearGoods = !gear;
             break;
         }
         if (!spare) return false;
@@ -2032,7 +2063,7 @@ namespace {
             if (line && line->GetTable() && GetPlayerBotSaleGearKindOf(line->GetTable(), line->GetInfo().vnum) != 0 &&
                     (int)(line->GetInfo().vnum % 10) > PLAYERBOT_MERCHANT_MAX_REFINE)
                 ++spareLines;
-        if (spareLines >= PLAYERBOT_SPARE_SWAP_COUNTER_LINES) return false;
+        if (!clearGoods && spareLines >= PLAYERBOT_SPARE_SWAP_COUNTER_LINES) return false;
         const auto& listed = state.offlineShop.listed;
         DWORD bestId = 0, bestVnum = 0;
         long long bestValue = -1;
@@ -2050,6 +2081,8 @@ namespace {
                     (table->bType == ITEM_COSTUME && IsPlayerBotSashVnum(vnum)) ||
                     GetPlayerBotRareGoodsKind(vnum) != PLAYERBOT_RARE_GOODS_NONE ||
                     s_setPlayerBotPriceSlips.count(id))
+                continue;
+            if (clearGoods && (table->bType == ITEM_SKILLBOOK || vnum == PLAYERBOT_HORSE_MEDAL_VNUM))
                 continue;
             const long long value = (long long)line->GetPrice().GetTotalYangAmount();
             if (value <= 0 || value * PLAYERBOT_SPARE_SWAP_PRICE_RATIO > asking) continue;
@@ -2075,9 +2108,9 @@ namespace {
         }
         if (!bestId) return false;
         const DWORD spareVnum = spare->GetVnum();
-        if (!BotOfflineTakeOff(ch, state, bestId, 0, now, "spare_gear_room")) return false;
-        sys_log(0, "PLAYERBOT_OFFLINE: room for a spare pid=%u name=%s spare=%u asking=%lld took_off=%u value=%lld spare_lines=%d",
-                ch->GetPlayerID(), ch->GetName(), spareVnum, asking, bestVnum, bestValue, spareLines);
+        if (!BotOfflineTakeOff(ch, state, bestId, 0, now, clearGoods ? "clear_goods_room" : "spare_gear_room")) return false;
+        sys_log(0, "PLAYERBOT_OFFLINE: room for a spare pid=%u name=%s spare=%u asking=%lld took_off=%u value=%lld spare_lines=%d clear=%d",
+                ch->GetPlayerID(), ch->GetName(), spareVnum, asking, bestVnum, bestValue, spareLines, clearGoods ? 1 : 0);
         return true;
     }
 
@@ -2129,6 +2162,16 @@ namespace {
         if (!o.visiting && o.nextService > now + 40000 && IsPlayerBotL30DropperAtWork(ch) &&
                 IsPlayerBotVillageMap(ch->GetMapIndex()) && CountPlayerBotL30DropperGoods(ch) > 0)
             o.nextService = now + 30000 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x4c333044U) % 10000;
+        // MT2009_PLUS_BOT_BOOKS_TO_STALL_V1 / MT2009_PLUS_BOT_SASH_CLEAR_V1:
+        // nor a dropper with a counter's worth of another build's books or of
+        // sash goods (IsPlayerBotClearStockReady) and a free cell on its
+        // counter - at most every PLAYERBOT_CLEAR_STOCK_SERVICE_MS, so a stock
+        // the counter refuses does not call it round in circles.
+        const bool clearLines = !o.visiting && !medalLines && shop && o.lastServedAt != 0 &&
+                Due(now, o.lastServedAt + PLAYERBOT_CLEAR_STOCK_SERVICE_MS) &&
+                BotOfflineFreeCells(shop) > 0 && IsPlayerBotClearStockReady(ch, state);
+        if (clearLines && o.nextService > now + 40000)
+            o.nextService = now + 30000 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x434c5253U) % 10000;
         const char* busy = BotOfflineBusyReason(ch, state);
         if (busy || !db_clientdesc || !db_clientdesc->IsPhase(PHASE_DBCLIENT)) {
             if (o.visiting) BotOfflineInterruptVisit(ch, state, now, busy ? busy : "db");
@@ -2292,7 +2335,7 @@ namespace {
         // reclaim probe above), nor does the first visit after a start, nor a
         // slipped price whose time is out (the slip probe above), nor a rod or
         // a pickaxe the owner's session is waiting for (AskPlayerBotTackleHome).
-        if (!o.visiting && !medalLines && !o.renewCalledAt && ch->GetMapIndex() != serviceMap && ch->GetWear(WEAR_WEAPON) &&
+        if (!o.visiting && !medalLines && !clearLines && !o.renewCalledAt && ch->GetMapIndex() != serviceMap && ch->GetWear(WEAR_WEAPON) &&
                 o.lastServedAt != 0 && !Due(now, o.lastServedAt + PLAYERBOT_OFFLINE_FAR_SERVICE_MIN_MS) &&
                 !IsPlayerBotTackleAskedHome(ch->GetPlayerID(), now)) {
             long long normal = 0;

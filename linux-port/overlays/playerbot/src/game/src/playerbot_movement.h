@@ -1457,6 +1457,98 @@ namespace
 		return bestDistance >= 0;
 	}
 
+	// MT2009_PLUS_SIDEKICK_NAV_GIVEUP_V1 (the owner, 13 October: from 07:13 to
+	// 07:17 the companion planned the same unreachable walk
+	// (1075908,50491) -> (1080793,51160) again and again; the watchdog reset
+	// it and the same goal came straight back). Every failure was forgotten:
+	// a new goal and the watchdog both zero bStuckCounter, and a target the
+	// fight gave up on came back after thirty seconds. Now a destination is
+	// remembered per bot by its spot (PLAYERBOT_NAV_GIVEUP_RADIUS): a series
+	// of "unreachable" plans, a walk with no progress, or a watchdog reset on
+	// the way to it is a strike; PLAYERBOT_NAV_GIVEUP_STRIKES strikes within
+	// PLAYERBOT_NAV_GIVEUP_WINDOW_MS and the spot is refused for
+	// PLAYERBOT_NAV_GIVEUP_BLOCK_MS (MovePlayerBot answers "unreachable" at
+	// once), so the caller - the target search, the hunt, the wander - picks
+	// another. Never in a village: the NPCs and the gates are the only way
+	// through a town errand, and a transient refusal there must not shut one
+	// for minutes. Every bot benefits; one line in the log a refusal.
+	const int PLAYERBOT_NAV_GIVEUP_RADIUS = 400;
+	const BYTE PLAYERBOT_NAV_GIVEUP_STRIKES = 3;
+	const DWORD PLAYERBOT_NAV_GIVEUP_WINDOW_MS = 15 * 60 * 1000;
+	const DWORD PLAYERBOT_NAV_GIVEUP_BLOCK_MS = 10 * 60 * 1000;
+	const size_t PLAYERBOT_NAV_GIVEUP_MAX_SPOTS = 12;
+	struct TPlayerBotNavGiveUp
+	{
+		long map;
+		long x;
+		long y;
+		BYTE strikes;
+		DWORD lastAt;
+		DWORD blockedUntil;
+	};
+	std::map<DWORD, std::vector<TPlayerBotNavGiveUp> > s_mapPlayerBotNavGiveUps;
+
+	bool IsPlayerBotNavDestGivenUp(DWORD pid, long map, long x, long y, DWORD dwNow)
+	{
+		if (s_mapPlayerBotNavGiveUps.empty())
+			return false;
+		std::map<DWORD, std::vector<TPlayerBotNavGiveUp> >::const_iterator it = s_mapPlayerBotNavGiveUps.find(pid);
+		if (it == s_mapPlayerBotNavGiveUps.end())
+			return false;
+		for (size_t i = 0; i < it->second.size(); ++i)
+		{
+			const TPlayerBotNavGiveUp& g = it->second[i];
+			if (g.map == map && g.blockedUntil != 0 && (int)(g.blockedUntil - dwNow) > 0 &&
+					DISTANCE_APPROX(g.x - x, g.y - y) <= PLAYERBOT_NAV_GIVEUP_RADIUS)
+				return true;
+		}
+		return false;
+	}
+
+	void NotePlayerBotNavDestStrike(LPCHARACTER ch, long map, long x, long y, DWORD dwNow, const char* why)
+	{
+		if (!ch || (x == 0 && y == 0) || IsPlayerBotVillageMap(map))
+			return;
+		std::vector<TPlayerBotNavGiveUp>& spots = s_mapPlayerBotNavGiveUps[ch->GetPlayerID()];
+		TPlayerBotNavGiveUp* spot = NULL;
+		for (size_t i = 0; i < spots.size(); ++i)
+			if (spots[i].map == map && DISTANCE_APPROX(spots[i].x - x, spots[i].y - y) <= PLAYERBOT_NAV_GIVEUP_RADIUS)
+			{
+				spot = &spots[i];
+				break;
+			}
+		if (!spot)
+		{
+			// Room for a new spot: the stalest one that is not refused goes.
+			if (spots.size() >= PLAYERBOT_NAV_GIVEUP_MAX_SPOTS)
+			{
+				size_t oldest = 0;
+				for (size_t i = 1; i < spots.size(); ++i)
+					if ((int)(spots[i].lastAt - spots[oldest].lastAt) < 0)
+						oldest = i;
+				spots.erase(spots.begin() + oldest);
+			}
+			TPlayerBotNavGiveUp fresh = { map, x, y, 0, dwNow, 0 };
+			spots.push_back(fresh);
+			spot = &spots.back();
+		}
+		if (spot->blockedUntil != 0 && (int)(spot->blockedUntil - dwNow) > 0)
+			return;
+		if (dwNow - spot->lastAt > PLAYERBOT_NAV_GIVEUP_WINDOW_MS)
+			spot->strikes = 0;
+		spot->blockedUntil = 0;
+		spot->lastAt = dwNow;
+		if (++spot->strikes < PLAYERBOT_NAV_GIVEUP_STRIKES)
+			return;
+		spot->strikes = 0;
+		spot->blockedUntil = dwNow + PLAYERBOT_NAV_GIVEUP_BLOCK_MS;
+		if (spot->blockedUntil == 0)
+			spot->blockedUntil = 1;
+		sys_log(0, "PLAYERBOT_NAV: destination given up pid=%u name=%s map=%ld from=(%ld,%ld) to=(%ld,%ld) why=%s for_s=%u",
+				ch->GetPlayerID(), ch->GetName(), map, ch->GetX(), ch->GetY(), x, y, why ? why : "?",
+				PLAYERBOT_NAV_GIVEUP_BLOCK_MS / 1000U);
+	}
+
 	bool MovePlayerBot(LPCHARACTER ch, long destX, long destY, DWORD dwNow,
 			int targetSnapRadius = 4, bool flexibleTargetSnap = false,
 			bool allowHorse = false, bool fightOnHorse = false,
@@ -1565,6 +1657,17 @@ namespace
 					ch->GetCurrentMoveDuration(), dwNow);
 			state.bLastNavOutcome = PLAYERBOT_NAV_OUT_ESCAPED;
 			return true;
+		}
+
+		// MT2009_PLUS_SIDEKICK_NAV_GIVEUP_V1: a spot given up is not walked to.
+		if (IsPlayerBotNavDestGivenUp(ch->GetPlayerID(), mapIndex, destX, destY, dwNow))
+		{
+			if (ch->IsStateMove())
+				ch->Stop();
+			if (state.bStuckCounter < 255)
+				++state.bStuckCounter;
+			state.bLastNavOutcome = PLAYERBOT_NAV_OUT_UNREACHABLE;
+			return false;
 		}
 
 		bool redirectedToMonkeyPortal = false;
@@ -1701,6 +1804,10 @@ namespace
 						sys_err("PLAYERBOT_NAV: unreachable pid=%u name=%s from=(%ld,%ld) to=(%ld,%ld) failures=%u",
 								ch->GetPlayerID(), ch->GetName(), ch->GetX(), ch->GetY(), destX, destY,
 								state.bStuckCounter);
+					// MT2009_PLUS_SIDEKICK_NAV_GIVEUP_V1: a series of refusals is
+					// one strike against the spot.
+					if (state.bStuckCounter == 1)
+						NotePlayerBotNavDestStrike(ch, mapIndex, destX, destY, dwNow, "unreachable");
 					if (ch->IsStateMove())
 						ch->Stop();
 					state.bLastNavOutcome = PLAYERBOT_NAV_OUT_UNREACHABLE;
@@ -1814,6 +1921,10 @@ namespace
 						ch->GetPlayerID(), ch->GetName(), ch->GetX(), ch->GetY(), waypoint.x, waypoint.y);
 				if (state.bStuckCounter < 255)
 					++state.bStuckCounter;
+				// MT2009_PLUS_SIDEKICK_NAV_GIVEUP_V1: a walk that went nowhere
+				// twice in a row on its way there.
+				if (state.bStuckCounter == 2)
+					NotePlayerBotNavDestStrike(ch, mapIndex, destX, destY, dwNow, "no_progress");
 				ClearPlayerBotRoute(state, false);
 				state.dwNextNavPlanTime = dwNow + 200;
 				ch->Stop();

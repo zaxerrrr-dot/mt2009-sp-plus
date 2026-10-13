@@ -2331,6 +2331,11 @@ namespace
 		// it, waiting in the bag for its slot.
 		if (IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item))
 			return false;
+		// MT2009_PLUS_SIDEKICK_FREE_SELL_V1: off the leash a companion's
+		// merchant takes the "sprzedaj zlom" scrap and its spare plain gear
+		// under +8 (IsPlayerBotSidekickFreeHandScrap) - by that rule alone.
+		if (IsPlayerBotSidekickOffLeash(ch))
+			return IsPlayerBotSidekickFreeHandScrap(ch, item);
 		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's bag is its
 		// owner's - the drops of the owner's own kills land in it too (the
 		// party's turn at a drop, CParty::GetNextOwnership). Only plain scrap
@@ -2432,8 +2437,9 @@ namespace
 				// go up whatever the counters' share (BotOfflineCounterRefuses);
 				// under pressure the merchant takes only the plain +0 ones past
 				// what the counter holds (IsPlayerBotSashForMerchant).
+				// MT2009_PLUS_BOT_SASH_CLEAR_V1: one is enough, as on the counter.
 				if (rareKind == PLAYERBOT_RARE_GOODS_SASH && PlayerBotHasCounter(ch) &&
-						GetPlayerBotSashGoodsInBag(ch) >= 2)
+						GetPlayerBotSashGoodsInBag(ch) >= 1)
 					return IsPlayerBotSashForMerchant(ch, item);
 				return IsPlayerBotBagUnderPressure(ch) &&
 						(!PlayerBotHasCounter(ch) || IsPlayerBotRareGoodsShopQuotaFull(rareKind));
@@ -3779,6 +3785,82 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_SIDEKICK_REFINE_GUARD_V1 (the owner, 13 October: the
+	// companion wears a Lion Shield +7, and raised another Lion Shield in its
+	// bag over and over - burned at +2/+3 - and bought the next one each time).
+	// A burned spare is replaced from the merchant (the progression ladder's
+	// piece) and goes straight back to the anvil: nothing remembered the
+	// burns. Now the failures of a bag piece raised for the bot's own slot
+	// are counted by slot; PLAYERBOT_SPARE_REFINE_FAILS of them (two for a
+	// companion) within PLAYERBOT_SPARE_REFINE_WINDOW_MS and that slot's bag
+	// pieces rest from the anvil for PLAYERBOT_SPARE_REFINE_REST_MS - the
+	// worn piece, a counter's spare, a level-30 weapon and a gambler's work
+	// are not asked. And a companion does not raise a spare worse than the
+	// piece it wears in that slot (no higher level, a lower score): the
+	// merchant takes such a spare (IsPlayerBotSidekickFreeHandScrap).
+	const int PLAYERBOT_SPARE_REFINE_FAILS = 3;
+	const int PLAYERBOT_SPARE_REFINE_FAILS_SIDEKICK = 2;
+	const DWORD PLAYERBOT_SPARE_REFINE_WINDOW_MS = 6 * 60 * 60 * 1000;
+	const DWORD PLAYERBOT_SPARE_REFINE_REST_MS = 6 * 60 * 60 * 1000;
+	struct TPlayerBotSpareRefineFails
+	{
+		int fails;
+		DWORD firstAt;
+		DWORD restUntil;
+	};
+	std::map<DWORD, std::map<int, TPlayerBotSpareRefineFails> > s_mapPlayerBotSpareRefineFails;
+
+	bool IsPlayerBotSpareRefineResting(LPCHARACTER ch, LPITEM item, DWORD dwNow)
+	{
+		if (!ch || !item || s_mapPlayerBotSpareRefineFails.empty())
+			return false;
+		std::map<DWORD, std::map<int, TPlayerBotSpareRefineFails> >::iterator it =
+				s_mapPlayerBotSpareRefineFails.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotSpareRefineFails.end())
+			return false;
+		std::map<int, TPlayerBotSpareRefineFails>::iterator slot = it->second.find(item->FindEquipCell(ch));
+		if (slot == it->second.end() || slot->second.restUntil == 0)
+			return false;
+		if ((int)(slot->second.restUntil - dwNow) > 0)
+			return true;
+		it->second.erase(slot);
+		return false;
+	}
+
+	void NotePlayerBotSpareRefineFailure(LPCHARACTER ch, int wearSlot, DWORD vnum, DWORD dwNow)
+	{
+		if (!ch || wearSlot < 0 || wearSlot >= WEAR_MAX_NUM)
+			return;
+		TPlayerBotSpareRefineFails& f = s_mapPlayerBotSpareRefineFails[ch->GetPlayerID()][wearSlot];
+		if (f.fails == 0 || dwNow - f.firstAt > PLAYERBOT_SPARE_REFINE_WINDOW_MS)
+		{
+			f.fails = 0;
+			f.firstAt = dwNow;
+		}
+		++f.fails;
+		const int limit = IsPlayerBotSidekickServing(ch) ? PLAYERBOT_SPARE_REFINE_FAILS_SIDEKICK : PLAYERBOT_SPARE_REFINE_FAILS;
+		if (f.fails < limit)
+			return;
+		f.fails = 0;
+		f.restUntil = dwNow + PLAYERBOT_SPARE_REFINE_REST_MS;
+		if (f.restUntil == 0)
+			f.restUntil = 1;
+		sys_log(0, "PLAYERBOT_AI: spare refine rests pid=%u name=%s slot=%d vnum=%u failures=%d rest_min=%u",
+				ch->GetPlayerID(), ch->GetName(), wearSlot, vnum, limit, PLAYERBOT_SPARE_REFINE_REST_MS / 60000U);
+	}
+
+	bool IsPlayerBotSidekickWorseSpare(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->IsEquipped() || !IsPlayerBotSidekickServing(ch))
+			return false;
+		const int wearCell = item->FindEquipCell(ch);
+		if (wearCell < 0 || wearCell >= WEAR_MAX_NUM)
+			return false;
+		LPITEM worn = ch->GetWear(wearCell);
+		return worn && worn != item && item->GetLevelLimit() <= worn->GetLevelLimit() &&
+				GetPlayerBotEquipmentScore(item, ch) < GetPlayerBotEquipmentScore(worn, ch);
+	}
+
 	bool IsPlayerBotRefineBagCandidate(LPCHARACTER ch, LPITEM item)
 	{
 		if (!item || item->GetRefinedVnum() == 0 || IsPlayerBotSidekickPinned(ch, item))
@@ -3820,6 +3902,10 @@ namespace
 		// The weapon kept for its lines, taken to the hand's plus.
 		if (item->GetType() == ITEM_WEAPON && item == FindPlayerBotLinesProject(ch))
 			return item->GetRefineLevel() < GetPlayerBotRefineTarget(ch, item);
+		// MT2009_PLUS_SIDEKICK_REFINE_GUARD_V1: a slot whose spares burned too
+		// often rests; a companion's spare worse than its worn piece is no work.
+		if (IsPlayerBotSpareRefineResting(ch, item, get_dword_time()) || IsPlayerBotSidekickWorseSpare(ch, item))
+			return false;
 		if (!IsPlayerBotEquipmentCandidate(ch, item) ||
 				IsPlayerBotJunkItem(ch, item))
 			return false;
@@ -4562,6 +4648,12 @@ namespace
 						ch->GetPlayerID(), ch->GetName(), oldVnum, (unsigned int)plusLevel, stepProb, coinWhy);
 			// Asked before the attempt, which may destroy the item.
 			const bool classLevel30 = IsPlayerBotClassLevel30Weapon(ch, item);
+			// MT2009_PLUS_SIDEKICK_REFINE_GUARD_V1: the slot of a bag piece raised
+			// for the bot's own slot (not the worn one, a counter's spare, a
+			// level-30 weapon), for its failure count.
+			const int spareSlot = (wearCell == 255 && !saleSpare && !classLevel30 &&
+					!IsPlayerBotSpecialLevel30Weapon(item))
+					? item->FindEquipCell(ch) : -1;
 			const long long goldBeforeAttempt = (long long)ch->GetGold();
 			const WORD cellBefore = item->GetCell();
 			const DWORD idBefore = item->GetID();
@@ -4614,6 +4706,7 @@ namespace
 				else
 				{
 					// And a failure on the way to them costs a level of mood.
+					NotePlayerBotSpareRefineFailure(ch, spareSlot, oldVnum, dwNow);	// MT2009_PLUS_SIDEKICK_REFINE_GUARD_V1
 					NotePlayerBotMoodRefineFailure(ch, (int)plusLevel + 1,
 							scrollCell >= 0 ? "downgraded" : "burned");
 					// A worn piece burned: what goes on in its slot next goes on

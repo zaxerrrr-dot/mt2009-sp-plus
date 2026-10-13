@@ -1852,6 +1852,135 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_SIDEKICK_FREE_SELL_V1 ("w wolnej rece Towarzysz nie sprzedaje
+	// smieci - zapasowe zbroje i bransolety +5 zapychaja plecak", the owner,
+	// 13 October). Off the leash ("Wolna reka", or "Gra beze mnie" with its
+	// owner out) a companion plays as a bot, and every town visit's merchant
+	// asked IsPlayerBotSidekickSellableJunk: plain gear under +4 at the price
+	// of scrap. The spare gear of +4 and up it picked up on its own stayed for
+	// good - a companion has no counter (PlayerBotHasCounter) and puts nothing
+	// in its box (HasPlayerBotSafeboxDeposit). Off the leash the merchant now
+	// takes, on every town visit, what "sprzedaj zlom" takes
+	// (IsPlayerBotSidekickOrderedScrap) and the spare gear below:
+	//   - a weapon or armour/jewellery under +8, not worn, not locked, no
+	//     gift, held or pinned piece of the owner's, no operator's keep, no
+	//     ItemShop or quest piece (ANTIFLAG_SELL), no arrow or quiver, no
+	//     Stalki, level-30 weapon or Awakening goods, no soul stone in it;
+	//   - nothing it would put on, raise for its slot or keep as the backup
+	//     of what it wears;
+	//   - with bonus lines only when the lines are not its worth
+	//     (IsPlayerBotBonusGoodsPiece) and the market prices it under
+	//     PLAYERBOT_SIDEKICK_FREE_SELL_LINES_MAX.
+	// What is left (+8 and up, a soul stone, valuable lines) is the owner's
+	// and stays in the bag - a companion has no counter, and its box is
+	// emptied back into the bag on the next errand (PlayerBotSidekickWantsBoxSweep).
+	// Nothing is destroyed: what is worth nothing the merchant takes for yang.
+	const DWORD PLAYERBOT_SIDEKICK_FREE_SELL_LINES_MAX = 1000000;
+
+	bool IsPlayerBotSidekickOffLeash(LPCHARACTER ch)
+	{
+		if (!ch || !IsPlayerBotSidekickServing(ch))
+			return false;
+		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(ch->GetPlayerID());
+		if (!rec)
+			return false;
+		if (rec->bMode == PLAYERBOT_SIDEKICK_FREE)
+			return true;
+		std::map<DWORD, TPlayerBotSidekickRuntime>::const_iterator rt =
+				s_mapPlayerBotSidekickRuntime.find(ch->GetPlayerID());
+		return rt != s_mapPlayerBotSidekickRuntime.end() && rt->second.bAlone;
+	}
+
+	bool IsPlayerBotSidekickFreeHandScrap(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !item->GetProto() || item->IsEquipped() || item->isLocked() || item->IsExchanging() ||
+				item->GetWindow() != INVENTORY || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL))
+			return false;
+		if (IsPlayerBotSidekickLockedItem(ch, item) || IsPlayerBotSidekickGift(ch, item) ||
+				IsPlayerBotSidekickHeld(ch, item) || IsPlayerBotSidekickPinned(ch, item))
+			return false;
+		{
+			const BYTE policy = GetPlayerBotItemPolicy(item);
+			if (policy != PLAYERBOT_ITEM_POLICY_NONE && policy != PLAYERBOT_ITEM_POLICY_MERCHANT)
+				return false;
+		}
+		if (IsPlayerBotSidekickSellableJunk(ch, item) || IsPlayerBotSidekickOrderedScrap(ch, item))
+			return true;
+		const BYTE type = item->GetType();
+		if (type != ITEM_WEAPON && type != ITEM_ARMOR)
+			return false;
+		if (type == ITEM_WEAPON && (item->GetSubType() == WEAPON_ARROW || IsPlayerBotQuiver(item)))
+			return false;
+		if (item->GetRefineLevel() >= PLAYERBOT_SIDEKICK_SELL_ALL_BELOW_REFINE ||
+				IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) ||
+				IsPlayerBotAwakeningGoods(item->GetVnum()))
+			return false;
+		for (int i = 0; i < ITEM_SOCKET_MAX_NUM; ++i)
+			if (IsPlayerBotSoulStoneVnum((DWORD)item->GetSocket(i)))
+				return false;
+		if (IsPlayerBotUpgradeForSelf(ch, item) || IsPlayerBotHigherTierSpare(ch, item) ||
+				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()) ||
+				IsPlayerBotKeptBackupWeapon(ch, item) || IsPlayerBotKeptBackupArmour(ch, item))
+			return false;
+		if (item->GetAttributeCount() > 0 &&
+				(IsPlayerBotBonusGoodsPiece(item) ||
+				 GetPlayerBotShopAskingPrice(item) > PLAYERBOT_SIDEKICK_FREE_SELL_LINES_MAX))
+			return false;
+		return true;
+	}
+
+	// MT2009_PLUS_SIDEKICK_BAG_LOOP_V1 (the owner, 13 October: a full bag,
+	// bag_3cell=0, held it in town - PLAYERBOT_DEPARTURE overdue - the trip was
+	// given up after twenty minutes and it went back to the services). A
+	// companion makes no room by selling its owner's valuables
+	// (MakePlayerBotBagColumnRoom leaves it out on purpose), so a town visit
+	// that ends with no free column is all the town can do for it: for
+	// PLAYERBOT_SIDEKICK_BAG_EXCUSE_MS its bag no longer holds its travel
+	// (BlocksPlayerBotTravel) - it goes out and hunts with what room it has,
+	// and its owner is told to take the valuables. What stops the fight (no
+	// weapon, no armour, no potions, no arrows) still holds it.
+	const DWORD PLAYERBOT_SIDEKICK_BAG_EXCUSE_MS = 30 * 60 * 1000;
+	const DWORD PLAYERBOT_SIDEKICK_BAG_STUCK_TELL_MS = 20 * 60 * 1000;
+	std::map<DWORD, DWORD> s_mapPlayerBotSidekickBagStuckAt;
+	std::map<DWORD, DWORD> s_mapPlayerBotSidekickBagStuckToldAt;
+
+	void NotePlayerBotSidekickBagStuck(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded() || !IsPlayerBotSidekickOffLeash(ch) || ch->GetEmptyInventory(3) >= 0)
+			return;
+		const DWORD pid = ch->GetPlayerID();
+		s_mapPlayerBotSidekickBagStuckAt[pid] = dwNow ? dwNow : 1;
+		DWORD& told = s_mapPlayerBotSidekickBagStuckToldAt[pid];
+		const bool tell = told == 0 || dwNow - told >= PLAYERBOT_SIDEKICK_BAG_STUCK_TELL_MS;
+		sys_log(0, "PLAYERBOT_SIDEKICK: bag still full after town pid=%u name=%s free_cells=%d map=%ld excused_min=%u told=%d",
+				pid, ch->GetName(), CountPlayerBotFreeInventoryCells(ch), ch->GetMapIndex(),
+				PLAYERBOT_SIDEKICK_BAG_EXCUSE_MS / 60000U, tell ? 1 : 0);
+		if (!tell)
+			return;
+		told = dwNow ? dwNow : 1;
+		const TPlayerBotSidekick* rec = FindPlayerBotSidekickOf(pid);
+		if (!rec)
+			return;
+		TellPlayerBotSidekick(GetPlayerBotSidekickOwnerChar(rec->dwOwnerPID), PLAYERBOT_SIDEKICK_NOTICE_BAG_FULL,
+				"Sprzedalem zlom, ale plecak nadal pelny cennych rzeczy (+8, kamienie, dobre bonusy). "
+				"Zabierz je z mojego plecaka (okno Towarzysza) - na razie ide expic mimo to.");
+	}
+
+	bool IsPlayerBotSidekickBagExcused(LPCHARACTER ch)
+	{
+		if (!ch || s_mapPlayerBotSidekickBagStuckAt.empty())
+			return false;
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotSidekickBagStuckAt.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotSidekickBagStuckAt.end())
+			return false;
+		if (get_dword_time() - it->second >= PLAYERBOT_SIDEKICK_BAG_EXCUSE_MS || !IsPlayerBotSidekickOffLeash(ch))
+		{
+			s_mapPlayerBotSidekickBagStuckAt.erase(it);
+			return false;
+		}
+		return true;
+	}
+
 	void NotePlayerBotSidekickScrapSold(LPCHARACTER ch, size_t count, long long gold)
 	{
 		if (!ch || count == 0 || !IsPlayerBotSidekickSellingScrap(ch))
@@ -10876,6 +11005,30 @@ namespace
 		using namespace playerbot_progression;
 		const int level = (int)ch->GetLevel();
 		weak = IsPlayerBotSidekickPlanWeakWeapon(ch);
+		// MT2009_PLUS_SIDEKICK_HORSE_TRIAL_V1 (the owner, 13 October: horse 20,
+		// forty medals, the Demon Tower trial at 0/50 for good). The plan's rows
+		// never named a trial's ground, and the plan is the only ground a
+		// companion off the leash goes to (GetPlayerBotFrontierMapForLevel), so
+		// the trials every bot hunts - the desert for the battle horse, the
+		// Demon Tower for the twenty-first level, the Grotto V2 for the Black
+		// Steed - were never begun. A trial's ground comes first now, while the
+		// trial is open (no fee: the trial is kills, the stable hands the level
+		// over when they are done) and the ground not given up or avoided.
+		{
+			long trialMap = 0;
+			if (IsPlayerBotOnMilitaryHorseTrial(ch))
+				trialMap = PLAYERBOT_MAP_DEMON_TOWER;
+			else if (IsPlayerBotOnBattleHorseTrial(ch))
+				trialMap = PLAYERBOT_MAP_DESERT;
+			else if (IsPlayerBotOnBlackSteedTrial(ch))
+				trialMap = PLAYERBOT_MAP_GROTTO_V2;
+			if (trialMap != 0 && IsPlayerBotMapHostedHere(trialMap) && !IsPlayerBotSidekickTripBlocked(ch, trialMap))
+			{
+				std::map<long, DWORD>::const_iterator avoid = plan.mapAvoidUntil.find(trialMap);
+				if (avoid == plan.mapAvoidUntil.end() || (int)(avoid->second - dwNow) <= 0)
+					return trialMap;
+			}
+		}
 		bool skipped = false;
 		for (int i = 0; i < PLAYERBOT_SIDEKICK_PLAN_ROW_COUNT; ++i)
 		{
@@ -10949,6 +11102,18 @@ namespace
 			why = "time";
 		bool weak = false;
 		const long want = PickPlayerBotSidekickPlanMap(ch, plan, dwNow, weak);
+		// MT2009_PLUS_SIDEKICK_HORSE_TRIAL_V1: a horse trial opened or done
+		// changes the ground at once, not at the plan's clock.
+		{
+			const bool wantTrial = want == PLAYERBOT_MAP_DEMON_TOWER || want == PLAYERBOT_MAP_DESERT ||
+					(want == PLAYERBOT_MAP_GROTTO_V2 && IsPlayerBotOnBlackSteedTrial(ch));
+			const bool onTrialGround = plan.lMap == PLAYERBOT_MAP_DEMON_TOWER || plan.lMap == PLAYERBOT_MAP_DESERT;
+			if (plan.bActive && want != plan.lMap && (wantTrial || onTrialGround))
+				why = "horse_trial";
+			else if (why && !strcmp(why, "ground_lost") && wantTrial && want == plan.lMap &&
+					IsPlayerBotMapHostedHere(want) && !IsPlayerBotSidekickTripBlocked(ch, want))
+				why = NULL;	// a trial's ground has no level ceiling for it
+		}
 		// The level band outgrown: a higher ground opened since the plan began.
 		if (!why && ch->GetLevel() != plan.bLevel && GetPlayerBotSidekickPlanRank(want) < GetPlayerBotSidekickPlanRank(plan.lMap))
 			why = "level";

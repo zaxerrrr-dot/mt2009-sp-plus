@@ -7425,6 +7425,16 @@ namespace
 	bool IsPlayerBotSidekickSellingScrap(LPCHARACTER ch);
 	bool IsPlayerBotSidekickOrderedScrap(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotSidekickSellOnly(LPCHARACTER ch);
+	// MT2009_PLUS_SIDEKICK_FREE_SELL_V1: off the leash ("Wolna reka", "Gra beze
+	// mnie"), what the merchant takes of a companion's bag on any town visit -
+	// the "sprzedaj zlom" scrap and its spare plain gear under +8
+	// (playerbot_sidekick.h). MT2009_PLUS_SIDEKICK_BAG_LOOP_V1: after a town
+	// visit that left its bag with no free three-cell column, the bag is
+	// excused from holding its travel (BlocksPlayerBotTravel) for a while.
+	bool IsPlayerBotSidekickOffLeash(LPCHARACTER ch);
+	bool IsPlayerBotSidekickFreeHandScrap(LPCHARACTER ch, LPITEM item);
+	void NotePlayerBotSidekickBagStuck(LPCHARACTER ch, DWORD dwNow);
+	bool IsPlayerBotSidekickBagExcused(LPCHARACTER ch);
 	void NotePlayerBotSidekickScrapSold(LPCHARACTER ch, size_t count, long long gold);
 	bool IsPlayerBotSidekickKeptForOwner(LPCHARACTER ch, LPITEM item);
 	// MT2009_PLUS_SIDEKICK_ALCHEMY_ACTIVE_V1: when the companion was last in
@@ -7717,6 +7727,32 @@ namespace
 	// for them while the bag holds two or more: this many sash lines, the
 	// share of counters (IsPlayerBotRareGoodsShopQuotaFull) not asked.
 	const int PLAYERBOT_SASH_FLOW_COUNTER_LINES = 6;
+	// MT2009_PLUS_BOT_SASH_CLEAR_V1 (the owner, 13 October: "Boty nadal trzymaja
+	// w EQ duzo szarf 1 poziomu - niech je lacza albo sprzedaja na ladzie. Nie
+	// ma trzeciej opcji"): 2 488 unworn sashes in 1 369 test-world bags, 1 488
+	// of them grade 1; 352 bots with two or more had a full counter and 68 none.
+	// One sash that is goods is enough for the flow (not two), and a counter
+	// takes this many lines of them; a full one makes room for it like a spare
+	// at +5..+9 (BotOfflineSpareGearSwap).
+	const int PLAYERBOT_SASH_CLEAR_COUNTER_LINES = 12;
+	// MT2009_PLUS_BOT_BOOKS_TO_STALL_V1 (the owner, 13 October: "Boty nadal
+	// trzymaja w EQ bardzo duzo KU ... innych klas - niech wystawiaja je na
+	// sklepy"): 36 092 books of another build in 2 250 test-world bags; 132
+	// medal droppers with no counter held 15 888 of them (they stood only for
+	// their medals, and their town errands are in the second village, which
+	// takes no stand), 1 494 bots with a full counter 12 129. A dropper with
+	// this many such books, or this many sash goods (IsPlayerBotClearStockReady),
+	// goes to its first village to open a counter the way a medal dropper with
+	// its stock does, and one whose counter has a free cell is served out of
+	// the dropper's long round, at most every PLAYERBOT_CLEAR_STOCK_SERVICE_MS.
+	// A full counter makes room for such a book like a spare at +5..+9.
+	const int PLAYERBOT_CLEAR_STOCK_BOOKS = 12;
+	const int PLAYERBOT_CLEAR_STOCK_SASHES = 2;
+	const DWORD PLAYERBOT_CLEAR_STOCK_SERVICE_MS = 15 * 60 * 1000;
+	// Lines of one skill another build's books take on a counter with
+	// PLAYERBOT_SHOP_BOOK_FREE_CELLS free cells or fewer (three before: 36
+	// skills of other builds, ten and more books of each in a dropper's bag).
+	const int PLAYERBOT_OTHER_CLASS_BOOK_SKILL_LINES = 6;
 	int GetPlayerBotSashGoodsInBag(LPCHARACTER ch);
 	bool IsPlayerBotSashForMerchant(LPCHARACTER ch, LPITEM item);
 

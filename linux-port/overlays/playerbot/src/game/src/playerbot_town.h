@@ -1756,6 +1756,11 @@ namespace
 		// free three-cell column and the box full makes the column now.
 		if (completed && ch)
 			MakePlayerBotBagColumnRoom(ch, state, dwNow);
+		// MT2009_PLUS_SIDEKICK_BAG_LOOP_V1: a companion off the leash whose bag
+		// the visit's merchants could not clear goes out anyway (its bag is
+		// excused from BlocksPlayerBotTravel for a while), its owner told.
+		if (completed && ch)
+			NotePlayerBotSidekickBagStuck(ch, dwNow);
 		if (completed)
 		{
 			// MT2009_PLUS_BOT_SPIDER_GROUND_V1: back from town, a new draw.
@@ -1853,6 +1858,19 @@ namespace
 				state.bPersonality == BOT_PERSONALITY_MEDAL_DROPPER &&
 				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >=
 					PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK;
+	}
+
+	// MT2009_PLUS_BOT_BOOKS_TO_STALL_V1 / MT2009_PLUS_BOT_SASH_CLEAR_V1: a
+	// dropper whose bag holds a counter's worth of another build's books or
+	// of sash goods (PLAYERBOT_CLEAR_STOCK_BOOKS, PLAYERBOT_CLEAR_STOCK_SASHES)
+	// brings them to its counter - the medal stock's road (the open pass
+	// below, ManagePlayerBotOfflineService).
+	bool IsPlayerBotClearStockReady(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		if (!ch || !ch->IsItemLoaded() || !IsPlayerBotDropper(state.bPersonality) || !PlayerBotHasCounter(ch))
+			return false;
+		return GetPlayerBotSashGoodsInBag(ch) >= PLAYERBOT_CLEAR_STOCK_SASHES ||
+				CountPlayerBotOtherClassBooks(ch) >= PLAYERBOT_CLEAR_STOCK_BOOKS;
 	}
 
 	// Lines of one vnum a counter carries: PLAYERBOT_SHOP_SAME_VNUM_LINES, and
@@ -2066,6 +2084,11 @@ namespace
 		// its own sockets take, a counter's worth of them - valuable spares,
 		// which the TRADE slider does not hold back either.
 		if (HasPlayerBotSpareAccessoryStones(ch))
+			return PLAYERBOT_SHOP_REASON_SPARE;
+		// MT2009_PLUS_BOT_SASH_CLEAR_V1: and sashes it neither wears nor
+		// combines - the counter or Uriel, never the bag ("nie ma trzeciej
+		// opcji").
+		if (GetPlayerBotSashGoodsInBag(ch) >= 1)
 			return PLAYERBOT_SHOP_REASON_SPARE;
 		// A trader always has the stall open when it can. For everyone else it
 		// stays what it was: an occasional thing one bot in ten does with a spare.
@@ -6093,7 +6116,14 @@ namespace
 		// stand while the SHOP_M2 switch is off, so it goes to its first
 		// village - straight from wherever it is, the dungeon included, since
 		// this pass runs before the world travel.
-		const bool medalStock = IsPlayerBotMedalStockReady(ch, state);
+		// MT2009_PLUS_BOT_BOOKS_TO_STALL_V1 / MT2009_PLUS_BOT_SASH_CLEAR_V1: so
+		// does a dropper with a counter's worth of another build's books or of
+		// sash goods (IsPlayerBotClearStockReady) and a reason to stand - not
+		// out of a Monkey Dungeon run, whose way out is the second village it
+		// does its errands in every few minutes anyway.
+		const bool medalStock = IsPlayerBotMedalStockReady(ch, state) ||
+				(!IsPlayerBotMonkeyMap(ch->GetMapIndex()) && IsPlayerBotClearStockReady(ch, state) &&
+					GetPlayerBotShopReason(ch, state) != PLAYERBOT_SHOP_REASON_NONE);
 		if (medalStock && !IsPlayerBotShopMapAllowed(ch->GetMapIndex()) &&
 				!IsPlayerBotHeldForCompany(ch))
 		{

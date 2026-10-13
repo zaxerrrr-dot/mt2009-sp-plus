@@ -3309,6 +3309,11 @@ namespace
 		// the need that brought the bot to town is handed to SERVICE_RECOVERY
 		// rather than to whatever monster is standing nearby, and the bot stays
 		// out of ordinary fights until its retry comes round.
+		// MT2009_PLUS_SIDEKICK_NAV_GIVEUP_V1: a reset on the way somewhere is a
+		// strike against that spot, so the same goal does not come straight back.
+		if (state.lRouteMapIndex == ch->GetMapIndex() && (state.lRouteDestX != 0 || state.lRouteDestY != 0) &&
+				DISTANCE_APPROX(ch->GetX() - state.lRouteDestX, ch->GetY() - state.lRouteDestY) > 600)
+			NotePlayerBotNavDestStrike(ch, state.lRouteMapIndex, state.lRouteDestX, state.lRouteDestY, dwNow, "watchdog");
 		if (state.bVisitingShop)
 		{
 			const bool stillNeeded = NeedsPlayerBotPotions(ch) ||
@@ -8476,7 +8481,19 @@ WritePlayerBotGuildStatus(dwNow);
 				// otherwise a monster behind a wall can keep one bot busy forever.
 				if (state.bNavFailedTargetCount >= 3)
 				{
-					state.mapFailedTargets[failedVID] = dwNow + 30000;
+					// MT2009_PLUS_SIDEKICK_NAV_GIVEUP_V1: a stone stands where it
+					// stands - thirty seconds later it was the nearest goal again
+					// ("cel Metiny zawsze wygrywa"). A stone, or a target on a spot
+					// given up, is left for the spot's whole refusal.
+					NotePlayerBotNavDestStrike(ch, ch->GetMapIndex(), target->GetX(), target->GetY(), dwNow, "target");
+					const bool longGiveUp = target->IsStone() ||
+							IsPlayerBotNavDestGivenUp(ch->GetPlayerID(), ch->GetMapIndex(), target->GetX(), target->GetY(), dwNow);
+					state.mapFailedTargets[failedVID] = dwNow + (longGiveUp ? PLAYERBOT_NAV_GIVEUP_BLOCK_MS : 30000);
+					if (target->IsStone())
+					{
+						state.mapFailedStones[failedVID] = dwNow + PLAYERBOT_NAV_GIVEUP_BLOCK_MS;
+						ReleasePlayerBotMetinReservation(ch, target);
+					}
 					state.dwTargetVID = 0;
 					state.dwNavFailedTargetVID = 0;
 					state.bNavFailedTargetCount = 0;
