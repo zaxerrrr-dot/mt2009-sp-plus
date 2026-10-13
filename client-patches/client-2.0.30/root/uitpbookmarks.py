@@ -45,7 +45,7 @@ MAP_NAMES = {
 	68: "Czerwony Las", 69: "W\xea\xbfowe Pole", 70: "Kraina Gigant\xf3w",
 	104: "Kuahklo Dong", 209: "\x8cwi\xb9tynia Ochao",
 	301: "Przyl\xb9dek Smoczego Ognia", 302: "Zbocze Gautama",
-	303: "Zatoka Czarnego Piasku", 304: "G\xf3ra Grzmot\xf3w",
+	303: "Nefrytowa Zatoka", 304: "Gromiste G\xf3ry",
 	360: "Dolina Cyklop\xf3w", 361: "Pustkowie Faraona", 362: "Zaczarowany Las",
 }
 
