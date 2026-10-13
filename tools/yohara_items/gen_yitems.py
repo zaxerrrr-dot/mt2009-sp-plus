@@ -131,6 +131,10 @@ for base, stat, apply in TALISMANS:
         add(base + lv, src=81000 + lv if base == 81000 else base + lv, name='Talizman Woli %s+%d' % (stat, lv),
             apply=((apply, TALISMAN_WILL[lv]),))
 
+# items we have whose name the official one replaces (MT2009_PLUS_YOHARA_ITEMS1_V1 rename; the client's records:
+# client-patches/client-2.0.30/tools/yohara/patch_yohara_client.py reads 'renamed' of yohara_items.json)
+RENAMED = ((27007, 'Czerwona Mikstura (XXL)'), (27008, 'Niebieska Mikstura (XXL)'))
+
 # items we have (official vnums): their names in the drop file
 EXISTING = {39002: 'Pierscien Doswiadczenia (1 h)', 72006: 'Rekawica Zlodzieja (3 h)',
             70048: 'Peleryna Maskujaca (our Plaszcz Uciekiniera)'}
@@ -303,6 +307,10 @@ def write_sql(items, refines):
              'count4,cost,src_vnum,result_vnum,prob) VALUES')
     L.append(',\n'.join('(%d,%d,%d,0,0,0,0,0,0,0,0,%d,0,0,%d)' % (r['id'], r['vnum0'], r['count0'], r['cost'],
                                                                      r['prob']) for r in refines) + ';')
+    # the owner (13 October): 27007/27008 under their official names - the "(XXL)" the wiki and the Yohara chests
+    # use (item_proto.mt2009plus.sql had "(XL)"; its INSERT IGNORE never renames a row that is there)
+    for vnum, pl in RENAMED:
+        L.append("UPDATE world.item_proto SET locale_name='%s' WHERE vnum=%d AND locale_name<>'%s';" % (pl, vnum, pl))
     with open(SQL_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L) + '\n')
 
@@ -315,7 +323,8 @@ def write_json(items):
     out = {'items': [dict((k, i[k]) for k in keys) for i in items],
            'item_list': dict((str(i['vnum']), '%d\t%s\t%s' % (i['vnum'], i['list_type'], i['icon'])) for i in items),
            'itemdesc': dict((str(i['vnum']), '%d\t%s\t%s' % (i['vnum'], i['locale_name'], client_desc(i)))
-                            for i in items)}
+                            for i in items),
+           'renamed': dict((str(v), pl) for v, pl in RENAMED)}
     with open(JSON_OUT, 'w', encoding='utf-8', newline='\n') as f:
         json.dump(out, f, ensure_ascii=False, indent=0)
         f.write('\n')

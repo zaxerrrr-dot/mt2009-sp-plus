@@ -216,3 +216,5 @@ INSERT IGNORE INTO world.refine_proto (id,vnum0,count0,vnum1,count1,vnum2,count2
 (22534,72353,42,0,0,0,0,0,0,0,0,4000000,0,0,40),
 (22535,72353,48,0,0,0,0,0,0,0,0,4500000,0,0,30),
 (22536,72353,54,0,0,0,0,0,0,0,0,5000000,0,0,20);
+UPDATE world.item_proto SET locale_name='Czerwona Mikstura (XXL)' WHERE vnum=27007 AND locale_name<>'Czerwona Mikstura (XXL)';
+UPDATE world.item_proto SET locale_name='Niebieska Mikstura (XXL)' WHERE vnum=27008 AND locale_name<>'Niebieska Mikstura (XXL)';

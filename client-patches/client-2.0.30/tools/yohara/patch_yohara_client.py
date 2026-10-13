@@ -26,7 +26,9 @@
 # yohara_items.json - made by tools/yohara_items/gen_yitems.py with linux-port/docker/mariadb/playerbot/yohara_items.sql,
 # so the client's records are the server's rows): a full record each (every server column written over a template -
 # Talizman Ognia+0's 94000 for the Talizmany Woli, Zelazna Szkatulka's 50120 for the rest), its item_list line (the GF
-# icons: client-patches/client-2.0.30/root/icon/item, build57.py adds every file there) and its itemdesc line. Then the next client's dbdata base for the panel's
+# icons: client-patches/client-2.0.30/root/icon/item, build57.py adds every file there) and its itemdesc line.
+# Also the Polish name of the items in its 'renamed' (27007/27008 "(XXL)"; the client has no itemdesc line for
+# them). Then the next client's dbdata base for the panel's
 # database editor: python3 -m m2clientpack.make_base <client>/pack <version> (linux-port/docker/seban-panel) -
 # the panel builds its dbdata zips from the newest base, so until then they lack these three items.
 import io
@@ -124,6 +126,14 @@ def item_proto(b):
         r = yitem_record(recs[YITEM_TEMPLATE.get(w['type'], TEMPLATE)], w)
         if recs.get(w['vnum']) != r:
             recs[w['vnum']] = r
+            changed += 1
+    # the official names of items the client has (27007/27008 "(XXL)", the owner 13 October): only the Polish name
+    for k, pl in sorted(YITEMS.get('renamed', {}).items()):
+        v = int(k)
+        r = bytearray(recs[v])
+        r[41:74] = base.fixed(pl, 33)
+        if recs[v] != bytes(r):
+            recs[v] = bytes(r)
             changed += 1
     if not changed:
         return b, 0
