@@ -1286,18 +1286,37 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
 # the map from the GF 26.1.11 client (client-patches/client-2.0.30/tools/cape301), so the server's server_attr
 # becomes the one that matches that terrain: Owsap's (100% of the block/water/safe-zone cells equal GF's attr.atr,
 # tools/gf28/srvattr.py; the base image's matched 99.76% / 100% / 98.51% - an older revision of the map).
-# npc.txt: the base image's, with the two warp portals 10101 (to Nefrytowa Zatoka, 303) and 10103 (to Gromiste
-# Gory, 304) commented out - our client has neither map and stepping into a portal would crash it as the warp to
-# 301 did; Jae-Seon Kim (20383) faces 7 as in the official data. Rybak 9009 stays at 838 1187 (official).
+# npc.txt: the base image's; Jae-Seon Kim (20383) faces 7 as in the official data. Rybak 9009 stays at 838 1187
+# (official). MT2009_PLUS_YOHARA_MAPS302_V1: the two warp portals 10101 (to Nefrytowa Zatoka, 303) and 10103 (to
+# Gromiste Gory, 304), commented out while our client had neither map, stand again - the client gets 302-304 in the
+# same update (tools/maps302, the step below).
 COPY cape301/ /tmp/cape301-add/
 RUN set -eu; M=/opt/metin2/share/locale/poland/map/Metin2_map_CapeDragonHead; A=/tmp/cape301-add/map/Metin2_map_CapeDragonHead \
  && test -d "$M" \
  && test "$(od -An -tx1 -N8 "$A/server_attr" | tr -d ' \n')" = 1800000018000000 \
  && cp -f "$A/server_attr" "$M/server_attr" && cp -f "$A/npc.txt" "$M/npc.txt" \
  && test "$(grep -c -E '^m[[:blank:]]+838[[:blank:]]+1187[[:blank:]].*[[:blank:]]9009[[:blank:]]*$' "$M/npc.txt")" = 1 \
- && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]1010[13][[:blank:]]*$' "$M/npc.txt")" = 0 \
+ && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]1010[13][[:blank:]]*$' "$M/npc.txt")" = 2 \
  && rm -rf /tmp/cape301-add \
- && echo "share: Przyladek Smoczego Ognia (301: server_attr of the GF terrain, npc.txt without the 303/304 portals)"
+ && echo "share: Przyladek Smoczego Ognia (301: server_attr of the GF terrain, npc.txt with the 303/304 portals)"
+# MT2009_PLUS_YOHARA_MAPS302_V1 (share): Zbocze Gautama (302, metin2_map_dawnmistwood), Nefrytowa Zatoka (303,
+# metin2_map_BayBlackSand) and Gromiste Gory (304, metin2_map_Mt_Thunder) - the client gets the three maps from the
+# GF 26.1.11 client (client-patches/client-2.0.30/tools/maps302), so each server_attr becomes Owsap's, which matches
+# that terrain: 100% of the block/water/safe-zone cells equal GF's attr.atr on 303 and 304, 100% block / 95.73% water /
+# 100% safe zone on 302 (tools/gf28/srvattr.py; the base image's: 302 99.97/92.72/99.81, 303 99.84/99.93/99.59, 304
+# 99.98/100/100). Every NPC, Town.txt point and warp-portal landing (10100-10105, all between 301-304) is on a free
+# cell of the new files. The rest of the maps (npc/regen/boss/stone, Setting, Town) stays the base image's.
+COPY maps302/ /tmp/maps302-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland/map; A=/tmp/maps302-add/map \
+ && for p in "metin2_map_dawnmistwood 1c00000010000000 302" "metin2_map_BayBlackSand 0c00000018000000 303" \
+             "metin2_map_Mt_Thunder 1000000018000000 304"; do \
+      set -- $p; test -d "$L/$1"; \
+      grep -q -E "^$3[[:blank:]]+$1[[:space:]]*$" "$L/index"; \
+      test "$(od -An -tx1 -N8 "$A/$1/server_attr" | tr -d ' \n')" = "$2"; \
+      cp -f "$A/$1/server_attr" "$L/$1/server_attr"; \
+    done \
+ && rm -rf /tmp/maps302-add \
+ && echo "share: Zbocze Gautama / Nefrytowa Zatoka / Gromiste Gory (302-304: server_attr of the GF terrain)"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only
