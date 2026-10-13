@@ -275,6 +275,9 @@ RUN set -eux; \
     # seon_pyeong opens Seon-Pyeong's cube window by the Grotto of Exile: a +9
     # piece of level 65-66 into its level-80 successor (cube.seon_pyeong.txt,
     # appended to the share's cube.txt below; NerrVoVy, 27 September).
+    # wytwarzanie_jae_seon_kim opens Jae-Seon Kim's (20383) cube window: the share's
+    # 72 recipes of his (level-75 weapons and armours, the level-80 jewellery, belts)
+    # that no quest opened (MT2009_PLUS_JAE_SEON_CUBE_V1).
     # flea_market is the Dom Towarowy's two options at the miscellaneous
     # merchant in M1, offered only while M2_FLEA_MARKET is on (Uxie [DSO]).
     # temple_of_the_ochao is the Temple of Ochao's entrance (Straznik Swiatyni,
@@ -329,7 +332,7 @@ RUN set -eux; \
     # zodiac_temples (the twelve portals of the day on 358 and the Teleporter's entry),
     # zodiac_milbon (Mnich Milbon's insignia exchange), zodiac_prism_mission and
     # zodiac_emergency_mission are the Zodiac Temple (MT2009_PLUS_ZODIAC_V1, Autor: Digi Rasta).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -454,12 +457,14 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt \
 #    Zaczarowanie / Wzmocnienie Przedmiotu x3 at 10% (was 0.2%) in its level-90 group;
 #  * the shared boss groups: 10743 (Boss HighTier) Zwoj x5 and Peleryna Mestwa x20, 10755
 #    (MiniBoss VeryHighTier) Zwoj x5 - every boss that rolls them.
+#  * MT2009_PLUS_JEWELS75_LIMIT_V1: the level-80 jewellery of the Grotto of Exile's Commanders and
+#    Generals (2491, 2492, 2494, 2495) is a limit group of theirs - none may have one before it.
 # Razador's and Nemere's own drops are in their quests; the chests in special_item_group.dungeons.txt
 # and arezzo/*.
 COPY mob_drop_item.dropedit.append.txt /tmp/mob_drop_item.dropedit.append.txt
 RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; G=/opt/metin2/share/locale/poland/special_item_group.txt; A=/tmp/mob_drop_item.dropedit.append.txt \
  && ! grep -q -E '^Group[[:blank:]]+MT2009_dropedit_' "$F" \
- && awk '{sub(/\r$/, "")} /^[[:blank:]]*Group/{t=""; m=""} tolower($1)=="mob"{m=$2} tolower($1)=="type"{t=tolower($2)} (t=="limit" && m=="9714") || m=="98006" {print "FATAL: mob " m " already has a " t " group" > "/dev/stderr"; bad=1; exit} END{exit bad}' "$F" \
+ && awk '{sub(/\r$/, "")} /^[[:blank:]]*Group/{t=""; m=""} tolower($1)=="mob"{m=$2} tolower($1)=="type"{t=tolower($2)} (t=="limit" && (m=="9714" || m=="2491" || m=="2492" || m=="2494" || m=="2495")) || m=="98006" {print "FATAL: mob " m " already has a " t " group" > "/dev/stderr"; bad=1; exit} END{exit bad}' "$F" \
  && sed -i 's/\r$//; s/$/\r/' "$A" \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
  && cat "$A" >> "$F" \

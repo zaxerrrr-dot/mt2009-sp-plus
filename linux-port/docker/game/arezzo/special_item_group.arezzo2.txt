@@ -297,6 +297,8 @@ Group	MT2009_chest_30776
 	9	s951103	1	40 -- drugie kamienie pasow
 	10	s951311	1	20 -- Dwutlenek Tytanu / Agat, 20% (MT2009_PLUS_ZODIAC_ITEMS_V1, wlasciciel 9.10; grupa w zodiak/special_item_group.zodiak.txt)
 }
+# MT2009_PLUS_JUNGLE_CHEST_ARMOUR_V1: the level-90 armours are numbered on from 22 - they had the
+# keys 1-20 again, the weapons' own, and the reader keeps a key once: no armour ever came out.
 Group	MT2009_chest_30776_gear
 {
 	Vnum	950761
@@ -321,26 +323,26 @@ Group	MT2009_chest_30776_gear
 	19	7185	1	30 -- Wachlarz 8 Trigramow+5
 	20	7186	1	20 -- Wachlarz 8 Trigramow+6
 	21	7187	1	10 -- Wachlarz 8 Trigramow+7
-	1	20000	1	30 -- Pancerz Diabel. Rogu+0
-	2	20001	1	25 -- Pancerz Diabel. Rogu+1
-	3	20002	1	20 -- Pancerz Diabel. Rogu+2
-	4	20003	1	15 -- Pancerz Diabel. Rogu+3
-	5	20004	1	10 -- Pancerz Diabel. Rogu+4
-	6	20250	1	30 -- Szata Smoczego Jezdzca+0
-	7	20251	1	25 -- Szata Smoczego Jezdzca+1
-	8	20252	1	20 -- Szata Smoczego Jezdzca+2
-	9	20253	1	15 -- Szata Smoczego Jezdzca+3
-	10	20254	1	10 -- Szata Smoczego Jezdzca+4
-	11	20500	1	30 -- Pancerz Kosciplytowy+0
-	12	20501	1	25 -- Pancerz Kosciplytowy+1
-	13	20502	1	20 -- Pancerz Kosciplytowy+2
-	14	20503	1	15 -- Pancerz Kosciplytowy+3
-	15	20504	1	10 -- Pancerz Kosciplytowy+4
-	16	20750	1	30 -- Zlote Ubranie+0
-	17	20751	1	25 -- Zlote Ubranie+1
-	18	20752	1	20 -- Zlote Ubranie+2
-	19	20753	1	15 -- Zlote Ubranie+3
-	20	20754	1	10 -- Zlote Ubranie+4
+	22	20000	1	30 -- Pancerz Diabel. Rogu+0
+	23	20001	1	25 -- Pancerz Diabel. Rogu+1
+	24	20002	1	20 -- Pancerz Diabel. Rogu+2
+	25	20003	1	15 -- Pancerz Diabel. Rogu+3
+	26	20004	1	10 -- Pancerz Diabel. Rogu+4
+	27	20250	1	30 -- Szata Smoczego Jezdzca+0
+	28	20251	1	25 -- Szata Smoczego Jezdzca+1
+	29	20252	1	20 -- Szata Smoczego Jezdzca+2
+	30	20253	1	15 -- Szata Smoczego Jezdzca+3
+	31	20254	1	10 -- Szata Smoczego Jezdzca+4
+	32	20500	1	30 -- Pancerz Kosciplytowy+0
+	33	20501	1	25 -- Pancerz Kosciplytowy+1
+	34	20502	1	20 -- Pancerz Kosciplytowy+2
+	35	20503	1	15 -- Pancerz Kosciplytowy+3
+	36	20504	1	10 -- Pancerz Kosciplytowy+4
+	37	20750	1	30 -- Zlote Ubranie+0
+	38	20751	1	25 -- Zlote Ubranie+1
+	39	20752	1	20 -- Zlote Ubranie+2
+	40	20753	1	15 -- Zlote Ubranie+3
+	41	20754	1	10 -- Zlote Ubranie+4
 }
 Group	MT2009_chest_30776_misc
 {

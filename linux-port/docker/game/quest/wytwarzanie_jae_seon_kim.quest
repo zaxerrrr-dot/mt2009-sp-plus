@@ -1,0 +1,29 @@
+-- MT2009_PLUS_JAE_SEON_CUBE_V1: Jae-Seon Kim (20383, Przyladek Smoczej Glowy) and his
+-- cube window. The share's cube.txt has 72 recipes for him (a +5..+9 weapon or
+-- body armour of level 65-66 into the new level-75 piece - Runiczny Miecz, Klinga
+-- Smoczego Kla, Pancerz Diabel. Rogu...; the Rubin / Granat / Szmaragd / Szafir
+-- jewellery and the belts 18040-18080), but no quest ever opened his window, so
+-- all of them were dead. The same as Seon-Pyeong (quest/seon_pyeong.quest):
+-- "cube open" uses the NPC the player talks to; Cube_open refuses an NPC with no
+-- recipe in cube.txt. Text without diacritics like the rest of ours.
+quest wytwarzanie_jae_seon_kim begin
+	state start begin
+		when 20383.chat."Wytwarzanie Ekwipunku" begin
+			say_title(mob_name(20383)..":")
+			say("Witaj, wojowniku! Z dobrze ulepszonej broni")
+			say("i zbroi poziomu 65 wykuwam nowy, potezniejszy")
+			say("ekwipunek. Potrafie tez oszlifowac klejnoty")
+			say("na bizuterie i splesc dla ciebie pas.")
+			say("")
+			say("Przynies przedmiot, materialy i Yang - przepisy")
+			say("zobaczysz w oknie wytwarzania.")
+			say("Bonusy i kamienie oddanego przedmiotu przepadaja.")
+			say("")
+			local s = select("Otworz okno wytwarzania", "Anuluj")
+			if s == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
+		end
+	end
+end

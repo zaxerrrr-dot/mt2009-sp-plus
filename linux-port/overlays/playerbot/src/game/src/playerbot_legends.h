@@ -323,17 +323,22 @@ namespace
 			const BYTE tier = GetPlayerBotLegendDrawnTier(pid);
 			if (tier == BOT_LEGEND_NONE)
 				continue;
+			// MT2009_PLUS_LEGEND_SEED_BATCH_V1: DBManager::Query formats into 4096 bytes and cuts
+			// the rest, so a batch flushed at 6000 characters (a new world's first boot seeds
+			// thousands of bots) reached MariaDB cut mid-row - a syntax error and those rows
+			// never written. A batch now stays under 3500 characters with the statement's head.
 			char one[64];
-			snprintf(one, sizeof(one), "%s(%u,%u,%u,NOW(),NOW())", values.empty() ? "" : ",",
-					pid, (unsigned int)tier, empire);
-			values += one;
-			++seeded;
-			if (values.size() > 6000)
+			snprintf(one, sizeof(one), "(%u,%u,%u,NOW(),NOW())", pid, (unsigned int)tier, empire);
+			if (!values.empty() && values.size() + 1 + strlen(one) > 3500)
 			{
 				DBManager::instance().Query("INSERT IGNORE INTO player.playerbot_legend (pid, tier, empire, since, tier_since) VALUES %s",
 						values.c_str());
 				values.clear();
 			}
+			if (!values.empty())
+				values += ',';
+			values += one;
+			++seeded;
 		}
 		if (!values.empty())
 			DBManager::instance().Query("INSERT IGNORE INTO player.playerbot_legend (pid, tier, empire, since, tier_since) VALUES %s",

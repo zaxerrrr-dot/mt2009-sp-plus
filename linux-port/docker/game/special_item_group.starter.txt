@@ -132,6 +132,9 @@ Group	lv90
 # Gnoll Lord, his guard, Arges and Polifem on maps 301-304 - hosted, so a
 # player of a hundred who broke one open got "nic nie otrzymales" and
 # nothing (26 September).
+# MT2009_PLUS_MOON_STONE_KEY_V1 (13 October): Skrzynia Mroku's Kamien Ksiezycowy (30618) had the
+# key 102 of the belt stones' line above it; the reader keeps a key once, so the stone never came
+# out. Key 103 now, weight 84: 84 of the group's 1657 is 5.1% of the openings (belt stones 1.8%).
 Group	box_50186
 {
 	Vnum	50186
@@ -283,5 +286,5 @@ Group	box_50254
 	100	39004	1	5	-- Marmur Blogoslawienstwa
 	101	71130	1	5	-- Przepustka
 	102	s951103	1	30	-- kamienie pasow, ok. 1.9% (MT2009_PLUS_BELT_MATS_V1, special_item_group.dungeons.txt)
-	102	30618	1	65	-- Kamien Ksiezycowy, ~5% (MT2009_PLUS_ZODIAC_ITEMS_V1, wlasciciel 9.10)
+	103	30618	1	84	-- Kamien Ksiezycowy, ~5% (MT2009_PLUS_ZODIAC_ITEMS_V1, wlasciciel 9.10; key 103 and weight 84 - MT2009_PLUS_MOON_STONE_KEY_V1)
 }
