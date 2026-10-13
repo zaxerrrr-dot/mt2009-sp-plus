@@ -19,6 +19,7 @@
 #include "utils.h"
 #include "cmd.h"
 #include "affect.h"
+#include "packet.h"
 
 #include <cctype>
 #include <cstdio>
@@ -187,6 +188,29 @@ namespace champion
 
 #ifdef ENABLE_CONQUEROR_LEVEL
 
+// MT2009_PLUS_CHAMPION_V2: Stage B - the numbers the Yohara 3.0 exe has (client-patches/exe/Server/common/length.h,
+// UserInterface/Mt2009Champion.cpp asserts the same).
+static_assert(POINT_ENCHANT_ELECT == 178, "the element powers must stay 178-183 (the talismans' item_proto applytypes)");
+static_assert(POINT_SUNGMA_STR == 184 && POINT_SUNGMA_IMMUNE == 187, "POINT_SUNGMA_* = APPLY_SUNGMA_* 184-187 (exe)");
+static_assert(POINT_CONQUEROR_LEVEL == 188 && POINT_CONQUEROR_POINT == 192, "POINT_CONQUEROR_* 188-192 (exe)");
+static_assert(POINT_PACKET_NUM == 193 && POINT_MAX_NUM == POINT_PACKET_NUM, "the exe's POINT_MAX_NUM is 193");
+static_assert(LIMIT_CONQUEROR_LEVEL == 10, "LIMIT_CONQUEROR_LEVEL is 10 in the exe");
+static_assert(sizeof(TPacketGCPoints) == 1 + 4 * 193, "the points packet the exe reads (773 B)");
+static_assert(sizeof(TPacketGCCharacterAdditionalInfo) == 70, "GC additional info as the exe reads it (70 B)");
+static_assert(sizeof(TPacketGCCharacterUpdate) == 52, "GC character update as the exe reads it (52 B)");
+
+// char.cpp PointsPacket (MT2009_PLUS_CHAMPION_V2 (points packet)): the champion's numbers are fields of m_points,
+// not points; the Sung Ma stats are points and travel in PointsPacket's own loop.
+void ChampionFillPoints(LPCHARACTER ch, INT* aiPoints)
+{
+	const bool bReal = ch && ch->IsPC() && ch->GetConquerorLevel() >= 1;
+	aiPoints[POINT_CONQUEROR_LEVEL] = bReal ? ch->GetConquerorLevel() : 0;
+	aiPoints[POINT_CONQUEROR_LEVEL_STEP] = bReal ? ch->GetConquerorLevelStep() : 0;
+	aiPoints[POINT_CONQUEROR_EXP] = bReal ? (INT)ch->GetConquerorExp() : 0;
+	aiPoints[POINT_CONQUEROR_NEXT_EXP] = bReal ? (INT)ch->GetConquerorNextExp() : 0;
+	aiPoints[POINT_CONQUEROR_POINT] = bReal ? ch->GetConquerorPoint() : 0;
+}
+
 namespace champion
 {
 	static const BYTE s_aStatPoint[4] = { POINT_SUNGMA_STR, POINT_SUNGMA_HP, POINT_SUNGMA_MOVE, POINT_SUNGMA_IMMUNE };
@@ -197,14 +221,30 @@ namespace champion
 		return ch && ch->GetDesc() && ch->GetDesc()->IsBot();
 	}
 
+	// MT2009_PLUS_CHAMPION_V2: Stage B - the numbers go as points (the exe's POINT_CONQUEROR_*/POINT_SUNGMA_*, the
+	// character window's Sung Ma page reads player.GetStatus); Stage A's "champion_info" chat line is gone (a 3.0
+	// client only - older ones are refused at login, server_version in m2-render-config).
+	static void SendPoint(LPCHARACTER ch, BYTE bType, long lValue)
+	{
+		TPacketGCPointChange pack;
+		pack.header = HEADER_GC_CHARACTER_POINT_CHANGE;
+		pack.dwVID = ch->GetVID();
+		pack.type = bType;
+		pack.amount = 0;
+		pack.value = lValue;
+		ch->GetDesc()->Packet(&pack, sizeof(pack));
+	}
+
 	void SendInfo(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsPC() || !ch->GetDesc() || IsBotCharacter(ch))
 			return;
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "champion_info %d %u %u %d %d %d %d %d %d",
-				(int)ch->GetConquerorLevel(), ch->GetConquerorExp(), ch->GetConquerorNextExp(), ch->GetConquerorPoint(),
-				ch->GetPoint(POINT_SUNGMA_STR), ch->GetPoint(POINT_SUNGMA_HP), ch->GetPoint(POINT_SUNGMA_MOVE),
-				ch->GetPoint(POINT_SUNGMA_IMMUNE), (int)ch->GetConquerorLevelStep());
+		INT aiPoints[POINT_PACKET_NUM] = {};
+		ChampionFillPoints(ch, aiPoints);
+		for (int i = POINT_CONQUEROR_LEVEL; i <= POINT_CONQUEROR_POINT; ++i)
+			SendPoint(ch, (BYTE)i, aiPoints[i]);
+		for (int i = 0; i < 4; ++i)
+			SendPoint(ch, s_aStatPoint[i], ch->GetPoint(s_aStatPoint[i]));
 	}
 
 	void SendMap(LPCHARACTER ch)
@@ -255,6 +295,7 @@ namespace champion
 		ch->Save();
 		LogManager::instance().CharLog(ch, 1, "CHAMPION_UNLOCK", "");
 		SendInfo(ch);
+		ch->UpdatePacket();	// MT2009_PLUS_CHAMPION_V2: the blue level over the head for everyone around
 		SendMap(ch);
 		return true;
 	}
@@ -307,6 +348,7 @@ namespace champion
 			snprintf(hint, sizeof(hint), "level %d points %d", iLevel, iPoints);
 			LogManager::instance().CharLog(ch, iLevel, "CHAMPION_LEVELUP", hint);
 			ch->Save();
+			ch->UpdatePacket();	// MT2009_PLUS_CHAMPION_V2: the new champion level over the head
 		}
 		else if (iPoints > iOldPoints)
 			ch->ChatPacket(CHAT_TYPE_INFO, "Masz nowy punkt statystyk Sung Ma (wolne: %d).", iPoints);
@@ -538,8 +580,8 @@ DWORD CHARACTER::GetConquerorNextExp() const
 
 // ---- commands ---------------------------------------------------------------------------------------------
 
-// "/conqueror_stat smh_str|smh_hp|smh_move|smh_inmune" - the names GF's uicharacternew.py sends (Stage B);
-// "/conqueror_stat info" - the numbers again (root uichampion.py, Stage A).
+// "/conqueror_stat smh_str|smh_hp|smh_move|smh_inmune" - the names GF's uicharacternew.py and root's uicharacter.py
+// (the Sung Ma page) send; "/conqueror_stat info" - the numbers and the map's requirements again.
 ACMD(do_conqueror_stat)
 {
 	char arg1[256];

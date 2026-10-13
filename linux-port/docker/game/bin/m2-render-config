@@ -273,6 +273,13 @@ EOF
 # draw this world's third bag page as its horse page. Only the auth core gets
 # the token - in a game core the engine also reads it as "a production server"
 # and blocks /reload p and /reload q and the beta_server flag with it.
+# MT2009_PLUS_CHAMPION_V2 (3.0 "Yohara", 13 October 2026): the gate is ON again,
+# at 1010300 = client 3.0 (root constinfo.py says 1.3.0 only together with the
+# Yohara exe). That exe reads a bigger points packet and the champion level in
+# the character packets, so an older client would desync on the first packet;
+# refused at login it shows its own "Wymagana aktualizacja klienta gry przez
+# Patcher." instead. M2_CLIENT_MIN_VERSION overrides it (0 = no gate).
+M2_CLIENT_MIN_VERSION="${M2_CLIENT_MIN_VERSION:-1010300}"
 render_auth() {
   local d="$VAR_DIR/auth"
   core_skeleton "$d"
@@ -281,7 +288,7 @@ render_auth() {
   cat > "$d/CONFIG" <<EOF
 CHANNEL: 1
 HOSTNAME: Auth01
-server_version: 0
+server_version: ${M2_CLIENT_MIN_VERSION}
 PORT: ${M2_AUTH_PORT}
 P2P_PORT: ${M2_AUTH_P2P_PORT}
 DB_ADDR: 127.0.0.1

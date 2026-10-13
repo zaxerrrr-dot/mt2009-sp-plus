@@ -3,11 +3,11 @@
 //
 // The logic follows Ameria's ENABLE_YOHARA_SYSTEM (the only complete public one), the numbers come from the
 // GF 26.1.11 client (<map>/sungma_attr.txt) and Owsap v6.2.6 (mob_proto SungMaExp, the quests' names).
-// Stage A (now): no new exe - the client gets its numbers through chat commands
-//   "champion_info <lv> <exp> <next> <points> <str> <hp> <move> <immune> <step>" and
-//   "sungma_map <str> <hp> <move> <immune>" (all 0 off a Sung Ma map), read by root uichampion.py.
-// Stage B (with the next exe): the same numbers as POINT_CONQUEROR_* / POINT_SUNGMA_* in the points packet
-// (README.md, "Etap B").
+// Stage B (MT2009_PLUS_CHAMPION_V2, the Yohara 3.0 exe): the numbers are POINT_CONQUEROR_* / POINT_SUNGMA_* of the
+// points packet and point changes (SendInfo), the champion level of everyone travels in the add/update packets
+// (dwConquerorLevel); "sungma_map <str> <hp> <move> <immune>" (all 0 off a Sung Ma map) stays a chat command, read
+// by the character window's Sung Ma page (root uicharacter.py). Stage A's "champion_info" line and uichampion.py
+// are gone (README.md, "Etap B").
 //
 // Champion data lives in player.player (czempion.sql) through TPlayerTable: conqueror_level, _level_step,
 // _exp, _point and sungma_str/hp/move/immune (the real, spent points). The Sung Ma points of a character are
