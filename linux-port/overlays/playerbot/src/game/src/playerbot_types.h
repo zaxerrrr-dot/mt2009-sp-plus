@@ -9614,9 +9614,8 @@ namespace
 	// thousandths, the experience in thousandths on top, the refine in points
 	// of chance (the blacksmith and the scrolls), and how many reads one
 	// skill book or Spirit Stone counts as.
-	// MT2009_PLUS_LEGEND_HP_HALF_V1 (owner, 13 October): Legends had too much HP - their max HP is now
-	// half of what it was with the old bonus (+25/+60/+125/+200 thousandths): (1000 + old) / 2 - 1000.
-	const int PLAYERBOT_LEGEND_HP_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, -488, -470, -438, -400 };
+	// MT2009_PLUS_LEGEND_HP_HALF_V1 (owner, 13 October): the Legends' HP bonus halved (was 25/60/125/200).
+	const int PLAYERBOT_LEGEND_HP_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 12, 30, 62, 100 };
 	const int PLAYERBOT_LEGEND_VS_HUMAN_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 15, 35, 60, 90 };
 	const int PLAYERBOT_LEGEND_VS_MONSTER_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 15, 35, 60, 75 };
 	const int PLAYERBOT_LEGEND_EXP_PERMILLE[PLAYERBOT_LEGEND_TIER_COUNT] = { 0, 50, 125, 250, 250 };
