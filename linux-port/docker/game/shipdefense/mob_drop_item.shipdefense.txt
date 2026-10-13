@@ -4,11 +4,14 @@
 // (pl-wiki "Skarb Hydry"). One limit group (a plain percent a kill, outside the level and rate
 // multipliers; the reader keeps a mob's first limit group only - the Dockerfile stops the build if
 // 3965 has one already). Each line rolls on its own: the chests 3 x 100% + 3 x 50% (3-6, 4.5 on
-// average), the rest about 3.5 items a kill on average (the percents below are ours - the wiki gives
-// none). Not in our world.item_proto, left out: Zbroja Dowodcy (21090), Pakiet Kamieni Duszy (72058),
+// average), Pakiet Kamieni Duszy (72058, shipdefense.sql; the official "up to 7") 1 x 100% + 6 x 50%
+// (1-7, 4 on average; each opens into one spirit stone - special_item_group.shipdefense.txt), the rest
+// about 3.5 items a kill on average (the percents below are ours - the wiki gives none).
+// Intentionally left out (the owner, 13 October 2026): Pierscien Hydry (70303) and Spirala Czasu
+// (72347) are NOT Hydra rewards. Not in our world.item_proto, left out: Zbroja Dowodcy (21090),
 // Zdobna Skrz. z Odlamkiem (39068), Plyta z Surowego Metalu (31216), Kamien Demonow+0 (28046),
 // Kamyki (50926 is a recipe here), Ksiazka Przebudzenia (31146), Ksiega Dzielnego/Dzikiego/Mlodego
-// Zwierza (55003-55005), Pierscien Hydry (70303, comes with the port), Spirala Czasu 10% (72347).
+// Zwierza (55003-55005).
 // Stand-ins: Dykta+ / Pien+ / Kamien do Fundamentu+ (90015-90017) -> Dykta (90012), Pien (90011),
 // Kamien Wegielny (90010); Kula Blogoslawienstwa -> Marmur Blogoslawienstwa (39004, the same item
 // under our name); Czerwona/Niebieska Mikstura(D) 600 -> up to 3 x 200 (the stack's limit).
@@ -64,4 +67,11 @@ Group	MT2009_shipdef_treasure_3965
 	44	71085	1	5	-- Wzmocnienie Przedmiotu
 	45	71084	1	5	-- Zaczarowanie Przedmiotu
 	46	25040	1	10	-- Zwoj Blogoslawienstwa
+	47	72058	1	100	-- Pakiet Kamieni Duszy
+	48	72058	1	50	-- Pakiet Kamieni Duszy (2)
+	49	72058	1	50	-- Pakiet Kamieni Duszy (3)
+	50	72058	1	50	-- Pakiet Kamieni Duszy (4)
+	51	72058	1	50	-- Pakiet Kamieni Duszy (5)
+	52	72058	1	50	-- Pakiet Kamieni Duszy (6)
+	53	72058	1	50	-- Pakiet Kamieni Duszy (7)
 }

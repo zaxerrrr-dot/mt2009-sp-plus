@@ -3479,8 +3479,9 @@ fi
 
 # MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku (Hydra; server-patches/shipdefense/README.md). shipdefense.sql is
 # idempotent (INSERT IGNORE): the ship's 24 monsters and NPCs (3949-3965, 3970, 20432-20437; Owsap's numbers in
-# our columns, levels into 90-110) and two items (31107 Deska Naprawcza, 54705 Skrzynia Hydry). Before the
-# elements' files, as the Zodiac: their owner's rules then hold for the ship's monsters too.
+# our columns, levels into 90-110) and three items (31107 Deska Naprawcza, 54705 Skrzynia Hydry, 72058 Pakiet
+# Kamieni Duszy). Before the elements' files, as the Zodiac: their owner's rules then hold for the ship's
+# monsters too.
 if [ -s /opt/playerbot/shipdefense.sql ]; then
     if db < /opt/playerbot/shipdefense.sql; then
         echo "[playerbot-migrate] ship defense: shipdefense.sql applied"

@@ -127,14 +127,24 @@ komunikatu, a `dw.state()` jest błędem składni (`state` to słowo kluczowe `q
 ## Nagrody (krok 6)
 
 Decyzja właściciela z 13.10.2026. Pliki w `linux-port/docker/game/shipdefense/`, dopisywane przez Dockerfile
-(krok „share: Obrona Statku”, który przerywa budowę, gdy 3965 albo 54705 ma już grupę):
+(krok „share: Obrona Statku”, który przerywa budowę, gdy 3965, 54705 albo 72058 ma już grupę):
 - `mob_drop_item.shipdefense.txt` – Skarb Hydry (3965), jedna grupa `limit` (zwykły procent na zabicie, bez
   mnożników poziomu i dropu): Skrzynia Hydry 3 × 100% + 3 × 50% (zawsze 3–6, średnio 4,5) i reszta listy wiki
-  z naszymi procentami (średnio ok. 3,5 przedmiotu więcej);
+  z naszymi procentami (średnio ok. 3,5 przedmiotu więcej) oraz Pakiet Kamieni Duszy (72058) 1 × 100% +
+  6 × 50% (oficjalne „do 7”: zawsze 1–7, średnio 4);
 - `special_item_group.shipdefense.txt` – Skrzynia Hydry (54705): jeden przedmiot na otwarcie, wagi na 1000,
-  Magiczny Kamień 40 (dokładnie 4%). Skrzynia otwiera się 3 razy (`chest_uses`), podpowiedź klienta
-  (`client-patches/client-2.0.30/root/uitooltip.py`) pokazuje pozostałe otwarcia.
-Brakujące u nas przedmioty i zamienniki są wypisane w nagłówkach obu plików.
+  Magiczny Kamień 40 (dokładnie 4%), Pakiet Kamieni Duszy ×3 60 (zabrane po 10 z Zwoju Błogosławieństwa,
+  Zaczarowania, Wzmocnienia, Przepustki i obu Klejnotów). Skrzynia otwiera się 3 razy (`chest_uses`),
+  podpowiedź klienta (`client-patches/client-2.0.30/root/uitooltip.py`) pokazuje pozostałe otwarcia;
+- ten sam plik – Pakiet Kamieni Duszy (72058, oficjalny vnum, ikona `icon/item/27999.tga`, skrzynka 23,
+  stos 200; `shipdefense.sql`): jeden kamień duszy na otwarcie, losowany jak kamień z Metina
+  (`CHARACTER::DetermineDropMetinStone`): rodzaj – jeden z 14 (28030–28043) po równo, stopień – średnia
+  wierszy `aStoneDrop` (Metiny 8005–8014): +0 16,9%, +1 27,3%, +2 34,6%, +3 19,0%, +4 2,2%
+  (70 wierszy, suma wag 14000).
+Pierścień Hydry (70303) i Spirala Czasu (72347) celowo NIE są nagrodami (decyzja właściciela 13.10.2026).
+Brakujące u nas przedmioty i zamienniki są wypisane w nagłówkach obu plików. Klient: Deska Naprawcza,
+Skrzynia Hydry i Pakiet Kamieni Duszy w `item_proto`, `item_list.txt` i `itemdesc.txt` oraz pusty opis
+Magicznego Kamienia – `client-patches/client-2.0.30/tools/yohara/patch_yohara_client.py`.
 
 ## Magiczny Kamień
 

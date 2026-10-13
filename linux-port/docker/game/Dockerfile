@@ -1255,8 +1255,9 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
 # times attacks and moves by them, every run.msa carries its Accumulation), 18 texts in Polish
 # (locale_string.shipdefense.txt), the map's name for the quests and /goto statek for game masters, and the
 # rewards (the owner, 13 October 2026): Skarb Hydry's (3965) limit group - 3-6 Skrzynia Hydry and the wiki's
-# list (mob_drop_item.shipdefense.txt) - and Skrzynia Hydry's (54705) group, one item an opening
-# (special_item_group.shipdefense.txt). Neither may exist before (a mob's first limit group wins).
+# list (mob_drop_item.shipdefense.txt) - and Skrzynia Hydry's (54705) group, one item an opening, and
+# Pakiet Kamieni Duszy's (72058) group, one spirit stone as a Metin's (special_item_group.shipdefense.txt).
+# None may exist before (a mob's first limit group wins).
 # The port (Owsap's 359, here 368) comes with Yohara.
 COPY shipdefense/ /tmp/shipdefense-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
@@ -1279,9 +1280,11 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
  && grep -q -F '"Ship defense: the mast has %d%% HP left!";' "$L/locale_string.txt" \
  && f="$L/special_item_group.txt" \
  && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+54705([^0-9]|$)' "$f" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+72058([^0-9]|$)' "$f" \
  && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
  && cat "$A/special_item_group.shipdefense.txt" >> "$f" \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+54705([^0-9]|$)' "$f")" = 1 \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+72058([^0-9]|$)' "$f")" = 1 \
  && F="$L/mob_drop_item.txt" \
  && ! grep -q -i -E '^[[:blank:]]*mob[[:blank:]]+3965([^0-9]|$)' "$F" \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
@@ -1296,7 +1299,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
  && S="$L/settings.lua" \
  && { LC_ALL=C grep -a -q 'add_goto_info("statek"' "$S" || printf 'add_goto_info("statek", 0, 367, 1667, 5223)\r\n' >> "$S"; } \
  && rm -rf "$A" \
- && echo "share: Obrona Statku (367, waves, motions, texts, /goto statek, Skarb Hydry and Skrzynia Hydry)"
+ && echo "share: Obrona Statku (367, waves, motions, texts, /goto statek, Skarb Hydry, Skrzynia Hydry, Pakiet Kamieni Duszy)"
 # MT2009_PLUS_CAPE301_V1 (share): Przyladek Smoczego Ognia (301, Metin2_map_CapeDragonHead, game2) - the client gets
 # the map from the GF 26.1.11 client (client-patches/client-2.0.30/tools/cape301), so the server's server_attr
 # becomes the one that matches that terrain: Owsap's (100% of the block/water/safe-zone cells equal GF's attr.atr,
