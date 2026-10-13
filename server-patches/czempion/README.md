@@ -52,6 +52,9 @@ cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
 - **Mapy**: `sungma_table.txt` wymienia mapy po **nazwach** (19 map Yohary z klienta GF). Silnik porównuje je z
   `map/index` rdzenia – nazwa, której nie mamy, nic nie zmienia. Na dziś **żadna nasza mapa** nie jest mapą Sung Ma
   (sprawdzone 13.10.2026: `metin2_map_eastplain_*`, `empirecastle` itd. to mapy Yohary – w Owsapie indeksy 373–396).
+- **Boty**: bez Poziomu Czempiona (decyzja właściciela: na razie nie – `pc.set_conqueror` odmawia botowi) i bez
+  wejścia na mapy Sung Ma: `TransitionPlayerBotMap` (`playerbot_travel.h`) odmawia (`sungma_map`) – przez nią idą
+  łowiska i wyjazdy, podążanie Towarzysza i drużyny, LFG lochów/gildii i `WarpBot` (warp z questa/GM).
 - **Etap A klienta**: komendy czatu `champion_info <lv> <exp> <next> <pkt> <str> <hp> <move> <imm> <krok>` i
   `sungma_map <str> <hp> <move> <imm>` (przy wejściu na mapę i po każdej zmianie) – okno `uichampion.py`.
 
