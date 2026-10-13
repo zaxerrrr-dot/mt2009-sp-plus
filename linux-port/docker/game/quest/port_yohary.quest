@@ -1,0 +1,131 @@
+-- MT2009_PLUS_YOHARA_PORT_V1: Port Nowego Kontynentu (368, metin2_map_defensewave_port, rdzeñ game2) i
+-- Pierœcieñ Hydry (70303). Decyzje w³aœciciela z 13.10.2026 (cache/yohara/decyzje.md, „13.10 wieczór”):
+--   * port od poziomu 90 - po wygranej Obronie Statku (portal 3949 na statku albo Rybak 9009 na Przyl¹dku,
+--     quest obrona_statku) albo Pierœcieniem Hydry;
+--   * na porcie stoi Pos¹g Wojownika (20433, 241 574): awans na Czempiona (quest czempion), ranking lochów
+--     (panel „Wyprawy”, cmdchat DungeonInfo show) i rejs z powrotem do Rybaka - dalsze mapy Yohary przyjd¹
+--     póŸniej, tak samo kowale zestawów, sklep i reszta funkcji pos¹gu.
+-- Pierœcieñ Hydry jak w grze (wiki): 3 teleporty do portu, potem znika; nie do handlu, sprzeda¿y ani
+-- magazynu (antiflag w item_proto). Wzór: Owsap quest/source/item/hydran_ring.quest - value0 = liczba u¿yæ,
+-- value1 = przerwa w sekundach (u nas 0), gniazdo 0 liczy u¿ycia, gniazdo 1 = czas nastêpnego u¿ycia.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest port_yohary begin
+	state start begin
+		function cfg()
+			return {
+				map = 368,
+				x = 1280 + 405, y = 5632 + 480, -- Town.txt portu
+				min_level = 90,
+				back_map = 301, back_x = 10240 + 840, back_y = 16640 + 1190, -- Rybak 9009 na Przyl¹dku
+				ring = 70303, ring_uses = 3,
+			}
+		end
+
+		function to_port()
+			local c = port_yohary.cfg()
+			return pc.warp(c.x * 100, c.y * 100)
+		end
+
+		function back()
+			local c = port_yohary.cfg()
+			return pc.warp(c.back_x * 100, c.back_y * 100)
+		end
+
+		-- Kto nie ma poziomu 90 (np. przeniesiony przez GM-a), wraca do Rybaka.
+		when login with pc.get_map_index() == 368 begin
+			local c = port_yohary.cfg()
+			if pc.is_gm() or pc.is_playerbot() then
+				return
+			end
+			if pc.get_level() < c.min_level then
+				syschat("Port Nowego Kontynentu jest dostêpny od poziomu "..c.min_level..". £ódŸ zabiera ciê z powrotem na Przyl¹dek.")
+				port_yohary.back()
+			end
+		end
+
+		when 20433.chat."Ranking lochów" with pc.get_map_index() == 368 begin
+			say_title(mob_name(20433)..":")
+			say("Tu spisano imiona tych, którzy obronili statek")
+			say("przed Hydr¹, i wszystkich innych œmia³ków.")
+			say("Panel wypraw poka¿e ci ranking ka¿dego lochu.")
+			if select("Poka¿ ranking", "Zamknij") == 1 then
+				cmdchat("DungeonInfo show")
+			end
+		end
+
+		when 20433.chat."Wróæ na Przyl¹dek Smoczego Ognia" with pc.get_map_index() == 368 begin
+			say_title(mob_name(20433)..":")
+			say("Dalsze ziemie nowego kontynentu s¹ jeszcze")
+			say("zamkniête. £ódŸ zabierze ciê z powrotem do")
+			say("Rybaka na Przyl¹dku Smoczego Ognia.")
+			if select("P³yñ na Przyl¹dek", "Zostañ w porcie") ~= 1 then
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			port_yohary.back()
+		end
+
+		when 70303.use begin
+			local c = port_yohary.cfg()
+			local max_use = item.get_value(0)
+			if max_use <= 0 then
+				max_use = c.ring_uses
+			end
+			local n = item.get_socket(0)
+			if n < 0 then
+				n = 0
+			end
+			say_title(item_name(c.ring)..":")
+			if n >= max_use then
+				say("Moc pierœcienia wyczerpa³a siê.")
+				item.remove()
+				return
+			end
+			local t = item.get_socket(1)
+			if t > get_global_time() and not pc.is_gm() then
+				say("Pierœcieñ odzyska moc za "..math.ceil((t - get_global_time()) / 60).." min.")
+				return
+			end
+			if pc.get_level() < c.min_level then
+				say("Pierœcieñ zaprowadzi ciê na nowy kontynent")
+				say("dopiero od poziomu "..c.min_level..".")
+				return
+			end
+			if pc.get_map_index() == c.map then
+				say("Jesteœ ju¿ w Porcie Nowego Kontynentu.")
+				return
+			end
+			if pc.in_dungeon() or pc.get_map_index() >= 10000 then
+				say("Tutaj moc pierœcienia nie dzia³a. Najpierw")
+				say("wyjdŸ z lochu.")
+				return
+			end
+			say("Ten pierœcieñ upuœci³a Hydra, konaj¹c.")
+			say("Zaprowadzi ciê na nowy kontynent - do Portu")
+			say("Nowego Kontynentu.")
+			say_reward("Pozosta³e teleporty: "..(max_use - n).." z "..max_use..".")
+			if select("Teleportuj do portu", "Nie teraz") ~= 1 then
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say_title(item_name(c.ring)..":")
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			if not port_yohary.to_port() then
+				return
+			end
+			if item.get_value(1) > 0 then
+				item.set_socket(1, get_global_time() + item.get_value(1))
+			end
+			if n + 1 >= max_use then
+				item.remove()
+			else
+				item.set_socket(0, n + 1)
+			end
+		end
+	end
+end

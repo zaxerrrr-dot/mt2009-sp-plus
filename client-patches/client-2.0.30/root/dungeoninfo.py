@@ -262,6 +262,12 @@ def OnCommand(game, *args):
 			d = _get(_int(a[0]))
 			if d:
 				d["drops"].append((_int(a[1]), _int(a[2]), _int(a[3])))
+		elif sub == "show":
+			# MT2009_PLUS_YOHARA_PORT_V1: the Posag Wojownika's "Ranking lochow" (quest port_yohary) opens the panel.
+			import uidungeoninfo
+			wnd = uidungeoninfo.GetWindow()
+			if not wnd.IsShow():
+				wnd.Open()
 		elif sub == "open":
 			import uidungeoninfo
 			wnd = uidungeoninfo.GetWindow()

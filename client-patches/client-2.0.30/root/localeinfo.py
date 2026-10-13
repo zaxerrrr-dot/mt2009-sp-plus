@@ -541,6 +541,8 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_devilsCatacomb" : "Katakumby Diab³a",
 	# MT2009_PLUS_SHIP_DEFENSE_V1 (client): Obrona Statku (Hydra, map 367) on the minimap
 	"metin2_map_defensewave" : "Obrona Statku",
+	# MT2009_PLUS_YOHARA_PORT_V1 (client): Port Nowego Kontynentu (map 368) on the minimap
+	"metin2_map_defensewave_port" : "Port Nowego Kontynentu",
 }
 
 

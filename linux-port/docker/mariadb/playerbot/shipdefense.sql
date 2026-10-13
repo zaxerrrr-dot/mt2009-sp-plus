@@ -43,8 +43,13 @@ INSERT IGNORE INTO world.mob_proto (`vnum`,`name`,`locale_name`,`rank`,`type`,`b
 -- u nas przedmiot zadania 18, bo robi to quest "take") i Skrzynia Hydry (skrzynia 23; zawartosc - krok 6,
 -- special_item_group). Jajo Nessie 55410/55710 - po decyzji wlasciciela. Pakiet Kamieni Duszy (72058, 13.10 wlasciciel:
 -- skrzynka 23 jak Zelazna Szkatulka, stos 200; ze Skarbu Hydry do 7 i ze Skrzyni Hydry x3) daje jeden kamien duszy.
--- Pierscien Hydry 70303 i Spirala Czasu 72347 celowo NIE sa nagrodami Hydry (wlasciciel, 13.10.2026).
+-- MT2009_PLUS_YOHARA_PORT_V1: Pierscien Hydry (70303, wlasciciel 13.10 wieczorem - znow nagroda Hydry: Skarb Hydry 0-2,
+-- Skrzynia Hydry 3%) - przedmiot zadania 18 jak Pierscien Teleportacji (70058); quest port_yohary: 3 teleporty do Portu
+-- Nowego Kontynentu (368), po trzecim znika (wiki); value0 = liczba uzyc, value1 = przerwa w s (0 - wiki jej nie podaje),
+-- gniazdo 0 liczy uzycia. Od poziomu 90 (LIMIT_LEVEL). Nie do sprzedania, oddania, wyrzucenia, sklepu ani magazynu
+-- (ANTI_SELL|GIVE|DROP|STACK|MYSHOP|SAFEBOX = 237952). Spirala Czasu 72347 celowo NIE jest nagroda Hydry.
 INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype`,`stack`,`weight`,`size`,`antiflag`,`flag`,`wearflag`,`immuneflag`,`gold`,`shop_buy_price`,`refined_vnum`,`refine_set`,`magic_pct`,`specular`,`socket_pct`,`addon_type`,`limittype0`,`limitvalue0`,`limittype1`,`limitvalue1`,`applytype0`,`applyvalue0`,`applytype1`,`applyvalue1`,`applytype2`,`applyvalue2`,`value0`,`value1`,`value2`,`value3`,`value4`,`value5`,`socket0`,`socket1`,`socket2`,`socket3`,`socket4`,`socket5`) VALUES
 (31107,'Repair Wood','Deska Naprawcza',18,0,200,0,1,196608,4,0,'',0,0,0,0,0,0,0,0,7,300,0,0,0,0,0,0,0,0,20437,0,0,0,0,0,-1,-1,-1,-1,-1,-1), -- ANTI_MYSHOP|ANTI_SAFEBOX, STACKABLE, LIMIT_REAL_TIME 300 s
 (54705,'Hydra Chest','Skrzynia Hydry',23,0,200,0,1,32768,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1), -- ANTI_STACK
-(72058,'Soul Stone Package','Pakiet Kamieni Duszy',23,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1); -- STACKABLE; oficjalny vnum, ikona 27999.tga; jeden kamien duszy jak z Metina (special_item_group)
+(72058,'Soul Stone Package','Pakiet Kamieni Duszy',23,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1), -- STACKABLE; oficjalny vnum, ikona 27999.tga; jeden kamien duszy jak z Metina (special_item_group)
+(70303,'Hydra Ring','Pierścień Hydry',18,0,1,0,1,237952,0,0,'',0,0,0,0,0,0,0,0,1,90,0,0,0,0,0,0,0,0,3,0,0,0,0,0,-1,-1,-1,-1,-1,-1); -- 3 teleporty do portu (368), quest port_yohary

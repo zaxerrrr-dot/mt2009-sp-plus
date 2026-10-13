@@ -339,7 +339,9 @@ RUN set -eux; \
     # the repair planks, the portal and the completion flags (MT2009_PLUS_SHIP_DEFENSE_V1).
     # czempion (the Posag Wojownika 20433: becoming a Champion) and czempion_nowa_wola (Nowa Wola 72068-72071)
     # are Poziom Czempiona (MT2009_PLUS_CHAMPION_V1, server-patches/czempion).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola; do \
+    # port_yohary is Port Nowego Kontynentu (368): the statue's dungeon ranking and the way back to the Fisherman,
+    # Pierscien Hydry (70303, three teleports to the port) and the level-90 guard (MT2009_PLUS_YOHARA_PORT_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1265,7 +1267,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
 # list (mob_drop_item.shipdefense.txt) - and Skrzynia Hydry's (54705) group, one item an opening, and
 # Pakiet Kamieni Duszy's (72058) group, one spirit stone as a Metin's (special_item_group.shipdefense.txt).
 # None may exist before (a mob's first limit group wins).
-# The port (Owsap's 359, here 368) comes with Yohara.
+# The port (Owsap's 359, here 368): the step "share: Port Nowego Kontynentu" below (MT2009_PLUS_YOHARA_PORT_V1).
 COPY shipdefense/ /tmp/shipdefense-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -1344,6 +1346,36 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/map; A=/tmp/maps302-add/map \
     done \
  && rm -rf /tmp/maps302-add \
  && echo "share: Zbocze Gautama / Nefrytowa Zatoka / Gromiste Gory (302-304: server_attr of the GF terrain)"
+# MT2009_PLUS_YOHARA_PORT_V1 (share): Port Nowego Kontynentu (368, metin2_map_defensewave_port; Owsap's 359), 3x3 at
+# 128000 563200 (next to the ship, 367), hosted by game2 beside Przyladek Smoczego Ognia (bin/m2-render-config). The
+# client gets the map from the GF 26.1.11 client (client-patches/client-2.0.30/tools/port368), so server_attr is made
+# from GF's attr.atr itself (tools/gf28/srvattr.py: 100% of the cells; Owsap's file blocks 2244 more cells - the
+# whole square the NPCs stand in - and flags the whole map as water). Setting.txt and Town.txt (405 480) are Owsap's;
+# npc.txt has only the Posag Wojownika (20433, 241 574 as in the official data) - no monsters, no Metins, the set
+# blacksmiths later (the owner, 13 October 2026). Reached from level 90: the Hydra's portal after a won defence, the
+# Fisherman after one, Pierscien Hydry (70303); the statue sails back to the Fisherman (quests obrona_statku,
+# czempion, pierscien_hydry). The map's name for the quests and /goto port for game masters.
+COPY yohara_port/ /tmp/yohara-port-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-port-add; M=metin2_map_defensewave_port \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && rm -rf "$L/map/$M" && cp -a "$A/map/$M" "$L/map/" \
+ && test "$(od -An -tx1 -N8 "$L/map/$M/server_attr" | tr -d ' \n')" = 0c0000000c000000 \
+ && grep -q -E '^BasePosition[[:blank:]]+128000[[:blank:]]+563200' "$L/map/$M/Setting.txt" \
+ && test "$(grep -c -E '^m[[:blank:]]+241[[:blank:]]+574[[:blank:]].*[[:blank:]]20433[[:space:]]*$' "$L/map/$M/npc.txt")" = 1 \
+ && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+ && sed -i -E '/^368[[:blank:]]/d' "$L/map/index" \
+ && printf '368 %s\n' "$M" >> "$L/map/index" \
+ && test "$(grep -c -E "^368[[:blank:]]+$M[[:space:]]*\$" "$L/map/index")" = 1 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[368\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_PORT_V1\r\ntranslate.general.map_names[368] = "Port Nowego Kontynentu"\r\n' >> "$f"; \
+    done \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("port"' "$S" || printf 'add_goto_info("port", 0, 368, 1685, 6112)\r\n' >> "$S"; } \
+ && rm -rf "$A" \
+ && echo "share: Port Nowego Kontynentu (368: GF terrain's server_attr, the statue, /goto port)"
 # MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1 (share): Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
 # README.md). sungma_table.txt - the Sung Ma requirements of the GF 26.1.11 client's 19 Yohara maps by name (the engine
 # matches the names against map/index, so none of our maps is touched until a Yohara map comes); sungma_mob_exp.txt -

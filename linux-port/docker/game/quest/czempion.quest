@@ -4,7 +4,9 @@
 -- Warunki sprawdza silnik (pc.get_conqueror_unlock_state / pc.set_conqueror, playerbot_champion.cpp):
 -- poziom 120 (max_level serwera), flaga Obrony Statku obrona_statku.completed_at_120 (nazwê zna
 -- tylko C++: champion::HYDRA_DONE_FLAG) i co najmniej jedna pe³na kula doœwiadczenia na 120.
--- Rejs na Yoharê - dopiero z map¹ portu. cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+-- MT2009_PLUS_YOHARA_PORT_V1: pos¹g stoi w Porcie Nowego Kontynentu (368, 241 574, npc.txt mapy); jego
+-- „Ranking lochów” i rejs z powrotem do Rybaka s¹ w queœcie port_yohary. Rejs dalej na Yoharê - z jej mapami.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest czempion begin
 	state start begin
 		when 20433.chat."Zostañ Czempionem" with pc.get_conqueror_level() == 0 begin

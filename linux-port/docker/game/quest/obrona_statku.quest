@@ -16,6 +16,9 @@
 -- portal, panel lochów (klucz "hydra") i trwa³a flaga przejœcia dla przysz³ego poziomu Mistrza:
 -- obrona_statku.completed (liczba przejœæ) i obrona_statku.completed_at_120 (przejœcie na poziomie
 -- 120+), tylko dla ludzi (boty: decyzja w³aœciciela - na razie nie).
+-- MT2009_PLUS_YOHARA_PORT_V1: po zwyciêstwie portal 3949 pyta, dok¹d p³yn¹æ - do Portu Nowego Kontynentu
+-- (368, jak w grze) albo z powrotem na Przyl¹dek; kto raz obroni³ statek, mo¿e te¿ pop³yn¹æ do portu od
+-- Rybaka (od poziomu 90). Port, pos¹g i Pierœcieñ Hydry - quest port_yohary.
 quest obrona_statku begin
 	state start begin
 		function cfg()
@@ -36,6 +39,7 @@ quest obrona_statku begin
 				keep = dw.cfg("idle_destroy") + dw.cfg("time_limit") + 120,
 				wood_item = 31107,
 				champion_level = 120,
+				port_level = 90, -- MT2009_PLUS_YOHARA_PORT_V1: Port Nowego Kontynentu (368) od poziomu 90
 			}
 		end
 
@@ -162,6 +166,37 @@ quest obrona_statku begin
 		function leave()
 			local c = obrona_statku.cfg()
 			pc.warp(c.exit_x * 100, c.exit_y * 100)
+		end
+
+		-- MT2009_PLUS_YOHARA_PORT_V1: Port Nowego Kontynentu (368, rdzeñ game2), Town.txt 405 480.
+		function to_port()
+			pc.warp((1280 + 405) * 100, (5632 + 480) * 100)
+		end
+
+		-- MT2009_PLUS_YOHARA_PORT_V1: rejs do Portu Nowego Kontynentu dla tych, którzy obronili ju¿ statek.
+		when 9009.chat."Port Nowego Kontynentu" with pc.get_map_index() == 301 and pc.getf("obrona_statku", "completed") > 0 begin
+			local c = obrona_statku.cfg()
+			say_title(mob_name(9009))
+			if pc.is_playerbot() then
+				return
+			end
+			say("Obroni³eœ ju¿ statek przed Hydr¹, wiêc znasz")
+			say("drogê na nowy kontynent. Czy mam ciê zabraæ do")
+			say("portu?")
+			if pc.get_level() < c.port_level then
+				say("")
+				say("Wróæ, gdy osi¹gniesz poziom "..c.port_level..".")
+				return
+			end
+			if select("P³yñ do portu", "Nie teraz") ~= 1 then
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say_title(mob_name(9009))
+				say("Poczekaj chwilê po handlu lub rozmowie i spróbuj ponownie.")
+				return
+			end
+			obrona_statku.to_port()
 		end
 
 		when 9009.chat."Obrona Statku (Hydra)" with pc.get_map_index() == 301 begin
@@ -458,13 +493,27 @@ quest obrona_statku begin
 			end
 		end
 
-		-- Portal po zwyciêstwie: na l¹d (port 368 przyjdzie z Yohar¹). Kto by³ na statku przy zwyciêstwie,
-		-- a nie by³ w dru¿ynie zabójcy, dostaje flagê przejœcia tutaj.
+		-- Portal po zwyciêstwie: do Portu Nowego Kontynentu (368, MT2009_PLUS_YOHARA_PORT_V1) albo na l¹d (301).
+		-- Kto by³ na statku przy zwyciêstwie, a nie by³ w dru¿ynie zabójcy, dostaje flagê przejœcia tutaj.
 		when 3949.click with obrona_statku.inside() begin
-			if d.getf("shipdef_won") == 1 then
+			local c = obrona_statku.cfg()
+			local won = d.getf("shipdef_won") == 1
+			if won then
 				obrona_statku.mark_done()
 			end
-			obrona_statku.leave()
+			if not won or pc.is_playerbot() or pc.get_level() < c.port_level then
+				obrona_statku.leave()
+				return
+			end
+			say_title(mob_name(3949))
+			say("Hydra pokonana! Statek mo¿e teraz dop³yn¹æ do")
+			say("Portu Nowego Kontynentu. Dok¹d chcesz p³yn¹æ?")
+			local s = select("Do Portu Nowego Kontynentu", "Na Przyl¹dek Smoczego Ognia", "Zostañ na statku")
+			if s == 1 then
+				obrona_statku.to_port()
+			elseif s == 2 then
+				obrona_statku.leave()
+			end
 		end
 	end
 end

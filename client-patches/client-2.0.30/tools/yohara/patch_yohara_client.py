@@ -4,10 +4,12 @@
 #   31107  Deska Naprawcza        quest item (18), stack 200, ANTI_MYSHOP|ANTI_SAFEBOX, LIMIT_REAL_TIME 300 s
 #   54705  Skrzynia Hydry         giftbox (23), ANTI_STACK - opens 3 times (chest_uses)
 #   72058  Pakiet Kamieni Duszy   giftbox (23), stack 200 - one spirit stone as a Metin's
+#   70303  Pierscien Hydry        quest item (18), level 90 - three teleports to Port Nowego Kontynentu (368, quest
+#                                 port_yohary; MT2009_PLUS_YOHARA_PORT_V1, the owner 13 October evening)
 #
 # The rows = linux-port/docker/mariadb/playerbot/shipdefense.sql (world.item_proto) - keep them equal. Each record
 # is a copy of the Zelazna Szkatulka's (50120, a giftbox) with every server column written over it and the rest
-# (prices, applies, sockets) cleared. Icons: GF 26.1.11 icon/item/31107.tga and 54705.tga, new entries of the root
+# (prices, applies, sockets) cleared. Icons: GF 26.1.11 icon/item/31107.tga, 54705.tga and 70303.tga, new entries of the root
 # pack (client-patches/client-2.0.30/root/icon/item/, build57.py adds every file there); 72058 uses the official
 # icon/item/27999.tga (Sakiewka Kamieni Dusz's), already in the icon pack.
 #
@@ -38,6 +40,9 @@ ITEMS = (
      u'Skarb pokonanej Hydry. Można ją otworzyć 3 razy - za każdym razem daje jeden przedmiot.'),
     (72058, u'Soul Stone Package', u'Pakiet Kamieni Duszy', 23, 0, 200, 0, 4, (0, 0), 0, u'icon/item/27999.tga',
      u'Po otwarciu daje jeden losowy Kamień Duszy (od +0 do +4).'),
+    # MT2009_PLUS_YOHARA_PORT_V1: value0 = 3 uses (quest port_yohary), level 90, ANTI_SELL|GIVE|DROP|STACK|MYSHOP|SAFEBOX
+    (70303, u'Hydra Ring', u'Pierścień Hydry', 18, 0, 1, 237952, 0, (1, 90), 3, u'icon/item/70303.tga',
+     u'Ten pierścień upuściła Hydra, konając. Zaprowadzi cię na nowy kontynent: 3 teleporty do Portu Nowego Kontynentu.'),
 )
 # vnum: (Polish name, description) of an item the client has - only its itemdesc line is set.
 # (the Magic Stone 25042 keeps its own text - the owner, 13 October; the stray refine-bonus lines under it
