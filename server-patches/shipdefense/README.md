@@ -109,7 +109,7 @@ Quest: `linux-port/docker/game/quest/obrona_statku.quest` (krok 5, poniżej).
 
 ## Quest `obrona_statku` (krok 5)
 
-Wzorzec Leża Smoka (`blue_dragon_lair.quest`): Rybak 9009 na Przylądku Smoczej Głowy (301, rdzeń game2,
+Wzorzec Leża Smoka (`blue_dragon_lair.quest`): Rybak 9009 na Przylądku Smoczego Ognia (301, rdzeń game2,
 838,1187) → „Obrona Statku (Hydra)” → `d.new_jump_pids(367, …)` dla gracza albo przywódcy z ludźmi drużyny
 stojącymi obok (30 pól); boty drużyny dołączają same (`playerbot_party_dungeon.h`: 367 jest mapą lochu
 drużyny, wyjście do Rybaka). Sprawdza poziom, limit dzienny, Yang i wierzchowca każdego człowieka; płaci się

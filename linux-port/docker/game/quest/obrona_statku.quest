@@ -3,7 +3,7 @@
 -- "dw" silnika (playerbot_ship_defense_questlua.cpp); quest defense_wave.quest Owsapa tylko jako wzór
 -- przebiegu (jego c_locale, dw.enter/dw.exit, bilety i ranking nie istniej¹ u nas).
 -- Decyzje w³aœciciela (cache/yohara/decyzje.md, 13 paŸdziernika 2026):
---   * wejœcie u Rybaka (9009) na Przyl¹dku Smoczej G³owy (301), od poziomu 90;
+--   * wejœcie u Rybaka (9009) na Przyl¹dku Smoczego Ognia (301), od poziomu 90;
 --   * dru¿yna albo solo, boty z dru¿yny wchodz¹ za cz³owiekiem (playerbot_party_dungeon.h);
 --   * 5 000 000 Yang za wejœcie, BEZ czekania miêdzy wyprawami, najwy¿ej 10 wejœæ dziennie.
 -- Wszystkie liczby s¹ flagami zdarzeñ shipdef_<nazwa> czytanymi przez dw.cfg() (domyœlne w C++:
@@ -23,7 +23,7 @@ quest obrona_statku begin
 				map = 367,
 				base_x = 1280, base_y = 4864,
 				start = {387, 359}, -- Town.txt statku (CShipDefense START_X/START_Y)
-				entry_map = 301, -- Przyl¹dek Smoczej G³owy (rdzeñ game2), Rybak 9009 na 838,1187
+				entry_map = 301, -- Przyl¹dek Smoczego Ognia (rdzeñ game2), Rybak 9009 na 838,1187
 				exit_map = 301, exit_x = 10240 + 840, exit_y = 16640 + 1190,
 				near = 30, -- MT2009_PLUS_DUNGEON_ONE_WARP_V1: ludzie dru¿yny w promieniu 30 pól od przywódcy
 				min_level = dw.cfg("min_level"),
