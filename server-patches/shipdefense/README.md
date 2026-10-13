@@ -150,8 +150,9 @@ Magicznego Kamienia – `client-patches/client-2.0.30/tools/yohara/patch_yohara_
 
 Decyzja właściciela z 13.10.2026: Magiczny Kamień (**25042**, `USE_TUNING`, `value0` = 1 =
 `NO_REDUCTION_WHEN_FAIL_SCROLL`) działa tak, jak silnik ma to od zawsze: szansa kowala, materiały i Yang
-jak u kowala, a przy porażce przedmiot nie znika i nie traci poziomu. Łatka go nie zmienia; w kliencie
-opis przedmiotu jest pusty (pod „Typ przedmiotu” nic). Wypada ze Skrzyni Hydry (4%).
+jak u kowala, a przy porażce przedmiot nie znika i nie traci poziomu. Łatka go nie zmienia, opis
+przedmiotu zostaje (linie „Typ przedmiotu / Max. poziom” pod nim dopisywał błędnie uitooltip.py –
+MT2009_PLUS_REFINE_TOOLTIP_V1). Wypada ze Skrzyni Hydry (4%).
 
 ## Test GM (bez questa)
 

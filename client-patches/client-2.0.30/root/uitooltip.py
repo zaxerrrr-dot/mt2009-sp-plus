@@ -1579,7 +1579,9 @@ class ItemToolTip(ToolTip):
 
 			elif item.USE_TUNING == itemSubType:
 				refineScrollType = item.GetValue(0)
-				if refineScrollType:
+				# MT2009_PLUS_REFINE_TOOLTIP_V1: the refine-bonus lines (item type, levels) only for the
+				# bonus scroll (REFINE_BONUS_SCROLL = 3) - the Magic Stone and the War Scroll showed them too.
+				if refineScrollType == 3:
 					bonusFlag = item.GetValue(2)
 					item_type = item.GetValue(3)
 					use_level = item.GetValue(4)

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-# MT2009_PLUS_SHIP_DEFENSE_V1 (client data) - Obrona Statku (Hydra) items the client did not have, and the
-# Magic Stone's empty description (the owner, 13 October 2026):
+# MT2009_PLUS_SHIP_DEFENSE_V1 (client data) - Obrona Statku (Hydra) items the client did not have (13 October 2026):
 #
 #   31107  Deska Naprawcza        quest item (18), stack 200, ANTI_MYSHOP|ANTI_SAFEBOX, LIMIT_REAL_TIME 300 s
 #   54705  Skrzynia Hydry         giftbox (23), ANTI_STACK - opens 3 times (chest_uses)
 #   72058  Pakiet Kamieni Duszy   giftbox (23), stack 200 - one spirit stone as a Metin's
-#   25042  Magiczny Kamien        itemdesc only: the description EMPTY (nothing under "Typ przedmiotu")
 #
 # The rows = linux-port/docker/mariadb/playerbot/shipdefense.sql (world.item_proto) - keep them equal. Each record
 # is a copy of the Zelazna Szkatulka's (50120, a giftbox) with every server column written over it and the rest
@@ -22,7 +20,7 @@
 #     <item_proto> <item_list.txt> <itemdesc.txt> [<out dir>]
 # Without an out dir the files are rewritten in place. Then the next client's dbdata base for the panel's
 # database editor: python3 -m m2clientpack.make_base <client>/pack <version> (linux-port/docker/seban-panel) -
-# the panel builds its dbdata zips from the newest base, so until then they carry the old 25042 text.
+# the panel builds its dbdata zips from the newest base, so until then they lack these three items.
 import os
 import struct
 import sys
@@ -42,9 +40,9 @@ ITEMS = (
      u'Po otwarciu daje jeden losowy Kamień Duszy (od +0 do +4).'),
 )
 # vnum: (Polish name, description) of an item the client has - only its itemdesc line is set.
-DESC_ONLY = (
-    (25042, u'Magiczny Kamień', u''),
-)
+# (the Magic Stone 25042 keeps its own text - the owner, 13 October; the stray refine-bonus lines under it
+# were uitooltip.py's, MT2009_PLUS_REFINE_TOOLTIP_V1)
+DESC_ONLY = ()
 
 
 def record(template, it):
