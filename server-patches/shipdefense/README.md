@@ -95,6 +95,8 @@ solo, 5 000 000 Yang, bez przerwy, 10 wejść dziennie. Wszystko da się zmieni�
 | `(lua)` | `questlua.cpp` | Rejestracja modułu `dw`. |
 | `(declare)`, `(table)` | `cmd.cpp` | Polecenie GM `/dw` (create, start, info, wave 1-4, end). |
 | `(hydra chest)` | `char_item.cpp` | Skrzynia Hydry (54705) po udanym otwarciu zostaje, dopóki nie otwarto jej `chest_uses` razy (gniazdo 0 liczy otwarcia; `ShipDefense_ChestKeep`). |
+| `MT2009_PLUS_MAGIC_STONE_REFINE_V1 (info cost)`, `(info materials)` | `char_item.cpp` | `RefineInformation`: okno ulepszenia Magicznym Kamieniem bez Yang i bez materiałów. |
+| `MT2009_PLUS_MAGIC_STONE_REFINE_V1 (gold)`, `(scroll)` | `char_item.cpp` | `DoRefineWithScroll`: Magiczny Kamień bez Yang i materiałów, szansa kowala, porażka bez zniszczenia i bez spadku poziomu. |
 
 ## Moduł `dw` (dla questa, krok 5)
 
@@ -135,6 +137,18 @@ Decyzja właściciela z 13.10.2026. Pliki w `linux-port/docker/game/shipdefense/
   Magiczny Kamień 40 (dokładnie 4%). Skrzynia otwiera się 3 razy (`chest_uses`), podpowiedź klienta
   (`client-patches/client-2.0.30/root/uitooltip.py`) pokazuje pozostałe otwarcia.
 Brakujące u nas przedmioty i zamienniki są wypisane w nagłówkach obu plików.
+
+## Magiczny Kamień (`MT2009_PLUS_MAGIC_STONE_REFINE_V1`)
+
+Decyzja właściciela z 13.10.2026 (założenie „bez materiałów i Yang, kamień zużywa się przy każdej próbie”
+– do potwierdzenia). U nas Magiczny Kamień to **25042** (`USE_TUNING`, `value0` = 1 =
+`NO_REDUCTION_WHEN_FAIL_SCROLL`); 25041 to u nas drugi Zwój Błogosławieństwa. Przeciągnięty na przedmiot
+(klient już na to pozwala: `item.IsRefineScroll` + `player.CanRefine` w exe, bez zmian w pythonie) otwiera
+okno ulepszenia (`RefineItem` → `RefineInformation`) z szansą kowala (`refine_proto.prob` zestawu
+przedmiotu, z błogosławieństwem Goblina jak u kowala), kosztem 0 i bez materiałów; `DoRefineWithScroll`
+zużywa kamień przy każdej próbie, przy porażce przedmiot zostaje na swoim poziomie. Rozpoznanie:
+`MagicStoneRefineFree` (vnum 25042 + `ITEM_USE`/`USE_TUNING`) w `playerbot_ship_defense.cpp`. Opis
+przedmiotu: `client-patches/client-2.0.30/locale/locale/pl/itemdesc.txt` (do najbliższej budowy klienta).
 
 ## Test GM (bez questa)
 
