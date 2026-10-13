@@ -365,3 +365,10 @@ jego exp na niebiesko, wartość poniżej wymagań mapy na czerwono). Klawisz �
 `uichampion.py` (Etap A) usunięty; `uicharacternew.py` GF nie jest używany (brak w nim naszych części okna).
 Grafiki są już w kliencie bazowym: `d:/ymir work/ui/game/windows/char_info_sungma_*.sub`, `old/new_level_btn_0*.sub`
 (paczka `etc`) wskazują na `d:/ymir work/ui/windows.dds` (512×940, wersja GF – sprawdzone 13.10.2026 wycinkiem).
+
+Zbudowane 13.10.2026 (`build.sh msvc --smoke`, MSVC 14.44; źródła: kopia client-build + cały ten katalog, jak exe 2.0.63 –
+`/opt/metin2/cache/exe-yohara/Source`): `metin2client.exe` 13 700 096 B, sha256
+`75d7825064b7cb42cd6e42f6117ca04300c49d88dae9acef3d5242a33ab8403a` (`/opt/metin2/cache/exe-releases/metin2client-75d78250.exe`,
+`/opt/metin2/cache/yohara/exe-out/`); smoke test dochodzi do okna logowania. Drugi smoke z root 3.0 (tylko do testu: hak w
+`intrologin.py` otwiera dwa okna postaci przy logowaniu) – strona zwykła i Sung Ma rysują się bez błędów
+(`exe-out/smoke-character-window.png`; liczby to śmieci, bo nie ma postaci).
