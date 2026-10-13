@@ -559,6 +559,35 @@ namespace
 	const char* const PLAYERBOT_MG_CK_PRIZE_QF = "mt2009_botmg.ck_prize_season";
 	const char* const PLAYERBOT_MG_YUT_PRIZE_QF = "minigame_yutnori.reward_season";	// the quest's pc.setqf("reward_season")
 
+	// MT2009_PLUS_RANKING_REWARD_ONCE_V1: a top ten's prize went to the same bot again and again - Yut Nori's
+	// on the test server 78 times to 20 bots and seasons, DIABELLEK (7th, season 1791212400) ten times, ZlyTaboret
+	// (2nd, 5 Trophies) eight. The pass ran in the very second of the bot's login (PLAYER_LOAD 09:35:00, prize
+	// 09:35:00), before the db core's QUEST_LOAD had brought its quest flags: the season's mark read 0, the prize
+	// went out, and the mark written then was the one it already had. Rumi's prize is marked the same way. Now
+	// the pass waits for the quest flags, and every prize is first written to player.mt2009_minigame_prize
+	// (game, season, pid - the primary key): only the INSERT that adds the row gives it, once a character and
+	// season, whatever the core, the login or the quest flags say. Catch the King keeps its own claimed = 0 UPDATE.
+	// 1 = this pass gives it, 0 = given before, -1 = no answer (asked again at the next pass).
+	int TakePlayerBotMinigamePrizeOnce(int game, DWORD season, DWORD pid)
+	{
+		static bool s_bTable = false;
+		if (!s_bTable)
+		{
+			std::unique_ptr<SQLMsg> create(DBManager::instance().DirectQuery(
+					"CREATE TABLE IF NOT EXISTS player.mt2009_minigame_prize ("
+					"game TINYINT UNSIGNED NOT NULL, season INT UNSIGNED NOT NULL, pid INT UNSIGNED NOT NULL, "
+					"given_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (game, season, pid)) ENGINE=InnoDB"));
+			if (!create.get() || create->uiSQLErrno != 0)
+				return -1;
+			s_bTable = true;
+		}
+		std::unique_ptr<SQLMsg> ins(DBManager::instance().DirectQuery(
+				"INSERT IGNORE INTO player.mt2009_minigame_prize (game, season, pid) VALUES (%d, %u, %u)", game, season, pid));
+		if (!ins.get() || ins->uiSQLErrno != 0 || !ins->Get())
+			return -1;
+		return ins->Get()->uiAffectedRows == 1 ? 1 : 0;
+	}
+
 	struct TPlayerBotMgTop
 	{
 		DWORD season;
@@ -639,6 +668,10 @@ namespace
 	{
 		bool given = false;
 		const DWORD pid = ch->GetPlayerID();
+		// MT2009_PLUS_RANKING_REWARD_ONCE_V1: not before the quest flags are read (QUEST_LOAD after a login).
+		quest::PC* questPC = quest::CQuestManager::instance().GetPCForce(pid);
+		if (!questPC || !questPC->IsLoaded())
+			return false;
 		for (int g = 0; g < PLAYERBOT_MG_GAMES; ++g)
 		{
 			const DWORD season = GetPlayerBotMinigamePrizeSeason(g);
@@ -685,7 +718,14 @@ namespace
 					count = mt2009_rumi::RANK_PRIZE[rank];
 					if (!ITEM_MANAGER::instance().GetTable(vnum))
 						continue;
-					ch->SetQuestFlag(mt2009_rumi::F_CLAIMED, (int)season);
+					{
+						const int once = TakePlayerBotMinigamePrizeOnce(g, season, pid);	// MT2009_PLUS_RANKING_REWARD_ONCE_V1
+						if (once < 0)
+							continue;
+						ch->SetQuestFlag(mt2009_rumi::F_CLAIMED, (int)season);
+						if (once == 0)
+							continue;
+					}
 					break;
 				case 2:
 					if ((DWORD)ch->GetQuestFlag(PLAYERBOT_MG_YUT_PRIZE_QF) == season)
@@ -694,7 +734,14 @@ namespace
 					count = PLAYERBOT_MG_YUT_PRIZE[rank];
 					if (!ITEM_MANAGER::instance().GetTable(vnum))
 						continue;
-					ch->SetQuestFlag(PLAYERBOT_MG_YUT_PRIZE_QF, (int)season);
+					{
+						const int once = TakePlayerBotMinigamePrizeOnce(g, season, pid);	// MT2009_PLUS_RANKING_REWARD_ONCE_V1
+						if (once < 0)
+							continue;
+						ch->SetQuestFlag(PLAYERBOT_MG_YUT_PRIZE_QF, (int)season);
+						if (once == 0)
+							continue;
+					}
 					break;
 			}
 			LPITEM item = ch->AutoGiveItem(vnum, (ITEM_COUNT)count, -1, false);

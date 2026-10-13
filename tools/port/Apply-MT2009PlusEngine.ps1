@@ -1118,6 +1118,17 @@ if ((Test-Path -LiteralPath $guildWarWatchApply -PathType Leaf) -and
         Write-Host ('Applied {0} guild war watch edit(s).' -f $guildWarWatchResult.Applied) -ForegroundColor DarkGray
     }
 }
+# No rank penalty for a guild war's kill, the deaths after the war's end and on the arena included
+# (server-patches/warrankkeep, MT2009_PLUS_WAR_RANK_KEEP_V1): char_battle.cpp Dead, guild_war.cpp EndWar.
+$warRankKeepApply = Join-Path $repo 'server-patches/warrankkeep/Apply-WarRankKeepPatch.ps1'
+if ((Test-Path -LiteralPath $warRankKeepApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'guild_war.cpp') -PathType Leaf)) {
+    $warRankKeepResult = & $warRankKeepApply -SourceDir $engineGameSource
+    if ($warRankKeepResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} war rank keep edit(s).' -f $warRankKeepResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # The Combo skill remembered over a relog, a teleport and a channel change
 # (server-patches/combosave, MT2009_PLUS_COMBO_SAVE_V1, Autor: Mur4s).
 $comboSaveApply = Join-Path $repo 'server-patches/combosave/Apply-ComboSavePatch.ps1'

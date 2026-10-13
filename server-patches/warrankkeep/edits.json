@@ -1,0 +1,20 @@
+[
+ {
+  "file": "guild_war.cpp",
+  "marker": "MT2009_PLUS_WAR_RANK_KEEP_V1 (ended)",
+  "old": "void CGuild::EndWar(DWORD dwOppGID)\n{",
+  "new": "// MT2009_PLUS_WAR_RANK_KEEP_V1 (ended) (server-patches/warrankkeep): when the war of two guilds ended on this core.\n// A killing blow of a war stuns its victim, and the death (CHARACTER::Dead) comes three seconds later (StunEvent) -\n// the blow that ends the war, or one struck in its last seconds, died after EndWar had erased the war, and the\n// engine took it for a murder: -2 000 rank to the killer (and his party) and an item drop of the victim. The\n// owner, 13 October: \"Po wyjsciu z wojny gildii punkty rangi gracza spadaja, nie powinny spadac.\"\nstatic std::map<std::pair<DWORD, DWORD>, DWORD> s_mapMt2009WarEndedAt;\n\nbool Mt2009GuildWarJustEnded(DWORD dwGuild1, DWORD dwGuild2)\n{\n\tif (!dwGuild1 || !dwGuild2 || dwGuild1 == dwGuild2)\n\t\treturn false;\n\tstd::map<std::pair<DWORD, DWORD>, DWORD>::const_iterator it = s_mapMt2009WarEndedAt.find(std::make_pair(MIN(dwGuild1, dwGuild2), MAX(dwGuild1, dwGuild2)));\n\treturn it != s_mapMt2009WarEndedAt.end() && get_global_time() - it->second <= 15;\n}\n\nvoid CGuild::EndWar(DWORD dwOppGID)\n{"
+ },
+ {
+  "file": "guild_war.cpp",
+  "marker": "MT2009_PLUS_WAR_RANK_KEEP_V1 (end)",
+  "old": "\t\tif (pMap)\n\t\t\tpMap->SetEnded();\n\n\t\tGuildWarPacket(dwOppGID, it->second.type, GUILD_WAR_END);\n\t\tm_EnemyGuild.erase(it);\n",
+  "new": "\t\tif (pMap)\n\t\t\tpMap->SetEnded();\n\n\t\t// MT2009_PLUS_WAR_RANK_KEEP_V1 (end): the war's end kept for the deaths still on their way.\n\t\ts_mapMt2009WarEndedAt[std::make_pair(MIN(GetID(), dwOppGID), MAX(GetID(), dwOppGID))] = get_global_time();\n\n\t\tGuildWarPacket(dwOppGID, it->second.type, GUILD_WAR_END);\n\t\tm_EnemyGuild.erase(it);\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_WAR_RANK_KEEP_V1 (dead)",
+  "old": "\t\t\tif (g1 && g2)\n\t\t\t\tif (g1->UnderWar(g2->GetID()))\n\t\t\t\t\tisUnderGuildWar = true;\n",
+  "new": "\t\t\tif (g1 && g2)\n\t\t\t\tif (g1->UnderWar(g2->GetID()))\n\t\t\t\t\tisUnderGuildWar = true;\n\n\t\t\t// MT2009_PLUS_WAR_RANK_KEEP_V1 (dead) (server-patches/warrankkeep): a death of a guild war is no murder,\n\t\t\t// though it comes after the war's end - the victim falls three seconds after the killing blow (StunEvent),\n\t\t\t// and the war that ends with it is erased by then (guild_war.cpp, Mt2009GuildWarJustEnded, 15 s) - nor is\n\t\t\t// any death on a guild war arena (110, 111 and their copies: only the guilds at war fight there,\n\t\t\t// MT2009_PLUS_GUILD_WAR_WATCH_V1). No rank lost by the killer or his party, no item dropped by the victim.\n\t\t\tif (!isUnderGuildWar)\n\t\t\t{\n\t\t\t\tbool Mt2009GuildWarJustEnded(DWORD dwGuild1, DWORD dwGuild2);\n\t\t\t\tconst long lWarRankMap = GetMapIndex() >= 10000 ? GetMapIndex() / 10000 : GetMapIndex();\n\t\t\t\tif ((g1 && g2 && Mt2009GuildWarJustEnded(g1->GetID(), g2->GetID())) || lWarRankMap == 110 || lWarRankMap == 111)\n\t\t\t\t{\n\t\t\t\t\tisUnderGuildWar = true;\n\t\t\t\t\tsys_log(0, \"WAR_RANK_KEEP: %s killed by %s on map %ld - a guild war's death, no rank penalty\", GetName(), pkKiller->GetName(), GetMapIndex());\n\t\t\t\t}\n\t\t\t}\n"
+ }
+]
