@@ -237,6 +237,10 @@ def CanTakeExtraBonus(itemVnum, attrSlot):
 			return False
 		if itemType == item.ITEM_TYPE_WEAPON and item.GetItemSubType() == item.WEAPON_ARROW:
 			return False
+		# MT2009_PLUS_WILL_TALISMAN_V1: a talisman takes no extra bonus here (the server has none for its set; a
+		# Talizman Woli's 6th/7th slots are its own two standard lines)
+		if itemType == item.ITEM_TYPE_ARMOR and item.GetItemSubType() == getattr(item, 'ARMOR_PENDANT', 7):
+			return False
 		normal = 0
 		rare = 0
 		for i in xrange(min(len(attrSlot), player.ATTRIBUTE_SLOT_MAX_NUM)):
