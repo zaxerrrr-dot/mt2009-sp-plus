@@ -6,7 +6,7 @@
 #   textureset and its textures, the msenv (fog as exe 2.0.25 reads it) and its skybox, the atlas, every object of
 #   every sector (areadata CRC -> a property of pack property -> its model/effect/tree and, for a Building, the
 #   .mdatr), every race of the maps (npclist -> .msm) and every name the staged text files give; the new packs
-#   under the 29 MB limit and in Index.
+#   under the 29 MB limit and in Index; with --locale, locale_game.txt's map names.
 # Run in the m2pack-lzo image:
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/maps302/verify_maps302.py \
 #     <OUT pack dir> [<work dir with c58.lst>] [<npclist.txt>]
@@ -187,6 +187,19 @@ for k in staged:
         if not (r.startswith('d:/') or r.startswith(('sound/', 'textureset/', 'property/'))):
             r = 'd:/' + r if r.startswith('ymir work/') else d + r
         need(r, k)
+
+# 7) the map names (MT2009_PLUS_OCHAO_GAUTAMA_V1), when the locale pack is in OUT
+if '--locale' in sys.argv:
+    want = {'MAP_DAWN': 'Zbocze Gautama', 'MAP_DAWNMISTWOOD': 'Zbocze Gautama', 'MAP_BAY': 'Nefrytowa Zatoka',
+            'MAP_BAYBLACKSAND': 'Nefrytowa Zatoka', 'MAP_THUNDER': 'Gromiste G\xf3ry', 'MAP_MT_THUNDER': 'Gromiste G\xf3ry'}
+    for f in ('locale/pl/locale_game.txt', 'locale/pl/locale_game_marty.txt'):
+        if f not in CONTENT:
+            fail.append('%s not in OUT' % f)
+            continue
+        rows = dict(l.split('\t', 1) for l in CONTENT[f].decode('cp1250').replace('\r', '').split('\n') if '\t' in l)
+        for k, v in want.items():
+            if rows.get(k, '').strip() != v:
+                fail.append('%s %s = %r (want %r)' % (f, k, rows.get(k), v))
 
 print('objects checked: %d, properties in pack: %d, names known: %d' % (nobj, len(props), len(NAMES)))
 print('Building/DungeonBlock models without .mdatr (none in GF either): %d' % len(nomdatr))

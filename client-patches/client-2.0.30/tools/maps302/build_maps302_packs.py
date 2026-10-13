@@ -7,7 +7,9 @@
 #      <staging>/add/<pack>/<in-pack path> ("d_/" = "d:/");
 #   2) the existing pack "property": the entries listed in "replace" (bone_whale_tail00.prb with the model's real
 #      path) - old entries otherwise unchanged;
-#   3) their lines at the end of pack/Index.
+#   3) their lines at the end of pack/Index;
+#   4) MT2009_PLUS_OCHAO_GAUTAMA_V1 - the existing pack "locale": MAP_DAWN / MAP_DAWNMISTWOOD of
+#      locale/pl/locale_game.txt and locale_game_marty.txt become "Zbocze Gautama" (they said "Klif Gautama").
 # No gamedata row changes: atlasinfo.txt, npclist.txt and mob_proto of client 2.0.64 already have the three maps and
 # every vnum they spawn.
 # Run it AFTER ../cape301/build_cape301_packs.py, on the same OUT: the names cape301 adds are left to its packs (the
@@ -26,6 +28,7 @@
 # /opt/metin2/cache/yohara/cape301-work, then stage_maps302.py). Idempotent: a second run gives "in out"/"unchanged".
 import json
 import os
+import re
 import sys
 import zlib
 
@@ -34,6 +37,17 @@ sys.path.insert(0, '/opt/metin2/cache/tcm/tz')
 sys.path.insert(0, '/opt/metin2/cache/arezzo-work/client/az58')
 TEXT = ('.txt', '.msa', '.msm', '.mse', '.mss', '.msenv', '.sub', '.prb', '.prd', '.pre', '.prt', '.py', '.ifl', '.pra')
 ZIP_LIMIT = 29 * 1024 * 1024
+# MT2009_PLUS_OCHAO_GAUTAMA_V1: the owner's name for map 302 (13 Oct 2026) - the client called it "Klif Gautama"
+# (MAP_DAWN / MAP_DAWNMISTWOOD of locale_game.txt and locale_game_marty.txt, pack "locale"); every other row stays.
+LOCALE_NAMES = {b'MAP_DAWN': u'Zbocze Gautama', b'MAP_DAWNMISTWOOD': u'Zbocze Gautama'}
+LOCALE_FILES = ('locale/pl/locale_game.txt', 'locale/pl/locale_game_marty.txt')
+
+
+def locale_rename(b):
+    for key, val in LOCALE_NAMES.items():
+        b, n = re.subn(rb'(?m)^(' + key + rb'\t)[^\r\n]*', lambda m: m.group(1) + val.encode('cp1250'), b)
+        assert n == 1, (key, n)
+    return b
 
 
 def ctype(name):
@@ -147,6 +161,26 @@ def main():
             report[pack] = dict(add=len(add), replace=sorted(rep))
         else:
             report[pack] = write(pack, src, rep, add, ents, dat)
+            report[pack]['replaced_names'] = sorted(rep)
+
+    # 2b) locale (MT2009_PLUS_OCHAO_GAUTAMA_V1): the map names of locale_game(_marty).txt
+    for pack in ('locale',):
+        src = src_of(pack)
+        f, v, ents = m2pack.read_index(os.path.join(src, pack + '.index'))
+        dat = rd(os.path.join(src, pack + '.data'))
+        have = dict((e['name'], e) for e in ents)
+        rep = {}
+        for k in LOCALE_FILES:
+            old = m2pack.read_entry(dat, have[k])
+            new = locale_rename(old)
+            if new != old:
+                rep[k] = new
+        if not rep:
+            report[pack] = 'unchanged'
+        elif check:
+            report[pack] = dict(replace=sorted(rep))
+        else:
+            report[pack] = write(pack, src, rep, {}, ents, dat)
             report[pack]['replaced_names'] = sorted(rep)
 
     # 3) Index: the new packs at the end (after the build's own lines and cape301's)

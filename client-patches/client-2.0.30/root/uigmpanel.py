@@ -311,7 +311,7 @@ GMP_TEXTS = {
 	'GMP_TP_GIANTS': 'Kraina Gigantow',
 	'GMP_TP_WLPASS': 'Przelecz (wl_pass)',
 	'GMP_TP_CAPE': 'Przyladek Smoczego Ognia',
-	'GMP_TP_DAWNMIST': 'Las Porannej Mgly',
+	'GMP_TP_DAWNMIST': 'Zbocze Gautama',
 	'GMP_TP_BLACKSAND': 'Zatoka Czarnego Piasku',
 	'GMP_TP_THUNDER': 'Gora Grzmotow',
 	'GMP_TP_HWANG': 'Swiatynia Hwang',

@@ -886,8 +886,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/cube-add/c
 # files as the package ships them, its groups (group.ochao.txt) and drops
 # (mob_drop_item.ochao.txt: the package's vnums mapped to this world's), the
 # En-Tai Guardian's motions (data/monster/trent_officer) and the entrance NPC,
-# Straznik Swiatyni (20426): beside Koe-Pung in Orc Valley, on a cell measured
-# free on its server_attr, and where the package stands him in Dawnmistwood.
+# Straznik Swiatyni (20426). MT2009_PLUS_OCHAO_GAUTAMA_V1: he stands ONLY on
+# Zbocze Gautama (302, metin2_map_dawnmistwood) at cell 1003 700, as on the
+# wiki - no longer beside Koe-Pung in Orc Valley (a line an older image left in
+# map_n_threeway's npc.txt is taken out); the quest talks only on 302.
 # The Guardian's eleven rooms are playerbot_ochao.h; the NPCs' talk is
 # quest/temple_of_the_ochao.quest (compiled above).
 COPY ochao/ /tmp/ochao-add/
@@ -904,16 +906,17 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/ochao-add \
  && sed -i 's/\r$//; s/$/\r/' "$A/mob_drop_item.ochao.txt" \
  && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
  && cat "$A/mob_drop_item.ochao.txt" >> "$L/mob_drop_item.txt" \
- && for p in "map_n_threeway 289 1448 5" "metin2_map_dawnmistwood 1004 700 1"; do \
-      set -- $p; F="$L/map/$1/npc.txt"; \
-      [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; \
-      grep -q -E '[[:blank:]]20426[[:space:]]*$' "$F" || printf 'm\t%s\t%s\t0\t0\t0\t%s\t1m\t100\t1\t20426\n' "$2" "$3" "$4" >> "$F"; \
-      grep -q -E "^m[[:blank:]]+$2[[:blank:]]+$3[[:blank:]].*[[:blank:]]20426" "$F"; \
-    done \
+ && sed -i -E '/[[:blank:]]20426[[:space:]]*$/d' "$L/map/map_n_threeway/npc.txt" "$L/map/metin2_map_dawnmistwood/npc.txt" \
+ && ! grep -q -E '[[:blank:]]20426[[:space:]]*$' "$L/map/map_n_threeway/npc.txt" \
+ && F="$L/map/metin2_map_dawnmistwood/npc.txt" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; } \
+ && printf 'm\t1003\t700\t0\t0\t0\t1\t1m\t100\t1\t20426\n' >> "$F" \
+ && test "$(grep -c -E '[[:blank:]]20426[[:space:]]*$' "$F")" = 1 \
+ && grep -q -E '^m[[:blank:]]+1003[[:blank:]]+700[[:blank:]].*[[:blank:]]20426[[:space:]]*$' "$F" \
  && S="$L/settings.lua" \
  && { LC_ALL=C grep -a -q 'add_goto_info("ochao"' "$S" || printf 'add_goto_info("ochao", 0, 209, 8537, 14164)\r\n' >> "$S"; } \
  && rm -rf "$A" \
- && echo "share: Swiatynia Ochao (map 209, groups, drops, Straznik Swiatyni, /goto ochao)"
+ && echo "share: Swiatynia Ochao (map 209, groups, drops, Straznik Swiatyni on Zbocze Gautama, /goto ochao)"
 
 # MT2009_PLUS_DUNGEONS_V1: the Razador and Nemere dungeons (quest/razador_dungeon.quest and
 # quest/nemere_dungeon.quest, compiled above; their monsters, keys and names are apply.sh's
@@ -1145,8 +1148,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-p58 \
 # MT2009_PLUS_ATLANTYDA_V1 (share): Ruiny Atlantydy - plechito_summer2022_dungeon, 158, 3x3 at 3814400 2252800,
 # the Plechito summer 2022 dungeon "Ruins of Atlantis" at the Grotto of Exile's band (entry 75, solo or a party;
 # quest/ruiny_atlantydy.quest; apply.sh has the rows). Its entrance, Mag Atlantydy (9460), stands in Orc Valley
-# beside the Grotto's entrance (286,1434; the Grotto's 20091 is at 295,1442, the Temple guard 20426 at 289,1448,
-# all on one open ground measured on server_attr). The public copy of 158 is the fallback lobby (its npc.txt:
+# beside the Grotto's entrance (286,1434; the Grotto's 20091 is at 295,1442, the Temple guard 20426 stood at
+# 289,1448 until MT2009_PLUS_OCHAO_GAUTAMA_V1, all on one open ground measured on server_attr). The public copy of 158 is the fallback lobby (its npc.txt:
 # the magician at the entry); the instance's two floors are data/dungeon/ruiny_atlantydy (wave1, wave2, hearts).
 # The Plechito monsters' motions (share/data/monster/plechi_sum2022_*: the server times attacks by them), the
 # stones' one-monster call groups 6408-6412 (group.atlantyda.txt), the ticket's drops from the Grotto's
