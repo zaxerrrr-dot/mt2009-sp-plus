@@ -69,6 +69,9 @@ param(
 #                      server-patches/rankpoints)
 #   Swiatynia Zodiaku  24 engine files, ENABLE_12ZI (MT2009_PLUS_ZODIAC_V1;
 #                      server-patches/zodiak, Autor: Digi Rasta)
+#   Obrona Statku      dungeon.cpp, char_battle.cpp, pvp.cpp, char.cpp, input_login.cpp,
+#                      regen.cpp, sectree.cpp, char_state.cpp, questlua.cpp, cmd.cpp
+#                      (MT2009_PLUS_SHIP_DEFENSE_V1; server-patches/shipdefense)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1190,6 +1193,23 @@ foreach ($dropSourceName in @('item_manager.cpp', 'char_item.cpp')) {
         [IO.File]::WriteAllText($dropSource, $dropText)
         $syncedFiles++
         Write-Host "Removed broken Death Ruler sash drops from $dropSourceName." -ForegroundColor DarkGray
+    }
+}
+
+# Obrona Statku / Hydra (server-patches/shipdefense, MT2009_PLUS_SHIP_DEFENSE_V1): 17 short hooks
+# in 10 engine files - the dungeon's destroy, d.kill_all and d.purge, the attack, damage, death and
+# aggro of the ship's monsters, the mast as a target (pvp.cpp), the attack ranges and the lasers'
+# fields (char.cpp), the entry (input_login.cpp), the waves' respawn (regen.cpp), the AI with nobody
+# near (sectree.cpp, char_state.cpp), the quests' "dw" module and the GM command /dw. The work is
+# the overlay's playerbot_ship_defense*. Last: its anchors are lines the Blue Dragon, Goblin and
+# Zodiac edits leave or add.
+$shipDefenseApply = Join-Path $repo 'server-patches/shipdefense/Apply-ShipDefensePatch.ps1'
+if ((Test-Path -LiteralPath $shipDefenseApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'dungeon.cpp') -PathType Leaf)) {
+    $shipDefenseResult = & $shipDefenseApply -SourceDir $engineGameSource
+    if ($shipDefenseResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Ship Defense (Hydra) edit(s).' -f $shipDefenseResult.Applied) -ForegroundColor DarkGray
     }
 }
 

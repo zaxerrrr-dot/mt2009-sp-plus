@@ -1,0 +1,104 @@
+[
+ {
+  "file": "dungeon.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (destroy)",
+  "old": "\tDWORD server_timer_arg = lMapIndex;\n\tquest::CQuestManager::instance().CancelServerTimers(server_timer_arg);\n",
+  "new": "\tDWORD server_timer_arg = lMapIndex;\n\tquest::CQuestManager::instance().CancelServerTimers(server_timer_arg);\n\t// MT2009_PLUS_SHIP_DEFENSE_V1 (destroy): a ship instance (367) drops its Obrona Statku object\n\t// (playerbot_ship_defense.cpp) with the dungeon.\n\t{ void ShipDefense_OnDungeonDestroy(long); ShipDefense_OnDungeonDestroy(lMapIndex); }\n"
+ },
+ {
+  "file": "dungeon.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (kill all)",
+  "old": "\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse())\n\t\t\t\t\tch->DeadNoReward(); // @fixme188 from Dead()",
+  "new": "\t\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (kill all): d.kill_all leaves the ship's mast, wheel, walls,\n\t\t\t\t// heads and portal standing (playerbot_ship_defense.cpp).\n\t\t\t\t{ bool ShipDefense_Protected(LPCHARACTER); if (ShipDefense_Protected(ch)) return; }\n\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse())\n\t\t\t\t\tch->DeadNoReward(); // @fixme188 from Dead()"
+ },
+ {
+  "file": "dungeon.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (purge)",
+  "old": "\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse()) {\n\t\t\t\t\tM2_DESTROY_CHARACTER(ch);",
+  "new": "\t\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (purge): d.purge too, while the ship runs.\n\t\t\t\t{ bool ShipDefense_Protected(LPCHARACTER); if (ShipDefense_Protected(ch)) return; }\n\t\t\t\tif (!ch->IsPC() && !ch->IsPet() && !ch->IsHorse()) {\n\t\t\t\t\tM2_DESTROY_CHARACTER(ch);"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (attack)",
+  "old": "\tif (GetMapIndex() != pkVictim->GetMapIndex())\n\t\treturn false;\n\n\t// CASTLE",
+  "new": "\tif (GetMapIndex() != pkVictim->GetMapIndex())\n\t\treturn false;\n\n\t// MT2009_PLUS_SHIP_DEFENSE_V1 (attack): the Hydra's heads and its intro on the ship strike nobody.\n\t{ bool ShipDefense_CannotAttack(LPCHARACTER); if (ShipDefense_CannotAttack(this)) return false; }\n\n\t// CASTLE"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (damage)",
+  "old": "BlueDragon_Block(GetMapIndex()))\n\t{\n\t\tif (pAttacker)\n\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\treturn false;\n\t}\n",
+  "new": "BlueDragon_Block(GetMapIndex()))\n\t{\n\t\tif (pAttacker)\n\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\treturn false;\n\t}\n\n\t// MT2009_PLUS_SHIP_DEFENSE_V1 (damage): on the ship (367) the Hydra's heads, its intro and the\n\t// wheel take no damage (1), and a repair plank (20437) loses one point a blow whatever the\n\t// blow (2, Owsap's COUNT flag, which our mob_proto has not) - playerbot_ship_defense.cpp.\n\t{\n\t\tint ShipDefense_DamageRule(LPCHARACTER, LPCHARACTER);\n\t\tconst int iShipRule = ShipDefense_DamageRule(this, pAttacker);\n\t\tif (iShipRule == 1)\n\t\t{\n\t\t\tif (pAttacker)\n\t\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\t\treturn false;\n\t\t}\n\t\tif (iShipRule == 2 && !IsDead())\n\t\t{\n\t\t\tif (pAttacker)\n\t\t\t{\n\t\t\t\tUpdateAggrPoint(pAttacker, DAMAGE_TYPE_NORMAL, 1);\n\t\t\t\tSendDamagePacket(pAttacker, 1, DAMAGE_NORMAL);\n\t\t\t}\n\t\t\tPointChange(POINT_HP, -1);\n\t\t\tif (GetHP() <= 0)\n\t\t\t{\n\t\t\t\tDead(pAttacker);\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\treturn false;\n\t\t}\n\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (dead)",
+  "old": "\t\tif (GetDungeon())\n\t\t{\n\t\t\tGetDungeon()->DeadCharacter(this);\n\t\t}\n",
+  "new": "\t\tif (GetDungeon())\n\t\t{\n\t\t\tGetDungeon()->DeadCharacter(this);\n\t\t}\n\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (dead): the ship notes its mast, Hydra, egg and spawn\n\t\t// (handled on its next second, not in here).\n\t\t{ void ShipDefense_OnDead(LPCHARACTER, LPCHARACTER); ShipDefense_OnDead(this, pkKiller); }\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (aggro)",
+  "old": "void CHARACTER::UpdateAggrPointEx(LPCHARACTER pAttacker, EDamageType type, int dam, CHARACTER::TBattleInfo & info)\n{\n",
+  "new": "void CHARACTER::UpdateAggrPointEx(LPCHARACTER pAttacker, EDamageType type, int dam, CHARACTER::TBattleInfo & info)\n{\n\t// MT2009_PLUS_SHIP_DEFENSE_V1 (aggro): the Hydra and its spawn keep to the mast whoever strikes them.\n\t{ bool ShipDefense_IgnoreAggro(LPCHARACTER); if (ShipDefense_IgnoreAggro(this)) return; }\n\n"
+ },
+ {
+  "file": "pvp.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (attack)",
+  "old": "\t\tif (GoblinAttackable(pkChr, pkVictim))\n\t\t\treturn true;\n\t}\n",
+  "new": "\t\tif (GoblinAttackable(pkChr, pkVictim))\n\t\t\treturn true;\n\t}\n\t// MT2009_PLUS_SHIP_DEFENSE_V1 (attack): the ship's monsters strike its mast (20434), a NPC the\n\t// engine keeps out of every fight; people do not (playerbot_ship_defense.cpp).\n\t{\n\t\tbool ShipDefense_Attackable(LPCHARACTER attacker, LPCHARACTER victim);\n\t\tif (ShipDefense_Attackable(pkChr, pkVictim))\n\t\t\treturn true;\n\t}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (range)",
+  "old": "WORD CHARACTER::GetMobAttackRange() const\n{\n\tswitch (GetMobBattleType())\n\t{\n\t\tcase BATTLE_TYPE_RANGE:\n\t\tcase BATTLE_TYPE_MAGIC:\n\t\t\treturn m_pkMobData->m_table.wAttackRange + GetPoint(POINT_BOW_DISTANCE);\n\t\tdefault:\n\t\t\treturn m_pkMobData->m_table.wAttackRange;\n\t}\n}\n",
+  "new": "WORD CHARACTER::GetMobAttackRange() const\n{\n\t// MT2009_PLUS_SHIP_DEFENSE_V1 (range): on the ship the Hydra reaches 4500 farther (it stands\n\t// off the deck; Owsap's +2000 and HitRange) and the other monsters 300 (the mast is wide); 0 elsewhere.\n\tint ShipDefense_AttackRangeBonus(const CHARACTER*);\n\tconst int iShipBonus = ShipDefense_AttackRangeBonus(this);\n\n\tswitch (GetMobBattleType())\n\t{\n\t\tcase BATTLE_TYPE_RANGE:\n\t\tcase BATTLE_TYPE_MAGIC:\n\t\t\treturn m_pkMobData->m_table.wAttackRange + GetPoint(POINT_BOW_DISTANCE) + iShipBonus;\n\t\tdefault:\n\t\t\treturn m_pkMobData->m_table.wAttackRange + iShipBonus;\n\t}\n}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (move)",
+  "old": "\tSetRotationToXY(x, y);\n\tSetXYZ(x, y, 0);\n\n\tif (GetDungeon())",
+  "new": "\tSetRotationToXY(x, y);\n\tSetXYZ(x, y, 0);\n\n\t// MT2009_PLUS_SHIP_DEFENSE_V1 (move): a person on the ship (367) - the lasers' fields, and a\n\t// party's bot binds the ship on its first step (playerbot_ship_defense.cpp).\n\tif (IsPC())\n\t{\n\t\tvoid ShipDefense_OnMove(LPCHARACTER, long, long);\n\t\tShipDefense_OnMove(this, x, y);\n\t}\n\n\tif (GetDungeon())"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (enter)",
+  "old": "\t\telse {\n\t\t\tch->SetDungeon(CDungeonManager::instance().FindByMapIndex(ch->GetMapIndex()));\n\t\t}\n",
+  "new": "\t\telse {\n\t\t\tch->SetDungeon(CDungeonManager::instance().FindByMapIndex(ch->GetMapIndex()));\n\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (enter): the first person aboard a ship instance (367) binds\n\t\t\t// the Obrona Statku to it (mast, wheel, walls); everyone gets the mast's HP bar.\n\t\t\t{ void ShipDefense_OnEnter(LPCHARACTER); ShipDefense_OnEnter(ch); }\n\t\t}\n"
+ },
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (regen)",
+  "old": "\t\tif (ch && !bOnce)\n\t\t\tch->SetRegen(regen);\n\t}\n}\n\n// playerbot: how many a respawn line keeps standing",
+  "new": "\t\tif (ch && !bOnce)\n\t\t\tch->SetRegen(regen);\n\n\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (regen): a monster of a ship's wave goes for the mast (Owsap).\n\t\tif (ch)\n\t\t{\n\t\t\tvoid ShipDefense_OnRegenSpawn(LPCHARACTER);\n\t\t\tShipDefense_OnRegenSpawn(ch);\n\t\t}\n\t}\n}\n\n// playerbot: how many a respawn line keeps standing"
+ },
+ {
+  "file": "sectree.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (ai)",
+  "old": "\t\t\t\t\tLPCHARACTER ch = (LPCHARACTER) pkEnt;\n\t\t\t\t\tch->StopStateMachine();",
+  "new": "\t\t\t\t\tLPCHARACTER ch = (LPCHARACTER) pkEnt;\n\t\t\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (ai): a ship's monsters fight on with nobody beside them\n\t\t\t\t\t// (the Hydra strikes the mast from off the deck; Owsap's sectree.cpp).\n\t\t\t\t\t{ bool ShipDefense_KeepAI(LPCHARACTER); if (ShipDefense_KeepAI(ch)) continue; }\n\t\t\t\t\tch->StopStateMachine();"
+ },
+ {
+  "file": "char_state.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (idle)",
+  "old": "\tif (victim && !victim->IsDead())\n\t{\n\t\tif (CanBeginFight())\n\t\t\tBeginFight(victim);\n\n\t\treturn;\n\t}\n\n\tif (IsAggressive() && !victim)",
+  "new": "\t// MT2009_PLUS_SHIP_DEFENSE_V1 (idle): a monster of a running ship with nobody to fight goes\n\t// back to the mast (Ameria's FindVictimHydra; playerbot_ship_defense.cpp).\n\tif (!victim)\n\t{\n\t\tLPCHARACTER ShipDefense_FallbackVictim(LPCHARACTER);\n\t\tvictim = ShipDefense_FallbackVictim(this);\n\t}\n\n\tif (victim && !victim->IsDead())\n\t{\n\t\tif (CanBeginFight())\n\t\t\tBeginFight(victim);\n\n\t\treturn;\n\t}\n\n\tif (IsAggressive() && !victim)"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (lua)",
+  "old": "\t\tRegisterCommandFunctionTable();\n",
+  "new": "\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (lua): the quests' \"dw\" module (playerbot_ship_defense_questlua.cpp).\n\t\t{ void RegisterShipDefenseFunctionTable(); RegisterShipDefenseFunctionTable(); }\n\t\tRegisterCommandFunctionTable();\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (declare)",
+  "old": "struct command_info cmd_info[] =\n",
+  "new": "// MT2009_PLUS_SHIP_DEFENSE_V1 (declare): \"/dw create|start|info|wave N|end\" (playerbot_ship_defense.cpp).\nACMD(do_ship_defense);\nstruct command_info cmd_info[] =\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (table)",
+  "old": "\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};",
+  "new": "\t// MT2009_PLUS_SHIP_DEFENSE_V1 (table): Obrona Statku's test command for game masters.\n\t{ \"dw\",\tdo_ship_defense,\t0,\t\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};"
+ }
+]
