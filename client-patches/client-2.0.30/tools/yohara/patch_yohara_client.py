@@ -67,6 +67,16 @@ YITEMS_PATH = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__fi
                                            'yohara_items', 'yohara_items.json'))
 with io.open(YITEMS_PATH, encoding='utf-8') as _f:
     YITEMS = json.load(_f)
+# MT2009_PLUS_YOHARA_ITEMS2_V1: the second batch's items (Seoganland ... Schronienie Polnocnego Wiatru,
+# tools/yohara_items/gen_yitems2.py) - the same rows, merged in
+YITEMS2_PATH = os.path.join(os.path.dirname(YITEMS_PATH), 'yohara_items2.json')
+if os.path.exists(YITEMS2_PATH):
+    with io.open(YITEMS2_PATH, encoding='utf-8') as _f:
+        _y2 = json.load(_f)
+    assert not set(str(w['vnum']) for w in YITEMS['items']) & set(str(w['vnum']) for w in _y2['items'])
+    YITEMS['items'] = YITEMS['items'] + _y2['items']
+    YITEMS['item_list'].update(_y2['item_list'])
+    YITEMS['itemdesc'].update(_y2['itemdesc'])
 YITEM_TEMPLATE = {2: 94000}    # by type: Talizman Ognia+0 for the talismans, else TEMPLATE
 
 
