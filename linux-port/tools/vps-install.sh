@@ -22,7 +22,7 @@
 #      passphrase - on a VPS, whoever found the port had the admin panel.
 #      Here M2_PANEL_BIND_ADDRESS is 127.0.0.1 and the panels are opened
 #      through an SSH tunnel (ssh -L 7788:127.0.0.1:7788 ...); the game's
-#      own ports (11000, 13000-13002) stay on 0.0.0.0 for the players.
+#      own ports (11000, 13000-13003) stay on 0.0.0.0 for the players.
 #    * the game ships the accounts admin/admin (a GM) and test/test. Once the
 #      database answers both get random passwords, kept in
 #      /root/metin2-accounts.txt (root only) and never written to a log.

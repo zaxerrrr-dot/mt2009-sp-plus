@@ -1,0 +1,14 @@
+[
+ {
+  "file": "mining.cpp",
+  "marker": "MT2009_PLUS_JADE_VEINS_V1 (server-patches/jadeit): the four",
+  "old": "\t\tMAX_ORE = 19,\n",
+  "new": "\t\t// MT2009_PLUS_JADE_VEINS_V1 (server-patches/jadeit): the four jade veins of Yohara below\n\t\tMAX_ORE = 23,\n"
+ },
+ {
+  "file": "mining.cpp",
+  "marker": "MT2009_PLUS_JADE_VEINS_V1 (server-patches/jadeit): the jade veins",
+  "old": "\t\t{ 30306, 50619, 50639 },\n\t};\n",
+  "new": "\t\t{ 30306, 50619, 50639 },\n\t\t// MT2009_PLUS_JADE_VEINS_V1 (server-patches/jadeit): the jade veins of Yohara (pl-wiki \"Zyla Jadeitu\n\t\t// Slonca/Nocy/Dymu/Mgly\": a pickaxe, level 30) -> Ruda Jadeitu (50641-50644) -> 100 of it smelted into the\n\t\t// jade (50661-50664) - Owsap's rows; the smelting is a guild alchemist's crafting window here.\n\t\t{ 30310, 50641, 50661 },\n\t\t{ 30311, 50642, 50662 },\n\t\t{ 30312, 50643, 50663 },\n\t\t{ 30313, 50644, 50664 },\n\t};\n"
+ }
+]

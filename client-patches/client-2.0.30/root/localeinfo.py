@@ -546,6 +546,12 @@ MINIMAP_ZONE_NAME_DICT = {
 	# MT2009_PLUS_YOHARA_MAPS1_V1 (client): the first maps of Yohara (373, 374) on the minimap
 	"metin2_map_eastplain_01" : "Dongan",
 	"metin2_map_empirecastle" : "Opuszczona Twierdza",
+	# MT2009_PLUS_YOHARA_MAPS2_V1 (client): the second batch of Yohara (376, 377, 385, 388, 393) on the minimap
+	"metin2_map_eastplain_02" : "Seoganland",
+	"metin2_map_eastplain_03" : "Namgan",
+	"metin2_map_snakevalley" : "Prze³êcz Yilad",
+	"metin2_map_icecrystalcave" : "W¹wóz Pó³nocnego Wiatru",
+	"metin2_map_whitedragoncave_01" : "Schronienie Pó³nocnego Wiatru",
 }
 
 

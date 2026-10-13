@@ -1,0 +1,39 @@
+-- MT2009_PLUS_YOHARA_MAPS2_V1: druga partia map Yohary (cache/yohara/plan-mapy-yohary.md, decyzja 14.10; wiki:
+-- "Seoganland", "Namgan", "Prze³êcz Yilad", "W¹wóz Pó³nocnego Wiatru", "Schronienie Pó³nocnego Wiatru"):
+--   * Seoganland (376), Namgan (377), Prze³êcz Yilad (385), W¹wóz Pó³nocnego Wiatru (388, metin2_map_icecrystalcave),
+--     Schronienie Pó³nocnego Wiatru (393) - rdzeñ Yohary (game3); przejœcia to portale (mob_proto WARP):
+--     Dongan -> Seoganland -> Namgan -> Prze³êcz Yilad -> W¹wóz -> Schronienie i z powrotem;
+--   * wejœcie od poziomu 120, bez wymogu czempiona (jak 373/374) - kto nie ma 120 poziomu, wraca do portu;
+--   * ¯y³y Jadeitu (30310-30313): kilof wydobywa z nich Rudê Jadeitu (server-patches/jadeit), jak mining.quest.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest yohara_mapy2 begin
+	state start begin
+		function cfg()
+			return {
+				min_level = 120,
+				port_x = 1280 + 405, port_y = 5632 + 480,        -- Town.txt portu (368)
+			}
+		end
+
+		function is_map(idx)
+			return idx == 376 or idx == 377 or idx == 385 or idx == 388 or idx == 393
+		end
+
+		when login with yohara_mapy2.is_map(pc.get_map_index()) begin
+			local c = yohara_mapy2.cfg()
+			if pc.is_gm() or pc.is_playerbot() then
+				return
+			end
+			if pc.get_level() < c.min_level then
+				syschat("Ziemie Yohary s¹ dostêpne od poziomu "..c.min_level..". Wracasz do Portu Nowego Kontynentu.")
+				pc.warp(c.port_x * 100, c.port_y * 100)
+			end
+		end
+
+		when 30310.click or 30311.click or 30312.click or 30313.click begin
+			if pc.is_mount() != true then
+				pc.mining()
+			end
+		end
+	end
+end

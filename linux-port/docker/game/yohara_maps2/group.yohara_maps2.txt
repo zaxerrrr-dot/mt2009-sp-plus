@@ -1,0 +1,244 @@
+// MT2009_PLUS_YOHARA_MAPS2_V1: Seoganland (376), Namgan (377), Schronienie Polnocnego Wiatru (393) - Owsap
+// v6.2.6 group.txt; Wawoz Polnocnego Wiatru (388) - ours (tools/yohara_maps/gen_ymaps2.py; GENERATED)
+Group	MT2009_ymaps2_EastPlane_02_01
+{
+	Vnum	6185
+	Leader	"Myr Kovix (ziemia)"	6718
+	1	"Myr Kovix (ziemia)"	6718
+	2	"Myr Kovix (ziemia)"	6718
+	3	"Myr Proletariusz"	6719
+}
+
+Group	MT2009_ymaps2_EastPlane_02_02
+{
+	Vnum	6186
+	Leader	"Myr Bojownik (ziemia)"	6721
+	1	"Myr Proletariusz"	6719
+	2	"Myr Proletariusz"	6719
+	3	"Myr Golem (ziemia)"	6720
+}
+
+Group	MT2009_ymaps2_EastPlane_02_03
+{
+	Vnum	6187
+	Leader	"Myr Golem (ziemia)"	6720
+	1	"Myr Czarodziej (ziemia)"	6722
+	2	"Myr Czarodziej (ziemia)"	6722
+	3	"Myr Golem (ziemia)"	6720
+}
+
+Group	MT2009_ymaps2_EastPlane_02_04
+{
+	Vnum	6188
+	Leader	"Myr Bojownik (ziemia)"	6721
+	1	"Myr Bojownik (ziemia)"	6721
+	2	"Myr Czarodziej (ziemia)"	6722
+	3	"Myr Golem (ziemia)"	6720
+}
+
+Group	MT2009_ymaps2_EastPlane_02_05
+{
+	Vnum	6189
+	Leader	"Myr Proletariusz"	6719
+	1	"Myr Proletariusz"	6719
+	2	"Myr Bojownik (ziemia)"	6721
+	3	"Myr Czarodziej (ziemia)"	6722
+}
+
+Group	MT2009_ymaps2_EastPlane_02_06
+{
+	Vnum	6190
+	Leader	"Myr Proletariusz"	6719
+	1	"Myr Proletariusz"	6719
+	2	"Myr Bojownik (ziemia)"	6721
+	3	"Myr Czarodziej (ziemia)"	6722
+}
+
+Group	MT2009_ymaps2_EastPlane_02_07
+{
+	Vnum	6191
+	Leader	"Myr Proletariusz"	6719
+	1	"Myr Proletariusz"	6719
+	2	"Myr Bojownik (ziemia)"	6721
+	3	"Myr Czarodziej (ziemia)"	6722
+}
+
+Group	MT2009_ymaps2_EastPlane_02_08
+{
+	Vnum	6192
+	Leader	"Myr Czarodziej (ziemia)"	6722
+	1	"Myr Czarodziej (ziemia)"	6722
+	2	"Myr Czarodziej (ziemia)"	6722
+	3	"Myr Czarodziej (ziemia)"	6722
+}
+
+Group	MT2009_ymaps2_EastPlane_03_01
+{
+	Vnum	6711
+	Leader	"Myr Kovix (wiatr)"	6725
+	1	"Myr Kovix (wiatr)"	6725
+	2	"Myr Kovix (wiatr)"	6725
+	3	"Myr Proletariusz"	6726
+}
+
+Group	MT2009_ymaps2_EastPlane_03_02
+{
+	Vnum	6712
+	Leader	"Myr Bojownik (wiatr)"	6728
+	1	"Myr Proletariusz"	6726
+	2	"Myr Proletariusz"	6726
+	3	"Myr Golem (wiatr)"	6727
+}
+
+Group	MT2009_ymaps2_EastPlane_03_03
+{
+	Vnum	6713
+	Leader	"Myr Golem (wiatr)"	6727
+	1	"Myr Czarodziej (wiatr)"	6729
+	2	"Myr Czarodziej (wiatr)"	6729
+	3	"Myr Golem (wiatr)"	6727
+}
+
+Group	MT2009_ymaps2_EastPlane_03_04
+{
+	Vnum	6714
+	Leader	"Myr Bojownik (wiatr)"	6728
+	1	"Myr Bojownik (wiatr)"	6728
+	2	"Myr Czarodziej (wiatr)"	6729
+	3	"Myr Golem (wiatr)"	6727
+}
+
+Group	MT2009_ymaps2_EastPlane_03_05
+{
+	Vnum	6715
+	Leader	"Myr Czarodziej (wiatr)"	6729
+	1	"Myr Czarodziej (wiatr)"	6729
+	2	"Myr Czarodziej (wiatr)"	6729
+	3	"Myr Czarodziej (wiatr)"	6729
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_01
+{
+	Vnum	9150
+	Leader	"Zolnierz Schron. Pln. W."	6784
+	1	"Zolnierz Schron. Pln. W."	6784
+	2	"Zolnierz Schron. Pln. W."	6784
+	3	"Zadziora Schron. Pln. W."	6785
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_02
+{
+	Vnum	9151
+	Leader	"Zolnierz Schron. Pln. W."	6784
+	1	"Zadziora Schron. Pln. W."	6785
+	2	"Wojownik Schron. Pln. W."	6786
+	3	"Wojownik Schron. Pln. W."	6786
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_03
+{
+	Vnum	9152
+	Leader	"Zolnierz Schron. Pln. W."	6784
+	1	"Zolnierz Schron. Pln. W."	6784
+	2	"Czarownik Sch. Pln. W."	6787
+	3	"Wojownik Schron. Pln. W."	6786
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_04
+{
+	Vnum	9153
+	Leader	"Zadziora Schron. Pln. W."	6785
+	1	"Wojownik Schron. Pln. W."	6786
+	2	"Zolnierz Schron. Pln. W."	6784
+	3	"Zolnierz Schron. Pln. W."	6784
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_05
+{
+	Vnum	9154
+	Leader	"Zadziora Schron. Pln. W."	6785
+	1	"Wojownik Schron. Pln. W."	6786
+	2	"Czarownik Sch. Pln. W."	6787
+	3	"Czarownik Sch. Pln. W."	6787
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_06
+{
+	Vnum	9155
+	Leader	"Zadziora Schron. Pln. W."	6785
+	1	"Wojownik Schron. Pln. W."	6786
+	2	"Zolnierz Schron. Pln. W."	6784
+	3	"Czarownik Sch. Pln. W."	6787
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_07
+{
+	Vnum	9156
+	Leader	"General Schron. Pln. W."	6788
+	1	"Zadziora Schron. Pln. W."	6785
+	2	"Czarownik Sch. Pln. W."	6787
+	3	"Czarownik Sch. Pln. W."	6787
+}
+
+Group	MT2009_ymaps2_whitedragoncave_01_08
+{
+	Vnum	9157
+	Leader	"General Schron. Pln. W."	6788
+	1	"General Schron. Pln. W."	6788
+	2	"Wojownik Schron. Pln. W."	6786
+	3	"Czarownik Sch. Pln. W."	6787
+}
+
+Group	MT2009_ymaps2_Wawoz_lod_01
+{
+	Vnum	9170
+	Leader	"Zamarzniety Lis"	6770
+	1	"Zamarzniety Lis"	6770
+	2	"Zamarzniety Zwiadowca"	6771
+	3	"Zamarzniety Zwiadowca"	6771
+}
+
+Group	MT2009_ymaps2_Wawoz_lod_02
+{
+	Vnum	9171
+	Leader	"Zamarzniety Wojownik"	6772
+	1	"Zamarzniety Wojownik"	6772
+	2	"Zamarzniety Lowca"	6773
+	3	"Zamarzniety Zwiadowca"	6771
+}
+
+Group	MT2009_ymaps2_Wawoz_lod_03
+{
+	Vnum	9172
+	Leader	"Zamarzniety Lowca"	6773
+	1	"Zamarzniety General"	6774
+	2	"Zamarzniety Wojownik"	6772
+	3	"Zamarzniety Lis"	6770
+}
+
+Group	MT2009_ymaps2_Wawoz_blysk_01
+{
+	Vnum	9173
+	Leader	"Zamarzniety Lis"	6882
+	1	"Zamarzniety Lis"	6882
+	2	"Zamarzniety Zwiadowca"	6883
+	3	"Zamarzniety Zwiadowca"	6883
+}
+
+Group	MT2009_ymaps2_Wawoz_blysk_02
+{
+	Vnum	9174
+	Leader	"Zamarzniety Wojownik"	6884
+	1	"Zamarzniety Wojownik"	6884
+	2	"Zamarzniety Lowca"	6885
+	3	"Zamarzniety Zwiadowca"	6883
+}
+
+Group	MT2009_ymaps2_Wawoz_blysk_03
+{
+	Vnum	9175
+	Leader	"Zamarzniety Lowca"	6885
+	1	"Zamarzniety General"	6886
+	2	"Zamarzniety Wojownik"	6884
+	3	"Zamarzniety Lis"	6882
+}

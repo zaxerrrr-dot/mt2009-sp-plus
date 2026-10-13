@@ -3517,6 +3517,23 @@ if [ -s /opt/playerbot/yohara_items.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_YOHARA_MAPS2_V1 / MT2009_PLUS_YOHARA_ITEMS2_V1: the second batch of Yohara maps - Seoganland (376),
+# Namgan (377), Przelecz Yilad (385), Wawoz Polnocnego Wiatru (388), Schronienie Polnocnego Wiatru (393).
+# yohara_maps2.sql (tools/yohara_maps/gen_ymaps2.py): their 48 monsters and bosses, 7 Metins, 10 NPCs, 4 jade veins and
+# 10 portals (Owsap's numbers in our columns); yohara_items2.sql (tools/yohara_items/gen_yitems2.py): the 58 items the
+# wiki drops there that the world lacked, and the jade smelting (crafting_proto 50661-50664). Both idempotent
+# (INSERT IGNORE), before the elements' files (their rule h2 holds for these monsters). The maps' drop file and chests
+# (game/yohara_maps2) name these vnums: a world without them stops the cores at boot.
+for f in yohara_maps2 yohara_items2; do
+    if [ -s /opt/playerbot/$f.sql ]; then
+        if db < /opt/playerbot/$f.sql; then
+            echo "[playerbot-migrate] yohara maps 2: $f.sql applied"
+        else
+            fail_step "yohara maps 2: $f.sql failed" >&2
+        fi
+    fi
+done
+
 # MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1: Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
 # README.md). czempion.sql is idempotent (ADD COLUMN IF NOT EXISTS, INSERT IGNORE): eight columns of player.player and
 # player_deleted (the same order - a deleted character is copied with SELECT *) that the db core of the patch reads and

@@ -65,7 +65,7 @@
       case 'port': return /^\d{1,5}$/.test(v) && num >= 1 && num <= 65535 ? '' : 'port 1–65535';
       case 'portrange': {
         const m = /^(\d{1,5})-(\d{1,5})$/.exec(v);
-        return m && +m[1] >= 1 && +m[1] <= +m[2] && +m[2] <= 65535 ? '' : 'zakres portów, np. 13000-13002';
+        return m && +m[1] >= 1 && +m[1] <= +m[2] && +m[2] <= 65535 ? '' : 'zakres portów, np. 13000-13003';
       }
       case 'address': return full(IPV4).test(v) ? '' : 'adres IPv4, np. 0.0.0.0';
       case 'host': return full(HOST).test(v) ? '' : 'adres IP albo domena (bez http:// i portu)';

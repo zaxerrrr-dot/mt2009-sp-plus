@@ -312,6 +312,8 @@ linux-port/docker/game/src/server/game/src/item_manager_read_tables.cpp
 linux-port/docker/game/src/server/game/src/questlua.cpp
 linux-port/docker/game/src/server/game/src/questlua_pc.cpp
 linux-port/docker/game/src/server/game/src/main.cpp
+# MT2009_PLUS_JADE_VEINS_V1 (server-patches/jadeit): the jade veins of Yohara in the mining table
+linux-port/docker/game/src/server/game/src/mining.cpp
 # Not ours to change, and shipped for that reason: a fork's companion system
 # rewrote it to call CPlayerBotManager::GetCompanionOwner, which this manager
 # never had, and an update replaces the manager and leaves this file - so

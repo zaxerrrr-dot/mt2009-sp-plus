@@ -551,6 +551,10 @@ sync_channel_ports() {
     esac
     [ "$_base" -gt 0 ] && [ "$_base" -lt 65500 ] || _base=13000
     _span=$((10 * (_need - 1) + 2))
+    # MT2009_PLUS_YOHARA_CORE_V1: each channel's Yohara core listens in the gap
+    # of the first ten (BASE+3 for CH1 .. BASE+6 for CH4): one channel reaches
+    # BASE+3, two and more reach past it already.
+    [ "$_span" -lt 3 ] && _span=3
     # The published side keeps its distance from the container's: a host that
     # moved its ports (M2_GAME_PORT_RANGE 14000-..., container 13000-...)
     # keeps them, and one whose two ranges were the same stays so.

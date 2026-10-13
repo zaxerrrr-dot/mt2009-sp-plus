@@ -1,0 +1,68 @@
+376 Seoganland (metin2_map_eastplain_02)
+  regen at 505,1363 (6707): no free GF ground within 25 m - left out
+  regen at 456,1387 (6707): no free GF ground within 25 m - left out
+  regen at 413,1376 (6707): no free GF ground within 25 m - left out
+  regen at 551,1307 (6707): no free GF ground within 25 m - left out
+  regen at 425,1350 (6709): no free GF ground within 25 m - left out
+  regen at 531,1331 (6710): no free GF ground within 25 m - left out
+  regen at 468,1363 (6710): no free GF ground within 25 m - left out
+  regen at 427,1396 (6710): no free GF ground within 25 m - left out
+  regen at 486,1381 (6706): no free GF ground within 25 m - left out
+  regen at 498,1347 (6706): no free GF ground within 25 m - left out
+  regen at 397,1375 (6706): no free GF ground within 25 m - left out
+  regen at 496,1399 (6706): no free GF ground within 25 m - left out
+  regen at 440,1365 (6706): no free GF ground within 25 m - left out
+  regen at 570,1270 (6706): no free GF ground within 25 m - left out
+  regen at 530,1322 (6707): no free GF ground within 25 m - left out
+  regen at 548,1301 (6707): no free GF ground within 25 m - left out
+  regen at 544,1411 (6707): no free GF ground within 25 m - left out
+  regen at 522,1411 (6707): no free GF ground within 25 m - left out
+  regen at 436,1391 (6707): no free GF ground within 25 m - left out
+  regen at 483,1378 (6707): no free GF ground within 25 m - left out
+  regen at 504,1378 (6707): no free GF ground within 25 m - left out
+  regen: 2 of Owsap's 435 centres on blocked GF ground moved to the nearest free metre
+  npc: 4020 Wieza Sung Mahi left out (the dungeon is not here)
+  veins: 8 (Żyła Jadeitu Słońca, Żyła Jadeitu Nocy, Żyła Jadeitu Dymu, Żyła Jadeitu Mgły), range 30, 600 s
+  Owsap regen: 435 group lines on 278674 reachable m2 -> 0.001561 a m2
+377 Namgan (metin2_map_eastplain_03)
+  troll spawn: 870,200 is blocked -> 871,199
+  troll spawn: 920,160 is blocked -> 925,157
+  Myr (ziemia) spawn: 700,150 is blocked -> 700,174
+  Myr (ziemia) spawn: 730,200 is blocked -> 728,198
+  + 35 group lines at GF positions (trolls/hounds/Dreczony Duch: Dongan groups; Myr (ziemia))
+  veins: 8 (Żyła Jadeitu Słońca, Żyła Jadeitu Nocy, Żyła Jadeitu Dymu, Żyła Jadeitu Mgły), range 30, 600 s
+385 Przelecz Yilad (metin2_map_snakevalley) - Ameria
+  Yilad regen: 735,176 is blocked -> 730,181
+  Yilad regen: 656,290 is blocked -> 656,289
+  Yilad regen: 825,528 is blocked -> 826,530
+  Yilad regen: 508,368 is blocked -> 508,370
+  Yilad regen: 886,403 is blocked -> 887,405
+  Yilad regen: 853,521 is blocked -> 853,522
+  Yilad regen: 1235,270 is blocked -> 1233,269
+  Yilad regen: 651,295 is blocked -> 651,289
+  Yilad regen: 296,350 is blocked -> 291,350
+  Yilad regen: 215,340 is blocked -> 220,343
+  Yilad regen: 451,438 is blocked -> 473,415
+  Yilad regen: 1060,646 is blocked -> 1060,647
+  Yilad regen: 413,431 is blocked -> 411,431
+  regen: 513 monsters (Ameria 483 + Skazony Wojownik 30)
+  Yilad boss: 1312,550 is blocked -> 1301,541
+  bosses: 11 (Skazony Wodz / Wodz Wojenny, mrok and ziemia) on Ameria's spots, 1 h
+  Metins: 17 (of Ameria's 33 spots: every second one), 30 min
+  veins: 6 (Żyła Jadeitu Nocy, Żyła Jadeitu Mgły), range 30, 600 s
+388 Wawoz Polnocnego Wiatru (metin2_map_icecrystalcave) - placed here
+  portal 10140 (to Yilad): 1140,915 is blocked -> 1125,902
+  regen: 590 group lines (target 600 = Seoganland's density x 384463 reachable m2; 23.0 m apart), 297 ice / 293 lightning by the nearest GF position of each kind
+  bosses: 6 (Zamarzniety Wodz / Wodz Wojenny, lod and blyskawice), 1 h
+  Metins: 19 (Shiho / z Gumar), 30 min
+  veins: 6 (Żyła Jadeitu Dymu, Żyła Jadeitu Nocy, Żyła Jadeitu Słońca), range 30, 600 s
+393 Schronienie Polnocnego Wiatru (metin2_map_whitedragoncave_01)
+  regen: 39 of Owsap's 1051 centres on blocked GF ground moved to the nearest free metre
+  portal 10146 (to Wawoz): 62,622 is blocked -> 64,626
+376 metin2_map_eastplain_02: 0 spawn centre(s) on blocked ground
+377 metin2_map_eastplain_03: 0 spawn centre(s) on blocked ground
+385 metin2_map_snakevalley: 0 spawn centre(s) on blocked ground
+388 metin2_map_icecrystalcave: 0 spawn centre(s) on blocked ground
+393 metin2_map_whitedragoncave_01: 0 spawn centre(s) on blocked ground
+spawned vnums of this batch: 79 new ([6718, 6719, 6720, 6721, 6722, 6723] ...), 2 of the first batch: [6705, 8067]
+yohara_maps2.sql: 79 rows

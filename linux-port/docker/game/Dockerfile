@@ -343,7 +343,9 @@ RUN set -eux; \
     # Pierscien Hydry (70303, three teleports to the port) and the level-90 guard (MT2009_PLUS_YOHARA_PORT_V1).
     # yohara_mapy is the first maps of Yohara - Opuszczona Twierdza (374) and Dongan (373): the statue's way there
     # from level 120, the way back to the port, the Teleporter of Dongan, the level-120 guard (MT2009_PLUS_YOHARA_MAPS1_V1).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy; do \
+    # yohara_mapy2 is the second batch - Seoganland, Namgan, Przelecz Yilad, Wawoz and Schronienie Polnocnego Wiatru
+    # (376/377/385/388/393): the level-120 guard and the jade veins' pickaxe (MT2009_PLUS_YOHARA_MAPS2_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1600,6 +1602,84 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting_data
  && test "$(LC_ALL=C grep -c 'vnum >= 50621 and vnum <= 50638 -- przetopy' "$F")" -eq 1 \
  && echo "share: the guild alchemists smelt Rubin / Granat / Szmaragd / Szafir too (MT2009_PLUS_JEWELS75_V1)"
 
+# MT2009_PLUS_YOHARA_MAPS2_V1 (share): the second batch of Yohara maps (the owner, 14 October 2026; the pl-wiki for
+# everything) on the Yohara core (game3, MT2009_PLUS_YOHARA_CORE_V1) - Seoganland (376, metin2_map_eastplain_02, 3x6),
+# Namgan (377, metin2_map_eastplain_03, 4x2), Przelecz Yilad (385, metin2_map_snakevalley, 6x3), Wawoz Polnocnego
+# Wiatru (388, metin2_map_icecrystalcave, 5x4 - the official folder of Northwind Canyon) and Schronienie Polnocnego
+# Wiatru (393, metin2_map_whitedragoncave_01, 6x6), Owsap's indexes; every file made by tools/yohara_maps/gen_ymaps2.py
+# (yohara_maps2/README.md: what came from where). server_attr from the GF client's attr.atr (tools/gf28 srvattr.py).
+# Spawns: Owsap's (376, 377, 393) with the wiki's missing monsters / bosses / Metins at GF's positions, Ameria's (385)
+# with the wiki's monsters and Metins, ours on Wawoz (Owsap's density, GF's positions decide lod / blyskawice). Jade
+# veins (server-patches/jadeit) as the wiki names them. Portals: Dongan's to Seoganland (10128, appended to Dongan's
+# npc.txt), Seoganland <-> Namgan <-> Przelecz Yilad <-> Wawoz <-> Schronienie (Owsap's 10127-10140, ours 10145/10146
+# in place of Rozpadlina Dusz). Groups: Owsap's group 6185-6192, 6711-6715, 9150-9157 / group_group 6706-6710,
+# 6715-6719, 4030-4033, ours 9170-9175 / 4040-4041; drops mob_drop_item.yohara_maps2.txt and the new chests
+# special_item_group.yohara_items2.txt (tools/yohara_items/gen_yitems2.py) - none may exist before. The jade ores
+# are smelted by the guild alchemists (after MT2009_PLUS_JEWELS75_V1's step: the same lists). After the champion step
+# (sungma_table.txt names all five: Sung Ma maps, no bot may enter) and before the belt materials' (which reads every
+# drop group). Rows: mariadb/playerbot/yohara_maps2.sql, yohara_items2.sql.
+COPY yohara_maps2/ /tmp/yohara-maps2-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps2-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for p in "376 metin2_map_eastplain_02 0c00000018000000 1152000 435200" "377 metin2_map_eastplain_03 1000000008000000 1228800 435200" \
+             "385 metin2_map_snakevalley 180000000c000000 0 1408000" "388 metin2_map_icecrystalcave 1400000010000000 0 1510400" \
+             "393 metin2_map_whitedragoncave_01 1800000018000000 998400 1203200"; do \
+      set -- $p; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" && test -s "$L/map/$2/npc.txt" && test -s "$L/map/$2/regen.txt" \
+        && test -s "$L/map/$2/boss.txt" && test -f "$L/map/$2/stone.txt" \
+        && grep -q -E "^$2[[:blank:]]" "$L/sungma_table.txt" \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: Yohara map $1 $2"; exit 1; }; \
+    done \
+ && D="$L/map/metin2_map_eastplain_01/npc.txt" \
+ && ! grep -q -E '[[:blank:]]10128[[:space:]]*$' "$D" \
+ && { [ -z "$(tail -c 1 "$D")" ] || printf '\r\n' >> "$D"; } \
+ && cat "$A/dongan_npc.yohara_maps2.txt" >> "$D" \
+ && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]10128[[:space:]]*$' "$D")" = 1 \
+ && f="$L/group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(618[5-9]|619[0-2]|671[1-5]|915[0-7]|917[0-5])[[:space:]]*$' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\n' >> "$f"; } \
+ && cat "$A/group.yohara_maps2.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(618[5-9]|619[0-2]|671[1-5]|915[0-7]|917[0-5])[[:space:]]*$' "$f")" = 27 \
+ && f="$L/group_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(670[6-9]|6710|671[5-9]|403[0-3]|404[01])[[:space:]]*$' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group_group.yohara_maps2.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(670[6-9]|6710|671[5-9]|403[0-3]|404[01])[[:space:]]*$' "$f")" = 16 \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -i -E '^[[:blank:]]*mob[[:blank:]]+(67(1[89]|2[0-9]|3[01]|5[89]|6[0-4]|7[0-6]|8[4-9])|68(7[5-9]|8[0-8])|806[3-6]|8077|862[67])([^0-9]|$)' "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.yohara_maps2.txt" >> "$F" \
+ && test "$(grep -c -i -E '^[[:blank:]]*mob[[:blank:]]+(67(1[89]|2[0-9]|3[01]|5[89]|6[0-4]|7[0-6]|8[4-9])|68(7[5-9]|8[0-8])|806[3-6]|8077|862[67])([^0-9]|$)' "$F")" = 55 \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(31238|83065|83066|83067)([^0-9]|$)' "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.yohara_items2.txt" >> "$G" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(31238|83065|83066|83067)([^0-9]|$)' "$G")" = 4 \
+ && C="$L/quest/libs/crafting/crafting_data.lua" \
+ && LC_ALL=C sed -i -E 's/^([[:blank:]]*\[20(06[0-9]|07[0-2])\] = \{50(62[1-9]|63[0-3]), 50635, 50636, 50637, 50638)\},(\r?)$/\1, 50661, 50662, 50663, 50664},\4/' "$C" \
+ && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*\[20(06[0-9]|07[0-2])\] = \{50(62[1-9]|63[0-3]), 50635, 50636, 50637, 50638, 50661, 50662, 50663, 50664\},' "$C")" -eq 12 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[388\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_MAPS2_V1\r\ntranslate.general.map_names[376] = "Seoganland"\r\ntranslate.general.map_names[377] = "Namgan"\r\ntranslate.general.map_names[385] = "Prze\263\352cz Yilad"\r\ntranslate.general.map_names[388] = "W\271w\363z P\363\263nocnego Wiatru"\r\ntranslate.general.map_names[393] = "Schronienie P\363\263nocnego Wiatru"\r\n' >> "$f"; \
+    done \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("seoganland"' "$S" || printf 'add_goto_info("seoganland", 0, 376, 12218, 4895)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("namgan"' "$S" || printf 'add_goto_info("namgan", 0, 377, 12780, 4411)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("yilad"' "$S" || printf 'add_goto_info("yilad", 0, 385, 316, 14148)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("wawoz"' "$S" || printf 'add_goto_info("wawoz", 0, 388, 1106, 15997)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("schronienie"' "$S" || printf 'add_goto_info("schronienie", 0, 393, 10064, 12672)\r\n' >> "$S"; } \
+ && rm -rf "$A" \
+ && echo "share: Yohara - Seoganland (376), Namgan (377), Przelecz Yilad (385), Wawoz (388), Schronienie (393): GF terrain, spawns, groups, drops, chests, jade"
+
 # MT2009_PLUS_BELT_MATS_V1 (the owner, 7 October): the belt materials drop. After every other
 # mob_drop_item.txt append (dungeons, Arezzo, the drop edit), so it sees all of their groups:
 #  * mob_drop_item.beltmats.append.txt - Beran-Setaou's gems (special group 951103, a drop group
@@ -1679,7 +1759,7 @@ ENV M2_SHARE_DIR=/opt/metin2/share \
     M2_VAR_DIR=/opt/metin2/var \
     TZ=UTC
 
-EXPOSE 11000/tcp 13000/tcp 13001/tcp 13002/tcp
+EXPOSE 11000/tcp 13000/tcp 13001/tcp 13002/tcp 13003/tcp
 
 HEALTHCHECK --interval=15s --timeout=5s --start-period=180s --retries=4 \
     CMD ["/usr/local/bin/m2-healthcheck"]

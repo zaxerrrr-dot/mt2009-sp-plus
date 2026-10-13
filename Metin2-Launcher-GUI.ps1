@@ -3312,7 +3312,7 @@ function Show-CoopDialog {
     $hostHelp = [Windows.Forms.Label]::new()
     $hostHelp.Text = ('Kolejność: Zabezpiecz konta, Dodaj znajomego, HOSTUJ ŚWIAT, a potem Kod zaproszenia - ' +
         'skopiuj go i wyślij znajomemu w prywatnej wiadomości (zawiera hasło). Hostowanie uruchamia ponownie ' +
-        'serwer gry (około minuty) i prosi Windows o zgodę na regułę zapory dla portów 11000 i 13000-13002; ' +
+        'serwer gry (około minuty) i prosi Windows o zgodę na regułę zapory dla portów 11000 i 13000-13003; ' +
         'przez internet otwiera je w routerze (UPnP). Gdy operator nie daje publicznego adresu (CGNAT - częste ' +
         'w internecie komórkowym), zainstalujcie Radmin VPN albo Tailscale i połączcie się w jednej sieci: ' +
         'launcher ją wykryje i hostuje przez nią, bez routera. Ty grasz dalej na serwerze 1, znajomy na serwerze Online.')
@@ -3674,7 +3674,7 @@ function Show-VpsDialog {
     }
 
     $help = [Windows.Forms.Label]::new()
-    $help.Text = ('Kolejność: POŁĄCZ, SPRAWDŹ VPS, ZAINSTALUJ. Gracze łączą się z adresem VPS (porty 11000 i 13000-13002 muszą być otwarte ' +
+    $help.Text = ('Kolejność: POŁĄCZ, SPRAWDŹ VPS, ZAINSTALUJ. Gracze łączą się z adresem VPS (porty 11000 i 13000-13003 muszą być otwarte ' +
         'w zaporze dostawcy VPS, jeśli ją ma). Panele WWW słuchają tylko na VPS - otwiera je tunel SSH (przycisk OTWÓRZ PANEL). ' +
         'DOPISZ DO KLIENTA dodaje VPS jako drugi serwer na liście w Twoim kliencie. KOD DLA ZNAJOMEGO zakłada mu konto na VPS i daje kod zaproszenia.')
     $help.Location = [Drawing.Point]::new(14, 412)

@@ -20,7 +20,7 @@ nakładka, kopia budowania i lista plików aktualizacji (`playerbot_*`) niosły 
 ## Jak to działa
 
 - **Mapa 367** `metin2_map_defensewave` (u Owsapa 358 – u nas Świątynia Zodiaku), prywatne
-  kopie 3670000–3679999, rdzeń game1 (`bin/m2-render-config`). Dane: `linux-port/docker/game/shipdefense/`
+  kopie 3670000–3679999, rdzeń Yohary game3 (`bin/m2-render-config`, MT2009_PLUS_YOHARA_CORE_V1; wcześniej game1). Dane: `linux-port/docker/game/shipdefense/`
   (krok Dockerfile „share: Obrona Statku”).
 - **Bez dziedziczenia po CDungeon** (nasz nie ma metod wirtualnych, `Create` bez typu): statek to osobny
   obiekt `CShipDefense` na prywatny indeks mapy, przypinany do instancji lochu, gdy wchodzi na nią
@@ -63,7 +63,7 @@ solo, 5 000 000 Yang, bez przerwy, 10 wejść dziennie. Wszystko da się zmieni�
 | `fee` | 5000000 | opłata w yangach (quest) |
 | `cooldown` | 0 | odpoczynek po wejściu, s – tylko boty (quest; ludzie nigdy nie czekają) |
 | `daily_limit` | 10 | wejść dziennie na postać (quest) |
-| `max_instances` | 8 | statków naraz na rdzeń – nieużywane: Rybak stoi na game2, statek na game1, `dw.count()` liczy tylko swój rdzeń |
+| `max_instances` | 8 | statków naraz na rdzeń – nieużywane: Rybak stoi na game2, statek na game3 (Yohara), `dw.count()` liczy tylko swój rdzeń |
 | `idle_destroy` | 600 | nieuruszony statek zamyka się po, s |
 | `time_limit` | 1800 | limit po starcie, s |
 | `wave1_countdown` / `wave1_time` | 60 / 120 | odliczanie i czas fali 1, s |
@@ -111,8 +111,9 @@ Quest: `linux-port/docker/game/quest/obrona_statku.quest` (krok 5, poniżej).
 
 Wzorzec Leża Smoka (`blue_dragon_lair.quest`): Rybak 9009 na Przylądku Smoczego Ognia (301, rdzeń game2,
 838,1187) → „Obrona Statku (Hydra)” → `d.new_jump_pids(367, …)` dla gracza albo przywódcy z ludźmi drużyny
-stojącymi obok (30 pól); boty drużyny dołączają same (`playerbot_party_dungeon.h`: 367 jest mapą lochu
-drużyny, wyjście do Rybaka). Sprawdza poziom, limit dzienny, Yang i wierzchowca każdego człowieka; płaci się
+stojącymi obok (30 pól); boty drużyny dołączały same (`playerbot_party_dungeon.h`: 367 jest mapą lochu
+drużyny, wyjście do Rybaka) - od MT2009_PLUS_YOHARA_CORE_V1 statek jest na rdzeniu Yohary, a bot nie przechodzi
+między rdzeniami, więc boty już nie wchodzą. Sprawdza poziom, limit dzienny, Yang i wierzchowca każdego człowieka; płaci się
 przy pierwszym wejściu do nowej instancji (GM i boty za darmo); „Wróć do lochu” po rozłączeniu
 (`mt2009_keep_until` = `idle_destroy` + `time_limit` + 120 s). Ster 20436: „Rozpocznij obronę masztu”
 (`dw.start()`, tylko przywódca lub solo), „Zejdź ze statku”. Potomstwo Hydry (3957-3959) zostawia deskę
@@ -162,7 +163,7 @@ MT2009_PLUS_REFINE_TOOLTIP_V1). Wypada ze Skrzyni Hydry (4%).
 
 ## Test GM (bez questa)
 
-`/dw create` (tylko na rdzeniu z mapą 367 – game1) → `/dw start` → `/dw info`, `/dw wave 4`, `/dw end`.
+`/dw create` (tylko na rdzeniu z mapą 367 – game3, Yohara) → `/dw start` → `/dw info`, `/dw wave 4`, `/dw end`.
 
 ## Port Nowego Kontynentu (368) – `MT2009_PLUS_YOHARA_PORT_V1`
 
