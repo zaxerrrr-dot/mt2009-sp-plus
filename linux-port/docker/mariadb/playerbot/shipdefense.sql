@@ -33,7 +33,7 @@ INSERT IGNORE INTO world.mob_proto (`vnum`,`name`,`locale_name`,`rank`,`type`,`b
 (3965,'Hydra\'s Treasure','Skarb Hydry',5,0,0,105,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'reddragon_room_box',0,0,0,0,0,0,0,120,3,1,0,0,584702,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- skrzynia-potwor: Owsap 120 PZ, exp 584702, drop w kroku 6
 (3970,'Wall','Ściana',5,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'',0,0,0,0,0,0,0,120,3,1,0,0,10,4,100,0,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- Owsap OBJECT (13) -> nasz NPC (1): nie do zaatakowania
 (20432,'Hydra Egg','Jajo Hydry',5,2,0,105,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'metinstone_defensewave',0,0,0,100,0,0,0,238386,5,1,0,0,10,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- kamien, poziom 120 -> 105 (zgadniete)
-(20433,'Warrior Statue','Posąg Wojownika',2,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'',2,0,0,0,0,0,0,120,3,1,0,0,10,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- posag w porcie (etap Yohary)
+(20433,'Warrior Statue','Statua Wojownika',2,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'',2,0,0,0,0,0,0,120,3,1,0,0,10,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- posag w porcie (etap Yohary)
 (20434,'Mast','Maszt',2,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'defensewave_sail',0,0,0,0,0,0,0,5000000,255,0,0,0,10,250,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- 5 000 000 PZ, NORECOVERY nie istnieje u nas -> regen co 255 s, +1 PZ (MAX(1,...))
 (20435,'Meley\'s Trace','Ślad Meley',2,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'',2,0,0,0,0,0,0,120,3,1,0,0,10,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (20436,'Ship\'s Wheel','Ster',2,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'',2,0,0,0,0,0,0,120,3,1,0,0,10,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
@@ -53,3 +53,7 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (54705,'Hydra Chest','Skrzynia Hydry',23,0,200,0,1,32768,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1), -- ANTI_STACK
 (72058,'Soul Stone Package','Pakiet Kamieni Duszy',23,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1), -- STACKABLE; oficjalny vnum, ikona 27999.tga; jeden kamien duszy jak z Metina (special_item_group)
 (70303,'Hydra Ring','Pierścień Hydry',18,0,1,0,1,237952,0,0,'',0,0,0,0,0,0,0,0,1,90,0,0,0,0,0,0,0,0,3,0,0,0,0,0,-1,-1,-1,-1,-1,-1); -- 3 teleporty do portu (368), quest port_yohary
+
+-- MT2009_PLUS_YOHARA_PORT_V1 (the owner, 13 October): the statue is "Statua Wojownika" as on the wiki (a row from an
+-- earlier start keeps INSERT IGNORE's old name, so set it).
+UPDATE world.mob_proto SET locale_name = 'Statua Wojownika' WHERE vnum = 20433 AND locale_name <> 'Statua Wojownika';

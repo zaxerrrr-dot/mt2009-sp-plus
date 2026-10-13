@@ -31,7 +31,7 @@ WORK = sys.argv[2] if len(sys.argv) > 2 else '/opt/metin2/cache/yohara/cape301-w
 NPCLIST = sys.argv[3] if len(sys.argv) > 3 else '/opt/metin2/cache/c61/chk/gamedata/npclist.txt'
 PRE_LST = '/opt/metin2/cache/tcm/gf28/ourpacks_pre.txt'
 MAP = 'metin2_map_defensewave_port'
-VNUMS = [20433]                     # the Posag Wojownika (npc.txt of the server's map)
+VNUMS = [20433]                     # the Statua Wojownika (npc.txt of the server's map)
 RACE_DIRS = ('guild', 'npc', 'npc2', 'npc_pet', 'npc_mount', 'monster', 'monster2')
 # GF's own broken references (the official client has the same): reported, not failed
 KNOWN = set()

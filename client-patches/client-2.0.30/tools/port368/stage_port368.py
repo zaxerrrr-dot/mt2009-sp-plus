@@ -16,7 +16,7 @@
 #   property/... the port's object properties our client lacks   -> pack property (the exe loads map objects only
 #                                                                    from pack/property)
 # The port shares its textureset (metin2_map_defensewave.txt) and msenv (defensewave_blue.msenv) with the ship, and
-# its only NPC, the Posag Wojownika (20433, defensewave_statue), is a race of the ship: all of that comes with
+# its only NPC, the Statua Wojownika (20433, defensewave_statue), is a race of the ship: all of that comes with
 # ../shipdefense (hydra_map, hydra_mobs). A name our client already has - the dump listing, the base client's
 # pre-import listing and what ../cape301, ../maps302 and ../shipdefense stage (the build runs them first) - is left
 # out: ours wins.

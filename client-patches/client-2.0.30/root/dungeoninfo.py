@@ -263,7 +263,7 @@ def OnCommand(game, *args):
 			if d:
 				d["drops"].append((_int(a[1]), _int(a[2]), _int(a[3])))
 		elif sub == "show":
-			# MT2009_PLUS_YOHARA_PORT_V1: the Posag Wojownika's "Ranking lochow" (quest port_yohary) opens the panel.
+			# MT2009_PLUS_YOHARA_PORT_V1: the Statua Wojownika's "Ranking lochow" (quest port_yohary) opens the panel.
 			import uidungeoninfo
 			wnd = uidungeoninfo.GetWindow()
 			if not wnd.IsShow():
