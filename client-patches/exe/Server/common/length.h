@@ -1268,6 +1268,27 @@ enum EPointTypes
 	POINT_ACCEDRAIN_RATE,
 #endif
 
+	// MT2009_PLUS_CHAMPION_V2 (points): the server's points after the sash's (common/length.h of the server, the same
+	// order): the six element powers of the talismans (178-183, item_proto applytypes, MT2009_PLUS_ELEMENTS_V1), the
+	// four Sung Ma stats (184-187, APPLY_SUNGMA_* of Yohara's items) and Poziom Czempiona (188-192). The points
+	// packet carries all of them: POINT_MAX_NUM here = POINT_PACKET_NUM of the server (193; static_assert in
+	// Mt2009Champion.cpp). Without #ifdef: every file must see the same numbers.
+	POINT_ENCHANT_ELECT,
+	POINT_ENCHANT_FIRE,
+	POINT_ENCHANT_ICE,
+	POINT_ENCHANT_WIND,
+	POINT_ENCHANT_EARTH,
+	POINT_ENCHANT_DARK,
+	POINT_SUNGMA_STR,
+	POINT_SUNGMA_HP,
+	POINT_SUNGMA_MOVE,
+	POINT_SUNGMA_IMMUNE,
+	POINT_CONQUEROR_LEVEL,
+	POINT_CONQUEROR_LEVEL_STEP,
+	POINT_CONQUEROR_EXP,
+	POINT_CONQUEROR_NEXT_EXP,
+	POINT_CONQUEROR_POINT,
+
 	POINT_MAX_NUM,
 };
 

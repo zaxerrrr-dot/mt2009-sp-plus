@@ -220,5 +220,16 @@
 // the 15 Zodiac SE_*/EFFECT_* effects, the mission chat types 13..15, chrmgr.IsDead/IsPC and the scripts'
 // constants (UserInterface/Mt2009Zodiak.cpp). The image cooltime is MT2009_PLUS_MINIGAMES_V1's.
 #define ENABLE_12ZI
+// MT2009_PLUS_CHAMPION_V2 (Yohara 3.0 exe): Poziom Czempiona and the Sung Ma stats as points of the points packet
+// (Server/common/length.h 178-192 = the server's; the packet grows, so 3.0 is a forced client update),
+// dwConquerorLevel in the character add/update packets (the blue champion level over heads), player.CONQUEROR_*,
+// player.SUNGMA_*, player.GetConquerorEXP/GetConquerorLevel, item.APPLY_SUNGMA_*, item.LIMIT_CONQUEROR_LEVEL
+// (UserInterface/Mt2009Champion.cpp); app.ENABLE_CONQUEROR_LEVEL/UI = 1 for root's character window (Sung Ma page).
+#define ENABLE_CONQUEROR_LEVEL
+#define ENABLE_CONQUEROR_UI
+// MT2009_PLUS_SHIP_DEFENSE_V2 (Obrona Statku, Hydra): the Hydra's races 3960-3962 are huge (not pushed, hit effect at
+// the blow, the text tail higher, skill range -200 like the other huge races) and on metin2_defensewave a targeted
+// skill on a huge race (or with IGNORE_BLOCK) skips the 'target stands in a block' check - the Hydra is in the sea.
+#define ENABLE_MT2009_SHIP_DEFENSE_CLIENT
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

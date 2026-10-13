@@ -752,6 +752,17 @@ void CInstanceBase::UpdateTextTailLevel(DWORD level)
 
 	if (level > 0 && !IsHideLevel())
 	{
+#ifdef ENABLE_CONQUEROR_LEVEL
+		// MT2009_PLUS_CHAMPION_V2: a Champion shows Poziom Czempiona, in blue, where the level stands.
+		if (m_dwConquerorLevel > 0 && IsPC())
+		{
+			static D3DXCOLOR s_kConquerorLevelColor = D3DXCOLOR(85.0f / 255.0f, 185.0f / 255.0f, 255.0f / 255.0f, 1.0f);
+			char szConqueror[256];
+			sprintf(szConqueror, "Lv %u", m_dwConquerorLevel);
+			CPythonTextTail::Instance().AttachLevel(GetVirtualID(), szConqueror, s_kConquerorLevelColor);
+			return;
+		}
+#endif
 		static D3DXCOLOR s_kLevelColor = D3DXCOLOR(152.0f / 255.0f, 255.0f / 255.0f, 51.0f / 255.0f, 1.0f);
 		char szText[256];
 		sprintf(szText, "Lv %d", level);
