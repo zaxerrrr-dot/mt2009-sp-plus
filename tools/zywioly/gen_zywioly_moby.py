@@ -22,6 +22,10 @@ Rules:
   f. WHOLE_DUNGEONS (the owner, 8 October 2026): every monster, boss AND stone of a dungeon by its data
      file, winning over everything above - Ruiny Atlantydy (158) -> lightning (the vnums of
      client-patches/client-2.0.30/tools/atlantis/atlantis.json of type 0 and 2; MT2009_PLUS_ATLANTYDA_V1);
+  h. YOHARA_ELEMENTS (the owner, 13 October 2026: "Zywioly potworow Yohary jak w oficjalnej grze"): the
+     monsters of Opuszczona Twierdza (374) and Dongan (373) by Owsap v6.2.6's mob_proto Att* columns (= the
+     pl-wiki "Zywiol" of each monster), winning over everything above; the Metins 8067 / 8625 have none
+     (MT2009_PLUS_YOHARA_ITEMS1_V1; the rows are mariadb/playerbot/yohara_maps.sql);
   d. nothing else has an element: the SQL clears bits 11-16 on every other mob.
 
 A vnum carries its element everywhere it spawns; the report lists the mapped vnums that also
@@ -86,6 +90,12 @@ BOSS_OVERRIDES = (
 # g. the Zodiac signs' elements (1 Zi .. 12 Hai)
 ZODIAC_SIGN_ELEMENT = {1: DARK, 2: EARTH, 3: FIRE, 4: WIND, 5: ELEC, 6: ICE, 7: ICE, 8: ELEC, 9: EARTH, 10: WIND,
                        11: DARK, 12: FIRE}
+# h. the Yohara monsters (MT2009_PLUS_YOHARA_ITEMS1_V1, the owner 13 Oct 2026): Owsap's Att* = the wiki's element
+YOHARA_ELEMENTS = (
+    (DARK, tuple(range(6686, 6693)) + tuple(range(6700, 6707)) + (6710,)),   # Twierdza (mrok), Dongan (mrok)
+    (ICE, tuple(range(6693, 6700))),                                         # Twierdza (lod), Krol Bao
+    (FIRE, tuple(range(6711, 6718))),                                        # Dongan (ogien)
+)
 SHARE_PARTS = ('locale/poland/map', 'locale/poland/group.txt', 'locale/poland/group_group.txt',
                'locale/poland/special_spawns.txt', 'locale/poland/BlueDragon.lua', 'data/dungeon')
 SKIP_MAP_FILES = ('setting.txt', 'town.txt', 'mapproperty.txt')
@@ -378,6 +388,13 @@ def main():
             if 2750 <= v <= 2862 and m['type'] == MOB_MONSTER:
                 result[v], why[v] = ZODIAC_SIGN_ELEMENT[(v - 2750) // 10 + 1], 'Swiatynia Zodiaku boss'
 
+        # h. the Yohara monsters (win over everything above; the rows may come after this world's dump)
+        for elem, vs in YOHARA_ELEMENTS:
+            for v in vs:
+                if v not in mobs:
+                    mobs[v] = dict(rank=0, type=MOB_MONSTER, summon=0, flag=0, name='(yohara_maps.sql)')
+                result[v], why[v] = elem, 'Yohara (Owsap Att*, wiki)'
+
         # where else every vnum spawns (maps of the index, dungeon dirs, special spawns)
         elsewhere = {}
         rule_maps = set(i for _, idxs, _ in MAP_RULES for i in idxs) | set(r[1] for r in DUNGEON_RULES)
@@ -427,7 +444,7 @@ def main():
                '-- ice, wind, earth, dark; in the column\'s SET: SAVAGE, ATT_FIRE, ATT_ICE, ATT_TEMPLE, ATT_EARTH,',
                '-- ATT_DARK). Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0) - by the owner\'s rules of',
                '-- 7 October 2026 (tools/zywioly/gen_zywioly_moby.py: wiki bosses, Grota Wygnancow 1/2, Swiatynia',
-               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses). GENERATED - do not',
+               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses, Yohara 373/374). GENERATED - do not',
                '-- edit; rerun the generator. Every start (apply.sh), idempotent: bits 11-16 cleared on every other',
                '-- mob, set on these.']
         for line in out[1:7]:

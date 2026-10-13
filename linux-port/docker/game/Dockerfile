@@ -1387,6 +1387,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-port-add; M=metin2
 # Grota), Dongan's mailbox (30308, no mail here) and portal to Seoganland (10128, not here yet) are left out. Their
 # spawn groups (group.yohara_maps.txt 6145-6152, 6194-6201; group_group.yohara_maps.txt 6700-6705, 6711-6714) and
 # drops (mob_drop_item.yohara_maps.txt - the wiki's lists, what our items have) are appended; none may exist before.
+# MT2009_PLUS_YOHARA_ITEMS1_V1: the drops name the Yohara items of mariadb/playerbot/yohara_items.sql (both files made by
+# tools/yohara_items/gen_yitems.py), and the five chests among them get their contents (special_item_group
+# .yohara_items.txt: Szkatulka Yohara 50528, Skrzynia Ksiag (9.skill) 50529, Skrzynia Ksiag: Riposta / Dopalacz
+# 50323 / 50324, Zdobna Skrz. z Odlamkiem 39068) - appended to special_item_group.txt, none may exist before.
 # The monsters' rows: mariadb/playerbot/yohara_maps.sql. Both names are in sungma_table.txt, so both maps become Sung
 # Ma maps by their map/index lines (no bot may enter one). The maps' names for the quests, /goto twierdza, /goto dongan.
 COPY yohara_maps/ /tmp/yohara-maps-add/
@@ -1422,6 +1426,11 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps-add \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
  && cat "$A/mob_drop_item.yohara_maps.txt" >> "$F" \
  && test "$(grep -c -i -E '^[[:blank:]]*mob[[:blank:]]+(66(8[6-9]|9[0-9])|67(0[0-6]|1[0-7])|8067|8625)([^0-9]|$)' "$F")" = 31 \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(50528|50529|50323|50324|39068)([^0-9]|$)' "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.yohara_items.txt" >> "$G" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(50528|50529|50323|50324|39068)([^0-9]|$)' "$G")" = 5 \
  && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
       [ -f "$f" ] || continue; \
       LC_ALL=C grep -a -q 'map_names\[374\]' "$f" && continue; \
@@ -1432,7 +1441,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps-add \
  && { LC_ALL=C grep -a -q 'add_goto_info("twierdza"' "$S" || printf 'add_goto_info("twierdza", 0, 374, 5376, 4949)\r\n' >> "$S"; } \
  && { LC_ALL=C grep -a -q 'add_goto_info("dongan"' "$S" || printf 'add_goto_info("dongan", 0, 373, 11024, 5068)\r\n' >> "$S"; } \
  && rm -rf "$A" \
- && echo "share: Yohara - Opuszczona Twierdza (374), Dongan (373): GF terrain's server_attr, Owsap's spawns, groups, drops"
+ && echo "share: Yohara - Opuszczona Twierdza (374), Dongan (373): GF terrain's server_attr, Owsap's spawns, groups, drops, the chests' groups"
 # MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1 (share): Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
 # README.md). sungma_table.txt - the Sung Ma requirements of the GF 26.1.11 client's 19 Yohara maps by name (the engine
 # matches the names against map/index, so none of our maps is touched until a Yohara map comes); sungma_mob_exp.txt -
