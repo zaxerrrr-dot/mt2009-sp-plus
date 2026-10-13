@@ -26,6 +26,10 @@ Rules:
      monsters of Opuszczona Twierdza (374) and Dongan (373) by Owsap v6.2.6's mob_proto Att* columns (= the
      pl-wiki "Zywiol" of each monster), winning over everything above; the Metins 8067 / 8625 have none
      (MT2009_PLUS_YOHARA_ITEMS1_V1; the rows are mariadb/playerbot/yohara_maps.sql);
+  h2. YOHARA_ELEMENTS2 (the owner, 14 October 2026: "ustawic wg wiki na wszystkich nowych mapach"): the monsters of
+     Seoganland (376), Namgan (377), Przelecz Yilad (385), Wawoz Polnocnego Wiatru (388) and Schronienie Polnocnego
+     Wiatru (393) by Owsap's Att* (= the wiki), as h; the Metins 8063-8066/8077 and 8626/8627 none
+     (MT2009_PLUS_YOHARA_MAPS2_V1; the rows are mariadb/playerbot/yohara_maps2.sql);
   d. nothing else has an element: the SQL clears bits 11-16 on every other mob.
 
 A vnum carries its element everywhere it spawns; the report lists the mapped vnums that also
@@ -95,6 +99,14 @@ YOHARA_ELEMENTS = (
     (DARK, tuple(range(6686, 6693)) + tuple(range(6700, 6707)) + (6710,)),   # Twierdza (mrok), Dongan (mrok)
     (ICE, tuple(range(6693, 6700))),                                         # Twierdza (lod), Krol Bao
     (FIRE, tuple(range(6711, 6718))),                                        # Dongan (ogien)
+)
+# h2. the second batch (MT2009_PLUS_YOHARA_MAPS2_V1, the owner 14 Oct 2026): Owsap's Att* = the wiki's element
+YOHARA_ELEMENTS2 = (
+    (EARTH, tuple(range(6718, 6725)) + tuple(range(6875, 6882))),         # Myr (ziemia), Skazeni (ziemia)
+    (WIND, tuple(range(6725, 6732))),                                     # Myr (wiatr)
+    (DARK, tuple(range(6758, 6765))),                                     # Skazeni (mrok)
+    (ICE, tuple(range(6770, 6777)) + tuple(range(6784, 6790))),           # Zamarznieci (lod), Schronienie (lod)
+    (ELEC, tuple(range(6882, 6889))),                                     # Zamarznieci (blyskawice)
 )
 SHARE_PARTS = ('locale/poland/map', 'locale/poland/group.txt', 'locale/poland/group_group.txt',
                'locale/poland/special_spawns.txt', 'locale/poland/BlueDragon.lua', 'data/dungeon')
@@ -394,6 +406,11 @@ def main():
                 if v not in mobs:
                     mobs[v] = dict(rank=0, type=MOB_MONSTER, summon=0, flag=0, name='(yohara_maps.sql)')
                 result[v], why[v] = elem, 'Yohara (Owsap Att*, wiki)'
+        for elem, vs in YOHARA_ELEMENTS2:
+            for v in vs:
+                if v not in mobs:
+                    mobs[v] = dict(rank=0, type=MOB_MONSTER, summon=0, flag=0, name='(yohara_maps2.sql)')
+                result[v], why[v] = elem, 'Yohara 2 (Owsap Att*, wiki)'
 
         # where else every vnum spawns (maps of the index, dungeon dirs, special spawns)
         elsewhere = {}
@@ -444,7 +461,7 @@ def main():
                '-- ice, wind, earth, dark; in the column\'s SET: SAVAGE, ATT_FIRE, ATT_ICE, ATT_TEMPLE, ATT_EARTH,',
                '-- ATT_DARK). Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0) - by the owner\'s rules of',
                '-- 7 October 2026 (tools/zywioly/gen_zywioly_moby.py: wiki bosses, Grota Wygnancow 1/2, Swiatynia',
-               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses, Yohara 373/374). GENERATED - do not',
+               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses, Yohara 373/374 and 376-393). GENERATED - do not',
                '-- edit; rerun the generator. Every start (apply.sh), idempotent: bits 11-16 cleared on every other',
                '-- mob, set on these.']
         for line in out[1:7]:
