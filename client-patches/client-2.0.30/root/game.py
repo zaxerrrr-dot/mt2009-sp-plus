@@ -3338,7 +3338,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["PickupSound"] = __import__("digiqol").PLAYER.OnCommand
 		serverCommandList["SEONHAE"] = self.__SeonHae # MT2009_PLUS_SEONHAE_V1
 		# MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku's mast, "ShipMastHP <hp> <max>" (uishipdefense.py).
-		serverCommandList["ShipMastHP"] = __import__("uishipdefense").OnCommand
+		serverCommandList["ShipMastHP"] = self.__ShipMastHP
 		# MT2009_PLUS_DBDATA_STAMP_V1: "DbDataStamp <stamp>" at login - the server's item/skill files
 		# (database editor) against this client's dbdata_stamp.txt (dbdatastamp.py).
 		serverCommandList["DbDataStamp"] = __import__("dbdatastamp").NOTICE.OnCommand
@@ -4045,6 +4045,11 @@ class GameWindow(ui.ScriptWindow):
 			return
 		import uiweeklyrank
 		uiweeklyrank.OnCommand(*args)
+
+	# MT2009_PLUS_SHIP_DEFENSE_V1: "ShipMastHP <hp> <max>" - a bound method, as stringCommander needs one
+	# (a module function broke the whole command table and the game window with it).
+	def __ShipMastHP(self, *args):
+		__import__("uishipdefense").OnCommand(*args)
 
 	# MT2009_PLUS_CHAMPION_V1: "champion_info ..." and "sungma_map ..." (uichampion.py, Stage A).
 	def __ChampionInfo(self, *args):
