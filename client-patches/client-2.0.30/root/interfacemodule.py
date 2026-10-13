@@ -520,6 +520,11 @@ GM_PANEL_TELEPORT_EXTRA_LIST = [
 	("Dolina Orkow",	2704,	7399),
 	("Gora Sohan",		3752,	1749),
 	("Kraina Ognia",	5978,	6222),
+	# MT2009_PLUS_YOHARA_MAPS302_V1: BasePosition/100 + Town.txt of 301-304
+	("Przyladek Sm. Ognia",	11048,	17888),
+	("Zbocze Gautama",	12257,	16820),
+	("Nefrytowa Zatoka",	10879,	16498),
+	("Gromiste Gory",	11341,	16554),
 ]
 
 # Dungeon/instance destinations - global meters = map's own BasePosition

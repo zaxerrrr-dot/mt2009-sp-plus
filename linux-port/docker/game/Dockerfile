@@ -1302,6 +1302,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
       LC_ALL=C grep -a -q 'map_names\[367\]' "$f" && continue; \
       { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
       printf '\r\n-- MT2009_PLUS_SHIP_DEFENSE_V1\r\ntranslate.general.map_names[367] = "Obrona Statku"\r\n' >> "$f"; \
+      LC_ALL=C grep -a -q 'map_names\[301\]' "$f" \
+        || printf '\r\n-- MT2009_PLUS_YOHARA_MAPS302_V1: the Teleporter lists 301-304 from level 90\r\ntranslate.general.map_names[301] = "Przyl\271dek Smoczego Ognia"\r\ntranslate.general.map_names[302] = "Zbocze Gautama"\r\ntranslate.general.map_names[303] = "Nefrytowa Zatoka"\r\ntranslate.general.map_names[304] = "Gromiste G\363ry"\r\n' >> "$f"; \
     done \
  && S="$L/settings.lua" \
  && { LC_ALL=C grep -a -q 'add_goto_info("statek"' "$S" || printf 'add_goto_info("statek", 0, 367, 1667, 5223)\r\n' >> "$S"; } \
