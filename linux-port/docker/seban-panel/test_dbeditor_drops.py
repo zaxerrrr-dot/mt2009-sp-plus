@@ -476,5 +476,185 @@ class GameSideTests(unittest.TestCase):
             self.assertEqual([p["key"] for p in df.pending_changes(spool)], ["etc"])
 
 
+# MT2009_PLUS_PANEL_DROP_MERGE_V1: a game update adds image groups to monsters
+# whose drop was saved in the panel before; the save must not swallow them.
+NEW_GROUPS = """Group\tMT2009_new_101
+{
+\tMob\t101
+\tType\tdrop
+\t1\t27100\t1\t40\t-- added by an update
+}
+Group\tMT2009_seen_101
+{
+\tMob\t101
+\tType\tdrop
+\t1\t27009\t1\t4
+}
+Group\tMT2009_newkill_101
+{
+\tMob\t101
+\tType\tkill
+\tkill_drop\t3
+\t1\t27200\t1\t1\t0
+}
+"""
+LEGACY_CUSTOM = """# MT2009_PLUS_DROP_EDITOR_V1 - an old save, no MT2009_REPLACES lines
+Group\tMT2009_panel_101_drop
+{
+\tMob\t101
+\tType\tdrop
+\t1\t27001\t1\t8
+\t2\t27009\t1\t4
+}
+Group\tMT2009_panel_101_kill
+{
+\tMob\t101
+\tType\tkill
+\tkill_drop\t10
+\t1\t27002\t1\t1\t0
+}
+"""
+
+
+class MergeTests(unittest.TestCase):
+    """MT2009_PLUS_PANEL_DROP_MERGE_V1: the panel and m2-drops agree which
+    image groups a saved group replaces."""
+
+    def setUp(self):
+        self.base = df.parse_mob_drop(MOB_SAMPLE + NEW_GROUPS)
+
+    def names(self, groups):
+        return [g["name"] for g in groups]
+
+    def test_legacy_rule(self):
+        custom = {(g["mob"], g["type"]): dict(g, replaces=None) for g in df.parse_mob_drop(LEGACY_CUSTOM)}
+        replaced, kept, hidden = df.split_image_groups(self.base, 101, "drop", custom[(101, "drop")])
+        self.assertEqual(self.names(replaced), ["Wolf", "MT2009_seen_101"])   # package group; shares 27009
+        self.assertEqual(self.names(kept), ["MT2009_new_101"])
+        self.assertEqual(hidden, [])
+        replaced, kept, hidden = df.split_image_groups(self.base, 101, "kill", custom[(101, "kill")])
+        self.assertEqual(self.names(replaced), ["WolfKill", "WolfKillIgnored"])
+        self.assertEqual(self.names(hidden), ["MT2009_newkill_101"])          # still cut, but reported
+        empty = {"items": [], "type": "drop", "replaces": None}
+        self.assertEqual(len(df.split_image_groups(self.base, 101, "drop", empty)[0]), 3)
+
+    def test_replaces_lines(self):
+        group = {"type": "drop", "kill_drop": "0", "level_limit": "0", "replaces": ["Wolf"],
+                 "items": [{"item": "27001", "count": "1", "prob": "8", "rare": "0", "comment": ""}]}
+        kill = {"type": "kill", "kill_drop": "10", "level_limit": "0", "replaces": ["WolfKill", "WolfKillIgnored"],
+                "items": [{"item": "27002", "count": "1", "prob": "1", "rare": "0", "comment": ""}]}
+        text = df.render_mob_custom({(101, "drop"): group, (101, "kill"): kill}, "test").decode("ascii")
+        self.assertIn("# MT2009_REPLACES 101:drop Wolf\r\nGroup\tMT2009_panel_101_drop", text)
+        replaces = df.parse_mob_replaces(text)
+        self.assertEqual(replaces[(101, "kill")], ["WolfKill", "WolfKillIgnored"])
+        custom = {k: dict(g, replaces=replaces.get(k)) for k, g in
+                  {(g["mob"], g["type"]): g for g in df.parse_mob_drop(text)}.items()}
+        effective = df.effective_mob_drops(self.base, custom)
+        self.assertEqual(self.names(effective[(101, "drop")]["kept"]), ["MT2009_new_101", "MT2009_seen_101"])
+        self.assertEqual(self.names(effective[(101, "kill")]["hidden"]), ["MT2009_newkill_101"])
+        self.assertEqual(sorted(df.unseen_image_groups(effective)), [(101, "drop"), (101, "kill")])
+        # a legacy group is frozen at the next save: what it replaces today
+        legacy = {(g["mob"], g["type"]): dict(g, replaces=None) for g in df.parse_mob_drop(LEGACY_CUSTOM)}
+        frozen = df.parse_mob_replaces(df.render_mob_custom(legacy, "x", self.base).decode("ascii"))
+        self.assertEqual(frozen[(101, "drop")], ["Wolf", "MT2009_seen_101"])
+        # a new save: every image group the editor showed
+        self.assertEqual(df.replaces_for_save(self.base, {}, None, 8001, "drop"), ["Metin", "MetinMore"])
+
+
+class MergePageTests(PageTests):
+    """The editor's warning and "Przejmij" (MT2009_PLUS_PANEL_DROP_MERGE_V1)."""
+
+    def setUp(self):
+        super().setUp()
+        (self.spool / "drops" / "mob_drop_item.base.txt").write_text(MOB_SAMPLE + NEW_GROUPS, encoding="utf-8")
+        df.write_custom(self.spool, "mob", LEGACY_CUSTOM.encode("ascii"), "test")
+
+    def legacy_set(self):
+        base = df.parse_mob_drop(MOB_SAMPLE + NEW_GROUPS)
+        sets = df.build_mob_sets(df.effective_mob_drops(base, df.read_mob_custom(self.spool)))
+        return next(s for s in sets.values() if s["mobs"] == [101] and s["kind"] == "drop")
+
+    def test_warning_and_absorb(self):
+        page = self.client.get("/db/drops").get_data(as_text=True)
+        self.assertIn("Nowe grupy z gry obok dropu zapisanego w panelu", page)
+        self.assertIn("MT2009_new_101", page)
+        entry = self.legacy_set()
+        page = self.client.get(f"/db/drops/set/{entry['id']}").get_data(as_text=True)
+        self.assertIn("dropią obok", page)
+        self.assertIn("27100", page)
+        # an ordinary save keeps the new group next to it (and freezes the old one)
+        form = {"dbe_csrf": self.csrf, "action": "save", "member": ["101"], "row_count": "1",
+                "r0_item": "27001", "r0_count": "1", "r0_pct": "2"}
+        self.assertEqual(self.client.post(f"/db/drops/set/{entry['id']}", data=form).status_code, 302)
+        custom = df.read_mob_custom(self.spool)
+        self.assertEqual(custom[(101, "drop")]["replaces"], ["Wolf", "MT2009_seen_101"])
+        self.assertEqual(custom[(101, "kill")]["replaces"], ["WolfKill", "WolfKillIgnored"])
+        entry = self.legacy_set()
+        form = {"dbe_csrf": self.csrf, "action": "absorb", "member": ["101"], "row_count": "0"}
+        self.assertEqual(self.client.post(f"/db/drops/set/{entry['id']}", data=form).status_code, 302)
+        custom = df.read_mob_custom(self.spool)
+        self.assertEqual([e["item"] for e in custom[(101, "drop")]["items"]], ["27001", "27100"])
+        self.assertIn("MT2009_new_101", custom[(101, "drop")]["replaces"])
+        self.assertNotIn((101, "drop"), df.unseen_image_groups(
+            df.effective_mob_drops(df.parse_mob_drop(MOB_SAMPLE + NEW_GROUPS), custom)))
+
+    # the inherited page tests run on the other base; not again here
+    test_overview_and_search = test_save_whole_set = test_multiply_copy_remove = None
+    test_validation_and_csrf = test_new_group = test_common_table = test_etc_table = None
+    test_chests = test_sections_registered = None
+
+
+@unittest.skipUnless(shutil.which("sh") and M2_DROPS.is_file(), "no sh or m2-drops")
+class MergeGameSideTests(unittest.TestCase):
+    def apply(self, custom_text, extra=""):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            locale = root / "share" / "locale" / "poland"
+            locale.mkdir(parents=True)
+            (root / "spool" / "drops").mkdir(parents=True)
+            (locale / "mob_drop_item.txt").write_text((MOB_SAMPLE + NEW_GROUPS + extra).replace("\n", "\r\n"), encoding="utf-8")
+            (root / "spool" / "drops" / "mob_drop_item.custom.txt").write_text(custom_text, encoding="ascii")
+            env = dict(os.environ, M2_SHARE_DIR=str(root / "share"), M2_VAR_DIR=str(root / "var"),
+                       M2_RATES_SPOOL=str(root / "spool"), PATH="/usr/bin:/bin")
+            for command in ("prepare", "apply"):
+                subprocess.run(["sh", str(M2_DROPS), command], env=env, check=True, capture_output=True)
+            live = (locale / "mob_drop_item.txt").read_text(encoding="utf-8")
+            status = (root / "spool" / "drops" / "status").read_text(encoding="utf-8")
+        return set(re.findall(r"^Group\t(\S+)", live, re.M)), status
+
+    def test_legacy_file(self):
+        groups, status = self.apply(LEGACY_CUSTOM)
+        self.assertIn("MT2009_new_101", groups)                 # added later: drops next to the save
+        self.assertNotIn("MT2009_seen_101", groups)             # its item is in the saved group
+        self.assertNotIn("Wolf", groups)
+        self.assertNotIn("MT2009_newkill_101", groups)          # one kill group per monster: hidden
+        self.assertIn("MT2009_panel_101_drop", groups)
+        self.assertIn("state=ok", status)
+        self.assertIn("kept next to the panel's: MT2009_new_101", status)
+        self.assertIn("hidden: MT2009_newkill_101", status)
+
+    def test_panel_file(self):
+        group = {"type": "drop", "kill_drop": "0", "level_limit": "0", "replaces": ["Wolf"],
+                 "items": [{"item": "27009", "count": "1", "prob": "8", "rare": "0", "comment": ""}]}
+        groups, status = self.apply(df.render_mob_custom({(101, "drop"): group}, "test").decode("ascii"))
+        self.assertNotIn("Wolf", groups)
+        self.assertIn("MT2009_new_101", groups)
+        self.assertIn("MT2009_seen_101", groups)                # not on its MT2009_REPLACES line
+        self.assertIn("WolfKill", groups)                       # other kind untouched
+        self.assertIn("Wolf2", groups)
+
+    def test_korean_names(self):
+        extra = "Group\t비마석\n{\n\tMob\t103\n\tType\tdrop\n\t1\t27001\t1\t4\n}\n" \
+                "Group\t비마석_100%\n{\n\tMob\t103\n\tType\tdrop\n\t1\t27002\t1\t4\n}\n"
+        group = {"type": "drop", "kill_drop": "0", "level_limit": "0", "replaces": ["비마석"],
+                 "items": [{"item": "27003", "count": "1", "prob": "8", "rare": "0", "comment": ""}]}
+        text = df.render_mob_custom({(103, "drop"): group}, "test").decode("ascii")
+        self.assertIn("# MT2009_REPLACES 103:drop %EB%B9%84%EB%A7%88%EC%84%9D\r\n", text)
+        self.assertEqual(df.parse_mob_replaces(text)[(103, "drop")], ["비마석"])
+        groups, _ = self.apply(text, extra)
+        self.assertNotIn("비마석", groups)
+        self.assertIn("비마석_100%", groups)
+
+
 if __name__ == "__main__":
     unittest.main()

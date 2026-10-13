@@ -19,6 +19,27 @@
 #  the same monster AND the same kind, then the operator's groups. A group
 #  with no item lines means "this monster has none of this kind" - the image's
 #  groups are cut out and nothing is added.
+#
+#  MT2009_PLUS_PANEL_DROP_MERGE_V1: a saved group replaces only the image
+#  groups the operator saw. The panel writes, before each group,
+#      # MT2009_REPLACES <mob>:<kind> <image group name> ...
+#  (no names = it replaced none; bytes outside printable ASCII and "%" as
+#  %XX - the package's group names are Korean) and `apply' cuts out only those. An image
+#  group an update adds later (e.g. MT2009_jewels75_2492) stays:
+#    * Type drop - the core merges every drop group of a monster, so it simply
+#      drops next to the operator's group;
+#    * the other kinds - the core keeps only a monster's first group of a kind
+#      (std::map::emplace) and the image's would hide the operator's, so they
+#      are still cut out, but logged as "hidden" (the panel shows them too).
+#  A file saved before this (no MT2009_REPLACES line for a group; the panel
+#  adds them on its next save) - the old image is not known any more, so:
+#  an image drop group is cut when its name does not start with MT2009_ (the
+#  package's own groups), or the operator's group is empty (= no drop of this
+#  kind), or the operator's group has at least one of its items (s<group>
+#  included) - the editor showed it merged and the operator kept or changed
+#  it; an MT2009_ group none of whose items are in the operator's group was
+#  not there when it was saved: a drop group stays, one of the other kinds is
+#  cut as before but logged as "hidden".
 #  The panel reads the image's file back from $SPOOL/drops/mob_drop_item.base.txt
 #  (and, to show them read-only, common_drop_item.base.txt and
 #  etc_drop_item.base.txt), and how the last apply went from $SPOOL/drops/status.
@@ -338,6 +359,18 @@ cmd_apply() {
     function isint(s) { return s ~ /^[0-9]+$/ }
     function isnum(s) { return s ~ /^[0-9]+(\.[0-9]+)?$/ || s ~ /^\.[0-9]+$/ }
     { sub(/[[:blank:]]+$/, "") }
+    # MT2009_PLUS_PANEL_DROP_MERGE_V1: "# MT2009_REPLACES <mob>:<kind> names..."
+    # outside a group - which image groups the next group replaces.
+    state == 0 && /^[[:blank:]]*#[[:blank:]]*MT2009_REPLACES[[:blank:]]/ {
+        n = split($0, f, /[[:blank:]]+/); o = ""
+        for (i = 1; i <= n; i++) if (f[i] == "MT2009_REPLACES") break
+        if (i < n && f[i + 1] ~ /^[0-9]+:(drop|kill|limit|thiefgloves)$/) {
+            split(f[i + 1], mk, ":"); o = "R " (mk[1] + 0) ":" mk[2]
+            for (j = i + 2; j <= n; j++) if (f[j] != "") o = o " " f[j]
+            print o
+        }
+        next
+    }
     /^[[:blank:]]*$/ || /^[[:blank:]]*(#|--|\/\/)/ { if (state == 2) blk = blk $0 "\n"; next }
     {
         n = split($0, f, /[[:blank:]]+/)
@@ -380,6 +413,7 @@ cmd_apply() {
         next_idx++
         if (n < 4) err("a line needs item, count and chance")
         it = f[2]
+        if (mob != "") print "C " mob ":" type " " (isint(it) ? it + 0 : tolower(it))
         if (it ~ /^s[0-9]+$/) { if (type != "drop") err("s<group> only works in a drop group") }
         else if (isint(it)) print "I " it
         else err("unknown item \"" it "\"")
@@ -428,29 +462,71 @@ cmd_apply() {
         fi
     fi
 
-    # The image's file without the groups of the same monster and kind (a
-    # group runs from its "Group" line to its "}"; what lies between groups
-    # is kept), then the operator's groups.
-    awk -v list=" $_keys " -v cutlog="$WORK/cut.log" '
+    # The image's file without the groups the operator's replace (a group
+    # runs from its "Group" line to its "}"; what lies between groups is
+    # kept), then the operator's groups. MT2009_PLUS_PANEL_DROP_MERGE_V1:
+    # which ones - see the top of this file (R = the panel's MT2009_REPLACES
+    # lines, C = the items of the operator's groups, for the older files).
+    sed -n 's/^R //p' "$WORK/custom.check" > "$WORK/custom.replaces"
+    sed -n 's/^C //p' "$WORK/custom.check" > "$WORK/custom.items"
+    : > "$WORK/cut.log"; : > "$WORK/kept.log"; : > "$WORK/hidden.log"
+    awk -v list=" $_keys " -v cutlog="$WORK/cut.log" -v keptlog="$WORK/kept.log" -v hidlog="$WORK/hidden.log" \
+        -v repf="$WORK/custom.replaces" -v itf="$WORK/custom.items" '
+    # A name as the panel writes it on MT2009_REPLACES: printable ASCII as
+    # it is, every other byte and "%" as %XX (LC_ALL=C: bytes).
+    function quote(s,   i, c, o) {
+        o = ""
+        for (i = 1; i <= length(s); i++) {
+            c = substr(s, i, 1)
+            o = o ((c > " " && c <= "~" && c != "%") ? c : sprintf("%%%02X", ord[c]))
+        }
+        return o
+    }
+    BEGIN {
+        for (i = 1; i < 256; i++) ord[sprintf("%c", i)] = i
+        while ((getline l < repf) > 0) {
+            n = split(l, r, " "); meta[r[1]] = 1
+            for (i = 2; i <= n; i++) rep[r[1] SUBSEP r[i]] = 1
+        }
+        close(repf)
+        while ((getline l < itf) > 0) { split(l, r, " "); citem[r[1] SUBSEP r[2]] = 1; cfull[r[1]] = 1 }
+        close(itf)
+    }
     {
         line = $0; sub(/\r$/, "", line)
-        t = line; sub(/^[[:blank:]]+/, "", t); split(t, f, /[[:blank:]]+/); k = tolower(f[1])
+        t = line; sub(/^[[:blank:]]+/, "", t); n = split(t, f, /[[:blank:]]+/); k = tolower(f[1])
     }
     !ing {
-        if (k == "group") { ing = 1; blk = $0 "\n"; mob = ""; typ = ""; next }
+        if (k == "group") { ing = 1; blk = $0 "\n"; mob = ""; typ = ""; gname = f[2]; ov = 0; ni = 0; next }
         print; next
     }
     { blk = blk $0 "\n" }
-    k == "mob" { mob = f[2] + 0 }
-    k == "type" { typ = f[2] }
+    k == "mob" && mob == "" { mob = f[2] + 0 }
+    k == "type" && typ == "" { typ = f[2] }
+    f[1] ~ /^[0-9]+$/ && n >= 2 && f[2] !~ /^--/ {
+        ni++; it = f[2] ~ /^[0-9]+$/ ? f[2] + 0 : tolower(f[2])
+        if (((mob ":" typ) SUBSEP it) in citem) ov = 1
+    }
     substr(t, 1, 1) == "}" {
-        if (index(list, " " mob ":" typ " ")) print mob ":" typ > cutlog
-        else printf "%s", blk
+        key = mob ":" typ
+        if (!index(list, " " key " ")) printf "%s", blk
+        else {
+            if (key in meta) cut = ((key SUBSEP quote(gname)) in rep)
+            else cut = (!(key in cfull) || gname !~ /^MT2009_/ || ov)
+            if (cut) print key " " gname > cutlog
+            else if (typ == "drop") { print key " " gname > keptlog; printf "%s", blk }
+            else print key " " gname > hidlog
+        }
         ing = 0; blk = ""
     }
     END { if (ing) printf "%s", blk }
     ' "$IMAGE" > "$WORK/live.new" || { say "could not build the live file"; put_image_live; return 1; }
-    _cut=$(wc -l < "$WORK/cut.log" 2>/dev/null | tr -d ' '); rm -f "$WORK/cut.log"
+    _cut=$(wc -l < "$WORK/cut.log" 2>/dev/null | tr -d ' ')
+    _kept=$(cut -d' ' -f2 "$WORK/kept.log" 2>/dev/null | tr '\n' ' ' | sed 's/ $//')
+    _hidden=$(cut -d' ' -f2 "$WORK/hidden.log" 2>/dev/null | tr '\n' ' ' | sed 's/ $//')
+    [ -n "$_kept" ] && say "image drop groups the panel's save did not know, kept next to it: $_kept"
+    [ -n "$_hidden" ] && say "WARNING: image groups the panel's save did not know, hidden by it (one group of this kind per monster): $_hidden"
+    rm -f "$WORK/cut.log" "$WORK/kept.log" "$WORK/hidden.log" "$WORK/custom.replaces" "$WORK/custom.items"
     {
         [ -z "$(tail -c 1 "$WORK/live.new")" ] || printf '\r\n'
         printf '\r\n# ---- MT2009_PLUS_DROP_EDITOR_V1: groups changed in the Seban panel ----\r\n'
@@ -467,7 +543,7 @@ cmd_apply() {
         return 1
     fi
     say "drops from the panel applied: $_count group(s) ($_keys), ${_cut:-0} image group(s) replaced"
-    write_status ok "$_count" "$_sha" "applied: $_keys(${_cut:-0} image groups replaced)"
+    write_status ok "$_count" "$_sha" "applied: $_keys(${_cut:-0} image groups replaced${_kept:+; kept next to the panel's: $_kept}${_hidden:+; hidden: $_hidden})"
     return 0
 }
 

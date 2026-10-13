@@ -53,7 +53,8 @@ def install(bp, ctx):
             custom = df.read_mob_custom(spool)
             effective = df.effective_mob_drops(base, custom)
             g.dbe_drop_state = {"spool": spool, "base": base, "custom": custom, "effective": effective,
-                                "sets": df.build_mob_sets(effective), "has_base": text is not None}
+                                "sets": df.build_mob_sets(effective), "has_base": text is not None,
+                                "unseen": df.unseen_image_groups(effective)}
         return g.dbe_drop_state
 
     def chest_groups():
@@ -163,9 +164,21 @@ def install(bp, ctx):
             common_source=common_source, rank_names=df.COMMON_RANKS,
             etc_count=sum(1 for e in etc if e["active"]) if etc is not None else None, etc_source=etc_source,
             drop_groups=drop_groups, group_known=group_text is not None, pending=df.pending_changes(spool),
+            unseen=unseen_view(st),
             mob_sets_of=lambda vnum: [(k, st["sets"].get(df.mob_set_id(st["effective"][(vnum, k)])))
                                       for k in df.MOB_KINDS if (vnum, k) in st["effective"]],
             pct_text=df.pct_text, chance_text=df.chance_text, mob_label=mob_label, csrf=df.csrf_token())
+
+    def unseen_view(st):
+        """MT2009_PLUS_PANEL_DROP_MERGE_V1: the monsters whose saved drop lives
+        next to image groups added after the save, with a link to the set."""
+        result = []
+        for (mob, kind), data in sorted(st["unseen"].items()):
+            entry = st["effective"].get((mob, kind))
+            result.append({"mob": mob, "name": mob_label(mob), "kind": kind,
+                           "kept": [gr["name"] for gr in data["kept"]], "hidden": [gr["name"] for gr in data["hidden"]],
+                           "set_id": df.mob_set_id(entry) if entry else None})
+        return result
 
     def who_drops(items, st, spool):
         """For each item: every place it can come from, with the chance."""
@@ -234,8 +247,19 @@ def install(bp, ctx):
         view = set_view(entry, names, chests)
         custom_members = [m for m in entry["mobs"] if (m, entry["kind"]) in st["custom"]]
         image_members = {m for m in entry["mobs"] if any(gr["mob"] == m and gr["type"] == entry["kind"] for gr in st["base"])}
+        # MT2009_PLUS_PANEL_DROP_MERGE_V1: image groups added after the save, to review
+        unseen = []
+        for mob, data in sorted(entry.get("unseen", {}).items()):
+            for state_name in ("kept", "hidden"):
+                for gr in data[state_name]:
+                    gnames = names_for([e["item"] for e in gr["items"]])
+                    view_group = {"type": gr["type"], "items": gr["items"], "kill_drop": gr["kill_drop"]}
+                    unseen.append({"mob": mob, "mob_name": mob_label(mob), "state": state_name, "name": gr["name"],
+                                   "level_limit": gr["level_limit"], "kill_drop": gr["kill_drop"],
+                                   "lines": [dict(e, **item_info(e["item"], gnames, chests),
+                                                  pct=df.mob_chance(gr["type"], e, view_group)) for e in gr["items"]]})
         return render_template("dbeditor/drops_set.html", s=view, kind_names=df.MOB_KIND_NAMES,
-                               custom_members=custom_members, image_members=image_members,
+                               custom_members=custom_members, image_members=image_members, unseen=unseen,
                                status=df.live_state(st["spool"], "mob"), factors=FACTORS,
                                pct_text=df.pct_text, chance_text=df.chance_text, csrf=df.csrf_token(),
                                old_editor="drop_edit" in _endpoints())
@@ -302,7 +326,12 @@ def install(bp, ctx):
         return found
 
     def save_custom(custom, reason):
-        df.write_custom(df.spool_dir(), "mob", df.render_mob_custom(custom, reason), reason)
+        # MT2009_PLUS_PANEL_DROP_MERGE_V1: the image's groups freeze what the
+        # older groups (no MT2009_REPLACES yet) replace today
+        df.write_custom(df.spool_dir(), "mob", df.render_mob_custom(custom, reason, state()["base"]), reason)
+
+    def replaces(st, mob, kind, absorb=()):
+        return df.replaces_for_save(st["base"], st["custom"], st["effective"], mob, kind, absorb)
 
     @bp.post("/drops/set/<set_id>")
     @login_required
@@ -321,6 +350,31 @@ def install(bp, ctx):
         custom = dict(st["custom"])
         back = url_for("dbeditor.drops_set", set_id=set_id)
         try:
+            if action == "absorb":
+                # MT2009_PLUS_PANEL_DROP_MERGE_V1: the image groups added after
+                # the save become part of it (drop: their lines join the
+                # group; other kinds: marked as seen - they stay hidden)
+                done = 0
+                for mob in selected:
+                    data = entry.get("unseen", {}).get(mob)
+                    old = custom.get((mob, kind))
+                    if not data or old is None:
+                        continue
+                    groups = data["kept"] + data["hidden"]
+                    items = list(old["items"]) + [dict(e) for gr in data["kept"] for e in gr["items"]]
+                    if len(items) > df.MOB_MAX_LINES:
+                        raise ValueError(f"{mob_label(mob)}: po dołączeniu byłoby {len(items)} pozycji (najwyżej {df.MOB_MAX_LINES}).")
+                    custom[(mob, kind)] = dict(old, items=items,
+                                               replaces=replaces(st, mob, kind, [gr["name"] for gr in groups]))
+                    done += 1
+                if not done:
+                    raise ValueError("Zaznaczone potwory nie mają nowych grup z gry do przejęcia.")
+                save_custom(custom, f"przejeto nowe grupy z gry {kind} {done} potworow")
+                g.pop("dbe_drop_state", None)
+                flash(f"Nowe grupy z gry przejęte do zapisu panelu u {done} potworów"
+                      + (" – ich pozycje są teraz w tabeli." if kind == "drop" else " – oznaczone jako przejrzane (dalej zasłonięte).")
+                      + " Zadziała po restarcie rdzeni (Zastosuj).", "success")
+                return redirect(url_for("dbeditor.drops_index", kind=kind))
             if action in ("remove", "reset"):
                 if not selected:
                     raise ValueError("Zaznacz potwory, których to dotyczy.")
@@ -329,7 +383,9 @@ def install(bp, ctx):
                     if action == "reset":
                         custom.pop((mob, kind), None)
                     elif has_base:
-                        custom[(mob, kind)] = {"mob": mob, "type": kind, "kill_drop": "1", "level_limit": "0", "items": []}
+                        # "nothing of this kind": every image group of it, as the editor shows them now
+                        custom[(mob, kind)] = {"mob": mob, "type": kind, "kill_drop": "1", "level_limit": "0", "items": [],
+                                               "replaces": [gr["name"] for gr in df.image_groups_of(st["base"], mob, kind)]}
                     else:
                         custom.pop((mob, kind), None)
                 save_custom(custom, f"{action} {kind} {len(selected)} potworow")
@@ -359,7 +415,7 @@ def install(bp, ctx):
                 known = names.get(int(line["item"])) if line["item"].isdigit() else None
                 line["comment"] = known["name"] if known else line["item"]
             for mob in targets:
-                custom[(mob, kind)] = dict(group, mob=mob)
+                custom[(mob, kind)] = dict(group, mob=mob, replaces=replaces(st, mob, kind))
             save_custom(custom, f"{action} {kind} dla {len(targets)} potworow")
         except ValueError as exc:
             flash(str(exc), "error")
@@ -403,7 +459,7 @@ def install(bp, ctx):
                 line["comment"] = known["name"] if known else line["item"]
             custom = dict(st["custom"])
             for mob in targets:
-                custom[(mob, kind)] = dict(group, mob=mob)
+                custom[(mob, kind)] = dict(group, mob=mob, replaces=replaces(st, mob, kind))
             save_custom(custom, f"nowy {kind} dla {len(targets)} potworow")
         except ValueError as exc:
             flash(str(exc), "error")

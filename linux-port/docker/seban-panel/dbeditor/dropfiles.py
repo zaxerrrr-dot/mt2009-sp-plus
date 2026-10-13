@@ -279,21 +279,139 @@ def render_mob_group(mob, kind, group):
     return lines
 
 
-def render_mob_custom(custom, reason):
+# MT2009_PLUS_PANEL_DROP_MERGE_V1: a saved group replaces only the image
+# groups the operator saw. Before each group the file says which:
+#     # MT2009_REPLACES <mob>:<kind> <image group name> ...
+# and m2-drops cuts out only those (the rule, also for files saved before
+# this, is at the top of game/bin/m2-drops and in split_image_groups()). An
+# image "drop" group an update adds later drops next to the operator's (the
+# core merges a monster's drop groups); of the other kinds the core keeps one
+# group per monster, so such a group stays hidden behind the operator's.
+REPLACES_MARK = "MT2009_REPLACES"
+_REPLACES_RE = re.compile(r"^\s*#\s*" + REPLACES_MARK + r"\s+(\d+):(drop|kill|limit|thiefgloves)\b(.*)$")
+
+
+def quote_group_name(name):
+    """A group name on the (ASCII) MT2009_REPLACES line: printable ASCII as it
+    is, every other byte of its UTF-8 (the package's names are Korean) and
+    "%" as %XX - m2-drops writes the image's names the same way."""
+    return "".join(c if 0x21 <= ord(c) <= 0x7E and c != "%" else
+                   "".join(f"%{b:02X}" for b in c.encode("utf-8", "surrogateescape")) for c in str(name))
+
+
+def unquote_group_name(token):
+    from urllib.parse import unquote
+    return unquote(token, errors="replace")
+
+
+def parse_mob_replaces(text):
+    """{(mob, kind): [image group names]} from the MT2009_REPLACES lines."""
+    result = {}
+    for raw in (text or "").replace("\r", "").split("\n"):
+        match = _REPLACES_RE.match(raw)
+        if match:
+            key = (int(match.group(1)), match.group(2))
+            names = result.setdefault(key, [])
+            names += [n for n in map(unquote_group_name, match.group(3).split()) if n not in names]
+    return result
+
+
+def _item_key(item):
+    item = str(item).strip().lower()
+    return str(int(item)) if item.isdigit() else item
+
+
+def image_groups_of(base_groups, mob, kind):
+    return [g for g in base_groups if g["mob"] == mob and g["type"] == kind]
+
+
+def split_image_groups(base_groups, mob, kind, custom_group):
+    """The image's groups of one monster and kind -> (replaced, kept, hidden)
+    as m2-drops builds the live file (MT2009_PLUS_PANEL_DROP_MERGE_V1):
+      replaced - cut out, the operator's group stands for them;
+      kept     - "drop" groups the save did not know: they drop next to it;
+      hidden   - groups of the other kinds the save did not know: still cut
+                 out (one group of such a kind per monster), shown as a warning.
+    No custom group: nothing replaced. A group read from a file saved before
+    the MT2009_REPLACES lines (replaces None): an image group counts as not
+    seen at that save only when its name starts with MT2009_, the operator's
+    group is not empty and has none of its items."""
+    groups = image_groups_of(base_groups, mob, kind)
+    if custom_group is None:
+        return [], groups, []
+    replaces = custom_group.get("replaces")
+    if replaces is not None:
+        known = set(replaces)
+        replaced = [g for g in groups if g["name"] in known]
+    else:
+        items = {_item_key(e["item"]) for e in custom_group.get("items") or []}
+        replaced = [g for g in groups
+                    if not items or not g["name"].startswith("MT2009_")
+                    or any(_item_key(e["item"]) in items for e in g["items"])]
+    others = [g for g in groups if g not in replaced]
+    if kind == "drop":
+        return replaced, others, []
+    return replaced, [], others
+
+
+def replaced_names(base_groups, mob, kind, custom_group):
+    """The names a save of this group should list: what it replaces now."""
+    names = []
+    for group in split_image_groups(base_groups, mob, kind, custom_group)[0]:
+        if group["name"] not in names:
+            names.append(group["name"])
+    return names
+
+
+def replaces_for_save(base_groups, custom, effective, mob, kind, absorb=()):
+    """MT2009_REPLACES of a group the operator saves now: what it replaced
+    before (or, new, every image group of that monster and kind - the editor
+    showed them), plus the image groups whose lines the editor showed in the
+    form (effective "names") and the ones taken over (absorb)."""
+    old = custom.get((mob, kind))
+    if old is None:
+        names = [g["name"] for g in image_groups_of(base_groups, mob, kind)]
+    else:
+        names = replaced_names(base_groups, mob, kind, old)
+    shown = (effective or {}).get((mob, kind)) or {}
+    for name in list(shown.get("names") or []) + list(absorb):
+        if name not in names:
+            names.append(name)
+    return names
+
+
+def render_mob_custom(custom, reason, base_groups=None):
+    """The whole custom file. MT2009_PLUS_PANEL_DROP_MERGE_V1: every group
+    with its MT2009_REPLACES line; a group without "replaces" (read from an
+    older file, not touched now) gets what it replaces today when the image's
+    groups are given - frozen, so an image group added after this save stays."""
     lines = ["# MT2009_PLUS_DROP_EDITOR_V1 - grupy mob_drop_item.txt zmienione w panelu Seban",
              f"# zapis: {datetime.now():%Y-%m-%d %H:%M:%S} - {ascii_comment(reason)}",
-             "# Kazda grupa zastepuje WSZYSTKIE grupy z obrazu gry o tym samym Mob i Type (m2-drops, przy starcie rdzeni).",
-             "# Grupa bez pozycji = ten potwor nie ma dropu tego rodzaju.", ""]
+             "# MT2009_PLUS_PANEL_DROP_MERGE_V1: grupa zastepuje tylko te grupy z obrazu gry, ktore wymienia",
+             "# linia REPLACES nad nia (edytor pokazal je przy zapisie). Nowe grupy drop z aktualizacji gry",
+             "# dropia obok; nowe grupy kill/limit/thiefgloves sa zasloniete (silnik bierze jedna) - panel ostrzega.",
+             "# Grupa bez pozycji = ten potwor nie ma dropu tego rodzaju (z wymienionych grup).", ""]
     for mob, kind in sorted(custom):
-        lines += render_mob_group(mob, kind, custom[(mob, kind)]) + [""]
+        group = custom[(mob, kind)]
+        replaces = group.get("replaces")
+        if replaces is None and base_groups is not None:
+            replaces = replaced_names(base_groups, mob, kind, group)
+        if replaces is not None:
+            lines.append(" ".join([f"# {REPLACES_MARK}", f"{mob}:{kind}"] + [quote_group_name(n) for n in replaces if n]))
+        lines += render_mob_group(mob, kind, group) + [""]
     return "\r\n".join(lines).encode("ascii", "replace")
 
 
 def read_mob_custom(spool):
+    text = read_text(custom_path(spool, "mob")) or ""
+    replaces = parse_mob_replaces(text)
     custom = {}
-    for group in parse_mob_drop(read_text(custom_path(spool, "mob")) or ""):
+    for group in parse_mob_drop(text):
         if group["type"] in MOB_KINDS:
-            custom.setdefault((group["mob"], group["type"]), group)
+            key = (group["mob"], group["type"])
+            if key not in custom:
+                group["replaces"] = replaces.get(key)
+                custom[key] = group
     return custom
 
 
@@ -302,7 +420,11 @@ def effective_mob_drops(base_groups, custom):
     or the image's - all "drop" groups of a monster merged (CDropItemGroup is
     shared per monster), only the first group of the other kinds
     (std::map::emplace keeps the first). A kill group with kill_drop 0 is
-    skipped by the core."""
+    skipped by the core.
+    MT2009_PLUS_PANEL_DROP_MERGE_V1: with an operator's group, "items" are
+    its lines (what the editor edits), "names" the image groups it replaces,
+    "kept" the image drop groups that drop next to it and "hidden" the image
+    groups of another kind it hides - both added after it was saved."""
     result = {}
     for group in base_groups:
         kind = group["type"]
@@ -322,14 +444,28 @@ def effective_mob_drops(base_groups, custom):
         else:
             current["ignored"] += 1
     for key, group in custom.items():
+        replaced, kept, hidden = split_image_groups(base_groups, key[0], key[1], group)
         if not group["items"]:
             result.pop(key, None)
+            if kept:
+                # the operator removed the drop he saw; groups added later drop
+                result[key] = {"mob": key[0], "type": key[1], "items": [e for g in kept for e in g["items"]],
+                               "kill_drop": "0", "level_limit": "0", "names": [g["name"] for g in kept],
+                               "source": "image", "ignored": 0, "kept": [], "hidden": []}
             continue
-        old = result.get(key)
         result[key] = {"mob": key[0], "type": key[1], "items": list(group["items"]),
                        "kill_drop": group.get("kill_drop", "0"), "level_limit": group.get("level_limit", "0"),
-                       "names": old["names"] if old else [], "source": "custom", "ignored": 0}
+                       "names": [g["name"] for g in replaced], "source": "custom", "ignored": 0,
+                       "kept": kept, "hidden": hidden}
     return result
+
+
+def unseen_image_groups(effective):
+    """{(mob, kind): {"kept": [...], "hidden": [...]}} - the monsters whose
+    saved drop lives next to image groups added after the save
+    (MT2009_PLUS_PANEL_DROP_MERGE_V1), for the editor's warning."""
+    return {key: {"kept": entry.get("kept") or [], "hidden": entry.get("hidden") or []}
+            for key, entry in effective.items() if entry.get("kept") or entry.get("hidden")}
 
 
 def _norm_prob(value):
@@ -359,8 +495,10 @@ def build_mob_sets(effective):
         if entry is None:
             entry = sets[set_id] = {"id": set_id, "kind": kind, "items": group["items"],
                                     "kill_drop": group["kill_drop"], "level_limit": group["level_limit"],
-                                    "mobs": [], "names": [], "custom": False}
+                                    "mobs": [], "names": [], "custom": False, "unseen": {}}
         entry["mobs"].append(mob)
+        if group.get("kept") or group.get("hidden"):  # MT2009_PLUS_PANEL_DROP_MERGE_V1
+            entry["unseen"][mob] = {"kept": group.get("kept") or [], "hidden": group.get("hidden") or []}
         for name in group["names"]:
             if name not in entry["names"]:
                 entry["names"].append(name)

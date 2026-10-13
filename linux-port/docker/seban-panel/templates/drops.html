@@ -59,6 +59,19 @@
   {% elif s.kind == 'limit' %}Tylko dla gracza z poziomem co najmniej „od poziomu”. Każda pozycja osobno, wartość to <b>procent wprost</b> (bez różnicy poziomów i stawki dropu).
   {% else %}Dodatkowy drop tylko dla gracza z premium lub rękawicami złodzieja. Wartość jak w „drop”: procent × 4.{% endif %}</p>
 
+  {% if s.unseen %}
+  {# MT2009_PLUS_PANEL_DROP_MERGE_V1: image groups a game update added after this group was saved in the panel #}
+  <div class="dr-bad dr-unseen">
+    <p><b>⚠️ Nowe grupy z gry obok zapisu z panelu:</b> {% for u in s.unseen %}{{ u.name }}{{ ', ' if not loop.last }}{% endfor %}.
+    {% if s.kind == 'drop' %}Nie było ich, gdy tę grupę zapisano w panelu – <b>dropią obok</b> tabeli niżej (szanse się sumują).{% else %}Nie było ich, gdy tę grupę zapisano w panelu – gra czyta jedną grupę „{{ s.kind }}” na potwora, więc są <b>zasłonięte</b> zapisem panelu.{% endif %}</p>
+    {% for u in s.unseen %}<details><summary>{{ u.name }} – {{ u.lines|length }} poz.{% if s.kind == 'kill' %} · co {{ u.kill_drop }} zabójstw{% elif s.kind == 'limit' %} · od poz. {{ u.level_limit }}{% endif %}</summary>
+      <ul>{% for e in u.lines %}<li><code>{{ e.item }}</code> {{ e.label }} ×{{ e.count }} – {{ '%.4g'|format(e.chance) }}%</li>{% endfor %}</ul></details>{% endfor %}
+    <form method="post" class="dr-tools" action="{{ url_for('drop_save', mob=mob.vnum) }}">
+      <input type="hidden" name="drop_csrf" value="{{ drop_csrf }}"><input type="hidden" name="kind" value="{{ s.kind }}">
+      <button name="action" value="absorb">{% if s.kind == 'drop' %}📥 Przejmij ich pozycje do tej grupy{% else %}✔ Oznacz jako przejrzane{% endif %}</button>
+    </form>
+  </div>
+  {% endif %}
   {% if s.data and s.data.groups %}
     {% if s.data.base|length > 1 and s.kind == 'drop' and not s.custom %}<p class="muted">W obrazie gry ten potwór ma {{ s.data.base|length }} grupy „drop” ({{ s.group_names|join(', ') }}) – silnik je łączy. Zapis zastąpi je wszystkie jedną grupą.</p>{% endif %}
     {% if s.data.ignored %}<p class="dr-bad">Uwaga: w obrazie jest jeszcze {{ s.data.ignored|length }} grupa „{{ s.kind }}” tego potwora, której silnik NIE używa (bierze tylko pierwszą). Zapis zastąpi obie.</p>{% endif %}

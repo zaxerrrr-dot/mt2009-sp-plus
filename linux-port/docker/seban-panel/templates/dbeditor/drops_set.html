@@ -13,7 +13,7 @@
 {% else %}Dodatkowy drop tylko dla gracza z premium lub rękawicami złodzieja. Każda pozycja osobno.{% endif %}
 {% if s.names %}<br><small>Nazwa grupy w pliku gry: {{ s.names|join(', ') }}</small>{% endif %}</p>
 
-<form method="post" class="dbd-form" data-mode="{{ 'kill' if s.kind == 'kill' else 'pct' }}" data-api="{{ url_for('dbeditor.api_items') }}" action="{{ url_for('dbeditor.drops_set_save', set_id=s.id) }}">
+<form method="post" id="dbd-set-form" class="dbd-form" data-mode="{{ 'kill' if s.kind == 'kill' else 'pct' }}" data-api="{{ url_for('dbeditor.api_items') }}" action="{{ url_for('dbeditor.drops_set_save', set_id=s.id) }}">
 <input type="hidden" name="dbe_csrf" value="{{ csrf }}">
 <input type="hidden" name="row_count" class="dbd-row-count" value="{{ s.lines|length }}">
 
@@ -31,6 +31,28 @@
   {% endfor %}
   </div>
 </section>
+
+{% if unseen %}
+{# MT2009_PLUS_PANEL_DROP_MERGE_V1: image groups added by a game update after this drop was saved in the panel #}
+<section class="panel dbd-status pending dbd-unseen">
+  <h2>⚠️ Nowe grupy z gry obok zapisu z panelu</h2>
+  <p>Drop tych potworów był zapisany w panelu, zanim aktualizacja gry dodała poniższe grupy. Zapis panelu ich <b>nie zastępuje</b>:
+  {% if s.kind == 'drop' %}<b>dropią obok</b> tabeli niżej (szanse się sumują).{% else %}gra czyta tylko jedną grupę tego rodzaju na potwora, więc działa zapis z panelu, a te są <b>zasłonięte</b>.{% endif %}</p>
+  {% for u in unseen %}
+  <details class="dbd-unseen-group">
+    <summary><b>{{ u.name }}</b> – {{ u.mob_name }} ({{ u.mob }}) · {{ 'dropi obok' if u.state == 'kept' else 'zasłonięta' }} · {{ u.lines|length }} poz.{% if s.kind == 'kill' %} · co {{ u.kill_drop }} zabójstw{% elif s.kind == 'limit' %} · od poz. {{ u.level_limit }}{% endif %}</summary>
+    <div class="table-wrap"><table class="dbd-table">
+      <thead><tr><th>#</th><th>Przedmiot</th><th>Nazwa</th><th>Ilość</th><th>Na jedno zabicie</th></tr></thead>
+      <tbody>{% for e in u.lines %}<tr><td>{{ loop.index }}</td><td>{{ e.item }}</td>
+        <td><span class="dbd-name">{% if e.icon %}<img src="{{ e.icon }}" alt="">{% endif %}<span class="{{ 'dbd-bad' if e.bad else '' }}">{{ e.label }}</span></span></td>
+        <td>{{ e.count }}</td><td>{{ chance_text(e.pct) }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </details>
+  {% endfor %}
+  <p class="muted dbd-help">{% if s.kind == 'drop' %}„Przejmij” dopisuje pozycje tych grup do tabeli zaznaczonych potworów (wtedy możesz je zmienić albo usunąć; przyszłe zmiany tych grup w aktualizacjach już nie wejdą).{% else %}„Oznacz jako przejrzane” chowa to ostrzeżenie; grupy dalej zostają zasłonięte przez zapis panelu. Żeby działały grupy z gry, użyj „Przywróć drop z obrazu gry”.{% endif %}</p>
+  <div class="dbd-actions"><button name="action" value="absorb" form="dbd-set-form">{% if s.kind == 'drop' %}📥 Przejmij nowe grupy do zapisu (zaznaczonym){% else %}✔ Oznacz jako przejrzane (zaznaczonym){% endif %}</button></div>
+</section>
+{% endif %}
 
 <section class="panel">
   <h2>Co wypada</h2>

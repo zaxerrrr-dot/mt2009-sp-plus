@@ -11096,8 +11096,11 @@ def api_chest_items():
 # <chance> [rare] ... }". This page writes the groups the operator changed -
 # only those, whole, one per monster and kind - to the spool volume both
 # containers share (drops/mob_drop_item.custom.txt, ASCII with CRLF). The
-# game's m2-drops (m2-supervise, before the cores boot) cuts every image
-# group of the same monster and kind out of the live file and appends these,
+# game's m2-drops (m2-supervise, before the cores boot) cuts the image groups
+# of the same monster and kind each one replaces (MT2009_PLUS_PANEL_DROP_MERGE_V1:
+# the ones named on its "# MT2009_REPLACES" line - those the page showed when
+# it was saved; drop groups a later update adds drop next to it) out of the
+# live file and appends these,
 # so a server update (a new image, a new mob_drop_item.txt) keeps them. A
 # group without item lines means "none of this kind for this monster". The
 # game publishes the image's file back as drops/mob_drop_item.base.txt, which
@@ -11191,14 +11194,26 @@ def drop_read(path):
         return None
 
 
+def drop_custom_groups(text):
+    """{(mob, type): group} of a custom file (or a backup of one), each with
+    the image groups it replaces (MT2009_PLUS_PANEL_DROP_MERGE_V1: "replaces",
+    None in a file saved before the MT2009_REPLACES lines)."""
+    from dbeditor import dropfiles as drop_files
+    replaces = drop_files.parse_mob_replaces(text or "")
+    custom = {}
+    for group in drop_parse(text or ""):
+        if group["type"] in DROP_TYPES and (group["mob"], group["type"]) not in custom:
+            group["replaces"] = replaces.get((group["mob"], group["type"]))
+            custom[(group["mob"], group["type"])] = group
+    return custom
+
+
 def drop_state():
     """The image's groups, the operator's groups ({(mob, type): group}), and
     how the game took the last save."""
     text = drop_read(DROP_BASE)
     base = drop_parse(text or "")
-    custom = {}
-    for group in drop_parse(drop_read(DROP_CUSTOM) or ""):
-        custom.setdefault((group["mob"], group["type"]), group)
+    custom = drop_custom_groups(drop_read(DROP_CUSTOM))
     status = read_spool_values(DROP_STATUS) if DROP_STATUS.exists() else {}
     sha = chest_file_sha(DROP_CUSTOM) if custom else ""
     try:
@@ -11246,14 +11261,19 @@ def drop_mob_rows():
 def drop_mob_groups(state, mob):
     """What the engine uses for one monster, per kind: the operator's group,
     or the image's. drop groups of one monster are merged by the engine, the
-    other kinds keep only the first group (std::map::emplace)."""
+    other kinds keep only the first group (std::map::emplace).
+    MT2009_PLUS_PANEL_DROP_MERGE_V1: with the operator's group, "kept" are the
+    image drop groups added after it was saved (they drop next to it) and
+    "hidden" those of the other kinds (it hides them)."""
+    from dbeditor import dropfiles as drop_files
     result = {}
     for kind in DROP_TYPES:
         base = [grp for grp in state["base"] if grp["mob"] == mob and grp["type"] == kind]
         custom = state["custom"].get((mob, kind))
         if custom is not None:
+            _, kept, hidden = drop_files.split_image_groups(state["base"], mob, kind, custom)
             result[kind] = {"source": "custom", "groups": [custom] if custom["items"] else [], "base": base,
-                            "removed": not custom["items"]}
+                            "removed": not custom["items"], "kept": kept, "hidden": hidden}
         elif base:
             result[kind] = {"source": "image", "groups": base if kind == "drop" else base[:1], "base": base,
                             "ignored": [] if kind == "drop" else base[1:], "removed": False}
@@ -11314,8 +11334,12 @@ def drop_render_group(mob, kind, group):
 
 def drop_write_custom(custom_groups, reason):
     """Writes the operator's groups ({(mob, type): group}) atomically, a
-    backup of the previous file first."""
+    backup of the previous file first. MT2009_PLUS_PANEL_DROP_MERGE_V1: in
+    the database editor's layout (dbeditor/dropfiles.py), each group with the
+    MT2009_REPLACES line of the image groups it replaces."""
     import fcntl
+    from dbeditor import dropfiles as drop_files
+    data = drop_files.render_mob_custom(custom_groups, reason, drop_parse(drop_read(DROP_BASE) or ""))
     DROP_SPOOL.mkdir(parents=True, exist_ok=True)
     DROP_BACKUPS.mkdir(parents=True, exist_ok=True)
     for folder in (DROP_SPOOL, DROP_BACKUPS):
@@ -11332,14 +11356,8 @@ def drop_write_custom(custom_groups, reason):
             backup.write_bytes(DROP_CUSTOM.read_bytes())
         else:
             backup.write_bytes(b"# (przed tym zapisem nie bylo zadnych zmian z panelu - obraz gry)\r\n")
-        lines = ["# MT2009_PLUS_DROP_EDITOR_V1 - grupy mob_drop_item.txt zmienione w panelu Seban",
-                 f"# zapis: {datetime.now():%Y-%m-%d %H:%M:%S} - {drop_ascii(reason)}",
-                 "# Kazda grupa zastepuje WSZYSTKIE grupy z obrazu gry o tym samym Mob i Type (m2-drops, przy starcie rdzeni).",
-                 "# Grupa bez pozycji = ten potwor nie ma dropu tego rodzaju.", ""]
-        for mob, kind in sorted(custom_groups):
-            lines += drop_render_group(mob, kind, custom_groups[(mob, kind)]) + [""]
         temporary = DROP_SPOOL / f"mob_drop_item.custom.txt.new{os.getpid()}"
-        temporary.write_bytes("\r\n".join(lines).encode("ascii", "replace"))
+        temporary.write_bytes(data)
         os.chmod(temporary, 0o664)
         os.replace(temporary, DROP_CUSTOM)
         for old in sorted(DROP_BACKUPS.glob("mob_drop_item.custom.*.txt"))[:-DROP_BACKUP_KEEP]:
@@ -11498,7 +11516,7 @@ def drop_edit(mob):
     kinds = drop_mob_groups(state, mob)
     vnums = []
     for data in kinds.values():
-        for grp in data["groups"] + data.get("ignored", []):
+        for grp in data["groups"] + data.get("ignored", []) + data.get("kept", []) + data.get("hidden", []):
             vnums += [e["item"] for e in grp["items"]]
     names = chest_item_names(vnums)
     chest_groups = chest_effective(chest_state())
@@ -11524,6 +11542,15 @@ def drop_edit(mob):
                         nested=int(item[1:]) if item[:1].lower() == "s" and item[1:].isdigit() else None,
                         share=(100.0 * drop_float(entry["prob"]) / weights) if weights else None))
             section["group_names"] = [grp["name"] for grp in data["groups"]]
+        # MT2009_PLUS_PANEL_DROP_MERGE_V1: image groups added after the save, to review
+        section["unseen"] = []
+        for state_name in ("kept", "hidden"):
+            for grp in (data or {}).get(state_name, []):
+                weights = sum(max(0.0, drop_float(e["prob"])) for e in grp["items"]) if kind == "kill" else 0
+                section["unseen"].append({"name": grp["name"], "state": state_name, "kill_drop": grp["kill_drop"],
+                                          "level_limit": grp["level_limit"], "lines": [
+                    dict(e, label=drop_item_label(str(e["item"]), names, chest_groups),
+                         chance=drop_chance(kind, e, grp, weights)) for e in grp["items"]]})
         sections.append(section)
     other, common = drop_other_sources(info)
     return render_template("drops.html", edit=True, mob=info, sections=sections, state=state, other=other,
@@ -11545,7 +11572,26 @@ def drop_save(mob):
     custom = dict(state["custom"])
     key = (mob, kind)
     has_base = any(grp["mob"] == mob and grp["type"] == kind for grp in state["base"])
+    from dbeditor import dropfiles as drop_files
+    # MT2009_PLUS_PANEL_DROP_MERGE_V1: what the saved group replaces - what it
+    # replaced so far, or (new) every image group this page showed
+    replaces = drop_files.replaces_for_save(state["base"], state["custom"], None, mob, kind)
     try:
+        if action == "absorb":
+            old = custom.get(key)
+            _, kept, hidden = drop_files.split_image_groups(state["base"], mob, kind, old)
+            if old is None or not (kept or hidden):
+                flash("Nie ma nowych grup z gry do przejęcia.")
+                return redirect(url_for("drop_edit", mob=mob) + anchor)
+            items = list(old["items"]) + [dict(e) for grp in kept for e in grp["items"]]
+            if len(items) > DROP_MAX_LINES:
+                raise ValueError(f"Po dołączeniu byłoby {len(items)} pozycji (najwyżej {DROP_MAX_LINES}).")
+            custom[key] = dict(old, items=items, replaces=drop_files.replaces_for_save(
+                state["base"], state["custom"], None, mob, kind, [grp["name"] for grp in kept + hidden]))
+            drop_write_custom(custom, f"przejeto nowe grupy z gry {kind} potwora {mob}")
+            flash(("Pozycje nowych grup z gry są teraz w tej grupie" if kept else "Nowe grupy z gry oznaczone jako przejrzane (dalej zasłonięte)")
+                  + " – zadziała po restarcie rdzeni.", "success")
+            return redirect(url_for("drop_edit", mob=mob) + anchor)
         if action == "reset":
             if key not in custom:
                 flash("Ta grupa i tak jest taka jak w obrazie gry.")
@@ -11556,7 +11602,8 @@ def drop_save(mob):
             return redirect(url_for("drop_edit", mob=mob) + anchor)
         if action == "remove":
             if has_base:
-                custom[key] = {"mob": mob, "type": kind, "kill_drop": "1", "level_limit": "0", "items": []}
+                custom[key] = {"mob": mob, "type": kind, "kill_drop": "1", "level_limit": "0", "items": [],
+                               "replaces": [grp["name"] for grp in state["base"] if grp["mob"] == mob and grp["type"] == kind]}
             else:
                 custom.pop(key, None)
             drop_write_custom(custom, f"usunieto {kind} potwora {mob}")
@@ -11569,7 +11616,8 @@ def drop_save(mob):
             if mob not in drop_mob_rows():
                 raise ValueError(f"Potwór {mob} nie istnieje w mob_proto.")
             start = {"item": "27001", "count": "1", "prob": "1" if kind != "drop" else "4", "rare": "0", "comment": "do zmiany"}
-            custom[key] = {"mob": mob, "type": kind, "kill_drop": "100", "level_limit": "1", "items": [start]}
+            custom[key] = {"mob": mob, "type": kind, "kill_drop": "100", "level_limit": "1", "items": [start],
+                           "replaces": replaces}
             drop_write_custom(custom, f"nowa grupa {kind} potwora {mob}")
             flash(f"Utworzono grupę „{kind}” z jedną pozycją startową (Czerwona Mikstura) – ustaw zawartość i zapisz."
                   + (" Zastąpi ona grupę z obrazu gry." if has_base else ""), "success")
@@ -11612,6 +11660,7 @@ def drop_save(mob):
         for entry in entries:
             known = names.get(int(entry["item"])) if entry["item"].isdigit() else None
             entry["comment"] = known["name"] if known else entry["item"]
+        group["replaces"] = replaces
         custom[key] = group
         drop_write_custom(custom, f"zmieniono {kind} potwora {mob}")
     except ValueError as exc:
@@ -11648,10 +11697,7 @@ def drop_restore():
     if not re.fullmatch(r"mob_drop_item\.custom\.[0-9-]+\.txt", name) or not (DROP_BACKUPS / name).is_file():
         flash("Nie ma takiej kopii.", "error")
         return redirect(url_for("drops"))
-    custom = {}
-    for group in drop_parse((DROP_BACKUPS / name).read_bytes().decode("utf-8", "replace")):
-        if group["type"] in DROP_TYPES:
-            custom.setdefault((group["mob"], group["type"]), group)
+    custom = drop_custom_groups((DROP_BACKUPS / name).read_bytes().decode("utf-8", "replace"))
     try:
         drop_write_custom(custom, f"przywrocono kopie {name}")
     except OSError as exc:
