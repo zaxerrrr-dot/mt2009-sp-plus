@@ -475,6 +475,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiingameevent").DestroyWindow()
 		# MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus window (uiseonhae.py).
 		__import__("uiseonhae").DestroyWindow()
+		# MT2009_PLUS_SHIP_DEFENSE_V1: the mast's HP bar (uishipdefense.py).
+		__import__("uishipdefense").DestroyWindow()
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
 		__import__("uitpbookmarks").DestroyWindow()
 		# MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): the teleport map under TAB (uiteleportmap.py).
@@ -3335,6 +3337,8 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): "PickupSound <vnum>" after a pick-up (digiqol.py)
 		serverCommandList["PickupSound"] = __import__("digiqol").PLAYER.OnCommand
 		serverCommandList["SEONHAE"] = self.__SeonHae # MT2009_PLUS_SEONHAE_V1
+		# MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku's mast, "ShipMastHP <hp> <max>" (uishipdefense.py).
+		serverCommandList["ShipMastHP"] = __import__("uishipdefense").OnCommand
 		# MT2009_PLUS_DBDATA_STAMP_V1: "DbDataStamp <stamp>" at login - the server's item/skill files
 		# (database editor) against this client's dbdata_stamp.txt (dbdatastamp.py).
 		serverCommandList["DbDataStamp"] = __import__("dbdatastamp").NOTICE.OnCommand

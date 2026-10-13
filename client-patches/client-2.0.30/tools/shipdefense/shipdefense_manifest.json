@@ -1,0 +1,3020 @@
+{
+ "motlist_removed": {
+  "d:/ymir work/monster2/defensewave_hydra_boss/motlist.txt": [
+   "GENERAL SPAWN drop.msa 100"
+  ],
+  "d:/ymir work/monster2/defensewave_minihydra/motlist.txt": [
+   "GENERAL SPECIAL special_attack1.msa 100"
+  ]
+ },
+ "objects": {
+  "crc_used": 38,
+  "ours": 7,
+  "staged": 31
+ },
+ "packs": {
+  "hydra_map": [
+   {
+    "name": "d:/ymir work/environment/clouds_zone06.tga",
+    "sha1": "441d97c8902f3984a9ff4f71ee81dc356f1179c5",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/environment/defensewave_blue.msenv",
+    "sha1": "3240725d53b0b88bfc23160cd13b2bcd86c9e38d",
+    "size": 2716,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/environment/skybox/dawnmistwood-b.dds",
+    "sha1": "73c8376e9c3b2fc93fd56ee312fca758bb0e1b39",
+    "size": 524416,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/environment/skybox/dawnmistwood-f.dds",
+    "sha1": "9827206e33b19c41815efb84f9552589c5261206",
+    "size": 524416,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/environment/skybox/dawnmistwood-l.dds",
+    "sha1": "f017e7d3973e7986a466a830ecc25de539795555",
+    "size": 524416,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/environment/skybox/dawnmistwood-r.dds",
+    "sha1": "a7650da59460659c8cc632a7b0894e581f479280",
+    "size": 524416,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/environment/skybox/dawnmistwood-t.dds",
+    "sha1": "6ef2e583035a4e172dfbedcae13141626a867a83",
+    "size": 524416,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/bayblacksand/bayblacksand_blacksand.dds",
+    "sha1": "861fc5441bd4b21ffd9ec971d91177e02c130f34",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/snakevalley/cliff01.dds",
+    "sha1": "a7797dccd94aa71a299500c47a2341a10c3be8bc",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/snakevalley/field02.dds",
+    "sha1": "04f58ee0793a62c641fe13f74e886637f0ea37cb",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/snakevalley/field03.dds",
+    "sha1": "1ddd482035deb71e422c7eecfb6c563aa9d484c7",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/snakevalley/grass01.dds",
+    "sha1": "60fd98349a624155f08318ba542594889f631d19",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_defensewave/atlas.sub",
+    "sha1": "4b3810886159be7452df424ea07e20fc5463c815",
+    "size": 109,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/metin2_map_defensewave_atlas.dds",
+    "sha1": "f7e707c7053d33ae9bc8ca35b4b7fed1fed7c855",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/back_dot.gr2",
+    "sha1": "9b0d3fd22a23aa3d69b87a80eabaae7b83aac09f",
+    "size": 29725,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/back_dot.mdatr",
+    "sha1": "487c2afd60ea2cb067a68524b35a1cac36ca4009",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/bd_waterford_village_i.dds",
+    "sha1": "27464194db2799c887dc85072a15bbc39977685a",
+    "size": 5640,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/box04.gr2",
+    "sha1": "c51454c9f224d379db9f9c53e9b7183bd033ffca",
+    "size": 15135,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/box04.mdatr",
+    "sha1": "5a99e006608ec636ba59f7479098f2cce247eee0",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/box05.gr2",
+    "sha1": "228eded3ab31ae8ba8f466b8d4f5624ae6d379a6",
+    "size": 14514,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/box05.mdatr",
+    "sha1": "bf18ff7656f8ec2271876e3aa93b627dfd512e3b",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/defensewave_floor.gr2",
+    "sha1": "068be8bd07777f4afeaeee14da7c8368045ea49f",
+    "size": 131861,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/defensewave_floor.mdatr",
+    "sha1": "9d864879e11a043a564741cc7512fd632001f631",
+    "size": 9562,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/defensewave_ship.gr2",
+    "sha1": "72b60d14fb29ba355f0feb61549d0f218ae1d85c",
+    "size": 231645,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/defensewave_ship.mdatr",
+    "sha1": "95c179c844f4814c37f5aac3fc4288ee1633d426",
+    "size": 2830,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/dfensewave_deck.dds",
+    "sha1": "54543a359f93ea06f2946278f14573f083adcb68",
+    "size": 699192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/dummy01.gr2",
+    "sha1": "da24fbe9b356b32c784ab01a725233bdf27b1272",
+    "size": 20619,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/dummy01.mdatr",
+    "sha1": "82d58a474c073494b55c845e6f3a99c18c34077b",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/dummy02.gr2",
+    "sha1": "57d20c3d8aa3efb9bb230233b472ec528276be64",
+    "size": 13668,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/dummy02.mdatr",
+    "sha1": "53a5fd496942f67455b1f8d1b818cbabfb1cce2d",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/flag01.gr2",
+    "sha1": "f7a2ce21b4157d2507cb78a4ab74c3cfeca1cee0",
+    "size": 17466,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/flag01.mdatr",
+    "sha1": "ced2b82280d9cacab1b1eaf6228b9177bd72cc93",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/floor_light_1.dds",
+    "sha1": "166c07175318f7c5c47abe6c673163eef9ba0606",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/floor_light_13.dds",
+    "sha1": "8c317a854d951496ca6f259e0990b379702fa2b0",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/floor_light_2,3,5,12,14.dds",
+    "sha1": "8013fc5d310ad561cadd2a16b9a6ecf42bbe7b6a",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/front_dot.gr2",
+    "sha1": "c8a74feaea98598b8c5df76960af8de5905dd588",
+    "size": 29319,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/front_dot.mdatr",
+    "sha1": "80a8e92d36218128e1f76eb29422cc1d7374c463",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/main_dot.gr2",
+    "sha1": "6fcc754faf5ec62e0a3d5fc4a201f821ceccfdf5",
+    "size": 30872,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/main_dot.mdatr",
+    "sha1": "d9ebb2ecf0217ab6354bdd78c1c60b3f5ada6c60",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/npcdeco_1th_auction_a.dds",
+    "sha1": "26d0871f29eb3853ae7df369953cc6171483288f",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/npcdeco_1th_streetlight_a.dds",
+    "sha1": "5fc95f8fff473242f10f4372ce28f663ceb6b92a",
+    "size": 87528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/npcdeco_1th_wagon_a.dds",
+    "sha1": "264ba86416c7cbca1a473e33dea60e32698a5286",
+    "size": 87528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/npcdeco_1th_wood_a.dds",
+    "sha1": "bc7fee3957dcd93cf3a2488967882fe6cd4f5a6b",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/package01.gr2",
+    "sha1": "838d9bd859d9239d6f617f46567672faf58d7cab",
+    "size": 21020,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/package01.mdatr",
+    "sha1": "feaac5b86a067e80471892cf59a15f346246b62e",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/package02.gr2",
+    "sha1": "04fc99ceb6e44f249e59e68eb3bd8c9941662d7d",
+    "size": 17045,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/package02.mdatr",
+    "sha1": "7b38ea74f8f222321b8676a91684b1f6292411e3",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_bigship_wood_004.dds",
+    "sha1": "6c302fb4c897ada419c6d9d4003262c533b274b7",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_parts_dot.dds",
+    "sha1": "2e41353b4ddf0f6164b092522d932ba98d7862fc",
+    "size": 87528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_parts_farm.dds",
+    "sha1": "974eda46874f0dc1563d7537427be401852556a1",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_parts_latch.dds",
+    "sha1": "98c2bcf370ed56a0e18cfc5697a57b719af333a5",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_parts_window.dds",
+    "sha1": "3704067425c739a8fe98da405d97fb6dc6935cf8",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_parts_woodnet.dds",
+    "sha1": "812abdb0c579afe030a602dde12779de989bf302",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_wood.dds",
+    "sha1": "2ce47132371b0513547f4575aba1c359a23a2308",
+    "size": 699192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_wood_2.dds",
+    "sha1": "ba6140846d3baec17e66c827a4053fd662ae0cde",
+    "size": 349672,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_wood_2_light.dds",
+    "sha1": "8bed5156c6f2e09b2071c745ba3220792e4bec60",
+    "size": 349672,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_wood_3.dds",
+    "sha1": "562ddcf7a52f498e4e37e10f021ab8bab5961876",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_wood_4_deco.dds",
+    "sha1": "2cf08e571c923df4e3a6cc3c03b41cbaf7a362ba",
+    "size": 87528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/r2_ship_wood_5.dds",
+    "sha1": "b7011fe832918b7566ac5cf67346cecf41d3cf2b",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack01.gr2",
+    "sha1": "e0fe1d1e974632fc703ca5c9a57a34b840f08b17",
+    "size": 24391,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack01.mdatr",
+    "sha1": "9e564cfca6cd1d329409a2be9303658cf3181dd6",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack02.gr2",
+    "sha1": "b05c8c9d6d574e3b19acca9202e59c9b47635ee3",
+    "size": 24534,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack02.mdatr",
+    "sha1": "e659507bba6f932f04285475542b2953dbd04a68",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack03.gr2",
+    "sha1": "43224cedc282e24632507b88f270695d329b8b17",
+    "size": 23316,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack03.mdatr",
+    "sha1": "f4c7070fa783846d3b8edcc745ccbbb2fa87c983",
+    "size": 238,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack04.gr2",
+    "sha1": "ad412b698a61369b507d04b87ab549fa560c8272",
+    "size": 23273,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack04.mdatr",
+    "sha1": "78d241aee71bc5ebd6ca71452974597e294a4f25",
+    "size": 238,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack05.gr2",
+    "sha1": "3824c815147ef704e57274e791247616a13ddaf8",
+    "size": 18186,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack05.mdatr",
+    "sha1": "7ca95c3caebdef0e4df3d55a1a4cdc67da6e4d8d",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack06.gr2",
+    "sha1": "1ece3dd2a8f724f5aa9c8e943d56fc334edc0484",
+    "size": 18208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/rail_crack06.mdatr",
+    "sha1": "bd791d3e8f07c69269adcc0822808bd0c7458bf6",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/ropeset01.gr2",
+    "sha1": "60336a4624c56564b1f24234993c450e9bcd340e",
+    "size": 14049,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/ropeset02.gr2",
+    "sha1": "272991681e18410909cc3640f5bf4506951589bf",
+    "size": 17007,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/ropeset03.gr2",
+    "sha1": "a3c742d686e7a56f685aaf8ec6192f08319a1fb8",
+    "size": 15006,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/ship_light_12.dds",
+    "sha1": "138c0f7a57fc1609d6d701dc3b6a7ca53cc6cf37",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/ship_light_1a.dds",
+    "sha1": "f60f89239892d85446ecf7d54499c3e944d2e956",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/ship_light_1b.dds",
+    "sha1": "5056d268a4076840cded072661bfac533761d0c4",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/ship_light_2,5.dds",
+    "sha1": "294b865089b21253addf653f6ba252b4dbfcd1dc",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/ship_light_3,4,6,7,8,9,10,11.dds",
+    "sha1": "8fd9470d4379c6fb0c018310454a2b1cd6760c6f",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/streetlight.gr2",
+    "sha1": "27662aaea90e66e782c1eb12b56240e6e4838209",
+    "size": 30143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/streetlight.mdatr",
+    "sha1": "303aba63b92d7b457d284bffb5d0bdee3e396f38",
+    "size": 166,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/table.gr2",
+    "sha1": "75c6bc86de3b83b1505363e38ead7a8b83c27089",
+    "size": 16211,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/table.mdatr",
+    "sha1": "8a65526f010331476cdaa7e0ac89d92e9100175a",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/table2.gr2",
+    "sha1": "4169406069ab7c84226ed2ce9260e3e02c11105c",
+    "size": 15296,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/table2.mdatr",
+    "sha1": "d7800e7d3d95fef8db96eb9c3e940df8e249da9e",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/up_lantern.gr2",
+    "sha1": "f4430bb4b1eeed5f5911588e35287decf80f0dbc",
+    "size": 15956,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent01.gr2",
+    "sha1": "3c8de0cfc5e57c808942681c182e124b5d2e5fa9",
+    "size": 14090,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent01.mdatr",
+    "sha1": "1c619db1b1fc57a451391fd7ff1ad88d59d3c7b4",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent03.gr2",
+    "sha1": "bccc0e4b4c6ded533ab62928ded6a60c29d9acae",
+    "size": 14334,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent03.mdatr",
+    "sha1": "f69af7987ee3753c11e02b7f5f11f918286320c3",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent05.gr2",
+    "sha1": "4cd467df6dd0c006caf799cc57eb0088f5a1a0b9",
+    "size": 15230,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent05.mdatr",
+    "sha1": "dd67e86651e5536ef876acd809314d0910b2dcba",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent06.gr2",
+    "sha1": "59ee7ff19fb43bfc9400cdb6dfc6a17d1227d87a",
+    "size": 14044,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent06.mdatr",
+    "sha1": "c5ae41e425e6acb8e8cd93c370ba687c932966d0",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent07.gr2",
+    "sha1": "d9983e7153478538a8f5be9287a3ff786dffcb65",
+    "size": 15528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/vent07.mdatr",
+    "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+    "size": 22,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/wall_lantern.gr2",
+    "sha1": "9dbf2297abd3f57cd8ec07e79bc13ff12001e487",
+    "size": 15707,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave/wall_lantern.mdatr",
+    "sha1": "dc0f0024aa55645e7f84fcc39c667c215a1e6d3b",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/attr.atr",
+    "sha1": "abbf57e01cd0273e26d52be64d380be17bb339b1",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/height.raw",
+    "sha1": "2ea77498282183c0d8b93e5b6ebce75ef0eacf8b",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/minimap.dds",
+    "sha1": "525d8f6a7be928b11a6bdf09df9f4b600807bc0e",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/tile.raw",
+    "sha1": "e68608734de9912642910b6869c24a6945f787b2",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000000/water.wtr",
+    "sha1": "08b13e428ac51a285ca58082e1e5cf42477ff1e2",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/attr.atr",
+    "sha1": "abbf57e01cd0273e26d52be64d380be17bb339b1",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/height.raw",
+    "sha1": "9b7311cd21c276e61d0513aa49946ef3c69e9b93",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/minimap.dds",
+    "sha1": "c27cc4fdb88423684c18c8184c3971b2ea08defe",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/tile.raw",
+    "sha1": "e68608734de9912642910b6869c24a6945f787b2",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000001/water.wtr",
+    "sha1": "08b13e428ac51a285ca58082e1e5cf42477ff1e2",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/areaproperty.txt",
+    "sha1": "048ccadcd01b74f473ab8595cadfeff547b2d1e6",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/attr.atr",
+    "sha1": "abbf57e01cd0273e26d52be64d380be17bb339b1",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/height.raw",
+    "sha1": "2ea77498282183c0d8b93e5b6ebce75ef0eacf8b",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/minimap.dds",
+    "sha1": "800ae9553e300ea6d6856d1e7545bf1e779203de",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/tile.raw",
+    "sha1": "e68608734de9912642910b6869c24a6945f787b2",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/000002/water.wtr",
+    "sha1": "509ca25b128a1e455781c04677cf036bf185c39b",
+    "size": 16399,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/attr.atr",
+    "sha1": "abbf57e01cd0273e26d52be64d380be17bb339b1",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/height.raw",
+    "sha1": "47f203e54b073ca6be0137ca36e53b324c565981",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/minimap.dds",
+    "sha1": "6c578981824a5cf162f5ee159a7b881afa732ade",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/tile.raw",
+    "sha1": "e68608734de9912642910b6869c24a6945f787b2",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001000/water.wtr",
+    "sha1": "08b13e428ac51a285ca58082e1e5cf42477ff1e2",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/areadata.txt",
+    "sha1": "5f1b5127f1885a1569f1d74cdb7342d49edccfdc",
+    "size": 18244,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/attr.atr",
+    "sha1": "b24ec769cdcd8013aa3e29003b515dc861f47bda",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/height.raw",
+    "sha1": "ae533cbedda2c06903db724712272d77b5c17234",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/minimap.dds",
+    "sha1": "8a595572a1d121ad32c5404ff2d760c73411e847",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/shadowmap.dds",
+    "sha1": "84829b2d3c0bab082045e17e8220736f66e4a400",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/shadowmap.raw",
+    "sha1": "66672d1e369b0a366a865f7466b75bac1106ac02",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/tile.raw",
+    "sha1": "7bd34b68f3fefd238267339d5c40dc8fa12385fe",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001001/water.wtr",
+    "sha1": "08b13e428ac51a285ca58082e1e5cf42477ff1e2",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/attr.atr",
+    "sha1": "abbf57e01cd0273e26d52be64d380be17bb339b1",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/height.raw",
+    "sha1": "7c120a98bd19a4859ccb88ac667f8d60b78ebc96",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/minimap.dds",
+    "sha1": "bf024c038617ff6d90e0501dd95737b3942e6fa7",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/tile.raw",
+    "sha1": "97fd2096fd81b56f266fdc5971999fe179c9bb25",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/001002/water.wtr",
+    "sha1": "08b13e428ac51a285ca58082e1e5cf42477ff1e2",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/attr.atr",
+    "sha1": "abbf57e01cd0273e26d52be64d380be17bb339b1",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/height.raw",
+    "sha1": "32bd2c370ad1c730238303fb2a99e6c7665beffa",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/minimap.dds",
+    "sha1": "002644f8f84ee284158fc70290a21b8c3b082d92",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/tile.raw",
+    "sha1": "e68608734de9912642910b6869c24a6945f787b2",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002000/water.wtr",
+    "sha1": "08b13e428ac51a285ca58082e1e5cf42477ff1e2",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/attr.atr",
+    "sha1": "abbf57e01cd0273e26d52be64d380be17bb339b1",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/height.raw",
+    "sha1": "e7b73bb7960aaad558290c0e24fe95e7a006c4fa",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/minimap.dds",
+    "sha1": "42a9c78e6cdd8fe3e0a8245ba19ac24754cb691b",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/tile.raw",
+    "sha1": "e68608734de9912642910b6869c24a6945f787b2",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002001/water.wtr",
+    "sha1": "08b13e428ac51a285ca58082e1e5cf42477ff1e2",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/attr.atr",
+    "sha1": "abbf57e01cd0273e26d52be64d380be17bb339b1",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/height.raw",
+    "sha1": "e70c3a0726fddb218164d176a09e77837d95a613",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/minimap.dds",
+    "sha1": "a1cc1561adb438799a731c59dbc33a19e212ea4a",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/tile.raw",
+    "sha1": "734580a780e74329bb62b49aea800af1b0e971d9",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/002002/water.wtr",
+    "sha1": "08b13e428ac51a285ca58082e1e5cf42477ff1e2",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/defensewave_blue.msenv",
+    "sha1": "3240725d53b0b88bfc23160cd13b2bcd86c9e38d",
+    "size": 2716,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/mapproperty.txt",
+    "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+    "size": 47,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave/setting.txt",
+    "sha1": "8bc05bbcdd7e47857b70794458a62fc6ede88181",
+    "size": 211,
+    "source": "gen"
+   },
+   {
+    "name": "textureset/metin2_map_defensewave.txt",
+    "sha1": "1febb2a2ddb0c1277c23b7e5e340d345610e25e2",
+    "size": 1379,
+    "source": "gf"
+   }
+  ],
+  "hydra_mobs": [
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_2_kareem.mse",
+    "sha1": "c21cfc7716f3bb1d99659993252d6879dafbce81",
+    "size": 9610,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/etc/compass/compass copy.tga",
+    "sha1": "6f48713352be13f2fa888cb1f3c6ccd6c5556127",
+    "size": 16428,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/hit/blow_1/3.dds",
+    "sha1": "619e3fb81d2f9a48342690b5c34a9513124aa859",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/hit/blow_electric/4.dds",
+    "sha1": "1ee0ca1964a62f6e143fbee4f97a616f944a31c3",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/hit/blow_electric/5.dds",
+    "sha1": "ed0626a441f259ec70122f66cf4c0744e8a3a72b",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/hit/blow_electric/6.dds",
+    "sha1": "3bc081b79aed03054372033c3598078f8f4b9fa8",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/12_muyeong_red.dds",
+    "sha1": "e42cf1dad42cd99e4a90319c09f4248c503c01e6",
+    "size": 8320,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/burn_01.dds",
+    "sha1": "953ff392d02520f187e4ec1ceb283b0167723af8",
+    "size": 11064,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s1_blow.mse",
+    "sha1": "331844adb6b04bd46e3f3e7c8848d36650eea915",
+    "size": 20148,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s1_drop.mse",
+    "sha1": "b71d3c2c01a4f9e0c1dbcb6bc9797501d0fd35e9",
+    "size": 25661,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_crack.mde",
+    "sha1": "89e42e0cf8c1c3388ce5b782338bfe3ed095d452",
+    "size": 95591,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_crack_i.mde",
+    "sha1": "b3ec44ddb7dc37da1277dd5d4f589d5f0bd33139",
+    "size": 1401263,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_crack_w.mde",
+    "sha1": "131cf318e1a1b3c6929b6510c5716013d11531f2",
+    "size": 1318207,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_crack_w2.mde",
+    "sha1": "f7e602fe4199052e165d221170477c5d21970fc5",
+    "size": 890447,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_ice.mde",
+    "sha1": "769c4188d0b1028f40d4b00476bbdc68c0bdf630",
+    "size": 1662355,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_ice.mse",
+    "sha1": "e3f888315a2abb172b1d2f24378154906b3d0925",
+    "size": 17729,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_impact.mse",
+    "sha1": "2d2bffffe2d02aea0e9528b1ed72976c885cb965",
+    "size": 21872,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_smoke.mse",
+    "sha1": "c1a183712e31a6deb306c32ba7241819fa38155b",
+    "size": 9563,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_smoke_2.mse",
+    "sha1": "4b5525f17af597cd641574a115e9a44ea1747aac",
+    "size": 6506,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_boss_s2_wood.dds",
+    "sha1": "7c44fe62cc74cdcf5327f0647a84e6b5f5bca937",
+    "size": 5616,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_n1_blow.mse",
+    "sha1": "dbae4488f6de8d8b187dd059d8df8167dcfc787a",
+    "size": 12444,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_n2_arrow.mse",
+    "sha1": "934beff11981cee83577eb9904b78dddeece71f5",
+    "size": 7463,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_n2_arrow.msf",
+    "sha1": "cc30ebaf044b6bb35ea1157e7ed80337b60a2186",
+    "size": 994,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_s1_arrow.mse",
+    "sha1": "b6b09676826fab531fc6b6ba76f1e89d86f82e71",
+    "size": 10722,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_s1_arrow.msf",
+    "sha1": "736bf86641855504d273ad5ae72e0e94e2566d0b",
+    "size": 994,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_s3_arrow.dds",
+    "sha1": "55f2dfe2c104f7fa3a190b11fc9970c31a3941bd",
+    "size": 22000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_s3_arrow.mse",
+    "sha1": "be696f6e31722fc8cb9490036bd9cd4cd81b68b0",
+    "size": 11035,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_s3_drop.mse",
+    "sha1": "57e8541ce5179e526b6637c5a10cf687e4f08dfb",
+    "size": 22262,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_s3_drop.msf",
+    "sha1": "b186eedb45e021014164644118d7a1c033528f69",
+    "size": 495,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_medusa_s3_making.mse",
+    "sha1": "40a3cd17ddb6d67828de7e9e177e79cbf220da4a",
+    "size": 18616,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_mini_laser.mse",
+    "sha1": "c2412dc040df6ceb37ca366f5279a50e7d7c2f25",
+    "size": 16382,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_mini_lazer_direction_2.mde",
+    "sha1": "286f99902f4adf37473fcf21f7622fe0709fbd0c",
+    "size": 43307,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_mini_n1_boom.mse",
+    "sha1": "b55ff7e5244f0e65ab15724368b6ab63eade767b",
+    "size": 9762,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_mini_n1_throw.mse",
+    "sha1": "83976470f192592fd768621e5581640b04b1030a",
+    "size": 12241,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_mini_n1_throw.msf",
+    "sha1": "729fdd80dadade3834f53a0f4e8cdf1be2a00dd0",
+    "size": 990,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_naga_n1_impact.mde",
+    "sha1": "4c8a99b10d2b1d6ebbbdd4459cbaa250a30b1305",
+    "size": 2323,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_naga_n1_impact.mse",
+    "sha1": "2962bfa43208b7521ba924807aa1b85c78dce20a",
+    "size": 2042,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_naga_n2_impact.mde",
+    "sha1": "2ebd5b2472796d63bb0e523e44ee7c4e3351a0b0",
+    "size": 1907,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_naga_n2_impact.mse",
+    "sha1": "f514c08bcae63fa08c4604d7d98030032394c824",
+    "size": 2042,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_naga_s1_blow.mse",
+    "sha1": "4070a9a39ada900016a5117da26adbc612625834",
+    "size": 12494,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_naga_s1_spin1.mse",
+    "sha1": "33483d8f16b07c41e53a56978c90808ea54c88bf",
+    "size": 6416,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_pwan_loop_fire.mse",
+    "sha1": "bd0fe35a0410f1902026009a3e7f45fa5aeb13a7",
+    "size": 6988,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_pwan_loop_fire2.mse",
+    "sha1": "0681e7e76eec20122d7e6b496448aadb7de9bc0f",
+    "size": 9613,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_pwan_loop_fire3.mse",
+    "sha1": "c72351d6900e87a9a819c1727599c0802758ca49",
+    "size": 10062,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_pwan_loop_fire4.mse",
+    "sha1": "66d914c37362d8e97c18e5e6672714113d80178e",
+    "size": 9707,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_pwan_loop_fire5.mse",
+    "sha1": "8333abd0403b9d2f34d40372e568f2468c7812eb",
+    "size": 6988,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_pwan_loop_fire6.mse",
+    "sha1": "71342bd768a1ceb8ddeaede37482aee1bae7ccbf",
+    "size": 12708,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_pwan_n1_blow1.mse",
+    "sha1": "92a78c736dd099cec0ea28cb2ffd8c9ce33a4ade",
+    "size": 15874,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_soul_n1_throw.mse",
+    "sha1": "f34e50568debd4a33c07f09bc1f1ea08df440d33",
+    "size": 18316,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_soul_n1_throw.msf",
+    "sha1": "c65cd66d63a37c65175de4ad35553db9de99c952",
+    "size": 990,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_soul_s1_spin1.mse",
+    "sha1": "c9114b100457d78d9f39f5c8c7cbf3dd207ce1aa",
+    "size": 15469,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_soul_s1_throw.mse",
+    "sha1": "f2fc1d64701380b386c5a2c043f5082666611206",
+    "size": 18316,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_soul_s1_throw.msf",
+    "sha1": "abdeb35af0f2f6a0cf57641cbe9cc8781c562808",
+    "size": 990,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/defense_start_breath.mse",
+    "sha1": "6ffda1b3d0d29cb1a74e891f1bf4141e7048f7c8",
+    "size": 20184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/gatein_16.dds",
+    "sha1": "9d5fb789f534d13f7081f81c27b81eefe4ed7983",
+    "size": 21632,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/redd_meteo_circle_blue.mse",
+    "sha1": "685d9a8d0a3590686bd739dc962436a7698caf01",
+    "size": 6240,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_attack.gr2",
+    "sha1": "4af21ecaf877fbe7face7141378f61f208ea7813",
+    "size": 6656,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_attack.msa",
+    "sha1": "7aefc7fa24c2ec719e2c35eeee5cfeb0cf01abde",
+    "size": 211,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_blow.gr2",
+    "sha1": "3f0069e2a01f85587677a8b15aaf9d8b6175034e",
+    "size": 42119,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_blow.msa",
+    "sha1": "20d6f39ec36b0627be24fc717046bf414be0192a",
+    "size": 209,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_defensewave.gr2",
+    "sha1": "86b3f0dea534c110a5cd9acd4acabed1a9cc34f9",
+    "size": 87960,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_defensewave.msm",
+    "sha1": "13f7bc840d19151d582705c959e10b9390051609",
+    "size": 1522,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_defensewave_01.dds",
+    "sha1": "4898222060eb36feaf1a8e47ba11f9b8b1e799a5",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_drop.gr2",
+    "sha1": "9da6713f6c08206f2e784e9bdc35759e2f10b9bc",
+    "size": 7604,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_drop.msa",
+    "sha1": "78ef2f22cf9027c471b8efdf225c9e9932902ca9",
+    "size": 209,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_loop.gr2",
+    "sha1": "ceaae6ee9e1128f6e91094a51f55b5366083c6ca",
+    "size": 7785,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/metinstone_loop.msa",
+    "sha1": "9860786396f293c3d0053005e5efda452d7e2e15",
+    "size": 209,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone_defensewave/motlist.txt",
+    "sha1": "92bb3ca59cfde4371705a38d1f9c62d99a369560",
+    "size": 532,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/defensewave_hydra_boss.dds",
+    "sha1": "2b705f9acf36c29276d1269b4ec7daa89de142c5",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/defensewave_hydra_boss.gr2",
+    "sha1": "e5c4aaba4a036568945af9701cd7fb234c8a978a",
+    "size": 62764,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/defensewave_hydra_boss.msm",
+    "sha1": "05a46ebb16fa412d45f82eb8e22e798343b31d4f",
+    "size": 1552,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/front_dead.gr2",
+    "sha1": "19496c08ef291aaad44cbbe7d4f2c4fb9c48e2a5",
+    "size": 29377,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/front_dead.msa",
+    "sha1": "1d2b3dd77221600b7b47957a573ff9f4f3c42ec8",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/motlist.txt",
+    "sha1": "9ed02b8241c2095a4906381a4ad8be2fdfd3a465",
+    "size": 191,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/special_attack1.gr2",
+    "sha1": "60b1127eb9b85d51257ff35b0da60c65a5e5cfae",
+    "size": 39715,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/special_attack1.msa",
+    "sha1": "ff742ca5173a7679dd095d92b31b58eff3c6a75c",
+    "size": 15851,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/special_attack2.gr2",
+    "sha1": "33f964aebacbe29387915cfb160fc2f93bb68859",
+    "size": 64439,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/special_attack2.msa",
+    "sha1": "33a38f3650ae49d36286217c01ef611b54ab38d8",
+    "size": 14917,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/special_attack3.msa",
+    "sha1": "e6fd8f83c6ca06813dc0c8f314c7ccca3ca2247e",
+    "size": 908,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/wait.gr2",
+    "sha1": "b863ae1a0d48c7f2e6d3fcc4637957930e4d62a4",
+    "size": 63698,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss/wait.msa",
+    "sha1": "b01484fa6be6fe2d471695007cb431bfb464e20f",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_left/defensewave_hydra_boss.gr2",
+    "sha1": "a47bc541a2eac671d89e41e5adc90a1920aa0d5a",
+    "size": 62214,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_left/defensewave_hydra_boss_left.msm",
+    "sha1": "05a46ebb16fa412d45f82eb8e22e798343b31d4f",
+    "size": 1552,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_left/motlist.txt",
+    "sha1": "95056bc90aec709ec7ef48bd00d6d0499c5b2955",
+    "size": 30,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_left/wait_left.gr2",
+    "sha1": "ea350e018a994145bc6f221e48b62ba97b1642ce",
+    "size": 62674,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_left/wait_left.msa",
+    "sha1": "2871c128bb6a74275649e6d2537e8745e0d51131",
+    "size": 209,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_right/defensewave_hydra_boss.gr2",
+    "sha1": "a47bc541a2eac671d89e41e5adc90a1920aa0d5a",
+    "size": 62214,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_right/defensewave_hydra_boss_right.msm",
+    "sha1": "05a46ebb16fa412d45f82eb8e22e798343b31d4f",
+    "size": 1552,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_right/motlist.txt",
+    "sha1": "c659705fa040e729dc857938a9f874080f00ceed",
+    "size": 31,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_right/wait_right.gr2",
+    "sha1": "d752bde2befddfa8b5cdee4b2f8f9571d2abbb51",
+    "size": 61918,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_hydra_boss_right/wait_right.msa",
+    "sha1": "7bf781bfddaf4de67ca37ff50d128d3e03858220",
+    "size": 211,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/defensewave_medusa.gr2",
+    "sha1": "2372fbbbf8811a1df9141053082a59b44238a631",
+    "size": 135867,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/defensewave_medusa.msm",
+    "sha1": "b26630cae8b959c0d088ed7226f1a9f8d5001990",
+    "size": 1110,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/defensewave_medusa_1.dds",
+    "sha1": "76dfc51b884ada11b35f5f2bf45f384c9725bf69",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/defensewave_medusa_1_weapon.dds",
+    "sha1": "f297ec98ebae05b2cedcc5645fe663d2407ffbaa",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/front_damage.gr2",
+    "sha1": "70e1fe69482d01d9d589979726a8866b96ab7786",
+    "size": 32249,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/front_damage.msa",
+    "sha1": "fcbba4fe13db0adf0d758e6b9080bb2cb792a52c",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/front_dead.gr2",
+    "sha1": "1453f68db50bccdccd2b7265f4ddb21c02ccd664",
+    "size": 60124,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/front_dead.msa",
+    "sha1": "414df444c2711c480fd7ca8b1a1f8c4b55b023a3",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/front_knockdown.gr2",
+    "sha1": "ff01cb15220af67da936cd36d1d8d63e2314b564",
+    "size": 42696,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/front_knockdown.msa",
+    "sha1": "8c100acbd36e07690c81b2a4920f107f55115e2d",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/front_standup.gr2",
+    "sha1": "a863846610977b09b14731200dcae28c62d42b22",
+    "size": 39453,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/front_standup.msa",
+    "sha1": "96d6bdf4a1da26178e597897ef5969ad91efd109",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/motlist.txt",
+    "sha1": "ffd74685fd286bda0c80d693b4f44d671e24240e",
+    "size": 381,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/normal_attack2.gr2",
+    "sha1": "160af534377f142f9c62191ca22d2b34cb7b840b",
+    "size": 45931,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/normal_attack2.msa",
+    "sha1": "62687699498e63a6ebe392ada6d81ab951eeb004",
+    "size": 462,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/run.gr2",
+    "sha1": "915e888ba915a64bfce8bbd2d9c1662bb4a611d2",
+    "size": 34363,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/run.msa",
+    "sha1": "cdcd345dc41eae670b2feddefc5ee68dd9abc98e",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/special_attack1.gr2",
+    "sha1": "a0f7d6b624e6c26683df8c46a7a06d7302aa502b",
+    "size": 63683,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/special_attack1.msa",
+    "sha1": "8db31c033f231a1328a2619e459a99ceb89ee150",
+    "size": 3642,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/special_attack3.gr2",
+    "sha1": "49b719b96070b82c4bb70e19b966aef8cd29b68a",
+    "size": 63029,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/special_attack3.msa",
+    "sha1": "9470b0842d8526a2db9f7f0d4442052f1a02ad36",
+    "size": 1596,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/wait.gr2",
+    "sha1": "f401f2e8f544638ea691cded2a07a1b4e4c67d24",
+    "size": 31191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_medusa/wait.msa",
+    "sha1": "41ff5dd455ea7281ef412781825651a95b8c6233",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/defensewave_minihydra.gr2",
+    "sha1": "c8303890b82a0fc87e792d107d6c79d24c6c9583",
+    "size": 88298,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/defensewave_minihydra.msm",
+    "sha1": "01095ade15d79d8bd5bcffbdcf072998c094ebda",
+    "size": 1116,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/defensewave_minihydra_1.dds",
+    "sha1": "32925e0500611e9c1d8bcf4a8ac4e993bdc5ba2a",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/front_damage.gr2",
+    "sha1": "84844bb9d2479beda7ad8e5bba0545558f5cc45b",
+    "size": 17692,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/front_damage.msa",
+    "sha1": "3f3cc72db1bf6d0f354a8958b3eae961b4ab2e62",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/front_dead.gr2",
+    "sha1": "8c844aa6f44e6a734f7a289ed0519d24d060e07b",
+    "size": 24338,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/front_dead.msa",
+    "sha1": "63b66a19b85ab80d4b07af8368611cfa7297d4f9",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/motlist.txt",
+    "sha1": "b5a4b22a46ba4c540379f2faf420d8cf3a85eb4d",
+    "size": 298,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/normal_attack1.gr2",
+    "sha1": "854bd8867b405e783ed7537981b18d5eb1b310eb",
+    "size": 37357,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/normal_attack1.msa",
+    "sha1": "796e42efa987fb39e57a9809baf9843558ac8a64",
+    "size": 1248,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/wait.gr2",
+    "sha1": "f260193f6db9d42586bd3be2cc8124652b20c77e",
+    "size": 33535,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/wait.msa",
+    "sha1": "c1004da34fdee6c2ad32511d5435a7949fa4580b",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/wait1.gr2",
+    "sha1": "d0f6ec27115470d58efe6e377ee7cbe9ec9502df",
+    "size": 37249,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_minihydra/wait1.msa",
+    "sha1": "5a294e8596ebc4ff6ae7a511f91d11ba6bdb2b0d",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/defensewave_naga.gr2",
+    "sha1": "2fe66af6c508481025ada8fd971df8934da74757",
+    "size": 82848,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/defensewave_naga_1.dds",
+    "sha1": "bc86e91f282f7526605929d6e00da5e43aa80662",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/defensewave_naga_1.msm",
+    "sha1": "212f88545590f4c7b449aab47e6ea0ac0ae3c9ae",
+    "size": 764,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/defensewave_naga_2.dds",
+    "sha1": "78cd4a776c584e81794c76bbf170c88b4ace04de",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/defensewave_naga_2.msm",
+    "sha1": "57afeaf208c065c702c40cc4a4d6d45eefeb0e09",
+    "size": 1038,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/front_damage.gr2",
+    "sha1": "f77521aaa765c2d9ce3803a422fa63f453e3b758",
+    "size": 38201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/front_damage.msa",
+    "sha1": "da3b9cd3fe2cb6181422d8edc3c7a7917b80a5a4",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/front_dead.gr2",
+    "sha1": "293461b993d18d62e7f2cc054f56ab92705d8808",
+    "size": 56804,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/front_dead.msa",
+    "sha1": "0047a45dc606f141fe6153214537bfa17430ecba",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/front_knockdown.gr2",
+    "sha1": "f235df8abe866ffceea84e38a618986c15f4384f",
+    "size": 38081,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/front_knockdown.msa",
+    "sha1": "1b61433897f2d3e07459a657c9c2d3d695848262",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/front_standup.gr2",
+    "sha1": "a22d296cc0a97585bfc099cc689cd84b66e5bb8e",
+    "size": 38721,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/front_standup.msa",
+    "sha1": "1e1f03c487cd5e2ea8cd0f308485966d76965171",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/motlist.txt",
+    "sha1": "a1fbcb86a8e84175fe70d9dc2d8a27fc082aef75",
+    "size": 384,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/normal_attack1.gr2",
+    "sha1": "db89d7b140e1807f8d15997725f9cca426941159",
+    "size": 37575,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/normal_attack1.msa",
+    "sha1": "d134e5688f849f0b7c0cb39f1f7850eabaab7bc8",
+    "size": 1510,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/normal_attack2.gr2",
+    "sha1": "8fc9843bbb0b621d731449cdcfc4eb08a06bf23b",
+    "size": 38195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/normal_attack2.msa",
+    "sha1": "0ec71220d48949ae88df2ba98c5f874092280422",
+    "size": 1510,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/run.gr2",
+    "sha1": "69d1636a78a9cec27a21b538708efd9395d492fe",
+    "size": 37860,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/run.msa",
+    "sha1": "6a9fd64065a61fc07aa3db7a88926d99e9b66ce0",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/special_attack1.gr2",
+    "sha1": "d04231207bd06a2678aef1f223dce7ddd557176a",
+    "size": 61553,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/special_attack1.msa",
+    "sha1": "e8a5fb1fb3d9b5ff2ed8695156fb7fb19d0fd4d0",
+    "size": 1917,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/wait.gr2",
+    "sha1": "095cb556537cdeacd23d0ea552d8dc91045f0da9",
+    "size": 56830,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/wait.msa",
+    "sha1": "f82f62a49055c87068dc8796425ba3172433fc86",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/wait1.gr2",
+    "sha1": "c0dec918f6a546d02d6433b051ed09cdd6d15a53",
+    "size": 105977,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/wait1.msa",
+    "sha1": "956013d7ff671760feeb7272ea800048d95ae72f",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/walk.gr2",
+    "sha1": "e0b10933311e82d2def9c465e8011fe2a6e3a3a8",
+    "size": 36308,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_naga/walk.msa",
+    "sha1": "f5f021a762a6f3205e19ec5f58bf9e671c733a1a",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn.gr2",
+    "sha1": "0e86c352c38cb22fa621ee30593ab57f3b27fd8f",
+    "size": 51699,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn_1.dds",
+    "sha1": "a3e2aed50a12cc18a7b5567fc6056d8d428dee6a",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn_1.msm",
+    "sha1": "1521b489e2706fd5dfa9cb5d68bebf595c48fb14",
+    "size": 1055,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn_2.dds",
+    "sha1": "4e2931e9a883cc72f9d057546123c9f9ef7b1ef3",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn_2.msm",
+    "sha1": "38ed580adc31d2eebaba4798da642e0d3faf2495",
+    "size": 1330,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn_3.dds",
+    "sha1": "b21b6cd8c35420554f83233109e5b67683aebae3",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn_3.msm",
+    "sha1": "91c550ada2edba6e6b34a2a9ab8c668a8791ec30",
+    "size": 1330,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/front_damage.gr2",
+    "sha1": "40de5afea58a6a022e5ffb3a7f23171607cd8008",
+    "size": 19213,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/front_damage.msa",
+    "sha1": "9c85c633bec600db26e79c6953fdef667267da76",
+    "size": 364,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/motlist.txt",
+    "sha1": "aa9cde08a816fe278f574ced3cec80cb9605732d",
+    "size": 159,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/normal_attack1.gr2",
+    "sha1": "6f5b033e27ca5a959871becd400109d217ce2415",
+    "size": 45317,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/normal_attack1.msa",
+    "sha1": "9c2e9b0ef039386b8a9d279f30786ecc6ce87a7f",
+    "size": 1193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/run.gr2",
+    "sha1": "b9214c2e795366263357377a506e807845fe5a80",
+    "size": 23735,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/run.msa",
+    "sha1": "c3125e73fe481cd6c1ea823f4875e3b7570458f9",
+    "size": 358,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/wait.gr2",
+    "sha1": "0a55fbb209169b4ee9867b2be0c04197cf4fd04f",
+    "size": 41277,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_pawn/wait.msa",
+    "sha1": "4a680d0940b5020826969f665f406f33f923c98d",
+    "size": 356,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/defensewave_sail.dds",
+    "sha1": "9910b503bc09820e9b0ca9ccef94ec9278e391f3",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/defensewave_sail.gr2",
+    "sha1": "86aacbc9fbf68f56346af7383e19ce4fcb67c7cb",
+    "size": 82264,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/defensewave_sail.msm",
+    "sha1": "d18d3ce2ca3b98632b217f54688a137ce4a8d3d8",
+    "size": 1102,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/front_dead.gr2",
+    "sha1": "c69d27445877836fc4edb4d31964afe07fc7a13f",
+    "size": 41030,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/front_dead.msa",
+    "sha1": "2365ef889f1a566ec1b3ce268af7f48ecc905a23",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/motlist.txt",
+    "sha1": "5b82487dba90ab2b40365a4ee1a10fd1424d820f",
+    "size": 114,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/normal_attack1.gr2",
+    "sha1": "1cb32f9eb7efc860de4728fbcc67e112ea43bfd3",
+    "size": 5499,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/normal_attack1.msa",
+    "sha1": "5e100358943eecb30055a265773e268f4d13bb00",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/wait.gr2",
+    "sha1": "20480b7602ba421f80ec321afaed15a46d89d78a",
+    "size": 5246,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_sail/wait.msa",
+    "sha1": "1e2e35550b58c6bd56425d74e8001933c0b06527",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/defensewave_watersoul.dds",
+    "sha1": "2433ee074e04c525a4e372dfc10474147da9c00b",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/defensewave_watersoul.gr2",
+    "sha1": "9d75b3be08a2c2ad0c51bc2bb997e1eeac570b1d",
+    "size": 69942,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/defensewave_watersoul.msm",
+    "sha1": "a564cccd0ea5bf3f935870a6d4639f2f6a34d1c6",
+    "size": 1114,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/front_damage.gr2",
+    "sha1": "99a324703caf838949801a00f096d937809b925d",
+    "size": 20447,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/front_damage.msa",
+    "sha1": "4a3b7b0b2818fb99ec4f8880d83034e0393f79f3",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/front_dead.gr2",
+    "sha1": "91839496aba382655e94c4529f0d1dd9a814d5cd",
+    "size": 48265,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/front_dead.msa",
+    "sha1": "5c68c303791dc62572a51562339257c5e17ae0a3",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/front_knockdown.gr2",
+    "sha1": "8a26a656536d910e30148e774e76ba5aeddacbdf",
+    "size": 29496,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/front_knockdown.msa",
+    "sha1": "7b2717909454c099fc1a0f4f757c5ff3ef740835",
+    "size": 209,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/front_standup.gr2",
+    "sha1": "abe19e7aeeef5ca92db14aefdd84f5785b3d8b9f",
+    "size": 31026,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/front_standup.msa",
+    "sha1": "5694eb3cdd65ecbb41d4d1da98457941873e2a4d",
+    "size": 207,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/motlist.txt",
+    "sha1": "5ec1fbc28eeb9725cc38315b0f37450153917ade",
+    "size": 385,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/normal_attack1.gr2",
+    "sha1": "d079500672057a6e1435203b58748aba32ce0391",
+    "size": 28144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/normal_attack1.msa",
+    "sha1": "2cc6b254a305417bc80848634ceae1603da0c532",
+    "size": 1440,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/normal_attack2.gr2",
+    "sha1": "9e27fdcc09c71731f0b8f77116ef324b5067c530",
+    "size": 27534,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/normal_attack2.msa",
+    "sha1": "64d9424589275c37b8a676edab1b384ad6b44ea3",
+    "size": 1440,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/run.gr2",
+    "sha1": "f2679c2bdbf2de66ab3ddd681f10449103e55a27",
+    "size": 29094,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/run.msa",
+    "sha1": "6861940f808bda6cc459cc37e90ae969ec7d2cd9",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/special_attack1.gr2",
+    "sha1": "d2ce15c81182afef1645b05797d47e9af198a1a9",
+    "size": 48091,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/special_attack1.msa",
+    "sha1": "1a145d80dd05d1865cd4b10c217f78ea8d2e40af",
+    "size": 2234,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/wait.gr2",
+    "sha1": "85b11295ebc67abf9c32528f24f05a614fdb954c",
+    "size": 29412,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/wait.msa",
+    "sha1": "5165748b30efbf01fa54739102d3536cb6d7b6bb",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/wait1.gr2",
+    "sha1": "991720a94c0915c333fd1167bb6a5517111547ab",
+    "size": 46758,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/defensewave_watersoul/wait1.msa",
+    "sha1": "006fcc20415578c596cdd08095a61b3a362666fc",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_redrock/defensewave_redrock.dds",
+    "sha1": "d7aaee41c27cb00c208d86533277171c3c5992f9",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_redrock/defensewave_redrock.gr2",
+    "sha1": "33c4789b80a6d92f3cdabb123100f18cf588c88e",
+    "size": 28518,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_redrock/defensewave_redrock.msm",
+    "sha1": "a6c21b6af3f4c6f3c3d05aa6d6cfe236c495d129",
+    "size": 1101,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_statue/defensewave_statue.gr2",
+    "sha1": "a48171a07b925f53d2f8ac37e234d22124fa9dbf",
+    "size": 54374,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_statue/defensewave_statue.msm",
+    "sha1": "810aad7e1aab2300dc1efbe2f6f053ab821c2cee",
+    "size": 1105,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_steerhandle/defensewave_steerhandle.dds",
+    "sha1": "1130baa920cb7a00b6fbac4221d9f593d57014d8",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_steerhandle/defensewave_steerhandle.gr2",
+    "sha1": "14d0c3ed65efbb3575e2cd91af10c5670f12d891",
+    "size": 33839,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_steerhandle/defensewave_steerhandle.msm",
+    "sha1": "475dc8bbb455288f62f1e6ca66a8a61d18530bfa",
+    "size": 1108,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_wall/defensewave_wall.gr2",
+    "sha1": "94c209c783830f245043021d827f7fc89d7e4756",
+    "size": 12961,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_wall/defensewave_wall.mdatr",
+    "sha1": "1881987e4bdb279db05457542e98778c68f0e484",
+    "size": 166,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_wall/defensewave_wall.msm",
+    "sha1": "3cfc86a53c59abf8994471303b50a4569c49a1fd",
+    "size": 1121,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_woodrepair/defensewave_woodrepair.gr2",
+    "sha1": "2d71d957acd7f2e17509d2881b6aa3c22e2b7c5d",
+    "size": 24828,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/defensewave_woodrepair/defensewave_woodrepair.msm",
+    "sha1": "abab9161aa0f166804dabee3abea2cf00eb7f443",
+    "size": 1107,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/reddragon_room_box/reddragon_room_box.dds",
+    "sha1": "47cabfd398e7b49c1895ae4c90568564dbd88398",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/reddragon_room_box/reddragon_room_box.gr2",
+    "sha1": "c69300d247dfa30cac3bd9a6ae60c2ac708173ce",
+    "size": 32968,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc/reddragon_room_box/reddragon_room_box.msm",
+    "sha1": "46256af842569d7b3a2082a09fe714b7acfa6869",
+    "size": 1129,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_statue_01_d.dds",
+    "sha1": "6c00545cc1060960377fb06ce920e82f68d22458",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "sound/common/spell/spell_fighter3dr_dragon_shouting.wav",
+    "sha1": "669278f17a2180aed2731082e7780e87c7495b93",
+    "size": 60798,
+    "source": "gf"
+   },
+   {
+    "name": "sound/common/spell/spell_fighter3p_dash_cast.wav",
+    "sha1": "37e6ceb7659cf657d1361eccb5dd6d614c0f7473",
+    "size": 35006,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_hydra_boss/front_dead.mss",
+    "sha1": "69874091b18192b986400e4bab821207063dae05",
+    "size": 219,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_hydra_boss/special_attack1.mss",
+    "sha1": "d6309584ddeaa2a020351bb04013d6e49e8be5fc",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_hydra_boss/special_attack2.mss",
+    "sha1": "63e063df824ce26b2c7d10fe6f509cf3b38e1579",
+    "size": 275,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_hydra_boss/wait.mss",
+    "sha1": "4ac7a29b987277a2a9b57aadb088150bd3075924",
+    "size": 154,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_medusa/front_damage.mss",
+    "sha1": "8c485092641f29078d8155e68a09e760402efa31",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_medusa/front_dead.mss",
+    "sha1": "5bd8a85db07d184acabbf14b642f2c5c40df2cfb",
+    "size": 325,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_medusa/front_knockdown.mss",
+    "sha1": "f3dd4097d74ec9f50c584f57110e48aacb741a06",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_medusa/normal_attack2.mss",
+    "sha1": "71547903ac1e653c8befba2b7e6164c48071225d",
+    "size": 244,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_medusa/special_attack1.mss",
+    "sha1": "372c79d22369e6648c9a74115134eab65898d37f",
+    "size": 604,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_medusa/special_attack3.mss",
+    "sha1": "29ac15f649356c791c95a9659b3b8de13e615904",
+    "size": 475,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_minihydra/front_dead.mss",
+    "sha1": "c9f2307ae1f1e4a4f7c7fbd48929c53a80689841",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_minihydra/normal_attack1.mss",
+    "sha1": "e7b89366067b47f69b6732f132516f60feeb9389",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_naga/front_dead.mss",
+    "sha1": "d34e02ba45c7c557759bbd13ad313844b5b127ff",
+    "size": 147,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_naga/normal_attack1.mss",
+    "sha1": "5602a39b4363282ddcbb25aed22b865f2944d827",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_naga/normal_attack2.mss",
+    "sha1": "a20e4b10d57f5a2ecf194d10d2628da466671863",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_naga/special_attack1.mss",
+    "sha1": "cfb7457a2aaf10ce723d11ff5d11158400cddccc",
+    "size": 147,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_pawn/normal_attack1.mss",
+    "sha1": "d62b5105635d601be80eb4f32ff85764b3445af2",
+    "size": 147,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_watersoul/front_damage.mss",
+    "sha1": "036a2fd9a49ed8593f89094ae9ce8bb58718fd84",
+    "size": 136,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_watersoul/front_dead.mss",
+    "sha1": "f5cee0197e39c6091cbcbaee4250262c2d2ab4eb",
+    "size": 137,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_watersoul/normal_attack1.mss",
+    "sha1": "138673faf97a8c5bc3f671060ad850e6fe2e93d0",
+    "size": 148,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_watersoul/normal_attack2.mss",
+    "sha1": "25eb7608084ed17eab7db7a43dde131b578a9995",
+    "size": 148,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/defensewave_watersoul/special_attack1.mss",
+    "sha1": "9b63603bbe286eede0ecd38e1fb1911bd3188aca",
+    "size": 232,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/naga_warrior/naga_warrior_die.wav",
+    "sha1": "9eca0888ee81ba625e9de4ca4a3d0bfd7dfec516",
+    "size": 83956,
+    "source": "gf"
+   }
+  ],
+  "property": [
+   {
+    "name": "property/defensewave/back_dot.prb",
+    "sha1": "c88dcaa6fb79b429e2e9ab776fb76af137bbd475",
+    "size": 147,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/box04.prb",
+    "sha1": "6c769d801bcb62b8521a75f566ddb394d677b608",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/box05.prb",
+    "sha1": "b0d70a3712675354220f17125f8a810ca27c4993",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/defensewave_floor.prd",
+    "sha1": "61c23a64f9e6855025cea5d5301c730fef3a738e",
+    "size": 156,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/defensewave_ship.prd",
+    "sha1": "cc0561f17b3842a0cdd0d3e969af6a4cf67ecb2c",
+    "size": 154,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/dummy01.prb",
+    "sha1": "4dce947fa5e48d0055c817147a9346bd516f4cfa",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/dummy02.prb",
+    "sha1": "4f26d824f4df95e96e8c9ccad135adcd665ba6e7",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/flag01.prb",
+    "sha1": "8cf5695cd192848ae60ecfa206360924ef2801bd",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/front_dot.prb",
+    "sha1": "958f6328ccbd2fc020fd2f3631eaf8c585b87ac8",
+    "size": 149,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/main_dot.prb",
+    "sha1": "8b3e45795283962c2d5a4ee7ae034243a19a29fa",
+    "size": 147,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/package01.prb",
+    "sha1": "3d84fc7343db5e911e0d3e6cbe8abcd8bfd7e9a6",
+    "size": 148,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/package02.prb",
+    "sha1": "8c7f43dd9d6ea3f0fce7da3368df95f53973dabf",
+    "size": 148,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/rail_crack01.prb",
+    "sha1": "bf0788dedab21d013fce4accef87aa9dad6d2599",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/rail_crack02.prb",
+    "sha1": "7af03c078533ba447695353c6bca939e882fb151",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/rail_crack03.prb",
+    "sha1": "b8f87bb5cbc12e1599968ced801f4a9053e1bae1",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/rail_crack04.prb",
+    "sha1": "0f067a87918717231338287854d78af12a96f73f",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/rail_crack05.prb",
+    "sha1": "cd05d34ce5e6adc5eaea34234f180c79321b7aa4",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/rail_crack06.prb",
+    "sha1": "3c093742f9147fe30eca5b1b98385c6d907558c8",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/ropeset01.prb",
+    "sha1": "b590b5749eb605b9e5818cc448c62c6c11a66df1",
+    "size": 149,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/ropeset02.prb",
+    "sha1": "2e692800257db67e427210b74c7313673bafe61b",
+    "size": 149,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/ropeset03.prb",
+    "sha1": "5e931ee5918f04a46349485e0ecb7b8b8c5c3454",
+    "size": 149,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/streetlight.prb",
+    "sha1": "0e8219ff94520257ce3d9d7c8a0f9c9c49a5c74a",
+    "size": 153,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/table.prb",
+    "sha1": "6dfd2eecec84fecb78be7e88a0b112fa83e82f28",
+    "size": 138,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/table2.prb",
+    "sha1": "9d917bf8fec88ae0fd101daf9c624f569902c2c8",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/up_lantern.prb",
+    "sha1": "06ac27c93e927c6a7ff5a5ee4071f81f0642010c",
+    "size": 150,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/vent01.prb",
+    "sha1": "554bf05d5bcecc43c686246bee69208dc9705117",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/vent03.prb",
+    "sha1": "7e7994885a63ceaa00e289cb1ddee6d68bcaa60f",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/vent05.prb",
+    "sha1": "410e62ca2a67911f8ab37f9ed7670f7e424bdfda",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/vent06.prb",
+    "sha1": "56dcbc5ca9e8bc4a64974faee3773a71e19c9858",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/vent07.prb",
+    "sha1": "911c31b6d1b5c02f585ce5ed1e1f81ad1a61d5b0",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/wall_lantern.prb",
+    "sha1": "e9901ea8ba15825c9a6e498abfee4e4fa1e4917e",
+    "size": 154,
+    "source": "gf"
+   }
+  ]
+ },
+ "races": {
+  "20432": {
+   "msm": "d:/ymir work/monster/metinstone_defensewave/metinstone_defensewave.msm",
+   "race": "metinstone_defensewave",
+   "status": "staged"
+  },
+  "20433": {
+   "msm": "d:/ymir work/npc/defensewave_statue/defensewave_statue.msm",
+   "race": "defensewave_statue",
+   "status": "staged"
+  },
+  "20434": {
+   "msm": "d:/ymir work/monster2/defensewave_sail/defensewave_sail.msm",
+   "race": "defensewave_sail",
+   "status": "staged"
+  },
+  "20435": {
+   "msm": "d:/ymir work/npc/defensewave_redrock/defensewave_redrock.msm",
+   "race": "defensewave_redrock",
+   "status": "staged"
+  },
+  "20436": {
+   "msm": "d:/ymir work/npc/defensewave_steerhandle/defensewave_steerhandle.msm",
+   "race": "defensewave_steerhandle",
+   "status": "staged"
+  },
+  "20437": {
+   "msm": "d:/ymir work/npc/defensewave_woodrepair/defensewave_woodrepair.msm",
+   "race": "defensewave_woodrepair",
+   "status": "staged"
+  },
+  "3401": {
+   "msm": "d:/ymir work/monster2/triton_soldier/triton_soldier.msm",
+   "race": "triton_soldier",
+   "status": "ours"
+  },
+  "3402": {
+   "msm": "d:/ymir work/monster2/triton_soldier2/triton_soldier2.msm",
+   "race": "triton_soldier2",
+   "status": "ours"
+  },
+  "3405": {
+   "msm": "d:/ymir work/monster2/triton_general/triton_general.msm",
+   "race": "triton_general",
+   "status": "ours"
+  },
+  "3601": {
+   "msm": "d:/ymir work/monster2/crustacean_soldier/crustacean_soldier.msm",
+   "race": "crustacean_soldier",
+   "status": "ours"
+  },
+  "3602": {
+   "msm": "d:/ymir work/monster2/crustacean_bow/crustacean_bow.msm",
+   "race": "crustacean_bow",
+   "status": "ours"
+  },
+  "3603": {
+   "msm": "d:/ymir work/monster2/crustacean_soldier2/crustacean_soldier2.msm",
+   "race": "crustacean_soldier2",
+   "status": "ours"
+  },
+  "3604": {
+   "msm": "d:/ymir work/monster2/crustacean_officer/crustacean_officer.msm",
+   "race": "crustacean_officer",
+   "status": "ours"
+  },
+  "3605": {
+   "msm": "d:/ymir work/monster2/crustacean_general/crustacean_general.msm",
+   "race": "crustacean_general",
+   "status": "ours"
+  },
+  "3949": {
+   "msm": "d:/ymir work/npc/warp/warp_blue.msm",
+   "race": "warp_blue",
+   "status": "ours"
+  },
+  "3950": {
+   "msm": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn_1.msm",
+   "race": "defensewave_pawn_1",
+   "status": "staged"
+  },
+  "3951": {
+   "msm": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn_2.msm",
+   "race": "defensewave_pawn_2",
+   "status": "staged"
+  },
+  "3952": {
+   "msm": "d:/ymir work/monster2/defensewave_pawn/defensewave_pawn_3.msm",
+   "race": "defensewave_pawn_3",
+   "status": "staged"
+  },
+  "3953": {
+   "msm": "d:/ymir work/monster2/defensewave_watersoul/defensewave_watersoul.msm",
+   "race": "defensewave_watersoul",
+   "status": "staged"
+  },
+  "3954": {
+   "msm": "d:/ymir work/monster2/defensewave_naga/defensewave_naga_1.msm",
+   "race": "defensewave_naga_1",
+   "status": "staged"
+  },
+  "3955": {
+   "msm": "d:/ymir work/monster2/defensewave_naga/defensewave_naga_2.msm",
+   "race": "defensewave_naga_2",
+   "status": "staged"
+  },
+  "3956": {
+   "msm": "d:/ymir work/monster2/defensewave_medusa/defensewave_medusa.msm",
+   "race": "defensewave_medusa",
+   "status": "staged"
+  },
+  "3957": {
+   "msm": "d:/ymir work/monster2/defensewave_minihydra/defensewave_minihydra.msm",
+   "race": "defensewave_minihydra",
+   "status": "staged"
+  },
+  "3958": {
+   "msm": "d:/ymir work/monster2/defensewave_minihydra/defensewave_minihydra.msm",
+   "race": "defensewave_minihydra",
+   "status": "staged"
+  },
+  "3959": {
+   "msm": "d:/ymir work/monster2/defensewave_minihydra/defensewave_minihydra.msm",
+   "race": "defensewave_minihydra",
+   "status": "staged"
+  },
+  "3960": {
+   "msm": "d:/ymir work/monster2/defensewave_hydra_boss/defensewave_hydra_boss.msm",
+   "race": "defensewave_hydra_boss",
+   "status": "staged"
+  },
+  "3961": {
+   "msm": "d:/ymir work/monster2/defensewave_hydra_boss/defensewave_hydra_boss.msm",
+   "race": "defensewave_hydra_boss",
+   "status": "staged"
+  },
+  "3962": {
+   "msm": "d:/ymir work/monster2/defensewave_hydra_boss/defensewave_hydra_boss.msm",
+   "race": "defensewave_hydra_boss",
+   "status": "staged"
+  },
+  "3963": {
+   "msm": "d:/ymir work/monster2/defensewave_hydra_boss_left/defensewave_hydra_boss_left.msm",
+   "race": "defensewave_hydra_boss_left",
+   "status": "staged"
+  },
+  "3964": {
+   "msm": "d:/ymir work/monster2/defensewave_hydra_boss_right/defensewave_hydra_boss_right.msm",
+   "race": "defensewave_hydra_boss_right",
+   "status": "staged"
+  },
+  "3965": {
+   "msm": "d:/ymir work/npc/reddragon_room_box/reddragon_room_box.msm",
+   "race": "reddragon_room_box",
+   "status": "staged"
+  },
+  "3970": {
+   "msm": "d:/ymir work/npc/defensewave_wall/defensewave_wall.msm",
+   "race": "defensewave_wall",
+   "status": "staged"
+  }
+ },
+ "unresolved": {
+  "effects": [],
+  "map": [],
+  "races": {
+   "d:/ymir work/monster2/defensewave_medusa/": [
+    "d:/ymir work/monster2/defensewave_medusa/ns~3.dds"
+   ]
+  }
+ }
+}

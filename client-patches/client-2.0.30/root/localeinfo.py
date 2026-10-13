@@ -539,6 +539,8 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_skipia_dungeon_boss" : "Œwi¹tynia Smoka",
 	# MT2009_PLUS_CATACOMB_MAP_V1 (client): the Devil's Catacomb (map 216) on the minimap
 	"metin2_map_devilsCatacomb" : "Katakumby Diab³a",
+	# MT2009_PLUS_SHIP_DEFENSE_V1 (client): Obrona Statku (Hydra, map 367) on the minimap
+	"metin2_map_defensewave" : "Obrona Statku",
 }
 
 
