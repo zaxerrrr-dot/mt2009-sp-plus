@@ -1,0 +1,294 @@
+// MT2009_PLUS_YOHARA_MAPS3_V1: the spawn groups of the third batch of Yohara places (tools/yohara_maps3/
+// gen_ymaps3_maps.py; GENERATED). Owsap v6.2.6: Tajemnicza Instancja 6829-6838, Krolestwo Zywiolow
+// 6156-6161; ours: Zejscie Polnocnego Wiatru 9160-9164, 1. poziom Swiatyni Wezy 9180-9189 (6758-6762 /
+// 6875-6879 are Przelecz Yilad's monsters, rows of maps2).
+Group	MT2009_ymaps3_anglar_dungeon_dark_01
+{
+	Vnum	6829
+	Leader	"Lucznik Gong"	6863
+	1	"Mistrz Miecza Jin"	6860
+	2	"Mistrz Miecza Jin"	6860
+	3	"Mistrz Miecza Jin"	6860
+	4	"Mistrz Miecza Jin"	6860
+	5	"Mistrz Miecza Jin"	6860
+}
+
+Group	MT2009_ymaps3_anglar_dungeon_dark_02
+{
+	Vnum	6830
+	Leader	"Lucznik Gong"	6863
+	1	"Mistrz Wloczni Ki"	6861
+	2	"Mistrz Wloczni Ki"	6861
+	3	"Mistrz Wloczni Ki"	6861
+	4	"Mistrz Wloczni Ki"	6861
+	5	"Mistrz Wloczni Ki"	6861
+}
+
+Group	MT2009_ymaps3_anglar_dungeon_dark_03
+{
+	Vnum	6831
+	Leader	"Lucznik Gong"	6863
+	1	"Mistrz Miecza Kao"	6864
+	2	"Mistrz Miecza Kao"	6864
+	3	"Mistrz Miecza Kao"	6864
+	4	"Mistrz Wloczni Mao"	6862
+	5	"Mistrz Wloczni Ki"	6861
+	6	"Mistrz Miecza Jin"	6860
+}
+
+Group	MT2009_ymaps3_anglar_dungeon_dark_04
+{
+	Vnum	6832
+	Leader	"Mistrz Wloczni Ki"	6861
+	1	"Mistrz Wloczni Ki"	6861
+	2	"Mistrz Wloczni Ki"	6861
+	3	"Mistrz Wloczni Ki"	6861
+	4	"Mistrz Wloczni Ki"	6861
+}
+
+Group	MT2009_ymaps3_anglar_dungeon_dark_05
+{
+	Vnum	6833
+	Leader	"Mistrz Wloczni Mao"	6862
+	1	"Mistrz Wloczni Mao"	6862
+	2	"Mistrz Wloczni Mao"	6862
+	3	"Mistrz Wloczni Mao"	6862
+	4	"Mistrz Wloczni Mao"	6862
+}
+
+Group	MT2009_ymaps3_anglar_dungeon_ice_01
+{
+	Vnum	6834
+	Leader	"Lucznik Gong"	6868
+	1	"Mistrz Miecza Jin"	6865
+	2	"Mistrz Miecza Jin"	6865
+	3	"Mistrz Miecza Jin"	6865
+	4	"Mistrz Miecza Jin"	6865
+	5	"Mistrz Miecza Jin"	6865
+}
+
+Group	MT2009_ymaps3_anglar_dungeon_ice_02
+{
+	Vnum	6835
+	Leader	"Lucznik Gong"	6868
+	1	"Mistrz Wloczni Ki"	6866
+	2	"Mistrz Wloczni Ki"	6866
+	3	"Mistrz Wloczni Ki"	6866
+	4	"Mistrz Wloczni Ki"	6866
+	5	"Mistrz Wloczni Ki"	6866
+}
+
+Group	MT2009_ymaps3_anglar_dungeon_ice_03
+{
+	Vnum	6836
+	Leader	"Lucznik Gong"	6868
+	1	"Mistrz Miecza Kao"	6869
+	2	"Mistrz Miecza Kao"	6869
+	3	"Mistrz Miecza Kao"	6869
+	4	"Mistrz Wloczni Mao"	6867
+	5	"Mistrz Wloczni Ki"	6866
+	6	"Mistrz Miecza Jin"	6865
+}
+
+Group	MT2009_ymaps3_anglar_dungeon_ice_04
+{
+	Vnum	6837
+	Leader	"Mistrz Wloczni Ki"	6866
+	1	"Mistrz Wloczni Ki"	6866
+	2	"Mistrz Wloczni Ki"	6866
+	3	"Mistrz Wloczni Ki"	6866
+	4	"Mistrz Wloczni Ki"	6866
+}
+
+Group	MT2009_ymaps3_anglar_dungeon_ice_05
+{
+	Vnum	6838
+	Leader	"Mistrz Wloczni Mao"	6867
+	1	"Mistrz Wloczni Mao"	6867
+	2	"Mistrz Wloczni Mao"	6867
+	3	"Mistrz Wloczni Mao"	6867
+	4	"Mistrz Wloczni Mao"	6867
+}
+
+Group	MT2009_ymaps3_ElementalRealm_Elect
+{
+	Vnum	6156
+	Leader	"Duch Elektro"	3988
+	1	"Duch Elektro"	3988
+	2	"Zywiolak Blyskawicy"	3982
+	3	"Zywiolak Blyskawicy"	3982
+}
+
+Group	MT2009_ymaps3_ElementalRealm_Ice
+{
+	Vnum	6157
+	Leader	"Duch Mrozu"	3987
+	1	"Duch Mrozu"	3987
+	2	"Zywiolak Lodu"	3981
+	3	"Zywiolak Lodu"	3981
+}
+
+Group	MT2009_ymaps3_ElementalRealm_Fire
+{
+	Vnum	6158
+	Leader	"Duch Zaru"	3986
+	1	"Duch Zaru"	3986
+	2	"Zywiolak Ognia"	3980
+	3	"Zywiolak Ognia"	3980
+}
+
+Group	MT2009_ymaps3_ElementalRealm_Wind
+{
+	Vnum	6159
+	Leader	"Zywiolak Wiatru"	3983
+	1	"Zywiolak Wiatru"	3983
+	2	"Duch Powietrza"	3989
+	3	"Duch Powietrza"	3989
+}
+
+Group	MT2009_ymaps3_ElementalRealm_Dark
+{
+	Vnum	6160
+	Leader	"Zywiolak Mroku"	3985
+	1	"Zywiolak Mroku"	3985
+	2	"Duch Polmroku"	3991
+	3	"Duch Polmroku"	3991
+}
+
+Group	MT2009_ymaps3_ElementalRealm_Earth
+{
+	Vnum	6161
+	Leader	"Zywiolak Ziemi"	3984
+	1	"Zywiolak Ziemi"	3984
+	2	"Duch Kamienia"	3990
+	3	"Duch Kamienia"	3990
+}
+
+Group	MT2009_ymaps3_Zejscie_Zolnierz
+{
+	Vnum	9160
+	Leader	"Zolnierz Schron. Pln. W."	6792
+	1	"Zolnierz Schron. Pln. W."	6792
+	2	"Zolnierz Schron. Pln. W."	6792
+	3	"Zadziora Schron. Pln. W."	6793
+}
+
+Group	MT2009_ymaps3_Zejscie_Zadziora
+{
+	Vnum	9161
+	Leader	"Zadziora Schron. Pln. W."	6793
+	1	"Zadziora Schron. Pln. W."	6793
+	2	"Zolnierz Schron. Pln. W."	6792
+	3	"Zolnierz Schron. Pln. W."	6792
+}
+
+Group	MT2009_ymaps3_Zejscie_Wojownik
+{
+	Vnum	9162
+	Leader	"Wojownik Schron. Pln. W."	6794
+	1	"Wojownik Schron. Pln. W."	6794
+	2	"Zolnierz Schron. Pln. W."	6792
+	3	"Zolnierz Schron. Pln. W."	6792
+}
+
+Group	MT2009_ymaps3_Zejscie_Czarownik
+{
+	Vnum	9163
+	Leader	"Czarownik Sch. Pln. W."	6795
+	1	"Czarownik Sch. Pln. W."	6795
+	2	"Zadziora Schron. Pln. W."	6793
+	3	"Zolnierz Schron. Pln. W."	6792
+}
+
+Group	MT2009_ymaps3_Zejscie_General
+{
+	Vnum	9164
+	Leader	"General Schron. Pln. W."	6796
+	1	"Wojownik Schron. Pln. W."	6794
+	2	"Czarownik Sch. Pln. W."	6795
+	3	"Zolnierz Schron. Pln. W."	6792
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Kappa_Robotnik
+{
+	Vnum	9180
+	Leader	"Kappa Robotnik"	6745
+	1	"Kappa Robotnik"	6745
+	2	"Kappa Robotnik"	6745
+	3	"Kappa Zolnierz"	6746
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Kappa_Zolnierz
+{
+	Vnum	9181
+	Leader	"Kappa Zolnierz"	6746
+	1	"Kappa Zolnierz"	6746
+	2	"Kappa Robotnik"	6745
+	3	"Kappa Robotnik"	6745
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Kappa_Czarodziej
+{
+	Vnum	9182
+	Leader	"Kappa Czarodziej"	6747
+	1	"Kappa Zolnierz"	6746
+	2	"Kappa Zolnierz"	6746
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Kappa_Lowca
+{
+	Vnum	9183
+	Leader	"Kappa Lowca"	6748
+	1	"Kappa Robotnik"	6745
+	2	"Kappa Robotnik"	6745
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Skazony_mrok
+{
+	Vnum	9184
+	Leader	"Skazony Zolnierz"	6758
+	1	"Skazony Zolnierz"	6758
+	2	"Skazony Zolnierz"	6758
+	3	"Skazony Zadziora"	6759
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Skazony_ziemia
+{
+	Vnum	9185
+	Leader	"Skazony Zolnierz"	6875
+	1	"Skazony Zolnierz"	6875
+	2	"Skazony Zolnierz"	6875
+	3	"Skazony Zadziora"	6876
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Skazony_Wojownik_mrok
+{
+	Vnum	9186
+	Leader	"Skazony Wojownik"	6760
+	1	"Skazony Wojownik"	6760
+	2	"Skazony Zolnierz"	6758
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Skazony_Wojownik_ziemia
+{
+	Vnum	9187
+	Leader	"Skazony Wojownik"	6877
+	1	"Skazony Wojownik"	6877
+	2	"Skazony Zolnierz"	6875
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Skazony_Mnich_mrok
+{
+	Vnum	9188
+	Leader	"Skazony Mnich"	6761
+	1	"Skazony General"	6762
+	2	"Skazony Zolnierz"	6758
+}
+
+Group	MT2009_ymaps3_Swiatynia1_Skazony_Mnich_ziemia
+{
+	Vnum	9189
+	Leader	"Skazony Mnich"	6878
+	1	"Skazony General"	6879
+	2	"Skazony Zolnierz"	6875
+}

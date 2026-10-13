@@ -1,0 +1,34 @@
+# Yohara – trzecia partia miejsc (MT2009_PLUS_YOHARA_MAPS3_V1)
+
+Decyzja właściciela 14.10.2026 (`cache/yohara/decyzje.md`, „Kolejna partia (14.10)”): Zejście i Głębie Północnego
+Wiatru, Świątynia Węży (obie części), Tajemnicza Instancja, Królestwo Żywiołów – wszystko wg pl-wiki, czego brak –
+wg wiki TR. Pliki tego katalogu robią `tools/yohara_maps3/gen_ymaps3_maps.py` (mapy, grupy) i
+`tools/yohara_maps3/gen_yitems3.py` (drop, skrzynie); wiersze potworów – `tools/yohara_maps3/gen_ymaps3_sql.py`
+(`mariadb/playerbot/yohara_maps3.sql`, żywioły `yohara_maps3_zywioly.sql`), przedmioty – `yohara_items3.sql`.
+Rdzeń: Yohara (game3, MT2009_PLUS_YOHARA_CORE_V1). Zależy od drugiej partii (claude/yohara-maps2: mapy 377/385/393,
+przedmioty `yohara_items2.sql` – Zamarznięty Klucz, Pył Wężowy, perły, skrzynie skarbów…).
+
+| indeks | miejsce | folder (GF/Owsap) | rodzaj | spawny |
+|---|---|---|---|---|
+| 394 | Zejście Północnego Wiatru | metin2_map_whitedragoncave_02 (3×3) | mapa | nasze (punkty GF), labirynt portali GF/Owsap |
+| 395 | Głębie Północnego Wiatru | metin2_map_whitedragoncave_boss (2×2) | loch (`ymaps3_glebie`) | quest |
+| 390 | 1. poziom Świątyni Węży | metin2_map_snake_temple_01 (3×3) | mapa | nasze (punkty GF), bossowie wg TR |
+| 391 | Świątynia Węży | metin2_map_snake_temple_02 (3×3) | loch (`swiatynia_wezy`, 7 poziomów) | quest |
+| 396 | Tajemnicza Instancja | metin2_map_anglar_dungeon_01 (6×6) | mapa (Tajemniczy Bilet) | Owsap |
+| 378–380 | Królestwo Żywiołów (9 obszarów wiki) | metin2_map_elemental_01..03 (5×5) | mapy (z portu, 90 lvl, 5 mln) | Owsap |
+| 381 | Płaskowyż Sił Natury | metin2_map_elemental_04 (1×2) | mapa (Pierścień Siły Natury) | Owsap |
+
+`metin2_map_elemental_04_rework` to własna kopia Amerii (te same pliki terenu co `_04`, inna baza, śnieżny
+textureset) – nieoficjalna, pominięta. Królestwo Żywiołów to w każdym źródle cztery mapy: `_01` (Turniobłysk,
+Szczytobłysk, Lodogóry), `_02` (Ognioturnia, Ognioszczyt, Wyspowiatr), `_03` (Turniomrok, Szczytomrok, Ziemiopust),
+`_04` (Płaskowyż); portale między obszarami – Owsapa (10110–10124, 10109 → u nas 10125).
+
+Połączenia (krok Dockerfile „Yohara maps 3: links”, punkty GF): Schronienie (393) 10202 → Zejście, Zejście 10203 →
+Schronienie; Przełęcz Yilad (385) Strażnik Węży 20804 → 1. poziom Świątyni, Wyjście 10138 / Statua Węży → Yilad;
+Namgan (377) Tajemniczy Ołtarz 20850 → Instancja (bilet 70408, 1. Poziom Czempiona), Wyjście 10204 → Namgan; Port
+(368) portal 3998 → Królestwo, Wyjście 3999 → port.
+
+Uproszczenia wobec gry (silnik nie ma stref na ziemi ani zmiany obrażeń potwora z questa): kolce i atak
+powierzchniowy – „stoisz po 3 s w tym samym miejscu = trafienie”, nigdy do zera PŻ; Śmiertelny Chłód Alastora trafia
+wszystkich naraz; szał Alastora leczy, nie podnosi obrażeń; brak: ciągu misji wejściowych Głębi, misji „Ważne
+przygotowania”, zakazu zwojów/pierścieni teleportu na tych mapach, efektów zestawu, rękawic Sung Ma.

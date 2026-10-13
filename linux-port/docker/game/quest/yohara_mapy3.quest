@@ -1,0 +1,367 @@
+-- MT2009_PLUS_YOHARA_MAPS3_V1: trzecia partia miejsc Yohary (decyzja w³aœciciela 14.10.2026, cache/yohara/decyzje.md;
+-- wiki: "Zejœcie Pó³nocnego Wiatru", "1. poziom Œwi¹tyni Wê¿y", "Tajemnicza Instancja", "Królestwo ¯ywio³ów",
+-- "P³askowy¿ Si³ Natury", "Tajemniczy O³tarz", "Stra¿nik Wê¿y", "Pierœcieñ Si³y Natury"):
+--   * Zejœcie Pó³nocnego Wiatru (394): portal 10202 w Schronieniu (393) i z powrotem 10203 - silnik (WARP);
+--     labirynt portali 10205-10225 (GOTO) jak w grze; G³êbie - quest ymaps3_glebie;
+--   * 1. poziom Œwi¹tyni Wê¿y (390): Stra¿nik Wê¿y (20804) na Prze³êczy Yilad (385) zabiera tam od poziomu 120,
+--     Wyjœcie (10138) wraca obok niego; Statua Wê¿y (20807) - loch (quest swiatynia_wezy) i powrót na Prze³êcz;
+--   * Tajemnicza Instancja (396): Tajemniczy O³tarz (20850) w Namgan (377) - 1. Poziom Czempiona i Tajemniczy
+--     Bilet (70408) za ka¿de wejœcie; Wyjœcie (10204) wraca do o³tarza; o³tarz wytwarza te¿ Esencjê Talizmanu
+--     (4 Talizmany Woli: SI£A, WIT, ODP, INT + 5 000 000 Yang, 90%) i Tajemniczy Talizman (Esencja + 200 Tajemniczych
+--     Kamieni + 10 000 000 Yang) - Gaya (100 / 200) pominiêta: nie mamy jej;
+--   * Królestwo ¯ywio³ów (378-380) i P³askowy¿ Si³ Natury (381): portal Królestwo ¯ywio³ów (3998) w Porcie Nowego
+--     Kontynentu (368) - od poziomu 90 za 5 000 000 Yang; Wyjœcie (3999) wraca do portu; po œmierci - do portu
+--     (wiki, Wersja 20.0); Pierœcieñ Si³y Natury (39114: 10% szansy, 39116: zawsze) przenosi na P³askowy¿;
+--     na P³askowy¿u P¯ stale spadaj¹ (5% co 10 s, nigdy do zera), Medal Si³y Natury (39113) chroni przez 10 minut;
+--   * stra¿nicy poziomu: Zejœcie, 1. poziom Œwi¹tyni, Instancja od 120 (Instancja: te¿ 1. Poziom Czempiona),
+--     Królestwo od 90 - kto nie spe³nia (np. przeniesiony przez GM-a), wraca.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest yohara_mapy3 begin
+	state start begin
+		function cfg()
+			return {
+				min_level = 120,
+				realm_level = 90,
+				realm_fee = 5000000, realm_fee_text = "5 000 000",
+				port = {1280 + 405, 5632 + 480},             -- Town.txt portu (368)
+				yilad = {0 + 633, 14080 + 490},              -- Prze³êcz Yilad (385), przy Stra¿niku Wê¿y 637,494
+				swiatynia1 = {0 + 669, 16384 + 658},         -- Town.txt 1. poziomu Œwi¹tyni Wê¿y (390)
+				namgan = {12288 + 956, 4352 + 238},          -- Namgan (377), przy Tajemniczym O³tarzu 960,242
+				instancja = {1536 + 73, 10496 + 119},        -- Town.txt Tajemniczej Instancji (396)
+				realm = {0 + 149, 9216 + 404},               -- Town.txt elemental_01 (378)
+				plateau = {3840 + 126, 9216 + 310},          -- Town.txt P³askowy¿u (381)
+				ticket = 70408,
+				talismans = {81000, 81300, 81250, 81550},    -- Talizman Woli SI£A, WIT, ODP, INT (+0)
+				essence = 31270, stone = 31261, mystic = 81560,
+				essence_fee = 5000000, essence_pct = 90,
+				mystic_fee = 10000000, mystic_stones = 200,
+				medal = 39113, ring = 39114, ring_sure = 39116,
+				medal_sec = 600, drain_pct = 5, drain_sec = 10,
+			}
+		end
+
+		function go(x, y)
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return false
+			end
+			return pc.warp(x * 100, y * 100)
+		end
+
+		function in_realm()
+			local m = pc.get_map_index()
+			return m >= 378 and m <= 381
+		end
+
+		function fee_text(n)
+			local s = tostring(n)
+			local out = ""
+			while string.len(s) > 3 do
+				out = " "..string.sub(s, -3)..out
+				s = string.sub(s, 1, -4)
+			end
+			return s..out
+		end
+
+		-- stra¿nicy poziomu
+		when login with pc.get_map_index() == 394 or pc.get_map_index() == 390 or pc.get_map_index() == 396 begin
+			local c = yohara_mapy3.cfg()
+			if pc.is_gm() or pc.is_playerbot() then
+				return
+			end
+			if pc.get_level() < c.min_level then
+				syschat("Ziemie Yohary s¹ dostêpne od poziomu "..c.min_level..". Wracasz do Portu Nowego Kontynentu.")
+				pc.warp(c.port[1] * 100, c.port[2] * 100)
+			elseif pc.get_map_index() == 396 and pc.get_conqueror_level() < 1 then
+				syschat("Tajemnicza Instancja wymaga 1. Poziomu Czempiona.")
+				pc.warp(c.namgan[1] * 100, c.namgan[2] * 100)
+			end
+		end
+
+		when login with yohara_mapy3.in_realm() begin
+			local c = yohara_mapy3.cfg()
+			if pc.is_gm() or pc.is_playerbot() then
+				return
+			end
+			if pc.get_level() < c.realm_level then
+				syschat("Królestwo ¯ywio³ów jest dostêpne od poziomu "..c.realm_level..". Wracasz do portu.")
+				pc.warp(c.port[1] * 100, c.port[2] * 100)
+				return
+			end
+			if pc.get_map_index() == 381 then
+				syschat("P³askowy¿ Si³ Natury: twoje P¯ bêd¹ stale spadaæ. Medal Si³y Natury chroni przez 10 minut.")
+				loop_timer("ymaps3_plateau", c.drain_sec)
+			end
+		end
+
+		-- P³askowy¿ Si³ Natury: P¯ spadaj¹ bez Medalu Si³y Natury (nigdy do zera)
+		when ymaps3_plateau.timer begin
+			local c = yohara_mapy3.cfg()
+			if pc.get_map_index() ~= 381 then
+				cleartimer("ymaps3_plateau")
+				return
+			end
+			if pc.is_dead() or get_global_time() < pc.getqf("medal_until") then
+				return
+			end
+			local hp = pc.get_hp()
+			local loss = math.floor(pc.get_max_hp() * c.drain_pct / 100)
+			if loss >= hp then
+				loss = hp - 1
+			end
+			if loss > 0 then
+				pc.point_change(5, -loss, false, true)
+			end
+		end
+
+		when 39113.use with yohara_mapy3.in_realm() begin
+			local c = yohara_mapy3.cfg()
+			pc.setqf("medal_until", get_global_time() + c.medal_sec)
+			pc.remove_item(c.medal, 1)
+			syschat("Medal Si³y Natury: przez 10 minut P³askowy¿ nie odbiera ci P¯.")
+		end
+
+		when 39113.use with not yohara_mapy3.in_realm() begin
+			syschat("Medal Si³y Natury dzia³a tylko w Królestwie ¯ywio³ów.")
+		end
+
+		function use_ring(vnum, pct)
+			local c = yohara_mapy3.cfg()
+			local m = pc.get_map_index()
+			if m < 378 or m > 380 then
+				syschat("Pierœcienia Si³y Natury mo¿na u¿yæ tylko w Królestwie ¯ywio³ów.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				syschat("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			pc.remove_item(vnum, 1)
+			if number(1, 100) > pct then
+				syschat("Pierœcieñ Si³y Natury rozsypa³ siê w py³ - tym razem bez skutku.")
+				return
+			end
+			syschat("Si³a natury porywa ciê na P³askowy¿ Si³ Natury!")
+			pc.warp(c.plateau[1] * 100, c.plateau[2] * 100)
+		end
+
+		when 39114.use begin
+			yohara_mapy3.use_ring(39114, 10)
+		end
+
+		when 39116.use begin
+			yohara_mapy3.use_ring(39116, 100)
+		end
+
+		-- œmieræ w Królestwie ¯ywio³ów: po wstaniu - do portu
+		when die with yohara_mapy3.in_realm() and not pc.is_gm() begin
+			pc.setqf("realm_dead", 1)
+			loop_timer("ymaps3_realm_dead", 2)
+		end
+
+		when ymaps3_realm_dead.timer begin
+			local c = yohara_mapy3.cfg()
+			if pc.is_dead() then
+				return
+			end
+			cleartimer("ymaps3_realm_dead")
+			if pc.getqf("realm_dead") == 1 then
+				pc.setqf("realm_dead", 0)
+				if yohara_mapy3.in_realm() then
+					syschat("Królestwo ¯ywio³ów nie przyjmuje pokonanych. Wracasz do portu.")
+					pc.warp(c.port[1] * 100, c.port[2] * 100)
+				end
+			end
+		end
+
+		-- Port Nowego Kontynentu: portal do Królestwa ¯ywio³ów
+		when 3998.chat."Królestwo ¯ywio³ów" with pc.get_map_index() == 368 begin
+			local c = yohara_mapy3.cfg()
+			say_title(mob_name(3998)..":")
+			say("Za tym portalem le¿y Królestwo ¯ywio³ów, gdzie")
+			say("duchy szeœciu ¿ywio³ów strzeg¹ swoich ziem.")
+			say("Nie dzia³aj¹ tam zwoje ani pierœcienie powrotu,")
+			say("a kto polegnie, wraca do portu.")
+			say("")
+			say_reward("Od poziomu "..c.realm_level..". Wstêp: "..c.realm_fee_text.." Yang.")
+			if select("WejdŸ do Królestwa", "Zostañ w porcie") ~= 1 then
+				return
+			end
+			if pc.get_level() < c.realm_level then
+				say_title(mob_name(3998)..":")
+				say("Wróæ, gdy osi¹gniesz poziom "..c.realm_level..".")
+				return
+			end
+			if pc.get_money() < c.realm_fee then
+				say_title(mob_name(3998)..":")
+				say("Wstêp kosztuje "..c.realm_fee_text.." Yang.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			pc.change_money(-c.realm_fee)
+			pc.warp(c.realm[1] * 100, c.realm[2] * 100)
+		end
+
+		when 3999.chat."Wróæ do portu" with yohara_mapy3.in_realm() begin
+			local c = yohara_mapy3.cfg()
+			say_title(mob_name(3999)..":")
+			say("Czy chcesz opuœciæ Królestwo ¯ywio³ów")
+			say("i wróciæ do Portu Nowego Kontynentu?")
+			if select("Wróæ do portu", "Zostañ tutaj") ~= 1 then
+				return
+			end
+			yohara_mapy3.go(c.port[1], c.port[2])
+		end
+
+		-- Prze³êcz Yilad: Stra¿nik Wê¿y zabiera na 1. poziom Œwi¹tyni Wê¿y
+		when 20804.chat."1. poziom Œwi¹tyni Wê¿y" with pc.get_map_index() == 385 begin
+			local c = yohara_mapy3.cfg()
+			say_title(mob_name(20804)..":")
+			say("Za mn¹ zaczyna siê Œwi¹tynia Wê¿y. Na jej")
+			say("pierwszym poziomie roi siê od Kapp i ska¿onych")
+			say("¿o³nierzy, a Statua Wê¿y prowadzi g³êbiej.")
+			say("")
+			say_reward("Wejœcie od poziomu "..c.min_level..".")
+			if pc.get_level() < c.min_level then
+				say("Wróæ, gdy osi¹gniesz poziom "..c.min_level..".")
+				return
+			end
+			if select("IdŸ do Œwi¹tyni Wê¿y", "Zostañ tutaj") ~= 1 then
+				return
+			end
+			yohara_mapy3.go(c.swiatynia1[1], c.swiatynia1[2])
+		end
+
+		-- 1. poziom Œwi¹tyni Wê¿y: Wyjœcie i Statua Wê¿y - powrót na Prze³êcz Yilad
+		when 10138.click with pc.get_map_index() == 390 begin
+			local c = yohara_mapy3.cfg()
+			say_title(mob_name(10138)..":")
+			say("Czy chcesz wróciæ na Prze³êcz Yilad?")
+			if select("Wróæ na Prze³êcz Yilad", "Zostañ tutaj") ~= 1 then
+				return
+			end
+			yohara_mapy3.go(c.yilad[1], c.yilad[2])
+		end
+
+		when 20807.chat."Prze³êcz Yilad" with pc.get_map_index() == 390 begin
+			local c = yohara_mapy3.cfg()
+			say_title(mob_name(20807)..":")
+			say("Czy chcesz wróciæ na Prze³êcz Yilad?")
+			if select("Wróæ na Prze³êcz Yilad", "Zostañ tutaj") ~= 1 then
+				return
+			end
+			yohara_mapy3.go(c.yilad[1], c.yilad[2])
+		end
+
+		-- Namgan: Tajemniczy O³tarz
+		when 20850.chat."Tajemnicza Instancja" with pc.get_map_index() == 377 begin
+			local c = yohara_mapy3.cfg()
+			say_title(mob_name(20850)..":")
+			say("Hej! Wiem, ¿e zamieniono mnie w kamieñ - to")
+			say("kl¹twa Sung Mahi. Ale jestem szamanem i znam")
+			say("pewne ciekawe miejsce... Jeœli masz Tajemniczy")
+			say("Bilet, mogê ciê zabraæ do Tajemniczej Instancji.")
+			say("")
+			say_reward("Wymagany 1. Poziom Czempiona i Tajemniczy Bilet.")
+			if select("Tak", "Nie") ~= 1 then
+				return
+			end
+			if pc.get_level() < c.min_level or pc.get_conqueror_level() < 1 then
+				say_title(mob_name(20850)..":")
+				say("Najpierw zostañ Czempionem (1. Poziom Czempiona).")
+				return
+			end
+			if pc.count_item(c.ticket) < 1 then
+				say_title(mob_name(20850)..":")
+				say("Och! Bez Tajemniczego Biletu nie mogê ciê wpuœciæ.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			pc.remove_item(c.ticket, 1)
+			pc.warp(c.instancja[1] * 100, c.instancja[2] * 100)
+		end
+
+		when 20850.chat."Esencja Talizmanu" with pc.get_map_index() == 377 begin
+			local c = yohara_mapy3.cfg()
+			say_title(mob_name(20850)..":")
+			say("Z czterech Talizmanów Woli (SI£A, WIT, ODP, INT)")
+			say("wydobêdê Esencjê Talizmanu.")
+			say("")
+			say_reward("Potrzeba: po 1 Talizmanie Woli SI£A, WIT, ODP i INT (+0),")
+			say_reward(yohara_mapy3.fee_text(c.essence_fee).." Yang. Szansa: "..c.essence_pct.."%.")
+			say_reward("Gdy siê nie uda, przedmioty przepadaj¹.")
+			if select("Wytwórz", "Nie teraz") ~= 1 then
+				return
+			end
+			for i = 1, table.getn(c.talismans) do
+				if pc.count_item(c.talismans[i]) < 1 then
+					say_title(mob_name(20850)..":")
+					say("Brakuje ci: "..item_name(c.talismans[i])..".")
+					return
+				end
+			end
+			if pc.get_money() < c.essence_fee then
+				say_title(mob_name(20850)..":")
+				say("Masz za ma³o Yang.")
+				return
+			end
+			for i = 1, table.getn(c.talismans) do
+				pc.remove_item(c.talismans[i], 1)
+			end
+			pc.change_money(-c.essence_fee)
+			say_title(mob_name(20850)..":")
+			if number(1, 100) <= c.essence_pct then
+				pc.give_item2(c.essence, 1)
+				say("Uda³o siê! Oto Esencja Talizmanu.")
+			else
+				say("Nie uda³o siê. Talizmany rozsypa³y siê w proch.")
+			end
+		end
+
+		when 20850.chat."Tajemniczy Talizman" with pc.get_map_index() == 377 begin
+			local c = yohara_mapy3.cfg()
+			say_title(mob_name(20850)..":")
+			say("Z Esencji Talizmanu i Tajemniczych Kamieni")
+			say("stworzê Tajemniczy Talizman.")
+			say("")
+			say_reward("Potrzeba: Esencja Talizmanu, "..c.mystic_stones.." Tajemniczych Kamieni,")
+			say_reward(yohara_mapy3.fee_text(c.mystic_fee).." Yang. Zawsze siê udaje.")
+			if select("Wytwórz", "Nie teraz") ~= 1 then
+				return
+			end
+			if pc.count_item(c.essence) < 1 or pc.count_item(c.stone) < c.mystic_stones then
+				say_title(mob_name(20850)..":")
+				say("Brakuje ci Esencji albo Tajemniczych Kamieni.")
+				return
+			end
+			if pc.get_money() < c.mystic_fee then
+				say_title(mob_name(20850)..":")
+				say("Masz za ma³o Yang.")
+				return
+			end
+			pc.remove_item(c.essence, 1)
+			pc.remove_item(c.stone, c.mystic_stones)
+			pc.change_money(-c.mystic_fee)
+			pc.give_item2(c.mystic, 1)
+			say_title(mob_name(20850)..":")
+			say("Oto Tajemniczy Talizman.")
+		end
+
+		when 10204.click with pc.get_map_index() == 396 begin
+			local c = yohara_mapy3.cfg()
+			say_title(mob_name(10204)..":")
+			say("Czy chcesz wróciæ z Tajemniczej Instancji")
+			say("do Namgan?")
+			if select("Wróæ do Namgan", "Zostañ tutaj") ~= 1 then
+				return
+			end
+			yohara_mapy3.go(c.namgan[1], c.namgan[2])
+		end
+	end
+end

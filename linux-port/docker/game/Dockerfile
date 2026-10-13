@@ -343,7 +343,12 @@ RUN set -eux; \
     # Pierscien Hydry (70303, three teleports to the port) and the level-90 guard (MT2009_PLUS_YOHARA_PORT_V1).
     # yohara_mapy is the first maps of Yohara - Opuszczona Twierdza (374) and Dongan (373): the statue's way there
     # from level 120, the way back to the port, the Teleporter of Dongan, the level-120 guard (MT2009_PLUS_YOHARA_MAPS1_V1).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy; do \
+    # yohara_mapy3 is the third batch of Yohara places (MT2009_PLUS_YOHARA_MAPS3_V1): the ways into Zejscie Polnocnego
+    # Wiatru's level guard, the 1st level of Swiatynia Wezy (Straznik Wezy on Przelecz Yilad), Tajemnicza Instancja
+    # (Tajemniczy Oltarz on Namgan: the ticket, the talisman crafting), Krolestwo Zywiolow and Plaskowyz Sil Natury
+    # (the port's portal, the rings, the medal, the plateau's HP drain, death -> the port); ymaps3_glebie is Glebie
+    # Polnocnego Wiatru (Alastor, slaby/silny, at Upiorny Straznik); swiatynia_wezy is the temple's 7 levels.
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy3 ymaps3_glebie swiatynia_wezy; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1454,6 +1459,95 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/champion-add \
  && test "$(grep -c -E '^[0-9]+[[:blank:]]+[0-9]+$' "$L/sungma_mob_exp.txt")" -gt 300 \
  && rm -rf "$A" \
  && echo "share: Poziom Czempiona (sungma_table.txt, sungma_mob_exp.txt)"
+# MT2009_PLUS_YOHARA_MAPS3_V1 (share): the third batch of Yohara places (the owner, 14 October 2026; cache/yohara/
+# decyzje.md, plan-mapy-yohary.md; pl-wiki first, TR wiki for what it lacks) - Zejscie Polnocnego Wiatru (394,
+# metin2_map_whitedragoncave_02), Glebie Polnocnego Wiatru (395, _boss; dungeon), 1. poziom Swiatyni Wezy (390,
+# metin2_map_snake_temple_01), Swiatynia Wezy (391, _02; dungeon), Tajemnicza Instancja (396, metin2_map_anglar_dungeon_01)
+# and Krolestwo Zywiolow (378-381, metin2_map_elemental_01..04 - the wiki's nine areas are the parts of _01-_03, _04 is
+# Plaskowyz Sil Natury; Ameria's elemental_04_rework is its own copy, not used), Owsap's indexes, on the Yohara core
+# (bin/m2-render-config, MT2009_PLUS_YOHARA_CORE_V1). tools/yohara_maps3/gen_ymaps3_maps.py made the folders:
+# server_attr from GF 26.1.11's attr.atr (equal to Owsap's in every cell), Setting/Town Owsap's, npc.txt GF's official
+# NPC and portal points (Owsap's for the elemental realm, our portal vnums), regen/boss/stone Owsap's where it has them
+# and ours (GF's map_mob_list points, the TR wiki's bosses) for Zejscie and the 1st temple level; the dungeons have
+# none - their quests spawn everything. Groups (group.yohara_maps3.txt: Owsap's 6156-6161, 6829-6838, ours 9160-9164,
+# 9180-9189), drops (mob_drop_item.yohara_maps3.txt) and chests (special_item_group.yohara_maps3.txt, made with the
+# items of mariadb/playerbot/yohara_items3.sql by tools/yohara_maps3/gen_yitems3.py) are appended; none may exist
+# before. The port gets Owsap's elemental portal (3998, 229,585); sungma_table.txt the two dungeons (the wiki's first
+# levels: Glebie slaby 60/50/60/65, the temple's 2nd level 35/25/35/40 - one requirement a map name here); the dungeon
+# panel its three dungeons; /goto zejscie, swiatynia, instancja, zywioly, plaskowyz. The monsters' rows:
+# mariadb/playerbot/yohara_maps3.sql. The connections into other batches' maps: the late step "Yohara maps 3: links".
+COPY yohara_maps3/ /tmp/yohara-maps3-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps3-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for p in "394 metin2_map_whitedragoncave_02 0c0000000c000000 1152000 1203200 map" \
+             "395 metin2_map_whitedragoncave_boss 0800000008000000 1228800 1203200 dungeon" \
+             "390 metin2_map_snake_temple_01 0c0000000c000000 0 1638400 map" \
+             "391 metin2_map_snake_temple_02 0c0000000c000000 76800 1638400 dungeon" \
+             "396 metin2_map_anglar_dungeon_01 1800000018000000 153600 1049600 map" \
+             "378 metin2_map_elemental_01 1400000014000000 0 921600 map" \
+             "379 metin2_map_elemental_02 1400000014000000 128000 921600 map" \
+             "380 metin2_map_elemental_03 1400000014000000 256000 921600 map" \
+             "381 metin2_map_elemental_04 0400000008000000 384000 921600 map"; do \
+      set -- $p; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" \
+        && { [ "$6" = dungeon ] || test -s "$L/map/$2/regen.txt"; } \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: Yohara map $1 $2"; exit 1; }; \
+    done \
+ && test "$(grep -c -E '[[:blank:]](10205|10206|10207|10208|10209|10210|10211|10212|10213|10214|10215|10216|10217|10218|10219|10220|10221|10222|10223|10224|10225|10203)[[:space:]]*$' "$L/map/metin2_map_whitedragoncave_02/npc.txt")" = 22 \
+ && test "$(grep -c -E '[[:blank:]]10125[[:space:]]*$' "$L/map/metin2_map_elemental_01/npc.txt")" = 1 \
+ && ! grep -q -E '[[:blank:]]10109[[:space:]]*$' "$L/map/metin2_map_elemental_01/npc.txt" \
+ && GV='(615[6-9]|616[01]|68(29|3[0-8])|916[0-4]|918[0-9])' \
+ && f="$L/group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_maps3.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 31 \
+ && MV='(39(8[0-9]|9[0-7])|400[0-6]|67(4[4-9]|5[0-6]|65|9[0-7])|685[0-4]|68(6[0-9]|7[01])|8076|8630|8631|8632|8633)' \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.yohara_maps3.txt" >> "$F" \
+ && test "$(grep -c -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F")" = 55 \
+ && SV='(70411|70412|70429|83051|83052|83053)' \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.yohara_maps3.txt" >> "$G" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G")" = 6 \
+ && P="$L/map/metin2_map_defensewave_port/npc.txt" \
+ && { grep -q -E '[[:blank:]]3998[[:space:]]*$' "$P" || { { [ -z "$(tail -c 1 "$P")" ] || printf '\r\n' >> "$P"; }; printf 'm\t229\t585\t0\t0\t0\t4\t60s\t100\t1\t3998\r\n' >> "$P"; }; } \
+ && test "$(grep -c -E '[[:blank:]]3998[[:space:]]*$' "$P")" = 1 \
+ && T="$L/sungma_table.txt" \
+ && { grep -q '^metin2_map_whitedragoncave_boss[[:blank:]]' "$T" || printf 'metin2_map_whitedragoncave_boss\t60\t50\t60\t65\n' >> "$T"; } \
+ && { grep -q '^metin2_map_snake_temple_02[[:blank:]]' "$T" || printf 'metin2_map_snake_temple_02\t35\t25\t35\t40\n' >> "$T"; } \
+ && I="$L/dungeon_info.txt" \
+ && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+swiatynia[[:blank:]]' "$I" \
+      || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
+           printf 'dungeon\tglebie_slaby\t395\t1\txy\t394\t11903\t12646\t120\t0\t4\t8\t6790\tymaps3_glebie.entry\t0\t70410\t3\tG\263\352bie_P\363\263nocnego_Wiatru_(s\263aby)\tZej\234cie_P\363\263nocnego_Wiatru\ndrop\tglebie_slaby\t70411\t8\t100\n' >> "$I"; \
+           printf 'dungeon\tglebie_silny\t395\t1\txy\t394\t11903\t12646\t120\t0\t4\t8\t6791\tymaps3_glebie.entry\t0\t70410\t3\tG\263\352bie_P\363\263nocnego_Wiatru_(silny)\tZej\234cie_P\363\263nocnego_Wiatru\ndrop\tglebie_silny\t70412\t8\t100\n' >> "$I"; \
+           printf 'dungeon\tswiatynia\t391\t1\txy\t390\t404\t16748\t120\t0\t1\t8\t6756\tswiatynia_wezy.entry\t0\t0\t0\t\214wi\271tynia_W\352\277y\t1._poziom_\214wi\271tyni_W\352\277y\ndrop\tswiatynia\t70429\t8\t100\n' >> "$I"; }; } \
+ && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+(glebie_slaby|glebie_silny|swiatynia)[[:blank:]]' "$I")" = 3 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[394\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_MAPS3_V1\r\ntranslate.general.map_names[394] = "Zej\234cie P\363\263nocnego Wiatru"\r\ntranslate.general.map_names[395] = "G\263\352bie P\363\263nocnego Wiatru"\r\ntranslate.general.map_names[390] = "1. poziom \214wi\271tyni W\352\277y"\r\ntranslate.general.map_names[391] = "\214wi\271tynia W\352\277y"\r\ntranslate.general.map_names[396] = "Tajemnicza Instancja"\r\ntranslate.general.map_names[378] = "Kr\363lestwo \257ywio\263\363w"\r\ntranslate.general.map_names[379] = "Kr\363lestwo \257ywio\263\363w"\r\ntranslate.general.map_names[380] = "Kr\363lestwo \257ywio\263\363w"\r\ntranslate.general.map_names[381] = "P\263askowy\277 Si\263 Natury"\r\n' >> "$f"; \
+    done \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("zejscie"' "$S" || printf 'add_goto_info("zejscie", 0, 394, 11590, 12182)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("swiatynia"' "$S" || printf 'add_goto_info("swiatynia", 0, 390, 669, 17042)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("instancja"' "$S" || printf 'add_goto_info("instancja", 0, 396, 1609, 10615)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("zywioly"' "$S" || printf 'add_goto_info("zywioly", 0, 378, 149, 9620)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("plaskowyz"' "$S" || printf 'add_goto_info("plaskowyz", 0, 381, 3966, 9526)\r\n' >> "$S"; } \
+ && rm -rf "$A" \
+ && echo "share: Yohara maps 3 - Zejscie/Glebie Polnocnego Wiatru, Swiatynia Wezy, Tajemnicza Instancja, Krolestwo Zywiolow: maps, groups, drops, chests, the port's portal, Sung Ma, the dungeon panel"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only
@@ -1660,6 +1754,27 @@ RUN set -eu; \
 # The three quests compiled in the quests stage, as a pure addition on top of
 # the package's own object tree (new files under quest/object/, the sources
 # beside the stock ones). Empty when web_admin.quest was left out.
+# MT2009_PLUS_YOHARA_MAPS3_V1 (links): the ways into the third batch from the maps of the second (claude/yohara-maps2:
+# Schronienie Polnocnego Wiatru 393, Przelecz Yilad 385, Namgan 377) - after every share step, so whatever order the
+# batches' steps take. Each map that is in map/index gets its official point if it lacks it (GF's _point.txt):
+# 10202 (Schronienie 1358,1467 -> Zejscie), Straznik Wezy 20804 (Yilad 637,494 -> 1. poziom Swiatyni Wezy, quest
+# yohara_mapy3), Tajemniczy Oltarz 20850 (Namgan 960,242 -> Tajemnicza Instancja); a map not in map/index yet is
+# only reported (its batch is not merged).
+RUN set -eu; L=/opt/metin2/share/locale/poland \
+ && for p in "393 metin2_map_whitedragoncave_01 1358 1467 1 10202" "385 metin2_map_snakevalley 637 494 1 20804" \
+             "377 metin2_map_eastplain_03 960 242 1 20850"; do \
+      set -- $p; \
+      if ! grep -q -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index"; then \
+        echo "links: map $1 $2 is not in map/index - its point ($6) waits for that batch"; continue; \
+      fi; \
+      N="$L/map/$2/npc.txt"; test -f "$N" || : > "$N"; \
+      if ! grep -q -E "[[:blank:]]$6[[:space:]]*\$" "$N"; then \
+        { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; }; \
+        printf 'm\t%s\t%s\t0\t0\t0\t%s\t1m\t100\t1\t%s\r\n' "$3" "$4" "$5" "$6" >> "$N"; \
+      fi; \
+      test "$(grep -c -E "[[:blank:]]$6[[:space:]]*\$" "$N")" -ge 1 || { echo "FATAL: link $6 on $2"; exit 1; }; \
+    done \
+ && echo "links: Yohara maps 3 (Schronienie -> Zejscie, Yilad -> Swiatynia Wezy, Namgan -> Tajemnicza Instancja)"
 COPY --from=quests /out-quest/ /opt/metin2/share/locale/
 
 # Seed for a core's mark/ directory (guild symbols): copied into the state

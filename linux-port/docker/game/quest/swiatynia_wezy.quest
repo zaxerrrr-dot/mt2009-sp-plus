@@ -1,0 +1,782 @@
+-- MT2009_PLUS_YOHARA_MAPS3_V1: Œwi¹tynia Wê¿y (391, metin2_map_snake_temple_02) - loch siedmiu poziomów (wiki
+-- "Œwi¹tynia Wê¿y", TR "Yilan Tapinagi"). Wzorzec: obrona_statku.quest. Wejœcie: Statua Wê¿y (20807) na 1. poziomie
+-- Œwi¹tyni Wê¿y (390), od poziomu 120, sam albo z dru¿yn¹ (boty nie wchodz¹ na mapy Sung Ma), 5 wejœæ dziennie -
+-- Wejœcie Do Œwi¹tyni Wê¿y (70430) odnawia dzisiejsze wejœcia; misja "Wa¿ne przygotowania" pominiêta (nie mamy
+-- jej). Mapa ma szeœæ sal: 1.-2. poziom (127,127), 3. (383,127), 4. (639,127), 5. (383,383), 6. (639,383),
+-- 7. okr¹g³a sala (127,642).
+--   1: Portal Œwi¹tyni Wê¿y (4022) - "Rozpocznij walkê!": losowy czas od 10 do 60 minut (Py³ Wê¿owy 70428: +1 min,
+--      najwy¿ej 60 minut); co 20 s atak powierzchniowy na losowego gracza (kto po 3 s stoi w tym samym miejscu,
+--      traci 20% P¯ - nigdy do zera - i czasem zwalnia); najwy¿ej 10 o¿ywieñ, roz³¹czenie ponad minutê - koniec;
+--   2: przez 6 minut nadci¹gaj¹ grupy - pierwsze cztery to cztery ¿ywio³y w losowej kolejnoœci (zapamiêtaj!);
+--      zabij wszystkie;
+--   3: cztery Metiny Wê¿owe ¿ywio³ów w rogach - zniszcz je w kolejnoœci ¿ywio³ów z 2. poziomu; z³y Metin
+--      przywraca wszystkie zniszczone;
+--   4: Metiny Wê¿owe Czasu w szeœciu miejscach jeden po drugim (zapamiêtaj kolejnoœæ miejsc!) i grupy; potem
+--      Potê¿ny Wojownik Wê¿owy (ziemia), jego wcielenie (lód) i od 0 do 3 kolejnych (lód) - zapamiêtaj ile;
+--   5: szeœæ Kolumn Wê¿y w tych samych miejscach - otwórz je Kluczami Wê¿owymi (70422, z potworów) w kolejnoœci
+--      Metinów z 4. poziomu; z³y klucz przepada;
+--   6: czterech Uwiêzionych Kowali w rogach - Klucz do Wiêzienia (70427, z potworów) czasem uwalnia kowala; po
+--      ostatnim potworze pojawia siê Kowal Œwi¹tyni Wê¿y (20829) - przenosi na 7. poziom (ulepszanie rêkawic -
+--      nie mamy rêkawic Sung Ma);
+--   7: cztery G³owy Wê¿a (4024 lód, 4025 ogieñ, 4026 wiatr, 4027 ziemia) - Od³amki Wê¿a (70423-70426, z potworów)
+--      w kolejnoœci ¿ywio³ów z 2. poziomu przesuniêtej w lewo o liczbê dodatkowych wojowników z 4. poziomu; z³y
+--      od³amek przepada; po czwartej g³owie - Królowa Wê¿y Nethis (6756); po niej 20 s i wszyscy wracaj¹ pod Statuê
+--      Wê¿y, która wydaje nagrodê: 8 Skarbów Wê¿y (70429) i przedmiot wykonania zbroi klasy postaci.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest swiatynia_wezy begin
+	state start begin
+		function cfg()
+			return {
+				map = 391, base_x = 768, base_y = 16384,
+				town = {127, 31}, portal = {127, 70},
+				rooms = {{127, 127}, {127, 127}, {383, 127}, {639, 127}, {383, 383}, {639, 383}, {127, 642}},
+				six = {{35, -35}, {-35, -35}, {-35, 35}, {35, 35}, {35, 0}, {-35, 0}},
+				corners = {{35, -35}, {-35, -35}, {-35, 35}, {35, 35}},
+				heads = {{25, 0}, {0, 25}, {-25, 0}, {0, -25}},
+				exit_map = 390, exit_x = 0 + 400, exit_y = 16384 + 360,     -- przy Statui Wê¿y
+				min_level = 120, daily = 5, near = 30, keep = 3600 + 300,
+				limit_min = 10, limit_max = 60, dust = 70428, entry_item = 70430,
+				revives = 10, logout_sec = 60,
+				-- the elements: name, monsters, Metin, shard, head
+				el = {
+					{name = "Ognia", mobs = {6851, 6851, 6851, 6851}, metin = 8630, shard = 70423, head = 4025},
+					{name = "Lodu", mobs = {6751, 6751, 6852, 6853}, metin = 8631, shard = 70424, head = 4024},
+					{name = "Wiatru", mobs = {6752, 6752, 6753, 6854}, metin = 8632, shard = 70425, head = 4026},
+					{name = "Ziemi", mobs = {6750, 6750, 6750, 6754}, metin = 8633, shard = 70426, head = 4027},
+				},
+				any = {6750, 6751, 6752, 6753, 6754, 6850, 6851, 6852, 6853, 6854, 6745, 6747},
+				rewards = 70429, reward_count = 8,
+				armour = {[0] = 21326, [1] = 21346, [2] = 21366, [3] = 21386},
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 391 * 10000 and idx < 392 * 10000 and pc.in_dungeon()
+		end
+
+		function today()
+			return math.floor((get_global_time() + 7200) / 86400)
+		end
+
+		function runs_today()
+			if pc.getf("swiatynia_wezy", "day") ~= swiatynia_wezy.today() then
+				return 0
+			end
+			return pc.getf("swiatynia_wezy", "runs")
+		end
+
+		function bot_leads()
+			local lp = party.get_leader_pid()
+			if lp == nil or lp == 0 or lp == pc.get_player_id() then
+				return false
+			end
+			local bot = false
+			local pids = {party.get_member_pids()}
+			for i, pid in next, pids, nil do
+				if pid == lp then
+					q.begin_other_pc_block(pid)
+					bot = pc.get_player_id() == pid and pc.is_playerbot()
+					q.end_other_pc_block()
+				end
+			end
+			return bot
+		end
+
+		function room_xy(level, off)
+			local c = swiatynia_wezy.cfg()
+			local r = c.rooms[level]
+			return r[1] + off[1], r[2] + off[2]
+		end
+
+		function register()
+			local me = pc.get_player_id()
+			for i = 1, 8 do
+				local p = d.getf("p"..i)
+				if p == me then
+					return
+				end
+				if p == 0 then
+					d.setf("p"..i, me)
+					return
+				end
+			end
+		end
+
+		function hurt(pct)
+			if pc.is_dead() then
+				return
+			end
+			local hp = pc.get_hp()
+			local loss = math.floor(pc.get_max_hp() * pct / 100)
+			if loss >= hp then
+				loss = hp - 1
+			end
+			if loss > 0 then
+				pc.point_change(5, -loss, false, true)
+			end
+		end
+
+		function group(level, mobs)
+			local c = swiatynia_wezy.cfg()
+			local off = c.six[number(1, 6)]
+			local x, y = swiatynia_wezy.room_xy(level, off)
+			for i = 1, table.getn(mobs) do
+				d.spawn_mob(mobs[i], x, y, 6)
+			end
+		end
+
+		function random_group(level)
+			local c = swiatynia_wezy.cfg()
+			local m = {}
+			for i = 1, 4 do
+				m[i] = c.any[number(1, table.getn(c.any))]
+			end
+			swiatynia_wezy.group(level, m)
+		end
+
+		function move_to(level)
+			local c = swiatynia_wezy.cfg()
+			local x, y = swiatynia_wezy.room_xy(level, {0, -50})
+			d.setf("lvl", level)
+			d.setf("lvl_t", get_global_time())
+			d.jump_all(c.base_x + x, c.base_y + y)
+		end
+
+		function finish(text)
+			local c = swiatynia_wezy.cfg()
+			d.setf("closed", 1)
+			d.setf("mt2009_keep_until", 0)
+			if text then
+				d.notice(text)
+			end
+			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			d.exit_all()
+		end
+
+		function out()
+			local c = swiatynia_wezy.cfg()
+			pc.warp(c.exit_x * 100, c.exit_y * 100)
+		end
+
+		-- the statue: the dungeon, the reward
+		when 20807.chat."Œwi¹tynia Wê¿y" with pc.get_map_index() == 390 begin
+			local c = swiatynia_wezy.cfg()
+			say_title(mob_name(20807)..":")
+			say("Statua Wê¿y prowadzi do wnêtrza œwi¹tyni, gdzie")
+			say("na siedmiu poziomach czeka Królowa Wê¿y Nethis.")
+			say("")
+			say_reward("Od poziomu "..c.min_level..". Sam albo z dru¿yn¹.")
+			say_reward("Najwy¿ej "..c.daily.." wejœæ dziennie (dziœ: "..swiatynia_wezy.runs_today().."/"..c.daily..").")
+			if select("WejdŸ do œwi¹tyni", "Nie teraz") ~= 1 then
+				return
+			end
+			local now = get_global_time()
+			local x, y = (c.base_x + c.town[1]) * 100, (c.base_y + c.town[2]) * 100
+			local idx = pc.getf("swiatynia_wezy", "idx")
+			if idx > 0 and now - pc.getf("swiatynia_wezy", "entry") < c.keep and d.find(idx) then
+				say_title(mob_name(20807)..":")
+				say("Twoja wyprawa wci¹¿ trwa.")
+				local s = select("Wróæ do lochu", "Nowa wyprawa", "Nie teraz")
+				if s == 3 then
+					return
+				elseif s == 1 then
+					if d.find(idx, x, y, pc.get_player_id()) then
+						pc.warp(x, y, idx)
+					end
+					return
+				end
+			end
+			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons_closed") > 0 then
+				say_title(mob_name(20807)..":")
+				say("Œwi¹tynia jest dziœ zamkniêta. Wróæ póŸniej.")
+				return
+			end
+			if party.is_party() and not party.is_leader() and not swiatynia_wezy.bot_leads() then
+				say_title(mob_name(20807)..":")
+				say("Tylko przywódca dru¿yny mo¿e otworzyæ œwi¹tyniê.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			local me = pc.get_player_id()
+			local humans = {me}
+			local bad = {}
+			local function check(name)
+				if pc.get_level() < c.min_level then
+					table.insert(bad, name.." (poziom)")
+				elseif swiatynia_wezy.runs_today() >= c.daily then
+					table.insert(bad, name.." (dzisiejsze wejœcia)")
+				end
+			end
+			if not pc.is_gm() then
+				check(pc.get_name())
+			end
+			if party.is_party() then
+				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						local dx, dy = pc.get_x() - lx, pc.get_y() - ly
+						if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+							table.insert(humans, pid)
+							if not pc.is_gm() then
+								check(pc.get_name())
+							end
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			if table.getn(bad) > 0 then
+				say_title(mob_name(20807)..":")
+				say("Nie spe³niaj¹ warunków:")
+				for i, n in next, bad, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(humans) > 8 then
+				say_title(mob_name(20807)..":")
+				say("Do œwi¹tyni wchodzi najwy¿ej 8 osób.")
+				return
+			end
+			if d.new_jump_pids(c.map, x, y, humans) < 0 then
+				say_title(mob_name(20807)..":")
+				say("Œwi¹tynia nie przyjmie was teraz. Spróbuj za chwilê.")
+			end
+		end
+
+		when 20807.chat."Odbierz nagrodê!" with pc.get_map_index() == 390 and pc.getf("swiatynia_wezy", "reward") > 0 begin
+			local c = swiatynia_wezy.cfg()
+			say_title(mob_name(20807)..":")
+			say("Królowa Wê¿y Nethis pokonana. Oto twoja nagroda.")
+			pc.setf("swiatynia_wezy", "reward", 0)
+			pc.give_item2(c.rewards, c.reward_count)
+			local a = c.armour[pc.get_job()]
+			if a then
+				pc.give_item2(a, 1)
+			end
+		end
+
+		when 70430.use begin
+			if swiatynia_wezy.runs_today() == 0 then
+				syschat("Wejœcie Do Œwi¹tyni Wê¿y: masz jeszcze wszystkie dzisiejsze wejœcia.")
+				return
+			end
+			pc.remove_item(70430, 1)
+			pc.setf("swiatynia_wezy", "runs", 0)
+			syschat("Wejœcie Do Œwi¹tyni Wê¿y: dzisiejsze wejœcia odnowione.")
+		end
+
+		-- inside
+		when login with swiatynia_wezy.inside() begin
+			local c = swiatynia_wezy.cfg()
+			local idx = pc.get_map_index()
+			local now = get_global_time()
+			if pc.is_playerbot() then
+				return
+			end
+			pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			if d.getf("closed") == 1 then
+				syschat("Œwi¹tynia Wê¿y: ta wyprawa ju¿ siê skoñczy³a.")
+				swiatynia_wezy.out()
+				return
+			end
+			if pc.getf("swiatynia_wezy", "idx") ~= idx then
+				if not pc.is_gm() then
+					if swiatynia_wezy.runs_today() >= c.daily then
+						syschat("Œwi¹tynia Wê¿y: wykorzysta³eœ dzisiejsze wejœcia.")
+						swiatynia_wezy.out()
+						return
+					end
+					local day = swiatynia_wezy.today()
+					if pc.getf("swiatynia_wezy", "day") ~= day then
+						pc.setf("swiatynia_wezy", "day", day)
+						pc.setf("swiatynia_wezy", "runs", 0)
+					end
+					pc.setf("swiatynia_wezy", "runs", pc.getf("swiatynia_wezy", "runs") + 1)
+				end
+				pc.setf("swiatynia_wezy", "idx", idx)
+				pc.setf("swiatynia_wezy", "entry", now)
+				pc.setf("swiatynia_wezy", "deaths", 0)
+				pc.setf("swiatynia_wezy", "logout", 0)
+			elseif d.getf("started") == 1 and pc.getf("swiatynia_wezy", "logout") > 0 and now - pc.getf("swiatynia_wezy", "logout") > c.logout_sec then
+				syschat("Œwi¹tynia Wê¿y: roz³¹czenie trwa³o ponad minutê - wypadasz z wyprawy.")
+				pc.setf("swiatynia_wezy", "idx", 0)
+				swiatynia_wezy.out()
+				return
+			end
+			pc.setf("swiatynia_wezy", "logout", 0)
+			swiatynia_wezy.register()
+			if d.getf("init") == 0 then
+				d.setf("init", 1)
+				d.setf("mt2009_keep_until", now + c.keep)
+				d.spawn_mob(4022, c.portal[1], c.portal[2])
+			end
+			if d.getf("started") == 0 then
+				syschat("Œwi¹tynia Wê¿y: kliknij Portal Œwi¹tyni Wê¿y i rozpocznij walkê.")
+			end
+		end
+
+		when logout with swiatynia_wezy.inside() begin
+			pc.setf("swiatynia_wezy", "logout", get_global_time())
+		end
+
+		when 4022.chat."Rozpocznij walkê!" with swiatynia_wezy.inside() and d.getf("started") == 0 begin
+			local c = swiatynia_wezy.cfg()
+			say_title(mob_name(4022)..":")
+			if party.is_party() and not party.is_leader() and not pc.is_gm() then
+				say("Tylko przywódca dru¿yny mo¿e rozpocz¹æ walkê.")
+				return
+			end
+			say("Gdy walka siê zacznie, œwi¹tynia odmierzy wam")
+			say("czas - od 10 do 60 minut. Py³ Wê¿owy dodaje minutê.")
+			if select("Rozpocznij walkê!", "Jeszcze nie") ~= 1 then
+				return
+			end
+			local now = get_global_time()
+			local limit = number(c.limit_min, c.limit_max)
+			d.setf("started", 1)
+			d.setf("start", now)
+			d.setf("limit_at", now + limit * 60)
+			-- the order of the elements (level 2): a random permutation
+			local o = {1, 2, 3, 4}
+			for i = 4, 2, -1 do
+				local j = number(1, i)
+				o[i], o[j] = o[j], o[i]
+			end
+			for i = 1, 4 do
+				d.setf("o"..i, o[i])
+			end
+			d.setf("lvl", 2)
+			d.setf("lvl_t", now)
+			npc.purge()
+			d.notice("Œwi¹tynia Wê¿y: walka siê zaczê³a! Czas: "..limit.." min. Zapamiêtajcie ¿ywio³y pierwszych czterech grup.")
+			server_timer("swiatynia_tick", 5, d.get_map_index())
+		end
+
+		when 4022.chat."Wróæ na 1. poziom Œwi¹tyni" with swiatynia_wezy.inside() begin
+			say_title(mob_name(4022)..":")
+			say("Czy chcesz opuœciæ œwi¹tyniê?")
+			if select("WyjdŸ teraz", "Zostañ tutaj") ~= 1 then
+				return
+			end
+			pc.setf("swiatynia_wezy", "idx", 0)
+			swiatynia_wezy.out()
+		end
+
+		when 70428.use with swiatynia_wezy.inside() and d.getf("started") == 1 and d.getf("closed") == 0 begin
+			local at = d.getf("limit_at") + 60
+			if at > d.getf("start") + 3600 then
+				syschat("Py³ Wê¿owy: czas nie mo¿e przekroczyæ 60 minut.")
+				return
+			end
+			pc.remove_item(70428, 1)
+			d.setf("limit_at", at)
+			syschat("Py³ Wê¿owy: +1 minuta. Zosta³o "..math.floor((at - get_global_time()) / 60).." min.")
+		end
+
+		when die with swiatynia_wezy.inside() and d.getf("started") == 1 begin
+			local c = swiatynia_wezy.cfg()
+			local n = pc.getf("swiatynia_wezy", "deaths") + 1
+			pc.setf("swiatynia_wezy", "deaths", n)
+			if n > c.revives then
+				loop_timer("swiatynia_dead_out", 2)
+			end
+		end
+
+		when swiatynia_dead_out.timer begin
+			if pc.is_dead() then
+				return
+			end
+			cleartimer("swiatynia_dead_out")
+			if swiatynia_wezy.inside() then
+				syschat("Œwi¹tynia Wê¿y: przekroczy³eœ limit o¿ywieñ - wypadasz z wyprawy.")
+				pc.setf("swiatynia_wezy", "idx", 0)
+				swiatynia_wezy.out()
+			end
+		end
+
+		-- the tick: time, the surface attack, the levels
+		when swiatynia_tick.server_timer begin
+			local c = swiatynia_wezy.cfg()
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			local now = get_global_time()
+			if now >= d.getf("limit_at") then
+				swiatynia_wezy.finish("Œwi¹tynia Wê¿y: czas min¹³ - œwi¹tynia was wypêdza.")
+				return
+			end
+			server_timer("swiatynia_tick", 5, get_server_timer_arg())
+			local left = d.getf("limit_at") - now
+			if math.mod(left, 300) < 5 then
+				d.notice("Œwi¹tynia Wê¿y: zosta³o "..math.floor(left / 60).." min.")
+			end
+			-- the surface attack, every 20 s, on a random player
+			if now - d.getf("atk") >= 20 then
+				d.setf("atk", now)
+				local i = number(1, 8)
+				for t = 1, 8 do
+					if d.getf("p"..i) > 0 then
+						break
+					end
+					i = math.mod(i, 8) + 1
+				end
+				local pid = d.getf("p"..i)
+				if pid > 0 then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and swiatynia_wezy.inside() and not pc.is_dead() then
+						d.setf("ax", pc.get_local_x())
+						d.setf("ay", pc.get_local_y())
+						d.setf("apid", pid)
+						syschat("Atak powierzchniowy celuje w ciebie - odsuñ siê!")
+					else
+						d.setf("apid", 0)
+					end
+					q.end_other_pc_block()
+					server_timer("swiatynia_atk", 3, get_server_timer_arg())
+				end
+			end
+			swiatynia_wezy.level_tick(now)
+		end
+
+		when swiatynia_atk.server_timer begin
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			local pid = d.getf("apid")
+			if pid == 0 then
+				return
+			end
+			q.begin_other_pc_block(pid)
+			if pc.get_player_id() == pid and swiatynia_wezy.inside() then
+				local dx, dy = pc.get_local_x() - d.getf("ax"), pc.get_local_y() - d.getf("ay")
+				if dx * dx + dy * dy <= 9 then
+					swiatynia_wezy.hurt(20)
+					if number(1, 100) <= 30 then
+						affect.add(19, -30, 10)
+					end
+					syschat("Atak powierzchniowy ciê dosiêgn¹³.")
+				end
+			end
+			q.end_other_pc_block()
+		end
+
+		function level_tick(now)
+			local c = swiatynia_wezy.cfg()
+			local lvl = d.getf("lvl")
+			local spent = now - d.getf("lvl_t")
+			if lvl == 2 then
+				-- 6 minutes of groups: the first four - the four elements in the order o1..o4
+				local n = d.getf("g")
+				if spent < 360 and now - d.getf("g_t") >= 30 then
+					d.setf("g_t", now)
+					d.setf("g", n + 1)
+					if n < 4 then
+						local e = c.el[d.getf("o"..(n + 1))]
+						swiatynia_wezy.group(2, e.mobs)
+						d.notice("Nadci¹ga grupa ¿ywio³u "..e.name..".")
+					else
+						swiatynia_wezy.random_group(2)
+					end
+				elseif spent >= 360 and d.count_monster() == 0 then
+					d.notice("Œwi¹tynia Wê¿y: 3. poziom - zniszczcie Metiny Wê¿owe w kolejnoœci ¿ywio³ów.")
+					swiatynia_wezy.move_to(3)
+					swiatynia_wezy.spawn_metins()
+				end
+			elseif lvl == 3 then
+				if now - d.getf("g_t") >= 40 then
+					d.setf("g_t", now)
+					swiatynia_wezy.random_group(3)
+				end
+			elseif lvl == 4 then
+				local m = d.getf("tm")
+				-- a Time Metin every 30 s at a new place (six), groups too; then the warriors
+				if m < 6 and now - d.getf("g_t") >= 30 then
+					d.setf("g_t", now)
+					local used = {}
+					for i = 1, m do
+						used[d.getf("m"..i)] = true
+					end
+					local free = {}
+					for i = 1, 6 do
+						if not used[i] then
+							table.insert(free, i)
+						end
+					end
+					local p = free[number(1, table.getn(free))]
+					d.setf("tm", m + 1)
+					d.setf("m"..(m + 1), p)
+					local x, y = swiatynia_wezy.room_xy(4, c.six[p])
+					d.spawn_mob(8634, x, y)
+					swiatynia_wezy.random_group(4)
+				elseif m >= 6 and d.getf("warrior") == 0 and spent >= 240 and d.count_monster() == 0 then
+					d.setf("warrior", 1)
+					local x, y = swiatynia_wezy.room_xy(4, {0, -35})
+					d.spawn_mob(6765, x, y)
+					d.notice("Potê¿ny Wojownik Wê¿owy (ziemia) wkracza do sali!")
+				elseif m >= 6 and d.getf("warrior") == 0 and spent < 240 and now - d.getf("g_t") >= 30 then
+					d.setf("g_t", now)
+					swiatynia_wezy.random_group(4)
+				end
+			elseif lvl == 5 or lvl == 6 or lvl == 7 then
+				local cap = 25
+				if lvl == 6 then
+					cap = 20
+				end
+				if now - d.getf("g_t") >= cap then
+					d.setf("g_t", now)
+					if lvl == 6 then
+						if d.getf("g6") < 8 then
+							d.setf("g6", d.getf("g6") + 1)
+							swiatynia_wezy.random_group(6)
+						elseif d.getf("smith") == 0 and d.count_monster() == 0 then
+							d.setf("smith", 1)
+							local x, y = swiatynia_wezy.room_xy(6, {0, -35})
+							d.spawn_mob(20829, x, y)
+							d.notice("Kowal Œwi¹tyni Wê¿y czeka. Uwolnieni kowale: "..d.getf("freed").."/4.")
+						end
+					elseif lvl == 7 and d.getf("nethis") == 0 then
+						swiatynia_wezy.random_group(7)
+					elseif lvl == 5 then
+						swiatynia_wezy.random_group(5)
+					end
+				end
+			end
+		end
+
+		function spawn_metins()
+			local c = swiatynia_wezy.cfg()
+			-- the four element Metins in the corners, at random
+			local o = {1, 2, 3, 4}
+			for i = 4, 2, -1 do
+				local j = number(1, i)
+				o[i], o[j] = o[j], o[i]
+			end
+			for i = 1, 4 do
+				local x, y = swiatynia_wezy.room_xy(3, c.corners[i])
+				d.spawn_mob(c.el[o[i]].metin, x, y)
+				d.setf("corner"..o[i], i)
+			end
+			d.setf("next", 1)
+			d.setf("dead_mask", 0)
+		end
+
+		when 8630.kill or 8631.kill or 8632.kill or 8633.kill with swiatynia_wezy.inside() and d.getf("lvl") == 3 begin
+			local c = swiatynia_wezy.cfg()
+			local e = npc.get_race() - 8629      -- 1 fire, 2 ice, 3 wind, 4 earth
+			local want = d.getf("o"..d.getf("next"))
+			if e == want then
+				local n = d.getf("next") + 1
+				d.setf("next", n)
+				d.setf("dead_mask", d.getf("dead_mask") + math.pow(2, e - 1))
+				if n > 4 then
+					d.notice("Œwi¹tynia Wê¿y: 4. poziom - zapamiêtajcie, gdzie pojawiaj¹ siê Metiny Wê¿owe Czasu.")
+					swiatynia_wezy.move_to(4)
+				else
+					d.notice("Dobrze! Nastêpny Metin.")
+				end
+			else
+				-- the wrong one: every destroyed Metin returns (this one too)
+				d.notice("Z³y Metin! Zniszczone Metiny Wê¿owe powracaj¹.")
+				local mask = d.getf("dead_mask") + math.pow(2, e - 1)
+				for k = 1, 4 do
+					if math.mod(math.floor(mask / math.pow(2, k - 1)), 2) == 1 then
+						local x, y = swiatynia_wezy.room_xy(3, c.corners[d.getf("corner"..k)])
+						d.spawn_mob(c.el[k].metin, x, y)
+					end
+				end
+				d.setf("next", 1)
+				d.setf("dead_mask", 0)
+			end
+		end
+
+		when 6765.kill with swiatynia_wezy.inside() and d.getf("lvl") == 4 begin
+			local x, y = swiatynia_wezy.room_xy(4, {0, -35})
+			d.setf("extra", number(0, 3))
+			d.setf("extra_left", d.getf("extra"))
+			d.spawn_mob(6755, x, y)
+			d.notice("Potê¿ny Wojownik Wê¿owy odradza siê w lodzie!")
+		end
+
+		when 6755.kill with swiatynia_wezy.inside() and d.getf("lvl") == 4 begin
+			local c = swiatynia_wezy.cfg()
+			local left = d.getf("extra_left")
+			if left > 0 then
+				d.setf("extra_left", left - 1)
+				local x, y = swiatynia_wezy.room_xy(4, c.six[number(1, 6)])
+				d.spawn_mob(6755, x, y)
+				d.notice("Kolejny Potê¿ny Wojownik Wê¿owy (lód)!")
+				return
+			end
+			d.notice("Œwi¹tynia Wê¿y: 5. poziom - otwórzcie Kolumny Wê¿y Kluczami Wê¿owymi.")
+			swiatynia_wezy.move_to(5)
+			for i = 1, 6 do
+				local x, y = swiatynia_wezy.room_xy(5, c.six[i])
+				d.spawn_mob(6757, x, y)
+			end
+			d.setf("opened", 0)
+		end
+
+		-- the keys and shards from the monsters (levels 5-7)
+		when kill with swiatynia_wezy.inside() and npc.get_race() >= 6745 and npc.get_race() <= 6854 begin
+			local lvl = d.getf("lvl")
+			local c = swiatynia_wezy.cfg()
+			if lvl == 5 then
+				if number(1, 100) <= 25 then
+					game.drop_item(70422, 1)
+				elseif number(1, 100) <= 10 then
+					game.drop_item(70427, 1)
+				end
+			elseif lvl == 6 then
+				if number(1, 100) <= 25 then
+					game.drop_item(70427, 1)
+				end
+			elseif lvl == 7 and d.getf("nethis") == 0 then
+				if number(1, 100) <= 30 then
+					game.drop_item(c.el[number(1, 4)].shard, 1)
+				end
+			end
+		end
+
+		when 6757.take with swiatynia_wezy.inside() and d.getf("lvl") == 5 and item.get_vnum() == 70422 begin
+			local c = swiatynia_wezy.cfg()
+			pc.remove_item(70422, 1)
+			local r = c.rooms[5]
+			local lx, ly = npc.get_x() - c.base_x - r[1], npc.get_y() - c.base_y - r[2]
+			local best, bd = 1, 999999
+			for i = 1, 6 do
+				local dx, dy = lx - c.six[i][1], ly - c.six[i][2]
+				if dx * dx + dy * dy < bd then
+					best, bd = i, dx * dx + dy * dy
+				end
+			end
+			local n = d.getf("opened") + 1
+			if d.getf("m"..n) ~= best then
+				syschat("Klucz Wê¿owy rozsypuje siê - Kolumna pozostaje niewzruszona.")
+				return
+			end
+			d.setf("opened", n)
+			npc.purge()
+			if n >= 6 then
+				d.notice("Œwi¹tynia Wê¿y: 6. poziom - uwolnijcie kowali Kluczami do Wiêzienia.")
+				swiatynia_wezy.move_to(6)
+				for i = 1, 4 do
+					local x, y = swiatynia_wezy.room_xy(6, c.corners[i])
+					d.spawn_mob(20842, x, y)
+				end
+				d.setf("freed", 0)
+			else
+				d.notice("Kolumna Wê¿y otwarta ("..n.."/6).")
+			end
+		end
+
+		when 20842.take with swiatynia_wezy.inside() and d.getf("lvl") == 6 and d.getf("smith") == 0 and item.get_vnum() == 70427 begin
+			pc.remove_item(70427, 1)
+			if number(1, 100) <= 40 then
+				d.setf("freed", d.getf("freed") + 1)
+				npc.purge()
+				d.notice("Uwiêziony Kowal jest wolny ("..d.getf("freed").."/4)!")
+			else
+				syschat("Klucz do Wiêzienia nie pasuje - kowal wci¹¿ siedzi w klatce.")
+			end
+		end
+
+		when 20829.chat."Ulepsz rêkawice" with swiatynia_wezy.inside() and d.getf("lvl") == 6 begin
+			say_title(mob_name(20829)..":")
+			say("Uwolnieni kowale: "..d.getf("freed").."/4. Ulepszy³bym ci")
+			say("rêkawice bez ulepszaczy... ale nie widzê u ciebie")
+			say("rêkawic Sung Ma.")
+		end
+
+		when 20829.chat."PrzejdŸ na 7. poziom" with swiatynia_wezy.inside() and d.getf("lvl") == 6 begin
+			local c = swiatynia_wezy.cfg()
+			say_title(mob_name(20829)..":")
+			say("Na 7. poziomie czekaj¹ G³owy Wê¿a. Od³amki z")
+			say("potworów obracaj¹ je - w dobrej kolejnoœci.")
+			if select("ProwadŸ mnie", "Jeszcze nie") ~= 1 then
+				return
+			end
+			if d.getf("lvl") ~= 6 then
+				return
+			end
+			swiatynia_wezy.move_to(7)
+			for i = 1, 4 do
+				local x, y = swiatynia_wezy.room_xy(7, c.heads[i])
+				d.spawn_mob(c.el[i].head, x, y)
+			end
+			d.setf("turned", 0)
+			d.notice("Œwi¹tynia Wê¿y: 7. poziom - obróæcie G³owy Wê¿a Od³amkami Wê¿a.")
+		end
+
+		when 4024.take or 4025.take or 4026.take or 4027.take with swiatynia_wezy.inside() and d.getf("lvl") == 7 begin
+			local c = swiatynia_wezy.cfg()
+			local v = item.get_vnum()
+			if v < 70423 or v > 70426 then
+				return
+			end
+			pc.remove_item(v, 1)
+			local head = 0
+			for i = 1, 4 do
+				if c.el[i].head == npc.get_race() then
+					head = i
+				end
+			end
+			local shard = 0
+			for i = 1, 4 do
+				if c.el[i].shard == v then
+					shard = i
+				end
+			end
+			-- the order: level 2's, shifted left by the extra warriors of level 4
+			local n = d.getf("turned") + 1
+			local want = d.getf("o"..(math.mod(n - 1 + d.getf("extra"), 4) + 1))
+			if shard ~= head or head ~= want then
+				syschat("Od³amek rozsypuje siê - G³owa Wê¿a ani drgnie.")
+				return
+			end
+			d.setf("turned", n)
+			npc.purge()
+			if n >= 4 then
+				local r = c.rooms[7]
+				d.purge_area((c.base_x + r[1] - 70) * 100, (c.base_y + r[2] - 80) * 100, (c.base_x + r[1] + 70) * 100, (c.base_y + r[2] + 90) * 100)
+				d.setf("nethis", 1)
+				d.spawn_mob(6756, r[1], r[2])
+				d.notice("Wszystkie G³owy Wê¿a obrócone - nadchodzi Królowa Wê¿y Nethis!")
+			else
+				d.notice("G³owa Wê¿a obrócona ("..n.."/4).")
+			end
+		end
+
+		when 6756.kill with swiatynia_wezy.inside() and d.getf("closed") == 0 begin
+			d.setf("closed", 1)
+			d.update_ranking("swiatynia", get_global_time() - d.getf("start"))
+			for i = 1, 8 do
+				local pid = d.getf("p"..i)
+				if pid > 0 then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and swiatynia_wezy.inside() then
+						pc.setf("swiatynia_wezy", "reward", 1)
+						pc.setf("swiatynia_wezy", "idx", 0)
+					end
+					q.end_other_pc_block()
+				end
+			end
+			d.notice("Królowa Wê¿y Nethis pokonana! Za 20 s wracacie pod Statuê Wê¿y po nagrodê.")
+			server_timer("swiatynia_end", 20, d.get_map_index())
+		end
+
+		when swiatynia_end.server_timer begin
+			local c = swiatynia_wezy.cfg()
+			if d.select(get_server_timer_arg()) then
+				d.setf("mt2009_keep_until", 0)
+				d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				d.exit_all()
+			end
+		end
+	end
+end

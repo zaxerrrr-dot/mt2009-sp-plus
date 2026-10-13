@@ -1,0 +1,493 @@
+-- MT2009_PLUS_YOHARA_MAPS3_V1: G³êbie Pó³nocnego Wiatru (395, metin2_map_whitedragoncave_boss) - loch Alastora, s³aby
+-- i silny (wiki: "G³êbie Pó³nocnego Wiatru (s³aby)" / "(silny)", "Upiorny Stra¿nik", "Zamarzniêty Klucz"; TR wiki
+-- "Alastor (Kolay)" / "Alastor (Zor)" - przebieg walki). Wzorzec: obrona_statku.quest / blue_dragon_lair.quest.
+-- Upiorny Stra¿nik (20815) w Zejœciu Pó³nocnego Wiatru (394, 383,614) tworzy instancjê (d.new_jump_pids):
+--   * minimum 4 osoby w dru¿ynie, najwy¿ej 8 (wiki; flaga zdarzeñ ymaps3_glebie_party zmienia minimum), od poziomu
+--     120 i 1. Poziomu Czempiona (TR), ka¿da postaæ oddaje 3 Zamarzniête Klucze (70410) przy wejœciu; silny - po
+--     trzech ukoñczonych s³abych (wiki); ci¹g misji wejœciowych pominiêty (nie mamy go); bez czekania (TR);
+--   * 30 minut na pokonanie Alastora; przywódca dotyka Bia³ego Jaja Smoka (4030) - Alastor (6790 s³aby, 6791 silny)
+--     siê budzi; od tej chwili: co 15 s lodowe kolce pod ka¿dym graczem (kto po 3 s stoi w tym samym miejscu, traci
+--     50% P¯ - nigdy do zera), fale potworów co minutê, Œmiertelny Ch³ód (12 razy: 15 000 / 20 000 P¯ i os³abienie
+--     5% / 7% maks. P¯ co 10 s, do 5 / 7 razy), Gniew Alastora (27:30, 25:00, 22:30 / 28:30, 27:00, 25:30 - wiele
+--     potworów i leczenie 25%); Kryszta³ P³n. Wiatru (3971) zamyka Komnatê Kryszta³u - po jego zniszczeniu portal
+--     3972 prowadzi do niej; tam stale pojawiaj¹ siê Bia³e Jaja Smoka (8635 / 8636): ka¿de zniszczone opóŸnia
+--     Œmiertelny Ch³ód o 20 s, a gdy jaj jest za du¿o (6/12/18, silny 5/10/15) Alastor wpada w sza³ (leczy siê
+--     10/20/30%, silny 30/40/50%; przy trzecim - 4 dodatkowe fale);
+--   * po zabiciu Alastora po 10 s wszyscy wracaj¹ do Upiornego Stra¿nika, u którego ka¿dy odbiera 8 Bia³ych Smoczych
+--     Skrzyñ (lekka 70411 / ciê¿ka 70412).
+-- Uproszczenia (silnik nie ma stref na ziemi ani zmiany obra¿eñ potwora z questa): Œmiertelny Ch³ód trafia wszystkich
+-- naraz zamiast sta³ych stref; sza³ leczy Alastora, nie podnosi jego obra¿eñ.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest ymaps3_glebie begin
+	state start begin
+		function cfg()
+			local party = game.get_event_flag("ymaps3_glebie_party")
+			if party <= 0 then
+				party = 4
+			end
+			return {
+				map = 395, base_x = 12288, base_y = 12032, size = 512,
+				entry = {135, 190},
+				egg = {132, 126}, crystal = {94, 118}, portal_east = {426, 134},
+				east = {384, 131}, hall = {132, 132},
+				exit_map = 394, exit_x = 11520 + 379, exit_y = 12032 + 612,   -- przy Upiornym Stra¿niku
+				npc = 20815, min_level = 120, key = 70410, keys = 3,
+				party_min = party, party_max = 8, near = 30,
+				limit = 30 * 60, keep = 30 * 60 + 120, end_sec = 10,
+				groups = {9160, 9161, 9162, 9163, 9164},
+				k = {
+					[1] = {boss = 6790, egg = 8635, hp = 67751800, cold_hp = 15000, cold_pct = 5, cold_max = 5,
+						   wrath = {150, 300, 450}, berserk = {6, 12, 18}, heal = {10, 20, 30}, reward = 70411,
+						   rank = "glebie_slaby", name = "G³êbie Pó³nocnego Wiatru (s³aby)"},
+					[2] = {boss = 6791, egg = 8636, hp = 48751800, cold_hp = 20000, cold_pct = 7, cold_max = 7,
+						   wrath = {90, 180, 270}, berserk = {5, 10, 15}, heal = {30, 40, 50}, reward = 70412,
+						   rank = "glebie_silny", name = "G³êbie Pó³nocnego Wiatru (silny)"},
+				},
+				reward_count = 8, weak_needed = 3,
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 395 * 10000 and idx < 396 * 10000 and pc.in_dungeon()
+		end
+
+		function xy(p)
+			local c = ymaps3_glebie.cfg()
+			return (c.base_x + p[1]) * 100, (c.base_y + p[2]) * 100
+		end
+
+		function bot_leads()
+			local lp = party.get_leader_pid()
+			if lp == nil or lp == 0 or lp == pc.get_player_id() then
+				return false
+			end
+			local bot = false
+			local pids = {party.get_member_pids()}
+			for i, pid in next, pids, nil do
+				if pid == lp then
+					q.begin_other_pc_block(pid)
+					bot = pc.get_player_id() == pid and pc.is_playerbot()
+					q.end_other_pc_block()
+				end
+			end
+			return bot
+		end
+
+		-- the players of an instance: p1..p8 (registered at login)
+		function register()
+			local me = pc.get_player_id()
+			for i = 1, 8 do
+				local p = d.getf("p"..i)
+				if p == me then
+					return
+				end
+				if p == 0 then
+					d.setf("p"..i, me)
+					return
+				end
+			end
+		end
+
+		function hurt(pct_of_max, flat)
+			if pc.is_dead() then
+				return
+			end
+			local hp = pc.get_hp()
+			local loss = math.floor(pc.get_max_hp() * pct_of_max / 100) + flat
+			if loss >= hp then
+				loss = hp - 1
+			end
+			if loss > 0 then
+				pc.point_change(5, -loss, false, true)
+			end
+		end
+
+		-- Upiorny Stra¿nik
+		when 20815.chat."G³êbie Pó³nocnego Wiatru" with pc.get_map_index() == 394 begin
+			local c = ymaps3_glebie.cfg()
+			say_title(mob_name(20815)..":")
+			say("W G³êbiach œpi Alastor, bia³y smok Pó³nocnego")
+			say("Wiatru. Mogê otworzyæ wam drogê - s³absz¹ albo")
+			say("silniejsz¹ bestiê.")
+			say("")
+			say_reward("Dru¿yna od "..c.party_min.." do "..c.party_max.." osób, poziom "..c.min_level.."+,")
+			say_reward("1. Poziom Czempiona, ka¿dy oddaje "..c.keys.." Zamarzniête Klucze.")
+			say_reward("Silny: po "..c.weak_needed.." ukoñczonych s³abych. 30 minut na Alastora.")
+			local s = select("G³êbie (s³aby)", "G³êbie (silny)", "Nie teraz")
+			if s == 3 then
+				return
+			end
+			ymaps3_glebie.open(s)
+		end
+
+		when 20815.chat."Odbierz nagrodê!" with pc.get_map_index() == 394 and pc.getf("ymaps3_glebie", "reward") > 0 begin
+			local c = ymaps3_glebie.cfg()
+			local kind = pc.getf("ymaps3_glebie", "reward")
+			say_title(mob_name(20815)..":")
+			say("Pokonaliœcie Alastora. Oto wasza nagroda.")
+			pc.setf("ymaps3_glebie", "reward", 0)
+			pc.give_item2(c.k[kind].reward, c.reward_count)
+		end
+
+		function open(kind)
+			local c = ymaps3_glebie.cfg()
+			local now = get_global_time()
+			local x, y = ymaps3_glebie.xy(c.entry)
+			-- wyprawa, która trwa (roz³¹czenie): powrót
+			local idx = pc.getf("ymaps3_glebie", "idx")
+			if idx > 0 and now - pc.getf("ymaps3_glebie", "entry") < c.keep and d.find(idx) then
+				say_title(mob_name(20815)..":")
+				say("Twoja dru¿yna wci¹¿ walczy w G³êbiach.")
+				local s = select("Wróæ do lochu", "Nowa wyprawa", "Nie teraz")
+				if s == 3 then
+					return
+				elseif s == 1 then
+					if d.find(idx, x, y, pc.get_player_id()) then
+						pc.warp(x, y, idx)
+					end
+					return
+				end
+			end
+			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons_closed") > 0 then
+				say_title(mob_name(20815)..":")
+				say("G³êbie s¹ dziœ zamkniête. Wróæ póŸniej.")
+				return
+			end
+			if party.is_party() and not party.is_leader() and not ymaps3_glebie.bot_leads() then
+				say_title(mob_name(20815)..":")
+				say("Tylko przywódca dru¿yny mo¿e otworzyæ G³êbie.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			-- kto idzie: przywódca i ludzie jego dru¿yny obok (c.near pól); boty nie wchodz¹ na mapy Sung Ma
+			local me = pc.get_player_id()
+			local humans = {me}
+			local bad = {}
+			local function check(name)
+				if pc.get_level() < c.min_level or pc.get_conqueror_level() < 1 then
+					table.insert(bad, name.." (poziom / Czempion)")
+				elseif pc.count_item(c.key) < c.keys then
+					table.insert(bad, name.." (Zamarzniête Klucze)")
+				elseif kind == 2 and pc.getf("ymaps3_glebie", "weak_done") < c.weak_needed then
+					table.insert(bad, name.." (s³aby: "..pc.getf("ymaps3_glebie", "weak_done").."/"..c.weak_needed..")")
+				end
+			end
+			if not pc.is_gm() then
+				check(pc.get_name())
+			end
+			if party.is_party() then
+				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						local dx, dy = pc.get_x() - lx, pc.get_y() - ly
+						if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+							table.insert(humans, pid)
+							if not pc.is_gm() then
+								check(pc.get_name())
+							end
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			if table.getn(bad) > 0 then
+				say_title(mob_name(20815)..":")
+				say("Nie spe³niaj¹ warunków:")
+				for i, n in next, bad, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if not pc.is_gm() and (table.getn(humans) < c.party_min or table.getn(humans) > c.party_max) then
+				say_title(mob_name(20815)..":")
+				say("Do G³êbi wchodzi dru¿yna od "..c.party_min.." do "..c.party_max.." osób")
+				say("(stoj¹cych obok). Teraz: "..table.getn(humans)..".")
+				return
+			end
+			for i, pid in next, humans, nil do
+				q.begin_other_pc_block(pid)
+				pc.setf("ymaps3_glebie", "want", kind)
+				q.end_other_pc_block()
+			end
+			local r = d.new_jump_pids(c.map, x, y, humans)
+			if r < 0 then
+				say_title(mob_name(20815)..":")
+				say("G³êbie nie przyjm¹ was teraz. Spróbuj za chwilê.")
+			end
+		end
+
+		-- inside: the first login opens the instance; each player gives his keys once
+		when login with ymaps3_glebie.inside() begin
+			local c = ymaps3_glebie.cfg()
+			local idx = pc.get_map_index()
+			if pc.is_playerbot() then
+				return
+			end
+			pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			if d.getf("kind") == 0 then
+				local kind = pc.getf("ymaps3_glebie", "want")
+				if kind ~= 2 then
+					kind = 1
+				end
+				d.setf("kind", kind)
+			end
+			if d.getf("closed") == 1 then
+				syschat("G³êbie: ta wyprawa ju¿ siê skoñczy³a.")
+				pc.warp(c.exit_x * 100, c.exit_y * 100)
+				return
+			end
+			if pc.getf("ymaps3_glebie", "idx") ~= idx then
+				if not pc.is_gm() then
+					if pc.count_item(c.key) < c.keys then
+						syschat("G³êbie: brakuje ci Zamarzniêtych Kluczy ("..c.keys.." sztuki).")
+						pc.warp(c.exit_x * 100, c.exit_y * 100)
+						return
+					end
+					pc.remove_item(c.key, c.keys)
+				end
+				pc.setf("ymaps3_glebie", "idx", idx)
+				pc.setf("ymaps3_glebie", "entry", get_global_time())
+			end
+			ymaps3_glebie.register()
+			if d.getf("init") == 0 then
+				d.setf("init", 1)
+				d.setf("start", get_global_time())
+				d.setf("mt2009_keep_until", get_global_time() + c.keep)
+				d.spawn_mob(4030, c.egg[1], c.egg[2])
+				d.spawn_mob(3971, c.crystal[1], c.crystal[2])
+				d.spawn_mob(3973, c.portal_east[1], c.portal_east[2])
+				server_timer("ymaps3_glebie_tick", 5, d.get_map_index())
+			end
+			local kind = d.getf("kind")
+			syschat(c.k[kind].name..": przywódca budzi Alastora, dotykaj¹c Bia³ego Jaja Smoka. 30 minut od wejœcia.")
+		end
+
+		when 4030.click with ymaps3_glebie.inside() and d.getf("awake") == 0 begin
+			local c = ymaps3_glebie.cfg()
+			if party.is_party() and not party.is_leader() and not pc.is_gm() then
+				syschat("Tylko przywódca dru¿yny mo¿e obudziæ Alastora.")
+				return
+			end
+			local kind = d.getf("kind")
+			npc.purge()
+			local vid = d.spawn_mob(c.k[kind].boss, c.egg[1], c.egg[2])
+			d.set_unique("alastor", vid)
+			d.setf("awake", 1)
+			d.setf("woke", get_global_time())
+			d.setf("next_cold", get_global_time() + 60)
+			d.notice("Alastor siê przebudzi³! Uciekajcie przed lodowymi kolcami i niszczcie Bia³e Jaja Smoka.")
+		end
+
+		-- the crystal: its death opens the way to the egg chamber
+		when 3971.kill with ymaps3_glebie.inside() begin
+			local c = ymaps3_glebie.cfg()
+			d.spawn_mob(3972, c.crystal[1], c.crystal[2])
+			d.notice("Kryszta³ P³n. Wiatru pêk³ - droga do Komnaty Kryszta³u stoi otworem.")
+		end
+
+		when 8635.kill or 8636.kill with ymaps3_glebie.inside() begin
+			local eggs = d.getf("eggs") - 1
+			if eggs < 0 then
+				eggs = 0
+			end
+			d.setf("eggs", eggs)
+			d.setf("next_cold", d.getf("next_cold") + 20)
+		end
+
+		when 6790.kill or 6791.kill with ymaps3_glebie.inside() and d.getf("closed") == 0 begin
+			local c = ymaps3_glebie.cfg()
+			local kind = d.getf("kind")
+			d.setf("closed", 1)
+			d.update_ranking(c.k[kind].rank, get_global_time() - d.getf("start"))
+			d.purge_area(c.base_x * 100, c.base_y * 100, (c.base_x + c.size) * 100, (c.base_y + c.size) * 100)
+			for i = 1, 8 do
+				local pid = d.getf("p"..i)
+				if pid > 0 then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and ymaps3_glebie.inside() then
+						pc.setf("ymaps3_glebie", "reward", kind)
+						if kind == 1 then
+							pc.setf("ymaps3_glebie", "weak_done", pc.getf("ymaps3_glebie", "weak_done") + 1)
+						end
+						pc.setf("ymaps3_glebie", "idx", 0)
+					end
+					q.end_other_pc_block()
+				end
+			end
+			d.notice("Alastor pokonany! Za "..c.end_sec.." s wracacie do Upiornego Stra¿nika po nagrodê.")
+			d.setf("end_in", c.end_sec)
+			server_timer("ymaps3_glebie_end", c.end_sec, d.get_map_index())
+		end
+
+		when ymaps3_glebie_end.server_timer begin
+			local c = ymaps3_glebie.cfg()
+			if d.select(get_server_timer_arg()) then
+				d.setf("mt2009_keep_until", 0)
+				d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				d.exit_all()
+			end
+		end
+
+		-- every 5 seconds: the time limit, the spikes, the waves, the cold, the wrath, the eggs
+		when ymaps3_glebie_tick.server_timer begin
+			local c = ymaps3_glebie.cfg()
+			if not d.select(get_server_timer_arg()) then
+				return
+			end
+			if d.getf("closed") == 1 then
+				return
+			end
+			local now = get_global_time()
+			local kind = d.getf("kind")
+			local k = c.k[kind]
+			local spent = now - d.getf("start")
+			if spent >= c.limit then
+				d.setf("closed", 1)
+				d.notice("Czas min¹³ - Alastor wypêdza was z G³êbi.")
+				d.setf("mt2009_keep_until", 0)
+				d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				d.exit_all()
+				return
+			end
+			local left = math.floor((c.limit - spent) / 60)
+			if math.mod(c.limit - spent, 300) < 5 and left > 0 then
+				d.notice("G³êbie: pozosta³o "..left.." min.")
+			end
+			server_timer("ymaps3_glebie_tick", 5, get_server_timer_arg())
+			if d.getf("awake") == 0 then
+				return
+			end
+			local awake = now - d.getf("woke")
+			-- the spikes, every 15 s: where you stand now hurts in 3 s
+			if now - d.getf("spike") >= 15 then
+				d.setf("spike", now)
+				d.notice("Lodowe kolce wyrastaj¹ pod waszymi stopami - uciekajcie!")
+				for i = 1, 8 do
+					local pid = d.getf("p"..i)
+					if pid > 0 then
+						q.begin_other_pc_block(pid)
+						if pc.get_player_id() == pid and ymaps3_glebie.inside() then
+							d.setf("sx"..i, pc.get_local_x())
+							d.setf("sy"..i, pc.get_local_y())
+						else
+							d.setf("sx"..i, -1)
+						end
+						q.end_other_pc_block()
+					end
+				end
+				server_timer("ymaps3_glebie_spike", 3, get_server_timer_arg())
+			end
+			-- a wave every minute, running at the players
+			if now - d.getf("wave") >= 60 then
+				d.setf("wave", now)
+				for j = 1, 2 do
+					d.spawn_group(c.groups[number(1, table.getn(c.groups))], c.hall[1], c.hall[2], 12, true, 1)
+				end
+			end
+			-- an egg in the crystal chamber every 20 s
+			if now - d.getf("egg_t") >= 20 then
+				d.setf("egg_t", now)
+				d.spawn_mob(k.egg, c.east[1] + number(-28, 28), c.east[2] + number(-28, 28))
+				d.setf("eggs", d.getf("eggs") + 1)
+			end
+			-- the berserk: too many eggs alive (checked every minute)
+			if now - d.getf("berserk_t") >= 60 then
+				d.setf("berserk_t", now)
+				local b = d.getf("berserk")
+				if b < 3 and d.getf("eggs") >= k.berserk[b + 1] then
+					b = b + 1
+					d.setf("berserk", b)
+					ymaps3_glebie.heal(k.heal[b], k.hp)
+					d.notice("Alastor wpada w sza³ ("..b.."/3) - zniszczcie Bia³e Jaja Smoka!")
+					if b == 3 then
+						for j = 1, 4 do
+							d.spawn_group(c.groups[number(1, table.getn(c.groups))], c.hall[1], c.hall[2], 15, true, 1)
+						end
+					end
+				end
+			end
+			-- the wrath (3 times)
+			local w = d.getf("wrath")
+			if w < 3 and spent >= k.wrath[w + 1] then
+				d.setf("wrath", w + 1)
+				d.notice("Gniew Alastora! Przyzywa s³ugi i leczy swoje rany.")
+				for j = 1, 4 do
+					d.spawn_group(c.groups[number(1, table.getn(c.groups))], c.hall[1], c.hall[2], 15, true, 1)
+				end
+				ymaps3_glebie.heal(25, k.hp)
+			end
+			-- the deadly cold (12 times) and its frost, every 10 s
+			if d.getf("colds") < 12 and now >= d.getf("next_cold") then
+				d.setf("colds", d.getf("colds") + 1)
+				d.setf("next_cold", now + 100)
+				d.notice("Œmiertelny Ch³ód Alastora ogarnia G³êbie ("..d.getf("colds").."/12)!")
+				for i = 1, 8 do
+					local pid = d.getf("p"..i)
+					if pid > 0 then
+						q.begin_other_pc_block(pid)
+						if pc.get_player_id() == pid and ymaps3_glebie.inside() and not pc.is_dead() then
+							ymaps3_glebie.hurt(0, k.cold_hp)
+							local st = d.getf("st"..i) + 1
+							if st > k.cold_max then
+								st = k.cold_max
+							end
+							d.setf("st"..i, st)
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			if now - d.getf("frost") >= 10 then
+				d.setf("frost", now)
+				for i = 1, 8 do
+					local pid = d.getf("p"..i)
+					local st = d.getf("st"..i)
+					if pid > 0 and st > 0 then
+						q.begin_other_pc_block(pid)
+						if pc.get_player_id() == pid and ymaps3_glebie.inside() then
+							ymaps3_glebie.hurt(st * k.cold_pct, 0)
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+		end
+
+		function heal(pct, max_hp)
+			local cur = math.floor(d.unique_get_hp_perc("alastor") * max_hp / 100)
+			local hp = cur + math.floor(max_hp * pct / 100)
+			if hp > max_hp then
+				hp = max_hp
+			end
+			if cur > 0 then
+				d.unique_set_hp("alastor", hp)
+			end
+		end
+
+		when ymaps3_glebie_spike.server_timer begin
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			for i = 1, 8 do
+				local pid = d.getf("p"..i)
+				local sx, sy = d.getf("sx"..i), d.getf("sy"..i)
+				if pid > 0 and sx >= 0 then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and ymaps3_glebie.inside() then
+						local dx, dy = pc.get_local_x() - sx, pc.get_local_y() - sy
+						if dx * dx + dy * dy <= 9 then
+							ymaps3_glebie.hurt(50, 0)
+							syschat("Lodowe kolce przebijaj¹ ciê - nie uciek³eœ na czas.")
+						end
+					end
+					q.end_other_pc_block()
+				end
+			end
+		end
+	end
+end
