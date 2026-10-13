@@ -3517,6 +3517,21 @@ if [ -s /opt/playerbot/yohara_items.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_YOHARA_MAPS3_V1: the third batch of Yohara places (the owner, 14 October 2026) - Zejscie (394) and
+# Glebie (395) Polnocnego Wiatru, 1. poziom Swiatyni Wezy (390), Swiatynia Wezy (391), Tajemnicza Instancja (396),
+# Krolestwo Zywiolow (378-381). yohara_maps3.sql (tools/yohara_maps3/gen_ymaps3_sql.py): their monsters, bosses,
+# Metins, NPCs and portals; yohara_items3.sql (tools/yohara_maps3/gen_yitems3.py): the items they drop and their
+# dungeons use. Both idempotent (INSERT IGNORE). The maps' drop file and chests (game/yohara_maps3) name these
+# vnums: a world without them stops the cores at boot. The elements: yohara_maps3_zywioly.sql after the elements.
+for ym3_sql in yohara_maps3.sql yohara_items3.sql; do
+    [ -s "/opt/playerbot/$ym3_sql" ] || continue
+    if db < "/opt/playerbot/$ym3_sql"; then
+        echo "[playerbot-migrate] yohara maps 3: $ym3_sql applied"
+    else
+        fail_step "yohara maps 3: $ym3_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1: Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
 # README.md). czempion.sql is idempotent (ADD COLUMN IF NOT EXISTS, INSERT IGNORE): eight columns of player.player and
 # player_deleted (the same order - a deleted character is copied with SELECT *) that the db core of the patch reads and
@@ -3574,6 +3589,17 @@ for zyw_sql in zywioly_talizmany.sql zywioly_moby.sql; do
         fail_step "elements: $zyw_sql failed" >&2
     fi
 done
+
+# MT2009_PLUS_YOHARA_MAPS3_V1: the elements of the third batch of Yohara places (the pl-wiki's "Zywiol" of each
+# monster; tools/yohara_maps3/gen_ymaps3_sql.py). After zywioly_moby.sql, which clears bits 11-16 of every mob it
+# does not list - so these are set again on every start.
+if [ -s /opt/playerbot/yohara_maps3_zywioly.sql ]; then
+    if db < /opt/playerbot/yohara_maps3_zywioly.sql; then
+        echo "[playerbot-migrate] yohara maps 3: yohara_maps3_zywioly.sql applied"
+    else
+        fail_step "yohara maps 3: yohara_maps3_zywioly.sql failed" >&2
+    fi
+fi
 
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
