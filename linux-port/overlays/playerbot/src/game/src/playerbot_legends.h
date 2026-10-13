@@ -988,8 +988,27 @@ namespace
 	// fiftieth (a level, an armour).
 	void SyncPlayerBotLegendHealth(LPCHARACTER ch, BYTE tier)
 	{
+		// MT2009_PLUS_LEGEND_HP_SINGLE_V1: not before the affects came from the DB (the same race as the
+		// weekly ranking's - an early copy plus the stored one made two), and every copy counts; more
+		// than one are all taken off and one is put back.
+		if (!ch->IsLoadedAffect())
+			return;
 		CAffect* aff = ch->FindAffect(PLAYERBOT_LEGEND_HP_AFFECT);
-		const long current = aff ? aff->lApplyValue : 0;
+		long current = 0;
+		int copies = 0;
+		for (CAffect* a : ch->GetAffectContainer())
+			if (a && a->dwType == PLAYERBOT_LEGEND_HP_AFFECT)
+			{
+				current += a->lApplyValue;
+				++copies;
+			}
+		if (copies > 1)
+		{
+			ch->RemoveAffect(PLAYERBOT_LEGEND_HP_AFFECT);
+			sys_log(0, "PLAYERBOT_LEGEND: %s had %d HP affect copies (sum %ld) - one left", ch->GetName(), copies, current);
+			aff = NULL;
+			current = 0;
+		}
 		const int permille = PLAYERBOT_LEGEND_HP_PERMILLE[ClampPlayerBotLegendTier(tier)];
 		const long base = (long)ch->GetMaxHP() - current;
 		// MT2009_PLUS_LEGEND_HP_HALF_V1: the permille may be negative (a cut), so only zero means none

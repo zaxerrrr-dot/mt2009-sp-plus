@@ -420,36 +420,119 @@ namespace mt2009_wrank
 	}
 
 	// One character's bonuses as its titles say: put on, changed or taken off.
-	void Sync(LPCHARACTER ch)
+	// MT2009_PLUS_WEEKLY_REWARD_SINGLE_V1: exactly one affect of each kind, the
+	// current one. Before, the login's Sync ran at ENTERGAME, before the
+	// character's affects had come from the DB (LoadAffect, an event a second
+	// later): it found nothing, put the new bonus on, and LoadAffect then kept it
+	// (500-599 survive ClearAffect) and added the stored one beside it - last
+	// season's (a player saw 18% + 23% against monsters, weekly_copies=2) or the
+	// same value twice (75 + 75 attack). A second copy never went away: the
+	// minute's Sync looked at the first one only, and a former holder's old
+	// bonus was never looked at at all. player.affect's key holds the value, so
+	// last season's row stayed beside the new one and came back at every login.
+	// Now Sync waits for the affects (s_waitAffects, the tick) and counts every
+	// copy of each kind: more than one, or one that is not what the titles say,
+	// and every copy goes (RemoveAffect - each one's player.affect rows with it,
+	// DELETE by pid, type and apply) and the one current bonus is put on
+	// (REPLACE). Whatever the core or channel: each one does it at the login
+	// and every minute for its own characters.
+	std::map<DWORD, time_t> s_waitAffects;
+	const time_t WAIT_AFFECTS_SEC = 600;
+
+	void EnsureTick();
+
+	void Sync(LPCHARACTER ch, bool login = false)
 	{
-		if (!Counts(ch))
+		if (!ch || !ch->IsPC() || !ch->GetDesc())
 			return;
+		const DWORD pid = ch->GetPlayerID();
+		if (!ch->IsLoadedAffect())
+		{
+			const time_t now = (time_t)get_global_time();
+			std::map<DWORD, time_t>::iterator w = s_waitAffects.find(pid);
+			if (w == s_waitAffects.end())
+			{
+				s_waitAffects[pid] = now;
+				EnsureTick();
+				return;
+			}
+			if (now - w->second < WAIT_AFFECTS_SEC)
+				return;
+			// Ten minutes and still no affects: as it used to be.
+		}
+		s_waitAffects.erase(pid);
 		static const DWORD types[5] = { AFF_MONSTER, AFF_BOSS, AFF_HUMAN, AFF_HP, AFF_ATT };
 		static const BYTE points[5] = { POINT_ATTBONUS_MONSTER, POINT_ATTBONUS_BOSS, POINT_ATTBONUS_HUMAN,
 				POINT_MAX_HP, POINT_ATT_GRADE_BONUS };
-		long want[5];
-		Bonus(ch->GetPlayerID(), want);
+		long want[5] = { 0, 0, 0, 0, 0 };
+		// A GM's or a companion's character takes no bonus - and loses one it has.
+		if (Counts(ch))
+			Bonus(pid, want);
+		int copies[5] = { 0, 0, 0, 0, 0 };
+		long sum[5] = { 0, 0, 0, 0, 0 };
+		bool match[5] = { false, false, false, false, false };
+		const std::list<CAffect*>& affs = ch->GetAffectContainer();
+		for (std::list<CAffect*>::const_iterator it = affs.begin(); it != affs.end(); ++it)
+		{
+			const CAffect* aff = *it;
+			if (!aff)
+				continue;
+			for (int i = 0; i < 5; ++i)
+				if (aff->dwType == types[i])
+				{
+					++copies[i];
+					sum[i] += aff->lApplyValue;
+					match[i] = aff->bApplyOn == points[i] && aff->lApplyValue == want[i];
+				}
+		}
+		int most = 0;
 		bool any = false;
 		for (int i = 0; i < 5; ++i)
 		{
-			CAffect* aff = ch->FindAffect(types[i]);
-			if (want[i] <= 0)
+			if (copies[i] > 1)
 			{
-				if (aff)
-					ch->RemoveAffect(types[i]);
-				continue;
+				sys_log(0, "WEEKLY_RANK: %s pid %u weekly_copies=%d type %u weekly_live_sum=%ld want %ld%s - cleaned, one left",
+						ch->GetName(), pid, copies[i], types[i], sum[i], want[i], login ? " at login" : "");
+				if (copies[i] > most)
+					most = copies[i];
 			}
-			any = true;
-			if (aff && aff->bApplyOn == points[i] && aff->lApplyValue == want[i])
+			if (want[i] > 0)
+				any = true;
+			if (copies[i] == 0 && want[i] <= 0)
 				continue;
-			if (aff)
+			if (copies[i] == 1 && want[i] > 0 && match[i])
+				continue;
+			// Every copy of the kind, the DB's rows with them.
+			if (copies[i] > 0)
 				ch->RemoveAffect(types[i]);
-			ch->AddAffect(types[i], points[i], want[i], 0, INFINITE_AFFECT_DURATION, 0, true);
+			if (want[i] > 0)
+				ch->AddAffect(types[i], points[i], want[i], 0, INFINITE_AFFECT_DURATION, 0, true);
 		}
+		if (most > 1)
+			sys_log(0, "WEEKLY_RANK: %s pid %u weekly_copies=%d%s cleaned (MT2009_PLUS_WEEKLY_REWARD_SINGLE_V1)",
+					ch->GetName(), pid, most, login ? " at login" : "");
 		if (any)
-			s_applied.insert(ch->GetPlayerID());
+			s_applied.insert(pid);
 		else
-			s_applied.erase(ch->GetPlayerID());
+			s_applied.erase(pid);
+	}
+
+	// MT2009_PLUS_WEEKLY_REWARD_SINGLE_V1: the characters whose affects came
+	// from the DB since (or that waited too long), every tick.
+	void SyncWaiting()
+	{
+		if (s_waitAffects.empty())
+			return;
+		const std::map<DWORD, time_t> pids(s_waitAffects);
+		const time_t now = (time_t)get_global_time();
+		for (std::map<DWORD, time_t>::const_iterator it = pids.begin(); it != pids.end(); ++it)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!ch || !ch->GetDesc())
+				s_waitAffects.erase(it->first);
+			else if (ch->IsLoadedAffect() || now - it->second >= WAIT_AFFECTS_SEC)
+				Sync(ch, true);
+		}
 	}
 
 	// Every holder on this core and everyone this core gave a bonus before.
@@ -730,6 +813,9 @@ namespace mt2009_wrank
 					++it;
 			}
 		}
+		// MT2009_PLUS_WEEKLY_REWARD_SINGLE_V1: the logins whose affects have come.
+		if (s_state.loaded)
+			SyncWaiting();
 		if (s_iTicks % TAIL_TICKS == 0)
 			SendTails();
 		return PASSES_PER_SEC(TICK_SEC);
@@ -961,11 +1047,13 @@ void WeeklyRankOnDungeon(LPCHARACTER pc, LPCHARACTER npc)
 void WeeklyRankOnLogin(LPCHARACTER ch)
 {
 	using namespace mt2009_wrank;
-	if (!Counts(ch))
+	// MT2009_PLUS_WEEKLY_REWARD_SINGLE_V1: every person's character, a GM's and
+	// a companion's too (an old bonus comes off), once its affects are loaded.
+	if (!ch || !ch->IsPC() || !ch->GetDesc())
 		return;
 	EnsureTick();
 	EnsureLoaded();
-	Sync(ch);
+	Sync(ch, true);
 }
 
 // "/ranking info|lista <cat>", for a GM also "koniec" and "przeladuj".
