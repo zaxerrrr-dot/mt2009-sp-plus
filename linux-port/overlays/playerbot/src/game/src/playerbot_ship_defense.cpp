@@ -1295,14 +1295,3 @@ bool ShipDefense_ChestKeep(LPITEM item)
 	return true;
 }
 
-// MT2009_PLUS_MAGIC_STONE_REFINE_V1: the Magic Stone (Magiczny Kamien - 25042 in our world.item_proto,
-// the official 25041 is a second Blessing Scroll here; USE_TUNING, value0 NO_REDUCTION_WHEN_FAIL_SCROLL).
-// The owner's decision of 13 October 2026: dragged onto an item it tries the next level at the
-// blacksmith's chance for that item (its refine_set's prob), with no materials and no Yang; a failure
-// neither destroys the item nor takes its level; the stone goes on every try. RefineInformation and
-// DoRefineWithScroll (char_item.cpp, edits.json) ask this for the scroll of the refine.
-bool MagicStoneRefineFree(LPITEM scroll)
-{
-	return scroll && scroll->GetVnum() == ship_defense::VNUM_MAGIC_STONE &&
-		scroll->GetType() == ITEM_USE && scroll->GetSubType() == USE_TUNING;
-}

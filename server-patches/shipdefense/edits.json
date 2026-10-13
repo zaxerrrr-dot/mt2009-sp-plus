@@ -106,29 +106,5 @@
   "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest)",
   "old": "DropSpecialItemGroup(dwBoxVnum, bSuccess);\n\t\t\t\tif (bSuccess)\n\t\t\t\t{\n\t\t\t\t\titem->SetCount(item->GetCount()-1);\n\t\t\t\t}",
   "new": "DropSpecialItemGroup(dwBoxVnum, bSuccess);\n\t\t\t\tif (bSuccess)\n\t\t\t\t{\n\t\t\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest): Skrzynia Hydry (54705) opens chest_uses times (3),\n\t\t\t\t\t// socket 0 counts the openings (the tooltip shows the rest); the last one takes the chest.\n\t\t\t\t\tbool ShipDefense_ChestKeep(LPITEM item);\n\t\t\t\t\tif (!ShipDefense_ChestKeep(item))\n\t\t\t\t\t\titem->SetCount(item->GetCount()-1);\n\t\t\t\t}"
- },
- {
-  "file": "char_item.cpp",
-  "marker": "MT2009_PLUS_MAGIC_STONE_REFINE_V1 (info cost)",
-  "old": "\tp.cost = IsRefineBonus(itemScroll, TUNING_FLAG_NO_GOLD) ? 0 : ComputeRefineFee(prt->cost);\n",
-  "new": "\tp.cost = IsRefineBonus(itemScroll, TUNING_FLAG_NO_GOLD) ? 0 : ComputeRefineFee(prt->cost);\n\t// MT2009_PLUS_MAGIC_STONE_REFINE_V1 (info cost): the Magic Stone (25042) refines with no Yang and no\n\t// materials at the blacksmith's own chance (playerbot_ship_defense.cpp, server-patches/shipdefense).\n\tbool MagicStoneRefineFree(LPITEM scroll);\n\tconst bool bMagicStoneFree = bType != REFINE_TYPE_NORMAL && bType != REFINE_TYPE_MONEY_ONLY && MagicStoneRefineFree(itemScroll);\n\tif (bMagicStoneFree)\n\t\tp.cost = 0;\n"
- },
- {
-  "file": "char_item.cpp",
-  "marker": "MT2009_PLUS_MAGIC_STONE_REFINE_V1 (info materials)",
-  "old": "\tif (bType == REFINE_TYPE_MONEY_ONLY || IsRefineBonus(itemScroll, TUNING_FLAG_NO_ITEM) ||\n",
-  "new": "\t// MT2009_PLUS_MAGIC_STONE_REFINE_V1 (info materials): none shown for the Magic Stone.\n\tif (bType == REFINE_TYPE_MONEY_ONLY || IsRefineBonus(itemScroll, TUNING_FLAG_NO_ITEM) || bMagicStoneFree ||\n"
- },
- {
-  "file": "char_item.cpp",
-  "marker": "MT2009_PLUS_MAGIC_STONE_REFINE_V1 (gold)",
-  "old": "\tif (GetGold() < prt->cost)\n",
-  "new": "\t// MT2009_PLUS_MAGIC_STONE_REFINE_V1 (gold): the Magic Stone costs no Yang.\n\tbool MagicStoneRefineFree(LPITEM scroll);\n\tconst bool bMagicStoneFree = MagicStoneRefineFree(pkItemScroll);\n\tif (!bMagicStoneFree && GetGold() < prt->cost)\n"
- },
- {
-  "file": "char_item.cpp",
-  "marker": "MT2009_PLUS_MAGIC_STONE_REFINE_V1 (scroll)",
-  "old": "\t// The scroll by its vnum for the refine log, taken while it exists:\n",
-  "new": "\t// MT2009_PLUS_MAGIC_STONE_REFINE_V1 (scroll): the Magic Stone - the blacksmith's chance (the recipe's prob,\n\t// as NO_REDUCTION_WHEN_FAIL_SCROLL keeps it), no Yang, no materials; a failure keeps the item and its level;\n\t// the stone goes on every try (SetCount below).\n\tif (bMagicStoneFree)\n\t{\n\t\tcost = 0;\n\t\tbCheckMaterials = false;\n\t\tbDestroyWhenFail = false;\n\t\tbLevelReductionOnFail = false;\n\t}\n\n\t// The scroll by its vnum for the refine log, taken while it exists:\n"
  }
 ]
