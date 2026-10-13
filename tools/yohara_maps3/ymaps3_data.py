@@ -117,7 +117,6 @@ NPCS = {
     20848: 'Stare Kości',               # Zejscie 413,200
     4030: 'Białe Jajo Smoka',           # Glebie: the leader touches it - Alastor wakes (TR wiki)
     20807: 'Statua Węży',               # 1. poziom Swiatyni Wezy 404,364 - the temple
-    20804: 'Strażnik Węży',             # Przelecz Yilad 637,494 - the way to the 1st level (map of maps2)
     20829: 'Kowal Świątyni Węży',       # the temple, level 6
     20842: 'Uwięziony Kowal',           # the temple, level 6
     4022: 'Portal Świątyni Węży',       # the temple, level 1: "Rozpocznij walke"
@@ -126,7 +125,6 @@ NPCS = {
     4026: 'Głowa Węża',
     4027: 'Głowa Węża',
     6757: 'Kolumna Węży',               # the temple, level 5
-    20850: 'Tajemniczy Ołtarz',         # Namgan 960,242 (map of maps2) - Tajemnicza Instancja
     3998: 'Królestwo Żywiołów',         # Port Nowego Kontynentu 229,585 (Owsap's place) - the elemental realm
     3999: 'Wyjście',                    # elemental_01 144,417 / elemental_04 126,321 - back to the port
     10138: 'Wyjście',                   # 1. poziom Swiatyni Wezy 671,665 - back to Przelecz Yilad (quest)
@@ -134,6 +132,8 @@ NPCS = {
 }
 # Owsap's folder of an NPC whose row we write (npclist race of the client is by vnum; the folder is the server's)
 NPC_FOLDER = {}
+# Straznik Wezy (20804, Przelecz Yilad 637,494) and Tajemniczy Oltarz (20850, Namgan 960,242) are rows of the second
+# batch (yohara_maps2.sql, MT2009_PLUS_YOHARA_MAPS2_V1); their dialogs here (quest yohara_mapy3)
 
 # -- portals: vnum -> (type, name (the official one: "<place> x y"), Polish name). WARP (3) = global coordinates /100,
 #    GOTO (9) = this map's own coordinates (char.cpp FuncCheckWarp). Owsap's Polish client's names. ---------------------
