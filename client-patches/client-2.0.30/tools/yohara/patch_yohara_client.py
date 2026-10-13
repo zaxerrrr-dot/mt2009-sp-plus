@@ -43,6 +43,15 @@ ITEMS = (
     # MT2009_PLUS_YOHARA_PORT_V1: value0 = 3 uses (quest port_yohary), level 90, ANTI_SELL|GIVE|DROP|STACK|MYSHOP|SAFEBOX
     (70303, u'Hydra Ring', u'Pierścień Hydry', 18, 0, 1, 237952, 0, (1, 90), 3, u'icon/item/70303.tga',
      u'Ten pierścień upuściła Hydra, konając. Zaprowadzi cię na nowy kontynent: 3 teleporty do Portu Nowego Kontynentu.'),
+    # MT2009_PLUS_CHAMPION_V1: Nowa Wola (czempion.sql, quest czempion_nowa_wola) - quest-use items, GF icons
+    (72068, u'New Will (STR)', u'Nowa Wola (Siła Sung Ma)', 18, 0, 200, 106880, 8192, (0, 0), 0, u'icon/item/72068.tga',
+     u'Zwraca punkty Czempiona rozdane w Siłę Sung Ma.'),
+    (72069, u'New Will (VIT)', u'Nowa Wola (Witalność Sung Ma)', 18, 0, 200, 106880, 8192, (0, 0), 0, u'icon/item/72069.tga',
+     u'Zwraca punkty Czempiona rozdane w Witalność Sung Ma.'),
+    (72070, u'New Will (RES)', u'Nowa Wola (Odporność Sung Ma)', 18, 0, 200, 106880, 8192, (0, 0), 0, u'icon/item/72070.tga',
+     u'Zwraca punkty Czempiona rozdane w Odporność Sung Ma.'),
+    (72071, u'New Will (INT)', u'Nowa Wola (Inteligencja Sung Ma)', 18, 0, 200, 106880, 8192, (0, 0), 0, u'icon/item/72071.tga',
+     u'Zwraca punkty Czempiona rozdane w Inteligencję Sung Ma.'),
 )
 # vnum: (Polish name, description) of an item the client has - only its itemdesc line is set.
 # (the Magic Stone 25042 keeps its own text - the owner, 13 October; the stray refine-bonus lines under it
