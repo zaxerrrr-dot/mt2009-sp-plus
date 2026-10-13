@@ -189,6 +189,11 @@ MAPS_game1="$MAPS_game1 358"
 # and a person's party bots follow (a bot cannot cross cores). game1: 38 maps in the split layout, 46 of
 # MAP_ALLOW_LIMIT 48 in the unified one - the port (368, with Yohara) would make 47.
 MAPS_game1="$MAPS_game1 367"
+# MT2009_PLUS_YOHARA_PORT_V1 (maps): Port Nowego Kontynentu (368, metin2_map_defensewave_port) on game2 under either
+# layout, beside Przyladek Smoczego Ognia (301) - game1 is at 46 of MAP_ALLOW_LIMIT 48 in the unified layout. No
+# monster lives there and no bot goes there; people cross cores by warp (the Hydra's portal, Pierscien Hydry, the
+# Fisherman). game2: 10 maps in the split layout, 6 in the unified one.
+MAPS_game2="$MAPS_game2 368"
 # The difficulty is acted on by the migrate service (event flags the quests
 # read); said here so a support bundle carries it next to the layout.
 log "difficulty: ${M2_DIFFICULTY:-easy} (Biologist and stable keeper waits; apply.sh writes the flags)"
