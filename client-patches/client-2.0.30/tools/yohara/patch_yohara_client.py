@@ -20,9 +20,17 @@
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 \
 #     <repo>/client-patches/client-2.0.30/tools/yohara/patch_yohara_client.py \
 #     <item_proto> <item_list.txt> <itemdesc.txt> [<out dir>]
-# Without an out dir the files are rewritten in place. Then the next client's dbdata base for the panel's
+# Without an out dir the files are rewritten in place.
+#
+# MT2009_PLUS_YOHARA_ITEMS1_V1: also the 106 Yohara items of Opuszczona Twierdza / Dongan (tools/yohara_items/
+# yohara_items.json - made by tools/yohara_items/gen_yitems.py with linux-port/docker/mariadb/playerbot/yohara_items.sql,
+# so the client's records are the server's rows): a full record each (every server column written over a template -
+# Talizman Ognia+0's 94000 for the Talizmany Woli, Zelazna Szkatulka's 50120 for the rest), its item_list line (the GF
+# icons: client-patches/client-2.0.30/root/icon/item, build57.py adds every file there) and its itemdesc line. Then the next client's dbdata base for the panel's
 # database editor: python3 -m m2clientpack.make_base <client>/pack <version> (linux-port/docker/seban-panel) -
 # the panel builds its dbdata zips from the newest base, so until then they lack these three items.
+import io
+import json
 import os
 import struct
 import sys
@@ -53,6 +61,31 @@ ITEMS = (
     (72071, u'New Will (INT)', u'Nowa Wola (Inteligencja Sung Ma)', 18, 0, 200, 106880, 8192, (0, 0), 0, u'icon/item/72071.tga',
      u'Zwraca punkty Czempiona rozdane w Inteligencję Sung Ma.'),
 )
+YITEMS_PATH = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..', 'tools',
+                                           'yohara_items', 'yohara_items.json'))
+with io.open(YITEMS_PATH, encoding='utf-8') as _f:
+    YITEMS = json.load(_f)
+YITEM_TEMPLATE = {2: 94000}    # by type: Talizman Ognia+0 for the talismans, else TEMPLATE
+
+
+def yitem_record(template, w):
+    r = bytearray(template)
+    struct.pack_into('<II', r, 0, w['vnum'], 0)
+    r[8:41] = base.fixed(w['name'], 33)
+    r[41:74] = base.fixed(w['locale_name'], 33)
+    struct.pack_into('<BBBB', r, 74, w['type'], w['subtype'], w['weight'], w['size'])
+    struct.pack_into('<IIIII', r, 78, w['stack'], w['antiflag'], w['flag'], w['wearflag'], 0)
+    struct.pack_into('<qq', r, 98, w['gold'], w['shop_buy_price'])
+    struct.pack_into('<BiBi', r, 114, w['limittype0'], w['limitvalue0'], w['limittype1'], w['limitvalue1'])
+    struct.pack_into('<BiBiBi', r, 124, w['applytype0'], w['applyvalue0'], w['applytype1'], w['applyvalue1'],
+                     w['applytype2'], w['applyvalue2'])
+    struct.pack_into('<6i', r, 139, *(w['value%d' % j] for j in range(6)))
+    struct.pack_into('<3i', r, 163, 0, 0, 0)
+    struct.pack_into('<IHBBB', r, 175, w['refined_vnum'], w['refine_set'], w['magic_pct'], w['specular'],
+                     w['socket_pct'])
+    return bytes(r)
+
+
 # vnum: (Polish name, description) of an item the client has - only its itemdesc line is set.
 # (the Magic Stone 25042 keeps its own text - the owner, 13 October; the stray refine-bonus lines under it
 # were uitooltip.py's, MT2009_PLUS_REFINE_TOOLTIP_V1)
@@ -87,6 +120,11 @@ def item_proto(b):
         if recs.get(it[0]) != r:
             recs[it[0]] = r
             changed += 1
+    for w in YITEMS['items']:
+        r = yitem_record(recs[YITEM_TEMPLATE.get(w['type'], TEMPLATE)], w)
+        if recs.get(w['vnum']) != r:
+            recs[w['vnum']] = r
+            changed += 1
     if not changed:
         return b, 0
     out = b''.join(recs[v] for v in sorted(recs))
@@ -103,9 +141,11 @@ def main():
     with open(proto_path, 'rb') as f:
         results.append((proto_path, item_proto(f.read())))
     with open(list_path, 'rb') as f:
-        results.append((list_path, base.set_rows(f.read(), [u'%d\tETC\t%s' % (i[0], i[10]) for i in ITEMS])))
+        results.append((list_path, base.set_rows(f.read(), [u'%d\tETC\t%s' % (i[0], i[10]) for i in ITEMS] +
+                                                 [YITEMS['item_list'][k] for k in sorted(YITEMS['item_list'], key=int)])))
     with open(desc_path, 'rb') as f:
-        rows = [u'%d\t%s\t%s' % (i[0], i[2], i[11]) for i in ITEMS] + [u'%d\t%s\t%s' % d for d in DESC_ONLY]
+        rows = [u'%d\t%s\t%s' % (i[0], i[2], i[11]) for i in ITEMS] + [u'%d\t%s\t%s' % d for d in DESC_ONLY] + \
+            [YITEMS['itemdesc'][k] for k in sorted(YITEMS['itemdesc'], key=int)]
         results.append((desc_path, base.set_rows(f.read(), rows)))
     for path, (data, changed) in results:
         target = os.path.join(out_dir, os.path.basename(path)) if out_dir else path
