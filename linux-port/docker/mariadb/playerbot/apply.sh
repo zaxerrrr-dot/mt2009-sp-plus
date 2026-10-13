@@ -3503,6 +3503,20 @@ if [ -s /opt/playerbot/yohara_maps.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_YOHARA_ITEMS1_V1: every item the pl-wiki lists as a drop of Opuszczona Twierdza and Dongan that the
+# world did not have (the owner, 13 October 2026) - 106 items with the official vnums (Topaz Woli, Talizmany Woli
+# +0..+9, the plates, runes, chests, the 9th-skill books ...; Ognisty Lisc / Mrozny Korzonek / Kamyki as
+# 95733 / 95734 / 95926, our 50733 / 50734 / 50926 being other items) and the talismans' refine_proto 22501-22536.
+# yohara_items.sql (tools/yohara_items/gen_yitems.py) is idempotent (INSERT IGNORE). The maps' drop file and the
+# chests' groups (game/yohara_maps) name these vnums: a world without them stops the cores at boot.
+if [ -s /opt/playerbot/yohara_items.sql ]; then
+    if db < /opt/playerbot/yohara_items.sql; then
+        echo "[playerbot-migrate] yohara items: yohara_items.sql applied"
+    else
+        fail_step "yohara items: yohara_items.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1: Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
 # README.md). czempion.sql is idempotent (ADD COLUMN IF NOT EXISTS, INSERT IGNORE): eight columns of player.player and
 # player_deleted (the same order - a deleted character is copied with SELECT *) that the db core of the patch reads and
