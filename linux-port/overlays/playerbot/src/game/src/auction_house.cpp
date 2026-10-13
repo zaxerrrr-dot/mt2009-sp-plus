@@ -647,6 +647,16 @@ namespace
 				return false;
 			else if (std::find(filter.skills.begin(), filter.skills.end(), static_cast<long>(item.alSockets[0])) == filter.skills.end())
 				return false;
+			// MT2009_PLUS_AUCTION_HOUSE_BOOK_KIND_V1: klient dopasowuje umiejetnosc do
+			// "<umiejetnosc> - <ksiega>" kazdej ksiegi, wiec "Czarowane Ostrze - Ksiega
+			// Umiejetnosci" znajdowalo tez ksiege zapomnienia. Tekst po " - " musi byc
+			// poczatkiem nazwy tej ksiegi.
+			else
+			{
+				const size_t dash = filter.query.rfind(" - ");
+				if (dash != std::string::npos && info.lowerName.compare(0, filter.query.size() - dash - 3, filter.query, dash + 3, std::string::npos) != 0)
+					return false;
+			}
 		}
 
 		return MatchBonuses(filter, item);
