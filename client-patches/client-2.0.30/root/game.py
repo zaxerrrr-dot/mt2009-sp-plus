@@ -485,8 +485,6 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uibonusswitch").DestroyWindow()
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 		__import__("uiweeklyrank").DestroyWindow()
-		# MT2009_PLUS_CHAMPION_V1: Poziom Czempiona (uichampion.py).
-		__import__("uichampion").DestroyWindow()
 		# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window (uiusunmisje.py).
 		__import__("uiusunmisje").DestroyWindow()
 		# MT2009_PLUS_FLOWER_V1: the Flower Event's window (uiflowerevent.py).
@@ -797,8 +795,8 @@ class GameWindow(ui.ScriptWindow):
 			"bonus_switch"		: (lambda : Window("uibonusswitch"), None),
 			# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 			"weekly_rank"		: (lambda : Window("uiweeklyrank"), None),
-			# MT2009_PLUS_CHAMPION_V1: Poziom Czempiona (uichampion.py), no key by default.
-			"champion"			: (lambda : Window("uichampion"), None),
+			# MT2009_PLUS_CHAMPION_V2: Poziom Czempiona - the character window's Sung Ma page, no key by default.
+			"champion"			: (lambda : self.interface.ToggleChampionPage(), None),
 			# MT2009_PLUS_MONSTER_CARDS_V1: the Monster Cards (monstercard.py), no key by default.
 			"monster_card"		: (lambda : Window("monstercard"), None),
 			# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
@@ -3346,7 +3344,8 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["MAPA_TAB"] = self.__TeleportMap # MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s)
 		serverCommandList["BSW"] = self.__BonusSwitch # MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion)
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
-		# MT2009_PLUS_CHAMPION_V1: Poziom Czempiona's numbers and the Sung Ma map's requirements (uichampion.py).
+		# MT2009_PLUS_CHAMPION_V2: the Sung Ma map's requirements (uicharacter.py's Sung Ma page); "champion_info" of
+		# a Stage A server only refreshes the window (the numbers are points now).
 		serverCommandList["champion_info"] = self.__ChampionInfo
 		serverCommandList["sungma_map"] = self.__SungmaMap
 		serverCommandList["RANGA"] = self.__RankPoints # MT2009_PLUS_RANK_POINTS_V1
@@ -4051,12 +4050,15 @@ class GameWindow(ui.ScriptWindow):
 	def __ShipMastHP(self, *args):
 		__import__("uishipdefense").OnCommand(*args)
 
-	# MT2009_PLUS_CHAMPION_V1: "champion_info ..." and "sungma_map ..." (uichampion.py, Stage A).
+	# MT2009_PLUS_CHAMPION_V2: "sungma_map <str> <hp> <move> <immune>" -> uicharacter.py's Sung Ma page.
 	def __ChampionInfo(self, *args):
-		__import__("uichampion").OnInfo(*args)
+		if self.interface:
+			self.interface.RefreshChampionPage()
 
 	def __SungmaMap(self, *args):
-		__import__("uichampion").OnMap(*args)
+		__import__("uiCharacter").SetSungmaMap(*args)
+		if self.interface:
+			self.interface.RefreshChampionPage()
 
 	# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window's lines (uiusunmisje.py).
 	def __ClearMissions(self, *args):

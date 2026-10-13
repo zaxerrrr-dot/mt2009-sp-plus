@@ -12,6 +12,19 @@ GAME_VERSION = {
 	"is_beta" : False,
 }
 
+# MT2009_PLUS_CHAMPION_V2: client 3.0 (Yohara) = this root with the Yohara exe (the points packet grew, the
+# character packets carry the champion level). Only that pair says 1.3.0 (1010300) at login; the auth core's
+# server_version (m2-render-config, M2_CLIENT_MIN_VERSION) refuses anything older with "UPDATE" - the client's own
+# "Wymagana aktualizacja klienta gry przez Patcher." - before a byte of the new packets reaches it. A new root on
+# an old exe keeps saying 1.0.15 and is refused the same way.
+if getattr(app, "MT2009_CHAMPION_EXE", 0) and hasattr(player, "CONQUEROR_LEVEL"):
+	GAME_VERSION = {
+		"expansion" : 1,
+		"major" : 3,
+		"minor" : 0,
+		"is_beta" : False,
+	}
+
 # EXTRA BEGIN
 ENABLE_NEW_LEVELSKILL_SYSTEM = False # loads 5 (B,M,G,P,F) skills .mse
 ENABLE_RANDOM_CHANNEL_SEL = False # don't set a random channel when you open the client

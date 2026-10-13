@@ -25,6 +25,43 @@ SHOW_ONLY_ACTIVE_SKILL = False
 SHOW_LIMIT_SUPPORT_SKILL_LIST = [121, 122, 123, 124, 126, 127, 129, 128, 131, 132, 137, 138, 139, 140]
 HIDE_SUPPORT_SKILL_POINT = True
 
+# MT2009_PLUS_CHAMPION_V2: Poziom Czempiona and the Sung Ma stats on the status tab's second page (the GF/official
+# character window's: the buttons under the level row switch "ordinary" / "Sung Ma"; the level row then shows the
+# champion level and its experience, the four stats stand where STR/DEX/VIT/INT stand, the free points with them).
+# The numbers are points of the Yohara 3.0 exe (player.CONQUEROR_*, player.SUNGMA_*); the map's requirements come
+# with "sungma_map" (game.py -> SetSungmaMap). Without that exe the page buttons stay hidden.
+CHAMPION_PAGE = bool(getattr(app, "ENABLE_CONQUEROR_UI", 0)) and hasattr(player, "CONQUEROR_LEVEL")
+SUNGMA_STATS = (
+	# (key, the child names' part, the player point, the command, name, what a shortage costs on a Sung Ma map)
+	("SMH_STR", "str", "SUNGMA_STR", "/conqueror_stat smh_str", "Si\xb3a Sung Ma", "obra\xbfenia zadawane potworom /2"),
+	("SMH_HP", "hp", "SUNGMA_HP", "/conqueror_stat smh_hp", "Witalno\x9c\xe6 Sung Ma", "maksymalne P\xaf /2"),
+	("SMH_MOVE", "move", "SUNGMA_MOVE", "/conqueror_stat smh_move", "Odporno\x9c\xe6 Sung Ma", "pr\xeadko\x9c\xe6 ruchu /2"),
+	("SMH_INMUNE", "immune", "SUNGMA_IMMUNE", "/conqueror_stat smh_inmune", "Inteligencja Sung Ma", "trucizna, ogie\xf1 i krwawienie rzadziej"),
+)
+TEXT_PAGE_BASE = "Statystyki postaci"
+TEXT_PAGE_SUNGMA = "Poziom Czempiona i Sung Ma"
+TEXT_BAR_SUNGMA = "Status Sung Ma"
+TEXT_SUNGMA_POINTS = "Punkty Sung Ma: %d"
+TEXT_CHAMPION_LEVEL = "Czempion %d"
+TEXT_NOT_CHAMPION_1 = "Nie jeste\x9c jeszcze Czempionem."
+TEXT_NOT_CHAMPION_2 = "Statua Wojownika w Porcie Nowego Kontynentu nada Ci ten poziom"
+TEXT_NOT_CHAMPION_3 = "(najwy\xbfszy poziom, Obrona Statku, pe\xb3na kula do\x9cwiadczenia)."
+TEXT_MAP_REQUIRED = "Ta mapa wymaga: %d"
+TEXT_MAP_SHORT = "Za ma\xb3o - na tej mapie: %s"
+TEXT_PLUS_HINT = "Dodaj punkt Sung Ma"
+COLOR_SUNGMA_SHORT = 0xffff6a5a
+COLOR_SUNGMA_OK = 0xffffffff
+COLOR_CHAMPION_LEVEL = 0xff55b9ff
+_SUNGMA_MAP = [0, 0, 0, 0]
+
+def SetSungmaMap(*args):
+	"""game.py: "sungma_map <str> <hp> <move> <immune>" - this map's requirements (all 0 off a Sung Ma map)."""
+	for i in xrange(4):
+		try:
+			_SUNGMA_MAP[i] = int(args[i])
+		except (IndexError, ValueError):
+			_SUNGMA_MAP[i] = 0
+
 FACE_IMAGE_DICT = {
 	playerSettingModule.RACE_WARRIOR_M	: "icon/face/warrior_m.tga",
 	playerSettingModule.RACE_WARRIOR_W	: "icon/face/warrior_w.tga",
@@ -150,6 +187,17 @@ class CharacterWindow(ui.ScriptWindow):
 		self.statusInputDialog = None
 
 		self.attributeListButton = None
+
+		# MT2009_PLUS_CHAMPION_V2: the Sung Ma page
+		self.substate = "BASE"
+		self.championButtonDict = None
+		self.sungmaValueDict = None
+		self.sungmaPlusButtonDict = None
+		self.sungmaImageDict = None
+		self.baseStatWindowList = None
+		self.sungmaInfo = None
+		self.conquerorLevelText = None
+		self.standardBarText = None
 
 	def Show(self):
 		self.__LoadWindow()
@@ -316,6 +364,54 @@ class CharacterWindow(ui.ScriptWindow):
 		self.__HideSprintOnboarding()
 		self.sprintOnboardingIcon.SAFE_SetStringEvent("MOUSE_OVER_IN", self.__HideSprintOnboarding)
 
+		self.__BindChampionObject()
+
+	# MT2009_PLUS_CHAMPION_V2: the Sung Ma page's children (uiscript/characterwindow.py)
+	def __BindChampionObject(self):
+		try:
+			self.championButtonDict = {
+				"BASE"		: self.GetChild("change_base_button"),
+				"SUNGMA"	: self.GetChild("change_conqueror_button"),
+			}
+			self.sungmaInfo = self.GetChild("sungma_info")
+			self.conquerorLevelText = self.GetChild("Conqueror_Level_Text")
+			self.standardBarText = self.GetChild("Character_Bar_01_Text")
+			self.sungmaValueDict = {}
+			self.sungmaPlusButtonDict = {}
+			self.sungmaImageDict = {}
+			for (key, part, pointName, command, name, shortage) in SUNGMA_STATS:
+				self.sungmaValueDict[key] = self.GetChild("sungma_%s_value" % part)
+				self.sungmaPlusButtonDict[key] = self.GetChild("sungma_%s_plus" % part)
+				self.sungmaImageDict[key] = self.GetChild("SUNGMA_%s_IMG" % part.upper())
+			self.baseStatWindowList = [self.GetChild(name) for name in ("HTH_Label", "INT_Label", "STR_Label", "DEX_Label", "Status_Standard_ItemList1")]
+		except KeyError:
+			self.championButtonDict = None
+
+		if not self.championButtonDict:
+			return
+
+		if not CHAMPION_PAGE:
+			for button in self.championButtonDict.itervalues():
+				button.Hide()
+			self.sungmaInfo.Hide()
+			self.conquerorLevelText.Hide()
+			self.championButtonDict = None
+			return
+
+		for (key, button) in self.championButtonDict.items():
+			button.SetEvent(ui.__mem_func__(self.__OnClickChampionPageButton), key)
+			button.ShowToolTip = lambda arg=key: self.__OverInChampionPageButton(arg)
+			button.HideToolTip = lambda: self.__HideStatToolTip()
+
+		for (key, button) in self.sungmaPlusButtonDict.items():
+			button.SAFE_SetEvent(self.__OnClickSungmaPlusButton, key)
+			button.ShowToolTip = lambda arg=key: self.__OverInSungmaStat(arg, True)
+			button.HideToolTip = lambda: self.__HideStatToolTip()
+
+		for (key, image) in self.sungmaImageDict.items():
+			image.SAFE_SetStringEvent("MOUSE_OVER_IN", self.__OverInSungmaStat, key)
+			image.SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideStatToolTip)
+
 	def __SetSkillSlotEvent(self):
 		for skillPageValue in self.skillPageDict.itervalues():
 			skillPageValue.SetSlotStyle(wndMgr.SLOT_STYLE_NONE)
@@ -455,6 +551,7 @@ class CharacterWindow(ui.ScriptWindow):
 
 		#self.tabButtonDict["EMOTICON"].Disable()
 		self.SetState("STATUS")
+		self.SetSubState("BASE")
 
 	@ui.WindowDestroy
 	def Destroy(self):
@@ -555,6 +652,118 @@ class CharacterWindow(ui.ScriptWindow):
 	def GetState(self):
 		return self.state
 
+	# MT2009_PLUS_CHAMPION_V2: the status tab's pages - "BASE" (ordinary) and "SUNGMA" (Poziom Czempiona)
+	def SetSubState(self, subStateKey):
+		if not self.championButtonDict or subStateKey not in self.championButtonDict:
+			subStateKey = "BASE"
+		self.substate = subStateKey
+
+		if self.championButtonDict:
+			for (key, button) in self.championButtonDict.items():
+				if key == subStateKey:
+					button.Down()
+				else:
+					button.SetUp()
+
+			isSungma = "SUNGMA" == subStateKey
+			for window in self.baseStatWindowList:
+				if isSungma:
+					window.Hide()
+				else:
+					window.Show()
+			if isSungma:
+				self.sungmaInfo.Show()
+				self.standardBarText.SetText(TEXT_BAR_SUNGMA)
+			else:
+				self.sungmaInfo.Hide()
+				self.standardBarText.SetText("Status postaci")
+
+		self.RefreshStatus()
+
+	def GetSubState(self):
+		return self.substate
+
+	def OpenChampionPage(self):
+		self.SetState("STATUS")
+		self.SetSubState("SUNGMA")
+
+	def __OnClickChampionPageButton(self, subStateKey):
+		self.SetSubState(subStateKey)
+
+	def __OverInChampionPageButton(self, subStateKey):
+		self.toolTip.ClearToolTip()
+		if "SUNGMA" == subStateKey:
+			self.toolTip.AppendTextLine(TEXT_PAGE_SUNGMA)
+		else:
+			self.toolTip.AppendTextLine(TEXT_PAGE_BASE)
+		self.toolTip.Show()
+
+	def __IsChampion(self):
+		return CHAMPION_PAGE and player.GetStatus(player.CONQUEROR_LEVEL) >= 1
+
+	def __OnClickSungmaPlusButton(self, statusKey):
+		for (key, part, pointName, command, name, shortage) in SUNGMA_STATS:
+			if key == statusKey:
+				net.SendChatPacket(command)
+				return
+
+	def __OverInSungmaStat(self, statusKey, isPlusButton=False):
+		self.toolTip.ClearToolTip()
+		for i in xrange(len(SUNGMA_STATS)):
+			(key, part, pointName, command, name, shortage) = SUNGMA_STATS[i]
+			if key != statusKey:
+				continue
+			self.toolTip.AppendTextLine(name)
+			if not self.__IsChampion():
+				self.toolTip.AppendTextLine(TEXT_NOT_CHAMPION_1)
+				self.toolTip.AppendTextLine(TEXT_NOT_CHAMPION_2)
+				self.toolTip.AppendTextLine(TEXT_NOT_CHAMPION_3)
+			elif _SUNGMA_MAP[i] > 0:
+				if player.GetStatus(getattr(player, pointName)) < _SUNGMA_MAP[i]:
+					self.toolTip.AppendTextLine(TEXT_MAP_REQUIRED % _SUNGMA_MAP[i], COLOR_SUNGMA_SHORT)
+					self.toolTip.AppendTextLine(TEXT_MAP_SHORT % shortage, COLOR_SUNGMA_SHORT)
+				else:
+					self.toolTip.AppendTextLine(TEXT_MAP_REQUIRED % _SUNGMA_MAP[i])
+			if isPlusButton:
+				self.toolTip.AppendTextLine(TEXT_PLUS_HINT)
+			break
+		self.toolTip.Show()
+
+	def __RefreshChampionPage(self):
+		if not self.championButtonDict:
+			return
+
+		conquerorLevel = player.GetStatus(player.CONQUEROR_LEVEL)
+		if conquerorLevel >= 1:
+			self.conquerorLevelText.SetText(TEXT_CHAMPION_LEVEL % conquerorLevel)
+		else:
+			self.conquerorLevelText.SetText("")
+
+		for i in xrange(len(SUNGMA_STATS)):
+			(key, part, pointName, command, name, shortage) = SUNGMA_STATS[i]
+			value = player.GetStatus(getattr(player, pointName))
+			valueText = self.sungmaValueDict[key]
+			valueText.SetText(str(value))
+			if _SUNGMA_MAP[i] > 0 and value < _SUNGMA_MAP[i]:
+				valueText.SetPackedFontColor(COLOR_SUNGMA_SHORT)
+			else:
+				valueText.SetPackedFontColor(COLOR_SUNGMA_OK)
+
+		if "SUNGMA" != self.substate:
+			return
+
+		levelText = self.GetChild("Level_Value")
+		levelText.SetText(str(conquerorLevel))
+		levelText.SetPackedFontColor(COLOR_CHAMPION_LEVEL)
+		if conquerorLevel >= 1:
+			curExp = unsigned32(player.GetConquerorEXP())
+			nextExp = unsigned32(player.GetStatus(player.CONQUEROR_NEXT_EXP))
+			self.GetChild("Exp_Value").SetText(str(curExp))
+			self.GetChild("RestExp_Value").SetText(str(max(0, nextExp - curExp)))
+		else:
+			self.GetChild("Exp_Value").SetText("0")
+			self.GetChild("RestExp_Value").SetText("0")
+
 	def __GetTotalAtkText(self):
 		minAtk=player.GetStatus(player.ATT_MIN)
 		maxAtk=player.GetStatus(player.ATT_MAX)
@@ -613,6 +822,7 @@ class CharacterWindow(ui.ScriptWindow):
 
 		try:
 			self.GetChild("Level_Value").SetText(str(player.GetStatus(player.LEVEL)))
+			self.GetChild("Level_Value").SetPackedFontColor(0xffffffff)	# MT2009_PLUS_CHAMPION_V2: blue on the Sung Ma page
 			self.GetChild("Exp_Value").SetText(str(unsigned32(player.GetEXP())))
 			self.GetChild("RestExp_Value").SetText(str(unsigned32(player.GetStatus(player.NEXT_EXP)) - unsigned32(player.GetStatus(player.EXP))))
 			self.GetChild("HP_Value").SetText(str(player.GetStatus(player.HP)) + '/' + str(player.GetStatus(player.MAX_HP)))
@@ -635,6 +845,8 @@ class CharacterWindow(ui.ScriptWindow):
 			self.GetChild("CSPD_Value").SetText(str(player.GetStatus(player.CASTING_SPEED)))
 			self.GetChild("ER_Value").SetText(str(player.GetStatus(player.EVADE_RATE)))
 
+			self.__RefreshChampionPage()	# MT2009_PLUS_CHAMPION_V2
+
 		except:
 			#import exception
 			#exception.Abort("CharacterWindow.RefreshStatus.BindObject")
@@ -651,6 +863,25 @@ class CharacterWindow(ui.ScriptWindow):
 		if self.isLoaded==0:
 			return
 
+		# MT2009_PLUS_CHAMPION_V2: on the Sung Ma page the free Sung Ma points and their plus buttons
+		if self.championButtonDict:
+			if "SUNGMA" == self.substate:
+				self.HideStatusPlusButtonList()
+				sungmaPoint = player.GetStatus(player.CONQUEROR_POINT) if self.__IsChampion() else 0
+				for button in self.sungmaPlusButtonDict.itervalues():
+					if sungmaPoint > 0:
+						button.Show()
+					else:
+						button.Hide()
+				if sungmaPoint > 0:
+					self.statusPlusLabel.SetText(TEXT_SUNGMA_POINTS % sungmaPoint)
+					self.statusPlusLabel.Show()
+				else:
+					self.statusPlusLabel.Hide()
+				return
+			for button in self.sungmaPlusButtonDict.itervalues():
+				button.Hide()
+
 		statusPlusPoint=player.GetStatus(player.STAT)
 
 		if statusPlusPoint>0:
@@ -666,6 +897,8 @@ class CharacterWindow(ui.ScriptWindow):
 			return
 
 		statusMinusPoint=self.__GetStatMinusPoint()
+		if self.championButtonDict and "SUNGMA" == self.substate:	# MT2009_PLUS_CHAMPION_V2: no minus on the Sung Ma page
+			statusMinusPoint = 0
 
 		if statusMinusPoint>0:
 			self.__ShowStatusMinusButtonList()
