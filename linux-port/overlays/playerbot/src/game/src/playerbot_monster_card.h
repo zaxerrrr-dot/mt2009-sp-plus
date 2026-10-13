@@ -769,15 +769,34 @@ namespace mt2009_mcard
 		return true;
 	}
 
+	// MT2009_PLUS_MONSTER_CARD_PASS_MAPS_V1 (owner, 13 October): the card's teleport never lands on a
+	// map whose way in takes a pass - Loch Pajakow V2 (71, ticket 71095/71130), the Grota Wygnancow
+	// (72/73, Krwisty Kamien), Lezo Smoka (208) and the Baronowna's nest (217).
+	bool IsPassMap(long map)
+	{
+		return map == 71 || map == 72 || map == 73 || map == 208 || map == 217;
+	}
+
 	void FnTeleport(LPCHARACTER ch, SMonster& m, DWORD mob)
 	{
 		std::vector<const STeleport*> candidates;
+		bool passOnly = false;
 		for (size_t i = 0; i < CountOf(TELEPORTS); ++i)
 			if (TELEPORTS[i].dwVnum == mob && MapForEmpire(TELEPORTS[i].lMap, ch->GetEmpire()))
+			{
+				if (IsPassMap(TELEPORTS[i].lMap))
+				{
+					passOnly = true;
+					continue;
+				}
 				candidates.push_back(&TELEPORTS[i]);
+			}
 		if (candidates.empty())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "%s", MSG_NO_TELEPORT);
+			if (passOnly)
+				ch->ChatPacket(CHAT_TYPE_INFO, "Ten potw\xF3r \xBFyje na mapie, na kt\xF3r\xB9 wchodzi si\xEA z przepustk\xB9 - teleport kart\xB9 jest tam niedost\xEApny.");
+			else
+				ch->ChatPacket(CHAT_TYPE_INFO, "%s", MSG_NO_TELEPORT);
 			return;
 		}
 		if (!CanMove(ch))
