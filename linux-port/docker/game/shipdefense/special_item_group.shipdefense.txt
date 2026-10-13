@@ -1,0 +1,39 @@
+# MT2009_PLUS_SHIP_DEFENSE_V1: Skrzynia Hydry (54705) - three of them or more from Skarb Hydry
+# (mob_drop_item.shipdefense.txt). The owner, 13 October 2026 (cache/yohara/decyzje.md): a chest opens
+# three times (right click; the engine keeps it for chest_uses = 3 openings, socket 0 counts them -
+# playerbot_ship_defense.cpp ShipDefense_ChestKeep), each opening gives exactly ONE item of the official
+# list (pl-wiki "Skrzynia Hydry") by weight (of 1000): Magiczny Kamien exactly 4% (40), the rest
+# spread over 960 - the common scrolls and materials 60-90, the elixirs and the snack 50, the pearls
+# 50/30/20, the rare ones (Smoczy Plomien, Jajo Nessie, the sash, the mount) 10-20.
+# Not in our world.item_proto, left out: Kamyki x200 (50926 is a recipe here), Pakiet Kamieni Duszy x3
+# (72058), Pierscien Hydry (70303, with the port), Tajemnicze Pudelko, Torba Emocji (38060), Zwoj
+# Przywolania GY / SLW (72052 / 72051). Our names: Odzywka is Proteinowa Przekaska (55001), Szarfa
+# Wladcy (zacna) is Szarfa Wladcy +2 (85003), Smoczy Plomien (B) is "Flame of the Dragon (B)" (100700),
+# Tygrys Bengalski (bialy) is the mount itself (71142, 20 days), not the official seal.
+# Appended to special_item_group.txt by the Dockerfile (share: Obrona Statku).
+
+Group	MT2009_shipdef_chest_54705
+{
+	Vnum	54705 -- Skrzynia Hydry
+	1	25042	1	40 -- Magiczny Kamien (4%)
+	2	25040	1	90 -- Zwoj Blogoslawienstwa
+	3	71084	1	70 -- Zaczarowanie Przedmiotu
+	4	71085	1	70 -- Wzmocnienie Przedmiotu
+	5	30252	5	60 -- Klejnot Madrosci x5
+	6	30251	5	60 -- Klejnot Zawisci x5
+	7	30168	5	60 -- Notatka Przywodcy x5
+	8	30167	5	60 -- Czerw. Konar Duchodrzewa x5
+	9	71001	2	60 -- Zwoj Egzorcyzmu x2
+	10	71083	2	60 -- Ksiega Obrobki Kamienia x2
+	11	71130	1	70 -- Przepustka
+	12	72727	1	50 -- Eliksir Ksiezyca (M)
+	13	72723	1	50 -- Eliksir Slonca (M)
+	14	55001	1	50 -- Proteinowa Przekaska (Odzywka)
+	15	27992	1	50 -- Biala Perla
+	16	27993	1	30 -- Niebieska Perla
+	17	27994	1	20 -- Krwawa Perla
+	18	100700	1	20 -- Smoczy Plomien (B)
+	19	55410	1	10 -- Jajo Nessie
+	20	85003	1	10 -- Szarfa Wladcy (zacna) = Szarfa Wladcy +2
+	21	71142	1	10 -- Tygrys Bengalski (bialy)
+}

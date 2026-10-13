@@ -1,0 +1,67 @@
+// MT2009_PLUS_SHIP_DEFENSE_V1: Skarb Hydry (3965) - the treasure the last Hydra leaves on the ship
+// (playerbot_ship_defense.cpp CShipDefense::Win; quest/obrona_statku.quest). The owner, 13 October 2026
+// (cache/yohara/decyzje.md): always 3-6 Skrzynia Hydry (54705) plus the rest of the official list
+// (pl-wiki "Skarb Hydry"). One limit group (a plain percent a kill, outside the level and rate
+// multipliers; the reader keeps a mob's first limit group only - the Dockerfile stops the build if
+// 3965 has one already). Each line rolls on its own: the chests 3 x 100% + 3 x 50% (3-6, 4.5 on
+// average), the rest about 3.5 items a kill on average (the percents below are ours - the wiki gives
+// none). Not in our world.item_proto, left out: Zbroja Dowodcy (21090), Pakiet Kamieni Duszy (72058),
+// Zdobna Skrz. z Odlamkiem (39068), Plyta z Surowego Metalu (31216), Kamien Demonow+0 (28046),
+// Kamyki (50926 is a recipe here), Ksiazka Przebudzenia (31146), Ksiega Dzielnego/Dzikiego/Mlodego
+// Zwierza (55003-55005), Pierscien Hydry (70303, comes with the port), Spirala Czasu 10% (72347).
+// Stand-ins: Dykta+ / Pien+ / Kamien do Fundamentu+ (90015-90017) -> Dykta (90012), Pien (90011),
+// Kamien Wegielny (90010); Kula Blogoslawienstwa -> Marmur Blogoslawienstwa (39004, the same item
+// under our name); Czerwona/Niebieska Mikstura(D) 600 -> up to 3 x 200 (the stack's limit).
+
+Group	MT2009_shipdef_treasure_3965
+{
+	mob	3965	-- Skarb Hydry
+	Type	limit
+	level_limit	1
+	1	54705	1	100	-- Skrzynia Hydry
+	2	54705	1	100	-- Skrzynia Hydry
+	3	54705	1	100	-- Skrzynia Hydry
+	4	54705	1	50	-- Skrzynia Hydry
+	5	54705	1	50	-- Skrzynia Hydry
+	6	54705	1	50	-- Skrzynia Hydry
+	7	20000	1	4	-- Pancerz Diabel. Rogu+0
+	8	20500	1	4	-- Pancerz Kosciplytowy+0
+	9	20250	1	4	-- Szata Smoczego Jezdzca+0
+	10	20750	1	4	-- Zlote Ubranie+0
+	11	50115	1	6	-- Fiol. Ebonit. Szkatulka
+	12	50114	1	6	-- Nieb. Ebon. Szkatulka
+	13	50113	1	6	-- Ziel. Ebonit. Szkatulka
+	14	50122	1	5	-- Zelazna Skrzynia
+	15	50120	1	7	-- Zelazna Szkatulka
+	16	50121	1	9	-- Zelazne Pudelko
+	17	50725	10	12	-- Bez x10
+	18	50726	10	12	-- Grzyb Tue x10
+	19	50724	10	12	-- Korzen Gango x10
+	20	50728	10	12	-- Morwa x10
+	21	50727	10	12	-- Roza Alpejska x10
+	22	27003	200	30	-- Czerwona Mikstura(D) x200
+	23	27003	200	15	-- Czerwona Mikstura(D) x200 (400)
+	24	27003	200	8	-- Czerwona Mikstura(D) x200 (600)
+	25	27006	200	30	-- Niebieska Mikstura(D) x200
+	26	27006	200	15	-- Niebieska Mikstura(D) x200 (400)
+	27	27006	200	8	-- Niebieska Mikstura(D) x200 (600)
+	28	50094	10	15	-- Sushi z Suma x10
+	29	50093	10	15	-- Sushi z Lososia x10
+	30	90012	1	6	-- Dykta (Dykta+)
+	31	90010	1	6	-- Kamien Wegielny (Kamien do Fundamentu+)
+	32	90011	1	6	-- Pien (Pien+)
+	33	27992	1	5	-- Biala Perla
+	34	27993	1	4	-- Niebieska Perla
+	35	27994	1	3	-- Krwawa Perla
+	36	50056	10	10	-- Czerwony Zen-szen x10
+	37	55410	1	1	-- Jajo Nessie
+	38	50513	1	8	-- Kamien Duchowy
+	39	70037	1	5	-- Ksiega Zapomnienia
+	40	39004	1	3	-- Marmur Blogoslawienstwa (Kula Blogoslawienstwa)
+	41	27987	1	10	-- Malz
+	42	39002	1	5	-- Pierscien Doswiadczenia (60 min)
+	43	71130	1	5	-- Przepustka
+	44	71085	1	5	-- Wzmocnienie Przedmiotu
+	45	71084	1	5	-- Zaczarowanie Przedmiotu
+	46	25040	1	10	-- Zwoj Blogoslawienstwa
+}
