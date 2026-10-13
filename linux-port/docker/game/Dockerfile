@@ -888,8 +888,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/cube-add/c
 # files as the package ships them, its groups (group.ochao.txt) and drops
 # (mob_drop_item.ochao.txt: the package's vnums mapped to this world's), the
 # En-Tai Guardian's motions (data/monster/trent_officer) and the entrance NPC,
-# Straznik Swiatyni (20426): beside Koe-Pung in Orc Valley, on a cell measured
-# free on its server_attr, and where the package stands him in Dawnmistwood.
+# Straznik Swiatyni (20426). MT2009_PLUS_OCHAO_GAUTAMA_V1: he stands ONLY on
+# Zbocze Gautama (302, metin2_map_dawnmistwood) at cell 1003 700, as on the
+# wiki - no longer beside Koe-Pung in Orc Valley (a line an older image left in
+# map_n_threeway's npc.txt is taken out); the quest talks only on 302.
 # The Guardian's eleven rooms are playerbot_ochao.h; the NPCs' talk is
 # quest/temple_of_the_ochao.quest (compiled above).
 COPY ochao/ /tmp/ochao-add/
@@ -906,16 +908,17 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/ochao-add \
  && sed -i 's/\r$//; s/$/\r/' "$A/mob_drop_item.ochao.txt" \
  && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
  && cat "$A/mob_drop_item.ochao.txt" >> "$L/mob_drop_item.txt" \
- && for p in "map_n_threeway 289 1448 5" "metin2_map_dawnmistwood 1004 700 1"; do \
-      set -- $p; F="$L/map/$1/npc.txt"; \
-      [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; \
-      grep -q -E '[[:blank:]]20426[[:space:]]*$' "$F" || printf 'm\t%s\t%s\t0\t0\t0\t%s\t1m\t100\t1\t20426\n' "$2" "$3" "$4" >> "$F"; \
-      grep -q -E "^m[[:blank:]]+$2[[:blank:]]+$3[[:blank:]].*[[:blank:]]20426" "$F"; \
-    done \
+ && sed -i -E '/[[:blank:]]20426[[:space:]]*$/d' "$L/map/map_n_threeway/npc.txt" "$L/map/metin2_map_dawnmistwood/npc.txt" \
+ && ! grep -q -E '[[:blank:]]20426[[:space:]]*$' "$L/map/map_n_threeway/npc.txt" \
+ && F="$L/map/metin2_map_dawnmistwood/npc.txt" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; } \
+ && printf 'm\t1003\t700\t0\t0\t0\t1\t1m\t100\t1\t20426\n' >> "$F" \
+ && test "$(grep -c -E '[[:blank:]]20426[[:space:]]*$' "$F")" = 1 \
+ && grep -q -E '^m[[:blank:]]+1003[[:blank:]]+700[[:blank:]].*[[:blank:]]20426[[:space:]]*$' "$F" \
  && S="$L/settings.lua" \
  && { LC_ALL=C grep -a -q 'add_goto_info("ochao"' "$S" || printf 'add_goto_info("ochao", 0, 209, 8537, 14164)\r\n' >> "$S"; } \
  && rm -rf "$A" \
- && echo "share: Swiatynia Ochao (map 209, groups, drops, Straznik Swiatyni, /goto ochao)"
+ && echo "share: Swiatynia Ochao (map 209, groups, drops, Straznik Swiatyni on Zbocze Gautama, /goto ochao)"
 
 # MT2009_PLUS_DUNGEONS_V1: the Razador and Nemere dungeons (quest/razador_dungeon.quest and
 # quest/nemere_dungeon.quest, compiled above; their monsters, keys and names are apply.sh's
@@ -1147,8 +1150,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-p58 \
 # MT2009_PLUS_ATLANTYDA_V1 (share): Ruiny Atlantydy - plechito_summer2022_dungeon, 158, 3x3 at 3814400 2252800,
 # the Plechito summer 2022 dungeon "Ruins of Atlantis" at the Grotto of Exile's band (entry 75, solo or a party;
 # quest/ruiny_atlantydy.quest; apply.sh has the rows). Its entrance, Mag Atlantydy (9460), stands in Orc Valley
-# beside the Grotto's entrance (286,1434; the Grotto's 20091 is at 295,1442, the Temple guard 20426 at 289,1448,
-# all on one open ground measured on server_attr). The public copy of 158 is the fallback lobby (its npc.txt:
+# beside the Grotto's entrance (286,1434; the Grotto's 20091 is at 295,1442, the Temple guard 20426 stood at
+# 289,1448 until MT2009_PLUS_OCHAO_GAUTAMA_V1, all on one open ground measured on server_attr). The public copy of 158 is the fallback lobby (its npc.txt:
 # the magician at the entry); the instance's two floors are data/dungeon/ruiny_atlantydy (wave1, wave2, hearts).
 # The Plechito monsters' motions (share/data/monster/plechi_sum2022_*: the server times attacks by them), the
 # stones' one-monster call groups 6408-6412 (group.atlantyda.txt), the ticket's drops from the Grotto's
@@ -1304,18 +1307,37 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
 # the map from the GF 26.1.11 client (client-patches/client-2.0.30/tools/cape301), so the server's server_attr
 # becomes the one that matches that terrain: Owsap's (100% of the block/water/safe-zone cells equal GF's attr.atr,
 # tools/gf28/srvattr.py; the base image's matched 99.76% / 100% / 98.51% - an older revision of the map).
-# npc.txt: the base image's, with the two warp portals 10101 (to Nefrytowa Zatoka, 303) and 10103 (to Gromiste
-# Gory, 304) commented out - our client has neither map and stepping into a portal would crash it as the warp to
-# 301 did; Jae-Seon Kim (20383) faces 7 as in the official data. Rybak 9009 stays at 838 1187 (official).
+# npc.txt: the base image's; Jae-Seon Kim (20383) faces 7 as in the official data. Rybak 9009 stays at 838 1187
+# (official). MT2009_PLUS_YOHARA_MAPS302_V1: the two warp portals 10101 (to Nefrytowa Zatoka, 303) and 10103 (to
+# Gromiste Gory, 304), commented out while our client had neither map, stand again - the client gets 302-304 in the
+# same update (tools/maps302, the step below).
 COPY cape301/ /tmp/cape301-add/
 RUN set -eu; M=/opt/metin2/share/locale/poland/map/Metin2_map_CapeDragonHead; A=/tmp/cape301-add/map/Metin2_map_CapeDragonHead \
  && test -d "$M" \
  && test "$(od -An -tx1 -N8 "$A/server_attr" | tr -d ' \n')" = 1800000018000000 \
  && cp -f "$A/server_attr" "$M/server_attr" && cp -f "$A/npc.txt" "$M/npc.txt" \
  && test "$(grep -c -E '^m[[:blank:]]+838[[:blank:]]+1187[[:blank:]].*[[:blank:]]9009[[:blank:]]*$' "$M/npc.txt")" = 1 \
- && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]1010[13][[:blank:]]*$' "$M/npc.txt")" = 0 \
+ && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]1010[13][[:blank:]]*$' "$M/npc.txt")" = 2 \
  && rm -rf /tmp/cape301-add \
- && echo "share: Przyladek Smoczego Ognia (301: server_attr of the GF terrain, npc.txt without the 303/304 portals)"
+ && echo "share: Przyladek Smoczego Ognia (301: server_attr of the GF terrain, npc.txt with the 303/304 portals)"
+# MT2009_PLUS_YOHARA_MAPS302_V1 (share): Zbocze Gautama (302, metin2_map_dawnmistwood), Nefrytowa Zatoka (303,
+# metin2_map_BayBlackSand) and Gromiste Gory (304, metin2_map_Mt_Thunder) - the client gets the three maps from the
+# GF 26.1.11 client (client-patches/client-2.0.30/tools/maps302), so each server_attr becomes Owsap's, which matches
+# that terrain: 100% of the block/water/safe-zone cells equal GF's attr.atr on 303 and 304, 100% block / 95.73% water /
+# 100% safe zone on 302 (tools/gf28/srvattr.py; the base image's: 302 99.97/92.72/99.81, 303 99.84/99.93/99.59, 304
+# 99.98/100/100). Every NPC, Town.txt point and warp-portal landing (10100-10105, all between 301-304) is on a free
+# cell of the new files. The rest of the maps (npc/regen/boss/stone, Setting, Town) stays the base image's.
+COPY maps302/ /tmp/maps302-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland/map; A=/tmp/maps302-add/map \
+ && for p in "metin2_map_dawnmistwood 1c00000010000000 302" "metin2_map_BayBlackSand 0c00000018000000 303" \
+             "metin2_map_Mt_Thunder 1000000018000000 304"; do \
+      set -- $p; test -d "$L/$1"; \
+      grep -q -E "^$3[[:blank:]]+$1[[:space:]]*$" "$L/index"; \
+      test "$(od -An -tx1 -N8 "$A/$1/server_attr" | tr -d ' \n')" = "$2"; \
+      cp -f "$A/$1/server_attr" "$L/$1/server_attr"; \
+    done \
+ && rm -rf /tmp/maps302-add \
+ && echo "share: Zbocze Gautama / Nefrytowa Zatoka / Gromiste Gory (302-304: server_attr of the GF terrain)"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only
