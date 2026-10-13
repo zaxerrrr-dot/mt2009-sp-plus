@@ -53,8 +53,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.normpath(os.path.join(HERE, '..', '..', '..', 'client-2.0.28', 'gf_razador', 'd_'))
 DOOR = 'd:/ymir work/npc2/flame_door_npc/'
 CHAIN = 'd:/ymir work/npc2/flame_bridge_block_chain/'
-FILES = (DOOR + 'flame_door_npc.msm', DOOR + 'flame_door_npc.mdatr',
-         CHAIN + 'bridge_block_chain.msm', CHAIN + 'bridge_block_chain.mdatr')
+# 13 October (owner): no collision on the chains at all - only the Smocza Brama's grating collides.
+FILES = (DOOR + 'flame_door_npc.msm', DOOR + 'flame_door_npc.mdatr')
 TEXT = ('.txt', '.msa', '.msm')
 UPRIGHT = (0.70710677, 0.0, 0.0, 0.70710677)
 
@@ -98,8 +98,6 @@ def bridge_mdatr():
 
 def items():
     got = dict((n, open(os.path.join(SRC, n[3:]), 'rb').read()) for n in FILES)
-    if got[CHAIN + 'bridge_block_chain.mdatr'] != bridge_mdatr():
-        raise SystemExit('bridge_block_chain.mdatr in the repo differs from bridge_mdatr() - regenerate it')
     for n in FILES:
         if n.endswith('.msm'):
             path = ('D:/' + n[3:-4] + '.mdatr').replace('/', '\\')
