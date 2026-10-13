@@ -3490,6 +3490,19 @@ if [ -s /opt/playerbot/shipdefense.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_YOHARA_MAPS1_V1: the first Yohara maps - Opuszczona Twierdza (374) and Dongan (373),
+# cache/yohara/plan-mapy-yohary.md. yohara_maps.sql (tools/yohara_maps/gen_ymaps_sql.py) is idempotent (INSERT
+# IGNORE): their 31 monsters and Metins (6686-6706, 6710-6717, 8067, 8625; Owsap's numbers in our columns), 16 NPCs
+# (20799-20849, 60003) and the gate portal 10144. Before the elements' files, as the ship: their owner's rules then
+# hold for these monsters too.
+if [ -s /opt/playerbot/yohara_maps.sql ]; then
+    if db < /opt/playerbot/yohara_maps.sql; then
+        echo "[playerbot-migrate] yohara maps: yohara_maps.sql applied"
+    else
+        fail_step "yohara maps: yohara_maps.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1: Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
 # README.md). czempion.sql is idempotent (ADD COLUMN IF NOT EXISTS, INSERT IGNORE): eight columns of player.player and
 # player_deleted (the same order - a deleted character is copied with SELECT *) that the db core of the patch reads and
