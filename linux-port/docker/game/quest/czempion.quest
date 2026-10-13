@@ -1,0 +1,64 @@
+-- MT2009_PLUS_CHAMPION_V1: Poziom Czempiona - Pos¹g Wojownika (20433, w porcie Yohary; plan
+-- cache/yohara/plan-champion-sungma.md krok 6, server-patches/czempion/README.md). Wzór przebiegu:
+-- Owsap quest/source/npc/conqueror_level.quest (bez jego c_locale i bezwarunkowego pc.set_conqueror).
+-- Warunki sprawdza silnik (pc.get_conqueror_unlock_state / pc.set_conqueror, playerbot_champion.cpp):
+-- poziom 120 (max_level serwera), flaga Obrony Statku obrona_statku.completed_at_120 (nazwê zna
+-- tylko C++: champion::HYDRA_DONE_FLAG) i co najmniej jedna pe³na kula doœwiadczenia na 120.
+-- Rejs na Yoharê - dopiero z map¹ portu. cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest czempion begin
+	state start begin
+		when 20433.chat."Zostañ Czempionem" with pc.get_conqueror_level() == 0 begin
+			say_title(mob_name(20433)..":")
+			say("Za morzem le¿y Yohara, ziemia Sung Ma.")
+			say("Jej potwory rani tylko Czempion - ten, kto")
+			say("doszed³ na szczyt i obroni³ statek przed Hydr¹.")
+			say("")
+			local st = pc.get_conqueror_unlock_state()
+			if st == 2 then
+				say("Wróæ, gdy osi¹gniesz najwy¿szy poziom.")
+				return
+			elseif st == 3 then
+				say("Obroñ najpierw statek przed Hydr¹, maj¹c")
+				say("najwy¿szy poziom (Rybak na Przyl¹dku).")
+				return
+			elseif st == 4 then
+				say("Zbierz na najwy¿szym poziomie co najmniej")
+				say("jedn¹ pe³n¹ kulê doœwiadczenia.")
+				return
+			elseif st ~= 0 then
+				say("Nie mo¿esz teraz zostaæ Czempionem.")
+				return
+			end
+			say("Spe³niasz wszystkie warunki. Czy chcesz")
+			say("zostaæ Czempionem?")
+			if select("Tak, zostanê Czempionem", "Jeszcze nie") == 1 then
+				if pc.set_conqueror() then
+					say_title(mob_name(20433)..":")
+					say("Od dziœ jesteœ Czempionem (poziom 1).")
+					say("Doœwiadczenie Czempiona daj¹ potwory ziemi")
+					say("Sung Ma. Co æwieræ paska dostajesz punkt")
+					say("statystyk Sung Ma - rozdasz go w oknie")
+					say("Czempiona (Opcje klawiszy: Czempion).")
+				else
+					say("Nie spe³niasz ju¿ warunków.")
+				end
+			end
+		end
+
+		when 20433.chat."Poziom Czempiona" with pc.get_conqueror_level() > 0 begin
+			say_title(mob_name(20433)..":")
+			say(string.format("Poziom Czempiona: %d, doœwiadczenie %d / %d.", pc.get_conqueror_level(), pc.get_conqueror_exp(), pc.get_conqueror_next_exp()))
+			say(string.format("Wolne punkty Sung Ma: %d.", pc.get_conqueror_point()))
+			say(string.format("Si³a %d, Witalnoœæ %d, Odpornoœæ %d,", pc.get_sungma_str(), pc.get_sungma_vit(), pc.get_sungma_res()))
+			say(string.format("Inteligencja %d.", pc.get_sungma_int()))
+			say("")
+			say("Ka¿da mapa Sung Ma ma swoje wymagania. Gdy")
+			say("któraœ statystyka jest za niska: Si³a - zadajesz")
+			say("po³owê obra¿eñ, Witalnoœæ - masz po³owê P¯,")
+			say("Odpornoœæ - chodzisz o po³owê wolniej,")
+			say("Inteligencja - trucizna, ogieñ i krwawienie")
+			say("dzia³aj¹ u Ciebie o po³owê rzadziej.")
+			say("Punkty jednej statystyki odda Nowa Wola.")
+		end
+	end
+end
