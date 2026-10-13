@@ -1,0 +1,146 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (points)",
+  "old": "\tPOINT_ENCHANT_DARK,\n\n\tPOINT_MAX_NUM,",
+  "new": "\tPOINT_ENCHANT_DARK,\n\t// MT2009_PLUS_SUNGMA_V1 (points): the four Sung Ma stats of a Champion (server-patches/czempion), server-only\n\t// like the elements (after POINT_PACKET_NUM): the real value is the spent points (player.sungma_*), the point\n\t// adds what items and affects give. Stage B (new exe) moves them before POINT_PACKET_NUM in the exe's order.\n\tPOINT_SUNGMA_STR,\n\tPOINT_SUNGMA_HP,\n\tPOINT_SUNGMA_MOVE,\n\tPOINT_SUNGMA_IMMUNE,\n\n\tPOINT_MAX_NUM,"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (player table)",
+  "old": "\tint\t\taiPremiumTimes[PREMIUM_MAX_NUM];\n} TPlayerTable;",
+  "new": "\tint\t\taiPremiumTimes[PREMIUM_MAX_NUM];\n\t// MT2009_PLUS_CHAMPION_V1 (player table): Poziom Czempiona and the spent Sung Ma points (player.player columns\n\t// of czempion.sql; server-patches/czempion). At the end: db and game are built from this one header together.\n\tBYTE\tconqueror_level;\n\tBYTE\tconqueror_level_step;\n\tshort\tconqueror_point;\n\tDWORD\tconqueror_exp;\n\tshort\tsungma_str;\n\tshort\tsungma_hp;\n\tshort\tsungma_move;\n\tshort\tsungma_immune;\n} TPlayerTable;"
+ },
+ {
+  "file": "../../common/CommonDefines.h",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (define)",
+  "old": "#define ENABLE_FULL_NOTICE",
+  "new": "#define ENABLE_FULL_NOTICE\n#define ENABLE_CONQUEROR_LEVEL // MT2009_PLUS_CHAMPION_V1 (define): Poziom Czempiona + Sung Ma (server-patches/czempion)"
+ },
+ {
+  "file": "../../db/src/ClientManagerPlayer.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (save)",
+  "old": "\tstatic char text[8192 + 1];\n",
+  "new": "\t// MT2009_PLUS_CHAMPION_V1 (save): Poziom Czempiona and the spent Sung Ma points (czempion.sql).\n\tqueryLen += snprintf(pszQuery + queryLen, querySize - queryLen,\n\t\t\t\"conqueror_level = %d, conqueror_level_step = %d, conqueror_exp = %u, conqueror_point = %d, \"\n\t\t\t\"sungma_str = %d, sungma_hp = %d, sungma_move = %d, sungma_immune = %d, \",\n\t\t\tpkTab->conqueror_level, pkTab->conqueror_level_step, pkTab->conqueror_exp, pkTab->conqueror_point,\n\t\t\tpkTab->sungma_str, pkTab->sungma_hp, pkTab->sungma_move, pkTab->sungma_immune);\n\n\tstatic char text[8192 + 1];\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerPlayer.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (select)",
+  "old": "\t\t\t\t\"UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(last_play),horse_skill_point\"\n",
+  "new": "\t\t\t\t\"UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(last_play),horse_skill_point\"\n\t\t\t\t// MT2009_PLUS_CHAMPION_V1 (select): read right after horse_skill_point (CreatePlayerTableFromRes).\n\t\t\t\t\",conqueror_level,conqueror_level_step,conqueror_exp,conqueror_point,sungma_str,sungma_hp,sungma_move,sungma_immune\"\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerPlayer.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (load)",
+  "old": "\tstr_to_number(pkTab->horse_skill_point, row[col++]);\n",
+  "new": "\tstr_to_number(pkTab->horse_skill_point, row[col++]);\n\t// MT2009_PLUS_CHAMPION_V1 (load): the eight columns of the select above.\n\tif (col + 8 <= (int)mysql_num_fields(res))\n\t{\n\t\tstr_to_number(pkTab->conqueror_level, row[col++]);\n\t\tstr_to_number(pkTab->conqueror_level_step, row[col++]);\n\t\tstr_to_number(pkTab->conqueror_exp, row[col++]);\n\t\tstr_to_number(pkTab->conqueror_point, row[col++]);\n\t\tstr_to_number(pkTab->sungma_str, row[col++]);\n\t\tstr_to_number(pkTab->sungma_hp, row[col++]);\n\t\tstr_to_number(pkTab->sungma_move, row[col++]);\n\t\tstr_to_number(pkTab->sungma_immune, row[col++]);\n\t}\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (point struct)",
+  "old": "\tBYTE\t\t\tskill_group;\n\tBYTE\t\t\thorse_inventory=0;\n} CHARACTER_POINT;",
+  "new": "\tBYTE\t\t\tskill_group;\n\tBYTE\t\t\thorse_inventory=0;\n\t// MT2009_PLUS_CHAMPION_V1 (point struct): Poziom Czempiona (playerbot_champion.cpp); the Sung Ma stats are points.\n\tBYTE\t\t\tconqueror_level;\n\tBYTE\t\t\tconqueror_level_step;\n\tshort\t\t\tconqueror_point;\n\tDWORD\t\t\tconqueror_exp;\n} CHARACTER_POINT;"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (methods)",
+  "old": "\t\tDWORD\t\t\tGetNextExp() const;\n\t\tLPCHARACTER\t\tDistributeExp();\n",
+  "new": "\t\tDWORD\t\t\tGetNextExp() const;\n\t\tLPCHARACTER\t\tDistributeExp();\n\t\t// MT2009_PLUS_CHAMPION_V1 (methods): Poziom Czempiona (playerbot_champion.h/.cpp, server-patches/czempion).\n\t\tBYTE\t\t\tGetConquerorLevel() const\t\t{ return m_points.conqueror_level; }\n\t\tvoid\t\t\tSetConquerorLevel(BYTE b)\t\t{ m_points.conqueror_level = b; }\n\t\tBYTE\t\t\tGetConquerorLevelStep() const\t{ return m_points.conqueror_level_step; }\n\t\tvoid\t\t\tSetConquerorLevelStep(BYTE b)\t{ m_points.conqueror_level_step = b; }\n\t\tDWORD\t\t\tGetConquerorExp() const\t\t\t{ return m_points.conqueror_exp; }\n\t\tvoid\t\t\tSetConquerorExp(DWORD d)\t\t{ m_points.conqueror_exp = d; }\n\t\tint\t\t\t\tGetConquerorPoint() const\t\t{ return m_points.conqueror_point; }\n\t\tvoid\t\t\tSetConquerorPoint(int i)\t\t{ m_points.conqueror_point = (short)MINMAX(0, i, 30000); }\n\t\tDWORD\t\t\tGetConquerorNextExp() const;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (save)",
+  "old": "\ttab.horse_skill_point = GetPoint(POINT_HORSE_SKILL);\n",
+  "new": "\ttab.horse_skill_point = GetPoint(POINT_HORSE_SKILL);\n\t// MT2009_PLUS_CHAMPION_V1 (save): Poziom Czempiona and the spent (real) Sung Ma points.\n\ttab.conqueror_level = GetConquerorLevel();\n\ttab.conqueror_level_step = GetConquerorLevelStep();\n\ttab.conqueror_exp = GetConquerorExp();\n\ttab.conqueror_point = GetConquerorPoint();\n\ttab.sungma_str = GetRealPoint(POINT_SUNGMA_STR);\n\ttab.sungma_hp = GetRealPoint(POINT_SUNGMA_HP);\n\ttab.sungma_move = GetRealPoint(POINT_SUNGMA_MOVE);\n\ttab.sungma_immune = GetRealPoint(POINT_SUNGMA_IMMUNE);\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (load)",
+  "old": "\tSetPoint(POINT_HORSE_SKILL, t->horse_skill_point);\n",
+  "new": "\tSetPoint(POINT_HORSE_SKILL, t->horse_skill_point);\n\t// MT2009_PLUS_CHAMPION_V1 (load): Poziom Czempiona and the spent Sung Ma points (ComputePoints adds the rest).\n\tSetConquerorLevel(MIN(t->conqueror_level, (BYTE)30));\n\tSetConquerorLevelStep(MIN(t->conqueror_level_step, (BYTE)3));\n\tSetConquerorExp(t->conqueror_exp);\n\tSetConquerorPoint(t->conqueror_point);\n\tSetRealPoint(POINT_SUNGMA_STR, t->sungma_str);\n\tSetRealPoint(POINT_SUNGMA_HP, t->sungma_hp);\n\tSetRealPoint(POINT_SUNGMA_MOVE, t->sungma_move);\n\tSetRealPoint(POINT_SUNGMA_IMMUNE, t->sungma_immune);\n\tSetPoint(POINT_SUNGMA_STR, t->sungma_str);\n\tSetPoint(POINT_SUNGMA_HP, t->sungma_hp);\n\tSetPoint(POINT_SUNGMA_MOVE, t->sungma_move);\n\tSetPoint(POINT_SUNGMA_IMMUNE, t->sungma_immune);\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (compute)",
+  "old": "\tSetPoint(POINT_IQ, GetRealPoint(POINT_IQ));\n\n\tSetPart(PART_MAIN, GetOriginalPart(PART_MAIN));\n",
+  "new": "\tSetPoint(POINT_IQ, GetRealPoint(POINT_IQ));\n\t// MT2009_PLUS_SUNGMA_V1 (compute): the spent Sung Ma points; items and affects add to them below.\n\tSetPoint(POINT_SUNGMA_STR, GetRealPoint(POINT_SUNGMA_STR));\n\tSetPoint(POINT_SUNGMA_HP, GetRealPoint(POINT_SUNGMA_HP));\n\tSetPoint(POINT_SUNGMA_MOVE, GetRealPoint(POINT_SUNGMA_MOVE));\n\tSetPoint(POINT_SUNGMA_IMMUNE, GetRealPoint(POINT_SUNGMA_IMMUNE));\n\n\tSetPart(PART_MAIN, GetOriginalPart(PART_MAIN));\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (point change)",
+  "old": "\t\tcase POINT_ENCHANT_DARK:\n\t\tcase POINT_RESIST_HUMAN:\n",
+  "new": "\t\tcase POINT_ENCHANT_DARK:\n\t\tcase POINT_SUNGMA_STR: // MT2009_PLUS_SUNGMA_V1 (point change): an item's or affect's Sung Ma points\n\t\tcase POINT_SUNGMA_HP:\n\t\tcase POINT_SUNGMA_MOVE:\n\t\tcase POINT_SUNGMA_IMMUNE:\n\t\tcase POINT_RESIST_HUMAN:\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (max hp)",
+  "old": "\t\t\t\tSetMaxHP(hp + add_hp);\n",
+  "new": "\t\t\t\t// MT2009_PLUS_SUNGMA_V1 (max hp): half on a Sung Ma map while Sung Ma HP is short (playerbot_champion.cpp).\n\t\t\t\t{ int ChampionMaxHP(const CHARACTER*, int); SetMaxHP(ChampionMaxHP(this, hp + add_hp)); }\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (move speed)",
+  "old": "\t\t\t\tif (FindAffect(AFFECT_WAR_FLAG))\n\t\t\t\t\tlimit = 50;\n",
+  "new": "\t\t\t\t// MT2009_PLUS_SUNGMA_V1 (move speed): half on a Sung Ma map while Sung Ma movement is short.\n\t\t\t\t{ int ChampionMoveSpeed(const CHARACTER*, int); val = ChampionMoveSpeed(this, val); }\n\t\t\t\tif (FindAffect(AFFECT_WAR_FLAG))\n\t\t\t\t\tlimit = 50;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (distribute)",
+  "old": "\tint iExpToDistribute = GetExp();\n",
+  "new": "\t// MT2009_PLUS_CHAMPION_V1 (distribute): the champion experience of a Sung Ma map's monster, before the\n\t// ordinary one (a Yohara monster has none, which returns below) - playerbot_champion.cpp.\n\t{ void ChampionDistributeExp(LPCHARACTER); ChampionDistributeExp(this); }\n\tint iExpToDistribute = GetExp();\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (damage)",
+  "old": "\t// Playerbot: a player's blow at a bot, or at a person in a party, is\n",
+  "new": "\t// MT2009_PLUS_SUNGMA_V1 (damage): a person's blow at a monster of a Sung Ma map - halved while Sung Ma\n\t// strength is short, blocked without a Champion level (playerbot_champion.cpp).\n\t{\n\t\tint ChampionDamage(LPCHARACTER, LPCHARACTER, int);\n\t\tdam = ChampionDamage(this, pAttacker, dam);\n\t\tif (dam < 0)\n\t\t{\n\t\t\tif (pAttacker)\n\t\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\t\treturn false;\n\t\t}\n\t}\n\n\t// Playerbot: a player's blow at a bot, or at a person in a party, is\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (attackable)",
+  "old": "\tif (victim->IsAffectFlag(AFF_REVIVE_INVISIBLE))\n\t\treturn false;\n",
+  "new": "\t// MT2009_PLUS_SUNGMA_V1 (attackable): no attack at a monster of a Sung Ma map without a Champion level.\n\t{ bool ChampionCanAttack(LPCHARACTER, LPCHARACTER); if (!ChampionCanAttack(ch, victim)) return false; }\n\n\tif (victim->IsAffectFlag(AFF_REVIVE_INVISIBLE))\n\t\treturn false;\n"
+ },
+ {
+  "file": "char_resist.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (fire)",
+  "old": "void CHARACTER::AttackedByFire(LPCHARACTER pkAttacker, int amount, int count)\n{\n",
+  "new": "void CHARACTER::AttackedByFire(LPCHARACTER pkAttacker, int amount, int count)\n{\n\t// MT2009_PLUS_SUNGMA_V1 (fire): half as often from a person short of Sung Ma intelligence on a Sung Ma map.\n\t{ bool ChampionImmuneBlocks(LPCHARACTER, LPCHARACTER); if (ChampionImmuneBlocks(pkAttacker, this)) return; }\n"
+ },
+ {
+  "file": "char_resist.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (poison)",
+  "old": "void CHARACTER::AttackedByPoison(LPCHARACTER pkAttacker)\n{\n",
+  "new": "void CHARACTER::AttackedByPoison(LPCHARACTER pkAttacker)\n{\n\t// MT2009_PLUS_SUNGMA_V1 (poison): half as often from a person short of Sung Ma intelligence on a Sung Ma map.\n\t{ bool ChampionImmuneBlocks(LPCHARACTER, LPCHARACTER); if (ChampionImmuneBlocks(pkAttacker, this)) return; }\n"
+ },
+ {
+  "file": "char_resist.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_V1 (bleeding)",
+  "old": "void CHARACTER::AttackedByBleeding(LPCHARACTER pkAttacker)\n{\n",
+  "new": "void CHARACTER::AttackedByBleeding(LPCHARACTER pkAttacker)\n{\n\t// MT2009_PLUS_SUNGMA_V1 (bleeding): half as often from a person short of Sung Ma intelligence on a Sung Ma map.\n\t{ bool ChampionImmuneBlocks(LPCHARACTER, LPCHARACTER); if (ChampionImmuneBlocks(pkAttacker, this)) return; }\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (login)",
+  "old": "\t{ void RankPointsOnLogin(LPCHARACTER); RankPointsOnLogin(ch); }\n",
+  "new": "\t{ void RankPointsOnLogin(LPCHARACTER); RankPointsOnLogin(ch); }\n\t// MT2009_PLUS_CHAMPION_V1 (login): the Sung Ma penalties of this map and the client's champion_info / sungma_map.\n\t{ void ChampionOnLogin(LPCHARACTER); ChampionOnLogin(ch); }\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (declare)",
+  "old": "struct command_info cmd_info[] =\n",
+  "new": "// MT2009_PLUS_CHAMPION_V1 (declare): /conqueror_stat (players) and /champion (game masters), playerbot_champion.cpp.\nACMD(do_conqueror_stat);\nACMD(do_champion);\nstruct command_info cmd_info[] =\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (table)",
+  "old": "\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};",
+  "new": "\t// MT2009_PLUS_CHAMPION_V1 (table): spending a Sung Ma point; the game masters' test command.\n\t{ \"conqueror_stat\",\tdo_conqueror_stat,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"champion\",\tdo_champion,\t0,\t\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_V1 (lua)",
+  "old": "\t\tRegisterCommandFunctionTable();\n",
+  "new": "\t\t// MT2009_PLUS_CHAMPION_V1 (lua): pc.*conqueror*, pc.*sungma*, npc.get_sungma_exp (playerbot_champion.cpp).\n\t\t{ void RegisterChampionFunctions(); RegisterChampionFunctions(); }\n\t\tRegisterCommandFunctionTable();\n"
+ }
+]

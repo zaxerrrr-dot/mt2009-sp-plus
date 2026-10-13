@@ -72,6 +72,10 @@ param(
 #   Obrona Statku      dungeon.cpp, char_battle.cpp, pvp.cpp, char.cpp, input_login.cpp,
 #                      regen.cpp, sectree.cpp, char_state.cpp, questlua.cpp, cmd.cpp
 #                      (MT2009_PLUS_SHIP_DEFENSE_V1; server-patches/shipdefense)
+#   Poziom Czempiona   common length.h/tables.h/CommonDefines.h, db ClientManagerPlayer.cpp,
+#                      char.h, char.cpp, char_battle.cpp, battle.cpp, char_resist.cpp,
+#                      input_login.cpp, cmd.cpp, questlua.cpp, ENABLE_CONQUEROR_LEVEL
+#                      (MT2009_PLUS_CHAMPION_V1, MT2009_PLUS_SUNGMA_V1; server-patches/czempion)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1210,6 +1214,23 @@ if ((Test-Path -LiteralPath $shipDefenseApply -PathType Leaf) -and
     if ($shipDefenseResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Ship Defense (Hydra) edit(s).' -f $shipDefenseResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Poziom Czempiona + Sung Ma (server-patches/czempion, MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1): the
+# player table's eight champion columns (common tables.h, db ClientManagerPlayer.cpp load/save - db and game
+# from the same header), POINT_SUNGMA_* after the elements (server-only), the champion level and its experience
+# (char.h/char.cpp, char_battle.cpp DistributeExp), the bar filling at the top level, the Sung Ma map penalties
+# (max HP, move speed, damage, poison/fire/bleeding, no attack without the level), /conqueror_stat, /champion,
+# the quests' pc.*conqueror* / pc.*sungma* and ENABLE_CONQUEROR_LEVEL last in CommonDefines.h. The work is the
+# overlay's playerbot_champion.*. After Obrona Statku: its cmd.cpp and questlua.cpp anchors sit beside those.
+$czempionApply = Join-Path $repo 'server-patches/czempion/Apply-CzempionPatch.ps1'
+if ((Test-Path -LiteralPath $czempionApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_resist.cpp') -PathType Leaf)) {
+    $czempionResult = & $czempionApply -SourceDir $engineGameSource
+    if ($czempionResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Champion level (Sung Ma) edit(s).' -f $czempionResult.Applied) -ForegroundColor DarkGray
     }
 }
 

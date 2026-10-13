@@ -180,6 +180,9 @@ linux-port/docker/game/zodiak/data/monster/cz_zephyr/*
 linux-port/docker/game/zodiak/map/metin2_12zi_stage/*
 # MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku's share files (Dockerfile step "share: Obrona Statku"). Its engine
 # sources are playerbot_ship_defense*.{h,cpp} - the overlay's and the build context's playerbot_* lines carry them.
+# MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1: Poziom Czempiona's share files (Dockerfile step "share: Poziom
+# Czempiona"); its engine sources are playerbot_champion.{h,cpp} (the playerbot_* lines).
+linux-port/docker/game/champion/*
 linux-port/docker/game/shipdefense/*
 linux-port/docker/game/shipdefense/data/dungeon/defense_wave/*
 linux-port/docker/game/shipdefense/data/monster/defensewave_hydra_boss/*
@@ -358,4 +361,6 @@ linux-port/docker/game/src/server/game/src/party.h
 linux-port/docker/game/src/server/game/src/questmanager.h
 linux-port/docker/game/src/server/game/src/regen.h
 linux-port/docker/game/src/server/game/src/typedef.h
+# MT2009_PLUS_CHAMPION_V1 (server-patches/czempion): engine files only the Champion / Sung Ma hooks change.
+linux-port/docker/game/src/server/game/src/char_resist.cpp
 linux-port/docker/panel/app/register_assets/*

@@ -1298,6 +1298,18 @@ RUN set -eu; M=/opt/metin2/share/locale/poland/map/Metin2_map_CapeDragonHead; A=
  && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]1010[13][[:blank:]]*$' "$M/npc.txt")" = 0 \
  && rm -rf /tmp/cape301-add \
  && echo "share: Przyladek Smoczego Ognia (301: server_attr of the GF terrain, npc.txt without the 303/304 portals)"
+# MT2009_PLUS_CHAMPION_V1 / MT2009_PLUS_SUNGMA_V1 (share): Poziom Czempiona and the Sung Ma stats (server-patches/czempion/
+# README.md). sungma_table.txt - the Sung Ma requirements of the GF 26.1.11 client's 19 Yohara maps by name (the engine
+# matches the names against map/index, so none of our maps is touched until a Yohara map comes); sungma_mob_exp.txt -
+# the champion experience of 356 monsters (Owsap's SungMaExp), given only on a Sung Ma map. Both made by
+# tools/champion/gen_sungma_data.py; "/champion reload" reads them again.
+COPY champion/ /tmp/champion-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/champion-add \
+ && for f in sungma_table.txt sungma_mob_exp.txt; do sed 's/\r$//' "$A/$f" > "$L/$f"; done \
+ && test "$(grep -c -E '^metin2_map_[a-z0-9_]+[[:blank:]]+[0-9]+[[:blank:]]+[0-9]+[[:blank:]]+[0-9]+[[:blank:]]+[0-9]+$' "$L/sungma_table.txt")" = 19 \
+ && test "$(grep -c -E '^[0-9]+[[:blank:]]+[0-9]+$' "$L/sungma_mob_exp.txt")" -gt 300 \
+ && rm -rf "$A" \
+ && echo "share: Poziom Czempiona (sungma_table.txt, sungma_mob_exp.txt)"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only
