@@ -1,0 +1,788 @@
+{
+ "objects": {
+  "crc_used": 14,
+  "earlier_builders": 0,
+  "ours": 7,
+  "staged": 7
+ },
+ "packs": {
+  "port_map": [
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_defensewave_port/atlas.sub",
+    "sha1": "f140627d307e334c869afdee5ab5a163ed6de77a",
+    "size": 114,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/metin2_map_defensewave_port_atlas.dds",
+    "sha1": "4a3d16a4c558b7b82ec7b26ab22d561b50c15537",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_ferryboat02.gr2",
+    "sha1": "4979f6df296c6802acd648f44c7d0d6d447dddc5",
+    "size": 13729,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_gate_01.dds",
+    "sha1": "04c259e07472020a4c6f1239ab3d9131d787576b",
+    "size": 699192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_gate_02.dds",
+    "sha1": "2b65a8f2bb966c28939d25b9838608da14a4376f",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_gate_02.gr2",
+    "sha1": "cf15fab7aa9148ac184027dad88774c8b6c668fa",
+    "size": 12083,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_gate_02.mdatr",
+    "sha1": "028356e4b6229b3743b806ea1b86a31cdd53664e",
+    "size": 1642,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_ob_01.dds",
+    "sha1": "226036ba0d0c93cc3a3a0349f9dd8321cb7c81d0",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_obj_02.dds",
+    "sha1": "977d91c57e6a8039425f048972374259aaa0109e",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_stair_01.dds",
+    "sha1": "5901085cbba2d9a5b6fe5764bf72eb0145efa947",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_stair_01.gr2",
+    "sha1": "160af954c8c76135b284a354200b9674434559a8",
+    "size": 90708,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_stair_01.mdatr",
+    "sha1": "a9ada4437d51d06b237137246c3764624a3c882a",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_general_statue_01.gr2",
+    "sha1": "7217d69efd0770f6887521ebc43c9f1e4e99ead0",
+    "size": 54212,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_old_dock_obj_01.gr2",
+    "sha1": "43de3c70a4f9c2e7bde426df71704cd4bf29a468",
+    "size": 22911,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_old_dock_obj_01.mdatr",
+    "sha1": "a146f193a4d8647b4bfb3db82f5ad28f11cb534d",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_old_dock_obj_02.gr2",
+    "sha1": "9f78176d549de0d1072578bac588adc0212c1235",
+    "size": 28208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_old_dock_obj_02.mdatr",
+    "sha1": "7e065aab31306b60da2474a58a32ab0da2a482e4",
+    "size": 490,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_old_dock_obj_03.gr2",
+    "sha1": "f1302d13bbe41d0877fb03282159acb42a9913ce",
+    "size": 19072,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/defensewave_port/b_old_dock_obj_03.mdatr",
+    "sha1": "de67906fb454125b452329121c505695ead218d7",
+    "size": 274,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/eastplain/deadwood_001.dds",
+    "sha1": "907be8c727c4cc2bc06826ce8c357afa96667659",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/eastplain/deadwood_08.gr2",
+    "sha1": "d20be03372800ac1ade6874b5f612bc50ffb1e1d",
+    "size": 20379,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/eastplain/deadwood_08.mdatr",
+    "sha1": "40e1b640631349f6585134dd69bf70c1d6146949",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/ghost/c1-008-house5-1_01.dds",
+    "sha1": "aeac34db5f3687cc17ef081543386352832dc1d9",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/ghost/c1-008-house5-2_02.dds",
+    "sha1": "49c2a6c9396f0795278a15c28c699db00af0ceda",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/ghost/c1-008-house5-2_02.gr2",
+    "sha1": "3e6e6c6bec3ee272500e912b794fffac7284d966",
+    "size": 52411,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/ghost/c1-008-house5-3_03.dds",
+    "sha1": "3673fd2e3e9a862c689425f83778a62b956afd3a",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/ghost/c1-035-woodgate_01.dds",
+    "sha1": "9a04d427642d2d896882b08d88e813cff35dfd60",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/ghost/c1-035-woodgate_01.gr2",
+    "sha1": "2e32252c482aec3d803b551d1334732d337ed5b3",
+    "size": 18136,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/attr.atr",
+    "sha1": "b822c85d500c11673257bb07f995cb02beece3f9",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/height.raw",
+    "sha1": "2a553f98ae75573875617b3e008f8979df608a99",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/minimap.dds",
+    "sha1": "608192aae156132412438c4347c29e8305bc8cd7",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/tile.raw",
+    "sha1": "c07e583e626b18006ef1c3999bcf8931f9811c37",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000000/water.wtr",
+    "sha1": "a13eff31f97b278a254fb648c9e44fb3951e1989",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/areadata.txt",
+    "sha1": "2f47c7c99c637b3ba41736cb2cde2473e01cf9d9",
+    "size": 1148,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/attr.atr",
+    "sha1": "f706f7a76366359902fcf5b6677e8fe03eabab1d",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/height.raw",
+    "sha1": "a5775ec64e49a4938e42524d71a8299bf472ba26",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/minimap.dds",
+    "sha1": "6977f879053b7924c6eb574a4a9a17930dba4650",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/shadowmap.dds",
+    "sha1": "8d9f9f2ae99924448280fd68e2a155c856bd06b0",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/shadowmap.raw",
+    "sha1": "aaae6d0b3e969f909ef71d08997d83398a514ad4",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/tile.raw",
+    "sha1": "7043889a5f9886e37447da873279f746c4a742f3",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000001/water.wtr",
+    "sha1": "a13eff31f97b278a254fb648c9e44fb3951e1989",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/areadata.txt",
+    "sha1": "2ebf47cecbecec8acec6a650bc48fbfc7633e37b",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/attr.atr",
+    "sha1": "92d5dad04a65e2b21372780a765d184991cf091c",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/height.raw",
+    "sha1": "748510445ca79773072a5f0e0fb3b808b9cfe3e0",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/minimap.dds",
+    "sha1": "49cdce29b45eab6dce2f714465f7b32d805148d2",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/shadowmap.dds",
+    "sha1": "14d019c3c2a10a6456958c0ec4b73b27e159c577",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/shadowmap.raw",
+    "sha1": "4224b35154ee9c97023f9f1fd9f3dc0f24e40533",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/tile.raw",
+    "sha1": "9f655d42a5e058221f814d13afc156b2e4c0e4c0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/000002/water.wtr",
+    "sha1": "a13eff31f97b278a254fb648c9e44fb3951e1989",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/attr.atr",
+    "sha1": "026d04275233cc2f3a36744fb7f64e9096327aa6",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/height.raw",
+    "sha1": "ace09adc8fa17e0e74587b54bd3828cf7c3db12b",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/minimap.dds",
+    "sha1": "6c578981824a5cf162f5ee159a7b881afa732ade",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/tile.raw",
+    "sha1": "abb23e262b2538a5e866e66ee7a2deae7d029d24",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001000/water.wtr",
+    "sha1": "a13eff31f97b278a254fb648c9e44fb3951e1989",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/areadata.txt",
+    "sha1": "412e3fdf1e6a5333279e7c4f3d089642c01cf244",
+    "size": 1297,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/attr.atr",
+    "sha1": "3d45f9514b4f6f797b517d1c14195bd940098f3d",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/height.raw",
+    "sha1": "f6843f8d1deeaff029d6a218b21f9a5a1624c7bd",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/minimap.dds",
+    "sha1": "f6738cf3c6d4714e1da4387fbb0bae63dbaacebe",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/shadowmap.dds",
+    "sha1": "777c854c8ea8734d95bd5b1e3da13894f678e6a4",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/shadowmap.raw",
+    "sha1": "c9d4022fc246973b11a771d478c1d3ca456bd1f4",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/tile.raw",
+    "sha1": "6bd73757d1be89f2dd8172031aa690059a3d25dd",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001001/water.wtr",
+    "sha1": "a13eff31f97b278a254fb648c9e44fb3951e1989",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/attr.atr",
+    "sha1": "7de1dae67ec8f1ebf47c5c5c47c8d5917a1acc55",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/height.raw",
+    "sha1": "301df98338786cda492114fba82211ffb1c30275",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/minimap.dds",
+    "sha1": "7a93746393a5c1df6b79dd26f850287f46eb7640",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/shadowmap.dds",
+    "sha1": "886eb18b8302180403616777e22782e001431a21",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/shadowmap.raw",
+    "sha1": "8cb5ef7be5ca7ceac3a105a4acf9f09283a60431",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/tile.raw",
+    "sha1": "5984d8076165b2bd6c99d95851b9a222b37bcbe8",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/001002/water.wtr",
+    "sha1": "a13eff31f97b278a254fb648c9e44fb3951e1989",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/attr.atr",
+    "sha1": "42b63105cf2c354d9ca93573bbe42ac909908276",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/height.raw",
+    "sha1": "16250bfaaf3144f71025615bb212d6386af90652",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/minimap.dds",
+    "sha1": "c37fe4c71464cb777cddd251b493c44e58f747db",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/tile.raw",
+    "sha1": "6ef981b999d5fd0f11acaa9fd2b764a552a0363b",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002000/water.wtr",
+    "sha1": "a13eff31f97b278a254fb648c9e44fb3951e1989",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/attr.atr",
+    "sha1": "42b63105cf2c354d9ca93573bbe42ac909908276",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/height.raw",
+    "sha1": "20812254d4aeee0c0dd77e783b5be76aa6ff5f96",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/minimap.dds",
+    "sha1": "807d5c31d9861fb77d28829dd47636b3ad45a35f",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/tile.raw",
+    "sha1": "feeb6dc52c9f7da6a072124b09d78a397f1aa84f",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002001/water.wtr",
+    "sha1": "a13eff31f97b278a254fb648c9e44fb3951e1989",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/attr.atr",
+    "sha1": "42b63105cf2c354d9ca93573bbe42ac909908276",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/height.raw",
+    "sha1": "cd033ddd5cd007badae9979c4eaa260559c7e5b1",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/minimap.dds",
+    "sha1": "b97b58a3980064d710810f0f3625f7d33fa59862",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/tile.raw",
+    "sha1": "9efcefc01a6b8024c7402c82306da65b7b9fe2ed",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/002002/water.wtr",
+    "sha1": "a13eff31f97b278a254fb648c9e44fb3951e1989",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/defensewave_blue.msenv",
+    "sha1": "3240725d53b0b88bfc23160cd13b2bcd86c9e38d",
+    "size": 2716,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/mapproperty.txt",
+    "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+    "size": 47,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_defensewave_port/setting.txt",
+    "sha1": "3dadabba312981c1db2a6bf93ac4a11fa2db8172",
+    "size": 211,
+    "source": "gen"
+   }
+  ],
+  "property": [
+   {
+    "name": "property/defensewave/b_general_gate_02.prb",
+    "sha1": "c8e2d460e215a2c47b8baec5533db3c5e376c71d",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/b_general_stair_01.prb",
+    "sha1": "92eeaece78bb7f7da43edafac3b2ae3e6b41e65a",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/b_general_statue_01.prb",
+    "sha1": "368968af75c401727c2dab95ed71a7b1e599cf40",
+    "size": 174,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/b_old_dock_obj_01.prb",
+    "sha1": "f863293e080c4232a1fffda8dc829b8a07634a82",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/b_old_dock_obj_02.prb",
+    "sha1": "84cc58aa7ce3bee14e8ae400fc5a98731232766c",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/defensewave/b_old_dock_obj_03.prb",
+    "sha1": "d026a1ba5a26da6d0bf1becd1a12695744ff6dd4",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/eastplain/deadwood_08.prb",
+    "sha1": "2af0c6b704730e3ba704efe40d594d54c364c3a2",
+    "size": 150,
+    "source": "gf"
+   }
+  ]
+ },
+ "unresolved": {
+  "effects": [],
+  "map": [
+   "d:/project/metin2/data/zone/devils_dragon_island/ships_brokenbody00.gr2"
+  ]
+ }
+}
