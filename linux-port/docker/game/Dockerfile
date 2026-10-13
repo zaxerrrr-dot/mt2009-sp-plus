@@ -1267,7 +1267,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
 # list (mob_drop_item.shipdefense.txt) - and Skrzynia Hydry's (54705) group, one item an opening, and
 # Pakiet Kamieni Duszy's (72058) group, one spirit stone as a Metin's (special_item_group.shipdefense.txt).
 # None may exist before (a mob's first limit group wins).
-# The port (Owsap's 359, here 368) comes with Yohara.
+# The port (Owsap's 359, here 368): the step "share: Port Nowego Kontynentu" below (MT2009_PLUS_YOHARA_PORT_V1).
 COPY shipdefense/ /tmp/shipdefense-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/shipdefense-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \

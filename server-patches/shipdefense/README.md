@@ -120,8 +120,8 @@ przy pierwszym wejściu do nowej instancji (GM i boty za darmo); „Wróć do lo
 `dw.set_alliance_hp_pct(0)`. Hydra 3962: panel lochów (`d.update_ranking("hydra", czas od startu)`, wpis
 `hydra` w `arezzo/dungeon_info.txt`) i trwała flaga przejścia ludzi drużyny na statku:
 `obrona_statku.completed` (liczba), `completed_at` (czas), `completed_at_120` = 1 przy poziomie 120+
-(pod przyszły poziom Mistrza); kto nie był w drużynie zabójcy, dostaje ją przy portalu 3949 (klik → ląd,
-301; port 368 z Yoharą). Boty flagi nie dostają (decyzja: na razie nie).
+(pod przyszły poziom Mistrza); kto nie był w drużynie zabójcy, dostaje ją przy portalu 3949 (klik → po
+zwycięstwie wybór: Port Nowego Kontynentu 368 albo ląd 301). Boty flagi nie dostają (decyzja: na razie nie).
 
 Pułapki kompilatora `qc` (sprawdzone): napis kończący się polską literą (`"…obronę"`) wywala `qc` bez
 komunikatu, a `dw.state()` jest błędem składni (`state` to słowo kluczowe `qc`) – w queście `dw["state"]()`.
@@ -143,7 +143,11 @@ Decyzja właściciela z 13.10.2026. Pliki w `linux-port/docker/game/shipdefense/
   (`CHARACTER::DetermineDropMetinStone`): rodzaj – jeden z 14 (28030–28043) po równo, stopień – średnia
   wierszy `aStoneDrop` (Metiny 8005–8014): +0 16,9%, +1 27,3%, +2 34,6%, +3 19,0%, +4 2,2%
   (70 wierszy, suma wag 14000).
-Pierścień Hydry (70303) i Spirala Czasu (72347) celowo NIE są nagrodami (decyzja właściciela 13.10.2026).
+Pierścień Hydry (70303) wrócił do nagród (właściciel, 13.10.2026 wieczorem; `MT2009_PLUS_YOHARA_PORT_V1`):
+Skarb Hydry 1 × 30% + 1 × 10% (0–2 jak na wiki: 63% / 34% / 3%), Skrzynia Hydry waga 30 (3%) – po 10 z Zwoju
+Błogosławieństwa (80→70), Notatki Przywódcy i Czerwonego Konaru (60→50); Magiczny Kamień nadal dokładnie 40 (4%),
+suma 1000. Pierścień: 3 teleporty do Portu Nowego Kontynentu (368), potem znika (quest `port_yohary`).
+Spirala Czasu (72347) celowo NIE jest nagrodą.
 Brakujące u nas przedmioty i zamienniki są wypisane w nagłówkach obu plików. Klient: Deska Naprawcza,
 Skrzynia Hydry i Pakiet Kamieni Duszy w `item_proto`, `item_list.txt` i `itemdesc.txt` oraz pusty opis
 Magicznego Kamienia – `client-patches/client-2.0.30/tools/yohara/patch_yohara_client.py`.
@@ -159,3 +163,18 @@ MT2009_PLUS_REFINE_TOOLTIP_V1). Wypada ze Skrzyni Hydry (4%).
 ## Test GM (bez questa)
 
 `/dw create` (tylko na rdzeniu z mapą 367 – game1) → `/dw start` → `/dw info`, `/dw wave 4`, `/dw end`.
+
+## Port Nowego Kontynentu (368) – `MT2009_PLUS_YOHARA_PORT_V1`
+
+Decyzja właściciela z 13.10.2026 wieczorem. `metin2_map_defensewave_port` (Owsap 359) jako mapa 368, 3x3 na
+128000 563200, rdzeń game2 obok 301 (`bin/m2-render-config`). Dane: `linux-port/docker/game/yohara_port/`
+(krok Dockerfile „share: Port Nowego Kontynentu”): `server_attr` zrobiony z `attr.atr` klienta GF 26.1.11
+(`tools/gf28/srvattr.py`, 100% komórek – plik Owsapa blokuje 2244 komórki więcej, cały plac z NPC, i całą mapę
+oznacza jako wodę), Setting/Town Owsapa, `npc.txt` tylko z Posągiem Wojownika (20433, 241 574). Bez potworów
+i Metinów; kowale zestawów (20475–20479), sklep i pozostałe funkcje posągu – później.
+
+Wejście od poziomu 90: portal 3949 po wygranej, Rybak 9009 („Port Nowego Kontynentu”, gdy `obrona_statku.completed`
+> 0) albo Pierścień Hydry. Posąg: „Zostań Czempionem” / „Poziom Czempiona” (`czempion`), „Ranking lochów”
+(`cmdchat DungeonInfo show` – otwiera panel wypraw, `client-patches/client-2.0.30/root/dungeoninfo.py`) i „Wróć na
+Przylądek Smoczego Ognia” (do Rybaka) – quest `port_yohary`, który pilnuje też poziomu 90 przy wejściu na mapę.
+Klient: paczki mapy `client-patches/client-2.0.30/tools/port368/`.

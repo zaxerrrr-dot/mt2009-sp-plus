@@ -79,3 +79,4 @@ cost	hydra	5000000
 drop	hydra	54705	3	100
 drop	hydra	25042	1	4
 drop	hydra	55410	1	1
+drop	hydra	70303	1	30

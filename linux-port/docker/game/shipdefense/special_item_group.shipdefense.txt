@@ -8,8 +8,11 @@
 # 10-20. (13 October, the owner: Pakiet Kamieni Duszy x3 added - its 60 taken 10 each from Zwoj
 # Blogoslawienstwa 90->80, Zaczarowanie / Wzmocnienie Przedmiotu and Przepustka 70->60, Klejnot
 # Madrosci / Zawisci 60->50; the total stays 1000.)
-# Intentionally left out (the owner, 13 October 2026): Pierscien Hydry (70303) and Spirala Czasu (72347)
-# are NOT Hydra rewards. Not in our world.item_proto, left out: Kamyki x200 (50926 is a recipe here),
+# MT2009_PLUS_YOHARA_PORT_V1 (the owner, 13 October 2026, evening): Pierscien Hydry (70303) is one of the
+# picks again - 30 (3%), taken 10 each from Zwoj Blogoslawienstwa 80->70, Notatka Przywodcy x5 and Czerw.
+# Konar Duchodrzewa x5 60->50; Magiczny Kamien stays exactly 40 (4%), the total stays 1000.
+# Spirala Czasu (72347) stays out (not a Hydra reward).
+# Not in our world.item_proto, left out: Kamyki x200 (50926 is a recipe here),
 # Tajemnicze Pudelko, Torba Emocji (38060), Zwoj Przywolania GY / SLW (72052 / 72051). Our names: Odzywka
 # is Proteinowa Przekaska (55001), Szarfa Wladcy (zacna) is Szarfa Wladcy +2 (85003), Smoczy Plomien (B)
 # is "Flame of the Dragon (B)" (100700), Tygrys Bengalski (bialy) is the mount itself (71142, 20 days),
@@ -20,13 +23,13 @@ Group	MT2009_shipdef_chest_54705
 {
 	Vnum	54705 -- Skrzynia Hydry
 	1	25042	1	40 -- Magiczny Kamien (4%)
-	2	25040	1	80 -- Zwoj Blogoslawienstwa
+	2	25040	1	70 -- Zwoj Blogoslawienstwa
 	3	71084	1	60 -- Zaczarowanie Przedmiotu
 	4	71085	1	60 -- Wzmocnienie Przedmiotu
 	5	30252	5	50 -- Klejnot Madrosci x5
 	6	30251	5	50 -- Klejnot Zawisci x5
-	7	30168	5	60 -- Notatka Przywodcy x5
-	8	30167	5	60 -- Czerw. Konar Duchodrzewa x5
+	7	30168	5	50 -- Notatka Przywodcy x5
+	8	30167	5	50 -- Czerw. Konar Duchodrzewa x5
 	9	71001	2	60 -- Zwoj Egzorcyzmu x2
 	10	71083	2	60 -- Ksiega Obrobki Kamienia x2
 	11	71130	1	60 -- Przepustka
@@ -41,6 +44,7 @@ Group	MT2009_shipdef_chest_54705
 	20	85003	1	10 -- Szarfa Wladcy (zacna) = Szarfa Wladcy +2
 	21	71142	1	10 -- Tygrys Bengalski (bialy)
 	22	72058	3	60 -- Pakiet Kamieni Duszy x3
+	23	70303	1	30 -- Pierscien Hydry
 }
 
 # MT2009_PLUS_SHIP_DEFENSE_V1: Pakiet Kamieni Duszy (72058, the official vnum and icon icon/item/27999.tga;
