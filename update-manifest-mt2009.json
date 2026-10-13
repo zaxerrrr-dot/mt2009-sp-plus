@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-13T07:00:00Z",
-  "statusMessage": "MT2009 PLUS 2.32.0: porzadki w plecakach botow, wojna gildii na wszystkich kanalach, handel Smocza Alchemia. Klient 2.0.63.",
+  "publishedAt": "2026-10-14T07:00:00Z",
+  "statusMessage": "MT2009 PLUS 2.33.0: stabilniejsze lochy, porzadki u botow i Towarzysza, uczciwe rankingi. Klient 2.0.64.",
   "server": {
-    "version": "2.32.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.32.0/metin2-server-update-2.32.0.zip",
-    "sha256": "B84263C0E59275F3AF8B3CB54D62ABA2C18926A226525D5E4B2040968A555197",
-    "size": 113653227
+    "version": "2.33.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.33.0/metin2-server-update-2.33.0.zip",
+    "sha256": "D7B9A32B3E34DA1413D2F75B457FDB592EAB8D908F29D8AFC21E9460D78F2B2E",
+    "size": 113691459
   },
   "client": {
-    "version": "2.0.63",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.63/metin2-client-update-2.0.63.zip",
-    "sha256": "FCA119B5121E8365AA0897972D458B9740CB488E4998A1C7E2822F83109D9201",
-    "size": 617387541
+    "version": "2.0.64",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.64/metin2-client-update-2.0.64.zip",
+    "sha256": "3508C04E6EE4E1D069CDE8FA402B392530B30348435F6CF5F4182687570B999E",
+    "size": 617392511
   }
 }

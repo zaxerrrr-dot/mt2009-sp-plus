@@ -17,6 +17,58 @@ every version here.
 
 ---
 
+## 2.33.0 — 2026-10-14 — Stabilniejsze lochy, porządki u botów i Towarzysza, uczciwe rankingi
+
+### Poprawki krytyczne
+- **Kanał nie pada już po zabiciu bossa w drużynie.** Zapis wyniku lochu do rankingu przełączał skrypt bossa na innego członka drużyny, przez co serwer potrafił się wyłączyć (m.in. przy Razadorze). W pojedynkę błąd nie występował.
+- **Nagroda rankingu tygodniowego liczy się tylko raz.** Przy logowaniu postać mogła dostać nagrodę dwukrotnie (np. 23% + 18% zamiast 18%, atak 75 + 75). Teraz zawsze jest jedna, aktualna – podwójne kopie znikną same przy pierwszym zalogowaniu.
+- **Nagrody top 10 minigier (Yut Nori, Rumi)** trafiają do każdej postaci tylko raz na sezon – wcześniej boty po każdym ponownym zalogowaniu odbierały je od nowa.
+
+### Wojna gildii
+- **Koniec wojny nie zabiera rangi.** Ostatnie ciosy wojny (ofiara pada chwilę po jej zakończeniu) były liczone jak zwykłe zabójstwo – zabójca tracił 2000 punktów rangi, a ofiara mogła zgubić przedmioty. Teraz śmierć na arenie i tuż po końcu wojny jest zawsze wojenna.
+
+### Lochy i drop
+- **Skrzynia Mroku daje Kamień Księżycowy** (ok. 5% otwarć) – wcześniej gra go pomijała.
+- **Generałowie i Dowódcy Yonghan/Huashin dają biżuterię 80 lvl** (Generałowie 10%, Dowódcy 2%), a Generałowie znów dają Bilet do Atlantydy.
+- **Skrzynia Dżungli daje zbroje 90 lvl** – wcześniej wypadały z niej tylko bronie.
+- **Razador:** zamknięta Smocza Brama zatrzymuje teraz postać (wcześniej dało się przez nią przejść). Łańcuchy na moście, jak dotąd, nie blokują.
+- **Drop zapisany w edytorze bazy danych** nie ukrywa już nowych grup dropu dodawanych w kolejnych aktualizacjach – działają obok Twoich zmian, a edytor pokazuje o nich informację z podglądem i przyciskiem „Przejmij”.
+- **Karty Potworów** nie teleportują już na mapy, na które wchodzi się z przepustką (np. Grota Wygnańców).
+
+### Dom Aukcyjny
+- **Dokładna nazwa = tylko ten przedmiot** (Autor: Vekirion). Wpisanie np. „Ząb Orka” pokazuje wyłącznie Ząb Orka – także gdy nikt go teraz nie sprzedaje (wcześniej pokazywało „Ząb Orka+” i „Złoty Ząb Orka”).
+- **Nowa kategoria „Zioła”** (Pokrzywa, Kwiat Kaki, grzyby…), zaraz za Dopalaczami (Autor: Vekirion).
+- **Podpowiedzi ksiąg umiejętności** (Autor: Vekirion) z nazwą umiejętności („<umiejętność> – Księga Umiejętności”).
+- **Rodzaj księgi w wyszukiwaniu:** „Czarowane Ostrze - Księga Umiejętności” nie pokazuje już Księgi Zapomnienia tej umiejętności (i odwrotnie).
+- Lista podpowiedzi rozszerza się do najdłuższej nazwy; nieznane przedmioty mają numer zamiast przypadkowej nazwy (Autor: Vekirion).
+- **Klasa postaci w oknie „Filtry”** (Wojownik, Ninja, Sura, Szaman) – działa razem z przyciskiem „Klasa”. Filtr klasy obejmuje też księgi umiejętności: np. „Sura” pokazuje tylko księgi umiejętności sury (księgi wspólne zostają dla wszystkich).
+
+### Towarzysz
+- **W wolnej ręce sprzedaje złom sam** – także zapasowy sprzęt do +7. Rzeczy od +8, z kamieniem albo z cennymi bonusami zostawia dla Ciebie.
+- **Nie utyka w mieście z pełnym plecakiem** – gdy po wizycie u kupców nadal jest pełny cennych rzeczy, wyrusza mimo to i daje Ci znać, żebyś je od niego zabrał.
+- **Próba konia:** gdy koń czeka na próbę (np. w Wieży Demonów), Towarzysz sam idzie na jej mapę.
+- **Bez marnowania pieniędzy u kowala** – po kilku nieudanych próbach ulepszenia zapasu robi kilkugodzinną przerwę i nie ulepsza zapasu gorszego niż ten, który nosi.
+
+### Boty
+- **Księgi umiejętności innych klas trafiają na stragany**, także u botów zbierających medale – nie leżą już setkami w plecakach.
+- **Szarfy:** boty łączą je albo wystawiają na sprzedaż, nie trzymają ich w plecaku.
+- **Pełny stragan** wymienia najtańsze, długo niesprzedane oferty na księgi i szarfy.
+- **Boty nie krążą w kółko** do miejsca, do którego nie da się dojść – po kilku próbach wybierają inny cel.
+- **Legendy** mają o połowę mniejszy bonus do PŻ.
+
+### Auto Łowy
+- **Na koniu bez trybu bojowca** postać zsiada tylko po buffy – koniec z ciągłym zsiadaniem i wsiadaniem przy każdym skillu.
+- **Utknięcie przy ścianie:** najpierw szukana jest droga dookoła, potem inny cel, a zsiadanie dopiero na końcu.
+- **Wybór celu:** najpierw potwory, do których da się podejść bez przeszkód (kolejność Boss/Metin/Potwór z okna zostaje).
+
+### Panele
+- **Podgląd rynku:** zwarte karty ofert, mały przełącznik „Porównaj” pod ikoną przedmiotu.
+
+## Klient 2.0.64 — 2026-10-14 — Auto Łowy, Razador, Dom Aukcyjny
+- Dom Aukcyjny: kategoria Zioła, podpowiedzi ksiąg, szersza lista podpowiedzi, wybór klasy postaci w oknie „Filtry”.
+- Auto Łowy: zsiadanie tylko po buffy i nowe zachowanie przy utknięciu.
+- Kolizja zamkniętej Smoczej Bramy w lochu Razadora.
+
 ## 2.32.0 — 2026-10-13 — Porządki w plecakach botów, wojna gildii na wszystkich kanałach, handel Smoczą Alchemią
 
 ### Poprawki
