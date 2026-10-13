@@ -18,7 +18,7 @@ Wszystkie pliki tego katalogu robi `tools/yohara_maps/gen_ymaps2.py` (drop i skr
 
 ## Wąwóz to `metin2_map_icecrystalcave`, nie `whitdragonvalley`
 
-W planie i w zleceniu Wąwóz stał przy folderze `metin2_map_whitdragonvalley` (Owsap 389). Oficjalne dane mówią inaczej:
+W planie i w zleceniu Wąwóz stał przy folderze `metin2_map_whitdragonvalley` (Owsap 389). Dane klienta GF i Owsapa mówią inaczej:
 
 - klient GF 26.1.11, `npc_location_helper.txt`: 388 = `metin2_map_icecrystalcave` z koreańską nazwą portalu Owsapa 10139
   „Northwind Canyon” / „WąwózPłnW.” (cel 1106 15997 leży w kwadracie icecrystalcave, 5×4 od 0 1510400);
