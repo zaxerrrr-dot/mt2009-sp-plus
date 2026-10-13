@@ -21,11 +21,17 @@ border-bottom:1px dashed var(--mk-dash)}
 padding:7px 9px;font-size:13px;width:100%;margin:0;box-shadow:none;font-family:inherit}
 .mk input::placeholder{color:var(--mk-dash)}
 .mk input:focus,.mk select:focus{outline:none;border-color:var(--mk-gold);box-shadow:none}
-/* The panel draws every checkbox as its 52 px switch (enhancements.css, !important). Here it stays a switch,
-   a compact one: beside a filter's text, and in its own column at an offer's left edge, clear of the icon. */
-.mk input[type=checkbox]{flex:0 0 36px;width:36px!important;min-width:36px!important;height:20px!important;margin:0!important}
-.mk input[type=checkbox]::after{top:2px;left:2px;width:14px;height:14px}
-.mk input[type=checkbox]:checked::after{transform:translateX(16px)}
+/* The panel draws every checkbox as its 52 px switch (enhancements.css, !important). Here it stays the panel's
+   switch, a compact one: 34x18 beside a filter's text, 30x16 under an offer's icon (.mk-cmpsw). Every size is
+   !important so no panel-wide rule can blow it back up over the icon. */
+.mk input[type=checkbox]{flex:0 0 34px!important;width:34px!important;min-width:34px!important;max-width:34px!important;
+height:18px!important;min-height:0!important;padding:0!important;margin:0!important}
+.mk input[type=checkbox]::after{top:2px!important;left:2px!important;width:12px!important;height:12px!important}
+.mk input[type=checkbox]:checked::after{transform:translateX(16px)!important}
+.mk input.mk-cmpsw{flex:none!important;width:30px!important;min-width:30px!important;max-width:30px!important;
+height:16px!important;display:block}
+.mk input.mk-cmpsw::after{width:10px!important;height:10px!important}
+.mk input.mk-cmpsw:checked::after{transform:translateX(14px)!important}
 .mk input.mk-bad,.mk select.mk-bad{border-color:var(--mk-bad)}
 .mk .mk-err{color:var(--mk-bad);font-size:11.5px;margin-top:3px;display:none}
 .mk .mk-bad+.mk-err,.mk .mk-err.on{display:block}
@@ -77,22 +83,22 @@ border-radius:0 6px 6px 0;cursor:pointer;color:var(--mk-title);font-size:13.5px;
 .mk-charbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}
 .mk-charbar select{width:auto;min-width:220px}
 .mk-list{display:flex;flex-direction:column;gap:8px}
-.mk-offer{display:grid;grid-template-columns:36px 50px minmax(0,1fr) auto;gap:12px;align-items:start;
+.mk-offer{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:4px 12px;align-items:start;
 background:linear-gradient(180deg,var(--mk-card-a),var(--mk-card-b));border:1px solid var(--mk-line);border-radius:10px;
-padding:10px 12px;transition:border-color .15s}
+padding:8px 12px;transition:border-color .15s}
 .mk-offer:hover{border-color:var(--mk-hover)}
-.mk-offer>input[type=checkbox]{margin-top:14px!important;justify-self:start}
+.mk-lead{display:flex;flex-direction:column;align-items:center;gap:6px;width:44px}
 .mk-offer.closed{opacity:.55;filter:grayscale(.6)}
-.mk-icon{width:48px;height:48px;background:rgba(0,0,0,.25);border:1px solid var(--mk-line);border-radius:6px;display:flex;
+.mk-icon{width:44px;height:44px;flex:none;background:rgba(0,0,0,.25);border:1px solid var(--mk-line);border-radius:6px;display:flex;
 align-items:center;justify-content:center;overflow:hidden;cursor:help}
-.mk-icon img{max-width:44px;max-height:44px;image-rendering:pixelated}
-.mk-icon .ph{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:700;
+.mk-icon img{max-width:40px;max-height:40px;image-rendering:pixelated}
+.mk-icon .ph{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;
 font-size:18px;color:var(--mk-ph);background:var(--mk-ph-bg);border:1px solid var(--mk-ph-line);border-radius:5px}
 .mk-name{font-size:15.5px;font-weight:700;color:var(--mk-title);cursor:pointer;word-break:break-word}
 .mk-name:hover{text-decoration:underline}
 .mk-name .plus{color:var(--mk-gold)}
 .mk-name .stack{color:var(--mk-text);font-weight:600;font-size:13px;margin-left:4px}
-.mk-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:5px;font-size:12px;min-width:0}
+.mk-tags{display:flex;gap:4px 6px;flex-wrap:wrap;align-items:center;margin-top:4px;font-size:12px;min-width:0}
 .mk-tag{padding:1px 7px;border-radius:5px;background:var(--mk-tag-bg);border:1px solid var(--mk-tag-line);color:var(--mk-tag);
 white-space:nowrap}
 .mk-tag.bad{background:var(--mk-bad-bg);border-color:var(--mk-bad-line);color:var(--mk-bad)}
@@ -102,7 +108,7 @@ white-space:nowrap}
 .mk-seller .who{color:var(--mk-title);cursor:pointer}
 .mk-seller .who:hover{text-decoration:underline}
 .mk-seller .shopname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px}
-.mk-bon{margin-top:6px}
+.mk-bon{margin-top:5px}
 .mk-bon-list{display:none;margin:6px 0 0;padding:8px 10px;border:1px solid var(--mk-line);border-radius:8px;background:rgba(0,0,0,.22);
 font-size:12.5px}
 .mk-bon-list.open{display:block}
@@ -110,7 +116,11 @@ font-size:12.5px}
 .mk-bon-list .l.max .t{color:var(--mk-gold);font-weight:700}
 .mk-bon-list .r{color:var(--mk-dash);font-size:11px;white-space:nowrap}
 .mk-bon-list .sub{border-top:1px dashed var(--mk-dash);margin-top:5px;padding-top:5px;color:var(--mk-tag)}
-.mk-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;text-align:right;min-width:150px}
+/* Price (and the per-unit line) on top, the badge and the TP button side by side under it: two rows, not four. */
+.mk-right{display:grid;grid-template-columns:auto auto;justify-content:end;justify-items:end;align-items:center;gap:4px 6px;
+text-align:right;min-width:150px}
+.mk-right>.mk-price,.mk-right>.mk-unit{grid-column:1 / -1}
+.mk-right>.mk-btn{grid-column:2;padding:5px 12px;font-size:13px}
 .mk-price{font-size:18px;font-weight:700;color:var(--mk-gold);white-space:nowrap}
 .mk-price small{font-size:12px;color:var(--mk-text);font-weight:400;margin-left:3px}
 .mk-unit{font-size:12px;color:var(--mk-text);white-space:nowrap}
@@ -173,8 +183,8 @@ border-radius:50%;animation:mkspin .8s linear infinite;vertical-align:-2px;margi
  .mk-side{position:static;max-height:none;display:none}
  .mk-side.open{display:block}
  .mk-sidetoggle{display:inline-block}
- .mk-offer{grid-template-columns:36px 50px minmax(0,1fr)}
- .mk-right{grid-column:2 / -1;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;text-align:left;min-width:0}
+ .mk-offer{grid-template-columns:44px minmax(0,1fr)}
+ .mk-right{grid-column:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:5px 8px;text-align:left;min-width:0}
  .mk-seller .shopname{max-width:160px}
  .mk-sortbox{flex:1 1 100%}
 }

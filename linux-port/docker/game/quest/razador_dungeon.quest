@@ -340,6 +340,9 @@ quest razador_dungeon begin
 			d.setf("active", 0)
 			d.setf("left", c.limit_min)
 			d.spawn_mob(20385, c.statue[1], c.statue[2])
+			-- MT2009_PLUS_RAZADOR_GATE_V1: while a lock (20387) or a gate (20388) stands, the core refuses a
+			-- player's move into 6.5 m around it (server-patches/enginefixes, input_main.cpp) - the map's
+			-- attributes are shared by all instances. d.kill_unique at a task's start opens the passage.
 			for i = 1, 6 do
 				d.set_unique("door"..i, d.spawn_mob_ac_dir(20387, c.doors[i][1], c.doors[i][2], c.doors_dir[i]))
 				d.set_unique("idoor"..i, d.spawn_mob_ac_dir(20388, c.idoors[i][1], c.idoors[i][2], c.idoors_dir[i]))

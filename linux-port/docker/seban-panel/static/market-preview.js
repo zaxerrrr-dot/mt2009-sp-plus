@@ -229,9 +229,11 @@ function offerHtml(o, i){
     right += '<span class="mk-dear" title="' + esc(fmt('ref_price', {p: num(o.ref)})) + '">' + esc(fmt('dearer', {n: -o.deal})) + '</span>';
   }
   if (o.running) right += '<button type="button" class="mk-btn" data-tp="' + i + '" title="' + esc(T.tp_title) + '">' + esc(T.tp) + '</button>';
-  return '<div class="mk-offer' + (o.running ? '' : ' closed') + '"><input type="checkbox" data-cmp="' + o.id + '" title="' +
-    esc(T.compare_pick) + '"' + (picked[o.id] ? ' checked' : '') + '><div class="mk-icon" data-tip="' + i + '">' + icon +
-    '</div><div style="min-width:0"><div class="mk-name" data-item="' + i + '" title="' + esc(T.item_title) + '">' + esc(o.name) +
+  // The icon and, under it, the small compare switch share one column (MT2009_PLUS_MARKET_PREVIEW_V1):
+  // the switch never sits on the icon and the card keeps no column of its own for it.
+  return '<div class="mk-offer' + (o.running ? '' : ' closed') + '"><div class="mk-lead"><div class="mk-icon" data-tip="' + i + '">' + icon +
+    '</div><input type="checkbox" class="mk-cmpsw" data-cmp="' + o.id + '" title="' + esc(T.compare_pick) + '" aria-label="' +
+    esc(T.compare_pick) + '"' + (picked[o.id] ? ' checked' : '') + '></div><div style="min-width:0"><div class="mk-name" data-item="' + i + '" title="' + esc(T.item_title) + '">' + esc(o.name) +
     plus + stack + '</div><div class="mk-tags">' + tags + '</div>' + bonBtn + '</div><div class="mk-right">' + right + '</div></div>';
 }
 function draw(data){
