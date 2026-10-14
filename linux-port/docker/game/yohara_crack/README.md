@@ -19,8 +19,8 @@ Rdzeń: Yohara (game3). Klient: `client-patches/client-2.0.30/tools/ycrack`. Sil
 |---|---|---|---|---|
 | 404 | Zaklęty Las (SZC) + Erebu (SZC) | metin2_map_boss_crack_dawnmist (3×4, baza 332800 1817600) | ten sam co Zaklęty Las (PB) (371) | `jotun_szc` |
 
-Indeks: oficjalny 367 to u nas Obrona Statku; 404 jest wolny u nas, we wszystkich worktree i na liście Owsapa.
-Baza jest oficjalna – na prawo od Płaskowyżu Iluzji. Prostokąt nie nachodzi na żadną mapę z atlasinfo klienta ani na
+Indeks: 367 z wiki/Owsapa to u nas Obrona Statku; 404 jest wolny u nas, we wszystkich worktree i na liście Owsapa.
+Baza jak w wiki/Owsapie – na prawo od Płaskowyżu Iluzji. Prostokąt nie nachodzi na żadną mapę z atlasinfo klienta ani na
 żaden `Setting.txt` serwera. W kliencie to mapa **kopiowana**: `ParentMapName "metin2_map_boss_awaken_dawnmist"`, czyli
 nasz pełny folder lasu PB. GF wskazuje tu `metin2_map_dawnmist_dungeon_01`, którego nie ma w żadnym naszym kliencie.
 Exe czyta Setting.txt, sektory (także attr.atr) i msenv z rodzica, a bazę mapy bierze z atlasinfo.
