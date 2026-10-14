@@ -4645,6 +4645,18 @@
     "source": "gf"
    },
    {
+    "name": "d:/ymir work/effect/monster2/snake_circle_snake.mde",
+    "sha1": "e34ed06943cae219a8c4d725ca31952ea9a4e7e5",
+    "size": 2832723,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/snake_circle_snake.mse",
+    "sha1": "fe5171af14aa97c1362838dba6c6ad333e7b7e7b",
+    "size": 40633,
+    "source": "gf"
+   },
+   {
     "name": "d:/ymir work/effect/monster2/snake_head_01.mse",
     "sha1": "f6a997791c16185ae233961cbebbf0d0fea1343e",
     "size": 7000,
@@ -4873,9 +4885,33 @@
     "source": "gf"
    },
    {
+    "name": "d:/ymir work/effect/monster2/whitedragon_circle_ice.dds",
+    "sha1": "31096aa11a0f7e0b4f4eefddd589a264423185d0",
+    "size": 87536,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/whitedragon_circle_ice.mse",
+    "sha1": "6c49d7b832aaecf1db64fa8d80943e0fd3aa1e0d",
+    "size": 18918,
+    "source": "gf"
+   },
+   {
     "name": "d:/ymir work/effect/monster2/whitedragon_defence_01.dds",
     "sha1": "02e8dcd242f482d0126bae0edcaf8f472d7b0c1b",
     "size": 87536,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/whitedragon_ground_ice.mde",
+    "sha1": "5a4323510f6cd43c3c43e37b97c07d56911fca82",
+    "size": 3546115,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/whitedragon_ground_ice.mse",
+    "sha1": "417ba1902598b4f62a954d3298a83b9c551db0d8",
+    "size": 28730,
     "source": "gf"
    },
    {
@@ -8111,7 +8147,9 @@
     "sha1": "4d7695635db1299e9b8598524310d6f3dbeb903f",
     "size": 197,
     "source": "gf"
-   },
+   }
+  ],
+  "ymaps3_mobs2": [
    {
     "name": "d:/ymir work/monster2/snaketemple_s_pawn/front_damage.gr2",
     "sha1": "10847745d63a4480c2505bd2f28e7d0d117b87df",
@@ -8927,9 +8965,7 @@
     "sha1": "068856d3de7ff5bf5ad0c9a0414a995a9f7d178d",
     "size": 65276,
     "source": "gf"
-   }
-  ],
-  "ymaps3_mobs2": [
+   },
    {
     "name": "sound/monster/bkknight/drop_1.wav",
     "sha1": "c4151fbe784741b4ce9807ec04aa9a1013d01cf8",

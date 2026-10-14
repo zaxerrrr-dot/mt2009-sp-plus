@@ -9,10 +9,10 @@
 #      <staging>/add/<pack>/<in-pack path> ("d_/" = "d:/");
 #   2) the existing pack "property": the maps' object properties added (none of ours replaced);
 #   3) their lines at the end of pack/Index;
-#   4) the existing packs "gamedata" and "dbdata" (patch_ymaps3_client.py): gamedata/mob_proto - the 131 rows of
+#   4) the existing packs "gamedata" and "dbdata" (patch_ymaps3_client.py): gamedata/mob_proto - the 132 rows of
 #      yohara_maps3.sql with their elements; gamedata/atlasinfo.txt - the nine maps' rows; gamedata/npclist.txt -
-#      10125 "warp"; gamedata/item_list.txt, gamedata/item_proto (dbdata) and locale/pl/itemdesc.txt (dbdata) - the 69
-#      items of yohara_items3.sql (tools/yohara_maps3/yohara_items3.json).
+#      10125 and 3975 "warp"; gamedata/item_list.txt, gamedata/item_proto (dbdata) and locale/pl/itemdesc.txt (dbdata) -
+#      the 69 items of yohara_items3.sql (tools/yohara_maps3/yohara_items3.json).
 # The maps' names on the minimap (localeinfo.py MINIMAP_ZONE_NAME_DICT) and the items' icons (root/icon/item) travel
 # in client-2.0.30/root like every root change.
 # BUILD ORDER - they share pack/Index, property, gamedata and dbdata: the build's own packs, then ../cape301,

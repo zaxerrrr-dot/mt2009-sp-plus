@@ -178,8 +178,13 @@ PORTALS = {
 }
 PORTAL_RENUMBER = {10109: 10125}     # Owsap's npc.txt vnum -> ours
 
+# MT2009_PLUS_DUNGEON_ZONE_V1 (server-patches/strefy): the invisible marker d.zone_attack stands on a ground zone (the
+# warning / strike effects of Glebie and Swiatynia Wezy are drawn on it) - an NPC without a name or a click, drawn as
+# "warp" (no visible mesh, no collision)
+ZONE_MARKS = {3975: 'Zone'}
+
 # The races the client draws for the vnums that are new to its npclist (client 2.0.61 has every GF row but these)
-NPCLIST_ADD = {10125: 'warp'}
+NPCLIST_ADD = {10125: 'warp', 3975: 'warp'}
 
 # -- the maps -----------------------------------------------------------------------------------------------------
 MAPS = [
