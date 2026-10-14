@@ -437,7 +437,7 @@ def drops():
         [(31236, 1, 3), (31243, 1, 2), (31242, 1, 5), (28046, 1, 3), (50513, 1, 10), (90006, 1, 5), (31237, 1, 5),
          (31244, 1, 5), (31263, 1, 3), (50527, 1, 3), (95734, 5, 10, 'Mrozny Korzonek x5'), (49992, 1, 2),
          (49993, 1, 1), (39002, 1, 5), (31239, 1, 2), (31240, 1, 2), (31241, 1, 2), (31238, 1, 8), (72006, 1, 5),
-         (55009, 1, 3), (83067, 1, 5), (70401, 1, 2), (39081, 1, 3), (72353, 2, 25, 'Topaz Woli x2'), (70410, 1, 5),
+         (55009, 1, 3), (83067, 1, 5), (70401, 1, 2), (39081, 1, 3), (72353, 2, 25, 'Topaz Woli x2'),
          (83065, 1, 5), (83066, 1, 5), (70434, 1, 2)] + [(v, 1, 0.3) for v in range(55050, 55068)]
     d.append((6789, 'Wodz Wojenny Schronienia (lod)', shelter_boss))
     # Metins
@@ -449,6 +449,9 @@ def drops():
     d.append((8626, '1. Posterunek Myr', OUTPOST))
     d.append((8627, '2. Posterunek Myr', OUTPOST))
     return d
+
+
+KEY_BOSSES = [(6789, 'Wodz Wojenny Schronienia (lod)')]
 
 
 def write_drops(byv):
@@ -463,7 +466,9 @@ def write_drops(byv):
          '// them by level) and the Lycan\'s Szpon Gryfa / Szpon Skarabeusza / Jastrzebi / Kolczasty Szpon (no Lycan);',
          '// not in our world nor in Owsap\'s Polish data: Symbol Krola Przepowiedni, Przeb. Ksiega Zwierza. The first',
          '// batch\'s monsters on Namgan (trolls, hounds, Dreczony Duch, Natanan) and Metin Swiadomosc keep their drops',
-         '// (mob_drop_item.yohara_maps.txt). The Dockerfile step stops the build if any of these has a group already.', '']
+         '// (mob_drop_item.yohara_maps.txt). The Dockerfile step stops the build if any of these has a group already.',
+         '// Wodz Wojenny Schronienia (6789) gives exactly one Zamarzniety Klucz a kill (a "limit" group at 100 - the',
+         '// owner, 14 October).', '']
     n = 0
     for v, nm, rows in drops():
         L += ['Group\tMT2009_ymaps2_%d' % v, '{', '\tMob\t%d\t-- %s' % (v, nm), '\tType\tdrop']
@@ -479,6 +484,12 @@ def write_drops(byv):
             L.append('\t%d\t%d\t%d\t%g\t-- %s' % (k, iv, c, p, name))
         L += ['}', '']
         n += 1
+    # Zamarzniety Klucz (70410): exactly one from every Wodz Wojenny Schronienia (the owner, 14 October 2026) - a
+    # "limit" group (item_manager: pct x 10000 against 1..1000000 - 100 is every kill, no level fade and no drop
+    # event multiplies it), apart from the "drop" group above
+    for v, nm in KEY_BOSSES:
+        L += ['Group\tMT2009_ymaps2_%d_klucz' % v, '{', '\tMob\t%d\t-- %s' % (v, nm), '\tType\tlimit',
+              '\tlevel_limit\t1', '\t1\t70410\t1\t100\t-- Zamarzniety Klucz (always one)', '}', '']
     with open(DROP_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L))
     return n

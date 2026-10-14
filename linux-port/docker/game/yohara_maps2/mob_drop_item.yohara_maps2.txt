@@ -10,6 +10,8 @@
 // not in our world nor in Owsap's Polish data: Symbol Krola Przepowiedni, Przeb. Ksiega Zwierza. The first
 // batch's monsters on Namgan (trolls, hounds, Dreczony Duch, Natanan) and Metin Swiadomosc keep their drops
 // (mob_drop_item.yohara_maps.txt). The Dockerfile step stops the build if any of these has a group already.
+// Wodz Wojenny Schronienia (6789) gives exactly one Zamarzniety Klucz a kill (a "limit" group at 100 - the
+// owner, 14 October).
 
 Group	MT2009_ymaps2_6718
 {
@@ -1424,28 +1426,27 @@ Group	MT2009_ymaps2_6789
 	34	70401	1	2	-- Sztandar Czaszki
 	35	39081	1	3	-- Swiety Fragment (120)
 	36	72353	2	25	-- Topaz Woli x2
-	37	70410	1	5	-- Zamarzniety Klucz
-	38	83065	1	5	-- Losowa Skrzynia Skarbow
-	39	83066	1	5	-- Los. Klucz do Skrz. Sk.
-	40	70434	1	2	-- Zwoj Skarbu (Stopien A)
-	41	55050	1	0.3	-- Jazda (Zwinne Kopyta)
-	42	55051	1	0.3	-- Jazda Konna (PD)
-	43	55052	1	0.3	-- Jazda (Gwalt. Wichura)
-	44	55053	1	0.3	-- Jazda (Bezszelest. Chod)
-	45	55054	1	0.3	-- Jazda (Niesmiertelnosc)
-	46	55055	1	0.3	-- Jazda (Brak Odrzutu)
-	47	55056	1	0.3	-- Jazda Konna (losowo)
-	48	55057	1	0.3	-- Jazda Konna (Wojownik)
-	49	55058	1	0.3	-- Jazda Konna (Ninja)
-	50	55059	1	0.3	-- Jazda Konna (Sura)
-	51	55060	1	0.3	-- Jazda Konna (Szaman)
-	52	55061	1	0.3	-- Jazda Konna (Likan)
-	53	55062	1	0.3	-- Jazda (umiej. konne)
-	54	55063	1	0.3	-- Jazda (W. SungMa. SILA)
-	55	55064	1	0.3	-- Jazda (W. SungMa. WIT)
-	56	55065	1	0.3	-- Jazda (W. SungMa. ODP)
-	57	55066	1	0.3	-- Jazda (W. SungMa. INT)
-	58	55067	1	0.3	-- Jazda Konna (Precyzja)
+	37	83065	1	5	-- Losowa Skrzynia Skarbow
+	38	83066	1	5	-- Los. Klucz do Skrz. Sk.
+	39	70434	1	2	-- Zwoj Skarbu (Stopien A)
+	40	55050	1	0.3	-- Jazda (Zwinne Kopyta)
+	41	55051	1	0.3	-- Jazda Konna (PD)
+	42	55052	1	0.3	-- Jazda (Gwalt. Wichura)
+	43	55053	1	0.3	-- Jazda (Bezszelest. Chod)
+	44	55054	1	0.3	-- Jazda (Niesmiertelnosc)
+	45	55055	1	0.3	-- Jazda (Brak Odrzutu)
+	46	55056	1	0.3	-- Jazda Konna (losowo)
+	47	55057	1	0.3	-- Jazda Konna (Wojownik)
+	48	55058	1	0.3	-- Jazda Konna (Ninja)
+	49	55059	1	0.3	-- Jazda Konna (Sura)
+	50	55060	1	0.3	-- Jazda Konna (Szaman)
+	51	55061	1	0.3	-- Jazda Konna (Likan)
+	52	55062	1	0.3	-- Jazda (umiej. konne)
+	53	55063	1	0.3	-- Jazda (W. SungMa. SILA)
+	54	55064	1	0.3	-- Jazda (W. SungMa. WIT)
+	55	55065	1	0.3	-- Jazda (W. SungMa. ODP)
+	56	55066	1	0.3	-- Jazda (W. SungMa. INT)
+	57	55067	1	0.3	-- Jazda Konna (Precyzja)
 }
 
 Group	MT2009_ymaps2_8063
@@ -1629,4 +1630,12 @@ Group	MT2009_ymaps2_8627
 	7	39068	1	3	-- Zdobna Skrz. z Odlamkiem
 	8	50513	1	10	-- Kamien Duchowy
 	9	50525	1	2	-- Kamien Duchowy+
+}
+
+Group	MT2009_ymaps2_6789_klucz
+{
+	Mob	6789	-- Wodz Wojenny Schronienia (lod)
+	Type	limit
+	level_limit	1
+	1	70410	1	100	-- Zamarzniety Klucz (always one)
 }

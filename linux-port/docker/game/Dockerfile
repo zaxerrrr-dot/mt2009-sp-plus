@@ -1472,7 +1472,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/champion-add \
 # NPC and portal points (Owsap's for the elemental realm, our portal vnums), regen/boss/stone Owsap's where it has them
 # and ours (GF's map_mob_list points, the TR wiki's bosses) for Zejscie and the 1st temple level; the dungeons have
 # none - their quests spawn everything. Groups (group.yohara_maps3.txt: Owsap's 6156-6161, 6829-6838, ours 9160-9164,
-# 9180-9189), drops (mob_drop_item.yohara_maps3.txt) and chests (special_item_group.yohara_maps3.txt, made with the
+# 9180-9189), drops (mob_drop_item.yohara_maps3.txt; 6797's Zamarzniety Klucz a "limit" group of its own - one a
+# kill, the owner 14 October) and chests (special_item_group.yohara_maps3.txt, made with the
 # items of mariadb/playerbot/yohara_items3.sql by tools/yohara_maps3/gen_yitems3.py) are appended; none may exist
 # before. The port gets Owsap's elemental portal (3998, 229,585); sungma_table.txt the two dungeons (the wiki's first
 # levels: Glebie slaby 60/50/60/65, the temple's 2nd level 35/25/35/40 - one requirement a map name here); the dungeon
@@ -1516,7 +1517,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps3-add \
  && ! grep -q -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F" \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
  && cat "$A/mob_drop_item.yohara_maps3.txt" >> "$F" \
- && test "$(grep -c -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F")" = 55 \
+ && test "$(grep -c -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F")" = 56 \
  && SV='(70411|70412|70429|83051|83052|83053)' \
  && G="$L/special_item_group.txt" \
  && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G" \
@@ -1707,7 +1708,8 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting_data
 # veins (server-patches/jadeit) as the wiki names them. Portals: Dongan's to Seoganland (10128, appended to Dongan's
 # npc.txt), Seoganland <-> Namgan <-> Przelecz Yilad <-> Wawoz <-> Schronienie (Owsap's 10127-10140, ours 10145/10146
 # in place of Rozpadlina Dusz). Groups: Owsap's group 6185-6192, 6711-6715, 9150-9157 / group_group 6706-6710,
-# 6715-6719, 4030-4033, ours 9170-9175 / 4040-4041; drops mob_drop_item.yohara_maps2.txt and the new chests
+# 6715-6719, 4030-4033, ours 9170-9175 / 4040-4041; drops mob_drop_item.yohara_maps2.txt (55 mobs; Wodz Wojenny
+# Schronienia's Zamarzniety Klucz a "limit" group of its own - one a kill, the owner 14 October) and the new chests
 # special_item_group.yohara_items2.txt (tools/yohara_items/gen_yitems2.py) - none may exist before. The jade ores
 # are smelted by the guild alchemists (after MT2009_PLUS_JEWELS75_V1's step: the same lists). After the champion step
 # (sungma_table.txt names all five: Sung Ma maps, no bot may enter) and before the belt materials' (which reads every
@@ -1750,7 +1752,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps2-add \
  && ! grep -q -i -E '^[[:blank:]]*mob[[:blank:]]+(67(1[89]|2[0-9]|3[01]|5[89]|6[0-4]|7[0-6]|8[4-9])|68(7[5-9]|8[0-8])|806[3-6]|8077|862[67])([^0-9]|$)' "$F" \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
  && cat "$A/mob_drop_item.yohara_maps2.txt" >> "$F" \
- && test "$(grep -c -i -E '^[[:blank:]]*mob[[:blank:]]+(67(1[89]|2[0-9]|3[01]|5[89]|6[0-4]|7[0-6]|8[4-9])|68(7[5-9]|8[0-8])|806[3-6]|8077|862[67])([^0-9]|$)' "$F")" = 55 \
+ && test "$(grep -c -i -E '^[[:blank:]]*mob[[:blank:]]+(67(1[89]|2[0-9]|3[01]|5[89]|6[0-4]|7[0-6]|8[4-9])|68(7[5-9]|8[0-8])|806[3-6]|8077|862[67])([^0-9]|$)' "$F")" = 56 \
  && G="$L/special_item_group.txt" \
  && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(31238|83065|83066|83067)([^0-9]|$)' "$G" \
  && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
