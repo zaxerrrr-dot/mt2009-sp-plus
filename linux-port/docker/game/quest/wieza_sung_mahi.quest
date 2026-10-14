@@ -28,7 +28,9 @@ quest wieza_sung_mahi begin
 	state start begin
 		function cfg()
 			return {
-				hall_map = 386, hall_x = 9216, hall_y = 6144, hall_town = {122, 173},
+				hall_map = 386, hall_x = 9216, hall_y = 6144, hall_town = {122, 152},
+				-- MT2009_PLUS_YOHARA_DUNG4_HALL_SPAWN_V1: nie Town.txt GF (122,173) - 3 m od portalu Wyjscia (10126, 122,176,
+				-- WARP: przenosi kazdego w promieniu 3 m), wiec gracz po zaladowaniu hali od razu wracal do Seoganland
 				map = 387, base_x = 9984, base_y = 6144,
 				seogan = {11520 + 102, 4352 + 1457},          -- obok Wejœcia Piekielnej Wie¿y (76,1459)
 				min_level = 120, near = 30, banner = 70401, max_floor = 50,

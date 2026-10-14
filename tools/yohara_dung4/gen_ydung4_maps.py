@@ -148,6 +148,8 @@ def main():
             assert n == 1, folder
         open(os.path.join(dst, 'Setting.txt'), 'w', newline='').write(st.replace('\r\n', '\n').replace('\n', '\r\n'))
         town = open(os.path.join(a.owsap, 'map', folder, 'Town.txt'), encoding='latin-1').read().split()
+        if m.get('town'):           # MT2009_PLUS_YOHARA_DUNG4_HALL_SPAWN_V1: our arrival point (ydung4_data)
+            town = [str(v) for v in m['town']]
         open(os.path.join(dst, 'Town.txt'), 'w', newline='').write('%s\t%s\r\n' % (town[0], town[1]))
         W, H, g, LW, LH, walk = walk_grid(a.gf, m)
         sa.write_server(os.path.join(dst, 'server_attr'), W, H, g)

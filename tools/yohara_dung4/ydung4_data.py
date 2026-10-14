@@ -129,7 +129,11 @@ MAPS = [
     dict(index=384, folder='metin2_map_maze_dungeon3', name='Jaskinie Gnolli (trzeci poziom)', size=(3, 3),
          base=(921600, 1203200), kind='map', pack='gnolle3_map', goto=None),
     dict(index=386, folder='metin2_map_smhdungeon_01', name='Wieża Sung Mahi', size=(1, 1),
-         base=(921600, 614400), kind='map', pack='wieza_hall_map', goto='wieza'),
+         base=(921600, 614400), kind='map', pack='wieza_hall_map', goto='wieza',
+         # MT2009_PLUS_YOHARA_DUNG4_HALL_SPAWN_V1: GF's Town 122,173 is 3 m from the Exit portal (10126, a WARP at
+         # 122,176 - it moves every PC within 300 units), so whoever arrived was sent straight back to Seoganland.
+         # The middle of the hall instead (quest wieza_sung_mahi hall_town, /goto wieza).
+         town=(122, 152)),
     dict(index=387, folder='metin2_map_smhdungeon_02', name='Wieża Sung Mahi', size=(2, 2),
          base=(998400, 614400), gf_base=(947200, 614400), kind='dungeon', pack='wieza_map', goto=None),
 ]

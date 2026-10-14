@@ -1709,7 +1709,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-dung4-add \
     done \
  && S="$L/settings.lua" \
  && { LC_ALL=C grep -a -q 'add_goto_info("gnolle"' "$S" || printf 'add_goto_info("gnolle", 0, 382, 7893, 12142)\r\n' >> "$S"; } \
- && { LC_ALL=C grep -a -q 'add_goto_info("wieza"' "$S" || printf 'add_goto_info("wieza", 0, 386, 9338, 6317)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("wieza"' "$S" || printf 'add_goto_info("wieza", 0, 386, 9338, 6296)\r\n' >> "$S"; } \
  && rm -rf "$A" \
  && echo "share: Yohara - Jaskinie Gnolli (382-384), Wieza Sung Mahi (386, 387): maps, groups, drops, chests, Sung Ma, the dungeon panel"
 # MT2009_PLUS_YOHARA_PB_V1 (share): the awakened bosses - Razador (PB) and Nemere (PB) (the owner, 14 October 2026,
