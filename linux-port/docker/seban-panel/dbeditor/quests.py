@@ -115,7 +115,7 @@ OWN_TITLES = {
     "fishing_pass_shop": "Sklep rybaka (Karta Wędkarska)", "collect_quest_lv85": "Biolog – Czerwony Konar (85)",
     "towarzysz": "Towarzysz (list)", "devilcatacomb_zone": "Katakumby Diabła",
     "check_trans_ticket": "Grota Wygnańców – przepustka", "heavens_cave_keyquest": "Seon-Hae – dzienna misja",
-    "tanaka_ears": "Uszy Tanaki (Yonah)", "acce_costume_uriel": "Szarfy (Uriel)", "ah_yu_shop": "Sklep Ah-Yu",
+    "tanaka_ears": "Uszy Tanaki (Yonah)", "acce_costume_uriel": "Szarfy (Theowahdan)", "ah_yu_shop": "Sklep Ah-Yu",
     "costume_bonus_transfer": "Przenoszenie bonusów kostiumu", "dragon_soul": "Smocze Kamienie",
     "dragon_soul_refine": "Smocze Kamienie – ulepszanie", "dragon_soul_shop": "Smocze Kamienie – sklep",
     "autohunt_time": "Bilet Auto Łowy", "antiexp_ring": "Pierścień anty-doświadczenia",

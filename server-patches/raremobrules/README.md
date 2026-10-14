@@ -48,7 +48,7 @@ Znacznik: `MT2009_PLUS_RARE_MOB_RULES_V1`. Arkusz dropu od właściciela, 1 paź
   gracze i boty tak samo (bot – do plecaka, przy pełnym przepada). Ilość wg poziomu **zabójcy**: 1–49 ×2,
   50–74 ×5, 75+ ×10. Log `[SUKNO_DROP]`. Podgląd dropu pokazuje sukno w ilości dla poziomu oglądającego,
   wiki dropu (`server-patches/dropwiki`) – dla zabójcy na poziomie potwora. 10 sukien + 80 000 Yang = Szarfa
-  Władcy +0 (85001) u Uriela (okno „Wytwarzanie” 111). Szarfa unikatowa ze skrzyń bossów (`char_item.cpp`) bez zmian.
+  Władcy +0 (85001) u Theowahdana (okno „Wytwarzanie” 111). Szarfa unikatowa ze skrzyń bossów (`char_item.cpp`) bez zmian.
   Funkcje `Mt2009PlusSashClothCount`, `Mt2009PlusSashClothDrop` (item_manager.cpp).
 
 Stosowanie: `Apply-RareMobRulesPatch.ps1 -SourceDir <game/src>` (Windows) albo

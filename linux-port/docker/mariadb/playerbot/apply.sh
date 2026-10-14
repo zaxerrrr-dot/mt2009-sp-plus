@@ -3334,7 +3334,7 @@ ishop_once collector_item_16 "INSERT IGNORE INTO common.itemshop_items (\`index\
 db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
 (80019, 'Fine Cloth', 'Delikatne Sukno', 5, 0, 200, 0, 1, 0, 4, 0, '', 5000, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" \
   || fail_step "could not add the Delikatne Sukno item (80019)" >&2
-# Its recipe at Uriel (NPC 20011, crafting window 111 - acce_costume_uriel.quest, the list
+# Its recipe at Theowahdan (NPC 60003 since MT2009_PLUS_TEOWADEN_V1, Uriel 20011 before; crafting window 111 - acce_costume_uriel.quest, the list
 # in crafting_data.lua from game/Dockerfile): 10 Delikatne Sukno + 80 000 yang -> the
 # plain sash, Szarfa Wladcy +0 (85001), 100%, no level or recipe asked. Recipe number
 # 85001 (the result's vnum, as the guild alchemists' 50621-50633). INSERT IGNORE: the Seban

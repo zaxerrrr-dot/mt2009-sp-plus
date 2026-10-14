@@ -50,7 +50,7 @@ The numbers below are counted from the ItemShop offers shipped with the pack
 
 ### 🎀 Sashes
 - Full sash system: **combining** two sashes into a stronger one and
-  **absorbing bonuses** from an item into a sash — at **Uriel**.
+  **absorbing bonuses** from an item into a sash — at **Theowahdan** (Yongan, Joan, Pyungmoo, Cape Dragon Fire, Dongan).
 
 ### 🐎 Mounts
 - **About 240 mount seals** (129 models) as mount costumes, with fixed

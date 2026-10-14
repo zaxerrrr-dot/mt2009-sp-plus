@@ -3767,7 +3767,7 @@ T = {
  "rare_alchemy": {"pl":"Alchemia (Cor Draconis)","en":"Alchemy (Cor Draconis)"},
  "rare_alchemy_help":{"pl":"Cor Draconis z Metinów i bossów, Odłamki Smoczego Kamienia z potworów oraz ich wymiana na Cory u Alchemika (quest od 30 poziomu).","en":"Cor Draconis from Metins and bosses, Dragon Stone Shards from monsters and their exchange for Cors at the Alchemist (the level-30 quest)."},
  "rare_sashes":  {"pl":"Szarfy","en":"Sashes"},
- "rare_sashes_help":{"pl":"Szarfy z bossów i ze skrzyń bossów. Łączenie szarf u Uriela działa zawsze.","en":"Sashes from bosses and boss chests. Combining sashes at Uriel always works."},
+ "rare_sashes_help":{"pl":"Szarfy z bossów i ze skrzyń bossów. Łączenie szarf u Theowahdana działa zawsze.","en":"Sashes from bosses and boss chests. Combining sashes at Theowahdan always works."},
  "rare_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 🐉","en":"Saved and switched live, through the in-game helper. 🐉"},
  "rare_ds_title":{"pl":"Odłamki Smoczego Kamienia (Alchemik)","en":"Dragon Stone Shards (the Alchemist)"},
  "rare_ds_help": {"pl":"Od 30 poziomu Alchemik (M1 każdego królestwa) daje Moc Smoczego Oka: potwory upuszczają Odłamki, a każde 10 podniesionych odłamków samo zamienia się w Cor Draconis — tyle razy dziennie, ile ustawisz niżej, odnawiane raz dziennie u Alchemika. Boty liczą tak samo (bez odłamków w plecaku). Działa od razu.","en":"From level 30 the Alchemist (each kingdom's M1) grants the Power of the Dragon Eye: monsters drop Shards, and every 10 shards picked up turn into a Cor Draconis by themselves — as many times a day as set below, renewed once a day at the Alchemist. Bots count the same way (without shards in the bag). Applies at once."},

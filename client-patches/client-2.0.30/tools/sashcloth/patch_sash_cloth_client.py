@@ -4,7 +4,7 @@
 #   80019  Delikatne Sukno   ITEM_MATERIAL, stack 200 (flag 4), antiflag 0, buy 5000 / sell 1000
 #
 # Metins and bosses drop it in place of the +0 sash (server-patches/raremobrules); ten of
-# them and 80 000 yang make the plain sash (85001) in Uriel's "Wytwarzanie" window
+# them and 80 000 yang make the plain sash (85001) in Theowahdan's "Wytwarzanie" window
 # (crafting window 111, game/quest/acce_costume_uriel.quest).
 #
 # The client already has its icon (icon/item/80019.tga in the icon pack, from Arezzo) and its

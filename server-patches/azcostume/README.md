@@ -19,7 +19,7 @@ efekt świecenia (+500) zostają. Bez nowego slotu, bez zmiany pakietów i bez n
 |---|---|---|
 | (bez dopisku) | `item.h`, `CItem::GetAcceVnum` | vnum nakładki z gniazda 2 (85200–85299) zamiast vnumu szarfy – to idzie do `PART_ACCE`, który widzą wszyscy; stałe `MT2009_SASH_SKIN_*`, `GetMt2009SashSkin()`. |
 | `(use)` | `char_item.cpp`, przed `CHARACTER::UseItemEx` | `Mt2009PlusUseSashSkin`: tylko szarfa w torbie (nie założona, nie w handlu, nie zablokowana); ta sama nakładka – komunikat; inaczej gniazdo 2 = nakładka, nakładka zużyta, poprzednia wraca do torby (`AutoGiveItem`), log `SASH_SKIN_SET`. |
-| `(combine)` | `char.cpp`, `RefineAcceMaterials` | Udane łączenie szarf u Uriela przenosi nakładkę (z pierwszej szarfy, a jak jej nie ma – z drugiej). |
+| `(combine)` | `char.cpp`, `RefineAcceMaterials` | Udane łączenie szarf u Theowahdana przenosi nakładkę (z pierwszej szarfy, a jak jej nie ma – z drugiej). |
 | `MT2009_PLUS_AREZZO_COSTUME_SETS_V2 (ishop-list` | `itemshop_manager.cpp`, `CItemShopManager::CanSendItem` | Przedmiot zestawu Arezzo nie trafia do okna ItemShopu, gdy moduł Arezzo jest wyłączony (flaga `mt2009_arezzo_closed`). Funkcja `Mt2009PlusArezzoCostumeLocked` jest w overlayu (`playerbot_arezzo_costumes.h`, generowany). |
 | `MT2009_PLUS_AREZZO_COSTUME_SETS_V2 (ishop-buy)` | `itemshop_manager.cpp`, `CItemShopManager::BuyItem` | Zakup takiego przedmiotu przy wyłączonym module jest odrzucany z komunikatem (okno otwarte przed przełączeniem, boty). |
 

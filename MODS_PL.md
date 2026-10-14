@@ -55,7 +55,7 @@ Jak wydać nową wersję: [AKTUALIZACJE_MOD.md](AKTUALIZACJE_MOD.md).
   u Kowala: przenosi bonusy z jednego kostiumu na drugi tego samego rodzaju).
   Do kupienia u Handlarki Różności.
 - System Smoczych Kamieni (alchemia), Szarfy (kombinacja i przechwytywanie
-  bonusów u Uriela), zestaw Władcy Śmierci, kostiumy Nosiciela Światła i Diademy,
+  bonusów u Theowahdana), zestaw Władcy Śmierci, kostiumy Nosiciela Światła i Diademy,
   sklep kostiumów u Ah-Yu, Magma Manni.
 - ItemShop w grze i ItemShop w przeglądarce z nowymi kategoriami (Fryzury +,
   Kostiumy, Nakładki na broń, Pety, Mounty); w przeglądarkowym przedmioty są

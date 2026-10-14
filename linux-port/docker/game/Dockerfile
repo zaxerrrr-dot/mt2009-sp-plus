@@ -1680,7 +1680,7 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting.lua 
 
 # Uriel's "Wytwarzanie" window (MT2009_PLUS_SASH_CLOTH_V1, the owner, 6 October):
 # Metins and bosses drop Delikatne Sukno (80019) in place of the +0 sash
-# (server-patches/raremobrules) and Uriel (20011) turns ten of them and 80 000
+# (server-patches/raremobrules) and Theowahdan (60003; Uriel 20011 until MT2009_PLUS_TEOWADEN_V1) turns ten of them and 80 000
 # yang into the plain sash, 85001 at 100% - crafting window 111 (CRAFTING_URIEL),
 # which quest/acce_costume_uriel.quest opens, listing recipe 85001 of
 # world.crafting_proto (mariadb/playerbot/apply.sh). Inside the crafting_data
