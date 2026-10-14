@@ -442,7 +442,7 @@ EDITS = [
     dict(file='item.cpp', marker=M + ' (init)',
          old='\tm_bSkipSave = false;\n\tm_dwLastOwnerPID = 0;\n}\n',
          new='\tm_bSkipSave = false;\n\tm_dwLastOwnerPID = 0;\n\tm_dwYExtra = 0; // ' + M + ' (init)\n}\n'),
-    dict(file='item.cpp', marker=M + ' (server-patches/ysets)',
+    dict(file='item.cpp', marker=M + ' (server-patches/ysets, README.md)',
          old='int CItem::GetWindowInventoryEx()\n{\n',
          new=sub(FUNCS).replace('@TABLES@', tables()) + 'int CItem::GetWindowInventoryEx()\n{\n'),
     dict(file='item.cpp', marker=M + ' (points)',

@@ -514,6 +514,9 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_maze_dungeon3" : "Jaskinie Gnolli (trzeci poziom)",
 	"metin2_map_smhdungeon_01" : "Wie¿a Sung Mahi",
 	"metin2_map_smhdungeon_02" : "Wie¿a Sung Mahi",
+	# MT2009_PLUS_YOHARA_PB_V1 (client): the awakened bosses' dungeons (369, 370) on the minimap
+	"metin2_map_boss_awaken_flame" : "Twierdza Czerwonego Smoka (PB)",
+	"metin2_map_boss_awaken_snow" : "Stra¿nica Nemere (PB)",
 	"metin2_map_a1"  : MAP_A1,
 	"map_a2"         : MAP_A2,
 	"metin2_map_a3"  : MAP_A3,

@@ -1,0 +1,8 @@
+[
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_YOHARA_PB_V1 (damage)",
+  "old": "\t// MT2009_PLUS_BLUE_DRAGON_V1 (damage): Beran-Setaou in a Blue Dragon lair instance (map 208)",
+  "new": "\t// MT2009_PLUS_YOHARA_PB_V1 (damage): Straznica Nemere (PB) - Metin Chlodu (PB) (8135) takes damage only from a\n\t// Shaman, Kolumna Smoka Polnocy (PB) (20538) only from a Shaman or a Ninja (the pl-wiki; server-patches/przebudzeni).\n\t// Every other blow - another class, a pet, poison or fire left by someone - is blocked.\n\tif (IsStone() && (GetRaceNum() == 8135 || GetRaceNum() == 20538))\n\t{\n\t\tconst bool bAllowed = pAttacker && pAttacker->IsPC() &&\n\t\t\t(pAttacker->GetJob() == JOB_SHAMAN || (GetRaceNum() == 20538 && pAttacker->GetJob() == JOB_ASSASSIN));\n\t\tif (!bAllowed)\n\t\t{\n\t\t\tif (pAttacker)\n\t\t\t{\n\t\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\t\t\tif (pAttacker->IsPC() && type == DAMAGE_TYPE_NORMAL)\n\t\t\t\t\tpAttacker->ChatPacket(CHAT_TYPE_INFO, GetRaceNum() == 8135 ? \"Ten Metin moze zranic tylko Szaman.\" : \"Te Kolumne moze zranic tylko Ninja albo Szaman.\");\n\t\t\t}\n\t\t\treturn false;\n\t\t}\n\t}\n\n\t// MT2009_PLUS_BLUE_DRAGON_V1 (damage): Beran-Setaou in a Blue Dragon lair instance (map 208)"
+ }
+]

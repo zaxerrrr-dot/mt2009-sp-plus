@@ -7,8 +7,8 @@
 --   serpent armours 21310/21330/21350/21370 +0..+15, level 120 - the same, Kamien Wezowy(+) (Owsap 735-749)
 --   dark dragon weapons 320/340/1190/2210/3230/5170/7310 +0..+15, level 96 (Owsap 571-585)
 --   dragon armours 21210/21230/21250/21270 +0..+15, level 96 (Owsap 551-565)
---   31122-31138 the awakening materials of the last two refines (Plotno ... Wspanialy Kamien Chaosu): no
---     awakened boss here yet - they wait for one (their description says so)
+--   31122-31138 the awakening materials of the last two refines (Plotno ... Wspanialy Kamien Chaosu): Razador
+--     (PB) and Nemere (PB) give them (MT2009_PLUS_YOHARA_PB_V1) - but 31126, 31127, 31130: only Beran / Jotun (PB) - not here
 -- The armours' value3 is the family's own body shape (the client's msm group, tools/ysets).
 -- refine_proto 22600-22659. The Lycan's pieces are left out (no Lycan).
 SET NAMES utf8mb4;

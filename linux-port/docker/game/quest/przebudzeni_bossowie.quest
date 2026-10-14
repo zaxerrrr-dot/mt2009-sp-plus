@@ -1,0 +1,281 @@
+-- MT2009_PLUS_YOHARA_PB_V1: Przebudzeni bossowie - wejście do lochów Przebudzenia (właściciel, 14.10.2026: "Razador (PB)
+-- i Nemere (PB) - dodać wg wiki"; pl-wiki "Statua Przebudzenia", "Statua Iluzji", "Płaskowyż Iluzji", "Książka
+-- Przebudzenia", "Codzienna misja: Świat Iluzji", "Lekarstwo Iluzji"; Owsap v6.2.6 labyrinth_dungeon.quest):
+--   * Statua Iluzji (20470) w Yongan (540,500), Joan (688,748) i Pyungmoo (342,800) - komórki z wiki. Codzienna misja
+--     "Świat Iluzji" (od poziomu 110): zabij Razadora i Nemere (zwykłe lochy; Jotuna Thryma tu nie ma) i wróć -
+--     nagroda: Książka Przebudzenia (31146); znowu 24 godziny po ukończeniu. Okno wytwarzania kamieni przebudzenia -
+--     nie (nie mamy ich receptur ani przebudzonego ekwipunku).
+--   * Statua Przebudzenia (20471) obok każdej Statui Iluzji (wiki: na Płaskowyżu Iluzji - tej mapy tu nie ma): lochy
+--     Twierdza Czerwonego Smoka (PB) (369, quest razador_pb) i Strażnica Nemere (PB) (370, quest nemere_pb) - od
+--     poziomu 110, tylko w grupie, otwiera przywódca, każdy członek musi mieć Książkę Przebudzenia (zabierana przy
+--     wejściu do nowej wyprawy); do Strażnicy Nemere (PB) w grupie musi być Ninja i Szaman. 60 minut; po ukończeniu
+--     lub po czasie każdy wraca pod statuę, przy której wszedł. "Wróć do lochu" - do trwającej wyprawy.
+--   * Baek-Go (20018): Lekarstwo Iluzji (31144) za 20 Liści Życia (31145) - wiki.
+-- Mapy 369/370 są na rdzeniu Yohary (game3): boty tam nie wchodzą - liczą się ludzie z grupy (GM może wejść sam).
+-- cp1250; żaden napis nie kończy się polską literą (qc).
+quest przebudzeni_bossowie begin
+	state start begin
+		function cfg()
+			return {
+				min_level = 110, ticket = 31146, near = 30, keep = 3600 + 300,
+				-- the villages: map, Statua Przebudzenia's landing cell in world units / 100 (the statue + 3 cells south)
+				villages = {[1] = {4640, 9463}, [21] = {692, 1775}, [41] = {9562, 2851}},
+				dungeons = {
+					{map = 369, name = "Twierdza Czerwonego Smoka (PB)", boss = 4411,
+					 entry = {1536 + 342, 19712 + 584}},
+					{map = 370, name = "Strażnica Nemere (PB)", boss = 4412,
+					 entry = {2304 + 171, 19712 + 270}, need_jobs = true},
+				},
+				mission_cd = 24 * 3600, leaves = 31145, leaves_count = 20, medicine = 31144,
+			}
+		end
+
+		function in_village()
+			return przebudzeni_bossowie.cfg().villages[pc.get_map_index()] ~= nil
+		end
+
+		function bot_leads()
+			local lp = party.get_leader_pid()
+			if lp == nil or lp == 0 or lp == pc.get_player_id() then
+				return false
+			end
+			local bot = false
+			local pids = {party.get_member_pids()}
+			for i, pid in next, pids, nil do
+				if pid == lp then
+					q.begin_other_pc_block(pid)
+					bot = pc.get_player_id() == pid and pc.is_playerbot()
+					q.end_other_pc_block()
+				end
+			end
+			return bot
+		end
+
+		function enter(dg)
+			local c = przebudzeni_bossowie.cfg()
+			say_title(mob_name(20471)..":")
+			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons_closed") > 0 then
+				say("Lochy są dziś zamknięte. Wróć później.")
+				return
+			end
+			if not pc.is_gm() and not party.is_party() then
+				say("Do Lochów Przebudzenia wchodzi się tylko w grupie.")
+				return
+			end
+			if party.is_party() and not party.is_leader() and not przebudzeni_bossowie.bot_leads() then
+				say("Tylko przywódca grupy może otworzyć loch.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilę po handlu lub rozmowie.")
+				return
+			end
+			local me = pc.get_player_id()
+			local humans = {me}
+			local bad = {}
+			local ninja, shaman = pc.get_job() == 1, pc.get_job() == 3
+			local function check(name)
+				if pc.get_level() < c.min_level then
+					table.insert(bad, name.." (poziom)")
+				elseif pc.count_item(c.ticket) < 1 then
+					table.insert(bad, name.." (Książka Przebudzenia)")
+				end
+			end
+			if not pc.is_gm() then
+				check(pc.get_name())
+			end
+			local far = 0
+			if party.is_party() then
+				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						if pc.get_player_id() == pid and not pc.is_playerbot() then
+							local dx, dy = pc.get_x() - lx, pc.get_y() - ly
+							if pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+								table.insert(humans, pid)
+								ninja = ninja or pc.get_job() == 1
+								shaman = shaman or pc.get_job() == 3
+								if not pc.is_gm() then
+									check(pc.get_name())
+								end
+							else
+								far = far + 1
+							end
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			if far > 0 then
+				say("Członek grupy jest za daleko. Zbierzcie się przy mnie.")
+				return
+			end
+			if table.getn(bad) > 0 then
+				say("Nie spełniają warunków:")
+				for i, n in next, bad, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if not pc.is_gm() and table.getn(humans) < 2 then
+				say("Sam nie przetrwasz w tym lochu - potrzebujesz")
+				say("co najmniej jednego towarzysza z grupy.")
+				return
+			end
+			if dg.need_jobs and not pc.is_gm() and not (ninja and shaman) then
+				say("W grupie musi być co najmniej jeden Ninja i jeden")
+				say("Szaman - bez nich nie przejdziecie Strażnicy Nemere.")
+				return
+			end
+			if table.getn(humans) > 8 then
+				say("Do lochu wchodzi najwyżej 8 osób.")
+				return
+			end
+			-- each one's way back: the village and the statue he entered at
+			local v = c.villages[pc.get_map_index()]
+			for i, pid in ipairs(humans) do
+				q.begin_other_pc_block(pid)
+				if pc.get_player_id() == pid then
+					pc.setf("przebudzeni_bossowie", "ret_map", pc.get_map_index())
+					pc.setf("przebudzeni_bossowie", "ret_x", v[1])
+					pc.setf("przebudzeni_bossowie", "ret_y", v[2])
+				end
+				q.end_other_pc_block()
+			end
+			if d.new_jump_pids(dg.map, dg.entry[1] * 100, dg.entry[2] * 100, humans) < 0 then
+				say("Loch nie przyjmie was teraz. Spróbuj za chwilę.")
+			end
+		end
+
+		-- Statua Iluzji: Codzienna misja "Świat Iluzji"
+		when 20470.chat."Codzienna misja: Świat Iluzji" with przebudzeni_bossowie.in_village() begin
+			local c = przebudzeni_bossowie.cfg()
+			local now = get_global_time()
+			say_title(mob_name(20470)..":")
+			if pc.get_level() < c.min_level then
+				say("Świat Iluzji otwiera się przed wojownikami od")
+				say("poziomu "..c.min_level..".")
+				return
+			end
+			local st = pc.getqf("m_start")
+			if st > 0 then
+				local r, n = pc.getqf("m_razador"), pc.getqf("m_nemere")
+				if r == 1 and n == 1 then
+					say("Pokonałeś Razadora i Nemere. Oto twoja nagroda:")
+					say_item_vnum(c.ticket)
+					pc.setqf("m_start", 0)
+					pc.setqf("m_razador", 0)
+					pc.setqf("m_nemere", 0)
+					pc.setqf("m_done", now)
+					pc.give_item2(c.ticket, 1)
+					return
+				end
+				say("Misja trwa. Pokonaj obu bossów i wróć do mnie:")
+				say((r == 1 and "    [x] " or "    [ ] ")..mob_name(6091).." (Czyściec Ognia)")
+				say((n == 1 and "    [x] " or "    [ ] ")..mob_name(6191).." (Lodowa Kraina)")
+				if select("Dobrze", "Porzuć misję teraz") == 2 then
+					pc.setqf("m_start", 0)
+					pc.setqf("m_razador", 0)
+					pc.setqf("m_nemere", 0)
+				end
+				return
+			end
+			local left = pc.getqf("m_done") + c.mission_cd - now
+			if left > 0 then
+				say("Misję możesz powtórzyć za "..math.floor(left / 3600).." h "..math.floor(math.mod(left, 3600) / 60).." min.")
+				return
+			end
+			say("Lochy Przebudzenia wpuszczają tylko tych, którzy")
+			say("niosą Książkę Przebudzenia. Udowodnij swoją siłę:")
+			say("pokonaj Razadora w Czyśćcu Ognia i Nemere w Lodowej")
+			say("Krainie, a dostaniesz Książkę.")
+			say_reward("Nagroda: Książka Przebudzenia. Misję można")
+			say_reward("powtarzać co 24 godziny.")
+			if select("Przyjmij misję teraz", "Nie teraz") == 1 then
+				pc.setqf("m_start", now)
+				pc.setqf("m_razador", 0)
+				pc.setqf("m_nemere", 0)
+			end
+		end
+
+		when 6091.kill or 6091.party_kill with pc.getqf("m_start") > 0 and pc.getqf("m_razador") == 0 begin
+			pc.setqf("m_razador", 1)
+			syschat("Codzienna misja Świat Iluzji: Razador pokonany.")
+		end
+
+		when 6191.kill or 6191.party_kill with pc.getqf("m_start") > 0 and pc.getqf("m_nemere") == 0 begin
+			pc.setqf("m_nemere", 1)
+			syschat("Codzienna misja Świat Iluzji: Nemere pokonany.")
+		end
+
+		-- Statua Przebudzenia: the two dungeons
+		when 20471.chat."Lochy Przebudzenia" with przebudzeni_bossowie.in_village() begin
+			local c = przebudzeni_bossowie.cfg()
+			say_title(mob_name(20471)..":")
+			say("Dzięki mojej mocy wejdziesz do Lochów Przebudzenia.")
+			say("Masz 60 minut, by je ukończyć. Po ukończeniu lub po")
+			say("upływie czasu wrócisz tutaj - innego wyjścia nie ma.")
+			say("")
+			say_reward("Od poziomu "..c.min_level..", tylko w grupie. Każdy musi")
+			say_reward("mieć Książkę Przebudzenia (zabieraną przy wejściu).")
+			say_red("Do Strażnicy Nemere (PB): Ninja i Szaman w grupie.")
+			local opts = {}
+			for i, dg in ipairs(c.dungeons) do
+				table.insert(opts, dg.name)
+			end
+			local back = 0
+			local now = get_global_time()
+			local idx = pc.getf("przebudzeni_bossowie", "idx")
+			-- an expedition still running (the instance lives on the Yohara core): d.find asks that core, which warps
+			-- the player back if the instance is still there
+			if idx > 0 and now - pc.getf("przebudzeni_bossowie", "entry") < c.keep then
+				table.insert(opts, "Wróć do lochu")
+				back = table.getn(opts)
+			end
+			table.insert(opts, "Nie teraz")
+			local s = select_table(opts)
+			if s == back then
+				local dg = nil
+				for i, x in ipairs(c.dungeons) do
+					if math.floor(idx / 10000) == x.map then
+						dg = x
+					end
+				end
+				if dg and d.find(idx, dg.entry[1] * 100, dg.entry[2] * 100, pc.get_player_id()) then
+					pc.warp(dg.entry[1] * 100, dg.entry[2] * 100, idx)
+				else
+					say_title(mob_name(20471)..":")
+					say("Jeśli wyprawa wciąż trwa, moc statui zaraz cię zabierze.")
+				end
+				return
+			end
+			local dg = c.dungeons[s]
+			if not dg then
+				return
+			end
+			przebudzeni_bossowie.enter(dg)
+		end
+
+		-- Baek-Go: Lekarstwo Iluzji
+		when 20018.chat."Lekarstwo Iluzji" with pc.count_item(31145) > 0 begin
+			local c = przebudzeni_bossowie.cfg()
+			say_title(mob_name(20018)..":")
+			say("Z 20 Liści Życia przygotuję ci Lekarstwo Iluzji -")
+			say("od razu przywraca 500 PŻ i 500 PE.")
+			say_item_vnum(c.medicine)
+			local n = math.floor(pc.count_item(c.leaves) / c.leaves_count)
+			if n < 1 then
+				say_red("Potrzebuję 20 Liści Życia (masz "..pc.count_item(c.leaves)..").")
+				return
+			end
+			if select("Przygotuj (20 Liści Życia)", "Nie teraz") ~= 1 then
+				return
+			end
+			if pc.count_item(c.leaves) < c.leaves_count then
+				return
+			end
+			pc.remove_item(c.leaves, c.leaves_count)
+			pc.give_item2(c.medicine, 1)
+		end
+	end
+end

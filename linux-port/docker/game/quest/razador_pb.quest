@@ -1,0 +1,367 @@
+-- MT2009_PLUS_YOHARA_PB_V1: Twierdza Czerwonego Smoka (PB) - loch Razadora (PB) (369, metin2_map_boss_awaken_flame -
+-- teren naszej 351 w oficjalnym miejscu; pl-wiki "Twierdza Czerwonego Smoka (PB)", "Razador (PB)"; przebieg, pozycje i
+-- szanse jak Owsap v6.2.6 awaken_flame_dungeon.quest). Wejście: Statua Przebudzenia (quest przebudzeni_bossowie).
+-- Siedem platform; Gardziel Am-heha (PB) (20531) wyznacza zadania sześciu z nich w losowej kolejności, każde otwiera
+-- swój Zamek Losu (20534) i Smoczą Bramę (20535):
+--   * zabij wszystkie potwory na platformie (dwie platformy);
+--   * zdobądź Złotą Zębatkę (PB) (31187, 5% z potwora) i przeciągnij ją na Stelę Isfet (PB) (20533) - zębatka bywa
+--     zepsuta (30% to prawdziwa), wtedy trzeba zdobyć następną;
+--   * zabij Ignatora (PB) (4309) - najlepiej najpierw wszystkie potwory;
+--   * odblokuj siedem Stel Isfet (PB) Kamieniami Maat (PB) (31188, 5% z potwora) w ukrytej kolejności - zły wybór
+--     niszczy kamień;
+--   * zniszcz Metin Purgatorium (PB) (8134) - zabite potwory się odradzają;
+--   * po sześciu zadaniach przywódca rozmawia z Gardzielą - siódma platforma: Razador (PB) (4411; przywołuje
+--     Ognistych Generałów Żaru (PB), maks. 3 - jego "summon" w mob_proto).
+-- 60 minut od wejścia; po zwycięstwie lub po czasie wszyscy wracają pod statuę (każdy pod swoją, przy której wszedł).
+-- Książka Przebudzenia znika przy pierwszym wejściu do nowej wyprawy. Panel lochów: razador_pb.
+-- cp1250; żaden napis nie kończy się polską literą (qc).
+quest razador_pb begin
+	state start begin
+		function cfg()
+			return {
+				map = 369, base_x = 1536, base_y = 19712,
+				entry = {342, 584}, gorge = {350, 360}, grave = {686, 639},
+				boss_room = {685, 710}, boss = {686, 637},
+				doors = {{320,394},{293,359},{333,321},{378,320},{400,355},{394,401}},
+				doors_dir = {135,90,210,152,90,223},
+				idoors = {{268,447},{234,359},{300,264},{454,217},{470,355},{467,469}},
+				idoors_dir = {135,90,210,135,90,239},
+				stone2 = {195, 352}, ignator = {470, 175},
+				stones5 = {{486,345},{511,336},{525,349},{521,365},{503,372},{486,365},{500,354}},
+				metin6 = {511, 480},
+				path = "data/dungeon/razador_pb/",
+				cog = 31187, cog_pct = 5, cog_real_pct = 30, maat = 31188, maat_pct = 5, gen_limit = 100,
+				limit = 3600, keep = 3600 + 300, ticket = 31146, end_sec = 60,
+				-- purge_area: the whole map in world units
+				area = {161200, 1976800, 228600, 2046200},
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 369 * 10000 and idx < 370 * 10000 and pc.in_dungeon()
+		end
+
+		function out()
+			local m, x, y = pc.getf("przebudzeni_bossowie", "ret_map"), pc.getf("przebudzeni_bossowie", "ret_x"),
+				pc.getf("przebudzeni_bossowie", "ret_y")
+			if m > 0 then
+				pc.warp(x * 100, y * 100, m)
+			else
+				warp_to_village()
+			end
+		end
+
+		function clear_level()
+			local c = razador_pb.cfg()
+			d.setf("level", 0)
+			d.clear_regen()
+			d.purge_area(c.area[1], c.area[2], c.area[3], c.area[4])
+		end
+
+		function remove_door(n)
+			d.kill_unique("door"..n)
+			d.kill_unique("idoor"..n)
+		end
+
+		function finish(text)
+			d.setf("closed", 1)
+			d.setf("mt2009_keep_until", 0)
+			if text then
+				d.notice(text)
+			end
+			d.exit_all()
+		end
+
+		function init()
+			local c = razador_pb.cfg()
+			d.setf("init", 1)
+			d.setf("start", get_global_time())
+			d.setf("mt2009_keep_until", get_global_time() + c.keep)
+			d.setf("level", 0)
+			d.spawn_mob(20531, c.gorge[1], c.gorge[2])
+			d.spawn_mob(20532, c.grave[1], c.grave[2])
+			for i = 1, 6 do
+				d.set_unique("door"..i, d.spawn_mob_ac_dir(20534, c.doors[i][1], c.doors[i][2], c.doors_dir[i]))
+				d.set_unique("idoor"..i, d.spawn_mob_ac_dir(20535, c.idoors[i][1], c.idoors[i][2], c.idoors_dir[i]))
+			end
+			d.notice("Twierdza Czerwonego Smoka (PB): masz 60 minut. Porozmawiaj z Gardzielą Am-heha.")
+			server_timer("razador_pb_tick", 60, d.get_map_index())
+		end
+
+		function start_task(lv)
+			local c = razador_pb.cfg()
+			say_title(mob_name(20531)..":")
+			if lv == 1 or lv == 3 then
+				local t = "Zadanie: zabij wszystkie potwory na platformie."
+				say(t)
+				d.notice(t)
+				d.setf("level", 10 + lv)
+				d.regen_file(c.path..(lv == 1 and "fd_a.txt" or "fd_c.txt"))
+				server_timer("razador_pb_kills", 12, d.get_map_index())
+			elseif lv == 2 then
+				say("Zadanie: zdobądź Złotą Zębatkę (PB) i uruchom")
+				say("nią ukryty mechanizm Steli Isfet (PB). Zębatkę noszą demony.")
+				d.notice("Zadanie: zdobądź Złotą Zębatkę (PB) i przeciągnij ją na Stelę Isfet (PB).")
+				d.setf("level", 12)
+				d.spawn_mob(20533, c.stone2[1], c.stone2[2])
+				d.set_regen_file(c.path.."fd_b.txt")
+			elseif lv == 4 then
+				say("Zadanie: pokonaj Ignatora (PB), strażnika żaru.")
+				d.notice("Zadanie: znajdź i zabij Ignatora (PB).")
+				d.setf("level", 14)
+				d.spawn_mob(4309, c.ignator[1], c.ignator[2])
+				d.set_regen_file(c.path.."fd_d.txt")
+			elseif lv == 5 then
+				say("Zadanie: zdobądź Kamienie Maat (PB) i umieść je na")
+				say("siedmiu Stelach Isfet (PB) we właściwej kolejności.")
+				say("Kamień użyty na złej steli się rozpadnie.")
+				d.notice("Zadanie: Kamienie Maat (PB) na siedem Stel Isfet (PB), we właściwej kolejności.")
+				d.setf("level", 15)
+				d.setf("maat_next", 1)
+				d.set_regen_file(c.path.."fd_e.txt")
+				-- the hidden order: stele k of the order stands on a random spot
+				local spot = {1, 2, 3, 4, 5, 6, 7}
+				for i = 7, 2, -1 do
+					local j = number(1, i)
+					spot[i], spot[j] = spot[j], spot[i]
+				end
+				for k = 1, 7 do
+					local p = c.stones5[spot[k]]
+					d.set_unique("stone5_"..k, d.spawn_mob(20533, p[1], p[2]))
+				end
+			elseif lv == 6 then
+				say("Zadanie: tylko ci, którzy nie boją się żaru,")
+				say("zniszczą Metin Purgatorium (PB).")
+				d.notice("Zadanie: zniszcz Metin Purgatorium (PB).")
+				d.setf("level", 16)
+				d.set_regen_file(c.path.."fd_f.txt")
+				d.spawn_mob(8134, c.metin6[1], c.metin6[2])
+			end
+		end
+
+		function task_done(text)
+			if text then
+				d.notice(text)
+			end
+			d.notice("Odwiedź Gardziel Am-heha (PB), by otworzyć kolejny Zamek Losu.")
+			razador_pb.clear_level()
+		end
+
+		when login with razador_pb.inside() begin
+			local c = razador_pb.cfg()
+			local idx = pc.get_map_index()
+			if pc.is_playerbot() then
+				return
+			end
+			local m = pc.getf("przebudzeni_bossowie", "ret_map")
+			if m > 0 then
+				pc.set_warp_location(m, pc.getf("przebudzeni_bossowie", "ret_x"), pc.getf("przebudzeni_bossowie", "ret_y"))
+			end
+			if d.getf("closed") == 1 then
+				syschat("Twierdza Czerwonego Smoka (PB): ta wyprawa już się skończyła.")
+				razador_pb.out()
+				return
+			end
+			if pc.getf("przebudzeni_bossowie", "idx") ~= idx then
+				if not pc.is_gm() then
+					if pc.count_item(c.ticket) < 1 then
+						syschat("Twierdza Czerwonego Smoka (PB): potrzebujesz Książki Przebudzenia.")
+						razador_pb.out()
+						return
+					end
+					pc.remove_item(c.ticket, 1)
+				end
+				pc.setf("przebudzeni_bossowie", "idx", idx)
+				pc.setf("przebudzeni_bossowie", "entry", get_global_time())
+			end
+			d.setf("entered", 1)
+			if d.getf("init") == 0 then
+				razador_pb.init()
+			end
+			if d.getf("level") == 17 and math.abs(pc.get_local_x() - c.boss_room[1]) > 60 then
+				pc.warp((c.base_x + c.boss_room[1]) * 100, (c.base_y + c.boss_room[2]) * 100, idx)
+			end
+		end
+
+		-- the time
+		when razador_pb_tick.server_timer begin
+			local c = razador_pb.cfg()
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			local left = d.getf("start") + c.limit - get_global_time()
+			if left <= 0 then
+				razador_pb.finish("Twierdza Czerwonego Smoka (PB): czas minął - wracacie pod statuę.")
+				return
+			end
+			local m = math.floor((left + 30) / 60)
+			if m == 45 or m == 30 or m == 15 or m == 5 or m == 1 then
+				d.notice("Twierdza Czerwonego Smoka (PB): zostało "..m.." min. Po czasie grupa wróci pod statuę.")
+			end
+			server_timer("razador_pb_tick", 60, get_server_timer_arg())
+		end
+
+		-- Gardziel Am-heha: the tasks
+		when 20531.chat."Gardziel Am-heha" with razador_pb.inside() and d.getf("closed") == 0 and npc.lock() begin
+			local c = razador_pb.cfg()
+			say_title(mob_name(20531)..":")
+			if party.is_party() and not party.is_leader() and not pc.is_gm() then
+				say("Tylko przywódca grupy może przyjąć zadanie.")
+				npc.unlock()
+				return
+			end
+			local lv = d.getf("level")
+			if lv == 0 then
+				if d.getf("done") >= 6 then
+					lv = 7
+				else
+					-- a random lock of those still standing
+					local open = {}
+					for i = 1, 6 do
+						if d.getf("task"..i) == 0 then
+							table.insert(open, i)
+						end
+					end
+					lv = open[number(1, table.getn(open))]
+					d.setf("task"..lv, 1)
+					d.setf("done", d.getf("done") + 1)
+					razador_pb.remove_door(lv)
+					razador_pb.start_task(lv)
+					npc.unlock()
+					return
+				end
+			end
+			if lv == 11 or lv == 13 then
+				say("Nie wszystkie demony zostały pokonane.")
+				say_reward("Pozostało: "..d.count_monster())
+			elseif lv == 12 then
+				say("Mechanizm Steli Isfet uruchomi tylko Złota Zębatka")
+				say("(PB). Wróć, gdy zadanie zostanie wykonane.")
+			elseif lv == 14 then
+				say("Ignator (PB) jeszcze żyje. Walcz dalej albo czeka")
+				say("cię wieczne potępienie.")
+			elseif lv == 15 then
+				say("Błądzić jest rzeczą ludzką - wybieraj rozważnie.")
+				say("Wróć, gdy wszystkie Stele Isfet zostaną odblokowane.")
+			elseif lv == 16 then
+				say("Metin Purgatorium (PB) wciąż stoi - demony wracają!")
+				say("Obróć go w popiół i wróć.")
+			elseif lv == 7 then
+				say("Czy chcesz przejść przez Gardziel Am-heha i")
+				say("stanąć twarzą w twarz ze swoim przeznaczeniem?")
+				if select("Wejdź do sali", "Może później") == 1 then
+					d.setf("level", 17)
+					d.jump_all(c.base_x + c.boss_room[1], c.base_y + c.boss_room[2])
+					d.set_regen_file(c.path.."fd_fild_boss.txt")
+					d.set_unique("boss", d.spawn_mob(4411, c.boss[1], c.boss[2]))
+					d.notice("Twierdza Czerwonego Smoka (PB): piekielny władca Razador (PB) czeka!")
+				end
+			end
+			npc.unlock()
+		end
+
+		when razador_pb_kills.server_timer begin
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			local lv = d.getf("level")
+			if lv ~= 11 and lv ~= 13 then
+				return
+			end
+			if d.count_monster() <= 0 then
+				d.notice("Wszystkie demony zostały pokonane.")
+				d.notice("Odwiedź Gardziel Am-heha (PB), by otworzyć kolejny Zamek Losu.")
+				d.setf("level", 0)
+				return
+			end
+			server_timer("razador_pb_kills", 6, get_server_timer_arg())
+		end
+
+		-- the cog (2nd task), the Maat stones (5th task): from the monsters
+		when kill with razador_pb.inside() and d.getf("level") == 12 and npc.is_pc() == false begin
+			local c = razador_pb.cfg()
+			if number(1, 100) <= c.cog_pct then
+				game.drop_item(c.cog, 1)
+			end
+		end
+
+		when kill with razador_pb.inside() and d.getf("level") == 15 and npc.is_pc() == false begin
+			local c = razador_pb.cfg()
+			if number(1, 100) <= c.maat_pct then
+				game.drop_item(c.maat, 1)
+			end
+		end
+
+		when 20533.take with razador_pb.inside() and d.getf("level") == 12 and item.get_vnum() == 31187 begin
+			local c = razador_pb.cfg()
+			item.remove()
+			if number(1, 100) <= c.cog_real_pct then
+				npc.purge()
+				razador_pb.task_done("Stela Isfet (PB) została zniszczona.")
+			else
+				say_title(mob_name(20533)..":")
+				say("Ta Złota Zębatka (PB) była zepsuta i rozpadła się.")
+				say("Znajdź prawdziwą.")
+			end
+		end
+
+		when 20533.take with razador_pb.inside() and d.getf("level") == 15 and item.get_vnum() == 31188 begin
+			local c = razador_pb.cfg()
+			local want = d.getf("maat_next")
+			local vid = npc.get_vid()
+			local which = 0
+			for k = 1, 7 do
+				if vid == d.get_unique_vid("stone5_"..k) then
+					which = k
+				end
+			end
+			item.remove()
+			say_title(mob_name(20533)..":")
+			if which == 0 or which ~= want then
+				say("Zła kolejność. Kamień Maat (PB) rozpadł się.")
+				return
+			end
+			npc.purge()
+			if want == 7 then
+				razador_pb.task_done("Maat zwyciężyła nad Isfet - ostatnia Stela Isfet (PB) zniszczona.")
+				return
+			end
+			d.setf("maat_next", want + 1)
+			if want == 6 then
+				say("Mądry wybór. Teraz zniszcz ostatnią stelę, a Maat")
+				say("zwycięży nad Isfet.")
+			else
+				say("Mądry wybór. Teraz zniszcz następną stelę.")
+			end
+			if d.count_monster() < c.gen_limit then
+				d.regen_file(c.path.."fd_e.txt")
+			end
+		end
+
+		when 4309.kill with razador_pb.inside() and d.getf("level") == 14 begin
+			razador_pb.task_done("Ignator (PB), strażnik żaru, został pokonany.")
+		end
+
+		when 8134.kill with razador_pb.inside() and d.getf("level") == 16 begin
+			razador_pb.task_done("Metin Purgatorium (PB) został zniszczony.")
+		end
+
+		when 4411.kill with razador_pb.inside() and d.getf("level") == 17 and d.getf("closed") == 0 begin
+			local c = razador_pb.cfg()
+			d.setf("closed", 1)
+			d.update_ranking("razador_pb", get_global_time() - d.getf("start"))
+			d.clear_regen()
+			d.notice("Razador (PB) został pokonany!")
+			d.notice("Wszyscy wojownicy wrócą pod statuę za minutę.")
+			server_timer("razador_pb_end", c.end_sec, d.get_map_index())
+		end
+
+		when razador_pb_end.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				d.setf("mt2009_keep_until", 0)
+				d.exit_all()
+			end
+		end
+	end
+end

@@ -94,6 +94,7 @@ param(
 #   Ukryj kostium      CommonDefines.h, char.cpp, input_login.cpp, cmd_general.cpp, cmd.cpp, ENABLE_HIDE_COSTUME_SYSTEM
 #                      (MT2009_PLUS_HIDE_COSTUME_V1; server-patches/ukryjkostium)
 #   Gaya               cube.h, cube.cpp (MT2009_PLUS_GAYA_V1; server-patches/gaya, after ysets)
+#   Przebudzeni bossowie char_battle.cpp (MT2009_PLUS_YOHARA_PB_V1; server-patches/przebudzeni)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1372,6 +1373,19 @@ if ((Test-Path -LiteralPath $gayaApply -PathType Leaf) -and
     if ($gayaResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Gaya edit(s).' -f $gayaResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Przebudzeni bossowie (server-patches/przebudzeni, MT2009_PLUS_YOHARA_PB_V1): Metin Chlodu (PB) (8135) takes damage only
+# from a Shaman, Kolumna Smoka Polnocy (PB) (20538) only from a Shaman or a Ninja (the pl-wiki) - CHARACTER::Damage in
+# char_battle.cpp. The dungeons themselves are quests (razador_pb, nemere_pb, przebudzeni_bossowie).
+$przebudzeniApply = Join-Path $repo 'server-patches/przebudzeni/Apply-PrzebudzeniPatch.ps1'
+if ((Test-Path -LiteralPath $przebudzeniApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $przebudzeniResult = & $przebudzeniApply -SourceDir $engineGameSource
+    if ($przebudzeniResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} awakened bosses edit(s).' -f $przebudzeniResult.Applied) -ForegroundColor DarkGray
     }
 }
 

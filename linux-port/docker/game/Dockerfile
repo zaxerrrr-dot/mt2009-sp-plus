@@ -362,7 +362,9 @@ RUN set -eux; \
     # (MT2009_PLUS_CHANGE_LOOK_V1, server-patches/transmutacja).
     # ygaya is Kamienie Gaya and Statua Wojownika's other functions (MT2009_PLUS_GAYA_V1): Kamyki ground into Gaya
     # (70%), Portowy Sklep Gaya (3 rows of 3, the third unlocked), the elemental pet chests' window.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya; do \
+    # przebudzeni_bossowie is the awakened bosses' entrance (Statua Iluzji's daily mission, Statua Przebudzenia, Baek-Go's
+    # Lekarstwo Iluzji), razador_pb Twierdza Czerwonego Smoka (PB), nemere_pb Straznica Nemere (PB) (MT2009_PLUS_YOHARA_PB_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1703,6 +1705,86 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-dung4-add \
  && { LC_ALL=C grep -a -q 'add_goto_info("wieza"' "$S" || printf 'add_goto_info("wieza", 0, 386, 9338, 6317)\r\n' >> "$S"; } \
  && rm -rf "$A" \
  && echo "share: Yohara - Jaskinie Gnolli (382-384), Wieza Sung Mahi (386, 387): maps, groups, drops, chests, Sung Ma, the dungeon panel"
+# MT2009_PLUS_YOHARA_PB_V1 (share): the awakened bosses - Razador (PB) and Nemere (PB) (the owner, 14 October 2026,
+# cache/yohara/decyzje.md "14.10 ok. 8:10"; pl-wiki first, Owsap v6.2.6 for the stages and numbers). Twierdza
+# Czerwonego Smoka (PB) (369, metin2_map_boss_awaken_flame) and Strażnica Nemere (PB) (370, metin2_map_boss_awaken_snow)
+# - dungeons on the Yohara core (bin/m2-render-config), copies of our 351 / 352 terrain at the official bases (the
+# client's folders name the parent map, ParentMapName - client-2.0.30/tools/ypb); quests razador_pb / nemere_pb.
+# tools/yohara_pb/gen_ypb.py made everything here: the folders (server_attr from GF's attr.atr of the parent = ours
+# cell for cell), the rooms' spawn files (data/dungeon/razador_pb, nemere_pb: Owsap's points, the PB groups), groups
+# 6101-6112 / 6121-6132 and groups of groups 6101-6103 (Owsap's), the bosses' and stones' drops, the three chests
+# (items: mariadb/playerbot/yohara_items_pb.sql; monsters: yohara_pb.sql) - none may exist before. The entrance:
+# Statua Iluzji (20470, the daily mission that gives Książka Przebudzenia) at the pl-wiki's cells of Yongan 540,500,
+# Joan 688,748, Pyungmoo 342,800 and Statua Przebudzenia (20471, the dungeons) four cells east of her (no Płaskowyż
+# Iluzji here) - every cell measured walkable, away from the villages' NPCs (quest przebudzeni_bossowie). The dungeon
+# panel gets razador_pb and nemere_pb (the ticket Książka Przebudzenia, party 2-8, level 110).
+COPY yohara_pb/ /tmp/yohara-pb-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-pb-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for p in "369 metin2_map_boss_awaken_flame 0c0000000c000000 153600 1971200" \
+             "370 metin2_map_boss_awaken_snow 100000000c000000 230400 1971200"; do \
+      set -- $p; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: PB map $1 $2"; exit 1; }; \
+    done \
+ && mkdir -p /opt/metin2/share/data/dungeon && rm -rf /opt/metin2/share/data/dungeon/razador_pb /opt/metin2/share/data/dungeon/nemere_pb \
+ && cp -a "$A/data/dungeon/razador_pb" "$A/data/dungeon/nemere_pb" /opt/metin2/share/data/dungeon/ \
+ && test "$(ls /opt/metin2/share/data/dungeon/razador_pb | wc -l)" = 7 && test "$(ls /opt/metin2/share/data/dungeon/nemere_pb | wc -l)" = 10 \
+ && GV='(61(0[1-9]|1[0-2]|2[1-9]|3[0-2]))' \
+ && f="$L/group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_pb.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 24 \
+ && GG='(610[1-3])' \
+ && f="$L/group_group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GG[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group_group.yohara_pb.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GG[[:space:]]*\$" "$f")" = 3 \
+ && MV='(4411|4412|8135|20538)' \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.yohara_pb.txt" >> "$F" \
+ && test "$(grep -c -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F")" = 4 \
+ && SV='(3114[1-3])' \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.yohara_pb.txt" >> "$G" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G")" = 3 \
+ && for p in "metin2_map_a1 540 500 544 500" "metin2_map_b1 688 748 692 748" "metin2_map_c1 342 800 346 800"; do \
+      set -- $p; N="$L/map/$1/npc.txt"; \
+      test -f "$N" || { echo "FATAL: PB statues: no $N"; exit 1; }; \
+      { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; }; \
+      grep -q -E '[[:blank:]]20470[[:space:]]*$' "$N" || printf 'm\t%s\t%s\t0\t0\t0\t5\t1m\t100\t1\t20470\r\n' "$2" "$3" >> "$N"; \
+      grep -q -E '[[:blank:]]20471[[:space:]]*$' "$N" || printf 'm\t%s\t%s\t0\t0\t0\t5\t1m\t100\t1\t20471\r\n' "$4" "$5" >> "$N"; \
+      { test "$(grep -c -E "^m[[:blank:]]+$2[[:blank:]]+$3[[:blank:]].*[[:blank:]]20470[[:space:]]*\$" "$N")" = 1 \
+        && test "$(grep -c -E "^m[[:blank:]]+$4[[:blank:]]+$5[[:blank:]].*[[:blank:]]20471[[:space:]]*\$" "$N")" = 1; } \
+        || { echo "FATAL: PB statues on $1"; exit 1; }; \
+    done \
+ && I="$L/dungeon_info.txt" \
+ && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+nemere_pb[[:blank:]]' "$I" \
+      || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
+           printf 'dungeon\trazador_pb\t369\t1\txy\t1/21/41\t4640\t9463\t110\t0\t2\t8\t4411\t-\t0\t31146\t1\tTwierdza_Czerwonego_Smoka_(PB)\tStatua_Przebudzenia\nentry\trazador_pb\t4640\t9463\t692\t1775\t9562\t2851\ndrop\trazador_pb\t31141\t4\t100\ndrop\trazador_pb\t31143\t3\t100\n' >> "$I"; \
+           printf 'dungeon\tnemere_pb\t370\t1\txy\t1/21/41\t4640\t9463\t110\t0\t2\t8\t4412\t-\t0\t31146\t1\tStra\277nica_Nemere_(PB)\tStatua_Przebudzenia\nentry\tnemere_pb\t4640\t9463\t692\t1775\t9562\t2851\ndrop\tnemere_pb\t31142\t4\t100\ndrop\tnemere_pb\t31143\t3\t100\n' >> "$I"; }; } \
+ && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+(razador_pb|nemere_pb)[[:blank:]]' "$I")" = 2 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[369\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_PB_V1\r\ntranslate.general.map_names[369] = "Twierdza Czerwonego Smoka (PB)"\r\ntranslate.general.map_names[370] = "Stra\277nica Nemere (PB)"\r\n' >> "$f"; \
+    done \
+ && rm -rf "$A" \
+ && echo "share: Yohara PB - Twierdza Czerwonego Smoka (PB) (369), Straznica Nemere (PB) (370): maps, rooms, groups, drops, chests, the statues, the dungeon panel"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only
