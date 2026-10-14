@@ -35,8 +35,9 @@ jako nasz kod, z **zasadami właściciela z 7.10.2026** w miejscu części decyz
    `pendant` = 0, a w istniejących (Silny p. Ludziom, Omdlenie) zmienia się tylko `pendant`.
 2. Żywioły potworów (bity 11–16 `setRaceFlag`) zamiast jego listy 253 mobów – `tools/zywioly/gen_zywioly_moby.py`:
    - wszyscy bossowie (ranga ≥ 4) z jego listy z wiki (`tools/zywioly/zywioly_wiki.json`) – żywioł z wiki;
-   - zwykłe potwory tylko na mapach: Grota Wygnańców 1/2 (72, 73) – Błyskawica; Świątynia Ochao (209) i Zaczarowany
-     Las (362) – Wiatr (wszystkie vnumy z regen/boss/stone mapy, grupy i grupy grup rozwinięte, przywołania; bez
+   - zwykłe potwory tylko na mapach: Grota Wygnańców 1/2 (72, 73) – Błyskawica; Świątynia Ochao (209) – Wiatr
+     (lemury 9611–9615 usuniętego Zaczarowanego Lasu Arezzo, 362, zachowują Wiatr – `FORMER_FOREST_WIND`; Zaklęty Las
+     (353) i Erebu mają swoje żywioły z wiki w `yohara_zaklety_zywioly.sql`) (wszystkie vnumy z regen/boss/stone mapy, grupy i grupy grup rozwinięte, przywołania; bez
      Metinów i NPC); boss bez wpisu w wiki dostaje żywioł mapy;
    - lochy – wszystkie potwory i bossowie (pliki mapy, `data/dungeon/<katalog>`, vnumy ≥ 1000 z questu, przywołania),
      żywioł lochu wygrywa z wiki: Nemere (352) – Lód, Leże Smoka (208, Błękitny Smok / Beran-Setaou) – Błyskawica,

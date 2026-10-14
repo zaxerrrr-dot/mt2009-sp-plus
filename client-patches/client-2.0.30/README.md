@@ -1,5 +1,10 @@
 # Klient 2.0.30: mapy z Arezzo, etap 1 (Dolina Cyklopów, Zaczarowany Las, Biblioteka Wiedzy)
 
+> MT2009 PLUS 3.x (`MT2009_PLUS_YOHARA_ZAKLETY_V1`): **Zaczarowany Las (362, `natural_map`) usunięty** – serwer go nie
+> hostuje, `tools/yzaklety` zdejmuje jego wiersz z `atlasinfo.txt` (pliki terenu zostają w paczkach Arezzo, nic ich nie
+> wczytuje). Portal Strażnika En-Tai w Świątyni Ochao prowadzi do **Zaklętego Lasu** (353,
+> `metin2_map_dawnmist_dungeon_01`, `tools/yzaklety`), Strażnik Dżungli stoi w Świątyni Ochao.
+
 Względem klienta 2.0.29 (wydanie 2.15.0; jego pliki są w `client-patches/client-2.0.28`). Paczki są kumulatywne: budowane
 na aktualnych paczkach 2.0.29 (`/opt/metin2/cache/tcm/c28/pack`, tylko do odczytu) przez
 `tools/az29/rebuild.sh`. Wynik: `/opt/metin2/cache/arezzo-work/client/out/pack` (tylko paczki,
