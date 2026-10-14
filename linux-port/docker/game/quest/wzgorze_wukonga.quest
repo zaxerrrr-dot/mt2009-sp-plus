@@ -290,6 +290,23 @@ quest wzgorze_wukonga begin
 
 		function guardians_check()
 			local c = wzgorze_wukonga.cfg()
+			-- MT2009_PLUS_WUKONG_GUARDIANS_V2 (14 October, the supporters' server, instance 3640077): two
+			-- Defenders left the map without a death (no drop, no kill) seconds after the first fell, and
+			-- the run stood at "Pozostalo: 2" - the dungeon no longer knew them (syserr "Unknown Key :
+			-- wukong_guardian2/3"), so the full-health check below never put them back. A Defender the
+			-- dungeon lost without its kill (guardian_down clears its flag first) comes back at once.
+			local lost = 0
+			for i = 1, table.getn(c.guardians) do
+				if d.getf("guardian"..i) ~= 0 and d.is_unique_dead("wukong_guardian"..i) then
+					wzgorze_wukonga.spawn_guardian(i)
+					lost = lost + 1
+				end
+			end
+			if lost > 0 then
+				d.setf("guardian_time", get_global_time())
+				d.notice("Wzgórze Wukonga: Zaginiony Obroñca Chmur wraca na swoje miejsce.")
+				return
+			end
 			if get_global_time() - d.getf("guardian_time") < c.guardian_idle then
 				return
 			end
