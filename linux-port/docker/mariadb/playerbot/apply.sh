@@ -3657,6 +3657,22 @@ for yd4_sql in yohara_dung4.sql yohara_items_d4.sql yohara_dung4_zywioly.sql; do
     fi
 done
 
+# MT2009_PLUS_YOHARA_PB_V1: the awakened bosses - Razador (PB) and Nemere (PB) (the owner, 14 October 2026). After
+# yohara_sets.sql (the chests hold its Dark Dragon materials 31122-31138) and the elements' files (zywioly_moby.sql
+# clears the element bits of every mob it does not list): yohara_pb.sql (tools/yohara_pb/gen_ypb.py) - the two
+# dungeons' monsters, bosses, stones, NPCs and the villages' statues; yohara_items_pb.sql - the chests, the materials,
+# Lekarstwo Iluzji / Liscie Zycia, Ksiazka Przebudzenia, the quest items; yohara_pb_zywioly.sql - the pl-wiki's
+# elements. All idempotent (INSERT IGNORE / UPDATE). The drop file and chests (game/yohara_pb) name these vnums: a world
+# without them stops the cores at boot.
+for ypb_sql in yohara_pb.sql yohara_items_pb.sql yohara_pb_zywioly.sql; do
+    [ -s "/opt/playerbot/$ypb_sql" ] || continue
+    if db < "/opt/playerbot/$ypb_sql"; then
+        echo "[playerbot-migrate] yohara PB: $ypb_sql applied"
+    else
+        fail_step "yohara PB: $ypb_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
 # fastBossSpawn<map>) and count (m2_boss_count) are the bosses' alone now; the Metin stones read

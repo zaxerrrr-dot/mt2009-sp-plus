@@ -202,7 +202,10 @@ MAPS_game1="$MAPS_game1 358"
 # server); this core's maps are ~170 sectors of terrain in all - well under 1 GB of the 32-bit core's 4 GB.
 # MT2009_PLUS_YOHARA_DUNG4_V1: Jaskinie Gnolli (382-384, 3x3 each) and Wieza Sung Mahi (386 the hall 1x1, 387 the
 # tower 2x2 - its instances 3870000+) - 31 sectors more.
-MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 389 382 383 384 386 387"
+# MT2009_PLUS_YOHARA_PB_V1: the awakened bosses' dungeons - Twierdza Czerwonego Smoka (PB) (369, 3x3) and Strazni-
+# ca Nemere (PB) (370, 4x3), our 351/352 terrain at the official bases; their instances 3690000+ / 3700000+ - 21 sectors
+# more. Entered from the villages (Statua Przebudzenia, d.new_jump_pids over P2P), no bot goes there.
+MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 389 382 383 384 386 387 369 370"
 yohara_maps_present() {
   local idx="$SHARE_DIR/locale/poland/map/index" m out=""
   for m in $MAPS_game3_all; do
