@@ -3780,6 +3780,49 @@ if [ "$regen_split" != "1" ]; then
     fi
 fi
 
+# MT2009_PLUS_GLOBAL_BONUS_V1 (server-patches/bonusyglobal/README.md): M2_BONUS_MODE - mt2009 (the default, the
+# world as it was) or global (Tieru's 2.2.31 "Bonusy jak na serwerze globalnym" and elements on every monster).
+# After every step above that writes item_attr or the monsters' elements (zywioly_*.sql, every *_zywioly.sql):
+#   * item_attr - world.item_attr_mt2009 holds the mt2009 rows exactly while the global set is in item_attr:
+#     global and it is empty -> bonusy_global.sql (copies the 14 rows, writes the global ones); mt2009 and it is not
+#     empty -> bonusy_mt2009.sql (puts the copy back). Anything else: nothing to do. Items keep their bonuses.
+#   * the monsters' elements - zywioly_moby.sql cleared and set them for mt2009 at this start already; global adds
+#     zywioly_moby_global.sql (tools/zywioly/gen_zywioly_moby_global.py) on top.
+#   * m2_bonus_global (1 = global), every start: the cores read it (element resistance at 30% against monsters,
+#     the double-item chance in the drop, a talisman's own resistance values) and send it to the client at login
+#     (quest zywioly: the tooltip's maxima, the element icons of global mode).
+case "$(printf '%s' "${M2_BONUS_MODE:-mt2009}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in global|globalny|1) bonus_global=1 ;; *) bonus_global=0 ;; esac
+if bonus_saved=$(db -N -e "CREATE TABLE IF NOT EXISTS world.item_attr_mt2009 LIKE world.item_attr;
+        SELECT COUNT(*) FROM world.item_attr_mt2009;" 2>/dev/null | tr -d ' \r'); then
+    if [ "$bonus_global" = 1 ] && [ "$bonus_saved" = 0 ]; then
+        if db < /opt/playerbot/bonusy_global.sql; then
+            echo "[playerbot-migrate] bonus mode: global - item_attr switched to the global set (the mt2009 rows kept in world.item_attr_mt2009)"
+        else
+            fail_step "bonus mode: bonusy_global.sql failed; item_attr stays as it was" >&2
+        fi
+    elif [ "$bonus_global" = 0 ] && [ "$bonus_saved" != 0 ]; then
+        if db < /opt/playerbot/bonusy_mt2009.sql; then
+            echo "[playerbot-migrate] bonus mode: mt2009 - item_attr back to the mt2009 set ($bonus_saved rows)"
+        else
+            fail_step "bonus mode: bonusy_mt2009.sql failed; item_attr stays as it was" >&2
+        fi
+    else
+        echo "[playerbot-migrate] bonus mode: $([ "$bonus_global" = 1 ] && echo global || echo mt2009) - item_attr already on it"
+    fi
+else
+    fail_step "bonus mode: could not read world.item_attr_mt2009" >&2
+fi
+if [ "$bonus_global" = 1 ] && [ -s /opt/playerbot/zywioly_moby_global.sql ]; then
+    if db < /opt/playerbot/zywioly_moby_global.sql; then
+        echo "[playerbot-migrate] bonus mode: global - elements on every monster (zywioly_moby_global.sql)"
+    else
+        fail_step "bonus mode: zywioly_moby_global.sql failed" >&2
+    fi
+fi
+if ! db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_bonus_global', '', $bonus_global);"; then
+    fail_step "bonus mode: could not write m2_bonus_global" >&2
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
