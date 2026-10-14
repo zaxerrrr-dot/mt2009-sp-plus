@@ -15,8 +15,8 @@ wytwarzania (cube) – i tylko to ostatnie wymaga silnika:
   `Mt2009YSetsCubeMake`).
 
 Receptury z Gaya (wiki / Owsap `cube.txt` „gem”): kowale zestawów 20475–20479 – 500, Statua Węży 20807 (wężowe bronie
-i zbroje) – 100 (`tools/ysets/gen_ysets.py`), Statua Wojownika 20433 – Skrzynki Żywiołaków – 10
-(`tools/ygaya/gen_ygaya.py`, `linux-port/docker/game/ygaya/cube.ygaya.txt`). Okno wytwarzania klienta nie pokazuje
+i zbroje) – 100 (`tools/ysets/gen_ysets.py`). Skrzynek Żywiołaków u Statui Wojownika nie ma (decyzja właściciela
+14.10.2026 – pet tylko w ItemShopie). Okno wytwarzania klienta nie pokazuje
 Gaya (exe bez zmian) – koszt podają rozmowy z NPC.
 
 Pięć edycji, każda ze swoim znacznikiem. Po `ysets` (edycja „cube set” stoi w jego funkcji `Mt2009YSetsCubeMake`).

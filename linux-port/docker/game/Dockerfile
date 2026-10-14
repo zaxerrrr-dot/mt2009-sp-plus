@@ -1517,26 +1517,6 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/ysets-add/
     done \
  && rm -rf /tmp/ysets-add \
  && echo "share: Yohara sets - 43 cube recipes (Statua Wezy, Statua Wojownika, the set blacksmiths), the blacksmiths in the port"
-# MT2009_PLUS_GAYA_V1 (share): Kamienie Gaya and Statua Wojownika (the owner, 14 October 2026; tools/ygaya/gen_ygaya.py
-# made ygaya/): the six elemental pet chests of Statua Wojownika (20433: 2 Kupony Zwierzaka Zywiolu, 100 000 Yang and
-# 10 Gaya - the cube's "gaya", server-patches/gaya) appended to cube.txt after the Yohara sets, and what each chest
-# holds (53581-53586 -> Maly Zywiolak 53290-53295) to special_item_group.txt; quest ygaya grinds Kamyki into Gaya and
-# keeps the Portowy Sklep Gaya.
-COPY ygaya/ /tmp/ygaya-add/
-RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/ygaya-add \
- && ! grep -q -E '^reward[[:blank:]]+5358[1-6][[:blank:]]' "$C" \
- && sed -i 's/\r$//; s/$/\r/' "$A/cube.ygaya.txt" \
- && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
- && cat "$A/cube.ygaya.txt" >> "$C" \
- && test "$(grep -c -E '^reward[[:blank:]]+5358[1-6][[:blank:]]' "$C")" -eq 6 \
- && test "$(grep -c -E '^gaya[[:blank:]]+[0-9]+' "$C")" -ge 6 \
- && G="$L/special_item_group.txt" \
- && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+5358[1-6]([^0-9]|$)' "$G" \
- && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
- && cat "$A/special_item_group.ygaya.txt" >> "$G" \
- && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+5358[1-6]([^0-9]|$)' "$G")" -eq 6 \
- && rm -rf "$A" \
- && echo "share: Gaya - 6 elemental pet chest recipes of Statua Wojownika, the chests' contents"
 # MT2009_PLUS_YOHARA_MAPS3_V1 (share): the third batch of Yohara places (the owner, 14 October 2026; cache/yohara/
 # decyzje.md, plan-mapy-yohary.md; pl-wiki first, TR wiki for what it lacks) - Zejscie Polnocnego Wiatru (394,
 # metin2_map_whitedragoncave_02), Glebie Polnocnego Wiatru (395, _boss; dungeon), 1. poziom Swiatyni Wezy (390,

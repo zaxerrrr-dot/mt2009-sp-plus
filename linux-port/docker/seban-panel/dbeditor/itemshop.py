@@ -128,8 +128,9 @@ BOOT_ONCE = {
     "king03_20212": {"adds": (20212, 30054), "note": "Zbroja Króla Wojowników+ i Święty Miecz Bogów+"},
     "monster_cards_617": {"adds": (617, 618), "note": "Karty Potworów (Nowego Początku / Układu)"},
     "collector_item_16": {"adds": (16,), "note": "Kolekcjoner – okno Kolekcjonera z dowolnego miejsca"},
-    # MT2009_PLUS_GAYA_V1: the Gaya shop's Reset / Rozszerzenie and the elemental pet coupon (tools/ygaya)
-    "yohara_gaya_620": {"adds": (620, 621, 622), "note": "Sklep Gaya (Reset, Rozszerzenie) i Kupon Zwierzaka Żywiołu"},
+    # MT2009_PLUS_GAYA_V1: the Gaya shop's Reset / Rozszerzenie (tools/ygaya); the elemental pet coupon (622) is out
+    "yohara_gaya_620": {"adds": (620, 621), "note": "Sklep Gaya (Reset, Rozszerzenie)"},
+    "yohara_gaya_622_off": {"adds": (), "remove_indexes": (622,), "note": "Kupon Zwierzaka Żywiołu znika ze sklepu"},
     # MT2009_PLUS_AREZZO_COSTUME_SETS_V1 (gen_azcostume_server.py): 44 helmets, 44 costumes, 126 weapon
     # skins and 17 sash skins (V4: four of the 21 out) of the 22 Arezzo sets, 100 SM each; shown and
     # sold only while the Arezzo module is on (V2, the engine's ItemShop). V2's arezzo_costume_sets_v2 (it deleted Ognisty Rycerz and

@@ -3683,8 +3683,8 @@ done
 
 # MT2009_PLUS_GAYA_V1: Kamienie Gaya and Statua Wojownika (the owner, 14 October 2026): yohara_gaya.sql
 # (tools/ygaya/gen_ygaya.py) - Gaya (95927, the currency as an item), Reset / Rozszerzenie Sklepu Gaya (39063/39064),
-# Kupon Zwierzaka Zywiolu (39117), the elemental pet chests (53581-53586) and Kamyki's flags. Idempotent (INSERT
-# IGNORE / UPDATE). The share's cube.txt and special_item_group.txt (game/ygaya) name these vnums.
+# and Kamyki's flags. Idempotent (INSERT IGNORE / UPDATE). The elemental pet chests (53581-53586) and Kupon Zwierzaka
+# Zywiolu (39117) are gone (the owner, 14 October 2026: the pet is sold in the ItemShop only).
 for yg_sql in yohara_gaya.sql; do
     [ -s "/opt/playerbot/$yg_sql" ] || continue
     if db < "/opt/playerbot/$yg_sql"; then
@@ -3693,12 +3693,14 @@ for yg_sql in yohara_gaya.sql; do
         fail_step "gaya: $yg_sql failed" >&2
     fi
 done
-# The wiki's sources of the Gaya shop's Reset (5 SM) and Rozszerzenie (19 SM) and of Kupon Zwierzaka Zywiolu (in the
-# official Losowa Skrzynia Krolestwa Zywiolow, 59 SM, of whose other contents we lack most) are the ItemShop: the
-# coupon at 50 (two of them = the price of our 15-day elemental pet in the shop). Once per install (ishop_once,
-# MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
-ishop_once yohara_gaya_620 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (620, 39063, 1, 5, 'DRAGON_COIN', 0), (621, 39064, 1, 19, 'DRAGON_COIN', 0), (622, 39117, 1, 50, 'DRAGON_COIN', 0);" \
-    "could not add the Gaya shop's Reset / Rozszerzenie and Kupon Zwierzaka Zywiolu to the ItemShop"
+# The wiki's sources of the Gaya shop's Reset (5 SM) and Rozszerzenie (19 SM) are the ItemShop. Once per install
+# (ishop_once, MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
+ishop_once yohara_gaya_620 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (620, 39063, 1, 5, 'DRAGON_COIN', 0), (621, 39064, 1, 19, 'DRAGON_COIN', 0);" \
+    "could not add the Gaya shop's Reset / Rozszerzenie to the ItemShop"
+# Kupon Zwierzaka Zywiolu (39117, index 622) is out (no pet chests any more - the owner, 14 October 2026): a world
+# whose yohara_gaya_620 added it loses that line once (only that index with that vnum).
+ishop_once yohara_gaya_622_off "DELETE FROM common.itemshop_items WHERE \`index\` = 622 AND vnum = 39117;" \
+    "could not take Kupon Zwierzaka Zywiolu out of the ItemShop"
 
 # MT2009_PLUS_YOHARA_PB_V1: the awakened bosses - Razador (PB) and Nemere (PB) (the owner, 14 October 2026). After
 # yohara_sets.sql (the chests hold its Dark Dragon materials 31122-31138) and the elements' files (zywioly_moby.sql

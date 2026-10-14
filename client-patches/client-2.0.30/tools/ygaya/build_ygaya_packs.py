@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_GAYA_V1 - the client build's part for Kamienie Gaya and Statua Wojownika: no new pack; the existing packs
-# "gamedata" (gamedata/item_list.txt) and "dbdata" (gamedata/item_proto, locale/pl/itemdesc.txt) get the 10 items of
+# "gamedata" (gamedata/item_list.txt) and "dbdata" (gamedata/item_proto, locale/pl/itemdesc.txt) get the 3 items of
 # yohara_gaya.sql (tools/ygaya/ygaya_items.json) and Kamyki's flags (patch_ygaya_client.py). The icons
-# (root/icon/item/95927.tga, 39063/39064/39117.tga, 53581-53586.tga) and the quest texts travel in client-2.0.30/root
+# (root/icon/item/95927.tga, 39063/39064.tga) and the quest texts travel in client-2.0.30/root
 # like every root change.
 # BUILD ORDER - they share gamedata and dbdata: after ../yohara (Kamyki's text), ../ysets and the other Yohara steps,
 # on the same OUT (a pack already in OUT - an earlier step changed it - is the one patched):

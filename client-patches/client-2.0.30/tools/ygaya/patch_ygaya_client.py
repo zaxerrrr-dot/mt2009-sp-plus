@@ -3,9 +3,9 @@
 # ../ymaps4/patch_ymaps4_client.py (its item part):
 #
 #   gamedata/item_list.txt, gamedata/item_proto (dbdata), locale/pl/itemdesc.txt (dbdata)
-#       the 10 items of tools/ygaya/ygaya_items.json (= the server's yohara_gaya.sql, tools/ygaya/gen_ygaya.py):
-#       Gaya 95927, Reset / Rozszerzenie Sklepu Gaya 39063/39064, Kupon Zwierzaka Zywiolu 39117, the elemental pet
-#       chests 53581-53586 - a full record each over Zelazna Szkatulka 50120 (../yohara/patch_yohara_client.py
+#       the 3 items of tools/ygaya/ygaya_items.json (= the server's yohara_gaya.sql, tools/ygaya/gen_ygaya.py):
+#       Gaya 95927, Reset / Rozszerzenie Sklepu Gaya 39063/39064 (the elemental pet chests and their coupon are gone,
+#       the owner 14 October 2026) - a full record each over Zelazna Szkatulka 50120 (../yohara/patch_yohara_client.py
 #       yitem_record), its item_list line (the GF icons: client-2.0.30/root/icon/item) and its itemdesc line;
 #   Kamyki 95926: its record's antiflag (yohara_gaya.sql's UPDATE) and its itemdesc line - tools/yohara_items/
 #       yohara_items.json's (../yohara writes the same line).
@@ -29,7 +29,7 @@ import patch_yohara_client as py  # noqa: E402
 REPO = os.path.normpath(os.path.join(HERE, '..', '..', '..', '..'))
 ITEMS_JSON = os.path.join(REPO, 'tools', 'ygaya', 'ygaya_items.json')
 YITEMS_JSON = os.path.join(REPO, 'tools', 'yohara_items', 'yohara_items.json')
-ITEMS = 10
+ITEMS = 3
 KAMYKI = 95926
 ANTIFLAG = 82                  # the record's antiflag (yitem_record: '<IIIII' at 78 = stack, antiflag, ...)
 
